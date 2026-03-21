@@ -36820,9 +36820,25 @@ reviews:
           status: skipped
           name: kspec validate
         timestamp: 2026-03-21T08:55:31.409Z
+      - _ulid: 01KM7SPS468748R3NN43VWYBW9
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-21T08:55:35.302Z
+      - _ulid: 01KM7SPS46QCAVJHV7Z1B32Z7G
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-21T08:55:35.302Z
     examined_commit: 8b694a8fdfb833abd8d7918097f90b56e916a23d
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -36878,7 +36894,14 @@ reviews:
               findings).
             created_at: 2026-03-21T08:55:27.028Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-21T08:55:35.302Z
     created_at: 2026-03-21T08:54:38.467Z
-    updated_at: 2026-03-21T08:55:31.083Z
+    updated_at: 2026-03-21T08:55:35.302Z
     notes: []
