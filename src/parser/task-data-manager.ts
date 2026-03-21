@@ -83,7 +83,7 @@ export interface TaskSummary {
  *
  * AC: @task-data-manager ac-2 — only index data is read
  */
-function rawToSummary(raw: unknown): TaskSummary | null {
+export function rawToSummary(raw: unknown): TaskSummary | null {
   if (!raw || typeof raw !== "object") return null;
   const r = raw as Record<string, unknown>;
 

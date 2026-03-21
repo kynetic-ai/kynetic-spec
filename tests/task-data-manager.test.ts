@@ -9,6 +9,7 @@ import {
 } from "../src/parser/index.js";
 import type { TaskSummary, TaskStorageBackend } from "../src/parser/task-data-manager.js";
 import { registerBackend, unregisterBackend } from "../src/parser/task-data-manager.js";
+import { splitBackend } from "../src/parser/split-backend.js";
 import { TaskSchema } from "../src/schema/task.js";
 import {
   cleanupTempDir,
@@ -584,16 +585,22 @@ describe("TaskDataManager", () => {
   // AC: @task-data-manager ac-8
   // Split format used when explicitly activated
   describe("split format activation (ac-8)", () => {
-    it("throws at construction when split backend is not registered", () => {
+    it("succeeds at construction when split backend is registered", () => {
+      // The split backend is registered via src/parser/split-backend.ts
+      // AC: @task-data-manager ac-8 — split format used when activated
+      const splitManager = new TaskDataManager("split");
+      expect(splitManager.storageFormat).toBe("split");
+    });
+
+    it("throws at construction for an unknown backend format", () => {
       // AC: @trait-error-guidance ac-1, ac-2
       try {
-        new TaskDataManager("split");
-        expect.fail("Should have thrown for unregistered split backend");
+        new TaskDataManager("nonexistent" as any);
+        expect.fail("Should have thrown for unregistered backend");
       } catch (err) {
         expect(err).toBeInstanceOf(TaskDataManagerError);
         const tdmErr = err as TaskDataManagerError;
         expect(tdmErr.message).toContain("No storage backend registered");
-        expect(tdmErr.message).toContain("split");
         expect(tdmErr.suggestion).toContain("registerBackend");
         expect(tdmErr.field).toBe("storageFormat");
       }
@@ -671,8 +678,9 @@ describe("TaskDataManager", () => {
         await splitManager.getTask(ctx, "@test-task-pending");
         expect(calls).toContain("getTask");
       } finally {
-        // Clean up: remove mock split backend from global registry
+        // Clean up: remove mock and restore real split backend
         unregisterBackend("split");
+        registerBackend(splitBackend);
       }
     });
 
@@ -707,7 +715,9 @@ describe("TaskDataManager", () => {
         expect(created._sourceFile).toContain("/task.yaml");
         expect(created._sourceFile).not.toContain("project.tasks.yaml");
       } finally {
+        // Clean up: remove mock and restore real split backend
         unregisterBackend("split");
+        registerBackend(splitBackend);
       }
     });
 
@@ -715,8 +725,9 @@ describe("TaskDataManager", () => {
       const monoManager = new TaskDataManager();
       expect(monoManager.storageFormat).toBe("monolithic");
 
-      // Split without registered backend throws at construction
-      expect(() => new TaskDataManager("split")).toThrow(TaskDataManagerError);
+      // Split backend is registered and succeeds at construction
+      const splitManager = new TaskDataManager("split");
+      expect(splitManager.storageFormat).toBe("split");
     });
   });
 
@@ -1340,7 +1351,9 @@ describe("TaskDataManager", () => {
         await splitManager.deleteTask(ctx, "@test-task-pending");
         expect(deleteCalled).toBe(true);
       } finally {
+        // Clean up: remove mock and restore real split backend
         unregisterBackend("split");
+        registerBackend(splitBackend);
       }
     });
   });
