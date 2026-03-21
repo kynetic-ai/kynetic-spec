@@ -37,8 +37,12 @@ import {
   stripRuntimeMetadata,
   writeRawTaskArray,
 } from "./yaml.js";
+import { createRequire } from "node:module";
 import { acquireFileLock } from "./file-lock.js";
 import { commitIfShadow } from "./shadow.js";
+
+/** Synchronous require for ESM — used for lazy backend registration. */
+const esmRequire = createRequire(import.meta.url);
 
 /**
  * Storage format selector.
@@ -108,8 +112,8 @@ export function rawToSummary(raw: unknown): TaskSummary | null {
     started_at: typeof r.started_at === "string" ? r.started_at : (r.started_at === null ? null : undefined),
     submitted_at: typeof r.submitted_at === "string" ? r.submitted_at : (r.submitted_at === null ? null : undefined),
     completed_at: typeof r.completed_at === "string" ? r.completed_at : (r.completed_at === null ? null : undefined),
-    notes_count: Array.isArray(r.notes) ? r.notes.length : 0,
-    todos_count: Array.isArray(r.todos) ? r.todos.length : 0,
+    notes_count: Array.isArray(r.notes) ? r.notes.length : (typeof r.notes_count === "number" ? r.notes_count : 0),
+    todos_count: Array.isArray(r.todos) ? r.todos.length : (typeof r.todos_count === "number" ? r.todos_count : 0),
   };
 }
 
@@ -619,6 +623,25 @@ export function unregisterBackend(format: StorageFormat): void {
 }
 
 /**
+ * Ensure the split backend is registered. Uses createRequire for synchronous
+ * module loading within ESM, avoiding circular dependency from top-level imports.
+ * Called lazily from the TaskDataManager constructor when "split" format is requested.
+ *
+ * AC: @task-data-manager ac-8 — split format routes to registered backend
+ */
+function ensureSplitBackend(): void {
+  if (backendRegistry.has("split")) return;
+  try {
+    const mod = esmRequire("./split-backend.js") as { ensureSplitBackendRegistered?: () => void };
+    mod.ensureSplitBackendRegistered?.();
+  } catch {
+    // In vitest or environments where createRequire can't resolve .js,
+    // the split backend must be imported by the test/caller directly.
+    // The constructor will throw a descriptive error if still not registered.
+  }
+}
+
+/**
  * Validate a task record against the schema before persisting.
  * Strips _sourceFile before validation since it is runtime metadata.
  * When originalUlid is provided, enforces that the mutation did not
@@ -671,7 +694,16 @@ export class TaskDataManager {
 
   constructor(storageFormat: StorageFormat = "monolithic") {
     this.storageFormat = storageFormat;
-    const backend = backendRegistry.get(storageFormat);
+    let backend = backendRegistry.get(storageFormat);
+
+    // Lazy registration: when "split" is requested but not yet registered,
+    // synchronously load the split backend module and register it.
+    // AC: @task-data-manager ac-8 — split format activates without caller import
+    if (!backend && storageFormat === "split") {
+      ensureSplitBackend();
+      backend = backendRegistry.get(storageFormat);
+    }
+
     if (!backend) {
       // AC: @trait-error-guidance ac-1, ac-2
       throw new TaskDataManagerError(

@@ -9,7 +9,10 @@ import {
 } from "../src/parser/index.js";
 import type { TaskSummary, TaskStorageBackend } from "../src/parser/task-data-manager.js";
 import { registerBackend, unregisterBackend } from "../src/parser/task-data-manager.js";
-import { splitBackend } from "../src/parser/split-backend.js";
+import { splitBackend, ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
+
+// Register the split backend (no longer auto-registered at module scope)
+ensureSplitBackendRegistered();
 import { TaskSchema } from "../src/schema/task.js";
 import {
   cleanupTempDir,

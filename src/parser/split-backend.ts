@@ -818,6 +818,10 @@ class SplitBackend implements TaskStorageBackend {
       depends_on: task.depends_on,
       blocked_by: task.blocked_by,
       created_at: task.created_at,
+      // Persist counts as scalars so rawToSummary can derive them
+      // without reading per-task files (notes/todos live outside the index)
+      notes_count: Array.isArray(task.notes) ? task.notes.length : 0,
+      todos_count: Array.isArray(task.todos) ? task.todos.length : 0,
     };
 
     // Include optional indexed fields only when present
@@ -883,9 +887,15 @@ export const splitBackend = new SplitBackend();
 
 /**
  * Register the split backend with the task data manager.
- * Called at module load time so the backend is available
- * when TaskDataManager is constructed with format "split".
+ *
+ * Exported as a function (not called at module scope) to avoid circular
+ * dependency issues — split-backend imports from task-data-manager, and
+ * calling registerBackend() at the top level would access backendRegistry
+ * before it is initialized. Instead, the TaskDataManager constructor
+ * calls ensureSplitBackend() when format "split" is requested.
  *
  * AC: @task-data-manager ac-8 — enables split format activation
  */
-registerBackend(splitBackend);
+export function ensureSplitBackendRegistered(): void {
+  registerBackend(splitBackend);
+}

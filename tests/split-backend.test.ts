@@ -8,6 +8,7 @@ import {
 } from "../src/parser/task-data-manager.js";
 import {
   splitBackend,
+  ensureSplitBackendRegistered,
   getTaskDir,
   getTaskFilePath,
   getNotesFilePath,
@@ -17,6 +18,9 @@ import {
   detectSplitFormat,
   getOperationRouting,
 } from "../src/parser/split-backend.js";
+
+// Register the split backend (no longer auto-registered at module scope)
+ensureSplitBackendRegistered();
 import { initContext } from "../src/parser/yaml.js";
 import type { KspecContext } from "../src/parser/yaml.js";
 import {

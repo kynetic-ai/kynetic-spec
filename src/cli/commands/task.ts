@@ -341,7 +341,7 @@ function reportBranchResult(result: {
  * AC: @spec-task-set-batch ac-1, ac-2, ac-4, ac-5
  */
 async function setTaskFields(
-  foundTask: TaskSummary,
+  foundTask: TaskSummary | LoadedTask,
   ctx: any,
   tasks: TaskSummary[],
   items: LoadedSpecItem[],
@@ -1652,8 +1652,8 @@ Examples:
           );
           const syncResult = await syncSpecImplementationStatus(
             ctx,
-            updatedTask as LoadedTask,
-            updatedTasks as LoadedTask[],
+            updatedTask,
+            updatedTasks,
             items,
             index,
           );
@@ -1835,8 +1835,8 @@ Examples:
                 );
                 const syncResult = await syncSpecImplementationStatus(
                   ctx,
-                  updatedTask as LoadedTask,
-                  updatedTasks as LoadedTask[],
+                  updatedTask,
+                  updatedTasks,
                   items,
                   index,
                 );

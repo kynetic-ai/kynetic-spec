@@ -7,7 +7,7 @@
 
 import type { ImplementationStatus } from "../schema/index.js";
 import type { ReferenceIndex } from "./refs.js";
-import type { KspecContext, LoadedSpecItem, LoadedTask } from "./yaml.js";
+import type { KspecContext, LoadedSpecItem } from "./yaml.js";
 import { updateSpecItem } from "./yaml.js";
 
 // ============================================================
@@ -52,10 +52,27 @@ export interface AlignmentWarning {
 // ============================================================
 
 /**
+ * Minimal task shape needed for alignment calculations.
+ * Both LoadedTask and TaskSummary satisfy this interface.
+ */
+export interface AlignmentTask {
+  _ulid: string;
+  slugs?: string[];
+  title: string;
+  status: string;
+  spec_ref?: string | null;
+  notes?: unknown[];
+}
+
+/**
  * Index for tracking spec-task alignment.
  * Build once when loading, then query for alignment issues.
+ *
+ * Generic over the task type so callers who pass LoadedTask[] get
+ * LoadedTask[] back from query methods, while callers who pass
+ * TaskSummary[] (or any AlignmentTask-compatible type) also work.
  */
-export class AlignmentIndex {
+export class AlignmentIndex<T extends AlignmentTask = AlignmentTask> {
   /** spec ULID → task ULIDs that reference it */
   private specToTasks = new Map<string, string[]>();
 
@@ -66,12 +83,12 @@ export class AlignmentIndex {
   private specItems = new Map<string, LoadedSpecItem>();
 
   /** All tasks by ULID */
-  private tasks = new Map<string, LoadedTask>();
+  private tasks = new Map<string, T>();
 
   /**
    * Build index from loaded items
    */
-  constructor(tasks: LoadedTask[], items: LoadedSpecItem[]) {
+  constructor(tasks: T[], items: LoadedSpecItem[]) {
     // Index spec items
     for (const item of items) {
       this.specItems.set(item._ulid, item);
@@ -109,11 +126,11 @@ export class AlignmentIndex {
   /**
    * Get tasks that implement a spec item
    */
-  getTasksForSpec(specUlid: string): LoadedTask[] {
+  getTasksForSpec(specUlid: string): T[] {
     const taskUlids = this.specToTasks.get(specUlid) || [];
     return taskUlids
       .map((ulid) => this.tasks.get(ulid))
-      .filter((t): t is LoadedTask => t !== undefined);
+      .filter((t): t is T => t !== undefined);
   }
 
   /**
@@ -144,7 +161,7 @@ export class AlignmentIndex {
 
     const tasks = taskUlids
       .map((ulid) => this.tasks.get(ulid))
-      .filter((t): t is LoadedTask => t !== undefined);
+      .filter((t): t is T => t !== undefined);
 
     if (tasks.length === 0) {
       return "not_started";
@@ -181,12 +198,12 @@ export class AlignmentIndex {
     const taskUlids = this.specToTasks.get(specUlid) || [];
     const linkedTasks: LinkedTaskSummary[] = taskUlids
       .map((ulid) => this.tasks.get(ulid))
-      .filter((t): t is LoadedTask => t !== undefined)
+      .filter((t): t is T => t !== undefined)
       .map((t) => ({
         taskUlid: t._ulid,
         taskTitle: t.title,
         taskStatus: t.status,
-        hasNotes: t.notes.length > 0,
+        hasNotes: Array.isArray(t.notes) ? t.notes.length > 0 : false,
       }));
 
     const currentStatus = spec.status?.implementation || "not_started";
@@ -331,8 +348,8 @@ export interface SyncResult {
  */
 export async function syncSpecImplementationStatus(
   ctx: KspecContext,
-  task: LoadedTask,
-  allTasks: LoadedTask[],
+  task: AlignmentTask,
+  allTasks: AlignmentTask[],
   allItems: LoadedSpecItem[],
   refIndex: ReferenceIndex,
 ): Promise<SyncResult | null> {
