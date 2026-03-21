@@ -113783,6 +113783,18 @@
       supersedes: null
       author: Test User
       created_at: 2026-03-21T17:55:55.154Z
+    - _ulid: 01KM8S3PZ8JM063AC4C9N5QKEB
+      content: "Fix cycle 2: Addressed both blockers. (1) Tasks with missing/invalid _ulid now get a
+        generated ULID and migrate with a warning instead of being silently skipped — prevents false
+        'Already migrated' reports. (2) Canonical-data path for already-migrated tasks no longer
+        round-trips through TaskSchema with sparse notes arrays — builds index entries directly from
+        raw canonical data, so tasks with notes correctly use split data instead of falling back to
+        stale monolithic values. Added 2 regression tests covering both scenarios. Full suite passes
+        (6912/6912, 1 pre-existing flaky timeout in agent-invocation-lifecycle unrelated to this
+        change)."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T18:04:24.936Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YEXN2KMJ43AMEKH3SW0RE
