@@ -37766,9 +37766,25 @@ reviews:
           status: pass
           name: review-evidence
         timestamp: 2026-03-21T10:10:01.889Z
+      - _ulid: 01KM7XZJME5QR768N373N6HM59
+        actor: codex@openai.com
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-21T10:10:17.871Z
+      - _ulid: 01KM7XZJMFXW52NBA7GNQQB18R
+        actor: codex@openai.com
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-21T10:10:17.871Z
     examined_commit: c925689681d0bb27dffc744f759c87480f0b41d2
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -37795,7 +37811,14 @@ reviews:
               and will pollute task history whenever these commands are used.
             created_at: 2026-03-21T10:09:58.613Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai.com
+        role: reviewer
+        created_at: 2026-03-21T10:10:17.870Z
     created_at: 2026-03-21T10:03:50.225Z
-    updated_at: 2026-03-21T10:10:01.597Z
+    updated_at: 2026-03-21T10:10:17.871Z
     notes: []
