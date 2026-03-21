@@ -15,6 +15,8 @@
  * Spec: @task-data-manager
  */
 
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
 import type { Note, Task, TaskInput } from "../schema/task.js";
 import { TaskSchema } from "../schema/task.js";
 import type { KspecContext, LoadedTask } from "./yaml.js";
@@ -22,13 +24,19 @@ import {
   createNote,
   createTask,
   deleteTask as deleteTaskFromFile,
+  extractRawTaskArray,
+  findRawTaskIndex,
   findTaskByRef,
   getDefaultTaskFilePath,
   loadAllTasks,
-  mutateTaskAtomically,
+  mergeTaskPreservingRawShape,
   mutateTasksAtomically,
+  readYamlFile,
   saveTask as saveTaskToFile,
+  stripRuntimeMetadata,
+  writeRawTaskArray,
 } from "./yaml.js";
+import { acquireFileLock } from "./file-lock.js";
 import { commitIfShadow } from "./shadow.js";
 
 /**
@@ -63,6 +71,42 @@ export interface TaskSummary {
   submitted_at?: string | null;
   completed_at?: string | null;
   _sourceFile?: string;
+}
+
+/**
+ * Extract a TaskSummary from a raw YAML task record.
+ * Only reads index-level fields — detail fields (notes, todos, description,
+ * vcs_refs, etc.) are never accessed.
+ *
+ * AC: @task-data-manager ac-2 — only index data is read
+ */
+function rawToSummary(raw: unknown, sourceFile: string): TaskSummary | null {
+  if (!raw || typeof raw !== "object") return null;
+  const r = raw as Record<string, unknown>;
+
+  // Minimal validation: ULID and title must be present
+  if (typeof r._ulid !== "string" || !r._ulid) return null;
+  if (typeof r.title !== "string" || !r.title) return null;
+
+  return {
+    _ulid: r._ulid,
+    slugs: Array.isArray(r.slugs) ? r.slugs.filter((s): s is string => typeof s === "string") : [],
+    title: r.title,
+    type: typeof r.type === "string" ? r.type : "task",
+    status: typeof r.status === "string" ? r.status : "pending",
+    priority: typeof r.priority === "number" ? r.priority : 3,
+    tags: Array.isArray(r.tags) ? r.tags.filter((t): t is string => typeof t === "string") : [],
+    assignee: typeof r.assignee === "string" ? r.assignee : (r.assignee === null ? null : undefined),
+    automation: typeof r.automation === "string" ? r.automation : undefined,
+    spec_ref: typeof r.spec_ref === "string" ? r.spec_ref : (r.spec_ref === null ? null : undefined),
+    depends_on: Array.isArray(r.depends_on) ? r.depends_on.filter((d): d is string => typeof d === "string") : [],
+    blocked_by: Array.isArray(r.blocked_by) ? r.blocked_by.filter((b): b is string => typeof b === "string") : [],
+    created_at: typeof r.created_at === "string" ? r.created_at : new Date().toISOString(),
+    started_at: typeof r.started_at === "string" ? r.started_at : (r.started_at === null ? null : undefined),
+    submitted_at: typeof r.submitted_at === "string" ? r.submitted_at : (r.submitted_at === null ? null : undefined),
+    completed_at: typeof r.completed_at === "string" ? r.completed_at : (r.completed_at === null ? null : undefined),
+    _sourceFile: sourceFile,
+  };
 }
 
 /**
@@ -159,7 +203,7 @@ export class TaskDataManagerError extends Error {
 export interface TaskStorageBackend {
   readonly format: StorageFormat;
 
-  listTasks(ctx: KspecContext): Promise<LoadedTask[]>;
+  listTasks(ctx: KspecContext): Promise<TaskSummary[]>;
   getTask(ctx: KspecContext, ref: string): Promise<LoadedTask | undefined>;
   createTask(ctx: KspecContext, task: LoadedTask): Promise<void>;
   mutateTask(
@@ -176,16 +220,207 @@ export interface TaskStorageBackend {
 }
 
 /**
+ * In-memory per-task mutex for contention-free non-overlapping mutations.
+ *
+ * Each task ULID maps to a promise chain. Mutations on the same task serialize
+ * by awaiting the previous mutation's promise. Mutations on different tasks
+ * proceed independently — they don't share a lock.
+ *
+ * AC: @task-data-manager ac-5 — non-overlapping mutations proceed without contention
+ * AC: @task-data-manager ac-9 — same-task mutations serialize
+ */
+class TaskMutexMap {
+  private readonly locks = new Map<string, Promise<void>>();
+
+  /**
+   * Acquire an exclusive lock for a task ULID. Returns a release function.
+   * If another mutation is in progress for the same ULID, waits for it.
+   * Mutations on different ULIDs proceed concurrently.
+   */
+  async acquire(ulid: string): Promise<() => void> {
+    // Wait for any existing lock on this ULID
+    const existing = this.locks.get(ulid);
+    if (existing) {
+      await existing;
+    }
+
+    let release!: () => void;
+    const lockPromise = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+
+    this.locks.set(ulid, lockPromise);
+
+    return () => {
+      // Only delete if this is still the current lock for the ULID
+      if (this.locks.get(ulid) === lockPromise) {
+        this.locks.delete(ulid);
+      }
+      release();
+    };
+  }
+}
+
+/**
+ * Load task summaries from raw YAML files without full schema validation.
+ * Reads the file and extracts only index-level fields from each raw record.
+ *
+ * AC: @task-data-manager ac-2 — only index data is read; detail fields not parsed
+ */
+async function loadSummariesFromFile(filePath: string): Promise<TaskSummary[]> {
+  const summaries: TaskSummary[] = [];
+
+  try {
+    const raw = await readYamlFile<unknown>(filePath);
+
+    let taskList: unknown[];
+
+    if (Array.isArray(raw)) {
+      taskList = raw;
+    } else if (raw && typeof raw === "object" && "tasks" in raw) {
+      const wrapper = raw as Record<string, unknown>;
+      const tasks = wrapper.tasks;
+      taskList = Array.isArray(tasks) ? tasks : [];
+    } else if (raw) {
+      taskList = [raw];
+    } else {
+      return summaries;
+    }
+
+    for (const taskData of taskList) {
+      const summary = rawToSummary(taskData, filePath);
+      if (summary) {
+        summaries.push(summary);
+      }
+    }
+  } catch {
+    // Skip invalid files
+  }
+
+  return summaries;
+}
+
+/**
+ * Discover task files and load only summary-level data from each.
+ * Uses the same file discovery algorithm as loadAllTasks but extracts
+ * only index-level fields without running TaskSchema validation.
+ *
+ * AC: @task-data-manager ac-2 — only index data is read for listing
+ */
+async function loadAllTaskSummaries(ctx: KspecContext): Promise<TaskSummary[]> {
+  // Reuse loadAllTasks' file discovery by importing findTaskFiles
+  // We inline the discovery logic to avoid importing a private function
+  const summaries: TaskSummary[] = [];
+
+  const checkFile = async (loc: string, files: string[]) => {
+    try {
+      await fs.access(loc);
+      if (!files.includes(loc)) {
+        files.push(loc);
+      }
+    } catch {
+      // File doesn't exist
+    }
+  };
+
+  const scanDir = async (dir: string): Promise<string[]> => {
+    const files: string[] = [];
+    try {
+      const entries = await fs.readdir(dir, { withFileTypes: true });
+      for (const entry of entries) {
+        if (
+          entry.isFile() &&
+          (entry.name.endsWith(".tasks.yaml") || entry.name === "tasks.yaml")
+        ) {
+          files.push(path.join(dir, entry.name));
+        }
+      }
+    } catch {
+      // Directory doesn't exist or can't be read
+    }
+    return files;
+  };
+
+  if (ctx.shadow?.enabled || Boolean(process.env.KSPEC_SPEC_DIR)) {
+    const taskFiles = await scanDir(ctx.specDir);
+
+    const standaloneLocations = [
+      path.join(ctx.specDir, "tasks.yaml"),
+      path.join(ctx.specDir, "project.tasks.yaml"),
+      path.join(ctx.specDir, "kynetic.tasks.yaml"),
+      path.join(ctx.specDir, "backlog.tasks.yaml"),
+      path.join(ctx.specDir, "active.tasks.yaml"),
+    ];
+
+    for (const loc of standaloneLocations) {
+      await checkFile(loc, taskFiles);
+    }
+
+    const uniqueFiles = [...new Set(taskFiles)];
+    for (const filePath of uniqueFiles) {
+      const fileSummaries = await loadSummariesFromFile(filePath);
+      summaries.push(...fileSummaries);
+    }
+  } else {
+    const taskFiles = await scanDir(ctx.rootDir);
+
+    const additionalPaths = [
+      path.join(ctx.rootDir, "tasks"),
+      path.join(ctx.rootDir, "spec"),
+    ];
+
+    for (const additionalPath of additionalPaths) {
+      const files = await scanDir(additionalPath);
+      taskFiles.push(...files);
+    }
+
+    const standaloneLocations = [
+      path.join(ctx.rootDir, "tasks.yaml"),
+      path.join(ctx.rootDir, "project.tasks.yaml"),
+      path.join(ctx.rootDir, "spec", "project.tasks.yaml"),
+      path.join(ctx.rootDir, "backlog.tasks.yaml"),
+      path.join(ctx.rootDir, "active.tasks.yaml"),
+    ];
+
+    for (const loc of standaloneLocations) {
+      await checkFile(loc, taskFiles);
+    }
+
+    const uniqueFiles = [...new Set(taskFiles)];
+    for (const filePath of uniqueFiles) {
+      const fileSummaries = await loadSummariesFromFile(filePath);
+      summaries.push(...fileSummaries);
+    }
+  }
+
+  return summaries;
+}
+
+/**
  * Monolithic storage backend — all tasks in a single YAML file.
  * This is the default backend used when no split format is activated.
  *
+ * Uses per-task in-memory locks so that non-overlapping mutations do not
+ * contend with each other. The file lock is acquired only for the brief
+ * write phase, not for the entire mutation callback.
+ *
+ * AC: @task-data-manager ac-5 — non-overlapping mutations proceed without contention
  * AC: @task-data-manager ac-7 — monolithic format used by default
  */
 class MonolithicBackend implements TaskStorageBackend {
   readonly format: StorageFormat = "monolithic";
 
-  async listTasks(ctx: KspecContext): Promise<LoadedTask[]> {
-    return loadAllTasks(ctx);
+  /** Per-task in-memory locks for contention-free non-overlapping mutations. */
+  private readonly taskMutex = new TaskMutexMap();
+
+  /**
+   * List tasks by reading raw YAML and extracting only summary-level fields.
+   * Detail fields (notes, todos, description, etc.) are not parsed or validated.
+   *
+   * AC: @task-data-manager ac-2 — only index data is read
+   */
+  async listTasks(ctx: KspecContext): Promise<TaskSummary[]> {
+    return loadAllTaskSummaries(ctx);
   }
 
   async getTask(ctx: KspecContext, ref: string): Promise<LoadedTask | undefined> {
@@ -197,12 +432,88 @@ class MonolithicBackend implements TaskStorageBackend {
     await saveTaskToFile(ctx, task);
   }
 
+  /**
+   * Mutate a single task with per-task locking.
+   *
+   * Acquires an in-memory per-task lock (by ULID) so that concurrent mutations
+   * on different tasks proceed independently. The file-level lock is held only
+   * for the brief re-read + merge + write phase, not during the mutation callback.
+   *
+   * AC: @task-data-manager ac-5 — non-overlapping mutations proceed without contention
+   * AC: @task-data-manager ac-9 — same-task mutations serialize via per-task lock
+   */
   async mutateTask(
     ctx: KspecContext,
     task: LoadedTask,
     mutate: (latestTask: LoadedTask) => Task | LoadedTask | Promise<Task | LoadedTask>,
   ): Promise<LoadedTask> {
-    return mutateTaskAtomically(ctx, task, mutate);
+    const taskFilePath = task._sourceFile || getDefaultTaskFilePath(ctx);
+
+    // Acquire per-task lock: same-task mutations serialize (AC-9),
+    // different-task mutations proceed concurrently (AC-5)
+    const releaseTaskLock = await this.taskMutex.acquire(task._ulid);
+
+    try {
+      // Phase 1: Read current state and run mutation callback OUTSIDE file lock.
+      // This allows other tasks' mutations to read/write concurrently.
+      const dir = path.dirname(taskFilePath);
+      await fs.mkdir(dir, { recursive: true });
+
+      const preRead = await extractRawTaskArray(taskFilePath);
+      const preIndex = findRawTaskIndex(preRead.rawTasks, task._ulid);
+      if (preIndex === -1) {
+        throw new Error(`Task not found in file: ${task._ulid}`);
+      }
+
+      const rawTarget = preRead.rawTasks[preIndex];
+      const parsed = TaskSchema.safeParse(rawTarget);
+      if (!parsed.success) {
+        throw new Error(`Invalid task data for ${task._ulid}: ${parsed.error.message}`);
+      }
+      const latestTask: LoadedTask = { ...parsed.data, _sourceFile: taskFilePath };
+
+      // Run the mutation callback outside the file lock
+      const mutatedTask = await mutate(latestTask);
+      const cleanMutatedTask = stripRuntimeMetadata(mutatedTask as LoadedTask);
+
+      // Phase 2: Acquire file lock ONLY for the re-read + merge + write phase.
+      // Since we hold the per-task lock, no other mutation can change our target
+      // task between phases. Other tasks' data may have changed, which is fine —
+      // we re-read the file to get fresh state for all non-target tasks.
+      let updatedTask: LoadedTask | undefined;
+      const releaseFileLock = await acquireFileLock(taskFilePath);
+      try {
+        const { rawTasks, useTasksWrapper, wrapperObj } =
+          await extractRawTaskArray(taskFilePath);
+
+        const taskIndex = findRawTaskIndex(rawTasks, task._ulid);
+        if (taskIndex === -1) {
+          throw new Error(`Task not found in file during write phase: ${task._ulid}`);
+        }
+
+        rawTasks[taskIndex] = mergeTaskPreservingRawShape(
+          rawTasks[taskIndex] as Record<string, unknown>,
+          cleanMutatedTask as Record<string, unknown>,
+        );
+
+        await writeRawTaskArray(taskFilePath, rawTasks, useTasksWrapper, wrapperObj);
+
+        updatedTask = {
+          ...cleanMutatedTask,
+          _sourceFile: taskFilePath,
+        };
+      } finally {
+        await releaseFileLock();
+      }
+
+      if (!updatedTask) {
+        throw new Error(`Failed to mutate task atomically: ${task._ulid}`);
+      }
+
+      return updatedTask;
+    } finally {
+      releaseTaskLock();
+    }
   }
 
   async mutateTasks(
@@ -313,50 +624,43 @@ export class TaskDataManager {
    *
    * Returns TaskSummary objects that contain only the fields needed for
    * listing, filtering, and dependency resolution. Detail fields (notes,
-   * todos, description, etc.) are not included.
+   * todos, description, etc.) are not included and not read from storage.
    *
-   * In the monolithic backend, this reads the full file and projects index
-   * fields. In the split backend, this reads only the lean index file.
-   *
-   * AC: @task-data-manager ac-2 — only index data returned to callers
+   * AC: @task-data-manager ac-2 — only index data read from storage
    * AC: @task-data-manager ac-7 — monolithic format used until split activated
    */
   async listTasks(
     ctx: KspecContext,
     filters?: TaskListFilters,
   ): Promise<TaskSummary[]> {
-    const tasks = await this.backend.listTasks(ctx);
+    const summaries = await this.backend.listTasks(ctx);
 
-    let filtered: LoadedTask[];
     if (!filters) {
-      filtered = tasks;
-    } else {
-      filtered = tasks.filter((task) => {
-        if (filters.status) {
-          const statuses = Array.isArray(filters.status)
-            ? filters.status
-            : [filters.status];
-          if (!statuses.includes(task.status)) return false;
-        }
-        if (filters.tags && filters.tags.length > 0) {
-          if (!filters.tags.some((tag) => task.tags.includes(tag)))
-            return false;
-        }
-        if (filters.assignee !== undefined) {
-          if (task.assignee !== filters.assignee) return false;
-        }
-        if (filters.automation !== undefined) {
-          if (task.automation !== filters.automation) return false;
-        }
-        if (filters.specRef !== undefined) {
-          if (task.spec_ref !== filters.specRef) return false;
-        }
-        return true;
-      });
+      return summaries;
     }
 
-    // AC: @task-data-manager ac-2 — project only index fields
-    return filtered.map(toTaskSummary);
+    return summaries.filter((task) => {
+      if (filters.status) {
+        const statuses = Array.isArray(filters.status)
+          ? filters.status
+          : [filters.status];
+        if (!statuses.includes(task.status)) return false;
+      }
+      if (filters.tags && filters.tags.length > 0) {
+        if (!filters.tags.some((tag) => task.tags.includes(tag)))
+          return false;
+      }
+      if (filters.assignee !== undefined) {
+        if (task.assignee !== filters.assignee) return false;
+      }
+      if (filters.automation !== undefined) {
+        if (task.automation !== filters.automation) return false;
+      }
+      if (filters.specRef !== undefined) {
+        if (task.spec_ref !== filters.specRef) return false;
+      }
+      return true;
+    });
   }
 
   /**
@@ -435,11 +739,12 @@ export class TaskDataManager {
    * Atomically mutate a single task using the latest on-disk state.
    *
    * The mutation callback receives the current task value while holding the
-   * file lock, so concurrent writers cannot clobber unrelated fields.
-   * The callback's output is validated against the task schema before
-   * persisting to prevent storage corruption.
+   * per-task lock, so concurrent writers on different tasks proceed without
+   * contention. The callback's output is validated against the task schema
+   * before persisting to prevent storage corruption.
    *
    * AC: @task-data-manager ac-4 — files, locking, commits coordinated
+   * AC: @task-data-manager ac-5 — non-overlapping mutations no contention
    * AC: @task-data-manager ac-6 — atomic operation
    * AC: @task-data-manager ac-9 — concurrent mutations serialize via lock
    */

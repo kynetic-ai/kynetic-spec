@@ -958,7 +958,7 @@ export function getDefaultTaskFilePath(ctx: KspecContext): string {
 /**
  * Strip runtime metadata before serialization
  */
-function stripRuntimeMetadata(task: LoadedTask): Task {
+export function stripRuntimeMetadata(task: LoadedTask): Task {
   const { _sourceFile, ...cleanTask } = task;
   return cleanTask as Task;
 }
@@ -967,7 +967,7 @@ function stripRuntimeMetadata(task: LoadedTask): Task {
  * Extract the raw task array and format info from a YAML file.
  * Does NOT run schema validation — preserves original data for round-trip stability.
  */
-async function extractRawTaskArray(
+export async function extractRawTaskArray(
   filePath: string,
 ): Promise<{ rawTasks: unknown[]; useTasksWrapper: boolean; wrapperObj?: Record<string, unknown> }> {
   let existingRaw: unknown = null;
@@ -1011,7 +1011,7 @@ async function extractRawTaskArray(
 /**
  * Write raw task array back to file, preserving the wrapper format.
  */
-async function writeRawTaskArray(
+export async function writeRawTaskArray(
   filePath: string,
   rawTasks: unknown[],
   useTasksWrapper: boolean,
@@ -1029,7 +1029,7 @@ async function writeRawTaskArray(
 /**
  * Find task index in a raw array by ULID match.
  */
-function findRawTaskIndex(rawTasks: unknown[], ulid: string): number {
+export function findRawTaskIndex(rawTasks: unknown[], ulid: string): number {
   return rawTasks.findIndex(
     (t) =>
       t && typeof t === "object" && (t as Record<string, unknown>)._ulid === ulid,
@@ -1046,7 +1046,7 @@ function findRawTaskIndex(rawTasks: unknown[], ulid: string): number {
  * Fields NOT in rawTask are only added if they carry meaningful data
  * (i.e. non-empty arrays, non-null values, etc.).
  */
-function mergeTaskPreservingRawShape(
+export function mergeTaskPreservingRawShape(
   rawTask: Record<string, unknown>,
   normalizedTask: Record<string, unknown>,
 ): Record<string, unknown> {

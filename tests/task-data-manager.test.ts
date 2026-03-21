@@ -7,6 +7,7 @@ import {
 } from "../src/parser/index.js";
 import type { TaskSummary, TaskStorageBackend } from "../src/parser/task-data-manager.js";
 import { registerBackend, unregisterBackend } from "../src/parser/task-data-manager.js";
+import { TaskSchema } from "../src/schema/task.js";
 import {
   cleanupTempDir,
   kspec,
@@ -190,6 +191,30 @@ describe("TaskDataManager", () => {
       });
       expect(tasks.length).toBe(4); // 3 pending + 1 completed
     });
+
+    it("does not run full TaskSchema validation for listing", async () => {
+      tempDir = await setupTempFixtures();
+      manager = new TaskDataManager();
+      const ctx = await initContext(tempDir);
+
+      // Spy on TaskSchema.safeParse to verify it's NOT called during listing
+      const originalSafeParse = TaskSchema.safeParse.bind(TaskSchema);
+      let safeParseCallCount = 0;
+      TaskSchema.safeParse = (...args: Parameters<typeof TaskSchema.safeParse>) => {
+        safeParseCallCount++;
+        return originalSafeParse(...args);
+      };
+
+      try {
+        const summaries = await manager.listTasks(ctx);
+        expect(summaries.length).toBe(4);
+        // listTasks should extract summary fields from raw YAML without
+        // running each record through TaskSchema.safeParse
+        expect(safeParseCallCount).toBe(0);
+      } finally {
+        TaskSchema.safeParse = originalSafeParse;
+      }
+    });
   });
 
   // AC: @task-data-manager ac-3
@@ -349,6 +374,49 @@ describe("TaskDataManager", () => {
       expect(reloaded1.priority).toBe(1);
       expect(reloaded2.priority).toBe(5);
     });
+
+    it("runs non-overlapping mutation callbacks concurrently, not serially", async () => {
+      tempDir = await setupTempFixtures();
+      manager = new TaskDataManager();
+      const ctx = await initContext(tempDir);
+
+      const DELAY_MS = 100;
+      const timestamps: { task1Start: number; task1End: number; task2Start: number; task2End: number } = {
+        task1Start: 0, task1End: 0, task2Start: 0, task2End: 0,
+      };
+
+      // Both mutations have a significant delay in their callback.
+      // With per-task locking, they should overlap (run concurrently).
+      // With file-level locking, they would serialize (total time ≈ 2×DELAY_MS).
+      await Promise.all([
+        manager.mutateTask(ctx, "@test-task-pending", async (task) => {
+          timestamps.task1Start = Date.now();
+          await new Promise((resolve) => setTimeout(resolve, DELAY_MS));
+          timestamps.task1End = Date.now();
+          return { ...task, priority: 1 };
+        }),
+        manager.mutateTask(ctx, "@test-task-secondary", async (task) => {
+          timestamps.task2Start = Date.now();
+          await new Promise((resolve) => setTimeout(resolve, DELAY_MS));
+          timestamps.task2End = Date.now();
+          return { ...task, priority: 5 };
+        }),
+      ]);
+
+      // If callbacks run concurrently, their execution windows overlap:
+      // task1's callback starts before task2's callback ends, and vice versa.
+      // With serial execution, one would start after the other finishes.
+      const overlap =
+        timestamps.task1Start < timestamps.task2End &&
+        timestamps.task2Start < timestamps.task1End;
+      expect(overlap).toBe(true);
+
+      // Verify both mutations persisted correctly
+      const reloaded1 = await manager.getTask(ctx, "@test-task-pending");
+      const reloaded2 = await manager.getTask(ctx, "@test-task-secondary");
+      expect(reloaded1.priority).toBe(1);
+      expect(reloaded2.priority).toBe(5);
+    });
   });
 
   // AC: @task-data-manager ac-6
@@ -479,9 +547,28 @@ describe("TaskDataManager", () => {
         format: "split",
         async listTasks(ctx) {
           calls.push("listTasks");
-          // Delegate to monolithic for this test — just proving routing works
+          // Return TaskSummary[] — only index-level fields
           const { loadAllTasks: load } = await import("../src/parser/yaml.js");
-          return load(ctx);
+          const tasks = await load(ctx);
+          return tasks.map((t) => ({
+            _ulid: t._ulid,
+            slugs: t.slugs,
+            title: t.title,
+            type: t.type,
+            status: t.status,
+            priority: t.priority,
+            tags: t.tags,
+            assignee: t.assignee,
+            automation: t.automation,
+            spec_ref: t.spec_ref,
+            depends_on: t.depends_on,
+            blocked_by: t.blocked_by,
+            created_at: t.created_at,
+            started_at: t.started_at,
+            submitted_at: t.submitted_at,
+            completed_at: t.completed_at,
+            _sourceFile: t._sourceFile,
+          }));
         },
         async getTask(ctx, ref) {
           calls.push("getTask");
