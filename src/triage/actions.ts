@@ -2,18 +2,17 @@ import type { KspecContext } from "../parser/yaml.js";
 import type { LoadedTriageRecord } from "../parser/index.js";
 import {
   createObservation,
-  createTask,
   deleteInboxItem,
   findInboxItemByRef,
   loadAllItems,
-  loadAllTasks,
   loadInboxItems,
   loadMetaContext,
   ReferenceIndex,
   saveObservation,
-  saveTask,
   shortestUniqueUlid,
+  type LoadedTask,
 } from "../parser/index.js";
+import { taskDataManager } from "../parser/task-data-manager.js";
 import { truncateText } from "../export/triage.js";
 
 /**
@@ -75,7 +74,7 @@ export async function executeTriageAction(
         }
         return {};
       }
-      const task = createTask({
+      const task = await taskDataManager.createTask(ctx, {
         title: record.item_snapshot.split("\n")[0].slice(0, 100),
         type: "task",
         priority: 3,
@@ -83,10 +82,9 @@ export async function executeTriageAction(
         tags: [],
         description: record.item_snapshot,
       });
-      await saveTask(ctx, task);
-      const tasks = await loadAllTasks(ctx);
+      const tasks = await taskDataManager.listTasks(ctx);
       const items = await loadAllItems(ctx);
-      const index = new ReferenceIndex(tasks, items);
+      const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
       const taskRef = `@${index.shortUlid(task._ulid)}`;
       if (consume) {
         const inboxItems = await loadInboxItems(ctx);

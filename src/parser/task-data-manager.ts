@@ -209,6 +209,7 @@ export interface TaskStorageBackend {
   readonly format: StorageFormat;
 
   listTasks(ctx: KspecContext): Promise<TaskSummary[]>;
+  loadAllTasks(ctx: KspecContext): Promise<LoadedTask[]>;
   getTask(ctx: KspecContext, ref: string): Promise<LoadedTask | undefined>;
   createTask(ctx: KspecContext, task: Task): Promise<LoadedTask>;
   mutateTask(
@@ -420,6 +421,10 @@ class MonolithicBackend implements TaskStorageBackend {
    */
   async listTasks(ctx: KspecContext): Promise<TaskSummary[]> {
     return loadAllTaskSummaries(ctx);
+  }
+
+  async loadAllTasks(ctx: KspecContext): Promise<LoadedTask[]> {
+    return loadAllTasks(ctx);
   }
 
   async getTask(ctx: KspecContext, ref: string): Promise<LoadedTask | undefined> {
@@ -723,6 +728,21 @@ export class TaskDataManager {
       }
       return true;
     });
+  }
+
+  /**
+   * Load all tasks with full detail (notes, todos, description, etc.).
+   *
+   * Use this when the caller genuinely needs complete task records for
+   * every task (e.g., alignment checks that inspect notes, prompt building
+   * that formats notes for agents). For listing/filtering where only
+   * index-level fields are needed, prefer listTasks().
+   *
+   * AC: @task-data-manager ac-1 — callers don't know about storage format
+   * AC: @task-data-manager ac-7 — monolithic format used until split activated
+   */
+  async loadAllTasks(ctx: KspecContext): Promise<LoadedTask[]> {
+    return this.backend.loadAllTasks(ctx);
   }
 
   /**
