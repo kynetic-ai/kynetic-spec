@@ -37697,6 +37697,17 @@ reviews:
         runner: npm
         created_at: 2026-03-21T10:09:59.654Z
         completed_at: 2026-03-21T10:09:59.654Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Exited 6 with repo-wide pre-existing warnings (orphaned skill dir, orphaned specs, invalid
+          AC fixture annotations), but no validation errors.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-21T10:10:00.633Z
+        completed_at: 2026-03-21T10:10:00.633Z
     events:
       - _ulid: 01KM7XKR2G3AR4KZ1CP768500R
         actor: Jacob Chapel
@@ -37725,6 +37736,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-21T10:09:59.981Z
+      - _ulid: 01KM7XZ22BPFXJWTYMFEPKD07R
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec validate
+        timestamp: 2026-03-21T10:10:00.907Z
     examined_commit: c925689681d0bb27dffc744f759c87480f0b41d2
     external_links: []
     lifecycle_state: open
@@ -37756,5 +37774,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-21T10:03:50.225Z
-    updated_at: 2026-03-21T10:09:59.654Z
+    updated_at: 2026-03-21T10:10:00.633Z
     notes: []
