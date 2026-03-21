@@ -6,9 +6,7 @@ import { markMutating } from "../command-annotations.js";
 import {
   checkSlugUniqueness,
   createNote,
-  createTask,
   createTodo,
-  deleteTask,
   findReviewByRef,
   getAuthor,
   initContext,
@@ -17,13 +15,11 @@ import {
   loadAllItems,
   loadAllTasks,
   loadReviewRecords,
-  mutateTaskAtomically,
-  mutateTasksAtomically,
   ReferenceIndex,
-  saveTask,
   scanTestCoverage,
   syncSpecImplementationStatus,
 } from "../../parser/index.js";
+import { taskDataManager } from "../../parser/task-data-manager.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import {
   AutomationStatusSchema,
@@ -528,7 +524,7 @@ async function setTaskFields(
     }
 
     let updatedTask = foundTask;
-    updatedTask = await mutateTaskAtomically(ctx, foundTask, (latestTask) => {
+    updatedTask = await taskDataManager.mutateTask(ctx, foundTask._ulid, (latestTask) => {
       const nextTask: Task = { ...latestTask };
       const mutationChanges: Array<{ field: string; before: unknown; after: unknown }> = [];
 
@@ -1169,14 +1165,12 @@ Examples:
           automation: automationValue,
         };
 
-        const newTask = createTask(input);
-        await saveTask(ctx, newTask);
-        await commitIfShadow(
-          ctx.shadow,
-          "task-add",
-          newTask.slugs[0] || newTask._ulid.slice(0, 8),
-          newTask.title,
-        );
+        // AC: @task-data-manager ac-1, ac-4 — create via task data manager
+        const newTask = await taskDataManager.createTask(ctx, input, {
+          operation: "task-add",
+          ref: input.slugs?.[0] || undefined,
+          detail: input.title,
+        });
 
         // Build index including the new task for accurate short ULID
         const index = new ReferenceIndex(
@@ -1479,19 +1473,19 @@ Examples:
           return;
         }
 
-        const updatedTask = await mutateTaskAtomically(
+        // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
+        const updatedTask = await taskDataManager.mutateTask(
           ctx,
-          foundTask,
+          foundTask._ulid,
           (latestTask) => ({
             ...latestTask,
             ...validatedPatch,
           }),
-        );
-        await commitIfShadow(
-          ctx.shadow,
-          "task-patch",
-          foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
-          changes.join(", "),
+          {
+            operation: "task-patch",
+            ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
+            detail: changes.join(", "),
+          },
         );
         success(
           `Patched task: ${index.shortUlid(updatedTask._ulid)} (${changes.join(", ")})`,
@@ -1569,21 +1563,24 @@ Examples:
 
         // Update status
         // AC: @session-scoped-task-claiming ac-stamp, ac-no-env
+        // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
         let transitionFromStatus: Task["status"] = foundTask.status;
-        const updatedTask = await mutateTaskAtomically(ctx, foundTask, (latestTask) => {
-          transitionFromStatus = latestTask.status;
-          return {
-            ...latestTask,
-            status: "in_progress",
-            started_at: new Date().toISOString(),
-            ...(sessionId ? { session_id: sessionId } : {}),
-          };
-        });
-
-        await commitIfShadow(
-          ctx.shadow,
-          "task-start",
-          foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
+        const updatedTask = await taskDataManager.mutateTask(
+          ctx,
+          foundTask._ulid,
+          (latestTask) => {
+            transitionFromStatus = latestTask.status;
+            return {
+              ...latestTask,
+              status: "in_progress",
+              started_at: new Date().toISOString(),
+              ...(sessionId ? { session_id: sessionId } : {}),
+            };
+          },
+          {
+            operation: "task-start",
+            ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
+          },
         );
 
         // AC: @task-budget-enforcement ac-increment, ac-resume-no-increment, ac-needs-work-no-increment
@@ -1730,9 +1727,10 @@ Examples:
               let transitionFromStatus: Task["status"] = foundTask.status;
               let forcedFromNonStandard = false;
               let forceStateDetail: string | undefined;
-              const updatedTask = await mutateTaskAtomically(
+              // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
+              const updatedTask = await taskDataManager.mutateTask(
                 ctx,
-                foundTask,
+                foundTask._ulid,
                 (latestTask) => {
                   transitionFromStatus = latestTask.status;
 
@@ -1810,13 +1808,11 @@ Examples:
                     notes: taskNotes,
                   };
                 },
-              );
-
-              await commitIfShadow(
-                ctx.shadow,
-                "task-complete",
-                foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
-                options.reason,
+                {
+                  operation: "task-complete",
+                  ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
+                  detail: options.reason,
+                },
               );
 
               // AC: @daemon-agent-dispatch ac-2, ac-7 - Notify daemon of state change (fire-and-forget)
@@ -1948,10 +1944,11 @@ Examples:
           ? captureSubmissionLinkage(ctx.projectRoot, options.reviewUrl, ctx.config?.dispatch?.base_branch)
           : null;
 
+        // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
         let transitionFromStatus: Task["status"] = foundTask.status;
-        const updatedTask = await mutateTaskAtomically(
+        const updatedTask = await taskDataManager.mutateTask(
           ctx,
-          foundTask,
+          foundTask._ulid,
           (latestTask) => {
             transitionFromStatus = latestTask.status;
             if (latestTask.status !== "in_progress") {
@@ -1968,6 +1965,10 @@ Examples:
               ...(linkage && { submission_linkage: linkage }),
             };
           },
+          {
+            operation: "task-submit",
+            ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
+          },
         );
 
         if (transitionFromStatus !== "in_progress") {
@@ -1976,11 +1977,6 @@ Examples:
           );
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
-        await commitIfShadow(
-          ctx.shadow,
-          "task-submit",
-          foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
-        );
 
         // AC: @daemon-agent-dispatch ac-2, ac-7 - Notify daemon of state change (fire-and-forget)
         postDispatchEvent({
@@ -2025,11 +2021,12 @@ Examples:
         const index = new ReferenceIndex(tasks, items);
         const foundTask = resolveTaskRef(ref, tasks, index);
 
+        // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
         let transitionFromStatus: Task["status"] = foundTask.status;
         let cycleNumber = 0;
-        const updatedTask = await mutateTaskAtomically(
+        const updatedTask = await taskDataManager.mutateTask(
           ctx,
-          foundTask,
+          foundTask._ulid,
           (latestTask) => {
             transitionFromStatus = latestTask.status;
             if (latestTask.status !== "pending_review") {
@@ -2100,10 +2097,11 @@ Examples:
         const index = new ReferenceIndex(tasks, items);
         const foundTask = resolveTaskRef(ref, tasks, index);
 
+        // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
         let transitionFromStatus: Task["status"] = foundTask.status;
-        const updatedTask = await mutateTaskAtomically(
+        const updatedTask = await taskDataManager.mutateTask(
           ctx,
-          foundTask,
+          foundTask._ulid,
           (latestTask) => {
             transitionFromStatus = latestTask.status;
             if (
@@ -2125,6 +2123,10 @@ Examples:
               blocked_by: [...latestTask.blocked_by, options.reason],
             };
           },
+          {
+            operation: "task-block",
+            ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
+          },
         );
 
         if (
@@ -2134,11 +2136,6 @@ Examples:
           error(errors.status.cannotBlock(transitionFromStatus));
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
-        await commitIfShadow(
-          ctx.shadow,
-          "task-block",
-          foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
-        );
 
         // AC: @daemon-agent-dispatch ac-2, ac-7 - Notify daemon of state change (fire-and-forget)
         postDispatchEvent({
@@ -2169,10 +2166,11 @@ Examples:
         const index = new ReferenceIndex(tasks, items);
         const foundTask = resolveTaskRef(ref, tasks, index);
 
+        // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
         let transitionFromStatus: Task["status"] = foundTask.status;
-        const updatedTask = await mutateTaskAtomically(
+        const updatedTask = await taskDataManager.mutateTask(
           ctx,
-          foundTask,
+          foundTask._ulid,
           (latestTask) => {
             transitionFromStatus = latestTask.status;
             if (latestTask.status !== "blocked") {
@@ -2189,17 +2187,16 @@ Examples:
               session_id: null,
             };
           },
+          {
+            operation: "task-unblock",
+            ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
+          },
         );
 
         if (transitionFromStatus !== "blocked") {
           warn("Task is not blocked");
           return;
         }
-        await commitIfShadow(
-          ctx.shadow,
-          "task-unblock",
-          foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
-        );
 
         // AC: @daemon-agent-dispatch ac-2, ac-7 - Notify daemon of state change (fire-and-forget)
         postDispatchEvent({
@@ -2268,9 +2265,11 @@ Examples:
                 })
               );
 
-              const [updatedTask] = await mutateTasksAtomically(
+              // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
+              const allRefs = [foundTask, ...downstreamTasks].map((t) => t._ulid);
+              const [updatedTask] = await taskDataManager.mutateTasks(
                 ctx,
-                [foundTask, ...downstreamTasks],
+                allRefs,
                 (latestTasks) => {
                   const latestCancelledTask = latestTasks[0];
                   const cancelledTaskRef = getTaskDisplayRef(latestCancelledTask);
@@ -2312,12 +2311,10 @@ Examples:
 
                   return updatedTasks;
                 },
-              );
-
-              await commitIfShadow(
-                ctx.shadow,
-                "task-cancel",
-                foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
+                {
+                  operation: "task-cancel",
+                  ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
+                },
               );
 
               return {
@@ -2354,9 +2351,10 @@ Examples:
         const index = new ReferenceIndex(tasks, items);
         const foundTask = resolveTaskRef(ref, tasks, index);
 
+        // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
         let previousStatus: Task["status"] = foundTask.status;
         const clearedFields: string[] = [];
-        const updatedTask = await mutateTaskAtomically(ctx, foundTask, (latestTask) => {
+        const updatedTask = await taskDataManager.mutateTask(ctx, foundTask._ulid, (latestTask) => {
           previousStatus = latestTask.status;
 
           // AC: @spec-task-reset ac-2 - Error if already pending
@@ -2535,13 +2533,12 @@ Examples:
                 }
               }
 
-              await deleteTask(ctx, foundTask);
-              await commitIfShadow(
-                ctx.shadow,
-                "task-delete",
-                foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
-                foundTask.title,
-              );
+              // AC: @task-data-manager ac-1, ac-4 — delete via task data manager
+              await taskDataManager.deleteTask(ctx, foundTask._ulid, {
+                operation: "task-delete",
+                ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
+                detail: foundTask.title,
+              });
 
               return {
                 success: true,
@@ -2579,14 +2576,18 @@ Examples:
 
         const note = createNote(message, options.author, options.supersedes);
 
-        const updatedTask = await mutateTaskAtomically(ctx, foundTask, (latestTask) => ({
-          ...latestTask,
-          notes: [...latestTask.notes, note],
-        }));
-        await commitIfShadow(
-          ctx.shadow,
-          "task-note",
-          foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
+        // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
+        const updatedTask = await taskDataManager.mutateTask(
+          ctx,
+          foundTask._ulid,
+          (latestTask) => ({
+            ...latestTask,
+            notes: [...latestTask.notes, note],
+          }),
+          {
+            operation: "task-note",
+            ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
+          },
         );
         success(`Added note to task: ${index.shortUlid(updatedTask._ulid)}`, {
           note,
@@ -2881,26 +2882,29 @@ Examples:
         const index = new ReferenceIndex(tasks, items);
         const foundTask = resolveTaskRef(ref, tasks, index);
 
+        // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
         let todo = createTodo(1, text, options.author);
-        const updatedTask = await mutateTaskAtomically(ctx, foundTask, (latestTask) => {
-          // Calculate next ID (max existing + 1, or 1 if none)
-          const nextId =
-            latestTask.todos.length > 0
-              ? Math.max(...latestTask.todos.map((entry) => entry.id)) + 1
-              : 1;
+        const updatedTask = await taskDataManager.mutateTask(
+          ctx,
+          foundTask._ulid,
+          (latestTask) => {
+            // Calculate next ID (max existing + 1, or 1 if none)
+            const nextId =
+              latestTask.todos.length > 0
+                ? Math.max(...latestTask.todos.map((entry) => entry.id)) + 1
+                : 1;
 
-          todo = createTodo(nextId, text, options.author);
+            todo = createTodo(nextId, text, options.author);
 
-          return {
-            ...latestTask,
-            todos: [...latestTask.todos, todo],
-          };
-        });
-
-        await commitIfShadow(
-          ctx.shadow,
-          "task-note",
-          foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
+            return {
+              ...latestTask,
+              todos: [...latestTask.todos, todo],
+            };
+          },
+          {
+            operation: "task-note",
+            ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
+          },
         );
         success(
           `Added todo #${todo.id} to task: ${index.shortUlid(updatedTask._ulid)}`,
@@ -2929,9 +2933,10 @@ Examples:
           process.exit(EXIT_CODES.USAGE_ERROR);
         }
 
+        // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
         let todoState: "not_found" | "already_done" | "updated" | undefined;
         let updatedTodo: Task["todos"][number] | undefined;
-        await mutateTaskAtomically(ctx, foundTask, (latestTask) => {
+        await taskDataManager.mutateTask(ctx, foundTask._ulid, (latestTask) => {
           const todoIndex = latestTask.todos.findIndex((todo) => todo.id === id);
           if (todoIndex === -1) {
             todoState = "not_found";
@@ -2997,13 +3002,14 @@ Examples:
           process.exit(EXIT_CODES.USAGE_ERROR);
         }
 
+        // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
         let todoState:
           | "not_found"
           | "already_not_done"
           | "updated"
           | undefined;
         let updatedTodo: Task["todos"][number] | undefined;
-        await mutateTaskAtomically(ctx, foundTask, (latestTask) => {
+        await taskDataManager.mutateTask(ctx, foundTask._ulid, (latestTask) => {
           const todoIndex = latestTask.todos.findIndex((todo) => todo.id === id);
           if (todoIndex === -1) {
             todoState = "not_found";
