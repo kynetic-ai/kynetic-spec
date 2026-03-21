@@ -41972,7 +41972,17 @@ reviews:
     slugs: []
     title: Review build migration command (cycle 5)
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation passed with only repo-wide standing warnings; no migration-specific validation
+          error or uncovered inherited trait warning.
+        name: kspec validate
+        required: false
+        created_at: 2026-03-21T18:58:49.163Z
+        completed_at: 2026-03-21T18:58:49.163Z
     events:
       - _ulid: 01KM8VWDBRY9VA8QFC1JBDVJ4P
         actor: Test User
@@ -41994,6 +42004,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM8W79K7EXAXE4VW9Z7FP8FH
         timestamp: 2026-03-21T18:58:48.416Z
+      - _ulid: 01KM8W7AZS90S9H19YQAHHYJ6Q
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-21T18:58:49.465Z
     examined_commit: 5d6e230aefe40be9f29be2bc8b1b99ea749266e3
     external_links: []
     lifecycle_state: open
@@ -42026,5 +42043,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-21T18:52:51.448Z
-    updated_at: 2026-03-21T18:58:48.039Z
+    updated_at: 2026-03-21T18:58:49.163Z
     notes: []
