@@ -40448,6 +40448,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-21T16:27:50.465Z
+      - _ulid: 01KM8KJX8SVGV7DDNGTXY1F126
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM8KJWZFEDGWEG50CBZ95363
+        timestamp: 2026-03-21T16:27:51.449Z
     examined_commit: 24dede1fb919b3d7d4015a22517a471efdf07a3a
     external_links: []
     lifecycle_state: open
@@ -40477,7 +40484,26 @@ reviews:
               reason in create/delete/mutateTasks at lines 661-664, 882-885, and 934-938)."
             created_at: 2026-03-21T16:27:46.198Z
         kind: blocker
+      - _ulid: 01KM8KJWZFEDGWEG50CBZ95363
+        entries:
+          - _ulid: 01KM8KJWZGJYPQ8MYCRA0MAZJY
+            author: Test User
+            body: "Review evidence log\\n\\nFiles read: src/parser/split-backend.ts,
+              src/parser/task-data-manager.ts, src/cli/batch-write-buffer.ts,
+              src/cli/commands/task.ts, src/parser/yaml.ts, packages/daemon/src/routes/tasks.ts,
+              tests/per-task-files.test.ts, tests/task-atomic-writes.test.ts,
+              tests/task-rebuild-index.test.ts, tests/split-backend.test.ts.\\n\\nCommands run: git
+              diff --stat/name-only, targeted git diff on core files/tests, kspec task get, kspec
+              item get @task-core-data-file, kspec item get @task-notes-file, grep for AC
+              annotations, kspec validate, npm test, targeted rg/nl/sed inspection of
+              split-backend/task-data-manager paths.\\n\\nClaims verified: full test suite passes on
+              this snapshot; task-core-data-file and task-notes-file AC annotations exist in
+              tests/per-task-files.test.ts; split-mode resolution and history wiring are present in
+              the task CLI path.\\n\\nCategories searched: correctness, atomicity/rollback,
+              concurrency, test quality, integration across CLI/API/review routes."
+            created_at: 2026-03-21T16:27:51.152Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-21T16:23:07.232Z
-    updated_at: 2026-03-21T16:27:50.144Z
+    updated_at: 2026-03-21T16:27:51.152Z
     notes: []
