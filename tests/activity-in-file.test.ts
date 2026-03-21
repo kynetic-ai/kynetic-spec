@@ -53,6 +53,7 @@ describe("historyToActivity — ac-1: field changes from stored history entries"
     expect(entries[0].summary).toBe("Updated priority");
     expect(entries[0].commitHash).toBe("");
     expect(entries[0].source).toBe("history");
+    expect(entries[0].command).toBe("task-set");
     expect(entries[0].detail).toEqual({
       field: "priority",
       from: "3",
@@ -98,6 +99,8 @@ describe("historyToActivity — ac-1: field changes from stored history entries"
       ]);
       expect(entries[0].type).toBe(expectedType);
       expect(entries[0].summary).toBe(expectedSummary);
+      // AC: @task-activity-in-file ac-2 — command preserved in activity entry
+      expect(entries[0].command).toBe(command);
     }
   });
 
@@ -128,7 +131,8 @@ describe("historyToActivity — ac-1: field changes from stored history entries"
     expect(entries[0].summary).toBe("Review linked: @review-abc");
   });
 
-  it("handles multi-field updates", () => {
+  // AC: @task-activity-in-file ac-2 — multi-field changes expose all field-level details
+  it("handles multi-field updates with namespaced detail", () => {
     const entries = historyToActivity([
       makeHistory({
         changes: {
@@ -138,7 +142,13 @@ describe("historyToActivity — ac-1: field changes from stored history entries"
       }),
     ]);
     expect(entries[0].summary).toBe("Updated priority, tags");
-    expect(entries[0].detail).toBeUndefined(); // no detail for multi-field
+    expect(entries[0].command).toBe("task-set");
+    expect(entries[0].detail).toEqual({
+      "priority.from": "3",
+      "priority.to": "1",
+      "tags.from": "",
+      "tags.to": "urgent",
+    });
   });
 });
 
@@ -159,6 +169,7 @@ describe("notesToActivity — ac-1: note events from stored note entries", () =>
     expect(entries[0].type).toBe("note_added");
     expect(entries[0].author).toBe("alice");
     expect(entries[0].source).toBe("note");
+    expect(entries[0].command).toBeUndefined(); // notes don't have commands
     expect(entries[1].author).toBe("bob");
     expect(entries[1].timestamp).toBe("2026-03-20T12:00:00.000Z");
   });
@@ -273,6 +284,33 @@ describe("assembleActivityFromFiles — ac-1, ac-2: assembled timeline from pers
       expect(entry.author).toBeTruthy();
       expect(entry.source).toBeTruthy();
     }
+
+    // AC: @task-activity-in-file ac-2 — commands preserved in history entries
+    const historyEntryResults = entries.filter((e) => e.source === "history");
+    for (const entry of historyEntryResults) {
+      expect(entry.command).toBeTruthy();
+    }
+
+    // AC: @task-activity-in-file ac-2 — multi-field entries expose all changed fields
+    // task-start changes both status and started_at
+    const startEntry = entries.find((e) => e.type === "started");
+    expect(startEntry!.command).toBe("task-start");
+    expect(startEntry!.detail).toEqual({
+      "status.from": "pending",
+      "status.to": "in_progress",
+      "started_at.from": "null",
+      "started_at.to": "2026-03-20T09:00:00.000Z",
+    });
+
+    // task-submit changes both status and submitted_at
+    const submitEntry = entries.find((e) => e.type === "submitted");
+    expect(submitEntry!.command).toBe("task-submit");
+    expect(submitEntry!.detail).toEqual({
+      "status.from": "in_progress",
+      "status.to": "pending_review",
+      "submitted_at.from": "null",
+      "submitted_at.to": "2026-03-20T13:00:00.000Z",
+    });
   });
 
   it("returns empty array when no history and no notes", () => {

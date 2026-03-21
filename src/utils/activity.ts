@@ -223,6 +223,14 @@ export interface ActivityEntry {
   /** Additional detail (e.g., from/to for state changes, field name) */
   detail?: Record<string, string>;
   /**
+   * The originating command that produced this change (e.g. "task-start",
+   * "task-set"). Present for stored-history entries; absent for notes,
+   * git fallback, and review events.
+   *
+   * AC: @task-activity-in-file ac-2
+   */
+  command?: string;
+  /**
    * Source of this entry: "history" for stored history entries, "note" for
    * note entries, "git_fallback" for pre-migration recovery, "review" for
    * review events. Omitted for legacy entries.
@@ -745,19 +753,30 @@ export function historyToActivity(history: HistoryEntry[]): ActivityEntry[] {
       entry.changes as Record<string, { previous: unknown; new: unknown }>,
     );
 
-    // For single-field changes, include detail with from/to values
-    const detail: Record<string, string> | undefined =
-      fields.length === 1
-        ? {
-            field: fields[0],
-            ...(entry.changes[fields[0]].previous !== undefined && {
-              from: String(entry.changes[fields[0]].previous),
-            }),
-            ...(entry.changes[fields[0]].new !== undefined && {
-              to: String(entry.changes[fields[0]].new),
-            }),
-          }
-        : undefined;
+    // Build detail with field-level from/to values for all changed fields.
+    // AC: @task-activity-in-file ac-2 — field-level details for the full timeline
+    const detail: Record<string, string> = {};
+    for (const field of fields) {
+      const change = entry.changes[field];
+      if (fields.length === 1) {
+        // Single-field: flat keys (backward-compatible)
+        detail.field = field;
+        if (change.previous !== undefined) {
+          detail.from = String(change.previous);
+        }
+        if (change.new !== undefined) {
+          detail.to = String(change.new);
+        }
+      } else {
+        // Multi-field: namespaced keys (field.from / field.to)
+        if (change.previous !== undefined) {
+          detail[`${field}.from`] = String(change.previous);
+        }
+        if (change.new !== undefined) {
+          detail[`${field}.to`] = String(change.new);
+        }
+      }
+    }
 
     entries.push({
       type,
@@ -765,7 +784,8 @@ export function historyToActivity(history: HistoryEntry[]): ActivityEntry[] {
       author: entry.author,
       summary,
       commitHash: "",
-      detail,
+      detail: Object.keys(detail).length > 0 ? detail : undefined,
+      command: entry.command,
       source: "history",
     });
   }
