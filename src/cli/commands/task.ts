@@ -3191,10 +3191,16 @@ Examples:
           "../../parser/split-backend.js"
         );
         const { readYamlFile } = await import("../../parser/yaml.js");
+        const { TaskDataManager } = await import(
+          "../../parser/task-data-manager.js"
+        );
 
         // AC: @task-index-rebuild ac-4 — report when no per-task directories exist
         const ulids = await listTaskDirs(ctx);
         if (ulids.length === 0) {
+          // AC: @trait-error-guidance ac-1 — description of what went wrong
+          // AC: @trait-error-guidance ac-2 — suggested action to resolve
+          // AC: @trait-error-guidance ac-6 — guidance in structured error object
           error(
             "No per-task directories found in .kspec/tasks/",
             { suggestion: "Run 'kspec task migrate' to convert monolithic task storage to per-task directories." },
@@ -3207,9 +3213,6 @@ Examples:
 
         // AC: @task-index-rebuild ac-1 — scan all task directories and extract indexed fields
         // Use a split-mode TaskDataManager to load tasks from per-task files
-        const { TaskDataManager } = await import(
-          "../../parser/task-data-manager.js"
-        );
         const splitManager = new TaskDataManager("split");
         const allTasks = await splitManager.loadAllTasks(ctx);
         const newEntries: Record<string, unknown>[] = allTasks.map((t) =>
@@ -3278,17 +3281,19 @@ Examples:
               title: newEntry.title as string,
             });
           } else if (!indexEntriesEqual(currentEntry, newEntry)) {
+            // Changed entries — compare all fields present in the new entry
             const fields: IndexDiff["fields"] = [];
             const allKeys = new Set([
               ...Object.keys(newEntry),
               ...Object.keys(currentEntry),
             ]);
             for (const field of allKeys) {
-              if (field === "_ulid") continue;
+              if (field === "_ulid") continue; // Skip identity field
               const before = currentEntry[field];
               const after = newEntry[field];
               if (before === after) continue;
               if (before === undefined && after === undefined) continue;
+              // Deep comparison for arrays
               if (Array.isArray(before) && Array.isArray(after)) {
                 if (
                   before.length === after.length &&
@@ -3344,6 +3349,7 @@ Examples:
           return;
         }
 
+        // AC: @trait-dry-run ac-3 — clear indication that this is a preview
         if (isDryRun) {
           output(resultData, () => {
             warn("DRY RUN — no changes will be written");
@@ -3357,6 +3363,7 @@ Examples:
           return;
         }
 
+        // No --repair: just report diffs
         if (!isRepair) {
           output(resultData, () => {
             printDiffs(diffs);
@@ -3403,6 +3410,7 @@ Examples:
           }
         }
 
+        // AC: @task-index-rebuild ac-3 — repair mode: overwrite index
         const result = await splitManager.rebuildIndex(ctx);
 
         await commitIfShadow(
@@ -3420,6 +3428,9 @@ Examples:
           );
         });
       } catch (err) {
+        // AC: @trait-error-guidance ac-1 — includes description of what went wrong
+        // AC: @trait-error-guidance ac-2 — includes suggested action
+        // AC: @trait-error-guidance ac-6 — guidance in structured error object
         if (isJsonMode()) {
           output({
             success: false,
