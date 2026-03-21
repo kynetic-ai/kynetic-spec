@@ -34760,7 +34760,20 @@ reviews:
     slugs: []
     title: Review @01KM6YEQ9GJYWB6ZC65Y3Y329G
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Failed: tests/lint/no-static-analysis.test.ts rejects
+          tests/daemon-task-data-manager-migration.test.ts for reading
+          ../packages/daemon/src/routes/tasks.ts. 298/299 files passed; 6766 tests passed, 1 failed,
+          3 skipped; duration ~159.73s."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-21T05:13:21.684Z
+        completed_at: 2026-03-21T05:13:21.684Z
     events:
       - _ulid: 01KM7CPXFVRTV6Y251HM2325B3
         actor: Jacob Chapel
@@ -34782,6 +34795,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM7CZV5D7FW4D4G5WFAX915C
         timestamp: 2026-03-21T05:13:21.083Z
+      - _ulid: 01KM7CZW9C1R75D63Q04PXEX4F
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-21T05:13:21.964Z
     examined_commit: a48c51675ffcedf07930adf5c12aab91d1463717
     external_links: []
     lifecycle_state: open
@@ -34813,5 +34833,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-21T05:08:28.283Z
-    updated_at: 2026-03-21T05:13:20.814Z
+    updated_at: 2026-03-21T05:13:21.684Z
     notes: []
