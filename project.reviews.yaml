@@ -42299,3 +42299,29 @@ reviews:
     created_at: 2026-03-21T19:10:19.101Z
     updated_at: 2026-03-21T19:13:58.198Z
     notes: []
+  - _ulid: 01KM9APKWZYCZCKYP529AJS484
+    slugs: []
+    title: Review fix-detail-loading-fallback-for-missing-per-task-directories
+    author: Test User
+    checks: []
+    events:
+      - _ulid: 01KM9APKWZG1SVVZSYZWPYGZFY
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-21T23:11:50.175Z
+    examined_commit: e203495374ffe623d4b4e19d58e12495546f82ad
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KM99V2BGM1Y4MNFPJS8YCHE4"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-21T23:11:50.175Z
+    updated_at: null
+    notes: []
