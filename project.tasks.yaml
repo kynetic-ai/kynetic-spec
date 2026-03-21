@@ -113389,6 +113389,16 @@
       supersedes: null
       author: Test User
       created_at: 2026-03-21T16:08:46.428Z
+    - _ulid: 01KM8K6Q5JDB7QRWXB3T5JJDZ5
+      content: "Fix cycle 20: Addressed all 5 blockers from review @01KM8J2P. (1) Daemon API routes:
+        skipCommit on mutateTask, single commit with spec sync. (2) Review verdict: merged verdict +
+        task-transition into one commit. (3) Index concurrency: IndexMutex serializes index
+        read-modify-write outside per-task buffers. (4) Review add linkage: skipCommit on
+        linkReviewToTasks, single commit. (5) rebuildIndex: added ensureMigrated gate. All 6890
+        tests pass, TS compiles clean."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T16:21:11.986Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YETR12GG1EZ5G68KSNTBK
