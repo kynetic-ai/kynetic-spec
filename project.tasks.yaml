@@ -113240,6 +113240,18 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-21T09:59:02.810Z
+    - _ulid: 01KM7Y0EENWY8E473ZEX5XXKTK
+      content: "Fix cycle 1: Addressed blocker from review @01KM7X4PVG5B9316MEQYDYMNV3. The split
+        backend's deleteTask was calling fs.rm(taskDir) directly outside the manager's write buffer
+        scope, so if flush failed the directory was already removed (breaking AC-2 atomicity for
+        delete flows). Fix: added deleteDirectory() to WriteBuffer that queues recursive directory
+        removal as Phase 3 during flush. On discard(), pending dir removals are cleared — no side
+        effects. Updated isDeletedInOverlay() and _buildDirectoryOverlay() for correct
+        read-after-write overlay semantics. Added a new test verifying delete rollback preserves
+        directory and index on flush failure. All 6832 tests pass."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T10:10:46.357Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YEW5EF6QXZHQP7FYARAK6
