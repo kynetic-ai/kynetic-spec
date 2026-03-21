@@ -40471,6 +40471,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-21T16:28:11.205Z
+      - _ulid: 01KM8KKJYTAYQSF9VEZ69RMRVJ
+        actor: Test User
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KM8KJR4NTTVVE2VMKH3NPKGY
+        timestamp: 2026-03-21T16:28:13.658Z
     examined_commit: 24dede1fb919b3d7d4015a22517a471efdf07a3a
     external_links: []
     lifecycle_state: closed
@@ -40499,6 +40505,14 @@ reviews:
               breaks \\ and violates the atomicity contract claimed here and in \\ (for the same
               reason in create/delete/mutateTasks at lines 661-664, 882-885, and 934-938)."
             created_at: 2026-03-21T16:27:46.198Z
+          - _ulid: 01KM8KKJNGPP8C9JE4YVBN5B5N
+            author: Test User
+            body: "Plain-language summary: the new split-backend flow flushes task.yaml/notes.yaml first and
+              only then updates project.tasks.yaml under the index mutex. If that second write
+              fails, the mutation is left half-applied on disk: detailed reads see the new task
+              state and history entry, but list/index reads still see the old summary until a manual
+              rebuild. There is no rollback path for those already-flushed per-task files."
+            created_at: 2026-03-21T16:28:13.360Z
         kind: blocker
       - _ulid: 01KM8KJWZFEDGWEG50CBZ95363
         entries:
@@ -40528,5 +40542,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-21T16:28:11.205Z
     created_at: 2026-03-21T16:23:07.232Z
-    updated_at: 2026-03-21T16:28:11.205Z
+    updated_at: 2026-03-21T16:28:13.360Z
     notes: []
