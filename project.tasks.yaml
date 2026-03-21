@@ -112399,6 +112399,17 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-21T04:03:44.721Z
+    - _ulid: 01KM79X1VD3RWXXN3CS5PTH9Z1
+      content: "Fix cycle 9: Fixed the flaky action-model.test.ts failure at line 387 where events.length
+        was 3 instead of 2. Root cause: the 'does not block — returns a promise' test called
+        executor.execute() without awaiting it. The onActionRunEvent closure captures the events
+        variable binding (not value), so when the un-awaited echo process settled after the next
+        beforeEach reassigned events to a new array, the old callback pushed into the new test's
+        array. Fix: await the promise at the end of the test to prevent event leakage. Full suite
+        passes (6756 tests, 0 regressions) across two consecutive runs."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T04:19:23.629Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YEPJDBDB9891TTESHZ0FR
