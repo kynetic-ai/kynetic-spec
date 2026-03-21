@@ -37969,6 +37969,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-21T10:22:38.896Z
+      - _ulid: 01KM7YVWVS5E9QDY1RR1F5637T
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM7YVWK45G7A32E8G023E1VP
+        timestamp: 2026-03-21T10:25:45.849Z
     examined_commit: c41a0e2ed26dbe1c71733e469a0ba343465fc9fb
     external_links: []
     lifecycle_state: open
@@ -37978,8 +37985,30 @@ reviews:
       content_hash: ""
       ref: "@01KM6YET1A7XY9D0V3YQ9DRASG"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM7YVWK45G7A32E8G023E1VP
+        anchor:
+          type: code
+          commit: c41a0e2ed26dbe1c71733e469a0ba343465fc9fb
+          line_end: 949
+          line_start: 947
+          path: src/parser/task-data-manager.ts
+          side: head
+        entries:
+          - _ulid: 01KM7YVWK4M0J3T1R3SX7Z507N
+            author: Jacob Chapel
+            body: 'MUST-FIX: history entries still ignore configured project author identity. This code always
+              passes `author: undefined` into mutation metadata, and
+              [createHistoryEntry](src/parser/split-backend.ts) falls back to `getAuthor()` without
+              `ctx.config?.identity?.author`. In a split-storage project with `identity.author:
+              "@config-author"` and no `KSPEC_AUTHOR`, task notes are authored as `@config-author`
+              but task.yaml history records the git/system user instead. I reproduced that locally
+              in a temp repo: the first history entry for a `task-set` mutation came back as
+              `{"author":"Git User",...}` instead of `@config-author`, so @task-core-data-file ac-3
+              is still violated for configured-author projects.'
+            created_at: 2026-03-21T10:25:45.572Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T10:22:18.571Z
-    updated_at: 2026-03-21T10:22:38.454Z
+    updated_at: 2026-03-21T10:25:45.572Z
     notes: []
