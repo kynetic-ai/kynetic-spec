@@ -16823,7 +16823,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-21T08:02:06.806Z
+      updated_at: 2026-03-21T08:02:08.436Z
     integration:
       status: pending
       detail: null
@@ -16832,25 +16832,20 @@ workspaces:
       target_branch: dev
       target_commit: 95efd1618ada37f2b635d6526f2e303cb450d6cc
       updated_at: 2026-03-21T08:02:06.806Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KM6YESAF92YTNXT3DF06AC0N"
     task_slug: task-impl-index
     timestamps:
       closed_at: null
       last_active_at: 2026-03-21T07:55:48.086Z
-      last_reconciled_at: 2026-03-21T08:02:06.806Z
+      last_reconciled_at: 2026-03-21T08:02:08.436Z
       created_at: 2026-03-21T07:42:51.388Z
-      updated_at: 2026-03-21T08:02:06.806Z
+      updated_at: 2026-03-21T08:02:08.436Z
     workspace_id: dispatch-workspace-01KM6YESAF92YTNXT3DF06AC0N
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 6023a5e30180743cd13485125c05f5975f5bf0da
-        last_seen_at: 2026-03-21T07:55:25.577Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-impl-index-01km6yes-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-impl-index/01km6yes
