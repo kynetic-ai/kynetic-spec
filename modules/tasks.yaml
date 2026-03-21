@@ -1226,15 +1226,12 @@ features:
     traits:
       - "@trait-json-output"
     acceptance_criteria:
-      - given: |
-          a task has had state transitions recorded via shadow branch commits
+      - given: a task has had state transitions recorded via stored history entries
         id: ac-1
-        then: |
-          the most recent activity entries are shown after the notes section,
-          including state changes, notes, and review events in reverse
-          chronological order, capped at a reasonable default count
-        when: |
-          kspec task get @ref is run
+        then: the most recent activity entries are shown after the notes section, including state changes,
+          notes, and review events in reverse chronological order, capped at a reasonable default
+          count
+        when: kspec task get @ref is run
       - given: |
           a task has state transitions, notes, and linked review records
         id: ac-2
