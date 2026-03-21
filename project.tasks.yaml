@@ -112644,7 +112644,18 @@
   session_id: 01KM7E1XRAWJG049RTS8FB706B
   created_at: 2026-03-21T00:59:20.402Z
   started_at: 2026-03-21T05:32:41.068Z
-  notes: []
+  notes:
+    - _ulid: 01KM7F6MDKXHQE0YVM3KNSNVR1
+      content: "Migrated all task mutation operations (createTask+saveTask, mutateTaskAtomically,
+        mutateTasksAtomically) from direct yaml.ts calls to taskDataManager in:
+        review-task-integration.ts, derive.ts, triage/actions.ts, inbox.ts, plan.ts, meta.ts,
+        tasks.ts, item.ts. Also migrated loadAllTasks to taskDataManager.listTasks where only
+        summary fields are needed (meta observations list). Retained loadAllTasks where full task
+        data is required (alignment checks, closed_reason for auto-resolution, plan_ref for plan
+        summary). All 6756 tests pass."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T05:52:00.435Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YERMDKKYA1XXRN025G0FT
