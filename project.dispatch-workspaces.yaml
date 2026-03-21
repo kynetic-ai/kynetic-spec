@@ -17785,7 +17785,7 @@ workspaces:
         head: e203495374ffe623d4b4e19d58e12495546f82ad
         last_seen_at: 2026-03-21T23:11:09.034Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-detail-loading-fallback-for-missing-per-task-directories-01km99v2
-  - active_role: worker
+  - active_role: null
     base_branch_point: 6661e9cae3c71f9e8292fa2e75c39e69e148ff77
     bootstrap:
       status: succeeded
@@ -17850,12 +17850,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-21T23:42:30.423Z
+      updated_at: 2026-03-21T23:56:38.368Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-21T23:42:32.008Z
+      updated_at: 2026-03-21T23:56:38.368Z
     integration:
       status: pending
       detail: null
@@ -17863,17 +17863,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 6661e9cae3c71f9e8292fa2e75c39e69e148ff77
-      updated_at: 2026-03-21T23:42:30.423Z
-    lifecycle_state: active
+      updated_at: 2026-03-21T23:56:38.368Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KM99VKMSAS3JBX7S3QWBHRSV"
     task_slug: add-missing-ac-test-annotations-for-storage-split-specs
     timestamps:
       closed_at: null
       last_active_at: 2026-03-21T23:42:32.008Z
-      last_reconciled_at: 2026-03-21T23:42:32.008Z
+      last_reconciled_at: 2026-03-21T23:56:38.368Z
       created_at: 2026-03-21T23:11:15.289Z
-      updated_at: 2026-03-21T23:42:32.008Z
+      updated_at: 2026-03-21T23:56:38.368Z
     workspace_id: dispatch-workspace-01KM99VKMSAS3JBX7S3QWBHRSV
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
