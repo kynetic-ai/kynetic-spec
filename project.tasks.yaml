@@ -113160,6 +113160,19 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-21T10:55:54.271Z
+    - _ulid: 01KM818P6RM3AYB44YPDSJBXNB
+      content: "Fix cycle 8: Addressed blocker from review @01KM8073MGS4NC33A4HT9VANM0 — split storage not
+        wired through all task write paths. Replaced every remaining taskDataManager singleton with
+        resolveTaskDataManager(ctx) in 11 files: review-task-integration.ts (review linkage +
+        verdict transitions), item.ts (ref cleanup mutations), tasks.ts (assessment mutations),
+        derive.ts (task creation), inbox.ts (promote listTasks/createTask), meta.ts (observation
+        listTasks/createTask), plan.ts (task creation), validate.ts (alignment/staleness
+        loadAllTasks), dispatch.ts (all loadAllTasks calls), triage/actions.ts
+        (createTask/listTasks), and daemon routes/tasks.ts (all API endpoints). TypeScript compiles
+        clean, all 6826 tests pass."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T11:07:42.168Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YETR12GG1EZ5G68KSNTBK
