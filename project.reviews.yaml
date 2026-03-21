@@ -36094,3 +36094,29 @@ reviews:
     created_at: 2026-03-21T08:00:04.180Z
     updated_at: 2026-03-21T08:00:47.026Z
     notes: []
+  - _ulid: 01KM7QCHPRPB02FMD2TEW84W4G
+    slugs: []
+    title: Review task-impl-per-task-files
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KM7QCHPR3MKEKFN4TBNDJTPC
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-21T08:15:02.872Z
+    examined_commit: 06f70edba54859505601d662116fc9ac7ea7b37e
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KM6YET1A7XY9D0V3YQ9DRASG"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-21T08:15:02.872Z
+    updated_at: null
+    notes: []
