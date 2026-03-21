@@ -112671,6 +112671,15 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-21T05:57:54.706Z
+    - _ulid: 01KM7FW0Y8R06QWFKBZX6FTEPQ
+      content: "Fix cycle 1: Reordered inbox promote to create task before deleting inbox item. The
+        migration had moved deleteInboxItem before taskDataManager.createTask, so a failure in task
+        creation would lose the inbox item. Fixed by: (1) calling createTask without commitOpts, (2)
+        deleting inbox item after, (3) doing a single commitIfShadow for both. This matches the
+        original safe ordering. All 6756 tests pass."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T06:03:41.384Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YERMDKKYA1XXRN025G0FT
