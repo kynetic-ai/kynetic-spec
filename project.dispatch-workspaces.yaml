@@ -17378,7 +17378,7 @@ workspaces:
         head: a5f4801899b17fd67eb522cc0e5803c156a9e49d
         last_seen_at: 2026-03-21T16:36:17.602Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/remove-default-timeout-from-dispatch-shadow-mutation-lock-01km8kee
-  - active_role: worker
+  - active_role: null
     base_branch_point: 87331ee1e9d640686caa51de93719322fb0c1a82
     bootstrap:
       status: succeeded
@@ -17462,12 +17462,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-21T17:20:12.212Z
+      updated_at: 2026-03-21T17:20:19.689Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-21T17:20:12.212Z
+      updated_at: 2026-03-21T17:20:19.689Z
     integration:
       status: pending
       detail: null
@@ -17475,24 +17475,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 87331ee1e9d640686caa51de93719322fb0c1a82
-      updated_at: 2026-03-21T17:20:12.212Z
-    lifecycle_state: active
+      updated_at: 2026-03-21T17:20:19.689Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KM6YETR12GG1EZ5G68KSNTBK"
     task_slug: task-impl-activity
     timestamps:
       closed_at: null
       last_active_at: 2026-03-21T16:53:18.920Z
-      last_reconciled_at: 2026-03-21T17:20:12.212Z
+      last_reconciled_at: 2026-03-21T17:20:19.689Z
       created_at: 2026-03-21T16:52:54.768Z
-      updated_at: 2026-03-21T17:20:12.212Z
+      updated_at: 2026-03-21T17:20:19.689Z
     workspace_id: dispatch-workspace-01KM6YETR12GG1EZ5G68KSNTBK
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: f68480a8d01aadbdce406f6aca86f353cc32e282
+        last_seen_at: 2026-03-21T17:20:19.689Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-impl-activity-01km6yet-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-impl-activity/01km6yet
-        head: 87331ee1e9d640686caa51de93719322fb0c1a82
-        last_seen_at: 2026-03-21T16:52:54.768Z
+        head: f68480a8d01aadbdce406f6aca86f353cc32e282
+        last_seen_at: 2026-03-21T17:20:19.689Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-impl-activity-01km6yet
