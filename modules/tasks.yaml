@@ -1357,6 +1357,9 @@ features:
       core data and notes. A lean index file contains only the fields
       needed for listing and filtering. Task semantics, CLI surface, and
       schema types visible to consumers are unchanged.
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on: []
     implements: []
     relates_to: []
