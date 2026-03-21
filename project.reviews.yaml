@@ -42060,9 +42060,25 @@ reviews:
           status: pass
           name: tests/task-migrate.test.ts
         timestamp: 2026-03-21T18:59:03.071Z
+      - _ulid: 01KM8W819X72YQTW6BA0M0JJB9
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-21T18:59:12.317Z
+      - _ulid: 01KM8W819XHTGQD63FYJWRDRAS
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-21T18:59:12.317Z
     examined_commit: 5d6e230aefe40be9f29be2bc8b1b99ea749266e3
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -42129,7 +42145,14 @@ reviews:
               asserts a lower-level surrogate."
             created_at: 2026-03-21T18:58:52.100Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-21T18:59:12.316Z
     created_at: 2026-03-21T18:52:51.448Z
-    updated_at: 2026-03-21T18:59:02.758Z
+    updated_at: 2026-03-21T18:59:12.317Z
     notes: []
