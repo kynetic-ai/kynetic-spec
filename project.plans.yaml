@@ -25890,10 +25890,38 @@ plans:
       branch data. Always use the globally installed `kspec` binary for any kspec CLI operations.
       Running partially-implemented storage code against real project data risks corruption. All
       testing must use the test harness with temp fixtures.
-    status: approved
+    status: active
     approved_at: 2026-03-21T00:59:06.230Z
-    derived_specs: []
-    derived_tasks: []
+    derived_specs:
+      - "@task-directory-storage"
+      - "@task-index-file"
+      - "@task-core-data-file"
+      - "@task-notes-file"
+      - "@task-data-manager"
+      - "@task-atomic-writes"
+      - "@task-listing-performance"
+      - "@task-detail-loading"
+      - "@task-activity-in-file"
+      - "@task-storage-activation"
+      - "@task-storage-migration"
+      - "@task-index-rebuild"
+    derived_tasks:
+      - "@task-deprecate-old-storage-specs"
+      - "@task-update-activity-timeline-spec"
+      - "@task-impl-data-manager"
+      - "@task-migrate-cli"
+      - "@task-migrate-daemon"
+      - "@task-migrate-supporting"
+      - "@task-impl-split-storage"
+      - "@task-impl-index"
+      - "@task-impl-per-task-files"
+      - "@task-impl-activity"
+      - "@task-extend-write-buffer"
+      - "@task-build-index-rebuild"
+      - "@task-build-migration"
+      - "@task-activate-split-storage"
+      - "@task-remove-monolithic"
+      - "@task-purge-old-storage-refs"
     module_ref: "@tasks"
     source_path: /home/chapel/Projects/kynetic-spec/plans/task-storage-split.md
     created_at: 2026-03-20T22:56:21.296Z
@@ -25942,3 +25970,71 @@ plans:
         content: Fix ac ordering on @task-storage-activation (ac-4/ac-5 were swapped).
         author: "@claude"
         created_at: 2026-03-21T00:40:52.642Z
+      - _ulid: 01KM6YEZNVBY027BWCB2DAYTBV
+        content: >-
+          **Phasing is critical.** Phase 1 (deprecation + task data manager + caller migration)
+          starts by deprecating old specs, then is pure refactoring with zero behavior change. Phase
+          2 (split storage) implements the new backend behind a format flag, defaulting to
+          monolithic. Phase 3 (atomic writes + migration command + index rebuild) ensures multi-file
+          safety and provides the migration and repair tools. Phase 4 (post-migration cleanup) is
+          manual only — activation, old code removal, and reference purging happen after migration
+          is run and verified out-of-band.
+
+
+          **Switchover sequence.** After all automated tasks complete: (1) pause dispatch/agent
+          work, (2) run migration command, (3) verify data integrity, (4) activate split format, (5)
+          exercise task operations, (6) resume automated work. Only then do the Phase 4 cleanup
+          tasks proceed.
+
+
+          **The manager-first approach is key.** By migrating all callers to the task data manager
+          before changing the storage format, the actual storage split becomes a contained change in
+          one module. If the manager interface is right, the storage swap is invisible to all
+          consumers. This is the same pattern as database migrations behind a repository layer.
+
+
+          **Index consistency.** The index is a derived cache. Per-task files are authoritative. The
+          rebuild command is the escape hatch. During normal operation, the manager keeps them in
+          sync through atomic writes. The index should never be written to directly — only through
+          the manager. The "index-only reads" invariant for list operations refers to the logical
+          data source — during batch operations, the write buffer may hold pending index updates
+          that must be visible to subsequent reads within the same batch.
+
+
+          **History entries vs git history.** Going forward, all field changes are recorded as
+          history entries in task.yaml. Git history becomes supplementary (per-task directory commit
+          log), not primary. Pre-migration tasks won't have history entries — the fallback to git
+          log -- tasks/<ulid>/ handles those. This degradation is acceptable because it only applies
+          to historical data that predates the migration.
+
+
+          **Write buffer integration.** The existing WriteBuffer class already supports multi-file
+          atomic writes. The task data manager uses this for every mutation, not just batch
+          operations. The overhead is minimal for single-task operations (buffer 2-3 files, flush
+          immediately). Batch operations continue to use the shared batch buffer.
+
+
+          **Shadow branch commit messages.** With per-task files, shadow branch commit messages
+          should include the task ULID for fast git log --grep lookups. The manager should generate
+          structured commit messages (e.g. "task-start @task-slug 01KJP279: pending → in_progress")
+          that enable future git-based queries without line tracking.
+
+
+          **Testing strategy.** Phase 1 tests verify behavioral equivalence — same inputs produce
+          same outputs through the manager as through direct yaml.ts calls. Phase 2 tests verify the
+          split format produces correct file structures. The full test suite runs after each phase.
+
+
+          **No schema changes.** The TaskSchema, TaskInputSchema, and TasksFileSchema types are
+          unchanged. The manager maps between the external schema (what callers see) and the
+          internal storage format (how files are organized). The history and notes separation is
+          internal to the storage backend.
+
+
+          **Agent safety: never use local kspec builds.** Agents working on this plan must NEVER use
+          `npm run dev`, `node dist/`, or `npm link` to run their in-progress code against live
+          shadow branch data. Always use the globally installed `kspec` binary for any kspec CLI
+          operations. Running partially-implemented storage code against real project data risks
+          corruption. All testing must use the test harness with temp fixtures.
+        author: "@claude"
+        created_at: 2026-03-21T00:59:28.315Z
