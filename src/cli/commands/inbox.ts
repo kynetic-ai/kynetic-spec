@@ -291,16 +291,19 @@ Examples:
           taskInput.notes = [note];
         }
 
-        // Delete inbox item unless --keep (before commit so both are in same state)
+        // Create task first, then delete inbox item — if task creation fails,
+        // the inbox item is preserved (no data loss).
+        const task = await taskDataManager.createTask(ctx, taskInput);
+
+        // Delete inbox item unless --keep (after task creation so inbox item
+        // is preserved if createTask fails)
         if (!options.keep) {
           await deleteInboxItem(ctx, item._ulid);
           info(`Removed from inbox: ${itemRef}`);
         }
 
-        const task = await taskDataManager.createTask(ctx, taskInput, {
-          operation: "inbox-promote",
-          ref: title,
-        });
+        // Single shadow commit covers both task creation and inbox deletion
+        await commitIfShadow(ctx.shadow, "inbox-promote", title);
 
         // Load for index to get short ULID
         const tasks = await taskDataManager.listTasks(ctx);
