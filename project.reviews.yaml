@@ -39533,6 +39533,19 @@ reviews:
         runner: kspec
         created_at: 2026-03-21T13:34:24.997Z
         completed_at: 2026-03-21T13:34:24.997Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite failed in this snapshot. Failing file:
+          tests/dispatch-workspace-registry.test.ts (2 failing tests: 'suppresses registry write and
+          commit when reconciliation produces no meaningful change' and 'performs registry write
+          when a meaningful field changes between reconciliations')."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-21T13:34:28.459Z
+        completed_at: 2026-03-21T13:34:28.459Z
     events:
       - _ulid: 01KM89977R9VC91DPFWVNY8GRW
         actor: Jacob Chapel
@@ -39584,6 +39597,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-21T13:34:26.290Z
+      - _ulid: 01KM89NEFDERB25F795JM6NCNE
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-21T13:34:28.845Z
     examined_commit: 04dd1dbb397bb4101d90c59dac3a3e27f314b57b
     external_links: []
     lifecycle_state: closed
@@ -39644,5 +39664,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-21T13:34:26.289Z
     created_at: 2026-03-21T13:27:48.217Z
-    updated_at: 2026-03-21T13:34:26.289Z
+    updated_at: 2026-03-21T13:34:28.459Z
     notes: []
