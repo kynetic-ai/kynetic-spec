@@ -90,6 +90,7 @@ export async function linkReviewToTasks(
       operation: "review-link",
       ref: task.slugs[0] || task._ulid,
       detail: `set review_ref to ${reviewRef}`,
+      skipCommit: true,
     });
 
     result.linkedTasks.push({
@@ -187,6 +188,7 @@ export async function handleVerdictTaskTransition(
       operation: "review-verdict-needs-work",
       ref: task.slugs[0] || task._ulid,
       detail: `changes_requested → needs_work (cycle ${cycleNumber})`,
+      skipCommit: true,
     });
 
     results.push({ ulid: task._ulid, slug: task.slugs[0], transitioned: true });

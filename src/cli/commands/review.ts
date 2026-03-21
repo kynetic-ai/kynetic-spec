@@ -512,26 +512,22 @@ export function registerReviewCommands(program: Command): void {
 
           await saveReviewRecord(ctx, { ...review, _sourceFile: undefined });
 
+          // AC: @review-task-lifecycle-integration ac-2, ac-3
+          // Auto-link review to task(s) via review_ref (skipCommit in linkReviewToTasks)
+          const allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+          const linkResult = await linkReviewToTasks(ctx, review, allTasks);
+
           // AC: @trait-shadow-commit ac-1, ac-2, ac-3
+          // Single atomic commit: review creation + task linkage
+          const linkSuffix = linkResult.linkedTasks.length > 0
+            ? ` (linked to ${linkResult.linkedTasks.length} task(s))`
+            : "";
           await commitIfShadow(
             ctx.shadow,
             "review-add",
             review.slugs[0] || review._ulid.slice(0, 8),
-            options.title,
+            `${options.title}${linkSuffix}`,
           );
-
-          // AC: @review-task-lifecycle-integration ac-2, ac-3
-          // Auto-link review to task(s) via review_ref
-          const allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
-          const linkResult = await linkReviewToTasks(ctx, review, allTasks);
-          if (linkResult.linkedTasks.length > 0) {
-            await commitIfShadow(
-              ctx.shadow,
-              "review-task-link",
-              review.slugs[0] || review._ulid.slice(0, 8),
-              `linked to ${linkResult.linkedTasks.length} task(s)`,
-            );
-          }
 
           const reviews = await loadReviewRecords(ctx);
           const shortRef = shortReviewRef(
@@ -1064,13 +1060,6 @@ export function registerReviewCommands(program: Command): void {
             return withVerdict;
           });
 
-          await commitIfShadow(
-            ctx.shadow,
-            "review-verdict",
-            found.slugs[0] || found._ulid.slice(0, 8),
-            `${options.decision}${shouldAutoClose ? " (auto-closed)" : ""}`,
-          );
-
           // AC: @review-task-lifecycle-integration ac-4
           // Auto-transition tasks to needs_work on changes_requested verdict
           const allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
@@ -1081,14 +1070,15 @@ export function registerReviewCommands(program: Command): void {
             allTasks,
             reviewer,
           );
-          if (transitioned.some((t) => t.transitioned)) {
-            await commitIfShadow(
-              ctx.shadow,
-              "review-verdict-task-transition",
-              found.slugs[0] || found._ulid.slice(0, 8),
-              `tasks transitioned to needs_work`,
-            );
-          }
+
+          // Single atomic commit: review verdict + any task transitions
+          const transitionedCount = transitioned.filter((t) => t.transitioned).length;
+          await commitIfShadow(
+            ctx.shadow,
+            "review-verdict",
+            found.slugs[0] || found._ulid.slice(0, 8),
+            `${options.decision}${shouldAutoClose ? " (auto-closed)" : ""}${transitionedCount > 0 ? ` (${transitionedCount} task(s) → needs_work)` : ""}`,
+          );
 
           output(
             { decision: options.decision, reviewer, review_ulid: found._ulid, lifecycle_state: updated.lifecycle_state },

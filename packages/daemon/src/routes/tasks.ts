@@ -308,6 +308,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         const oldStatus = task.status;
 
         // AC: @task-data-manager ac-4, ac-6 - Atomic mutation via manager
+        // skipCommit: task mutation + spec sync committed as one shadow commit
         const updatedTask = await resolveTaskDataManager(ctx).mutateTask(
           ctx,
           params.ref,
@@ -320,6 +321,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
             operation: 'api-task-start',
             ref: params.ref,
             detail: `start ${params.ref}`,
+            skipCommit: true,
           },
         );
 
@@ -457,6 +459,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         const oldStatus = task.status;
 
         // AC: @task-data-manager ac-4, ac-6 - Atomic mutation via manager
+        // skipCommit: task mutation + spec sync committed as one shadow commit
         const updatedTask = await resolveTaskDataManager(ctx).mutateTask(
           ctx,
           params.ref,
@@ -465,6 +468,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
             operation: 'api-task-submit',
             ref: params.ref,
             detail: `submit ${params.ref}`,
+            skipCommit: true,
           },
         );
 
@@ -514,6 +518,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         const oldStatus = task.status;
 
         // AC: @task-data-manager ac-4, ac-6 - Atomic mutation via manager
+        // skipCommit: task mutation + spec sync committed as one shadow commit
         const updatedTask = await resolveTaskDataManager(ctx).mutateTask(
           ctx,
           params.ref,
@@ -527,6 +532,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
             operation: 'api-task-complete',
             ref: params.ref,
             detail: `complete ${params.ref}`,
+            skipCommit: true,
           },
         );
 
@@ -581,6 +587,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         const note = createNote(`Blocked: ${body.reason}`, author);
 
         // AC: @task-data-manager ac-4, ac-6 - Atomic mutation via manager
+        // skipCommit: task mutation + spec sync committed as one shadow commit
         const updatedTask = await resolveTaskDataManager(ctx).mutateTask(
           ctx,
           params.ref,
@@ -593,6 +600,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
             operation: 'api-task-block',
             ref: params.ref,
             detail: `block ${params.ref}`,
+            skipCommit: true,
           },
         );
 
