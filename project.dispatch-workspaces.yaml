@@ -17714,18 +17714,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/fix-detail-loading-fallback-for-missing-per-task-directories/01km99v2
-    canonical_branch_head: 6661e9cae3c71f9e8292fa2e75c39e69e148ff77
+    canonical_branch_head: e203495374ffe623d4b4e19d58e12495546f82ad
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-21T23:11:04.656Z
+      updated_at: 2026-03-21T23:11:09.034Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-21T23:11:04.656Z
+      updated_at: 2026-03-21T23:11:09.034Z
     integration:
       status: pending
       detail: null
@@ -17733,24 +17733,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 6661e9cae3c71f9e8292fa2e75c39e69e148ff77
-      updated_at: 2026-03-21T23:11:04.656Z
-    lifecycle_state: ready
+      updated_at: 2026-03-21T23:11:09.034Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KM99V2BGM1Y4MNFPJS8YCHE4"
     task_slug: fix-detail-loading-fallback-for-missing-per-task-directories
     timestamps:
       closed_at: null
       last_active_at: 2026-03-21T23:01:50.908Z
-      last_reconciled_at: 2026-03-21T23:11:04.656Z
+      last_reconciled_at: 2026-03-21T23:11:09.034Z
       created_at: 2026-03-21T23:01:45.884Z
-      updated_at: 2026-03-21T23:11:04.656Z
+      updated_at: 2026-03-21T23:11:09.034Z
     workspace_id: dispatch-workspace-01KM99V2BGM1Y4MNFPJS8YCHE4
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: e203495374ffe623d4b4e19d58e12495546f82ad
+        last_seen_at: 2026-03-21T23:11:09.034Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-detail-loading-fallback-for-missing-per-task-directories-01km99v2-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/fix-detail-loading-fallback-for-missing-per-task-directories/01km99v2
-        head: 6661e9cae3c71f9e8292fa2e75c39e69e148ff77
-        last_seen_at: 2026-03-21T23:01:45.884Z
+        head: e203495374ffe623d4b4e19d58e12495546f82ad
+        last_seen_at: 2026-03-21T23:11:09.034Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-detail-loading-fallback-for-missing-per-task-directories-01km99v2
