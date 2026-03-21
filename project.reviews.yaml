@@ -33260,7 +33260,18 @@ reviews:
     slugs: []
     title: Review task-impl-data-manager
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Warnings only (exit 6): orphaned skill dir, orphaned specs, and existing AC coverage
+          warnings; no schema/reference errors specific to this change"
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-21T02:18:26.731Z
+        completed_at: 2026-03-21T02:18:26.731Z
     events:
       - _ulid: 01KM72RM7H7MA6FDYHKX3KEC6Y
         actor: Jacob Chapel
@@ -33296,6 +33307,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM72Z7NHKRQC6WS7T1NACE4Z
         timestamp: 2026-03-21T02:18:15.388Z
+      - _ulid: 01KM72ZK9FRTMB3ZYX8VXG53MJ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-21T02:18:26.991Z
     examined_commit: c3a88b1ac7c731546031baec42a2024062f4c88a
     external_links: []
     lifecycle_state: open
@@ -33370,5 +33388,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-21T02:14:38.577Z
-    updated_at: 2026-03-21T02:18:15.090Z
+    updated_at: 2026-03-21T02:18:26.731Z
     notes: []
