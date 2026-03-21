@@ -21360,7 +21360,7 @@
   type: task
   spec_ref: "@task-storage-migration"
   plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-impl-index"
@@ -21372,8 +21372,9 @@
     - migration
     - cli
   review_ref: "@01KM8TK0KVA5YX0M314GX4N9XG"
+  session_id: 01KM8V1M8R4V8V8B7N9B9F4QKK
   created_at: 2026-03-21T00:59:25.505Z
-  started_at: 2026-03-21T18:29:01.269Z
+  started_at: 2026-03-21T18:51:44.114Z
   submitted_at: 2026-03-21T18:29:05.465Z
   notes:
     - _ulid: 01KM8VT0KQ6CGJD0YMANYMWBQ6
