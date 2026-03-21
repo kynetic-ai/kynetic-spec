@@ -112963,8 +112963,12 @@
   spec_ref: "@task-core-data-file"
   plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Approved in review @01KM8MME and merged to dev as
+    87331ee1e9d640686caa51de93719322fb0c1a82. Implemented split per-task core data and notes files
+    with history tracking, split-aware task manager routing, and atomic buffered index/per-task
+    writes.
   depends_on:
     - "@task-impl-split-storage"
   context: []
@@ -112986,6 +112990,7 @@
   created_at: 2026-03-21T00:59:22.538Z
   started_at: 2026-03-21T16:44:42.099Z
   submitted_at: 2026-03-21T16:44:50.541Z
+  completed_at: 2026-03-21T16:52:35.246Z
   notes:
     - _ulid: 01KM7Q3J7H2DH14Y9Q8YREQPYJ
       content: >-
