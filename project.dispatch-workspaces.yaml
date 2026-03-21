@@ -16908,12 +16908,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-21T12:05:10.727Z
+      updated_at: 2026-03-21T12:05:14.835Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-21T12:05:10.727Z
+      updated_at: 2026-03-21T12:05:14.835Z
     integration:
       status: pending
       detail: null
@@ -16921,26 +16921,31 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 95efd1618ada37f2b635d6526f2e303cb450d6cc
-      updated_at: 2026-03-21T12:05:10.727Z
-    lifecycle_state: ready
+      updated_at: 2026-03-21T12:05:14.835Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KM6YET1A7XY9D0V3YQ9DRASG"
     task_slug: task-impl-per-task-files
     timestamps:
       closed_at: null
       last_active_at: 2026-03-21T11:53:16.960Z
-      last_reconciled_at: 2026-03-21T12:05:10.727Z
+      last_reconciled_at: 2026-03-21T12:05:14.835Z
       created_at: 2026-03-21T07:55:49.032Z
-      updated_at: 2026-03-21T12:05:10.727Z
+      updated_at: 2026-03-21T12:05:14.835Z
     workspace_id: dispatch-workspace-01KM6YET1A7XY9D0V3YQ9DRASG
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 8ffbce2773d7ce1e143bb9a483e37b4fc583ee2f
+        last_seen_at: 2026-03-21T12:05:14.835Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-impl-per-task-files-01km6yet-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-impl-per-task-files/01km6yet
-        head: 8b23acb130d43d97a533d6e28707641b62e2e21d
-        last_seen_at: 2026-03-21T11:53:14.944Z
+        head: 8ffbce2773d7ce1e143bb9a483e37b4fc583ee2f
+        last_seen_at: 2026-03-21T12:05:14.835Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-impl-per-task-files-01km6yet
   - active_role: null
     base_branch_point: e273fe88270dc48f490a0856d03ba78deecc23b0
