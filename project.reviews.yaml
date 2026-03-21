@@ -41508,7 +41508,19 @@ reviews:
     slugs: []
     title: Review @01KM6YETR12GG1EZ5G68KSNTBK
     author: Test User
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Ran full suite from this workspace. The run exposed at least one unrelated failure in
+          tests/agent-invocation-lifecycle.test.ts before I stopped the runner because it was
+          holding the shadow mutation lock. Not used as the blocker for this review.
+        name: npm test
+        required: false
+        runner: npm
+        created_at: 2026-03-21T18:28:38.851Z
+        completed_at: 2026-03-21T18:28:38.851Z
     events:
       - _ulid: 01KM8TANC36FQ7M1EY68X7NNFP
         actor: Test User
@@ -41549,6 +41561,13 @@ reviews:
         payload:
           thread_ulid: 01KM8TBRC6FNRB72YVFFKP7HBN
         timestamp: 2026-03-21T18:28:00.271Z
+      - _ulid: 01KM8TG33BPKEFP9MJE5MQYJZD
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-21T18:28:39.147Z
     examined_commit: 2b21f5fb5066a62e14f72235ba6882244e4942e9
     external_links: []
     lifecycle_state: open
@@ -41606,5 +41625,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-21T18:25:41.252Z
-    updated_at: 2026-03-21T18:27:59.977Z
+    updated_at: 2026-03-21T18:28:38.851Z
     notes: []
