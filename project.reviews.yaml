@@ -40787,6 +40787,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM8Q543Y2W1QF849Q2NBEH8V
         timestamp: 2026-03-21T17:30:14.307Z
+      - _ulid: 01KM8Q5EYW3JYZ8A840G4SB2H6
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM8Q5EPBGN5DZ12VQD39QHBE
+        timestamp: 2026-03-21T17:30:25.116Z
     examined_commit: f68480a8d01aadbdce406f6aca86f353cc32e282
     external_links: []
     lifecycle_state: open
@@ -40816,7 +40823,19 @@ reviews:
               cases, error handling, test quality, integration."
             created_at: 2026-03-21T17:30:14.014Z
         kind: nit
+      - _ulid: 01KM8Q5EPBGN5DZ12VQD39QHBE
+        entries:
+          - _ulid: 01KM8Q5EPBJ3RBY7C456K9MY6G
+            author: Test User
+            body: Merge gate is currently blocked by unrelated full-suite instability. Two consecutive npm test
+              runs in this snapshot timed out after 15s in tests/agent-invocation-lifecycle.test.ts,
+              while the activity-specific suites added by this task passed and the same lifecycle
+              file also passed in isolation and on the dev base commit. This does not point to a
+              defect in the submitted activity-timeline change, but it does mean the required
+              full-suite gate is not clean enough to merge safely right now.
+            created_at: 2026-03-21T17:30:24.843Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T17:26:31.494Z
-    updated_at: 2026-03-21T17:30:14.014Z
+    updated_at: 2026-03-21T17:30:24.843Z
     notes: []
