@@ -42681,9 +42681,25 @@ reviews:
           status: pass
           name: kspec validate --warnings-ok
         timestamp: 2026-03-21T23:41:55.976Z
+      - _ulid: 01KM9CE1GF0WDKABSRT10EEBEQ
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-21T23:42:06.351Z
+      - _ulid: 01KM9CE1GFRZ1XV4NDZNDK462X
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-21T23:42:06.351Z
     examined_commit: e85852381a7bdabdd4cae7f7fd041c9e3d106e4d
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -42731,7 +42747,14 @@ reviews:
               handling; no new AC-coverage defects found, full-suite stability remains blocking."
             created_at: 2026-03-21T23:41:54.651Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-21T23:42:06.351Z
     created_at: 2026-03-21T23:33:46.331Z
-    updated_at: 2026-03-21T23:41:55.655Z
+    updated_at: 2026-03-21T23:42:06.351Z
     notes: []
