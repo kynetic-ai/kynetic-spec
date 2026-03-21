@@ -25,7 +25,7 @@ import {
   savePlan,
   shortestUniqueUlid,
 } from "../../parser/index.js";
-import { taskDataManager } from "../../parser/task-data-manager.js";
+import { resolveTaskDataManager } from "../../parser/task-data-manager.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import {
   parsePlanDocument,
@@ -1284,7 +1284,7 @@ Examples:
 
         if (!options.dryRun) {
           for (const taskPlan of taskPlans) {
-            await taskDataManager.createTask(ctx, taskPlan.input);
+            await resolveTaskDataManager(ctx).createTask(ctx, taskPlan.input);
           }
 
           const updatedPlan = await mutatePlanAtomically(ctx, foundPlan, (latestPlan) => {

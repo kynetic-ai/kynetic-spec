@@ -28,7 +28,7 @@ import {
   shortestUniqueUlid,
   updateSpecItem,
 } from "../../parser/index.js";
-import { taskDataManager } from "../../parser/task-data-manager.js";
+import { resolveTaskDataManager } from "../../parser/task-data-manager.js";
 import type { ItemFilter } from "../../parser/items.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import type {
@@ -1416,7 +1416,7 @@ Examples:
     }
 
     if (tasksToClean.length > 0) {
-      await taskDataManager.mutateTasks(ctx, tasksToClean.map(t => t._ulid), (latestTasks) => {
+      await resolveTaskDataManager(ctx).mutateTasks(ctx, tasksToClean.map(t => t._ulid), (latestTasks) => {
         return latestTasks.map((task) => {
           let refsRemovedFromTask = 0;
           const origDepsLen = task.depends_on.length;

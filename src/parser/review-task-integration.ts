@@ -16,7 +16,7 @@
 import type { ReviewRecord, ReviewVerdictDecision } from "../schema/index.js";
 import type { KspecContext, LoadedTask } from "./yaml.js";
 import { createNote, getAuthor } from "./yaml.js";
-import { taskDataManager } from "./task-data-manager.js";
+import { resolveTaskDataManager } from "./task-data-manager.js";
 import { findReviewByRef, loadReviewRecords, type LoadedReviewRecord } from "./reviews.js";
 
 /**
@@ -83,7 +83,7 @@ export async function linkReviewToTasks(
     );
     if (!task) continue;
 
-    await taskDataManager.mutateTask(ctx, task._ulid, (latestTask) => ({
+    await resolveTaskDataManager(ctx).mutateTask(ctx, task._ulid, (latestTask) => ({
       ...latestTask,
       review_ref: reviewRef,
     }));
@@ -163,7 +163,7 @@ export async function handleVerdictTaskTransition(
     ).length;
     const cycleNumber = existingKickbacks + 1;
 
-    await taskDataManager.mutateTask(ctx, task._ulid, (latestTask) => {
+    await resolveTaskDataManager(ctx).mutateTask(ctx, task._ulid, (latestTask) => {
       if (latestTask.status !== "pending_review") {
         return latestTask;
       }
