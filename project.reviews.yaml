@@ -35325,6 +35325,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM7G7YGGHDVJVQ9PZ5N87YYF
         timestamp: 2026-03-21T06:10:12.637Z
+      - _ulid: 01KM7G80MNP05B96BWQ8DT436T
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM7G805AS1540SJSVMX8R8VC
+        timestamp: 2026-03-21T06:10:14.293Z
     examined_commit: 028e4ab3766f79012521057d9d4be114c06f2cf2
     external_links: []
     lifecycle_state: open
@@ -35372,7 +35379,36 @@ reviews:
               the storage-format abstraction is not complete."
             created_at: 2026-03-21T06:10:12.112Z
         kind: blocker
+      - _ulid: 01KM7G805AS1540SJSVMX8R8VC
+        entries:
+          - _ulid: 01KM7G805BNSZR8DW4WNENR8QV
+            author: Jacob Chapel
+            body: >-
+              Review evidence log:
+
+              Files read: src/cli/commands/{derive,inbox,item,meta,plan,tasks,validate}.ts,
+              src/parser/review-task-integration.ts, src/triage/actions.ts,
+              src/agent-runtime/dispatch.ts, src/parser/task-data-manager.ts, src/parser/shadow.ts,
+              src/parser/yaml.ts, tests/{integration,meta,tasks-assess-automation}.test.ts,
+              .agents/skills/{kspec-review,kspec-merge,review-gates,work-gates}/SKILL.md,
+              kspec-agents.md.
+
+              Commands run: git diff/stat vs dev, kspec task get, kspec item get @task-data-manager,
+              kspec review for-task/get, kspec validate, grep for AC annotations, rg for remaining
+              direct task I/O, npm test.
+
+              Claims verified: worker claim "All 6756 tests pass" verified by local npm test (6756
+              passed, 3 skipped); inbox promote ordering fix verified by comparing the submitted
+              implementation against both the prior broken commit and the pre-migration base.
+
+              Categories searched: correctness (found incomplete migration in validate/dispatch),
+              edge cases (checked inbox promote failure ordering), error handling (checked manager
+              validation/not-found paths), test quality (confirmed full suite passes; no targeted
+              regression coverage added for the unfinished scope), integration (checked
+              commit/atomicity semantics at each migrated write site).
+            created_at: 2026-03-21T06:10:13.803Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-21T06:08:55.442Z
-    updated_at: 2026-03-21T06:10:12.112Z
+    updated_at: 2026-03-21T06:10:13.803Z
     notes: []
