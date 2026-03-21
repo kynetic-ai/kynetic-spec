@@ -17378,7 +17378,7 @@ workspaces:
         head: a5f4801899b17fd67eb522cc0e5803c156a9e49d
         last_seen_at: 2026-03-21T16:36:17.602Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/remove-default-timeout-from-dispatch-shadow-mutation-lock-01km8kee
-  - active_role: worker
+  - active_role: null
     base_branch_point: 87331ee1e9d640686caa51de93719322fb0c1a82
     bootstrap:
       status: succeeded
@@ -17444,12 +17444,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-21T18:29:43.583Z
+      updated_at: 2026-03-21T18:37:12.358Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-21T18:29:46.518Z
+      updated_at: 2026-03-21T18:37:12.358Z
     integration:
       status: pending
       detail: null
@@ -17457,17 +17457,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 87331ee1e9d640686caa51de93719322fb0c1a82
-      updated_at: 2026-03-21T18:29:43.583Z
-    lifecycle_state: active
+      updated_at: 2026-03-21T18:37:12.358Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KM6YETR12GG1EZ5G68KSNTBK"
     task_slug: task-impl-activity
     timestamps:
       closed_at: null
       last_active_at: 2026-03-21T18:29:46.518Z
-      last_reconciled_at: 2026-03-21T18:29:46.518Z
+      last_reconciled_at: 2026-03-21T18:37:12.358Z
       created_at: 2026-03-21T16:52:54.768Z
-      updated_at: 2026-03-21T18:29:46.518Z
+      updated_at: 2026-03-21T18:37:12.358Z
     workspace_id: dispatch-workspace-01KM6YETR12GG1EZ5G68KSNTBK
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
