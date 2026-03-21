@@ -41870,6 +41870,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-21T18:38:41.625Z
+      - _ulid: 01KM8V8YENMZY4A997FB9S2XJN
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM8V8Y59R5E7RWCT2JTDVCJS
+        timestamp: 2026-03-21T18:42:13.589Z
     examined_commit: 1232fc203326f1ce5bfd022fc21be3dff269433b
     external_links: []
     lifecycle_state: open
@@ -41879,8 +41886,27 @@ reviews:
       content_hash: ""
       ref: "@01KM6YETR12GG1EZ5G68KSNTBK"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM8V8Y59R5E7RWCT2JTDVCJS
+        entries:
+          - _ulid: 01KM8V8Y59WCKY222E7T2BK087
+            author: Test User
+            body: >-
+              Files read: src/cli/commands/task.ts, src/utils/activity.ts, src/cli/output.ts,
+              src/parser/task-data-manager.ts, tests/activity-in-file.test.ts,
+              tests/activity-display.test.ts
+
+              Commands run: git diff/stat, kspec task get, kspec item get, kspec review for-task, rg
+              AC annotations, kspec validate, npm test
+
+              Claims verified: worker claim that command preservation and multi-field detail were
+              fixed; verified in src/utils/activity.ts and matching tests.
+
+              Categories searched: correctness, edge cases, error handling, test quality,
+              integration; no task-specific regressions found.
+            created_at: 2026-03-21T18:42:13.289Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-21T18:38:20.083Z
-    updated_at: 2026-03-21T18:38:41.287Z
+    updated_at: 2026-03-21T18:42:13.289Z
     notes: []
