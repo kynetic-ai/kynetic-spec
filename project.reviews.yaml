@@ -37392,6 +37392,21 @@ reviews:
         runner: kspec
         created_at: 2026-03-21T09:45:53.730Z
         completed_at: 2026-03-21T09:45:53.730Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/cli/commands/task.ts, src/parser/split-backend.ts,
+          src/parser/task-data-manager.ts, src/schema/spec.ts, tests/per-task-files.test.ts,
+          src/utils/activity.ts. Commands run: kspec task get, kspec item get @task-core-data-file,
+          kspec item get @task-notes-file, git diff, kspec validate, rg AC annotations, npm test.
+          Claims verified: full suite passed; task get now resolves split manager in task.ts.
+          Categories searched: correctness, AC coverage, error handling, integration, test quality."
+        name: review evidence
+        required: false
+        runner: codex
+        created_at: 2026-03-21T09:46:28.037Z
+        completed_at: 2026-03-21T09:46:28.037Z
     events:
       - _ulid: 01KM7WCJRJ44ZQHZMHMC7KG4RH
         actor: Jacob Chapel
@@ -37427,6 +37442,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-21T09:45:54.087Z
+      - _ulid: 01KM7WKYKKH77NNA9GRKGVYCFG
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence
+        timestamp: 2026-03-21T09:46:28.339Z
     examined_commit: 1e88f19f3c0bfbd20f3ece5cb6cd1372fc2fb16e
     external_links: []
     lifecycle_state: open
@@ -37477,5 +37499,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-21T09:42:26.834Z
-    updated_at: 2026-03-21T09:45:53.730Z
+    updated_at: 2026-03-21T09:46:28.037Z
     notes: []
