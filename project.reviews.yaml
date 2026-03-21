@@ -36001,6 +36001,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM7PHTQD18C134Z2JY58DYT4
         timestamp: 2026-03-21T08:00:27.721Z
+      - _ulid: 01KM7PHVZRHCTHCF51KKT8R8NR
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM7PHVPRFB079BAJKZ0J7MSB
+        timestamp: 2026-03-21T08:00:28.664Z
     examined_commit: 6023a5e30180743cd13485125c05f5975f5bf0da
     external_links: []
     lifecycle_state: open
@@ -36030,7 +36037,30 @@ reviews:
               user-visible regression in any list/session output that shows note counts."
             created_at: 2026-03-21T08:00:27.373Z
         kind: blocker
+      - _ulid: 01KM7PHVPRFB079BAJKZ0J7MSB
+        entries:
+          - _ulid: 01KM7PHVPRN83FNXWFK5Q51ZBK
+            author: Jacob Chapel
+            body: >-
+              Review evidence log
+
+
+              Files read: src/parser/split-backend.ts, src/parser/task-data-manager.ts,
+              tests/split-backend.test.ts, tests/task-data-manager.test.ts
+
+              Commands run: git diff --stat, git diff, kspec task get, kspec item get, kspec review
+              for-task, kspec validate, rg AC annotations, npm test
+
+              Claims verified: task note claim that the full test suite passes; verified by running
+              npm test (6813 passed, 3 skipped). Verified that listTasks still reads counters from
+              index via split-backend/listTasks and rawToSummary.
+
+              Categories searched: correctness (found stale counter regression), edge cases
+              (drift/rebuild path), error handling (no new issue), test quality (missing regression
+              for stale counts), integration (listTasks/rawToSummary interaction).
+            created_at: 2026-03-21T08:00:28.376Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-21T08:00:04.180Z
-    updated_at: 2026-03-21T08:00:27.373Z
+    updated_at: 2026-03-21T08:00:28.376Z
     notes: []
