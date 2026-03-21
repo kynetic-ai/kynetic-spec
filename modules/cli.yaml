@@ -9327,6 +9327,10 @@ features:
             then: Stale lock detection identifies the orphaned lock, cleans it up, and the waiting mutation
               acquires the lock without manual intervention
             when: The lock holder process is no longer alive
+          - given: The KSPEC_SHADOW_MUTATION_LOCK_TIMEOUT_MS environment variable is set to a finite value
+            id: ac-6
+            then: The explicit timeout is honored, overriding the default wait-indefinitely behavior
+            when: A dispatch mutation waits for the lock
         tags: []
         created: 2026-03-12T02:33:44.530Z
         notes: []
