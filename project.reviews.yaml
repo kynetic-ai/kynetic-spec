@@ -39371,7 +39371,18 @@ reviews:
     slugs: []
     title: Review per-task core data and notes files (cycle 15)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Exited 6 due pre-existing repo-wide warnings only; schema and references passed, no
+          task-specific validation errors found during review.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-21T13:16:51.521Z
+        completed_at: 2026-03-21T13:16:51.521Z
     events:
       - _ulid: 01KM889FX1NHYNJAFQ5SKMZQM2
         actor: Jacob Chapel
@@ -39393,6 +39404,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM88MX9YPZDVCMVKKK3YE5XD
         timestamp: 2026-03-21T13:16:42.992Z
+      - _ulid: 01KM88N685SFBC8WJY6D177XGC
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec validate
+        timestamp: 2026-03-21T13:16:51.845Z
     examined_commit: 4245fa4dfadcd899df46ee3bcf8b1c7ec90f97b6
     external_links: []
     lifecycle_state: open
@@ -39427,5 +39445,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-21T13:10:28.514Z
-    updated_at: 2026-03-21T13:16:42.686Z
+    updated_at: 2026-03-21T13:16:51.521Z
     notes: []
