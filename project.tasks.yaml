@@ -112044,8 +112044,13 @@
   spec_ref: null
   plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged dispatch/task/task-deprecate-old-storage-specs/01km6yem into dev at
+    f1559ae07b7c8067eceb22565a6ca6284ce9beb5 after approved review. Verified all four superseded
+    specs are deprecated with correct superseded_by targets, stale implements references are
+    cleared, kspec validate --warnings-ok passes with only existing repo-wide warnings, and npm test
+    passed (6704 tests).
   depends_on: []
   context: []
   priority: 1
@@ -112066,6 +112071,7 @@
   created_at: 2026-03-21T00:59:16.796Z
   started_at: 2026-03-21T02:00:37.035Z
   submitted_at: 2026-03-21T02:00:40.896Z
+  completed_at: 2026-03-21T02:07:12.711Z
   notes:
     - _ulid: 01KM6Z3EQ296YCF6VH1ZQ39RXN
       content: >-
