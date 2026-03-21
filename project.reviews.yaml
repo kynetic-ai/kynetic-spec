@@ -38107,6 +38107,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-21T10:43:22.681Z
+      - _ulid: 01KM7ZWF65AFTR6B5F70W8FPX0
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM7ZWEXETJZ5ZJHJAJGYPVJE
+        timestamp: 2026-03-21T10:43:33.189Z
     examined_commit: cdc31d9ac007832d463edeae3a7ddd921f6bb9f9
     external_links: []
     lifecycle_state: open
@@ -38116,8 +38123,27 @@ reviews:
       content_hash: ""
       ref: "@01KM6YEW5EF6QXZHQP7FYARAK6"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM7ZWEXETJZ5ZJHJAJGYPVJE
+        anchor:
+          type: code
+          commit: cdc31d9ac007832d463edeae3a7ddd921f6bb9f9
+          line_end: 3155
+          line_start: 3153
+          path: src/cli/commands/task.ts
+          side: head
+        entries:
+          - _ulid: 01KM7ZWEXEPGBHWC1A3VZ353P1
+            author: Jacob Chapel
+            body: The CLI advertises '--force' as 'skip confirmation', but this command never implements any
+              confirmation path before the repair write. The only repair branch goes straight from
+              '--repair' to 'splitManager.rebuildIndex()' and 'commitIfShadow()', without reading
+              'options.force' at all. That means 'kspec task rebuild-index --repair' mutates shadow
+              state immediately even though the help text promises a confirmation gate unless
+              '--force' is supplied.
+            created_at: 2026-03-21T10:43:32.911Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T10:38:18.995Z
-    updated_at: 2026-03-21T10:43:22.358Z
+    updated_at: 2026-03-21T10:43:32.911Z
     notes: []
