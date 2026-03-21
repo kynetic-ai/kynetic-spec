@@ -6,24 +6,19 @@ import { markMutating } from "../command-annotations.js";
 import {
   checkSlugUniqueness,
   createNote,
-  createTask,
   createTodo,
-  deleteTask,
   findReviewByRef,
   getAuthor,
   initContext,
   type LoadedSpecItem,
   type LoadedTask,
   loadAllItems,
-  loadAllTasks,
   loadReviewRecords,
-  mutateTaskAtomically,
-  mutateTasksAtomically,
   ReferenceIndex,
-  saveTask,
   scanTestCoverage,
   syncSpecImplementationStatus,
 } from "../../parser/index.js";
+import { taskDataManager, type TaskSummary } from "../../parser/task-data-manager.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import {
   AutomationStatusSchema,
@@ -119,13 +114,16 @@ async function postDispatchEvent(opts: {
 
 /**
  * Find a task by reference with detailed error reporting.
+ * Uses ReferenceIndex for resolution and TaskDataManager to load full details.
  * Returns the task or exits with appropriate error.
+ * AC: @task-data-manager ac-1 — callers don't know about storage format
  */
-function resolveTaskRef(
+async function resolveTaskRef(
   ref: string,
-  tasks: LoadedTask[],
+  tasks: TaskSummary[],
   index: ReferenceIndex,
-): LoadedTask {
+  ctx: import("../../parser/yaml.js").KspecContext,
+): Promise<LoadedTask> {
   const result = index.resolve(ref);
 
   if (!result.ok) {
@@ -154,27 +152,30 @@ function resolveTaskRef(
     process.exit(EXIT_CODES.NOT_FOUND);
   }
 
-  // Check if it's actually a task
-  const task = tasks.find((t) => t._ulid === result.ulid);
-  if (!task) {
+  // Check if it's actually a task (not a spec item or meta item)
+  const taskSummary = tasks.find((t) => t._ulid === result.ulid);
+  if (!taskSummary) {
     error(errors.reference.notTask(ref));
     // AC: @cli-exit-codes consistent-usage - NOT_FOUND for missing resources
     process.exit(EXIT_CODES.NOT_FOUND);
   }
 
-  return task;
+  // Load full task details via the data manager
+  // AC: @task-data-manager ac-3 — assembles complete task transparently
+  return taskDataManager.getTask(ctx, result.ulid);
 }
 
 /**
  * Batch-compatible resolver that returns null instead of calling process.exit().
- * Used by executeBatchOperation to handle errors without terminating the process.
+ * Resolves ref against the summary array to verify it's a task.
  * AC: @multi-ref-batch ac-4, ac-8 - Partial failure handling and ref resolution
+ * AC: @task-data-manager ac-1 — callers don't know about storage format
  */
 function resolveTaskRefForBatch(
   ref: string,
-  tasks: LoadedTask[],
+  tasks: TaskSummary[],
   index: ReferenceIndex,
-): { task: LoadedTask | null; error?: string } {
+): { task: TaskSummary | null; error?: string } {
   const result = index.resolve(ref);
 
   if (!result.ok) {
@@ -193,13 +194,13 @@ function resolveTaskRefForBatch(
     return { task: null, error: errorMsg };
   }
 
-  // Check if it's actually a task
-  const task = tasks.find((t) => t._ulid === result.ulid);
-  if (!task) {
+  // Check if it's actually a task (not a spec item or meta item)
+  const taskSummary = tasks.find((t) => t._ulid === result.ulid);
+  if (!taskSummary) {
     return { task: null, error: `Reference "${ref}" is not a task` };
   }
 
-  return { task };
+  return { task: taskSummary };
 }
 
 function getTaskDisplayRef(task: Pick<LoadedTask, "_ulid" | "slugs">): string {
@@ -340,9 +341,9 @@ function reportBranchResult(result: {
  * AC: @spec-task-set-batch ac-1, ac-2, ac-4, ac-5
  */
 async function setTaskFields(
-  foundTask: LoadedTask,
+  foundTask: TaskSummary,
   ctx: any,
-  tasks: LoadedTask[],
+  tasks: TaskSummary[],
   items: LoadedSpecItem[],
   _allMetaItems: any[],
   index: ReferenceIndex,
@@ -527,8 +528,7 @@ async function setTaskFields(
       validatedAutomation = automationResult.value;
     }
 
-    let updatedTask = foundTask;
-    updatedTask = await mutateTaskAtomically(ctx, foundTask, (latestTask) => {
+    const updatedTask = await taskDataManager.mutateTask(ctx, foundTask._ulid, (latestTask) => {
       const nextTask: Task = { ...latestTask };
       const mutationChanges: Array<{ field: string; before: unknown; after: unknown }> = [];
 
@@ -795,7 +795,7 @@ export function registerTaskCommands(program: Command): void {
     .action(async (ref: string, options: { all?: boolean; activity?: boolean }) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const _items = await loadAllItems(ctx);
 
         // Build all indexes including TraitIndex
@@ -804,7 +804,7 @@ export function registerTaskCommands(program: Command): void {
           return buildIndexes(ctx);
         })();
 
-        const foundTask = resolveTaskRef(ref, tasks, index);
+        const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
 
         // AC: @trait-display ac-3 - task get shows inherited AC sections
         // Get inherited traits if task has spec_ref
@@ -1005,7 +1005,7 @@ Examples:
     .action(async (options) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
 
         // Load meta items for validation
@@ -1019,7 +1019,7 @@ Examples:
         ];
 
         // Build index for reference validation
-        const refIndex = new ReferenceIndex(tasks, items, allMetaItems);
+        const refIndex = new ReferenceIndex(tasks as unknown as LoadedTask[], items, allMetaItems);
 
         // Check slug uniqueness if provided
         if (options.slug) {
@@ -1056,7 +1056,7 @@ Examples:
           const specRefResult = validateSpecRef(
             options.specRef,
             refIndex,
-            tasks,
+            tasks as unknown as LoadedTask[],
             items,
           );
           if (!specRefResult.ok) {
@@ -1169,18 +1169,16 @@ Examples:
           automation: automationValue,
         };
 
-        const newTask = createTask(input);
-        await saveTask(ctx, newTask);
-        await commitIfShadow(
-          ctx.shadow,
-          "task-add",
-          newTask.slugs[0] || newTask._ulid.slice(0, 8),
-          newTask.title,
-        );
+        // AC: @task-data-manager ac-1, ac-4 — create via task data manager
+        const newTask = await taskDataManager.createTask(ctx, input, {
+          operation: "task-add",
+          ref: input.slugs?.[0] || undefined,
+          detail: input.title,
+        });
 
         // Build index including the new task for accurate short ULID
         const index = new ReferenceIndex(
-          [...tasks, newTask],
+          [...tasks, newTask] as unknown as LoadedTask[],
           items,
           allMetaItems,
         );
@@ -1269,7 +1267,7 @@ Examples:
         }
 
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
 
         // Load meta items for validation
@@ -1282,7 +1280,7 @@ Examples:
           ...metaContext.observations,
         ];
 
-        const index = new ReferenceIndex(tasks, items, allMetaItems);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items, allMetaItems);
 
         // AC: @trait-multi-ref-batch ac-8 - Deduplicate refs
         const refsFlag = options.refs
@@ -1300,13 +1298,13 @@ Examples:
             index,
             resolveRef: (
               refStr: string,
-              taskList: LoadedTask[],
+              taskList: TaskSummary[],
               idx: ReferenceIndex,
             ) => {
               const result = resolveTaskRefForBatch(refStr, taskList, idx);
               return { item: result.task, error: result.error };
             },
-            executeOperation: async (task: LoadedTask, context) => {
+            executeOperation: async (task: TaskSummary, context) => {
               return await setTaskFields(
                 task,
                 context.ctx,
@@ -1317,7 +1315,7 @@ Examples:
                 context.options,
               );
             },
-            getUlid: (task: LoadedTask) => task._ulid,
+            getUlid: (task: TaskSummary) => task._ulid,
           });
 
           formatBatchOutput(result, "Set");
@@ -1328,7 +1326,7 @@ Examples:
             process.exit(EXIT_CODES.USAGE_ERROR);
           }
 
-          const foundTask = resolveTaskRef(ref, tasks, index);
+          const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
           const result = await setTaskFields(
             foundTask,
             ctx,
@@ -1381,7 +1379,7 @@ Examples:
     .action(async (ref: string, options) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
 
         // Load meta items for validation
@@ -1394,8 +1392,8 @@ Examples:
           ...metaContext.observations,
         ];
 
-        const index = new ReferenceIndex(tasks, items, allMetaItems);
-        const foundTask = resolveTaskRef(ref, tasks, index);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items, allMetaItems);
+        const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
 
         // Get JSON data from --data flag or stdin
         let jsonData: string;
@@ -1479,19 +1477,19 @@ Examples:
           return;
         }
 
-        const updatedTask = await mutateTaskAtomically(
+        // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
+        const updatedTask = await taskDataManager.mutateTask(
           ctx,
-          foundTask,
+          foundTask._ulid,
           (latestTask) => ({
             ...latestTask,
             ...validatedPatch,
           }),
-        );
-        await commitIfShadow(
-          ctx.shadow,
-          "task-patch",
-          foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
-          changes.join(", "),
+          {
+            operation: "task-patch",
+            ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
+            detail: changes.join(", "),
+          },
         );
         success(
           `Patched task: ${index.shortUlid(updatedTask._ulid)} (${changes.join(", ")})`,
@@ -1510,10 +1508,10 @@ Examples:
     .action(async (ref: string, options) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
-        const foundTask = resolveTaskRef(ref, tasks, index);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
+        const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
 
         if (foundTask.status === "in_progress") {
           warn("Task is already in progress");
@@ -1569,21 +1567,24 @@ Examples:
 
         // Update status
         // AC: @session-scoped-task-claiming ac-stamp, ac-no-env
+        // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
         let transitionFromStatus: Task["status"] = foundTask.status;
-        const updatedTask = await mutateTaskAtomically(ctx, foundTask, (latestTask) => {
-          transitionFromStatus = latestTask.status;
-          return {
-            ...latestTask,
-            status: "in_progress",
-            started_at: new Date().toISOString(),
-            ...(sessionId ? { session_id: sessionId } : {}),
-          };
-        });
-
-        await commitIfShadow(
-          ctx.shadow,
-          "task-start",
-          foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
+        const updatedTask = await taskDataManager.mutateTask(
+          ctx,
+          foundTask._ulid,
+          (latestTask) => {
+            transitionFromStatus = latestTask.status;
+            return {
+              ...latestTask,
+              status: "in_progress",
+              started_at: new Date().toISOString(),
+              ...(sessionId ? { session_id: sessionId } : {}),
+            };
+          },
+          {
+            operation: "task-start",
+            ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
+          },
         );
 
         // AC: @task-budget-enforcement ac-increment, ac-resume-no-increment, ac-needs-work-no-increment
@@ -1699,9 +1700,9 @@ Examples:
     .action(async (ref: string | undefined, options) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
 
         // AC: @spec-completion-enforcement ac-8
         if (options.skipReview && !options.reason) {
@@ -1727,12 +1728,13 @@ Examples:
             try {
               const forcingCompletion = options.force;
               const now = new Date().toISOString();
-              let transitionFromStatus: Task["status"] = foundTask.status;
+              let transitionFromStatus: Task["status"] = foundTask.status as Task["status"];
               let forcedFromNonStandard = false;
               let forceStateDetail: string | undefined;
-              const updatedTask = await mutateTaskAtomically(
+              // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
+              const updatedTask = await taskDataManager.mutateTask(
                 ctx,
-                foundTask,
+                foundTask._ulid,
                 (latestTask) => {
                   transitionFromStatus = latestTask.status;
 
@@ -1810,13 +1812,11 @@ Examples:
                     notes: taskNotes,
                   };
                 },
-              );
-
-              await commitIfShadow(
-                ctx.shadow,
-                "task-complete",
-                foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
-                options.reason,
+                {
+                  operation: "task-complete",
+                  ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
+                  detail: options.reason,
+                },
               );
 
               // AC: @daemon-agent-dispatch ac-2, ac-7 - Notify daemon of state change (fire-and-forget)
@@ -1938,20 +1938,21 @@ Examples:
         }
 
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
-        const foundTask = resolveTaskRef(ref, tasks, index);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
+        const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
 
         // AC: @portable-task-submission-linkage ac-1, ac-3, ac-5 — capture git context
         const linkage = isGitRepo(ctx.projectRoot)
           ? captureSubmissionLinkage(ctx.projectRoot, options.reviewUrl, ctx.config?.dispatch?.base_branch)
           : null;
 
+        // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
         let transitionFromStatus: Task["status"] = foundTask.status;
-        const updatedTask = await mutateTaskAtomically(
+        const updatedTask = await taskDataManager.mutateTask(
           ctx,
-          foundTask,
+          foundTask._ulid,
           (latestTask) => {
             transitionFromStatus = latestTask.status;
             if (latestTask.status !== "in_progress") {
@@ -1968,6 +1969,10 @@ Examples:
               ...(linkage && { submission_linkage: linkage }),
             };
           },
+          {
+            operation: "task-submit",
+            ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
+          },
         );
 
         if (transitionFromStatus !== "in_progress") {
@@ -1976,11 +1981,6 @@ Examples:
           );
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
-        await commitIfShadow(
-          ctx.shadow,
-          "task-submit",
-          foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
-        );
 
         // AC: @daemon-agent-dispatch ac-2, ac-7 - Notify daemon of state change (fire-and-forget)
         postDispatchEvent({
@@ -2020,16 +2020,17 @@ Examples:
     .action(async (ref: string, options) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
-        const foundTask = resolveTaskRef(ref, tasks, index);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
+        const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
 
+        // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
         let transitionFromStatus: Task["status"] = foundTask.status;
         let cycleNumber = 0;
-        const updatedTask = await mutateTaskAtomically(
+        const updatedTask = await taskDataManager.mutateTask(
           ctx,
-          foundTask,
+          foundTask._ulid,
           (latestTask) => {
             transitionFromStatus = latestTask.status;
             if (latestTask.status !== "pending_review") {
@@ -2095,15 +2096,16 @@ Examples:
     .action(async (ref: string, options) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
-        const foundTask = resolveTaskRef(ref, tasks, index);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
+        const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
 
+        // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
         let transitionFromStatus: Task["status"] = foundTask.status;
-        const updatedTask = await mutateTaskAtomically(
+        const updatedTask = await taskDataManager.mutateTask(
           ctx,
-          foundTask,
+          foundTask._ulid,
           (latestTask) => {
             transitionFromStatus = latestTask.status;
             if (
@@ -2125,6 +2127,10 @@ Examples:
               blocked_by: [...latestTask.blocked_by, options.reason],
             };
           },
+          {
+            operation: "task-block",
+            ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
+          },
         );
 
         if (
@@ -2134,11 +2140,6 @@ Examples:
           error(errors.status.cannotBlock(transitionFromStatus));
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
-        await commitIfShadow(
-          ctx.shadow,
-          "task-block",
-          foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
-        );
 
         // AC: @daemon-agent-dispatch ac-2, ac-7 - Notify daemon of state change (fire-and-forget)
         postDispatchEvent({
@@ -2164,15 +2165,16 @@ Examples:
     .action(async (ref: string) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
-        const foundTask = resolveTaskRef(ref, tasks, index);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
+        const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
 
+        // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
         let transitionFromStatus: Task["status"] = foundTask.status;
-        const updatedTask = await mutateTaskAtomically(
+        const updatedTask = await taskDataManager.mutateTask(
           ctx,
-          foundTask,
+          foundTask._ulid,
           (latestTask) => {
             transitionFromStatus = latestTask.status;
             if (latestTask.status !== "blocked") {
@@ -2189,17 +2191,16 @@ Examples:
               session_id: null,
             };
           },
+          {
+            operation: "task-unblock",
+            ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
+          },
         );
 
         if (transitionFromStatus !== "blocked") {
           warn("Task is not blocked");
           return;
         }
-        await commitIfShadow(
-          ctx.shadow,
-          "task-unblock",
-          foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
-        );
 
         // AC: @daemon-agent-dispatch ac-2, ac-7 - Notify daemon of state change (fire-and-forget)
         postDispatchEvent({
@@ -2235,9 +2236,9 @@ Examples:
     .action(async (ref: string | undefined, options) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
 
         const result = await executeBatchOperation({
           positionalRef: ref,
@@ -2268,9 +2269,11 @@ Examples:
                 })
               );
 
-              const [updatedTask] = await mutateTasksAtomically(
+              // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
+              const allRefs = [foundTask, ...downstreamTasks].map((t) => t._ulid);
+              const [updatedTask] = await taskDataManager.mutateTasks(
                 ctx,
-                [foundTask, ...downstreamTasks],
+                allRefs,
                 (latestTasks) => {
                   const latestCancelledTask = latestTasks[0];
                   const cancelledTaskRef = getTaskDisplayRef(latestCancelledTask);
@@ -2312,12 +2315,10 @@ Examples:
 
                   return updatedTasks;
                 },
-              );
-
-              await commitIfShadow(
-                ctx.shadow,
-                "task-cancel",
-                foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
+                {
+                  operation: "task-cancel",
+                  ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
+                },
               );
 
               return {
@@ -2349,14 +2350,15 @@ Examples:
     .action(async (ref: string) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
-        const foundTask = resolveTaskRef(ref, tasks, index);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
+        const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
 
+        // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
         let previousStatus: Task["status"] = foundTask.status;
         const clearedFields: string[] = [];
-        const updatedTask = await mutateTaskAtomically(ctx, foundTask, (latestTask) => {
+        const updatedTask = await taskDataManager.mutateTask(ctx, foundTask._ulid, (latestTask) => {
           previousStatus = latestTask.status;
 
           // AC: @spec-task-reset ac-2 - Error if already pending
@@ -2478,9 +2480,9 @@ Examples:
     .action(async (ref: string | undefined, options) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
 
         // For batch mode (--refs), require --force
         if (
@@ -2535,13 +2537,12 @@ Examples:
                 }
               }
 
-              await deleteTask(ctx, foundTask);
-              await commitIfShadow(
-                ctx.shadow,
-                "task-delete",
-                foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
-                foundTask.title,
-              );
+              // AC: @task-data-manager ac-1, ac-4 — delete via task data manager
+              await taskDataManager.deleteTask(ctx, foundTask._ulid, {
+                operation: "task-delete",
+                ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
+                detail: foundTask.title,
+              });
 
               return {
                 success: true,
@@ -2572,21 +2573,25 @@ Examples:
     .action(async (ref: string, message: string, options) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
-        const foundTask = resolveTaskRef(ref, tasks, index);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
+        const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
 
         const note = createNote(message, options.author, options.supersedes);
 
-        const updatedTask = await mutateTaskAtomically(ctx, foundTask, (latestTask) => ({
-          ...latestTask,
-          notes: [...latestTask.notes, note],
-        }));
-        await commitIfShadow(
-          ctx.shadow,
-          "task-note",
-          foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
+        // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
+        const updatedTask = await taskDataManager.mutateTask(
+          ctx,
+          foundTask._ulid,
+          (latestTask) => ({
+            ...latestTask,
+            notes: [...latestTask.notes, note],
+          }),
+          {
+            operation: "task-note",
+            ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
+          },
         );
         success(`Added note to task: ${index.shortUlid(updatedTask._ulid)}`, {
           note,
@@ -2632,10 +2637,10 @@ Examples:
     .action(async (ref: string) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
-        const foundTask = resolveTaskRef(ref, tasks, index);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
+        const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
 
         output(foundTask.notes, () => {
           if (foundTask.notes.length === 0) {
@@ -2664,10 +2669,10 @@ Examples:
     .action(async (ref: string) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
-        const foundTask = resolveTaskRef(ref, tasks, index);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
+        const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
 
         // Import getDiffSince from utils
         const { getDiffSince } = await import("../../utils/index.js");
@@ -2843,10 +2848,10 @@ Examples:
     .action(async (ref: string) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
-        const foundTask = resolveTaskRef(ref, tasks, index);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
+        const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
 
         output(foundTask.todos, () => {
           if (foundTask.todos.length === 0) {
@@ -2876,31 +2881,34 @@ Examples:
     .action(async (ref: string, text: string, options) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
-        const foundTask = resolveTaskRef(ref, tasks, index);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
+        const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
 
+        // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
         let todo = createTodo(1, text, options.author);
-        const updatedTask = await mutateTaskAtomically(ctx, foundTask, (latestTask) => {
-          // Calculate next ID (max existing + 1, or 1 if none)
-          const nextId =
-            latestTask.todos.length > 0
-              ? Math.max(...latestTask.todos.map((entry) => entry.id)) + 1
-              : 1;
+        const updatedTask = await taskDataManager.mutateTask(
+          ctx,
+          foundTask._ulid,
+          (latestTask) => {
+            // Calculate next ID (max existing + 1, or 1 if none)
+            const nextId =
+              latestTask.todos.length > 0
+                ? Math.max(...latestTask.todos.map((entry) => entry.id)) + 1
+                : 1;
 
-          todo = createTodo(nextId, text, options.author);
+            todo = createTodo(nextId, text, options.author);
 
-          return {
-            ...latestTask,
-            todos: [...latestTask.todos, todo],
-          };
-        });
-
-        await commitIfShadow(
-          ctx.shadow,
-          "task-note",
-          foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
+            return {
+              ...latestTask,
+              todos: [...latestTask.todos, todo],
+            };
+          },
+          {
+            operation: "task-note",
+            ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
+          },
         );
         success(
           `Added todo #${todo.id} to task: ${index.shortUlid(updatedTask._ulid)}`,
@@ -2918,10 +2926,10 @@ Examples:
     .action(async (ref: string, idStr: string) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
-        const foundTask = resolveTaskRef(ref, tasks, index);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
+        const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
 
         const id = parseInt(idStr, 10);
         if (Number.isNaN(id)) {
@@ -2929,9 +2937,10 @@ Examples:
           process.exit(EXIT_CODES.USAGE_ERROR);
         }
 
+        // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
         let todoState: "not_found" | "already_done" | "updated" | undefined;
         let updatedTodo: Task["todos"][number] | undefined;
-        await mutateTaskAtomically(ctx, foundTask, (latestTask) => {
+        await taskDataManager.mutateTask(ctx, foundTask._ulid, (latestTask) => {
           const todoIndex = latestTask.todos.findIndex((todo) => todo.id === id);
           if (todoIndex === -1) {
             todoState = "not_found";
@@ -2986,10 +2995,10 @@ Examples:
     .action(async (ref: string, idStr: string) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
-        const foundTask = resolveTaskRef(ref, tasks, index);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
+        const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
 
         const id = parseInt(idStr, 10);
         if (Number.isNaN(id)) {
@@ -2997,13 +3006,14 @@ Examples:
           process.exit(EXIT_CODES.USAGE_ERROR);
         }
 
+        // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
         let todoState:
           | "not_found"
           | "already_not_done"
           | "updated"
           | undefined;
         let updatedTodo: Task["todos"][number] | undefined;
-        await mutateTaskAtomically(ctx, foundTask, (latestTask) => {
+        await taskDataManager.mutateTask(ctx, foundTask._ulid, (latestTask) => {
           const todoIndex = latestTask.todos.findIndex((todo) => todo.id === id);
           if (todoIndex === -1) {
             todoState = "not_found";
@@ -3062,10 +3072,10 @@ Examples:
     .action(async (ref: string) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
-        const foundTask = resolveTaskRef(ref, tasks, index);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
+        const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
 
         // AC: @trait-error-guidance ac-1, ac-2
         if (!isGitRepo()) {
