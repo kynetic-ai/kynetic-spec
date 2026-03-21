@@ -112129,7 +112129,15 @@
   session_id: 01KM6Z4DX2JHG4H4AR5Y0PQXBN
   created_at: 2026-03-21T00:59:17.533Z
   started_at: 2026-03-21T01:11:41.589Z
-  notes: []
+  notes:
+    - _ulid: 01KM6Z746KPR90QA5CPJ98HRJP
+      content: "Updated @task-activity-timeline spec to reflect in-file data source: ac-1 changed 'shadow
+        branch commits' to 'stored history entries', ac-2 changed 'shadow branch commit history' to
+        'stored task history and note records', description changed 'shadow branch git history' to
+        'stored history entries'. ac-3/ac-4 unchanged. Behavioral requirements preserved."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T01:12:39.379Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YENV3CBFAGSRHVHR7QPJN
