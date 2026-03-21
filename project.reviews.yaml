@@ -41067,6 +41067,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM8RJXPW2BRQXN40QFY43VZJ
         timestamp: 2026-03-21T17:55:15.070Z
+      - _ulid: 01KM8RK8DBX0AC00AAHPF3749F
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM8RK83ENAPAR73HNWFSCAMJ
+        timestamp: 2026-03-21T17:55:25.739Z
     examined_commit: e83d3c1d997a2dcbd417ba261dd4963382db944a
     external_links: []
     lifecycle_state: open
@@ -41096,7 +41103,26 @@ reviews:
               monolithic row unchanged in project.tasks.yaml, and created no per-task directory."
             created_at: 2026-03-21T17:55:14.780Z
         kind: blocker
+      - _ulid: 01KM8RK83ENAPAR73HNWFSCAMJ
+        anchor:
+          type: code
+          commit: e83d3c1d997a2dcbd417ba261dd4963382db944a
+          line_end: 3460
+          line_start: 3458
+          path: src/cli/commands/task.ts
+          side: head
+        entries:
+          - _ulid: 01KM8RK83EZKPT809DBXMN2KZ8
+            author: Test User
+            body: "The canonical-data fallback fix still regresses as soon as an already-migrated task has any
+              notes. notes: Array(notesCount) builds a sparse array, TaskSchema.safeParse rejects
+              the undefined holes, and the code falls back to the stale monolithic row. I reproduced
+              this by giving the existing split task one note plus a stale monolithic row: after
+              migration the rebuilt index still showed the stale monolithic title/status instead of
+              the canonical split values."
+            created_at: 2026-03-21T17:55:25.422Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T17:54:43.597Z
-    updated_at: 2026-03-21T17:55:14.780Z
+    updated_at: 2026-03-21T17:55:25.422Z
     notes: []
