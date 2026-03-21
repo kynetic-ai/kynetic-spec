@@ -34239,7 +34239,18 @@ reviews:
     slugs: []
     title: Review task-impl-data-manager (cycle 9)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Full suite failed twice on tests/action-model.test.ts:387 with expected 3 to be 2; 297
+          files passed, 1 failed.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-21T04:02:25.894Z
+        completed_at: 2026-03-21T04:02:25.894Z
     events:
       - _ulid: 01KM78QCF4SXVHYAPK74C3ST7Q
         actor: Jacob Chapel
@@ -34254,6 +34265,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-21T04:02:11.385Z
+      - _ulid: 01KM78Y09EM8G242E3S2W5PW69
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-21T04:02:26.222Z
     examined_commit: 2c8fbbdcbae2e51ff010b4c6e6fa51479d5581fc
     external_links: []
     lifecycle_state: open
@@ -34266,5 +34284,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-21T03:58:49.317Z
-    updated_at: 2026-03-21T04:02:11.114Z
+    updated_at: 2026-03-21T04:02:25.894Z
     notes: []
