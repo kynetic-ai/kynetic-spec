@@ -36008,9 +36008,25 @@ reviews:
           kind: nit
           thread_ulid: 01KM7PHVPRFB079BAJKZ0J7MSB
         timestamp: 2026-03-21T08:00:28.664Z
+      - _ulid: 01KM7PJDXJ1A7PMMQ92VRQCYXM
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-21T08:00:47.026Z
+      - _ulid: 01KM7PJDXJTN6C35DXYCR0DAHD
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-21T08:00:47.026Z
     examined_commit: 6023a5e30180743cd13485125c05f5975f5bf0da
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -36060,7 +36076,14 @@ reviews:
               for stale counts), integration (listTasks/rawToSummary interaction).
             created_at: 2026-03-21T08:00:28.376Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-21T08:00:47.026Z
     created_at: 2026-03-21T08:00:04.180Z
-    updated_at: 2026-03-21T08:00:28.376Z
+    updated_at: 2026-03-21T08:00:47.026Z
     notes: []
