@@ -113127,6 +113127,18 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-21T10:10:19.087Z
+    - _ulid: 01KM7YJDADBC9BCC8T1HWYP773
+      content: "Fix cycle 6: Addressed blocker from review @01KM7XKR2HF3F33CHZH2G88BSK — duplicate shadow
+        commits. Five command handlers (task set, needs-work, reset, todo done, todo undone) passed
+        commitOpts to TaskDataManager.mutateTask() which already calls commitIfShadow(), then called
+        commitIfShadow() again afterward. Fix: removed redundant commitIfShadow() calls. For
+        set/needs-work/reset, moved the detail string into commitOpts by setting it inside the
+        mutation callback (the callback runs before TaskDataManager calls commitIfShadow, so the
+        detail is available). For todo done/undone, simply removed the mislabelled calls. All 6825
+        tests pass."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T10:20:35.021Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YETR12GG1EZ5G68KSNTBK
