@@ -3427,28 +3427,68 @@ Examples:
 
         // Already-migrated entries (monolithic format but dir exists) — convert to lean
         // AC: @task-storage-migration ac-7 — don't affect existing per-task data
+        // Read canonical data from per-task directories, NOT from stale monolithic entries
         for (const entry of alreadyMigrated) {
-          const raw = entry.raw;
-          const parsed = TaskSchema.safeParse(raw);
-          if (parsed.success) {
-            newIndex.push(toIndexEntry(parsed.data));
-          } else {
-            // Best-effort lean conversion for invalid entries
-            const notes = Array.isArray(raw.notes) ? raw.notes : [];
-            newIndex.push({
-              _ulid: raw._ulid,
-              slugs: Array.isArray(raw.slugs) ? raw.slugs : [],
-              title: raw.title ?? "",
-              type: raw.type ?? "task",
-              status: raw.status ?? "pending",
-              priority: raw.priority ?? 3,
-              tags: Array.isArray(raw.tags) ? raw.tags : [],
-              depends_on: Array.isArray(raw.depends_on) ? raw.depends_on : [],
-              blocked_by: Array.isArray(raw.blocked_by) ? raw.blocked_by : [],
-              created_at: raw.created_at ?? new Date().toISOString(),
-              notes_count: notes.length,
-              todos_count: Array.isArray(raw.todos) ? raw.todos.length : 0,
-            });
+          const ulid = entry.raw._ulid as string;
+          const taskFilePath = getTaskFilePath(ctx, ulid);
+          const notesFilePath = getNotesFilePath(ctx, ulid);
+
+          // Read canonical core data from the per-task directory
+          let canonicalParsed = false;
+          try {
+            const rawCore = await readYamlFile<unknown>(taskFilePath);
+            if (rawCore && typeof rawCore === "object") {
+              const coreObj = rawCore as Record<string, unknown>;
+              const { history: _h, ...coreWithoutHistory } = coreObj;
+
+              // Read canonical notes count
+              let notesCount = 0;
+              try {
+                const rawNotes = await readYamlFile<unknown>(notesFilePath);
+                if (rawNotes && typeof rawNotes === "object" && "notes" in rawNotes) {
+                  const notesWrapper = rawNotes as Record<string, unknown>;
+                  notesCount = Array.isArray(notesWrapper.notes) ? notesWrapper.notes.length : 0;
+                } else if (Array.isArray(rawNotes)) {
+                  notesCount = rawNotes.length;
+                }
+              } catch {
+                // Notes file doesn't exist — zero notes
+              }
+
+              const assembled = { ...coreWithoutHistory, notes: Array(notesCount) };
+              const parsed = TaskSchema.safeParse(assembled);
+              if (parsed.success) {
+                newIndex.push(toIndexEntry(parsed.data));
+                canonicalParsed = true;
+              }
+            }
+          } catch {
+            // Per-task dir read failed — fall through to monolithic fallback
+          }
+
+          // Fallback: if canonical read failed, use monolithic data
+          if (!canonicalParsed) {
+            const raw = entry.raw;
+            const parsed = TaskSchema.safeParse(raw);
+            if (parsed.success) {
+              newIndex.push(toIndexEntry(parsed.data));
+            } else {
+              const notes = Array.isArray(raw.notes) ? raw.notes : [];
+              newIndex.push({
+                _ulid: raw._ulid,
+                slugs: Array.isArray(raw.slugs) ? raw.slugs : [],
+                title: raw.title ?? "",
+                type: raw.type ?? "task",
+                status: raw.status ?? "pending",
+                priority: raw.priority ?? 3,
+                tags: Array.isArray(raw.tags) ? raw.tags : [],
+                depends_on: Array.isArray(raw.depends_on) ? raw.depends_on : [],
+                blocked_by: Array.isArray(raw.blocked_by) ? raw.blocked_by : [],
+                created_at: raw.created_at ?? new Date().toISOString(),
+                notes_count: notes.length,
+                todos_count: Array.isArray(raw.todos) ? raw.todos.length : 0,
+              });
+            }
           }
         }
 

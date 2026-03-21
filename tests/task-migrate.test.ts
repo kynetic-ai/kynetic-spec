@@ -493,6 +493,53 @@ describe("kspec task migrate", () => {
     expect(existingTaskYaml.description).toBe("This should not be touched");
   });
 
+  // AC: @task-storage-migration ac-7
+  it("index entries for already-migrated tasks use canonical split data, not stale monolithic data", async () => {
+    ({ env, specDir } = await setupMonolithicEnv(tempDir));
+
+    const [idExisting, idNew] = testUlids("MGCI", 2);
+
+    // Create per-task dir with canonical title
+    await createPerTaskDir(specDir, idExisting, "task-canonical", {
+      title: "Canonical Split Title",
+      status: "in_progress",
+    });
+
+    // Write index with stale monolithic entry (different title) + a new monolithic entry
+    // The existing task has a stale monolithic row with a different title
+    const staleMonolithic = makeMonolithicTask(idExisting, "task-canonical", {
+      title: "Stale Monolithic Title",
+      status: "pending",
+    });
+    const newMonolithic = makeMonolithicTask(idNew, "task-new-for-index", {
+      title: "New Task For Index",
+    });
+    await fs.writeFile(
+      path.join(specDir, "project.tasks.yaml"),
+      toYaml([staleMonolithic, newMonolithic]),
+    );
+
+    const result = kspec("task migrate --force", tempDir, { env });
+    expect(result.exitCode).toBe(0);
+
+    // Read the resulting index
+    const index = parseYaml(
+      await fs.readFile(path.join(specDir, "project.tasks.yaml"), "utf-8"),
+    ) as Array<Record<string, unknown>>;
+
+    // Find the existing task's index entry
+    const existingEntry = index.find((e) => e._ulid === idExisting);
+    expect(existingEntry).toBeDefined();
+    // Index should use the canonical split title, NOT the stale monolithic title
+    expect(existingEntry!.title).toBe("Canonical Split Title");
+    expect(existingEntry!.status).toBe("in_progress");
+
+    // The new task should also be in the index
+    const newEntry = index.find((e) => e._ulid === idNew);
+    expect(newEntry).toBeDefined();
+    expect(newEntry!.title).toBe("New Task For Index");
+  });
+
   // ── AC: @task-storage-migration ac-8 ────────────────────────────────────
   // Given: The migration or backfill completes
   // When: The shadow branch state is examined
