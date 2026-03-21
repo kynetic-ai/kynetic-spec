@@ -40963,6 +40963,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-21T17:40:45.798Z
+      - _ulid: 01KM8QRE0411FMKV2KF7ZZMN8T
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM8QRDQK0K8SKQ8KF59QNPHN
+        timestamp: 2026-03-21T17:40:46.725Z
     examined_commit: 66ff03762bb3763a0166e96b7fc94c5adaa18729
     external_links: []
     lifecycle_state: open
@@ -40993,7 +41000,21 @@ reviews:
               per-task data is left unaffected.
             created_at: 2026-03-21T17:40:34.745Z
         kind: blocker
+      - _ulid: 01KM8QRDQK0K8SKQ8KF59QNPHN
+        entries:
+          - _ulid: 01KM8QRDQKF17W1E8FET2CGX9X
+            author: Test User
+            body: "Evidence log: Files read: src/cli/commands/task.ts, src/parser/split-backend.ts,
+              src/parser/task-data-manager.ts, src/parser/yaml.ts, tests/task-migrate.test.ts,
+              tests/per-task-files.test.ts, tests/helpers/cli.ts. Commands run: git diff --stat, git
+              diff, kspec task get, kspec item get, grep AC annotations, kspec validate, npm test,
+              npm test -- tests/task-migrate.test.ts, and a temp-dir CLI repro of stale-index
+              backfill behavior. Claims verified: full suite passes; migrate tests pass; backfill
+              rewrites existing index rows from stale monolithic data. Categories searched:
+              correctness, tests, error handling, integration, edge cases."
+            created_at: 2026-03-21T17:40:46.451Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-21T17:37:13.499Z
-    updated_at: 2026-03-21T17:40:45.508Z
+    updated_at: 2026-03-21T17:40:46.451Z
     notes: []
