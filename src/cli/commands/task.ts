@@ -872,14 +872,52 @@ export function registerTaskCommands(program: Command): void {
           }
         }
 
+        // AC: @task-activity-in-file ac-1, ac-2, ac-3 — load activity timeline
         // AC: @task-activity-timeline ac-1, ac-2, ac-3 — load activity timeline
         let activity: import("../../utils/activity.js").ActivityEntry[] = [];
         try {
-          const { getRawTaskCommits, normalizeTaskActivity } = await import(
-            "../../utils/activity.js"
-          );
-          const rawCommits = getRawTaskCommits(ctx.specDir, foundTask._ulid);
-          activity = normalizeTaskActivity(rawCommits);
+          const {
+            assembleActivityFromFiles,
+            getPreMigrationActivity,
+            getRawTaskCommits,
+            normalizeTaskActivity,
+          } = await import("../../utils/activity.js");
+
+          // Primary: read history entries from task.yaml and notes from task record.
+          // AC: @task-activity-in-file ac-1 — assembled from persisted data, no VCS queries
+          const resolvedManager = resolveTaskDataManager(ctx);
+          const historyEntries = await resolvedManager.getTaskHistory(ctx, foundTask._ulid);
+          activity = assembleActivityFromFiles(historyEntries, foundTask.notes);
+
+          // AC: @task-activity-in-file ac-3 — fallback for pre-migration tasks
+          // If no history entries exist, the task predates the storage migration.
+          // Try per-directory git log first (fast, for split format without history),
+          // then fall back to git log -L (slower, for monolithic format).
+          if (historyEntries.length === 0 && activity.length === 0) {
+            const fallbackEntries = getPreMigrationActivity(ctx.specDir, foundTask._ulid);
+            if (fallbackEntries.length > 0) {
+              activity = [...activity, ...fallbackEntries];
+            } else {
+              // Ultimate fallback: git log -L for monolithic format tasks
+              // that have no per-task directory at all.
+              const rawCommits = getRawTaskCommits(ctx.specDir, foundTask._ulid);
+              const legacyEntries = normalizeTaskActivity(rawCommits);
+              for (const entry of legacyEntries) {
+                entry.source = "git_fallback";
+              }
+              activity = [...activity, ...legacyEntries];
+            }
+          } else if (historyEntries.length === 0) {
+            // Have note entries but no history — try per-directory git log
+            // to recover field-change history for migrated tasks.
+            // Filter out note_added entries from fallback since notes are
+            // already represented from notes.yaml (prevents duplication).
+            const fallbackEntries = getPreMigrationActivity(ctx.specDir, foundTask._ulid)
+              .filter((e) => e.type !== "note_added");
+            if (fallbackEntries.length > 0) {
+              activity = [...activity, ...fallbackEntries];
+            }
+          }
 
           // AC: @task-activity-timeline ac-3 — merge review events into timeline
           const taskRef = `@${foundTask.slugs[0] || foundTask._ulid}`;
@@ -904,45 +942,18 @@ export function registerTaskCommands(program: Command): void {
                 author: event.actor,
                 summary: `Review ${reviewRef}: ${event.event_type.replace(/_/g, " ")}`,
                 commitHash: "",
+                source: "review",
               });
             }
           }
 
-          // AC: @task-core-data-file ac-2 — merge per-task history into activity timeline
-          // Use the context-resolved manager to get history from the correct backend.
-          // The module-level singleton defaults to monolithic; when split format is
-          // activated via manifest tasks.storage, resolveTaskDataManager returns the
-          // split-format manager that provides actual history entries.
-          const resolvedManager = resolveTaskDataManager(ctx);
-          const historyEntries = await resolvedManager.getTaskHistory(ctx, foundTask._ulid);
-          for (const entry of historyEntries) {
-            const fields = Object.keys(entry.changes);
-            const summary = fields.length === 1 && fields[0] === "status"
-              ? `Status: ${String(entry.changes.status.previous ?? "—")} → ${String(entry.changes.status.new)}`
-              : `Updated ${fields.join(", ")}`;
-            activity.push({
-              type: fields.includes("status") ? "state_change" : "field_updated",
-              timestamp: entry.timestamp,
-              author: entry.author,
-              summary,
-              commitHash: "",
-              detail: fields.length === 1
-                ? {
-                    field: fields[0],
-                    ...(entry.changes[fields[0]].previous !== undefined && { from: String(entry.changes[fields[0]].previous) }),
-                    ...(entry.changes[fields[0]].new !== undefined && { to: String(entry.changes[fields[0]].new) }),
-                  }
-                : undefined,
-            });
-          }
-
-          // Re-sort chronologically (oldest first) after merging
+          // Re-sort chronologically (oldest first) after merging all sources
           activity.sort(
             (a, b) =>
               new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
           );
         } catch {
-          // Activity is best-effort — don't fail task get if git query fails
+          // Activity is best-effort — don't fail task get if activity assembly fails
         }
 
         // Build JSON output with inherited traits (AC: @trait-display ac-2)

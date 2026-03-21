@@ -1,14 +1,23 @@
 /**
- * Task activity — extracts and normalizes task activity from shadow branch
- * git history.
+ * Task activity — assembles task activity timelines from persisted data.
  *
- * AC: @task-activity-git-query ac-1, ac-2 (raw extraction)
- * AC: @task-activity-git-query ac-3, ac-4 (normalization)
+ * Primary source: in-file history entries (task.yaml) and note entries (notes.yaml).
+ * Fallback: lightweight git log for pre-migration tasks without history entries.
+ *
+ * AC: @task-activity-in-file ac-1 — timeline from persisted data without VCS queries
+ * AC: @task-activity-in-file ac-2 — all changes present in chronological order
+ * AC: @task-activity-in-file ac-3 — pre-migration fallback with source indication
+ *
+ * Legacy AC references retained for backward compatibility:
+ * AC: @task-activity-git-query ac-1, ac-2 (raw extraction — legacy)
+ * AC: @task-activity-git-query ac-3, ac-4 (normalization — legacy)
  */
 
 import { execSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import path from "node:path";
+import type { HistoryEntry } from "../parser/task-data-manager.js";
+import type { Note } from "../schema/task.js";
 
 export interface RawTaskCommit {
   hash: string;
@@ -196,15 +205,39 @@ export type ActivityType =
   | "field_updated"
   | "unknown";
 
+/**
+ * Source of the activity entry.
+ *
+ * AC: @task-activity-in-file ac-3 — indicates whether entry is from stored history
+ * or best-effort recovery (git fallback).
+ */
+export type ActivitySource = "history" | "note" | "git_fallback" | "review";
+
 export interface ActivityEntry {
   type: ActivityType;
   timestamp: string;
   author: string;
   summary: string;
-  /** Commit hash for traceability */
+  /** Commit hash for traceability (empty for in-file history entries) */
   commitHash: string;
   /** Additional detail (e.g., from/to for state changes, field name) */
   detail?: Record<string, string>;
+  /**
+   * The originating command that produced this change (e.g. "task-start",
+   * "task-set"). Present for stored-history entries; absent for notes,
+   * git fallback, and review events.
+   *
+   * AC: @task-activity-in-file ac-2
+   */
+  command?: string;
+  /**
+   * Source of this entry: "history" for stored history entries, "note" for
+   * note entries, "git_fallback" for pre-migration recovery, "review" for
+   * review events. Omitted for legacy entries.
+   *
+   * AC: @task-activity-in-file ac-3
+   */
+  source?: ActivitySource;
 }
 
 // ─── Commit Message Parsing (AC: @task-activity-git-query ac-3) ───
@@ -602,4 +635,268 @@ export function normalizeTaskActivity(
   // Reverse: rawCommits are newest-first (git log order),
   // but activity timeline should be chronological (oldest first)
   return entries.reverse();
+}
+
+// ─── In-File Activity Timeline ───────────────────────────────────────────────
+
+/**
+ * Map a history entry command to an ActivityType.
+ *
+ * History entries store the kspec command that triggered the change
+ * (e.g., "task-start", "task-set", "task-submit"). This maps them
+ * to the same ActivityType used by the legacy git-based approach.
+ */
+function commandToActivityType(
+  command: string,
+  changes: Record<string, unknown>,
+): ActivityType {
+  // Status-changing commands have specific types
+  switch (command) {
+    case "task-add":
+    case "Add task":
+      return "created";
+    case "task-start":
+    case "Start":
+      return "started";
+    case "task-submit":
+      return "submitted";
+    case "task-complete":
+    case "Complete":
+      return "completed";
+    case "task-block":
+      return "blocked";
+    case "task-needs-work":
+      return "needs_work";
+    case "task-cancel":
+      return "cancelled";
+  }
+
+  // If the changes include a status field, it's a state change
+  if ("status" in changes) {
+    return "state_change";
+  }
+
+  // If the changes include review_ref, it's a review linkage
+  if ("review_ref" in changes) {
+    return "review_linked";
+  }
+
+  return "field_updated";
+}
+
+/**
+ * Build a summary string from a history entry's changes.
+ */
+function historyEntryToSummary(
+  command: string,
+  changes: Record<string, { previous: unknown; new: unknown }>,
+): string {
+  const fields = Object.keys(changes);
+
+  // Known lifecycle commands get their own summary — check these first
+  // so that "task-add" with a status change says "Task created", not
+  // "Status: undefined → pending".
+  switch (command) {
+    case "task-add":
+    case "Add task":
+      return "Task created";
+    case "task-start":
+    case "Start":
+      return "Task started";
+    case "task-submit":
+      return "Task submitted for review";
+    case "task-complete":
+    case "Complete":
+      return "Task completed";
+    case "task-block":
+      return "Task blocked";
+    case "task-needs-work":
+      return "Task returned for changes";
+    case "task-cancel":
+      return "Task cancelled";
+  }
+
+  // Single status change — show transition
+  if (fields.length === 1 && fields[0] === "status") {
+    const c = changes.status;
+    return `Status: ${String(c.previous ?? "—")} → ${String(c.new)}`;
+  }
+
+  // For review_ref changes, include the ref
+  if (fields.includes("review_ref")) {
+    const ref = changes.review_ref;
+    return `Review linked: ${String(ref.new ?? "")}`;
+  }
+
+  // Generic field update
+  return `Updated ${fields.join(", ")}`;
+}
+
+/**
+ * Convert history entries from task.yaml into ActivityEntry[].
+ *
+ * Each history entry records a mutation with timestamp, author, command,
+ * and field-level changes. These are converted to the same ActivityEntry
+ * format used throughout the CLI and daemon.
+ *
+ * AC: @task-activity-in-file ac-1 — field changes from stored history entries
+ * AC: @task-activity-in-file ac-2 — all changes with timestamps, authors, commands, field details
+ */
+export function historyToActivity(history: HistoryEntry[]): ActivityEntry[] {
+  const entries: ActivityEntry[] = [];
+
+  for (const entry of history) {
+    const fields = Object.keys(entry.changes);
+    const type = commandToActivityType(entry.command, entry.changes);
+    const summary = historyEntryToSummary(
+      entry.command,
+      entry.changes as Record<string, { previous: unknown; new: unknown }>,
+    );
+
+    // Build detail with field-level from/to values for all changed fields.
+    // AC: @task-activity-in-file ac-2 — field-level details for the full timeline
+    const detail: Record<string, string> = {};
+    for (const field of fields) {
+      const change = entry.changes[field];
+      if (fields.length === 1) {
+        // Single-field: flat keys (backward-compatible)
+        detail.field = field;
+        if (change.previous !== undefined) {
+          detail.from = String(change.previous);
+        }
+        if (change.new !== undefined) {
+          detail.to = String(change.new);
+        }
+      } else {
+        // Multi-field: namespaced keys (field.from / field.to)
+        if (change.previous !== undefined) {
+          detail[`${field}.from`] = String(change.previous);
+        }
+        if (change.new !== undefined) {
+          detail[`${field}.to`] = String(change.new);
+        }
+      }
+    }
+
+    entries.push({
+      type,
+      timestamp: entry.timestamp,
+      author: entry.author,
+      summary,
+      commitHash: "",
+      detail: Object.keys(detail).length > 0 ? detail : undefined,
+      command: entry.command,
+      source: "history",
+    });
+  }
+
+  return entries;
+}
+
+/**
+ * Convert note entries from notes.yaml into ActivityEntry[].
+ *
+ * Each note has a created_at timestamp and optional author. These become
+ * "note_added" activity entries merged into the timeline.
+ *
+ * AC: @task-activity-in-file ac-1 — note events from stored note entries
+ */
+export function notesToActivity(notes: Note[]): ActivityEntry[] {
+  return notes.map((note) => ({
+    type: "note_added" as ActivityType,
+    timestamp: note.created_at,
+    author: note.author ?? "unknown",
+    summary: "Note added",
+    commitHash: "",
+    source: "note" as ActivitySource,
+  }));
+}
+
+/**
+ * Assemble the full activity timeline from in-file history and notes.
+ *
+ * Merges history entries (field changes from task.yaml) and note entries
+ * (from notes.yaml) into a single chronologically-sorted timeline.
+ *
+ * This is the primary activity source for tasks in split format.
+ * No version control queries are executed.
+ *
+ * AC: @task-activity-in-file ac-1 — assembled from persisted data without VCS queries
+ * AC: @task-activity-in-file ac-2 — all changes in chronological order
+ *
+ * @param history - History entries from task.yaml
+ * @param notes - Note entries from notes.yaml
+ * @returns ActivityEntry[] in chronological order (oldest first)
+ */
+export function assembleActivityFromFiles(
+  history: HistoryEntry[],
+  notes: Note[],
+): ActivityEntry[] {
+  const historyEntries = historyToActivity(history);
+  const noteEntries = notesToActivity(notes);
+
+  // Merge and sort chronologically (oldest first)
+  const merged = [...historyEntries, ...noteEntries];
+  merged.sort(
+    (a, b) =>
+      new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
+  );
+
+  return merged;
+}
+
+/**
+ * Lightweight git log fallback for pre-migration tasks.
+ *
+ * Uses `git log -- tasks/<ulid>/` which is fast (per-directory, not line-range
+ * tracking). This is only used for tasks created before the storage migration
+ * that lack history entries in their task.yaml.
+ *
+ * AC: @task-activity-in-file ac-3 — pre-migration best-effort recovery
+ *
+ * @param specDir - Path to the .kspec worktree directory
+ * @param taskUlid - The task's full ULID
+ * @returns ActivityEntry[] in chronological order, each marked with source: "git_fallback"
+ */
+export function getPreMigrationActivity(
+  specDir: string,
+  taskUlid: string,
+): ActivityEntry[] {
+  try {
+    const output = execSync(
+      `git log --format="%H%x00%aI%x00%an%x00%s%x00" -- "tasks/${taskUlid}/"`,
+      {
+        cwd: specDir,
+        encoding: "utf-8",
+        stdio: ["pipe", "pipe", "ignore"],
+        maxBuffer: 10 * 1024 * 1024,
+      },
+    );
+
+    if (!output.trim()) return [];
+
+    const entries: ActivityEntry[] = [];
+    for (const line of output.split("\n")) {
+      if (!line.includes("\x00")) continue;
+      const parts = line.split("\x00");
+      if (parts.length < 4) continue;
+
+      const [fullHash, timestamp, author, message] = parts;
+      const { type, summary } = parseCommitMessage(message);
+
+      entries.push({
+        type,
+        timestamp,
+        author,
+        summary,
+        commitHash: fullHash.slice(0, 7),
+        source: "git_fallback",
+      });
+    }
+
+    // git log returns newest-first, reverse to chronological
+    return entries.reverse();
+  } catch {
+    return [];
+  }
 }
