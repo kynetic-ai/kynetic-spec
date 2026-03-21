@@ -1210,12 +1210,10 @@ features:
       - task-activity-timeline
     title: Task Activity Timeline
     type: feature
-    description: |
-      Unified chronological view of all activity on a task derived from
-      shadow branch git history and linked review records. State transitions,
-      notes, review events, and submission changes are merged into a single
-      timeline. Recent activity shown by default in task get; full history
-      available via --activity flag.
+    description: Unified chronological view of all activity on a task derived from stored history
+      entries and linked review records. State transitions, notes, review events, and submission
+      changes are merged into a single timeline. Recent activity shown by default in task get; full
+      history available via --activity flag.
     status:
       maturity: draft
       implementation: implemented
