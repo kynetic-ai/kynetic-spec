@@ -17,6 +17,8 @@ import {
   listTaskDirs,
   detectSplitFormat,
   getOperationRouting,
+  toIndexEntry,
+  indexEntriesEqual,
 } from "../src/parser/split-backend.js";
 
 // Register the split backend (no longer auto-registered at module scope)
@@ -783,6 +785,563 @@ describe("SplitBackend", () => {
       const r2 = await manager.getTask(ctx, "@batch-2");
       expect(r1.priority).toBe(1);
       expect(r2.priority).toBe(1);
+    });
+  });
+
+  // ── AC: @task-index-file ac-1 ────────────────────────────────────────────
+  // Given: Tasks exist in the system
+  // When: The index file is read
+  // Then: Each entry contains only the fields required for listing,
+  //       filtering, and dependency resolution — no notes, history,
+  //       or other detail-only data
+  describe("index contains only listing/filtering fields (ac-1)", () => {
+    // AC: @task-index-file ac-1
+    it("index entries exclude notes, todos, description, and history", async () => {
+      const manager = new TaskDataManager("split");
+
+      await manager.createTask(ctx, {
+        title: "Index fields test",
+        slugs: ["index-fields-test"],
+        description: "A detailed description that should not appear in index",
+        priority: 2,
+        tags: ["feature", "mvp"],
+      });
+
+      // Read the raw index file to check what fields are persisted
+      const indexPath = getIndexFilePath(ctx);
+      const content = await fs.readFile(indexPath, "utf-8");
+      const { parse } = await import("yaml");
+      const parsed = parse(content);
+      const indexEntry = Array.isArray(parsed) ? parsed[0] : parsed.tasks[0];
+
+      // Index should have listing/filtering fields
+      expect(indexEntry._ulid).toBeDefined();
+      expect(indexEntry.slugs).toEqual(["index-fields-test"]);
+      expect(indexEntry.title).toBe("Index fields test");
+      expect(indexEntry.status).toBe("pending");
+      expect(indexEntry.priority).toBe(2);
+      expect(indexEntry.tags).toEqual(["feature", "mvp"]);
+      expect(indexEntry.depends_on).toEqual([]);
+      expect(indexEntry.blocked_by).toEqual([]);
+      expect(indexEntry.created_at).toBeDefined();
+
+      // Index must NOT have detail-only data
+      expect(indexEntry.notes).toBeUndefined();
+      expect(indexEntry.todos).toBeUndefined();
+      expect(indexEntry.description).toBeUndefined();
+      expect(indexEntry.history).toBeUndefined();
+      expect(indexEntry.vcs_refs).toBeUndefined();
+      expect(indexEntry.context).toBeUndefined();
+    });
+
+    // AC: @task-index-file ac-1
+    it("toIndexEntry produces only indexed fields", () => {
+      const fullTask = {
+        _ulid: testUlid("TIDX"),
+        slugs: ["test-task"],
+        title: "Test Task",
+        type: "task" as const,
+        status: "pending" as const,
+        priority: 3,
+        tags: ["test"],
+        depends_on: [],
+        blocked_by: [],
+        created_at: "2026-03-20T00:00:00.000Z",
+        notes: [{ _ulid: testUlid("TNOT", 1), content: "note text", created_at: "2026-03-20T00:00:00.000Z" }],
+        todos: [{ id: "t1", text: "todo item", done: false }],
+        description: "A description",
+        context: ["some-context"],
+        vcs_refs: [],
+      };
+
+      const entry = toIndexEntry(fullTask as any);
+
+      expect(entry._ulid).toBe(fullTask._ulid);
+      expect(entry.title).toBe("Test Task");
+      expect(entry.notes_count).toBe(1);
+      expect(entry.todos_count).toBe(1);
+
+      // Detail fields must not leak into index
+      expect(entry.notes).toBeUndefined();
+      expect(entry.todos).toBeUndefined();
+      expect(entry.description).toBeUndefined();
+      expect(entry.context).toBeUndefined();
+      expect(entry.vcs_refs).toBeUndefined();
+    });
+
+    // AC: @task-index-file ac-1
+    it("listTasks returns summaries without detail data", async () => {
+      const manager = new TaskDataManager("split");
+
+      await manager.createTask(ctx, {
+        title: "Summary check",
+        slugs: ["summary-check"],
+        description: "Should not appear in summary",
+      });
+
+      // Add a note to verify notes are excluded from summary
+      await manager.addNote(ctx, "@summary-check", "A note", "@tester");
+
+      const summaries = await manager.listTasks(ctx);
+      expect(summaries.length).toBe(1);
+
+      const summary = summaries[0];
+      expect(summary.title).toBe("Summary check");
+      expect(summary._ulid).toBeDefined();
+      // Summary should have notes_count but NOT notes array contents
+      expect(summary.notes_count).toBeGreaterThanOrEqual(0);
+      expect((summary as any).notes).toBeUndefined();
+      expect((summary as any).description).toBeUndefined();
+    });
+  });
+
+  // ── AC: @task-index-file ac-2 ────────────────────────────────────────────
+  // Given: A task's filterable field changes (status, priority, tags, etc.)
+  // When: The mutation is persisted
+  // Then: Both the index entry and the per-task file are updated atomically
+  describe("index updated on filterable field changes (ac-2)", () => {
+    // AC: @task-index-file ac-2
+    it("status change updates both index and per-task file", async () => {
+      const manager = new TaskDataManager("split");
+
+      const created = await manager.createTask(ctx, {
+        title: "Status sync test",
+        slugs: ["status-sync-test"],
+      });
+
+      await manager.mutateTask(ctx, "@status-sync-test", (task) => ({
+        ...task,
+        status: "in_progress" as const,
+        started_at: "2026-03-20T01:00:00.000Z",
+      }));
+
+      // Check the index
+      const summaries = await manager.listTasks(ctx);
+      const summary = summaries.find((s) => s._ulid === created._ulid);
+      expect(summary).toBeDefined();
+      expect(summary!.status).toBe("in_progress");
+
+      // Check the per-task file
+      const fetched = await manager.getTask(ctx, "@status-sync-test");
+      expect(fetched.status).toBe("in_progress");
+    });
+
+    // AC: @task-index-file ac-2
+    it("priority change updates both index and per-task file", async () => {
+      const manager = new TaskDataManager("split");
+
+      const created = await manager.createTask(ctx, {
+        title: "Priority sync test",
+        slugs: ["priority-sync-test"],
+      });
+
+      await manager.mutateTask(ctx, "@priority-sync-test", (task) => ({
+        ...task,
+        priority: 1,
+      }));
+
+      const summaries = await manager.listTasks(ctx);
+      const summary = summaries.find((s) => s._ulid === created._ulid);
+      expect(summary!.priority).toBe(1);
+
+      const fetched = await manager.getTask(ctx, "@priority-sync-test");
+      expect(fetched.priority).toBe(1);
+    });
+
+    // AC: @task-index-file ac-2
+    it("tags change updates both index and per-task file", async () => {
+      const manager = new TaskDataManager("split");
+
+      const created = await manager.createTask(ctx, {
+        title: "Tags sync test",
+        slugs: ["tags-sync-test"],
+        tags: ["original"],
+      });
+
+      await manager.mutateTask(ctx, "@tags-sync-test", (task) => ({
+        ...task,
+        tags: ["original", "new-tag"],
+      }));
+
+      const summaries = await manager.listTasks(ctx);
+      const summary = summaries.find((s) => s._ulid === created._ulid);
+      expect(summary!.tags).toEqual(["original", "new-tag"]);
+
+      const fetched = await manager.getTask(ctx, "@tags-sync-test");
+      expect(fetched.tags).toEqual(["original", "new-tag"]);
+    });
+
+    // AC: @task-index-file ac-2
+    it("batch mutation updates index for all changed tasks", async () => {
+      const manager = new TaskDataManager("split");
+
+      await manager.createTask(ctx, {
+        title: "Batch idx 1",
+        slugs: ["batch-idx-1"],
+      });
+      await manager.createTask(ctx, {
+        title: "Batch idx 2",
+        slugs: ["batch-idx-2"],
+      });
+
+      await manager.mutateTasks(
+        ctx,
+        ["@batch-idx-1", "@batch-idx-2"],
+        (tasks) => tasks.map((t) => ({ ...t, status: "in_progress" as const, started_at: "2026-03-20T01:00:00.000Z" })),
+      );
+
+      const summaries = await manager.listTasks(ctx);
+      expect(summaries.every((s) => s.status === "in_progress")).toBe(true);
+    });
+  });
+
+  // ── AC: @task-index-file ac-3 ────────────────────────────────────────────
+  // Given: A task's non-indexed data changes (notes, history entries)
+  // When: The mutation is persisted
+  // Then: Only the per-task file is written; the index is not modified
+  describe("non-indexed changes skip index (ac-3)", () => {
+    // AC: @task-index-file ac-3
+    it("adding a note does not modify the index file", async () => {
+      const manager = new TaskDataManager("split");
+
+      const created = await manager.createTask(ctx, {
+        title: "Note no index",
+        slugs: ["note-no-index"],
+      });
+
+      // Capture index file content after creation
+      const indexPath = getIndexFilePath(ctx);
+      const indexBefore = await fs.readFile(indexPath, "utf-8");
+
+      // Add a note (goes through mutateTask)
+      await manager.addNote(ctx, "@note-no-index", "A note that should not touch the index", "@tester");
+
+      // The index file content should be unchanged
+      const indexAfter = await fs.readFile(indexPath, "utf-8");
+      expect(indexAfter).toBe(indexBefore);
+
+      // But the note should be persisted in the per-task notes file
+      const fetched = await manager.getTask(ctx, "@note-no-index");
+      expect(fetched.notes.length).toBe(1);
+      expect(fetched.notes[0].content).toBe("A note that should not touch the index");
+    });
+
+    // AC: @task-index-file ac-3
+    it("description change does not modify the index file", async () => {
+      const manager = new TaskDataManager("split");
+
+      await manager.createTask(ctx, {
+        title: "Desc no index",
+        slugs: ["desc-no-index"],
+        description: "Original description",
+      });
+
+      const indexPath = getIndexFilePath(ctx);
+      const indexBefore = await fs.readFile(indexPath, "utf-8");
+
+      await manager.mutateTask(ctx, "@desc-no-index", (task) => ({
+        ...task,
+        description: "Updated description",
+      }));
+
+      const indexAfter = await fs.readFile(indexPath, "utf-8");
+      expect(indexAfter).toBe(indexBefore);
+    });
+
+    // AC: @task-index-file ac-3
+    it("indexEntriesEqual correctly detects unchanged indexed fields", () => {
+      const a = {
+        _ulid: "01ABC",
+        slugs: ["test"],
+        title: "Test",
+        type: "task",
+        status: "pending",
+        priority: 3,
+        tags: ["a", "b"],
+        depends_on: [],
+        blocked_by: [],
+        created_at: "2026-03-20T00:00:00.000Z",
+        notes_count: 0,
+        todos_count: 0,
+      };
+
+      const b = { ...a };
+      expect(indexEntriesEqual(a, b)).toBe(true);
+    });
+
+    // AC: @task-index-file ac-3
+    it("indexEntriesEqual detects changed indexed fields", () => {
+      const a = {
+        _ulid: "01ABC",
+        slugs: ["test"],
+        title: "Test",
+        type: "task",
+        status: "pending",
+        priority: 3,
+        tags: ["a"],
+        depends_on: [],
+        blocked_by: [],
+        created_at: "2026-03-20T00:00:00.000Z",
+        notes_count: 0,
+        todos_count: 0,
+      };
+
+      // Status changed
+      expect(indexEntriesEqual(a, { ...a, status: "in_progress" })).toBe(false);
+      // Priority changed
+      expect(indexEntriesEqual(a, { ...a, priority: 1 })).toBe(false);
+      // Tags changed
+      expect(indexEntriesEqual(a, { ...a, tags: ["a", "b"] })).toBe(false);
+      // Title changed
+      expect(indexEntriesEqual(a, { ...a, title: "Changed" })).toBe(false);
+    });
+  });
+
+  // ── AC: @task-index-file ac-4 ────────────────────────────────────────────
+  // (covered by @task-directory-storage ac-1 and ac-2 tests above — task
+  //  directory creation is the same operation. Adding explicit index check.)
+  describe("new task creates directory with per-task files (ac-4)", () => {
+    // AC: @task-index-file ac-4
+    it("creating a task creates task.yaml and notes.yaml in the directory", async () => {
+      const manager = new TaskDataManager("split");
+
+      const created = await manager.createTask(ctx, {
+        title: "AC4 create test",
+        slugs: ["ac4-create-test"],
+      });
+
+      const taskFile = getTaskFilePath(ctx, created._ulid);
+      const notesFile = getNotesFilePath(ctx, created._ulid);
+
+      const taskStat = await fs.stat(taskFile);
+      expect(taskStat.isFile()).toBe(true);
+
+      const notesStat = await fs.stat(notesFile);
+      expect(notesStat.isFile()).toBe(true);
+    });
+  });
+
+  // ── AC: @task-index-file ac-5 ────────────────────────────────────────────
+  // (covered by @task-directory-storage ac-5 tests above — adding index
+  //  content verification.)
+  describe("new task adds index entry atomically (ac-5)", () => {
+    // AC: @task-index-file ac-5
+    it("creating a task adds an entry to the index", async () => {
+      const manager = new TaskDataManager("split");
+
+      const summariesBefore = await manager.listTasks(ctx);
+      expect(summariesBefore.length).toBe(0);
+
+      const created = await manager.createTask(ctx, {
+        title: "AC5 index test",
+        slugs: ["ac5-index-test"],
+        priority: 2,
+        tags: ["feature"],
+      });
+
+      const summariesAfter = await manager.listTasks(ctx);
+      expect(summariesAfter.length).toBe(1);
+
+      const summary = summariesAfter[0];
+      expect(summary._ulid).toBe(created._ulid);
+      expect(summary.title).toBe("AC5 index test");
+      expect(summary.priority).toBe(2);
+      expect(summary.tags).toEqual(["feature"]);
+    });
+
+    // AC: @task-index-file ac-5
+    it("index entry and directory are created in same atomic operation", async () => {
+      const manager = new TaskDataManager("split");
+
+      const created = await manager.createTask(ctx, {
+        title: "AC5 atomic test",
+        slugs: ["ac5-atomic-test"],
+      });
+
+      // Both must exist — if one is missing, the operation was not atomic
+      const taskDir = getTaskDir(ctx, created._ulid);
+      const dirStat = await fs.stat(taskDir);
+      expect(dirStat.isDirectory()).toBe(true);
+
+      const summaries = await manager.listTasks(ctx);
+      expect(summaries.some((s) => s._ulid === created._ulid)).toBe(true);
+    });
+  });
+
+  // ── AC: @task-index-file ac-6 ────────────────────────────────────────────
+  // Given: The index and a per-task file disagree on a filterable field value
+  // When: The task is loaded for detailed view
+  // Then: The per-task file is authoritative
+  describe("per-task file is authoritative on disagreement (ac-6)", () => {
+    // AC: @task-index-file ac-6
+    it("getTask returns per-task file values when index disagrees", async () => {
+      const manager = new TaskDataManager("split");
+
+      const created = await manager.createTask(ctx, {
+        title: "Authority test",
+        slugs: ["authority-test"],
+        priority: 3,
+      });
+
+      // Manually corrupt the index to have a different priority
+      const indexPath = getIndexFilePath(ctx);
+      const indexContent = await fs.readFile(indexPath, "utf-8");
+      const { parse, stringify } = await import("yaml");
+      const indexData = parse(indexContent);
+
+      // Find the entry and change its priority in the index only
+      const entry = Array.isArray(indexData)
+        ? indexData.find((e: any) => e._ulid === created._ulid)
+        : indexData.tasks?.find((e: any) => e._ulid === created._ulid);
+      entry.priority = 1;
+      entry.status = "completed";
+      await fs.writeFile(indexPath, stringify(indexData));
+
+      // getTask should return values from per-task file, not index
+      const fetched = await manager.getTask(ctx, created._ulid);
+      expect(fetched.priority).toBe(3); // per-task file value
+      expect(fetched.status).toBe("pending"); // per-task file value
+    });
+
+    // AC: @task-index-file ac-6
+    it("getTask reads from per-task directory not from index", async () => {
+      const ulid = testUlid("AUTH");
+      await createSplitTask(ctx, ulid, "auth-test");
+
+      // Manually update per-task file to have different title
+      const taskFilePath = getTaskFilePath(ctx, ulid);
+      const { parse, stringify } = await import("yaml");
+      const content = await fs.readFile(taskFilePath, "utf-8");
+      const taskData = parse(content);
+      taskData.title = "Updated per-task title";
+      await fs.writeFile(taskFilePath, stringify(taskData));
+
+      // getTask should return the per-task file's title
+      const task = await splitBackend.getTask(ctx, ulid);
+      expect(task).toBeDefined();
+      expect(task!.title).toBe("Updated per-task title");
+    });
+  });
+
+  // ── AC: @task-index-file ac-7 ────────────────────────────────────────────
+  // Given: The index has drifted from per-task files
+  // When: A rebuild is requested
+  // Then: The index can be fully regenerated from per-task files alone
+  describe("index rebuild from per-task files (ac-7)", () => {
+    // AC: @task-index-file ac-7
+    it("rebuildIndex regenerates index from per-task directories", async () => {
+      const manager = new TaskDataManager("split");
+
+      // Create some tasks
+      await manager.createTask(ctx, {
+        title: "Rebuild task 1",
+        slugs: ["rebuild-1"],
+        priority: 1,
+        tags: ["feature"],
+      });
+      await manager.createTask(ctx, {
+        title: "Rebuild task 2",
+        slugs: ["rebuild-2"],
+        priority: 5,
+        tags: ["bug"],
+      });
+
+      // Corrupt the index (remove all entries)
+      const indexPath = getIndexFilePath(ctx);
+      await fs.writeFile(indexPath, toYaml([]));
+
+      // Verify index is empty
+      const summariesEmpty = await manager.listTasks(ctx);
+      expect(summariesEmpty.length).toBe(0);
+
+      // Rebuild
+      const result = await splitBackend.rebuildIndex(ctx);
+      expect(result.count).toBe(2);
+
+      // Verify index is restored
+      const summaries = await manager.listTasks(ctx);
+      expect(summaries.length).toBe(2);
+
+      const s1 = summaries.find((s) => s.slugs.includes("rebuild-1"));
+      expect(s1).toBeDefined();
+      expect(s1!.priority).toBe(1);
+      expect(s1!.tags).toEqual(["feature"]);
+
+      const s2 = summaries.find((s) => s.slugs.includes("rebuild-2"));
+      expect(s2).toBeDefined();
+      expect(s2!.priority).toBe(5);
+      expect(s2!.tags).toEqual(["bug"]);
+    });
+
+    // AC: @task-index-file ac-7
+    it("rebuildIndex handles drifted index values", async () => {
+      const manager = new TaskDataManager("split");
+
+      const created = await manager.createTask(ctx, {
+        title: "Drift test",
+        slugs: ["drift-test"],
+        priority: 3,
+      });
+
+      // Mutate the per-task file directly (simulating drift)
+      const taskFilePath = getTaskFilePath(ctx, created._ulid);
+      const { parse, stringify } = await import("yaml");
+      const content = await fs.readFile(taskFilePath, "utf-8");
+      const taskData = parse(content);
+      taskData.priority = 1;
+      taskData.status = "in_progress";
+      taskData.started_at = "2026-03-20T01:00:00.000Z";
+      await fs.writeFile(taskFilePath, stringify(taskData));
+
+      // Index still shows old values
+      const summariesBefore = await manager.listTasks(ctx);
+      const beforeEntry = summariesBefore.find((s) => s._ulid === created._ulid);
+      expect(beforeEntry!.priority).toBe(3); // Old index value
+
+      // Rebuild
+      await splitBackend.rebuildIndex(ctx);
+
+      // Index should now match per-task file
+      const summariesAfter = await manager.listTasks(ctx);
+      const afterEntry = summariesAfter.find((s) => s._ulid === created._ulid);
+      expect(afterEntry!.priority).toBe(1);
+      expect(afterEntry!.status).toBe("in_progress");
+    });
+
+    // AC: @task-index-file ac-7
+    it("rebuildIndex handles tasks with notes", async () => {
+      const manager = new TaskDataManager("split");
+
+      const created = await manager.createTask(ctx, {
+        title: "Notes rebuild test",
+        slugs: ["notes-rebuild"],
+      });
+
+      await manager.addNote(ctx, "@notes-rebuild", "Note 1", "@tester");
+      await manager.addNote(ctx, "@notes-rebuild", "Note 2", "@tester");
+
+      // Corrupt index
+      const indexPath = getIndexFilePath(ctx);
+      await fs.writeFile(indexPath, toYaml([]));
+
+      // Rebuild
+      await splitBackend.rebuildIndex(ctx);
+
+      // Index should show correct notes count
+      const summaries = await manager.listTasks(ctx);
+      const summary = summaries.find((s) => s._ulid === created._ulid);
+      expect(summary).toBeDefined();
+      expect(summary!.notes_count).toBe(2);
+    });
+
+    // AC: @task-index-file ac-7
+    it("rebuildIndex with empty tasks directory produces empty index", async () => {
+      // No tasks created — tasks dir exists but is empty
+      const result = await splitBackend.rebuildIndex(ctx);
+      expect(result.count).toBe(0);
+
+      const summaries = await splitBackend.listTasks(ctx);
+      expect(summaries.length).toBe(0);
     });
   });
 });
