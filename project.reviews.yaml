@@ -41851,3 +41851,29 @@ reviews:
     created_at: 2026-03-21T18:30:14.907Z
     updated_at: 2026-03-21T18:37:39.207Z
     notes: []
+  - _ulid: 01KM8V1TDKF4YKPP5DR2G519TJ
+    slugs: []
+    title: Review task-impl-activity cycle 3
+    author: Test User
+    checks: []
+    events:
+      - _ulid: 01KM8V1TDJVQJZNJR6AKDMRDJV
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-21T18:38:20.083Z
+    examined_commit: 1232fc203326f1ce5bfd022fc21be3dff269433b
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KM6YETR12GG1EZ5G68KSNTBK"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-21T18:38:20.083Z
+    updated_at: null
+    notes: []
