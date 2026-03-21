@@ -35029,7 +35029,17 @@ reviews:
     slugs: []
     title: Review task-migrate-daemon-api-to-task-data-manager
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 298 test files passed, 6756 tests passed, 3 skipped (exit 0).
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-21T05:37:03.458Z
+        completed_at: 2026-03-21T05:37:03.458Z
     events:
       - _ulid: 01KM7E2BNB8C5G07RBND5TF6G2
         actor: Jacob Chapel
@@ -35044,6 +35054,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-21T05:32:33.296Z
+      - _ulid: 01KM7EB8QJ6RJ12KEJA9R7DEAR
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-21T05:37:03.730Z
     examined_commit: 3f512d234f1cefd8357c542e9a36cd115a658d73
     external_links: []
     lifecycle_state: open
@@ -35056,5 +35073,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-21T05:32:11.819Z
-    updated_at: 2026-03-21T05:32:33.018Z
+    updated_at: 2026-03-21T05:37:03.458Z
     notes: []
