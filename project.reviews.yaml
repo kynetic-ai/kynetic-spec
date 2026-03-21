@@ -38557,6 +38557,12 @@ reviews:
           kind: nit
           thread_ulid: 01KM81NTBDMA3FK945Z1GN1AY5
         timestamp: 2026-03-21T11:14:52.906Z
+      - _ulid: 01KM81RMES5J41E98PNXBDTSGF
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KM81N5FF4GH4D39BA4VCJ7TH
+        timestamp: 2026-03-21T11:16:24.666Z
     examined_commit: 1db83c00f8bd886f9006e661da0bcfcbdc6f228d
     external_links: []
     lifecycle_state: open
@@ -38587,6 +38593,8 @@ reviews:
               task commands."
             created_at: 2026-03-21T11:14:31.023Z
         kind: blocker
+        resolved_at: 2026-03-21T11:16:24.080Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KM81NRQR6Z8XE7MQVMQ28MAM
         anchor:
           type: code
@@ -38643,5 +38651,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-21T11:09:30.269Z
-    updated_at: 2026-03-21T11:14:52.397Z
+    updated_at: 2026-03-21T11:16:24.080Z
     notes: []
