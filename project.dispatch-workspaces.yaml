@@ -16960,3 +16960,79 @@ workspaces:
         head: 1e88f19f3c0bfbd20f3ece5cb6cd1372fc2fb16e
         last_seen_at: 2026-03-21T09:41:47.930Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-impl-per-task-files-01km6yet
+  - active_role: null
+    base_branch_point: e273fe88270dc48f490a0856d03ba78deecc23b0
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-extend-write-buffer/01km6yev
+    canonical_branch_head: e273fe88270dc48f490a0856d03ba78deecc23b0
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-03-21T09:41:54.097Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-03-21T09:41:54.097Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: e273fe88270dc48f490a0856d03ba78deecc23b0
+      updated_at: 2026-03-21T09:41:54.097Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KM6YEVFHZ9J6734CYVPWWDMH"
+    task_slug: task-extend-write-buffer
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-03-21T09:41:54.097Z
+      created_at: 2026-03-21T09:41:54.097Z
+      updated_at: 2026-03-21T09:41:54.097Z
+    workspace_id: dispatch-workspace-01KM6YEVFHZ9J6734CYVPWWDMH
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-extend-write-buffer/01km6yev
+        head: e273fe88270dc48f490a0856d03ba78deecc23b0
+        last_seen_at: 2026-03-21T09:41:54.097Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-extend-write-buffer-01km6yev
