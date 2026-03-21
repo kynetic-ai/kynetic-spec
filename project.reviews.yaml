@@ -35623,6 +35623,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM7KFAD08WYRM3SY6T07RNHY
         timestamp: 2026-03-21T07:06:39.636Z
+      - _ulid: 01KM7KFBG55TS8AS0ZWDDNZGV7
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM7KFB787Z7NV5WQZF31471A
+        timestamp: 2026-03-21T07:06:40.517Z
     examined_commit: dd5e26ef8777fce556ae0ccaa5d1ff5bd14f779a
     external_links: []
     lifecycle_state: open
@@ -35650,7 +35657,23 @@ reviews:
               task cards and detail badges will silently show the wrong numbers in split mode."
             created_at: 2026-03-21T07:06:39.392Z
         kind: blocker
+      - _ulid: 01KM7KFB787Z7NV5WQZF31471A
+        entries:
+          - _ulid: 01KM7KFB7882G9DXEHK031BT87
+            author: Jacob Chapel
+            body: "Evidence log: Files read: kspec-agents.md, .agents/skills/review-gates/SKILL.md,
+              src/parser/task-data-manager.ts, src/parser/split-backend.ts, src/parser/index.ts,
+              src/cli/batch-write-buffer.ts, src/cli/commands/task.ts,
+              packages/daemon/src/routes/tasks.ts, tests/split-backend.test.ts,
+              tests/task-data-manager.test.ts. Commands run: git diff/stat against
+              61eb4369..dd5e26ef, kspec task get, kspec item get, kspec validate, rg for AC
+              annotations/usages, npm test, targeted tsx repros for split registration and
+              notes-count behavior. Claims verified: direct-import split activation, list-summary
+              count behavior after addNote, and npm test preflight behavior. Categories searched:
+              correctness, integration, test quality, atomicity, verification gates."
+            created_at: 2026-03-21T07:06:40.232Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-21T07:03:23.100Z
-    updated_at: 2026-03-21T07:06:39.392Z
+    updated_at: 2026-03-21T07:06:40.232Z
     notes: []
