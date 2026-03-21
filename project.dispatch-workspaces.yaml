@@ -16668,12 +16668,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-21T07:02:17.082Z
+      updated_at: 2026-03-21T07:02:21.835Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-21T07:02:17.082Z
+      updated_at: 2026-03-21T07:02:21.835Z
     integration:
       status: pending
       detail: null
@@ -16681,24 +16681,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 61eb4369ce1f4ece77cb55bc19f888eebf4d78a8
-      updated_at: 2026-03-21T07:02:17.082Z
-    lifecycle_state: ready
+      updated_at: 2026-03-21T07:02:21.835Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KM6YERMDKKYA1XXRN025G0FT"
     task_slug: task-impl-split-storage
     timestamps:
       closed_at: null
       last_active_at: 2026-03-21T06:31:04.544Z
-      last_reconciled_at: 2026-03-21T07:02:17.082Z
+      last_reconciled_at: 2026-03-21T07:02:21.835Z
       created_at: 2026-03-21T06:30:59.495Z
-      updated_at: 2026-03-21T07:02:17.082Z
+      updated_at: 2026-03-21T07:02:21.835Z
     workspace_id: dispatch-workspace-01KM6YERMDKKYA1XXRN025G0FT
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: dd5e26ef8777fce556ae0ccaa5d1ff5bd14f779a
+        last_seen_at: 2026-03-21T07:02:21.835Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-impl-split-storage-01km6yer-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-impl-split-storage/01km6yer
-        head: 61eb4369ce1f4ece77cb55bc19f888eebf4d78a8
-        last_seen_at: 2026-03-21T06:30:59.495Z
+        head: dd5e26ef8777fce556ae0ccaa5d1ff5bd14f779a
+        last_seen_at: 2026-03-21T07:02:21.835Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-impl-split-storage-01km6yer
