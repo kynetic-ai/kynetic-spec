@@ -33819,9 +33819,25 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-21T03:05:28.851Z
+      - _ulid: 01KM75P05PRGM0FMDSBZ24AKTX
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-21T03:05:38.230Z
+      - _ulid: 01KM75P05P8CE86PF4131MCFWC
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-21T03:05:38.230Z
     examined_commit: 84d638489e25e955c89daf02c6d62971d5a7e5c8
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -33870,7 +33886,14 @@ reviews:
               cases, atomicity, error handling, test quality, spec alignment"
             created_at: 2026-03-21T03:05:26.983Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-21T03:05:38.230Z
     created_at: 2026-03-21T03:01:03.087Z
-    updated_at: 2026-03-21T03:05:28.626Z
+    updated_at: 2026-03-21T03:05:38.230Z
     notes: []
