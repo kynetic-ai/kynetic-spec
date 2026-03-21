@@ -42628,6 +42628,17 @@ reviews:
         runner: npm
         created_at: 2026-03-21T23:41:53.633Z
         completed_at: 2026-03-21T23:41:53.633Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation passed with existing repository-wide warnings only; no new validation errors in
+          this snapshot.
+        name: kspec validate --warnings-ok
+        required: false
+        runner: kspec
+        created_at: 2026-03-21T23:41:55.655Z
+        completed_at: 2026-03-21T23:41:55.655Z
     events:
       - _ulid: 01KM9BYS6V1MBCCTGVMP0B5SCH
         actor: Test User
@@ -42663,6 +42674,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM9CDP2TG3ZTA00GHTHBC8KJ
         timestamp: 2026-03-21T23:41:54.947Z
+      - _ulid: 01KM9CDQC8GXEDS6E09607WVNF
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --warnings-ok
+        timestamp: 2026-03-21T23:41:55.976Z
     examined_commit: e85852381a7bdabdd4cae7f7fd041c9e3d106e4d
     external_links: []
     lifecycle_state: open
@@ -42715,5 +42733,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-21T23:33:46.331Z
-    updated_at: 2026-03-21T23:41:54.651Z
+    updated_at: 2026-03-21T23:41:55.655Z
     notes: []
