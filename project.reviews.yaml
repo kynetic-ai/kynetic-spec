@@ -41239,6 +41239,23 @@ reviews:
         runner: npm
         created_at: 2026-03-21T18:10:43.236Z
         completed_at: 2026-03-21T18:10:43.236Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: kspec-agents.md, src/cli/commands/task.ts, src/utils/activity.ts,
+          src/parser/task-data-manager.ts, src/parser/split-backend.ts, src/cli/output.ts,
+          tests/activity-in-file.test.ts, tests/activity-display.test.ts,
+          tests/per-task-files.test.ts. Commands run: git diff
+          87331ee1e9d640686caa51de93719322fb0c1a82...HEAD, kspec task get
+          @01KM6YETR12GG1EZ5G68KSNTBK, npm test, kspec validate, rg/nl/sed lookups. Claims verified:
+          activity now assembles from history plus notes; per-directory fallback parses note commits
+          as note_added; validate has warnings only. Categories searched: correctness, edge cases,
+          test quality, integration, error handling."
+        name: review-evidence
+        required: false
+        created_at: 2026-03-21T18:10:46.118Z
+        completed_at: 2026-03-21T18:10:46.118Z
     events:
       - _ulid: 01KM8S78J6GEF7QE79DKV3WNZM
         actor: Test User
@@ -41274,6 +41291,13 @@ reviews:
           status: skipped
           name: npm test
         timestamp: 2026-03-21T18:10:43.545Z
+      - _ulid: 01KM8SFBK6EJ2SRJ3GDDZ98ZH9
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-03-21T18:10:46.502Z
     examined_commit: f68480a8d01aadbdce406f6aca86f353cc32e282
     external_links: []
     lifecycle_state: open
@@ -41305,7 +41329,7 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-21T18:06:21.254Z
-    updated_at: 2026-03-21T18:10:43.236Z
+    updated_at: 2026-03-21T18:10:46.118Z
     notes: []
   - _ulid: 01KM8S7BAF7RR8Z853MWHPDG44
     slugs: []
