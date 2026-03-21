@@ -34802,6 +34802,13 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-03-21T05:13:21.964Z
+      - _ulid: 01KM7CZX345QZA6RKZC9K1167R
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM7CZWVMN2JNQMXJJ9JYM8AK
+        timestamp: 2026-03-21T05:13:22.788Z
     examined_commit: a48c51675ffcedf07930adf5c12aab91d1463717
     external_links: []
     lifecycle_state: open
@@ -34831,7 +34838,29 @@ reviews:
               with 1 note and 2 todos, but this route would return 0/0."
             created_at: 2026-03-21T05:13:20.814Z
         kind: blocker
+      - _ulid: 01KM7CZWVMN2JNQMXJJ9JYM8AK
+        entries:
+          - _ulid: 01KM7CZWVNW6H05AE0TY7310ER
+            author: Jacob Chapel
+            body: "Evidence log\\nFiles read: AGENTS.md, kspec-agents.md, packages/daemon/src/routes/tasks.ts,
+              src/parser/task-data-manager.ts, packages/shared/src/api.ts,
+              tests/daemon-task-data-manager-migration.test.ts,
+              packages/web-ui/src/lib/api-static.ts,
+              packages/web-ui/src/lib/components/TaskList.svelte,
+              packages/web-ui/src/lib/components/board/TaskCard.svelte,
+              tests/fixtures/project.tasks.yaml, packages/web-ui/tests/fixtures/project.tasks.yaml,
+              packages/web-ui/tests/e2e/api-tasks.spec.ts.\\nCommands run: kspec task get
+              @01KM6YEQ9GJYWB6ZC65Y3Y329G, kspec item get @task-data-manager, git diff --stat
+              878b300...a48c516, git diff 878b300...a48c516 -- packages/daemon/src/routes/tasks.ts
+              tests/daemon-task-data-manager-migration.test.ts, rg lookups for taskDataManager and
+              notes_count consumers, kspec validate, rg AC annotation search, npm test.\\nClaims
+              verified: the daemon routes now call taskDataManager methods; npm test currently
+              fails; list fixtures still contain tasks with non-zero notes/todos while the route
+              returns 0/0.\\nCategories searched: correctness, test quality, error handling,
+              integration, API contract compatibility."
+            created_at: 2026-03-21T05:13:22.549Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-21T05:08:28.283Z
-    updated_at: 2026-03-21T05:13:21.684Z
+    updated_at: 2026-03-21T05:13:22.549Z
     notes: []
