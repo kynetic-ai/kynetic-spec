@@ -538,15 +538,17 @@ class SplitBackend implements TaskStorageBackend {
           const updatedHistory = [...existingHistory, historyEntry];
 
           await writeTaskFile(taskFilePath, coreDataAfter, updatedHistory);
-
-          // Update index if indexed fields changed
-          await this.updateIndexEntry(ctx, cleanTask);
         }
 
         // Write notes if they changed
         if (notes !== undefined) {
           const notesFilePath = getNotesFilePath(ctx, task._ulid);
           await writeNotesFile(notesFilePath, notes);
+        }
+
+        // Update index whenever any indexed data changed (core fields or notes_count)
+        if (fieldChanges || notes !== undefined) {
+          await this.updateIndexEntry(ctx, cleanTask);
         }
 
         if (localBuffer) {
@@ -649,12 +651,16 @@ class SplitBackend implements TaskStorageBackend {
             const historyEntry = createHistoryEntry(fieldChanges, metadata);
             const updatedHistory = [...latestResults[i].history, historyEntry];
             await writeTaskFile(taskFilePath, coreData, updatedHistory);
-            await this.updateIndexEntry(ctx, cleanTask);
           }
 
           if (notes !== undefined) {
             const notesFilePath = getNotesFilePath(ctx, cleanTask._ulid);
             await writeNotesFile(notesFilePath, notes);
+          }
+
+          // Update index whenever any indexed data changed (core fields or notes_count)
+          if (fieldChanges || notes !== undefined) {
+            await this.updateIndexEntry(ctx, cleanTask);
           }
 
           updatedTasks.push({ ...cleanTask, _sourceFile: taskFilePath });

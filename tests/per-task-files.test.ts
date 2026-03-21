@@ -739,6 +739,32 @@ describe("Per-Task Notes File (@task-notes-file)", () => {
       const taskFile = await readYaml(getTaskFilePath(ctx, created._ulid));
       expect(taskFile.history).toBeUndefined();
     });
+
+    // AC: @task-notes-file ac-1
+    it("note-only mutation updates notes_count in the lean index", async () => {
+      const manager = new TaskDataManager("split");
+
+      await manager.createTask(ctx, {
+        title: "Index count test",
+        slugs: ["index-count"],
+      });
+
+      // Verify initial notes_count is 0 in listTasks
+      const beforeList = await manager.listTasks(ctx);
+      const beforeTask = beforeList.find((t) => t.slugs.includes("index-count"));
+      expect(beforeTask).toBeDefined();
+      expect(beforeTask!.notes_count).toBe(0);
+
+      // Add notes (note-only mutation — no core field changes)
+      await manager.addNote(ctx, "@index-count", "First note", "@tester");
+      await manager.addNote(ctx, "@index-count", "Second note", "@tester");
+
+      // Verify notes_count in listTasks reflects the added notes
+      const afterList = await manager.listTasks(ctx);
+      const afterTask = afterList.find((t) => t.slugs.includes("index-count"));
+      expect(afterTask).toBeDefined();
+      expect(afterTask!.notes_count).toBe(2);
+    });
   });
 
   // ── AC: @task-notes-file ac-2 ──────────────────────────────────────────
