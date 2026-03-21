@@ -38397,6 +38397,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-21T10:58:34.022Z
+      - _ulid: 01KM80YD41P0PEG88ZNEDEXPNJ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM80YCV3Q4TC9A41Y8DJY2WR
+        timestamp: 2026-03-21T11:02:05.185Z
     examined_commit: 7dbdd5b4fff729ac426a406880ea843dad049152
     external_links: []
     lifecycle_state: open
@@ -38406,8 +38413,27 @@ reviews:
       content_hash: ""
       ref: "@01KM6YEW5EF6QXZHQP7FYARAK6"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM80YCV3Q4TC9A41Y8DJY2WR
+        anchor:
+          type: code
+          commit: 7dbdd5b4fff729ac426a406880ea843dad049152
+          line_end: 3320
+          line_start: 3314
+          path: src/cli/commands/task.ts
+          side: head
+        entries:
+          - _ulid: 01KM80YCV4ZVAXS6HH9KE74Q9V
+            author: Jacob Chapel
+            body: "The early return for 'diffs.length === 0' bypasses the dry-run preview branch, so 'kspec task
+              rebuild-index --dry-run' prints only 'Index is up to date (...)' when the index is
+              already synchronized. That violates @trait-dry-run ac-3 ('clear indication that this
+              is a preview') for a valid dry-run path, and the current test coverage misses it. I
+              reproduced this against the built CLI with a synced index: exit 0, stdout 'OK Index is
+              up to date (1 tasks)', no DRY RUN marker."
+            created_at: 2026-03-21T11:02:04.900Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T10:58:03.846Z
-    updated_at: 2026-03-21T10:58:33.740Z
+    updated_at: 2026-03-21T11:02:04.900Z
     notes: []
