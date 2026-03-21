@@ -40186,6 +40186,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM8JF3Y71QM1KW5C9313Q9DV
         timestamp: 2026-03-21T16:08:18.928Z
+      - _ulid: 01KM8JF57W4JMT8CER81N55J4W
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM8JF4YPFP9R8GBCF0JACZTA
+        timestamp: 2026-03-21T16:08:19.965Z
     examined_commit: 57af9e5bc4227d76b715277cfa249b72e667f07c
     external_links: []
     lifecycle_state: open
@@ -40251,7 +40258,25 @@ reviews:
               index.
             created_at: 2026-03-21T16:08:18.632Z
         kind: blocker
+      - _ulid: 01KM8JF4YPFP9R8GBCF0JACZTA
+        anchor:
+          type: code
+          commit: ""
+          line_end: 533
+          line_start: 523
+          path: src/cli/commands/review.ts
+          side: head
+        entries:
+          - _ulid: 01KM8JF4YPX7E4D6DK0CTPS4JM
+            author: Test User
+            body: review add now commits the new review before task linkage runs, but linkReviewToTasks mutates
+              each task with commit metadata of its own. If one of those task updates fails partway
+              through, the review is already committed and only a prefix of linked tasks gets
+              review_ref updated. Carry the history metadata without per-task auto-commits here,
+              then commit once after the whole linkage pass succeeds.
+            created_at: 2026-03-21T16:08:19.670Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T16:01:32.017Z
-    updated_at: 2026-03-21T16:08:18.632Z
+    updated_at: 2026-03-21T16:08:19.670Z
     notes: []
