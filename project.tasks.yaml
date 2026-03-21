@@ -112779,6 +112779,18 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-21T07:06:54.208Z
+    - _ulid: 01KM7N4HHTRAJ0848MWBM3864V
+      content: "Fix cycle 1: Addressed both blocker threads from review @01KM7K9APW6JFK2G1AETY551HG. (1)
+        Split index now persists notes_count/todos_count as scalars in toIndexEntry(), and
+        rawToSummary() reads them as fallback when no notes array exists. This fixes the daemon task
+        list showing wrong counts in split mode. (2) Replaced side-effect registration with lazy
+        loading via createRequire in TaskDataManager constructor — new TaskDataManager('split') now
+        works from any import path without importing split-backend.ts first. Also fixed 3 TypeScript
+        build errors by making AlignmentIndex generic over task type, removing unsafe LoadedTask
+        casts. All 6793 tests pass."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T07:35:43.419Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YESAF92YTNXT3DF06AC0N
