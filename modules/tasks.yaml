@@ -1720,6 +1720,9 @@ features:
           Task mutations that span multiple files (index + task.yaml + notes.yaml)
           must be atomic. All task writes — single or batch — either fully
           succeed or fully roll back.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
