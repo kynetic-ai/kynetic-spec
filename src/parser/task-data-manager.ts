@@ -206,7 +206,7 @@ export interface TaskStorageBackend {
 
   listTasks(ctx: KspecContext): Promise<TaskSummary[]>;
   getTask(ctx: KspecContext, ref: string): Promise<LoadedTask | undefined>;
-  createTask(ctx: KspecContext, task: LoadedTask): Promise<void>;
+  createTask(ctx: KspecContext, task: Task): Promise<LoadedTask>;
   mutateTask(
     ctx: KspecContext,
     task: LoadedTask,
@@ -423,8 +423,13 @@ class MonolithicBackend implements TaskStorageBackend {
     return findTaskByRef(tasks, ref);
   }
 
-  async createTask(ctx: KspecContext, task: LoadedTask): Promise<void> {
-    await saveTaskToFile(ctx, task);
+  async createTask(ctx: KspecContext, task: Task): Promise<LoadedTask> {
+    const loadedTask: LoadedTask = {
+      ...task,
+      _sourceFile: getDefaultTaskFilePath(ctx),
+    };
+    await saveTaskToFile(ctx, loadedTask);
+    return loadedTask;
   }
 
   /**
@@ -755,12 +760,11 @@ export class TaskDataManager {
       );
     }
 
-    const loadedTask: LoadedTask = {
-      ...newTask,
-      _sourceFile: getDefaultTaskFilePath(ctx),
-    };
-
-    await this.backend.createTask(ctx, loadedTask);
+    // Delegate _sourceFile ownership to the backend — the backend decides
+    // where the task lives based on its storage format.
+    // AC: @task-data-manager ac-1 — callers don't know about storage format
+    // AC: @task-data-manager ac-8 — split backend owns its own metadata
+    const loadedTask = await this.backend.createTask(ctx, newTask);
 
     if (commitOpts) {
       await commitIfShadow(

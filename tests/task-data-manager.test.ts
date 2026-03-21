@@ -639,8 +639,9 @@ describe("TaskDataManager", () => {
           const tasks = await load(ctx);
           return find(tasks, ref);
         },
-        async createTask() {
+        async createTask(_ctx, task) {
           calls.push("createTask");
+          return { ...task, _sourceFile: "/mock/split/tasks/" + task._ulid + "/task.yaml" };
         },
         async mutateTask(ctx, task, mutate) {
           calls.push("mutateTask");
@@ -672,6 +673,41 @@ describe("TaskDataManager", () => {
         expect(calls).toContain("getTask");
       } finally {
         // Clean up: remove mock split backend from global registry
+        unregisterBackend("split");
+      }
+    });
+
+    // AC: @task-data-manager ac-1 — callers don't know about storage format
+    // AC: @task-data-manager ac-8 — split backend owns _sourceFile on create
+    it("createTask returns _sourceFile from the backend, not a monolithic path", async () => {
+      tempDir = await setupTempFixtures();
+
+      const mockSplitBackend: TaskStorageBackend = {
+        format: "split",
+        async listTasks() { return []; },
+        async getTask() { return undefined; },
+        async createTask(_ctx, task) {
+          // Split backend assigns its own _sourceFile
+          return { ...task, _sourceFile: "/split/tasks/" + task._ulid + "/task.yaml" };
+        },
+        async mutateTask(_ctx, task) { return { ...task, _sourceFile: task._sourceFile }; },
+        async mutateTasks(_ctx, tasks) { return tasks; },
+        async deleteTask() {},
+      };
+
+      registerBackend(mockSplitBackend);
+      try {
+        const splitManager = new TaskDataManager("split");
+        const ctx = await initContext(tempDir);
+
+        const created = await splitManager.createTask(ctx, { title: "Split-owned task" });
+
+        // The returned task should have the split backend's _sourceFile,
+        // not the monolithic getDefaultTaskFilePath(ctx)
+        expect(created._sourceFile).toContain("/split/tasks/");
+        expect(created._sourceFile).toContain("/task.yaml");
+        expect(created._sourceFile).not.toContain("project.tasks.yaml");
+      } finally {
         unregisterBackend("split");
       }
     });
