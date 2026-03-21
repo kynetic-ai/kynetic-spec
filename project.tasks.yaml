@@ -112963,7 +112963,7 @@
   spec_ref: "@task-core-data-file"
   plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
   origin: derived
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-impl-split-storage"
@@ -112982,7 +112982,7 @@
     remote: origin
     remote_url: git@github.com:kynetic-ai/kynetic-spec.git
     upstream_ref: refs/heads/dev
-  session_id: 01KM8GAABKNW67A3G4JTFNE1H9
+  session_id: null
   created_at: 2026-03-21T00:59:22.538Z
   started_at: 2026-03-21T15:43:43.389Z
   submitted_at: 2026-03-21T15:43:47.976Z
@@ -113366,6 +113366,11 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-21T15:43:27.826Z
+    - _ulid: 01KM8HGMS80GZY2DRCYJSZN3DF
+      content: "[FIX_CYCLE: 18] Review verdict: changes_requested by codex@openai.com"
+      supersedes: null
+      author: Test User
+      created_at: 2026-03-21T15:51:40.072Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YETR12GG1EZ5G68KSNTBK
