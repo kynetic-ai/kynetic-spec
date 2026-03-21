@@ -112837,7 +112837,20 @@
   session_id: 01KM7NHRF7JCGQY5Q3PEX5H4SB
   created_at: 2026-03-21T00:59:21.807Z
   started_at: 2026-03-21T07:43:29.012Z
-  notes: []
+  notes:
+    - _ulid: 01KM7P7HDS4YG9GZC9FWG5PAZT
+      content: "Implemented task index file operations in split-backend.ts. Key design decisions: (1)
+        Extracted toIndexEntry() from private method to standalone exported function with
+        indexEntriesEqual() for change detection. (2) notes_count/todos_count excluded from change
+        detection so note additions don't trigger index writes (AC-3). They are denormalized counts
+        that get corrected during rebuildIndex(). (3) rebuildIndex() reads all per-task directories
+        and regenerates the index file, preserving the existing format (wrapper vs bare array). (4)
+        Per-task file authority (AC-6) was inherently satisfied since getTask() already reads from
+        per-task directory, not index. All 7 ACs covered with 20 new annotated tests. Full test
+        suite passes (6813 tests, 0 failures)."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T07:54:50.169Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YET1A7XY9D0V3YQ9DRASG
