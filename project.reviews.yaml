@@ -34002,3 +34002,29 @@ reviews:
     created_at: 2026-03-21T03:16:38.753Z
     updated_at: 2026-03-21T03:20:38.770Z
     notes: []
+  - _ulid: 01KM7722WYQC5952QNQNK04K3T
+    slugs: []
+    title: Review task-impl-data-manager (cycle 8)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KM7722WXMM4FSQFQERVE9A26
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-21T03:29:42.814Z
+    examined_commit: 29d48278f31ece8b422641f746402a06ab097948
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KM6YENV3CBFAGSRHVHR7QPJN"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-21T03:29:42.814Z
+    updated_at: null
+    notes: []
