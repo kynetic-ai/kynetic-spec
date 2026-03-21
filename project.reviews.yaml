@@ -34006,7 +34006,17 @@ reviews:
     slugs: []
     title: Review task-impl-data-manager (cycle 8)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 298 files passed, 6749 tests passed, 3 skipped, 0 failed.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-21T03:35:16.762Z
+        completed_at: 2026-03-21T03:35:16.762Z
     events:
       - _ulid: 01KM7722WXMM4FSQFQERVE9A26
         actor: Jacob Chapel
@@ -34056,6 +34066,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM77C85FFANFHCNVW377B1F5
         timestamp: 2026-03-21T03:35:16.157Z
+      - _ulid: 01KM77C9831MACZE32CE8DY2MZ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-21T03:35:16.996Z
     examined_commit: 29d48278f31ece8b422641f746402a06ab097948
     external_links: []
     lifecycle_state: open
@@ -34175,5 +34192,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-21T03:29:42.814Z
-    updated_at: 2026-03-21T03:35:15.887Z
+    updated_at: 2026-03-21T03:35:16.762Z
     notes: []
