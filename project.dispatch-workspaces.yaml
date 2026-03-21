@@ -17200,7 +17200,7 @@ workspaces:
         head: 80d6cca9e58e1be0373ec03056fb1ffba80329d7
         last_seen_at: 2026-03-21T11:35:16.411Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-build-index-rebuild-01km6yew
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: cbe88397420fa6992b3edd94fca7b847586c143f
     bootstrap:
       status: succeeded
@@ -17310,7 +17310,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-21T16:36:17.602Z
+      updated_at: 2026-03-21T16:36:25.568Z
     integration:
       status: pending
       detail: null
@@ -17325,10 +17325,10 @@ workspaces:
     task_slug: remove-default-timeout-from-dispatch-shadow-mutation-lock
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-21T16:27:24.235Z
-      last_reconciled_at: 2026-03-21T16:36:17.602Z
+      last_active_at: 2026-03-21T16:36:25.568Z
+      last_reconciled_at: 2026-03-21T16:36:25.568Z
       created_at: 2026-03-21T16:27:18.934Z
-      updated_at: 2026-03-21T16:36:23.342Z
+      updated_at: 2026-03-21T16:36:25.568Z
     workspace_id: dispatch-workspace-01KM8KEEN57D9E64GZPQTH1SXJ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
