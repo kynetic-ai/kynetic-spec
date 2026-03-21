@@ -113449,8 +113449,11 @@
   spec_ref: "@task-activity-in-file"
   plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged to dev at 8337c9ada07b3d1da672e92346b5b5e34ab5d31d after approved review
+    01KM8V1T. In-file activity timeline now reads stored history and note entries, preserves command
+    metadata and multi-field details, and retains pre-migration fallback coverage.
   depends_on:
     - "@task-impl-per-task-files"
   context: []
@@ -113472,6 +113475,7 @@
   created_at: 2026-03-21T00:59:23.265Z
   started_at: 2026-03-21T18:30:41.376Z
   submitted_at: 2026-03-21T18:36:54.340Z
+  completed_at: 2026-03-21T18:44:05.024Z
   notes:
     - _ulid: 01KM8PHRX08MC8TCSKFTYYM5K6
       content: >-
