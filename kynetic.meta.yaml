@@ -7611,6 +7611,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-21T03:04:51.672Z
+  - _ulid: 01KM75RRFJ8ZRA9RPVZNYF04PV
+    type: friction
+    content: "Reviewer agents may be stopping at the first blocker found and submitting
+      changes_requested instead of completing a full sweep. This turns N independent issues into N
+      sequential fix cycles. Example: @task-impl-data-manager had 5 cycles where each found 1-2 new
+      issues that could have been caught in a single thorough pass. Need to investigate whether the
+      review skill/prompt encourages early termination or if the reviewer is just hitting
+      context/budget limits."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-21T03:07:08.658Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
