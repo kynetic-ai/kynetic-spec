@@ -38139,6 +38139,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-21T10:43:43.945Z
+      - _ulid: 01KM7ZX0NSYHES724RSX6GYMT1
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KM7ZX0DAD0Z5RSBV0TNYTXZX
+        timestamp: 2026-03-21T10:43:51.097Z
     examined_commit: cdc31d9ac007832d463edeae3a7ddd921f6bb9f9
     external_links: []
     lifecycle_state: open
@@ -38186,7 +38193,23 @@ reviews:
               uncovered and the new '--force' behavior is unverified."
             created_at: 2026-03-21T10:43:39.284Z
         kind: blocker
+      - _ulid: 01KM7ZX0DAD0Z5RSBV0TNYTXZX
+        entries:
+          - _ulid: 01KM7ZX0DAPSHKGRF2YQ9HKRGW
+            author: Jacob Chapel
+            body: "Evidence log: Files read: AGENTS.md, kspec-agents.md, src/cli/commands/task.ts,
+              src/cli/output.ts, src/parser/split-backend.ts, src/parser/task-data-manager.ts,
+              tests/task-rebuild-index.test.ts, tests/helpers/cli.ts, package.json,
+              scripts/test.cjs. Commands run: git diff/stat, kspec task get, kspec review for-task,
+              kspec validate, grep/rg for AC annotations and related helpers, node dist/cli/index.js
+              task rebuild-index --help, npm test. Claims verified: the worker note's 'full test
+              suite passes' claim was verified with npm test; the claimed @trait-dry-run ac-5
+              coverage was disproved by reading the annotated test. Categories searched:
+              correctness, tests/AC coverage, edge cases, error handling, integration with
+              split-backend rebuild path."
+            created_at: 2026-03-21T10:43:50.826Z
+        kind: question
     verdicts: []
     created_at: 2026-03-21T10:38:18.995Z
-    updated_at: 2026-03-21T10:43:43.649Z
+    updated_at: 2026-03-21T10:43:50.826Z
     notes: []
