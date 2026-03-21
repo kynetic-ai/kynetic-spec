@@ -112583,6 +112583,19 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-21T05:13:33.083Z
+    - _ulid: 01KM7DZZS7BK5XCM4M1VR8DT38
+      content: "Fix cycle 1: Addressed both blockers from review @01KM7CPXFVEFTZ0ZY6PRD0BDEF. (1) Added
+        notes_count and todos_count to TaskSummary interface and extraction functions (rawToSummary,
+        toTaskSummary) so the list endpoint returns accurate derived counts from raw YAML array
+        lengths instead of hardcoded zeros. This preserves the API contract — the UI renders
+        notes_count on TaskCard and TaskList. (2) Deleted
+        tests/daemon-task-data-manager-migration.test.ts which was a static-analysis test that read
+        source files and asserted on string patterns, violating the no-static-analysis lint rule and
+        failing npm test. Updated mock split backend in task-data-manager.test.ts to include the new
+        summary fields. All 298 test files pass (6756 tests)."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T05:30:54.119Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YEQYJGQ4JF2ECR67DANZQ
