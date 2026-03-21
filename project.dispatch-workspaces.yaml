@@ -17573,12 +17573,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-21T19:09:40.154Z
+      updated_at: 2026-03-21T19:09:42.004Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-21T19:09:40.154Z
+      updated_at: 2026-03-21T19:09:42.004Z
     integration:
       status: pending
       detail: null
@@ -17586,24 +17586,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 87331ee1e9d640686caa51de93719322fb0c1a82
-      updated_at: 2026-03-21T19:09:40.154Z
-    lifecycle_state: ready
+      updated_at: 2026-03-21T19:09:42.004Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KM6YEWY1WSKEXTF5YNP5GG81"
     task_slug: task-build-migration
     timestamps:
       closed_at: null
       last_active_at: 2026-03-21T18:59:46.259Z
-      last_reconciled_at: 2026-03-21T19:09:40.154Z
+      last_reconciled_at: 2026-03-21T19:09:42.004Z
       created_at: 2026-03-21T17:20:26.459Z
-      updated_at: 2026-03-21T19:09:40.154Z
+      updated_at: 2026-03-21T19:09:42.004Z
     workspace_id: dispatch-workspace-01KM6YEWY1WSKEXTF5YNP5GG81
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: cb1ed366bb42915d700aae438ac48a1eac4737b4
+        last_seen_at: 2026-03-21T19:09:42.004Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-build-migration-01km6yew-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-build-migration/01km6yew
-        head: 5d6e230aefe40be9f29be2bc8b1b99ea749266e3
-        last_seen_at: 2026-03-21T18:59:44.559Z
+        head: cb1ed366bb42915d700aae438ac48a1eac4737b4
+        last_seen_at: 2026-03-21T19:09:42.004Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-build-migration-01km6yew
