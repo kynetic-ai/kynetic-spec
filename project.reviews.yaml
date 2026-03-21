@@ -38378,3 +38378,29 @@ reviews:
     created_at: 2026-03-21T10:49:21.808Z
     updated_at: 2026-03-21T10:55:53.022Z
     notes: []
+  - _ulid: 01KM80Q1E6EHTG58TXZJTPTW3T
+    slugs: []
+    title: Review build index rebuild command
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KM80Q1E6VH1DR8AQWXMSKBW7
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-21T10:58:03.846Z
+    examined_commit: 7dbdd5b4fff729ac426a406880ea843dad049152
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KM6YEW5EF6QXZHQP7FYARAK6"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-21T10:58:03.846Z
+    updated_at: null
+    notes: []
