@@ -42318,6 +42318,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-21T23:12:02.830Z
+      - _ulid: 01KM9AYAP5WW8A19M91FHG1YVT
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM9AYA45NDGXGYYBKQY3XK58
+        timestamp: 2026-03-21T23:16:02.885Z
     examined_commit: e203495374ffe623d4b4e19d58e12495546f82ad
     external_links: []
     lifecycle_state: open
@@ -42327,8 +42334,31 @@ reviews:
       content_hash: ""
       ref: "@01KM99V2BGM1Y4MNFPJS8YCHE4"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM9AYA45NDGXGYYBKQY3XK58
+        entries:
+          - _ulid: 01KM9AYA45W20RN5RKC350XYTK
+            author: Test User
+            body: >-
+              Evidence log:
+
+              Files read: src/parser/split-backend.ts, src/parser/task-data-manager.ts,
+              src/parser/yaml.ts, src/schema/task.ts, tests/split-backend.test.ts
+
+              Commands run: git diff --unified=80 6661e9cae3c71f9e8292fa2e75c39e69e148ff77...HEAD --
+              src/parser/split-backend.ts tests/split-backend.test.ts; kspec task get
+              @01KM99V2BGM1Y4MNFPJS8YCHE4; kspec item get @task-detail-loading; kspec validate; rg
+              -n "AC: @task-detail-loading|AC: @trait-" tests; npm test
+
+              Claims verified: verified the new getTask fallback now returns index-backed task data
+              plus a warning for missing per-task directories across ULID, short ULID, and slug
+              lookup paths; verified full-suite tests pass rather than only the changed file
+
+              Categories searched: correctness, edge cases, error handling, test quality,
+              integration; no blocking issues found.
+            created_at: 2026-03-21T23:16:02.309Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-21T23:11:50.175Z
-    updated_at: 2026-03-21T23:12:02.503Z
+    updated_at: 2026-03-21T23:16:02.309Z
     notes: []
