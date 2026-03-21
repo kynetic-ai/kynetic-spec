@@ -7598,6 +7598,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-20T20:45:38.923Z
+  - _ulid: 01KM75MJPRYZ2248HCYJME25WN
+    type: friction
+    content: "Worker agents on complex tasks (e.g. @task-impl-data-manager, 5 fix cycles) show a pattern
+      of shallow initial implementation: not reading spec ACs carefully, not using existing helpers
+      (findTaskFiles), writing tests that only cover 2-writer cases when the AC implies N-writer
+      correctness, and implementing stubs (throw unconditionally) instead of real routing. Unclear
+      if this is context window pressure, insufficient upfront planning, or prompt structure.
+      Results in reviewer catching things the worker should have gotten right — each fix cycle is
+      one issue the worker could have anticipated."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-21T03:04:51.672Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
