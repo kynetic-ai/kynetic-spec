@@ -34028,6 +34028,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM77AJ8HKG0MC3MS1YTC21F2
         timestamp: 2026-03-21T03:34:20.946Z
+      - _ulid: 01KM77AY9T9RD674WH7RCGCS27
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM77AY1P1GAACHN4YGK06RJC
+        timestamp: 2026-03-21T03:34:33.018Z
     examined_commit: 29d48278f31ece8b422641f746402a06ab097948
     external_links: []
     lifecycle_state: open
@@ -34057,7 +34064,27 @@ reviews:
               which does reject ULID changes."
             created_at: 2026-03-21T03:34:20.689Z
         kind: blocker
+      - _ulid: 01KM77AY1P1GAACHN4YGK06RJC
+        anchor:
+          type: code
+          commit: 29d48278f31ece8b422641f746402a06ab097948
+          line_end: 505
+          line_start: 471
+          path: src/parser/task-data-manager.ts
+          side: head
+        entries:
+          - _ulid: 01KM77AY1QG6B2JVMK1HQ71NWG
+            author: Jacob Chapel
+            body: "Mutations currently drop any raw task fields that are not modeled in TaskSchema. The write
+              path schema-parses the raw record first, then mergeTaskPreservingRawShape() rebuilds
+              the YAML from that normalized object, so unknown keys never make it back out. I
+              reproduced this by injecting `custom_backend_field: preserved-value` into
+              project.tasks.yaml, then calling addNote(); the field disappeared from disk after the
+              mutation. That breaks the storage-format abstraction in ac-1/ac-8 because any
+              backend-specific or forward-compatible metadata is lost on the first write."
+            created_at: 2026-03-21T03:34:32.759Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T03:29:42.814Z
-    updated_at: 2026-03-21T03:34:20.689Z
+    updated_at: 2026-03-21T03:34:32.759Z
     notes: []
