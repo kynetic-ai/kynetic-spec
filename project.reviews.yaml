@@ -40765,7 +40765,18 @@ reviews:
     slugs: []
     title: Review task-impl-activity
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation completed with no errors. Exit code 6 was due to existing repo-wide warnings
+          only.
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-03-21T17:30:30.127Z
+        completed_at: 2026-03-21T17:30:30.127Z
     events:
       - _ulid: 01KM8PYAT64VPDEHQ4YNMR9Q9X
         actor: Test User
@@ -40794,6 +40805,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM8Q5EPBGN5DZ12VQD39QHBE
         timestamp: 2026-03-21T17:30:25.116Z
+      - _ulid: 01KM8Q5M5AT4Y26B5Y8BN8JHCS
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-21T17:30:30.442Z
     examined_commit: f68480a8d01aadbdce406f6aca86f353cc32e282
     external_links: []
     lifecycle_state: open
@@ -40837,5 +40855,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-21T17:26:31.494Z
-    updated_at: 2026-03-21T17:30:24.843Z
+    updated_at: 2026-03-21T17:30:30.127Z
     notes: []
