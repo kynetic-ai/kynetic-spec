@@ -317,6 +317,11 @@ export function createTasksRoutes(options: TasksRouteOptions) {
             status: 'in_progress' as const,
             started_at: latestTask.started_at || new Date().toISOString(),
           }),
+          {
+            operation: 'api-task-start',
+            ref: params.ref,
+            detail: `start ${params.ref}`,
+          },
         );
 
         // Sync spec implementation status and commit both changes together
@@ -457,6 +462,11 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           ctx,
           params.ref,
           (latestTask) => ({ ...latestTask, status: 'pending_review' as const }),
+          {
+            operation: 'api-task-submit',
+            ref: params.ref,
+            detail: `submit ${params.ref}`,
+          },
         );
 
         // Sync spec implementation status and commit both changes together
@@ -514,6 +524,11 @@ export function createTasksRoutes(options: TasksRouteOptions) {
             completed_at: new Date().toISOString(),
             closed_reason: body.reason,
           }),
+          {
+            operation: 'api-task-complete',
+            ref: params.ref,
+            detail: `complete ${params.ref}`,
+          },
         );
 
         // Sync spec implementation status and commit both changes together
@@ -575,6 +590,11 @@ export function createTasksRoutes(options: TasksRouteOptions) {
             status: 'blocked' as const,
             notes: [...latestTask.notes, note],
           }),
+          {
+            operation: 'api-task-block',
+            ref: params.ref,
+            detail: `block ${params.ref}`,
+          },
         );
 
         // Sync spec implementation status and commit both changes together

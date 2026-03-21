@@ -86,7 +86,11 @@ export async function linkReviewToTasks(
     await resolveTaskDataManager(ctx).mutateTask(ctx, task._ulid, (latestTask) => ({
       ...latestTask,
       review_ref: reviewRef,
-    }));
+    }), {
+      operation: "review-link",
+      ref: task.slugs[0] || task._ulid,
+      detail: `set review_ref to ${reviewRef}`,
+    });
 
     result.linkedTasks.push({
       ulid: task._ulid,
@@ -179,6 +183,10 @@ export async function handleVerdictTaskTransition(
         session_id: null,
         notes: [...latestTask.notes, note],
       };
+    }, {
+      operation: "review-verdict-needs-work",
+      ref: task.slugs[0] || task._ulid,
+      detail: `changes_requested → needs_work (cycle ${cycleNumber})`,
     });
 
     results.push({ ulid: task._ulid, slug: task.slugs[0], transitioned: true });
