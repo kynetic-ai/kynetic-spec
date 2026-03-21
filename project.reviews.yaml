@@ -34370,6 +34370,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-21T04:21:22.753Z
+      - _ulid: 01KM7A7K5CN238MN7D7FC3M6HA
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM7A7JXESXYHWDHGVQA5AH6S
+        timestamp: 2026-03-21T04:25:09.036Z
     examined_commit: aba38db786aa6f593e5f2ceb9f6e7acc3db5bb4c
     external_links: []
     lifecycle_state: open
@@ -34379,8 +34386,28 @@ reviews:
       content_hash: ""
       ref: "@01KM6YENV3CBFAGSRHVHR7QPJN"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM7A7JXESXYHWDHGVQA5AH6S
+        anchor:
+          type: code
+          commit: aba38db786aa6f593e5f2ceb9f6e7acc3db5bb4c
+          line_end: 109
+          line_start: 92
+          path: src/parser/task-data-manager.ts
+          side: head
+        entries:
+          - _ulid: 01KM7A7JXEFNNFM99CFK69MEZ5
+            author: Jacob Chapel
+            body: listTasks() still publishes _sourceFile, which leaks the concrete storage layout back through
+              the new abstraction. AC-1 says callers should not know or care about the underlying
+              format, but the summary record now exposes whether tasks live in project.tasks.yaml or
+              a split-path location, and tests/task-data-manager.test.ts:555 also locks that leak in
+              as intended behavior. _sourceFile is already treated elsewhere in the codebase as
+              runtime metadata that is not serialized, so keeping it in TaskSummary undermines the
+              manager's core contract and will couple future callers to backend-specific paths.
+            created_at: 2026-03-21T04:25:08.782Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T04:20:46.932Z
-    updated_at: 2026-03-21T04:21:22.477Z
+    updated_at: 2026-03-21T04:25:08.782Z
     notes: []
