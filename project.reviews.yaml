@@ -41074,6 +41074,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM8RK83ENAPAR73HNWFSCAMJ
         timestamp: 2026-03-21T17:55:25.739Z
+      - _ulid: 01KM8RKK5VBR2E6EEWHNPVZP0W
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM8RKJW9752QMW42SQG6AKBW
+        timestamp: 2026-03-21T17:55:36.763Z
     examined_commit: e83d3c1d997a2dcbd417ba261dd4963382db944a
     external_links: []
     lifecycle_state: open
@@ -41122,7 +41129,25 @@ reviews:
               the canonical split values."
             created_at: 2026-03-21T17:55:25.422Z
         kind: blocker
+      - _ulid: 01KM8RKJW9752QMW42SQG6AKBW
+        entries:
+          - _ulid: 01KM8RKJW9GF6R0S4QP5E16XEA
+            author: Test User
+            body: "Evidence log: Files read: src/cli/commands/task.ts, src/parser/yaml.ts,
+              src/parser/split-backend.ts, src/schema/task.ts, tests/task-migrate.test.ts,
+              tests/helpers/cli.ts. Commands run: git diff --stat, git diff on changed files, kspec
+              task get @01KM6YEWY1WSKEXTF5YNP5GG81, kspec review for-task, kspec review get
+              @01KM8QHXRVQKMZW0VFDNPCVFDB, grep for AC annotations, kspec validate, npm test, and
+              two standalone node-based CLI reproductions for the blockers. Claims verified: prior
+              blocker fix was checked against canonical split reads; reproduced that it still falls
+              back to stale monolithic data when notes exist, and reproduced that missing-_ulid
+              monolithic rows are skipped entirely. Categories searched: correctness (2 blockers
+              found), edge cases (invalid _ulid, existing notes), error handling (warnings/Already
+              migrated path), test quality (new regression test only covers zero-note canonical
+              case), integration (full npm test run)."
+            created_at: 2026-03-21T17:55:36.457Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-21T17:54:43.597Z
-    updated_at: 2026-03-21T17:55:25.422Z
+    updated_at: 2026-03-21T17:55:36.457Z
     notes: []
