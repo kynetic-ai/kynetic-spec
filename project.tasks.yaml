@@ -113512,6 +113512,18 @@
       supersedes: null
       author: Test User
       created_at: 2026-03-21T18:28:50.217Z
+    - _ulid: 01KM8TYYBJJBWKR3Y0H7R9GG9Y
+      content: "Fix cycle 2: Addressed both blockers from review. (1) Added optional 'command' field to
+        ActivityEntry interface and populated it from entry.command in historyToActivity(), so
+        stored-history entries now preserve the originating kspec command. (2) Fixed multi-field
+        history entries to expose all changed fields using namespaced detail keys
+        (field.from/field.to) instead of dropping detail when fields.length > 1. Single-field
+        entries retain the backward-compatible flat key format. Updated 4 test assertions and added
+        new assertions for command preservation, multi-field detail on task-start/task-submit, and
+        note entries having no command. All 6912 tests pass."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T18:36:45.810Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YEVFHZ9J6734CYVPWWDMH
