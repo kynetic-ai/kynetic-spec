@@ -113836,3 +113836,60 @@
   created_at: 2026-03-21T09:26:39.009Z
   notes: []
   todos: []
+- _ulid: 01KM8KEEN57D9E64GZPQTH1SXJ
+  slugs: []
+  title: Remove default timeout from dispatch shadow mutation lock
+  type: task
+  description: >-
+    Why: Dispatch agents run parallel kspec CLI commands (e.g. kspec review comment, kspec review
+    check) that all acquire the shared dispatch shadow mutation file lock. The current default
+    timeout is 5 seconds, inherited from the general-purpose file-lock DEFAULT_TIMEOUT_MS. When one
+    command holds the lock through its read-modify-write + git commit cycle, sibling commands time
+    out and hard-exit, causing dispatch bootstrap failures and review command failures. The spec
+    says mutations should serialize (ac-2), not race — a timeout that kills the waiter contradicts
+    this.
+
+
+    What: Change the dispatch shadow mutation lock to wait indefinitely by default, relying on stale
+    PID detection (process.kill(pid, 0)) as the safety valve for dead lock holders. The
+    KSPEC_SHADOW_MUTATION_LOCK_TIMEOUT_MS env var remains as an explicit operator override.
+
+
+    How: Three targeted changes:
+
+
+    1. src/parser/file-lock.ts — acquireFileLock(): Support no-timeout mode. When timeoutMs is 0 or
+    Infinity, set deadline to Infinity so the retry loop never triggers the timeout throw. The stale
+    lock detection and 50ms retry interval continue to function normally.
+
+
+    2. src/cli/index.ts — maybeAcquireDispatchMutationLock(): Change the default timeout from
+    undefined (which falls through to DEFAULT_TIMEOUT_MS = 5000) to 0 (wait indefinitely). When
+    KSPEC_SHADOW_MUTATION_LOCK_TIMEOUT_MS is set, use that value. The process.exit catch block stays
+    for explicit timeout overrides.
+
+
+    3. src/agent-runtime/workspace.ts — resolveDispatchMutationLockTimeoutMs(): Return 0 instead of
+    undefined when the env var is unset, so daemon-side lock acquisitions via
+    withDispatchShadowMutationLock also wait indefinitely.
+
+
+    Verification: Existing tests for file-lock stale detection and dispatch mutation serialization
+    should continue to pass. Add tests for the no-timeout path (lock acquired after holder releases
+    without hitting a deadline).
+  spec_ref: "@scoped-dispatch-shadow-serialization"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 1
+  tags:
+    - dispatch
+    - concurrency
+    - bug
+  vcs_refs: []
+  created_at: 2026-03-21T16:25:25.413Z
+  notes: []
+  todos: []
