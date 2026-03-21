@@ -87,6 +87,8 @@ describe("TaskDataManager", () => {
   });
 
   // AC: @task-data-manager ac-2
+  // AC: @task-listing-performance ac-1 — filtered lists read only index; no per-task directory accessed
+  // AC: @task-listing-performance ac-2 — response time proportional to task count, not notes/history volume
   // Only index data is read for listing; per-task detail files are not accessed
   describe("list returns only index data (ac-2)", () => {
     it("returns summary records containing only index-level fields", async () => {
@@ -283,6 +285,7 @@ describe("TaskDataManager", () => {
   });
 
   // AC: @task-data-manager ac-3
+  // AC: @task-detail-loading ac-1 — detail request reads index + per-task directory; result is unified task
   // Manager assembles the complete task from index and per-task files transparently
   describe("full detail loading (ac-3)", () => {
     it("returns complete task by slug reference", async () => {
@@ -607,6 +610,7 @@ describe("TaskDataManager", () => {
       }
     });
 
+    // AC: @task-storage-activation ac-2 — split format used for all operations when activated
     it("routes to registered split backend when available", async () => {
       tempDir = await setupTempFixtures();
 

@@ -292,6 +292,7 @@ describe("SplitBackend", () => {
     });
 
     // AC: @task-directory-storage ac-2
+    // AC: @task-detail-loading ac-1 — unified task assembled from index + per-task directory
     it("assembled task has data from both files", async () => {
       const ulid = testUlid("ASMB");
       const noteUlid = testUlid("ANT2", 1);
@@ -555,6 +556,7 @@ describe("SplitBackend", () => {
 
   // ── Operation Routing ──────────────────────────────────────────────────
   describe("operation routing", () => {
+    // AC: @task-listing-performance ac-1 — list reads only index; no per-task directory accessed
     it("list touches only index", () => {
       const routing = getOperationRouting("list");
       expect(routing.touchesIndex).toBe(true);
@@ -562,6 +564,7 @@ describe("SplitBackend", () => {
       expect(routing.touchesNotes).toBe(false);
     });
 
+    // AC: @task-detail-loading ac-1 — detail request reads per-task directory (core data + notes)
     it("get touches only per-task files", () => {
       const routing = getOperationRouting("get");
       expect(routing.touchesIndex).toBe(false);
@@ -640,6 +643,7 @@ describe("SplitBackend", () => {
       expect(fetched.priority).toBe(2);
     });
 
+    // AC: @task-listing-performance ac-1 — list reads only index, no per-task directory accessed
     it("listTasks returns summaries from index", async () => {
       const manager = new TaskDataManager("split");
 
