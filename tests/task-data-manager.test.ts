@@ -5,7 +5,8 @@ import {
   TaskDataManager,
   TaskDataManagerError,
 } from "../src/parser/index.js";
-import type { TaskSummary } from "../src/parser/task-data-manager.js";
+import type { TaskSummary, TaskStorageBackend } from "../src/parser/task-data-manager.js";
+import { registerBackend, unregisterBackend } from "../src/parser/task-data-manager.js";
 import {
   cleanupTempDir,
   kspec,
@@ -454,60 +455,83 @@ describe("TaskDataManager", () => {
   // AC: @task-data-manager ac-8
   // Split format used when explicitly activated
   describe("split format activation (ac-8)", () => {
-    it("throws descriptive error when split format is activated", async () => {
-      tempDir = await setupTempFixtures();
-      const splitManager = new TaskDataManager("split");
-      const ctx = await initContext(tempDir);
-
-      // The split backend is not yet implemented — the manager routes to it
-      // and throws a descriptive error explaining the situation
+    it("throws at construction when split backend is not registered", () => {
+      // AC: @trait-error-guidance ac-1, ac-2
       try {
-        await splitManager.listTasks(ctx);
-        expect.fail("Should have thrown for unimplemented split backend");
+        new TaskDataManager("split");
+        expect.fail("Should have thrown for unregistered split backend");
       } catch (err) {
         expect(err).toBeInstanceOf(TaskDataManagerError);
         const tdmErr = err as TaskDataManagerError;
-        expect(tdmErr.message).toContain("Split storage format is not yet implemented");
-        expect(tdmErr.suggestion).toContain("monolithic");
+        expect(tdmErr.message).toContain("No storage backend registered");
+        expect(tdmErr.message).toContain("split");
+        expect(tdmErr.suggestion).toContain("registerBackend");
         expect(tdmErr.field).toBe("storageFormat");
       }
     });
 
-    it("split format guard applies to all operations", async () => {
+    it("routes to registered split backend when available", async () => {
       tempDir = await setupTempFixtures();
-      const splitManager = new TaskDataManager("split");
-      const ctx = await initContext(tempDir);
 
-      // Every public method should throw when split is activated
-      await expect(splitManager.listTasks(ctx)).rejects.toThrow(
-        "Split storage format is not yet implemented",
-      );
-      await expect(splitManager.getTask(ctx, "@test-task-pending")).rejects.toThrow(
-        "Split storage format is not yet implemented",
-      );
-      await expect(
-        splitManager.createTask(ctx, { title: "test", slugs: ["test"] }),
-      ).rejects.toThrow("Split storage format is not yet implemented");
-      await expect(
-        splitManager.mutateTask(ctx, "@test-task-pending", (t) => t),
-      ).rejects.toThrow("Split storage format is not yet implemented");
-      await expect(
-        splitManager.mutateTasks(ctx, ["@test-task-pending"], (t) => t),
-      ).rejects.toThrow("Split storage format is not yet implemented");
-      await expect(
-        splitManager.deleteTask(ctx, "@test-task-pending"),
-      ).rejects.toThrow("Split storage format is not yet implemented");
-      await expect(
-        splitManager.addNote(ctx, "@test-task-pending", "note"),
-      ).rejects.toThrow("Split storage format is not yet implemented");
+      // Register a mock split backend to verify routing
+      const calls: string[] = [];
+      const mockSplitBackend: TaskStorageBackend = {
+        format: "split",
+        async listTasks(ctx) {
+          calls.push("listTasks");
+          // Delegate to monolithic for this test — just proving routing works
+          const { loadAllTasks: load } = await import("../src/parser/yaml.js");
+          return load(ctx);
+        },
+        async getTask(ctx, ref) {
+          calls.push("getTask");
+          const { loadAllTasks: load, findTaskByRef: find } = await import("../src/parser/yaml.js");
+          const tasks = await load(ctx);
+          return find(tasks, ref);
+        },
+        async createTask() {
+          calls.push("createTask");
+        },
+        async mutateTask(ctx, task, mutate) {
+          calls.push("mutateTask");
+          const { mutateTaskAtomically: mut } = await import("../src/parser/yaml.js");
+          return mut(ctx, task, mutate);
+        },
+        async mutateTasks(ctx, tasks, mutate) {
+          calls.push("mutateTasks");
+          const { mutateTasksAtomically: mut } = await import("../src/parser/yaml.js");
+          return mut(ctx, tasks, mutate);
+        },
+        async deleteTask() {
+          calls.push("deleteTask");
+        },
+      };
+
+      registerBackend(mockSplitBackend);
+      try {
+        const splitManager = new TaskDataManager("split");
+        expect(splitManager.storageFormat).toBe("split");
+
+        const ctx = await initContext(tempDir);
+
+        // Operations should route through the split backend
+        await splitManager.listTasks(ctx);
+        expect(calls).toContain("listTasks");
+
+        await splitManager.getTask(ctx, "@test-task-pending");
+        expect(calls).toContain("getTask");
+      } finally {
+        // Clean up: remove mock split backend from global registry
+        unregisterBackend("split");
+      }
     });
 
     it("exposes storageFormat property for inspection", () => {
       const monoManager = new TaskDataManager();
       expect(monoManager.storageFormat).toBe("monolithic");
 
-      const splitManager = new TaskDataManager("split");
-      expect(splitManager.storageFormat).toBe("split");
+      // Split without registered backend throws at construction
+      expect(() => new TaskDataManager("split")).toThrow(TaskDataManagerError);
     });
   });
 
@@ -554,6 +578,109 @@ describe("TaskDataManager", () => {
       expect(
         reloaded.notes.some((n) => n.content === "Concurrent note"),
       ).toBe(true);
+    });
+  });
+
+  // Mutation output validation — prevents storage corruption from invalid callback output
+  describe("mutation output validation", () => {
+    it("rejects mutation that produces invalid task (missing title)", async () => {
+      tempDir = await setupTempFixtures();
+      manager = new TaskDataManager();
+      const ctx = await initContext(tempDir);
+
+      await expect(
+        manager.mutateTask(ctx, "@test-task-pending", (task) => {
+          // Return task with empty title — violates schema min(1) constraint
+          return { ...task, title: "" };
+        }),
+      ).rejects.toThrow(TaskDataManagerError);
+
+      try {
+        await manager.mutateTask(ctx, "@test-task-pending", (task) => ({
+          ...task,
+          title: "",
+        }));
+      } catch (err) {
+        const tdmErr = err as TaskDataManagerError;
+        expect(tdmErr.message).toContain("Mutation produced invalid task data");
+        expect(tdmErr.suggestion).toContain("mutation callback");
+      }
+    });
+
+    it("rejects mutation that produces invalid priority", async () => {
+      tempDir = await setupTempFixtures();
+      manager = new TaskDataManager();
+      const ctx = await initContext(tempDir);
+
+      await expect(
+        manager.mutateTask(ctx, "@test-task-pending", (task) => ({
+          ...task,
+          priority: 99, // out of range (1-5)
+        })),
+      ).rejects.toThrow(TaskDataManagerError);
+    });
+
+    it("does not persist invalid mutation output", async () => {
+      tempDir = await setupTempFixtures();
+      manager = new TaskDataManager();
+      const ctx = await initContext(tempDir);
+
+      // Get the task's original title
+      const original = await manager.getTask(ctx, "@test-task-pending");
+      const originalTitle = original.title;
+
+      // Attempt an invalid mutation
+      try {
+        await manager.mutateTask(ctx, "@test-task-pending", (task) => ({
+          ...task,
+          title: "", // invalid
+        }));
+      } catch {
+        // Expected to fail
+      }
+
+      // Verify the original task is unchanged on disk
+      const reloaded = await manager.getTask(ctx, "@test-task-pending");
+      expect(reloaded.title).toBe(originalTitle);
+    });
+
+    it("rejects invalid output in batch mutations", async () => {
+      tempDir = await setupTempFixtures();
+      manager = new TaskDataManager();
+      const ctx = await initContext(tempDir);
+
+      await expect(
+        manager.mutateTasks(
+          ctx,
+          ["@test-task-pending", "@test-task-secondary"],
+          (tasks) =>
+            tasks.map((task, i) =>
+              i === 0 ? { ...task, title: "" } : task, // first task invalid
+            ),
+        ),
+      ).rejects.toThrow(TaskDataManagerError);
+    });
+
+    it("accepts valid mutation output", async () => {
+      tempDir = await setupTempFixtures();
+      manager = new TaskDataManager();
+      const ctx = await initContext(tempDir);
+
+      // Valid mutation should succeed
+      const updated = await manager.mutateTask(
+        ctx,
+        "@test-task-pending",
+        (task) => ({
+          ...task,
+          tags: [...task.tags, "validated"],
+        }),
+      );
+
+      expect(updated.tags).toContain("validated");
+
+      // Verify persisted
+      const reloaded = await manager.getTask(ctx, "@test-task-pending");
+      expect(reloaded.tags).toContain("validated");
     });
   });
 

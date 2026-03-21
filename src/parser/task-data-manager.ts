@@ -16,6 +16,7 @@
  */
 
 import type { Note, Task, TaskInput } from "../schema/task.js";
+import { TaskSchema } from "../schema/task.js";
 import type { KspecContext, LoadedTask } from "./yaml.js";
 import {
   createNote,
@@ -148,6 +149,133 @@ export class TaskDataManagerError extends Error {
 }
 
 /**
+ * Storage backend interface — defines all storage operations that a backend
+ * must implement. The manager delegates to the active backend based on the
+ * configured storage format.
+ *
+ * AC: @task-data-manager ac-1 — callers interact via the manager, not backends
+ * AC: @task-data-manager ac-8 — split format routes through its own backend
+ */
+export interface TaskStorageBackend {
+  readonly format: StorageFormat;
+
+  listTasks(ctx: KspecContext): Promise<LoadedTask[]>;
+  getTask(ctx: KspecContext, ref: string): Promise<LoadedTask | undefined>;
+  createTask(ctx: KspecContext, task: LoadedTask): Promise<void>;
+  mutateTask(
+    ctx: KspecContext,
+    task: LoadedTask,
+    mutate: (latestTask: LoadedTask) => Task | LoadedTask | Promise<Task | LoadedTask>,
+  ): Promise<LoadedTask>;
+  mutateTasks(
+    ctx: KspecContext,
+    tasks: LoadedTask[],
+    mutate: (latestTasks: LoadedTask[]) => Array<Task | LoadedTask> | Promise<Array<Task | LoadedTask>>,
+  ): Promise<LoadedTask[]>;
+  deleteTask(ctx: KspecContext, task: LoadedTask): Promise<void>;
+}
+
+/**
+ * Monolithic storage backend — all tasks in a single YAML file.
+ * This is the default backend used when no split format is activated.
+ *
+ * AC: @task-data-manager ac-7 — monolithic format used by default
+ */
+class MonolithicBackend implements TaskStorageBackend {
+  readonly format: StorageFormat = "monolithic";
+
+  async listTasks(ctx: KspecContext): Promise<LoadedTask[]> {
+    return loadAllTasks(ctx);
+  }
+
+  async getTask(ctx: KspecContext, ref: string): Promise<LoadedTask | undefined> {
+    const tasks = await loadAllTasks(ctx);
+    return findTaskByRef(tasks, ref);
+  }
+
+  async createTask(ctx: KspecContext, task: LoadedTask): Promise<void> {
+    await saveTaskToFile(ctx, task);
+  }
+
+  async mutateTask(
+    ctx: KspecContext,
+    task: LoadedTask,
+    mutate: (latestTask: LoadedTask) => Task | LoadedTask | Promise<Task | LoadedTask>,
+  ): Promise<LoadedTask> {
+    return mutateTaskAtomically(ctx, task, mutate);
+  }
+
+  async mutateTasks(
+    ctx: KspecContext,
+    tasks: LoadedTask[],
+    mutate: (latestTasks: LoadedTask[]) => Array<Task | LoadedTask> | Promise<Array<Task | LoadedTask>>,
+  ): Promise<LoadedTask[]> {
+    return mutateTasksAtomically(ctx, tasks, mutate);
+  }
+
+  async deleteTask(ctx: KspecContext, task: LoadedTask): Promise<void> {
+    await deleteTaskFromFile(ctx, task);
+  }
+}
+
+/** Singleton monolithic backend instance. */
+const monolithicBackend = new MonolithicBackend();
+
+/**
+ * Registry for storage backends. The split backend will be registered here
+ * by @task-impl-split-storage when it is implemented.
+ *
+ * AC: @task-data-manager ac-8 — split format routes to registered backend
+ */
+const backendRegistry = new Map<StorageFormat, TaskStorageBackend>([
+  ["monolithic", monolithicBackend],
+]);
+
+/**
+ * Register a storage backend for a given format.
+ * Used by the split storage implementation to plug in its backend.
+ *
+ * AC: @task-data-manager ac-8 — enables split format activation
+ */
+export function registerBackend(backend: TaskStorageBackend): void {
+  backendRegistry.set(backend.format, backend);
+}
+
+/**
+ * Unregister a storage backend for a given format.
+ * Primarily used in tests to restore the default registry state.
+ * Cannot unregister the monolithic backend.
+ */
+export function unregisterBackend(format: StorageFormat): void {
+  if (format === "monolithic") {
+    return; // monolithic backend is always available
+  }
+  backendRegistry.delete(format);
+}
+
+/**
+ * Validate a task record against the schema before persisting.
+ * Strips _sourceFile before validation since it is runtime metadata.
+ *
+ * AC: @trait-error-guidance ac-5 — validation errors include field info
+ */
+function validateMutationOutput(task: Task | LoadedTask): void {
+  const { _sourceFile: _, ...cleanTask } = task as LoadedTask;
+  const result = TaskSchema.safeParse(cleanTask);
+  if (!result.success) {
+    const firstIssue = result.error.issues[0];
+    const fieldPath = firstIssue?.path?.join(".") || "unknown";
+    throw new TaskDataManagerError(
+      `Mutation produced invalid task data: ${result.error.message}`,
+      {
+        suggestion: "Check the mutation callback returns a valid task record matching the task schema",
+        field: fieldPath,
+      },
+    );
+  }
+}
+
+/**
  * Task Data Manager — owns all task storage operations.
  *
  * AC: @task-data-manager ac-1 — callers don't know about storage format
@@ -156,32 +284,28 @@ export class TaskDataManagerError extends Error {
  *
  * The manager receives a storage format at construction time. The format
  * defaults to "monolithic" per @task-storage-activation ac-1. When set to
- * "split", the manager routes to the split backend (not yet implemented;
- * the split storage backend is delivered by @task-impl-split-storage).
+ * "split", the manager routes to the registered split backend. If no split
+ * backend has been registered, the manager throws a descriptive error.
  */
 export class TaskDataManager {
   readonly storageFormat: StorageFormat;
+  private readonly backend: TaskStorageBackend;
 
   constructor(storageFormat: StorageFormat = "monolithic") {
     this.storageFormat = storageFormat;
-  }
-
-  /**
-   * Guard that throws if the split backend is requested but not yet available.
-   * AC: @task-data-manager ac-8 — split format routing
-   * AC: @trait-error-guidance ac-1, ac-2 — descriptive error with suggestion
-   */
-  private ensureBackendAvailable(): void {
-    if (this.storageFormat === "split") {
+    const backend = backendRegistry.get(storageFormat);
+    if (!backend) {
+      // AC: @trait-error-guidance ac-1, ac-2
       throw new TaskDataManagerError(
-        "Split storage format is not yet implemented. The split per-task directory backend is delivered by task @task-impl-split-storage.",
+        `No storage backend registered for format "${storageFormat}". The split per-task directory backend is delivered by task @task-impl-split-storage.`,
         {
           suggestion:
-            "Set storage format to 'monolithic' or wait for the split storage implementation to be completed.",
+            "Set storage format to 'monolithic' or ensure the split storage backend has been registered via registerBackend().",
           field: "storageFormat",
         },
       );
     }
+    this.backend = backend;
   }
 
   /**
@@ -192,8 +316,7 @@ export class TaskDataManager {
    * todos, description, etc.) are not included.
    *
    * In the monolithic backend, this reads the full file and projects index
-   * fields. In the split backend (future), this will read only the lean
-   * index file.
+   * fields. In the split backend, this reads only the lean index file.
    *
    * AC: @task-data-manager ac-2 — only index data returned to callers
    * AC: @task-data-manager ac-7 — monolithic format used until split activated
@@ -202,9 +325,7 @@ export class TaskDataManager {
     ctx: KspecContext,
     filters?: TaskListFilters,
   ): Promise<TaskSummary[]> {
-    this.ensureBackendAvailable();
-
-    const tasks = await loadAllTasks(ctx);
+    const tasks = await this.backend.listTasks(ctx);
 
     let filtered: LoadedTask[];
     if (!filters) {
@@ -242,7 +363,7 @@ export class TaskDataManager {
    * Get full details for a specific task by reference (ULID, slug, or short ref).
    *
    * In the monolithic backend, this loads all tasks and finds the match.
-   * When the split format is activated, this will read the index + per-task
+   * When the split format is activated, the backend reads the index + per-task
    * directory to assemble the complete record.
    *
    * AC: @task-data-manager ac-3 — assembles complete task transparently
@@ -250,9 +371,7 @@ export class TaskDataManager {
    * AC: @trait-error-guidance ac-3 — suggests checking ref on not found
    */
   async getTask(ctx: KspecContext, ref: string): Promise<LoadedTask> {
-    this.ensureBackendAvailable();
-    const tasks = await loadAllTasks(ctx);
-    const task = findTaskByRef(tasks, ref);
+    const task = await this.backend.getTask(ctx, ref);
     if (!task) {
       // AC: @trait-error-guidance ac-1, ac-2, ac-3
       throw new TaskDataManagerError(
@@ -281,7 +400,6 @@ export class TaskDataManager {
     input: TaskInput,
     commitOpts?: ShadowCommitOptions,
   ): Promise<LoadedTask> {
-    this.ensureBackendAvailable();
     let newTask: Task;
     try {
       newTask = createTask(input);
@@ -298,7 +416,7 @@ export class TaskDataManager {
       _sourceFile: getDefaultTaskFilePath(ctx),
     };
 
-    await saveTaskToFile(ctx, loadedTask);
+    await this.backend.createTask(ctx, loadedTask);
 
     if (commitOpts) {
       await commitIfShadow(
@@ -318,6 +436,8 @@ export class TaskDataManager {
    *
    * The mutation callback receives the current task value while holding the
    * file lock, so concurrent writers cannot clobber unrelated fields.
+   * The callback's output is validated against the task schema before
+   * persisting to prevent storage corruption.
    *
    * AC: @task-data-manager ac-4 — files, locking, commits coordinated
    * AC: @task-data-manager ac-6 — atomic operation
@@ -331,11 +451,18 @@ export class TaskDataManager {
     ) => Task | LoadedTask | Promise<Task | LoadedTask>,
     commitOpts?: ShadowCommitOptions,
   ): Promise<LoadedTask> {
-    this.ensureBackendAvailable();
     // Resolve the task first to get _sourceFile for locking
     const task = await this.getTask(ctx, ref);
 
-    const updated = await mutateTaskAtomically(ctx, task, mutate);
+    const updated = await this.backend.mutateTask(
+      ctx,
+      task,
+      async (latestTask) => {
+        const result = await mutate(latestTask);
+        validateMutationOutput(result);
+        return result;
+      },
+    );
 
     if (commitOpts) {
       await commitIfShadow(
@@ -356,6 +483,7 @@ export class TaskDataManager {
    * Acquires all affected task-file locks in sorted order, loads the latest
    * on-disk state for each target task, lets the caller compute the updated
    * records, then writes each touched file once before releasing the locks.
+   * Each mutated task is validated against the task schema before persisting.
    *
    * AC: @task-data-manager ac-4 — files, locking, commits coordinated
    * AC: @task-data-manager ac-5 — non-overlapping mutations no contention
@@ -370,13 +498,22 @@ export class TaskDataManager {
     ) => Array<Task | LoadedTask> | Promise<Array<Task | LoadedTask>>,
     commitOpts?: ShadowCommitOptions,
   ): Promise<LoadedTask[]> {
-    this.ensureBackendAvailable();
     // Resolve all refs to loaded tasks
     const tasks = await Promise.all(
       refs.map((ref) => this.getTask(ctx, ref)),
     );
 
-    const updated = await mutateTasksAtomically(ctx, tasks, mutate);
+    const updated = await this.backend.mutateTasks(
+      ctx,
+      tasks,
+      async (latestTasks) => {
+        const results = await mutate(latestTasks);
+        for (const result of results) {
+          validateMutationOutput(result);
+        }
+        return results;
+      },
+    );
 
     if (commitOpts) {
       await commitIfShadow(
@@ -405,7 +542,6 @@ export class TaskDataManager {
     ref: string,
     commitOpts?: ShadowCommitOptions,
   ): Promise<void> {
-    this.ensureBackendAvailable();
     const task = await this.getTask(ctx, ref);
 
     if (!task._sourceFile) {
@@ -415,7 +551,7 @@ export class TaskDataManager {
       );
     }
 
-    await deleteTaskFromFile(ctx, task);
+    await this.backend.deleteTask(ctx, task);
 
     if (commitOpts) {
       await commitIfShadow(
@@ -445,7 +581,6 @@ export class TaskDataManager {
     author?: string,
     commitOpts?: ShadowCommitOptions,
   ): Promise<{ task: LoadedTask; note: Note }> {
-    this.ensureBackendAvailable();
     const note = createNote(content, author);
 
     const updated = await this.mutateTask(
