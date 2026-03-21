@@ -39032,9 +39032,25 @@ reviews:
           status: skipped
           name: npm test
         timestamp: 2026-03-21T12:09:40.748Z
+      - _ulid: 01KM84T91QB2GTFDZA0JNF1RYX
+        actor: codex@openai.com
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-21T12:09:44.247Z
+      - _ulid: 01KM84T91QVR02M62VNBP25B2V
+        actor: codex@openai.com
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-21T12:09:44.247Z
     examined_commit: 8ffbce2773d7ce1e143bb9a483e37b4fc583ee2f
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -39077,7 +39093,14 @@ reviews:
               even though the CLI paths were fixed in earlier cycles.
             created_at: 2026-03-21T12:09:24.516Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai.com
+        role: reviewer
+        created_at: 2026-03-21T12:09:44.247Z
     created_at: 2026-03-21T12:08:30.389Z
-    updated_at: 2026-03-21T12:09:40.470Z
+    updated_at: 2026-03-21T12:09:44.247Z
     notes: []
