@@ -38236,3 +38236,29 @@ reviews:
     created_at: 2026-03-21T10:38:18.995Z
     updated_at: 2026-03-21T10:43:55.151Z
     notes: []
+  - _ulid: 01KM8073MGS4NC33A4HT9VANM0
+    slugs: []
+    title: Review per-task core data and notes files (cycle 8)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KM8073MF5MDDY5HN723G01D1
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-21T10:49:21.808Z
+    examined_commit: eb6cf22b0b84aaa7f2368374bcb5f933c96dc010
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KM6YET1A7XY9D0V3YQ9DRASG"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-21T10:49:21.808Z
+    updated_at: null
+    notes: []
