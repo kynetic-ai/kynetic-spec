@@ -36267,6 +36267,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM7QVN00XNC9RT5GT4BXXKNN
         timestamp: 2026-03-21T08:23:18.032Z
+      - _ulid: 01KM7QWPHNX08KSJM5VPJKFNAR
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM7QWP9C62QBRSB7H43YRVJG
+        timestamp: 2026-03-21T08:23:52.117Z
     examined_commit: 19eb168e46267d19228636e2b2c1e1d83eba2cac
     external_links: []
     lifecycle_state: open
@@ -36316,7 +36323,44 @@ reviews:
               treating note mutations as index writes.
             created_at: 2026-03-21T08:23:17.760Z
         kind: blocker
+      - _ulid: 01KM7QWP9C62QBRSB7H43YRVJG
+        entries:
+          - _ulid: 01KM7QWP9CNAHNNX47RF21W6DK
+            author: Jacob Chapel
+            body: >-
+              Review evidence log
+
+
+              Files read: src/parser/split-backend.ts, src/parser/task-data-manager.ts,
+              tests/split-backend.test.ts, prior review @01KM7PH42M0N44GZREQ3T126RP,
+              @task-index-file, @task-data-manager,
+              @plan-task-storage-split-per-task-directory-architecture.
+
+
+              Commands run: git diff --stat dev..HEAD, git diff dev..HEAD --
+              src/parser/split-backend.ts tests/split-backend.test.ts, git diff 6023a5e3..HEAD --
+              src/parser/split-backend.ts tests/split-backend.test.ts, kspec task get
+              @01KM6YESAF92YTNXT3DF06AC0N, kspec item get @task-index-file, kspec item get
+              @task-data-manager, kspec plan get
+              @plan-task-storage-split-per-task-directory-architecture, kspec review get
+              @01KM7PH42M0N44GZREQ3T126RP, kspec validate, rg -n "AC: @task-index-file"
+              tests/split-backend.test.ts, npm test.
+
+
+              Claims verified: verified the prior blocker really was stale notes_count/todos_count
+              after note mutations by reading the prior review and the fix-cycle diff; verified the
+              new snapshot makes listTasks() counts fresh by changing INDEX_CHANGE_FIELDS and
+              rewriting the AC-3 test expectation.
+
+
+              Categories searched: correctness (found blocker: implementation now contradicts
+              @task-index-file ac-3), test quality (found blocker: AC-3 annotation now proves the
+              opposite behavior), edge cases (checked rebuild and per-task-authoritative paths, no
+              additional issue found), error handling (no new issue found in changed code),
+              integration (full npm test passed; kspec validate had repo-wide warnings only).
+            created_at: 2026-03-21T08:23:51.852Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-21T08:22:52.107Z
-    updated_at: 2026-03-21T08:23:17.760Z
+    updated_at: 2026-03-21T08:23:51.852Z
     notes: []
