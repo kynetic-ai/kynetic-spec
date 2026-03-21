@@ -39779,6 +39779,13 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-03-21T13:54:06.172Z
+      - _ulid: 01KM8ASJDCWBY404KCDTA7GCCW
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM8ASHW2QK9C6YHANM1389KW
+        timestamp: 2026-03-21T13:54:12.524Z
     examined_commit: 71d9fdfaf5c31d9816143595800c42f8996a40df
     external_links: []
     lifecycle_state: closed
@@ -39788,7 +39795,27 @@ reviews:
       content_hash: ""
       ref: "@01KM6YET1A7XY9D0V3YQ9DRASG"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM8ASHW2QK9C6YHANM1389KW
+        anchor:
+          type: code
+          commit: 71d9fdfaf5c31d9816143595800c42f8996a40df
+          line_end: 370
+          line_start: 369
+          path: src/cli/batch-write-buffer.ts
+          side: head
+        entries:
+          - _ulid: 01KM8ASHW3NCN7W88YFG7YQKSH
+            author: Test User
+            body: "WriteBuffer.flush() now stages every write to a fixed path derived only from the destination
+              file. That makes isolated buffers for concurrent split mutations contend on the same
+              staging file whenever both touch project.tasks.yaml: one flush renames the staging
+              file away and the other then fails with ENOENT. The full npm test run hit exactly that
+              in tests/split-backend.test.ts:735, so the new async-local buffering regresses the
+              @task-data-manager guarantee that non-overlapping task mutations succeed
+              concurrently."
+            created_at: 2026-03-21T13:54:11.971Z
+        kind: blocker
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -39798,5 +39825,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-21T13:54:01.832Z
     created_at: 2026-03-21T13:48:42.173Z
-    updated_at: 2026-03-21T13:54:05.651Z
+    updated_at: 2026-03-21T13:54:11.971Z
     notes: []
