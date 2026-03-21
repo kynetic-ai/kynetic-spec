@@ -16547,7 +16547,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-21T06:30:48.788Z
+      updated_at: 2026-03-21T06:30:54.799Z
     integration:
       status: merged
       detail: integration:merged
@@ -16563,18 +16563,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-21T06:24:53.099Z
-      last_reconciled_at: 2026-03-21T06:30:53.570Z
+      last_reconciled_at: 2026-03-21T06:30:54.799Z
       created_at: 2026-03-21T05:31:50.974Z
-      updated_at: 2026-03-21T06:30:53.570Z
+      updated_at: 2026-03-21T06:30:54.799Z
     workspace_id: dispatch-workspace-01KM6YEQYJGQ4JF2ECR67DANZQ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: cc86164e3003f834f77f39b6a71e24ff25e52362
-        last_seen_at: 2026-03-21T06:24:47.453Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-supporting-01km6yeq-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-migrate-supporting/01km6yeq
