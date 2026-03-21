@@ -37269,6 +37269,17 @@ reviews:
         runner: npm
         created_at: 2026-03-21T09:39:43.227Z
         completed_at: 2026-03-21T09:39:43.227Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: No task-specific validation errors. Command exited 6 due existing repository-wide warnings
+          (orphaned skills/spec coverage baseline), not this change.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-21T09:39:48.736Z
+        completed_at: 2026-03-21T09:39:48.736Z
     events:
       - _ulid: 01KM7VYM7KGN7Q62SQ1Z9QPQX1
         actor: Jacob Chapel
@@ -37297,6 +37308,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-21T09:39:43.520Z
+      - _ulid: 01KM7W7RNJA8R0EDJS8NNRMPQX
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-21T09:39:49.042Z
     examined_commit: acb192f9f232e7dc8ef6a5fbc8eec7b090eb1e5d
     external_links: []
     lifecycle_state: open
@@ -37333,5 +37351,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-21T09:34:49.587Z
-    updated_at: 2026-03-21T09:39:43.227Z
+    updated_at: 2026-03-21T09:39:48.736Z
     notes: []
