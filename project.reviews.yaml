@@ -39842,6 +39842,26 @@ reviews:
         runner: npm
         created_at: 2026-03-21T15:28:51.830Z
         completed_at: 2026-03-21T15:28:51.830Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/parser/split-backend.ts, src/parser/task-data-manager.ts,
+          src/cli/batch-write-buffer.ts, src/cli/commands/task.ts, src/cli/commands/tasks.ts,
+          src/cli/commands/item.ts, src/parser/review-task-integration.ts,
+          packages/daemon/src/routes/tasks.ts, src/parser/yaml.ts, tests/per-task-files.test.ts,
+          tests/split-backend.test.ts, tests/task-atomic-writes.test.ts,
+          tests/task-rebuild-index.test.ts. Commands run: kspec task get, kspec review for-task,
+          kspec item get @task-core-data-file/@task-notes-file, git diff/stat, rg AC annotations,
+          kspec validate, npm test, targeted rg/sed/nl audits. Claims verified: full suite passes;
+          split manager routing is wired through production reads; history metadata is still missing
+          on specific mutation paths. Categories searched: correctness (2 blockers), edge cases
+          (migration/buffer concurrency), error handling, test quality, integration."
+        name: review-evidence
+        required: false
+        runner: codex
+        created_at: 2026-03-21T15:29:36.318Z
+        completed_at: 2026-03-21T15:29:36.318Z
     events:
       - _ulid: 01KM8FQW4S32PAYMEV2TFVHGSX
         actor: Test User
@@ -39884,6 +39904,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-21T15:28:52.230Z
+      - _ulid: 01KM8G88E175WCAA4NEF5ESRAF
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-03-21T15:29:36.706Z
     examined_commit: 4241cfba631c31163ad3241461302891839d59f6
     external_links: []
     lifecycle_state: open
@@ -39949,5 +39976,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-21T15:20:39.834Z
-    updated_at: 2026-03-21T15:28:51.830Z
+    updated_at: 2026-03-21T15:29:36.318Z
     notes: []
