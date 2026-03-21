@@ -34635,6 +34635,13 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-03-21T04:54:49.945Z
+      - _ulid: 01KM7C3SYN7GWB8086MRVG9R88
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM7C3SNQPQCBJ6B4A2JNP0DM
+        timestamp: 2026-03-21T04:58:02.069Z
     examined_commit: c195445ea83a06feba1bc485453d92bebc2de1fe
     external_links: []
     lifecycle_state: draft
@@ -34644,8 +34651,29 @@ reviews:
       content_hash: ""
       ref: "@01KM6YEPJDBDB9891TTESHZ0FR"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM7C3SNQPQCBJ6B4A2JNP0DM
+        anchor:
+          type: code
+          commit: c195445ea83a06feba1bc485453d92bebc2de1fe
+          line_end: 803
+          line_start: 794
+          path: src/cli/commands/task.ts
+          side: head
+        entries:
+          - _ulid: 01KM7C3SNRRSRWNYYMWPQK32M3
+            author: Jacob Chapel
+            body: "Scope miss: this command file still reads tasks directly via loadAllTasks(), so the CLI has
+              not actually migrated all task I/O behind TaskDataManager. At line 794 it loads the
+              full task set and resolves the ref itself, and the same direct read pattern still
+              appears at 1004, 1266, 1378, 1507, 1699, 1937, 2019, 2095, 2164, 2235, 2349, 2479,
+              2572, 2636, 2668, 2847, 2880, 2925, 2994, and 3071. TaskDataManager already exposes
+              getTask()/listTasks() for these paths, so leaving loadAllTasks() in place means
+              src/cli/commands/task.ts still knows about the monolithic task storage shape, which is
+              exactly what this task is supposed to remove before the storage split lands."
+            created_at: 2026-03-21T04:58:01.784Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T04:54:49.945Z
-    updated_at: null
+    updated_at: 2026-03-21T04:58:01.784Z
     notes: []
