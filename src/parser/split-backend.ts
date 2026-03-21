@@ -10,10 +10,8 @@
  * - Directory layout conventions (.kspec/tasks/<full-ulid>/)
  * - Routing logic (which operations touch index, per-task files, or both)
  * - Per-task file locking replacing whole-file locking
- *
- * The actual index read/write and per-task file read/write operations are
- * implemented by child tasks (@task-impl-index and @task-impl-per-task-files).
- * This module provides the framework they plug into.
+ * - Index entry projection and change detection (@task-impl-index)
+ * - Index rebuild from per-task files (@task-impl-index)
  *
  * Spec: @task-directory-storage
  * Task: @task-impl-split-storage
@@ -217,13 +215,14 @@ export async function listTaskDirs(ctx: KspecContext): Promise<string[]> {
  * | listTasks     | READ  | -         | -          |
  * | getTask       | -     | READ      | READ       |
  * | createTask    | WRITE | WRITE     | WRITE      |
- * | mutateTask    | WRITE*| WRITE     | -          |
- * | addNote       | -     | -         | WRITE      |
+ * | mutateTask    | WRITE*| WRITE     | WRITE*     |
  * | deleteTask    | WRITE | DELETE    | DELETE     |
- * | mutateTasks   | WRITE*| WRITE     | -          |
+ * | mutateTasks   | WRITE*| WRITE     | WRITE*     |
  *
  * * Index is only written when indexed fields change.
- *   The index write determination is deferred to @task-impl-index.
+ *   This includes notes_count/todos_count — these are indexed fields
+ *   used by list surfaces. Note *content* is non-indexed (AC-3),
+ *   but the derived count is an indexed field (AC-2).
  *
  * AC: @task-index-file ac-3 — note-only mutations don't touch index
  */
@@ -271,6 +270,114 @@ export function getOperationRouting(operation: OperationType): OperationRouting 
     case "delete":
       return { touchesIndex: true, touchesCoreData: true, touchesNotes: true };
   }
+}
+
+// ── Index Entry Helpers ──────────────────────────────────────────────────────
+
+/**
+ * The set of fields that are stored in the index. Used to detect whether
+ * an index write is needed after a mutation.
+ *
+ * AC: @task-index-file ac-1 — only listing/filtering/dependency fields
+ */
+const INDEXED_FIELDS = [
+  "_ulid", "slugs", "title", "type", "status", "priority", "tags",
+  "depends_on", "blocked_by", "created_at", "assignee", "automation",
+  "spec_ref", "plan_ref", "review_ref", "started_at", "submitted_at",
+  "completed_at", "notes_count", "todos_count",
+] as const;
+
+/**
+ * Extract the index-level fields from a full task record.
+ * This is the canonical projection used for index entries.
+ *
+ * AC: @task-index-file ac-1 — only listing/filtering/dependency fields
+ */
+export function toIndexEntry(task: Task): Record<string, unknown> {
+  const entry: Record<string, unknown> = {
+    _ulid: task._ulid,
+    slugs: task.slugs,
+    title: task.title,
+    type: task.type,
+    status: task.status,
+    priority: task.priority,
+    tags: task.tags,
+    depends_on: task.depends_on,
+    blocked_by: task.blocked_by,
+    created_at: task.created_at,
+    // Persist counts as scalars so rawToSummary can derive them
+    // without reading per-task files (notes/todos live outside the index)
+    notes_count: Array.isArray(task.notes) ? task.notes.length : 0,
+    todos_count: Array.isArray(task.todos) ? task.todos.length : 0,
+  };
+
+  // Include optional indexed fields only when present
+  if (task.assignee !== undefined && task.assignee !== null) {
+    entry.assignee = task.assignee;
+  }
+  if (task.automation !== undefined) {
+    entry.automation = task.automation;
+  }
+  if (task.spec_ref !== undefined && task.spec_ref !== null) {
+    entry.spec_ref = task.spec_ref;
+  }
+  if (task.plan_ref !== undefined && task.plan_ref !== null) {
+    entry.plan_ref = task.plan_ref;
+  }
+  if (task.review_ref !== undefined && task.review_ref !== null) {
+    entry.review_ref = task.review_ref;
+  }
+  if (task.started_at) {
+    entry.started_at = task.started_at;
+  }
+  if (task.submitted_at) {
+    entry.submitted_at = task.submitted_at;
+  }
+  if (task.completed_at) {
+    entry.completed_at = task.completed_at;
+  }
+
+  return entry;
+}
+
+/**
+ * Compare two index entries for equality on all indexed fields.
+ * Returns true if all indexed fields (including notes_count/todos_count)
+ * have the same values.
+ *
+ * notes_count and todos_count ARE included in the comparison because they
+ * are indexed fields used by list surfaces. When a note is added, the note
+ * *content* is non-indexed data (AC-3), but the *count* is a derived indexed
+ * field that changes — triggering an index write per AC-2 (filterable field
+ * changes are persisted to both index and per-task file atomically).
+ *
+ * AC: @task-index-file ac-2 — index updated when any indexed field changes
+ */
+export function indexEntriesEqual(
+  a: Record<string, unknown>,
+  b: Record<string, unknown>,
+): boolean {
+  for (const field of INDEXED_FIELDS) {
+    const va = a[field];
+    const vb = b[field];
+
+    if (va === vb) continue;
+
+    // Handle undefined vs missing consistently
+    if (va === undefined && vb === undefined) continue;
+
+    // Deep comparison for arrays (slugs, tags, depends_on, blocked_by)
+    if (Array.isArray(va) && Array.isArray(vb)) {
+      if (va.length !== vb.length) return false;
+      for (let i = 0; i < va.length; i++) {
+        if (va[i] !== vb[i]) return false;
+      }
+      continue;
+    }
+
+    return false;
+  }
+  return true;
 }
 
 // ── Per-Task Locking ─────────────────────────────────────────────────────────
@@ -558,6 +665,8 @@ class SplitBackend implements TaskStorageBackend {
    *
    * AC: @task-data-manager ac-5 — non-overlapping mutations no contention
    * AC: @task-data-manager ac-9 — same-task mutations serialize
+   * AC: @task-index-file ac-2 — index updated when indexed fields change
+   * AC: @task-index-file ac-3 — note/history content not stored in index
    * AC: @task-core-data-file ac-1 — field changes recorded in history
    * AC: @task-notes-file ac-1 — note-only mutations don't touch task.yaml
    */
@@ -579,6 +688,9 @@ class SplitBackend implements TaskStorageBackend {
           { suggestion: `Check the reference with: kspec search "${task._ulid}" or kspec task list` },
         );
       }
+
+      // Snapshot the index entry BEFORE mutation to detect changes
+      const oldIndexEntry = toIndexEntry(latestTask);
 
       // Capture pre-mutation state for diff computation (excluding notes — they live in notes.yaml)
       const { notes: _notesBefore, ...coreFieldsBefore } =
@@ -622,8 +734,12 @@ class SplitBackend implements TaskStorageBackend {
           await writeNotesFile(notesFilePath, notes);
         }
 
-        // Update index whenever any indexed data changed (core fields or notes_count)
-        if (fieldChanges || notes !== undefined) {
+        // Only update index if any indexed field changed (including counts).
+        // Note *content* is non-indexed data (AC-3), but notes_count is an
+        // indexed field — so adding a note updates the count in the index.
+        // AC: @task-index-file ac-2 — index updated when indexed fields change
+        const newIndexEntry = toIndexEntry(cleanTask);
+        if (!indexEntriesEqual(oldIndexEntry, newIndexEntry)) {
           await this.updateIndexEntry(ctx, cleanTask);
         }
 
@@ -657,6 +773,7 @@ class SplitBackend implements TaskStorageBackend {
    * AC: @task-data-manager ac-6 — all writes in single atomic operation
    * AC: @task-data-manager ac-9 — same-task mutations serialize
    * AC: @task-atomic-writes ac-3 — batch uses single write buffer
+   * AC: @task-index-file ac-2 — index updated when indexed fields change
    * AC: @task-core-data-file ac-1 — field changes recorded in history
    */
   async mutateTasks(
@@ -689,6 +806,9 @@ class SplitBackend implements TaskStorageBackend {
       }
 
       const latestTasks = latestResults.map((r) => r.task);
+
+      // Snapshot index entries BEFORE mutation
+      const oldIndexEntries = latestTasks.map((t) => toIndexEntry(t));
 
       // Capture pre-mutation core fields for diff computation (excluding notes — they live in notes.yaml)
       const coreFieldsBefore = latestTasks.map((t) => {
@@ -735,8 +855,10 @@ class SplitBackend implements TaskStorageBackend {
             await writeNotesFile(notesFilePath, notes);
           }
 
-          // Update index whenever any indexed data changed (core fields or notes_count)
-          if (fieldChanges || notes !== undefined) {
+          // Only update index if any indexed field changed (including counts)
+          // AC: @task-index-file ac-2 — index updated when indexed fields change
+          const newIndexEntry = toIndexEntry(cleanTask);
+          if (!indexEntriesEqual(oldIndexEntries[i], newIndexEntry)) {
             await this.updateIndexEntry(ctx, cleanTask);
           }
 
@@ -768,9 +890,9 @@ class SplitBackend implements TaskStorageBackend {
   /**
    * Delete a task: remove the entire directory and the index entry.
    *
-   * Strategy: Use the write buffer for the index update and file deletions,
-   * then remove the directory itself after flush (since the WriteBuffer
-   * only handles file-level operations, not recursive directory removal).
+   * Strategy: Use the write buffer for the index update, file deletions,
+   * and directory removal. The buffer defers directory removal to flush
+   * so it participates in atomicity.
    *
    * AC: @task-directory-storage ac-4 — entire directory is removed
    * AC: @task-directory-storage ac-5 — index entry removed in same atomic operation
@@ -788,11 +910,17 @@ class SplitBackend implements TaskStorageBackend {
         // Delete known per-task files through the buffer
         const taskFilePath = getTaskFilePath(ctx, task._ulid);
         const notesFilePath = getNotesFilePath(ctx, task._ulid);
-        const buffer = getActiveBatchBuffer();
-        if (buffer) {
-          buffer.delete(taskFilePath);
-          buffer.delete(notesFilePath);
-        }
+        const buffer = getActiveBatchBuffer()!;
+        buffer.delete(taskFilePath);
+        buffer.delete(notesFilePath);
+
+        // Queue directory removal through the buffer so it happens during
+        // flush — after file-level operations. This ensures the directory
+        // removal participates in the buffer's atomicity: if flush fails,
+        // discard() prevents the removal from executing.
+        // AC: @task-directory-storage ac-4 — entire directory is removed
+        // AC: @task-atomic-writes ac-2 — directory removal deferred to flush
+        buffer.deleteDirectory(taskDir);
 
         // Remove from index (also goes through the buffer)
         await this.removeFromIndex(ctx, task._ulid);
@@ -810,11 +938,6 @@ class SplitBackend implements TaskStorageBackend {
           deactivateBatchBuffer();
         }
       }
-
-      // After buffer flush, remove the directory tree directly.
-      // This handles unknown files/subdirectories that weren't in the buffer.
-      // AC: @task-directory-storage ac-4 — entire directory is removed
-      await fs.rm(taskDir, { recursive: true, force: true });
     } finally {
       releaseTaskLock();
     }
@@ -932,7 +1055,7 @@ class SplitBackend implements TaskStorageBackend {
    */
   private async addToIndex(ctx: KspecContext, task: Task): Promise<void> {
     const indexPath = getIndexFilePath(ctx);
-    const indexEntry = this.toIndexEntry(task);
+    const indexEntry = toIndexEntry(task);
 
     // Read current index
     let rawTasks: unknown[] = [];
@@ -968,7 +1091,7 @@ class SplitBackend implements TaskStorageBackend {
    */
   private async updateIndexEntry(ctx: KspecContext, task: Task): Promise<void> {
     const indexPath = getIndexFilePath(ctx);
-    const indexEntry = this.toIndexEntry(task);
+    const indexEntry = toIndexEntry(task);
 
     const raw = await readYamlFile<unknown>(indexPath);
     let rawTasks: unknown[];
@@ -1040,55 +1163,47 @@ class SplitBackend implements TaskStorageBackend {
   }
 
   /**
-   * Extract the index-level fields from a full task record.
+   * Rebuild the index from per-task files.
    *
-   * AC: @task-index-file ac-1 — only listing/filtering/dependency fields
+   * Scans all task directories, reads their core data, and regenerates
+   * the entire index file. This is the recovery path when the index
+   * has drifted from per-task files.
+   *
+   * AC: @task-index-file ac-7 — index fully regenerated from per-task files alone
    */
-  private toIndexEntry(task: Task): Record<string, unknown> {
-    const entry: Record<string, unknown> = {
-      _ulid: task._ulid,
-      slugs: task.slugs,
-      title: task.title,
-      type: task.type,
-      status: task.status,
-      priority: task.priority,
-      tags: task.tags,
-      depends_on: task.depends_on,
-      blocked_by: task.blocked_by,
-      created_at: task.created_at,
-      // Persist counts as scalars so rawToSummary can derive them
-      // without reading per-task files (notes/todos live outside the index)
-      notes_count: Array.isArray(task.notes) ? task.notes.length : 0,
-      todos_count: Array.isArray(task.todos) ? task.todos.length : 0,
-    };
+  async rebuildIndex(ctx: KspecContext): Promise<{ count: number }> {
+    const ulids = await listTaskDirs(ctx);
+    const entries: Record<string, unknown>[] = [];
 
-    // Include optional indexed fields only when present
-    if (task.assignee !== undefined && task.assignee !== null) {
-      entry.assignee = task.assignee;
-    }
-    if (task.automation !== undefined) {
-      entry.automation = task.automation;
-    }
-    if (task.spec_ref !== undefined && task.spec_ref !== null) {
-      entry.spec_ref = task.spec_ref;
-    }
-    if (task.plan_ref !== undefined && task.plan_ref !== null) {
-      entry.plan_ref = task.plan_ref;
-    }
-    if (task.review_ref !== undefined && task.review_ref !== null) {
-      entry.review_ref = task.review_ref;
-    }
-    if (task.started_at) {
-      entry.started_at = task.started_at;
-    }
-    if (task.submitted_at) {
-      entry.submitted_at = task.submitted_at;
-    }
-    if (task.completed_at) {
-      entry.completed_at = task.completed_at;
+    for (const ulid of ulids) {
+      const task = await this.loadTaskFromDir(ctx, ulid);
+      if (task) {
+        entries.push(toIndexEntry(task));
+      }
     }
 
-    return entry;
+    const indexPath = getIndexFilePath(ctx);
+
+    // Detect current format (wrapper vs bare array) to preserve it
+    let useWrapper = false;
+    let wrapperObj: Record<string, unknown> | undefined;
+    try {
+      const raw = await readYamlFile<unknown>(indexPath);
+      if (raw && typeof raw === "object" && !Array.isArray(raw) && "tasks" in raw) {
+        wrapperObj = raw as Record<string, unknown>;
+        useWrapper = true;
+      }
+    } catch {
+      // Index doesn't exist — use bare array
+    }
+
+    if (useWrapper && wrapperObj) {
+      await writeYamlFile(indexPath, { ...wrapperObj, tasks: entries });
+    } else {
+      await writeYamlFile(indexPath, entries);
+    }
+
+    return { count: entries.length };
   }
 }
 

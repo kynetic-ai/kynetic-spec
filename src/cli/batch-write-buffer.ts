@@ -92,6 +92,9 @@ export class WriteBuffer {
   /** buffered writes: path → content (null = deleted) */
   private readonly entries = new Map<string, BufferedFileContent | null>();
 
+  /** directories to recursively remove during flush (after file operations) */
+  private readonly pendingDirRemovals = new Set<string>();
+
   constructor(specDir: string) {
     this.specDir = path.resolve(specDir);
   }
@@ -117,6 +120,15 @@ export class WriteBuffer {
    */
   delete(filePath: string): void {
     this.entries.set(path.resolve(filePath), null);
+  }
+
+  /**
+   * Mark a directory for recursive removal during flush.
+   * The removal happens after all file-level operations complete,
+   * ensuring it participates in the buffer's atomicity guarantees.
+   */
+  deleteDirectory(dirPath: string): void {
+    this.pendingDirRemovals.add(path.resolve(dirPath));
   }
 
   /**
@@ -153,7 +165,7 @@ export class WriteBuffer {
 
     let current = path.resolve(filePath);
     while (true) {
-      if (this.entries.get(current) === null) {
+      if (this.entries.get(current) === null || this.pendingDirRemovals.has(current)) {
         return true;
       }
       if (current === this.specDir) {
@@ -202,6 +214,18 @@ export class WriteBuffer {
         directWrites.set(rootName, content === null ? "deleted" : "file");
       } else if (content !== null) {
         inferredDirectories.add(rootName);
+      }
+    }
+
+    // Pending directory removals show as deleted entries in the overlay.
+    for (const dirPath of this.pendingDirRemovals) {
+      const relative = path.relative(resolvedDir, dirPath);
+      if (!relative || relative.startsWith("..") || path.isAbsolute(relative)) {
+        continue;
+      }
+      const parts = relative.split(path.sep).filter(Boolean);
+      if (parts.length === 1) {
+        directWrites.set(parts[0], "deleted");
       }
     }
 
@@ -305,7 +329,7 @@ export class WriteBuffer {
    * AC: @batch-write-buffer ac-7 — flush failure reported; .kspec/ not silently corrupted
    */
   async flush(): Promise<void> {
-    if (this.entries.size === 0) return;
+    if (this.entries.size === 0 && this.pendingDirRemovals.size === 0) return;
 
     const stagingMap = new Map<string, string>(); // real path → staging path
 
@@ -361,6 +385,11 @@ export class WriteBuffer {
         );
       }
     }
+
+    // Phase 3: Remove pending directories (after all file operations)
+    for (const dirPath of this.pendingDirRemovals) {
+      await fs.rm(dirPath, { recursive: true, force: true });
+    }
   }
 
   /**
@@ -369,6 +398,7 @@ export class WriteBuffer {
    */
   discard(): void {
     this.entries.clear();
+    this.pendingDirRemovals.clear();
   }
 
   private async _cleanupStaging(stagingMap: Map<string, string>): Promise<void> {

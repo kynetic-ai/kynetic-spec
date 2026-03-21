@@ -41,6 +41,11 @@ import {
 import { createRequire } from "node:module";
 import { acquireFileLock } from "./file-lock.js";
 import { commitIfShadow } from "./shadow.js";
+import {
+  activateBatchBuffer,
+  deactivateBatchBuffer,
+  getActiveBatchBuffer,
+} from "../cli/batch-write-buffer.js";
 
 /** Synchronous require for ESM — used for lazy backend registration. */
 const esmRequire = createRequire(import.meta.url);
@@ -70,6 +75,8 @@ export interface TaskSummary {
   assignee?: string | null;
   automation?: string;
   spec_ref?: string | null;
+  plan_ref?: string | null;
+  review_ref?: string | null;
   depends_on: string[];
   blocked_by: string[];
   created_at: string;
@@ -107,6 +114,8 @@ export function rawToSummary(raw: unknown): TaskSummary | null {
     assignee: typeof r.assignee === "string" ? r.assignee : (r.assignee === null ? null : undefined),
     automation: typeof r.automation === "string" ? r.automation : undefined,
     spec_ref: typeof r.spec_ref === "string" ? r.spec_ref : (r.spec_ref === null ? null : undefined),
+    plan_ref: typeof r.plan_ref === "string" ? r.plan_ref : (r.plan_ref === null ? null : undefined),
+    review_ref: typeof r.review_ref === "string" ? r.review_ref : (r.review_ref === null ? null : undefined),
     depends_on: Array.isArray(r.depends_on) ? r.depends_on.filter((d): d is string => typeof d === "string") : [],
     blocked_by: Array.isArray(r.blocked_by) ? r.blocked_by.filter((b): b is string => typeof b === "string") : [],
     created_at: typeof r.created_at === "string" ? r.created_at : new Date().toISOString(),
@@ -136,6 +145,8 @@ function toTaskSummary(task: LoadedTask): TaskSummary {
     assignee: task.assignee,
     automation: task.automation,
     spec_ref: task.spec_ref,
+    plan_ref: task.plan_ref,
+    review_ref: task.review_ref,
     depends_on: task.depends_on,
     blocked_by: task.blocked_by,
     created_at: task.created_at,
@@ -274,6 +285,7 @@ export interface TaskStorageBackend {
     metadata?: MutationMetadata,
   ): Promise<LoadedTask[]>;
   deleteTask(ctx: KspecContext, task: LoadedTask): Promise<void>;
+  rebuildIndex(ctx: KspecContext): Promise<{ count: number }>;
 
   /**
    * Get the history entries for a task (optional — only split backend provides this).
@@ -641,6 +653,17 @@ class MonolithicBackend implements TaskStorageBackend {
       releaseTaskLock();
     }
   }
+
+  /**
+   * No-op for monolithic backend — the task file IS the index, so there
+   * is no separate index to drift or rebuild.
+   *
+   * AC: @task-index-file ac-7
+   */
+  async rebuildIndex(ctx: KspecContext): Promise<{ count: number }> {
+    const tasks = await loadAllTasks(ctx);
+    return { count: tasks.length };
+  }
 }
 
 /** Singleton monolithic backend instance. */
@@ -876,6 +899,88 @@ export class TaskDataManager {
   }
 
   /**
+   * Wrap a backend operation in a write buffer scope.
+   *
+   * For the split format, this ensures all file writes (index + per-task files)
+   * are collected in a single buffer and flushed atomically. The backend detects
+   * the active buffer via getActiveBatchBuffer() and uses it instead of creating
+   * its own. If a batch buffer is already active (from batch-exec), the backend
+   * reuses that buffer and the manager skips flush/deactivation — the batch
+   * executor owns the lifecycle.
+   *
+   * For the monolithic format, no buffer is needed since writes go to a single
+   * file under a file lock.
+   *
+   * AC: @task-atomic-writes ac-1 — both files written within single buffered transaction
+   * AC: @task-atomic-writes ac-2 — if any write fails, buffer is discarded
+   * AC: @task-atomic-writes ac-3 — batch buffer reused when active
+   */
+  private async withWriteBuffer<T>(
+    ctx: KspecContext,
+    commitOpts: ShadowCommitOptions | undefined,
+    operation: () => Promise<T>,
+  ): Promise<T> {
+    // Monolithic format: no buffer needed, single-file writes are atomic
+    // under file lock. Split format: buffer coordinates multi-file writes.
+    if (this.storageFormat !== "split") {
+      const result = await operation();
+      if (commitOpts) {
+        await commitIfShadow(
+          ctx.shadow,
+          commitOpts.operation,
+          commitOpts.ref,
+          commitOpts.detail,
+          commitOpts.verbose,
+        );
+      }
+      return result;
+    }
+
+    // If a batch buffer is already active, reuse it — the batch executor
+    // owns the buffer lifecycle and will flush/commit at the end.
+    const existingBuffer = getActiveBatchBuffer();
+    if (existingBuffer) {
+      const result = await operation();
+      if (commitOpts) {
+        await commitIfShadow(
+          ctx.shadow,
+          commitOpts.operation,
+          commitOpts.ref,
+          commitOpts.detail,
+          commitOpts.verbose,
+        );
+      }
+      return result;
+    }
+
+    // Activate a manager-owned buffer so all backend writes (index +
+    // per-task files) go to the same buffer.
+    const buffer = activateBatchBuffer(ctx.specDir);
+    try {
+      const result = await operation();
+      await buffer.flush();
+
+      // Shadow commit AFTER flush — all files are on disk atomically
+      if (commitOpts) {
+        await commitIfShadow(
+          ctx.shadow,
+          commitOpts.operation,
+          commitOpts.ref,
+          commitOpts.detail,
+          commitOpts.verbose,
+        );
+      }
+
+      return result;
+    } catch (error) {
+      buffer.discard();
+      throw error;
+    } finally {
+      deactivateBatchBuffer();
+    }
+  }
+
+  /**
    * Create a new task and persist it.
    *
    * Handles ULID generation, schema validation, file writing, locking, and
@@ -883,6 +988,7 @@ export class TaskDataManager {
    *
    * AC: @task-data-manager ac-4 — files, locking, commits coordinated
    * AC: @task-data-manager ac-6 — atomic operation
+   * AC: @task-atomic-writes ac-1 — all files written in single buffered transaction
    * AC: @trait-error-guidance ac-5 — validation errors include field info
    */
   async createTask(
@@ -901,23 +1007,13 @@ export class TaskDataManager {
       );
     }
 
-    // Delegate _sourceFile ownership to the backend — the backend decides
-    // where the task lives based on its storage format.
-    // AC: @task-data-manager ac-1 — callers don't know about storage format
-    // AC: @task-data-manager ac-8 — split backend owns its own metadata
-    const loadedTask = await this.backend.createTask(ctx, newTask);
-
-    if (commitOpts) {
-      await commitIfShadow(
-        ctx.shadow,
-        commitOpts.operation,
-        commitOpts.ref,
-        commitOpts.detail,
-        commitOpts.verbose,
-      );
-    }
-
-    return loadedTask;
+    return this.withWriteBuffer(ctx, commitOpts, async () => {
+      // Delegate _sourceFile ownership to the backend — the backend decides
+      // where the task lives based on its storage format.
+      // AC: @task-data-manager ac-1 — callers don't know about storage format
+      // AC: @task-data-manager ac-8 — split backend owns its own metadata
+      return this.backend.createTask(ctx, newTask);
+    });
   }
 
   /**
@@ -932,6 +1028,7 @@ export class TaskDataManager {
    * AC: @task-data-manager ac-5 — non-overlapping mutations no contention
    * AC: @task-data-manager ac-6 — atomic operation
    * AC: @task-data-manager ac-9 — concurrent mutations serialize via lock
+   * AC: @task-atomic-writes ac-1 — index + per-task file in single buffer
    */
   async mutateTask(
     ctx: KspecContext,
@@ -950,28 +1047,18 @@ export class TaskDataManager {
       ? { command: commitOpts.operation, author: getAuthor(ctx.config?.identity?.author) }
       : undefined;
 
-    const updated = await this.backend.mutateTask(
-      ctx,
-      task,
-      async (latestTask) => {
-        const result = await mutate(latestTask);
-        validateMutationOutput(result, latestTask._ulid);
-        return result;
-      },
-      metadata,
-    );
-
-    if (commitOpts) {
-      await commitIfShadow(
-        ctx.shadow,
-        commitOpts.operation,
-        commitOpts.ref,
-        commitOpts.detail,
-        commitOpts.verbose,
+    return this.withWriteBuffer(ctx, commitOpts, async () => {
+      return this.backend.mutateTask(
+        ctx,
+        task,
+        async (latestTask) => {
+          const result = await mutate(latestTask);
+          validateMutationOutput(result, latestTask._ulid);
+          return result;
+        },
+        metadata,
       );
-    }
-
-    return updated;
+    });
   }
 
   /**
@@ -986,6 +1073,8 @@ export class TaskDataManager {
    * AC: @task-data-manager ac-5 — non-overlapping mutations no contention
    * AC: @task-data-manager ac-6 — all writes in single atomic operation
    * AC: @task-data-manager ac-9 — same-task mutations serialize via lock
+   * AC: @task-atomic-writes ac-3 — all writes in single buffer commit
+   * AC: @task-atomic-writes ac-4 — multi-task writes in single atomic operation
    */
   async mutateTasks(
     ctx: KspecContext,
@@ -1006,30 +1095,20 @@ export class TaskDataManager {
       ? { command: commitOpts.operation, author: getAuthor(ctx.config?.identity?.author) }
       : undefined;
 
-    const updated = await this.backend.mutateTasks(
-      ctx,
-      tasks,
-      async (latestTasks) => {
-        const results = await mutate(latestTasks);
-        for (let i = 0; i < results.length; i++) {
-          validateMutationOutput(results[i], latestTasks[i]?._ulid);
-        }
-        return results;
-      },
-      metadata,
-    );
-
-    if (commitOpts) {
-      await commitIfShadow(
-        ctx.shadow,
-        commitOpts.operation,
-        commitOpts.ref,
-        commitOpts.detail,
-        commitOpts.verbose,
+    return this.withWriteBuffer(ctx, commitOpts, async () => {
+      return this.backend.mutateTasks(
+        ctx,
+        tasks,
+        async (latestTasks) => {
+          const results = await mutate(latestTasks);
+          for (let i = 0; i < results.length; i++) {
+            validateMutationOutput(results[i], latestTasks[i]?._ulid);
+          }
+          return results;
+        },
+        metadata,
       );
-    }
-
-    return updated;
+    });
   }
 
   /**
@@ -1039,6 +1118,7 @@ export class TaskDataManager {
    *
    * AC: @task-data-manager ac-4 — files, locking, commits coordinated
    * AC: @task-data-manager ac-6 — atomic operation
+   * AC: @task-atomic-writes ac-1 — index + per-task file in single buffer
    * AC: @trait-error-guidance ac-3 — suggests checking ref on not found
    */
   async deleteTask(
@@ -1048,22 +1128,14 @@ export class TaskDataManager {
   ): Promise<void> {
     const task = await this.getTask(ctx, ref);
 
-    // Delegate entirely to the backend — it decides how to locate and
-    // remove the task based on its own storage format. The manager does
-    // not require _sourceFile; a split backend may use other metadata.
-    // AC: @task-data-manager ac-1 — callers don't know about storage format
-    // AC: @task-data-manager ac-8 — split backend owns its own deletion path
-    await this.backend.deleteTask(ctx, task);
-
-    if (commitOpts) {
-      await commitIfShadow(
-        ctx.shadow,
-        commitOpts.operation,
-        commitOpts.ref,
-        commitOpts.detail,
-        commitOpts.verbose,
-      );
-    }
+    return this.withWriteBuffer(ctx, commitOpts, async () => {
+      // Delegate entirely to the backend — it decides how to locate and
+      // remove the task based on its own storage format. The manager does
+      // not require _sourceFile; a split backend may use other metadata.
+      // AC: @task-data-manager ac-1 — callers don't know about storage format
+      // AC: @task-data-manager ac-8 — split backend owns its own deletion path
+      await this.backend.deleteTask(ctx, task);
+    });
   }
 
   /**
@@ -1096,6 +1168,19 @@ export class TaskDataManager {
     );
 
     return { task: updated, note };
+  }
+
+  /**
+   * Rebuild the task index from per-task files.
+   *
+   * For the split backend, this scans all task directories and regenerates the
+   * index file — the recovery path when the index has drifted. For the
+   * monolithic backend, this is a no-op since the task file IS the index.
+   *
+   * AC: @task-index-file ac-7 — index fully regenerated from per-task files alone
+   */
+  async rebuildIndex(ctx: KspecContext): Promise<{ count: number }> {
+    return this.backend.rebuildIndex(ctx);
   }
 }
 
