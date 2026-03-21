@@ -40062,6 +40062,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-21T15:51:22.716Z
+      - _ulid: 01KM8HGJG130JMZZ8QQ3YD3V5E
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM8HGJ67KMMZWHTRGXWZZT3V
+        timestamp: 2026-03-21T15:51:37.729Z
     examined_commit: 0137c640a8a95d2d11ebec3a6646bc5e3023a927
     external_links: []
     lifecycle_state: open
@@ -40092,7 +40099,27 @@ reviews:
               on-disk result if the parent buffer later fails or is discarded.
             created_at: 2026-03-21T15:51:21.536Z
         kind: blocker
+      - _ulid: 01KM8HGJ67KMMZWHTRGXWZZT3V
+        entries:
+          - _ulid: 01KM8HGJ67WAWHW4SWZK7G0JVN
+            author: Test User
+            body: "Evidence log: Files read: src/parser/task-data-manager.ts, src/cli/batch-write-buffer.ts,
+              src/parser/split-backend.ts, src/cli/commands/task.ts, src/cli/commands/tasks.ts,
+              src/cli/commands/item.ts, src/parser/review-task-integration.ts,
+              packages/daemon/src/routes/tasks.ts, tests/per-task-files.test.ts,
+              tests/task-atomic-writes.test.ts, tests/task-rebuild-index.test.ts,
+              tests/split-backend.test.ts. Commands run: git diff/stat/show, kspec task get, kspec
+              item get @task-core-data-file, kspec item get @task-notes-file, kspec validate, rg AC
+              annotations, npm test. Claims verified: worker claim that latest fix adds commit
+              metadata to dangling-ref cleanup and tasks assess call sites, confirmed in item.ts and
+              tasks.ts; full test suite pass, confirmed via npm test. Categories searched:
+              correctness (found blocker in buffered commit ordering), edge cases (batch/nested
+              buffer reuse), error handling (validate warnings only), test quality (coverage present
+              for both task specs and rebuild-index traits), integration (task CLI, daemon routes,
+              review integration)."
+            created_at: 2026-03-21T15:51:37.415Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-21T15:50:26.374Z
-    updated_at: 2026-03-21T15:51:22.447Z
+    updated_at: 2026-03-21T15:51:37.415Z
     notes: []
