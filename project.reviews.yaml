@@ -36767,6 +36767,17 @@ reviews:
         runner: npm
         created_at: 2026-03-21T08:55:14.082Z
         completed_at: 2026-03-21T08:55:14.082Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Command exits 6 on pre-existing repo-wide warnings (orphaned specs / AC coverage warnings
+          unrelated to this task); no validation errors.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-21T08:55:31.083Z
+        completed_at: 2026-03-21T08:55:31.083Z
     events:
       - _ulid: 01KM7SN1M2WE5YRMNKD69096J2
         actor: Jacob Chapel
@@ -36802,6 +36813,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM7SPH1MCW3VERR3947D83H1
         timestamp: 2026-03-21T08:55:27.314Z
+      - _ulid: 01KM7SPNAHRKWQ93R4FFKA88DS
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec validate
+        timestamp: 2026-03-21T08:55:31.409Z
     examined_commit: 8b694a8fdfb833abd8d7918097f90b56e916a23d
     external_links: []
     lifecycle_state: open
@@ -36862,5 +36880,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-21T08:54:38.467Z
-    updated_at: 2026-03-21T08:55:27.028Z
+    updated_at: 2026-03-21T08:55:31.083Z
     notes: []
