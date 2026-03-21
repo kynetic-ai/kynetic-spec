@@ -36598,6 +36598,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-21T08:43:26.402Z
+      - _ulid: 01KM7S8SSWXEG5YH16DMF64EDG
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM7S8SFR33NK7JYBTV38A9BG
+        timestamp: 2026-03-21T08:47:57.244Z
     examined_commit: fc3e4978e676d00c5dc7e84bd16e23a536d2fe14
     external_links: []
     lifecycle_state: open
@@ -36607,8 +36614,26 @@ reviews:
       content_hash: ""
       ref: "@01KM6YESAF92YTNXT3DF06AC0N"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM7S8SFR33NK7JYBTV38A9BG
+        anchor:
+          type: code
+          commit: fc3e4978e676d00c5dc7e84bd16e23a536d2fe14
+          line_end: 299
+          line_start: 297
+          path: src/parser/split-backend.ts
+          side: head
+        entries:
+          - _ulid: 01KM7S8SFST4GBXM64AYZ5V5GR
+            author: Jacob Chapel
+            body: Excluding  and  from index change detection makes  return stale summaries after normal
+              note/todo mutations. These counts are part of  and are emitted by the task list
+              API/UI, so after  the user-visible list can still show 0 notes until an explicit
+              rebuild. That breaks the task's stated goal of keeping the index in sync with per-task
+              mutations for list surfaces.
+            created_at: 2026-03-21T08:47:56.921Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T08:43:11.398Z
-    updated_at: 2026-03-21T08:43:26.104Z
+    updated_at: 2026-03-21T08:47:56.921Z
     notes: []
