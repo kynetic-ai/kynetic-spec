@@ -33769,6 +33769,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-21T03:01:23.076Z
+      - _ulid: 01KM75NMKG48AWMQAMJ0KMHGJP
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM75NMB552QZ772YSMAZDMZD
+        timestamp: 2026-03-21T03:05:26.384Z
     examined_commit: 84d638489e25e955c89daf02c6d62971d5a7e5c8
     external_links: []
     lifecycle_state: open
@@ -33778,8 +33785,28 @@ reviews:
       content_hash: ""
       ref: "@01KM6YENV3CBFAGSRHVHR7QPJN"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM75NMB552QZ772YSMAZDMZD
+        anchor:
+          type: code
+          commit: 84d638489e25e955c89daf02c6d62971d5a7e5c8
+          line_end: 879
+          line_start: 865
+          path: src/parser/task-data-manager.ts
+          side: head
+        entries:
+          - _ulid: 01KM75NMB5FTFPR3YMSPC6613T
+            author: Jacob Chapel
+            body: deleteTask() bypasses the per-task queue that mutateTask()/mutateTasks() use, so same-task
+              operations still race across lock paths instead of serializing behind one task-level
+              lock. I reproduced this by running deleteTask('@test-task-pending') concurrently with
+              mutateTask() on the same ref; the delete completed and the mutation then failed with
+              'Task not found in file during write phase'. That violates AC-9's guarantee that when
+              two mutations target the same task, one waits while the other proceeds without
+              corruption or mid-flight not-found failures.
+            created_at: 2026-03-21T03:05:26.117Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T03:01:03.087Z
-    updated_at: 2026-03-21T03:01:22.801Z
+    updated_at: 2026-03-21T03:05:26.117Z
     notes: []
