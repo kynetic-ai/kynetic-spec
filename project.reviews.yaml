@@ -36579,3 +36579,29 @@ reviews:
     created_at: 2026-03-21T08:32:22.192Z
     updated_at: 2026-03-21T08:40:48.451Z
     notes: []
+  - _ulid: 01KM7S02N6MANWD89P9H50CPN4
+    slugs: []
+    title: Review task-impl-index (cycle 3)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KM7S02N521AA15W5KMS13G38
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-21T08:43:11.397Z
+    examined_commit: fc3e4978e676d00c5dc7e84bd16e23a536d2fe14
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KM6YESAF92YTNXT3DF06AC0N"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-21T08:43:11.398Z
+    updated_at: null
+    notes: []
