@@ -113740,7 +113740,19 @@
   session_id: 01KM8PKDX82TADQB5GPVQYEGAG
   created_at: 2026-03-21T00:59:25.505Z
   started_at: 2026-03-21T17:20:55.608Z
-  notes: []
+  notes:
+    - _ulid: 01KM8QEKXAD9BTTSN93MCSCX0F
+      content: Implemented task migrate command. The command reads monolithic project.tasks.yaml entries
+        (identified by having notes as an array vs notes_count scalar), creates per-task directories
+        with task.yaml and notes.yaml, rewrites the index with lean entries, and handles backfill
+        for tasks added by older tooling after a previous migration. All operations use the write
+        buffer for atomicity. Dry-run shows preview summary without modifications. Tasks with schema
+        validation errors are migrated with raw data preserved and warnings emitted. 15 E2E tests
+        cover all 8 spec ACs plus trait ACs (dry-run, error-guidance). Full test suite passes (6910
+        tests, 0 failures).
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T17:35:25.098Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YEXN2KMJ43AMEKH3SW0RE
