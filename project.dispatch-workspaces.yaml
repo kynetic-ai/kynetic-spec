@@ -16157,12 +16157,20 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-21T04:40:50.213Z
+      updated_at: 2026-03-21T04:42:11.937Z
     health:
-      status: healthy
-      issues: []
-      summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-21T04:40:56.212Z
+      status: invalid
+      issues:
+        - code: missing_canonical_branch
+          message: Canonical branch "dispatch/task/task-impl-data-manager/01km6yen" is missing.
+          suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
+        - code: missing_worker_worktree
+          message: Worker worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-impl-data-manager-01km6yen"
+            is missing or no longer registered.
+          suggestion: Re-provision the worker worktree from the recorded canonical branch.
+      summary: Workspace registry record is invalid because required git state is missing.
+      updated_at: 2026-03-21T04:42:11.937Z
     integration:
       status: merged
       detail: integration:merged
@@ -16170,17 +16178,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 0b83080a89d15bec8d00c46e33d52fc6c2597dd0
-      updated_at: 2026-03-21T04:40:50.213Z
-    lifecycle_state: closing
+      updated_at: 2026-03-21T04:42:11.937Z
+    lifecycle_state: stale
     resolved_base_branch: dev
     task_ref: "@01KM6YENV3CBFAGSRHVHR7QPJN"
     task_slug: task-impl-data-manager
     timestamps:
       closed_at: null
       last_active_at: 2026-03-21T04:33:15.562Z
-      last_reconciled_at: 2026-03-21T04:40:56.212Z
+      last_reconciled_at: 2026-03-21T04:42:11.937Z
       created_at: 2026-03-21T01:13:05.993Z
-      updated_at: 2026-03-21T04:40:56.212Z
+      updated_at: 2026-03-21T04:42:11.937Z
     workspace_id: dispatch-workspace-01KM6YENV3CBFAGSRHVHR7QPJN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
