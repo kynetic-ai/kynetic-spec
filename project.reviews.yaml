@@ -36494,9 +36494,25 @@ reviews:
           kind: nit
           thread_ulid: 01KM7RVKECRAS5CNEB8C10MXJ0
         timestamp: 2026-03-21T08:40:45.033Z
+      - _ulid: 01KM7RVQ22Y1AVZSH3J1CWCGPY
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-21T08:40:48.450Z
+      - _ulid: 01KM7RVQ23P27D4ZP6TX6XS4C9
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-21T08:40:48.451Z
     examined_commit: c870308b044370f3e2434679932ea13d1b0a875c
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -36552,7 +36568,14 @@ reviews:
               activity timeline.
             created_at: 2026-03-21T08:40:44.748Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-21T08:40:48.450Z
     created_at: 2026-03-21T08:32:22.192Z
-    updated_at: 2026-03-21T08:40:44.748Z
+    updated_at: 2026-03-21T08:40:48.451Z
     notes: []
