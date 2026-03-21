@@ -35630,6 +35630,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM7KFB787Z7NV5WQZF31471A
         timestamp: 2026-03-21T07:06:40.517Z
+      - _ulid: 01KM7KFCC3WGETE9EBGE665T1M
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM7KFC2E4NGC688JH6DAZDHV
+        timestamp: 2026-03-21T07:06:41.411Z
     examined_commit: dd5e26ef8777fce556ae0ccaa5d1ff5bd14f779a
     external_links: []
     lifecycle_state: open
@@ -35673,7 +35680,26 @@ reviews:
               correctness, integration, test quality, atomicity, verification gates."
             created_at: 2026-03-21T07:06:40.232Z
         kind: nit
+      - _ulid: 01KM7KFC2E4NGC688JH6DAZDHV
+        anchor:
+          type: code
+          commit: dd5e26ef8777fce556ae0ccaa5d1ff5bd14f779a
+          line_end: 891
+          line_start: 885
+          path: src/parser/split-backend.ts
+          side: head
+        entries:
+          - _ulid: 01KM7KFC2E6W8M86D30QPXAK17
+            author: Jacob Chapel
+            body: ' still fails unless callers import  for its side effect first. This module claims
+              registration at load time makes the split backend generally available, but
+              importing  directly and constructing  still throws "No storage backend registered for
+              format "split"". That means the new backend is not actually activated by choosing the
+              format; it only works in call sites and tests that happen to import this module
+              separately, which breaks the storage-format abstraction this task is supposed to add.'
+            created_at: 2026-03-21T07:06:41.102Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T07:03:23.100Z
-    updated_at: 2026-03-21T07:06:40.232Z
+    updated_at: 2026-03-21T07:06:41.102Z
     notes: []
