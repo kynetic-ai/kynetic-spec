@@ -113811,6 +113811,17 @@
       supersedes: null
       author: Test User
       created_at: 2026-03-21T18:15:18.148Z
+    - _ulid: 01KM8TGA959KH17W96G47MXX5Q
+      content: "Fix cycle 3: Addressed blocker — malformed non-empty _ulid values (e.g.
+        'not-a-valid-ulid') were being used verbatim as directory names, violating the split-storage
+        ULID directory contract. Fixed by validating _ulid against ulidPattern (Crockford base32)
+        before accepting it; invalid values now trigger ULID regeneration with a warning, same as
+        missing/empty values. Added regression test that creates a task with _ulid:
+        'not-a-valid-ulid' and verifies it gets a regenerated valid ULID directory, not the
+        malformed string. Full suite passes (6914/6914, 0 failures)."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T18:28:46.501Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YEXN2KMJ43AMEKH3SW0RE
