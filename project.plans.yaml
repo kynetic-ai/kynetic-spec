@@ -25890,8 +25890,8 @@ plans:
       branch data. Always use the globally installed `kspec` binary for any kspec CLI operations.
       Running partially-implemented storage code against real project data risks corruption. All
       testing must use the test harness with temp fixtures.
-    status: draft
-    approved_at: null
+    status: approved
+    approved_at: 2026-03-21T00:59:06.230Z
     derived_specs: []
     derived_tasks: []
     module_ref: "@tasks"
