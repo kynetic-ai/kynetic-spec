@@ -295,11 +295,11 @@ export function buildDispatchGitEnv(
   return env;
 }
 
-function resolveDispatchMutationLockTimeoutMs(): number | undefined {
+function resolveDispatchMutationLockTimeoutMs(): number {
   const raw = process.env.KSPEC_SHADOW_MUTATION_LOCK_TIMEOUT_MS;
-  if (!raw) return undefined;
+  if (!raw) return 0;
   const parsed = Number(raw);
-  return Number.isFinite(parsed) ? parsed : undefined;
+  return Number.isFinite(parsed) ? parsed : 0;
 }
 
 function runGitOrThrow(
