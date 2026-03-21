@@ -112910,7 +112910,34 @@
   session_id: 01KM7P9GEHK9W6XYAB0G9JRZMV
   created_at: 2026-03-21T00:59:22.538Z
   started_at: 2026-03-21T07:56:51.251Z
-  notes: []
+  notes:
+    - _ulid: 01KM7Q3J7H2DH14Y9Q8YREQPYJ
+      content: >-
+        Implemented per-task core data and notes files. Key design decisions:
+
+
+        1. History entries are internal to split storage (not in TaskSchema) — stored in task.yaml
+        alongside core fields, stripped on load, returned separately via getTaskHistory().
+
+
+        2. Field diff computation uses JSON.stringify equality for deep comparison, skipping
+        internal fields (notes, todos, history, _sourceFile).
+
+
+        3. Note-only mutations (addNote) skip task.yaml entirely — the split backend detects when no
+        core fields changed and avoids writing task.yaml or creating history entries.
+
+
+        4. MutationMetadata (author/command) is threaded from TaskDataManager.commitOpts through to
+        the backend. When commitOpts is absent, author falls back to getAuthor() and command
+        defaults to 'unknown'.
+
+
+        5. Full AC coverage: 25 tests covering all 3 ACs of @task-core-data-file and all 3 ACs of
+        @task-notes-file. All 6818 tests pass with zero regressions.
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T08:10:08.497Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YETR12GG1EZ5G68KSNTBK
