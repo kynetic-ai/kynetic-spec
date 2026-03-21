@@ -1584,6 +1584,9 @@ features:
           recorded in task.yaml's history section. Note additions are evident
           from notes.yaml entries. The activity timeline is assembled from
           file contents alone.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
