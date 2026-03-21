@@ -38070,3 +38070,29 @@ reviews:
     created_at: 2026-03-21T10:22:18.571Z
     updated_at: 2026-03-21T10:25:57.639Z
     notes: []
+  - _ulid: 01KM7ZJWBK8BM2C8D3K83DMQ27
+    slugs: []
+    title: Review task-build-index-rebuild
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KM7ZJWBJRFK7P3QBAD163RY8
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-21T10:38:18.995Z
+    examined_commit: cdc31d9ac007832d463edeae3a7ddd921f6bb9f9
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KM6YEW5EF6QXZHQP7FYARAK6"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-21T10:38:18.995Z
+    updated_at: null
+    notes: []
