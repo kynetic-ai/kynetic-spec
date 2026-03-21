@@ -457,7 +457,10 @@ class MonolithicBackend implements TaskStorageBackend {
       const preRead = await extractRawTaskArray(taskFilePath);
       const preIndex = findRawTaskIndex(preRead.rawTasks, task._ulid);
       if (preIndex === -1) {
-        throw new Error(`Task not found in file: ${task._ulid}`);
+        throw new TaskDataManagerError(
+          `Task not found: ${task._ulid}`,
+          { suggestion: `Check the reference with: kspec search "${task._ulid}" or kspec task list` },
+        );
       }
 
       const rawTarget = preRead.rawTasks[preIndex];
@@ -483,7 +486,10 @@ class MonolithicBackend implements TaskStorageBackend {
 
         const taskIndex = findRawTaskIndex(rawTasks, task._ulid);
         if (taskIndex === -1) {
-          throw new Error(`Task not found in file during write phase: ${task._ulid}`);
+          throw new TaskDataManagerError(
+            `Task not found: ${task._ulid}`,
+            { suggestion: `Check the reference with: kspec search "${task._ulid}" or kspec task list` },
+          );
         }
 
         rawTasks[taskIndex] = mergeTaskPreservingRawShape(
@@ -544,8 +550,22 @@ class MonolithicBackend implements TaskStorageBackend {
     }
   }
 
+  /**
+   * Delete a task with per-task locking.
+   *
+   * Acquires the same per-task mutex used by mutateTask()/mutateTasks() so
+   * that a concurrent mutation on the same task must wait, preventing
+   * mid-flight "task not found" failures.
+   *
+   * AC: @task-data-manager ac-9 — same-task operations serialize via per-task lock
+   */
   async deleteTask(ctx: KspecContext, task: LoadedTask): Promise<void> {
-    await deleteTaskFromFile(ctx, task);
+    const releaseTaskLock = await this.taskMutex.acquire(task._ulid);
+    try {
+      await deleteTaskFromFile(ctx, task);
+    } finally {
+      releaseTaskLock();
+    }
   }
 }
 

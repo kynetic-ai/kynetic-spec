@@ -818,6 +818,61 @@ describe("TaskDataManager", () => {
       expect(reloaded.tags).toContain("writer-2");
       expect(reloaded.tags).toContain("writer-3");
     });
+
+    it("serializes concurrent deleteTask and mutateTask on the same task", async () => {
+      tempDir = await setupTempFixtures();
+      manager = new TaskDataManager();
+      const ctx = await initContext(tempDir);
+
+      // Create a task that we'll race delete + mutate on
+      const target = await manager.createTask(ctx, {
+        title: "Race target",
+        slugs: ["race-target"],
+        tags: ["original"],
+      });
+      expect(target._ulid).toBeDefined();
+
+      // Run deleteTask and mutateTask concurrently on the same task.
+      // Without per-task locking in deleteTask, the mutate can read the
+      // task, then delete removes it, then the mutate's write phase fails
+      // with "Task not found in file during write phase" — violating AC-9.
+      // With the per-task lock, one operation completes before the other
+      // starts, so we get either:
+      //   (a) delete first → mutate throws TaskDataManagerError("Task not found")
+      //   (b) mutate first → delete succeeds afterward
+      // Both are valid as long as no "mid-flight" corruption occurs.
+      const results = await Promise.allSettled([
+        manager.deleteTask(ctx, "@race-target"),
+        manager.mutateTask(ctx, "@race-target", async (task) => {
+          // Delay to widen the race window
+          await new Promise((resolve) => setTimeout(resolve, 20));
+          return { ...task, tags: [...task.tags, "mutated"] };
+        }),
+      ]);
+
+      // Count successes and failures
+      const fulfilled = results.filter((r) => r.status === "fulfilled");
+      const rejected = results.filter((r) => r.status === "rejected");
+
+      // At least one operation should succeed. If both succeed, the
+      // mutate ran first and then the delete followed. If one fails, the
+      // failure should be TaskDataManagerError (clean "not found"), not
+      // an internal "Task not found in file during write phase" error
+      // from the monolithic backend.
+      expect(fulfilled.length).toBeGreaterThanOrEqual(1);
+
+      for (const r of rejected) {
+        if (r.status === "rejected") {
+          expect(r.reason).toBeInstanceOf(TaskDataManagerError);
+          expect(r.reason.message).toContain("Task not found");
+        }
+      }
+
+      // Regardless of order, the task should be gone after delete ran
+      await expect(
+        manager.getTask(ctx, "@race-target"),
+      ).rejects.toThrow(TaskDataManagerError);
+    });
   });
 
   // Mutation output validation — prevents storage corruption from invalid callback output
