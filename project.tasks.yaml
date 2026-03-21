@@ -112963,7 +112963,7 @@
   spec_ref: "@task-core-data-file"
   plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
   origin: derived
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-impl-split-storage"
@@ -112982,7 +112982,7 @@
     remote: origin
     remote_url: git@github.com:kynetic-ai/kynetic-spec.git
     upstream_ref: refs/heads/dev
-  session_id: 01KM7VWG9JCCJY6R9100CW6WGV
+  session_id: null
   created_at: 2026-03-21T00:59:22.538Z
   started_at: 2026-03-21T09:41:23.353Z
   submitted_at: 2026-03-21T09:41:27.090Z
@@ -113089,6 +113089,11 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-21T09:40:54.919Z
+    - _ulid: 01KM7WM1WA9V9P2GRZEJPF49QT
+      content: "[FIX_CYCLE: 5] Review verdict: changes_requested by codex"
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-21T09:46:31.690Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YETR12GG1EZ5G68KSNTBK
