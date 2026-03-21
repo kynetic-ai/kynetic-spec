@@ -1900,6 +1900,9 @@ features:
           A CLI command to regenerate the task index from per-task directories.
           Serves as both a repair mechanism for index drift and a verification
           tool after migration.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
