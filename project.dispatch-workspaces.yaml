@@ -17850,12 +17850,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-21T23:32:25.884Z
+      updated_at: 2026-03-21T23:32:30.129Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-21T23:32:25.884Z
+      updated_at: 2026-03-21T23:32:30.129Z
     integration:
       status: pending
       detail: null
@@ -17863,24 +17863,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 6661e9cae3c71f9e8292fa2e75c39e69e148ff77
-      updated_at: 2026-03-21T23:32:25.884Z
-    lifecycle_state: ready
+      updated_at: 2026-03-21T23:32:30.129Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KM99VKMSAS3JBX7S3QWBHRSV"
     task_slug: add-missing-ac-test-annotations-for-storage-split-specs
     timestamps:
       closed_at: null
       last_active_at: 2026-03-21T23:25:58.578Z
-      last_reconciled_at: 2026-03-21T23:32:25.884Z
+      last_reconciled_at: 2026-03-21T23:32:30.129Z
       created_at: 2026-03-21T23:11:15.289Z
-      updated_at: 2026-03-21T23:32:25.884Z
+      updated_at: 2026-03-21T23:32:30.129Z
     workspace_id: dispatch-workspace-01KM99VKMSAS3JBX7S3QWBHRSV
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: e85852381a7bdabdd4cae7f7fd041c9e3d106e4d
+        last_seen_at: 2026-03-21T23:32:30.129Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/add-missing-ac-test-annotations-for-storage-split-specs-01km99vk-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/add-missing-ac-test-annotations-for-storage-split-specs/01km99vk
-        head: 6e8ed2622a60022c3094e03f5d57321a53683b34
-        last_seen_at: 2026-03-21T23:25:56.203Z
+        head: e85852381a7bdabdd4cae7f7fd041c9e3d106e4d
+        last_seen_at: 2026-03-21T23:32:30.129Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/add-missing-ac-test-annotations-for-storage-split-specs-01km99vk
