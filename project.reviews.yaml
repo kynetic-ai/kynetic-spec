@@ -37086,7 +37086,18 @@ reviews:
     slugs: []
     title: Review per-task core data and notes files
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Exit code 6 with repo-wide existing warnings only (orphaned skills/specs and global AC
+          coverage warnings); no task-specific schema or reference errors.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-21T09:27:21.839Z
+        completed_at: 2026-03-21T09:27:21.839Z
     events:
       - _ulid: 01KM7V8R1956ZBHJXNFZ0ET8EJ
         actor: Jacob Chapel
@@ -37115,6 +37126,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM7VG7M9RAY1GA62MTGFMJQ7
         timestamp: 2026-03-21T09:26:58.198Z
+      - _ulid: 01KM7VGZ81MV9GM6HH1NJW0KJZ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec validate
+        timestamp: 2026-03-21T09:27:22.113Z
     examined_commit: 9bb58c6776e7df3a23ef51e1df4133cade934b4b
     external_links: []
     lifecycle_state: open
@@ -37171,5 +37189,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-21T09:22:52.585Z
-    updated_at: 2026-03-21T09:26:57.929Z
+    updated_at: 2026-03-21T09:27:21.839Z
     notes: []
