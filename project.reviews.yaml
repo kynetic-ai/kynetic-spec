@@ -35886,6 +35886,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM7PG3F75D8R9NP5Q2CSCB6F
         timestamp: 2026-03-21T07:59:31.047Z
+      - _ulid: 01KM7PG4HV1EKJSP35ED5QYXMT
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM7PG49VDC3CVVVJ2NETP7A2
+        timestamp: 2026-03-21T07:59:31.899Z
     examined_commit: 6023a5e30180743cd13485125c05f5975f5bf0da
     external_links: []
     lifecycle_state: open
@@ -35913,7 +35920,23 @@ reviews:
               list data, because  reads those counters only from the index in split mode."
             created_at: 2026-03-21T07:59:30.791Z
         kind: blocker
+      - _ulid: 01KM7PG49VDC3CVVVJ2NETP7A2
+        anchor:
+          type: code
+          commit: 6023a5e30180743cd13485125c05f5975f5bf0da
+          line_end: 892
+          line_start: 882
+          path: tests/split-backend.test.ts
+          side: head
+        entries:
+          - _ulid: 01KM7PG49V484KHHV5A39GJ1PT
+            author: Jacob Chapel
+            body: The new summary test only asserts , so it doesn’t catch the stale-counter regression above.
+              Tightening this to the exact expected count would close the gap once the
+              implementation is fixed.
+            created_at: 2026-03-21T07:59:31.643Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-21T07:59:05.203Z
-    updated_at: 2026-03-21T07:59:30.791Z
+    updated_at: 2026-03-21T07:59:31.643Z
     notes: []
