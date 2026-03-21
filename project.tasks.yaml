@@ -112056,6 +112056,7 @@
   created_at: 2026-03-21T00:59:16.796Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KM6YEN4XR089AVHHSWKJ6F9Q
   slugs:
     - task-update-activity-timeline-spec
@@ -112097,6 +112098,7 @@
   created_at: 2026-03-21T00:59:17.533Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KM6YENV3CBFAGSRHVHR7QPJN
   slugs:
     - task-impl-data-manager
@@ -112147,6 +112149,7 @@
   created_at: 2026-03-21T00:59:18.243Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KM6YEPJDBDB9891TTESHZ0FR
   slugs:
     - task-migrate-cli
@@ -112188,6 +112191,7 @@
   created_at: 2026-03-21T00:59:18.989Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KM6YEQ9GJYWB6ZC65Y3Y329G
   slugs:
     - task-migrate-daemon
@@ -112229,6 +112233,7 @@
   created_at: 2026-03-21T00:59:19.728Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KM6YEQYJGQ4JF2ECR67DANZQ
   slugs:
     - task-migrate-supporting
@@ -112271,6 +112276,7 @@
   created_at: 2026-03-21T00:59:20.402Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KM6YERMDKKYA1XXRN025G0FT
   slugs:
     - task-impl-split-storage
@@ -112323,6 +112329,7 @@
   created_at: 2026-03-21T00:59:21.101Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KM6YESAF92YTNXT3DF06AC0N
   slugs:
     - task-impl-index
@@ -112363,6 +112370,7 @@
   created_at: 2026-03-21T00:59:21.807Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KM6YET1A7XY9D0V3YQ9DRASG
   slugs:
     - task-impl-per-task-files
@@ -112405,6 +112413,7 @@
   created_at: 2026-03-21T00:59:22.538Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KM6YETR12GG1EZ5G68KSNTBK
   slugs:
     - task-impl-activity
@@ -112444,6 +112453,7 @@
   created_at: 2026-03-21T00:59:23.265Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KM6YEVFHZ9J6734CYVPWWDMH
   slugs:
     - task-extend-write-buffer
@@ -112486,6 +112496,7 @@
   created_at: 2026-03-21T00:59:24.017Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KM6YEW5EF6QXZHQP7FYARAK6
   slugs:
     - task-build-index-rebuild
@@ -112525,6 +112536,7 @@
   created_at: 2026-03-21T00:59:24.718Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KM6YEWY1WSKEXTF5YNP5GG81
   slugs:
     - task-build-migration
@@ -112582,6 +112594,7 @@
   created_at: 2026-03-21T00:59:25.505Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KM6YEXN2KMJ43AMEKH3SW0RE
   slugs:
     - task-activate-split-storage
@@ -112626,6 +112639,7 @@
   created_at: 2026-03-21T00:59:26.242Z
   notes: []
   todos: []
+  automation: manual_only
 - _ulid: 01KM6YEYAEWFKETRCB53V73HHK
   slugs:
     - task-remove-monolithic
@@ -112667,6 +112681,7 @@
   created_at: 2026-03-21T00:59:26.926Z
   notes: []
   todos: []
+  automation: manual_only
 - _ulid: 01KM6YEZ0E4QE1E37DAA4T1X7F
   slugs:
     - task-purge-old-storage-refs
@@ -112712,3 +112727,4 @@
   created_at: 2026-03-21T00:59:27.630Z
   notes: []
   todos: []
+  automation: manual_only
