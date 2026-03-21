@@ -34035,6 +34035,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM77AY1P1GAACHN4YGK06RJC
         timestamp: 2026-03-21T03:34:33.018Z
+      - _ulid: 01KM77B9GVCP1Y3T6GP1N479K2
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM77B98RPAXYSF8SMTFSX3YT
+        timestamp: 2026-03-21T03:34:44.507Z
     examined_commit: 29d48278f31ece8b422641f746402a06ab097948
     external_links: []
     lifecycle_state: open
@@ -34084,7 +34091,27 @@ reviews:
               backend-specific or forward-compatible metadata is lost on the first write."
             created_at: 2026-03-21T03:34:32.759Z
         kind: blocker
+      - _ulid: 01KM77B98RPAXYSF8SMTFSX3YT
+        anchor:
+          type: code
+          commit: 29d48278f31ece8b422641f746402a06ab097948
+          line_end: 1008
+          line_start: 970
+          path: src/parser/yaml.ts
+          side: head
+        entries:
+          - _ulid: 01KM77B98RJBR9TTC887SMD2ZG
+            author: Jacob Chapel
+            body: "The manager can read a bare single-task YAML file, but it cannot mutate that same file.
+              loadSummariesFromFile() and the existing read path both accept a top-level task
+              object, while extractRawTaskArray() only accepts arrays or `{ tasks: [...] }`. I
+              reproduced this with a temp repo containing `.kspec/project.tasks.yaml` as a single
+              task object: getTask('@single-task') succeeds, but addNote('@single-task') fails with
+              `Task not found: 01ARZ3NDEKTSV4RRFFQ69G5FAV`. That means the abstraction accepts a
+              valid on-disk task file on reads and then refuses to write it back."
+            created_at: 2026-03-21T03:34:44.248Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T03:29:42.814Z
-    updated_at: 2026-03-21T03:34:32.759Z
+    updated_at: 2026-03-21T03:34:44.248Z
     notes: []
