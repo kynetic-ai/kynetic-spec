@@ -41521,6 +41521,23 @@ reviews:
         runner: npm
         created_at: 2026-03-21T18:28:38.851Z
         completed_at: 2026-03-21T18:28:38.851Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/cli/commands/task.ts, src/utils/activity.ts, src/utils/index.ts,
+          src/cli/output.ts, src/parser/task-data-manager.ts, src/parser/split-backend.ts,
+          tests/activity-in-file.test.ts. Commands run: git diff --stat/name-only/unified, kspec
+          task get, kspec item get, kspec review for-task/get, kspec task get --json, kspec
+          validate, grep for AC annotations, npm test. Claim verified: activity JSON for this task
+          omits a command field, matching the code path in historyToActivity. Categories searched:
+          correctness (found blockers), edge cases (checked migration/note fallback), error handling
+          (best-effort fallback), test quality (coverage present but missed ac-2 fidelity),
+          integration (task get JSON/formatter)."
+        name: review-evidence
+        required: false
+        created_at: 2026-03-21T18:28:39.842Z
+        completed_at: 2026-03-21T18:28:39.842Z
     events:
       - _ulid: 01KM8TANC36FQ7M1EY68X7NNFP
         actor: Test User
@@ -41568,6 +41585,13 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-03-21T18:28:39.147Z
+      - _ulid: 01KM8TG43JEKKYK8K7JTVAKTP0
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-03-21T18:28:40.178Z
     examined_commit: 2b21f5fb5066a62e14f72235ba6882244e4942e9
     external_links: []
     lifecycle_state: open
@@ -41625,5 +41649,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-21T18:25:41.252Z
-    updated_at: 2026-03-21T18:28:38.851Z
+    updated_at: 2026-03-21T18:28:39.842Z
     notes: []
