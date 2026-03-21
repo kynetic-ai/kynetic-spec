@@ -340,6 +340,19 @@ describe("kspec task rebuild-index", () => {
     expect(result.stdout + " " + result.stderr).toMatch(/DRY RUN/i);
   });
 
+  // AC: @trait-dry-run ac-3
+  it("shows DRY RUN indication even when index is already synced", async () => {
+    ({ env } = await setupSplitEnv(tempDir));
+    const id = testUlid("DRYS");
+    await createTaskDir(tempDir, id, "task-dry-synced");
+    await addToIndex(tempDir, id, "task-dry-synced");
+
+    const result = kspec("task rebuild-index --dry-run", tempDir, { env });
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout + " " + result.stderr).toMatch(/DRY RUN/i);
+    expect(result.stdout).toContain("up to date");
+  });
+
   // ── AC: @trait-dry-run ac-4 ───────────────────────────────────────────────
   // Given: dry run mode is active
   // When: command would error

@@ -3313,6 +3313,10 @@ Examples:
 
         if (diffs.length === 0) {
           output(resultData, () => {
+            if (isDryRun) {
+              warn("DRY RUN — no changes will be written");
+              console.log();
+            }
             success(
               `Index is up to date (${newEntries.length} tasks)`,
             );
