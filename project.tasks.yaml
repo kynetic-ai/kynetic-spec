@@ -112685,6 +112685,15 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-21T06:12:13.984Z
+    - _ulid: 01KM7H157T865QXJMP7HQAQYNE
+      content: "Fix cycle 2: Migrated dispatch.ts (7 call sites) and validate.ts (2 call sites) from
+        direct loadAllTasks() to taskDataManager.loadAllTasks(). Added loadAllTasks() method to
+        TaskStorageBackend interface and TaskDataManager class for callers that need full task data
+        (notes for prompt building, notes.length for alignment). These were the last two files
+        called out in the review as bypassing the manager abstraction. All 6756 tests pass."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T06:23:58.202Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YERMDKKYA1XXRN025G0FT
