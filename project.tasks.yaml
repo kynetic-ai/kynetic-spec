@@ -21403,6 +21403,18 @@
       supersedes: null
       author: Test User
       created_at: 2026-03-21T18:59:13.009Z
+    - _ulid: 01KM8WSW8PE8MA6Q2G3TSKC639
+      content: "Fix cycle 5: Addressed both blockers. (1) Monolithic detection now uses positive
+        lean-entry identification (typeof notes_count === number) instead of Array.isArray(notes).
+        Entries with malformed/missing notes are now correctly classified as monolithic and migrated
+        with warnings per AC-5. Same fix applied to split-backend ensureMigrated gate. Added test
+        with string/null/missing notes variants. (2) AC-4 test now loads migrated data through
+        TaskDataManager split getTask instead of reading raw YAML files, proving the spec
+        requirement that migrated data is visible through the actual split-format load path. All 23
+        migration tests pass. Full suite: 6917 passed, 1 pre-existing timeout failure unrelated."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T19:08:56.983Z
   automation: eligible
 - _ulid: 01KM6YEXN2KMJ43AMEKH3SW0RE
   slugs:
