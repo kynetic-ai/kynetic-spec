@@ -41543,6 +41543,12 @@ reviews:
         payload:
           thread_ulid: 01KM8TBPE0JSAADKQR8Q5HMWEM
         timestamp: 2026-03-21T18:27:52.325Z
+      - _ulid: 01KM8TEX4F36VXSHEWH3VS9VHW
+        actor: Test User
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KM8TBRC6FNRB72YVFFKP7HBN
+        timestamp: 2026-03-21T18:28:00.271Z
     examined_commit: 2b21f5fb5066a62e14f72235ba6882244e4942e9
     external_links: []
     lifecycle_state: open
@@ -41590,8 +41596,15 @@ reviews:
               single-field changes, so multi-field history entries such as / drop part of the stored
               delta instead of exposing all changed fields."
             created_at: 2026-03-21T18:26:17.095Z
+          - _ulid: 01KM8TEWV9GVWJ9Y4JBFDXVS0Z
+            author: Test User
+            body: Spec ac-2 also requires field-level details for the full timeline. This code only fills detail
+              for single-field mutations, so multi-field history entries such as task-start and
+              task-submit drop part of the persisted change set instead of exposing every changed
+              field.
+            created_at: 2026-03-21T18:27:59.977Z
         kind: blocker
     verdicts: []
     created_at: 2026-03-21T18:25:41.252Z
-    updated_at: 2026-03-21T18:27:52.006Z
+    updated_at: 2026-03-21T18:27:59.977Z
     notes: []
