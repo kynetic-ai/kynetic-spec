@@ -21730,5 +21730,17 @@
       supersedes: null
       author: Test User
       created_at: 2026-03-21T23:24:55.749Z
+    - _ulid: 01KM9BV8QG4QWW4SPGSZBM4S3M
+      content: "Fix cycle 1: Addressed both review blockers. (1) Removed misplaced
+        @task-listing-performance ac-2 annotation from task-data-manager.test.ts — it was on a test
+        that only checked field exclusion, not proportionality. Added a proper behavioral test in
+        split-backend.test.ts that creates tasks with 20 notes (4KB+ notes file), lists via
+        index-only path, and verifies notes files are never read. (2) Extended
+        @task-storage-activation ac-2 test to cover all 5 operation types (list, get, create,
+        mutate, delete) via mock backend call tracking, proving split format is used for ALL reads
+        and writes. Full suite passes: 6936 tests, 0 failures."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T23:31:51.152Z
   todos: []
   automation: eligible
