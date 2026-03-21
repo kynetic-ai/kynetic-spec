@@ -17284,12 +17284,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-21T16:36:08.664Z
+      updated_at: 2026-03-21T16:36:17.602Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-21T16:36:08.664Z
+      updated_at: 2026-03-21T16:36:17.602Z
     integration:
       status: pending
       detail: null
@@ -17297,24 +17297,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: cbe88397420fa6992b3edd94fca7b847586c143f
-      updated_at: 2026-03-21T16:36:08.664Z
-    lifecycle_state: ready
+      updated_at: 2026-03-21T16:36:17.602Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KM8KEEN57D9E64GZPQTH1SXJ"
     task_slug: remove-default-timeout-from-dispatch-shadow-mutation-lock
     timestamps:
       closed_at: null
       last_active_at: 2026-03-21T16:27:24.235Z
-      last_reconciled_at: 2026-03-21T16:36:08.664Z
+      last_reconciled_at: 2026-03-21T16:36:17.602Z
       created_at: 2026-03-21T16:27:18.934Z
-      updated_at: 2026-03-21T16:36:08.664Z
+      updated_at: 2026-03-21T16:36:17.602Z
     workspace_id: dispatch-workspace-01KM8KEEN57D9E64GZPQTH1SXJ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: a5f4801899b17fd67eb522cc0e5803c156a9e49d
+        last_seen_at: 2026-03-21T16:36:17.602Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/remove-default-timeout-from-dispatch-shadow-mutation-lock-01km8kee-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/remove-default-timeout-from-dispatch-shadow-mutation-lock/01km8kee
-        head: cbe88397420fa6992b3edd94fca7b847586c143f
-        last_seen_at: 2026-03-21T16:27:18.934Z
+        head: a5f4801899b17fd67eb522cc0e5803c156a9e49d
+        last_seen_at: 2026-03-21T16:36:17.602Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/remove-default-timeout-from-dispatch-shadow-mutation-lock-01km8kee
