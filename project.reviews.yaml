@@ -33275,6 +33275,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-21T02:16:37.887Z
+      - _ulid: 01KM72YRCDX4Z67GR55E5EXTCN
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM72YR45ZVCPSJJ92DKK2APY
+        timestamp: 2026-03-21T02:17:59.437Z
     examined_commit: c3a88b1ac7c731546031baec42a2024062f4c88a
     external_links: []
     lifecycle_state: open
@@ -33284,8 +33291,27 @@ reviews:
       content_hash: ""
       ref: "@01KM6YENV3CBFAGSRHVHR7QPJN"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM72YR45ZVCPSJJ92DKK2APY
+        anchor:
+          type: code
+          commit: c3a88b1ac7c731546031baec42a2024062f4c88a
+          line_end: 188
+          line_start: 187
+          path: src/parser/task-data-manager.ts
+          side: head
+        entries:
+          - _ulid: 01KM72YR46TZWE9Y9SXYQ3QAY4
+            author: Jacob Chapel
+            body: "`listTasks()` still reads full task records from storage instead of reading index-only data.
+              In the monolithic backend this method delegates straight to `loadAllTasks()`, which
+              parses every task file before the manager projects a `TaskSummary`. That means AC-2 is
+              still unsatisfied: listing callers avoid detail fields in the return value, but they
+              do not avoid detail-file I/O. The new tests only assert the returned shape, so this
+              would still pass."
+            created_at: 2026-03-21T02:17:59.174Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T02:14:38.577Z
-    updated_at: 2026-03-21T02:16:37.414Z
+    updated_at: 2026-03-21T02:17:59.174Z
     notes: []
