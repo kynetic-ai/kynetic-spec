@@ -16520,12 +16520,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-21T06:04:15.648Z
+      updated_at: 2026-03-21T06:04:19.420Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-21T06:04:15.648Z
+      updated_at: 2026-03-21T06:04:19.420Z
     integration:
       status: pending
       detail: null
@@ -16533,24 +16533,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 6cb272c5d20a72401bf9fe26e7dfe40cf64fff75
-      updated_at: 2026-03-21T06:04:15.648Z
-    lifecycle_state: ready
+      updated_at: 2026-03-21T06:04:19.420Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KM6YEQYJGQ4JF2ECR67DANZQ"
     task_slug: task-migrate-supporting
     timestamps:
       closed_at: null
       last_active_at: 2026-03-21T05:58:39.783Z
-      last_reconciled_at: 2026-03-21T06:04:15.648Z
+      last_reconciled_at: 2026-03-21T06:04:19.420Z
       created_at: 2026-03-21T05:31:50.974Z
-      updated_at: 2026-03-21T06:04:15.648Z
+      updated_at: 2026-03-21T06:04:19.420Z
     workspace_id: dispatch-workspace-01KM6YEQYJGQ4JF2ECR67DANZQ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 028e4ab3766f79012521057d9d4be114c06f2cf2
+        last_seen_at: 2026-03-21T06:04:19.420Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-supporting-01km6yeq-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-migrate-supporting/01km6yeq
-        head: 2bd11ca860e8117d0c5d7c10b61e610c45d9819c
-        last_seen_at: 2026-03-21T05:58:22.331Z
+        head: 028e4ab3766f79012521057d9d4be114c06f2cf2
+        last_seen_at: 2026-03-21T06:04:19.420Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-supporting-01km6yeq
