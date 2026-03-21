@@ -40777,6 +40777,20 @@ reviews:
         runner: kspec
         created_at: 2026-03-21T17:30:30.127Z
         completed_at: 2026-03-21T17:30:30.127Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Two consecutive full-suite runs failed on unrelated 15s timeouts in
+          tests/agent-invocation-lifecycle.test.ts (first at should restore env even when invocation
+          fails, second at should NOT call shadowAutoCommit after failed invocation).
+          Activity-specific suites passed: tests/activity-in-file.test.ts and
+          tests/activity-display.test.ts."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-21T17:30:34.910Z
+        completed_at: 2026-03-21T17:30:34.910Z
     events:
       - _ulid: 01KM8PYAT64VPDEHQ4YNMR9Q9X
         actor: Test User
@@ -40812,6 +40826,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-21T17:30:30.442Z
+      - _ulid: 01KM8Q5RTA00KF5CPAYWT7HJQB
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-21T17:30:35.210Z
     examined_commit: f68480a8d01aadbdce406f6aca86f353cc32e282
     external_links: []
     lifecycle_state: open
@@ -40855,5 +40876,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-21T17:26:31.494Z
-    updated_at: 2026-03-21T17:30:30.127Z
+    updated_at: 2026-03-21T17:30:34.910Z
     notes: []
