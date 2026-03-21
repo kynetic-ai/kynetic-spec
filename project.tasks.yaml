@@ -112631,7 +112631,7 @@
   spec_ref: "@task-data-manager"
   plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
   origin: derived
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-impl-data-manager"
@@ -112645,7 +112645,7 @@
   submission_linkage:
     review_url: null
     branch: dev
-    captured_at: 2026-03-21T05:52:17.882Z
+    captured_at: 2026-03-21T06:03:59.069Z
     commit: 571b6c3df5fea1c478f526e6412b87879f747a0a
     remote: origin
     remote_url: git@github.com:kynetic-ai/kynetic-spec.git
@@ -112653,7 +112653,7 @@
   session_id: 01KM7FJSZVC40ZPMZSN1CYM539
   created_at: 2026-03-21T00:59:20.402Z
   started_at: 2026-03-21T06:03:53.434Z
-  submitted_at: 2026-03-21T05:52:18.317Z
+  submitted_at: 2026-03-21T06:03:59.500Z
   notes:
     - _ulid: 01KM7F6MDKXHQE0YVM3KNSNVR1
       content: "Migrated all task mutation operations (createTask+saveTask, mutateTaskAtomically,
