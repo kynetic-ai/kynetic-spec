@@ -16164,7 +16164,7 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-21T01:36:14.413Z
+      updated_at: 2026-03-21T01:38:05.799Z
     health:
       status: stale
       issues:
@@ -16174,7 +16174,7 @@ workspaces:
             is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
       summary: Workspace registry record is stale and needs reconciliation.
-      updated_at: 2026-03-21T01:36:14.413Z
+      updated_at: 2026-03-21T01:38:05.799Z
     integration:
       status: pending
       detail: null
@@ -16182,7 +16182,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 0b83080a89d15bec8d00c46e33d52fc6c2597dd0
-      updated_at: 2026-03-21T01:36:14.413Z
+      updated_at: 2026-03-21T01:38:05.799Z
     lifecycle_state: stale
     resolved_base_branch: dev
     task_ref: "@01KM6YENV3CBFAGSRHVHR7QPJN"
@@ -16190,9 +16190,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-21T01:26:06.336Z
-      last_reconciled_at: 2026-03-21T01:36:14.413Z
+      last_reconciled_at: 2026-03-21T01:38:05.799Z
       created_at: 2026-03-21T01:13:05.993Z
-      updated_at: 2026-03-21T01:36:14.413Z
+      updated_at: 2026-03-21T01:38:05.799Z
     workspace_id: dispatch-workspace-01KM6YENV3CBFAGSRHVHR7QPJN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -16206,5 +16206,5 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-impl-data-manager/01km6yen
         head: 3e6d901fcc248a5e455c477b826578d8000f90af
-        last_seen_at: 2026-03-21T01:25:58.874Z
+        last_seen_at: 2026-03-21T01:38:05.799Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-impl-data-manager-01km6yen
