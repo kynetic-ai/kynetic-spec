@@ -38971,6 +38971,18 @@ reviews:
         runner: kspec
         created_at: 2026-03-21T12:09:36.302Z
         completed_at: 2026-03-21T12:09:36.302Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Full suite was started from this snapshot and progressed through the reviewed tests
+          without reported failures in captured output, but the harness truncated output while the
+          process was still running, so no clean completion was observed.
+        name: npm test
+        required: false
+        runner: npm
+        created_at: 2026-03-21T12:09:40.470Z
+        completed_at: 2026-03-21T12:09:40.470Z
     events:
       - _ulid: 01KM84R0XNJ0ZMSVBZKF4NMMJJ
         actor: Jacob Chapel
@@ -39013,6 +39025,13 @@ reviews:
           status: skipped
           name: kspec validate
         timestamp: 2026-03-21T12:09:36.569Z
+      - _ulid: 01KM84T5MCKB3BPVHBC2AAYNA7
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: npm test
+        timestamp: 2026-03-21T12:09:40.748Z
     examined_commit: 8ffbce2773d7ce1e143bb9a483e37b4fc583ee2f
     external_links: []
     lifecycle_state: open
@@ -39060,5 +39079,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-21T12:08:30.389Z
-    updated_at: 2026-03-21T12:09:36.302Z
+    updated_at: 2026-03-21T12:09:40.470Z
     notes: []
