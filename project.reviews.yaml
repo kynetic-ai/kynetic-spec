@@ -37595,6 +37595,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-21T09:58:44.323Z
+      - _ulid: 01KM7XAE81A0CYA1F85K96VZHF
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM7XADYVQM41N6EVQ8PXJJ3T
+        timestamp: 2026-03-21T09:58:45.250Z
     examined_commit: 99e92ad7d12fdb6a6cce9ab8f7d11bc48ca3bd1b
     external_links: []
     lifecycle_state: open
@@ -37604,8 +37611,28 @@ reviews:
       content_hash: ""
       ref: "@01KM6YEVFHZ9J6734CYVPWWDMH"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM7XADYVQM41N6EVQ8PXJJ3T
+        anchor:
+          type: code
+          commit: 99e92ad7d12fdb6a6cce9ab8f7d11bc48ca3bd1b
+          line_end: 759
+          line_start: 756
+          path: src/parser/split-backend.ts
+          side: head
+        entries:
+          - _ulid: 01KM7XADYVH0VS8EYZQJVHXS0J
+            author: Jacob Chapel
+            body: "When deleteTask runs under the manager-owned write buffer, this direct fs.rm executes before
+              the manager flushes the buffered index/task deletions. If buffer.flush() later fails
+              in TaskDataManager.withWriteBuffer(), the task directory has already been removed
+              while the index update is still buffered, so the operation is no longer atomic and
+              cannot roll back cleanly. That violates @task-atomic-writes ac-2 for delete flows.
+              Evidence: manager-owned buffering is activated in task-data-manager.ts:886-889, but
+              the directory removal here happens outside that buffer lifecycle."
+            created_at: 2026-03-21T09:58:44.955Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T09:55:37.456Z
-    updated_at: 2026-03-21T09:58:44.058Z
+    updated_at: 2026-03-21T09:58:44.955Z
     notes: []
