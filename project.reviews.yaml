@@ -38011,9 +38011,25 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-21T10:25:47.853Z
+      - _ulid: 01KM7YW8C61FKDG6NJ8KV2QQM6
+        actor: codex@openai.com
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-21T10:25:57.639Z
+      - _ulid: 01KM7YW8C7ZCD8R4VEKMQVAMY8
+        actor: codex@openai.com
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-21T10:25:57.639Z
     examined_commit: c41a0e2ed26dbe1c71733e469a0ba343465fc9fb
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -38043,7 +38059,14 @@ reviews:
               is still violated for configured-author projects.'
             created_at: 2026-03-21T10:25:45.572Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai.com
+        role: reviewer
+        created_at: 2026-03-21T10:25:57.638Z
     created_at: 2026-03-21T10:22:18.571Z
-    updated_at: 2026-03-21T10:25:47.466Z
+    updated_at: 2026-03-21T10:25:57.639Z
     notes: []
