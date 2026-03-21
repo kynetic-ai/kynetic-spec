@@ -42507,9 +42507,25 @@ reviews:
         payload:
           thread_ulid: 01KM9BD1Z649DNET4PF55W1BDX
         timestamp: 2026-03-21T23:24:43.618Z
+      - _ulid: 01KM9BEJ8A7GR1WHJRQC8SH1JQ
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-21T23:24:54.922Z
+      - _ulid: 01KM9BEJ8AZXRVJV2AYNJH4MAC
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-21T23:24:54.922Z
     examined_commit: 6e8ed2622a60022c3094e03f5d57321a53683b34
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -42584,7 +42600,14 @@ reviews:
               runtime regression from test run)."
             created_at: 2026-03-21T23:24:42.241Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-21T23:24:54.922Z
     created_at: 2026-03-21T23:20:17.564Z
-    updated_at: 2026-03-21T23:24:43.269Z
+    updated_at: 2026-03-21T23:24:54.922Z
     notes: []
