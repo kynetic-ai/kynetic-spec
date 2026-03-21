@@ -33463,6 +33463,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM747BANWKDN72XRTE6FQXXA
         timestamp: 2026-03-21T02:40:09.815Z
+      - _ulid: 01KM747Q0N9HW8HG2BK2KT0EWB
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM747PRKPMX08CWVAYF0EQRF
+        timestamp: 2026-03-21T02:40:21.525Z
     examined_commit: 6a5ac975064bf1dc5dfa7706e4c17796d524d57b
     external_links: []
     lifecycle_state: open
@@ -33513,7 +33520,43 @@ reviews:
               that no other mutation can change the target task between phases."
             created_at: 2026-03-21T02:40:09.557Z
         kind: blocker
+      - _ulid: 01KM747PRKPMX08CWVAYF0EQRF
+        entries:
+          - _ulid: 01KM747PRK0WY9GAE1VA569RES
+            author: Jacob Chapel
+            body: >-
+              Review evidence log
+
+
+              Files read: kspec-agents.md, .agents/skills/review-gates/SKILL.md,
+              src/parser/task-data-manager.ts, src/parser/yaml.ts, tests/task-data-manager.test.ts,
+              tests/task-mutation-serialization.test.ts, package.json
+
+
+              Commands run: kspec task get @01KM6YENV3CBFAGSRHVHR7QPJN; kspec review for-task
+              @01KM6YENV3CBFAGSRHVHR7QPJN; kspec review get @01KM72RM7H32H3DD5DEZMHPYV0; kspec item
+              get @task-data-manager; git diff --stat
+              0b83080a89d15bec8d00c46e33d52fc6c2597dd0...6a5ac975064bf1dc5dfa7706e4c17796d524d57b;
+              git diff --name-only
+              0b83080a89d15bec8d00c46e33d52fc6c2597dd0...6a5ac975064bf1dc5dfa7706e4c17796d524d57b;
+              kspec validate; grep -Rni "AC: @task-data-manager\|AC: @trait-error-guidance" tests;
+              npm test; targeted tsx repro showing nested-task omission; targeted tsx repro showing
+              overlapping mutateTask/mutateTasks lost update
+
+
+              Claims verified: full suite passes locally; listTasks avoids TaskSchema.safeParse in
+              the normal path; previous blockers on AC-2 and AC-5 were partially addressed but new
+              regressions remain in recursive discovery and same-task serialization across
+              batch/single mutation paths.
+
+
+              Categories searched: correctness (2 blockers found), edge cases (nested task files,
+              overlapping batch/single writes), error handling (not-found and validation paths),
+              test quality (AC annotations present), integration (interaction with yaml.ts discovery
+              and locking helpers).
+            created_at: 2026-03-21T02:40:21.267Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-21T02:38:39.245Z
-    updated_at: 2026-03-21T02:40:09.557Z
+    updated_at: 2026-03-21T02:40:21.267Z
     notes: []
