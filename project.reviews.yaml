@@ -32993,6 +32993,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM71PKPBYZEW57PBPXCHQG5A
         timestamp: 2026-03-21T01:56:04.170Z
+      - _ulid: 01KM71PMR4DW3D67TTP435EARB
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM71PMH9R0XDX9T89E2H4NRC
+        timestamp: 2026-03-21T01:56:04.996Z
     examined_commit: 22590082dbd063c31e0db7037b6fa96c5e6074b0
     external_links: []
     lifecycle_state: open
@@ -33036,7 +33043,27 @@ reviews:
               spec alignment, error handling, concurrency, test quality, integration."
             created_at: 2026-03-21T01:56:03.915Z
         kind: nit
+      - _ulid: 01KM71PMH9R0XDX9T89E2H4NRC
+        anchor:
+          type: code
+          commit: 22590082dbd063c31e0db7037b6fa96c5e6074b0
+          line_end: 379
+          line_start: 338
+          path: src/parser/task-data-manager.ts
+          side: head
+        entries:
+          - _ulid: 01KM71PMH9XBXYHS47XXXKS1H0
+            author: Jacob Chapel
+            body: "The new mutation API does not validate the callback's returned task before it is persisted.
+              Both  and  hand the mutated record straight to the YAML writer, so a caller can save
+              an invalid shape and silently corrupt storage. I reproduced this by calling : the
+              write succeeded, and the next  emitted a skipped-invalid-task warning and
+              dropped  from the result set (). This violates the manager's contract as the exclusive
+              task I/O boundary and is not covered by the current tests, which only assert
+              validation on ."
+            created_at: 2026-03-21T01:56:04.777Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T01:51:44.263Z
-    updated_at: 2026-03-21T01:56:03.915Z
+    updated_at: 2026-03-21T01:56:04.777Z
     notes: []
