@@ -16343,7 +16343,7 @@ workspaces:
         head: c195445ea83a06feba1bc485453d92bebc2de1fe
         last_seen_at: 2026-03-21T04:54:23.135Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-cli-01km6yep
-  - active_role: null
+  - active_role: worker
     base_branch_point: 878b30086642c631a8296a541616b2ecdcfa2dc1
     bootstrap:
       status: succeeded
@@ -16432,7 +16432,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-21T04:54:30.875Z
+      updated_at: 2026-03-21T04:54:37.873Z
     integration:
       status: pending
       detail: null
@@ -16441,16 +16441,16 @@ workspaces:
       target_branch: dev
       target_commit: 878b30086642c631a8296a541616b2ecdcfa2dc1
       updated_at: 2026-03-21T04:54:30.875Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KM6YEQ9GJYWB6ZC65Y3Y329G"
     task_slug: task-migrate-daemon
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-03-21T04:54:30.875Z
+      last_active_at: 2026-03-21T04:54:37.873Z
+      last_reconciled_at: 2026-03-21T04:54:37.873Z
       created_at: 2026-03-21T04:54:30.875Z
-      updated_at: 2026-03-21T04:54:36.688Z
+      updated_at: 2026-03-21T04:54:37.873Z
     workspace_id: dispatch-workspace-01KM6YEQ9GJYWB6ZC65Y3Y329G
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
