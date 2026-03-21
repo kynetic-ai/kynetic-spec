@@ -34367,6 +34367,18 @@ reviews:
         runner: npm
         created_at: 2026-03-21T04:25:31.298Z
         completed_at: 2026-03-21T04:25:31.298Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate reported no schema/reference errors, but the repository still has existing
+          non-task-specific warnings (exit 6), so I recorded this as informational rather than a
+          merge gate for this task review.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-21T04:25:34.454Z
+        completed_at: 2026-03-21T04:25:34.454Z
     events:
       - _ulid: 01KM79ZK6K71TTQXKX8XBYRA74
         actor: Jacob Chapel
@@ -34418,6 +34430,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-21T04:25:32.477Z
+      - _ulid: 01KM7A8C7792X2E1BGJP2WFTEB
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec validate
+        timestamp: 2026-03-21T04:25:34.695Z
     examined_commit: aba38db786aa6f593e5f2ceb9f6e7acc3db5bb4c
     external_links: []
     lifecycle_state: closed
@@ -34481,5 +34500,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-21T04:25:32.476Z
     created_at: 2026-03-21T04:20:46.932Z
-    updated_at: 2026-03-21T04:25:32.477Z
+    updated_at: 2026-03-21T04:25:34.454Z
     notes: []
