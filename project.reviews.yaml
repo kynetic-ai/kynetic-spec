@@ -38941,7 +38941,25 @@ reviews:
     slugs: []
     title: Review per-task core data and notes files (cycle 11)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: packages/daemon/src/routes/tasks.ts, src/parser/review-task-integration.ts,
+          src/parser/split-backend.ts, src/parser/task-data-manager.ts, src/cli/commands/task.ts,
+          src/parser/yaml.ts, tests/per-task-files.test.ts. Commands run: git diff --stat, git diff
+          on changed files, kspec task get, kspec review for-task, kspec item get
+          @task-core-data-file, @task-notes-file, @task-storage-activation, rg AC annotations, kspec
+          validate, npm test (started; output truncated by harness while still running), pgrep for
+          test process state. Claims verified: split history is populated from TaskDataManager
+          commitOpts metadata, and these API/review paths omit it. Categories searched: correctness,
+          integration, AC coverage, task activity/history wiring, daemon API paths."
+        name: review-evidence
+        required: false
+        runner: codex
+        created_at: 2026-03-21T12:09:32.326Z
+        completed_at: 2026-03-21T12:09:32.326Z
     events:
       - _ulid: 01KM84R0XNJ0ZMSVBZKF4NMMJJ
         actor: Jacob Chapel
@@ -38970,6 +38988,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM84SNS473J5GXG864NSYDC1
         timestamp: 2026-03-21T12:09:24.796Z
+      - _ulid: 01KM84SXNMK6PM6QQ4QZ77KNMH
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-03-21T12:09:32.596Z
     examined_commit: 8ffbce2773d7ce1e143bb9a483e37b4fc583ee2f
     external_links: []
     lifecycle_state: open
@@ -39017,5 +39042,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-21T12:08:30.389Z
-    updated_at: 2026-03-21T12:09:24.516Z
+    updated_at: 2026-03-21T12:09:32.326Z
     notes: []
