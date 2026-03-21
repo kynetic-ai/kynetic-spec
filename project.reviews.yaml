@@ -36931,6 +36931,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM7TD7AXQN97TXTZR7REZWP1
         timestamp: 2026-03-21T09:07:51.242Z
+      - _ulid: 01KM7TF0FN82M8TFNFTXB9Q7RT
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM7TF0205GPVAKQ1PX39ZEFQ
+        timestamp: 2026-03-21T09:08:49.269Z
     examined_commit: 54201d9e92eec58950b8d7ec342b710bb4e0d32a
     external_links: []
     lifecycle_state: open
@@ -36961,7 +36968,27 @@ reviews:
               listTasks()/task list --json."
             created_at: 2026-03-21T09:07:50.750Z
         kind: blocker
+      - _ulid: 01KM7TF0205GPVAKQ1PX39ZEFQ
+        anchor:
+          type: code
+          commit: 54201d9e92eec58950b8d7ec342b710bb4e0d32a
+          line_end: 966
+          line_start: 940
+          path: src/parser/split-backend.ts
+          side: head
+        entries:
+          - _ulid: 01KM7TF020XPG5CCNEQNGFVHKK
+            author: Jacob Chapel
+            body: "rebuildIndex() is implemented only on the concrete split backend. There is still no supported
+              way to request a rebuild through TaskStorageBackend, TaskDataManager, or any CLI/API
+              path, and the only callers in this snapshot are tests importing splitBackend directly.
+              That means AC-7 is not actually satisfied for real callers yet: production code cannot
+              trigger the rebuild when drift is detected. Please expose this through the
+              manager/public surface and verify that public entrypoint instead of a test-only direct
+              backend call."
+            created_at: 2026-03-21T09:08:48.832Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T09:03:10.808Z
-    updated_at: 2026-03-21T09:07:50.750Z
+    updated_at: 2026-03-21T09:08:48.832Z
     notes: []
