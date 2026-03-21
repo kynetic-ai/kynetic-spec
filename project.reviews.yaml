@@ -38859,6 +38859,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-21T11:52:15.069Z
+      - _ulid: 01KM83TJ3AXWFQQVZEH7Z4CB6D
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM83THTMH216X97Q709CP1M8
+        timestamp: 2026-03-21T11:52:24.938Z
     examined_commit: 8b23acb130d43d97a533d6e28707641b62e2e21d
     external_links: []
     lifecycle_state: open
@@ -38884,7 +38891,26 @@ reviews:
               integration, test coverage, error handling."
             created_at: 2026-03-21T11:52:07.277Z
         kind: nit
+      - _ulid: 01KM83THTMH216X97Q709CP1M8
+        anchor:
+          type: code
+          commit: 8b23acb130d43d97a533d6e28707641b62e2e21d
+          line_end: 1137
+          line_start: 1130
+          path: src/parser/task-data-manager.ts
+          side: head
+        entries:
+          - _ulid: 01KM83THTMZN5W5JSRMC6BVH42
+            author: Jacob Chapel
+            body: Setting task_storage.format=split now unconditionally switches every read/write path to the
+              split backend, but there is still no migration gate. resolveTaskDataManager() returns
+              the split manager solely from the manifest flag, and split loadAllTasks() only scans
+              per-task directories. On a project that flips the setting before migration, existing
+              tasks in project.tasks.yaml will disappear instead of producing the spec-required
+              error that migration must run first (@task-storage-activation ac-3).
+            created_at: 2026-03-21T11:52:24.660Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T11:48:42.225Z
-    updated_at: 2026-03-21T11:52:14.726Z
+    updated_at: 2026-03-21T11:52:24.660Z
     notes: []
