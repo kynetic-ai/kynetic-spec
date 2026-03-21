@@ -39831,7 +39831,17 @@ reviews:
     slugs: []
     title: Review per-task core data and notes files (cycle 18)
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 302/302 test files passed; 6890 tests passed, 3 skipped, 0 failed.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-21T15:28:51.830Z
+        completed_at: 2026-03-21T15:28:51.830Z
     events:
       - _ulid: 01KM8FQW4S32PAYMEV2TFVHGSX
         actor: Test User
@@ -39867,6 +39877,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM8G6NEY29QS7ZS92WRKK2CZ
         timestamp: 2026-03-21T15:28:44.892Z
+      - _ulid: 01KM8G6X06T1P9FVG689F84YEH
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-21T15:28:52.230Z
     examined_commit: 4241cfba631c31163ad3241461302891839d59f6
     external_links: []
     lifecycle_state: open
@@ -39932,5 +39949,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-21T15:20:39.834Z
-    updated_at: 2026-03-21T15:28:44.510Z
+    updated_at: 2026-03-21T15:28:51.830Z
     notes: []
