@@ -32840,6 +32840,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM71E3FQVJJE7C2MEWE9G3AZ
         timestamp: 2026-03-21T01:51:25.455Z
+      - _ulid: 01KM71ECF2KNWPJQ96SPZNKQWG
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM71EC6JTJ00M7B9HSYQRQF6
+        timestamp: 2026-03-21T01:51:34.370Z
     examined_commit: 0b83080a89d15bec8d00c46e33d52fc6c2597dd0
     external_links: []
     lifecycle_state: open
@@ -32867,7 +32874,28 @@ reviews:
               required check."
             created_at: 2026-03-21T01:51:25.175Z
         kind: blocker
+      - _ulid: 01KM71EC6JTJ00M7B9HSYQRQF6
+        entries:
+          - _ulid: 01KM71EC6JQ69DT8H22GSCD8C8
+            author: Jacob Chapel
+            body: "Files read: AGENTS.md, kspec-agents.md, .agents/skills/review-gates/SKILL.md,
+              tests/cli-serve.test.ts, @task-storage, @task-storage-alongside,
+              @task-storage-separate, @task-activity-git-query, @task-directory-storage,
+              @task-activity-in-file. Commands run: git rev-parse HEAD dev
+              dispatch/task/task-deprecate-old-storage-specs/01km6yem; git show --stat --summary
+              --format=fuller HEAD; kspec task get @01KM6YEMDW3WNPT2XM66EH0AKM; kspec review
+              for-task/get; kspec item get on old/new specs (text+json); kspec validate; kspec
+              validate --warnings-ok; npm test; npm test -- tests/cli-serve.test.ts. Claims
+              verified: the fix-cycle note claimed stale implements refs were cleared; verified via
+              kspec item get --json showing implements=[] on @task-storage-alongside and
+              @task-storage-separate and superseded_by set correctly on all four deprecated specs.
+              Categories searched: correctness (spec deprecation/superseded_by relationships clean),
+              integration (superseded specs no longer point at deprecated parent), test
+              quality/regression (full suite still fails), edge cases/error handling (reviewed the
+              foreground serve shutdown assertion path)."
+            created_at: 2026-03-21T01:51:34.098Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-21T01:39:10.235Z
-    updated_at: 2026-03-21T01:51:25.175Z
+    updated_at: 2026-03-21T01:51:34.098Z
     notes: []
