@@ -32485,7 +32485,24 @@ reviews:
     slugs: []
     title: Review task-update-activity-timeline-spec
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: modules/tasks.yaml shadow diff commits a5fccefbb,d99e7076a,64aa4893d;
+          tests/activity-display.test.ts; kspec item get @task-activity-timeline. Commands run:
+          kspec task get, kspec item get, kspec review for-task, kspec validate, rg AC annotations,
+          npm test, targeted npm test for agent-dispatch-engine guardrail case. Claims verified:
+          ac-1/ac-2 wording now references stored history entries and stored task history/note
+          records; behavior unchanged; existing activity-display tests still prove default cap and
+          --activity full timeline behavior. Categories searched: correctness, AC coverage, test
+          quality, integration; no task-specific issues found."
+        name: manual-review
+        required: true
+        runner: manual
+        created_at: 2026-03-21T01:18:24.689Z
+        completed_at: 2026-03-21T01:18:24.689Z
     events:
       - _ulid: 01KM6ZGRHX97580HQ6QMRFGE4H
         actor: Jacob Chapel
@@ -32500,6 +32517,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-21T01:18:20.065Z
+      - _ulid: 01KM6ZHNVRMAEBWEQCV7F0GZ01
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: manual-review
+        timestamp: 2026-03-21T01:18:25.144Z
     examined_commit: 0b83080a89d15bec8d00c46e33d52fc6c2597dd0
     external_links: []
     lifecycle_state: open
@@ -32512,5 +32536,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-21T01:17:55.134Z
-    updated_at: 2026-03-21T01:18:19.630Z
+    updated_at: 2026-03-21T01:18:24.689Z
     notes: []
