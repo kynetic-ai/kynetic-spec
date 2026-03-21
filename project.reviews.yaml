@@ -38550,6 +38550,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM81NRQR6Z8XE7MQVMQ28MAM
         timestamp: 2026-03-21T11:14:51.243Z
+      - _ulid: 01KM81NTVAMDP2SSR23WX2C2XH
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM81NTBDMA3FK945Z1GN1AY5
+        timestamp: 2026-03-21T11:14:52.906Z
     examined_commit: 1db83c00f8bd886f9006e661da0bcfcbdc6f228d
     external_links: []
     lifecycle_state: open
@@ -38607,7 +38614,34 @@ reviews:
               user-facing task commands.
             created_at: 2026-03-21T11:14:50.744Z
         kind: blocker
+      - _ulid: 01KM81NTBDMA3FK945Z1GN1AY5
+        entries:
+          - _ulid: 01KM81NTBDZ2P580BP2M0R3P1A
+            author: Jacob Chapel
+            body: >-
+              Review evidence log:
+
+              Files read: src/parser/task-data-manager.ts, src/parser/split-backend.ts,
+              src/cli/commands/task.ts, src/cli/commands/tasks.ts,
+              packages/daemon/src/routes/tasks.ts, src/parser/review-task-integration.ts,
+              src/parser/alignment.ts, src/parser/yaml.ts, tests/per-task-files.test.ts,
+              tests/tasks-assess-automation.test.ts.
+
+              Commands run: `kspec task get`, `kspec review for-task`, `git diff --stat`, `git
+              diff`, `kspec item get`, `rg` for AC annotations, `kspec validate`, `npm test`, `node`
+              repro comparing `loadAllTasks(ctx)` vs `resolveTaskDataManager(ctx).loadAllTasks(ctx)`
+              in split mode.
+
+              Claims verified: reproduced that legacy `loadAllTasks(ctx)` drops split-storage
+              notes/todos even after they exist on disk; confirmed new tests cover direct manager
+              behavior but not CLI split-mode paths.
+
+              Categories searched: correctness (found blocker), test coverage (gap for CLI
+              split-mode reads), integration (found blocker in task commands), edge cases/error
+              handling/security (no additional blockers found).
+            created_at: 2026-03-21T11:14:52.397Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-21T11:09:30.269Z
-    updated_at: 2026-03-21T11:14:50.744Z
+    updated_at: 2026-03-21T11:14:52.397Z
     notes: []
