@@ -39123,6 +39123,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-21T12:26:28.215Z
+      - _ulid: 01KM85S08WMVNVTG7R86KCVXHJ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM85RZZ70CF032JG65PTJXDG
+        timestamp: 2026-03-21T12:26:31.068Z
     examined_commit: 016332a40c99716b0291d605fb9942378194f820
     external_links: []
     lifecycle_state: open
@@ -39132,8 +39139,34 @@ reviews:
       content_hash: ""
       ref: "@01KM6YET1A7XY9D0V3YQ9DRASG"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM85RZZ70CF032JG65PTJXDG
+        entries:
+          - _ulid: 01KM85RZZ8MZ817RERV4MJDHWX
+            author: Jacob Chapel
+            body: >-
+              Evidence log
+
+
+              Files read: src/parser/task-data-manager.ts, src/parser/split-backend.ts,
+              src/parser/review-task-integration.ts, src/cli/commands/task.ts,
+              packages/daemon/src/routes/tasks.ts, tests/per-task-files.test.ts
+
+              Commands run: kspec task get @01KM6YET1A7XY9D0V3YQ9DRASG; kspec item get
+              @task-core-data-file; kspec item get @task-notes-file; kspec item get
+              @task-storage-activation; kspec validate; rg -n "AC:
+              @(task-core-data-file|task-notes-file|task-storage-activation)"
+              tests/per-task-files.test.ts; npm test; git diff/stat/log/merge-base checks
+
+              Claims verified: split manager selection follows manifest.task_storage.format;
+              per-task history is surfaced into task activity; daemon/task/review mutation paths now
+              pass operation metadata for history entries; full suite passes on this snapshot
+
+              Categories searched: correctness, edge cases, error handling, test quality,
+              integration. No blocking issues found.
+            created_at: 2026-03-21T12:26:30.760Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-21T12:22:35.026Z
-    updated_at: 2026-03-21T12:26:27.940Z
+    updated_at: 2026-03-21T12:26:30.760Z
     notes: []
