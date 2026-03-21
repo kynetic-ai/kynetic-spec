@@ -36422,3 +36422,29 @@ reviews:
     created_at: 2026-03-21T08:22:52.107Z
     updated_at: 2026-03-21T08:24:05.022Z
     notes: []
+  - _ulid: 01KM7RC8NG4KJXV2EEZXPQ26DJ
+    slugs: []
+    title: Review task-impl-per-task-files (cycle 2)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KM7RC8NG8DG5Z5S01D916M01
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-21T08:32:22.192Z
+    examined_commit: c870308b044370f3e2434679932ea13d1b0a875c
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KM6YET1A7XY9D0V3YQ9DRASG"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-21T08:32:22.192Z
+    updated_at: null
+    notes: []
