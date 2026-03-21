@@ -34355,7 +34355,18 @@ reviews:
     slugs: []
     title: Review task-impl-data-manager
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm test passed in the review snapshot, including tests/task-data-manager.test.ts and the
+          regression fix in tests/action-model.test.ts.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-21T04:25:31.298Z
+        completed_at: 2026-03-21T04:25:31.298Z
     events:
       - _ulid: 01KM79ZK6K71TTQXKX8XBYRA74
         actor: Jacob Chapel
@@ -34384,6 +34395,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM7A7Z5V9W3B274B0EJM5DGX
         timestamp: 2026-03-21T04:25:21.595Z
+      - _ulid: 01KM7A8957NXZ8MVB1GJ5VQ401
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-21T04:25:31.560Z
     examined_commit: aba38db786aa6f593e5f2ceb9f6e7acc3db5bb4c
     external_links: []
     lifecycle_state: open
@@ -34440,5 +34458,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-21T04:20:46.932Z
-    updated_at: 2026-03-21T04:25:21.339Z
+    updated_at: 2026-03-21T04:25:31.298Z
     notes: []
