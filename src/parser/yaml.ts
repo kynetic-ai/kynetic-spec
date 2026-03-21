@@ -9,10 +9,9 @@ import type { ZodError } from "zod";
 import { acquireFileLock, withFileLock } from "./file-lock.js";
 import {
   accessBufferAware,
-  activateBatchBuffer,
-  deactivateBatchBuffer,
   getActiveBatchBuffer,
   readdirBufferAware,
+  runWithBuffer,
 } from "../cli/batch-write-buffer.js";
 import {
   InboxFileSchema,
@@ -1224,7 +1223,6 @@ export async function mutateTasksAtomically(
 
   const filePaths = [...new Set(taskFileByUlid.values())].sort();
   const releases: Array<() => Promise<void>> = [];
-  const existingBuffer = getActiveBatchBuffer();
   const batchBufferScope = filePaths.length > 1
     ? filePaths.reduce((commonPath, filePath) => {
         let candidate = commonPath;
@@ -1238,123 +1236,119 @@ export async function mutateTasksAtomically(
         return candidate;
       }, path.dirname(filePaths[0]))
     : null;
-  const localBatchBuffer = !existingBuffer && batchBufferScope
-    ? activateBatchBuffer(batchBufferScope)
-    : null;
 
-  try {
-    for (const filePath of filePaths) {
-      releases.push(await acquireFileLock(filePath));
-    }
-
-    const fileStates = new Map<string, {
-      rawTasks: unknown[];
-      useTasksWrapper: boolean;
-      wrapperObj?: Record<string, unknown>;
-    }>();
-
-    for (const filePath of filePaths) {
-      const dir = path.dirname(filePath);
-      await fs.mkdir(dir, { recursive: true });
-      fileStates.set(filePath, await extractRawTaskArray(filePath));
-    }
-
-    const latestTasks = uniqueTasks.map((task) => {
-      const taskFilePath = taskFileByUlid.get(task._ulid);
-      if (!taskFilePath) {
-        throw new Error(`No task file path found for ${task._ulid}`);
+  // Core mutation logic — runs inside a buffer scope when multi-file
+  const doMutate = async (): Promise<LoadedTask[]> => {
+    try {
+      for (const filePath of filePaths) {
+        releases.push(await acquireFileLock(filePath));
       }
 
-      const fileState = fileStates.get(taskFilePath);
-      if (!fileState) {
-        throw new Error(`Task file state not loaded for ${taskFilePath}`);
+      const fileStates = new Map<string, {
+        rawTasks: unknown[];
+        useTasksWrapper: boolean;
+        wrapperObj?: Record<string, unknown>;
+      }>();
+
+      for (const filePath of filePaths) {
+        const dir = path.dirname(filePath);
+        await fs.mkdir(dir, { recursive: true });
+        fileStates.set(filePath, await extractRawTaskArray(filePath));
       }
 
-      const taskIndex = findRawTaskIndex(fileState.rawTasks, task._ulid);
-      if (taskIndex === -1) {
-        throw new Error(`Task not found in file: ${task._ulid}`);
-      }
+      const latestTasks = uniqueTasks.map((task) => {
+        const taskFilePath = taskFileByUlid.get(task._ulid);
+        if (!taskFilePath) {
+          throw new Error(`No task file path found for ${task._ulid}`);
+        }
 
-      const rawTarget = fileState.rawTasks[taskIndex];
-      const parsed = TaskSchema.safeParse(rawTarget);
-      if (!parsed.success) {
-        throw new Error(`Invalid task data for ${task._ulid}: ${parsed.error.message}`);
-      }
+        const fileState = fileStates.get(taskFilePath);
+        if (!fileState) {
+          throw new Error(`Task file state not loaded for ${taskFilePath}`);
+        }
 
-      return {
-        ...parsed.data,
-        _sourceFile: taskFilePath,
-      };
-    });
+        const taskIndex = findRawTaskIndex(fileState.rawTasks, task._ulid);
+        if (taskIndex === -1) {
+          throw new Error(`Task not found in file: ${task._ulid}`);
+        }
 
-    const mutatedTasks = await mutate(latestTasks);
-    if (mutatedTasks.length !== latestTasks.length) {
-      throw new Error(
-        `Expected ${latestTasks.length} mutated tasks, received ${mutatedTasks.length}`,
-      );
-    }
+        const rawTarget = fileState.rawTasks[taskIndex];
+        const parsed = TaskSchema.safeParse(rawTarget);
+        if (!parsed.success) {
+          throw new Error(`Invalid task data for ${task._ulid}: ${parsed.error.message}`);
+        }
 
-    const updatedTasks = mutatedTasks.map((mutatedTask, index) => {
-      const latestTask = latestTasks[index];
-      if (mutatedTask._ulid !== latestTask._ulid) {
+        return {
+          ...parsed.data,
+          _sourceFile: taskFilePath,
+        };
+      });
+
+      const mutatedTasks = await mutate(latestTasks);
+      if (mutatedTasks.length !== latestTasks.length) {
         throw new Error(
-          `Mutated task order mismatch: expected ${latestTask._ulid}, received ${mutatedTask._ulid}`,
+          `Expected ${latestTasks.length} mutated tasks, received ${mutatedTasks.length}`,
         );
       }
 
-      const cleanMutatedTask = stripRuntimeMetadata(mutatedTask as LoadedTask);
-      const taskFilePath = latestTask._sourceFile || getDefaultTaskFilePath(ctx);
-      const fileState = fileStates.get(taskFilePath);
-      if (!fileState) {
-        throw new Error(`Task file state not loaded for ${taskFilePath}`);
+      const updatedTasks = mutatedTasks.map((mutatedTask, index) => {
+        const latestTask = latestTasks[index];
+        if (mutatedTask._ulid !== latestTask._ulid) {
+          throw new Error(
+            `Mutated task order mismatch: expected ${latestTask._ulid}, received ${mutatedTask._ulid}`,
+          );
+        }
+
+        const cleanMutatedTask = stripRuntimeMetadata(mutatedTask as LoadedTask);
+        const taskFilePath = latestTask._sourceFile || getDefaultTaskFilePath(ctx);
+        const fileState = fileStates.get(taskFilePath);
+        if (!fileState) {
+          throw new Error(`Task file state not loaded for ${taskFilePath}`);
+        }
+
+        const taskIndex = findRawTaskIndex(fileState.rawTasks, latestTask._ulid);
+        if (taskIndex === -1) {
+          throw new Error(`Task not found in file: ${latestTask._ulid}`);
+        }
+
+        fileState.rawTasks[taskIndex] = mergeTaskPreservingRawShape(
+          fileState.rawTasks[taskIndex] as Record<string, unknown>,
+          cleanMutatedTask as Record<string, unknown>,
+        );
+
+        return {
+          ...cleanMutatedTask,
+          _sourceFile: taskFilePath,
+        };
+      });
+
+      for (const filePath of filePaths) {
+        const fileState = fileStates.get(filePath);
+        if (!fileState) {
+          throw new Error(`Task file state not loaded for ${filePath}`);
+        }
+
+        await writeRawTaskArray(
+          filePath,
+          fileState.rawTasks,
+          fileState.useTasksWrapper,
+          fileState.wrapperObj,
+        );
       }
 
-      const taskIndex = findRawTaskIndex(fileState.rawTasks, latestTask._ulid);
-      if (taskIndex === -1) {
-        throw new Error(`Task not found in file: ${latestTask._ulid}`);
-      }
-
-      fileState.rawTasks[taskIndex] = mergeTaskPreservingRawShape(
-        fileState.rawTasks[taskIndex] as Record<string, unknown>,
-        cleanMutatedTask as Record<string, unknown>,
-      );
-
-      return {
-        ...cleanMutatedTask,
-        _sourceFile: taskFilePath,
-      };
-    });
-
-    for (const filePath of filePaths) {
-      const fileState = fileStates.get(filePath);
-      if (!fileState) {
-        throw new Error(`Task file state not loaded for ${filePath}`);
-      }
-
-      await writeRawTaskArray(
-        filePath,
-        fileState.rawTasks,
-        fileState.useTasksWrapper,
-        fileState.wrapperObj,
-      );
+      return updatedTasks;
+    } finally {
+      await Promise.allSettled(releases.reverse().map((release) => release()));
     }
+  };
 
-    if (localBatchBuffer) {
-      await localBatchBuffer.flush();
-    }
-
-    return updatedTasks;
-  } catch (error) {
-    if (localBatchBuffer) {
-      localBatchBuffer.discard();
-    }
-    throw error;
-  } finally {
-    if (localBatchBuffer) {
-      deactivateBatchBuffer();
-    }
-    await Promise.allSettled(releases.reverse().map((release) => release()));
+  // Wrap in a buffer scope when operating across multiple files.
+  // runWithBuffer creates an isolated async-local scope so concurrent
+  // operations don't share the buffer.
+  if (batchBufferScope) {
+    return runWithBuffer(batchBufferScope, async () => doMutate());
   }
+  return doMutate();
 }
 
 /**
@@ -1901,7 +1895,9 @@ export async function buildReferenceIndex(ctx: KspecContext): Promise<{
   tasks: LoadedTask[];
   items: LoadedSpecItem[];
 }> {
-  const tasks = await loadAllTasks(ctx);
+  // Dynamic import to avoid circular dependency (task-data-manager imports from yaml)
+  const { resolveTaskDataManager } = await import("./task-data-manager.js");
+  const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
   const items = await loadAllItems(ctx);
   const reviews = await loadReviewRecords(ctx);
   const index = new ReferenceIndex(tasks, items, [], [], reviews);
@@ -1921,7 +1917,9 @@ export async function buildIndexes(ctx: KspecContext, plans: LoadedPlan[] = []):
   tasks: LoadedTask[];
   items: LoadedSpecItem[];
 }> {
-  const tasks = await loadAllTasks(ctx);
+  // Dynamic import to avoid circular dependency (task-data-manager imports from yaml)
+  const { resolveTaskDataManager } = await import("./task-data-manager.js");
+  const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
   const items = await loadAllItems(ctx);
   const reviews = await loadReviewRecords(ctx);
   const refIndex = new ReferenceIndex(tasks, items, [], plans, reviews);

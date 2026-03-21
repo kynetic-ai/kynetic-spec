@@ -36,11 +36,12 @@ import {
 } from '../../sessions/legacy.js';
 import {
   initContext,
-  loadAllTasks,
   loadAllItems,
   ReferenceIndex,
   AlignmentIndex,
+  resolveTaskDataManager,
   type KspecContext,
+  type LoadedTask,
 } from '../../parser/index.js';
 import { resolveRefTitle } from './ref-resolution.js';
 import { getSessionCache } from '../../sessions/cache.js';
@@ -167,10 +168,10 @@ async function filterSessionSummaries(
     });
   }
 
-  let tasks: Awaited<ReturnType<typeof loadAllTasks>> | null = null;
+  let tasks: LoadedTask[] | null = null;
   let items: Awaited<ReturnType<typeof loadAllItems>> | null = null;
   const ensureAlignmentContext = async () => {
-    if (!tasks) tasks = await loadAllTasks(ctx);
+    if (!tasks) tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
     if (!items) items = await loadAllItems(ctx);
     return { tasks, items };
   };
@@ -289,7 +290,7 @@ export function createSessionRoutes() {
       const taskIdsPresent = paginated.some((s) => s.task_id);
       if (taskIdsPresent) {
         try {
-          const tasks = await loadAllTasks(ctx);
+          const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
           const items = await loadAllItems(ctx);
           refIndex = new ReferenceIndex(tasks, items);
         } catch {
@@ -423,7 +424,7 @@ export function createSessionRoutes() {
 
       if (metadata?.task_id) {
         try {
-          const tasks = await loadAllTasks(ctx);
+          const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
           const items = await loadAllItems(ctx);
           const index = new ReferenceIndex(tasks, items);
           const taskResult = index.resolve(metadata.task_id);

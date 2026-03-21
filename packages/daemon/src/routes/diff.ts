@@ -16,9 +16,9 @@ import { execFileSync } from 'node:child_process';
 import {
   initContext,
   loadAllItems,
-  loadAllTasks,
   findPlanByRef,
   ReferenceIndex,
+  resolveTaskDataManager,
 } from '../../parser/index.js';
 import {
   loadReviewRecords,
@@ -385,7 +385,7 @@ export function createDiffRoutes() {
         // Spec content
         if (subject.type === 'spec') {
           const items = await loadAllItems(ctx);
-          const tasks = await loadAllTasks(ctx);
+          const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
           const index = new ReferenceIndex(tasks, items);
           const resolved = index.resolve(subject.ref);
 
@@ -489,7 +489,7 @@ export function createDiffRoutes() {
 
         // Task subject — return task details
         if (subject.type === 'task') {
-          const tasks = await loadAllTasks(ctx);
+          const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
           const items = await loadAllItems(ctx);
           const index = new ReferenceIndex(tasks, items);
           const resolved = index.resolve(subject.ref);

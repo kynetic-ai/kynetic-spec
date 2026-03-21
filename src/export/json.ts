@@ -16,7 +16,6 @@ import {
   computeACCoverage,
   initContext,
   loadAllItems,
-  loadAllTasks,
   loadInboxItems,
   loadMetaContext,
   loadPlans,
@@ -27,6 +26,7 @@ import {
   ReferenceIndex,
   validate,
 } from "../parser/index.js";
+import { resolveTaskDataManager } from "../parser/task-data-manager.js";
 import { loadSessionContext } from "../parser/meta.js";
 import { TraitIndex } from "../parser/traits.js";
 import {
@@ -260,7 +260,7 @@ export async function generateJsonSnapshot(
   const ctx = await initContext();
 
   // Load all data
-  const tasks = await loadAllTasks(ctx);
+  const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
   const items = await loadAllItems(ctx);
   const inboxItems = await loadInboxItems(ctx);
   const metaContext = await loadMetaContext(ctx);

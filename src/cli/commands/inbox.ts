@@ -17,7 +17,7 @@ import {
   saveInboxItem,
   shortestUniqueUlid,
 } from "../../parser/index.js";
-import { taskDataManager } from "../../parser/task-data-manager.js";
+import { resolveTaskDataManager } from "../../parser/task-data-manager.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import {
   TaskTypeSchema,
@@ -246,7 +246,7 @@ Examples:
 
         // Validate spec_ref if provided — must point to a spec item
         if (options.specRef) {
-          const allTasks = await taskDataManager.listTasks(ctx);
+          const allTasks = await resolveTaskDataManager(ctx).listTasks(ctx);
           const allItems = await loadAllItems(ctx);
           const refIndex = new ReferenceIndex(allTasks as unknown as LoadedTask[], allItems);
           const specRefResult = validateSpecRef(
@@ -293,7 +293,7 @@ Examples:
 
         // Create task first, then delete inbox item — if task creation fails,
         // the inbox item is preserved (no data loss).
-        const task = await taskDataManager.createTask(ctx, taskInput);
+        const task = await resolveTaskDataManager(ctx).createTask(ctx, taskInput);
 
         // Delete inbox item unless --keep (after task creation so inbox item
         // is preserved if createTask fails)
@@ -306,7 +306,7 @@ Examples:
         await commitIfShadow(ctx.shadow, "inbox-promote", title);
 
         // Load for index to get short ULID
-        const tasks = await taskDataManager.listTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).listTasks(ctx);
         const items = await loadAllItems(ctx);
         const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
 

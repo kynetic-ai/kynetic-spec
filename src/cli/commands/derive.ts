@@ -10,10 +10,9 @@ import {
   type LoadedSpecItem,
   type LoadedTask,
   loadAllItems,
-  loadAllTasks,
   ReferenceIndex,
 } from "../../parser/index.js";
-import { taskDataManager } from "../../parser/task-data-manager.js";
+import { resolveTaskDataManager } from "../../parser/task-data-manager.js";
 import { normalizeRefInput } from "../../schema/index.js";
 import type { TaskInput } from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
@@ -352,7 +351,7 @@ async function deriveTaskFromSpec(
 
   // Create and save the task via task data manager
   const specSlug = specItem.slugs[0] || specItem._ulid.slice(0, 8);
-  const newTask = await taskDataManager.createTask(ctx, taskInput, {
+  const newTask = await resolveTaskDataManager(ctx).createTask(ctx, taskInput, {
     operation: "derive",
     ref: specSlug,
   });
@@ -593,7 +592,7 @@ export function registerDeriveCommand(program: Command): void {
         }
 
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
         const items = await loadAllItems(ctx);
         const index = new ReferenceIndex(tasks, items);
 

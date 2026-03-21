@@ -11,7 +11,7 @@
 
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   TaskDataManager,
 } from "../src/parser/task-data-manager.js";
@@ -343,6 +343,57 @@ describe("Atomic Multi-File Task Writes", () => {
     });
 
     // AC: @task-atomic-writes ac-2
+    it("index write failure does not leave per-task files committed", async () => {
+      const [ulid] = testUlids("AIDX", 1);
+      await createSplitTask(ctx, ulid, "index-fail-test");
+
+      // Snapshot state before
+      const indexBefore = await fs.readFile(getIndexFilePath(ctx), "utf-8");
+      const taskBefore = await fs.readFile(getTaskFilePath(ctx, ulid), "utf-8");
+
+      // Monkey-patch writeYamlFile to throw only when writing the index file
+      const yamlModule = await import("../src/parser/yaml.js");
+      const originalWriteYamlFile = yamlModule.writeYamlFile;
+      const indexPath = getIndexFilePath(ctx);
+      vi.spyOn(yamlModule, "writeYamlFile").mockImplementation(
+        async (filePath: string, data: unknown) => {
+          if (path.resolve(filePath) === path.resolve(indexPath)) {
+            throw new Error("Simulated index write failure");
+          }
+          return originalWriteYamlFile(filePath, data);
+        },
+      );
+
+      try {
+        await expect(
+          manager.mutateTask(
+            ctx,
+            `@${ulid}`,
+            (task) => ({
+              ...task,
+              status: "in_progress",
+              started_at: "2026-03-20T12:00:00.000Z",
+            }),
+          ),
+        ).rejects.toThrow("Simulated index write failure");
+      } finally {
+        vi.restoreAllMocks();
+      }
+
+      // Per-task files should be unchanged — the buffer was discarded
+      // because the index write (inside the buffer) threw
+      const taskAfter = await fs.readFile(getTaskFilePath(ctx, ulid), "utf-8");
+      expect(taskAfter).toBe(taskBefore);
+
+      // Index should also be unchanged
+      const indexAfter = await fs.readFile(getIndexFilePath(ctx), "utf-8");
+      expect(indexAfter).toBe(indexBefore);
+
+      // Buffer should be cleaned up
+      expect(getActiveBatchBuffer()).toBeNull();
+    });
+
+    // AC: @task-atomic-writes ac-2
     it("createTask failure does not leave partial files on disk", async () => {
       // Create a conflicting task directory to prevent task creation from
       // being fully processed — we rely on Zod validation failure instead
@@ -437,6 +488,40 @@ describe("Atomic Multi-File Task Writes", () => {
       // Now verify files are on disk
       const taskContent = await fs.readFile(getTaskFilePath(ctx, ulid), "utf-8");
       expect(taskContent).toContain("Updated in batch");
+    });
+
+    // AC: @task-atomic-writes ac-3
+    it("nested mutation with commitOpts skips commitIfShadow until parent flushes", async () => {
+      const [ulid] = testUlids("ABNCS", 1);
+      await createSplitTask(ctx, ulid, "no-commit-in-nested");
+
+      // Spy on commitIfShadow to verify it is NOT called during nested mutation
+      const shadowModule = await import("../src/parser/shadow.js");
+      const commitSpy = vi.spyOn(shadowModule, "commitIfShadow");
+
+      // Simulate batch-exec scenario: activate a parent buffer
+      const batchBuffer = activateBatchBuffer(ctx.specDir);
+
+      try {
+        await manager.mutateTask(
+          ctx,
+          `@${ulid}`,
+          (task) => ({ ...task, priority: 1 }),
+          { operation: "test-nested-commit", ref: `@${ulid}` },
+        );
+
+        // commitIfShadow must NOT be called — the parent buffer hasn't
+        // flushed yet, so disk state is stale. The parent (batch-exec)
+        // owns the commit lifecycle and will commit after flush.
+        expect(commitSpy).not.toHaveBeenCalled();
+
+        // Writes should still be in the buffer, not on disk
+        expect(batchBuffer.size).toBeGreaterThan(0);
+      } finally {
+        batchBuffer.discard();
+        deactivateBatchBuffer();
+        commitSpy.mockRestore();
+      }
     });
   });
 
@@ -549,6 +634,106 @@ describe("Atomic Multi-File Task Writes", () => {
 
       // No buffer should remain active
       expect(getActiveBatchBuffer()).toBeNull();
+    });
+  });
+
+  // ── Concurrent buffer isolation ──────────────────────────────────────
+  //
+  // Verifies that concurrent split mutations on different tasks each get
+  // their own buffer scope via AsyncLocalStorage. Previously, a process-
+  // global singleton buffer meant one operation's failure could discard
+  // another's successful writes.
+
+  describe("concurrent split mutations use isolated buffers", () => {
+    it("one mutation failure does not discard another's writes", async () => {
+      const [ulidA, ulidB] = testUlids("CONC", 2);
+      await createSplitTask(ctx, ulidA, "concurrent-a", { status: "pending" });
+      await createSplitTask(ctx, ulidB, "concurrent-b", { status: "pending" });
+
+      // Mutation A: will throw after a short delay
+      const mutationA = manager.mutateTask(
+        ctx,
+        `@${ulidA}`,
+        async (task) => {
+          // Yield to let mutation B start concurrently
+          await new Promise((r) => setTimeout(r, 10));
+          throw new Error("Simulated failure in mutation A");
+        },
+      );
+
+      // Mutation B: succeeds immediately
+      const mutationB = manager.mutateTask(
+        ctx,
+        `@${ulidB}`,
+        (task) => ({ ...task, priority: 1 }),
+      );
+
+      // Both run concurrently; A should fail, B should succeed
+      const results = await Promise.allSettled([mutationA, mutationB]);
+
+      expect(results[0].status).toBe("rejected");
+      expect(results[1].status).toBe("fulfilled");
+
+      // B's writes should be persisted — NOT discarded by A's failure
+      const taskBContent = await fs.readFile(getTaskFilePath(ctx, ulidB), "utf-8");
+      expect(taskBContent).toContain("priority: 1");
+
+      // A's task should be unchanged (its buffer was discarded)
+      const taskAContent = await fs.readFile(getTaskFilePath(ctx, ulidA), "utf-8");
+      expect(taskAContent).toContain("priority: 3");
+
+      // No buffer should remain active
+      expect(getActiveBatchBuffer()).toBeNull();
+    });
+
+    it("each concurrent mutation gets its own buffer instance", async () => {
+      const [ulidC, ulidD] = testUlids("CONP", 2);
+      await createSplitTask(ctx, ulidC, "concurrent-c", { status: "pending" });
+      await createSplitTask(ctx, ulidD, "concurrent-d", { status: "pending" });
+
+      let bufferC: ReturnType<typeof getActiveBatchBuffer> = null;
+      let bufferD: ReturnType<typeof getActiveBatchBuffer> = null;
+
+      // Use a barrier to ensure both mutations are in-flight simultaneously
+      let resolveBarrier: () => void;
+      const barrier = new Promise<void>((r) => { resolveBarrier = r; });
+      let arrivals = 0;
+
+      const mutationC = manager.mutateTask(
+        ctx,
+        `@${ulidC}`,
+        async (task) => {
+          bufferC = getActiveBatchBuffer();
+          arrivals++;
+          if (arrivals === 2) resolveBarrier!();
+          await barrier;
+          return { ...task, title: "Updated C" };
+        },
+      );
+
+      const mutationD = manager.mutateTask(
+        ctx,
+        `@${ulidD}`,
+        async (task) => {
+          bufferD = getActiveBatchBuffer();
+          arrivals++;
+          if (arrivals === 2) resolveBarrier!();
+          await barrier;
+          return { ...task, title: "Updated D" };
+        },
+      );
+
+      // Both mutations run concurrently — we only care that they have
+      // distinct buffer instances (isolation), not that they both flush
+      // without conflict. Index-level coordination is a separate concern.
+      await Promise.allSettled([mutationC, mutationD]);
+
+      // Critical assertion: each mutation must have seen its own buffer,
+      // NOT the same shared buffer. This prevents one operation's
+      // discard() from affecting the other.
+      expect(bufferC).not.toBeNull();
+      expect(bufferD).not.toBeNull();
+      expect(bufferC).not.toBe(bufferD);
     });
   });
 

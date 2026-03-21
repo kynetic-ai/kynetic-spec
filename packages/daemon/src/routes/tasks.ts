@@ -24,14 +24,13 @@
 import { Elysia, t } from 'elysia';
 import {
   initContext,
-  loadAllTasks,
   loadAllItems,
   loadPlans,
   ReferenceIndex,
   createNote,
   getAuthor,
   syncSpecImplementationStatus,
-  taskDataManager,
+  resolveTaskDataManager,
   TaskDataManagerError,
   type LoadedTask,
 } from '../../parser/index.js';
@@ -52,7 +51,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
 
   return new Elysia({ prefix: '/api/tasks' })
     // AC: @api-contract ac-2, ac-3, ac-4 - List tasks with filters and pagination
-    // AC: @task-data-manager ac-2 - Uses taskDataManager.listTasks for index-only read
+    // AC: @task-data-manager ac-2 - Uses resolveTaskDataManager(ctx).listTasks for index-only read
     .get(
       '/',
       async ({ query, projectContext }) => {
@@ -60,7 +59,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         const ctx = await initContext(projectContext.path);
 
         // AC: @task-data-manager ac-2 — list uses index-only summaries
-        const summaries = await taskDataManager.listTasks(ctx, {
+        const summaries = await resolveTaskDataManager(ctx).listTasks(ctx, {
           status: query.status
             ? (Array.isArray(query.status) ? query.status : [query.status])
             : undefined,
@@ -161,7 +160,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
     )
 
     // AC: @api-contract ac-5 - Get single task by ref
-    // AC: @task-data-manager ac-3 - Uses taskDataManager.getTask for full detail
+    // AC: @task-data-manager ac-3 - Uses resolveTaskDataManager(ctx).getTask for full detail
     .get(
       '/:ref',
       async ({ params, error: errorResponse, projectContext }) => {
@@ -171,7 +170,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         // AC: @task-data-manager ac-3 — get full task detail via manager
         let task: LoadedTask;
         try {
-          task = await taskDataManager.getTask(ctx, params.ref);
+          task = await resolveTaskDataManager(ctx).getTask(ctx, params.ref);
         } catch (err) {
           if (err instanceof TaskDataManagerError) {
             return errorResponse(404, {
@@ -186,7 +185,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         // Build ReferenceIndex for ref title resolution
         const items = await loadAllItems(ctx);
         const plans = await loadPlans(ctx);
-        const tasks = await taskDataManager.listTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).listTasks(ctx);
         const index = new ReferenceIndex(
           tasks as unknown as LoadedTask[],
           items,
@@ -246,7 +245,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
       '/:ref/sessions',
       async ({ params, error: errorResponse, projectContext }) => {
         const ctx = await initContext(projectContext.path);
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
         const items = await loadAllItems(ctx);
         const result = await getRelatedSessionsForTask({
           taskRef: params.ref,
@@ -274,7 +273,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
     )
 
     // AC: @api-contract ac-6 - Start task
-    // AC: @task-data-manager ac-4 - Mutation via taskDataManager.mutateTask
+    // AC: @task-data-manager ac-4 - Mutation via resolveTaskDataManager(ctx).mutateTask
     .post(
       '/:ref/start',
       async ({ params, error: errorResponse, projectContext }) => {
@@ -284,7 +283,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         // AC: @task-data-manager ac-3 — resolve task via manager
         let task: LoadedTask;
         try {
-          task = await taskDataManager.getTask(ctx, params.ref);
+          task = await resolveTaskDataManager(ctx).getTask(ctx, params.ref);
         } catch (err) {
           if (err instanceof TaskDataManagerError) {
             return errorResponse(404, {
@@ -309,7 +308,8 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         const oldStatus = task.status;
 
         // AC: @task-data-manager ac-4, ac-6 - Atomic mutation via manager
-        const updatedTask = await taskDataManager.mutateTask(
+        // skipCommit: task mutation + spec sync committed as one shadow commit
+        const updatedTask = await resolveTaskDataManager(ctx).mutateTask(
           ctx,
           params.ref,
           (latestTask) => ({
@@ -317,11 +317,17 @@ export function createTasksRoutes(options: TasksRouteOptions) {
             status: 'in_progress' as const,
             started_at: latestTask.started_at || new Date().toISOString(),
           }),
+          {
+            operation: 'api-task-start',
+            ref: params.ref,
+            detail: `start ${params.ref}`,
+            skipCommit: true,
+          },
         );
 
         // Sync spec implementation status and commit both changes together
         const items = await loadAllItems(ctx);
-        const allTasks = await loadAllTasks(ctx);
+        const allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
         const index = new ReferenceIndex(allTasks, items);
         await syncSpecImplementationStatus(ctx, updatedTask, allTasks, items, index);
         await commitIfShadow(ctx.shadow, `task: start ${params.ref}`);
@@ -349,7 +355,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
     )
 
     // AC: @api-contract ac-7 - Add note to task
-    // AC: @task-data-manager ac-4 - Note via taskDataManager.addNote
+    // AC: @task-data-manager ac-4 - Note via resolveTaskDataManager(ctx).addNote
     .post(
       '/:ref/note',
       async ({ params, body, error: errorResponse, projectContext }) => {
@@ -374,7 +380,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         // AC: @task-data-manager ac-4, ac-6 - Atomic note addition via manager
         let result: { task: LoadedTask; note: { _ulid: string } };
         try {
-          result = await taskDataManager.addNote(
+          result = await resolveTaskDataManager(ctx).addNote(
             ctx,
             params.ref,
             body.content,
@@ -421,7 +427,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
     )
 
     // AC: @ui-task-board ac-6 - Submit task for review
-    // AC: @task-data-manager ac-4 - Mutation via taskDataManager.mutateTask
+    // AC: @task-data-manager ac-4 - Mutation via resolveTaskDataManager(ctx).mutateTask
     .post(
       '/:ref/submit',
       async ({ params, error: errorResponse, projectContext }) => {
@@ -430,7 +436,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         // AC: @task-data-manager ac-3 — resolve task via manager
         let task: LoadedTask;
         try {
-          task = await taskDataManager.getTask(ctx, params.ref);
+          task = await resolveTaskDataManager(ctx).getTask(ctx, params.ref);
         } catch (err) {
           if (err instanceof TaskDataManagerError) {
             return errorResponse(404, {
@@ -453,15 +459,22 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         const oldStatus = task.status;
 
         // AC: @task-data-manager ac-4, ac-6 - Atomic mutation via manager
-        const updatedTask = await taskDataManager.mutateTask(
+        // skipCommit: task mutation + spec sync committed as one shadow commit
+        const updatedTask = await resolveTaskDataManager(ctx).mutateTask(
           ctx,
           params.ref,
           (latestTask) => ({ ...latestTask, status: 'pending_review' as const }),
+          {
+            operation: 'api-task-submit',
+            ref: params.ref,
+            detail: `submit ${params.ref}`,
+            skipCommit: true,
+          },
         );
 
         // Sync spec implementation status and commit both changes together
         const items = await loadAllItems(ctx);
-        const allTasks = await loadAllTasks(ctx);
+        const allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
         const index = new ReferenceIndex(allTasks, items);
         await syncSpecImplementationStatus(ctx, updatedTask, allTasks, items, index);
         await commitIfShadow(ctx.shadow, `task: submit ${params.ref}`);
@@ -482,7 +495,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
     )
 
     // AC: @ui-task-board ac-6 - Complete task
-    // AC: @task-data-manager ac-4 - Mutation via taskDataManager.mutateTask
+    // AC: @task-data-manager ac-4 - Mutation via resolveTaskDataManager(ctx).mutateTask
     .post(
       '/:ref/complete',
       async ({ params, body, error: errorResponse, projectContext }) => {
@@ -491,7 +504,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         // AC: @task-data-manager ac-3 — resolve task via manager
         let task: LoadedTask;
         try {
-          task = await taskDataManager.getTask(ctx, params.ref);
+          task = await resolveTaskDataManager(ctx).getTask(ctx, params.ref);
         } catch (err) {
           if (err instanceof TaskDataManagerError) {
             return errorResponse(404, {
@@ -505,7 +518,8 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         const oldStatus = task.status;
 
         // AC: @task-data-manager ac-4, ac-6 - Atomic mutation via manager
-        const updatedTask = await taskDataManager.mutateTask(
+        // skipCommit: task mutation + spec sync committed as one shadow commit
+        const updatedTask = await resolveTaskDataManager(ctx).mutateTask(
           ctx,
           params.ref,
           (latestTask) => ({
@@ -514,11 +528,17 @@ export function createTasksRoutes(options: TasksRouteOptions) {
             completed_at: new Date().toISOString(),
             closed_reason: body.reason,
           }),
+          {
+            operation: 'api-task-complete',
+            ref: params.ref,
+            detail: `complete ${params.ref}`,
+            skipCommit: true,
+          },
         );
 
         // Sync spec implementation status and commit both changes together
         const items = await loadAllItems(ctx);
-        const allTasks = await loadAllTasks(ctx);
+        const allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
         const index = new ReferenceIndex(allTasks, items);
         await syncSpecImplementationStatus(ctx, updatedTask, allTasks, items, index);
         await commitIfShadow(ctx.shadow, `task: complete ${params.ref}`);
@@ -542,7 +562,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
     )
 
     // AC: @ui-task-board ac-6 - Block task
-    // AC: @task-data-manager ac-4 - Mutation via taskDataManager.mutateTask
+    // AC: @task-data-manager ac-4 - Mutation via resolveTaskDataManager(ctx).mutateTask
     .post(
       '/:ref/block',
       async ({ params, body, error: errorResponse, projectContext }) => {
@@ -551,7 +571,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         // AC: @task-data-manager ac-3 — resolve task via manager
         let task: LoadedTask;
         try {
-          task = await taskDataManager.getTask(ctx, params.ref);
+          task = await resolveTaskDataManager(ctx).getTask(ctx, params.ref);
         } catch (err) {
           if (err instanceof TaskDataManagerError) {
             return errorResponse(404, {
@@ -567,7 +587,8 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         const note = createNote(`Blocked: ${body.reason}`, author);
 
         // AC: @task-data-manager ac-4, ac-6 - Atomic mutation via manager
-        const updatedTask = await taskDataManager.mutateTask(
+        // skipCommit: task mutation + spec sync committed as one shadow commit
+        const updatedTask = await resolveTaskDataManager(ctx).mutateTask(
           ctx,
           params.ref,
           (latestTask) => ({
@@ -575,11 +596,17 @@ export function createTasksRoutes(options: TasksRouteOptions) {
             status: 'blocked' as const,
             notes: [...latestTask.notes, note],
           }),
+          {
+            operation: 'api-task-block',
+            ref: params.ref,
+            detail: `block ${params.ref}`,
+            skipCommit: true,
+          },
         );
 
         // Sync spec implementation status and commit both changes together
         const items = await loadAllItems(ctx);
-        const allTasks = await loadAllTasks(ctx);
+        const allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
         const index = new ReferenceIndex(allTasks, items);
         await syncSpecImplementationStatus(ctx, updatedTask, allTasks, items, index);
         await commitIfShadow(ctx.shadow, `task: block ${params.ref}`);

@@ -19,13 +19,13 @@ import {
   initContext,
   type LoadedPlan,
   type LoadedSpecItem,
-  loadAllTasks,
+  type LoadedTask,
   loadPlans,
   mutatePlanAtomically,
   savePlan,
   shortestUniqueUlid,
 } from "../../parser/index.js";
-import { taskDataManager } from "../../parser/task-data-manager.js";
+import { resolveTaskDataManager } from "../../parser/task-data-manager.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import {
   parsePlanDocument,
@@ -481,7 +481,7 @@ function buildTaskPlans(
   deriveFromSpecs: boolean | undefined,
   additionalTasks: PlanTask[] | undefined,
   refIndex: Awaited<ReturnType<typeof buildIndexes>>["refIndex"],
-  allTasks: Awaited<ReturnType<typeof loadAllTasks>>,
+  allTasks: LoadedTask[],
   reservedSlugs: Set<string>,
   author: string | undefined,
   warnings: DeriveWarning[],
@@ -1026,7 +1026,7 @@ Examples:
       try {
         const ctx = await initContext();
         let plans = await loadPlans(ctx);
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
 
         // AC: @plan-crud ac-7 - status filter
         if (options.status) {
@@ -1284,7 +1284,7 @@ Examples:
 
         if (!options.dryRun) {
           for (const taskPlan of taskPlans) {
-            await taskDataManager.createTask(ctx, taskPlan.input);
+            await resolveTaskDataManager(ctx).createTask(ctx, taskPlan.input);
           }
 
           const updatedPlan = await mutatePlanAtomically(ctx, foundPlan, (latestPlan) => {

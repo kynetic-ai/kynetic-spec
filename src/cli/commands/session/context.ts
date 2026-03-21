@@ -9,13 +9,13 @@ import {
   type KspecContext,
   type LoadedTask,
   loadAllItems,
-  loadAllTasks,
   loadInboxItems,
   loadSessionContext,
   loadTriageRecords,
   ReferenceIndex,
   shortestUniqueUlid,
 } from "../../../parser/index.js";
+import { resolveTaskDataManager } from "../../../parser/task-data-manager.js";
 import { loadMetaContext } from "../../../parser/meta.js";
 import {
   type GitWorkingTree,
@@ -341,7 +341,7 @@ export async function gatherSessionContext(
   const showGit = options.git !== false; // default true
 
   // Load all data
-  const allTasks = await loadAllTasks(ctx);
+  const allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
   const items = await loadAllItems(ctx);
   const inboxItems = await loadInboxItems(ctx);
   const triageRecords = await loadTriageRecords(ctx);
@@ -643,7 +643,7 @@ export async function getIterationStats(
   ctx: KspecContext,
   since: Date,
 ): Promise<IterationStats> {
-  const allTasks = await loadAllTasks(ctx);
+  const allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
   const items = await loadAllItems(ctx);
   const index = new ReferenceIndex(allTasks, items);
 

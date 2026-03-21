@@ -15,7 +15,7 @@ import { spawnSync } from "node:child_process";
 import { ulid } from "ulid";
 import {
   initContext,
-  taskDataManager,
+  resolveTaskDataManager,
   loadMetaContext,
   areDependenciesMet,
   loadReviewRecords,
@@ -938,7 +938,7 @@ export class DispatchEngine {
 
     try {
       const ctx = await initContext(this.projectDir);
-      const tasks = await taskDataManager.loadAllTasks(ctx);
+      const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
       const taskStatusByRef = new Map(
         tasks.map((task) => [`@${task._ulid}`, task.status as TaskStatus]),
       );
@@ -1058,7 +1058,7 @@ export class DispatchEngine {
     if (!taskData && change.taskId) {
       try {
         const ctx = await initContext(this.projectDir);
-        allTasks = await taskDataManager.loadAllTasks(ctx);
+        allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
         taskData = allTasks.find((t) => t._ulid === change.taskId);
       } catch {
         // Can't load tasks, filter evaluation will be lenient
@@ -1068,7 +1068,7 @@ export class DispatchEngine {
     if (!allTasks && taskData) {
       try {
         const ctx = await initContext(this.projectDir);
-        allTasks = await taskDataManager.loadAllTasks(ctx);
+        allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
       } catch {
         // Can't load tasks, dependency check will be skipped
       }
@@ -1111,7 +1111,7 @@ export class DispatchEngine {
 
     try {
       const ctx = await initContext(this.projectDir);
-      const tasks = await taskDataManager.loadAllTasks(ctx);
+      const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
 
       const changes: TaskStateChange[] = [];
       const now = Date.now();
@@ -1290,7 +1290,7 @@ export class DispatchEngine {
 
     try {
       const ctx = await initContext(this.projectDir);
-      const tasks = await taskDataManager.loadAllTasks(ctx);
+      const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
       const taskStatusByRef = new Map(
         tasks.map((task) => [`@${task._ulid}`, task.status as TaskStatus]),
       );
@@ -1430,7 +1430,7 @@ export class DispatchEngine {
    */
   private async _evaluateAllTasks(opts: { skipIfActive: boolean }): Promise<number> {
     const ctx = await initContext(this.projectDir);
-    const tasks = await taskDataManager.loadAllTasks(ctx);
+    const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
     const agents = await this._loadAgents();
     const now = Date.now();
     let enqueued = 0;
@@ -2052,7 +2052,7 @@ export class DispatchEngine {
     let currentTaskStates: Map<string, TaskStatus> | undefined;
     try {
       const ctx = await initContext(this.projectDir);
-      currentTasks = await taskDataManager.loadAllTasks(ctx);
+      currentTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
       currentTaskStates = new Map(
         currentTasks.map((t) => [t._ulid, t.status as TaskStatus]),
       );

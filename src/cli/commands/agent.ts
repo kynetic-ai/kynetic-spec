@@ -17,9 +17,9 @@ import chalk from "chalk";
 import {
   initContext,
   loadMetaContext,
-  loadAllTasks,
   findTaskByRef,
 } from "../../parser/index.js";
+import { resolveTaskDataManager } from "../../parser/task-data-manager.js";
 import { runInvocation } from "../../agent-runtime/invocation.js";
 import type { SessionUpdate } from "../../acp/index.js";
 import { buildPromptWithSkills, interpolateTemplate } from "../../agent-runtime/prompts.js";
@@ -294,7 +294,7 @@ export function registerAgentCommands(program: Command): void {
           // Best-effort task title resolution — falls back to "(unavailable)".
           let taskTitle = "(unavailable)";
           try {
-            const tasks = await loadAllTasks(ctx);
+            const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
             const task = findTaskByRef(tasks, taskRef);
             if (task?.title) taskTitle = task.title;
           } catch {

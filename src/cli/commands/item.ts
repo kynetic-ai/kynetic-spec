@@ -20,7 +20,6 @@ import {
   type LoadedTask,
   loadAllItems,
   loadMetaContext,
-  loadAllTasks,
   type PatchOperation,
   patchSpecItems,
   ReferenceIndex,
@@ -28,7 +27,7 @@ import {
   shortestUniqueUlid,
   updateSpecItem,
 } from "../../parser/index.js";
-import { taskDataManager } from "../../parser/task-data-manager.js";
+import { resolveTaskDataManager, type ShadowCommitOptions } from "../../parser/task-data-manager.js";
 import type { ItemFilter } from "../../parser/items.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import type {
@@ -1387,7 +1386,7 @@ Examples:
     }
 
     // Also clean task references (depends_on, context, spec_ref, blocked_by)
-    const tasks = await loadAllTasks(ctx);
+    const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
     const tasksToClean: LoadedTask[] = [];
 
     for (const task of tasks) {
@@ -1416,7 +1415,11 @@ Examples:
     }
 
     if (tasksToClean.length > 0) {
-      await taskDataManager.mutateTasks(ctx, tasksToClean.map(t => t._ulid), (latestTasks) => {
+      const cleanupCommitOpts: ShadowCommitOptions = {
+        operation: "item-delete-ref-cleanup",
+        detail: `${tasksToClean.length} task(s)`,
+      };
+      await resolveTaskDataManager(ctx).mutateTasks(ctx, tasksToClean.map(t => t._ulid), (latestTasks) => {
         return latestTasks.map((task) => {
           let refsRemovedFromTask = 0;
           const origDepsLen = task.depends_on.length;
@@ -1450,7 +1453,7 @@ Examples:
             spec_ref: specRef,
           };
         });
-      });
+      }, cleanupCommitOpts);
     }
 
     return { totalRefsRemoved, itemsUpdated };
@@ -1814,7 +1817,7 @@ Examples:
     .action(async (ref) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
         const items = await loadAllItems(ctx);
         const refIndex = new ReferenceIndex(tasks, items);
 
@@ -1913,7 +1916,7 @@ Examples:
       try {
         const ctx = await initContext();
         const items = await loadAllItems(ctx);
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
         const refIndex = new ReferenceIndex(tasks, items);
 
         const result = refIndex.resolve(ref);
@@ -1954,7 +1957,7 @@ Examples:
       try {
         const ctx = await initContext();
         const items = await loadAllItems(ctx);
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
         const refIndex = new ReferenceIndex(tasks, items);
 
         const result = refIndex.resolve(ref);

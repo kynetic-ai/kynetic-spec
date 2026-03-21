@@ -28,7 +28,7 @@ import { HookExecutor } from '../../agent-runtime/hook-executor.js';
 import { JoinAccumulator } from '../../agent-runtime/join-accumulator.js';
 import { ActionExecutor } from '../../agent-runtime/action-executor.js';
 import { DEFAULT_KSPEC_CLI_PATH } from '../../agent-runtime/invocation.js';
-import { initContext, loadMetaContext, loadAllTasks, loadAllItems, ReferenceIndex, resolveProjectRoots } from '../../parser/index.js';
+import { initContext, loadMetaContext, loadAllItems, ReferenceIndex, resolveProjectRoots, resolveTaskDataManager } from '../../parser/index.js';
 import { getCompletedSessionCountsByAgent } from '../../sessions/store.js';
 import { TaskStatusSchema } from '../../schema/common.js';
 import type { PubSubManager } from '../websocket/pubsub.js';
@@ -510,7 +510,7 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
         const [meta, counts, tasks, items] = await Promise.all([
           loadMetaContext(ctx),
           getCompletedSessionCountsByAgent(ctx.specDir),
-          loadAllTasks(ctx),
+          resolveTaskDataManager(ctx).loadAllTasks(ctx),
           loadAllItems(ctx),
         ]);
         completedCounts = counts;

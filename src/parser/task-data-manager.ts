@@ -28,6 +28,7 @@ import {
   findRawTaskIndex,
   findTaskByRef,
   findTaskFiles,
+  getAuthor,
   getDefaultTaskFilePath,
   loadAllTasks,
   mergeTaskPreservingRawShape,
@@ -41,9 +42,8 @@ import { createRequire } from "node:module";
 import { acquireFileLock } from "./file-lock.js";
 import { commitIfShadow } from "./shadow.js";
 import {
-  activateBatchBuffer,
-  deactivateBatchBuffer,
   getActiveBatchBuffer,
+  runWithBuffer,
 } from "../cli/batch-write-buffer.js";
 
 /** Synchronous require for ESM — used for lazy backend registration. */
@@ -158,6 +158,50 @@ function toTaskSummary(task: LoadedTask): TaskSummary {
 }
 
 /**
+ * Metadata about a mutation, passed to the storage backend for history tracking.
+ * In the split format, this information is recorded in per-task history entries.
+ *
+ * AC: @task-core-data-file ac-1, ac-3 — provides author and command for history entries
+ */
+export interface MutationMetadata {
+  /** The kspec command or API call that triggered the change */
+  command: string;
+  /** Who made the change (author identity) */
+  author?: string;
+}
+
+/**
+ * A single field change within a history entry.
+ * Maps field name to previous and new values.
+ *
+ * AC: @task-core-data-file ac-1 — records field name, previous value, and new value
+ */
+export interface HistoryFieldChange {
+  previous: unknown;
+  new: unknown;
+}
+
+/**
+ * A history entry recording a mutation to a task's fields.
+ *
+ * Stored in the `history` array within task.yaml. Each entry records
+ * the timestamp, author, command, and the specific field changes.
+ *
+ * AC: @task-core-data-file ac-1 — appended on mutation
+ * AC: @task-core-data-file ac-3 — includes timestamp, author, command, changes
+ */
+export interface HistoryEntry {
+  /** ISO 8601 timestamp of when the change was made */
+  timestamp: string;
+  /** Who made the change (author identity) */
+  author: string;
+  /** The kspec command or API call that triggered the change */
+  command: string;
+  /** Field-level changes: field name → { previous, new } */
+  changes: Record<string, HistoryFieldChange>;
+}
+
+/**
  * Options for shadow branch commits after mutations.
  * When provided, the manager coordinates the commit as part of the operation.
  */
@@ -171,6 +215,9 @@ export interface ShadowCommitOptions {
   detail?: string;
   /** Enable verbose logging */
   verbose?: boolean;
+  /** Skip the shadow commit — caller manages its own commit lifecycle.
+   *  History metadata is still derived from operation/ref fields. */
+  skipCommit?: boolean;
 }
 
 /**
@@ -231,14 +278,23 @@ export interface TaskStorageBackend {
     ctx: KspecContext,
     task: LoadedTask,
     mutate: (latestTask: LoadedTask) => Task | LoadedTask | Promise<Task | LoadedTask>,
+    metadata?: MutationMetadata,
   ): Promise<LoadedTask>;
   mutateTasks(
     ctx: KspecContext,
     tasks: LoadedTask[],
     mutate: (latestTasks: LoadedTask[]) => Array<Task | LoadedTask> | Promise<Array<Task | LoadedTask>>,
+    metadata?: MutationMetadata,
   ): Promise<LoadedTask[]>;
   deleteTask(ctx: KspecContext, task: LoadedTask): Promise<void>;
   rebuildIndex(ctx: KspecContext): Promise<{ count: number }>;
+
+  /**
+   * Get the history entries for a task (optional — only split backend provides this).
+   *
+   * AC: @task-core-data-file ac-2 — history provides complete audit trail
+   */
+  getTaskHistory?(ctx: KspecContext, ulid: string): Promise<HistoryEntry[]>;
 }
 
 /**
@@ -471,6 +527,7 @@ class MonolithicBackend implements TaskStorageBackend {
     ctx: KspecContext,
     task: LoadedTask,
     mutate: (latestTask: LoadedTask) => Task | LoadedTask | Promise<Task | LoadedTask>,
+    _metadata?: MutationMetadata,
   ): Promise<LoadedTask> {
     const taskFilePath = task._sourceFile || getDefaultTaskFilePath(ctx);
 
@@ -562,6 +619,7 @@ class MonolithicBackend implements TaskStorageBackend {
     ctx: KspecContext,
     tasks: LoadedTask[],
     mutate: (latestTasks: LoadedTask[]) => Array<Task | LoadedTask> | Promise<Array<Task | LoadedTask>>,
+    _metadata?: MutationMetadata,
   ): Promise<LoadedTask[]> {
     // Acquire per-task locks in sorted order to prevent deadlocks
     const sortedUlids = [...new Set(tasks.map((t) => t._ulid))].sort();
@@ -827,14 +885,30 @@ export class TaskDataManager {
   }
 
   /**
+   * Get the history entries for a task from the storage backend.
+   *
+   * Returns the per-task field-change history if the backend supports it
+   * (split format). For monolithic format, returns an empty array since
+   * history is not tracked at the file level.
+   *
+   * AC: @task-core-data-file ac-2 — history provides complete audit trail
+   */
+  async getTaskHistory(ctx: KspecContext, ulid: string): Promise<HistoryEntry[]> {
+    if (this.backend.getTaskHistory) {
+      return this.backend.getTaskHistory(ctx, ulid);
+    }
+    return [];
+  }
+
+  /**
    * Wrap a backend operation in a write buffer scope.
    *
    * For the split format, this ensures all file writes (index + per-task files)
-   * are collected in a single buffer and flushed atomically. The backend detects
-   * the active buffer via getActiveBatchBuffer() and uses it instead of creating
-   * its own. If a batch buffer is already active (from batch-exec), the backend
-   * reuses that buffer and the manager skips flush/deactivation — the batch
-   * executor owns the lifecycle.
+   * are collected in a single buffer and flushed atomically. Uses runWithBuffer()
+   * which creates an isolated async-local scope — concurrent operations on
+   * different tasks each get their own buffer and cannot interfere with each
+   * other. If a batch buffer is already active (from batch-exec or a parent
+   * operation), runWithBuffer() reuses it and the parent owns flush/discard.
    *
    * For the monolithic format, no buffer is needed since writes go to a single
    * file under a file lock.
@@ -852,7 +926,7 @@ export class TaskDataManager {
     // under file lock. Split format: buffer coordinates multi-file writes.
     if (this.storageFormat !== "split") {
       const result = await operation();
-      if (commitOpts) {
+      if (commitOpts && !commitOpts.skipCommit) {
         await commitIfShadow(
           ctx.shadow,
           commitOpts.operation,
@@ -864,48 +938,36 @@ export class TaskDataManager {
       return result;
     }
 
-    // If a batch buffer is already active, reuse it — the batch executor
-    // owns the buffer lifecycle and will flush/commit at the end.
-    const existingBuffer = getActiveBatchBuffer();
-    if (existingBuffer) {
-      const result = await operation();
-      if (commitOpts) {
-        await commitIfShadow(
-          ctx.shadow,
-          commitOpts.operation,
-          commitOpts.ref,
-          commitOpts.detail,
-          commitOpts.verbose,
-        );
-      }
-      return result;
+    // Check whether a parent buffer already owns the lifecycle BEFORE
+    // entering runWithBuffer. When nested, the parent buffer has not
+    // flushed yet, so commitIfShadow must be deferred to the parent —
+    // committing now would capture pre-flush (stale) disk state.
+    const isNested = getActiveBatchBuffer() !== null;
+
+    // runWithBuffer creates an isolated async-local scope for the buffer.
+    // If a parent buffer already exists (batch-exec or outer operation),
+    // the callback receives null and the parent's buffer is reused.
+    // Otherwise, a new buffer is created, flushed on success, discarded
+    // on failure — all scoped to this async context only.
+    const result = await runWithBuffer(ctx.specDir, async () => {
+      return operation();
+    });
+
+    // Shadow commit AFTER flush — all files are on disk atomically.
+    // Skip when nested: the parent buffer hasn't flushed yet, so disk
+    // state doesn't reflect our writes. The parent scope (batch-exec or
+    // outer withWriteBuffer) owns flush + commit lifecycle.
+    if (commitOpts && !commitOpts.skipCommit && !isNested) {
+      await commitIfShadow(
+        ctx.shadow,
+        commitOpts.operation,
+        commitOpts.ref,
+        commitOpts.detail,
+        commitOpts.verbose,
+      );
     }
 
-    // Activate a manager-owned buffer so all backend writes (index +
-    // per-task files) go to the same buffer.
-    const buffer = activateBatchBuffer(ctx.specDir);
-    try {
-      const result = await operation();
-      await buffer.flush();
-
-      // Shadow commit AFTER flush — all files are on disk atomically
-      if (commitOpts) {
-        await commitIfShadow(
-          ctx.shadow,
-          commitOpts.operation,
-          commitOpts.ref,
-          commitOpts.detail,
-          commitOpts.verbose,
-        );
-      }
-
-      return result;
-    } catch (error) {
-      buffer.discard();
-      throw error;
-    } finally {
-      deactivateBatchBuffer();
-    }
+    return result;
   }
 
   /**
@@ -969,6 +1031,12 @@ export class TaskDataManager {
     // Resolve the task first to get _sourceFile for locking
     const task = await this.getTask(ctx, ref);
 
+    // Build mutation metadata from commitOpts for history tracking
+    // AC: @task-core-data-file ac-3 — author resolved via full priority chain (env → config → git → system)
+    const metadata: MutationMetadata | undefined = commitOpts
+      ? { command: commitOpts.operation, author: getAuthor(ctx.config?.identity?.author) }
+      : undefined;
+
     return this.withWriteBuffer(ctx, commitOpts, async () => {
       return this.backend.mutateTask(
         ctx,
@@ -978,6 +1046,7 @@ export class TaskDataManager {
           validateMutationOutput(result, latestTask._ulid);
           return result;
         },
+        metadata,
       );
     });
   }
@@ -1010,6 +1079,12 @@ export class TaskDataManager {
       refs.map((ref) => this.getTask(ctx, ref)),
     );
 
+    // Build mutation metadata from commitOpts for history tracking
+    // AC: @task-core-data-file ac-3 — author resolved via full priority chain (env → config → git → system)
+    const metadata: MutationMetadata | undefined = commitOpts
+      ? { command: commitOpts.operation, author: getAuthor(ctx.config?.identity?.author) }
+      : undefined;
+
     return this.withWriteBuffer(ctx, commitOpts, async () => {
       return this.backend.mutateTasks(
         ctx,
@@ -1021,6 +1096,7 @@ export class TaskDataManager {
           }
           return results;
         },
+        metadata,
       );
     });
   }
@@ -1099,9 +1175,42 @@ export class TaskDataManager {
 }
 
 /**
- * Module-level singleton instance.
+ * Module-level default singleton instance (monolithic format).
  *
- * Consumers should use this singleton rather than creating new instances.
- * The manager is stateless, so a single instance serves all callers.
+ * This singleton is the default for consumers that don't need a context-aware
+ * manager. When the project manifest specifies a different storage format,
+ * use resolveTaskDataManager(ctx) instead to get the correctly-configured manager.
+ *
+ * AC: @task-data-manager ac-7 — monolithic format used by default
  */
 export const taskDataManager = new TaskDataManager();
+
+/**
+ * Cached split-format manager instance.
+ * Created lazily on first resolveTaskDataManager() call with split format.
+ */
+let splitManagerInstance: TaskDataManager | null = null;
+
+/**
+ * Resolve the correct TaskDataManager for a given context.
+ *
+ * Reads the storage format from the project manifest (`tasks.storage`).
+ * Returns the monolithic singleton when no manifest or monolithic format,
+ * or a split-format manager when the manifest specifies "split".
+ *
+ * AC: @task-storage-activation ac-1 — defaults to monolithic without setting
+ * AC: @task-storage-activation ac-2 — uses split when explicitly set
+ * AC: @task-data-manager ac-8 — split format routes through its own backend
+ */
+export function resolveTaskDataManager(ctx: KspecContext): TaskDataManager {
+  const storage = ctx.manifest?.task_storage?.format;
+
+  if (storage === "split") {
+    if (!splitManagerInstance) {
+      splitManagerInstance = new TaskDataManager("split");
+    }
+    return splitManagerInstance;
+  }
+
+  return taskDataManager;
+}

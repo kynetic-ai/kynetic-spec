@@ -12,7 +12,7 @@ import {
   shortestUniqueUlid,
   type LoadedTask,
 } from "../parser/index.js";
-import { taskDataManager } from "../parser/task-data-manager.js";
+import { resolveTaskDataManager } from "../parser/task-data-manager.js";
 import { truncateText } from "../export/triage.js";
 
 /**
@@ -74,7 +74,7 @@ export async function executeTriageAction(
         }
         return {};
       }
-      const task = await taskDataManager.createTask(ctx, {
+      const task = await resolveTaskDataManager(ctx).createTask(ctx, {
         title: record.item_snapshot.split("\n")[0].slice(0, 100),
         type: "task",
         priority: 3,
@@ -82,7 +82,7 @@ export async function executeTriageAction(
         tags: [],
         description: record.item_snapshot,
       });
-      const tasks = await taskDataManager.listTasks(ctx);
+      const tasks = await resolveTaskDataManager(ctx).listTasks(ctx);
       const items = await loadAllItems(ctx);
       const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
       const taskRef = `@${index.shortUlid(task._ulid)}`;
