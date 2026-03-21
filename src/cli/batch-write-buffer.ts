@@ -86,9 +86,14 @@ export class SyntheticDirent {
  * Maps absolute file paths to their buffered string content.
  * A null value indicates the file should be deleted on flush.
  */
+let _bufferIdCounter = 0;
+
 export class WriteBuffer {
   /** specDir this buffer is scoped to */
   readonly specDir: string;
+
+  /** unique id for this buffer instance — used to isolate staging files */
+  private readonly _id = ++_bufferIdCounter;
 
   /** buffered writes: path → content (null = deleted) */
   private readonly entries = new Map<string, BufferedFileContent | null>();
@@ -342,7 +347,7 @@ export class WriteBuffer {
           stagingMap.set(filePath, "");
           continue;
         }
-        const stagingPath = `${filePath}.kspec-batch-staging`;
+        const stagingPath = `${filePath}.kspec-batch-staging-${this._id}`;
         await fs.mkdir(path.dirname(filePath), { recursive: true });
         await fs.writeFile(stagingPath, content, "utf-8");
         stagingMap.set(filePath, stagingPath);
