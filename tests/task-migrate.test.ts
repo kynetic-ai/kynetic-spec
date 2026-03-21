@@ -1,3 +1,4 @@
+import { execSync } from "node:child_process";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
@@ -544,45 +545,75 @@ describe("kspec task migrate", () => {
   // Given: The migration or backfill completes
   // When: The shadow branch state is examined
   // Then: All file changes are committed as a single atomic shadow branch commit
-  // (This is structural — the test verifies all files exist after a single command run)
 
   // AC: @task-storage-migration ac-8
-  it("writes all files atomically within a single operation", async () => {
-    ({ env, specDir } = await setupMonolithicEnv(tempDir));
-    const [id1, id2, id3] = testUlids("MGAT", 3);
-    await writeMonolithicTasks(specDir, [
-      makeMonolithicTask(id1, "task-atomic-a"),
-      makeMonolithicTask(id2, "task-atomic-b"),
-      makeMonolithicTask(id3, "task-atomic-c"),
-    ]);
+  it("commits all migration files in a single atomic shadow branch commit", async () => {
+    // Set up a real shadow branch (not KSPEC_SPEC_DIR) so commitIfShadow actually commits
+    initGitRepo(tempDir);
+    execSync('git add . && git commit --allow-empty -m "initial"', {
+      cwd: tempDir,
+      encoding: "utf-8",
+      stdio: "pipe",
+    });
+    kspec("init --no-prompt", tempDir);
 
-    const result = kspec("task migrate --force", tempDir, { env });
+    const shadowDir = path.join(tempDir, ".kspec");
+
+    // Write monolithic tasks directly into the shadow worktree's project.tasks.yaml
+    const [id1, id2, id3] = testUlids("MGAT", 3);
+    const monolithicTasks = [
+      makeMonolithicTask(id1, "task-atomic-a"),
+      makeMonolithicTask(id2, "task-atomic-b", {
+        notes: [
+          { _ulid: testUlid("NTE", 95), created_at: "2026-03-20T01:00:00.000Z", author: "@test", content: "A note" },
+        ],
+      }),
+      makeMonolithicTask(id3, "task-atomic-c"),
+    ];
+    await fs.writeFile(
+      path.join(shadowDir, "project.tasks.yaml"),
+      toYaml(monolithicTasks),
+    );
+    // Stage and commit the monolithic data so migrate sees it
+    // KSPEC_SHADOW_COMMIT=1 authorizes the commit past the pre-commit hook
+    execSync("git add -A && git commit -m 'add monolithic tasks'", {
+      cwd: shadowDir,
+      encoding: "utf-8",
+      stdio: "pipe",
+      env: { ...process.env, KSPEC_SHADOW_COMMIT: "1" },
+    });
+
+    // Count shadow commits before migration
+    const commitsBefore = Number.parseInt(
+      execSync("git rev-list --count HEAD", { cwd: shadowDir, encoding: "utf-8" }).trim(),
+      10,
+    );
+
+    const result = kspec("task migrate --force", tempDir);
     expect(result.exitCode).toBe(0);
 
-    // All three directories and files should exist
+    // Count shadow commits after migration — must be exactly 1 new commit
+    const commitsAfter = Number.parseInt(
+      execSync("git rev-list --count HEAD", { cwd: shadowDir, encoding: "utf-8" }).trim(),
+      10,
+    );
+    expect(commitsAfter).toBe(commitsBefore + 1);
+
+    // Verify all three per-task directories were created in that single commit
     for (const id of [id1, id2, id3]) {
       const taskYaml = await fs.readFile(
-        path.join(specDir, "tasks", id, "task.yaml"),
+        path.join(shadowDir, "tasks", id, "task.yaml"),
         "utf-8",
       );
       expect(taskYaml).toContain(id);
-
-      const notesYaml = await fs.readFile(
-        path.join(specDir, "tasks", id, "notes.yaml"),
-        "utf-8",
-      );
-      expect(notesYaml).toContain("notes");
     }
 
-    // Index should have lean entries for all three
-    const index = parseYaml(
-      await fs.readFile(path.join(specDir, "project.tasks.yaml"), "utf-8"),
-    );
-    expect(index).toHaveLength(3);
-    for (const entry of index) {
-      expect(entry.notes_count).toBe(0);
-      expect(entry.notes).toBeUndefined();
-    }
+    // Verify shadow branch is clean (no uncommitted changes)
+    const status = execSync("git status --porcelain", {
+      cwd: shadowDir,
+      encoding: "utf-8",
+    }).trim();
+    expect(status).toBe("");
   });
 
   // ── Trait: @trait-dry-run ────────────────────────────────────────────────
@@ -616,15 +647,64 @@ describe("kspec task migrate", () => {
   });
 
   // AC: @trait-dry-run ac-4
-  // Given: dry run mode is active
-  // When: command would error
-  // Then: error shown but no state changed
-  // (The command doesn't error on valid input in dry-run; this is structural via try/catch)
+  it("dry-run shows error but does not change state when command would error", async () => {
+    // Set up a real shadow branch project so initContext uses shadow detection
+    initGitRepo(tempDir);
+    execSync('git add . && git commit --allow-empty -m "initial"', {
+      cwd: tempDir,
+      encoding: "utf-8",
+      stdio: "pipe",
+    });
+    kspec("init --no-prompt", tempDir);
 
-  // AC: @trait-dry-run ac-5
-  // Given: --dry-run and --force both provided
-  // When: command executes
-  // Then: dry run takes precedence (no changes made)
+    const shadowDir = path.join(tempDir, ".kspec");
+
+    // Write some monolithic tasks that would normally be migrated
+    const [id1] = testUlids("MGDE", 1);
+    await fs.writeFile(
+      path.join(shadowDir, "project.tasks.yaml"),
+      toYaml([makeMonolithicTask(id1, "task-dry-error")]),
+    );
+    execSync('git add -A && git commit -m "add monolithic tasks"', {
+      cwd: shadowDir,
+      encoding: "utf-8",
+      stdio: "pipe",
+      env: { ...process.env, KSPEC_SHADOW_COMMIT: "1" },
+    });
+
+    // Snapshot state before dry-run
+    const tasksBefore = await fs.readFile(path.join(shadowDir, "project.tasks.yaml"), "utf-8");
+    const commitsBefore = Number.parseInt(
+      execSync("git rev-list --count HEAD", { cwd: shadowDir, encoding: "utf-8" }).trim(),
+      10,
+    );
+
+    // Break the shadow worktree so initContext throws
+    await fs.writeFile(path.join(shadowDir, ".git"), "broken");
+
+    const result = kspec("task migrate --dry-run", tempDir, { expectFail: true });
+    // Command should fail
+    expect(result.exitCode).not.toBe(0);
+    // Error output should describe the problem
+    const combinedOutput = `${result.stdout}\n${result.stderr}`;
+    expect(combinedOutput.toLowerCase()).toMatch(/fail|error|disconnect/i);
+
+    // Restore .git so we can verify state
+    // The worktree gitdir path is under .git/worktrees/
+    const worktreeGitdir = path.join(tempDir, ".git", "worktrees");
+    const worktreeEntries = await fs.readdir(worktreeGitdir);
+    const worktreeLink = path.join(worktreeGitdir, worktreeEntries[0]);
+    await fs.writeFile(path.join(shadowDir, ".git"), `gitdir: ${worktreeLink}`);
+
+    // Verify no state was changed
+    const tasksAfter = await fs.readFile(path.join(shadowDir, "project.tasks.yaml"), "utf-8");
+    expect(tasksAfter).toBe(tasksBefore);
+    const commitsAfter = Number.parseInt(
+      execSync("git rev-list --count HEAD", { cwd: shadowDir, encoding: "utf-8" }).trim(),
+      10,
+    );
+    expect(commitsAfter).toBe(commitsBefore);
+  });
 
   // AC: @trait-dry-run ac-5
   it("dry-run takes precedence over --force", async () => {
@@ -647,17 +727,59 @@ describe("kspec task migrate", () => {
 
   // ── Trait: @trait-error-guidance ──────────────────────────────────────────
 
-  // AC: @trait-error-guidance ac-1, ac-2
-  // Given: command encounters error
-  // When: error message is shown
-  // Then: includes description and suggested action
-  // (Structural: the catch block includes error() and info() with suggestion)
+  // AC: @trait-error-guidance ac-1
+  // AC: @trait-error-guidance ac-2
+  it("error output includes description and suggested action", async () => {
+    ({ env, specDir } = await setupMonolithicEnv(tempDir));
+
+    // Write monolithic tasks and make the tasks directory read-only
+    // so the write buffer flush fails with a permission error
+    const [id1] = testUlids("MGEG", 1);
+    await writeMonolithicTasks(specDir, [makeMonolithicTask(id1, "task-err-guidance")]);
+    await fs.mkdir(path.join(specDir, "tasks"), { recursive: true });
+    await fs.chmod(path.join(specDir, "tasks"), 0o444);
+
+    try {
+      const result = kspec("task migrate --force", tempDir, { env, expectFail: true });
+      expect(result.exitCode).not.toBe(0);
+
+      const combinedOutput = `${result.stdout}\n${result.stderr}`;
+      // AC: @trait-error-guidance ac-1 — description of what went wrong
+      expect(combinedOutput).toMatch(/Failed to migrate|EACCES|permission denied/i);
+      // AC: @trait-error-guidance ac-2 — suggested action to resolve
+      expect(combinedOutput).toMatch(/kspec shadow status|Check that/i);
+    } finally {
+      await fs.chmod(path.join(specDir, "tasks"), 0o755);
+    }
+  });
 
   // AC: @trait-error-guidance ac-6
-  // Given: error in JSON mode
-  // When: --json is active
-  // Then: guidance included in structured error object
-  // (Structural: the catch block outputs structured error with suggestion field)
+  it("JSON error output includes structured guidance", async () => {
+    ({ env, specDir } = await setupMonolithicEnv(tempDir));
+
+    // Write monolithic tasks and make the tasks directory read-only
+    const [id1] = testUlids("MGEJ", 1);
+    await writeMonolithicTasks(specDir, [makeMonolithicTask(id1, "task-err-json")]);
+    await fs.mkdir(path.join(specDir, "tasks"), { recursive: true });
+    await fs.chmod(path.join(specDir, "tasks"), 0o444);
+
+    try {
+      const result = kspec("task migrate --force --json", tempDir, { env, expectFail: true });
+      expect(result.exitCode).not.toBe(0);
+
+      // Parse the JSON error output
+      const jsonOutput = JSON.parse(result.stdout || result.stderr);
+      // AC: @trait-error-guidance ac-6 — guidance in structured error object
+      expect(jsonOutput.success).toBe(false);
+      expect(typeof jsonOutput.error).toBe("string");
+      expect(jsonOutput.error.length).toBeGreaterThan(0);
+      expect(typeof jsonOutput.suggestion).toBe("string");
+      expect(jsonOutput.suggestion.length).toBeGreaterThan(0);
+    } finally {
+      await fs.chmod(path.join(specDir, "tasks"), 0o755);
+    }
+  });
+
   // AC: @trait-error-guidance ac-3 — N/A: migrate doesn't use references that could be "not found"
   // AC: @trait-error-guidance ac-4 — N/A: migrate doesn't perform state transitions
   // AC: @trait-error-guidance ac-5 — N/A: migrate doesn't validate individual fields with user-provided values
