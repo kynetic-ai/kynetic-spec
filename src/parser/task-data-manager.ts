@@ -221,39 +221,50 @@ export interface TaskStorageBackend {
 }
 
 /**
- * In-memory per-task mutex for contention-free non-overlapping mutations.
+ * In-memory per-task FIFO mutex for contention-free non-overlapping mutations.
  *
- * Each task ULID maps to a promise chain. Mutations on the same task serialize
- * by awaiting the previous mutation's promise. Mutations on different tasks
- * proceed independently — they don't share a lock.
+ * Each task ULID maps to a promise representing the tail of a FIFO queue.
+ * A new waiter captures the current tail, replaces it with its own promise,
+ * then awaits the captured tail. This ensures strict serialization even with
+ * 3+ concurrent same-task mutations: each waiter chains onto the previous
+ * waiter (not the current holder), so only one wakes at a time.
+ *
+ * Mutations on different ULIDs proceed independently — they don't share a lock.
  *
  * AC: @task-data-manager ac-5 — non-overlapping mutations proceed without contention
- * AC: @task-data-manager ac-9 — same-task mutations serialize
+ * AC: @task-data-manager ac-9 — same-task mutations serialize (FIFO queue)
  */
 class TaskMutexMap {
   private readonly locks = new Map<string, Promise<void>>();
 
   /**
    * Acquire an exclusive lock for a task ULID. Returns a release function.
-   * If another mutation is in progress for the same ULID, waits for it.
+   * Waiters form a FIFO chain: each new caller chains onto the tail of the
+   * queue so that only one waiter wakes when the preceding holder releases.
    * Mutations on different ULIDs proceed concurrently.
    */
   async acquire(ulid: string): Promise<() => void> {
-    // Wait for any existing lock on this ULID
-    const existing = this.locks.get(ulid);
-    if (existing) {
-      await existing;
-    }
+    // Capture the current tail of the queue (the previous waiter's promise).
+    // This is the promise we must await before entering the critical section.
+    const predecessor = this.locks.get(ulid);
 
+    // Create this waiter's own promise — the *next* waiter will chain onto it.
     let release!: () => void;
     const lockPromise = new Promise<void>((resolve) => {
       release = resolve;
     });
 
+    // Install this waiter as the new tail BEFORE awaiting the predecessor.
+    // Any subsequent caller will now chain onto lockPromise, not predecessor.
     this.locks.set(ulid, lockPromise);
 
+    // Wait for the predecessor to release (no-op if we're first in line).
+    if (predecessor) {
+      await predecessor;
+    }
+
     return () => {
-      // Only delete if this is still the current lock for the ULID
+      // Clean up the map entry only if this is still the tail (no waiters behind us).
       if (this.locks.get(ulid) === lockPromise) {
         this.locks.delete(ulid);
       }

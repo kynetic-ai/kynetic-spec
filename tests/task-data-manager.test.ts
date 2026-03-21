@@ -771,6 +771,53 @@ describe("TaskDataManager", () => {
       const secondary = await manager.getTask(ctx, "@test-task-secondary");
       expect(secondary.tags).toContain("batch-tagged");
     });
+
+    it("serializes three concurrent mutations on the same task (FIFO queue)", async () => {
+      tempDir = await setupTempFixtures();
+      manager = new TaskDataManager();
+      const ctx = await initContext(tempDir);
+
+      // Track the order in which mutations enter and exit the critical section.
+      // With a proper FIFO queue, each mutation runs exclusively — no two
+      // mutations should overlap in time.
+      const executionLog: Array<{ writer: number; phase: "enter" | "exit" }> = [];
+
+      const mutate = (writer: number, tag: string) =>
+        manager.mutateTask(ctx, "@test-task-pending", async (task) => {
+          executionLog.push({ writer, phase: "enter" });
+          // Delay long enough that a broken mutex would let others in
+          await new Promise((resolve) => setTimeout(resolve, 30));
+          executionLog.push({ writer, phase: "exit" });
+          return { ...task, tags: [...task.tags, tag] };
+        });
+
+      // Launch all three mutations concurrently
+      const [r1, r2, r3] = await Promise.all([
+        mutate(1, "writer-1"),
+        mutate(2, "writer-2"),
+        mutate(3, "writer-3"),
+      ]);
+
+      expect(r1).toBeDefined();
+      expect(r2).toBeDefined();
+      expect(r3).toBeDefined();
+
+      // Verify strict serialization: each "enter" must follow the previous "exit".
+      // With a broken mutex, two enters would appear consecutively.
+      for (let i = 1; i < executionLog.length; i++) {
+        const prev = executionLog[i - 1];
+        const curr = executionLog[i];
+        if (curr.phase === "enter") {
+          expect(prev.phase).toBe("exit");
+        }
+      }
+
+      // Reload and verify all three writers' tags are present (no lost updates)
+      const reloaded = await manager.getTask(ctx, "@test-task-pending");
+      expect(reloaded.tags).toContain("writer-1");
+      expect(reloaded.tags).toContain("writer-2");
+      expect(reloaded.tags).toContain("writer-3");
+    });
   });
 
   // Mutation output validation — prevents storage corruption from invalid callback output
