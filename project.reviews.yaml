@@ -37402,6 +37402,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM7WJ5MYCFCWR33SW4GMJE7Z
         timestamp: 2026-03-21T09:45:30.330Z
+      - _ulid: 01KM7WJ6VMEEW6CS9AM7FJ8GJW
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM7WJ6JYEWN51847MK2K4X6F
+        timestamp: 2026-03-21T09:45:31.252Z
     examined_commit: 1e88f19f3c0bfbd20f3ece5cb6cd1372fc2fb16e
     external_links: []
     lifecycle_state: open
@@ -37431,7 +37438,26 @@ reviews:
               each history record to include the triggering command or API call.
             created_at: 2026-03-21T09:45:30.014Z
         kind: blocker
+      - _ulid: 01KM7WJ6JYEWN51847MK2K4X6F
+        anchor:
+          type: code
+          commit: 1e88f19f3c0bfbd20f3ece5cb6cd1372fc2fb16e
+          line_end: 3044
+          line_start: 2919
+          path: src/cli/commands/task.ts
+          side: head
+        entries:
+          - _ulid: 01KM7WJ6JYYSZR5S5N8B041PD9
+            author: Jacob Chapel
+            body: Todo mutations now write todos into task.yaml history, but these call sites still feed the
+              wrong command metadata into that history. task todo add passes operation task-note,
+              and task todo done / task todo undone omit commitOpts entirely, so their history
+              entries become either mislabelled or command unknown. Because @task-core-data-file
+              ac-3 requires each history entry to record the actual triggering command, the
+              persisted audit trail is incorrect for the todo commands.
+            created_at: 2026-03-21T09:45:30.974Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T09:42:26.834Z
-    updated_at: 2026-03-21T09:45:30.014Z
+    updated_at: 2026-03-21T09:45:30.974Z
     notes: []
