@@ -35171,6 +35171,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM7FGD7BZVTKPECAAK8ZK27D
         timestamp: 2026-03-21T05:57:21.039Z
+      - _ulid: 01KM7FGEBCWQB7WK9H3VRC3CKW
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM7FGE3JM6AVRV5VT14ENN9W
+        timestamp: 2026-03-21T05:57:21.900Z
     examined_commit: 2bd11ca860e8117d0c5d7c10b61e610c45d9819c
     external_links: []
     lifecycle_state: open
@@ -35199,7 +35206,24 @@ reviews:
               integration (review/task manager and plan/task flows checked)."
             created_at: 2026-03-21T05:57:20.748Z
         kind: nit
+      - _ulid: 01KM7FGE3JM6AVRV5VT14ENN9W
+        anchor:
+          type: code
+          commit: 2bd11ca860e8117d0c5d7c10b61e610c45d9819c
+          line_end: 300
+          line_start: 294
+          path: src/cli/commands/inbox.ts
+          side: head
+        entries:
+          - _ulid: 01KM7FGE3JCAVPNGE0S53Q9Q7A
+            author: Jacob Chapel
+            body: "MUST-FIX:  now deletes the inbox item before  runs. If task creation or its shadow commit
+              fails after the delete, the inbox item is already gone and no task is created, so
+              promotion can lose user data. The previous flow created/saved the task first and only
+              consumed the inbox item afterwards."
+            created_at: 2026-03-21T05:57:21.650Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T05:53:13.849Z
-    updated_at: 2026-03-21T05:57:20.748Z
+    updated_at: 2026-03-21T05:57:21.650Z
     notes: []
