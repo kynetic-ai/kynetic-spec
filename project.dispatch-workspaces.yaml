@@ -16942,7 +16942,7 @@ workspaces:
         head: c925689681d0bb27dffc744f759c87480f0b41d2
         last_seen_at: 2026-03-21T10:11:34.996Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-impl-per-task-files-01km6yet
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: e273fe88270dc48f490a0856d03ba78deecc23b0
     bootstrap:
       status: succeeded
@@ -17029,7 +17029,7 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-21T10:19:27.975Z
+      updated_at: 2026-03-21T10:20:18.457Z
     health:
       status: invalid
       issues:
@@ -17042,7 +17042,7 @@ workspaces:
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
-      updated_at: 2026-03-21T10:19:32.545Z
+      updated_at: 2026-03-21T10:20:18.457Z
     integration:
       status: merged
       detail: integration:merged
@@ -17050,17 +17050,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: e273fe88270dc48f490a0856d03ba78deecc23b0
-      updated_at: 2026-03-21T10:19:27.975Z
-    lifecycle_state: closing
+      updated_at: 2026-03-21T10:20:18.457Z
+    lifecycle_state: stale
     resolved_base_branch: dev
     task_ref: "@01KM6YEVFHZ9J6734CYVPWWDMH"
     task_slug: task-extend-write-buffer
     timestamps:
       closed_at: null
       last_active_at: 2026-03-21T10:11:43.343Z
-      last_reconciled_at: 2026-03-21T10:19:32.545Z
+      last_reconciled_at: 2026-03-21T10:20:18.457Z
       created_at: 2026-03-21T09:41:54.097Z
-      updated_at: 2026-03-21T10:19:32.545Z
+      updated_at: 2026-03-21T10:20:18.457Z
     workspace_id: dispatch-workspace-01KM6YEVFHZ9J6734CYVPWWDMH
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
