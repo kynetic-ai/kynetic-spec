@@ -41436,6 +41436,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-21T18:15:16.834Z
+      - _ulid: 01KM8SQP2HKP3K48V61CB0N63D
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM8SQNSF3MME3DF7J624V74K
+        timestamp: 2026-03-21T18:15:19.377Z
     examined_commit: d272c3a0e66962b616ef8f6bf63e661fa80191a6
     external_links: []
     lifecycle_state: closed
@@ -41467,6 +41474,25 @@ reviews:
               .kspec/tasks/not-a-valid-ulid/{task,notes}.yaml."
             created_at: 2026-03-21T18:12:07.694Z
         kind: blocker
+      - _ulid: 01KM8SQNSF3MME3DF7J624V74K
+        entries:
+          - _ulid: 01KM8SQNSFE75NPVC0AQ4M4QZN
+            author: Test User
+            body: "Evidence log:\\nFiles read: src/cli/commands/task.ts, src/parser/split-backend.ts,
+              src/schema/task.ts, tests/task-migrate.test.ts.\\nCommands run: kspec task get
+              @01KM6YEWY1WSKEXTF5YNP5GG81; kspec review get @01KM8RHZ8DKY6EJ2GAFR9JBFHY; git diff
+              87331ee1e9d640686caa51de93719322fb0c1a82...d272c3a0e66962b616ef8f6bf63e661fa80191a6;
+              grep/rg for AC annotations and ULID handling; kspec validate; npm test twice; isolated
+              rerun of tests/agent-invocation-lifecycle.test.ts; temp-project CLI repro with
+              malformed _ulid.\\nClaims verified: the previous blocker about malformed _ulid
+              handling is still present; canonical split data path for already-migrated entries
+              appears fixed by the new regression tests.\\nCategories searched: correctness (found
+              malformed _ulid regression), edge cases (missing/malformed ULIDs, mixed formats,
+              already-migrated data), error handling (validation-warning path, dry-run path), test
+              quality (checked AC annotations and added regressions in this snapshot), integration
+              (index rebuild against split-backend ULID directory contract)."
+            created_at: 2026-03-21T18:15:19.087Z
+        kind: nit
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -41476,5 +41502,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-21T18:15:16.834Z
     created_at: 2026-03-21T18:06:24.079Z
-    updated_at: 2026-03-21T18:15:16.834Z
+    updated_at: 2026-03-21T18:15:19.087Z
     notes: []
