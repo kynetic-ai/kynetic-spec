@@ -17636,7 +17636,7 @@ workspaces:
         head: cb1ed366bb42915d700aae438ac48a1eac4737b4
         last_seen_at: 2026-03-21T19:09:42.004Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-build-migration-01km6yew
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 6661e9cae3c71f9e8292fa2e75c39e69e148ff77
     bootstrap:
       status: succeeded
@@ -17746,7 +17746,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-21T23:17:44.205Z
+      updated_at: 2026-03-21T23:17:49.631Z
     integration:
       status: merged
       detail: integration:merged
@@ -17762,18 +17762,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-21T23:11:14.676Z
-      last_reconciled_at: 2026-03-21T23:17:44.205Z
+      last_reconciled_at: 2026-03-21T23:17:49.631Z
       created_at: 2026-03-21T23:01:45.884Z
-      updated_at: 2026-03-21T23:17:44.205Z
+      updated_at: 2026-03-21T23:17:49.631Z
     workspace_id: dispatch-workspace-01KM99V2BGM1Y4MNFPJS8YCHE4
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: e203495374ffe623d4b4e19d58e12495546f82ad
-        last_seen_at: 2026-03-21T23:11:09.034Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-detail-loading-fallback-for-missing-per-task-directories-01km99v2-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/fix-detail-loading-fallback-for-missing-per-task-directories/01km99v2
