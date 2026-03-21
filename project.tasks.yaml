@@ -112631,8 +112631,11 @@
   spec_ref: "@task-data-manager"
   plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged to dev after review approval. Migrated remaining supporting modules and
+    dispatch/validate task reads to TaskDataManager, added manager loadAllTasks support for
+    full-detail consumers, and verified with kspec validate plus npm test (6756 passing).
   depends_on:
     - "@task-impl-data-manager"
   context: []
@@ -112654,6 +112657,7 @@
   created_at: 2026-03-21T00:59:20.402Z
   started_at: 2026-03-21T06:24:11.019Z
   submitted_at: 2026-03-21T06:24:18.631Z
+  completed_at: 2026-03-21T06:30:46.241Z
   notes:
     - _ulid: 01KM7F6MDKXHQE0YVM3KNSNVR1
       content: "Migrated all task mutation operations (createTask+saveTask, mutateTaskAtomically,
