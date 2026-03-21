@@ -38074,7 +38074,18 @@ reviews:
     slugs: []
     title: Review task-build-index-rebuild
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Exited 6 with repo-wide baseline warnings only: orphaned skill directory, orphaned specs,
+          and pre-existing AC coverage warnings. No validation errors for this change."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-21T10:43:22.358Z
+        completed_at: 2026-03-21T10:43:22.358Z
     events:
       - _ulid: 01KM7ZJWBJRFK7P3QBAD163RY8
         actor: Jacob Chapel
@@ -38089,6 +38100,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-21T10:38:34.264Z
+      - _ulid: 01KM7ZW4XS8MJ2EHC8V10BM5S8
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-21T10:43:22.681Z
     examined_commit: cdc31d9ac007832d463edeae3a7ddd921f6bb9f9
     external_links: []
     lifecycle_state: open
@@ -38101,5 +38119,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-21T10:38:18.995Z
-    updated_at: 2026-03-21T10:38:33.984Z
+    updated_at: 2026-03-21T10:43:22.358Z
     notes: []
