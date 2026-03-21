@@ -113294,6 +113294,21 @@
       supersedes: null
       author: Test User
       created_at: 2026-03-21T13:34:27.532Z
+    - _ulid: 01KM8ACPHQC17H7J4R198NB12N
+      content: "Fix cycle 16: Replaced process-global _activeBuffer singleton in batch-write-buffer.ts
+        with AsyncLocalStorage from node:async_hooks. The module singleton caused a concurrency bug
+        where concurrent split mutations shared the same buffer — one operation's discard() could
+        silently lose another's successful writes. Now each operation gets an isolated async-local
+        scope via runWithBuffer(), which creates a buffer, runs the callback, and flushes/discards
+        scoped to that context. Updated all sites: TaskDataManager.withWriteBuffer(),
+        SplitBackend.mutateTask/mutateTasks/createTask/deleteTask, and yaml.ts mutateTasksAtomically
+        to use runWithBuffer() instead of manual activateBatchBuffer/deactivateBatchBuffer.
+        batch-exec still uses activateBatchBuffer+enterWith for its top-level batch scope. Added 2
+        concurrency tests proving isolation (failed mutation doesn't discard concurrent success, and
+        concurrent mutations get distinct buffers). All 6890 tests pass, zero regressions."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T13:47:10.775Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YETR12GG1EZ5G68KSNTBK
