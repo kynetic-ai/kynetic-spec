@@ -37602,6 +37602,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM7XADYVQM41N6EVQ8PXJJ3T
         timestamp: 2026-03-21T09:58:45.250Z
+      - _ulid: 01KM7XAF4X43J71511K47RW6Z9
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM7XAEW4SDRMY5GQ7W3QP8SS
+        timestamp: 2026-03-21T09:58:46.173Z
     examined_commit: 99e92ad7d12fdb6a6cce9ab8f7d11bc48ca3bd1b
     external_links: []
     lifecycle_state: open
@@ -37632,7 +37639,22 @@ reviews:
               the directory removal here happens outside that buffer lifecycle."
             created_at: 2026-03-21T09:58:44.955Z
         kind: blocker
+      - _ulid: 01KM7XAEW4SDRMY5GQ7W3QP8SS
+        entries:
+          - _ulid: 01KM7XAEW5DDV3HR2VRKN018ZT
+            author: Jacob Chapel
+            body: "Evidence log:\\nFiles read: src/parser/task-data-manager.ts, src/parser/split-backend.ts,
+              src/cli/batch-write-buffer.ts, src/parser/yaml.ts, src/parser/shadow.ts,
+              tests/task-atomic-writes.test.ts.\\nCommands run: git diff against dev, kspec task
+              get, kspec item get @task-atomic-writes, kspec review for-task, kspec validate, rg for
+              AC annotations, npm test.\\nClaims verified: worker claim that the full suite passes
+              was verified with npm test (6831 passed, 3 skipped); AC annotations for
+              @task-atomic-writes were verified in tests/task-atomic-writes.test.ts.\\nCategories
+              searched: correctness, rollback/edge cases, buffer ownership, test quality,
+              integration with shadow commits."
+            created_at: 2026-03-21T09:58:45.893Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-21T09:55:37.456Z
-    updated_at: 2026-03-21T09:58:44.955Z
+    updated_at: 2026-03-21T09:58:45.893Z
     notes: []
