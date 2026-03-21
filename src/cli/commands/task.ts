@@ -910,7 +910,10 @@ export function registerTaskCommands(program: Command): void {
           } else if (historyEntries.length === 0) {
             // Have note entries but no history — try per-directory git log
             // to recover field-change history for migrated tasks.
-            const fallbackEntries = getPreMigrationActivity(ctx.specDir, foundTask._ulid);
+            // Filter out note_added entries from fallback since notes are
+            // already represented from notes.yaml (prevents duplication).
+            const fallbackEntries = getPreMigrationActivity(ctx.specDir, foundTask._ulid)
+              .filter((e) => e.type !== "note_added");
             if (fallbackEntries.length > 0) {
               activity = [...activity, ...fallbackEntries];
             }

@@ -365,6 +365,52 @@ describe("getPreMigrationActivity — ac-3: pre-migration fallback", () => {
     expect(entries[0].commitHash).toMatch(/^[a-f0-9]{7}$/);
   });
 
+  it("git fallback note entries are filterable to prevent duplication with notes.yaml", () => {
+    // AC: @task-activity-in-file ac-3 — when a migrated task has notes in notes.yaml
+    // but no stored history, the consumer filters note_added entries from the
+    // git fallback to avoid duplicating notes already present from notes.yaml.
+    const taskDir = path.join(tmpDir, "tasks", ULID_A);
+    fs.mkdirSync(taskDir, { recursive: true });
+    fs.writeFileSync(
+      path.join(taskDir, "task.yaml"),
+      `_ulid: ${ULID_A}\ntitle: Test Task\nstatus: pending\n`,
+    );
+    execSync('git add tasks/ && git commit -m "Add task @test-task"', {
+      cwd: tmpDir,
+      stdio: "pipe",
+    });
+
+    // Add a note commit (git log will classify this as note_added)
+    fs.writeFileSync(
+      path.join(taskDir, "notes.yaml"),
+      `- _ulid: 01ACTVTY00000000000000NOTE\n  content: A note\n`,
+    );
+    execSync('git add tasks/ && git commit -m "Note on @test-task"', {
+      cwd: tmpDir,
+      stdio: "pipe",
+    });
+
+    const fallbackEntries = getPreMigrationActivity(tmpDir, ULID_A);
+    expect(fallbackEntries.length).toBe(2);
+    expect(fallbackEntries.some((e) => e.type === "note_added")).toBe(true);
+
+    // The consumer filters out note_added from fallback when notes already
+    // exist from notes.yaml (this is the fix for the duplication bug).
+    const filtered = fallbackEntries.filter((e) => e.type !== "note_added");
+    expect(filtered.length).toBe(1);
+    expect(filtered[0].type).toBe("created");
+
+    // Combine with notes from notes.yaml — no duplication
+    const noteEntries = notesToActivity([
+      makeNote({ created_at: "2026-03-20T11:00:00.000Z", author: "alice" }),
+    ]);
+    const combined = [...noteEntries, ...filtered].sort(
+      (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
+    );
+    const noteCount = combined.filter((e) => e.type === "note_added").length;
+    expect(noteCount).toBe(1); // exactly one note, not duplicated
+  });
+
   it("does not use git log -L (uses per-directory git log)", () => {
     // AC: @task-activity-in-file ac-3 — fast per-directory git log, not line-range
     // Create two tasks and verify querying one doesn't return the other
