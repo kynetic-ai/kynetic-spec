@@ -1492,6 +1492,9 @@ features:
           tasks/<ulid>/task.yaml contains the complete task record excluding
           notes. This includes all current field values plus an append-only
           history section that records field-level changes with metadata.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
