@@ -36309,9 +36309,25 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-21T08:24:01.036Z
+      - _ulid: 01KM7QX34Y196VWHE89J0JX17D
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-21T08:24:05.022Z
+      - _ulid: 01KM7QX34YX8P4EABM6A74X6PD
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-21T08:24:05.022Z
     examined_commit: 19eb168e46267d19228636e2b2c1e1d83eba2cac
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -36395,7 +36411,14 @@ reviews:
               integration (full npm test passed; kspec validate had repo-wide warnings only).
             created_at: 2026-03-21T08:23:51.852Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-21T08:24:05.021Z
     created_at: 2026-03-21T08:22:52.107Z
-    updated_at: 2026-03-21T08:24:00.764Z
+    updated_at: 2026-03-21T08:24:05.022Z
     notes: []
