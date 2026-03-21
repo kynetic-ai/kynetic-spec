@@ -40406,6 +40406,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-21T16:23:22.855Z
+      - _ulid: 01KM8KJRE7YG11VY0A7JSH10VD
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM8KJR4NTTVVE2VMKH3NPKGY
+        timestamp: 2026-03-21T16:27:46.503Z
     examined_commit: 24dede1fb919b3d7d4015a22517a471efdf07a3a
     external_links: []
     lifecycle_state: open
@@ -40415,8 +40422,27 @@ reviews:
       content_hash: ""
       ref: "@01KM6YET1A7XY9D0V3YQ9DRASG"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM8KJR4NTTVVE2VMKH3NPKGY
+        anchor:
+          type: code
+          commit: 24dede1fb919b3d7d4015a22517a471efdf07a3a
+          line_end: 761
+          line_start: 751
+          path: src/parser/split-backend.ts
+          side: head
+        entries:
+          - _ulid: 01KM8KJR4PQS2H14R8Y1K3RZYP
+            author: Test User
+            body: "Index writes now happen only after \\ returns, which means the per-task files have already
+              been flushed to disk before \\ runs. If the later index write throws (disk error, YAML
+              write failure, lock interruption), the task mutation is partially persisted: \\/\\
+              contain the new state and history entry, but \\ still reflects the old summary. That
+              breaks \\ and violates the atomicity contract claimed here and in \\ (for the same
+              reason in create/delete/mutateTasks at lines 661-664, 882-885, and 934-938)."
+            created_at: 2026-03-21T16:27:46.198Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T16:23:07.232Z
-    updated_at: 2026-03-21T16:23:22.514Z
+    updated_at: 2026-03-21T16:27:46.198Z
     notes: []
