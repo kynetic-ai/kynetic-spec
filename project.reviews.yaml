@@ -39827,3 +39827,29 @@ reviews:
     created_at: 2026-03-21T13:48:42.173Z
     updated_at: 2026-03-21T13:54:11.971Z
     notes: []
+  - _ulid: 01KM8FQW4TVWZNP034R0ZFQ5CP
+    slugs: []
+    title: Review per-task core data and notes files (cycle 18)
+    author: Test User
+    checks: []
+    events:
+      - _ulid: 01KM8FQW4S32PAYMEV2TFVHGSX
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-21T15:20:39.833Z
+    examined_commit: 4241cfba631c31163ad3241461302891839d59f6
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KM6YET1A7XY9D0V3YQ9DRASG"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-21T15:20:39.834Z
+    updated_at: null
+    notes: []
