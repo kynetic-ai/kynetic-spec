@@ -36924,6 +36924,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-21T09:03:17.866Z
+      - _ulid: 01KM7TD7TA2C1HQN4PEMK1F5FS
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM7TD7AXQN97TXTZR7REZWP1
+        timestamp: 2026-03-21T09:07:51.242Z
     examined_commit: 54201d9e92eec58950b8d7ec342b710bb4e0d32a
     external_links: []
     lifecycle_state: open
@@ -36933,8 +36940,28 @@ reviews:
       content_hash: ""
       ref: "@01KM6YESAF92YTNXT3DF06AC0N"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM7TD7AXQN97TXTZR7REZWP1
+        anchor:
+          type: code
+          commit: 54201d9e92eec58950b8d7ec342b710bb4e0d32a
+          line_end: 271
+          line_start: 226
+          path: src/parser/split-backend.ts
+          side: head
+        entries:
+          - _ulid: 01KM7TD7AYPM46BKYNMSM9F0QR
+            author: Jacob Chapel
+            body: "The new index projection writes plan_ref and review_ref, but the summary path still drops
+              both fields: TaskSummary/rawToSummary() only expose spec_ref. Once split storage is
+              activated, listTasks() will therefore stop returning plan_ref-linked tasks to
+              plan-summary consumers and lose review_ref data from list surfaces, even though this
+              task explicitly marked those refs as indexed. Please carry the new indexed fields
+              through the summary type/parser and add a split-backend coverage test for
+              listTasks()/task list --json."
+            created_at: 2026-03-21T09:07:50.750Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T09:03:10.808Z
-    updated_at: 2026-03-21T09:03:17.567Z
+    updated_at: 2026-03-21T09:07:50.750Z
     notes: []
