@@ -38086,6 +38086,17 @@ reviews:
         runner: kspec
         created_at: 2026-03-21T10:43:22.358Z
         completed_at: 2026-03-21T10:43:22.358Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed: 301 test files, 6851 tests, 3 skipped, 202.50s. Test runner rebuilt dist before
+          execution because build artifacts were missing/stale."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-21T10:43:43.649Z
+        completed_at: 2026-03-21T10:43:43.649Z
     events:
       - _ulid: 01KM7ZJWBJRFK7P3QBAD163RY8
         actor: Jacob Chapel
@@ -38121,6 +38132,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM7ZWN4M230T4AH7K98BE2FC
         timestamp: 2026-03-21T10:43:39.559Z
+      - _ulid: 01KM7ZWSP90DMSEH5RJV464TM8
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-21T10:43:43.945Z
     examined_commit: cdc31d9ac007832d463edeae3a7ddd921f6bb9f9
     external_links: []
     lifecycle_state: open
@@ -38170,5 +38188,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-21T10:38:18.995Z
-    updated_at: 2026-03-21T10:43:39.284Z
+    updated_at: 2026-03-21T10:43:43.649Z
     notes: []
