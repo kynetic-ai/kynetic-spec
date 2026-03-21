@@ -69,6 +69,8 @@ export interface TaskSummary {
   assignee?: string | null;
   automation?: string;
   spec_ref?: string | null;
+  plan_ref?: string | null;
+  review_ref?: string | null;
   depends_on: string[];
   blocked_by: string[];
   created_at: string;
@@ -106,6 +108,8 @@ export function rawToSummary(raw: unknown): TaskSummary | null {
     assignee: typeof r.assignee === "string" ? r.assignee : (r.assignee === null ? null : undefined),
     automation: typeof r.automation === "string" ? r.automation : undefined,
     spec_ref: typeof r.spec_ref === "string" ? r.spec_ref : (r.spec_ref === null ? null : undefined),
+    plan_ref: typeof r.plan_ref === "string" ? r.plan_ref : (r.plan_ref === null ? null : undefined),
+    review_ref: typeof r.review_ref === "string" ? r.review_ref : (r.review_ref === null ? null : undefined),
     depends_on: Array.isArray(r.depends_on) ? r.depends_on.filter((d): d is string => typeof d === "string") : [],
     blocked_by: Array.isArray(r.blocked_by) ? r.blocked_by.filter((b): b is string => typeof b === "string") : [],
     created_at: typeof r.created_at === "string" ? r.created_at : new Date().toISOString(),
@@ -135,6 +139,8 @@ function toTaskSummary(task: LoadedTask): TaskSummary {
     assignee: task.assignee,
     automation: task.automation,
     spec_ref: task.spec_ref,
+    plan_ref: task.plan_ref,
+    review_ref: task.review_ref,
     depends_on: task.depends_on,
     blocked_by: task.blocked_by,
     created_at: task.created_at,
@@ -227,6 +233,7 @@ export interface TaskStorageBackend {
     mutate: (latestTasks: LoadedTask[]) => Array<Task | LoadedTask> | Promise<Array<Task | LoadedTask>>,
   ): Promise<LoadedTask[]>;
   deleteTask(ctx: KspecContext, task: LoadedTask): Promise<void>;
+  rebuildIndex(ctx: KspecContext): Promise<{ count: number }>;
 }
 
 /**
@@ -584,6 +591,17 @@ class MonolithicBackend implements TaskStorageBackend {
     } finally {
       releaseTaskLock();
     }
+  }
+
+  /**
+   * No-op for monolithic backend — the task file IS the index, so there
+   * is no separate index to drift or rebuild.
+   *
+   * AC: @task-index-file ac-7
+   */
+  async rebuildIndex(ctx: KspecContext): Promise<{ count: number }> {
+    const tasks = await loadAllTasks(ctx);
+    return { count: tasks.length };
   }
 }
 
@@ -1010,6 +1028,19 @@ export class TaskDataManager {
     );
 
     return { task: updated, note };
+  }
+
+  /**
+   * Rebuild the task index from per-task files.
+   *
+   * For the split backend, this scans all task directories and regenerates the
+   * index file — the recovery path when the index has drifted. For the
+   * monolithic backend, this is a no-op since the task file IS the index.
+   *
+   * AC: @task-index-file ac-7 — index fully regenerated from per-task files alone
+   */
+  async rebuildIndex(ctx: KspecContext): Promise<{ count: number }> {
+    return this.backend.rebuildIndex(ctx);
   }
 }
 
