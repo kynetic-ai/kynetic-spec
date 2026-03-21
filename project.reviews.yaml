@@ -41236,3 +41236,29 @@ reviews:
     created_at: 2026-03-21T18:06:21.254Z
     updated_at: null
     notes: []
+  - _ulid: 01KM8S7BAF7RR8Z853MWHPDG44
+    slugs: []
+    title: Review task-build-migration (cycle 3)
+    author: Test User
+    checks: []
+    events:
+      - _ulid: 01KM8S7BAF5Z3Y5BF2WQSZ5230
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-21T18:06:24.079Z
+    examined_commit: d272c3a0e66962b616ef8f6bf63e661fa80191a6
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KM6YEWY1WSKEXTF5YNP5GG81"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-21T18:06:24.079Z
+    updated_at: null
+    notes: []
