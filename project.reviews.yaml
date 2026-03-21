@@ -32677,7 +32677,18 @@ reviews:
     slugs: []
     title: Review task-impl-data-manager
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation exited 6 with repo-wide pre-existing warnings only; no schema or reference
+          errors for this task snapshot.
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-03-21T01:33:29.154Z
+        completed_at: 2026-03-21T01:33:29.154Z
     events:
       - _ulid: 01KM7098H4MG62VGCWPFHA8WJX
         actor: Jacob Chapel
@@ -32706,6 +32717,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM70CZ0CXP8XVAZP3DHJA6EK
         timestamp: 2026-03-21T01:33:19.676Z
+      - _ulid: 01KM70D93BW1T5BJ94XZKQRDX6
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-21T01:33:29.580Z
     examined_commit: 3e6d901fcc248a5e455c477b826578d8000f90af
     external_links: []
     lifecycle_state: open
@@ -32753,5 +32771,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-21T01:31:17.924Z
-    updated_at: 2026-03-21T01:33:19.245Z
+    updated_at: 2026-03-21T01:33:29.154Z
     notes: []
