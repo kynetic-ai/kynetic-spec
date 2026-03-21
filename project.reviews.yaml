@@ -37108,6 +37108,22 @@ reviews:
         runner: npm
         created_at: 2026-03-21T09:27:22.780Z
         completed_at: 2026-03-21T09:27:22.780Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/cli/commands/task.ts, src/parser/split-backend.ts,
+          src/parser/task-data-manager.ts, src/schema/spec.ts, tests/per-task-files.test.ts.
+          Commands run: kspec task get, kspec item get @task-core-data-file, kspec item get
+          @task-notes-file, kspec validate, rg AC annotations, git diff, npm test, and a
+          split-format CLI reproduction of kspec task add. Claim verified: split history is surfaced
+          in task get activity via resolveTaskDataManager, but task add still routes through the
+          monolithic singleton. Categories searched: correctness, CLI integration, test quality,
+          spec alignment, storage-path edge cases."
+        name: review evidence
+        required: false
+        created_at: 2026-03-21T09:27:23.750Z
+        completed_at: 2026-03-21T09:27:23.750Z
     events:
       - _ulid: 01KM7V8R1956ZBHJXNFZ0ET8EJ
         actor: Jacob Chapel
@@ -37150,6 +37166,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-21T09:27:23.085Z
+      - _ulid: 01KM7VH13D0T45YHV1A474ZWZW
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence
+        timestamp: 2026-03-21T09:27:24.013Z
     examined_commit: 9bb58c6776e7df3a23ef51e1df4133cade934b4b
     external_links: []
     lifecycle_state: open
@@ -37206,5 +37229,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-21T09:22:52.585Z
-    updated_at: 2026-03-21T09:27:22.780Z
+    updated_at: 2026-03-21T09:27:23.750Z
     notes: []
