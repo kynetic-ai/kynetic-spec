@@ -25186,13 +25186,6 @@ plans:
               The task data manager initializes
             then: |
               An error indicates that migration must be run before activation
-          - id: ac-5
-            given: |
-              The storage format is set to split and no tasks exist at all
-            when: |
-              The task data manager initializes
-            then: |
-              The system operates normally with an empty task set
           - id: ac-4
             given: |
               The storage format setting needs to change
@@ -25200,6 +25193,13 @@ plans:
               The activation command is run
             then: |
               The setting is persisted and takes effect on the next operation
+          - id: ac-5
+            given: |
+              The storage format is set to split and no tasks exist at all
+            when: |
+              The task data manager initializes
+            then: |
+              The system operates normally with an empty task set
 
       # ─── Migration ───
 
@@ -25938,3 +25938,7 @@ plans:
           case), S3 (move deprecation to Phase 1), S4 (verified @review-fix-cycle-diff unaffected)."
         author: "@claude"
         created_at: 2026-03-21T00:31:04.651Z
+      - _ulid: 01KM6XCY52YS099QY319H2QX6R
+        content: Fix ac ordering on @task-storage-activation (ac-4/ac-5 were swapped).
+        author: "@claude"
+        created_at: 2026-03-21T00:40:52.642Z
