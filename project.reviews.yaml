@@ -41538,6 +41538,16 @@ reviews:
         required: false
         created_at: 2026-03-21T18:28:39.842Z
         completed_at: 2026-03-21T18:28:39.842Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Exited 6 with repository-wide pre-existing warnings only: orphaned skills, orphaned
+          specs, and broad AC-coverage warnings. No task-specific validation error surfaced."
+        name: kspec validate
+        required: false
+        created_at: 2026-03-21T18:28:40.952Z
+        completed_at: 2026-03-21T18:28:40.952Z
     events:
       - _ulid: 01KM8TANC36FQ7M1EY68X7NNFP
         actor: Test User
@@ -41592,6 +41602,13 @@ reviews:
           status: pass
           name: review-evidence
         timestamp: 2026-03-21T18:28:40.178Z
+      - _ulid: 01KM8TG5521N0XGPSPSNRN5023
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-21T18:28:41.250Z
     examined_commit: 2b21f5fb5066a62e14f72235ba6882244e4942e9
     external_links: []
     lifecycle_state: open
@@ -41649,5 +41666,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-21T18:25:41.252Z
-    updated_at: 2026-03-21T18:28:39.842Z
+    updated_at: 2026-03-21T18:28:40.952Z
     notes: []
