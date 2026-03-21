@@ -16162,7 +16162,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-21T04:40:50.213Z
+      updated_at: 2026-03-21T04:40:56.212Z
     integration:
       status: merged
       detail: integration:merged
@@ -16178,18 +16178,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-21T04:33:15.562Z
-      last_reconciled_at: 2026-03-21T04:40:54.973Z
+      last_reconciled_at: 2026-03-21T04:40:56.212Z
       created_at: 2026-03-21T01:13:05.993Z
-      updated_at: 2026-03-21T04:40:54.973Z
+      updated_at: 2026-03-21T04:40:56.212Z
     workspace_id: dispatch-workspace-01KM6YENV3CBFAGSRHVHR7QPJN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 33fedb42b513bbc3a6e5e4bae85f0b20526e2d30
-        last_seen_at: 2026-03-21T04:32:51.938Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-impl-data-manager-01km6yen-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-impl-data-manager/01km6yen
