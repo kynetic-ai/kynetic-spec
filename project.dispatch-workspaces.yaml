@@ -17483,12 +17483,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-21T17:31:16.901Z
+      updated_at: 2026-03-21T18:05:43.920Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-21T17:31:19.423Z
+      updated_at: 2026-03-21T18:05:43.920Z
     integration:
       status: pending
       detail: null
@@ -17496,26 +17496,31 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 87331ee1e9d640686caa51de93719322fb0c1a82
-      updated_at: 2026-03-21T17:31:16.901Z
-    lifecycle_state: ready
+      updated_at: 2026-03-21T18:05:43.920Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KM6YETR12GG1EZ5G68KSNTBK"
     task_slug: task-impl-activity
     timestamps:
       closed_at: null
       last_active_at: 2026-03-21T17:20:25.968Z
-      last_reconciled_at: 2026-03-21T17:31:19.423Z
+      last_reconciled_at: 2026-03-21T18:05:43.920Z
       created_at: 2026-03-21T16:52:54.768Z
-      updated_at: 2026-03-21T17:31:19.423Z
+      updated_at: 2026-03-21T18:05:43.920Z
     workspace_id: dispatch-workspace-01KM6YETR12GG1EZ5G68KSNTBK
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: f68480a8d01aadbdce406f6aca86f353cc32e282
+        last_seen_at: 2026-03-21T18:05:43.920Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-impl-activity-01km6yet-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-impl-activity/01km6yet
         head: f68480a8d01aadbdce406f6aca86f353cc32e282
-        last_seen_at: 2026-03-21T17:20:19.689Z
+        last_seen_at: 2026-03-21T18:05:43.920Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-impl-activity-01km6yet
   - active_role: reviewer
     base_branch_point: 87331ee1e9d640686caa51de93719322fb0c1a82
