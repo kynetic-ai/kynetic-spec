@@ -689,6 +689,9 @@ async function setTaskFields(
 
       changes.splice(0, changes.length, ...mutationChanges);
       return nextTask;
+    }, {
+      operation: "task-set",
+      ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
     });
 
     if (noChangesMessage) {
@@ -2084,6 +2087,10 @@ Examples:
               notes: [...latestTask.notes, note],
             };
           },
+          {
+            operation: "task-needs-work",
+            ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
+          },
         );
 
         if (transitionFromStatus !== "pending_review") {
@@ -2452,6 +2459,9 @@ Examples:
           nextTask.notes = [...nextTask.notes, note];
 
           return nextTask;
+        }, {
+          operation: "task-reset",
+          ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
         });
 
         if (previousStatus === "pending") {
@@ -2934,7 +2944,7 @@ Examples:
             };
           },
           {
-            operation: "task-note",
+            operation: "task-todo-add",
             ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
           },
         );
@@ -2992,6 +3002,9 @@ Examples:
             ...latestTask,
             todos: updatedTodos,
           };
+        }, {
+          operation: "task-todo-done",
+          ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
         });
 
         if (todoState === "not_found") {
@@ -3065,6 +3078,9 @@ Examples:
             ...latestTask,
             todos: updatedTodos,
           };
+        }, {
+          operation: "task-todo-undone",
+          ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
         });
 
         if (todoState === "not_found") {
