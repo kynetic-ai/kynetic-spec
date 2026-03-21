@@ -1959,6 +1959,9 @@ features:
       to the split per-task directory format. Also handles backfilling
       tasks that were written in legacy format after an initial migration
       (e.g. by an older version of kspec or external tooling).
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on: []
     implements: []
     relates_to: []
