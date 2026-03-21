@@ -41778,9 +41778,25 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-03-21T18:37:21.896Z
+      - _ulid: 01KM8V0JG7S386QTCRPJ6R34ZY
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-21T18:37:39.207Z
+      - _ulid: 01KM8V0JG7CJ4G0VQKGXP7VV31
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-21T18:37:39.207Z
     examined_commit: 1e5c994079003c929d4780f2adc0f574b5617813
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -41824,7 +41840,14 @@ reviews:
               cannot be approved until these behaviors are proven by runnable tests.
             created_at: 2026-03-21T18:37:00.493Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-21T18:37:39.207Z
     created_at: 2026-03-21T18:30:14.907Z
-    updated_at: 2026-03-21T18:37:21.606Z
+    updated_at: 2026-03-21T18:37:39.207Z
     notes: []
