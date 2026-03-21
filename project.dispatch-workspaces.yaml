@@ -16203,22 +16203,24 @@ workspaces:
     base_branch_point: 878b30086642c631a8296a541616b2ecdcfa2dc1
     bootstrap:
       status: succeeded
-      canonicalBranchHead: c195445ea83a06feba1bc485453d92bebc2de1fe
+      canonicalBranchHead: 252e175acbc7af12e2d356d76640db443a4c5a7c
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
       failureMessage: null
       invalidationReasons:
         - canonical-branch-head-changed
-      lastRole: worker
-      lastRunAt: 2026-03-21T05:07:49.222Z
+        - workspace-dependencies-missing
+      lastRole: reviewer
+      lastRunAt: 2026-03-21T05:23:13.197Z
       roleStates:
         reviewer:
           status: succeeded
-          canonicalBranchHead: c195445ea83a06feba1bc485453d92bebc2de1fe
+          canonicalBranchHead: 252e175acbc7af12e2d356d76640db443a4c5a7c
           configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
           failureMessage: null
           invalidationReasons:
+            - canonical-branch-head-changed
             - workspace-dependencies-missing
-          lastRunAt: 2026-03-21T04:54:27.370Z
+          lastRunAt: 2026-03-21T05:23:13.197Z
           steps:
             - status: succeeded
               allowTrackedChanges: false
@@ -16249,7 +16251,27 @@ workspaces:
             - canonical-branch-head-changed
           lastRunAt: 2026-03-21T05:07:49.222Z
           steps: []
-      steps: []
+      steps:
+        - status: succeeded
+          allowTrackedChanges: false
+          idempotent: true
+          name: install-workspace-dependencies
+          output: |-
+            added 283 packages, and audited 288 packages in 3s
+
+            66 packages are looking for funding
+              run `npm fund` for details
+
+            9 vulnerabilities (1 low, 5 moderate, 3 high)
+
+            To address all issues, run:
+              npm audit fix
+
+            Run `npm audit` for details.
+          reviewerRerunAllowed: true
+          role: reviewer
+          run: npm ci
+          source: dispatch
     branch_provenance:
       adopted_at: null
       adopted_from: null
@@ -16264,12 +16286,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-21T05:23:28.129Z
+      updated_at: 2026-03-21T05:23:07.248Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-21T05:23:28.129Z
+      updated_at: 2026-03-21T05:23:07.248Z
     integration:
       status: pending
       detail: null
@@ -16277,7 +16299,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 878b30086642c631a8296a541616b2ecdcfa2dc1
-      updated_at: 2026-03-21T05:23:28.129Z
+      updated_at: 2026-03-21T05:23:07.248Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KM6YEPJDBDB9891TTESHZ0FR"
@@ -16285,18 +16307,23 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-21T05:07:50.637Z
-      last_reconciled_at: 2026-03-21T05:23:28.129Z
+      last_reconciled_at: 2026-03-21T05:23:07.248Z
       created_at: 2026-03-21T04:41:23.169Z
-      updated_at: 2026-03-21T05:23:28.129Z
+      updated_at: 2026-03-21T05:23:13.197Z
     workspace_id: dispatch-workspace-01KM6YEPJDBDB9891TTESHZ0FR
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 252e175acbc7af12e2d356d76640db443a4c5a7c
+        last_seen_at: 2026-03-21T05:23:07.248Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-cli-01km6yep-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-migrate-cli/01km6yep
-        head: c195445ea83a06feba1bc485453d92bebc2de1fe
-        last_seen_at: 2026-03-21T05:07:48.494Z
+        head: 252e175acbc7af12e2d356d76640db443a4c5a7c
+        last_seen_at: 2026-03-21T05:23:07.248Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-cli-01km6yep
   - active_role: worker
     base_branch_point: 878b30086642c631a8296a541616b2ecdcfa2dc1
