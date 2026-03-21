@@ -39622,6 +39622,13 @@ reviews:
           status: skipped
           name: kspec validate
         timestamp: 2026-03-21T13:34:29.897Z
+      - _ulid: 01KM89NGGD2PH3SP48R3HNZA3H
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM89NG6BNSMNYVQJYWJ3G1ZB
+        timestamp: 2026-03-21T13:34:30.925Z
     examined_commit: 04dd1dbb397bb4101d90c59dac3a3e27f314b57b
     external_links: []
     lifecycle_state: closed
@@ -39673,6 +39680,24 @@ reviews:
               concurrency/atomicity, test coverage, integration call paths."
             created_at: 2026-03-21T13:34:06.149Z
         kind: nit
+      - _ulid: 01KM89NG6BNSMNYVQJYWJ3G1ZB
+        entries:
+          - _ulid: 01KM89NG6BY57EQVJVDF9A5MBD
+            author: Test User
+            body: "Review evidence log: Files read: src/parser/split-backend.ts,
+              src/parser/task-data-manager.ts, src/cli/commands/task.ts, src/cli/commands/review.ts,
+              src/parser/review-task-integration.ts, src/agent-runtime/dispatch.ts,
+              packages/daemon/src/routes/tasks.ts, packages/daemon/src/routes/diff.ts,
+              tests/per-task-files.test.ts, tests/split-backend.test.ts,
+              tests/task-atomic-writes.test.ts, tests/task-rebuild-index.test.ts. Commands run: git
+              diff/stat, kspec task get, kspec item get, kspec review for-task/get, rg for AC
+              annotations and task loaders, kspec validate, npm test. Claims verified: remaining
+              daemon/CLI task load paths now use resolveTaskDataManager(ctx); task/history mutation
+              sites carry explicit commit metadata where applicable. Categories searched:
+              correctness, test quality, integration, error handling; blocking issue is failing
+              required test gate."
+            created_at: 2026-03-21T13:34:30.603Z
+        kind: nit
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -39682,5 +39707,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-21T13:34:26.289Z
     created_at: 2026-03-21T13:27:48.217Z
-    updated_at: 2026-03-21T13:34:29.587Z
+    updated_at: 2026-03-21T13:34:30.603Z
     notes: []
