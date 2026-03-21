@@ -39386,6 +39386,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-21T13:10:35.345Z
+      - _ulid: 01KM88MXKGPXYJFZ7RMB8VDRTB
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM88MX9YPZDVCMVKKK3YE5XD
+        timestamp: 2026-03-21T13:16:42.992Z
     examined_commit: 4245fa4dfadcd899df46ee3bcf8b1c7ec90f97b6
     external_links: []
     lifecycle_state: open
@@ -39395,8 +39402,30 @@ reviews:
       content_hash: ""
       ref: "@01KM6YET1A7XY9D0V3YQ9DRASG"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM88MX9YPZDVCMVKKK3YE5XD
+        anchor:
+          type: code
+          commit: 4245fa4dfadcd899df46ee3bcf8b1c7ec90f97b6
+          line_end: 534
+          line_start: 492
+          path: packages/daemon/src/routes/diff.ts
+          side: head
+        entries:
+          - _ulid: 01KM88MX9YFH129Y0HDNE402V5
+            author: Jacob Chapel
+            body: The daemon still reads task review subjects through the legacy loadAllTasks(ctx) path here. In
+              split storage, that helper only scans *.tasks.yaml / project.tasks.yaml entries and
+              never loads tasks/<ulid>/task.yaml or notes.yaml (see src/parser/yaml.ts:839-872), so
+              this response is assembled from the lean index instead of the real per-task files. The
+              immediate regression is that reviewed task content loses split-only detail such as
+              description and notes, and the same raw loader is still used in multiple daemon routes
+              (tasks.ts, items.ts, sessions.ts, etc.). The CLI was switched to
+              resolveTaskDataManager(ctx).loadAllTasks(ctx), but the daemon/web surface is still
+              incomplete in this snapshot.
+            created_at: 2026-03-21T13:16:42.686Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T13:10:28.514Z
-    updated_at: 2026-03-21T13:10:35.053Z
+    updated_at: 2026-03-21T13:16:42.686Z
     notes: []
