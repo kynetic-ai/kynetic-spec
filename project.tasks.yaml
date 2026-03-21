@@ -112882,6 +112882,18 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-21T08:24:06.206Z
+    - _ulid: 01KM7RWH9W4SX2C0E1Q9EA1562
+      content: "Fix cycle 2: Addressed both blockers — reverted INDEX_CHANGE_FIELDS to exclude
+        notes_count/todos_count, restoring AC-3 compliance. Note-only mutations no longer trigger
+        index writes. Counts are set at creation time and corrected via rebuildIndex() (AC-7).
+        Reverted the AC-3 test to assert the index is unchanged after note additions. Replaced the
+        'listTasks returns accurate notes_count' test with one that verifies stale-after-note +
+        correct-after-rebuild behavior. Changed indexEntriesEqual assertions for counts from false
+        to true. Full test suite passes (6810 pass, 4 pre-existing failures in unrelated dispatch
+        tests)."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T08:41:15.324Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YET1A7XY9D0V3YQ9DRASG
