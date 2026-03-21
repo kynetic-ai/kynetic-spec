@@ -32699,6 +32699,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM70CN6CWYCBFDB6PNH59PQM
         timestamp: 2026-03-21T01:33:09.643Z
+      - _ulid: 01KM70CZDW9H1VQD9QBZHKNPF1
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM70CZ0CXP8XVAZP3DHJA6EK
+        timestamp: 2026-03-21T01:33:19.676Z
     examined_commit: 3e6d901fcc248a5e455c477b826578d8000f90af
     external_links: []
     lifecycle_state: open
@@ -32727,7 +32734,24 @@ reviews:
               MUST-FIX coverage gap for a linked spec AC.
             created_at: 2026-03-21T01:33:09.196Z
         kind: blocker
+      - _ulid: 01KM70CZ0CXP8XVAZP3DHJA6EK
+        anchor:
+          type: code
+          commit: 3e6d901fcc248a5e455c477b826578d8000f90af
+          line_end: 394
+          line_start: 391
+          path: tests/task-data-manager.test.ts
+          side: head
+        entries:
+          - _ulid: 01KM70CZ0DEMSJSM13JC2WVBKH
+            author: Jacob Chapel
+            body: ac-8 is acknowledged here as future work, but this task is submitted directly against
+              task-data-manager and the manager has no split-backend activation path yet. Shipping
+              the review in this state would approve a known-unimplemented spec AC and a missing AC
+              test rather than a completed task.
+            created_at: 2026-03-21T01:33:19.245Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T01:31:17.924Z
-    updated_at: 2026-03-21T01:33:09.196Z
+    updated_at: 2026-03-21T01:33:19.245Z
     notes: []
