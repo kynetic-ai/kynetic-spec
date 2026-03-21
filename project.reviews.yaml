@@ -35764,6 +35764,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-21T07:37:41.784Z
+      - _ulid: 01KM7NF1DKCM5SX9HAF883G3Q5
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM7NF142NJATFDX0RAMJ7JHA
+        timestamp: 2026-03-21T07:41:27.347Z
     examined_commit: e3cad16ed523d9896944f9251cbb65fa5fd8f86d
     external_links: []
     lifecycle_state: open
@@ -35773,8 +35780,25 @@ reviews:
       content_hash: ""
       ref: "@01KM6YERMDKKYA1XXRN025G0FT"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM7NF142NJATFDX0RAMJ7JHA
+        entries:
+          - _ulid: 01KM7NF142VYYBMF48DE6R7SMQ
+            author: Jacob Chapel
+            body: "Evidence log: Files read: src/parser/task-data-manager.ts, src/parser/split-backend.ts,
+              src/parser/alignment.ts, src/parser/index.ts, src/cli/commands/task.ts,
+              src/cli/commands/derive.ts, tests/split-backend.test.ts,
+              tests/task-data-manager.test.ts. Commands run: kspec task get
+              @01KM6YERMDKKYA1XXRN025G0FT, kspec review for-task @01KM6YERMDKKYA1XXRN025G0FT, kspec
+              review get @01KM7K9APW6JFK2G1AETY551HG, kspec item get @task-directory-storage, kspec
+              validate, rg -n \"AC: @task-directory-storage|AC: @trait-\" tests, git diff against
+              61eb4369..e3cad16, git log, npm test. Claims verified: split index now persists
+              notes_count/todos_count and TaskDataManager('split') lazy-loads split-backend
+              registration. Categories searched: correctness, edge cases, error handling, test
+              quality, integration. No new blockers found."
+            created_at: 2026-03-21T07:41:27.042Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-21T07:37:22.574Z
-    updated_at: 2026-03-21T07:37:41.514Z
+    updated_at: 2026-03-21T07:41:27.042Z
     notes: []
