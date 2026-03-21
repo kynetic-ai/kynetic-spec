@@ -42656,6 +42656,13 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-03-21T23:41:53.964Z
+      - _ulid: 01KM9CDPC30R6Z2XDJ0F926A7G
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM9CDP2TG3ZTA00GHTHBC8KJ
+        timestamp: 2026-03-21T23:41:54.947Z
     examined_commit: e85852381a7bdabdd4cae7f7fd041c9e3d106e4d
     external_links: []
     lifecycle_state: open
@@ -42687,7 +42694,26 @@ reviews:
               with a clean full-suite run.
             created_at: 2026-03-21T23:41:52.618Z
         kind: blocker
+      - _ulid: 01KM9CDP2TG3ZTA00GHTHBC8KJ
+        entries:
+          - _ulid: 01KM9CDP2T90A90J8N185P1THJ
+            author: Test User
+            body: "Evidence log: Files read: AGENTS.md, kspec-agents.md, tests/split-backend.test.ts,
+              tests/task-data-manager.test.ts, tests/per-task-files.test.ts,
+              tests/agent-invocation-lifecycle.test.ts, package.json, scripts/test.cjs. Commands
+              run: git diff --stat/base diff, kspec task get, kspec review for-task/get, kspec item
+              get for
+              @task-directory-storage/@task-listing-performance/@task-detail-loading/@task-storage-\
+              activation, rg AC annotation search, kspec review open, kspec validate, kspec validate
+              --warnings-ok, npm test (twice), npm test -- tests/agent-invocation-lifecycle.test.ts,
+              git branch --all --contains. Claims verified: the worker’s two prior blockers are
+              addressed in code; targeted AC annotations now exist and the new/expanded tests match
+              the relevant ACs; the branch still does not produce a passing full-suite run.
+              Categories searched: correctness, test quality, integration, edge cases, error
+              handling; no new AC-coverage defects found, full-suite stability remains blocking."
+            created_at: 2026-03-21T23:41:54.651Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-21T23:33:46.331Z
-    updated_at: 2026-03-21T23:41:53.633Z
+    updated_at: 2026-03-21T23:41:54.651Z
     notes: []
