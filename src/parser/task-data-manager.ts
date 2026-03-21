@@ -215,6 +215,9 @@ export interface ShadowCommitOptions {
   detail?: string;
   /** Enable verbose logging */
   verbose?: boolean;
+  /** Skip the shadow commit — caller manages its own commit lifecycle.
+   *  History metadata is still derived from operation/ref fields. */
+  skipCommit?: boolean;
 }
 
 /**
@@ -923,7 +926,7 @@ export class TaskDataManager {
     // under file lock. Split format: buffer coordinates multi-file writes.
     if (this.storageFormat !== "split") {
       const result = await operation();
-      if (commitOpts) {
+      if (commitOpts && !commitOpts.skipCommit) {
         await commitIfShadow(
           ctx.shadow,
           commitOpts.operation,
@@ -945,7 +948,7 @@ export class TaskDataManager {
     });
 
     // Shadow commit AFTER flush — all files are on disk atomically
-    if (commitOpts) {
+    if (commitOpts && !commitOpts.skipCommit) {
       await commitIfShadow(
         ctx.shadow,
         commitOpts.operation,

@@ -27,7 +27,7 @@ import {
   shortestUniqueUlid,
   updateSpecItem,
 } from "../../parser/index.js";
-import { resolveTaskDataManager } from "../../parser/task-data-manager.js";
+import { resolveTaskDataManager, type ShadowCommitOptions } from "../../parser/task-data-manager.js";
 import type { ItemFilter } from "../../parser/items.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import type {
@@ -1415,6 +1415,10 @@ Examples:
     }
 
     if (tasksToClean.length > 0) {
+      const cleanupCommitOpts: ShadowCommitOptions = {
+        operation: "item-delete-ref-cleanup",
+        detail: `${tasksToClean.length} task(s)`,
+      };
       await resolveTaskDataManager(ctx).mutateTasks(ctx, tasksToClean.map(t => t._ulid), (latestTasks) => {
         return latestTasks.map((task) => {
           let refsRemovedFromTask = 0;
@@ -1449,7 +1453,7 @@ Examples:
             spec_ref: specRef,
           };
         });
-      });
+      }, cleanupCommitOpts);
     }
 
     return { totalRefsRemoved, itemsUpdated };

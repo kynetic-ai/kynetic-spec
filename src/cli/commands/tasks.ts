@@ -13,7 +13,7 @@ import {
   ReferenceIndex,
   type TaskAssessment,
 } from "../../parser/index.js";
-import { resolveTaskDataManager } from "../../parser/task-data-manager.js";
+import { resolveTaskDataManager, type ShadowCommitOptions } from "../../parser/task-data-manager.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import { errors } from "../../strings/index.js";
 import { grepItem } from "../../utils/grep.js";
@@ -506,11 +506,15 @@ export function registerTasksCommands(program: Command): void {
             const noteContent = `Automation assessment: set to ${change.newStatus}. ${change.reason}`;
             const note = createNote(noteContent, "@automation-assess");
 
+            const assessCommitOpts: ShadowCommitOptions = {
+              operation: "tasks-assess",
+              skipCommit: true,
+            };
             await resolveTaskDataManager(ctx).mutateTask(ctx, task._ulid, (latestTask) => ({
               ...latestTask,
               automation: change.newStatus,
               notes: [...latestTask.notes, note],
-            }));
+            }), assessCommitOpts);
             changeCount++;
           }
 
