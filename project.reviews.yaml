@@ -37685,7 +37685,18 @@ reviews:
     slugs: []
     title: Review per-task core data and notes files
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed locally: 6825 tests across 300 files, 3 skipped. scripts/test.cjs rebuilt dist and
+          completed successfully."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-21T10:09:59.654Z
+        completed_at: 2026-03-21T10:09:59.654Z
     events:
       - _ulid: 01KM7XKR2G3AR4KZ1CP768500R
         actor: Jacob Chapel
@@ -37707,6 +37718,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM7XYZTNFAJW7ACDY6C7KWJM
         timestamp: 2026-03-21T10:09:58.953Z
+      - _ulid: 01KM7XZ15DP5X16ZH3SCEPH2TN
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-21T10:09:59.981Z
     examined_commit: c925689681d0bb27dffc744f759c87480f0b41d2
     external_links: []
     lifecycle_state: open
@@ -37738,5 +37756,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-21T10:03:50.225Z
-    updated_at: 2026-03-21T10:09:58.613Z
+    updated_at: 2026-03-21T10:09:59.654Z
     notes: []
