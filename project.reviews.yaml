@@ -37541,3 +37541,29 @@ reviews:
     created_at: 2026-03-21T09:42:26.834Z
     updated_at: 2026-03-21T09:46:30.507Z
     notes: []
+  - _ulid: 01KM7X4PVG5B9316MEQYDYMNV3
+    slugs: []
+    title: Review task-extend-write-buffer
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KM7X4PVG03028PE0GJ070MWP
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-21T09:55:37.456Z
+    examined_commit: 99e92ad7d12fdb6a6cce9ab8f7d11bc48ca3bd1b
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KM6YEVFHZ9J6734CYVPWWDMH"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-21T09:55:37.456Z
+    updated_at: null
+    notes: []
