@@ -35025,3 +35025,29 @@ reviews:
     created_at: 2026-03-21T05:24:21.536Z
     updated_at: 2026-03-21T05:30:01.019Z
     notes: []
+  - _ulid: 01KM7E2BNBH2G7VHJF91TYPQY6
+    slugs: []
+    title: Review task-migrate-daemon-api-to-task-data-manager
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KM7E2BNB8C5G07RBND5TF6G2
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-21T05:32:11.819Z
+    examined_commit: 3f512d234f1cefd8357c542e9a36cd115a658d73
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KM6YEQ9GJYWB6ZC65Y3Y329G"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-21T05:32:11.819Z
+    updated_at: null
+    notes: []
