@@ -34623,3 +34623,29 @@ reviews:
     created_at: 2026-03-21T04:33:37.414Z
     updated_at: 2026-03-21T04:40:21.238Z
     notes: []
+  - _ulid: 01KM7BXYASSXCD59AZNGS2WP2H
+    slugs: []
+    title: Review task-migrate-cli-task-commands-to-task-data-manager
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KM7BXYASF36TFJCCR5EFT2H4
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-21T04:54:49.945Z
+    examined_commit: c195445ea83a06feba1bc485453d92bebc2de1fe
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KM6YEPJDBDB9891TTESHZ0FR"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-21T04:54:49.945Z
+    updated_at: null
+    notes: []
