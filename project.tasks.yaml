@@ -113144,6 +113144,17 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-21T10:25:58.919Z
+    - _ulid: 01KM8047CDJHRGH4YE8SWBGV2Q
+      content: "Fix cycle 7: Addressed blocker from review @01KM7YNJEB3CZWD7G7YA6C2Z0C — history entries
+        ignored ctx.config.identity.author. The metadata construction in
+        TaskDataManager.mutateTask/mutateTasks passed author: undefined, so createHistoryEntry fell
+        back to getAuthor() without the config author parameter. Fixed by importing getAuthor and
+        passing ctx.config?.identity?.author at both metadata construction sites. Added test
+        verifying config author is used in history entries when KSPEC_AUTHOR is unset. All 6826
+        tests pass."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T10:47:47.341Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YETR12GG1EZ5G68KSNTBK
