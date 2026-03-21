@@ -1624,6 +1624,9 @@ features:
       (CLI, API, batch, automation) read and write tasks exclusively
       through this module. It encapsulates the storage format behind a
       consistent interface so callers provide mutations, not I/O strategy.
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on: []
     implements: []
     relates_to: []
