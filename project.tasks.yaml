@@ -113318,7 +113318,7 @@
   spec_ref: "@task-index-rebuild"
   plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
   origin: derived
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-impl-index"
@@ -113332,7 +113332,7 @@
   submission_linkage:
     review_url: null
     branch: dev
-    captured_at: 2026-03-21T10:36:58.152Z
+    captured_at: 2026-03-21T10:56:56.301Z
     commit: 52fc4834d86ade03e9d3fe98abe37c1380e714ca
     remote: origin
     remote_url: git@github.com:kynetic-ai/kynetic-spec.git
@@ -113340,7 +113340,7 @@
   session_id: 01KM805P7RYCW2NK4CD2KTECZE
   created_at: 2026-03-21T00:59:24.718Z
   started_at: 2026-03-21T10:56:52.775Z
-  submitted_at: 2026-03-21T10:36:58.600Z
+  submitted_at: 2026-03-21T10:56:56.727Z
   notes:
     - _ulid: 01KM7ZG74XADT6M0KCDSQJJ778
       content: Implemented kspec task rebuild-index CLI command. Scans .kspec/tasks/ for per-task
