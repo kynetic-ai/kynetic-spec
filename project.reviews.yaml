@@ -41717,6 +41717,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM8TZBRX0EF0R415X1AJ306R
         timestamp: 2026-03-21T18:36:59.842Z
+      - _ulid: 01KM8TZCZYFH3ASQHMCNJ8E5SN
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM8TZCPCEEBEAANVWH5W0D65
+        timestamp: 2026-03-21T18:37:00.798Z
     examined_commit: 1e5c994079003c929d4780f2adc0f574b5617813
     external_links: []
     lifecycle_state: open
@@ -41745,7 +41752,25 @@ reviews:
               verified behaviorally instead of being treated as a structural comment.
             created_at: 2026-03-21T18:36:59.549Z
         kind: blocker
+      - _ulid: 01KM8TZCPCEEBEAANVWH5W0D65
+        anchor:
+          type: code
+          commit: 1e5c994079003c929d4780f2adc0f574b5617813
+          line_end: 663
+          line_start: 618
+          path: tests/task-migrate.test.ts
+          side: head
+        entries:
+          - _ulid: 01KM8TZCPCZFBB1SDRF0C6CS0P
+            author: Test User
+            body: Inherited trait AC coverage is still missing here.  and , , and  are only asserted in comments
+              as 'structural' coverage, but there is no executable test that forces  down an error
+              path and verifies the emitted human/JSON guidance or the dry-run no-mutation guarantee
+              on failure. In this repo, comment-only AC claims are not valid coverage, so the task
+              cannot be approved until these behaviors are proven by runnable tests.
+            created_at: 2026-03-21T18:37:00.493Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T18:30:14.907Z
-    updated_at: 2026-03-21T18:36:59.549Z
+    updated_at: 2026-03-21T18:37:00.493Z
     notes: []
