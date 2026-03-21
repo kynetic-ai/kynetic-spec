@@ -33272,6 +33272,16 @@ reviews:
         runner: kspec
         created_at: 2026-03-21T02:18:26.731Z
         completed_at: 2026-03-21T02:18:26.731Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite passed: 6742 passed, 3 skipped"
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-21T02:18:27.561Z
+        completed_at: 2026-03-21T02:18:27.561Z
     events:
       - _ulid: 01KM72RM7H7MA6FDYHKX3KEC6Y
         actor: Jacob Chapel
@@ -33314,6 +33324,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-21T02:18:26.991Z
+      - _ulid: 01KM72ZM4EY2HYQQ8AX9H2E9A4
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-21T02:18:27.854Z
     examined_commit: c3a88b1ac7c731546031baec42a2024062f4c88a
     external_links: []
     lifecycle_state: open
@@ -33388,5 +33405,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-21T02:14:38.577Z
-    updated_at: 2026-03-21T02:18:26.731Z
+    updated_at: 2026-03-21T02:18:27.561Z
     notes: []
