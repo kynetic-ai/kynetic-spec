@@ -117,10 +117,9 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         // ReferenceIndex accepts LoadedTask[] — summaries have compatible _ulid/slugs
         const index = new ReferenceIndex([], specItems);
 
-        // AC: @api-contract ac-2 - Return with status, priority, spec_ref
+        // AC: @api-contract ac-2 - Return with status, priority, spec_ref, notes count
         // AC: @web-dashboard ac-1 - Include depends_on for blocked task computation
         // AC: @ui-api-ref-resolution ac-1 - Include spec_title resolved server-side
-        // AC: @task-data-manager ac-2 — notes_count/todos_count not available from summaries
         const items = paginated.map((task) => ({
           _ulid: task._ulid,
           slugs: task.slugs,
@@ -133,8 +132,8 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           tags: task.tags,
           depends_on: task.depends_on || [],
           automation: task.automation,
-          notes_count: 0,
-          todos_count: 0,
+          notes_count: task.notes_count,
+          todos_count: task.todos_count,
           started_at: task.started_at,
           completed_at: task.completed_at,
           created_at: task.created_at,
