@@ -113371,6 +113371,19 @@
       supersedes: null
       author: Test User
       created_at: 2026-03-21T15:51:40.072Z
+    - _ulid: 01KM8HY9D3SSQ9JQ8FBHEHRYYF
+      content: "Fix cycle 19: Addressed blocker from review @01KM8HECT675BJ6JNCJECTERE1 — commitIfShadow()
+        firing against pre-flush state in nested buffer scope. When withWriteBuffer() ran inside an
+        existing batch buffer (e.g., from batch-exec), runWithBuffer() correctly reused the parent
+        buffer without flushing, but withWriteBuffer() still called commitIfShadow() immediately
+        afterward. This committed against stale disk state since the parent buffer hadn't flushed
+        yet. Fix: check getActiveBatchBuffer() before entering runWithBuffer() — when a parent
+        buffer exists, skip commitIfShadow() since the parent scope owns both flush and commit
+        lifecycle. Added test verifying commitIfShadow is not called during nested mutations. All
+        6891 tests pass."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T15:59:07.171Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YETR12GG1EZ5G68KSNTBK
