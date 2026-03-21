@@ -113336,8 +113336,10 @@
   spec_ref: "@task-index-rebuild"
   plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged to dev after approved review. Added task rebuild-index command with
+    diff/repair/dry-run handling and test coverage for task-index-rebuild plus inherited traits.
   depends_on:
     - "@task-impl-index"
   context: []
@@ -113359,6 +113361,7 @@
   created_at: 2026-03-21T00:59:24.718Z
   started_at: 2026-03-21T11:34:44.958Z
   submitted_at: 2026-03-21T11:34:48.965Z
+  completed_at: 2026-03-21T11:40:20.394Z
   notes:
     - _ulid: 01KM7ZG74XADT6M0KCDSQJJ778
       content: Implemented kspec task rebuild-index CLI command. Scans .kspec/tasks/ for per-task
