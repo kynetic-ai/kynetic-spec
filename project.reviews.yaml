@@ -42615,7 +42615,19 @@ reviews:
     slugs: []
     title: Review add-missing-ac-test-annotations-for-storage-split-specs (cycle 2)
     author: Test User
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Full suite failed twice in tests/agent-invocation-lifecycle.test.ts with 15s timeout
+          failures in timeout-handling cases. Isolated rerun of that file passed, indicating
+          suite-level flakiness but not a mergeable green build.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-21T23:41:53.633Z
+        completed_at: 2026-03-21T23:41:53.633Z
     events:
       - _ulid: 01KM9BYS6V1MBCCTGVMP0B5SCH
         actor: Test User
@@ -42637,6 +42649,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM9CDM3AZD0APHSATCB4TNG8
         timestamp: 2026-03-21T23:41:52.948Z
+      - _ulid: 01KM9CDNDC4WZMDHHHXNSEQECV
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-21T23:41:53.964Z
     examined_commit: e85852381a7bdabdd4cae7f7fd041c9e3d106e4d
     external_links: []
     lifecycle_state: open
@@ -42670,5 +42689,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-21T23:33:46.331Z
-    updated_at: 2026-03-21T23:41:52.618Z
+    updated_at: 2026-03-21T23:41:53.633Z
     notes: []
