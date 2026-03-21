@@ -147,6 +147,19 @@ function toTaskSummary(task: LoadedTask): TaskSummary {
 }
 
 /**
+ * Metadata about a mutation, passed to the storage backend for history tracking.
+ * In the split format, this information is recorded in per-task history entries.
+ *
+ * AC: @task-core-data-file ac-1, ac-3 — provides author and command for history entries
+ */
+export interface MutationMetadata {
+  /** The kspec command or API call that triggered the change */
+  command: string;
+  /** Who made the change (author identity) */
+  author?: string;
+}
+
+/**
  * Options for shadow branch commits after mutations.
  * When provided, the manager coordinates the commit as part of the operation.
  */
@@ -220,11 +233,13 @@ export interface TaskStorageBackend {
     ctx: KspecContext,
     task: LoadedTask,
     mutate: (latestTask: LoadedTask) => Task | LoadedTask | Promise<Task | LoadedTask>,
+    metadata?: MutationMetadata,
   ): Promise<LoadedTask>;
   mutateTasks(
     ctx: KspecContext,
     tasks: LoadedTask[],
     mutate: (latestTasks: LoadedTask[]) => Array<Task | LoadedTask> | Promise<Array<Task | LoadedTask>>,
+    metadata?: MutationMetadata,
   ): Promise<LoadedTask[]>;
   deleteTask(ctx: KspecContext, task: LoadedTask): Promise<void>;
 }
@@ -459,6 +474,7 @@ class MonolithicBackend implements TaskStorageBackend {
     ctx: KspecContext,
     task: LoadedTask,
     mutate: (latestTask: LoadedTask) => Task | LoadedTask | Promise<Task | LoadedTask>,
+    _metadata?: MutationMetadata,
   ): Promise<LoadedTask> {
     const taskFilePath = task._sourceFile || getDefaultTaskFilePath(ctx);
 
@@ -550,6 +566,7 @@ class MonolithicBackend implements TaskStorageBackend {
     ctx: KspecContext,
     tasks: LoadedTask[],
     mutate: (latestTasks: LoadedTask[]) => Array<Task | LoadedTask> | Promise<Array<Task | LoadedTask>>,
+    _metadata?: MutationMetadata,
   ): Promise<LoadedTask[]> {
     // Acquire per-task locks in sorted order to prevent deadlocks
     const sortedUlids = [...new Set(tasks.map((t) => t._ulid))].sort();
@@ -872,6 +889,11 @@ export class TaskDataManager {
     // Resolve the task first to get _sourceFile for locking
     const task = await this.getTask(ctx, ref);
 
+    // Build mutation metadata from commitOpts for history tracking
+    const metadata: MutationMetadata | undefined = commitOpts
+      ? { command: commitOpts.operation, author: undefined }
+      : undefined;
+
     const updated = await this.backend.mutateTask(
       ctx,
       task,
@@ -880,6 +902,7 @@ export class TaskDataManager {
         validateMutationOutput(result, latestTask._ulid);
         return result;
       },
+      metadata,
     );
 
     if (commitOpts) {
@@ -921,6 +944,11 @@ export class TaskDataManager {
       refs.map((ref) => this.getTask(ctx, ref)),
     );
 
+    // Build mutation metadata from commitOpts for history tracking
+    const metadata: MutationMetadata | undefined = commitOpts
+      ? { command: commitOpts.operation, author: undefined }
+      : undefined;
+
     const updated = await this.backend.mutateTasks(
       ctx,
       tasks,
@@ -931,6 +959,7 @@ export class TaskDataManager {
         }
         return results;
       },
+      metadata,
     );
 
     if (commitOpts) {

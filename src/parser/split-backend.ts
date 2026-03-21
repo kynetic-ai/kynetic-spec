@@ -31,11 +31,12 @@ import {
   readdirBufferAware,
   writeFileBufferAware,
 } from "../cli/batch-write-buffer.js";
-import type { TaskStorageBackend, TaskSummary } from "./task-data-manager.js";
+import type { MutationMetadata, TaskStorageBackend, TaskSummary } from "./task-data-manager.js";
 import { TaskDataManagerError, registerBackend } from "./task-data-manager.js";
 import type { KspecContext, LoadedTask } from "./yaml.js";
 import {
   findTaskByRef,
+  getAuthor,
   getDefaultTaskFilePath,
   readYamlFile,
   stripRuntimeMetadata,
@@ -43,6 +44,90 @@ import {
   writeYamlFile,
 } from "./yaml.js";
 import { rawToSummary } from "./task-data-manager.js";
+
+// ── History Entry Types ─────────────────────────────────────────────────────
+
+/**
+ * A single field change within a history entry.
+ * Maps field name to previous and new values.
+ *
+ * AC: @task-core-data-file ac-1 — records field name, previous value, and new value
+ */
+export interface HistoryFieldChange {
+  previous: unknown;
+  new: unknown;
+}
+
+/**
+ * A history entry recording a mutation to a task's fields.
+ *
+ * Stored in the `history` array within task.yaml. Each entry records
+ * the timestamp, author, command, and the specific field changes.
+ *
+ * AC: @task-core-data-file ac-1 — appended on mutation
+ * AC: @task-core-data-file ac-3 — includes timestamp, author, command, changes
+ */
+export interface HistoryEntry {
+  /** ISO 8601 timestamp of when the change was made */
+  timestamp: string;
+  /** Who made the change (author identity) */
+  author: string;
+  /** The kspec command or API call that triggered the change */
+  command: string;
+  /** Field-level changes: field name → { previous, new } */
+  changes: Record<string, HistoryFieldChange>;
+}
+
+/**
+ * Compute the field-level diff between two task states.
+ * Only includes fields that actually changed (different values).
+ * Skips internal/runtime fields (_sourceFile, notes, todos, history).
+ *
+ * AC: @task-core-data-file ac-1 — records field name, previous value, new value
+ */
+function computeFieldChanges(
+  before: Record<string, unknown>,
+  after: Record<string, unknown>,
+): Record<string, HistoryFieldChange> | null {
+  const changes: Record<string, HistoryFieldChange> = {};
+  // Fields to skip — notes and todos are separate files, history is internal
+  const skipFields = new Set(["_sourceFile", "notes", "todos", "history"]);
+
+  // Collect all unique keys from both objects
+  const allKeys = new Set([...Object.keys(before), ...Object.keys(after)]);
+
+  for (const key of allKeys) {
+    if (skipFields.has(key)) continue;
+
+    const oldVal = before[key];
+    const newVal = after[key];
+
+    // Use JSON comparison for deep equality of arrays/objects
+    if (JSON.stringify(oldVal) !== JSON.stringify(newVal)) {
+      changes[key] = { previous: oldVal ?? null, new: newVal ?? null };
+    }
+  }
+
+  return Object.keys(changes).length > 0 ? changes : null;
+}
+
+/**
+ * Create a history entry from a field diff.
+ *
+ * AC: @task-core-data-file ac-1 — appended on mutation with all required metadata
+ * AC: @task-core-data-file ac-3 — timestamp, author, command, changes
+ */
+function createHistoryEntry(
+  changes: Record<string, HistoryFieldChange>,
+  metadata?: MutationMetadata,
+): HistoryEntry {
+  return {
+    timestamp: new Date().toISOString(),
+    author: metadata?.author ?? getAuthor() ?? "unknown",
+    command: metadata?.command ?? "unknown",
+    changes,
+  };
+}
 
 // ── Directory Layout ─────────────────────────────────────────────────────────
 
@@ -390,8 +475,7 @@ class SplitBackend implements TaskStorageBackend {
       // Separate notes from core data
       const { notes, ...coreData } = stripRuntimeMetadata(task as LoadedTask) as Task;
 
-      // Write core data file (task.yaml)
-      // History starts empty — @task-impl-per-task-files will add entries
+      // Write core data file (task.yaml) — no history for new tasks
       await writeTaskFile(taskFilePath, coreData);
 
       // Write notes file (notes.yaml)
@@ -418,24 +502,29 @@ class SplitBackend implements TaskStorageBackend {
   }
 
   /**
-   * Mutate a single task with per-task locking.
+   * Mutate a single task with per-task locking and history tracking.
    *
    * The mutation only touches the per-task directory files.
    * Index is updated only if indexed fields changed.
+   * History entries are appended to task.yaml when core fields change.
+   * If only notes changed, task.yaml is not modified.
    *
    * AC: @task-data-manager ac-5 — non-overlapping mutations no contention
    * AC: @task-data-manager ac-9 — same-task mutations serialize
+   * AC: @task-core-data-file ac-1 — field changes recorded in history
+   * AC: @task-notes-file ac-1 — note-only mutations don't touch task.yaml
    */
   async mutateTask(
     ctx: KspecContext,
     task: LoadedTask,
     mutate: (latestTask: LoadedTask) => Task | LoadedTask | Promise<Task | LoadedTask>,
+    metadata?: MutationMetadata,
   ): Promise<LoadedTask> {
     const releaseTaskLock = await this.taskMutex.acquire(task._ulid);
 
     try {
-      // Read latest state from per-task directory
-      const latestTask = await this.loadTaskFromDir(ctx, task._ulid);
+      // Read latest state from per-task directory (includes existing history)
+      const { task: latestTask, history: existingHistory } = await this.loadTaskFromDirWithHistory(ctx, task._ulid);
       if (!latestTask) {
         throw new TaskDataManagerError(
           `Task not found: ${task._ulid}`,
@@ -443,30 +532,50 @@ class SplitBackend implements TaskStorageBackend {
         );
       }
 
+      // Capture pre-mutation state for diff computation (excluding notes/history)
+      const { notes: _notesBefore, todos: _todosBefore, ...coreFieldsBefore } =
+        stripRuntimeMetadata(latestTask) as Task;
+
       // Run mutation callback
       const mutatedTask = await mutate(latestTask);
       const cleanTask = stripRuntimeMetadata(mutatedTask as LoadedTask) as Task;
+
+      // Separate notes from core data for routing
+      const { notes, ...coreDataAfter } = cleanTask;
+
+      // Compute field-level diff for history tracking
+      // AC: @task-core-data-file ac-1 — detect field changes
+      const fieldChanges = computeFieldChanges(
+        coreFieldsBefore as Record<string, unknown>,
+        coreDataAfter as Record<string, unknown>,
+      );
 
       // Use a write buffer for atomicity
       const existingBuffer = getActiveBatchBuffer();
       const localBuffer = !existingBuffer ? activateBatchBuffer(ctx.specDir) : null;
 
       try {
-        // Determine what needs writing based on routing
-        const { notes, ...coreData } = cleanTask;
-
-        // Always write core data
         const taskFilePath = getTaskFilePath(ctx, task._ulid);
-        await writeTaskFile(taskFilePath, coreData);
+
+        // Only write task.yaml if core fields actually changed
+        // AC: @task-notes-file ac-1 — note-only mutations don't modify task.yaml
+        if (fieldChanges) {
+          // Append history entry for the field changes
+          // AC: @task-core-data-file ac-1 — history entry appended on mutation
+          const historyEntry = createHistoryEntry(fieldChanges, metadata);
+          const updatedHistory = [...existingHistory, historyEntry];
+
+          await writeTaskFile(taskFilePath, coreDataAfter, updatedHistory);
+
+          // Update index if indexed fields changed
+          await this.updateIndexEntry(ctx, cleanTask);
+        }
 
         // Write notes if they changed
         if (notes !== undefined) {
           const notesFilePath = getNotesFilePath(ctx, task._ulid);
           await writeNotesFile(notesFilePath, notes);
         }
-
-        // Update index if indexed fields changed
-        await this.updateIndexEntry(ctx, cleanTask);
 
         if (localBuffer) {
           await localBuffer.flush();
@@ -489,7 +598,7 @@ class SplitBackend implements TaskStorageBackend {
   }
 
   /**
-   * Mutate multiple tasks atomically.
+   * Mutate multiple tasks atomically with history tracking.
    *
    * Acquires per-task locks in sorted ULID order to prevent deadlocks,
    * then performs all mutations within a single write buffer transaction.
@@ -498,11 +607,13 @@ class SplitBackend implements TaskStorageBackend {
    * AC: @task-data-manager ac-6 — all writes in single atomic operation
    * AC: @task-data-manager ac-9 — same-task mutations serialize
    * AC: @task-atomic-writes ac-3 — batch uses single write buffer
+   * AC: @task-core-data-file ac-1 — field changes recorded in history
    */
   async mutateTasks(
     ctx: KspecContext,
     tasks: LoadedTask[],
     mutate: (latestTasks: LoadedTask[]) => Array<Task | LoadedTask> | Promise<Array<Task | LoadedTask>>,
+    metadata?: MutationMetadata,
   ): Promise<LoadedTask[]> {
     // Acquire per-task locks in sorted order to prevent deadlocks
     const sortedUlids = [...new Set(tasks.map((t) => t._ulid))].sort();
@@ -513,18 +624,26 @@ class SplitBackend implements TaskStorageBackend {
         releases.push(await this.taskMutex.acquire(ulid));
       }
 
-      // Load latest state for each task
-      const latestTasks: LoadedTask[] = [];
+      // Load latest state for each task (with history for diff tracking)
+      const latestResults: Array<{ task: LoadedTask; history: HistoryEntry[] }> = [];
       for (const task of tasks) {
-        const latest = await this.loadTaskFromDir(ctx, task._ulid);
-        if (!latest) {
+        const result = await this.loadTaskFromDirWithHistory(ctx, task._ulid);
+        if (!result.task) {
           throw new TaskDataManagerError(
             `Task not found: ${task._ulid}`,
             { suggestion: `Check the reference with: kspec search "${task._ulid}" or kspec task list` },
           );
         }
-        latestTasks.push(latest);
+        latestResults.push({ task: result.task, history: result.history });
       }
+
+      const latestTasks = latestResults.map((r) => r.task);
+
+      // Capture pre-mutation core fields for diff computation
+      const coreFieldsBefore = latestTasks.map((t) => {
+        const { notes: _n, todos: _td, ...core } = stripRuntimeMetadata(t) as Task;
+        return core as Record<string, unknown>;
+      });
 
       // Run mutation callback
       const mutatedTasks = await mutate(latestTasks);
@@ -547,14 +666,24 @@ class SplitBackend implements TaskStorageBackend {
           const { notes, ...coreData } = cleanTask;
 
           const taskFilePath = getTaskFilePath(ctx, cleanTask._ulid);
-          await writeTaskFile(taskFilePath, coreData);
+
+          // Compute field-level diff for history tracking
+          const fieldChanges = computeFieldChanges(
+            coreFieldsBefore[i],
+            coreData as Record<string, unknown>,
+          );
+
+          if (fieldChanges) {
+            const historyEntry = createHistoryEntry(fieldChanges, metadata);
+            const updatedHistory = [...latestResults[i].history, historyEntry];
+            await writeTaskFile(taskFilePath, coreData, updatedHistory);
+            await this.updateIndexEntry(ctx, cleanTask);
+          }
 
           if (notes !== undefined) {
             const notesFilePath = getNotesFilePath(ctx, cleanTask._ulid);
             await writeNotesFile(notesFilePath, notes);
           }
-
-          await this.updateIndexEntry(ctx, cleanTask);
 
           updatedTasks.push({ ...cleanTask, _sourceFile: taskFilePath });
         }
@@ -641,7 +770,8 @@ class SplitBackend implements TaskStorageBackend {
    * Load a complete task from its per-task directory.
    *
    * Reads task.yaml for core data and notes.yaml for notes,
-   * then assembles them into a unified LoadedTask.
+   * then assembles them into a unified LoadedTask. History is
+   * stripped from the assembled task (it's internal to storage).
    *
    * AC: @task-detail-loading ac-1 — assembles complete task from files
    * AC: @task-detail-loading ac-2 — handles missing per-task directory
@@ -650,6 +780,25 @@ class SplitBackend implements TaskStorageBackend {
     ctx: KspecContext,
     ulid: string,
   ): Promise<LoadedTask | undefined> {
+    const result = await this.loadTaskFromDirWithHistory(ctx, ulid);
+    return result.task;
+  }
+
+  /**
+   * Load a task from its per-task directory, returning both the task
+   * and the raw history entries from task.yaml.
+   *
+   * The history is NOT included in the returned LoadedTask (it's
+   * internal to the split storage format). It's returned separately
+   * for use by mutation operations that need to append new entries.
+   *
+   * AC: @task-core-data-file ac-2 — history provides complete audit trail
+   * AC: @task-detail-loading ac-1 — assembles complete task from files
+   */
+  private async loadTaskFromDirWithHistory(
+    ctx: KspecContext,
+    ulid: string,
+  ): Promise<{ task: LoadedTask | undefined; history: HistoryEntry[] }> {
     const taskFilePath = getTaskFilePath(ctx, ulid);
     const notesFilePath = getNotesFilePath(ctx, ulid);
 
@@ -657,10 +806,22 @@ class SplitBackend implements TaskStorageBackend {
       // Read core data
       const rawCore = await readYamlFile<unknown>(taskFilePath);
       if (!rawCore || typeof rawCore !== "object") {
-        return undefined;
+        return { task: undefined, history: [] };
       }
 
+      const rawCoreObj = rawCore as Record<string, unknown>;
+
+      // Extract history before assembling the task
+      // History is internal to the split format — not part of TaskSchema
+      const history: HistoryEntry[] = Array.isArray(rawCoreObj.history)
+        ? (rawCoreObj.history as HistoryEntry[])
+        : [];
+
+      // Remove history from the core data before schema validation
+      const { history: _h, ...coreWithoutHistory } = rawCoreObj;
+
       // Read notes (may not exist)
+      // AC: @task-notes-file ac-2 — missing file treated as zero notes
       let notes: unknown[] = [];
       try {
         const rawNotes = await readYamlFile<unknown>(notesFilePath);
@@ -672,19 +833,39 @@ class SplitBackend implements TaskStorageBackend {
         }
       } catch {
         // Notes file doesn't exist — zero notes
+        // AC: @task-notes-file ac-2 — treated as zero notes
       }
 
-      // Assemble the complete task
-      const assembled = { ...(rawCore as Record<string, unknown>), notes };
+      // Assemble the complete task (without history — it's not in the schema)
+      const assembled = { ...coreWithoutHistory, notes };
       const parsed = TaskSchema.safeParse(assembled);
       if (!parsed.success) {
-        return undefined;
+        return { task: undefined, history: [] };
       }
 
-      return { ...parsed.data, _sourceFile: taskFilePath };
+      return {
+        task: { ...parsed.data, _sourceFile: taskFilePath },
+        history,
+      };
     } catch {
-      return undefined;
+      return { task: undefined, history: [] };
     }
+  }
+
+  /**
+   * Get the history entries for a task from its per-task directory.
+   *
+   * This is the public interface for reading history — callers use this
+   * to display the audit trail without needing to know the storage format.
+   *
+   * AC: @task-core-data-file ac-2 — history provides complete audit trail
+   */
+  async getTaskHistory(
+    ctx: KspecContext,
+    ulid: string,
+  ): Promise<HistoryEntry[]> {
+    const { history } = await this.loadTaskFromDirWithHistory(ctx, ulid);
+    return history;
   }
 
   /**
@@ -858,13 +1039,21 @@ class SplitBackend implements TaskStorageBackend {
 
 /**
  * Write a task core data file (task.yaml).
+ * Includes optional history entries alongside core data.
  * Uses buffer-aware writing for atomicity in batch operations.
+ *
+ * AC: @task-core-data-file ac-1 — history appended to task.yaml
  */
 async function writeTaskFile(
   filePath: string,
   coreData: Record<string, unknown>,
+  history?: HistoryEntry[],
 ): Promise<void> {
-  const content = toYaml(coreData);
+  const dataWithHistory: Record<string, unknown> = { ...coreData };
+  if (history && history.length > 0) {
+    dataWithHistory.history = history;
+  }
+  const content = toYaml(dataWithHistory);
   await writeFileBufferAware(filePath, content);
 }
 
