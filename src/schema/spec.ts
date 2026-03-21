@@ -129,6 +129,14 @@ export const ManifestSchema = z.object({
   // External references (large projects)
   includes: z.array(z.string()).optional(),
 
+  // Task storage format configuration
+  // AC: @task-storage-activation ac-1, ac-2 — explicit setting controls format
+  // Named task_storage to avoid collision with the `tasks:` array used
+  // in manifests for task file includes.
+  task_storage: z.object({
+    format: z.enum(["monolithic", "split"]).default("monolithic"),
+  }).optional(),
+
   // Session storage configuration
   sessions: z.object({
     storage: z.enum(["local", "branch"]).default("local"),

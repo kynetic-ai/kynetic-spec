@@ -3,6 +3,7 @@ import * as path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
   TaskDataManager,
+  resolveTaskDataManager,
 } from "../src/parser/task-data-manager.js";
 import {
   splitBackend,
@@ -637,6 +638,64 @@ describe("Per-Task Core Data File (@task-core-data-file)", () => {
       // Monolithic backend doesn't support getTaskHistory
       const history = await manager.getTaskHistory(ctx, "nonexistent");
       expect(history).toEqual([]);
+    });
+
+    // AC: @task-core-data-file ac-2
+    // AC: @task-storage-activation ac-1, ac-2
+    it("resolveTaskDataManager returns split manager when manifest specifies split format", async () => {
+      // Context with task_storage.format = "split" in manifest
+      const splitCtx: KspecContext = {
+        ...ctx,
+        manifest: {
+          ...ctx.manifest!,
+          task_storage: { format: "monolithic" as const },
+        } as any,
+      };
+
+      // With monolithic format, should return monolithic manager
+      const monolithicManager = resolveTaskDataManager(splitCtx);
+      expect(monolithicManager.storageFormat).toBe("monolithic");
+
+      // With split format, should return split manager
+      const splitCtx2: KspecContext = {
+        ...ctx,
+        manifest: {
+          ...ctx.manifest!,
+          task_storage: { format: "split" as const },
+        } as any,
+      };
+      const splitManager = resolveTaskDataManager(splitCtx2);
+      expect(splitManager.storageFormat).toBe("split");
+
+      // Create a task and mutate it to generate history
+      const created = await splitManager.createTask(splitCtx2, {
+        title: "Resolve manager test",
+        slugs: ["resolve-mgr-test"],
+        priority: 3,
+      });
+
+      await splitManager.mutateTask(splitCtx2, "@resolve-mgr-test", (task) => ({
+        ...task,
+        priority: 1,
+      }));
+
+      // History should surface through the resolved manager
+      const history = await splitManager.getTaskHistory(splitCtx2, created._ulid);
+      expect(history.length).toBe(1);
+      expect(history[0].changes.priority).toBeDefined();
+      expect(history[0].changes.priority.previous).toBe(3);
+      expect(history[0].changes.priority.new).toBe(1);
+    });
+
+    // AC: @task-core-data-file ac-2
+    // AC: @task-storage-activation ac-1
+    it("resolveTaskDataManager returns monolithic manager when no manifest", async () => {
+      const noManifestCtx: KspecContext = {
+        ...ctx,
+        manifest: null,
+      };
+      const manager = resolveTaskDataManager(noManifestCtx);
+      expect(manager.storageFormat).toBe("monolithic");
     });
   });
 });

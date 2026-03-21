@@ -18,7 +18,7 @@ import {
   scanTestCoverage,
   syncSpecImplementationStatus,
 } from "../../parser/index.js";
-import { taskDataManager, type TaskSummary } from "../../parser/task-data-manager.js";
+import { taskDataManager, resolveTaskDataManager, type TaskSummary } from "../../parser/task-data-manager.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import {
   AutomationStatusSchema,
@@ -909,7 +909,12 @@ export function registerTaskCommands(program: Command): void {
           }
 
           // AC: @task-core-data-file ac-2 — merge per-task history into activity timeline
-          const historyEntries = await taskDataManager.getTaskHistory(ctx, foundTask._ulid);
+          // Use the context-resolved manager to get history from the correct backend.
+          // The module-level singleton defaults to monolithic; when split format is
+          // activated via manifest tasks.storage, resolveTaskDataManager returns the
+          // split-format manager that provides actual history entries.
+          const resolvedManager = resolveTaskDataManager(ctx);
+          const historyEntries = await resolvedManager.getTaskHistory(ctx, foundTask._ulid);
           for (const entry of historyEntries) {
             const fields = Object.keys(entry.changes);
             const summary = fields.length === 1 && fields[0] === "status"

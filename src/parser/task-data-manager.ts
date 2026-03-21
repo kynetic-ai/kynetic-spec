@@ -1097,9 +1097,42 @@ export class TaskDataManager {
 }
 
 /**
- * Module-level singleton instance.
+ * Module-level default singleton instance (monolithic format).
  *
- * Consumers should use this singleton rather than creating new instances.
- * The manager is stateless, so a single instance serves all callers.
+ * This singleton is the default for consumers that don't need a context-aware
+ * manager. When the project manifest specifies a different storage format,
+ * use resolveTaskDataManager(ctx) instead to get the correctly-configured manager.
+ *
+ * AC: @task-data-manager ac-7 — monolithic format used by default
  */
 export const taskDataManager = new TaskDataManager();
+
+/**
+ * Cached split-format manager instance.
+ * Created lazily on first resolveTaskDataManager() call with split format.
+ */
+let splitManagerInstance: TaskDataManager | null = null;
+
+/**
+ * Resolve the correct TaskDataManager for a given context.
+ *
+ * Reads the storage format from the project manifest (`tasks.storage`).
+ * Returns the monolithic singleton when no manifest or monolithic format,
+ * or a split-format manager when the manifest specifies "split".
+ *
+ * AC: @task-storage-activation ac-1 — defaults to monolithic without setting
+ * AC: @task-storage-activation ac-2 — uses split when explicitly set
+ * AC: @task-data-manager ac-8 — split format routes through its own backend
+ */
+export function resolveTaskDataManager(ctx: KspecContext): TaskDataManager {
+  const storage = ctx.manifest?.task_storage?.format;
+
+  if (storage === "split") {
+    if (!splitManagerInstance) {
+      splitManagerInstance = new TaskDataManager("split");
+    }
+    return splitManagerInstance;
+  }
+
+  return taskDataManager;
+}
