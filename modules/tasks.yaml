@@ -866,8 +866,7 @@ features:
         status:
           maturity: deprecated
           implementation: in_progress
-        implements:
-          - "@task-storage"
+        implements: []
         acceptance_criteria:
           - given: a smaller project stores tasks alongside specs
             id: ac-1
@@ -895,8 +894,7 @@ features:
         status:
           maturity: deprecated
           implementation: in_progress
-        implements:
-          - "@task-storage"
+        implements: []
         acceptance_criteria:
           - given: a larger project uses separate task storage
             id: ac-1
