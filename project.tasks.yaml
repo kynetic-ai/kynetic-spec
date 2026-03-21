@@ -112736,8 +112736,11 @@
   spec_ref: "@task-directory-storage"
   plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged to dev in 95efd1618 after approved review @01KM7N7J. Split storage backend now
+    provides per-task directory routing, index/count persistence, lazy split backend registration,
+    and AC coverage via split backend/task manager tests.
   depends_on:
     - "@task-migrate-cli"
     - "@task-migrate-daemon"
@@ -112762,6 +112765,7 @@
   created_at: 2026-03-21T00:59:21.101Z
   started_at: 2026-03-21T07:36:00.410Z
   submitted_at: 2026-03-21T07:36:04.306Z
+  completed_at: 2026-03-21T07:42:17.143Z
   notes:
     - _ulid: 01KM7K6DP8FMHAXN1PJKGV7E5N
       content: "Implemented split storage backend (src/parser/split-backend.ts) with full
