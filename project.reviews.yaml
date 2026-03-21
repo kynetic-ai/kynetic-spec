@@ -34290,6 +34290,13 @@ reviews:
           status: pass
           name: isolated failing test
         timestamp: 2026-03-21T04:02:27.759Z
+      - _ulid: 01KM790AYM05RVWHT000E7CKEP
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM790APMCB6VCFKM8FDQCCEN
+        timestamp: 2026-03-21T04:03:42.676Z
     examined_commit: 2c8fbbdcbae2e51ff010b4c6e6fa51479d5581fc
     external_links: []
     lifecycle_state: open
@@ -34299,8 +34306,25 @@ reviews:
       content_hash: ""
       ref: "@01KM6YENV3CBFAGSRHVHR7QPJN"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM790APMCB6VCFKM8FDQCCEN
+        anchor:
+          type: code
+          commit: 2c8fbbdcbae2e51ff010b4c6e6fa51479d5581fc
+          line_end: 387
+          line_start: 387
+          path: tests/action-model.test.ts
+          side: head
+        entries:
+          - _ulid: 01KM790APMC4HYZKV7Y741NFWA
+            author: Jacob Chapel
+            body: Full-suite npm test fails twice on this snapshot at this assertion (events.length is 3 instead
+              of 2), so the branch is not mergeable yet. The same test passes in isolation, which
+              points to suite-level interference or leaked global state that still needs to be
+              understood before this task can advance.
+            created_at: 2026-03-21T04:03:42.420Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T03:58:49.317Z
-    updated_at: 2026-03-21T04:02:27.287Z
+    updated_at: 2026-03-21T04:03:42.420Z
     notes: []
