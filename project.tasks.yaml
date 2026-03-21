@@ -112752,7 +112752,18 @@
   session_id: 01KM7HE5D5TFPQS9YRSY0QKFVV
   created_at: 2026-03-21T00:59:21.101Z
   started_at: 2026-03-21T06:31:45.204Z
-  notes: []
+  notes:
+    - _ulid: 01KM7K6DP8FMHAXN1PJKGV7E5N
+      content: "Implemented split storage backend (src/parser/split-backend.ts) with full
+        TaskStorageBackend interface implementation. Module provides: format detection, directory
+        layout (.kspec/tasks/<full-ulid>/ with task.yaml + notes.yaml), operation routing table,
+        per-task FIFO mutex locking, and auto-registration with the backend registry. Created 36
+        tests covering all 5 ACs of @task-directory-storage. Updated existing task-data-manager
+        tests to account for the real split backend now being registered. All task-related tests
+        pass (89 total). Pre-existing daemon/UI test failures are unrelated."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T07:01:47.848Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YESAF92YTNXT3DF06AC0N
