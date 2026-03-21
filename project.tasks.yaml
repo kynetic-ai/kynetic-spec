@@ -113079,6 +113079,16 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-21T09:27:32.591Z
+    - _ulid: 01KM7W9S0746YSSSNQYN67HM3R
+      content: "Fix cycle 4: Addressed blocker from review @01KM7V8R19CR9562B03VC75TR5. The issue was that
+        only getTaskHistory() at line 916 used resolveTaskDataManager(ctx), while all ~35 other
+        taskDataManager call sites (createTask, mutateTask, mutateTasks, deleteTask, listTasks,
+        getTask) still used the monolithic singleton. Replaced every occurrence of
+        taskDataManager.xxx(ctx,...) with resolveTaskDataManager(ctx).xxx(ctx,...) in task.ts and
+        removed the now-unused taskDataManager import. All 6825 tests pass, zero regressions."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T09:40:54.919Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YETR12GG1EZ5G68KSNTBK
