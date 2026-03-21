@@ -20,7 +20,6 @@ import {
   type LoadedTask,
   loadAllItems,
   loadMetaContext,
-  loadAllTasks,
   type PatchOperation,
   patchSpecItems,
   ReferenceIndex,
@@ -1387,7 +1386,7 @@ Examples:
     }
 
     // Also clean task references (depends_on, context, spec_ref, blocked_by)
-    const tasks = await loadAllTasks(ctx);
+    const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
     const tasksToClean: LoadedTask[] = [];
 
     for (const task of tasks) {
@@ -1814,7 +1813,7 @@ Examples:
     .action(async (ref) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
         const items = await loadAllItems(ctx);
         const refIndex = new ReferenceIndex(tasks, items);
 
@@ -1913,7 +1912,7 @@ Examples:
       try {
         const ctx = await initContext();
         const items = await loadAllItems(ctx);
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
         const refIndex = new ReferenceIndex(tasks, items);
 
         const result = refIndex.resolve(ref);
@@ -1954,7 +1953,7 @@ Examples:
       try {
         const ctx = await initContext();
         const items = await loadAllItems(ctx);
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
         const refIndex = new ReferenceIndex(tasks, items);
 
         const result = refIndex.resolve(ref);

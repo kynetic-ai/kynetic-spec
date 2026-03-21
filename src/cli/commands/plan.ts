@@ -19,7 +19,7 @@ import {
   initContext,
   type LoadedPlan,
   type LoadedSpecItem,
-  loadAllTasks,
+  type LoadedTask,
   loadPlans,
   mutatePlanAtomically,
   savePlan,
@@ -481,7 +481,7 @@ function buildTaskPlans(
   deriveFromSpecs: boolean | undefined,
   additionalTasks: PlanTask[] | undefined,
   refIndex: Awaited<ReturnType<typeof buildIndexes>>["refIndex"],
-  allTasks: Awaited<ReturnType<typeof loadAllTasks>>,
+  allTasks: LoadedTask[],
   reservedSlugs: Set<string>,
   author: string | undefined,
   warnings: DeriveWarning[],
@@ -1026,7 +1026,7 @@ Examples:
       try {
         const ctx = await initContext();
         let plans = await loadPlans(ctx);
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
 
         // AC: @plan-crud ac-7 - status filter
         if (options.status) {

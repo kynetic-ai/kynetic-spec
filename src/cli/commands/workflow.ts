@@ -20,7 +20,6 @@ import {
   findWorkflowRunByRef,
   getAuthor,
   initContext,
-  loadAllTasks,
   loadMetaContext,
   loadWorkflowRuns,
   ReferenceIndex,
@@ -28,6 +27,7 @@ import {
   updateWorkflowRun,
   type Workflow,
 } from "../../parser/index.js";
+import { resolveTaskDataManager } from "../../parser/task-data-manager.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import type { WorkflowRun, WorkflowRunResult } from "../../schema/index.js";
 import { WorkflowRunResultSchema } from "../../schema/index.js";
@@ -104,7 +104,7 @@ async function workflowStart(
   // Validate task reference if provided (AC: @workflow-run-foundation ac-6)
   let taskRef: string | undefined;
   if (options.task) {
-    const tasks = await loadAllTasks(ctx);
+    const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
     const index = new ReferenceIndex(tasks, []);
     const result = index.resolve(options.task);
     if (!result.ok) {

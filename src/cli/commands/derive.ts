@@ -10,7 +10,6 @@ import {
   type LoadedSpecItem,
   type LoadedTask,
   loadAllItems,
-  loadAllTasks,
   ReferenceIndex,
 } from "../../parser/index.js";
 import { resolveTaskDataManager } from "../../parser/task-data-manager.js";
@@ -593,7 +592,7 @@ export function registerDeriveCommand(program: Command): void {
         }
 
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
         const items = await loadAllItems(ctx);
         const index = new ReferenceIndex(tasks, items);
 

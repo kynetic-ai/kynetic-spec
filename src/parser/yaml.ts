@@ -1901,7 +1901,9 @@ export async function buildReferenceIndex(ctx: KspecContext): Promise<{
   tasks: LoadedTask[];
   items: LoadedSpecItem[];
 }> {
-  const tasks = await loadAllTasks(ctx);
+  // Dynamic import to avoid circular dependency (task-data-manager imports from yaml)
+  const { resolveTaskDataManager } = await import("./task-data-manager.js");
+  const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
   const items = await loadAllItems(ctx);
   const reviews = await loadReviewRecords(ctx);
   const index = new ReferenceIndex(tasks, items, [], [], reviews);
@@ -1921,7 +1923,9 @@ export async function buildIndexes(ctx: KspecContext, plans: LoadedPlan[] = []):
   tasks: LoadedTask[];
   items: LoadedSpecItem[];
 }> {
-  const tasks = await loadAllTasks(ctx);
+  // Dynamic import to avoid circular dependency (task-data-manager imports from yaml)
+  const { resolveTaskDataManager } = await import("./task-data-manager.js");
+  const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
   const items = await loadAllItems(ctx);
   const reviews = await loadReviewRecords(ctx);
   const refIndex = new ReferenceIndex(tasks, items, [], plans, reviews);

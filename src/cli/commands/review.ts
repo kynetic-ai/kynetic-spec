@@ -21,7 +21,6 @@ import {
   handleVerdictTaskTransition,
   initContext,
   linkReviewToTasks,
-  loadAllTasks,
   type LoadedReviewRecord,
   loadReviewRecords,
   mutateReviewAtomically,
@@ -30,6 +29,7 @@ import {
   submitVerdict,
   transitionLifecycle,
 } from "../../parser/index.js";
+import { resolveTaskDataManager } from "../../parser/task-data-manager.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import { evaluateGates } from "../../review/checks.js";
 import { extractSubjectVersion } from "../../review/subject-bindings.js";
@@ -522,7 +522,7 @@ export function registerReviewCommands(program: Command): void {
 
           // AC: @review-task-lifecycle-integration ac-2, ac-3
           // Auto-link review to task(s) via review_ref
-          const allTasks = await loadAllTasks(ctx);
+          const allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
           const linkResult = await linkReviewToTasks(ctx, review, allTasks);
           if (linkResult.linkedTasks.length > 0) {
             await commitIfShadow(
@@ -652,7 +652,7 @@ export function registerReviewCommands(program: Command): void {
           const taskRefNoAt = taskRef.slice(1);
 
           // Also check task.review_ref to find reviews linked via the task schema
-          const tasks = await loadAllTasks(ctx);
+          const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
           const task = tasks.find(
             (t) =>
               t._ulid === taskRefNoAt ||
@@ -1073,7 +1073,7 @@ export function registerReviewCommands(program: Command): void {
 
           // AC: @review-task-lifecycle-integration ac-4
           // Auto-transition tasks to needs_work on changes_requested verdict
-          const allTasks = await loadAllTasks(ctx);
+          const allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
           const transitioned = await handleVerdictTaskTransition(
             ctx,
             found,
@@ -1532,7 +1532,7 @@ export function registerReviewCommands(program: Command): void {
       try {
         const ctx = await initContext();
         const reviews = await loadReviewRecords(ctx);
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
         const cleanRef = ref.startsWith("@") ? ref : `@${ref}`;
         const cleanRefNoAt = cleanRef.startsWith("@") ? cleanRef.slice(1) : cleanRef;
 

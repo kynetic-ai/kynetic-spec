@@ -23,9 +23,9 @@ import {
 } from "../../merge/index.js";
 import {
   initContext,
-  loadAllTasks,
   loadAllItems,
 } from "../../parser/yaml.js";
+import { resolveTaskDataManager } from "../../parser/task-data-manager.js";
 import { loadMetaContext } from "../../parser/meta.js";
 import { ReferenceIndex } from "../../parser/refs.js";
 
@@ -75,7 +75,7 @@ async function buildRefIndex(): Promise<ReferenceIndex | undefined> {
     const ctx = await initContext();
 
     // Load all items needed for the index
-    const tasks = await loadAllTasks(ctx);
+    const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
     const items = await loadAllItems(ctx);
     const metaContext = await loadMetaContext(ctx);
     const metaItems = [

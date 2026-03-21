@@ -24,7 +24,6 @@ import {
   initContext,
   type LoadedTask,
   loadAllItems,
-  loadAllTasks,
   loadInboxItems,
   loadMetaContext,
   loadSessionContext,
@@ -1180,7 +1179,7 @@ Examples:
 
           // Load tasks/items for auto-resolution from promoted tasks
           // Full task data needed: closed_reason is used for auto-resolution text (AC-obs-9)
-          const tasks = await loadAllTasks(ctx);
+          const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
           const items = await loadAllItems(ctx);
           const index = new ReferenceIndex(tasks, items);
 
@@ -1761,7 +1760,7 @@ Examples:
         // Check for dangling references (unless --confirm is used to override)
         if (!options.confirm) {
           // Check tasks with meta_ref
-          const tasks = await loadAllTasks(ctx);
+          const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
           const referencingTasks = tasks.filter((t) => {
             if (!t.meta_ref) return false;
             // Resolve the task's meta_ref to a ULID

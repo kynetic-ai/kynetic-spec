@@ -8,9 +8,9 @@ import type { Command } from "commander";
 import {
   initContext,
   loadAllItems,
-  loadAllTasks,
   ReferenceIndex,
 } from "../../parser/index.js";
+import { resolveTaskDataManager } from "../../parser/task-data-manager.js";
 import { normalizeRefInput } from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
 import { isGitRepo } from "../../utils/git.js";
@@ -229,7 +229,7 @@ export function registerLogCommand(program: Command): void {
             dashDashIndex !== -1 ? process.argv.slice(dashDashIndex + 1) : [];
 
           // Determine what to search for
-          const tasks = needsSpecContext && ctx ? await loadAllTasks(ctx) : [];
+          const tasks = needsSpecContext && ctx ? await resolveTaskDataManager(ctx).loadAllTasks(ctx) : [];
           const items = needsSpecContext && ctx ? await loadAllItems(ctx) : [];
           const index = new ReferenceIndex(tasks, items);
 
