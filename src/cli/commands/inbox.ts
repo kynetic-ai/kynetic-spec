@@ -4,21 +4,20 @@ import { markMutating } from "../command-annotations.js";
 import {
   createInboxItem,
   createNote,
-  createTask,
   deleteInboxItem,
   findInboxItemByRef,
   getAuthor,
   initContext,
   type LoadedInboxItem,
+  type LoadedTask,
   loadAllItems,
-  loadAllTasks,
   loadInboxItems,
   mutateInboxItemAtomically,
   ReferenceIndex,
   saveInboxItem,
-  saveTask,
   shortestUniqueUlid,
 } from "../../parser/index.js";
+import { taskDataManager } from "../../parser/task-data-manager.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import {
   TaskTypeSchema,
@@ -247,13 +246,13 @@ Examples:
 
         // Validate spec_ref if provided — must point to a spec item
         if (options.specRef) {
-          const allTasks = await loadAllTasks(ctx);
+          const allTasks = await taskDataManager.listTasks(ctx);
           const allItems = await loadAllItems(ctx);
-          const refIndex = new ReferenceIndex(allTasks, allItems);
+          const refIndex = new ReferenceIndex(allTasks as unknown as LoadedTask[], allItems);
           const specRefResult = validateSpecRef(
             options.specRef,
             refIndex,
-            allTasks,
+            allTasks as unknown as LoadedTask[],
             allItems,
           );
           if (!specRefResult.ok) {
@@ -286,32 +285,28 @@ Examples:
             options.description !== undefined ? options.description : item.text, // Use provided description (even if empty) or fall back to inbox item text
         };
 
-        const task = createTask(taskInput);
-
         // AC: @cmd-inbox-promote ac-2
         if (options.note) {
           const note = createNote(options.note, getAuthor(ctx.config?.identity?.author));
-          task.notes = [...(task.notes || []), note];
+          taskInput.notes = [note];
         }
 
-        await saveTask(ctx, task);
-
-        // Load for index to get short ULID
-        const tasks = await loadAllTasks(ctx);
-        const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
-
-        // Delete inbox item unless --keep
+        // Delete inbox item unless --keep (before commit so both are in same state)
         if (!options.keep) {
           await deleteInboxItem(ctx, item._ulid);
           info(`Removed from inbox: ${itemRef}`);
         }
 
-        await commitIfShadow(
-          ctx.shadow,
-          "inbox-promote",
-          task.slugs[0] || index.shortUlid(task._ulid),
-        );
+        const task = await taskDataManager.createTask(ctx, taskInput, {
+          operation: "inbox-promote",
+          ref: title,
+        });
+
+        // Load for index to get short ULID
+        const tasks = await taskDataManager.listTasks(ctx);
+        const items = await loadAllItems(ctx);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
+
         success(`Created task: ${index.shortUlid(task._ulid)} - ${title}`, {
           task,
         });

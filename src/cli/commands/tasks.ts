@@ -12,9 +12,9 @@ import {
   loadAllItems,
   loadAllTasks,
   ReferenceIndex,
-  saveTask,
   type TaskAssessment,
 } from "../../parser/index.js";
+import { taskDataManager } from "../../parser/task-data-manager.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import { errors } from "../../strings/index.js";
 import { grepItem } from "../../utils/grep.js";
@@ -503,15 +503,15 @@ export function registerTasksCommands(program: Command): void {
             const task = allTasks.find((t) => t._ulid === change.taskUlid);
             if (!task) continue;
 
-            // Set automation status
-            task.automation = change.newStatus;
-
             // AC: @tasks-assess-automation ac-19, ac-20 - Add note explaining assessment
             const noteContent = `Automation assessment: set to ${change.newStatus}. ${change.reason}`;
             const note = createNote(noteContent, "@automation-assess");
-            task.notes = [...task.notes, note];
 
-            await saveTask(ctx, task);
+            await taskDataManager.mutateTask(ctx, task._ulid, (latestTask) => ({
+              ...latestTask,
+              automation: change.newStatus,
+              notes: [...latestTask.notes, note],
+            }));
             changeCount++;
           }
 

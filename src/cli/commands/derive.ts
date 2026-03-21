@@ -12,9 +12,8 @@ import {
   loadAllItems,
   loadAllTasks,
   ReferenceIndex,
-  saveTask,
 } from "../../parser/index.js";
-import { commitIfShadow } from "../../parser/shadow.js";
+import { taskDataManager } from "../../parser/task-data-manager.js";
 import { normalizeRefInput } from "../../schema/index.js";
 import type { TaskInput } from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
@@ -351,19 +350,20 @@ async function deriveTaskFromSpec(
     };
   }
 
-  // Create and save the task
-  const newTask = createTask(taskInput);
-  await saveTask(ctx, newTask);
+  // Create and save the task via task data manager
   const specSlug = specItem.slugs[0] || specItem._ulid.slice(0, 8);
-  await commitIfShadow(ctx.shadow, "derive", specSlug);
+  const newTask = await taskDataManager.createTask(ctx, taskInput, {
+    operation: "derive",
+    ref: specSlug,
+  });
 
   // Add to existing tasks list for slug collision checks
-  existingTasks.push(newTask as LoadedTask);
+  existingTasks.push(newTask);
 
   return {
     specItem,
     action: "created",
-    task: newTask as LoadedTask,
+    task: newTask,
     dependsOn: options.dependsOn,
     acCount,
   };
