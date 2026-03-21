@@ -112540,7 +112540,20 @@
   session_id: 01KM7BXJBJW3BB6QACHZ3MSXX7
   created_at: 2026-03-21T00:59:19.728Z
   started_at: 2026-03-21T04:55:18.322Z
-  notes: []
+  notes:
+    - _ulid: 01KM7CMEW25EJBMNXK3X9RBKNW
+      content: "Migrated daemon task routes to use taskDataManager. Key changes: (1) GET /api/tasks uses
+        taskDataManager.listTasks() for index-only summaries — notes_count/todos_count now return 0
+        in list since these are detail-only fields not in TaskSummary; (2) GET /api/tasks/:ref uses
+        taskDataManager.getTask() for full detail; (3) All mutation routes (start, submit, complete,
+        block) use taskDataManager.mutateTask() for atomic mutations with per-task locking; (4) POST
+        note uses taskDataManager.addNote(); (5) saveTask import removed — no direct yaml.ts task
+        persistence calls remain; (6) Sessions endpoint still uses loadAllTasks since
+        getRelatedSessionsForTask needs full LoadedTask[] for ReferenceIndex. Added static source
+        analysis test verifying the migration pattern."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T05:07:07.778Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YEQYJGQ4JF2ECR67DANZQ
