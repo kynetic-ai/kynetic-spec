@@ -36795,6 +36795,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-21T08:55:14.345Z
+      - _ulid: 01KM7SPHAJMXPXC2B69RHXT9CX
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM7SPH1MCW3VERR3947D83H1
+        timestamp: 2026-03-21T08:55:27.314Z
     examined_commit: 8b694a8fdfb833abd8d7918097f90b56e916a23d
     external_links: []
     lifecycle_state: open
@@ -36825,7 +36832,35 @@ reviews:
               remains dead, so @task-core-data-file ac-2 is still not satisfied.
             created_at: 2026-03-21T08:55:12.320Z
         kind: blocker
+      - _ulid: 01KM7SPH1MCW3VERR3947D83H1
+        entries:
+          - _ulid: 01KM7SPH1MS04Q7TYF22XZJ4GE
+            author: Jacob Chapel
+            body: >-
+              Evidence log:
+
+              Files read: src/cli/commands/task.ts, src/parser/split-backend.ts,
+              src/parser/task-data-manager.ts, tests/per-task-files.test.ts
+
+              Commands run: git diff --stat dev...HEAD; git diff --unified=80 dev...HEAD --
+              src/cli/commands/task.ts src/parser/split-backend.ts src/parser/task-data-manager.ts
+              tests/per-task-files.test.ts; kspec task get @01KM6YET1A7XY9D0V3YQ9DRASG; kspec item
+              get @task-core-data-file; kspec item get @task-notes-file; kspec review get
+              @01KM7QCHPRPB02FMD2TEW84W4G; kspec review get @01KM7RC8NG4KJXV2EEZXPQ26DJ; grep -Rni
+              "AC: @task-core-data-file" tests/; grep -Rni "AC: @task-notes-file" tests/; grep -Rni
+              "AC: @trait-" tests/; kspec validate; npm test
+
+              Claims verified: full suite passes at this snapshot; AC annotations exist for both
+              spec refs; prior blocker about stale notes_count is fixed in split-backend.
+
+              Categories searched: correctness (found blocker: caller path still monolithic),
+              integration (found blocker: CLI path not using split manager), edge cases (checked
+              note-only and todo-only mutations), test quality (coverage present but missing
+              CLI-level assertion for history surfacing), error handling/security (no additional
+              findings).
+            created_at: 2026-03-21T08:55:27.028Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-21T08:54:38.467Z
-    updated_at: 2026-03-21T08:55:14.082Z
+    updated_at: 2026-03-21T08:55:27.028Z
     notes: []
