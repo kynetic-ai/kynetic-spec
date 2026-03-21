@@ -41523,6 +41523,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-21T18:26:13.763Z
+      - _ulid: 01KM8TBQ0F4PSRJ0KMEMKQ6A90
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM8TBPE0JSAADKQR8Q5HMWEM
+        timestamp: 2026-03-21T18:26:15.695Z
     examined_commit: 2b21f5fb5066a62e14f72235ba6882244e4942e9
     external_links: []
     lifecycle_state: open
@@ -41532,8 +41539,24 @@ reviews:
       content_hash: ""
       ref: "@01KM6YETR12GG1EZ5G68KSNTBK"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM8TBPE0JSAADKQR8Q5HMWEM
+        anchor:
+          type: code
+          commit: 2b21f5fb5066a62e14f72235ba6882244e4942e9
+          line_end: 224
+          line_start: 216
+          path: src/utils/activity.ts
+          side: head
+        entries:
+          - _ulid: 01KM8TBPE0QG1MDE3ASZY6N0PK
+            author: Test User
+            body: " requires timeline entries to preserve the originating command. This shape has no  field,
+              and  only emits a derived , so stored-history activity returned by  loses the actual
+              command that produced each change."
+            created_at: 2026-03-21T18:26:15.104Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T18:25:41.252Z
-    updated_at: 2026-03-21T18:26:13.239Z
+    updated_at: 2026-03-21T18:26:15.104Z
     notes: []
