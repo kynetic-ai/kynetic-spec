@@ -35749,7 +35749,18 @@ reviews:
     slugs: []
     title: Review task-impl-split-storage (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Validation exited with warnings only (exit 6): repo-wide pre-existing
+          completeness/alignment warnings, no task-specific schema/reference regression."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-21T07:41:27.940Z
+        completed_at: 2026-03-21T07:41:27.940Z
     events:
       - _ulid: 01KM7N7JCDXMZR0K694F662C9R
         actor: Jacob Chapel
@@ -35771,6 +35782,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM7NF142NJATFDX0RAMJ7JHA
         timestamp: 2026-03-21T07:41:27.347Z
+      - _ulid: 01KM7NF295M1ERQA4WXH3XVSKY
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-21T07:41:28.229Z
     examined_commit: e3cad16ed523d9896944f9251cbb65fa5fd8f86d
     external_links: []
     lifecycle_state: open
@@ -35800,5 +35818,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-21T07:37:22.574Z
-    updated_at: 2026-03-21T07:41:27.042Z
+    updated_at: 2026-03-21T07:41:27.940Z
     notes: []
