@@ -139,7 +139,7 @@ describe("kspec task rebuild-index", () => {
     await createTaskDir(tempDir, id1, "task-alpha");
     await createTaskDir(tempDir, id2, "task-beta");
     // Index is empty — rebuild should find 2 tasks
-    const result = kspec("task rebuild-index --repair", tempDir, { env });
+    const result = kspec("task rebuild-index --repair --force", tempDir, { env });
     expect(result.exitCode).toBe(0);
     expect(result.stdout).toContain("2");
     expect(result.stdout).toContain("rebuilt");
@@ -232,7 +232,7 @@ describe("kspec task rebuild-index", () => {
     // Only id1 in the index
     await addToIndex(tempDir, id1, "task-keep");
 
-    const result = kspec("task rebuild-index --repair", tempDir, { env });
+    const result = kspec("task rebuild-index --repair --force", tempDir, { env });
     expect(result.exitCode).toBe(0);
     expect(result.stdout).toContain("rebuilt");
 
@@ -371,14 +371,14 @@ describe("kspec task rebuild-index", () => {
   // Then: dry run takes precedence (no changes made)
 
   // AC: @trait-dry-run ac-5
-  it("dry-run takes precedence over --repair", async () => {
+  it("dry-run takes precedence over --force --repair", async () => {
     ({ env } = await setupSplitEnv(tempDir));
     const id = testUlid("DRYF");
     await createTaskDir(tempDir, id, "task-dry-force");
     const indexPath = path.join(tempDir, ".kspec", "project.tasks.yaml");
     const indexBefore = await fs.readFile(indexPath, "utf-8");
 
-    const result = kspec("task rebuild-index --dry-run --repair", tempDir, {
+    const result = kspec("task rebuild-index --dry-run --repair --force", tempDir, {
       env,
     });
     expect(result.exitCode).toBe(0);
@@ -497,7 +497,7 @@ describe("kspec task rebuild-index", () => {
     const result = kspecJson<{
       repaired: boolean;
       differences: unknown[];
-    }>("task rebuild-index --repair", tempDir, { env });
+    }>("task rebuild-index --repair --force", tempDir, { env });
 
     expect(result.repaired).toBe(true);
     expect(result.differences.length).toBeGreaterThan(0);

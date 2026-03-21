@@ -3346,6 +3346,41 @@ Examples:
           return;
         }
 
+        // AC: @task-index-rebuild ac-3 — confirm before repairing unless --force
+        if (!options.force) {
+          if (isJsonMode()) {
+            error("Confirmation required. Use --force with --json to proceed");
+            process.exit(EXIT_CODES.USAGE_ERROR);
+          }
+
+          const isTTY =
+            process.env.KSPEC_TEST_TTY === "1" ||
+            process.env.KSPEC_TEST_TTY === "true" ||
+            process.stdin.isTTY;
+          if (!isTTY) {
+            error("Non-interactive environment. Use --force to proceed");
+            process.exit(EXIT_CODES.USAGE_ERROR);
+          }
+
+          const readline = await import("node:readline");
+          const rl = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout,
+          });
+          const answer = await new Promise<string>((resolve) => {
+            rl.question(
+              `Overwrite index with ${newEntries.length} entries (${diffs.length} change(s))? [y/N] `,
+              resolve,
+            );
+          });
+          rl.close();
+
+          if (answer.toLowerCase() !== "y" && answer.toLowerCase() !== "yes") {
+            info("Index repair cancelled");
+            return;
+          }
+        }
+
         // AC: @task-index-rebuild ac-3 — repair mode: overwrite index
         const result = await splitManager.rebuildIndex(ctx);
 
