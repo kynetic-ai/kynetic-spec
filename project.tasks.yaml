@@ -21439,6 +21439,17 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-03-21T00:59:26.242Z
+  notes:
+    - _ulid: 01KM99T40NF3JSN3TQ5WYHVFGD
+      content: "Audit finding (session eval, 2026-03-21): AC-4 has no implementation yet — no CLI command
+        exists to persist the task_storage.format setting in kynetic.yaml. The schema field exists
+        (ManifestSchema.task_storage.format), resolveTaskDataManager() reads it correctly, and
+        ensureMigrated() validates migration completeness. What's missing is the command to flip the
+        switch. This task needs to build that command as part of its scope. AC-2 also lacks a test
+        annotation but is behaviorally covered by per-task-files.test.ts."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T22:56:16.405Z
   automation: manual_only
 - _ulid: 01KM6YEYAEWFKETRCB53V73HHK
   slugs:
