@@ -9322,6 +9322,11 @@ features:
             id: ac-4
             then: Waiting mutations block until the lock is released
             when: The lock holder process is alive and executing
+          - given: A dispatch mutation is waiting for the shadow mutation lock
+            id: ac-5
+            then: Stale lock detection identifies the orphaned lock, cleans it up, and the waiting mutation
+              acquires the lock without manual intervention
+            when: The lock holder process is no longer alive
         tags: []
         created: 2026-03-12T02:33:44.530Z
         notes: []
