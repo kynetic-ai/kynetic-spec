@@ -112963,7 +112963,7 @@
   spec_ref: "@task-core-data-file"
   plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
   origin: derived
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-impl-split-storage"
@@ -112982,9 +112982,9 @@
     remote: origin
     remote_url: git@github.com:kynetic-ai/kynetic-spec.git
     upstream_ref: refs/heads/dev
-  session_id: null
+  session_id: 01KM87K2N6404MSX4GY3QZM6RR
   created_at: 2026-03-21T00:59:22.538Z
-  started_at: 2026-03-21T12:49:42.925Z
+  started_at: 2026-03-21T13:08:49.755Z
   submitted_at: 2026-03-21T12:49:50.603Z
   notes:
     - _ulid: 01KM7Q3J7H2DH14Y9Q8YREQPYJ
