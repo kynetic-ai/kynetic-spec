@@ -40455,9 +40455,25 @@ reviews:
           kind: nit
           thread_ulid: 01KM8KJWZFEDGWEG50CBZ95363
         timestamp: 2026-03-21T16:27:51.449Z
+      - _ulid: 01KM8KKGJ5ZFRFAW9PFK8RBJ0X
+        actor: codex@openai.com
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-21T16:28:11.205Z
+      - _ulid: 01KM8KKGJ5N74SW3J2GWVRB8R4
+        actor: codex@openai.com
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-21T16:28:11.205Z
     examined_commit: 24dede1fb919b3d7d4015a22517a471efdf07a3a
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -40503,7 +40519,14 @@ reviews:
               concurrency, test quality, integration across CLI/API/review routes."
             created_at: 2026-03-21T16:27:51.152Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai.com
+        role: reviewer
+        created_at: 2026-03-21T16:28:11.205Z
     created_at: 2026-03-21T16:23:07.232Z
-    updated_at: 2026-03-21T16:27:51.152Z
+    updated_at: 2026-03-21T16:28:11.205Z
     notes: []
