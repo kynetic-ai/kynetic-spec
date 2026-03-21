@@ -1417,6 +1417,9 @@ features:
           without reading individual task directories. The index is the
           authoritative source for filterable fields; per-task files are the
           authoritative source for full task data.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
