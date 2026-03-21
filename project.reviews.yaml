@@ -40172,6 +40172,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM8JDSZAV0P13QWMCFYAVHEQ
         timestamp: 2026-03-21T16:07:35.987Z
+      - _ulid: 01KM8JF38GVQ83BX2VXHHP895Y
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM8JF2YSE69V7CYTBEWS5CMQ
+        timestamp: 2026-03-21T16:08:17.936Z
     examined_commit: 57af9e5bc4227d76b715277cfa249b72e667f07c
     external_links: []
     lifecycle_state: open
@@ -40200,7 +40207,25 @@ reviews:
               need the same skipCommit-style outer commit boundary used in other multi-step flows.
             created_at: 2026-03-21T16:07:35.659Z
         kind: blocker
+      - _ulid: 01KM8JF2YSE69V7CYTBEWS5CMQ
+        anchor:
+          type: code
+          commit: ""
+          line_end: 1088
+          line_start: 1074
+          path: src/cli/commands/review.ts
+          side: head
+        entries:
+          - _ulid: 01KM8JF2YSDQXVFB280NZ2ZW3A
+            author: Test User
+            body: "The same commit-order problem exists on request_changes: review verdict is committed before
+              handleVerdictTaskTransition() runs, and that helper now mutates each task with
+              per-task auto-commits. A mid-loop failure leaves a closed review on disk with only
+              some pending_review tasks moved to needs_work, which breaks review/task lifecycle
+              consistency."
+            created_at: 2026-03-21T16:08:17.625Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T16:01:32.017Z
-    updated_at: 2026-03-21T16:07:35.659Z
+    updated_at: 2026-03-21T16:08:17.625Z
     notes: []
