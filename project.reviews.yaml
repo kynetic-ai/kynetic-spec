@@ -41358,7 +41358,21 @@ reviews:
     slugs: []
     title: Review task-build-migration (cycle 3)
     author: Test User
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "6912 passed, 1 failed, 3 skipped. Current failure:
+          tests/agent-invocation-lifecycle.test.ts:1646 timed out after 15000ms in 'should NOT call
+          shadowAutoCommit after failed invocation'. Separate isolated rerun of
+          tests/agent-invocation-lifecycle.test.ts passed, so this appears flaky/unrelated, but the
+          full required suite did not pass."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-21T18:15:14.346Z
+        completed_at: 2026-03-21T18:15:14.346Z
     events:
       - _ulid: 01KM8S7BAF5Z3Y5BF2WQSZ5230
         actor: Test User
@@ -41380,6 +41394,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM8SHTWEHK5YCTDXN8CHZ33X
         timestamp: 2026-03-21T18:12:08.014Z
+      - _ulid: 01KM8SQHFTA0B7ZFMT6EEHCJC3
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-21T18:15:14.683Z
     examined_commit: d272c3a0e66962b616ef8f6bf63e661fa80191a6
     external_links: []
     lifecycle_state: open
@@ -41413,5 +41434,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-21T18:06:24.079Z
-    updated_at: 2026-03-21T18:12:07.694Z
+    updated_at: 2026-03-21T18:15:14.346Z
     notes: []
