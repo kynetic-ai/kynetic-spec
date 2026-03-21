@@ -113449,8 +113449,12 @@
   spec_ref: "@task-activity-in-file"
   plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
   origin: derived
-  status: pending_review
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - Review found no task-specific defects in the in-file activity timeline change, but merge is
+      blocked because npm test timed out twice in unrelated tests/agent-invocation-lifecycle.test.ts
+      during full-suite runs. Activity-focused suites passed; unblock after the repo-wide flaky
+      timeout is stabilized or the full suite passes cleanly.
   depends_on:
     - "@task-impl-per-task-files"
   context: []
