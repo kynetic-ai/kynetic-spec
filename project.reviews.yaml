@@ -36920,6 +36920,17 @@ reviews:
         runner: npm
         created_at: 2026-03-21T09:09:15.251Z
         completed_at: 2026-03-21T09:09:15.251Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation reported no errors. Exit 6 came from pre-existing repository warnings (1
+          orphaned skill dir, 33 orphaned specs, 408 completeness warnings).
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-21T09:09:23.806Z
+        completed_at: 2026-03-21T09:09:23.806Z
     events:
       - _ulid: 01KM7T4NYR893Z0PH3PVECCE4N
         actor: Jacob Chapel
@@ -36962,6 +36973,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-21T09:09:15.559Z
+      - _ulid: 01KM7TG2GRG5WNMQY1H8V24XYR
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-21T09:09:24.120Z
     examined_commit: 54201d9e92eec58950b8d7ec342b710bb4e0d32a
     external_links: []
     lifecycle_state: open
@@ -37039,5 +37057,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-21T09:03:10.808Z
-    updated_at: 2026-03-21T09:09:15.251Z
+    updated_at: 2026-03-21T09:09:23.806Z
     notes: []
