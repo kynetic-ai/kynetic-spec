@@ -38817,6 +38817,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-21T11:51:52.264Z
+      - _ulid: 01KM83T14YD552YEN0V1B3PGWH
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM83T0VD6H1JFZSH8FXRKC74
+        timestamp: 2026-03-21T11:52:07.582Z
     examined_commit: 8b23acb130d43d97a533d6e28707641b62e2e21d
     external_links: []
     lifecycle_state: open
@@ -38826,8 +38833,23 @@ reviews:
       content_hash: ""
       ref: "@01KM6YET1A7XY9D0V3YQ9DRASG"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM83T0VD6H1JFZSH8FXRKC74
+        entries:
+          - _ulid: 01KM83T0VDAP2H7M7HR8EX2AG4
+            author: Jacob Chapel
+            body: "Evidence log: files read: src/parser/task-data-manager.ts, src/parser/split-backend.ts,
+              src/parser/yaml.ts, src/schema/spec.ts, packages/daemon/src/routes/tasks.ts,
+              packages/daemon/src/routes/session-related.ts, src/cli/commands/task.ts,
+              tests/per-task-files.test.ts. Commands run: git diff --name-only/base diff, kspec task
+              get, kspec item get @task-core-data-file, @task-notes-file, @task-storage-activation,
+              rg for loadAllTasks/resolveTaskDataManager, kspec validate, npm test. Claims verified:
+              full suite passed (6826 tests); validate only showed repo-standing warnings;
+              activation path lacks a migration guard. Categories searched: correctness,
+              integration, test coverage, error handling."
+            created_at: 2026-03-21T11:52:07.277Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-21T11:48:42.225Z
-    updated_at: 2026-03-21T11:51:51.983Z
+    updated_at: 2026-03-21T11:52:07.277Z
     notes: []
