@@ -9318,6 +9318,10 @@ features:
               workspace execution failure
             when: |
               The invocation handles the failure
+          - given: Multiple dispatch-scoped kspec CLI mutations are queued behind a held lock
+            id: ac-4
+            then: Waiting mutations block until the lock is released
+            when: The lock holder process is alive and executing
         tags: []
         created: 2026-03-12T02:33:44.530Z
         notes: []
