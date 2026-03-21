@@ -112198,7 +112198,7 @@
   spec_ref: "@task-data-manager"
   plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
   origin: derived
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -112208,9 +112208,18 @@
     - storage
     - foundation
   vcs_refs: []
+  submission_linkage:
+    review_url: null
+    branch: dev
+    captured_at: 2026-03-21T01:25:24.615Z
+    commit: 0b83080a89d15bec8d00c46e33d52fc6c2597dd0
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/dev
   session_id: 01KM6Z85F195JDZVHE8JFZGSW1
   created_at: 2026-03-21T00:59:18.243Z
   started_at: 2026-03-21T01:14:15.740Z
+  submitted_at: 2026-03-21T01:25:25.024Z
   notes:
     - _ulid: 01KM6ZY93T298G8J88RBYGZ700
       content: "Implemented TaskDataManager module (src/parser/task-data-manager.ts) wrapping existing
