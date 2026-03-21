@@ -39108,7 +39108,17 @@ reviews:
     slugs: []
     title: Review per-task core data and notes files
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate completed with warnings-only repo baseline; no task-specific errors
+        name: validate
+        required: true
+        runner: kspec
+        created_at: 2026-03-21T12:26:33.808Z
+        completed_at: 2026-03-21T12:26:33.808Z
     events:
       - _ulid: 01KM85HSRHPJ2TM3T17Q15ETSY
         actor: Jacob Chapel
@@ -39130,6 +39140,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM85RZZ70CF032JG65PTJXDG
         timestamp: 2026-03-21T12:26:31.068Z
+      - _ulid: 01KM85S37N1EF63207A81WSP26
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: validate
+        timestamp: 2026-03-21T12:26:34.101Z
     examined_commit: 016332a40c99716b0291d605fb9942378194f820
     external_links: []
     lifecycle_state: open
@@ -39168,5 +39185,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-21T12:22:35.026Z
-    updated_at: 2026-03-21T12:26:30.760Z
+    updated_at: 2026-03-21T12:26:33.808Z
     notes: []
