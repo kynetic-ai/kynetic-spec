@@ -25,6 +25,7 @@ import {
   normalizeRefInput,
   TaskTypeSchema,
 } from "../../schema/index.js";
+import { ulidPattern } from "../../schema/common.js";
 import type { AutomationStatus, Task, TaskInput } from "../../schema/index.js";
 import { alignmentCheck, errors } from "../../strings/index.js";
 import {
@@ -3180,6 +3181,432 @@ Examples:
         process.exit(EXIT_CODES.ERROR);
       }
     });
+
+  // kspec task migrate
+  // AC: @task-storage-migration ac-1, ac-2, ac-3, ac-4, ac-5, ac-6, ac-7, ac-8
+  markMutating(
+    task
+      .command("migrate")
+      .description("Migrate tasks from monolithic format to per-task directory format")
+      .option("--dry-run", "Preview migration without making changes")
+      .option("--force", "Skip confirmation prompt")
+  ).action(async (options) => {
+    try {
+      const ctx = await initContext();
+
+      // AC: @trait-dry-run ac-5 — dry-run takes precedence over --force
+      const isDryRun = !!options.dryRun;
+
+      // Import split backend utilities
+      const {
+        getTasksDir, getTaskDir, getTaskFilePath, getNotesFilePath,
+        getIndexFilePath, toIndexEntry, listTaskDirs,
+      } = await import("../../parser/split-backend.js");
+      const {
+        extractRawTaskArray, toYaml, readYamlFile, stripRuntimeMetadata,
+      } = await import("../../parser/yaml.js");
+      const { TaskSchema } = await import("../../schema/task.js");
+      const { ulid: generateUlid } = await import("ulid");
+      const {
+        runWithBuffer, mkdirBufferAware, writeFileBufferAware,
+      } = await import("../../cli/batch-write-buffer.js");
+
+      const indexPath = getIndexFilePath(ctx);
+
+      // Read the raw task entries from project.tasks.yaml
+      const { rawTasks, useTasksWrapper, wrapperObj } = await extractRawTaskArray(indexPath);
+
+      if (rawTasks.length === 0) {
+        // AC: @task-storage-migration ac-6 — already migrated (no monolithic entries)
+        const resultData = {
+          ...(isDryRun ? { dry_run: true } : {}),
+          migrated: 0,
+          backfilled: 0,
+          notes_total: 0,
+          warnings: [] as string[],
+          already_migrated: true,
+        };
+        output(resultData, () => {
+          if (isDryRun) {
+            warn("DRY RUN — no changes will be written");
+            console.log();
+          }
+          success("Already migrated — no monolithic tasks found.");
+        });
+        return;
+      }
+
+      // Identify which entries are lean index entries (have `notes_count` as number)
+      // vs monolithic entries (everything else — including malformed notes).
+      // A lean index entry uses scalar counts; any entry without `notes_count`
+      // as a number is treated as monolithic and migrated (AC-5: malformed
+      // tasks migrate with a warning rather than being silently skipped).
+      const monolithicEntries: Array<{ raw: Record<string, unknown>; index: number }> = [];
+      const leanEntries: Array<{ raw: Record<string, unknown>; index: number }> = [];
+
+      for (let i = 0; i < rawTasks.length; i++) {
+        const entry = rawTasks[i];
+        if (!entry || typeof entry !== "object") continue;
+        const rec = entry as Record<string, unknown>;
+
+        if (typeof rec.notes_count === "number") {
+          leanEntries.push({ raw: rec, index: i });
+        } else {
+          monolithicEntries.push({ raw: rec, index: i });
+        }
+      }
+
+      // Check which monolithic entries already have per-task directories
+      const existingDirs = new Set(await listTaskDirs(ctx));
+
+      // AC: @task-storage-migration ac-5 — tasks with missing/invalid _ulid get
+      // a generated ULID and a warning, then migrate normally
+      const generatedUlids = new Set<string>();
+      for (const entry of monolithicEntries) {
+        const rawUlid = entry.raw._ulid;
+        if (typeof rawUlid !== "string" || !rawUlid || !ulidPattern.test(rawUlid)) {
+          const generated = generateUlid();
+          entry.raw._ulid = generated;
+          generatedUlids.add(generated);
+        }
+      }
+
+      // Entries that need migration: monolithic entries without existing dirs
+      const toMigrate = monolithicEntries.filter(
+        (e) => !existingDirs.has(e.raw._ulid as string),
+      );
+
+      // Entries that are already in both formats (monolithic + dir exists) — just need index cleanup
+      const alreadyMigrated = monolithicEntries.filter(
+        (e) => existingDirs.has(e.raw._ulid as string),
+      );
+
+      if (toMigrate.length === 0 && alreadyMigrated.length === 0) {
+        // AC: @task-storage-migration ac-6 — all entries are already lean index entries
+        const resultData = {
+          ...(isDryRun ? { dry_run: true } : {}),
+          migrated: 0,
+          backfilled: 0,
+          notes_total: 0,
+          warnings: [] as string[],
+          already_migrated: true,
+        };
+        output(resultData, () => {
+          if (isDryRun) {
+            warn("DRY RUN — no changes will be written");
+            console.log();
+          }
+          success("Already migrated — no monolithic tasks to process.");
+        });
+        return;
+      }
+
+      const warnings: string[] = [];
+      let totalNotes = 0;
+
+      // Validate tasks and collect migration data
+      interface MigrationTask {
+        ulid: string;
+        rawData: Record<string, unknown>;
+        notes: unknown[];
+        coreData: Record<string, unknown>;
+        indexEntry: Record<string, unknown>;
+        isBackfill: boolean;
+        validationWarning?: string;
+      }
+      const migrationTasks: MigrationTask[] = [];
+
+      for (const entry of toMigrate) {
+        const raw = entry.raw;
+        const ulid = raw._ulid as string;
+        const notes = Array.isArray(raw.notes) ? raw.notes : [];
+        totalNotes += notes.length;
+
+        // AC: @task-storage-migration ac-5 — warn when _ulid was missing/invalid and generated
+        if (generatedUlids.has(ulid)) {
+          warnings.push(`Task "${raw.title ?? "(untitled)"}": missing or invalid _ulid — generated ${ulid}`);
+        }
+
+        // AC: @task-storage-migration ac-5 — try validation, warn on failure, migrate raw data
+        const parsed = TaskSchema.safeParse(raw);
+        let coreData: Record<string, unknown>;
+        let indexEntry: Record<string, unknown>;
+
+        if (parsed.success) {
+          // Clean task: separate notes from core data
+          const { notes: _n, _sourceFile: _sf, ...core } = parsed.data as Record<string, unknown>;
+          coreData = core;
+          indexEntry = toIndexEntry(parsed.data);
+        } else {
+          // AC: @task-storage-migration ac-5 — preserve raw data with warning
+          const validationMsg = `Task ${ulid}: validation warning — ${parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("; ")}`;
+          warnings.push(validationMsg);
+
+          // Use raw data as-is, stripping notes for the core file
+          const { notes: _n, _sourceFile: _sf, ...core } = raw;
+          coreData = core;
+
+          // Build a best-effort index entry from raw data
+          indexEntry = {
+            _ulid: ulid,
+            slugs: Array.isArray(raw.slugs) ? raw.slugs : [],
+            title: raw.title ?? "",
+            type: raw.type ?? "task",
+            status: raw.status ?? "pending",
+            priority: raw.priority ?? 3,
+            tags: Array.isArray(raw.tags) ? raw.tags : [],
+            depends_on: Array.isArray(raw.depends_on) ? raw.depends_on : [],
+            blocked_by: Array.isArray(raw.blocked_by) ? raw.blocked_by : [],
+            created_at: raw.created_at ?? new Date().toISOString(),
+            notes_count: notes.length,
+            todos_count: Array.isArray(raw.todos) ? raw.todos.length : 0,
+          };
+          // Include optional fields if present
+          for (const field of ["assignee", "automation", "spec_ref", "plan_ref", "review_ref", "started_at", "submitted_at", "completed_at"]) {
+            if (raw[field] !== undefined && raw[field] !== null) {
+              indexEntry[field] = raw[field];
+            }
+          }
+        }
+
+        // Determine if this is a backfill (previous migration already happened)
+        const isBackfill = existingDirs.size > 0 || leanEntries.length > 0;
+
+        migrationTasks.push({
+          ulid,
+          rawData: raw,
+          notes,
+          coreData,
+          indexEntry,
+          isBackfill,
+          validationWarning: parsed.success ? undefined : warnings[warnings.length - 1],
+        });
+      }
+
+      const migrateCount = migrationTasks.filter((t) => !t.isBackfill).length;
+      const backfillCount = migrationTasks.filter((t) => t.isBackfill).length;
+
+      // AC: @trait-dry-run ac-1, ac-2, ac-3 — dry-run shows preview without changes
+      if (isDryRun) {
+        const resultData = {
+          dry_run: true,
+          migrated: migrateCount,
+          backfilled: backfillCount,
+          notes_total: totalNotes,
+          warnings,
+          already_migrated: false,
+          tasks: migrationTasks.map((t) => ({
+            ulid: t.ulid,
+            title: (t.coreData.title as string) || "",
+            notes_count: t.notes.length,
+            is_backfill: t.isBackfill,
+            has_warning: !!t.validationWarning,
+          })),
+        };
+        // AC: @trait-dry-run ac-6 — JSON output includes dry_run boolean field
+        output(resultData, () => {
+          // AC: @trait-dry-run ac-3 — clear indication this is a preview
+          warn("DRY RUN — no changes will be written");
+          console.log();
+          info(`Would migrate ${migrateCount} task(s), backfill ${backfillCount} task(s)`);
+          info(`Total notes: ${totalNotes}`);
+          if (warnings.length > 0) {
+            console.log();
+            warn(`${warnings.length} validation warning(s):`);
+            for (const w of warnings) {
+              console.log(`  ${chalk.yellow("!")} ${w}`);
+            }
+          }
+          console.log();
+          for (const t of migrationTasks) {
+            const label = t.isBackfill ? chalk.cyan("[backfill]") : chalk.green("[migrate]");
+            const warnLabel = t.validationWarning ? chalk.yellow(" [warning]") : "";
+            console.log(`  ${label}${warnLabel} ${t.coreData.title || t.ulid} (${t.notes.length} notes)`);
+          }
+        });
+        return;
+      }
+
+      // AC: @task-storage-migration ac-8 — all changes in single atomic commit
+      await runWithBuffer(ctx.specDir, async () => {
+        // Ensure tasks directory exists
+        const tasksDir = getTasksDir(ctx);
+        await mkdirBufferAware(tasksDir);
+
+        // AC: @task-storage-migration ac-1 — create per-task directories with core data and notes
+        for (const task of migrationTasks) {
+          const taskDir = getTaskDir(ctx, task.ulid);
+          const taskFilePath = getTaskFilePath(ctx, task.ulid);
+          const notesFilePath = getNotesFilePath(ctx, task.ulid);
+
+          await mkdirBufferAware(taskDir);
+
+          // Write task.yaml (core data without notes, with empty history)
+          await writeFileBufferAware(taskFilePath, toYaml(task.coreData));
+
+          // Write notes.yaml
+          await writeFileBufferAware(notesFilePath, toYaml({ notes: task.notes }));
+        }
+
+        // AC: @task-storage-migration ac-2 — rewrite index with lean entries
+        // Build new index: keep existing lean entries + add new index entries from migrated tasks
+        // Also convert any remaining monolithic entries that had existing dirs to lean format
+        const newIndex: Record<string, unknown>[] = [];
+
+        // Existing lean entries stay as-is
+        for (const entry of leanEntries) {
+          newIndex.push(entry.raw);
+        }
+
+        // Already-migrated entries (monolithic format but dir exists) — convert to lean
+        // AC: @task-storage-migration ac-7 — don't affect existing per-task data
+        // Read canonical data from per-task directories, NOT from stale monolithic entries
+        for (const entry of alreadyMigrated) {
+          const ulid = entry.raw._ulid as string;
+          const taskFilePath = getTaskFilePath(ctx, ulid);
+          const notesFilePath = getNotesFilePath(ctx, ulid);
+
+          // Read canonical core data from the per-task directory and build
+          // the index entry directly — avoids round-tripping through TaskSchema
+          // which rejects sparse/placeholder notes arrays
+          let canonicalBuilt = false;
+          try {
+            const rawCore = await readYamlFile<unknown>(taskFilePath);
+            if (rawCore && typeof rawCore === "object") {
+              const coreObj = rawCore as Record<string, unknown>;
+
+              // Read canonical notes count
+              let notesCount = 0;
+              try {
+                const rawNotes = await readYamlFile<unknown>(notesFilePath);
+                if (rawNotes && typeof rawNotes === "object" && "notes" in rawNotes) {
+                  const notesWrapper = rawNotes as Record<string, unknown>;
+                  notesCount = Array.isArray(notesWrapper.notes) ? notesWrapper.notes.length : 0;
+                } else if (Array.isArray(rawNotes)) {
+                  notesCount = rawNotes.length;
+                }
+              } catch {
+                // Notes file doesn't exist — zero notes
+              }
+
+              // Build index entry directly from canonical data
+              const indexEntry: Record<string, unknown> = {
+                _ulid: coreObj._ulid ?? ulid,
+                slugs: Array.isArray(coreObj.slugs) ? coreObj.slugs : [],
+                title: coreObj.title ?? "",
+                type: coreObj.type ?? "task",
+                status: coreObj.status ?? "pending",
+                priority: coreObj.priority ?? 3,
+                tags: Array.isArray(coreObj.tags) ? coreObj.tags : [],
+                depends_on: Array.isArray(coreObj.depends_on) ? coreObj.depends_on : [],
+                blocked_by: Array.isArray(coreObj.blocked_by) ? coreObj.blocked_by : [],
+                created_at: coreObj.created_at ?? new Date().toISOString(),
+                notes_count: notesCount,
+                todos_count: Array.isArray(coreObj.todos) ? coreObj.todos.length : 0,
+              };
+              for (const field of ["assignee", "automation", "spec_ref", "plan_ref", "review_ref", "started_at", "submitted_at", "completed_at", "session_id"]) {
+                if (coreObj[field] !== undefined && coreObj[field] !== null) {
+                  indexEntry[field] = coreObj[field];
+                }
+              }
+              newIndex.push(indexEntry);
+              canonicalBuilt = true;
+            }
+          } catch {
+            // Per-task dir read failed — fall through to monolithic fallback
+          }
+
+          // Fallback: if canonical read failed, use monolithic data
+          if (!canonicalBuilt) {
+            const raw = entry.raw;
+            const notes = Array.isArray(raw.notes) ? raw.notes : [];
+            const fallbackEntry: Record<string, unknown> = {
+              _ulid: raw._ulid,
+              slugs: Array.isArray(raw.slugs) ? raw.slugs : [],
+              title: raw.title ?? "",
+              type: raw.type ?? "task",
+              status: raw.status ?? "pending",
+              priority: raw.priority ?? 3,
+              tags: Array.isArray(raw.tags) ? raw.tags : [],
+              depends_on: Array.isArray(raw.depends_on) ? raw.depends_on : [],
+              blocked_by: Array.isArray(raw.blocked_by) ? raw.blocked_by : [],
+              created_at: raw.created_at ?? new Date().toISOString(),
+              notes_count: notes.length,
+              todos_count: Array.isArray(raw.todos) ? raw.todos.length : 0,
+            };
+            for (const field of ["assignee", "automation", "spec_ref", "plan_ref", "review_ref", "started_at", "submitted_at", "completed_at", "session_id"]) {
+              if (raw[field] !== undefined && raw[field] !== null) {
+                fallbackEntry[field] = raw[field];
+              }
+            }
+            newIndex.push(fallbackEntry);
+          }
+        }
+
+        // Newly migrated entries
+        for (const task of migrationTasks) {
+          newIndex.push(task.indexEntry);
+        }
+
+        // Write the lean index
+        if (useTasksWrapper && wrapperObj) {
+          await writeFileBufferAware(indexPath, toYaml({ ...wrapperObj, tasks: newIndex }));
+        } else {
+          await writeFileBufferAware(indexPath, toYaml(newIndex));
+        }
+      });
+
+      // AC: @task-storage-migration ac-8 — single atomic shadow branch commit
+      await commitIfShadow(
+        ctx.shadow,
+        `feat: migrate ${migrationTasks.length} task(s) to per-task directory format`,
+      );
+
+      const resultData = {
+        migrated: migrateCount,
+        backfilled: backfillCount,
+        notes_total: totalNotes,
+        warnings,
+        already_migrated: false,
+      };
+      output(resultData, () => {
+        if (migrateCount > 0) {
+          success(`Migrated ${migrateCount} task(s) to per-task directory format`);
+        }
+        if (backfillCount > 0) {
+          success(`Backfilled ${backfillCount} task(s) into per-task directories`);
+        }
+        info(`Total notes migrated: ${totalNotes}`);
+        if (warnings.length > 0) {
+          console.log();
+          warn(`${warnings.length} validation warning(s):`);
+          for (const w of warnings) {
+            console.log(`  ${chalk.yellow("!")} ${w}`);
+          }
+        }
+      });
+    } catch (err) {
+      // AC: @trait-error-guidance ac-1 — description of what went wrong
+      // AC: @trait-error-guidance ac-2 — suggested action
+      // AC: @trait-error-guidance ac-6 — guidance in structured error object
+      if (isJsonMode()) {
+        output({
+          success: false,
+          error: String(err instanceof Error ? err.message : err),
+          suggestion: "Check that .kspec/ directory exists and shadow branch is healthy. Run 'kspec shadow status' for diagnostics.",
+        });
+      } else {
+        error(
+          "Failed to migrate tasks",
+          err instanceof Error ? err.message : err,
+        );
+        info(
+          "Check that .kspec/ directory exists and shadow branch is healthy. Run 'kspec shadow status' for diagnostics.",
+        );
+      }
+      process.exit(EXIT_CODES.ERROR);
+    }
+  });
 
   // kspec task rebuild-index
   // AC: @task-index-rebuild ac-1, ac-2, ac-3, ac-4
