@@ -16842,7 +16842,7 @@ workspaces:
         head: acb192f9f232e7dc8ef6a5fbc8eec7b090eb1e5d
         last_seen_at: 2026-03-21T09:33:40.436Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-impl-index-01km6yes
-  - active_role: worker
+  - active_role: null
     base_branch_point: 95efd1618ada37f2b635d6526f2e303cb450d6cc
     bootstrap:
       status: succeeded
@@ -16902,18 +16902,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-impl-per-task-files/01km6yet
-    canonical_branch_head: 1db83c00f8bd886f9006e661da0bcfcbdc6f228d
+    canonical_branch_head: 8b23acb130d43d97a533d6e28707641b62e2e21d
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-21T11:35:14.907Z
+      updated_at: 2026-03-21T11:48:17.445Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-21T11:35:16.750Z
+      updated_at: 2026-03-21T11:48:17.445Z
     integration:
       status: pending
       detail: null
@@ -16921,17 +16921,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 95efd1618ada37f2b635d6526f2e303cb450d6cc
-      updated_at: 2026-03-21T11:35:14.907Z
-    lifecycle_state: active
+      updated_at: 2026-03-21T11:48:17.445Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KM6YET1A7XY9D0V3YQ9DRASG"
     task_slug: task-impl-per-task-files
     timestamps:
       closed_at: null
       last_active_at: 2026-03-21T11:35:16.750Z
-      last_reconciled_at: 2026-03-21T11:35:16.750Z
+      last_reconciled_at: 2026-03-21T11:48:17.445Z
       created_at: 2026-03-21T07:55:49.032Z
-      updated_at: 2026-03-21T11:35:16.750Z
+      updated_at: 2026-03-21T11:48:17.445Z
     workspace_id: dispatch-workspace-01KM6YET1A7XY9D0V3YQ9DRASG
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
