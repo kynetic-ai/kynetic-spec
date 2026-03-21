@@ -40607,9 +40607,25 @@ reviews:
           kind: nit
           thread_ulid: 01KM8MFD44E5DT6DTV1W9225HX
         timestamp: 2026-03-21T16:43:25.531Z
+      - _ulid: 01KM8MFEKD8MA7RHE5AZNEFTM3
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-03-21T16:43:26.701Z
+      - _ulid: 01KM8MFEKDT8PHGA6H2ABN094E
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-21T16:43:26.701Z
     examined_commit: a5f4801899b17fd67eb522cc0e5803c156a9e49d
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -40643,7 +40659,14 @@ reviews:
               integration. No task-related findings.
             created_at: 2026-03-21T16:43:25.188Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-21T16:43:26.700Z
     created_at: 2026-03-21T16:36:49.796Z
-    updated_at: 2026-03-21T16:43:25.188Z
+    updated_at: 2026-03-21T16:43:26.701Z
     notes: []
