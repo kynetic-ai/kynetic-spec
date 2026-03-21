@@ -17026,12 +17026,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-21T09:54:43.250Z
+      updated_at: 2026-03-21T09:54:50.691Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-21T09:54:43.250Z
+      updated_at: 2026-03-21T09:54:50.691Z
     integration:
       status: pending
       detail: null
@@ -17039,24 +17039,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: e273fe88270dc48f490a0856d03ba78deecc23b0
-      updated_at: 2026-03-21T09:54:43.250Z
-    lifecycle_state: ready
+      updated_at: 2026-03-21T09:54:50.691Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KM6YEVFHZ9J6734CYVPWWDMH"
     task_slug: task-extend-write-buffer
     timestamps:
       closed_at: null
       last_active_at: 2026-03-21T09:41:59.565Z
-      last_reconciled_at: 2026-03-21T09:54:43.250Z
+      last_reconciled_at: 2026-03-21T09:54:50.691Z
       created_at: 2026-03-21T09:41:54.097Z
-      updated_at: 2026-03-21T09:54:43.250Z
+      updated_at: 2026-03-21T09:54:50.691Z
     workspace_id: dispatch-workspace-01KM6YEVFHZ9J6734CYVPWWDMH
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 99e92ad7d12fdb6a6cce9ab8f7d11bc48ca3bd1b
+        last_seen_at: 2026-03-21T09:54:50.691Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-extend-write-buffer-01km6yev-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-extend-write-buffer/01km6yev
-        head: e273fe88270dc48f490a0856d03ba78deecc23b0
-        last_seen_at: 2026-03-21T09:41:54.097Z
+        head: 99e92ad7d12fdb6a6cce9ab8f7d11bc48ca3bd1b
+        last_seen_at: 2026-03-21T09:54:50.691Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-extend-write-buffer-01km6yev
