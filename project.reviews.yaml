@@ -37273,6 +37273,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-21T09:38:54.626Z
+      - _ulid: 01KM7W658EXFHBQGJ0546QNB6M
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM7W64RBJQ3SM9Z0T13XGE1W
+        timestamp: 2026-03-21T09:38:56.398Z
     examined_commit: acb192f9f232e7dc8ef6a5fbc8eec7b090eb1e5d
     external_links: []
     lifecycle_state: open
@@ -37282,8 +37289,32 @@ reviews:
       content_hash: ""
       ref: "@01KM6YESAF92YTNXT3DF06AC0N"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM7W64RBJQ3SM9Z0T13XGE1W
+        entries:
+          - _ulid: 01KM7W64RB6DZZ9XYCKZ1XS0BJ
+            author: Jacob Chapel
+            body: >-
+              Review evidence log
+
+
+              Files read: src/parser/split-backend.ts, src/parser/task-data-manager.ts,
+              tests/split-backend.test.ts, tests/task-data-manager.test.ts
+
+              Commands run: git diff --stat dev...HEAD; git diff dev...HEAD -- src tests; kspec task
+              get @01KM6YESAF92YTNXT3DF06AC0N; kspec item get @task-index-file; kspec review get
+              @01KM7T4NYRDWM8K9PEECACX0D5; rg -n "AC: @task-index-file" tests; kspec validate; npm
+              test
+
+              Claims verified: plan_ref/review_ref now flow through TaskSummary/rawToSummary;
+              rebuildIndex is exposed through TaskStorageBackend and TaskDataManager; full suite
+              passes on this snapshot
+
+              Categories searched: correctness, AC coverage, edge cases, error handling,
+              integration, test quality — no remaining blocking issues found.
+            created_at: 2026-03-21T09:38:55.883Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-21T09:34:49.587Z
-    updated_at: 2026-03-21T09:38:54.133Z
+    updated_at: 2026-03-21T09:38:55.883Z
     notes: []
