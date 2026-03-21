@@ -41691,3 +41691,29 @@ reviews:
     created_at: 2026-03-21T18:25:41.252Z
     updated_at: 2026-03-21T18:28:48.858Z
     notes: []
+  - _ulid: 01KM8TK0KVA5YX0M314GX4N9XG
+    slugs: []
+    title: Review build migration command
+    author: Test User
+    checks: []
+    events:
+      - _ulid: 01KM8TK0KVDWGM14JZYQ3RZ73W
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-21T18:30:14.907Z
+    examined_commit: 1e5c994079003c929d4780f2adc0f574b5617813
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KM6YEWY1WSKEXTF5YNP5GG81"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-21T18:30:14.907Z
+    updated_at: null
+    notes: []
