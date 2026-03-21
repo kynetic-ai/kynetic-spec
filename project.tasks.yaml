@@ -113897,8 +113897,13 @@
   spec_ref: "@scoped-dispatch-shadow-serialization"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Reviewed and approved. Merged
+    dispatch/task/remove-default-timeout-from-dispatch-shadow-mutation-lock/01km8kee into dev at
+    9df6382315d1. Verified lock wait-indefinitely default, explicit timeout override, and stale-lock
+    recovery via targeted tests. Full SKIP_BUILD=1 npm test had one unrelated timeout in
+    tests/agent-invocation-lifecycle.test.ts:351.
   depends_on: []
   context: []
   priority: 1
@@ -113920,6 +113925,7 @@
   created_at: 2026-03-21T16:25:25.413Z
   started_at: 2026-03-21T16:27:47.994Z
   submitted_at: 2026-03-21T16:35:36.092Z
+  completed_at: 2026-03-21T16:44:34.010Z
   notes:
     - _ulid: 01KM8KZR87PN372FK1Z53Q6GRF
       content: >-
