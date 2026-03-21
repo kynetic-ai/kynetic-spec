@@ -1961,7 +1961,7 @@ features:
       (e.g. by an older version of kspec or external tooling).
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
     depends_on: []
     implements: []
     relates_to: []
