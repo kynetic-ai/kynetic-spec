@@ -112457,8 +112457,11 @@
   spec_ref: "@task-data-manager"
   plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged to dev in commit 6cb272c5d20a72401bf9fe26e7dfe40cf64fff75 after approved
+    review @01KM7DM0. Verified task command migration in src/cli/commands/task.ts, kspec validate
+    produced only existing repo warnings, and npm test passed (6756 passed, 3 skipped).
   depends_on:
     - "@task-impl-data-manager"
   context: []
@@ -112481,6 +112484,7 @@
   created_at: 2026-03-21T00:59:18.989Z
   started_at: 2026-03-21T05:22:36.507Z
   submitted_at: 2026-03-21T05:22:43.035Z
+  completed_at: 2026-03-21T05:30:44.770Z
   notes:
     - _ulid: 01KM7BVRZP7T739ACZA8M0Q60R
       content: Migrated all direct yaml.ts task function calls in src/cli/commands/task.ts to
