@@ -11,7 +11,7 @@
 
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   TaskDataManager,
 } from "../src/parser/task-data-manager.js";
@@ -437,6 +437,40 @@ describe("Atomic Multi-File Task Writes", () => {
       // Now verify files are on disk
       const taskContent = await fs.readFile(getTaskFilePath(ctx, ulid), "utf-8");
       expect(taskContent).toContain("Updated in batch");
+    });
+
+    // AC: @task-atomic-writes ac-3
+    it("nested mutation with commitOpts skips commitIfShadow until parent flushes", async () => {
+      const [ulid] = testUlids("ABNCS", 1);
+      await createSplitTask(ctx, ulid, "no-commit-in-nested");
+
+      // Spy on commitIfShadow to verify it is NOT called during nested mutation
+      const shadowModule = await import("../src/parser/shadow.js");
+      const commitSpy = vi.spyOn(shadowModule, "commitIfShadow");
+
+      // Simulate batch-exec scenario: activate a parent buffer
+      const batchBuffer = activateBatchBuffer(ctx.specDir);
+
+      try {
+        await manager.mutateTask(
+          ctx,
+          `@${ulid}`,
+          (task) => ({ ...task, priority: 1 }),
+          { operation: "test-nested-commit", ref: `@${ulid}` },
+        );
+
+        // commitIfShadow must NOT be called — the parent buffer hasn't
+        // flushed yet, so disk state is stale. The parent (batch-exec)
+        // owns the commit lifecycle and will commit after flush.
+        expect(commitSpy).not.toHaveBeenCalled();
+
+        // Writes should still be in the buffer, not on disk
+        expect(batchBuffer.size).toBeGreaterThan(0);
+      } finally {
+        batchBuffer.discard();
+        deactivateBatchBuffer();
+        commitSpy.mockRestore();
+      }
     });
   });
 

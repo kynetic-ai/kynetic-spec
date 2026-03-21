@@ -938,6 +938,12 @@ export class TaskDataManager {
       return result;
     }
 
+    // Check whether a parent buffer already owns the lifecycle BEFORE
+    // entering runWithBuffer. When nested, the parent buffer has not
+    // flushed yet, so commitIfShadow must be deferred to the parent —
+    // committing now would capture pre-flush (stale) disk state.
+    const isNested = getActiveBatchBuffer() !== null;
+
     // runWithBuffer creates an isolated async-local scope for the buffer.
     // If a parent buffer already exists (batch-exec or outer operation),
     // the callback receives null and the parent's buffer is reused.
@@ -947,8 +953,11 @@ export class TaskDataManager {
       return operation();
     });
 
-    // Shadow commit AFTER flush — all files are on disk atomically
-    if (commitOpts && !commitOpts.skipCommit) {
+    // Shadow commit AFTER flush — all files are on disk atomically.
+    // Skip when nested: the parent buffer hasn't flushed yet, so disk
+    // state doesn't reflect our writes. The parent scope (batch-exec or
+    // outer withWriteBuffer) owns flush + commit lifecycle.
+    if (commitOpts && !commitOpts.skipCommit && !isNested) {
       await commitIfShadow(
         ctx.shadow,
         commitOpts.operation,
