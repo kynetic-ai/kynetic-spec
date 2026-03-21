@@ -38262,6 +38262,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM80FJ1DTNA8SC4J9YBQME7D
         timestamp: 2026-03-21T10:53:59.191Z
+      - _ulid: 01KM80FM44T48FQBMVS34XNN2P
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM80FKMKHXA4WAQ5M5NNE70J
+        timestamp: 2026-03-21T10:54:00.836Z
     examined_commit: eb6cf22b0b84aaa7f2368374bcb5f933c96dc010
     external_links: []
     lifecycle_state: open
@@ -38290,7 +38297,26 @@ reviews:
               error handling, test quality, integration."
             created_at: 2026-03-21T10:53:58.701Z
         kind: nit
+      - _ulid: 01KM80FKMKHXA4WAQ5M5NNE70J
+        anchor:
+          type: code
+          commit: eb6cf22b0b84aaa7f2368374bcb5f933c96dc010
+          line_end: 89
+          line_start: 86
+          path: src/parser/review-task-integration.ts
+          side: head
+        entries:
+          - _ulid: 01KM80FKMM8X3Z7AGG2S2GBPE1
+            author: Jacob Chapel
+            body: Split storage is still not wired through all task write paths.  mutates via the module-level
+              monolithic , and the same file does it again in  at line 166. Once  is enabled, review
+              creation and request-changes handling will update the wrong backend instead of the
+              per-task files, so  linkage and the automatic  transition break. I also found the same
+              singleton bypass in  and , which means the new format is not used for all reads/writes
+              required by @task-storage-activation ac-2.
+            created_at: 2026-03-21T10:54:00.340Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T10:49:21.808Z
-    updated_at: 2026-03-21T10:53:58.701Z
+    updated_at: 2026-03-21T10:54:00.340Z
     notes: []
