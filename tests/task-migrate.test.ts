@@ -818,6 +818,83 @@ describe("kspec task migrate", () => {
     expect(index).toHaveLength(2);
   });
 
+  // ── Regression: blocker — malformed non-empty _ulid must be regenerated, not used verbatim ──
+
+  // AC: @task-storage-migration ac-5
+  it("migrates tasks with malformed non-empty _ulid by regenerating and emitting a warning", async () => {
+    ({ env, specDir } = await setupMonolithicEnv(tempDir));
+    const [idValid] = testUlids("MGMF", 1);
+
+    // Task with a valid _ulid
+    const validTask = makeMonolithicTask(idValid, "task-valid-ulid");
+
+    // Task with a malformed _ulid (non-empty string but not a valid ULID)
+    const malformedUlidTask = {
+      _ulid: "not-a-valid-ulid",
+      slugs: ["task-bad-ulid"],
+      title: "Malformed ULID Task",
+      type: "task",
+      status: "pending",
+      priority: 3,
+      tags: [],
+      depends_on: [],
+      blocked_by: [],
+      created_at: "2026-03-20T00:00:00.000Z",
+      notes: [
+        { _ulid: testUlid("NTE", 91), created_at: "2026-03-20T01:00:00.000Z", author: "@test", content: "Note on malformed-ulid task" },
+      ],
+      todos: [],
+    };
+
+    await writeMonolithicTasks(specDir, [validTask, malformedUlidTask]);
+
+    const result = kspec("task migrate --force", tempDir, { env });
+    expect(result.exitCode).toBe(0);
+    // Should report both tasks migrated
+    expect(result.stdout).toContain("Migrated 2 task(s)");
+    // Should warn about the malformed _ulid
+    expect(result.stderr).toContain("warning");
+    expect(result.stdout).toContain("missing or invalid _ulid");
+
+    // Both tasks should have per-task directories
+    const taskDirs = await fs.readdir(path.join(specDir, "tasks"));
+    expect(taskDirs).toHaveLength(2);
+
+    // The malformed "not-a-valid-ulid" should NOT be used as a directory name
+    expect(taskDirs).not.toContain("not-a-valid-ulid");
+
+    // The valid task dir should exist
+    expect(taskDirs).toContain(idValid);
+
+    // The other dir is the generated ULID
+    const generatedDir = taskDirs.find((d) => d !== idValid);
+    expect(generatedDir).toBeDefined();
+    // Generated dir name should be a valid 26-char ULID
+    expect(generatedDir).toMatch(/^[0-9A-HJKMNP-TV-Z]{26}$/i);
+
+    // Verify task data was preserved
+    const taskYaml = parseYaml(
+      await fs.readFile(path.join(specDir, "tasks", generatedDir!, "task.yaml"), "utf-8"),
+    );
+    expect(taskYaml.title).toBe("Malformed ULID Task");
+
+    // Verify notes were preserved
+    const notesYaml = parseYaml(
+      await fs.readFile(path.join(specDir, "tasks", generatedDir!, "notes.yaml"), "utf-8"),
+    );
+    expect(notesYaml.notes).toHaveLength(1);
+    expect(notesYaml.notes[0].content).toBe("Note on malformed-ulid task");
+
+    // Verify the index has both entries with valid ULIDs
+    const index = parseYaml(
+      await fs.readFile(path.join(specDir, "project.tasks.yaml"), "utf-8"),
+    ) as Array<Record<string, unknown>>;
+    expect(index).toHaveLength(2);
+    // No entry should have the malformed ULID
+    const ulids = index.map((e) => e._ulid);
+    expect(ulids).not.toContain("not-a-valid-ulid");
+  });
+
   // ── Regression: blocker — canonical index for already-migrated tasks with notes ──
 
   // AC: @task-storage-migration ac-7

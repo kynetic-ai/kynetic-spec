@@ -25,6 +25,7 @@ import {
   normalizeRefInput,
   TaskTypeSchema,
 } from "../../schema/index.js";
+import { ulidPattern } from "../../schema/common.js";
 import type { AutomationStatus, Task, TaskInput } from "../../schema/index.js";
 import { alignmentCheck, errors } from "../../strings/index.js";
 import {
@@ -3248,7 +3249,8 @@ Examples:
       // a generated ULID and a warning, then migrate normally
       const generatedUlids = new Set<string>();
       for (const entry of monolithicEntries) {
-        if (typeof entry.raw._ulid !== "string" || !entry.raw._ulid) {
+        const rawUlid = entry.raw._ulid;
+        if (typeof rawUlid !== "string" || !rawUlid || !ulidPattern.test(rawUlid)) {
           const generated = generateUlid();
           entry.raw._ulid = generated;
           generatedUlids.add(generated);
