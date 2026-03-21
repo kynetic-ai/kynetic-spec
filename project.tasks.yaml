@@ -21616,5 +21616,62 @@
     - testing
   vcs_refs: []
   created_at: 2026-03-21T22:57:05.177Z
-  notes: []
+  notes:
+    - _ulid: 01KM99WC7M7NA7PJQSBY6BW4MB
+      content: >-
+        ## Context
+
+
+        The task storage split plan (@plan-task-storage-split-per-task-directory-architecture)
+        introduced 12 specs with 43 total acceptance criteria. Post-implementation audit found that
+        while the behavior for most ACs is tested, several specs are missing the // AC: @slug ac-N
+        comment annotations that link tests to their acceptance criteria.
+
+
+        ## Missing annotations
+
+
+        ### @task-listing-performance (0/2 ACs annotated)
+
+        - ac-1: "Filtered task lists read only project.tasks.yaml; no per-task directory accessed"
+
+        - ac-2: "Response time proportional to task count, not total notes/history volume"
+
+        - Behavior IS tested in task-data-manager.test.ts (the ac-2 test for index-only reads covers
+        this) but lacks explicit AC annotations referencing @task-listing-performance.
+
+
+        ### @task-detail-loading ac-1 (0/1 annotated — ac-2 is a separate implementation task)
+
+        - ac-1: "Detail request reads index entry and per-task directory; result is unified task
+        indistinguishable from current monolithic format"
+
+        - Behavior IS tested in split-backend.test.ts and task-data-manager.test.ts (getTask tests)
+        but lacks the annotation.
+
+
+        ### @task-storage-activation ac-2 (0/1 annotated — ac-1, ac-3, ac-5 already annotated)
+
+        - ac-2: "Split per-task directory format used for all operations when activated"
+
+        - Behavior IS tested in per-task-files.test.ts (the backend registration/activation tests)
+        but lacks the specific ac-2 annotation.
+
+
+        ## What to do
+
+
+        Add // AC: @spec-slug ac-N annotations to existing tests that already cover the behavior. No
+        new test logic needed — this is purely about traceability.
+
+
+        ## Why
+
+
+        AC annotations are the machine-parseable link between specs and tests. Without them, kspec
+        validate and coverage tools cannot verify that these ACs have test coverage. The behavior is
+        correct; only the annotations are missing.
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T22:57:30.356Z
   todos: []
