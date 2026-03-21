@@ -41373,6 +41373,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-21T18:06:48.292Z
+      - _ulid: 01KM8SHV6E7F1CXASAJ1FANB08
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM8SHTWEHK5YCTDXN8CHZ33X
+        timestamp: 2026-03-21T18:12:08.014Z
     examined_commit: d272c3a0e66962b616ef8f6bf63e661fa80191a6
     external_links: []
     lifecycle_state: open
@@ -41382,8 +41389,29 @@ reviews:
       content_hash: ""
       ref: "@01KM6YEWY1WSKEXTF5YNP5GG81"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM8SHTWEHK5YCTDXN8CHZ33X
+        anchor:
+          type: code
+          commit: d272c3a0e66962b616ef8f6bf63e661fa80191a6
+          line_end: 3255
+          line_start: 3247
+          path: src/cli/commands/task.ts
+          side: head
+        entries:
+          - _ulid: 01KM8SHTWEVPTW4JBX2D99TTKW
+            author: Test User
+            body: "Malformed non-empty _ulid values are still migrated verbatim instead of being regenerated.
+              This branch only replaces _ulid when it is missing or empty, so a task like '_ulid:
+              not-a-valid-ulid' is written to .kspec/tasks/not-a-valid-ulid/ and kept in
+              project.tasks.yaml. That reintroduces the blocker from the previous cycle and violates
+              the split-storage contract that task directories are ULID-named. I reproduced it
+              against this snapshot with the current CLI in a temp project: the command exited 0,
+              printed a validation warning, and created
+              .kspec/tasks/not-a-valid-ulid/{task,notes}.yaml."
+            created_at: 2026-03-21T18:12:07.694Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T18:06:24.079Z
-    updated_at: 2026-03-21T18:06:47.702Z
+    updated_at: 2026-03-21T18:12:07.694Z
     notes: []
