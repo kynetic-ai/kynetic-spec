@@ -42488,6 +42488,12 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-21T23:24:07.317Z
+      - _ulid: 01KM9BE55K32RXCJKKNY5AN4FY
+        actor: Test User
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KM9BD0YD1MG807CZB0E5XFA6
+        timestamp: 2026-03-21T23:24:41.523Z
     examined_commit: 6e8ed2622a60022c3094e03f5d57321a53683b34
     external_links: []
     lifecycle_state: open
@@ -42516,6 +42522,13 @@ reviews:
               shows list behavior is unaffected, so the annotation overstates coverage and leaves
               ac-2 effectively unproven.
             created_at: 2026-03-21T23:24:04.429Z
+          - _ulid: 01KM9BE4TSRJVKDYNQZYM8KET2
+            author: Test User
+            body: "Clarification: the missing proof is for @task-listing-performance ac-2 specifically. The
+              surrounding tests show index-only summary loading, but none of them vary note/history
+              volume or otherwise demonstrate that list cost stays proportional to task count rather
+              than per-task detail size."
+            created_at: 2026-03-21T23:24:41.177Z
         kind: blocker
       - _ulid: 01KM9BD1Z649DNET4PF55W1BDX
         anchor:
@@ -42537,5 +42550,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-21T23:20:17.564Z
-    updated_at: 2026-03-21T23:24:06.567Z
+    updated_at: 2026-03-21T23:24:41.177Z
     notes: []
