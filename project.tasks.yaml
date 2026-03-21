@@ -112056,7 +112056,26 @@
   session_id: 01KM6Z0569M0KEKFVTA1YHQX2Q
   created_at: 2026-03-21T00:59:16.796Z
   started_at: 2026-03-21T01:09:11.683Z
-  notes: []
+  notes:
+    - _ulid: 01KM6Z3EQ296YCF6VH1ZQ39RXN
+      content: >-
+        Deprecated all four superseded specs using kspec batch (atomic). Set maturity=deprecated and
+        superseded_by on each:
+
+        - @task-storage → superseded_by @task-directory-storage
+
+        - @task-storage-alongside → superseded_by @task-directory-storage
+
+        - @task-storage-separate → superseded_by @task-directory-storage
+
+        - @task-activity-git-query → superseded_by @task-activity-in-file
+
+
+        Used item set for maturity and item patch for superseded_by (not exposed as a CLI flag on
+        item set). All verified via kspec item get --json.
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T01:10:39.074Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YEN4XR089AVHHSWKJ6F9Q
