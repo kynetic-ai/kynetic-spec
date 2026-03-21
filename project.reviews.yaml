@@ -39542,6 +39542,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM89MQ87BNEETAC0N2DKXHMN
         timestamp: 2026-03-21T13:34:05.388Z
+      - _ulid: 01KM89MRK3PT49VR9G4HRQTMPK
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM89MRA4NDQBGWD92H47A43Z
+        timestamp: 2026-03-21T13:34:06.435Z
     examined_commit: 04dd1dbb397bb4101d90c59dac3a3e27f314b57b
     external_links: []
     lifecycle_state: open
@@ -39575,7 +39582,25 @@ reviews:
               guarantees for non-overlapping task mutations.'
             created_at: 2026-03-21T13:34:05.064Z
         kind: blocker
+      - _ulid: 01KM89MRA4NDQBGWD92H47A43Z
+        entries:
+          - _ulid: 01KM89MRA5X2Y9QVXEK8EGWVTC
+            author: Test User
+            body: "Review evidence log: Files read: AGENTS.md, kspec-agents.md, src/parser/task-data-manager.ts,
+              src/parser/split-backend.ts, src/cli/batch-write-buffer.ts, src/cli/commands/task.ts,
+              packages/daemon/src/routes/tasks.ts, packages/daemon/src/routes/diff.ts,
+              tests/per-task-files.test.ts, tests/split-backend.test.ts,
+              tests/task-atomic-writes.test.ts, tests/task-data-manager.test.ts. Commands run: git
+              diff --stat/name-only, kspec task get, kspec item get @task-core-data-file, kspec item
+              get @task-notes-file, rg AC annotations, rg resolveTaskDataManager/loadAllTasks call
+              sites, kspec validate, npm test, and a direct node reproduction against dist/. Claims
+              verified: split-callers now route through resolveTaskDataManager(ctx); AC annotations
+              exist for both specs; concurrent split writes can still lose a successful mutation
+              because of shared buffer reuse. Categories searched: correctness,
+              concurrency/atomicity, test coverage, integration call paths."
+            created_at: 2026-03-21T13:34:06.149Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-21T13:27:48.217Z
-    updated_at: 2026-03-21T13:34:05.064Z
+    updated_at: 2026-03-21T13:34:06.149Z
     notes: []
