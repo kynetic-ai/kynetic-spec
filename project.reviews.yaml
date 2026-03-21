@@ -41045,7 +41045,17 @@ reviews:
     slugs: []
     title: Review task-build-migration (cycle 2)
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed locally in this snapshot: 303 test files, 6911 passed, 3 skipped."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-21T17:55:43.752Z
+        completed_at: 2026-03-21T17:55:43.752Z
     events:
       - _ulid: 01KM8RHZ8D7EM8CSR5YGC6XVQ9
         actor: Test User
@@ -41081,6 +41091,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM8RKJW9752QMW42SQG6AKBW
         timestamp: 2026-03-21T17:55:36.763Z
+      - _ulid: 01KM8RKTA8XF7WTGF1CSRW19J7
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-21T17:55:44.073Z
     examined_commit: e83d3c1d997a2dcbd417ba261dd4963382db944a
     external_links: []
     lifecycle_state: open
@@ -41149,5 +41166,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-21T17:54:43.597Z
-    updated_at: 2026-03-21T17:55:36.457Z
+    updated_at: 2026-03-21T17:55:43.752Z
     notes: []
