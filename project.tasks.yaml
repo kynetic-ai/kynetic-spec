@@ -21360,7 +21360,7 @@
   type: task
   spec_ref: "@task-storage-migration"
   plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-impl-index"
@@ -21375,7 +21375,7 @@
   submission_linkage:
     review_url: null
     branch: dev
-    captured_at: 2026-03-21T18:51:47.054Z
+    captured_at: 2026-03-21T19:09:11.140Z
     commit: 8337c9ada07b3d1da672e92346b5b5e34ab5d31d
     remote: origin
     remote_url: git@github.com:kynetic-ai/kynetic-spec.git
@@ -21383,7 +21383,7 @@
   session_id: 01KM8W9297G96YMS1E4D4YQ4P5
   created_at: 2026-03-21T00:59:25.505Z
   started_at: 2026-03-21T19:09:08.315Z
-  submitted_at: 2026-03-21T18:51:47.206Z
+  submitted_at: 2026-03-21T19:09:11.297Z
   notes:
     - _ulid: 01KM8VT0KQ6CGJD0YMANYMWBQ6
       content: "Fix cycle 4: Addressed both blockers. (1) AC-8 atomicity test now uses a real shadow
