@@ -38536,6 +38536,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-21T11:14:01.831Z
+      - _ulid: 01KM81N5T5T70GFBFTKG3T9YNM
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM81N5FF4GH4D39BA4VCJ7TH
+        timestamp: 2026-03-21T11:14:31.365Z
     examined_commit: 1db83c00f8bd886f9006e661da0bcfcbdc6f228d
     external_links: []
     lifecycle_state: open
@@ -38545,8 +38552,28 @@ reviews:
       content_hash: ""
       ref: "@01KM6YET1A7XY9D0V3YQ9DRASG"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM81N5FF4GH4D39BA4VCJ7TH
+        anchor:
+          type: code
+          commit: 1db83c00f8bd886f9006e661da0bcfcbdc6f228d
+          line_end: 93
+          line_start: 93
+          path: src/cli/commands/tasks.ts
+          side: head
+        entries:
+          - _ulid: 01KM81N5FF6TECY8BNKHX69ZNV
+            author: Jacob Chapel
+            body: " still rebuilds tasks from , which is only the lean index in split mode. That loader drops
+              per-task  and , so every command in this file that uses it (, , , , , , and ) is
+              reading incomplete task objects under . I reproduced this with a temp split manifest:
+              after adding one note and one todo through ,  returned  and  while  returned  for
+              both. That means  output omits real notes/todos and  cannot match note content in
+              split storage, so the snapshot still fails the per-task-file behavior from user-facing
+              task commands."
+            created_at: 2026-03-21T11:14:31.023Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T11:09:30.269Z
-    updated_at: 2026-03-21T11:14:01.512Z
+    updated_at: 2026-03-21T11:14:31.023Z
     notes: []
