@@ -604,6 +604,7 @@ class SplitBackend implements TaskStorageBackend {
    *
    * AC: @task-data-manager ac-3 — assembles complete task transparently
    * AC: @task-detail-loading ac-1 — reads per-task directory for complete data
+   * AC: @task-detail-loading ac-2 — falls back to index data when per-task directory is missing
    */
   async getTask(ctx: KspecContext, ref: string): Promise<LoadedTask | undefined> {
     await this.ensureMigrated(ctx);
@@ -611,19 +612,34 @@ class SplitBackend implements TaskStorageBackend {
     if (/^[0-9A-HJKMNP-TV-Z]{10,26}$/.test(ref)) {
       // Could be a full ULID or a short ULID prefix
       if (ref.length === 26) {
-        return this.loadTaskFromDir(ctx, ref);
+        const task = await this.loadTaskFromDir(ctx, ref);
+        if (task) return task;
+        // AC: @task-detail-loading ac-2 — fallback to index when per-task directory is missing
+        return this.fallbackToIndexEntry(ctx, ref);
       }
       // Short ULID prefix — scan directories
       const ulids = await listTaskDirs(ctx);
       const matching = ulids.filter((u) => u.startsWith(ref));
       if (matching.length === 1) {
-        return this.loadTaskFromDir(ctx, matching[0]);
+        const task = await this.loadTaskFromDir(ctx, matching[0]);
+        if (task) return task;
+        return this.fallbackToIndexEntry(ctx, matching[0]);
+      }
+      // No directory match — try index for short ULID prefix
+      // AC: @task-detail-loading ac-2 — index fallback for missing per-task directory
+      if (matching.length === 0) {
+        return this.fallbackToIndexEntry(ctx, ref);
       }
     }
 
     // Fall back to loading all tasks and finding by ref (handles slugs)
     const allTasks = await this.loadAllTasks(ctx);
-    return findTaskByRef(allTasks, ref);
+    const found = findTaskByRef(allTasks, ref);
+    if (found) return found;
+
+    // Last resort: try slug-based lookup against the index
+    // AC: @task-detail-loading ac-2 — index fallback for missing per-task directory
+    return this.fallbackToIndexEntryByRef(ctx, ref);
   }
 
   /**
@@ -1036,6 +1052,119 @@ class SplitBackend implements TaskStorageBackend {
     } catch {
       return { task: undefined, history: [] };
     }
+  }
+
+  /**
+   * Fallback: construct a LoadedTask from an index entry when the per-task
+   * directory is missing. Emits a warning to stderr indicating degraded data.
+   *
+   * AC: @task-detail-loading ac-2 — returns index data with warning when
+   * per-task directory is missing; does not fail silently or throw
+   */
+  private async fallbackToIndexEntry(
+    ctx: KspecContext,
+    ulid: string,
+  ): Promise<LoadedTask | undefined> {
+    const indexPath = getIndexFilePath(ctx);
+    try {
+      const raw = await readYamlFile<unknown>(indexPath);
+      let entries: unknown[];
+      if (Array.isArray(raw)) {
+        entries = raw;
+      } else if (raw && typeof raw === "object" && "tasks" in raw) {
+        entries = Array.isArray((raw as Record<string, unknown>).tasks)
+          ? (raw as Record<string, unknown>).tasks as unknown[]
+          : [];
+      } else {
+        return undefined;
+      }
+
+      // Match by full ULID or short prefix
+      const match = entries.find((entry) => {
+        if (!entry || typeof entry !== "object") return false;
+        const e = entry as Record<string, unknown>;
+        return typeof e._ulid === "string" &&
+          (e._ulid === ulid || (ulid.length < 26 && e._ulid.startsWith(ulid)));
+      });
+
+      if (!match) return undefined;
+      return this.indexEntryToLoadedTask(match as Record<string, unknown>);
+    } catch {
+      return undefined;
+    }
+  }
+
+  /**
+   * Fallback: find a task in the index by slug ref when the per-task
+   * directory is missing.
+   *
+   * AC: @task-detail-loading ac-2 — index fallback for slug-based lookups
+   */
+  private async fallbackToIndexEntryByRef(
+    ctx: KspecContext,
+    ref: string,
+  ): Promise<LoadedTask | undefined> {
+    const indexPath = getIndexFilePath(ctx);
+    // Strip leading @ for slug matching
+    const normalizedRef = ref.startsWith("@") ? ref.slice(1) : ref;
+    try {
+      const raw = await readYamlFile<unknown>(indexPath);
+      let entries: unknown[];
+      if (Array.isArray(raw)) {
+        entries = raw;
+      } else if (raw && typeof raw === "object" && "tasks" in raw) {
+        entries = Array.isArray((raw as Record<string, unknown>).tasks)
+          ? (raw as Record<string, unknown>).tasks as unknown[]
+          : [];
+      } else {
+        return undefined;
+      }
+
+      const match = entries.find((entry) => {
+        if (!entry || typeof entry !== "object") return false;
+        const e = entry as Record<string, unknown>;
+        // Match by slug
+        if (Array.isArray(e.slugs) && e.slugs.includes(normalizedRef)) return true;
+        // Match by ULID
+        if (typeof e._ulid === "string" && e._ulid === normalizedRef) return true;
+        return false;
+      });
+
+      if (!match) return undefined;
+      return this.indexEntryToLoadedTask(match as Record<string, unknown>);
+    } catch {
+      return undefined;
+    }
+  }
+
+  /**
+   * Convert a raw index entry to a LoadedTask, emitting a warning about
+   * the missing per-task directory.
+   *
+   * The index entry has listing/filtering fields but lacks detail-only
+   * data (notes content, description, history). Schema defaults fill
+   * in empty arrays for notes and todos.
+   *
+   * AC: @task-detail-loading ac-2 — returns index data with warning
+   */
+  private indexEntryToLoadedTask(
+    entry: Record<string, unknown>,
+  ): LoadedTask | undefined {
+    // Index entries store notes_count/todos_count as scalars — strip them
+    // before parsing since TaskSchema expects notes/todos arrays (which will
+    // default to empty arrays via schema defaults)
+    const { notes_count: _nc, todos_count: _tc, ...taskFields } = entry;
+    const parsed = TaskSchema.safeParse(taskFields);
+    if (!parsed.success) return undefined;
+
+    const ulid = parsed.data._ulid;
+    process.stderr.write(
+      `Warning: Per-task directory missing for task ${ulid}. ` +
+      `Returning index-only data (notes, description, and history unavailable). ` +
+      `Run "kspec task rebuild-index" or re-migrate to restore full data.\n`,
+    );
+
+    return { ...parsed.data, _sourceFile: undefined };
   }
 
   /**

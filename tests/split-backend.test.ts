@@ -1493,4 +1493,241 @@ describe("SplitBackend", () => {
       expect(summary!.review_ref).toBe("@review-xyz");
     });
   });
+
+  // ── AC: @task-detail-loading ac-1 ──────────────────────────────────────
+  // Given: A caller requests full details for a specific task
+  // When: The task is loaded
+  // Then: The manager reads the index entry for filterable fields and the
+  //       per-task directory (task.yaml + notes.yaml) for complete data;
+  //       the result is a unified task object indistinguishable from the
+  //       current monolithic format
+  describe("detail loading assembles unified task (ac-1)", () => {
+    // AC: @task-detail-loading ac-1
+    it("getTask assembles complete task from index and per-task files", async () => {
+      const manager = new TaskDataManager("split");
+
+      const created = await manager.createTask(ctx, {
+        title: "Detail loading test",
+        slugs: ["detail-loading-test"],
+        description: "A full description",
+        priority: 2,
+        tags: ["feature", "mvp"],
+      });
+
+      // Add a note so both files contribute
+      await manager.addNote(ctx, "@detail-loading-test", "Implementation note", "@tester");
+
+      const task = await manager.getTask(ctx, created._ulid);
+      // Unified task has all fields
+      expect(task._ulid).toBe(created._ulid);
+      expect(task.title).toBe("Detail loading test");
+      expect(task.description).toBe("A full description");
+      expect(task.priority).toBe(2);
+      expect(task.tags).toEqual(["feature", "mvp"]);
+      expect(task.notes.length).toBe(1);
+      expect(task.notes[0].content).toBe("Implementation note");
+      expect(task.status).toBe("pending");
+    });
+
+    // AC: @task-detail-loading ac-1
+    it("getTask by slug assembles complete task", async () => {
+      const manager = new TaskDataManager("split");
+
+      await manager.createTask(ctx, {
+        title: "Slug detail test",
+        slugs: ["slug-detail-test"],
+        description: "Slug-accessed task",
+      });
+
+      await manager.addNote(ctx, "@slug-detail-test", "A note via slug", "@tester");
+
+      const task = await manager.getTask(ctx, "@slug-detail-test");
+      expect(task.title).toBe("Slug detail test");
+      expect(task.description).toBe("Slug-accessed task");
+      expect(task.notes.length).toBe(1);
+      expect(task.notes[0].content).toBe("A note via slug");
+    });
+
+    // AC: @task-detail-loading ac-1
+    it("getTask by short ULID prefix assembles complete task", async () => {
+      const manager = new TaskDataManager("split");
+
+      const created = await manager.createTask(ctx, {
+        title: "Short ULID test",
+        slugs: ["short-ulid-test"],
+      });
+
+      // Use first 10 characters as short prefix
+      const shortRef = created._ulid.slice(0, 10);
+      const task = await manager.getTask(ctx, shortRef);
+      expect(task._ulid).toBe(created._ulid);
+      expect(task.title).toBe("Short ULID test");
+    });
+  });
+
+  // ── AC: @task-detail-loading ac-2 ──────────────────────────────────────
+  // Given: A per-task directory is missing but an index entry exists
+  // When: The task detail is requested
+  // Then: The manager returns the index data with a warning indicating
+  //       the per-task directory is missing; it does not fail silently
+  //       or throw an unrecoverable error
+  describe("fallback for missing per-task directory (ac-2)", () => {
+    // AC: @task-detail-loading ac-2
+    it("returns index data when per-task directory is missing (full ULID)", async () => {
+      const manager = new TaskDataManager("split");
+
+      const created = await manager.createTask(ctx, {
+        title: "Fallback test",
+        slugs: ["fallback-test"],
+        priority: 2,
+        tags: ["bug"],
+      });
+
+      // Delete the per-task directory to simulate missing data
+      const taskDir = getTaskDir(ctx, created._ulid);
+      await fs.rm(taskDir, { recursive: true });
+
+      // Should NOT throw — returns degraded data from index
+      const task = await manager.getTask(ctx, created._ulid);
+      expect(task._ulid).toBe(created._ulid);
+      expect(task.title).toBe("Fallback test");
+      expect(task.priority).toBe(2);
+      expect(task.tags).toEqual(["bug"]);
+      expect(task.status).toBe("pending");
+      // Notes are unavailable in fallback — defaults to empty
+      expect(task.notes).toEqual([]);
+    });
+
+    // AC: @task-detail-loading ac-2
+    it("returns index data when per-task directory is missing (slug ref)", async () => {
+      const manager = new TaskDataManager("split");
+
+      const created = await manager.createTask(ctx, {
+        title: "Slug fallback test",
+        slugs: ["slug-fallback-test"],
+        priority: 1,
+        tags: ["infra"],
+      });
+
+      // Delete the per-task directory
+      const taskDir = getTaskDir(ctx, created._ulid);
+      await fs.rm(taskDir, { recursive: true });
+
+      // Should still be retrievable via slug
+      const task = await manager.getTask(ctx, "@slug-fallback-test");
+      expect(task._ulid).toBe(created._ulid);
+      expect(task.title).toBe("Slug fallback test");
+      expect(task.priority).toBe(1);
+    });
+
+    // AC: @task-detail-loading ac-2
+    it("returns index data when per-task directory is missing (short ULID)", async () => {
+      const manager = new TaskDataManager("split");
+
+      const created = await manager.createTask(ctx, {
+        title: "Short ULID fallback",
+        slugs: ["short-fallback"],
+      });
+
+      // Delete the per-task directory
+      const taskDir = getTaskDir(ctx, created._ulid);
+      await fs.rm(taskDir, { recursive: true });
+
+      // Should work with short ULID prefix
+      const shortRef = created._ulid.slice(0, 10);
+      const task = await manager.getTask(ctx, shortRef);
+      expect(task._ulid).toBe(created._ulid);
+      expect(task.title).toBe("Short ULID fallback");
+    });
+
+    // AC: @task-detail-loading ac-2
+    it("emits a warning to stderr when falling back to index data", async () => {
+      const manager = new TaskDataManager("split");
+
+      const created = await manager.createTask(ctx, {
+        title: "Warning test",
+        slugs: ["warning-test"],
+      });
+
+      // Delete the per-task directory
+      const taskDir = getTaskDir(ctx, created._ulid);
+      await fs.rm(taskDir, { recursive: true });
+
+      // Capture stderr
+      const stderrWrites: string[] = [];
+      const originalWrite = process.stderr.write;
+      process.stderr.write = ((chunk: string | Uint8Array) => {
+        stderrWrites.push(String(chunk));
+        return true;
+      }) as typeof process.stderr.write;
+
+      try {
+        await manager.getTask(ctx, created._ulid);
+      } finally {
+        process.stderr.write = originalWrite;
+      }
+
+      const allStderr = stderrWrites.join("");
+      expect(allStderr).toContain("Per-task directory missing");
+      expect(allStderr).toContain(created._ulid);
+    });
+
+    // AC: @task-detail-loading ac-2
+    it("does not throw an unrecoverable error for missing directory", async () => {
+      const manager = new TaskDataManager("split");
+
+      const created = await manager.createTask(ctx, {
+        title: "No throw test",
+        slugs: ["no-throw-test"],
+      });
+
+      // Delete the per-task directory
+      const taskDir = getTaskDir(ctx, created._ulid);
+      await fs.rm(taskDir, { recursive: true });
+
+      // Should not throw
+      await expect(
+        manager.getTask(ctx, created._ulid),
+      ).resolves.toBeDefined();
+    });
+
+    // AC: @task-detail-loading ac-2
+    it("returns empty notes and todos for fallback task", async () => {
+      const manager = new TaskDataManager("split");
+
+      const created = await manager.createTask(ctx, {
+        title: "Empty detail test",
+        slugs: ["empty-detail"],
+      });
+
+      // Add notes before deleting directory
+      await manager.addNote(ctx, "@empty-detail", "A note that will be lost", "@tester");
+
+      // Delete the per-task directory — notes are now gone
+      const taskDir = getTaskDir(ctx, created._ulid);
+      await fs.rm(taskDir, { recursive: true });
+
+      // Suppress stderr warning noise
+      const originalWrite = process.stderr.write;
+      process.stderr.write = (() => true) as typeof process.stderr.write;
+      try {
+        const task = await manager.getTask(ctx, created._ulid);
+        expect(task.notes).toEqual([]);
+        expect(task.todos).toEqual([]);
+      } finally {
+        process.stderr.write = originalWrite;
+      }
+    });
+
+    // AC: @task-detail-loading ac-2
+    it("still throws for truly non-existent tasks (no index entry)", async () => {
+      const manager = new TaskDataManager("split");
+
+      // No task created — neither index nor directory exists
+      const nonExistentUlid = testUlid("NOPE");
+      await expect(
+        manager.getTask(ctx, nonExistentUlid),
+      ).rejects.toThrow("Task not found");
+    });
+  });
 });
