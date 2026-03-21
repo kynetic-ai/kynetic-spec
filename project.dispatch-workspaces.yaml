@@ -15919,3 +15919,79 @@ workspaces:
         head: 0b83080a89d15bec8d00c46e33d52fc6c2597dd0
         last_seen_at: 2026-03-21T01:10:58.458Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-deprecate-old-storage-specs-01km6yem
+  - active_role: null
+    base_branch_point: 0b83080a89d15bec8d00c46e33d52fc6c2597dd0
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-update-activity-timeline-spec/01km6yen
+    canonical_branch_head: 0b83080a89d15bec8d00c46e33d52fc6c2597dd0
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-03-21T01:11:04.447Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-03-21T01:11:04.447Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: 0b83080a89d15bec8d00c46e33d52fc6c2597dd0
+      updated_at: 2026-03-21T01:11:04.447Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KM6YEN4XR089AVHHSWKJ6F9Q"
+    task_slug: task-update-activity-timeline-spec
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-03-21T01:11:04.447Z
+      created_at: 2026-03-21T01:11:04.447Z
+      updated_at: 2026-03-21T01:11:04.447Z
+    workspace_id: dispatch-workspace-01KM6YEN4XR089AVHHSWKJ6F9Q
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-update-activity-timeline-spec/01km6yen
+        head: 0b83080a89d15bec8d00c46e33d52fc6c2597dd0
+        last_seen_at: 2026-03-21T01:11:04.447Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-update-activity-timeline-spec-01km6yen
