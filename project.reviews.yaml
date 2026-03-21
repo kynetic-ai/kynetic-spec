@@ -35366,9 +35366,25 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-21T06:10:27.017Z
+      - _ulid: 01KM7GBM9S29XXKYAXKFACJ5TZ
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-21T06:12:12.729Z
+      - _ulid: 01KM7GBM9S9XMXZFQS0MDPNNAR
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-21T06:12:12.729Z
     examined_commit: 028e4ab3766f79012521057d9d4be114c06f2cf2
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -35442,7 +35458,14 @@ reviews:
               commit/atomicity semantics at each migrated write site).
             created_at: 2026-03-21T06:10:13.803Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-21T06:12:12.728Z
     created_at: 2026-03-21T06:08:55.442Z
-    updated_at: 2026-03-21T06:10:26.444Z
+    updated_at: 2026-03-21T06:12:12.729Z
     notes: []
