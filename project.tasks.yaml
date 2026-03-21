@@ -113740,7 +113740,7 @@
   spec_ref: "@task-storage-migration"
   plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
   origin: derived
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-impl-index"
@@ -113757,7 +113757,7 @@
   submission_linkage:
     review_url: null
     branch: dev
-    captured_at: 2026-03-21T18:04:41.055Z
+    captured_at: 2026-03-21T18:29:04.987Z
     commit: 87331ee1e9d640686caa51de93719322fb0c1a82
     remote: origin
     remote_url: git@github.com:kynetic-ai/kynetic-spec.git
@@ -113765,7 +113765,7 @@
   session_id: 01KM8T3HDWRJAXTB3QX2PJ4652
   created_at: 2026-03-21T00:59:25.505Z
   started_at: 2026-03-21T18:29:01.269Z
-  submitted_at: 2026-03-21T18:04:41.469Z
+  submitted_at: 2026-03-21T18:29:05.465Z
   notes:
     - _ulid: 01KM8QEKXAD9BTTSN93MCSCX0F
       content: Implemented task migrate command. The command reads monolithic project.tasks.yaml entries
