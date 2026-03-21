@@ -3,6 +3,9 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { stringify as toYaml, parse as parseYaml } from "yaml";
+import { TaskDataManager } from "../src/parser/task-data-manager.js";
+import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
+import type { KspecContext } from "../src/parser/yaml.js";
 import {
   cleanupTempDir,
   createTempDir,
@@ -12,6 +15,9 @@ import {
   testUlid,
   testUlids,
 } from "./helpers/cli.js";
+
+// Register the split backend so TaskDataManager can load split-format data
+ensureSplitBackendRegistered();
 
 /**
  * Helper: set up a monolithic task environment in a temp directory.
@@ -315,7 +321,7 @@ describe("kspec task migrate", () => {
   // Then: Every task has identical field values and notes to the pre-migration state
 
   // AC: @task-storage-migration ac-4
-  it("preserves task field values and notes through migration", async () => {
+  it("preserves task field values and notes through migration (loaded via TaskDataManager)", async () => {
     ({ env, specDir } = await setupMonolithicEnv(tempDir));
     const [id1] = testUlids("MGFD", 1);
     const notes = [
@@ -337,27 +343,38 @@ describe("kspec task migrate", () => {
 
     kspec("task migrate --force", tempDir, { env });
 
-    // Read back from per-task files directly (simulating TaskDataManager load)
-    const taskDir = path.join(specDir, "tasks", id1);
-    const taskYaml = parseYaml(await fs.readFile(path.join(taskDir, "task.yaml"), "utf-8"));
-    const notesYaml = parseYaml(await fs.readFile(path.join(taskDir, "notes.yaml"), "utf-8"));
+    // Load migrated data through TaskDataManager (the actual split-format load path)
+    const ctx: KspecContext = {
+      rootDir: tempDir,
+      projectRoot: tempDir,
+      specDir,
+      sessionsDir: path.join(tempDir, ".kspec-sessions"),
+      manifestPath: path.join(specDir, "kynetic.yaml"),
+      manifest: { kynetic_spec: "1.0", title: "Test Project", task_storage: { format: "split" } } as any,
+      shadow: null,
+      config: {} as any,
+    };
+    const manager = new TaskDataManager("split");
+    const loaded = await manager.getTask(ctx, id1);
 
-    // Core fields preserved
-    expect(taskYaml._ulid).toBe(id1);
-    expect(taskYaml.slugs).toEqual([`task-fidelity`]);
-    expect(taskYaml.title).toBe("Fidelity Test Task");
-    expect(taskYaml.status).toBe("in_progress");
-    expect(taskYaml.priority).toBe(1);
-    expect(taskYaml.tags).toEqual(["important", "cli"]);
-    expect(taskYaml.description).toBe("A task to test data fidelity through migration.");
-    expect(taskYaml.spec_ref).toBe("@some-spec");
-    expect(taskYaml.automation).toBe("eligible");
+    expect(loaded).toBeDefined();
 
-    // Notes preserved
-    expect(notesYaml.notes).toHaveLength(2);
-    expect(notesYaml.notes[0].content).toBe("Detailed note content");
-    expect(notesYaml.notes[0].author).toBe("@dev");
-    expect(notesYaml.notes[1].content).toBe("Follow-up note");
+    // Core fields preserved through TaskDataManager load
+    expect(loaded!._ulid).toBe(id1);
+    expect(loaded!.slugs).toEqual(["task-fidelity"]);
+    expect(loaded!.title).toBe("Fidelity Test Task");
+    expect(loaded!.status).toBe("in_progress");
+    expect(loaded!.priority).toBe(1);
+    expect(loaded!.tags).toEqual(["important", "cli"]);
+    expect(loaded!.description).toBe("A task to test data fidelity through migration.");
+    expect(loaded!.spec_ref).toBe("@some-spec");
+    expect(loaded!.automation).toBe("eligible");
+
+    // Notes preserved through TaskDataManager load
+    expect(loaded!.notes).toHaveLength(2);
+    expect(loaded!.notes[0].content).toBe("Detailed note content");
+    expect(loaded!.notes[0].author).toBe("@dev");
+    expect(loaded!.notes[1].content).toBe("Follow-up note");
   });
 
   // ── AC: @task-storage-migration ac-5 ────────────────────────────────────
@@ -405,6 +422,47 @@ describe("kspec task migrate", () => {
     expect(invalidTaskYaml.title).toBe("Invalid Schema Task");
     // The raw (invalid) status should be preserved
     expect(invalidTaskYaml.status).toBe("not_a_real_status");
+  });
+
+  // AC: @task-storage-migration ac-5
+  it("migrates tasks with malformed or missing notes (not silently skipped)", async () => {
+    ({ env, specDir } = await setupMonolithicEnv(tempDir));
+    const [idStringNotes, idNullNotes, idMissingNotes] = testUlids("MGMN", 3);
+
+    // Task with notes as a string (malformed)
+    const stringNotesTask = {
+      ...makeMonolithicTask(idStringNotes, "task-string-notes"),
+      notes: "bad",
+    };
+    // Task with notes as null
+    const nullNotesTask = {
+      ...makeMonolithicTask(idNullNotes, "task-null-notes"),
+      notes: null,
+    };
+    // Task with notes missing entirely (delete notes from the spread)
+    const { notes: _n, ...missingNotesBase } = makeMonolithicTask(idMissingNotes, "task-missing-notes");
+    const missingNotesTask = missingNotesBase;
+
+    await writeMonolithicTasks(specDir, [stringNotesTask, nullNotesTask, missingNotesTask]);
+
+    const result = kspec("task migrate --force", tempDir, { env });
+    expect(result.exitCode).toBe(0);
+
+    // All three tasks should be migrated (not skipped as "already migrated")
+    expect(result.stdout).not.toContain("Already migrated");
+
+    // All three should have per-task directories
+    for (const id of [idStringNotes, idNullNotes, idMissingNotes]) {
+      const stat = await fs.stat(path.join(specDir, "tasks", id));
+      expect(stat.isDirectory()).toBe(true);
+    }
+
+    // String-notes task should have warning and empty notes
+    const strNotesYaml = parseYaml(await fs.readFile(
+      path.join(specDir, "tasks", idStringNotes, "notes.yaml"), "utf-8",
+    )) as Record<string, unknown>;
+    expect(Array.isArray(strNotesYaml.notes)).toBe(true);
+    expect((strNotesYaml.notes as unknown[]).length).toBe(0);
   });
 
   // ── AC: @task-storage-migration ac-6 ────────────────────────────────────

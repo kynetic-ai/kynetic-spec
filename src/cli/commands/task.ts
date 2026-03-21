@@ -3225,8 +3225,11 @@ Examples:
         return;
       }
 
-      // Identify which entries are monolithic (have `notes` as array)
-      // vs already-lean index entries (have `notes_count` as number)
+      // Identify which entries are lean index entries (have `notes_count` as number)
+      // vs monolithic entries (everything else — including malformed notes).
+      // A lean index entry uses scalar counts; any entry without `notes_count`
+      // as a number is treated as monolithic and migrated (AC-5: malformed
+      // tasks migrate with a warning rather than being silently skipped).
       const monolithicEntries: Array<{ raw: Record<string, unknown>; index: number }> = [];
       const leanEntries: Array<{ raw: Record<string, unknown>; index: number }> = [];
 
@@ -3235,10 +3238,10 @@ Examples:
         if (!entry || typeof entry !== "object") continue;
         const rec = entry as Record<string, unknown>;
 
-        if (Array.isArray(rec.notes)) {
-          monolithicEntries.push({ raw: rec, index: i });
-        } else {
+        if (typeof rec.notes_count === "number") {
           leanEntries.push({ raw: rec, index: i });
+        } else {
+          monolithicEntries.push({ raw: rec, index: i });
         }
       }
 

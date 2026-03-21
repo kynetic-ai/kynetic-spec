@@ -503,12 +503,13 @@ class SplitBackend implements TaskStorageBackend {
       return;
     }
 
-    // Check for monolithic-style entries: they have `notes` as an array,
-    // whereas lean index entries use `notes_count` as a scalar number.
+    // Check for monolithic-style entries: lean index entries use `notes_count`
+    // as a scalar number. Any entry without `notes_count` as a number is
+    // potentially monolithic (including entries with malformed/missing notes).
     const unmigratedEntries = rawEntries.filter((entry) => {
       if (!entry || typeof entry !== "object") return false;
       const rec = entry as Record<string, unknown>;
-      return Array.isArray(rec.notes);
+      return typeof rec.notes_count !== "number";
     });
 
     if (unmigratedEntries.length > 0) {
