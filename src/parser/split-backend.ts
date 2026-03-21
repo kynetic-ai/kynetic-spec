@@ -22,9 +22,8 @@ import * as path from "node:path";
 import type { Task } from "../schema/task.js";
 import { TaskSchema } from "../schema/task.js";
 import {
-  activateBatchBuffer,
-  deactivateBatchBuffer,
   getActiveBatchBuffer,
+  runWithBuffer,
   mkdirBufferAware,
   readdirBufferAware,
   writeFileBufferAware,
@@ -619,10 +618,9 @@ class SplitBackend implements TaskStorageBackend {
     const taskFilePath = getTaskFilePath(ctx, task._ulid);
     const notesFilePath = getNotesFilePath(ctx, task._ulid);
 
-    const existingBuffer = getActiveBatchBuffer();
-    const localBuffer = !existingBuffer ? activateBatchBuffer(ctx.specDir) : null;
-
-    try {
+    // runWithBuffer creates an isolated async-local scope. If a parent
+    // buffer exists (from withWriteBuffer or batch-exec), it's reused.
+    return runWithBuffer(ctx.specDir, async () => {
       // Create directory
       await mkdirBufferAware(taskDir);
 
@@ -638,21 +636,8 @@ class SplitBackend implements TaskStorageBackend {
       // Add to index
       await this.addToIndex(ctx, task);
 
-      if (localBuffer) {
-        await localBuffer.flush();
-      }
-
       return { ...task, _sourceFile: taskFilePath };
-    } catch (error) {
-      if (localBuffer) {
-        localBuffer.discard();
-      }
-      throw error;
-    } finally {
-      if (localBuffer) {
-        deactivateBatchBuffer();
-      }
-    }
+    });
   }
 
   /**
@@ -710,11 +695,10 @@ class SplitBackend implements TaskStorageBackend {
         coreDataAfter as Record<string, unknown>,
       );
 
-      // Use a write buffer for atomicity
-      const existingBuffer = getActiveBatchBuffer();
-      const localBuffer = !existingBuffer ? activateBatchBuffer(ctx.specDir) : null;
-
-      try {
+      // Use a write buffer for atomicity — runWithBuffer creates an
+      // isolated async-local scope so concurrent mutations on other
+      // tasks don't share this buffer.
+      return await runWithBuffer(ctx.specDir, async () => {
         const taskFilePath = getTaskFilePath(ctx, task._ulid);
 
         // Only write task.yaml if core fields actually changed
@@ -743,21 +727,8 @@ class SplitBackend implements TaskStorageBackend {
           await this.updateIndexEntry(ctx, cleanTask);
         }
 
-        if (localBuffer) {
-          await localBuffer.flush();
-        }
-
         return { ...cleanTask, _sourceFile: taskFilePath };
-      } catch (error) {
-        if (localBuffer) {
-          localBuffer.discard();
-        }
-        throw error;
-      } finally {
-        if (localBuffer) {
-          deactivateBatchBuffer();
-        }
-      }
+      });
     } finally {
       releaseTaskLock();
     }
@@ -824,11 +795,10 @@ class SplitBackend implements TaskStorageBackend {
         );
       }
 
-      // Write all mutations within a single buffer transaction
-      const existingBuffer = getActiveBatchBuffer();
-      const localBuffer = !existingBuffer ? activateBatchBuffer(ctx.specDir) : null;
-
-      try {
+      // Write all mutations within a single buffer transaction.
+      // runWithBuffer creates an isolated async-local scope so concurrent
+      // mutations on other tasks don't share this buffer.
+      return await runWithBuffer(ctx.specDir, async () => {
         const updatedTasks: LoadedTask[] = [];
 
         for (let i = 0; i < mutatedTasks.length; i++) {
@@ -865,21 +835,8 @@ class SplitBackend implements TaskStorageBackend {
           updatedTasks.push({ ...cleanTask, _sourceFile: taskFilePath });
         }
 
-        if (localBuffer) {
-          await localBuffer.flush();
-        }
-
         return updatedTasks;
-      } catch (error) {
-        if (localBuffer) {
-          localBuffer.discard();
-        }
-        throw error;
-      } finally {
-        if (localBuffer) {
-          deactivateBatchBuffer();
-        }
-      }
+      });
     } finally {
       for (const release of releases) {
         release();
@@ -903,10 +860,8 @@ class SplitBackend implements TaskStorageBackend {
 
     try {
       const taskDir = getTaskDir(ctx, task._ulid);
-      const existingBuffer = getActiveBatchBuffer();
-      const localBuffer = !existingBuffer ? activateBatchBuffer(ctx.specDir) : null;
 
-      try {
+      await runWithBuffer(ctx.specDir, async () => {
         // Delete known per-task files through the buffer
         const taskFilePath = getTaskFilePath(ctx, task._ulid);
         const notesFilePath = getNotesFilePath(ctx, task._ulid);
@@ -924,20 +879,7 @@ class SplitBackend implements TaskStorageBackend {
 
         // Remove from index (also goes through the buffer)
         await this.removeFromIndex(ctx, task._ulid);
-
-        if (localBuffer) {
-          await localBuffer.flush();
-        }
-      } catch (error) {
-        if (localBuffer) {
-          localBuffer.discard();
-        }
-        throw error;
-      } finally {
-        if (localBuffer) {
-          deactivateBatchBuffer();
-        }
-      }
+      });
     } finally {
       releaseTaskLock();
     }

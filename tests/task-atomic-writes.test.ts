@@ -552,6 +552,106 @@ describe("Atomic Multi-File Task Writes", () => {
     });
   });
 
+  // ── Concurrent buffer isolation ──────────────────────────────────────
+  //
+  // Verifies that concurrent split mutations on different tasks each get
+  // their own buffer scope via AsyncLocalStorage. Previously, a process-
+  // global singleton buffer meant one operation's failure could discard
+  // another's successful writes.
+
+  describe("concurrent split mutations use isolated buffers", () => {
+    it("one mutation failure does not discard another's writes", async () => {
+      const [ulidA, ulidB] = testUlids("CONC", 2);
+      await createSplitTask(ctx, ulidA, "concurrent-a", { status: "pending" });
+      await createSplitTask(ctx, ulidB, "concurrent-b", { status: "pending" });
+
+      // Mutation A: will throw after a short delay
+      const mutationA = manager.mutateTask(
+        ctx,
+        `@${ulidA}`,
+        async (task) => {
+          // Yield to let mutation B start concurrently
+          await new Promise((r) => setTimeout(r, 10));
+          throw new Error("Simulated failure in mutation A");
+        },
+      );
+
+      // Mutation B: succeeds immediately
+      const mutationB = manager.mutateTask(
+        ctx,
+        `@${ulidB}`,
+        (task) => ({ ...task, priority: 1 }),
+      );
+
+      // Both run concurrently; A should fail, B should succeed
+      const results = await Promise.allSettled([mutationA, mutationB]);
+
+      expect(results[0].status).toBe("rejected");
+      expect(results[1].status).toBe("fulfilled");
+
+      // B's writes should be persisted — NOT discarded by A's failure
+      const taskBContent = await fs.readFile(getTaskFilePath(ctx, ulidB), "utf-8");
+      expect(taskBContent).toContain("priority: 1");
+
+      // A's task should be unchanged (its buffer was discarded)
+      const taskAContent = await fs.readFile(getTaskFilePath(ctx, ulidA), "utf-8");
+      expect(taskAContent).toContain("priority: 3");
+
+      // No buffer should remain active
+      expect(getActiveBatchBuffer()).toBeNull();
+    });
+
+    it("each concurrent mutation gets its own buffer instance", async () => {
+      const [ulidC, ulidD] = testUlids("CONP", 2);
+      await createSplitTask(ctx, ulidC, "concurrent-c", { status: "pending" });
+      await createSplitTask(ctx, ulidD, "concurrent-d", { status: "pending" });
+
+      let bufferC: ReturnType<typeof getActiveBatchBuffer> = null;
+      let bufferD: ReturnType<typeof getActiveBatchBuffer> = null;
+
+      // Use a barrier to ensure both mutations are in-flight simultaneously
+      let resolveBarrier: () => void;
+      const barrier = new Promise<void>((r) => { resolveBarrier = r; });
+      let arrivals = 0;
+
+      const mutationC = manager.mutateTask(
+        ctx,
+        `@${ulidC}`,
+        async (task) => {
+          bufferC = getActiveBatchBuffer();
+          arrivals++;
+          if (arrivals === 2) resolveBarrier!();
+          await barrier;
+          return { ...task, title: "Updated C" };
+        },
+      );
+
+      const mutationD = manager.mutateTask(
+        ctx,
+        `@${ulidD}`,
+        async (task) => {
+          bufferD = getActiveBatchBuffer();
+          arrivals++;
+          if (arrivals === 2) resolveBarrier!();
+          await barrier;
+          return { ...task, title: "Updated D" };
+        },
+      );
+
+      // Both mutations run concurrently — we only care that they have
+      // distinct buffer instances (isolation), not that they both flush
+      // without conflict. Index-level coordination is a separate concern.
+      await Promise.allSettled([mutationC, mutationD]);
+
+      // Critical assertion: each mutation must have seen its own buffer,
+      // NOT the same shared buffer. This prevents one operation's
+      // discard() from affecting the other.
+      expect(bufferC).not.toBeNull();
+      expect(bufferD).not.toBeNull();
+      expect(bufferC).not.toBe(bufferD);
+    });
+  });
+
   describe("monolithic format skips buffer management", () => {
     it("monolithic manager does not activate a write buffer", async () => {
       const monoManager = new TaskDataManager("monolithic");

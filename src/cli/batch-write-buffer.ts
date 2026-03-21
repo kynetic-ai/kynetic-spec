@@ -19,6 +19,7 @@
 import * as fs from "node:fs/promises";
 import type { Dirent } from "node:fs";
 import * as path from "node:path";
+import { AsyncLocalStorage } from "node:async_hooks";
 
 type OverlayEntryKind = "file" | "directory";
 type BufferedFileContent = string | Uint8Array;
@@ -410,32 +411,92 @@ export class WriteBuffer {
   }
 }
 
-// ── Module Singleton ─────────────────────────────────────────────────────────
+// ── Async-Local Buffer Scope ─────────────────────────────────────────────────
+//
+// Write buffers are scoped per async context using AsyncLocalStorage.
+// This ensures concurrent operations each see only their own buffer:
+// - batch-exec activates a buffer for the entire batch, visible to all
+//   commands dispatched within that async context
+// - withWriteBuffer (TaskDataManager) activates a per-operation buffer,
+//   invisible to concurrent operations on other tasks
+//
+// The old module-level singleton (_activeBuffer) caused a concurrency bug:
+// concurrent split mutations shared a single global buffer, so one
+// operation's discard() would silently lose another's successful writes.
 
-let _activeBuffer: WriteBuffer | null = null;
+const _bufferStorage = new AsyncLocalStorage<WriteBuffer>();
 
 /**
  * Activate an in-memory write buffer for the given specDir.
- * All subsequent writes to paths under specDir will go to the buffer.
+ * Stores the buffer in the current async context so only the current
+ * operation (and its descendants) see it via getActiveBatchBuffer().
+ *
+ * IMPORTANT: After calling this, you MUST call deactivateBatchBuffer()
+ * to exit the async context. For new code, prefer runWithBuffer() which
+ * manages the lifecycle automatically.
+ *
  * AC: @batch-write-buffer ac-1
  */
 export function activateBatchBuffer(specDir: string): WriteBuffer {
-  _activeBuffer = new WriteBuffer(specDir);
-  return _activeBuffer;
+  const buffer = new WriteBuffer(specDir);
+  _bufferStorage.enterWith(buffer);
+  return buffer;
 }
 
 /**
  * Deactivate the active buffer (after flush or discard).
+ * Exits the async-local context so subsequent code in this async context
+ * no longer sees the buffer.
  */
 export function deactivateBatchBuffer(): void {
-  _activeBuffer = null;
+  _bufferStorage.enterWith(undefined as unknown as WriteBuffer);
 }
 
 /**
- * Get the currently active write buffer, or null if not in batch mode.
+ * Get the currently active write buffer, or null if no buffer is active
+ * in the current async context.
  */
 export function getActiveBatchBuffer(): WriteBuffer | null {
-  return _activeBuffer;
+  return _bufferStorage.getStore() ?? null;
+}
+
+/**
+ * Run an operation within an isolated write buffer scope.
+ *
+ * Creates a new WriteBuffer, executes the callback within an async context
+ * where getActiveBatchBuffer() returns that buffer, then flushes on success
+ * or discards on failure. The buffer is invisible to concurrent operations
+ * running in other async contexts.
+ *
+ * If a buffer is already active (e.g., from batch-exec), returns null as
+ * the buffer parameter to the callback, signaling that the caller should
+ * reuse the existing buffer.
+ *
+ * AC: @batch-write-buffer ac-1 — writes buffered in memory
+ * AC: @batch-write-buffer ac-4 — rollback discards buffer on failure
+ */
+export async function runWithBuffer<T>(
+  specDir: string,
+  operation: (buffer: WriteBuffer | null) => Promise<T>,
+): Promise<T> {
+  const existingBuffer = getActiveBatchBuffer();
+  if (existingBuffer) {
+    // Already in a buffer scope (batch-exec or parent withWriteBuffer).
+    // Reuse it — the parent owns flush/discard lifecycle.
+    return operation(null);
+  }
+
+  const buffer = new WriteBuffer(specDir);
+  return _bufferStorage.run(buffer, async () => {
+    try {
+      const result = await operation(buffer);
+      await buffer.flush();
+      return result;
+    } catch (error) {
+      buffer.discard();
+      throw error;
+    }
+  });
 }
 
 export async function readdirBufferAware(

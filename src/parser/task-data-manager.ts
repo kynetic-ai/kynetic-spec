@@ -42,9 +42,8 @@ import { createRequire } from "node:module";
 import { acquireFileLock } from "./file-lock.js";
 import { commitIfShadow } from "./shadow.js";
 import {
-  activateBatchBuffer,
-  deactivateBatchBuffer,
   getActiveBatchBuffer,
+  runWithBuffer,
 } from "../cli/batch-write-buffer.js";
 
 /** Synchronous require for ESM — used for lazy backend registration. */
@@ -902,11 +901,11 @@ export class TaskDataManager {
    * Wrap a backend operation in a write buffer scope.
    *
    * For the split format, this ensures all file writes (index + per-task files)
-   * are collected in a single buffer and flushed atomically. The backend detects
-   * the active buffer via getActiveBatchBuffer() and uses it instead of creating
-   * its own. If a batch buffer is already active (from batch-exec), the backend
-   * reuses that buffer and the manager skips flush/deactivation — the batch
-   * executor owns the lifecycle.
+   * are collected in a single buffer and flushed atomically. Uses runWithBuffer()
+   * which creates an isolated async-local scope — concurrent operations on
+   * different tasks each get their own buffer and cannot interfere with each
+   * other. If a batch buffer is already active (from batch-exec or a parent
+   * operation), runWithBuffer() reuses it and the parent owns flush/discard.
    *
    * For the monolithic format, no buffer is needed since writes go to a single
    * file under a file lock.
@@ -936,48 +935,27 @@ export class TaskDataManager {
       return result;
     }
 
-    // If a batch buffer is already active, reuse it — the batch executor
-    // owns the buffer lifecycle and will flush/commit at the end.
-    const existingBuffer = getActiveBatchBuffer();
-    if (existingBuffer) {
-      const result = await operation();
-      if (commitOpts) {
-        await commitIfShadow(
-          ctx.shadow,
-          commitOpts.operation,
-          commitOpts.ref,
-          commitOpts.detail,
-          commitOpts.verbose,
-        );
-      }
-      return result;
+    // runWithBuffer creates an isolated async-local scope for the buffer.
+    // If a parent buffer already exists (batch-exec or outer operation),
+    // the callback receives null and the parent's buffer is reused.
+    // Otherwise, a new buffer is created, flushed on success, discarded
+    // on failure — all scoped to this async context only.
+    const result = await runWithBuffer(ctx.specDir, async () => {
+      return operation();
+    });
+
+    // Shadow commit AFTER flush — all files are on disk atomically
+    if (commitOpts) {
+      await commitIfShadow(
+        ctx.shadow,
+        commitOpts.operation,
+        commitOpts.ref,
+        commitOpts.detail,
+        commitOpts.verbose,
+      );
     }
 
-    // Activate a manager-owned buffer so all backend writes (index +
-    // per-task files) go to the same buffer.
-    const buffer = activateBatchBuffer(ctx.specDir);
-    try {
-      const result = await operation();
-      await buffer.flush();
-
-      // Shadow commit AFTER flush — all files are on disk atomically
-      if (commitOpts) {
-        await commitIfShadow(
-          ctx.shadow,
-          commitOpts.operation,
-          commitOpts.ref,
-          commitOpts.detail,
-          commitOpts.verbose,
-        );
-      }
-
-      return result;
-    } catch (error) {
-      buffer.discard();
-      throw error;
-    } finally {
-      deactivateBatchBuffer();
-    }
+    return result;
   }
 
   /**
