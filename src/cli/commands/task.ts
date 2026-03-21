@@ -18,7 +18,7 @@ import {
   scanTestCoverage,
   syncSpecImplementationStatus,
 } from "../../parser/index.js";
-import { resolveTaskDataManager, type TaskSummary } from "../../parser/task-data-manager.js";
+import { resolveTaskDataManager, type ShadowCommitOptions, type TaskSummary } from "../../parser/task-data-manager.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import {
   AutomationStatusSchema,
@@ -528,6 +528,10 @@ async function setTaskFields(
       validatedAutomation = automationResult.value;
     }
 
+    const setCommitOpts: ShadowCommitOptions = {
+      operation: "task-set",
+      ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
+    };
     const updatedTask = await resolveTaskDataManager(ctx).mutateTask(ctx, foundTask._ulid, (latestTask) => {
       const nextTask: Task = { ...latestTask };
       const mutationChanges: Array<{ field: string; before: unknown; after: unknown }> = [];
@@ -688,11 +692,10 @@ async function setTaskFields(
       }
 
       changes.splice(0, changes.length, ...mutationChanges);
+      // Set detail on commitOpts so TaskDataManager's shadow commit includes changed fields
+      setCommitOpts.detail = mutationChanges.map((c) => c.field).join(", ");
       return nextTask;
-    }, {
-      operation: "task-set",
-      ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
-    });
+    }, setCommitOpts);
 
     if (noChangesMessage) {
       return {
@@ -712,12 +715,6 @@ async function setTaskFields(
     }
 
     const changedFields = changes.map((c) => c.field).join(", ");
-    await commitIfShadow(
-      ctx.shadow,
-      "task-set",
-      foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
-      changedFields,
-    );
 
     return {
       success: true,
@@ -2059,6 +2056,10 @@ Examples:
         // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
         let transitionFromStatus: Task["status"] = foundTask.status;
         let cycleNumber = 0;
+        const needsWorkCommitOpts: ShadowCommitOptions = {
+          operation: "task-needs-work",
+          ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
+        };
         const updatedTask = await resolveTaskDataManager(ctx).mutateTask(
           ctx,
           foundTask._ulid,
@@ -2079,6 +2080,9 @@ Examples:
               getAuthor(ctx.config?.identity?.author),
             );
 
+            // Set detail on commitOpts so TaskDataManager's shadow commit includes cycle info
+            needsWorkCommitOpts.detail = `cycle ${cycleNumber}`;
+
             // AC: @session-scoped-task-claiming ac-claim-clear
             return {
               ...latestTask,
@@ -2087,23 +2091,13 @@ Examples:
               notes: [...latestTask.notes, note],
             };
           },
-          {
-            operation: "task-needs-work",
-            ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
-          },
+          needsWorkCommitOpts,
         );
 
         if (transitionFromStatus !== "pending_review") {
           error(errors.status.cannotNeedsWork(transitionFromStatus));
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
-
-        await commitIfShadow(
-          ctx.shadow,
-          "task-needs-work",
-          foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
-          `cycle ${cycleNumber}`,
-        );
 
         // AC: @daemon-agent-dispatch ac-2, ac-7 - Notify daemon of state change (fire-and-forget)
         postDispatchEvent({
@@ -2393,6 +2387,11 @@ Examples:
         // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
         let previousStatus: Task["status"] = foundTask.status;
         const clearedFields: string[] = [];
+        // AC: @spec-task-reset ac-3 - Shadow commit with message task-reset
+        const resetCommitOpts: ShadowCommitOptions = {
+          operation: "task-reset",
+          ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
+        };
         const updatedTask = await resolveTaskDataManager(ctx).mutateTask(ctx, foundTask._ulid, (latestTask) => {
           previousStatus = latestTask.status;
 
@@ -2400,6 +2399,9 @@ Examples:
           if (latestTask.status === "pending") {
             return latestTask;
           }
+
+          // Set detail on commitOpts so TaskDataManager's shadow commit includes previous status
+          resetCommitOpts.detail = `from ${latestTask.status}`;
 
           // AC: @spec-task-reset ac-1 - Reset to pending, clear completion-related fields
           const nextTask: Task = {
@@ -2459,23 +2461,12 @@ Examples:
           nextTask.notes = [...nextTask.notes, note];
 
           return nextTask;
-        }, {
-          operation: "task-reset",
-          ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
-        });
+        }, resetCommitOpts);
 
         if (previousStatus === "pending") {
           error("Task is already pending");
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
-
-        // AC: @spec-task-reset ac-3 - Shadow commit with message task-reset
-        await commitIfShadow(
-          ctx.shadow,
-          "task-reset",
-          foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
-          `from ${previousStatus}`,
-        );
 
         // AC: @spec-task-reset ac-6 - JSON output includes previous_status, new_status, cleared_fields
         const jsonOutput = {
@@ -3016,11 +3007,6 @@ Examples:
           warn(`Todo #${id} is already done`);
           return;
         }
-        await commitIfShadow(
-          ctx.shadow,
-          "task-note",
-          foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
-        );
         success(`Marked todo #${id} as done`, {
           todo: updatedTodo,
         });
@@ -3092,11 +3078,6 @@ Examples:
           warn(`Todo #${id} is not done`);
           return;
         }
-        await commitIfShadow(
-          ctx.shadow,
-          "task-note",
-          foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
-        );
         success(`Marked todo #${id} as not done`, {
           todo: updatedTodo,
         });
