@@ -35879,6 +35879,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-21T07:59:30.061Z
+      - _ulid: 01KM7PG3Q6H4GNPBERQJ9A3NBY
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM7PG3F75D8R9NP5Q2CSCB6F
+        timestamp: 2026-03-21T07:59:31.047Z
     examined_commit: 6023a5e30180743cd13485125c05f5975f5bf0da
     external_links: []
     lifecycle_state: open
@@ -35888,8 +35895,25 @@ reviews:
       content_hash: ""
       ref: "@01KM6YESAF92YTNXT3DF06AC0N"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM7PG3F75D8R9NP5Q2CSCB6F
+        anchor:
+          type: code
+          commit: 6023a5e30180743cd13485125c05f5975f5bf0da
+          line_end: 295
+          line_start: 225
+          path: src/parser/split-backend.ts
+          side: head
+        entries:
+          - _ulid: 01KM7PG3F7KPFFA82K851S7NWN
+            author: Jacob Chapel
+            body: " persists  and  into the index, but  explicitly excludes those fields from change detection.
+              As a result, note-only mutations leave the summary index stale: I reproduced  and the
+              task still reported  after the note was written. That breaks the current  contract for
+              list data, because  reads those counters only from the index in split mode."
+            created_at: 2026-03-21T07:59:30.791Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T07:59:05.203Z
-    updated_at: 2026-03-21T07:59:29.712Z
+    updated_at: 2026-03-21T07:59:30.791Z
     notes: []
