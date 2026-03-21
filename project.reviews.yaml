@@ -34251,6 +34251,17 @@ reviews:
         runner: npm
         created_at: 2026-03-21T04:02:25.894Z
         completed_at: 2026-03-21T04:02:25.894Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm test -- tests/action-model.test.ts -t "handles command failure with non-zero exit
+          code" passed in isolation (1 passed, 48 skipped).
+        name: isolated failing test
+        required: false
+        runner: npm
+        created_at: 2026-03-21T04:02:27.287Z
+        completed_at: 2026-03-21T04:02:27.287Z
     events:
       - _ulid: 01KM78QCF4SXVHYAPK74C3ST7Q
         actor: Jacob Chapel
@@ -34272,6 +34283,13 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-03-21T04:02:26.222Z
+      - _ulid: 01KM78Y1SEECN298X10KTKAJDH
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: isolated failing test
+        timestamp: 2026-03-21T04:02:27.759Z
     examined_commit: 2c8fbbdcbae2e51ff010b4c6e6fa51479d5581fc
     external_links: []
     lifecycle_state: open
@@ -34284,5 +34302,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-21T03:58:49.317Z
-    updated_at: 2026-03-21T04:02:25.894Z
+    updated_at: 2026-03-21T04:02:27.287Z
     notes: []
