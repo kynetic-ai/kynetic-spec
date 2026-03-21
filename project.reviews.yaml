@@ -42439,6 +42439,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-21T23:20:42.010Z
+      - _ulid: 01KM9BD18YMBPRYWZ09N6KBDY2
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM9BD0YD1MG807CZB0E5XFA6
+        timestamp: 2026-03-21T23:24:04.766Z
     examined_commit: 6e8ed2622a60022c3094e03f5d57321a53683b34
     external_links: []
     lifecycle_state: open
@@ -42448,8 +42455,27 @@ reviews:
       content_hash: ""
       ref: "@01KM99VKMSAS3JBX7S3QWBHRSV"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM9BD0YD1MG807CZB0E5XFA6
+        anchor:
+          type: code
+          commit: 6e8ed2622a60022c3094e03f5d57321a53683b34
+          line_end: 91
+          line_start: 90
+          path: tests/task-data-manager.test.ts
+          side: head
+        entries:
+          - _ulid: 01KM9BD0YD2B9N1Z27JG3Y2BWB
+            author: Test User
+            body: The new  annotation is not backed by a test that proves the AC. The requirement is about list
+              cost staying proportional to task count rather than notes/history volume, but this
+              block only asserts that list results omit detail fields and that summary extraction
+              avoids detail loading. There is no test here that varies notes/history volume and
+              shows list behavior is unaffected, so the annotation overstates coverage and leaves
+              ac-2 effectively unproven.
+            created_at: 2026-03-21T23:24:04.429Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T23:20:17.564Z
-    updated_at: 2026-03-21T23:20:41.695Z
+    updated_at: 2026-03-21T23:24:04.429Z
     notes: []
