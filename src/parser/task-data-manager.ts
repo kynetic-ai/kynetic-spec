@@ -27,6 +27,7 @@ import {
   extractRawTaskArray,
   findRawTaskIndex,
   findTaskByRef,
+  findTaskFiles,
   getDefaultTaskFilePath,
   loadAllTasks,
   mergeTaskPreservingRawShape,
@@ -302,14 +303,13 @@ async function loadSummariesFromFile(filePath: string): Promise<TaskSummary[]> {
 
 /**
  * Discover task files and load only summary-level data from each.
- * Uses the same file discovery algorithm as loadAllTasks but extracts
- * only index-level fields without running TaskSchema validation.
+ * Delegates file discovery to the same findTaskFiles() used by loadAllTasks
+ * so that both code paths discover identical task files (including those
+ * in subdirectories).
  *
  * AC: @task-data-manager ac-2 — only index data is read for listing
  */
 async function loadAllTaskSummaries(ctx: KspecContext): Promise<TaskSummary[]> {
-  // Reuse loadAllTasks' file discovery by importing findTaskFiles
-  // We inline the discovery logic to avoid importing a private function
   const summaries: TaskSummary[] = [];
 
   const checkFile = async (loc: string, files: string[]) => {
@@ -323,26 +323,9 @@ async function loadAllTaskSummaries(ctx: KspecContext): Promise<TaskSummary[]> {
     }
   };
 
-  const scanDir = async (dir: string): Promise<string[]> => {
-    const files: string[] = [];
-    try {
-      const entries = await fs.readdir(dir, { withFileTypes: true });
-      for (const entry of entries) {
-        if (
-          entry.isFile() &&
-          (entry.name.endsWith(".tasks.yaml") || entry.name === "tasks.yaml")
-        ) {
-          files.push(path.join(dir, entry.name));
-        }
-      }
-    } catch {
-      // Directory doesn't exist or can't be read
-    }
-    return files;
-  };
-
   if (ctx.shadow?.enabled || Boolean(process.env.KSPEC_SPEC_DIR)) {
-    const taskFiles = await scanDir(ctx.specDir);
+    // Use the same recursive findTaskFiles as loadAllTasks
+    const taskFiles = await findTaskFiles(ctx.specDir);
 
     const standaloneLocations = [
       path.join(ctx.specDir, "tasks.yaml"),
@@ -362,7 +345,8 @@ async function loadAllTaskSummaries(ctx: KspecContext): Promise<TaskSummary[]> {
       summaries.push(...fileSummaries);
     }
   } else {
-    const taskFiles = await scanDir(ctx.rootDir);
+    // Use the same recursive findTaskFiles as loadAllTasks
+    const taskFiles = await findTaskFiles(ctx.rootDir);
 
     const additionalPaths = [
       path.join(ctx.rootDir, "tasks"),
@@ -370,7 +354,7 @@ async function loadAllTaskSummaries(ctx: KspecContext): Promise<TaskSummary[]> {
     ];
 
     for (const additionalPath of additionalPaths) {
-      const files = await scanDir(additionalPath);
+      const files = await findTaskFiles(additionalPath);
       taskFiles.push(...files);
     }
 
@@ -516,12 +500,37 @@ class MonolithicBackend implements TaskStorageBackend {
     }
   }
 
+  /**
+   * Mutate multiple tasks with per-task locking for each target.
+   *
+   * Acquires per-task mutex locks for all target ULIDs (sorted to prevent
+   * deadlocks) before delegating to mutateTasksAtomically, which handles
+   * file-level locking. This ensures that a concurrent mutateTask() on
+   * any of the target tasks must wait, preventing lost updates.
+   *
+   * AC: @task-data-manager ac-5 — non-overlapping mutations proceed without contention
+   * AC: @task-data-manager ac-9 — same-task mutations serialize via per-task lock
+   */
   async mutateTasks(
     ctx: KspecContext,
     tasks: LoadedTask[],
     mutate: (latestTasks: LoadedTask[]) => Array<Task | LoadedTask> | Promise<Array<Task | LoadedTask>>,
   ): Promise<LoadedTask[]> {
-    return mutateTasksAtomically(ctx, tasks, mutate);
+    // Acquire per-task locks in sorted order to prevent deadlocks
+    const sortedUlids = [...new Set(tasks.map((t) => t._ulid))].sort();
+    const releases: Array<() => void> = [];
+
+    try {
+      for (const ulid of sortedUlids) {
+        releases.push(await this.taskMutex.acquire(ulid));
+      }
+
+      return await mutateTasksAtomically(ctx, tasks, mutate);
+    } finally {
+      for (const release of releases) {
+        release();
+      }
+    }
   }
 
   async deleteTask(ctx: KspecContext, task: LoadedTask): Promise<void> {

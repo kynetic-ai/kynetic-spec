@@ -1,3 +1,5 @@
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import {
   initContext,
@@ -13,6 +15,7 @@ import {
   kspec,
   setupTempFixtures,
   testUlid,
+  testUlids,
 } from "./helpers/cli.js";
 
 /** Detail-only fields that must NOT appear on TaskSummary results from listTasks. */
@@ -190,6 +193,66 @@ describe("TaskDataManager", () => {
         status: ["pending", "completed"],
       });
       expect(tasks.length).toBe(4); // 3 pending + 1 completed
+    });
+
+    it("discovers task files in subdirectories (recursive discovery)", async () => {
+      tempDir = await setupTempFixtures();
+      manager = new TaskDataManager();
+      const ctx = await initContext(tempDir);
+
+      // Create a subdirectory with an additional tasks file
+      const subDir = path.join(ctx.specDir, "submodule");
+      await fs.mkdir(subDir, { recursive: true });
+
+      const [nestedUlid1, nestedUlid2] = testUlids("NEST", 2);
+      const nestedTasksYaml = [
+        `- _ulid: ${nestedUlid1}`,
+        '  title: "Nested task one"',
+        "  slugs: [nested-task-one]",
+        "  type: task",
+        "  status: pending",
+        "  priority: 3",
+        "  tags: [nested]",
+        "  depends_on: []",
+        "  blocked_by: []",
+        `  created_at: "2026-03-20T00:00:00.000Z"`,
+        "  notes: []",
+        "  todos: []",
+        `- _ulid: ${nestedUlid2}`,
+        '  title: "Nested task two"',
+        "  slugs: [nested-task-two]",
+        "  type: task",
+        "  status: pending",
+        "  priority: 2",
+        "  tags: [nested]",
+        "  depends_on: []",
+        "  blocked_by: []",
+        `  created_at: "2026-03-20T00:00:00.000Z"`,
+        "  notes: []",
+        "  todos: []",
+      ].join("\n");
+
+      await fs.writeFile(
+        path.join(subDir, "nested.tasks.yaml"),
+        nestedTasksYaml,
+      );
+
+      // loadAllTasks (the existing loader) should find the nested tasks
+      const allTasks = await loadAllTasks(ctx);
+      const nestedFromLoader = allTasks.filter((t) =>
+        t.slugs.some((s) => s.startsWith("nested-task-")),
+      );
+      expect(nestedFromLoader.length).toBe(2);
+
+      // listTasks (the manager's summary loader) must find them too
+      const summaries = await manager.listTasks(ctx);
+      const nestedFromManager = summaries.filter((t) =>
+        t.slugs.some((s) => s.startsWith("nested-task-")),
+      );
+      expect(nestedFromManager.length).toBe(2);
+
+      // Both loaders must discover the same total count
+      expect(summaries.length).toBe(allTasks.length);
     });
 
     it("does not run full TaskSchema validation for listing", async () => {
@@ -665,6 +728,48 @@ describe("TaskDataManager", () => {
       expect(
         reloaded.notes.some((n) => n.content === "Concurrent note"),
       ).toBe(true);
+    });
+
+    it("serializes overlapping mutateTask and mutateTasks on the same task", async () => {
+      tempDir = await setupTempFixtures();
+      manager = new TaskDataManager();
+      const ctx = await initContext(tempDir);
+
+      // Run mutateTask on @test-task-pending in parallel with mutateTasks
+      // targeting [@test-task-pending, @test-task-secondary]. If mutateTasks
+      // doesn't acquire per-task locks, the single-task mutation can overwrite
+      // the batch update or vice versa, losing one set of changes.
+      const [singleResult, batchResult] = await Promise.all([
+        manager.mutateTask(ctx, "@test-task-pending", async (task) => {
+          // Add delay so both mutations overlap
+          await new Promise((resolve) => setTimeout(resolve, 20));
+          return { ...task, priority: 1 as const };
+        }),
+        manager.mutateTasks(
+          ctx,
+          ["@test-task-pending", "@test-task-secondary"],
+          (tasks) =>
+            tasks.map((task) => ({
+              ...task,
+              tags: [...task.tags, "batch-tagged"],
+            })),
+        ),
+      ]);
+
+      expect(singleResult).toBeDefined();
+      expect(batchResult.length).toBe(2);
+
+      // Reload and verify both mutations took effect on the shared task
+      const reloaded = await manager.getTask(ctx, "@test-task-pending");
+      // Exactly one of these operations ran last. Since they serialize,
+      // the task must reflect the priority from mutateTask AND the tag
+      // from mutateTasks — both changes must be present.
+      expect(reloaded.priority).toBe(1);
+      expect(reloaded.tags).toContain("batch-tagged");
+
+      // The secondary task should also have the batch tag
+      const secondary = await manager.getTask(ctx, "@test-task-secondary");
+      expect(secondary.tags).toContain("batch-tagged");
     });
   });
 
