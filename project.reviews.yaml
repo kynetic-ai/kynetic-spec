@@ -42182,6 +42182,16 @@ reviews:
         runner: vitest
         created_at: 2026-03-21T19:13:46.920Z
         completed_at: 2026-03-21T19:13:46.920Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 303 test files passed; 6918 tests passed, 3 skipped.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-21T19:13:48.132Z
+        completed_at: 2026-03-21T19:13:48.132Z
     events:
       - _ulid: 01KM8WWCEXKWAN6TQ4973CEF3D
         actor: Test User
@@ -42210,6 +42220,13 @@ reviews:
           status: pass
           name: tests/task-migrate.test.ts
         timestamp: 2026-03-21T19:13:47.324Z
+      - _ulid: 01KM8X2RWA411X326JYYTV1ZHD
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-21T19:13:48.427Z
     examined_commit: cb1ed366bb42915d700aae438ac48a1eac4737b4
     external_links: []
     lifecycle_state: open
@@ -42222,5 +42239,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-21T19:10:19.101Z
-    updated_at: 2026-03-21T19:13:46.920Z
+    updated_at: 2026-03-21T19:13:48.132Z
     notes: []
