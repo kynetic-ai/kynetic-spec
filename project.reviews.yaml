@@ -42501,6 +42501,12 @@ reviews:
           kind: nit
           thread_ulid: 01KM9BE5W13TFDGJKGMCKD416N
         timestamp: 2026-03-21T23:24:42.550Z
+      - _ulid: 01KM9BE772XAPEJW6WT3ZBG2P7
+        actor: Test User
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KM9BD1Z649DNET4PF55W1BDX
+        timestamp: 2026-03-21T23:24:43.618Z
     examined_commit: 6e8ed2622a60022c3094e03f5d57321a53683b34
     external_links: []
     lifecycle_state: open
@@ -42554,6 +42560,13 @@ reviews:
               (for example create/mutate/delete). As written, the annotation narrows the behavior
               under test and marks the broader AC as covered when it is not.
             created_at: 2026-03-21T23:24:05.478Z
+          - _ulid: 01KM9BE6W5PZSH7KRJX5X84PBN
+            author: Test User
+            body: "Clarification: this is about @task-storage-activation ac-2. The test proves split activation
+              affects listTasks and getTask, but it does not exercise write paths such as
+              createTask, mutateTask, or deleteTask, so it does not justify claiming the broader all
+              reads and writes criterion."
+            created_at: 2026-03-21T23:24:43.269Z
         kind: blocker
       - _ulid: 01KM9BE5W13TFDGJKGMCKD416N
         entries:
@@ -42573,5 +42586,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-21T23:20:17.564Z
-    updated_at: 2026-03-21T23:24:42.241Z
+    updated_at: 2026-03-21T23:24:43.269Z
     notes: []
