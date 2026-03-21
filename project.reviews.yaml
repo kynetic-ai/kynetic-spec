@@ -34809,6 +34809,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM7CZWVMN2JNQMXJJ9JYM8AK
         timestamp: 2026-03-21T05:13:22.788Z
+      - _ulid: 01KM7CZXYBZE2MQHR9YCRBJ56C
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM7CZXPS31R7PA1ATVQ7HK94
+        timestamp: 2026-03-21T05:13:23.659Z
     examined_commit: a48c51675ffcedf07930adf5c12aab91d1463717
     external_links: []
     lifecycle_state: open
@@ -34860,7 +34867,24 @@ reviews:
               integration, API contract compatibility."
             created_at: 2026-03-21T05:13:22.549Z
         kind: nit
+      - _ulid: 01KM7CZXPS31R7PA1ATVQ7HK94
+        anchor:
+          type: code
+          commit: a48c51675ffcedf07930adf5c12aab91d1463717
+          line_end: 20
+          line_start: 12
+          path: tests/daemon-task-data-manager-migration.test.ts
+          side: head
+        entries:
+          - _ulid: 01KM7CZXPTSNTF9FQ6N6EJCQPS
+            author: Jacob Chapel
+            body: This new test reads the implementation source file directly and asserts on string patterns
+              instead of exercising daemon behavior. That violates the repo's no-static-analysis
+              test rule, and npm test currently fails on tests/lint/no-static-analysis.test.ts
+              because of this file. As submitted, the task cannot pass the required test gate.
+            created_at: 2026-03-21T05:13:23.418Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T05:08:28.283Z
-    updated_at: 2026-03-21T05:13:22.549Z
+    updated_at: 2026-03-21T05:13:23.418Z
     notes: []
