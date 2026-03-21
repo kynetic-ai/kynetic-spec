@@ -17895,7 +17895,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-21T23:25:50.830Z
+      updated_at: 2026-03-21T23:25:53.252Z
     integration:
       status: pending
       detail: null
@@ -17904,25 +17904,20 @@ workspaces:
       target_branch: dev
       target_commit: 6661e9cae3c71f9e8292fa2e75c39e69e148ff77
       updated_at: 2026-03-21T23:25:50.830Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KM99VKMSAS3JBX7S3QWBHRSV"
     task_slug: add-missing-ac-test-annotations-for-storage-split-specs
     timestamps:
       closed_at: null
       last_active_at: 2026-03-21T23:19:25.064Z
-      last_reconciled_at: 2026-03-21T23:25:50.830Z
+      last_reconciled_at: 2026-03-21T23:25:53.252Z
       created_at: 2026-03-21T23:11:15.289Z
-      updated_at: 2026-03-21T23:25:50.830Z
+      updated_at: 2026-03-21T23:25:53.252Z
     workspace_id: dispatch-workspace-01KM99VKMSAS3JBX7S3QWBHRSV
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 6e8ed2622a60022c3094e03f5d57321a53683b34
-        last_seen_at: 2026-03-21T23:19:19.406Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/add-missing-ac-test-annotations-for-storage-split-specs-01km99vk-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/add-missing-ac-test-annotations-for-storage-split-specs/01km99vk
