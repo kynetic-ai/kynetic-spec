@@ -16515,18 +16515,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-migrate-supporting/01km6yeq
-    canonical_branch_head: 028e4ab3766f79012521057d9d4be114c06f2cf2
+    canonical_branch_head: cc86164e3003f834f77f39b6a71e24ff25e52362
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-21T06:12:48.162Z
+      updated_at: 2026-03-21T06:23:37.804Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-21T06:12:49.900Z
+      updated_at: 2026-03-21T06:23:37.804Z
     integration:
       status: pending
       detail: null
@@ -16534,7 +16534,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 6cb272c5d20a72401bf9fe26e7dfe40cf64fff75
-      updated_at: 2026-03-21T06:12:48.162Z
+      updated_at: 2026-03-21T06:23:37.804Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KM6YEQYJGQ4JF2ECR67DANZQ"
@@ -16542,9 +16542,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-21T06:12:49.900Z
-      last_reconciled_at: 2026-03-21T06:12:49.900Z
+      last_reconciled_at: 2026-03-21T06:23:37.804Z
       created_at: 2026-03-21T05:31:50.974Z
-      updated_at: 2026-03-21T06:12:49.900Z
+      updated_at: 2026-03-21T06:23:37.804Z
     workspace_id: dispatch-workspace-01KM6YEQYJGQ4JF2ECR67DANZQ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
