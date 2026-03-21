@@ -5,9 +5,12 @@
  * through this module. It encapsulates the storage format behind a consistent
  * interface so callers provide mutations, not I/O strategy.
  *
- * Phase 1: Wraps the existing monolithic file operations (loadAllTasks, saveTask,
- * mutateTaskAtomically, mutateTasksAtomically, deleteTask). The split storage
- * backend comes in a later phase.
+ * The manager supports two storage formats:
+ * - "monolithic": All tasks in a single file (default, current)
+ * - "split": Per-task directories with a lean index (future)
+ *
+ * The active format is an explicit setting, not auto-detected.
+ * AC: @task-storage-activation ac-1, ac-2
  *
  * Spec: @task-data-manager
  */
@@ -26,6 +29,68 @@ import {
   saveTask as saveTaskToFile,
 } from "./yaml.js";
 import { commitIfShadow } from "./shadow.js";
+
+/**
+ * Storage format selector.
+ * AC: @task-data-manager ac-7, ac-8
+ * AC: @task-storage-activation ac-1, ac-2
+ */
+export type StorageFormat = "monolithic" | "split";
+
+/**
+ * Summary record returned by listTasks — contains only index-level fields
+ * needed for listing, filtering, and dependency resolution.
+ *
+ * AC: @task-data-manager ac-2 — only index data read for listing
+ * AC: @task-index-file ac-1 — no notes, history, or detail-only data
+ */
+export interface TaskSummary {
+  _ulid: string;
+  slugs: string[];
+  title: string;
+  type: string;
+  status: string;
+  priority: number;
+  tags: string[];
+  assignee?: string | null;
+  automation?: string;
+  spec_ref?: string | null;
+  depends_on: string[];
+  blocked_by: string[];
+  created_at: string;
+  started_at?: string | null;
+  submitted_at?: string | null;
+  completed_at?: string | null;
+  _sourceFile?: string;
+}
+
+/**
+ * Project only the index-level fields from a full task record.
+ * Detail fields (notes, todos, description, vcs_refs, etc.) are stripped.
+ *
+ * AC: @task-data-manager ac-2 — callers of listTasks get only index data
+ */
+function toTaskSummary(task: LoadedTask): TaskSummary {
+  return {
+    _ulid: task._ulid,
+    slugs: task.slugs,
+    title: task.title,
+    type: task.type,
+    status: task.status,
+    priority: task.priority,
+    tags: task.tags,
+    assignee: task.assignee,
+    automation: task.automation,
+    spec_ref: task.spec_ref,
+    depends_on: task.depends_on,
+    blocked_by: task.blocked_by,
+    created_at: task.created_at,
+    started_at: task.started_at,
+    submitted_at: task.submitted_at,
+    completed_at: task.completed_at,
+    _sourceFile: task._sourceFile,
+  };
+}
 
 /**
  * Options for shadow branch commits after mutations.
@@ -87,52 +152,90 @@ export class TaskDataManagerError extends Error {
  *
  * AC: @task-data-manager ac-1 — callers don't know about storage format
  * AC: @task-data-manager ac-7 — monolithic format used by default
+ * AC: @task-data-manager ac-8 — split format used when activated
  *
- * The manager is stateless — it receives KspecContext per operation rather than
- * holding a reference. This matches the existing pattern where context is resolved
- * per-command invocation.
+ * The manager receives a storage format at construction time. The format
+ * defaults to "monolithic" per @task-storage-activation ac-1. When set to
+ * "split", the manager routes to the split backend (not yet implemented;
+ * the split storage backend is delivered by @task-impl-split-storage).
  */
 export class TaskDataManager {
+  readonly storageFormat: StorageFormat;
+
+  constructor(storageFormat: StorageFormat = "monolithic") {
+    this.storageFormat = storageFormat;
+  }
+
   /**
-   * List all tasks, returning summary records.
+   * Guard that throws if the split backend is requested but not yet available.
+   * AC: @task-data-manager ac-8 — split format routing
+   * AC: @trait-error-guidance ac-1, ac-2 — descriptive error with suggestion
+   */
+  private ensureBackendAvailable(): void {
+    if (this.storageFormat === "split") {
+      throw new TaskDataManagerError(
+        "Split storage format is not yet implemented. The split per-task directory backend is delivered by task @task-impl-split-storage.",
+        {
+          suggestion:
+            "Set storage format to 'monolithic' or wait for the split storage implementation to be completed.",
+          field: "storageFormat",
+        },
+      );
+    }
+  }
+
+  /**
+   * List all tasks, returning summary records with only index-level fields.
    *
-   * In the monolithic backend, this reads the full file. When the split format
-   * is activated, this will read only the lean index file.
+   * Returns TaskSummary objects that contain only the fields needed for
+   * listing, filtering, and dependency resolution. Detail fields (notes,
+   * todos, description, etc.) are not included.
    *
-   * AC: @task-data-manager ac-2 — only index data read for listing
+   * In the monolithic backend, this reads the full file and projects index
+   * fields. In the split backend (future), this will read only the lean
+   * index file.
+   *
+   * AC: @task-data-manager ac-2 — only index data returned to callers
    * AC: @task-data-manager ac-7 — monolithic format used until split activated
    */
   async listTasks(
     ctx: KspecContext,
     filters?: TaskListFilters,
-  ): Promise<LoadedTask[]> {
+  ): Promise<TaskSummary[]> {
+    this.ensureBackendAvailable();
+
     const tasks = await loadAllTasks(ctx);
 
+    let filtered: LoadedTask[];
     if (!filters) {
-      return tasks;
+      filtered = tasks;
+    } else {
+      filtered = tasks.filter((task) => {
+        if (filters.status) {
+          const statuses = Array.isArray(filters.status)
+            ? filters.status
+            : [filters.status];
+          if (!statuses.includes(task.status)) return false;
+        }
+        if (filters.tags && filters.tags.length > 0) {
+          if (!filters.tags.some((tag) => task.tags.includes(tag)))
+            return false;
+        }
+        if (filters.assignee !== undefined) {
+          if (task.assignee !== filters.assignee) return false;
+        }
+        if (filters.automation !== undefined) {
+          if (task.automation !== filters.automation) return false;
+        }
+        if (filters.specRef !== undefined) {
+          if (task.spec_ref !== filters.specRef) return false;
+        }
+        return true;
+      });
     }
 
-    return tasks.filter((task) => {
-      if (filters.status) {
-        const statuses = Array.isArray(filters.status)
-          ? filters.status
-          : [filters.status];
-        if (!statuses.includes(task.status)) return false;
-      }
-      if (filters.tags && filters.tags.length > 0) {
-        if (!filters.tags.some((tag) => task.tags.includes(tag))) return false;
-      }
-      if (filters.assignee !== undefined) {
-        if (task.assignee !== filters.assignee) return false;
-      }
-      if (filters.automation !== undefined) {
-        if (task.automation !== filters.automation) return false;
-      }
-      if (filters.specRef !== undefined) {
-        if (task.spec_ref !== filters.specRef) return false;
-      }
-      return true;
-    });
+    // AC: @task-data-manager ac-2 — project only index fields
+    return filtered.map(toTaskSummary);
   }
 
   /**
@@ -147,6 +250,7 @@ export class TaskDataManager {
    * AC: @trait-error-guidance ac-3 — suggests checking ref on not found
    */
   async getTask(ctx: KspecContext, ref: string): Promise<LoadedTask> {
+    this.ensureBackendAvailable();
     const tasks = await loadAllTasks(ctx);
     const task = findTaskByRef(tasks, ref);
     if (!task) {
@@ -177,6 +281,7 @@ export class TaskDataManager {
     input: TaskInput,
     commitOpts?: ShadowCommitOptions,
   ): Promise<LoadedTask> {
+    this.ensureBackendAvailable();
     let newTask: Task;
     try {
       newTask = createTask(input);
@@ -226,6 +331,7 @@ export class TaskDataManager {
     ) => Task | LoadedTask | Promise<Task | LoadedTask>,
     commitOpts?: ShadowCommitOptions,
   ): Promise<LoadedTask> {
+    this.ensureBackendAvailable();
     // Resolve the task first to get _sourceFile for locking
     const task = await this.getTask(ctx, ref);
 
@@ -264,6 +370,7 @@ export class TaskDataManager {
     ) => Array<Task | LoadedTask> | Promise<Array<Task | LoadedTask>>,
     commitOpts?: ShadowCommitOptions,
   ): Promise<LoadedTask[]> {
+    this.ensureBackendAvailable();
     // Resolve all refs to loaded tasks
     const tasks = await Promise.all(
       refs.map((ref) => this.getTask(ctx, ref)),
@@ -298,6 +405,7 @@ export class TaskDataManager {
     ref: string,
     commitOpts?: ShadowCommitOptions,
   ): Promise<void> {
+    this.ensureBackendAvailable();
     const task = await this.getTask(ctx, ref);
 
     if (!task._sourceFile) {
@@ -337,6 +445,7 @@ export class TaskDataManager {
     author?: string,
     commitOpts?: ShadowCommitOptions,
   ): Promise<{ task: LoadedTask; note: Note }> {
+    this.ensureBackendAvailable();
     const note = createNote(content, author);
 
     const updated = await this.mutateTask(

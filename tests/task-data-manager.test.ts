@@ -5,12 +5,33 @@ import {
   TaskDataManager,
   TaskDataManagerError,
 } from "../src/parser/index.js";
+import type { TaskSummary } from "../src/parser/task-data-manager.js";
 import {
   cleanupTempDir,
   kspec,
   setupTempFixtures,
   testUlid,
 } from "./helpers/cli.js";
+
+/** Detail-only fields that must NOT appear on TaskSummary results from listTasks. */
+const DETAIL_ONLY_FIELDS = [
+  "notes",
+  "todos",
+  "description",
+  "vcs_refs",
+  "review_url",
+  "review_ref",
+  "submission_linkage",
+  "session_id",
+  "meta_ref",
+  "plan_ref",
+  "derivation",
+  "origin",
+  "prior_status",
+  "closed_reason",
+  "complexity",
+  "context",
+] as const;
 
 describe("TaskDataManager", () => {
   let tempDir: string;
@@ -33,7 +54,7 @@ describe("TaskDataManager", () => {
       const tasks = await manager.listTasks(ctx);
       expect(tasks.length).toBeGreaterThan(0);
 
-      // Callers get LoadedTask objects — the storage format is not exposed
+      // Callers get TaskSummary objects for listing — the storage format is not exposed
       const task = tasks[0];
       expect(task._ulid).toBeDefined();
       expect(task.title).toBeDefined();
@@ -60,18 +81,55 @@ describe("TaskDataManager", () => {
 
   // AC: @task-data-manager ac-2
   // Only index data is read for listing; per-task detail files are not accessed
-  describe("list reads only index data (ac-2)", () => {
-    it("returns summary records for all tasks", async () => {
+  describe("list returns only index data (ac-2)", () => {
+    it("returns summary records containing only index-level fields", async () => {
       tempDir = await setupTempFixtures();
       manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
 
       const tasks = await manager.listTasks(ctx);
-      // In monolithic mode, all data comes from the same file — the interface
-      // still returns complete records. The split backend will enforce the
-      // index-only optimization.
       expect(tasks.length).toBe(4); // fixture has 4 tasks
+
+      // Index fields are present
       expect(tasks.every((t) => t._ulid && t.title && t.status)).toBe(true);
+
+      // Detail-only fields are NOT present on the returned objects
+      for (const task of tasks) {
+        for (const field of DETAIL_ONLY_FIELDS) {
+          expect(task).not.toHaveProperty(
+            field,
+            `listTasks should not return detail field "${field}"`,
+          );
+        }
+      }
+    });
+
+    it("returns TaskSummary type, not full LoadedTask", async () => {
+      tempDir = await setupTempFixtures();
+      manager = new TaskDataManager();
+      const ctx = await initContext(tempDir);
+
+      // Create a task with notes so we can verify they're stripped
+      await manager.createTask(ctx, {
+        title: "Task with detail data",
+        slugs: ["detail-task"],
+        description: "This is a description",
+      });
+      await manager.addNote(ctx, "@detail-task", "A note", "@author");
+
+      // getTask returns full data including notes
+      const fullTask = await manager.getTask(ctx, "@detail-task");
+      expect(fullTask.notes.length).toBe(1);
+      expect(fullTask.description).toBe("This is a description");
+
+      // listTasks returns only summary — no notes or description
+      const summaries = await manager.listTasks(ctx, {
+        status: "pending",
+      });
+      const summary = summaries.find((t) => t.slugs.includes("detail-task"));
+      expect(summary).toBeDefined();
+      expect(summary).not.toHaveProperty("notes");
+      expect(summary).not.toHaveProperty("description");
     });
 
     it("applies status filters", async () => {
@@ -348,6 +406,11 @@ describe("TaskDataManager", () => {
   // AC: @task-data-manager ac-7
   // Monolithic format is used until split explicitly activated
   describe("monolithic format by default (ac-7)", () => {
+    it("defaults to monolithic format when no format specified", () => {
+      const defaultManager = new TaskDataManager();
+      expect(defaultManager.storageFormat).toBe("monolithic");
+    });
+
     it("reads from monolithic tasks file", async () => {
       tempDir = await setupTempFixtures();
       manager = new TaskDataManager();
@@ -390,8 +453,63 @@ describe("TaskDataManager", () => {
 
   // AC: @task-data-manager ac-8
   // Split format used when explicitly activated
-  // Note: Split format is implemented in a later phase. This test documents
-  // the expected behavior — it will be implemented when the split backend is added.
+  describe("split format activation (ac-8)", () => {
+    it("throws descriptive error when split format is activated", async () => {
+      tempDir = await setupTempFixtures();
+      const splitManager = new TaskDataManager("split");
+      const ctx = await initContext(tempDir);
+
+      // The split backend is not yet implemented — the manager routes to it
+      // and throws a descriptive error explaining the situation
+      try {
+        await splitManager.listTasks(ctx);
+        expect.fail("Should have thrown for unimplemented split backend");
+      } catch (err) {
+        expect(err).toBeInstanceOf(TaskDataManagerError);
+        const tdmErr = err as TaskDataManagerError;
+        expect(tdmErr.message).toContain("Split storage format is not yet implemented");
+        expect(tdmErr.suggestion).toContain("monolithic");
+        expect(tdmErr.field).toBe("storageFormat");
+      }
+    });
+
+    it("split format guard applies to all operations", async () => {
+      tempDir = await setupTempFixtures();
+      const splitManager = new TaskDataManager("split");
+      const ctx = await initContext(tempDir);
+
+      // Every public method should throw when split is activated
+      await expect(splitManager.listTasks(ctx)).rejects.toThrow(
+        "Split storage format is not yet implemented",
+      );
+      await expect(splitManager.getTask(ctx, "@test-task-pending")).rejects.toThrow(
+        "Split storage format is not yet implemented",
+      );
+      await expect(
+        splitManager.createTask(ctx, { title: "test", slugs: ["test"] }),
+      ).rejects.toThrow("Split storage format is not yet implemented");
+      await expect(
+        splitManager.mutateTask(ctx, "@test-task-pending", (t) => t),
+      ).rejects.toThrow("Split storage format is not yet implemented");
+      await expect(
+        splitManager.mutateTasks(ctx, ["@test-task-pending"], (t) => t),
+      ).rejects.toThrow("Split storage format is not yet implemented");
+      await expect(
+        splitManager.deleteTask(ctx, "@test-task-pending"),
+      ).rejects.toThrow("Split storage format is not yet implemented");
+      await expect(
+        splitManager.addNote(ctx, "@test-task-pending", "note"),
+      ).rejects.toThrow("Split storage format is not yet implemented");
+    });
+
+    it("exposes storageFormat property for inspection", () => {
+      const monoManager = new TaskDataManager();
+      expect(monoManager.storageFormat).toBe("monolithic");
+
+      const splitManager = new TaskDataManager("split");
+      expect(splitManager.storageFormat).toBe("split");
+    });
+  });
 
   // AC: @task-data-manager ac-9
   // Concurrent same-task mutations serialize via lock
@@ -553,11 +671,12 @@ describe("TaskDataManager", () => {
   });
 
   describe("singleton export", () => {
-    it("provides a module-level singleton instance", async () => {
+    it("provides a module-level singleton instance with monolithic format", async () => {
       const { taskDataManager } = await import(
         "../src/parser/task-data-manager.js"
       );
       expect(taskDataManager).toBeInstanceOf(TaskDataManager);
+      expect(taskDataManager.storageFormat).toBe("monolithic");
     });
   });
 });
