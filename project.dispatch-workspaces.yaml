@@ -17047,12 +17047,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-21T09:59:38.388Z
+      updated_at: 2026-03-21T10:03:17.285Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-21T09:59:42.631Z
+      updated_at: 2026-03-21T10:03:17.285Z
     integration:
       status: pending
       detail: null
@@ -17060,7 +17060,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: e273fe88270dc48f490a0856d03ba78deecc23b0
-      updated_at: 2026-03-21T09:59:38.388Z
+      updated_at: 2026-03-21T10:03:17.285Z
     lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KM6YEVFHZ9J6734CYVPWWDMH"
@@ -17068,9 +17068,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-21T09:54:57.122Z
-      last_reconciled_at: 2026-03-21T09:59:42.631Z
+      last_reconciled_at: 2026-03-21T10:03:17.285Z
       created_at: 2026-03-21T09:41:54.097Z
-      updated_at: 2026-03-21T09:59:42.631Z
+      updated_at: 2026-03-21T10:03:17.285Z
     workspace_id: dispatch-workspace-01KM6YEVFHZ9J6734CYVPWWDMH
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -17079,5 +17079,5 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-extend-write-buffer/01km6yev
         head: 99e92ad7d12fdb6a6cce9ab8f7d11bc48ca3bd1b
-        last_seen_at: 2026-03-21T09:54:50.691Z
+        last_seen_at: 2026-03-21T10:03:17.285Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-extend-write-buffer-01km6yev
