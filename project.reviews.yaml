@@ -38543,6 +38543,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM81N5FF4GH4D39BA4VCJ7TH
         timestamp: 2026-03-21T11:14:31.365Z
+      - _ulid: 01KM81NS7B0F3C6Y618SDDDJRN
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM81NRQR6Z8XE7MQVMQ28MAM
+        timestamp: 2026-03-21T11:14:51.243Z
     examined_commit: 1db83c00f8bd886f9006e661da0bcfcbdc6f228d
     external_links: []
     lifecycle_state: open
@@ -38573,7 +38580,34 @@ reviews:
               task commands."
             created_at: 2026-03-21T11:14:31.023Z
         kind: blocker
+      - _ulid: 01KM81NRQR6Z8XE7MQVMQ28MAM
+        anchor:
+          type: code
+          commit: 1db83c00f8bd886f9006e661da0bcfcbdc6f228d
+          line_end: 93
+          line_start: 93
+          path: src/cli/commands/tasks.ts
+          side: head
+        entries:
+          - _ulid: 01KM81NRQRT4YZ15GEK64JWT37
+            author: Jacob Chapel
+            body: >-
+              `loadAllTasks(ctx)` still rebuilds tasks from `project.tasks.yaml`, which is only the
+              lean index in split mode. That loader drops per-task `notes` and `todos`, so every
+              command in this file that uses it (`tasks list`, `task list`, `tasks ready`, `tasks
+              next`, `tasks blocked`, `tasks in-progress`, and `tasks assess automation`) is reading
+              incomplete task objects under `task_storage.format: split`.
+
+
+              I reproduced this with a temp split manifest: after adding one note and one todo
+              through `resolveTaskDataManager(ctx)`, `loadAllTasks(ctx)` returned `notes.length ===
+              0` and `todos.length === 0` while `manager.loadAllTasks(ctx)` returned `1` for both.
+              That means `--full` output omits real notes/todos and `--grep` cannot match note
+              content in split storage, so the snapshot still fails the per-task-file behavior from
+              user-facing task commands.
+            created_at: 2026-03-21T11:14:50.744Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T11:09:30.269Z
-    updated_at: 2026-03-21T11:14:31.023Z
+    updated_at: 2026-03-21T11:14:50.744Z
     notes: []
