@@ -838,7 +838,7 @@ features:
       Tasks are stored alongside or separate from specs.
       Auto-adaptive: start alongside, separate when volume grows.
     status:
-      maturity: draft
+      maturity: deprecated
       implementation: implemented
     acceptance_criteria:
       - given: a project uses the task system
@@ -864,7 +864,7 @@ features:
 
           Simple, keeps related items together.
         status:
-          maturity: draft
+          maturity: deprecated
           implementation: in_progress
         implements:
           - "@task-storage"
@@ -873,6 +873,7 @@ features:
             id: ac-1
             then: tasks for that module remain colocated with the related spec
             when: a module has a companion .tasks.yaml file next to its spec file
+        superseded_by: "@task-directory-storage"
       - _ulid: 01JHNKA6W9TSTR200000000000
         slugs:
           - task-storage-separate
@@ -892,7 +893,7 @@ features:
 
           Separates concerns, enables archiving.
         status:
-          maturity: draft
+          maturity: deprecated
           implementation: in_progress
         implements:
           - "@task-storage"
@@ -901,6 +902,8 @@ features:
             id: ac-1
             then: task data is stored separately from module spec files and can be archived independently
             when: tasks are persisted under tasks backlog, active, or archive files
+        superseded_by: "@task-directory-storage"
+    superseded_by: "@task-directory-storage"
   - _ulid: 01JHNKA7W0TQRY000000000000
     slugs:
       - task-queries
@@ -1270,7 +1273,7 @@ features:
           complete history of state transitions and mutations, including manual
           edits and batch operations.
         status:
-          maturity: draft
+          maturity: deprecated
           implementation: implemented
         depends_on: []
         implements: []
@@ -1303,6 +1306,7 @@ features:
             when: the raw commit data is normalized into activity entries
         tags: []
         created: 2026-03-16T20:19:31.632Z
+        superseded_by: "@task-activity-in-file"
         notes: []
       - _ulid: 01KKW4VGPTSX0Z2AQDX7R8PV0P
         slugs:
