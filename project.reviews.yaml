@@ -42227,6 +42227,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-21T19:13:48.427Z
+      - _ulid: 01KM8X2SVXQ81NXVKQH8DPSCB8
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM8X2SJ9XA2P6B8N6PWGXDTA
+        timestamp: 2026-03-21T19:13:49.437Z
     examined_commit: cb1ed366bb42915d700aae438ac48a1eac4737b4
     external_links: []
     lifecycle_state: open
@@ -42236,8 +42243,36 @@ reviews:
       content_hash: ""
       ref: "@01KM6YEWY1WSKEXTF5YNP5GG81"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM8X2SJ9XA2P6B8N6PWGXDTA
+        entries:
+          - _ulid: 01KM8X2SJAXYPDB730ZKJD6D01
+            author: Test User
+            body: >-
+              Files read: src/cli/commands/task.ts, src/parser/split-backend.ts,
+              src/parser/task-data-manager.ts, src/parser/yaml.ts, src/schema/task.ts,
+              tests/task-migrate.test.ts, tests/task-data-manager.test.ts
+
+
+              Commands run: kspec task get @01KM6YEWY1WSKEXTF5YNP5GG81; kspec review for-task
+              @01KM6YEWY1WSKEXTF5YNP5GG81; git diff/stat/log against dev; kspec item get
+              @task-storage-migration; kspec validate; npm test -- task-migrate; npm test
+
+
+              Claims verified: the cycle-5 claim that malformed/missing notes rows are treated as
+              monolithic was verified in src/cli/commands/task.ts and src/parser/split-backend.ts;
+              the AC-4 claim that migrated data loads through TaskDataManager was verified by the
+              executable test coverage in tests/task-migrate.test.ts.
+
+
+              Categories searched: correctness (no issues), edge cases (missing/malformed _ulid and
+              notes, mixed lean/monolithic backfill, canonical index rebuild from split data), error
+              handling (dry-run failure path, text/JSON guidance), test quality (AC and trait
+              coverage are executable and aligned), integration (TaskDataManager load path, split
+              backend activation, atomic shadow commit).
+            created_at: 2026-03-21T19:13:49.130Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-21T19:10:19.101Z
-    updated_at: 2026-03-21T19:13:48.132Z
+    updated_at: 2026-03-21T19:13:49.130Z
     notes: []
