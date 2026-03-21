@@ -36260,6 +36260,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM7QVM4C2SSQM5E47DMTAECZ
         timestamp: 2026-03-21T08:23:17.150Z
+      - _ulid: 01KM7QVN8G3BHT5EV5TF08YJ95
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM7QVN00XNC9RT5GT4BXXKNN
+        timestamp: 2026-03-21T08:23:18.032Z
     examined_commit: 19eb168e46267d19228636e2b2c1e1d83eba2cac
     external_links: []
     lifecycle_state: open
@@ -36289,7 +36296,27 @@ reviews:
               the actual AC or be re-annotated after a spec change.
             created_at: 2026-03-21T08:23:16.876Z
         kind: blocker
+      - _ulid: 01KM7QVN00XNC9RT5GT4BXXKNN
+        anchor:
+          type: code
+          commit: 19eb168e46267d19228636e2b2c1e1d83eba2cac
+          line_end: 300
+          line_start: 289
+          path: src/parser/split-backend.ts
+          side: head
+        entries:
+          - _ulid: 01KM7QVN00WH77AHF1AWRJE3JK
+            author: Jacob Chapel
+            body: This fix changes the contract instead of implementing it. @task-index-file ac-3 and the task
+              description both say note-only mutations must leave project.tasks.yaml untouched, but
+              this change makes notes_count/todos_count writes part of every note mutation. That
+              restores fresh counts for listTasks(), but it does so by violating the submitted spec
+              rather than satisfying it. Either the spec needs to be updated in a separate change,
+              or the implementation needs a different way to keep summary counts fresh without
+              treating note mutations as index writes.
+            created_at: 2026-03-21T08:23:17.760Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T08:22:52.107Z
-    updated_at: 2026-03-21T08:23:16.876Z
+    updated_at: 2026-03-21T08:23:17.760Z
     notes: []
