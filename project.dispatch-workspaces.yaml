@@ -17517,7 +17517,7 @@ workspaces:
         head: f68480a8d01aadbdce406f6aca86f353cc32e282
         last_seen_at: 2026-03-21T17:20:19.689Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-impl-activity-01km6yet
-  - active_role: worker
+  - active_role: null
     base_branch_point: 87331ee1e9d640686caa51de93719322fb0c1a82
     bootstrap:
       status: succeeded
@@ -17601,12 +17601,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-21T17:20:26.459Z
+      updated_at: 2026-03-21T17:35:50.538Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-21T17:20:34.509Z
+      updated_at: 2026-03-21T17:35:50.538Z
     integration:
       status: pending
       detail: null
@@ -17614,17 +17614,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 87331ee1e9d640686caa51de93719322fb0c1a82
-      updated_at: 2026-03-21T17:20:26.459Z
-    lifecycle_state: active
+      updated_at: 2026-03-21T17:35:50.538Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KM6YEWY1WSKEXTF5YNP5GG81"
     task_slug: task-build-migration
     timestamps:
       closed_at: null
       last_active_at: 2026-03-21T17:20:34.509Z
-      last_reconciled_at: 2026-03-21T17:20:34.509Z
+      last_reconciled_at: 2026-03-21T17:35:50.538Z
       created_at: 2026-03-21T17:20:26.459Z
-      updated_at: 2026-03-21T17:20:34.509Z
+      updated_at: 2026-03-21T17:35:50.538Z
     workspace_id: dispatch-workspace-01KM6YEWY1WSKEXTF5YNP5GG81
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
