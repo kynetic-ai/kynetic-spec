@@ -35994,6 +35994,13 @@ reviews:
           status: skipped
           name: kspec validate
         timestamp: 2026-03-21T08:00:26.704Z
+      - _ulid: 01KM7PHV29K3VTNAXZFDKT7QNR
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM7PHTQD18C134Z2JY58DYT4
+        timestamp: 2026-03-21T08:00:27.721Z
     examined_commit: 6023a5e30180743cd13485125c05f5975f5bf0da
     external_links: []
     lifecycle_state: open
@@ -36003,8 +36010,27 @@ reviews:
       content_hash: ""
       ref: "@01KM6YESAF92YTNXT3DF06AC0N"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM7PHTQD18C134Z2JY58DYT4
+        anchor:
+          type: code
+          commit: 6023a5e30180743cd13485125c05f5975f5bf0da
+          line_end: 294
+          line_start: 293
+          path: src/parser/split-backend.ts
+          side: head
+        entries:
+          - _ulid: 01KM7PHTQDEZ3RXR7FY71EC1JZ
+            author: Jacob Chapel
+            body: "`listTasks()` now returns stale `notes_count`/`todos_count` values after note-only mutations.
+              `INDEX_CHANGE_FIELDS` explicitly excludes those counters, so `mutateTask()` skips the
+              index write when notes change, but split-mode listing still reads the counters from
+              the index via `rawToSummary()`. That means adding a note updates `notes.yaml` while
+              task summaries continue to report the old counts until a manual rebuild, which is a
+              user-visible regression in any list/session output that shows note counts."
+            created_at: 2026-03-21T08:00:27.373Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T08:00:04.180Z
-    updated_at: 2026-03-21T08:00:26.435Z
+    updated_at: 2026-03-21T08:00:27.373Z
     notes: []
