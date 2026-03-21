@@ -355,7 +355,7 @@ describe("ActionExecutor", () => {
       expect(events[1].action_run.status).toBe("completed");
     });
 
-    it("does not block — returns a promise", () => {
+    it("does not block — returns a promise", async () => {
       const action: Action = {
         type: "command",
         command: "echo",
@@ -366,6 +366,11 @@ describe("ActionExecutor", () => {
       // AC: @dispatch-action-model ac-1 — the action does not block event processing
       const promise = executor.execute(action, ctx);
       expect(promise).toBeInstanceOf(Promise);
+      // Await to prevent the spawned process from leaking events into subsequent tests.
+      // The closure over `events` captures the variable binding (not the value), so
+      // if this promise settles after the next beforeEach reassigns `events`, the
+      // callback pushes into the wrong array.
+      await promise;
     });
 
     it("handles command failure with non-zero exit code", async () => {

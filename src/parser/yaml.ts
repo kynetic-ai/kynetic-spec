@@ -958,7 +958,7 @@ export function getDefaultTaskFilePath(ctx: KspecContext): string {
 /**
  * Strip runtime metadata before serialization
  */
-function stripRuntimeMetadata(task: LoadedTask): Task {
+export function stripRuntimeMetadata(task: LoadedTask): Task {
   const { _sourceFile, ...cleanTask } = task;
   return cleanTask as Task;
 }
@@ -967,7 +967,7 @@ function stripRuntimeMetadata(task: LoadedTask): Task {
  * Extract the raw task array and format info from a YAML file.
  * Does NOT run schema validation — preserves original data for round-trip stability.
  */
-async function extractRawTaskArray(
+export async function extractRawTaskArray(
   filePath: string,
 ): Promise<{ rawTasks: unknown[]; useTasksWrapper: boolean; wrapperObj?: Record<string, unknown> }> {
   let existingRaw: unknown = null;
@@ -1005,13 +1005,19 @@ async function extractRawTaskArray(
     };
   }
 
+  // Bare single-task object (not an array, not a {tasks:[...]} wrapper).
+  // Treat as a single-element array so mutations can read and write it back.
+  if (typeof existingRaw === "object") {
+    return { rawTasks: [existingRaw], useTasksWrapper: false, wrapperObj: undefined };
+  }
+
   return { rawTasks: [], useTasksWrapper: false };
 }
 
 /**
  * Write raw task array back to file, preserving the wrapper format.
  */
-async function writeRawTaskArray(
+export async function writeRawTaskArray(
   filePath: string,
   rawTasks: unknown[],
   useTasksWrapper: boolean,
@@ -1029,7 +1035,7 @@ async function writeRawTaskArray(
 /**
  * Find task index in a raw array by ULID match.
  */
-function findRawTaskIndex(rawTasks: unknown[], ulid: string): number {
+export function findRawTaskIndex(rawTasks: unknown[], ulid: string): number {
   return rawTasks.findIndex(
     (t) =>
       t && typeof t === "object" && (t as Record<string, unknown>)._ulid === ulid,
@@ -1046,11 +1052,26 @@ function findRawTaskIndex(rawTasks: unknown[], ulid: string): number {
  * Fields NOT in rawTask are only added if they carry meaningful data
  * (i.e. non-empty arrays, non-null values, etc.).
  */
-function mergeTaskPreservingRawShape(
+/** Schema-known keys — used to distinguish unknown (extension) fields from
+ *  known fields that a mutation intentionally cleared. */
+const TASK_SCHEMA_KEYS = new Set(Object.keys(TaskSchema.shape));
+
+export function mergeTaskPreservingRawShape(
   rawTask: Record<string, unknown>,
   normalizedTask: Record<string, unknown>,
 ): Record<string, unknown> {
   const result: Record<string, unknown> = {};
+
+  // Carry forward raw keys that are NOT part of the task schema and NOT
+  // present in the normalizedTask output. These are backend-specific or
+  // forward-compatible extension fields that must survive round-trip
+  // mutations. Schema-known keys that are absent from normalizedTask were
+  // intentionally cleared by the mutation — do not restore them.
+  for (const [key, value] of Object.entries(rawTask)) {
+    if (!(key in normalizedTask) && !TASK_SCHEMA_KEYS.has(key)) {
+      result[key] = value;
+    }
+  }
 
   for (const [key, value] of Object.entries(normalizedTask)) {
     if (key in rawTask) {
