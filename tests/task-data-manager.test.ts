@@ -552,13 +552,11 @@ describe("TaskDataManager", () => {
       const tasks = await manager.listTasks(ctx);
       expect(tasks.length).toBe(4);
 
-      // All tasks should have _sourceFile pointing to the monolithic file
-      expect(
-        tasks.every(
-          (t) =>
-            t._sourceFile && t._sourceFile.endsWith("project.tasks.yaml"),
-        ),
-      ).toBe(true);
+      // TaskSummary does not expose _sourceFile — callers should not know
+      // about the underlying storage format (AC-1)
+      for (const t of tasks) {
+        expect(t).not.toHaveProperty("_sourceFile");
+      }
     });
 
     it("writes to monolithic tasks file", async () => {
@@ -630,7 +628,6 @@ describe("TaskDataManager", () => {
             started_at: t.started_at,
             submitted_at: t.submitted_at,
             completed_at: t.completed_at,
-            _sourceFile: t._sourceFile,
           }));
         },
         async getTask(ctx, ref) {

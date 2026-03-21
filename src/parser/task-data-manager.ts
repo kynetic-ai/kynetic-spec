@@ -71,7 +71,6 @@ export interface TaskSummary {
   started_at?: string | null;
   submitted_at?: string | null;
   completed_at?: string | null;
-  _sourceFile?: string;
 }
 
 /**
@@ -81,7 +80,7 @@ export interface TaskSummary {
  *
  * AC: @task-data-manager ac-2 — only index data is read
  */
-function rawToSummary(raw: unknown, sourceFile: string): TaskSummary | null {
+function rawToSummary(raw: unknown): TaskSummary | null {
   if (!raw || typeof raw !== "object") return null;
   const r = raw as Record<string, unknown>;
 
@@ -106,7 +105,6 @@ function rawToSummary(raw: unknown, sourceFile: string): TaskSummary | null {
     started_at: typeof r.started_at === "string" ? r.started_at : (r.started_at === null ? null : undefined),
     submitted_at: typeof r.submitted_at === "string" ? r.submitted_at : (r.submitted_at === null ? null : undefined),
     completed_at: typeof r.completed_at === "string" ? r.completed_at : (r.completed_at === null ? null : undefined),
-    _sourceFile: sourceFile,
   };
 }
 
@@ -134,7 +132,6 @@ function toTaskSummary(task: LoadedTask): TaskSummary {
     started_at: task.started_at,
     submitted_at: task.submitted_at,
     completed_at: task.completed_at,
-    _sourceFile: task._sourceFile,
   };
 }
 
@@ -300,7 +297,7 @@ async function loadSummariesFromFile(filePath: string): Promise<TaskSummary[]> {
     }
 
     for (const taskData of taskList) {
-      const summary = rawToSummary(taskData, filePath);
+      const summary = rawToSummary(taskData);
       if (summary) {
         summaries.push(summary);
       }
