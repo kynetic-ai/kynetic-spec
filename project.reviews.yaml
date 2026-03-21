@@ -39242,6 +39242,17 @@ reviews:
         runner: npm
         created_at: 2026-03-21T12:55:18.570Z
         completed_at: 2026-03-21T12:55:18.570Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "tests/per-task-files.test.ts, tests/split-backend.test.ts,
+          tests/task-atomic-writes.test.ts, tests/task-rebuild-index.test.ts: 131 tests passed."
+        name: task-focused suites
+        required: false
+        runner: npm
+        created_at: 2026-03-21T12:55:22.729Z
+        completed_at: 2026-03-21T12:55:22.729Z
     events:
       - _ulid: 01KM8755X672J7Y5H47VQ5BKXZ
         actor: Jacob Chapel
@@ -39270,6 +39281,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-21T12:55:18.853Z
+      - _ulid: 01KM87DVKQ6DG32YTD9TXSER95
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: task-focused suites
+        timestamp: 2026-03-21T12:55:23.000Z
     examined_commit: d252cd89d7d5a802f5f9d125985c12ea02ec0d99
     external_links: []
     lifecycle_state: open
@@ -39306,5 +39324,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-21T12:50:38.631Z
-    updated_at: 2026-03-21T12:55:18.570Z
+    updated_at: 2026-03-21T12:55:22.729Z
     notes: []
