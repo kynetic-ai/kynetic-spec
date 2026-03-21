@@ -17200,7 +17200,7 @@ workspaces:
         head: 80d6cca9e58e1be0373ec03056fb1ffba80329d7
         last_seen_at: 2026-03-21T11:35:16.411Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-build-index-rebuild-01km6yew
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: cbe88397420fa6992b3edd94fca7b847586c143f
     bootstrap:
       status: succeeded
@@ -17301,34 +17301,34 @@ workspaces:
     canonical_branch: dispatch/task/remove-default-timeout-from-dispatch-shadow-mutation-lock/01km8kee
     canonical_branch_head: a5f4801899b17fd67eb522cc0e5803c156a9e49d
     cleanup:
-      status: not_scheduled
-      detail: null
-      eligible: false
-      reason: null
-      updated_at: 2026-03-21T16:36:17.602Z
+      status: scheduled
+      detail: integrated-into-base-branch
+      eligible: true
+      reason: integrated-into-base-branch
+      updated_at: 2026-03-21T16:44:37.164Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-21T16:36:25.568Z
+      updated_at: 2026-03-21T16:44:37.164Z
     integration:
-      status: pending
-      detail: null
-      outcome: manual_merge
+      status: merged
+      detail: integration:merged
+      outcome: merged
       publication_mode: manual_merge
       target_branch: dev
       target_commit: cbe88397420fa6992b3edd94fca7b847586c143f
-      updated_at: 2026-03-21T16:36:17.602Z
-    lifecycle_state: integrating
+      updated_at: 2026-03-21T16:44:37.164Z
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KM8KEEN57D9E64GZPQTH1SXJ"
     task_slug: remove-default-timeout-from-dispatch-shadow-mutation-lock
     timestamps:
       closed_at: null
       last_active_at: 2026-03-21T16:36:25.568Z
-      last_reconciled_at: 2026-03-21T16:36:25.568Z
+      last_reconciled_at: 2026-03-21T16:44:37.164Z
       created_at: 2026-03-21T16:27:18.934Z
-      updated_at: 2026-03-21T16:36:25.568Z
+      updated_at: 2026-03-21T16:44:37.164Z
     workspace_id: dispatch-workspace-01KM8KEEN57D9E64GZPQTH1SXJ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
