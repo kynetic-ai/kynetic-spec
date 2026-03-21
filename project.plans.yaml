@@ -24991,13 +24991,20 @@ plans:
               all succeed or all roll back
           - id: ac-7
             given: |
-              Tasks exist in either the monolithic or split storage format
+              The storage format has not been explicitly activated
             when: |
-              The manager loads tasks
+              The manager reads or writes tasks
             then: |
-              It detects the active format and reads correctly from either
-              without user intervention
+              The monolithic format is used; the split backend is not
+              engaged until explicitly activated
           - id: ac-8
+            given: |
+              The split storage format has been activated
+            when: |
+              The manager reads or writes tasks
+            then: |
+              The split format is used for all operations
+          - id: ac-9
             given: |
               Two mutations target the same task concurrently
             when: |
@@ -25143,6 +25150,50 @@ plans:
             then: |
               Pre-migration activity may be incomplete; the timeline indicates
               which entries are from stored history versus best-effort recovery
+
+      # ─── Storage Activation ───
+
+
+      - title: Task Storage Format Activation
+        slug: task-storage-activation
+        type: requirement
+        parent: "@task-data-manager"
+        description: |
+          The active storage format is an explicit setting, not auto-detected.
+          The system defaults to the monolithic format until activation. This
+          ensures the switchover from monolithic to split format is a
+          deliberate, coordinated action taken after migration.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A project has no explicit storage format setting
+            when: |
+              The task data manager initializes
+            then: |
+              The monolithic format is used for all reads and writes
+          - id: ac-2
+            given: |
+              The storage format has been set to split
+            when: |
+              The task data manager initializes
+            then: |
+              The split per-task directory format is used for all reads
+              and writes
+          - id: ac-3
+            given: |
+              The storage format is set to split but no per-task directories
+              exist
+            when: |
+              The task data manager initializes
+            then: |
+              An error indicates that migration must be run before activation
+          - id: ac-4
+            given: |
+              The storage format setting needs to change
+            when: |
+              The activation command is run
+            then: |
+              The setting is persisted and takes effect on the next operation
 
       # ─── Migration ───
 
@@ -25621,7 +25672,7 @@ plans:
           branch data. Always use the globally installed kspec binary for CLI
           operations. All testing must use the test harness with temp fixtures.
 
-      # ─── Phase 4: Cleanup ───
+      # ─── Phase 4: Deprecation ───
 
 
       - title: Deprecate superseded task specs
@@ -25650,19 +25701,52 @@ plans:
           How: Use kspec item set --maturity deprecated --superseded-by <ref>
           for each spec.
 
-      - title: Remove monolithic task file support
-        slug: task-remove-monolithic
-        priority: 2
-        tags: [tasks, cleanup]
+      # ─── Phase 5: Post-Migration Cleanup (manual only) ───
+
+
+      - title: Activate split storage format
+        slug: task-activate-split-storage
+        priority: 1
+        tags: [tasks, storage, manual]
+        spec_ref: "@task-storage-activation"
         depends_on:
           - "@task-build-migration"
         description: |
+          Activate the split storage format after migration has been run and
+          verified. This is the switchover point — after this, all task writes
+          go to the split format.
+
+          Why: The migration command creates the per-task directories but the
+          system continues writing to the monolithic format until explicitly
+          switched. This task is the deliberate switchover after confirming
+          the migration is correct.
+
+          What: Run the activation command to set the storage format to split.
+          Verify that subsequent task operations (list, get, add, set, note)
+          read from and write to the per-task directory structure. Confirm
+          the index stays in sync.
+
+          How: Run the activation command. Exercise the full task lifecycle
+          through CLI and daemon API. Verify shadow branch commits show
+          per-task file changes rather than monolithic file changes.
+
+          MANUAL ONLY: This task requires human coordination. Migration must
+          be run first, all dispatch/agent work must be paused, and the
+          switchover must be verified before resuming automated work.
+
+      - title: Remove monolithic task file support
+        slug: task-remove-monolithic
+        priority: 2
+        tags: [tasks, cleanup, manual]
+        depends_on:
+          - "@task-activate-split-storage"
+        description: |
           Remove the legacy monolithic file loading path from the task data
-          manager after migration is complete and stable.
+          manager after the split format is activated and stable.
 
           Why: Keeping two storage backends increases complexity and testing
-          surface. Once all projects are migrated, the old path serves no
-          purpose.
+          surface. Once all projects are migrated and activated, the old path
+          serves no purpose.
 
           What: Remove the code that loads tasks from a monolithic array in
           project.tasks.yaml. Remove loadTasksFromFile, extractRawTaskArray,
@@ -25673,10 +25757,13 @@ plans:
           How: Delete the old codepaths, update tests to use the split format,
           verify the full test suite passes.
 
+          MANUAL ONLY: Must confirm the switchover is stable before removing
+          the fallback path.
+
       - title: Purge deprecated spec references
         slug: task-purge-old-storage-refs
         priority: 2
-        tags: [tasks, cleanup]
+        tags: [tasks, cleanup, manual]
         depends_on:
           - "@task-remove-monolithic"
         description: |
@@ -25699,6 +25786,9 @@ plans:
           task-activity-git-query across all source, test, doc, and spec files.
           Remove or update each reference. Verify no broken links remain via
           kspec validate.
+
+          MANUAL ONLY: Final cleanup after confirming the old code and format
+          are fully retired.
       ```
 
 
@@ -25706,10 +25796,16 @@ plans:
 
 
       **Phasing is critical.** Phase 1 (task data manager + caller migration) is pure refactoring
-      with zero behavior change — every test must continue passing with identical output. Phase 2
-      (split storage) is the backend swap inside the manager. Phase 3 (atomic writes) ensures
-      multi-file safety. Phase 4 (cleanup) removes dead code. Each phase is independently shippable
-      and testable.
+      with zero behavior change. Phase 2 (split storage) implements the new backend behind a format
+      flag, defaulting to monolithic. Phase 3 (atomic writes + migration command) ensures multi-file
+      safety and provides the migration tool. Phase 4 (deprecation) marks old specs as superseded.
+      Phase 5 (post-migration cleanup) is manual only — activation, old code removal, and reference
+      purging happen after migration is run and verified out-of-band.
+
+
+      **Switchover sequence.** After all automated tasks complete: (1) pause dispatch/agent work,
+      (2) run migration command, (3) verify data integrity, (4) activate split format, (5) exercise
+      task operations, (6) resume automated work. Only then do the Phase 5 cleanup tasks proceed.
 
 
       **The manager-first approach is key.** By migrating all callers to the task data manager
@@ -25793,3 +25889,10 @@ plans:
           with backfill support and spec."
         author: "@claude"
         created_at: 2026-03-21T00:04:20.409Z
+      - _ulid: 01KM6VV6BSBFWMYNJVW1P4JDB7
+        content: "Add explicit switchover: storage activation spec, format defaults to monolithic until
+          activated. Migration command stays (for other users, handles backfill). Phase 5 tasks are
+          manual-only with activation → remove monolithic → purge refs ordering. Address all review
+          findings."
+        author: "@claude"
+        created_at: 2026-03-21T00:13:42.649Z
