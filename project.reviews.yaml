@@ -33289,6 +33289,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM72Z14EBCRTYHRMN26CXW9S
         timestamp: 2026-03-21T02:18:08.654Z
+      - _ulid: 01KM72Z7YWGDCY5CB5C62WTH8Q
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM72Z7NHKRQC6WS7T1NACE4Z
+        timestamp: 2026-03-21T02:18:15.388Z
     examined_commit: c3a88b1ac7c731546031baec42a2024062f4c88a
     external_links: []
     lifecycle_state: open
@@ -33337,7 +33344,31 @@ reviews:
               eventually succeed, not that independent tasks can run without contending.
             created_at: 2026-03-21T02:18:08.399Z
         kind: blocker
+      - _ulid: 01KM72Z7NHKRQC6WS7T1NACE4Z
+        entries:
+          - _ulid: 01KM72Z7NJBTG18MEAZTCAA9R1
+            author: Jacob Chapel
+            body: >-
+              Review evidence log
+
+
+              Files read: AGENTS.md, kspec-agents.md, src/parser/task-data-manager.ts,
+              src/parser/yaml.ts, tests/task-data-manager.test.ts.
+
+              Commands run: `git diff --stat`, `git diff`, `kspec task get`, `kspec item get
+              @task-data-manager`, `kspec item get @trait-error-guidance`, `kspec review for-task`,
+              `grep -rn "AC: @task-data-manager|AC: @trait-error-guidance" tests/`, `kspec
+              validate`, `npm test`.
+
+              Claims verified: checked the AC-8 routing claim against the backend registry and
+              delegate calls; checked the mutation-validation claim against
+              `validateMutationOutput()` and the new tests.
+
+              Categories searched: correctness/spec alignment, concurrency/locking, error handling,
+              test quality, integration with existing YAML storage helpers.
+            created_at: 2026-03-21T02:18:15.090Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-21T02:14:38.577Z
-    updated_at: 2026-03-21T02:18:08.399Z
+    updated_at: 2026-03-21T02:18:15.090Z
     notes: []
