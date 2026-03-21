@@ -113045,6 +113045,19 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-21T08:55:36.761Z
+    - _ulid: 01KM7V6A0AA0FP5Q49MFB4BKJV
+      content: "Fix cycle 3: Addressed blocker from review @01KM7SN1M3VZ44H5KQ0FRNPM09. The module-level
+        taskDataManager singleton was hardcoded to monolithic format, so getTaskHistory() always
+        returned [] on the CLI path (task.ts:912). Added resolveTaskDataManager(ctx) that reads
+        ctx.manifest.task_storage.format — when set to 'split', it returns a split-format manager
+        instance (cached). Updated the task get activity timeline to use the resolved manager. Also
+        added task_storage.format to ManifestSchema for explicit storage format configuration. Added
+        2 tests: resolveTaskDataManager returns split manager with manifest config, returns
+        monolithic with null manifest. All 6825 tests pass, pre-existing failures in
+        staleness/validate/dispatch-bootstrap tests are unrelated."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T09:21:32.682Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YETR12GG1EZ5G68KSNTBK
