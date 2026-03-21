@@ -113768,6 +113768,16 @@
       supersedes: null
       author: Test User
       created_at: 2026-03-21T17:41:16.545Z
+    - _ulid: 01KM8RA9NMFR7ACNRA97GNTYSR
+      content: "Fix cycle 1: Addressed blocker — already-migrated tasks were building index entries from
+        stale monolithic YAML data instead of reading canonical task.yaml from the per-task
+        directory. Fixed by reading task.yaml and notes.yaml from the per-task directory when
+        building index entries for already-migrated tasks, with fallback to monolithic data only if
+        the canonical read fails. Added regression test verifying index uses canonical split
+        title/status, not stale monolithic values. Full suite passes (6911 tests, 0 failures)."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T17:50:32.116Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YEXN2KMJ43AMEKH3SW0RE
