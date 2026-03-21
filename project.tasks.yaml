@@ -112824,8 +112824,10 @@
   spec_ref: "@task-index-file"
   plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged to dev at e273fe882. Implemented split index file operations, exposed
+    rebuildIndex through TaskDataManager, and preserved plan/review linkage in TaskSummary.
   depends_on:
     - "@task-impl-split-storage"
   context: []
@@ -112847,6 +112849,7 @@
   created_at: 2026-03-21T00:59:21.807Z
   started_at: 2026-03-21T09:32:54.613Z
   submitted_at: 2026-03-21T09:33:02.864Z
+  completed_at: 2026-03-21T09:40:30.820Z
   notes:
     - _ulid: 01KM7P7HDS4YG9GZC9FWG5PAZT
       content: "Implemented task index file operations in split-backend.ts. Key design decisions: (1)
