@@ -24868,10 +24868,9 @@ plans:
         acceptance_criteria:
           - id: ac-1
             given: |
-              A task's field is modified (status, priority, tags, spec_ref,
-              depends_on, automation, or any other mutable field)
+              A task's mutable field is modified
             when: |
-              The mutation is persisted to task.yaml
+              The mutation is persisted
             then: |
               The current field value is updated in-place and a history entry
               is appended recording the timestamp, author, command that made
@@ -25181,12 +25180,19 @@ plans:
               and writes
           - id: ac-3
             given: |
-              The storage format is set to split but no per-task directories
-              exist
+              The storage format is set to split but unmigrated tasks exist
+              in the monolithic file without corresponding per-task directories
             when: |
               The task data manager initializes
             then: |
               An error indicates that migration must be run before activation
+          - id: ac-5
+            given: |
+              The storage format is set to split and no tasks exist at all
+            when: |
+              The task data manager initializes
+            then: |
+              The system operates normally with an empty task set
           - id: ac-4
             given: |
               The storage format setting needs to change
@@ -25334,6 +25340,58 @@ plans:
 
       # ─── Phase 1: Foundation ───
 
+
+      - title: Deprecate superseded task specs
+        slug: task-deprecate-old-storage-specs
+        priority: 1
+        tags: [tasks, spec]
+        description: |
+          Mark the old task storage and activity specs as deprecated before
+          implementation begins, signaling that the new specs are the source
+          of truth.
+
+          Why: @task-storage, @task-storage-alongside, and @task-storage-separate
+          describe the old monolithic storage model — superseded by
+          @task-directory-storage. @task-activity-git-query describes the
+          git log -L based activity extraction — superseded by
+          @task-activity-in-file. Deprecating upfront prevents confusion about
+          which specs are authoritative during implementation.
+
+          What: Set maturity to deprecated on all four specs. Set superseded_by
+          to the corresponding new spec on each:
+          - @task-storage → superseded_by @task-directory-storage
+          - @task-storage-alongside → superseded_by @task-directory-storage
+          - @task-storage-separate → superseded_by @task-directory-storage
+          - @task-activity-git-query → superseded_by @task-activity-in-file
+
+          How: Use kspec item set --maturity deprecated --superseded-by <ref>
+          for each spec.
+
+      - title: Update activity timeline spec for in-file data source
+        slug: task-update-activity-timeline-spec
+        priority: 1
+        tags: [tasks, spec]
+        description: |
+          Update the @task-activity-timeline feature spec's ACs to reflect
+          that activity is assembled from in-file data, not git history.
+
+          Why: @task-activity-timeline ac-1 says "state transitions recorded
+          via shadow branch commits" and ac-2 says "merging shadow branch
+          commit history with review record events." After this plan, activity
+          comes from in-file history entries and note timestamps — the feature
+          still exists but the data source changes. Unlike the child spec
+          @task-activity-git-query (which is deprecated), the parent feature
+          spec should be updated, not deprecated.
+
+          What: Update ac-1 and ac-2 to say activity comes from stored history
+          entries and note records rather than shadow branch commits. Keep the
+          behavioral requirements (chronological ordering, review event merging,
+          default count, --activity flag) unchanged.
+
+          How: Use kspec item ac set to update the given/when/then clauses on
+          ac-1 and ac-2 of @task-activity-timeline. Replace "shadow branch
+          commits" with "stored history entries" and "shadow branch commit
+          history" with "stored task history and note records."
 
       - title: Implement task data manager module
         slug: task-impl-data-manager
@@ -25541,6 +25599,10 @@ plans:
           and a changes object with field names mapped to previous/new values.
           notes.yaml contains the notes array in the current schema format.
 
+          Note: spec_ref is @task-core-data-file but this task also covers
+          @task-notes-file ACs (notes.yaml implementation). Both specs must
+          have AC coverage.
+
           How: On field mutations, update the field in-place and append a
           history entry. On note additions, append to notes.yaml only. On
           task reads, merge task.yaml fields with notes.yaml notes to produce
@@ -25672,36 +25734,7 @@ plans:
           branch data. Always use the globally installed kspec binary for CLI
           operations. All testing must use the test harness with temp fixtures.
 
-      # ─── Phase 4: Deprecation ───
-
-
-      - title: Deprecate superseded task specs
-        slug: task-deprecate-old-storage-specs
-        priority: 1
-        tags: [tasks, spec, cleanup]
-        description: |
-          Mark the old task storage and activity specs as deprecated before
-          implementation begins, signaling that the new specs are the source
-          of truth.
-
-          Why: @task-storage, @task-storage-alongside, and @task-storage-separate
-          describe the old monolithic storage model — superseded by
-          @task-directory-storage. @task-activity-git-query describes the
-          git log -L based activity extraction — superseded by
-          @task-activity-in-file. Deprecating upfront prevents confusion about
-          which specs are authoritative during implementation.
-
-          What: Set maturity to deprecated on all four specs. Set superseded_by
-          to the corresponding new spec on each:
-          - @task-storage → superseded_by @task-directory-storage
-          - @task-storage-alongside → superseded_by @task-directory-storage
-          - @task-storage-separate → superseded_by @task-directory-storage
-          - @task-activity-git-query → superseded_by @task-activity-in-file
-
-          How: Use kspec item set --maturity deprecated --superseded-by <ref>
-          for each spec.
-
-      # ─── Phase 5: Post-Migration Cleanup (manual only) ───
+      # ─── Phase 4: Post-Migration Cleanup (manual only) ───
 
 
       - title: Activate split storage format
@@ -25795,17 +25828,17 @@ plans:
       ## Implementation Notes
 
 
-      **Phasing is critical.** Phase 1 (task data manager + caller migration) is pure refactoring
-      with zero behavior change. Phase 2 (split storage) implements the new backend behind a format
-      flag, defaulting to monolithic. Phase 3 (atomic writes + migration command) ensures multi-file
-      safety and provides the migration tool. Phase 4 (deprecation) marks old specs as superseded.
-      Phase 5 (post-migration cleanup) is manual only — activation, old code removal, and reference
-      purging happen after migration is run and verified out-of-band.
+      **Phasing is critical.** Phase 1 (deprecation + task data manager + caller migration) starts
+      by deprecating old specs, then is pure refactoring with zero behavior change. Phase 2 (split
+      storage) implements the new backend behind a format flag, defaulting to monolithic. Phase 3
+      (atomic writes + migration command + index rebuild) ensures multi-file safety and provides the
+      migration and repair tools. Phase 4 (post-migration cleanup) is manual only — activation, old
+      code removal, and reference purging happen after migration is run and verified out-of-band.
 
 
       **Switchover sequence.** After all automated tasks complete: (1) pause dispatch/agent work,
       (2) run migration command, (3) verify data integrity, (4) activate split format, (5) exercise
-      task operations, (6) resume automated work. Only then do the Phase 5 cleanup tasks proceed.
+      task operations, (6) resume automated work. Only then do the Phase 4 cleanup tasks proceed.
 
 
       **The manager-first approach is key.** By migrating all callers to the task data manager
@@ -25817,7 +25850,9 @@ plans:
       **Index consistency.** The index is a derived cache. Per-task files are authoritative. The
       rebuild command is the escape hatch. During normal operation, the manager keeps them in sync
       through atomic writes. The index should never be written to directly — only through the
-      manager.
+      manager. The "index-only reads" invariant for list operations refers to the logical data
+      source — during batch operations, the write buffer may hold pending index updates that must be
+      visible to subsequent reads within the same batch.
 
 
       **History entries vs git history.** Going forward, all field changes are recorded as history
@@ -25896,3 +25931,10 @@ plans:
           findings."
         author: "@claude"
         created_at: 2026-03-21T00:13:42.649Z
+      - _ulid: 01KM6WTZYBCNW5TTMC6MHH9AC7
+        content: "Second review fixes: B1 (add task to update @task-activity-timeline ACs), B2 (index-only
+          caveat for write buffer in impl notes), B3 (remove field enumeration from core data ac-1),
+          S1 (note @task-notes-file coverage in per-task files task), S2 (zero-tasks activation edge
+          case), S3 (move deprecation to Phase 1), S4 (verified @review-fix-cycle-diff unaffected)."
+        author: "@claude"
+        created_at: 2026-03-21T00:31:04.651Z
