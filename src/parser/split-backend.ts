@@ -332,6 +332,77 @@ class SplitTaskMutexMap {
 class SplitBackend implements TaskStorageBackend {
   readonly format = "split" as const;
   private readonly taskMutex = new SplitTaskMutexMap();
+  /** Per-specDir cache so each project is checked at most once. */
+  private readonly migrationChecked = new Set<string>();
+
+  /**
+   * Verify that migration has been completed before allowing split operations.
+   *
+   * Detects unmigrated monolithic entries by checking if project.tasks.yaml
+   * contains full task records (with `notes` arrays) rather than lean index
+   * entries (with `notes_count` scalars). When unmigrated entries are found
+   * without corresponding per-task directories, an error is raised.
+   *
+   * AC: @task-storage-activation ac-3 — error when unmigrated tasks exist
+   * AC: @task-storage-activation ac-5 — empty task set operates normally
+   */
+  private async ensureMigrated(ctx: KspecContext): Promise<void> {
+    const key = ctx.specDir;
+    if (this.migrationChecked.has(key)) return;
+
+    const indexPath = getIndexFilePath(ctx);
+    let rawEntries: unknown[];
+    try {
+      const raw = await readYamlFile<unknown>(indexPath);
+      if (Array.isArray(raw)) {
+        rawEntries = raw;
+      } else if (raw && typeof raw === "object" && "tasks" in raw) {
+        const wrapper = raw as Record<string, unknown>;
+        rawEntries = Array.isArray(wrapper.tasks) ? wrapper.tasks : [];
+      } else {
+        rawEntries = [];
+      }
+    } catch {
+      // File doesn't exist or is unreadable — empty set, proceed normally
+      rawEntries = [];
+    }
+
+    // No entries at all — empty project, split is fine (ac-5)
+    if (rawEntries.length === 0) {
+      this.migrationChecked.add(key);
+      return;
+    }
+
+    // Check for monolithic-style entries: they have `notes` as an array,
+    // whereas lean index entries use `notes_count` as a scalar number.
+    const unmigratedEntries = rawEntries.filter((entry) => {
+      if (!entry || typeof entry !== "object") return false;
+      const rec = entry as Record<string, unknown>;
+      return Array.isArray(rec.notes);
+    });
+
+    if (unmigratedEntries.length > 0) {
+      // Verify these aren't already migrated (per-task dirs exist)
+      const taskDirs = await listTaskDirs(ctx);
+      const dirSet = new Set(taskDirs);
+      const trulyUnmigrated = unmigratedEntries.filter((entry) => {
+        const rec = entry as Record<string, unknown>;
+        return typeof rec._ulid === "string" && !dirSet.has(rec._ulid);
+      });
+
+      if (trulyUnmigrated.length > 0) {
+        throw new TaskDataManagerError(
+          `Storage format is set to "split" but ${trulyUnmigrated.length} task(s) in project.tasks.yaml have not been migrated to per-task directories. Run the migration command before activating split format.`,
+          {
+            suggestion: "Run the task storage migration to convert monolithic entries to per-task directories, or set task_storage.format back to \"monolithic\".",
+            field: "task_storage.format",
+          },
+        );
+      }
+    }
+
+    this.migrationChecked.add(key);
+  }
 
   /**
    * List tasks by reading only the index file.
@@ -340,6 +411,7 @@ class SplitBackend implements TaskStorageBackend {
    * AC: @task-listing-performance ac-1 — only project.tasks.yaml is read
    */
   async listTasks(ctx: KspecContext): Promise<TaskSummary[]> {
+    await this.ensureMigrated(ctx);
     const indexPath = getIndexFilePath(ctx);
     try {
       const raw = await readYamlFile<unknown>(indexPath);
@@ -376,6 +448,7 @@ class SplitBackend implements TaskStorageBackend {
    * AC: @task-detail-loading ac-1 — assembles complete task from per-task files
    */
   async loadAllTasks(ctx: KspecContext): Promise<LoadedTask[]> {
+    await this.ensureMigrated(ctx);
     const ulids = await listTaskDirs(ctx);
     const tasks: LoadedTask[] = [];
 
@@ -402,6 +475,7 @@ class SplitBackend implements TaskStorageBackend {
    * AC: @task-detail-loading ac-1 — reads per-task directory for complete data
    */
   async getTask(ctx: KspecContext, ref: string): Promise<LoadedTask | undefined> {
+    await this.ensureMigrated(ctx);
     // First try direct ULID lookup (fast path)
     if (/^[0-9A-HJKMNP-TV-Z]{10,26}$/.test(ref)) {
       // Could be a full ULID or a short ULID prefix
@@ -433,6 +507,7 @@ class SplitBackend implements TaskStorageBackend {
    * AC: @task-index-file ac-5 — index entry added atomically
    */
   async createTask(ctx: KspecContext, task: Task): Promise<LoadedTask> {
+    await this.ensureMigrated(ctx);
     const taskDir = getTaskDir(ctx, task._ulid);
     const taskFilePath = getTaskFilePath(ctx, task._ulid);
     const notesFilePath = getNotesFilePath(ctx, task._ulid);
@@ -492,6 +567,7 @@ class SplitBackend implements TaskStorageBackend {
     mutate: (latestTask: LoadedTask) => Task | LoadedTask | Promise<Task | LoadedTask>,
     metadata?: MutationMetadata,
   ): Promise<LoadedTask> {
+    await this.ensureMigrated(ctx);
     const releaseTaskLock = await this.taskMutex.acquire(task._ulid);
 
     try {
@@ -589,6 +665,7 @@ class SplitBackend implements TaskStorageBackend {
     mutate: (latestTasks: LoadedTask[]) => Array<Task | LoadedTask> | Promise<Array<Task | LoadedTask>>,
     metadata?: MutationMetadata,
   ): Promise<LoadedTask[]> {
+    await this.ensureMigrated(ctx);
     // Acquire per-task locks in sorted order to prevent deadlocks
     const sortedUlids = [...new Set(tasks.map((t) => t._ulid))].sort();
     const releases: Array<() => void> = [];
@@ -699,6 +776,7 @@ class SplitBackend implements TaskStorageBackend {
    * AC: @task-directory-storage ac-5 — index entry removed in same atomic operation
    */
   async deleteTask(ctx: KspecContext, task: LoadedTask): Promise<void> {
+    await this.ensureMigrated(ctx);
     const releaseTaskLock = await this.taskMutex.acquire(task._ulid);
 
     try {
@@ -842,6 +920,7 @@ class SplitBackend implements TaskStorageBackend {
     ctx: KspecContext,
     ulid: string,
   ): Promise<HistoryEntry[]> {
+    await this.ensureMigrated(ctx);
     const { history } = await this.loadTaskFromDirWithHistory(ctx, ulid);
     return history;
   }

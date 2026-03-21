@@ -1092,4 +1092,182 @@ describe("Per-Task Notes File (@task-notes-file)", () => {
       expect(taskFile.notes).toBeUndefined();
     });
   });
+
+  // ── AC: @task-storage-activation ac-3 ─────────────────────────────────
+  // Given: The storage format is set to split but unmigrated tasks exist
+  //        in the monolithic file without corresponding per-task directories
+  // When: The task data manager initializes
+  // Then: An error indicates that migration must be run before activation
+  describe("migration gate (ac-3)", () => {
+    // AC: @task-storage-activation ac-3
+    it("throws when monolithic entries exist without per-task directories", async () => {
+      const migrationDir = await createTempDir("kspec-migration-gate-");
+      try {
+        initGitRepo(migrationDir);
+        const specDir = path.join(migrationDir, ".kspec");
+        await fs.mkdir(specDir, { recursive: true });
+        await fs.mkdir(path.join(specDir, "tasks"), { recursive: true });
+
+        // Write monolithic-style entries (with `notes` arrays, not `notes_count`)
+        const ulid = testUlid("MIGRATE");
+        await fs.writeFile(
+          path.join(specDir, "project.tasks.yaml"),
+          toYaml([
+            {
+              _ulid: ulid,
+              slugs: ["unmigrated-task"],
+              title: "Unmigrated Task",
+              type: "task",
+              status: "pending",
+              priority: 3,
+              tags: [],
+              depends_on: [],
+              blocked_by: [],
+              created_at: "2026-03-20T00:00:00.000Z",
+              notes: [],
+              todos: [],
+            },
+          ]),
+        );
+
+        const migCtx: KspecContext = {
+          rootDir: migrationDir,
+          projectRoot: migrationDir,
+          specDir,
+          sessionsDir: path.join(migrationDir, ".kspec-sessions"),
+          manifestPath: path.join(specDir, "kynetic.yaml"),
+          manifest: {
+            kynetic_spec: "1.0",
+            title: "Migration Test",
+            task_storage: { format: "split" as const },
+          } as any,
+          shadow: null,
+          config: {} as any,
+        };
+
+        const manager = new TaskDataManager("split");
+        await expect(manager.listTasks(migCtx)).rejects.toThrow(
+          /migration/i,
+        );
+      } finally {
+        await cleanupTempDir(migrationDir);
+      }
+    });
+
+    // AC: @task-storage-activation ac-5
+    it("allows split mode with empty task set", async () => {
+      const emptyDir = await createTempDir("kspec-empty-split-");
+      try {
+        initGitRepo(emptyDir);
+        const specDir = path.join(emptyDir, ".kspec");
+        await fs.mkdir(specDir, { recursive: true });
+        await fs.mkdir(path.join(specDir, "tasks"), { recursive: true });
+        await fs.writeFile(
+          path.join(specDir, "project.tasks.yaml"),
+          toYaml([]),
+        );
+
+        const emptyCtx: KspecContext = {
+          rootDir: emptyDir,
+          projectRoot: emptyDir,
+          specDir,
+          sessionsDir: path.join(emptyDir, ".kspec-sessions"),
+          manifestPath: path.join(specDir, "kynetic.yaml"),
+          manifest: {
+            kynetic_spec: "1.0",
+            title: "Empty Test",
+            task_storage: { format: "split" as const },
+          } as any,
+          shadow: null,
+          config: {} as any,
+        };
+
+        const manager = new TaskDataManager("split");
+        const tasks = await manager.listTasks(emptyCtx);
+        expect(tasks).toEqual([]);
+      } finally {
+        await cleanupTempDir(emptyDir);
+      }
+    });
+
+    // AC: @task-storage-activation ac-3
+    it("allows split mode when monolithic entries have corresponding per-task dirs", async () => {
+      // This tests the case where entries have notes arrays but per-task dirs exist
+      // (migration was completed but index wasn't converted to lean format yet)
+      const migratedDir = await createTempDir("kspec-migrated-split-");
+      try {
+        initGitRepo(migratedDir);
+        const specDir = path.join(migratedDir, ".kspec");
+        await fs.mkdir(specDir, { recursive: true });
+
+        const ulid = testUlid("MIGRTD");
+        const taskDir = path.join(specDir, "tasks", ulid);
+        await fs.mkdir(taskDir, { recursive: true });
+
+        // Write task.yaml and notes.yaml in per-task dir
+        await fs.writeFile(
+          path.join(taskDir, "task.yaml"),
+          toYaml({
+            _ulid: ulid,
+            slugs: ["migrated-task"],
+            title: "Migrated Task",
+            type: "task",
+            status: "pending",
+            priority: 3,
+            tags: [],
+            depends_on: [],
+            blocked_by: [],
+            created_at: "2026-03-20T00:00:00.000Z",
+          }),
+        );
+        await fs.writeFile(
+          path.join(taskDir, "notes.yaml"),
+          toYaml({ notes: [] }),
+        );
+
+        // Index still has monolithic-style entry (notes array)
+        await fs.writeFile(
+          path.join(specDir, "project.tasks.yaml"),
+          toYaml([
+            {
+              _ulid: ulid,
+              slugs: ["migrated-task"],
+              title: "Migrated Task",
+              type: "task",
+              status: "pending",
+              priority: 3,
+              tags: [],
+              depends_on: [],
+              blocked_by: [],
+              created_at: "2026-03-20T00:00:00.000Z",
+              notes: [],
+              todos: [],
+            },
+          ]),
+        );
+
+        const migCtx: KspecContext = {
+          rootDir: migratedDir,
+          projectRoot: migratedDir,
+          specDir,
+          sessionsDir: path.join(migratedDir, ".kspec-sessions"),
+          manifestPath: path.join(specDir, "kynetic.yaml"),
+          manifest: {
+            kynetic_spec: "1.0",
+            title: "Migrated Test",
+            task_storage: { format: "split" as const },
+          } as any,
+          shadow: null,
+          config: {} as any,
+        };
+
+        const manager = new TaskDataManager("split");
+        // Should NOT throw — per-task dir exists
+        const tasks = await manager.listTasks(migCtx);
+        expect(tasks.length).toBe(1);
+      } finally {
+        await cleanupTempDir(migratedDir);
+      }
+    });
+  });
 });
