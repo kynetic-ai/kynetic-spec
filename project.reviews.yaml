@@ -36249,6 +36249,17 @@ reviews:
         runner: npm
         created_at: 2026-03-21T08:23:56.389Z
         completed_at: 2026-03-21T08:23:56.389Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Validation produced warnings only (exit 6): no schema/reference errors, but repo-wide
+          completeness/alignment warnings remain."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-21T08:24:00.764Z
+        completed_at: 2026-03-21T08:24:00.764Z
     events:
       - _ulid: 01KM7QTVYAX213Y8VE75JDC044
         actor: Jacob Chapel
@@ -36291,6 +36302,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-21T08:23:56.658Z
+      - _ulid: 01KM7QWZ8CPXN93859JZ82CV50
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-21T08:24:01.036Z
     examined_commit: 19eb168e46267d19228636e2b2c1e1d83eba2cac
     external_links: []
     lifecycle_state: open
@@ -36379,5 +36397,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-21T08:22:52.107Z
-    updated_at: 2026-03-21T08:23:56.389Z
+    updated_at: 2026-03-21T08:24:00.764Z
     notes: []
