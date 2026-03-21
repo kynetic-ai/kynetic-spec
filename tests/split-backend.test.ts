@@ -1378,5 +1378,119 @@ describe("SplitBackend", () => {
       const summaries = await splitBackend.listTasks(ctx);
       expect(summaries.length).toBe(0);
     });
+
+    // AC: @task-index-file ac-7
+    it("rebuildIndex is accessible through TaskDataManager", async () => {
+      const manager = new TaskDataManager("split");
+
+      await manager.createTask(ctx, {
+        title: "Manager rebuild test",
+        slugs: ["manager-rebuild"],
+        priority: 2,
+        tags: ["infra"],
+      });
+
+      // Corrupt the index
+      const indexPath = getIndexFilePath(ctx);
+      await fs.writeFile(indexPath, toYaml([]));
+
+      // Verify index is empty
+      const summariesEmpty = await manager.listTasks(ctx);
+      expect(summariesEmpty.length).toBe(0);
+
+      // Rebuild via the manager (public API), not the backend directly
+      const result = await manager.rebuildIndex(ctx);
+      expect(result.count).toBe(1);
+
+      // Verify index is restored
+      const summaries = await manager.listTasks(ctx);
+      expect(summaries.length).toBe(1);
+      expect(summaries[0].slugs).toContain("manager-rebuild");
+    });
+  });
+
+  // ── Blocker fix: plan_ref and review_ref in summary ────────────────────
+  describe("plan_ref and review_ref in TaskSummary", () => {
+    // AC: @task-index-file ac-1
+    it("listTasks returns plan_ref and review_ref from index", async () => {
+      const manager = new TaskDataManager("split");
+
+      const created = await manager.createTask(ctx, {
+        title: "Refs test task",
+        slugs: ["refs-test"],
+        plan_ref: "@test-plan",
+        review_ref: "@test-review",
+      });
+
+      const summaries = await manager.listTasks(ctx);
+      const summary = summaries.find((s) => s._ulid === created._ulid);
+      expect(summary).toBeDefined();
+      expect(summary!.plan_ref).toBe("@test-plan");
+      expect(summary!.review_ref).toBe("@test-review");
+    });
+
+    // AC: @task-index-file ac-1
+    it("listTasks returns undefined for missing plan_ref/review_ref", async () => {
+      const manager = new TaskDataManager("split");
+
+      const created = await manager.createTask(ctx, {
+        title: "No refs task",
+        slugs: ["no-refs"],
+      });
+
+      const summaries = await manager.listTasks(ctx);
+      const summary = summaries.find((s) => s._ulid === created._ulid);
+      expect(summary).toBeDefined();
+      // Fields should be undefined (not present) when not set
+      expect(summary!.plan_ref).toBeUndefined();
+      expect(summary!.review_ref).toBeUndefined();
+    });
+
+    // AC: @task-index-file ac-2
+    it("index updates plan_ref when task is mutated", async () => {
+      const manager = new TaskDataManager("split");
+
+      const created = await manager.createTask(ctx, {
+        title: "Plan ref mutation test",
+        slugs: ["plan-mut"],
+      });
+
+      // Mutate to add plan_ref
+      await manager.mutateTask(ctx, `@${created._ulid}`, (task) => ({
+        ...task,
+        plan_ref: "@new-plan",
+      }));
+
+      const summaries = await manager.listTasks(ctx);
+      const summary = summaries.find((s) => s._ulid === created._ulid);
+      expect(summary).toBeDefined();
+      expect(summary!.plan_ref).toBe("@new-plan");
+    });
+
+    // AC: @task-index-file ac-7
+    it("rebuildIndex preserves plan_ref and review_ref", async () => {
+      const manager = new TaskDataManager("split");
+
+      const created = await manager.createTask(ctx, {
+        title: "Rebuild refs test",
+        slugs: ["rebuild-refs"],
+        plan_ref: "@plan-abc",
+        review_ref: "@review-xyz",
+      });
+
+      // Corrupt the index
+      const indexPath = getIndexFilePath(ctx);
+      await fs.writeFile(indexPath, toYaml([]));
+
+      // Rebuild
+      await manager.rebuildIndex(ctx);
+
+      // Verify refs are preserved in rebuilt index
+      const summaries = await manager.listTasks(ctx);
+      const summary = summaries.find((s) => s._ulid === created._ulid);
+      expect(summary).toBeDefined();
+      expect(summary!.plan_ref).toBe("@plan-abc");
+      expect(summary!.review_ref).toBe("@review-xyz");
+    });
   });
 });
