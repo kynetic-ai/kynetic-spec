@@ -547,6 +547,98 @@ describe("Per-Task Core Data File (@task-core-data-file)", () => {
       expect(history2[0].changes.priority.new).toBe(1);
     });
   });
+
+  // ── Todo-only mutations ──────────────────────────────────────────────
+  describe("todo mutations persist to task.yaml", () => {
+    // AC: @task-core-data-file ac-1
+    it("todo-only mutation writes task.yaml and records history", async () => {
+      const manager = new TaskDataManager("split");
+
+      const created = await manager.createTask(ctx, {
+        title: "Todo mutation test",
+        slugs: ["todo-mutation"],
+      });
+
+      // Add a todo via mutation (todo-only change)
+      await manager.mutateTask(ctx, "@todo-mutation", (task) => ({
+        ...task,
+        todos: [
+          { id: 1, text: "Do something", done: false, added_at: "2026-03-20T01:00:00.000Z" },
+        ],
+      }));
+
+      // task.yaml should contain the todo
+      const taskFile = await readYaml(getTaskFilePath(ctx, created._ulid));
+      expect(taskFile.todos).toBeDefined();
+      expect(Array.isArray(taskFile.todos)).toBe(true);
+      expect((taskFile.todos as unknown[]).length).toBe(1);
+
+      // History should record the todos change
+      const history = taskFile.history as HistoryEntry[];
+      expect(history.length).toBe(1);
+      expect(history[0].changes.todos).toBeDefined();
+    });
+
+    // AC: @task-core-data-file ac-1
+    it("todo-only mutation in batch writes task.yaml", async () => {
+      const manager = new TaskDataManager("split");
+
+      const task1 = await manager.createTask(ctx, {
+        title: "Batch todo 1",
+        slugs: ["batch-todo-1"],
+      });
+
+      await manager.mutateTasks(
+        ctx,
+        ["@batch-todo-1"],
+        (tasks) => tasks.map((t) => ({
+          ...t,
+          todos: [{ id: 1, text: "Batch todo", done: false, added_at: "2026-03-20T01:00:00.000Z" }],
+        })),
+      );
+
+      const taskFile = await readYaml(getTaskFilePath(ctx, task1._ulid));
+      expect(taskFile.todos).toBeDefined();
+      expect((taskFile.todos as unknown[]).length).toBe(1);
+
+      const history = taskFile.history as HistoryEntry[];
+      expect(history.length).toBe(1);
+      expect(history[0].changes.todos).toBeDefined();
+    });
+  });
+
+  // ── TaskDataManager.getTaskHistory ────────────────────────────────────
+  describe("getTaskHistory via TaskDataManager", () => {
+    // AC: @task-core-data-file ac-2
+    it("returns history entries through TaskDataManager", async () => {
+      const manager = new TaskDataManager("split");
+
+      const created = await manager.createTask(ctx, {
+        title: "Manager history test",
+        slugs: ["manager-history"],
+        priority: 3,
+      });
+
+      await manager.mutateTask(ctx, "@manager-history", (task) => ({
+        ...task,
+        priority: 1,
+      }));
+
+      const history = await manager.getTaskHistory(ctx, created._ulid);
+      expect(history.length).toBe(1);
+      expect(history[0].changes.priority).toBeDefined();
+      expect(history[0].changes.priority.previous).toBe(3);
+      expect(history[0].changes.priority.new).toBe(1);
+    });
+
+    // AC: @task-core-data-file ac-2
+    it("returns empty array for monolithic backend", async () => {
+      const manager = new TaskDataManager("monolithic");
+      // Monolithic backend doesn't support getTaskHistory
+      const history = await manager.getTaskHistory(ctx, "nonexistent");
+      expect(history).toEqual([]);
+    });
+  });
 });
 
 describe("Per-Task Notes File (@task-notes-file)", () => {

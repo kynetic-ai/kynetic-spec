@@ -908,6 +908,29 @@ export function registerTaskCommands(program: Command): void {
             }
           }
 
+          // AC: @task-core-data-file ac-2 — merge per-task history into activity timeline
+          const historyEntries = await taskDataManager.getTaskHistory(ctx, foundTask._ulid);
+          for (const entry of historyEntries) {
+            const fields = Object.keys(entry.changes);
+            const summary = fields.length === 1 && fields[0] === "status"
+              ? `Status: ${String(entry.changes.status.previous ?? "—")} → ${String(entry.changes.status.new)}`
+              : `Updated ${fields.join(", ")}`;
+            activity.push({
+              type: fields.includes("status") ? "state_change" : "field_updated",
+              timestamp: entry.timestamp,
+              author: entry.author,
+              summary,
+              commitHash: "",
+              detail: fields.length === 1
+                ? {
+                    field: fields[0],
+                    ...(entry.changes[fields[0]].previous !== undefined && { from: String(entry.changes[fields[0]].previous) }),
+                    ...(entry.changes[fields[0]].new !== undefined && { to: String(entry.changes[fields[0]].new) }),
+                  }
+                : undefined,
+            });
+          }
+
           // Re-sort chronologically (oldest first) after merging
           activity.sort(
             (a, b) =>

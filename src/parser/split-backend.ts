@@ -32,6 +32,9 @@ import {
   writeFileBufferAware,
 } from "../cli/batch-write-buffer.js";
 import type { MutationMetadata, TaskStorageBackend, TaskSummary } from "./task-data-manager.js";
+// Re-export history types from their canonical home in task-data-manager
+export type { HistoryEntry, HistoryFieldChange } from "./task-data-manager.js";
+import type { HistoryEntry, HistoryFieldChange } from "./task-data-manager.js";
 import { TaskDataManagerError, registerBackend } from "./task-data-manager.js";
 import type { KspecContext, LoadedTask } from "./yaml.js";
 import {
@@ -45,38 +48,7 @@ import {
 } from "./yaml.js";
 import { rawToSummary } from "./task-data-manager.js";
 
-// ── History Entry Types ─────────────────────────────────────────────────────
-
-/**
- * A single field change within a history entry.
- * Maps field name to previous and new values.
- *
- * AC: @task-core-data-file ac-1 — records field name, previous value, and new value
- */
-export interface HistoryFieldChange {
-  previous: unknown;
-  new: unknown;
-}
-
-/**
- * A history entry recording a mutation to a task's fields.
- *
- * Stored in the `history` array within task.yaml. Each entry records
- * the timestamp, author, command, and the specific field changes.
- *
- * AC: @task-core-data-file ac-1 — appended on mutation
- * AC: @task-core-data-file ac-3 — includes timestamp, author, command, changes
- */
-export interface HistoryEntry {
-  /** ISO 8601 timestamp of when the change was made */
-  timestamp: string;
-  /** Who made the change (author identity) */
-  author: string;
-  /** The kspec command or API call that triggered the change */
-  command: string;
-  /** Field-level changes: field name → { previous, new } */
-  changes: Record<string, HistoryFieldChange>;
-}
+// ── History Helpers ──────────────────────────────────────────────────────────
 
 /**
  * Compute the field-level diff between two task states.
@@ -90,8 +62,8 @@ function computeFieldChanges(
   after: Record<string, unknown>,
 ): Record<string, HistoryFieldChange> | null {
   const changes: Record<string, HistoryFieldChange> = {};
-  // Fields to skip — notes and todos are separate files, history is internal
-  const skipFields = new Set(["_sourceFile", "notes", "todos", "history"]);
+  // Fields to skip — notes are in a separate file, history is internal metadata
+  const skipFields = new Set(["_sourceFile", "notes", "history"]);
 
   // Collect all unique keys from both objects
   const allKeys = new Set([...Object.keys(before), ...Object.keys(after)]);
@@ -532,8 +504,8 @@ class SplitBackend implements TaskStorageBackend {
         );
       }
 
-      // Capture pre-mutation state for diff computation (excluding notes/history)
-      const { notes: _notesBefore, todos: _todosBefore, ...coreFieldsBefore } =
+      // Capture pre-mutation state for diff computation (excluding notes — they live in notes.yaml)
+      const { notes: _notesBefore, ...coreFieldsBefore } =
         stripRuntimeMetadata(latestTask) as Task;
 
       // Run mutation callback
@@ -639,9 +611,9 @@ class SplitBackend implements TaskStorageBackend {
 
       const latestTasks = latestResults.map((r) => r.task);
 
-      // Capture pre-mutation core fields for diff computation
+      // Capture pre-mutation core fields for diff computation (excluding notes — they live in notes.yaml)
       const coreFieldsBefore = latestTasks.map((t) => {
-        const { notes: _n, todos: _td, ...core } = stripRuntimeMetadata(t) as Task;
+        const { notes: _n, ...core } = stripRuntimeMetadata(t) as Task;
         return core as Record<string, unknown>;
       });
 

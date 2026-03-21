@@ -160,6 +160,37 @@ export interface MutationMetadata {
 }
 
 /**
+ * A single field change within a history entry.
+ * Maps field name to previous and new values.
+ *
+ * AC: @task-core-data-file ac-1 — records field name, previous value, and new value
+ */
+export interface HistoryFieldChange {
+  previous: unknown;
+  new: unknown;
+}
+
+/**
+ * A history entry recording a mutation to a task's fields.
+ *
+ * Stored in the `history` array within task.yaml. Each entry records
+ * the timestamp, author, command, and the specific field changes.
+ *
+ * AC: @task-core-data-file ac-1 — appended on mutation
+ * AC: @task-core-data-file ac-3 — includes timestamp, author, command, changes
+ */
+export interface HistoryEntry {
+  /** ISO 8601 timestamp of when the change was made */
+  timestamp: string;
+  /** Who made the change (author identity) */
+  author: string;
+  /** The kspec command or API call that triggered the change */
+  command: string;
+  /** Field-level changes: field name → { previous, new } */
+  changes: Record<string, HistoryFieldChange>;
+}
+
+/**
  * Options for shadow branch commits after mutations.
  * When provided, the manager coordinates the commit as part of the operation.
  */
@@ -242,6 +273,13 @@ export interface TaskStorageBackend {
     metadata?: MutationMetadata,
   ): Promise<LoadedTask[]>;
   deleteTask(ctx: KspecContext, task: LoadedTask): Promise<void>;
+
+  /**
+   * Get the history entries for a task (optional — only split backend provides this).
+   *
+   * AC: @task-core-data-file ac-2 — history provides complete audit trail
+   */
+  getTaskHistory?(ctx: KspecContext, ulid: string): Promise<HistoryEntry[]>;
 }
 
 /**
@@ -818,6 +856,22 @@ export class TaskDataManager {
       );
     }
     return task;
+  }
+
+  /**
+   * Get the history entries for a task from the storage backend.
+   *
+   * Returns the per-task field-change history if the backend supports it
+   * (split format). For monolithic format, returns an empty array since
+   * history is not tracked at the file level.
+   *
+   * AC: @task-core-data-file ac-2 — history provides complete audit trail
+   */
+  async getTaskHistory(ctx: KspecContext, ulid: string): Promise<HistoryEntry[]> {
+    if (this.backend.getTaskHistory) {
+      return this.backend.getTaskHistory(ctx, ulid);
+    }
+    return [];
   }
 
   /**
