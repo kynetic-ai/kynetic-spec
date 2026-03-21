@@ -750,4 +750,126 @@ describe("kspec task migrate", () => {
     );
     expect(notesYaml.notes).toEqual([]);
   });
+
+  // ── Regression: blocker — missing _ulid tasks must be migrated with warning ──
+
+  // AC: @task-storage-migration ac-5
+  it("migrates tasks with missing _ulid by generating one and emitting a warning", async () => {
+    ({ env, specDir } = await setupMonolithicEnv(tempDir));
+    const [idValid] = testUlids("MGNU", 1);
+
+    // Task with a valid _ulid
+    const validTask = makeMonolithicTask(idValid, "task-has-ulid");
+
+    // Task missing _ulid entirely — should NOT be silently skipped
+    const missingUlidTask = {
+      slugs: ["task-no-ulid"],
+      title: "No ULID Task",
+      type: "task",
+      status: "pending",
+      priority: 3,
+      tags: [],
+      depends_on: [],
+      blocked_by: [],
+      created_at: "2026-03-20T00:00:00.000Z",
+      notes: [
+        { _ulid: testUlid("NTE", 90), created_at: "2026-03-20T01:00:00.000Z", author: "@test", content: "Note on missing-ulid task" },
+      ],
+      todos: [],
+    };
+
+    await writeMonolithicTasks(specDir, [validTask, missingUlidTask]);
+
+    const result = kspec("task migrate --force", tempDir, { env });
+    expect(result.exitCode).toBe(0);
+    // Should report both tasks migrated (not just the valid one)
+    expect(result.stdout).toContain("Migrated 2 task(s)");
+    // Should warn about the missing _ulid (warn() goes to stderr, individual warnings to stdout)
+    expect(result.stderr).toContain("warning");
+    expect(result.stdout).toContain("missing or invalid _ulid");
+
+    // Both tasks should have per-task directories
+    const taskDirValid = await fs.stat(path.join(specDir, "tasks", idValid));
+    expect(taskDirValid.isDirectory()).toBe(true);
+
+    // Find the generated ULID directory (not idValid)
+    const taskDirs = await fs.readdir(path.join(specDir, "tasks"));
+    expect(taskDirs).toHaveLength(2);
+    const generatedDir = taskDirs.find((d) => d !== idValid);
+    expect(generatedDir).toBeDefined();
+
+    // Verify the task data was preserved
+    const noUlidTaskYaml = parseYaml(
+      await fs.readFile(path.join(specDir, "tasks", generatedDir!, "task.yaml"), "utf-8"),
+    );
+    expect(noUlidTaskYaml.title).toBe("No ULID Task");
+
+    // Verify notes were preserved
+    const noUlidNotesYaml = parseYaml(
+      await fs.readFile(path.join(specDir, "tasks", generatedDir!, "notes.yaml"), "utf-8"),
+    );
+    expect(noUlidNotesYaml.notes).toHaveLength(1);
+    expect(noUlidNotesYaml.notes[0].content).toBe("Note on missing-ulid task");
+
+    // Verify the index has both entries
+    const index = parseYaml(
+      await fs.readFile(path.join(specDir, "project.tasks.yaml"), "utf-8"),
+    ) as Array<Record<string, unknown>>;
+    expect(index).toHaveLength(2);
+  });
+
+  // ── Regression: blocker — canonical index for already-migrated tasks with notes ──
+
+  // AC: @task-storage-migration ac-7
+  it("index entries for already-migrated tasks with notes use canonical split data", async () => {
+    ({ env, specDir } = await setupMonolithicEnv(tempDir));
+
+    const [idExisting, idNew] = testUlids("MGCN", 2);
+
+    // Create per-task dir with canonical title and notes
+    await createPerTaskDir(specDir, idExisting, "task-with-notes", {
+      title: "Canonical Title With Notes",
+      status: "in_progress",
+    });
+    // Write notes to the per-task dir
+    await fs.writeFile(
+      path.join(specDir, "tasks", idExisting, "notes.yaml"),
+      toYaml({
+        notes: [
+          { _ulid: testUlid("NTE", 91), created_at: "2026-03-20T01:00:00.000Z", author: "@dev", content: "A canonical note" },
+          { _ulid: testUlid("NTE", 92), created_at: "2026-03-20T02:00:00.000Z", author: "@dev", content: "Another canonical note" },
+        ],
+      }),
+    );
+
+    // Write stale monolithic entry with different title + a new task
+    const staleMonolithic = makeMonolithicTask(idExisting, "task-with-notes", {
+      title: "Stale Monolithic Title",
+      status: "pending",
+    });
+    const newMonolithic = makeMonolithicTask(idNew, "task-new-trigger", {
+      title: "New Trigger Task",
+    });
+    await fs.writeFile(
+      path.join(specDir, "project.tasks.yaml"),
+      toYaml([staleMonolithic, newMonolithic]),
+    );
+
+    const result = kspec("task migrate --force", tempDir, { env });
+    expect(result.exitCode).toBe(0);
+
+    // Read the resulting index
+    const index = parseYaml(
+      await fs.readFile(path.join(specDir, "project.tasks.yaml"), "utf-8"),
+    ) as Array<Record<string, unknown>>;
+
+    // Find the existing task's index entry
+    const existingEntry = index.find((e) => e._ulid === idExisting);
+    expect(existingEntry).toBeDefined();
+    // MUST use canonical split title, NOT stale monolithic title
+    expect(existingEntry!.title).toBe("Canonical Title With Notes");
+    expect(existingEntry!.status).toBe("in_progress");
+    // Notes count should reflect canonical notes (2), not stale monolithic (0)
+    expect(existingEntry!.notes_count).toBe(2);
+  });
 });

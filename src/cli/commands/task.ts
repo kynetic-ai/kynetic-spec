@@ -3194,6 +3194,7 @@ Examples:
         extractRawTaskArray, toYaml, readYamlFile, stripRuntimeMetadata,
       } = await import("../../parser/yaml.js");
       const { TaskSchema } = await import("../../schema/task.js");
+      const { ulid: generateUlid } = await import("ulid");
       const {
         runWithBuffer, mkdirBufferAware, writeFileBufferAware,
       } = await import("../../cli/batch-write-buffer.js");
@@ -3243,14 +3244,25 @@ Examples:
       // Check which monolithic entries already have per-task directories
       const existingDirs = new Set(await listTaskDirs(ctx));
 
+      // AC: @task-storage-migration ac-5 — tasks with missing/invalid _ulid get
+      // a generated ULID and a warning, then migrate normally
+      const generatedUlids = new Set<string>();
+      for (const entry of monolithicEntries) {
+        if (typeof entry.raw._ulid !== "string" || !entry.raw._ulid) {
+          const generated = generateUlid();
+          entry.raw._ulid = generated;
+          generatedUlids.add(generated);
+        }
+      }
+
       // Entries that need migration: monolithic entries without existing dirs
       const toMigrate = monolithicEntries.filter(
-        (e) => typeof e.raw._ulid === "string" && !existingDirs.has(e.raw._ulid),
+        (e) => !existingDirs.has(e.raw._ulid as string),
       );
 
       // Entries that are already in both formats (monolithic + dir exists) — just need index cleanup
       const alreadyMigrated = monolithicEntries.filter(
-        (e) => typeof e.raw._ulid === "string" && existingDirs.has(e.raw._ulid),
+        (e) => existingDirs.has(e.raw._ulid as string),
       );
 
       if (toMigrate.length === 0 && alreadyMigrated.length === 0) {
@@ -3293,6 +3305,11 @@ Examples:
         const ulid = raw._ulid as string;
         const notes = Array.isArray(raw.notes) ? raw.notes : [];
         totalNotes += notes.length;
+
+        // AC: @task-storage-migration ac-5 — warn when _ulid was missing/invalid and generated
+        if (generatedUlids.has(ulid)) {
+          warnings.push(`Task "${raw.title ?? "(untitled)"}": missing or invalid _ulid — generated ${ulid}`);
+        }
 
         // AC: @task-storage-migration ac-5 — try validation, warn on failure, migrate raw data
         const parsed = TaskSchema.safeParse(raw);
@@ -3433,13 +3450,14 @@ Examples:
           const taskFilePath = getTaskFilePath(ctx, ulid);
           const notesFilePath = getNotesFilePath(ctx, ulid);
 
-          // Read canonical core data from the per-task directory
-          let canonicalParsed = false;
+          // Read canonical core data from the per-task directory and build
+          // the index entry directly — avoids round-tripping through TaskSchema
+          // which rejects sparse/placeholder notes arrays
+          let canonicalBuilt = false;
           try {
             const rawCore = await readYamlFile<unknown>(taskFilePath);
             if (rawCore && typeof rawCore === "object") {
               const coreObj = rawCore as Record<string, unknown>;
-              const { history: _h, ...coreWithoutHistory } = coreObj;
 
               // Read canonical notes count
               let notesCount = 0;
@@ -3455,40 +3473,57 @@ Examples:
                 // Notes file doesn't exist — zero notes
               }
 
-              const assembled = { ...coreWithoutHistory, notes: Array(notesCount) };
-              const parsed = TaskSchema.safeParse(assembled);
-              if (parsed.success) {
-                newIndex.push(toIndexEntry(parsed.data));
-                canonicalParsed = true;
+              // Build index entry directly from canonical data
+              const indexEntry: Record<string, unknown> = {
+                _ulid: coreObj._ulid ?? ulid,
+                slugs: Array.isArray(coreObj.slugs) ? coreObj.slugs : [],
+                title: coreObj.title ?? "",
+                type: coreObj.type ?? "task",
+                status: coreObj.status ?? "pending",
+                priority: coreObj.priority ?? 3,
+                tags: Array.isArray(coreObj.tags) ? coreObj.tags : [],
+                depends_on: Array.isArray(coreObj.depends_on) ? coreObj.depends_on : [],
+                blocked_by: Array.isArray(coreObj.blocked_by) ? coreObj.blocked_by : [],
+                created_at: coreObj.created_at ?? new Date().toISOString(),
+                notes_count: notesCount,
+                todos_count: Array.isArray(coreObj.todos) ? coreObj.todos.length : 0,
+              };
+              for (const field of ["assignee", "automation", "spec_ref", "plan_ref", "review_ref", "started_at", "submitted_at", "completed_at", "session_id"]) {
+                if (coreObj[field] !== undefined && coreObj[field] !== null) {
+                  indexEntry[field] = coreObj[field];
+                }
               }
+              newIndex.push(indexEntry);
+              canonicalBuilt = true;
             }
           } catch {
             // Per-task dir read failed — fall through to monolithic fallback
           }
 
           // Fallback: if canonical read failed, use monolithic data
-          if (!canonicalParsed) {
+          if (!canonicalBuilt) {
             const raw = entry.raw;
-            const parsed = TaskSchema.safeParse(raw);
-            if (parsed.success) {
-              newIndex.push(toIndexEntry(parsed.data));
-            } else {
-              const notes = Array.isArray(raw.notes) ? raw.notes : [];
-              newIndex.push({
-                _ulid: raw._ulid,
-                slugs: Array.isArray(raw.slugs) ? raw.slugs : [],
-                title: raw.title ?? "",
-                type: raw.type ?? "task",
-                status: raw.status ?? "pending",
-                priority: raw.priority ?? 3,
-                tags: Array.isArray(raw.tags) ? raw.tags : [],
-                depends_on: Array.isArray(raw.depends_on) ? raw.depends_on : [],
-                blocked_by: Array.isArray(raw.blocked_by) ? raw.blocked_by : [],
-                created_at: raw.created_at ?? new Date().toISOString(),
-                notes_count: notes.length,
-                todos_count: Array.isArray(raw.todos) ? raw.todos.length : 0,
-              });
+            const notes = Array.isArray(raw.notes) ? raw.notes : [];
+            const fallbackEntry: Record<string, unknown> = {
+              _ulid: raw._ulid,
+              slugs: Array.isArray(raw.slugs) ? raw.slugs : [],
+              title: raw.title ?? "",
+              type: raw.type ?? "task",
+              status: raw.status ?? "pending",
+              priority: raw.priority ?? 3,
+              tags: Array.isArray(raw.tags) ? raw.tags : [],
+              depends_on: Array.isArray(raw.depends_on) ? raw.depends_on : [],
+              blocked_by: Array.isArray(raw.blocked_by) ? raw.blocked_by : [],
+              created_at: raw.created_at ?? new Date().toISOString(),
+              notes_count: notes.length,
+              todos_count: Array.isArray(raw.todos) ? raw.todos.length : 0,
+            };
+            for (const field of ["assignee", "automation", "spec_ref", "plan_ref", "review_ref", "started_at", "submitted_at", "completed_at", "session_id"]) {
+              if (raw[field] !== undefined && raw[field] !== null) {
+                fallbackEntry[field] = raw[field];
+              }
             }
+            newIndex.push(fallbackEntry);
           }
         }
 
