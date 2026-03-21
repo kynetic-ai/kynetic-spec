@@ -34911,3 +34911,29 @@ reviews:
     created_at: 2026-03-21T05:08:28.283Z
     updated_at: 2026-03-21T05:13:31.916Z
     notes: []
+  - _ulid: 01KM7DM0D0KJ8F5BWBM9BEJY65
+    slugs: []
+    title: Review task-migrate-cli-task-data-manager
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KM7DM0CZ9XJBS75ZS2HCS578
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-21T05:24:21.536Z
+    examined_commit: 252e175acbc7af12e2d356d76640db443a4c5a7c
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KM6YEPJDBDB9891TTESHZ0FR"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-21T05:24:21.536Z
+    updated_at: null
+    notes: []
