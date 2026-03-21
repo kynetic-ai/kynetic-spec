@@ -113261,6 +113261,17 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-21T12:56:31.780Z
+    - _ulid: 01KM885S6VBGWSBNQYQ3TPBAR1
+      content: "Fix cycle 14: Merged origin/dev into task branch to resolve semantic conflicts in task.ts,
+        split-backend.ts, and task-data-manager.ts. Conflicts were caused by dev merging
+        rebuild-index feature (with extra AC annotations and inline comments) while our branch has
+        per-task history/metadata features. Resolution: kept all our branch's feature code (history
+        entries, metadata construction, getTaskHistory, pre-mutation state capture) and adopted
+        dev's improved inline comments/AC annotations in task.ts rebuild-index section. All 6888
+        tests pass, zero regressions."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T13:08:26.971Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YETR12GG1EZ5G68KSNTBK
