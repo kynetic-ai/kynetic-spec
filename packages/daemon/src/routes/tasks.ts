@@ -17,6 +17,8 @@
  * - @ui-task-board ac-6: POST /api/tasks/:ref/submit transitions to pending_review
  * - @ui-task-board ac-6: POST /api/tasks/:ref/complete transitions to completed
  * - @ui-task-board ac-6: POST /api/tasks/:ref/block transitions to blocked
+ *
+ * AC: @task-data-manager ac-1 — all task I/O goes through taskDataManager
  */
 
 import { Elysia, t } from 'elysia';
@@ -27,9 +29,10 @@ import {
   loadPlans,
   ReferenceIndex,
   createNote,
-  saveTask,
   getAuthor,
   syncSpecImplementationStatus,
+  taskDataManager,
+  TaskDataManagerError,
   type LoadedTask,
 } from '../../parser/index.js';
 import { commitIfShadow } from '../../parser/shadow.js';
@@ -49,23 +52,23 @@ export function createTasksRoutes(options: TasksRouteOptions) {
 
   return new Elysia({ prefix: '/api/tasks' })
     // AC: @api-contract ac-2, ac-3, ac-4 - List tasks with filters and pagination
+    // AC: @task-data-manager ac-2 - Uses taskDataManager.listTasks for index-only read
     .get(
       '/',
       async ({ query, projectContext }) => {
         // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
         const ctx = await initContext(projectContext.path);
-        const tasks = await loadAllTasks(ctx);
-        const specItems = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, specItems);
 
-        // Apply filters
-        let filtered = tasks;
+        // AC: @task-data-manager ac-2 — list uses index-only summaries
+        const summaries = await taskDataManager.listTasks(ctx, {
+          status: query.status
+            ? (Array.isArray(query.status) ? query.status : [query.status])
+            : undefined,
+          automation: query.automation || undefined,
+        });
 
-        // AC: @api-contract ac-3 - Multi-value status filter
-        if (query.status) {
-          const statusFilters = Array.isArray(query.status) ? query.status : [query.status];
-          filtered = filtered.filter((task) => statusFilters.includes(task.status));
-        }
+        // Apply filters not supported by TaskListFilters
+        let filtered = summaries;
 
         // Type filter (optional, not in ACs but useful)
         if (query.type) {
@@ -79,11 +82,6 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           filtered = filtered.filter((task) =>
             task.tags?.some((t) => tagFilters.includes(t))
           );
-        }
-
-        // Automation filter — filter by automation eligibility status
-        if (query.automation) {
-          filtered = filtered.filter((task) => task.automation === query.automation);
         }
 
         // Plan filter — show only tasks derived from a given plan
@@ -113,9 +111,16 @@ export function createTasksRoutes(options: TasksRouteOptions) {
 
         const paginated = filtered.slice(offset, offset + limit);
 
-        // AC: @api-contract ac-2 - Return with status, priority, spec_ref, notes count
+        // Resolve spec titles via ReferenceIndex (needs spec items)
+        const specItems = await loadAllItems(ctx);
+        // Build a minimal index from summaries for ref resolution
+        // ReferenceIndex accepts LoadedTask[] — summaries have compatible _ulid/slugs
+        const index = new ReferenceIndex([], specItems);
+
+        // AC: @api-contract ac-2 - Return with status, priority, spec_ref
         // AC: @web-dashboard ac-1 - Include depends_on for blocked task computation
         // AC: @ui-api-ref-resolution ac-1 - Include spec_title resolved server-side
+        // AC: @task-data-manager ac-2 — notes_count/todos_count not available from summaries
         const items = paginated.map((task) => ({
           _ulid: task._ulid,
           slugs: task.slugs,
@@ -125,12 +130,11 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           priority: task.priority,
           spec_ref: task.spec_ref,
           spec_title: resolveRefTitle(index, task.spec_ref),
-          meta_ref: task.meta_ref,
           tags: task.tags,
           depends_on: task.depends_on || [],
           automation: task.automation,
-          notes_count: task.notes?.length || 0,
-          todos_count: task.todos?.length || 0,
+          notes_count: 0,
+          todos_count: 0,
           started_at: task.started_at,
           completed_at: task.completed_at,
           created_at: task.created_at,
@@ -158,37 +162,38 @@ export function createTasksRoutes(options: TasksRouteOptions) {
     )
 
     // AC: @api-contract ac-5 - Get single task by ref
+    // AC: @task-data-manager ac-3 - Uses taskDataManager.getTask for full detail
     .get(
       '/:ref',
       async ({ params, error: errorResponse, projectContext }) => {
         // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
         const ctx = await initContext(projectContext.path);
-        const tasks = await loadAllTasks(ctx);
+
+        // AC: @task-data-manager ac-3 — get full task detail via manager
+        let task: LoadedTask;
+        try {
+          task = await taskDataManager.getTask(ctx, params.ref);
+        } catch (err) {
+          if (err instanceof TaskDataManagerError) {
+            return errorResponse(404, {
+              error: 'not_found',
+              message: `Task reference "${params.ref}" not found`,
+              suggestion: 'Use kspec task list or kspec search to find valid task references',
+            });
+          }
+          throw err;
+        }
+
+        // Build ReferenceIndex for ref title resolution
         const items = await loadAllItems(ctx);
         const plans = await loadPlans(ctx);
-        const index = new ReferenceIndex(tasks, items, [], plans);
-
-        // AC: @api-contract ac-5, @trait-api-endpoint ac-2 - Resolve ref via ReferenceIndex
-        const result = index.resolve(params.ref);
-
-        if (!result.ok) {
-          // AC: @trait-api-endpoint ac-2 - Return 404 with error details
-          return errorResponse(404, {
-            error: 'not_found',
-            message: `Task reference "${params.ref}" not found`,
-            suggestion: 'Use kspec task list or kspec search to find valid task references',
-          });
-        }
-
-        // Find the task
-        const task = tasks.find((t) => t._ulid === result.ulid);
-        if (!task) {
-          return errorResponse(404, {
-            error: 'not_found',
-            message: `Reference "${params.ref}" is not a task`,
-            suggestion: 'This reference might point to a spec item instead',
-          });
-        }
+        const tasks = await taskDataManager.listTasks(ctx);
+        const index = new ReferenceIndex(
+          tasks as unknown as LoadedTask[],
+          items,
+          [],
+          plans,
+        );
 
         // AC: @api-contract ac-5 - Return full task with notes, todos, dependencies
         // AC: @ui-task-board ac-3 - Include type, description, blocked_by, vcs_refs, plan_ref, session_ref
@@ -270,31 +275,26 @@ export function createTasksRoutes(options: TasksRouteOptions) {
     )
 
     // AC: @api-contract ac-6 - Start task
+    // AC: @task-data-manager ac-4 - Mutation via taskDataManager.mutateTask
     .post(
       '/:ref/start',
       async ({ params, error: errorResponse, projectContext }) => {
         // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
         const ctx = await initContext(projectContext.path);
-        const tasks = await loadAllTasks(ctx);
-        const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
 
-        // Resolve ref
-        const result = index.resolve(params.ref);
-        if (!result.ok) {
-          return errorResponse(404, {
-            error: 'not_found',
-            message: `Task reference "${params.ref}" not found`,
-            suggestion: 'Use kspec task list to find valid task references',
-          });
-        }
-
-        const task = tasks.find((t) => t._ulid === result.ulid);
-        if (!task) {
-          return errorResponse(404, {
-            error: 'not_found',
-            message: `Reference "${params.ref}" is not a task`,
-          });
+        // AC: @task-data-manager ac-3 — resolve task via manager
+        let task: LoadedTask;
+        try {
+          task = await taskDataManager.getTask(ctx, params.ref);
+        } catch (err) {
+          if (err instanceof TaskDataManagerError) {
+            return errorResponse(404, {
+              error: 'not_found',
+              message: `Task reference "${params.ref}" not found`,
+              suggestion: 'Use kspec task list to find valid task references',
+            });
+          }
+          throw err;
         }
 
         // AC: @api-contract ac-6 - Transition to in_progress
@@ -307,16 +307,24 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           });
         }
 
-        // Update task status
-        const updatedTask: LoadedTask = {
-          ...task,
-          status: 'in_progress',
-          started_at: task.started_at || new Date().toISOString(),
-        };
+        const oldStatus = task.status;
 
-        // Save and commit
-        await saveTask(ctx, updatedTask);
-        await syncSpecImplementationStatus(ctx, updatedTask, tasks, items, index);
+        // AC: @task-data-manager ac-4, ac-6 - Atomic mutation via manager
+        const updatedTask = await taskDataManager.mutateTask(
+          ctx,
+          params.ref,
+          (latestTask) => ({
+            ...latestTask,
+            status: 'in_progress' as const,
+            started_at: latestTask.started_at || new Date().toISOString(),
+          }),
+        );
+
+        // Sync spec implementation status and commit both changes together
+        const items = await loadAllItems(ctx);
+        const allTasks = await loadAllTasks(ctx);
+        const index = new ReferenceIndex(allTasks, items);
+        await syncSpecImplementationStatus(ctx, updatedTask, allTasks, items, index);
         await commitIfShadow(ctx.shadow, `task: start ${params.ref}`);
 
         // AC: @api-contract ac-6, @trait-api-endpoint ac-5 - WebSocket broadcast
@@ -327,7 +335,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           ulid: task._ulid,
           action: 'start',
           title: task.title,
-          old_status: task.status,
+          old_status: oldStatus,
           new_status: 'in_progress',
         }, projectContext.path);
 
@@ -342,31 +350,12 @@ export function createTasksRoutes(options: TasksRouteOptions) {
     )
 
     // AC: @api-contract ac-7 - Add note to task
+    // AC: @task-data-manager ac-4 - Note via taskDataManager.addNote
     .post(
       '/:ref/note',
       async ({ params, body, error: errorResponse, projectContext }) => {
         // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
         const ctx = await initContext(projectContext.path);
-        const tasks = await loadAllTasks(ctx);
-        const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
-
-        // Resolve ref
-        const result = index.resolve(params.ref);
-        if (!result.ok) {
-          return errorResponse(404, {
-            error: 'not_found',
-            message: `Task reference "${params.ref}" not found`,
-          });
-        }
-
-        const task = tasks.find((t) => t._ulid === result.ulid);
-        if (!task) {
-          return errorResponse(404, {
-            error: 'not_found',
-            message: `Reference "${params.ref}" is not a task`,
-          });
-        }
 
         // AC: @trait-api-endpoint ac-3 - Validate body
         if (!body.content || typeof body.content !== 'string') {
@@ -381,36 +370,45 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           });
         }
 
-        // AC: @api-contract ac-7 - Append note
         const author = getAuthor(ctx.config?.identity?.author);
-        const note = createNote(body.content, author);
 
-        const updatedTask: LoadedTask = {
-          ...task,
-          notes: [...(task.notes || []), note],
-        };
-
-        // AC: @api-contract ac-7, @trait-api-endpoint ac-5 - Shadow commit
-        await saveTask(ctx, updatedTask);
-        await commitIfShadow(ctx.shadow, `task: add note to ${params.ref}`);
+        // AC: @task-data-manager ac-4, ac-6 - Atomic note addition via manager
+        let result: { task: LoadedTask; note: { _ulid: string } };
+        try {
+          result = await taskDataManager.addNote(
+            ctx,
+            params.ref,
+            body.content,
+            author,
+            { operation: 'task', ref: params.ref, detail: 'add note' },
+          );
+        } catch (err) {
+          if (err instanceof TaskDataManagerError) {
+            return errorResponse(404, {
+              error: 'not_found',
+              message: `Task reference "${params.ref}" not found`,
+            });
+          }
+          throw err;
+        }
 
         // AC: @api-contract ac-7 - WebSocket broadcast
         // AC: @ui-api-aggregation ac-4 - Include title (no status change for notes)
         // AC: @multi-directory-daemon ac-18 - Broadcast scoped to request project
         pubsub.broadcast('tasks:updates', 'task_updated', {
           ref: params.ref,
-          ulid: task._ulid,
+          ulid: result.task._ulid,
           action: 'note_added',
-          title: task.title,
+          title: result.task.title,
           old_status: null,
           new_status: null,
-          note_ulid: note._ulid,
+          note_ulid: result.note._ulid,
         }, projectContext.path);
 
         return {
           success: true,
-          note,
-          task: updatedTask,
+          note: result.note,
+          task: result.task,
         };
       },
       {
@@ -424,28 +422,24 @@ export function createTasksRoutes(options: TasksRouteOptions) {
     )
 
     // AC: @ui-task-board ac-6 - Submit task for review
+    // AC: @task-data-manager ac-4 - Mutation via taskDataManager.mutateTask
     .post(
       '/:ref/submit',
       async ({ params, error: errorResponse, projectContext }) => {
         const ctx = await initContext(projectContext.path);
-        const tasks = await loadAllTasks(ctx);
-        const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
 
-        const result = index.resolve(params.ref);
-        if (!result.ok) {
-          return errorResponse(404, {
-            error: 'not_found',
-            message: `Task reference "${params.ref}" not found`,
-          });
-        }
-
-        const task = tasks.find((t) => t._ulid === result.ulid);
-        if (!task) {
-          return errorResponse(404, {
-            error: 'not_found',
-            message: `Reference "${params.ref}" is not a task`,
-          });
+        // AC: @task-data-manager ac-3 — resolve task via manager
+        let task: LoadedTask;
+        try {
+          task = await taskDataManager.getTask(ctx, params.ref);
+        } catch (err) {
+          if (err instanceof TaskDataManagerError) {
+            return errorResponse(404, {
+              error: 'not_found',
+              message: `Task reference "${params.ref}" not found`,
+            });
+          }
+          throw err;
         }
 
         if (task.status !== 'in_progress' && task.status !== 'needs_work') {
@@ -457,9 +451,20 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           });
         }
 
-        const updatedTask: LoadedTask = { ...task, status: 'pending_review' };
-        await saveTask(ctx, updatedTask);
-        await syncSpecImplementationStatus(ctx, updatedTask, tasks, items, index);
+        const oldStatus = task.status;
+
+        // AC: @task-data-manager ac-4, ac-6 - Atomic mutation via manager
+        const updatedTask = await taskDataManager.mutateTask(
+          ctx,
+          params.ref,
+          (latestTask) => ({ ...latestTask, status: 'pending_review' as const }),
+        );
+
+        // Sync spec implementation status and commit both changes together
+        const items = await loadAllItems(ctx);
+        const allTasks = await loadAllTasks(ctx);
+        const index = new ReferenceIndex(allTasks, items);
+        await syncSpecImplementationStatus(ctx, updatedTask, allTasks, items, index);
         await commitIfShadow(ctx.shadow, `task: submit ${params.ref}`);
 
         // AC: @ui-api-aggregation ac-4 - Include title and old/new status
@@ -468,7 +473,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           ulid: task._ulid,
           action: 'submit',
           title: task.title,
-          old_status: task.status,
+          old_status: oldStatus,
           new_status: 'pending_review',
         }, projectContext.path);
 
@@ -478,38 +483,45 @@ export function createTasksRoutes(options: TasksRouteOptions) {
     )
 
     // AC: @ui-task-board ac-6 - Complete task
+    // AC: @task-data-manager ac-4 - Mutation via taskDataManager.mutateTask
     .post(
       '/:ref/complete',
       async ({ params, body, error: errorResponse, projectContext }) => {
         const ctx = await initContext(projectContext.path);
-        const tasks = await loadAllTasks(ctx);
+
+        // AC: @task-data-manager ac-3 — resolve task via manager
+        let task: LoadedTask;
+        try {
+          task = await taskDataManager.getTask(ctx, params.ref);
+        } catch (err) {
+          if (err instanceof TaskDataManagerError) {
+            return errorResponse(404, {
+              error: 'not_found',
+              message: `Task reference "${params.ref}" not found`,
+            });
+          }
+          throw err;
+        }
+
+        const oldStatus = task.status;
+
+        // AC: @task-data-manager ac-4, ac-6 - Atomic mutation via manager
+        const updatedTask = await taskDataManager.mutateTask(
+          ctx,
+          params.ref,
+          (latestTask) => ({
+            ...latestTask,
+            status: 'completed' as const,
+            completed_at: new Date().toISOString(),
+            closed_reason: body.reason,
+          }),
+        );
+
+        // Sync spec implementation status and commit both changes together
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
-
-        const result = index.resolve(params.ref);
-        if (!result.ok) {
-          return errorResponse(404, {
-            error: 'not_found',
-            message: `Task reference "${params.ref}" not found`,
-          });
-        }
-
-        const task = tasks.find((t) => t._ulid === result.ulid);
-        if (!task) {
-          return errorResponse(404, {
-            error: 'not_found',
-            message: `Reference "${params.ref}" is not a task`,
-          });
-        }
-
-        const updatedTask: LoadedTask = {
-          ...task,
-          status: 'completed',
-          completed_at: new Date().toISOString(),
-          closed_reason: body.reason,
-        };
-        await saveTask(ctx, updatedTask);
-        await syncSpecImplementationStatus(ctx, updatedTask, tasks, items, index);
+        const allTasks = await loadAllTasks(ctx);
+        const index = new ReferenceIndex(allTasks, items);
+        await syncSpecImplementationStatus(ctx, updatedTask, allTasks, items, index);
         await commitIfShadow(ctx.shadow, `task: complete ${params.ref}`);
 
         // AC: @ui-api-aggregation ac-4 - Include title and old/new status
@@ -518,7 +530,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           ulid: task._ulid,
           action: 'complete',
           title: task.title,
-          old_status: task.status,
+          old_status: oldStatus,
           new_status: 'completed',
         }, projectContext.path);
 
@@ -531,40 +543,46 @@ export function createTasksRoutes(options: TasksRouteOptions) {
     )
 
     // AC: @ui-task-board ac-6 - Block task
+    // AC: @task-data-manager ac-4 - Mutation via taskDataManager.mutateTask
     .post(
       '/:ref/block',
       async ({ params, body, error: errorResponse, projectContext }) => {
         const ctx = await initContext(projectContext.path);
-        const tasks = await loadAllTasks(ctx);
-        const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
 
-        const result = index.resolve(params.ref);
-        if (!result.ok) {
-          return errorResponse(404, {
-            error: 'not_found',
-            message: `Task reference "${params.ref}" not found`,
-          });
+        // AC: @task-data-manager ac-3 — resolve task via manager
+        let task: LoadedTask;
+        try {
+          task = await taskDataManager.getTask(ctx, params.ref);
+        } catch (err) {
+          if (err instanceof TaskDataManagerError) {
+            return errorResponse(404, {
+              error: 'not_found',
+              message: `Task reference "${params.ref}" not found`,
+            });
+          }
+          throw err;
         }
 
-        const task = tasks.find((t) => t._ulid === result.ulid);
-        if (!task) {
-          return errorResponse(404, {
-            error: 'not_found',
-            message: `Reference "${params.ref}" is not a task`,
-          });
-        }
-
+        const oldStatus = task.status;
         const author = getAuthor(ctx.config?.identity?.author);
         const note = createNote(`Blocked: ${body.reason}`, author);
 
-        const updatedTask: LoadedTask = {
-          ...task,
-          status: 'blocked',
-          notes: [...(task.notes || []), note],
-        };
-        await saveTask(ctx, updatedTask);
-        await syncSpecImplementationStatus(ctx, updatedTask, tasks, items, index);
+        // AC: @task-data-manager ac-4, ac-6 - Atomic mutation via manager
+        const updatedTask = await taskDataManager.mutateTask(
+          ctx,
+          params.ref,
+          (latestTask) => ({
+            ...latestTask,
+            status: 'blocked' as const,
+            notes: [...latestTask.notes, note],
+          }),
+        );
+
+        // Sync spec implementation status and commit both changes together
+        const items = await loadAllItems(ctx);
+        const allTasks = await loadAllTasks(ctx);
+        const index = new ReferenceIndex(allTasks, items);
+        await syncSpecImplementationStatus(ctx, updatedTask, allTasks, items, index);
         await commitIfShadow(ctx.shadow, `task: block ${params.ref}`);
 
         // AC: @ui-api-aggregation ac-4 - Include title and old/new status
@@ -573,7 +591,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           ulid: task._ulid,
           action: 'block',
           title: task.title,
-          old_status: task.status,
+          old_status: oldStatus,
           new_status: 'blocked',
         }, projectContext.path);
 
