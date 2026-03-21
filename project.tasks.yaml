@@ -113340,6 +113340,32 @@
       supersedes: null
       author: Test User
       created_at: 2026-03-21T15:29:46.334Z
+    - _ulid: 01KM8H1M2HZ27CH0PVCKZF0A1J
+      content: >-
+        Fix cycle 18: Addressed 3 blocker threads from review @01KM8FQW4TVWZNP034R0ZFQ5CP — missing
+        commitOpts in two mutation call sites.
+
+
+        1. item.ts dangling-ref cleanup (mutateTasks): Added commitOpts with operation
+        'item-delete-ref-cleanup' so history entries record the correct command when depends_on,
+        context, blocked_by, or spec_ref are removed.
+
+
+        2. tasks.ts assess --auto (mutateTask): Added commitOpts with operation 'tasks-assess' and
+        skipCommit:true so history entries record the correct command while preserving the existing
+        summary shadow commit.
+
+
+        3. Added ShadowCommitOptions.skipCommit flag to task-data-manager.ts — allows callers that
+        manage their own commitIfShadow lifecycle to still provide operation metadata for history
+        tracking without duplicate shadow commits from withWriteBuffer.
+
+
+        All 6889 tests pass (1 pre-existing flaky timeout in canonical-task-workspace-contract
+        unrelated to changes).
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T15:43:27.826Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YETR12GG1EZ5G68KSNTBK
