@@ -24,7 +24,6 @@
 import { Elysia, t } from 'elysia';
 import {
   initContext,
-  loadAllTasks,
   loadAllItems,
   loadPlans,
   ReferenceIndex,
@@ -246,7 +245,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
       '/:ref/sessions',
       async ({ params, error: errorResponse, projectContext }) => {
         const ctx = await initContext(projectContext.path);
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
         const items = await loadAllItems(ctx);
         const result = await getRelatedSessionsForTask({
           taskRef: params.ref,
@@ -326,7 +325,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
 
         // Sync spec implementation status and commit both changes together
         const items = await loadAllItems(ctx);
-        const allTasks = await loadAllTasks(ctx);
+        const allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
         const index = new ReferenceIndex(allTasks, items);
         await syncSpecImplementationStatus(ctx, updatedTask, allTasks, items, index);
         await commitIfShadow(ctx.shadow, `task: start ${params.ref}`);
@@ -471,7 +470,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
 
         // Sync spec implementation status and commit both changes together
         const items = await loadAllItems(ctx);
-        const allTasks = await loadAllTasks(ctx);
+        const allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
         const index = new ReferenceIndex(allTasks, items);
         await syncSpecImplementationStatus(ctx, updatedTask, allTasks, items, index);
         await commitIfShadow(ctx.shadow, `task: submit ${params.ref}`);
@@ -533,7 +532,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
 
         // Sync spec implementation status and commit both changes together
         const items = await loadAllItems(ctx);
-        const allTasks = await loadAllTasks(ctx);
+        const allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
         const index = new ReferenceIndex(allTasks, items);
         await syncSpecImplementationStatus(ctx, updatedTask, allTasks, items, index);
         await commitIfShadow(ctx.shadow, `task: complete ${params.ref}`);
@@ -599,7 +598,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
 
         // Sync spec implementation status and commit both changes together
         const items = await loadAllItems(ctx);
-        const allTasks = await loadAllTasks(ctx);
+        const allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
         const index = new ReferenceIndex(allTasks, items);
         await syncSpecImplementationStatus(ctx, updatedTask, allTasks, items, index);
         await commitIfShadow(ctx.shadow, `task: block ${params.ref}`);

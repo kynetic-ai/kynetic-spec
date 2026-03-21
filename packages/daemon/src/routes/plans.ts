@@ -14,8 +14,8 @@ import { Elysia, t } from 'elysia';
 import {
   initContext,
   loadPlans,
-  loadAllTasks,
   findPlanByRef,
+  resolveTaskDataManager,
   type LoadedPlan,
   type LoadedTask,
 } from '../../parser/index.js';
@@ -63,7 +63,7 @@ export function createPlansRoutes(options: PlansRouteOptions = {}) {
       async ({ query, projectContext }) => {
         const ctx = await initContext(projectContext.path);
         const plans = await loadPlans(ctx);
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
 
         // Apply status filter
         let filtered: LoadedPlan[] = plans;
@@ -106,7 +106,7 @@ export function createPlansRoutes(options: PlansRouteOptions = {}) {
           });
         }
 
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
 
         const detail: PlanDetail = {
           ...toPlanSummary(plan, tasks),

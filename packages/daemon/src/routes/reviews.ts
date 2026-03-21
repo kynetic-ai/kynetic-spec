@@ -31,7 +31,6 @@ import { ulid } from 'ulidx';
 import {
   initContext,
   loadReviewRecords,
-  loadAllTasks,
   loadAllItems,
   ReferenceIndex,
   findReviewByRef,
@@ -45,6 +44,7 @@ import {
   addReplyAtomic,
   resolveThreadAtomic,
   reopenThreadAtomic,
+  resolveTaskDataManager,
 } from '../../parser/index.js';
 import { getUnresolvedBlockers } from '../../parser/review-threads.js';
 import { createCheck } from '../../review/checks.js';
@@ -140,7 +140,7 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
       async ({ query, projectContext }) => {
         const ctx = await initContext(projectContext.path);
         const reviews = await loadReviewRecords(ctx);
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
         const specItems = await loadAllItems(ctx);
         const index = new ReferenceIndex(tasks, specItems);
 
@@ -831,7 +831,7 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
         // AC: @review-task-lifecycle-integration ac-4
         // Auto-transition tasks to needs_work on changes_requested verdict
         if (decision === 'request_changes') {
-          const allTasks = await loadAllTasks(ctx);
+          const allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
           const transitioned = await handleVerdictTaskTransition(
             ctx,
             updated,

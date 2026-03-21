@@ -25,7 +25,6 @@ import { Elysia, t } from 'elysia';
 import { ulid } from 'ulidx';
 import {
   initContext,
-  loadAllTasks,
   loadAllItems,
   ReferenceIndex,
   loadTriageRecords,
@@ -35,6 +34,7 @@ import {
   loadInboxItems,
   findInboxItemByRef,
   getAuthor,
+  resolveTaskDataManager,
   type LoadedTriageRecord,
 } from '../../parser/index.js';
 import { resolveRefEntries } from './ref-resolution.js';
@@ -97,7 +97,7 @@ export function createTriageRoutes(options: TriageRouteOptions) {
         let refIndex: ReferenceIndex | null = null;
         if (hasEvidenceRefs) {
           try {
-            const tasks = await loadAllTasks(ctx);
+            const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
             const items = await loadAllItems(ctx);
             refIndex = new ReferenceIndex(tasks, items);
           } catch {
@@ -268,7 +268,7 @@ export function createTriageRoutes(options: TriageRouteOptions) {
         // AC: @ui-api-ref-resolution ac-2 - Resolve evidence_refs
         if (record.evidence_refs?.length > 0) {
           try {
-            const tasks = await loadAllTasks(ctx);
+            const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
             const items = await loadAllItems(ctx);
             const refIndex = new ReferenceIndex(tasks, items);
             return {

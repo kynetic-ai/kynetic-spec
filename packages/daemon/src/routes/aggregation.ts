@@ -15,7 +15,6 @@
 import { Elysia } from 'elysia';
 import {
   initContext,
-  loadAllTasks,
   loadInboxItems,
   loadTriageRecords,
   findTriageRecordByInboxRef,
@@ -23,6 +22,7 @@ import {
   validate,
   AlignmentIndex,
   areDependenciesMet,
+  resolveTaskDataManager,
 } from '../../parser/index.js';
 import { TriageActionSchema, TriageStatusSchema } from '../../schema/index.js';
 import type {
@@ -38,7 +38,7 @@ export function createAggregationRoutes(options: AggregationRouteOptions = {}) {
     // AC: @ui-api-aggregation ac-1 - Task status summary with dependency-aware distinctions
     .get('/tasks/summary', async ({ projectContext }) => {
       const ctx = await initContext(projectContext.path);
-      const tasks = await loadAllTasks(ctx);
+      const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
 
       // Count tasks by status
       const counts: Record<string, number> = {};

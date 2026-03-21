@@ -15,10 +15,10 @@
 import { Elysia } from 'elysia';
 import {
   initContext,
-  loadAllTasks,
   loadAllItems,
   loadPlans,
   ReferenceIndex,
+  resolveTaskDataManager,
 } from '../../parser/index.js';
 import { buildRefIndex } from './ref-resolution.js';
 
@@ -30,7 +30,7 @@ export function createRefsRoutes() {
     .get('/', async ({ projectContext }) => {
       const ctx = await initContext(projectContext.path);
       const [tasks, items, plans] = await Promise.all([
-        loadAllTasks(ctx),
+        resolveTaskDataManager(ctx).loadAllTasks(ctx),
         loadAllItems(ctx),
         loadPlans(ctx),
       ]);
