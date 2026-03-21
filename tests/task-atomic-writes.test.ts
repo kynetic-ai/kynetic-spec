@@ -230,6 +230,9 @@ describe("Atomic Multi-File Task Writes", () => {
       const indexContent = await fs.readFile(getIndexFilePath(ctx), "utf-8");
       expect(indexContent).not.toContain(ulid);
 
+      // Verify the task directory was removed
+      await expect(fs.stat(taskDir)).rejects.toThrow();
+
       // No buffer should be active after the operation completes
       expect(getActiveBatchBuffer()).toBeNull();
     });
@@ -291,6 +294,51 @@ describe("Atomic Multi-File Task Writes", () => {
       expect(taskAfter).toBe(taskBefore);
 
       // Buffer should be cleaned up after failure
+      expect(getActiveBatchBuffer()).toBeNull();
+    });
+
+    // AC: @task-atomic-writes ac-2
+    it("deleteTask failure preserves directory and index — no partial deletion", async () => {
+      const [ulid] = testUlids("ADRF", 1);
+      await createSplitTask(ctx, ulid, "delete-rollback-test");
+
+      // Snapshot state before the failed deletion
+      const indexBefore = await fs.readFile(getIndexFilePath(ctx), "utf-8");
+      const taskDir = getTaskDir(ctx, ulid);
+      const taskBefore = await fs.readFile(getTaskFilePath(ctx, ulid), "utf-8");
+
+      // Monkey-patch the manager to inject a failure after the backend
+      // queues deletions but before flush completes. We do this by
+      // activating a buffer that will throw on flush.
+      const realFlush = (await import("../src/cli/batch-write-buffer.js")).WriteBuffer.prototype.flush;
+      const { WriteBuffer } = await import("../src/cli/batch-write-buffer.js");
+      const originalFlush = WriteBuffer.prototype.flush;
+      WriteBuffer.prototype.flush = async function () {
+        // Discard so nothing is written, then throw
+        this.discard();
+        throw new Error("Simulated flush failure");
+      };
+
+      try {
+        await expect(
+          manager.deleteTask(ctx, `@${ulid}`),
+        ).rejects.toThrow("Simulated flush failure");
+      } finally {
+        WriteBuffer.prototype.flush = originalFlush;
+      }
+
+      // Directory should still exist — buffer was discarded before flush
+      await expect(fs.stat(taskDir)).resolves.toBeTruthy();
+
+      // Task files should be unchanged
+      const taskAfter = await fs.readFile(getTaskFilePath(ctx, ulid), "utf-8");
+      expect(taskAfter).toBe(taskBefore);
+
+      // Index should be unchanged
+      const indexAfter = await fs.readFile(getIndexFilePath(ctx), "utf-8");
+      expect(indexAfter).toBe(indexBefore);
+
+      // Buffer should be cleaned up
       expect(getActiveBatchBuffer()).toBeNull();
     });
 

@@ -730,11 +730,17 @@ class SplitBackend implements TaskStorageBackend {
         // Delete known per-task files through the buffer
         const taskFilePath = getTaskFilePath(ctx, task._ulid);
         const notesFilePath = getNotesFilePath(ctx, task._ulid);
-        const buffer = getActiveBatchBuffer();
-        if (buffer) {
-          buffer.delete(taskFilePath);
-          buffer.delete(notesFilePath);
-        }
+        const buffer = getActiveBatchBuffer()!;
+        buffer.delete(taskFilePath);
+        buffer.delete(notesFilePath);
+
+        // Queue directory removal through the buffer so it happens during
+        // flush — after file-level operations. This ensures the directory
+        // removal participates in the buffer's atomicity: if flush fails,
+        // discard() prevents the removal from executing.
+        // AC: @task-directory-storage ac-4 — entire directory is removed
+        // AC: @task-atomic-writes ac-2 — directory removal deferred to flush
+        buffer.deleteDirectory(taskDir);
 
         // Remove from index (also goes through the buffer)
         await this.removeFromIndex(ctx, task._ulid);
@@ -752,11 +758,6 @@ class SplitBackend implements TaskStorageBackend {
           deactivateBatchBuffer();
         }
       }
-
-      // After buffer flush, remove the directory tree directly.
-      // This handles unknown files/subdirectories that weren't in the buffer.
-      // AC: @task-directory-storage ac-4 — entire directory is removed
-      await fs.rm(taskDir, { recursive: true, force: true });
     } finally {
       releaseTaskLock();
     }
