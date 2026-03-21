@@ -41229,6 +41229,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-21T18:10:34.626Z
+      - _ulid: 01KM8SF2VJ8VW8CR4VH53770C4
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM8SF2GRC6TK8C31YNV6QDYH
+        timestamp: 2026-03-21T18:10:37.554Z
     examined_commit: f68480a8d01aadbdce406f6aca86f353cc32e282
     external_links: []
     lifecycle_state: open
@@ -41238,10 +41245,29 @@ reviews:
       content_hash: ""
       ref: "@01KM6YETR12GG1EZ5G68KSNTBK"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM8SF2GRC6TK8C31YNV6QDYH
+        anchor:
+          type: code
+          commit: f68480a8d01aadbdce406f6aca86f353cc32e282
+          line_end: 915
+          line_start: 910
+          path: src/cli/commands/task.ts
+          side: head
+        entries:
+          - _ulid: 01KM8SF2GRA63XBB0DDVWABP7C
+            author: Test User
+            body: When a migrated task has notes but no stored history yet, this fallback appends the full
+              per-directory git log after  has already emitted  entries from .  walks the
+              whole  directory, and its parser classifies  commits as , so every persisted note is
+              duplicated in the activity timeline for exactly the partial-migration case this branch
+              handles. That breaks the timeline instead of recovering only the missing field
+              history.
+            created_at: 2026-03-21T18:10:37.208Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T18:06:21.254Z
-    updated_at: 2026-03-21T18:10:34.296Z
+    updated_at: 2026-03-21T18:10:37.208Z
     notes: []
   - _ulid: 01KM8S7BAF7RR8Z853MWHPDG44
     slugs: []
