@@ -411,6 +411,44 @@ describe("Per-Task Core Data File (@task-core-data-file)", () => {
     });
 
     // AC: @task-core-data-file ac-3
+    it("history entry uses configured project author identity", async () => {
+      const manager = new TaskDataManager("split");
+
+      // Create a ctx with config identity.author set
+      const configCtx: KspecContext = {
+        ...ctx,
+        config: {
+          ...ctx.config,
+          identity: { author: "@config-author" },
+        } as any,
+      };
+
+      const created = await manager.createTask(configCtx, {
+        title: "Config author test",
+        slugs: ["config-author-test"],
+        priority: 3,
+      });
+
+      // Clear KSPEC_AUTHOR to ensure config author is used
+      const prevAuthor = process.env.KSPEC_AUTHOR;
+      delete process.env.KSPEC_AUTHOR;
+      try {
+        await manager.mutateTask(
+          configCtx,
+          "@config-author-test",
+          (task) => ({ ...task, priority: 1 }),
+          { operation: "task-set", ref: "@config-author-test" },
+        );
+      } finally {
+        if (prevAuthor !== undefined) process.env.KSPEC_AUTHOR = prevAuthor;
+      }
+
+      const history = await splitBackend.getTaskHistory(configCtx, created._ulid);
+      expect(history.length).toBe(1);
+      expect(history[0].author).toBe("@config-author");
+    });
+
+    // AC: @task-core-data-file ac-3
     it("history entry has command field", async () => {
       const manager = new TaskDataManager("split");
 

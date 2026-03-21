@@ -28,6 +28,7 @@ import {
   findRawTaskIndex,
   findTaskByRef,
   findTaskFiles,
+  getAuthor,
   getDefaultTaskFilePath,
   loadAllTasks,
   mergeTaskPreservingRawShape,
@@ -944,8 +945,9 @@ export class TaskDataManager {
     const task = await this.getTask(ctx, ref);
 
     // Build mutation metadata from commitOpts for history tracking
+    // AC: @task-core-data-file ac-3 — author resolved via full priority chain (env → config → git → system)
     const metadata: MutationMetadata | undefined = commitOpts
-      ? { command: commitOpts.operation, author: undefined }
+      ? { command: commitOpts.operation, author: getAuthor(ctx.config?.identity?.author) }
       : undefined;
 
     const updated = await this.backend.mutateTask(
@@ -999,8 +1001,9 @@ export class TaskDataManager {
     );
 
     // Build mutation metadata from commitOpts for history tracking
+    // AC: @task-core-data-file ac-3 — author resolved via full priority chain (env → config → git → system)
     const metadata: MutationMetadata | undefined = commitOpts
-      ? { command: commitOpts.operation, author: undefined }
+      ? { command: commitOpts.operation, author: getAuthor(ctx.config?.identity?.author) }
       : undefined;
 
     const updated = await this.backend.mutateTasks(
