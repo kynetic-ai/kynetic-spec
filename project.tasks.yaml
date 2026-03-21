@@ -113197,8 +113197,12 @@
   spec_ref: "@task-atomic-writes"
   plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: "Reviewed and approved in @01KM7Y3A8JFMBME1MQ41J9M1VN. Merged
+    dispatch/task/task-extend-write-buffer/01km6yev into dev after verifying task mutation
+    buffering, delete rollback atomicity, AC coverage, and full test suite pass (npm test: 6832
+    passed, 3 skipped)."
   depends_on:
     - "@task-impl-split-storage"
   context: []
@@ -113221,6 +113225,7 @@
   created_at: 2026-03-21T00:59:24.017Z
   started_at: 2026-03-21T10:10:59.158Z
   submitted_at: 2026-03-21T10:11:03.063Z
+  completed_at: 2026-03-21T10:17:43.841Z
   notes:
     - _ulid: 01KM7X27M8ZG0P3PFSYH5G2531
       content: "Implemented withWriteBuffer() in TaskDataManager that wraps all task mutations
