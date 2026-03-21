@@ -112969,6 +112969,28 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-21T08:16:32.706Z
+    - _ulid: 01KM7R9PH8FM7K0C3JJCW2XQHW
+      content: >-
+        Fix cycle 1: Addressed both blocker threads from review @01KM7QCHPRPB02FMD2TEW84W4G.
+
+
+        Blocker 1 (todo-only mutations dropped): Removed 'todos' from skipFields in
+        computeFieldChanges() and stopped excluding todos from the pre-mutation snapshot. Todo-only
+        mutations now correctly write task.yaml and generate history entries.
+
+
+        Blocker 2 (history not wired into activity): Moved HistoryEntry types to
+        task-data-manager.ts as the canonical location, added optional getTaskHistory() to
+        TaskStorageBackend interface and TaskDataManager, then merged per-task history entries into
+        the task get activity timeline. This satisfies @task-core-data-file ac-2 — history provides
+        audit trail without git queries.
+
+
+        Added 4 new tests (todo-only single/batch, TaskDataManager getTaskHistory for
+        split/monolithic). All 6822 tests pass, zero regressions.
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T08:30:58.088Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YETR12GG1EZ5G68KSNTBK
