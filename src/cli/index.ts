@@ -104,7 +104,7 @@ async function maybeAcquireDispatchMutationLock(isMutating: boolean): Promise<vo
   const timeoutMs =
     timeoutRaw && Number.isFinite(Number(timeoutRaw))
       ? Number(timeoutRaw)
-      : undefined;
+      : 0;
 
   try {
     heldMutationLockRelease = await acquireFileLock(lockFile, timeoutMs);
