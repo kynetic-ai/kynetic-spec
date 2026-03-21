@@ -113724,7 +113724,7 @@
   spec_ref: "@task-storage-migration"
   plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
   origin: derived
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-impl-index"
@@ -113746,7 +113746,7 @@
     remote: origin
     remote_url: git@github.com:kynetic-ai/kynetic-spec.git
     upstream_ref: refs/heads/dev
-  session_id: 01KM8QTBS1SM3V4R7B6N0JC116
+  session_id: null
   created_at: 2026-03-21T00:59:25.505Z
   started_at: 2026-03-21T17:50:45.238Z
   submitted_at: 2026-03-21T17:50:51.889Z
@@ -113778,6 +113778,11 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-21T17:50:32.116Z
+    - _ulid: 01KM8RM54HPFYNEJRW7G6J26CZ
+      content: "[FIX_CYCLE: 2] Review verdict: changes_requested by codex"
+      supersedes: null
+      author: Test User
+      created_at: 2026-03-21T17:55:55.154Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YEXN2KMJ43AMEKH3SW0RE
