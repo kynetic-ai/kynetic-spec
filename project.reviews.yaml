@@ -39911,9 +39911,25 @@ reviews:
           status: pass
           name: review-evidence
         timestamp: 2026-03-21T15:29:36.706Z
+      - _ulid: 01KM8G8GA47H0A61GS195CCQN9
+        actor: codex@openai.com
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-21T15:29:44.772Z
+      - _ulid: 01KM8G8GA47K5R3AAF3BAJKKFK
+        actor: codex@openai.com
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-21T15:29:44.772Z
     examined_commit: 4241cfba631c31163ad3241461302891839d59f6
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -39974,7 +39990,14 @@ reviews:
               incomplete for `item delete` cleanup edits.'
             created_at: 2026-03-21T15:28:44.510Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai.com
+        role: reviewer
+        created_at: 2026-03-21T15:29:44.772Z
     created_at: 2026-03-21T15:20:39.834Z
-    updated_at: 2026-03-21T15:29:36.318Z
+    updated_at: 2026-03-21T15:29:44.772Z
     notes: []
