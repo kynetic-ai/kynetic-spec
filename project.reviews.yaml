@@ -34377,6 +34377,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM7A7JXESXYHWDHGVQA5AH6S
         timestamp: 2026-03-21T04:25:09.036Z
+      - _ulid: 01KM7A7ZDVDGE7HSPS16M1CQP8
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM7A7Z5V9W3B274B0EJM5DGX
+        timestamp: 2026-03-21T04:25:21.595Z
     examined_commit: aba38db786aa6f593e5f2ceb9f6e7acc3db5bb4c
     external_links: []
     lifecycle_state: open
@@ -34407,7 +34414,31 @@ reviews:
               manager's core contract and will couple future callers to backend-specific paths.
             created_at: 2026-03-21T04:25:08.782Z
         kind: blocker
+      - _ulid: 01KM7A7Z5V9W3B274B0EJM5DGX
+        entries:
+          - _ulid: 01KM7A7Z5VC32Q2Q604ZCV9NZJ
+            author: Jacob Chapel
+            body: >-
+              Evidence log:
+
+              Files read: src/parser/task-data-manager.ts, src/parser/yaml.ts,
+              tests/task-data-manager.test.ts, tests/action-model.test.ts, kspec-agents.md,
+              task/spec output via kspec.
+
+              Commands run: kspec task get @01KM6YENV3CBFAGSRHVHR7QPJN, kspec item get
+              @task-data-manager, kspec review for-task @01KM6YENV3CBFAGSRHVHR7QPJN, git diff
+              --stat/base...head, git diff base...head -- changed files, rg AC annotations, npm
+              test, kspec validate.
+
+              Claims verified: the flaky action-model note is real (the test now awaits the leaked
+              promise); full test suite passes on this snapshot; AC annotations exist for the new
+              task-data-manager tests.
+
+              Categories searched: correctness, storage abstraction boundaries, concurrency/locking,
+              test quality, error handling, integration with existing YAML helpers.
+            created_at: 2026-03-21T04:25:21.339Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-21T04:20:46.932Z
-    updated_at: 2026-03-21T04:25:08.782Z
+    updated_at: 2026-03-21T04:25:21.339Z
     notes: []
