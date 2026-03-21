@@ -71,12 +71,15 @@ export interface TaskSummary {
   started_at?: string | null;
   submitted_at?: string | null;
   completed_at?: string | null;
+  notes_count: number;
+  todos_count: number;
 }
 
 /**
  * Extract a TaskSummary from a raw YAML task record.
- * Only reads index-level fields — detail fields (notes, todos, description,
- * vcs_refs, etc.) are never accessed.
+ * Reads index-level fields plus array lengths for notes/todos counts.
+ * Detail field *contents* (note text, todo items) are not accessed —
+ * only Array.isArray checks and .length are used for the counts.
  *
  * AC: @task-data-manager ac-2 — only index data is read
  */
@@ -105,6 +108,8 @@ function rawToSummary(raw: unknown): TaskSummary | null {
     started_at: typeof r.started_at === "string" ? r.started_at : (r.started_at === null ? null : undefined),
     submitted_at: typeof r.submitted_at === "string" ? r.submitted_at : (r.submitted_at === null ? null : undefined),
     completed_at: typeof r.completed_at === "string" ? r.completed_at : (r.completed_at === null ? null : undefined),
+    notes_count: Array.isArray(r.notes) ? r.notes.length : 0,
+    todos_count: Array.isArray(r.todos) ? r.todos.length : 0,
   };
 }
 
@@ -132,6 +137,8 @@ function toTaskSummary(task: LoadedTask): TaskSummary {
     started_at: task.started_at,
     submitted_at: task.submitted_at,
     completed_at: task.completed_at,
+    notes_count: task.notes?.length ?? 0,
+    todos_count: task.todos?.length ?? 0,
   };
 }
 

@@ -628,6 +628,8 @@ describe("TaskDataManager", () => {
             started_at: t.started_at,
             submitted_at: t.submitted_at,
             completed_at: t.completed_at,
+            notes_count: t.notes?.length ?? 0,
+            todos_count: t.todos?.length ?? 0,
           }));
         },
         async getTask(ctx, ref) {
