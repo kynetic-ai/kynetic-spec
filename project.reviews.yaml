@@ -38255,6 +38255,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-21T10:49:28.951Z
+      - _ulid: 01KM80FJGQ5FXXA822K2SY1RPS
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM80FJ1DTNA8SC4J9YBQME7D
+        timestamp: 2026-03-21T10:53:59.191Z
     examined_commit: eb6cf22b0b84aaa7f2368374bcb5f933c96dc010
     external_links: []
     lifecycle_state: open
@@ -38264,8 +38271,26 @@ reviews:
       content_hash: ""
       ref: "@01KM6YET1A7XY9D0V3YQ9DRASG"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM80FJ1DTNA8SC4J9YBQME7D
+        entries:
+          - _ulid: 01KM80FJ1DGD96HA49Y31KJVDN
+            author: Jacob Chapel
+            body: "Review evidence log: Files read: src/parser/task-data-manager.ts,
+              src/parser/split-backend.ts, src/cli/commands/task.ts,
+              src/parser/review-task-integration.ts, src/cli/commands/tasks.ts,
+              src/cli/commands/item.ts, src/schema/spec.ts, tests/per-task-files.test.ts. Commands
+              run: kspec task get @01KM6YET1A7XY9D0V3YQ9DRASG; kspec review for-task
+              @01KM6YET1A7XY9D0V3YQ9DRASG; kspec item get @task-core-data-file; kspec item get
+              @task-notes-file; kspec item get @task-storage-activation; git diff against
+              95efd1618ada37f2b635d6526f2e303cb450d6cc; rg AC annotations; kspec validate; npm test.
+              Claims verified: the new per-task history/notes behavior is covered by tests and the
+              full suite passes; split-format routing is incomplete because non-CLI task mutations
+              still call the monolithic singleton. Categories searched: correctness, edge cases,
+              error handling, test quality, integration."
+            created_at: 2026-03-21T10:53:58.701Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-21T10:49:21.808Z
-    updated_at: 2026-03-21T10:49:28.650Z
+    updated_at: 2026-03-21T10:53:58.701Z
     notes: []
