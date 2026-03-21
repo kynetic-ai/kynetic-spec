@@ -40172,6 +40172,24 @@ reviews:
         runner: kspec
         created_at: 2026-03-21T16:08:38.049Z
         completed_at: 2026-03-21T16:08:38.049Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/parser/task-data-manager.ts, src/parser/split-backend.ts,
+          src/cli/batch-write-buffer.ts, src/parser/review-task-integration.ts,
+          packages/daemon/src/routes/tasks.ts, src/cli/commands/review.ts, src/cli/commands/task.ts,
+          tests/per-task-files.test.ts, tests/split-backend.test.ts,
+          tests/task-atomic-writes.test.ts. Commands run: kspec task get, kspec item get
+          @task-core-data-file, kspec item get @task-notes-file, kspec validate, git diff/stat, rg
+          AC annotations, npm test. Claims verified: AC coverage exists in
+          tests/per-task-files.test.ts; full suite passes. Categories searched: correctness,
+          concurrency, migration/error handling, test quality, integration/commit ordering."
+        name: review-evidence
+        required: false
+        runner: manual
+        created_at: 2026-03-21T16:08:39.057Z
+        completed_at: 2026-03-21T16:08:39.057Z
     events:
       - _ulid: 01KM8J2PVHS68EE8SXVD9580YA
         actor: Test User
@@ -40235,6 +40253,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-21T16:08:38.853Z
+      - _ulid: 01KM8JFR7V1MFSEAHN11QX929P
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-03-21T16:08:39.419Z
     examined_commit: 57af9e5bc4227d76b715277cfa249b72e667f07c
     external_links: []
     lifecycle_state: open
@@ -40337,5 +40362,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-21T16:01:32.017Z
-    updated_at: 2026-03-21T16:08:38.049Z
+    updated_at: 2026-03-21T16:08:39.057Z
     notes: []
