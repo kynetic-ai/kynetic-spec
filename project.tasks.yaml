@@ -112370,6 +112370,16 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-21T03:20:39.966Z
+    - _ulid: 01KM76YCF218FHCAA1A7E5A936
+      content: "Fix cycle 7: Changed TaskStorageBackend.createTask() signature from Promise<void> to
+        Promise<LoadedTask>. The backend now owns _sourceFile assignment — MonolithicBackend sets
+        the default monolithic path, and a split backend can set per-task directory paths.
+        TaskDataManager.createTask() no longer pre-populates _sourceFile before delegating. Added
+        test verifying a registered split backend's _sourceFile is returned (not the monolithic
+        path). Full suite passes (6749 tests, 0 regressions)."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T03:27:41.538Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YEPJDBDB9891TTESHZ0FR
