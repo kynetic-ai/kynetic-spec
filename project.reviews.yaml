@@ -44219,6 +44219,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMAEDNMPJ31FR39BCHTF0GJN
         timestamp: 2026-03-22T09:36:06.185Z
+      - _ulid: 01KMAEEJYGKK2GRZJD17GRN9QB
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMAEEJMDGSMFEH9VHAKQKY63
+        timestamp: 2026-03-22T09:36:35.792Z
     examined_commit: 769ad92f5181d44fac0de9b5994c66a0f4dabeab
     external_links: []
     lifecycle_state: open
@@ -44247,7 +44254,27 @@ reviews:
               of a prompt or prompt template."
             created_at: 2026-03-22T09:36:05.782Z
         kind: blocker
+      - _ulid: 01KMAEEJMDGSMFEH9VHAKQKY63
+        anchor:
+          type: code
+          commit: 769ad92f5181d44fac0de9b5994c66a0f4dabeab
+          line_end: 154
+          line_start: 133
+          path: src/schema/action.ts
+          side: head
+        entries:
+          - _ulid: 01KMAEEJMD2JEMHA247JGCTDE2
+            author: Test User
+            body: SessionPromptActionRefinedSchema is never used by the real config-loading paths, so
+              ActionSchema still accepts a session_prompt action with neither prompt nor
+              prompt_template. Hooks, schedules, compositions, and kspec hook add/set all parse
+              through ActionSchema, which means invalid session_prompt configs load successfully and
+              only fail later at execution time with a No prompt or prompt_template configured
+              error. That violates @session-prompt-action-schema ac-1, which requires load-time
+              validation of a prompt or prompt template.
+            created_at: 2026-03-22T09:36:35.469Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-22T09:33:28.920Z
-    updated_at: 2026-03-22T09:36:05.782Z
+    updated_at: 2026-03-22T09:36:35.469Z
     notes: []
