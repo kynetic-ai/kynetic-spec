@@ -46109,6 +46109,20 @@ reviews:
         runner: kspec
         created_at: 2026-03-22T12:05:15.693Z
         completed_at: 2026-03-22T12:05:15.693Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm test exited 1 in the review snapshot. Failures were in 6 existing dispatch/workspace
+          test files (12 tests total), including tests/agent-dispatch-engine.test.ts,
+          tests/agent-invocation-lifecycle.test.ts, tests/canonical-task-workspace-contract.test.ts,
+          tests/dispatch-runtime-bootstrap-contract.test.ts,
+          tests/dispatch-workspace-cleanup.test.ts, and tests/dispatch-workspace-config.test.ts.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-22T12:05:29.966Z
+        completed_at: 2026-03-22T12:05:29.966Z
     events:
       - _ulid: 01KMAPN8JAGFDQTQDDPR958DH6
         actor: Test User
@@ -46130,6 +46144,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-22T12:05:16.084Z
+      - _ulid: 01KMAPZ89CR1VX2FCH48A4YSW3
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-22T12:05:30.554Z
     examined_commit: 7e45d49f6ef5ac6d24b08b3e5279c4f12cbdd529
     external_links: []
     lifecycle_state: open
@@ -46142,5 +46163,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-22T12:00:03.146Z
-    updated_at: 2026-03-22T12:05:15.693Z
+    updated_at: 2026-03-22T12:05:29.966Z
     notes: []
