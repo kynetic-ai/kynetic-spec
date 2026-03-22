@@ -36,7 +36,7 @@ description: |
 spec_ref: "@multi-turn-session-lifecycle"
 plan_ref: "@plan-multi-turn-session-lifecycle"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-multi-turn-invocation"
@@ -48,6 +48,14 @@ tags:
   - sessions
   - integration
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-22T19:28:29.453Z
+  commit: 9b977f23838f2a28626856a5ae7638d0f4135a01
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
 session_id: 01KMBFFC87J0JFVDM5NCMT1B1C
 history:
   - author: "@claude"
@@ -70,7 +78,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-03-22T19:14:39.615Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-03-22T19:28:29.453Z
+          commit: 9b977f23838f2a28626856a5ae7638d0f4135a01
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous: null
+      submitted_at:
+        new: 2026-03-22T19:28:29.455Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-03-22T19:28:29.455Z
 created_at: 2026-03-22T07:28:43.883Z
 started_at: 2026-03-22T19:14:39.615Z
+submitted_at: 2026-03-22T19:28:29.455Z
 todos: []
 automation: eligible
