@@ -26815,8 +26815,8 @@ plans:
       emits that event on idle timeout, which is consistent. No payload change is needed — the
       existing payload contract covers session_id, agent_id, task_ref, duration_ms, and
       terminal_reason.
-    status: draft
-    approved_at: null
+    status: approved
+    approved_at: 2026-03-22T07:28:10.192Z
     derived_specs: []
     derived_tasks: []
     module_ref: "@agent-integration"
