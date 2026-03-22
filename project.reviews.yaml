@@ -46559,3 +46559,29 @@ reviews:
     created_at: 2026-03-22T12:31:03.041Z
     updated_at: 2026-03-22T12:34:46.965Z
     notes: []
+  - _ulid: 01KMAS4WK56ZW0JPGVMCZBTDZQ
+    slugs: []
+    title: Review task-multi-turn-invocation (cycle 8)
+    author: Test User
+    checks: []
+    events:
+      - _ulid: 01KMAS4WK50V39436GFV847CK1
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-22T12:43:32.325Z
+    examined_commit: 535d7a68040fb623d7513769f07fa7a1960450bd
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMA74DY7WGG4KA6P07BTMJFD"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-22T12:43:32.325Z
+    updated_at: null
+    notes: []
