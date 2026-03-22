@@ -176,6 +176,15 @@ Use passport.js for OAuth, following existing auth patterns.
 | `traits` | No | Array of trait slugs (e.g., `trait-json-output`) |
 | `implementation_notes` | No | Scoped to this spec's derived task |
 
+### Spec Language Quality
+
+Specs in plan documents must follow the same behavioral language rules as any spec. See `$kspec-writing-specs` for the full rules. Key points:
+
+- **ACs describe observable behavior** — not internal mechanisms. Use natural language a non-developer could follow, not code-level terms.
+- **ACs contain only assertions** — no rationale, design commentary, or backward compatibility notes. Those belong in descriptions or `implementation_notes`.
+- **Specs are standalone and timeless** — describe what the system does, not how it differs from a previous version. Use spec fields (`depends_on`, `relates_to`) for relationships.
+- **Implementation guidance goes in tasks** — task descriptions are the right place for file paths, class names, and technical approach.
+
 ### Task Fields
 
 | Field | Required | Description |

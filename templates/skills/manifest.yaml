@@ -80,6 +80,13 @@ skills:
       - claude-code
       - codex
       - droid
+  - id: review-plan
+    name: Plan Review
+    description: Review a plan document for quality, completeness, and readiness. Checks spec quality, task standalone-ness, dependency ordering, and alignment with existing specs.
+    platforms:
+      - claude-code
+      - codex
+      - droid
   - id: create-workflow
     name: Create Workflow
     description: Formalize repeatable patterns into trackable kspec workflows. Design steps, choose triggers, create loop variants, and integrate with skills.
