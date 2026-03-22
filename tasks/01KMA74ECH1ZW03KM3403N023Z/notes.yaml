@@ -34,3 +34,16 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-22T10:13:50.910Z
+  - _ulid: 01KMAHGHQQ9HDKA1EVGXF0JS07
+    content: "Fix cycle 2: Addressed reviewer blocker — threaded SessionRegistry through daemon
+      ActionExecutor construction. All three ActionExecutor construction sites (startScheduleEngine,
+      startHookExecutor, startJoinAccumulator) in agent-dispatch.ts now pass sessionRegistry via
+      getOrCreateSessionRegistry(projectDir). Added per-project SessionRegistry singleton map
+      following the existing pattern of engines/scheduleEngines/hookExecutors/joinAccumulators.
+      Registry is cleaned up on engine stop and daemon shutdown via stopSessionRegistry() and
+      updated stopAllEngines(). Added behavioral integration test in
+      daemon-agent-dispatch-routes.test.ts that starts the dispatch engine via the route handler and
+      verifies the registry lifecycle (created on start, cleaned on stop). All 7070 tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-22T10:30:05.815Z
