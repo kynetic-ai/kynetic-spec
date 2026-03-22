@@ -1359,7 +1359,7 @@ features:
       schema types visible to consumers are unchanged.
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
     depends_on: []
     implements: []
     relates_to: []
