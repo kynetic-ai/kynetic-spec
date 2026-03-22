@@ -37,6 +37,7 @@ tags:
   - events
   - schema
 vcs_refs: []
+review_ref: "@01KMA8EY9DP6ZT9FAAHP17HHT9"
 submission_linkage:
   review_url: null
   branch: dev
@@ -87,6 +88,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-03-22T07:50:34.786Z
+  - author: Test User
+    changes:
+      review_ref:
+        new: "@01KMA8EY9DP6ZT9FAAHP17HHT9"
+        previous: null
+    command: review-link
+    timestamp: 2026-03-22T07:51:57.583Z
 created_at: 2026-03-22T07:28:43.162Z
 started_at: 2026-03-22T07:41:15.238Z
 submitted_at: 2026-03-22T07:50:34.785Z
