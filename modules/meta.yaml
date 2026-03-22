@@ -5974,6 +5974,9 @@ modules:
               interface for prompt delivery, state query, and close requests.
               This keeps action execution decoupled from session internals
               while enabling the session prompt action type.
+            status:
+              maturity: draft
+              implementation: in_progress
             depends_on: []
             implements: []
             relates_to: []
