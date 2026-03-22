@@ -45586,6 +45586,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-22T11:17:24.629Z
+      - _ulid: 01KMAMDV0WH4Y10XA03V2VC69F
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMAMDTP5YSKKN5MASYA3CVS7
+        timestamp: 2026-03-22T11:21:02.748Z
     examined_commit: cb2b471882c83c4b263922b20fc3bdb0ddb886f1
     external_links: []
     lifecycle_state: open
@@ -45595,8 +45602,27 @@ reviews:
       content_hash: ""
       ref: "@01KMA74DY7WGG4KA6P07BTMJFD"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMAMDTP5YSKKN5MASYA3CVS7
+        anchor:
+          type: code
+          commit: cb2b471882c83c4b263922b20fc3bdb0ddb886f1
+          line_end: 118
+          line_start: 75
+          path: packages/shared/src/schemas.ts
+          side: head
+        entries:
+          - _ulid: 01KMAMDTP5H9VETHHVNB7N9EX0
+            author: Test User
+            body: "The new runtime registers and emits `session.idle`, but the shared web-contract enum was not
+              updated to include it. `packages/shared/src/schemas.ts` still omits `session.idle`
+              from both `AgentDispatchEvent` and `AGENT_DISPATCH_EVENTS`, and the UI trigger editor
+              builds its selectable events directly from that list. Impact: users cannot create or
+              edit `session.idle` dispatch rules from the web UI, so the new post-turn automation
+              trigger is effectively unavailable outside handwritten YAML/CLI flows."
+            created_at: 2026-03-22T11:21:02.405Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-22T11:17:10.657Z
-    updated_at: 2026-03-22T11:17:24.253Z
+    updated_at: 2026-03-22T11:21:02.405Z
     notes: []
