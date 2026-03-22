@@ -1787,6 +1787,66 @@ function validateSessionPromptActions(
   return warnings;
 }
 
+/**
+ * Validate session_prompt actions on schedules — schedules never have session
+ * event context, so session_id is always required.
+ *
+ * AC: @session-prompt-action ac-7
+ * AC: @session-prompt-action-schema ac-4
+ */
+function validateScheduleSessionPromptActions(
+  schedules: LoadedSchedule[],
+): { ref: string; sourceFile?: string; field: string; warning: "deprecated_target"; message: string }[] {
+  const warnings: { ref: string; sourceFile?: string; field: string; warning: "deprecated_target"; message: string }[] = [];
+
+  for (const schedule of schedules) {
+    if (schedule.action.type !== "session_prompt") continue;
+
+    const hasExplicitSessionId = schedule.action.session_id !== undefined;
+    if (!hasExplicitSessionId) {
+      warnings.push({
+        ref: `@${schedule.id}`,
+        sourceFile: schedule._sourceFile,
+        field: "action.session_id",
+        warning: "deprecated_target",
+        message: `Schedule '${schedule.name}' uses a session_prompt action without an explicit session_id. Schedules have no session event context — the action will fail at runtime without a session_id.`,
+      });
+    }
+  }
+
+  return warnings;
+}
+
+/**
+ * Validate session_prompt actions on compositions — compositions never have
+ * session event context, so session_id is always required.
+ *
+ * AC: @session-prompt-action ac-7
+ * AC: @session-prompt-action-schema ac-4
+ */
+function validateCompositionSessionPromptActions(
+  compositions: LoadedComposition[],
+): { ref: string; sourceFile?: string; field: string; warning: "deprecated_target"; message: string }[] {
+  const warnings: { ref: string; sourceFile?: string; field: string; warning: "deprecated_target"; message: string }[] = [];
+
+  for (const composition of compositions) {
+    if (composition.on_complete.type !== "session_prompt") continue;
+
+    const hasExplicitSessionId = composition.on_complete.session_id !== undefined;
+    if (!hasExplicitSessionId) {
+      warnings.push({
+        ref: `@${composition.id}`,
+        sourceFile: composition._sourceFile,
+        field: "on_complete.session_id",
+        warning: "deprecated_target",
+        message: `Composition '${composition.name}' uses a session_prompt on_complete action without an explicit session_id. Compositions have no session event context — the action will fail at runtime without a session_id.`,
+      });
+    }
+  }
+
+  return warnings;
+}
+
 // ============================================================
 // SCHEDULE VALIDATION
 // ============================================================
@@ -2244,6 +2304,10 @@ export async function validate(
         path: e.path,
         message: e.message,
       })));
+
+      // AC: @session-prompt-action-schema ac-4 — warn on session_prompt without session_id on schedules
+      const scheduleSessionPromptWarnings = validateScheduleSessionPromptActions(metaCtx.schedules);
+      result.refWarnings.push(...scheduleSessionPromptWarnings);
     }
 
     // Validate composition on_complete agent action references
@@ -2254,6 +2318,10 @@ export async function validate(
         path: e.path,
         message: e.message,
       })));
+
+      // AC: @session-prompt-action-schema ac-4 — warn on session_prompt without session_id on compositions
+      const compositionSessionPromptWarnings = validateCompositionSessionPromptActions(metaCtx.compositions);
+      result.refWarnings.push(...compositionSessionPromptWarnings);
     }
 
     // AC: @dispatch-action-model ac-7 - validate template variables in actions

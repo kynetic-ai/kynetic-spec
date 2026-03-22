@@ -32,6 +32,9 @@ import {
   type SessionState,
 } from "../src/agent-runtime/session-registry.js";
 import type { TurnCompleteInfo } from "../src/agent-runtime/invocation.js";
+import { ScheduleSchema } from "../src/schema/schedules.js";
+import { CompositionSchema } from "../src/schema/composition.js";
+import { testUlid } from "./helpers/cli.js";
 
 // ─── Test Helpers ────────────────────────────────────────────────────────────
 
@@ -776,6 +779,66 @@ describe("InvocationOptions.sessionRegistry — session handle lifecycle", () =>
     expect(handle.getState()).toBe("prompting");
   });
 
+  // AC: @session-prompt-action ac-1, ac-2 — idle sendPrompt returns deferred promise
+  // that only resolves when the turn completes (not immediately on wake-up)
+  it("idle sendPrompt returns deferred promise that resolves on turn completion", async () => {
+    const registry = new SessionRegistry();
+    const sessionId = "idle-deferred-001";
+
+    let sessionState: SessionState = "prompting";
+    let pendingResolve: ((p: string) => void) | null = null;
+    interface QueueEntry { prompt: string; resolve: () => void; reject: (e: Error) => void }
+    const queue: QueueEntry[] = [];
+
+    // Mirror the production sendPrompt: idle path pushes to queue, wakes idle loop
+    registry.register(sessionId, {
+      sendPrompt: (prompt: string): Promise<void> => {
+        if (sessionState === "closed") {
+          return Promise.reject(new Error("closed"));
+        }
+        if (sessionState === "idle" && pendingResolve) {
+          const deferredPromise = new Promise<void>((resolve, reject) => {
+            queue.push({ prompt, resolve, reject });
+          });
+          sessionState = "prompting";
+          const wakeResolve = pendingResolve;
+          pendingResolve = null;
+          wakeResolve(""); // Wake idle loop; prompt is in queue
+          return deferredPromise;
+        }
+        if (sessionState === "prompting") {
+          return new Promise<void>((resolve, reject) => {
+            queue.push({ prompt, resolve, reject });
+          });
+        }
+        return Promise.reject(new Error("not ready"));
+      },
+      getState: () => sessionState,
+      requestClose: () => { sessionState = "closed"; },
+    });
+
+    const handle = registry.get(sessionId)!;
+
+    // Transition to idle
+    sessionState = "idle";
+    pendingResolve = () => {}; // Set up a pending resolver (simulates idle loop waiting)
+
+    // sendPrompt should NOT resolve immediately — the promise is deferred
+    let resolved = false;
+    const sendPromise = handle.sendPrompt("Deferred prompt").then(() => { resolved = true; });
+
+    // Promise should still be pending; prompt is in the queue
+    expect(resolved).toBe(false);
+    expect(queue.length).toBe(1);
+    expect(queue[0].prompt).toBe("Deferred prompt");
+    expect(handle.getState()).toBe("prompting");
+
+    // Simulate turn completion — resolve the queue entry
+    queue[0].resolve();
+    await sendPromise;
+    expect(resolved).toBe(true);
+  });
+
   // AC: @session-prompt-action ac-4 — closed handle rejects sendPrompt
   it("closed handle rejects sendPrompt with clear error", async () => {
     const registry = new SessionRegistry();
@@ -986,6 +1049,115 @@ describe("TurnCompleteInfo — onTurnComplete callback contract", () => {
     };
 
     expect(info.taskRef).toBeUndefined();
+  });
+});
+
+// ─── Schedule & Composition Schema Tests ──────────────────────────────────────
+
+describe("session_prompt on schedules and compositions", () => {
+  // AC: @session-prompt-action ac-7 — schedules have no session context, so session_id
+  // is always required. Schema still parses (validation warns), but ActionSchema
+  // superRefine enforces prompt/prompt_template.
+  // AC: @session-prompt-action-schema ac-4
+
+  it("ScheduleSchema accepts session_prompt action with session_id", () => {
+    const result = ScheduleSchema.safeParse({
+      _ulid: testUlid("SCHED", 1),
+      id: "idle-followup",
+      name: "Idle Follow-Up",
+      cron: "*/5 * * * *",
+      action: {
+        type: "session_prompt",
+        prompt: "Continue working",
+        session_id: "session-target-001",
+      },
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("ScheduleSchema parses session_prompt without session_id (validation warns later)", () => {
+    // Schema doesn't reject — the validate() pipeline emits a warning.
+    // This verifies the shared ActionSchema allows it at parse time.
+    const result = ScheduleSchema.safeParse({
+      _ulid: testUlid("SCHED", 2),
+      id: "missing-session",
+      name: "Missing Session",
+      cron: "*/5 * * * *",
+      action: {
+        type: "session_prompt",
+        prompt: "Continue",
+        // No session_id — validate() warns
+      },
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("ScheduleSchema rejects session_prompt without prompt or prompt_template", () => {
+    const result = ScheduleSchema.safeParse({
+      _ulid: testUlid("SCHED", 3),
+      id: "no-prompt",
+      name: "No Prompt",
+      cron: "*/5 * * * *",
+      action: {
+        type: "session_prompt",
+        session_id: "session-001",
+        // Missing both prompt and prompt_template
+      },
+    });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      const messages = result.error.issues.map(i => i.message);
+      expect(messages.some(m => m.includes("prompt") || m.includes("prompt_template"))).toBe(true);
+    }
+  });
+
+  it("CompositionSchema accepts session_prompt on_complete with session_id", () => {
+    const result = CompositionSchema.safeParse({
+      _ulid: testUlid("COMP", 1),
+      id: "fan-in-session",
+      name: "Fan-in Session",
+      join_count: 2,
+      on_complete: {
+        type: "session_prompt",
+        prompt: "Fan-in complete, review results",
+        session_id: "session-target-002",
+      },
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("CompositionSchema parses session_prompt on_complete without session_id (validation warns later)", () => {
+    const result = CompositionSchema.safeParse({
+      _ulid: testUlid("COMP", 2),
+      id: "missing-session-comp",
+      name: "Missing Session Comp",
+      join_count: 3,
+      on_complete: {
+        type: "session_prompt",
+        prompt_template: "Group {{group_id}} complete",
+        // No session_id — validate() warns
+      },
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("CompositionSchema rejects session_prompt on_complete without prompt or prompt_template", () => {
+    const result = CompositionSchema.safeParse({
+      _ulid: testUlid("COMP", 3),
+      id: "no-prompt-comp",
+      name: "No Prompt Comp",
+      join_count: 2,
+      on_complete: {
+        type: "session_prompt",
+        session_id: "session-001",
+        // Missing both prompt and prompt_template
+      },
+    });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      const messages = result.error.issues.map(i => i.message);
+      expect(messages.some(m => m.includes("prompt") || m.includes("prompt_template"))).toBe(true);
+    }
   });
 });
 

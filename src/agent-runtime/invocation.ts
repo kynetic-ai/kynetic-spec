@@ -499,14 +499,18 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
             ));
           }
           if (sessionState === "idle" && pendingPromptResolve) {
-            // AC: @session-prompt-action ac-1 — immediate delivery to idle session
+            // AC: @session-prompt-action ac-1 — delivery to idle session
+            // AC: @session-prompt-action ac-2 — deferred promise ensures
+            // action.completed only fires after the turn finishes.
+            // Push to queue for deferred resolution, then wake the idle loop.
+            const deferredPromise = new Promise<void>((resolve, reject) => {
+              promptQueue.push({ prompt, resolve, reject });
+            });
             sessionState = "prompting";
-            const resolve = pendingPromptResolve;
+            const wakeResolve = pendingPromptResolve;
             pendingPromptResolve = null;
-            resolve(prompt);
-            // Resolve immediately — the caller's action is "delivered" once
-            // the idle loop picks it up. The idle loop itself tracks the turn.
-            return Promise.resolve();
+            wakeResolve(""); // Wake the idle loop; the actual prompt is in the queue
+            return deferredPromise;
           } else if (sessionState === "prompting") {
             // AC: @session-prompt-action ac-5 — queue for after current turn.
             // Return a promise that won't settle until this prompt's turn completes
@@ -709,9 +713,18 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
         });
 
         // sessionState may have been mutated asynchronously by requestClose()
-        if (idlePrompt && (sessionState as SessionState) !== "closed") {
-          followUpPrompt = idlePrompt;
-          sessionState = "prompting";
+        if ((sessionState as SessionState) !== "closed") {
+          // The idle wake may have placed the prompt in the queue (deferred
+          // resolution path for ac-2). Check queue first; fall back to the
+          // idle prompt string for backward compatibility.
+          if (promptQueue.length > 0) {
+            currentQueueEntry = promptQueue.shift()!;
+            followUpPrompt = currentQueueEntry.prompt;
+            sessionState = "prompting";
+          } else if (idlePrompt) {
+            followUpPrompt = idlePrompt;
+            sessionState = "prompting";
+          }
         }
       }
 
