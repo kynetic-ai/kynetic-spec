@@ -26061,7 +26061,7 @@ plans:
         description: |
           Event-driven session lifecycle where sessions remain alive between
           turns. After each agent turn completes, the session enters an idle
-          state and emits a session.idle event. The
+          state and emits a session idle event. The
           session stays open until something explicitly closes it — a
           timeout, a close action, or the absence of any queued prompts
           after a grace period.
@@ -26120,8 +26120,8 @@ plans:
               The session is closed
           - id: ac-6
             given: |
-              A session is in idle state and the agent uses interactive
-              session mode
+              A session is in idle state and the agent uses a session mode
+              that disables auto-close
             when: |
               No prompt arrives within the grace period
             then: |
@@ -26445,147 +26445,6 @@ plans:
               All registered sessions are closed and the registry is
               cleared
 
-      # ─── Interactive Sessions ───
-
-
-      - title: Interactive Agent Sessions
-        slug: interactive-agent-sessions
-        type: feature
-        parent: "@agent-integration"
-        description: |
-          Extends the multi-turn session lifecycle with a human-facing
-          interaction mode. When an agent definition uses interactive
-          session mode, the session stays open after each turn, waiting
-          for user input via API or CLI.
-
-          Interactive sessions use the same multi-turn lifecycle state
-          machine — idle and prompting states, prompt queue, session idle
-          events, and close semantics are all inherited from the core
-          lifecycle. This spec defines only the interactive-specific
-          behaviors: the mode flag that disables auto-close, and the
-          user-facing prompt submission surfaces (API, CLI).
-        traits:
-          - "@trait-error-guidance"
-        acceptance_criteria:
-          - id: ac-1
-            given: |
-              An agent definition uses interactive session mode
-            when: |
-              An invocation is started for this agent
-            then: |
-              The session remains open after each turn until explicit
-              close, idle timeout, or daemon shutdown
-          - id: ac-2
-            given: |
-              An interactive session is in idle state
-            when: |
-              A user submits a prompt
-            then: |
-              The prompt is delivered to the agent as a follow-up turn
-              with full conversation context from all prior turns
-          - id: ac-3
-            given: |
-              A user sends an explicit close command to an interactive
-              session
-            when: |
-              The session is in idle state
-            then: |
-              The session closes and the standard completion events fire
-          - id: ac-4
-            given: |
-              An interactive session is running
-            when: |
-              The agent produces streaming output during a turn
-            then: |
-              The output is available to connected clients in real time
-
-      - title: Interactive Session API
-        slug: interactive-session-api
-        type: requirement
-        parent: "@interactive-agent-sessions"
-        traits:
-          - "@trait-api-endpoint"
-          - "@trait-localhost-security"
-          - "@trait-json-output"
-        description: |
-          REST API endpoints for interactive session management. Allows
-          human users to submit prompts, query session state, and close
-          sessions.
-        acceptance_criteria:
-          - id: ac-1
-            given: |
-              An interactive session is in idle state
-            when: |
-              A prompt is submitted via the session prompt endpoint
-            then: |
-              The prompt is delivered to the session and the response
-              includes acknowledgment with the turn number
-          - id: ac-2
-            given: |
-              A client queries a session's state
-            when: |
-              The session state endpoint is called
-            then: |
-              The response includes current state, turn count, agent,
-              task reference, and session duration
-          - id: ac-3
-            given: |
-              A client sends a close request
-            when: |
-              The session close endpoint is called
-            then: |
-              If idle, the session closes immediately; if prompting,
-              the session closes after the current turn completes
-          - id: ac-4
-            given: |
-              A client submits a prompt to a closed session
-            when: |
-              The session prompt endpoint is called
-            then: |
-              The response indicates the session is closed with an error
-
-      - title: Interactive Session CLI
-        slug: interactive-session-cli
-        type: requirement
-        parent: "@interactive-agent-sessions"
-        traits:
-          - "@trait-error-guidance"
-          - "@trait-json-output"
-        description: |
-          CLI commands for interacting with active agent sessions. Provides
-          a terminal-based interface for human-agent chat.
-        acceptance_criteria:
-          - id: ac-1
-            given: |
-              An interactive session is running
-            when: |
-              A user submits a prompt to the session via CLI
-            then: |
-              The prompt is delivered and the agent's response is streamed
-              to the terminal
-          - id: ac-2
-            given: |
-              A user starts an agent in interactive mode via CLI
-            when: |
-              The agent is spawned
-            then: |
-              The CLI enters a prompt loop where the user can send
-              messages and see responses
-          - id: ac-3
-            given: |
-              An interactive CLI session is active
-            when: |
-              The user sends an empty input or exit command
-            then: |
-              The session is closed and the CLI exits
-          - id: ac-4
-            given: |
-              Active sessions exist
-            when: |
-              A user lists active sessions via CLI
-            then: |
-              Each session shows its identifier, agent, state, turn
-              count, and duration
       ```
 
 
@@ -26750,29 +26609,27 @@ plans:
           - "@task-session-prompt-action"
         description: |
           Implement the grace period that determines when an idle session
-          auto-closes, and the session_mode flag that overrides it.
+          auto-closes, and the session mode flag that can disable it.
 
           Why: Backward compatibility requires that sessions without
           idle-targeting hooks close automatically after one turn, matching
-          current behavior. But interactive sessions and sessions with
-          hooks need to stay open. The grace period bridges these modes.
+          current behavior. Sessions with hooks or a non-auto-close mode
+          need to stay open. The grace period bridges these modes.
 
           What: When a session enters idle, a configurable timer starts
           (default 5 seconds). If no prompt arrives before it expires and
-          session_mode is not interactive, the session closes. The timer
-          resets if a prompt is queued. The agent definition schema gets
-          a session_mode field (default: "dispatch", alternative:
-          "interactive") and an idle_timeout field for interactive sessions.
+          the session mode allows auto-close, the session closes. The
+          timer resets if a prompt is queued. The agent definition schema
+          gets a session mode field and an idle timeout field.
 
           How: The grace period timer is part of the turn loop in
           invocation.ts. It races against the prompt queue — whichever
-          fires first wins. For dispatch mode, the grace period is short
-          (enough for hooks to fire and queue prompts). For interactive
-          mode, there's no grace period auto-close, only idle_timeout.
-          The agent schema extension is in meta.ts.
+          fires first wins. For auto-close mode, the grace period is short
+          (enough for hooks to fire and queue prompts). For modes that
+          disable auto-close, only idle timeout applies. The agent schema
+          extension is in meta.ts.
 
-          Covers: @multi-turn-session-lifecycle ac-5, ac-6, ac-7, ac-11,
-          @interactive-agent-sessions ac-1.
+          Covers: @multi-turn-session-lifecycle ac-5, ac-6, ac-7, ac-11.
 
       - title: Integrate multi-turn lifecycle with dispatch engine
         slug: task-dispatch-multi-turn-integration
@@ -26811,67 +26668,6 @@ plans:
 
           Covers: @multi-turn-session-lifecycle ac-1, ac-2, ac-3, ac-4,
           ac-12, ac-13, ac-14.
-
-      - title: Implement interactive session API
-        slug: task-interactive-session-api
-        priority: 3
-        tags: [daemon, api, interactive]
-        spec_ref: "@interactive-session-api"
-        depends_on:
-          - "@task-dispatch-multi-turn-integration"
-        description: |
-          Add REST API endpoints for interactive session management:
-          prompt submission, state query, and session close.
-
-          Why: Interactive sessions need a user-facing surface for sending
-          prompts. The API is the canonical interface — the CLI and web UI
-          consume it.
-
-          What: POST /api/sessions/:id/prompt accepts a prompt body and
-          delivers it via the session registry. GET /api/sessions/:id/state
-          returns current state, turn_count, agent_id, and duration.
-          POST /api/sessions/:id/close signals session close. Streaming
-          output uses the existing WebSocket session event stream.
-
-          How: Routes added to the daemon's API router. Each endpoint
-          resolves the session handle from the registry. Prompt submission
-          calls handle.sendPrompt() and returns acknowledgment (the actual
-          response streams via WebSocket). State query reads from the
-          handle. Close calls handle.requestClose(). Standard error
-          handling for closed/missing sessions.
-
-          Covers: @interactive-session-api ac-1 through ac-4,
-          @interactive-agent-sessions ac-2, ac-4.
-
-      - title: Implement interactive session CLI
-        slug: task-interactive-session-cli
-        priority: 3
-        tags: [cli, interactive]
-        spec_ref: "@interactive-session-cli"
-        depends_on:
-          - "@task-interactive-session-api"
-        description: |
-          Add CLI commands for interactive agent sessions: one-shot prompt
-          submission and interactive prompt loop mode.
-
-          Why: Users need a terminal interface for chatting with agents,
-          not just the web UI. The CLI prompt loop is the most natural
-          interface for developers.
-
-          What: kspec session prompt <id> "message" for one-shot prompt
-          submission. kspec agent run <agent-id> --interactive for starting
-          an interactive session with a prompt loop. kspec session list
-          --active for listing active sessions with state info.
-
-          How: One-shot prompt calls POST /api/sessions/:id/prompt and
-          streams the response via WebSocket subscription. Interactive
-          mode spawns the agent, then enters a readline loop that submits
-          prompts via the API and streams responses. The prompt loop exits
-          on empty input, Ctrl-C, or "exit". Session list queries the
-          daemon API.
-
-          Covers: @interactive-session-cli ac-1 through ac-4,
-          @interactive-agent-sessions ac-3.
 
       - title: Update existing specs for multi-turn lifecycle
         slug: task-update-existing-specs
@@ -27063,3 +26859,9 @@ plans:
           update table protocol terms"
         author: "@claude"
         created_at: 2026-03-22T06:59:38.269Z
+      - _ulid: 01KMA5NTQMHMX8FSCF97CNDSWD
+        content: Split out interactive session specs and tasks into separate future plan — this plan now
+          covers core multi-turn lifecycle, session idle event, session prompt action, and active
+          session registry only
+        author: "@claude"
+        created_at: 2026-03-22T07:03:15.956Z
