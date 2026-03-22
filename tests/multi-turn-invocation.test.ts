@@ -640,12 +640,12 @@ describe("Multi-turn error handling", { timeout: 60_000 }, () => {
 
     const registry = new SessionRegistry();
 
+    // Omit taskRef to avoid slow kspec CLI calls in failure handler
     const result = await runInvocation({
       agent: makeTestAgent(),
       specDir: testDir,
       sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
-      taskRef: "@" + testUlid("TASK"),
       prompt: "Initial",
       trigger: "task.ready",
       sessionRegistry: registry,
@@ -681,12 +681,12 @@ describe("Multi-turn error handling", { timeout: 60_000 }, () => {
 
     const registry = new SessionRegistry();
 
+    // Omit taskRef to avoid slow kspec CLI calls in failure handler
     const result = await runInvocation({
       agent: makeTestAgent(),
       specDir: testDir,
       sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
-      taskRef: "@" + testUlid("TASK"),
       prompt: "Initial",
       trigger: "task.ready",
       sessionRegistry: registry,
