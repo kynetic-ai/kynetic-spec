@@ -5835,7 +5835,7 @@ modules:
           provides the per-turn observation point.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
