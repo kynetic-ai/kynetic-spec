@@ -46708,7 +46708,23 @@ reviews:
     slugs: []
     title: Review task-multi-turn-invocation (cycle 8)
     author: "@claude"
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: '15 failures, 7031 passed, 3 skipped. 14 of 15 failures are pre-existing
+          (canonical-task-workspace-contract timeouts, dispatch-runtime-bootstrap-contract timeouts,
+          dispatch-workspace-cleanup timeouts, dispatch-workspace-config timeouts,
+          agent-invocation-lifecycle timeout, agent-dispatch-engine flaky dedup test). 1 failure is
+          task-specific: multi-turn-invocation.test.ts "should apply timeout to total session
+          duration, not per-turn" hangs because taskRef triggers blocking spawnSync in the failure
+          handler.'
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-22T16:08:51.964Z
+        completed_at: 2026-03-22T16:08:51.964Z
     events:
       - _ulid: 01KMB4SCR2966HWV304DR67EKV
         actor: "@claude"
@@ -46730,6 +46746,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMB4SYX6H33ZDY90F26AZPG1
         timestamp: 2026-03-22T16:07:17.751Z
+      - _ulid: 01KMB4WVZJJKSCGFS91FA2YNSS
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: vitest
+        timestamp: 2026-03-22T16:08:52.467Z
     examined_commit: 535d7a68040fb623d7513769f07fa7a1960450bd
     external_links: []
     lifecycle_state: open
@@ -46762,5 +46785,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-22T16:06:58.562Z
-    updated_at: 2026-03-22T16:07:17.159Z
+    updated_at: 2026-03-22T16:08:51.964Z
     notes: []
