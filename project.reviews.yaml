@@ -44978,6 +44978,13 @@ reviews:
           kind: nit
           thread_ulid: 01KMAHZ6B7QWXTD8VHSEJP9434
         timestamp: 2026-03-22T10:38:06.017Z
+      - _ulid: 01KMAHZ96A5TRATEM9GD39XS45
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMAHZ8WETZ14F3Q77WXT7QTB
+        timestamp: 2026-03-22T10:38:08.587Z
     examined_commit: 5c3160a75d54d75d231b33b15d14ecd2b38d1083
     external_links: []
     lifecycle_state: open
@@ -45024,7 +45031,28 @@ reviews:
               quality."
             created_at: 2026-03-22T10:38:05.671Z
         kind: nit
+      - _ulid: 01KMAHZ8WETZ14F3Q77WXT7QTB
+        anchor:
+          type: code
+          commit: 5c3160a75d54d75d231b33b15d14ecd2b38d1083
+          line_end: 128
+          line_start: 124
+          path: packages/daemon/src/routes/agent-dispatch.ts
+          side: head
+        entries:
+          - _ulid: 01KMAHZ8WEY8Y95CMTWMWHT6NB
+            author: Test User
+            body: This fix threads a SessionRegistry into ActionExecutor, but it still never makes real sessions
+              visible to that registry. executeSessionPrompt() can only succeed via
+              sessionRegistry.get(sessionId), yet there is no production
+              SessionRegistry.register(...) call anywhere under src/ or packages/, and
+              DispatchEngine still invokes runInvocation(options) without any registry or
+              session-handle hook. In production that leaves the registry empty, so a session_prompt
+              action against a live idle session still falls through the "was never registered"
+              failure path instead of delivering the follow-up prompt.
+            created_at: 2026-03-22T10:38:08.270Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-22T10:31:44.937Z
-    updated_at: 2026-03-22T10:38:05.671Z
+    updated_at: 2026-03-22T10:38:08.270Z
     notes: []
