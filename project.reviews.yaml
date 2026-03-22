@@ -45600,6 +45600,13 @@ reviews:
           kind: nit
           thread_ulid: 01KMAMDVSRAJ0ZBVAJV1EW7Y4Z
         timestamp: 2026-03-22T11:21:04.037Z
+      - _ulid: 01KMAMDXADDVTGK20PQHZ707Y7
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMAMDWZMNJBDGWK0K9K17Q51
+        timestamp: 2026-03-22T11:21:05.101Z
     examined_commit: cb2b471882c83c4b263922b20fc3bdb0ddb886f1
     external_links: []
     lifecycle_state: open
@@ -45647,7 +45654,28 @@ reviews:
               quality."
             created_at: 2026-03-22T11:21:03.544Z
         kind: nit
+      - _ulid: 01KMAMDWZMNJBDGWK0K9K17Q51
+        anchor:
+          type: code
+          commit: cb2b471882c83c4b263922b20fc3bdb0ddb886f1
+          line_end: 870
+          line_start: 864
+          path: src/agent-runtime/invocation.ts
+          side: head
+        entries:
+          - _ulid: 01KMAMDWZNGF2QHQ7C4QC75Z8W
+            author: Test User
+            body: "`requestClose()` does not prevent a prompt that has already been dequeued from starting
+              another turn. After idle waiting resolves, the loop only breaks on `nextPrompt ===
+              null`; it never re-checks `closeRequested` before assigning `currentPromptText =
+              nextPrompt`. In the race where one source enqueues a follow-up prompt and another
+              immediately closes the session, the queued prompt still runs as an extra turn before
+              the close is honored. Impact: shutdown/close requests can execute additional agent
+              work after the session was asked to stop, which violates the close contract and
+              defeats the intended prompt discard behavior."
+            created_at: 2026-03-22T11:21:04.757Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-22T11:17:10.657Z
-    updated_at: 2026-03-22T11:21:03.544Z
+    updated_at: 2026-03-22T11:21:04.757Z
     notes: []
