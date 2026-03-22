@@ -28,8 +28,13 @@ description: |
 spec_ref: "@multi-turn-session-lifecycle"
 plan_ref: "@plan-multi-turn-session-lifecycle"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Approved in review @01KMA8PH. Verified the four spec updates on
+  @agent-invocation-lifecycle, @dispatch-event-taxonomy, and @dispatch-action-model. npm test passed
+  on rerun; kspec validate had only existing baseline warnings unrelated to this task. Canonical
+  branch dispatch/task/task-update-existing-specs/01kma74f is already an ancestor of current dev, so
+  no additional merge commit was required.
 depends_on: []
 context: []
 priority: 1
@@ -95,8 +100,26 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-03-22T07:56:06.757Z
+  - author: Test User
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Approved in review @01KMA8PH. Verified the four spec updates on @agent-invocation-lifecycle,
+          @dispatch-event-taxonomy, and @dispatch-action-model. npm test passed on rerun; kspec
+          validate had only existing baseline warnings unrelated to this task. Canonical branch
+          dispatch/task/task-update-existing-specs/01kma74f is already an ancestor of current dev,
+          so no additional merge commit was required.
+        previous: null
+      completed_at:
+        new: 2026-03-22T08:03:22.489Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-03-22T08:03:22.497Z
 created_at: 2026-03-22T07:28:44.108Z
 started_at: 2026-03-22T07:52:07.003Z
 submitted_at: 2026-03-22T07:54:40.246Z
+completed_at: 2026-03-22T08:03:22.489Z
 todos: []
 automation: eligible
