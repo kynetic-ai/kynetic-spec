@@ -17920,22 +17920,43 @@ workspaces:
     base_branch_point: 369132b7926d1becbc70af8efdfd69bc148a848d
     bootstrap:
       status: succeeded
-      canonicalBranchHead: 369132b7926d1becbc70af8efdfd69bc148a848d
+      canonicalBranchHead: d795bf21f60c6acb04936b8221ffbd5e1c649a5b
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
       failureMessage: null
       invalidationReasons:
         - workspace-dependencies-missing
-      lastRole: worker
-      lastRunAt: 2026-03-22T00:24:05.582Z
+      lastRole: reviewer
+      lastRunAt: 2026-03-22T00:37:22.178Z
       roleStates:
         reviewer:
-          status: not_run
-          canonicalBranchHead: null
-          configHash: null
+          status: succeeded
+          canonicalBranchHead: d795bf21f60c6acb04936b8221ffbd5e1c649a5b
+          configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
           failureMessage: null
-          invalidationReasons: []
-          lastRunAt: null
-          steps: []
+          invalidationReasons:
+            - workspace-dependencies-missing
+          lastRunAt: 2026-03-22T00:37:22.178Z
+          steps:
+            - status: succeeded
+              allowTrackedChanges: false
+              idempotent: true
+              name: install-workspace-dependencies
+              output: |-
+                added 283 packages, and audited 288 packages in 3s
+
+                66 packages are looking for funding
+                  run `npm fund` for details
+
+                9 vulnerabilities (1 low, 5 moderate, 3 high)
+
+                To address all issues, run:
+                  npm audit fix
+
+                Run `npm audit` for details.
+              reviewerRerunAllowed: true
+              role: reviewer
+              run: npm ci
+              source: dispatch
         worker:
           status: succeeded
           canonicalBranchHead: 369132b7926d1becbc70af8efdfd69bc148a848d
@@ -17983,7 +18004,7 @@ workspaces:
 
             Run `npm audit` for details.
           reviewerRerunAllowed: true
-          role: worker
+          role: reviewer
           run: npm ci
           source: dispatch
     branch_provenance:
@@ -18023,7 +18044,7 @@ workspaces:
       last_active_at: 2026-03-22T00:24:06.481Z
       last_reconciled_at: 2026-03-22T00:37:18.038Z
       created_at: 2026-03-22T00:24:01.439Z
-      updated_at: 2026-03-22T00:37:18.038Z
+      updated_at: 2026-03-22T00:37:22.178Z
     workspace_id: dispatch-workspace-01KM6YEXN2KMJ43AMEKH3SW0RE
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
