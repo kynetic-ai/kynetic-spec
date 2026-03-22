@@ -37,6 +37,7 @@ tags:
   - specs
   - compatibility
 vcs_refs: []
+review_ref: "@01KMA8PHR65PG0FRQ5KHR9XDTX"
 submission_linkage:
   review_url: null
   branch: dev
@@ -87,6 +88,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-03-22T07:54:40.246Z
+  - author: Test User
+    changes:
+      review_ref:
+        new: "@01KMA8PHR65PG0FRQ5KHR9XDTX"
+        previous: null
+    command: review-link
+    timestamp: 2026-03-22T07:56:06.757Z
 created_at: 2026-03-22T07:28:44.108Z
 started_at: 2026-03-22T07:52:07.003Z
 submitted_at: 2026-03-22T07:54:40.246Z

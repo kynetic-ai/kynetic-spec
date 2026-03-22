@@ -43894,3 +43894,29 @@ reviews:
     created_at: 2026-03-22T07:51:55.949Z
     updated_at: 2026-03-22T07:55:16.860Z
     notes: []
+  - _ulid: 01KMA8PHR65PG0FRQ5KHR9XDTX
+    slugs: []
+    title: Review task-update-existing-specs
+    author: Test User
+    checks: []
+    events:
+      - _ulid: 01KMA8PHR5NBP15MQH6QZH5YQX
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-22T07:56:05.253Z
+    examined_commit: 463db210d316c43a70446ac83bc179c6de5a1616
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMA74F2C4MBREFDB7N2KZ45V"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-22T07:56:05.254Z
+    updated_at: null
+    notes: []
