@@ -18128,12 +18128,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-22T00:56:33.030Z
+      updated_at: 2026-03-22T00:56:35.686Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-22T00:56:33.030Z
+      updated_at: 2026-03-22T00:56:35.686Z
     integration:
       status: pending
       detail: null
@@ -18141,24 +18141,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 369132b7926d1becbc70af8efdfd69bc148a848d
-      updated_at: 2026-03-22T00:56:33.030Z
-    lifecycle_state: ready
+      updated_at: 2026-03-22T00:56:35.686Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KM9FB8PAK46RP5SRP1JVD2FD"
     task_slug: fix-worktree-guard-to-detect-actual-shadow-branch-not-substring-match
     timestamps:
       closed_at: null
       last_active_at: 2026-03-22T00:49:06.980Z
-      last_reconciled_at: 2026-03-22T00:56:33.030Z
+      last_reconciled_at: 2026-03-22T00:56:35.686Z
       created_at: 2026-03-22T00:37:24.076Z
-      updated_at: 2026-03-22T00:56:33.030Z
+      updated_at: 2026-03-22T00:56:35.686Z
     workspace_id: dispatch-workspace-01KM9FB8PAK46RP5SRP1JVD2FD
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 141a89631eecfc6b81577ce04697fac3c205f74c
+        last_seen_at: 2026-03-22T00:56:35.686Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-worktree-guard-to-detect-actual-shadow-branch-not-substring-match-01km9fb8-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/fix-worktree-guard-to-detect-actual-shadow-branch-not-substring-match/01km9fb8
-        head: 1c5294476abdccfb6c355209f9e08f6668c8a437
-        last_seen_at: 2026-03-22T00:49:05.007Z
+        head: 141a89631eecfc6b81577ce04697fac3c205f74c
+        last_seen_at: 2026-03-22T00:56:35.686Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-worktree-guard-to-detect-actual-shadow-branch-not-substring-match-01km9fb8
