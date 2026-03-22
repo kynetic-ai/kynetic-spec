@@ -36,8 +36,14 @@ description: |
 spec_ref: "@multi-turn-session-lifecycle"
 plan_ref: "@plan-multi-turn-session-lifecycle"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: "Merged to dev. Adds turn_count to InvocationTerminalPayloadSchema (required positive
+  integer) and enriches dispatch engine terminal event emission with turn_count from
+  invocationResult. 11 new integration tests covering ACs 1-4, 12-14. One nit recorded: test file
+  exercises runInvocation() directly rather than instantiating DispatchEngine, so the dispatch.ts
+  payload construction path lacks direct test coverage from the new file (existing dispatch engine
+  tests cover surrounding code)."
 depends_on:
   - "@task-multi-turn-invocation"
   - "@task-idle-grace-period"
@@ -106,8 +112,27 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-03-22T19:36:10.137Z
+  - author: "@claude"
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: "Merged to dev. Adds turn_count to InvocationTerminalPayloadSchema (required positive integer)
+          and enriches dispatch engine terminal event emission with turn_count from
+          invocationResult. 11 new integration tests covering ACs 1-4, 12-14. One nit recorded: test
+          file exercises runInvocation() directly rather than instantiating DispatchEngine, so the
+          dispatch.ts payload construction path lacks direct test coverage from the new file
+          (existing dispatch engine tests cover surrounding code)."
+        previous: null
+      completed_at:
+        new: 2026-03-22T19:42:44.192Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-03-22T19:42:44.196Z
 created_at: 2026-03-22T07:28:43.883Z
 started_at: 2026-03-22T19:14:39.615Z
 submitted_at: 2026-03-22T19:28:29.455Z
+completed_at: 2026-03-22T19:42:44.192Z
 todos: []
 automation: eligible
