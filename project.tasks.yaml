@@ -21982,5 +21982,16 @@
       supersedes: null
       author: Test User
       created_at: 2026-03-22T00:48:40.437Z
+    - _ulid: 01KM9GNAFRS8TCJXPSJWEA5583
+      content: "Fix cycle 1: Addressed review blocker — guard now resolves shadow directory from
+        kspec.config.yaml via loadProjectConfig() instead of using hardcoded SHADOW_WORKTREE_DIR
+        constant. evaluateWorktreeGuard() accepts optional GuardOptions.shadowDirectory, CLI handler
+        loads config and passes it. All detection helpers (isShadowWorktreePath,
+        isCdToShadowWorktree, isInKspec) parameterized on shadowDir. Added 8 tests covering custom
+        shadow directory scenarios including .specs as configured dir, substring prefix protection,
+        and default fallback. All 64 guard tests pass."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-22T00:55:59.224Z
   todos: []
   automation: eligible
