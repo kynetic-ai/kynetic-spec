@@ -21452,6 +21452,17 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-21T22:56:16.405Z
+    - _ulid: 01KM9FDF9B7T8NZGME66CXPQ4Q
+      content: "Implemented AC-4: Added 'kspec task storage activate' CLI command. The command validates
+        migration completeness (checks for unmigrated monolithic entries), persists
+        task_storage.format=split in the manifest, and commits to shadow branch. Also added 'kspec
+        task storage status' for inspecting the current format. AC-1,2,3,5 were already fully
+        implemented in resolveTaskDataManager/ensureMigrated. Added 10 E2E tests covering: format
+        persistence, next-operation effect, JSON output, idempotent re-activation, unmigrated
+        rejection, post-migration activation, and status reporting."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-22T00:34:13.419Z
   automation: eligible
 - _ulid: 01KM6YEYAEWFKETRCB53V73HHK
   slugs:
