@@ -31,6 +31,7 @@ import {
   type SessionHandle,
   type SessionState,
 } from "../src/agent-runtime/session-registry.js";
+import type { TurnCompleteInfo } from "../src/agent-runtime/invocation.js";
 
 // ─── Test Helpers ────────────────────────────────────────────────────────────
 
@@ -715,10 +716,16 @@ describe("InvocationOptions.sessionRegistry — session handle lifecycle", () =>
     const registry = new SessionRegistry();
 
     // Simulate what the invocation runner does: register a handle
-    let sessionState: "idle" | "prompting" | "closed" = "prompting";
+    let sessionState: SessionState = "prompting";
+    let pendingResolve: ((p: string) => void) | null = null;
     const sessionId = "invocation-test-session-001";
     registry.register(sessionId, {
-      sendPrompt: async () => { throw new Error("Single-turn mode"); },
+      sendPrompt: async (prompt: string) => {
+        if (sessionState === "idle" && pendingResolve) {
+          sessionState = "prompting";
+          pendingResolve(prompt);
+        }
+      },
       getState: () => sessionState,
       requestClose: () => { sessionState = "closed"; },
     });
@@ -734,24 +741,144 @@ describe("InvocationOptions.sessionRegistry — session handle lifecycle", () =>
     expect(registry.get(sessionId)).toBeUndefined();
   });
 
-  it("single-turn handle rejects sendPrompt with clear error", async () => {
+  // AC: @session-prompt-action ac-1 — idle handle accepts follow-up prompts
+  it("idle handle accepts sendPrompt and transitions to prompting", async () => {
     const registry = new SessionRegistry();
-    const sessionId = "single-turn-reject-001";
+    const sessionId = "idle-accept-001";
 
-    // Simulate the handle created by the single-turn invocation runner
+    let sessionState: SessionState = "prompting";
+    let pendingResolve: ((p: string) => void) | null = null;
+
     registry.register(sessionId, {
-      sendPrompt: async () => {
-        throw new Error(
-          `Session '${sessionId}' does not accept follow-up prompts in single-turn mode. ` +
-          "Multi-turn session support is required for session_prompt actions.",
-        );
+      sendPrompt: async (prompt: string) => {
+        if (sessionState === "closed") {
+          throw new Error(`Session '${sessionId}' is closed`);
+        }
+        if (sessionState === "idle" && pendingResolve) {
+          sessionState = "prompting";
+          pendingResolve(prompt);
+        }
       },
-      getState: () => "prompting",
-      requestClose: () => {},
+      getState: () => sessionState,
+      requestClose: () => { sessionState = "closed"; },
     });
 
     const handle = registry.get(sessionId)!;
-    await expect(handle.sendPrompt("test")).rejects.toThrow("single-turn mode");
+
+    // Transition to idle and set up a pending resolver
+    sessionState = "idle";
+    let receivedPrompt: string | null = null;
+    pendingResolve = (p: string) => { receivedPrompt = p; };
+
+    // sendPrompt on idle handle should resolve the pending prompt
+    await handle.sendPrompt("Follow-up question");
+    expect(receivedPrompt).toBe("Follow-up question");
+    expect(handle.getState()).toBe("prompting");
+  });
+
+  // AC: @session-prompt-action ac-4 — closed handle rejects sendPrompt
+  it("closed handle rejects sendPrompt with clear error", async () => {
+    const registry = new SessionRegistry();
+    const sessionId = "closed-reject-001";
+
+    let sessionState: SessionState = "closed";
+
+    registry.register(sessionId, {
+      sendPrompt: async () => {
+        if (sessionState === "closed") {
+          throw new Error(
+            `Session '${sessionId}' is closed — cannot deliver prompt to a closed session.`,
+          );
+        }
+      },
+      getState: () => sessionState,
+      requestClose: () => { sessionState = "closed"; },
+    });
+
+    const handle = registry.get(sessionId)!;
+    await expect(handle.sendPrompt("test")).rejects.toThrow("closed");
+  });
+
+  // AC: @session-prompt-action ac-5 — prompting handle queues prompt
+  it("prompting handle queues sendPrompt for after current turn", async () => {
+    const registry = new SessionRegistry();
+    const sessionId = "queue-001";
+
+    let sessionState: SessionState = "prompting";
+    let queuedPrompt: string | null = null;
+
+    registry.register(sessionId, {
+      sendPrompt: async (prompt: string) => {
+        if (sessionState === "prompting") {
+          queuedPrompt = prompt;
+        }
+      },
+      getState: () => sessionState,
+      requestClose: () => { sessionState = "closed"; },
+    });
+
+    const handle = registry.get(sessionId)!;
+
+    // sendPrompt while prompting should queue
+    await handle.sendPrompt("Queued for later");
+    expect(queuedPrompt).toBe("Queued for later");
+    // State remains prompting — the queue is drained after turn completes
+    expect(handle.getState()).toBe("prompting");
+  });
+});
+
+// ─── TurnCompleteInfo and onTurnComplete Tests ───────────────────────────────
+
+describe("TurnCompleteInfo — onTurnComplete callback contract", () => {
+  // AC: @session-idle-event ac-1 — turn complete info includes required fields
+  it("TurnCompleteInfo type includes session context and turn metadata", () => {
+    const info: TurnCompleteInfo = {
+      sessionId: "session-001",
+      agentId: "task-worker",
+      taskRef: "@task-foo",
+      turnCount: 1,
+      stopReason: "end_turn",
+      turnDurationMs: 5000,
+    };
+
+    expect(info.sessionId).toBe("session-001");
+    expect(info.agentId).toBe("task-worker");
+    expect(info.taskRef).toBe("@task-foo");
+    expect(info.turnCount).toBe(1);
+    expect(info.stopReason).toBe("end_turn");
+    expect(info.turnDurationMs).toBe(5000);
+  });
+
+  // AC: @session-idle-event ac-2 — turn count increments across turns
+  it("turnCount increments across successive turns", () => {
+    const turns: TurnCompleteInfo[] = [];
+    for (let i = 1; i <= 3; i++) {
+      turns.push({
+        sessionId: "session-multi",
+        agentId: "task-worker",
+        taskRef: "@task-bar",
+        turnCount: i,
+        stopReason: "end_turn",
+        turnDurationMs: 1000 * i,
+      });
+    }
+
+    expect(turns.map(t => t.turnCount)).toEqual([1, 2, 3]);
+    expect(turns[2].turnDurationMs).toBe(3000);
+  });
+
+  // AC: @session-idle-event ac-1 — taskRef is optional for unbound sessions
+  it("taskRef can be undefined for unbound sessions", () => {
+    const info: TurnCompleteInfo = {
+      sessionId: "session-unbound",
+      agentId: "task-worker",
+      taskRef: undefined,
+      turnCount: 1,
+      stopReason: "end_turn",
+      turnDurationMs: 2000,
+    };
+
+    expect(info.taskRef).toBeUndefined();
   });
 });
 

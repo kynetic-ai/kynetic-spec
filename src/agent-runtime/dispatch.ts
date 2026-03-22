@@ -25,7 +25,7 @@ import {
 import { DEFAULT_KSPEC_CLI_PATH, runInvocation } from "./invocation.js";
 import type { SessionRegistry } from "./session-registry.js";
 import { loadProjectConfig, resolveDispatchRemoteSync } from "../parser/config.js";
-import type { InvocationOptions, InvocationResult } from "./invocation.js";
+import type { InvocationOptions, InvocationResult, TurnCompleteInfo } from "./invocation.js";
 import { SessionEventAccumulator } from "./session-event-accumulator.js";
 import type { SessionEventData } from "./session-event-types.js";
 import { EventBus, type EventBusOptions, type EventEnvelope, type EmitOptions } from "./event-bus.js";
@@ -2488,6 +2488,23 @@ export class DispatchEngine {
         // AC: @session-prompt-action ac-1, @active-session-registry ac-1
         // Pass session registry so invocation registers a handle while alive
         sessionRegistry: this._sessionRegistry,
+        // AC: @session-idle-event ac-1 — emit session.idle after each turn completes
+        // AC: @session-prompt-action ac-1 — enables idle → follow-up prompt flow
+        onTurnComplete: async (turnInfo: TurnCompleteInfo) => {
+          this._eventBus.emit({
+            event_type: "session.idle",
+            source_type: "invocation_lifecycle",
+            source_id: turnInfo.sessionId,
+            payload: {
+              session_id: turnInfo.sessionId,
+              agent_id: turnInfo.agentId,
+              task_ref: turnInfo.taskRef ?? null,
+              turn_count: turnInfo.turnCount,
+              stop_reason: turnInfo.stopReason,
+              duration_ms: turnInfo.turnDurationMs,
+            },
+          });
+        },
       };
 
       let resolveInvocationStarted!: () => void;
