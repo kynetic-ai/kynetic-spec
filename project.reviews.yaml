@@ -43169,6 +43169,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-22T01:01:15.372Z
+      - _ulid: 01KM9GZMP3829EGJ35TD7HTJBM
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM9GZMC1C28F2270SGCRAFRM
+        timestamp: 2026-03-22T01:01:37.348Z
     examined_commit: 141a89631eecfc6b81577ce04697fac3c205f74c
     external_links: []
     lifecycle_state: open
@@ -43178,8 +43185,27 @@ reviews:
       content_hash: ""
       ref: "@01KM9FB8PAK46RP5SRP1JVD2FD"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM9GZMC1C28F2270SGCRAFRM
+        anchor:
+          type: code
+          commit: 141a89631eecfc6b81577ce04697fac3c205f74c
+          line_end: 123
+          line_start: 97
+          path: src/cli/commands/guard.ts
+          side: head
+        entries:
+          - _ulid: 01KM9GZMC1VFCB5Q2RCDSH5J00
+            author: Test User
+            body: The fix still matches any path segment named after shadow.directory instead of the actual
+              shadow worktree rooted at the project. With shadow.directory=.specs, a cwd like
+              /repo/packages/demo/.specs will still be treated as protected because
+              isShadowWorktreePath() only does indexOf('/.specs'), so dangerous git commands in an
+              unrelated nested directory get blocked. That means we still are not detecting the real
+              shadow worktree, only a name match, which leaves the task’s core requirement unmet.
+            created_at: 2026-03-22T01:01:37.025Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-22T01:01:05.085Z
-    updated_at: 2026-03-22T01:01:15.055Z
+    updated_at: 2026-03-22T01:01:37.025Z
     notes: []
