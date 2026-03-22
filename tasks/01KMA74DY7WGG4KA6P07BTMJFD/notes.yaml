@@ -30,3 +30,16 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-22T09:10:14.242Z
+  - _ulid: 01KMAFJWVTR9K1HZH5FB1JZG3X
+    content: "Fix cycle 1: Addressed blocker about premature queue close during idle. The idle loop was
+      closing the prompt queue after a single microtask yield (await Promise.resolve()), which
+      prevented async prompt sources from delivering follow-up prompts. Fix: when sessionRegistry is
+      provided, the queue stays open for a default 100ms grace period (DEFAULT_IDLE_GRACE_MS) before
+      closing, allowing async sources (event-bus hooks, timers) to deliver via the session handle.
+      Without a registry, queue closes immediately for backward compat. Added test proving async
+      setTimeout-based prompt delivery works. Grace timer is properly cleared on prompt arrival and
+      in the finally block. Pre-existing flaky timeout in canonical-task-workspace-contract is
+      unrelated."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-22T09:56:25.594Z
