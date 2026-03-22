@@ -26060,8 +26060,8 @@ plans:
         parent: "@agent-integration"
         description: |
           Event-driven session lifecycle where sessions remain alive between
-          turns. After each agent turn completes (stopReason: end_turn), the
-          session enters an idle state and emits a session.idle event. The
+          turns. After each agent turn completes, the session enters an idle
+          state and emits a session.idle event. The
           session stays open until something explicitly closes it — a
           timeout, a close action, or the absence of any queued prompts
           after a grace period.
@@ -26083,12 +26083,12 @@ plans:
         acceptance_criteria:
           - id: ac-1
             given: |
-              An agent's turn completes (stopReason: end_turn)
+              An agent's turn completes
             when: |
-              The invocation runner processes the prompt result
+              The turn result is processed
             then: |
-              The session transitions to idle state; the ACP session
-              remains open and the agent process stays alive
+              The session transitions to idle state; the session remains
+              open and capable of receiving follow-up prompts
           - id: ac-2
             given: |
               A session transitions to idle state after a turn completes
@@ -26105,9 +26105,9 @@ plans:
               A follow-up prompt is delivered (from a hook action, API call,
               or CLI command)
             then: |
-              The session transitions to prompting state, the prompt is sent
-              via the existing ACP client.prompt(), and the session returns
-              to idle when the agent's turn completes; turn_count increments
+              The session transitions to prompting state, the prompt is
+              delivered to the agent, and the session returns to idle when
+              the agent's turn completes; turn_count increments
           - id: ac-4
             given: |
               A session emits session.idle and no prompt is queued within
@@ -26115,9 +26115,8 @@ plans:
             when: |
               The grace period expires
             then: |
-              The session is closed with the standard teardown sequence;
-              this preserves backward compatibility — existing single-turn
-              dispatch works unchanged
+              The session is closed; this preserves backward
+              compatibility — existing single-turn dispatch works unchanged
           - id: ac-5
             given: |
               A session is in idle state and the agent definition specifies
@@ -26161,8 +26160,8 @@ plans:
             when: |
               The agent's current turn completes
             then: |
-              Queued prompts are discarded and the session proceeds to
-              teardown; the close reason reflects the explicit close
+              Queued prompts are discarded and the session closes; the
+              close reason reflects the explicit close
           - id: ac-10
             given: |
               An agent invocation is spawned by the dispatch engine with
@@ -26178,7 +26177,7 @@ plans:
             when: |
               The session is eventually closed
             then: |
-              All turns are logged to the same session event log (JSONL)
+              All turns are recorded in the same session's event history
               under the single session_id
           - id: ac-12
             given: |
@@ -26204,8 +26203,7 @@ plans:
               The error is detected
             then: |
               The session closes immediately with status failed and the
-              standard failure handling applies (task note, retry logic
-              per @agent-invocation-lifecycle)
+              standard failure handling applies (task note, retry logic)
           - id: ac-15
             given: |
               An agent process crashes during a multi-turn session and
@@ -26242,7 +26240,7 @@ plans:
         acceptance_criteria:
           - id: ac-1
             given: |
-              An agent completes a turn (stopReason: end_turn)
+              An agent completes a turn
             when: |
               The session transitions to idle
             then: |
@@ -26310,7 +26308,7 @@ plans:
             then: |
               The prompt is delivered to the session as a follow-up turn;
               the action run tracks as running until the agent's turn
-              finishes (stopReason received)
+              finishes
           - id: ac-2
             given: |
               A session_prompt action begins execution
@@ -26423,16 +26421,14 @@ plans:
         type: feature
         parent: "@multi-turn-session-lifecycle"
         description: |
-          A runtime registry of active sessions that allows the action
-          executor to deliver prompts to live ACP sessions. Maps session_id
-          to a session handle providing prompt delivery and state query
-          capabilities.
+          A runtime registry of active sessions that allows actions to
+          deliver prompts to live sessions. Maps session_id to a session
+          handle providing prompt delivery and state query capabilities.
 
-          The registry is volatile (daemon lifetime). It does not store ACP
-          client references directly — it exposes a minimal interface for
-          prompt delivery, state query, and close requests. This keeps the
-          action executor decoupled from ACP internals while enabling the
-          session_prompt action type.
+          The registry is volatile (daemon lifetime). It exposes a minimal
+          interface for prompt delivery, state query, and close requests.
+          This keeps action execution decoupled from session internals
+          while enabling the session_prompt action type.
         acceptance_criteria:
           - id: ac-1
             given: |
@@ -26458,8 +26454,7 @@ plans:
               It queries the registry by session_id
             then: |
               It receives a handle if the session is active, or null if
-              the session has been closed; the handle encapsulates the
-              delivery mechanism without exposing the ACP client
+              the session has been closed
           - id: ac-4
             given: |
               The daemon shuts down
@@ -26518,17 +26513,16 @@ plans:
             when: |
               The session is in idle state
             then: |
-              The session closes with the standard teardown sequence;
-              invocation.completed and session.ended events fire normally
+              The session closes; invocation.completed and session.ended
+              events fire normally
           - id: ac-4
             given: |
               An interactive session is running
             when: |
-              The agent's streaming output arrives via ACP updates
+              The agent produces streaming output during a turn
             then: |
-              Updates are streamed to connected clients via the existing
-              WebSocket session event stream; the interactive user sees
-              real-time output
+              The output is available to connected clients in real time;
+              the interactive user sees output as it is generated
 
       - title: Interactive Session API
         slug: interactive-session-api
@@ -27077,3 +27071,8 @@ plans:
           timeless
         author: "@claude"
         created_at: 2026-03-22T06:01:39.037Z
+      - _ulid: 01KMA2SDR84ZJXN27DAF6ZV1W4
+        content: Remove implementation details from ACs — no ACP, JSONL, stopReason, teardown sequence,
+          WebSocket, or cross-spec references in behavioral contracts
+        author: "@claude"
+        created_at: 2026-03-22T06:12:48.008Z
