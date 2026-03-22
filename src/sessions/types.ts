@@ -49,6 +49,7 @@ export const SessionTriggerSchema = z.enum([
   "invocation.failed",
   "invocation.stalled",
   // Session lifecycle events
+  "session.idle",
   "session.ended",
   "session.idle_timeout",
   "session.cancelled",

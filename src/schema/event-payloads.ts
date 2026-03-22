@@ -147,10 +147,43 @@ export type WorkSummary = z.infer<typeof WorkSummarySchema>;
 export type SessionEventPayload = z.infer<typeof SessionEventPayloadSchema>;
 
 /**
- * Field names guaranteed in session.* event payloads.
+ * Field names guaranteed in session terminal event payloads.
  */
 export const SESSION_PAYLOAD_FIELDS = Object.keys(
   SessionEventPayloadSchema.shape,
+) as readonly string[];
+
+/**
+ * Payload for session.idle events.
+ *
+ * Emitted when an agent completes a turn and the session enters idle state.
+ * Unlike terminal session events, the session is still alive and receptive
+ * to follow-up prompts. Includes turn context instead of terminal/summary data.
+ *
+ * AC: @session-idle-event ac-1
+ */
+export const SessionIdlePayloadSchema = z.object({
+  /** The session's canonical identifier */
+  session_id: z.string(),
+  /** The agent definition that ran the session */
+  agent_id: z.string(),
+  /** Task reference if the session is task-scoped */
+  task_ref: z.string().nullable().optional(),
+  /** Cumulative number of completed turns in this session */
+  turn_count: z.number().int().positive(),
+  /** Why the agent stopped responding on this turn */
+  stop_reason: z.string(),
+  /** Duration of the completed turn in milliseconds */
+  duration_ms: z.number().nonnegative(),
+});
+
+export type SessionIdlePayload = z.infer<typeof SessionIdlePayloadSchema>;
+
+/**
+ * Field names guaranteed in session.idle event payloads.
+ */
+export const SESSION_IDLE_PAYLOAD_FIELDS = Object.keys(
+  SessionIdlePayloadSchema.shape,
 ) as readonly string[];
 
 // ─── Schedule Event Payloads ────────────────────────────────────────────────
@@ -255,6 +288,7 @@ export const EVENT_PAYLOAD_SCHEMAS: Record<string, z.ZodType> = {
   "invocation.failed": InvocationTerminalPayloadSchema,
   "invocation.stalled": InvocationTerminalPayloadSchema,
   "session.ended": SessionEventPayloadSchema,
+  "session.idle": SessionIdlePayloadSchema,
   "session.idle_timeout": SessionEventPayloadSchema,
   "session.cancelled": SessionEventPayloadSchema,
   "schedule.tick": ScheduleTickPayloadSchema,

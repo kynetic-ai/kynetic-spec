@@ -662,6 +662,13 @@ describe("event payload schemas align with registry", () => {
     samplePayloads["task.pending_review"] = samplePayloads["task.ready"];
     samplePayloads["invocation.failed"] = samplePayloads["invocation.completed"];
     samplePayloads["invocation.stalled"] = samplePayloads["invocation.completed"];
+    samplePayloads["session.idle"] = {
+      session_id: "s1",
+      agent_id: "a1",
+      turn_count: 1,
+      stop_reason: "end_turn",
+      duration_ms: 1000,
+    };
     samplePayloads["session.idle_timeout"] = samplePayloads["session.ended"];
     samplePayloads["session.cancelled"] = samplePayloads["session.ended"];
     samplePayloads["action.failed"] = samplePayloads["action.completed"];
