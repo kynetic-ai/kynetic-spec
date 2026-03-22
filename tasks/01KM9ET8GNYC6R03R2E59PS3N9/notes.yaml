@@ -7,3 +7,48 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-22T00:23:53.101Z
+  - _ulid: 01KM9VRTM6GFQDA7YEN4NVPM2F
+    content: >-
+      Activated split storage on kynetic-spec project (2026-03-21).
+
+
+      The premature migration run by @task-build-migration created 1,154 per-task directories while
+      the system was still in monolithic mode. Subsequent dispatch work (completing
+      @task-build-migration and @task-activate-split-storage) mutated tasks via the monolithic
+      backend, which updated the index but not the per-task files — creating a split-brain state.
+
+
+      Audit found:
+
+      - 1,152 tasks: clean (per-task files matched index)
+
+      - 2 tasks with stale per-task files: @task-build-migration (status needs_work vs completed, 8
+      notes in per-task + 3 in index with 0 overlap) and @task-activate-split-storage (status
+      pending vs completed, 0 notes in per-task + 2 in index)
+
+      - 4 tasks created after migration with no per-task dirs (clean — would backfill normally)
+
+      - 1 hybrid index entry with both notes_count and notes array
+
+
+      Fix procedure (tested 3x in isolated clones before executing):
+
+      1. Used kspec's own toYaml/readYamlFile to merge index field values into stale per-task files
+      and deduplicate notes
+
+      2. Committed fix to kspec-meta
+
+      3. kspec task migrate — backfilled 4 new tasks
+
+      4. kspec task rebuild-index --repair --force — fixed hybrid entry (notes_count 0→2, stripped
+      non-indexed fields)
+
+      5. kspec task rebuild-index --dry-run — confirmed "Index is up to date (1158 tasks)"
+
+      6. kspec task storage activate — flipped the switch
+
+
+      Result: 1,158 tasks on split storage, index consistent, all operations verified.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-22T04:10:08.390Z
