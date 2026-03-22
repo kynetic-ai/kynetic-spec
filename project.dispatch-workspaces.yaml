@@ -19701,18 +19701,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-remove-duplicate-handle-registration/01kmbpya
-    canonical_branch_head: 2da4a1f5163cdbd9acbb5a6acef049732b6b75c8
+    canonical_branch_head: 7156ce71b80632a7f36a0a148efe41ceb78f57b6
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-22T21:37:31.931Z
+      updated_at: 2026-03-22T21:43:51.207Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-22T21:37:39.519Z
+      updated_at: 2026-03-22T21:43:51.207Z
     integration:
       status: pending
       detail: null
@@ -19720,7 +19720,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 2da4a1f5163cdbd9acbb5a6acef049732b6b75c8
-      updated_at: 2026-03-22T21:37:31.931Z
+      updated_at: 2026-03-22T21:43:51.207Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KMBPYA8WRP5WFQV53QQK3GW4"
@@ -19728,9 +19728,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-22T21:37:39.519Z
-      last_reconciled_at: 2026-03-22T21:37:39.519Z
+      last_reconciled_at: 2026-03-22T21:43:51.207Z
       created_at: 2026-03-22T21:37:31.931Z
-      updated_at: 2026-03-22T21:37:39.519Z
+      updated_at: 2026-03-22T21:43:51.207Z
     workspace_id: dispatch-workspace-01KMBPYA8WRP5WFQV53QQK3GW4
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
