@@ -1,14 +1,23 @@
 /**
- * Agent Invocation Lifecycle
+ * Agent Invocation Lifecycle — Multi-Turn
  *
  * Per-invocation session creation, ACP agent spawn, prompt delivery,
  * event logging, timeout handling, and structured completion tracking.
  *
- * This is the core building block used by both the dispatch engine and
- * CLI one-shot mode. Each invocation creates an isolated session with
- * its own event log and metadata.
+ * The invocation runner implements an event-driven turn loop: after the
+ * first prompt returns, the session transitions to idle state instead of
+ * tearing down. A prompt queue accepts follow-up prompts from any source.
+ * The runner loops: wait for prompt → send → wait for turn completion →
+ * idle → repeat. The loop exits when a close is requested, the abort signal
+ * fires, or the grace period expires with no queued prompts.
+ *
+ * Backward compatibility: when no onIdle callback is provided and no
+ * prompts are queued, the session closes after the first turn — identical
+ * to the previous single-turn behavior.
  *
  * AC: @agent-invocation-lifecycle ac-1 through ac-11
+ * AC: @multi-turn-session-lifecycle ac-1, ac-2, ac-3, ac-4, ac-8, ac-9,
+ *      ac-10, ac-15, ac-16, ac-17
  */
 
 import * as path from "node:path";
@@ -31,7 +40,7 @@ import {
   removeEnvForAdapter,
 } from "../sessions/store.js";
 import type { SessionEventInput, SessionMetadata, SessionTrigger } from "../sessions/types.js";
-import type { SessionRegistry, SessionState } from "./session-registry.js";
+import type { SessionHandle, SessionRegistry, SessionState } from "./session-registry.js";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -49,6 +58,12 @@ export const DEFAULT_KSPEC_CLI_PATH = resolveDefaultKspecCliPath();
 export const DEFAULT_INITIAL_RESPONSE_TIMEOUT_SECONDS = 120;
 
 /**
+ * Default maximum prompt queue depth.
+ * AC: @multi-turn-session-lifecycle ac-17
+ */
+export const DEFAULT_MAX_PROMPT_QUEUE_DEPTH = 64;
+
+/**
  * Session update types that count as meaningful agent activity.
  * These prove the agent received the prompt and is processing it.
  * AC: @invocation-initial-activity-watchdog ac-1, ac-3
@@ -62,7 +77,109 @@ const MEANINGFUL_UPDATE_TYPES = new Set([
   "usage_update",
 ]);
 
+// ─── Prompt Queue ─────────────────────────────────────────────────────────────
+
+/**
+ * FIFO queue for follow-up prompts delivered to an active session.
+ *
+ * Consumers wait via waitForPrompt() which resolves when a prompt is
+ * enqueued. Producers call enqueue() to deliver prompts. The queue has
+ * a configurable maximum depth — enqueue() throws PromptQueueFullError
+ * when the limit is reached.
+ *
+ * AC: @multi-turn-session-lifecycle ac-8, ac-9, ac-17
+ */
+export class PromptQueue {
+  private readonly queue: string[] = [];
+  private waiter: { resolve: (prompt: string | null) => void } | null = null;
+  private closed = false;
+
+  constructor(private readonly maxDepth: number = DEFAULT_MAX_PROMPT_QUEUE_DEPTH) {}
+
+  /**
+   * Enqueue a prompt for delivery. If a consumer is waiting, delivers
+   * immediately. Otherwise queues for later consumption.
+   *
+   * AC: @multi-turn-session-lifecycle ac-8 — queued when session is prompting
+   * AC: @multi-turn-session-lifecycle ac-9 — FIFO ordering
+   * AC: @multi-turn-session-lifecycle ac-17 — rejects when queue is full
+   */
+  enqueue(prompt: string): void {
+    if (this.closed) {
+      throw new Error("Prompt queue is closed");
+    }
+    if (this.waiter) {
+      const { resolve } = this.waiter;
+      this.waiter = null;
+      resolve(prompt);
+      return;
+    }
+    if (this.queue.length >= this.maxDepth) {
+      throw new PromptQueueFullError(this.maxDepth);
+    }
+    this.queue.push(prompt);
+  }
+
+  /**
+   * Wait for the next prompt. Resolves immediately if a prompt is
+   * already queued, otherwise waits until one is enqueued or the
+   * queue is closed.
+   *
+   * Returns null when the queue is closed with no pending prompts.
+   */
+  waitForPrompt(): Promise<string | null> {
+    if (this.queue.length > 0) {
+      return Promise.resolve(this.queue.shift()!);
+    }
+    if (this.closed) {
+      return Promise.resolve(null);
+    }
+    return new Promise<string | null>((resolve) => {
+      this.waiter = { resolve };
+    });
+  }
+
+  /**
+   * Close the queue, discarding any pending prompts.
+   * Resolves any waiting consumer with null.
+   *
+   * AC: @multi-turn-session-lifecycle ac-10, ac-16
+   */
+  close(): string[] {
+    const discarded = [...this.queue];
+    this.queue.length = 0;
+    this.closed = true;
+    if (this.waiter) {
+      const { resolve } = this.waiter;
+      this.waiter = null;
+      resolve(null);
+    }
+    return discarded;
+  }
+
+  get pending(): number {
+    return this.queue.length;
+  }
+
+  get isClosed(): boolean {
+    return this.closed;
+  }
+}
+
 // ─── Types ────────────────────────────────────────────────────────────────────
+
+/**
+ * Idle context passed to the onIdle callback.
+ * AC: @multi-turn-session-lifecycle ac-3
+ */
+export interface SessionIdleContext {
+  sessionId: string;
+  agentId: string;
+  taskRef: string | undefined;
+  turnCount: number;
+  stopReason: string | undefined;
+  turnDurationMs: number;
+}
 
 /**
  * Options for running a single agent invocation.
@@ -105,39 +222,32 @@ export interface InvocationOptions {
   /** Pre-assigned session ID (generated if not provided) */
   sessionId?: string;
   /**
-   * Session registry for multi-turn prompt delivery.
-   * When provided, the invocation runner registers a SessionHandle so that
-   * session_prompt actions (and other registry consumers) can deliver prompts
-   * to this session while it is alive.
-   *
-   * AC: @session-prompt-action ac-1 — enables production prompt delivery path
-   * AC: @active-session-registry ac-1 — session registration at invocation start
+   * Called when the session transitions to idle after a turn completes.
+   * This is the hook point for emitting session.idle events on the event bus.
+   * AC: @multi-turn-session-lifecycle ac-3
+   */
+  onIdle?: (context: SessionIdleContext) => void;
+  /**
+   * Session registry to register/unregister the session handle.
+   * When provided, the runner creates a SessionHandle and registers it
+   * before the first prompt, unregisters on session close.
+   * AC: @active-session-registry ac-1, ac-2
    */
   sessionRegistry?: SessionRegistry;
   /**
-   * Called after each prompt turn completes (before the session enters idle).
-   * The dispatch engine uses this to emit session.idle events so hooks can
-   * trigger session_prompt actions. Returns a promise that resolves when
-   * event processing is complete.
-   *
-   * AC: @session-idle-event ac-1 — session idle event emission
-   * AC: @session-prompt-action ac-1 — enables idle → follow-up prompt loop
+   * Maximum depth of the prompt queue.
+   * AC: @multi-turn-session-lifecycle ac-17
    */
-  onTurnComplete?: (turnInfo: TurnCompleteInfo) => Promise<void>;
-}
-
-/**
- * Information about a completed turn, provided to onTurnComplete callbacks.
- *
- * AC: @session-idle-event ac-1
- */
-export interface TurnCompleteInfo {
-  sessionId: string;
-  agentId: string;
-  taskRef: string | undefined;
-  turnCount: number;
-  stopReason: string;
-  turnDurationMs: number;
+  maxPromptQueueDepth?: number;
+  /**
+   * Grace period in milliseconds to wait for follow-up prompts after
+   * entering idle state. When 0 (default), the session closes immediately
+   * after a turn if no prompt is already queued — preserving single-turn
+   * backward compatibility. The dispatch engine sets this to a positive
+   * value when session.idle hooks are configured.
+   * AC: @multi-turn-session-lifecycle ac-2
+   */
+  idleGracePeriodMs?: number;
 }
 
 /**
@@ -154,8 +264,11 @@ export interface InvocationResult {
   error?: string;
   /** Total duration in milliseconds */
   durationMs: number;
-  /** Number of completed prompt turns (1 for single-turn, >1 for follow-up prompts) */
-  turnCount?: number;
+  /**
+   * Number of turns completed in this session.
+   * AC: @multi-turn-session-lifecycle ac-13, ac-14
+   */
+  turnCount: number;
 }
 
 /**
@@ -307,12 +420,21 @@ function disposeAgent(agent: SpawnedAgent | null): null {
 // ─── Core Invocation ──────────────────────────────────────────────────────────
 
 /**
- * Run a single agent invocation for a task.
+ * Run an agent invocation with multi-turn lifecycle support.
  *
  * Creates a session, spawns the agent, injects KSPEC_SESSION_ID,
- * sends the prompt, streams events, and closes the session on completion.
+ * sends the initial prompt, then enters a turn loop. After each turn
+ * completes, the session transitions to idle and the onIdle callback
+ * fires. If a follow-up prompt is queued (via the session handle's
+ * prompt queue), the next turn begins. Otherwise, the session closes.
+ *
+ * The session handle is registered in the session registry (if provided)
+ * so that external components (action executors, hooks) can deliver
+ * follow-up prompts to the live session.
  *
  * AC: @agent-invocation-lifecycle ac-1 through ac-11
+ * AC: @multi-turn-session-lifecycle ac-1, ac-2, ac-3, ac-4, ac-8, ac-9,
+ *      ac-10, ac-15, ac-16, ac-17
  */
 export async function runInvocation(options: InvocationOptions): Promise<InvocationResult> {
   const {
@@ -328,8 +450,10 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     onEventAppended,
     kspecCliPath = DEFAULT_KSPEC_CLI_PATH,
     abortSignal,
+    onIdle,
     sessionRegistry,
-    onTurnComplete,
+    maxPromptQueueDepth = DEFAULT_MAX_PROMPT_QUEUE_DEPTH,
+    idleGracePeriodMs = 0,
   } = options;
 
   // AC: @session-storage-path-resolution ac-resolver
@@ -346,7 +470,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
   // Build extra args for auto-approve
   const extraArgs = autoApprove ? (adapter.autoApproveArgs ?? []) : [];
 
-  // Resolve timeout: option overrides agent budget
+  // Resolve timeout: option overrides agent budget (applies to total session duration)
   const timeoutMinutes =
     options.timeoutMinutes ??
     agent.budget?.timeout_minutes ??
@@ -374,6 +498,17 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     agent: null,
     acpSessionId: null,
   };
+
+  // ─── Prompt queue for multi-turn ─────────────────────────────────────────
+  // AC: @multi-turn-session-lifecycle ac-8, ac-9, ac-17
+  const promptQueue = new PromptQueue(maxPromptQueueDepth);
+
+  // Session state for the handle
+  // AC: @multi-turn-session-lifecycle ac-1, ac-2
+  let sessionState: SessionState = "prompting";
+  let closeRequested = false;
+  let closeReason: string | undefined;
+  let turnCount = 0;
 
   // Serialize all per-session event writes so seq assignment and append order
   // are deterministic even when ACP update callbacks fire concurrently.
@@ -404,6 +539,36 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     onEventAppended?.(sessionId);
   };
 
+  // ─── Session handle for registry ─────────────────────────────────────────
+  // AC: @active-session-registry ac-1
+  // AC: @multi-turn-session-lifecycle ac-2, ac-4
+  const sessionHandle: SessionHandle = {
+    sendPrompt(prompt: string): Promise<void> {
+      if (sessionState === "closed") {
+        return Promise.reject(new Error("Session is closed"));
+      }
+      // AC: @multi-turn-session-lifecycle ac-4 — deliver prompt
+      // AC: @multi-turn-session-lifecycle ac-8 — queue when prompting
+      // AC: @multi-turn-session-lifecycle ac-17 — reject when full
+      try {
+        promptQueue.enqueue(prompt);
+      } catch (err) {
+        return Promise.reject(err);
+      }
+      return Promise.resolve();
+    },
+    getState(): SessionState {
+      return sessionState;
+    },
+    requestClose(reason: string): void {
+      // AC: @multi-turn-session-lifecycle ac-10
+      closeRequested = true;
+      closeReason = reason;
+      // Close the prompt queue so the turn loop wakes up and exits
+      promptQueue.close();
+    },
+  };
+
   // ─── Create session ───────────────────────────────────────────────────────
   // AC: @agent-invocation-lifecycle ac-1
   const session = await createSession(sessionsDir, {
@@ -424,24 +589,6 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       trigger,
     },
   });
-
-  // Session handle state for registry integration. Declared outside try/finally
-  // so the finally block can update state and unregister.
-  // AC: @session-prompt-action ac-1, @active-session-registry ac-1, ac-2
-  let sessionState: SessionState = "prompting";
-  // Timeout handle declared here so it's accessible in the finally cleanup block
-  let timeoutHandle: ReturnType<typeof setTimeout> | undefined;
-
-  // Prompt queue for follow-up delivery. Declared outside try/finally so the
-  // finally block can reject remaining entries on any exit path.
-  // AC: @session-prompt-action ac-1, ac-2, ac-5
-  interface QueuedPromptEntry {
-    prompt: string;
-    resolve: () => void;
-    reject: (err: Error) => void;
-  }
-  const promptQueue: QueuedPromptEntry[] = [];
-  let pendingPromptResolve: ((prompt: string) => void) | null = null;
 
   try {
     // ─── Inject KSPEC_SESSION_ID ──────────────────────────────────────────
@@ -484,75 +631,12 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     });
 
     // ─── Register session handle ─────────────────────────────────────────
-    // AC: @session-prompt-action ac-1 — production registration path
+    // Register inside try block after successful session creation to prevent
+    // dead handles in the registry. The finally block's unregister() is
+    // guaranteed to run for cleanup.
     // AC: @active-session-registry ac-1, ac-2
-    //
-    // Register a session handle so session_prompt actions can discover this
-    // session via the registry. The handle supports follow-up prompts:
-    // when idle, sendPrompt() wakes the idle loop; when prompting, it queues.
     if (sessionRegistry) {
-      sessionRegistry.register(sessionId, {
-        sendPrompt: (prompt: string): Promise<void> => {
-          if (sessionState === "closed") {
-            return Promise.reject(new Error(
-              `Session '${sessionId}' is closed — cannot deliver prompt to a closed session.`,
-            ));
-          }
-          if (sessionState === "idle") {
-            // AC: @session-prompt-action ac-1 — delivery to idle session
-            // AC: @session-prompt-action ac-2 — deferred promise ensures
-            // action.completed only fires after the turn finishes.
-            // Push to queue for deferred resolution.  If the idle-loop
-            // resolver already exists, wake it immediately; otherwise the
-            // prompt sits in the queue and the idle loop drains it when it
-            // starts waiting (line ~692).  This closes the race window
-            // between emitting session.idle and installing the resolver.
-            const deferredPromise = new Promise<void>((resolve, reject) => {
-              promptQueue.push({ prompt, resolve, reject });
-            });
-            sessionState = "prompting";
-            if (pendingPromptResolve) {
-              const wakeResolve = pendingPromptResolve;
-              pendingPromptResolve = null;
-              wakeResolve(""); // Wake the idle loop; the actual prompt is in the queue
-            }
-            return deferredPromise;
-          } else if (sessionState === "prompting") {
-            // AC: @session-prompt-action ac-5 — queue for after current turn.
-            // Return a promise that won't settle until this prompt's turn completes
-            // (or is rejected on session close). This ensures the action lifecycle
-            // event (action.completed) only fires after the queued turn finishes.
-            // AC: @session-prompt-action ac-2
-            return new Promise<void>((resolve, reject) => {
-              promptQueue.push({ prompt, resolve, reject });
-            });
-          } else {
-            // Should not happen — sessionState is "closed" and was
-            // already handled above.
-            return Promise.reject(new Error(
-              `Session '${sessionId}' is not ready to accept prompts.`,
-            ));
-          }
-        },
-        getState: () => sessionState,
-        requestClose: (reason: string) => {
-          sessionState = "closed";
-          // Reject all queued prompts — their turns will never run
-          const closeError = new Error(
-            `Session '${sessionId}' closed: ${reason}`,
-          );
-          for (const entry of promptQueue.splice(0)) {
-            entry.reject(closeError);
-          }
-          // Wake idle wait if pending, so the loop can exit
-          if (pendingPromptResolve) {
-            const resolve = pendingPromptResolve;
-            pendingPromptResolve = null;
-            // Resolve with empty string to signal close; the loop checks sessionState
-            resolve("");
-          }
-        },
-      });
+      sessionRegistry.register(sessionId, sessionHandle);
     }
 
     // ─── Stall watchdog state ──────────────────────────────────────────────
@@ -615,8 +699,9 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
 
     state.agent.client.on("request", requestHandler);
 
-    // ─── Send prompt with timeout ─────────────────────────────────────────
+    // ─── Session-level timeout (applies to total session duration) ────────
     // AC: @agent-invocation-lifecycle ac-3
+    let timeoutHandle: ReturnType<typeof setTimeout> | undefined;
     const timeoutPromise = new Promise<never>((_, reject) => {
       timeoutHandle = setTimeout(() => {
         reject(new InvocationTimeoutError(timeoutMinutes));
@@ -646,154 +731,133 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
         })
       : null;
 
-    const promptPromise = state.agent.client.prompt({
-      sessionId: state.acpSessionId,
-      prompt: [{ type: "text", text: fullPrompt }],
-    });
+    // ─── Turn loop ────────────────────────────────────────────────────────
+    // AC: @multi-turn-session-lifecycle ac-1, ac-2, ac-4
+    let currentPromptText: string = fullPrompt;
+    let lastStopReason: string | undefined;
 
-    let promptResult: Awaited<typeof promptPromise>;
     try {
-      const racers: Array<Promise<typeof promptResult | never>> = [promptPromise, timeoutPromise, stallPromise];
-      if (abortPromise) racers.push(abortPromise);
-      promptResult = await Promise.race(racers);
-    } finally {
-      // Clear stall handle after first turn. The overall timeout handle
-      // persists across follow-up turns and is cleared after the idle loop.
-      clearTimeout(stallHandle);
-    }
+      // eslint-disable-next-line no-constant-condition
+      while (true) {
+        // ─── Prompting state ─────────────────────────────────────────────
+        sessionState = "prompting";
+        const turnStartTime = Date.now();
 
-    // ─── Idle loop: support follow-up prompts via session handle ─────────
-    // AC: @session-prompt-action ac-1, ac-5 — deliver follow-up prompts
-    // AC: @session-idle-event ac-1, ac-2 — emit idle events with turn count
-    //
-    // After each turn completes, transition to idle and notify the dispatch
-    // engine (via onTurnComplete). If a follow-up prompt arrives (from a
-    // session_prompt action triggered by a session.idle hook), send it and
-    // loop. Otherwise, proceed to session close.
-    let turnCount = 1;
-    let lastStopReason = promptResult.stopReason;
-    let turnStartTime = startTime;
+        const promptPromise: Promise<{ stopReason: string }> = state.agent.client.prompt({
+          sessionId: state.acpSessionId,
+          prompt: [{ type: "text", text: currentPromptText }],
+        });
 
-    // eslint-disable-next-line no-constant-condition
-    while (true) {
-      const turnDurationMs = Date.now() - turnStartTime;
+        const racers: Array<Promise<{ stopReason: string } | never>> = [promptPromise, timeoutPromise];
+        // Stall watchdog only applies to the first turn
+        if (turnCount === 0) {
+          racers.push(stallPromise);
+        }
+        if (abortPromise) racers.push(abortPromise);
 
-      // Notify dispatch engine that a turn completed (emits session.idle)
-      // AC: @session-idle-event ac-1
-      if (onTurnComplete && sessionRegistry) {
+        let promptResult: { stopReason: string };
+        try {
+          promptResult = await Promise.race(racers);
+        } finally {
+          // Clear stall handle after first turn (it only applies to initial response)
+          if (turnCount === 0) {
+            clearTimeout(stallHandle);
+          }
+        }
+
+        turnCount++;
+        lastStopReason = promptResult.stopReason;
+        const turnDurationMs = Date.now() - turnStartTime;
+
+        // ─── Log turn completion event ─────────────────────────────────
+        // AC: @multi-turn-session-lifecycle ac-1
+        await appendSessionEvent({
+          type: "agent.turn_completed",
+          data: {
+            task_id: taskRef,
+            turn_count: turnCount,
+            stop_reason: promptResult.stopReason,
+            turn_duration_ms: turnDurationMs,
+          },
+        });
+
+        // ─── Check for close request ───────────────────────────────────
+        // AC: @multi-turn-session-lifecycle ac-10
+        if (closeRequested) {
+          // Discard queued prompts and break
+          promptQueue.close();
+          break;
+        }
+
+        // ─── Transition to idle ────────────────────────────────────────
+        // AC: @multi-turn-session-lifecycle ac-1, ac-2
         sessionState = "idle";
-        await onTurnComplete({
+
+        // AC: @multi-turn-session-lifecycle ac-3 — emit idle event
+        onIdle?.({
           sessionId,
           agentId: agent.id,
           taskRef,
           turnCount,
-          stopReason: lastStopReason ?? "end_turn",
+          stopReason: promptResult.stopReason,
           turnDurationMs,
         });
-      }
 
-      // Check for queued prompt (from sendPrompt during prompting state)
-      // AC: @session-prompt-action ac-5 — drain queue one at a time
-      let followUpPrompt: string | null = null;
-      let currentQueueEntry: QueuedPromptEntry | null = null;
-      if (promptQueue.length > 0) {
-        currentQueueEntry = promptQueue.shift()!;
-        followUpPrompt = currentQueueEntry.prompt;
-        sessionState = "prompting";
-      } else if (sessionRegistry && sessionState === "idle") {
-        // Wait briefly for a follow-up prompt from session_prompt actions.
-        // The idle wait is resolved when sendPrompt() is called on the handle
-        // or when requestClose() is called.
-        // AC: @session-prompt-action ac-1
-        const idlePrompt = await new Promise<string>((resolve) => {
-          pendingPromptResolve = resolve;
-          // Use an idle grace window to allow hooks to fire session_prompt actions.
-          // If no prompt arrives within the window, the session ends normally.
-          // 2000ms is enough for the event bus → hook executor → action executor
-          // → sendPrompt() async chain to complete.
-          setTimeout(() => {
-            if (pendingPromptResolve === resolve) {
-              pendingPromptResolve = null;
-              resolve(""); // Empty string signals no follow-up
-            }
-          }, 2000);
-        });
+        // ─── Wait for next prompt or close ─────────────────────────────
+        // AC: @multi-turn-session-lifecycle ac-2, ac-4
+        //
+        // Yield a microtask to let synchronous onIdle callbacks enqueue
+        // prompts before checking the queue.
+        await Promise.resolve();
 
-        // sessionState may have been mutated asynchronously by requestClose()
-        if ((sessionState as SessionState) !== "closed") {
-          // The idle wake may have placed the prompt in the queue (deferred
-          // resolution path for ac-2). Check queue first; fall back to the
-          // idle prompt string for backward compatibility.
-          if (promptQueue.length > 0) {
-            currentQueueEntry = promptQueue.shift()!;
-            followUpPrompt = currentQueueEntry.prompt;
-            sessionState = "prompting";
-          } else if (idlePrompt) {
-            followUpPrompt = idlePrompt;
-            sessionState = "prompting";
+        // Check if a close was requested during idle callback
+        if (closeRequested) {
+          promptQueue.close();
+          break;
+        }
+
+        // If no prompt was queued during the idle transition and no
+        // grace period is configured, close the session immediately.
+        // This preserves backward compatibility: single-turn invocations
+        // exit after one turn with no delay.
+        if (promptQueue.pending === 0 && !promptQueue.isClosed) {
+          if (idleGracePeriodMs > 0) {
+            // Wait for the grace period to allow async prompt sources
+            // (event bus hooks, timers) to deliver follow-up prompts
+            await new Promise<void>((resolve) => setTimeout(resolve, idleGracePeriodMs));
+          }
+          // After grace period (or immediately if 0), close if still no prompts
+          if (promptQueue.pending === 0 && !promptQueue.isClosed) {
+            promptQueue.close();
           }
         }
-      }
 
-      // If no follow-up prompt, exit the idle loop
-      if (!followUpPrompt || (sessionState as SessionState) === "closed") {
-        break;
-      }
+        // Race the prompt queue against the session timeout and abort
+        const nextPromptPromise = promptQueue.waitForPrompt();
+        const idleRacers: Array<Promise<string | null | never>> = [nextPromptPromise, timeoutPromise as Promise<never>];
+        if (abortPromise) idleRacers.push(abortPromise as Promise<never>);
 
-      // ─── Send follow-up prompt ─────────────────────────────────────────
-      // AC: @session-prompt-action ac-1 — deliver prompt to session
-      turnStartTime = Date.now();
-      turnCount++;
+        const nextPrompt = await Promise.race(idleRacers);
 
-      // Reset stall detection for the follow-up turn
-      stallResolved = false;
-      const followUpStallHandle = setTimeout(() => {
-        if (!stallResolved) {
-          // Follow-up stall: close the session rather than throwing
-          sessionState = "closed";
-          // Reject remaining queued prompts
-          const stallError = new Error(
-            `Session '${sessionId}' closed: follow-up turn stalled`,
-          );
-          for (const entry of promptQueue.splice(0)) {
-            entry.reject(stallError);
-          }
-          if (pendingPromptResolve) {
-            const resolve = pendingPromptResolve;
-            pendingPromptResolve = null;
-            resolve("");
-          }
+        if (nextPrompt === null) {
+          // Queue closed or no more prompts — exit turn loop
+          break;
         }
-      }, stallTimeoutSeconds * 1000);
 
-      try {
-        promptResult = await Promise.race([
-          state.agent!.client.prompt({
-            sessionId: state.acpSessionId!,
-            prompt: [{ type: "text", text: followUpPrompt }],
-          }),
-          timeoutPromise,
-          ...(abortPromise ? [abortPromise] : []),
-        ]);
-        lastStopReason = promptResult.stopReason;
-        // AC: @session-prompt-action ac-2 — resolve the queued entry's promise
-        // now that the turn has actually completed. This ensures the action
-        // executor doesn't emit action.completed until the turn finishes.
-        currentQueueEntry?.resolve();
-      } catch (turnErr) {
-        // Reject the queued entry so the action executor sees the failure.
-        // Re-throw so the outer catch handles timeout/abort/failure paths.
-        currentQueueEntry?.reject(
-          turnErr instanceof Error ? turnErr : new Error(String(turnErr)),
-        );
-        throw turnErr;
-      } finally {
-        clearTimeout(followUpStallHandle);
+        // Guard against close requested between dequeue and here
+        if (closeRequested) {
+          promptQueue.close();
+          break;
+        }
+
+        // AC: @multi-turn-session-lifecycle ac-4 — deliver follow-up prompt
+        currentPromptText = nextPrompt;
       }
+    } finally {
+      // Clear the session timeout handle regardless of how we exit
+      clearTimeout(timeoutHandle);
+      clearTimeout(stallHandle);
     }
-
-    // Clear the overall invocation timeout now that the idle loop is done
-    clearTimeout(timeoutHandle);
 
     // ─── Log agent.completed event ────────────────────────────────────────
     // AC: @agent-invocation-lifecycle ac-4
@@ -805,20 +869,13 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
         outcome: "success",
         stop_reason: lastStopReason,
         duration_ms: durationMs,
+        turn_count: turnCount,
       },
     });
 
     // ─── Close session as completed ───────────────────────────────────────
-    sessionState = "closed";
-    // Reject any remaining queued prompts — the session is ending
-    const closeError = new Error(
-      `Session '${sessionId}' closed: invocation completed normally`,
-    );
-    for (const entry of promptQueue.splice(0)) {
-      entry.reject(closeError);
-    }
-    sessionRegistry?.unregister(sessionId);
-    const finalSession = await closeSession(sessionsDir, sessionId, "completed", "Invocation completed normally");
+    const sessionCloseReason = closeReason ?? "Invocation completed normally";
+    const finalSession = await closeSession(sessionsDir, sessionId, "completed", sessionCloseReason);
 
     return {
       session: finalSession ?? session,
@@ -829,6 +886,21 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     };
   } catch (err) {
     const durationMs = Date.now() - startTime;
+
+    // AC: @multi-turn-session-lifecycle ac-15, ac-16
+    // On any error, close the prompt queue so waiters fail
+    const discardedPrompts = promptQueue.close();
+    if (discardedPrompts.length > 0) {
+      // AC: @multi-turn-session-lifecycle ac-16 — log discarded prompts
+      await appendSessionEvent({
+        type: "session.prompts_discarded",
+        data: {
+          session_id: sessionId,
+          discarded_count: discardedPrompts.length,
+          reason: err instanceof Error ? err.message : String(err),
+        },
+      });
+    }
 
     if (err instanceof InvocationTimeoutError) {
       // ─── Handle timeout ──────────────────────────────────────────────
@@ -847,6 +919,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
           task_id: taskRef,
           timeout_minutes: timeoutMinutes,
           duration_ms: durationMs,
+          turn_count: turnCount,
         },
       });
 
@@ -871,6 +944,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
         outcome: "timed_out",
         error: err.message,
         durationMs,
+        turnCount,
       };
     }
 
@@ -892,6 +966,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
         outcome: "failed",
         error: err.message,
         durationMs,
+        turnCount,
       };
     }
 
@@ -931,11 +1006,13 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
         outcome: "stalled",
         error: err.message,
         durationMs,
+        turnCount,
       };
     }
 
     // ─── Handle failure ──────────────────────────────────────────────────
     // AC: @agent-invocation-lifecycle ac-5
+    // AC: @multi-turn-session-lifecycle ac-15
     const errorMessage = err instanceof Error ? err.message : String(err);
 
     await appendSessionEvent({
@@ -946,6 +1023,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
         error: errorMessage,
         reason: errorMessage,
         duration_ms: durationMs,
+        turn_count: turnCount,
       },
     });
 
@@ -988,24 +1066,24 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       outcome: "failed",
       error: errorMessage,
       durationMs,
+      turnCount,
     };
   } finally {
     // ─── Cleanup ──────────────────────────────────────────────────────────
     // AC: @agent-invocation-lifecycle ac-8
 
-    // Clear timeout handle on any exit path
-    clearTimeout(timeoutHandle);
-
-    // AC: @active-session-registry ac-2 — unregister on any exit path
+    // Mark session as closed so handle rejects further prompts
     sessionState = "closed";
-    // Reject any remaining queued prompts on any exit path
-    const finalCloseError = new Error(
-      `Session '${sessionId}' closed unexpectedly`,
-    );
-    for (const entry of promptQueue.splice(0)) {
-      entry.reject(finalCloseError);
+
+    // Close prompt queue to release any waiters
+    // AC: @multi-turn-session-lifecycle ac-16
+    promptQueue.close();
+
+    // Unregister from session registry
+    // AC: @active-session-registry ac-2
+    if (sessionRegistry) {
+      sessionRegistry.unregister(sessionId);
     }
-    sessionRegistry?.unregister(sessionId);
 
     // End ACP session
     if (state.acpSessionId && state.agent) {
@@ -1063,5 +1141,16 @@ export class DispatchMutationError extends Error {
   constructor(message: string) {
     super(message);
     this.name = "DispatchMutationError";
+  }
+}
+
+/**
+ * Thrown when the prompt queue is full and a new prompt is submitted.
+ * AC: @multi-turn-session-lifecycle ac-17
+ */
+export class PromptQueueFullError extends Error {
+  constructor(public readonly maxDepth: number) {
+    super(`Prompt queue is full (maximum depth: ${maxDepth})`);
+    this.name = "PromptQueueFullError";
   }
 }

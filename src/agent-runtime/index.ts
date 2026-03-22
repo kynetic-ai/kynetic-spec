@@ -9,8 +9,11 @@
 export {
   runInvocation,
   InvocationTimeoutError,
+  PromptQueue,
+  PromptQueueFullError,
   type InvocationOptions,
   type InvocationResult,
+  type SessionIdleContext,
 } from "./invocation.js";
 
 export {
