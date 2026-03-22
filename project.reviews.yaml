@@ -46736,6 +46736,18 @@ reviews:
         runner: kspec
         created_at: 2026-03-22T16:09:01.292Z
         completed_at: 2026-03-22T16:09:01.292Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: All 10 in-scope ACs (ac-1,2,3,4,8,9,10,15,16,17) have test annotations. All 6
+          trait-error-guidance ACs annotated as N/A with valid reasons. Additional coverage for
+          ac-11,13,14 as bonus.
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-22T16:09:04.863Z
+        completed_at: 2026-03-22T16:09:04.863Z
     events:
       - _ulid: 01KMB4SCR2966HWV304DR67EKV
         actor: "@claude"
@@ -46771,6 +46783,13 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-03-22T16:09:01.677Z
+      - _ulid: 01KMB4X8H1QQ0QTC9WN63ZPNBF
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-22T16:09:05.313Z
     examined_commit: 535d7a68040fb623d7513769f07fa7a1960450bd
     external_links: []
     lifecycle_state: open
@@ -46803,5 +46822,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-22T16:06:58.562Z
-    updated_at: 2026-03-22T16:09:01.292Z
+    updated_at: 2026-03-22T16:09:04.863Z
     notes: []
