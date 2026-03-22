@@ -46449,6 +46449,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-22T12:31:34.566Z
+      - _ulid: 01KMARM7WGF4G1CFE94BT1FVSR
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMARM7J854CV9BT2EPPK7ZP8
+        timestamp: 2026-03-22T12:34:26.833Z
     examined_commit: 61688e7c52b0632ebd71c8ceebcb6030cb1b65c6
     external_links: []
     lifecycle_state: open
@@ -46458,8 +46465,30 @@ reviews:
       content_hash: ""
       ref: "@01KMA74ECH1ZW03KM3403N023Z"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMARM7J854CV9BT2EPPK7ZP8
+        anchor:
+          type: code
+          commit: 61688e7c52b0632ebd71c8ceebcb6030cb1b65c6
+          line_end: 703
+          line_start: 676
+          path: src/agent-runtime/invocation.ts
+          side: head
+        entries:
+          - _ulid: 01KMARM7J8GBGV7ZE0V2SB76P1
+            author: Test User
+            body: The production idle-hook path still races prompt delivery. At
+              [src/agent-runtime/invocation.ts](/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-prompt-action-01kma74e-review/src/agent-runtime/invocation.ts#L676)
+              you set  and emit  before installing  at line 702.  only queues subscribers
+              asynchronously and returns immediately, so a  hook can call  while the handle is
+              already  but still has no resolver. That path falls into the  rejection at lines
+              523-527 instead of queueing the follow-up. In practice this breaks the core  flow on
+              the real dispatch path, so ACs 1 and 3 are not reliably satisfied. The resolver needs
+              to exist before the idle event is emitted, or the idle-state send path needs to queue
+              even when the wake callback has not been installed yet.
+            created_at: 2026-03-22T12:34:26.504Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-22T12:31:03.041Z
-    updated_at: 2026-03-22T12:31:33.984Z
+    updated_at: 2026-03-22T12:34:26.504Z
     notes: []
