@@ -45911,6 +45911,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-22T11:45:31.068Z
+      - _ulid: 01KMAPA7FHCY8MCTK73HZSXVC8
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMAPA6VWZ03C50TKTM8JPGNJ
+        timestamp: 2026-03-22T11:54:01.585Z
     examined_commit: 1d2fe7b6543ae344cf43e25828a8fa0e3b6922af
     external_links: []
     lifecycle_state: open
@@ -45920,8 +45927,28 @@ reviews:
       content_hash: ""
       ref: "@01KMA74DY7WGG4KA6P07BTMJFD"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMAPA6VWZ03C50TKTM8JPGNJ
+        anchor:
+          type: code
+          commit: 1d2fe7b6543ae344cf43e25828a8fa0e3b6922af
+          line_end: 847
+          line_start: 835
+          path: src/agent-runtime/invocation.ts
+          side: head
+        entries:
+          - _ulid: 01KMAPA6VW6RMA88QD55YHDMMZ
+            author: Test User
+            body: This idle-close branch keys off  instead of whether follow-up delivery is actually enabled. In
+              dispatch,  now always passes a registry (), so every ordinary single-turn invocation
+              takes the 100ms grace-period path even when no  hooks or prompt producers exist. That
+              breaks the task's backward-compatibility requirement ('no observable behavior change
+              from single-turn dispatch') and is consistent with the dispatch regressions in  where
+              post-invocation re-evaluation never reaches the second spawn under the current timing
+              assumptions.
+            created_at: 2026-03-22T11:54:00.956Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-22T11:45:14.778Z
-    updated_at: 2026-03-22T11:45:30.701Z
+    updated_at: 2026-03-22T11:54:00.956Z
     notes: []
