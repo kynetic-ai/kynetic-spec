@@ -19627,22 +19627,43 @@ workspaces:
     base_branch_point: 2da4a1f5163cdbd9acbb5a6acef049732b6b75c8
     bootstrap:
       status: succeeded
-      canonicalBranchHead: 2da4a1f5163cdbd9acbb5a6acef049732b6b75c8
+      canonicalBranchHead: 7156ce71b80632a7f36a0a148efe41ceb78f57b6
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
       failureMessage: null
       invalidationReasons:
         - workspace-dependencies-missing
-      lastRole: worker
-      lastRunAt: 2026-03-22T21:37:37.445Z
+      lastRole: reviewer
+      lastRunAt: 2026-03-22T21:45:15.887Z
       roleStates:
         reviewer:
-          status: not_run
-          canonicalBranchHead: null
-          configHash: null
+          status: succeeded
+          canonicalBranchHead: 7156ce71b80632a7f36a0a148efe41ceb78f57b6
+          configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
           failureMessage: null
-          invalidationReasons: []
-          lastRunAt: null
-          steps: []
+          invalidationReasons:
+            - workspace-dependencies-missing
+          lastRunAt: 2026-03-22T21:45:15.887Z
+          steps:
+            - status: succeeded
+              allowTrackedChanges: false
+              idempotent: true
+              name: install-workspace-dependencies
+              output: |-
+                added 283 packages, and audited 288 packages in 3s
+
+                66 packages are looking for funding
+                  run `npm fund` for details
+
+                9 vulnerabilities (1 low, 5 moderate, 3 high)
+
+                To address all issues, run:
+                  npm audit fix
+
+                Run `npm audit` for details.
+              reviewerRerunAllowed: true
+              role: reviewer
+              run: npm ci
+              source: dispatch
         worker:
           status: succeeded
           canonicalBranchHead: 2da4a1f5163cdbd9acbb5a6acef049732b6b75c8
@@ -19690,7 +19711,7 @@ workspaces:
 
             Run `npm audit` for details.
           reviewerRerunAllowed: true
-          role: worker
+          role: reviewer
           run: npm ci
           source: dispatch
     branch_provenance:
@@ -19707,12 +19728,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-22T21:44:44.287Z
+      updated_at: 2026-03-22T21:45:08.392Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-22T21:44:44.287Z
+      updated_at: 2026-03-22T21:45:08.392Z
     integration:
       status: pending
       detail: null
@@ -19720,24 +19741,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 2da4a1f5163cdbd9acbb5a6acef049732b6b75c8
-      updated_at: 2026-03-22T21:44:44.287Z
-    lifecycle_state: ready
+      updated_at: 2026-03-22T21:45:08.392Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KMBPYA8WRP5WFQV53QQK3GW4"
     task_slug: task-remove-duplicate-handle-registration
     timestamps:
       closed_at: null
       last_active_at: 2026-03-22T21:37:39.519Z
-      last_reconciled_at: 2026-03-22T21:44:44.287Z
+      last_reconciled_at: 2026-03-22T21:45:08.392Z
       created_at: 2026-03-22T21:37:31.931Z
-      updated_at: 2026-03-22T21:44:44.287Z
+      updated_at: 2026-03-22T21:45:15.887Z
     workspace_id: dispatch-workspace-01KMBPYA8WRP5WFQV53QQK3GW4
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 7156ce71b80632a7f36a0a148efe41ceb78f57b6
+        last_seen_at: 2026-03-22T21:45:08.392Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-remove-duplicate-handle-registration-01kmbpya-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-remove-duplicate-handle-registration/01kmbpya
-        head: 2da4a1f5163cdbd9acbb5a6acef049732b6b75c8
-        last_seen_at: 2026-03-22T21:37:31.931Z
+        head: 7156ce71b80632a7f36a0a148efe41ceb78f57b6
+        last_seen_at: 2026-03-22T21:45:08.392Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-remove-duplicate-handle-registration-01kmbpya
