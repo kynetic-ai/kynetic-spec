@@ -45174,7 +45174,19 @@ reviews:
     slugs: []
     title: Review task-multi-turn-invocation (cycle 4)
     author: Test User
-    checks: []
+    checks:
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation had no errors but exited 6 because of repo-wide pre-existing warnings (orphaned
+          skill directory, orphaned specs, uncovered ACs, invalid AC annotations). No
+          changed-file-specific validation error was reported.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-22T10:58:19.973Z
+        completed_at: 2026-03-22T10:58:19.973Z
     events:
       - _ulid: 01KMAJPA6KHAA6CY60Q9ZDHK0V
         actor: Test User
@@ -45210,6 +45222,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMAK3GZ870XMHZACZ0AP3BYJ
         timestamp: 2026-03-22T10:57:56.510Z
+      - _ulid: 01KMAK48G761BP87G9P6YW62D4
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec validate
+        timestamp: 2026-03-22T10:58:20.295Z
     examined_commit: d5bf3a6fbc1d57c239e4db860559df2e723d145c
     external_links: []
     lifecycle_state: open
@@ -45277,5 +45296,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-22T10:50:43.284Z
-    updated_at: 2026-03-22T10:57:56.200Z
+    updated_at: 2026-03-22T10:58:19.973Z
     notes: []
