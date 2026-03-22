@@ -21610,9 +21610,8 @@
   type: task
   spec_ref: "@multi-turn-session-lifecycle"
   plan_ref: "@plan-multi-turn-session-lifecycle"
-  status: blocked
-  blocked_by:
-    - "Agent pr-reviewer failed 3 consecutive times: Internal error"
+  status: pending_review
+  blocked_by: []
   depends_on:
     - "@task-session-registry"
   priority: 1

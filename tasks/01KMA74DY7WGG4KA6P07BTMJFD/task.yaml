@@ -42,9 +42,8 @@ description: |
 spec_ref: "@multi-turn-session-lifecycle"
 plan_ref: "@plan-multi-turn-session-lifecycle"
 origin: derived
-status: blocked
-blocked_by:
-  - "Agent pr-reviewer failed 3 consecutive times: Internal error"
+status: pending_review
+blocked_by: []
 depends_on:
   - "@task-session-registry"
 context: []
@@ -63,7 +62,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
   upstream_ref: refs/heads/dev
-session_id: 01KMARD2VP6F29760W25JX7XWS
+session_id: null
 history:
   - author: "@claude"
     changes:
@@ -525,7 +524,24 @@ history:
         previous: null
     command: task-block
     timestamp: 2026-03-22T12:45:09.380Z
-prior_status: pending_review
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: blocked
+      blocked_by:
+        new: []
+        previous:
+          - "Agent pr-reviewer failed 3 consecutive times: Internal error"
+      session_id:
+        new: null
+        previous: 01KMARD2VP6F29760W25JX7XWS
+      prior_status:
+        new: null
+        previous: pending_review
+    command: task-unblock
+    timestamp: 2026-03-22T15:50:05.998Z
+prior_status: null
 created_at: 2026-03-22T07:28:42.951Z
 started_at: 2026-03-22T12:41:48.125Z
 submitted_at: 2026-03-22T12:41:54.234Z
