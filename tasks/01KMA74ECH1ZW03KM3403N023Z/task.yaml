@@ -39,7 +39,7 @@ description: |
 spec_ref: "@session-prompt-action"
 plan_ref: "@plan-multi-turn-session-lifecycle"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-session-registry"
@@ -60,7 +60,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
   upstream_ref: refs/heads/dev
-session_id: null
+session_id: 01KMAM5ACDM4NFDJCQTST71TVB
 history:
   - author: "@claude"
     changes:
@@ -290,8 +290,21 @@ history:
         previous: 01KMAJMTXZVH1HEMKN0BRVEVY2
     command: review-verdict-needs-work
     timestamp: 2026-03-22T11:14:22.970Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KMAM5ACDM4NFDJCQTST71TVB
+        previous: null
+      started_at:
+        new: 2026-03-22T11:31:53.964Z
+        previous: 2026-03-22T11:06:20.708Z
+    command: task-start
+    timestamp: 2026-03-22T11:31:53.965Z
 created_at: 2026-03-22T07:28:43.409Z
-started_at: 2026-03-22T11:06:20.708Z
+started_at: 2026-03-22T11:31:53.964Z
 submitted_at: 2026-03-22T11:06:27.144Z
 todos: []
 automation: eligible
