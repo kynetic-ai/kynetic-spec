@@ -43637,3 +43637,29 @@ reviews:
     created_at: 2026-03-22T02:00:01.441Z
     updated_at: 2026-03-22T02:01:04.681Z
     notes: []
+  - _ulid: 01KMA7W0W839C4ZW7SD6TTP7WT
+    slugs: []
+    title: Review active session registry
+    author: Test User
+    checks: []
+    events:
+      - _ulid: 01KMA7W0W8GECTZTB06TDVV6CY
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-22T07:41:36.008Z
+    examined_commit: 5447244e888087b2fa8ee12b5bcc163d321b474a
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMA74DPD6ESYCQAT6YY8DXJJ"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-22T07:41:36.008Z
+    updated_at: null
+    notes: []

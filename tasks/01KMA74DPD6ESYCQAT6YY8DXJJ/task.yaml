@@ -40,6 +40,7 @@ tags:
   - sessions
   - foundation
 vcs_refs: []
+review_ref: "@01KMA7W0W839C4ZW7SD6TTP7WT"
 submission_linkage:
   review_url: null
   branch: dev
@@ -90,6 +91,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-03-22T07:40:07.752Z
+  - author: Test User
+    changes:
+      review_ref:
+        new: "@01KMA7W0W839C4ZW7SD6TTP7WT"
+        previous: null
+    command: review-link
+    timestamp: 2026-03-22T07:41:37.381Z
 created_at: 2026-03-22T07:28:42.701Z
 started_at: 2026-03-22T07:32:30.888Z
 submitted_at: 2026-03-22T07:40:07.751Z
