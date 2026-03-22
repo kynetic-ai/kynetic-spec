@@ -625,13 +625,6 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
   });
 
   try {
-    // Register in the session registry AFTER session creation succeeds.
-    // This is inside the try block so the finally block's unregister()
-    // always runs, preventing dead handles if spawn or ACP init throws.
-    // AC: @active-session-registry ac-1
-    if (sessionRegistry) {
-      sessionRegistry.register(sessionId, sessionHandle);
-    }
     // ─── Inject KSPEC_SESSION_ID ──────────────────────────────────────────
     // AC: @agent-invocation-lifecycle ac-2
     const injectionResult = await injectEnvForAdapter(adapterId, sessionId);
