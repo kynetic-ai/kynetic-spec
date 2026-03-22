@@ -26095,16 +26095,22 @@ plans:
         acceptance_criteria:
           - id: ac-1
             given: |
-              An agent invocation completes its first prompt (stopReason:
-              end_turn)
+              An agent's turn completes (stopReason: end_turn)
             when: |
               The invocation runner processes the prompt result
             then: |
-              The session transitions to idle state and a session.idle event
-              is emitted on the event bus with the session's full context
-              (session_id, agent_id, task_ref, turn_count, work_summary);
-              the ACP session remains open and the agent process stays alive
+              The session transitions to idle state; the ACP session
+              remains open and the agent process stays alive
           - id: ac-2
+            given: |
+              A session transitions to idle state after a turn completes
+            when: |
+              The state transition is processed
+            then: |
+              A session.idle event is emitted on the event bus with the
+              session's context (session_id, agent_id, task_ref,
+              turn_count, work_summary)
+          - id: ac-3
             given: |
               A session is in idle state
             when: |
@@ -26114,18 +26120,17 @@ plans:
               The session transitions to prompting state, the prompt is sent
               via the existing ACP client.prompt(), and the session returns
               to idle when the agent's turn completes; turn_count increments
-          - id: ac-3
+          - id: ac-4
             given: |
-              A session emits session.idle and no session_prompt actions
-              target it within a configurable grace period
+              A session emits session.idle and no prompt is queued within
+              a configurable grace period
             when: |
               The grace period expires
             then: |
-              The session is closed with the standard teardown sequence
-              (closeSession, endSession, process termination); this
-              preserves backward compatibility — existing single-turn
+              The session is closed with the standard teardown sequence;
+              this preserves backward compatibility — existing single-turn
               dispatch works unchanged
-          - id: ac-4
+          - id: ac-5
             given: |
               A session is in idle state and the agent definition specifies
               session_mode: interactive
@@ -26135,7 +26140,7 @@ plans:
               The session remains open indefinitely (no auto-close); the
               session closes only on explicit close request, idle timeout
               (if configured), or daemon shutdown
-          - id: ac-5
+          - id: ac-6
             given: |
               A session has been in idle state longer than the configured
               idle_timeout (distinct from the overall invocation timeout)
@@ -26144,7 +26149,7 @@ plans:
             then: |
               A session.idle_timeout event is emitted and the session is
               closed; this applies to both dispatch and interactive modes
-          - id: ac-6
+          - id: ac-7
             given: |
               A session is in prompting state (agent is actively working)
             when: |
@@ -26153,7 +26158,7 @@ plans:
               The prompt is queued and delivered when the current turn
               completes and the session returns to idle; prompts are
               delivered in submission order
-          - id: ac-7
+          - id: ac-8
             given: |
               Multiple sources submit prompts for an idle session
               simultaneously (e.g., two hooks match session.idle)
@@ -26163,7 +26168,7 @@ plans:
               One prompt transitions the session to prompting; the
               remaining prompts are queued and delivered in order after
               each subsequent idle transition
-          - id: ac-8
+          - id: ac-9
             given: |
               A session receives a close request while in prompting state
             when: |
@@ -26171,7 +26176,7 @@ plans:
             then: |
               Queued prompts are discarded and the session proceeds to
               teardown; the close reason reflects the explicit close
-          - id: ac-9
+          - id: ac-10
             given: |
               An agent invocation is spawned by the dispatch engine with
               no idle-targeting hooks configured and no interactive mode
@@ -26180,7 +26185,7 @@ plans:
             then: |
               The session auto-closes after the grace period with no
               observable behavior change from the current single-turn model
-          - id: ac-10
+          - id: ac-11
             given: |
               A session completes multiple turns via follow-up prompts
             when: |
@@ -26188,21 +26193,35 @@ plans:
             then: |
               All turns are logged to the same session event log (JSONL);
               the session metadata reflects total turn_count and cumulative
-              duration; the invocation.completed event payload includes
-              turn_count
-          - id: ac-11
+              duration
+          - id: ac-12
+            given: |
+              A multi-turn session completes and the session is closed
+            when: |
+              The invocation.completed event is emitted
+            then: |
+              The event fires exactly once per session (at close, not per
+              turn) and includes turn_count in the payload
+          - id: ac-13
             given: |
               An agent process crashes or an ACP error occurs during a
               turn in a multi-turn session
             when: |
               The error is detected
             then: |
-              The session closes immediately; queued prompts are discarded;
-              any session_prompt action runs waiting on queued prompts
-              receive action.failed events; the session is closed with
-              status failed and the standard failure handling applies
-              (task note, retry logic per @agent-invocation-lifecycle)
-          - id: ac-12
+              The session closes immediately with status failed and the
+              standard failure handling applies (task note, retry logic
+              per @agent-invocation-lifecycle)
+          - id: ac-14
+            given: |
+              An agent process crashes during a multi-turn session and
+              prompts are queued
+            when: |
+              The session closes due to the error
+            then: |
+              Queued prompts are discarded; any session_prompt action runs
+              waiting on those prompts receive action.failed events
+          - id: ac-15
             given: |
               The prompt queue has accumulated more entries than a
               configurable maximum depth
@@ -26472,14 +26491,13 @@ plans:
           interactive, the session stays open after each turn, waiting for
           user input via API or CLI.
 
-          Interactive sessions use the same session.idle event as automated
-          multi-turn sessions. The difference is behavioral: interactive
-          sessions don't auto-close on idle, and they expose a prompt
-          submission surface for human users.
-
-          This enables direct human-agent chat within the kspec framework,
-          using the same ACP protocol, session logging, and event system
-          as automated dispatch.
+          Interactive sessions use the same multi-turn lifecycle state
+          machine — idle/prompting states, prompt queue, session.idle
+          events, and close semantics are all inherited from
+          @multi-turn-session-lifecycle. This spec defines only the
+          interactive-specific behaviors: the session_mode flag that
+          disables auto-close, and the user-facing prompt submission
+          surfaces (API, CLI).
         traits:
           - "@trait-error-guidance"
         acceptance_criteria:
@@ -26490,8 +26508,9 @@ plans:
               An invocation is started for this agent (via dispatch, CLI,
               or API)
             then: |
-              The session remains open after each turn; the session.idle
-              event fires normally; auto-close grace period does not apply
+              The session uses the multi-turn lifecycle with auto-close
+              grace period disabled; the session remains open until
+              explicit close, idle_timeout, or daemon shutdown
           - id: ac-2
             given: |
               An interactive session is in idle state
@@ -26503,15 +26522,6 @@ plans:
               prior turns
           - id: ac-3
             given: |
-              An interactive session is in idle state
-            when: |
-              Hooks on session.idle also match (e.g., a reflection hook)
-            then: |
-              Both the user prompt and hook prompts are handled via the
-              standard prompt queue; prompts are delivered in submission
-              order
-          - id: ac-4
-            given: |
               A user sends an explicit close command to an interactive
               session
             when: |
@@ -26519,16 +26529,7 @@ plans:
             then: |
               The session closes with the standard teardown sequence;
               invocation.completed and session.ended events fire normally
-          - id: ac-5
-            given: |
-              An interactive session has an idle_timeout configured
-            when: |
-              No input arrives within the timeout period
-            then: |
-              The session closes with session.idle_timeout, same as any
-              other session; idle_timeout provides a safety net for
-              abandoned interactive sessions
-          - id: ac-6
+          - id: ac-4
             given: |
               An interactive session is running
             when: |
@@ -26710,7 +26711,7 @@ plans:
           the first turn and teardown proceeds — identical to current
           behavior.
 
-          Covers: @multi-turn-session-lifecycle ac-1 through ac-10.
+          Covers: @multi-turn-session-lifecycle ac-1 through ac-15.
 
       - title: Add session.idle event to taxonomy and payloads
         slug: task-session-idle-event
@@ -26808,7 +26809,7 @@ plans:
           mode, there's no grace period auto-close, only idle_timeout.
           The agent schema extension is in meta.ts.
 
-          Covers: @multi-turn-session-lifecycle ac-3, ac-4, ac-5, ac-9.
+          Covers: @multi-turn-session-lifecycle ac-4, ac-5, ac-6, ac-10.
 
       - title: Integrate multi-turn lifecycle with dispatch engine
         slug: task-dispatch-multi-turn-integration
@@ -26845,7 +26846,7 @@ plans:
           exits and teardown completes). The existing invocation.completed
           event payload is extended with turn_count.
 
-          Covers: @multi-turn-session-lifecycle ac-1, ac-2, ac-10.
+          Covers: @multi-turn-session-lifecycle ac-1, ac-2, ac-3, ac-11, ac-12.
 
       - title: Implement interactive session API
         slug: task-interactive-session-api
@@ -26919,17 +26920,17 @@ plans:
           updating them, the spec system has contradictory definitions of
           session completion behavior.
 
-          What: Update @agent-invocation-lifecycle ac-4 to reflect that
-          end_turn triggers idle, not completion. Update
-          @dispatch-event-taxonomy description to include session.idle in
-          the enumerated event list. Update @dispatch-action-model
-          description to list session_prompt as a fifth action type.
-          Review @agent-invocation-lifecycle ac-8 (cleanup) to ensure it
-          describes cleanup at session close, not per-turn.
+          What: Apply the four updates documented in the "Superseded
+          acceptance criteria" table in the implementation notes:
+          @agent-invocation-lifecycle ac-4 (end_turn → idle, not close),
+          @agent-invocation-lifecycle ac-8 (cleanup at session close),
+          @dispatch-event-taxonomy description (add session.idle),
+          @dispatch-action-model description (add session_prompt).
 
           How: Use kspec item ac set to update the specific ACs. Use kspec
           item set --description for description updates. Each change is
           a targeted update to an existing spec item, not a new spec.
+          Verify each update with kspec item get after applying.
 
           Covers: supersession notes in @multi-turn-session-lifecycle
           description.
@@ -27012,22 +27013,32 @@ plans:
       observation point, not a replacement.
 
 
-      ### Existing spec updates required
+      ### Superseded acceptance criteria
 
 
-      The following existing specs need targeted updates (handled by task-update-existing-specs):
+      Explicit per-AC tracking of what changes in existing specs (handled by
+      task-update-existing-specs):
 
 
-      - **@agent-invocation-lifecycle ac-4**: Currently says completion = end_turn. Must be updated
-      to say completion = session close (which may follow many end_turn transitions).
+      | Existing AC | Current wording (summary) | New wording (summary) | Reason |
 
-      - **@agent-invocation-lifecycle ac-8**: Cleanup description should clarify it runs at session
-      close, not after each turn.
+      |---|---|---|---|
 
-      - **@dispatch-event-taxonomy description**: Must add session.idle to the enumerated event
-      list.
+      | @agent-invocation-lifecycle ac-4 | "When ACP session ends with stop reason end_turn →
+      session closed with status completed" | "When ACP agent returns end_turn → session transitions
+      to idle; session is closed when the turn loop exits (grace period, explicit close, or
+      timeout)" | end_turn no longer means completion; it means turn boundary |
 
-      - **@dispatch-action-model description**: Must add session_prompt as a fifth action type.
+      | @agent-invocation-lifecycle ac-8 | "When invocation completes → cleanup runs (env restore,
+      process termination)" | "When session closes (after all turns complete) → cleanup runs" |
+      Cleanup is per-session, not per-turn |
+
+      | @dispatch-event-taxonomy description | Lists session events as: session.ended,
+      session.idle_timeout, session.cancelled | Add session.idle to the enumeration | New event type
+      |
+
+      | @dispatch-action-model description | Lists 4 action types: command, kspec, agent, notify |
+      Add session_prompt as 5th type | New action type |
 
 
       ### session.idle_timeout already exists
@@ -27050,3 +27061,9 @@ plans:
         content: Fix trait @ prefixes per codex review
         author: "@claude"
         created_at: 2026-03-22T05:42:31.734Z
+      - _ulid: 01KMA186J74PDDYV4GGB1Z4F05
+        content: "Address codex review: split compound ACs, add terminal-event timing AC, broaden auto-close
+          wording, tighten interactive/lifecycle boundaries, add queue-depth task coverage, add
+          per-AC supersession table"
+        author: "@claude"
+        created_at: 2026-03-22T05:45:55.015Z
