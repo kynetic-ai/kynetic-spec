@@ -1844,3 +1844,16 @@ inbox:
       - bug
     added_by: "@claude"
     created_at: 2026-03-22T04:14:02.945Z
+  - _ulid: 01KMA704411QJ8TJDQEHRKF7AB
+    text: "Automation CRUD UI — hooks and schedules are read-only in the web UI. Need full editing
+      support: hook editor with per-action-type forms (command, kspec, agent, notify,
+      session_prompt), schedule editor with cron/overlap/action config, inline enable/disable, and
+      delete. Blocked on PATCH/DELETE API endpoints for hooks and schedules. Spun out of
+      @plan-multi-turn-session-lifecycle where session_prompt action form was identified as
+      dependent on this."
+    tags:
+      - ui
+      - automation
+      - hooks
+    added_by: "@claude"
+    created_at: 2026-03-22T07:26:21.825Z
