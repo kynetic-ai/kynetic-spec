@@ -44868,3 +44868,29 @@ reviews:
     created_at: 2026-03-22T10:16:21.330Z
     updated_at: 2026-03-22T10:20:43.260Z
     notes: []
+  - _ulid: 01KMAHKJH9P6F0TM3H9XNAWK18
+    slugs: []
+    title: Review session_prompt action type
+    author: Test User
+    checks: []
+    events:
+      - _ulid: 01KMAHKJH8CJQDEMXYNW896TPJ
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-22T10:31:44.937Z
+    examined_commit: 5c3160a75d54d75d231b33b15d14ecd2b38d1083
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMA74ECH1ZW03KM3403N023Z"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-22T10:31:44.937Z
+    updated_at: null
+    notes: []
