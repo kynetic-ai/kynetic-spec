@@ -45360,3 +45360,36 @@ reviews:
     created_at: 2026-03-22T10:50:43.284Z
     updated_at: 2026-03-22T10:58:31.189Z
     notes: []
+  - _ulid: 01KMAKP6JS0BKN3MSK84QDAD9H
+    slugs: []
+    title: Review task-session-prompt-action (cycle 4)
+    author: Test User
+    checks: []
+    events:
+      - _ulid: 01KMAKP6JSQDRXXCK2J4V91DKR
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-22T11:08:08.153Z
+      - _ulid: 01KMAKWW1KRWNE585ZPE9WVV7B
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-03-22T11:11:46.739Z
+    examined_commit: 0a2c33c2e406d71723e924ac121094d68ee3ce5f
+    external_links: []
+    lifecycle_state: open
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMA74ECH1ZW03KM3403N023Z"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-22T11:08:08.153Z
+    updated_at: 2026-03-22T11:11:46.404Z
+    notes: []
