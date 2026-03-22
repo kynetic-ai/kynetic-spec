@@ -45432,6 +45432,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-22T11:12:43.160Z
+      - _ulid: 01KMAKYX2JDK4FQ0V20D2CY4B9
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMAKYWFQ5WBB36JB739W3WST
+        timestamp: 2026-03-22T11:12:53.330Z
     examined_commit: 0a2c33c2e406d71723e924ac121094d68ee3ce5f
     external_links: []
     lifecycle_state: open
@@ -45441,8 +45448,26 @@ reviews:
       content_hash: ""
       ref: "@01KMA74ECH1ZW03KM3403N023Z"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMAKYWFQ5WBB36JB739W3WST
+        anchor:
+          type: code
+          commit: 0a2c33c2e406d71723e924ac121094d68ee3ce5f
+          line_end: 464
+          line_start: 457
+          path: src/agent-runtime/invocation.ts
+          side: head
+        entries:
+          - _ulid: 01KMAKYWFQAZBQ9MK4XP1JA5RF
+            author: Test User
+            body: "The new action is still non-functional on the real runtime path: the only production
+              SessionHandle registered here always rejects follow-up prompts with a single-turn
+              error, so executeSessionPrompt can only succeed against mocked handles in tests. That
+              violates the task/spec contract that an idle or prompting live session accepts a
+              delivered or queued prompt (ac-1/ac-5)."
+            created_at: 2026-03-22T11:12:52.728Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-22T11:08:08.153Z
-    updated_at: 2026-03-22T11:12:42.559Z
+    updated_at: 2026-03-22T11:12:52.728Z
     notes: []
