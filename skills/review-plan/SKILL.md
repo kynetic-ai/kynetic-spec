@@ -161,15 +161,18 @@ kspec review check @review-ref \
 
 ### Structured Anchors
 
-Anchors let threads point at specific plan areas so the author knows exactly where to look:
+Anchors let threads point at specific plan areas so the author knows exactly where to look. All anchor fields are optional — use whichever combination targets the finding precisely.
 
 | Anchor | Use for |
 |--------|---------|
-| `--section acceptance_criteria --anchor-ref @spec` | AC quality issues on a specific spec |
-| `--section tasks --anchor-ref @task` | Task executability or coverage issues |
-| `--section specs --anchor-ref @spec` | Spec description, boundary, or hierarchy issues |
-| `--section specs --anchor-ref @spec --field description` | Description-specific language issues |
-| `--section dependencies` | Dependency ordering or priority alignment issues |
+| `--section acceptance_criteria --anchor-ref @spec` | AC quality issues on a spec generally |
+| `--section acceptance_criteria --field ac-3 --anchor-ref @spec` | Issue with a specific AC |
+| `--section description --anchor-ref @spec` | Spec description language or clarity |
+| `--section traits --anchor-ref @spec` | Trait selection or usage issues |
+| `--anchor-ref @task` | Task executability or coverage issues |
+| `--section description --anchor-ref @task` | Task description quality (what/why/how) |
+| `--section dependencies` | Dependency ordering or priority alignment |
+| `--anchor-ref @spec` | General issue with a spec (hierarchy, boundary, overlap) |
 
 ### Verdict
 
