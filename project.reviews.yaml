@@ -44365,6 +44365,13 @@ reviews:
           from: closed
           to: open
         timestamp: 2026-03-22T10:02:35.751Z
+      - _ulid: 01KMAFY7E33Z1655FDKYTDEV1W
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMAFY73XGY8115D63GGP4CWN
+        timestamp: 2026-03-22T10:02:36.867Z
     examined_commit: f7bd46ee2c1a4bf8558ff6e67c6faeca544c2626
     external_links: []
     lifecycle_state: open
@@ -44441,6 +44448,26 @@ reviews:
               intended rejection behavior."
             created_at: 2026-03-22T10:02:34.144Z
         kind: blocker
+      - _ulid: 01KMAFY73XGY8115D63GGP4CWN
+        anchor:
+          type: code
+          commit: f7bd46ee2c1a4bf8558ff6e67c6faeca544c2626
+          line_end: 560
+          line_start: 552
+          path: src/agent-runtime/invocation.ts
+          side: head
+        entries:
+          - _ulid: 01KMAFY73X8E2QCY0YPTYJ26T7
+            author: Test User
+            body: " is documented and typed as a promise-returning API, but this implementation can throw
+              synchronously when  hits a closed/full queue. That turns an AC-17 rejection into a
+              fatal exception path for ordinary  callers: an uncaught overflow/closed-queue send now
+              fails the whole invocation instead of just rejecting the extra prompt. The new test at
+              tests/multi-turn-invocation.test.ts:815-818 only passes because it catches a
+              synchronous throw, which confirms the contract mismatch rather than the intended
+              rejection behavior."
+            created_at: 2026-03-22T10:02:36.541Z
+        kind: blocker
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -44450,5 +44477,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-22T10:01:16.410Z
     created_at: 2026-03-22T09:58:29.291Z
-    updated_at: 2026-03-22T10:02:35.371Z
+    updated_at: 2026-03-22T10:02:36.541Z
     notes: []
