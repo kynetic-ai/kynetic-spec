@@ -70,6 +70,8 @@ grep -rn "AC: @trait-" tests/               # Trait AC annotations
 4. Verify at least one worker claim independently
 5. Search across categories — correctness, edge cases, error handling, security, test quality, integration
 
+**Complete ALL checks before recording any verdict.** Do not stop at the first finding. Each unrecorded finding becomes a future fix cycle that could have been avoided. Record every issue you find, then submit one verdict covering all of them.
+
 ---
 
 ## AC Coverage Verification
@@ -431,11 +433,12 @@ kspec task submit @ref  # Back to pending_review — reviewer creates a new revi
 2. **Create review** — `kspec review add --subject-type task --subject-ref @ref` (creates a new record each cycle)
 3. **Open review** — `kspec review open @review-ref`
 4. **Investigate** — deterministic checks, then analytical checks
-5. **Record findings** — `kspec review comment` for each finding with appropriate kind. **Always use anchors:**
+5. **Record ALL findings** — `kspec review comment` for each finding with appropriate kind. **Always use anchors:**
    - Code reviews: `--path`, `--line-start`, `--line-end`, `--commit` to pin findings to exact source locations
    - Plan/spec reviews: `--section`, `--field`, `--anchor-ref` to pin findings to specific ACs or fields
 6. **Record checks** — `kspec review check` for test/lint results
-7. **Submit verdict** — `kspec review verdict` (approve or request_changes — auto-closes the review)
+7. **Verify completeness** — Before submitting a verdict, confirm you have searched all categories and recorded every finding. A review with one blocker and an immediate verdict is almost always incomplete. Each fix cycle costs time — find everything in one pass.
+8. **Submit verdict** — `kspec review verdict` (approve or request_changes — auto-closes the review)
 
 ---
 
