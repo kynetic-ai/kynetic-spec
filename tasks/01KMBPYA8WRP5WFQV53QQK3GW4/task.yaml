@@ -22,8 +22,14 @@ description: >-
 spec_ref: "@multi-turn-session-lifecycle"
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: "Merged to dev. Removed duplicate sessionRegistry.register() call in invocation.ts
+  and redundant _updateSessionIdleHookPresence method in dispatch.ts. Behavioral equivalence
+  confirmed — hook presence reload still occurs during reconciliation via _evaluateAllTasks() ->
+  _loadAgents() path. All AC coverage maintained. Two nits noted: worker test count slightly off
+  (7161 vs claimed 7162), and scope slightly exceeded task description (dispatch.ts cleanup beyond
+  invocation.ts change)."
 depends_on: []
 context: []
 priority: 3
@@ -91,8 +97,27 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-03-22T21:51:16.394Z
+  - author: "@claude"
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: "Merged to dev. Removed duplicate sessionRegistry.register() call in invocation.ts and
+          redundant _updateSessionIdleHookPresence method in dispatch.ts. Behavioral equivalence
+          confirmed — hook presence reload still occurs during reconciliation via
+          _evaluateAllTasks() -> _loadAgents() path. All AC coverage maintained. Two nits noted:
+          worker test count slightly off (7161 vs claimed 7162), and scope slightly exceeded task
+          description (dispatch.ts cleanup beyond invocation.ts change)."
+        previous: null
+      completed_at:
+        new: 2026-03-22T21:53:44.973Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-03-22T21:53:44.979Z
 created_at: 2026-03-22T21:24:14.236Z
 started_at: 2026-03-22T21:38:23.041Z
 submitted_at: 2026-03-22T21:44:03.717Z
+completed_at: 2026-03-22T21:53:44.973Z
 todos: []
 automation: eligible
