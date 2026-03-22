@@ -44751,6 +44751,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-22T10:20:26.678Z
+      - _ulid: 01KMAGZB8GNH2S7G13Z9D2RTMW
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMAGZAVJPGHCDZ7E33PEX8DF
+        timestamp: 2026-03-22T10:20:42.128Z
     examined_commit: 6512cfcb14755cd254463a1452552cd254ad72cd
     external_links: []
     lifecycle_state: open
@@ -44802,7 +44809,32 @@ reviews:
               never does.
             created_at: 2026-03-22T10:20:25.180Z
         kind: blocker
+      - _ulid: 01KMAGZAVJPGHCDZ7E33PEX8DF
+        entries:
+          - _ulid: 01KMAGZAVJNE4FH1D9E84S8SCA
+            author: Test User
+            body: >-
+              Evidence log:
+
+              Files read: src/agent-runtime/invocation.ts, src/agent-runtime/dispatch.ts,
+              src/agent-runtime/session-registry.ts, src/sessions/store.ts, src/sessions/types.ts,
+              src/schema/event-registry.ts, src/schema/event-payloads.ts,
+              tests/multi-turn-invocation.test.ts, tests/session-lifecycle-events.test.ts.
+
+              Commands run: sed -n kspec-agents.md; kspec task get @01KMA74DY7WGG4KA6P07BTMJFD;
+              kspec item get @multi-turn-session-lifecycle; git diff/stat against
+              463db210d316c43a70446ac83bc179c6de5a1616...6512cfcb1475; rg for
+              runInvocation/session.idle/SessionRegistry; npm test; kspec validate.
+
+              Claims verified: previous sendPrompt rejection fix is present in
+              src/agent-runtime/invocation.ts; async queue grace-period behavior is covered by
+              tests; dispatch integration and session.idle event registration are still missing.
+
+              Categories searched: correctness, integration, event wiring, queue lifecycle,
+              persistence, test quality.
+            created_at: 2026-03-22T10:20:41.714Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-22T10:16:21.330Z
-    updated_at: 2026-03-22T10:20:26.350Z
+    updated_at: 2026-03-22T10:20:41.714Z
     notes: []
