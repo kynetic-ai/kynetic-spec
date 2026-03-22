@@ -19563,12 +19563,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-22T21:37:12.106Z
+      updated_at: 2026-03-22T21:37:24.139Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-22T21:37:12.106Z
+      updated_at: 2026-03-22T21:37:24.139Z
     integration:
       status: pending
       detail: null
@@ -19576,24 +19576,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 2da4a1f5163cdbd9acbb5a6acef049732b6b75c8
-      updated_at: 2026-03-22T21:37:12.106Z
-    lifecycle_state: ready
+      updated_at: 2026-03-22T21:37:24.139Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KMBPYB05RT7ZJZBA2GVW4A7D"
     task_slug: reload-session-idle-hook-presence-during-dispatch-reconciliation
     timestamps:
       closed_at: null
       last_active_at: 2026-03-22T21:24:55.570Z
-      last_reconciled_at: 2026-03-22T21:37:12.106Z
+      last_reconciled_at: 2026-03-22T21:37:24.139Z
       created_at: 2026-03-22T21:24:49.679Z
-      updated_at: 2026-03-22T21:37:12.106Z
+      updated_at: 2026-03-22T21:37:24.139Z
     workspace_id: dispatch-workspace-01KMBPYB05RT7ZJZBA2GVW4A7D
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 3fe484fb622ef64ca3131a23ef6e5f077ef910aa
+        last_seen_at: 2026-03-22T21:37:24.139Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/reload-session-idle-hook-presence-during-dispatch-reconciliation-01kmbpyb-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/reload-session-idle-hook-presence-during-dispatch-reconciliation/01kmbpyb
-        head: 2da4a1f5163cdbd9acbb5a6acef049732b6b75c8
-        last_seen_at: 2026-03-22T21:24:49.679Z
+        head: 3fe484fb622ef64ca3131a23ef6e5f077ef910aa
+        last_seen_at: 2026-03-22T21:37:24.139Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/reload-session-idle-hook-presence-during-dispatch-reconciliation-01kmbpyb
