@@ -47579,7 +47579,18 @@ reviews:
     slugs: []
     title: Review reload session.idle hook presence during reconciliation
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 7162 tests passed, 3 skipped. 1 timeout failure in agent-invocation-lifecycle.test.ts is
+          pre-existing and unrelated to changed files (dispatch.ts, agent-dispatch-engine.test.ts).
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-22T21:44:11.499Z
+        completed_at: 2026-03-22T21:44:11.499Z
     events:
       - _ulid: 01KMBR2AFEEH7QJVS4J8GZFNKM
         actor: "@claude"
@@ -47594,6 +47605,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-22T21:44:02.761Z
+      - _ulid: 01KMBR2VTAE2EZC853N67H944E
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-22T21:44:11.851Z
     examined_commit: 3fe484fb622ef64ca3131a23ef6e5f077ef910aa
     external_links: []
     lifecycle_state: open
@@ -47606,5 +47624,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-22T21:43:54.094Z
-    updated_at: 2026-03-22T21:44:02.392Z
+    updated_at: 2026-03-22T21:44:11.499Z
     notes: []
