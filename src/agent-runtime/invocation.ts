@@ -31,6 +31,7 @@ import {
   removeEnvForAdapter,
 } from "../sessions/store.js";
 import type { SessionEventInput, SessionMetadata, SessionTrigger } from "../sessions/types.js";
+import type { SessionRegistry, SessionState } from "./session-registry.js";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -103,6 +104,16 @@ export interface InvocationOptions {
   abortSignal?: AbortSignal;
   /** Pre-assigned session ID (generated if not provided) */
   sessionId?: string;
+  /**
+   * Session registry for multi-turn prompt delivery.
+   * When provided, the invocation runner registers a SessionHandle so that
+   * session_prompt actions (and other registry consumers) can deliver prompts
+   * to this session while it is alive.
+   *
+   * AC: @session-prompt-action ac-1 — enables production prompt delivery path
+   * AC: @active-session-registry ac-1 — session registration at invocation start
+   */
+  sessionRegistry?: SessionRegistry;
 }
 
 /**
@@ -291,6 +302,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     onEventAppended,
     kspecCliPath = DEFAULT_KSPEC_CLI_PATH,
     abortSignal,
+    sessionRegistry,
   } = options;
 
   // AC: @session-storage-path-resolution ac-resolver
@@ -386,6 +398,11 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     },
   });
 
+  // Session handle state for registry integration. Declared outside try/finally
+  // so the finally block can update state and unregister.
+  // AC: @session-prompt-action ac-1, @active-session-registry ac-1, ac-2
+  let sessionState: SessionState = "prompting";
+
   try {
     // ─── Inject KSPEC_SESSION_ID ──────────────────────────────────────────
     // AC: @agent-invocation-lifecycle ac-2
@@ -425,6 +442,33 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
         acp_session_id: state.acpSessionId,
       },
     });
+
+    // ─── Register session handle ─────────────────────────────────────────
+    // AC: @session-prompt-action ac-1 — production registration path
+    // AC: @active-session-registry ac-1, ac-2
+    //
+    // Register a session handle so session_prompt actions can discover this
+    // session via the registry. In the current single-turn runner, the
+    // handle stays in "prompting" state for the duration of the prompt call,
+    // then transitions to "closed" on completion. The multi-turn invocation
+    // runner (@task-multi-turn-invocation) extends this with idle/prompting
+    // transitions and prompt queue support.
+    if (sessionRegistry) {
+      sessionRegistry.register(sessionId, {
+        sendPrompt: async (_prompt: string) => {
+          // Single-turn runner does not accept follow-up prompts.
+          // The multi-turn runner replaces this with PromptQueue-backed delivery.
+          throw new Error(
+            `Session '${sessionId}' does not accept follow-up prompts in single-turn mode. ` +
+            "Multi-turn session support is required for session_prompt actions.",
+          );
+        },
+        getState: () => sessionState,
+        requestClose: (_reason: string) => {
+          sessionState = "closed";
+        },
+      });
+    }
 
     // ─── Stall watchdog state ──────────────────────────────────────────────
     // AC: @invocation-initial-activity-watchdog ac-1, ac-3
@@ -549,6 +593,8 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     });
 
     // ─── Close session as completed ───────────────────────────────────────
+    sessionState = "closed";
+    sessionRegistry?.unregister(sessionId);
     const finalSession = await closeSession(sessionsDir, sessionId, "completed", "Invocation completed normally");
 
     return {
@@ -722,6 +768,10 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
   } finally {
     // ─── Cleanup ──────────────────────────────────────────────────────────
     // AC: @agent-invocation-lifecycle ac-8
+
+    // AC: @active-session-registry ac-2 — unregister on any exit path
+    sessionState = "closed";
+    sessionRegistry?.unregister(sessionId);
 
     // End ACP session
     if (state.acpSessionId && state.agent) {

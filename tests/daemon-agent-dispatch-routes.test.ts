@@ -222,6 +222,11 @@ describe('Agent dispatch routes', () => {
     expect(registry!.size).toBe(0);
     expect(registry!.listActive()).toEqual([]);
 
+    // Dispatch engine also exposes the same registry (shared instance)
+    const engine = getDispatchEngine(rootDir);
+    expect(engine).toBeDefined();
+    expect(engine!.sessionRegistry).toBe(registry);
+
     // Stop the engine
     const stopResponse = await app.handle(new Request('http://localhost/api/agent/dispatch/stop', {
       method: 'POST',

@@ -109,6 +109,10 @@ function createEngine(
           pubsub.broadcast('agents', event.type, event, projectDir);
         }
       : undefined,
+    // AC: @session-prompt-action ac-1, @active-session-registry ac-1
+    // Share the session registry with the dispatch engine so invocations register
+    // their sessions, making them discoverable by session_prompt actions.
+    sessionRegistry: getOrCreateSessionRegistry(projectDir),
   });
 }
 
