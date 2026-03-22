@@ -43465,9 +43465,25 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-22T01:45:22.413Z
+      - _ulid: 01KM9KG2ZVRANEDEWA3RVP7X8Q
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-22T01:45:33.436Z
+      - _ulid: 01KM9KG2ZWDTB8DZKW31BN3E8B
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-22T01:45:33.436Z
     examined_commit: 2f0b08248d6dbc5365a90bf82192db4b511bbec2
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -43496,7 +43512,14 @@ reviews:
               tests only cover invocation from the repo root."
             created_at: 2026-03-22T01:45:20.059Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-22T01:45:33.435Z
     created_at: 2026-03-22T01:40:12.695Z
-    updated_at: 2026-03-22T01:45:22.094Z
+    updated_at: 2026-03-22T01:45:33.436Z
     notes: []
