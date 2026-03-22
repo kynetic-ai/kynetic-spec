@@ -44887,6 +44887,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-22T10:32:43.968Z
+      - _ulid: 01KMAHW18AD4996NDDXV6ATPMM
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMAHW0WKX88XPM7S8M8R6H2K
+        timestamp: 2026-03-22T10:36:22.154Z
     examined_commit: 5c3160a75d54d75d231b33b15d14ecd2b38d1083
     external_links: []
     lifecycle_state: open
@@ -44896,8 +44903,26 @@ reviews:
       content_hash: ""
       ref: "@01KMA74ECH1ZW03KM3403N023Z"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMAHW0WKX88XPM7S8M8R6H2K
+        anchor:
+          type: code
+          commit: 5c3160a75d54d75d231b33b15d14ecd2b38d1083
+          line_end: 128
+          line_start: 124
+          path: packages/daemon/src/routes/agent-dispatch.ts
+          side: head
+        entries:
+          - _ulid: 01KMAHW0WMD29CPJ5R5F5KQ5W7
+            author: Test User
+            body: This fix threads a SessionRegistry into ActionExecutor, but it still never makes real sessions
+              visible to that registry.  can only succeed via , yet there is no production  call
+              anywhere under  or , and  still invokes  without any registry/session-handle hook. In
+              production that leaves the registry empty, so a  action against a live idle session
+              still falls through the  failure path instead of delivering the follow-up prompt.
+            created_at: 2026-03-22T10:36:21.780Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-22T10:31:44.937Z
-    updated_at: 2026-03-22T10:32:43.659Z
+    updated_at: 2026-03-22T10:36:21.780Z
     notes: []
