@@ -47071,3 +47071,29 @@ reviews:
     created_at: 2026-03-22T16:29:49.988Z
     updated_at: 2026-03-22T16:30:49.077Z
     notes: []
+  - _ulid: 01KMB6V5H69J5P4H025R4D919T
+    slugs: []
+    title: Review task-ui-session-idle (cycle 1)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KMB6V5H6EK2WG5STG7QCH5HK
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-22T16:42:53.862Z
+    examined_commit: ede5ca68ef95835b8de7f87e8914246c2e21ddb4
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMA74FB1KFR4938XKWNT6M2K"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-22T16:42:53.862Z
+    updated_at: null
+    notes: []

@@ -44,6 +44,7 @@ tags:
   - web-ui
   - automation
 vcs_refs: []
+review_ref: "@01KMB6V5H69J5P4H025R4D919T"
 submission_linkage:
   review_url: null
   branch: dev
@@ -94,6 +95,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-03-22T16:40:17.879Z
+  - author: "@claude"
+    changes:
+      review_ref:
+        new: "@01KMB6V5H69J5P4H025R4D919T"
+        previous: null
+    command: review-link
+    timestamp: 2026-03-22T16:42:55.371Z
 created_at: 2026-03-22T07:28:44.385Z
 started_at: 2026-03-22T16:27:50.150Z
 submitted_at: 2026-03-22T16:40:17.878Z
