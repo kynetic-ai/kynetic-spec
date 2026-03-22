@@ -45189,6 +45189,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-22T10:50:50.253Z
+      - _ulid: 01KMAK3F6E90J6WYN63KPDCQRF
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMAK3EWTZYX583XRQEZB26NB
+        timestamp: 2026-03-22T10:57:54.383Z
     examined_commit: d5bf3a6fbc1d57c239e4db860559df2e723d145c
     external_links: []
     lifecycle_state: open
@@ -45198,8 +45205,29 @@ reviews:
       content_hash: ""
       ref: "@01KMA74DY7WGG4KA6P07BTMJFD"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMAK3EWTZYX583XRQEZB26NB
+        entries:
+          - _ulid: 01KMAK3EWTH062FFGG4MK6Q796
+            author: Test User
+            body: "Evidence log:\\nFiles read: src/agent-runtime/invocation.ts, src/agent-runtime/dispatch.ts,
+              src/agent-runtime/session-registry.ts, src/agent-runtime/event-bus.ts,
+              src/agent-runtime/hook-executor.ts, src/schema/event-payloads.ts,
+              src/schema/event-registry.ts, src/sessions/types.ts,
+              tests/multi-turn-invocation.test.ts, tests/event-payloads.test.ts,
+              tests/event-registry.test.ts, tests/session-lifecycle-events.test.ts,
+              tests/agent-invocation-lifecycle.test.ts\\nCommands run: kspec task get
+              @01KMA74DY7WGG4KA6P07BTMJFD; kspec item get @multi-turn-session-lifecycle; git diff
+              --stat/base...head; git diff on changed src/tests files; kspec validate; rg AC
+              annotations in tests; npm test; npm test -- agent-invocation-lifecycle\\nClaims
+              verified: previous blockers for dispatch wiring and session.idle registration are
+              fixed in the reviewed snapshot; full npm test observed one timeout in
+              agent-invocation-lifecycle, but the targeted rerun of that file passed\\nCategories
+              searched: correctness, shutdown/error handling, session cleanup, event propagation,
+              test coverage/integrity, dispatch integration"
+            created_at: 2026-03-22T10:57:54.074Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-22T10:50:43.284Z
-    updated_at: 2026-03-22T10:50:49.907Z
+    updated_at: 2026-03-22T10:57:54.074Z
     notes: []
