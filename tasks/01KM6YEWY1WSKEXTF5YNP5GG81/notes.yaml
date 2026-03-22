@@ -64,3 +64,33 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-21T18:37:40.596Z
+  - _ulid: 01KM8VT0KQ6CGJD0YMANYMWBQ6
+    content: "Fix cycle 4: Addressed both blockers. (1) AC-8 atomicity test now uses a real shadow
+      branch with kspec init, writes monolithic tasks, runs migrate, and counts commits — asserts
+      exactly 1 new commit and clean working tree. (2) Replaced comment-only trait AC claims with
+      executable tests: @trait-dry-run ac-4 breaks the shadow worktree to trigger initContext error
+      during dry-run and verifies no state change; @trait-error-guidance ac-1/ac-2 uses a read-only
+      tasks directory to trigger EACCES during flush and verifies error description + suggestion;
+      @trait-error-guidance ac-6 same with --json verifying structured error object. All 22
+      migration tests pass. Full suite: 6916 passed, 1 pre-existing failure unrelated to this
+      change."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-21T18:51:32.855Z
+  - _ulid: 01KM8W81ZGHAP06YPFHC9HPZ5F
+    content: "[FIX_CYCLE: 1] Review verdict: changes_requested by codex"
+    supersedes: null
+    author: Test User
+    created_at: 2026-03-21T18:59:13.009Z
+  - _ulid: 01KM8WSW8PE8MA6Q2G3TSKC639
+    content: "Fix cycle 5: Addressed both blockers. (1) Monolithic detection now uses positive
+      lean-entry identification (typeof notes_count === number) instead of Array.isArray(notes).
+      Entries with malformed/missing notes are now correctly classified as monolithic and migrated
+      with warnings per AC-5. Same fix applied to split-backend ensureMigrated gate. Added test with
+      string/null/missing notes variants. (2) AC-4 test now loads migrated data through
+      TaskDataManager split getTask instead of reading raw YAML files, proving the spec requirement
+      that migrated data is visible through the actual split-format load path. All 23 migration
+      tests pass. Full suite: 6917 passed, 1 pre-existing timeout failure unrelated."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-21T19:08:56.983Z

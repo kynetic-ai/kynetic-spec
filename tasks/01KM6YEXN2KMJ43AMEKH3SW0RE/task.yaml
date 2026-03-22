@@ -28,10 +28,13 @@ description: |
 spec_ref: "@task-storage-activation"
 plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
 origin: derived
-status: pending
+status: completed
 blocked_by: []
+closed_reason: Approved in review @01KM9FMDBZRWW1RXP946YHMEB3 and merged
+  dispatch/task/task-activate-split-storage/01km6yex into dev. Added kspec task storage
+  activate/status commands and activation coverage tests.
 depends_on:
-  - "@task-build-migration"
+  - "@01KM99V2"
 context: []
 priority: 1
 tags:
@@ -39,6 +42,19 @@ tags:
   - storage
   - manual
 vcs_refs: []
+review_ref: "@01KM9FMDBZRWW1RXP946YHMEB3"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-22T00:36:55.564Z
+  commit: 369132b7926d1becbc70af8efdfd69bc148a848d
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM9ETYCW9KWA5A3M0ENKJ7SZ
 created_at: 2026-03-21T00:59:26.242Z
+started_at: 2026-03-22T00:24:32.255Z
+submitted_at: 2026-03-22T00:36:55.987Z
+completed_at: 2026-03-22T00:43:57.666Z
 todos: []
-automation: manual_only
+automation: eligible
