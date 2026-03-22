@@ -47723,6 +47723,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-22T21:51:35.652Z
+      - _ulid: 01KMBRGPJJX1JQP3M7KPZ8P9GQ
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMBRGP6NF42RX0D9NFQA7QHA
+        timestamp: 2026-03-22T21:51:45.234Z
     examined_commit: 7156ce71b80632a7f36a0a148efe41ceb78f57b6
     external_links: []
     lifecycle_state: open
@@ -47732,8 +47739,17 @@ reviews:
       content_hash: ""
       ref: "@task-remove-duplicate-handle-registration"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMBRGP6NF42RX0D9NFQA7QHA
+        entries:
+          - _ulid: 01KMBRGP6PQ6VMT5KAFRG4B799
+            author: "@claude"
+            body: Worker note claims '7162 tests pass' but test run shows 7161 passed, 1 timed out
+              (agent-invocation-lifecycle.test.ts timeout test — pre-existing flaky test, file not
+              modified in this commit). Minor inaccuracy in the note, not a code issue.
+            created_at: 2026-03-22T21:51:44.854Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-22T21:51:14.820Z
-    updated_at: 2026-03-22T21:51:35.265Z
+    updated_at: 2026-03-22T21:51:44.854Z
     notes: []
