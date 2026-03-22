@@ -142,13 +142,13 @@ kspec review comment @review-ref \
 kspec review check @review-ref \
   --name "AC coverage" \
   --status pass \
-  --detail "All 17 ACs claimed by at least one task"
+  --evidence "All 17 ACs claimed by at least one task"
 
 # Record a check that failed
 kspec review check @review-ref \
   --name "Dependency ordering" \
   --status fail \
-  --detail "P1 task depends on P2 task — priority misalignment"
+  --evidence "P1 task depends on P2 task — priority misalignment"
 ```
 
 ### Thread Kinds
@@ -156,7 +156,7 @@ kspec review check @review-ref \
 | Plan review severity | Thread kind |
 |---------------------|-------------|
 | MUST-FIX | `blocker` |
-| SHOULD-FIX | `question` or `nit` |
+| SHOULD-FIX | `question` |
 | SUGGESTION | `nit` |
 
 ### Structured Anchors
@@ -177,12 +177,10 @@ After findings are addressed (or accepted):
 
 ```bash
 # Approve — plan is ready for derivation
-kspec review verdict @review-ref --disposition approved \
-  --summary "Specs are behavioral, tasks are standalone, deps are ordered"
+kspec review verdict @review-ref --decision approve
 
 # Request changes — issues need fixing before approval
-kspec review verdict @review-ref --disposition needs_work \
-  --summary "3 blocker items: compound ACs, missing coverage, broken refs"
+kspec review verdict @review-ref --decision request_changes
 ```
 
 ### Review Lifecycle
