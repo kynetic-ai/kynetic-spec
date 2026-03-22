@@ -43420,6 +43420,16 @@ reviews:
         required: false
         created_at: 2026-03-22T01:45:21.075Z
         completed_at: 2026-03-22T01:45:21.075Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 305 files passed, 6979 tests passed, 3 skipped.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-22T01:45:22.094Z
+        completed_at: 2026-03-22T01:45:22.094Z
     events:
       - _ulid: 01KM9K69RQJQ99672W618574G8
         actor: Test User
@@ -43448,6 +43458,13 @@ reviews:
           status: pass
           name: review-evidence
         timestamp: 2026-03-22T01:45:21.383Z
+      - _ulid: 01KM9KFR7DZYP97N2VXAYEYKP6
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-22T01:45:22.413Z
     examined_commit: 2f0b08248d6dbc5365a90bf82192db4b511bbec2
     external_links: []
     lifecycle_state: open
@@ -43481,5 +43498,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-22T01:40:12.695Z
-    updated_at: 2026-03-22T01:45:21.075Z
+    updated_at: 2026-03-22T01:45:22.094Z
     notes: []
