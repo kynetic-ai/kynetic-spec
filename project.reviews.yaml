@@ -44160,7 +44160,18 @@ reviews:
     slugs: []
     title: Review session_prompt action type
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Exited 6 with repository-wide warnings only (orphaned skill dir, orphaned specs,
+          historical AC coverage warnings); no new schema/ref errors attributable to this snapshot.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-22T09:36:03.551Z
+        completed_at: 2026-03-22T09:36:03.551Z
     events:
       - _ulid: 01KMAE8WERGQ5HQT2ZBCVQ44PE
         actor: Test User
@@ -44175,6 +44186,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-22T09:36:02.757Z
+      - _ulid: 01KMAEDKS39KGR09Z3885A0YGB
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-22T09:36:03.875Z
     examined_commit: 769ad92f5181d44fac0de9b5994c66a0f4dabeab
     external_links: []
     lifecycle_state: open
@@ -44187,5 +44205,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-22T09:33:28.920Z
-    updated_at: 2026-03-22T09:36:02.401Z
+    updated_at: 2026-03-22T09:36:03.551Z
     notes: []
