@@ -11,7 +11,10 @@
 import type { Command } from "commander";
 import { EXIT_CODES } from "../exit-codes.js";
 import { isJsonMode, output } from "../output.js";
-import { SHADOW_BRANCH_NAME } from "../../parser/shadow.js";
+import {
+  SHADOW_BRANCH_NAME,
+  SHADOW_WORKTREE_DIR,
+} from "../../parser/shadow.js";
 
 /**
  * Decision from a guard check
@@ -63,20 +66,62 @@ const DANGEROUS_PATTERNS: readonly string[] = [
 ];
 
 /**
- * Check if a command targets the .kspec directory, either via cwd or cd commands.
+ * Check if a command targets the shadow branch worktree, either via cwd or cd commands.
+ *
+ * Uses exact path-segment matching against the configured shadow directory name
+ * (default: ".kspec") to avoid false positives on paths like ".kspec-worktrees/"
+ * which contain the shadow name as a substring but are NOT the shadow worktree.
  */
 function isInKspec(command: string, cwd: string | undefined): boolean {
   if (cwd) {
     // Normalize path separators for cross-platform support
     const normalizedCwd = cwd.replace(/\\/g, "/");
-    if (normalizedCwd.includes("/.kspec") || normalizedCwd.endsWith("/.kspec")) {
+    if (isShadowWorktreePath(normalizedCwd)) {
       return true;
     }
   }
-  if (command.includes("cd .kspec") || /cd\s+.*\.kspec/.test(command)) {
+  if (isCdToShadowWorktree(command)) {
     return true;
   }
   return false;
+}
+
+/**
+ * Check if a normalized path is inside the shadow worktree directory.
+ *
+ * Matches paths that are exactly the shadow directory or a subdirectory of it,
+ * using path-segment boundary checks to avoid substring false positives.
+ * e.g. "/.kspec" and "/.kspec/modules" match, but "/.kspec-worktrees/..." does not.
+ */
+function isShadowWorktreePath(normalizedPath: string): boolean {
+  const shadowDir = SHADOW_WORKTREE_DIR; // e.g. ".kspec"
+  // Match /<shadowDir> at end of path, or /<shadowDir>/ as a path segment
+  const segmentPattern = `/${shadowDir}`;
+  const idx = normalizedPath.indexOf(segmentPattern);
+  if (idx === -1) {
+    return false;
+  }
+  // Check that the match is a complete path segment:
+  // the character after the shadow dir name must be "/" or end-of-string
+  const afterIdx = idx + segmentPattern.length;
+  return afterIdx === normalizedPath.length || normalizedPath[afterIdx] === "/";
+}
+
+/**
+ * Check if a command contains a cd into the shadow worktree directory.
+ *
+ * Matches "cd .kspec", "cd /path/to/.kspec", "cd .kspec/subdir" etc.
+ * but NOT "cd .kspec-worktrees/..." or similar substring matches.
+ */
+function isCdToShadowWorktree(command: string): boolean {
+  const shadowDir = SHADOW_WORKTREE_DIR; // e.g. ".kspec"
+  // Escape for regex
+  const escaped = shadowDir.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  // Match cd (with optional path prefix) to the shadow dir, followed by
+  // end-of-string, whitespace, path separator, or shell operator (&&, ;, |)
+  return new RegExp(
+    `cd\\s+(?:\\S*/)?${escaped}(?:\\s|/|$|&&|;|\\|)`,
+  ).test(command);
 }
 
 /**

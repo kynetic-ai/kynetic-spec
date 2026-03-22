@@ -343,6 +343,93 @@ describe("evaluateWorktreeGuard", () => {
       expect(result.decision).toBe("block");
     });
   });
+
+  // AC: @native-guard-commands ac-worktree-guard — exact path-segment matching
+  describe("does NOT false-positive on paths containing .kspec as substring", () => {
+    it("allows git rebase in .kspec-worktrees dispatch worktree", () => {
+      const result = evaluateWorktreeGuard({
+        tool_input: { command: "git rebase origin/dev" },
+        cwd: "/home/user/project/.kspec-worktrees/dispatch/task/foo/01ABC123",
+      });
+      expect(result.decision).toBe("allow");
+    });
+
+    it("allows git fetch in .kspec-worktrees directory", () => {
+      const result = evaluateWorktreeGuard({
+        tool_input: { command: "git fetch origin" },
+        cwd: "/home/user/project/.kspec-worktrees",
+      });
+      expect(result.decision).toBe("allow");
+    });
+
+    it("allows git reset in .kspec-backup directory", () => {
+      const result = evaluateWorktreeGuard({
+        tool_input: { command: "git reset --hard HEAD~1" },
+        cwd: "/home/user/project/.kspec-backup",
+      });
+      expect(result.decision).toBe("allow");
+    });
+
+    it("allows dangerous git ops in .kspec-data directory", () => {
+      const result = evaluateWorktreeGuard({
+        tool_input: { command: "git clean -fd" },
+        cwd: "/home/user/project/.kspec-data/something",
+      });
+      expect(result.decision).toBe("allow");
+    });
+
+    it("still blocks dangerous commands in actual .kspec directory", () => {
+      const result = evaluateWorktreeGuard({
+        tool_input: { command: "git rebase origin/dev" },
+        cwd: "/home/user/project/.kspec",
+      });
+      expect(result.decision).toBe("block");
+    });
+
+    it("still blocks dangerous commands in .kspec subdirectory", () => {
+      const result = evaluateWorktreeGuard({
+        tool_input: { command: "git reset --hard" },
+        cwd: "/home/user/project/.kspec/modules",
+      });
+      expect(result.decision).toBe("block");
+    });
+  });
+
+  // AC: @native-guard-commands ac-worktree-guard — cd detection must also be exact
+  describe("cd detection uses exact path-segment matching", () => {
+    it("allows cd to .kspec-worktrees with dangerous git ops", () => {
+      const result = evaluateWorktreeGuard({
+        tool_input: { command: "cd .kspec-worktrees/task/foo && git rebase origin/dev" },
+        cwd: "/home/user/project",
+      });
+      expect(result.decision).toBe("allow");
+    });
+
+    it("blocks cd to .kspec with dangerous git ops", () => {
+      const result = evaluateWorktreeGuard({
+        tool_input: { command: "cd .kspec && git reset --hard" },
+        cwd: "/home/user/project",
+      });
+      expect(result.decision).toBe("block");
+    });
+
+    it("blocks cd to .kspec/subdir with dangerous git ops", () => {
+      const result = evaluateWorktreeGuard({
+        tool_input: { command: "cd .kspec/modules && git stash" },
+        cwd: "/home/user/project",
+      });
+      expect(result.decision).toBe("block");
+    });
+
+    it("still blocks kspec-meta deletion from dispatch worktree", () => {
+      const result = evaluateWorktreeGuard({
+        tool_input: { command: "git branch -D kspec-meta" },
+        cwd: "/home/user/project/.kspec-worktrees/dispatch/task/foo/01ABC123",
+      });
+      expect(result.decision).toBe("block");
+      expect(result.reason).toContain("kspec-meta");
+    });
+  });
 });
 
 // ─── CLI integration tests ───
