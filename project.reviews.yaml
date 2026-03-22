@@ -43066,6 +43066,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM9G735JH9ZDM99TD5CC0TTX
         timestamp: 2026-03-22T00:48:13.306Z
+      - _ulid: 01KM9G7BN0TRN8R4E4DXPCNM54
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM9G7B92P1WY1QX7J3V45T68
+        timestamp: 2026-03-22T00:48:21.664Z
     examined_commit: 1c5294476abdccfb6c355209f9e08f6668c8a437
     external_links: []
     lifecycle_state: open
@@ -43095,7 +43102,28 @@ reviews:
               guard does not yet detect the actual shadow worktree.
             created_at: 2026-03-22T00:48:12.978Z
         kind: blocker
+      - _ulid: 01KM9G7B92P1WY1QX7J3V45T68
+        anchor:
+          type: code
+          commit: 1c5294476abdccfb6c355209f9e08f6668c8a437
+          line_end: 123
+          line_start: 96
+          path: src/cli/commands/guard.ts
+          side: head
+        entries:
+          - _ulid: 01KM9G7B92QWPNQGPF81BXP8K4
+            author: Test User
+            body: This still hardcodes the default shadow directory instead of detecting the actual configured
+              shadow worktree. shadow.directory is already configurable via kspec.config.yaml
+              (loadProjectConfig / resolveConfig), and the task note explicitly called that out as
+              part of the bug. With a project configured to use something like .specs, dangerous
+              commands run from that real shadow worktree will now be allowed because
+              isShadowWorktreePath() and isCdToShadowWorktree() only match SHADOW_WORKTREE_DIR. That
+              leaves the real shadow branch unprotected, so the guard does not yet detect the actual
+              shadow worktree.
+            created_at: 2026-03-22T00:48:21.282Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-22T00:47:39.246Z
-    updated_at: 2026-03-22T00:48:12.978Z
+    updated_at: 2026-03-22T00:48:21.282Z
     notes: []
