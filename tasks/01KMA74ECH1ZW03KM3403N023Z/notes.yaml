@@ -19,3 +19,13 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-22T09:36:38.118Z
+  - _ulid: 01KMAG55C1EV9XST0QK5DANX05
+    content: "Fix cycle 1: Moved prompt/prompt_template validation from unused
+      SessionPromptActionRefinedSchema into ActionSchema via superRefine. Now all config-loading
+      paths (hooks, schedules, compositions, kspec hook add/set) enforce the constraint at parse
+      time since they all parse through ActionSchema. Removed the standalone RefinedSchema export.
+      Tests updated to validate through ActionSchema.safeParse() instead. Runtime fallback in
+      executeSessionPrompt retained as defense-in-depth."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-22T10:06:24.129Z
