@@ -46878,6 +46878,17 @@ reviews:
         runner: manual
         created_at: 2026-03-22T16:22:53.351Z
         completed_at: 2026-03-22T16:22:53.351Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: grep for activateBatchBuffer/deactivateBatchBuffer in src/ and tests/ confirms only the
+          deprecated function definitions remain — no production or test callers.
+        name: no-deprecated-callers
+        required: true
+        runner: manual
+        created_at: 2026-03-22T16:23:03.265Z
+        completed_at: 2026-03-22T16:23:03.265Z
     events:
       - _ulid: 01KMB58X6NXKYCBYE2NYY8DM6S
         actor: "@claude"
@@ -46906,6 +46917,13 @@ reviews:
           status: pass
           name: ac-coverage
         timestamp: 2026-03-22T16:22:53.760Z
+      - _ulid: 01KMB5PV6ZGX7AHC5TEJH9875W
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: no-deprecated-callers
+        timestamp: 2026-03-22T16:23:03.647Z
     examined_commit: 861d966082cd395f0fd6072be639f10950f1be31
     external_links: []
     lifecycle_state: open
@@ -46918,5 +46936,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-22T16:15:26.933Z
-    updated_at: 2026-03-22T16:22:53.351Z
+    updated_at: 2026-03-22T16:23:03.265Z
     notes: []
