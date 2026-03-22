@@ -2686,11 +2686,19 @@ export class DispatchEngine {
           if (terminalEvent) {
             this.onInvocationEvent?.(terminalEvent);
             // AC: @dispatch-event-envelope ac-1 - Route invocation lifecycle through bus
+            // AC: @multi-turn-session-lifecycle ac-14 — include turn_count in terminal payload
+            const terminalPayload: Record<string, unknown> = {
+              ...terminalEvent,
+              trigger: (STATUS_TO_EVENT[entry.change.toStatus] ?? "task.ready"),
+              task_ref: terminalEvent.task_id ?? undefined,
+              duration_ms: invocationResult?.durationMs ?? (Date.now() - trackingRecord.startedAtMs),
+              turn_count: invocationResult?.turnCount ?? 1,
+            };
             this._eventBus.emit({
               event_type: `invocation.${terminalEvent.type}`,
               source_type: "invocation_lifecycle",
               source_id: terminalEvent.session_id,
-              payload: { ...terminalEvent },
+              payload: terminalPayload,
             });
 
             // AC: @dispatch-event-taxonomy ac-2 — Emit corresponding session.* event

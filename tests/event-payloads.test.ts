@@ -162,6 +162,7 @@ describe("ac-2: invocation.* event payloads include required fields", () => {
   const validTerminalPayload = {
     ...validStartedPayload,
     duration_ms: 120000,
+    turn_count: 1,
   };
 
   it("should accept a valid invocation.started payload", () => {
@@ -218,6 +219,36 @@ describe("ac-2: invocation.* event payloads include required fields", () => {
     expect(INVOCATION_STARTED_PAYLOAD_FIELDS).toContain("agent_id");
     expect(INVOCATION_STARTED_PAYLOAD_FIELDS).toContain("trigger");
     expect(INVOCATION_STARTED_PAYLOAD_FIELDS).toContain("task_ref");
+  });
+
+  // AC: @multi-turn-session-lifecycle ac-14
+  it("should include turn_count in terminal payload fields", () => {
+    expect(INVOCATION_TERMINAL_PAYLOAD_FIELDS).toContain("turn_count");
+  });
+
+  it("should reject invocation terminal payload missing turn_count", () => {
+    const { turn_count: _, ...missing } = validTerminalPayload;
+    const result = InvocationTerminalPayloadSchema.safeParse(missing);
+    expect(result.success).toBe(false);
+  });
+
+  it("should reject invocation terminal payload with turn_count less than 1", () => {
+    const result = InvocationTerminalPayloadSchema.safeParse({
+      ...validTerminalPayload,
+      turn_count: 0,
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("should accept invocation terminal payload with multi-turn count", () => {
+    const result = InvocationTerminalPayloadSchema.safeParse({
+      ...validTerminalPayload,
+      turn_count: 5,
+    });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.turn_count).toBe(5);
+    }
   });
 
   it("should include duration_ms in terminal payload fields", () => {
@@ -731,6 +762,7 @@ describe("event payload schemas align with registry", () => {
         agent_id: "a1",
         trigger: "task.ready",
         duration_ms: 1000,
+        turn_count: 1,
       },
       "session.idle": {
         session_id: "s1",
