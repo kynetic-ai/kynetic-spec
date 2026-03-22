@@ -4761,6 +4761,9 @@ modules:
               receptive to prompts. Hooks on this event can inject follow-up
               prompts via the session prompt action type, enabling
               trigger-driven multi-turn conversations.
+            status:
+              maturity: draft
+              implementation: in_progress
             depends_on: []
             implements: []
             relates_to: []
