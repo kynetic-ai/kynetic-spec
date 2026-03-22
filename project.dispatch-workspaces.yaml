@@ -18700,12 +18700,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-22T09:57:21.328Z
+      updated_at: 2026-03-22T09:57:27.992Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-22T09:57:21.328Z
+      updated_at: 2026-03-22T09:57:27.992Z
     integration:
       status: pending
       detail: null
@@ -18713,26 +18713,31 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 463db210d316c43a70446ac83bc179c6de5a1616
-      updated_at: 2026-03-22T09:57:21.328Z
-    lifecycle_state: ready
+      updated_at: 2026-03-22T09:57:27.992Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KMA74DY7WGG4KA6P07BTMJFD"
     task_slug: task-multi-turn-invocation
     timestamps:
       closed_at: null
       last_active_at: 2026-03-22T09:32:54.671Z
-      last_reconciled_at: 2026-03-22T09:57:21.328Z
+      last_reconciled_at: 2026-03-22T09:57:27.992Z
       created_at: 2026-03-22T07:55:24.230Z
-      updated_at: 2026-03-22T09:57:21.328Z
+      updated_at: 2026-03-22T09:57:27.992Z
     workspace_id: dispatch-workspace-01KMA74DY7WGG4KA6P07BTMJFD
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: f7bd46ee2c1a4bf8558ff6e67c6faeca544c2626
+        last_seen_at: 2026-03-22T09:57:27.992Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-multi-turn-invocation-01kma74d-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-multi-turn-invocation/01kma74d
-        head: 901a962905f2d9795f570a172acec51f73d6d1ad
-        last_seen_at: 2026-03-22T09:32:52.132Z
+        head: f7bd46ee2c1a4bf8558ff6e67c6faeca544c2626
+        last_seen_at: 2026-03-22T09:57:27.992Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-multi-turn-invocation-01kma74d
   - active_role: worker
     base_branch_point: 48ee7bf43230aec5c67ea89428745854d1c4dd6e
