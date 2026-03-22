@@ -5,8 +5,10 @@ type: task
 spec_ref: "@task-storage-activation"
 meta_ref: null
 plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Split storage activated on kynetic-spec. 1,158 tasks migrated and verified. Required
+  manual repair of 2 stale per-task files caused by premature migration during build-migration task.
 depends_on:
   - "@task-activate-split-storage"
 context: []
@@ -59,8 +61,24 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-03-22T04:10:30.754Z
+  - author: "@claude"
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Split storage activated on kynetic-spec. 1,158 tasks migrated and verified. Required manual
+          repair of 2 stale per-task files caused by premature migration during build-migration
+          task.
+        previous: null
+      completed_at:
+        new: 2026-03-22T04:10:34.051Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-03-22T04:10:34.054Z
 created_at: 2026-03-22T00:23:43.893Z
 started_at: 2026-03-22T04:10:22.521Z
 submitted_at: 2026-03-22T04:10:30.754Z
+completed_at: 2026-03-22T04:10:34.051Z
 todos: []
 automation: manual_only

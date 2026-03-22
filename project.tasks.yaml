@@ -21525,7 +21525,7 @@
   type: task
   spec_ref: "@task-storage-activation"
   plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-activate-split-storage"
@@ -21539,6 +21539,7 @@
   created_at: 2026-03-22T00:23:43.893Z
   started_at: 2026-03-22T04:10:22.521Z
   submitted_at: 2026-03-22T04:10:30.754Z
+  completed_at: 2026-03-22T04:10:34.051Z
   automation: manual_only
 - _ulid: 01KM9FB8PAK46RP5SRP1JVD2FD
   slugs: []
