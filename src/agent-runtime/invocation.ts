@@ -101,7 +101,8 @@ const MEANINGFUL_UPDATE_TYPES = new Set([
  * Consumers wait via waitForPrompt() which resolves when a prompt is
  * enqueued. Producers call enqueue() to deliver prompts. The queue has
  * a configurable maximum depth — enqueue() throws PromptQueueFullError
- * when the limit is reached.
+ * when the limit is reached. SessionHandle.sendPrompt() wraps enqueue()
+ * and converts synchronous throws into rejected promises.
  *
  * AC: @multi-turn-session-lifecycle ac-8, ac-9, ac-17
  */
@@ -568,10 +569,10 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       // AC: @multi-turn-session-lifecycle ac-17 — reject when full
       try {
         promptQueue.enqueue(prompt);
+        return Promise.resolve();
       } catch (err) {
         return Promise.reject(err);
       }
-      return Promise.resolve();
     },
     getState(): SessionState {
       return sessionState;

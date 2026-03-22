@@ -811,12 +811,10 @@ describe("Multi-turn error handling", { timeout: 60_000 }, () => {
           // Queue up to max depth
           handle.sendPrompt("prompt 1");
           handle.sendPrompt("prompt 2");
-          // This should fail
-          try {
-            handle.sendPrompt("prompt 3 (overflow)");
-          } catch (err) {
+          // This should return a rejected promise, not throw synchronously
+          handle.sendPrompt("prompt 3 (overflow)").catch((err) => {
             queueFullError = err as Error;
-          }
+          });
         }
       },
     });
