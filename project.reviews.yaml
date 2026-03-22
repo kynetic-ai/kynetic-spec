@@ -44050,6 +44050,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-22T09:09:57.387Z
+      - _ulid: 01KMACXV3R7DRTPEJ21DX6VS3Y
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMACXTRG8H44GVEYM52Z3NDS
+        timestamp: 2026-03-22T09:09:58.521Z
     examined_commit: 901a962905f2d9795f570a172acec51f73d6d1ad
     external_links: []
     lifecycle_state: open
@@ -44059,8 +44066,28 @@ reviews:
       content_hash: ""
       ref: "@01KMA74DY7WGG4KA6P07BTMJFD"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMACXTRG8H44GVEYM52Z3NDS
+        anchor:
+          type: code
+          commit: 901a962905f2d9795f570a172acec51f73d6d1ad
+          line_end: 802
+          line_start: 792
+          path: src/agent-runtime/invocation.ts
+          side: head
+        entries:
+          - _ulid: 01KMACXTRGTM5M58TQTRNBXM22
+            author: Test User
+            body: The new idle loop closes the prompt queue after a single microtask when nothing was enqueued
+              synchronously in onIdle. That means any asynchronous follow-up source (for example an
+              event-bus hook, timer, or external action that resolves after the callback returns)
+              loses the session before it can use the registry handle, so the session is not
+              actually kept open/capable of receiving follow-up prompts while idle. This violates
+              the task goal and @multi-turn-session-lifecycle ac-2/ac-4 for any non-inline prompt
+              source.
+            created_at: 2026-03-22T09:09:58.160Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-22T09:09:18.339Z
-    updated_at: 2026-03-22T09:09:57.073Z
+    updated_at: 2026-03-22T09:09:58.160Z
     notes: []
