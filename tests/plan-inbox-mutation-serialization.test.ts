@@ -20,9 +20,21 @@ function runKspecAsync(
   cwd: string,
 ): Promise<{ exitCode: number; stdout: string; stderr: string }> {
   return new Promise((resolve, reject) => {
+    const cleanEnv = { ...process.env };
+    const dispatchEnvVars = [
+      "KSPEC_RALPH_SESSION",
+      "KSPEC_SESSION_ID",
+      "KSPEC_DISPATCH_CANONICAL_HEAD",
+      "KSPEC_SHADOW_MUTATION_LOCK_FILE",
+      "KSPEC_SHADOW_MUTATION_LOCK_TIMEOUT_MS",
+    ];
+    for (const key of dispatchEnvVars) {
+      delete cleanEnv[key];
+    }
+
     const child = spawn("/bin/sh", ["-c", `node ${CLI_PATH} ${args}`], {
       cwd,
-      env: { ...process.env, KSPEC_AUTHOR: "@test" },
+      env: { ...cleanEnv, KSPEC_AUTHOR: "@test" },
     });
 
     let stdout = "";

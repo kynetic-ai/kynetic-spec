@@ -2230,6 +2230,44 @@ describe('Integration: link commands', () => {
     expect(result.exitCode).not.toBe(0);
   });
 
+  // AC: @trait-shadow-commit ac-1
+  // AC: @trait-shadow-commit ac-2
+  // AC: @trait-shadow-commit ac-3
+  // AC: @trait-shadow-commit ac-8 — link create/delete each perform a single save, so each command should produce one semantic shadow commit.
+  it('should create semantic shadow commit messages for link mutations', () => {
+    initGitRepo(tempDir);
+    execSync('git add . && git commit -m "test: fixtures"', {
+      cwd: tempDir,
+      stdio: 'pipe',
+    });
+    const initResult = kspecRun('init --no-prompt', tempDir, {
+      env: { KSPEC_AUTHOR: '@test' },
+    });
+    expect(initResult.exitCode).toBe(0);
+    kspec('module add --title "Test Core" --slug test-core', tempDir);
+    kspec('item add --under @test-core --title "Feature" --type feature --slug test-feature', tempDir);
+    kspec(
+      'item add --under @test-core --title "Requirement" --type requirement --slug test-requirement',
+      tempDir,
+    );
+
+    kspec('link create @test-feature @test-requirement --type implements', tempDir);
+    let shadowHead = execSync('git log --format=%s -1', {
+      cwd: path.join(tempDir, '.kspec'),
+      encoding: 'utf-8',
+      stdio: ['pipe', 'pipe', 'pipe'],
+    }).trim();
+    expect(shadowHead).toBe('Add Link: @test-feature - implements @test-requirement');
+
+    kspec('link delete @test-feature @test-requirement --type implements', tempDir);
+    shadowHead = execSync('git log --format=%s -1', {
+      cwd: path.join(tempDir, '.kspec'),
+      encoding: 'utf-8',
+      stdio: ['pipe', 'pipe', 'pipe'],
+    }).trim();
+    expect(shadowHead).toBe('Remove Link: @test-feature - implements @test-requirement');
+  });
+
   it('should return JSON with --json flag', () => {
     const result = kspecJson<{ success: boolean; from: string; to: string; type: string }>(
       'link create @test-feature @test-requirement --type depends_on',

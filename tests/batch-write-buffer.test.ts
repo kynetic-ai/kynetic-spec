@@ -349,6 +349,12 @@ describe("WriteBuffer.flush()", () => {
 // ── Module Singleton Tests ───────────────────────────────────────────
 
 describe("batch buffer singleton", () => {
+  beforeEach(() => {
+    // Ensure clean state — AsyncLocalStorage.enterWith() from other test files
+    // or describe blocks can leak across vitest's sequential test execution.
+    deactivateBatchBuffer();
+  });
+
   afterEach(() => {
     deactivateBatchBuffer();
   });

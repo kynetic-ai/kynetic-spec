@@ -300,7 +300,7 @@
 								<div class="flex items-center gap-3">
 									<div class="flex-1 h-2 rounded-full bg-muted overflow-hidden" data-testid="plan-progress-bar">
 										<div
-											class="h-full rounded-full transition-all duration-300 bg-[var(--design-status-completed)]"
+											class="h-full rounded-full bg-status-completed transition-all duration-300"
 											style="width: {progressPercent(plan)}%"
 										></div>
 									</div>
@@ -312,25 +312,25 @@
 								<div class="flex flex-wrap gap-2 text-xs text-muted-foreground" data-testid="plan-task-breakdown">
 									{#if plan.task_progress.completed > 0}
 										<span class="inline-flex items-center gap-1">
-											<span class="inline-block size-2 rounded-full bg-[var(--design-status-completed)]"></span>
+											<span class="inline-block size-2 rounded-full bg-status-completed"></span>
 											{plan.task_progress.completed} completed
 										</span>
 									{/if}
 									{#if plan.task_progress.in_progress > 0}
 										<span class="inline-flex items-center gap-1">
-											<span class="inline-block size-2 rounded-full bg-[var(--design-status-in-progress)]"></span>
+											<span class="inline-block size-2 rounded-full bg-status-in-progress"></span>
 											{plan.task_progress.in_progress} in progress
 										</span>
 									{/if}
 									{#if plan.task_progress.pending > 0}
 										<span class="inline-flex items-center gap-1">
-											<span class="inline-block size-2 rounded-full bg-[var(--design-status-pending)]"></span>
+											<span class="inline-block size-2 rounded-full bg-status-pending"></span>
 											{plan.task_progress.pending} pending
 										</span>
 									{/if}
 									{#if plan.task_progress.blocked > 0}
 										<span class="inline-flex items-center gap-1">
-											<span class="inline-block size-2 rounded-full bg-[var(--design-status-blocked)]"></span>
+											<span class="inline-block size-2 rounded-full bg-status-blocked"></span>
 											{plan.task_progress.blocked} blocked
 										</span>
 									{/if}

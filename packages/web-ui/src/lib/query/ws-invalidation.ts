@@ -22,7 +22,9 @@ const INVALIDATION_TOPICS = [
 	'items:updates',
 	'inbox:updates',
 	'triage:updates',
+	'reviews:updates',
 	'agents',
+	'sessions',
 	'files:updates',
 ] as const;
 
@@ -51,6 +53,10 @@ function getInvalidationKeys(topic: string, event: BroadcastEvent): readonly (re
 			// Triage changes affect the merged inbox view (triage status inline)
 			return [queryKeys.inbox.all];
 
+		case 'reviews:updates':
+			// Review changes affect review lists and task detail (review_ref display)
+			return [queryKeys.reviews.all, queryKeys.tasks.all];
+
 		case 'agents': {
 			// Streaming progress events don't need cache invalidation —
 			// they're consumed directly by components for real-time display.
@@ -74,15 +80,19 @@ function getInvalidationKeys(topic: string, event: BroadcastEvent): readonly (re
 			return [queryKeys.agents.all, queryKeys.sessions.all];
 		}
 
+		case 'sessions':
+			return [queryKeys.sessions.all];
+
 		case 'files:updates':
 			// File changes (e.g., settings save, meta edits) affect multiple caches
 			// Observations and session context live in meta files
+			// Automation config (hooks, schedules, compositions) lives in meta files
 			return [
 				queryKeys.settings.all,
 				queryKeys.workflows.all,
 				queryKeys.observations.all,
 				queryKeys.validation.all,
-				queryKeys.observations.all,
+				queryKeys.automation.all,
 				queryKeys.sessionContext.all,
 			];
 

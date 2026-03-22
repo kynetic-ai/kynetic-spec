@@ -13,6 +13,7 @@
 
 import * as path from "node:path";
 import { spawnSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 import { ulid } from "ulid";
 import type { Agent } from "../schema/meta.js";
 import { buildPromptWithSkills } from "./prompts.js";
@@ -33,10 +34,12 @@ import type { SessionEventInput, SessionMetadata, SessionTrigger } from "../sess
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-export const DEFAULT_KSPEC_CLI_PATH = path.resolve(
-  path.dirname(new URL(import.meta.url).pathname),
-  "../../bin/kspec.cjs",
-);
+export function resolveDefaultKspecCliPath(moduleUrl = import.meta.url): string {
+  const moduleDir = path.dirname(fileURLToPath(moduleUrl));
+  return path.resolve(moduleDir, "../../dist/cli/index.js");
+}
+
+export const DEFAULT_KSPEC_CLI_PATH = resolveDefaultKspecCliPath();
 
 /**
  * Default stall detection timeout in seconds.
@@ -94,7 +97,7 @@ export interface InvocationOptions {
    * AC: @session-summary-cache ac-live-counter
    */
   onEventAppended?: (sessionId: string) => void;
-  /** Path to kspec CLI (defaults to resolved bin/kspec.cjs) */
+  /** Path to kspec CLI (defaults to the package CLI entrypoint under cli/) */
   kspecCliPath?: string;
   /** Abort signal for graceful cancellation (AC-11) */
   abortSignal?: AbortSignal;

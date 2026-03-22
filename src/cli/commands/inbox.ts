@@ -4,30 +4,38 @@ import { markMutating } from "../command-annotations.js";
 import {
   createInboxItem,
   createNote,
-  createTask,
   deleteInboxItem,
   findInboxItemByRef,
   getAuthor,
   initContext,
   type LoadedInboxItem,
+  type LoadedTask,
   loadAllItems,
-  loadAllTasks,
   loadInboxItems,
   mutateInboxItemAtomically,
   ReferenceIndex,
   saveInboxItem,
-  saveTask,
   shortestUniqueUlid,
 } from "../../parser/index.js";
+import { resolveTaskDataManager } from "../../parser/task-data-manager.js";
 import { commitIfShadow } from "../../parser/shadow.js";
-import type { InboxItemInput, TaskInput } from "../../schema/index.js";
+import {
+  TaskTypeSchema,
+  type InboxItemInput,
+  type TaskInput,
+} from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
 import { fieldLabels } from "../../strings/labels.js";
 import { formatRelativeTime as formatRelativeTimeUtil } from "../../utils/time.js";
+import { describeEnumValues } from "../enum-help.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, output, success } from "../output.js";
 import { parseTagsArray } from "../parse-utils.js";
-import { parseIntOption, validateSpecRef } from "../validators.js";
+import {
+  parseIntOption,
+  validateEnumOption,
+  validateSpecRef,
+} from "../validators.js";
 
 /**
  * Format relative time for display (wrapper for utils function)
@@ -105,7 +113,7 @@ Examples:
 
         const item = createInboxItem(input, ctx.config?.identity?.author);
         await saveInboxItem(ctx, item);
-        await commitIfShadow(ctx.shadow, "inbox-add", undefined, text);
+        await commitIfShadow(ctx.shadow, "inbox-add", item._ulid, text);
         const inboxItems = await loadInboxItems(ctx);
         const itemRef = shortInboxRef(item, inboxItems);
 
@@ -192,7 +200,11 @@ Examples:
       "Task description (defaults to inbox item text)",
     )
     .option("--priority <n>", "Priority (1-5)", "3")
-    .option("--type <type>", "Task type (task, bug, spike, etc.)", "task")
+    .option(
+      "--type <type>",
+      describeEnumValues("Task type", TaskTypeSchema.options),
+      "task",
+    )
     .option("--spec-ref <ref>", "Link to spec item")
     .option("--tag <tag...>", "Tags for the task")
     .option("--note <text>", "Add initial note to the created task")
@@ -222,15 +234,25 @@ Examples:
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
 
+        const taskTypeResult = validateEnumOption(
+          options.type || "task",
+          TaskTypeSchema.options,
+          "task type",
+        );
+        if (!taskTypeResult.ok) {
+          error(taskTypeResult.error);
+          process.exit(EXIT_CODES.VALIDATION_FAILED);
+        }
+
         // Validate spec_ref if provided — must point to a spec item
         if (options.specRef) {
-          const allTasks = await loadAllTasks(ctx);
+          const allTasks = await resolveTaskDataManager(ctx).listTasks(ctx);
           const allItems = await loadAllItems(ctx);
-          const refIndex = new ReferenceIndex(allTasks, allItems);
+          const refIndex = new ReferenceIndex(allTasks as unknown as LoadedTask[], allItems);
           const specRefResult = validateSpecRef(
             options.specRef,
             refIndex,
-            allTasks,
+            allTasks as unknown as LoadedTask[],
             allItems,
           );
           if (!specRefResult.ok) {
@@ -255,7 +277,7 @@ Examples:
         // Create the task
         const taskInput: TaskInput = {
           title,
-          type: options.type,
+          type: taskTypeResult.value,
           priority: priorityResult.value,
           spec_ref: options.specRef || null,
           tags: options.tag ? parseTagsArray(options.tag) : item.tags, // Inherit tags from inbox item if not specified
@@ -263,32 +285,31 @@ Examples:
             options.description !== undefined ? options.description : item.text, // Use provided description (even if empty) or fall back to inbox item text
         };
 
-        const task = createTask(taskInput);
-
         // AC: @cmd-inbox-promote ac-2
         if (options.note) {
           const note = createNote(options.note, getAuthor(ctx.config?.identity?.author));
-          task.notes = [...(task.notes || []), note];
+          taskInput.notes = [note];
         }
 
-        await saveTask(ctx, task);
+        // Create task first, then delete inbox item — if task creation fails,
+        // the inbox item is preserved (no data loss).
+        const task = await resolveTaskDataManager(ctx).createTask(ctx, taskInput);
 
-        // Load for index to get short ULID
-        const tasks = await loadAllTasks(ctx);
-        const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
-
-        // Delete inbox item unless --keep
+        // Delete inbox item unless --keep (after task creation so inbox item
+        // is preserved if createTask fails)
         if (!options.keep) {
           await deleteInboxItem(ctx, item._ulid);
           info(`Removed from inbox: ${itemRef}`);
         }
 
-        await commitIfShadow(
-          ctx.shadow,
-          "inbox-promote",
-          task.slugs[0] || index.shortUlid(task._ulid),
-        );
+        // Single shadow commit covers both task creation and inbox deletion
+        await commitIfShadow(ctx.shadow, "inbox-promote", title);
+
+        // Load for index to get short ULID
+        const tasks = await resolveTaskDataManager(ctx).listTasks(ctx);
+        const items = await loadAllItems(ctx);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
+
         success(`Created task: ${index.shortUlid(task._ulid)} - ${title}`, {
           task,
         });

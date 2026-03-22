@@ -203,7 +203,7 @@ describe('Integration: session-scoped task claiming', () => {
       expect(task.session_id).toBeNull();
     });
 
-    it('should clear session_id when task is unblocked to pending', () => {
+    it('should clear session_id when task is unblocked', () => {
       const sessionId = '01KJ6NFBHNMBABEHHDVEYSPJFR';
 
       // Start with session
@@ -221,14 +221,14 @@ describe('Integration: session-scoped task claiming', () => {
       );
       expect(blocked.session_id).toBe(sessionId);
 
-      // Unblock it
+      // Unblock it — restores prior status (in_progress) but clears session_id
       kspec('task unblock @test-task-pending', tempDir);
 
       const task = kspecJson<{ status: string; session_id?: string | null }>(
         'task get @test-task-pending',
         tempDir,
       );
-      expect(task.status).toBe('pending');
+      expect(task.status).toBe('in_progress');
       expect(task.session_id).toBeNull();
     });
 

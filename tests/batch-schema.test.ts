@@ -57,6 +57,13 @@ function createTestProgram(): Command {
     .description("Add note to an item")
     .argument("<ref>", "Item reference")
     .argument("<content>", "Note content");
+  const itemAc = item.command("ac").description("Acceptance criteria management");
+  itemAc
+    .command("remove")
+    .description("Remove an acceptance criterion")
+    .argument("<ref>", "Item reference")
+    .argument("<id>", "Acceptance criterion identifier")
+    .option("--force", "Skip confirmation");
 
   // validate (leaf command, no subcommands)
   program
@@ -345,6 +352,30 @@ describe("validateBatchCommands", () => {
         (e) => e.type === "unknown_arg",
       );
       expect(unknownArgErrs).toHaveLength(0);
+    });
+
+    // AC: @item-ac ac-item-ac-id-arg-consistency
+    it("accepts id for item ac remove positional arg names", () => {
+      const result = validateBatchCommands(
+        [{ command: "item ac remove", args: { ref: "@item", id: "ac-1" } }],
+        tree,
+      );
+      const unknownArgErrs = result.errors.filter(
+        (e) => e.type === "unknown_arg",
+      );
+      expect(unknownArgErrs).toHaveLength(0);
+      expect(result.valid).toBe(true);
+    });
+
+    it("rejects legacy acId for item ac remove with id suggestion", () => {
+      const result = validateBatchCommands(
+        [{ command: "item ac remove", args: { ref: "@item", acId: "ac-1" } }],
+        tree,
+      );
+      const unknownArgErr = result.errors.find((e) => e.type === "unknown_arg");
+      expect(unknownArgErr).toBeDefined();
+      expect(unknownArgErr?.message).toContain('Unknown argument "acId"');
+      expect(unknownArgErr?.suggestion).toBe("id");
     });
 
     it("flags unknown args with suggestion", () => {

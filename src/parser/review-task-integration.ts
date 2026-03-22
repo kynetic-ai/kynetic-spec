@@ -15,7 +15,8 @@
 
 import type { ReviewRecord, ReviewVerdictDecision } from "../schema/index.js";
 import type { KspecContext, LoadedTask } from "./yaml.js";
-import { createNote, getAuthor, mutateTaskAtomically } from "./yaml.js";
+import { createNote, getAuthor } from "./yaml.js";
+import { resolveTaskDataManager } from "./task-data-manager.js";
 import { findReviewByRef, loadReviewRecords, type LoadedReviewRecord } from "./reviews.js";
 
 /**
@@ -82,10 +83,15 @@ export async function linkReviewToTasks(
     );
     if (!task) continue;
 
-    await mutateTaskAtomically(ctx, task, (latestTask) => ({
+    await resolveTaskDataManager(ctx).mutateTask(ctx, task._ulid, (latestTask) => ({
       ...latestTask,
       review_ref: reviewRef,
-    }));
+    }), {
+      operation: "review-link",
+      ref: task.slugs[0] || task._ulid,
+      detail: `set review_ref to ${reviewRef}`,
+      skipCommit: true,
+    });
 
     result.linkedTasks.push({
       ulid: task._ulid,
@@ -162,7 +168,7 @@ export async function handleVerdictTaskTransition(
     ).length;
     const cycleNumber = existingKickbacks + 1;
 
-    await mutateTaskAtomically(ctx, task, (latestTask) => {
+    await resolveTaskDataManager(ctx).mutateTask(ctx, task._ulid, (latestTask) => {
       if (latestTask.status !== "pending_review") {
         return latestTask;
       }
@@ -178,6 +184,11 @@ export async function handleVerdictTaskTransition(
         session_id: null,
         notes: [...latestTask.notes, note],
       };
+    }, {
+      operation: "review-verdict-needs-work",
+      ref: task.slugs[0] || task._ulid,
+      detail: `changes_requested → needs_work (cycle ${cycleNumber})`,
+      skipCommit: true,
     });
 
     results.push({ ulid: task._ulid, slug: task.slugs[0], transitioned: true });

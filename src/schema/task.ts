@@ -24,6 +24,29 @@ export const AutomationStatusSchema = z.enum([
   "manual_only",
 ]);
 
+export type AutomationStatus = z.infer<typeof AutomationStatusSchema>;
+
+/**
+ * Coarse dispatch-facing automation filter.
+ * Derived from task automation semantics: "eligible" stays explicit and every
+ * other canonical task automation state buckets into "ineligible".
+ */
+export const AgentDispatchAutomationFilterSchema = z.enum([
+  "eligible",
+  "ineligible",
+]);
+
+export type AgentDispatchAutomationFilter = z.infer<
+  typeof AgentDispatchAutomationFilterSchema
+>;
+
+export function matchesAutomationFilter(
+  status: AutomationStatus | undefined,
+  filter: AgentDispatchAutomationFilter,
+): boolean {
+  return filter === "eligible" ? status === "eligible" : status !== "eligible";
+}
+
 /**
  * Note entry - append-only work log
  */
@@ -79,6 +102,8 @@ export const TaskSchema = z.object({
   // State
   status: TaskStatusSchema.default("pending"),
   blocked_by: z.array(z.string()).default([]),
+  // AC: @state-blocked ac-1, @task-unblock ac-1 — stores the status before blocking for restoration on unblock
+  prior_status: TaskStatusSchema.nullable().optional(),
   closed_reason: z.string().nullable().optional(),
 
   // Dependencies
@@ -157,6 +182,7 @@ export const TaskInputSchema = z.object({
   // State
   status: TaskStatusSchema.optional(),
   blocked_by: z.array(z.string()).optional(),
+  prior_status: TaskStatusSchema.nullable().optional(),
   closed_reason: z.string().nullable().optional(),
 
   // Dependencies

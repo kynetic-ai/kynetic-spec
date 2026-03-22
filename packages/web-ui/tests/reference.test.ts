@@ -99,4 +99,15 @@ describe('refHref', () => {
 		const href = refHref('spec', 'my-spec');
 		expect(href).toBe('/specs?ref=my-spec');
 	});
+
+	// AC: @review-records-web-ui ac-7 — review links navigate to /reviews/[id]
+	it('generates review URL with normalized ref', () => {
+		const href = refHref('review', '@01KKTX0CA45ZT43W2T6HJMVA01');
+		expect(href).toBe('/reviews/01KKTX0CA45ZT43W2T6HJMVA01');
+	});
+
+	it('generates review URL with base path', () => {
+		const href = refHref('review', '@review-slug', '/kynetic-spec');
+		expect(href).toBe('/kynetic-spec/reviews/review-slug');
+	});
 });

@@ -17,20 +17,22 @@ import chalk from "chalk";
 import {
   initContext,
   loadMetaContext,
-  loadAllTasks,
   findTaskByRef,
 } from "../../parser/index.js";
+import { resolveTaskDataManager } from "../../parser/task-data-manager.js";
 import { runInvocation } from "../../agent-runtime/invocation.js";
 import type { SessionUpdate } from "../../acp/index.js";
 import { buildPromptWithSkills, interpolateTemplate } from "../../agent-runtime/prompts.js";
 import { resolveAdapter } from "../../agents/adapters.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, output, success, warn, isJsonMode } from "../output.js";
-import { parseIntOption } from "../validators.js";
+import { parseIntOption, validateEnumOption } from "../validators.js";
 import { PidFileManager } from "../pid-utils.js";
 import { errors } from "../../strings/errors.js";
 import type { LoadedAgent } from "../../parser/meta.js";
 import { isEndLoopRequested, requestEndLoop } from "../../sessions/index.js";
+import { AgentDispatchAutomationFilterSchema } from "../../schema/index.js";
+import { describeEnumValues } from "../enum-help.js";
 import WsDefault from "ws";
 
 // WebSocket constructor that works on Node 18+.
@@ -97,7 +99,14 @@ export function registerAgentCommands(program: Command): void {
     .command("list")
     .description("List all agent definitions")
     .option("--json", "Output as JSON")
-    .option("--status <status>", "Filter by automation status (eligible|ineligible)")
+    .option(
+      "--status <status>",
+      describeEnumValues(
+        "Filter by automation status",
+        AgentDispatchAutomationFilterSchema.options,
+        "|",
+      ),
+    )
     .option("--tag <tag>", "Filter by tag (repeatable)", (val: string, arr: string[]) => [...arr, val], [] as string[])
     .option("--limit <n>", "Maximum number of results")
     .option("--offset <n>", "Skip first N results")
@@ -116,8 +125,19 @@ export function registerAgentCommands(program: Command): void {
 
         // AC: @trait-filterable-list ac-1 - automation status filter
         if (opts.status) {
+          const statusResult = validateEnumOption(
+            opts.status,
+            AgentDispatchAutomationFilterSchema.options,
+            "agent automation status",
+          );
+          if (!statusResult.ok) {
+            error(statusResult.error, {
+              suggestion: `Valid statuses: ${AgentDispatchAutomationFilterSchema.options.join(", ")}`,
+            });
+            process.exit(EXIT_CODES.VALIDATION_FAILED);
+          }
           agents = agents.filter((a) =>
-            (a as LoadedAgent & { automation?: string }).automation === opts.status,
+            (a as LoadedAgent & { automation?: string }).automation === statusResult.value,
           );
         }
 
@@ -274,7 +294,7 @@ export function registerAgentCommands(program: Command): void {
           // Best-effort task title resolution — falls back to "(unavailable)".
           let taskTitle = "(unavailable)";
           try {
-            const tasks = await loadAllTasks(ctx);
+            const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
             const task = findTaskByRef(tasks, taskRef);
             if (task?.title) taskTitle = task.title;
           } catch {
@@ -705,6 +725,11 @@ export function registerAgentCommands(program: Command): void {
           running: boolean;
           activeInvocations: number;
           queuedInvocations: number;
+          degraded?: {
+            active: boolean;
+            reason: string;
+            enteredAt: string | null;
+          };
         };
 
         // Get loaded agents
@@ -721,6 +746,18 @@ export function registerAgentCommands(program: Command): void {
         output(fullData, () => {
           console.log(chalk.bold("Dispatch Status"));
           console.log();
+          // AC: @dispatch-remote-branch-sync ac-degraded-status-api — prominent warning
+          if (statusData.degraded?.active) {
+            console.log(chalk.bgRed.white.bold("  ⚠ DEGRADED  ") + " " + chalk.red("New workspace provisioning is paused"));
+            console.log(`  ${chalk.red("Reason:")} ${statusData.degraded.reason}`);
+            if (statusData.degraded.enteredAt) {
+              const enteredAt = new Date(statusData.degraded.enteredAt);
+              const durationMs = Date.now() - enteredAt.getTime();
+              const durationMin = Math.round(durationMs / 60_000);
+              console.log(`  ${chalk.red("Since:")} ${enteredAt.toLocaleString()} (${durationMin}m ago)`);
+            }
+            console.log();
+          }
           console.log(`  Engine:             ${statusData.running ? chalk.green("enabled") : chalk.yellow("disabled")}`);
           console.log(`  Active invocations: ${chalk.cyan(String(statusData.activeInvocations))}`);
           console.log(`  Queued invocations: ${chalk.cyan(String(statusData.queuedInvocations))}`);
@@ -940,7 +977,7 @@ export function registerAgentCommands(program: Command): void {
           const sessionEventTypes = new Set([
             "message_start", "message_progress", "message_complete",
             "thinking_start", "thinking_progress", "thinking_complete",
-            "tool_call_start", "tool_call_complete",
+            "tool_call_start", "tool_call_input", "tool_call_complete",
           ]);
 
           if (sessionEventTypes.has(eventType) && msg.data) {
@@ -1005,6 +1042,16 @@ export function registerAgentCommands(program: Command): void {
                 const inputSummary = summarizeToolInput(data.tool_input);
                 startSpeakerSection(streamKey, prefix);
                 writeRaw(`  ⚡ Tool: ${toolName}${inputSummary}\n`);
+                break;
+              }
+              // AC: @ws-session-event-streaming ac-tool-input-update
+              case "tool_call_input": {
+                const toolName = data.tool_name ?? "unknown";
+                const inputSummary = summarizeToolInput(data.tool_input);
+                if (inputSummary) {
+                  startSpeakerSection(streamKey, prefix);
+                  writeRaw(`  ⚡ Tool: ${toolName}${inputSummary}\n`);
+                }
                 break;
               }
               case "tool_call_complete": {

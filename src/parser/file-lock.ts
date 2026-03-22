@@ -29,7 +29,7 @@ export async function acquireFileLock(
 ): Promise<() => Promise<void>> {
   const lockDir = `${filePath}.lock`;
   const pidFile = path.join(lockDir, "pid");
-  const deadline = Date.now() + timeoutMs;
+  const deadline = timeoutMs === 0 || timeoutMs === Infinity ? Infinity : Date.now() + timeoutMs;
   const ownershipMarker = `${process.pid}\n${Date.now()}\n${randomUUID()}`;
 
   // Ensure parent directory exists so the lock dir can be created

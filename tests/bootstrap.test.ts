@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 const {
   checkKspecCliWithDeps,
+  checkNodeModulesWithDeps,
   loadShadowBootstrapConfigWithDeps,
   resolveShadowBootstrapActionWithDeps,
 } = require('../scripts/bootstrap.cjs');
@@ -227,6 +228,37 @@ describe('bootstrap shadow config parsing', () => {
       directory: '.shadow-spec',
       remote: 'specs-origin',
       remoteType: 'named',
+    });
+  });
+});
+
+describe('bootstrap dependency checks', () => {
+  it('detects missing direct dependencies from package.json, not just legacy sentinel packages', () => {
+    const status = checkNodeModulesWithDeps({
+      projectRootPath: '/workspace',
+      fsApi: {
+        existsSync: (target: string) => {
+          const existing = new Set([
+            '/workspace/package.json',
+            '/workspace/package-lock.json',
+            '/workspace/node_modules',
+            '/workspace/node_modules/zod',
+          ]);
+          return existing.has(target);
+        },
+        readFileSync: () => JSON.stringify({
+          dependencies: {
+            zod: '^3.0.0',
+            croner: '^10.0.0',
+          },
+        }),
+      },
+      pathApi: path,
+    });
+
+    expect(status).toMatchObject({
+      installed: false,
+      reason: expect.stringContaining('croner'),
     });
   });
 });

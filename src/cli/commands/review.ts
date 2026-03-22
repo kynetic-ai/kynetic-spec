@@ -14,20 +14,25 @@ import type { Command } from "commander";
 import { ulid } from "ulid";
 import { markMutating } from "../command-annotations.js";
 import {
+  computeDisposition,
   createReviewRecord,
   findReviewByRef,
   getAuthor,
   handleVerdictTaskTransition,
   initContext,
   linkReviewToTasks,
-  loadAllTasks,
   type LoadedReviewRecord,
   loadReviewRecords,
   mutateReviewAtomically,
   saveReviewRecord,
   shortestUniqueUlid,
+  submitVerdict,
+  transitionLifecycle,
 } from "../../parser/index.js";
+import { resolveTaskDataManager } from "../../parser/task-data-manager.js";
 import { commitIfShadow } from "../../parser/shadow.js";
+import { evaluateGates } from "../../review/checks.js";
+import { extractSubjectVersion } from "../../review/subject-bindings.js";
 import type {
   ReviewAnchor,
   ReviewCheck,
@@ -35,16 +40,22 @@ import type {
   ReviewLifecycleState,
   ReviewRecord,
   ReviewSubject,
-  ReviewSubjectVersion,
   ReviewThread,
   ReviewThreadKind,
-  ReviewVerdict,
   ReviewVerdictDecision,
+} from "../../schema/index.js";
+import {
+  ReviewDispositionSchema,
+  ReviewCheckStatusSchema,
+  ReviewLifecycleStateSchema,
+  ReviewThreadKindSchema,
 } from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
+import { describeEnumValues } from "../enum-help.js";
 import { error, info, isJsonMode, output, success, warn } from "../output.js";
 import { formatRelativeTime as formatRelativeTimeUtil } from "../../utils/time.js";
+import { validateEnumOption } from "../validators.js";
 
 // --- Helpers ---
 
@@ -111,34 +122,12 @@ function shortReviewRef(
 }
 
 /**
- * Compute disposition from verdicts.
- * AC: @review-cli-commands ac-2
- */
-function computeDisposition(review: ReviewRecord): string {
-  if (review.verdicts.length === 0) return "pending";
-  const hasChangesRequested = review.verdicts.some(
-    (v) => v.decision === "request_changes",
-  );
-  if (hasChangesRequested) return "changes_requested";
-  const hasApproval = review.verdicts.some((v) => v.decision === "approve");
-  if (hasApproval) return "approved";
-  return "pending";
-}
-
-/**
- * Compute gate state from checks.
+ * Compute gate state from checks using shared evaluateGates.
  * AC: @review-cli-commands ac-2
  */
 function computeGateState(review: ReviewRecord): string {
-  const requiredChecks = review.checks.filter((c) => c.required);
-  if (requiredChecks.length === 0) return "pending";
-  const allPassing = requiredChecks.every((c) => c.status === "pass");
-  if (allPassing) return "passing";
-  const hasFailing = requiredChecks.some(
-    (c) => c.status === "fail",
-  );
-  if (hasFailing) return "failing";
-  return "pending";
+  const currentVersion = extractSubjectVersion(review.subject);
+  return evaluateGates(review.checks, currentVersion).state;
 }
 
 /**
@@ -324,12 +313,88 @@ function createEvent(
 
 /**
  * Parse subject from CLI flags.
- * AC: @review-cli-creation-and-query ac-1, ac-2
+ * AC: @review-cli-creation-and-query ac-1, ac-2, ac-ref-subject-remains-ref-subject,
+ *     ac-code-subject-created-only-when-requested, ac-ambiguous-review-subject-rejected,
+ *     ac-version-context-does-not-change-subject
  */
 function parseSubjectFromOptions(options: Record<string, unknown>): ReviewSubject {
   const subjectType = options.subjectType as string | undefined;
+  const hasRefSubjectInput = Boolean(options.subjectRef);
+  const hasCodeSubjectInput = Boolean(
+    options.base ||
+      options.head ||
+      options.mergeBase ||
+      options.baseBranch ||
+      options.headBranch,
+  );
+  const hasExternalSubjectInput = Boolean(
+    options.url || options.externalId || options.provider,
+  );
 
-  if (subjectType === "code" || options.base) {
+  const inferSubjectType = (): "task" | "code" | "external" => {
+    const inferredTypes = [
+      hasRefSubjectInput ? "task" : null,
+      hasCodeSubjectInput ? "code" : null,
+      hasExternalSubjectInput ? "external" : null,
+    ].filter((value): value is "task" | "code" | "external" => value !== null);
+
+    if (inferredTypes.length > 1) {
+      exitWithGuidance(
+        "Ambiguous review subject. Provide one subject input kind or make the subject explicit with matching flags.",
+        EXIT_CODES.USAGE_ERROR,
+        "Use exactly one of: --subject-ref [--subject-type plan|task|spec], --base/--head, or --url",
+        { field: "subject", value: "ambiguous" },
+      );
+    }
+
+    return inferredTypes[0] || "task";
+  };
+
+  const resolvedSubjectType = subjectType || inferSubjectType();
+
+  if (
+    resolvedSubjectType === "plan" ||
+    resolvedSubjectType === "task" ||
+    resolvedSubjectType === "spec"
+  ) {
+    if (hasCodeSubjectInput || hasExternalSubjectInput) {
+      exitWithGuidance(
+        `Subject type ${resolvedSubjectType} cannot be combined with code or external subject flags`,
+        EXIT_CODES.USAGE_ERROR,
+        "Use --subject-ref for plan/task/spec reviews. Use --examined-commit for review context, not --base/--head.",
+        { field: "subject-type", value: resolvedSubjectType },
+      );
+    }
+
+    if (!options.subjectRef) {
+      exitWithGuidance(
+        "Subject is required. Provide --subject-ref for plan/task/spec, or --base/--head for code, or --url for external",
+        EXIT_CODES.USAGE_ERROR,
+        "Usage: kspec review add --title '...' --subject-ref @ref [--subject-type plan|task|spec]",
+        { field: "subject", value: "missing" },
+      );
+    }
+
+    return {
+      type: resolvedSubjectType,
+      ref: (options.subjectRef as string).startsWith("@")
+        ? (options.subjectRef as string)
+        : `@${options.subjectRef as string}`,
+      shadow_commit: "",
+      content_hash: "",
+    };
+  }
+
+  if (resolvedSubjectType === "code") {
+    if (hasRefSubjectInput || hasExternalSubjectInput) {
+      exitWithGuidance(
+        "Code subject cannot be combined with --subject-ref or external subject flags",
+        EXIT_CODES.USAGE_ERROR,
+        "Use only --base/--head for code reviews, or remove --subject-type code.",
+        { field: "subject-type", value: "code" },
+      );
+    }
+
     if (!options.base || !options.head) {
       exitWithGuidance(
         "Code subject requires --base and --head commit refs",
@@ -355,7 +420,16 @@ function parseSubjectFromOptions(options: Record<string, unknown>): ReviewSubjec
     return subject;
   }
 
-  if (subjectType === "external" || options.url) {
+  if (resolvedSubjectType === "external") {
+    if (hasRefSubjectInput || hasCodeSubjectInput) {
+      exitWithGuidance(
+        "External subject cannot be combined with --subject-ref or code subject flags",
+        EXIT_CODES.USAGE_ERROR,
+        "Use only --url [--external-id --provider] for external reviews.",
+        { field: "subject-type", value: "external" },
+      );
+    }
+
     if (!options.url) {
       exitWithGuidance(
         "External subject requires --url",
@@ -377,58 +451,11 @@ function parseSubjectFromOptions(options: Record<string, unknown>): ReviewSubjec
     return subject;
   }
 
-  // Ref-backed subjects (plan, task, spec)
-  if (!options.subjectRef) {
-    exitWithGuidance(
-      "Subject is required. Provide --subject-ref for plan/task/spec, or --base/--head for code, or --url for external",
-      EXIT_CODES.USAGE_ERROR,
-      "Usage: kspec review add --title '...' --subject-ref @ref [--subject-type plan|task|spec]",
-      { field: "subject", value: "missing" },
-    );
-  }
-
-  const ref = options.subjectRef as string;
-  const type = (subjectType || "task") as "plan" | "task" | "spec";
-  if (!["plan", "task", "spec"].includes(type)) {
-    exitWithGuidance(
-      `Invalid subject type: ${type}. Must be one of: plan, task, spec, code, external`,
-      EXIT_CODES.USAGE_ERROR,
-      "Valid subject types: plan, task, spec, code, external",
-      { field: "subject-type", value: type },
-    );
-  }
-
-  return {
-    type,
-    ref: ref.startsWith("@") ? ref : `@${ref}`,
-    shadow_commit: "",
-    content_hash: "",
-  };
-}
-
-/**
- * Parse applies_to_version from CLI flags.
- */
-function parseVersionFromOptions(options: Record<string, unknown>): ReviewSubjectVersion {
-  if (options.versionBase && options.versionHead) {
-    return {
-      type: "code_compare" as const,
-      base_commit: options.versionBase as string,
-      head_commit: options.versionHead as string,
-    };
-  }
-  if (options.versionHash) {
-    return {
-      type: "entity_version" as const,
-      content_hash: options.versionHash as string,
-    };
-  }
-  // Default code compare with empty commits (must be provided)
   exitWithGuidance(
-    "Version context is required. Provide --version-base and --version-head for code, or --version-hash for entity",
+    `Invalid subject type: ${resolvedSubjectType}. Must be one of: plan, task, spec, code, external`,
     EXIT_CODES.USAGE_ERROR,
-    "Usage: --version-base <commit> --version-head <commit> OR --version-hash <hash>",
-    { field: "version", value: "missing" },
+    "Valid subject types: plan, task, spec, code, external",
+    { field: "subject-type", value: resolvedSubjectType },
   );
 }
 
@@ -485,26 +512,22 @@ export function registerReviewCommands(program: Command): void {
 
           await saveReviewRecord(ctx, { ...review, _sourceFile: undefined });
 
+          // AC: @review-task-lifecycle-integration ac-2, ac-3
+          // Auto-link review to task(s) via review_ref (skipCommit in linkReviewToTasks)
+          const allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+          const linkResult = await linkReviewToTasks(ctx, review, allTasks);
+
           // AC: @trait-shadow-commit ac-1, ac-2, ac-3
+          // Single atomic commit: review creation + task linkage
+          const linkSuffix = linkResult.linkedTasks.length > 0
+            ? ` (linked to ${linkResult.linkedTasks.length} task(s))`
+            : "";
           await commitIfShadow(
             ctx.shadow,
             "review-add",
             review.slugs[0] || review._ulid.slice(0, 8),
-            options.title,
+            `${options.title}${linkSuffix}`,
           );
-
-          // AC: @review-task-lifecycle-integration ac-2, ac-3
-          // Auto-link review to task(s) via review_ref
-          const allTasks = await loadAllTasks(ctx);
-          const linkResult = await linkReviewToTasks(ctx, review, allTasks);
-          if (linkResult.linkedTasks.length > 0) {
-            await commitIfShadow(
-              ctx.shadow,
-              "review-task-link",
-              review.slugs[0] || review._ulid.slice(0, 8),
-              `linked to ${linkResult.linkedTasks.length} task(s)`,
-            );
-          }
 
           const reviews = await loadReviewRecords(ctx);
           const shortRef = shortReviewRef(
@@ -570,14 +593,40 @@ export function registerReviewCommands(program: Command): void {
         // Apply filters
         // AC: @trait-filterable-list ac-1
         if (options.status) {
+          const statusResult = validateEnumOption(
+            options.status,
+            ReviewLifecycleStateSchema.options,
+            "review lifecycle state",
+          );
+          if (!statusResult.ok) {
+            exitWithGuidance(
+              statusResult.error,
+              EXIT_CODES.VALIDATION_FAILED,
+              `Valid statuses: ${ReviewLifecycleStateSchema.options.join(", ")}`,
+              { field: "status", value: options.status },
+            );
+          }
           reviews = reviews.filter(
-            (r) => r.lifecycle_state === options.status,
+            (r) => r.lifecycle_state === statusResult.value,
           );
         }
 
         if (options.disposition) {
+          const dispositionResult = validateEnumOption(
+            options.disposition,
+            ReviewDispositionSchema.options,
+            "review disposition",
+          );
+          if (!dispositionResult.ok) {
+            exitWithGuidance(
+              dispositionResult.error,
+              EXIT_CODES.VALIDATION_FAILED,
+              `Valid dispositions: ${ReviewDispositionSchema.options.join(", ")}`,
+              { field: "disposition", value: options.disposition },
+            );
+          }
           reviews = reviews.filter(
-            (r) => computeDisposition(r) === options.disposition,
+            (r) => computeDisposition(r) === dispositionResult.value,
           );
         }
 
@@ -599,7 +648,7 @@ export function registerReviewCommands(program: Command): void {
           const taskRefNoAt = taskRef.slice(1);
 
           // Also check task.review_ref to find reviews linked via the task schema
-          const tasks = await loadAllTasks(ctx);
+          const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
           const task = tasks.find(
             (t) =>
               t._ulid === taskRefNoAt ||
@@ -695,7 +744,11 @@ export function registerReviewCommands(program: Command): void {
       .command("comment <ref>")
       .description("Add a comment thread to a review")
       .requiredOption("--body <body>", "Comment body")
-      .option("--kind <kind>", "Thread kind: blocker, question, nit", "nit")
+      .option(
+        "--kind <kind>",
+        describeEnumValues("Thread kind", ReviewThreadKindSchema.options),
+        "nit",
+      )
       .option("--path <path>", "Code anchor: file path")
       .option("--side <side>", "Code anchor: base or head")
       .option("--line-start <n>", "Code anchor: start line", parseInt)
@@ -714,7 +767,7 @@ export function registerReviewCommands(program: Command): void {
 
           // Validate thread kind
           // AC: @trait-error-guidance ac-5
-          const validKinds = ["blocker", "question", "nit"];
+          const validKinds = ReviewThreadKindSchema.options;
           if (!validKinds.includes(options.kind)) {
             exitWithGuidance(
               `Invalid thread kind: ${options.kind}`,
@@ -888,9 +941,6 @@ export function registerReviewCommands(program: Command): void {
       .option("--no-required", "Mark check as not required")
       .option("--runner <runner>", "Check runner identifier")
       .option("--evidence <evidence>", "Evidence payload or link")
-      .option("--version-base <commit>", "Applies-to version: base commit (for code)")
-      .option("--version-head <commit>", "Applies-to version: head commit (for code)")
-      .option("--version-hash <hash>", "Applies-to version: content hash (for entities)")
       .option("--author <author>", "Actor for the event")
       .action(async (ref: string, options) => {
         try {
@@ -902,27 +952,32 @@ export function registerReviewCommands(program: Command): void {
 
           // Validate check status
           // AC: @trait-error-guidance ac-5
-          const validStatuses = ["pass", "fail", "running", "skipped"];
-          if (!validStatuses.includes(options.status)) {
+          const statusResult = validateEnumOption(
+            options.status,
+            ReviewCheckStatusSchema.options,
+            "check status",
+          );
+          if (!statusResult.ok) {
             exitWithGuidance(
-              `Invalid check status: ${options.status}`,
-              EXIT_CODES.USAGE_ERROR,
-              `Valid statuses: ${validStatuses.join(", ")}`,
+              statusResult.error,
+              EXIT_CODES.VALIDATION_FAILED,
+              `Valid statuses: ${ReviewCheckStatusSchema.options.join(", ")}`,
               { field: "status", value: options.status },
             );
           }
 
-          const version = parseVersionFromOptions(options);
+          // AC: @review-cli-mutation-commands ac-2 — auto-derive version from review subject
+          const version = extractSubjectVersion(found.subject);
 
           const newCheck: ReviewCheck = {
             name: options.name,
-            status: options.status as ReviewCheck["status"],
+            status: statusResult.value as ReviewCheck["status"],
             required: options.required !== false,
             ...(options.runner ? { runner: options.runner } : {}),
             ...(options.evidence ? { evidence: options.evidence } : {}),
             applies_to_version: version,
             created_at: now,
-            completed_at: options.status !== "running" ? now : null,
+            completed_at: statusResult.value !== "running" ? now : null,
           };
 
           const updated = await mutateReviewAtomically(ctx, found, (latest) => ({
@@ -932,7 +987,7 @@ export function registerReviewCommands(program: Command): void {
               ...latest.events,
               createEvent("check_added", author, {
                 name: options.name,
-                status: options.status,
+                status: statusResult.value,
               }),
             ],
             updated_at: now,
@@ -946,9 +1001,9 @@ export function registerReviewCommands(program: Command): void {
           );
 
           output(
-            { check_name: options.name, status: options.status, review_ulid: found._ulid },
+            { check_name: options.name, status: statusResult.value, review_ulid: found._ulid },
             () => {
-              success(`Added check "${options.name}" (${options.status}) to review ${shortReviewRef(found, reviews)}`);
+              success(`Added check "${options.name}" (${statusResult.value}) to review ${shortReviewRef(found, reviews)}`);
             },
           );
         } catch (err) {
@@ -967,16 +1022,12 @@ export function registerReviewCommands(program: Command): void {
       .requiredOption("--decision <decision>", "Verdict: approve, request_changes, comment")
       .option("--reviewer <reviewer>", "Reviewer identity")
       .option("--role <role>", "Reviewer role", "reviewer")
-      .option("--version-base <commit>", "Applies-to version: base commit (for code)")
-      .option("--version-head <commit>", "Applies-to version: head commit (for code)")
-      .option("--version-hash <hash>", "Applies-to version: content hash (for entities)")
       .action(async (ref: string, options) => {
         try {
           const ctx = await initContext();
           const reviews = await loadReviewRecords(ctx);
           const found = resolveReviewRef(ref, reviews);
           const reviewer = options.reviewer || getAuthor(ctx.config?.identity?.author) || "unknown";
-          const now = new Date().toISOString();
 
           // Validate decision
           // AC: @trait-error-guidance ac-5
@@ -990,51 +1041,28 @@ export function registerReviewCommands(program: Command): void {
             );
           }
 
-          const version = parseVersionFromOptions(options);
-
-          const newVerdict: ReviewVerdict = {
-            reviewer,
-            role: options.role,
-            decision: options.decision as ReviewVerdictDecision,
-            applies_to_version: version,
-            created_at: now,
-          };
-
           // AC: @review-record-per-cycle-lifecycle ac-1 — auto-close on approve/request_changes
           const shouldAutoClose =
             options.decision === "approve" || options.decision === "request_changes";
 
-          const updated = await mutateReviewAtomically(ctx, found, (latest) => ({
-            ...latest,
-            verdicts: [...latest.verdicts, newVerdict],
-            ...(shouldAutoClose && { lifecycle_state: "closed" as ReviewLifecycleState }),
-            events: [
-              ...latest.events,
-              createEvent("verdict_submitted", reviewer, {
-                decision: options.decision,
-              }),
-              ...(shouldAutoClose
-                ? [
-                    createEvent("lifecycle_change", reviewer, {
-                      from: latest.lifecycle_state,
-                      to: "closed",
-                    }),
-                  ]
-                : []),
-            ],
-            updated_at: now,
-          }));
+          const updated = await mutateReviewAtomically(ctx, found, (latest) => {
+            const withVerdict = submitVerdict(latest, {
+              reviewer,
+              decision: options.decision as ReviewVerdictDecision,
+              role: options.role,
+            });
 
-          await commitIfShadow(
-            ctx.shadow,
-            "review-verdict",
-            found.slugs[0] || found._ulid.slice(0, 8),
-            `${options.decision}${shouldAutoClose ? " (auto-closed)" : ""}`,
-          );
+            // Auto-close if approve or request_changes
+            if (shouldAutoClose && withVerdict.lifecycle_state !== "closed") {
+              return transitionLifecycle(withVerdict, "closed", reviewer);
+            }
+
+            return withVerdict;
+          });
 
           // AC: @review-task-lifecycle-integration ac-4
           // Auto-transition tasks to needs_work on changes_requested verdict
-          const allTasks = await loadAllTasks(ctx);
+          const allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
           const transitioned = await handleVerdictTaskTransition(
             ctx,
             found,
@@ -1042,14 +1070,15 @@ export function registerReviewCommands(program: Command): void {
             allTasks,
             reviewer,
           );
-          if (transitioned.some((t) => t.transitioned)) {
-            await commitIfShadow(
-              ctx.shadow,
-              "review-verdict-task-transition",
-              found.slugs[0] || found._ulid.slice(0, 8),
-              `tasks transitioned to needs_work`,
-            );
-          }
+
+          // Single atomic commit: review verdict + any task transitions
+          const transitionedCount = transitioned.filter((t) => t.transitioned).length;
+          await commitIfShadow(
+            ctx.shadow,
+            "review-verdict",
+            found.slugs[0] || found._ulid.slice(0, 8),
+            `${options.decision}${shouldAutoClose ? " (auto-closed)" : ""}${transitionedCount > 0 ? ` (${transitionedCount} task(s) → needs_work)` : ""}`,
+          );
 
           output(
             { decision: options.decision, reviewer, review_ulid: found._ulid, lifecycle_state: updated.lifecycle_state },
@@ -1493,7 +1522,7 @@ export function registerReviewCommands(program: Command): void {
       try {
         const ctx = await initContext();
         const reviews = await loadReviewRecords(ctx);
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
         const cleanRef = ref.startsWith("@") ? ref : `@${ref}`;
         const cleanRefNoAt = cleanRef.startsWith("@") ? cleanRef.slice(1) : cleanRef;
 

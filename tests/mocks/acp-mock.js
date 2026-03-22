@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Mock ACP agent for testing ralph command.
+ * Mock ACP agent for testing dispatch command flows.
  *
  * Implements minimal ACP JSON-RPC protocol:
  * - initialize
@@ -250,7 +250,7 @@ async function handlePrompt(id, params) {
   }
 
   // Complete task if configured (simulates agent completing work)
-  // IMPORTANT: Must complete BEFORE sending response so ralph's verifyTaskCompleted() sees the change
+  // IMPORTANT: Must complete BEFORE sending response so the dispatch verifier sees the change
   if (completeTask && projectDir) {
     try {
       // Use --force to complete from pending_review state
@@ -300,7 +300,7 @@ async function handleRequestPermission(id, params) {
   const options = params.options || [];
 
   // Auto-approve: Find an "allow" option (prefer allow_always, then allow_once)
-  // This matches the yolo mode behavior in the real ralph command
+  // This matches the yolo mode behavior in the real dispatch command
   const allowOption =
     options.find((o) => o.kind === "allow_always") ||
     options.find((o) => o.kind === "allow_once");

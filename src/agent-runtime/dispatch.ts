@@ -15,7 +15,7 @@ import { spawnSync } from "node:child_process";
 import { ulid } from "ulid";
 import {
   initContext,
-  loadAllTasks,
+  resolveTaskDataManager,
   loadMetaContext,
   areDependenciesMet,
   loadReviewRecords,
@@ -23,16 +23,18 @@ import {
   type LoadedAgent,
 } from "../parser/index.js";
 import { DEFAULT_KSPEC_CLI_PATH, runInvocation } from "./invocation.js";
-import { loadProjectConfig } from "../parser/config.js";
-import type { InvocationOptions } from "./invocation.js";
+import { loadProjectConfig, resolveDispatchRemoteSync } from "../parser/config.js";
+import type { InvocationOptions, InvocationResult } from "./invocation.js";
 import { SessionEventAccumulator } from "./session-event-accumulator.js";
 import type { SessionEventData } from "./session-event-types.js";
+import { EventBus, type EventBusOptions, type EventEnvelope, type EmitOptions } from "./event-bus.js";
 import {
   interpolateTemplate,
   rewriteSkillReferencesForAdapter,
 } from "./prompts.js";
 import { getAdapter } from "../agents/adapters.js";
 import {
+  buildDispatchGitEnv,
   provisionDispatchWorkspace,
   DispatchWorkspaceError,
   getDispatchShadowMutationLockPath,
@@ -47,6 +49,13 @@ import {
   cleanupReviewerDispatchWorkspace,
   reconcileDispatchWorkspaceArtifacts,
   discoverWorkspaceForReviewOrFixCycle,
+  fastForwardDispatchIntegrationBranch,
+  pushDispatchBranch,
+  pushIntegrationTarget,
+  runDispatchIntegrationTargetGit,
+  resolveDispatchIntegrationMutationScope,
+  resolveDispatchRemote,
+  resolveDispatchWorkspaceConfig,
 } from "./workspace.js";
 import {
   ensureWorkspaceBootstrap,
@@ -56,6 +65,7 @@ import type {
   AgentDispatchRule,
   AgentDispatchFilter,
 } from "../schema/meta.js";
+import { matchesAutomationFilter } from "../schema/task.js";
 import type { SessionTrigger } from "../sessions/types.js";
 import { getSessionCache } from "../sessions/cache.js";
 
@@ -266,8 +276,8 @@ async function resolveRoleEntrypoint(
   config: Awaited<ReturnType<typeof loadProjectConfig>>["config"],
 ): Promise<string> {
   const rawEntrypoint = role === "reviewer"
-    ? config.ralph.skills.pr_review
-    : config.ralph.skills.task_work;
+    ? config.agent.skills.pr_review
+    : config.agent.skills.task_work;
   const rendered = await renderEntrypointForAdapter(
     rawEntrypoint,
     adapterId,
@@ -276,7 +286,7 @@ async function resolveRoleEntrypoint(
   if (!rendered) {
     throw new DispatchPromptError(
       `No valid ${role} entrypoint is configured for adapter "${adapterId}".`,
-      `Set ralph.skills.${role === "reviewer" ? "pr_review" : "task_work"} in kspec.config.yaml to a non-empty workflow or skill entrypoint.`,
+      `Set agent.skills.${role === "reviewer" ? "pr_review" : "task_work"} in kspec.config.yaml to a non-empty workflow or skill entrypoint.`,
     );
   }
   return rendered;
@@ -673,6 +683,40 @@ interface ActiveInvocationRecord {
 type DedupKey = `${string}:${string}:${string}`;
 
 /**
+ * Result of a target branch sync operation.
+ * AC: @dispatch-remote-branch-sync ac-pull-target-on-start through ac-no-remote
+ */
+export type TargetSyncResult =
+  | "synced"
+  | "up_to_date"
+  | "skipped"
+  | "transient_failure"
+  | "diverged"
+  | "unsafe_target";
+
+/**
+ * Degraded state descriptor for the dispatch engine.
+ * AC: @dispatch-remote-branch-sync ac-degraded-status-api
+ */
+export interface DegradedState {
+  active: boolean;
+  reason: string;
+  enteredAt: Date | null;
+}
+
+/**
+ * Sync state event emitted when the engine enters or exits degraded state.
+ * AC: @dispatch-remote-branch-sync ac-degraded-status-broadcast
+ */
+export interface SyncStateEvent {
+  type: "sync_state";
+  degraded: boolean;
+  reason: string;
+  enteredAt: string | null;
+  recoveredAfterMs?: number;
+}
+
+/**
  * Invocation lifecycle event payload.
  * AC: @daemon-agent-dispatch ac-3, ac-4
  */
@@ -731,6 +775,16 @@ export interface DispatchEngineOptions {
    * AC: @daemon-agent-dispatch ac-8
    */
   onSessionEvent?: (event: SessionEventData) => void;
+  /**
+   * Optional callback invoked when the engine enters or exits degraded state.
+   * AC: @dispatch-remote-branch-sync ac-degraded-status-broadcast
+   */
+  onSyncStateEvent?: (event: SyncStateEvent) => void;
+  /**
+   * Configuration for the event bus (chain depth, ring buffer, dedup).
+   * AC: @dispatch-event-envelope ac-5, ac-6
+   */
+  eventBusOptions?: EventBusOptions;
 }
 
 // ─── DispatchEngine ───────────────────────────────────────────────────────────
@@ -757,6 +811,7 @@ export class DispatchEngine {
   private kspecCliPath?: string;
   private onInvocationEvent?: (event: InvocationEvent) => void;
   private onSessionEvent?: (event: SessionEventData) => void;
+  private onSyncStateEvent?: (event: SyncStateEvent) => void;
   /** Per-session text accumulator for newline-boundary streaming. */
   private accumulator = new SessionEventAccumulator();
 
@@ -794,6 +849,49 @@ export class DispatchEngine {
   private drainInProgress = false;
   /** Whether another drain was requested while one is already running. AC: @per-task-dispatch-drain-coalescing ac-8 */
   private drainPending = false;
+  /** Central event bus for structured event emission and subscription. AC: @dispatch-event-envelope ac-1 through ac-6 */
+  private _eventBus: EventBus;
+  /**
+   * Whether a push to the integration target is currently in progress.
+   * AC: @dispatch-remote-branch-sync ac-target-push-serialization
+   */
+  private targetPushInProgress = false;
+  /** Resolved effective remote_sync value (set once at start time). */
+  private remoteSyncEnabled = false;
+  /** Resolved remote name for push operations (null = no remote). */
+  private dispatchRemote: string | null = null;
+  /** Resolved integration target branch for push operations. */
+  private integrationTargetBranch: string | null = null;
+
+  // ─── Target Branch Sync State ───────────────────────────────────────────────
+  // AC: @dispatch-remote-branch-sync ac-pull-target-on-start through ac-no-remote
+
+  /** Whether a target sync is currently in progress (running guard). */
+  private _targetSyncRunning = false;
+  /** Timestamp of last successful target sync (ms since epoch). 0 = never synced. */
+  private _lastTargetSyncTimestamp = 0;
+  /** Counter of consecutive transient sync failures. Reset on any success. */
+  private _consecutiveTransientFailures = 0;
+  /** Resolved remote sync config (cached at start). */
+  private _remoteSyncEnabled: boolean | null = null;
+  /** Resolved remote name for sync operations (cached at start). */
+  private _syncRemote: string | null = null;
+  /** Resolved base branch for sync operations (cached at start). */
+  private _syncBaseBranch: string | null = null;
+  /** Configured sync interval in milliseconds. */
+  private _syncIntervalMs = 0;
+  /** Timestamp of first consecutive transient failure (ms since epoch). 0 = no failures. */
+  private _firstTransientFailureTimestamp = 0;
+
+  // ─── Degraded State ──────────────────────────────────────────────────────
+  // AC: @dispatch-remote-branch-sync ac-divergence-enters-degraded through ac-degraded-auto-recover
+
+  /** Whether the engine is in degraded state. */
+  private _degraded = false;
+  /** Human-readable reason for degraded state. */
+  private _degradedReason = "";
+  /** Timestamp when degraded state was entered. */
+  private _degradedEnteredAt: Date | null = null;
 
   constructor(options: DispatchEngineOptions) {
     this.projectDir = options.projectDir;
@@ -808,9 +906,23 @@ export class DispatchEngine {
     this.kspecCliPath = options.kspecCliPath;
     this.onInvocationEvent = options.onInvocationEvent;
     this.onSessionEvent = options.onSessionEvent;
+    this.onSyncStateEvent = options.onSyncStateEvent;
+    // AC: @dispatch-event-envelope ac-1 through ac-6
+    this._eventBus = new EventBus({
+      dedupWindowMs: this.dedupWindowMs,
+      ...options.eventBusOptions,
+    });
   }
 
   // ─── Public API ─────────────────────────────────────────────────────────────
+
+  /**
+   * Access the event bus for subscribing to events or querying recent events.
+   * AC: @dispatch-event-envelope ac-6
+   */
+  get eventBus(): EventBus {
+    return this._eventBus;
+  }
 
   /**
    * Start the dispatch engine.
@@ -821,9 +933,12 @@ export class DispatchEngine {
   async start(): Promise<void> {
     this.running = true;
 
+    // AC: @dispatch-remote-branch-sync ac-pull-target-on-start — resolve sync config and sync before bootstrap
+    await this._initTargetSync();
+
     try {
       const ctx = await initContext(this.projectDir);
-      const tasks = await loadAllTasks(ctx);
+      const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
       const taskStatusByRef = new Map(
         tasks.map((task) => [`@${task._ulid}`, task.status as TaskStatus]),
       );
@@ -836,6 +951,20 @@ export class DispatchEngine {
     await reconcileDispatchWorkspaceArtifacts(this.projectDir, {
       activeTaskRefs: this._activeTaskRefs(),
     });
+
+    // AC: @dispatch-remote-branch-sync ac-no-remote — resolve remote sync at start time
+    try {
+      const resolvedConfig = await resolveDispatchWorkspaceConfig(this.projectDir);
+      const { config } = await loadProjectConfig(this.projectDir);
+      this.dispatchRemote = resolveDispatchRemote(this.projectDir);
+      this.remoteSyncEnabled = resolveDispatchRemoteSync(config, this.dispatchRemote !== null);
+      this.integrationTargetBranch = resolvedConfig.baseBranch;
+    } catch (err) {
+      console.warn("[dispatch] Failed to resolve remote sync config, defaulting to disabled:", err);
+      this.remoteSyncEnabled = false;
+      this.dispatchRemote = null;
+      this.integrationTargetBranch = null;
+    }
 
     // AC: @agent-dispatch-engine ac-8 - Bootstrap: evaluate existing task states
     await this._bootstrap();
@@ -894,10 +1023,34 @@ export class DispatchEngine {
       }
     }
 
-    // AC: @agent-dispatch-engine ac-1 - Match against dispatch rules
-    const agents = await this._loadAgents();
+    // AC: @dispatch-event-envelope ac-1, ac-2 - Emit through event bus
     const eventType = STATUS_TO_EVENT[change.toStatus];
     if (!eventType) return;
+
+    // AC: @dispatch-event-envelope ac-2 - Propagate correlation chain via env var
+    const envCorrelationId = process.env.KSPEC_CORRELATION_ID ?? null;
+    const busResult = this._eventBus.emit({
+      event_type: eventType,
+      source_type: change.task ? "task_watcher" : "api",
+      source_id: change.taskRef,
+      payload: {
+        taskId: change.taskId,
+        taskRef: change.taskRef,
+        fromStatus: change.fromStatus,
+        toStatus: change.toStatus,
+      },
+      correlation_id: envCorrelationId,
+      causation_id: envCorrelationId,
+      // Engine already performed dedup; skip bus-level dedup to avoid double-filtering
+      skipDedup: true,
+    });
+    if (!busResult.accepted) {
+      // Event rejected by bus (chain depth limit or bus-level dedup)
+      return;
+    }
+
+    // AC: @agent-dispatch-engine ac-1 - Match against dispatch rules
+    const agents = await this._loadAgents();
 
     // Load all tasks for filter evaluation (needed for dependency checks)
     let allTasks: LoadedTask[] | undefined;
@@ -905,7 +1058,7 @@ export class DispatchEngine {
     if (!taskData && change.taskId) {
       try {
         const ctx = await initContext(this.projectDir);
-        allTasks = await loadAllTasks(ctx);
+        allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
         taskData = allTasks.find((t) => t._ulid === change.taskId);
       } catch {
         // Can't load tasks, filter evaluation will be lenient
@@ -915,7 +1068,7 @@ export class DispatchEngine {
     if (!allTasks && taskData) {
       try {
         const ctx = await initContext(this.projectDir);
-        allTasks = await loadAllTasks(ctx);
+        allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
       } catch {
         // Can't load tasks, dependency check will be skipped
       }
@@ -958,7 +1111,7 @@ export class DispatchEngine {
 
     try {
       const ctx = await initContext(this.projectDir);
-      const tasks = await loadAllTasks(ctx);
+      const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
 
       const changes: TaskStateChange[] = [];
       const now = Date.now();
@@ -1126,11 +1279,18 @@ export class DispatchEngine {
    * Periodic reconciliation: re-evaluate all task states against dispatch rules.
    * Enqueues tasks that match but have no active or queued invocation.
    * AC: @agent-dispatch-engine ac-19
+   * AC: @dispatch-remote-branch-sync ac-pull-target-periodic, ac-pull-target-periodic-deferred
    */
   private async _reconcile(): Promise<void> {
+    // AC: @dispatch-remote-branch-sync ac-pull-target-periodic — sync target when stale
+    // AC: @dispatch-remote-branch-sync ac-pull-target-periodic-deferred — skip if reviewer active
+    if (this._remoteSyncEnabled && this._isTargetSyncStale() && !this._hasActiveReviewerInvocation()) {
+      await this._syncTargetBranch();
+    }
+
     try {
       const ctx = await initContext(this.projectDir);
-      const tasks = await loadAllTasks(ctx);
+      const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
       const taskStatusByRef = new Map(
         tasks.map((task) => [`@${task._ulid}`, task.status as TaskStatus]),
       );
@@ -1147,12 +1307,116 @@ export class DispatchEngine {
     await reconcileDispatchWorkspaceArtifacts(this.projectDir, {
       activeTaskRefs: this._activeTaskRefs(),
     });
+    // AC: @dispatch-remote-branch-sync ac-push-target-periodic
+    // Push the integration target if it has unpushed commits (retries failed post-merge pushes).
+    if (this.remoteSyncEnabled && this.dispatchRemote) {
+      this._pushIntegrationTargetAsync("periodic-sync");
+    }
+
     const enqueued = await this._evaluateAllTasks({ skipIfActive: true });
     if (enqueued > 0) {
       console.log(`[dispatch] Reconciliation enqueued ${enqueued} task(s)`);
       // AC: @agent-dispatch-engine ac-27 — all drains go through _serializedDrain()
       await this._serializedDrain();
     }
+  }
+
+  // ─── Dispatch Branch Push Helpers ─────────────────────────────────────────
+
+  /**
+   * Fire-and-forget push of a dispatch branch to remote.
+   * Logs warnings on failure but never throws or blocks the dispatch loop.
+   *
+   * AC: @dispatch-remote-branch-sync ac-first-push-sets-tracking
+   * AC: @dispatch-remote-branch-sync ac-first-push-replaces-stale-ref
+   * AC: @dispatch-remote-branch-sync ac-subsequent-push
+   * AC: @dispatch-remote-branch-sync ac-push-non-fatal
+   */
+  private _pushDispatchBranchAsync(canonicalBranch: string, taskRef: string): void {
+    try {
+      const result = pushDispatchBranch(
+        this.projectDir,
+        canonicalBranch,
+        this.dispatchRemote!,
+      );
+      if (result.error) {
+        // AC: @dispatch-remote-branch-sync ac-push-non-fatal
+        console.warn(
+          `[dispatch] Push failed for ${canonicalBranch} (task ${taskRef}): ${result.error}`,
+        );
+      } else if (result.pushed) {
+        console.log(
+          `[dispatch] Pushed ${canonicalBranch}${result.firstPush ? " (first push, tracking established)" : ""}`,
+        );
+      }
+    } catch (err) {
+      // AC: @dispatch-remote-branch-sync ac-push-non-fatal
+      console.warn(
+        `[dispatch] Unexpected error pushing ${canonicalBranch} (task ${taskRef}):`,
+        err,
+      );
+    }
+  }
+
+  /**
+   * Push the integration target branch to remote with serialization.
+   * If a push is already in progress, the call is skipped (not queued).
+   *
+   * AC: @dispatch-remote-branch-sync ac-push-target-after-merge
+   * AC: @dispatch-remote-branch-sync ac-push-target-periodic
+   * AC: @dispatch-remote-branch-sync ac-target-push-serialization
+   * AC: @dispatch-remote-branch-sync ac-push-non-fatal
+   */
+  private _pushIntegrationTargetAsync(trigger: string): void {
+    // AC: @dispatch-remote-branch-sync ac-target-push-serialization
+    if (this.targetPushInProgress) {
+      return;
+    }
+    this.targetPushInProgress = true;
+    try {
+      const config = this._resolveBaseBranch();
+      if (!config) {
+        return;
+      }
+      try {
+        resolveDispatchIntegrationMutationScope(this.projectDir, config);
+      } catch (err) {
+        const reason = this._formatUnsafeMutationScopeReason(err, config);
+        this._enterDegradedState(reason);
+        console.warn(`[dispatch] Integration target push skipped (${trigger}): ${reason}`);
+        return;
+      }
+      const result = pushIntegrationTarget(
+        this.projectDir,
+        config,
+        this.dispatchRemote!,
+      );
+      if (result.error) {
+        // AC: @dispatch-remote-branch-sync ac-push-non-fatal
+        console.warn(
+          `[dispatch] Integration target push failed (${trigger}): ${result.error}`,
+        );
+      } else if (result.pushed) {
+        console.log(
+          `[dispatch] Pushed integration target "${config}" (${trigger})`,
+        );
+      }
+    } catch (err) {
+      // AC: @dispatch-remote-branch-sync ac-push-non-fatal
+      console.warn(
+        `[dispatch] Unexpected error pushing integration target (${trigger}):`,
+        err,
+      );
+    } finally {
+      this.targetPushInProgress = false;
+    }
+  }
+
+  /**
+   * Resolve the dispatch base branch from the cached config. Returns null if unavailable.
+   */
+  private _resolveBaseBranch(): string | null {
+    return this.integrationTargetBranch;
   }
 
   /**
@@ -1166,7 +1430,7 @@ export class DispatchEngine {
    */
   private async _evaluateAllTasks(opts: { skipIfActive: boolean }): Promise<number> {
     const ctx = await initContext(this.projectDir);
-    const tasks = await loadAllTasks(ctx);
+    const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
     const agents = await this._loadAgents();
     const now = Date.now();
     let enqueued = 0;
@@ -1330,7 +1594,12 @@ export class DispatchEngine {
 
     // Automation filter
     if (effectiveAutomation !== undefined) {
-      if ((task as LoadedTask & { automation?: string }).automation !== effectiveAutomation) {
+      if (
+        !matchesAutomationFilter(
+          task.automation,
+          effectiveAutomation,
+        )
+      ) {
         return false;
       }
     }
@@ -1530,11 +1799,15 @@ export class DispatchEngine {
       ? (entry.change.toStatus !== "in_progress" && entry.change.toStatus !== "pending_review") || hasSubmissionLinkage
       : health.healthy;
 
-    // For pending_review and needs_work tasks, attempt workspace discovery
-    // before discarding the queue entry as missing or ineligible.
+    // For resumable tasks, attempt workspace discovery before discarding the
+    // queue entry as missing or ineligible.
     if (
       !eligible &&
-      (entry.change.toStatus === "pending_review" || entry.change.toStatus === "needs_work")
+      (
+        entry.change.toStatus === "in_progress"
+        || entry.change.toStatus === "pending_review"
+        || entry.change.toStatus === "needs_work"
+      )
     ) {
       const discoveryResult = await discoverWorkspaceForReviewOrFixCycle({
         projectDir: this.projectDir,
@@ -1767,12 +2040,19 @@ export class DispatchEngine {
     // Prevent new invocation starts during/after shutdown.
     if (!this.running) return;
 
+    // AC: @dispatch-remote-branch-sync ac-degraded-no-provision
+    // When degraded, skip provisioning new workspaces. Tasks remain queued.
+    // Existing in-flight invocations continue normally.
+    if (this._degraded) {
+      return;
+    }
+
     // AC: @agent-dispatch-engine ac-17 - Load current tasks once for staleness + readiness checks
     let currentTasks: LoadedTask[] | undefined;
     let currentTaskStates: Map<string, TaskStatus> | undefined;
     try {
       const ctx = await initContext(this.projectDir);
-      currentTasks = await loadAllTasks(ctx);
+      currentTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
       currentTaskStates = new Map(
         currentTasks.map((t) => [t._ulid, t.status as TaskStatus]),
       );
@@ -1916,6 +2196,21 @@ export class DispatchEngine {
     }
   }
 
+  private _runRecoveryTaskCommand(
+    taskRef: string,
+    action: string,
+    run: () => void,
+  ): void {
+    try {
+      run();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      console.warn(
+        `[dispatch] Failed to ${action} for ${taskRef} during recovery: ${message}`,
+      );
+    }
+  }
+
   /**
    * Spawn a single invocation for a queue entry.
    * Returns true if an invocation was actually started, false if skipped.
@@ -1934,6 +2229,11 @@ export class DispatchEngine {
     const role: DispatchWorkspaceRole =
       entry.change.toStatus === "pending_review" ? "reviewer" : "worker";
     try {
+      // AC: @dispatch-remote-branch-sync ac-pull-target-before-provision — sync if stale
+      if (this._remoteSyncEnabled && this._isTargetSyncStale()) {
+        await this._syncTargetBranch();
+      }
+
       try {
         workspace = await provisionDispatchWorkspace({
           projectDir: this.projectDir,
@@ -1960,13 +2260,21 @@ export class DispatchEngine {
         console.error(
           `[dispatch] Failed to provision workspace for ${entry.change.taskRef}: ${message}`,
         );
-        this._addTaskNote(
+        this._runRecoveryTaskCommand(
           entry.change.taskRef,
-          `[DISPATCH-WORKSPACE] ${message} Suggested action: ${guidance}`,
+          "add task note",
+          () => this._addTaskNote(
+            entry.change.taskRef,
+            `[DISPATCH-WORKSPACE] ${message} Suggested action: ${guidance}`,
+          ),
         );
-        this._blockTask(
+        this._runRecoveryTaskCommand(
           entry.change.taskRef,
-          `Dispatch workspace provisioning failed: ${message}. Suggested action: ${guidance}`,
+          "block task",
+          () => this._blockTask(
+            entry.change.taskRef,
+            `Dispatch workspace provisioning failed: ${message}. Suggested action: ${guidance}`,
+          ),
         );
         return false;
       }
@@ -2084,7 +2392,7 @@ export class DispatchEngine {
       const emitStartedEvent = (): void => {
         if (startedEventEmitted) return;
         startedEventEmitted = true;
-        this.onInvocationEvent?.({
+        const invEvent: InvocationEvent = {
           type: "started",
           session_id: preSessionId,
           agent_id: agentId,
@@ -2092,6 +2400,14 @@ export class DispatchEngine {
           task_title: entry.change.task?.title ?? null,
           status: "started",
           timestamp: Date.now(),
+        };
+        this.onInvocationEvent?.(invEvent);
+        // AC: @dispatch-event-envelope ac-1 - Route invocation lifecycle through bus
+        this._eventBus.emit({
+          event_type: "invocation.started",
+          source_type: "invocation_lifecycle",
+          source_id: preSessionId,
+          payload: { ...invEvent },
         });
       };
 
@@ -2161,6 +2477,8 @@ export class DispatchEngine {
       };
 
       let terminalEvent: InvocationEvent | null = null;
+      /** AC: @dispatch-event-taxonomy ac-2 — captured invocation result for session event emission */
+      let invocationResult: InvocationResult | null = null;
       let releasedInFlightKey = false;
       const markActivePromise = this.shadowMutex.runExclusive(async () => {
         try {
@@ -2192,7 +2510,7 @@ export class DispatchEngine {
             markInvocationStarted();
             emitStartedEvent();
             await markActivePromise;
-            await runInvocation(options);
+            invocationResult = await runInvocation(options);
             // Reset retry count on success
             entry.retryCount = 0;
             entry.starvationDeferrals = 0;
@@ -2306,6 +2624,39 @@ export class DispatchEngine {
           }
           if (terminalEvent) {
             this.onInvocationEvent?.(terminalEvent);
+            // AC: @dispatch-event-envelope ac-1 - Route invocation lifecycle through bus
+            this._eventBus.emit({
+              event_type: `invocation.${terminalEvent.type}`,
+              source_type: "invocation_lifecycle",
+              source_id: terminalEvent.session_id,
+              payload: { ...terminalEvent },
+            });
+
+            // AC: @dispatch-event-taxonomy ac-2 — Emit corresponding session.* event
+            // AC: @dispatch-event-payload ac-3 — Session payload includes session_id,
+            // agent_id, task_ref, duration_ms, terminal_reason, and work_summary
+            this._emitSessionLifecycleEvent(
+              terminalEvent,
+              invocationResult,
+              trackingRecord.startedAtMs,
+            );
+          }
+
+          // AC: @dispatch-remote-branch-sync ac-first-push-sets-tracking,
+          //     ac-subsequent-push, ac-push-non-fatal, ac-no-remote
+          // Fire-and-forget: push dispatch branch to remote after invocation completes.
+          // Does not block re-evaluation or queue drain.
+          if (this.remoteSyncEnabled && this.dispatchRemote && terminalEvent?.type === "completed") {
+            this._pushDispatchBranchAsync(
+              workspace.metadata.canonicalBranch,
+              entry.change.taskRef,
+            );
+            // AC: @dispatch-remote-branch-sync ac-push-target-after-merge
+            // When a reviewer invocation completes, push the integration target
+            // (the reviewer may have merged into it).
+            if (role === "reviewer") {
+              this._pushIntegrationTargetAsync("post-merge");
+            }
           }
         })
         .then(async () => {
@@ -2355,5 +2706,473 @@ export class DispatchEngine {
         this.inFlightTaskKeys.delete(inFlightKey);
       }
     }
+  }
+
+  // ─── Session Lifecycle Events ──────────────────────────────────────────────
+
+  /**
+   * Map invocation outcomes to session event types and emit session lifecycle events.
+   *
+   * Mapping:
+   *   invocation completed (success) → session.ended
+   *   invocation completed (timed_out) → session.ended (with timeout reason)
+   *   invocation completed (failed) → session.ended (with failure reason)
+   *   invocation completed (stalled) → session.idle_timeout
+   *   invocation aborted (shutdown) → session.cancelled
+   *
+   * Session identity: session_id == invocation_id (same value).
+   *
+   * AC: @dispatch-event-taxonomy ac-2
+   * AC: @dispatch-event-payload ac-3
+   */
+  private _emitSessionLifecycleEvent(
+    terminalEvent: InvocationEvent,
+    invocationResult: InvocationResult | null,
+    startedAtMs: number,
+  ): void {
+    const outcome = invocationResult?.outcome ?? (terminalEvent.type === "completed" ? "success" : "failed");
+    const durationMs = invocationResult?.durationMs ?? (Date.now() - startedAtMs);
+
+    // Determine session event type from invocation outcome
+    let sessionEventType: string;
+    let terminalReason: string;
+    switch (outcome) {
+      case "success":
+        sessionEventType = "session.ended";
+        terminalReason = "completed";
+        break;
+      case "timed_out":
+        sessionEventType = "session.ended";
+        terminalReason = "timed_out";
+        break;
+      case "failed": {
+        // Distinguish abort (cancellation) from other failures
+        const isAborted = invocationResult?.error?.includes("aborted by shutdown") ?? false;
+        if (isAborted) {
+          sessionEventType = "session.cancelled";
+          terminalReason = "shutdown";
+        } else {
+          sessionEventType = "session.ended";
+          terminalReason = invocationResult?.error ?? "failed";
+        }
+        break;
+      }
+      case "stalled":
+        sessionEventType = "session.idle_timeout";
+        terminalReason = invocationResult?.error ?? "no initial response";
+        break;
+      default:
+        sessionEventType = "session.ended";
+        terminalReason = "unknown";
+        break;
+    }
+
+    // Build work summary from session metadata if available
+    // AC: @dispatch-event-payload ac-3 — work_summary includes task notes, tasks completed, etc.
+    const workSummary: Record<string, unknown> = {};
+    if (invocationResult?.session) {
+      const session = invocationResult.session;
+      if (session.event_count !== undefined) {
+        workSummary.event_count = session.event_count;
+      }
+      if (session.iteration_count !== undefined) {
+        workSummary.iteration_count = session.iteration_count;
+      }
+      if (session.tasks_completed !== undefined) {
+        workSummary.tasks_completed = session.tasks_completed;
+      }
+    }
+
+    // AC: @dispatch-event-payload ac-3 — session payload fields
+    const payload: Record<string, unknown> = {
+      session_id: terminalEvent.session_id,
+      agent_id: terminalEvent.agent_id,
+      task_ref: terminalEvent.task_id ?? undefined,
+      duration_ms: durationMs,
+      terminal_reason: terminalReason,
+      work_summary: workSummary,
+    };
+
+    this._eventBus.emit({
+      event_type: sessionEventType,
+      source_type: "invocation_lifecycle",
+      source_id: terminalEvent.session_id,
+      payload,
+    });
+  }
+
+  // ─── Target Branch Sync ───────────────────────────────────────────────────
+
+  /**
+   * Initialize target sync config at engine start time. Resolves effective
+   * remote sync setting, remote name, and base branch once so they don't
+   * change mid-run. Then performs the initial sync before bootstrap.
+   *
+   * AC: @dispatch-remote-branch-sync ac-pull-target-on-start
+   * AC: @dispatch-remote-branch-sync ac-no-remote
+   */
+  private async _initTargetSync(): Promise<void> {
+    try {
+      const resolvedConfig = await resolveDispatchWorkspaceConfig(this.projectDir);
+      const { config } = await loadProjectConfig(this.projectDir, this.projectDir);
+      this._syncIntervalMs = config.dispatch.sync_interval * 1000;
+
+      // Detect remote
+      const remotes = this._listGitRemotes();
+      const hasRemote = remotes.length > 0;
+      this._remoteSyncEnabled = resolveDispatchRemoteSync(config, hasRemote);
+
+      if (!this._remoteSyncEnabled) {
+        // AC: @dispatch-remote-branch-sync ac-no-remote — skip silently
+        return;
+      }
+
+      this._syncRemote = remotes[0] ?? null;
+      this._syncBaseBranch = resolvedConfig.baseBranch;
+
+      if (!this._syncBaseBranch || !this._syncRemote) {
+        // Can't sync without a base branch or remote
+        this._remoteSyncEnabled = false;
+        return;
+      }
+
+      console.log(
+        `[dispatch] Target sync enabled: ${this._syncRemote}/${this._syncBaseBranch} (interval: ${config.dispatch.sync_interval}s)`,
+      );
+
+      // AC: @dispatch-remote-branch-sync ac-pull-target-on-start — sync before bootstrap
+      await this._syncTargetBranch();
+    } catch (err) {
+      console.error("[dispatch] Failed to initialize target sync:", err);
+      // Non-fatal: engine continues without sync
+    }
+  }
+
+  /**
+   * Sync the integration target branch from remote using fetch + fast-forward merge.
+   * Uses a running guard so slow fetches don't stack.
+   *
+   * AC: @dispatch-remote-branch-sync ac-pull-ff-only
+   * AC: @dispatch-remote-branch-sync ac-transient-no-degrade
+   * AC: @dispatch-remote-branch-sync ac-no-remote
+   */
+  async _syncTargetBranch(): Promise<TargetSyncResult> {
+    // AC: @dispatch-remote-branch-sync ac-no-remote — skip when no remote
+    if (!this._remoteSyncEnabled || !this._syncRemote || !this._syncBaseBranch) {
+      return "skipped";
+    }
+
+    // Running guard — if a sync is already in progress, skip
+    if (this._targetSyncRunning) {
+      return "skipped";
+    }
+
+    this._targetSyncRunning = true;
+    try {
+      let mutationScope;
+      try {
+        mutationScope = resolveDispatchIntegrationMutationScope(this.projectDir, this._syncBaseBranch);
+      } catch (err) {
+        const reason = this._formatUnsafeMutationScopeReason(err, this._syncBaseBranch);
+        this._enterDegradedState(reason);
+        return "unsafe_target";
+      }
+
+      // Step 1: Fetch the target branch from remote
+      const fetchResult = runDispatchIntegrationTargetGit(
+        this.projectDir,
+        this._syncBaseBranch,
+        ["fetch", this._syncRemote, this._syncBaseBranch],
+        { timeout: 30_000 },
+      );
+
+      if (fetchResult.status !== 0) {
+        // AC: @dispatch-remote-branch-sync ac-transient-no-degrade — warn and continue
+        this._consecutiveTransientFailures++;
+        if (this._firstTransientFailureTimestamp === 0) {
+          this._firstTransientFailureTimestamp = Date.now();
+        }
+        const stderr = fetchResult.stderr?.trim() ?? "";
+        console.warn(
+          `[dispatch] Target sync fetch failed (attempt ${this._consecutiveTransientFailures}): ${stderr}`,
+        );
+
+        // AC: @dispatch-remote-branch-sync ac-repeated-transient-escalation
+        if (this._consecutiveTransientFailures >= 5) {
+          const failureDurationMs = Date.now() - this._firstTransientFailureTimestamp;
+          console.warn(
+            `[dispatch] Persistent connectivity issues: ${this._consecutiveTransientFailures} consecutive sync failures over ${Math.round(failureDurationMs / 1000)}s`,
+          );
+        }
+
+        // AC: @dispatch-remote-branch-sync ac-repeated-transient-no-degrade
+        // Transient failures never enter degraded state
+        return "transient_failure";
+      }
+
+      // Step 2: Fast-forward merge the target branch
+      // AC: @dispatch-remote-branch-sync ac-pull-ff-only — no merge commits
+      const mergeResult = mutationScope.targetBranchCheckedOut
+        ? runDispatchIntegrationTargetGit(
+            this.projectDir,
+            this._syncBaseBranch,
+            ["merge", "--ff-only", `${this._syncRemote}/${this._syncBaseBranch}`],
+            { timeout: 10_000 },
+          )
+        : fastForwardDispatchIntegrationBranch(
+            this.projectDir,
+            this._syncBaseBranch,
+            `${this._syncRemote}/${this._syncBaseBranch}`,
+          );
+
+      if (mergeResult.status !== 0) {
+        const stderr = mergeResult.stderr?.trim() ?? "";
+        const stdout = mergeResult.stdout?.trim() ?? "";
+
+        // AC: @dispatch-remote-branch-sync ac-divergence-enters-degraded
+        // AC: @dispatch-remote-branch-sync ac-divergence-log-guidance
+        const reason = this._classifyDivergence(stderr || stdout);
+        this._enterDegradedState(reason);
+        return "diverged";
+      }
+
+      // Success
+      this._consecutiveTransientFailures = 0;
+      this._firstTransientFailureTimestamp = 0;
+      this._lastTargetSyncTimestamp = Date.now();
+
+      // AC: @dispatch-remote-branch-sync ac-degraded-auto-recover
+      if (this._degraded) {
+        this._exitDegradedState();
+      }
+
+      const stdout = mergeResult.stdout?.trim() ?? "";
+      if (stdout.includes("Already up to date") || stdout.includes("Already up-to-date")) {
+        return "up_to_date";
+      }
+
+      console.log(`[dispatch] Target branch synced: ${this._syncRemote}/${this._syncBaseBranch}`);
+      return "synced";
+    } finally {
+      this._targetSyncRunning = false;
+    }
+  }
+
+  /**
+   * Classify a divergence based on the git merge --ff-only error output.
+   * Distinguishes "local has unpushed merges" from "remote history was rewritten".
+   * AC: @dispatch-remote-branch-sync ac-divergence-log-guidance
+   */
+  private _classifyDivergence(_mergeOutput: string): string {
+    const remote = this._syncRemote;
+    const branch = this._syncBaseBranch;
+    if (!remote || !branch) {
+      return "Integration target divergence detected, but remote or branch context is unavailable.";
+    }
+
+    // Count commits local has that remote doesn't, and vice versa
+    let localAhead = 0;
+    let remoteAhead = 0;
+    try {
+      const aheadResult = runDispatchIntegrationTargetGit(
+        this.projectDir,
+        branch,
+        ["rev-list", "--count", `${remote}/${branch}..${branch}`],
+      );
+      localAhead = parseInt(aheadResult.stdout?.trim() ?? "0", 10);
+
+      const behindResult = runDispatchIntegrationTargetGit(
+        this.projectDir,
+        branch,
+        ["rev-list", "--count", `${branch}..${remote}/${branch}`],
+      );
+      remoteAhead = parseInt(behindResult.stdout?.trim() ?? "0", 10);
+    } catch {
+      // If we can't determine counts, fall through to generic divergence message
+    }
+
+    // Case 1: Local has commits not on remote (unpushed merges from dispatcher)
+    // This is the common case — the reviewer merged work locally and the push
+    // to remote failed or hasn't happened yet, then remote advanced independently.
+    if (localAhead > 0 && remoteAhead === 0) {
+      return `Integration target '${branch}' has ${localAhead} unpushed local commit(s) not on ${remote}/${branch} (unpushed merges). Resolution: push the integration target to remote with 'git push ${remote} ${branch}', or if the local commits should be discarded, reset with 'git checkout ${branch} && git reset --hard ${remote}/${branch}'.`;
+    }
+
+    // Case 2: Remote has different history (force push / rewrite)
+    // Either remote-only divergence (localAhead=0, remoteAhead>0) or mutual
+    // divergence where local has commits AND remote was rewritten.
+    if (localAhead === 0 && remoteAhead > 0) {
+      return `Integration target '${branch}' has diverged from ${remote}/${branch} — remote history appears rewritten (force push). Resolution: verify the remote state is correct, then reset the local branch with 'git checkout ${branch} && git reset --hard ${remote}/${branch}'.`;
+    }
+
+    // Case 3: Mutual divergence — both local and remote have unique commits
+    if (localAhead > 0 && remoteAhead > 0) {
+      return `Integration target '${branch}' has diverged: ${localAhead} local unpushed commit(s) and ${remoteAhead} remote commit(s) not in local (unpushed merges combined with remote changes). Resolution: push local merges first with 'git push ${remote} ${branch}', or if the remote state is authoritative, reset with 'git checkout ${branch} && git reset --hard ${remote}/${branch}'.`;
+    }
+
+    // Fallback
+    return `Integration target '${branch}' has diverged from ${remote}/${branch}. Fast-forward merge failed. Resolution: inspect the branch state and resolve manually — either push local changes or reset to match remote.`;
+  }
+
+  /**
+   * Enter degraded state with a descriptive reason.
+   * AC: @dispatch-remote-branch-sync ac-divergence-enters-degraded
+   * AC: @dispatch-remote-branch-sync ac-divergence-log-guidance
+   * AC: @dispatch-remote-branch-sync ac-degraded-status-broadcast
+   */
+  private _enterDegradedState(reason: string): void {
+    if (this._degraded) return; // Already degraded — don't re-enter
+
+    this._degraded = true;
+    this._degradedReason = reason;
+    this._degradedEnteredAt = new Date();
+
+    console.warn(`[dispatch] DEGRADED: ${reason}`);
+
+    // AC: @dispatch-remote-branch-sync ac-degraded-status-broadcast
+    const event: SyncStateEvent = {
+      type: "sync_state",
+      degraded: true,
+      reason,
+      enteredAt: this._degradedEnteredAt.toISOString(),
+    };
+    this.onSyncStateEvent?.(event);
+  }
+
+  /**
+   * Exit degraded state on successful sync (auto-recovery).
+   * AC: @dispatch-remote-branch-sync ac-degraded-auto-recover
+   * AC: @dispatch-remote-branch-sync ac-degraded-recovery-logged
+   * AC: @dispatch-remote-branch-sync ac-degraded-status-broadcast
+   */
+  private _exitDegradedState(): void {
+    const durationMs = this._degradedEnteredAt
+      ? Date.now() - this._degradedEnteredAt.getTime()
+      : 0;
+
+    // AC: @dispatch-remote-branch-sync ac-degraded-recovery-logged
+    console.log(
+      `[dispatch] Recovered from degraded state after ${Math.round(durationMs / 1000)}s. Resuming normal dispatch operations.`,
+    );
+
+    this._degraded = false;
+    this._degradedReason = "";
+    this._degradedEnteredAt = null;
+
+    // AC: @dispatch-remote-branch-sync ac-degraded-status-broadcast
+    const event: SyncStateEvent = {
+      type: "sync_state",
+      degraded: false,
+      reason: "",
+      enteredAt: null,
+      recoveredAfterMs: durationMs,
+    };
+    this.onSyncStateEvent?.(event);
+
+    // AC: @dispatch-remote-branch-sync ac-degraded-auto-recover — drain queued tasks
+    this._serializedDrain().catch((err) => {
+      console.error("[dispatch] Post-recovery drain error:", err);
+    });
+  }
+
+  /**
+   * Check whether the last target sync is stale relative to the sync interval.
+   * AC: @dispatch-remote-branch-sync ac-pull-target-before-provision
+   */
+  private _isTargetSyncStale(): boolean {
+    if (this._syncIntervalMs <= 0) return false;
+    if (this._lastTargetSyncTimestamp === 0) return true;
+    return (Date.now() - this._lastTargetSyncTimestamp) > this._syncIntervalMs;
+  }
+
+  /**
+   * Check whether a reviewer invocation is currently active.
+   * AC: @dispatch-remote-branch-sync ac-pull-target-periodic-deferred
+   */
+  private _hasActiveReviewerInvocation(): boolean {
+    for (const record of this.activeInvocationDetails.values()) {
+      if (record.role === "reviewer") {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * List git remotes from the project directory, origin first.
+   */
+  private _listGitRemotes(): string[] {
+    const result = spawnSync("git", ["remote"], {
+      cwd: this.projectDir,
+      env: buildDispatchGitEnv(),
+      encoding: "utf-8",
+      stdio: "pipe",
+    });
+    if (result.status !== 0 || !result.stdout) {
+      return [];
+    }
+    const remotes = result.stdout
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter(Boolean)
+      .sort();
+    const originFirst = remotes.filter((r) => r === "origin");
+    const rest = remotes.filter((r) => r !== "origin");
+    return [...originFirst, ...rest];
+  }
+
+  private _formatUnsafeMutationScopeReason(
+    err: unknown,
+    branch: string,
+  ): string {
+    if (err instanceof DispatchWorkspaceError) {
+      return `${err.message} Resolution: ${err.suggestion}`;
+    }
+    const detail = err instanceof Error ? err.message : String(err);
+    return `Dispatch cannot determine a safe mutation surface for integration target "${branch}". Resolution: ${detail}`;
+  }
+
+  /**
+   * Get the current target sync state for external status queries.
+   * AC: @dispatch-remote-branch-sync ac-degraded-status-api
+   */
+  getTargetSyncStatus(): {
+    enabled: boolean;
+    remote: string | null;
+    baseBranch: string | null;
+    lastSyncTimestamp: number;
+    consecutiveFailures: number;
+    syncRunning: boolean;
+    degraded: {
+      active: boolean;
+      reason: string;
+      enteredAt: string | null;
+    };
+  } {
+    return {
+      enabled: this._remoteSyncEnabled ?? false,
+      remote: this._syncRemote,
+      baseBranch: this._syncBaseBranch,
+      lastSyncTimestamp: this._lastTargetSyncTimestamp,
+      consecutiveFailures: this._consecutiveTransientFailures,
+      syncRunning: this._targetSyncRunning,
+      degraded: {
+        active: this._degraded,
+        reason: this._degradedReason,
+        enteredAt: this._degradedEnteredAt?.toISOString() ?? null,
+      },
+    };
+  }
+
+  /**
+   * Get the current degraded state. Convenience accessor for external consumers.
+   * AC: @dispatch-remote-branch-sync ac-degraded-status-api
+   */
+  getDegradedState(): DegradedState {
+    return {
+      active: this._degraded,
+      reason: this._degradedReason,
+      enteredAt: this._degradedEnteredAt,
+    };
   }
 }

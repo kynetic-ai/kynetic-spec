@@ -411,6 +411,100 @@ test.describe('Tasks View', () => {
     });
   });
 
+  test.describe('Task Reviews Section', () => {
+    // AC: @review-records-web-ui ac-7
+    test('shows reviews section on task detail', async ({ page, daemon }) => {
+      await page.goto('/tasks');
+
+      // Wait for tasks to load
+      const taskItem = page.getByTestId('task-list-item').first();
+      await expect(taskItem).toBeVisible();
+
+      // Click first task to open detail
+      await taskItem.click();
+
+      const detailPanel = page.getByTestId('task-detail-panel');
+      await expect(detailPanel).toBeVisible({ timeout: 5000 });
+
+      // Reviews section should be visible
+      const reviewsSection = detailPanel.getByTestId('task-reviews');
+      await expect(reviewsSection).toBeVisible();
+    });
+
+    // AC: @review-records-web-ui ac-7
+    test('shows linked reviews with disposition badge for pending_review task', async ({ page, daemon }) => {
+      // Navigate to pending_review tasks
+      await page.goto('/tasks?status=pending_review');
+
+      // Wait for tasks to load and click the pending_review task
+      const taskItem = page.getByTestId('task-list-item').first();
+      await expect(taskItem).toBeVisible({ timeout: 5000 });
+      await taskItem.click();
+
+      const detailPanel = page.getByTestId('task-detail-panel');
+      await expect(detailPanel).toBeVisible({ timeout: 5000 });
+
+      // Wait for reviews to load
+      await page.waitForTimeout(1000);
+
+      // Reviews section should show linked reviews
+      const reviewsSection = detailPanel.getByTestId('task-reviews');
+      await expect(reviewsSection).toBeVisible();
+
+      // Should show at least one review row (the open review linked to this task)
+      const reviewRows = reviewsSection.getByTestId('task-review-row');
+      await expect(reviewRows.first()).toBeVisible({ timeout: 5000 });
+
+      // Review row should contain the review title
+      const firstRow = reviewRows.first();
+      await expect(firstRow).toContainText('Review of test task');
+    });
+
+    // AC: @review-records-web-ui ac-7
+    test('shows empty state when task has no linked reviews', async ({ page, daemon }) => {
+      // Navigate to completed tasks (no reviews linked)
+      await page.goto('/tasks?status=completed');
+
+      const taskItem = page.getByTestId('task-list-item').first();
+      await expect(taskItem).toBeVisible({ timeout: 5000 });
+      await taskItem.click();
+
+      const detailPanel = page.getByTestId('task-detail-panel');
+      await expect(detailPanel).toBeVisible({ timeout: 5000 });
+
+      // Wait for reviews to load
+      await page.waitForTimeout(1000);
+
+      // Should show empty state message
+      const emptyState = detailPanel.getByTestId('task-reviews-empty');
+      await expect(emptyState).toBeVisible({ timeout: 5000 });
+      await expect(emptyState).toContainText('No reviews linked to this task');
+    });
+
+    // AC: @review-records-web-ui ac-7
+    test('review links navigate to review detail page', async ({ page, daemon }) => {
+      await page.goto('/tasks?status=pending_review');
+
+      const taskItem = page.getByTestId('task-list-item').first();
+      await expect(taskItem).toBeVisible({ timeout: 5000 });
+      await taskItem.click();
+
+      const detailPanel = page.getByTestId('task-detail-panel');
+      await expect(detailPanel).toBeVisible({ timeout: 5000 });
+
+      // Wait for reviews to load
+      await page.waitForTimeout(1000);
+
+      // Get the review row link
+      const reviewRow = detailPanel.getByTestId('task-review-row').first();
+      await expect(reviewRow).toBeVisible({ timeout: 5000 });
+
+      // Verify it has the correct href to /reviews/[id]
+      const href = await reviewRow.getAttribute('href');
+      expect(href).toContain('/reviews/');
+    });
+  });
+
   test.describe('Task Actions', () => {
     // AC: @web-dashboard ac-7
     test('starts a pending task', async ({ page, daemon }) => {

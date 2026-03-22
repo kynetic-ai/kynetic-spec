@@ -6,8 +6,11 @@ import {
   initializeShadow,
   SHADOW_WORKTREE_DIR,
   SESSIONS_WORKTREE_DIR,
+  TRANSIENT_PLANS_DIR,
+  ensurePlansGitignore,
   ensureSessionsGitignore,
   ensureShadowSessionsGitignore,
+  needsPlansGitignore,
   needsSessionsGitignore,
   needsShadowSessionsGitignore,
 } from '../src/parser/shadow.js';
@@ -120,6 +123,44 @@ describe('Init/Setup Sessions Directory', () => {
     });
   });
 
+  describe('ensurePlansGitignore', () => {
+    it('adds plans/ to root .gitignore', async () => {
+      initGit(testDir);
+      initialCommit(testDir);
+
+      const result = await ensurePlansGitignore(testDir);
+
+      expect(result).toBe(true);
+      const content = await fs.readFile(path.join(testDir, '.gitignore'), 'utf-8');
+      expect(content).toContain(`${TRANSIENT_PLANS_DIR}/`);
+    });
+
+    it('is idempotent — does not add duplicate entries', async () => {
+      initGit(testDir);
+      initialCommit(testDir);
+
+      const result1 = await ensurePlansGitignore(testDir);
+      expect(result1).toBe(true);
+
+      const result2 = await ensurePlansGitignore(testDir);
+      expect(result2).toBe(false);
+
+      const content = await fs.readFile(path.join(testDir, '.gitignore'), 'utf-8');
+      const matches = content.split('\n').filter((l) => l.trim() === `${TRANSIENT_PLANS_DIR}/`);
+      expect(matches).toHaveLength(1);
+    });
+
+    it('detects various existing patterns as already present', async () => {
+      initGit(testDir);
+      initialCommit(testDir);
+
+      await fs.writeFile(path.join(testDir, '.gitignore'), '/plans/\n', 'utf-8');
+
+      const result = await ensurePlansGitignore(testDir);
+      expect(result).toBe(false);
+    });
+  });
+
   describe('needsSessionsGitignore', () => {
     it('returns true when .gitignore does not exist', async () => {
       const result = await needsSessionsGitignore(testDir);
@@ -135,6 +176,25 @@ describe('Init/Setup Sessions Directory', () => {
     it('returns false when entry already present', async () => {
       await fs.writeFile(path.join(testDir, '.gitignore'), '.kspec-sessions/\n', 'utf-8');
       const result = await needsSessionsGitignore(testDir);
+      expect(result).toBe(false);
+    });
+  });
+
+  describe('needsPlansGitignore', () => {
+    it('returns true when .gitignore does not exist', async () => {
+      const result = await needsPlansGitignore(testDir);
+      expect(result).toBe(true);
+    });
+
+    it('returns true when entry is not present', async () => {
+      await fs.writeFile(path.join(testDir, '.gitignore'), 'node_modules/\n', 'utf-8');
+      const result = await needsPlansGitignore(testDir);
+      expect(result).toBe(true);
+    });
+
+    it('returns false when entry already present', async () => {
+      await fs.writeFile(path.join(testDir, '.gitignore'), 'plans/\n', 'utf-8');
+      const result = await needsPlansGitignore(testDir);
       expect(result).toBe(false);
     });
   });
@@ -231,6 +291,7 @@ describe('Init/Setup Sessions Directory', () => {
 
         const content = await fs.readFile(path.join(testDir, '.gitignore'), 'utf-8');
         expect(content).toContain('.kspec-sessions/');
+        expect(content).toContain('plans/');
         expect(content).toContain('.kspec/');
       },
     );

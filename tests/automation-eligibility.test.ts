@@ -126,7 +126,7 @@ describe('Task Automation Eligibility', () => {
     });
 
     it('should show unassessed for tasks without automation', () => {
-      // Create a task without automation field (fixture task now has eligible for ralph tests)
+      // Create a task without automation field (fixture task now has eligible for dispatch tests)
       const addOutput = kspec('task add --title "Task Without Automation" --json', tempDir);
       const { task } = JSON.parse(addOutput);
       const output = kspec(`task get @${task._ulid.slice(0, 8)}`, tempDir);

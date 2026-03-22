@@ -13,20 +13,19 @@ import {
   buildIndexes,
   createPlan,
   createSpecItem,
-  createTask,
   findPlanByRef,
   filterPlansByStatus,
   getAuthor,
   initContext,
   type LoadedPlan,
   type LoadedSpecItem,
-  loadAllTasks,
+  type LoadedTask,
   loadPlans,
   mutatePlanAtomically,
   savePlan,
-  saveTask,
   shortestUniqueUlid,
 } from "../../parser/index.js";
+import { resolveTaskDataManager } from "../../parser/task-data-manager.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import {
   parsePlanDocument,
@@ -41,13 +40,19 @@ import type {
   SpecItemInput,
   TaskInput,
 } from "../../schema/index.js";
+import { PlanStatusSchema } from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
 import { fieldLabels } from "../../strings/labels.js";
 import { formatRelativeTime as formatRelativeTimeUtil } from "../../utils/time.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, isJsonMode, output, success, warn } from "../output.js";
+import { validateEnumOption } from "../validators.js";
 import { ulid } from "ulid";
 import { registerPlanImportCommand } from "./plan-import.js";
+import {
+  getLinkedPlanSummaryTasks,
+  isCountedInPlanSummary,
+} from "../../lib/plan-summary.js";
 
 /**
  * Format relative time for display
@@ -476,7 +481,7 @@ function buildTaskPlans(
   deriveFromSpecs: boolean | undefined,
   additionalTasks: PlanTask[] | undefined,
   refIndex: Awaited<ReturnType<typeof buildIndexes>>["refIndex"],
-  allTasks: Awaited<ReturnType<typeof loadAllTasks>>,
+  allTasks: LoadedTask[],
   reservedSlugs: Set<string>,
   author: string | undefined,
   warnings: DeriveWarning[],
@@ -713,10 +718,20 @@ Examples:
           }
         }
 
+        const statusResult = validateEnumOption(
+          options.status || "draft",
+          PlanStatusSchema.options,
+          "plan status",
+        );
+        if (!statusResult.ok) {
+          error(statusResult.error);
+          process.exit(EXIT_CODES.VALIDATION_FAILED);
+        }
+
         const input: PlanInput = {
           title: options.title,
           content,
-          status: options.status || "draft",
+          status: statusResult.value,
           slugs: [planSlug],
         };
 
@@ -910,12 +925,26 @@ Examples:
           return;
         }
 
+        let statusValue: LoadedPlan["status"] | undefined;
+        if (options.status) {
+          const statusResult = validateEnumOption(
+            options.status,
+            PlanStatusSchema.options,
+            "plan status",
+          );
+          if (!statusResult.ok) {
+            error(statusResult.error);
+            process.exit(EXIT_CODES.VALIDATION_FAILED);
+          }
+          statusValue = statusResult.value;
+        }
+
         let updatedPlan: LoadedPlan;
         try {
           updatedPlan = await mutatePlanAtomically(ctx, foundPlan, (latestPlan) => {
             // AC: @plan-crud ac-4 - prevent transitions from terminal states
             if (
-              options.status &&
+              statusValue &&
               (latestPlan.status === "completed" ||
                 latestPlan.status === "rejected")
             ) {
@@ -935,13 +964,13 @@ Examples:
               changes.push("title");
             }
 
-            if (options.status) {
+            if (statusValue) {
               const oldStatus = latestPlan.status;
-              nextPlan.status = options.status;
-              changes.push(`status: ${oldStatus} → ${options.status}`);
+              nextPlan.status = statusValue;
+              changes.push(`status: ${oldStatus} → ${statusValue}`);
 
               // AC: @plan-crud ac-3 - set approved_at timestamp when transitioning to approved
-              if (options.status === "approved" && !nextPlan.approved_at) {
+              if (statusValue === "approved" && !nextPlan.approved_at) {
                 nextPlan.approved_at = new Date().toISOString();
               }
             }
@@ -997,10 +1026,20 @@ Examples:
       try {
         const ctx = await initContext();
         let plans = await loadPlans(ctx);
+        const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
 
         // AC: @plan-crud ac-7 - status filter
         if (options.status) {
-          plans = filterPlansByStatus(plans, options.status);
+          const statusResult = validateEnumOption(
+            options.status,
+            PlanStatusSchema.options,
+            "plan status",
+          );
+          if (!statusResult.ok) {
+            error(statusResult.error);
+            process.exit(EXIT_CODES.VALIDATION_FAILED);
+          }
+          plans = filterPlansByStatus(plans, statusResult.value);
         }
 
         // Sort by created date (newest first)
@@ -1021,12 +1060,14 @@ Examples:
           for (const p of plans) {
             const ref = shortPlanRef(p, plans);
             const age = formatRelativeTime(p.created_at);
-            const taskCount = p.derived_tasks.length;
-            const tasks =
+            const taskCount = getLinkedPlanSummaryTasks(p, tasks).filter((task) =>
+              isCountedInPlanSummary(task),
+            ).length;
+            const taskLabel =
               taskCount > 0 ? ` [${taskCount} task${taskCount > 1 ? "s" : ""}]` : "";
 
             console.log(
-              `  ${ref} [${p.status}]${tasks} ${p.title}`,
+              `  ${ref} [${p.status}]${taskLabel} ${p.title}`,
             );
             console.log(`         Created ${age}`);
 
@@ -1139,24 +1180,6 @@ Examples:
           );
         }
 
-        const moduleRef = await resolveDeriveModuleRef(
-          ctx,
-          plans,
-          foundPlan,
-          options.module,
-        );
-        if (!moduleRef) {
-          exitDeriveWithGuidance(
-            "Plan derive requires --module when the plan has no stored module ref",
-            EXIT_CODES.USAGE_ERROR,
-            `Re-run with a module, for example: kspec plan derive ${planRef} --module @your-module`,
-            {
-              field: "module",
-              value: null,
-            },
-          );
-        }
-
         const parsedPlan = parsePlanDocument(foundPlan.content);
         const errorsList: Array<{ type: string; message: string }> = [];
         const warnings: DeriveWarning[] = [];
@@ -1179,12 +1202,43 @@ Examples:
           });
         }
 
-        if (parsedPlan.specs.length === 0) {
+        const hasSpecsToMaterialize = parsedPlan.specs.length > 0;
+        const hasManualTasksToMaterialize = Boolean(
+          options.tasks &&
+            parsedPlan.tasks.additional_tasks &&
+            parsedPlan.tasks.additional_tasks.length > 0,
+        );
+
+        if (!hasSpecsToMaterialize && !hasManualTasksToMaterialize) {
           exitDeriveWithGuidance(
-            "No specs found in plan content. Ensure ## Specs section contains a fenced YAML code block.",
+            "Plan does not define derivable work. Add specs or run with --tasks when the plan defines manual tasks.",
             EXIT_CODES.USAGE_ERROR,
-            "Add a ## Specs section with a ```yaml fenced block, then re-run derive.",
+            "Add a ## Specs section with a ```yaml fenced block, or define tasks in ## Tasks and re-run with --tasks.",
           );
+        }
+
+        let moduleRef = "";
+        if (hasSpecsToMaterialize) {
+          const resolvedModuleRef = await resolveDeriveModuleRef(
+            ctx,
+            plans,
+            foundPlan,
+            options.module,
+          );
+          if (!resolvedModuleRef) {
+            exitDeriveWithGuidance(
+              "Plan derive requires --module when the plan has no stored module ref",
+              EXIT_CODES.USAGE_ERROR,
+              `Re-run with a module, for example: kspec plan derive ${planRef} --module @your-module`,
+              {
+                field: "module",
+                value: null,
+              },
+            );
+          }
+          moduleRef = resolvedModuleRef;
+        } else {
+          moduleRef = foundPlan.module_ref ?? options.module ?? "";
         }
 
         const { refIndex, items, tasks } = await buildIndexes(ctx, plans);
@@ -1194,18 +1248,20 @@ Examples:
           ...tasks.flatMap((task) => task.slugs),
         ]);
 
-        const materializedSpecs = await materializePlanSpecs(
-          ctx,
-          foundPlan,
-          moduleRef,
-          parsedPlan,
-          refIndex,
-          items,
-          reservedSlugs,
-          Boolean(options.dryRun),
-          warnings,
-          skipped,
-        );
+        const materializedSpecs = hasSpecsToMaterialize
+          ? await materializePlanSpecs(
+              ctx,
+              foundPlan,
+              moduleRef,
+              parsedPlan,
+              refIndex,
+              items,
+              reservedSlugs,
+              Boolean(options.dryRun),
+              warnings,
+              skipped,
+            )
+          : [];
 
         const createdSpecRefs = materializedSpecs.map((item) => item.ref);
 
@@ -1228,8 +1284,7 @@ Examples:
 
         if (!options.dryRun) {
           for (const taskPlan of taskPlans) {
-            const newTask = createTask(taskPlan.input);
-            await saveTask(ctx, newTask);
+            await resolveTaskDataManager(ctx).createTask(ctx, taskPlan.input);
           }
 
           const updatedPlan = await mutatePlanAtomically(ctx, foundPlan, (latestPlan) => {

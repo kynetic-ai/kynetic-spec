@@ -17,7 +17,6 @@ import { Elysia, t } from 'elysia';
 import {
   initContext,
   loadAllItems,
-  loadAllTasks,
   loadPlans,
   findItemByRef,
   findTaskByRef,
@@ -25,9 +24,16 @@ import {
   AlignmentIndex,
   getCachedTestCoverage,
   computeACCoverage,
+  resolveTaskDataManager,
   type LoadedSpecItem,
   type LoadedTask,
 } from '../../parser/index.js';
+import {
+  ImplementationStatusSchema,
+  ItemTypeSchema,
+  MaturitySchema,
+} from '../../schema/common.js';
+import { enumArrayUnion } from './enum-utils.js';
 import { getRelatedSessionsForItem } from './session-related.js';
 
 interface ItemsRouteOptions {}
@@ -242,9 +248,9 @@ export function createItemsRoutes(options: ItemsRouteOptions = {}) {
       },
       {
         query: t.Object({
-          type: t.Optional(t.Union([t.String(), t.Array(t.String())])),
-          maturity: t.Optional(t.Union([t.String(), t.Array(t.String())])),
-          implementation: t.Optional(t.Union([t.String(), t.Array(t.String())])),
+          type: t.Optional(enumArrayUnion(ItemTypeSchema.options)),
+          maturity: t.Optional(enumArrayUnion(MaturitySchema.options)),
+          implementation: t.Optional(enumArrayUnion(ImplementationStatusSchema.options)),
           tag: t.Optional(t.Union([t.String(), t.Array(t.String())])),
           plan: t.Optional(t.String()),
           limit: t.Optional(t.String()),
@@ -287,7 +293,7 @@ export function createItemsRoutes(options: ItemsRouteOptions = {}) {
         // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
         const ctx = await initContext(projectContext.path);
         const items = await loadAllItems(ctx);
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
 
         const resolvedItems = [];
         const unresolved: string[] = [];
@@ -327,7 +333,7 @@ export function createItemsRoutes(options: ItemsRouteOptions = {}) {
         // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
         const ctx = await initContext(projectContext.path);
         const items = await loadAllItems(ctx);
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
         const index = new ReferenceIndex(tasks, items);
 
         // Compute parent relationships from path structure
@@ -399,7 +405,7 @@ export function createItemsRoutes(options: ItemsRouteOptions = {}) {
         // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
         const ctx = await initContext(projectContext.path);
         const items = await loadAllItems(ctx);
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
         const refIndex = new ReferenceIndex(tasks, items);
         const alignIndex = new AlignmentIndex(tasks, items);
         alignIndex.buildLinks(refIndex);
@@ -461,7 +467,7 @@ export function createItemsRoutes(options: ItemsRouteOptions = {}) {
       async ({ params, error: errorResponse, projectContext }) => {
         const ctx = await initContext(projectContext.path);
         const items = await loadAllItems(ctx);
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
         const result = await getRelatedSessionsForItem({
           itemRef: params.ref,
           items,

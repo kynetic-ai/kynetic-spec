@@ -10,11 +10,10 @@ import {
   getReadyTasks,
   initContext,
   loadAllItems,
-  loadAllTasks,
   ReferenceIndex,
-  saveTask,
   type TaskAssessment,
 } from "../../parser/index.js";
+import { resolveTaskDataManager, type ShadowCommitOptions } from "../../parser/task-data-manager.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import { errors } from "../../strings/index.js";
 import { grepItem } from "../../utils/grep.js";
@@ -30,8 +29,10 @@ import {
 import { findClosestCommand } from "../suggest.js";
 import {
   normalizeRefInput,
+  TaskTypeSchema,
   TaskStatusSchema,
 } from "../../schema/common.js";
+import { validateEnumOption } from "../validators.js";
 
 /** List options shared between tasks list subcommand and default action */
 interface ListTasksOptions {
@@ -88,7 +89,7 @@ export function parseMultiStatus<T extends string>(
 export async function listTasksAction(options: ListTasksOptions): Promise<void> {
   try {
     const ctx = await initContext();
-    const allTasks = await loadAllTasks(ctx);
+    const allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
     const items = await loadAllItems(ctx);
 
     // Load meta items if filtering by meta-ref
@@ -118,7 +119,16 @@ export async function listTasksAction(options: ListTasksOptions): Promise<void> 
       }
     }
     if (options.type) {
-      taskList = taskList.filter((t) => t.type === options.type);
+      const typeResult = validateEnumOption(
+        options.type,
+        TaskTypeSchema.options,
+        "task type",
+      );
+      if (!typeResult.ok) {
+        error(typeResult.error);
+        process.exit(EXIT_CODES.VALIDATION_FAILED);
+      }
+      taskList = taskList.filter((t) => t.type === typeResult.value);
     }
     if (options.tag) {
       const tag = options.tag;
@@ -244,7 +254,7 @@ export function registerTasksCommands(program: Command): void {
     .action(async (options) => {
       try {
         const ctx = await initContext();
-        const allTasks = await loadAllTasks(ctx);
+        const allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
         const items = await loadAllItems(ctx);
         const index = new ReferenceIndex(allTasks, items);
         let readyTasks = getReadyTasks(allTasks);
@@ -305,7 +315,7 @@ export function registerTasksCommands(program: Command): void {
     .action(async () => {
       try {
         const ctx = await initContext();
-        const allTasks = await loadAllTasks(ctx);
+        const allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
         const items = await loadAllItems(ctx);
         const index = new ReferenceIndex(allTasks, items);
         const readyTasks = getReadyTasks(allTasks);
@@ -333,7 +343,7 @@ export function registerTasksCommands(program: Command): void {
     .action(async (options) => {
       try {
         const ctx = await initContext();
-        const allTasks = await loadAllTasks(ctx);
+        const allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
         const items = await loadAllItems(ctx);
         const index = new ReferenceIndex(allTasks, items);
         const blockedTasks = allTasks.filter((t) => t.status === "blocked");
@@ -363,7 +373,7 @@ export function registerTasksCommands(program: Command): void {
     .action(async (options) => {
       try {
         const ctx = await initContext();
-        const allTasks = await loadAllTasks(ctx);
+        const allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
         const items = await loadAllItems(ctx);
         const index = new ReferenceIndex(allTasks, items);
         const activeTasks = allTasks.filter(
@@ -405,7 +415,7 @@ export function registerTasksCommands(program: Command): void {
     .action(async (taskRef: string | undefined, options) => {
       try {
         const ctx = await initContext();
-        const allTasks = await loadAllTasks(ctx);
+        const allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
         const items = await loadAllItems(ctx);
         const index = new ReferenceIndex(allTasks, items);
 
@@ -492,15 +502,19 @@ export function registerTasksCommands(program: Command): void {
             const task = allTasks.find((t) => t._ulid === change.taskUlid);
             if (!task) continue;
 
-            // Set automation status
-            task.automation = change.newStatus;
-
             // AC: @tasks-assess-automation ac-19, ac-20 - Add note explaining assessment
             const noteContent = `Automation assessment: set to ${change.newStatus}. ${change.reason}`;
             const note = createNote(noteContent, "@automation-assess");
-            task.notes = [...task.notes, note];
 
-            await saveTask(ctx, task);
+            const assessCommitOpts: ShadowCommitOptions = {
+              operation: "tasks-assess",
+              skipCommit: true,
+            };
+            await resolveTaskDataManager(ctx).mutateTask(ctx, task._ulid, (latestTask) => ({
+              ...latestTask,
+              automation: change.newStatus,
+              notes: [...latestTask.notes, note],
+            }), assessCommitOpts);
             changeCount++;
           }
 
@@ -508,7 +522,7 @@ export function registerTasksCommands(program: Command): void {
             await commitIfShadow(
               ctx.shadow,
               "tasks-assess",
-              "automation",
+              undefined,
               `${changeCount} task(s)`,
             );
           }

@@ -2,7 +2,8 @@
  * Agent Prompt Building
  *
  * Resolves skills from the skill registry and builds structured prompts
- * for agent invocations. Extracted from ralph.ts to be reusable by both
+ * for agent invocations. Extracted from the legacy dispatch command path to be
+ * reusable by both
  * the dispatch engine and CLI one-shot mode.
  *
  * AC: @agent-invocation-lifecycle ac-7

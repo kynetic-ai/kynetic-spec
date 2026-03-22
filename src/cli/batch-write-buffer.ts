@@ -19,6 +19,7 @@
 import * as fs from "node:fs/promises";
 import type { Dirent } from "node:fs";
 import * as path from "node:path";
+import { AsyncLocalStorage } from "node:async_hooks";
 
 type OverlayEntryKind = "file" | "directory";
 type BufferedFileContent = string | Uint8Array;
@@ -85,12 +86,20 @@ export class SyntheticDirent {
  * Maps absolute file paths to their buffered string content.
  * A null value indicates the file should be deleted on flush.
  */
+let _bufferIdCounter = 0;
+
 export class WriteBuffer {
   /** specDir this buffer is scoped to */
   readonly specDir: string;
 
+  /** unique id for this buffer instance — used to isolate staging files */
+  private readonly _id = ++_bufferIdCounter;
+
   /** buffered writes: path → content (null = deleted) */
   private readonly entries = new Map<string, BufferedFileContent | null>();
+
+  /** directories to recursively remove during flush (after file operations) */
+  private readonly pendingDirRemovals = new Set<string>();
 
   constructor(specDir: string) {
     this.specDir = path.resolve(specDir);
@@ -117,6 +126,15 @@ export class WriteBuffer {
    */
   delete(filePath: string): void {
     this.entries.set(path.resolve(filePath), null);
+  }
+
+  /**
+   * Mark a directory for recursive removal during flush.
+   * The removal happens after all file-level operations complete,
+   * ensuring it participates in the buffer's atomicity guarantees.
+   */
+  deleteDirectory(dirPath: string): void {
+    this.pendingDirRemovals.add(path.resolve(dirPath));
   }
 
   /**
@@ -153,7 +171,7 @@ export class WriteBuffer {
 
     let current = path.resolve(filePath);
     while (true) {
-      if (this.entries.get(current) === null) {
+      if (this.entries.get(current) === null || this.pendingDirRemovals.has(current)) {
         return true;
       }
       if (current === this.specDir) {
@@ -202,6 +220,18 @@ export class WriteBuffer {
         directWrites.set(rootName, content === null ? "deleted" : "file");
       } else if (content !== null) {
         inferredDirectories.add(rootName);
+      }
+    }
+
+    // Pending directory removals show as deleted entries in the overlay.
+    for (const dirPath of this.pendingDirRemovals) {
+      const relative = path.relative(resolvedDir, dirPath);
+      if (!relative || relative.startsWith("..") || path.isAbsolute(relative)) {
+        continue;
+      }
+      const parts = relative.split(path.sep).filter(Boolean);
+      if (parts.length === 1) {
+        directWrites.set(parts[0], "deleted");
       }
     }
 
@@ -305,7 +335,7 @@ export class WriteBuffer {
    * AC: @batch-write-buffer ac-7 — flush failure reported; .kspec/ not silently corrupted
    */
   async flush(): Promise<void> {
-    if (this.entries.size === 0) return;
+    if (this.entries.size === 0 && this.pendingDirRemovals.size === 0) return;
 
     const stagingMap = new Map<string, string>(); // real path → staging path
 
@@ -317,7 +347,7 @@ export class WriteBuffer {
           stagingMap.set(filePath, "");
           continue;
         }
-        const stagingPath = `${filePath}.kspec-batch-staging`;
+        const stagingPath = `${filePath}.kspec-batch-staging-${this._id}`;
         await fs.mkdir(path.dirname(filePath), { recursive: true });
         await fs.writeFile(stagingPath, content, "utf-8");
         stagingMap.set(filePath, stagingPath);
@@ -361,6 +391,11 @@ export class WriteBuffer {
         );
       }
     }
+
+    // Phase 3: Remove pending directories (after all file operations)
+    for (const dirPath of this.pendingDirRemovals) {
+      await fs.rm(dirPath, { recursive: true, force: true });
+    }
   }
 
   /**
@@ -369,6 +404,7 @@ export class WriteBuffer {
    */
   discard(): void {
     this.entries.clear();
+    this.pendingDirRemovals.clear();
   }
 
   private async _cleanupStaging(stagingMap: Map<string, string>): Promise<void> {
@@ -380,32 +416,92 @@ export class WriteBuffer {
   }
 }
 
-// ── Module Singleton ─────────────────────────────────────────────────────────
+// ── Async-Local Buffer Scope ─────────────────────────────────────────────────
+//
+// Write buffers are scoped per async context using AsyncLocalStorage.
+// This ensures concurrent operations each see only their own buffer:
+// - batch-exec activates a buffer for the entire batch, visible to all
+//   commands dispatched within that async context
+// - withWriteBuffer (TaskDataManager) activates a per-operation buffer,
+//   invisible to concurrent operations on other tasks
+//
+// The old module-level singleton (_activeBuffer) caused a concurrency bug:
+// concurrent split mutations shared a single global buffer, so one
+// operation's discard() would silently lose another's successful writes.
 
-let _activeBuffer: WriteBuffer | null = null;
+const _bufferStorage = new AsyncLocalStorage<WriteBuffer>();
 
 /**
  * Activate an in-memory write buffer for the given specDir.
- * All subsequent writes to paths under specDir will go to the buffer.
+ * Stores the buffer in the current async context so only the current
+ * operation (and its descendants) see it via getActiveBatchBuffer().
+ *
+ * IMPORTANT: After calling this, you MUST call deactivateBatchBuffer()
+ * to exit the async context. For new code, prefer runWithBuffer() which
+ * manages the lifecycle automatically.
+ *
  * AC: @batch-write-buffer ac-1
  */
 export function activateBatchBuffer(specDir: string): WriteBuffer {
-  _activeBuffer = new WriteBuffer(specDir);
-  return _activeBuffer;
+  const buffer = new WriteBuffer(specDir);
+  _bufferStorage.enterWith(buffer);
+  return buffer;
 }
 
 /**
  * Deactivate the active buffer (after flush or discard).
+ * Exits the async-local context so subsequent code in this async context
+ * no longer sees the buffer.
  */
 export function deactivateBatchBuffer(): void {
-  _activeBuffer = null;
+  _bufferStorage.enterWith(undefined as unknown as WriteBuffer);
 }
 
 /**
- * Get the currently active write buffer, or null if not in batch mode.
+ * Get the currently active write buffer, or null if no buffer is active
+ * in the current async context.
  */
 export function getActiveBatchBuffer(): WriteBuffer | null {
-  return _activeBuffer;
+  return _bufferStorage.getStore() ?? null;
+}
+
+/**
+ * Run an operation within an isolated write buffer scope.
+ *
+ * Creates a new WriteBuffer, executes the callback within an async context
+ * where getActiveBatchBuffer() returns that buffer, then flushes on success
+ * or discards on failure. The buffer is invisible to concurrent operations
+ * running in other async contexts.
+ *
+ * If a buffer is already active (e.g., from batch-exec), returns null as
+ * the buffer parameter to the callback, signaling that the caller should
+ * reuse the existing buffer.
+ *
+ * AC: @batch-write-buffer ac-1 — writes buffered in memory
+ * AC: @batch-write-buffer ac-4 — rollback discards buffer on failure
+ */
+export async function runWithBuffer<T>(
+  specDir: string,
+  operation: (buffer: WriteBuffer | null) => Promise<T>,
+): Promise<T> {
+  const existingBuffer = getActiveBatchBuffer();
+  if (existingBuffer) {
+    // Already in a buffer scope (batch-exec or parent withWriteBuffer).
+    // Reuse it — the parent owns flush/discard lifecycle.
+    return operation(null);
+  }
+
+  const buffer = new WriteBuffer(specDir);
+  return _bufferStorage.run(buffer, async () => {
+    try {
+      const result = await operation(buffer);
+      await buffer.flush();
+      return result;
+    } catch (error) {
+      buffer.discard();
+      throw error;
+    }
+  });
 }
 
 export async function readdirBufferAware(

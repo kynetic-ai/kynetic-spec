@@ -17,6 +17,8 @@
  * - @ui-url-panel-state ac-4: Filter URL mutations use goto() and stay reactive.
  */
 
+import { mkdir, writeFile } from 'fs/promises';
+import { join } from 'path';
 import { test, expect } from '../fixtures/test-base';
 
 /** Generate a session with a specific index for stable ordering. */
@@ -202,6 +204,38 @@ function mockSearchRoute() {
 			})
 		});
 	};
+}
+
+async function writeSessionFixture(
+	projectRoot: string,
+	options: {
+		id: string;
+		status: 'active' | 'completed' | 'abandoned' | 'timed_out' | 'failed';
+		startedAt: string;
+		endedAt?: string;
+		agentType?: string;
+		agentId?: string;
+		trigger?: string;
+		taskId?: string;
+	}
+) {
+	const sessionDir = join(projectRoot, '.kspec-sessions', options.id);
+	await mkdir(sessionDir, { recursive: true });
+	const endedAtLine = options.endedAt ? `ended_at: "${options.endedAt}"\n` : '';
+	const taskIdLine = options.taskId ? `task_id: "${options.taskId}"\n` : '';
+
+	await writeFile(
+		join(sessionDir, 'session.yaml'),
+		`id: "${options.id}"
+${taskIdLine}agent_type: "${options.agentType ?? 'task-worker'}"
+agent_id: "${options.agentId ?? 'worker'}"
+trigger: "${options.trigger ?? 'manual'}"
+status: "${options.status}"
+started_at: "${options.startedAt}"
+${endedAtLine}`,
+		'utf-8'
+	);
+	await writeFile(join(sessionDir, 'events.jsonl'), '', 'utf-8');
 }
 
 test.describe('Session History View', () => {
@@ -952,45 +986,32 @@ test.describe('Session History View', () => {
 			await expect(page.getByTestId('new-sessions-indicator')).not.toBeVisible();
 		});
 
-		// AC: @session-list-infinite-scroll ac-live-update — Subscribes to agents topic
-		test('subscribes to agents WebSocket topic for live updates', async ({ page, daemon }) => {
-			await page.route('**/api/sessions*', (route) => {
-				route.fulfill({
-					status: 200,
-					contentType: 'application/json',
-					body: JSON.stringify({
-						items: [makeSession(1)],
-						total: 1,
-						offset: 0,
-						limit: 25,
-					}),
-				});
+		// AC: @session-list-infinite-scroll ac-live-update-source-agnostic
+		test('refreshes from sessions-topic updates as well as agent-origin updates', async ({ page, daemon }) => {
+			const agentType = 'source-agnostic-worker';
+			await writeSessionFixture(daemon.tempDir, {
+				id: '01JTESTSOURCEAGNTSESSION000001',
+				status: 'completed',
+				startedAt: '2026-03-20T10:00:00.000Z',
+				endedAt: '2026-03-20T10:05:00.000Z',
+				agentType
 			});
 
-			// Track WebSocket subscribe messages
-			const wsMessages: string[] = [];
-			page.on('websocket', ws => {
-				ws.on('framesent', frame => {
-					if (typeof frame.payload === 'string') {
-						wsMessages.push(frame.payload);
-					}
-				});
-			});
-
-			await page.goto('/sessions');
+			await page.goto(`/sessions?agent_type=${agentType}`);
 			await expect(page.getByTestId('sessions-list')).toBeVisible();
+			await expect(page.getByTestId('sessions-count')).toContainText('1 of 1 session');
+			await expect(page.getByTestId('session-row').first()).toContainText('01JTESTSOURCEAGNTSESSION000001');
 
-			// Wait for WebSocket subscription to be sent
-			await page.waitForTimeout(1000);
-
-			// Should have subscribed to 'agents' topic
-			const subscribeMessages = wsMessages.filter(msg => {
-				try {
-					const parsed = JSON.parse(msg);
-					return parsed.command === 'subscribe' && parsed.topics?.includes('agents');
-				} catch { return false; }
+			await writeSessionFixture(daemon.tempDir, {
+				id: '01JTESTSOURCEAGNTSESSION000002',
+				status: 'active',
+				startedAt: '2026-03-20T10:10:00.000Z',
+				agentType
 			});
-			expect(subscribeMessages.length).toBeGreaterThan(0);
+
+			await expect(page.getByTestId('sessions-count')).toContainText('2 of 2 sessions', { timeout: 3000 });
+			await expect(page.getByTestId('session-row').first()).toContainText('01JTESTSOURCEAGNTSESSION000002', { timeout: 3000 });
+			await expect(page.getByTestId('session-row').first()).toContainText('active');
 		});
 
 		// AC: @session-list-infinite-scroll ac-live-update — Total count updates on new session
@@ -1127,17 +1148,25 @@ test.describe('Session History View', () => {
 			await expect(page.getByTestId('new-sessions-indicator')).not.toBeVisible();
 		});
 
-		// AC: @session-list-infinite-scroll ac-live-update — Scrolled-down indicator behavior
-		test('shows indicator when user is scrolled down and new session arrives', async ({ page, daemon }) => {
+		// AC: @session-list-infinite-scroll ac-live-update-scrolled
+		test('shows indicator when an in-list update arrives while the user is scrolled down', async ({ page, daemon }) => {
 			// Need enough sessions to enable scrolling
 			const sessions = Array.from({ length: 25 }, (_, i) => makeSession(i + 1));
+			let requestCount = 0;
 
 			await page.route('**/api/sessions*', (route) => {
+				requestCount++;
+				const currentSessions =
+					requestCount > 1
+						? sessions.map((session, index) =>
+								index === 10 ? { ...session, status: 'failed' as const } : session
+							)
+						: sessions;
 				route.fulfill({
 					status: 200,
 					contentType: 'application/json',
 					body: JSON.stringify({
-						items: sessions,
+						items: currentSessions,
 						total: 50, // More than one page so sentinel is visible
 						offset: 0,
 						limit: 25,
@@ -1170,7 +1199,8 @@ test.describe('Session History View', () => {
 			});
 			await page.waitForTimeout(200); // Let scroll handler fire
 
-			// Inject new session event while scrolled down
+			// Inject a sessions update while scrolled down. The total count and first
+			// row stay the same, so this only surfaces if the page detects in-list changes.
 			const injected = await page.evaluate(() => {
 				const instances = (window as any).__test_ws_instances as WebSocket[];
 				const ws = instances?.find((s) => s.readyState === WebSocket.OPEN);
@@ -1180,14 +1210,11 @@ test.describe('Session History View', () => {
 					msg_id: 'test-live-003',
 					seq: 9997,
 					timestamp: new Date().toISOString(),
-					topic: 'agents',
-					event: 'agent_invocation',
+					topic: 'sessions',
+					event: 'session_changed',
 					data: {
-						session_id: 'new-session-003',
-						agent_id: 'task-worker',
-						task_id: null,
-						status: 'started',
-						timestamp: Date.now()
+						session_id: sessions[10].id,
+						path: `.kspec-sessions/${sessions[10].id}/session.yaml`
 					}
 				});
 				ws.dispatchEvent(new MessageEvent('message', { data: msg }));
@@ -1199,8 +1226,8 @@ test.describe('Session History View', () => {
 			await expect(page.getByTestId('new-sessions-indicator')).toBeVisible({ timeout: 3000 });
 			await expect(page.getByTestId('new-sessions-indicator')).toContainText('1 new session');
 
-			// Total count should also be updated
-			await expect(page.getByTestId('sessions-count')).toContainText('of 51 sessions');
+			// Count stays unchanged because this is an in-place status update rather than a new row.
+			await expect(page.getByTestId('sessions-count')).toContainText('25 of 50 sessions');
 		});
 
 		// AC: @session-list-infinite-scroll ac-live-update — Clicking indicator refreshes

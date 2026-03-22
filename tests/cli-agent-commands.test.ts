@@ -875,7 +875,7 @@ describe("AC-4: kspec agent dispatch start with running daemon", () => {
         identity: { author: null },
         validation: { strict_refs: true, require_acceptance: false },
         daemon: { port: 3456, host: "localhost", auto_start: true },
-        ralph: {
+        agent: {
           skills: {
             task_work: "/kspec:task-work",
             reflect: "/kspec:reflect",
@@ -933,7 +933,7 @@ describe("AC-4: kspec agent dispatch start with running daemon", () => {
         identity: { author: null },
         validation: { strict_refs: true, require_acceptance: false },
         daemon: { port: 3456, host: "localhost", auto_start: true },
-        ralph: {
+        agent: {
           skills: {
             task_work: "/kspec:task-work",
             reflect: "/kspec:reflect",

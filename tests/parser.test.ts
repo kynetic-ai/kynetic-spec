@@ -99,6 +99,7 @@ Line 5 after blank`,
 });
 
 describe('createTask', () => {
+  // AC: @parser-write-type-safety ac-2
   it('should create task with defaults', () => {
     const input: TaskInput = {
       title: 'My task',
@@ -129,6 +130,16 @@ describe('createTask', () => {
     expect(task.type).toBe('bug');
     expect(task.priority).toBe(1);
     expect(task.tags).toEqual(['urgent']);
+  });
+
+  // AC: @parser-write-type-safety ac-1
+  it('should reject invalid task input before creating a task', () => {
+    expect(() =>
+      createTask({
+        title: 'Invalid task',
+        status: 'not-a-status' as TaskInput['status'],
+      }),
+    ).toThrowError(/Invalid task input: status="not-a-status"/);
   });
 });
 

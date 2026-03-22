@@ -226,10 +226,10 @@ describe('AC-4: Setup --status detects stale agents.md', () => {
     expect(statusAfter.agentsMd.status).toBe('stale');
   });
 
-  it('should report stale when skills change after generation', async () => {
+  it('should report stale when conventions change after generation', async () => {
     // AC: @cross-platform-and-version-robustness ac-4
     // Initialize project and generate agents.md
-    kspecFull('init --name staleness-skills --no-prompt', tempDir);
+    kspecFull('init --name staleness-conventions --no-prompt', tempDir);
     kspecFull('agents generate', tempDir);
 
     // Verify current
@@ -238,8 +238,8 @@ describe('AC-4: Setup --status detects stale agents.md', () => {
     }>('setup --status', tempDir);
     expect(statusBefore.agentsMd.status).toBe('current');
 
-    // Add a new skill to change meta content
-    kspecFull('skill add --id new-skill --name "New Skill" --description "Changes meta hash"', tempDir);
+    // Add a new convention to change meta content
+    kspecFull('meta add convention --domain staleness-test --rule "Changes meta hash"', tempDir);
 
     // Now setup --status should detect the meta change
     const statusAfter = kspecJson<{

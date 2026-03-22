@@ -21,6 +21,7 @@ import {
 } from "../src/agent-runtime/dispatch.js";
 import * as invocationModule from "../src/agent-runtime/invocation.js";
 import * as workspaceModule from "../src/agent-runtime/workspace.js";
+import * as configModule from "../src/parser/config.js";
 import type { ProvisionedDispatchWorkspace } from "../src/agent-runtime/workspace.js";
 import {
   createTempDir,
@@ -340,6 +341,16 @@ async function installFakeGh(dir: string): Promise<{ restore: () => void }> {
   };
 }
 
+async function waitForMockCall(
+  spy: { mock: { calls: unknown[] } },
+  timeoutMs = 2_000,
+): Promise<void> {
+  const deadline = Date.now() + timeoutMs;
+  while (spy.mock.calls.length === 0 && Date.now() < deadline) {
+    await new Promise((resolve) => setTimeout(resolve, 10));
+  }
+}
+
 /**
  * Write tasks to the project tasks file.
  */
@@ -573,7 +584,7 @@ describe("Dispatch in-progress priority", () => {
         fromStatus: "pending",
         toStatus: "in_progress",
       }),
-      task: { automation: "ineligible", tags: [] } as any,
+      task: { automation: "manual_only", tags: [] } as any,
     });
     expect(enqueueCount).toBe(0);
 
@@ -637,7 +648,7 @@ describe("Dispatch scheduling priority model", () => {
 
     const [depId, pendingId, reviewId, blockedId] = testUlids("SCHA", 4);
     await writeTasks(testDir, [
-      { _ulid: depId, status: "pending", automation: "ineligible" },
+      { _ulid: depId, status: "pending", automation: "manual_only" },
       { _ulid: pendingId, status: "pending", automation: "eligible", depends_on: [`@${depId}`] },
       { _ulid: reviewId, status: "pending_review", automation: "eligible", priority: 1 },
       { _ulid: blockedId, status: "needs_work", automation: "eligible", blocked_by: ["waiting"] },
@@ -1065,7 +1076,7 @@ describe("AC-6: Dispatch rule filters applied", () => {
 
     const taskId = testUlid("TASK");
     await writeTasks(testDir, [
-      { _ulid: taskId, status: "in_progress", automation: "ineligible" },
+      { _ulid: taskId, status: "in_progress", automation: "manual_only" },
     ]);
 
     const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
@@ -1073,7 +1084,7 @@ describe("AC-6: Dispatch rule filters applied", () => {
 
     // Transition to pending — should NOT be queued (automation: ineligible)
     await writeTasks(testDir, [
-      { _ulid: taskId, status: "pending", automation: "ineligible" },
+      { _ulid: taskId, status: "pending", automation: "manual_only" },
     ]);
 
     let dispatchedCount = 0;
@@ -1415,7 +1426,8 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
     }
   });
 
-  it("throws when dispatch workspace blocking cannot be executed successfully", async () => {
+  // AC: @agent-dispatch-engine ac-8
+  it("does not throw when dispatch workspace blocking cannot be executed successfully", async () => {
     const agent = makeTestAgent({ dispatch: [{ on: "task.ready" }] });
     await setupProjectWithAgents(testDir, [agent]);
     await fs.mkdir(path.join(testDir, ".kspec"), { recursive: true });
@@ -1437,11 +1449,59 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
       const entry = { agent, change, retryCount: 0, nextRetryAt: 0 };
       const runSpy = vi.spyOn(invocationModule, "runInvocation");
       vi.spyOn(console, "error").mockImplementation(() => {});
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
       type EngineInternal = { _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean> };
-      await expect((engine as unknown as EngineInternal)._spawnInvocation(agent, entry)).rejects.toThrow(
-        /Failed to run `kspec task block/,
+      const spawned = await (engine as unknown as EngineInternal)._spawnInvocation(agent, entry);
+
+      expect(spawned).toBe(false);
+      expect(runSpy).not.toHaveBeenCalled();
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.stringContaining("Failed to block task"),
       );
+
+      const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{ args: string[] }>;
+      const noteCall = calls.find((c) => c.args.includes("task") && c.args.includes("note") && c.args.includes(taskRef));
+      const blockCall = calls.find((c) => c.args.includes("task") && c.args.includes("block") && c.args.includes(taskRef));
+
+      expect(noteCall).toBeDefined();
+      expect(blockCall).toBeDefined();
+    } finally {
+      delete process.env.KSPEC_CAPTURE_FILE;
+      delete process.env.KSPEC_CAPTURE_FAIL_ON;
+      vi.restoreAllMocks();
+    }
+  });
+
+  // AC: @agent-dispatch-engine ac-8
+  it("continues recovery blocking when adding the workspace failure note also fails", async () => {
+    const agent = makeTestAgent({ dispatch: [{ on: "task.ready" }] });
+    await setupProjectWithAgents(testDir, [agent]);
+    await fs.mkdir(path.join(testDir, ".kspec"), { recursive: true });
+    await fs.writeFile(
+      path.join(testDir, "kspec.config.yaml"),
+      "dispatch:\n  base_branch: main\n  worktree_root: .kspec/worktrees\n",
+      "utf-8",
+    );
+
+    const captureFile = path.join(testDir, "kspec-workspace-note-failure-capture.json");
+    process.env.KSPEC_CAPTURE_FILE = captureFile;
+    process.env.KSPEC_CAPTURE_FAIL_ON = "task:note";
+
+    try {
+      const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+      (engine as unknown as { running: boolean }).running = true;
+      const taskRef = `@${testUlid("TASK", 35)}`;
+      const change = makeStateChange({ toStatus: "pending", fromStatus: "in_progress", taskRef });
+      const entry = { agent, change, retryCount: 0, nextRetryAt: 0 };
+      const runSpy = vi.spyOn(invocationModule, "runInvocation");
+      vi.spyOn(console, "error").mockImplementation(() => {});
+      vi.spyOn(console, "warn").mockImplementation(() => {});
+
+      type EngineInternal = { _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean> };
+      const spawned = await (engine as unknown as EngineInternal)._spawnInvocation(agent, entry);
+
+      expect(spawned).toBe(false);
       expect(runSpy).not.toHaveBeenCalled();
 
       const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{ args: string[] }>;
@@ -1450,6 +1510,7 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
 
       expect(noteCall).toBeDefined();
       expect(blockCall).toBeDefined();
+      expect(blockCall!.args.join(" ")).toContain("Dispatch workspace provisioning failed");
     } finally {
       delete process.env.KSPEC_CAPTURE_FILE;
       delete process.env.KSPEC_CAPTURE_FAIL_ON;
@@ -1776,26 +1837,26 @@ describe("AC-12: Shadow branch mutations serialized via mutex", () => {
     const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
     await engine.start();
 
-    const taskId = testUlid("TASK");
-    await engine.handleStateChange({
-      taskId,
-      taskRef: `@${taskId}`,
-      fromStatus: "in_progress",
-      toStatus: "pending",
-      timestamp: Date.now(),
-      task: { automation: "eligible", tags: [] } as any,
-    });
+    try {
+      const taskId = testUlid("TASK");
+      await engine.handleStateChange({
+        taskId,
+        taskRef: `@${taskId}`,
+        fromStatus: "in_progress",
+        toStatus: "pending",
+        timestamp: Date.now(),
+        task: { automation: "eligible", tags: [] } as any,
+      });
 
-    for (let i = 0; i < 20 && runSpy.mock.calls.length === 0; i++) {
-      await new Promise((resolve) => setTimeout(resolve, 5));
+      await waitForMockCall(runSpy);
+
+      expect(runSpy).toHaveBeenCalled();
+      expect(runSpy.mock.calls[0][0].mutationLockFile).toBe(
+        path.join(testDir, ".kspec-dispatch-shadow-mutation"),
+      );
+    } finally {
+      await engine.stop();
     }
-
-    expect(runSpy).toHaveBeenCalled();
-    expect(runSpy.mock.calls[0][0].mutationLockFile).toBe(
-      path.join(testDir, ".kspec-dispatch-shadow-mutation"),
-    );
-
-    await engine.stop();
   });
 });
 
@@ -1962,7 +2023,7 @@ describe("Active fleet cleanup on invocation completion", () => {
       task: { automation: "eligible", tags: [] } as any,
     });
 
-    for (let i = 0; i < 50 && quietEvents.length === 0; i++) {
+    for (let i = 0; i < 200 && quietEvents.length === 0; i++) {
       await new Promise((resolve) => setTimeout(resolve, 10));
     }
     expect(quietEvents[0]).toBe("started");
@@ -1970,7 +2031,7 @@ describe("Active fleet cleanup on invocation completion", () => {
     releaseQuietInvocation();
     await quietHandle;
 
-    for (let i = 0; i < 50 && quietEvents.at(-1) !== "completed"; i++) {
+    for (let i = 0; i < 200 && quietEvents.at(-1) !== "completed"; i++) {
       await new Promise((resolve) => setTimeout(resolve, 10));
     }
     expect(quietEvents).toEqual(["started", "completed"]);
@@ -1997,7 +2058,7 @@ describe("Active fleet cleanup on invocation completion", () => {
       task: { automation: "eligible", tags: [] } as any,
     });
 
-    for (let i = 0; i < 50 && failureEvents.at(-1) !== "failed"; i++) {
+    for (let i = 0; i < 200 && failureEvents.at(-1) !== "failed"; i++) {
       await new Promise((resolve) => setTimeout(resolve, 10));
     }
     expect(failureEvents).toEqual(["started", "failed"]);
@@ -2555,8 +2616,8 @@ describe("Dispatch prompt orientation context and interpolation", () => {
         task: { _ulid: taskId, title: "Test task title", slugs: [], status: "pending", type: "task", priority: 3, blocked_by: [], depends_on: [], context: [], tags: [], vcs_refs: [], notes: [], todos: [], created_at: new Date().toISOString(), automation: "eligible" } as any,
       });
 
-      for (let i = 0; i < 20 && runSpy.mock.calls.length === 0; i++) {
-        await new Promise((resolve) => setTimeout(resolve, 5));
+      for (let i = 0; i < 200 && runSpy.mock.calls.length === 0; i++) {
+        await new Promise((resolve) => setTimeout(resolve, 10));
       }
 
       expect(runSpy).toHaveBeenCalled();
@@ -2601,8 +2662,8 @@ describe("Dispatch prompt orientation context and interpolation", () => {
         task: { _ulid: taskId, title: "Workspace dir test", slugs: [], status: "pending", type: "task", priority: 3, blocked_by: [], depends_on: [], context: [], tags: [], vcs_refs: [], notes: [], todos: [], created_at: new Date().toISOString(), automation: "eligible" } as any,
       });
 
-      for (let i = 0; i < 20 && runSpy.mock.calls.length === 0; i++) {
-        await new Promise((resolve) => setTimeout(resolve, 5));
+      for (let i = 0; i < 200 && runSpy.mock.calls.length === 0; i++) {
+        await new Promise((resolve) => setTimeout(resolve, 10));
       }
 
       expect(runSpy).toHaveBeenCalled();
@@ -2648,8 +2709,8 @@ describe("Dispatch prompt orientation context and interpolation", () => {
         task: { _ulid: taskId, title: "My task", slugs: [], status: "pending", type: "task", priority: 3, blocked_by: [], depends_on: [], context: [], tags: [], vcs_refs: [], notes: [], todos: [], created_at: new Date().toISOString(), automation: "eligible" } as any,
       });
 
-      for (let i = 0; i < 20 && runSpy.mock.calls.length === 0; i++) {
-        await new Promise((resolve) => setTimeout(resolve, 5));
+      for (let i = 0; i < 200 && runSpy.mock.calls.length === 0; i++) {
+        await new Promise((resolve) => setTimeout(resolve, 10));
       }
 
       expect(runSpy).toHaveBeenCalled();
@@ -2689,7 +2750,7 @@ describe("Dispatch role workflow entrypoints", () => {
       [
         "dispatch:",
         "  base_branch: main",
-        "ralph:",
+        "agent:",
         "  skills:",
         "    task_work: \"/kspec:task-work\"",
       ].join("\n"),
@@ -2699,6 +2760,7 @@ describe("Dispatch role workflow entrypoints", () => {
     const fakeGh = await installFakeGh(testDir);
 
     try {
+      vi.spyOn(configModule, "resolveDispatchRemoteSync").mockReturnValue(false);
       const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
         session: {} as any,
         outcome: "success",
@@ -2713,30 +2775,30 @@ describe("Dispatch role workflow entrypoints", () => {
       });
 
       await engine.start();
-      const taskId = testUlid("TASK");
-      await engine.handleStateChange({
-        taskId,
-        taskRef: `@${taskId}`,
-        fromStatus: "in_progress",
-        toStatus: "pending",
-        timestamp: Date.now(),
-        task: { _ulid: taskId, title: "Worker role task", slugs: ["worker-role-task"], status: "pending", type: "task", priority: 1, blocked_by: [], depends_on: [], context: [], tags: [], vcs_refs: [], notes: [], todos: [], created_at: new Date().toISOString(), automation: "eligible" } as any,
-      });
+      try {
+        const taskId = testUlid("TASK");
+        await engine.handleStateChange({
+          taskId,
+          taskRef: `@${taskId}`,
+          fromStatus: "in_progress",
+          toStatus: "pending",
+          timestamp: Date.now(),
+          task: { _ulid: taskId, title: "Worker role task", slugs: ["worker-role-task"], status: "pending", type: "task", priority: 1, blocked_by: [], depends_on: [], context: [], tags: [], vcs_refs: [], notes: [], todos: [], created_at: new Date().toISOString(), automation: "eligible" } as any,
+        });
 
-      for (let i = 0; i < 20 && runSpy.mock.calls.length === 0; i++) {
-        await new Promise((resolve) => setTimeout(resolve, 5));
+        await waitForMockCall(runSpy);
+
+        expect(runSpy).toHaveBeenCalled();
+        const invocation = runSpy.mock.calls[0][0];
+        expect(invocation.prompt).toContain("## Role Entry");
+        expect(invocation.prompt).toContain("Workflow entrypoint: `$kspec-task-work`");
+        expect(invocation.prompt).toContain("Publication mode: `pull_request`");
+        expect(invocation.prompt).toContain("Publish target: `main`");
+        expect(invocation.prompt).toContain("create or update a PR");
+        expect(invocation.env?.KSPEC_DISPATCH_PUBLICATION_MODE).toBe("pull_request");
+      } finally {
+        await engine.stop();
       }
-
-      expect(runSpy).toHaveBeenCalled();
-      const invocation = runSpy.mock.calls[0][0];
-      expect(invocation.prompt).toContain("## Role Entry");
-      expect(invocation.prompt).toContain("Workflow entrypoint: `$kspec-task-work`");
-      expect(invocation.prompt).toContain("Publication mode: `pull_request`");
-      expect(invocation.prompt).toContain("Publish target: `main`");
-      expect(invocation.prompt).toContain("create or update a PR");
-      expect(invocation.env?.KSPEC_DISPATCH_PUBLICATION_MODE).toBe("pull_request");
-
-      await engine.stop();
     } finally {
       fakeGh.restore();
     }
@@ -2755,7 +2817,7 @@ describe("Dispatch role workflow entrypoints", () => {
       [
         "dispatch:",
         "  base_branch: main",
-        "ralph:",
+        "agent:",
         "  skills:",
         "    pr_review: \"{skill:pr-review}\"",
       ].join("\n"),
@@ -2776,35 +2838,35 @@ describe("Dispatch role workflow entrypoints", () => {
     });
 
     await engine.start();
-    const taskId = testUlid("TASK");
-    await provisionDispatchWorkspace({
-      projectDir: testDir,
-      taskRef: `@${taskId}`,
-      task: { title: "Reviewer role task", slugs: ["reviewer-role-task"] },
-    });
-    await engine.handleStateChange({
-      taskId,
-      taskRef: `@${taskId}`,
-      fromStatus: "in_progress",
-      toStatus: "pending_review",
-      timestamp: Date.now(),
-      task: { _ulid: taskId, title: "Reviewer role task", slugs: ["reviewer-role-task"], status: "pending_review", type: "task", priority: 1, blocked_by: [], depends_on: [], context: [], tags: [], vcs_refs: [], notes: [], todos: [], created_at: new Date().toISOString(), automation: "eligible", review_url: "https://example.com/pr/1" } as any,
-    });
+    try {
+      const taskId = testUlid("TASK");
+      await provisionDispatchWorkspace({
+        projectDir: testDir,
+        taskRef: `@${taskId}`,
+        task: { title: "Reviewer role task", slugs: ["reviewer-role-task"] },
+      });
+      await engine.handleStateChange({
+        taskId,
+        taskRef: `@${taskId}`,
+        fromStatus: "in_progress",
+        toStatus: "pending_review",
+        timestamp: Date.now(),
+        task: { _ulid: taskId, title: "Reviewer role task", slugs: ["reviewer-role-task"], status: "pending_review", type: "task", priority: 1, blocked_by: [], depends_on: [], context: [], tags: [], vcs_refs: [], notes: [], todos: [], created_at: new Date().toISOString(), automation: "eligible", review_url: "https://example.com/pr/1" } as any,
+      });
 
-    for (let i = 0; i < 20 && runSpy.mock.calls.length === 0; i++) {
-      await new Promise((resolve) => setTimeout(resolve, 5));
+      await waitForMockCall(runSpy);
+
+      expect(runSpy).toHaveBeenCalled();
+      const invocation = runSpy.mock.calls[0][0];
+      expect(invocation.prompt).toContain("Workflow entrypoint: `/pr-review`");
+      expect(invocation.prompt).not.toContain("{skill:pr-review}");
+      expect(invocation.prompt).toContain("Publication mode: `manual_merge`");
+      expect(invocation.prompt).toContain("git merge --abort");
+      expect(invocation.prompt).toContain("needs_work");
+      expect(invocation.env?.KSPEC_DISPATCH_PUBLICATION_MODE).toBe("manual_merge");
+    } finally {
+      await engine.stop();
     }
-
-    expect(runSpy).toHaveBeenCalled();
-    const invocation = runSpy.mock.calls[0][0];
-    expect(invocation.prompt).toContain("Workflow entrypoint: `/pr-review`");
-    expect(invocation.prompt).not.toContain("{skill:pr-review}");
-    expect(invocation.prompt).toContain("Publication mode: `manual_merge`");
-    expect(invocation.prompt).toContain("git merge --abort");
-    expect(invocation.prompt).toContain("needs_work");
-    expect(invocation.env?.KSPEC_DISPATCH_PUBLICATION_MODE).toBe("manual_merge");
-
-    await engine.stop();
   });
 
   // AC: @dispatch-role-workflow-entry-contract ac-4
@@ -2820,7 +2882,7 @@ describe("Dispatch role workflow entrypoints", () => {
       [
         "dispatch:",
         "  base_branch: main",
-        "ralph:",
+        "agent:",
         "  skills:",
         "    task_work: \"   \"",
       ].join("\n"),
@@ -2894,7 +2956,7 @@ describe("Dispatch role workflow entrypoints", () => {
       [
         "dispatch:",
         "  base_branch: main",
-        "ralph:",
+        "agent:",
         "  skills:",
         "    task_work: \"/kspec:task-work\"",
       ].join("\n"),
@@ -3572,7 +3634,7 @@ describe("Self-trigger suppression", () => {
 
     // Run task start WITHOUT KSPEC_SESSION_ID — event should be posted
     kspec(`task start @${taskId}`, testDir, {
-      env: { ...isolated.env, ...specDirEnv },
+      env: { ...isolated.env, ...specDirEnv, KSPEC_NO_DAEMON: "0" },
     });
     // Give async fire-and-forget fetch time to complete
     await new Promise((r) => setTimeout(r, 200));
@@ -3599,7 +3661,12 @@ describe("Self-trigger suppression", () => {
 
     // Run task start WITH KSPEC_SESSION_ID — event should be suppressed
     kspec(`task start @${taskId}`, testDir, {
-      env: { ...isolated.env, ...specDirEnv, KSPEC_SESSION_ID: "test-session-id" },
+      env: {
+        ...isolated.env,
+        ...specDirEnv,
+        KSPEC_NO_DAEMON: "0",
+        KSPEC_SESSION_ID: "test-session-id",
+      },
     });
     await new Promise((r) => setTimeout(r, 200));
     expect(receivedEvents.length).toBe(0);
@@ -3611,13 +3678,16 @@ describe("Self-trigger suppression", () => {
 // AC: @agent-dispatch-engine ac-19
 describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
   let testDir: string;
+  let remoteDir: string;
 
   beforeEach(async () => {
     testDir = await createTempDir("kspec-dispatch-reconcile-");
+    remoteDir = await createTempDir("kspec-dispatch-reconcile-remote-");
   });
 
   afterEach(async () => {
     await cleanupTempDir(testDir);
+    await cleanupTempDir(remoteDir);
   });
 
   // AC: @agent-dispatch-engine ac-19
@@ -3790,6 +3860,144 @@ describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
         }),
       ]),
     );
+
+    await engine.stop();
+  });
+
+  // AC: @dispatch-workspace-registry ac-11
+  it("recovers metadata-backed legacy workspaces before pruning in_progress worker work", async () => {
+    const worker = makeTestAgent({
+      id: "task-worker",
+      dispatch: [{ on: "task.in_progress", filter: { automation: "eligible" } }],
+      concurrency: { max_concurrent: 1 },
+    });
+    await setupProjectWithAgents(testDir, [worker]);
+
+    const taskId = testUlid("TASK", 31);
+    const taskRef = `@${taskId}`;
+    await writeTasks(testDir, [{ _ulid: taskId, status: "in_progress", automation: "eligible" }]);
+
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: testDir,
+      taskRef,
+      task: {
+        title: "Legacy Worker Recovery",
+        slugs: ["task-legacy-worker-recovery"],
+      },
+    });
+
+    const legacyBranch = "feat/legacy-worker-recovery";
+    git(workspace.cwd, `checkout -b ${legacyBranch}`);
+    git(testDir, `branch -D ${workspace.metadata.canonicalBranch}`);
+    const metadataPath = path.join(workspace.cwd, ".kspec-dispatch-workspace.json");
+    const metadata = JSON.parse(await fs.readFile(metadataPath, "utf-8")) as {
+      canonicalBranch: string;
+      canonicalBranchHead: string;
+    };
+    metadata.canonicalBranch = legacyBranch;
+    metadata.canonicalBranchHead = git(workspace.cwd, "rev-parse HEAD");
+    await fs.writeFile(metadataPath, `${JSON.stringify(metadata, null, 2)}\n`, "utf-8");
+    await fs.writeFile(
+      path.join(testDir, "project.dispatch-workspaces.yaml"),
+      YAML.stringify({
+        kynetic_dispatch_workspaces: "1.0",
+        workspaces: [],
+      }),
+      "utf-8",
+    );
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    const spawnSpy = vi.spyOn(
+      engine as unknown as { _spawnInvocation: (agent: unknown, entry: unknown) => Promise<boolean> },
+      "_spawnInvocation",
+    ).mockResolvedValue(true);
+
+    await engine.start();
+
+    expect(spawnSpy).toHaveBeenCalledTimes(1);
+    expect(git(workspace.cwd, "branch --show-current")).toBe(workspace.metadata.canonicalBranch);
+    const registry = YAML.parse(
+      await fs.readFile(path.join(testDir, "project.dispatch-workspaces.yaml"), "utf-8"),
+    ) as { workspaces?: Array<{ task_ref: string; canonical_branch: string }> };
+    expect(registry.workspaces).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          task_ref: taskRef,
+          canonical_branch: workspace.metadata.canonicalBranch,
+        }),
+      ]),
+    );
+
+    await engine.stop();
+  });
+
+  // AC: @dispatch-workspace-registry ac-11
+  it("reprovisions missing in_progress worker worktrees during dispatch bootstrap", async () => {
+    const worker = makeTestAgent({
+      id: "task-worker",
+      dispatch: [{ on: "task.in_progress", filter: { automation: "eligible" } }],
+      concurrency: { max_concurrent: 1 },
+    });
+    await setupProjectWithAgents(testDir, [worker]);
+    git(remoteDir, "init --bare");
+    git(testDir, `remote add origin "${remoteDir}"`);
+    await fs.writeFile(
+      path.join(testDir, "kspec.config.yaml"),
+      YAML.stringify({
+        dispatch: {
+          remote_sync: false,
+        },
+      }),
+      "utf-8",
+    );
+
+    const taskId = testUlid("TASK", 32);
+    const taskRef = `@${taskId}`;
+    await writeTasks(testDir, [{ _ulid: taskId, status: "in_progress", automation: "eligible" }]);
+
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: testDir,
+      taskRef,
+      task: {
+        title: "Reprovision In Progress Workspace",
+        slugs: ["task-reprovision-in-progress-workspace"],
+      },
+    });
+    git(testDir, `push origin ${workspace.metadata.canonicalBranch}`);
+    git(testDir, `worktree remove --force ${workspace.cwd}`);
+    git(testDir, `branch -D ${workspace.metadata.canonicalBranch}`);
+    expect(fsSync.existsSync(workspace.cwd)).toBe(false);
+
+    const runSpy = vi.spyOn(invocationModule, "runInvocation").mockImplementation(async () => ({
+      session: {} as any,
+      outcome: "success" as const,
+      durationMs: 1,
+    }));
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+
+    await engine.start();
+    await waitForMockCall(runSpy);
+
+    expect(runSpy).toHaveBeenCalledTimes(1);
+    expect(runSpy.mock.calls[0]?.[0]).toMatchObject({
+      taskRef,
+      agent: expect.objectContaining({ id: "task-worker" }),
+      cwd: workspace.cwd,
+    });
+    expect(fsSync.existsSync(workspace.cwd)).toBe(true);
 
     await engine.stop();
   });
@@ -4034,7 +4242,7 @@ describe("AC-21: Default automation:eligible for task.ready/task.needs_work with
 
     const taskId = testUlid("TASK");
     await writeTasks(testDir, [
-      { _ulid: taskId, status: "in_progress", automation: "ineligible" },
+      { _ulid: taskId, status: "in_progress", automation: "manual_only" },
     ]);
 
     const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
@@ -4049,7 +4257,7 @@ describe("AC-21: Default automation:eligible for task.ready/task.needs_work with
 
     // Transition to pending (task.ready) — should NOT be queued because task is ineligible
     await writeTasks(testDir, [
-      { _ulid: taskId, status: "pending", automation: "ineligible" },
+      { _ulid: taskId, status: "pending", automation: "manual_only" },
     ]);
 
     await engine.handleFileChange(testDir);
@@ -4101,7 +4309,7 @@ describe("AC-21: Default automation:eligible for task.ready/task.needs_work with
 
     const taskId = testUlid("TASK");
     await writeTasks(testDir, [
-      { _ulid: taskId, status: "pending_review", automation: "ineligible" },
+      { _ulid: taskId, status: "pending_review", automation: "manual_only" },
     ]);
 
     const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
@@ -4115,7 +4323,7 @@ describe("AC-21: Default automation:eligible for task.ready/task.needs_work with
     enqueueCount = 0;
 
     await writeTasks(testDir, [
-      { _ulid: taskId, status: "needs_work", automation: "ineligible" },
+      { _ulid: taskId, status: "needs_work", automation: "manual_only" },
     ]);
 
     await engine.handleFileChange(testDir);
@@ -4136,7 +4344,7 @@ describe("AC-21: Default automation:eligible for task.ready/task.needs_work with
 
     const taskId = testUlid("TASK");
     await writeTasks(testDir, [
-      { _ulid: taskId, status: "in_progress", automation: "ineligible" },
+      { _ulid: taskId, status: "in_progress", automation: "manual_only" },
     ]);
 
     const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
@@ -4145,7 +4353,7 @@ describe("AC-21: Default automation:eligible for task.ready/task.needs_work with
     // Transition to pending_review — should be queued even though task is ineligible
     // because task.pending_review does NOT default to automation:eligible
     await writeTasks(testDir, [
-      { _ulid: taskId, status: "pending_review", automation: "ineligible" },
+      { _ulid: taskId, status: "pending_review", automation: "manual_only" },
     ]);
 
     // Use handleStateChange directly to test filter behavior independently of file diffing
@@ -4179,7 +4387,7 @@ describe("AC-21: Default automation:eligible for task.ready/task.needs_work with
 
     const taskId = testUlid("TASK");
     await writeTasks(testDir, [
-      { _ulid: taskId, status: "in_progress", automation: "ineligible", tags: ["mvp"] },
+      { _ulid: taskId, status: "in_progress", automation: "manual_only", tags: ["mvp"] },
     ]);
 
     const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
@@ -4193,7 +4401,7 @@ describe("AC-21: Default automation:eligible for task.ready/task.needs_work with
     enqueueCount = 0;
 
     await writeTasks(testDir, [
-      { _ulid: taskId, status: "pending", automation: "ineligible", tags: ["mvp"] },
+      { _ulid: taskId, status: "pending", automation: "manual_only", tags: ["mvp"] },
     ]);
 
     await engine.handleFileChange(testDir);

@@ -203,13 +203,18 @@ describe('kspec setup (enhanced)', () => {
       // Remove .kspec-sessions/ and its gitignore entries to simulate a pre-sessions state
       const sessionsDir = path.join(tempDir, '.kspec-sessions');
       await fs.rm(sessionsDir, { recursive: true }).catch(() => {});
+      const plansDir = path.join(tempDir, 'plans');
+      await fs.mkdir(plansDir, { recursive: true });
 
-      // Remove .kspec-sessions/ from root .gitignore
+      // Remove .kspec-sessions/ and plans/ from root .gitignore
       const rootGitignore = path.join(tempDir, '.gitignore');
       const rootContent = await fs.readFile(rootGitignore, 'utf-8');
       await fs.writeFile(
         rootGitignore,
-        rootContent.split('\n').filter((l) => !l.includes('.kspec-sessions')).join('\n'),
+        rootContent
+          .split('\n')
+          .filter((l) => !l.includes('.kspec-sessions') && !l.includes('plans/'))
+          .join('\n'),
         'utf-8',
       );
 
@@ -230,16 +235,20 @@ describe('kspec setup (enhanced)', () => {
       expect(result.stdout).toContain('DRY RUN');
       // Verify all three session directory actions are previewed
       expect(result.stdout).toContain('.kspec-sessions/');
+      expect(result.stdout).toContain('plans/');
       expect(result.stdout).toContain('.gitignore');
       expect(result.stdout).toContain('.kspec/.gitignore');
 
       // Verify no actual changes were made
       const rootAfter = await fs.readFile(rootGitignore, 'utf-8');
       expect(rootAfter).not.toContain('.kspec-sessions');
+      expect(rootAfter).not.toContain('plans/');
       const shadowAfter = await fs.readFile(shadowGitignore, 'utf-8');
       expect(shadowAfter).not.toContain('sessions/');
       const sessionsDirExists = await fs.access(sessionsDir).then(() => true).catch(() => false);
       expect(sessionsDirExists).toBe(false);
+      const plansDirExists = await fs.access(plansDir).then(() => true).catch(() => false);
+      expect(plansDirExists).toBe(true);
     });
   });
 
@@ -275,6 +284,24 @@ describe('kspec setup (enhanced)', () => {
       expect(result.stdout).toContain('Install hooks');
       expect(result.stdout).toContain('Render skills');
       expect(result.stdout).toContain('Generate kspec-agents.md');
+    });
+
+    it('should add plans/ to .gitignore for existing projects', async () => {
+      const rootGitignore = path.join(tempDir, '.gitignore');
+      const rootContent = await fs.readFile(rootGitignore, 'utf-8');
+      await fs.writeFile(
+        rootGitignore,
+        rootContent.split('\n').filter((l) => l.trim() !== 'plans/').join('\n'),
+        'utf-8',
+      );
+
+      const result = kspec('setup', tempDir, {
+        env: { CLAUDECODE: '1' },
+      });
+
+      expect(result.exitCode).toBe(0);
+      const updated = await fs.readFile(rootGitignore, 'utf-8');
+      expect(updated).toContain('plans/');
     });
 
     it('should run setup with --agent claude-code without CLAUDECODE env var', async () => {
@@ -801,6 +828,124 @@ hooks:
           entry.hooks?.some((h) => h.command?.includes('session checkpoint')),
       );
       expect(hasCheckpoint).toBeFalsy();
+    });
+
+    // AC: @project-config ac-hooks-preserve-user-stop-hooks
+    it('should preserve user-defined Stop hooks when disabling checkpoint', async () => {
+      await fs.writeFile(
+        path.join(tempDir, 'kspec.config.yaml'),
+        `
+hooks:
+  checkpoint: false
+`
+      );
+
+      const settingsPath = path.join(tempDir, '.claude', 'settings.json');
+      await fs.mkdir(path.dirname(settingsPath), { recursive: true });
+      await fs.writeFile(
+        settingsPath,
+        `${JSON.stringify({
+          hooks: {
+            Stop: [
+              {
+                matcher: 'Notebook',
+                hooks: [
+                  {
+                    type: 'command',
+                    command: 'kspec session checkpoint --json',
+                  },
+                ],
+              },
+              {
+                matcher: '',
+                hooks: [
+                  {
+                    type: 'command',
+                    command: 'kspec session checkpoint --json',
+                  },
+                ],
+              },
+            ],
+          },
+        }, null, 2)}\n`,
+        'utf-8',
+      );
+
+      kspec('setup', tempDir, {
+        env: { CLAUDECODE: '1' },
+      });
+
+      const settings = JSON.parse(await fs.readFile(settingsPath, 'utf-8'));
+      expect(settings.hooks.Stop).toEqual([
+        {
+          matcher: 'Notebook',
+          hooks: [
+            {
+              type: 'command',
+              command: 'kspec session checkpoint --json',
+            },
+          ],
+        },
+      ]);
+    });
+
+    // AC: @project-config ac-hooks-preserve-user-stop-hooks
+    it('should add the managed checkpoint hook alongside user-defined Stop hooks', async () => {
+      await fs.writeFile(
+        path.join(tempDir, 'kspec.config.yaml'),
+        `
+hooks:
+  checkpoint: true
+`
+      );
+
+      const settingsPath = path.join(tempDir, '.claude', 'settings.json');
+      await fs.mkdir(path.dirname(settingsPath), { recursive: true });
+      await fs.writeFile(
+        settingsPath,
+        `${JSON.stringify({
+          hooks: {
+            Stop: [
+              {
+                matcher: 'Notebook',
+                hooks: [
+                  {
+                    type: 'command',
+                    command: 'kspec session checkpoint --json',
+                  },
+                ],
+              },
+            ],
+          },
+        }, null, 2)}\n`,
+        'utf-8',
+      );
+
+      kspec('setup', tempDir, {
+        env: { CLAUDECODE: '1' },
+      });
+
+      const settings = JSON.parse(await fs.readFile(settingsPath, 'utf-8'));
+      expect(settings.hooks.Stop).toEqual([
+        {
+          matcher: 'Notebook',
+          hooks: [
+            {
+              type: 'command',
+              command: 'kspec session checkpoint --json',
+            },
+          ],
+        },
+        {
+          matcher: '',
+          hooks: [
+            {
+              type: 'command',
+              command: 'kspec session checkpoint --json',
+            },
+          ],
+        },
+      ]);
     });
 
     // AC: @project-config ac-hooks-section — removal of previously installed prompt-check

@@ -1,6 +1,6 @@
 dispatch:
   publication_mode: manual_merge
   base_branch: dev
-ralph:
+agent:
   skills:
     pr_review: "{skill:pr-review}"

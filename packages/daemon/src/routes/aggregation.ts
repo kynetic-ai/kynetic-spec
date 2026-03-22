@@ -15,7 +15,6 @@
 import { Elysia } from 'elysia';
 import {
   initContext,
-  loadAllTasks,
   loadInboxItems,
   loadTriageRecords,
   findTriageRecordByInboxRef,
@@ -23,7 +22,9 @@ import {
   validate,
   AlignmentIndex,
   areDependenciesMet,
+  resolveTaskDataManager,
 } from '../../parser/index.js';
+import { TriageActionSchema, TriageStatusSchema } from '../../schema/index.js';
 import type {
   TaskStatusSummary,
   ValidationAggregation,
@@ -37,7 +38,7 @@ export function createAggregationRoutes(options: AggregationRouteOptions = {}) {
     // AC: @ui-api-aggregation ac-1 - Task status summary with dependency-aware distinctions
     .get('/tasks/summary', async ({ projectContext }) => {
       const ctx = await initContext(projectContext.path);
-      const tasks = await loadAllTasks(ctx);
+      const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
 
       // Count tasks by status
       const counts: Record<string, number> = {};
@@ -162,10 +163,14 @@ export function createAggregationRoutes(options: AggregationRouteOptions = {}) {
         };
 
         if (triageRecord) {
+          const triageStatus = TriageStatusSchema.safeParse(triageRecord.status);
+          const triageAction = triageRecord.action
+            ? TriageActionSchema.safeParse(triageRecord.action)
+            : null;
           result.triage = {
             _ulid: triageRecord._ulid,
-            status: triageRecord.status as 'pending' | 'triaged' | 'acted_on',
-            action: triageRecord.action as 'promote' | 'delete' | 'defer' | 'spec-gap' | 'duplicate' | undefined,
+            status: triageStatus.success ? triageStatus.data : 'pending',
+            action: triageAction?.success ? triageAction.data : undefined,
             reasoning: triageRecord.reasoning,
             decided_by: triageRecord.decided_by,
             acted_at: triageRecord.acted_at,

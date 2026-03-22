@@ -10,11 +10,9 @@ import {
   type LoadedSpecItem,
   type LoadedTask,
   loadAllItems,
-  loadAllTasks,
   ReferenceIndex,
-  saveTask,
 } from "../../parser/index.js";
-import { commitIfShadow } from "../../parser/shadow.js";
+import { resolveTaskDataManager } from "../../parser/task-data-manager.js";
 import { normalizeRefInput } from "../../schema/index.js";
 import type { TaskInput } from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
@@ -272,7 +270,7 @@ async function deriveTaskFromSpec(
   existingTasks: LoadedTask[],
   _items: LoadedSpecItem[],
   index: ReferenceIndex,
-  alignmentIndex: AlignmentIndex,
+  alignmentIndex: AlignmentIndex<LoadedTask>,
   options: {
     force: boolean;
     dryRun: boolean;
@@ -351,19 +349,20 @@ async function deriveTaskFromSpec(
     };
   }
 
-  // Create and save the task
-  const newTask = createTask(taskInput);
-  await saveTask(ctx, newTask);
+  // Create and save the task via task data manager
   const specSlug = specItem.slugs[0] || specItem._ulid.slice(0, 8);
-  await commitIfShadow(ctx.shadow, "derive", specSlug);
+  const newTask = await resolveTaskDataManager(ctx).createTask(ctx, taskInput, {
+    operation: "derive",
+    ref: specSlug,
+  });
 
   // Add to existing tasks list for slug collision checks
-  existingTasks.push(newTask as LoadedTask);
+  existingTasks.push(newTask);
 
   return {
     specItem,
     action: "created",
-    task: newTask as LoadedTask,
+    task: newTask,
     dependsOn: options.dependsOn,
     acCount,
   };
@@ -390,7 +389,7 @@ function getTaskRef(task: LoadedTask, index: ReferenceIndex): string {
 function getParentTaskRef(
   parentSpec: LoadedSpecItem,
   specToTaskMap: Map<string, LoadedTask>,
-  alignmentIndex: AlignmentIndex,
+  alignmentIndex: AlignmentIndex<LoadedTask>,
   index: ReferenceIndex,
 ): string | undefined {
   // Check if we created a task for this parent in this session
@@ -508,7 +507,7 @@ function sortSpecsForDerive(
 function resolveSpecDependencyTaskRefs(
   specItem: LoadedSpecItem,
   specToTaskMap: Map<string, LoadedTask>,
-  alignmentIndex: AlignmentIndex,
+  alignmentIndex: AlignmentIndex<LoadedTask>,
   index: ReferenceIndex,
 ): { taskRefs: string[]; warnings: string[] } {
   const taskRefs: string[] = [];
@@ -593,7 +592,7 @@ export function registerDeriveCommand(program: Command): void {
         }
 
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
         const items = await loadAllItems(ctx);
         const index = new ReferenceIndex(tasks, items);
 

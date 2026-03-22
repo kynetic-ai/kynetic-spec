@@ -259,7 +259,7 @@ export interface StopHookInput {
 
 /**
  * Stats for tasks completed/started within a time window.
- * Used by ralph to track task completions per iteration.
+ * Used by dispatch agents to track task completions per iteration.
  */
 export interface IterationStats {
   /** Number of tasks completed since the given time */

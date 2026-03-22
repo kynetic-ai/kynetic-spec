@@ -16,7 +16,6 @@ import {
   type ReviewRecord,
   type ReviewRecordInput,
   ReviewRecordSchema,
-  type ReviewRecordsFile,
   ReviewRecordsFileSchema,
 } from "../schema/index.js";
 import type { KspecContext } from "./yaml.js";
@@ -75,6 +74,87 @@ async function loadReviewsFromFile(
 ): Promise<ReviewRecord[]> {
   const raw = await readYamlFile<unknown>(reviewsPath);
   return parseReviewsFromRaw(raw);
+}
+
+/**
+ * Extract the raw review array and wrapper metadata from a YAML file.
+ * Does NOT run schema validation — preserves original data for round-trip stability.
+ */
+async function extractRawReviewArray(
+  filePath: string,
+): Promise<{ rawReviews: unknown[]; wrapperObj?: Record<string, unknown> }> {
+  let existingRaw: unknown = null;
+
+  try {
+    existingRaw = await readYamlFile<unknown>(filePath);
+  } catch {
+    // File doesn't exist
+    return { rawReviews: [] };
+  }
+
+  if (!existingRaw || typeof existingRaw !== "object") {
+    return { rawReviews: [] };
+  }
+
+  const wrapper = existingRaw as Record<string, unknown>;
+  const reviews = wrapper.reviews;
+  return {
+    rawReviews: Array.isArray(reviews) ? reviews : [],
+    wrapperObj: wrapper,
+  };
+}
+
+/**
+ * Write raw review array back to file, preserving wrapper metadata.
+ */
+async function writeRawReviewArray(
+  filePath: string,
+  rawReviews: unknown[],
+  wrapperObj?: Record<string, unknown>,
+): Promise<void> {
+  const output = wrapperObj
+    ? { ...wrapperObj, reviews: rawReviews }
+    : { kynetic_reviews: "1.0", reviews: rawReviews };
+  await writeYamlFilePreserveFormat(filePath, output);
+}
+
+/**
+ * Find review index in a raw array by ULID match.
+ */
+function findRawReviewIndex(rawReviews: unknown[], ulid: string): number {
+  return rawReviews.findIndex(
+    (r) =>
+      r && typeof r === "object" && (r as Record<string, unknown>)._ulid === ulid,
+  );
+}
+
+/**
+ * Merge a schema-normalized review onto the original raw review data.
+ * Only adds fields that were in the original raw data or that contain
+ * non-default values. This prevents Zod defaults from polluting YAML
+ * output with fields that weren't originally present.
+ */
+function mergeReviewPreservingRawShape(
+  rawReview: Record<string, unknown>,
+  normalizedReview: Record<string, unknown>,
+): Record<string, unknown> {
+  const result: Record<string, unknown> = {};
+
+  for (const [key, value] of Object.entries(normalizedReview)) {
+    if (key in rawReview) {
+      // Field existed in raw — always include (even if value changed)
+      result[key] = value;
+    } else {
+      // Field was added by schema normalization — only include if non-trivial
+      const isEmptyArray = Array.isArray(value) && value.length === 0;
+      const isNull = value === null || value === undefined;
+      if (!isEmptyArray && !isNull) {
+        result[key] = value;
+      }
+    }
+  }
+
+  return result;
 }
 
 /**
@@ -175,31 +255,24 @@ export async function saveReviewRecord(
     const dir = path.dirname(reviewsPath);
     await fs.mkdir(dir, { recursive: true });
 
-    // Load existing reviews (inside lock to prevent TOCTOU)
-    let reviews: ReviewRecord[] = [];
-    try {
-      reviews = await loadReviewsFromFile(reviewsPath);
-    } catch {
-      // File doesn't exist yet, start fresh
-    }
+    // Load raw review data without schema normalization
+    const { rawReviews, wrapperObj } =
+      await extractRawReviewArray(reviewsPath);
 
+    // Strip runtime metadata before saving
     const cleanReview = stripReviewMetadata(review);
 
-    // Update or add
-    const existingIndex = reviews.findIndex((r) => r._ulid === review._ulid);
+    // Update existing or add new — replace only the target review
+    const existingIndex = findRawReviewIndex(rawReviews, review._ulid);
     if (existingIndex >= 0) {
-      reviews[existingIndex] = cleanReview;
+      // Merge onto raw data to avoid adding Zod defaults for absent fields
+      const rawTarget = rawReviews[existingIndex] as Record<string, unknown>;
+      rawReviews[existingIndex] = mergeReviewPreservingRawShape(rawTarget, cleanReview as Record<string, unknown>);
     } else {
-      reviews.push(cleanReview);
+      rawReviews.push(cleanReview);
     }
 
-    // Save back to file
-    const reviewsFile: ReviewRecordsFile = {
-      kynetic_reviews: "1.0",
-      reviews,
-    };
-
-    await writeYamlFilePreserveFormat(reviewsPath, reviewsFile);
+    await writeRawReviewArray(reviewsPath, rawReviews, wrapperObj);
   });
 }
 
@@ -224,34 +297,40 @@ export async function mutateReviewAtomically(
     const dir = path.dirname(reviewsPath);
     await fs.mkdir(dir, { recursive: true });
 
-    let reviews: ReviewRecord[] = [];
-    try {
-      reviews = await loadReviewsFromFile(reviewsPath);
-    } catch {
+    // Load raw review data without schema normalization for non-target reviews
+    const { rawReviews, wrapperObj } =
+      await extractRawReviewArray(reviewsPath);
+
+    if (rawReviews.length === 0) {
       throw new Error(`Reviews file not found: ${reviewsPath}`);
     }
 
-    const reviewIndex = reviews.findIndex(
-      (candidate) => candidate._ulid === review._ulid,
-    );
+    const reviewIndex = findRawReviewIndex(rawReviews, review._ulid);
     if (reviewIndex === -1) {
       throw new Error(`Review not found in file: ${review._ulid}`);
     }
 
+    // Schema-parse only the target review for the mutation callback
+    const rawTarget = rawReviews[reviewIndex];
+    const parsed = ReviewRecordSchema.safeParse(rawTarget);
+    if (!parsed.success) {
+      throw new Error(`Invalid review data for ${review._ulid}: ${parsed.error.message}`);
+    }
     const latestReview: LoadedReviewRecord = {
-      ...reviews[reviewIndex],
+      ...parsed.data,
       _sourceFile: reviewsPath,
     };
 
     const mutatedReview = await mutate(latestReview);
     const cleanMutatedReview = stripReviewMetadata(mutatedReview);
-    reviews[reviewIndex] = cleanMutatedReview;
 
-    const reviewsFile: ReviewRecordsFile = {
-      kynetic_reviews: "1.0",
-      reviews,
-    };
-    await writeYamlFilePreserveFormat(reviewsPath, reviewsFile);
+    // Merge onto raw data to avoid adding Zod defaults for absent fields
+    rawReviews[reviewIndex] = mergeReviewPreservingRawShape(
+      rawTarget as Record<string, unknown>,
+      cleanMutatedReview as Record<string, unknown>,
+    );
+
+    await writeRawReviewArray(reviewsPath, rawReviews, wrapperObj);
 
     updatedReview = {
       ...cleanMutatedReview,
@@ -277,21 +356,18 @@ export async function deleteReviewRecord(
 
   return withFileLock(reviewsPath, async () => {
     try {
-      const reviews = await loadReviewsFromFile(reviewsPath);
+      // Load raw review data without schema normalization for round-trip stability
+      const { rawReviews, wrapperObj } =
+        await extractRawReviewArray(reviewsPath);
 
-      const index = reviews.findIndex((r) => r._ulid === reviewUlid);
+      const index = findRawReviewIndex(rawReviews, reviewUlid);
       if (index < 0) {
         return false;
       }
 
-      reviews.splice(index, 1);
+      rawReviews.splice(index, 1);
 
-      const reviewsFile: ReviewRecordsFile = {
-        kynetic_reviews: "1.0",
-        reviews,
-      };
-
-      await writeYamlFilePreserveFormat(reviewsPath, reviewsFile);
+      await writeRawReviewArray(reviewsPath, rawReviews, wrapperObj);
       return true;
     } catch {
       return false;

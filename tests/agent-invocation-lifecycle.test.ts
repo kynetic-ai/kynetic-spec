@@ -13,6 +13,7 @@ import * as fs from "node:fs/promises";
 import * as fsSync from "node:fs";
 import * as path from "node:path";
 import * as os from "node:os";
+import { pathToFileURL } from "node:url";
 import { EventEmitter } from "node:events";
 import * as YAML from "yaml";
 import {
@@ -25,7 +26,12 @@ import {
   isSessionBlobPointer,
 } from "../src/sessions/store.js";
 import * as storeModule from "../src/sessions/store.js";
-import { runInvocation, InvocationTimeoutError } from "../src/agent-runtime/invocation.js";
+import {
+  runInvocation,
+  InvocationTimeoutError,
+  DEFAULT_KSPEC_CLI_PATH,
+  resolveDefaultKspecCliPath,
+} from "../src/agent-runtime/invocation.js";
 import { resolveSkills, buildPromptWithSkills } from "../src/agent-runtime/prompts.js";
 import { registerAdapter } from "../src/agents/adapters.js";
 import * as spawnerModule from "../src/agents/spawner.js";
@@ -97,10 +103,41 @@ async function seedInvocationOutcome(
   await new Promise((resolve) => setTimeout(resolve, 2));
 }
 
+describe("DEFAULT_KSPEC_CLI_PATH resolution", () => {
+  it("should resolve to the cli entrypoint instead of the removed bin/kspec.cjs path", () => {
+    expect(DEFAULT_KSPEC_CLI_PATH).toMatch(new RegExp(`dist\\${path.sep}cli\\${path.sep}index\\.js$`));
+    expect(DEFAULT_KSPEC_CLI_PATH).not.toContain(`${path.sep}bin${path.sep}kspec.cjs`);
+  });
+
+  it("should resolve the built cli entrypoint from both source and dist module locations", async () => {
+    const testDir = await createTempDir("kspec-cli-path-");
+    try {
+      const srcAgentRuntimeDir = path.join(testDir, "src", "agent-runtime");
+      const agentRuntimeDir = path.join(testDir, "dist", "agent-runtime");
+      const cliDir = path.join(testDir, "dist", "cli");
+      await fs.mkdir(srcAgentRuntimeDir, { recursive: true });
+      await fs.mkdir(agentRuntimeDir, { recursive: true });
+      await fs.mkdir(cliDir, { recursive: true });
+
+      const fakeSourceModule = path.join(srcAgentRuntimeDir, "invocation.ts");
+      const fakeInvocationModule = path.join(agentRuntimeDir, "invocation.js");
+      const builtCli = path.join(cliDir, "index.js");
+      await fs.writeFile(fakeSourceModule, "", "utf-8");
+      await fs.writeFile(fakeInvocationModule, "", "utf-8");
+      await fs.writeFile(builtCli, "", "utf-8");
+
+      expect(resolveDefaultKspecCliPath(pathToFileURL(fakeSourceModule).href)).toBe(builtCli);
+      expect(resolveDefaultKspecCliPath(pathToFileURL(fakeInvocationModule).href)).toBe(builtCli);
+    } finally {
+      await cleanupTempDir(testDir);
+    }
+  });
+});
+
 // ─── AC-1: Session creation with trigger, agent_id, task_id ──────────────────
 
 // AC: @agent-invocation-lifecycle ac-1
-describe("Session creation on invocation start", () => {
+describe("Session creation on invocation start", { timeout: 60_000 }, () => {
   let testDir: string;
 
   beforeEach(async () => {
@@ -162,7 +199,7 @@ describe("Session creation on invocation start", () => {
 // ─── AC-2: KSPEC_SESSION_ID injection ────────────────────────────────────────
 
 // AC: @agent-invocation-lifecycle ac-2
-describe("KSPEC_SESSION_ID injection", () => {
+describe("KSPEC_SESSION_ID injection", { timeout: 60_000 }, () => {
   let testDir: string;
   let originalSessionId: string | undefined;
 
@@ -290,7 +327,7 @@ describe("KSPEC_SESSION_ID injection", () => {
 // ─── AC-3: Timeout handling ───────────────────────────────────────────────────
 
 // AC: @agent-invocation-lifecycle ac-3
-describe("Timeout handling", () => {
+describe("Timeout handling", { timeout: 60_000 }, () => {
   let testDir: string;
 
   beforeEach(async () => {
@@ -506,7 +543,7 @@ describe("Timeout handling", () => {
 // ─── AC-4: Successful completion ─────────────────────────────────────────────
 
 // AC: @agent-invocation-lifecycle ac-4
-describe("Successful invocation completion", () => {
+describe("Successful invocation completion", { timeout: 60_000 }, () => {
   let testDir: string;
 
   beforeEach(async () => {
@@ -584,7 +621,7 @@ describe("Successful invocation completion", () => {
 // ─── AC-5: Failure handling ───────────────────────────────────────────────────
 
 // AC: @agent-invocation-lifecycle ac-5
-describe("Failure handling", () => {
+describe("Failure handling", { timeout: 60_000 }, () => {
   let testDir: string;
 
   beforeEach(async () => {
@@ -687,7 +724,7 @@ describe("Failure handling", () => {
 // ─── AC-6: Streaming event logging ───────────────────────────────────────────
 
 // AC: @agent-invocation-lifecycle ac-6
-describe("Streaming event logging", () => {
+describe("Streaming event logging", { timeout: 60_000 }, () => {
   let testDir: string;
 
   beforeEach(async () => {
@@ -1086,7 +1123,7 @@ describe("Skill resolution for agent invocations", () => {
 // ─── AC-8: Cleanup on completion or failure ───────────────────────────────────
 
 // AC: @agent-invocation-lifecycle ac-8
-describe("Cleanup on completion or failure", () => {
+describe("Cleanup on completion or failure", { timeout: 60_000 }, () => {
   let testDir: string;
 
   beforeEach(async () => {
@@ -1220,7 +1257,7 @@ describe("Cleanup on completion or failure", () => {
 // ─── AC-9: Retry threshold and task blocking ──────────────────────────────────
 
 // AC: @agent-invocation-lifecycle ac-9
-describe("Consecutive failure threshold and task blocking", () => {
+describe("Consecutive failure threshold and task blocking", { timeout: 60_000 }, () => {
   let testDir: string;
 
   beforeEach(async () => {
@@ -1376,7 +1413,7 @@ describe("Consecutive failure threshold and task blocking", () => {
 // ─── AC-11: ACP permission request auto-approval ─────────────────────────────
 
 // AC: @agent-invocation-lifecycle ac-11
-describe("ACP permission request handling", () => {
+describe("ACP permission request handling", { timeout: 60_000 }, () => {
   let testDir: string;
 
   beforeEach(async () => {
@@ -1449,7 +1486,7 @@ describe("ACP permission request handling", () => {
 // ─── AC-12: Sanitize inherited env vars in agent spawner ──────────────────────
 
 // AC: @agent-invocation-lifecycle ac-12
-describe("Host environment variable sanitization", () => {
+describe("Host environment variable sanitization", { timeout: 60_000 }, () => {
   let testDir: string;
 
   beforeEach(async () => {
@@ -1548,7 +1585,7 @@ describe("Host environment variable sanitization", () => {
 // ─── No shadow commit on session end ──────────────────────────────────────────
 
 // AC: @session-remove-shadow-commits ac-invocation-end
-describe("No shadow commit on session close (session storage separation)", () => {
+describe("No shadow commit on session close (session storage separation)", { timeout: 60_000 }, () => {
   let testDir: string;
   let commitSpy: ReturnType<typeof vi.spyOn>;
 

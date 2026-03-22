@@ -64,4 +64,35 @@ describe('KspecWatcher error handling', () => {
 
     await watcher.stop();
   });
+
+  // AC: @multi-directory-daemon ac-34
+  it('invokes permanent failure callback after ENOENT exhausts retries and the watched root is gone', async () => {
+    const errorHandler = vi.fn();
+    const permanentFailureHandler = vi.fn();
+    const fsWatcher = new MockFsWatcher();
+
+    mockState.fsWatch.mockReturnValue(fsWatcher);
+
+    const { KspecWatcher } = await import('../packages/daemon/src/watcher');
+    const watcher = new KspecWatcher({
+      kspecDir: '/tmp/kspec-missing/.kspec',
+      onFileChange: vi.fn(),
+      onError: errorHandler,
+      onPermanentFailure: permanentFailureHandler,
+    });
+
+    await watcher.start();
+
+    for (let attempt = 0; attempt < 6; attempt++) {
+      fsWatcher.emit('error', Object.assign(new Error('ENOENT: watch /tmp/kspec-missing/.kspec'), { code: 'ENOENT' }));
+      await vi.runOnlyPendingTimersAsync();
+    }
+
+    await vi.waitFor(() => {
+      expect(permanentFailureHandler).toHaveBeenCalledWith('/tmp/kspec-missing/.kspec');
+    });
+
+    expect(errorHandler).toHaveBeenCalledTimes(6);
+    expect(fsWatcher.close).toHaveBeenCalled();
+  });
 });

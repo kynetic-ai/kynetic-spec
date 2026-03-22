@@ -21,8 +21,8 @@ import {
   deleteInboxItem,
   findInboxItemByRef,
   ReferenceIndex,
-  loadAllTasks,
   loadAllItems,
+  resolveTaskDataManager,
   type InboxItemInput,
 } from '../../parser/index.js';
 import { commitIfShadow } from '../../parser/shadow.js';
@@ -120,7 +120,7 @@ export function createInboxRoutes(options: InboxRouteOptions) {
         // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
         const ctx = await initContext(projectContext.path);
         const inboxItems = await loadInboxItems(ctx);
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
         const specItems = await loadAllItems(ctx);
         const index = new ReferenceIndex(tasks, specItems);
 

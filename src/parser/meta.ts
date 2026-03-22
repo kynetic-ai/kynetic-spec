@@ -34,8 +34,13 @@ import {
   type WorkflowRun,
   type WorkflowRunsFile,
   WorkflowRunsFileSchema,
+  WorkflowRunSchema,
   WorkflowSchema,
 } from "../schema/index.js";
+import { type Hook, HookSchema } from "../schema/hooks.js";
+import { type Schedule, ScheduleSchema } from "../schema/schedules.js";
+import { type Composition, CompositionSchema } from "../schema/composition.js";
+import { withFileLock } from "./file-lock.js";
 import type { KspecContext } from "./yaml.js";
 import {
   expandIncludePattern,
@@ -81,6 +86,27 @@ export interface LoadedSkill extends Skill {
 }
 
 /**
+ * Loaded hook with runtime metadata
+ */
+export interface LoadedHook extends Hook {
+  _sourceFile?: string;
+}
+
+/**
+ * Loaded schedule with runtime metadata
+ */
+export interface LoadedSchedule extends Schedule {
+  _sourceFile?: string;
+}
+
+/**
+ * Loaded composition with runtime metadata
+ */
+export interface LoadedComposition extends Composition {
+  _sourceFile?: string;
+}
+
+/**
  * Any loaded meta item
  */
 export type LoadedMetaItem =
@@ -101,6 +127,9 @@ export interface MetaContext {
   conventions: LoadedConvention[];
   observations: LoadedObservation[];
   skills: LoadedSkill[];
+  hooks: LoadedHook[];
+  schedules: LoadedSchedule[];
+  compositions: LoadedComposition[];
 }
 
 /**
@@ -186,6 +215,9 @@ async function loadMetaFile(filePath: string): Promise<{
   conventions: LoadedConvention[];
   observations: LoadedObservation[];
   skills: LoadedSkill[];
+  hooks: LoadedHook[];
+  schedules: LoadedSchedule[];
+  compositions: LoadedComposition[];
 }> {
   const result: {
     agents: LoadedAgent[];
@@ -193,12 +225,18 @@ async function loadMetaFile(filePath: string): Promise<{
     conventions: LoadedConvention[];
     observations: LoadedObservation[];
     skills: LoadedSkill[];
+    hooks: LoadedHook[];
+    schedules: LoadedSchedule[];
+    compositions: LoadedComposition[];
   } = {
     agents: [],
     workflows: [],
     conventions: [],
     observations: [],
     skills: [],
+    hooks: [],
+    schedules: [],
+    compositions: [],
   };
 
   try {
@@ -259,6 +297,39 @@ async function loadMetaFile(filePath: string): Promise<{
         }
       }
     }
+
+    // Parse hooks
+    // AC: @dispatch-hook-schema ac-1 - hooks parsed with typed fields
+    if (Array.isArray(obj.hooks)) {
+      for (const hook of obj.hooks) {
+        const parsed = HookSchema.safeParse(hook);
+        if (parsed.success) {
+          result.hooks.push({ ...parsed.data, _sourceFile: filePath });
+        }
+      }
+    }
+
+    // Parse schedules
+    // AC: @dispatch-schedule-schema ac-1 - schedules parsed with typed fields
+    if (Array.isArray(obj.schedules)) {
+      for (const schedule of obj.schedules) {
+        const parsed = ScheduleSchema.safeParse(schedule);
+        if (parsed.success) {
+          result.schedules.push({ ...parsed.data, _sourceFile: filePath });
+        }
+      }
+    }
+
+    // Parse compositions
+    // AC: @dispatch-composition-schema ac-1 - compositions parsed with typed fields
+    if (Array.isArray(obj.compositions)) {
+      for (const composition of obj.compositions) {
+        const parsed = CompositionSchema.safeParse(composition);
+        if (parsed.success) {
+          result.compositions.push({ ...parsed.data, _sourceFile: filePath });
+        }
+      }
+    }
   } catch {
     // File doesn't exist or parse error
   }
@@ -280,6 +351,9 @@ export async function loadMetaContext(ctx: KspecContext): Promise<MetaContext> {
     conventions: [],
     observations: [],
     skills: [],
+    hooks: [],
+    schedules: [],
+    compositions: [],
   };
 
   const manifestPath = await findMetaManifest(ctx.specDir);
@@ -300,6 +374,9 @@ export async function loadMetaContext(ctx: KspecContext): Promise<MetaContext> {
       result.conventions.push(...items.conventions);
       result.observations.push(...items.observations);
       result.skills.push(...items.skills);
+      result.hooks.push(...items.hooks);
+      result.schedules.push(...items.schedules);
+      result.compositions.push(...items.compositions);
       return result;
     }
 
@@ -312,6 +389,9 @@ export async function loadMetaContext(ctx: KspecContext): Promise<MetaContext> {
     result.conventions.push(...manifestItems.conventions);
     result.observations.push(...manifestItems.observations);
     result.skills.push(...manifestItems.skills);
+    result.hooks.push(...manifestItems.hooks);
+    result.schedules.push(...manifestItems.schedules);
+    result.compositions.push(...manifestItems.compositions);
 
     // Process includes
     const includes = parsed.data.includes || [];
@@ -327,6 +407,9 @@ export async function loadMetaContext(ctx: KspecContext): Promise<MetaContext> {
         result.conventions.push(...items.conventions);
         result.observations.push(...items.observations);
         result.skills.push(...items.skills);
+        result.hooks.push(...items.hooks);
+        result.schedules.push(...items.schedules);
+        result.compositions.push(...items.compositions);
       }
     }
   } catch {
@@ -454,18 +537,144 @@ export function isMetaItemType(type: string): boolean {
 }
 
 // ============================================================
-// META ITEM CRUD
+// RAW DATA PRESERVATION HELPERS
 // ============================================================
 
+/** Top-level array field names in the meta manifest. */
+const META_ARRAY_FIELDS = [
+  "agents",
+  "workflows",
+  "conventions",
+  "observations",
+  "skills",
+  "hooks",
+  "schedules",
+  "compositions",
+  "includes",
+] as const;
+
+type MetaArrayField = (typeof META_ARRAY_FIELDS)[number];
+
 /**
- * Save the entire meta manifest to file
+ * Extract the raw meta manifest data from a YAML file.
+ * Does NOT run schema validation — preserves original data for round-trip stability.
  */
-async function saveMetaManifest(
-  manifestPath: string,
-  manifest: MetaManifest,
-): Promise<void> {
-  await writeYamlFilePreserveFormat(manifestPath, manifest);
+async function extractRawMetaManifest(filePath: string): Promise<{
+  wrapperObj?: Record<string, unknown>;
+}> {
+  let existingRaw: unknown = null;
+
+  try {
+    existingRaw = await readYamlFile<unknown>(filePath);
+  } catch {
+    return {};
+  }
+
+  if (!existingRaw || typeof existingRaw !== "object") {
+    return {};
+  }
+
+  return {
+    wrapperObj: existingRaw as Record<string, unknown>,
+  };
 }
+
+/**
+ * Get a raw array from the wrapper object, defaulting to empty.
+ */
+function getRawArray(
+  wrapperObj: Record<string, unknown> | undefined,
+  field: MetaArrayField,
+): unknown[] {
+  if (!wrapperObj) return [];
+  const arr = wrapperObj[field];
+  return Array.isArray(arr) ? arr : [];
+}
+
+/**
+ * Write the meta manifest back to file, preserving wrapper metadata.
+ * Only includes array fields that were present in the original wrapper
+ * or that have non-empty values.
+ */
+async function writeRawMetaManifest(
+  filePath: string,
+  wrapperObj: Record<string, unknown> | undefined,
+  updates: Partial<Record<MetaArrayField, unknown[]>>,
+): Promise<void> {
+  const output: Record<string, unknown> = {};
+
+  if (wrapperObj) {
+    // Copy all existing top-level fields in their original order
+    for (const [key, value] of Object.entries(wrapperObj)) {
+      if (key in updates) {
+        // This field was mutated — use the updated value
+        output[key] = updates[key as MetaArrayField];
+      } else {
+        output[key] = value;
+      }
+    }
+    // Add any new fields from updates that weren't in the original
+    for (const [key, value] of Object.entries(updates)) {
+      if (!(key in output)) {
+        output[key] = value;
+      }
+    }
+  } else {
+    output.kynetic_meta = "1.0";
+    for (const [key, value] of Object.entries(updates)) {
+      output[key] = value;
+    }
+  }
+
+  await writeYamlFilePreserveFormat(filePath, output);
+}
+
+/**
+ * Find an item index in a raw array by ULID match.
+ */
+function findRawMetaItemIndex(rawItems: unknown[], itemUlid: string): number {
+  return rawItems.findIndex(
+    (item) =>
+      item &&
+      typeof item === "object" &&
+      (item as Record<string, unknown>)._ulid === itemUlid,
+  );
+}
+
+/**
+ * Merge a schema-normalized meta item onto the original raw data.
+ * Only adds fields that were in the original raw data or that contain
+ * non-default values. This prevents Zod defaults from polluting YAML
+ * output with fields that weren't originally present.
+ */
+function mergeMetaItemPreservingRawShape(
+  rawItem: Record<string, unknown>,
+  normalizedItem: Record<string, unknown>,
+): Record<string, unknown> {
+  const result: Record<string, unknown> = {};
+
+  for (const [key, value] of Object.entries(normalizedItem)) {
+    if (key in rawItem) {
+      // Field existed in raw — always include (even if value changed)
+      result[key] = value;
+    } else {
+      // Field was added by schema normalization — only include if non-trivial.
+      // Skip empty arrays, null/undefined, and false (common Zod defaults).
+      const isEmptyArray = Array.isArray(value) && value.length === 0;
+      const isNull = value === null || value === undefined;
+      const isFalse = value === false;
+      if (!isEmptyArray && !isNull && !isFalse) {
+        result[key] = value;
+      }
+    }
+  }
+
+  return result;
+}
+
+// ============================================================
+// META ITEM CRUD
+// ============================================================
 
 /**
  * Strip runtime metadata before serialization
@@ -503,7 +712,8 @@ export function createObservation(
 }
 
 /**
- * Save an observation to the meta manifest
+ * Save an observation to the meta manifest.
+ * Uses raw-data-preservation pattern to avoid adding Zod defaults for absent sections.
  */
 export async function saveObservation(
   ctx: KspecContext,
@@ -511,75 +721,137 @@ export async function saveObservation(
 ): Promise<void> {
   const manifestPath = getMetaManifestPath(ctx);
 
-  // Ensure directory exists
-  const dir = path.dirname(manifestPath);
-  await fs.mkdir(dir, { recursive: true });
+  await withFileLock(manifestPath, async () => {
+    // Ensure directory exists
+    const dir = path.dirname(manifestPath);
+    await fs.mkdir(dir, { recursive: true });
 
-  // Load existing manifest
-  let manifest: MetaManifest = {
-    kynetic_meta: "1.0",
-    agents: [],
-    workflows: [],
-    conventions: [],
-    observations: [],
-    skills: [],
-    includes: [],
-  };
+    // Load raw manifest data without schema normalization
+    const { wrapperObj } = await extractRawMetaManifest(manifestPath);
+    const rawObservations = getRawArray(wrapperObj, "observations");
 
-  try {
-    const raw = await readYamlFile<unknown>(manifestPath);
-    const parsed = MetaManifestSchema.safeParse(raw);
-    if (parsed.success) {
-      manifest = parsed.data;
+    // Strip runtime metadata and schema-parse only the target item
+    const cleanObs = stripMetaMetadata(observation);
+
+    // Update existing or add new — replace only the target observation
+    const existingIndex = findRawMetaItemIndex(rawObservations, observation._ulid);
+    if (existingIndex >= 0) {
+      const rawTarget = rawObservations[existingIndex] as Record<string, unknown>;
+      rawObservations[existingIndex] = mergeMetaItemPreservingRawShape(
+        rawTarget,
+        cleanObs as unknown as Record<string, unknown>,
+      );
+    } else {
+      rawObservations.push(cleanObs);
     }
-  } catch {
-    // File doesn't exist, use defaults
-  }
 
-  // Strip runtime metadata
-  const cleanObs = stripMetaMetadata(observation);
-
-  // Update or add
-  const existingIndex = manifest.observations.findIndex(
-    (o) => o._ulid === observation._ulid,
-  );
-  if (existingIndex >= 0) {
-    manifest.observations[existingIndex] = cleanObs as Observation;
-  } else {
-    manifest.observations.push(cleanObs as Observation);
-  }
-
-  await saveMetaManifest(manifestPath, manifest);
+    await writeRawMetaManifest(manifestPath, wrapperObj, {
+      observations: rawObservations,
+    });
+  });
 }
 
 /**
- * Delete an observation from the meta manifest
+ * Delete an observation from the meta manifest.
+ * Uses raw-data-preservation pattern to avoid adding Zod defaults for absent sections.
  */
 export async function deleteObservation(
   ctx: KspecContext,
-  ulid: string,
+  targetUlid: string,
 ): Promise<boolean> {
   const manifestPath = getMetaManifestPath(ctx);
 
-  try {
-    const raw = await readYamlFile<unknown>(manifestPath);
-    const parsed = MetaManifestSchema.safeParse(raw);
-    if (!parsed.success) {
+  return withFileLock(manifestPath, async () => {
+    try {
+      const { wrapperObj } = await extractRawMetaManifest(manifestPath);
+      const rawObservations = getRawArray(wrapperObj, "observations");
+
+      const index = findRawMetaItemIndex(rawObservations, targetUlid);
+      if (index < 0) {
+        return false;
+      }
+
+      rawObservations.splice(index, 1);
+      await writeRawMetaManifest(manifestPath, wrapperObj, {
+        observations: rawObservations,
+      });
+      return true;
+    } catch {
       return false;
     }
+  });
+}
 
-    const manifest = parsed.data;
-    const index = manifest.observations.findIndex((o) => o._ulid === ulid);
-    if (index < 0) {
-      return false;
+/**
+ * Save a hook to the meta manifest.
+ * Uses raw-data-preservation pattern to avoid adding Zod defaults for absent sections.
+ * AC: @dispatch-event-cli ac-4 — hook is persisted and available for event matching
+ */
+export async function saveHook(
+  ctx: KspecContext,
+  hook: LoadedHook,
+): Promise<void> {
+  const manifestPath = getMetaManifestPath(ctx);
+
+  await withFileLock(manifestPath, async () => {
+    const dir = path.dirname(manifestPath);
+    await fs.mkdir(dir, { recursive: true });
+
+    const { wrapperObj } = await extractRawMetaManifest(manifestPath);
+    const rawHooks = wrapperObj
+      ? (Array.isArray(wrapperObj.hooks) ? wrapperObj.hooks as unknown[] : [])
+      : [];
+
+    const { _sourceFile: _, ...cleanHook } = hook;
+
+    const existingIndex = findRawMetaItemIndex(rawHooks, hook._ulid);
+    if (existingIndex >= 0) {
+      const rawTarget = rawHooks[existingIndex] as Record<string, unknown>;
+      rawHooks[existingIndex] = mergeMetaItemPreservingRawShape(
+        rawTarget,
+        cleanHook as unknown as Record<string, unknown>,
+      );
+    } else {
+      rawHooks.push(cleanHook);
     }
 
-    manifest.observations.splice(index, 1);
-    await saveMetaManifest(manifestPath, manifest);
-    return true;
-  } catch {
-    return false;
-  }
+    await writeRawMetaManifest(manifestPath, wrapperObj, {
+      hooks: rawHooks,
+    } as unknown as Partial<Record<MetaArrayField, unknown[]>>);
+  });
+}
+
+/**
+ * Delete a hook from the meta manifest.
+ * Uses raw-data-preservation pattern to avoid adding Zod defaults for absent sections.
+ */
+export async function deleteHook(
+  ctx: KspecContext,
+  targetUlid: string,
+): Promise<boolean> {
+  const manifestPath = getMetaManifestPath(ctx);
+
+  return withFileLock(manifestPath, async () => {
+    try {
+      const { wrapperObj } = await extractRawMetaManifest(manifestPath);
+      const rawHooks = wrapperObj
+        ? (Array.isArray(wrapperObj.hooks) ? wrapperObj.hooks as unknown[] : [])
+        : [];
+
+      const index = findRawMetaItemIndex(rawHooks, targetUlid);
+      if (index < 0) {
+        return false;
+      }
+
+      rawHooks.splice(index, 1);
+      await writeRawMetaManifest(manifestPath, wrapperObj, {
+        hooks: rawHooks,
+      } as unknown as Partial<Record<MetaArrayField, unknown[]>>);
+      return true;
+    } catch {
+      return false;
+    }
+  });
 }
 
 /**
@@ -769,16 +1041,115 @@ export async function listSkillSupportingDirs(
   return dirs;
 }
 
+// ============================================================
+// SCHEDULE / HOOK CRUD
+// ============================================================
+
+/**
+ * Save a schedule to the meta manifest.
+ * Uses raw-data-preservation pattern to avoid adding Zod defaults for absent sections.
+ */
+export async function saveSchedule(
+  ctx: KspecContext,
+  schedule: LoadedSchedule,
+): Promise<void> {
+  const manifestPath = getMetaManifestPath(ctx);
+
+  await withFileLock(manifestPath, async () => {
+    const dir = path.dirname(manifestPath);
+    await fs.mkdir(dir, { recursive: true });
+
+    const { wrapperObj } = await extractRawMetaManifest(manifestPath);
+    const rawSchedules = getRawArray(wrapperObj, "schedules");
+
+    const { _sourceFile, ...cleanSchedule } = schedule;
+
+    const existingIndex = findRawMetaItemIndex(rawSchedules, schedule._ulid);
+    if (existingIndex >= 0) {
+      const rawTarget = rawSchedules[existingIndex] as Record<string, unknown>;
+      rawSchedules[existingIndex] = mergeMetaItemPreservingRawShape(
+        rawTarget,
+        cleanSchedule as unknown as Record<string, unknown>,
+      );
+    } else {
+      rawSchedules.push(cleanSchedule);
+    }
+
+    await writeRawMetaManifest(manifestPath, wrapperObj, {
+      schedules: rawSchedules,
+    });
+  });
+}
+
+/**
+ * Delete a schedule from the meta manifest.
+ * Uses raw-data-preservation pattern to avoid adding Zod defaults for absent sections.
+ */
+export async function deleteSchedule(
+  ctx: KspecContext,
+  targetUlid: string,
+): Promise<boolean> {
+  const manifestPath = getMetaManifestPath(ctx);
+
+  return withFileLock(manifestPath, async () => {
+    try {
+      const { wrapperObj } = await extractRawMetaManifest(manifestPath);
+      const rawSchedules = getRawArray(wrapperObj, "schedules");
+
+      const index = findRawMetaItemIndex(rawSchedules, targetUlid);
+      if (index < 0) {
+        return false;
+      }
+
+      rawSchedules.splice(index, 1);
+      await writeRawMetaManifest(manifestPath, wrapperObj, {
+        schedules: rawSchedules,
+      });
+      return true;
+    } catch {
+      return false;
+    }
+  });
+}
+
+/**
+ * Resolve a schedule reference by id, ULID, or ULID prefix.
+ */
+export function resolveScheduleRef(
+  meta: MetaContext,
+  ref: string,
+): LoadedSchedule | undefined {
+  const cleanRef = ref.startsWith("@") ? ref.slice(1) : ref;
+
+  for (const schedule of meta.schedules) {
+    if (schedule._ulid === cleanRef) return schedule;
+    if (schedule._ulid.toLowerCase().startsWith(cleanRef.toLowerCase())) return schedule;
+    if (schedule.id === cleanRef) return schedule;
+  }
+
+  return undefined;
+}
+
 // Re-export the getMetaItemType and isSkill functions
 export { getMetaItemType, isSkill };
-export type { Agent, Workflow, Convention, Observation, Skill, MetaItem };
+export type { Agent, Workflow, Convention, Observation, Skill, Hook, MetaItem };
 
 // ============================================================
 // GENERIC META ITEM CRUD
 // ============================================================
 
 /**
- * Save any meta item (agent, workflow, convention, skill) to the manifest
+ * Map item type to manifest array field name.
+ */
+function itemTypeToField(
+  itemType: "agent" | "workflow" | "convention" | "observation" | "skill",
+): MetaArrayField {
+  return `${itemType}s` as MetaArrayField;
+}
+
+/**
+ * Save any meta item (agent, workflow, convention, skill) to the manifest.
+ * Uses raw-data-preservation pattern to avoid adding Zod defaults for absent sections.
  * AC: @skill-parser ac-1 - skill is appended to manifest.skills and written to disk
  * AC: @skill-parser ac-2 - .kspec/skills/<id>/ directory is created for skills
  */
@@ -789,59 +1160,35 @@ export async function saveMetaItem(
 ): Promise<void> {
   const manifestPath = getMetaManifestPath(ctx);
 
-  // Ensure directory exists
-  const dir = path.dirname(manifestPath);
-  await fs.mkdir(dir, { recursive: true });
+  await withFileLock(manifestPath, async () => {
+    // Ensure directory exists
+    const dir = path.dirname(manifestPath);
+    await fs.mkdir(dir, { recursive: true });
 
-  // Load existing manifest
-  let manifest: MetaManifest = {
-    kynetic_meta: "1.0",
-    agents: [],
-    workflows: [],
-    conventions: [],
-    observations: [],
-    skills: [],
-    includes: [],
-  };
+    // Load raw manifest data without schema normalization
+    const { wrapperObj } = await extractRawMetaManifest(manifestPath);
+    const field = itemTypeToField(itemType);
+    const rawItems = getRawArray(wrapperObj, field);
 
-  try {
-    const raw = await readYamlFile<unknown>(manifestPath);
-    const parsed = MetaManifestSchema.safeParse(raw);
-    if (parsed.success) {
-      manifest = parsed.data;
+    // Strip runtime metadata
+    const cleanItem = stripMetaMetadata(item);
+
+    // Update existing or add new — replace only the target item
+    const existingIndex = findRawMetaItemIndex(rawItems, item._ulid);
+    if (existingIndex >= 0) {
+      const rawTarget = rawItems[existingIndex] as Record<string, unknown>;
+      rawItems[existingIndex] = mergeMetaItemPreservingRawShape(
+        rawTarget,
+        cleanItem as unknown as Record<string, unknown>,
+      );
+    } else {
+      rawItems.push(cleanItem);
     }
-  } catch {
-    // File doesn't exist, use defaults
-  }
 
-  // Strip runtime metadata
-  const cleanItem = stripMetaMetadata(item);
-
-  // Get the appropriate array
-  const getArray = () => {
-    switch (itemType) {
-      case "agent":
-        return manifest.agents;
-      case "workflow":
-        return manifest.workflows;
-      case "convention":
-        return manifest.conventions;
-      case "skill":
-        return manifest.skills;
-    }
-  };
-
-  const array = getArray();
-
-  // Update or add
-  const existingIndex = array.findIndex((i) => i._ulid === item._ulid);
-  if (existingIndex >= 0) {
-    (array as unknown[])[existingIndex] = cleanItem;
-  } else {
-    (array as unknown[]).push(cleanItem);
-  }
-
-  await saveMetaManifest(manifestPath, manifest);
+    await writeRawMetaManifest(manifestPath, wrapperObj, {
+      [field]: rawItems,
+    });
+  });
 
   // AC: @skill-parser ac-2 - Create skill content directory
   if (itemType === "skill" && "id" in item) {
@@ -851,7 +1198,8 @@ export async function saveMetaItem(
 }
 
 /**
- * Delete any meta item from the manifest
+ * Delete any meta item from the manifest.
+ * Uses raw-data-preservation pattern to avoid adding Zod defaults for absent sections.
  * AC: @skill-parser ac-3 - skill is removed from manifest.skills
  * AC: @skill-parser ac-4 - .kspec/skills/<id>/ directory is deleted for skills
  */
@@ -862,55 +1210,44 @@ export async function deleteMetaItem(
 ): Promise<boolean> {
   const manifestPath = getMetaManifestPath(ctx);
 
-  try {
-    const raw = await readYamlFile<unknown>(manifestPath);
-    const parsed = MetaManifestSchema.safeParse(raw);
-    if (!parsed.success) {
-      return false;
-    }
-
-    const manifest = parsed.data;
-
-    const getArray = () => {
-      switch (itemType) {
-        case "agent":
-          return manifest.agents;
-        case "workflow":
-          return manifest.workflows;
-        case "convention":
-          return manifest.conventions;
-        case "observation":
-          return manifest.observations;
-        case "skill":
-          return manifest.skills;
+  return withFileLock(manifestPath, async () => {
+    try {
+      const { wrapperObj } = await extractRawMetaManifest(manifestPath);
+      if (!wrapperObj) {
+        return false;
       }
-    };
 
-    const array = getArray();
-    const index = array.findIndex((i) => i._ulid === itemUlid);
-    if (index < 0) {
-      return false;
-    }
+      const field = itemTypeToField(itemType);
+      const rawItems = getRawArray(wrapperObj, field);
 
-    // AC: @skill-parser ac-4 - Delete skill directory before removing from manifest
-    if (itemType === "skill") {
-      const skill = array[index] as Skill;
-      if (skill.id) {
-        const skillDir = path.join(ctx.specDir, "skills", skill.id);
-        try {
-          await fs.rm(skillDir, { recursive: true, force: true });
-        } catch {
-          // Directory might not exist, that's fine
+      const index = findRawMetaItemIndex(rawItems, itemUlid);
+      if (index < 0) {
+        return false;
+      }
+
+      // AC: @skill-parser ac-4 - Delete skill directory before removing from manifest
+      if (itemType === "skill") {
+        const rawSkill = rawItems[index] as Record<string, unknown>;
+        const skillId = rawSkill.id as string | undefined;
+        if (skillId) {
+          const skillDir = path.join(ctx.specDir, "skills", skillId);
+          try {
+            await fs.rm(skillDir, { recursive: true, force: true });
+          } catch {
+            // Directory might not exist, that's fine
+          }
         }
       }
-    }
 
-    array.splice(index, 1);
-    await saveMetaManifest(manifestPath, manifest);
-    return true;
-  } catch {
-    return false;
-  }
+      rawItems.splice(index, 1);
+      await writeRawMetaManifest(manifestPath, wrapperObj, {
+        [field]: rawItems,
+      });
+      return true;
+    } catch {
+      return false;
+    }
+  });
 }
 
 // ============================================================
@@ -995,6 +1332,91 @@ export function getWorkflowRunsPath(ctx: KspecContext): string {
 }
 
 /**
+ * Extract the raw workflow run array and format info from a YAML file.
+ * Does NOT run schema validation — preserves original data for round-trip stability.
+ */
+async function extractRawRunArray(
+  filePath: string,
+): Promise<{ rawRuns: unknown[]; wrapperObj?: Record<string, unknown> }> {
+  let existingRaw: unknown = null;
+
+  try {
+    existingRaw = await readYamlFile<unknown>(filePath);
+  } catch {
+    // File doesn't exist
+    return { rawRuns: [] };
+  }
+
+  if (!existingRaw || typeof existingRaw !== "object") {
+    return { rawRuns: [] };
+  }
+
+  if ("runs" in existingRaw) {
+    const wrapper = existingRaw as Record<string, unknown>;
+    const runs = wrapper.runs;
+    return {
+      rawRuns: Array.isArray(runs) ? runs : [],
+      wrapperObj: wrapper,
+    };
+  }
+
+  return { rawRuns: [] };
+}
+
+/**
+ * Write raw workflow run array back to file, preserving the wrapper format.
+ */
+async function writeRawRunArray(
+  filePath: string,
+  rawRuns: unknown[],
+  wrapperObj?: Record<string, unknown>,
+): Promise<void> {
+  const output = wrapperObj
+    ? { ...wrapperObj, runs: rawRuns }
+    : { kynetic_runs: "1.0", runs: rawRuns };
+  await writeYamlFilePreserveFormat(filePath, output);
+}
+
+/**
+ * Find workflow run index in a raw array by ULID match.
+ */
+function findRawRunIndex(rawRuns: unknown[], ulid: string): number {
+  return rawRuns.findIndex(
+    (r) =>
+      r && typeof r === "object" && (r as Record<string, unknown>)._ulid === ulid,
+  );
+}
+
+/**
+ * Merge a schema-normalized workflow run onto the original raw run data.
+ * Only adds fields that were in the original raw data or that contain
+ * non-default values. This prevents Zod defaults from polluting YAML
+ * output with fields that weren't originally present.
+ */
+function mergeRunPreservingRawShape(
+  rawRun: Record<string, unknown>,
+  normalizedRun: Record<string, unknown>,
+): Record<string, unknown> {
+  const result: Record<string, unknown> = {};
+
+  for (const [key, value] of Object.entries(normalizedRun)) {
+    if (key in rawRun) {
+      // Field existed in raw — always include (even if value changed)
+      result[key] = value;
+    } else {
+      // Field was added by schema normalization — only include if non-trivial
+      const isEmptyArray = Array.isArray(value) && value.length === 0;
+      const isNull = value === null || value === undefined;
+      if (!isEmptyArray && !isNull) {
+        result[key] = value;
+      }
+    }
+  }
+
+  return result;
+}
+
+/**
  * Load workflow runs from file
  */
 export async function loadWorkflowRuns(
@@ -1019,6 +1441,10 @@ export async function loadWorkflowRuns(
 
 /**
  * Save a workflow run (create or update)
+ *
+ * Non-target runs are preserved as raw data (no schema parsing) to ensure
+ * round-trip stability — fields not present in the original YAML won't be
+ * added by Zod defaults.
  */
 export async function saveWorkflowRun(
   ctx: KspecContext,
@@ -1026,24 +1452,25 @@ export async function saveWorkflowRun(
 ): Promise<void> {
   const runsPath = getWorkflowRunsPath(ctx);
 
-  // Load existing runs
-  const runs = await loadWorkflowRuns(ctx);
+  await withFileLock(runsPath, async () => {
+    const dir = path.dirname(runsPath);
+    await fs.mkdir(dir, { recursive: true });
 
-  // Update or add
-  const existingIndex = runs.findIndex((r) => r._ulid === run._ulid);
-  if (existingIndex >= 0) {
-    runs[existingIndex] = run;
-  } else {
-    runs.push(run);
-  }
+    // Load raw run data without schema normalization
+    const { rawRuns, wrapperObj } = await extractRawRunArray(runsPath);
 
-  // Save back
-  const runsFile: WorkflowRunsFile = {
-    kynetic_runs: "1.0",
-    runs,
-  };
+    // Update existing or add new — replace only the target run
+    const existingIndex = findRawRunIndex(rawRuns, run._ulid);
+    if (existingIndex >= 0) {
+      // Merge onto raw data to avoid adding Zod defaults for absent fields
+      const rawTarget = rawRuns[existingIndex] as Record<string, unknown>;
+      rawRuns[existingIndex] = mergeRunPreservingRawShape(rawTarget, run as unknown as Record<string, unknown>);
+    } else {
+      rawRuns.push(run);
+    }
 
-  await writeYamlFilePreserveFormat(runsPath, runsFile);
+    await writeRawRunArray(runsPath, rawRuns, wrapperObj);
+  });
 }
 
 /**
@@ -1054,6 +1481,63 @@ export async function updateWorkflowRun(
   run: WorkflowRun,
 ): Promise<void> {
   await saveWorkflowRun(ctx, run);
+}
+
+/**
+ * Atomically mutate a workflow run using the latest on-disk state.
+ *
+ * The callback receives the current run value while holding the runs file lock,
+ * so concurrent writers do not clobber unrelated fields.
+ *
+ * Non-target runs are preserved as raw data (no schema parsing) to ensure
+ * round-trip stability.
+ */
+export async function mutateWorkflowRunAtomically(
+  ctx: KspecContext,
+  run: WorkflowRun,
+  mutate: (latestRun: WorkflowRun) => WorkflowRun | Promise<WorkflowRun>,
+): Promise<WorkflowRun> {
+  const runsPath = getWorkflowRunsPath(ctx);
+  let updatedRun: WorkflowRun | undefined;
+
+  await withFileLock(runsPath, async () => {
+    const dir = path.dirname(runsPath);
+    await fs.mkdir(dir, { recursive: true });
+
+    // Load raw run data without schema normalization for non-target runs
+    const { rawRuns, wrapperObj } = await extractRawRunArray(runsPath);
+
+    const runIndex = findRawRunIndex(rawRuns, run._ulid);
+    if (runIndex === -1) {
+      throw new Error(`Workflow run not found in file: ${run._ulid}`);
+    }
+
+    // Schema-parse only the target run for the mutation callback
+    const rawTarget = rawRuns[runIndex];
+    const parsed = WorkflowRunSchema.safeParse(rawTarget);
+    if (!parsed.success) {
+      throw new Error(`Invalid workflow run data for ${run._ulid}: ${parsed.error.message}`);
+    }
+    const latestRun = parsed.data;
+
+    const mutatedRun = await mutate(latestRun);
+
+    // Merge onto raw data to avoid adding Zod defaults for absent fields
+    rawRuns[runIndex] = mergeRunPreservingRawShape(
+      rawTarget as Record<string, unknown>,
+      mutatedRun as unknown as Record<string, unknown>,
+    );
+
+    await writeRawRunArray(runsPath, rawRuns, wrapperObj);
+
+    updatedRun = mutatedRun;
+  });
+
+  if (!updatedRun) {
+    throw new Error(`Failed to mutate workflow run atomically: ${run._ulid}`);
+  }
+
+  return updatedRun;
 }
 
 /**
@@ -1085,6 +1569,9 @@ export async function findActiveRuns(
 
 /**
  * Delete workflow runs by ULIDs
+ *
+ * Non-target runs are preserved as raw data (no schema parsing) to ensure
+ * round-trip stability.
  * AC: @workflow-prune ac-1, ac-2, ac-3, ac-4
  */
 export async function deleteWorkflowRuns(
@@ -1092,16 +1579,17 @@ export async function deleteWorkflowRuns(
   ulidsToDelete: string[],
 ): Promise<void> {
   const runsPath = getWorkflowRunsPath(ctx);
-  const runs = await loadWorkflowRuns(ctx);
 
-  // Filter out runs to delete
-  const remainingRuns = runs.filter((r) => !ulidsToDelete.includes(r._ulid));
+  await withFileLock(runsPath, async () => {
+    const { rawRuns, wrapperObj } = await extractRawRunArray(runsPath);
 
-  // Save back
-  const runsFile: WorkflowRunsFile = {
-    kynetic_runs: "1.0",
-    runs: remainingRuns,
-  };
+    // Filter out runs to delete using raw ULID field
+    const remainingRuns = rawRuns.filter((r) => {
+      if (!r || typeof r !== "object") return true;
+      const runUlid = (r as Record<string, unknown>)._ulid;
+      return typeof runUlid !== "string" || !ulidsToDelete.includes(runUlid);
+    });
 
-  await writeYamlFilePreserveFormat(runsPath, runsFile);
+    await writeRawRunArray(runsPath, remainingRuns, wrapperObj);
+  });
 }

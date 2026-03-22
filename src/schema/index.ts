@@ -1,8 +1,14 @@
 // Re-export all schema definitions
 
+export * from "./action.js";
 export * from "./common.js";
+export * from "./composition.js";
 export * from "./dispatch-workspace.js";
+export * from "./event-payloads.js";
+export * from "./event-registry.js";
+export * from "./hooks.js";
 export * from "./inbox.js";
+export * from "./schedules.js";
 export * from "./meta.js";
 export * from "./plan.js";
 export * from "./spec.js";

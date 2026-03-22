@@ -28,10 +28,13 @@ import { createValidationRoutes } from './routes/validation';
 import { createProjectsRoutes } from './routes/projects';
 import { createTriageRoutes } from './routes/triage';
 import { createAgentDispatchRoutes, getDispatchEngine, stopAllEngines } from './routes/agent-dispatch';
+import { createAutomationRoutes } from './routes/automation';
 import { createSessionRoutes } from './routes/sessions';
 import { createPlansRoutes } from './routes/plans';
 import { createAggregationRoutes } from './routes/aggregation';
 import { createRefsRoutes } from './routes/refs';
+import { createDiffRoutes } from './routes/diff';
+import { createReviewsRoutes } from './routes/reviews';
 import { ShadowSyncScheduler } from './shadow-sync';
 import { SessionSyncScheduler } from './session-sync';
 import { join } from 'path';
@@ -317,9 +320,18 @@ export async function createServer(options: ServerOptions) {
     // AC: @ui-api-ref-resolution ac-4, ac-5 - Lightweight ref index endpoint
     .use(createRefsRoutes())
 
+    // AC: @review-content-diff-api ac-1, ac-2, ac-3, ac-4 - Diff and review content endpoints
+    .use(createDiffRoutes())
+
+    // AC: @review-records-daemon-api ac-3, ac-4, ac-5, ac-6, ac-7, ac-8, ac-9, ac-10 - Review endpoints
+    .use(createReviewsRoutes({ pubsub: pubsubManager }))
+
     // AC: @agent-dispatch-engine ac-4 - Agent dispatch API endpoints
     // AC: @daemon-agent-dispatch ac-3, ac-4 - Pass pubsub for WebSocket broadcast on invocation events
     .use(createAgentDispatchRoutes({ pubsub: pubsubManager }))
+
+    // AC: @automation-api ac-1 through ac-6 - Automation management endpoints
+    .use(createAutomationRoutes())
 
     // AC-4: WebSocket endpoint for real-time updates
     .ws<ConnectionData>('/ws', {
@@ -422,7 +434,9 @@ export async function createServer(options: ServerOptions) {
       '/specs',
       '/workflows',
       '/plans',
+      '/reviews', '/reviews/*',
       '/settings',
+      '/automation',
     ];
     for (const route of spaRoutes) {
       app.get(route, () => Bun.file(indexHtmlPath));

@@ -212,7 +212,25 @@ export class SessionEventAccumulator {
         const tcId = update.toolCallId;
         const tracked = state.activeToolCalls.get(tcId);
 
-        // Only emit complete when status transitions to completed/failed
+        // Emit tool_call_input when populated rawInput arrives (phased streaming)
+        // AC: @ws-session-event-streaming ac-tool-input-update
+        if (
+          update.rawInput != null &&
+          typeof update.rawInput === "object" &&
+          Object.keys(update.rawInput as Record<string, unknown>).length > 0 &&
+          !(update.status === "completed" || update.status === "failed")
+        ) {
+          const toolName = tracked?.toolName ?? update.title ?? "";
+          emit({
+            ...this.baseFields(ctx),
+            type: "tool_call_input",
+            tool_call_id: tcId,
+            tool_name: toolName,
+            tool_input: update.rawInput,
+          } as SessionEventData);
+        }
+
+        // Emit complete when status transitions to completed/failed
         if (update.status && (update.status === "completed" || update.status === "failed")) {
           const durationMs = tracked ? Date.now() - tracked.startTime : 0;
           const toolName = tracked?.toolName ?? "";

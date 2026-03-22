@@ -95,6 +95,57 @@ function normalizeLegacyRegistryRaw(raw: unknown): unknown {
   };
 }
 
+/**
+ * Normalize a single legacy workspace record (same logic as normalizeLegacyRegistryRaw
+ * but for one workspace instead of the full registry).
+ */
+function normalizeLegacyWorkspaceRaw(workspace: unknown): unknown {
+  if (!workspace || typeof workspace !== "object") {
+    return workspace;
+  }
+
+  const record = workspace as {
+    base_branch_point?: unknown;
+    canonical_branch_head?: unknown;
+    integration?: {
+      status?: unknown;
+      target_branch?: unknown;
+      target_commit?: unknown;
+      publication_mode?: unknown;
+      outcome?: unknown;
+      detail?: unknown;
+      updated_at?: unknown;
+    };
+  };
+  const integration = record.integration;
+  if (!integration || typeof integration !== "object") {
+    return workspace;
+  }
+
+  const publicationMode = integration.publication_mode === "pull_request"
+    || integration.publication_mode === "manual_merge"
+    ? integration.publication_mode
+    : integration.outcome === "pull_request"
+      || integration.outcome === "manual_merge"
+      ? integration.outcome
+      : "manual_merge";
+  const targetCommit = typeof integration.target_commit === "string" && integration.target_commit.trim().length > 0
+    ? integration.target_commit
+    : typeof record.base_branch_point === "string" && record.base_branch_point.trim().length > 0
+      ? record.base_branch_point
+      : record.canonical_branch_head;
+
+  return {
+    ...record,
+    integration: {
+      ...integration,
+      target_commit: targetCommit,
+      publication_mode: publicationMode,
+      outcome: integration.outcome ?? defaultLegacyIntegrationOutcome(integration.status, publicationMode),
+    },
+  };
+}
+
 function formatRegistryValidationError(raw: unknown): string {
   const parsed = DispatchWorkspaceRegistryFileSchema.safeParse(
     normalizeLegacyRegistryRaw(raw),
@@ -218,6 +269,204 @@ function isClosedBeyondRetention(
   return now - new Date(closedAt).getTime() > retentionMs;
 }
 
+/**
+ * Check if a raw workspace record is closed beyond the retention threshold.
+ * Operates on untyped raw data to avoid schema parsing for non-target records.
+ */
+function isRawClosedBeyondRetention(
+  rawRecord: unknown,
+  now: number,
+  retentionMs: number,
+): boolean {
+  if (!rawRecord || typeof rawRecord !== "object") return false;
+  const rec = rawRecord as Record<string, unknown>;
+  if (rec.lifecycle_state !== "closed") return false;
+  const timestamps = rec.timestamps;
+  if (!timestamps || typeof timestamps !== "object") return false;
+  const closedAt = (timestamps as Record<string, unknown>).closed_at;
+  if (typeof closedAt !== "string") return false;
+  return now - new Date(closedAt).getTime() > retentionMs;
+}
+
+/**
+ * Extract the raw workspace array and wrapper metadata from a YAML file.
+ * Does NOT run schema validation — preserves original data for round-trip stability.
+ */
+async function extractRawWorkspaceArray(
+  filePath: string,
+): Promise<{ rawWorkspaces: unknown[]; wrapperObj?: Record<string, unknown> }> {
+  let existingRaw: unknown = null;
+
+  try {
+    existingRaw = await readYamlFile<unknown>(filePath);
+  } catch {
+    // File doesn't exist
+    return { rawWorkspaces: [] };
+  }
+
+  if (!existingRaw || typeof existingRaw !== "object") {
+    return { rawWorkspaces: [] };
+  }
+
+  const wrapper = existingRaw as Record<string, unknown>;
+  const workspaces = wrapper.workspaces;
+  return {
+    rawWorkspaces: Array.isArray(workspaces) ? workspaces : [],
+    wrapperObj: wrapper,
+  };
+}
+
+/**
+ * Write raw workspace array back to file, preserving wrapper metadata.
+ */
+async function writeRawWorkspaceArray(
+  filePath: string,
+  rawWorkspaces: unknown[],
+  wrapperObj?: Record<string, unknown>,
+): Promise<void> {
+  const output = wrapperObj
+    ? { ...wrapperObj, workspaces: rawWorkspaces }
+    : { kynetic_dispatch_workspaces: "1.0", workspaces: rawWorkspaces };
+  await writeYamlFilePreserveFormat(filePath, output);
+}
+
+/**
+ * Find workspace index in a raw array by workspace_id match.
+ */
+function findRawWorkspaceIndex(rawWorkspaces: unknown[], workspaceId: string): number {
+  return rawWorkspaces.findIndex(
+    (w) =>
+      w && typeof w === "object" && (w as Record<string, unknown>).workspace_id === workspaceId,
+  );
+}
+
+/**
+ * Check if a value is a Zod default that should not be added to raw data
+ * when the field wasn't originally present. Dispatch workspace records have
+ * deeply nested schema defaults (branch_provenance objects, roleStates, etc.)
+ * that must not pollute non-original fields.
+ */
+function isTrivialDefault(value: unknown): boolean {
+  if (value === null || value === undefined) return true;
+  if (value === false) return true;
+  if (Array.isArray(value) && value.length === 0) return true;
+  // Treat plain objects not in raw as schema defaults — they would be
+  // default-constructed objects like branch_provenance, roleStates, etc.
+  if (typeof value === "object" && !Array.isArray(value)) return true;
+  return false;
+}
+
+/**
+ * Merge a schema-normalized workspace onto the original raw workspace data.
+ * Recursively preserves the raw shape: fields not present in the original
+ * YAML are only included if they carry non-default values. Nested objects
+ * (like bootstrap, integration, etc.) are merged recursively so that
+ * deeply nested Zod defaults don't leak into output.
+ *
+ * When `preMutationWorkspace` is provided (for atomic mutations), fields
+ * absent from raw data are compared against the pre-mutation record. If the
+ * value differs from pre-mutation, the callback explicitly set it and it
+ * must be persisted — even if `isTrivialDefault` would otherwise suppress it.
+ */
+function mergeWorkspacePreservingRawShape(
+  rawWorkspace: Record<string, unknown>,
+  normalizedWorkspace: Record<string, unknown>,
+  preMutationWorkspace?: Record<string, unknown>,
+): Record<string, unknown> {
+  const result: Record<string, unknown> = {};
+
+  for (const [key, value] of Object.entries(normalizedWorkspace)) {
+    if (key in rawWorkspace) {
+      const rawValue = rawWorkspace[key];
+      // Both values are plain objects — recurse to preserve nested raw shape
+      if (
+        rawValue != null && typeof rawValue === "object" && !Array.isArray(rawValue) &&
+        value != null && typeof value === "object" && !Array.isArray(value)
+      ) {
+        const preMutationNested = preMutationWorkspace?.[key];
+        result[key] = mergeWorkspacePreservingRawShape(
+          rawValue as Record<string, unknown>,
+          value as Record<string, unknown>,
+          preMutationNested != null && typeof preMutationNested === "object" && !Array.isArray(preMutationNested)
+            ? preMutationNested as Record<string, unknown>
+            : undefined,
+        );
+      } else {
+        // Scalar, array, or type mismatch — use the normalized value
+        result[key] = value;
+      }
+    } else {
+      // Field was added by schema normalization — only include if non-trivial
+      // OR if the callback explicitly changed it from its pre-mutation value
+      if (!isTrivialDefault(value)) {
+        result[key] = value;
+      } else if (preMutationWorkspace && !deepEqual(value, preMutationWorkspace[key])) {
+        // The callback changed this field from its Zod default — persist it
+        result[key] = value;
+      }
+    }
+  }
+
+  return result;
+}
+
+/**
+ * Deep equality check for comparing pre/post-mutation values.
+ */
+function deepEqual(a: unknown, b: unknown): boolean {
+  if (a === b) return true;
+  if (a == null || b == null) return a === b;
+  if (typeof a !== typeof b) return false;
+  if (typeof a !== "object") return false;
+  if (Array.isArray(a) !== Array.isArray(b)) return false;
+  if (Array.isArray(a) && Array.isArray(b)) {
+    if (a.length !== b.length) return false;
+    return a.every((v, i) => deepEqual(v, b[i]));
+  }
+  const aObj = a as Record<string, unknown>;
+  const bObj = b as Record<string, unknown>;
+  const aKeys = Object.keys(aObj);
+  const bKeys = Object.keys(bObj);
+  if (aKeys.length !== bKeys.length) return false;
+  return aKeys.every((k) => k in bObj && deepEqual(aObj[k], bObj[k]));
+}
+
+/**
+ * Validate the single-open-workspace-per-task constraint on raw data.
+ * Operates on untyped raw records to avoid schema parsing.
+ */
+function validateSingleOpenWorkspacePerTaskRaw(
+  rawWorkspaces: unknown[],
+): void {
+  const openCounts = new Map<string, string[]>();
+  for (const rawWs of rawWorkspaces) {
+    if (!rawWs || typeof rawWs !== "object") continue;
+    const rec = rawWs as Record<string, unknown>;
+    if (rec.lifecycle_state === "closed") continue;
+    const taskRef = rec.task_ref as string;
+    const workspaceId = rec.workspace_id as string;
+    if (!taskRef || !workspaceId) continue;
+    const existing = openCounts.get(taskRef) ?? [];
+    existing.push(workspaceId);
+    openCounts.set(taskRef, existing);
+  }
+
+  for (const [taskRef, workspaceIds] of openCounts) {
+    if (workspaceIds.length > 1) {
+      throw new Error(
+        `Task ${taskRef} has multiple active dispatch workspace records: ${workspaceIds.join(", ")}`,
+      );
+    }
+  }
+}
+
+/**
+ * Save a dispatch workspace record.
+ *
+ * Non-target workspaces are preserved as raw data (no schema parsing) to ensure
+ * round-trip stability — fields not present in the original YAML won't be
+ * added by Zod defaults.
+ */
 export async function saveDispatchWorkspaceRecord(
   ctx: KspecContext,
   record: LoadedDispatchWorkspaceRecord,
@@ -229,34 +478,53 @@ export async function saveDispatchWorkspaceRecord(
   await withFileLock(registryPath, async () => {
     const dir = path.dirname(registryPath);
     await fs.mkdir(dir, { recursive: true });
-    let workspaces = await loadRegistryFile(registryPath);
+
+    // Load raw workspace data without schema normalization
+    let { rawWorkspaces, wrapperObj } =
+      await extractRawWorkspaceArray(registryPath);
+
+    // Validate existing registry content to catch corruption early.
+    // This is a read-only check — the parsed result is not used for writing.
+    const registryCheck = DispatchWorkspaceRegistryFileSchema.safeParse(
+      normalizeLegacyRegistryRaw(
+        wrapperObj ? { ...wrapperObj, workspaces: rawWorkspaces } : { workspaces: rawWorkspaces },
+      ),
+    );
+    if (!registryCheck.success) {
+      throw new Error(formatRegistryValidationError(
+        wrapperObj ? { ...wrapperObj, workspaces: rawWorkspaces } : { workspaces: rawWorkspaces },
+      ));
+    }
 
     const cleanRecord = stripRuntimeMetadata(record);
-    const index = workspaces.findIndex(
-      (workspace) => workspace.workspace_id === cleanRecord.workspace_id,
-    );
-    if (index >= 0) {
-      workspaces[index] = cleanRecord;
+    const existingIndex = findRawWorkspaceIndex(rawWorkspaces, cleanRecord.workspace_id);
+    if (existingIndex >= 0) {
+      // Merge onto raw data to avoid adding Zod defaults for absent fields
+      const rawTarget = rawWorkspaces[existingIndex] as Record<string, unknown>;
+      rawWorkspaces[existingIndex] = mergeWorkspacePreservingRawShape(rawTarget, cleanRecord as unknown as Record<string, unknown>);
     } else {
-      workspaces.push(cleanRecord);
+      rawWorkspaces.push(cleanRecord);
     }
 
     // Purge closed records older than the retention threshold (ac-9)
     const now = Date.now();
-    workspaces = workspaces.filter(
-      (ws) => !isClosedBeyondRetention(ws, now, retentionMs),
+    rawWorkspaces = rawWorkspaces.filter(
+      (ws) => !isRawClosedBeyondRetention(ws, now, retentionMs),
     );
 
-    validateSingleOpenWorkspacePerTask(workspaces);
+    validateSingleOpenWorkspacePerTaskRaw(rawWorkspaces);
 
-    const registryFile: DispatchWorkspaceRegistryFile = {
-      kynetic_dispatch_workspaces: "1.0",
-      workspaces,
-    };
-    await writeYamlFilePreserveFormat(registryPath, registryFile);
+    await writeRawWorkspaceArray(registryPath, rawWorkspaces, wrapperObj);
   });
 }
 
+/**
+ * Atomically mutate a dispatch workspace record using the latest on-disk state.
+ *
+ * The callback receives the current record value while holding the registry file lock.
+ * Non-target workspaces are preserved as raw data (no schema parsing) to ensure
+ * round-trip stability.
+ */
 export async function mutateDispatchWorkspaceRecordAtomically(
   ctx: KspecContext,
   workspaceId: string,
@@ -271,34 +539,68 @@ export async function mutateDispatchWorkspaceRecordAtomically(
     const dir = path.dirname(registryPath);
     await fs.mkdir(dir, { recursive: true });
 
-    const workspaces = await loadRegistryFile(registryPath).catch(() => {
-      throw new Error(`Dispatch workspace registry not found: ${registryPath}`);
-    });
+    // Load raw workspace data without schema normalization for non-target workspaces
+    const { rawWorkspaces, wrapperObj } =
+      await extractRawWorkspaceArray(registryPath).catch(() => {
+        throw new Error(`Dispatch workspace registry not found: ${registryPath}`);
+      });
 
-    const index = workspaces.findIndex(
-      (workspace) => workspace.workspace_id === workspaceId,
+    if (rawWorkspaces.length === 0) {
+      throw new Error(`Dispatch workspace registry not found: ${registryPath}`);
+    }
+
+    // Validate existing registry content to catch corruption early.
+    // This ensures malformed sibling records are rejected before rewriting.
+    const registryCheck = DispatchWorkspaceRegistryFileSchema.safeParse(
+      normalizeLegacyRegistryRaw(
+        wrapperObj ? { ...wrapperObj, workspaces: rawWorkspaces } : { workspaces: rawWorkspaces },
+      ),
     );
-    if (index === -1) {
+    if (!registryCheck.success) {
+      throw new Error(formatRegistryValidationError(
+        wrapperObj ? { ...wrapperObj, workspaces: rawWorkspaces } : { workspaces: rawWorkspaces },
+      ));
+    }
+
+    const wsIndex = findRawWorkspaceIndex(rawWorkspaces, workspaceId);
+    if (wsIndex === -1) {
       throw new Error(`Dispatch workspace not found in registry: ${workspaceId}`);
     }
 
+    // Apply legacy normalization only to the target workspace, then schema-parse
+    const rawTarget = rawWorkspaces[wsIndex];
+    const normalizedTarget = normalizeLegacyWorkspaceRaw(rawTarget);
+    const parsed = DispatchWorkspaceRecordSchema.safeParse(normalizedTarget);
+    if (!parsed.success) {
+      throw new Error(`Invalid dispatch workspace data for ${workspaceId}: ${parsed.error.message}`);
+    }
     const latestRecord: LoadedDispatchWorkspaceRecord = {
-      ...workspaces[index],
+      ...parsed.data,
       _sourceFile: registryPath,
     };
 
-    const mutated = await mutate(latestRecord);
-    workspaces[index] = stripRuntimeMetadata(mutated);
-    validateSingleOpenWorkspacePerTask(workspaces);
+    // Snapshot the pre-mutation parsed record for detecting callback-set fields
+    const preMutationRecord = stripRuntimeMetadata(latestRecord);
 
-    const registryFile: DispatchWorkspaceRegistryFile = {
-      kynetic_dispatch_workspaces: "1.0",
-      workspaces,
-    };
-    await writeYamlFilePreserveFormat(registryPath, registryFile);
+    const mutated = await mutate(latestRecord);
+    const cleanMutated = stripRuntimeMetadata(mutated);
+
+    // Merge onto raw data to avoid adding Zod defaults for absent fields.
+    // Pass pre-mutation record so the merge can detect callback-added fields
+    // (fields that changed between pre-mutation and post-mutation are persisted
+    // even if they would otherwise be suppressed as trivial defaults).
+    rawWorkspaces[wsIndex] = mergeWorkspacePreservingRawShape(
+      rawTarget as Record<string, unknown>,
+      cleanMutated as unknown as Record<string, unknown>,
+      preMutationRecord as unknown as Record<string, unknown>,
+    );
+
+    validateSingleOpenWorkspacePerTaskRaw(rawWorkspaces);
+
+    await writeRawWorkspaceArray(registryPath, rawWorkspaces, wrapperObj);
 
     updatedRecord = {
-      ...workspaces[index],
+      ...cleanMutated,
       _sourceFile: registryPath,
     };
   });

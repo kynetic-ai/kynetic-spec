@@ -299,8 +299,11 @@ daemon:
       );
 
       // Run a CLI command that triggers maybeAutoStartDaemon()
-      // Using 'validate' since it doesn't require init and loads context
-      const result = kspec("validate", tempDir, { expectFail: true });
+      // Using 'validate' since it doesn't require init and loads context.
+      // AC: @multi-directory-daemon ac-32 - warning still emits even when incidental daemon traffic is suppressed.
+      const result = kspec("validate", tempDir, {
+        expectFail: true,
+      });
 
       // Should contain the deprecation warning in stderr
       expect(result.stderr).toContain('Manifest "daemon" block is deprecated');

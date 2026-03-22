@@ -9,7 +9,7 @@
  */
 
 /** Types of entities that can be referenced in the UI. */
-export type RefType = 'task' | 'spec' | 'plan' | 'session';
+export type RefType = 'task' | 'spec' | 'plan' | 'session' | 'review';
 
 /**
  * Strip the leading @ from a reference string if present.
@@ -53,5 +53,7 @@ export function refHref(type: RefType, ref: string, basePath = ''): string {
 			return `${basePath}/plans?ref=${encoded}`;
 		case 'session':
 			return `${basePath}/sessions/${normalizeRef(ref)}`;
+		case 'review':
+			return `${basePath}/reviews/${normalizeRef(ref)}`;
 	}
 }

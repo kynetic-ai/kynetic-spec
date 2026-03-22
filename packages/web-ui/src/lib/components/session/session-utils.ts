@@ -105,6 +105,59 @@ function truncate(str: string, max: number): string {
 	return str.slice(0, max) + '\u2026';
 }
 
+// ─── Shared field extraction helpers ────────────────────────────────────────
+// Mirrors src/agent-runtime/session-event-fields.ts for the web-ui context.
+// AC: @ws-session-event-streaming ac-unified-event-parsing
+
+/**
+ * Unwrap the SessionUpdate from a session.update event's data field.
+ * ACP format: data.sessionUpdate exists (data IS the update).
+ * Legacy format: data.update.sessionUpdate exists (data wraps the update).
+ */
+function unwrapSessionUpdate(
+	data: Record<string, unknown> | null | undefined,
+): Record<string, unknown> | undefined {
+	if (!data) return undefined;
+	if (data.sessionUpdate) return data;
+	const nested = data.update;
+	if (nested && typeof nested === 'object' && !Array.isArray(nested)) {
+		return nested as Record<string, unknown>;
+	}
+	return undefined;
+}
+
+/**
+ * Extract tool call identification and input fields from a SessionUpdate.
+ * Field resolution order matches session-event-fields.ts.
+ */
+function extractToolCallFields(update: Record<string, unknown>): {
+	toolCallId: string;
+	toolName: string;
+	rawInput: unknown;
+} {
+	const toolCallId = (update.toolCallId ?? update.tool_call_id ?? update.id ?? '') as string;
+	const toolName = (update.title ?? update.tool ?? update.toolName ?? update.name ?? 'unknown') as string;
+	const rawInput = update.rawInput ?? update.input;
+	return { toolCallId, toolName, rawInput };
+}
+
+/**
+ * Extract tool call result fields from a SessionUpdate.
+ * Field resolution order matches session-event-fields.ts.
+ */
+function extractToolCallResult(update: Record<string, unknown>): {
+	rawOutput: unknown;
+	status: string | undefined;
+	isError: boolean;
+	rawInput: unknown;
+} {
+	const rawOutput = update.rawOutput ?? update.output ?? update.content;
+	const status = update.status as string | undefined;
+	const isError = !!(update.error || update.isError);
+	const rawInput = update.rawInput;
+	return { rawOutput, status, isError, rawInput };
+}
+
 /**
  * Extract text content from an ACP SessionUpdate.
  *
@@ -167,13 +220,8 @@ export function parseEventsToBlocks(events: SessionEvent[]): DisplayBlock[] {
 			}
 
 			case 'session.update': {
-				// ACP format: data IS the SessionUpdate (data.sessionUpdate exists)
-				// Legacy format: data wraps the update (data.update.sessionUpdate)
-				const update = (
-					data.sessionUpdate
-						? data
-						: (data.update as Record<string, unknown> | undefined)
-				) as Record<string, unknown> | undefined;
+				// AC: @ws-session-event-streaming ac-unified-event-parsing
+				const update = unwrapSessionUpdate(data);
 				if (!update) break;
 
 				const sessionUpdate = update.sessionUpdate as string | undefined;
@@ -218,9 +266,7 @@ export function parseEventsToBlocks(events: SessionEvent[]): DisplayBlock[] {
 						}
 					}
 				} else if (sessionUpdate === 'tool_call') {
-					const toolCallId = (update.toolCallId ?? update.tool_call_id ?? update.id ?? '') as string;
-					const toolName = (update.title ?? update.tool ?? update.toolName ?? update.name ?? 'unknown') as string;
-					const rawInput = update.rawInput ?? update.input;
+					const { toolCallId, toolName, rawInput } = extractToolCallFields(update);
 
 					const block: ToolCallBlock = {
 						type: 'tool_call',
@@ -235,22 +281,20 @@ export function parseEventsToBlocks(events: SessionEvent[]): DisplayBlock[] {
 					toolCalls.set(toolCallId, block);
 					blocks.push(block);
 				} else if (sessionUpdate === 'tool_call_update' || sessionUpdate === 'tool_result') {
-					const toolCallId = (update.toolCallId ?? update.tool_call_id ?? update.id ?? '') as string;
+					const { toolCallId } = extractToolCallFields(update);
 					const existing = toolCalls.get(toolCallId);
 
 					if (existing) {
-						// ACP tool_call_update uses status + rawOutput; legacy uses output/error flags
-						const acpStatus = update.status as string | undefined;
-						const output = update.rawOutput ?? update.output ?? update.content;
-						if (output !== undefined) {
-							existing.output = output;
+						const result = extractToolCallResult(update);
+						if (result.rawOutput !== undefined) {
+							existing.output = result.rawOutput;
 							existing.resultSeq = event.seq;
 						}
-						if (acpStatus === 'completed' || acpStatus === 'failed') {
-							existing.status = acpStatus;
+						if (result.status === 'completed' || result.status === 'failed') {
+							existing.status = result.status;
 							existing.completedAt = event.ts;
 							existing.durationMs = event.ts - existing.startedAt;
-						} else if (update.error || update.isError) {
+						} else if (result.isError) {
 							existing.status = 'failed';
 							existing.completedAt = event.ts;
 							existing.durationMs = event.ts - existing.startedAt;
@@ -263,8 +307,8 @@ export function parseEventsToBlocks(events: SessionEvent[]): DisplayBlock[] {
 							existing.resultSeq = event.seq;
 						}
 						// Update rawInput if provided (ACP phased tool calls)
-						if (update.rawInput !== undefined) {
-							existing.input = update.rawInput;
+						if (result.rawInput !== undefined) {
+							existing.input = result.rawInput;
 						}
 					}
 				}
@@ -501,6 +545,22 @@ export function incrementalBlockUpdate(
 				startedAt: (data.timestamp as number) ?? Date.now(),
 				seq: -1,
 			});
+			break;
+		}
+
+		case 'tool_call_input': {
+			// AC: @ws-session-event-streaming ac-tool-input-update — update input in-place from phased event
+			const toolCallId = (data.tool_call_id as string) ?? '';
+			const idx = result.findLastIndex(
+				(b) => b.type === 'tool_call' && b.toolCallId === toolCallId
+			);
+			if (idx !== -1) {
+				const existing = result[idx] as ToolCallBlock;
+				result[idx] = {
+					...existing,
+					input: data.tool_input,
+				};
+			}
 			break;
 		}
 

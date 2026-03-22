@@ -25,7 +25,6 @@ import { Elysia, t } from 'elysia';
 import { ulid } from 'ulidx';
 import {
   initContext,
-  loadAllTasks,
   loadAllItems,
   ReferenceIndex,
   loadTriageRecords,
@@ -35,15 +34,17 @@ import {
   loadInboxItems,
   findInboxItemByRef,
   getAuthor,
+  resolveTaskDataManager,
   type LoadedTriageRecord,
 } from '../../parser/index.js';
 import { resolveRefEntries } from './ref-resolution.js';
 import { commitIfShadow } from '../../parser/shadow.js';
-import { normalizeRefInput } from '../../schema/index.js';
+import { normalizeRefInput, TriageActionSchema, TriageStatusSchema } from '../../schema/index.js';
 import type { TriageAction } from '../../schema/index.js';
 import { exportTriageRecords } from '../../export/triage.js';
 import { executeTriageAction, VALID_ACTIONS } from '../../triage/index.js';
 import type { PubSubManager } from '../websocket/pubsub';
+import { enumArrayUnion, enumUnion } from './enum-utils.js';
 
 interface TriageRouteOptions {
   pubsub: PubSubManager;
@@ -96,7 +97,7 @@ export function createTriageRoutes(options: TriageRouteOptions) {
         let refIndex: ReferenceIndex | null = null;
         if (hasEvidenceRefs) {
           try {
-            const tasks = await loadAllTasks(ctx);
+            const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
             const items = await loadAllItems(ctx);
             refIndex = new ReferenceIndex(tasks, items);
           } catch {
@@ -119,8 +120,8 @@ export function createTriageRoutes(options: TriageRouteOptions) {
       },
       {
         query: t.Object({
-          status: t.Optional(t.Union([t.String(), t.Array(t.String())])),
-          action: t.Optional(t.Union([t.String(), t.Array(t.String())])),
+          status: t.Optional(enumArrayUnion(TriageStatusSchema.options)),
+          action: t.Optional(enumArrayUnion(TriageActionSchema.options)),
           limit: t.Optional(t.String()),
           offset: t.Optional(t.String()),
         }),
@@ -151,7 +152,7 @@ export function createTriageRoutes(options: TriageRouteOptions) {
       {
         query: t.Object({
           format: t.Optional(t.String()),
-          status: t.Optional(t.Union([t.String(), t.Array(t.String())])),
+          status: t.Optional(enumArrayUnion(TriageStatusSchema.options)),
         }),
       }
     )
@@ -237,7 +238,7 @@ export function createTriageRoutes(options: TriageRouteOptions) {
       {
         body: t.Object({
           inbox_ref: t.String(),
-          action: t.String(),
+          action: enumUnion(TriageActionSchema.options),
           reasoning: t.String(),
           decided_by: t.Optional(t.String()),
           evidence_refs: t.Optional(t.Array(t.String())),
@@ -267,7 +268,7 @@ export function createTriageRoutes(options: TriageRouteOptions) {
         // AC: @ui-api-ref-resolution ac-2 - Resolve evidence_refs
         if (record.evidence_refs?.length > 0) {
           try {
-            const tasks = await loadAllTasks(ctx);
+            const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
             const items = await loadAllItems(ctx);
             const refIndex = new ReferenceIndex(tasks, items);
             return {
@@ -359,7 +360,7 @@ export function createTriageRoutes(options: TriageRouteOptions) {
           ref: t.String(),
         }),
         body: t.Object({
-          action: t.String(),
+          action: enumUnion(TriageActionSchema.options),
           reasoning: t.String(),
           override_by: t.Optional(t.String()),
         }),

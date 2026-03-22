@@ -32,6 +32,12 @@ import {
 import {
   sessionBranchAutoCommit,
 } from "../parser/session-branch.js";
+import {
+  unwrapSessionUpdate,
+  extractToolCallFields,
+  extractToolName,
+  isPopulatedInput,
+} from "../agent-runtime/session-event-fields.js";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -1201,14 +1207,11 @@ export function deduplicatePhasedToolCalls(
   for (let i = 0; i < events.length; i++) {
     const event = events[i];
     if (event.type !== "session.update") continue;
-    const data = event.data as { update?: { sessionUpdate?: string; toolCallId?: string; tool_call_id?: string; id?: string; rawInput?: Record<string, unknown> } } | null;
-    const update = data?.update;
-    if (update?.sessionUpdate !== "tool_call") continue;
-    const toolCallId = update.toolCallId || update.tool_call_id || update.id;
+    const update = unwrapSessionUpdate(event.data as Record<string, unknown> | null);
+    if (!update || update.sessionUpdate !== "tool_call") continue;
+    const { toolCallId, rawInput } = extractToolCallFields(update);
     if (!toolCallId) continue;
-    const rawInput = update.rawInput;
-    const hasContent = rawInput && Object.keys(rawInput).length > 0;
-    if (hasContent) {
+    if (isPopulatedInput(rawInput)) {
       populatedToolCalls.set(toolCallId, i);
     } else if (!populatedToolCalls.has(toolCallId)) {
       // First (empty) version - track it in case no populated version exists
@@ -1219,10 +1222,9 @@ export function deduplicatePhasedToolCalls(
   // Second pass: keep only the best version per toolCallId
   return events.filter((event, i) => {
     if (event.type !== "session.update") return true;
-    const data = event.data as { update?: { sessionUpdate?: string; toolCallId?: string; tool_call_id?: string; id?: string; rawInput?: Record<string, unknown> } } | null;
-    const update = data?.update;
-    if (update?.sessionUpdate !== "tool_call") return true;
-    const toolCallId = update.toolCallId || update.tool_call_id || update.id;
+    const update = unwrapSessionUpdate(event.data as Record<string, unknown> | null);
+    if (!update || update.sessionUpdate !== "tool_call") return true;
+    const { toolCallId } = extractToolCallFields(update);
     if (!toolCallId) return true;
     // Keep this event only if it's the best version (populated or only version)
     return populatedToolCalls.get(toolCallId) === i;
@@ -1747,7 +1749,7 @@ export async function applyAutoAbandonMetadata(
 /**
  * Determine session type from metadata for display.
  * - "invocation": New agent runtime session (has trigger != "legacy" or agent_id)
- * - "loop": Legacy ralph loop session (no trigger, or trigger === "legacy")
+ * - "loop": Legacy dispatch loop session (no trigger, or trigger === "legacy")
  *
  * AC: @session-model-evolution ac-6
  */
@@ -1771,7 +1773,8 @@ export interface SessionLogSummary {
   /** Agent definition ID (e.g. worker, pr-reviewer). AC: @session-list-pagination-api ac-filter-agent-id */
   agent_id?: string;
   /**
-   * Session type: "loop" for legacy ralph sessions, "invocation" for new agent runtime.
+   * Session type: "loop" for legacy agent sessions, "invocation" for the
+   * current runtime.
    * AC: @session-model-evolution ac-6
    */
   session_type: "loop" | "invocation";
@@ -1857,7 +1860,8 @@ async function countTaskCompletions(
       if (!line.includes("task complete")) continue;
       try {
         const event = JSON.parse(line);
-        const rawCommand = event?.data?.update?.rawInput?.command;
+        const update = unwrapSessionUpdate(event?.data);
+        const rawCommand = (update?.rawInput as Record<string, unknown> | undefined)?.command;
         // Normalize: string (claude-*-acp) or array like [bash, -lc, cmd] (codex-acp)
         const command =
           typeof rawCommand === "string"
@@ -2100,7 +2104,8 @@ export interface SessionLogDetail {
   status: SessionStatus;
   agent_type: string;
   /**
-   * Session type: "loop" for legacy ralph sessions, "invocation" for new agent runtime.
+   * Session type: "loop" for legacy agent sessions, "invocation" for the
+   * current runtime.
    * AC: @session-model-evolution ac-6
    */
   session_type: "loop" | "invocation";
@@ -2150,7 +2155,7 @@ function extractTaskRef(command: string): string | null {
 
 /**
  * Iteration boundary: a prompt.sent event with phase "task-work" that marks
- * the start of a new iteration in a ralph session.
+ * the start of a new iteration in a legacy loop session.
  */
 interface IterationBoundary {
   /** Array index in the events list */
@@ -2162,7 +2167,8 @@ interface IterationBoundary {
 /**
  * Find iteration boundaries from prompt.sent events with phase "task-work".
  *
- * Ralph emits these synchronously at the start of each iteration, so their
+ * The dispatch runtime emits these synchronously at the start of each
+ * iteration, so their
  * array positions are reliable even when concurrent fire-and-forget events
  * produce duplicate seq numbers.
  *
@@ -2216,13 +2222,8 @@ function extractTaskTransitions(events: SessionEvent[]): {
 
   for (const event of events) {
     if (event.type === "session.update") {
-      const data = event.data as {
-        update?: {
-          sessionUpdate?: string;
-          rawInput?: { command?: string | string[] };
-        };
-      } | null;
-      const rawCommand = data?.update?.rawInput?.command;
+      const update = unwrapSessionUpdate(event.data as Record<string, unknown> | null);
+      const rawCommand = (update?.rawInput as Record<string, unknown> | undefined)?.command as string | string[] | undefined;
       // Normalize: string (claude-*-acp) or array like [bash, -lc, cmd] (codex-acp)
       const command =
         typeof rawCommand === "string"
@@ -2249,7 +2250,7 @@ function extractTaskTransitions(events: SessionEvent[]): {
  * Legacy iteration grouping: groups events by their data.iteration field.
  *
  * Used as fallback for sessions that don't have prompt.sent boundary events
- * with phase "task-work" (pre-boundary sessions or non-ralph sessions).
+ * with phase "task-work" (pre-boundary sessions or non-loop sessions).
  *
  * AC: @session-log-show ac-2
  */
@@ -2612,13 +2613,13 @@ export async function computeToolUsageStats(
         try {
           const event = JSON.parse(line);
           if (event?.type === "session.update") {
-            const update = event?.data?.update;
+            const update = unwrapSessionUpdate(event?.data);
             if (update?.sessionUpdate === "tool_call") {
               // Deduplicate phased tool_call events by toolCallId
-              const toolCallId = update?.toolCallId || update?.tool_call_id || update?.id;
+              const { toolCallId } = extractToolCallFields(update);
               if (toolCallId && seenToolCallIds.has(toolCallId)) continue;
               if (toolCallId) seenToolCallIds.add(toolCallId);
-              const toolName = update?._meta?.claudeCode?.toolName || "unknown";
+              const toolName = extractToolName(update);
               toolCounts[toolName] = (toolCounts[toolName] || 0) + 1;
               totalToolCalls++;
             }
@@ -2914,9 +2915,9 @@ export async function searchSessionEvents(
 
         // Deduplicate phased tool_call events
         if (event?.type === "session.update") {
-          const update = event?.data?.update;
+          const update = unwrapSessionUpdate(event?.data);
           if (update?.sessionUpdate === "tool_call") {
-            const toolCallId = update?.toolCallId || update?.tool_call_id || update?.id;
+            const { toolCallId } = extractToolCallFields(update);
             if (toolCallId) {
               if (seenToolCallIds.has(toolCallId)) continue;
               seenToolCallIds.add(toolCallId);
@@ -3420,7 +3421,8 @@ export function getFallbackInjectionInstructions(
 /**
  * Inject KSPEC_SESSION_ID via the appropriate mechanism for the given adapter.
  *
- * Ralph passes env vars to spawned agents via process environment, but some
+ * The legacy runtime passed env vars to spawned agents via process
+ * environment, but some
  * harnesses (Claude Code, Codex, etc.) sandbox child processes and don't
  * forward arbitrary parent env vars. This function writes the session ID to
  * the harness-specific config location so it reaches kspec subprocesses.
@@ -3683,8 +3685,8 @@ export async function incrementBudget(
 /**
  * Reset the budget counter to 0 for a new cycle/iteration.
  *
- * Called by ralph at iteration boundaries. Single-writer guarantee:
- * ralph only resets between iterations when the agent is not running.
+ * Called by the dispatch loop at iteration boundaries. Single-writer guarantee:
+ * the loop only resets between iterations when the agent is not running.
  *
  * AC: @task-budget-enforcement ac-reset
  * AC: @task-budget-enforcement ac-atomic-write

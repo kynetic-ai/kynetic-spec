@@ -77,6 +77,7 @@ When running as an automated reviewer agent:
 
 - **Do NOT fix code** — post findings as review threads, transition to needs_work
 - **Do NOT push commits** — the worker handles fixes
+- **DO resolve simple merge conflicts** — textual conflicts from parallel additive edits are merge mechanics, not code fixes. Read both sides, include both, complete the merge. Only escalate semantic conflicts (see `$kspec-merge` conflict handling).
 - Verdicts auto-close the review — no manual close needed after approve/request_changes
 - Each fix cycle gets a **new** review record — do not reopen prior reviews
 - After merge, complete the task: `kspec task complete @ref --reason "Merged. Summary..."`

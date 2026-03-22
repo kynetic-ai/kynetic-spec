@@ -73,6 +73,44 @@ export const queryKeys = {
 			[...queryKeys.sessions.all, 'eventDetail', id, seq] as const,
 	},
 
+	reviews: {
+		all: ['reviews'] as const,
+		lists: () => [...queryKeys.reviews.all, 'list'] as const,
+		list: (filters?: Record<string, unknown>) =>
+			[...queryKeys.reviews.lists(), filters] as const,
+		forTask: (taskRef: string) =>
+			[...queryKeys.reviews.all, 'forTask', taskRef] as const,
+		detail: (ref: string) => [...queryKeys.reviews.all, 'detail', ref] as const,
+		content: (ref: string) => [...queryKeys.reviews.all, 'content', ref] as const,
+		siblings: (filters: {
+			subject_type: string;
+			subject_ref?: string;
+			head_branch?: string;
+		}) => [...queryKeys.reviews.all, 'siblings', filters] as const,
+	},
+
+	diff: {
+		all: ['diff'] as const,
+		full: (base: string, head: string) =>
+			[...queryKeys.diff.all, 'full', base, head] as const,
+		file: (base: string, head: string, path: string) =>
+			[...queryKeys.diff.all, 'file', base, head, path] as const,
+		context: (base: string, head: string, path: string, start: number, end: number) =>
+			[...queryKeys.diff.all, 'context', base, head, path, start, end] as const,
+	},
+
+	automation: {
+		all: ['automation'] as const,
+		hooks: () => [...queryKeys.automation.all, 'hooks'] as const,
+		schedules: () => [...queryKeys.automation.all, 'schedules'] as const,
+		scheduleStatus: (id: string) => [...queryKeys.automation.all, 'scheduleStatus', id] as const,
+		events: (filters?: Record<string, unknown>) =>
+			[...queryKeys.automation.all, 'events', filters] as const,
+		compositionConfigs: () => [...queryKeys.automation.all, 'compositionConfigs'] as const,
+		compositionActivations: (configId: string) =>
+			[...queryKeys.automation.all, 'compositionActivations', configId] as const,
+	},
+
 	plans: {
 		all: ['plans'] as const,
 		lists: () => [...queryKeys.plans.all, 'list'] as const,

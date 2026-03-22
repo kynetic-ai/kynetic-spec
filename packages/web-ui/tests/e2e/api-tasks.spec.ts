@@ -281,6 +281,26 @@ test.describe('Tasks API', () => {
       expect(task.title).toBe(firstTask.title);
     });
 
+    // AC: @review-records-web-ui ac-7 - review_ref exposed in task detail
+    test('returns review_ref for task with linked review', async ({ request, daemon }) => {
+      const response = await request.get(`${daemon.baseUrl}/api/tasks/@test-task-pending-review`);
+      expect(response.status()).toBe(200);
+
+      const task = await response.json();
+      expect(task).toHaveProperty('review_ref');
+      expect(task.review_ref).toBe('@test-review-open');
+    });
+
+    // AC: @review-records-web-ui ac-7 - review_ref null for task without review
+    test('returns null review_ref for task without linked review', async ({ request, daemon }) => {
+      const response = await request.get(`${daemon.baseUrl}/api/tasks/@test-task-ready`);
+      expect(response.status()).toBe(200);
+
+      const task = await response.json();
+      expect(task).toHaveProperty('review_ref');
+      expect(task.review_ref).toBeNull();
+    });
+
     // AC: @api-contract ac-5 (error handling) - 404 for invalid ref
     test('returns 404 for non-existent task ref', async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/tasks/@nonexistent-task-xyz`);

@@ -15,7 +15,7 @@
  * AC: @enhanced-setup ac-6 - --dry-run displays planned actions without changes
  * AC: @enhanced-setup ac-7 - --status reports current state including agent detected
  * AC: @enhanced-setup ac-8 - --status shows hooks status, skills rendered count, agents.md freshness
- * AC: @enhanced-setup ac-9 - skills referenced by ralph (task-work, reflect) are present
+ * AC: @enhanced-setup ac-9 - skills referenced by built-in agent workflows (task-work, reflect) are present
  */
 
 import * as fs from "node:fs/promises";
@@ -33,8 +33,11 @@ import {
   SHADOW_BRANCH_NAME,
   SHADOW_WORKTREE_DIR,
   SESSIONS_WORKTREE_DIR,
+  TRANSIENT_PLANS_DIR,
+  ensurePlansGitignore,
   ensureSessionsGitignore,
   ensureShadowSessionsGitignore,
+  needsPlansGitignore,
   needsSessionsGitignore,
   needsShadowSessionsGitignore,
   type ShadowOptions,
@@ -47,6 +50,11 @@ import {
 import {
   getSetupStatus as getSharedSetupStatus,
 } from "../../parser/setup-status.js";
+import {
+  type ClaudeHookEntry,
+  KSPEC_STOP_HOOK_COMMAND,
+  isKspecManagedStopHookEntry,
+} from "../../lib/claude-hooks.js";
 import { errors } from "../../strings/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, output, success, warn } from "../output.js";
@@ -336,12 +344,11 @@ async function installClaudeCodeHooks(
     // AC: @project-config ac-hooks-section — checkpoint independently controllable
     // Default: disabled (dispatch handles task lifecycle)
     const checkpointEnabled = hooksPrefs?.checkpoint ?? false;
-    const stopHookCommand = "kspec session checkpoint --json";
     const existingStopHooks = hooks.Stop as
-      | Array<{ matcher?: string; hooks?: Array<{ command?: string }> }>
+      | ClaudeHookEntry[]
       | undefined;
-    const stopAlreadyInstalled = existingStopHooks?.some((entry) =>
-      entry.hooks?.some((hook) => hook.command?.includes("session checkpoint")),
+    const stopAlreadyInstalled = existingStopHooks?.some(
+      isKspecManagedStopHookEntry,
     );
 
     if (checkpointEnabled) {
@@ -354,7 +361,7 @@ async function installClaudeCodeHooks(
             hooks: [
               {
                 type: "command",
-                command: stopHookCommand,
+                command: KSPEC_STOP_HOOK_COMMAND,
               },
             ],
           },
@@ -366,12 +373,9 @@ async function installClaudeCodeHooks(
     } else {
       // AC: @project-config ac-hooks-section — remove if disabled and previously installed
       if (stopAlreadyInstalled) {
-        const filtered = (existingStopHooks || []).map((entry) => ({
-          ...entry,
-          hooks: entry.hooks?.filter(
-            (hook) => !hook.command?.includes("session checkpoint"),
-          ),
-        })).filter((entry) => entry.hooks && entry.hooks.length > 0);
+        const filtered = (existingStopHooks || []).filter(
+          (entry) => !isKspecManagedStopHookEntry(entry),
+        );
         if (filtered.length > 0) {
           hooks.Stop = filtered;
         } else {
@@ -882,10 +886,12 @@ function getHookInstallSkipMessage(agentType: AgentType): string {
  * Ensure built-in worker and reviewer agent definitions exist in the project meta.
  *
  * Creates task-worker and pr-reviewer agents with dispatch rules that match
- * ralph's behavior. Skips creation if agents already exist (idempotent).
+ * the prior built-in automation behavior. Skips creation if agents already
+ * exist (idempotent).
  *
  * AC: @ralph-replacement ac-2 — built-in worker and reviewer agent definitions
- * created in kynetic.meta.yaml with default dispatch rules matching ralph's behavior
+ * created in kynetic.meta.yaml with default dispatch rules matching the prior
+ * built-in automation behavior
  */
 async function ensureBuiltInAgents(
   projectDir: string,
@@ -909,7 +915,7 @@ async function ensureBuiltInAgents(
     const meta = await loadMetaContext(ctx);
     const existingIds = new Set((meta.agents || []).map((a) => a.id));
 
-    // Built-in agent definitions — match ralph's dispatch behavior
+    // Built-in agent definitions — preserve the prior built-in dispatch behavior
     const builtInAgents = [
       {
         id: "task-worker",
@@ -1018,7 +1024,6 @@ async function generateAgentInstructions(
 
     // Generate content using the canonical implementation from agents.ts
     const content = await generateAgentsContent(
-      metaCtx.skills,
       metaCtx.conventions,
       metaCtx.workflows,
       timestamp,
@@ -1028,7 +1033,6 @@ async function generateAgentInstructions(
     if (!dryRun) {
       // Compute meta hash for freshness tracking
       const metaHash = computeMetaHash(
-        metaCtx.skills,
         metaCtx.conventions,
         metaCtx.workflows,
         templateSections,
@@ -1182,7 +1186,8 @@ async function installCoreSkillsForSetup(
       await commitIfShadow(
         ctx2.shadow,
         "skill-install-core",
-        `${installed} core skills`
+        undefined,
+        `${installed} core skills`,
       );
     }
 
@@ -1383,6 +1388,19 @@ export async function runSetupPipeline(
         const rootAdded = await ensureSessionsGitignore(projectDir);
         if (rootAdded) {
           actions.push(`added ${SESSIONS_WORKTREE_DIR}/ to .gitignore`);
+        }
+      }
+
+      // Add plans/ to root .gitignore
+      if (dryRun) {
+        const plansNeeded = await needsPlansGitignore(projectDir);
+        if (plansNeeded) {
+          actions.push(`add ${TRANSIENT_PLANS_DIR}/ to .gitignore`);
+        }
+      } else {
+        const plansAdded = await ensurePlansGitignore(projectDir);
+        if (plansAdded) {
+          actions.push(`added ${TRANSIENT_PLANS_DIR}/ to .gitignore`);
         }
       }
 

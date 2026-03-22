@@ -30,7 +30,9 @@ import type {
   LoadedObservation,
   LoadedConvention,
 } from '../../parser/meta.js';
+import { ItemTypeSchema, TaskStatusSchema } from '../../schema/common.js';
 import { grepItem } from '../../utils/grep.js';
+import { enumUnion } from './enum-utils.js';
 
 interface ValidationRouteOptions {}
 
@@ -194,8 +196,8 @@ export function createValidationRoutes(options: ValidationRouteOptions = {}) {
       {
         query: t.Object({
           q: t.Optional(t.String()),
-          type: t.Optional(t.String()),
-          status: t.Optional(t.String()),
+          type: t.Optional(enumUnion(ItemTypeSchema.options)),
+          status: t.Optional(enumUnion(TaskStatusSchema.options)),
           itemsOnly: t.Optional(t.String()),
           tasksOnly: t.Optional(t.String()),
           limit: t.Optional(t.String()),

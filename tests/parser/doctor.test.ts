@@ -368,7 +368,7 @@ describe("Doctor Command", () => {
       await initializeShadow(tempDir, { projectName: "test-project" });
 
       // Mock daemon as not running to isolate from host environment
-      // (flaky when real daemon is running, e.g. during ralph loop sessions)
+      // (flaky when real daemon is running, e.g. during dispatch sessions)
       const daemonStatusModule = await import("../../src/parser/daemon-status.js");
       vi.spyOn(daemonStatusModule, "getDaemonStatus").mockResolvedValue({
         running: false,

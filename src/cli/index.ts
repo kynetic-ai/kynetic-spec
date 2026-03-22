@@ -21,9 +21,11 @@ import {
   registerCloneForTestingCommand,
   registerDeriveCommand,
   registerDoctorCommand,
+  registerEventCommands,
   registerExportCommand,
   registerGuardCommand,
   registerHelpCommand,
+  registerHookCommands,
   registerInboxCommands,
   registerInitCommand,
   registerItemCommands,
@@ -34,9 +36,9 @@ import {
   registerMetaCommands,
   registerModuleCommands,
   registerPlanCommands,
-  registerRalphCommand,
   registerRefsCommand,
   registerReviewCommands,
+  registerScheduleCommands,
   registerSearchCommand,
   registerServeCommands,
   registerSessionCommands,
@@ -63,7 +65,7 @@ import {
   findClosestCommand,
   getAllCommands,
 } from "./suggest.js";
-import { PidFileManager } from "./pid-utils.js";
+import { isNoDaemonModeEnabled, PidFileManager } from "./pid-utils.js";
 import { getAlwaysSyncAnnotation, getMutatingAnnotation } from "./command-annotations.js";
 import { setSyncMode, clearSyncMode } from "./sync-mode.js";
 import { spawn } from "child_process";
@@ -102,7 +104,7 @@ async function maybeAcquireDispatchMutationLock(isMutating: boolean): Promise<vo
   const timeoutMs =
     timeoutRaw && Number.isFinite(Number(timeoutRaw))
       ? Number(timeoutRaw)
-      : undefined;
+      : 0;
 
   try {
     heldMutationLockRelease = await acquireFileLock(lockFile, timeoutMs);
@@ -157,6 +159,11 @@ async function maybeAutoStartDaemon(): Promise<void> {
       return;
     }
 
+    // AC: @multi-directory-daemon ac-32
+    if (isNoDaemonModeEnabled()) {
+      return;
+    }
+
     // AC: @config-daemon ac-1 — port from config (defaults to 3456)
     const port = daemonConfig.port;
 
@@ -193,6 +200,37 @@ async function maybeAutoStartDaemon(): Promise<void> {
   } catch {
     // Errors during auto-start are non-fatal - continue with command
   }
+}
+
+function showRemovedRalphCommandError(): never {
+  const header = chalk.red("✗ kspec ralph has been replaced by kspec agent");
+  const msg = [
+    chalk.red("error: unknown command 'ralph'"),
+    "",
+    header,
+    "",
+    chalk.bold("kspec ralph has been removed.") +
+      " Use " +
+      chalk.cyan("kspec agent") +
+      " for equivalent functionality.",
+    "",
+    chalk.bold("Equivalent commands:"),
+    `  ${chalk.yellow("kspec ralph run")}      → ${chalk.cyan("kspec agent dispatch start")}`,
+    `  ${chalk.yellow("kspec ralph --dry-run")} → ${chalk.cyan("kspec agent dispatch start --dry-run")}`,
+    `  ${chalk.yellow("kspec ralph end-loop")} → ${chalk.cyan("kspec agent end-loop")}`,
+    "",
+    chalk.bold("Getting started:"),
+    `  List configured agents:  ${chalk.cyan("kspec agent list")}`,
+    `  Run a specific agent:    ${chalk.cyan("kspec agent run <agent-id>")}`,
+    `  Start dispatch engine:   ${chalk.cyan("kspec agent dispatch start")}`,
+    `  Check dispatch status:   ${chalk.cyan("kspec agent dispatch status")}`,
+    "",
+    `Run ${chalk.cyan("kspec setup")} to create built-in worker and reviewer agent definitions.`,
+    `Run ${chalk.cyan("kspec agent --help")} for full documentation.`,
+  ].join("\n");
+
+  process.stderr.write(msg + "\n");
+  process.exit(EXIT_CODES.ERROR);
 }
 
 program
@@ -308,7 +346,6 @@ registerLogCommand(program);
 registerSearchCommand(program);
 registerRefsCommand(program);
 registerServeCommands(program);
-registerRalphCommand(program);
 registerMetaCommands(program);
 registerLinkCommands(program);
 registerModuleCommands(program);
@@ -319,15 +356,22 @@ registerWorkflowCommand(program);
 registerMergeDriverCommand(program);
 registerExportCommand(program);
 registerGuardCommand(program);
+registerHookCommands(program);
+registerEventCommands(program);
 registerUtilCommands(program);
 registerBatchCommand(program);
 registerSkillCommands(program);
+registerScheduleCommands(program);
 registerAgentsCommands(program);
 registerAgentCommands(program);
 
 // Handle unknown commands with suggestions
 program.on("command:*", (operands) => {
   const unknownCommand = operands[0];
+
+  if (unknownCommand === "ralph") {
+    showRemovedRalphCommandError();
+  }
 
   // Check for direct alias match
   if (COMMAND_ALIASES[unknownCommand]) {

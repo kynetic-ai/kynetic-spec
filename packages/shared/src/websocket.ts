@@ -157,6 +157,14 @@ export interface ToolCallStartEventData extends SessionEventBase {
   tool_input: unknown;
 }
 
+/** Tool call input updated (phased streaming: populated input arrives after registration). */
+export interface ToolCallInputEventData extends SessionEventBase {
+  type: 'tool_call_input';
+  tool_call_id: string;
+  tool_name: string;
+  tool_input: unknown;
+}
+
 /** Tool call finished. Includes status and duration; output excluded. */
 export interface ToolCallCompleteEventData extends SessionEventBase {
   type: 'tool_call_complete';
@@ -175,10 +183,79 @@ export type SessionEventData =
   | ThinkingProgressEventData
   | ThinkingCompleteEventData
   | ToolCallStartEventData
+  | ToolCallInputEventData
   | ToolCallCompleteEventData;
 
 /** All possible `event` field values for session events on the 'agents' topic. */
 export type SessionEventType = SessionEventData['type'];
+
+// ─── Review Event Data Payloads ──────────────────────────────────────────────
+// AC: @review-records-daemon-api ac-9
+
+/** Data payload for thread_created broadcast events on reviews:updates topic. */
+export interface ReviewThreadCreatedEventData {
+  review_ulid: string;
+  thread_ulid: string;
+  kind: string;
+  author: string;
+}
+
+/** Data payload for thread_replied broadcast events on reviews:updates topic. */
+export interface ReviewThreadRepliedEventData {
+  review_ulid: string;
+  thread_ulid: string;
+  entry_ulid: string;
+  author: string;
+}
+
+/** Data payload for thread_resolved broadcast events on reviews:updates topic. */
+export interface ReviewThreadResolvedEventData {
+  review_ulid: string;
+  thread_ulid: string;
+  actor: string;
+}
+
+/** Data payload for thread_reopened broadcast events on reviews:updates topic. */
+export interface ReviewThreadReopenedEventData {
+  review_ulid: string;
+  thread_ulid: string;
+  actor: string;
+}
+
+/** Data payload for verdict_submitted broadcast events on reviews:updates topic. */
+export interface ReviewVerdictSubmittedEventData {
+  review_ulid: string;
+  decision: string;
+  reviewer: string;
+  lifecycle_state: string;
+  disposition: string;
+}
+
+/** Data payload for check_added broadcast events on reviews:updates topic. */
+export interface ReviewCheckAddedEventData {
+  review_ulid: string;
+  check_name: string;
+  check_status: string;
+  gate_state: string;
+}
+
+/** Data payload for lifecycle_changed broadcast events on reviews:updates topic. */
+export interface ReviewLifecycleChangedEventData {
+  review_ulid: string;
+  from: string;
+  to: string;
+  actor: string;
+}
+
+/** Union of all review event payloads for the reviews:updates topic. */
+export type ReviewEventData =
+  | ReviewThreadCreatedEventData
+  | ReviewThreadRepliedEventData
+  | ReviewThreadResolvedEventData
+  | ReviewThreadReopenedEventData
+  | ReviewVerdictSubmittedEventData
+  | ReviewCheckAddedEventData
+  | ReviewLifecycleChangedEventData;
 
 /**
  * Union of all possible WebSocket messages from server

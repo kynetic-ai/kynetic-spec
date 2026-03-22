@@ -19,6 +19,7 @@ export interface WatcherOptions {
   kspecDir: string;
   onFileChange: (file: string, content: string) => void;
   onError: (error: Error, file?: string) => void;
+  onPermanentFailure?: (kspecDir: string) => void | Promise<void>;
 }
 
 export interface WatcherEvent {
@@ -186,6 +187,7 @@ export class KspecWatcher {
       if (nodeError.code === 'ENOENT' && !existsSync(this.options.kspecDir)) {
         console.warn('[watcher] Watched .kspec directory no longer exists after recovery attempts; stopping watcher');
         await this.stop();
+        await this.options.onPermanentFailure?.(this.options.kspecDir);
         return;
       }
       console.error('[watcher] Max retries reached, giving up');

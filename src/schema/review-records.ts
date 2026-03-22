@@ -97,10 +97,14 @@ export const ReviewSubjectVersionSchema = z.discriminatedUnion("type", [
 
 // --- Anchors ---
 
+export const ReviewAnchorTypeSchema = z.enum(["code", "structured"]);
+
+export const ReviewCodeAnchorSideSchema = z.enum(["base", "head"]);
+
 export const ReviewCodeAnchorSchema = z.object({
   type: z.literal("code"),
   path: z.string(),
-  side: z.enum(["base", "head"]),
+  side: ReviewCodeAnchorSideSchema,
   line_start: z.number().int().positive(),
   line_end: z.number().int().positive(),
   commit: z.string(),

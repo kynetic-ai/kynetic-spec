@@ -49,7 +49,8 @@ describe("Integration: review CLI commands", () => {
       expect(result.subject.ref).toBe("@task-slug");
       expect(result.author).toBeDefined();
       expect(result.disposition).toBe("pending");
-      expect(result.gate_state).toBe("pending");
+      // No required checks → gate is trivially passing (vacuous truth, aligns with shared evaluateGates)
+      expect(result.gate_state).toBe("passing");
     });
 
     // AC: @review-cli-creation-and-query ac-2
@@ -65,6 +66,22 @@ describe("Integration: review CLI commands", () => {
       expect(result.subject.type).toBe("code");
       expect(result.subject.base_commit).toBe("abc123");
       expect(result.subject.head_commit).toBe("def456");
+    });
+
+    // AC: @review-cli-creation-and-query ac-ref-subject-remains-ref-subject
+    // AC: @review-cli-creation-and-query ac-version-context-does-not-change-subject
+    it("should keep a ref-backed subject when review context is provided separately", () => {
+      const result = kspecJson<{
+        subject: { type: string; ref: string };
+        examined_commit: string | null;
+      }>(
+        "review add --title 'Task Review With Context' --subject-ref @task-slug --subject-type task --examined-commit abc123def456",
+        tempDir,
+      );
+
+      expect(result.subject.type).toBe("task");
+      expect(result.subject.ref).toBe("@task-slug");
+      expect(result.examined_commit).toBe("abc123def456");
     });
 
     // AC: @review-cli-creation-and-query ac-2
@@ -85,6 +102,20 @@ describe("Integration: review CLI commands", () => {
       expect(result.subject.merge_base_commit).toBe("000aaa");
       expect(result.subject.base_branch).toBe("main");
       expect(result.subject.head_branch).toBe("feat/test");
+    });
+
+    // AC: @review-cli-creation-and-query ac-code-subject-created-only-when-requested
+    it("should create a code subject when code comparison inputs are the selected subject", () => {
+      const result = kspecJson<{
+        subject: { type: string; base_commit: string; head_commit: string };
+      }>(
+        "review add --title 'Explicit Code Review' --subject-type code --base abc123 --head def456",
+        tempDir,
+      );
+
+      expect(result.subject.type).toBe("code");
+      expect(result.subject.base_commit).toBe("abc123");
+      expect(result.subject.head_commit).toBe("def456");
     });
 
     // AC: @review-cli-creation-and-query ac-5
@@ -173,6 +204,31 @@ describe("Integration: review CLI commands", () => {
       expect(result.exitCode).not.toBe(0);
       expect(result.stderr).toContain("--base and --head");
     });
+
+    // AC: @review-cli-creation-and-query ac-ambiguous-review-subject-rejected
+    it("should reject ambiguous inferred subject inputs", () => {
+      const result = kspecRun(
+        "review add --title 'Ambiguous Review' --subject-ref @task-slug --base abc123 --head def456",
+        tempDir,
+        { expectFail: true },
+      );
+
+      expect(result.exitCode).toBe(2);
+      expect(result.stderr).toContain("Ambiguous review subject");
+    });
+
+    // AC: @review-cli-creation-and-query ac-ambiguous-review-subject-rejected
+    it("should reject code flags when an explicit task subject is selected", () => {
+      const result = kspecRun(
+        "review add --title 'Conflicting Task Review' --subject-type task --subject-ref @task-slug --base abc123 --head def456",
+        tempDir,
+        { expectFail: true },
+      );
+
+      expect(result.exitCode).toBe(2);
+      expect(result.stderr).toContain("Subject type task cannot be combined");
+      expect(result.stderr).toContain("--examined-commit");
+    });
   });
 
   describe("review get", () => {
@@ -205,7 +261,8 @@ describe("Integration: review CLI commands", () => {
       expect(result.title).toBe("Detail Review");
       expect(result.lifecycle_state).toBe("draft");
       expect(result.disposition).toBe("pending");
-      expect(result.gate_state).toBe("pending");
+      // No required checks → gate is trivially passing (vacuous truth, aligns with shared evaluateGates)
+      expect(result.gate_state).toBe("passing");
       expect(result.subject.type).toBe("code");
       expect(result.thread_state).toBeDefined();
       expect(result.thread_state.total).toBe(0);
@@ -463,9 +520,9 @@ describe("Integration: review CLI commands", () => {
     });
 
     // AC: @review-cli-mutation-commands ac-2
-    it("should add a check result with version binding", () => {
+    it("should add a check result with auto-derived version", () => {
       const result = kspecJson<{ check_name: string; status: string }>(
-        `review check @${reviewSlug} --name 'tests' --status pass --version-base a1 --version-head b1`,
+        `review check @${reviewSlug} --name 'tests' --status pass`,
         tempDir,
       );
 
@@ -492,7 +549,7 @@ describe("Integration: review CLI commands", () => {
 
     it("should add an optional check", () => {
       kspec(
-        `review check @${reviewSlug} --name 'lint' --status fail --no-required --version-base a1 --version-head b1`,
+        `review check @${reviewSlug} --name 'lint' --status fail --no-required`,
         tempDir,
       );
 
@@ -502,13 +559,13 @@ describe("Integration: review CLI commands", () => {
       }>(`review get @${reviewSlug}`, tempDir);
 
       expect(review.checks[0].required).toBe(false);
-      // Gate should be pending (no required checks)
-      expect(review.gate_state).toBe("pending");
+      // No required checks → gate is trivially passing (vacuous truth, aligns with shared evaluateGates)
+      expect(review.gate_state).toBe("passing");
     });
 
     it("should compute failing gate state", () => {
       kspec(
-        `review check @${reviewSlug} --name 'tests' --status fail --version-base a1 --version-head b1`,
+        `review check @${reviewSlug} --name 'tests' --status fail`,
         tempDir,
       );
 
@@ -516,16 +573,6 @@ describe("Integration: review CLI commands", () => {
       expect(review.gate_state).toBe("failing");
     });
 
-    // AC: @trait-error-guidance ac-5
-    it("should error when version context is missing", () => {
-      const result = kspecRun(
-        `review check @${reviewSlug} --name 'tests' --status pass`,
-        tempDir,
-        { expectFail: true },
-      );
-      expect(result.exitCode).not.toBe(0);
-      expect(result.stderr).toContain("Version context is required");
-    });
   });
 
   describe("review verdict", () => {
@@ -537,9 +584,9 @@ describe("Integration: review CLI commands", () => {
     });
 
     // AC: @review-cli-mutation-commands ac-3
-    it("should set an approve verdict with version binding", () => {
+    it("should set an approve verdict with auto-derived version", () => {
       kspec(
-        `review verdict @${reviewSlug} --decision approve --reviewer alice --version-base a1 --version-head b1`,
+        `review verdict @${reviewSlug} --decision approve --reviewer alice`,
         tempDir,
       );
 
@@ -547,7 +594,7 @@ describe("Integration: review CLI commands", () => {
         verdicts: Array<{
           reviewer: string;
           decision: string;
-          applies_to_version: { type: string };
+          applies_to_version: { type: string; base_commit?: string; head_commit?: string };
         }>;
         disposition: string;
         events: Array<{ event_type: string }>;
@@ -556,14 +603,17 @@ describe("Integration: review CLI commands", () => {
       expect(review.verdicts).toHaveLength(1);
       expect(review.verdicts[0].reviewer).toBe("alice");
       expect(review.verdicts[0].decision).toBe("approve");
+      // Version auto-derived from code subject (--base a1 --head b1 on review add)
       expect(review.verdicts[0].applies_to_version.type).toBe("code_compare");
+      expect(review.verdicts[0].applies_to_version.base_commit).toBe("a1");
+      expect(review.verdicts[0].applies_to_version.head_commit).toBe("b1");
       expect(review.disposition).toBe("approved");
       expect(review.events.some((e) => e.event_type === "verdict_submitted")).toBe(true);
     });
 
     it("should compute changes_requested disposition", () => {
       kspec(
-        `review verdict @${reviewSlug} --decision request_changes --version-base a1 --version-head b1`,
+        `review verdict @${reviewSlug} --decision request_changes`,
         tempDir,
       );
 
@@ -574,7 +624,7 @@ describe("Integration: review CLI commands", () => {
     // AC: @review-record-per-cycle-lifecycle ac-1
     it("should auto-close review on approve verdict", () => {
       kspec(
-        `review verdict @${reviewSlug} --decision approve --reviewer alice --version-base a1 --version-head b1`,
+        `review verdict @${reviewSlug} --decision approve --reviewer alice`,
         tempDir,
       );
 
@@ -594,7 +644,7 @@ describe("Integration: review CLI commands", () => {
     // AC: @review-record-per-cycle-lifecycle ac-1
     it("should auto-close review on request_changes verdict", () => {
       kspec(
-        `review verdict @${reviewSlug} --decision request_changes --reviewer bob --version-base a1 --version-head b1`,
+        `review verdict @${reviewSlug} --decision request_changes --reviewer bob`,
         tempDir,
       );
 
@@ -611,7 +661,7 @@ describe("Integration: review CLI commands", () => {
       kspec(`review open @${reviewSlug}`, tempDir);
 
       kspec(
-        `review verdict @${reviewSlug} --decision comment --reviewer carol --version-base a1 --version-head b1`,
+        `review verdict @${reviewSlug} --decision comment --reviewer carol`,
         tempDir,
       );
 
@@ -625,7 +675,7 @@ describe("Integration: review CLI commands", () => {
     // AC: @trait-error-guidance ac-5
     it("should error on invalid decision", () => {
       const result = kspecRun(
-        `review verdict @${reviewSlug} --decision invalid --version-base a1 --version-head b1`,
+        `review verdict @${reviewSlug} --decision invalid`,
         tempDir,
         { expectFail: true },
       );

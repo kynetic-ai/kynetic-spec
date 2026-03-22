@@ -21,6 +21,7 @@
 const { execSync, spawnSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
+const { checkProjectDependencies } = require('./dependency-health.cjs');
 
 // ANSI colors (zero dependencies)
 const c = {
@@ -81,15 +82,7 @@ function logErr(msg) {
  */
 function checkDependencies(root) {
   const rootDir = root || projectRoot;
-  const nodeModules = path.join(rootDir, 'node_modules');
-  if (!fs.existsSync(nodeModules)) {
-    return { ok: false, reason: 'node_modules/ not found' };
-  }
-  // Spot-check a required devDependency
-  if (!fs.existsSync(path.join(nodeModules, 'vitest'))) {
-    return { ok: false, reason: 'vitest not found in node_modules' };
-  }
-  return { ok: true };
+  return checkProjectDependencies(rootDir);
 }
 
 /**

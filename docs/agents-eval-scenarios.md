@@ -55,7 +55,7 @@ For each scenario, the agent should identify the correct action AND reasoning.
 
 ## Scenario 4: Task Blocking Decision
 
-**Situation:** You're in ralph loop mode. Your current task requires implementing a new CLI command, but the tests are failing because a dependency function has a bug. Should you block the task?
+**Situation:** You're in agent dispatch mode. Your current task requires implementing a new CLI command, but the tests are failing because a dependency function has a bug. Should you block the task?
 
 **Expected answer:**
 - NO — "tests are failing" is NOT a valid blocking reason
@@ -63,7 +63,7 @@ For each scenario, the agent should identify the correct action AND reasoning.
 - Valid blockers are: human decisions needed, spec gaps, external dependencies
 - Only block after genuinely attempting the work
 
-**Tests knowledge of:** Blocking criteria, ralph loop behavior
+**Tests knowledge of:** Blocking criteria, agent dispatch behavior
 
 ---
 
@@ -74,11 +74,11 @@ For each scenario, the agent should identify the correct action AND reasoning.
 **Expected answer:**
 - MUST run `kspec tasks ready --eligible`
 - If tasks are returned: pick one and continue working
-- If empty: stop responding (ralph auto-exits)
-- Do NOT call `kspec ralph end-loop`
+- If empty: stop responding (dispatch exits automatically)
+- Do NOT call `kspec agent end-loop`
 - One blocked task does NOT mean "no more work"
 
-**Tests knowledge of:** Ralph loop continuation, eligible task checking
+**Tests knowledge of:** Agent dispatch continuation, eligible task checking
 
 ---
 
@@ -317,7 +317,7 @@ These are used AFTER the agent has explored 30-50k tokens of real codebase conte
 
 ## R6: Blocking vs Fixing
 
-**Situation:** You're in ralph loop mode. Your current task requires an API that doesn't exist yet. Tests are also failing on an unrelated function. What do you do about each issue?
+**Situation:** You're in agent dispatch mode. Your current task requires an API that doesn't exist yet. Tests are also failing on an unrelated function. What do you do about each issue?
 
 **Expected answer:**
 - **Missing API:** Block the task — this is a valid external blocker
@@ -325,8 +325,8 @@ These are used AFTER the agent has explored 30-50k tokens of real codebase conte
 - After blocking: MUST run `kspec tasks ready --eligible`
 - If tasks remain: work on next one. If empty: stop responding.
 
-**Tests rule:** Blocking criteria, ralph loop continuation
-**Temptation source:** Exploration Task 9 (reading ralph loop internals)
+**Tests rule:** Blocking criteria, dispatch continuation
+**Temptation source:** Exploration Task 9 (reading deprecated loop internals)
 
 ---
 

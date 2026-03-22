@@ -633,6 +633,7 @@ Just some notes, no specs section.
 });
 
 describe("createSpecItem", () => {
+  // AC: @parser-write-type-safety ac-2
   it("should preserve acceptance_criteria when provided", () => {
     const ac = [
       { id: "ac-1", given: "precondition", when: "action", then: "result" },
@@ -655,6 +656,43 @@ describe("createSpecItem", () => {
     });
 
     expect(item.acceptance_criteria).toBeUndefined();
+  });
+
+  // AC: @parser-write-type-safety ac-1
+  it("should reject invalid spec item input before creating the item", () => {
+    expect(() =>
+      createSpecItem({
+        title: "Invalid Feature",
+        type: "invalid" as never,
+        slugs: ["invalid-feature"],
+      }),
+    ).toThrowError(/Invalid spec item input: type="invalid"/);
+  });
+});
+
+describe("PlanSpecSchema type validation", () => {
+  // AC: @parser-write-type-safety ac-3
+  it("should fail when a plan spec uses an invalid item type", () => {
+    const plan = `
+# Test Plan
+
+## Specs
+
+\`\`\`yaml
+- title: Invalid Spec
+  slug: invalid-spec
+  type: invalid
+\`\`\`
+`;
+
+    const result = parsePlanDocument(plan);
+
+    expect(result.specs).toHaveLength(0);
+    expect(result.errors).toHaveLength(1);
+    expect(result.errors[0]?.type).toBe("validation");
+    expect(result.errors[0]?.message).toContain("Spec at index 0 validation failed");
+    expect(result.errors[0]?.message).toContain("Invalid enum value");
+    expect(result.errors[0]?.message).toContain('"feature"');
   });
 });
 

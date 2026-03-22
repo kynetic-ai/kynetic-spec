@@ -26,3 +26,53 @@ export {
   type TaskStateChange,
   type TaskStatus,
 } from "./dispatch.js";
+
+export {
+  ActionExecutor,
+  resolveTemplateVars,
+  extractTemplateVars,
+  validateActionTemplates,
+  extractActionTemplates,
+  KNOWN_EVENT_FIELDS,
+  type ActionEventContext,
+  type ActionRunEvent,
+  type ActionExecutorOptions,
+  type NotifyBroadcast,
+  type AgentSpawner,
+  type TemplateValidationWarning,
+} from "./action-executor.js";
+
+export {
+  EventBus,
+  type EventBusOptions,
+  type EventEnvelope,
+  type EventSourceType,
+  type EmitOptions,
+  type EmitResult,
+  type SubscriptionPattern,
+  type EventHandler,
+} from "./event-bus.js";
+
+export {
+  HookExecutor,
+  type HookExecutorOptions,
+  type HookConfigSnapshot,
+} from "./hook-executor.js";
+
+export {
+  JoinAccumulator,
+  type JoinAccumulatorOptions,
+  type GroupState,
+  type GroupMemberRun,
+  type MemberRunStatus,
+} from "./join-accumulator.js";
+
+export {
+  ScheduleEngine,
+  EVALUATION_INTERVAL_MS,
+  type ScheduleEngineOptions,
+  type ScheduleLoader,
+  type ScheduleRuntimeState,
+  type ScheduleStatus,
+  type ScheduleDetailedStatus,
+} from "./schedule-engine.js";

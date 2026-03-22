@@ -230,4 +230,60 @@ describe("File Lock", () => {
     await release2();
     await expect(fs.stat(lockDir)).rejects.toThrow();
   });
+
+  // AC: @scoped-dispatch-shadow-serialization ac-4
+  it("should wait indefinitely when timeoutMs is 0 and acquire after holder releases", async () => {
+    tempDir = await createTempDir();
+    const lockTarget = path.join(tempDir, "test.yaml");
+    const events: string[] = [];
+
+    const release1 = await acquireFileLock(lockTarget);
+    events.push("acquired-1");
+
+    // Start second acquire with timeoutMs=0 (wait indefinitely)
+    const acquire2 = acquireFileLock(lockTarget, 0).then((release) => {
+      events.push("acquired-2");
+      return release;
+    });
+
+    // Give it time to retry several times — should NOT timeout
+    await new Promise((r) => setTimeout(r, 300));
+    expect(events).toEqual(["acquired-1"]);
+
+    // Release first lock
+    await release1();
+    events.push("released-1");
+
+    // Second should now acquire
+    const release2 = await acquire2;
+    expect(events).toContain("acquired-2");
+
+    await release2();
+  });
+
+  // AC: @scoped-dispatch-shadow-serialization ac-5
+  it("should acquire lock via stale detection when holder is dead and timeoutMs is 0", async () => {
+    tempDir = await createTempDir();
+    const lockTarget = path.join(tempDir, "test.yaml");
+    const lockDir = `${lockTarget}.lock`;
+
+    // Create a fake stale lock with a non-existent PID
+    await fs.mkdir(lockDir);
+    await fs.writeFile(
+      path.join(lockDir, "pid"),
+      `999999\n${Date.now()}`,
+    );
+
+    // Should acquire via stale PID detection even with no timeout
+    const release = await acquireFileLock(lockTarget, 0);
+
+    // Verify we own the lock
+    const pidContent = await fs.readFile(
+      path.join(lockDir, "pid"),
+      "utf-8",
+    );
+    expect(pidContent).toContain(String(process.pid));
+
+    await release();
+  });
 });

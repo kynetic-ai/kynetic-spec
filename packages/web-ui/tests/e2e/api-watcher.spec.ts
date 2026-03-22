@@ -52,7 +52,7 @@
 // AC: @trait-websocket-protocol ac-7 — N/A: close codes tested in api-websocket.spec.ts
 // AC: @trait-websocket-protocol ac-8 — N/A: client reconnection sequence reset tested in connection.spec.ts
 
-import { writeFileSync } from 'fs';
+import { mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { test, expect } from '../fixtures/test-base';
 
@@ -575,5 +575,30 @@ test.describe('File Watcher API', () => {
     // Final health check
     const healthResponse = await request.get(`${daemon.baseUrl}/api/health`);
     expect(healthResponse.status()).toBe(200);
+  });
+
+  test('broadcasts sessions updates when a session file changes', async ({ page, daemon }) => {
+    await subscribeTopic(page, 'sessions');
+
+    const sessionDir = join(daemon.projectDir, '.kspec-sessions', '01JTESTWATCHERSESSION00000001');
+    const metadataPath = join(sessionDir, 'session.yaml');
+    mkdirSync(sessionDir, { recursive: true });
+    writeFileSync(
+      metadataPath,
+      [
+        'id: 01JTESTWATCHERSESSION00000001',
+        'agent_type: task-worker',
+        'status: active',
+        'started_at: "2026-03-19T12:00:00.000Z"',
+        'trigger: manual',
+        ''
+      ].join('\n')
+    );
+
+    const broadcast = await waitForBroadcast(page, 'sessions');
+
+    expect(broadcast.topic).toBe('sessions');
+    expect(broadcast.event).toBe('session_changed');
+    expect(broadcast).toHaveProperty('msg_id');
   });
 });

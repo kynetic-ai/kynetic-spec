@@ -90,8 +90,9 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
     const isolatedHome = join(tempDir, '.home');
     const configDir = join(isolatedHome, '.config', 'kspec');
     mkdirSync(configDir, { recursive: true });
+    const { KSPEC_NO_DAEMON: _kspecNoDaemon, ...baseEnv } = process.env;
     const isolatedEnv = {
-      ...process.env,
+      ...baseEnv,
       HOME: isolatedHome,
       USERPROFILE: isolatedHome,
       WEB_UI_DIR: WEB_UI_BUILD,

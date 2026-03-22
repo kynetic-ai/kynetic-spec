@@ -14,7 +14,7 @@ import {
   fixFiles,
   initContext,
   loadAllItems,
-  loadAllTasks,
+  resolveTaskDataManager,
   loadMetaContext,
   ReferenceIndex,
   type ValidationResult,
@@ -941,7 +941,7 @@ export function registerValidateCommand(program: Command): void {
         let alignmentWarnings: AlignmentWarning[] | undefined;
         let alignmentStats: { specsWithTasks: number; totalSpecs: number; alignedSpecs: number } | undefined;
         if (selectedChecks.alignment || runAll) {
-          const tasks = await loadAllTasks(ctx);
+          const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
           const items = await loadAllItems(ctx);
           const refIndex = new ReferenceIndex(tasks, items);
           const alignmentIndex = new AlignmentIndex(tasks, items);
@@ -978,7 +978,7 @@ export function registerValidateCommand(program: Command): void {
         let stalenessWarnings: StalenessWarning[] | undefined;
         let stalenessWarningCount = 0;
         if (selectedChecks.staleness) {
-          const tasks = await loadAllTasks(ctx);
+          const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
           const items = await loadAllItems(ctx);
           const refIndex = new ReferenceIndex(tasks, items);
 

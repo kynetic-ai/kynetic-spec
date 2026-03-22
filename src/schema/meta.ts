@@ -1,5 +1,10 @@
 import { z } from "zod";
 import { DateTimeSchema, RefSchema, UlidSchema } from "./common.js";
+import { HookSchema } from "./hooks.js";
+import { ScheduleSchema } from "./schedules.js";
+import { CompositionSchema } from "./composition.js";
+import { DispatchEventTypeSchema } from "./event-registry.js";
+import { AgentDispatchAutomationFilterSchema } from "./task.js";
 
 /**
  * ULID schema for meta items - uses the same strict validation as core items.
@@ -17,22 +22,23 @@ export const SessionProtocolSchema = z.object({
 });
 
 /**
- * Agent dispatch event types - lifecycle events that can trigger agent spawning
+ * Agent dispatch event types - lifecycle events that can trigger agent spawning.
+ *
+ * Accepts any registered event type from the dispatch event registry.
+ * The original 4 task events remain valid; the expanded registry adds
+ * invocation.*, session.*, schedule.*, and action.* events.
+ *
  * AC: @agent-definition-schema ac-2
+ * AC: @dispatch-event-taxonomy ac-4 — existing dispatch rules unchanged
  */
-export const AgentDispatchEventSchema = z.enum([
-  "task.in_progress",
-  "task.ready",
-  "task.needs_work",
-  "task.pending_review",
-]);
+export const AgentDispatchEventSchema = DispatchEventTypeSchema;
 
 /**
  * Agent dispatch filter - constraints for matching tasks during dispatch
  * AC: @agent-definition-schema ac-3
  */
 export const AgentDispatchFilterSchema = z.object({
-  automation: z.enum(["eligible", "ineligible"]).optional(),
+  automation: AgentDispatchAutomationFilterSchema.optional(),
   tags: z.array(z.string()).optional(),
   priority: z.number().optional(),
 });
@@ -101,7 +107,7 @@ export const AgentSchema = z.object({
   auto_approve: z.boolean().default(false),
   prompt_template: z.string().optional(),
   /** Automation eligibility for agent list filtering (eligible|ineligible) */
-  automation: z.enum(["eligible", "ineligible"]).optional(),
+  automation: AgentDispatchAutomationFilterSchema.optional(),
   /** Tags for filtering and categorization */
   tags: z.array(z.string()).default([]).optional(),
 });
@@ -405,6 +411,9 @@ export const WorkflowRunsFileSchema = z.object({
 
 /**
  * Meta manifest schema - the root structure for kynetic.meta.yaml
+ * AC: @dispatch-hook-schema ac-4 — hooks defaults to empty array
+ * AC: @dispatch-schedule-schema ac-4 — schedules defaults to empty array
+ * AC: @dispatch-composition-schema ac-2 — compositions defaults to empty array
  */
 export const MetaManifestSchema = z.object({
   kynetic_meta: z.string().default("1.0"),
@@ -413,6 +422,9 @@ export const MetaManifestSchema = z.object({
   conventions: z.array(ConventionSchema).default([]),
   observations: z.array(ObservationSchema).default([]),
   skills: z.array(SkillSchema).default([]),
+  hooks: z.array(HookSchema).default([]),
+  schedules: z.array(ScheduleSchema).default([]),
+  compositions: z.array(CompositionSchema).default([]),
   includes: z.array(z.string()).default([]),
 });
 

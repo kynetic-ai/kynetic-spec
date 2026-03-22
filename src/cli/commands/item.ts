@@ -15,10 +15,11 @@ import {
   findDescendantItems,
   findTraitImplementors,
   initContext,
+  type KspecContext,
   type LoadedSpecItem,
+  type LoadedTask,
   loadAllItems,
   loadMetaContext,
-  loadAllTasks,
   type PatchOperation,
   patchSpecItems,
   ReferenceIndex,
@@ -26,6 +27,7 @@ import {
   shortestUniqueUlid,
   updateSpecItem,
 } from "../../parser/index.js";
+import { resolveTaskDataManager, type ShadowCommitOptions } from "../../parser/task-data-manager.js";
 import type { ItemFilter } from "../../parser/items.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import type {
@@ -35,7 +37,7 @@ import type {
   Maturity,
   SpecItemInput,
 } from "../../schema/index.js";
-import { SpecItemPatchSchema } from "../../schema/index.js";
+import { ItemTypeSchema, SpecItemPatchSchema } from "../../schema/index.js";
 import {
   ImplementationStatusSchema,
   MaturitySchema,
@@ -46,6 +48,7 @@ import { formatMatchedFields, grepItem } from "../../utils/grep.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, isJsonMode, output, showChangeDiff, success, warn } from "../output.js";
 import { parseTagsArray } from "../parse-utils.js";
+import { validateEnumOption } from "../validators.js";
 
 /**
  * Serialize a LoadedSpecItem for JSON output.
@@ -341,7 +344,16 @@ export function registerItemCommands(program: Command): void {
         };
 
         if (options.type) {
-          filter.type = options.type as ItemType;
+          const typeResult = validateEnumOption(
+            options.type,
+            ItemTypeSchema.options,
+            "item type",
+          );
+          if (!typeResult.ok) {
+            error(typeResult.error);
+            process.exit(EXIT_CODES.VALIDATION_FAILED);
+          }
+          filter.type = typeResult.value as ItemType;
         }
 
         // AC: @multi-value-status-filter ac-item-list-parity, ac-invalid-item-status
@@ -705,7 +717,16 @@ Examples:
         const ctx = await initContext();
         const { refIndex, items } = await buildIndexes(ctx);
         const isRootAdd = Boolean(options.root);
-        const itemType = options.type as ItemType;
+        const itemTypeResult = validateEnumOption(
+          options.type || "feature",
+          ItemTypeSchema.options,
+          "item type",
+        );
+        if (!itemTypeResult.ok) {
+          error(itemTypeResult.error);
+          process.exit(EXIT_CODES.VALIDATION_FAILED);
+        }
+        const itemType = itemTypeResult.value as ItemType;
 
         const exitWithUsageGuidance = (
           message: string,
@@ -1086,7 +1107,18 @@ Examples:
         const updates: Partial<SpecItemInput> = {};
 
         if (options.title) updates.title = options.title;
-        if (options.type) updates.type = options.type as ItemType;
+        if (options.type) {
+          const typeResult = validateEnumOption(
+            options.type,
+            ItemTypeSchema.options,
+            "item type",
+          );
+          if (!typeResult.ok) {
+            error(typeResult.error);
+            process.exit(EXIT_CODES.VALIDATION_FAILED);
+          }
+          updates.type = typeResult.value as ItemType;
+        }
         if (options.slug || options.removeSlug) {
           let slugs = [...(foundItem.slugs || [])];
           if (options.removeSlug) {
@@ -1141,31 +1173,43 @@ Examples:
         // AC: @implementation-states ac-reject-invalid
         // AC: @maturity-states ac-reject-invalid
         // Validate enum values before writing
+        let statusValue: ImplementationStatus | undefined;
         if (options.status) {
-          const valid = ImplementationStatusSchema.options as readonly string[];
-          if (!valid.includes(options.status)) {
-            error(`Invalid implementation status: '${options.status}'. Valid values: ${valid.join(", ")}`);
-            process.exit(EXIT_CODES.USAGE_ERROR);
+          const statusResult = validateEnumOption(
+            options.status,
+            ImplementationStatusSchema.options,
+            "implementation status",
+          );
+          if (!statusResult.ok) {
+            error(statusResult.error);
+            process.exit(EXIT_CODES.VALIDATION_FAILED);
           }
+          statusValue = statusResult.value as ImplementationStatus;
         }
+        let maturityValue: Maturity | undefined;
         if (options.maturity) {
-          const valid = MaturitySchema.options as readonly string[];
-          if (!valid.includes(options.maturity)) {
-            error(`Invalid maturity: '${options.maturity}'. Valid values: ${valid.join(", ")}`);
-            process.exit(EXIT_CODES.USAGE_ERROR);
+          const maturityResult = validateEnumOption(
+            options.maturity,
+            MaturitySchema.options,
+            "maturity",
+          );
+          if (!maturityResult.ok) {
+            error(maturityResult.error);
+            process.exit(EXIT_CODES.VALIDATION_FAILED);
           }
+          maturityValue = maturityResult.value as Maturity;
         }
 
         // Handle status updates
-        if (options.status || options.maturity) {
+        if (statusValue || maturityValue) {
           const currentStatus =
             foundItem.status && typeof foundItem.status === "object"
               ? foundItem.status
-              : {};
+              : undefined;
           updates.status = {
-            ...currentStatus,
-            ...(options.status && { implementation: options.status }),
-            ...(options.maturity && { maturity: options.maturity }),
+            implementation:
+              statusValue ?? currentStatus?.implementation ?? "not_started",
+            maturity: maturityValue ?? currentStatus?.maturity ?? "draft",
           };
         }
 
@@ -1279,6 +1323,141 @@ Examples:
         process.exit(EXIT_CODES.ERROR);
       }
     });
+
+  // AC: @spec-item-delete-children ac-11 - Clean up dangling references on item deletion
+  async function cleanupDanglingRefs(
+    ctx: KspecContext,
+    refIndex: ReferenceIndex,
+    deletedUlids: Set<string>,
+    deletedSlugs: Set<string>,
+  ): Promise<{ totalRefsRemoved: number; itemsUpdated: number }> {
+    // Check if a reference string points to any deleted item
+    function isDeletedRef(ref: string): boolean {
+      const cleanRef = ref.startsWith("@") ? ref.slice(1) : ref;
+      if (deletedSlugs.has(cleanRef)) return true;
+      // Try resolving via index - if it resolves to a deleted ULID, it's a match
+      const resolved = refIndex.resolve(cleanRef);
+      if (resolved.ok && deletedUlids.has(resolved.ulid)) return true;
+      // Direct ULID match (full or prefix)
+      if (deletedUlids.has(cleanRef)) return true;
+      for (const ulid of deletedUlids) {
+        if (ulid.startsWith(cleanRef) && cleanRef.length >= 4) return true;
+      }
+      return false;
+    }
+
+    const arrayRefFields = ["depends_on", "implements", "relates_to", "tests", "traits"] as const;
+    let totalRefsRemoved = 0;
+    let itemsUpdated = 0;
+
+    // Reload items from disk after deletions
+    const remainingItems = await loadAllItems(ctx);
+
+    for (const item of remainingItems) {
+      if (deletedUlids.has(item._ulid)) continue;
+
+      let refsRemovedFromItem = 0;
+      const updates: Record<string, unknown> = {};
+
+      // Check array reference fields
+      for (const field of arrayRefFields) {
+        const arr = (item as unknown as Record<string, string[]>)[field];
+        if (!Array.isArray(arr) || arr.length === 0) continue;
+
+        const filtered = arr.filter((ref) => !isDeletedRef(ref));
+        const removed = arr.length - filtered.length;
+        if (removed > 0) {
+          updates[field] = filtered;
+          refsRemovedFromItem += removed;
+        }
+      }
+
+      // Check supersedes (single nullable ref)
+      if (item.supersedes && isDeletedRef(item.supersedes)) {
+        updates.supersedes = null;
+        refsRemovedFromItem += 1;
+      }
+
+      if (refsRemovedFromItem > 0) {
+        await updateSpecItem(ctx, item, updates as Partial<SpecItemInput>);
+        totalRefsRemoved += refsRemovedFromItem;
+        itemsUpdated++;
+      }
+    }
+
+    // Also clean task references (depends_on, context, spec_ref, blocked_by)
+    const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+    const tasksToClean: LoadedTask[] = [];
+
+    for (const task of tasks) {
+      let hasDeletedRef = false;
+
+      for (const ref of task.depends_on) {
+        if (isDeletedRef(ref)) { hasDeletedRef = true; break; }
+      }
+      if (!hasDeletedRef && task.context) {
+        for (const ref of task.context) {
+          if (isDeletedRef(ref)) { hasDeletedRef = true; break; }
+        }
+      }
+      if (!hasDeletedRef && task.spec_ref && isDeletedRef(task.spec_ref)) {
+        hasDeletedRef = true;
+      }
+      if (!hasDeletedRef && task.blocked_by) {
+        for (const ref of task.blocked_by) {
+          if (isDeletedRef(ref)) { hasDeletedRef = true; break; }
+        }
+      }
+
+      if (hasDeletedRef) {
+        tasksToClean.push(task);
+      }
+    }
+
+    if (tasksToClean.length > 0) {
+      const cleanupCommitOpts: ShadowCommitOptions = {
+        operation: "item-delete-ref-cleanup",
+        detail: `${tasksToClean.length} task(s)`,
+      };
+      await resolveTaskDataManager(ctx).mutateTasks(ctx, tasksToClean.map(t => t._ulid), (latestTasks) => {
+        return latestTasks.map((task) => {
+          let refsRemovedFromTask = 0;
+          const origDepsLen = task.depends_on.length;
+          const filteredDeps = task.depends_on.filter((ref) => !isDeletedRef(ref));
+          refsRemovedFromTask += origDepsLen - filteredDeps.length;
+
+          const origCtxLen = (task.context || []).length;
+          const filteredCtx = (task.context || []).filter((ref) => !isDeletedRef(ref));
+          refsRemovedFromTask += origCtxLen - filteredCtx.length;
+
+          const origBlockedLen = (task.blocked_by || []).length;
+          const filteredBlocked = (task.blocked_by || []).filter((ref) => !isDeletedRef(ref));
+          refsRemovedFromTask += origBlockedLen - filteredBlocked.length;
+
+          let specRef = task.spec_ref;
+          if (specRef && isDeletedRef(specRef)) {
+            specRef = null;
+            refsRemovedFromTask += 1;
+          }
+
+          if (refsRemovedFromTask === 0) return task;
+
+          totalRefsRemoved += refsRemovedFromTask;
+          itemsUpdated++;
+
+          return {
+            ...task,
+            depends_on: filteredDeps,
+            context: filteredCtx,
+            blocked_by: filteredBlocked,
+            spec_ref: specRef,
+          };
+        });
+      }, cleanupCommitOpts);
+    }
+
+    return { totalRefsRemoved, itemsUpdated };
+  }
 
   // kspec item delete - delete a spec item
   markMutating(item.command("delete <ref>"))
@@ -1420,6 +1599,17 @@ Examples:
         }
 
         if (deletedCount > 0) {
+          // AC: @spec-item-delete-children ac-11 - Clean up dangling references
+          const deletedUlids = new Set(itemsToDelete.map((i) => i._ulid));
+          const deletedSlugs = new Set(itemsToDelete.flatMap((i) => i.slugs));
+
+          const cleanupResult = await cleanupDanglingRefs(
+            ctx,
+            refIndex,
+            deletedUlids,
+            deletedSlugs,
+          );
+
           // AC: @spec-item-delete-children ac-6 - Single shadow commit with all deletions
           const itemSlug =
             foundItem.slugs[0] || refIndex.shortUlid(foundItem._ulid);
@@ -1427,15 +1617,23 @@ Examples:
             deletedCount > 1 ? `${deletedCount} items` : itemSlug;
           await commitIfShadow(ctx.shadow, "item-delete", commitMsg);
 
+          const cleanedMsg = cleanupResult.totalRefsRemoved > 0
+            ? `. Cleaned ${cleanupResult.totalRefsRemoved} reference${cleanupResult.totalRefsRemoved === 1 ? "" : "s"} from ${cleanupResult.itemsUpdated} item${cleanupResult.itemsUpdated === 1 ? "" : "s"}`
+            : "";
+
           if (deletedCount > 1) {
-            success(`Deleted ${deletedCount} items`, {
+            success(`Deleted ${deletedCount} items${cleanedMsg}`, {
               deleted: deletedCount,
               root_ulid: foundItem._ulid,
+              refs_cleaned: cleanupResult.totalRefsRemoved,
+              items_cleaned: cleanupResult.itemsUpdated,
             });
           } else {
-            success(`Deleted item: ${foundItem.title}`, {
+            success(`Deleted item: ${foundItem.title}${cleanedMsg}`, {
               deleted: true,
               ulid: foundItem._ulid,
+              refs_cleaned: cleanupResult.totalRefsRemoved,
+              items_cleaned: cleanupResult.itemsUpdated,
             });
           }
         } else {
@@ -1619,7 +1817,7 @@ Examples:
     .action(async (ref) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
         const items = await loadAllItems(ctx);
         const refIndex = new ReferenceIndex(tasks, items);
 
@@ -1718,7 +1916,7 @@ Examples:
       try {
         const ctx = await initContext();
         const items = await loadAllItems(ctx);
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
         const refIndex = new ReferenceIndex(tasks, items);
 
         const result = refIndex.resolve(ref);
@@ -1759,7 +1957,7 @@ Examples:
       try {
         const ctx = await initContext();
         const items = await loadAllItems(ctx);
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
         const refIndex = new ReferenceIndex(tasks, items);
 
         const result = refIndex.resolve(ref);
@@ -2007,8 +2205,8 @@ Examples:
       }
     });
 
-  // kspec item ac remove <ref> <ac-id>
-  markMutating(acCmd.command("remove <ref> <acId>"))
+  // kspec item ac remove <ref> <id>
+  markMutating(acCmd.command("remove <ref> <id>"))
     .description("Remove an acceptance criterion")
     .option("--force", "Skip confirmation")
     .action(async (ref: string, acId: string, options) => {

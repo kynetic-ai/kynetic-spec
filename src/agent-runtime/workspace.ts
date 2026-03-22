@@ -1,10 +1,10 @@
 import * as fs from "node:fs/promises";
+import * as fsSync from "node:fs";
 import * as path from "node:path";
 import { spawnSync } from "node:child_process";
 import { initContext } from "../parser/index.js";
 import { acquireFileLock } from "../parser/file-lock.js";
 import {
-  findDispatchWorkspaceByTaskRef,
   getDispatchWorkspaceRegistryPath,
   loadDispatchWorkspaceRegistry,
   saveDispatchWorkspaceRecord,
@@ -33,12 +33,38 @@ import type {
 const DISPATCH_WORKSPACE_METADATA_FILE = ".kspec-dispatch-workspace.json";
 const DISPATCH_BRANCH_PREFIX = "dispatch/task/";
 const DISPATCH_SHADOW_MUTATION_LOCK_FILE = ".kspec-dispatch-shadow-mutation";
+const DISPATCH_CHECKOUT_COHERENCE_FILE = "kspec-dispatch-checkout-coherence.json";
 
 interface GitResult {
   stdout: string;
   stderr: string;
   status: number | null;
 }
+
+interface RunGitOptions {
+  timeout?: number;
+}
+
+interface DispatchCheckoutCoherenceSnapshot {
+  headCommit: string;
+  tree: string;
+  recordedAt: string;
+}
+
+interface DispatchCheckoutCoherenceState {
+  version: 1;
+  branches: Record<string, DispatchCheckoutCoherenceSnapshot>;
+}
+
+const DISPATCH_GIT_ENV_KEYS = [
+  "GIT_ALTERNATE_OBJECT_DIRECTORIES",
+  "GIT_COMMON_DIR",
+  "GIT_DIR",
+  "GIT_INDEX_FILE",
+  "GIT_OBJECT_DIRECTORY",
+  "GIT_PREFIX",
+  "GIT_WORK_TREE",
+] as const;
 
 export interface ResolvedDispatchWorkspaceConfig {
   baseBranch: string;
@@ -244,11 +270,13 @@ export class DispatchWorkspaceError extends Error {
   }
 }
 
-function runGit(cwd: string, args: string[]): GitResult {
+function runGit(cwd: string, args: string[], options: RunGitOptions = {}): GitResult {
   const result = spawnSync("git", args, {
     cwd,
+    env: buildDispatchGitEnv(),
     encoding: "utf-8",
     stdio: "pipe",
+    ...(options.timeout !== undefined ? { timeout: options.timeout } : {}),
   });
   return {
     stdout: (result.stdout ?? "").trim(),
@@ -257,11 +285,21 @@ function runGit(cwd: string, args: string[]): GitResult {
   };
 }
 
-function resolveDispatchMutationLockTimeoutMs(): number | undefined {
+export function buildDispatchGitEnv(
+  baseEnv: NodeJS.ProcessEnv = process.env,
+): NodeJS.ProcessEnv {
+  const env: NodeJS.ProcessEnv = { ...baseEnv };
+  for (const key of DISPATCH_GIT_ENV_KEYS) {
+    delete env[key];
+  }
+  return env;
+}
+
+function resolveDispatchMutationLockTimeoutMs(): number {
   const raw = process.env.KSPEC_SHADOW_MUTATION_LOCK_TIMEOUT_MS;
-  if (!raw) return undefined;
+  if (!raw) return 0;
   const parsed = Number(raw);
-  return Number.isFinite(parsed) ? parsed : undefined;
+  return Number.isFinite(parsed) ? parsed : 0;
 }
 
 function runGitOrThrow(
@@ -354,6 +392,217 @@ function resolveCurrentBranch(projectDir: string): string | null {
   return result.status === 0 && result.stdout ? result.stdout : null;
 }
 
+interface DispatchCheckoutCoherenceResult {
+  repaired: boolean;
+  drifted: boolean;
+  previousCommit: string | null;
+}
+
+function resolveDispatchCheckoutCoherencePath(projectDir: string): string | null {
+  const result = runGit(projectDir, ["rev-parse", "--git-path", DISPATCH_CHECKOUT_COHERENCE_FILE]);
+  if (result.status !== 0 || !result.stdout) {
+    return null;
+  }
+  return path.isAbsolute(result.stdout)
+    ? result.stdout
+    : path.join(projectDir, result.stdout);
+}
+
+function loadDispatchCheckoutCoherenceSnapshot(
+  projectDir: string,
+  branch: string,
+): DispatchCheckoutCoherenceSnapshot | null {
+  const coherencePath = resolveDispatchCheckoutCoherencePath(projectDir);
+  if (!coherencePath || !fsSync.existsSync(coherencePath)) {
+    return null;
+  }
+
+  try {
+    const raw = fsSync.readFileSync(coherencePath, "utf-8");
+    const parsed = JSON.parse(raw) as Partial<DispatchCheckoutCoherenceState>;
+    if (parsed.version !== 1 || !parsed.branches || typeof parsed.branches !== "object") {
+      return null;
+    }
+    const snapshot = parsed.branches[branch];
+    if (!snapshot || typeof snapshot.headCommit !== "string" || typeof snapshot.tree !== "string") {
+      return null;
+    }
+    return snapshot;
+  } catch {
+    return null;
+  }
+}
+
+function persistDispatchCheckoutCoherenceSnapshot(
+  projectDir: string,
+  branch: string,
+  snapshot: DispatchCheckoutCoherenceSnapshot,
+): void {
+  const coherencePath = resolveDispatchCheckoutCoherencePath(projectDir);
+  if (!coherencePath) {
+    return;
+  }
+
+  let state: DispatchCheckoutCoherenceState = { version: 1, branches: {} };
+  if (fsSync.existsSync(coherencePath)) {
+    try {
+      const raw = fsSync.readFileSync(coherencePath, "utf-8");
+      const parsed = JSON.parse(raw) as Partial<DispatchCheckoutCoherenceState>;
+      if (parsed.version === 1 && parsed.branches && typeof parsed.branches === "object") {
+        state = {
+          version: 1,
+          branches: parsed.branches as Record<string, DispatchCheckoutCoherenceSnapshot>,
+        };
+      }
+    } catch {
+      state = { version: 1, branches: {} };
+    }
+  }
+
+  state.branches[branch] = snapshot;
+  fsSync.writeFileSync(coherencePath, `${JSON.stringify(state, null, 2)}\n`, "utf-8");
+}
+
+function resolveBranchTree(projectDir: string, ref: string): string | null {
+  const result = runGit(projectDir, ["rev-parse", `${ref}^{tree}`]);
+  return result.status === 0 && result.stdout ? result.stdout : null;
+}
+
+function resolveIndexTree(projectDir: string): string | null {
+  const result = runGit(projectDir, ["write-tree"]);
+  return result.status === 0 && result.stdout ? result.stdout : null;
+}
+
+function listRecentBranchReflogCommits(projectDir: string, branch: string, limit = 20): string[] {
+  const result = runGit(projectDir, ["reflog", "show", "--format=%H", `-n${limit}`, branch]);
+  if (result.status !== 0 || !result.stdout) {
+    return [];
+  }
+  return Array.from(new Set(
+    result.stdout
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter(Boolean),
+  ));
+}
+
+function buildUnsafeCheckoutDriftError(
+  integrationBranch: string,
+  detail: string,
+  suggestion: string,
+): DispatchWorkspaceError {
+  return new DispatchWorkspaceError(
+    `Dispatch detected shared-checkout drift for integration target "${integrationBranch}" but refused automatic repair because ${detail}.`,
+    suggestion,
+  );
+}
+
+export function ensureDispatchIntegrationTargetCheckoutCoherence(
+  projectDir: string,
+  integrationBranch: string,
+): DispatchCheckoutCoherenceResult {
+  const headCommit = resolveCommit(projectDir, "HEAD");
+  const status = runGit(projectDir, ["status", "--porcelain"]);
+  if (status.status !== 0) {
+    throw new DispatchWorkspaceError(
+      `Dispatch could not inspect shared checkout state for integration target "${integrationBranch}".`,
+      `Run 'git status' in ${projectDir}, fix the git error, and retry dispatch.`,
+    );
+  }
+  const headTree = resolveBranchTree(projectDir, "HEAD");
+  if (!status.stdout) {
+    if (headTree) {
+      persistDispatchCheckoutCoherenceSnapshot(projectDir, integrationBranch, {
+        headCommit,
+        tree: headTree,
+        recordedAt: new Date().toISOString(),
+      });
+    }
+    return { repaired: false, drifted: false, previousCommit: null };
+  }
+
+  const worktreeDiff = runGit(projectDir, ["diff", "--quiet"]);
+  if (worktreeDiff.status !== 0 && worktreeDiff.status !== 1) {
+    throw new DispatchWorkspaceError(
+      `Dispatch could not compare the working tree against the index for integration target "${integrationBranch}".`,
+      `Run 'git diff' in ${projectDir}, resolve the git error, and retry dispatch.`,
+    );
+  }
+  if (worktreeDiff.status === 1) {
+    throw buildUnsafeCheckoutDriftError(
+      integrationBranch,
+      "the working tree has tracked modifications",
+      `Review the local changes in ${projectDir}, then commit/stash/discard them before retrying. If the branch tip is authoritative, run 'git checkout ${integrationBranch} && git reset --hard ${integrationBranch}'.`,
+    );
+  }
+
+  const indexTree = resolveIndexTree(projectDir);
+  if (!indexTree || !headTree) {
+    throw new DispatchWorkspaceError(
+      `Dispatch could not compare index state against HEAD for integration target "${integrationBranch}".`,
+      `Run 'git status' in ${projectDir}, repair the repository state, and retry dispatch.`,
+    );
+  }
+  if (indexTree === headTree) {
+    persistDispatchCheckoutCoherenceSnapshot(projectDir, integrationBranch, {
+      headCommit,
+      tree: headTree,
+      recordedAt: new Date().toISOString(),
+    });
+    return { repaired: false, drifted: false, previousCommit: null };
+  }
+
+  const snapshot = loadDispatchCheckoutCoherenceSnapshot(projectDir, integrationBranch);
+  if (snapshot?.headCommit === headCommit) {
+    throw buildUnsafeCheckoutDriftError(
+      integrationBranch,
+      "the index contains staged tracked changes after dispatch already observed this branch tip as coherent",
+      `Inspect 'git status' and 'git diff --cached' in ${projectDir}. Commit/stash/discard those staged changes before retrying. If the branch tip is authoritative and the staged changes should be discarded, run 'git checkout ${integrationBranch} && git reset --hard ${integrationBranch}'.`,
+    );
+  }
+
+  const candidateCommits = snapshot?.headCommit
+    ? [snapshot.headCommit]
+    : listRecentBranchReflogCommits(projectDir, integrationBranch);
+  for (const commit of candidateCommits) {
+    if (commit === headCommit) continue;
+    if (resolveBranchTree(projectDir, commit) !== indexTree) continue;
+
+    const repair = runGit(projectDir, ["reset", "--hard", "HEAD"]);
+    if (repair.status !== 0) {
+      throw new DispatchWorkspaceError(
+        `Dispatch detected shared-checkout drift for integration target "${integrationBranch}" but failed to repair it automatically.`,
+        `Run 'git checkout ${integrationBranch} && git reset --hard ${integrationBranch}' in ${projectDir}, then retry dispatch.`,
+      );
+    }
+
+    const repairedWorktreeDiff = runGit(projectDir, ["diff", "--quiet"]);
+    const repairedIndexDiff = runGit(projectDir, ["diff", "--cached", "--quiet"]);
+    if (
+      repairedWorktreeDiff.status !== 0 ||
+      repairedIndexDiff.status !== 0
+    ) {
+      throw new DispatchWorkspaceError(
+        `Dispatch repaired shared-checkout drift for integration target "${integrationBranch}" but tracked checkout drift is still present.`,
+        `Inspect 'git diff' and 'git diff --cached' in ${projectDir}, clear any remaining tracked changes, and retry dispatch.`,
+      );
+    }
+
+    persistDispatchCheckoutCoherenceSnapshot(projectDir, integrationBranch, {
+      headCommit,
+      tree: headTree,
+      recordedAt: new Date().toISOString(),
+    });
+    return { repaired: true, drifted: true, previousCommit: commit };
+  }
+
+  throw buildUnsafeCheckoutDriftError(
+    integrationBranch,
+    "the index contains staged or drifted tracked changes that do not match a known prior branch tip",
+    `Inspect 'git status' and 'git diff --cached' in ${projectDir}. Commit/stash/discard those changes, then retry dispatch. If the branch tip is authoritative, run 'git checkout ${integrationBranch} && git reset --hard ${integrationBranch}'.`,
+  );
+}
+
 function normalizeTaskSlug(taskRef: string, task?: { title?: string; slugs?: string[] }): string {
   const preferred = task?.slugs?.[0] ?? task?.title ?? taskRef.replace(/^@/, "task");
   const normalized = preferred
@@ -437,6 +686,55 @@ function resolveWorkspacePublicationMode(
     default:
       return existingRecord.integration.publication_mode;
   }
+}
+
+// AC: @dispatch-workspace-configuration ac-6 — detect and handle stale integration target
+// When an existing workspace record's integration.target_branch differs from an
+// explicitly configured dispatch.base_branch, either auto-update (if integration is
+// still pending) or surface the conflict as an error (if integration is active).
+// Only triggers for explicitly configured base branches — auto-detected values
+// (remote-head, current-branch, default) are inherently unstable and should not
+// cause retargeting.
+function resolveStaleIntegrationTarget(
+  existingRecord: LoadedDispatchWorkspaceRecord | undefined,
+  configuredBaseBranch: string,
+  baseBranchSource: ResolvedDispatchWorkspaceConfig["baseBranchSource"],
+  resolvedBaseBranch: string,
+): string {
+  if (!existingRecord) {
+    return resolvedBaseBranch;
+  }
+
+  const recordedTarget = existingRecord.integration.target_branch;
+
+  // Only detect staleness when base_branch is explicitly configured.
+  // Auto-detected sources (remote-head, current-branch, default) are unstable
+  // and should not override a previously recorded target.
+  if (baseBranchSource !== "configured") {
+    return recordedTarget;
+  }
+
+  // No mismatch — the workspace already targets the configured branch
+  if (recordedTarget === configuredBaseBranch) {
+    return recordedTarget;
+  }
+
+  // Mismatch detected: config changed since workspace was provisioned.
+  // When integration is still pending, auto-update to the current config.
+  if (existingRecord.integration.status === "pending") {
+    return configuredBaseBranch;
+  }
+
+  // Active integration state — cannot silently retarget. Surface the conflict.
+  throw new DispatchWorkspaceError(
+    `Workspace for ${existingRecord.task_ref} targets integration branch "${recordedTarget}" ` +
+      `but dispatch.base_branch is now "${configuredBaseBranch}". ` +
+      `The workspace has active integration state (${existingRecord.integration.status}) ` +
+      `and cannot be silently retargeted.`,
+    `Either revert dispatch.base_branch to "${recordedTarget}" to match the existing workspace, ` +
+      `or reset the workspace integration state before re-provisioning ` +
+      `(kspec dispatch workspace reset ${existingRecord.task_ref}).`,
+  );
 }
 
 // AC: @adopt-existing-task-branch-lineage ac-2 — rehydrate adopted branch from remote
@@ -550,6 +848,28 @@ function findExistingWorktreeForBranch(projectDir: string, canonicalBranch: stri
   return parseWorktreeList(projectDir).find((entry) => entry.branch === branchRef)?.path ?? null;
 }
 
+function findExistingWorktreeForBranchUnderRoot(
+  projectDir: string,
+  canonicalBranch: string,
+  worktreeRoot: string,
+): string | null {
+  const branchRef = `refs/heads/${canonicalBranch}`;
+  return parseWorktreeList(projectDir).find((entry) =>
+    entry.branch === branchRef && isPathInside(worktreeRoot, entry.path)
+  )?.path ?? null;
+}
+
+function findForeignWorktreeForBranch(
+  projectDir: string,
+  canonicalBranch: string,
+  worktreeRoot: string,
+): string | null {
+  const branchRef = `refs/heads/${canonicalBranch}`;
+  return parseWorktreeList(projectDir).find((entry) =>
+    entry.branch === branchRef && !isPathInside(worktreeRoot, entry.path)
+  )?.path ?? null;
+}
+
 function findWorktreeByPath(projectDir: string, worktreeDir: string): { path: string; branch: string | null } | null {
   const normalized = path.resolve(worktreeDir);
   return parseWorktreeList(projectDir).find((entry) => path.resolve(entry.path) === normalized) ?? null;
@@ -559,6 +879,34 @@ function pathExists(targetPath: string): boolean {
   return spawnSync("bash", ["-lc", `test -e "${targetPath.replace(/(["\\$`])/g, "\\$1")}"`], {
     stdio: "ignore",
   }).status === 0;
+}
+
+function workspaceRecordBelongsToWorktreeRoot(
+  record: DispatchWorkspaceRecord | LoadedDispatchWorkspaceRecord,
+  worktreeRoot: string,
+): boolean {
+  if (path.resolve(record.worktree_root) !== path.resolve(worktreeRoot)) {
+    return false;
+  }
+  if (!isPathInside(worktreeRoot, record.worktrees.worker.path)) {
+    return false;
+  }
+  return record.worktrees.reviewer == null
+    || isPathInside(worktreeRoot, record.worktrees.reviewer.path);
+}
+
+function metadataBelongsToWorktreeRoot(
+  metadata: DispatchWorkspaceMetadata,
+  worktreeRoot: string,
+): boolean {
+  if (path.resolve(metadata.worktreeRoot) !== path.resolve(worktreeRoot)) {
+    return false;
+  }
+  if (!isPathInside(worktreeRoot, metadata.workerWorktreeDir)) {
+    return false;
+  }
+  return metadata.reviewerWorktreeDir == null
+    || isPathInside(worktreeRoot, metadata.reviewerWorktreeDir);
 }
 
 function defaultBranchProvenance(): DispatchWorkspaceBranchProvenance {
@@ -644,7 +992,9 @@ function resolveIntegrationRecord(
   return {
     status,
     target_branch: targetBranch,
-    target_commit: existingRecord?.integration.target_commit ?? targetCommit,
+    target_commit: (existingRecord && existingRecord.integration.target_branch === targetBranch)
+      ? existingRecord.integration.target_commit
+      : targetCommit,
     publication_mode: publicationMode,
     outcome: resolveIntegrationOutcome(publicationMode, status),
     detail: cleanupState?.integrationState ? `integration:${cleanupState.integrationState}` : existingRecord?.integration.detail ?? null,
@@ -825,7 +1175,11 @@ function reconcileWorkspaceHealth(
     }
   }
 
-  const workerRegistered = findExistingWorktreeForBranch(projectDir, record.canonical_branch);
+  const workerRegistered = findExistingWorktreeForBranchUnderRoot(
+    projectDir,
+    record.canonical_branch,
+    record.worktree_root,
+  );
   const workerExists = pathExists(record.worktrees.worker.path);
   if (!workerExists || (!workerRegistered && record.lifecycle_state !== "closed")) {
     issues.push(buildIssue(
@@ -923,12 +1277,34 @@ function toMetadata(record: DispatchWorkspaceRecord): DispatchWorkspaceMetadata 
   };
 }
 
-async function loadWorkspaceRecord(
+async function loadWorkspaceRecordForWorktreeRoot(
   projectDir: string,
   taskRef: string,
+  worktreeRoot: string,
 ): Promise<LoadedDispatchWorkspaceRecord | undefined> {
   const ctx = await initContext(projectDir);
-  return findDispatchWorkspaceByTaskRef(ctx, taskRef, { includeClosed: true });
+  const records = await loadDispatchWorkspaceRegistry(ctx);
+  return records
+    .filter((record) =>
+      record.task_ref === taskRef && workspaceRecordBelongsToWorktreeRoot(record, worktreeRoot)
+    )
+    .sort((a, b) => a.timestamps.updated_at < b.timestamps.updated_at ? 1 : -1)[0];
+}
+
+async function loadForeignOpenWorkspaceRecord(
+  projectDir: string,
+  taskRef: string,
+  worktreeRoot: string,
+): Promise<LoadedDispatchWorkspaceRecord | undefined> {
+  const ctx = await initContext(projectDir);
+  const records = await loadDispatchWorkspaceRegistry(ctx);
+  return records
+    .filter((record) =>
+      record.task_ref === taskRef
+      && record.lifecycle_state !== "closed"
+      && !workspaceRecordBelongsToWorktreeRoot(record, worktreeRoot)
+    )
+    .sort((a, b) => a.timestamps.updated_at < b.timestamps.updated_at ? 1 : -1)[0];
 }
 
 /**
@@ -1045,7 +1421,11 @@ export async function persistDispatchWorkspaceMetadata(
   projectDir: string,
   metadata: DispatchWorkspaceMetadata,
 ): Promise<string> {
-  const existingRecord = await loadWorkspaceRecord(projectDir, metadata.taskRef);
+  const existingRecord = await loadWorkspaceRecordForWorktreeRoot(
+    projectDir,
+    metadata.taskRef,
+    metadata.worktreeRoot,
+  );
   if (!existingRecord) {
     throw new DispatchWorkspaceError(
       `Cannot persist dispatch metadata for ${metadata.taskRef}: workspace registry record is missing.`,
@@ -1075,31 +1455,44 @@ async function findWorkspaceRegistrationByTaskRef(
   taskRef: string,
   task?: { title?: string; slugs?: string[] },
 ): Promise<{ canonicalBranch: string; workerWorktreeDir: string; metadata: DispatchWorkspaceMetadata } | null> {
+  const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
   // Try the deterministic dispatch/task/* branch first (most common path).
   const slug = normalizeTaskSlug(taskRef, task);
   const shortId = shortTaskId(taskRef);
   const syntheticBranch = `dispatch/task/${slug}/${shortId}`;
-  const workerWorktreeDir = findExistingWorktreeForBranch(projectDir, syntheticBranch);
+  const workerWorktreeDir = findExistingWorktreeForBranchUnderRoot(
+    projectDir,
+    syntheticBranch,
+    resolvedConfig.worktreeRoot,
+  );
   if (workerWorktreeDir) {
     const metadata = await readWorkspaceMetadata(workerWorktreeDir);
-    if (metadata) {
+    if (metadata && metadataBelongsToWorktreeRoot(metadata, resolvedConfig.worktreeRoot)) {
       return { canonicalBranch: syntheticBranch, workerWorktreeDir, metadata };
     }
   }
 
   // Fall back to registry lookup — adopted branches use a non-dispatch canonical
   // branch name, so the synthetic prefix won't match.
-  const record = await loadWorkspaceRecord(projectDir, taskRef);
+  const record = await loadWorkspaceRecordForWorktreeRoot(
+    projectDir,
+    taskRef,
+    resolvedConfig.worktreeRoot,
+  );
   if (!record) {
     return null;
   }
   const registryBranch = record.canonical_branch;
-  const registryWorktreeDir = findExistingWorktreeForBranch(projectDir, registryBranch);
+  const registryWorktreeDir = findExistingWorktreeForBranchUnderRoot(
+    projectDir,
+    registryBranch,
+    resolvedConfig.worktreeRoot,
+  );
   if (!registryWorktreeDir) {
     return null;
   }
   const metadata = await readWorkspaceMetadata(registryWorktreeDir);
-  if (!metadata) {
+  if (!metadata || !metadataBelongsToWorktreeRoot(metadata, resolvedConfig.worktreeRoot)) {
     return null;
   }
   return { canonicalBranch: registryBranch, workerWorktreeDir: registryWorktreeDir, metadata };
@@ -1115,7 +1508,11 @@ async function recoverWorkspaceRecordFromMetadata(
     return null;
   }
 
-  const existingRecord = await loadWorkspaceRecord(projectDir, metadata.taskRef);
+  const existingRecord = await loadWorkspaceRecordForWorktreeRoot(
+    projectDir,
+    metadata.taskRef,
+    resolvedConfig.worktreeRoot,
+  );
   if (existingRecord) {
     return existingRecord;
   }
@@ -1294,12 +1691,25 @@ async function ensureUsableWorktreeRoot(
   }
 }
 
-async function assertPathSafeForWorktree(worktreeDir: string, projectDir: string): Promise<void> {
+async function assertPathSafeForWorktree(
+  worktreeDir: string,
+  projectDir: string,
+  expectedBranch?: string,
+): Promise<void> {
   const existing = await fs.stat(worktreeDir).catch(() => null);
   if (!existing) return;
 
-  const registered = parseWorktreeList(projectDir).some((entry) => entry.path === worktreeDir);
-  if (registered) return;
+  const registration = findWorktreeByPath(projectDir, worktreeDir);
+  if (registration) {
+    const registeredBranch = normalizeBranchRef(registration.branch);
+    if (expectedBranch && registeredBranch !== expectedBranch) {
+      throw new DispatchWorkspaceError(
+        `Dispatch worktree path "${worktreeDir}" is already registered to branch "${registeredBranch ?? "(detached)"}", not "${expectedBranch}".`,
+        "Remove the conflicting worktree or choose a different dispatch.worktree_root before retrying.",
+      );
+    }
+    return;
+  }
 
   const entries = await fs.readdir(worktreeDir).catch(() => []);
   if (entries.length > 0) {
@@ -1322,7 +1732,10 @@ export async function resolveDispatchWorkspaceConfig(
     : path.resolve(projectDir, rawRoot);
 
   if (configuredBaseBranch) {
-    const resolved = resolveBranchStartPoint(projectDir, configuredBaseBranch);
+    let resolved = resolveBranchStartPoint(projectDir, configuredBaseBranch);
+    if (!resolved && ensureLocalDispatchIntegrationBranchExists(projectDir, configuredBaseBranch)) {
+      resolved = resolveBranchStartPoint(projectDir, configuredBaseBranch);
+    }
     if (!resolved) {
       throw new DispatchWorkspaceError(
         `Configured dispatch.base_branch "${configuredBaseBranch}" does not exist in this repository.`,
@@ -1383,6 +1796,119 @@ export async function resolveDispatchWorkspaceConfig(
       'no current branch, and default "main" does not exist.',
     "Set dispatch.base_branch in kspec.config.yaml, or ensure the repository has a main branch.",
   );
+}
+
+export interface DispatchIntegrationMutationScope {
+  projectDir: string;
+  integrationBranch: string;
+  currentBranch: string | null;
+  targetBranchCheckedOut: boolean;
+}
+
+function ensureLocalDispatchIntegrationBranchExists(
+  projectDir: string,
+  integrationBranch: string,
+): boolean {
+  if (refExists(projectDir, `refs/heads/${integrationBranch}`)) {
+    return true;
+  }
+  if (tryRestoreBranchFromRemote(projectDir, integrationBranch)) {
+    return true;
+  }
+
+  for (const remote of listGitRemotes(projectDir)) {
+    const fetchResult = runGit(projectDir, ["fetch", remote, integrationBranch], {
+      timeout: 30_000,
+    });
+    if (fetchResult.status !== 0) {
+      console.debug(
+        `[dispatch] Failed to fetch integration branch "${integrationBranch}" from ${remote}: ${fetchResult.stderr || fetchResult.stdout}`,
+      );
+      continue;
+    }
+    if (tryRestoreBranchFromRemote(projectDir, integrationBranch)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+export function resolveDispatchIntegrationMutationScope(
+  projectDir: string,
+  integrationBranch: string,
+): DispatchIntegrationMutationScope {
+  const currentBranch = resolveCurrentBranch(projectDir);
+  if (!currentBranch || currentBranch !== integrationBranch) {
+    if (!ensureLocalDispatchIntegrationBranchExists(projectDir, integrationBranch)) {
+      throw new DispatchWorkspaceError(
+        `Dispatch cannot determine a safe mutation surface for integration target "${integrationBranch}" in ${projectDir}.`,
+        `Create or fetch "${integrationBranch}" in ${projectDir}, or verify that a remote branch named "${integrationBranch}" exists before retrying.`,
+      );
+    }
+
+    const checkedOutWorktree = findExistingWorktreeForBranch(projectDir, integrationBranch);
+    if (checkedOutWorktree) {
+      throw new DispatchWorkspaceError(
+        `Dispatch cannot safely mutate integration target "${integrationBranch}" from ${projectDir} because that branch is currently checked out in worktree "${checkedOutWorktree}".`,
+        `Check out a different branch in "${checkedOutWorktree}" or run the integration-target operation from that worktree before retrying.`,
+      );
+    }
+  }
+
+  if (currentBranch === integrationBranch) {
+    ensureDispatchIntegrationTargetCheckoutCoherence(projectDir, integrationBranch);
+  }
+
+  return {
+    projectDir,
+    integrationBranch,
+    currentBranch,
+    targetBranchCheckedOut: currentBranch === integrationBranch,
+  };
+}
+
+export function fastForwardDispatchIntegrationBranch(
+  projectDir: string,
+  integrationBranch: string,
+  remoteRef: string,
+): GitResult {
+  const localCommit = resolveCommit(projectDir, integrationBranch);
+  const remoteCommit = resolveCommit(projectDir, remoteRef);
+  if (localCommit && remoteCommit && localCommit === remoteCommit) {
+    return {
+      status: 0,
+      stdout: "Already up to date.",
+      stderr: "",
+    };
+  }
+
+  const ffCheck = runGit(projectDir, ["merge-base", "--is-ancestor", integrationBranch, remoteRef]);
+  if (ffCheck.status !== 0) {
+    return ffCheck.status === 1
+      ? {
+          status: 1,
+          stdout: "",
+          stderr: `fatal: Not possible to fast-forward integration target "${integrationBranch}" to ${remoteRef}.`,
+        }
+      : ffCheck;
+  }
+
+  const updateArgs = ["update-ref", `refs/heads/${integrationBranch}`, remoteRef];
+  if (localCommit) {
+    updateArgs.push(localCommit);
+  }
+  return runGit(projectDir, updateArgs);
+}
+
+export function runDispatchIntegrationTargetGit(
+  projectDir: string,
+  integrationBranch: string,
+  args: string[],
+  options: RunGitOptions = {},
+): GitResult {
+  const scope = resolveDispatchIntegrationMutationScope(projectDir, integrationBranch);
+  return runGit(scope.projectDir, args, options);
 }
 
 export function resolveDispatchWorkspaceCleanupState(
@@ -1527,9 +2053,13 @@ export async function reconcileDispatchWorkspaceRegistry(
   taskStatusByRef?: Map<string, ResolveDispatchWorkspaceCleanupStateOptions["taskStatus"]>,
   activeRoleByTaskRef?: Map<string, RegistryRole>,
 ): Promise<void> {
+  const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
   const ctx = await initContext(projectDir);
   const records = await loadDispatchWorkspaceRegistry(ctx);
-  const nonClosedRecords = records.filter((r) => r.lifecycle_state !== "closed");
+  const nonClosedRecords = records.filter((r) =>
+    r.lifecycle_state !== "closed"
+    && workspaceRecordBelongsToWorktreeRoot(r, resolvedConfig.worktreeRoot)
+  );
   if (nonClosedRecords.length === 0) return;
 
   // Use the first non-closed record's task_ref for lock/commit attribution.
@@ -1686,6 +2216,205 @@ function deleteRehydratedAdoptedBranch(projectDir: string, branch: string): void
   );
 }
 
+// ─── Dispatch Branch Push Lifecycle ──────────────────────────────────────────
+
+/**
+ * Check whether a branch has upstream tracking configured.
+ * AC: @dispatch-remote-branch-sync ac-first-push-sets-tracking
+ */
+function hasUpstreamTracking(projectDir: string, branch: string): boolean {
+  const result = runGit(projectDir, ["rev-parse", "--verify", "--quiet", `${branch}@{u}`]);
+  return result.status === 0;
+}
+
+/**
+ * Check whether a local branch has commits ahead of its upstream.
+ * Returns false when there is no upstream or on error.
+ */
+function isLocalBranchAheadOfUpstream(projectDir: string, branch: string): boolean {
+  const result = runGit(projectDir, [
+    "rev-list", "--left-right", "--count", `${branch}...${branch}@{u}`,
+  ]);
+  if (result.status !== 0) return false;
+  const [aheadStr] = result.stdout.trim().split("\t");
+  const ahead = parseInt(aheadStr, 10);
+  return ahead > 0;
+}
+
+export interface PushDispatchBranchResult {
+  pushed: boolean;
+  firstPush: boolean;
+  error: string | null;
+}
+
+/**
+ * Push a dispatch branch to remote after an invocation completes.
+ *
+ * Detects whether upstream tracking exists to decide first-push vs normal-push:
+ * - First push: uses --force-with-lease to safely replace stale remote refs,
+ *   then sets upstream tracking with -u.
+ * - Subsequent push: normal push (tracking already established).
+ *
+ * AC: @dispatch-remote-branch-sync ac-first-push-sets-tracking
+ * AC: @dispatch-remote-branch-sync ac-first-push-replaces-stale-ref
+ * AC: @dispatch-remote-branch-sync ac-subsequent-push
+ * AC: @dispatch-remote-branch-sync ac-push-non-fatal
+ * AC: @dispatch-remote-branch-sync ac-no-remote
+ */
+export function pushDispatchBranch(
+  projectDir: string,
+  canonicalBranch: string,
+  remote: string,
+): PushDispatchBranchResult {
+  // AC: @dispatch-remote-branch-sync ac-no-remote
+  if (!remote) {
+    return { pushed: false, firstPush: false, error: null };
+  }
+
+  const isFirstPush = !hasUpstreamTracking(projectDir, canonicalBranch);
+
+  if (isFirstPush) {
+    // AC: @dispatch-remote-branch-sync ac-first-push-sets-tracking
+    // AC: @dispatch-remote-branch-sync ac-first-push-replaces-stale-ref
+    // Use --force-with-lease to safely replace stale remote refs from previous runs.
+    // --force-with-lease verifies the remote ref hasn't been updated by a concurrent
+    // writer (it succeeds if the remote ref is empty or matches our expected value).
+    const result = runGit(projectDir, [
+      "push", "-u", "--force-with-lease", remote, canonicalBranch,
+    ]);
+    if (result.status !== 0) {
+      // AC: @dispatch-remote-branch-sync ac-push-non-fatal
+      return {
+        pushed: false,
+        firstPush: true,
+        error: result.stderr || result.stdout || "push failed",
+      };
+    }
+    return { pushed: true, firstPush: true, error: null };
+  }
+
+  // AC: @dispatch-remote-branch-sync ac-subsequent-push
+  // Check if there are commits to push before attempting
+  if (!isLocalBranchAheadOfUpstream(projectDir, canonicalBranch)) {
+    return { pushed: false, firstPush: false, error: null };
+  }
+  const result = runGit(projectDir, ["push", remote, canonicalBranch]);
+  if (result.status !== 0) {
+    // AC: @dispatch-remote-branch-sync ac-push-non-fatal
+    return {
+      pushed: false,
+      firstPush: false,
+      error: result.stderr || result.stdout || "push failed",
+    };
+  }
+  return { pushed: true, firstPush: false, error: null };
+}
+
+export interface PushIntegrationTargetResult {
+  pushed: boolean;
+  skipped: boolean;
+  error: string | null;
+}
+
+/**
+ * Push the integration target branch to remote.
+ *
+ * Called after reviewer merges and during periodic sync when the local
+ * integration target has commits not yet on the remote.
+ *
+ * AC: @dispatch-remote-branch-sync ac-push-target-after-merge
+ * AC: @dispatch-remote-branch-sync ac-push-target-periodic
+ * AC: @dispatch-remote-branch-sync ac-push-non-fatal
+ * AC: @dispatch-remote-branch-sync ac-no-remote
+ */
+export function pushIntegrationTarget(
+  projectDir: string,
+  integrationBranch: string,
+  remote: string,
+): PushIntegrationTargetResult {
+  // AC: @dispatch-remote-branch-sync ac-no-remote
+  if (!remote) {
+    return { pushed: false, skipped: true, error: null };
+  }
+
+  // Check if the local branch is ahead of remote before pushing
+  const hasTracking = hasUpstreamTracking(projectDir, integrationBranch);
+  if (hasTracking && !isLocalBranchAheadOfUpstream(projectDir, integrationBranch)) {
+    return { pushed: false, skipped: true, error: null };
+  }
+
+  // For integration target, always use -u to ensure tracking is established
+  let result: GitResult;
+  try {
+    result = runDispatchIntegrationTargetGit(projectDir, integrationBranch, [
+      "push",
+      "-u",
+      remote,
+      integrationBranch,
+    ]);
+  } catch (err) {
+    if (err instanceof DispatchWorkspaceError) {
+      return {
+        pushed: false,
+        skipped: false,
+        error: `${err.message} Resolution: ${err.suggestion}`,
+      };
+    }
+    throw err;
+  }
+  if (result.status !== 0) {
+    // AC: @dispatch-remote-branch-sync ac-push-non-fatal
+    return {
+      pushed: false,
+      skipped: false,
+      error: result.stderr || result.stdout || "push failed",
+    };
+  }
+  return { pushed: true, skipped: false, error: null };
+}
+
+/**
+ * Delete a remote dispatch branch ref during workspace cleanup.
+ * Non-fatal: logs a warning on failure but does not throw.
+ *
+ * AC: @dispatch-remote-branch-sync ac-cleanup-remote-branch
+ * AC: @dispatch-remote-branch-sync ac-no-remote
+ */
+export function deleteRemoteDispatchBranch(
+  projectDir: string,
+  canonicalBranch: string,
+  remote: string,
+): { deleted: boolean; error: string | null } {
+  // AC: @dispatch-remote-branch-sync ac-no-remote
+  if (!remote) {
+    return { deleted: false, error: null };
+  }
+
+  // Only delete if the branch has been pushed (has upstream tracking)
+  if (!hasUpstreamTracking(projectDir, canonicalBranch)) {
+    return { deleted: false, error: null };
+  }
+
+  const result = runGit(projectDir, ["push", remote, "--delete", canonicalBranch]);
+  if (result.status !== 0) {
+    // AC: @dispatch-remote-branch-sync ac-cleanup-remote-branch — deletion failure is non-fatal
+    return {
+      deleted: false,
+      error: result.stderr || result.stdout || "remote branch deletion failed",
+    };
+  }
+  return { deleted: true, error: null };
+}
+
+/**
+ * Resolve the first configured git remote name, or null if none.
+ * AC: @dispatch-remote-branch-sync ac-no-remote
+ */
+export function resolveDispatchRemote(projectDir: string): string | null {
+  const remotes = listGitRemotes(projectDir);
+  return remotes.length > 0 ? remotes[0] : null;
+}
+
 function listDispatchBranches(projectDir: string): string[] {
   const result = runGit(projectDir, [
     "for-each-ref",
@@ -1702,7 +2431,12 @@ export async function reconcileDispatchWorkspaceLifecycle(
   options: ReconcileDispatchWorkspaceLifecycleOptions,
 ): Promise<ProvisionedDispatchWorkspace | null> {
   const { projectDir, taskRef, cleanupState, task } = options;
-  const existingRecord = await loadWorkspaceRecord(projectDir, taskRef);
+  const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
+  const existingRecord = await loadWorkspaceRecordForWorktreeRoot(
+    projectDir,
+    taskRef,
+    resolvedConfig.worktreeRoot,
+  );
   if (!existingRecord) {
     return null;
   }
@@ -1762,7 +2496,12 @@ export async function cleanupReviewerDispatchWorkspace(
   task?: { title?: string; slugs?: string[] },
 ): Promise<DispatchWorkspaceReapResult> {
   const existing = await findWorkspaceRegistrationByTaskRef(projectDir, taskRef, task);
-  const existingRecord = await loadWorkspaceRecord(projectDir, taskRef);
+  const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
+  const existingRecord = await loadWorkspaceRecordForWorktreeRoot(
+    projectDir,
+    taskRef,
+    resolvedConfig.worktreeRoot,
+  );
   if (!existing || !existing.metadata.reviewerWorktreeDir || !existingRecord) {
     return { taskRef, action: "none", blockedReason: null };
   }
@@ -1777,7 +2516,11 @@ export async function cleanupReviewerDispatchWorkspace(
   // concurrent writer (e.g. handleStateChange → reconcileDispatchWorkspaceLifecycle)
   // updates the registry between our initial read and the write below.
   await withDispatchShadowMutationLock(projectDir, taskRef, async () => {
-    const latestRecord = await loadWorkspaceRecord(projectDir, taskRef);
+    const latestRecord = await loadWorkspaceRecordForWorktreeRoot(
+      projectDir,
+      taskRef,
+      resolvedConfig.worktreeRoot,
+    );
     if (!latestRecord) return;
 
     const now = new Date().toISOString();
@@ -1862,6 +2605,25 @@ export async function reapDispatchWorkspace(
     existing.metadata.worktreeRoot,
     existing.workerWorktreeDir,
   );
+  // AC: @dispatch-remote-branch-sync ac-cleanup-remote-branch
+  // Delete the remote dispatch branch before deleting the local one.
+  // Non-fatal: failure is logged but does not block cleanup.
+  if (existing.metadata.branchProvenance.ownership !== "adopted") {
+    const remote = resolveDispatchRemote(projectDir);
+    if (remote) {
+      const remoteResult = deleteRemoteDispatchBranch(
+        projectDir,
+        existing.metadata.canonicalBranch,
+        remote,
+      );
+      if (remoteResult.error) {
+        console.warn(
+          `[dispatch] Failed to delete remote branch "${existing.metadata.canonicalBranch}" on ${remote}: ${remoteResult.error}`,
+        );
+      }
+    }
+  }
+
   // AC: @adopted-branch-cleanup-and-recoverability ac-1, ac-2, ac-4
   // Dispatcher-managed branches are always deleted on cleanup.
   // Adopted branches are preserved unless they were rehydrated (local ref
@@ -1951,6 +2713,14 @@ export async function reconcileDispatchWorkspaceArtifacts(
     if (findWorktreeByPath(projectDir, candidate)) {
       continue;
     }
+    const metadata = await readWorkspaceMetadata(candidate);
+    if (metadata && !metadataBelongsToWorktreeRoot(metadata, resolvedConfig.worktreeRoot)) {
+      continue;
+    }
+    const gitMarker = await fs.stat(path.join(candidate, ".git")).catch(() => null);
+    if (gitMarker) {
+      continue;
+    }
     await fs.rm(candidate, { recursive: true, force: true });
   }
 
@@ -2000,9 +2770,23 @@ export async function provisionDispatchWorkspace(
   const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
   await ensureUsableWorktreeRoot(projectDir, resolvedConfig.worktreeRoot);
 
-  const existingRecord = await loadWorkspaceRecord(projectDir, taskRef);
+  const existingRecord = await loadWorkspaceRecordForWorktreeRoot(
+    projectDir,
+    taskRef,
+    resolvedConfig.worktreeRoot,
+  );
+  const foreignOpenRecord = existingRecord
+    ? undefined
+    : await loadForeignOpenWorkspaceRecord(projectDir, taskRef, resolvedConfig.worktreeRoot);
   const taskSlug = existingRecord?.task_slug ?? normalizeTaskSlug(taskRef, task);
   const shortId = shortTaskId(taskRef);
+
+  if (foreignOpenRecord) {
+    throw new DispatchWorkspaceError(
+      `Task ${taskRef} already has an open dispatch workspace in foreign worktree root "${foreignOpenRecord.worktree_root}" (${foreignOpenRecord.worktrees.worker.path}).`,
+      `Resume work from that checkout, or close/reset workspace "${foreignOpenRecord.workspace_id}" before provisioning under "${resolvedConfig.worktreeRoot}".`,
+    );
+  }
 
   // AC: @adopt-existing-task-branch-lineage ac-1, ac-2, ac-3, ac-4
   // When no workspace record exists but submission linkage provides a branch,
@@ -2060,19 +2844,35 @@ export async function provisionDispatchWorkspace(
       : defaultBranchProvenance());
   const workspaceId = existingRecord?.workspace_id ?? workspaceIdFor(taskRef);
   const workerWorktreeDir = existingRecord?.worktrees.worker.path
-    ?? findExistingWorktreeForBranch(projectDir, canonicalBranch)
+    ?? findExistingWorktreeForBranchUnderRoot(projectDir, canonicalBranch, resolvedConfig.worktreeRoot)
     ?? path.join(resolvedConfig.worktreeRoot, `${taskSlug}-${shortId}`);
   const reviewerWorktreeDir = existingRecord?.worktrees.reviewer?.path
     ?? path.join(resolvedConfig.worktreeRoot, `${taskSlug}-${shortId}-review`);
-  const baseBranch = existingRecord?.resolved_base_branch ?? resolvedConfig.baseBranch;
+  // AC: @dispatch-workspace-configuration ac-6 — detect stale integration target
+  // when dispatch.base_branch config has changed since the workspace was provisioned.
+  const mergeTargetBranch = resolveStaleIntegrationTarget(
+    existingRecord,
+    resolvedConfig.baseBranch,
+    resolvedConfig.baseBranchSource,
+    existingRecord?.resolved_base_branch ?? resolvedConfig.baseBranch,
+  );
+  // When the integration target was updated to match config, also update resolved_base_branch.
+  const baseBranch = mergeTargetBranch === resolvedConfig.baseBranch
+    ? resolvedConfig.baseBranch
+    : (existingRecord?.resolved_base_branch ?? resolvedConfig.baseBranch);
   const baseBranchPoint = resolveBaseBranchPoint(
     projectDir,
     canonicalBranch,
     resolvedConfig.baseBranchStartPoint,
     existingRecord,
   );
-  const mergeTargetBranch = existingRecord?.integration.target_branch ?? baseBranch;
-  const integrationTargetCommit = existingRecord?.integration.target_commit ?? baseBranchPoint;
+  // When the integration target changed, resolve the commit from the new base branch
+  // rather than reusing the stale base_branch_point from the existing record.
+  const integrationTargetUpdated = existingRecord
+    && existingRecord.integration.target_branch !== mergeTargetBranch;
+  const integrationTargetCommit = integrationTargetUpdated
+    ? resolveCommit(projectDir, resolvedConfig.baseBranchStartPoint)
+    : (existingRecord?.integration.target_commit ?? baseBranchPoint);
   const publicationMode = resolveWorkspacePublicationMode(projectDir, existingRecord, resolvedConfig.publicationMode);
   const now = new Date().toISOString();
   const provisioningRecord: DispatchWorkspaceRecord = {
@@ -2118,8 +2918,23 @@ export async function provisionDispatchWorkspace(
   };
   // Perform git worktree operations before acquiring the shadow mutation lock
   // so we don't hold the lock during potentially slow git operations.
-  await assertPathSafeForWorktree(workerWorktreeDir, projectDir);
-  const existingWorkerWorktree = findExistingWorktreeForBranch(projectDir, canonicalBranch);
+  await assertPathSafeForWorktree(workerWorktreeDir, projectDir, canonicalBranch);
+  const existingWorkerWorktree = findExistingWorktreeForBranchUnderRoot(
+    projectDir,
+    canonicalBranch,
+    resolvedConfig.worktreeRoot,
+  );
+  const foreignWorkerWorktree = findForeignWorktreeForBranch(
+    projectDir,
+    canonicalBranch,
+    resolvedConfig.worktreeRoot,
+  );
+  if (!existingWorkerWorktree && foreignWorkerWorktree) {
+    throw new DispatchWorkspaceError(
+      `Dispatch canonical branch "${canonicalBranch}" is already attached to foreign worktree "${foreignWorkerWorktree}" outside this checkout's worktree root "${resolvedConfig.worktreeRoot}".`,
+      `Remove or relocate the foreign worktree in the other checkout, then retry dispatch from "${resolvedConfig.worktreeRoot}".`,
+    );
+  }
   if (!existingWorkerWorktree) {
     const branchExists = refExists(projectDir, `refs/heads/${canonicalBranch}`);
     if (branchExists) {
@@ -2227,7 +3042,12 @@ export async function markDispatchWorkspaceActive(options: {
   taskRef: string;
   role: DispatchWorkspaceRole;
 }): Promise<ProvisionedDispatchWorkspace | null> {
-  const existingRecord = await loadWorkspaceRecord(options.projectDir, options.taskRef);
+  const resolvedConfig = await resolveDispatchWorkspaceConfig(options.projectDir);
+  const existingRecord = await loadWorkspaceRecordForWorktreeRoot(
+    options.projectDir,
+    options.taskRef,
+    resolvedConfig.worktreeRoot,
+  );
   if (!existingRecord) return null;
 
   const now = new Date().toISOString();
@@ -2277,7 +3097,12 @@ export async function markDispatchWorkspaceIdle(options: {
   taskRef: string;
   taskStatus: ResolveDispatchWorkspaceCleanupStateOptions["taskStatus"] | null;
 }): Promise<ProvisionedDispatchWorkspace | null> {
-  const existingRecord = await loadWorkspaceRecord(options.projectDir, options.taskRef);
+  const resolvedConfig = await resolveDispatchWorkspaceConfig(options.projectDir);
+  const existingRecord = await loadWorkspaceRecordForWorktreeRoot(
+    options.projectDir,
+    options.taskRef,
+    resolvedConfig.worktreeRoot,
+  );
   if (!existingRecord) return null;
 
   // If a lifecycle reconciliation (e.g. task completed/cancelled) has already
@@ -2350,7 +3175,12 @@ export async function getDispatchWorkspaceHealth(
   options: ProvisionDispatchWorkspaceOptions,
 ): Promise<DispatchWorkspaceHealth> {
   const { projectDir, taskRef, role = "worker" } = options;
-  const existingRecord = await loadWorkspaceRecord(projectDir, taskRef);
+  const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
+  const existingRecord = await loadWorkspaceRecordForWorktreeRoot(
+    projectDir,
+    taskRef,
+    resolvedConfig.worktreeRoot,
+  );
   if (!existingRecord) {
     return {
       exists: false,
@@ -2456,8 +3286,9 @@ interface DiscoverySubmissionLinkage {
 }
 
 /**
- * Attempt workspace discovery and recovery for a `pending_review` or
- * `needs_work` dispatch entry that has no healthy local workspace candidate.
+ * Attempt workspace discovery and recovery for a resumable dispatch entry
+ * (`in_progress`, `pending_review`, or `needs_work`) that has no healthy
+ * local workspace candidate.
  *
  * Applies explicit precedence ordering (AC-4):
  *   1. Existing registry state
@@ -2493,10 +3324,15 @@ export async function discoverWorkspaceForReviewOrFixCycle(options: {
   const { projectDir, taskRef, role = "worker", task } = options;
   const diagnostics: WorkspaceDiscoveryDiagnostic[] = [];
   const branchSignals: BranchSignal[] = [];
+  const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
 
   // Phase 1: Registry state — the highest precedence source.
   // AC: @review-and-fix-cycle-workspace-discovery-before-discard ac-1, ac-4
-  const existingRecord = await loadWorkspaceRecord(projectDir, taskRef);
+  const existingRecord = await loadWorkspaceRecordForWorktreeRoot(
+    projectDir,
+    taskRef,
+    resolvedConfig.worktreeRoot,
+  );
   if (existingRecord) {
     branchSignals.push({
       source: "registry-state",
@@ -2530,7 +3366,6 @@ export async function discoverWorkspaceForReviewOrFixCycle(options: {
   // AC: @review-and-fix-cycle-workspace-discovery-before-discard ac-1
   let metadataCandidate: { branch: string; worktreeDir: string } | null = null;
   try {
-    const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
     const worktreeEntries = parseWorktreeList(projectDir);
     const entriesUnderRoot = worktreeEntries.filter((entry) =>
       isPathInside(resolvedConfig.worktreeRoot, entry.path)
@@ -2557,7 +3392,6 @@ export async function discoverWorkspaceForReviewOrFixCycle(options: {
   // to reconstruct the registry record from the worktree metadata.
   if (metadataCandidate && !existingRecord) {
     try {
-      const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
       const recovered = await recoverWorkspaceRecordFromMetadata(
         projectDir,
         resolvedConfig,
@@ -2614,12 +3448,15 @@ export async function discoverWorkspaceForReviewOrFixCycle(options: {
     if (branchAvailable && !existingRecord) {
       // Adopt the submission branch as the canonical branch for this task.
       try {
-        const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
         const now = new Date().toISOString();
         const taskSlug = normalizeTaskSlug(taskRef, task);
         const shortId = shortTaskId(taskRef);
         const workspaceId = workspaceIdFor(taskRef);
-        const workerWorktreeDir = findExistingWorktreeForBranch(projectDir, submissionLinkage.branch)
+        const workerWorktreeDir = findExistingWorktreeForBranchUnderRoot(
+          projectDir,
+          submissionLinkage.branch,
+          resolvedConfig.worktreeRoot,
+        )
           ?? path.join(resolvedConfig.worktreeRoot, `${taskSlug}-${shortId}`);
         const baseBranch = resolvedConfig.baseBranch;
         const baseBranchPoint = resolvedConfig.baseBranchStartPoint;
@@ -2715,10 +3552,13 @@ export async function discoverWorkspaceForReviewOrFixCycle(options: {
         branch: syntheticBranch,
       });
       try {
-        const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
         const now = new Date().toISOString();
         const workspaceId = workspaceIdFor(taskRef);
-        const workerWorktreeDir = findExistingWorktreeForBranch(projectDir, syntheticBranch)
+        const workerWorktreeDir = findExistingWorktreeForBranchUnderRoot(
+          projectDir,
+          syntheticBranch,
+          resolvedConfig.worktreeRoot,
+        )
           ?? path.join(resolvedConfig.worktreeRoot, `${taskSlug}-${shortId}`);
         const baseBranch = resolvedConfig.baseBranch;
         const baseBranchPoint = resolvedConfig.baseBranchStartPoint;

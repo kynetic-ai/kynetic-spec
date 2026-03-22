@@ -2,18 +2,16 @@
  * E2E Tests for Agent and Dispatch View
  *
  * Tests verify the /agents page renders agent definitions, dispatch status,
- * and active invocations correctly.
+ * and active invocations correctly. Agent definition editing (name, description,
+ * adapter, capabilities, etc.) is tested here.
+ *
+ * Dispatch trigger editing tests have moved to automation.spec.ts — trigger
+ * editing now lives in the automation view per @ui-automation-view ac-5.
  *
  * Covered ACs:
  * - @ui-agent-dispatch ac-1: Agent definitions show name, triggers, active/completed counts
  * - @ui-agent-dispatch ac-2: Dispatch running with stop button and active invocations
  * - @ui-agent-dispatch ac-3: Dispatch stopped with no active invocations
- * - @ui-agent-dispatch ac-4: Agent editing with inline edit form
- * - @ui-agent-dispatch ac-5: Trigger rows display filter criteria with inline editing
- * - @ui-agent-dispatch ac-6: New task.ready/task.needs_work triggers default automation to eligible
- * - @ui-agent-dispatch ac-7: Tag filter with removable chips
- * - @ui-agent-dispatch ac-8: Priority filter threshold editing
- * - @ui-agent-dispatch ac-9: Save persists full dispatch rules including filters
  */
 
 import { test, expect } from '../fixtures/test-base';
@@ -121,6 +119,30 @@ test.describe('Agent and Dispatch View', () => {
       const triggers = card.getByTestId('agent-trigger');
       await expect(triggers).toHaveCount(1);
       await expect(triggers.first()).toContainText('pending_review');
+    });
+
+    // AC: @ui-agent-dispatch ac-1 — Read-only filter badges on agent cards
+    test('agent card shows filter badges for automation, tags, and priority', async ({ page, daemon }) => {
+      await page.goto('/agents');
+      await expect(page.getByTestId('agents-loading')).toHaveCount(0);
+
+      const card = page.getByTestId('agent-card-task-worker');
+
+      // Fixture has task.ready with filter: { automation: eligible, tags: [mvp], priority: 3 }
+      await expect(card.getByTestId('filter-badge-automation').first()).toContainText('eligible');
+      await expect(card.getByTestId('filter-badge-tag').first()).toContainText('mvp');
+      await expect(card.getByTestId('filter-badge-priority').first()).toContainText('p≤3');
+    });
+
+    test('agent card shows "Configure in Automation" link', async ({ page, daemon }) => {
+      await page.goto('/agents');
+      await expect(page.getByTestId('agents-loading')).toHaveCount(0);
+
+      const card = page.getByTestId('agent-card-task-worker');
+      const link = card.getByTestId('configure-triggers-link');
+      await expect(link).toBeVisible();
+      await expect(link).toContainText('Configure in Automation');
+      await expect(link).toHaveAttribute('href', '/automation');
     });
   });
 
@@ -335,8 +357,7 @@ test.describe('Agent and Dispatch View', () => {
     });
   });
 
-  test.describe('Agent Editing (AC-4)', () => {
-    // AC: @ui-agent-dispatch ac-4
+  test.describe('Agent Editing', () => {
     test('edit button opens dialog with agent fields pre-populated', async ({ page, daemon }) => {
       await page.goto('/agents');
       await expect(page.getByTestId('agents-loading')).toHaveCount(0);
@@ -359,25 +380,6 @@ test.describe('Agent and Dispatch View', () => {
       await expect(nameInput).toHaveValue('Task Worker');
     });
 
-    // AC: @ui-agent-dispatch ac-4
-    test('edit dialog shows dispatch triggers with add/remove', async ({ page, daemon }) => {
-      await page.goto('/agents');
-      await expect(page.getByTestId('agents-loading')).toHaveCount(0);
-
-      await page.getByTestId('agent-edit-button-task-worker').click();
-      await expect(page.getByTestId('agent-edit-dialog')).toBeVisible();
-
-      // Should show existing triggers
-      const triggers = page.getByTestId('agent-edit-triggers');
-      await expect(triggers).toBeVisible();
-
-      // task-worker has 3 triggers: ready, in_progress, needs_work
-      // So pending_review should be available to add
-      const addPendingReview = page.getByTestId('add-trigger-task.pending_review');
-      await expect(addPendingReview).toBeVisible();
-    });
-
-    // AC: @ui-agent-dispatch ac-4
     test('edit dialog shows prompt template textarea', async ({ page, daemon }) => {
       await page.goto('/agents');
       await expect(page.getByTestId('agents-loading')).toHaveCount(0);
@@ -389,7 +391,18 @@ test.describe('Agent and Dispatch View', () => {
       await expect(promptTemplate).toBeVisible();
     });
 
-    // AC: @ui-agent-dispatch ac-4
+    test('edit dialog mentions automation view for trigger editing', async ({ page, daemon }) => {
+      await page.goto('/agents');
+      await expect(page.getByTestId('agents-loading')).toHaveCount(0);
+
+      await page.getByTestId('agent-edit-button-task-worker').click();
+      await expect(page.getByTestId('agent-edit-dialog')).toBeVisible();
+
+      // Dialog description should mention automation view
+      const dialog = page.getByTestId('agent-edit-dialog');
+      await expect(dialog).toContainText('Automation');
+    });
+
     test('cancel discards changes and closes dialog', async ({ page, daemon }) => {
       await page.goto('/agents');
       await expect(page.getByTestId('agents-loading')).toHaveCount(0);
@@ -412,7 +425,6 @@ test.describe('Agent and Dispatch View', () => {
       await expect(card.getByTestId('agent-name')).toContainText('Task Worker');
     });
 
-    // AC: @ui-agent-dispatch ac-4
     test('save persists changes via PATCH API and updates card', async ({ page, daemon }) => {
       await page.goto('/agents');
       await expect(page.getByTestId('agents-loading')).toHaveCount(0);
@@ -438,7 +450,6 @@ test.describe('Agent and Dispatch View', () => {
       await expect(card).toContainText('Updated description via E2E test');
     });
 
-    // AC: @ui-agent-dispatch ac-4
     test('edit form shows error on save failure', async ({ page, daemon }) => {
       await page.goto('/agents');
       await expect(page.getByTestId('agents-loading')).toHaveCount(0);
@@ -466,260 +477,6 @@ test.describe('Agent and Dispatch View', () => {
       const errorMsg = page.getByTestId('agent-edit-error');
       await expect(errorMsg).toBeVisible();
       await expect(errorMsg).toContainText('Save failed');
-    });
-
-    // AC: @ui-agent-dispatch ac-4
-    test('trigger management: add and remove triggers', async ({ page, daemon }) => {
-      await page.goto('/agents');
-      await expect(page.getByTestId('agents-loading')).toHaveCount(0);
-
-      await page.getByTestId('agent-edit-button-task-worker').click();
-      await expect(page.getByTestId('agent-edit-dialog')).toBeVisible();
-
-      // Remove a trigger (needs_work)
-      const removeButton = page.getByTestId('remove-trigger-task.needs_work');
-      await expect(removeButton).toBeVisible();
-      await removeButton.click();
-
-      // Add pending_review trigger
-      const addButton = page.getByTestId('add-trigger-task.pending_review');
-      await expect(addButton).toBeVisible();
-      await addButton.click();
-
-      // needs_work should now be available to add
-      await expect(page.getByTestId('add-trigger-task.needs_work')).toBeVisible();
-    });
-  });
-
-  test.describe('Filter Display on Agent Cards', () => {
-    // AC: @ui-agent-dispatch ac-5
-    test('agent card shows filter badges for automation, tags, and priority', async ({ page, daemon }) => {
-      await page.goto('/agents');
-      await expect(page.getByTestId('agents-loading')).toHaveCount(0);
-
-      const card = page.getByTestId('agent-card-task-worker');
-
-      // Fixture has task.ready with filter: { automation: eligible, tags: [mvp], priority: 3 }
-      await expect(card.getByTestId('filter-badge-automation').first()).toContainText('eligible');
-      await expect(card.getByTestId('filter-badge-tag').first()).toContainText('mvp');
-      await expect(card.getByTestId('filter-badge-priority').first()).toContainText('p≤3');
-    });
-  });
-
-  test.describe('Dispatch Filter Editing (AC-5 through AC-9)', () => {
-    // AC: @ui-agent-dispatch ac-5
-    test('trigger rows display filter criteria with inline editing controls', async ({ page, daemon }) => {
-      await page.goto('/agents');
-      await expect(page.getByTestId('agents-loading')).toHaveCount(0);
-
-      await page.getByTestId('agent-edit-button-task-worker').click();
-      await expect(page.getByTestId('agent-edit-dialog')).toBeVisible();
-
-      // The task.ready trigger row should show filter controls
-      const triggerRow = page.getByTestId('trigger-row-task.ready');
-      await expect(triggerRow).toBeVisible();
-
-      // Automation dropdown present
-      const automationSelect = page.getByTestId('trigger-automation-task.ready');
-      await expect(automationSelect).toBeVisible();
-
-      // Tags section present
-      const tagsContainer = page.getByTestId('trigger-tags-task.ready');
-      await expect(tagsContainer).toBeVisible();
-
-      // Priority input present
-      const priorityInput = page.getByTestId('trigger-priority-task.ready');
-      await expect(priorityInput).toBeVisible();
-    });
-
-    // AC: @ui-agent-dispatch ac-5
-    test('trigger row shows existing automation filter value', async ({ page, daemon }) => {
-      await page.goto('/agents');
-      await expect(page.getByTestId('agents-loading')).toHaveCount(0);
-
-      await page.getByTestId('agent-edit-button-task-worker').click();
-      await expect(page.getByTestId('agent-edit-dialog')).toBeVisible();
-
-      // task.ready has automation: eligible in fixture
-      const automationTrigger = page.getByTestId('trigger-automation-task.ready');
-      await expect(automationTrigger).toContainText('eligible');
-    });
-
-    // AC: @ui-agent-dispatch ac-5
-    test('trigger row shows existing tags as chips', async ({ page, daemon }) => {
-      await page.goto('/agents');
-      await expect(page.getByTestId('agents-loading')).toHaveCount(0);
-
-      await page.getByTestId('agent-edit-button-task-worker').click();
-      await expect(page.getByTestId('agent-edit-dialog')).toBeVisible();
-
-      // task.ready has tags: [mvp] in fixture
-      const tagsContainer = page.getByTestId('trigger-tags-task.ready');
-      await expect(tagsContainer).toContainText('mvp');
-    });
-
-    // AC: @ui-agent-dispatch ac-5
-    test('trigger row shows existing priority filter value', async ({ page, daemon }) => {
-      await page.goto('/agents');
-      await expect(page.getByTestId('agents-loading')).toHaveCount(0);
-
-      await page.getByTestId('agent-edit-button-task-worker').click();
-      await expect(page.getByTestId('agent-edit-dialog')).toBeVisible();
-
-      // task.ready has priority: 3 in fixture
-      const priorityInput = page.getByTestId('trigger-priority-task.ready');
-      await expect(priorityInput).toHaveValue('3');
-    });
-
-    // AC: @ui-agent-dispatch ac-6
-    test('new task.ready trigger defaults automation to eligible', async ({ page, daemon }) => {
-      await page.goto('/agents');
-      await expect(page.getByTestId('agents-loading')).toHaveCount(0);
-
-      // Open pr-reviewer which has pending_review but not task.ready
-      await page.getByTestId('agent-edit-button-pr-reviewer').click();
-      await expect(page.getByTestId('agent-edit-dialog')).toBeVisible();
-
-      // Add task.ready trigger
-      const addButton = page.getByTestId('add-trigger-task.ready');
-      await expect(addButton).toBeVisible();
-      await addButton.click();
-
-      // New trigger should auto-default automation to eligible
-      const triggerRow = page.getByTestId('trigger-row-task.ready');
-      await expect(triggerRow).toBeVisible();
-
-      const automationTrigger = page.getByTestId('trigger-automation-task.ready');
-      await expect(automationTrigger).toContainText('eligible');
-    });
-
-    // AC: @ui-agent-dispatch ac-6
-    test('new task.needs_work trigger defaults automation to eligible', async ({ page, daemon }) => {
-      await page.goto('/agents');
-      await expect(page.getByTestId('agents-loading')).toHaveCount(0);
-
-      // Open pr-reviewer which doesn't have task.needs_work
-      await page.getByTestId('agent-edit-button-pr-reviewer').click();
-      await expect(page.getByTestId('agent-edit-dialog')).toBeVisible();
-
-      // Add task.needs_work trigger
-      const addButton = page.getByTestId('add-trigger-task.needs_work');
-      await expect(addButton).toBeVisible();
-      await addButton.click();
-
-      // Should auto-default automation to eligible
-      const automationTrigger = page.getByTestId('trigger-automation-task.needs_work');
-      await expect(automationTrigger).toContainText('eligible');
-    });
-
-    // AC: @ui-agent-dispatch ac-6
-    test('new task.pending_review trigger does NOT default automation to eligible', async ({ page, daemon }) => {
-      await page.goto('/agents');
-      await expect(page.getByTestId('agents-loading')).toHaveCount(0);
-
-      await page.getByTestId('agent-edit-button-task-worker').click();
-      await expect(page.getByTestId('agent-edit-dialog')).toBeVisible();
-
-      // task.pending_review should be available to add (not already on task-worker)
-      const addButton = page.getByTestId('add-trigger-task.pending_review');
-      await addButton.click();
-
-      // Should show 'any' (no default automation for pending_review)
-      const automationTrigger = page.getByTestId('trigger-automation-task.pending_review');
-      await expect(automationTrigger).toContainText('any');
-    });
-
-    // AC: @ui-agent-dispatch ac-7
-    test('can add tag filter chips via input', async ({ page, daemon }) => {
-      await page.goto('/agents');
-      await expect(page.getByTestId('agents-loading')).toHaveCount(0);
-
-      await page.getByTestId('agent-edit-button-task-worker').click();
-      await expect(page.getByTestId('agent-edit-dialog')).toBeVisible();
-
-      // Add a new tag to the task.ready trigger
-      const tagInput = page.getByTestId('trigger-tag-input-task.ready');
-      await tagInput.fill('cli');
-      await tagInput.press('Enter');
-
-      // New tag should appear as a chip
-      const tagsContainer = page.getByTestId('trigger-tags-task.ready');
-      await expect(tagsContainer).toContainText('cli');
-
-      // Original tag should still be there
-      await expect(tagsContainer).toContainText('mvp');
-    });
-
-    // AC: @ui-agent-dispatch ac-7
-    test('can remove tag filter chips', async ({ page, daemon }) => {
-      await page.goto('/agents');
-      await expect(page.getByTestId('agents-loading')).toHaveCount(0);
-
-      await page.getByTestId('agent-edit-button-task-worker').click();
-      await expect(page.getByTestId('agent-edit-dialog')).toBeVisible();
-
-      // Remove the mvp tag from task.ready
-      const removeTag = page.getByTestId('remove-filter-tag-mvp');
-      await expect(removeTag).toBeVisible();
-      await removeTag.click();
-
-      // mvp should no longer be in the tags container
-      const tagsContainer = page.getByTestId('trigger-tags-task.ready');
-      await expect(tagsContainer).not.toContainText('mvp');
-    });
-
-    // AC: @ui-agent-dispatch ac-8
-    test('can set priority filter threshold', async ({ page, daemon }) => {
-      await page.goto('/agents');
-      await expect(page.getByTestId('agents-loading')).toHaveCount(0);
-
-      await page.getByTestId('agent-edit-button-task-worker').click();
-      await expect(page.getByTestId('agent-edit-dialog')).toBeVisible();
-
-      // Change priority on task.ready from 3 to 5
-      const priorityInput = page.getByTestId('trigger-priority-task.ready');
-      await priorityInput.fill('5');
-
-      // Verify the input reflects new value
-      await expect(priorityInput).toHaveValue('5');
-    });
-
-    // AC: @ui-agent-dispatch ac-9
-    test('save persists dispatch rules including filter objects', async ({ page, daemon }) => {
-      await page.goto('/agents');
-      await expect(page.getByTestId('agents-loading')).toHaveCount(0);
-
-      await page.getByTestId('agent-edit-button-task-worker').click();
-      await expect(page.getByTestId('agent-edit-dialog')).toBeVisible();
-
-      // Add a new tag to task.ready trigger
-      const tagInput = page.getByTestId('trigger-tag-input-task.ready');
-      await tagInput.fill('dispatch');
-      await tagInput.press('Enter');
-
-      // Save the agent
-      await page.getByTestId('agent-edit-save').click();
-      await expect(page.getByTestId('agent-edit-dialog')).toHaveCount(0);
-
-      // Reload and verify filters persisted
-      await page.reload();
-      await expect(page.getByTestId('agents-loading')).toHaveCount(0);
-
-      // Open edit again and verify the tag is still there
-      await page.getByTestId('agent-edit-button-task-worker').click();
-      await expect(page.getByTestId('agent-edit-dialog')).toBeVisible();
-
-      const tagsContainer = page.getByTestId('trigger-tags-task.ready');
-      await expect(tagsContainer).toContainText('dispatch');
-      await expect(tagsContainer).toContainText('mvp');
-
-      // Verify automation filter also persisted
-      const automationTrigger = page.getByTestId('trigger-automation-task.ready');
-      await expect(automationTrigger).toContainText('eligible');
-
-      // Verify priority filter persisted
-      const priorityInput = page.getByTestId('trigger-priority-task.ready');
-      await expect(priorityInput).toHaveValue('3');
     });
   });
 });

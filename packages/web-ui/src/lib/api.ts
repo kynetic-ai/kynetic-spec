@@ -26,6 +26,9 @@ import type {
 	PaginatedResponse,
 	PlanSummary,
 	PlanDetail,
+	ReviewSummary,
+	ReviewDetail,
+	ReviewThread,
 	ErrorResponse,
 	SearchResponse,
 	AgentDefinition,
@@ -819,6 +822,218 @@ export async function actOnTriageRecord(
 }
 
 // ============================================================
+// Automation API Functions
+// AC: @ui-automation-view ac-1 through ac-7
+// ============================================================
+
+/**
+ * Hook summary from GET /api/hooks
+ */
+export interface HookSummary {
+	id: string;
+	name: string;
+	on: string;
+	filter: Record<string, unknown> | null;
+	action_type: string;
+	enabled: boolean;
+}
+
+/**
+ * Schedule summary from GET /api/schedules
+ */
+export interface ScheduleSummary {
+	id: string;
+	name: string;
+	enabled: boolean;
+	cron: string;
+	timezone: string;
+	overlap_policy: 'skip' | 'buffer_one' | 'allow';
+	next_tick: number | null;
+	last_tick: number | null;
+	run_count: number;
+	active_run_count: number;
+}
+
+/**
+ * Schedule runtime status from GET /api/schedules/:id/status
+ */
+export interface ScheduleRuntimeStatus extends ScheduleSummary {
+	active_run_ids: string[];
+	overlap_state: 'idle' | 'running' | 'running_buffered';
+}
+
+/**
+ * Event envelope from GET /api/events/recent
+ */
+export interface EventEnvelopeSummary {
+	event_id: string;
+	event_type: string;
+	emitted_at: string;
+	source_type: string;
+	source_id: string;
+	causation_id: string | null;
+	correlation_id: string | null;
+	payload: Record<string, unknown>;
+}
+
+/**
+ * Composition activation from GET /api/compositions/:config_id/activations
+ */
+export interface CompositionActivation {
+	activation_id: string;
+	group_id: string;
+	completed_count: number;
+	failed_count: number;
+	total_members: number;
+	member_action_run_ids: string[];
+	timeout_remaining_ms: number | null;
+	first_run_at: string | null;
+}
+
+/**
+ * Fetch all hooks
+ * AC: @ui-automation-view ac-1
+ */
+export async function fetchHooks(params?: {
+	limit?: number;
+	offset?: number;
+}): Promise<PaginatedResponse<HookSummary>> {
+	const url = new URL(`${API_BASE}/api/hooks`);
+	if (params?.limit !== undefined) url.searchParams.set('limit', String(params.limit));
+	if (params?.offset !== undefined) url.searchParams.set('offset', String(params.offset));
+
+	const response = await fetch(url.toString(), {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+	return response.json();
+}
+
+/**
+ * Fetch all schedules
+ * AC: @ui-automation-view ac-1, ac-4
+ */
+export async function fetchSchedules(params?: {
+	limit?: number;
+	offset?: number;
+}): Promise<PaginatedResponse<ScheduleSummary>> {
+	const url = new URL(`${API_BASE}/api/schedules`);
+	if (params?.limit !== undefined) url.searchParams.set('limit', String(params.limit));
+	if (params?.offset !== undefined) url.searchParams.set('offset', String(params.offset));
+
+	const response = await fetch(url.toString(), {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+	return response.json();
+}
+
+/**
+ * Fetch schedule runtime status
+ * AC: @ui-automation-view ac-4
+ */
+export async function fetchScheduleStatus(id: string): Promise<ScheduleRuntimeStatus> {
+	const response = await fetch(`${API_BASE}/api/schedules/${encodeURIComponent(id)}/status`, {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+	return response.json();
+}
+
+/**
+ * Manually trigger a schedule
+ * AC: @ui-automation-view ac-3
+ */
+export async function triggerSchedule(id: string): Promise<{
+	outcome: 'accepted' | 'buffered' | 'queued' | 'skipped';
+	accepted: boolean;
+	reason: string | null;
+}> {
+	assertWritable('trigger schedule');
+
+	const response = await fetch(`${API_BASE}/api/schedules/${encodeURIComponent(id)}/trigger`, {
+		method: 'POST',
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+	return response.json();
+}
+
+/**
+ * Fetch recent events from the event ring buffer
+ * AC: @ui-automation-view ac-2
+ */
+export async function fetchRecentEvents(params?: {
+	type?: string;
+	limit?: number;
+	offset?: number;
+}): Promise<PaginatedResponse<EventEnvelopeSummary>> {
+	const url = new URL(`${API_BASE}/api/events/recent`);
+	if (params?.type) url.searchParams.set('type', params.type);
+	if (params?.limit !== undefined) url.searchParams.set('limit', String(params.limit));
+	if (params?.offset !== undefined) url.searchParams.set('offset', String(params.offset));
+
+	const response = await fetch(url.toString(), {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+	return response.json();
+}
+
+/**
+ * Composition config summary from GET /api/compositions
+ */
+export interface CompositionConfigSummary {
+	id: string;
+	name: string;
+	join_count: number;
+	timeout_ms: number | null;
+	enabled: boolean;
+}
+
+/**
+ * Fetch composition configs
+ * AC: @ui-automation-view ac-6
+ */
+export async function fetchCompositionConfigs(): Promise<PaginatedResponse<CompositionConfigSummary>> {
+	const response = await fetch(`${API_BASE}/api/compositions`, {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+	return response.json();
+}
+
+/**
+ * Fetch composition activations
+ * AC: @ui-automation-view ac-6
+ */
+export async function fetchCompositionActivations(configId: string): Promise<{
+	config_id: string;
+	activations: CompositionActivation[];
+}> {
+	const response = await fetch(
+		`${API_BASE}/api/compositions/${encodeURIComponent(configId)}/activations`,
+		{ headers: getProjectHeaders() }
+	);
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+	return response.json();
+}
+
+// ============================================================
 // Plans API Functions
 // AC: @ui-plans-view ac-1
 // ============================================================
@@ -864,6 +1079,239 @@ export async function fetchPlanContent(ref: string): Promise<PlanDetail> {
 	}
 
 	const response = await fetch(`${API_BASE}/api/plans/${ref}`, {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+// ============================================================
+// Reviews API Functions
+// AC: @review-records-web-ui ac-1
+// ============================================================
+
+/**
+ * Fetch reviews with optional filters
+ * AC: @review-records-web-ui ac-1
+ */
+export async function fetchReviews(params?: {
+	status?: string | string[];
+	disposition?: string;
+	subject_type?: string;
+	subject_ref?: string;
+	head_branch?: string;
+	task?: string;
+	sort?: string;
+	sort_dir?: string;
+	limit?: number;
+	offset?: number;
+}): Promise<PaginatedResponse<ReviewSummary>> {
+	if (isStaticMode()) {
+		return { items: [], total: 0, offset: 0, limit: 0 };
+	}
+
+	const url = new URL(`${API_BASE}/api/reviews`);
+
+	if (params) {
+		Object.entries(params).forEach(([key, value]) => {
+			if (value !== undefined && value !== '') {
+				if (Array.isArray(value)) {
+					value.forEach((v) => url.searchParams.append(key, v));
+				} else {
+					url.searchParams.set(key, String(value));
+				}
+			}
+		});
+	}
+
+	const response = await fetch(url.toString(), {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+/**
+ * Fetch a single review by ID (ULID or slug).
+ * AC: @review-records-web-ui ac-2
+ */
+export async function fetchReview(id: string): Promise<ReviewDetail> {
+	if (isStaticMode()) {
+		throw new Error('Review detail not available in static mode');
+	}
+
+	const response = await fetch(`${API_BASE}/api/reviews/${encodeURIComponent(id)}`, {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+/**
+ * Fetch sibling reviews for the same subject (for revision selector).
+ * Returns all reviews matching the subject type, filtered client-side
+ * by subject_ref or head_branch depending on subject type.
+ * AC: @review-records-web-ui ac-11
+ */
+export async function fetchReviewSiblings(params: {
+	subject_type: string;
+	subject_ref?: string;
+	head_branch?: string;
+}): Promise<ReviewSummary[]> {
+	if (isStaticMode()) {
+		return [];
+	}
+
+	const data = await fetchReviews({
+		status: 'all',
+		sort: 'created_at',
+		sort_dir: 'asc',
+		subject_type: params.subject_type,
+		subject_ref: params.subject_ref,
+		head_branch: params.head_branch
+	});
+
+	return data.items;
+}
+
+// ============================================================
+// Diff API Functions
+// AC: @review-code-diff-viewer ac-1, ac-2, ac-3, ac-6
+// ============================================================
+
+/**
+ * Diff types matching the daemon's parsed diff format.
+ * AC: @review-code-diff-viewer ac-1, ac-2
+ */
+export interface DiffChangeLine {
+	type: 'added' | 'deleted' | 'unchanged';
+	content: string;
+	oldLineNumber: number | null;
+	newLineNumber: number | null;
+}
+
+export interface DiffHunk {
+	header: string;
+	oldStart: number;
+	oldCount: number;
+	newStart: number;
+	newCount: number;
+	changes: DiffChangeLine[];
+}
+
+export interface DiffFile {
+	oldPath: string;
+	newPath: string;
+	status: 'added' | 'deleted' | 'modified' | 'renamed';
+	stats: { additions: number; deletions: number };
+	hunks: DiffHunk[];
+}
+
+export interface ParsedDiff {
+	base: string;
+	head: string;
+	files: DiffFile[];
+	stats: {
+		totalFiles: number;
+		totalAdditions: number;
+		totalDeletions: number;
+	};
+}
+
+export interface DiffContextLine {
+	lineNumber: number;
+	content: string;
+}
+
+export interface DiffContextResponse {
+	base: string;
+	head: string;
+	path: string;
+	startLine: number;
+	endLine: number;
+	totalLines: number;
+	lines: DiffContextLine[];
+}
+
+/**
+ * Fetch full diff between two commits.
+ * AC: @review-code-diff-viewer ac-1
+ */
+export async function fetchDiff(base: string, head: string): Promise<ParsedDiff> {
+	if (isStaticMode()) {
+		throw new Error('Diff not available in static mode');
+	}
+
+	const url = new URL(`${API_BASE}/api/diff`);
+	url.searchParams.set('base', base);
+	url.searchParams.set('head', head);
+
+	const response = await fetch(url.toString(), {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+/**
+ * Fetch diff for a single file (lazy loading).
+ * AC: @review-code-diff-viewer ac-6
+ */
+export async function fetchFileDiff(base: string, head: string, path: string): Promise<{ base: string; head: string; file: DiffFile }> {
+	if (isStaticMode()) {
+		throw new Error('File diff not available in static mode');
+	}
+
+	const url = new URL(`${API_BASE}/api/diff/file`);
+	url.searchParams.set('base', base);
+	url.searchParams.set('head', head);
+	url.searchParams.set('path', path);
+
+	const response = await fetch(url.toString(), {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+/**
+ * Fetch expanded context lines for a file region.
+ * AC: @review-code-diff-viewer ac-3
+ */
+export async function fetchDiffContext(
+	base: string,
+	head: string,
+	path: string,
+	start: number,
+	end: number
+): Promise<DiffContextResponse> {
+	if (isStaticMode()) {
+		throw new Error('Diff context not available in static mode');
+	}
+
+	const url = new URL(`${API_BASE}/api/diff/context`);
+	url.searchParams.set('base', base);
+	url.searchParams.set('head', head);
+	url.searchParams.set('path', path);
+	url.searchParams.set('start', String(start));
+	url.searchParams.set('end', String(end));
+
+	const response = await fetch(url.toString(), {
 		headers: getProjectHeaders()
 	});
 	if (!response.ok) {
@@ -1225,6 +1673,296 @@ export async function fetchSessionEventDetail(
 	const response = await fetch(`${API_BASE}/api/sessions/${id}/events/${seq}`, {
 		headers: getProjectHeaders()
 	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+// ============================================================
+// Reviews API Functions
+// AC: @review-records-web-ui ac-7
+// ============================================================
+
+/**
+ * Fetch reviews linked to a task (via subject or related_refs).
+ * Used by the task detail page to show linked review history.
+ * AC: @review-records-web-ui ac-7
+ */
+export async function fetchReviewsForTask(taskRef: string): Promise<PaginatedResponse<ReviewSummary>> {
+	if (isStaticMode()) {
+		return { items: [], total: 0, offset: 0, limit: 0 };
+	}
+
+	const url = new URL(`${API_BASE}/api/reviews`);
+	url.searchParams.set('task', taskRef);
+	// Fetch all lifecycle states — backend defaults to 'open' when no status param
+	for (const s of ['draft', 'open', 'closed', 'archived']) {
+		url.searchParams.append('status', s);
+	}
+
+	const response = await fetch(url.toString(), {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+// ============================================================
+// Review Content API Functions
+// AC: @review-structured-content-viewer ac-1, ac-2
+// ============================================================
+
+/**
+ * Content section types returned by GET /api/reviews/:id/content
+ */
+export interface ContentSectionMarkdown {
+	id: string;
+	type: 'markdown';
+	title: string;
+	content: string;
+}
+
+export interface ContentSectionRefList {
+	id: string;
+	type: 'ref_list';
+	title: string;
+	refs: string[];
+}
+
+export interface ContentSectionAcceptanceCriteria {
+	id: string;
+	type: 'acceptance_criteria';
+	title: string;
+	criteria: Array<{ id: string; given?: string; when?: string; then?: string }>;
+}
+
+export interface ContentSectionNotes {
+	id: string;
+	type: 'notes';
+	title: string;
+	notes: Array<{ author: string; body: string; created_at: string }>;
+}
+
+export interface ContentSectionMetadata {
+	id: string;
+	type: 'metadata';
+	title: string;
+	metadata: Record<string, unknown>;
+}
+
+export type ContentSection =
+	| ContentSectionMarkdown
+	| ContentSectionRefList
+	| ContentSectionAcceptanceCriteria
+	| ContentSectionNotes
+	| ContentSectionMetadata;
+
+export interface ReviewContentResponse {
+	review_id: string;
+	subject_type: string;
+	subject_ref: string | null;
+	content: {
+		title: string;
+		sections: ContentSection[];
+	} | null;
+	diff_params?: {
+		base: string;
+		head: string;
+	};
+}
+
+/**
+ * Fetch structured content for a review (plan/spec/task subjects).
+ * AC: @review-structured-content-viewer ac-1, ac-2
+ */
+export async function fetchReviewContent(reviewId: string): Promise<ReviewContentResponse> {
+	if (isStaticMode()) {
+		throw new Error('Review content not available in static mode');
+	}
+
+	const response = await fetch(
+		`${API_BASE}/api/reviews/${encodeURIComponent(reviewId)}/content`,
+		{
+			headers: getProjectHeaders()
+		}
+	);
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+// ============================================================
+// Review Interaction API Functions
+// AC: @review-records-web-ui ac-3, ac-4, ac-5, ac-6
+// ============================================================
+
+/**
+ * Create a new thread (comment) on a review.
+ * AC: @review-records-web-ui ac-3
+ */
+export async function createReviewThread(
+	reviewId: string,
+	data: {
+		body: string;
+		kind?: 'blocker' | 'question' | 'nit';
+		author?: string;
+		anchor?: {
+			type: 'code';
+			path: string;
+			side: 'base' | 'head';
+			line_start: number;
+			line_end: number;
+			commit: string;
+		} | {
+			type: 'structured';
+			section?: string;
+			field?: string;
+			path?: string;
+			ref?: string;
+		};
+	}
+): Promise<ReviewThread> {
+	assertWritable('add comment to review');
+
+	const response = await fetch(
+		`${API_BASE}/api/reviews/${encodeURIComponent(reviewId)}/comments`,
+		{
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				...getProjectHeaders()
+			},
+			body: JSON.stringify(data)
+		}
+	);
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+/**
+ * Reply to an existing thread on a review.
+ * AC: @review-records-web-ui ac-4
+ */
+export async function replyToReviewThread(
+	reviewId: string,
+	threadId: string,
+	data: { body: string; author?: string }
+): Promise<ReviewThread> {
+	assertWritable('reply to review thread');
+
+	const response = await fetch(
+		`${API_BASE}/api/reviews/${encodeURIComponent(reviewId)}/comments/${encodeURIComponent(threadId)}/replies`,
+		{
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				...getProjectHeaders()
+			},
+			body: JSON.stringify(data)
+		}
+	);
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+/**
+ * Resolve a thread on a review.
+ * AC: @review-records-web-ui ac-5
+ */
+export async function resolveReviewThread(
+	reviewId: string,
+	threadId: string,
+	actor?: string
+): Promise<ReviewThread> {
+	assertWritable('resolve review thread');
+
+	const response = await fetch(
+		`${API_BASE}/api/reviews/${encodeURIComponent(reviewId)}/comments/${encodeURIComponent(threadId)}/resolve`,
+		{
+			method: 'PATCH',
+			headers: {
+				'Content-Type': 'application/json',
+				...getProjectHeaders()
+			},
+			body: JSON.stringify({ actor: actor || 'anonymous' })
+		}
+	);
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+/**
+ * Reopen a resolved thread on a review.
+ * AC: @review-records-web-ui ac-5
+ */
+export async function reopenReviewThread(
+	reviewId: string,
+	threadId: string,
+	actor?: string
+): Promise<ReviewThread> {
+	assertWritable('reopen review thread');
+
+	const response = await fetch(
+		`${API_BASE}/api/reviews/${encodeURIComponent(reviewId)}/comments/${encodeURIComponent(threadId)}/reopen`,
+		{
+			method: 'PATCH',
+			headers: {
+				'Content-Type': 'application/json',
+				...getProjectHeaders()
+			},
+			body: JSON.stringify({ actor: actor || 'anonymous' })
+		}
+	);
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+/**
+ * Submit a verdict on a review.
+ * AC: @review-records-web-ui ac-6
+ */
+export async function submitReviewVerdict(
+	reviewId: string,
+	data: { decision: 'approve' | 'request_changes' | 'comment'; reviewer: string; role?: string }
+): Promise<{
+	review_ulid: string;
+	decision: string;
+	reviewer: string;
+	lifecycle_state: string;
+	disposition: string;
+}> {
+	assertWritable('submit review verdict');
+
+	const response = await fetch(
+		`${API_BASE}/api/reviews/${encodeURIComponent(reviewId)}/verdicts`,
+		{
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				...getProjectHeaders()
+			},
+			body: JSON.stringify(data)
+		}
+	);
 	if (!response.ok) {
 		await handleResponseError(response);
 	}

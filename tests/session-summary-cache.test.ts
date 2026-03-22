@@ -463,6 +463,55 @@ describe("SessionSummaryCache", () => {
       expect(result!.id).toBe("session-001");
     });
 
+    it("should re-discover invalidated session in getAll() after status change on disk", async () => {
+      // Regression: invalidate() used to leave the session ID in knownSessionIds,
+      // causing refresh() to treat it as neither new nor existing — a ghost entry
+      // invisible until daemon restart.
+      await createTestSession(sessionsDir, "session-001", {
+        status: "active",
+        started_at: "2026-03-01T00:00:00.000Z",
+      });
+
+      // Build cache — session appears as active
+      const first = await cache.getAll(sessionsDir);
+      expect(first).toHaveLength(1);
+      expect(first[0].status).toBe("active");
+
+      // Session completes on disk (dispatch writes session.yaml)
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      await createTestSession(sessionsDir, "session-001", {
+        status: "completed",
+        started_at: "2026-03-01T00:00:00.000Z",
+        ended_at: "2026-03-01T01:00:00.000Z",
+        event_count: 10,
+      });
+
+      // Dispatch calls invalidate() after completing the session
+      cache.invalidate("session-001");
+
+      // getAll() must re-discover the session with its updated status
+      const second = await cache.getAll(sessionsDir);
+      expect(second).toHaveLength(1);
+      expect(second[0].id).toBe("session-001");
+      expect(second[0].status).toBe("completed");
+      expect(second[0].event_count).toBe(10);
+    });
+
+    it("should clean up live event counter on invalidate", async () => {
+      await createTestSession(sessionsDir, "session-001", {
+        status: "active",
+        started_at: "2026-03-01T00:00:00.000Z",
+      });
+
+      await cache.getAll(sessionsDir);
+      cache.incrementEventCount("session-001");
+      cache.incrementEventCount("session-001");
+      expect(cache.getLiveEventCount("session-001")).toBe(2);
+
+      cache.invalidate("session-001");
+      expect(cache.getLiveEventCount("session-001")).toBe(0);
+    });
+
     it("should support clearing entire cache", async () => {
       await createTestSession(sessionsDir, "session-001", {
         status: "completed",

@@ -107,12 +107,13 @@ export function kspec(args: string, cwd: string, options: KspecOptions = {}): Ks
   const { stdin, expectFail = false, env = {} } = options;
 
   // Build clean env: strip dispatch/session vars that pollute tests when running
-  // inside a dispatch loop or ralph session. Tests that need these vars pass
+  // inside a dispatch loop or legacy session. Tests that need these vars pass
   // them explicitly via env.
   const cleanEnv = { ...process.env };
   const DISPATCH_ENV_VARS = [
     'KSPEC_RALPH_SESSION',
     'KSPEC_SESSION_ID',
+    'KSPEC_DISPATCH_CANONICAL_HEAD',
     'KSPEC_SHADOW_MUTATION_LOCK_FILE',
     'KSPEC_SHADOW_MUTATION_LOCK_TIMEOUT_MS',
   ];
