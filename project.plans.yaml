@@ -26059,13 +26059,12 @@ plans:
         type: feature
         parent: "@agent-integration"
         description: |
-          Replaces the current single-prompt-then-teardown invocation model
-          with an event-driven session lifecycle where sessions remain alive
-          between turns. After each agent turn completes (stopReason:
-          end_turn), the session enters an idle state and emits an event.
-          The session stays open until something explicitly closes it — a
-          timeout, a close action, or the absence of any idle-targeting
-          hooks (backward-compatible auto-close).
+          Event-driven session lifecycle where sessions remain alive between
+          turns. After each agent turn completes (stopReason: end_turn), the
+          session enters an idle state and emits a session.idle event. The
+          session stays open until something explicitly closes it — a
+          timeout, a close action, or the absence of any queued prompts
+          after a grace period.
 
           The lifecycle is: spawn → idle ⇄ prompting → close. The session
           loops between prompting and idle until a close decision is made.
@@ -26073,23 +26072,12 @@ plans:
           analysis), interactive human-agent chat, and hybrid workflows
           where automation and human input alternate.
 
-          Identity model evolution: the existing dispatch event taxonomy
-          defines session_id and invocation_id as the same value. This plan
-          preserves that identity — a multi-turn session IS still a single
-          invocation. The session_id/invocation_id represents the full
-          lifecycle from spawn to close, regardless of how many turns occur.
-          What changes is that invocation completion (invocation.completed)
-          now fires once at session close, not after each turn. The new
-          session.idle event fills the per-turn observation point.
-
-          Supersedes @agent-invocation-lifecycle ac-4: that AC defines
-          completion as "ACP session ends with stop reason end_turn." In
-          the multi-turn model, end_turn triggers idle, not completion.
-          Completion occurs when the session closes (grace period expiry,
-          explicit close, timeout, or error).
-
-          Non-goals: persistent sessions across daemon restarts, multi-agent
-          shared sessions, session forking.
+          A session_id and invocation_id remain the same value — a
+          multi-turn session is a single invocation. The session_id
+          represents the full lifecycle from spawn to close, regardless
+          of how many turns occur. The invocation.completed event fires
+          once at session close. The session.idle event provides the
+          per-turn observation point.
         traits:
           - "@trait-error-guidance"
         acceptance_criteria:
@@ -26242,16 +26230,15 @@ plans:
         type: requirement
         parent: "@dispatch-event-taxonomy"
         description: |
-          New event type in the dispatch event taxonomy: session.idle.
-          Emitted each time an agent completes a turn and the session
-          enters idle state. This is the event that enables post-turn
-          automation and signals interactive session readiness for user
-          input.
+          Event type in the dispatch event taxonomy: session.idle. Emitted
+          each time an agent completes a turn and the session enters idle
+          state. This is the event that enables post-turn automation and
+          signals interactive session readiness for user input.
 
-          Unlike session.ended (which fires after teardown), session.idle
-          fires while the session is still alive and receptive to prompts.
-          This is the key distinction that makes trigger-driven multi-turn
-          sessions possible.
+          session.idle fires while the session is still alive and receptive
+          to prompts. Hooks on this event can inject follow-up prompts via
+          the session_prompt action type, enabling trigger-driven multi-turn
+          conversations.
         acceptance_criteria:
           - id: ac-1
             given: |
@@ -26926,15 +26913,15 @@ plans:
         tags: [specs, compatibility]
         spec_ref: "@multi-turn-session-lifecycle"
         description: |
-          Update existing spec items that are superseded or extended by the
-          multi-turn session lifecycle.
+          Update existing spec items to align with multi-turn session
+          semantics.
 
-          Why: Several existing ACs assume single-turn sessions. Without
-          updating them, the spec system has contradictory definitions of
-          session completion behavior.
+          Why: Several existing ACs describe single-turn session behavior.
+          Updating them ensures consistent definitions of session
+          completion and cleanup across the spec system.
 
-          What: Apply the four updates documented in the "Superseded
-          acceptance criteria" table in the implementation notes:
+          What: Apply the four updates documented in the "Existing spec
+          updates" table in the implementation notes:
           @agent-invocation-lifecycle ac-4 (end_turn → idle, not close),
           @agent-invocation-lifecycle ac-8 (cleanup at session close),
           @dispatch-event-taxonomy description (add session.idle),
@@ -26945,8 +26932,8 @@ plans:
           a targeted update to an existing spec item, not a new spec.
           Verify each update with kspec item get after applying.
 
-          Covers: supersession notes in @multi-turn-session-lifecycle
-          description.
+          Covers: @multi-turn-session-lifecycle (alignment of dependent
+          specs).
 
       - title: Update automation view for session.idle and session_prompt
         slug: task-ui-session-idle
@@ -27027,25 +27014,24 @@ plans:
       observation point, not a replacement.
 
 
-      ### Superseded acceptance criteria
+      ### Existing spec updates (task-update-existing-specs reference)
 
 
-      Explicit per-AC tracking of what changes in existing specs (handled by
-      task-update-existing-specs):
+      These updates align existing specs with the multi-turn lifecycle:
 
 
-      | Existing AC | Current wording (summary) | New wording (summary) | Reason |
+      | Existing AC | Current wording (summary) | Updated wording (summary) | Reason |
 
       |---|---|---|---|
 
       | @agent-invocation-lifecycle ac-4 | "When ACP session ends with stop reason end_turn →
       session closed with status completed" | "When ACP agent returns end_turn → session transitions
       to idle; session is closed when the turn loop exits (grace period, explicit close, or
-      timeout)" | end_turn no longer means completion; it means turn boundary |
+      timeout)" | end_turn is a turn boundary, not session completion |
 
       | @agent-invocation-lifecycle ac-8 | "When invocation completes → cleanup runs (env restore,
-      process termination)" | "When session closes (after all turns complete) → cleanup runs" |
-      Cleanup is per-session, not per-turn |
+      process termination)" | "When session closes (after all turns complete) → cleanup runs (env
+      restore, process termination)" | Cleanup is per-session, not per-turn; preserves specifics |
 
       | @dispatch-event-taxonomy description | Lists session events as: session.ended,
       session.idle_timeout, session.cancelled | Add session.idle to the enumeration | New event type
@@ -27086,3 +27072,8 @@ plans:
           coverage, resolve lifecycle/interactive overlap, correct task AC mappings"
         author: "@claude"
         created_at: 2026-03-22T05:52:35.934Z
+      - _ulid: 01KMA250EXX5HRGRDS2RPRRVPD
+        content: Remove supersession/non-goals language from specs, make descriptions standalone and
+          timeless
+        author: "@claude"
+        created_at: 2026-03-22T06:01:39.037Z
