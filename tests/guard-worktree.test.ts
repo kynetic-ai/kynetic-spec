@@ -7,7 +7,7 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { evaluateWorktreeGuard, type GuardDecision } from "../src/cli/commands/guard.js";
+import { evaluateWorktreeGuard, type GuardDecision, type GuardOptions } from "../src/cli/commands/guard.js";
 import { kspec } from "./helpers/cli.js";
 
 // ─── Unit tests for evaluateWorktreeGuard ───
@@ -428,6 +428,75 @@ describe("evaluateWorktreeGuard", () => {
       });
       expect(result.decision).toBe("block");
       expect(result.reason).toContain("kspec-meta");
+    });
+  });
+
+  // AC: @native-guard-commands ac-worktree-guard — configurable shadow directory
+  describe("respects configured shadow directory", () => {
+    const customOpts: GuardOptions = { shadowDirectory: ".specs" };
+
+    it("blocks dangerous commands in custom shadow directory", () => {
+      const result = evaluateWorktreeGuard({
+        tool_input: { command: "git reset --hard" },
+        cwd: "/home/user/project/.specs",
+      }, customOpts);
+      expect(result.decision).toBe("block");
+    });
+
+    it("blocks dangerous commands in custom shadow subdirectory", () => {
+      const result = evaluateWorktreeGuard({
+        tool_input: { command: "git rebase main" },
+        cwd: "/home/user/project/.specs/modules",
+      }, customOpts);
+      expect(result.decision).toBe("block");
+    });
+
+    it("allows dangerous commands in default .kspec when custom dir is configured", () => {
+      const result = evaluateWorktreeGuard({
+        tool_input: { command: "git reset --hard" },
+        cwd: "/home/user/project/.kspec",
+      }, customOpts);
+      expect(result.decision).toBe("allow");
+    });
+
+    it("allows commands in directories with custom dir as substring prefix", () => {
+      const result = evaluateWorktreeGuard({
+        tool_input: { command: "git rebase origin/dev" },
+        cwd: "/home/user/project/.specs-worktrees/dispatch/task/foo/01ABC123",
+      }, customOpts);
+      expect(result.decision).toBe("allow");
+    });
+
+    it("blocks cd to custom shadow directory with dangerous ops", () => {
+      const result = evaluateWorktreeGuard({
+        tool_input: { command: "cd .specs && git reset --hard" },
+        cwd: "/home/user/project",
+      }, customOpts);
+      expect(result.decision).toBe("block");
+    });
+
+    it("allows cd to .kspec when custom dir is .specs", () => {
+      const result = evaluateWorktreeGuard({
+        tool_input: { command: "cd .kspec && git reset --hard" },
+        cwd: "/home/user/project",
+      }, customOpts);
+      expect(result.decision).toBe("allow");
+    });
+
+    it("still blocks kspec-meta branch deletion regardless of custom dir", () => {
+      const result = evaluateWorktreeGuard({
+        tool_input: { command: "git branch -D kspec-meta" },
+        cwd: "/home/user/project",
+      }, customOpts);
+      expect(result.decision).toBe("block");
+    });
+
+    it("defaults to .kspec when no options provided", () => {
+      const result = evaluateWorktreeGuard({
+        tool_input: { command: "git reset --hard" },
+        cwd: "/home/user/project/.kspec",
+      });
+      expect(result.decision).toBe("block");
     });
   });
 });

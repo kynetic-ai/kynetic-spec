@@ -15,6 +15,7 @@ import {
   SHADOW_BRANCH_NAME,
   SHADOW_WORKTREE_DIR,
 } from "../../parser/shadow.js";
+import { loadProjectConfig } from "../../parser/config.js";
 
 /**
  * Decision from a guard check
@@ -72,15 +73,15 @@ const DANGEROUS_PATTERNS: readonly string[] = [
  * (default: ".kspec") to avoid false positives on paths like ".kspec-worktrees/"
  * which contain the shadow name as a substring but are NOT the shadow worktree.
  */
-function isInKspec(command: string, cwd: string | undefined): boolean {
+function isInKspec(command: string, cwd: string | undefined, shadowDir: string): boolean {
   if (cwd) {
     // Normalize path separators for cross-platform support
     const normalizedCwd = cwd.replace(/\\/g, "/");
-    if (isShadowWorktreePath(normalizedCwd)) {
+    if (isShadowWorktreePath(normalizedCwd, shadowDir)) {
       return true;
     }
   }
-  if (isCdToShadowWorktree(command)) {
+  if (isCdToShadowWorktree(command, shadowDir)) {
     return true;
   }
   return false;
@@ -93,8 +94,7 @@ function isInKspec(command: string, cwd: string | undefined): boolean {
  * using path-segment boundary checks to avoid substring false positives.
  * e.g. "/.kspec" and "/.kspec/modules" match, but "/.kspec-worktrees/..." does not.
  */
-function isShadowWorktreePath(normalizedPath: string): boolean {
-  const shadowDir = SHADOW_WORKTREE_DIR; // e.g. ".kspec"
+function isShadowWorktreePath(normalizedPath: string, shadowDir: string): boolean {
   // Match /<shadowDir> at end of path, or /<shadowDir>/ as a path segment
   const segmentPattern = `/${shadowDir}`;
   const idx = normalizedPath.indexOf(segmentPattern);
@@ -113,8 +113,7 @@ function isShadowWorktreePath(normalizedPath: string): boolean {
  * Matches "cd .kspec", "cd /path/to/.kspec", "cd .kspec/subdir" etc.
  * but NOT "cd .kspec-worktrees/..." or similar substring matches.
  */
-function isCdToShadowWorktree(command: string): boolean {
-  const shadowDir = SHADOW_WORKTREE_DIR; // e.g. ".kspec"
+function isCdToShadowWorktree(command: string, shadowDir: string): boolean {
   // Escape for regex
   const escaped = shadowDir.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   // Match cd (with optional path prefix) to the shadow dir, followed by
@@ -166,14 +165,26 @@ function matchesDangerousPattern(command: string): string | null {
 }
 
 /**
+ * Options for evaluateWorktreeGuard to support configurable shadow directory.
+ */
+export interface GuardOptions {
+  /** Shadow worktree directory name (default: SHADOW_WORKTREE_DIR from constants) */
+  shadowDirectory?: string;
+}
+
+/**
  * Evaluate a PreToolUse hook input and return a guard decision.
  * This is the core logic, exported for testing.
+ *
+ * The shadowDirectory is resolved from kspec.config.yaml at the CLI layer
+ * and passed in. When not provided, falls back to the default constant.
  *
  * AC: @native-guard-commands ac-worktree-guard
  * AC: @native-guard-commands ac-worktree-allow
  */
-export function evaluateWorktreeGuard(input: PreToolUseInput): GuardDecision {
+export function evaluateWorktreeGuard(input: PreToolUseInput, options?: GuardOptions): GuardDecision {
   const command = input.tool_input?.command;
+  const shadowDir = options?.shadowDirectory ?? SHADOW_WORKTREE_DIR;
 
   // No command means not a Bash tool call — allow
   if (!command) {
@@ -189,12 +200,12 @@ export function evaluateWorktreeGuard(input: PreToolUseInput): GuardDecision {
     };
   }
 
-  // If not operating in .kspec, allow everything
-  if (!isInKspec(command, input.cwd)) {
+  // If not operating in the shadow worktree, allow everything
+  if (!isInKspec(command, input.cwd, shadowDir)) {
     return { decision: "allow" };
   }
 
-  // Check for dangerous patterns in .kspec context
+  // Check for dangerous patterns in shadow worktree context
   const matched = matchesDangerousPattern(command);
   if (matched) {
     return {
@@ -272,7 +283,13 @@ export function registerGuardCommand(program: Command): void {
           return;
         }
 
-        const decision = evaluateWorktreeGuard(input);
+        // Resolve the actual shadow directory from project config.
+        // The shadow directory is configurable via kspec.config.yaml shadow.directory,
+        // so we must use the configured value rather than the hardcoded default.
+        const { config } = await loadProjectConfig(input.cwd ?? process.cwd());
+        const decision = evaluateWorktreeGuard(input, {
+          shadowDirectory: config.shadow.directory,
+        });
 
         // Guard commands always output JSON (hook protocol requirement)
         // AC: @trait-json-output ac-1 - valid JSON with no ANSI codes
