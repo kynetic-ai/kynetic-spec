@@ -1,1 +1,11 @@
-notes: []
+notes:
+  - _ulid: 01KMB6P56Y3B3TRG46V4M197RW
+    content: Implemented session.idle event rendering in EventLogSection with enriched details (turn
+      count badge, agent ID, formatted duration). Updated HooksSection to map action types to
+      human-friendly labels including session_prompt → 'Session Prompt'. Trigger picker already
+      auto-includes session.idle from AGENT_DISPATCH_EVENTS. Added E2E tests using route mocking for
+      events and hooks endpoints. Vitest suite passes (1 pre-existing flaky timeout unrelated to
+      changes).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-22T16:40:09.694Z
