@@ -44872,7 +44872,77 @@ reviews:
     slugs: []
     title: Review session_prompt action type
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: >-
+          Ran ✓ Validation passed
+
+          ────────────────────────────────────────
+
+          Files checked: 10
+
+          Items checked: 582
+
+          Tasks checked: 0
+
+          Meta: 10 agents, 11 workflows, 10 conventions
+
+
+          Schema: OK
+
+          References: OK
+
+
+          Reference warnings: 1
+            ⚠ @skills
+              Orphaned skill directory 'skills' has no corresponding meta entry
+              in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+          Alignment warnings: 34
+            Orphaned specs (no tasks): 33
+              ○ Test Trait
+              ○ Filterable List Commands
+              ○ Dry Run Preview Mode
+              ... and 30 more
+            Status mismatches: 1
+              ! Atomic isolation via write buffer
+                Spec "Atomic isolation via write buffer" status is "implemented" but should be "in_progress" based on task progress
+
+          Alignment stats: 427/582 specs have tasks, 426 aligned
+
+
+          Completeness warnings: 402
+            Missing acceptance criteria: 1
+              ○ @01KJN1WT - Test Trait
+            Missing own AC coverage: 236
+              ! @spec-item - Spec Item
+                Uncovered: ac-item-1, ac-item-2
+              ! @ulid-system - ULID Identifier System
+                Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+              ! @slug-system - Slug Alias System
+                Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+              ... and 233 more
+            Invalid AC annotations: 165
+              ! AC annotation references '@slug' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-prompt-action-01kma74e-review/tests/ac-annotation-validation.test.ts:6
+              ! AC annotation references '@my-spec' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-prompt-action-01kma74e-review/tests/ac-annotation-validation.test.ts:88
+              ! AC annotation references '@my-spec' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-prompt-action-01kma74e-review/tests/ac-annotation-validation.test.ts:91
+              ! AC annotation references '@spec-a' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-prompt-action-01kma74e-review/tests/ac-annotation-validation.test.ts:124
+              ! AC annotation references '@spec-b' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-prompt-action-01kma74e-review/tests/ac-annotation-validation.test.ts:128
+              ... and 160 more
+          Skills: OK (9 files checked): exit 6 with existing repo-wide warnings only (orphaned
+          skill/alignment/completeness), no session_prompt-specific schema or reference errors.
+        name: kspec validate
+        required: false
+        created_at: 2026-03-22T10:36:30.963Z
+        completed_at: 2026-03-22T10:36:30.963Z
     events:
       - _ulid: 01KMAHKJH8CJQDEMXYNW896TPJ
         actor: Test User
@@ -44894,6 +44964,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMAHW0WKX88XPM7S8M8R6H2K
         timestamp: 2026-03-22T10:36:22.154Z
+      - _ulid: 01KMAHWAF0GWBN60GMXJ21FD3E
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-22T10:36:31.585Z
     examined_commit: 5c3160a75d54d75d231b33b15d14ecd2b38d1083
     external_links: []
     lifecycle_state: open
@@ -44924,5 +45001,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-22T10:31:44.937Z
-    updated_at: 2026-03-22T10:36:21.780Z
+    updated_at: 2026-03-22T10:36:30.963Z
     notes: []
