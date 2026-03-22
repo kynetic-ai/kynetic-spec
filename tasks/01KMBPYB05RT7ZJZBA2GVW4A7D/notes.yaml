@@ -1,1 +1,12 @@
-notes: []
+notes:
+  - _ulid: 01KMBQMAJB4GQCFR1YJWGE5318
+    content: "Implemented hook presence reload during reconciliation. Extracted
+      _updateSessionIdleHookPresence() helper called from both _loadAgents() and _reconcile(). The
+      helper takes the meta context and checks for session.idle hooks. In _reconcile(), it reuses
+      the existing initContext() call and loads meta context alongside the workspace reconciliation.
+      Added test: starts engine with no hooks (verifies grace=0), adds a session.idle hook to meta
+      on disk, triggers _reconcile(), verifies subsequent invocations use DEFAULT_IDLE_GRACE_MS. All
+      123 dispatch engine tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-22T21:36:15.435Z
