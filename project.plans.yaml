@@ -26137,9 +26137,8 @@ plans:
             when: |
               No prompt arrives within the grace period
             then: |
-              The session remains open indefinitely (no auto-close); the
-              session closes only on explicit close request, idle timeout
-              (if configured), or daemon shutdown
+              The auto-close grace period does not apply; behavior is
+              defined by @interactive-agent-sessions
           - id: ac-6
             given: |
               A session has been in idle state longer than the configured
@@ -26191,10 +26190,17 @@ plans:
             when: |
               The session is eventually closed
             then: |
-              All turns are logged to the same session event log (JSONL);
-              the session metadata reflects total turn_count and cumulative
-              duration
+              All turns are logged to the same session event log (JSONL)
+              under the single session_id
           - id: ac-12
+            given: |
+              A multi-turn session closes after completing multiple turns
+            when: |
+              The session metadata is finalized
+            then: |
+              The metadata reflects total turn_count and cumulative
+              duration across all turns
+          - id: ac-13
             given: |
               A multi-turn session completes and the session is closed
             when: |
@@ -26202,7 +26208,7 @@ plans:
             then: |
               The event fires exactly once per session (at close, not per
               turn) and includes turn_count in the payload
-          - id: ac-13
+          - id: ac-14
             given: |
               An agent process crashes or an ACP error occurs during a
               turn in a multi-turn session
@@ -26212,7 +26218,7 @@ plans:
               The session closes immediately with status failed and the
               standard failure handling applies (task note, retry logic
               per @agent-invocation-lifecycle)
-          - id: ac-14
+          - id: ac-15
             given: |
               An agent process crashes during a multi-turn session and
               prompts are queued
@@ -26221,7 +26227,7 @@ plans:
             then: |
               Queued prompts are discarded; any session_prompt action runs
               waiting on those prompts receive action.failed events
-          - id: ac-15
+          - id: ac-16
             given: |
               The prompt queue has accumulated more entries than a
               configurable maximum depth
@@ -26315,10 +26321,18 @@ plans:
             when: |
               The action executes and the target session is in idle state
             then: |
-              The prompt is delivered to the session via ACP client.prompt();
-              an action.started event is emitted; the action completes when
-              the agent's turn finishes (stopReason received)
+              The prompt is delivered to the session as a follow-up turn;
+              the action run tracks as running until the agent's turn
+              finishes (stopReason received)
           - id: ac-2
+            given: |
+              A session_prompt action begins execution
+            when: |
+              The prompt delivery starts
+            then: |
+              An action.started event is emitted; on turn completion an
+              action.completed event is emitted with the session_id
+          - id: ac-3
             given: |
               A session_prompt action fires from a hook on session.idle
             when: |
@@ -26327,7 +26341,7 @@ plans:
               The action targets the session identified by session_id in the
               triggering event's payload; no explicit session_id configuration
               is needed for hooks on session.idle — the target is implicit
-          - id: ac-3
+          - id: ac-4
             given: |
               A session_prompt action targets a session that has already
               been closed
@@ -26336,7 +26350,7 @@ plans:
             then: |
               The action fails with a clear error indicating the session
               is no longer active; an action.failed event is emitted
-          - id: ac-4
+          - id: ac-5
             given: |
               A session_prompt action targets a session that is in
               prompting state
@@ -26346,7 +26360,7 @@ plans:
               The prompt is queued for delivery after the current turn
               completes; the action tracks as running until the queued
               prompt's turn finishes
-          - id: ac-5
+          - id: ac-6
             given: |
               A session_prompt action uses template variables in the prompt
             when: |
@@ -26355,7 +26369,7 @@ plans:
               Template variables are interpolated from the triggering
               event's envelope and payload using the standard {{var}}
               syntax
-          - id: ac-6
+          - id: ac-7
             given: |
               A session_prompt action is configured outside a session.idle
               hook (e.g., on a schedule or other event)
@@ -26364,16 +26378,6 @@ plans:
             then: |
               The action requires an explicit session_id field (string or
               template variable) to identify the target session
-          - id: ac-7
-            given: |
-              A session_prompt action completes
-            when: |
-              The action run is finalized
-            then: |
-              An action.completed event is emitted with the action_run_id
-              and the session_id of the target session; the duration_ms
-              reflects the time from prompt delivery to agent turn
-              completion
 
       - title: Session Prompt Action Schema
         slug: session-prompt-action-schema
@@ -26665,7 +26669,7 @@ plans:
           created by the invocation runner when a session starts and
           removed during teardown. The handle wraps the ACP client but
           doesn't expose it — sendPrompt() calls client.prompt()
-          internally. Thread safety comes from the prompt queue (ac-6/ac-7
+          internally. Thread safety comes from the prompt queue (ac-7/ac-8
           of the lifecycle spec).
 
           Covers: @active-session-registry ac-1 through ac-4.
@@ -26711,7 +26715,8 @@ plans:
           the first turn and teardown proceeds — identical to current
           behavior.
 
-          Covers: @multi-turn-session-lifecycle ac-1 through ac-15.
+          Covers: @multi-turn-session-lifecycle ac-1, ac-2, ac-3, ac-7,
+          ac-8, ac-9, ac-14, ac-15, ac-16.
 
       - title: Add session.idle event to taxonomy and payloads
         slug: task-session-idle-event
@@ -26778,6 +26783,10 @@ plans:
           Covers: @session-prompt-action ac-1 through ac-7,
           @session-prompt-action-schema ac-1 through ac-4.
 
+          Note: @session-prompt-action ac-2 (action lifecycle events) is
+          inherited from the shared action model pattern — verified by
+          existing action executor tests.
+
       - title: Implement idle grace period and auto-close logic
         slug: task-idle-grace-period
         priority: 2
@@ -26809,7 +26818,8 @@ plans:
           mode, there's no grace period auto-close, only idle_timeout.
           The agent schema extension is in meta.ts.
 
-          Covers: @multi-turn-session-lifecycle ac-4, ac-5, ac-6, ac-10.
+          Covers: @multi-turn-session-lifecycle ac-4, ac-5, ac-6, ac-10,
+          @interactive-agent-sessions ac-1.
 
       - title: Integrate multi-turn lifecycle with dispatch engine
         slug: task-dispatch-multi-turn-integration
@@ -26846,7 +26856,8 @@ plans:
           exits and teardown completes). The existing invocation.completed
           event payload is extended with turn_count.
 
-          Covers: @multi-turn-session-lifecycle ac-1, ac-2, ac-3, ac-11, ac-12.
+          Covers: @multi-turn-session-lifecycle ac-1, ac-2, ac-3, ac-11,
+          ac-12, ac-13.
 
       - title: Implement interactive session API
         slug: task-interactive-session-api
@@ -26876,7 +26887,8 @@ plans:
           handle. Close calls handle.requestClose(). Standard error
           handling for closed/missing sessions.
 
-          Covers: @interactive-session-api ac-1 through ac-4.
+          Covers: @interactive-session-api ac-1 through ac-4,
+          @interactive-agent-sessions ac-2, ac-4.
 
       - title: Implement interactive session CLI
         slug: task-interactive-session-cli
@@ -26905,7 +26917,8 @@ plans:
           on empty input, Ctrl-C, or "exit". Session list queries the
           daemon API.
 
-          Covers: @interactive-session-cli ac-1 through ac-4.
+          Covers: @interactive-session-cli ac-1 through ac-4,
+          @interactive-agent-sessions ac-3.
 
       - title: Update existing specs for multi-turn lifecycle
         slug: task-update-existing-specs
@@ -26964,7 +26977,8 @@ plans:
           needs a new form for session_prompt fields. Event log rendering
           needs a turn_count badge for session.idle events.
 
-          Covers: @session-idle-event ac-3, ac-4.
+          Covers: @session-idle-event ac-1 (event log rendering),
+          @session-prompt-action-schema ac-1 (action type selector).
       ```
 
 
@@ -27067,3 +27081,8 @@ plans:
           per-AC supersession table"
         author: "@claude"
         created_at: 2026-03-22T05:45:55.015Z
+      - _ulid: 01KMA1ME2YPCAWG6JWV3N2AJPA
+        content: "Final review fixes: split compound ACs, fix cross-references, add interactive spec
+          coverage, resolve lifecycle/interactive overlap, correct task AC mappings"
+        author: "@claude"
+        created_at: 2026-03-22T05:52:35.934Z
