@@ -46987,6 +46987,18 @@ reviews:
         runner: kspec
         created_at: 2026-03-22T16:30:37.864Z
         completed_at: 2026-03-22T16:30:37.864Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: All assigned ACs (ac-1,2,3,4,8,9,10,15,16,17) have annotated tests. Trait-error-guidance
+          ac-1 through ac-6 annotated N/A with valid reasons (library module). Event
+          registry/payload ACs tested in dedicated test files.
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-22T16:30:41.485Z
+        completed_at: 2026-03-22T16:30:41.485Z
     events:
       - _ulid: 01KMB638132W4558Y19W764VH9
         actor: "@claude"
@@ -47015,6 +47027,13 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-03-22T16:30:38.376Z
+      - _ulid: 01KMB64TR7CGR66CK1JXXY32RY
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-22T16:30:41.927Z
     examined_commit: 0dea89cb099dc6212e430ef754cc9bbbf8a3ddc8
     external_links: []
     lifecycle_state: open
@@ -47027,5 +47046,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-22T16:29:49.988Z
-    updated_at: 2026-03-22T16:30:37.864Z
+    updated_at: 2026-03-22T16:30:41.485Z
     notes: []
