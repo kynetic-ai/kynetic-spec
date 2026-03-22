@@ -26238,8 +26238,8 @@ plans:
               The session transitions to idle
             then: |
               A session idle event is emitted with the session context,
-              agent identity, task reference, turn count, stop reason,
-              and the duration of the completed turn
+              agent identity, task reference, turn count, turn completion
+              reason, and the duration of the completed turn
           - id: ac-2
             given: |
               A session completes its third turn via follow-up prompts
@@ -26355,9 +26355,9 @@ plans:
         traits:
           - "@trait-error-guidance"
         description: |
-          Schema definition for the session prompt action type. Defines the
-          configuration fields and validation rules for session prompt
-          actions in hooks and schedules.
+          Validation rules for session prompt actions in hooks and
+          schedules. Ensures prompt actions are well-formed before
+          execution.
         acceptance_criteria:
           - id: ac-1
             given: |
@@ -26990,14 +26990,14 @@ plans:
 
       |---|---|---|---|
 
-      | @agent-invocation-lifecycle ac-4 | "When ACP session ends with stop reason end_turn →
-      session closed with status completed" | "When ACP agent returns end_turn → session transitions
-      to idle; session is closed when the turn loop exits (grace period, explicit close, or
-      timeout)" | end_turn is a turn boundary, not session completion |
+      | @agent-invocation-lifecycle ac-4 | "When the agent signals turn complete → session closed
+      with status completed" | "When the agent signals turn complete → session transitions to idle;
+      session is closed when no more prompts arrive (grace period expiry, explicit close, or
+      timeout)" | Turn completion is a turn boundary, not session completion |
 
       | @agent-invocation-lifecycle ac-8 | "When invocation completes → cleanup runs (env restore,
       process termination)" | "When session closes (after all turns complete) → cleanup runs (env
-      restore, process termination)" | Cleanup is per-session, not per-turn; preserves specifics |
+      restore, process termination)" | Cleanup is per-session, not per-turn |
 
       | @dispatch-event-taxonomy description | Lists session events as: session.ended,
       session.idle_timeout, session.cancelled | Add session.idle to the enumeration | New event type
@@ -27058,3 +27058,8 @@ plans:
           descriptions — pure behavioral language throughout"
         author: "@claude"
         created_at: 2026-03-22T06:48:06.039Z
+      - _ulid: 01KMA5F64XZJ5ERK5J3TQ92DXY
+        content: "Fix last 3 should-fix items: stop reason → turn completion reason, schema description,
+          update table protocol terms"
+        author: "@claude"
+        created_at: 2026-03-22T06:59:38.269Z
