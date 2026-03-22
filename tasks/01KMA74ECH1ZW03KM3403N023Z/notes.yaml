@@ -93,3 +93,16 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-22T11:38:36.271Z
+  - _ulid: 01KMAPJ7QAHGZXB519XN4GCCHX
+    content: "Fix cycle 5: Addressed both reviewer blockers. (1) Replaced single-string queuedPrompt
+      with a QueuedPromptEntry[] backed by deferred promises — sendPrompt() on a prompting session
+      now returns a promise that only resolves when the queued turn actually completes, fixing the
+      premature action.completed emission (ac-2). (2) Multiple concurrent sendPrompt calls from
+      parallel hooks are all preserved in the array queue instead of overwriting — no silent prompt
+      drops (ac-1/ac-5). Queue entries are rejected on all close paths: requestClose(), session
+      completion, stall timeout, and finally cleanup. Added 3 new tests: deferred resolution,
+      multi-prompt queue preservation, and close rejection. All 41 session-prompt-action tests pass.
+      Full suite has 4 pre-existing timeout failures in unrelated files."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-22T11:58:23.978Z
