@@ -45593,6 +45593,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMAMDTP5YSKKN5MASYA3CVS7
         timestamp: 2026-03-22T11:21:02.748Z
+      - _ulid: 01KMAMDW94M8M4CE58PTRVY0Z9
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMAMDVSRAJ0ZBVAJV1EW7Y4Z
+        timestamp: 2026-03-22T11:21:04.037Z
     examined_commit: cb2b471882c83c4b263922b20fc3bdb0ddb886f1
     external_links: []
     lifecycle_state: open
@@ -45622,7 +45629,25 @@ reviews:
               trigger is effectively unavailable outside handwritten YAML/CLI flows."
             created_at: 2026-03-22T11:21:02.405Z
         kind: blocker
+      - _ulid: 01KMAMDVSRAJ0ZBVAJV1EW7Y4Z
+        entries:
+          - _ulid: 01KMAMDVSR246Y4A6SSV6VS06K
+            author: Test User
+            body: "Review evidence log: Files read: src/agent-runtime/invocation.ts,
+              src/agent-runtime/dispatch.ts, src/agent-runtime/session-registry.ts,
+              src/schema/event-payloads.ts, src/schema/event-registry.ts, src/sessions/types.ts,
+              packages/shared/src/schemas.ts,
+              packages/web-ui/src/lib/components/automation/DispatchTriggersSection.svelte,
+              tests/multi-turn-invocation.test.ts, tests/session-lifecycle-events.test.ts,
+              tests/agent-dispatch-engine.test.ts. Commands run: `kspec task get`, `kspec review
+              for-task`, `git diff`, `kspec validate`, `rg` for AC annotations, `npm test`, and an
+              isolated rerun of the failing dispatch test. Claims verified: the full suite currently
+              fails once under `npm test`; the isolated dispatch guardrail test passes on rerun.
+              Categories searched: correctness, edge cases, error handling, integration, test
+              quality."
+            created_at: 2026-03-22T11:21:03.544Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-22T11:17:10.657Z
-    updated_at: 2026-03-22T11:21:02.405Z
+    updated_at: 2026-03-22T11:21:03.544Z
     notes: []
