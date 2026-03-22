@@ -21353,73 +21353,6 @@
   submitted_at: 2026-03-21T11:34:48.965Z
   completed_at: 2026-03-21T11:40:20.394Z
   automation: eligible
-- _ulid: 01KM6YEWY1WSKEXTF5YNP5GG81
-  slugs:
-    - task-build-migration
-  title: Build migration command
-  type: task
-  spec_ref: "@task-storage-migration"
-  plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
-  status: completed
-  blocked_by: []
-  closed_reason: Merged to dev after approved review. Added task migrate CLI implementation,
-    split-backend migration detection updates, and executable migration coverage including dry-run,
-    error-guidance, backfill, malformed legacy rows, and atomic shadow-commit behavior.
-  depends_on:
-    - "@task-impl-index"
-    - "@task-impl-per-task-files"
-    - "@task-extend-write-buffer"
-  priority: 1
-  tags:
-    - tasks
-    - migration
-    - cli
-  review_ref: "@01KM8WWCEX1YF28PXRQVP75S8D"
-  submission_linkage:
-    review_url: null
-    branch: dev
-    captured_at: 2026-03-21T19:09:11.140Z
-    commit: 8337c9ada07b3d1da672e92346b5b5e34ab5d31d
-    remote: origin
-    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
-    upstream_ref: refs/heads/dev
-  session_id: 01KM8W9297G96YMS1E4D4YQ4P5
-  created_at: 2026-03-21T00:59:25.505Z
-  started_at: 2026-03-21T19:09:08.315Z
-  submitted_at: 2026-03-21T19:09:11.297Z
-  completed_at: 2026-03-21T19:14:23.074Z
-  notes:
-    - _ulid: 01KM8VT0KQ6CGJD0YMANYMWBQ6
-      content: "Fix cycle 4: Addressed both blockers. (1) AC-8 atomicity test now uses a real shadow
-        branch with kspec init, writes monolithic tasks, runs migrate, and counts commits — asserts
-        exactly 1 new commit and clean working tree. (2) Replaced comment-only trait AC claims with
-        executable tests: @trait-dry-run ac-4 breaks the shadow worktree to trigger initContext
-        error during dry-run and verifies no state change; @trait-error-guidance ac-1/ac-2 uses a
-        read-only tasks directory to trigger EACCES during flush and verifies error description +
-        suggestion; @trait-error-guidance ac-6 same with --json verifying structured error object.
-        All 22 migration tests pass. Full suite: 6916 passed, 1 pre-existing failure unrelated to
-        this change."
-      supersedes: null
-      author: "@claude"
-      created_at: 2026-03-21T18:51:32.855Z
-    - _ulid: 01KM8W81ZGHAP06YPFHC9HPZ5F
-      content: "[FIX_CYCLE: 1] Review verdict: changes_requested by codex"
-      supersedes: null
-      author: Test User
-      created_at: 2026-03-21T18:59:13.009Z
-    - _ulid: 01KM8WSW8PE8MA6Q2G3TSKC639
-      content: "Fix cycle 5: Addressed both blockers. (1) Monolithic detection now uses positive
-        lean-entry identification (typeof notes_count === number) instead of Array.isArray(notes).
-        Entries with malformed/missing notes are now correctly classified as monolithic and migrated
-        with warnings per AC-5. Same fix applied to split-backend ensureMigrated gate. Added test
-        with string/null/missing notes variants. (2) AC-4 test now loads migrated data through
-        TaskDataManager split getTask instead of reading raw YAML files, proving the spec
-        requirement that migrated data is visible through the actual split-format load path. All 23
-        migration tests pass. Full suite: 6917 passed, 1 pre-existing timeout failure unrelated."
-      supersedes: null
-      author: "@claude"
-      created_at: 2026-03-21T19:08:56.983Z
-  automation: eligible
 - _ulid: 01KM6YEXN2KMJ43AMEKH3SW0RE
   slugs:
     - task-activate-split-storage
@@ -21550,504 +21483,114 @@
   submitted_at: 2026-03-21T16:35:36.092Z
   completed_at: 2026-03-21T16:44:34.010Z
   automation: eligible
+- _ulid: 01KM6YEWY1WSKEXTF5YNP5GG81
+  slugs:
+    - task-build-migration
+  title: Build migration command
+  type: task
+  spec_ref: "@task-storage-migration"
+  plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
+  status: completed
+  blocked_by: []
+  depends_on:
+    - "@task-impl-index"
+    - "@task-impl-per-task-files"
+    - "@task-extend-write-buffer"
+  priority: 1
+  tags:
+    - tasks
+    - migration
+    - cli
+  review_ref: "@01KM8WWCEX1YF28PXRQVP75S8D"
+  session_id: 01KM8W9297G96YMS1E4D4YQ4P5
+  notes_count: 11
+  todos_count: 0
+  created_at: 2026-03-21T00:59:25.505Z
+  started_at: 2026-03-21T19:09:08.315Z
+  submitted_at: 2026-03-21T19:09:11.297Z
+  completed_at: 2026-03-21T19:14:23.074Z
+  automation: eligible
 - _ulid: 01KM99V2BGM1Y4MNFPJS8YCHE4
   slugs: []
   title: Fix detail-loading fallback for missing per-task directories
   type: task
   spec_ref: "@task-detail-loading"
-  meta_ref: null
   plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
   status: completed
   blocked_by: []
-  closed_reason: Merged to dev as acbaabfcd6c617738e0098a81d161e80438308a1. Approved fallback to
-    index-backed task detail loading when per-task directories are missing, with warning emission
-    and regression coverage for ULID, short ULID, and slug lookup paths.
   depends_on: []
-  context: []
   priority: 2
   tags:
     - tasks
     - storage
     - bug
-  vcs_refs: []
   review_ref: "@01KM9APKWZYCZCKYP529AJS484"
-  submission_linkage:
-    review_url: null
-    branch: dev
-    captured_at: 2026-03-21T23:10:43.892Z
-    commit: 6661e9cae3c71f9e8292fa2e75c39e69e148ff77
-    remote: origin
-    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
-    upstream_ref: refs/heads/dev
-  session_id: 01KM9A4AGAAMW523R35C51F0YQ
+  notes_count: 2
+  todos_count: 0
   created_at: 2026-03-21T22:56:47.472Z
   started_at: 2026-03-21T23:02:12.110Z
   submitted_at: 2026-03-21T23:10:44.263Z
   completed_at: 2026-03-21T23:17:18.713Z
-  notes:
-    - _ulid: 01KM99VAYE1RQE8H6SH2Y6BMTP
-      content: >-
-        ## Context
-
-
-        The task storage split plan (@plan-task-storage-split-per-task-directory-architecture)
-        introduced per-task directory storage where each task lives in .kspec/tasks/<ULID>/. The
-        split backend (src/parser/split-backend.ts) reads task.yaml + notes.yaml from these
-        directories when loading full task details.
-
-
-        ## Problem
-
-
-        Spec @task-detail-loading ac-2 requires: "Missing per-task directory with existing index
-        entry: manager returns index data with warning (not silent failure)."
-
-
-        Current behavior in split-backend.ts getTask(): when a per-task directory is missing but an
-        index entry exists, the method returns undefined. The task becomes completely unretrievable
-        even though the index still has its summary fields.
-
-
-        ## What needs to change
-
-
-        In the split backend's getTask() method (src/parser/split-backend.ts), when
-        loadTaskFromDir() returns undefined for a ULID that exists in the index:
-
-        1. Read the index entry for that ULID
-
-        2. Construct a partial LoadedTask from the index fields (it will lack notes, description,
-        history)
-
-        3. Emit a warning indicating the per-task directory is missing and suggesting rebuild-index
-        or re-migration
-
-        4. Return the partial task rather than undefined
-
-
-        ## Why
-
-
-        During activation and production use, if a task directory is corrupted or deleted, the task
-        should degrade gracefully to index-only data rather than vanish entirely. Resilience
-        requirement for split storage.
-
-
-        ## AC reference
-
-
-        @task-detail-loading ac-2
-      supersedes: null
-      author: "@claude"
-      created_at: 2026-03-21T22:56:56.271Z
-    - _ulid: 01KM9AKVSMVV5Q5HM28607M3MM
-      content: "Implemented fallback in SplitBackend.getTask() for missing per-task directories. When
-        loadTaskFromDir() returns undefined for a ULID that exists in the index, the backend now
-        reads the index entry, constructs a partial LoadedTask via TaskSchema.safeParse() (with
-        empty notes/todos via schema defaults), and emits a stderr warning. Covers all lookup paths:
-        full ULID, short ULID prefix, and slug-based refs. Added 10 new tests: 3 for AC-1 (normal
-        detail loading via full ULID, slug, and short prefix) and 7 for AC-2 (fallback for full
-        ULID, slug, short prefix, warning emission, no-throw guarantee, empty detail fields, and
-        still-throws for truly non-existent tasks). All 72 split-backend tests pass. 2 pre-existing
-        timeout failures in agent-invocation-lifecycle.test.ts are unrelated."
-      supersedes: null
-      author: "@claude"
-      created_at: 2026-03-21T23:10:19.956Z
-  todos: []
   automation: eligible
 - _ulid: 01KM99VKMSAS3JBX7S3QWBHRSV
   slugs: []
   title: Add missing AC test annotations for storage split specs
   type: task
   spec_ref: "@task-directory-storage"
-  meta_ref: null
   plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
   status: completed
   blocked_by: []
-  closed_reason: Merged to dev. Verified AC annotations for @task-listing-performance,
-    @task-detail-loading, and @task-storage-activation; merge gate fixed by stabilizing
-    process-spawning invocation test timeouts; review 01KM9DAZ approved with npm test passing.
   depends_on: []
-  context: []
   priority: 3
   tags:
     - tasks
     - storage
     - testing
-  vcs_refs: []
   review_ref: "@01KM9DAZKHJG2EPZ7ZTJVMWKJF"
-  submission_linkage:
-    review_url: null
-    branch: dev
-    captured_at: 2026-03-21T23:56:21.366Z
-    commit: acbaabfcd6c617738e0098a81d161e80438308a1
-    remote: origin
-    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
-    upstream_ref: refs/heads/dev
-  session_id: 01KM9CETD4R2ZG7GMX7HXHKB6Z
+  notes_count: 6
+  todos_count: 0
   created_at: 2026-03-21T22:57:05.177Z
   started_at: 2026-03-21T23:56:15.327Z
   submitted_at: 2026-03-21T23:56:21.735Z
   completed_at: 2026-03-22T00:02:38.452Z
-  notes:
-    - _ulid: 01KM99WC7M7NA7PJQSBY6BW4MB
-      content: >-
-        ## Context
-
-
-        The task storage split plan (@plan-task-storage-split-per-task-directory-architecture)
-        introduced 12 specs with 43 total acceptance criteria. Post-implementation audit found that
-        while the behavior for most ACs is tested, several specs are missing the // AC: @slug ac-N
-        comment annotations that link tests to their acceptance criteria.
-
-
-        ## Missing annotations
-
-
-        ### @task-listing-performance (0/2 ACs annotated)
-
-        - ac-1: "Filtered task lists read only project.tasks.yaml; no per-task directory accessed"
-
-        - ac-2: "Response time proportional to task count, not total notes/history volume"
-
-        - Behavior IS tested in task-data-manager.test.ts (the ac-2 test for index-only reads covers
-        this) but lacks explicit AC annotations referencing @task-listing-performance.
-
-
-        ### @task-detail-loading ac-1 (0/1 annotated — ac-2 is a separate implementation task)
-
-        - ac-1: "Detail request reads index entry and per-task directory; result is unified task
-        indistinguishable from current monolithic format"
-
-        - Behavior IS tested in split-backend.test.ts and task-data-manager.test.ts (getTask tests)
-        but lacks the annotation.
-
-
-        ### @task-storage-activation ac-2 (0/1 annotated — ac-1, ac-3, ac-5 already annotated)
-
-        - ac-2: "Split per-task directory format used for all operations when activated"
-
-        - Behavior IS tested in per-task-files.test.ts (the backend registration/activation tests)
-        but lacks the specific ac-2 annotation.
-
-
-        ## What to do
-
-
-        Add // AC: @spec-slug ac-N annotations to existing tests that already cover the behavior. No
-        new test logic needed — this is purely about traceability.
-
-
-        ## Why
-
-
-        AC annotations are the machine-parseable link between specs and tests. Without them, kspec
-        validate and coverage tools cannot verify that these ACs have test coverage. The behavior is
-        correct; only the annotations are missing.
-      supersedes: null
-      author: "@claude"
-      created_at: 2026-03-21T22:57:30.356Z
-    - _ulid: 01KM9B3MP3KQMQKY5SR3GT9WXS
-      content: "Added 8 AC annotation comments across 2 test files (task-data-manager.test.ts,
-        split-backend.test.ts). No new test logic — all annotations link to existing tests that
-        already cover the behavior. Annotations added: @task-listing-performance ac-1 (3 sites),
-        @task-listing-performance ac-2 (1 site), @task-detail-loading ac-1 (3 sites),
-        @task-storage-activation ac-2 (1 site). Full test suite passes (6935 tests, 0 failures)."
-      supersedes: null
-      author: "@claude"
-      created_at: 2026-03-21T23:18:56.963Z
-    - _ulid: 01KM9BEK25612R1PPWV0Y3F0N2
-      content: "[FIX_CYCLE: 1] Review verdict: changes_requested by codex"
-      supersedes: null
-      author: Test User
-      created_at: 2026-03-21T23:24:55.749Z
-    - _ulid: 01KM9BV8QG4QWW4SPGSZBM4S3M
-      content: "Fix cycle 1: Addressed both review blockers. (1) Removed misplaced
-        @task-listing-performance ac-2 annotation from task-data-manager.test.ts — it was on a test
-        that only checked field exclusion, not proportionality. Added a proper behavioral test in
-        split-backend.test.ts that creates tasks with 20 notes (4KB+ notes file), lists via
-        index-only path, and verifies notes files are never read. (2) Extended
-        @task-storage-activation ac-2 test to cover all 5 operation types (list, get, create,
-        mutate, delete) via mock backend call tracking, proving split format is used for ALL reads
-        and writes. Full suite passes: 6936 tests, 0 failures."
-      supersedes: null
-      author: "@claude"
-      created_at: 2026-03-21T23:31:51.152Z
-    - _ulid: 01KM9CE29HTRB83Q1GSMPZ1B19
-      content: "[FIX_CYCLE: 2] Review verdict: changes_requested by codex"
-      supersedes: null
-      author: Test User
-      created_at: 2026-03-21T23:42:07.153Z
-    - _ulid: 01KM9D7M9MPA36WV8BHKSHF2DA
-      content: "Fix cycle 2: The blocker was flaky test timeouts in agent-invocation-lifecycle.test.ts —
-        not caused by our AC annotation changes. Tests that spawn real ACP child processes via
-        runInvocation were exceeding the default 15s vitest testTimeout under full-suite CPU
-        pressure. Fixed by adding { timeout: 30_000 } to all 11 describe blocks that spawn child
-        processes, leaving the 2 pure unit test blocks at the default. Full suite passes cleanly:
-        6936 tests, 0 failures."
-      supersedes: null
-      author: "@claude"
-      created_at: 2026-03-21T23:56:04.788Z
-  todos: []
   automation: eligible
 - _ulid: 01KM9ET8GNYC6R03R2E59PS3N9
   slugs: []
   title: Activate split storage on kynetic-spec project
   type: task
   spec_ref: "@task-storage-activation"
-  meta_ref: null
   plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
   status: pending
   blocked_by: []
   depends_on:
     - "@task-activate-split-storage"
-  context: []
   priority: 1
   tags:
     - tasks
     - storage
     - manual
-  vcs_refs: []
+  notes_count: 1
+  todos_count: 0
   created_at: 2026-03-22T00:23:43.893Z
-  notes:
-    - _ulid: 01KM9ETHGDY9WXM4P1S10W3QJV
-      content: "Manual step: after the activation command is implemented and merged, run it on this
-        project to flip kynetic-spec from monolithic to split storage. Verify with kspec shadow
-        status and spot-check task get/list operations. This is a one-way switch — ensure migration
-        has been run first (kspec task migrate)."
-      supersedes: null
-      author: "@claude"
-      created_at: 2026-03-22T00:23:53.101Z
-  todos: []
   automation: manual_only
 - _ulid: 01KM9FB8PAK46RP5SRP1JVD2FD
   slugs: []
   title: Fix worktree guard to detect actual shadow branch, not substring match
   type: task
   spec_ref: "@native-guard-commands"
-  meta_ref: null
-  plan_ref: null
   status: completed
   blocked_by: []
-  closed_reason: Merged to dev via merge commit 6bba94e608f4e0a8d084da3a765b273d62b4bdd4 after review
-    approval. Verified guard now resolves the main project root when invoked from inside the shadow
-    worktree, retains AC coverage for shadow-path detection, and full npm test passed (6981 tests).
   depends_on: []
-  context: []
   priority: 2
   tags:
     - cli
     - bug
     - guard
-  vcs_refs: []
   review_ref: "@01KM9MAJN1DWZ2J333F7RRCBNB"
-  submission_linkage:
-    review_url: null
-    branch: dev
-    captured_at: 2026-03-22T01:55:01.931Z
-    commit: 25566421cc05dc88edf97d653d6dc773eee5896e
-    remote: origin
-    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
-    upstream_ref: refs/heads/dev
-  session_id: 01KM9KH56STZ7J33R0TCW0M78M
+  notes_count: 10
+  todos_count: 0
   created_at: 2026-03-22T00:33:01.130Z
   started_at: 2026-03-22T01:54:47.182Z
   submitted_at: 2026-03-22T01:55:02.306Z
   completed_at: 2026-03-22T02:02:00.322Z
-  notes:
-    - _ulid: 01KM9FC5J82Q06XBEAAZTCVECV
-      content: >-
-        ## Problem
-
-
-        The worktree guard (src/cli/commands/guard.ts) uses substring matching to detect if a
-        command is running inside the .kspec shadow branch worktree:
-
-
-        ```typescript
-
-        function isInKspec(command: string, cwd: string | undefined): boolean {
-          if (cwd) {
-            const normalizedCwd = cwd.replace(/\\/g, "/");
-            if (normalizedCwd.includes("/.kspec") || normalizedCwd.endsWith("/.kspec")) {
-              return true;
-            }
-          }
-          // ...
-        }
-
-        ```
-
-
-        This fires false positives for any path containing "/.kspec" as a substring, including
-        dispatch worktrees under .kspec-worktrees/ (the default dispatch.worktree_root). Agents
-        working in dispatch worktrees get blocked from running git rebase, git fetch, etc. —
-        operations that are legitimate in task worktrees but dangerous in the shadow branch.
-
-
-        ## Why this matters
-
-
-        Dispatch agents routinely need to rebase on the integration branch before starting work. The
-        guard blocks this, forcing agents to skip the rebase and work on potentially stale branches.
-        This was observed in production dispatch runs.
-
-
-        ## Root cause
-
-
-        The guard hardcodes "/.kspec" as a substring check. Two problems:
-
-
-        1. The shadow directory is configurable — shadow.directory in kspec.config.yaml defaults to
-        ".kspec" but can be changed (src/parser/config.ts, ShadowConfigSchema). If reconfigured, the
-        guard would fail to protect the actual shadow worktree.
-
-
-        2. The substring match is too broad — ".kspec-worktrees/dispatch/task/foo/01ABC123/"
-        contains "/.kspec" and triggers the guard even though it's a normal git worktree, not the
-        shadow branch.
-
-
-        ## What needs to change
-
-
-        Replace substring matching in isInKspec() with detection of the actual shadow branch
-        worktree. The guard runs as a kspec CLI command so it has access to the project config.
-
-
-        ### Approach
-
-
-        1. Resolve the actual shadow worktree path from config:
-           - Load kspec.config.yaml to get shadow.directory (default: ".kspec")
-           - Resolve to absolute path from project root
-           - Compare cwd against that resolved path (exact prefix match, not substring)
-
-        2. If config loading is too expensive for a hot-path hook, cache or use a faster detection:
-           - The shadow worktree's .git file contains "gitdir: ../.git/worktrees/-kspec" (or similar)
-           - Check if cwd's .git pointer references a kspec-meta worktree
-           - This distinguishes shadow worktree from dispatch worktrees definitively
-
-        3. The cd-based detection (line 76: command contains "cd .kspec") also needs the same
-        treatment — check against the configured directory name, not hardcoded ".kspec".
-
-
-        ### Key files
-
-
-        - src/cli/commands/guard.ts — isInKspec() function (lines 68-80), evaluateWorktreeGuard()
-        (lines 130-163)
-
-        - src/parser/config.ts — ShadowConfigSchema (lines 20-47), resolveConfig() (lines 604-630)
-
-        - src/parser/shadow.ts — SHADOW_WORKTREE_DIR constant
-
-        - tests/guard-worktree.test.ts — existing tests to extend
-
-        - .claude/settings.json — hook definition (PreToolUse matcher for Bash)
-
-
-        ### Test cases needed
-
-
-        - cwd is the actual shadow worktree (.kspec/) + dangerous command → BLOCK
-
-        - cwd is a dispatch worktree (.kspec-worktrees/dispatch/task/foo/) + rebase → ALLOW
-
-        - cwd is a dispatch worktree + kspec-meta deletion → still BLOCK (this is checked
-        separately)
-
-        - shadow directory reconfigured to custom path → guard uses configured path
-
-        - cwd contains ".kspec" as substring but is not the shadow worktree → ALLOW
-
-
-        ## Spec reference
-
-
-        @native-guard-commands ac-worktree-guard: "blocks dangerous git operations in .kspec/" — the
-        spec says "in .kspec/", meaning the shadow branch worktree specifically.
-      supersedes: null
-      author: "@claude"
-      created_at: 2026-03-22T00:33:30.696Z
-    - _ulid: 01KM9FZX5C37EEN9DSYR301JFV
-      content: "Fixed substring matching in worktree guard. Replaced isInKspec() with path-segment-aware
-        detection: isShadowWorktreePath() checks that '/.kspec' is a complete path segment (not a
-        prefix of '.kspec-worktrees'), and isCdToShadowWorktree() applies the same boundary check
-        for cd-based detection. Both use SHADOW_WORKTREE_DIR constant. Added 10 new tests covering
-        dispatch worktree false positives, .kspec-backup/.kspec-data paths, cd-to-.kspec-worktrees,
-        and kspec-meta deletion from dispatch worktrees. All 6956 tests pass."
-      supersedes: null
-      author: "@claude"
-      created_at: 2026-03-22T00:44:17.452Z
-    - _ulid: 01KM9G7XZNV2BDWCYY8JZCPXK5
-      content: "[FIX_CYCLE: 1] Review verdict: changes_requested by codex"
-      supersedes: null
-      author: Test User
-      created_at: 2026-03-22T00:48:40.437Z
-    - _ulid: 01KM9GNAFRS8TCJXPSJWEA5583
-      content: "Fix cycle 1: Addressed review blocker — guard now resolves shadow directory from
-        kspec.config.yaml via loadProjectConfig() instead of using hardcoded SHADOW_WORKTREE_DIR
-        constant. evaluateWorktreeGuard() accepts optional GuardOptions.shadowDirectory, CLI handler
-        loads config and passes it. All detection helpers (isShadowWorktreePath,
-        isCdToShadowWorktree, isInKspec) parameterized on shadowDir. Added 8 tests covering custom
-        shadow directory scenarios including .specs as configured dir, substring prefix protection,
-        and default fallback. All 64 guard tests pass."
-      supersedes: null
-      author: "@claude"
-      created_at: 2026-03-22T00:55:59.224Z
-    - _ulid: 01KM9H0AF285KSPK7FQXTTQRH9
-      content: "[FIX_CYCLE: 2] Review verdict: changes_requested by codex"
-      supersedes: null
-      author: Test User
-      created_at: 2026-03-22T01:01:59.650Z
-    - _ulid: 01KM9J796NSBF5N5T1J0AA0FN4
-      content: "Fix cycle 2: Addressed core blocker — guard now compares cwd against the resolved absolute
-        path of the shadow worktree (gitRoot + config.shadow.directory) instead of matching
-        directory names as path segments. This eliminates false positives on unrelated nested
-        directories like /repo/packages/demo/.kspec. GuardOptions.shadowDirectory replaced with
-        shadowAbsolutePath. CLI handler resolves absolute path from project config using
-        process.cwd() (not input.cwd which may be inside the shadow worktree's own git context).
-        Guard fails open without shadowAbsolutePath (except kspec-meta branch deletion). Tests
-        updated with explicit absolute paths and new test section for nested directory false
-        positive prevention."
-      supersedes: null
-      author: "@claude"
-      created_at: 2026-03-22T01:23:16.309Z
-    - _ulid: 01KM9JQJSC15589X1NGDSNYF2V
-      content: "[FIX_CYCLE: 3] Review verdict: changes_requested by codex"
-      supersedes: null
-      author: Test User
-      created_at: 2026-03-22T01:32:10.412Z
-    - _ulid: 01KM9K387QPTF449Z2YBDRMGYF
-      content: "Fix cycle 3: Addressed review blocker — nondeterministic
-        agent-invocation-lifecycle.test.ts timeouts under full-suite pressure. The prior bump from
-        15s to 30s (67e06ae) was insufficient; reviewer reproduced 30s timeouts on lines 351, 463,
-        1620. Increased all 11 process-spawning describe blocks from 30s to 60s. Merged origin/dev
-        (2 commits: task storage activate). Full npm test passes clean: 6979 tests, 305 files, 0
-        failures."
-      supersedes: null
-      author: "@claude"
-      created_at: 2026-03-22T01:38:32.824Z
-    - _ulid: 01KM9KG3Z73YGK9J01QGJW26C3
-      content: "[FIX_CYCLE: 4] Review verdict: changes_requested by codex"
-      supersedes: null
-      author: Test User
-      created_at: 2026-03-22T01:45:34.439Z
-    - _ulid: 01KM9M0N3G361EETCZ8GH1WKPX
-      content: "Fix cycle 4: Addressed review blocker — guard CLI mis-detected the shadow worktree when
-        the hook process itself started from .kspec/. Root cause: loadProjectConfig(process.cwd())
-        calls getGitRoot() which returns .kspec/ as the git root (it's its own worktree), making
-        shadowAbsolutePath resolve to .kspec/.kspec (wrong). Fix: use
-        resolveProjectRoots(process.cwd()) which leverages git rev-parse --git-common-dir to find
-        the real main repo root even from inside a worktree, then pass that as mainRoot to
-        loadProjectConfig(). Also fixed existing CLI tests — cliShadowCwd was resolving relative to
-        the dispatch worktree root instead of the main project root, which was coincidentally
-        passing before but wrong. Added 2 integration tests that create a real shadow worktree in a
-        temp repo and run the guard from inside it. Full suite: 6981 tests pass, 0 failures."
-      supersedes: null
-      author: "@claude"
-      created_at: 2026-03-22T01:54:36.272Z
-  todos: []
   automation: eligible

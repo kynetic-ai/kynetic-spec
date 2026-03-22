@@ -1,0 +1,69 @@
+notes:
+  - _ulid: 01KM99VAYE1RQE8H6SH2Y6BMTP
+    content: >-
+      ## Context
+
+
+      The task storage split plan (@plan-task-storage-split-per-task-directory-architecture)
+      introduced per-task directory storage where each task lives in .kspec/tasks/<ULID>/. The split
+      backend (src/parser/split-backend.ts) reads task.yaml + notes.yaml from these directories when
+      loading full task details.
+
+
+      ## Problem
+
+
+      Spec @task-detail-loading ac-2 requires: "Missing per-task directory with existing index
+      entry: manager returns index data with warning (not silent failure)."
+
+
+      Current behavior in split-backend.ts getTask(): when a per-task directory is missing but an
+      index entry exists, the method returns undefined. The task becomes completely unretrievable
+      even though the index still has its summary fields.
+
+
+      ## What needs to change
+
+
+      In the split backend's getTask() method (src/parser/split-backend.ts), when loadTaskFromDir()
+      returns undefined for a ULID that exists in the index:
+
+      1. Read the index entry for that ULID
+
+      2. Construct a partial LoadedTask from the index fields (it will lack notes, description,
+      history)
+
+      3. Emit a warning indicating the per-task directory is missing and suggesting rebuild-index or
+      re-migration
+
+      4. Return the partial task rather than undefined
+
+
+      ## Why
+
+
+      During activation and production use, if a task directory is corrupted or deleted, the task
+      should degrade gracefully to index-only data rather than vanish entirely. Resilience
+      requirement for split storage.
+
+
+      ## AC reference
+
+
+      @task-detail-loading ac-2
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-21T22:56:56.271Z
+  - _ulid: 01KM9AKVSMVV5Q5HM28607M3MM
+    content: "Implemented fallback in SplitBackend.getTask() for missing per-task directories. When
+      loadTaskFromDir() returns undefined for a ULID that exists in the index, the backend now reads
+      the index entry, constructs a partial LoadedTask via TaskSchema.safeParse() (with empty
+      notes/todos via schema defaults), and emits a stderr warning. Covers all lookup paths: full
+      ULID, short ULID prefix, and slug-based refs. Added 10 new tests: 3 for AC-1 (normal detail
+      loading via full ULID, slug, and short prefix) and 7 for AC-2 (fallback for full ULID, slug,
+      short prefix, warning emission, no-throw guarantee, empty detail fields, and still-throws for
+      truly non-existent tasks). All 72 split-backend tests pass. 2 pre-existing timeout failures in
+      agent-invocation-lifecycle.test.ts are unrelated."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-21T23:10:19.956Z

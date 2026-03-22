@@ -1,0 +1,36 @@
+_ulid: 01KM99V2BGM1Y4MNFPJS8YCHE4
+slugs: []
+title: Fix detail-loading fallback for missing per-task directories
+type: task
+spec_ref: "@task-detail-loading"
+meta_ref: null
+plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
+status: completed
+blocked_by: []
+closed_reason: Merged to dev as acbaabfcd6c617738e0098a81d161e80438308a1. Approved fallback to
+  index-backed task detail loading when per-task directories are missing, with warning emission and
+  regression coverage for ULID, short ULID, and slug lookup paths.
+depends_on: []
+context: []
+priority: 2
+tags:
+  - tasks
+  - storage
+  - bug
+vcs_refs: []
+review_ref: "@01KM9APKWZYCZCKYP529AJS484"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-21T23:10:43.892Z
+  commit: 6661e9cae3c71f9e8292fa2e75c39e69e148ff77
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM9A4AGAAMW523R35C51F0YQ
+created_at: 2026-03-21T22:56:47.472Z
+started_at: 2026-03-21T23:02:12.110Z
+submitted_at: 2026-03-21T23:10:44.263Z
+completed_at: 2026-03-21T23:17:18.713Z
+todos: []
+automation: eligible

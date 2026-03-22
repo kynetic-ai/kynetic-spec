@@ -1,0 +1,193 @@
+notes:
+  - _ulid: 01KM9FC5J82Q06XBEAAZTCVECV
+    content: >-
+      ## Problem
+
+
+      The worktree guard (src/cli/commands/guard.ts) uses substring matching to detect if a command
+      is running inside the .kspec shadow branch worktree:
+
+
+      ```typescript
+
+      function isInKspec(command: string, cwd: string | undefined): boolean {
+        if (cwd) {
+          const normalizedCwd = cwd.replace(/\\/g, "/");
+          if (normalizedCwd.includes("/.kspec") || normalizedCwd.endsWith("/.kspec")) {
+            return true;
+          }
+        }
+        // ...
+      }
+
+      ```
+
+
+      This fires false positives for any path containing "/.kspec" as a substring, including
+      dispatch worktrees under .kspec-worktrees/ (the default dispatch.worktree_root). Agents
+      working in dispatch worktrees get blocked from running git rebase, git fetch, etc. —
+      operations that are legitimate in task worktrees but dangerous in the shadow branch.
+
+
+      ## Why this matters
+
+
+      Dispatch agents routinely need to rebase on the integration branch before starting work. The
+      guard blocks this, forcing agents to skip the rebase and work on potentially stale branches.
+      This was observed in production dispatch runs.
+
+
+      ## Root cause
+
+
+      The guard hardcodes "/.kspec" as a substring check. Two problems:
+
+
+      1. The shadow directory is configurable — shadow.directory in kspec.config.yaml defaults to
+      ".kspec" but can be changed (src/parser/config.ts, ShadowConfigSchema). If reconfigured, the
+      guard would fail to protect the actual shadow worktree.
+
+
+      2. The substring match is too broad — ".kspec-worktrees/dispatch/task/foo/01ABC123/" contains
+      "/.kspec" and triggers the guard even though it's a normal git worktree, not the shadow
+      branch.
+
+
+      ## What needs to change
+
+
+      Replace substring matching in isInKspec() with detection of the actual shadow branch worktree.
+      The guard runs as a kspec CLI command so it has access to the project config.
+
+
+      ### Approach
+
+
+      1. Resolve the actual shadow worktree path from config:
+         - Load kspec.config.yaml to get shadow.directory (default: ".kspec")
+         - Resolve to absolute path from project root
+         - Compare cwd against that resolved path (exact prefix match, not substring)
+
+      2. If config loading is too expensive for a hot-path hook, cache or use a faster detection:
+         - The shadow worktree's .git file contains "gitdir: ../.git/worktrees/-kspec" (or similar)
+         - Check if cwd's .git pointer references a kspec-meta worktree
+         - This distinguishes shadow worktree from dispatch worktrees definitively
+
+      3. The cd-based detection (line 76: command contains "cd .kspec") also needs the same
+      treatment — check against the configured directory name, not hardcoded ".kspec".
+
+
+      ### Key files
+
+
+      - src/cli/commands/guard.ts — isInKspec() function (lines 68-80), evaluateWorktreeGuard()
+      (lines 130-163)
+
+      - src/parser/config.ts — ShadowConfigSchema (lines 20-47), resolveConfig() (lines 604-630)
+
+      - src/parser/shadow.ts — SHADOW_WORKTREE_DIR constant
+
+      - tests/guard-worktree.test.ts — existing tests to extend
+
+      - .claude/settings.json — hook definition (PreToolUse matcher for Bash)
+
+
+      ### Test cases needed
+
+
+      - cwd is the actual shadow worktree (.kspec/) + dangerous command → BLOCK
+
+      - cwd is a dispatch worktree (.kspec-worktrees/dispatch/task/foo/) + rebase → ALLOW
+
+      - cwd is a dispatch worktree + kspec-meta deletion → still BLOCK (this is checked separately)
+
+      - shadow directory reconfigured to custom path → guard uses configured path
+
+      - cwd contains ".kspec" as substring but is not the shadow worktree → ALLOW
+
+
+      ## Spec reference
+
+
+      @native-guard-commands ac-worktree-guard: "blocks dangerous git operations in .kspec/" — the
+      spec says "in .kspec/", meaning the shadow branch worktree specifically.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-22T00:33:30.696Z
+  - _ulid: 01KM9FZX5C37EEN9DSYR301JFV
+    content: "Fixed substring matching in worktree guard. Replaced isInKspec() with path-segment-aware
+      detection: isShadowWorktreePath() checks that '/.kspec' is a complete path segment (not a
+      prefix of '.kspec-worktrees'), and isCdToShadowWorktree() applies the same boundary check for
+      cd-based detection. Both use SHADOW_WORKTREE_DIR constant. Added 10 new tests covering
+      dispatch worktree false positives, .kspec-backup/.kspec-data paths, cd-to-.kspec-worktrees,
+      and kspec-meta deletion from dispatch worktrees. All 6956 tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-22T00:44:17.452Z
+  - _ulid: 01KM9G7XZNV2BDWCYY8JZCPXK5
+    content: "[FIX_CYCLE: 1] Review verdict: changes_requested by codex"
+    supersedes: null
+    author: Test User
+    created_at: 2026-03-22T00:48:40.437Z
+  - _ulid: 01KM9GNAFRS8TCJXPSJWEA5583
+    content: "Fix cycle 1: Addressed review blocker — guard now resolves shadow directory from
+      kspec.config.yaml via loadProjectConfig() instead of using hardcoded SHADOW_WORKTREE_DIR
+      constant. evaluateWorktreeGuard() accepts optional GuardOptions.shadowDirectory, CLI handler
+      loads config and passes it. All detection helpers (isShadowWorktreePath, isCdToShadowWorktree,
+      isInKspec) parameterized on shadowDir. Added 8 tests covering custom shadow directory
+      scenarios including .specs as configured dir, substring prefix protection, and default
+      fallback. All 64 guard tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-22T00:55:59.224Z
+  - _ulid: 01KM9H0AF285KSPK7FQXTTQRH9
+    content: "[FIX_CYCLE: 2] Review verdict: changes_requested by codex"
+    supersedes: null
+    author: Test User
+    created_at: 2026-03-22T01:01:59.650Z
+  - _ulid: 01KM9J796NSBF5N5T1J0AA0FN4
+    content: "Fix cycle 2: Addressed core blocker — guard now compares cwd against the resolved absolute
+      path of the shadow worktree (gitRoot + config.shadow.directory) instead of matching directory
+      names as path segments. This eliminates false positives on unrelated nested directories like
+      /repo/packages/demo/.kspec. GuardOptions.shadowDirectory replaced with shadowAbsolutePath. CLI
+      handler resolves absolute path from project config using process.cwd() (not input.cwd which
+      may be inside the shadow worktree's own git context). Guard fails open without
+      shadowAbsolutePath (except kspec-meta branch deletion). Tests updated with explicit absolute
+      paths and new test section for nested directory false positive prevention."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-22T01:23:16.309Z
+  - _ulid: 01KM9JQJSC15589X1NGDSNYF2V
+    content: "[FIX_CYCLE: 3] Review verdict: changes_requested by codex"
+    supersedes: null
+    author: Test User
+    created_at: 2026-03-22T01:32:10.412Z
+  - _ulid: 01KM9K387QPTF449Z2YBDRMGYF
+    content: "Fix cycle 3: Addressed review blocker — nondeterministic
+      agent-invocation-lifecycle.test.ts timeouts under full-suite pressure. The prior bump from 15s
+      to 30s (67e06ae) was insufficient; reviewer reproduced 30s timeouts on lines 351, 463, 1620.
+      Increased all 11 process-spawning describe blocks from 30s to 60s. Merged origin/dev (2
+      commits: task storage activate). Full npm test passes clean: 6979 tests, 305 files, 0
+      failures."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-22T01:38:32.824Z
+  - _ulid: 01KM9KG3Z73YGK9J01QGJW26C3
+    content: "[FIX_CYCLE: 4] Review verdict: changes_requested by codex"
+    supersedes: null
+    author: Test User
+    created_at: 2026-03-22T01:45:34.439Z
+  - _ulid: 01KM9M0N3G361EETCZ8GH1WKPX
+    content: "Fix cycle 4: Addressed review blocker — guard CLI mis-detected the shadow worktree when
+      the hook process itself started from .kspec/. Root cause: loadProjectConfig(process.cwd())
+      calls getGitRoot() which returns .kspec/ as the git root (it's its own worktree), making
+      shadowAbsolutePath resolve to .kspec/.kspec (wrong). Fix: use
+      resolveProjectRoots(process.cwd()) which leverages git rev-parse --git-common-dir to find the
+      real main repo root even from inside a worktree, then pass that as mainRoot to
+      loadProjectConfig(). Also fixed existing CLI tests — cliShadowCwd was resolving relative to
+      the dispatch worktree root instead of the main project root, which was coincidentally passing
+      before but wrong. Added 2 integration tests that create a real shadow worktree in a temp repo
+      and run the guard from inside it. Full suite: 6981 tests pass, 0 failures."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-22T01:54:36.272Z
