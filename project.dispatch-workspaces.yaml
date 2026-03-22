@@ -18778,3 +18778,79 @@ workspaces:
         head: 901a962905f2d9795f570a172acec51f73d6d1ad
         last_seen_at: 2026-03-22T09:06:36.541Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-multi-turn-invocation-01kma74d
+  - active_role: null
+    base_branch_point: 48ee7bf43230aec5c67ea89428745854d1c4dd6e
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-session-prompt-action/01kma74e
+    canonical_branch_head: 48ee7bf43230aec5c67ea89428745854d1c4dd6e
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-03-22T09:06:43.597Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-03-22T09:06:43.597Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: 48ee7bf43230aec5c67ea89428745854d1c4dd6e
+      updated_at: 2026-03-22T09:06:43.597Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KMA74ECH1ZW03KM3403N023Z"
+    task_slug: task-session-prompt-action
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-03-22T09:06:43.597Z
+      created_at: 2026-03-22T09:06:43.597Z
+      updated_at: 2026-03-22T09:06:43.597Z
+    workspace_id: dispatch-workspace-01KMA74ECH1ZW03KM3403N023Z
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-session-prompt-action/01kma74e
+        head: 48ee7bf43230aec5c67ea89428745854d1c4dd6e
+        last_seen_at: 2026-03-22T09:06:43.597Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-prompt-action-01kma74e
