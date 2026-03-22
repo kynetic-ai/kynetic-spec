@@ -47737,9 +47737,25 @@ reviews:
           kind: nit
           thread_ulid: 01KMBRHMA7JMYMPA6T8G3H69PA
         timestamp: 2026-03-22T21:52:16.020Z
+      - _ulid: 01KMBRJ999KZPMP8FQJB0EQEFH
+        actor: agent@kspec-dispatch
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-03-22T21:52:37.161Z
+      - _ulid: 01KMBRJ999KCHKTC2WR7AJ3VBN
+        actor: agent@kspec-dispatch
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-22T21:52:37.161Z
     examined_commit: 7156ce71b80632a7f36a0a148efe41ceb78f57b6
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -47776,7 +47792,14 @@ reviews:
               (dispatch.ts:1348 -> 1466 -> 1575)."
             created_at: 2026-03-22T21:52:15.687Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: agent@kspec-dispatch
+        role: reviewer
+        created_at: 2026-03-22T21:52:37.161Z
     created_at: 2026-03-22T21:51:14.820Z
-    updated_at: 2026-03-22T21:52:15.687Z
+    updated_at: 2026-03-22T21:52:37.161Z
     notes: []
