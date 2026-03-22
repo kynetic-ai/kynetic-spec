@@ -87,6 +87,11 @@ export const InvocationTerminalPayloadSchema = z.object({
   task_ref: z.string().nullable().optional(),
   /** Duration of the invocation in milliseconds */
   duration_ms: z.number().nonnegative(),
+  /**
+   * Number of turns completed in this session.
+   * AC: @multi-turn-session-lifecycle ac-14
+   */
+  turn_count: z.number().int().positive(),
 });
 
 export type InvocationStartedPayload = z.infer<typeof InvocationStartedPayloadSchema>;
