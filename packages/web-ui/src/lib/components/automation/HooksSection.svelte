@@ -14,6 +14,18 @@
 	}
 
 	let { hooks }: Props = $props();
+
+	const ACTION_TYPE_LABELS: Record<string, string> = {
+		command: 'Command',
+		kspec: 'Kspec',
+		agent: 'Agent',
+		notify: 'Notify',
+		session_prompt: 'Session Prompt',
+	};
+
+	function actionTypeLabel(type: string): string {
+		return ACTION_TYPE_LABELS[type] ?? type;
+	}
 </script>
 
 <section data-testid="hooks-section">
@@ -55,7 +67,7 @@
 
 					<div class="flex flex-wrap gap-1.5">
 						<Badge variant="secondary" class="text-xs">on: {hook.on}</Badge>
-						<Badge variant="outline" class="text-xs">action: {hook.action_type}</Badge>
+						<Badge variant="outline" class="text-xs" data-testid="hook-action-badge">{actionTypeLabel(hook.action_type)}</Badge>
 					</div>
 
 					{#if hook.filter}

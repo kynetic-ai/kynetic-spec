@@ -1,6 +1,7 @@
 <!--
   AC: @ui-automation-view ac-2 — Recent events in reverse chronological order
   AC: @ui-automation-view ac-7 — Real-time updates via WebSocket (parent handles invalidation)
+  AC: @session-idle-event ac-1 — Event log renders session idle events with turn count context
 -->
 <script lang="ts">
 	import type { EventEnvelopeSummary } from '$lib/api';
@@ -44,6 +45,19 @@
 			default:
 				return 'outline';
 		}
+	}
+
+	function formatDuration(ms: number): string {
+		if (ms < 1000) return `${ms}ms`;
+		const secs = ms / 1000;
+		if (secs < 60) return `${secs.toFixed(1)}s`;
+		const mins = Math.floor(secs / 60);
+		const remainSecs = Math.round(secs % 60);
+		return `${mins}m ${remainSecs}s`;
+	}
+
+	function isSessionIdleEvent(event: EventEnvelopeSummary): boolean {
+		return event.event_type === 'session.idle';
 	}
 
 	// Expand state for payload details
@@ -108,8 +122,18 @@
 										<span class="font-mono">({event.source_id})</span>
 									{/if}
 								</td>
-								<td class="px-3 py-2 text-xs text-muted-foreground">
-									{#if event.causation_id}
+								<td class="px-3 py-2 text-xs text-muted-foreground" data-testid="event-details-{event.event_id}">
+									{#if isSessionIdleEvent(event)}
+										<span class="inline-flex items-center gap-1.5 flex-wrap">
+											<Badge variant="outline" class="text-xs" data-testid="session-idle-turn-count">turn {event.payload.turn_count}</Badge>
+											{#if event.payload.agent_id}
+												<span class="font-mono" data-testid="session-idle-agent">{event.payload.agent_id}</span>
+											{/if}
+											{#if typeof event.payload.duration_ms === 'number'}
+												<span class="text-muted-foreground" data-testid="session-idle-duration">{formatDuration(event.payload.duration_ms)}</span>
+											{/if}
+										</span>
+									{:else if event.causation_id}
 										<span class="font-mono" title="Causation ID">⤵ {event.causation_id.slice(0, 8)}</span>
 									{/if}
 								</td>
