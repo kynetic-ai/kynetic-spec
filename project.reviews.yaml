@@ -45910,6 +45910,19 @@ reviews:
         runner: npm
         created_at: 2026-03-22T11:54:02.987Z
         completed_at: 2026-03-22T11:54:02.987Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Failed: tests/agent-dispatch-engine.test.ts ('should re-evaluate tasks from disk after
+          invocation completes, discovering new pending_review tasks' expected invocationCount >= 2,
+          got 1; 'should still drain existing queue when re-evaluation fails' expected
+          invocationCount === 2, got 1). Overall: 7042 passed, 2 failed, 3 skipped in ~225s."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-22T11:54:06.914Z
+        completed_at: 2026-03-22T11:54:06.914Z
     events:
       - _ulid: 01KMANT50S6NJHMTZ0M8K1VBGK
         actor: Test User
@@ -45945,6 +45958,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMAPAAQGZ99CTR3JGZZ1BNZ9
         timestamp: 2026-03-22T11:54:05.516Z
+      - _ulid: 01KMAPAD88NRNYKS6YE6J2EQQQ
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-22T11:54:07.496Z
     examined_commit: 1d2fe7b6543ae344cf43e25828a8fa0e3b6922af
     external_links: []
     lifecycle_state: open
@@ -45998,5 +46018,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-22T11:45:14.778Z
-    updated_at: 2026-03-22T11:54:04.913Z
+    updated_at: 2026-03-22T11:54:06.914Z
     notes: []
