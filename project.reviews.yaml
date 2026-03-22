@@ -44727,6 +44727,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMAGYSMQQFVPB12ZPV790GKH
         timestamp: 2026-03-22T10:20:24.421Z
+      - _ulid: 01KMAGYV18JP0AYB6V2KDM7W8S
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMAGYTPWT8A5TRKMBPA2VZXH
+        timestamp: 2026-03-22T10:20:25.512Z
     examined_commit: 6512cfcb14755cd254463a1452552cd254ad72cd
     external_links: []
     lifecycle_state: open
@@ -44756,7 +44763,29 @@ reviews:
               actual runtime.
             created_at: 2026-03-22T10:20:24.087Z
         kind: blocker
+      - _ulid: 01KMAGYTPWT8A5TRKMBPA2VZXH
+        anchor:
+          type: code
+          commit: 6512cfcb14755cd254463a1452552cd254ad72cd
+          line_end: 2466
+          line_start: 2431
+          path: src/agent-runtime/dispatch.ts
+          side: head
+        entries:
+          - _ulid: 01KMAGYTPWF2CJ7XS6KHHYCZB5
+            author: Test User
+            body: The new multi-turn runner is not wired into the production dispatch path. `runInvocation()`
+              only stays open for external follow-up prompts when callers provide `sessionRegistry`,
+              and it only exposes idle transitions through `onIdle`, but the dispatch engine still
+              constructs `InvocationOptions` without either field. As a result, reviewer/worker
+              invocations continue to behave as single-turn sessions in real dispatch, and no
+              external component can enqueue prompts into the live session handle despite the task
+              description making that the interface other components should use. The direct unit
+              tests pass because they inject a registry/callback themselves, but the main call site
+              never does.
+            created_at: 2026-03-22T10:20:25.180Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-22T10:16:21.330Z
-    updated_at: 2026-03-22T10:20:24.087Z
+    updated_at: 2026-03-22T10:20:25.180Z
     notes: []
