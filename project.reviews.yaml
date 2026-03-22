@@ -45453,6 +45453,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMAM0M0SJH5P599ANGH5P9EN
         timestamp: 2026-03-22T11:13:49.934Z
+      - _ulid: 01KMAM1DJ1BK7QR002297BW5SW
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMAM1D60HHKAJYSJ9DD2CHPD
+        timestamp: 2026-03-22T11:14:15.745Z
     examined_commit: 0a2c33c2e406d71723e924ac121094d68ee3ce5f
     external_links: []
     lifecycle_state: open
@@ -45514,7 +45521,26 @@ reviews:
               even though the schema and executor tests pass.
             created_at: 2026-03-22T11:13:49.593Z
         kind: blocker
+      - _ulid: 01KMAM1D60HHKAJYSJ9DD2CHPD
+        entries:
+          - _ulid: 01KMAM1D608DTX0M4MKD18NV6H
+            author: Test User
+            body: "Review evidence log: Files read: src/schema/action.ts, src/agent-runtime/action-executor.ts,
+              src/agent-runtime/invocation.ts, src/agent-runtime/dispatch.ts,
+              src/parser/validate.ts, src/schema/event-payloads.ts,
+              packages/daemon/src/routes/agent-dispatch.ts, tests/session-prompt-action.test.ts,
+              tests/daemon-agent-dispatch-routes.test.ts, prior review @01KMAHKJH9P6F0TM3H9XNAWK18.
+              Commands run: kspec task get, kspec item get, kspec review for-task/get, git diff, rg
+              for AC annotations and runtime paths, kspec validate, npm test. Claims verified: full
+              suite passes; registry is now threaded through daemon -> dispatch -> invocation;
+              session_prompt still lacks a production idle-capable session handle and a production
+              session.idle emitter. Categories searched: correctness (found blockers), integration
+              (found blockers), test quality (tests pass but rely on mocks for delivery), error
+              handling (messages/warnings looked reasonable), edge cases (explicit vs event-derived
+              session_id validated)."
+            created_at: 2026-03-22T11:14:15.360Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-22T11:08:08.153Z
-    updated_at: 2026-03-22T11:13:49.593Z
+    updated_at: 2026-03-22T11:14:15.360Z
     notes: []
