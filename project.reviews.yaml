@@ -44242,6 +44242,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-22T09:36:36.851Z
+      - _ulid: 01KMAEFD0MFZ13QW57H5A3AF4E
+        actor: Test User
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMAEDNMPJ31FR39BCHTF0GJN
+        timestamp: 2026-03-22T09:37:02.485Z
     examined_commit: 769ad92f5181d44fac0de9b5994c66a0f4dabeab
     external_links: []
     lifecycle_state: closed
@@ -44270,6 +44276,8 @@ reviews:
               of a prompt or prompt template."
             created_at: 2026-03-22T09:36:05.782Z
         kind: blocker
+        resolved_at: 2026-03-22T09:37:01.929Z
+        resolved_by: Test User
       - _ulid: 01KMAEEJMDGSMFEH9VHAKQKY63
         anchor:
           type: code
@@ -44299,5 +44307,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-22T09:36:36.851Z
     created_at: 2026-03-22T09:33:28.920Z
-    updated_at: 2026-03-22T09:36:36.851Z
+    updated_at: 2026-03-22T09:37:01.929Z
     notes: []
