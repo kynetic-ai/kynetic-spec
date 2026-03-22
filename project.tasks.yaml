@@ -21427,7 +21427,7 @@
   type: task
   spec_ref: "@task-storage-activation"
   plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@01KM99V2"
@@ -21436,11 +21436,20 @@
     - tasks
     - storage
     - manual
+  submission_linkage:
+    review_url: null
+    branch: dev
+    captured_at: 2026-03-22T00:36:55.564Z
+    commit: 369132b7926d1becbc70af8efdfd69bc148a848d
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/dev
   session_id: 01KM9ETYCW9KWA5A3M0ENKJ7SZ
   notes_count: 0
   todos_count: 0
   created_at: 2026-03-21T00:59:26.242Z
   started_at: 2026-03-22T00:24:32.255Z
+  submitted_at: 2026-03-22T00:36:55.987Z
   notes:
     - _ulid: 01KM99T40NF3JSN3TQ5WYHVFGD
       content: "Audit finding (session eval, 2026-03-21): AC-4 has no implementation yet — no CLI command
