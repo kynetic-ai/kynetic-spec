@@ -21775,7 +21775,8 @@
   completed_at: 2026-03-22T16:49:43.388Z
   automation: eligible
 - _ulid: 01KMBPYA8WRP5WFQV53QQK3GW4
-  slugs: []
+  slugs:
+    - task-remove-duplicate-handle-registration
   title: Remove duplicate session handle registration in invocation runner
   type: task
   spec_ref: "@multi-turn-session-lifecycle"

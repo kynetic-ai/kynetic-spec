@@ -1,5 +1,6 @@
 _ulid: 01KMBPYA8WRP5WFQV53QQK3GW4
-slugs: []
+slugs:
+  - task-remove-duplicate-handle-registration
 title: Remove duplicate session handle registration in invocation runner
 type: task
 description: >-
@@ -31,6 +32,15 @@ tags:
   - dispatch
   - sessions
 vcs_refs: []
+history:
+  - author: "@claude"
+    changes:
+      slugs:
+        new:
+          - task-remove-duplicate-handle-registration
+        previous: []
+    command: task-set
+    timestamp: 2026-03-22T21:24:50.789Z
 created_at: 2026-03-22T21:24:14.236Z
 todos: []
 automation: eligible
