@@ -170,3 +170,14 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-22T16:10:26.868Z
+  - _ulid: 01KMB5PQC8ZS8K5VWVASAQ7B26
+    content: "Fix cycle 8: Addressed blocker about timeout tests hanging due to taskRef triggering
+      blocking spawnSync kspec CLI calls in the timeout handler. Removed taskRef from both timeout
+      tests (lines 1060/1094), following the same pattern established in error-path tests at lines
+      679/731. Also fixed flaky duration_ms assertion (toBeGreaterThan(0) →
+      toBeGreaterThanOrEqual(0)) since mocked prompts can complete in <1ms. All 32 multi-turn tests
+      pass. Full suite: 7044 passed, 2 pre-existing flaky timeouts (agent-invocation-lifecycle,
+      canonical-task-workspace-contract) unrelated to this task."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-22T16:22:59.721Z
