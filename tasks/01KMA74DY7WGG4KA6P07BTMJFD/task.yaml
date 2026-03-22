@@ -53,7 +53,7 @@ tags:
   - sessions
   - invocation
 vcs_refs: []
-review_ref: "@01KMANT50T68ECRGJPZ3MY7MRE"
+review_ref: "@01KMAQR8BSF98HCA8JNBBRR4AQ"
 submission_linkage:
   review_url: null
   branch: dev
@@ -446,6 +446,13 @@ history:
         previous: 2026-03-22T11:43:51.854Z
     command: task-submit
     timestamp: 2026-03-22T12:17:27.054Z
+  - author: Test User
+    changes:
+      review_ref:
+        new: "@01KMAQR8BSF98HCA8JNBBRR4AQ"
+        previous: "@01KMANT50T68ECRGJPZ3MY7MRE"
+    command: review-link
+    timestamp: 2026-03-22T12:19:11.363Z
 created_at: 2026-03-22T07:28:42.951Z
 started_at: 2026-03-22T12:17:23.970Z
 submitted_at: 2026-03-22T12:17:27.053Z
