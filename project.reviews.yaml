@@ -43665,6 +43665,17 @@ reviews:
         runner: vitest
         created_at: 2026-03-22T07:48:29.032Z
         completed_at: 2026-03-22T07:48:29.032Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test passed after environment repair in this snapshot: 306 files passed, 7000 tests
+          passed, 3 skipped, test-runner reported Tests passed."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-22T07:49:14.445Z
+        completed_at: 2026-03-22T07:49:14.445Z
     events:
       - _ulid: 01KMA7W0W8GECTZTB06TDVV6CY
         actor: Test User
@@ -43716,6 +43727,13 @@ reviews:
           status: pass
           name: active-session-registry tests
         timestamp: 2026-03-22T07:48:29.337Z
+      - _ulid: 01KMA8A0WBM276CX6XV5NASVC0
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-22T07:49:14.763Z
     examined_commit: 5447244e888087b2fa8ee12b5bcc163d321b474a
     external_links: []
     lifecycle_state: closed
@@ -43751,5 +43769,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-22T07:48:25.069Z
     created_at: 2026-03-22T07:41:36.008Z
-    updated_at: 2026-03-22T07:48:29.032Z
+    updated_at: 2026-03-22T07:49:14.445Z
     notes: []
