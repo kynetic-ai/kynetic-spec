@@ -43672,6 +43672,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-22T07:48:25.070Z
+      - _ulid: 01KMA88J82B3S61GMTT6B2K4V4
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMA88HYPKZJ2VHBPRFPWZR5W
+        timestamp: 2026-03-22T07:48:27.010Z
     examined_commit: 5447244e888087b2fa8ee12b5bcc163d321b474a
     external_links: []
     lifecycle_state: closed
@@ -43681,7 +43688,23 @@ reviews:
       content_hash: ""
       ref: "@01KMA74DPD6ESYCQAT6YY8DXJJ"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMA88HYPKZJ2VHBPRFPWZR5W
+        entries:
+          - _ulid: 01KMA88HYPSAY7C3EM8Z1X3TFC
+            author: Test User
+            body: |-
+              Review evidence log
+
+              Files read: src/agent-runtime/session-registry.ts, src/agent-runtime/index.ts, src/agent-runtime/dispatch.ts, src/agent-runtime/invocation.ts, src/acp/client.ts, tests/active-session-registry.test.ts, tests/acp.test.ts.
+
+              Commands run: git diff --stat 3997b9bdf83ad069eeae20912280def282bc6b77..5447244e888087b2fa8ee12b5bcc163d321b474a; git diff 3997b9bdf83ad069eeae20912280def282bc6b77..5447244e888087b2fa8ee12b5bcc163d321b474a -- src/agent-runtime/index.ts src/agent-runtime/session-registry.ts tests/active-session-registry.test.ts; kspec task get @01KMA74DPD6ESYCQAT6YY8DXJJ; kspec item get @active-session-registry; kspec review for-task @01KMA74DPD6ESYCQAT6YY8DXJJ; kspec validate; rg -n "AC: @active-session-registry|AC: @trait-" tests; rg -n "SessionRegistry|SessionHandle|session-registry|sendPrompt\(|requestClose\(|listActive\(" src tests; npm test -- --run tests/active-session-registry.test.ts.
+
+              Claims verified: spec AC coverage exists for ac-1 through ac-4 in tests/active-session-registry.test.ts; barrel export added in src/agent-runtime/index.ts; runtime close semantics checked against src/acp/client.ts and src/agent-runtime/invocation.ts.
+
+              Categories searched: correctness, edge cases, error handling, test quality, integration. No task-specific blockers found.
+            created_at: 2026-03-22T07:48:26.710Z
+        kind: nit
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -43691,5 +43714,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-22T07:48:25.069Z
     created_at: 2026-03-22T07:41:36.008Z
-    updated_at: 2026-03-22T07:48:25.070Z
+    updated_at: 2026-03-22T07:48:26.710Z
     notes: []
