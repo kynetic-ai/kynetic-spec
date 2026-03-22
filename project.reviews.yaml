@@ -45743,6 +45743,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-22T11:33:49.366Z
+      - _ulid: 01KMANCYFAZYYSFXGWSK2WN5H9
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMANCXX731RCYRSGFG7CRZMM
+        timestamp: 2026-03-22T11:38:02.090Z
     examined_commit: 2dbdb68a84693d74e9ae060ab2c9753e3b1d5fa1
     external_links: []
     lifecycle_state: open
@@ -45752,8 +45759,26 @@ reviews:
       content_hash: ""
       ref: "@01KMA74ECH1ZW03KM3403N023Z"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMANCXX731RCYRSGFG7CRZMM
+        anchor:
+          type: code
+          commit: 2dbdb68a84693d74e9ae060ab2c9753e3b1d5fa1
+          line_end: 509
+          line_start: 495
+          path: src/agent-runtime/invocation.ts
+          side: head
+        entries:
+          - _ulid: 01KMANCXX7S1NMW9MME3C1SFM1
+            author: Test User
+            body: When  is called while the session is already , this implementation just assigns  and resolves
+              immediately.  awaits  and then emits , so any queued session_prompt action is marked
+              complete before the follow-up turn has actually run. That violates
+              @session-prompt-action ac-2 ('completed when the turn finishes') and also hides
+              delivery failures that occur in the queued turn path.
+            created_at: 2026-03-22T11:38:01.511Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-22T11:33:36.069Z
-    updated_at: 2026-03-22T11:33:49.010Z
+    updated_at: 2026-03-22T11:38:01.511Z
     notes: []
