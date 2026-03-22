@@ -47203,3 +47203,29 @@ reviews:
     created_at: 2026-03-22T16:42:53.862Z
     updated_at: 2026-03-22T16:49:15.650Z
     notes: []
+  - _ulid: 01KMBDVY9CWT9K61BW7X7KVHR4
+    slugs: []
+    title: Review task-multi-turn-invocation (cycle 10)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KMBDVY9C91Z5TG6ZJF41Y021
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-22T18:45:39.244Z
+    examined_commit: 53ec6f82e20ce4706655edeb2443a30aca424e08
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@task-multi-turn-invocation"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-22T18:45:39.244Z
+    updated_at: null
+    notes: []
