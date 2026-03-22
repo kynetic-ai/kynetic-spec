@@ -26087,9 +26087,16 @@ plans:
             when: |
               The turn result is processed
             then: |
-              The session transitions to idle state; the session remains
-              open and capable of receiving follow-up prompts
+              The session transitions to idle state
           - id: ac-2
+            given: |
+              A session has transitioned to idle state after a turn
+            when: |
+              The session state is queried
+            then: |
+              The session remains open and capable of receiving follow-up
+              prompts
+          - id: ac-3
             given: |
               A session transitions to idle state after a turn completes
             when: |
@@ -26098,7 +26105,7 @@ plans:
               A session.idle event is emitted on the event bus with the
               session's context (session_id, agent_id, task_ref,
               turn_count, work_summary)
-          - id: ac-3
+          - id: ac-4
             given: |
               A session is in idle state
             when: |
@@ -26108,7 +26115,7 @@ plans:
               The session transitions to prompting state, the prompt is
               delivered to the agent, and the session returns to idle when
               the agent's turn completes; turn_count increments
-          - id: ac-4
+          - id: ac-5
             given: |
               A session emits session.idle and no prompt is queued within
               a configurable grace period
@@ -26117,7 +26124,7 @@ plans:
             then: |
               The session is closed; this preserves backward
               compatibility — existing single-turn dispatch works unchanged
-          - id: ac-5
+          - id: ac-6
             given: |
               A session is in idle state and the agent definition specifies
               session_mode: interactive
@@ -26126,7 +26133,7 @@ plans:
             then: |
               The auto-close grace period does not apply; behavior is
               defined by @interactive-agent-sessions
-          - id: ac-6
+          - id: ac-7
             given: |
               A session has been in idle state longer than the configured
               idle_timeout (distinct from the overall invocation timeout)
@@ -26135,7 +26142,7 @@ plans:
             then: |
               A session.idle_timeout event is emitted and the session is
               closed; this applies to both dispatch and interactive modes
-          - id: ac-7
+          - id: ac-8
             given: |
               A session is in prompting state (agent is actively working)
             when: |
@@ -26144,7 +26151,7 @@ plans:
               The prompt is queued and delivered when the current turn
               completes and the session returns to idle; prompts are
               delivered in submission order
-          - id: ac-8
+          - id: ac-9
             given: |
               Multiple sources submit prompts for an idle session
               simultaneously (e.g., two hooks match session.idle)
@@ -26154,7 +26161,7 @@ plans:
               One prompt transitions the session to prompting; the
               remaining prompts are queued and delivered in order after
               each subsequent idle transition
-          - id: ac-9
+          - id: ac-10
             given: |
               A session receives a close request while in prompting state
             when: |
@@ -26162,7 +26169,7 @@ plans:
             then: |
               Queued prompts are discarded and the session closes; the
               close reason reflects the explicit close
-          - id: ac-10
+          - id: ac-11
             given: |
               An agent invocation is spawned by the dispatch engine with
               no idle-targeting hooks configured and no interactive mode
@@ -26171,7 +26178,7 @@ plans:
             then: |
               The session auto-closes after the grace period with no
               observable behavior change from the current single-turn model
-          - id: ac-11
+          - id: ac-12
             given: |
               A session completes multiple turns via follow-up prompts
             when: |
@@ -26179,7 +26186,7 @@ plans:
             then: |
               All turns are recorded in the same session's event history
               under the single session_id
-          - id: ac-12
+          - id: ac-13
             given: |
               A multi-turn session closes after completing multiple turns
             when: |
@@ -26187,7 +26194,7 @@ plans:
             then: |
               The metadata reflects total turn_count and cumulative
               duration across all turns
-          - id: ac-13
+          - id: ac-14
             given: |
               A multi-turn session completes and the session is closed
             when: |
@@ -26195,25 +26202,24 @@ plans:
             then: |
               The event fires exactly once per session (at close, not per
               turn) and includes turn_count in the payload
-          - id: ac-14
+          - id: ac-15
             given: |
-              An agent process crashes or an ACP error occurs during a
-              turn in a multi-turn session
+              An agent encounters a fatal error during a turn in a
+              multi-turn session
             when: |
               The error is detected
             then: |
               The session closes immediately with status failed and the
               standard failure handling applies (task note, retry logic)
-          - id: ac-15
+          - id: ac-16
             given: |
-              An agent process crashes during a multi-turn session and
-              prompts are queued
+              A session closes due to an error and prompts are queued
             when: |
-              The session closes due to the error
+              The session closes
             then: |
               Queued prompts are discarded; any session_prompt action runs
               waiting on those prompts receive action.failed events
-          - id: ac-16
+          - id: ac-17
             given: |
               The prompt queue has accumulated more entries than a
               configurable maximum depth
@@ -26650,7 +26656,7 @@ plans:
           created by the invocation runner when a session starts and
           removed during teardown. The handle wraps the ACP client but
           doesn't expose it — sendPrompt() calls client.prompt()
-          internally. Thread safety comes from the prompt queue (ac-7/ac-8
+          internally. Thread safety comes from the prompt queue (ac-8/ac-9
           of the lifecycle spec).
 
           Covers: @active-session-registry ac-1 through ac-4.
@@ -26696,8 +26702,8 @@ plans:
           the first turn and teardown proceeds — identical to current
           behavior.
 
-          Covers: @multi-turn-session-lifecycle ac-1, ac-2, ac-3, ac-7,
-          ac-8, ac-9, ac-14, ac-15, ac-16.
+          Covers: @multi-turn-session-lifecycle ac-1, ac-2, ac-3, ac-4,
+          ac-8, ac-9, ac-10, ac-15, ac-16, ac-17.
 
       - title: Add session.idle event to taxonomy and payloads
         slug: task-session-idle-event
@@ -26799,7 +26805,7 @@ plans:
           mode, there's no grace period auto-close, only idle_timeout.
           The agent schema extension is in meta.ts.
 
-          Covers: @multi-turn-session-lifecycle ac-4, ac-5, ac-6, ac-10,
+          Covers: @multi-turn-session-lifecycle ac-5, ac-6, ac-7, ac-11,
           @interactive-agent-sessions ac-1.
 
       - title: Integrate multi-turn lifecycle with dispatch engine
@@ -26837,8 +26843,8 @@ plans:
           exits and teardown completes). The existing invocation.completed
           event payload is extended with turn_count.
 
-          Covers: @multi-turn-session-lifecycle ac-1, ac-2, ac-3, ac-11,
-          ac-12, ac-13.
+          Covers: @multi-turn-session-lifecycle ac-1, ac-2, ac-3, ac-4,
+          ac-12, ac-13, ac-14.
 
       - title: Implement interactive session API
         slug: task-interactive-session-api
@@ -27076,3 +27082,8 @@ plans:
           WebSocket, or cross-spec references in behavioral contracts
         author: "@claude"
         created_at: 2026-03-22T06:12:48.008Z
+      - _ulid: 01KMA366AYK5MPM47KDX1V7SPS
+        content: Split ac-1 into ac-1 (state transition) and ac-2 (session stays open), renumber all
+          subsequent ACs and task coverage
+        author: "@claude"
+        created_at: 2026-03-22T06:19:46.398Z
