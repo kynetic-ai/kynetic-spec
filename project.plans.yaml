@@ -26069,8 +26069,8 @@ plans:
           The lifecycle is: spawn → idle ⇄ prompting → close. The session
           loops between prompting and idle until a close decision is made.
           This enables post-turn automation (reflection prompts, chained
-          analysis), interactive human-agent chat, and hybrid workflows
-          where automation and human input alternate.
+          analysis) and allows external sources to deliver follow-up
+          prompts to a running session.
 
           A multi-turn session is a single invocation. The session
           identifier represents the full lifecycle from spawn to close,
@@ -26224,7 +26224,7 @@ plans:
         description: |
           Event emitted each time an agent completes a turn and the session
           enters idle state. This event enables post-turn automation and
-          signals interactive session readiness for user input.
+          signals that the session is ready for follow-up prompts.
 
           The session idle event fires while the session is still alive and
           receptive to prompts. Hooks on this event can inject follow-up
@@ -26666,8 +26666,9 @@ plans:
           exits and teardown completes). The existing invocation.completed
           event payload is extended with turn_count.
 
-          Covers: @multi-turn-session-lifecycle ac-1, ac-2, ac-3, ac-4,
-          ac-12, ac-13, ac-14.
+          Covers: @multi-turn-session-lifecycle ac-1, ac-2, ac-3, ac-4
+          (integration-level verification of state machine wired through
+          dispatch), ac-12, ac-13, ac-14.
 
       - title: Update existing specs for multi-turn lifecycle
         slug: task-update-existing-specs
@@ -26869,6 +26870,11 @@ plans:
         content: "Fix impl notes: ac-5 → ac-7 for idle timeout event reference"
         author: "@claude"
         created_at: 2026-03-22T07:13:11.842Z
+      - _ulid: 01KMA6BDAQ4P7TKJ4FMTXY896J
+        content: Soften interactive language in descriptions, clarify duplicate AC coverage between
+          invocation and dispatch tasks
+        author: "@claude"
+        created_at: 2026-03-22T07:15:03.127Z
   - _ulid: 01KMA5W61Z4SY2PNVSGAM38CQ1
     slugs:
       - plan-interactive-agent-sessions
