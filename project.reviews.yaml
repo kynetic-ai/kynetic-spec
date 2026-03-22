@@ -43775,7 +43775,19 @@ reviews:
     slugs: []
     title: Review task-session-idle-event
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Warnings only (exit 6), no schema/reference errors and no task-specific validation
+          failures. Warnings are pre-existing repo-wide completeness/alignment items unrelated to
+          this change.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-22T07:55:07.427Z
+        completed_at: 2026-03-22T07:55:07.427Z
     events:
       - _ulid: 01KMA8EY9CGD9SN9YX1HCZHDBF
         actor: Test User
@@ -43790,6 +43802,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-22T07:52:19.166Z
+      - _ulid: 01KMA8MSK3SQF6KBM5WTE5RC0Q
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-22T07:55:07.747Z
     examined_commit: 6d0d9ba61216f23987e1b1f07808a882d6ff8f20
     external_links: []
     lifecycle_state: open
@@ -43802,5 +43821,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-22T07:51:55.949Z
-    updated_at: 2026-03-22T07:52:18.622Z
+    updated_at: 2026-03-22T07:55:07.427Z
     notes: []
