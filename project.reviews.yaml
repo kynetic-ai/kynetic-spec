@@ -44569,9 +44569,25 @@ reviews:
           kind: blocker
           thread_ulid: 01KMAGJCAE98RHVGE27AK9NJ0J
         timestamp: 2026-03-22T10:13:37.644Z
+      - _ulid: 01KMAGJRGA77KW39FV078P7M12
+        actor: codex@openai
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-22T10:13:49.707Z
+      - _ulid: 01KMAGJRGBZG4E79QFQNWRJW6B
+        actor: codex@openai
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-22T10:13:49.707Z
     examined_commit: 5d6f8f9881322ed407f0013005a1b4c0f7835a04
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -44657,7 +44673,14 @@ reviews:
               not just direct unit construction.'
             created_at: 2026-03-22T10:13:37.230Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai
+        role: reviewer
+        created_at: 2026-03-22T10:13:49.706Z
     created_at: 2026-03-22T10:08:25.916Z
-    updated_at: 2026-03-22T10:13:37.230Z
+    updated_at: 2026-03-22T10:13:49.707Z
     notes: []
