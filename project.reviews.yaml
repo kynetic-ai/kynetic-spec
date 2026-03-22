@@ -45446,6 +45446,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMAM0GRFDNYMN09TRXFDWNVY
         timestamp: 2026-03-22T11:13:46.625Z
+      - _ulid: 01KMAM0MBED9WFW4F4H7C0TD0X
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMAM0M0SJH5P599ANGH5P9EN
+        timestamp: 2026-03-22T11:13:49.934Z
     examined_commit: 0a2c33c2e406d71723e924ac121094d68ee3ce5f
     external_links: []
     lifecycle_state: open
@@ -45490,7 +45497,24 @@ reviews:
               dispatch flow it was added for, even though the schema and executor tests pass.
             created_at: 2026-03-22T11:13:46.255Z
         kind: blocker
+      - _ulid: 01KMAM0M0SJH5P599ANGH5P9EN
+        anchor:
+          type: code
+          commit: 0a2c33c2e406d71723e924ac121094d68ee3ce5f
+          line_end: 2767
+          line_start: 2765
+          path: src/agent-runtime/dispatch.ts
+          side: head
+        entries:
+          - _ulid: 01KMAM0M0SSGVJC2KRJEP5NF5E
+            author: Test User
+            body: Successful invocations still publish session.ended rather than session.idle, so a hook
+              configured on session.idle never fires in production. This means the new
+              session_prompt action cannot be triggered through the dispatch flow it was added for,
+              even though the schema and executor tests pass.
+            created_at: 2026-03-22T11:13:49.593Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-22T11:08:08.153Z
-    updated_at: 2026-03-22T11:13:46.255Z
+    updated_at: 2026-03-22T11:13:49.593Z
     notes: []
