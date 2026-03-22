@@ -44971,6 +44971,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-22T10:36:31.585Z
+      - _ulid: 01KMAHZ6P1C5ZE6J30594E25QN
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMAHZ6B7QWXTD8VHSEJP9434
+        timestamp: 2026-03-22T10:38:06.017Z
     examined_commit: 5c3160a75d54d75d231b33b15d14ecd2b38d1083
     external_links: []
     lifecycle_state: open
@@ -44999,7 +45006,25 @@ reviews:
               still falls through the  failure path instead of delivering the follow-up prompt.
             created_at: 2026-03-22T10:36:21.780Z
         kind: blocker
+      - _ulid: 01KMAHZ6B7QWXTD8VHSEJP9434
+        entries:
+          - _ulid: 01KMAHZ6B7TPBPRRNG0Z7H384M
+            author: Test User
+            body: "Review evidence log: Files read: packages/daemon/src/routes/agent-dispatch.ts,
+              src/agent-runtime/action-executor.ts, src/agent-runtime/dispatch.ts,
+              src/agent-runtime/invocation.ts, src/agent-runtime/session-registry.ts,
+              src/schema/action.ts, src/parser/validate.ts, tests/session-prompt-action.test.ts,
+              tests/daemon-agent-dispatch-routes.test.ts, tests/hook-schema.test.ts. Commands run:
+              git diff, kspec task get, kspec item get @session-prompt-action, kspec item get
+              @session-prompt-action-schema, kspec validate, rg searches for AC coverage and
+              SessionRegistry wiring, npm test. Claims verified: the new fix does pass a registry
+              into all three ActionExecutor construction sites; the runtime still lacks any
+              production SessionRegistry.register(...) path; the full test suite did not pass in
+              this snapshot. Categories searched: correctness, integration, error handling, test
+              quality."
+            created_at: 2026-03-22T10:38:05.671Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-22T10:31:44.937Z
-    updated_at: 2026-03-22T10:36:30.963Z
+    updated_at: 2026-03-22T10:38:05.671Z
     notes: []
