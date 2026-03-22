@@ -44512,6 +44512,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMAGH7MVTNYSJD2J93377464
         timestamp: 2026-03-22T10:13:00.238Z
+      - _ulid: 01KMAGHA1F0RBBZF4WKQDGXGHY
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMAGH9G6AWCT4C3K7KBQCXWX
+        timestamp: 2026-03-22T10:13:02.128Z
     examined_commit: 5d6f8f9881322ed407f0013005a1b4c0f7835a04
     external_links: []
     lifecycle_state: open
@@ -44542,7 +44549,28 @@ reviews:
               construction."
             created_at: 2026-03-22T10:12:59.676Z
         kind: blocker
+      - _ulid: 01KMAGH9G6AWCT4C3K7KBQCXWX
+        anchor:
+          type: code
+          commit: 5d6f8f9881322ed407f0013005a1b4c0f7835a04
+          line_end: 255
+          line_start: 107
+          path: packages/daemon/src/routes/agent-dispatch.ts
+          side: head
+        entries:
+          - _ulid: 01KMAGH9G6JNWFJH2VNCV1FJG5
+            author: Test User
+            body: 'session_prompt is only test-wired today. In production, the daemon constructs every
+              ActionExecutor without a sessionRegistry, so hook, schedule, and composition
+              executions will always hit the "No session registry configured" failure path instead
+              of delivering or queueing a prompt. That breaks the core feature this task is meant to
+              add: a configured session.idle hook cannot actually send a follow-up prompt to the
+              live session. Please thread the active SessionRegistry through the daemon/runtime
+              construction path and add an integration test that exercises the real executor wiring,
+              not just direct unit construction.'
+            created_at: 2026-03-22T10:13:01.574Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-22T10:08:25.916Z
-    updated_at: 2026-03-22T10:12:59.676Z
+    updated_at: 2026-03-22T10:13:01.574Z
     notes: []
