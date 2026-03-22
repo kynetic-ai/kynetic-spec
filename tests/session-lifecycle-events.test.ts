@@ -560,24 +560,30 @@ describe("session event payload field registries", () => {
   it("should have consistent session fields in KNOWN_EVENT_FIELDS (action-executor)", () => {
     const sessionFields = KNOWN_EVENT_FIELDS["session"];
     expect(sessionFields).toBeDefined();
+    // Terminal session event fields
     expect(sessionFields.has("session_id")).toBe(true);
     expect(sessionFields.has("agent_id")).toBe(true);
     expect(sessionFields.has("task_ref")).toBe(true);
     expect(sessionFields.has("duration_ms")).toBe(true);
     expect(sessionFields.has("terminal_reason")).toBe(true);
     expect(sessionFields.has("work_summary")).toBe(true);
+    // AC: @multi-turn-session-lifecycle ac-3 — session.idle per-turn fields
+    expect(sessionFields.has("turn_count")).toBe(true);
+    expect(sessionFields.has("stop_reason")).toBe(true);
+    expect(sessionFields.has("turn_duration_ms")).toBe(true);
   });
 
   // AC: @dispatch-event-taxonomy ac-2
-  it("should register all three session event types in HookEventTypeSchema", () => {
+  it("should register all four session event types in HookEventTypeSchema", () => {
     const validTypes = HookEventTypeSchema.options;
+    expect(validTypes).toContain("session.idle");
     expect(validTypes).toContain("session.ended");
     expect(validTypes).toContain("session.idle_timeout");
     expect(validTypes).toContain("session.cancelled");
   });
 
   // AC: @dispatch-event-payload ac-3
-  it("should return valid filter fields for all session event types", () => {
+  it("should return valid filter fields for terminal session event types", () => {
     for (const eventType of ["session.ended", "session.idle_timeout", "session.cancelled"]) {
       const fields = getValidFilterFields(eventType);
       expect(fields).toContain("session_id");
@@ -588,6 +594,19 @@ describe("session event payload field registries", () => {
       expect(fields).toContain("event_id");
       expect(fields).toContain("correlation_id");
     }
+  });
+
+  // AC: @multi-turn-session-lifecycle ac-3
+  it("should return valid filter fields for session.idle event", () => {
+    const fields = getValidFilterFields("session.idle");
+    expect(fields).toContain("session_id");
+    expect(fields).toContain("agent_id");
+    expect(fields).toContain("turn_count");
+    expect(fields).toContain("stop_reason");
+    expect(fields).toContain("turn_duration_ms");
+    // Envelope fields should also be present
+    expect(fields).toContain("event_id");
+    expect(fields).toContain("correlation_id");
   });
 });
 

@@ -23,9 +23,10 @@ import {
   type LoadedAgent,
 } from "../parser/index.js";
 import { DEFAULT_KSPEC_CLI_PATH, runInvocation } from "./invocation.js";
-import type { SessionRegistry } from "./session-registry.js";
+import { SessionRegistry } from "./session-registry.js";
+import type { SessionIdleContext } from "./invocation.js";
 import { loadProjectConfig, resolveDispatchRemoteSync } from "../parser/config.js";
-import type { InvocationOptions, InvocationResult, TurnCompleteInfo } from "./invocation.js";
+import type { InvocationOptions, InvocationResult } from "./invocation.js";
 import { SessionEventAccumulator } from "./session-event-accumulator.js";
 import type { SessionEventData } from "./session-event-types.js";
 import { EventBus, type EventBusOptions, type EventEnvelope, type EmitOptions } from "./event-bus.js";
@@ -786,15 +787,6 @@ export interface DispatchEngineOptions {
    * AC: @dispatch-event-envelope ac-5, ac-6
    */
   eventBusOptions?: EventBusOptions;
-  /**
-   * Session registry shared with action executors for session_prompt delivery.
-   * When provided, the engine passes it through to runInvocation() so sessions
-   * are registered while alive and discoverable by session_prompt actions.
-   *
-   * AC: @session-prompt-action ac-1 — enables production prompt delivery path
-   * AC: @active-session-registry ac-1
-   */
-  sessionRegistry?: SessionRegistry;
 }
 
 // ─── DispatchEngine ───────────────────────────────────────────────────────────
@@ -819,8 +811,12 @@ export class DispatchEngine {
   /** AC: @per-task-dispatch-drain-coalescing ac-4 */
   private coalesceWindowMs: number;
   private kspecCliPath?: string;
-  /** AC: @session-prompt-action ac-1, @active-session-registry ac-1 */
-  private _sessionRegistry?: SessionRegistry;
+  /**
+   * Active session registry for multi-turn prompt delivery.
+   * Shared with the action executor so hooks can deliver prompts to live sessions.
+   * AC: @active-session-registry ac-1, @multi-turn-session-lifecycle ac-2, ac-4
+   */
+  private _sessionRegistry = new SessionRegistry();
   private onInvocationEvent?: (event: InvocationEvent) => void;
   private onSessionEvent?: (event: SessionEventData) => void;
   private onSyncStateEvent?: (event: SyncStateEvent) => void;
@@ -916,7 +912,6 @@ export class DispatchEngine {
     // AC: @per-task-dispatch-drain-coalescing ac-4
     this.coalesceWindowMs = options.coalesceWindowMs ?? 5000;
     this.kspecCliPath = options.kspecCliPath;
-    this._sessionRegistry = options.sessionRegistry;
     this.onInvocationEvent = options.onInvocationEvent;
     this.onSessionEvent = options.onSessionEvent;
     this.onSyncStateEvent = options.onSyncStateEvent;
@@ -938,11 +933,13 @@ export class DispatchEngine {
   }
 
   /**
-   * Session registry for multi-turn prompt delivery.
-   * Returns undefined if no registry was provided at construction.
+   * Active session registry for multi-turn prompt delivery.
+   * Exposes the registry so the action executor (and other components)
+   * can deliver prompts to live sessions.
+   *
    * AC: @active-session-registry ac-3
    */
-  get sessionRegistry(): SessionRegistry | undefined {
+  get sessionRegistry(): SessionRegistry {
     return this._sessionRegistry;
   }
 
@@ -1200,6 +1197,9 @@ export class DispatchEngine {
     // after our snapshot, eliminating the need for a while loop (which
     // risks hanging indefinitely if an invocation never resolves).
     this.queues.clear();
+
+    // AC: @active-session-registry ac-4 — close all active sessions before abort
+    this._sessionRegistry.closeAll("dispatch engine stopping");
 
     // AC: @agent-dispatch-engine ac-11 - Send graceful cancel to all active invocations
     for (const controller of this.invocationAbortControllers) {
@@ -2485,23 +2485,21 @@ export class DispatchEngine {
           const cache = getSessionCache(sessionsDir);
           cache.incrementEventCount(sid);
         },
-        // AC: @session-prompt-action ac-1, @active-session-registry ac-1
-        // Pass session registry so invocation registers a handle while alive
+        // AC: @active-session-registry ac-1, @multi-turn-session-lifecycle ac-2, ac-4
         sessionRegistry: this._sessionRegistry,
-        // AC: @session-idle-event ac-1 — emit session.idle after each turn completes
-        // AC: @session-prompt-action ac-1 — enables idle → follow-up prompt flow
-        onTurnComplete: async (turnInfo: TurnCompleteInfo) => {
+        // AC: @multi-turn-session-lifecycle ac-3 — emit session.idle event on event bus
+        onIdle: (ctx: SessionIdleContext) => {
           this._eventBus.emit({
             event_type: "session.idle",
             source_type: "invocation_lifecycle",
-            source_id: turnInfo.sessionId,
+            source_id: ctx.sessionId,
             payload: {
-              session_id: turnInfo.sessionId,
-              agent_id: turnInfo.agentId,
-              task_ref: turnInfo.taskRef ?? null,
-              turn_count: turnInfo.turnCount,
-              stop_reason: turnInfo.stopReason,
-              duration_ms: turnInfo.turnDurationMs,
+              session_id: ctx.sessionId,
+              agent_id: ctx.agentId,
+              task_ref: ctx.taskRef ?? undefined,
+              turn_count: ctx.turnCount,
+              stop_reason: ctx.stopReason,
+              turn_duration_ms: ctx.turnDurationMs,
             },
           });
         },

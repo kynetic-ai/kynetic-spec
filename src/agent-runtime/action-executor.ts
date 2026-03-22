@@ -270,7 +270,7 @@ export const KNOWN_EVENT_FIELDS: Record<string, Set<string>> = {
     "task_ref",
     "outcome",
   ]),
-  // Session event payload fields — AC: @dispatch-event-payload ac-3
+  // Session event payload fields — AC: @dispatch-event-payload ac-3, @multi-turn-session-lifecycle ac-3
   "session": new Set([
     "session_id",
     "agent_id",
@@ -278,8 +278,10 @@ export const KNOWN_EVENT_FIELDS: Record<string, Set<string>> = {
     "duration_ms",
     "terminal_reason",
     "work_summary",
+    // session.idle per-turn fields
     "turn_count",
     "stop_reason",
+    "turn_duration_ms",
   ]),
   // Action event payload fields — AC: @dispatch-event-payload ac-5
   "action": new Set([

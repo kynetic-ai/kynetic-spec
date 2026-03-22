@@ -154,27 +154,27 @@ export const SESSION_PAYLOAD_FIELDS = Object.keys(
 ) as readonly string[];
 
 /**
- * Payload for session.idle events.
+ * Payload for session.idle events (non-terminal, emitted per-turn).
  *
- * Emitted when an agent completes a turn and the session enters idle state.
- * Unlike terminal session events, the session is still alive and receptive
- * to follow-up prompts. Includes turn context instead of terminal/summary data.
+ * Emitted each time a multi-turn session transitions to idle state
+ * after a turn completes. This is the observation point for post-turn
+ * automation (reflection prompts, chained analysis).
  *
- * AC: @session-idle-event ac-1
+ * AC: @multi-turn-session-lifecycle ac-3
  */
 export const SessionIdlePayloadSchema = z.object({
   /** The session's canonical identifier */
   session_id: z.string(),
-  /** The agent definition that ran the session */
+  /** The agent definition running the session */
   agent_id: z.string(),
   /** Task reference if the session is task-scoped */
   task_ref: z.string().nullable().optional(),
-  /** Cumulative number of completed turns in this session */
+  /** Number of turns completed so far (including the turn that just ended) */
   turn_count: z.number().int().positive(),
-  /** Why the agent stopped responding on this turn */
-  stop_reason: z.string(),
-  /** Duration of the completed turn in milliseconds */
-  duration_ms: z.number().nonnegative(),
+  /** Stop reason from the agent's last turn (e.g., "end_turn") */
+  stop_reason: z.string().optional(),
+  /** Duration of the turn that just completed, in milliseconds */
+  turn_duration_ms: z.number().nonnegative(),
 });
 
 export type SessionIdlePayload = z.infer<typeof SessionIdlePayloadSchema>;
@@ -287,6 +287,7 @@ export const EVENT_PAYLOAD_SCHEMAS: Record<string, z.ZodType> = {
   "invocation.completed": InvocationTerminalPayloadSchema,
   "invocation.failed": InvocationTerminalPayloadSchema,
   "invocation.stalled": InvocationTerminalPayloadSchema,
+  "session.idle": SessionIdlePayloadSchema,
   "session.ended": SessionEventPayloadSchema,
   "session.idle": SessionIdlePayloadSchema,
   "session.idle_timeout": SessionEventPayloadSchema,
