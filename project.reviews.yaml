@@ -45187,6 +45187,17 @@ reviews:
         runner: kspec
         created_at: 2026-03-22T10:58:19.973Z
         completed_at: 2026-03-22T10:58:19.973Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Targeted rerun passed: tests/agent-invocation-lifecycle.test.ts (49 tests) green; the
+          previously failing cleanup test completed in 20616ms."
+        name: npm test -- agent-invocation-lifecycle
+        required: false
+        runner: npm
+        created_at: 2026-03-22T10:58:21.090Z
+        completed_at: 2026-03-22T10:58:21.090Z
     events:
       - _ulid: 01KMAJPA6KHAA6CY60Q9ZDHK0V
         actor: Test User
@@ -45229,6 +45240,13 @@ reviews:
           status: skipped
           name: kspec validate
         timestamp: 2026-03-22T10:58:20.295Z
+      - _ulid: 01KMAK49MM9KXTRPKQM35P3TC8
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test -- agent-invocation-lifecycle
+        timestamp: 2026-03-22T10:58:21.460Z
     examined_commit: d5bf3a6fbc1d57c239e4db860559df2e723d145c
     external_links: []
     lifecycle_state: open
@@ -45296,5 +45314,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-22T10:50:43.284Z
-    updated_at: 2026-03-22T10:58:19.973Z
+    updated_at: 2026-03-22T10:58:21.090Z
     notes: []
