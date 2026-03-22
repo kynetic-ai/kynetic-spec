@@ -47460,6 +47460,18 @@ reviews:
         runner: kspec
         created_at: 2026-03-22T19:39:51.921Z
         completed_at: 2026-03-22T19:39:51.921Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: InvocationTerminalPayloadSchema.turn_count is z.number().int().positive() — correctly
+          rejects 0, negatives, and non-integers. Required field, not optional. Schema aligns with
+          AC-14 (turn count in terminal event).
+        name: schema-correctness
+        required: true
+        runner: manual
+        created_at: 2026-03-22T19:40:00.183Z
+        completed_at: 2026-03-22T19:40:00.183Z
     events:
       - _ulid: 01KMBGRCKG6G41ZS06E6EZ27F2
         actor: "@claude"
@@ -47488,6 +47500,13 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-03-22T19:39:52.313Z
+      - _ulid: 01KMBGZF5E7RVKCQB2F4XN7QPQ
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: schema-correctness
+        timestamp: 2026-03-22T19:40:00.558Z
     examined_commit: 88a4d9d805cf5567379546abf8636a5cbc27ae51
     external_links: []
     lifecycle_state: open
@@ -47500,5 +47519,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-22T19:36:08.560Z
-    updated_at: 2026-03-22T19:39:51.921Z
+    updated_at: 2026-03-22T19:40:00.183Z
     notes: []
