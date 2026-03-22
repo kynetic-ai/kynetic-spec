@@ -4605,28 +4605,32 @@ modules:
           - dispatch-event-taxonomy
         title: Dispatch Event Taxonomy
         type: feature
-        description: |
-          Defines the event domains and maintains a registry of valid event
-          type identifiers. Events use dotted-namespace domains. The registry
-          is an explicit enumeration of known events, not a free-form string
-          pattern — event identifiers must be registered to be valid.
+        description: >-
+          Defines the event domains and maintains a registry of valid event type identifiers. Events
+          use dotted-namespace domains. The registry is an explicit enumeration of known events, not
+          a free-form string pattern — event identifiers must be registered to be valid.
+
 
           Event domains:
-          - task.ready, task.in_progress, task.needs_work, task.pending_review
-            (existing, unchanged)
-          - invocation.started, invocation.completed, invocation.failed,
-            invocation.stalled
-          - session.ended, session.idle_timeout, session.cancelled
-          - schedule.tick
-          - action.started, action.completed, action.failed (universal action
-            run tracking — every hook, schedule, and composition action produces
-            action run events regardless of action type)
 
-          Identity model: session_id and invocation_id are the same value.
-          A "session" in the dispatch context IS an invocation — they are not
-          separate entities. invocation.* events use session_id as the canonical
-          identifier. action.* events use action_run_id as their canonical
-          identifier and link to session_id when the action type is agent.
+          - task.ready, task.in_progress, task.needs_work, task.pending_review (existing, unchanged)
+
+          - invocation.started, invocation.completed, invocation.failed, invocation.stalled
+
+          - session.idle, session.ended, session.idle_timeout, session.cancelled
+
+          - schedule.tick
+
+          - action.started, action.completed, action.failed (universal action run tracking — every
+          hook, schedule, and composition action produces action run events regardless of action
+          type)
+
+
+          Identity model: session_id and invocation_id are the same value. A "session" in the
+          dispatch context IS an invocation — they are not separate entities. invocation.* events
+          use session_id as the canonical identifier. action.* events use action_run_id as their
+          canonical identifier and link to session_id when the action type is agent.
+
 
           All events carry the standard envelope defined by @dispatch-event-envelope.
         status:
@@ -4812,24 +4816,32 @@ modules:
           - dispatch-action-model
         title: Dispatch Action Model
         type: feature
-        description: |
-          The shared action model used by hooks, schedules, and composition
-          join triggers. An action describes what to do when an event matches.
+        description: >-
+          The shared action model used by hooks, schedules, and composition join triggers. An action
+          describes what to do when an event matches.
 
-          Four action types:
+
+          Five action types:
+
           - command: Run an executable with explicit arguments
+
           - kspec: Run a kspec CLI command
+
           - agent: Spawn an agent invocation
+
           - notify: Emit a WebSocket notification
 
-          Every action execution produces an action run — a lightweight
-          tracking record with unique ID, status, duration, and optional
-          linked invocation_id (for agent actions). Action runs are the
-          uniform abstraction that overlap policies, UI status, event logging,
-          and action history key off of, regardless of action type.
+          - session_prompt: Deliver a prompt to an active session
 
-          Template variables use {{var}} syntax resolved from the triggering
-          event's envelope and payload.
+
+          Every action execution produces an action run — a lightweight tracking record with unique
+          ID, status, duration, and optional linked invocation_id (for agent actions). Action runs
+          are the uniform abstraction that overlap policies, UI status, event logging, and action
+          history key off of, regardless of action type.
+
+
+          Template variables use {{var}} syntax resolved from the triggering event's envelope and
+          payload.
         status:
           maturity: draft
           implementation: implemented

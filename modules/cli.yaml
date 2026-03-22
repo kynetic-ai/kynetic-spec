@@ -7640,14 +7640,12 @@ features:
           with status timed_out, and a timeout note is added to the task
         when: |
           The configured timeout_minutes is reached
-      - given: |
-          An agent invocation completes successfully
+      - given: An agent invocation completes successfully
         id: ac-4
-        then: |
-          The session is closed with status completed and an
-          agent.completed event is logged with structured outcome data
-        when: |
-          The ACP session ends with stop reason end_turn
+        then: The session transitions to idle state; the session is closed when no more prompts arrive
+          (grace period expiry, explicit close, or timeout) and an invocation completed event is
+          logged with structured outcome data at session close
+        when: The agent signals turn complete
       - given: |
           An agent invocation fails with a process crash or ACP error
         id: ac-5
@@ -7673,14 +7671,11 @@ features:
           is included in the prompt sent to the agent
         when: |
           The agent definition specifies skills
-      - given: |
-          An agent invocation completes (success or failure)
+      - given: A session closes (after all turns complete)
         id: ac-8
-        then: |
-          The adapter env injection is restored to its previous state
-          and the ACP agent process is terminated if still running
-        when: |
-          Cleanup runs
+        then: The adapter env injection is restored to its previous state and the ACP agent process is
+          terminated if still running
+        when: Cleanup runs
       - given: |
           An agent encounters consecutive failures on the same task
         id: ac-9
