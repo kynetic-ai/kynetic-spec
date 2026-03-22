@@ -45972,6 +45972,13 @@ reviews:
           kind: nit
           thread_ulid: 01KMAPAEJ35878WV3T4F68V3FY
         timestamp: 2026-03-22T11:54:09.404Z
+      - _ulid: 01KMAPAH1HQ9VZ5H3XX5R3Y7FK
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMAPAGF9Q0GGH1VPD8000DE7
+        timestamp: 2026-03-22T11:54:11.378Z
     examined_commit: 1d2fe7b6543ae344cf43e25828a8fa0e3b6922af
     external_links: []
     lifecycle_state: open
@@ -46041,7 +46048,25 @@ reviews:
               backward compatibility, edge cases/races, integration, test quality."
             created_at: 2026-03-22T11:54:08.836Z
         kind: nit
+      - _ulid: 01KMAPAGF9Q0GGH1VPD8000DE7
+        entries:
+          - _ulid: 01KMAPAGF9ATMYZTHSZKJ0RWJ5
+            author: Test User
+            body: "Review evidence log: Files read: kspec-agents.md, src/agent-runtime/invocation.ts,
+              src/agent-runtime/dispatch.ts, src/agent-runtime/action-executor.ts,
+              src/agent-runtime/session-registry.ts, src/schema/event-payloads.ts,
+              src/schema/event-registry.ts, src/sessions/types.ts,
+              tests/multi-turn-invocation.test.ts, tests/event-payloads.test.ts,
+              tests/event-registry.test.ts, tests/session-lifecycle-events.test.ts,
+              tests/agent-dispatch-engine.test.ts. Commands run: kspec task get, kspec review
+              for-task/get/add/open, kspec item get, kspec validate, git diff --stat/--name-only,
+              grep AC annotations, rg searches, npm test. Claims verified: dispatch always passes a
+              session registry; the idle-close branch waits 100ms whenever a registry exists; full
+              suite fails in dispatch re-evaluation tests. Categories searched: correctness,
+              backward compatibility, edge cases/races, integration, test quality."
+            created_at: 2026-03-22T11:54:10.793Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-22T11:45:14.778Z
-    updated_at: 2026-03-22T11:54:08.836Z
+    updated_at: 2026-03-22T11:54:10.793Z
     notes: []
