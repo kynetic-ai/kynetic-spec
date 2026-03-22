@@ -18744,9 +18744,8 @@ workspaces:
       failureMessage: null
       invalidationReasons:
         - canonical-branch-head-changed
-        - workspace-dependencies-missing
-      lastRole: reviewer
-      lastRunAt: 2026-03-22T12:30:37.546Z
+      lastRole: worker
+      lastRunAt: 2026-03-22T12:42:42.822Z
       roleStates:
         reviewer:
           status: succeeded
@@ -18780,34 +18779,14 @@ workspaces:
               source: dispatch
         worker:
           status: succeeded
-          canonicalBranchHead: 7e45d49f6ef5ac6d24b08b3e5279c4f12cbdd529
+          canonicalBranchHead: 61688e7c52b0632ebd71c8ceebcb6030cb1b65c6
           configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
           failureMessage: null
           invalidationReasons:
             - canonical-branch-head-changed
-          lastRunAt: 2026-03-22T12:18:18.425Z
+          lastRunAt: 2026-03-22T12:42:42.822Z
           steps: []
-      steps:
-        - status: succeeded
-          allowTrackedChanges: false
-          idempotent: true
-          name: install-workspace-dependencies
-          output: |-
-            added 283 packages, and audited 288 packages in 3s
-
-            66 packages are looking for funding
-              run `npm fund` for details
-
-            9 vulnerabilities (1 low, 5 moderate, 3 high)
-
-            To address all issues, run:
-              npm audit fix
-
-            Run `npm audit` for details.
-          reviewerRerunAllowed: true
-          role: reviewer
-          run: npm ci
-          source: dispatch
+      steps: []
     branch_provenance:
       adopted_at: null
       adopted_from: null
@@ -18845,7 +18824,7 @@ workspaces:
       last_active_at: 2026-03-22T12:30:39.569Z
       last_reconciled_at: 2026-03-22T12:42:41.989Z
       created_at: 2026-03-22T09:06:43.597Z
-      updated_at: 2026-03-22T12:42:41.989Z
+      updated_at: 2026-03-22T12:42:42.822Z
     workspace_id: dispatch-workspace-01KMA74ECH1ZW03KM3403N023Z
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
