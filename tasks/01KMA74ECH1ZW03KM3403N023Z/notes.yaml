@@ -132,3 +132,16 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-22T12:34:48.030Z
+  - _ulid: 01KMASE75QXXPED6N4S5RYKP7H
+    content: "Fix cycle 7: Closed the race between session.idle emission and idle-loop resolver
+      installation. The sendPrompt() handler no longer requires pendingPromptResolve to be set when
+      sessionState is idle — it now always queues the prompt to promptQueue and transitions to
+      prompting. If pendingPromptResolve exists, it wakes the loop immediately; otherwise the loop
+      picks up the queued entry at its queue-drain check (line ~692). This eliminates the window
+      where a fast session_prompt hook could call sendPrompt() and hit the 'not ready' rejection.
+      Added regression test exercising the exact race (idle state, null resolver). Updated existing
+      deferred-promise test to mirror the new production pattern. All 7086 tests pass (1
+      pre-existing timeout in canonical-task-workspace-contract unrelated to changes)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-22T12:48:38.071Z
