@@ -47150,9 +47150,25 @@ reviews:
           kind: nit
           thread_ulid: 01KMB75X8JBVEPJDRAQ71W0KW5
         timestamp: 2026-03-22T16:48:46.339Z
+      - _ulid: 01KMB76TC1W5ZMTXAP0VQJ39YM
+        actor: agent@kspec-dispatch
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-03-22T16:49:15.650Z
+      - _ulid: 01KMB76TC2JY1FGRQTAMCY7BN4
+        actor: agent@kspec-dispatch
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-22T16:49:15.650Z
     examined_commit: ede5ca68ef95835b8de7f87e8914246c2e21ddb4
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -47176,7 +47192,14 @@ reviews:
               Cosmetic-only — unlikely in practice and display-only context."
             created_at: 2026-03-22T16:48:45.843Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: agent@kspec-dispatch
+        role: reviewer
+        created_at: 2026-03-22T16:49:15.649Z
     created_at: 2026-03-22T16:42:53.862Z
-    updated_at: 2026-03-22T16:48:45.843Z
+    updated_at: 2026-03-22T16:49:15.650Z
     notes: []
