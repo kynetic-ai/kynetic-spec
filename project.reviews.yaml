@@ -47222,6 +47222,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-22T18:45:47.642Z
+      - _ulid: 01KMBDWFVYH2ZFCQDDCG8DH17Z
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMBDWFGJ8KM68ADNYR95FMHG
+        timestamp: 2026-03-22T18:45:57.246Z
     examined_commit: 53ec6f82e20ce4706655edeb2443a30aca424e08
     external_links: []
     lifecycle_state: open
@@ -47231,8 +47238,25 @@ reviews:
       content_hash: ""
       ref: "@task-multi-turn-invocation"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMBDWFGJ8KM68ADNYR95FMHG
+        anchor:
+          type: code
+          commit: 53ec6f82e20c
+          line_end: 664
+          line_start: 662
+          path: src/agent-runtime/invocation.ts
+          side: head
+        entries:
+          - _ulid: 01KMBDWFGKJBZ15RNT397DHC44
+            author: "@claude"
+            body: "Duplicate session registry registration: line 616 registers the handle at try-block entry,
+              then line 663 registers the same handle again after ACP session creation. Map.set()
+              makes this idempotent and harmless, but the second call is dead code — the first
+              registration already covers the cleanup path via the finally block."
+            created_at: 2026-03-22T18:45:56.883Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-22T18:45:39.244Z
-    updated_at: 2026-03-22T18:45:47.271Z
+    updated_at: 2026-03-22T18:45:56.883Z
     notes: []
