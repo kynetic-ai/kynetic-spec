@@ -98,3 +98,15 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-22T11:21:27.487Z
+  - _ulid: 01KMANQ6VHDM77TNM8W2G067H2
+    content: "Fix cycle 5: Addressed two blockers. (1) Added session.idle to AgentDispatchEvent type and
+      AGENT_DISPATCH_EVENTS array in packages/shared/src/schemas.ts — the web UI trigger editor now
+      includes session.idle as a selectable event. (2) Added closeRequested guard after dequeuing a
+      non-null prompt from waitForPrompt() in the turn loop — prevents a race where a prompt
+      resolves the waiter and requestClose() fires immediately after, which would otherwise start an
+      extra turn. Added test exercising the dequeue-then-close race scenario (setTimeout-based async
+      delivery). All 7043 tests pass; the one timeout in agent-invocation-lifecycle is the
+      pre-existing flaky test."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-22T11:43:38.353Z
