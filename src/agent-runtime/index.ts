@@ -76,3 +76,9 @@ export {
   type ScheduleStatus,
   type ScheduleDetailedStatus,
 } from "./schedule-engine.js";
+
+export {
+  SessionRegistry,
+  type SessionHandle,
+  type SessionState,
+} from "./session-registry.js";
