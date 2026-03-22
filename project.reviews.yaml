@@ -46725,6 +46725,17 @@ reviews:
         runner: vitest
         created_at: 2026-03-22T16:08:51.964Z
         completed_at: 2026-03-22T16:08:51.964Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate passed with no errors. Pre-existing warnings only (orphaned specs, missing
+          AC coverage on other specs).
+        name: kspec-validate
+        required: true
+        runner: kspec
+        created_at: 2026-03-22T16:09:01.292Z
+        completed_at: 2026-03-22T16:09:01.292Z
     events:
       - _ulid: 01KMB4SCR2966HWV304DR67EKV
         actor: "@claude"
@@ -46753,6 +46764,13 @@ reviews:
           status: fail
           name: vitest
         timestamp: 2026-03-22T16:08:52.467Z
+      - _ulid: 01KMB4X4ZCWFWY3ZYSWC7YM5N3
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec-validate
+        timestamp: 2026-03-22T16:09:01.677Z
     examined_commit: 535d7a68040fb623d7513769f07fa7a1960450bd
     external_links: []
     lifecycle_state: open
@@ -46785,5 +46803,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-22T16:06:58.562Z
-    updated_at: 2026-03-22T16:08:51.964Z
+    updated_at: 2026-03-22T16:09:01.292Z
     notes: []
