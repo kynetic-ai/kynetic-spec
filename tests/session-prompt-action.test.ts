@@ -796,14 +796,16 @@ describe("InvocationOptions.sessionRegistry — session handle lifecycle", () =>
         if (sessionState === "closed") {
           return Promise.reject(new Error("closed"));
         }
-        if (sessionState === "idle" && pendingResolve) {
+        if (sessionState === "idle") {
           const deferredPromise = new Promise<void>((resolve, reject) => {
             queue.push({ prompt, resolve, reject });
           });
           sessionState = "prompting";
-          const wakeResolve = pendingResolve;
-          pendingResolve = null;
-          wakeResolve(""); // Wake idle loop; prompt is in queue
+          if (pendingResolve) {
+            const wakeResolve = pendingResolve;
+            pendingResolve = null;
+            wakeResolve(""); // Wake idle loop; prompt is in queue
+          }
           return deferredPromise;
         }
         if (sessionState === "prompting") {
@@ -834,6 +836,70 @@ describe("InvocationOptions.sessionRegistry — session handle lifecycle", () =>
     expect(handle.getState()).toBe("prompting");
 
     // Simulate turn completion — resolve the queue entry
+    queue[0].resolve();
+    await sendPromise;
+    expect(resolved).toBe(true);
+  });
+
+  // AC: @session-prompt-action ac-1, ac-3 — sendPrompt during idle-before-resolver race
+  // Regression: sendPrompt() arriving after session.idle is emitted but before the
+  // idle-loop resolver is installed must queue successfully, not reject.
+  it("idle sendPrompt without resolver queues prompt instead of rejecting", async () => {
+    const registry = new SessionRegistry();
+    const sessionId = "idle-race-001";
+
+    let sessionState: SessionState = "prompting";
+    let pendingResolve: ((p: string) => void) | null = null;
+    interface QueueEntry { prompt: string; resolve: () => void; reject: (e: Error) => void }
+    const queue: QueueEntry[] = [];
+
+    // Mirror the production sendPrompt — handles idle WITHOUT pendingResolve
+    registry.register(sessionId, {
+      sendPrompt: (prompt: string): Promise<void> => {
+        if (sessionState === "closed") {
+          return Promise.reject(new Error("closed"));
+        }
+        if (sessionState === "idle") {
+          const deferredPromise = new Promise<void>((resolve, reject) => {
+            queue.push({ prompt, resolve, reject });
+          });
+          sessionState = "prompting";
+          if (pendingResolve) {
+            const wakeResolve = pendingResolve;
+            pendingResolve = null;
+            wakeResolve("");
+          }
+          return deferredPromise;
+        }
+        if (sessionState === "prompting") {
+          return new Promise<void>((resolve, reject) => {
+            queue.push({ prompt, resolve, reject });
+          });
+        }
+        return Promise.reject(new Error("not ready"));
+      },
+      getState: () => sessionState,
+      requestClose: () => { sessionState = "closed"; },
+    });
+
+    const handle = registry.get(sessionId)!;
+
+    // Transition to idle but do NOT set pendingResolve — simulates the race
+    // window between onTurnComplete and the idle-loop installing the resolver
+    sessionState = "idle";
+    pendingResolve = null;
+
+    // sendPrompt must NOT reject — it should queue the prompt
+    let resolved = false;
+    const sendPromise = handle.sendPrompt("Race prompt").then(() => { resolved = true; });
+
+    // Prompt should be queued, state transitioned to prompting
+    expect(queue.length).toBe(1);
+    expect(queue[0].prompt).toBe("Race prompt");
+    expect(handle.getState()).toBe("prompting");
+    expect(resolved).toBe(false);
+
+    // Simulate the idle loop eventually draining the queue and completing the turn
     queue[0].resolve();
     await sendPromise;
     expect(resolved).toBe(true);

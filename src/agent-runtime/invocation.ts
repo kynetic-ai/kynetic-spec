@@ -498,18 +498,24 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
               `Session '${sessionId}' is closed — cannot deliver prompt to a closed session.`,
             ));
           }
-          if (sessionState === "idle" && pendingPromptResolve) {
+          if (sessionState === "idle") {
             // AC: @session-prompt-action ac-1 — delivery to idle session
             // AC: @session-prompt-action ac-2 — deferred promise ensures
             // action.completed only fires after the turn finishes.
-            // Push to queue for deferred resolution, then wake the idle loop.
+            // Push to queue for deferred resolution.  If the idle-loop
+            // resolver already exists, wake it immediately; otherwise the
+            // prompt sits in the queue and the idle loop drains it when it
+            // starts waiting (line ~692).  This closes the race window
+            // between emitting session.idle and installing the resolver.
             const deferredPromise = new Promise<void>((resolve, reject) => {
               promptQueue.push({ prompt, resolve, reject });
             });
             sessionState = "prompting";
-            const wakeResolve = pendingPromptResolve;
-            pendingPromptResolve = null;
-            wakeResolve(""); // Wake the idle loop; the actual prompt is in the queue
+            if (pendingPromptResolve) {
+              const wakeResolve = pendingPromptResolve;
+              pendingPromptResolve = null;
+              wakeResolve(""); // Wake the idle loop; the actual prompt is in the queue
+            }
             return deferredPromise;
           } else if (sessionState === "prompting") {
             // AC: @session-prompt-action ac-5 — queue for after current turn.
@@ -521,7 +527,8 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
               promptQueue.push({ prompt, resolve, reject });
             });
           } else {
-            // Idle but no resolver set (should not happen in normal flow)
+            // Should not happen — sessionState is "closed" and was
+            // already handled above.
             return Promise.reject(new Error(
               `Session '${sessionId}' is not ready to accept prompts.`,
             ));
