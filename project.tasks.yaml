@@ -21755,7 +21755,7 @@
   type: task
   spec_ref: "@session-idle-event"
   plan_ref: "@plan-multi-turn-session-lifecycle"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-session-idle-event"
@@ -21770,4 +21770,5 @@
   created_at: 2026-03-22T07:28:44.385Z
   started_at: 2026-03-22T16:27:50.150Z
   submitted_at: 2026-03-22T16:40:17.878Z
+  completed_at: 2026-03-22T16:49:43.388Z
   automation: eligible
