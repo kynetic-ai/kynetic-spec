@@ -817,6 +817,12 @@ export class DispatchEngine {
    * AC: @active-session-registry ac-1, @multi-turn-session-lifecycle ac-2, ac-4
    */
   private _sessionRegistry = new SessionRegistry();
+  /**
+   * Whether any hook targets session.idle. Updated on each meta context load.
+   * When false, invocations use idleGracePeriodMs=0 for backward-compat (ac-11).
+   * AC: @multi-turn-session-lifecycle ac-11
+   */
+  private _hasSessionIdleHooks = false;
   private onInvocationEvent?: (event: InvocationEvent) => void;
   private onSessionEvent?: (event: SessionEventData) => void;
   private onSyncStateEvent?: (event: SyncStateEvent) => void;
@@ -1565,6 +1571,8 @@ export class DispatchEngine {
     try {
       const ctx = await initContext(this.projectDir);
       const meta = await loadMetaContext(ctx);
+      // AC: @multi-turn-session-lifecycle ac-11 — track whether any hook targets session.idle
+      this._hasSessionIdleHooks = meta.hooks.some((h) => h.on === "session.idle");
       return meta.agents;
     } catch {
       return [];
@@ -2491,8 +2499,9 @@ export class DispatchEngine {
         },
         // AC: @active-session-registry ac-1, @multi-turn-session-lifecycle ac-2, ac-4
         sessionRegistry: this._sessionRegistry,
-        // AC: @multi-turn-session-lifecycle ac-2, ac-11 — grace period for async prompt delivery
-        idleGracePeriodMs: DEFAULT_IDLE_GRACE_MS,
+        // AC: @multi-turn-session-lifecycle ac-2, ac-11 — grace period for async prompt delivery;
+        // only enable when session.idle hooks exist, otherwise close immediately for backward compat
+        idleGracePeriodMs: this._hasSessionIdleHooks ? DEFAULT_IDLE_GRACE_MS : 0,
         // AC: @multi-turn-session-lifecycle ac-3 — emit session.idle event on event bus
         onIdle: (ctx: SessionIdleContext) => {
           this._eventBus.emit({
