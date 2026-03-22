@@ -1,1 +1,33 @@
-notes: []
+notes:
+  - _ulid: 01KMBGA54V2N23JXBH73KCKGE0
+    content: >-
+      Integrated multi-turn lifecycle with dispatch engine. Key changes:
+
+
+      1. Added turn_count to InvocationTerminalPayloadSchema (required field, positive integer) so
+      invocation.completed events include session turn count per AC-14.
+
+
+      2. Updated dispatch engine _spawnInvocation() terminal event emission to build enriched
+      payload with turn_count from invocationResult, plus duration_ms and trigger from invocation
+      context. Previously the payload only spread the InvocationEvent which lacked these fields.
+
+
+      3. Most of the multi-turn wiring (session registry, onIdle callback, grace period, session
+      mode, idle timeout) was already implemented by dependency tasks @task-multi-turn-invocation
+      and @task-idle-grace-period. This task primarily added the missing turn_count to the terminal
+      event schema and emission, plus integration-level test coverage.
+
+
+      4. Wrote 11 integration tests covering ACs 1-4, 12-14: terminal event turn_count validation,
+      session.idle event bus emission, registry wiring for prompt delivery, event history integrity,
+      metadata totals, and per-task exclusivity across turns. Updated 4 existing event-payloads
+      tests for turn_count.
+
+
+      Full test suite: 309/310 files pass, 7161/7162 tests pass. The one failure
+      (agent-invocation-lifecycle timeout test) is pre-existing and intermittent — passes on
+      unmodified code.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-22T19:28:22.172Z
