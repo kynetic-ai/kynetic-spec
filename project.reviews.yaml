@@ -47514,9 +47514,25 @@ reviews:
           kind: nit
           thread_ulid: 01KMBH0SABD7DCAA0SK706872Y
         timestamp: 2026-03-22T19:40:44.076Z
+      - _ulid: 01KMBH1DS5PP62FKAX22768SP5
+        actor: pr-reviewer@dispatch
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-03-22T19:41:04.677Z
+      - _ulid: 01KMBH1DS5G426Z5DFWSM214MW
+        actor: pr-reviewer@dispatch
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-22T19:41:04.677Z
     examined_commit: 88a4d9d805cf5567379546abf8636a5cbc27ae51
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -47548,7 +47564,14 @@ reviews:
               terminal event payload includes turn_count from a real dispatch code path.
             created_at: 2026-03-22T19:40:43.723Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: pr-reviewer@dispatch
+        role: reviewer
+        created_at: 2026-03-22T19:41:04.677Z
     created_at: 2026-03-22T19:36:08.560Z
-    updated_at: 2026-03-22T19:40:43.723Z
+    updated_at: 2026-03-22T19:41:04.677Z
     notes: []
