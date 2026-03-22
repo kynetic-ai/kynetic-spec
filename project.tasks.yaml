@@ -22016,5 +22016,15 @@
       supersedes: null
       author: Test User
       created_at: 2026-03-22T01:32:10.412Z
+    - _ulid: 01KM9K387QPTF449Z2YBDRMGYF
+      content: "Fix cycle 3: Addressed review blocker — nondeterministic
+        agent-invocation-lifecycle.test.ts timeouts under full-suite pressure. The prior bump from
+        15s to 30s (67e06ae) was insufficient; reviewer reproduced 30s timeouts on lines 351, 463,
+        1620. Increased all 11 process-spawning describe blocks from 30s to 60s. Merged origin/dev
+        (2 commits: task storage activate). Full npm test passes clean: 6979 tests, 305 files, 0
+        failures."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-22T01:38:32.824Z
   todos: []
   automation: eligible
