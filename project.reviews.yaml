@@ -43898,7 +43898,19 @@ reviews:
     slugs: []
     title: Review task-update-existing-specs
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite passed on rerun: 306 files, 7000 tests, 3 skipped. Initial run had one
+          non-reproducing timeout-path failure in tests/agent-invocation-lifecycle.test.ts; isolated
+          rerun passed."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-22T08:02:44.822Z
+        completed_at: 2026-03-22T08:02:44.822Z
     events:
       - _ulid: 01KMA8PHR5NBP15MQH6QZH5YQX
         actor: Test User
@@ -43913,6 +43925,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-22T07:56:28.287Z
+      - _ulid: 01KMA92R8MCFHC8554AAHP27KQ
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-22T08:02:45.140Z
     examined_commit: 463db210d316c43a70446ac83bc179c6de5a1616
     external_links: []
     lifecycle_state: open
@@ -43925,5 +43944,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-22T07:56:05.254Z
-    updated_at: 2026-03-22T07:56:27.923Z
+    updated_at: 2026-03-22T08:02:44.822Z
     notes: []
