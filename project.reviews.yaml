@@ -44351,6 +44351,13 @@ reviews:
           kind: nit
           thread_ulid: 01KMAFY2TYX41ZERF4JNDXQQ6P
         timestamp: 2026-03-22T10:02:32.518Z
+      - _ulid: 01KMAFY53ZCAPY0WRECQVR7XGH
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMAFY4RZJAC2SDD7E8GJJ6D5
+        timestamp: 2026-03-22T10:02:34.495Z
     examined_commit: f7bd46ee2c1a4bf8558ff6e67c6faeca544c2626
     external_links: []
     lifecycle_state: closed
@@ -44407,6 +44414,26 @@ reviews:
               overflow test behavior), integration (registry handle contract).
             created_at: 2026-03-22T10:02:32.158Z
         kind: nit
+      - _ulid: 01KMAFY4RZJAC2SDD7E8GJJ6D5
+        anchor:
+          type: code
+          commit: f7bd46ee2c1a4bf8558ff6e67c6faeca544c2626
+          line_end: 560
+          line_start: 552
+          path: src/agent-runtime/invocation.ts
+          side: head
+        entries:
+          - _ulid: 01KMAFY4RZBRHJ9JSY5AQWN9GQ
+            author: Test User
+            body: "SessionHandle.sendPrompt() is documented and typed as a promise-returning API, but this
+              implementation can throw synchronously when promptQueue.enqueue() hits a closed/full
+              queue. That turns an AC-17 rejection into a fatal exception path for ordinary onIdle
+              callers: an uncaught overflow/closed-queue send now fails the whole invocation instead
+              of just rejecting the extra prompt. The new overflow test only passes because it
+              catches a synchronous throw, which confirms the contract mismatch rather than the
+              intended rejection behavior."
+            created_at: 2026-03-22T10:02:34.144Z
+        kind: blocker
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -44416,5 +44443,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-22T10:01:16.410Z
     created_at: 2026-03-22T09:58:29.291Z
-    updated_at: 2026-03-22T10:02:32.158Z
+    updated_at: 2026-03-22T10:02:34.144Z
     notes: []
