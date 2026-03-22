@@ -44555,6 +44555,13 @@ reviews:
           status: pass
           name: targeted tests
         timestamp: 2026-03-22T10:13:35.158Z
+      - _ulid: 01KMAGJBH6Q9R4FYZ4VRM6DS00
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KMAGJB52DWM5ZS178XF36R7P
+        timestamp: 2026-03-22T10:13:36.422Z
     examined_commit: 5d6f8f9881322ed407f0013005a1b4c0f7835a04
     external_links: []
     lifecycle_state: open
@@ -44606,7 +44613,23 @@ reviews:
               not just direct unit construction.'
             created_at: 2026-03-22T10:13:01.574Z
         kind: blocker
+      - _ulid: 01KMAGJB52DWM5ZS178XF36R7P
+        entries:
+          - _ulid: 01KMAGJB5268CM2S2MQ1DE755P
+            author: Test User
+            body: "Evidence log: Files read: src/schema/action.ts, src/agent-runtime/action-executor.ts,
+              src/parser/validate.ts, src/agent-runtime/session-registry.ts,
+              src/schema/event-payloads.ts, packages/daemon/src/routes/agent-dispatch.ts,
+              tests/session-prompt-action.test.ts, tests/hook-schema.test.ts. Commands run: kspec
+              task get, kspec item get, git diff, kspec review for-task, kspec validate, grep AC
+              search, targeted npm test. Claims verified: the previous schema blocker is fixed
+              because hooks, schedules, and compositions now parse through ActionSchema; the runtime
+              still lacks sessionRegistry wiring because all production ActionExecutor constructors
+              in packages/daemon/src/routes/agent-dispatch.ts omit it. Categories searched:
+              correctness, integration, validation path, test quality, edge cases."
+            created_at: 2026-03-22T10:13:36.034Z
+        kind: question
     verdicts: []
     created_at: 2026-03-22T10:08:25.916Z
-    updated_at: 2026-03-22T10:13:34.836Z
+    updated_at: 2026-03-22T10:13:36.034Z
     notes: []
