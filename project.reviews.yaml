@@ -46434,7 +46434,17 @@ reviews:
     slugs: []
     title: Review session_prompt action type
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test passed in the review snapshot: 308 files, 7086 passed, 3 skipped."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-22T12:34:27.691Z
+        completed_at: 2026-03-22T12:34:27.691Z
     events:
       - _ulid: 01KMARE0W12QR5ETH6RSX16TRC
         actor: Test User
@@ -46456,6 +46466,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMARM7J854CV9BT2EPPK7ZP8
         timestamp: 2026-03-22T12:34:26.833Z
+      - _ulid: 01KMARM93VC7ADT14SQGCS5661
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-22T12:34:28.091Z
     examined_commit: 61688e7c52b0632ebd71c8ceebcb6030cb1b65c6
     external_links: []
     lifecycle_state: open
@@ -46490,5 +46507,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-22T12:31:03.041Z
-    updated_at: 2026-03-22T12:34:26.504Z
+    updated_at: 2026-03-22T12:34:27.691Z
     notes: []
