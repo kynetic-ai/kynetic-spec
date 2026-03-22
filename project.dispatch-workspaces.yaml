@@ -18759,7 +18759,7 @@ workspaces:
         head: 535d7a68040fb623d7513769f07fa7a1960450bd
         last_seen_at: 2026-03-22T15:52:38.191Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-multi-turn-invocation-01kma74d
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 48ee7bf43230aec5c67ea89428745854d1c4dd6e
     bootstrap:
       status: succeeded
@@ -18863,9 +18863,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-22T15:49:01.568Z
-      last_reconciled_at: 2026-03-22T15:56:05.928Z
+      last_reconciled_at: 2026-03-22T15:56:11.860Z
       created_at: 2026-03-22T09:06:43.597Z
-      updated_at: 2026-03-22T15:56:05.928Z
+      updated_at: 2026-03-22T15:56:11.860Z
     workspace_id: dispatch-workspace-01KMA74ECH1ZW03KM3403N023Z
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
