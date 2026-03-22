@@ -46864,6 +46864,20 @@ reviews:
         runner: vitest
         created_at: 2026-03-22T16:22:44.072Z
         completed_at: 2026-03-22T16:22:44.072Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "AC annotations verified: ac-1 (buffer intercepts writes) covered in
+          batch-write-buffer.test.ts:353, ac-9 (concurrent isolation) covered in
+          batch-write-buffer.test.ts:363,377. Source annotations present in
+          batch-write-buffer.ts:527 and batch-exec.ts:781. No remaining callers of deprecated
+          activateBatchBuffer/deactivateBatchBuffer in src/ or tests/."
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-22T16:22:53.351Z
+        completed_at: 2026-03-22T16:22:53.351Z
     events:
       - _ulid: 01KMB58X6NXKYCBYE2NYY8DM6S
         actor: "@claude"
@@ -46885,6 +46899,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-22T16:22:44.439Z
+      - _ulid: 01KMB5PHJ04DPGSWQ501428VDH
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-22T16:22:53.760Z
     examined_commit: 861d966082cd395f0fd6072be639f10950f1be31
     external_links: []
     lifecycle_state: open
@@ -46897,5 +46918,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-22T16:15:26.933Z
-    updated_at: 2026-03-22T16:22:44.072Z
+    updated_at: 2026-03-22T16:22:53.351Z
     notes: []
