@@ -47436,7 +47436,20 @@ reviews:
     slugs: []
     title: Review dispatch multi-turn integration
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "All 11 new tests pass. Full suite: 7160/7162 tests pass (2 failures are pre-existing
+          intermittent timeouts in agent-dispatch-engine.test.ts and
+          agent-invocation-lifecycle.test.ts — both pass in isolation and are unmodified by this
+          changeset)."
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-22T19:39:44.664Z
+        completed_at: 2026-03-22T19:39:44.664Z
     events:
       - _ulid: 01KMBGRCKG6G41ZS06E6EZ27F2
         actor: "@claude"
@@ -47451,6 +47464,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-22T19:36:45.887Z
+      - _ulid: 01KMBGYZZPKHS2D8M4HCW7YG4J
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-22T19:39:45.015Z
     examined_commit: 88a4d9d805cf5567379546abf8636a5cbc27ae51
     external_links: []
     lifecycle_state: open
@@ -47463,5 +47483,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-22T19:36:08.560Z
-    updated_at: 2026-03-22T19:36:45.531Z
+    updated_at: 2026-03-22T19:39:44.664Z
     notes: []
