@@ -21774,3 +21774,37 @@
   submitted_at: 2026-03-22T16:40:17.878Z
   completed_at: 2026-03-22T16:49:43.388Z
   automation: eligible
+- _ulid: 01KMBPYA8WRP5WFQV53QQK3GW4
+  slugs: []
+  title: Remove duplicate session handle registration in invocation runner
+  type: task
+  spec_ref: "@multi-turn-session-lifecycle"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 3
+  tags:
+    - cleanup
+    - dispatch
+    - sessions
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-22T21:24:14.236Z
+  automation: eligible
+- _ulid: 01KMBPYB05RT7ZJZBA2GVW4A7D
+  slugs: []
+  title: Reload session.idle hook presence during dispatch reconciliation
+  type: task
+  spec_ref: "@multi-turn-session-lifecycle"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - bug
+    - dispatch
+    - sessions
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-22T21:24:14.981Z
+  automation: eligible

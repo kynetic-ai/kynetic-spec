@@ -1,0 +1,36 @@
+_ulid: 01KMBPYA8WRP5WFQV53QQK3GW4
+slugs: []
+title: Remove duplicate session handle registration in invocation runner
+type: task
+description: >-
+  What: Remove the duplicate sessionRegistry.register() call at invocation.ts:633. The same handle
+  is registered again at :680 after ACP session creation, which is the correct location (inside the
+  try block, after session creation succeeds).
+
+
+  Why: Artifact of merging two parallel multi-turn implementations (task-multi-turn-invocation and
+  task-session-prompt-action). The first registration at :633 was added to ensure the finally
+  block's unregister() always runs, but the second registration at :680 already handles this
+  correctly. The duplicate is harmless (idempotent Map.set) but misleading — it suggests intentional
+  double registration when it's just merge residue.
+
+
+  How: Remove the sessionRegistry.register() block at :633 and its surrounding comment. Keep the
+  registration at :680. Verify the finally block's unregister() still runs correctly in tests. No
+  behavioral change expected.
+spec_ref: "@multi-turn-session-lifecycle"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - cleanup
+  - dispatch
+  - sessions
+vcs_refs: []
+created_at: 2026-03-22T21:24:14.236Z
+todos: []
+automation: eligible
