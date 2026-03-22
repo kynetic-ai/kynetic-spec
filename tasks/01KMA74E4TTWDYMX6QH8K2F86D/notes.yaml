@@ -1,1 +1,13 @@
-notes: []
+notes:
+  - _ulid: 01KMA8C9KKN2CAA5742BNR5JWW
+    content: "Implemented session.idle event registration and payload schema. Key design decisions: (1)
+      Created SessionIdlePayloadSchema as a separate schema from SessionEventPayloadSchema because
+      idle events have different semantics — no terminal_reason/work_summary, but adds
+      turn_count/stop_reason. (2) turn_count is z.number().int().positive() since at least one turn
+      must complete for idle to fire. (3) Added session.idle to all 5 sync points: event-registry,
+      event-payloads, shared schemas, session trigger schema. Hook validation inherits automatically
+      via PAYLOAD_FIELDS_BY_EVENT_TYPE. All 4 ACs covered with 37 dedicated tests plus updates to 2
+      existing test files."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-22T07:50:29.235Z
