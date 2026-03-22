@@ -46480,9 +46480,25 @@ reviews:
           kind: nit
           thread_ulid: 01KMARM9TTNSFXYG68R2AEKRDJ
         timestamp: 2026-03-22T12:34:29.184Z
+      - _ulid: 01KMARMVHN23QR5YAAB21D9XY9
+        actor: codex@openai
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-22T12:34:46.965Z
+      - _ulid: 01KMARMVHNMDEBW8PRP131JZE3
+        actor: codex@openai
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-22T12:34:46.965Z
     examined_commit: 61688e7c52b0632ebd71c8ceebcb6030cb1b65c6
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -46532,7 +46548,14 @@ reviews:
               blockers found in the second sweep."
             created_at: 2026-03-22T12:34:28.826Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai
+        role: reviewer
+        created_at: 2026-03-22T12:34:46.965Z
     created_at: 2026-03-22T12:31:03.041Z
-    updated_at: 2026-03-22T12:34:28.826Z
+    updated_at: 2026-03-22T12:34:46.965Z
     notes: []
