@@ -21613,15 +21613,8 @@
   type: task
   spec_ref: "@multi-turn-session-lifecycle"
   plan_ref: "@plan-multi-turn-session-lifecycle"
-  status: blocked
-  blocked_by:
-    - "Semantic merge conflicts with dev. Another task has merged overlapping multi-turn session
-      lifecycle support into dev (session_prompt action, SessionRegistry wiring, session.idle
-      events). Conflicts are in 4 files (invocation.ts, dispatch.ts, action-executor.ts,
-      event-payloads.ts). Key API differences: onIdle vs onTurnComplete callback, SessionIdleContext
-      vs TurnCompleteInfo type, turn_duration_ms vs duration_ms field name, turnCount required vs
-      optional, stop_reason optional vs required. Requires human judgment on which API to keep or
-      how to reconcile the two implementations."
+  status: pending_review
+  blocked_by: []
   depends_on:
     - "@task-session-registry"
   priority: 1
