@@ -47601,6 +47601,18 @@ reviews:
         runner: kspec
         created_at: 2026-03-22T21:44:43.573Z
         completed_at: 2026-03-22T21:44:43.573Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "AC: @multi-turn-session-lifecycle ac-11 annotated on new test (line 6501), on extracted
+          helper (line 1578), on _reconcile call site (line 1336), and on _loadAgents call site
+          (line 1591). Pre-existing annotations on 3 other files also intact."
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-22T21:44:52.502Z
+        completed_at: 2026-03-22T21:44:52.502Z
     events:
       - _ulid: 01KMBR2AFEEH7QJVS4J8GZFNKM
         actor: "@claude"
@@ -47629,6 +47641,13 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-03-22T21:44:43.916Z
+      - _ulid: 01KMBR43WKFT7CWD7VQASPF3HV
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-22T21:44:52.884Z
     examined_commit: 3fe484fb622ef64ca3131a23ef6e5f077ef910aa
     external_links: []
     lifecycle_state: open
@@ -47641,5 +47660,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-22T21:43:54.094Z
-    updated_at: 2026-03-22T21:44:43.573Z
+    updated_at: 2026-03-22T21:44:52.502Z
     notes: []
