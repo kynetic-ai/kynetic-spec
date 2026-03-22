@@ -887,7 +887,10 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
           break;
         }
 
-        // Guard against close requested between dequeue and here
+        // AC: @multi-turn-session-lifecycle ac-10 — re-check close after dequeue
+        // A close request may have arrived after the prompt was dequeued.
+        // Honor the close: discard the prompt and exit rather than starting
+        // another turn with a session that was asked to stop.
         if (closeRequested) {
           promptQueue.close();
           break;

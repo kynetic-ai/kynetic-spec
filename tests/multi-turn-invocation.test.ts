@@ -546,6 +546,50 @@ describe("Multi-turn lifecycle", { timeout: 60_000 }, () => {
     expect(result.outcome).toBe("success");
     expect(result.turnCount).toBe(1);
   });
+
+  // AC: @multi-turn-session-lifecycle ac-10
+  it("should not start a new turn with an already-dequeued prompt when close is requested", async () => {
+    const { spawnedAgent } = createMockSpawnedAgent();
+    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
+      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+    );
+
+    const registry = new SessionRegistry();
+
+    // Race scenario: after idle, a prompt arrives asynchronously
+    // (via setTimeout, so it resolves a waiting consumer), then
+    // requestClose fires immediately after. The dequeued prompt
+    // must not start a new turn because closeRequested is set.
+    const result = await runInvocation({
+      agent: makeTestAgent(),
+      specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
+      cwd: process.cwd(),
+      taskRef: "@" + testUlid("TASK"),
+      prompt: "Initial prompt",
+      trigger: "task.ready",
+      sessionRegistry: registry,
+      onIdle: (ctx) => {
+        if (ctx.turnCount === 1) {
+          const handle = registry.get(ctx.sessionId);
+          // Schedule both operations to fire during idle wait (after
+          // waitForPrompt is already listening). sendPrompt resolves
+          // the waiter with the prompt, then requestClose sets the
+          // closeRequested flag.
+          setTimeout(() => {
+            handle?.sendPrompt("should not execute");
+            handle?.requestClose("race close");
+          }, 10);
+        }
+      },
+    });
+
+    expect(result.outcome).toBe("success");
+    // Only 1 turn — the dequeued prompt must not start a second turn
+    expect(result.turnCount).toBe(1);
+    // prompt() should only have been called once (the initial prompt)
+    expect(spawnedAgent.client.prompt).toHaveBeenCalledTimes(1);
+  });
 });
 
 // ─── Session Registry Integration ───────────────────────────────────────────
