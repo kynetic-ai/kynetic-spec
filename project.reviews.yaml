@@ -44212,6 +44212,13 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-03-22T09:36:04.986Z
+      - _ulid: 01KMAEDP199ZQGPMYXV607KF20
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMAEDNMPJ31FR39BCHTF0GJN
+        timestamp: 2026-03-22T09:36:06.185Z
     examined_commit: 769ad92f5181d44fac0de9b5994c66a0f4dabeab
     external_links: []
     lifecycle_state: open
@@ -44221,8 +44228,26 @@ reviews:
       content_hash: ""
       ref: "@01KMA74ECH1ZW03KM3403N023Z"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMAEDNMPJ31FR39BCHTF0GJN
+        anchor:
+          type: code
+          commit: 769ad92f5181d44fac0de9b5994c66a0f4dabeab
+          line_end: 154
+          line_start: 133
+          path: src/schema/action.ts
+          side: head
+        entries:
+          - _ulid: 01KMAEDNMPZJ83MBEDHTZNV3RY
+            author: Test User
+            body: " never gets used by the real config-loading paths, so  still accepts  with neither  nor .
+              Hooks, schedules, compositions, and  all parse through , which means invalid
+              session_prompt configs load successfully and only fail later at execution time with .
+              That violates @session-prompt-action-schema ac-1, which requires load-time validation
+              of a prompt or prompt template."
+            created_at: 2026-03-22T09:36:05.782Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-22T09:33:28.920Z
-    updated_at: 2026-03-22T09:36:04.649Z
+    updated_at: 2026-03-22T09:36:05.782Z
     notes: []
