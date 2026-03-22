@@ -3182,6 +3182,186 @@ Examples:
       }
     });
 
+  // kspec task storage activate
+  // AC: @task-storage-activation ac-4 — persist split format setting
+  const storage = task.command("storage").description("Manage task storage format");
+
+  markMutating(
+    storage
+      .command("activate")
+      .description("Activate split per-task directory storage format")
+      .option("--force", "Skip confirmation prompt")
+  ).action(async (options) => {
+    try {
+      const ctx = await initContext();
+
+      if (!ctx.manifestPath) {
+        error(errors.project.noKspecProject);
+        process.exit(EXIT_CODES.ERROR);
+      }
+
+      const { readYamlFile, writeYamlFilePreserveFormat } = await import("../../parser/yaml.js");
+      const {
+        getIndexFilePath, listTaskDirs,
+      } = await import("../../parser/split-backend.js");
+
+      // Check if already activated
+      const currentFormat = ctx.manifest?.task_storage?.format;
+      if (currentFormat === "split") {
+        if (isJsonMode()) {
+          output({ success: true, already_active: true, format: "split" });
+        } else {
+          info("Split storage format is already active.");
+        }
+        return;
+      }
+
+      // Validate migration completeness before activating
+      const indexPath = getIndexFilePath(ctx);
+      let rawEntries: unknown[] = [];
+      try {
+        const raw = await readYamlFile<unknown>(indexPath);
+        if (Array.isArray(raw)) {
+          rawEntries = raw;
+        } else if (raw && typeof raw === "object" && "tasks" in raw) {
+          const wrapper = raw as Record<string, unknown>;
+          rawEntries = Array.isArray(wrapper.tasks) ? wrapper.tasks : [];
+        }
+      } catch {
+        // No index file — empty project, activation is fine
+      }
+
+      if (rawEntries.length > 0) {
+        // Check for unmigrated entries (monolithic format: no notes_count as number)
+        const unmigratedEntries = rawEntries.filter((entry) => {
+          if (!entry || typeof entry !== "object") return false;
+          const rec = entry as Record<string, unknown>;
+          return typeof rec.notes_count !== "number";
+        });
+
+        if (unmigratedEntries.length > 0) {
+          // Verify these aren't already migrated (per-task dirs exist)
+          const taskDirs = await listTaskDirs(ctx);
+          const dirSet = new Set(taskDirs);
+          const trulyUnmigrated = unmigratedEntries.filter((entry) => {
+            const rec = entry as Record<string, unknown>;
+            return typeof rec._ulid === "string" && !dirSet.has(rec._ulid);
+          });
+
+          if (trulyUnmigrated.length > 0) {
+            if (isJsonMode()) {
+              output({
+                success: false,
+                error: `${trulyUnmigrated.length} task(s) have not been migrated`,
+                suggestion: "Run 'kspec task migrate' before activating split format.",
+              });
+            } else {
+              error(
+                `Cannot activate split format: ${trulyUnmigrated.length} task(s) have not been migrated to per-task directories.`,
+              );
+              info("Run 'kspec task migrate' first, then retry activation.");
+            }
+            process.exit(EXIT_CODES.ERROR);
+          }
+        }
+      }
+
+      // Confirmation prompt (unless --force)
+      if (!options.force && !isJsonMode()) {
+        const readline = await import("node:readline");
+        const rl = readline.createInterface({
+          input: process.stdin,
+          output: process.stdout,
+        });
+        const answer = await new Promise<string>((resolve) => {
+          rl.question(
+            chalk.yellow("Activate split storage format? This changes how tasks are read and written. [y/N] "),
+            resolve,
+          );
+        });
+        rl.close();
+        if (answer.trim().toLowerCase() !== "y") {
+          info("Activation cancelled.");
+          return;
+        }
+      }
+
+      // Update manifest: set task_storage.format = "split"
+      const manifest = await readYamlFile<Record<string, unknown>>(ctx.manifestPath);
+      if (!manifest) {
+        error("Could not load manifest file.");
+        process.exit(EXIT_CODES.ERROR);
+      }
+
+      if (!manifest.task_storage || typeof manifest.task_storage !== "object") {
+        manifest.task_storage = { format: "split" };
+      } else {
+        (manifest.task_storage as Record<string, unknown>).format = "split";
+      }
+
+      await writeYamlFilePreserveFormat(ctx.manifestPath, manifest);
+
+      // AC: @task-storage-activation ac-4 — commit the setting change
+      await commitIfShadow(
+        ctx.shadow,
+        "feat: activate split task storage format",
+      );
+
+      if (isJsonMode()) {
+        output({ success: true, format: "split", already_active: false });
+      } else {
+        success("Split storage format activated. All subsequent operations will use per-task directories.");
+      }
+    } catch (err) {
+      if (isJsonMode()) {
+        output({
+          success: false,
+          error: String(err instanceof Error ? err.message : err),
+          suggestion: "Check that .kspec/ directory exists and shadow branch is healthy.",
+        });
+      } else {
+        error(
+          "Failed to activate split storage format",
+          err instanceof Error ? err.message : err,
+        );
+        info(
+          "Check that .kspec/ directory exists and shadow branch is healthy. Run 'kspec shadow status' for diagnostics.",
+        );
+      }
+      process.exit(EXIT_CODES.ERROR);
+    }
+  });
+
+  // kspec task storage status — show current format
+  storage
+    .command("status")
+    .description("Show current task storage format")
+    .action(async () => {
+      try {
+        const ctx = await initContext();
+
+        const currentFormat = ctx.manifest?.task_storage?.format ?? "monolithic";
+
+        if (isJsonMode()) {
+          output({ format: currentFormat });
+        } else {
+          info(`Task storage format: ${chalk.bold(currentFormat)}`);
+        }
+      } catch (err) {
+        if (isJsonMode()) {
+          output({
+            error: String(err instanceof Error ? err.message : err),
+          });
+        } else {
+          error(
+            "Failed to check storage format",
+            err instanceof Error ? err.message : err,
+          );
+        }
+        process.exit(EXIT_CODES.ERROR);
+      }
+    });
+
   // kspec task migrate
   // AC: @task-storage-migration ac-1, ac-2, ac-3, ac-4, ac-5, ac-6, ac-7, ac-8
   markMutating(
