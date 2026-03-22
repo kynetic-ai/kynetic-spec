@@ -18485,3 +18485,79 @@ workspaces:
         head: 6d0d9ba61216f23987e1b1f07808a882d6ff8f20
         last_seen_at: 2026-03-22T07:51:05.226Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-idle-event-01kma74e
+  - active_role: null
+    base_branch_point: 463db210d316c43a70446ac83bc179c6de5a1616
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-update-existing-specs/01kma74f
+    canonical_branch_head: 463db210d316c43a70446ac83bc179c6de5a1616
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-03-22T07:51:11.462Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-03-22T07:51:11.462Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: 463db210d316c43a70446ac83bc179c6de5a1616
+      updated_at: 2026-03-22T07:51:11.462Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KMA74F2C4MBREFDB7N2KZ45V"
+    task_slug: task-update-existing-specs
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-03-22T07:51:11.462Z
+      created_at: 2026-03-22T07:51:11.462Z
+      updated_at: 2026-03-22T07:51:11.462Z
+    workspace_id: dispatch-workspace-01KMA74F2C4MBREFDB7N2KZ45V
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-update-existing-specs/01kma74f
+        head: 463db210d316c43a70446ac83bc179c6de5a1616
+        last_seen_at: 2026-03-22T07:51:11.462Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-update-existing-specs-01kma74f
