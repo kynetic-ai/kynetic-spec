@@ -17,7 +17,9 @@ import type {
   KspecAction,
   AgentAction,
   NotifyAction,
+  SessionPromptAction,
 } from "../schema/action.js";
+import type { SessionRegistry } from "./session-registry.js";
 import { interpolateTemplate } from "./prompts.js";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -89,6 +91,8 @@ export interface ActionExecutorOptions {
   notifyBroadcast?: NotifyBroadcast;
   /** Spawner function for agent actions */
   agentSpawner?: AgentSpawner;
+  /** Session registry for session_prompt actions. AC: @session-prompt-action ac-1 */
+  sessionRegistry?: SessionRegistry;
 }
 
 // ─── KSPEC_* Environment Variable Injection ─────────────────────────────────
@@ -274,6 +278,8 @@ export const KNOWN_EVENT_FIELDS: Record<string, Set<string>> = {
     "duration_ms",
     "terminal_reason",
     "work_summary",
+    "turn_count",
+    "stop_reason",
   ]),
   // Action event payload fields — AC: @dispatch-event-payload ac-5
   "action": new Set([
@@ -381,6 +387,10 @@ export function extractActionTemplates(action: Action): string[] {
     case "notify":
       templates.push(action.message);
       break;
+    case "session_prompt":
+      if (action.prompt) templates.push(action.prompt);
+      if (action.prompt_template) templates.push(action.prompt_template);
+      break;
   }
   return templates;
 }
@@ -402,6 +412,7 @@ export class ActionExecutor {
   private onActionRunEvent?: (event: ActionRunEvent) => void;
   private notifyBroadcast?: NotifyBroadcast;
   private agentSpawner?: AgentSpawner;
+  private sessionRegistry?: SessionRegistry;
 
   constructor(options: ActionExecutorOptions) {
     this.projectDir = options.projectDir;
@@ -409,6 +420,7 @@ export class ActionExecutor {
     this.onActionRunEvent = options.onActionRunEvent;
     this.notifyBroadcast = options.notifyBroadcast;
     this.agentSpawner = options.agentSpawner;
+    this.sessionRegistry = options.sessionRegistry;
   }
 
   /**
@@ -515,6 +527,8 @@ export class ActionExecutor {
         return this.executeAgent(action, eventContext, run);
       case "notify":
         return this.executeNotify(action, eventContext, run);
+      case "session_prompt":
+        return this.executeSessionPrompt(action, eventContext, run);
     }
   }
 
@@ -906,6 +920,156 @@ export class ActionExecutor {
     const completedAt = new Date().toISOString();
     const durationMs = Date.now() - new Date(run.started_at).getTime();
 
+    const completedRun: ActionRun = {
+      ...run,
+      status: "completed",
+      completed_at: completedAt,
+      duration_ms: durationMs,
+    };
+    this.emitEvent("action.completed", completedRun, eventContext);
+    return completedRun;
+  }
+
+  /**
+   * Execute a session_prompt action — delivers a prompt to an active session.
+   *
+   * Session ID resolution:
+   *   1. action.session_id (explicit, takes precedence)
+   *   2. eventContext.session_id (implicit, from triggering event — e.g. session.idle)
+   *
+   * Prompt resolution:
+   *   1. action.prompt (literal, interpolated with event context)
+   *   2. action.prompt_template (template, interpolated with event context)
+   *
+   * AC: @session-prompt-action ac-1 (deliver prompt to idle session)
+   * AC: @session-prompt-action ac-2 (action lifecycle events — handled by execute() wrapper)
+   * AC: @session-prompt-action ac-3 (session_id defaults to event's session_id)
+   * AC: @session-prompt-action ac-4 (fail with clear error if session is closed)
+   * AC: @session-prompt-action ac-5 (queue prompt if session is in prompting state)
+   * AC: @session-prompt-action ac-6 (template variable interpolation)
+   * AC: @session-prompt-action ac-7 (require explicit session_id outside session events)
+   */
+  private async executeSessionPrompt(
+    action: SessionPromptAction,
+    eventContext: ActionEventContext,
+    run: ActionRun,
+  ): Promise<ActionRun> {
+    if (!this.sessionRegistry) {
+      const completedAt = new Date().toISOString();
+      const durationMs = Date.now() - new Date(run.started_at).getTime();
+      const failedRun: ActionRun = {
+        ...run,
+        status: "failed",
+        completed_at: completedAt,
+        duration_ms: durationMs,
+        error: "No session registry configured — cannot execute session_prompt action. Ensure the dispatch engine is running with session registry support.",
+        failure_reason: "error",
+      };
+      this.emitEvent("action.failed", failedRun, eventContext);
+      return failedRun;
+    }
+
+    // AC: @session-prompt-action ac-3, ac-7 — resolve session_id
+    const sessionId = action.session_id
+      ?? (typeof eventContext.session_id === "string" ? eventContext.session_id : undefined);
+
+    if (!sessionId) {
+      const completedAt = new Date().toISOString();
+      const durationMs = Date.now() - new Date(run.started_at).getTime();
+      const failedRun: ActionRun = {
+        ...run,
+        status: "failed",
+        completed_at: completedAt,
+        duration_ms: durationMs,
+        error: "No session_id available — session_prompt action requires either an explicit session_id or a triggering event with a session_id field (e.g. session.idle). Check your hook configuration.",
+        failure_reason: "error",
+      };
+      this.emitEvent("action.failed", failedRun, eventContext);
+      return failedRun;
+    }
+
+    // AC: @session-prompt-action ac-6 — resolve prompt with template interpolation
+    let resolvedPrompt: string;
+    if (action.prompt) {
+      resolvedPrompt = resolveTemplateVars(action.prompt, eventContext);
+    } else if (action.prompt_template) {
+      resolvedPrompt = resolveTemplateVars(action.prompt_template, eventContext);
+    } else {
+      // Schema validation ensures at least one is set, but handle defensively
+      const completedAt = new Date().toISOString();
+      const durationMs = Date.now() - new Date(run.started_at).getTime();
+      const failedRun: ActionRun = {
+        ...run,
+        status: "failed",
+        completed_at: completedAt,
+        duration_ms: durationMs,
+        error: "No prompt or prompt_template configured on session_prompt action",
+        failure_reason: "error",
+      };
+      this.emitEvent("action.failed", failedRun, eventContext);
+      return failedRun;
+    }
+
+    // Look up the session in the registry
+    const handle = this.sessionRegistry.get(sessionId);
+
+    if (!handle) {
+      // AC: @session-prompt-action ac-4 — session not found (closed or never registered)
+      const completedAt = new Date().toISOString();
+      const durationMs = Date.now() - new Date(run.started_at).getTime();
+      const failedRun: ActionRun = {
+        ...run,
+        status: "failed",
+        completed_at: completedAt,
+        duration_ms: durationMs,
+        error: `Session '${sessionId}' is no longer active — it may have been closed or was never registered. Ensure the target session is alive before sending prompts.`,
+        failure_reason: "error",
+      };
+      this.emitEvent("action.failed", failedRun, eventContext);
+      return failedRun;
+    }
+
+    // Check session state for better error messaging
+    const state = handle.getState();
+    if (state === "closed") {
+      // AC: @session-prompt-action ac-4 — session is explicitly closed
+      const completedAt = new Date().toISOString();
+      const durationMs = Date.now() - new Date(run.started_at).getTime();
+      const failedRun: ActionRun = {
+        ...run,
+        status: "failed",
+        completed_at: completedAt,
+        duration_ms: durationMs,
+        error: `Session '${sessionId}' is closed — cannot deliver prompt to a closed session. The session may have terminated between the triggering event and action execution.`,
+        failure_reason: "error",
+      };
+      this.emitEvent("action.failed", failedRun, eventContext);
+      return failedRun;
+    }
+
+    // AC: @session-prompt-action ac-1, ac-5 — deliver prompt
+    // sendPrompt() handles both idle (immediate delivery) and prompting
+    // (queued delivery) states internally via the session handle implementation.
+    try {
+      await handle.sendPrompt(resolvedPrompt);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      const completedAt = new Date().toISOString();
+      const durationMs = Date.now() - new Date(run.started_at).getTime();
+      const failedRun: ActionRun = {
+        ...run,
+        status: "failed",
+        completed_at: completedAt,
+        duration_ms: durationMs,
+        error: `Failed to deliver prompt to session '${sessionId}': ${errorMessage}`,
+        failure_reason: "error",
+      };
+      this.emitEvent("action.failed", failedRun, eventContext);
+      return failedRun;
+    }
+
+    const completedAt = new Date().toISOString();
+    const durationMs = Date.now() - new Date(run.started_at).getTime();
     const completedRun: ActionRun = {
       ...run,
       status: "completed",

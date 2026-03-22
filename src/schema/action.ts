@@ -93,6 +93,57 @@ export const NotifyActionSchema = z.object({
 });
 
 /**
+ * Session prompt action — delivers a prompt to an active session.
+ * Unlike the agent action (which spawns a new invocation), a session prompt
+ * action targets an existing session that is currently alive and idle.
+ *
+ * AC: @session-prompt-action ac-1 through ac-7
+ * AC: @session-prompt-action-schema ac-1 through ac-4
+ */
+const SessionPromptActionBaseSchema = z.object({
+  type: z.literal("session_prompt"),
+  /**
+   * Optional literal prompt to deliver (takes precedence over prompt_template).
+   * At least one of prompt or prompt_template is required.
+   * AC: @session-prompt-action-schema ac-1
+   */
+  prompt: z.string().optional(),
+  /**
+   * Optional prompt template with {{variable}} placeholders.
+   * Interpolated with event envelope and payload variables at execution time.
+   * AC: @session-prompt-action-schema ac-1
+   * AC: @session-prompt-action ac-6
+   */
+  prompt_template: z.string().optional(),
+  /**
+   * Optional target session identifier. When omitted in a hook on a session
+   * event, defaults to the triggering event's session_id.
+   * Required when configured outside a session event hook context.
+   * AC: @session-prompt-action ac-3, ac-7
+   * AC: @session-prompt-action-schema ac-3, ac-4
+   */
+  session_id: z.string().optional(),
+});
+
+/**
+ * Schema for discriminated union (ZodObject required by z.discriminatedUnion).
+ * Use SessionPromptActionRefinedSchema for full validation with the
+ * prompt/prompt_template requirement check.
+ */
+export const SessionPromptActionSchema = SessionPromptActionBaseSchema;
+
+/**
+ * Full validation schema that checks at least one of prompt or prompt_template
+ * is provided. Use this when validating configuration input rather than in the
+ * discriminated union.
+ * AC: @session-prompt-action-schema ac-1
+ */
+export const SessionPromptActionRefinedSchema = SessionPromptActionBaseSchema.refine(
+  (data) => data.prompt !== undefined || data.prompt_template !== undefined,
+  { message: "At least one of 'prompt' or 'prompt_template' is required" },
+);
+
+/**
  * Discriminated union of all action types.
  */
 export const ActionSchema = z.discriminatedUnion("type", [
@@ -100,12 +151,13 @@ export const ActionSchema = z.discriminatedUnion("type", [
   KspecActionSchema,
   AgentActionSchema,
   NotifyActionSchema,
+  SessionPromptActionSchema,
 ]);
 
 /**
  * Valid action type identifiers.
  */
-export const ACTION_TYPES = ["command", "kspec", "agent", "notify"] as const;
+export const ACTION_TYPES = ["command", "kspec", "agent", "notify", "session_prompt"] as const;
 
 // ─── Action Run Schema ───────────────────────────────────────────────────────
 
@@ -126,7 +178,7 @@ export const ActionRunSchema = z.object({
   /** Unique identifier for this action run */
   action_run_id: UlidSchema,
   /** The action type that was executed */
-  action_type: z.enum(["command", "kspec", "agent", "notify"]),
+  action_type: z.enum(["command", "kspec", "agent", "notify", "session_prompt"]),
   /** Current status */
   status: ActionRunStatusSchema,
   /** When the run started */
@@ -164,6 +216,7 @@ export type CommandAction = z.infer<typeof CommandActionSchema>;
 export type KspecAction = z.infer<typeof KspecActionSchema>;
 export type AgentAction = z.infer<typeof AgentActionSchema>;
 export type NotifyAction = z.infer<typeof NotifyActionSchema>;
+export type SessionPromptAction = z.infer<typeof SessionPromptActionSchema>;
 export type Action = z.infer<typeof ActionSchema>;
 export type ActionRunStatus = z.infer<typeof ActionRunStatusSchema>;
 export type ActionRun = z.infer<typeof ActionRunSchema>;

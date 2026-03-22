@@ -224,7 +224,7 @@ export const ActionStartedPayloadSchema = z.object({
   /** Unique identifier for this action run */
   action_run_id: z.string(),
   /** The action type (command, kspec, agent, notify) */
-  action_type: z.enum(["command", "kspec", "agent", "notify"]),
+  action_type: z.enum(["command", "kspec", "agent", "notify", "session_prompt"]),
   /** Hook ID that triggered this action (mutually exclusive with schedule_id) */
   hook_id: z.string().optional(),
   /** Schedule ID that triggered this action (mutually exclusive with hook_id) */
@@ -242,7 +242,7 @@ export const ActionTerminalPayloadSchema = z.object({
   /** Unique identifier for this action run */
   action_run_id: z.string(),
   /** The action type (command, kspec, agent, notify) */
-  action_type: z.enum(["command", "kspec", "agent", "notify"]),
+  action_type: z.enum(["command", "kspec", "agent", "notify", "session_prompt"]),
   /** Hook ID that triggered this action (mutually exclusive with schedule_id) */
   hook_id: z.string().optional(),
   /** Schedule ID that triggered this action (mutually exclusive with hook_id) */

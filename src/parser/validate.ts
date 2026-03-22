@@ -1750,6 +1750,44 @@ function validateHookFilters(
 }
 
 // ============================================================
+// SESSION PROMPT ACTION VALIDATION
+// ============================================================
+
+/**
+ * Validate session_prompt actions in hooks for session_id availability.
+ *
+ * When a session_prompt action is on a session.* event, session_id is
+ * available from the event context (AC: @session-prompt-action-schema ac-3).
+ * When on a non-session event, an explicit session_id is required for the
+ * action to succeed at runtime (AC: @session-prompt-action-schema ac-4).
+ */
+function validateSessionPromptActions(
+  hooks: LoadedHook[],
+): { ref: string; sourceFile?: string; field: string; warning: "deprecated_target"; message: string }[] {
+  const warnings: { ref: string; sourceFile?: string; field: string; warning: "deprecated_target"; message: string }[] = [];
+
+  for (const hook of hooks) {
+    if (hook.action.type !== "session_prompt") continue;
+
+    const isSessionEvent = hook.on.startsWith("session.");
+    const hasExplicitSessionId = hook.action.session_id !== undefined;
+
+    if (!isSessionEvent && !hasExplicitSessionId) {
+      // AC: @session-prompt-action-schema ac-4 — warn that session_id is required
+      warnings.push({
+        ref: `@${hook.name}`,
+        sourceFile: hook._sourceFile,
+        field: "action.session_id",
+        warning: "deprecated_target",
+        message: `Hook '${hook.name}' uses a session_prompt action on event '${hook.on}' without an explicit session_id. Session prompt actions on non-session events require a session_id — the action will fail at runtime without one.`,
+      });
+    }
+  }
+
+  return warnings;
+}
+
+// ============================================================
 // SCHEDULE VALIDATION
 // ============================================================
 
@@ -2192,6 +2230,10 @@ export async function validate(
 
       const hookFilterWarnings = validateHookFilters(metaCtx.hooks);
       result.refWarnings.push(...hookFilterWarnings);
+
+      // AC: @session-prompt-action-schema ac-4 — warn on session_prompt without session_id on non-session events
+      const sessionPromptWarnings = validateSessionPromptActions(metaCtx.hooks);
+      result.refWarnings.push(...sessionPromptWarnings);
     }
 
     // AC: @dispatch-schedule-schema ac-3 - validate schedule agent action references
