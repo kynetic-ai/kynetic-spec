@@ -1,0 +1,45 @@
+_ulid: 01KMA74EKPGJMJXEXMZMGWY51A
+slugs:
+  - task-idle-grace-period
+title: Implement idle grace period and auto-close logic
+type: task
+description: |
+  Implement the grace period that determines when an idle session
+  auto-closes, and the session mode flag that can disable it.
+
+  Why: Backward compatibility requires that sessions without
+  idle-targeting hooks close automatically after one turn, matching
+  current behavior. Sessions with hooks or a non-auto-close mode
+  need to stay open. The grace period bridges these modes.
+
+  What: When a session enters idle, a configurable timer starts
+  (default 5 seconds). If no prompt arrives before it expires and
+  the session mode allows auto-close, the session closes. The
+  timer resets if a prompt is queued. The agent definition schema
+  gets a session mode field and an idle timeout field.
+
+  How: The grace period timer is part of the turn loop in
+  invocation.ts. It races against the prompt queue — whichever
+  fires first wins. For auto-close mode, the grace period is short
+  (enough for hooks to fire and queue prompts). For modes that
+  disable auto-close, only idle timeout applies. The agent schema
+  extension is in meta.ts.
+
+  Covers: @multi-turn-session-lifecycle ac-5, ac-6, ac-7, ac-11.
+spec_ref: "@multi-turn-session-lifecycle"
+plan_ref: "@plan-multi-turn-session-lifecycle"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-multi-turn-invocation"
+  - "@task-session-prompt-action"
+context: []
+priority: 2
+tags:
+  - dispatch
+  - sessions
+  - backward-compat
+vcs_refs: []
+created_at: 2026-03-22T07:28:43.638Z
+todos: []

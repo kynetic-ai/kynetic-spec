@@ -1,0 +1,55 @@
+_ulid: 01KMA74ECH1ZW03KM3403N023Z
+slugs:
+  - task-session-prompt-action
+title: Implement session_prompt action type
+type: task
+description: |
+  Add the session_prompt action type to the shared action model
+  and implement its execution in the action executor.
+
+  Why: This is the action that makes trigger-driven multi-turn
+  sessions work. Without it, hooks on session.idle can only spawn
+  new invocations or run commands — they can't send prompts to the
+  session that just went idle.
+
+  What: Add SessionPromptActionSchema to action.ts with fields:
+  type ("session_prompt"), prompt (optional), prompt_template
+  (optional), session_id (optional — defaults to event's
+  session_id for session.idle hooks). Add to the ActionSchema
+  discriminated union and ACTION_TYPES constant. Implement
+  executeSessionPrompt() in ActionExecutor that resolves the
+  target session from the registry, delivers the prompt via the
+  session handle, and tracks the action run until the turn
+  completes.
+
+  How: The executor resolves session_id from either the explicit
+  field or the event context (for session.idle hooks). It calls
+  registry.get(sessionId) to get the handle, then
+  handle.sendPrompt(interpolatedPrompt). The action run stays
+  in running state until the prompt delivery promise resolves
+  (which happens when the agent's turn completes). If the session
+  is closed, the action fails with a clear error.
+
+  Covers: @session-prompt-action ac-1 through ac-7,
+  @session-prompt-action-schema ac-1 through ac-4.
+
+  Note: @session-prompt-action ac-2 (action lifecycle events) is
+  inherited from the shared action model pattern — verified by
+  existing action executor tests.
+spec_ref: "@session-prompt-action"
+plan_ref: "@plan-multi-turn-session-lifecycle"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-session-registry"
+  - "@task-session-idle-event"
+context: []
+priority: 1
+tags:
+  - dispatch
+  - actions
+  - sessions
+vcs_refs: []
+created_at: 2026-03-22T07:28:43.409Z
+todos: []

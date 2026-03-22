@@ -1,0 +1,41 @@
+_ulid: 01KMA74F2C4MBREFDB7N2KZ45V
+slugs:
+  - task-update-existing-specs
+title: Update existing specs for multi-turn lifecycle
+type: task
+description: |
+  Update existing spec items to align with multi-turn session
+  semantics.
+
+  Why: Several existing ACs describe single-turn session behavior.
+  Updating them ensures consistent definitions of session
+  completion and cleanup across the spec system.
+
+  What: Apply the four updates documented in the "Existing spec
+  updates" table in the implementation notes:
+  @agent-invocation-lifecycle ac-4 (end_turn → idle, not close),
+  @agent-invocation-lifecycle ac-8 (cleanup at session close),
+  @dispatch-event-taxonomy description (add session.idle),
+  @dispatch-action-model description (add session_prompt).
+
+  How: Use kspec item ac set to update the specific ACs. Use kspec
+  item set --description for description updates. Each change is
+  a targeted update to an existing spec item, not a new spec.
+  Verify each update with kspec item get after applying.
+
+  Covers: @multi-turn-session-lifecycle (alignment of dependent
+  specs).
+spec_ref: "@multi-turn-session-lifecycle"
+plan_ref: "@plan-multi-turn-session-lifecycle"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - specs
+  - compatibility
+vcs_refs: []
+created_at: 2026-03-22T07:28:44.108Z
+todos: []

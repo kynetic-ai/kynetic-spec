@@ -21579,3 +21579,154 @@
   todos_count: 0
   created_at: 2026-03-22T07:28:01.460Z
   automation: eligible
+- _ulid: 01KMA74DPD6ESYCQAT6YY8DXJJ
+  slugs:
+    - task-session-registry
+  title: Implement active session registry
+  type: task
+  spec_ref: "@active-session-registry"
+  plan_ref: "@plan-multi-turn-session-lifecycle"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - dispatch
+    - sessions
+    - foundation
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-22T07:28:42.701Z
+- _ulid: 01KMA74DY7WGG4KA6P07BTMJFD
+  slugs:
+    - task-multi-turn-invocation
+  title: Refactor invocation runner to multi-turn lifecycle
+  type: task
+  spec_ref: "@multi-turn-session-lifecycle"
+  plan_ref: "@plan-multi-turn-session-lifecycle"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-session-registry"
+  priority: 1
+  tags:
+    - dispatch
+    - sessions
+    - invocation
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-22T07:28:42.951Z
+- _ulid: 01KMA74E4TTWDYMX6QH8K2F86D
+  slugs:
+    - task-session-idle-event
+  title: Add session.idle event to taxonomy and payloads
+  type: task
+  spec_ref: "@session-idle-event"
+  plan_ref: "@plan-multi-turn-session-lifecycle"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - dispatch
+    - events
+    - schema
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-22T07:28:43.162Z
+- _ulid: 01KMA74ECH1ZW03KM3403N023Z
+  slugs:
+    - task-session-prompt-action
+  title: Implement session_prompt action type
+  type: task
+  spec_ref: "@session-prompt-action"
+  plan_ref: "@plan-multi-turn-session-lifecycle"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-session-registry"
+    - "@task-session-idle-event"
+  priority: 1
+  tags:
+    - dispatch
+    - actions
+    - sessions
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-22T07:28:43.409Z
+- _ulid: 01KMA74EKPGJMJXEXMZMGWY51A
+  slugs:
+    - task-idle-grace-period
+  title: Implement idle grace period and auto-close logic
+  type: task
+  spec_ref: "@multi-turn-session-lifecycle"
+  plan_ref: "@plan-multi-turn-session-lifecycle"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-multi-turn-invocation"
+    - "@task-session-prompt-action"
+  priority: 2
+  tags:
+    - dispatch
+    - sessions
+    - backward-compat
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-22T07:28:43.638Z
+- _ulid: 01KMA74EVBPW0NWYCF3S7S8A3N
+  slugs:
+    - task-dispatch-multi-turn-integration
+  title: Integrate multi-turn lifecycle with dispatch engine
+  type: task
+  spec_ref: "@multi-turn-session-lifecycle"
+  plan_ref: "@plan-multi-turn-session-lifecycle"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-multi-turn-invocation"
+    - "@task-idle-grace-period"
+  priority: 2
+  tags:
+    - dispatch
+    - sessions
+    - integration
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-22T07:28:43.883Z
+- _ulid: 01KMA74F2C4MBREFDB7N2KZ45V
+  slugs:
+    - task-update-existing-specs
+  title: Update existing specs for multi-turn lifecycle
+  type: task
+  spec_ref: "@multi-turn-session-lifecycle"
+  plan_ref: "@plan-multi-turn-session-lifecycle"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - specs
+    - compatibility
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-22T07:28:44.108Z
+- _ulid: 01KMA74FB1KFR4938XKWNT6M2K
+  slugs:
+    - task-ui-session-idle
+  title: Update automation view for session idle events
+  type: task
+  spec_ref: "@session-idle-event"
+  plan_ref: "@plan-multi-turn-session-lifecycle"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-session-idle-event"
+    - "@task-session-prompt-action"
+  priority: 3
+  tags:
+    - web-ui
+    - automation
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-22T07:28:44.385Z

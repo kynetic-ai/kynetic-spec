@@ -1,0 +1,41 @@
+_ulid: 01KMA74E4TTWDYMX6QH8K2F86D
+slugs:
+  - task-session-idle-event
+title: Add session.idle event to taxonomy and payloads
+type: task
+description: |
+  Register session.idle in the event taxonomy and define its
+  payload schema.
+
+  Why: Hooks and the UI need to reference session.idle as a valid
+  event type. The payload schema defines what filters can match on
+  and what template variables are available.
+
+  What: Add session.idle to the event registry in event-registry.ts.
+  Define its payload in event-payloads.ts: session_id, agent_id,
+  task_ref (nullable), turn_count (number), stop_reason (string),
+  duration_ms (of the completed turn). Update validation to accept
+  session.idle in hook configurations. Add to the UI trigger picker.
+
+  How: Follow the exact pattern used for session.ended — add to
+  SESSION_EVENTS, define payload schema, register in the combined
+  registry. The payload is a superset of session.ended with the
+  addition of turn_count and stop_reason, minus terminal_reason
+  (since the session isn't terminal).
+
+  Covers: @session-idle-event ac-1 through ac-4.
+spec_ref: "@session-idle-event"
+plan_ref: "@plan-multi-turn-session-lifecycle"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - dispatch
+  - events
+  - schema
+vcs_refs: []
+created_at: 2026-03-22T07:28:43.162Z
+todos: []

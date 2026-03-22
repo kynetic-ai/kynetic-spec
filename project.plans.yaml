@@ -26815,10 +26815,23 @@ plans:
       emits that event on idle timeout, which is consistent. No payload change is needed — the
       existing payload contract covers session_id, agent_id, task_ref, duration_ms, and
       terminal_reason.
-    status: approved
+    status: active
     approved_at: 2026-03-22T07:28:10.192Z
-    derived_specs: []
-    derived_tasks: []
+    derived_specs:
+      - "@multi-turn-session-lifecycle"
+      - "@session-idle-event"
+      - "@session-prompt-action"
+      - "@session-prompt-action-schema"
+      - "@active-session-registry"
+    derived_tasks:
+      - "@task-session-registry"
+      - "@task-multi-turn-invocation"
+      - "@task-session-idle-event"
+      - "@task-session-prompt-action"
+      - "@task-idle-grace-period"
+      - "@task-dispatch-multi-turn-integration"
+      - "@task-update-existing-specs"
+      - "@task-ui-session-idle"
     module_ref: "@agent-integration"
     source_path: /home/chapel/Projects/kynetic-spec/plans/multi-turn-session-lifecycle.md
     created_at: 2026-03-22T05:05:48.090Z
@@ -26890,6 +26903,88 @@ plans:
           current capabilities. Automation CRUD UI captured as inbox 01KMA704.
         author: "@claude"
         created_at: 2026-03-22T07:28:07.995Z
+      - _ulid: 01KMA74FK1JZF96M33DVJSTXEH
+        content: >-
+          ### Grace period design rationale
+
+
+          The grace period (default 5s) bridges backward compatibility with multi-turn capability.
+          It must be long enough for hooks to fire and queue their prompts, but short enough that
+          single-turn dispatch doesn't feel sluggish. The 5s default is conservative — it should be
+          tunable per-agent.
+
+
+          ### Prompt queue ordering
+
+
+          When multiple sources submit prompts to the same session (hooks + user), FIFO ordering
+          ensures deterministic behavior. The queue is internal to the session handle — external
+          callers don't control ordering beyond submission time. This is simpler than priority-based
+          ordering and avoids the question of who outranks whom.
+
+
+          ### Session handle vs ACP client exposure
+
+
+          The session handle pattern exists to keep the action executor decoupled from ACP
+          internals. The executor calls handle.sendPrompt() without knowing about ACP sessions,
+          JSON-RPC, or process management. This enables future adapter changes without touching the
+          action system.
+
+
+          ### Relationship to existing events
+
+
+          session.idle is distinct from all existing events:
+
+          - session.ended: fires after teardown (session is dead)
+
+          - invocation.completed: fires after teardown (invocation is done)
+
+          - session.idle: fires while session is alive (ready for more work)
+
+
+          The existing events continue to fire at their current timing. session.idle adds a new
+          observation point, not a replacement.
+
+
+          ### Existing spec updates (task-update-existing-specs reference)
+
+
+          These updates align existing specs with the multi-turn lifecycle:
+
+
+          | Existing AC | Current wording (summary) | Updated wording (summary) | Reason |
+
+          |---|---|---|---|
+
+          | @agent-invocation-lifecycle ac-4 | "When the agent signals turn complete → session
+          closed with status completed" | "When the agent signals turn complete → session
+          transitions to idle; session is closed when no more prompts arrive (grace period expiry,
+          explicit close, or timeout)" | Turn completion is a turn boundary, not session completion
+          |
+
+          | @agent-invocation-lifecycle ac-8 | "When invocation completes → cleanup runs (env
+          restore, process termination)" | "When session closes (after all turns complete) → cleanup
+          runs (env restore, process termination)" | Cleanup is per-session, not per-turn |
+
+          | @dispatch-event-taxonomy description | Lists session events as: session.ended,
+          session.idle_timeout, session.cancelled | Add session.idle to the enumeration | New event
+          type |
+
+          | @dispatch-action-model description | Lists 4 action types: command, kspec, agent, notify
+          | Add session_prompt as 5th type | New action type |
+
+
+          ### session.idle_timeout already exists
+
+
+          The existing taxonomy already includes session.idle_timeout. This plan's lifecycle spec
+          ac-7 emits that event on idle timeout, which is consistent. No payload change is needed —
+          the existing payload contract covers session_id, agent_id, task_ref, duration_ms, and
+          terminal_reason.
+        author: "@claude"
+        created_at: 2026-03-22T07:28:44.641Z
   - _ulid: 01KMA5W61Z4SY2PNVSGAM38CQ1
     slugs:
       - plan-interactive-agent-sessions

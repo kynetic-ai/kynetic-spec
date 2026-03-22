@@ -1,0 +1,52 @@
+_ulid: 01KMA74EVBPW0NWYCF3S7S8A3N
+slugs:
+  - task-dispatch-multi-turn-integration
+title: Integrate multi-turn lifecycle with dispatch engine
+type: task
+description: |
+  Wire the multi-turn invocation lifecycle into the dispatch
+  engine, ensuring session registry, event emission, concurrency
+  tracking, and post-invocation cleanup all work with sessions
+  that span multiple turns.
+
+  Why: The dispatch engine currently assumes runInvocation() = one
+  prompt = done. With multi-turn sessions, a single runInvocation()
+  call may span many turns over a longer duration. Concurrency
+  tracking, task exclusivity, timeout enforcement, and event
+  emission all need to account for this.
+
+  What: The dispatch engine registers sessions in the registry
+  before spawning. It receives session.idle events from the bus
+  (for metrics/logging). The per-task exclusivity lock is held for
+  the entire multi-turn session, not released after each turn.
+  The overall timeout_minutes still applies to the total session
+  duration. invocation.completed fires once when the session
+  finally closes, with turn_count in the payload.
+
+  How: _spawnInvocation() registers the session handle before
+  calling runInvocation(). The onIdle callback (from the invocation
+  runner) emits session.idle on the event bus. Post-invocation
+  cleanup runs when runInvocation() returns (after the turn loop
+  exits and teardown completes). The existing invocation.completed
+  event payload is extended with turn_count.
+
+  Covers: @multi-turn-session-lifecycle ac-1, ac-2, ac-3, ac-4
+  (integration-level verification of state machine wired through
+  dispatch), ac-12, ac-13, ac-14.
+spec_ref: "@multi-turn-session-lifecycle"
+plan_ref: "@plan-multi-turn-session-lifecycle"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-multi-turn-invocation"
+  - "@task-idle-grace-period"
+context: []
+priority: 2
+tags:
+  - dispatch
+  - sessions
+  - integration
+vcs_refs: []
+created_at: 2026-03-22T07:28:43.883Z
+todos: []

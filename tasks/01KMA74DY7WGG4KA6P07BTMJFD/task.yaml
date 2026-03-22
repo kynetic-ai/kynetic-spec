@@ -1,0 +1,57 @@
+_ulid: 01KMA74DY7WGG4KA6P07BTMJFD
+slugs:
+  - task-multi-turn-invocation
+title: Refactor invocation runner to multi-turn lifecycle
+type: task
+description: |
+  Replace the linear prompt-then-teardown flow in invocation.ts
+  with an event-driven turn loop that keeps the session alive
+  between turns.
+
+  Why: The current runInvocation() sends one prompt, then
+  unconditionally tears down. Every other feature in this plan
+  depends on sessions staying alive after a turn completes. This
+  is the core architectural change.
+
+  What: After the first prompt returns (stopReason: end_turn),
+  the session enters idle state instead of proceeding to teardown.
+  A prompt queue accepts follow-up prompts from any source. The
+  runner loops: wait for prompt → send → wait for turn completion
+  → idle → repeat. The loop exits when a close is requested or the
+  grace period expires with no queued prompts.
+
+  The session handle (from the registry) is the interface other
+  components use to enqueue prompts. The runner consumes the queue.
+
+  How: runInvocation() becomes an async loop instead of a linear
+  function. The state machine is: spawning → prompting → idle →
+  (prompting | closing). The idle state emits session.idle on the
+  event bus (via a callback, same pattern as onInvocationEvent).
+  A grace period timer starts on each idle entry — if no prompt
+  arrives before it expires and the session isn't interactive, the
+  loop breaks and teardown proceeds. The existing timeout_minutes
+  applies to total session duration, not per-turn.
+
+  Backward compatibility: when no hooks target session.idle and
+  session_mode is not interactive, the grace period expires after
+  the first turn and teardown proceeds — identical to current
+  behavior.
+
+  Covers: @multi-turn-session-lifecycle ac-1, ac-2, ac-3, ac-4,
+  ac-8, ac-9, ac-10, ac-15, ac-16, ac-17.
+spec_ref: "@multi-turn-session-lifecycle"
+plan_ref: "@plan-multi-turn-session-lifecycle"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-session-registry"
+context: []
+priority: 1
+tags:
+  - dispatch
+  - sessions
+  - invocation
+vcs_refs: []
+created_at: 2026-03-22T07:28:42.951Z
+todos: []
