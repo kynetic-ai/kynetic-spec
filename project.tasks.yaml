@@ -21655,7 +21655,7 @@
   type: task
   spec_ref: "@session-prompt-action"
   plan_ref: "@plan-multi-turn-session-lifecycle"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-session-registry"
@@ -21670,7 +21670,7 @@
   todos_count: 0
   created_at: 2026-03-22T07:28:43.409Z
   started_at: 2026-03-22T11:58:35.386Z
-  submitted_at: 2026-03-22T11:32:00.437Z
+  submitted_at: 2026-03-22T11:58:42.067Z
   automation: eligible
 - _ulid: 01KMA74EKPGJMJXEXMZMGWY51A
   slugs:
