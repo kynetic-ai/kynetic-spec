@@ -45979,9 +45979,25 @@ reviews:
           kind: nit
           thread_ulid: 01KMAPAGF9Q0GGH1VPD8000DE7
         timestamp: 2026-03-22T11:54:11.378Z
+      - _ulid: 01KMAPBDZG0MQ1YWMWH4MRBM1S
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-22T11:54:41.009Z
+      - _ulid: 01KMAPBDZHDFRSRAYTQY2RDRH2
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-22T11:54:41.009Z
     examined_commit: 1d2fe7b6543ae344cf43e25828a8fa0e3b6922af
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -46066,7 +46082,14 @@ reviews:
               backward compatibility, edge cases/races, integration, test quality."
             created_at: 2026-03-22T11:54:10.793Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-22T11:54:41.008Z
     created_at: 2026-03-22T11:45:14.778Z
-    updated_at: 2026-03-22T11:54:10.793Z
+    updated_at: 2026-03-22T11:54:41.009Z
     notes: []
