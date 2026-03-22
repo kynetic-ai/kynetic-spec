@@ -35,8 +35,7 @@ import {
   isBatchMode,
 } from "./batch-context.js";
 import {
-  activateBatchBuffer,
-  deactivateBatchBuffer,
+  runWithBatchBuffer,
 } from "./batch-write-buffer.js";
 
 // ── Input Source Types ───────────────────────────────────────────────
@@ -767,9 +766,6 @@ async function executeAtomic(
   const ctx = await initContext();
   const realSpecDir = ctx.specDir;
 
-  // Activate in-memory write buffer — writes to specDir go to buffer
-  const buffer = activateBatchBuffer(realSpecDir);
-
   // Set up atomic context
   const savedChalkLevel = chalk.level;
   const savedBatchProjectRoot = process.env.KSPEC_BATCH_PROJECT_ROOT;
@@ -778,64 +774,79 @@ async function executeAtomic(
   setBatchMode(true);
   chalk.level = 0;
 
-  const results: BatchCommandResult[] = [];
-  let allSucceeded = true;
-  let flushFailed = false;
-
   try {
-    for (let i = 0; i < commands.length; i++) {
-      const cmd = commands[i];
-      const result = await dispatchCommand(cmd, i, program, tree);
-      results.push(result);
+    // Run all commands within an isolated write buffer scope.
+    // _bufferStorage.run() scopes the buffer to this callback's async context
+    // and automatically reverts when it completes — no manual deactivation needed.
+    // AC: @batch-write-buffer ac-9 — concurrent isolation via AsyncLocalStorage.run()
+    return await runWithBatchBuffer(realSpecDir, async (buffer) => {
+      const results: BatchCommandResult[] = [];
+      let allSucceeded = true;
+      let flushFailed = false;
 
-      if (!result.success) {
-        allSucceeded = false;
-        // Atomic mode: stop on first failure, discard buffer
-        // Fill remaining as not-executed
-        for (let j = i + 1; j < commands.length; j++) {
-          results.push({
-            index: j,
-            id: commands[j].id,
-            command: commands[j].command,
-            success: false,
-            error: "Not executed (prior command failed in atomic mode)",
-          });
+      for (let i = 0; i < commands.length; i++) {
+        const cmd = commands[i];
+        const result = await dispatchCommand(cmd, i, program, tree);
+        results.push(result);
+
+        if (!result.success) {
+          allSucceeded = false;
+          // Atomic mode: stop on first failure, discard buffer
+          // Fill remaining as not-executed
+          for (let j = i + 1; j < commands.length; j++) {
+            results.push({
+              index: j,
+              id: commands[j].id,
+              command: commands[j].command,
+              success: false,
+              error: "Not executed (prior command failed in atomic mode)",
+            });
+          }
+          break;
         }
-        break;
       }
-    }
 
-    // Flush buffer to disk on success
-    // AC: @batch-write-buffer ac-3 — only written files flushed
-    // AC: @batch-write-buffer ac-7 — flush failure reported, pre-batch state preserved
-    if (allSucceeded) {
-      try {
-        await buffer.flush();
+      // Flush buffer to disk on success
+      // AC: @batch-write-buffer ac-3 — only written files flushed
+      // AC: @batch-write-buffer ac-7 — flush failure reported, pre-batch state preserved
+      if (allSucceeded) {
+        try {
+          await buffer.flush();
 
-        // Single shadow commit for all changes
-        if (ctx.shadow?.enabled) {
-          const successCount = results.filter((r) => r.success).length;
-          await shadowAutoCommit(
-            ctx.shadow.worktreeDir,
-            `batch: ${successCount} command${successCount !== 1 ? "s" : ""}`,
+          // Single shadow commit for all changes
+          if (ctx.shadow?.enabled) {
+            const successCount = results.filter((r) => r.success).length;
+            await shadowAutoCommit(
+              ctx.shadow.worktreeDir,
+              `batch: ${successCount} command${successCount !== 1 ? "s" : ""}`,
+            );
+            shadowPushAsync(ctx.shadow.worktreeDir);
+          }
+        } catch (flushErr) {
+          flushFailed = true;
+          allSucceeded = false;
+          console.error(
+            `Batch flush failed: ${flushErr instanceof Error ? flushErr.message : flushErr}`,
           );
-          shadowPushAsync(ctx.shadow.worktreeDir);
         }
-      } catch (flushErr) {
-        flushFailed = true;
-        allSucceeded = false;
-        console.error(
-          `Batch flush failed: ${flushErr instanceof Error ? flushErr.message : flushErr}`,
-        );
       }
-    }
-  } finally {
-    // Always deactivate buffer (discard if not flushed)
-    if (!allSucceeded || flushFailed) {
-      buffer.discard();
-    }
-    deactivateBatchBuffer();
 
+      // Discard if not flushed successfully
+      if (!allSucceeded || flushFailed) {
+        buffer.discard();
+      }
+
+      const succeeded = results.filter((r) => r.success).length;
+      const failed = results.filter((r) => !r.success).length;
+
+      return {
+        success: allSucceeded,
+        mode: "atomic" as const,
+        summary: { total: commands.length, succeeded, failed },
+        results,
+      };
+    });
+  } finally {
     setBatchMode(false);
     chalk.level = savedChalkLevel;
     // AC: @project-config ac-7 — restore batch project root env var
@@ -845,16 +856,6 @@ async function executeAtomic(
       delete process.env.KSPEC_BATCH_PROJECT_ROOT;
     }
   }
-
-  const succeeded = results.filter((r) => r.success).length;
-  const failed = results.filter((r) => !r.success).length;
-
-  return {
-    success: allSucceeded,
-    mode: "atomic",
-    summary: { total: commands.length, succeeded, failed },
-    results,
-  };
 }
 
 /**

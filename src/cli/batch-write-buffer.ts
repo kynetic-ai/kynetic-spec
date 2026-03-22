@@ -436,9 +436,12 @@ const _bufferStorage = new AsyncLocalStorage<WriteBuffer>();
  * Stores the buffer in the current async context so only the current
  * operation (and its descendants) see it via getActiveBatchBuffer().
  *
- * IMPORTANT: After calling this, you MUST call deactivateBatchBuffer()
- * to exit the async context. For new code, prefer runWithBuffer() which
- * manages the lifecycle automatically.
+ * @deprecated Use `runWithBatchBuffer(specDir, fn)` instead, which scopes
+ * the buffer to the callback via `AsyncLocalStorage.run()` and automatically
+ * exits the scope when the callback completes. `enterWith()` permanently
+ * mutates the store for the current async context and does not reliably
+ * propagate cleanup across async boundaries (e.g., vitest's Promise-chain
+ * test runner), causing intermittent buffer leaks.
  *
  * AC: @batch-write-buffer ac-1
  */
@@ -452,6 +455,10 @@ export function activateBatchBuffer(specDir: string): WriteBuffer {
  * Deactivate the active buffer (after flush or discard).
  * Exits the async-local context so subsequent code in this async context
  * no longer sees the buffer.
+ *
+ * @deprecated Use `runWithBatchBuffer(specDir, fn)` instead. When using
+ * `runWithBatchBuffer`, the buffer scope exits automatically when the
+ * callback returns — no manual deactivation needed.
  */
 export function deactivateBatchBuffer(): void {
   _bufferStorage.enterWith(undefined as unknown as WriteBuffer);
@@ -502,6 +509,29 @@ export async function runWithBuffer<T>(
       throw error;
     }
   });
+}
+
+/**
+ * Run an operation within an isolated batch write buffer scope.
+ *
+ * Creates a new WriteBuffer scoped to specDir and executes `fn` inside
+ * `_bufferStorage.run()`, so `getActiveBatchBuffer()` returns this buffer
+ * for the callback and all async descendants. The caller owns the flush/discard
+ * lifecycle via the buffer passed to `fn`.
+ *
+ * Unlike `runWithBuffer()`, this does NOT auto-flush or auto-discard — the
+ * caller is responsible for calling `buffer.flush()` or `buffer.discard()`.
+ * The buffer scope is automatically exited when `fn` returns (or throws),
+ * so no manual `deactivateBatchBuffer()` call is needed.
+ *
+ * AC: @batch-write-buffer ac-9 — concurrent isolation via AsyncLocalStorage.run()
+ */
+export async function runWithBatchBuffer<T>(
+  specDir: string,
+  fn: (buffer: WriteBuffer) => Promise<T>,
+): Promise<T> {
+  const buffer = new WriteBuffer(specDir);
+  return _bufferStorage.run(buffer, () => fn(buffer));
 }
 
 export async function readdirBufferAware(
