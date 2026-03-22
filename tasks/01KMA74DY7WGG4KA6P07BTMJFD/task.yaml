@@ -42,7 +42,7 @@ description: |
 spec_ref: "@multi-turn-session-lifecycle"
 plan_ref: "@plan-multi-turn-session-lifecycle"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-session-registry"
@@ -62,7 +62,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
   upstream_ref: refs/heads/dev
-session_id: 01KMAKMKEX6C31SCHS0P0YP97V
+session_id: null
 history:
   - author: "@claude"
     changes:
@@ -339,6 +339,16 @@ history:
         previous: "@01KMAJPA6M15GFFC42K59YND62"
     command: review-link
     timestamp: 2026-03-22T11:17:12.254Z
+  - author: Test User
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KMAKMKEX6C31SCHS0P0YP97V
+    command: review-verdict-needs-work
+    timestamp: 2026-03-22T11:21:27.487Z
 created_at: 2026-03-22T07:28:42.951Z
 started_at: 2026-03-22T11:15:48.973Z
 submitted_at: 2026-03-22T11:15:51.853Z

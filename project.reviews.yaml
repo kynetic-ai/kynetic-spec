@@ -45629,9 +45629,25 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-03-22T11:21:06.274Z
+      - _ulid: 01KMAMEJ47RFATNVTHV4R0QFWY
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-22T11:21:26.407Z
+      - _ulid: 01KMAMEJ47WM70MASXKQHJNMTX
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-22T11:21:26.407Z
     examined_commit: cb2b471882c83c4b263922b20fc3bdb0ddb886f1
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -45697,7 +45713,14 @@ reviews:
               defeats the intended prompt discard behavior."
             created_at: 2026-03-22T11:21:04.757Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-22T11:21:26.407Z
     created_at: 2026-03-22T11:17:10.657Z
-    updated_at: 2026-03-22T11:21:05.854Z
+    updated_at: 2026-03-22T11:21:26.407Z
     notes: []
