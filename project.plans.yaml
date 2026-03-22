@@ -26884,6 +26884,12 @@ plans:
           doesn't exist yet — full editor is separate work."
         author: "@claude"
         created_at: 2026-03-22T07:24:38.946Z
+      - _ulid: 01KMA73BSVAHMD2JTZWJW452VZ
+        content: Approved after multiple review rounds (internal, codex, final). ACs are behavioral and
+          atomic. Interactive sessions split to @plan-interactive-agent-sessions. UI scoped to
+          current capabilities. Automation CRUD UI captured as inbox 01KMA704.
+        author: "@claude"
+        created_at: 2026-03-22T07:28:07.995Z
   - _ulid: 01KMA5W61Z4SY2PNVSGAM38CQ1
     slugs:
       - plan-interactive-agent-sessions
