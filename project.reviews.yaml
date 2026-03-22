@@ -47087,6 +47087,16 @@ reviews:
         runner: vitest
         created_at: 2026-03-22T16:48:28.380Z
         completed_at: 2026-03-22T16:48:28.380Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: No new type errors in changed files. 58 pre-existing errors in fixture/unrelated files.
+        name: svelte-check
+        required: true
+        runner: svelte-check
+        created_at: 2026-03-22T16:48:32.033Z
+        completed_at: 2026-03-22T16:48:32.033Z
     events:
       - _ulid: 01KMB6V5H6EK2WG5STG7QCH5HK
         actor: "@claude"
@@ -47108,6 +47118,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-22T16:48:28.847Z
+      - _ulid: 01KMB75G5YJSMZZMSPQRZBTGXR
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: svelte-check
+        timestamp: 2026-03-22T16:48:32.446Z
     examined_commit: ede5ca68ef95835b8de7f87e8914246c2e21ddb4
     external_links: []
     lifecycle_state: open
@@ -47120,5 +47137,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-22T16:42:53.862Z
-    updated_at: 2026-03-22T16:48:28.380Z
+    updated_at: 2026-03-22T16:48:32.033Z
     notes: []
