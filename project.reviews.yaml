@@ -45750,6 +45750,26 @@ reviews:
         runner: kspec
         created_at: 2026-03-22T11:38:05.416Z
         completed_at: 2026-03-22T11:38:05.416Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/schema/action.ts, src/parser/validate.ts,
+          src/agent-runtime/action-executor.ts, src/agent-runtime/invocation.ts,
+          src/agent-runtime/dispatch.ts, src/agent-runtime/hook-executor.ts,
+          src/agent-runtime/session-registry.ts, tests/session-prompt-action.test.ts,
+          tests/daemon-agent-dispatch-routes.test.ts. Commands run: git diff --stat/--name-only,
+          kspec task get, kspec item get, kspec review for-task, grep AC annotations, kspec
+          validate, npm test. Claims verified: full suite passes; AC annotations exist for the new
+          spec/schema tests; daemon wiring shares a session registry. Categories searched:
+          correctness (found 2 blockers), edge cases (multi-hook queue overwrite), error handling
+          (reviewed closed/missing session paths), test quality (tests miss queued-delivery
+          lifecycle semantics), integration (dispatch->invocation->hook path reviewed)."
+        name: review-evidence
+        required: false
+        runner: codex
+        created_at: 2026-03-22T11:38:07.322Z
+        completed_at: 2026-03-22T11:38:07.322Z
     events:
       - _ulid: 01KMAN4TP4V9YFZWRNGFM9C96N
         actor: Test User
@@ -45785,6 +45805,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-22T11:38:06.009Z
+      - _ulid: 01KMAND452ZX9WH64W3SFVB709
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-03-22T11:38:07.907Z
     examined_commit: 2dbdb68a84693d74e9ae060ab2c9753e3b1d5fa1
     external_links: []
     lifecycle_state: open
@@ -45815,5 +45842,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-22T11:33:36.069Z
-    updated_at: 2026-03-22T11:38:05.416Z
+    updated_at: 2026-03-22T11:38:07.322Z
     notes: []
