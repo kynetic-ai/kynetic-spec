@@ -47730,6 +47730,13 @@ reviews:
           kind: nit
           thread_ulid: 01KMBRGP6NF42RX0D9NFQA7QHA
         timestamp: 2026-03-22T21:51:45.234Z
+      - _ulid: 01KMBRHMMKY6VVD15RMTDHM0FH
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMBRHMA7JMYMPA6T8G3H69PA
+        timestamp: 2026-03-22T21:52:16.020Z
     examined_commit: 7156ce71b80632a7f36a0a148efe41ceb78f57b6
     external_links: []
     lifecycle_state: open
@@ -47749,7 +47756,27 @@ reviews:
               modified in this commit). Minor inaccuracy in the note, not a code issue.
             created_at: 2026-03-22T21:51:44.854Z
         kind: nit
+      - _ulid: 01KMBRHMA7JMYMPA6T8G3H69PA
+        anchor:
+          type: code
+          commit: ""
+          line_end: 1336
+          line_start: 1336
+          path: src/agent-runtime/dispatch.ts
+          side: head
+        entries:
+          - _ulid: 01KMBRHMA7FWSYEXF2XGK2EKH3
+            author: "@claude"
+            body: "Changes to dispatch.ts (removing _updateSessionIdleHookPresence method and its reconciliation
+              call) go beyond the task description which only mentions invocation.ts:633. However,
+              this is thematically consistent cleanup — the reconciliation-time hook reload was
+              redundant because _evaluateAllTasks() already calls _loadAgents() which sets
+              _hasSessionIdleHooks. Behavioral equivalence confirmed: hook presence is still
+              reloaded during reconciliation via _evaluateAllTasks() -> _loadAgents() path
+              (dispatch.ts:1348 -> 1466 -> 1575)."
+            created_at: 2026-03-22T21:52:15.687Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-22T21:51:14.820Z
-    updated_at: 2026-03-22T21:51:44.854Z
+    updated_at: 2026-03-22T21:52:15.687Z
     notes: []
