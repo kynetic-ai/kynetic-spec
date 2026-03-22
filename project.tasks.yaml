@@ -21567,7 +21567,7 @@
   title: Migrate batch buffer scoping from enterWith to AsyncLocalStorage.run()
   type: task
   spec_ref: "@batch-write-buffer"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 2
@@ -21578,6 +21578,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-03-22T07:28:01.460Z
+  started_at: 2026-03-22T15:49:31.593Z
   automation: eligible
 - _ulid: 01KMA74DPD6ESYCQAT6YY8DXJJ
   slugs:
