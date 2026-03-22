@@ -18168,12 +18168,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-22T00:49:00.896Z
+      updated_at: 2026-03-22T00:49:05.007Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-22T00:49:02.743Z
+      updated_at: 2026-03-22T00:49:05.007Z
     integration:
       status: pending
       detail: null
@@ -18181,7 +18181,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 369132b7926d1becbc70af8efdfd69bc148a848d
-      updated_at: 2026-03-22T00:49:00.896Z
+      updated_at: 2026-03-22T00:49:05.007Z
     lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KM9FB8PAK46RP5SRP1JVD2FD"
@@ -18189,9 +18189,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-22T00:45:17.790Z
-      last_reconciled_at: 2026-03-22T00:49:02.743Z
+      last_reconciled_at: 2026-03-22T00:49:05.007Z
       created_at: 2026-03-22T00:37:24.076Z
-      updated_at: 2026-03-22T00:49:02.743Z
+      updated_at: 2026-03-22T00:49:05.007Z
     workspace_id: dispatch-workspace-01KM9FB8PAK46RP5SRP1JVD2FD
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -18200,5 +18200,5 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/fix-worktree-guard-to-detect-actual-shadow-branch-not-substring-match/01km9fb8
         head: 1c5294476abdccfb6c355209f9e08f6668c8a437
-        last_seen_at: 2026-03-22T00:45:12.149Z
+        last_seen_at: 2026-03-22T00:49:05.007Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-worktree-guard-to-detect-actual-shadow-branch-not-substring-match-01km9fb8
