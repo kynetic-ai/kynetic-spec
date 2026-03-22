@@ -43216,9 +43216,25 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-22T01:01:39.471Z
+      - _ulid: 01KM9H09NC5PJ971WA9P8HM1EH
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-22T01:01:58.828Z
+      - _ulid: 01KM9H09NCB51X8XHG6A88JPBR
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-22T01:01:58.828Z
     examined_commit: 141a89631eecfc6b81577ce04697fac3c205f74c
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -43245,7 +43261,14 @@ reviews:
               shadow worktree, only a name match, which leaves the task’s core requirement unmet.
             created_at: 2026-03-22T01:01:37.025Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-22T01:01:58.827Z
     created_at: 2026-03-22T01:01:05.085Z
-    updated_at: 2026-03-22T01:01:39.116Z
+    updated_at: 2026-03-22T01:01:58.828Z
     notes: []
