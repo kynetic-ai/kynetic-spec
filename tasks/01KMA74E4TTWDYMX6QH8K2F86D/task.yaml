@@ -27,7 +27,7 @@ description: |
 spec_ref: "@session-idle-event"
 plan_ref: "@plan-multi-turn-session-lifecycle"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -37,6 +37,7 @@ tags:
   - events
   - schema
 vcs_refs: []
+session_id: 01KMA7TRH62ZBMX3J0CGGGHB50
 history:
   - author: "@claude"
     changes:
@@ -45,6 +46,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-03-22T07:30:58.373Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KMA7TRH62ZBMX3J0CGGGHB50
+        previous: null
+      started_at:
+        new: 2026-03-22T07:41:15.238Z
+        previous: null
+    command: task-start
+    timestamp: 2026-03-22T07:41:15.239Z
 created_at: 2026-03-22T07:28:43.162Z
+started_at: 2026-03-22T07:41:15.238Z
 todos: []
 automation: eligible
