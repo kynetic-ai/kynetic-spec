@@ -2499,9 +2499,15 @@ export class DispatchEngine {
         },
         // AC: @active-session-registry ac-1, @multi-turn-session-lifecycle ac-2, ac-4
         sessionRegistry: this._sessionRegistry,
-        // AC: @multi-turn-session-lifecycle ac-2, ac-11 — grace period for async prompt delivery;
-        // only enable when session.idle hooks exist, otherwise close immediately for backward compat
-        idleGracePeriodMs: this._hasSessionIdleHooks ? DEFAULT_IDLE_GRACE_MS : 0,
+        // AC: @multi-turn-session-lifecycle ac-2, ac-5, ac-11 — grace period for async prompt delivery;
+        // Per-agent config overrides the global default. When no hooks exist and no agent config
+        // is set, use 0 for backward compat (AC-11).
+        idleGracePeriodMs: agent.session?.idle_grace_period_ms
+          ?? (this._hasSessionIdleHooks ? DEFAULT_IDLE_GRACE_MS : 0),
+        // AC: @multi-turn-session-lifecycle ac-6 — session mode from agent config
+        sessionMode: agent.session?.mode ?? "auto_close",
+        // AC: @multi-turn-session-lifecycle ac-7 — idle timeout from agent config
+        idleTimeoutMs: agent.session?.idle_timeout_ms,
         // AC: @multi-turn-session-lifecycle ac-3 — emit session.idle event on event bus
         onIdle: (ctx: SessionIdleContext) => {
           this._eventBus.emit({

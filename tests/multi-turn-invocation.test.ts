@@ -18,6 +18,7 @@ import {
   runInvocation,
   PromptQueue,
   PromptQueueFullError,
+  InvocationIdleTimeoutError,
   DEFAULT_IDLE_GRACE_MS,
   type SessionIdleContext,
 } from "../src/agent-runtime/invocation.js";
@@ -1108,6 +1109,401 @@ describe("Session timeout across multiple turns", { timeout: 60_000 }, () => {
     const timeoutEvent = events.find((e: { type: string }) => e.type === "agent.timeout");
     expect(timeoutEvent).toBeDefined();
     expect(timeoutEvent.data.turn_count).toBeGreaterThanOrEqual(1);
+  });
+});
+
+// ─── Idle Grace Period and Auto-Close ─────────────────────────────────────────
+
+describe("Idle grace period and auto-close logic", { timeout: 60_000 }, () => {
+  let testDir: string;
+  let spawnSpy: ReturnType<typeof vi.spyOn>;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-idle-grace-");
+    registerMockAdapter();
+  });
+
+  afterEach(async () => {
+    spawnSpy?.mockRestore();
+    await cleanupTempDir(testDir);
+  });
+
+  // AC: @multi-turn-session-lifecycle ac-5
+  it("should close session when grace period expires with no prompt queued", async () => {
+    const { spawnedAgent } = createMockSpawnedAgent();
+    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
+      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+    );
+
+    const registry = new SessionRegistry();
+    const idleContexts: SessionIdleContext[] = [];
+
+    const result = await runInvocation({
+      agent: makeTestAgent(),
+      specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
+      cwd: process.cwd(),
+      prompt: "Grace period close test",
+      trigger: "task.ready",
+      sessionRegistry: registry,
+      // auto_close mode with a short grace period; no hooks queue prompts
+      sessionMode: "auto_close",
+      idleGracePeriodMs: 50,
+      onIdle: (ctx) => {
+        idleContexts.push(ctx);
+        // Do NOT queue a follow-up prompt — let the grace period expire
+      },
+    });
+
+    expect(result.outcome).toBe("success");
+    expect(result.turnCount).toBe(1);
+    expect(idleContexts).toHaveLength(1);
+  });
+
+  // AC: @multi-turn-session-lifecycle ac-5
+  it("should accept prompt within grace period and continue session", async () => {
+    const { spawnedAgent } = createMockSpawnedAgent();
+    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
+      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+    );
+
+    const registry = new SessionRegistry();
+    const idleContexts: SessionIdleContext[] = [];
+
+    const result = await runInvocation({
+      agent: makeTestAgent(),
+      specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
+      cwd: process.cwd(),
+      prompt: "Grace period accept test",
+      trigger: "task.ready",
+      sessionRegistry: registry,
+      sessionMode: "auto_close",
+      idleGracePeriodMs: 200,
+      onIdle: (ctx) => {
+        idleContexts.push(ctx);
+        if (ctx.turnCount === 1) {
+          // Queue a prompt within the grace period
+          setTimeout(() => {
+            registry.get(ctx.sessionId)?.sendPrompt("Follow-up within grace");
+          }, 20);
+        }
+      },
+    });
+
+    expect(result.outcome).toBe("success");
+    expect(result.turnCount).toBe(2);
+    expect(idleContexts).toHaveLength(2);
+  });
+
+  // AC: @multi-turn-session-lifecycle ac-6
+  it("should stay idle in persistent mode when no prompt arrives within grace period equivalent", async () => {
+    const { spawnedAgent } = createMockSpawnedAgent();
+    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
+      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+    );
+
+    const registry = new SessionRegistry();
+    const idleContexts: SessionIdleContext[] = [];
+
+    // In persistent mode, the session stays idle indefinitely.
+    // Use an idle timeout to eventually close the session (AC-7 applies).
+    const result = await runInvocation({
+      agent: makeTestAgent(),
+      specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
+      cwd: process.cwd(),
+      prompt: "Persistent mode test",
+      trigger: "task.ready",
+      sessionRegistry: registry,
+      sessionMode: "persistent",
+      idleGracePeriodMs: 50,
+      // Use idle timeout to eventually close; without it, only session
+      // timeout would apply and we'd have to wait too long
+      idleTimeoutMs: 200,
+      onIdle: (ctx) => {
+        idleContexts.push(ctx);
+        // Do NOT queue prompts — session should stay idle past grace
+        // period, then close on idle timeout
+      },
+    });
+
+    // Session should have closed via idle timeout, NOT via grace period
+    expect(result.outcome).toBe("timed_out");
+    expect(result.turnCount).toBe(1);
+    expect(result.error).toContain("idle timeout");
+    expect(idleContexts).toHaveLength(1);
+  });
+
+  // AC: @multi-turn-session-lifecycle ac-6
+  it("should accept prompts in persistent mode after grace period would have expired in auto_close", async () => {
+    const { spawnedAgent } = createMockSpawnedAgent();
+    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
+      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+    );
+
+    const registry = new SessionRegistry();
+    const idleContexts: SessionIdleContext[] = [];
+
+    const result = await runInvocation({
+      agent: makeTestAgent(),
+      specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
+      cwd: process.cwd(),
+      prompt: "Persistent delayed prompt test",
+      trigger: "task.ready",
+      sessionRegistry: registry,
+      sessionMode: "persistent",
+      idleGracePeriodMs: 30,
+      // Idle timeout must be long enough for the delayed prompt (80ms)
+      // but short enough to close the session after turn 2's idle
+      idleTimeoutMs: 300,
+      timeoutMinutes: 0.1, // Safety timeout well above idle timeout
+      onIdle: (ctx) => {
+        idleContexts.push(ctx);
+        if (ctx.turnCount === 1) {
+          // Send a prompt AFTER the grace period would have expired
+          // in auto_close mode. In persistent mode, this should still work.
+          setTimeout(() => {
+            registry.get(ctx.sessionId)?.sendPrompt("Late prompt");
+          }, 80);
+        }
+        // Turn 2: no prompt, idle timeout will close the session
+      },
+    });
+
+    // Session closes via idle timeout after turn 2 (persistent mode,
+    // no prompt queued). The key assertion: turnCount is 2, proving the
+    // prompt delivered at 80ms (past auto_close grace of 30ms) was accepted.
+    expect(result.outcome).toBe("timed_out");
+    expect(result.turnCount).toBe(2);
+    expect(idleContexts).toHaveLength(2);
+    expect(result.error).toContain("idle timeout");
+  });
+
+  // AC: @multi-turn-session-lifecycle ac-11
+  it("should auto-close immediately with no grace period when session mode is auto_close and grace is 0", async () => {
+    const { spawnedAgent } = createMockSpawnedAgent();
+    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
+      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+    );
+
+    const idleContexts: SessionIdleContext[] = [];
+
+    const result = await runInvocation({
+      agent: makeTestAgent(),
+      specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
+      cwd: process.cwd(),
+      prompt: "Immediate close test",
+      trigger: "task.ready",
+      // No registry, no grace period, auto_close mode — pure single-turn
+      sessionMode: "auto_close",
+      idleGracePeriodMs: 0,
+      onIdle: (ctx) => idleContexts.push(ctx),
+    });
+
+    expect(result.outcome).toBe("success");
+    expect(result.turnCount).toBe(1);
+    expect(idleContexts).toHaveLength(1);
+  });
+});
+
+// ─── Idle Timeout ────────────────────────────────────────────────────────────
+
+describe("Idle timeout", { timeout: 60_000 }, () => {
+  let testDir: string;
+  let spawnSpy: ReturnType<typeof vi.spyOn>;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-idle-timeout-");
+    registerMockAdapter();
+  });
+
+  afterEach(async () => {
+    spawnSpy?.mockRestore();
+    await cleanupTempDir(testDir);
+  });
+
+  // AC: @multi-turn-session-lifecycle ac-7
+  it("should emit session.idle_timeout and close when idle exceeds timeout", async () => {
+    const { spawnedAgent } = createMockSpawnedAgent();
+    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
+      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+    );
+
+    const registry = new SessionRegistry();
+    const idleContexts: SessionIdleContext[] = [];
+
+    const result = await runInvocation({
+      agent: makeTestAgent(),
+      specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
+      cwd: process.cwd(),
+      prompt: "Idle timeout test",
+      trigger: "task.ready",
+      sessionRegistry: registry,
+      sessionMode: "persistent",
+      idleTimeoutMs: 100,
+      onIdle: (ctx) => {
+        idleContexts.push(ctx);
+        // Do NOT queue a prompt — let the idle timeout fire
+      },
+    });
+
+    expect(result.outcome).toBe("timed_out");
+    expect(result.turnCount).toBe(1);
+    expect(result.error).toContain("idle timeout");
+
+    // Verify session.idle_timeout event was logged
+    const eventsPath = path.join(testDir, "sessions", result.session.id, "events.jsonl");
+    const content = await fs.readFile(eventsPath, "utf-8");
+    const events = content.trim().split("\n").filter(Boolean).map((l) => JSON.parse(l));
+
+    const idleTimeoutEvent = events.find((e: { type: string }) => e.type === "session.idle_timeout");
+    expect(idleTimeoutEvent).toBeDefined();
+    expect(idleTimeoutEvent.data.idle_timeout_ms).toBe(100);
+    expect(idleTimeoutEvent.data.turn_count).toBe(1);
+  });
+
+  // AC: @multi-turn-session-lifecycle ac-7
+  it("should reset idle timeout when a prompt arrives and timer fires on next idle", async () => {
+    const { spawnedAgent } = createMockSpawnedAgent();
+    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
+      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+    );
+
+    const registry = new SessionRegistry();
+    const idleContexts: SessionIdleContext[] = [];
+
+    const result = await runInvocation({
+      agent: makeTestAgent(),
+      specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
+      cwd: process.cwd(),
+      prompt: "Idle timeout reset test",
+      trigger: "task.ready",
+      sessionRegistry: registry,
+      sessionMode: "persistent",
+      idleTimeoutMs: 200,
+      onIdle: (ctx) => {
+        idleContexts.push(ctx);
+        if (ctx.turnCount === 1) {
+          // Queue a prompt before idle timeout fires
+          setTimeout(() => {
+            registry.get(ctx.sessionId)?.sendPrompt("Prompt before timeout");
+          }, 50);
+        }
+        // On turn 2, don't queue — let idle timeout fire
+      },
+    });
+
+    expect(result.outcome).toBe("timed_out");
+    expect(result.turnCount).toBe(2);
+    expect(idleContexts).toHaveLength(2);
+    expect(result.error).toContain("idle timeout");
+  });
+
+  // AC: @multi-turn-session-lifecycle ac-7
+  it("should apply idle timeout in auto_close mode as well", async () => {
+    const { spawnedAgent } = createMockSpawnedAgent();
+    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
+      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+    );
+
+    const registry = new SessionRegistry();
+
+    // In auto_close with a long grace period and a short idle timeout:
+    // the idle timeout should fire before the grace period expires
+    const result = await runInvocation({
+      agent: makeTestAgent(),
+      specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
+      cwd: process.cwd(),
+      prompt: "Auto close idle timeout test",
+      trigger: "task.ready",
+      sessionRegistry: registry,
+      sessionMode: "auto_close",
+      idleGracePeriodMs: 5000, // Very long grace
+      idleTimeoutMs: 100, // Short idle timeout
+      onIdle: () => {
+        // Don't queue — let idle timeout win over grace period
+      },
+    });
+
+    expect(result.outcome).toBe("timed_out");
+    expect(result.turnCount).toBe(1);
+    expect(result.error).toContain("idle timeout");
+  });
+});
+
+// ─── Session Event Type ──────────────────────────────────────────────────────
+
+describe("Session idle timeout event type", () => {
+  // AC: @multi-turn-session-lifecycle ac-7
+  it("should include session.idle_timeout in EventTypeSchema", async () => {
+    const { EventTypeSchema } = await import("../src/sessions/types.js");
+    expect(() => EventTypeSchema.parse("session.idle_timeout")).not.toThrow();
+  });
+});
+
+// ─── Agent Session Schema ────────────────────────────────────────────────────
+
+describe("Agent session schema", () => {
+  // AC: @multi-turn-session-lifecycle ac-5, ac-6, ac-7
+  it("should accept agent definition with session config", async () => {
+    const { AgentSchema } = await import("../src/schema/meta.js");
+
+    const result = AgentSchema.safeParse({
+      _ulid: testUlid("AGNT"),
+      id: "test-agent",
+      name: "Test Agent",
+      session: {
+        mode: "persistent",
+        idle_grace_period_ms: 500,
+        idle_timeout_ms: 30000,
+      },
+    });
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.session?.mode).toBe("persistent");
+      expect(result.data.session?.idle_grace_period_ms).toBe(500);
+      expect(result.data.session?.idle_timeout_ms).toBe(30000);
+    }
+  });
+
+  // AC: @multi-turn-session-lifecycle ac-6
+  it("should default session mode to auto_close", async () => {
+    const { AgentSessionSchema } = await import("../src/schema/meta.js");
+
+    const result = AgentSessionSchema.parse({});
+    expect(result.mode).toBe("auto_close");
+  });
+
+  it("should accept agent definition without session config", async () => {
+    const { AgentSchema } = await import("../src/schema/meta.js");
+
+    const result = AgentSchema.safeParse({
+      _ulid: testUlid("AGNT"),
+      id: "test-agent",
+      name: "Test Agent",
+    });
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.session).toBeUndefined();
+    }
+  });
+
+  it("should reject invalid session mode", async () => {
+    const { AgentSessionSchema } = await import("../src/schema/meta.js");
+
+    const result = AgentSessionSchema.safeParse({
+      mode: "invalid",
+    });
+
+    expect(result.success).toBe(false);
   });
 });
 

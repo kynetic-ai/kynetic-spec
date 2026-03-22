@@ -71,6 +71,47 @@ export const AgentConcurrencySchema = z.object({
   max_concurrent: z.number().int().positive().default(1),
 });
 
+/**
+ * Session mode determines whether a session auto-closes after the grace
+ * period expires with no queued prompts, or stays open indefinitely
+ * until an explicit close or idle timeout.
+ *
+ * - auto_close (default): session closes when grace period expires with
+ *   no queued prompts. Backward-compatible with single-turn dispatch.
+ * - persistent: session stays idle until a prompt arrives, an explicit
+ *   close is requested, or the idle timeout fires.
+ *
+ * AC: @multi-turn-session-lifecycle ac-6
+ */
+export const SessionModeSchema = z.enum(["auto_close", "persistent"]);
+
+/**
+ * Agent session settings — configures idle grace period, session mode,
+ * and idle timeout for multi-turn sessions.
+ *
+ * AC: @multi-turn-session-lifecycle ac-5, ac-6, ac-7
+ */
+export const AgentSessionSchema = z.object({
+  /** Session mode: auto_close (default) or persistent. */
+  mode: SessionModeSchema.default("auto_close"),
+  /**
+   * Grace period in milliseconds to wait for async prompt sources
+   * before closing the queue after a turn completes with no queued
+   * prompts. Only applies in auto_close mode.
+   * Defaults to the invocation-level default when not set.
+   */
+  idle_grace_period_ms: z.number().int().nonnegative().optional(),
+  /**
+   * Maximum time in milliseconds a session can remain in idle state
+   * before being forcibly closed. Applies in both auto_close and
+   * persistent modes. When unset, no idle timeout is enforced
+   * (only the overall session timeout_minutes applies).
+   *
+   * AC: @multi-turn-session-lifecycle ac-7
+   */
+  idle_timeout_ms: z.number().int().positive().optional(),
+});
+
 export const AgentBootstrapStepSchema = z.object({
   run: z.string().min(1, "Bootstrap command is required"),
   name: z.string().optional(),
@@ -110,6 +151,11 @@ export const AgentSchema = z.object({
   automation: AgentDispatchAutomationFilterSchema.optional(),
   /** Tags for filtering and categorization */
   tags: z.array(z.string()).default([]).optional(),
+  /**
+   * Session settings for multi-turn lifecycle control.
+   * AC: @multi-turn-session-lifecycle ac-5, ac-6, ac-7
+   */
+  session: AgentSessionSchema.optional(),
 });
 
 /**
@@ -435,6 +481,8 @@ export type AgentDispatchFilter = z.infer<typeof AgentDispatchFilterSchema>;
 export type AgentDispatchRule = z.infer<typeof AgentDispatchRuleSchema>;
 export type AgentBudget = z.infer<typeof AgentBudgetSchema>;
 export type AgentConcurrency = z.infer<typeof AgentConcurrencySchema>;
+export type AgentSession = z.infer<typeof AgentSessionSchema>;
+export type SessionMode = z.infer<typeof SessionModeSchema>;
 export type Agent = z.infer<typeof AgentSchema>;
 export type WorkflowStepType = z.infer<typeof WorkflowStepTypeSchema>;
 export type StepExecution = z.infer<typeof StepExecutionSchema>;
