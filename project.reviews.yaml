@@ -46851,7 +46851,19 @@ reviews:
     slugs: []
     title: Review migrate-batch-buffer-scoping (cycle 1)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: All 50 batch-related tests pass (33 in batch-write-buffer.test.ts + 17 in
+          task-atomic-writes.test.ts). 13 failures in unrelated dispatch engine tests (timeouts and
+          prompt assertion mismatches) — all pre-existing, not introduced by this change.
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-22T16:22:44.072Z
+        completed_at: 2026-03-22T16:22:44.072Z
     events:
       - _ulid: 01KMB58X6NXKYCBYE2NYY8DM6S
         actor: "@claude"
@@ -46866,6 +46878,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-22T16:15:36.010Z
+      - _ulid: 01KMB5P8EQDW1ZER6P6GSDQC8K
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-22T16:22:44.439Z
     examined_commit: 861d966082cd395f0fd6072be639f10950f1be31
     external_links: []
     lifecycle_state: open
@@ -46878,5 +46897,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-22T16:15:26.933Z
-    updated_at: 2026-03-22T16:15:35.394Z
+    updated_at: 2026-03-22T16:22:44.072Z
     notes: []
