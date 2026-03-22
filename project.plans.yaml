@@ -26072,12 +26072,11 @@ plans:
           analysis), interactive human-agent chat, and hybrid workflows
           where automation and human input alternate.
 
-          A session_id and invocation_id remain the same value — a
-          multi-turn session is a single invocation. The session_id
-          represents the full lifecycle from spawn to close, regardless
-          of how many turns occur. The invocation.completed event fires
-          once at session close. The session.idle event provides the
-          per-turn observation point.
+          A multi-turn session is a single invocation. The session
+          identifier represents the full lifecycle from spawn to close,
+          regardless of how many turns occur. The invocation completed
+          event fires once at session close. The session idle event
+          provides the per-turn observation point.
         traits:
           - "@trait-error-guidance"
         acceptance_criteria:
@@ -26090,7 +26089,7 @@ plans:
               The session transitions to idle state
           - id: ac-2
             given: |
-              A session has transitioned to idle state after a turn
+              A session is in idle state after a turn
             when: |
               The session state is queried
             then: |
@@ -26098,67 +26097,60 @@ plans:
               prompts
           - id: ac-3
             given: |
-              A session transitions to idle state after a turn completes
+              A session transitions to idle state after a turn
             when: |
               The state transition is processed
             then: |
-              A session.idle event is emitted on the event bus with the
-              session's context (session_id, agent_id, task_ref,
-              turn_count, work_summary)
+              A session idle event is emitted with the session's context
           - id: ac-4
             given: |
               A session is in idle state
             when: |
-              A follow-up prompt is delivered (from a hook action, API call,
-              or CLI command)
+              A follow-up prompt is delivered
             then: |
-              The session transitions to prompting state, the prompt is
-              delivered to the agent, and the session returns to idle when
-              the agent's turn completes; turn_count increments
+              The session transitions to prompting state and the prompt
+              is delivered to the agent
           - id: ac-5
             given: |
-              A session emits session.idle and no prompt is queued within
-              a configurable grace period
+              A session enters idle and no prompt is queued within the
+              configured grace period
             when: |
               The grace period expires
             then: |
-              The session is closed; this preserves backward
-              compatibility — existing single-turn dispatch works unchanged
+              The session is closed
           - id: ac-6
             given: |
-              A session is in idle state and the agent definition specifies
-              session_mode: interactive
+              A session is in idle state and the agent uses interactive
+              session mode
             when: |
               No prompt arrives within the grace period
             then: |
-              The auto-close grace period does not apply; behavior is
-              defined by @interactive-agent-sessions
+              The session stays in idle state
           - id: ac-7
             given: |
               A session has been in idle state longer than the configured
-              idle_timeout (distinct from the overall invocation timeout)
+              idle timeout
             when: |
-              The idle timer fires
+              The timeout expires
             then: |
-              A session.idle_timeout event is emitted and the session is
-              closed; this applies to both dispatch and interactive modes
+              A session idle timeout event is emitted and the session is
+              closed
           - id: ac-8
             given: |
-              A session is in prompting state (agent is actively working)
+              A session is in prompting state
             when: |
               A new prompt is submitted for the same session
             then: |
               The prompt is queued and delivered when the current turn
-              completes and the session returns to idle; prompts are
-              delivered in submission order
+              completes
           - id: ac-9
             given: |
               Multiple sources submit prompts for an idle session
-              simultaneously (e.g., two hooks match session.idle)
+              simultaneously
             when: |
               The prompts arrive
             then: |
-              One prompt transitions the session to prompting; the
+              One prompt transitions the session to prompting and the
               remaining prompts are queued and delivered in order after
               each subsequent idle transition
           - id: ac-10
@@ -26167,17 +26159,16 @@ plans:
             when: |
               The agent's current turn completes
             then: |
-              Queued prompts are discarded and the session closes; the
-              close reason reflects the explicit close
+              Queued prompts are discarded and the session closes
           - id: ac-11
             given: |
-              An agent invocation is spawned by the dispatch engine with
-              no idle-targeting hooks configured and no interactive mode
+              An invocation is spawned with no idle-targeting hooks
+              configured and no interactive session mode
             when: |
               The agent's first turn completes
             then: |
               The session auto-closes after the grace period with no
-              observable behavior change from the current single-turn model
+              observable behavior change from single-turn dispatch
           - id: ac-12
             given: |
               A session completes multiple turns via follow-up prompts
@@ -26185,23 +26176,22 @@ plans:
               The session is eventually closed
             then: |
               All turns are recorded in the same session's event history
-              under the single session_id
           - id: ac-13
             given: |
               A multi-turn session closes after completing multiple turns
             when: |
               The session metadata is finalized
             then: |
-              The metadata reflects total turn_count and cumulative
+              The metadata reflects total turn count and cumulative
               duration across all turns
           - id: ac-14
             given: |
-              A multi-turn session completes and the session is closed
+              A multi-turn session is closed
             when: |
-              The invocation.completed event is emitted
+              The invocation completed event is emitted
             then: |
-              The event fires exactly once per session (at close, not per
-              turn) and includes turn_count in the payload
+              The event fires exactly once per session at close and
+              includes the turn count
           - id: ac-15
             given: |
               An agent encounters a fatal error during a turn in a
@@ -26209,40 +26199,37 @@ plans:
             when: |
               The error is detected
             then: |
-              The session closes immediately with status failed and the
-              standard failure handling applies (task note, retry logic)
+              The session closes immediately with failed status
           - id: ac-16
             given: |
               A session closes due to an error and prompts are queued
             when: |
               The session closes
             then: |
-              Queued prompts are discarded; any session_prompt action runs
-              waiting on those prompts receive action.failed events
+              Queued prompts are discarded and any session prompt actions
+              waiting on those prompts fail
           - id: ac-17
             given: |
-              The prompt queue has accumulated more entries than a
-              configurable maximum depth
+              The prompt queue has reached its configured maximum depth
             when: |
               A new prompt is submitted
             then: |
-              The prompt is rejected; the submitter receives an error
-              indicating the queue is full
+              The prompt is rejected with an error indicating the queue
+              is full
 
       - title: Session Idle Event
         slug: session-idle-event
         type: requirement
         parent: "@dispatch-event-taxonomy"
         description: |
-          Event type in the dispatch event taxonomy: session.idle. Emitted
-          each time an agent completes a turn and the session enters idle
-          state. This is the event that enables post-turn automation and
+          Event emitted each time an agent completes a turn and the session
+          enters idle state. This event enables post-turn automation and
           signals interactive session readiness for user input.
 
-          session.idle fires while the session is still alive and receptive
-          to prompts. Hooks on this event can inject follow-up prompts via
-          the session_prompt action type, enabling trigger-driven multi-turn
-          conversations.
+          The session idle event fires while the session is still alive and
+          receptive to prompts. Hooks on this event can inject follow-up
+          prompts via the session prompt action type, enabling
+          trigger-driven multi-turn conversations.
         acceptance_criteria:
           - id: ac-1
             given: |
@@ -26250,37 +26237,32 @@ plans:
             when: |
               The session transitions to idle
             then: |
-              A session.idle event is emitted with payload: session_id,
-              agent_id, task_ref (if task-scoped), turn_count (number of
-              completed turns), stop_reason, and duration_ms (of the
-              completed turn, not the total session)
+              A session idle event is emitted with the session context,
+              agent identity, task reference, turn count, stop reason,
+              and the duration of the completed turn
           - id: ac-2
             given: |
               A session completes its third turn via follow-up prompts
             when: |
-              The session.idle event is emitted
+              The session idle event is emitted
             then: |
-              turn_count is 3; each idle event reflects the cumulative
-              turn count, enabling hooks to filter on turn progression
-              (e.g., "only fire after the first turn")
+              The turn count in the event reflects the cumulative number
+              of completed turns
           - id: ac-3
             given: |
-              A hook is configured with on: session.idle and a filter on
-              turn_count or agent_id
+              A hook is configured on the session idle event with a filter
+              on turn count or agent
             when: |
-              A session.idle event fires that does not match the filter
+              A session idle event fires that does not match the filter
             then: |
-              The hook does not execute; standard hook filter semantics
-              apply to session.idle events
+              The hook does not execute
           - id: ac-4
             given: |
-              Existing hooks and dispatch rules target session.ended,
-              invocation.completed, or task.* events
+              Existing hooks and dispatch rules target other event types
             when: |
-              The session.idle event is added to the taxonomy
+              The session idle event is registered
             then: |
-              Existing configurations are unaffected; session.idle is a
-              new event, not a replacement for any existing event
+              Existing configurations are unaffected
 
       # ─── Session Prompt Action ───
 
@@ -26290,85 +26272,81 @@ plans:
         type: feature
         parent: "@dispatch-action-model"
         description: |
-          New action type in the shared action model: session_prompt. Unlike
-          the agent action (which spawns a new invocation), session_prompt
-          delivers a prompt to an active session that is currently in idle
-          state.
+          Action type that delivers a prompt to an active session that is
+          currently in idle state. Unlike the agent action (which spawns a
+          new invocation), a session prompt action targets an existing
+          session.
 
-          This is the mechanism that allows hooks on session.idle to inject
-          follow-up prompts into the same conversation. The agent retains
-          full conversation context across turns.
+          This is the mechanism that allows hooks on session idle events to
+          inject follow-up prompts into the same conversation. The agent
+          retains full conversation context across turns.
 
-          Session prompt actions can only target sessions that are alive and
-          idle. If the target session is already closed or in prompting
+          Session prompt actions can only target sessions that are alive
+          and idle. If the target session is already closed or in prompting
           state, the prompt is queued or fails gracefully.
         traits:
           - "@trait-error-guidance"
         acceptance_criteria:
           - id: ac-1
             given: |
-              A session_prompt action is configured with a prompt or
-              prompt_template
+              A session prompt action is configured with a prompt
             when: |
               The action executes and the target session is in idle state
             then: |
-              The prompt is delivered to the session as a follow-up turn;
-              the action run tracks as running until the agent's turn
-              finishes
+              The prompt is delivered to the session as a follow-up turn
           - id: ac-2
             given: |
-              A session_prompt action begins execution
+              A session prompt action is executing
             when: |
-              The prompt delivery starts
+              The action lifecycle is tracked
             then: |
-              An action.started event is emitted; on turn completion an
-              action.completed event is emitted with the session_id
+              An action started event is emitted when delivery begins and
+              an action completed event is emitted when the turn finishes
           - id: ac-3
             given: |
-              A session_prompt action fires from a hook on session.idle
+              A session prompt action fires from a hook on a session idle
+              event
             when: |
-              The session_id is resolved from the event context
+              The target session is resolved
             then: |
-              The action targets the session identified by session_id in the
-              triggering event's payload; no explicit session_id configuration
-              is needed for hooks on session.idle — the target is implicit
+              The action targets the session from the triggering event
+              without requiring explicit session configuration
           - id: ac-4
             given: |
-              A session_prompt action targets a session that has already
+              A session prompt action targets a session that has already
               been closed
             when: |
               The action attempts to deliver the prompt
             then: |
               The action fails with a clear error indicating the session
-              is no longer active; an action.failed event is emitted
+              is no longer active
           - id: ac-5
             given: |
-              A session_prompt action targets a session that is in
+              A session prompt action targets a session that is in
               prompting state
             when: |
               The action attempts to deliver the prompt
             then: |
               The prompt is queued for delivery after the current turn
-              completes; the action tracks as running until the queued
-              prompt's turn finishes
+              completes
           - id: ac-6
             given: |
-              A session_prompt action uses template variables in the prompt
+              A session prompt action uses template variables in the
+              prompt
             when: |
               The prompt is constructed
             then: |
               Template variables are interpolated from the triggering
-              event's envelope and payload using the standard {{var}}
-              syntax
+              event context
           - id: ac-7
             given: |
-              A session_prompt action is configured outside a session.idle
-              hook (e.g., on a schedule or other event)
+              A session prompt action is configured outside a session idle
+              hook
             when: |
-              The action schema is validated
+              The action is validated
             then: |
-              The action requires an explicit session_id field (string or
-              template variable) to identify the target session
+              The action requires an explicit session identifier to
+              identify the target session
 
       - title: Session Prompt Action Schema
         slug: session-prompt-action-schema
@@ -26377,47 +26355,45 @@ plans:
         traits:
           - "@trait-error-guidance"
         description: |
-          Schema definition for the session_prompt action type in the shared
-          action model. Extends the action discriminated union with the new
-          type.
+          Schema definition for the session prompt action type. Defines the
+          configuration fields and validation rules for session prompt
+          actions in hooks and schedules.
         acceptance_criteria:
           - id: ac-1
             given: |
-              A session_prompt action is defined in a hook or schedule
+              A session prompt action is defined in a hook or schedule
             when: |
-              The meta manifest is loaded
+              The configuration is loaded
             then: |
-              The action is parsed with fields: type ("session_prompt"),
-              prompt (optional string), prompt_template (optional string),
-              session_id (optional string or template variable); at least
-              one of prompt or prompt_template must be present
+              The action is parsed with a prompt or prompt template
+              (at least one required) and an optional session identifier
           - id: ac-2
             given: |
-              An existing meta manifest uses only command, kspec, agent,
-              and notify action types
+              An existing configuration uses only the previously defined
+              action types
             when: |
-              The extended action schema is applied
+              The configuration is loaded
             then: |
-              The manifest loads successfully; session_prompt is additive
-              to the discriminated union
+              The configuration loads successfully with the session prompt
+              type as an additive option
           - id: ac-3
             given: |
-              A session_prompt action in a hook on session.idle omits
-              session_id
+              A session prompt action in a hook on a session idle event
+              omits the session identifier
             when: |
               Validation runs
             then: |
-              The action is valid; session_id defaults to the triggering
-              event's session_id for session.idle hooks
+              The action is valid because the session identifier defaults
+              to the triggering event's session
           - id: ac-4
             given: |
-              A session_prompt action in a hook on a non-session event
-              omits session_id
+              A session prompt action in a hook on a non-session event
+              omits the session identifier
             when: |
               Validation runs
             then: |
-              A warning indicates that session_id is required for non-session
-              event hooks and the action will fail at runtime without it
+              A warning indicates that a session identifier is required
+              and the action will fail at runtime without it
 
       # ─── Session Handle Registry ───
 
@@ -26428,13 +26404,13 @@ plans:
         parent: "@multi-turn-session-lifecycle"
         description: |
           A runtime registry of active sessions that allows actions to
-          deliver prompts to live sessions. Maps session_id to a session
-          handle providing prompt delivery and state query capabilities.
+          deliver prompts to live sessions. Maps session identifiers to
+          handles providing prompt delivery and state query capabilities.
 
           The registry is volatile (daemon lifetime). It exposes a minimal
           interface for prompt delivery, state query, and close requests.
           This keeps action execution decoupled from session internals
-          while enabling the session_prompt action type.
+          while enabling the session prompt action type.
         acceptance_criteria:
           - id: ac-1
             given: |
@@ -26442,33 +26418,32 @@ plans:
             when: |
               The session is registered
             then: |
-              The registry maps the session_id to a handle that supports
-              prompt delivery, state query (idle/prompting/closed), and
-              close requests
+              The registry maps the session to a handle that supports
+              prompt delivery, state query, and close requests
           - id: ac-2
             given: |
-              A session completes all turns and is torn down
+              A session is closed
             when: |
               Cleanup runs
             then: |
-              The session is removed from the registry; subsequent lookups
-              for that session_id return null
+              The session is removed from the registry and subsequent
+              lookups return no result
           - id: ac-3
             given: |
-              An action executor needs to deliver a prompt to a session
+              An action needs to deliver a prompt to a session
             when: |
-              It queries the registry by session_id
+              It queries the registry by session identifier
             then: |
-              It receives a handle if the session is active, or null if
-              the session has been closed
+              It receives a handle if the session is active, or no result
+              if the session has been closed
           - id: ac-4
             given: |
               The daemon shuts down
             when: |
               Active sessions exist in the registry
             then: |
-              All registered sessions receive close signals; the registry
-              is cleared as part of shutdown
+              All registered sessions are closed and the registry is
+              cleared
 
       # ─── Interactive Sessions ───
 
@@ -26479,39 +26454,35 @@ plans:
         parent: "@agent-integration"
         description: |
           Extends the multi-turn session lifecycle with a human-facing
-          interaction mode. When an agent definition specifies session_mode:
-          interactive, the session stays open after each turn, waiting for
-          user input via API or CLI.
+          interaction mode. When an agent definition uses interactive
+          session mode, the session stays open after each turn, waiting
+          for user input via API or CLI.
 
           Interactive sessions use the same multi-turn lifecycle state
-          machine — idle/prompting states, prompt queue, session.idle
-          events, and close semantics are all inherited from
-          @multi-turn-session-lifecycle. This spec defines only the
-          interactive-specific behaviors: the session_mode flag that
-          disables auto-close, and the user-facing prompt submission
-          surfaces (API, CLI).
+          machine — idle and prompting states, prompt queue, session idle
+          events, and close semantics are all inherited from the core
+          lifecycle. This spec defines only the interactive-specific
+          behaviors: the mode flag that disables auto-close, and the
+          user-facing prompt submission surfaces (API, CLI).
         traits:
           - "@trait-error-guidance"
         acceptance_criteria:
           - id: ac-1
             given: |
-              An agent definition specifies session_mode: interactive
+              An agent definition uses interactive session mode
             when: |
-              An invocation is started for this agent (via dispatch, CLI,
-              or API)
+              An invocation is started for this agent
             then: |
-              The session uses the multi-turn lifecycle with auto-close
-              grace period disabled; the session remains open until
-              explicit close, idle_timeout, or daemon shutdown
+              The session remains open after each turn until explicit
+              close, idle timeout, or daemon shutdown
           - id: ac-2
             given: |
               An interactive session is in idle state
             when: |
-              A user submits a prompt via the API or CLI
+              A user submits a prompt
             then: |
-              The prompt is delivered to the agent as a follow-up turn;
-              the agent responds with full conversation context from all
-              prior turns
+              The prompt is delivered to the agent as a follow-up turn
+              with full conversation context from all prior turns
           - id: ac-3
             given: |
               A user sends an explicit close command to an interactive
@@ -26519,16 +26490,14 @@ plans:
             when: |
               The session is in idle state
             then: |
-              The session closes; invocation.completed and session.ended
-              events fire normally
+              The session closes and the standard completion events fire
           - id: ac-4
             given: |
               An interactive session is running
             when: |
               The agent produces streaming output during a turn
             then: |
-              The output is available to connected clients in real time;
-              the interactive user sees output as it is generated
+              The output is available to connected clients in real time
 
       - title: Interactive Session API
         slug: interactive-session-api
@@ -26547,35 +26516,33 @@ plans:
             given: |
               An interactive session is in idle state
             when: |
-              POST /api/sessions/:id/prompt is called with a prompt body
+              A prompt is submitted via the session prompt endpoint
             then: |
-              The prompt is delivered to the session; the response includes
-              acknowledgment with the turn number; streaming output is
-              available via the WebSocket session stream
+              The prompt is delivered to the session and the response
+              includes acknowledgment with the turn number
           - id: ac-2
             given: |
               A client queries a session's state
             when: |
-              GET /api/sessions/:id/state is called
+              The session state endpoint is called
             then: |
-              The response includes current state (idle, prompting, closed),
-              turn_count, agent_id, task_ref, and session duration
+              The response includes current state, turn count, agent,
+              task reference, and session duration
           - id: ac-3
             given: |
               A client sends a close request
             when: |
-              POST /api/sessions/:id/close is called
+              The session close endpoint is called
             then: |
-              The session is marked for close; if idle, closes immediately;
-              if prompting, closes after the current turn completes
+              If idle, the session closes immediately; if prompting,
+              the session closes after the current turn completes
           - id: ac-4
             given: |
               A client submits a prompt to a closed session
             when: |
-              POST /api/sessions/:id/prompt is called
+              The session prompt endpoint is called
             then: |
-              The response indicates the session is closed with appropriate
-              error status
+              The response indicates the session is closed with an error
 
       - title: Interactive Session CLI
         slug: interactive-session-cli
@@ -26592,19 +26559,18 @@ plans:
             given: |
               An interactive session is running
             when: |
-              A user runs kspec session prompt <session-id> "message"
+              A user submits a prompt to the session via CLI
             then: |
-              The prompt is submitted to the session; the agent's response
-              is streamed to stdout
+              The prompt is delivered and the agent's response is streamed
+              to the terminal
           - id: ac-2
             given: |
-              A user wants to start an interactive session
+              A user starts an agent in interactive mode via CLI
             when: |
-              kspec agent run <agent-id> --interactive is invoked
+              The agent is spawned
             then: |
-              The agent is spawned with session_mode: interactive; the CLI
-              enters a prompt loop where the user can send messages and
-              see responses
+              The CLI enters a prompt loop where the user can send
+              messages and see responses
           - id: ac-3
             given: |
               An interactive CLI session is active
@@ -26616,10 +26582,10 @@ plans:
             given: |
               Active sessions exist
             when: |
-              kspec session list --active is run
+              A user lists active sessions via CLI
             then: |
-              Active sessions are listed with session_id, agent_id,
-              state (idle/prompting), turn_count, and duration
+              Each session shows its identifier, agent, state, turn
+              count, and duration
       ```
 
 
@@ -27087,3 +27053,8 @@ plans:
           subsequent ACs and task coverage
         author: "@claude"
         created_at: 2026-03-22T06:19:46.398Z
+      - _ulid: 01KMA4T24PV94M0EBW0J4VPTWM
+        content: "Full cleanup pass: remove field names, internal terms, meta commentary from all ACs and
+          descriptions — pure behavioral language throughout"
+        author: "@claude"
+        created_at: 2026-03-22T06:48:06.039Z
