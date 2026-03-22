@@ -43276,7 +43276,21 @@ reviews:
     slugs: []
     title: Review fix-worktree-guard-to-detect-actual-shadow-branch-not-substring-match (cycle 3)
     author: Test User
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Run 1: 303 files passed, 1 failed; timeouts in
+          tests/agent-invocation-lifecycle.test.ts:463 and :1620 after ~150.59s. Run 2: 303 files
+          passed, 1 failed; timeout in tests/agent-invocation-lifecycle.test.ts:351 after ~151.53s.
+          Isolated rerun of tests/agent-invocation-lifecycle.test.ts passed 49/49 in 11.39s, so the
+          failing required gate appears nondeterministic but remains red on full-suite execution."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-22T01:32:00.175Z
+        completed_at: 2026-03-22T01:32:00.175Z
     events:
       - _ulid: 01KM9JBKXSN6TGT9PCG19MH6TD
         actor: Test User
@@ -43298,6 +43312,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM9JQ7RVXX2HNG6001EGKJ27
         timestamp: 2026-03-22T01:31:59.447Z
+      - _ulid: 01KM9JQ9466DT51CR1B9QD2Z79
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-22T01:32:00.518Z
     examined_commit: 4d66d49bc8ea95ad119c39fe63d7d437d5116019
     external_links: []
     lifecycle_state: open
@@ -43329,5 +43350,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-22T01:25:38.361Z
-    updated_at: 2026-03-22T01:31:59.131Z
+    updated_at: 2026-03-22T01:32:00.175Z
     notes: []
