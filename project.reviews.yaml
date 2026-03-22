@@ -46179,6 +46179,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMAQ1GD0VCKHHPGT9WBPPSZ1
         timestamp: 2026-03-22T12:06:44.997Z
+      - _ulid: 01KMAQ2KH2HJKJCPYEYK35XBFY
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMAQ2K60CB7WY1B7F7TPTNDC
+        timestamp: 2026-03-22T12:07:20.354Z
     examined_commit: 7e45d49f6ef5ac6d24b08b3e5279c4f12cbdd529
     external_links: []
     lifecycle_state: open
@@ -46263,7 +46270,34 @@ reviews:
               until the turn completes.
             created_at: 2026-03-22T12:06:44.384Z
         kind: blocker
+      - _ulid: 01KMAQ2K60CB7WY1B7F7TPTNDC
+        entries:
+          - _ulid: 01KMAQ2K60XAR9ZHBVMASVMKZH
+            author: Test User
+            body: >-
+              Evidence log:
+
+              Files read: src/schema/action.ts, src/parser/validate.ts,
+              src/agent-runtime/action-executor.ts, src/agent-runtime/invocation.ts,
+              src/agent-runtime/dispatch.ts, src/schema/event-payloads.ts, src/schema/schedules.ts,
+              src/schema/composition.ts, packages/daemon/src/routes/agent-dispatch.ts,
+              tests/session-prompt-action.test.ts, tests/hook-schema.test.ts,
+              tests/daemon-agent-dispatch-routes.test.ts.
+
+              Commands run: git diff --stat, git diff on src/tests, kspec task get, kspec item get
+              @session-prompt-action, kspec item get @trait-error-guidance, kspec review for-task,
+              kspec validate, grep for AC annotations, npm test.
+
+              Claims verified: checked that the runtime now threads SessionRegistry through daemon
+              and dispatch layers; verified that session.idle payload fields are wired into the
+              dispatch event emission path; verified by code inspection that idle sendPrompt
+              resolves immediately and that session_id validation is only invoked for hooks.
+
+              Categories searched: correctness, validation/spec alignment, lifecycle timing, error
+              handling, test quality, integration wiring.
+            created_at: 2026-03-22T12:07:20.000Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-22T12:00:03.146Z
-    updated_at: 2026-03-22T12:06:44.384Z
+    updated_at: 2026-03-22T12:07:20.000Z
     notes: []
