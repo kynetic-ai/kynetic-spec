@@ -1,1 +1,12 @@
-notes: []
+notes:
+  - _ulid: 01KMB506F9N956VY4MGY3JBEHM
+    content: Migrated batch buffer scoping from enterWith to AsyncLocalStorage.run(). Added
+      runWithBatchBuffer() that wraps _bufferStorage.run() with caller-owned flush/discard
+      lifecycle. Migrated executeAtomic() in batch-exec.ts to use it (removed
+      activateBatchBuffer/deactivateBatchBuffer calls). Rewrote test singleton tests as scoping
+      tests verifying visibility inside .run() and null outside, plus concurrent isolation.
+      Deprecated activateBatchBuffer/deactivateBatchBuffer with guidance to use runWithBatchBuffer.
+      All 50 batch-related tests pass, 2 pre-existing failures in unrelated dispatch tests.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-22T16:10:41.514Z
