@@ -21998,5 +21998,18 @@
       supersedes: null
       author: Test User
       created_at: 2026-03-22T01:01:59.650Z
+    - _ulid: 01KM9J796NSBF5N5T1J0AA0FN4
+      content: "Fix cycle 2: Addressed core blocker — guard now compares cwd against the resolved absolute
+        path of the shadow worktree (gitRoot + config.shadow.directory) instead of matching
+        directory names as path segments. This eliminates false positives on unrelated nested
+        directories like /repo/packages/demo/.kspec. GuardOptions.shadowDirectory replaced with
+        shadowAbsolutePath. CLI handler resolves absolute path from project config using
+        process.cwd() (not input.cwd which may be inside the shadow worktree's own git context).
+        Guard fails open without shadowAbsolutePath (except kspec-meta branch deletion). Tests
+        updated with explicit absolute paths and new test section for nested directory false
+        positive prevention."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-22T01:23:16.309Z
   todos: []
   automation: eligible
