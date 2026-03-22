@@ -42,8 +42,15 @@ description: |
 spec_ref: "@multi-turn-session-lifecycle"
 plan_ref: "@plan-multi-turn-session-lifecycle"
 origin: derived
-status: pending_review
-blocked_by: []
+status: blocked
+blocked_by:
+  - "Semantic merge conflicts with dev. Another task has merged overlapping multi-turn session
+    lifecycle support into dev (session_prompt action, SessionRegistry wiring, session.idle events).
+    Conflicts are in 4 files (invocation.ts, dispatch.ts, action-executor.ts, event-payloads.ts).
+    Key API differences: onIdle vs onTurnComplete callback, SessionIdleContext vs TurnCompleteInfo
+    type, turn_duration_ms vs duration_ms field name, turnCount required vs optional, stop_reason
+    optional vs required. Requires human judgment on which API to keep or how to reconcile the two
+    implementations."
 depends_on:
   - "@task-session-registry"
 context: []
@@ -602,7 +609,27 @@ history:
         previous: "@01KMB4SCR2VAAV1PHHARHH1WVZ"
     command: review-link
     timestamp: 2026-03-22T16:29:51.635Z
-prior_status: null
+  - author: "@claude"
+    changes:
+      status:
+        new: blocked
+        previous: pending_review
+      blocked_by:
+        new:
+          - "Semantic merge conflicts with dev. Another task has merged overlapping multi-turn
+            session lifecycle support into dev (session_prompt action, SessionRegistry wiring,
+            session.idle events). Conflicts are in 4 files (invocation.ts, dispatch.ts,
+            action-executor.ts, event-payloads.ts). Key API differences: onIdle vs onTurnComplete
+            callback, SessionIdleContext vs TurnCompleteInfo type, turn_duration_ms vs duration_ms
+            field name, turnCount required vs optional, stop_reason optional vs required. Requires
+            human judgment on which API to keep or how to reconcile the two implementations."
+        previous: []
+      prior_status:
+        new: pending_review
+        previous: null
+    command: task-block
+    timestamp: 2026-03-22T16:32:26.167Z
+prior_status: pending_review
 created_at: 2026-03-22T07:28:42.951Z
 started_at: 2026-03-22T16:23:10.753Z
 submitted_at: 2026-03-22T16:23:14.585Z
