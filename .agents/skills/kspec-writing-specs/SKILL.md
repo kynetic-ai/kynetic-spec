@@ -115,6 +115,45 @@ kspec item ac add @bulk-delete \
 | "Fast performance" | Not measurable | "Response returns within 200ms" |
 | "Handles errors" | Vague | Specific error scenario + expected behavior |
 | Duplicating trait AC | Maintenance burden | Apply the trait instead |
+| Implementation details | Not behavioral | Describe observable outcome, not internal mechanism |
+| Rationale or commentary | Not testable | Move to description or implementation notes |
+
+### Behavioral Language Rules
+
+Specs are standalone behavioral contracts. They must read as timeless descriptions of what the system does, not how it's built. A spec should make sense to someone who has never seen the codebase.
+
+**ACs describe observable behavior, not implementation:**
+ACs should describe what happens from the outside — what a user or consumer observes. They should not reveal how the system achieves the behavior internally. This includes field/variable names, protocol details, internal function calls, file formats, library names, and architectural terms. Use natural language to describe the same concept.
+
+Examples of implementation leaking into ACs:
+- `session_id`, `turn_count` → "session identifier", "turn count"
+- `ACP`, `JSON-RPC`, `WebSocket` → describe the behavior these enable
+- `client.prompt()`, `closeSession()` → "the prompt is delivered", "the session closes"
+- `events.jsonl` → "the session's event history"
+
+**ACs contain only assertions, not rationale:**
+Each AC should state what happens, not why it happens or how it relates to other concerns. Rationale, design context, backward compatibility notes, and cross-references to other specs belong in the description or implementation notes — not in the given/when/then.
+
+Examples of commentary leaking into ACs:
+- "the session closes; this preserves backward compatibility" → "the session closes"
+- "per @other-spec" → use `depends_on` or `relates_to` fields
+- "unlike the previous behavior" → just state the current behavior
+
+**Descriptions follow the same principles** — describe behavior and purpose, not implementation approach. Implementation guidance belongs in task descriptions or implementation notes.
+
+**Good:**
+```
+Given: A session is in idle state
+When: No prompt arrives within the configured grace period
+Then: The session is closed
+```
+
+**Bad:**
+```
+Given: A session emits session.idle and no session_prompt actions target it within 5 seconds
+When: The grace period timer fires
+Then: closeSession() is called with the standard teardown sequence; this preserves backward compatibility
+```
 
 ### AC Naming Convention
 
