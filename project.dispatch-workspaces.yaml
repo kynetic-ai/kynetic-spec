@@ -18801,12 +18801,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-22T10:30:45.158Z
+      updated_at: 2026-03-22T10:30:55.413Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-22T10:30:45.158Z
+      updated_at: 2026-03-22T10:30:55.413Z
     integration:
       status: pending
       detail: null
@@ -18814,24 +18814,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 48ee7bf43230aec5c67ea89428745854d1c4dd6e
-      updated_at: 2026-03-22T10:30:45.158Z
-    lifecycle_state: ready
+      updated_at: 2026-03-22T10:30:55.413Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KMA74ECH1ZW03KM3403N023Z"
     task_slug: task-session-prompt-action
     timestamps:
       closed_at: null
       last_active_at: 2026-03-22T10:15:52.323Z
-      last_reconciled_at: 2026-03-22T10:30:45.158Z
+      last_reconciled_at: 2026-03-22T10:30:55.413Z
       created_at: 2026-03-22T09:06:43.597Z
-      updated_at: 2026-03-22T10:30:45.158Z
+      updated_at: 2026-03-22T10:30:55.413Z
     workspace_id: dispatch-workspace-01KMA74ECH1ZW03KM3403N023Z
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 5c3160a75d54d75d231b33b15d14ecd2b38d1083
+        last_seen_at: 2026-03-22T10:30:55.413Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-prompt-action-01kma74e-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-session-prompt-action/01kma74e
-        head: 5d6f8f9881322ed407f0013005a1b4c0f7835a04
-        last_seen_at: 2026-03-22T10:15:50.015Z
+        head: 5c3160a75d54d75d231b33b15d14ecd2b38d1083
+        last_seen_at: 2026-03-22T10:30:55.413Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-prompt-action-01kma74e
