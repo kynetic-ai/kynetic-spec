@@ -22,7 +22,7 @@ description: >-
 spec_ref: "@multi-turn-session-lifecycle"
 meta_ref: null
 plan_ref: null
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -32,6 +32,7 @@ tags:
   - dispatch
   - sessions
 vcs_refs: []
+session_id: 01KMBQPW3E7ACAB906M2Y3WQ5J
 history:
   - author: "@claude"
     changes:
@@ -41,6 +42,20 @@ history:
         previous: []
     command: task-set
     timestamp: 2026-03-22T21:24:50.789Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KMBQPW3E7ACAB906M2Y3WQ5J
+        previous: null
+      started_at:
+        new: 2026-03-22T21:38:23.041Z
+        previous: null
+    command: task-start
+    timestamp: 2026-03-22T21:38:23.042Z
 created_at: 2026-03-22T21:24:14.236Z
+started_at: 2026-03-22T21:38:23.041Z
 todos: []
 automation: eligible
