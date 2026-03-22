@@ -18059,22 +18059,43 @@ workspaces:
     base_branch_point: 369132b7926d1becbc70af8efdfd69bc148a848d
     bootstrap:
       status: succeeded
-      canonicalBranchHead: 369132b7926d1becbc70af8efdfd69bc148a848d
+      canonicalBranchHead: 1c5294476abdccfb6c355209f9e08f6668c8a437
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
       failureMessage: null
       invalidationReasons:
         - workspace-dependencies-missing
-      lastRole: worker
-      lastRunAt: 2026-03-22T00:37:28.515Z
+      lastRole: reviewer
+      lastRunAt: 2026-03-22T00:44:47.482Z
       roleStates:
         reviewer:
-          status: not_run
-          canonicalBranchHead: null
-          configHash: null
+          status: succeeded
+          canonicalBranchHead: 1c5294476abdccfb6c355209f9e08f6668c8a437
+          configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
           failureMessage: null
-          invalidationReasons: []
-          lastRunAt: null
-          steps: []
+          invalidationReasons:
+            - workspace-dependencies-missing
+          lastRunAt: 2026-03-22T00:44:47.482Z
+          steps:
+            - status: succeeded
+              allowTrackedChanges: false
+              idempotent: true
+              name: install-workspace-dependencies
+              output: |-
+                added 283 packages, and audited 288 packages in 3s
+
+                66 packages are looking for funding
+                  run `npm fund` for details
+
+                9 vulnerabilities (1 low, 5 moderate, 3 high)
+
+                To address all issues, run:
+                  npm audit fix
+
+                Run `npm audit` for details.
+              reviewerRerunAllowed: true
+              role: reviewer
+              run: npm ci
+              source: dispatch
         worker:
           status: succeeded
           canonicalBranchHead: 369132b7926d1becbc70af8efdfd69bc148a848d
@@ -18122,7 +18143,7 @@ workspaces:
 
             Run `npm audit` for details.
           reviewerRerunAllowed: true
-          role: worker
+          role: reviewer
           run: npm ci
           source: dispatch
     branch_provenance:
@@ -18139,12 +18160,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-22T00:45:01.935Z
+      updated_at: 2026-03-22T00:44:42.949Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-22T00:45:01.935Z
+      updated_at: 2026-03-22T00:44:42.949Z
     integration:
       status: pending
       detail: null
@@ -18152,7 +18173,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 369132b7926d1becbc70af8efdfd69bc148a848d
-      updated_at: 2026-03-22T00:45:01.935Z
+      updated_at: 2026-03-22T00:44:42.949Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KM9FB8PAK46RP5SRP1JVD2FD"
@@ -18160,16 +18181,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-22T00:37:29.874Z
-      last_reconciled_at: 2026-03-22T00:45:01.935Z
+      last_reconciled_at: 2026-03-22T00:44:42.949Z
       created_at: 2026-03-22T00:37:24.076Z
-      updated_at: 2026-03-22T00:45:01.935Z
+      updated_at: 2026-03-22T00:44:47.482Z
     workspace_id: dispatch-workspace-01KM9FB8PAK46RP5SRP1JVD2FD
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 1c5294476abdccfb6c355209f9e08f6668c8a437
+        last_seen_at: 2026-03-22T00:44:42.949Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-worktree-guard-to-detect-actual-shadow-branch-not-substring-match-01km9fb8-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/fix-worktree-guard-to-detect-actual-shadow-branch-not-substring-match/01km9fb8
-        head: 369132b7926d1becbc70af8efdfd69bc148a848d
+        head: 1c5294476abdccfb6c355209f9e08f6668c8a437
         last_seen_at: 2026-03-22T00:44:42.949Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-worktree-guard-to-detect-actual-shadow-branch-not-substring-match-01km9fb8
