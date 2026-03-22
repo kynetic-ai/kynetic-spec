@@ -314,7 +314,7 @@ kspec item ac list <ref>               # List ACs for item
 kspec item ac add <ref> --given "..." --when "..." --then "..."
 kspec item ac add <ref> --id <id> --given "..." --when "..." --then "..."
 kspec item ac set <ref> <ac-id> --then "updated"
-kspec item ac remove <ref> <ac-id> [--force]
+kspec item ac remove <ref> <id> [--force]
 ```
 
 ### Traits
