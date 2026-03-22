@@ -45439,6 +45439,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMAKYWFQ5WBB36JB739W3WST
         timestamp: 2026-03-22T11:12:53.330Z
+      - _ulid: 01KMAM0H41RT2WDVNN6GQS1A4R
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMAM0GRFDNYMN09TRXFDWNVY
+        timestamp: 2026-03-22T11:13:46.625Z
     examined_commit: 0a2c33c2e406d71723e924ac121094d68ee3ce5f
     external_links: []
     lifecycle_state: open
@@ -45467,7 +45474,23 @@ reviews:
               delivered or queued prompt (ac-1/ac-5)."
             created_at: 2026-03-22T11:12:52.728Z
         kind: blocker
+      - _ulid: 01KMAM0GRFDNYMN09TRXFDWNVY
+        anchor:
+          type: code
+          commit: 0a2c33c2e406d71723e924ac121094d68ee3ce5f
+          line_end: 2767
+          line_start: 2765
+          path: src/agent-runtime/dispatch.ts
+          side: head
+        entries:
+          - _ulid: 01KMAM0GRFDZ67JZCQXGAVREYG
+            author: Test User
+            body: Successful invocations still publish  rather than , so a hook configured on  never fires in
+              production. This means the new session_prompt action cannot be triggered through the
+              dispatch flow it was added for, even though the schema and executor tests pass.
+            created_at: 2026-03-22T11:13:46.255Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-22T11:08:08.153Z
-    updated_at: 2026-03-22T11:12:52.728Z
+    updated_at: 2026-03-22T11:13:46.255Z
     notes: []
