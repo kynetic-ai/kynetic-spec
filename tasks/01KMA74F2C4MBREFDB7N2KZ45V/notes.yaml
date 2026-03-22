@@ -1,1 +1,29 @@
-notes: []
+notes:
+  - _ulid: 01KMA8KRQG687TNTMWRT8FY5ZG
+    content: >-
+      Applied all four spec updates from the plan's 'Existing spec updates' table using kspec batch
+      (atomic commit):
+
+
+      1. @agent-invocation-lifecycle ac-4: Updated to reflect that turn completion transitions to
+      idle state, not session close. Session closes only when no more prompts arrive (grace period,
+      explicit close, or timeout). Invocation completed event fires at session close.
+
+
+      2. @agent-invocation-lifecycle ac-8: Changed precondition from 'invocation completes' to
+      'session closes (after all turns complete)' — cleanup is per-session, not per-turn.
+
+
+      3. @dispatch-event-taxonomy description: Added session.idle to the session events enumeration
+      (session.idle, session.ended, session.idle_timeout, session.cancelled).
+
+
+      4. @dispatch-action-model description: Changed 'Four action types' to 'Five action types' and
+      added session_prompt as the fifth type.
+
+
+      All updates verified with kspec item get. No code changes needed — this task is purely spec
+      metadata alignment for multi-turn lifecycle consistency.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-22T07:54:34.097Z
