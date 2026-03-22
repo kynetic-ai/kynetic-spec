@@ -21782,6 +21782,14 @@
     - manual
   vcs_refs: []
   created_at: 2026-03-22T00:23:43.893Z
-  notes: []
+  notes:
+    - _ulid: 01KM9ETHGDY9WXM4P1S10W3QJV
+      content: "Manual step: after the activation command is implemented and merged, run it on this
+        project to flip kynetic-spec from monolithic to split storage. Verify with kspec shadow
+        status and spot-check task get/list operations. This is a one-way switch — ensure migration
+        has been run first (kspec task migrate)."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-22T00:23:53.101Z
   todos: []
   automation: manual_only
