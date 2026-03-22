@@ -21793,7 +21793,8 @@
   created_at: 2026-03-22T21:24:14.236Z
   automation: eligible
 - _ulid: 01KMBPYB05RT7ZJZBA2GVW4A7D
-  slugs: []
+  slugs:
+    - task-reload-idle-hook-presence
   title: Reload session.idle hook presence during dispatch reconciliation
   type: task
   spec_ref: "@multi-turn-session-lifecycle"
