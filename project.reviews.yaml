@@ -43641,7 +43641,20 @@ reviews:
     slugs: []
     title: Review active session registry
     author: Test User
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Full npm test could not complete in this snapshot because the pre-test build step failed
+          in packages/web-ui with ENOENT for .svelte-kit/output/server/manifest-full.js. Focused
+          registry test run still passed and the failure appears unrelated to the registry files
+          under review.
+        name: npm test
+        required: false
+        runner: npm
+        created_at: 2026-03-22T07:48:27.843Z
+        completed_at: 2026-03-22T07:48:27.843Z
     events:
       - _ulid: 01KMA7W0W8GECTZTB06TDVV6CY
         actor: Test User
@@ -43679,6 +43692,13 @@ reviews:
           kind: nit
           thread_ulid: 01KMA88HYPKZJ2VHBPRFPWZR5W
         timestamp: 2026-03-22T07:48:27.010Z
+      - _ulid: 01KMA88KD4RD2V375G9Y2ACC1A
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-22T07:48:28.196Z
     examined_commit: 5447244e888087b2fa8ee12b5bcc163d321b474a
     external_links: []
     lifecycle_state: closed
@@ -43714,5 +43734,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-22T07:48:25.069Z
     created_at: 2026-03-22T07:41:36.008Z
-    updated_at: 2026-03-22T07:48:26.710Z
+    updated_at: 2026-03-22T07:48:27.843Z
     notes: []
