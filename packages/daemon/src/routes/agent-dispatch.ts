@@ -27,6 +27,7 @@ import { ScheduleEngine } from '../../agent-runtime/schedule-engine.js';
 import { HookExecutor } from '../../agent-runtime/hook-executor.js';
 import { JoinAccumulator } from '../../agent-runtime/join-accumulator.js';
 import { ActionExecutor } from '../../agent-runtime/action-executor.js';
+import { SessionRegistry } from '../../agent-runtime/session-registry.js';
 import { DEFAULT_KSPEC_CLI_PATH } from '../../agent-runtime/invocation.js';
 import { initContext, loadMetaContext, loadAllItems, ReferenceIndex, resolveProjectRoots, resolveTaskDataManager } from '../../parser/index.js';
 import { getCompletedSessionCountsByAgent } from '../../sessions/store.js';
@@ -45,11 +46,28 @@ const scheduleEngines: Map<string, ScheduleEngine> = new Map();
 const hookExecutors: Map<string, HookExecutor> = new Map();
 // Singleton join accumulator per project path (started alongside dispatch)
 const joinAccumulators: Map<string, JoinAccumulator> = new Map();
+// Singleton session registry per project path (shared with action executors for session_prompt actions)
+// AC: @session-prompt-action ac-1
+const sessionRegistries: Map<string, SessionRegistry> = new Map();
 
 export interface AgentDispatchRouteOptions {
   defaultProjectPath?: string;
   /** PubSubManager for broadcasting agent invocation events to WebSocket clients */
   pubsub?: PubSubManager;
+}
+
+/**
+ * Get or create the session registry for a project path.
+ * The registry is created once and shared across all action executors for the project.
+ * AC: @session-prompt-action ac-1
+ */
+function getOrCreateSessionRegistry(projectDir: string): SessionRegistry {
+  let registry = sessionRegistries.get(projectDir);
+  if (!registry) {
+    registry = new SessionRegistry();
+    sessionRegistries.set(projectDir, registry);
+  }
+  return registry;
 }
 
 /**
@@ -103,10 +121,11 @@ async function startScheduleEngine(
   engine: DispatchEngine,
   pubsub?: PubSubManager,
 ): Promise<void> {
-  // Create action executor wired to the event bus
+  // Create action executor wired to the event bus and session registry
   const actionExecutor = new ActionExecutor({
     projectDir,
     kspecCliPath: DEFAULT_KSPEC_CLI_PATH,
+    sessionRegistry: getOrCreateSessionRegistry(projectDir),
     onActionRunEvent: (event) => {
       // Emit action lifecycle events on the shared bus
       engine.eventBus.emit({
@@ -167,6 +186,7 @@ async function startHookExecutor(
   const actionExecutor = new ActionExecutor({
     projectDir,
     kspecCliPath: DEFAULT_KSPEC_CLI_PATH,
+    sessionRegistry: getOrCreateSessionRegistry(projectDir),
     onActionRunEvent: (event) => {
       engine.eventBus.emit({
         event_type: event.type,
@@ -229,6 +249,7 @@ async function startJoinAccumulator(
   const actionExecutor = new ActionExecutor({
     projectDir,
     kspecCliPath: DEFAULT_KSPEC_CLI_PATH,
+    sessionRegistry: getOrCreateSessionRegistry(projectDir),
     onActionRunEvent: (event) => {
       engine.eventBus.emit({
         event_type: event.type,
@@ -270,6 +291,19 @@ function stopJoinAccumulator(projectDir: string): void {
   if (accumulator) {
     accumulator.stop();
     joinAccumulators.delete(projectDir);
+  }
+}
+
+/**
+ * Stop and clean up the session registry for a project.
+ * Closes all active sessions and removes the registry.
+ * AC: @session-prompt-action ac-1
+ */
+function stopSessionRegistry(projectDir: string): void {
+  const registry = sessionRegistries.get(projectDir);
+  if (registry) {
+    registry.closeAll('Dispatch engine stopping');
+    sessionRegistries.delete(projectDir);
   }
 }
 
@@ -399,6 +433,7 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
         stopJoinAccumulator(projectDir);
         stopHookExecutor(projectDir);
         await stopScheduleEngine(projectDir);
+        stopSessionRegistry(projectDir);
         await engine.stop();
         engines.delete(projectDir);
 
@@ -461,6 +496,7 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
       stopJoinAccumulator(projectDir);
       stopHookExecutor(projectDir);
       await stopScheduleEngine(projectDir);
+      stopSessionRegistry(projectDir);
       await engine.stop();
       engines.delete(projectDir);
 
@@ -585,6 +621,15 @@ export function getJoinAccumulator(projectDir: string): JoinAccumulator | undefi
 }
 
 /**
+ * Get the session registry for a project path.
+ * Returns undefined if no dispatch engine is running for the project.
+ * AC: @session-prompt-action ac-1
+ */
+export function getSessionRegistry(projectDir: string): SessionRegistry | undefined {
+  return sessionRegistries.get(projectDir);
+}
+
+/**
  * Stop all active dispatch engines. Called on daemon shutdown.
  * AC: @agent-dispatch-engine ac-11 - daemon shutdown stops active engines
  */
@@ -599,6 +644,12 @@ export async function stopAllEngines(): Promise<void> {
     accumulator.stop();
   }
   joinAccumulators.clear();
+
+  // Close all session registries (AC: @session-prompt-action ac-1)
+  for (const [, registry] of sessionRegistries) {
+    registry.closeAll('Daemon shutting down');
+  }
+  sessionRegistries.clear();
 
   const stopPromises: Promise<void>[] = [];
   // Stop schedule engines

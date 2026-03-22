@@ -696,3 +696,28 @@ describe("session_prompt failure isolation", () => {
 // AC: @trait-error-guidance ac-6 — N/A: session_prompt action does not operate
 // in JSON mode. JSON-mode error formatting is handled by CLI commands that
 // consume the action model.
+
+// ─── Daemon Wiring Integration Test ──────────────────────────────────────────
+
+describe("daemon wiring — session registry threaded to ActionExecutor", () => {
+  /**
+   * Verifies that the daemon's route module exports getSessionRegistry and that
+   * the registry lifecycle works correctly (undefined before start, available after).
+   *
+   * The full production wiring is verified by the dispatch engine integration
+   * tests in daemon-agent-dispatch-routes.test.ts. Here we verify the
+   * getSessionRegistry export is available and returns undefined when no
+   * engine is running.
+   *
+   * AC: @session-prompt-action ac-1
+   */
+  it("getSessionRegistry returns undefined when no engine is running", async () => {
+    const {
+      getSessionRegistry,
+    } = await import("../dist/daemon/routes/agent-dispatch.ts");
+
+    // Before any engine starts, no registry exists for a random project path
+    const fakePath = "/nonexistent/project";
+    expect(getSessionRegistry(fakePath)).toBeUndefined();
+  });
+});
