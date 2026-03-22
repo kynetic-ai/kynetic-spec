@@ -47218,6 +47218,18 @@ reviews:
         runner: vitest
         created_at: 2026-03-22T18:46:33.098Z
         completed_at: 2026-03-22T18:46:33.098Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: All assigned ACs covered (ac-1,2,3,4,8,9,10,15,16,17) plus bonus ac-13,ac-14. All
+          trait-error-guidance ACs annotated N/A with valid reasons. kspec validate not run (no spec
+          changes in this cycle).
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-22T18:46:36.607Z
+        completed_at: 2026-03-22T18:46:36.607Z
     events:
       - _ulid: 01KMBDVY9C91Z5TG6ZJF41Y021
         actor: "@claude"
@@ -47246,6 +47258,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-22T18:46:33.443Z
+      - _ulid: 01KMBDXPNYBT9ZQ00QYXQ24BVJ
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-22T18:46:36.991Z
     examined_commit: 53ec6f82e20ce4706655edeb2443a30aca424e08
     external_links: []
     lifecycle_state: open
@@ -47275,5 +47294,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-22T18:45:39.244Z
-    updated_at: 2026-03-22T18:46:33.098Z
+    updated_at: 2026-03-22T18:46:36.607Z
     notes: []
