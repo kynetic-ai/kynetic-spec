@@ -44248,9 +44248,16 @@ reviews:
         payload:
           thread_ulid: 01KMAEDNMPJ31FR39BCHTF0GJN
         timestamp: 2026-03-22T09:37:02.485Z
+      - _ulid: 01KMAHKJ7MHZF5C2N36ZA80GKG
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          from: closed
+          to: open
+        timestamp: 2026-03-22T10:31:44.628Z
     examined_commit: 769ad92f5181d44fac0de9b5994c66a0f4dabeab
     external_links: []
-    lifecycle_state: closed
+    lifecycle_state: open
     related_refs: []
     subject:
       type: task
@@ -44307,7 +44314,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-22T09:36:36.851Z
     created_at: 2026-03-22T09:33:28.920Z
-    updated_at: 2026-03-22T09:37:01.929Z
+    updated_at: 2026-03-22T10:31:44.320Z
     notes: []
   - _ulid: 01KMAFPNNB9GGDSPTP5MMSKTFC
     slugs: []
