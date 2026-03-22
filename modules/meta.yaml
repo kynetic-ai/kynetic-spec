@@ -4950,6 +4950,9 @@ modules:
               Session prompt actions can only target sessions that are alive
               and idle. If the target session is already closed or in prompting
               state, the prompt is queued or fails gracefully.
+            status:
+              maturity: draft
+              implementation: in_progress
             depends_on: []
             implements: []
             relates_to: []
