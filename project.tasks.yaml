@@ -21597,6 +21597,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-03-22T07:28:42.701Z
+  automation: eligible
 - _ulid: 01KMA74DY7WGG4KA6P07BTMJFD
   slugs:
     - task-multi-turn-invocation
@@ -21616,6 +21617,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-03-22T07:28:42.951Z
+  automation: eligible
 - _ulid: 01KMA74E4TTWDYMX6QH8K2F86D
   slugs:
     - task-session-idle-event
@@ -21634,6 +21636,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-03-22T07:28:43.162Z
+  automation: eligible
 - _ulid: 01KMA74ECH1ZW03KM3403N023Z
   slugs:
     - task-session-prompt-action
@@ -21654,6 +21657,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-03-22T07:28:43.409Z
+  automation: eligible
 - _ulid: 01KMA74EKPGJMJXEXMZMGWY51A
   slugs:
     - task-idle-grace-period
@@ -21674,6 +21678,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-03-22T07:28:43.638Z
+  automation: eligible
 - _ulid: 01KMA74EVBPW0NWYCF3S7S8A3N
   slugs:
     - task-dispatch-multi-turn-integration
@@ -21694,6 +21699,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-03-22T07:28:43.883Z
+  automation: eligible
 - _ulid: 01KMA74F2C4MBREFDB7N2KZ45V
   slugs:
     - task-update-existing-specs
@@ -21711,6 +21717,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-03-22T07:28:44.108Z
+  automation: eligible
 - _ulid: 01KMA74FB1KFR4938XKWNT6M2K
   slugs:
     - task-ui-session-idle
@@ -21730,3 +21737,4 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-03-22T07:28:44.385Z
+  automation: eligible
