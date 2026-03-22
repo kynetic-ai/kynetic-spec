@@ -46723,6 +46723,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-22T16:07:06.073Z
+      - _ulid: 01KMB4SZFQ9PT95X21HEBD99DM
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMB4SYX6H33ZDY90F26AZPG1
+        timestamp: 2026-03-22T16:07:17.751Z
     examined_commit: 535d7a68040fb623d7513769f07fa7a1960450bd
     external_links: []
     lifecycle_state: open
@@ -46732,8 +46739,28 @@ reviews:
       content_hash: ""
       ref: "@task-multi-turn-invocation"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMB4SYX6H33ZDY90F26AZPG1
+        anchor:
+          type: code
+          commit: 535d7a68
+          line_end: 1060
+          line_start: 1060
+          path: tests/multi-turn-invocation.test.ts
+          side: head
+        entries:
+          - _ulid: 01KMB4SYX7HHKHHBT7J52CA51Y
+            author: "@claude"
+            body: 'Timeout tests pass taskRef which triggers a blocking spawnSync kspec CLI call in the
+              InvocationTimeoutError handler (addTaskNote at line 962). This hangs the test because
+              spawnSync blocks the event loop indefinitely in the temp dir environment (no shadow
+              branch). Other error-path tests in the same file correctly omit taskRef with the
+              comment: "Omit taskRef to avoid slow CLI calls in failure handler" (lines 679, 731).
+              Both timeout tests at lines 1041 and 1076 must omit taskRef like the other failure
+              tests do.'
+            created_at: 2026-03-22T16:07:17.159Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-22T16:06:58.562Z
-    updated_at: 2026-03-22T16:07:05.632Z
+    updated_at: 2026-03-22T16:07:17.159Z
     notes: []
