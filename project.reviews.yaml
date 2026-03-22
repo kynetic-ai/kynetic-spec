@@ -47575,3 +47575,29 @@ reviews:
     created_at: 2026-03-22T19:36:08.560Z
     updated_at: 2026-03-22T19:41:04.677Z
     notes: []
+  - _ulid: 01KMBR2AFE500RX71PZPRZKFFZ
+    slugs: []
+    title: Review reload session.idle hook presence during reconciliation
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KMBR2AFEEH7QJVS4J8GZFNKM
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-22T21:43:54.094Z
+    examined_commit: 3fe484fb622ef64ca3131a23ef6e5f077ef910aa
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMBPYB05RT7ZJZBA2GVW4A7D"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-22T21:43:54.094Z
+    updated_at: null
+    notes: []
