@@ -44955,6 +44955,18 @@ reviews:
         runner: npm
         created_at: 2026-03-22T10:38:09.334Z
         completed_at: 2026-03-22T10:38:09.334Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Ran full npm test: 307 passed / 1 failed test file, 7069 passed / 1 failed tests / 3
+          skipped. Failure: tests/agent-invocation-lifecycle.test.ts:1620 timed out after 60000ms in
+          should NOT call shadowAutoCommit after timed-out invocation."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-22T10:38:31.649Z
+        completed_at: 2026-03-22T10:38:31.649Z
     events:
       - _ulid: 01KMAHKJH8CJQDEMXYNW896TPJ
         actor: Test User
@@ -45011,6 +45023,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMAHZB1TJ96JRZ2FJ464Q7DT
         timestamp: 2026-03-22T10:38:10.842Z
+      - _ulid: 01KMAJ00332BJMF9FV4QH9370S
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-22T10:38:32.035Z
     examined_commit: 5c3160a75d54d75d231b33b15d14ecd2b38d1083
     external_links: []
     lifecycle_state: open
@@ -45101,5 +45120,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-22T10:31:44.937Z
-    updated_at: 2026-03-22T10:38:10.490Z
+    updated_at: 2026-03-22T10:38:31.649Z
     notes: []
