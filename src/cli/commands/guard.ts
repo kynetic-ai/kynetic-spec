@@ -14,6 +14,7 @@ import { EXIT_CODES } from "../exit-codes.js";
 import { isJsonMode, output } from "../output.js";
 import {
   SHADOW_BRANCH_NAME,
+  resolveProjectRoots,
 } from "../../parser/shadow.js";
 import { loadProjectConfig } from "../../parser/config.js";
 
@@ -315,12 +316,15 @@ export function registerGuardCommand(program: Command): void {
           return;
         }
 
-        // Resolve the actual shadow worktree absolute path from project config.
-        // Always use process.cwd() (the project root where the hook runs) for
-        // config resolution, NOT input.cwd. The input.cwd is the directory where
-        // the guarded command would execute — it may be inside the shadow worktree
-        // itself, which has its own git context and would resolve the wrong root.
-        const { config, gitRoot } = await loadProjectConfig(process.cwd());
+        // Resolve the actual project root, handling the case where the hook
+        // process itself was launched from inside a git worktree (e.g. from
+        // the shadow worktree .kspec/). resolveProjectRoots() uses
+        // git rev-parse --git-common-dir to find the main repo root even when
+        // cwd is inside a worktree. Without this, getGitRoot() would return
+        // .kspec/ as the git root, making shadowAbsolutePath wrong.
+        const roots = resolveProjectRoots(process.cwd());
+        const mainRoot = roots?.mainRoot ?? undefined;
+        const { config, gitRoot } = await loadProjectConfig(process.cwd(), mainRoot);
         const projectRoot = gitRoot ?? process.cwd();
         const shadowAbsolutePath = path.resolve(projectRoot, config.shadow.directory);
         const decision = evaluateWorktreeGuard(input, {

@@ -7,9 +7,10 @@
  */
 
 import * as path from "node:path";
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { evaluateWorktreeGuard, type GuardDecision, type GuardOptions } from "../src/cli/commands/guard.js";
-import { kspec } from "./helpers/cli.js";
+import { kspec, createTempDir, initGitRepo, git } from "./helpers/cli.js";
+import * as fs from "node:fs";
 
 // Standard test project root and shadow worktree path
 const PROJECT_ROOT = "/home/user/project";
@@ -562,12 +563,25 @@ describe("evaluateWorktreeGuard", () => {
 // ─── CLI integration tests ───
 
 describe("kspec guard worktree CLI", () => {
-  // The CLI handler resolves the shadow worktree absolute path from git root + config.
-  // For CLI tests, we use the actual .kspec path that the handler will resolve.
-  // The handler calls loadProjectConfig(input.cwd) which finds the git root,
-  // then constructs path.resolve(gitRoot, config.shadow.directory).
+  // The CLI handler resolves the project root via resolveProjectRoots(), which
+  // finds the main repo root even when running from a dispatch worktree.
+  // The shadow path is then resolved as path.resolve(mainRoot, config.shadow.directory).
+  // When running in a dispatch worktree, mainRoot is the parent project, not the
+  // worktree itself — so cliShadowCwd must point to the main project's .kspec/.
   const cliTestCwd = process.cwd();
-  const cliShadowCwd = path.resolve(cliTestCwd, ".kspec");
+  // Resolve mainRoot the same way the guard does: via git --git-common-dir
+  const mainRoot = (() => {
+    const { execSync } = require("node:child_process");
+    const commonDir = execSync("git rev-parse --git-common-dir", {
+      cwd: cliTestCwd, encoding: "utf-8",
+    }).trim();
+    const absCommon = path.isAbsolute(commonDir)
+      ? path.resolve(commonDir)
+      : path.resolve(cliTestCwd, commonDir);
+    // If commonDir is <root>/.git, mainRoot is <root>
+    return path.dirname(absCommon);
+  })();
+  const cliShadowCwd = path.resolve(mainRoot, ".kspec");
 
   // AC: @trait-semantic-exit-codes ac-1 - exit 0 on success
   it("exits 0 and outputs allow JSON for safe command", () => {
@@ -655,6 +669,64 @@ describe("kspec guard worktree CLI", () => {
     expect(result.exitCode).toBe(0);
     const parsed = JSON.parse(result.stdout.trim());
     expect(parsed.decision).toBe("allow");
+  });
+
+  // AC: @native-guard-commands ac-worktree-guard — guard invoked from shadow worktree
+  describe("blocks dangerous ops when hook process runs inside shadow worktree", () => {
+    let tempDir: string;
+    let shadowDir: string;
+
+    beforeEach(async () => {
+      tempDir = await createTempDir();
+      initGitRepo(tempDir);
+      // Create an initial commit on main
+      fs.writeFileSync(path.join(tempDir, "README.md"), "test");
+      git("add .", tempDir);
+      git('commit -m "init"', tempDir);
+      // Create orphan branch kspec-meta with a commit
+      git("checkout --orphan kspec-meta", tempDir);
+      fs.writeFileSync(path.join(tempDir, "kynetic.yaml"), "version: 1");
+      git("add .", tempDir);
+      git('commit -m "init shadow"', tempDir);
+      // Switch back to main and add .kspec as a worktree
+      git("checkout main", tempDir);
+      git("worktree add .kspec kspec-meta", tempDir);
+      shadowDir = path.join(tempDir, ".kspec");
+    });
+
+    afterEach(() => {
+      // Clean up worktree before temp dir removal
+      try {
+        git("worktree remove .kspec --force", tempDir);
+      } catch {
+        // ignore
+      }
+    });
+
+    it("blocks dangerous command when process.cwd() is the shadow worktree", () => {
+      const input = JSON.stringify({
+        tool_input: { command: "git reset --hard" },
+        cwd: shadowDir,
+      });
+      // Run guard with cwd inside the shadow worktree — this is the scenario
+      // where the hook process itself starts from .kspec/
+      const result = kspec("guard worktree", shadowDir, { stdin: input });
+      expect(result.exitCode).toBe(0);
+      const parsed = JSON.parse(result.stdout.trim());
+      expect(parsed.decision).toBe("block");
+      expect(parsed.reason).toContain("kspec-worktree-guard");
+    });
+
+    it("allows safe command when process.cwd() is the shadow worktree", () => {
+      const input = JSON.stringify({
+        tool_input: { command: "git status" },
+        cwd: shadowDir,
+      });
+      const result = kspec("guard worktree", shadowDir, { stdin: input });
+      expect(result.exitCode).toBe(0);
+      const parsed = JSON.parse(result.stdout.trim());
+      expect(parsed.decision).toBe("allow");
+    });
   });
 
   // ─── Trait AC coverage: N/A documentation ───
