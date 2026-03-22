@@ -43527,7 +43527,17 @@ reviews:
     slugs: []
     title: Review fix-worktree-guard-to-detect-actual-shadow-branch-not-substring-match (cycle 5)
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite passed: 305 files, 6981 tests passed, 3 skipped, about 150s. No failures."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-22T02:01:01.192Z
+        completed_at: 2026-03-22T02:01:01.192Z
     events:
       - _ulid: 01KM9MAJN0X8HQHPAXWJW8ZQZT
         actor: Test User
@@ -43542,6 +43552,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-22T02:00:32.618Z
+      - _ulid: 01KM9MCDA93F0DT1X3V2S8XZXQ
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-22T02:01:01.514Z
     examined_commit: ab085eb989d558a8f2657da36cb6a2b5a5f750e6
     external_links: []
     lifecycle_state: open
@@ -43554,5 +43571,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-22T02:00:01.441Z
-    updated_at: 2026-03-22T02:00:32.297Z
+    updated_at: 2026-03-22T02:01:01.192Z
     notes: []
