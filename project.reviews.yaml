@@ -45571,7 +45571,22 @@ reviews:
     slugs: []
     title: Review task-multi-turn-invocation (cycle 5)
     author: Test User
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite result in this snapshot: 7042 passed, 1 failed, 3 skipped. Failure observed in
+          tests/agent-dispatch-engine.test.ts > Autonomous dispatch prompt guardrails > should
+          include worker completion guardrails for task.ready triggers, followed by ENOTEMPTY
+          cleanup on /tmp/kspec-dispatch-prompt-*. Isolated rerun of that single test passed, so the
+          failure is at least flaky, but the required full-suite check did not pass cleanly in this
+          review run."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-22T11:21:05.854Z
+        completed_at: 2026-03-22T11:21:05.854Z
     events:
       - _ulid: 01KMAM6RC1KGH8TR63KQ7ZBZ6G
         actor: Test User
@@ -45607,6 +45622,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMAMDWZMNJBDGWK0K9K17Q51
         timestamp: 2026-03-22T11:21:05.101Z
+      - _ulid: 01KMAMDYF29WJ5E39DSZ1T6MZ1
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-22T11:21:06.274Z
     examined_commit: cb2b471882c83c4b263922b20fc3bdb0ddb886f1
     external_links: []
     lifecycle_state: open
@@ -45677,5 +45699,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-22T11:17:10.657Z
-    updated_at: 2026-03-22T11:21:04.757Z
+    updated_at: 2026-03-22T11:21:05.854Z
     notes: []
