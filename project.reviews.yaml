@@ -44172,6 +44172,18 @@ reviews:
         runner: kspec
         created_at: 2026-03-22T09:36:03.551Z
         completed_at: 2026-03-22T09:36:03.551Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite run in this snapshot is not green: tests/agent-invocation-lifecycle.test.ts
+          has a failing timeout-cancel test ('should dispatch ACP cancel request on timeout').
+          Separate from that, review found a blocking schema issue in session_prompt validation."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-22T09:36:04.649Z
+        completed_at: 2026-03-22T09:36:04.649Z
     events:
       - _ulid: 01KMAE8WERGQ5HQT2ZBCVQ44PE
         actor: Test User
@@ -44193,6 +44205,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-22T09:36:03.875Z
+      - _ulid: 01KMAEDMVTQV8HWQ083A48ZZRF
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-22T09:36:04.986Z
     examined_commit: 769ad92f5181d44fac0de9b5994c66a0f4dabeab
     external_links: []
     lifecycle_state: open
@@ -44205,5 +44224,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-22T09:33:28.920Z
-    updated_at: 2026-03-22T09:36:03.551Z
+    updated_at: 2026-03-22T09:36:04.649Z
     notes: []
