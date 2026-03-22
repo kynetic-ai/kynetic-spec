@@ -6387,3 +6387,114 @@ describe("Cross-agent task dispatch exclusivity", () => {
     await engine.stop();
   });
 });
+
+// ─── AC-11: Idle grace period backward compatibility ─────────────────────────
+
+// AC: @multi-turn-session-lifecycle ac-11
+describe("AC-11: Idle grace period backward compatibility", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-dispatch-idle-grace-");
+  });
+
+  afterEach(async () => {
+    vi.restoreAllMocks();
+    await cleanupTempDir(testDir);
+  });
+
+  it("should pass idleGracePeriodMs=0 when no session.idle hooks are configured", async () => {
+    const agent = makeTestAgent({ id: "worker", dispatch: [{ on: "task.ready" }] });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const taskId = testUlid("TASK");
+
+    const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
+      session: {} as any,
+      outcome: "success",
+      durationMs: 1,
+    });
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
+
+    await engine.start();
+    await engine.handleStateChange({
+      taskId,
+      taskRef: `@${taskId}`,
+      fromStatus: "in_progress",
+      toStatus: "pending",
+      timestamp: Date.now(),
+      task: { automation: "eligible", tags: [] } as any,
+    });
+
+    await waitForMockCall(runSpy);
+
+    expect(runSpy).toHaveBeenCalled();
+    const invocationOpts = runSpy.mock.calls[0][0];
+    expect(invocationOpts.idleGracePeriodMs).toBe(0);
+
+    await engine.stop();
+  });
+
+  it("should pass DEFAULT_IDLE_GRACE_MS when a session.idle hook is configured", async () => {
+    const agent = makeTestAgent({ id: "worker", dispatch: [{ on: "task.ready" }] });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    // Add a session.idle hook to the meta YAML and re-commit
+    const hookUlid = testUlid("HOOK");
+    const metaContent = YAML.parse(
+      await fs.readFile(path.join(testDir, "kynetic.meta.yaml"), "utf-8"),
+    );
+    metaContent.hooks = [{
+      _ulid: hookUlid,
+      name: "test-idle-hook",
+      on: "session.idle",
+      action: { type: "kspec", command: "task list" },
+      enabled: true,
+    }];
+    await fs.writeFile(
+      path.join(testDir, "kynetic.meta.yaml"),
+      YAML.stringify(metaContent),
+      "utf-8",
+    );
+    execSync("git add -A && git commit -m 'add hook'", { cwd: testDir, stdio: "pipe" });
+
+    const taskId = testUlid("TASK", 2);
+
+    const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
+      session: {} as any,
+      outcome: "success",
+      durationMs: 1,
+    });
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
+
+    await engine.start();
+    await engine.handleStateChange({
+      taskId,
+      taskRef: `@${taskId}`,
+      fromStatus: "in_progress",
+      toStatus: "pending",
+      timestamp: Date.now(),
+      task: { automation: "eligible", tags: [] } as any,
+    });
+
+    await waitForMockCall(runSpy);
+
+    expect(runSpy).toHaveBeenCalled();
+    const invocationOpts = runSpy.mock.calls[0][0];
+    expect(invocationOpts.idleGracePeriodMs).toBe(invocationModule.DEFAULT_IDLE_GRACE_MS);
+
+    await engine.stop();
+  });
+});

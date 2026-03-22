@@ -140,6 +140,20 @@ describe("ac-2: session terminal state events", () => {
     expect(entry!.payload_fields).toContain("work_summary");
   });
 
+  // AC: @multi-turn-session-lifecycle ac-3
+  it("should register session.idle event with per-turn payload fields", () => {
+    expect(isRegisteredEventType("session.idle")).toBe(true);
+    const entry = getEventRegistryEntry("session.idle");
+    expect(entry).toBeDefined();
+    expect(entry!.domain).toBe("session");
+    expect(entry!.payload_fields).toContain("session_id");
+    expect(entry!.payload_fields).toContain("agent_id");
+    expect(entry!.payload_fields).toContain("task_ref");
+    expect(entry!.payload_fields).toContain("turn_count");
+    expect(entry!.payload_fields).toContain("stop_reason");
+    expect(entry!.payload_fields).toContain("turn_duration_ms");
+  });
+
   it("should emit session events through the event bus with standard envelope", () => {
     const bus = new EventBus();
 

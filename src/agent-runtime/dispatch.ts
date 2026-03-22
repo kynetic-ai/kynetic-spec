@@ -22,10 +22,11 @@ import {
   type LoadedTask,
   type LoadedAgent,
 } from "../parser/index.js";
-import { DEFAULT_KSPEC_CLI_PATH, runInvocation } from "./invocation.js";
-import type { SessionRegistry } from "./session-registry.js";
+import { DEFAULT_IDLE_GRACE_MS, DEFAULT_KSPEC_CLI_PATH, runInvocation } from "./invocation.js";
+import { SessionRegistry } from "./session-registry.js";
+import type { SessionIdleContext } from "./invocation.js";
 import { loadProjectConfig, resolveDispatchRemoteSync } from "../parser/config.js";
-import type { InvocationOptions, InvocationResult, TurnCompleteInfo } from "./invocation.js";
+import type { InvocationOptions, InvocationResult } from "./invocation.js";
 import { SessionEventAccumulator } from "./session-event-accumulator.js";
 import type { SessionEventData } from "./session-event-types.js";
 import { EventBus, type EventBusOptions, type EventEnvelope, type EmitOptions } from "./event-bus.js";
@@ -786,15 +787,6 @@ export interface DispatchEngineOptions {
    * AC: @dispatch-event-envelope ac-5, ac-6
    */
   eventBusOptions?: EventBusOptions;
-  /**
-   * Session registry shared with action executors for session_prompt delivery.
-   * When provided, the engine passes it through to runInvocation() so sessions
-   * are registered while alive and discoverable by session_prompt actions.
-   *
-   * AC: @session-prompt-action ac-1 — enables production prompt delivery path
-   * AC: @active-session-registry ac-1
-   */
-  sessionRegistry?: SessionRegistry;
 }
 
 // ─── DispatchEngine ───────────────────────────────────────────────────────────
@@ -819,8 +811,18 @@ export class DispatchEngine {
   /** AC: @per-task-dispatch-drain-coalescing ac-4 */
   private coalesceWindowMs: number;
   private kspecCliPath?: string;
-  /** AC: @session-prompt-action ac-1, @active-session-registry ac-1 */
-  private _sessionRegistry?: SessionRegistry;
+  /**
+   * Active session registry for multi-turn prompt delivery.
+   * Shared with the action executor so hooks can deliver prompts to live sessions.
+   * AC: @active-session-registry ac-1, @multi-turn-session-lifecycle ac-2, ac-4
+   */
+  private _sessionRegistry = new SessionRegistry();
+  /**
+   * Whether any hook targets session.idle. Updated on each meta context load.
+   * When false, invocations use idleGracePeriodMs=0 for backward-compat (ac-11).
+   * AC: @multi-turn-session-lifecycle ac-11
+   */
+  private _hasSessionIdleHooks = false;
   private onInvocationEvent?: (event: InvocationEvent) => void;
   private onSessionEvent?: (event: SessionEventData) => void;
   private onSyncStateEvent?: (event: SyncStateEvent) => void;
@@ -916,7 +918,6 @@ export class DispatchEngine {
     // AC: @per-task-dispatch-drain-coalescing ac-4
     this.coalesceWindowMs = options.coalesceWindowMs ?? 5000;
     this.kspecCliPath = options.kspecCliPath;
-    this._sessionRegistry = options.sessionRegistry;
     this.onInvocationEvent = options.onInvocationEvent;
     this.onSessionEvent = options.onSessionEvent;
     this.onSyncStateEvent = options.onSyncStateEvent;
@@ -938,11 +939,13 @@ export class DispatchEngine {
   }
 
   /**
-   * Session registry for multi-turn prompt delivery.
-   * Returns undefined if no registry was provided at construction.
+   * Active session registry for multi-turn prompt delivery.
+   * Exposes the registry so the action executor (and other components)
+   * can deliver prompts to live sessions.
+   *
    * AC: @active-session-registry ac-3
    */
-  get sessionRegistry(): SessionRegistry | undefined {
+  get sessionRegistry(): SessionRegistry {
     return this._sessionRegistry;
   }
 
@@ -1201,10 +1204,17 @@ export class DispatchEngine {
     // risks hanging indefinitely if an invocation never resolves).
     this.queues.clear();
 
-    // AC: @agent-dispatch-engine ac-11 - Send graceful cancel to all active invocations
+    // AC: @agent-dispatch-engine ac-11 - Send graceful cancel to all active invocations.
+    // Abort controllers BEFORE closing sessions so that invocations waiting
+    // in idle observe the abort signal (InvocationAbortedError) rather than
+    // the prompt-queue close (which resolves null and falls through the
+    // normal success path, misreporting interrupted sessions as completed).
     for (const controller of this.invocationAbortControllers) {
       controller.abort();
     }
+
+    // AC: @active-session-registry ac-4 — close all active sessions after abort
+    this._sessionRegistry.closeAll("dispatch engine stopping");
 
     // Wait for all running invocations to complete (or abort).
     // Safe as a single pass: queues are already cleared above, and
@@ -1561,6 +1571,8 @@ export class DispatchEngine {
     try {
       const ctx = await initContext(this.projectDir);
       const meta = await loadMetaContext(ctx);
+      // AC: @multi-turn-session-lifecycle ac-11 — track whether any hook targets session.idle
+      this._hasSessionIdleHooks = meta.hooks.some((h) => h.on === "session.idle");
       return meta.agents;
     } catch {
       return [];
@@ -2485,23 +2497,24 @@ export class DispatchEngine {
           const cache = getSessionCache(sessionsDir);
           cache.incrementEventCount(sid);
         },
-        // AC: @session-prompt-action ac-1, @active-session-registry ac-1
-        // Pass session registry so invocation registers a handle while alive
+        // AC: @active-session-registry ac-1, @multi-turn-session-lifecycle ac-2, ac-4
         sessionRegistry: this._sessionRegistry,
-        // AC: @session-idle-event ac-1 — emit session.idle after each turn completes
-        // AC: @session-prompt-action ac-1 — enables idle → follow-up prompt flow
-        onTurnComplete: async (turnInfo: TurnCompleteInfo) => {
+        // AC: @multi-turn-session-lifecycle ac-2, ac-11 — grace period for async prompt delivery;
+        // only enable when session.idle hooks exist, otherwise close immediately for backward compat
+        idleGracePeriodMs: this._hasSessionIdleHooks ? DEFAULT_IDLE_GRACE_MS : 0,
+        // AC: @multi-turn-session-lifecycle ac-3 — emit session.idle event on event bus
+        onIdle: (ctx: SessionIdleContext) => {
           this._eventBus.emit({
             event_type: "session.idle",
             source_type: "invocation_lifecycle",
-            source_id: turnInfo.sessionId,
+            source_id: ctx.sessionId,
             payload: {
-              session_id: turnInfo.sessionId,
-              agent_id: turnInfo.agentId,
-              task_ref: turnInfo.taskRef ?? null,
-              turn_count: turnInfo.turnCount,
-              stop_reason: turnInfo.stopReason,
-              duration_ms: turnInfo.turnDurationMs,
+              session_id: ctx.sessionId,
+              agent_id: ctx.agentId,
+              task_ref: ctx.taskRef ?? undefined,
+              turn_count: ctx.turnCount,
+              stop_reason: ctx.stopReason,
+              turn_duration_ms: ctx.turnDurationMs,
             },
           });
         },

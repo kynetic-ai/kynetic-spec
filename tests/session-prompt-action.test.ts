@@ -31,7 +31,7 @@ import {
   type SessionHandle,
   type SessionState,
 } from "../src/agent-runtime/session-registry.js";
-import type { TurnCompleteInfo } from "../src/agent-runtime/invocation.js";
+import type { SessionIdleContext } from "../src/agent-runtime/invocation.js";
 import { ScheduleSchema } from "../src/schema/schedules.js";
 import { CompositionSchema } from "../src/schema/composition.js";
 import { testUlid } from "./helpers/cli.js";
@@ -65,7 +65,7 @@ function makeSessionIdleContext(overrides: Partial<ActionEventContext> = {}): Ac
     task_ref: "@task-current",
     turn_count: 1,
     stop_reason: "end_turn",
-    duration_ms: 30000,
+    turn_duration_ms: 30000,
     ...overrides,
   };
 }
@@ -885,7 +885,7 @@ describe("InvocationOptions.sessionRegistry — session handle lifecycle", () =>
     const handle = registry.get(sessionId)!;
 
     // Transition to idle but do NOT set pendingResolve — simulates the race
-    // window between onTurnComplete and the idle-loop installing the resolver
+    // window between onIdle and the idle-loop installing the resolver
     sessionState = "idle";
     pendingResolve = null;
 
@@ -1063,12 +1063,12 @@ describe("InvocationOptions.sessionRegistry — session handle lifecycle", () =>
   });
 });
 
-// ─── TurnCompleteInfo and onTurnComplete Tests ───────────────────────────────
+// ─── SessionIdleContext and onIdle Tests ───────────────────────────────
 
-describe("TurnCompleteInfo — onTurnComplete callback contract", () => {
+describe("SessionIdleContext — onIdle callback contract", () => {
   // AC: @session-idle-event ac-1 — turn complete info includes required fields
-  it("TurnCompleteInfo type includes session context and turn metadata", () => {
-    const info: TurnCompleteInfo = {
+  it("SessionIdleContext type includes session context and turn metadata", () => {
+    const info: SessionIdleContext = {
       sessionId: "session-001",
       agentId: "task-worker",
       taskRef: "@task-foo",
@@ -1087,7 +1087,7 @@ describe("TurnCompleteInfo — onTurnComplete callback contract", () => {
 
   // AC: @session-idle-event ac-2 — turn count increments across turns
   it("turnCount increments across successive turns", () => {
-    const turns: TurnCompleteInfo[] = [];
+    const turns: SessionIdleContext[] = [];
     for (let i = 1; i <= 3; i++) {
       turns.push({
         sessionId: "session-multi",
@@ -1105,7 +1105,7 @@ describe("TurnCompleteInfo — onTurnComplete callback contract", () => {
 
   // AC: @session-idle-event ac-1 — taskRef is optional for unbound sessions
   it("taskRef can be undefined for unbound sessions", () => {
-    const info: TurnCompleteInfo = {
+    const info: SessionIdleContext = {
       sessionId: "session-unbound",
       agentId: "task-worker",
       taskRef: undefined,

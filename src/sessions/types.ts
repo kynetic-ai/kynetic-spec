@@ -166,6 +166,11 @@ export const EventTypeSchema = z.enum([
   "agent.failed",
   "agent.timeout",
   "agent.stalled",
+  // Multi-turn session lifecycle events
+  // AC: @multi-turn-session-lifecycle ac-1
+  "agent.turn_completed",
+  // AC: @multi-turn-session-lifecycle ac-16
+  "session.prompts_discarded",
 ]);
 
 export type EventType = z.infer<typeof EventTypeSchema>;

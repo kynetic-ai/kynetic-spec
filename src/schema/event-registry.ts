@@ -131,10 +131,11 @@ export const EVENT_REGISTRY: readonly EventRegistryEntry[] = [
 
   // ─── Session domain ───────────────────────────────────────────────────
   // AC: @session-idle-event ac-1 — session idle event with turn context
+  // AC: @multi-turn-session-lifecycle ac-3
   {
     event_type: "session.idle",
     domain: "session",
-    description: "A dispatch session entered idle state after an agent completed a turn",
+    description: "A multi-turn session transitioned to idle after a turn completed",
     payload_fields: SESSION_IDLE_PAYLOAD_FIELDS,
   },
   // AC: @dispatch-event-taxonomy ac-2 — session terminal state events
