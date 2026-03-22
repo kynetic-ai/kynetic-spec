@@ -45203,6 +45203,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMAK3FXWV2ZJPBJGHPFCW1D9
         timestamp: 2026-03-22T10:57:55.449Z
+      - _ulid: 01KMAK3H8YZN5VNPD6WZG13CZX
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMAK3GZ870XMHZACZ0AP3BYJ
+        timestamp: 2026-03-22T10:57:56.510Z
     examined_commit: d5bf3a6fbc1d57c239e4db860559df2e723d145c
     external_links: []
     lifecycle_state: open
@@ -45251,7 +45258,24 @@ reviews:
               of a live ACP session.
             created_at: 2026-03-22T10:57:55.132Z
         kind: blocker
+      - _ulid: 01KMAK3GZ870XMHZACZ0AP3BYJ
+        anchor:
+          type: code
+          commit: d5bf3a6fbc1d57c239e4db860559df2e723d145c
+          line_end: 1206
+          line_start: 1201
+          path: src/agent-runtime/dispatch.ts
+          side: head
+        entries:
+          - _ulid: 01KMAK3GZ8TH7R969JMCDJTFE5
+            author: Test User
+            body: Shutdown closes registered sessions before aborting their controllers. For an invocation
+              already waiting in idle,  makes  resolve , so  falls through its normal success path
+              and emits / before the abort signal is observed. Stopping the engine can therefore
+              misreport interrupted multi-turn sessions as successful completions.
+            created_at: 2026-03-22T10:57:56.200Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-22T10:50:43.284Z
-    updated_at: 2026-03-22T10:57:55.132Z
+    updated_at: 2026-03-22T10:57:56.200Z
     notes: []
