@@ -43538,6 +43538,17 @@ reviews:
         runner: npm
         created_at: 2026-03-22T02:01:01.192Z
         completed_at: 2026-03-22T02:01:01.192Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Exited 6 with warnings only. No schema or reference errors. Remaining warnings are
+          existing repo-wide orphan/completeness issues unrelated to this task.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-22T02:01:02.266Z
+        completed_at: 2026-03-22T02:01:02.266Z
     events:
       - _ulid: 01KM9MAJN0X8HQHPAXWJW8ZQZT
         actor: Test User
@@ -43559,6 +43570,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-22T02:01:01.514Z
+      - _ulid: 01KM9MCEBM9YG796A57JF288FC
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-22T02:01:02.580Z
     examined_commit: ab085eb989d558a8f2657da36cb6a2b5a5f750e6
     external_links: []
     lifecycle_state: open
@@ -43571,5 +43589,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-22T02:00:01.441Z
-    updated_at: 2026-03-22T02:01:01.192Z
+    updated_at: 2026-03-22T02:01:02.266Z
     notes: []
