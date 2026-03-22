@@ -39,7 +39,7 @@ description: |
 spec_ref: "@session-prompt-action"
 plan_ref: "@plan-multi-turn-session-lifecycle"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-session-registry"
@@ -51,6 +51,7 @@ tags:
   - actions
   - sessions
 vcs_refs: []
+session_id: 01KMACR2MCNYR8FGH634JKG30H
 history:
   - author: "@claude"
     changes:
@@ -59,6 +60,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-03-22T07:30:59.080Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KMACR2MCNYR8FGH634JKG30H
+        previous: null
+      started_at:
+        new: 2026-03-22T09:07:27.500Z
+        previous: null
+    command: task-start
+    timestamp: 2026-03-22T09:07:27.501Z
 created_at: 2026-03-22T07:28:43.409Z
+started_at: 2026-03-22T09:07:27.500Z
 todos: []
 automation: eligible
