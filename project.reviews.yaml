@@ -44358,9 +44358,16 @@ reviews:
           kind: blocker
           thread_ulid: 01KMAFY4RZJAC2SDD7E8GJJ6D5
         timestamp: 2026-03-22T10:02:34.495Z
+      - _ulid: 01KMAFY6B66BD5BJPEHDHRSYAG
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          from: closed
+          to: open
+        timestamp: 2026-03-22T10:02:35.751Z
     examined_commit: f7bd46ee2c1a4bf8558ff6e67c6faeca544c2626
     external_links: []
-    lifecycle_state: closed
+    lifecycle_state: open
     related_refs: []
     subject:
       type: task
@@ -44443,5 +44450,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-22T10:01:16.410Z
     created_at: 2026-03-22T09:58:29.291Z
-    updated_at: 2026-03-22T10:02:34.144Z
+    updated_at: 2026-03-22T10:02:35.371Z
     notes: []
