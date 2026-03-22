@@ -43291,6 +43291,24 @@ reviews:
         runner: npm
         created_at: 2026-03-22T01:32:00.175Z
         completed_at: 2026-03-22T01:32:00.175Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/cli/commands/guard.ts, tests/guard-worktree.test.ts,
+          src/cli/commands/setup.ts, src/parser/config.ts, tests/enhanced-setup.test.ts,
+          tests/agent-invocation-lifecycle.test.ts. Commands run: git diff base...head, git diff
+          --stat, kspec task get, kspec review for-task/get, kspec validate, rg AC annotations, npm
+          test -- tests/guard-worktree.test.ts, npm test --
+          tests/agent-invocation-lifecycle.test.ts, npm test (twice). Claims verified: current patch
+          now compares against resolved absolute shadow worktree path and covers nested unrelated
+          .kspec paths; verified in code and targeted tests. Categories searched: correctness, edge
+          cases, error handling, test quality, integration. Finding: no code-level regression found
+          in the submitted guard patch, but required full-suite gate remains failing."
+        name: review-evidence
+        required: false
+        created_at: 2026-03-22T01:32:01.322Z
+        completed_at: 2026-03-22T01:32:01.322Z
     events:
       - _ulid: 01KM9JBKXSN6TGT9PCG19MH6TD
         actor: Test User
@@ -43319,6 +43337,13 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-03-22T01:32:00.518Z
+      - _ulid: 01KM9JQA6FB3BRREFWV5DCZ50V
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-03-22T01:32:01.615Z
     examined_commit: 4d66d49bc8ea95ad119c39fe63d7d437d5116019
     external_links: []
     lifecycle_state: open
@@ -43350,5 +43375,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-22T01:25:38.361Z
-    updated_at: 2026-03-22T01:32:00.175Z
+    updated_at: 2026-03-22T01:32:01.322Z
     notes: []
