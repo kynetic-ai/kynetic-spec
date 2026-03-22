@@ -45198,6 +45198,20 @@ reviews:
         runner: npm
         created_at: 2026-03-22T10:58:21.090Z
         completed_at: 2026-03-22T10:58:21.090Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Observed 1 failing test in full suite: tests/agent-invocation-lifecycle.test.ts > Cleanup
+          on completion or failure > should restore env even when invocation fails timed out at
+          60000ms. Summary: 7042 passed, 3 skipped, 1 failed. A targeted rerun of npm test --
+          agent-invocation-lifecycle passed, so the timeout appears flaky or load-sensitive rather
+          than a deterministic new failure."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-22T10:58:22.226Z
+        completed_at: 2026-03-22T10:58:22.226Z
     events:
       - _ulid: 01KMAJPA6KHAA6CY60Q9ZDHK0V
         actor: Test User
@@ -45247,6 +45261,13 @@ reviews:
           status: pass
           name: npm test -- agent-invocation-lifecycle
         timestamp: 2026-03-22T10:58:21.460Z
+      - _ulid: 01KMAK4AQ1T8YJHY8DKXCJ2NAG
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-22T10:58:22.562Z
     examined_commit: d5bf3a6fbc1d57c239e4db860559df2e723d145c
     external_links: []
     lifecycle_state: open
@@ -45314,5 +45335,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-22T10:50:43.284Z
-    updated_at: 2026-03-22T10:58:21.090Z
+    updated_at: 2026-03-22T10:58:22.226Z
     notes: []
