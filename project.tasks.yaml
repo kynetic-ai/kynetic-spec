@@ -21635,8 +21635,11 @@
   spec_ref: "@task-directory-storage"
   meta_ref: null
   plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged to dev. Verified AC annotations for @task-listing-performance,
+    @task-detail-loading, and @task-storage-activation; merge gate fixed by stabilizing
+    process-spawning invocation test timeouts; review 01KM9DAZ approved with npm test passing.
   depends_on: []
   context: []
   priority: 3
@@ -21658,6 +21661,7 @@
   created_at: 2026-03-21T22:57:05.177Z
   started_at: 2026-03-21T23:56:15.327Z
   submitted_at: 2026-03-21T23:56:21.735Z
+  completed_at: 2026-03-22T00:02:38.452Z
   notes:
     - _ulid: 01KM99WC7M7NA7PJQSBY6BW4MB
       content: >-
