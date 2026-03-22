@@ -46151,6 +46151,13 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-03-22T12:05:30.554Z
+      - _ulid: 01KMAQ1B2708AF39T021E7J0X1
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMAQ1AFKJW00EP4VSS4F2Z75
+        timestamp: 2026-03-22T12:06:38.919Z
     examined_commit: 7e45d49f6ef5ac6d24b08b3e5279c4f12cbdd529
     external_links: []
     lifecycle_state: open
@@ -46160,8 +46167,27 @@ reviews:
       content_hash: ""
       ref: "@01KMA74ECH1ZW03KM3403N023Z"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMAQ1AFKJW00EP4VSS4F2Z75
+        anchor:
+          type: code
+          commit: 7e45d49f6ef5ac6d24b08b3e5279c4f12cbdd529
+          line_end: 509
+          line_start: 501
+          path: src/agent-runtime/invocation.ts
+          side: head
+        entries:
+          - _ulid: 01KMAQ1AFK32X58DJK75AKDXY7
+            author: Test User
+            body: Idle-session prompt delivery resolves immediately instead of waiting for the follow-up turn to
+              finish. ActionExecutor.executeSessionPrompt() awaits handle.sendPrompt(), and in the
+              idle branch sendPrompt() returns Promise.resolve() as soon as it wakes the idle loop.
+              That means action.completed is emitted before the prompted turn actually runs,
+              violating @session-prompt-action ac-2 and the task contract that the action remains
+              running until the turn completes.
+            created_at: 2026-03-22T12:06:38.323Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-22T12:00:03.146Z
-    updated_at: 2026-03-22T12:05:29.966Z
+    updated_at: 2026-03-22T12:06:38.323Z
     notes: []
