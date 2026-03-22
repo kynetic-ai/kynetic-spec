@@ -18739,23 +18739,24 @@ workspaces:
     base_branch_point: 48ee7bf43230aec5c67ea89428745854d1c4dd6e
     bootstrap:
       status: succeeded
-      canonicalBranchHead: 2dbdb68a84693d74e9ae060ab2c9753e3b1d5fa1
+      canonicalBranchHead: 7e45d49f6ef5ac6d24b08b3e5279c4f12cbdd529
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
       failureMessage: null
       invalidationReasons:
         - canonical-branch-head-changed
-      lastRole: worker
-      lastRunAt: 2026-03-22T11:44:25.780Z
+        - workspace-dependencies-missing
+      lastRole: reviewer
+      lastRunAt: 2026-03-22T11:59:09.969Z
       roleStates:
         reviewer:
           status: succeeded
-          canonicalBranchHead: 2dbdb68a84693d74e9ae060ab2c9753e3b1d5fa1
+          canonicalBranchHead: 7e45d49f6ef5ac6d24b08b3e5279c4f12cbdd529
           configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
           failureMessage: null
           invalidationReasons:
             - canonical-branch-head-changed
             - workspace-dependencies-missing
-          lastRunAt: 2026-03-22T11:32:51.739Z
+          lastRunAt: 2026-03-22T11:59:09.969Z
           steps:
             - status: succeeded
               allowTrackedChanges: false
@@ -18786,7 +18787,27 @@ workspaces:
             - canonical-branch-head-changed
           lastRunAt: 2026-03-22T11:44:25.780Z
           steps: []
-      steps: []
+      steps:
+        - status: succeeded
+          allowTrackedChanges: false
+          idempotent: true
+          name: install-workspace-dependencies
+          output: |-
+            added 283 packages, and audited 288 packages in 3s
+
+            66 packages are looking for funding
+              run `npm fund` for details
+
+            9 vulnerabilities (1 low, 5 moderate, 3 high)
+
+            To address all issues, run:
+              npm audit fix
+
+            Run `npm audit` for details.
+          reviewerRerunAllowed: true
+          role: reviewer
+          run: npm ci
+          source: dispatch
     branch_provenance:
       adopted_at: null
       adopted_from: null
@@ -18801,12 +18822,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-22T11:58:56.970Z
+      updated_at: 2026-03-22T11:59:04.206Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-22T11:58:56.970Z
+      updated_at: 2026-03-22T11:59:04.206Z
     integration:
       status: pending
       detail: null
@@ -18814,24 +18835,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 48ee7bf43230aec5c67ea89428745854d1c4dd6e
-      updated_at: 2026-03-22T11:58:56.970Z
-    lifecycle_state: ready
+      updated_at: 2026-03-22T11:59:04.206Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KMA74ECH1ZW03KM3403N023Z"
     task_slug: task-session-prompt-action
     timestamps:
       closed_at: null
       last_active_at: 2026-03-22T11:44:26.914Z
-      last_reconciled_at: 2026-03-22T11:58:56.970Z
+      last_reconciled_at: 2026-03-22T11:59:04.206Z
       created_at: 2026-03-22T09:06:43.597Z
-      updated_at: 2026-03-22T11:58:56.970Z
+      updated_at: 2026-03-22T11:59:09.969Z
     workspace_id: dispatch-workspace-01KMA74ECH1ZW03KM3403N023Z
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 7e45d49f6ef5ac6d24b08b3e5279c4f12cbdd529
+        last_seen_at: 2026-03-22T11:59:04.206Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-prompt-action-01kma74e-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-session-prompt-action/01kma74e
-        head: 2dbdb68a84693d74e9ae060ab2c9753e3b1d5fa1
-        last_seen_at: 2026-03-22T11:44:24.830Z
+        head: 7e45d49f6ef5ac6d24b08b3e5279c4f12cbdd529
+        last_seen_at: 2026-03-22T11:59:04.206Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-prompt-action-01kma74e
