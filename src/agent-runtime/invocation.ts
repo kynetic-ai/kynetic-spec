@@ -432,6 +432,17 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
   // Timeout handle declared here so it's accessible in the finally cleanup block
   let timeoutHandle: ReturnType<typeof setTimeout> | undefined;
 
+  // Prompt queue for follow-up delivery. Declared outside try/finally so the
+  // finally block can reject remaining entries on any exit path.
+  // AC: @session-prompt-action ac-1, ac-2, ac-5
+  interface QueuedPromptEntry {
+    prompt: string;
+    resolve: () => void;
+    reject: (err: Error) => void;
+  }
+  const promptQueue: QueuedPromptEntry[] = [];
+  let pendingPromptResolve: ((prompt: string) => void) | null = null;
+
   try {
     // ─── Inject KSPEC_SESSION_ID ──────────────────────────────────────────
     // AC: @agent-invocation-lifecycle ac-2
@@ -472,17 +483,6 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       },
     });
 
-    // ─── Prompt queue for follow-up delivery ─────────────────────────────
-    // AC: @session-prompt-action ac-1, ac-5 — idle sessions accept prompts;
-    //     prompting sessions queue them for after the current turn completes.
-    //
-    // The queue holds at most one pending prompt. When sendPrompt() is called:
-    //   - If idle: the prompt resolves the idle wait, transitioning to prompting
-    //   - If prompting: the prompt is queued for after the current turn
-    //   - If closed: sendPrompt rejects with an error
-    let pendingPromptResolve: ((prompt: string) => void) | null = null;
-    let queuedPrompt: string | null = null;
-
     // ─── Register session handle ─────────────────────────────────────────
     // AC: @session-prompt-action ac-1 — production registration path
     // AC: @active-session-registry ac-1, ac-2
@@ -492,11 +492,11 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     // when idle, sendPrompt() wakes the idle loop; when prompting, it queues.
     if (sessionRegistry) {
       sessionRegistry.register(sessionId, {
-        sendPrompt: async (prompt: string) => {
+        sendPrompt: (prompt: string): Promise<void> => {
           if (sessionState === "closed") {
-            throw new Error(
+            return Promise.reject(new Error(
               `Session '${sessionId}' is closed — cannot deliver prompt to a closed session.`,
-            );
+            ));
           }
           if (sessionState === "idle" && pendingPromptResolve) {
             // AC: @session-prompt-action ac-1 — immediate delivery to idle session
@@ -504,19 +504,35 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
             const resolve = pendingPromptResolve;
             pendingPromptResolve = null;
             resolve(prompt);
+            // Resolve immediately — the caller's action is "delivered" once
+            // the idle loop picks it up. The idle loop itself tracks the turn.
+            return Promise.resolve();
           } else if (sessionState === "prompting") {
-            // AC: @session-prompt-action ac-5 — queue for after current turn
-            queuedPrompt = prompt;
+            // AC: @session-prompt-action ac-5 — queue for after current turn.
+            // Return a promise that won't settle until this prompt's turn completes
+            // (or is rejected on session close). This ensures the action lifecycle
+            // event (action.completed) only fires after the queued turn finishes.
+            // AC: @session-prompt-action ac-2
+            return new Promise<void>((resolve, reject) => {
+              promptQueue.push({ prompt, resolve, reject });
+            });
           } else {
             // Idle but no resolver set (should not happen in normal flow)
-            throw new Error(
+            return Promise.reject(new Error(
               `Session '${sessionId}' is not ready to accept prompts.`,
-            );
+            ));
           }
         },
         getState: () => sessionState,
-        requestClose: (_reason: string) => {
+        requestClose: (reason: string) => {
           sessionState = "closed";
+          // Reject all queued prompts — their turns will never run
+          const closeError = new Error(
+            `Session '${sessionId}' closed: ${reason}`,
+          );
+          for (const entry of promptQueue.splice(0)) {
+            entry.reject(closeError);
+          }
           // Wake idle wait if pending, so the loop can exit
           if (pendingPromptResolve) {
             const resolve = pendingPromptResolve;
@@ -666,11 +682,12 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       }
 
       // Check for queued prompt (from sendPrompt during prompting state)
-      // AC: @session-prompt-action ac-5
+      // AC: @session-prompt-action ac-5 — drain queue one at a time
       let followUpPrompt: string | null = null;
-      if (queuedPrompt !== null) {
-        followUpPrompt = queuedPrompt;
-        queuedPrompt = null;
+      let currentQueueEntry: QueuedPromptEntry | null = null;
+      if (promptQueue.length > 0) {
+        currentQueueEntry = promptQueue.shift()!;
+        followUpPrompt = currentQueueEntry.prompt;
         sessionState = "prompting";
       } else if (sessionRegistry && sessionState === "idle") {
         // Wait briefly for a follow-up prompt from session_prompt actions.
@@ -714,6 +731,13 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
         if (!stallResolved) {
           // Follow-up stall: close the session rather than throwing
           sessionState = "closed";
+          // Reject remaining queued prompts
+          const stallError = new Error(
+            `Session '${sessionId}' closed: follow-up turn stalled`,
+          );
+          for (const entry of promptQueue.splice(0)) {
+            entry.reject(stallError);
+          }
           if (pendingPromptResolve) {
             const resolve = pendingPromptResolve;
             pendingPromptResolve = null;
@@ -732,6 +756,17 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
           ...(abortPromise ? [abortPromise] : []),
         ]);
         lastStopReason = promptResult.stopReason;
+        // AC: @session-prompt-action ac-2 — resolve the queued entry's promise
+        // now that the turn has actually completed. This ensures the action
+        // executor doesn't emit action.completed until the turn finishes.
+        currentQueueEntry?.resolve();
+      } catch (turnErr) {
+        // Reject the queued entry so the action executor sees the failure.
+        // Re-throw so the outer catch handles timeout/abort/failure paths.
+        currentQueueEntry?.reject(
+          turnErr instanceof Error ? turnErr : new Error(String(turnErr)),
+        );
+        throw turnErr;
       } finally {
         clearTimeout(followUpStallHandle);
       }
@@ -755,6 +790,13 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
 
     // ─── Close session as completed ───────────────────────────────────────
     sessionState = "closed";
+    // Reject any remaining queued prompts — the session is ending
+    const closeError = new Error(
+      `Session '${sessionId}' closed: invocation completed normally`,
+    );
+    for (const entry of promptQueue.splice(0)) {
+      entry.reject(closeError);
+    }
     sessionRegistry?.unregister(sessionId);
     const finalSession = await closeSession(sessionsDir, sessionId, "completed", "Invocation completed normally");
 
@@ -936,6 +978,13 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
 
     // AC: @active-session-registry ac-2 — unregister on any exit path
     sessionState = "closed";
+    // Reject any remaining queued prompts on any exit path
+    const finalCloseError = new Error(
+      `Session '${sessionId}' closed unexpectedly`,
+    );
+    for (const entry of promptQueue.splice(0)) {
+      entry.reject(finalCloseError);
+    }
     sessionRegistry?.unregister(sessionId);
 
     // End ACP session

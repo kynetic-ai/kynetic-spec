@@ -800,18 +800,24 @@ describe("InvocationOptions.sessionRegistry — session handle lifecycle", () =>
   });
 
   // AC: @session-prompt-action ac-5 — prompting handle queues prompt
-  it("prompting handle queues sendPrompt for after current turn", async () => {
+  // AC: @session-prompt-action ac-2 — sendPrompt promise defers until turn completes
+  it("prompting handle queues sendPrompt and defers resolution until turn completes", async () => {
     const registry = new SessionRegistry();
     const sessionId = "queue-001";
 
     let sessionState: SessionState = "prompting";
-    let queuedPrompt: string | null = null;
+    interface QueueEntry { prompt: string; resolve: () => void; reject: (e: Error) => void }
+    const queue: QueueEntry[] = [];
 
     registry.register(sessionId, {
-      sendPrompt: async (prompt: string) => {
+      sendPrompt: (prompt: string): Promise<void> => {
         if (sessionState === "prompting") {
-          queuedPrompt = prompt;
+          // Mirror the production implementation: return a deferred promise
+          return new Promise<void>((resolve, reject) => {
+            queue.push({ prompt, resolve, reject });
+          });
         }
+        return Promise.resolve();
       },
       getState: () => sessionState,
       requestClose: () => { sessionState = "closed"; },
@@ -819,11 +825,112 @@ describe("InvocationOptions.sessionRegistry — session handle lifecycle", () =>
 
     const handle = registry.get(sessionId)!;
 
-    // sendPrompt while prompting should queue
-    await handle.sendPrompt("Queued for later");
-    expect(queuedPrompt).toBe("Queued for later");
+    // sendPrompt while prompting should queue and NOT resolve yet
+    let resolved = false;
+    const sendPromise = handle.sendPrompt("Queued for later").then(() => { resolved = true; });
+
+    // Queue should have the entry but promise should not have resolved
+    expect(queue.length).toBe(1);
+    expect(queue[0].prompt).toBe("Queued for later");
+    expect(resolved).toBe(false);
+
+    // Simulate the turn completing — resolve the entry
+    queue[0].resolve();
+    await sendPromise;
+    expect(resolved).toBe(true);
+
     // State remains prompting — the queue is drained after turn completes
     expect(handle.getState()).toBe("prompting");
+  });
+
+  // AC: @session-prompt-action ac-1, ac-5 — multiple queued prompts are preserved
+  it("multiple concurrent sendPrompt calls are all queued (no overwrite)", async () => {
+    const registry = new SessionRegistry();
+    const sessionId = "multi-queue-001";
+
+    let sessionState: SessionState = "prompting";
+    interface QueueEntry { prompt: string; resolve: () => void; reject: (e: Error) => void }
+    const queue: QueueEntry[] = [];
+
+    registry.register(sessionId, {
+      sendPrompt: (prompt: string): Promise<void> => {
+        if (sessionState === "closed") {
+          return Promise.reject(new Error("closed"));
+        }
+        if (sessionState === "prompting") {
+          return new Promise<void>((resolve, reject) => {
+            queue.push({ prompt, resolve, reject });
+          });
+        }
+        return Promise.resolve();
+      },
+      getState: () => sessionState,
+      requestClose: () => { sessionState = "closed"; },
+    });
+
+    const handle = registry.get(sessionId)!;
+
+    // Fire two session_prompt actions while the session is prompting
+    const results: boolean[] = [];
+    const p1 = handle.sendPrompt("Prompt A").then(() => { results.push(true); });
+    const p2 = handle.sendPrompt("Prompt B").then(() => { results.push(true); });
+
+    // Both should be queued, neither lost
+    expect(queue.length).toBe(2);
+    expect(queue[0].prompt).toBe("Prompt A");
+    expect(queue[1].prompt).toBe("Prompt B");
+    expect(results).toEqual([]);
+
+    // Resolve them in order (simulating sequential turn completion)
+    queue[0].resolve();
+    await p1;
+    expect(results).toEqual([true]);
+
+    queue[1].resolve();
+    await p2;
+    expect(results).toEqual([true, true]);
+  });
+
+  // AC: @session-prompt-action ac-4, ac-5 — queued prompts rejected on close
+  it("queued sendPrompt promises are rejected when session closes", async () => {
+    const registry = new SessionRegistry();
+    const sessionId = "close-reject-001";
+
+    let sessionState: SessionState = "prompting";
+    interface QueueEntry { prompt: string; resolve: () => void; reject: (e: Error) => void }
+    const queue: QueueEntry[] = [];
+
+    registry.register(sessionId, {
+      sendPrompt: (prompt: string): Promise<void> => {
+        if (sessionState === "closed") {
+          return Promise.reject(new Error("closed"));
+        }
+        if (sessionState === "prompting") {
+          return new Promise<void>((resolve, reject) => {
+            queue.push({ prompt, resolve, reject });
+          });
+        }
+        return Promise.resolve();
+      },
+      getState: () => sessionState,
+      requestClose: (reason: string) => {
+        sessionState = "closed";
+        const err = new Error(`closed: ${reason}`);
+        for (const entry of queue.splice(0)) {
+          entry.reject(err);
+        }
+      },
+    });
+
+    const handle = registry.get(sessionId)!;
+
+    // Queue a prompt
+    const sendPromise = handle.sendPrompt("Will be rejected");
+    expect(queue.length).toBe(1);
+
+    // Close the session — the queued promise should reject
+    handle.requestClose("shutdown");
+    await expect(sendPromise).rejects.toThrow("closed");
   });
 });
 
