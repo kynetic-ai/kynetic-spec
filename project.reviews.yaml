@@ -45196,6 +45196,13 @@ reviews:
           kind: nit
           thread_ulid: 01KMAK3EWTZYX583XRQEZB26NB
         timestamp: 2026-03-22T10:57:54.383Z
+      - _ulid: 01KMAK3G7SEE6P5ETA2R2Q71X8
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMAK3FXWV2ZJPBJGHPFCW1D9
+        timestamp: 2026-03-22T10:57:55.449Z
     examined_commit: d5bf3a6fbc1d57c239e4db860559df2e723d145c
     external_links: []
     lifecycle_state: open
@@ -45227,7 +45234,24 @@ reviews:
               test coverage/integrity, dispatch integration"
             created_at: 2026-03-22T10:57:54.074Z
         kind: nit
+      - _ulid: 01KMAK3FXWV2ZJPBJGHPFCW1D9
+        anchor:
+          type: code
+          commit: d5bf3a6fbc1d57c239e4db860559df2e723d145c
+          line_end: 604
+          line_start: 579
+          path: src/agent-runtime/invocation.ts
+          side: head
+        entries:
+          - _ulid: 01KMAK3FXWDX6A9ZEYSNE2QQYX
+            author: Test User
+            body: The session handle is registered before  and before the outer cleanup . If  or the
+              initial  append throws,  never runs, so the dispatch engine retains a dead handle for
+              a session that never became valid. Later / calls then target a detached queue instead
+              of a live ACP session.
+            created_at: 2026-03-22T10:57:55.132Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-22T10:50:43.284Z
-    updated_at: 2026-03-22T10:57:54.074Z
+    updated_at: 2026-03-22T10:57:55.132Z
     notes: []
