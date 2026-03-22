@@ -46097,7 +46097,18 @@ reviews:
     slugs: []
     title: Review session_prompt action type
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Ran kspec validate in the review snapshot; no validation errors or warnings were reported
+          for the current project state.
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-03-22T12:05:15.693Z
+        completed_at: 2026-03-22T12:05:15.693Z
     events:
       - _ulid: 01KMAPN8JAGFDQTQDDPR958DH6
         actor: Test User
@@ -46112,6 +46123,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-22T12:00:25.683Z
+      - _ulid: 01KMAPYT5M1C07MF5AC6ZM7C78
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-22T12:05:16.084Z
     examined_commit: 7e45d49f6ef5ac6d24b08b3e5279c4f12cbdd529
     external_links: []
     lifecycle_state: open
@@ -46124,5 +46142,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-22T12:00:03.146Z
-    updated_at: 2026-03-22T12:00:25.372Z
+    updated_at: 2026-03-22T12:05:15.693Z
     notes: []
