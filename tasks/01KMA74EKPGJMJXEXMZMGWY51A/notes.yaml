@@ -1,1 +1,29 @@
-notes: []
+notes:
+  - _ulid: 01KMBEVQEXC63J36M8BHSFVRJD
+    content: >-
+      Implemented idle grace period and auto-close logic covering ACs 5, 6, 7, 11.
+
+
+      Changes:
+
+      - AgentSchema: added session config block with mode (auto_close/persistent),
+      idle_grace_period_ms, idle_timeout_ms
+
+      - invocation.ts: added sessionMode and idleTimeoutMs to InvocationOptions; updated turn loop
+      to support persistent mode (no grace-based close) and idle timeout (InvocationIdleTimeoutError
+      → session.idle_timeout event + timed_out close)
+
+      - dispatch.ts: reads agent.session config and passes to runInvocation; per-agent grace period
+      overrides global default
+
+      - types.ts: added session.idle_timeout to EventTypeSchema
+
+      - Tests: 14 new tests covering grace period expiry (ac-5), persistent mode (ac-6), idle
+      timeout with event emission (ac-7), backward compat (ac-11), schema validation, and event type
+      validation
+
+
+      All 7147 tests pass (309 files), no regressions.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-22T19:03:00.829Z
