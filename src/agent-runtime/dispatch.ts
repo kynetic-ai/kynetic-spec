@@ -1198,13 +1198,17 @@ export class DispatchEngine {
     // risks hanging indefinitely if an invocation never resolves).
     this.queues.clear();
 
-    // AC: @active-session-registry ac-4 — close all active sessions before abort
-    this._sessionRegistry.closeAll("dispatch engine stopping");
-
-    // AC: @agent-dispatch-engine ac-11 - Send graceful cancel to all active invocations
+    // AC: @agent-dispatch-engine ac-11 - Send graceful cancel to all active invocations.
+    // Abort controllers BEFORE closing sessions so that invocations waiting
+    // in idle observe the abort signal (InvocationAbortedError) rather than
+    // the prompt-queue close (which resolves null and falls through the
+    // normal success path, misreporting interrupted sessions as completed).
     for (const controller of this.invocationAbortControllers) {
       controller.abort();
     }
+
+    // AC: @active-session-registry ac-4 — close all active sessions after abort
+    this._sessionRegistry.closeAll("dispatch engine stopping");
 
     // Wait for all running invocations to complete (or abort).
     // Safe as a single pass: queues are already cleared above, and
