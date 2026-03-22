@@ -78,7 +78,7 @@ description: >-
 spec_ref: "@batch-write-buffer"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -88,6 +88,14 @@ tags:
   - infra
   - testing
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-22T16:11:28.719Z
+  commit: 6b806dbe6f1ea76f1869877e93f803883d906365
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
 session_id: 01KMB3RQG3EYB01CHD9TFG64SP
 history:
   - author: "@claude"
@@ -110,7 +118,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-03-22T15:49:31.593Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-03-22T16:11:28.719Z
+          commit: 6b806dbe6f1ea76f1869877e93f803883d906365
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous: null
+      submitted_at:
+        new: 2026-03-22T16:11:28.722Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-03-22T16:11:28.722Z
 created_at: 2026-03-22T07:28:01.460Z
 started_at: 2026-03-22T15:49:31.593Z
+submitted_at: 2026-03-22T16:11:28.722Z
 todos: []
 automation: eligible
