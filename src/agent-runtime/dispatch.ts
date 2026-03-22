@@ -1333,12 +1333,17 @@ export class DispatchEngine {
           this._activeRoleByTaskRef(),
         );
       });
+      // AC: @multi-turn-session-lifecycle ac-11 — reload session.idle hook presence
+      // so hooks added while dispatch is running take effect on subsequent invocations.
+      const meta = await loadMetaContext(ctx);
+      this._updateSessionIdleHookPresence(meta);
     } catch (err) {
       console.error("[dispatch] Workspace registry reconciliation error:", err);
     }
     await reconcileDispatchWorkspaceArtifacts(this.projectDir, {
       activeTaskRefs: this._activeTaskRefs(),
     });
+
     // AC: @dispatch-remote-branch-sync ac-push-target-periodic
     // Push the integration target if it has unpushed commits (retries failed post-merge pushes).
     if (this.remoteSyncEnabled && this.dispatchRemote) {
@@ -1565,6 +1570,18 @@ export class DispatchEngine {
   }
 
   /**
+   * Reload _hasSessionIdleHooks from the current meta context.
+   * Called from both _loadAgents() and _reconcile() so that hooks added
+   * while dispatch is running are picked up without waiting for the next
+   * _loadAgents() cycle.
+   *
+   * AC: @multi-turn-session-lifecycle ac-11
+   */
+  private _updateSessionIdleHookPresence(meta: { hooks: Array<{ on: string }> }): void {
+    this._hasSessionIdleHooks = meta.hooks.some((h) => h.on === "session.idle");
+  }
+
+  /**
    * Load agent definitions from meta context.
    */
   private async _loadAgents(): Promise<LoadedAgent[]> {
@@ -1572,7 +1589,7 @@ export class DispatchEngine {
       const ctx = await initContext(this.projectDir);
       const meta = await loadMetaContext(ctx);
       // AC: @multi-turn-session-lifecycle ac-11 — track whether any hook targets session.idle
-      this._hasSessionIdleHooks = meta.hooks.some((h) => h.on === "session.idle");
+      this._updateSessionIdleHookPresence(meta);
       return meta.agents;
     } catch {
       return [];

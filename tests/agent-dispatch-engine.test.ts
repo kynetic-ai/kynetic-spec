@@ -6497,4 +6497,83 @@ describe("AC-11: Idle grace period backward compatibility", () => {
 
     await engine.stop();
   });
+
+  // AC: @multi-turn-session-lifecycle ac-11
+  it("should reload session.idle hook presence during reconciliation", async () => {
+    // Start with NO session.idle hooks — grace period should be 0
+    const agent = makeTestAgent({ id: "worker", dispatch: [{ on: "task.ready" }] });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const taskId1 = testUlid("TASK", 3);
+
+    const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
+      session: {} as any,
+      outcome: "success",
+      durationMs: 1,
+    });
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+      reconcileIntervalMs: 0, // Disable periodic — we'll call _reconcile() manually
+    });
+
+    await engine.start();
+
+    // First invocation: no hooks → idleGracePeriodMs=0
+    await engine.handleStateChange({
+      taskId: taskId1,
+      taskRef: `@${taskId1}`,
+      fromStatus: "in_progress",
+      toStatus: "pending",
+      timestamp: Date.now(),
+      task: { automation: "eligible", tags: [] } as any,
+    });
+
+    await waitForMockCall(runSpy);
+    expect(runSpy).toHaveBeenCalledTimes(1);
+    expect(runSpy.mock.calls[0][0].idleGracePeriodMs).toBe(0);
+
+    // Now add a session.idle hook to meta on disk
+    const hookUlid = testUlid("HOOK", 2);
+    const metaContent = YAML.parse(
+      await fs.readFile(path.join(testDir, "kynetic.meta.yaml"), "utf-8"),
+    );
+    metaContent.hooks = [{
+      _ulid: hookUlid,
+      name: "test-idle-hook",
+      on: "session.idle",
+      action: { type: "kspec", command: "task list" },
+      enabled: true,
+    }];
+    await fs.writeFile(
+      path.join(testDir, "kynetic.meta.yaml"),
+      YAML.stringify(metaContent),
+      "utf-8",
+    );
+    execSync("git add -A && git commit -m 'add session.idle hook'", { cwd: testDir, stdio: "pipe" });
+
+    // Trigger reconciliation — this should reload the hook presence
+    await (engine as unknown as { _reconcile: () => Promise<void> })._reconcile();
+
+    // Second invocation: hook present → idleGracePeriodMs=DEFAULT_IDLE_GRACE_MS
+    runSpy.mockClear();
+    const taskId2 = testUlid("TASK", 4);
+    await engine.handleStateChange({
+      taskId: taskId2,
+      taskRef: `@${taskId2}`,
+      fromStatus: "in_progress",
+      toStatus: "pending",
+      timestamp: Date.now(),
+      task: { automation: "eligible", tags: [] } as any,
+    });
+
+    await waitForMockCall(runSpy);
+    expect(runSpy).toHaveBeenCalledTimes(1);
+    expect(runSpy.mock.calls[0][0].idleGracePeriodMs).toBe(invocationModule.DEFAULT_IDLE_GRACE_MS);
+
+    await engine.stop();
+  });
 });
