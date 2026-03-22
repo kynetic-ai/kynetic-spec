@@ -47346,6 +47346,20 @@ reviews:
         runner: kspec
         created_at: 2026-03-22T19:11:33.023Z
         completed_at: 2026-03-22T19:11:33.023Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "ACs 5,6,7,11 all have annotated tests in tests/multi-turn-invocation.test.ts. AC-5: 2
+          tests (grace period expiry, prompt within grace). AC-6: 2 tests (persistent stays idle,
+          persistent accepts late prompts). AC-7: 4 tests (timeout event+close, reset on prompt,
+          applies in auto_close, EventTypeSchema). AC-11: 1 test (immediate close with grace=0).
+          Trait error-guidance ACs all annotated N/A with valid reasons."
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-22T19:11:36.436Z
+        completed_at: 2026-03-22T19:11:36.436Z
     events:
       - _ulid: 01KMBF9TMQXC04KH0RA786TQ63
         actor: "@claude"
@@ -47374,6 +47388,13 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-03-22T19:11:33.397Z
+      - _ulid: 01KMBFBFBC3AE4W70CD9B4QRGA
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-22T19:11:36.812Z
     examined_commit: 338372aabcf716f9c3e0d2efadb6c29038a00a52
     external_links: []
     lifecycle_state: open
@@ -47386,5 +47407,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-22T19:10:42.840Z
-    updated_at: 2026-03-22T19:11:33.023Z
+    updated_at: 2026-03-22T19:11:36.436Z
     notes: []
