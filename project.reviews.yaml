@@ -47207,7 +47207,17 @@ reviews:
     slugs: []
     title: Review task-multi-turn-invocation (cycle 10)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: All 7134 tests passed (3 skipped). 0 failures. npm test completed in ~171s.
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-22T18:46:33.098Z
+        completed_at: 2026-03-22T18:46:33.098Z
     events:
       - _ulid: 01KMBDVY9C91Z5TG6ZJF41Y021
         actor: "@claude"
@@ -47229,6 +47239,13 @@ reviews:
           kind: nit
           thread_ulid: 01KMBDWFGJ8KM68ADNYR95FMHG
         timestamp: 2026-03-22T18:45:57.246Z
+      - _ulid: 01KMBDXK72E3XDXKZXR99S045S
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-22T18:46:33.443Z
     examined_commit: 53ec6f82e20ce4706655edeb2443a30aca424e08
     external_links: []
     lifecycle_state: open
@@ -47258,5 +47275,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-22T18:45:39.244Z
-    updated_at: 2026-03-22T18:45:56.883Z
+    updated_at: 2026-03-22T18:46:33.098Z
     notes: []
