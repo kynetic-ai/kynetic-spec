@@ -46965,7 +46965,18 @@ reviews:
     slugs: []
     title: Review task-multi-turn-invocation (cycle 9)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 7045 passed, 1 pre-existing flaky timeout (agent-invocation-lifecycle process crash test —
+          unmodified by this branch). All 32 multi-turn tests pass.
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-22T16:30:34.182Z
+        completed_at: 2026-03-22T16:30:34.182Z
     events:
       - _ulid: 01KMB638132W4558Y19W764VH9
         actor: "@claude"
@@ -46980,6 +46991,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-22T16:30:24.664Z
+      - _ulid: 01KMB64KKE4KFRW65NWWM7BEAC
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-22T16:30:34.607Z
     examined_commit: 0dea89cb099dc6212e430ef754cc9bbbf8a3ddc8
     external_links: []
     lifecycle_state: open
@@ -46992,5 +47010,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-22T16:29:49.988Z
-    updated_at: 2026-03-22T16:30:24.278Z
+    updated_at: 2026-03-22T16:30:34.182Z
     notes: []
