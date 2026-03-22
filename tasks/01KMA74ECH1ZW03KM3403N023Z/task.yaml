@@ -51,6 +51,7 @@ tags:
   - actions
   - sessions
 vcs_refs: []
+review_ref: "@01KMAE8WER8K112GAAJ6ZYHB85"
 submission_linkage:
   review_url: null
   branch: dev
@@ -101,6 +102,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-03-22T09:32:26.071Z
+  - author: Test User
+    changes:
+      review_ref:
+        new: "@01KMAE8WER8K112GAAJ6ZYHB85"
+        previous: null
+    command: review-link
+    timestamp: 2026-03-22T09:33:30.294Z
 created_at: 2026-03-22T07:28:43.409Z
 started_at: 2026-03-22T09:07:27.500Z
 submitted_at: 2026-03-22T09:32:26.071Z
