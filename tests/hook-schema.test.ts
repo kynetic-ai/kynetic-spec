@@ -175,7 +175,7 @@ describe("HookSchema", () => {
 
     it("should list valid action types in ActionSchema", () => {
       // Verify the action types are as expected
-      expect(ACTION_TYPES).toEqual(["command", "kspec", "agent", "notify"]);
+      expect(ACTION_TYPES).toEqual(["command", "kspec", "agent", "notify", "session_prompt"]);
     });
   });
 

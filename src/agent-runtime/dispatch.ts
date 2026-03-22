@@ -23,8 +23,9 @@ import {
   type LoadedAgent,
 } from "../parser/index.js";
 import { DEFAULT_KSPEC_CLI_PATH, runInvocation } from "./invocation.js";
+import type { SessionRegistry } from "./session-registry.js";
 import { loadProjectConfig, resolveDispatchRemoteSync } from "../parser/config.js";
-import type { InvocationOptions, InvocationResult } from "./invocation.js";
+import type { InvocationOptions, InvocationResult, TurnCompleteInfo } from "./invocation.js";
 import { SessionEventAccumulator } from "./session-event-accumulator.js";
 import type { SessionEventData } from "./session-event-types.js";
 import { EventBus, type EventBusOptions, type EventEnvelope, type EmitOptions } from "./event-bus.js";
@@ -785,6 +786,15 @@ export interface DispatchEngineOptions {
    * AC: @dispatch-event-envelope ac-5, ac-6
    */
   eventBusOptions?: EventBusOptions;
+  /**
+   * Session registry shared with action executors for session_prompt delivery.
+   * When provided, the engine passes it through to runInvocation() so sessions
+   * are registered while alive and discoverable by session_prompt actions.
+   *
+   * AC: @session-prompt-action ac-1 — enables production prompt delivery path
+   * AC: @active-session-registry ac-1
+   */
+  sessionRegistry?: SessionRegistry;
 }
 
 // ─── DispatchEngine ───────────────────────────────────────────────────────────
@@ -809,6 +819,8 @@ export class DispatchEngine {
   /** AC: @per-task-dispatch-drain-coalescing ac-4 */
   private coalesceWindowMs: number;
   private kspecCliPath?: string;
+  /** AC: @session-prompt-action ac-1, @active-session-registry ac-1 */
+  private _sessionRegistry?: SessionRegistry;
   private onInvocationEvent?: (event: InvocationEvent) => void;
   private onSessionEvent?: (event: SessionEventData) => void;
   private onSyncStateEvent?: (event: SyncStateEvent) => void;
@@ -904,6 +916,7 @@ export class DispatchEngine {
     // AC: @per-task-dispatch-drain-coalescing ac-4
     this.coalesceWindowMs = options.coalesceWindowMs ?? 5000;
     this.kspecCliPath = options.kspecCliPath;
+    this._sessionRegistry = options.sessionRegistry;
     this.onInvocationEvent = options.onInvocationEvent;
     this.onSessionEvent = options.onSessionEvent;
     this.onSyncStateEvent = options.onSyncStateEvent;
@@ -922,6 +935,15 @@ export class DispatchEngine {
    */
   get eventBus(): EventBus {
     return this._eventBus;
+  }
+
+  /**
+   * Session registry for multi-turn prompt delivery.
+   * Returns undefined if no registry was provided at construction.
+   * AC: @active-session-registry ac-3
+   */
+  get sessionRegistry(): SessionRegistry | undefined {
+    return this._sessionRegistry;
   }
 
   /**
@@ -2462,6 +2484,26 @@ export class DispatchEngine {
           const sessionsDir = path.join(this.projectDir, ".kspec-sessions");
           const cache = getSessionCache(sessionsDir);
           cache.incrementEventCount(sid);
+        },
+        // AC: @session-prompt-action ac-1, @active-session-registry ac-1
+        // Pass session registry so invocation registers a handle while alive
+        sessionRegistry: this._sessionRegistry,
+        // AC: @session-idle-event ac-1 — emit session.idle after each turn completes
+        // AC: @session-prompt-action ac-1 — enables idle → follow-up prompt flow
+        onTurnComplete: async (turnInfo: TurnCompleteInfo) => {
+          this._eventBus.emit({
+            event_type: "session.idle",
+            source_type: "invocation_lifecycle",
+            source_id: turnInfo.sessionId,
+            payload: {
+              session_id: turnInfo.sessionId,
+              agent_id: turnInfo.agentId,
+              task_ref: turnInfo.taskRef ?? null,
+              turn_count: turnInfo.turnCount,
+              stop_reason: turnInfo.stopReason,
+              duration_ms: turnInfo.turnDurationMs,
+            },
+          });
         },
       };
 
