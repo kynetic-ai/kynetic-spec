@@ -47689,7 +47689,19 @@ reviews:
     slugs: []
     title: Review task-remove-duplicate-handle-registration (cycle 1)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 7161 passed, 3 skipped. 1 timeout failure in agent-invocation-lifecycle.test.ts
+          (pre-existing flaky test using slow-mock-acp adapter with 60ms timeout — file not modified
+          by this commit, not a regression)
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-22T21:51:35.265Z
+        completed_at: 2026-03-22T21:51:35.265Z
     events:
       - _ulid: 01KMBRFRW3QBJKSVNHFPMCV0EH
         actor: "@claude"
@@ -47704,6 +47716,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-22T21:51:26.958Z
+      - _ulid: 01KMBRGD74CPP009S17PWVA0G8
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-22T21:51:35.652Z
     examined_commit: 7156ce71b80632a7f36a0a148efe41ceb78f57b6
     external_links: []
     lifecycle_state: open
@@ -47716,5 +47735,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-22T21:51:14.820Z
-    updated_at: 2026-03-22T21:51:26.561Z
+    updated_at: 2026-03-22T21:51:35.265Z
     notes: []
