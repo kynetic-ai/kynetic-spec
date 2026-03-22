@@ -43040,3 +43040,36 @@ reviews:
     created_at: 2026-03-22T00:47:35.291Z
     updated_at: null
     notes: []
+  - _ulid: 01KM9G627E4150R7W10WKE53RB
+    slugs: []
+    title: Review fix-worktree-guard-to-detect-actual-shadow-branch-not-substring-match
+    author: Test User
+    checks: []
+    events:
+      - _ulid: 01KM9G627EP5MGE18ZG172JDY0
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-22T00:47:39.246Z
+      - _ulid: 01KM9G72C8QCWGXFN9HZB70NW5
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-03-22T00:48:12.168Z
+    examined_commit: 1c5294476abdccfb6c355209f9e08f6668c8a437
+    external_links: []
+    lifecycle_state: open
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KM9FB8PAK46RP5SRP1JVD2FD"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-22T00:47:39.246Z
+    updated_at: 2026-03-22T00:48:11.861Z
+    notes: []
