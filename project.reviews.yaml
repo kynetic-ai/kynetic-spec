@@ -42895,6 +42895,17 @@ reviews:
         runner: npm
         created_at: 2026-03-22T00:42:40.262Z
         completed_at: 2026-03-22T00:42:40.262Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed: tests/task-storage-activate.test.ts (10 tests, exit 0). Verified manifest
+          persistence, next-operation routing, unmigrated rejection, JSON mode, and status output."
+        name: task-storage-activate slice
+        required: false
+        runner: npm
+        created_at: 2026-03-22T00:42:42.156Z
+        completed_at: 2026-03-22T00:42:42.156Z
     events:
       - _ulid: 01KM9FMDBYZ1G2WESR8BG8Z3H7
         actor: Test User
@@ -42916,6 +42927,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-22T00:42:40.820Z
+      - _ulid: 01KM9FX0NN8QXEFF13VNJYFWQR
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: task-storage-activate slice
+        timestamp: 2026-03-22T00:42:42.741Z
     examined_commit: d795bf21f60c6acb04936b8221ffbd5e1c649a5b
     external_links: []
     lifecycle_state: open
@@ -42928,5 +42946,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-22T00:38:00.831Z
-    updated_at: 2026-03-22T00:42:40.262Z
+    updated_at: 2026-03-22T00:42:42.156Z
     notes: []
