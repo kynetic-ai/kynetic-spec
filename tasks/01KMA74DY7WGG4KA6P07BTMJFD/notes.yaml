@@ -63,3 +63,16 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-22T10:20:44.427Z
+  - _ulid: 01KMAJJYQCKFAAYW2C87WQDMQ2
+    content: "Fix cycle 3: Addressed two blockers. (1) Registered session.idle event type in the event
+      registry with a dedicated SessionIdlePayloadSchema — per-turn payload with turn_count,
+      stop_reason, turn_duration_ms fields. Added to SessionTriggerSchema and KNOWN_EVENT_FIELDS for
+      hook filter support. (2) Wired sessionRegistry and onIdle into dispatch engine
+      InvocationOptions: engine now owns a SessionRegistry, passes it to runInvocation(), onIdle
+      emits session.idle events on the event bus. Added sessionRegistry getter for action executor
+      integration and closeAll on engine stop. Updated 3 test files with new assertions for
+      session.idle registration, payload validation, filter fields, and hook schema acceptance. All
+      7042 tests pass (1 pre-existing timeout in canonical-task-workspace-contract unrelated)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-22T10:48:53.228Z
