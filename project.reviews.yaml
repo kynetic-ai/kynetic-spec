@@ -42923,6 +42923,18 @@ reviews:
         runner: manual
         created_at: 2026-03-22T00:42:44.206Z
         completed_at: 2026-03-22T00:42:44.206Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Exited 6 with pre-existing repository warnings (orphaned skill dir, existing
+          alignment/completeness warnings). No task-specific warning surfaced for
+          @task-storage-activation.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-22T00:43:06.081Z
+        completed_at: 2026-03-22T00:43:06.081Z
     events:
       - _ulid: 01KM9FMDBYZ1G2WESR8BG8Z3H7
         actor: Test User
@@ -42958,6 +42970,13 @@ reviews:
           status: pass
           name: review-evidence
         timestamp: 2026-03-22T00:42:44.788Z
+      - _ulid: 01KM9FXQSF64BJK4ZV7D3W22M0
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-03-22T00:43:06.415Z
     examined_commit: d795bf21f60c6acb04936b8221ffbd5e1c649a5b
     external_links: []
     lifecycle_state: open
@@ -42970,5 +42989,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-22T00:38:00.831Z
-    updated_at: 2026-03-22T00:42:44.206Z
+    updated_at: 2026-03-22T00:43:06.081Z
     notes: []
