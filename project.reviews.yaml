@@ -47323,7 +47323,18 @@ reviews:
     slugs: []
     title: Review task-idle-grace-period (cycle 1)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 7145 tests passed, 3 skipped; 2 failures pre-existing on dev (agent-invocation-lifecycle
+          timeout tests — confirmed by zero diff on that file)
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-22T19:11:29.364Z
+        completed_at: 2026-03-22T19:11:29.364Z
     events:
       - _ulid: 01KMBF9TMQXC04KH0RA786TQ63
         actor: "@claude"
@@ -47338,6 +47349,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-22T19:10:53.341Z
+      - _ulid: 01KMBFB8DEZBH5FGGCSHY8SM86
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-22T19:11:29.710Z
     examined_commit: 338372aabcf716f9c3e0d2efadb6c29038a00a52
     external_links: []
     lifecycle_state: open
@@ -47350,5 +47368,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-22T19:10:42.840Z
-    updated_at: 2026-03-22T19:10:52.971Z
+    updated_at: 2026-03-22T19:11:29.364Z
     notes: []
