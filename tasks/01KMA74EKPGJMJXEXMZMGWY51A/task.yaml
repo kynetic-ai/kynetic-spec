@@ -29,8 +29,11 @@ description: |
 spec_ref: "@multi-turn-session-lifecycle"
 plan_ref: "@plan-multi-turn-session-lifecycle"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: "Merged to dev. Implements idle grace period and auto-close logic covering ACs 5, 6,
+  7, 11: session mode (auto_close/persistent), configurable grace period, idle timeout with event
+  emission, and backward-compatible single-turn behavior."
 depends_on:
   - "@task-multi-turn-invocation"
   - "@task-session-prompt-action"
@@ -99,8 +102,24 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-03-22T19:10:44.385Z
+  - author: "@claude"
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: "Merged to dev. Implements idle grace period and auto-close logic covering ACs 5, 6, 7, 11:
+          session mode (auto_close/persistent), configurable grace period, idle timeout with event
+          emission, and backward-compatible single-turn behavior."
+        previous: null
+      completed_at:
+        new: 2026-03-22T19:13:29.149Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-03-22T19:13:29.153Z
 created_at: 2026-03-22T07:28:43.638Z
 started_at: 2026-03-22T18:49:42.058Z
 submitted_at: 2026-03-22T19:03:06.943Z
+completed_at: 2026-03-22T19:13:29.149Z
 todos: []
 automation: eligible

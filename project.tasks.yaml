@@ -21685,7 +21685,7 @@
   type: task
   spec_ref: "@multi-turn-session-lifecycle"
   plan_ref: "@plan-multi-turn-session-lifecycle"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-multi-turn-invocation"
@@ -21701,6 +21701,7 @@
   created_at: 2026-03-22T07:28:43.638Z
   started_at: 2026-03-22T18:49:42.058Z
   submitted_at: 2026-03-22T19:03:06.943Z
+  completed_at: 2026-03-22T19:13:29.149Z
   automation: eligible
 - _ulid: 01KMA74EVBPW0NWYCF3S7S8A3N
   slugs:
