@@ -19479,7 +19479,7 @@ workspaces:
         head: 88a4d9d805cf5567379546abf8636a5cbc27ae51
         last_seen_at: 2026-03-22T19:29:18.819Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-dispatch-multi-turn-integration-01kma74e
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 2da4a1f5163cdbd9acbb5a6acef049732b6b75c8
     bootstrap:
       status: succeeded
@@ -19605,9 +19605,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-22T21:37:31.396Z
-      last_reconciled_at: 2026-03-22T21:46:45.313Z
+      last_reconciled_at: 2026-03-22T21:46:47.943Z
       created_at: 2026-03-22T21:24:49.679Z
-      updated_at: 2026-03-22T21:46:45.313Z
+      updated_at: 2026-03-22T21:46:47.943Z
     workspace_id: dispatch-workspace-01KMBPYB05RT7ZJZBA2GVW4A7D
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
