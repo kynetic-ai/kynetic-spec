@@ -45892,3 +45892,29 @@ reviews:
     created_at: 2026-03-22T11:33:36.069Z
     updated_at: 2026-03-22T11:38:30.831Z
     notes: []
+  - _ulid: 01KMANT50T68ECRGJPZ3MY7MRE
+    slugs: []
+    title: Review task-multi-turn-invocation (cycle 6)
+    author: Test User
+    checks: []
+    events:
+      - _ulid: 01KMANT50S6NJHMTZ0M8K1VBGK
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-22T11:45:14.778Z
+    examined_commit: 1d2fe7b6543ae344cf43e25828a8fa0e3b6922af
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMA74DY7WGG4KA6P07BTMJFD"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-22T11:45:14.778Z
+    updated_at: null
+    notes: []
