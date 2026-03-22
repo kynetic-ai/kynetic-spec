@@ -113,33 +113,63 @@ kspec review add \
 
 ### Structure Findings as Threads
 
-Each finding becomes a comment thread with a severity level:
+Each finding becomes a comment thread with a kind and a structured anchor pointing to the specific part of the plan. Use `--section` and `--field` to target findings precisely, and `--anchor-ref` to reference specific specs or tasks.
 
 ```bash
-# MUST-FIX finding
+# Blocker on a specific spec's ACs
 kspec review comment @review-ref \
-  --severity blocker \
-  --message "ac-3 and ac-4 overlap — both describe idle timeout behavior"
+  --kind blocker \
+  --section acceptance_criteria \
+  --anchor-ref @spec-slug \
+  --body "ac-3 and ac-4 overlap — both describe idle timeout behavior"
 
-# SHOULD-FIX finding
+# Question about task design
 kspec review comment @review-ref \
-  --severity concern \
-  --message "task-multi-turn-invocation covers 10 ACs — consider splitting"
+  --kind question \
+  --section tasks \
+  --anchor-ref @task-slug \
+  --body "Should the How section keep mechanism-level wording or use behavioral language?"
+
+# Nit on spec description
+kspec review comment @review-ref \
+  --kind nit \
+  --section specs \
+  --anchor-ref @spec-slug \
+  --field description \
+  --body "Description still references protocol terms"
 
 # Record a check that passed
 kspec review check @review-ref \
   --name "AC coverage" \
   --status pass \
   --detail "All 17 ACs claimed by at least one task"
+
+# Record a check that failed
+kspec review check @review-ref \
+  --name "Dependency ordering" \
+  --status fail \
+  --detail "P1 task depends on P2 task — priority misalignment"
 ```
 
-### Severity Mapping
+### Thread Kinds
 
-| Plan review severity | Review thread severity |
-|---------------------|----------------------|
+| Plan review severity | Thread kind |
+|---------------------|-------------|
 | MUST-FIX | `blocker` |
-| SHOULD-FIX | `concern` |
-| SUGGESTION | `suggestion` or `nitpick` |
+| SHOULD-FIX | `question` or `nit` |
+| SUGGESTION | `nit` |
+
+### Structured Anchors
+
+Anchors let threads point at specific plan areas so the author knows exactly where to look:
+
+| Anchor | Use for |
+|--------|---------|
+| `--section acceptance_criteria --anchor-ref @spec` | AC quality issues on a specific spec |
+| `--section tasks --anchor-ref @task` | Task executability or coverage issues |
+| `--section specs --anchor-ref @spec` | Spec description, boundary, or hierarchy issues |
+| `--section specs --anchor-ref @spec --field description` | Description-specific language issues |
+| `--section dependencies` | Dependency ordering or priority alignment issues |
 
 ### Verdict
 
