@@ -96,6 +96,8 @@ async function createDivergence(
   const cloneDir = await createTempDir("kspec-degraded-clone-");
   try {
     git(cloneDir, `clone "${remoteDir}" .`);
+    git(cloneDir, 'config user.email "test@example.com"');
+    git(cloneDir, 'config user.name "Test User"');
     git(cloneDir, "checkout dev");
     await fs.writeFile(path.join(cloneDir, "remote-only.txt"), "remote\n", "utf-8");
     git(cloneDir, "add remote-only.txt");
@@ -122,6 +124,8 @@ async function createRemoteRewrite(
   const cloneDir = await createTempDir("kspec-degraded-clone-");
   try {
     git(cloneDir, `clone "${remoteDir}" .`);
+    git(cloneDir, 'config user.email "test@example.com"');
+    git(cloneDir, 'config user.name "Test User"');
     git(cloneDir, "checkout dev");
     // Rewrite history: reset to before the "dev branch" commit, then make a new one
     git(cloneDir, "reset --soft HEAD~1");
@@ -564,6 +568,8 @@ describe("dispatch engine degraded state", () => {
     const cloneDir = await createTempDir("kspec-degraded-clone-");
     try {
       git(cloneDir, `clone "${remoteDir}" .`);
+      git(cloneDir, 'config user.email "test@example.com"');
+      git(cloneDir, 'config user.name "Test User"');
       git(cloneDir, "checkout dev");
       await fs.writeFile(path.join(cloneDir, "new.txt"), "new\n", "utf-8");
       git(cloneDir, "add new.txt");

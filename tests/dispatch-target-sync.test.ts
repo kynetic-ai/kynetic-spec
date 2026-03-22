@@ -183,6 +183,8 @@ async function pushRemoteCommit(
   const cloneDir = await createTempDir("kspec-target-sync-clone-");
   try {
     git(cloneDir, `clone "${remoteDir}" .`);
+    git(cloneDir, 'config user.email "test@example.com"');
+    git(cloneDir, 'config user.name "Test User"');
     git(cloneDir, `checkout ${branch}`);
     await fs.writeFile(path.join(cloneDir, fileName), content, "utf-8");
     git(cloneDir, `add ${fileName}`);
@@ -631,6 +633,8 @@ describe("dispatch target branch sync", () => {
     const cloneDir = await createTempDir("kspec-target-sync-clone-");
     try {
       git(cloneDir, `clone "${remoteDir}" .`);
+      git(cloneDir, 'config user.email "test@example.com"');
+      git(cloneDir, 'config user.name "Test User"');
       git(cloneDir, "checkout dev");
       await fs.writeFile(path.join(cloneDir, "ff-test.txt"), "ff\n", "utf-8");
       git(cloneDir, "add ff-test.txt");
@@ -678,6 +682,8 @@ describe("dispatch target branch sync", () => {
     const cloneDir = await createTempDir("kspec-target-sync-clone-");
     try {
       git(cloneDir, `clone "${remoteDir}" .`);
+      git(cloneDir, 'config user.email "test@example.com"');
+      git(cloneDir, 'config user.name "Test User"');
       git(cloneDir, "checkout dev");
       await fs.writeFile(path.join(cloneDir, "periodic.txt"), "periodic\n", "utf-8");
       git(cloneDir, "add periodic.txt");
@@ -736,6 +742,8 @@ describe("dispatch target branch sync", () => {
     const cloneDir = await createTempDir("kspec-target-sync-clone-");
     try {
       git(cloneDir, `clone "${remoteDir}" .`);
+      git(cloneDir, 'config user.email "test@example.com"');
+      git(cloneDir, 'config user.name "Test User"');
       git(cloneDir, "checkout dev");
       await fs.writeFile(path.join(cloneDir, "deferred.txt"), "deferred\n", "utf-8");
       git(cloneDir, "add deferred.txt");
@@ -893,6 +901,8 @@ describe("dispatch target branch sync", () => {
     const cloneDir = await createTempDir("kspec-target-sync-clone-");
     try {
       git(cloneDir, `clone "${remoteDir}" .`);
+      git(cloneDir, 'config user.email "test@example.com"');
+      git(cloneDir, 'config user.name "Test User"');
       git(cloneDir, "checkout dev");
       await fs.writeFile(path.join(cloneDir, "reset.txt"), "reset\n", "utf-8");
       git(cloneDir, "add reset.txt");
@@ -1056,6 +1066,8 @@ describe("dispatch target branch sync", () => {
     const cloneDir = await createTempDir("kspec-target-sync-clone-");
     try {
       git(cloneDir, `clone "${remoteDir}" .`);
+      git(cloneDir, 'config user.email "test@example.com"');
+      git(cloneDir, 'config user.name "Test User"');
       git(cloneDir, "checkout dev");
       await fs.writeFile(path.join(cloneDir, "remote-only.txt"), "remote\n", "utf-8");
       git(cloneDir, "add remote-only.txt");
