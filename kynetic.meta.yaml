@@ -7642,6 +7642,22 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-22T04:14:03.168Z
+  - _ulid: 01KMBB816MXW8KM25135RMDPHN
+    type: friction
+    content: "Review-driven scope creep from missing depends_on. task-session-prompt-action lacked a
+      dependency on task-multi-turn-invocation, so reviewers pushed it to reimplement the idle loop
+      and prompt queue to make integration tests pass. By fix cycle 4, the task had rebuilt the core
+      of the multi-turn invocation refactor, creating semantic merge conflicts when both branches
+      tried to merge into dev. Root cause: the plan derived tasks with correct spec refs but
+      incomplete inter-task dependencies. The reviewer had no visibility into parallel in-flight
+      work and optimized locally for test coverage. Mitigation: during plan derivation, explicitly
+      declare depends_on for tasks whose tests require infrastructure from sibling tasks. During
+      review, check for parallel in-flight tasks touching the same files before requesting
+      structural additions."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-22T17:59:49.717Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
