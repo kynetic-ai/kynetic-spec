@@ -47685,3 +47685,29 @@ reviews:
     created_at: 2026-03-22T21:43:54.094Z
     updated_at: 2026-03-22T21:45:00.338Z
     notes: []
+  - _ulid: 01KMBRFRW4XEF700KD0BRNN7VX
+    slugs: []
+    title: Review task-remove-duplicate-handle-registration (cycle 1)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KMBRFRW3QBJKSVNHFPMCV0EH
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-22T21:51:14.820Z
+    examined_commit: 7156ce71b80632a7f36a0a148efe41ceb78f57b6
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@task-remove-duplicate-handle-registration"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-22T21:51:14.820Z
+    updated_at: null
+    notes: []
