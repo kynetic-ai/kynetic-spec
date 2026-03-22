@@ -29,7 +29,7 @@ description: |
 spec_ref: "@multi-turn-session-lifecycle"
 plan_ref: "@plan-multi-turn-session-lifecycle"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-multi-turn-invocation"
@@ -41,6 +41,7 @@ tags:
   - sessions
   - backward-compat
 vcs_refs: []
+session_id: 01KMBE1RSCG705YCEDVEPXXBB6
 history:
   - author: "@claude"
     changes:
@@ -49,6 +50,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-03-22T07:30:59.820Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KMBE1RSCG705YCEDVEPXXBB6
+        previous: null
+      started_at:
+        new: 2026-03-22T18:49:42.058Z
+        previous: null
+    command: task-start
+    timestamp: 2026-03-22T18:49:42.059Z
 created_at: 2026-03-22T07:28:43.638Z
+started_at: 2026-03-22T18:49:42.058Z
 todos: []
 automation: eligible

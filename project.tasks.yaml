@@ -21685,7 +21685,7 @@
   type: task
   spec_ref: "@multi-turn-session-lifecycle"
   plan_ref: "@plan-multi-turn-session-lifecycle"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-multi-turn-invocation"
@@ -21698,6 +21698,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-03-22T07:28:43.638Z
+  started_at: 2026-03-22T18:49:42.058Z
   automation: eligible
 - _ulid: 01KMA74EVBPW0NWYCF3S7S8A3N
   slugs:
