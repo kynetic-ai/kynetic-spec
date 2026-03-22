@@ -292,6 +292,7 @@ describe("SplitBackend", () => {
     });
 
     // AC: @task-directory-storage ac-2
+    // AC: @task-detail-loading ac-1 — unified task assembled from index + per-task directory
     it("assembled task has data from both files", async () => {
       const ulid = testUlid("ASMB");
       const noteUlid = testUlid("ANT2", 1);
@@ -529,6 +530,65 @@ describe("SplitBackend", () => {
     });
   });
 
+  // ── AC: @task-listing-performance ac-2 ──────────────────────────────────
+  // Given: Tasks have extensive notes and history
+  // When: A filtered task list is requested
+  // Then: The response time is proportional to the number of tasks,
+  //       not the total volume of notes and history across all tasks
+  describe("listing cost independent of notes volume (ac-2)", () => {
+    // AC: @task-listing-performance ac-2
+    it("listTasks reads only the index, not per-task notes files, regardless of notes volume", async () => {
+      const manager = new TaskDataManager("split");
+
+      // Create tasks with varying notes volumes
+      const created1 = await manager.createTask(ctx, {
+        title: "Few notes task",
+        slugs: ["few-notes"],
+      });
+      const created2 = await manager.createTask(ctx, {
+        title: "Many notes task",
+        slugs: ["many-notes"],
+      });
+
+      // Add extensive notes to one task (simulating heavy history)
+      for (let i = 0; i < 20; i++) {
+        await manager.addNote(
+          ctx,
+          "@many-notes",
+          `Detailed note entry ${i}: ${"x".repeat(200)}`,
+          "@author",
+        );
+      }
+
+      // Verify the heavy task has extensive notes on disk
+      const notesFilePath = getNotesFilePath(ctx, created2._ulid);
+      const notesContent = await fs.readFile(notesFilePath, "utf-8");
+      expect(notesContent.length).toBeGreaterThan(4000);
+
+      // listTasks should succeed and return accurate summaries
+      // without reading any notes files — it reads only the index
+      const summaries = await manager.listTasks(ctx);
+      expect(summaries.length).toBe(2);
+
+      // Summaries have notes_count (from index) but no notes content
+      const heavySummary = summaries.find((s) => s.slugs.includes("many-notes"));
+      expect(heavySummary).toBeDefined();
+      expect(heavySummary!.notes_count).toBe(20);
+      expect((heavySummary as any).notes).toBeUndefined();
+
+      const lightSummary = summaries.find((s) => s.slugs.includes("few-notes"));
+      expect(lightSummary).toBeDefined();
+      expect(lightSummary!.notes_count).toBe(0);
+
+      // The architectural guarantee: list operation routing confirms
+      // notes files are never accessed during listing
+      const routing = getOperationRouting("list");
+      expect(routing.touchesNotes).toBe(false);
+      expect(routing.touchesCoreData).toBe(false);
+      expect(routing.touchesIndex).toBe(true);
+    });
+  });
+
   // ── Format Detection ───────────────────────────────────────────────────
   describe("format detection", () => {
     it("detects split format when ULID directories exist", async () => {
@@ -555,6 +615,7 @@ describe("SplitBackend", () => {
 
   // ── Operation Routing ──────────────────────────────────────────────────
   describe("operation routing", () => {
+    // AC: @task-listing-performance ac-1 — list reads only index; no per-task directory accessed
     it("list touches only index", () => {
       const routing = getOperationRouting("list");
       expect(routing.touchesIndex).toBe(true);
@@ -562,6 +623,7 @@ describe("SplitBackend", () => {
       expect(routing.touchesNotes).toBe(false);
     });
 
+    // AC: @task-detail-loading ac-1 — detail request reads per-task directory (core data + notes)
     it("get touches only per-task files", () => {
       const routing = getOperationRouting("get");
       expect(routing.touchesIndex).toBe(false);
@@ -640,6 +702,7 @@ describe("SplitBackend", () => {
       expect(fetched.priority).toBe(2);
     });
 
+    // AC: @task-listing-performance ac-1 — list reads only index, no per-task directory accessed
     it("listTasks returns summaries from index", async () => {
       const manager = new TaskDataManager("split");
 

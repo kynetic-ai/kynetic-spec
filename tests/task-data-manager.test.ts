@@ -87,6 +87,7 @@ describe("TaskDataManager", () => {
   });
 
   // AC: @task-data-manager ac-2
+  // AC: @task-listing-performance ac-1 — filtered lists read only index; no per-task directory accessed
   // Only index data is read for listing; per-task detail files are not accessed
   describe("list returns only index data (ac-2)", () => {
     it("returns summary records containing only index-level fields", async () => {
@@ -283,6 +284,7 @@ describe("TaskDataManager", () => {
   });
 
   // AC: @task-data-manager ac-3
+  // AC: @task-detail-loading ac-1 — detail request reads index + per-task directory; result is unified task
   // Manager assembles the complete task from index and per-task files transparently
   describe("full detail loading (ac-3)", () => {
     it("returns complete task by slug reference", async () => {
@@ -607,10 +609,11 @@ describe("TaskDataManager", () => {
       }
     });
 
-    it("routes to registered split backend when available", async () => {
+    // AC: @task-storage-activation ac-2 — split format used for all operations when activated
+    it("routes all reads and writes to registered split backend", async () => {
       tempDir = await setupTempFixtures();
 
-      // Register a mock split backend to verify routing
+      // Register a mock split backend to verify routing for ALL operation types
       const calls: string[] = [];
       const mockSplitBackend: TaskStorageBackend = {
         format: "split",
@@ -672,12 +675,33 @@ describe("TaskDataManager", () => {
 
         const ctx = await initContext(tempDir);
 
-        // Operations should route through the split backend
+        // Read paths should route through the split backend
         await splitManager.listTasks(ctx);
         expect(calls).toContain("listTasks");
 
         await splitManager.getTask(ctx, "@test-task-pending");
         expect(calls).toContain("getTask");
+
+        // Write paths should also route through the split backend
+        await splitManager.createTask(ctx, {
+          title: "Activation write test",
+          slugs: ["activation-write"],
+        });
+        expect(calls).toContain("createTask");
+
+        await splitManager.mutateTask(ctx, "@test-task-pending", (task) => ({
+          ...task,
+          priority: 1,
+        }));
+        expect(calls).toContain("mutateTask");
+
+        await splitManager.deleteTask(ctx, "@test-task-pending");
+        expect(calls).toContain("deleteTask");
+
+        // Verify ALL operation types were routed to the split backend
+        expect(calls).toEqual(
+          expect.arrayContaining(["listTasks", "getTask", "createTask", "mutateTask", "deleteTask"]),
+        );
       } finally {
         // Clean up: remove mock and restore real split backend
         unregisterBackend("split");
