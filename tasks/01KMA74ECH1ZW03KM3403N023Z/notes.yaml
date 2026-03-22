@@ -111,3 +111,19 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-22T12:07:22.595Z
+  - _ulid: 01KMARB0HGN9N6WWTABNBNK7RY
+    content: "Fix cycle 6: Addressed both reviewer blockers. (1) Idle-session sendPrompt() no longer
+      returns Promise.resolve() immediately — it now pushes the prompt to the queue and returns a
+      deferred promise, waking the idle loop with an empty signal. The idle loop drains the queue
+      entry (which carries the deferred promise) and resolves it only after the turn completes. This
+      fixes ac-2: action.completed is no longer emitted before the prompted turn runs. (2) Added
+      validateScheduleSessionPromptActions() and validateCompositionSessionPromptActions() to
+      validate.ts — session_prompt actions on schedules and compositions always need explicit
+      session_id since they have no session event context. Wired both into the validation pipeline
+      alongside the existing hook validation. Added 7 new tests: idle deferred promise resolution,
+      ScheduleSchema/CompositionSchema parsing with/without session_id and prompt fields. All 48
+      session-prompt-action tests pass. Full suite: 7085 pass, 1 pre-existing timeout in
+      canonical-task-workspace-contract (unrelated, documented in prior cycles)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-22T12:29:24.400Z
