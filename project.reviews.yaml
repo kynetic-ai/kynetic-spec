@@ -46619,6 +46619,19 @@ reviews:
         runner: kspec
         created_at: 2026-03-22T15:53:37.243Z
         completed_at: 2026-03-22T15:53:37.243Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: All 7 own ACs for @session-prompt-action have annotated tests. All 4 ACs for
+          @session-prompt-action-schema have annotated tests. All 6 trait ACs from
+          @trait-error-guidance are annotated (ac-1/ac-2 covered by error message tests,
+          ac-3/ac-4/ac-5/ac-6 annotated as N/A with valid reasons).
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-22T15:53:40.599Z
+        completed_at: 2026-03-22T15:53:40.599Z
     events:
       - _ulid: 01KMB407EQDP65VVN2D56CJ0KC
         actor: "@claude"
@@ -46647,6 +46660,13 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-03-22T15:53:37.596Z
+      - _ulid: 01KMB411WPAN5HPBX9W3GR55NP
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-22T15:53:41.014Z
     examined_commit: 4b6934f8bbe699092aa657664187bb19efba0b1b
     external_links: []
     lifecycle_state: open
@@ -46659,5 +46679,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-22T15:53:13.944Z
-    updated_at: 2026-03-22T15:53:37.243Z
+    updated_at: 2026-03-22T15:53:40.599Z
     notes: []
