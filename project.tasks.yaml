@@ -21427,7 +21427,7 @@
   type: task
   spec_ref: "@task-storage-activation"
   plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@01KM99V2"
@@ -21436,9 +21436,11 @@
     - tasks
     - storage
     - manual
+  session_id: 01KM9ETYCW9KWA5A3M0ENKJ7SZ
   notes_count: 0
   todos_count: 0
   created_at: 2026-03-21T00:59:26.242Z
+  started_at: 2026-03-22T00:24:32.255Z
   notes:
     - _ulid: 01KM99T40NF3JSN3TQ5WYHVFGD
       content: "Audit finding (session eval, 2026-03-21): AC-4 has no implementation yet — no CLI command
