@@ -21763,3 +21763,25 @@
       created_at: 2026-03-21T23:56:04.788Z
   todos: []
   automation: eligible
+- _ulid: 01KM9ET8GNYC6R03R2E59PS3N9
+  slugs: []
+  title: Activate split storage on kynetic-spec project
+  type: task
+  spec_ref: "@task-storage-activation"
+  meta_ref: null
+  plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-activate-split-storage"
+  context: []
+  priority: 1
+  tags:
+    - tasks
+    - storage
+    - manual
+  vcs_refs: []
+  created_at: 2026-03-22T00:23:43.893Z
+  notes: []
+  todos: []
+  automation: manual_only
