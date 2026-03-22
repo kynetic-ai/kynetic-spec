@@ -42879,3 +42879,29 @@ reviews:
     created_at: 2026-03-21T23:57:54.673Z
     updated_at: 2026-03-22T00:02:19.836Z
     notes: []
+  - _ulid: 01KM9FMDBZRWW1RXP946YHMEB3
+    slugs: []
+    title: Review activate split storage format
+    author: Test User
+    checks: []
+    events:
+      - _ulid: 01KM9FMDBYZ1G2WESR8BG8Z3H7
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-22T00:38:00.830Z
+    examined_commit: d795bf21f60c6acb04936b8221ffbd5e1c649a5b
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KM6YEXN2KMJ43AMEKH3SW0RE"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-22T00:38:00.831Z
+    updated_at: null
+    notes: []
