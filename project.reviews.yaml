@@ -47450,6 +47450,16 @@ reviews:
         runner: vitest
         created_at: 2026-03-22T19:39:44.664Z
         completed_at: 2026-03-22T19:39:44.664Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate passes. No trait AC coverage issues for @multi-turn-session-lifecycle.
+        name: kspec-validate
+        required: true
+        runner: kspec
+        created_at: 2026-03-22T19:39:51.921Z
+        completed_at: 2026-03-22T19:39:51.921Z
     events:
       - _ulid: 01KMBGRCKG6G41ZS06E6EZ27F2
         actor: "@claude"
@@ -47471,6 +47481,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-22T19:39:45.015Z
+      - _ulid: 01KMBGZ73SN8GFTZHBXMVVXXD2
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec-validate
+        timestamp: 2026-03-22T19:39:52.313Z
     examined_commit: 88a4d9d805cf5567379546abf8636a5cbc27ae51
     external_links: []
     lifecycle_state: open
@@ -47483,5 +47500,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-22T19:36:08.560Z
-    updated_at: 2026-03-22T19:39:44.664Z
+    updated_at: 2026-03-22T19:39:51.921Z
     notes: []
