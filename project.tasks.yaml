@@ -21353,6 +21353,32 @@
   submitted_at: 2026-03-21T11:34:48.965Z
   completed_at: 2026-03-21T11:40:20.394Z
   automation: eligible
+- _ulid: 01KM6YEWY1WSKEXTF5YNP5GG81
+  slugs:
+    - task-build-migration
+  title: Build migration command
+  type: task
+  spec_ref: "@task-storage-migration"
+  plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
+  status: completed
+  blocked_by: []
+  depends_on:
+    - "@task-impl-index"
+    - "@task-impl-per-task-files"
+    - "@task-extend-write-buffer"
+  priority: 1
+  tags:
+    - tasks
+    - migration
+    - cli
+  review_ref: "@01KM8WWCEX1YF28PXRQVP75S8D"
+  notes_count: 11
+  todos_count: 0
+  created_at: 2026-03-21T00:59:25.505Z
+  started_at: 2026-03-21T19:09:08.315Z
+  submitted_at: 2026-03-21T19:09:11.297Z
+  completed_at: 2026-03-21T19:14:23.074Z
+  automation: eligible
 - _ulid: 01KM6YEXN2KMJ43AMEKH3SW0RE
   slugs:
     - task-activate-split-storage
@@ -21362,9 +21388,6 @@
   plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
   status: completed
   blocked_by: []
-  closed_reason: Approved in review @01KM9FMDBZRWW1RXP946YHMEB3 and merged
-    dispatch/task/task-activate-split-storage/01km6yex into dev. Added kspec task storage
-    activate/status commands and activation coverage tests.
   depends_on:
     - "@01KM99V2"
   priority: 1
@@ -21373,43 +21396,12 @@
     - storage
     - manual
   review_ref: "@01KM9FMDBZRWW1RXP946YHMEB3"
-  submission_linkage:
-    review_url: null
-    branch: dev
-    captured_at: 2026-03-22T00:36:55.564Z
-    commit: 369132b7926d1becbc70af8efdfd69bc148a848d
-    remote: origin
-    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
-    upstream_ref: refs/heads/dev
-  session_id: 01KM9ETYCW9KWA5A3M0ENKJ7SZ
-  notes_count: 0
+  notes_count: 2
   todos_count: 0
   created_at: 2026-03-21T00:59:26.242Z
   started_at: 2026-03-22T00:24:32.255Z
   submitted_at: 2026-03-22T00:36:55.987Z
   completed_at: 2026-03-22T00:43:57.666Z
-  notes:
-    - _ulid: 01KM99T40NF3JSN3TQ5WYHVFGD
-      content: "Audit finding (session eval, 2026-03-21): AC-4 has no implementation yet — no CLI command
-        exists to persist the task_storage.format setting in kynetic.yaml. The schema field exists
-        (ManifestSchema.task_storage.format), resolveTaskDataManager() reads it correctly, and
-        ensureMigrated() validates migration completeness. What's missing is the command to flip the
-        switch. This task needs to build that command as part of its scope. AC-2 also lacks a test
-        annotation but is behaviorally covered by per-task-files.test.ts."
-      supersedes: null
-      author: "@claude"
-      created_at: 2026-03-21T22:56:16.405Z
-    - _ulid: 01KM9FDF9B7T8NZGME66CXPQ4Q
-      content: "Implemented AC-4: Added 'kspec task storage activate' CLI command. The command validates
-        migration completeness (checks for unmigrated monolithic entries), persists
-        task_storage.format=split in the manifest, and commits to shadow branch. Also added 'kspec
-        task storage status' for inspecting the current format. AC-1,2,3,5 were already fully
-        implemented in resolveTaskDataManager/ensureMigrated. Added 10 E2E tests covering: format
-        persistence, next-operation effect, JSON output, idempotent re-activation, unmigrated
-        rejection, post-migration activation, and status reporting."
-      supersedes: null
-      author: "@claude"
-      created_at: 2026-03-22T00:34:13.419Z
   automation: eligible
 - _ulid: 01KM6YEYAEWFKETRCB53V73HHK
   slugs:
@@ -21482,33 +21474,6 @@
   started_at: 2026-03-21T16:27:47.994Z
   submitted_at: 2026-03-21T16:35:36.092Z
   completed_at: 2026-03-21T16:44:34.010Z
-  automation: eligible
-- _ulid: 01KM6YEWY1WSKEXTF5YNP5GG81
-  slugs:
-    - task-build-migration
-  title: Build migration command
-  type: task
-  spec_ref: "@task-storage-migration"
-  plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
-  status: completed
-  blocked_by: []
-  depends_on:
-    - "@task-impl-index"
-    - "@task-impl-per-task-files"
-    - "@task-extend-write-buffer"
-  priority: 1
-  tags:
-    - tasks
-    - migration
-    - cli
-  review_ref: "@01KM8WWCEX1YF28PXRQVP75S8D"
-  session_id: 01KM8W9297G96YMS1E4D4YQ4P5
-  notes_count: 11
-  todos_count: 0
-  created_at: 2026-03-21T00:59:25.505Z
-  started_at: 2026-03-21T19:09:08.315Z
-  submitted_at: 2026-03-21T19:09:11.297Z
-  completed_at: 2026-03-21T19:14:23.074Z
   automation: eligible
 - _ulid: 01KM99V2BGM1Y4MNFPJS8YCHE4
   slugs: []
