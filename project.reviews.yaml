@@ -43923,6 +43923,24 @@ reviews:
         runner: kspec
         created_at: 2026-03-22T08:02:45.878Z
         completed_at: 2026-03-22T08:02:45.878Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 'Files read: AGENTS.md, kspec-agents.md, plan @plan-multi-turn-session-lifecycle, items
+          @agent-invocation-lifecycle, @dispatch-event-taxonomy, @dispatch-action-model,
+          tests/agent-invocation-lifecycle.test.ts. Commands run: kspec task get, kspec review
+          for-task, kspec review add/open, kspec plan get, kspec item get (3), kspec validate, npm
+          test, npm test -- tests/agent-invocation-lifecycle.test.ts -t "should close session as
+          timed_out when timeout is reached", git branch/log/rev-list checks. Claims verified: all
+          four requested spec updates are present; no code changes were required for this task; task
+          branch is already an ancestor of current dev. Categories searched: correctness, spec
+          alignment, integration consistency, test gate status, stale wording search.'
+        name: review evidence
+        required: false
+        runner: reviewer
+        created_at: 2026-03-22T08:02:46.899Z
+        completed_at: 2026-03-22T08:02:46.899Z
     events:
       - _ulid: 01KMA8PHR5NBP15MQH6QZH5YQX
         actor: Test User
@@ -43951,6 +43969,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-22T08:02:46.201Z
+      - _ulid: 01KMA92T9YSR89PVW8FET9KR88
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence
+        timestamp: 2026-03-22T08:02:47.231Z
     examined_commit: 463db210d316c43a70446ac83bc179c6de5a1616
     external_links: []
     lifecycle_state: open
@@ -43963,5 +43988,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-22T07:56:05.254Z
-    updated_at: 2026-03-22T08:02:45.878Z
+    updated_at: 2026-03-22T08:02:46.899Z
     notes: []
