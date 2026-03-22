@@ -129,9 +129,77 @@ Verify all internal references resolve:
 - `derive_from_specs` directive is present in the Tasks section
 - Parent, spec_ref, and depends_on references use `@` prefix
 
+## Recording the Review
+
+Plan reviews use the same kspec review record system as task/code reviews. This creates a durable audit trail of what was checked, what was found, and what the verdict was.
+
+### Create the Review Record
+
+```bash
+kspec review add \
+  --title "Plan review: <plan title>" \
+  --subject-type plan \
+  --subject-ref @plan-ref
+```
+
+### Structure Findings as Threads
+
+Each finding becomes a comment thread with a severity level:
+
+```bash
+# MUST-FIX finding
+kspec review comment @review-ref \
+  --severity blocker \
+  --message "ac-3 and ac-4 overlap — both describe idle timeout behavior"
+
+# SHOULD-FIX finding
+kspec review comment @review-ref \
+  --severity suggestion \
+  --message "task-multi-turn-invocation covers 10 ACs — consider splitting"
+
+# Record a check that passed
+kspec review check @review-ref \
+  --name "AC coverage" \
+  --status pass \
+  --detail "All 17 ACs claimed by at least one task"
+```
+
+### Severity Mapping
+
+| Plan review severity | Review thread severity |
+|---------------------|----------------------|
+| MUST-FIX | `blocker` |
+| SHOULD-FIX | `suggestion` or `concern` |
+| SUGGESTION | `suggestion` or `nitpick` |
+
+### Verdict
+
+After findings are addressed (or accepted):
+
+```bash
+# Approve — plan is ready for derivation
+kspec review verdict @review-ref --disposition approved \
+  --summary "Specs are behavioral, tasks are standalone, deps are ordered"
+
+# Request changes — issues need fixing before approval
+kspec review verdict @review-ref --disposition needs_work \
+  --summary "3 MUST-FIX items: compound ACs, missing coverage, broken refs"
+```
+
+### Review Lifecycle
+
+```
+create review → add findings as threads → add check results → submit verdict
+                                              ↓
+                              if needs_work: author fixes → re-review
+                              if approved: plan ready for kspec plan set --status approved
+```
+
+The review record links to the plan via `subject-ref`. Use `kspec review for-task @plan-ref` pattern (or `kspec review list --subject @plan-ref`) to find reviews for a plan.
+
 ## Reporting
 
-Group findings by severity:
+When reporting findings directly (without a review record), group by severity:
 
 **MUST-FIX** — Blocks approval. Factual errors, missing coverage, broken references, spec conflicts.
 
