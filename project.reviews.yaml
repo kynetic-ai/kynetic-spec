@@ -46165,6 +46165,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMAQ1CEHTRM9CG41PCK50J3G
         timestamp: 2026-03-22T12:06:40.911Z
+      - _ulid: 01KMAQ1F0BPCSQS6G9QR94T7ZT
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMAQ1EDCMP1WAFD8F57ZZV00
+        timestamp: 2026-03-22T12:06:42.955Z
     examined_commit: 7e45d49f6ef5ac6d24b08b3e5279c4f12cbdd529
     external_links: []
     lifecycle_state: open
@@ -46213,7 +46220,25 @@ reviews:
               this shared action model.
             created_at: 2026-03-22T12:06:40.337Z
         kind: blocker
+      - _ulid: 01KMAQ1EDCMP1WAFD8F57ZZV00
+        anchor:
+          type: code
+          commit: 7e45d49f6ef5ac6d24b08b3e5279c4f12cbdd529
+          line_end: 2235
+          line_start: 2234
+          path: src/parser/validate.ts
+          side: head
+        entries:
+          - _ulid: 01KMAQ1EDC4N02NKXPFNTJ31AP
+            author: Test User
+            body: The new  validation only runs for hooks, but  is also used by schedules and compositions.
+              A  configured on a schedule tick or composition completion without  still parses
+              cleanly and reaches runtime, where it can only fail with "No session_id available".
+              That misses @session-prompt-action ac-7/@session-prompt-action-schema ac-4 for two of
+              the three configuration surfaces using this shared action model.
+            created_at: 2026-03-22T12:06:42.348Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-22T12:00:03.146Z
-    updated_at: 2026-03-22T12:06:40.337Z
+    updated_at: 2026-03-22T12:06:42.348Z
     notes: []
