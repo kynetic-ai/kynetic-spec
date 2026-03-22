@@ -21788,7 +21788,7 @@
     - cleanup
     - dispatch
     - sessions
-  notes_count: 0
+  notes_count: 1
   todos_count: 0
   created_at: 2026-03-22T21:24:14.236Z
   started_at: 2026-03-22T21:38:23.041Z
