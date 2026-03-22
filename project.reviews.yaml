@@ -43073,9 +43073,25 @@ reviews:
           kind: blocker
           thread_ulid: 01KM9G7B92P1WY1QX7J3V45T68
         timestamp: 2026-03-22T00:48:21.664Z
+      - _ulid: 01KM9G7X5FZ29C10BPG4S26CY0
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-22T00:48:39.599Z
+      - _ulid: 01KM9G7X5FNSBJBTF54DX9Y841
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-22T00:48:39.599Z
     examined_commit: 1c5294476abdccfb6c355209f9e08f6668c8a437
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -43123,7 +43139,14 @@ reviews:
               shadow worktree.
             created_at: 2026-03-22T00:48:21.282Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-22T00:48:39.599Z
     created_at: 2026-03-22T00:47:39.246Z
-    updated_at: 2026-03-22T00:48:21.282Z
+    updated_at: 2026-03-22T00:48:39.599Z
     notes: []
