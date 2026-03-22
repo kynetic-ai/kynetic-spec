@@ -18718,34 +18718,34 @@ workspaces:
     canonical_branch: dispatch/task/task-multi-turn-invocation/01kma74d
     canonical_branch_head: 53ec6f82e20ce4706655edeb2443a30aca424e08
     cleanup:
-      status: not_scheduled
-      detail: null
-      eligible: false
-      reason: null
-      updated_at: 2026-03-22T18:48:55.306Z
+      status: scheduled
+      detail: integrated-into-base-branch
+      eligible: true
+      reason: integrated-into-base-branch
+      updated_at: 2026-03-22T18:49:33.898Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-22T18:48:57.520Z
+      updated_at: 2026-03-22T18:49:33.898Z
     integration:
-      status: pending
-      detail: null
-      outcome: manual_merge
+      status: merged
+      detail: integration:merged
+      outcome: merged
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 463db210d316c43a70446ac83bc179c6de5a1616
-      updated_at: 2026-03-22T18:48:55.306Z
-    lifecycle_state: ready
+      updated_at: 2026-03-22T18:49:33.898Z
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KMA74DY7WGG4KA6P07BTMJFD"
     task_slug: task-multi-turn-invocation
     timestamps:
       closed_at: null
       last_active_at: 2026-03-22T18:39:09.146Z
-      last_reconciled_at: 2026-03-22T18:48:57.520Z
+      last_reconciled_at: 2026-03-22T18:49:33.898Z
       created_at: 2026-03-22T07:55:24.230Z
-      updated_at: 2026-03-22T18:48:57.520Z
+      updated_at: 2026-03-22T18:49:33.898Z
     workspace_id: dispatch-workspace-01KMA74DY7WGG4KA6P07BTMJFD
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
