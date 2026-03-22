@@ -19623,7 +19623,7 @@ workspaces:
         head: 3fe484fb622ef64ca3131a23ef6e5f077ef910aa
         last_seen_at: 2026-03-22T21:37:24.139Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/reload-session-idle-hook-presence-during-dispatch-reconciliation-01kmbpyb
-  - active_role: worker
+  - active_role: null
     base_branch_point: 2da4a1f5163cdbd9acbb5a6acef049732b6b75c8
     bootstrap:
       status: succeeded
@@ -19707,12 +19707,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-22T21:43:51.207Z
+      updated_at: 2026-03-22T21:44:44.287Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-22T21:43:51.207Z
+      updated_at: 2026-03-22T21:44:44.287Z
     integration:
       status: pending
       detail: null
@@ -19720,17 +19720,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 2da4a1f5163cdbd9acbb5a6acef049732b6b75c8
-      updated_at: 2026-03-22T21:43:51.207Z
-    lifecycle_state: active
+      updated_at: 2026-03-22T21:44:44.287Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMBPYA8WRP5WFQV53QQK3GW4"
     task_slug: task-remove-duplicate-handle-registration
     timestamps:
       closed_at: null
       last_active_at: 2026-03-22T21:37:39.519Z
-      last_reconciled_at: 2026-03-22T21:43:51.207Z
+      last_reconciled_at: 2026-03-22T21:44:44.287Z
       created_at: 2026-03-22T21:37:31.931Z
-      updated_at: 2026-03-22T21:43:51.207Z
+      updated_at: 2026-03-22T21:44:44.287Z
     workspace_id: dispatch-workspace-01KMBPYA8WRP5WFQV53QQK3GW4
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
