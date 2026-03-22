@@ -46847,3 +46847,36 @@ reviews:
     created_at: 2026-03-22T16:06:58.562Z
     updated_at: 2026-03-22T16:09:40.263Z
     notes: []
+  - _ulid: 01KMB58X6NAT4HD8CEKPX3DQQC
+    slugs: []
+    title: Review migrate-batch-buffer-scoping (cycle 1)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KMB58X6NXKYCBYE2NYY8DM6S
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-22T16:15:26.933Z
+      - _ulid: 01KMB59629481933AV06EAZ9ZK
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-03-22T16:15:36.010Z
+    examined_commit: 861d966082cd395f0fd6072be639f10950f1be31
+    external_links: []
+    lifecycle_state: open
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMA735DM9VEGT6DA7G603G58"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-22T16:15:26.933Z
+    updated_at: 2026-03-22T16:15:35.394Z
+    notes: []
