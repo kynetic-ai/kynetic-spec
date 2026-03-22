@@ -43154,7 +43154,23 @@ reviews:
     slugs: []
     title: Review fix-worktree-guard-to-detect-actual-shadow-branch-not-substring-match (cycle 2)
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/cli/commands/guard.ts, src/parser/config.ts, src/parser/shadow.ts,
+          tests/guard-worktree.test.ts. Commands run: git show --stat, git diff 369132b..141a896,
+          kspec task get @01KM9FB8PAK46RP5SRP1JVD2FD, kspec item get @native-guard-commands, grep
+          -Rni AC annotations, kspec validate (warnings-only baseline), npm test. Claims verified:
+          custom shadow.directory is now loaded from config; full suite passes. Categories searched:
+          correctness (found blocker), edge cases (nested same-name dirs), test quality,
+          integration, error handling/security (none)."
+        name: review-evidence
+        required: false
+        runner: codex
+        created_at: 2026-03-22T01:01:38.069Z
+        completed_at: 2026-03-22T01:01:38.069Z
     events:
       - _ulid: 01KM9GYN5WZ0E5SFV166D6VXQ4
         actor: Test User
@@ -43176,6 +43192,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM9GZMC1C28F2270SGCRAFRM
         timestamp: 2026-03-22T01:01:37.348Z
+      - _ulid: 01KM9GZNPFX1JT9YW9ARKDM3ST
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-03-22T01:01:38.384Z
     examined_commit: 141a89631eecfc6b81577ce04697fac3c205f74c
     external_links: []
     lifecycle_state: open
@@ -43207,5 +43230,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-22T01:01:05.085Z
-    updated_at: 2026-03-22T01:01:37.025Z
+    updated_at: 2026-03-22T01:01:38.069Z
     notes: []
