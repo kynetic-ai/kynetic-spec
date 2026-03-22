@@ -44344,6 +44344,13 @@ reviews:
           kind: nit
           thread_ulid: 01KMAFY1MF18TWH4FAMJREY3NE
         timestamp: 2026-03-22T10:02:31.292Z
+      - _ulid: 01KMAFY366N1V03Z872ESH5DHJ
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMAFY2TYX41ZERF4JNDXQQ6P
+        timestamp: 2026-03-22T10:02:32.518Z
     examined_commit: f7bd46ee2c1a4bf8558ff6e67c6faeca544c2626
     external_links: []
     lifecycle_state: closed
@@ -44374,6 +44381,32 @@ reviews:
               behavior), integration (registry handle contract).'
             created_at: 2026-03-22T10:02:30.927Z
         kind: nit
+      - _ulid: 01KMAFY2TYX41ZERF4JNDXQQ6P
+        entries:
+          - _ulid: 01KMAFY2TYV3EHJKSN0NB9REV0
+            author: Test User
+            body: >-
+              Evidence log:
+
+              Files read: src/agent-runtime/invocation.ts, src/agent-runtime/index.ts,
+              src/agent-runtime/session-registry.ts, src/sessions/types.ts,
+              tests/multi-turn-invocation.test.ts, tests/active-session-registry.test.ts.
+
+              Commands run: kspec task get @01KMA74DY7WGG4KA6P07BTMJFD, kspec review for-task
+              @01KMA74DY7WGG4KA6P07BTMJFD, kspec review get @01KMACWKW34XRRZZ5ZE1TKSDEY, git diff
+              463db210d316c43a70446ac83bc179c6de5a1616...f7bd46ee2c1a4bf8558ff6e67c6faeca544c2626,
+              rg -n "AC: @multi-turn-session-lifecycle|AC: @trait-"
+              tests/multi-turn-invocation.test.ts, kspec validate, npm test.
+
+              Claims verified: previous blocker fix verified by reading the new idle grace-period
+              path and the async follow-up test; queue-overflow behavior verified by comparing the
+              SessionHandle promise contract to the synchronous throw path and its matching test.
+
+              Categories searched: correctness (found blocker), edge cases (queue full / closed
+              queue), error handling (found blocker), test quality (reviewed AC annotations and
+              overflow test behavior), integration (registry handle contract).
+            created_at: 2026-03-22T10:02:32.158Z
+        kind: nit
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -44383,5 +44416,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-22T10:01:16.410Z
     created_at: 2026-03-22T09:58:29.291Z
-    updated_at: 2026-03-22T10:02:30.927Z
+    updated_at: 2026-03-22T10:02:32.158Z
     notes: []
