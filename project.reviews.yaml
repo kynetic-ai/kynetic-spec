@@ -47097,6 +47097,17 @@ reviews:
         runner: svelte-check
         created_at: 2026-03-22T16:48:32.033Z
         completed_at: 2026-03-22T16:48:32.033Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "AC: @session-idle-event ac-1 annotated in EventLogSection.svelte line 4 and in 8 E2E test
+          locations in automation-session-idle.spec.ts"
+        name: ac-annotations
+        required: true
+        runner: manual
+        created_at: 2026-03-22T16:48:35.698Z
+        completed_at: 2026-03-22T16:48:35.698Z
     events:
       - _ulid: 01KMB6V5H6EK2WG5STG7QCH5HK
         actor: "@claude"
@@ -47125,6 +47136,13 @@ reviews:
           status: pass
           name: svelte-check
         timestamp: 2026-03-22T16:48:32.446Z
+      - _ulid: 01KMB75KQJN73YH2TT2AGMV6JW
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-annotations
+        timestamp: 2026-03-22T16:48:36.082Z
     examined_commit: ede5ca68ef95835b8de7f87e8914246c2e21ddb4
     external_links: []
     lifecycle_state: open
@@ -47137,5 +47155,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-22T16:42:53.862Z
-    updated_at: 2026-03-22T16:48:32.033Z
+    updated_at: 2026-03-22T16:48:35.698Z
     notes: []
