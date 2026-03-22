@@ -42762,7 +42762,17 @@ reviews:
     slugs: []
     title: Review add-missing-ac-test-annotations-for-storage-split-specs (cycle 3)
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Exit 6 with repository-wide warnings only; no targeted blocker for this task's AC coverage.
+        name: kspec validate --warnings-ok
+        required: false
+        runner: kspec
+        created_at: 2026-03-22T00:01:57.606Z
+        completed_at: 2026-03-22T00:01:57.606Z
     events:
       - _ulid: 01KM9DAZKH5HM8TGBBDD22EYAD
         actor: Test User
@@ -42784,6 +42794,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM9DJBT7TDW2G01DRBRD1V0E
         timestamp: 2026-03-22T00:01:56.921Z
+      - _ulid: 01KM9DJD4AMFF6EB4Y3FCGHM11
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --warnings-ok
+        timestamp: 2026-03-22T00:01:57.898Z
     examined_commit: 67e06ae5234df28e1c75dc83bc64d907b844b187
     external_links: []
     lifecycle_state: open
@@ -42820,5 +42837,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-21T23:57:54.673Z
-    updated_at: 2026-03-22T00:01:56.552Z
+    updated_at: 2026-03-22T00:01:57.606Z
     notes: []
