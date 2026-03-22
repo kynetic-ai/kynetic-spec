@@ -6,9 +6,15 @@
  * via the CLI.
  */
 
+import * as path from "node:path";
 import { describe, it, expect } from "vitest";
 import { evaluateWorktreeGuard, type GuardDecision, type GuardOptions } from "../src/cli/commands/guard.js";
 import { kspec } from "./helpers/cli.js";
+
+// Standard test project root and shadow worktree path
+const PROJECT_ROOT = "/home/user/project";
+const SHADOW_ABS_PATH = `${PROJECT_ROOT}/.kspec`;
+const defaultOpts: GuardOptions = { shadowAbsolutePath: SHADOW_ABS_PATH };
 
 // ─── Unit tests for evaluateWorktreeGuard ───
 
@@ -16,12 +22,12 @@ describe("evaluateWorktreeGuard", () => {
   // AC: @native-guard-commands ac-worktree-allow
   describe("allows safe commands", () => {
     it("allows when no command is provided (not a Bash tool call)", () => {
-      const result = evaluateWorktreeGuard({ tool_input: {} });
+      const result = evaluateWorktreeGuard({ tool_input: {} }, defaultOpts);
       expect(result.decision).toBe("allow");
     });
 
     it("allows when tool_input is missing", () => {
-      const result = evaluateWorktreeGuard({});
+      const result = evaluateWorktreeGuard({}, defaultOpts);
       expect(result.decision).toBe("allow");
     });
 
@@ -29,7 +35,7 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "ls -la" },
         cwd: "/home/user/project",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("allow");
     });
 
@@ -37,7 +43,7 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "git status" },
         cwd: "/home/user/project",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("allow");
     });
 
@@ -45,7 +51,7 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "git status" },
         cwd: "/home/user/project/.kspec",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("allow");
     });
 
@@ -53,7 +59,7 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "git checkout kspec-meta" },
         cwd: "/home/user/project/.kspec",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("allow");
     });
 
@@ -61,7 +67,7 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "git log --oneline" },
         cwd: "/home/user/project/.kspec",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("allow");
     });
 
@@ -69,7 +75,7 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "git diff" },
         cwd: "/home/user/project/.kspec",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("allow");
     });
 
@@ -77,7 +83,7 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "git add . && git commit -m 'update'" },
         cwd: "/home/user/project/.kspec",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("allow");
     });
 
@@ -85,7 +91,7 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "git push origin kspec-meta" },
         cwd: "/home/user/project/.kspec",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("allow");
     });
 
@@ -94,7 +100,7 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: 'echo "git reset --hard"' },
         cwd: "/home/user/project/.kspec",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("allow");
     });
 
@@ -102,7 +108,7 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "grep 'git stash' some-file.sh" },
         cwd: "/home/user/project/.kspec",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("allow");
     });
   });
@@ -114,7 +120,7 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "git checkout -b new-branch" },
         cwd: "/home/user/project/.kspec",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("block");
       expect(result.reason).toContain("kspec-worktree-guard");
     });
@@ -123,7 +129,7 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "git checkout -B new-branch" },
         cwd: "/home/user/project/.kspec",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("block");
     });
 
@@ -131,7 +137,7 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "git switch -c new-branch" },
         cwd: "/home/user/project/.kspec",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("block");
     });
 
@@ -139,7 +145,7 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "git switch --create new-branch" },
         cwd: "/home/user/project/.kspec",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("block");
     });
 
@@ -147,7 +153,7 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "git branch -c old new" },
         cwd: "/home/user/project/.kspec",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("block");
     });
 
@@ -155,7 +161,7 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "git branch -m old new" },
         cwd: "/home/user/project/.kspec",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("block");
     });
 
@@ -163,7 +169,7 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "git branch -M old new" },
         cwd: "/home/user/project/.kspec",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("block");
     });
 
@@ -172,7 +178,7 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "git reset --hard HEAD~1" },
         cwd: "/home/user/project/.kspec",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("block");
     });
 
@@ -180,7 +186,7 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "git rebase main" },
         cwd: "/home/user/project/.kspec",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("block");
     });
 
@@ -188,7 +194,7 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "git cherry-pick abc123" },
         cwd: "/home/user/project/.kspec",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("block");
     });
 
@@ -196,7 +202,7 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "git commit --amend -m 'fix'" },
         cwd: "/home/user/project/.kspec",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("block");
     });
 
@@ -205,7 +211,7 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "git push --force origin kspec-meta" },
         cwd: "/home/user/project/.kspec",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("block");
     });
 
@@ -213,7 +219,7 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "git push -f origin kspec-meta" },
         cwd: "/home/user/project/.kspec",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("block");
     });
 
@@ -222,7 +228,7 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "git stash" },
         cwd: "/home/user/project/.kspec",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("block");
     });
 
@@ -230,7 +236,7 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "git clean -fd" },
         cwd: "/home/user/project/.kspec",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("block");
     });
 
@@ -238,7 +244,7 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "git checkout -- file.yaml" },
         cwd: "/home/user/project/.kspec",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("block");
     });
 
@@ -246,7 +252,7 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "git restore file.yaml" },
         cwd: "/home/user/project/.kspec",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("block");
     });
   });
@@ -257,7 +263,7 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "git branch -d kspec-meta" },
         cwd: "/home/user/project",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("block");
       expect(result.reason).toContain("kspec-meta");
     });
@@ -266,7 +272,7 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "git branch -D kspec-meta" },
         cwd: "/home/user/project",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("block");
     });
 
@@ -274,7 +280,7 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: 'git "branch" -D kspec-meta' },
         cwd: "/home/user/project",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("block");
     });
 
@@ -282,8 +288,18 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "git branch -D kspec-meta-backup-2026-02-28" },
         cwd: "/home/user/project",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("allow");
+    });
+
+    it("blocks kspec-meta deletion even without shadowAbsolutePath", () => {
+      // Branch deletion protection works without shadow path context
+      const result = evaluateWorktreeGuard({
+        tool_input: { command: "git branch -D kspec-meta" },
+        cwd: "/home/user/project",
+      });
+      expect(result.decision).toBe("block");
+      expect(result.reason).toContain("kspec-meta");
     });
   });
 
@@ -293,15 +309,15 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "cd .kspec && git reset --hard" },
         cwd: "/home/user/project",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("block");
     });
 
-    it("blocks dangerous commands with cd to .kspec path", () => {
+    it("blocks dangerous commands with cd to absolute .kspec path", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "cd /home/user/project/.kspec && git stash" },
         cwd: "/home/user/project",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("block");
     });
   });
@@ -312,7 +328,7 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "git reset --hard" },
         cwd: "/home/user/project/.kspec",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("block");
     });
 
@@ -320,7 +336,7 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "git reset --hard" },
         cwd: "/home/user/project/.kspec/modules",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("block");
     });
 
@@ -328,7 +344,7 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "git reset --hard" },
         cwd: "C:\\Users\\dev\\project\\.kspec",
-      });
+      }, { shadowAbsolutePath: "C:\\Users\\dev\\project\\.kspec" });
       expect(result.decision).toBe("block");
     });
   });
@@ -339,18 +355,18 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: 'git "reset" --hard' },
         cwd: "/home/user/project/.kspec",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("block");
     });
   });
 
-  // AC: @native-guard-commands ac-worktree-guard — exact path-segment matching
+  // AC: @native-guard-commands ac-worktree-guard — absolute path matching prevents false positives
   describe("does NOT false-positive on paths containing .kspec as substring", () => {
     it("allows git rebase in .kspec-worktrees dispatch worktree", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "git rebase origin/dev" },
         cwd: "/home/user/project/.kspec-worktrees/dispatch/task/foo/01ABC123",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("allow");
     });
 
@@ -358,7 +374,7 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "git fetch origin" },
         cwd: "/home/user/project/.kspec-worktrees",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("allow");
     });
 
@@ -366,7 +382,7 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "git reset --hard HEAD~1" },
         cwd: "/home/user/project/.kspec-backup",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("allow");
     });
 
@@ -374,7 +390,7 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "git clean -fd" },
         cwd: "/home/user/project/.kspec-data/something",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("allow");
     });
 
@@ -382,7 +398,7 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "git rebase origin/dev" },
         cwd: "/home/user/project/.kspec",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("block");
     });
 
@@ -390,18 +406,18 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "git reset --hard" },
         cwd: "/home/user/project/.kspec/modules",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("block");
     });
   });
 
   // AC: @native-guard-commands ac-worktree-guard — cd detection must also be exact
-  describe("cd detection uses exact path-segment matching", () => {
+  describe("cd detection uses absolute path matching", () => {
     it("allows cd to .kspec-worktrees with dangerous git ops", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "cd .kspec-worktrees/task/foo && git rebase origin/dev" },
         cwd: "/home/user/project",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("allow");
     });
 
@@ -409,7 +425,7 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "cd .kspec && git reset --hard" },
         cwd: "/home/user/project",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("block");
     });
 
@@ -417,7 +433,7 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "cd .kspec/modules && git stash" },
         cwd: "/home/user/project",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("block");
     });
 
@@ -425,15 +441,15 @@ describe("evaluateWorktreeGuard", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "git branch -D kspec-meta" },
         cwd: "/home/user/project/.kspec-worktrees/dispatch/task/foo/01ABC123",
-      });
+      }, defaultOpts);
       expect(result.decision).toBe("block");
       expect(result.reason).toContain("kspec-meta");
     });
   });
 
-  // AC: @native-guard-commands ac-worktree-guard — configurable shadow directory
-  describe("respects configured shadow directory", () => {
-    const customOpts: GuardOptions = { shadowDirectory: ".specs" };
+  // AC: @native-guard-commands ac-worktree-guard — configurable shadow directory via absolute path
+  describe("respects configured shadow directory via absolute path", () => {
+    const customOpts: GuardOptions = { shadowAbsolutePath: "/home/user/project/.specs" };
 
     it("blocks dangerous commands in custom shadow directory", () => {
       const result = evaluateWorktreeGuard({
@@ -490,11 +506,53 @@ describe("evaluateWorktreeGuard", () => {
       }, customOpts);
       expect(result.decision).toBe("block");
     });
+  });
 
-    it("defaults to .kspec when no options provided", () => {
+  // AC: @native-guard-commands ac-worktree-guard — nested directory false positive prevention
+  describe("does NOT false-positive on nested directories with same shadow dir name", () => {
+    it("allows dangerous ops in unrelated nested .kspec directory", () => {
+      // /repo/packages/demo/.kspec is NOT the project shadow worktree
+      // The project shadow worktree is at /home/user/project/.kspec
+      const result = evaluateWorktreeGuard({
+        tool_input: { command: "git reset --hard" },
+        cwd: "/repo/packages/demo/.kspec",
+      }, defaultOpts);
+      expect(result.decision).toBe("allow");
+    });
+
+    it("allows dangerous ops in unrelated nested .specs directory (custom config)", () => {
+      const customOpts: GuardOptions = { shadowAbsolutePath: "/repo/.specs" };
+      const result = evaluateWorktreeGuard({
+        tool_input: { command: "git rebase main" },
+        cwd: "/repo/packages/demo/.specs",
+      }, customOpts);
+      expect(result.decision).toBe("allow");
+    });
+
+    it("allows cd to unrelated nested .kspec directory", () => {
+      const result = evaluateWorktreeGuard({
+        tool_input: { command: "cd /other/project/.kspec && git reset --hard" },
+        cwd: "/home/user/project",
+      }, defaultOpts);
+      expect(result.decision).toBe("allow");
+    });
+  });
+
+  // Fail-open behavior when no shadowAbsolutePath is provided
+  describe("fails open without shadowAbsolutePath (except branch deletion)", () => {
+    it("allows cwd-based detection without options", () => {
       const result = evaluateWorktreeGuard({
         tool_input: { command: "git reset --hard" },
         cwd: "/home/user/project/.kspec",
+      });
+      // Without shadowAbsolutePath, cwd-based detection is skipped
+      expect(result.decision).toBe("allow");
+    });
+
+    it("still blocks kspec-meta deletion without options", () => {
+      const result = evaluateWorktreeGuard({
+        tool_input: { command: "git branch -D kspec-meta" },
+        cwd: "/home/user/project",
       });
       expect(result.decision).toBe("block");
     });
@@ -504,13 +562,20 @@ describe("evaluateWorktreeGuard", () => {
 // ─── CLI integration tests ───
 
 describe("kspec guard worktree CLI", () => {
+  // The CLI handler resolves the shadow worktree absolute path from git root + config.
+  // For CLI tests, we use the actual .kspec path that the handler will resolve.
+  // The handler calls loadProjectConfig(input.cwd) which finds the git root,
+  // then constructs path.resolve(gitRoot, config.shadow.directory).
+  const cliTestCwd = process.cwd();
+  const cliShadowCwd = path.resolve(cliTestCwd, ".kspec");
+
   // AC: @trait-semantic-exit-codes ac-1 - exit 0 on success
   it("exits 0 and outputs allow JSON for safe command", () => {
     const input = JSON.stringify({
       tool_input: { command: "git status" },
-      cwd: "/home/user/project",
+      cwd: cliTestCwd,
     });
-    const result = kspec(`guard worktree`, process.cwd(), {
+    const result = kspec(`guard worktree`, cliTestCwd, {
       stdin: input,
     });
     expect(result.exitCode).toBe(0);
@@ -522,9 +587,9 @@ describe("kspec guard worktree CLI", () => {
   it("exits 0 and outputs block JSON for dangerous command", () => {
     const input = JSON.stringify({
       tool_input: { command: "git reset --hard" },
-      cwd: "/home/user/project/.kspec",
+      cwd: cliShadowCwd,
     });
-    const result = kspec(`guard worktree`, process.cwd(), {
+    const result = kspec(`guard worktree`, cliTestCwd, {
       stdin: input,
     });
     expect(result.exitCode).toBe(0);
@@ -537,9 +602,9 @@ describe("kspec guard worktree CLI", () => {
   it("outputs valid JSON with no ANSI color codes", () => {
     const input = JSON.stringify({
       tool_input: { command: "git stash" },
-      cwd: "/home/user/project/.kspec",
+      cwd: cliShadowCwd,
     });
-    const result = kspec(`guard worktree`, process.cwd(), {
+    const result = kspec(`guard worktree`, cliTestCwd, {
       stdin: input,
     });
     expect(result.exitCode).toBe(0);
@@ -554,9 +619,9 @@ describe("kspec guard worktree CLI", () => {
   it("JSON output includes decision and reason fields", () => {
     const input = JSON.stringify({
       tool_input: { command: "git reset --hard" },
-      cwd: "/home/user/project/.kspec",
+      cwd: cliShadowCwd,
     });
-    const result = kspec(`guard worktree`, process.cwd(), {
+    const result = kspec(`guard worktree`, cliTestCwd, {
       stdin: input,
     });
     const parsed = JSON.parse(result.stdout.trim());
@@ -566,7 +631,7 @@ describe("kspec guard worktree CLI", () => {
 
   // AC: @trait-json-output ac-3 - error returned as JSON with error field
   it("returns JSON error for invalid stdin input", () => {
-    const result = kspec(`guard worktree`, process.cwd(), {
+    const result = kspec(`guard worktree`, cliTestCwd, {
       stdin: "not valid json{{{",
     });
     expect(result.exitCode).toBe(1);
@@ -576,7 +641,7 @@ describe("kspec guard worktree CLI", () => {
 
   // AC: @trait-semantic-exit-codes ac-2 - validation error exit code 1
   it("exits 1 on invalid JSON input (validation error)", () => {
-    const result = kspec(`guard worktree`, process.cwd(), {
+    const result = kspec(`guard worktree`, cliTestCwd, {
       stdin: "not json",
     });
     expect(result.exitCode).toBe(1);
@@ -584,7 +649,7 @@ describe("kspec guard worktree CLI", () => {
 
   // AC: @native-guard-commands ac-worktree-allow - empty input
   it("allows with empty stdin input", () => {
-    const result = kspec(`guard worktree`, process.cwd(), {
+    const result = kspec(`guard worktree`, cliTestCwd, {
       stdin: "",
     });
     expect(result.exitCode).toBe(0);

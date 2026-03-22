@@ -8,12 +8,12 @@
  * AC: @native-guard-commands ac-worktree-allow - allows safe commands
  */
 
+import * as path from "node:path";
 import type { Command } from "commander";
 import { EXIT_CODES } from "../exit-codes.js";
 import { isJsonMode, output } from "../output.js";
 import {
   SHADOW_BRANCH_NAME,
-  SHADOW_WORKTREE_DIR,
 } from "../../parser/shadow.js";
 import { loadProjectConfig } from "../../parser/config.js";
 
@@ -69,19 +69,19 @@ const DANGEROUS_PATTERNS: readonly string[] = [
 /**
  * Check if a command targets the shadow branch worktree, either via cwd or cd commands.
  *
- * Uses exact path-segment matching against the configured shadow directory name
- * (default: ".kspec") to avoid false positives on paths like ".kspec-worktrees/"
- * which contain the shadow name as a substring but are NOT the shadow worktree.
+ * Compares against the resolved absolute path of the shadow worktree to avoid
+ * false positives on unrelated directories that happen to share the shadow
+ * directory name (e.g. /repo/packages/demo/.kspec is NOT the project shadow worktree).
  */
-function isInKspec(command: string, cwd: string | undefined, shadowDir: string): boolean {
+function isInKspec(command: string, cwd: string | undefined, shadowAbsPath: string): boolean {
   if (cwd) {
     // Normalize path separators for cross-platform support
     const normalizedCwd = cwd.replace(/\\/g, "/");
-    if (isShadowWorktreePath(normalizedCwd, shadowDir)) {
+    if (isShadowWorktreePath(normalizedCwd, shadowAbsPath)) {
       return true;
     }
   }
-  if (isCdToShadowWorktree(command, shadowDir)) {
+  if (isCdToShadowWorktree(command, shadowAbsPath, cwd)) {
     return true;
   }
   return false;
@@ -90,37 +90,54 @@ function isInKspec(command: string, cwd: string | undefined, shadowDir: string):
 /**
  * Check if a normalized path is inside the shadow worktree directory.
  *
- * Matches paths that are exactly the shadow directory or a subdirectory of it,
- * using path-segment boundary checks to avoid substring false positives.
- * e.g. "/.kspec" and "/.kspec/modules" match, but "/.kspec-worktrees/..." does not.
+ * Compares against the resolved absolute path of the shadow worktree.
+ * Only matches the exact shadow worktree path or subdirectories of it.
  */
-function isShadowWorktreePath(normalizedPath: string, shadowDir: string): boolean {
-  // Match /<shadowDir> at end of path, or /<shadowDir>/ as a path segment
-  const segmentPattern = `/${shadowDir}`;
-  const idx = normalizedPath.indexOf(segmentPattern);
-  if (idx === -1) {
-    return false;
+function isShadowWorktreePath(normalizedPath: string, shadowAbsPath: string): boolean {
+  const normalizedShadow = shadowAbsPath.replace(/\\/g, "/");
+  // Exact match: cwd IS the shadow worktree
+  if (normalizedPath === normalizedShadow) {
+    return true;
   }
-  // Check that the match is a complete path segment:
-  // the character after the shadow dir name must be "/" or end-of-string
-  const afterIdx = idx + segmentPattern.length;
-  return afterIdx === normalizedPath.length || normalizedPath[afterIdx] === "/";
+  // Subdirectory match: cwd is inside the shadow worktree
+  return normalizedPath.startsWith(normalizedShadow + "/");
 }
 
 /**
  * Check if a command contains a cd into the shadow worktree directory.
  *
- * Matches "cd .kspec", "cd /path/to/.kspec", "cd .kspec/subdir" etc.
- * but NOT "cd .kspec-worktrees/..." or similar substring matches.
+ * For absolute cd targets, compares directly against the shadow worktree path.
+ * For relative cd targets, resolves against cwd (if available) and compares.
+ * Falls back to directory-name matching when cwd is not available.
  */
-function isCdToShadowWorktree(command: string, shadowDir: string): boolean {
-  // Escape for regex
-  const escaped = shadowDir.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  // Match cd (with optional path prefix) to the shadow dir, followed by
-  // end-of-string, whitespace, path separator, or shell operator (&&, ;, |)
-  return new RegExp(
-    `cd\\s+(?:\\S*/)?${escaped}(?:\\s|/|$|&&|;|\\|)`,
-  ).test(command);
+function isCdToShadowWorktree(command: string, shadowAbsPath: string, cwd: string | undefined): boolean {
+  // Extract the cd target from the command
+  const cdMatch = command.match(/cd\s+(\S+)/);
+  if (!cdMatch) {
+    return false;
+  }
+  const cdTarget = cdMatch[1];
+  const normalizedShadow = shadowAbsPath.replace(/\\/g, "/");
+  const shadowDirName = path.basename(normalizedShadow);
+
+  // If cd target is absolute, compare directly
+  if (cdTarget.startsWith("/")) {
+    const normalizedTarget = cdTarget.replace(/\\/g, "/").replace(/\/+$/, "");
+    return normalizedTarget === normalizedShadow ||
+      normalizedTarget.startsWith(normalizedShadow + "/");
+  }
+
+  // For relative targets, resolve against cwd if available
+  if (cwd) {
+    const resolved = path.resolve(cwd, cdTarget).replace(/\\/g, "/");
+    return resolved === normalizedShadow ||
+      resolved.startsWith(normalizedShadow + "/");
+  }
+
+  // Fallback: no cwd available, use directory-name segment matching
+  // This only matches relative cd targets like "cd .kspec" or "cd .kspec/subdir"
+  const escaped = shadowDirName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`^${escaped}(?:/|$)`).test(cdTarget);
 }
 
 /**
@@ -168,30 +185,36 @@ function matchesDangerousPattern(command: string): string | null {
  * Options for evaluateWorktreeGuard to support configurable shadow directory.
  */
 export interface GuardOptions {
-  /** Shadow worktree directory name (default: SHADOW_WORKTREE_DIR from constants) */
-  shadowDirectory?: string;
+  /**
+   * Absolute path to the shadow worktree directory.
+   * When provided, cwd is compared against this exact path (not a name pattern).
+   * When omitted, the guard fails open (allows all cwd-based checks) since it
+   * cannot distinguish the project's shadow worktree from unrelated directories.
+   */
+  shadowAbsolutePath?: string;
 }
 
 /**
  * Evaluate a PreToolUse hook input and return a guard decision.
  * This is the core logic, exported for testing.
  *
- * The shadowDirectory is resolved from kspec.config.yaml at the CLI layer
- * and passed in. When not provided, falls back to the default constant.
+ * The shadowAbsolutePath is resolved from kspec.config.yaml + project root at
+ * the CLI layer and passed in. When not provided, cwd-based shadow worktree
+ * detection is skipped (fail-open) to avoid false positives on unrelated
+ * directories that share the shadow directory name.
  *
  * AC: @native-guard-commands ac-worktree-guard
  * AC: @native-guard-commands ac-worktree-allow
  */
 export function evaluateWorktreeGuard(input: PreToolUseInput, options?: GuardOptions): GuardDecision {
   const command = input.tool_input?.command;
-  const shadowDir = options?.shadowDirectory ?? SHADOW_WORKTREE_DIR;
 
   // No command means not a Bash tool call — allow
   if (!command) {
     return { decision: "allow" };
   }
 
-  // Block shadow branch deletion from anywhere
+  // Block shadow branch deletion from anywhere (does not need shadow path context)
   if (isShadowBranchDeletion(command)) {
     return {
       decision: "block",
@@ -200,8 +223,17 @@ export function evaluateWorktreeGuard(input: PreToolUseInput, options?: GuardOpt
     };
   }
 
+  // shadowAbsolutePath is required for cwd-based shadow worktree detection.
+  // The CLI handler resolves it from config + project root. Without it, the
+  // guard cannot distinguish the project's shadow worktree from unrelated
+  // directories that share the same name — fail-open to avoid false positives.
+  if (!options?.shadowAbsolutePath) {
+    return { decision: "allow" };
+  }
+  const shadowAbsPath = options.shadowAbsolutePath;
+
   // If not operating in the shadow worktree, allow everything
-  if (!isInKspec(command, input.cwd, shadowDir)) {
+  if (!isInKspec(command, input.cwd, shadowAbsPath)) {
     return { decision: "allow" };
   }
 
@@ -283,12 +315,16 @@ export function registerGuardCommand(program: Command): void {
           return;
         }
 
-        // Resolve the actual shadow directory from project config.
-        // The shadow directory is configurable via kspec.config.yaml shadow.directory,
-        // so we must use the configured value rather than the hardcoded default.
-        const { config } = await loadProjectConfig(input.cwd ?? process.cwd());
+        // Resolve the actual shadow worktree absolute path from project config.
+        // Always use process.cwd() (the project root where the hook runs) for
+        // config resolution, NOT input.cwd. The input.cwd is the directory where
+        // the guarded command would execute — it may be inside the shadow worktree
+        // itself, which has its own git context and would resolve the wrong root.
+        const { config, gitRoot } = await loadProjectConfig(process.cwd());
+        const projectRoot = gitRoot ?? process.cwd();
+        const shadowAbsolutePath = path.resolve(projectRoot, config.shadow.directory);
         const decision = evaluateWorktreeGuard(input, {
-          shadowDirectory: config.shadow.directory,
+          shadowAbsolutePath,
         });
 
         // Guard commands always output JSON (hook protocol requirement)
