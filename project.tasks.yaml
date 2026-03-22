@@ -21780,7 +21780,7 @@
   title: Remove duplicate session handle registration in invocation runner
   type: task
   spec_ref: "@multi-turn-session-lifecycle"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 3
@@ -21792,6 +21792,7 @@
   todos_count: 0
   created_at: 2026-03-22T21:24:14.236Z
   started_at: 2026-03-22T21:38:23.041Z
+  submitted_at: 2026-03-22T21:44:03.717Z
   automation: eligible
 - _ulid: 01KMBPYB05RT7ZJZBA2GVW4A7D
   slugs:
