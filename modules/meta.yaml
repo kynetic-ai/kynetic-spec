@@ -5818,6 +5818,9 @@ modules:
           regardless of how many turns occur. The invocation completed
           event fires once at session close. The session idle event
           provides the per-turn observation point.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
