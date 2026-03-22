@@ -1824,3 +1824,23 @@ inbox:
       - bug
     added_by: "@claude"
     created_at: 2026-03-22T04:03:13.227Z
+  - _ulid: 01KM9VZZKWE9NQEJEGRVXTTEWX
+    text: Migration command needs a refresh/repair mode for stale per-task files — when per-task dirs
+      exist but have older data than the monolithic index entries, migration should detect and offer
+      to update them rather than skipping as already-migrated
+    tags:
+      - tasks
+      - storage
+      - migration
+    added_by: "@claude"
+    created_at: 2026-03-22T04:14:02.876Z
+  - _ulid: 01KM9VZZP1DY3EX0RRBS55PY3G
+    text: Migration hybrid entry detection too narrow — entries with both notes_count (number) and notes
+      (array) are classified as lean and skipped. Detection should flag entries with non-indexed
+      fields as needing cleanup
+    tags:
+      - tasks
+      - storage
+      - bug
+    added_by: "@claude"
+    created_at: 2026-03-22T04:14:02.945Z

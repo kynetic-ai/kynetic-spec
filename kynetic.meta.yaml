@@ -7623,6 +7623,25 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-21T03:07:08.658Z
+  - _ulid: 01KM9VZZR4539FJH7ADW1897YS
+    type: friction
+    content: "Automated agent ran kspec task migrate on live project data during @task-build-migration
+      as an integration test, creating split-brain state between per-task files and index. Task
+      notes and specs did not prevent this. Consider adding a guard or convention: migration and
+      activation should only run as deliberate manual steps, never as part of automated task work."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-22T04:14:03.012Z
+  - _ulid: 01KM9VZZX00R52Q3MEX3TSHAE1
+    type: success
+    content: "Clone-to-tmp-remove-remote-test-then-push pattern worked well for safely validating shadow
+      branch migrations. Three iterations caught: Python yaml format incompatibility, stale per-task
+      file detection, and hybrid entry edge case — all before touching live data."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-22T04:14:03.168Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
