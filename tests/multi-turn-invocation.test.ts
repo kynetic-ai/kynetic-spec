@@ -470,6 +470,48 @@ describe("Multi-turn lifecycle", { timeout: 60_000 }, () => {
     expect(receivedPrompts).toEqual(["Prompt A", "Prompt B", "Prompt C", "Prompt D"]);
   });
 
+  // AC: @multi-turn-session-lifecycle ac-2
+  // AC: @multi-turn-session-lifecycle ac-4
+  it("should accept asynchronous prompt delivery via registry handle after onIdle returns", async () => {
+    const { spawnedAgent } = createMockSpawnedAgent();
+    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
+      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+    );
+
+    const registry = new SessionRegistry();
+    const idleContexts: SessionIdleContext[] = [];
+
+    const result = await runInvocation({
+      agent: makeTestAgent(),
+      specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
+      cwd: process.cwd(),
+      taskRef: "@" + testUlid("TASK"),
+      prompt: "Initial prompt",
+      trigger: "task.ready",
+      timeoutMinutes: 0.05, // safety timeout
+      sessionRegistry: registry,
+      onIdle: (ctx) => {
+        idleContexts.push(ctx);
+        if (ctx.turnCount === 1) {
+          // Simulate an async prompt source: deliver prompt after a
+          // short delay (not synchronously in onIdle). This exercises
+          // the fix for the blocker where the queue was closed after
+          // a single microtask, preventing async sources from working.
+          setTimeout(() => {
+            registry.get(ctx.sessionId)?.sendPrompt("Async follow-up");
+          }, 50);
+        }
+        // Turn 2: don't queue more — session closes naturally
+      },
+    });
+
+    expect(result.outcome).toBe("success");
+    expect(result.turnCount).toBe(2);
+    expect(idleContexts).toHaveLength(2);
+    expect(spawnedAgent.client.prompt).toHaveBeenCalledTimes(2);
+  });
+
   // AC: @multi-turn-session-lifecycle ac-10
   it("should discard queued prompts and close when close is requested during prompting", async () => {
     const { spawnedAgent } = createMockSpawnedAgent();

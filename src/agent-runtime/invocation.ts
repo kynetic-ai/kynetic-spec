@@ -64,6 +64,22 @@ export const DEFAULT_INITIAL_RESPONSE_TIMEOUT_SECONDS = 120;
 export const DEFAULT_MAX_PROMPT_QUEUE_DEPTH = 64;
 
 /**
+ * Default idle grace period in milliseconds.
+ *
+ * When a session enters idle with a session registry (meaning external
+ * sources can deliver prompts asynchronously), this grace period gives
+ * those sources time to deliver before the queue closes.
+ *
+ * The configurable grace period (task-idle-grace-period) will extend
+ * this with per-agent configuration. This default ensures the session
+ * stays open long enough for async prompt delivery without hanging
+ * indefinitely.
+ *
+ * AC: @multi-turn-session-lifecycle ac-2
+ */
+export const DEFAULT_IDLE_GRACE_MS = 100;
+
+/**
  * Session update types that count as meaningful agent activity.
  * These prove the agent received the prompt and is processing it.
  * AC: @invocation-initial-activity-watchdog ac-1, ac-3
@@ -735,6 +751,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     // AC: @multi-turn-session-lifecycle ac-1, ac-2, ac-4
     let currentPromptText: string = fullPrompt;
     let lastStopReason: string | undefined;
+    let idleGraceHandle: ReturnType<typeof setTimeout> | undefined;
 
     try {
       // eslint-disable-next-line no-constant-condition
@@ -816,19 +833,31 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
           break;
         }
 
-        // If no prompt was queued during the idle transition and no
-        // grace period is configured, close the session immediately.
-        // This preserves backward compatibility: single-turn invocations
-        // exit after one turn with no delay.
+        // If no prompt was queued during the idle transition, decide
+        // whether to keep the session open or close it:
+        //
+        // - When idleGracePeriodMs is 0 (default), close immediately.
+        //   This preserves backward compatibility: single-turn
+        //   invocations exit after one turn with no delay.
+        //
+        // - When idleGracePeriodMs > 0 (set by dispatch engine when
+        //   session.idle hooks exist), wait briefly for async prompt
+        //   sources (event bus hooks, timers) to deliver follow-up
+        //   prompts via the session handle.
+        //   AC: @multi-turn-session-lifecycle ac-2, ac-4
         if (promptQueue.pending === 0 && !promptQueue.isClosed) {
-          if (idleGracePeriodMs > 0) {
-            // Wait for the grace period to allow async prompt sources
-            // (event bus hooks, timers) to deliver follow-up prompts
-            await new Promise<void>((resolve) => setTimeout(resolve, idleGracePeriodMs));
-          }
-          // After grace period (or immediately if 0), close if still no prompts
-          if (promptQueue.pending === 0 && !promptQueue.isClosed) {
+          if (idleGracePeriodMs <= 0) {
             promptQueue.close();
+          } else {
+            // Grace period: wait briefly for async prompt sources
+            // before closing the queue. This races with waitForPrompt
+            // below — if a prompt arrives first, the grace timer is
+            // cleared after the race resolves.
+            idleGraceHandle = setTimeout(() => {
+              if (promptQueue.pending === 0 && !promptQueue.isClosed) {
+                promptQueue.close();
+              }
+            }, idleGracePeriodMs);
           }
         }
 
@@ -838,6 +867,12 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
         if (abortPromise) idleRacers.push(abortPromise as Promise<never>);
 
         const nextPrompt = await Promise.race(idleRacers);
+
+        // Clear the grace timer — either a prompt arrived, the session
+        // timed out, or the queue closed. The timer must not fire
+        // during a subsequent turn.
+        clearTimeout(idleGraceHandle);
+        idleGraceHandle = undefined;
 
         if (nextPrompt === null) {
           // Queue closed or no more prompts — exit turn loop
@@ -854,9 +889,10 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
         currentPromptText = nextPrompt;
       }
     } finally {
-      // Clear the session timeout handle regardless of how we exit
+      // Clear all timer handles regardless of how we exit
       clearTimeout(timeoutHandle);
       clearTimeout(stallHandle);
+      clearTimeout(idleGraceHandle);
     }
 
     // ─── Log agent.completed event ────────────────────────────────────────
