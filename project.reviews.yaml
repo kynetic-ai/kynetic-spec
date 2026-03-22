@@ -43549,6 +43549,22 @@ reviews:
         runner: kspec
         created_at: 2026-03-22T02:01:02.266Z
         completed_at: 2026-03-22T02:01:02.266Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/cli/commands/guard.ts, src/parser/shadow.ts, src/parser/config.ts,
+          tests/guard-worktree.test.ts, tests/agent-invocation-lifecycle.test.ts. Commands run:
+          kspec task get @01KM9FB8PAK46RP5SRP1JVD2FD, kspec item get @native-guard-commands, kspec
+          review for-task @01KM9FB8PAK46RP5SRP1JVD2FD, kspec review get @01KM9K69RQZ0JBS6JM4WT030X6,
+          git diff origin/dev...HEAD, rg AC annotations, kspec validate, npm test. Claims verified:
+          resolveProjectRoots + loadProjectConfig use main repo root when hook runs inside .kspec;
+          guard CLI tests cover shadow-worktree cwd. Categories searched: correctness, edge cases,
+          error handling, test quality, integration; no blocking issues found."
+        name: review-evidence
+        required: false
+        created_at: 2026-03-22T02:01:03.312Z
+        completed_at: 2026-03-22T02:01:03.312Z
     events:
       - _ulid: 01KM9MAJN0X8HQHPAXWJW8ZQZT
         actor: Test User
@@ -43577,6 +43593,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-22T02:01:02.580Z
+      - _ulid: 01KM9MCFCQYQS8MHAKNHJWJAQ7
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-03-22T02:01:03.639Z
     examined_commit: ab085eb989d558a8f2657da36cb6a2b5a5f750e6
     external_links: []
     lifecycle_state: open
@@ -43589,5 +43612,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-22T02:00:01.441Z
-    updated_at: 2026-03-22T02:01:02.266Z
+    updated_at: 2026-03-22T02:01:03.312Z
     notes: []
