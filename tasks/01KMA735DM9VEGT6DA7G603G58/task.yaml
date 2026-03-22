@@ -1,0 +1,92 @@
+_ulid: 01KMA735DM9VEGT6DA7G603G58
+slugs: []
+title: Migrate batch buffer scoping from enterWith to AsyncLocalStorage.run()
+type: task
+description: >-
+  ## What
+
+
+  Replace `AsyncLocalStorage.enterWith()` with `AsyncLocalStorage.run()` for all batch write buffer
+  scoping. This affects:
+
+
+  1. `activateBatchBuffer()` / `deactivateBatchBuffer()` in `src/cli/batch-write-buffer.ts` — the
+  enterWith-based API
+
+  2. `executeAtomic()` in `src/cli/batch-exec.ts` — the sole production caller
+
+  3. Tests in `tests/batch-write-buffer.test.ts` and `tests/task-atomic-writes.test.ts` that use the
+  enterWith API
+
+
+  ## Why
+
+
+  `enterWith()` permanently mutates the store for the current async execution context. Under Node 22
+  with vitest's Promise-chain test runner (`withTimeout` + `limitConcurrency` wrappers),
+  `enterWith(undefined)` cleanup does not reliably propagate to subsequent test contexts, causing
+  intermittent CI failures where a WriteBuffer leaks across tests.
+
+
+  More importantly, `enterWith()` violates the concurrent isolation guarantee (ac-9): if two async
+  operations call `enterWith()`, the second clobbers the first's buffer. `_bufferStorage.run(buffer,
+  callback)` scopes the buffer to the callback's async context and automatically reverts when the
+  callback completes — no manual cleanup needed, no cross-context leaks.
+
+
+  `runWithBuffer()` in the same file already uses `.run()` correctly. Only the
+  `activateBatchBuffer`/`deactivateBatchBuffer` pair still uses `enterWith`.
+
+
+  ## How
+
+
+  1. Add `runWithBatchBuffer(specDir, fn)` — a new export that wraps `_bufferStorage.run()` with a
+  callback receiving the buffer. The caller owns flush/discard lifecycle (unlike `runWithBuffer`
+  which auto-flushes).
+
+
+  2. Migrate `executeAtomic()` in `batch-exec.ts`: replace `activateBatchBuffer(realSpecDir)` +
+  try/finally `deactivateBatchBuffer()` with `runWithBatchBuffer(realSpecDir, async (buffer) => {
+  ... })`. Move the entire try/finally body inside the callback. Remove the
+  `deactivateBatchBuffer()` call — `.run()` handles scope exit automatically.
+
+
+  3. Migrate tests in `batch-write-buffer.test.ts`: wrap buffer-aware helper tests in
+  `runWithBatchBuffer` instead of activate+afterEach cleanup. Rewrite singleton tests as scoping
+  tests that verify visibility inside `.run()` and null outside.
+
+
+  4. Migrate tests in `task-atomic-writes.test.ts`: two tests simulate batch-exec with
+  `activateBatchBuffer` — wrap in `runWithBatchBuffer` instead. Remove `deactivateBatchBuffer()`
+  from afterEach.
+
+
+  5. Deprecate `activateBatchBuffer`/`deactivateBatchBuffer` — mark as `@deprecated` with guidance
+  to use `runWithBatchBuffer`.
+
+
+  ## Verification
+
+
+  - All 3 test shards pass (npm run test:shard1/2/3)
+
+  - No remaining callers of `activateBatchBuffer`/`deactivateBatchBuffer` in src/ (only deprecated
+  exports)
+
+  - AC annotations: ac-1 (buffer intercepts writes), ac-9 (concurrent isolation)
+spec_ref: "@batch-write-buffer"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - cli
+  - infra
+  - testing
+vcs_refs: []
+created_at: 2026-03-22T07:28:01.460Z
+todos: []
