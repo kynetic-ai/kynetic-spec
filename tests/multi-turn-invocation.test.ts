@@ -18,6 +18,7 @@ import {
   runInvocation,
   PromptQueue,
   PromptQueueFullError,
+  DEFAULT_IDLE_GRACE_MS,
   type SessionIdleContext,
 } from "../src/agent-runtime/invocation.js";
 import { SessionRegistry, type SessionHandle } from "../src/agent-runtime/session-registry.js";
@@ -491,13 +492,13 @@ describe("Multi-turn lifecycle", { timeout: 60_000 }, () => {
       trigger: "task.ready",
       timeoutMinutes: 0.05, // safety timeout
       sessionRegistry: registry,
+      idleGracePeriodMs: DEFAULT_IDLE_GRACE_MS,
       onIdle: (ctx) => {
         idleContexts.push(ctx);
         if (ctx.turnCount === 1) {
           // Simulate an async prompt source: deliver prompt after a
           // short delay (not synchronously in onIdle). This exercises
-          // the fix for the blocker where the queue was closed after
-          // a single microtask, preventing async sources from working.
+          // the grace period that keeps the queue open for async sources.
           setTimeout(() => {
             registry.get(ctx.sessionId)?.sendPrompt("Async follow-up");
           }, 50);
@@ -569,6 +570,7 @@ describe("Multi-turn lifecycle", { timeout: 60_000 }, () => {
       prompt: "Initial prompt",
       trigger: "task.ready",
       sessionRegistry: registry,
+      idleGracePeriodMs: DEFAULT_IDLE_GRACE_MS,
       onIdle: (ctx) => {
         if (ctx.turnCount === 1) {
           const handle = registry.get(ctx.sessionId);

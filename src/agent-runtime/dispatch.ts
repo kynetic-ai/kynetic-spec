@@ -22,7 +22,7 @@ import {
   type LoadedTask,
   type LoadedAgent,
 } from "../parser/index.js";
-import { DEFAULT_KSPEC_CLI_PATH, runInvocation } from "./invocation.js";
+import { DEFAULT_IDLE_GRACE_MS, DEFAULT_KSPEC_CLI_PATH, runInvocation } from "./invocation.js";
 import { SessionRegistry } from "./session-registry.js";
 import type { SessionIdleContext } from "./invocation.js";
 import { loadProjectConfig, resolveDispatchRemoteSync } from "../parser/config.js";
@@ -2491,6 +2491,8 @@ export class DispatchEngine {
         },
         // AC: @active-session-registry ac-1, @multi-turn-session-lifecycle ac-2, ac-4
         sessionRegistry: this._sessionRegistry,
+        // AC: @multi-turn-session-lifecycle ac-2, ac-11 — grace period for async prompt delivery
+        idleGracePeriodMs: DEFAULT_IDLE_GRACE_MS,
         // AC: @multi-turn-session-lifecycle ac-3 — emit session.idle event on event bus
         onIdle: (ctx: SessionIdleContext) => {
           this._eventBus.emit({

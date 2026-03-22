@@ -11,9 +11,9 @@
  * idle → repeat. The loop exits when a close is requested, the abort signal
  * fires, or the grace period expires with no queued prompts.
  *
- * Backward compatibility: when no onIdle callback is provided and no
- * prompts are queued, the session closes after the first turn — identical
- * to the previous single-turn behavior.
+ * Backward compatibility: when idleGracePeriodMs is 0 (the default) and no
+ * prompts are queued, the session closes immediately after the first turn —
+ * identical to the previous single-turn behavior.
  *
  * AC: @agent-invocation-lifecycle ac-1 through ac-11
  * AC: @multi-turn-session-lifecycle ac-1, ac-2, ac-3, ac-4, ac-8, ac-9,
@@ -257,12 +257,12 @@ export interface InvocationOptions {
    */
   maxPromptQueueDepth?: number;
   /**
-   * Grace period in milliseconds to wait for follow-up prompts after
-   * entering idle state. When 0 (default), the session closes immediately
-   * after a turn if no prompt is already queued — preserving single-turn
-   * backward compatibility. The dispatch engine sets this to a positive
-   * value when session.idle hooks are configured.
-   * AC: @multi-turn-session-lifecycle ac-2
+   * Grace period in milliseconds to wait for async prompt sources before
+   * closing the queue after a turn completes with no queued prompts.
+   * Defaults to 0 (immediate close, preserving single-turn backward compat).
+   * Set to a positive value when async prompt delivery is enabled (e.g.,
+   * session.idle hooks exist).
+   * AC: @multi-turn-session-lifecycle ac-2, ac-11
    */
   idleGracePeriodMs?: number;
 }
@@ -847,11 +847,12 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
         // - When idleGracePeriodMs is 0 (default), close immediately.
         //   This preserves backward compatibility: single-turn
         //   invocations exit after one turn with no delay.
+        //   AC: @multi-turn-session-lifecycle ac-11
         //
-        // - When idleGracePeriodMs > 0 (set by dispatch engine when
-        //   session.idle hooks exist), wait briefly for async prompt
-        //   sources (event bus hooks, timers) to deliver follow-up
-        //   prompts via the session handle.
+        // - When idleGracePeriodMs > 0, external sources may deliver
+        //   prompts asynchronously via the session handle (e.g.,
+        //   event-bus hooks triggered by session.idle). Wait for the
+        //   grace period before closing.
         //   AC: @multi-turn-session-lifecycle ac-2, ac-4
         if (promptQueue.pending === 0 && !promptQueue.isClosed) {
           if (idleGracePeriodMs <= 0) {
