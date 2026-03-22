@@ -21813,6 +21813,122 @@
     - guard
   vcs_refs: []
   created_at: 2026-03-22T00:33:01.130Z
-  notes: []
+  notes:
+    - _ulid: 01KM9FC5J82Q06XBEAAZTCVECV
+      content: >-
+        ## Problem
+
+
+        The worktree guard (src/cli/commands/guard.ts) uses substring matching to detect if a
+        command is running inside the .kspec shadow branch worktree:
+
+
+        ```typescript
+
+        function isInKspec(command: string, cwd: string | undefined): boolean {
+          if (cwd) {
+            const normalizedCwd = cwd.replace(/\\/g, "/");
+            if (normalizedCwd.includes("/.kspec") || normalizedCwd.endsWith("/.kspec")) {
+              return true;
+            }
+          }
+          // ...
+        }
+
+        ```
+
+
+        This fires false positives for any path containing "/.kspec" as a substring, including
+        dispatch worktrees under .kspec-worktrees/ (the default dispatch.worktree_root). Agents
+        working in dispatch worktrees get blocked from running git rebase, git fetch, etc. —
+        operations that are legitimate in task worktrees but dangerous in the shadow branch.
+
+
+        ## Why this matters
+
+
+        Dispatch agents routinely need to rebase on the integration branch before starting work. The
+        guard blocks this, forcing agents to skip the rebase and work on potentially stale branches.
+        This was observed in production dispatch runs.
+
+
+        ## Root cause
+
+
+        The guard hardcodes "/.kspec" as a substring check. Two problems:
+
+
+        1. The shadow directory is configurable — shadow.directory in kspec.config.yaml defaults to
+        ".kspec" but can be changed (src/parser/config.ts, ShadowConfigSchema). If reconfigured, the
+        guard would fail to protect the actual shadow worktree.
+
+
+        2. The substring match is too broad — ".kspec-worktrees/dispatch/task/foo/01ABC123/"
+        contains "/.kspec" and triggers the guard even though it's a normal git worktree, not the
+        shadow branch.
+
+
+        ## What needs to change
+
+
+        Replace substring matching in isInKspec() with detection of the actual shadow branch
+        worktree. The guard runs as a kspec CLI command so it has access to the project config.
+
+
+        ### Approach
+
+
+        1. Resolve the actual shadow worktree path from config:
+           - Load kspec.config.yaml to get shadow.directory (default: ".kspec")
+           - Resolve to absolute path from project root
+           - Compare cwd against that resolved path (exact prefix match, not substring)
+
+        2. If config loading is too expensive for a hot-path hook, cache or use a faster detection:
+           - The shadow worktree's .git file contains "gitdir: ../.git/worktrees/-kspec" (or similar)
+           - Check if cwd's .git pointer references a kspec-meta worktree
+           - This distinguishes shadow worktree from dispatch worktrees definitively
+
+        3. The cd-based detection (line 76: command contains "cd .kspec") also needs the same
+        treatment — check against the configured directory name, not hardcoded ".kspec".
+
+
+        ### Key files
+
+
+        - src/cli/commands/guard.ts — isInKspec() function (lines 68-80), evaluateWorktreeGuard()
+        (lines 130-163)
+
+        - src/parser/config.ts — ShadowConfigSchema (lines 20-47), resolveConfig() (lines 604-630)
+
+        - src/parser/shadow.ts — SHADOW_WORKTREE_DIR constant
+
+        - tests/guard-worktree.test.ts — existing tests to extend
+
+        - .claude/settings.json — hook definition (PreToolUse matcher for Bash)
+
+
+        ### Test cases needed
+
+
+        - cwd is the actual shadow worktree (.kspec/) + dangerous command → BLOCK
+
+        - cwd is a dispatch worktree (.kspec-worktrees/dispatch/task/foo/) + rebase → ALLOW
+
+        - cwd is a dispatch worktree + kspec-meta deletion → still BLOCK (this is checked
+        separately)
+
+        - shadow directory reconfigured to custom path → guard uses configured path
+
+        - cwd contains ".kspec" as substring but is not the shadow worktree → ALLOW
+
+
+        ## Spec reference
+
+
+        @native-guard-commands ac-worktree-guard: "blocks dangerous git operations in .kspec/" — the
+        spec says "in .kspec/", meaning the shadow branch worktree specifically.
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-22T00:33:30.696Z
   todos: []
   automation: eligible
