@@ -304,6 +304,11 @@ features:
                   buffer-aware helper (e.g. readYamlFile or a shared readFileBufferAware) that
                   checks getActiveBatchBuffer() before falling back to disk
                 when: the function uses fs.readFile or fs.readdir directly instead of a buffer-aware helper
+              - given: two concurrent async operations each activate a write buffer within the same process
+                id: ac-9
+                then: each operation sees only its own buffer; writes from one operation are invisible to the other,
+                  and discarding one buffer does not affect the other
+                when: both operations are in progress simultaneously
             tags: []
             created: 2026-03-02T15:56:41.235Z
             notes: []
