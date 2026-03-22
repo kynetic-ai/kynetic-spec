@@ -19623,3 +19623,79 @@ workspaces:
         head: 3fe484fb622ef64ca3131a23ef6e5f077ef910aa
         last_seen_at: 2026-03-22T21:37:24.139Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/reload-session-idle-hook-presence-during-dispatch-reconciliation-01kmbpyb
+  - active_role: null
+    base_branch_point: 2da4a1f5163cdbd9acbb5a6acef049732b6b75c8
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-remove-duplicate-handle-registration/01kmbpya
+    canonical_branch_head: 2da4a1f5163cdbd9acbb5a6acef049732b6b75c8
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-03-22T21:37:31.931Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-03-22T21:37:31.931Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: 2da4a1f5163cdbd9acbb5a6acef049732b6b75c8
+      updated_at: 2026-03-22T21:37:31.931Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KMBPYA8WRP5WFQV53QQK3GW4"
+    task_slug: task-remove-duplicate-handle-registration
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-03-22T21:37:31.931Z
+      created_at: 2026-03-22T21:37:31.931Z
+      updated_at: 2026-03-22T21:37:31.931Z
+    workspace_id: dispatch-workspace-01KMBPYA8WRP5WFQV53QQK3GW4
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-remove-duplicate-handle-registration/01kmbpya
+        head: 2da4a1f5163cdbd9acbb5a6acef049732b6b75c8
+        last_seen_at: 2026-03-22T21:37:31.931Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-remove-duplicate-handle-registration-01kmbpya
