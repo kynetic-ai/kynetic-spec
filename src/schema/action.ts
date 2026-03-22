@@ -127,32 +127,39 @@ const SessionPromptActionBaseSchema = z.object({
 
 /**
  * Schema for discriminated union (ZodObject required by z.discriminatedUnion).
- * Use SessionPromptActionRefinedSchema for full validation with the
- * prompt/prompt_template requirement check.
  */
 export const SessionPromptActionSchema = SessionPromptActionBaseSchema;
 
 /**
- * Full validation schema that checks at least one of prompt or prompt_template
- * is provided. Use this when validating configuration input rather than in the
- * discriminated union.
- * AC: @session-prompt-action-schema ac-1
+ * Internal discriminated union before cross-field validation.
+ * Use ActionSchema (which adds superRefine) for all parsing.
  */
-export const SessionPromptActionRefinedSchema = SessionPromptActionBaseSchema.refine(
-  (data) => data.prompt !== undefined || data.prompt_template !== undefined,
-  { message: "At least one of 'prompt' or 'prompt_template' is required" },
-);
-
-/**
- * Discriminated union of all action types.
- */
-export const ActionSchema = z.discriminatedUnion("type", [
+const ActionSchemaBase = z.discriminatedUnion("type", [
   CommandActionSchema,
   KspecActionSchema,
   AgentActionSchema,
   NotifyActionSchema,
   SessionPromptActionSchema,
 ]);
+
+/**
+ * Discriminated union of all action types, with cross-field validation.
+ * session_prompt actions require at least one of prompt or prompt_template.
+ * AC: @session-prompt-action-schema ac-1
+ */
+export const ActionSchema = ActionSchemaBase.superRefine((data, ctx) => {
+  if (
+    data.type === "session_prompt" &&
+    data.prompt === undefined &&
+    data.prompt_template === undefined
+  ) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "At least one of 'prompt' or 'prompt_template' is required",
+      path: ["prompt"],
+    });
+  }
+});
 
 /**
  * Valid action type identifiers.

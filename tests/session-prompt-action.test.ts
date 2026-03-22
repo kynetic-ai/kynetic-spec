@@ -15,7 +15,6 @@ import * as os from "node:os";
 import {
   ActionSchema,
   SessionPromptActionSchema,
-  SessionPromptActionRefinedSchema,
   type Action,
   type ActionRun,
 } from "../src/schema/action.js";
@@ -151,9 +150,9 @@ describe("SessionPromptActionSchema", () => {
   });
 
   // AC: @session-prompt-action-schema ac-1
-  describe("SessionPromptActionRefinedSchema", () => {
+  describe("ActionSchema rejects session_prompt without prompt or prompt_template", () => {
     it("rejects when neither prompt nor prompt_template is provided", () => {
-      const result = SessionPromptActionRefinedSchema.safeParse({
+      const result = ActionSchema.safeParse({
         type: "session_prompt",
         session_id: "session-001",
       });
@@ -166,7 +165,7 @@ describe("SessionPromptActionSchema", () => {
     });
 
     it("accepts when prompt is provided", () => {
-      const result = SessionPromptActionRefinedSchema.safeParse({
+      const result = ActionSchema.safeParse({
         type: "session_prompt",
         prompt: "Continue",
       });
@@ -174,7 +173,7 @@ describe("SessionPromptActionSchema", () => {
     });
 
     it("accepts when prompt_template is provided", () => {
-      const result = SessionPromptActionRefinedSchema.safeParse({
+      const result = ActionSchema.safeParse({
         type: "session_prompt",
         prompt_template: "Work on {{task_ref}}",
       });
@@ -689,10 +688,10 @@ describe("session_prompt failure isolation", () => {
 // The action run lifecycle is managed by the ActionExecutor.execute() wrapper.
 
 // AC: @trait-error-guidance ac-5 — N/A: Validation errors for session_prompt
-// schema fields are handled by Zod schemas (SessionPromptActionSchema/
-// SessionPromptActionRefinedSchema). The Zod error messages include field/value
-// details by default. The "At least one of 'prompt' or 'prompt_template'"
-// message covers the primary validation rule.
+// schema fields are handled by Zod schemas (ActionSchema with superRefine).
+// The Zod error messages include field/value details by default.
+// The "At least one of 'prompt' or 'prompt_template'" message covers
+// the primary validation rule.
 
 // AC: @trait-error-guidance ac-6 — N/A: session_prompt action does not operate
 // in JSON mode. JSON-mode error formatting is handled by CLI commands that
