@@ -44029,6 +44029,18 @@ reviews:
         runner: npm
         created_at: 2026-03-22T09:09:55.899Z
         completed_at: 2026-03-22T09:09:55.899Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Exited 6 with pre-existing repo-wide warnings (orphaned skills, alignment/completeness
+          baseline warnings not introduced by this diff); no task-specific validation error
+          identified.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-22T09:10:11.578Z
+        completed_at: 2026-03-22T09:10:11.578Z
     events:
       - _ulid: 01KMACWKW2ZXDKWH24BMT7YSQS
         actor: Test User
@@ -44064,6 +44076,13 @@ reviews:
           kind: nit
           thread_ulid: 01KMACXVVT07CB6X942GR3M5EA
         timestamp: 2026-03-22T09:09:59.638Z
+      - _ulid: 01KMACY886X6G5HDK3TX3NAVY8
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec validate
+        timestamp: 2026-03-22T09:10:11.974Z
     examined_commit: 901a962905f2d9795f570a172acec51f73d6d1ad
     external_links: []
     lifecycle_state: open
@@ -44112,5 +44131,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-22T09:09:18.339Z
-    updated_at: 2026-03-22T09:09:59.290Z
+    updated_at: 2026-03-22T09:10:11.578Z
     notes: []
