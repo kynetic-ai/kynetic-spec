@@ -19733,12 +19733,21 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-22T21:55:16.840Z
+      updated_at: 2026-03-22T21:56:10.685Z
     health:
-      status: healthy
-      issues: []
-      summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-22T21:55:16.840Z
+      status: invalid
+      issues:
+        - code: missing_canonical_branch
+          message: Canonical branch "dispatch/task/task-remove-duplicate-handle-registration/01kmbpya" is
+            missing.
+          suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
+        - code: missing_worker_worktree
+          message: Worker worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-remove-duplicate-handle-registration-01kmbpya"
+            is missing or no longer registered.
+          suggestion: Re-provision the worker worktree from the recorded canonical branch.
+      summary: Workspace registry record is invalid because required git state is missing.
+      updated_at: 2026-03-22T21:56:10.685Z
     integration:
       status: merged
       detail: integration:merged
@@ -19746,17 +19755,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 2da4a1f5163cdbd9acbb5a6acef049732b6b75c8
-      updated_at: 2026-03-22T21:55:16.840Z
-    lifecycle_state: closing
+      updated_at: 2026-03-22T21:56:10.685Z
+    lifecycle_state: stale
     resolved_base_branch: dev
     task_ref: "@01KMBPYA8WRP5WFQV53QQK3GW4"
     task_slug: task-remove-duplicate-handle-registration
     timestamps:
       closed_at: null
       last_active_at: 2026-03-22T21:45:56.179Z
-      last_reconciled_at: 2026-03-22T21:55:16.840Z
+      last_reconciled_at: 2026-03-22T21:56:10.685Z
       created_at: 2026-03-22T21:37:31.931Z
-      updated_at: 2026-03-22T21:55:16.840Z
+      updated_at: 2026-03-22T21:56:10.685Z
     workspace_id: dispatch-workspace-01KMBPYA8WRP5WFQV53QQK3GW4
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
