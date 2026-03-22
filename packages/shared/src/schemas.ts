@@ -84,6 +84,7 @@ export type AgentDispatchEvent =
   | 'invocation.failed'
   | 'invocation.stalled'
   // Session lifecycle events
+  | 'session.idle'
   | 'session.ended'
   | 'session.idle_timeout'
   | 'session.cancelled'
@@ -108,6 +109,7 @@ export const AGENT_DISPATCH_EVENTS: readonly AgentDispatchEvent[] = [
   'invocation.completed',
   'invocation.failed',
   'invocation.stalled',
+  'session.idle',
   'session.ended',
   'session.idle_timeout',
   'session.cancelled',

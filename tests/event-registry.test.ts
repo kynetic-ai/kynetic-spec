@@ -389,7 +389,7 @@ describe("Event Registry structure", () => {
   it("should group events by domain correctly", () => {
     expect(EVENTS_BY_DOMAIN.task.length).toBe(4);
     expect(EVENTS_BY_DOMAIN.invocation.length).toBe(4);
-    expect(EVENTS_BY_DOMAIN.session.length).toBe(3);
+    expect(EVENTS_BY_DOMAIN.session.length).toBe(4);
     expect(EVENTS_BY_DOMAIN.schedule.length).toBe(1);
     expect(EVENTS_BY_DOMAIN.action.length).toBe(3);
   });
@@ -403,9 +403,9 @@ describe("Event Registry structure", () => {
     }
   });
 
-  it("should register exactly 15 event types", () => {
-    expect(REGISTERED_EVENT_TYPES).toHaveLength(15);
-    expect(REGISTERED_EVENT_TYPE_SET.size).toBe(15);
+  it("should register exactly 16 event types", () => {
+    expect(REGISTERED_EVENT_TYPES).toHaveLength(16);
+    expect(REGISTERED_EVENT_TYPE_SET.size).toBe(16);
   });
 
   it("should have consistent PAYLOAD_FIELDS_BY_EVENT_TYPE for all registered events", () => {
@@ -456,7 +456,7 @@ describe("SessionTriggerSchema expansion", () => {
   });
 
   it("should accept new session event triggers", () => {
-    for (const event of ["session.ended", "session.idle_timeout", "session.cancelled"]) {
+    for (const event of ["session.idle", "session.ended", "session.idle_timeout", "session.cancelled"]) {
       const result = SessionTriggerSchema.safeParse(event);
       expect(result.success).toBe(true);
     }
