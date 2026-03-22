@@ -7470,7 +7470,7 @@ features:
       native commands instead of bash scripts and cleans up old hook entries.
     status:
       maturity: draft
-      implementation: implemented
+      implementation: in_progress
     depends_on: []
     implements: []
     relates_to: []
