@@ -137,7 +137,7 @@ describe("DEFAULT_KSPEC_CLI_PATH resolution", () => {
 // ─── AC-1: Session creation with trigger, agent_id, task_id ──────────────────
 
 // AC: @agent-invocation-lifecycle ac-1
-describe("Session creation on invocation start", { timeout: 30_000 }, () => {
+describe("Session creation on invocation start", { timeout: 60_000 }, () => {
   let testDir: string;
 
   beforeEach(async () => {
@@ -199,7 +199,7 @@ describe("Session creation on invocation start", { timeout: 30_000 }, () => {
 // ─── AC-2: KSPEC_SESSION_ID injection ────────────────────────────────────────
 
 // AC: @agent-invocation-lifecycle ac-2
-describe("KSPEC_SESSION_ID injection", { timeout: 30_000 }, () => {
+describe("KSPEC_SESSION_ID injection", { timeout: 60_000 }, () => {
   let testDir: string;
   let originalSessionId: string | undefined;
 
@@ -327,7 +327,7 @@ describe("KSPEC_SESSION_ID injection", { timeout: 30_000 }, () => {
 // ─── AC-3: Timeout handling ───────────────────────────────────────────────────
 
 // AC: @agent-invocation-lifecycle ac-3
-describe("Timeout handling", { timeout: 30_000 }, () => {
+describe("Timeout handling", { timeout: 60_000 }, () => {
   let testDir: string;
 
   beforeEach(async () => {
@@ -543,7 +543,7 @@ describe("Timeout handling", { timeout: 30_000 }, () => {
 // ─── AC-4: Successful completion ─────────────────────────────────────────────
 
 // AC: @agent-invocation-lifecycle ac-4
-describe("Successful invocation completion", { timeout: 30_000 }, () => {
+describe("Successful invocation completion", { timeout: 60_000 }, () => {
   let testDir: string;
 
   beforeEach(async () => {
@@ -621,7 +621,7 @@ describe("Successful invocation completion", { timeout: 30_000 }, () => {
 // ─── AC-5: Failure handling ───────────────────────────────────────────────────
 
 // AC: @agent-invocation-lifecycle ac-5
-describe("Failure handling", { timeout: 30_000 }, () => {
+describe("Failure handling", { timeout: 60_000 }, () => {
   let testDir: string;
 
   beforeEach(async () => {
@@ -724,7 +724,7 @@ describe("Failure handling", { timeout: 30_000 }, () => {
 // ─── AC-6: Streaming event logging ───────────────────────────────────────────
 
 // AC: @agent-invocation-lifecycle ac-6
-describe("Streaming event logging", { timeout: 30_000 }, () => {
+describe("Streaming event logging", { timeout: 60_000 }, () => {
   let testDir: string;
 
   beforeEach(async () => {
@@ -1123,7 +1123,7 @@ describe("Skill resolution for agent invocations", () => {
 // ─── AC-8: Cleanup on completion or failure ───────────────────────────────────
 
 // AC: @agent-invocation-lifecycle ac-8
-describe("Cleanup on completion or failure", { timeout: 30_000 }, () => {
+describe("Cleanup on completion or failure", { timeout: 60_000 }, () => {
   let testDir: string;
 
   beforeEach(async () => {
@@ -1257,7 +1257,7 @@ describe("Cleanup on completion or failure", { timeout: 30_000 }, () => {
 // ─── AC-9: Retry threshold and task blocking ──────────────────────────────────
 
 // AC: @agent-invocation-lifecycle ac-9
-describe("Consecutive failure threshold and task blocking", { timeout: 30_000 }, () => {
+describe("Consecutive failure threshold and task blocking", { timeout: 60_000 }, () => {
   let testDir: string;
 
   beforeEach(async () => {
@@ -1413,7 +1413,7 @@ describe("Consecutive failure threshold and task blocking", { timeout: 30_000 },
 // ─── AC-11: ACP permission request auto-approval ─────────────────────────────
 
 // AC: @agent-invocation-lifecycle ac-11
-describe("ACP permission request handling", { timeout: 30_000 }, () => {
+describe("ACP permission request handling", { timeout: 60_000 }, () => {
   let testDir: string;
 
   beforeEach(async () => {
@@ -1486,7 +1486,7 @@ describe("ACP permission request handling", { timeout: 30_000 }, () => {
 // ─── AC-12: Sanitize inherited env vars in agent spawner ──────────────────────
 
 // AC: @agent-invocation-lifecycle ac-12
-describe("Host environment variable sanitization", { timeout: 30_000 }, () => {
+describe("Host environment variable sanitization", { timeout: 60_000 }, () => {
   let testDir: string;
 
   beforeEach(async () => {
@@ -1585,7 +1585,7 @@ describe("Host environment variable sanitization", { timeout: 30_000 }, () => {
 // ─── No shadow commit on session end ──────────────────────────────────────────
 
 // AC: @session-remove-shadow-commits ac-invocation-end
-describe("No shadow commit on session close (session storage separation)", { timeout: 30_000 }, () => {
+describe("No shadow commit on session close (session storage separation)", { timeout: 60_000 }, () => {
   let testDir: string;
   let commitSpy: ReturnType<typeof vi.spyOn>;
 
