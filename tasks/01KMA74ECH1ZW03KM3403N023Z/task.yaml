@@ -39,8 +39,14 @@ description: |
 spec_ref: "@session-prompt-action"
 plan_ref: "@plan-multi-turn-session-lifecycle"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev. Session_prompt action type fully implemented with schema
+  (SessionPromptActionSchema + ActionSchema superRefine), executor (executeSessionPrompt with
+  session_id resolution, template interpolation, lifecycle events), validation (hooks, schedules,
+  compositions), and production wiring (SessionRegistry threaded through daemon → DispatchEngine →
+  InvocationRunner with deferred-promise queue for multi-turn prompt delivery). All 49 tests pass,
+  all ACs covered (own + schema + trait).
 depends_on:
   - "@task-session-registry"
   - "@task-session-idle-event"
@@ -508,8 +514,27 @@ history:
         previous: "@01KMARE0W1A4FS4XM0AZ7C6YGD"
     command: review-link
     timestamp: 2026-03-22T15:53:15.508Z
+  - author: "@claude"
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev. Session_prompt action type fully implemented with schema
+          (SessionPromptActionSchema + ActionSchema superRefine), executor (executeSessionPrompt
+          with session_id resolution, template interpolation, lifecycle events), validation (hooks,
+          schedules, compositions), and production wiring (SessionRegistry threaded through daemon →
+          DispatchEngine → InvocationRunner with deferred-promise queue for multi-turn prompt
+          delivery). All 49 tests pass, all ACs covered (own + schema + trait).
+        previous: null
+      completed_at:
+        new: 2026-03-22T15:54:43.598Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-03-22T15:54:43.608Z
 created_at: 2026-03-22T07:28:43.409Z
 started_at: 2026-03-22T12:48:46.934Z
 submitted_at: 2026-03-22T12:48:49.933Z
+completed_at: 2026-03-22T15:54:43.598Z
 todos: []
 automation: eligible
