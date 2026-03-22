@@ -46359,6 +46359,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-22T12:21:33.204Z
+      - _ulid: 01KMAQWPM5AA2EW3SKSE4VW4WA
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMAQWP8GFBA8X7PDVBBAT1W8
+        timestamp: 2026-03-22T12:21:35.493Z
     examined_commit: e27c0be8ccfbc83214619b5a8e86987ba8fb8331
     external_links: []
     lifecycle_state: closed
@@ -46368,7 +46375,26 @@ reviews:
       content_hash: ""
       ref: "@01KMA74DY7WGG4KA6P07BTMJFD"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMAQWP8GFBA8X7PDVBBAT1W8
+        anchor:
+          type: code
+          commit: e27c0be8ccfbc83214619b5a8e86987ba8fb8331
+          line_end: 2495
+          line_start: 2493
+          path: src/agent-runtime/dispatch.ts
+          side: head
+        entries:
+          - _ulid: 01KMAQWP8GXHZSHNVSP5WSCY8W
+            author: Test User
+            body: The dispatch engine still opts every invocation into the 100ms idle grace period by
+              unconditionally passing DEFAULT_IDLE_GRACE_MS. That means sessions linger after the
+              first turn even when there are no session.idle consumers and no interactive mode,
+              which is exactly the backward-compat case ac-11 says must have no observable behavior
+              change from single-turn dispatch. The new tests only cover the opt-in path where
+              idleGracePeriodMs is set explicitly, so this regression is not exercised.
+            created_at: 2026-03-22T12:21:35.120Z
+        kind: blocker
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -46378,5 +46404,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-22T12:21:33.203Z
     created_at: 2026-03-22T12:19:09.817Z
-    updated_at: 2026-03-22T12:21:33.204Z
+    updated_at: 2026-03-22T12:21:35.120Z
     notes: []
