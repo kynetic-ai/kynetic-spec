@@ -26091,7 +26091,7 @@ plans:
           Non-goals: persistent sessions across daemon restarts, multi-agent
           shared sessions, session forking.
         traits:
-          - trait-error-guidance
+          - "@trait-error-guidance"
         acceptance_criteria:
           - id: ac-1
             given: |
@@ -26287,7 +26287,7 @@ plans:
           idle. If the target session is already closed or in prompting
           state, the prompt is queued or fails gracefully.
         traits:
-          - trait-error-guidance
+          - "@trait-error-guidance"
         acceptance_criteria:
           - id: ac-1
             given: |
@@ -26361,7 +26361,7 @@ plans:
         type: requirement
         parent: "@session-prompt-action"
         traits:
-          - trait-error-guidance
+          - "@trait-error-guidance"
         description: |
           Schema definition for the session_prompt action type in the shared
           action model. Extends the action discriminated union with the new
@@ -26481,7 +26481,7 @@ plans:
           using the same ACP protocol, session logging, and event system
           as automated dispatch.
         traits:
-          - trait-error-guidance
+          - "@trait-error-guidance"
         acceptance_criteria:
           - id: ac-1
             given: |
@@ -26543,9 +26543,9 @@ plans:
         type: requirement
         parent: "@interactive-agent-sessions"
         traits:
-          - trait-api-endpoint
-          - trait-localhost-security
-          - trait-json-output
+          - "@trait-api-endpoint"
+          - "@trait-localhost-security"
+          - "@trait-json-output"
         description: |
           REST API endpoints for interactive session management. Allows
           human users to submit prompts, query session state, and close
@@ -26590,8 +26590,8 @@ plans:
         type: requirement
         parent: "@interactive-agent-sessions"
         traits:
-          - trait-error-guidance
-          - trait-json-output
+          - "@trait-error-guidance"
+          - "@trait-json-output"
         description: |
           CLI commands for interacting with active agent sessions. Provides
           a terminal-based interface for human-agent chat.
@@ -27045,4 +27045,8 @@ plans:
     source_path: /home/chapel/Projects/kynetic-spec/plans/multi-turn-session-lifecycle.md
     created_at: 2026-03-22T05:05:48.090Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KMA1201PS2647M75FK9P3DFJ
+        content: Fix trait @ prefixes per codex review
+        author: "@claude"
+        created_at: 2026-03-22T05:42:31.734Z
