@@ -26698,37 +26698,41 @@ plans:
           Covers: @multi-turn-session-lifecycle (alignment of dependent
           specs).
 
-      - title: Update automation view for session.idle and session_prompt
+      - title: Update automation view for session idle events
         slug: task-ui-session-idle
         priority: 3
         tags: [web-ui, automation]
-        spec_ref: "@session-prompt-action"
+        spec_ref: "@session-idle-event"
         depends_on:
           - "@task-session-idle-event"
           - "@task-session-prompt-action"
         description: |
-          Update the automation view to support the new session.idle event
-          and session_prompt action type.
+          Update the automation view to display session idle events and
+          recognize the session prompt action type.
 
-          Why: Users configuring hooks via the web UI need to see
-          session.idle as a trigger option and session_prompt as an action
-          type. The event log should show session.idle events with
-          turn_count context.
+          Why: The event log needs to render session idle events with
+          turn count context so users can observe multi-turn session
+          behavior. The dispatch trigger picker and hook display need
+          to recognize the new event and action types.
 
-          What: Add session.idle to the trigger picker in the automation
-          view. Add session_prompt to the action type selector in hook/
-          schedule editors. Show session.idle events in the event log with
-          turn_count and agent_id. Show active session state (idle/
-          prompting) in the dispatch status view.
+          What: The dispatch trigger picker renders from the event
+          registry, so session idle appears automatically once registered.
+          The event log needs rendering for session idle events showing
+          turn count and agent context. The read-only hook display needs
+          to show "session_prompt" as a recognized action type badge.
 
-          How: Extend existing UI components — the trigger picker already
-          renders from the event registry, so adding session.idle should
-          be automatic if the registry is updated. The action type selector
-          needs a new form for session_prompt fields. Event log rendering
-          needs a turn_count badge for session.idle events.
+          Note: Full hook editing UI (including a session prompt action
+          form with prompt/template fields) does not exist yet — hooks
+          are currently read-only in the UI. Building a hook editor is
+          separate work that would include forms for all action types,
+          not just session prompt.
 
-          Covers: @session-idle-event ac-1 (event log rendering),
-          @session-prompt-action-schema ac-1 (action type selector).
+          How: Add an event log row renderer for session idle events
+          following the pattern of existing event type renderers. Ensure
+          the action type badge component recognizes "session_prompt" as
+          a valid type label. The trigger picker is automatic.
+
+          Covers: @session-idle-event ac-1 (event log rendering).
       ```
 
 
@@ -26875,6 +26879,11 @@ plans:
           invocation and dispatch tasks
         author: "@claude"
         created_at: 2026-03-22T07:15:03.127Z
+      - _ulid: 01KMA6WZN2NF630E56ZHRT6V47
+        content: "Scope UI task to what's achievable: event log rendering + action type badge. Hook editing
+          doesn't exist yet — full editor is separate work."
+        author: "@claude"
+        created_at: 2026-03-22T07:24:38.946Z
   - _ulid: 01KMA5W61Z4SY2PNVSGAM38CQ1
     slugs:
       - plan-interactive-agent-sessions
