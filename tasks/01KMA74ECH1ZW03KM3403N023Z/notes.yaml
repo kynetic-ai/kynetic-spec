@@ -73,3 +73,18 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-22T11:14:22.969Z
+  - _ulid: 01KMAN1C59C542NDXPFBS9D61T
+    content: "Fix cycle 4: Addressed both reviewer blockers. (1) Replaced single-turn session handle
+      that always rejected sendPrompt() with a prompt-queue-backed handle: idle sessions accept
+      prompts immediately, prompting sessions queue for after current turn, closed sessions reject
+      with error. (2) Added onTurnComplete callback to InvocationOptions — dispatch engine emits
+      session.idle event via the event bus after each turn. The invocation runner now enters an idle
+      loop after each turn: transitions to idle, calls onTurnComplete (emitting session.idle), waits
+      for follow-up prompt or 2s grace timeout, then either sends follow-up or ends normally. This
+      creates the production path: session.idle hook → action executor → handle.sendPrompt() →
+      follow-up turn. Added TurnCompleteInfo type. Updated tests: removed single-turn rejection
+      test, added idle accept, closed reject, queue, and TurnCompleteInfo tests. All 7077 tests
+      pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-22T11:31:42.889Z
