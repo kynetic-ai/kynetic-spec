@@ -28,7 +28,7 @@ description: |
 spec_ref: "@multi-turn-session-lifecycle"
 plan_ref: "@plan-multi-turn-session-lifecycle"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -37,6 +37,7 @@ tags:
   - specs
   - compatibility
 vcs_refs: []
+session_id: 01KMA8DRDA5VBPXK6WT1JD03EN
 history:
   - author: "@claude"
     changes:
@@ -45,6 +46,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-03-22T07:31:01.281Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KMA8DRDA5VBPXK6WT1JD03EN
+        previous: null
+      started_at:
+        new: 2026-03-22T07:52:07.003Z
+        previous: null
+    command: task-start
+    timestamp: 2026-03-22T07:52:07.003Z
 created_at: 2026-03-22T07:28:44.108Z
+started_at: 2026-03-22T07:52:07.003Z
 todos: []
 automation: eligible
