@@ -17916,7 +17916,7 @@ workspaces:
         head: 67e06ae5234df28e1c75dc83bc64d907b844b187
         last_seen_at: 2026-03-21T23:57:00.509Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/add-missing-ac-test-annotations-for-storage-split-specs-01km99vk
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 369132b7926d1becbc70af8efdfd69bc148a848d
     bootstrap:
       status: succeeded
@@ -18021,12 +18021,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-22T00:37:18.038Z
+      updated_at: 2026-03-22T00:44:11.071Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-22T00:37:23.461Z
+      updated_at: 2026-03-22T00:44:11.071Z
     integration:
       status: pending
       detail: null
@@ -18034,7 +18034,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 369132b7926d1becbc70af8efdfd69bc148a848d
-      updated_at: 2026-03-22T00:37:18.038Z
+      updated_at: 2026-03-22T00:44:11.071Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KM6YEXN2KMJ43AMEKH3SW0RE"
@@ -18042,9 +18042,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-22T00:37:23.461Z
-      last_reconciled_at: 2026-03-22T00:37:23.461Z
+      last_reconciled_at: 2026-03-22T00:44:11.071Z
       created_at: 2026-03-22T00:24:01.439Z
-      updated_at: 2026-03-22T00:37:23.461Z
+      updated_at: 2026-03-22T00:44:11.071Z
     workspace_id: dispatch-workspace-01KM6YEXN2KMJ43AMEKH3SW0RE
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
