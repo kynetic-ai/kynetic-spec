@@ -22031,5 +22031,19 @@
       supersedes: null
       author: Test User
       created_at: 2026-03-22T01:45:34.439Z
+    - _ulid: 01KM9M0N3G361EETCZ8GH1WKPX
+      content: "Fix cycle 4: Addressed review blocker — guard CLI mis-detected the shadow worktree when
+        the hook process itself started from .kspec/. Root cause: loadProjectConfig(process.cwd())
+        calls getGitRoot() which returns .kspec/ as the git root (it's its own worktree), making
+        shadowAbsolutePath resolve to .kspec/.kspec (wrong). Fix: use
+        resolveProjectRoots(process.cwd()) which leverages git rev-parse --git-common-dir to find
+        the real main repo root even from inside a worktree, then pass that as mainRoot to
+        loadProjectConfig(). Also fixed existing CLI tests — cliShadowCwd was resolving relative to
+        the dispatch worktree root instead of the main project root, which was coincidentally
+        passing before but wrong. Added 2 integration tests that create a real shadow worktree in a
+        temp repo and run the guard from inside it. Full suite: 6981 tests pass, 0 failures."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-22T01:54:36.272Z
   todos: []
   automation: eligible
