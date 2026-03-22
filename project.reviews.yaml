@@ -44226,9 +44226,25 @@ reviews:
           kind: blocker
           thread_ulid: 01KMAEEJMDGSMFEH9VHAKQKY63
         timestamp: 2026-03-22T09:36:35.792Z
+      - _ulid: 01KMAEEKZK8PWPW1N2SXG2295G
+        actor: codex@openai
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-22T09:36:36.851Z
+      - _ulid: 01KMAEEKZKKVM36CEY7465CZ58
+        actor: codex@openai
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-22T09:36:36.851Z
     examined_commit: 769ad92f5181d44fac0de9b5994c66a0f4dabeab
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -44274,7 +44290,14 @@ reviews:
               validation of a prompt or prompt template.
             created_at: 2026-03-22T09:36:35.469Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai
+        role: reviewer
+        created_at: 2026-03-22T09:36:36.851Z
     created_at: 2026-03-22T09:33:28.920Z
-    updated_at: 2026-03-22T09:36:35.469Z
+    updated_at: 2026-03-22T09:36:36.851Z
     notes: []
