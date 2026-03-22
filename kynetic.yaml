@@ -742,3 +742,5 @@ project:
   status: draft
   name: Kynetic Spec
   version: 0.1.0
+task_storage:
+  format: split
