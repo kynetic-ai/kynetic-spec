@@ -23,9 +23,8 @@ import {
   getIndexFilePath,
 } from "../src/parser/split-backend.js";
 import {
-  activateBatchBuffer,
-  deactivateBatchBuffer,
   getActiveBatchBuffer,
+  runWithBatchBuffer,
 } from "../src/cli/batch-write-buffer.js";
 
 // Register the split backend (no longer auto-registered at module scope)
@@ -151,8 +150,6 @@ describe("Atomic Multi-File Task Writes", () => {
   });
 
   afterEach(async () => {
-    // Always clean up any lingering buffer
-    deactivateBatchBuffer();
     if (tempDir) {
       await cleanupTempDir(tempDir);
     }
@@ -458,32 +455,31 @@ describe("Atomic Multi-File Task Writes", () => {
       const [ulid] = testUlids("ABNST", 1);
       await createSplitTask(ctx, ulid, "no-nest-test");
 
-      // Simulate batch-exec scenario: activate a buffer before the operation
-      const batchBuffer = activateBatchBuffer(ctx.specDir);
+      // Simulate batch-exec scenario: run within a buffer scope
+      await runWithBatchBuffer(ctx.specDir, async (batchBuffer) => {
+        let bufferDuringMutation: ReturnType<typeof getActiveBatchBuffer> = null;
 
-      let bufferDuringMutation: ReturnType<typeof getActiveBatchBuffer> = null;
+        await manager.mutateTask(
+          ctx,
+          `@${ulid}`,
+          (task) => {
+            bufferDuringMutation = getActiveBatchBuffer();
+            return { ...task, title: "Updated in batch" };
+          },
+        );
 
-      await manager.mutateTask(
-        ctx,
-        `@${ulid}`,
-        (task) => {
-          bufferDuringMutation = getActiveBatchBuffer();
-          return { ...task, title: "Updated in batch" };
-        },
-      );
+        // The same batch buffer should have been used (not a new one)
+        expect(bufferDuringMutation).toBe(batchBuffer);
 
-      // The same batch buffer should have been used (not a new one)
-      expect(bufferDuringMutation).toBe(batchBuffer);
+        // The batch buffer should still be active (batch-exec owns it)
+        expect(getActiveBatchBuffer()).toBe(batchBuffer);
 
-      // The batch buffer should still be active (batch-exec owns it)
-      expect(getActiveBatchBuffer()).toBe(batchBuffer);
+        // Writes should be in the buffer, not on disk yet
+        expect(batchBuffer.size).toBeGreaterThan(0);
 
-      // Writes should be in the buffer, not on disk yet
-      expect(batchBuffer.size).toBeGreaterThan(0);
-
-      // Flush the batch buffer (simulating batch-exec completion)
-      await batchBuffer.flush();
-      deactivateBatchBuffer();
+        // Flush the batch buffer (simulating batch-exec completion)
+        await batchBuffer.flush();
+      });
 
       // Now verify files are on disk
       const taskContent = await fs.readFile(getTaskFilePath(ctx, ulid), "utf-8");
@@ -499,27 +495,28 @@ describe("Atomic Multi-File Task Writes", () => {
       const shadowModule = await import("../src/parser/shadow.js");
       const commitSpy = vi.spyOn(shadowModule, "commitIfShadow");
 
-      // Simulate batch-exec scenario: activate a parent buffer
-      const batchBuffer = activateBatchBuffer(ctx.specDir);
-
       try {
-        await manager.mutateTask(
-          ctx,
-          `@${ulid}`,
-          (task) => ({ ...task, priority: 1 }),
-          { operation: "test-nested-commit", ref: `@${ulid}` },
-        );
+        // Simulate batch-exec scenario: run within a parent buffer scope
+        await runWithBatchBuffer(ctx.specDir, async (batchBuffer) => {
+          await manager.mutateTask(
+            ctx,
+            `@${ulid}`,
+            (task) => ({ ...task, priority: 1 }),
+            { operation: "test-nested-commit", ref: `@${ulid}` },
+          );
 
-        // commitIfShadow must NOT be called — the parent buffer hasn't
-        // flushed yet, so disk state is stale. The parent (batch-exec)
-        // owns the commit lifecycle and will commit after flush.
-        expect(commitSpy).not.toHaveBeenCalled();
+          // commitIfShadow must NOT be called — the parent buffer hasn't
+          // flushed yet, so disk state is stale. The parent (batch-exec)
+          // owns the commit lifecycle and will commit after flush.
+          expect(commitSpy).not.toHaveBeenCalled();
 
-        // Writes should still be in the buffer, not on disk
-        expect(batchBuffer.size).toBeGreaterThan(0);
+          // Writes should still be in the buffer, not on disk
+          expect(batchBuffer.size).toBeGreaterThan(0);
+
+          // Discard instead of flushing — we're just testing the nested behavior
+          batchBuffer.discard();
+        });
       } finally {
-        batchBuffer.discard();
-        deactivateBatchBuffer();
         commitSpy.mockRestore();
       }
     });

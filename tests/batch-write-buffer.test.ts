@@ -12,10 +12,9 @@ import {
   WriteBuffer,
   SyntheticDirent,
   accessBufferAware,
-  activateBatchBuffer,
-  deactivateBatchBuffer,
   getActiveBatchBuffer,
   readdirBufferAware,
+  runWithBatchBuffer,
   writeFileBufferAware,
 } from "../src/cli/batch-write-buffer.js";
 import { copyCoreSkillFiles } from "../src/cli/commands/skill-install.js";
@@ -182,64 +181,66 @@ describe("buffer-aware fs helpers", () => {
   });
 
   afterEach(async () => {
-    deactivateBatchBuffer();
     await cleanupTempDir(tempDir);
   });
 
   it("readdirBufferAware() returns buffered directory entries with file types", async () => {
-    activateBatchBuffer(tempDir);
-    const bufferedFile = path.join(tempDir, "docs", "note.md");
-    getActiveBatchBuffer()!.write(bufferedFile, "# note\n");
+    await runWithBatchBuffer(tempDir, async (buffer) => {
+      const bufferedFile = path.join(tempDir, "docs", "note.md");
+      buffer.write(bufferedFile, "# note\n");
 
-    const entries = await readdirBufferAware(path.join(tempDir, "docs"), {
-      withFileTypes: true,
+      const entries = await readdirBufferAware(path.join(tempDir, "docs"), {
+        withFileTypes: true,
+      });
+      expect(entries).toHaveLength(1);
+      expect(entries[0].name).toBe("note.md");
+      expect(entries[0].isFile()).toBe(true);
     });
-    expect(entries).toHaveLength(1);
-    expect(entries[0].name).toBe("note.md");
-    expect(entries[0].isFile()).toBe(true);
   });
 
   it("accessBufferAware() checks buffered writes and deletions", async () => {
-    const buffer = activateBatchBuffer(tempDir);
-    const filePath = path.join(tempDir, "buffered.txt");
+    await runWithBatchBuffer(tempDir, async (buffer) => {
+      const filePath = path.join(tempDir, "buffered.txt");
 
-    buffer.write(filePath, "buffered");
-    await expect(accessBufferAware(filePath)).resolves.toBeUndefined();
+      buffer.write(filePath, "buffered");
+      await expect(accessBufferAware(filePath)).resolves.toBeUndefined();
 
-    buffer.delete(filePath);
-    await expect(accessBufferAware(filePath)).rejects.toMatchObject({ code: "ENOENT" });
+      buffer.delete(filePath);
+      await expect(accessBufferAware(filePath)).rejects.toMatchObject({ code: "ENOENT" });
 
-    buffer.write(path.join(tempDir, "nested", "child.md"), "hello");
-    await expect(accessBufferAware(path.join(tempDir, "nested"))).resolves.toBeUndefined();
+      buffer.write(path.join(tempDir, "nested", "child.md"), "hello");
+      await expect(accessBufferAware(path.join(tempDir, "nested"))).resolves.toBeUndefined();
 
-    buffer.delete(path.join(tempDir, "gone"));
-    await expect(accessBufferAware(path.join(tempDir, "gone", "child.md"))).rejects.toMatchObject({
-      code: "ENOENT",
+      buffer.delete(path.join(tempDir, "gone"));
+      await expect(accessBufferAware(path.join(tempDir, "gone", "child.md"))).rejects.toMatchObject({
+        code: "ENOENT",
+      });
     });
   });
 
   it("writeFileBufferAware()/readFileBufferAware() use active buffer", async () => {
-    activateBatchBuffer(tempDir);
-    const filePath = path.join(tempDir, "buffered.md");
+    await runWithBatchBuffer(tempDir, async (buffer) => {
+      const filePath = path.join(tempDir, "buffered.md");
 
-    await writeFileBufferAware(filePath, "hello from buffer");
-    await expect(fs.readFile(filePath, "utf-8")).rejects.toThrow();
-    await expect(readFileBufferAware(filePath)).resolves.toBe("hello from buffer");
+      await writeFileBufferAware(filePath, "hello from buffer");
+      await expect(fs.readFile(filePath, "utf-8")).rejects.toThrow();
+      await expect(readFileBufferAware(filePath)).resolves.toBe("hello from buffer");
 
-    getActiveBatchBuffer()!.delete(filePath);
-    await expect(readFileBufferAware(filePath)).rejects.toMatchObject({ code: "ENOENT" });
+      buffer.delete(filePath);
+      await expect(readFileBufferAware(filePath)).rejects.toMatchObject({ code: "ENOENT" });
+    });
   });
 
   it("copyCoreSkillFiles() is read-after-write consistent within one active buffer", async () => {
     const specDir = path.join(tempDir, ".kspec");
     const targetDir = path.join(specDir, "skills", "triage");
-    activateBatchBuffer(specDir);
+    await runWithBatchBuffer(specDir, async () => {
+      const first = await copyCoreSkillFiles("triage", targetDir);
+      const second = await copyCoreSkillFiles("triage", targetDir);
 
-    const first = await copyCoreSkillFiles("triage", targetDir);
-    const second = await copyCoreSkillFiles("triage", targetDir);
-
-    expect(first.changed).toBe(true);
-    expect(second.changed).toBe(false);
+      expect(first.changed).toBe(true);
+      expect(second.changed).toBe(false);
+    });
   });
 });
 
@@ -346,32 +347,58 @@ describe("WriteBuffer.flush()", () => {
   });
 });
 
-// ── Module Singleton Tests ───────────────────────────────────────────
+// ── Buffer Scoping Tests ─────────────────────────────────────────────
 
-describe("batch buffer singleton", () => {
-  beforeEach(() => {
-    // Ensure clean state — AsyncLocalStorage.enterWith() from other test files
-    // or describe blocks can leak across vitest's sequential test execution.
-    deactivateBatchBuffer();
+describe("batch buffer scoping", () => {
+  // AC: @batch-write-buffer ac-1
+  it("runWithBatchBuffer() makes buffer visible inside the callback", async () => {
+    let bufferInsideScope: WriteBuffer | null = null;
+    await runWithBatchBuffer("/tmp/specdir", async (buffer) => {
+      bufferInsideScope = getActiveBatchBuffer();
+      expect(bufferInsideScope).toBe(buffer);
+      expect(buffer).toBeInstanceOf(WriteBuffer);
+    });
   });
 
-  afterEach(() => {
-    deactivateBatchBuffer();
-  });
-
-  it("activateBatchBuffer() creates and returns a buffer", () => {
-    const buf = activateBatchBuffer("/tmp/specdir");
-    expect(buf).toBeInstanceOf(WriteBuffer);
-    expect(getActiveBatchBuffer()).toBe(buf);
-  });
-
-  it("deactivateBatchBuffer() clears the singleton", () => {
-    activateBatchBuffer("/tmp/specdir");
-    deactivateBatchBuffer();
+  // AC: @batch-write-buffer ac-9
+  it("buffer is null outside runWithBatchBuffer scope", async () => {
+    await runWithBatchBuffer("/tmp/specdir", async () => {
+      // inside — buffer is visible
+      expect(getActiveBatchBuffer()).not.toBeNull();
+    });
+    // outside — scope has exited, buffer is no longer visible
     expect(getActiveBatchBuffer()).toBeNull();
   });
 
-  it("getActiveBatchBuffer() returns null when not active", () => {
+  it("getActiveBatchBuffer() returns null when no buffer scope is active", () => {
+    expect(getActiveBatchBuffer()).toBeNull();
+  });
+
+  // AC: @batch-write-buffer ac-9
+  it("concurrent runWithBatchBuffer scopes are isolated", async () => {
+    let bufferA: WriteBuffer | null = null;
+    let bufferB: WriteBuffer | null = null;
+
+    await Promise.all([
+      runWithBatchBuffer("/tmp/scope-a", async (buffer) => {
+        bufferA = buffer;
+        // Yield to let the other scope start
+        await new Promise((r) => setTimeout(r, 10));
+        // Should still see our own buffer, not the other scope's
+        expect(getActiveBatchBuffer()).toBe(buffer);
+      }),
+      runWithBatchBuffer("/tmp/scope-b", async (buffer) => {
+        bufferB = buffer;
+        await new Promise((r) => setTimeout(r, 10));
+        expect(getActiveBatchBuffer()).toBe(buffer);
+      }),
+    ]);
+
+    // Each scope got its own buffer instance
+    expect(bufferA).not.toBeNull();
+    expect(bufferB).not.toBeNull();
+    expect(bufferA).not.toBe(bufferB);
+    // Both scopes have exited
     expect(getActiveBatchBuffer()).toBeNull();
   });
 });
