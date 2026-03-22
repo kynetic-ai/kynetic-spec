@@ -48,7 +48,7 @@ const hookExecutors: Map<string, HookExecutor> = new Map();
 const joinAccumulators: Map<string, JoinAccumulator> = new Map();
 // Singleton session registry per project path (shared with action executors for session_prompt actions)
 // AC: @session-prompt-action ac-1
-const sessionRegistries: Map<string, SessionRegistry> = new Map();
+// Session registries are owned by DispatchEngine instances — use engine.sessionRegistry
 
 export interface AgentDispatchRouteOptions {
   defaultProjectPath?: string;
@@ -56,19 +56,7 @@ export interface AgentDispatchRouteOptions {
   pubsub?: PubSubManager;
 }
 
-/**
- * Get or create the session registry for a project path.
- * The registry is created once and shared across all action executors for the project.
- * AC: @session-prompt-action ac-1
- */
-function getOrCreateSessionRegistry(projectDir: string): SessionRegistry {
-  let registry = sessionRegistries.get(projectDir);
-  if (!registry) {
-    registry = new SessionRegistry();
-    sessionRegistries.set(projectDir, registry);
-  }
-  return registry;
-}
+// Session registry is created by DispatchEngine and accessed via engine.sessionRegistry
 
 /**
  * Create a new dispatch engine with optional WebSocket broadcast wiring.
@@ -109,10 +97,6 @@ function createEngine(
           pubsub.broadcast('agents', event.type, event, projectDir);
         }
       : undefined,
-    // AC: @session-prompt-action ac-1, @active-session-registry ac-1
-    // Share the session registry with the dispatch engine so invocations register
-    // their sessions, making them discoverable by session_prompt actions.
-    sessionRegistry: getOrCreateSessionRegistry(projectDir),
   });
 }
 
@@ -125,11 +109,11 @@ async function startScheduleEngine(
   engine: DispatchEngine,
   pubsub?: PubSubManager,
 ): Promise<void> {
-  // Create action executor wired to the event bus and session registry
+  // Create action executor wired to the event bus and engine's session registry
   const actionExecutor = new ActionExecutor({
     projectDir,
     kspecCliPath: DEFAULT_KSPEC_CLI_PATH,
-    sessionRegistry: getOrCreateSessionRegistry(projectDir),
+    sessionRegistry: engine.sessionRegistry,
     onActionRunEvent: (event) => {
       // Emit action lifecycle events on the shared bus
       engine.eventBus.emit({
@@ -190,7 +174,7 @@ async function startHookExecutor(
   const actionExecutor = new ActionExecutor({
     projectDir,
     kspecCliPath: DEFAULT_KSPEC_CLI_PATH,
-    sessionRegistry: getOrCreateSessionRegistry(projectDir),
+    sessionRegistry: engine.sessionRegistry,
     onActionRunEvent: (event) => {
       engine.eventBus.emit({
         event_type: event.type,
@@ -253,7 +237,7 @@ async function startJoinAccumulator(
   const actionExecutor = new ActionExecutor({
     projectDir,
     kspecCliPath: DEFAULT_KSPEC_CLI_PATH,
-    sessionRegistry: getOrCreateSessionRegistry(projectDir),
+    sessionRegistry: engine.sessionRegistry,
     onActionRunEvent: (event) => {
       engine.eventBus.emit({
         event_type: event.type,
@@ -304,10 +288,9 @@ function stopJoinAccumulator(projectDir: string): void {
  * AC: @session-prompt-action ac-1
  */
 function stopSessionRegistry(projectDir: string): void {
-  const registry = sessionRegistries.get(projectDir);
-  if (registry) {
-    registry.closeAll('Dispatch engine stopping');
-    sessionRegistries.delete(projectDir);
+  const engine = engines.get(projectDir);
+  if (engine) {
+    engine.sessionRegistry.closeAll('Dispatch engine stopping');
   }
 }
 
@@ -630,7 +613,7 @@ export function getJoinAccumulator(projectDir: string): JoinAccumulator | undefi
  * AC: @session-prompt-action ac-1
  */
 export function getSessionRegistry(projectDir: string): SessionRegistry | undefined {
-  return sessionRegistries.get(projectDir);
+  return engines.get(projectDir)?.sessionRegistry;
 }
 
 /**
@@ -649,11 +632,7 @@ export async function stopAllEngines(): Promise<void> {
   }
   joinAccumulators.clear();
 
-  // Close all session registries (AC: @session-prompt-action ac-1)
-  for (const [, registry] of sessionRegistries) {
-    registry.closeAll('Daemon shutting down');
-  }
-  sessionRegistries.clear();
+  // Session registries are owned by dispatch engines and closed during engine.stop()
 
   const stopPromises: Promise<void>[] = [];
   // Stop schedule engines

@@ -289,7 +289,6 @@ export const EVENT_PAYLOAD_SCHEMAS: Record<string, z.ZodType> = {
   "invocation.stalled": InvocationTerminalPayloadSchema,
   "session.idle": SessionIdlePayloadSchema,
   "session.ended": SessionEventPayloadSchema,
-  "session.idle": SessionIdlePayloadSchema,
   "session.idle_timeout": SessionEventPayloadSchema,
   "session.cancelled": SessionEventPayloadSchema,
   "schedule.tick": ScheduleTickPayloadSchema,

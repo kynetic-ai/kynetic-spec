@@ -27,7 +27,7 @@ test.describe('Automation View — Session Idle Event Rendering', () => {
       task_ref: '@task-example',
       turn_count: 3,
       stop_reason: 'end_turn',
-      duration_ms: 45200,
+      turn_duration_ms: 45200,
     },
   };
 

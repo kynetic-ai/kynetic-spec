@@ -129,8 +129,8 @@
 											{#if event.payload.agent_id}
 												<span class="font-mono" data-testid="session-idle-agent">{event.payload.agent_id}</span>
 											{/if}
-											{#if typeof event.payload.duration_ms === 'number'}
-												<span class="text-muted-foreground" data-testid="session-idle-duration">{formatDuration(event.payload.duration_ms)}</span>
+											{#if typeof event.payload.turn_duration_ms === 'number'}
+												<span class="text-muted-foreground" data-testid="session-idle-duration">{formatDuration(event.payload.turn_duration_ms)}</span>
 											{/if}
 										</span>
 									{:else if event.causation_id}

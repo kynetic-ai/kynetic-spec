@@ -773,7 +773,7 @@ describe("event payload schemas align with registry", () => {
       agent_id: "a1",
       turn_count: 1,
       stop_reason: "end_turn",
-      duration_ms: 1000,
+      turn_duration_ms: 1000,
     };
     samplePayloads["session.idle_timeout"] = samplePayloads["session.ended"];
     samplePayloads["session.cancelled"] = samplePayloads["session.ended"];

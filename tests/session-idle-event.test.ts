@@ -51,7 +51,7 @@ describe("ac-1: session.idle event emitted with session context, agent identity,
     task_ref: "@task-my-feature",
     turn_count: 1,
     stop_reason: "end_turn",
-    duration_ms: 45000,
+    turn_duration_ms: 45000,
   };
 
   it("should register session.idle in the event registry", () => {
@@ -68,14 +68,14 @@ describe("ac-1: session.idle event emitted with session context, agent identity,
     expect(idleEntry).toBeDefined();
   });
 
-  it("should have payload fields for session_id, agent_id, task_ref, turn_count, stop_reason, duration_ms", () => {
+  it("should have payload fields for session_id, agent_id, task_ref, turn_count, stop_reason, turn_duration_ms", () => {
     const entry = getEventRegistryEntry("session.idle");
     expect(entry!.payload_fields).toContain("session_id");
     expect(entry!.payload_fields).toContain("agent_id");
     expect(entry!.payload_fields).toContain("task_ref");
     expect(entry!.payload_fields).toContain("turn_count");
     expect(entry!.payload_fields).toContain("stop_reason");
-    expect(entry!.payload_fields).toContain("duration_ms");
+    expect(entry!.payload_fields).toContain("turn_duration_ms");
   });
 
   it("should accept a valid session.idle payload with all required fields", () => {
@@ -87,7 +87,7 @@ describe("ac-1: session.idle event emitted with session context, agent identity,
       expect(result.data.task_ref).toBe("@task-my-feature");
       expect(result.data.turn_count).toBe(1);
       expect(result.data.stop_reason).toBe("end_turn");
-      expect(result.data.duration_ms).toBe(45000);
+      expect(result.data.turn_duration_ms).toBe(45000);
     }
   });
 
@@ -111,14 +111,14 @@ describe("ac-1: session.idle event emitted with session context, agent identity,
     expect(result.success).toBe(false);
   });
 
-  it("should reject session.idle payload missing stop_reason", () => {
-    const { stop_reason: _, ...missing } = validIdlePayload;
-    const result = SessionIdlePayloadSchema.safeParse(missing);
-    expect(result.success).toBe(false);
+  it("should accept session.idle payload without stop_reason (optional field)", () => {
+    const { stop_reason: _, ...noStopReason } = validIdlePayload;
+    const result = SessionIdlePayloadSchema.safeParse(noStopReason);
+    expect(result.success).toBe(true);
   });
 
-  it("should reject session.idle payload missing duration_ms", () => {
-    const { duration_ms: _, ...missing } = validIdlePayload;
+  it("should reject session.idle payload missing turn_duration_ms", () => {
+    const { turn_duration_ms: _, ...missing } = validIdlePayload;
     const result = SessionIdlePayloadSchema.safeParse(missing);
     expect(result.success).toBe(false);
   });
@@ -199,7 +199,7 @@ describe("ac-2: turn count reflects cumulative number of completed turns", () =>
       task_ref: "@task-foo",
       turn_count: 3,
       stop_reason: "end_turn",
-      duration_ms: 30000,
+      turn_duration_ms: 30000,
     });
     expect(result.success).toBe(true);
     if (result.success) {
@@ -221,7 +221,7 @@ describe("ac-2: turn count reflects cumulative number of completed turns", () =>
           task_ref: "@task-foo",
           turn_count: turn,
           stop_reason: "end_turn",
-          duration_ms: 10000 * turn,
+          turn_duration_ms: 10000 * turn,
         },
       });
 
@@ -237,7 +237,7 @@ describe("ac-2: turn count reflects cumulative number of completed turns", () =>
       agent_id: "a1",
       turn_count: 1.5,
       stop_reason: "end_turn",
-      duration_ms: 1000,
+      turn_duration_ms: 1000,
     });
     expect(fractional.success).toBe(false);
 
@@ -247,7 +247,7 @@ describe("ac-2: turn count reflects cumulative number of completed turns", () =>
       agent_id: "a1",
       turn_count: -1,
       stop_reason: "end_turn",
-      duration_ms: 1000,
+      turn_duration_ms: 1000,
     });
     expect(negative.success).toBe(false);
   });
@@ -298,7 +298,7 @@ describe("ac-3: hook filter on turn_count or agent filters session.idle events",
     expect(validFields).toContain("agent_id");
     expect(validFields).toContain("session_id");
     expect(validFields).toContain("stop_reason");
-    expect(validFields).toContain("duration_ms");
+    expect(validFields).toContain("turn_duration_ms");
   });
 
   it("should warn when filtering on unknown fields for session.idle", () => {
