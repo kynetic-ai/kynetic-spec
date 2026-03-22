@@ -24,7 +24,7 @@ import * as path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { ulid } from "ulid";
-import type { Agent } from "../schema/meta.js";
+import type { Agent, SessionMode } from "../schema/meta.js";
 import { buildPromptWithSkills } from "./prompts.js";
 import { resolveAdapter } from "../agents/adapters.js";
 import { spawnAndInitialize } from "../agents/spawner.js";
@@ -265,6 +265,21 @@ export interface InvocationOptions {
    * AC: @multi-turn-session-lifecycle ac-2, ac-11
    */
   idleGracePeriodMs?: number;
+  /**
+   * Session mode controlling auto-close behavior.
+   * - "auto_close" (default): close when grace period expires with no prompt.
+   * - "persistent": stay idle until explicit close, idle timeout, or prompt.
+   * AC: @multi-turn-session-lifecycle ac-6
+   */
+  sessionMode?: SessionMode;
+  /**
+   * Maximum time in milliseconds a session can remain in idle state
+   * before being forcibly closed. When set, an idle timeout timer starts
+   * each time the session enters idle and is cleared when a prompt arrives.
+   * On expiry, a session.idle_timeout event is logged and the session closes.
+   * AC: @multi-turn-session-lifecycle ac-7
+   */
+  idleTimeoutMs?: number;
 }
 
 /**
@@ -471,6 +486,8 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     sessionRegistry,
     maxPromptQueueDepth = DEFAULT_MAX_PROMPT_QUEUE_DEPTH,
     idleGracePeriodMs = 0,
+    sessionMode = "auto_close",
+    idleTimeoutMs,
   } = options;
 
   // AC: @session-storage-path-resolution ac-resolver
@@ -760,6 +777,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     let currentPromptText: string = fullPrompt;
     let lastStopReason: string | undefined;
     let idleGraceHandle: ReturnType<typeof setTimeout> | undefined;
+    let idleTimeoutHandle: ReturnType<typeof setTimeout> | undefined;
 
     try {
       // eslint-disable-next-line no-constant-condition
@@ -842,46 +860,74 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
         }
 
         // If no prompt was queued during the idle transition, decide
-        // whether to keep the session open or close it:
+        // whether to keep the session open or close it based on session
+        // mode and grace period configuration.
         //
-        // - When idleGracePeriodMs is 0 (default), close immediately.
-        //   This preserves backward compatibility: single-turn
-        //   invocations exit after one turn with no delay.
-        //   AC: @multi-turn-session-lifecycle ac-11
+        // Three modes of operation:
         //
-        // - When idleGracePeriodMs > 0, external sources may deliver
-        //   prompts asynchronously via the session handle (e.g.,
-        //   event-bus hooks triggered by session.idle). Wait for the
-        //   grace period before closing.
-        //   AC: @multi-turn-session-lifecycle ac-2, ac-4
+        // 1. auto_close + grace period = 0: close immediately.
+        //    Preserves backward compatibility: single-turn invocations
+        //    exit after one turn with no delay.
+        //    AC: @multi-turn-session-lifecycle ac-11
+        //
+        // 2. auto_close + grace period > 0: wait for async sources to
+        //    deliver prompts within the grace period, then close.
+        //    AC: @multi-turn-session-lifecycle ac-5
+        //
+        // 3. persistent: do not auto-close on grace period expiry.
+        //    Session stays idle until a prompt arrives, an explicit
+        //    close is requested, or the idle timeout fires.
+        //    AC: @multi-turn-session-lifecycle ac-6
         if (promptQueue.pending === 0 && !promptQueue.isClosed) {
-          if (idleGracePeriodMs <= 0) {
-            promptQueue.close();
-          } else {
-            // Grace period: wait briefly for async prompt sources
-            // before closing the queue. This races with waitForPrompt
-            // below — if a prompt arrives first, the grace timer is
-            // cleared after the race resolves.
-            idleGraceHandle = setTimeout(() => {
-              if (promptQueue.pending === 0 && !promptQueue.isClosed) {
-                promptQueue.close();
-              }
-            }, idleGracePeriodMs);
+          if (sessionMode === "auto_close") {
+            if (idleGracePeriodMs <= 0) {
+              promptQueue.close();
+            } else {
+              // Grace period: wait briefly for async prompt sources
+              // before closing the queue. This races with waitForPrompt
+              // below — if a prompt arrives first, the grace timer is
+              // cleared after the race resolves.
+              // AC: @multi-turn-session-lifecycle ac-5
+              idleGraceHandle = setTimeout(() => {
+                if (promptQueue.pending === 0 && !promptQueue.isClosed) {
+                  promptQueue.close();
+                }
+              }, idleGracePeriodMs);
+            }
           }
+          // persistent mode: no grace-based close — only idle timeout,
+          // explicit close, or session-level timeout will end the session.
+          // AC: @multi-turn-session-lifecycle ac-6
         }
 
-        // Race the prompt queue against the session timeout and abort
+        // AC: @multi-turn-session-lifecycle ac-7 — idle timeout timer
+        // Start an idle timeout timer if configured. This fires when the
+        // session has been idle for longer than idleTimeoutMs. It applies
+        // in both auto_close and persistent modes.
+        let idleTimeoutPromise: Promise<never> | null = null;
+        if (idleTimeoutMs != null && idleTimeoutMs > 0) {
+          idleTimeoutPromise = new Promise<never>((_, reject) => {
+            idleTimeoutHandle = setTimeout(() => {
+              reject(new InvocationIdleTimeoutError(idleTimeoutMs));
+            }, idleTimeoutMs);
+          });
+        }
+
+        // Race the prompt queue against the session timeout, idle timeout, and abort
         const nextPromptPromise = promptQueue.waitForPrompt();
         const idleRacers: Array<Promise<string | null | never>> = [nextPromptPromise, timeoutPromise as Promise<never>];
+        if (idleTimeoutPromise) idleRacers.push(idleTimeoutPromise);
         if (abortPromise) idleRacers.push(abortPromise as Promise<never>);
 
         const nextPrompt = await Promise.race(idleRacers);
 
-        // Clear the grace timer — either a prompt arrived, the session
-        // timed out, or the queue closed. The timer must not fire
-        // during a subsequent turn.
+        // Clear the grace and idle timeout timers — either a prompt
+        // arrived, the session timed out, or the queue closed. The
+        // timers must not fire during a subsequent turn.
         clearTimeout(idleGraceHandle);
         idleGraceHandle = undefined;
+        clearTimeout(idleTimeoutHandle);
+        idleTimeoutHandle = undefined;
 
         if (nextPrompt === null) {
           // Queue closed or no more prompts — exit turn loop
@@ -905,6 +951,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       clearTimeout(timeoutHandle);
       clearTimeout(stallHandle);
       clearTimeout(idleGraceHandle);
+      clearTimeout(idleTimeoutHandle);
     }
 
     // ─── Log agent.completed event ────────────────────────────────────────
@@ -1012,6 +1059,44 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       return {
         session: finalSession ?? session,
         outcome: "failed",
+        error: err.message,
+        durationMs,
+        turnCount,
+      };
+    }
+
+    if (err instanceof InvocationIdleTimeoutError) {
+      // ─── Handle idle timeout ────────────────────────────────────────
+      // AC: @multi-turn-session-lifecycle ac-7
+      try {
+        if (state.acpSessionId && state.agent) {
+          await state.agent.client.cancel(state.acpSessionId);
+        }
+      } catch {
+        // Best-effort cancel
+      }
+
+      await appendSessionEvent({
+        type: "session.idle_timeout",
+        data: {
+          session_id: sessionId,
+          task_id: taskRef,
+          idle_timeout_ms: err.idleTimeoutMs,
+          duration_ms: durationMs,
+          turn_count: turnCount,
+        },
+      });
+
+      const finalSession = await closeSession(
+        sessionsDir,
+        sessionId,
+        "timed_out",
+        `Session idle timeout after ${err.idleTimeoutMs}ms`,
+      );
+
+      return {
+        session: finalSession ?? session,
+        outcome: "timed_out",
         error: err.message,
         durationMs,
         turnCount,
@@ -1182,6 +1267,19 @@ export class InvocationAbortedError extends Error {
   constructor() {
     super("Agent invocation aborted by shutdown signal");
     this.name = "InvocationAbortedError";
+  }
+}
+
+/**
+ * Thrown when a session has been idle longer than the configured idle
+ * timeout (idleTimeoutMs). Distinct from InvocationTimeoutError which
+ * covers total session duration.
+ * AC: @multi-turn-session-lifecycle ac-7
+ */
+export class InvocationIdleTimeoutError extends Error {
+  constructor(public readonly idleTimeoutMs: number) {
+    super(`Session idle timeout after ${idleTimeoutMs}ms`);
+    this.name = "InvocationIdleTimeoutError";
   }
 }
 
