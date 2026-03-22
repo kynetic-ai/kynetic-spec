@@ -21957,5 +21957,15 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-22T00:33:30.696Z
+    - _ulid: 01KM9FZX5C37EEN9DSYR301JFV
+      content: "Fixed substring matching in worktree guard. Replaced isInKspec() with path-segment-aware
+        detection: isShadowWorktreePath() checks that '/.kspec' is a complete path segment (not a
+        prefix of '.kspec-worktrees'), and isCdToShadowWorktree() applies the same boundary check
+        for cd-based detection. Both use SHADOW_WORKTREE_DIR constant. Added 10 new tests covering
+        dispatch worktree false positives, .kspec-backup/.kspec-data paths, cd-to-.kspec-worktrees,
+        and kspec-meta deletion from dispatch worktrees. All 6956 tests pass."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-22T00:44:17.452Z
   todos: []
   automation: eligible
