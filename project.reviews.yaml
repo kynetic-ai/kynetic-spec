@@ -44505,6 +44505,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-22T10:09:05.036Z
+      - _ulid: 01KMAGH86EMX3G6N3YH2C11MYP
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMAGH7MVTNYSJD2J93377464
+        timestamp: 2026-03-22T10:13:00.238Z
     examined_commit: 5d6f8f9881322ed407f0013005a1b4c0f7835a04
     external_links: []
     lifecycle_state: open
@@ -44514,8 +44521,28 @@ reviews:
       content_hash: ""
       ref: "@01KMA74ECH1ZW03KM3403N023Z"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMAGH7MVTNYSJD2J93377464
+        anchor:
+          type: code
+          commit: 5d6f8f9881322ed407f0013005a1b4c0f7835a04
+          line_end: 255
+          line_start: 107
+          path: packages/daemon/src/routes/agent-dispatch.ts
+          side: head
+        entries:
+          - _ulid: 01KMAGH7MW2CYN5B4N4WKQ0QX5
+            author: Test User
+            body: " is only test-wired today. In production, the daemon constructs every  without a , so hook,
+              schedule, and composition executions will always hit the  failure path instead of
+              delivering or queueing a prompt. That breaks the core feature this task is meant to
+              add: a configured  hook cannot actually send a follow-up prompt to the live session.
+              Please thread the active  through the daemon/runtime construction path and add an
+              integration test that exercises the real executor wiring, not just direct unit
+              construction."
+            created_at: 2026-03-22T10:12:59.676Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-22T10:08:25.916Z
-    updated_at: 2026-03-22T10:09:04.500Z
+    updated_at: 2026-03-22T10:12:59.676Z
     notes: []
