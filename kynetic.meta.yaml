@@ -7658,6 +7658,33 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-22T17:59:49.717Z
+  - _ulid: 01KMBPPMW4GTV4CY0C7F45RFBC
+    type: success
+    content: Dual review pattern (internal agent + codex in parallel) catches different issue classes
+      and gives high confidence before plan approval. Internal finds structural issues, codex finds
+      format issues.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-22T21:20:02.948Z
+  - _ulid: 01KMBPPN0808NDG80BY1Q3JV3M
+    type: friction
+    content: Sequential AC numbering in plan documents causes cascading renumbering when ACs are split
+      or inserted. Named ACs (ac-idle-transition) or omitting IDs to let derive auto-number would
+      eliminate the cascade. Discussed with user — named ACs are preferred going forward.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-22T21:20:03.080Z
+  - _ulid: 01KMBPPN3BPBWWXQA503C8DHY2
+    type: success
+    content: Codifying spec quality rules into skills (writing-specs, plan, review-plan) during the
+      session that discovered them prevents the same friction in future sessions. Rules emerged from
+      concrete review feedback and were generalized into principles.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-22T21:20:03.179Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
