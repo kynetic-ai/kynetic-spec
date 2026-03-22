@@ -8011,6 +8011,22 @@ skills:
       - codex
       - droid
     version: 0.12.0
+  - _ulid: 01KMBK6F7WKY0NMZXCARPNAWWP
+    description: Review a plan document for quality, completeness, and readiness. Checks spec quality,
+      task standalone-ness, dependency ordering, and alignment with existing specs.
+    origin: core
+    depends_on: []
+    tags:
+      - core
+    _type: skill
+    allowed_tools: []
+    id: review-plan
+    name: Plan Review
+    platforms:
+      - claude-code
+      - codex
+      - droid
+    version: 0.12.0
 workflows:
   - _ulid: 01KF782ZSH8JG4CCJRWVQQ9G5R
     description: |
