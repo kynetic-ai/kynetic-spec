@@ -41,6 +41,7 @@ tags:
   - sessions
   - backward-compat
 vcs_refs: []
+review_ref: "@01KMBF9TMR1XNEZDJ5QVGYV597"
 submission_linkage:
   review_url: null
   branch: dev
@@ -91,6 +92,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-03-22T19:03:06.944Z
+  - author: "@claude"
+    changes:
+      review_ref:
+        new: "@01KMBF9TMR1XNEZDJ5QVGYV597"
+        previous: null
+    command: review-link
+    timestamp: 2026-03-22T19:10:44.385Z
 created_at: 2026-03-22T07:28:43.638Z
 started_at: 2026-03-22T18:49:42.058Z
 submitted_at: 2026-03-22T19:03:06.943Z

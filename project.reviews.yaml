@@ -47319,3 +47319,29 @@ reviews:
     created_at: 2026-03-22T18:45:39.244Z
     updated_at: 2026-03-22T18:46:44.003Z
     notes: []
+  - _ulid: 01KMBF9TMR1XNEZDJ5QVGYV597
+    slugs: []
+    title: Review task-idle-grace-period (cycle 1)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KMBF9TMQXC04KH0RA786TQ63
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-22T19:10:42.840Z
+    examined_commit: 338372aabcf716f9c3e0d2efadb6c29038a00a52
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@task-idle-grace-period"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-22T19:10:42.840Z
+    updated_at: null
+    notes: []
