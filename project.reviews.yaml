@@ -46172,6 +46172,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMAQ1EDCMP1WAFD8F57ZZV00
         timestamp: 2026-03-22T12:06:42.955Z
+      - _ulid: 01KMAQ1H05MZYN5VJJYQMJPJXH
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMAQ1GD0VCKHHPGT9WBPPSZ1
+        timestamp: 2026-03-22T12:06:44.997Z
     examined_commit: 7e45d49f6ef5ac6d24b08b3e5279c4f12cbdd529
     external_links: []
     lifecycle_state: open
@@ -46238,7 +46245,25 @@ reviews:
               the three configuration surfaces using this shared action model.
             created_at: 2026-03-22T12:06:42.348Z
         kind: blocker
+      - _ulid: 01KMAQ1GD0VCKHHPGT9WBPPSZ1
+        anchor:
+          type: code
+          commit: 7e45d49f6ef5ac6d24b08b3e5279c4f12cbdd529
+          line_end: 509
+          line_start: 501
+          path: src/agent-runtime/invocation.ts
+          side: head
+        entries:
+          - _ulid: 01KMAQ1GD09HWPMZ7ZYG89XGK1
+            author: Test User
+            body: Idle-session prompt delivery resolves immediately instead of waiting for the follow-up turn to
+              finish.  awaits , and in the idle branch  returns  as soon as it wakes the idle loop.
+              That means  is emitted before the prompted turn actually runs, violating
+              @session-prompt-action ac-2 and the task contract that the action remains running
+              until the turn completes.
+            created_at: 2026-03-22T12:06:44.384Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-22T12:00:03.146Z
-    updated_at: 2026-03-22T12:06:42.348Z
+    updated_at: 2026-03-22T12:06:44.384Z
     notes: []
