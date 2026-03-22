@@ -52,3 +52,19 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-22T10:38:54.405Z
+  - _ulid: 01KMAKJG5DEZRTJ4DW6Z5WASFG
+    content: "Fix cycle 3: Addressed reviewer blocker — wired SessionRegistry from daemon route layer
+      through DispatchEngine to runInvocation(). Added sessionRegistry to InvocationOptions and
+      DispatchEngineOptions. The invocation runner now registers a single-turn SessionHandle when
+      the ACP session is created and unregisters it in the finally cleanup block. The daemon's
+      createEngine() passes getOrCreateSessionRegistry() to the dispatch engine, which passes it
+      through to each runInvocation() call. The single-turn handle reports 'prompting' state and
+      rejects sendPrompt() since multi-turn delivery requires the PromptQueue from
+      @task-multi-turn-invocation. Added tests verifying: (1) handle lifecycle (register during
+      invocation, unregister on cleanup), (2) single-turn sendPrompt rejection with clear error
+      message, (3) dispatch engine exposes same registry instance as daemon (shared identity via
+      ===). The pre-existing flaky timeout in agent-invocation-lifecycle.test.ts is unrelated to
+      this branch (no changes to that file)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-22T11:06:06.893Z
