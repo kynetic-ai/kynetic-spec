@@ -19030,7 +19030,7 @@ workspaces:
         head: 861d966082cd395f0fd6072be639f10950f1be31
         last_seen_at: 2026-03-22T16:12:53.426Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/migrate-batch-buffer-scoping-from-enterwith-to-asynclocalstorage-run-01kma735
-  - active_role: worker
+  - active_role: null
     base_branch_point: 4415be9ef9c4a5e62b1e4c6e74d64d73d3ba0a3f
     bootstrap:
       status: succeeded
@@ -19114,12 +19114,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-22T16:40:49.193Z
+      updated_at: 2026-03-22T16:40:52.586Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-22T16:40:49.193Z
+      updated_at: 2026-03-22T16:40:52.586Z
     integration:
       status: pending
       detail: null
@@ -19127,17 +19127,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 4415be9ef9c4a5e62b1e4c6e74d64d73d3ba0a3f
-      updated_at: 2026-03-22T16:40:49.193Z
-    lifecycle_state: active
+      updated_at: 2026-03-22T16:40:52.586Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMA74FB1KFR4938XKWNT6M2K"
     task_slug: task-ui-session-idle
     timestamps:
       closed_at: null
       last_active_at: 2026-03-22T16:25:50.992Z
-      last_reconciled_at: 2026-03-22T16:40:49.193Z
+      last_reconciled_at: 2026-03-22T16:40:52.586Z
       created_at: 2026-03-22T16:25:02.039Z
-      updated_at: 2026-03-22T16:40:49.193Z
+      updated_at: 2026-03-22T16:40:52.586Z
     workspace_id: dispatch-workspace-01KMA74FB1KFR4938XKWNT6M2K
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
