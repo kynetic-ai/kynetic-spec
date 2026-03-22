@@ -19557,18 +19557,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/reload-session-idle-hook-presence-during-dispatch-reconciliation/01kmbpyb
-    canonical_branch_head: 2da4a1f5163cdbd9acbb5a6acef049732b6b75c8
+    canonical_branch_head: 3fe484fb622ef64ca3131a23ef6e5f077ef910aa
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-22T21:24:49.679Z
+      updated_at: 2026-03-22T21:36:13.433Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-22T21:24:55.570Z
+      updated_at: 2026-03-22T21:36:13.433Z
     integration:
       status: pending
       detail: null
@@ -19576,7 +19576,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 2da4a1f5163cdbd9acbb5a6acef049732b6b75c8
-      updated_at: 2026-03-22T21:24:49.679Z
+      updated_at: 2026-03-22T21:36:13.433Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KMBPYB05RT7ZJZBA2GVW4A7D"
@@ -19584,9 +19584,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-22T21:24:55.570Z
-      last_reconciled_at: 2026-03-22T21:24:55.570Z
+      last_reconciled_at: 2026-03-22T21:36:13.433Z
       created_at: 2026-03-22T21:24:49.679Z
-      updated_at: 2026-03-22T21:24:55.570Z
+      updated_at: 2026-03-22T21:36:13.433Z
     workspace_id: dispatch-workspace-01KMBPYB05RT7ZJZBA2GVW4A7D
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
