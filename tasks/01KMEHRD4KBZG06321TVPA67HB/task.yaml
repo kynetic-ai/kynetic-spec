@@ -2,12 +2,72 @@ _ulid: 01KMEHRD4KBZG06321TVPA67HB
 slugs: []
 title: Fix web UI pages not rendering on initial load
 type: task
-description: "Dashboard, agents, and automation pages don't show content on initial load but work
-  after navigating away and back. Root cause: isStaticMode() in query enabled conditions creates an
-  extra reactive dependency on the mode state that interferes with TanStack Query v6 effect-based
-  subscription in Svelte 5. Fix: move static mode guards from query enabled into the API fetch
-  functions (matching the pattern fetchTasks/fetchInbox/fetchPlans already use), so all queries use
-  only enabled: isProjectInitialized()."
+description: >-
+  ## Problem
+
+
+  The dashboard, agents, and automation pages in the web UI do not render their content on initial
+  page load. The pages show loading skeletons or empty states indefinitely, even though network
+  requests complete without errors. Navigating away to a different page and then back causes the
+  content to appear correctly (served from TanStack Query cache).
+
+
+  The same issue affects settings, sessions/[id], and tasks/board — any page where a TanStack Query
+  `enabled` condition includes `!isStaticMode()`.
+
+
+  ## Root Cause
+
+
+  Pages that work (tasks, triage, inbox) gate their queries with only `enabled:
+  isProjectInitialized()`. Pages that break additionally include `!isStaticMode()`, which reads the
+  `mode` $state variable from the mode store.
+
+
+  TanStack Query v6 for Svelte 5 uses an internal `$effect` to subscribe to query observer state
+  changes. When components are created inside the layout's conditional render gate (`{#if ready}`),
+  this `$effect` does not reliably fire (known upstream issue: TanStack/query PR #9810). The extra
+  reactive dependency on `mode` exacerbates this — queries with a single `$state` dependency
+  (`initialized`) work, while queries with two (`initialized` + `mode`) do not.
+
+
+  When the subscription `$effect` fails to fire, the query fetches data but the proxy object backing
+  the query result never updates. The component stays in its initial loading state until remount
+  (navigation away and back), at which point cached data is available immediately and the initial
+  render succeeds.
+
+
+  ## Fix
+
+
+  Move static mode guards from query `enabled` conditions into the API fetch functions. This matches
+  the pattern already used by `fetchTasks`, `fetchInbox`, `fetchPlans`, and other functions that
+  check `isStaticMode()` internally and return snapshot data.
+
+
+  Daemon-only fetch functions that currently lack static mode handling need guards added:
+  `fetchAgentStatus`, `fetchAgentDefinitions`, `fetchHooks`, `fetchSchedules`,
+  `fetchScheduleStatus`, `fetchRecentEvents`, `fetchHealth`, `fetchShadowStatus`,
+  `fetchCompositionConfigs`, `fetchCompositionActivations`.
+
+
+  After adding API-layer guards, remove `&& !isStaticMode()` from all query `enabled` conditions
+  across pages and components, leaving only `enabled: isProjectInitialized()`.
+
+
+  This satisfies @ui-data-freshness ac-6 (no daemon HTTP calls in static mode) and @gh-pages-export
+  ac-25 (all views with snapshot data render without a daemon connection) while eliminating the
+  problematic dual-$state dependency.
+
+
+  ## Scope
+
+
+  - 1 API file: add static mode fallbacks to ~10 daemon-only fetch functions
+
+  - 8 page/component files: simplify query `enabled` to `isProjectInitialized()` only
+
+  - 1 test file: update 3 assertions that check for `!isStaticMode()` in page source
 spec_ref: "@ui-data-freshness"
 meta_ref: null
 plan_ref: null
@@ -21,5 +81,84 @@ tags:
   - web-ui
   - mvp
 vcs_refs: []
+history:
+  - author: "@claude"
+    changes:
+      description:
+        new: >-
+          ## Problem
+
+
+          The dashboard, agents, and automation pages in the web UI do not render their content on
+          initial page load. The pages show loading skeletons or empty states indefinitely, even
+          though network requests complete without errors. Navigating away to a different page and
+          then back causes the content to appear correctly (served from TanStack Query cache).
+
+
+          The same issue affects settings, sessions/[id], and tasks/board — any page where a
+          TanStack Query `enabled` condition includes `!isStaticMode()`.
+
+
+          ## Root Cause
+
+
+          Pages that work (tasks, triage, inbox) gate their queries with only `enabled:
+          isProjectInitialized()`. Pages that break additionally include `!isStaticMode()`, which
+          reads the `mode` $state variable from the mode store.
+
+
+          TanStack Query v6 for Svelte 5 uses an internal `$effect` to subscribe to query observer
+          state changes. When components are created inside the layout's conditional render gate
+          (`{#if ready}`), this `$effect` does not reliably fire (known upstream issue:
+          TanStack/query PR #9810). The extra reactive dependency on `mode` exacerbates this —
+          queries with a single `$state` dependency (`initialized`) work, while queries with two
+          (`initialized` + `mode`) do not.
+
+
+          When the subscription `$effect` fails to fire, the query fetches data but the proxy object
+          backing the query result never updates. The component stays in its initial loading state
+          until remount (navigation away and back), at which point cached data is available
+          immediately and the initial render succeeds.
+
+
+          ## Fix
+
+
+          Move static mode guards from query `enabled` conditions into the API fetch functions. This
+          matches the pattern already used by `fetchTasks`, `fetchInbox`, `fetchPlans`, and other
+          functions that check `isStaticMode()` internally and return snapshot data.
+
+
+          Daemon-only fetch functions that currently lack static mode handling need guards added:
+          `fetchAgentStatus`, `fetchAgentDefinitions`, `fetchHooks`, `fetchSchedules`,
+          `fetchScheduleStatus`, `fetchRecentEvents`, `fetchHealth`, `fetchShadowStatus`,
+          `fetchCompositionConfigs`, `fetchCompositionActivations`.
+
+
+          After adding API-layer guards, remove `&& !isStaticMode()` from all query `enabled`
+          conditions across pages and components, leaving only `enabled: isProjectInitialized()`.
+
+
+          This satisfies @ui-data-freshness ac-6 (no daemon HTTP calls in static mode) and
+          @gh-pages-export ac-25 (all views with snapshot data render without a daemon connection)
+          while eliminating the problematic dual-$state dependency.
+
+
+          ## Scope
+
+
+          - 1 API file: add static mode fallbacks to ~10 daemon-only fetch functions
+
+          - 8 page/component files: simplify query `enabled` to `isProjectInitialized()` only
+
+          - 1 test file: update 3 assertions that check for `!isStaticMode()` in page source
+        previous: "Dashboard, agents, and automation pages don't show content on initial load but work after
+          navigating away and back. Root cause: isStaticMode() in query enabled conditions creates
+          an extra reactive dependency on the mode state that interferes with TanStack Query v6
+          effect-based subscription in Svelte 5. Fix: move static mode guards from query enabled
+          into the API fetch functions (matching the pattern fetchTasks/fetchInbox/fetchPlans
+          already use), so all queries use only enabled: isProjectInitialized()."
+    command: task-set
+    timestamp: 2026-03-23T23:53:38.256Z
 created_at: 2026-03-23T23:51:20.979Z
 todos: []
