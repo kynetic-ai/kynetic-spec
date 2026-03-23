@@ -28,3 +28,30 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-23T19:53:41.808Z
+  - _ulid: 01KME55RQF63P0V07PZ558MA5T
+    content: >-
+      Implementation complete. Added 14 new CLI flags to meta set for agents:
+
+
+      Session config (ac-13): --session-mode, --idle-grace-period-ms, --idle-timeout-ms with
+      validation and merge semantics.
+
+      Clear session (ac-14): --clear-session removes session object entirely.
+
+      Scalar fields (ac-15): --prompt-template, --automation (with enum validation),
+      --initial-response-timeout-seconds (merges into budget).
+
+      Array removal + tags (ac-16): --remove-capability, --remove-tool, --remove-convention,
+      --remove-skill, --add-tag, --remove-tag.
+
+
+      Also fixed meta agents JSON output to include prompt_template, automation, tags, and session
+      fields.
+
+
+      24 new E2E tests covering all flags, merge behavior, validation errors, and no-op removal. All
+      185 meta tests pass. Full suite: 7197 passed, 1 pre-existing flaky timeout
+      (agent-invocation-lifecycle unrelated).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-23T20:11:27.343Z
