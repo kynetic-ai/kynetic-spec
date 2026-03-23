@@ -13894,7 +13894,7 @@ runs:
     completed_at: 2026-03-20T01:33:41.195Z
   - _ulid: 01KMDQW3YKVQA3TMX1TPJ2PGV7
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -13910,7 +13910,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-23T16:19:16.859Z
-        completed_at: 2026-03-23T16:19:16.859Z
+        completed_at: 2026-03-23T16:19:28.360Z
+        notes: 1. Review-driven scope creep is invisible to dispatch — reviewers push tasks beyond their
+          spec boundary because they have no visibility into parallel in-flight work. The reviewer
+          for session-prompt-action asked for idle loop implementation without knowing
+          multi-turn-invocation was building the same thing. 2. No inter-task dependency inference
+          during plan derivation — depends_on was manually set for explicit sequencing but missed
+          implicit test dependencies (task B's integration tests can't pass without task A's
+          infrastructure). 3. Massive stale workflow run accumulation — 100+ active workflow runs
+          cluttering the list, making workflow next require explicit run ID every time.
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-23T16:19:28.360Z
+        completed_at: 2026-03-23T16:19:28.360Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-03-23T16:18:59.668Z
