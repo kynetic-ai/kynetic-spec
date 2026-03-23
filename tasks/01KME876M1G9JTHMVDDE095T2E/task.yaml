@@ -77,7 +77,7 @@ description: >-
 spec_ref: "@cli-agent-commands"
 meta_ref: null
 plan_ref: null
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -87,6 +87,7 @@ tags:
   - agent
   - bug
 vcs_refs: []
+session_id: 01KME8QSB4GMPVBCFNBFVNVXYK
 history:
   - author: "@claude"
     changes:
@@ -171,6 +172,20 @@ history:
           session, budget, skills, and tags when present."
     command: task-set
     timestamp: 2026-03-23T21:12:32.362Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KME8QSB4GMPVBCFNBFVNVXYK
+        previous: null
+      started_at:
+        new: 2026-03-23T21:14:04.604Z
+        previous: null
+    command: task-start
+    timestamp: 2026-03-23T21:14:04.604Z
 created_at: 2026-03-23T21:04:40.065Z
+started_at: 2026-03-23T21:14:04.604Z
 todos: []
 automation: eligible
