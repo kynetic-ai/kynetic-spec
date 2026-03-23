@@ -275,6 +275,9 @@ agents:
       - on: task.pending_review
     id: pr-reviewer
     name: PR Reviewer
+    session:
+      idle_grace_period_ms: 5000
+      mode: auto_close
     skills:
       - review
       - review-gates
@@ -308,6 +311,9 @@ agents:
         on: task.needs_work
     id: task-worker
     name: Task Worker
+    session:
+      idle_grace_period_ms: 5000
+      mode: auto_close
     skills:
       - task-work
       - work-gates
