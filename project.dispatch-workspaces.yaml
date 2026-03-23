@@ -19989,12 +19989,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-23T19:55:46.716Z
+      updated_at: 2026-03-23T19:57:16.299Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-23T19:55:46.716Z
+      updated_at: 2026-03-23T19:57:16.299Z
     integration:
       status: pending
       detail: null
@@ -20002,7 +20002,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 1ae197391bf2ab8ce652d0afdbc58f5eb426cede
-      updated_at: 2026-03-23T19:55:46.716Z
+      updated_at: 2026-03-23T19:57:16.299Z
     lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KME3X12V1YCBEDV21S5057YY"
@@ -20010,9 +20010,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-23T19:50:32.424Z
-      last_reconciled_at: 2026-03-23T19:55:46.716Z
+      last_reconciled_at: 2026-03-23T19:57:16.299Z
       created_at: 2026-03-23T19:50:25.252Z
-      updated_at: 2026-03-23T19:55:46.716Z
+      updated_at: 2026-03-23T19:57:16.299Z
     workspace_id: dispatch-workspace-01KME3X12V1YCBEDV21S5057YY
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -20021,5 +20021,5 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-meta-set-agent-expansion/01kme3x1
         head: 1ae197391bf2ab8ce652d0afdbc58f5eb426cede
-        last_seen_at: 2026-03-23T19:50:25.252Z
+        last_seen_at: 2026-03-23T19:57:16.299Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-meta-set-agent-expansion-01kme3x1
