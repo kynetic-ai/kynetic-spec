@@ -1,0 +1,131 @@
+_ulid: 01KME3X12V1YCBEDV21S5057YY
+slugs:
+  - task-meta-set-agent-expansion
+title: Expand kspec meta set agent with missing schema fields
+type: task
+description: >-
+  ## What
+
+
+  `kspec meta set` for agents is missing CLI flags for fields that exist on the `AgentSchema`. The
+  current command covers name, description, adapter, auto_approve,
+  capabilities/tools/conventions/skills (add only), dispatch rules (add/remove/clear), and
+  budget/concurrency scalars — but not session config, prompt_template, automation, tags, array
+  removal, initial_response_timeout_seconds, or session clearing.
+
+
+  ## Why
+
+
+  The multi-turn session lifecycle added `session.mode`, `session.idle_grace_period_ms`, and
+  `session.idle_timeout_ms` to agent definitions, but these can only be set via manual YAML editing.
+  The reflection hooks we've configured need session config (e.g. persistent mode, custom grace
+  periods) to be tunable per-agent. Beyond session config, other schema fields have accumulated
+  without corresponding CLI flags, creating an expanding gap between what the schema supports and
+  what the CLI exposes.
+
+
+  ## How
+
+
+  All changes are in `src/cli/commands/meta-crud.ts` (the `meta set` command handler) and
+  `src/parser/meta.ts` (the `updateMetaItem` function that persists changes).
+
+
+  ### 1. Session config flags — @agent-definition-schema ac-13
+
+  Add three flags to the `meta set` command:
+
+  - `--session-mode <mode>` — validates against SessionModeSchema (auto_close | persistent)
+
+  - `--idle-grace-period-ms <n>` — non-negative integer
+
+  - `--idle-timeout-ms <n>` — positive integer
+
+
+  These merge into the existing `session` object on the agent, preserving fields not specified. If
+  the agent has no session config yet, a new session object is created with only the specified
+  fields.
+
+
+  ### 2. Clear session — @agent-definition-schema ac-14
+
+  - `--clear-session` — removes the `session` key entirely from the agent definition, reverting to
+  runtime defaults (dispatch engine auto-detects grace period from hook presence)
+
+
+  ### 3. Additional scalar/enum fields — @agent-definition-schema ac-15
+
+  - `--prompt-template <text>` — string, sets `prompt_template`
+
+  - `--automation <status>` — validates against enum (eligible | ineligible)
+
+  - `--initial-response-timeout-seconds <n>` — positive integer, sets
+  `budget.initial_response_timeout_seconds` (merges into existing budget object like other budget
+  flags)
+
+
+  ### 4. Array removal and tag operations — @agent-definition-schema ac-16
+
+  Add `--remove-*` variants for existing add-only arrays:
+
+  - `--remove-capability <cap>`
+
+  - `--remove-tool <tool>`
+
+  - `--remove-convention <conv>`
+
+  - `--remove-skill <skill>`
+
+
+  Add tag operations (new array field, not currently exposed):
+
+  - `--add-tag <tag>`
+
+  - `--remove-tag <tag>`
+
+
+  Remove operations should fail gracefully if the item isn't in the array (no-op with a warning, not
+  an error).
+
+
+  ### Key files
+
+  - `src/cli/commands/meta-crud.ts` — command flag definitions and handler logic
+
+  - `src/parser/meta.ts` — updateMetaItem() persistence logic
+
+  - `tests/meta-crud.test.ts` — existing test file for meta CRUD
+
+
+  ### Testing
+
+  - Per-flag tests: each new flag updates the correct field and preserves others
+
+  - Session merge: setting one session field preserves others already set
+
+  - Clear session: removes session object entirely
+
+  - Remove from array: item removed; removing non-existent item is a no-op
+
+  - Tag add/remove: works like other array fields
+
+  - Validation: invalid enum values, negative numbers, etc. produce clear errors
+
+  - Batch support: verify new flags work via kspec batch with meta set command
+spec_ref: "@agent-definition-schema"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - cli
+  - agent
+  - feature
+vcs_refs: []
+created_at: 2026-03-23T19:49:12.411Z
+todos: []
+automation: eligible

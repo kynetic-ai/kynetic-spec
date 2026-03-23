@@ -21839,3 +21839,21 @@
   submitted_at: 2026-03-23T18:23:04.812Z
   completed_at: 2026-03-23T18:33:15.449Z
   automation: eligible
+- _ulid: 01KME3X12V1YCBEDV21S5057YY
+  slugs:
+    - task-meta-set-agent-expansion
+  title: Expand kspec meta set agent with missing schema fields
+  type: task
+  spec_ref: "@agent-definition-schema"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - cli
+    - agent
+    - feature
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-23T19:49:12.411Z
+  automation: eligible
