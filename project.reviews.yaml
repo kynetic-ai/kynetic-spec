@@ -48217,3 +48217,29 @@ reviews:
     created_at: 2026-03-23T20:13:09.022Z
     updated_at: 2026-03-23T20:24:28.822Z
     notes: []
+  - _ulid: 01KME9P0SM4RT24W116YQ22ZY8
+    slugs: []
+    title: Review task-agent-list-json-fields (cycle 1)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KME9P0SKDWRHQPS741W1MS10
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-23T21:30:14.195Z
+    examined_commit: ae4a1eecdbeb1a3cf0d00e0029d82050a04e5644
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@task-agent-list-json-fields"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-23T21:30:14.196Z
+    updated_at: null
+    notes: []
