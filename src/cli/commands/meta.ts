@@ -39,11 +39,13 @@ import {
 import { resolveTaskDataManager } from "../../parser/task-data-manager.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import {
+  AgentDispatchAutomationFilterSchema,
   AgentDispatchEventSchema,
   type AgentDispatchRule,
   AgentDispatchRuleSchema,
   normalizeRefInput,
   type ObservationType,
+  SessionModeSchema,
   type WorkflowStep,
   WorkflowStepSchema,
 } from "../../schema/index.js";
@@ -518,6 +520,10 @@ export function registerMetaCommands(program: Command): void {
             budget: agent.budget,
             concurrency: agent.concurrency ?? { max_concurrent: 1 },
             auto_approve: agent.auto_approve ?? false,
+            prompt_template: agent.prompt_template,
+            automation: agent.automation,
+            tags: agent.tags,
+            session: agent.session,
           })),
           // AC-agent-1: Table output with ID, Name, Capabilities
           () => formatAgents(agents),
@@ -1567,6 +1573,19 @@ Examples:
     .option("--max-retries <n>", "Set maximum retry attempts on failure (for agents)")
     .option("--timeout-minutes <n>", "Set timeout minutes budget (for agents)")
     .option("--max-concurrent <n>", "Set max concurrent tasks (for agents)")
+    .option("--session-mode <mode>", "Set session mode: auto_close or persistent (for agents)")
+    .option("--idle-grace-period-ms <n>", "Set session idle grace period in ms (for agents)")
+    .option("--idle-timeout-ms <n>", "Set session idle timeout in ms (for agents)")
+    .option("--clear-session", "Remove session configuration entirely (for agents)")
+    .option("--prompt-template <text>", "Set prompt template (for agents)")
+    .option("--automation <status>", "Set automation eligibility: eligible or ineligible (for agents)")
+    .option("--initial-response-timeout-seconds <n>", "Set initial response timeout in seconds (for agents)")
+    .option("--remove-capability <cap>", "Remove capability (for agents)")
+    .option("--remove-tool <tool>", "Remove tool (for agents)")
+    .option("--remove-convention <conv>", "Remove convention reference (for agents)")
+    .option("--remove-skill <skill>", "Remove skill slug (for agents)")
+    .option("--add-tag <tag>", "Add tag (for agents)")
+    .option("--remove-tag <tag>", "Remove tag (for agents)")
     .option("--add-rule <rule>", "Add rule (for conventions)")
     .action(async (ref: string, options) => {
       try {
@@ -1668,6 +1687,122 @@ Examples:
               options.maxConcurrent,
               10,
             );
+          }
+          // AC: @agent-definition-schema ac-13 — session config flags
+          if (
+            options.sessionMode !== undefined ||
+            options.idleGracePeriodMs !== undefined ||
+            options.idleTimeoutMs !== undefined
+          ) {
+            if (!item.session)
+              item.session = { mode: "auto_close" as const };
+            const session = item.session;
+            if (options.sessionMode !== undefined) {
+              const parsed = SessionModeSchema.safeParse(options.sessionMode);
+              if (!parsed.success) {
+                error(
+                  `Invalid session mode: ${options.sessionMode}. Valid values: ${SessionModeSchema.options.join(", ")}`,
+                );
+                process.exit(EXIT_CODES.ERROR);
+              }
+              session.mode = parsed.data;
+            }
+            if (options.idleGracePeriodMs !== undefined) {
+              const result = parseIntOption(options.idleGracePeriodMs, {
+                min: 0,
+                max: Number.MAX_SAFE_INTEGER,
+                name: "idle-grace-period-ms",
+              });
+              if (!result.ok) {
+                error(result.error);
+                process.exit(EXIT_CODES.ERROR);
+              }
+              session.idle_grace_period_ms = result.value;
+            }
+            if (options.idleTimeoutMs !== undefined) {
+              const result = parseIntOption(options.idleTimeoutMs, {
+                min: 1,
+                max: Number.MAX_SAFE_INTEGER,
+                name: "idle-timeout-ms",
+              });
+              if (!result.ok) {
+                error(result.error);
+                process.exit(EXIT_CODES.ERROR);
+              }
+              session.idle_timeout_ms = result.value;
+            }
+          }
+          // AC: @agent-definition-schema ac-14 — clear session
+          if (options.clearSession) {
+            delete (item as Record<string, unknown>).session;
+          }
+          // AC: @agent-definition-schema ac-15 — prompt_template, automation, initial_response_timeout_seconds
+          if (options.promptTemplate !== undefined) {
+            item.prompt_template = options.promptTemplate;
+          }
+          if (options.automation !== undefined) {
+            const parsed = AgentDispatchAutomationFilterSchema.safeParse(
+              options.automation,
+            );
+            if (!parsed.success) {
+              error(
+                `Invalid automation status: ${options.automation}. Valid values: ${AgentDispatchAutomationFilterSchema.options.join(", ")}`,
+              );
+              process.exit(EXIT_CODES.ERROR);
+            }
+            item.automation = parsed.data;
+          }
+          if (options.initialResponseTimeoutSeconds !== undefined) {
+            if (!item.budget) item.budget = {};
+            const result = parseIntOption(
+              options.initialResponseTimeoutSeconds,
+              {
+                min: 1,
+                max: Number.MAX_SAFE_INTEGER,
+                name: "initial-response-timeout-seconds",
+              },
+            );
+            if (!result.ok) {
+              error(result.error);
+              process.exit(EXIT_CODES.ERROR);
+            }
+            item.budget.initial_response_timeout_seconds = result.value;
+          }
+          // AC: @agent-definition-schema ac-16 — array removal and tag operations
+          if (options.removeCapability) {
+            item.capabilities = item.capabilities.filter(
+              (c: string) => c !== options.removeCapability,
+            );
+          }
+          if (options.removeTool) {
+            item.tools = item.tools.filter(
+              (t: string) => t !== options.removeTool,
+            );
+          }
+          if (options.removeConvention) {
+            item.conventions = item.conventions.filter(
+              (c: string) => c !== options.removeConvention,
+            );
+          }
+          if (options.removeSkill) {
+            if (item.skills) {
+              item.skills = item.skills.filter(
+                (s: string) => s !== options.removeSkill,
+              );
+            }
+          }
+          if (options.addTag) {
+            if (!item.tags) item.tags = [];
+            if (!item.tags.includes(options.addTag)) {
+              item.tags.push(options.addTag);
+            }
+          }
+          if (options.removeTag) {
+            if (item.tags) {
+              item.tags = item.tags.filter(
+                (t: string) => t !== options.removeTag,
+              );
+            }
           }
         } else if (itemType === "workflow") {
           const item = found as Workflow;

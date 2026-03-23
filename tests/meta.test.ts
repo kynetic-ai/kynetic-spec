@@ -3183,6 +3183,261 @@ describe('Integration: agent definition schema', () => {
     expect(testAgent?.concurrency?.max_concurrent).toBe(1);
   });
 
+  // AC: @agent-definition-schema ac-13 — session mode via meta set
+  it('should set session mode on agent', () => {
+    kspecRun('meta add agent --id session-agent --name "Session Agent"', tempDir);
+    kspecRun('meta set session-agent --session-mode persistent', tempDir);
+
+    const agents = kspecJson<Array<{ id: string; session?: { mode: string } }>>('meta agents', tempDir);
+    const agent = agents.find(a => a.id === 'session-agent');
+    expect(agent?.session?.mode).toBe('persistent');
+  });
+
+  // AC: @agent-definition-schema ac-13 — idle grace period via meta set
+  it('should set session idle grace period on agent', () => {
+    kspecRun('meta add agent --id grace-agent --name "Grace Agent"', tempDir);
+    kspecRun('meta set grace-agent --idle-grace-period-ms 5000', tempDir);
+
+    const agents = kspecJson<Array<{ id: string; session?: { mode: string; idle_grace_period_ms?: number } }>>('meta agents', tempDir);
+    const agent = agents.find(a => a.id === 'grace-agent');
+    expect(agent?.session?.idle_grace_period_ms).toBe(5000);
+    // Default mode should be set when session didn't exist
+    expect(agent?.session?.mode).toBe('auto_close');
+  });
+
+  // AC: @agent-definition-schema ac-13 — idle timeout via meta set
+  it('should set session idle timeout on agent', () => {
+    kspecRun('meta add agent --id timeout-agent --name "Timeout Agent"', tempDir);
+    kspecRun('meta set timeout-agent --idle-timeout-ms 60000', tempDir);
+
+    const agents = kspecJson<Array<{ id: string; session?: { mode: string; idle_timeout_ms?: number } }>>('meta agents', tempDir);
+    const agent = agents.find(a => a.id === 'timeout-agent');
+    expect(agent?.session?.idle_timeout_ms).toBe(60000);
+  });
+
+  // AC: @agent-definition-schema ac-13 — session merge preserves existing fields
+  it('should merge session fields preserving existing values', () => {
+    kspecRun('meta add agent --id merge-session-agent --name "Merge Session Agent"', tempDir);
+    kspecRun('meta set merge-session-agent --session-mode persistent --idle-grace-period-ms 3000', tempDir);
+    // Now update only the timeout — mode and grace period should be preserved
+    kspecRun('meta set merge-session-agent --idle-timeout-ms 120000', tempDir);
+
+    const agents = kspecJson<Array<{ id: string; session?: { mode: string; idle_grace_period_ms?: number; idle_timeout_ms?: number } }>>('meta agents', tempDir);
+    const agent = agents.find(a => a.id === 'merge-session-agent');
+    expect(agent?.session?.mode).toBe('persistent');
+    expect(agent?.session?.idle_grace_period_ms).toBe(3000);
+    expect(agent?.session?.idle_timeout_ms).toBe(120000);
+  });
+
+  // AC: @agent-definition-schema ac-13 — invalid session mode rejected
+  it('should reject invalid session mode', () => {
+    kspecRun('meta add agent --id bad-session-agent --name "Bad Session Agent"', tempDir);
+    const result = kspecRun('meta set bad-session-agent --session-mode invalid', tempDir, { expectFail: true });
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stderr).toContain('Invalid session mode');
+  });
+
+  // AC: @agent-definition-schema ac-13 — idle grace period allows zero (non-negative)
+  it('should allow zero for idle grace period', () => {
+    kspecRun('meta add agent --id zero-grace-agent --name "Zero Grace Agent"', tempDir);
+    kspecRun('meta set zero-grace-agent --idle-grace-period-ms 0', tempDir);
+
+    const agents = kspecJson<Array<{ id: string; session?: { idle_grace_period_ms?: number } }>>('meta agents', tempDir);
+    const agent = agents.find(a => a.id === 'zero-grace-agent');
+    expect(agent?.session?.idle_grace_period_ms).toBe(0);
+  });
+
+  // AC: @agent-definition-schema ac-13 — idle timeout rejects zero (must be positive)
+  it('should reject zero for idle timeout', () => {
+    kspecRun('meta add agent --id zero-timeout-agent --name "Zero Timeout Agent"', tempDir);
+    const result = kspecRun('meta set zero-timeout-agent --idle-timeout-ms 0', tempDir, { expectFail: true });
+    expect(result.exitCode).not.toBe(0);
+  });
+
+  // AC: @agent-definition-schema ac-14 — clear session removes entire session config
+  it('should clear session configuration entirely', () => {
+    kspecRun('meta add agent --id clear-session-agent --name "Clear Session Agent"', tempDir);
+    kspecRun('meta set clear-session-agent --session-mode persistent --idle-timeout-ms 30000', tempDir);
+
+    // Verify session is set
+    let agents = kspecJson<Array<{ id: string; session?: { mode: string } }>>('meta agents', tempDir);
+    let agent = agents.find(a => a.id === 'clear-session-agent');
+    expect(agent?.session?.mode).toBe('persistent');
+
+    // Clear session
+    kspecRun('meta set clear-session-agent --clear-session', tempDir);
+
+    agents = kspecJson<Array<{ id: string; session?: unknown }>>('meta agents', tempDir);
+    agent = agents.find(a => a.id === 'clear-session-agent');
+    expect(agent?.session).toBeUndefined();
+  });
+
+  // AC: @agent-definition-schema ac-15 — prompt template via meta set
+  it('should set prompt template on agent', () => {
+    kspecRun('meta add agent --id template-agent --name "Template Agent"', tempDir);
+    kspecRun('meta set template-agent --prompt-template "You are a helpful assistant."', tempDir);
+
+    const agents = kspecJson<Array<{ id: string; prompt_template?: string }>>('meta agents', tempDir);
+    const agent = agents.find(a => a.id === 'template-agent');
+    expect(agent?.prompt_template).toBe('You are a helpful assistant.');
+  });
+
+  // AC: @agent-definition-schema ac-15 — automation eligibility via meta set
+  it('should set automation eligibility on agent', () => {
+    kspecRun('meta add agent --id auto-agent --name "Auto Agent"', tempDir);
+    kspecRun('meta set auto-agent --automation eligible', tempDir);
+
+    const agents = kspecJson<Array<{ id: string; automation?: string }>>('meta agents', tempDir);
+    const agent = agents.find(a => a.id === 'auto-agent');
+    expect(agent?.automation).toBe('eligible');
+  });
+
+  // AC: @agent-definition-schema ac-15 — invalid automation value rejected
+  it('should reject invalid automation status', () => {
+    kspecRun('meta add agent --id bad-auto-agent --name "Bad Auto Agent"', tempDir);
+    const result = kspecRun('meta set bad-auto-agent --automation invalid', tempDir, { expectFail: true });
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stderr).toContain('Invalid automation status');
+  });
+
+  // AC: @agent-definition-schema ac-15 — initial response timeout via meta set
+  it('should set initial response timeout seconds on agent', () => {
+    kspecRun('meta add agent --id irt-agent --name "IRT Agent"', tempDir);
+    kspecRun('meta set irt-agent --initial-response-timeout-seconds 300', tempDir);
+
+    const agents = kspecJson<Array<{ id: string; budget?: { initial_response_timeout_seconds?: number } }>>('meta agents', tempDir);
+    const agent = agents.find(a => a.id === 'irt-agent');
+    expect(agent?.budget?.initial_response_timeout_seconds).toBe(300);
+  });
+
+  // AC: @agent-definition-schema ac-15 — initial response timeout merges with existing budget
+  it('should merge initial response timeout into existing budget', () => {
+    kspecRun('meta add agent --id budget-merge-agent --name "Budget Merge Agent"', tempDir);
+    kspecRun('meta set budget-merge-agent --max-tasks 5 --timeout-minutes 30', tempDir);
+    kspecRun('meta set budget-merge-agent --initial-response-timeout-seconds 120', tempDir);
+
+    const agents = kspecJson<Array<{ id: string; budget?: { max_tasks?: number; timeout_minutes?: number; initial_response_timeout_seconds?: number } }>>('meta agents', tempDir);
+    const agent = agents.find(a => a.id === 'budget-merge-agent');
+    expect(agent?.budget?.max_tasks).toBe(5);
+    expect(agent?.budget?.timeout_minutes).toBe(30);
+    expect(agent?.budget?.initial_response_timeout_seconds).toBe(120);
+  });
+
+  // AC: @agent-definition-schema ac-15 — initial response timeout rejects zero
+  it('should reject zero for initial response timeout', () => {
+    kspecRun('meta add agent --id bad-irt-agent --name "Bad IRT Agent"', tempDir);
+    const result = kspecRun('meta set bad-irt-agent --initial-response-timeout-seconds 0', tempDir, { expectFail: true });
+    expect(result.exitCode).not.toBe(0);
+  });
+
+  // AC: @agent-definition-schema ac-16 — remove capability from agent
+  it('should remove capability from agent', () => {
+    kspecRun('meta add agent --id rm-cap-agent --name "RM Cap Agent" --capability code --capability review', tempDir);
+
+    kspecRun('meta set rm-cap-agent --remove-capability review', tempDir);
+
+    const agents = kspecJson<Array<{ id: string; capabilities: string[] }>>('meta agents', tempDir);
+    const agent = agents.find(a => a.id === 'rm-cap-agent');
+    expect(agent?.capabilities).toEqual(['code']);
+  });
+
+  // AC: @agent-definition-schema ac-16 — remove non-existent capability is no-op
+  it('should be a no-op when removing non-existent capability', () => {
+    kspecRun('meta add agent --id noop-cap-agent --name "NoOp Cap Agent" --capability code', tempDir);
+
+    const result = kspecRun('meta set noop-cap-agent --remove-capability nonexistent', tempDir);
+    expect(result.exitCode).toBe(0);
+
+    const agents = kspecJson<Array<{ id: string; capabilities: string[] }>>('meta agents', tempDir);
+    const agent = agents.find(a => a.id === 'noop-cap-agent');
+    expect(agent?.capabilities).toEqual(['code']);
+  });
+
+  // AC: @agent-definition-schema ac-16 — remove tool from agent
+  it('should remove tool from agent', () => {
+    kspecRun('meta add agent --id rm-tool-agent --name "RM Tool Agent" --tool bash --tool read', tempDir);
+
+    kspecRun('meta set rm-tool-agent --remove-tool bash', tempDir);
+
+    const agents = kspecJson<Array<{ id: string; tools: string[] }>>('meta agents', tempDir);
+    const agent = agents.find(a => a.id === 'rm-tool-agent');
+    expect(agent?.tools).toEqual(['read']);
+  });
+
+  // AC: @agent-definition-schema ac-16 — remove convention from agent
+  it('should remove convention from agent', () => {
+    kspecRun('meta add agent --id rm-conv-agent --name "RM Conv Agent"', tempDir);
+    kspecRun('meta set rm-conv-agent --add-convention commits', tempDir);
+    kspecRun('meta set rm-conv-agent --add-convention testing', tempDir);
+
+    kspecRun('meta set rm-conv-agent --remove-convention commits', tempDir);
+
+    const agents = kspecJson<Array<{ id: string; conventions: string[] }>>('meta agents', tempDir);
+    const agent = agents.find(a => a.id === 'rm-conv-agent');
+    expect(agent?.conventions).toEqual(['testing']);
+  });
+
+  // AC: @agent-definition-schema ac-16 — remove skill from agent
+  it('should remove skill from agent', () => {
+    kspecRun('meta add agent --id rm-skill-agent --name "RM Skill Agent"', tempDir);
+    kspecRun('meta set rm-skill-agent --add-skill task-work', tempDir);
+    kspecRun('meta set rm-skill-agent --add-skill review', tempDir);
+
+    kspecRun('meta set rm-skill-agent --remove-skill task-work', tempDir);
+
+    const agents = kspecJson<Array<{ id: string; skills: string[] }>>('meta agents', tempDir);
+    const agent = agents.find(a => a.id === 'rm-skill-agent');
+    expect(agent?.skills).toEqual(['review']);
+  });
+
+  // AC: @agent-definition-schema ac-16 — add tag to agent
+  it('should add tag to agent', () => {
+    kspecRun('meta add agent --id tag-agent --name "Tag Agent"', tempDir);
+    kspecRun('meta set tag-agent --add-tag worker', tempDir);
+    kspecRun('meta set tag-agent --add-tag reviewer', tempDir);
+
+    const agents = kspecJson<Array<{ id: string; tags?: string[] }>>('meta agents', tempDir);
+    const agent = agents.find(a => a.id === 'tag-agent');
+    expect(agent?.tags).toEqual(['worker', 'reviewer']);
+  });
+
+  // AC: @agent-definition-schema ac-16 — add duplicate tag is no-op
+  it('should not duplicate tags when adding existing tag', () => {
+    kspecRun('meta add agent --id dup-tag-agent --name "Dup Tag Agent"', tempDir);
+    kspecRun('meta set dup-tag-agent --add-tag worker', tempDir);
+    kspecRun('meta set dup-tag-agent --add-tag worker', tempDir);
+
+    const agents = kspecJson<Array<{ id: string; tags?: string[] }>>('meta agents', tempDir);
+    const agent = agents.find(a => a.id === 'dup-tag-agent');
+    expect(agent?.tags).toEqual(['worker']);
+  });
+
+  // AC: @agent-definition-schema ac-16 — remove tag from agent
+  it('should remove tag from agent', () => {
+    kspecRun('meta add agent --id rm-tag-agent --name "RM Tag Agent"', tempDir);
+    kspecRun('meta set rm-tag-agent --add-tag worker', tempDir);
+    kspecRun('meta set rm-tag-agent --add-tag reviewer', tempDir);
+
+    kspecRun('meta set rm-tag-agent --remove-tag worker', tempDir);
+
+    const agents = kspecJson<Array<{ id: string; tags?: string[] }>>('meta agents', tempDir);
+    const agent = agents.find(a => a.id === 'rm-tag-agent');
+    expect(agent?.tags).toEqual(['reviewer']);
+  });
+
+  // AC: @agent-definition-schema ac-16 — remove non-existent tag is no-op
+  it('should be a no-op when removing non-existent tag', () => {
+    kspecRun('meta add agent --id noop-tag-agent --name "NoOp Tag Agent"', tempDir);
+    kspecRun('meta set noop-tag-agent --add-tag worker', tempDir);
+
+    const result = kspecRun('meta set noop-tag-agent --remove-tag nonexistent', tempDir);
+    expect(result.exitCode).toBe(0);
+
+    const agents = kspecJson<Array<{ id: string; tags?: string[] }>>('meta agents', tempDir);
+    const agent = agents.find(a => a.id === 'noop-tag-agent');
+    expect(agent?.tags).toEqual(['worker']);
+  });
+
   // N/A annotations for trait ACs not applicable to this schema extension feature:
   // AC: @trait-json-output ac-3 — N/A: agent schema tests don't exercise error paths in JSON mode
   // AC: @trait-json-output ac-4 — N/A: agent definitions use string IDs, not @ references
