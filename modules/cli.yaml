@@ -9489,7 +9489,7 @@ features:
       One-shot invocations use the same session model as dispatched agents.
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
     depends_on: []
     implements: []
     relates_to: []
