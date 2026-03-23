@@ -1035,6 +1035,10 @@ export class ActionExecutor {
             // Fall back to default adapter if meta load fails
             adapterId = "claude-agent-acp";
           }
+        } else {
+          // No agent_id in event context — default to claude-agent-acp
+          // so that {skill:...} tokens are still rewritten
+          adapterId = "claude-agent-acp";
         }
 
         // AC: @session-prompt-action ac-8 — resolve skill content and append

@@ -940,6 +940,8 @@ describe("ActionExecutor — session_prompt skills resolution", () => {
     // Should succeed — skill content resolved, adapter defaults to claude-agent-acp
     expect(run.status).toBe("completed");
     expect(handle.prompts[0]).toContain("# Reflection Skill");
+    // AC: @session-prompt-action ac-9 — {skill:task-work} should be rewritten even without agent_id
+    expect(handle.prompts[0]).not.toContain("{skill:task-work}");
 
     initSpy.mockRestore();
   });
