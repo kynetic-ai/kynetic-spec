@@ -48106,3 +48106,29 @@ reviews:
     created_at: 2026-03-23T18:25:02.175Z
     updated_at: 2026-03-23T18:31:32.151Z
     notes: []
+  - _ulid: 01KME58W0Y8TVRD4B4Y3KQ78A0
+    slugs: []
+    title: Review task-meta-set-agent-expansion (cycle 1)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KME58W0XJR9JPJNS8P0VXD3H
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-23T20:13:09.021Z
+    examined_commit: bcde67c0f2d262b86615e499afde7c7c054ee10e
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KME3X12V1YCBEDV21S5057YY"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-23T20:13:09.022Z
+    updated_at: null
+    notes: []
