@@ -280,19 +280,25 @@ When inheriting a `needs_work` task, the review feedback lives in kspec review r
 
 3. **Address all threads** — Blockers must be resolved before re-approval. Questions and nits are non-blocking but should be addressed. Fix everything the reviewer found in one pass — don't fix one blocker and resubmit hoping the rest will pass.
 
-4. **Push fixes** — Commit with descriptive message
+4. **Reply and resolve threads** — For each thread you addressed, reply explaining what you did, then resolve the thread. This gives the next reviewer clear signal of what was addressed and lets them verify the resolution rather than re-discovering the original issue.
+   ```bash
+   kspec review reply @review-ref --thread <ulid> --body "Fixed: replaced mutex with FIFO queue, added 3-writer test"
+   kspec review resolve @review-ref --thread <ulid>
+   ```
+
+5. **Push fixes** — Commit with descriptive message
    ```bash
    git add <files> && git commit -m "fix: address review feedback
 
    Task: @task-slug"
    ```
 
-5. **Note what changed** — Before resubmitting, add a task note summarizing what was fixed and why. This note becomes a key entry in the activity timeline and gives the next reviewer context on what changed since the prior review.
+6. **Note what changed** — Before resubmitting, add a task note summarizing what was fixed and why. This note becomes a key entry in the activity timeline and gives the next reviewer context on what changed since the prior review.
    ```bash
    kspec task note @ref "Fix cycle N: addressed all review threads. Fixed X (blocker), Y (nit). Also re-verified ACs 1-5 against implementation."
    ```
 
-6. **Re-submit** — `kspec task submit @ref` (back to pending_review, reviewer creates a new review record)
+7. **Re-submit** — `kspec task submit @ref` (back to pending_review, reviewer creates a new review record)
 
 You do NOT merge in a fix cycle. The reviewer handles merge decisions.
 

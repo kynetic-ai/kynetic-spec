@@ -64,6 +64,8 @@ grep -rn "AC: @trait-" tests/               # Trait AC annotations
 
 **Complete ALL checks before recording any verdict.** Do not stop at the first finding. Each unrecorded finding becomes a future fix cycle that could have been avoided. Record every issue you find, then submit one verdict covering all of them.
 
+**Verify findings are real, not invented.** Every finding must be backed by evidence you can demonstrate — code you read, tests you ran, commands you executed. Run the test suite. If an AC implies edge case behavior (concurrency, boundary values, error paths), check whether tests actually cover those cases — missing edge case coverage is a must-fix. Do not emit findings based solely on reading code and reasoning about it; execute what you can to confirm.
+
 ---
 
 ## AC Coverage Verification
@@ -344,6 +346,8 @@ kspec review add --title "Review task-foo (cycle 2)" \
 kspec review for-task @task-foo  # Shows all reviews, current + historical
 ```
 
+When reviewing a fix cycle, read the prior review's threads. If the worker resolved threads, verify their resolutions are correct — a resolved thread is a claim that the issue was fixed, not proof. Reopen threads where the fix is insufficient.
+
 If dispatch workspace metadata is available, the new review's orientation will include a diff summary showing what changed since the prior review's examined commit.
 
 **Subject refresh** is still available for within-cycle updates (e.g., reviewer pushes a minor fix before verdicting):
@@ -429,7 +433,7 @@ kspec task submit @ref  # Back to pending_review — reviewer creates a new revi
    - Code reviews: `--path`, `--line-start`, `--line-end`, `--commit` to pin findings to exact source locations
    - Plan/spec reviews: `--section`, `--field`, `--anchor-ref` to pin findings to specific ACs or fields
 6. **Record checks** — `kspec review check` for test/lint results
-7. **Verify completeness** — Before submitting a verdict, confirm you have searched all categories and recorded every finding. A review with one blocker and an immediate verdict is almost always incomplete. Each fix cycle costs time — find everything in one pass.
+7. **Verify completeness** — Before submitting a verdict, confirm you have searched all categories, recorded every finding, and verified each finding with evidence. A review with one blocker and an immediate verdict is almost always incomplete. Each fix cycle costs time — find everything in one pass. Equally, do not invent findings — every issue must be backed by evidence you ran or read, not just suspicion.
 8. **Submit verdict** — `kspec review verdict` (approve or request_changes — auto-closes the review)
 
 ---
