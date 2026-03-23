@@ -29,3 +29,33 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-23T21:16:09.249Z
+  - _ulid: 01KME96CTT8HX0SZW8631JMP1Z
+    content: >-
+      Implementation complete. Changes:
+
+
+      1. JSON output (agent.ts lines 212-228): Added conditional fields for session, budget, skills,
+      tags, automation, and prompt_template. Fields are only included when they have values
+      (non-null, non-empty arrays).
+
+
+      2. Human-readable output (agent.ts lines 240-254): Added conditional display lines after
+      concurrency for session (mode, grace, timeout), budget (max_tasks, timeout, max_retries),
+      skills (comma-separated), and tags (comma-separated). Lines only appear when the agent has
+      these fields set.
+
+
+      3. Tests (12 new tests in cli-agent-commands.test.ts):
+         - JSON: session, budget, skills, tags, automation fields present when set
+         - JSON: optional fields omitted when not set
+         - JSON: full agent with all fields (trait-json-output ac-2 compliance)
+         - Human-readable: session, budget, skills, tags display when present
+         - Human-readable: no output clutter when fields not set
+
+      4. Updated setupProjectWithAgents helper to pass through new fields.
+
+
+      All 7210 tests pass, no regressions.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-23T21:21:42.234Z
