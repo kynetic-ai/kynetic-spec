@@ -47978,7 +47978,17 @@ reviews:
     slugs: []
     title: Review task-session-prompt-skills (cycle 2)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: All 7175 tests passed (310 test files, 3 skipped). No regressions.
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-23T18:30:41.136Z
+        completed_at: 2026-03-23T18:30:41.136Z
     events:
       - _ulid: 01KMDZ2X6Z0MXR7CY7B254CMYP
         actor: "@claude"
@@ -47993,6 +48003,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-23T18:25:10.707Z
+      - _ulid: 01KMDZD8K4S4YFMTBGBDV3BABY
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-23T18:30:41.508Z
     examined_commit: 3b7c7c8513228a4bd506f9656d0d6b7f8e1b535b
     external_links: []
     lifecycle_state: open
@@ -48005,5 +48022,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-23T18:25:02.175Z
-    updated_at: 2026-03-23T18:25:10.339Z
+    updated_at: 2026-03-23T18:30:41.136Z
     notes: []
