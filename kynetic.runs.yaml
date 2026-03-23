@@ -13961,9 +13961,22 @@ runs:
     completed_at: 2026-03-23T16:22:21.682Z
   - _ulid: 01KME98195PKSM1DPKATMPC22N
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-03-23T21:22:35.942Z
+        completed_at: 2026-03-23T21:23:03.896Z
+        notes: "Session: Fixed agent list JSON/human-readable output (task @task-agent-list-json-fields).
+          What worked well: (1) Task description was very detailed with exact file paths and
+          formatting examples — made implementation straightforward. (2) Existing test patterns
+          (writeProject helper, CLI E2E approach) were easy to follow. (3) Single-file change with
+          clear scope — no architectural decisions needed."
+      - status: completed
+        step_index: 1
+        started_at: 2026-03-23T21:23:03.896Z
+        completed_at: 2026-03-23T21:23:03.896Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-23T21:22:35.942Z
