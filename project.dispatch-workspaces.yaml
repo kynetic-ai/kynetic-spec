@@ -20051,7 +20051,7 @@ workspaces:
         head: bcde67c0f2d262b86615e499afde7c7c054ee10e
         last_seen_at: 2026-03-23T20:12:14.958Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-meta-set-agent-expansion-01kme3x1
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: a378987c30a659df68c0dbe60834ee97624fb9a8
     bootstrap:
       status: succeeded
@@ -20161,7 +20161,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-23T21:24:07.690Z
+      updated_at: 2026-03-23T21:24:14.954Z
     integration:
       status: pending
       detail: null
@@ -20176,10 +20176,10 @@ workspaces:
     task_slug: task-agent-list-json-fields
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-23T21:13:44.001Z
-      last_reconciled_at: 2026-03-23T21:24:07.690Z
+      last_active_at: 2026-03-23T21:24:14.954Z
+      last_reconciled_at: 2026-03-23T21:24:14.954Z
       created_at: 2026-03-23T21:13:38.182Z
-      updated_at: 2026-03-23T21:24:12.269Z
+      updated_at: 2026-03-23T21:24:14.954Z
     workspace_id: dispatch-workspace-01KME876M1G9JTHMVDDE095T2E
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
