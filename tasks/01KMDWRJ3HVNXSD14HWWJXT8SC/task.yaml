@@ -1,0 +1,104 @@
+_ulid: 01KMDWRJ3HVNXSD14HWWJXT8SC
+slugs:
+  - task-session-prompt-skills
+title: Add skill support to session_prompt actions
+type: task
+description: >-
+  ## What
+
+
+  Session prompt actions (used by hooks to deliver follow-up prompts to idle sessions) currently
+  only support literal text and template variable interpolation. They cannot include skill content
+  or resolve cross-skill references. This means follow-up turns (e.g. a reflection prompt after a
+  worker completes a turn) get a raw text prompt with no access to skill instructions that the
+  initial invocation prompt receives automatically.
+
+
+  ## Why
+
+
+  The multi-turn session lifecycle enables hooks on session.idle to inject prompts into a live
+  session. A key use case is sending a reflection skill prompt to a task worker after their turn
+  completes. Without skill support, the prompt is just plain text — it cannot leverage the
+  structured guidance that skills provide. The initial invocation prompt already resolves skills via
+  buildPromptWithSkills() (AC: @agent-invocation-lifecycle ac-7, ac-10), but session_prompt actions
+  bypass that entirely.
+
+
+  ## How
+
+
+  Three changes, all scoped to the session_prompt action path:
+
+
+  ### 1. Schema — @session-prompt-action-schema ac-5
+
+  Add an optional `skills` field to SessionPromptActionBaseSchema in src/schema/action.ts:
+
+  - `skills: z.array(z.string()).optional()`
+
+  - Follows the same pattern as agent definition `skills` field
+
+  - Existing actions without skills continue to work unchanged
+
+
+  ### 2. Skill content resolution — @session-prompt-action ac-8
+
+  In ActionExecutor.executeSessionPrompt() (src/agent-runtime/action-executor.ts), after resolving
+  the prompt text via resolveTemplateVars(), call buildPromptWithSkills() when action.skills is
+  non-empty:
+
+  - `buildPromptWithSkills({ basePrompt: resolvedPrompt, skillIds: action.skills, specDir, adapterId
+  })`
+
+  - specDir: derivable from projectDir (already available on ActionExecutor) via initContext()
+
+  - adapterId: needs to be resolved from the session's agent definition. The session.idle event
+  payload includes agent_id — look up the agent to get its adapter. Options:
+    - Add adapter_id to ActionEventContext (populated by dispatch when emitting session.idle)
+    - Or look up agent definition from meta context using agent_id from event context
+  - buildPromptWithSkills already handles empty skill lists (returns basePrompt unchanged) so the
+  no-skills path is a no-op
+
+
+  ### 3. Skill reference rewriting — @session-prompt-action ac-9
+
+  buildPromptWithSkills() already calls rewriteSkillReferencesForAdapter() as its final step, so
+  {skill:foo} tokens in both the prompt template and injected skill content are rewritten to
+  adapter-appropriate invocation format (/foo for Claude Code, $foo for Codex, etc.). This comes
+  free from using the existing code path.
+
+
+  ### Key files
+
+  - src/schema/action.ts — SessionPromptActionBaseSchema
+
+  - src/agent-runtime/action-executor.ts — executeSessionPrompt()
+
+  - src/agent-runtime/prompts.ts — buildPromptWithSkills() (already exists, reuse as-is)
+
+
+  ### Testing
+
+  - Unit test: action-executor executeSessionPrompt with skills list resolves skill content
+
+  - Unit test: schema validates skills field (present, absent, empty array)
+
+  - Unit test: skill references in injected content are rewritten for adapter
+
+  - Integration test: hook on session.idle with session_prompt action + skills delivers
+  skill-enriched prompt to session
+spec_ref: "@session-prompt-action"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - agent
+  - feature
+vcs_refs: []
+created_at: 2026-03-23T17:44:25.969Z
+todos: []
