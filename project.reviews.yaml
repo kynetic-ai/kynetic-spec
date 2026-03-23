@@ -48133,6 +48133,18 @@ reviews:
         runner: kspec
         created_at: 2026-03-23T20:24:16.924Z
         completed_at: 2026-03-23T20:24:16.924Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: All 4 ACs (ac-13, ac-14, ac-15, ac-16) have annotated tests in tests/meta.test.ts. Trait
+          ACs for json-output and shadow-commit have N/A annotations where appropriate and existing
+          coverage for active ACs.
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-23T20:24:20.624Z
+        completed_at: 2026-03-23T20:24:20.624Z
     events:
       - _ulid: 01KME58W0XJR9JPJNS8P0VXD3H
         actor: "@claude"
@@ -48161,6 +48173,13 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-03-23T20:24:17.304Z
+      - _ulid: 01KME5XC7SRDHAKMZQS7FZSWYA
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-23T20:24:20.985Z
     examined_commit: bcde67c0f2d262b86615e499afde7c7c054ee10e
     external_links: []
     lifecycle_state: open
@@ -48173,5 +48192,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-23T20:13:09.022Z
-    updated_at: 2026-03-23T20:24:16.924Z
+    updated_at: 2026-03-23T20:24:20.624Z
     notes: []
