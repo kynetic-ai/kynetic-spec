@@ -5020,6 +5020,16 @@ modules:
                   identify the target session
                 when: |
                   The action is validated
+              - given: A session prompt action specifies a skills list
+                id: ac-8
+                then: Skills are resolved from the skill registry and their content is appended to the prompt before
+                  delivery
+                when: The prompt is constructed for delivery
+              - given: The assembled prompt (including any injected skill content) contains cross-skill references
+                id: ac-9
+                then: Skill references are rewritten to the adapter-appropriate invocation format for the session's
+                  agent
+                when: The prompt is finalized for the target session
             tags: []
             requirements:
               - _ulid: 01KMA74DJNERYYEAJ6PDEAY740
@@ -5073,6 +5083,11 @@ modules:
                       and the action will fail at runtime without it
                     when: |
                       Validation runs
+                  - given: A session prompt action is defined with a skills list
+                    id: ac-5
+                    then: The action is parsed with an optional list of skill identifiers that are resolved at execution
+                      time
+                    when: The configuration is loaded
                 tags: []
                 created: 2026-03-22T07:28:42.581Z
                 notes: []
