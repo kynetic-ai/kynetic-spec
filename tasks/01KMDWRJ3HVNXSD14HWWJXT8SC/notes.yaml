@@ -23,3 +23,26 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-23T17:53:06.247Z
+  - _ulid: 01KMDXR4EBENZ49ETK8FC9RX5H
+    content: >-
+      Implementation complete. Three changes:
+
+      1. Schema (ac-5): Added optional skills field to SessionPromptActionBaseSchema
+
+      2. Executor (ac-8): In executeSessionPrompt(), when action.skills is non-empty, derives
+      specDir via initContext(projectDir), looks up agent adapter from meta context using agent_id
+      from event context, calls buildPromptWithSkills() to resolve skill content and append to
+      prompt
+
+      3. Skill reference rewriting (ac-9): Free from buildPromptWithSkills() which calls
+      rewriteSkillReferencesForAdapter()
+
+
+      Tests added: 8 new tests covering schema validation (skills present/absent/empty/invalid),
+      skill content resolution, adapter-specific reference rewriting, multiple skills, missing
+      skills (silent skip), missing agent_id fallback, and initContext failure error handling. All
+      61 session-prompt-action tests pass. Full test suite passes (7174/7174, 1 pre-existing flaky
+      test in dispatch engine).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-23T18:01:40.555Z
