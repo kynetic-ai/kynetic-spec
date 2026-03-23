@@ -2797,7 +2797,7 @@ features:
       managing agent definitions (add, set, remove).
     status:
       maturity: draft
-      implementation: implemented
+      implementation: in_progress
     depends_on: []
     implements: []
     relates_to: []
