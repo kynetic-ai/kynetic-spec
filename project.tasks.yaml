@@ -21845,7 +21845,7 @@
   title: Expand kspec meta set agent with missing schema fields
   type: task
   spec_ref: "@agent-definition-schema"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 2
@@ -21856,4 +21856,5 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-03-23T19:49:12.411Z
+  started_at: 2026-03-23T19:51:16.952Z
   automation: eligible
