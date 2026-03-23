@@ -1857,3 +1857,24 @@ inbox:
       - hooks
     added_by: "@claude"
     created_at: 2026-03-22T07:26:21.825Z
+  - _ulid: 01KMDR21T3RJ18K183QRX7RCRW
+    text: "Reviewer context for parallel in-flight work: When reviewing a task, show sibling tasks under
+      the same plan that are in_progress and which files they touch. Prevents reviewers from pushing
+      scope into territory another task owns. Could be a review prompt section or a kspec review
+      context command."
+    tags:
+      - reflection
+      - dispatch
+      - review
+    added_by: "@claude"
+    created_at: 2026-03-23T16:22:14.083Z
+  - _ulid: 01KMDR21VWM4GEJ3VTWCC48KMY
+    text: "Plan derivation dependency audit: After kspec plan import derives tasks, suggest depends_on
+      relationships by analyzing which tasks' ACs reference infrastructure that sibling tasks
+      create. Catches implicit test dependencies that manual derivation misses."
+    tags:
+      - reflection
+      - planning
+      - cli
+    added_by: "@claude"
+    created_at: 2026-03-23T16:22:14.140Z
