@@ -133,13 +133,32 @@ This keeps your branch fresh with the latest integrated work and lets you resolv
 
 Do this every time you start or resume work on a task, not just the first time.
 
-### 5. Work and Note
+### 5. Plan Before Code
 
-Read all ACs (own + trait) before implementing:
+**Do not start writing code until you complete this step.** Read all ACs and plan your approach:
 
 ```bash
 kspec item get @spec-ref  # Shows own ACs AND inherited trait ACs
 ```
+
+For each AC, identify:
+- **Existing code to reuse** — Search the codebase for related functions, utilities, and patterns before creating anything new. Reimplementing existing helpers is a common review blocker.
+- **Edge cases implied by the AC** — If an AC describes concurrent behavior, think beyond the simple 2-actor case. If it says "atomic," consider partial failure. Read the AC literally and think about what would break it.
+- **Test cases that will prove each AC** — List them before writing production code. This surfaces gaps in your understanding early.
+
+Record your planned approach as a task note:
+
+```bash
+kspec task note @ref "Approach: reusing existing X for Y.
+Edge cases: A, B, C.
+Test plan: N ACs × 1+ test each, plus trait ACs."
+```
+
+### 6. Write Tests First
+
+Write test skeletons from your AC analysis **before** implementing production code. For each AC, create an annotated test with the expected behavior described — then implement code to make the tests pass. This ensures coverage is driven by the spec, not retrofitted to the implementation.
+
+### 7. Implement and Note
 
 Add notes during work, not just at the end:
 
@@ -157,7 +176,7 @@ Note when you:
 - Encounter a blocker
 - Complete a significant piece
 
-### 6. AC Test Annotations
+### 8. AC Test Annotations
 
 Every acceptance criterion should have at least one test annotated with a comment linking it to the AC. Use the comment syntax appropriate for the language:
 
@@ -197,7 +216,7 @@ If a trait AC genuinely doesn't apply, annotate it with a reason:
 
 Annotations must be standalone line comments, not embedded inside block comments or docstrings.
 
-### 7. Regenerate Derived Files
+### 9. Regenerate Derived Files
 
 If your task modified any of these source files, regenerate before committing:
 
@@ -208,7 +227,7 @@ If your task modified any of these source files, regenerate before committing:
 
 Commit the regenerated output alongside your source changes.
 
-### 8. Commit
+### 10. Commit
 
 Include task and spec trailers:
 
@@ -251,27 +270,35 @@ The reviewer (human or agent) takes over from here. See `{skill:review}` for the
 
 When inheriting a `needs_work` task, the review feedback lives in kspec review records. Each fix cycle creates a new review record — the reviewer does not reopen the prior review.
 
-1. **Read the review** — Find and read review threads
+1. **Read the review** — Find and read ALL review threads, not just the first blocker
    ```bash
    kspec review for-task @ref              # Find all reviews (current + historical)
    kspec review get @review-ref            # Read full review with threads
    ```
 
-2. **Address blocker threads** — Blockers must be resolved before re-approval. Questions and nits are non-blocking but should be addressed.
+2. **Re-read all ACs** — Don't just fix the flagged issue. Re-read every AC on the spec and verify your full implementation against each one. Fixing one issue often introduces or reveals others. A narrow fix that ignores the broader spec is likely to produce another fix cycle.
 
-3. **Push fixes** — Commit with descriptive message
+3. **Address all threads** — Blockers must be resolved before re-approval. Questions and nits are non-blocking but should be addressed. Fix everything the reviewer found in one pass — don't fix one blocker and resubmit hoping the rest will pass.
+
+4. **Reply and resolve threads** — For each thread you addressed, reply explaining what you did, then resolve the thread. This gives the next reviewer clear signal of what was addressed and lets them verify the resolution rather than re-discovering the original issue.
+   ```bash
+   kspec review reply @review-ref --thread <ulid> --body "Fixed: <description of what was changed and why>"
+   kspec review resolve @review-ref --thread <ulid>
+   ```
+
+5. **Push fixes** — Commit with descriptive message
    ```bash
    git add <files> && git commit -m "fix: address review feedback
 
    Task: @task-slug"
    ```
 
-4. **Note what changed** — Before resubmitting, add a task note summarizing what was fixed and why. This note becomes a key entry in the activity timeline and gives the next reviewer context on what changed since the prior review.
+6. **Note what changed** — Before resubmitting, add a task note summarizing what was fixed and why. This note becomes a key entry in the activity timeline and gives the next reviewer context on what changed since the prior review.
    ```bash
-   kspec task note @ref "Fixed auth token validation: added null check before decode, updated test to cover expired token edge case. Addresses blocker thread on missing error handling."
+   kspec task note @ref "Fix cycle N: addressed all review threads. Fixed X (blocker), Y (nit). Also re-verified ACs 1-5 against implementation."
    ```
 
-5. **Re-submit** — `kspec task submit @ref` (back to pending_review, reviewer creates a new review record)
+7. **Re-submit** — `kspec task submit @ref` (back to pending_review, reviewer creates a new review record)
 
 You do NOT merge in a fix cycle. The reviewer handles merge decisions.
 
