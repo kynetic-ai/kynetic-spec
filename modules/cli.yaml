@@ -9504,9 +9504,8 @@ features:
       - given: |
           Agent definitions exist in meta
         id: ac-1
-        then: |
-          All agent definitions are listed with id, adapter, dispatch
-          rules summary, and concurrency settings
+        then: All agent definitions are listed with id, adapter, dispatch rules summary, concurrency
+          settings, session configuration, budget limits, skills, and tags when present
         when: |
           kspec agent list is run
       - given: |
