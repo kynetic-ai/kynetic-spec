@@ -47832,6 +47832,21 @@ reviews:
         runner: kspec
         created_at: 2026-03-23T18:10:51.911Z
         completed_at: 2026-03-23T18:10:51.911Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: eccb722e8
+          head_commit: 703b559df
+        evidence: All own ACs (ac-1 through ac-9 on @session-prompt-action, ac-1 through ac-5 on
+          @session-prompt-action-schema) have annotated tests. Trait ACs (@trait-error-guidance ac-1
+          through ac-6) are annotated — ac-1 and ac-2 are tested, ac-3 through ac-6 are marked N/A
+          with reasons. New ac-8 has 6 test annotations, ac-9 has 1 test annotation, schema ac-5 has
+          4 test annotations.
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-23T18:11:04.063Z
+        completed_at: 2026-03-23T18:11:04.063Z
     events:
       - _ulid: 01KMDY7AD5GGCV1K88ZGWSKTEY
         actor: "@claude"
@@ -47867,6 +47882,13 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-03-23T18:10:52.276Z
+      - _ulid: 01KMDY9B3DWREKTXV0P45WDBQY
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-23T18:11:04.430Z
     examined_commit: 703b559df8ded493faf2d586e669f4e856d4878d
     external_links: []
     lifecycle_state: open
@@ -47903,5 +47925,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-23T18:09:58.182Z
-    updated_at: 2026-03-23T18:10:51.911Z
+    updated_at: 2026-03-23T18:11:04.063Z
     notes: []
