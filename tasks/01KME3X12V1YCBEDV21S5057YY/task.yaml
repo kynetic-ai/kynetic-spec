@@ -116,7 +116,7 @@ description: >-
 spec_ref: "@agent-definition-schema"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -126,6 +126,14 @@ tags:
   - agent
   - feature
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-23T20:11:36.524Z
+  commit: 1ae197391bf2ab8ce652d0afdbc58f5eb426cede
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
 session_id: 01KME3ZEGJWVREF5FWEY4F9YCJ
 history:
   - author: "@claude"
@@ -141,7 +149,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-03-23T19:51:16.952Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-03-23T20:11:36.524Z
+          commit: 1ae197391bf2ab8ce652d0afdbc58f5eb426cede
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous: null
+      submitted_at:
+        new: 2026-03-23T20:11:36.526Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-03-23T20:11:36.526Z
 created_at: 2026-03-23T19:49:12.411Z
 started_at: 2026-03-23T19:51:16.952Z
+submitted_at: 2026-03-23T20:11:36.526Z
 todos: []
 automation: eligible
