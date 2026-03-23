@@ -1,1 +1,30 @@
-notes: []
+notes:
+  - _ulid: 01KME4585G7X4129YF6E1VPESE
+    content: >-
+      Approach: All changes in src/cli/commands/meta.ts (meta set command handler, lines 1539-1713).
+
+
+      Session config (ac-13): Add --session-mode, --idle-grace-period-ms, --idle-timeout-ms flags.
+      Merge into existing session object. Validate mode against SessionModeSchema enum
+      (auto_close|persistent), grace period as non-negative int, timeout as positive int.
+
+
+      Clear session (ac-14): Add --clear-session boolean flag. Deletes session key entirely.
+
+
+      Scalar fields (ac-15): Add --prompt-template, --automation (eligible|ineligible),
+      --initial-response-timeout-seconds. Automation validated against
+      AgentDispatchAutomationFilterSchema. Timeout merges into budget object.
+
+
+      Array removal + tags (ac-16): Add --remove-capability, --remove-tool, --remove-convention,
+      --remove-skill for existing arrays. Add --add-tag, --remove-tag for new tags array. Remove ops
+      are no-ops if item not present.
+
+
+      Test plan: 14+ tests covering each new flag, merge behavior, clear behavior, no-op removal,
+      validation errors, and batch compatibility. Tests follow existing E2E pattern with
+      kspecRun/kspecJson helpers.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-23T19:53:41.808Z
