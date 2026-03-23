@@ -91,7 +91,7 @@ description: >-
 spec_ref: "@session-prompt-action"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -104,7 +104,7 @@ review_ref: "@01KMDY7AD6DAF2SGT14S4BQ8PM"
 submission_linkage:
   review_url: null
   branch: dev
-  captured_at: 2026-03-23T18:01:47.594Z
+  captured_at: 2026-03-23T18:23:04.809Z
   commit: eccb722e8c2898d7fa91cc8d1e9deedae7e5e626
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
@@ -181,8 +181,35 @@ history:
         previous: 2026-03-23T17:48:37.332Z
     command: task-start
     timestamp: 2026-03-23T18:23:01.506Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-03-23T18:23:04.809Z
+          commit: eccb722e8c2898d7fa91cc8d1e9deedae7e5e626
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous:
+          review_url: null
+          branch: dev
+          captured_at: 2026-03-23T18:01:47.594Z
+          commit: eccb722e8c2898d7fa91cc8d1e9deedae7e5e626
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+      submitted_at:
+        new: 2026-03-23T18:23:04.812Z
+        previous: 2026-03-23T18:01:47.596Z
+    command: task-submit
+    timestamp: 2026-03-23T18:23:04.813Z
 created_at: 2026-03-23T17:44:25.969Z
 started_at: 2026-03-23T18:23:01.506Z
-submitted_at: 2026-03-23T18:01:47.596Z
+submitted_at: 2026-03-23T18:23:04.812Z
 todos: []
 automation: eligible
