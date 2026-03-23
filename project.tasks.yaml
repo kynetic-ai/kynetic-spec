@@ -21824,7 +21824,7 @@
   title: Add skill support to session_prompt actions
   type: task
   spec_ref: "@session-prompt-action"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 2
@@ -21837,4 +21837,5 @@
   created_at: 2026-03-23T17:44:25.969Z
   started_at: 2026-03-23T18:23:01.506Z
   submitted_at: 2026-03-23T18:23:04.812Z
+  completed_at: 2026-03-23T18:33:15.449Z
   automation: eligible
