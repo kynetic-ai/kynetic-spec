@@ -7684,6 +7684,35 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-22T21:20:03.179Z
+  - _ulid: 01KMDQR79C9S4TAR93T4CE4EAR
+    type: success
+    content: Three-pass plan review pattern (write → agent review → fix → agent review → fix → agent
+      review) caught progressively subtler issues. First pass found structural problems (missing
+      specs, field leaks). Second pass found spec interactions (existing specs conflicting). Third
+      pass was clean. This pattern should be the standard for complex plans.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-23T16:16:52.012Z
+  - _ulid: 01KMDQR7DQR6PMHF7ZVN06CHHM
+    type: friction
+    content: Skill template → shadow branch → rendered output pipeline requires 3 separate commands (npm
+      run build, skill install-core, skill render) with no single command to do all three. Easy to
+      get confused about which step is missing when rendered output doesn't update. The development
+      convention mentions kspec skill render but not the full pipeline for template authors.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-23T16:16:52.151Z
+  - _ulid: 01KMDQR7GXCVCAKYP97CMDWVM3
+    type: success
+    content: Profiling git log -L before designing solutions gave concrete numbers (39s baseline, 12-18s
+      with -n limits) that guided the architecture decision. The data made it clear that optimizing
+      the existing approach was insufficient and a structural change was needed.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-23T16:16:52.253Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
