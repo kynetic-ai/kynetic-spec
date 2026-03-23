@@ -48122,6 +48122,17 @@ reviews:
         runner: vitest
         created_at: 2026-03-23T20:24:13.171Z
         completed_at: 2026-03-23T20:24:13.171Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation passed. All warnings are pre-existing (orphaned skill dir, orphaned specs,
+          missing AC coverage on unrelated specs). No new warnings introduced by this change.
+        name: kspec-validate
+        required: true
+        runner: kspec
+        created_at: 2026-03-23T20:24:16.924Z
+        completed_at: 2026-03-23T20:24:16.924Z
     events:
       - _ulid: 01KME58W0XJR9JPJNS8P0VXD3H
         actor: "@claude"
@@ -48143,6 +48154,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-23T20:24:13.535Z
+      - _ulid: 01KME5X8MRF0NZTVQPDFWSJX24
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec-validate
+        timestamp: 2026-03-23T20:24:17.304Z
     examined_commit: bcde67c0f2d262b86615e499afde7c7c054ee10e
     external_links: []
     lifecycle_state: open
@@ -48155,5 +48173,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-23T20:13:09.022Z
-    updated_at: 2026-03-23T20:24:13.171Z
+    updated_at: 2026-03-23T20:24:16.924Z
     notes: []
