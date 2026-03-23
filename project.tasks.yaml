@@ -21888,7 +21888,7 @@
   title: Fix web UI pages not rendering on initial load
   type: task
   spec_ref: "@ui-data-freshness"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 3
@@ -21899,4 +21899,5 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-03-23T23:51:20.979Z
+  started_at: 2026-03-23T23:58:55.657Z
   automation: eligible
