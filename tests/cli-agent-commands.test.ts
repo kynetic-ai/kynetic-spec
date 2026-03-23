@@ -107,6 +107,11 @@ async function setupProjectWithAgents(
         adapter: a.adapter,
         budget: a.budget,
         auto_approve: a.auto_approve ?? false,
+        ...(a.session ? { session: a.session } : {}),
+        ...(a.skills && a.skills.length > 0 ? { skills: a.skills } : {}),
+        ...(a.tags && a.tags.length > 0 ? { tags: a.tags } : {}),
+        ...(a.automation ? { automation: a.automation } : {}),
+        ...(a.prompt_template ? { prompt_template: a.prompt_template } : {}),
       })),
     }),
     "utf-8",
@@ -345,6 +350,288 @@ describe("AC-1: kspec agent list", () => {
     const result = kspec("agent list --offset xyz", testDir, { expectFail: true });
     expect(result.exitCode).toBe(4);
     expect(result.stderr + result.stdout).toContain("Invalid --offset value");
+  });
+});
+
+// ─── AC-1: agent list includes session, budget, skills, tags ─────────────────
+
+// AC: @cli-agent-commands ac-1
+// AC: @trait-json-output ac-2
+describe("AC-1: kspec agent list includes session, budget, skills, and tags", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-agent-list-fields-");
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+  });
+
+  function writeProject(agents: object[]): void {
+    const fs_sync = require("node:fs");
+    const path_sync = require("node:path");
+    initGitRepo(testDir);
+    fs_sync.writeFileSync(
+      path_sync.join(testDir, "kynetic.yaml"),
+      YAML.stringify({ kynetic: "1", title: "Test" }),
+    );
+    fs_sync.writeFileSync(
+      path_sync.join(testDir, "kynetic.meta.yaml"),
+      YAML.stringify({ kynetic_meta: "1.0", agents }),
+    );
+    fs_sync.writeFileSync(
+      path_sync.join(testDir, "project.tasks.yaml"),
+      YAML.stringify({ tasks: [] }),
+    );
+  }
+
+  it("should include session config in JSON output when set on agent", () => {
+    writeProject([{
+      _ulid: testUlid("AGNT"),
+      id: "session-worker",
+      name: "Session Worker",
+      dispatch: [],
+      concurrency: { max_concurrent: 1 },
+      adapter: "claude-agent-acp",
+      auto_approve: false,
+      session: { mode: "persistent", idle_grace_period_ms: 5000, idle_timeout_ms: 300000 },
+    }]);
+
+    const result = kspec("agent list --json", testDir);
+    expect(result.exitCode).toBe(0);
+    const data = JSON.parse(result.stdout);
+    expect(data.items[0].session).toEqual({
+      mode: "persistent",
+      idle_grace_period_ms: 5000,
+      idle_timeout_ms: 300000,
+    });
+  });
+
+  it("should include budget in JSON output when set on agent", () => {
+    writeProject([{
+      _ulid: testUlid("AGNT"),
+      id: "budget-worker",
+      name: "Budget Worker",
+      dispatch: [],
+      concurrency: { max_concurrent: 1 },
+      adapter: "claude-agent-acp",
+      auto_approve: false,
+      budget: { max_tasks: 10, timeout_minutes: 30 },
+    }]);
+
+    const result = kspec("agent list --json", testDir);
+    expect(result.exitCode).toBe(0);
+    const data = JSON.parse(result.stdout);
+    expect(data.items[0].budget).toEqual({
+      max_tasks: 10,
+      timeout_minutes: 30,
+    });
+  });
+
+  it("should include skills in JSON output when non-empty", () => {
+    writeProject([{
+      _ulid: testUlid("AGNT"),
+      id: "skilled-worker",
+      name: "Skilled Worker",
+      dispatch: [],
+      concurrency: { max_concurrent: 1 },
+      adapter: "claude-agent-acp",
+      auto_approve: false,
+      skills: ["task-work", "reflect"],
+    }]);
+
+    const result = kspec("agent list --json", testDir);
+    expect(result.exitCode).toBe(0);
+    const data = JSON.parse(result.stdout);
+    expect(data.items[0].skills).toEqual(["task-work", "reflect"]);
+  });
+
+  it("should include tags in JSON output when non-empty", () => {
+    writeProject([{
+      _ulid: testUlid("AGNT"),
+      id: "tagged-worker",
+      name: "Tagged Worker",
+      dispatch: [],
+      concurrency: { max_concurrent: 1 },
+      adapter: "claude-agent-acp",
+      auto_approve: false,
+      tags: ["cli", "agent"],
+    }]);
+
+    const result = kspec("agent list --json", testDir);
+    expect(result.exitCode).toBe(0);
+    const data = JSON.parse(result.stdout);
+    expect(data.items[0].tags).toEqual(["cli", "agent"]);
+  });
+
+  it("should include automation in JSON output when set", () => {
+    writeProject([{
+      _ulid: testUlid("AGNT"),
+      id: "eligible-worker",
+      name: "Eligible Worker",
+      dispatch: [],
+      concurrency: { max_concurrent: 1 },
+      adapter: "claude-agent-acp",
+      auto_approve: false,
+      automation: "eligible",
+    }]);
+
+    const result = kspec("agent list --json", testDir);
+    expect(result.exitCode).toBe(0);
+    const data = JSON.parse(result.stdout);
+    expect(data.items[0].automation).toBe("eligible");
+  });
+
+  it("should omit optional fields from JSON when not set on agent", () => {
+    writeProject([{
+      _ulid: testUlid("AGNT"),
+      id: "minimal-worker",
+      name: "Minimal Worker",
+      dispatch: [],
+      concurrency: { max_concurrent: 1 },
+      adapter: "claude-agent-acp",
+      auto_approve: false,
+    }]);
+
+    const result = kspec("agent list --json", testDir);
+    expect(result.exitCode).toBe(0);
+    const data = JSON.parse(result.stdout);
+    const item = data.items[0];
+    expect(item.session).toBeUndefined();
+    expect(item.budget).toBeUndefined();
+    expect(item.skills).toBeUndefined();
+    expect(item.tags).toBeUndefined();
+    expect(item.automation).toBeUndefined();
+    expect(item.prompt_template).toBeUndefined();
+  });
+
+  it("should show session config in human-readable output when present", () => {
+    writeProject([{
+      _ulid: testUlid("AGNT"),
+      id: "session-worker",
+      name: "Session Worker",
+      dispatch: [],
+      concurrency: { max_concurrent: 1 },
+      adapter: "claude-agent-acp",
+      auto_approve: false,
+      session: { mode: "persistent", idle_grace_period_ms: 5000, idle_timeout_ms: 300000 },
+    }]);
+
+    const result = kspec("agent list", testDir);
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain("session:");
+    expect(result.stdout).toContain("mode=persistent");
+    expect(result.stdout).toContain("grace=5000ms");
+    expect(result.stdout).toContain("timeout=300000ms");
+  });
+
+  it("should show budget in human-readable output when present", () => {
+    writeProject([{
+      _ulid: testUlid("AGNT"),
+      id: "budget-worker",
+      name: "Budget Worker",
+      dispatch: [],
+      concurrency: { max_concurrent: 1 },
+      adapter: "claude-agent-acp",
+      auto_approve: false,
+      budget: { max_tasks: 10, timeout_minutes: 30 },
+    }]);
+
+    const result = kspec("agent list", testDir);
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain("budget:");
+    expect(result.stdout).toContain("max_tasks=10");
+    expect(result.stdout).toContain("timeout=30m");
+  });
+
+  it("should show skills in human-readable output when non-empty", () => {
+    writeProject([{
+      _ulid: testUlid("AGNT"),
+      id: "skilled-worker",
+      name: "Skilled Worker",
+      dispatch: [],
+      concurrency: { max_concurrent: 1 },
+      adapter: "claude-agent-acp",
+      auto_approve: false,
+      skills: ["task-work", "reflect"],
+    }]);
+
+    const result = kspec("agent list", testDir);
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain("skills:");
+    expect(result.stdout).toContain("task-work, reflect");
+  });
+
+  it("should show tags in human-readable output when non-empty", () => {
+    writeProject([{
+      _ulid: testUlid("AGNT"),
+      id: "tagged-worker",
+      name: "Tagged Worker",
+      dispatch: [],
+      concurrency: { max_concurrent: 1 },
+      adapter: "claude-agent-acp",
+      auto_approve: false,
+      tags: ["cli", "agent"],
+    }]);
+
+    const result = kspec("agent list", testDir);
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain("tags:");
+    expect(result.stdout).toContain("cli, agent");
+  });
+
+  it("should not show optional fields in human-readable output when not set", () => {
+    writeProject([{
+      _ulid: testUlid("AGNT"),
+      id: "minimal-worker",
+      name: "Minimal Worker",
+      dispatch: [],
+      concurrency: { max_concurrent: 1 },
+      adapter: "claude-agent-acp",
+      auto_approve: false,
+    }]);
+
+    const result = kspec("agent list", testDir);
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).not.toContain("session:");
+    expect(result.stdout).not.toContain("budget:");
+    expect(result.stdout).not.toContain("skills:");
+    expect(result.stdout).not.toContain("tags:");
+  });
+
+  // AC: @trait-json-output ac-2 - JSON includes all data available in human-readable mode
+  it("should include all fields in JSON that are shown in human-readable mode", () => {
+    writeProject([{
+      _ulid: testUlid("AGNT"),
+      id: "full-worker",
+      name: "Full Worker",
+      dispatch: [{ on: "task.ready" }],
+      concurrency: { max_concurrent: 2 },
+      adapter: "claude-agent-acp",
+      auto_approve: false,
+      session: { mode: "persistent", idle_grace_period_ms: 5000 },
+      budget: { max_tasks: 10, timeout_minutes: 30 },
+      skills: ["task-work", "reflect"],
+      tags: ["cli", "agent"],
+      automation: "eligible",
+    }]);
+
+    const result = kspec("agent list --json", testDir);
+    expect(result.exitCode).toBe(0);
+    const data = JSON.parse(result.stdout);
+    const item = data.items[0];
+
+    // All fields present in human-readable should be in JSON
+    expect(item.id).toBe("full-worker");
+    expect(item.adapter).toBe("claude-agent-acp");
+    expect(item.dispatch).toEqual([{ on: "task.ready" }]);
+    expect(item.concurrency).toEqual({ max_concurrent: 2 });
+    expect(item.session).toEqual({ mode: "persistent", idle_grace_period_ms: 5000 });
+    expect(item.budget).toEqual({ max_tasks: 10, timeout_minutes: 30 });
+    expect(item.skills).toEqual(["task-work", "reflect"]);
+    expect(item.tags).toEqual(["cli", "agent"]);
+    expect(item.automation).toBe("eligible");
   });
 });
 

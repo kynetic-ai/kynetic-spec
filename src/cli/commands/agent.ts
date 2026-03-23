@@ -207,15 +207,25 @@ export function registerAgentCommands(program: Command): void {
         }
 
         // AC: @trait-json-output ac-1 through ac-5
+        // AC: @trait-json-output ac-2 - JSON includes all data available in human-readable mode
         output(
           {
-            items: paginated.map((a) => ({
-              id: a.id,
-              name: a.name,
-              adapter: a.adapter ?? "claude-agent-acp",
-              dispatch: a.dispatch ?? [],
-              concurrency: a.concurrency ?? { max_concurrent: 1 },
-            })),
+            items: paginated.map((a) => {
+              const item: Record<string, unknown> = {
+                id: a.id,
+                name: a.name,
+                adapter: a.adapter ?? "claude-agent-acp",
+                dispatch: a.dispatch ?? [],
+                concurrency: a.concurrency ?? { max_concurrent: 1 },
+              };
+              if (a.session) item.session = a.session;
+              if (a.budget) item.budget = a.budget;
+              if (a.skills && a.skills.length > 0) item.skills = a.skills;
+              if (a.tags && a.tags.length > 0) item.tags = a.tags;
+              if (a.automation) item.automation = a.automation;
+              if (a.prompt_template) item.prompt_template = a.prompt_template;
+              return item;
+            }),
             total,
             offset,
             limit,
@@ -234,6 +244,26 @@ export function registerAgentCommands(program: Command): void {
               console.log(`  ${chalk.cyan(a.id)}  ${chalk.gray(a.adapter ?? "claude-agent-acp")}`);
               console.log(`    ${chalk.gray("dispatch:")} ${formatDispatchRules(a)}`);
               console.log(`    ${chalk.gray("concurrency:")} max ${a.concurrency?.max_concurrent ?? 1}`);
+              // AC: @cli-agent-commands ac-1 - show optional fields when present
+              if (a.session) {
+                const parts: string[] = [`mode=${a.session.mode ?? "auto_close"}`];
+                if (a.session.idle_grace_period_ms !== undefined) parts.push(`grace=${a.session.idle_grace_period_ms}ms`);
+                if (a.session.idle_timeout_ms !== undefined) parts.push(`timeout=${a.session.idle_timeout_ms}ms`);
+                console.log(`    ${chalk.gray("session:")} ${parts.join(", ")}`);
+              }
+              if (a.budget) {
+                const parts: string[] = [];
+                if (a.budget.max_tasks !== undefined) parts.push(`max_tasks=${a.budget.max_tasks}`);
+                if (a.budget.timeout_minutes !== undefined) parts.push(`timeout=${a.budget.timeout_minutes}m`);
+                if (a.budget.max_retries !== undefined) parts.push(`max_retries=${a.budget.max_retries}`);
+                if (parts.length > 0) console.log(`    ${chalk.gray("budget:")} ${parts.join(", ")}`);
+              }
+              if (a.skills && a.skills.length > 0) {
+                console.log(`    ${chalk.gray("skills:")} ${a.skills.join(", ")}`);
+              }
+              if (a.tags && a.tags.length > 0) {
+                console.log(`    ${chalk.gray("tags:")} ${a.tags.join(", ")}`);
+              }
             }
           },
         );
