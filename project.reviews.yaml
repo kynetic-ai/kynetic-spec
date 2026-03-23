@@ -48000,6 +48000,18 @@ reviews:
         runner: kspec
         created_at: 2026-03-23T18:30:48.934Z
         completed_at: 2026-03-23T18:30:48.934Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "All own ACs covered: @session-prompt-action ac-1 through ac-9 (tests),
+          @session-prompt-action-schema ac-1 through ac-5 (tests). All trait ACs covered:
+          @trait-error-guidance ac-1,ac-2 (tests), ac-3 through ac-6 (N/A with reasons)."
+        name: ac-coverage
+        required: true
+        runner: kspec
+        created_at: 2026-03-23T18:31:15.816Z
+        completed_at: 2026-03-23T18:31:15.816Z
     events:
       - _ulid: 01KMDZ2X6Z0MXR7CY7B254CMYP
         actor: "@claude"
@@ -48028,6 +48040,13 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-03-23T18:30:49.316Z
+      - _ulid: 01KMDZEAEAM29TKB86YAD31T3S
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-23T18:31:16.170Z
     examined_commit: 3b7c7c8513228a4bd506f9656d0d6b7f8e1b535b
     external_links: []
     lifecycle_state: open
@@ -48040,5 +48059,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-23T18:25:02.175Z
-    updated_at: 2026-03-23T18:30:48.934Z
+    updated_at: 2026-03-23T18:31:15.816Z
     notes: []
