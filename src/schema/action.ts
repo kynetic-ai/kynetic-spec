@@ -97,8 +97,8 @@ export const NotifyActionSchema = z.object({
  * Unlike the agent action (which spawns a new invocation), a session prompt
  * action targets an existing session that is currently alive and idle.
  *
- * AC: @session-prompt-action ac-1 through ac-7
- * AC: @session-prompt-action-schema ac-1 through ac-4
+ * AC: @session-prompt-action ac-1 through ac-9
+ * AC: @session-prompt-action-schema ac-1 through ac-5
  */
 const SessionPromptActionBaseSchema = z.object({
   type: z.literal("session_prompt"),
@@ -123,6 +123,14 @@ const SessionPromptActionBaseSchema = z.object({
    * AC: @session-prompt-action-schema ac-3, ac-4
    */
   session_id: z.string().optional(),
+  /**
+   * Optional skill IDs to resolve and include in the prompt.
+   * Skills are resolved from the skill registry and their content is appended
+   * to the prompt before delivery. Follows the same pattern as agent definition skills.
+   * AC: @session-prompt-action-schema ac-5
+   * AC: @session-prompt-action ac-8
+   */
+  skills: z.array(z.string()).optional(),
 });
 
 /**
