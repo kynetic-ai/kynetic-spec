@@ -19905,7 +19905,7 @@ workspaces:
         head: 3b7c7c8513228a4bd506f9656d0d6b7f8e1b535b
         last_seen_at: 2026-03-23T18:23:30.881Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-prompt-skills-01kmdwrj
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 1ae197391bf2ab8ce652d0afdbc58f5eb426cede
     bootstrap:
       status: succeeded
@@ -20014,7 +20014,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-23T20:12:14.958Z
+      updated_at: 2026-03-23T20:12:22.191Z
     integration:
       status: pending
       detail: null
@@ -20029,10 +20029,10 @@ workspaces:
     task_slug: task-meta-set-agent-expansion
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-23T19:57:18.880Z
-      last_reconciled_at: 2026-03-23T20:12:14.958Z
+      last_active_at: 2026-03-23T20:12:22.191Z
+      last_reconciled_at: 2026-03-23T20:12:22.191Z
       created_at: 2026-03-23T19:50:25.252Z
-      updated_at: 2026-03-23T20:12:19.900Z
+      updated_at: 2026-03-23T20:12:22.191Z
     workspace_id: dispatch-workspace-01KME3X12V1YCBEDV21S5057YY
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
