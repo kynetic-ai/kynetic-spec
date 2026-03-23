@@ -19905,7 +19905,7 @@ workspaces:
         head: 3b7c7c8513228a4bd506f9656d0d6b7f8e1b535b
         last_seen_at: 2026-03-23T18:23:30.881Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-prompt-skills-01kmdwrj
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 1ae197391bf2ab8ce652d0afdbc58f5eb426cede
     bootstrap:
       status: succeeded
@@ -20030,9 +20030,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-23T20:12:22.191Z
-      last_reconciled_at: 2026-03-23T20:26:08.694Z
+      last_reconciled_at: 2026-03-23T20:26:10.135Z
       created_at: 2026-03-23T19:50:25.252Z
-      updated_at: 2026-03-23T20:26:08.694Z
+      updated_at: 2026-03-23T20:26:10.135Z
     workspace_id: dispatch-workspace-01KME3X12V1YCBEDV21S5057YY
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
