@@ -51,3 +51,13 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-23T18:11:37.270Z
+  - _ulid: 01KMDYB39RRVSK0B30F6B5Q25F
+    content: "Review complete (01KMDY7A). Verdict: request_changes. One blocker: when agent_id is absent
+      from event context, adapterId remains undefined instead of defaulting to claude-agent-acp —
+      {skill:...} tokens are left unrewritten. The test claims this default but does not verify
+      reference rewriting. Fix: add else clause setting adapterId = claude-agent-acp, and add test
+      assertion verifying {skill:task-work} is rewritten. All other aspects are solid — schema,
+      skill resolution, error handling, AC coverage, tests all pass (7174/7174)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-23T18:12:01.976Z
