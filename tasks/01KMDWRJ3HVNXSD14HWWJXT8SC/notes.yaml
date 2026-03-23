@@ -1,1 +1,25 @@
-notes: []
+notes:
+  - _ulid: 01KMDX8E67A34S2W7Z8R25TN9Z
+    content: >-
+      Approach: Three changes scoped to session_prompt action path.
+
+      1. Schema: Add optional skills field to SessionPromptActionBaseSchema
+      (z.array(z.string()).optional())
+
+      2. Skill resolution: In executeSessionPrompt(), when action.skills is non-empty, derive
+      specDir via initContext(projectDir), look up agent adapter from meta context using agent_id
+      from event context, then call buildPromptWithSkills()
+
+      3. Skill reference rewriting: Free from buildPromptWithSkills() which already calls
+      rewriteSkillReferencesForAdapter()
+
+
+      Edge cases: empty skills array (no-op via buildPromptWithSkills), missing agent_id in event
+      context (default to claude-agent-acp), initContext failure (fail action with clear error).
+
+
+      Test plan: Schema validation (skills present/absent/empty), skill resolution in
+      executeSessionPrompt, skill reference rewriting for adapter, all trait ACs.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-23T17:53:06.247Z
