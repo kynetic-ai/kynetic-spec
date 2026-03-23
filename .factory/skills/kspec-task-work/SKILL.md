@@ -289,7 +289,7 @@ When inheriting a `needs_work` task, the review feedback lives in kspec review r
 
 4. **Reply and resolve threads** — For each thread you addressed, reply explaining what you did, then resolve the thread. This gives the next reviewer clear signal of what was addressed and lets them verify the resolution rather than re-discovering the original issue.
    ```bash
-   kspec review reply @review-ref --thread <ulid> --body "Fixed: replaced mutex with FIFO queue, added 3-writer test"
+   kspec review reply @review-ref --thread <ulid> --body "Fixed: <description of what was changed and why>"
    kspec review resolve @review-ref --thread <ulid>
    ```
 
