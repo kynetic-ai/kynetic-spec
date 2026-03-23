@@ -8131,6 +8131,20 @@ skills:
       - codex
       - droid
     version: 0.12.0
+  - _ulid: 01KMECA91QR3H5HJJHW0B4F5R4
+    description: Pencil MCP reference and canvas conventions for designing kynetic-spec web UI
+    origin: project
+    depends_on: []
+    tags:
+      - design
+      - pencil
+      - web-ui
+    _type: skill
+    allowed_tools: []
+    id: ui-design
+    name: UI Design
+    platforms:
+      - claude-code
 workflows:
   - _ulid: 01KF782ZSH8JG4CCJRWVQQ9G5R
     description: |
