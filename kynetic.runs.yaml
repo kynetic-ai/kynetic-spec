@@ -13894,7 +13894,7 @@ runs:
     completed_at: 2026-03-20T01:33:41.195Z
   - _ulid: 01KMDQW3YKVQA3TMX1TPJ2PGV7
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -13933,7 +13933,20 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-03-23T16:19:57.402Z
-        completed_at: 2026-03-23T16:19:57.402Z
+        completed_at: 2026-03-23T16:20:08.488Z
+        notes: "Two untracked items worth capturing: (1) Reviewer context about parallel in-flight work —
+          When a reviewer evaluates a task, they should see what other tasks under the same plan are
+          currently in_progress and which files they touch. This would prevent reviewers from
+          pushing scope into territory another task owns. Could be a section in the review prompt or
+          a kspec review context command. Medium scope — needs file-change tracking per task branch.
+          (2) Plan derivation dependency audit — After deriving tasks from a plan, automatically
+          suggest depends_on relationships by analyzing which tasks' ACs reference infrastructure
+          that other tasks create. Small-medium scope — heuristic analysis of spec refs and AC text
+          across sibling tasks."
+      - status: completed
+        step_index: 4
+        started_at: 2026-03-23T16:20:08.488Z
+        completed_at: 2026-03-23T16:20:08.488Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-03-23T16:18:59.668Z
