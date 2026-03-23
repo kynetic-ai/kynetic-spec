@@ -8,25 +8,13 @@ description: How to review work and use kspec review records. Covers both
 <!-- kspec-managed -->
 # Review
 
-How to review work and use kspec review records. Covers both the reviewer perspective (creating reviews, structuring findings) and the worker perspective (reading feedback, addressing issues). Bakes in review principles, AC coverage verification, and the full review record interface.
+How to review work and use kspec review records. Covers creating reviews, structuring findings, AC coverage verification, and the full review record interface.
 
 ## When to Use
 
-- Reviewing submitted work (as reviewer)
-- Reading and addressing review feedback (as worker)
+- Reviewing submitted work
 - Creating or managing review records
-- Verifying AC coverage before submitting work
-
-## Two Perspectives
-
-This skill serves both sides of the review process:
-
-- **As a reviewer:** Create reviews, investigate code, structure findings as threads, record checks, submit verdicts
-- **As a worker:** Read review threads, understand what's blocking, address findings, request re-review
-
-Both perspectives use the same review record system.
-
----
+- Verifying AC coverage
 
 ## Review Principles
 
@@ -69,6 +57,10 @@ grep -rn "AC: @trait-" tests/               # Trait AC annotations
 3. Verify spec alignment — for each AC, confirm the code satisfies the behavior
 4. Verify at least one worker claim independently
 5. Search across categories — correctness, edge cases, error handling, security, test quality, integration
+
+**Complete ALL checks before recording any verdict.** Do not stop at the first finding. Each unrecorded finding becomes a future fix cycle that could have been avoided. Record every issue you find, then submit one verdict covering all of them.
+
+**Verify findings are real, not invented.** Every finding must be backed by evidence you can demonstrate — code you read, tests you ran, commands you executed. Run the test suite. If an AC implies edge case behavior (concurrency, boundary values, error paths), check whether tests actually cover those cases — missing edge case coverage is a must-fix. Do not emit findings based solely on reading code and reasoning about it; execute what you can to confirm.
 
 ---
 
@@ -350,6 +342,8 @@ kspec review add --title "Review task-foo (cycle 2)" \
 kspec review for-task @task-foo  # Shows all reviews, current + historical
 ```
 
+When reviewing a fix cycle, read the prior review's threads. If the worker resolved threads, verify their resolutions are correct — a resolved thread is a claim that the issue was fixed, not proof. Reopen threads where the fix is insufficient.
+
 If dispatch workspace metadata is available, the new review's orientation will include a diff summary showing what changed since the prior review's examined commit.
 
 **Subject refresh** is still available for within-cycle updates (e.g., reviewer pushes a minor fix before verdicting):
@@ -399,43 +393,18 @@ Every finding must include:
 
 ---
 
-## As a Worker: Reading Review Feedback
-
-When your task is in `needs_work`:
-
-```bash
-# Find all reviews for the task (current + historical)
-kspec review for-task @ref
-
-# Read the most recent review (the one that kicked back to needs_work)
-kspec review get @review-ref
-
-# Focus on blocker threads — these must be resolved
-# Address questions and nits where reasonable
-# Reply to threads explaining your fix
-kspec review reply @review-ref --thread <ulid> --body "Fixed in commit abc1234"
-```
-
-**Historical context:** If the task has been through multiple fix cycles, `kspec review for-task @ref` returns all reviews. Each is a closed artifact with its own findings and verdict. Read prior reviews to understand the full review history and avoid re-introducing previously flagged issues.
-
-After fixing:
-```bash
-kspec task submit @ref  # Back to pending_review — reviewer creates a new review record
-```
-
----
-
 ## Reviewer Workflow Summary
 
 1. **Discover context** — `kspec task get @ref`, `kspec item get @spec-ref`
 2. **Create review** — `kspec review add --subject-type task --subject-ref @ref` (creates a new record each cycle)
 3. **Open review** — `kspec review open @review-ref`
 4. **Investigate** — deterministic checks, then analytical checks
-5. **Record findings** — `kspec review comment` for each finding with appropriate kind. **Always use anchors:**
+5. **Record ALL findings** — `kspec review comment` for each finding with appropriate kind. **Always use anchors:**
    - Code reviews: `--path`, `--line-start`, `--line-end`, `--commit` to pin findings to exact source locations
    - Plan/spec reviews: `--section`, `--field`, `--anchor-ref` to pin findings to specific ACs or fields
 6. **Record checks** — `kspec review check` for test/lint results
-7. **Submit verdict** — `kspec review verdict` (approve or request_changes — auto-closes the review)
+7. **Verify completeness** — Before submitting a verdict, confirm you have searched all categories, recorded every finding, and verified each finding with evidence. A review with one blocker and an immediate verdict is almost always incomplete. Each fix cycle costs time — find everything in one pass. Equally, do not invent findings — every issue must be backed by evidence you ran or read, not just suspicion.
+8. **Submit verdict** — `kspec review verdict` (approve or request_changes — auto-closes the review)
 
 ---
 
@@ -482,7 +451,6 @@ kspec review refresh <ref> --head <commit> [--base <commit>]
 
 ## Integration
 
-- **`/kspec-task-work`** — Workers read review feedback during fix cycles
 - **`/kspec-merge`** — Merge gate checks review disposition before merging
 - **`/kspec-writing-specs`** — If review reveals spec gaps, update specs first
 - **`kspec validate`** — Automated validation complements manual review
