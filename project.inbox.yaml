@@ -1878,16 +1878,6 @@ inbox:
       - cli
     added_by: "@claude"
     created_at: 2026-03-23T16:22:14.140Z
-  - _ulid: 01KMDVBFMMTSFS5TD3AK1ANXW4
-    text: Agent session config not settable via CLI — no kspec agent set command exists. Need CLI
-      support for setting session.mode, session.idle_grace_period_ms, session.idle_timeout_ms on
-      agent definitions without manual YAML editing.
-    tags:
-      - cli
-      - agent
-      - feature
-    added_by: "@claude"
-    created_at: 2026-03-23T17:19:48.884Z
   - _ulid: 01KMDVBFPA511BA2SJYXMEHXCM
     text: Hook filters only support exact equality and contains-all — no range operators (gt, lt, gte,
       lte) or negation (not, ne). Limits usefulness for numeric payload fields like turn_count where
