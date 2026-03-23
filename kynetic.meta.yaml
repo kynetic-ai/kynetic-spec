@@ -443,6 +443,31 @@ conventions:
         — do NOT grep YAML files
       - Use kspec search for keyword lookups instead of piping kspec item list through grep
       - Key skills include CLI Lookups tables — check those first for the right command to use
+hooks:
+  - _ulid: 01KME0H8XCA8P3HC7SQM98VR61
+    action:
+      type: session_prompt
+      prompt_template: Now that the session is complete, reflect on what happened during the session.
+      skills:
+        - reflect
+    enabled: true
+    filter:
+      agent_id: task-worker
+      turn_count: 1
+    name: worker-session-reflection
+    on: session.idle
+  - _ulid: 01KME0H9549JVWDQPVCE38ZYP8
+    action:
+      type: session_prompt
+      prompt_template: Now that the session is complete, reflect on what happened during the session.
+      skills:
+        - reflect
+    enabled: true
+    filter:
+      agent_id: pr-reviewer
+      turn_count: 1
+    name: reviewer-session-reflection
+    on: session.idle
 includes: []
 kynetic_meta: "1.0"
 observations:
