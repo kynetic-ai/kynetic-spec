@@ -1,1 +1,31 @@
-notes: []
+notes:
+  - _ulid: 01KME8W7N1235G5VSRFC0HGYKW
+    content: >-
+      Approach: Fix agent list JSON and human-readable output to include all agent definition
+      fields.
+
+
+      JSON output fix: Replace the explicit field mapping (lines 212-218 in agent.ts) with a mapping
+      that includes session, budget, skills, tags, automation, and prompt_template when present. Use
+      destructuring to exclude internal fields (_ulid, _sourceFile) and pass through everything
+      else.
+
+
+      Human-readable fix: Add conditional lines after existing concurrency line for session, budget,
+      skills, and tags (only when present/non-empty).
+
+
+      Test plan: 
+
+      - Test JSON output includes session config when set
+
+      - Test JSON output includes budget, skills, tags when set
+
+      - Test human-readable shows session/budget/skills/tags when present
+
+      - Test human-readable unchanged for agents without these fields
+
+      - Verify @trait-json-output ac-2 compliance
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-23T21:16:09.249Z
