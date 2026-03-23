@@ -116,8 +116,13 @@ description: >-
 spec_ref: "@agent-definition-schema"
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: "Merged to dev. Added 14 new CLI flags to meta set for agents: session config
+  (--session-mode, --idle-grace-period-ms, --idle-timeout-ms), clear session (--clear-session),
+  scalar fields (--prompt-template, --automation, --initial-response-timeout-seconds), and array
+  removal/tag operations (--remove-capability/tool/convention/skill, --add-tag, --remove-tag). JSON
+  output includes all new fields. 24 new tests, all passing."
 depends_on: []
 context: []
 priority: 2
@@ -177,8 +182,26 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-03-23T20:13:10.535Z
+  - author: "@claude"
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: "Merged to dev. Added 14 new CLI flags to meta set for agents: session config (--session-mode,
+          --idle-grace-period-ms, --idle-timeout-ms), clear session (--clear-session), scalar fields
+          (--prompt-template, --automation, --initial-response-timeout-seconds), and array
+          removal/tag operations (--remove-capability/tool/convention/skill, --add-tag,
+          --remove-tag). JSON output includes all new fields. 24 new tests, all passing."
+        previous: null
+      completed_at:
+        new: 2026-03-23T20:25:38.253Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-03-23T20:25:38.258Z
 created_at: 2026-03-23T19:49:12.411Z
 started_at: 2026-03-23T19:51:16.952Z
 submitted_at: 2026-03-23T20:11:36.526Z
+completed_at: 2026-03-23T20:25:38.253Z
 todos: []
 automation: eligible
