@@ -20135,12 +20135,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-23T21:24:01.282Z
+      updated_at: 2026-03-23T21:24:07.690Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-23T21:24:01.282Z
+      updated_at: 2026-03-23T21:24:07.690Z
     integration:
       status: pending
       detail: null
@@ -20148,24 +20148,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: a378987c30a659df68c0dbe60834ee97624fb9a8
-      updated_at: 2026-03-23T21:24:01.282Z
-    lifecycle_state: ready
+      updated_at: 2026-03-23T21:24:07.690Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KME876M1G9JTHMVDDE095T2E"
     task_slug: task-agent-list-json-fields
     timestamps:
       closed_at: null
       last_active_at: 2026-03-23T21:13:44.001Z
-      last_reconciled_at: 2026-03-23T21:24:01.282Z
+      last_reconciled_at: 2026-03-23T21:24:07.690Z
       created_at: 2026-03-23T21:13:38.182Z
-      updated_at: 2026-03-23T21:24:01.282Z
+      updated_at: 2026-03-23T21:24:07.690Z
     workspace_id: dispatch-workspace-01KME876M1G9JTHMVDDE095T2E
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: ae4a1eecdbeb1a3cf0d00e0029d82050a04e5644
+        last_seen_at: 2026-03-23T21:24:07.690Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-agent-list-json-fields-01kme876-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-agent-list-json-fields/01kme876
-        head: a378987c30a659df68c0dbe60834ee97624fb9a8
-        last_seen_at: 2026-03-23T21:13:38.182Z
+        head: ae4a1eecdbeb1a3cf0d00e0029d82050a04e5644
+        last_seen_at: 2026-03-23T21:24:07.690Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-agent-list-json-fields-01kme876
