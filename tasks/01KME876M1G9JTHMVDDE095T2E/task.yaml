@@ -3,11 +3,77 @@ slugs:
   - task-agent-list-json-fields
 title: Fix agent list JSON output missing session, budget, skills, and tags
 type: bug
-description: "kspec agent list --json returns session: null even when agent definitions have session
-  configuration set. Similarly, budget, skills, and tags are missing or null in JSON output. This
-  violates @trait-json-output ac-2 (JSON includes all data available in human-readable mode). The
-  human-readable output also needs updating per @cli-agent-commands ac-1 to show session, budget,
-  skills, and tags when present."
+description: >-
+  ## What
+
+
+  `kspec agent list --json` returns `session: null` for agents that have session configuration set
+  (e.g. idle_grace_period_ms: 5000). The human-readable output also omits session, budget, skills,
+  and tags fields entirely. Both outputs should include all configured agent definition fields.
+
+
+  ## Why
+
+
+  Agent definitions now include session configuration (mode, idle_grace_period_ms, idle_timeout_ms),
+  budget limits, skills, and tags — but `agent list` output predates these fields. The JSON output
+  violates @trait-json-output ac-2 ("output includes all data available in human-readable mode")
+  since it returns null for fields that have values. The human-readable output violates
+  @cli-agent-commands ac-1 which now requires showing these fields when present.
+
+
+  This matters for debugging dispatch behavior — when session config affects whether reflection
+  hooks fire (grace period timing), operators need to verify config via CLI without reading raw
+  YAML.
+
+
+  ## How
+
+
+  ### 1. JSON output — include all agent definition fields
+
+  The JSON serialization in the agent list handler strips or nullifies fields that aren't in its
+  explicit output mapping. Update the JSON output to include the full agent definition: session,
+  budget, skills, tags, automation, prompt_template, and any other fields present on the
+  AgentSchema.
+
+
+  ### 2. Human-readable output — show optional fields when present
+
+  The text formatter currently shows id, adapter, dispatch rules, and concurrency. Add conditional
+  lines for:
+
+  - `session: mode=persistent, grace=5000ms, timeout=300000ms` (when session config exists)
+
+  - `budget: max_tasks=10, timeout=30m` (when budget exists)
+
+  - `skills: task-work, reflect` (when skills array is non-empty)
+
+  - `tags: cli, agent` (when tags array is non-empty)
+
+
+  Only show these lines when the fields have values — don't clutter output for simple agent
+  definitions.
+
+
+  ### Key files
+
+  - `src/cli/commands/agent.ts` — agent list command handler and formatters
+
+  - Look for the JSON output mapping and the human-readable formatter
+
+
+  ### Testing
+
+  - Verify JSON output includes session config when set on agent
+
+  - Verify JSON output includes budget, skills, tags when set
+
+  - Verify human-readable output shows session/budget/skills/tags lines when present
+
+  - Verify human-readable output is unchanged for agents without these fields
+
+  - Verify @trait-json-output ac-2 compliance: JSON has all data from human-readable
 spec_ref: "@cli-agent-commands"
 meta_ref: null
 plan_ref: null
@@ -21,6 +87,90 @@ tags:
   - agent
   - bug
 vcs_refs: []
+history:
+  - author: "@claude"
+    changes:
+      description:
+        new: >-
+          ## What
+
+
+          `kspec agent list --json` returns `session: null` for agents that have session
+          configuration set (e.g. idle_grace_period_ms: 5000). The human-readable output also omits
+          session, budget, skills, and tags fields entirely. Both outputs should include all
+          configured agent definition fields.
+
+
+          ## Why
+
+
+          Agent definitions now include session configuration (mode, idle_grace_period_ms,
+          idle_timeout_ms), budget limits, skills, and tags — but `agent list` output predates these
+          fields. The JSON output violates @trait-json-output ac-2 ("output includes all data
+          available in human-readable mode") since it returns null for fields that have values. The
+          human-readable output violates @cli-agent-commands ac-1 which now requires showing these
+          fields when present.
+
+
+          This matters for debugging dispatch behavior — when session config affects whether
+          reflection hooks fire (grace period timing), operators need to verify config via CLI
+          without reading raw YAML.
+
+
+          ## How
+
+
+          ### 1. JSON output — include all agent definition fields
+
+          The JSON serialization in the agent list handler strips or nullifies fields that aren't in
+          its explicit output mapping. Update the JSON output to include the full agent definition:
+          session, budget, skills, tags, automation, prompt_template, and any other fields present
+          on the AgentSchema.
+
+
+          ### 2. Human-readable output — show optional fields when present
+
+          The text formatter currently shows id, adapter, dispatch rules, and concurrency. Add
+          conditional lines for:
+
+          - `session: mode=persistent, grace=5000ms, timeout=300000ms` (when session config exists)
+
+          - `budget: max_tasks=10, timeout=30m` (when budget exists)
+
+          - `skills: task-work, reflect` (when skills array is non-empty)
+
+          - `tags: cli, agent` (when tags array is non-empty)
+
+
+          Only show these lines when the fields have values — don't clutter output for simple agent
+          definitions.
+
+
+          ### Key files
+
+          - `src/cli/commands/agent.ts` — agent list command handler and formatters
+
+          - Look for the JSON output mapping and the human-readable formatter
+
+
+          ### Testing
+
+          - Verify JSON output includes session config when set on agent
+
+          - Verify JSON output includes budget, skills, tags when set
+
+          - Verify human-readable output shows session/budget/skills/tags lines when present
+
+          - Verify human-readable output is unchanged for agents without these fields
+
+          - Verify @trait-json-output ac-2 compliance: JSON has all data from human-readable
+        previous: "kspec agent list --json returns session: null even when agent definitions have session
+          configuration set. Similarly, budget, skills, and tags are missing or null in JSON output.
+          This violates @trait-json-output ac-2 (JSON includes all data available in human-readable
+          mode). The human-readable output also needs updating per @cli-agent-commands ac-1 to show
+          session, budget, skills, and tags when present."
+    command: task-set
+    timestamp: 2026-03-23T21:12:32.362Z
 created_at: 2026-03-23T21:04:40.065Z
 todos: []
 automation: eligible
