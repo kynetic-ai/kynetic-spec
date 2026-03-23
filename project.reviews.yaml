@@ -47974,3 +47974,29 @@ reviews:
     created_at: 2026-03-23T18:09:58.182Z
     updated_at: 2026-03-23T18:21:22.640Z
     notes: []
+  - _ulid: 01KMDZ2X6Z3SXP0PP2QD3KT514
+    slugs: []
+    title: Review task-session-prompt-skills (cycle 2)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KMDZ2X6Z0MXR7CY7B254CMYP
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-23T18:25:02.175Z
+    examined_commit: 3b7c7c8513228a4bd506f9656d0d6b7f8e1b535b
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@task-session-prompt-skills"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-23T18:25:02.175Z
+    updated_at: null
+    notes: []
