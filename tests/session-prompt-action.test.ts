@@ -2,10 +2,10 @@
  * Session Prompt Action Tests
  *
  * Tests the session_prompt action type: schema validation, executor behavior,
- * session resolution, template interpolation, and error handling.
+ * session resolution, template interpolation, skill resolution, and error handling.
  *
- * AC: @session-prompt-action ac-1 through ac-7
- * AC: @session-prompt-action-schema ac-1 through ac-4
+ * AC: @session-prompt-action ac-1 through ac-9
+ * AC: @session-prompt-action-schema ac-1 through ac-5
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
@@ -151,6 +151,53 @@ describe("SessionPromptActionSchema", () => {
     if (result.success) {
       expect(result.data.session_id).toBe("session-explicit-001");
     }
+  });
+
+  // AC: @session-prompt-action-schema ac-5
+  describe("skills field", () => {
+    it("parses a session_prompt action with skills list", () => {
+      const result = SessionPromptActionSchema.safeParse({
+        type: "session_prompt",
+        prompt: "Continue with reflection",
+        skills: ["session-reflect", "task-work"],
+      });
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data.skills).toEqual(["session-reflect", "task-work"]);
+      }
+    });
+
+    it("parses a session_prompt action without skills (field is optional)", () => {
+      const result = SessionPromptActionSchema.safeParse({
+        type: "session_prompt",
+        prompt: "Continue",
+      });
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data.skills).toBeUndefined();
+      }
+    });
+
+    it("parses a session_prompt action with empty skills array", () => {
+      const result = SessionPromptActionSchema.safeParse({
+        type: "session_prompt",
+        prompt: "Continue",
+        skills: [],
+      });
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data.skills).toEqual([]);
+      }
+    });
+
+    it("rejects skills field with non-string elements", () => {
+      const result = SessionPromptActionSchema.safeParse({
+        type: "session_prompt",
+        prompt: "Continue",
+        skills: [123],
+      });
+      expect(result.success).toBe(false);
+    });
   });
 
   // AC: @session-prompt-action-schema ac-1
@@ -576,6 +623,353 @@ describe("ActionExecutor — session_prompt", () => {
     expect(run.error).toContain("Failed to deliver prompt");
     expect(run.error).toContain("session-reject-001");
     expect(run.error).toContain("Session closed during delivery");
+  });
+});
+
+// ─── Skill Resolution Tests ──────────────────────────────────────────────────
+
+describe("ActionExecutor — session_prompt skills resolution", () => {
+  let events: ActionRunEvent[];
+  let registry: SessionRegistry;
+  let specDir: string;
+
+  beforeEach(async () => {
+    events = [];
+    registry = new SessionRegistry();
+
+    // Set up skill files in tempDir to simulate the skill registry.
+    // buildPromptWithSkills resolves skills from specDir/skills/<id>/SKILL.md
+    specDir = path.join(tempDir, ".kspec");
+    const skillDir = path.join(specDir, "skills", "session-reflect");
+    await fs.mkdir(skillDir, { recursive: true });
+    await fs.writeFile(
+      path.join(skillDir, "SKILL.md"),
+      "# Reflection Skill\n\nReflect on your work session.\n\nUse {skill:task-work} for task context.",
+    );
+
+    const skillDir2 = path.join(specDir, "skills", "task-work");
+    await fs.mkdir(skillDir2, { recursive: true });
+    await fs.writeFile(
+      path.join(skillDir2, "SKILL.md"),
+      "# Task Work Skill\n\nStructured task lifecycle.",
+    );
+  });
+
+  function makeExecutor(): ActionExecutor {
+    return new ActionExecutor({
+      projectDir: tempDir,
+      onActionRunEvent: (event) => events.push(event),
+      sessionRegistry: registry,
+    });
+  }
+
+  // AC: @session-prompt-action ac-8
+  it("resolves skills and appends content to prompt", async () => {
+    const handle = createMockHandle({ state: "idle" });
+    registry.register("session-skills-001", handle);
+
+    // Mock initContext to return our test specDir
+    const yamlModule = await import("../src/parser/yaml.js");
+    const initSpy = vi.spyOn(yamlModule, "initContext").mockResolvedValue({
+      rootDir: tempDir,
+      projectRoot: tempDir,
+      specDir,
+      sessionsDir: path.join(tempDir, ".kspec-sessions"),
+      manifestPath: null,
+      manifest: null,
+      shadow: null,
+      config: { defaultView: "board" },
+    } as any);
+
+    // Mock loadMetaContext to return agent definitions
+    const metaModule = await import("../src/parser/meta.js");
+    const metaSpy = vi.spyOn(metaModule, "loadMetaContext").mockResolvedValue({
+      agents: [{ id: "task-worker", adapter: "claude-code-acp", skills: [] }],
+      hooks: [],
+      skills: [],
+      schedules: [],
+      conventions: [],
+      workflows: [],
+      manifest: null,
+    } as any);
+
+    const executor = makeExecutor();
+    const action: Action = {
+      type: "session_prompt",
+      prompt: "Reflect on your work",
+      skills: ["session-reflect"],
+    };
+    const ctx = makeSessionIdleContext({
+      session_id: "session-skills-001",
+      agent_id: "task-worker",
+    });
+
+    const run = await executor.execute(action, ctx);
+
+    expect(run.status).toBe("completed");
+    expect(handle.prompts.length).toBe(1);
+    // Prompt should include both the base prompt and the skill content
+    expect(handle.prompts[0]).toContain("Reflect on your work");
+    expect(handle.prompts[0]).toContain("# Reflection Skill");
+    expect(handle.prompts[0]).toContain("## Skills");
+
+    initSpy.mockRestore();
+    metaSpy.mockRestore();
+  });
+
+  // AC: @session-prompt-action ac-8
+  it("delivers prompt unchanged when skills list is empty", async () => {
+    const handle = createMockHandle({ state: "idle" });
+    registry.register("session-noskills-001", handle);
+
+    const executor = makeExecutor();
+    const action: Action = {
+      type: "session_prompt",
+      prompt: "Continue your work",
+      skills: [],
+    };
+    const ctx = makeSessionIdleContext({ session_id: "session-noskills-001" });
+
+    const run = await executor.execute(action, ctx);
+
+    expect(run.status).toBe("completed");
+    expect(handle.prompts).toEqual(["Continue your work"]);
+  });
+
+  // AC: @session-prompt-action ac-8
+  it("delivers prompt unchanged when skills field is absent", async () => {
+    const handle = createMockHandle({ state: "idle" });
+    registry.register("session-absentskills-001", handle);
+
+    const executor = makeExecutor();
+    const action: Action = {
+      type: "session_prompt",
+      prompt: "Continue your work",
+      // No skills field
+    };
+    const ctx = makeSessionIdleContext({ session_id: "session-absentskills-001" });
+
+    const run = await executor.execute(action, ctx);
+
+    expect(run.status).toBe("completed");
+    expect(handle.prompts).toEqual(["Continue your work"]);
+  });
+
+  // AC: @session-prompt-action ac-9
+  it("rewrites skill references to adapter-specific format", async () => {
+    const handle = createMockHandle({ state: "idle" });
+    registry.register("session-rewrite-001", handle);
+
+    // Mock initContext
+    const yamlModule = await import("../src/parser/yaml.js");
+    const initSpy = vi.spyOn(yamlModule, "initContext").mockResolvedValue({
+      rootDir: tempDir,
+      projectRoot: tempDir,
+      specDir,
+      sessionsDir: path.join(tempDir, ".kspec-sessions"),
+      manifestPath: null,
+      manifest: null,
+      shadow: null,
+      config: { defaultView: "board" },
+    } as any);
+
+    // Mock loadMetaContext — agent uses claude-code-acp adapter
+    const metaModule = await import("../src/parser/meta.js");
+    const metaSpy = vi.spyOn(metaModule, "loadMetaContext").mockResolvedValue({
+      agents: [{ id: "task-worker", adapter: "claude-code-acp", skills: [] }],
+      hooks: [],
+      skills: [{ id: "session-reflect", origin: "core" }, { id: "task-work", origin: "core" }],
+      schedules: [],
+      conventions: [],
+      workflows: [],
+      manifest: null,
+    } as any);
+
+    const executor = makeExecutor();
+    const action: Action = {
+      type: "session_prompt",
+      prompt: "Reflect on your work",
+      skills: ["session-reflect"],
+    };
+    const ctx = makeSessionIdleContext({
+      session_id: "session-rewrite-001",
+      agent_id: "task-worker",
+    });
+
+    const run = await executor.execute(action, ctx);
+
+    expect(run.status).toBe("completed");
+    // The {skill:task-work} reference in the skill content should be rewritten
+    // to the claude-code adapter format (/kspec:task-work)
+    expect(handle.prompts[0]).toContain("/kspec:task-work");
+    expect(handle.prompts[0]).not.toContain("{skill:task-work}");
+
+    initSpy.mockRestore();
+    metaSpy.mockRestore();
+  });
+
+  // AC: @session-prompt-action ac-8
+  it("resolves multiple skills and appends all content", async () => {
+    const handle = createMockHandle({ state: "idle" });
+    registry.register("session-multi-skills-001", handle);
+
+    const yamlModule = await import("../src/parser/yaml.js");
+    const initSpy = vi.spyOn(yamlModule, "initContext").mockResolvedValue({
+      rootDir: tempDir,
+      projectRoot: tempDir,
+      specDir,
+      sessionsDir: path.join(tempDir, ".kspec-sessions"),
+      manifestPath: null,
+      manifest: null,
+      shadow: null,
+      config: { defaultView: "board" },
+    } as any);
+
+    const metaModule = await import("../src/parser/meta.js");
+    const metaSpy = vi.spyOn(metaModule, "loadMetaContext").mockResolvedValue({
+      agents: [{ id: "task-worker", adapter: "claude-code-acp", skills: [] }],
+      hooks: [],
+      skills: [],
+      schedules: [],
+      conventions: [],
+      workflows: [],
+      manifest: null,
+    } as any);
+
+    const executor = makeExecutor();
+    const action: Action = {
+      type: "session_prompt",
+      prompt: "Review session",
+      skills: ["session-reflect", "task-work"],
+    };
+    const ctx = makeSessionIdleContext({
+      session_id: "session-multi-skills-001",
+      agent_id: "task-worker",
+    });
+
+    const run = await executor.execute(action, ctx);
+
+    expect(run.status).toBe("completed");
+    expect(handle.prompts[0]).toContain("# Reflection Skill");
+    expect(handle.prompts[0]).toContain("# Task Work Skill");
+
+    initSpy.mockRestore();
+    metaSpy.mockRestore();
+  });
+
+  // AC: @session-prompt-action ac-8
+  it("silently skips skills that don't exist in the registry", async () => {
+    const handle = createMockHandle({ state: "idle" });
+    registry.register("session-missing-skill-001", handle);
+
+    const yamlModule = await import("../src/parser/yaml.js");
+    const initSpy = vi.spyOn(yamlModule, "initContext").mockResolvedValue({
+      rootDir: tempDir,
+      projectRoot: tempDir,
+      specDir,
+      sessionsDir: path.join(tempDir, ".kspec-sessions"),
+      manifestPath: null,
+      manifest: null,
+      shadow: null,
+      config: { defaultView: "board" },
+    } as any);
+
+    const metaModule = await import("../src/parser/meta.js");
+    const metaSpy = vi.spyOn(metaModule, "loadMetaContext").mockResolvedValue({
+      agents: [{ id: "task-worker", adapter: "claude-code-acp", skills: [] }],
+      hooks: [],
+      skills: [],
+      schedules: [],
+      conventions: [],
+      workflows: [],
+      manifest: null,
+    } as any);
+
+    const executor = makeExecutor();
+    const action: Action = {
+      type: "session_prompt",
+      prompt: "Continue",
+      skills: ["nonexistent-skill"],
+    };
+    const ctx = makeSessionIdleContext({
+      session_id: "session-missing-skill-001",
+      agent_id: "task-worker",
+    });
+
+    const run = await executor.execute(action, ctx);
+
+    // Missing skills are silently skipped — prompt delivered as-is
+    expect(run.status).toBe("completed");
+    expect(handle.prompts).toEqual(["Continue"]);
+
+    initSpy.mockRestore();
+    metaSpy.mockRestore();
+  });
+
+  // AC: @session-prompt-action ac-8
+  it("defaults to claude-agent-acp adapter when agent_id is not in event context", async () => {
+    const handle = createMockHandle({ state: "idle" });
+    registry.register("session-no-agent-001", handle);
+
+    const yamlModule = await import("../src/parser/yaml.js");
+    const initSpy = vi.spyOn(yamlModule, "initContext").mockResolvedValue({
+      rootDir: tempDir,
+      projectRoot: tempDir,
+      specDir,
+      sessionsDir: path.join(tempDir, ".kspec-sessions"),
+      manifestPath: null,
+      manifest: null,
+      shadow: null,
+      config: { defaultView: "board" },
+    } as any);
+
+    const executor = makeExecutor();
+    const action: Action = {
+      type: "session_prompt",
+      prompt: "Continue",
+      skills: ["session-reflect"],
+      session_id: "session-no-agent-001",
+    };
+    // Event context without agent_id
+    const ctx = makeEventContext({
+      event_type: "task.ready",
+    });
+
+    const run = await executor.execute(action, ctx);
+
+    // Should succeed — skill content resolved, adapter defaults to claude-agent-acp
+    expect(run.status).toBe("completed");
+    expect(handle.prompts[0]).toContain("# Reflection Skill");
+
+    initSpy.mockRestore();
+  });
+
+  // AC: @session-prompt-action ac-8
+  it("fails with clear error when initContext fails", async () => {
+    const handle = createMockHandle({ state: "idle" });
+    registry.register("session-initfail-001", handle);
+
+    const yamlModule = await import("../src/parser/yaml.js");
+    const initSpy = vi.spyOn(yamlModule, "initContext").mockRejectedValue(
+      new Error("Cannot find kspec project"),
+    );
+
+    const executor = makeExecutor();
+    const action: Action = {
+      type: "session_prompt",
+      prompt: "Continue",
+      skills: ["session-reflect"],
+    };
+    const ctx = makeSessionIdleContext({ session_id: "session-initfail-001" });
+
+    const run = await executor.execute(action, ctx);
+
+    expect(run.status).toBe("failed");
+    expect(run.error).toContain("Failed to resolve skills");
+    expect(run.error).toContain("Cannot find kspec project");
+    expect(run.error).toContain("session-reflect");
+
+    initSpy.mockRestore();
   });
 });
 

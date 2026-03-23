@@ -20,7 +20,9 @@ import type {
   SessionPromptAction,
 } from "../schema/action.js";
 import type { SessionRegistry } from "./session-registry.js";
-import { interpolateTemplate } from "./prompts.js";
+import { interpolateTemplate, buildPromptWithSkills } from "./prompts.js";
+import { initContext } from "../parser/yaml.js";
+import { loadMetaContext } from "../parser/meta.js";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -950,6 +952,8 @@ export class ActionExecutor {
    * AC: @session-prompt-action ac-5 (queue prompt if session is in prompting state)
    * AC: @session-prompt-action ac-6 (template variable interpolation)
    * AC: @session-prompt-action ac-7 (require explicit session_id outside session events)
+   * AC: @session-prompt-action ac-8 (resolve skills and append content to prompt)
+   * AC: @session-prompt-action ac-9 (rewrite skill references for adapter — via buildPromptWithSkills)
    */
   private async executeSessionPrompt(
     action: SessionPromptAction,
@@ -1010,6 +1014,52 @@ export class ActionExecutor {
       };
       this.emitEvent("action.failed", failedRun, eventContext);
       return failedRun;
+    }
+
+    // AC: @session-prompt-action ac-8, ac-9 — resolve skills and append to prompt
+    const skillIds = action.skills ?? [];
+    if (skillIds.length > 0) {
+      try {
+        const ctx = await initContext(this.projectDir);
+        const specDir = ctx.specDir;
+
+        // Resolve adapter from agent_id in event context
+        let adapterId: string | undefined;
+        const agentId = typeof eventContext.agent_id === "string" ? eventContext.agent_id : undefined;
+        if (agentId) {
+          try {
+            const meta = await loadMetaContext(ctx);
+            const agent = meta.agents.find((a) => a.id === agentId);
+            adapterId = agent?.adapter ?? "claude-agent-acp";
+          } catch {
+            // Fall back to default adapter if meta load fails
+            adapterId = "claude-agent-acp";
+          }
+        }
+
+        // AC: @session-prompt-action ac-8 — resolve skill content and append
+        // AC: @session-prompt-action ac-9 — rewrite skill references for adapter (handled by buildPromptWithSkills)
+        resolvedPrompt = await buildPromptWithSkills({
+          basePrompt: resolvedPrompt,
+          skillIds,
+          specDir,
+          adapterId,
+        });
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : String(err);
+        const completedAt = new Date().toISOString();
+        const durationMs = Date.now() - new Date(run.started_at).getTime();
+        const failedRun: ActionRun = {
+          ...run,
+          status: "failed",
+          completed_at: completedAt,
+          duration_ms: durationMs,
+          error: `Failed to resolve skills for session_prompt action: ${errorMessage}. Check that the project is initialized and skill IDs [${skillIds.join(", ")}] are valid.`,
+          failure_reason: "error",
+        };
+        this.emitEvent("action.failed", failedRun, eventContext);
+        return failedRun;
+      }
     }
 
     // Look up the session in the registry
