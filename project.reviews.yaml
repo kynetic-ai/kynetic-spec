@@ -48221,7 +48221,17 @@ reviews:
     slugs: []
     title: Review task-agent-list-json-fields (cycle 1)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: All 7210 tests passed, 3 skipped. No regressions.
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-23T21:30:53.899Z
+        completed_at: 2026-03-23T21:30:53.899Z
     events:
       - _ulid: 01KME9P0SKDWRHQPS741W1MS10
         actor: "@claude"
@@ -48236,6 +48246,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-23T21:30:23.230Z
+      - _ulid: 01KME9Q7WSWYX0CQ0FJ9NP8DX1
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-23T21:30:54.234Z
     examined_commit: ae4a1eecdbeb1a3cf0d00e0029d82050a04e5644
     external_links: []
     lifecycle_state: open
@@ -48248,5 +48265,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-23T21:30:14.196Z
-    updated_at: 2026-03-23T21:30:22.885Z
+    updated_at: 2026-03-23T21:30:53.899Z
     notes: []
