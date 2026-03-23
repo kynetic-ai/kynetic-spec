@@ -2899,6 +2899,24 @@ features:
           agent
         when: --add-dispatch-rule flag is provided with a JSON object containing on and optional filter
           fields
+      - given: An agent definition exists
+        id: ac-13
+        then: The session configuration is updated while preserving unspecified session fields
+        when: kspec meta set <id> is run with session options
+      - given: An agent definition has session configuration
+        id: ac-14
+        then: The session configuration is removed entirely from the agent definition
+        when: kspec meta set <id> is run with the clear session option
+      - given: An agent definition exists
+        id: ac-15
+        then: The specified fields are updated on the agent definition
+        when: kspec meta set <id> is run with prompt template, automation eligibility, or budget timeout
+          options
+      - given: An agent definition exists with populated array fields
+        id: ac-16
+        then: The specified items are removed from the array field, or tags are added to or removed from the
+          tags array
+        when: kspec meta set <id> is run with remove or tag operations
     tags: []
     created: 2026-03-02T01:22:19.832Z
     notes: []
