@@ -27231,3 +27231,181 @@ plans:
     created_at: 2026-03-22T07:06:44.158Z
     completed_at: null
     notes: []
+  - _ulid: 01KMEEJHA7W7R251XZ71CC25HP
+    slugs:
+      - plan-ux-module-and-design-decision-architecture
+    title: UX Module and Design Decision Architecture
+    content: >
+      # UX Module and Design Decision Architecture
+
+
+      ## Specs
+
+
+      ```yaml
+
+      - title: UX Module
+        slug: ux
+        type: module
+        description: |
+          Top-level module governing user experience across all kspec surfaces.
+          Parents the existing web-ui module and any future UX-related specs
+          (design system, interaction patterns, information architecture).
+
+          Design decisions flow from exploration (.pen file) into specs as they
+          crystallize. The .pen file is the sketchpad; specs are the source of truth
+          for what to build.
+
+      - title: Visual Design Language
+        slug: visual-design-language
+        type: feature
+        parent: "@ux"
+        description: |
+          Cross-cutting visual decisions that define kspec's look and feel:
+          color palette, typography, spacing rhythm, iconography style, and
+          light/dark mode behavior. Evolves from design exploration in the
+          .pen file. Supersedes the implementation-oriented ui-design-system
+          spec with behavioral, experience-level language.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              any page in the web UI
+            when: |
+              viewed in light mode and dark mode
+            then: |
+              both modes are visually coherent with consistent contrast ratios
+              and no elements that feel like afterthoughts
+          - id: ac-2
+            given: |
+              status indicators across all views (tasks, reviews, agents)
+            when: |
+              displayed to the user
+            then: |
+              each status is distinguishable by color and shape, not color alone
+
+      - title: Page Behavioral Contracts
+        slug: page-contracts
+        type: feature
+        parent: "@ux"
+        description: |
+          Per-page specs defining what the user can see and do on each view.
+          Not layout or visual treatment — those emerge from design exploration.
+          Focused on: what data is shown, what actions are available, how
+          navigation flows to and from the page.
+
+          Individual page specs are children of this feature, created as
+          pages are designed. This spec defines the pattern all page specs follow.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              any page spec under this feature
+            when: |
+              the spec is written
+            then: |
+              it defines visible data, available actions, and navigation
+              entry/exit points without prescribing layout or visual treatment
+          - id: ac-2
+            given: |
+              a page with filtering or sorting
+            when: |
+              the user applies filters
+            then: |
+              filter state is reflected in the URL and survives page reload
+
+      - title: Interaction Pattern Traits
+        slug: interaction-traits
+        type: feature
+        parent: "@ux"
+        description: |
+          Cross-cutting interaction behaviors expressed as traits that apply
+          to multiple pages. Examples: empty state guidance, loading skeletons,
+          confirmation for destructive actions, keyboard navigation.
+
+          Individual traits are created as patterns emerge from design work.
+          This spec defines the criteria for when something becomes a trait
+          vs a per-page AC.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              an interaction pattern appears on 3+ pages
+            when: |
+              the pattern is identified during design or review
+            then: |
+              it is extracted into a trait with its own ACs rather than
+              duplicated across page specs
+          - id: ac-2
+            given: |
+              a trait defines a cross-cutting interaction
+            when: |
+              a page spec implements that trait
+            then: |
+              the page spec does not restate the trait's ACs; it only
+              adds page-specific variations if needed
+      ```
+
+
+      ## Tasks
+
+
+      derive_from_specs: true
+
+
+      ```yaml
+
+      - title: Reparent web-ui module under ux
+        slug: task-reparent-web-ui
+        description: |
+          Move the existing @web-ui module to be a child of the new @ux module.
+          Verify all existing specs and tasks that reference @web-ui still resolve.
+        priority: 2
+        tags:
+          - infra
+          - spec
+
+      - title: Audit ui-design-system spec for behavioral language
+        slug: task-audit-design-system-spec
+        description: |
+          Review @ui-design-system to determine if it should be superseded by
+          @visual-design-language or updated in place. Current spec is
+          implementation-oriented (token values, Tailwind mappings). Decide
+          whether to keep it as implementation detail under the new behavioral
+          spec or retire it.
+        priority: 3
+        tags:
+          - spec
+          - design
+        spec_ref: "@visual-design-language"
+      ```
+
+
+      ## Implementation Notes
+
+
+      This plan captures architectural decisions about how design concerns fit into kspec's spec
+      system. It is deliberately lightweight — the specs here are scaffolding that will grow as
+      design work produces concrete decisions.
+
+
+      Key decisions:
+
+      1. UX is a top-level module, not nested under web-ui. Web-ui becomes a child of UX.
+
+      2. Design exploration happens in .pen files. Decisions crystallize into specs.
+
+      3. The ui-design skill stays operational (how to use Pencil). Design decisions live in specs.
+
+      4. Per-page behavioral contracts describe what users see and do, not layout/visuals.
+
+      5. Cross-cutting interaction patterns become traits when they appear on 3+ pages.
+
+      6. The existing @ui-design-system spec needs audit — it's implementation-oriented where the
+      new approach is behavioral.
+    status: draft
+    approved_at: null
+    derived_specs: []
+    derived_tasks: []
+    module_ref: null
+    source_path: /home/chapel/Projects/kynetic-spec/plans/ux-design-system.md
+    created_at: 2026-03-23T22:55:42.919Z
+    completed_at: null
+    notes: []
