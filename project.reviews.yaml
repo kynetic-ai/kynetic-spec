@@ -48180,9 +48180,25 @@ reviews:
           status: pass
           name: ac-coverage
         timestamp: 2026-03-23T20:24:20.985Z
+      - _ulid: 01KME5XKWPS60SNZ008X779F7N
+        actor: agent@kspec-dispatch
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-03-23T20:24:28.822Z
+      - _ulid: 01KME5XKWPRJ2VJDHM0BQBHHZ6
+        actor: agent@kspec-dispatch
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-23T20:24:28.822Z
     examined_commit: bcde67c0f2d262b86615e499afde7c7c054ee10e
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -48190,7 +48206,14 @@ reviews:
       ref: "@01KME3X12V1YCBEDV21S5057YY"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: agent@kspec-dispatch
+        role: reviewer
+        created_at: 2026-03-23T20:24:28.822Z
     created_at: 2026-03-23T20:13:09.022Z
-    updated_at: 2026-03-23T20:24:20.624Z
+    updated_at: 2026-03-23T20:24:28.822Z
     notes: []
