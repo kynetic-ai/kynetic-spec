@@ -1311,6 +1311,10 @@ features:
         id: ac-25
         then: All views with snapshot data load and display content without requiring a daemon connection.
         when: Any page renders
+      - given: The app is in static mode
+        id: ac-26
+        then: The page shows an informative read-only message rather than a loading spinner or error state.
+        when: A page has no corresponding data in the snapshot
     tags:
       - static
       - export
