@@ -1307,11 +1307,10 @@ features:
         then: the page renders snapshot-backed sections such as project metadata and conventions, and
           clearly labels live-only daemon/shadow details as unavailable
         when: the user navigates to /settings
-      - given: The app is in static mode after initMode() completes and snapshot JSON is loaded
+      - given: The app is in static mode and snapshot data is loaded
         id: ac-25
-        then: The project store reports initialized=true so that page-level data loading gates
-          (isProjectInitialized) pass and static API functions can serve snapshot data to all views
-        when: A page component checks project initialization before loading data
+        then: All views with snapshot data load and display content without requiring a daemon connection.
+        when: Any page renders
     tags:
       - static
       - export
