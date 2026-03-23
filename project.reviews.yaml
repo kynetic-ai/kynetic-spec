@@ -48110,7 +48110,18 @@ reviews:
     slugs: []
     title: Review task-meta-set-agent-expansion (cycle 1)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 7197 tests passed. 1 pre-existing flaky timeout in agent-invocation-lifecycle (unrelated
+          to this change). 24 new meta tests for ac-13 through ac-16 all pass.
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-23T20:24:13.171Z
+        completed_at: 2026-03-23T20:24:13.171Z
     events:
       - _ulid: 01KME58W0XJR9JPJNS8P0VXD3H
         actor: "@claude"
@@ -48125,6 +48136,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-23T20:13:20.053Z
+      - _ulid: 01KME5X4YZEY5ZCYR7THXZ2F36
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-23T20:24:13.535Z
     examined_commit: bcde67c0f2d262b86615e499afde7c7c054ee10e
     external_links: []
     lifecycle_state: open
@@ -48137,5 +48155,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-23T20:13:09.022Z
-    updated_at: 2026-03-23T20:13:19.689Z
+    updated_at: 2026-03-23T20:24:13.171Z
     notes: []
