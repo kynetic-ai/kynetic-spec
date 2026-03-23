@@ -47807,7 +47807,19 @@ reviews:
     slugs: []
     title: Review task-session-prompt-skills
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: eccb722e8
+          head_commit: 703b559df
+        evidence: 7174/7174 tests passed. 1 pre-existing flaky test (agent-invocation-lifecycle timeout)
+          unrelated to this change. All 61 session-prompt-action tests pass.
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-23T18:10:44.334Z
+        completed_at: 2026-03-23T18:10:44.334Z
     events:
       - _ulid: 01KMDY7AD5GGCV1K88ZGWSKTEY
         actor: "@claude"
@@ -47829,6 +47841,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMDY8FHZMRDK322A3883696D
         timestamp: 2026-03-23T18:10:36.572Z
+      - _ulid: 01KMDY8QVH79F1KQTXBFZX9FDT
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-23T18:10:44.721Z
     examined_commit: 703b559df8ded493faf2d586e669f4e856d4878d
     external_links: []
     lifecycle_state: open
@@ -47865,5 +47884,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-23T18:09:58.182Z
-    updated_at: 2026-03-23T18:10:36.223Z
+    updated_at: 2026-03-23T18:10:44.334Z
     notes: []
