@@ -160,5 +160,13 @@ history:
           already use), so all queries use only enabled: isProjectInitialized()."
     command: task-set
     timestamp: 2026-03-23T23:53:38.256Z
+  - author: "@claude"
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-03-23T23:56:37.256Z
 created_at: 2026-03-23T23:51:20.979Z
 todos: []
+automation: eligible
