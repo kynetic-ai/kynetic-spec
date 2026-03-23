@@ -47822,6 +47822,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-23T18:10:06.483Z
+      - _ulid: 01KMDY8FWVZCAHNQ7N75BK9GMG
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMDY8FHZMRDK322A3883696D
+        timestamp: 2026-03-23T18:10:36.572Z
     examined_commit: 703b559df8ded493faf2d586e669f4e856d4878d
     external_links: []
     lifecycle_state: open
@@ -47833,8 +47840,30 @@ reviews:
       base_commit: eccb722e8
       head_branch: dispatch/task/task-session-prompt-skills/01kmdwrj
       head_commit: 703b559df
-    threads: []
+    threads:
+      - _ulid: 01KMDY8FHZMRDK322A3883696D
+        anchor:
+          type: code
+          commit: 703b559df
+          line_end: 1038
+          line_start: 1027
+          path: src/agent-runtime/action-executor.ts
+          side: head
+        entries:
+          - _ulid: 01KMDY8FHZ1DRZGNP4XGT93HN3
+            author: "@claude"
+            body: "When agent_id is not present in event context, adapterId remains undefined instead of
+              defaulting to \"claude-agent-acp\" as stated in the worker's approach notes and the
+              test name. getSkillReferencePlatform(undefined) returns null, causing
+              rewriteSkillReferencesForAdapter to return text unchanged — {skill:...} tokens remain
+              unrewritten. The test \"defaults to claude-agent-acp adapter when agent_id is not in
+              event context\" does not verify reference rewriting, so it passes despite the missing
+              default. Fix: add an else clause to set adapterId = \"claude-agent-acp\" when agentId
+              is undefined, and add an assertion in the test verifying that {skill:task-work} is
+              rewritten to /kspec:task-work (or the appropriate default adapter format)."
+            created_at: 2026-03-23T18:10:36.223Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-23T18:09:58.182Z
-    updated_at: 2026-03-23T18:10:06.115Z
+    updated_at: 2026-03-23T18:10:36.223Z
     notes: []
