@@ -8,25 +8,13 @@ description: How to review work and use kspec review records. Covers both
 <!-- kspec-managed -->
 # Review
 
-How to review work and use kspec review records. Covers both the reviewer perspective (creating reviews, structuring findings) and the worker perspective (reading feedback, addressing issues). Bakes in review principles, AC coverage verification, and the full review record interface.
+How to review work and use kspec review records. Covers creating reviews, structuring findings, AC coverage verification, and the full review record interface.
 
 ## When to Use
 
-- Reviewing submitted work (as reviewer)
-- Reading and addressing review feedback (as worker)
+- Reviewing submitted work
 - Creating or managing review records
-- Verifying AC coverage before submitting work
-
-## Two Perspectives
-
-This skill serves both sides of the review process:
-
-- **As a reviewer:** Create reviews, investigate code, structure findings as threads, record checks, submit verdicts
-- **As a worker:** Read review threads, understand what's blocking, address findings, request re-review
-
-Both perspectives use the same review record system.
-
----
+- Verifying AC coverage
 
 ## Review Principles
 
@@ -405,32 +393,6 @@ Every finding must include:
 
 ---
 
-## As a Worker: Reading Review Feedback
-
-When your task is in `needs_work`:
-
-```bash
-# Find all reviews for the task (current + historical)
-kspec review for-task @ref
-
-# Read the most recent review (the one that kicked back to needs_work)
-kspec review get @review-ref
-
-# Focus on blocker threads — these must be resolved
-# Address questions and nits where reasonable
-# Reply to threads explaining your fix
-kspec review reply @review-ref --thread <ulid> --body "Fixed in commit abc1234"
-```
-
-**Historical context:** If the task has been through multiple fix cycles, `kspec review for-task @ref` returns all reviews. Each is a closed artifact with its own findings and verdict. Read prior reviews to understand the full review history and avoid re-introducing previously flagged issues.
-
-After fixing:
-```bash
-kspec task submit @ref  # Back to pending_review — reviewer creates a new review record
-```
-
----
-
 ## Reviewer Workflow Summary
 
 1. **Discover context** — `kspec task get @ref`, `kspec item get @spec-ref`
@@ -489,7 +451,6 @@ kspec review refresh <ref> --head <commit> [--base <commit>]
 
 ## Integration
 
-- **`$kspec-task-work`** — Workers read review feedback during fix cycles
 - **`$kspec-merge`** — Merge gate checks review disposition before merging
 - **`$kspec-writing-specs`** — If review reveals spec gaps, update specs first
 - **`kspec validate`** — Automated validation complements manual review
