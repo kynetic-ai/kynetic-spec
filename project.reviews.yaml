@@ -47906,6 +47906,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-23T18:11:36.176Z
+      - _ulid: 01KMDYVXPKAXG6BXDKGWKXGDRJ
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMDY8FHZMRDK322A3883696D
+        timestamp: 2026-03-23T18:21:13.299Z
     examined_commit: 703b559df8ded493faf2d586e669f4e856d4878d
     external_links: []
     lifecycle_state: closed
@@ -47939,6 +47945,14 @@ reviews:
               is undefined, and add an assertion in the test verifying that {skill:task-work} is
               rewritten to /kspec:task-work (or the appropriate default adapter format)."
             created_at: 2026-03-23T18:10:36.223Z
+          - _ulid: 01KMDYVXB0F9TXM70E67Y5CSE5
+            author: "@claude"
+            body: "Fixed: added else clause at action-executor.ts:1038-1042 that sets adapterId =
+              'claude-agent-acp' when agentId is undefined. This ensures {skill:...} tokens are
+              rewritten even when agent_id is absent from event context. Also added assertion in the
+              'defaults to claude-agent-acp' test verifying that {skill:task-work} does not appear
+              in the delivered prompt (i.e., it was rewritten)."
+            created_at: 2026-03-23T18:21:12.928Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -47950,5 +47964,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-23T18:11:36.175Z
     created_at: 2026-03-23T18:09:58.182Z
-    updated_at: 2026-03-23T18:11:36.176Z
+    updated_at: 2026-03-23T18:21:12.928Z
     notes: []
