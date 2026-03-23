@@ -311,7 +311,6 @@ agents:
     skills:
       - task-work
       - work-gates
-      - review
     tools:
       - kspec
       - git
