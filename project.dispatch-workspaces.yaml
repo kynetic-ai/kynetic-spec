@@ -20198,3 +20198,79 @@ workspaces:
         head: ae4a1eecdbeb1a3cf0d00e0029d82050a04e5644
         last_seen_at: 2026-03-23T21:24:07.690Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-agent-list-json-fields-01kme876
+  - active_role: null
+    base_branch_point: 02ef0686e50d41b82f181c1d1f9f23e2b7417e20
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/fix-web-ui-pages-not-rendering-on-initial-load/01kmehrd
+    canonical_branch_head: 02ef0686e50d41b82f181c1d1f9f23e2b7417e20
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-03-23T23:58:26.691Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-03-23T23:58:26.691Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: 02ef0686e50d41b82f181c1d1f9f23e2b7417e20
+      updated_at: 2026-03-23T23:58:26.691Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KMEHRD4KBZG06321TVPA67HB"
+    task_slug: fix-web-ui-pages-not-rendering-on-initial-load
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-03-23T23:58:26.691Z
+      created_at: 2026-03-23T23:58:26.691Z
+      updated_at: 2026-03-23T23:58:26.691Z
+    workspace_id: dispatch-workspace-01KMEHRD4KBZG06321TVPA67HB
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/fix-web-ui-pages-not-rendering-on-initial-load/01kmehrd
+        head: 02ef0686e50d41b82f181c1d1f9f23e2b7417e20
+        last_seen_at: 2026-03-23T23:58:26.691Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-web-ui-pages-not-rendering-on-initial-load-01kmehrd
