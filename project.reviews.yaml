@@ -47912,6 +47912,12 @@ reviews:
         payload:
           thread_ulid: 01KMDY8FHZMRDK322A3883696D
         timestamp: 2026-03-23T18:21:13.299Z
+      - _ulid: 01KMDYW75NB6EGB1YQMSCQ5368
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMDY8FHZMRDK322A3883696D
+        timestamp: 2026-03-23T18:21:22.997Z
     examined_commit: 703b559df8ded493faf2d586e669f4e856d4878d
     external_links: []
     lifecycle_state: closed
@@ -47954,6 +47960,8 @@ reviews:
               in the delivered prompt (i.e., it was rewritten)."
             created_at: 2026-03-23T18:21:12.928Z
         kind: blocker
+        resolved_at: 2026-03-23T18:21:22.640Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: code_compare
@@ -47964,5 +47972,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-23T18:11:36.175Z
     created_at: 2026-03-23T18:09:58.182Z
-    updated_at: 2026-03-23T18:21:12.928Z
+    updated_at: 2026-03-23T18:21:22.640Z
     notes: []
