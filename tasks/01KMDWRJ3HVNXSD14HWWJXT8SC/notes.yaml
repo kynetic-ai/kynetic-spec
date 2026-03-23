@@ -61,3 +61,14 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-23T18:12:01.976Z
+  - _ulid: 01KMDYXB88608RDVMGT6CWNH8T
+    content: "Fix cycle 1: addressed review blocker — added else clause in executeSessionPrompt() to
+      default adapterId to 'claude-agent-acp' when agent_id is absent from event context.
+      Previously, adapterId remained undefined, causing getSkillReferencePlatform(undefined) to
+      return null and {skill:...} tokens to pass through unrewritten. Updated test to assert
+      {skill:task-work} is not present in delivered prompt (verifying rewriting occurs). All 7174
+      tests pass. 1 pre-existing flaky timeout in canonical-task-workspace-contract unrelated to
+      this change."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-23T18:21:59.945Z
