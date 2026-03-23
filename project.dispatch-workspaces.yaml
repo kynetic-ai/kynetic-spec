@@ -20198,7 +20198,7 @@ workspaces:
         head: ae4a1eecdbeb1a3cf0d00e0029d82050a04e5644
         last_seen_at: 2026-03-23T21:24:07.690Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-agent-list-json-fields-01kme876
-  - active_role: null
+  - active_role: worker
     base_branch_point: 02ef0686e50d41b82f181c1d1f9f23e2b7417e20
     bootstrap:
       status: succeeded
@@ -20287,7 +20287,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-23T23:58:26.691Z
+      updated_at: 2026-03-23T23:58:33.885Z
     integration:
       status: pending
       detail: null
@@ -20296,16 +20296,16 @@ workspaces:
       target_branch: dev
       target_commit: 02ef0686e50d41b82f181c1d1f9f23e2b7417e20
       updated_at: 2026-03-23T23:58:26.691Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KMEHRD4KBZG06321TVPA67HB"
     task_slug: fix-web-ui-pages-not-rendering-on-initial-load
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-03-23T23:58:26.691Z
+      last_active_at: 2026-03-23T23:58:33.885Z
+      last_reconciled_at: 2026-03-23T23:58:33.885Z
       created_at: 2026-03-23T23:58:26.691Z
-      updated_at: 2026-03-23T23:58:31.961Z
+      updated_at: 2026-03-23T23:58:33.885Z
     workspace_id: dispatch-workspace-01KMEHRD4KBZG06321TVPA67HB
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
