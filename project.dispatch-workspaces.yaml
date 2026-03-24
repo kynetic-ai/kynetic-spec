@@ -20600,15 +20600,10 @@ workspaces:
       reason: null
       updated_at: 2026-03-24T20:40:25.108Z
     health:
-      status: stale
-      issues:
-        - code: missing_reviewer_worktree
-          message: Reviewer worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-flaky-tests-canonical-task-workspace-contract-and-agent-dispatch-engine-01kmgn92-review"
-            is missing or no longer registered.
-          suggestion: Recreate the detached reviewer snapshot before running review again.
-      summary: Workspace registry record is stale and needs reconciliation.
-      updated_at: 2026-03-24T20:40:25.108Z
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-03-24T20:40:31.641Z
     integration:
       status: pending
       detail: null
@@ -20617,25 +20612,20 @@ workspaces:
       target_branch: dev
       target_commit: 1053b623d26e19a217913185932850a73e46c387
       updated_at: 2026-03-24T20:40:25.108Z
-    lifecycle_state: stale
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMGN921HM61YB644E7ZQ2XX9"
     task_slug: fix-flaky-tests-canonical-task-workspace-contract-and-agent-dispatch-engine
     timestamps:
       closed_at: null
       last_active_at: 2026-03-24T20:40:22.789Z
-      last_reconciled_at: 2026-03-24T20:40:25.108Z
+      last_reconciled_at: 2026-03-24T20:40:31.641Z
       created_at: 2026-03-24T20:18:21.452Z
-      updated_at: 2026-03-24T20:40:25.108Z
+      updated_at: 2026-03-24T20:40:31.641Z
     workspace_id: dispatch-workspace-01KMGN921HM61YB644E7ZQ2XX9
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: f99e417cb5641fddbfc863130de02dc550f0cc5b
-        last_seen_at: 2026-03-24T20:39:48.534Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-flaky-tests-canonical-task-workspace-contract-and-agent-dispatch-engine-01kmgn92-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/fix-flaky-tests-canonical-task-workspace-contract-and-agent-dispatch-engine/01kmgn92
