@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { createTempDir, cleanupTempDir, testUlid, testUlids } from "./helpers/cli.js";
+import { createTempDir, cleanupTempDir, readTestOutput, testUlid, testUlids } from "./helpers/cli.js";
 import {
   getTriageFilePath,
   loadTriageRecords,
@@ -242,7 +242,7 @@ describe("saveTriageRecord", () => {
   it("should write TriageFileSchema format with version", async () => {
     await saveTriageRecord(ctx, makeRecord());
 
-    const content = await fs.readFile(path.join(tempDir, "project.triage.yaml"), "utf-8");
+    const content = await readTestOutput(path.join(tempDir, "project.triage.yaml"));
     expect(content).toContain("kynetic_triage");
     expect(content).toContain("triage:");
   });

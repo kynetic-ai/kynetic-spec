@@ -13,6 +13,7 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import * as os from "node:os";
+import { readTestOutput } from "./helpers/cli.js";
 import { TaskBudgetSchema } from "../src/sessions/types.js";
 import {
   createBudget,
@@ -150,7 +151,7 @@ describe("Budget CRUD", () => {
 
       // Verify file on disk
       const budgetPath = getSessionBudgetPath(sessionsDir, sessionId);
-      const content = await fs.readFile(budgetPath, "utf-8");
+      const content = await readTestOutput(budgetPath);
       const parsed = JSON.parse(content);
       expect(parsed.max_per_cycle).toBe(3);
       expect(parsed.started_this_cycle).toBe(0);

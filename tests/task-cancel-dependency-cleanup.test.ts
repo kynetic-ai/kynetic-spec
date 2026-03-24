@@ -8,6 +8,7 @@ import {
   initGitRepo,
   kspecJson,
   kspecOutput as kspec,
+  readTestOutput,
   setupTempFixtures,
 } from "./helpers/cli";
 
@@ -175,7 +176,7 @@ describe("Integration: task cancel dependency cleanup", () => {
     const shadowDir = path.join(tempDir, ".kspec");
     const primaryTaskFile = path.join(shadowDir, "project.tasks.yaml");
     const secondaryTaskFile = path.join(shadowDir, "tasks", "split-downstream.tasks.yaml");
-    const primaryDoc = YAML.parse(await fs.readFile(primaryTaskFile, "utf-8")) as
+    const primaryDoc = YAML.parse(await readTestOutput(primaryTaskFile)) as
       | {
           tasks?: Array<Record<string, unknown>>;
         }
@@ -222,7 +223,7 @@ describe("Integration: task cancel dependency cleanup", () => {
       true,
     );
 
-    const downstreamFileDoc = YAML.parse(await fs.readFile(secondaryTaskFile, "utf-8")) as {
+    const downstreamFileDoc = YAML.parse(await readTestOutput(secondaryTaskFile)) as {
       tasks: Array<{ slugs?: string[]; depends_on?: string[]; notes?: Array<{ content: string }> }>;
     };
     const persistedDownstream = downstreamFileDoc.tasks.find((task) =>

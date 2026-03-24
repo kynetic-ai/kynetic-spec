@@ -12,6 +12,7 @@ import {
   kspec as kspecRun,
   kspecOutput as kspec,
   kspecJson,
+  readTestOutput,
 } from "./helpers/cli";
 
 describe("Integration: plan commands", () => {
@@ -367,7 +368,7 @@ describe("Integration: plan commands", () => {
       const output = kspec(`plan export @export-plan --output "${outputPath}"`, tempDir);
 
       expect(output).toContain("Exported plan content");
-      const fileContents = await fs.readFile(outputPath, "utf-8");
+      const fileContents = await readTestOutput(outputPath);
       expect(fileContents).toBe("# Iterative Plan\n\n## Specs\n\n- export me");
     });
 

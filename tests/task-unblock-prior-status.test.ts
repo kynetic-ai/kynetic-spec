@@ -5,11 +5,12 @@
  * AC: @state-blocked ac-1
  */
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { writeFileSync, readFileSync } from "node:fs";
+import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 import {
   kspecOutput as kspec,
   kspecJson,
+  readTestOutputSync,
   setupTempFixtures,
   cleanupTempDir,
   testUlid,
@@ -125,7 +126,7 @@ describe("Integration: restore prior status on task unblock", () => {
   // AC: @task-unblock ac-1 — backwards compat: no prior_status falls back to pending
   it("should fall back to pending when prior_status is not set (backwards compat)", () => {
     const tasksPath = join(tempDir, "project.tasks.yaml");
-    const existing = readFileSync(tasksPath, "utf-8");
+    const existing = readTestOutputSync(tasksPath);
     const ulid = testUlid("LEGACY", 1);
     const legacyTask = `
   - _ulid: ${ulid}

@@ -10,6 +10,7 @@ import {
   kspec as kspecRun,
   kspecOutput as kspec,
   kspecJson,
+  readTestOutput,
 } from "./helpers/cli";
 
 describe("Integration: task plan_ref field", () => {
@@ -154,7 +155,7 @@ describe("Integration: task plan_ref field", () => {
       const { parse, stringify } = await import("yaml");
 
       const tasksFile = join(tempDir, "project.tasks.yaml");
-      const content = await fs.readFile(tasksFile, "utf-8");
+      const content = await readTestOutput(tasksFile);
       const data = parse(content);
 
       // Find the task and add non-existent plan_ref

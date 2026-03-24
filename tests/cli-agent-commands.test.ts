@@ -16,6 +16,7 @@ import {
   createIsolatedKspecHome,
   cleanupTempDir,
   kspec,
+  readTestOutputSync,
   waitForStartup,
   testUlid,
   initGitRepo,
@@ -2060,7 +2061,7 @@ type DispatchWatchReconnectFixture = {
 
 function loadDispatchWatchFixture<T>(fileName: string): T {
   const fixturePath = path.join(DISPATCH_WATCH_FIXTURE_DIR, fileName);
-  return JSON.parse(fsSync.readFileSync(fixturePath, "utf-8")) as T;
+  return JSON.parse(readTestOutputSync(fixturePath)) as T;
 }
 
 /**

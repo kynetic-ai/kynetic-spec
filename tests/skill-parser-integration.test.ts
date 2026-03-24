@@ -6,7 +6,7 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { stringify as yamlStringify } from "yaml";
-import { createTempDir, cleanupTempDir, testUlid, initGitRepo } from "./helpers/cli";
+import { createTempDir, cleanupTempDir, readTestOutput, testUlid, initGitRepo } from "./helpers/cli";
 import {
   loadMetaContext,
   saveMetaItem,
@@ -133,7 +133,7 @@ describe("Skill Parser Integration", () => {
 
       // Verify _sourceFile is not in the saved file
       const manifestPath = path.join(tempDir, "kynetic.meta.yaml");
-      const content = await fs.readFile(manifestPath, "utf-8");
+      const content = await readTestOutput(manifestPath);
       expect(content).not.toContain("_sourceFile");
     });
 

@@ -11,7 +11,7 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { kspec as kspecFull, setupTempFixtures, cleanupTempDir, initGitRepo } from "./helpers/cli";
+import { kspec as kspecFull, readTestOutput, setupTempFixtures, cleanupTempDir, initGitRepo } from "./helpers/cli";
 import { getClaudeCodeSkillSubdir, getSkillSubdir } from "../src/parser/skill-render";
 import type { LoadedSkill } from "../src/parser/meta";
 
@@ -124,7 +124,7 @@ describe("Core Skill Namespace", () => {
 
       // Project skill at flat path
       const flatPath = path.join(tempDir, ".claude", "skills", "proj-test", "SKILL.md");
-      const content = await fs.readFile(flatPath, "utf-8");
+      const content = await readTestOutput(flatPath);
       expect(content).toContain("<!-- kspec-managed -->");
 
       // Should NOT exist in plugin directory
@@ -216,7 +216,7 @@ describe("Core Skill Namespace", () => {
 
       // Project at flat path should be rendered
       const projPath = path.join(tempDir, ".claude", "skills", "proj-b", "SKILL.md");
-      expect(await fs.readFile(projPath, "utf-8")).toContain("# Project B");
+      expect(await readTestOutput(projPath)).toContain("# Project B");
     });
 
     it("should clean up old plugin render target when rendering core skill", async () => {

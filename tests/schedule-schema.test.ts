@@ -17,7 +17,7 @@ import {
   OverlapPolicySchema,
   MetaManifestSchema,
 } from "../src/schema/index.js";
-import { testUlid, setupTempFixtures, cleanupTempDir, kspec as kspecRun } from "./helpers/cli.js";
+import { testUlid, setupTempFixtures, cleanupTempDir, kspec as kspecRun, readTestOutput } from "./helpers/cli.js";
 
 // ─── @dispatch-schedule-schema ac-1: Valid 5-field cron expressions ──────────
 
@@ -564,7 +564,7 @@ describe("Schedule validation integration", () => {
   it("should report error for schedule with invalid cron expression via schema validation", async () => {
     // Append a schedule with invalid cron to the existing fixture meta
     const metaPath = path.join(tempDir, "kynetic.meta.yaml");
-    const existing = await fs.readFile(metaPath, "utf-8");
+    const existing = await readTestOutput(metaPath);
 
     await fs.writeFile(
       metaPath,
@@ -602,7 +602,7 @@ schedules:
   it("should succeed with non-agent action schedules (no agent ref check needed)", async () => {
     // Append valid schedules to the existing fixture meta (preserves agents)
     const metaPath = path.join(tempDir, "kynetic.meta.yaml");
-    const existing = await fs.readFile(metaPath, "utf-8");
+    const existing = await readTestOutput(metaPath);
 
     await fs.writeFile(
       metaPath,
