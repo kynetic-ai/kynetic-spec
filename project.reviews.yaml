@@ -50372,7 +50372,19 @@ reviews:
     slugs: []
     title: "Plan re-review: Daemon Optimistic Data Layer (v2)"
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "All parent refs valid: @daemon-entity-cache under @daemon-server (exists, feature),
+          @daemon-read-path under @daemon-entity-cache (valid child), @cli-daemon-proxy under @cli
+          (exists, module), @daemon-command-api under @cli-daemon-proxy (valid child),
+          @daemon-proxy-detection under @cli-daemon-proxy (valid child)."
+        name: Spec hierarchy placement
+        required: true
+        created_at: 2026-03-24T22:17:27.466Z
+        completed_at: 2026-03-24T22:17:27.466Z
     events:
       - _ulid: 01KMGYQTS9JPQGA49J953K0HJM
         actor: "@claude"
@@ -50394,6 +50406,13 @@ reviews:
           kind: nit
           thread_ulid: 01KMGYRYABN8GRG5DK9PV94NPS
         timestamp: 2026-03-24T22:17:19.327Z
+      - _ulid: 01KMGYS71SJ73A0JCAWG8MKCQD
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Spec hierarchy placement
+        timestamp: 2026-03-24T22:17:27.865Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -50437,5 +50456,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-24T22:16:42.537Z
-    updated_at: 2026-03-24T22:17:18.923Z
+    updated_at: 2026-03-24T22:17:27.466Z
     notes: []
