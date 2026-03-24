@@ -37,8 +37,12 @@ description: >-
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev. Updated 3 skill source files (templates/skills/review,
+  .kspec/skills/work-gates, .kspec/skills/audit) and 5 rendered outputs to replace Biome/eslint
+  references with oxlint/oxfmt. All 8 substitutions verified correct. Zero stale references
+  remaining.
 depends_on: []
 context: []
 priority: 3
@@ -104,8 +108,24 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-03-24T20:19:12.190Z
+  - author: "@claude"
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev. Updated 3 skill source files (templates/skills/review, .kspec/skills/work-gates,
+          .kspec/skills/audit) and 5 rendered outputs to replace Biome/eslint references with
+          oxlint/oxfmt. All 8 substitutions verified correct. Zero stale references remaining.
+        previous: null
+      completed_at:
+        new: 2026-03-24T20:27:27.219Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-03-24T20:27:27.222Z
 created_at: 2026-03-24T08:14:07.184Z
 started_at: 2026-03-24T20:08:03.998Z
 submitted_at: 2026-03-24T20:17:24.617Z
+completed_at: 2026-03-24T20:27:27.219Z
 todos: []
 automation: eligible
