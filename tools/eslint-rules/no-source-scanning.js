@@ -23,7 +23,6 @@ const SAFE_PATH_SEGMENTS = [
   "tmp",
   ".kspec",
   "dist",
-  "build",
   "node_modules",
 ];
 
