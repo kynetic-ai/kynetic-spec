@@ -27651,6 +27651,17 @@ plans:
         content: Added lint test to deletion list
         author: "@claude"
         created_at: 2026-03-24T05:03:35.255Z
+      - _ulid: 01KMFE49JHWT1YSSN4ECFSVJG3
+        content: "The no-source-scanning oxlint rule (tools/eslint-rules/no-source-scanning.js) now enforces
+          the ban on source-scanning tests at lint time. It detects: (1) any readFileSync/readFile
+          call in test files targeting non-temp paths, (2) assertions on variables holding file read
+          results (expect().toContain, .includes, .match). Safe reads through
+          readTestOutput/readTestOutputSync helpers are allowlisted. The rule catches all known
+          offending files from this plan. The old tests/lint/no-static-analysis.test.ts is
+          superseded by this rule and should be deleted as part of
+          task-delete-static-analysis-tests-all."
+        author: "@claude"
+        created_at: 2026-03-24T08:07:10.673Z
   - _ulid: 01KMF7S3K8Z0SQNR3C51HXKBF3
     slugs:
       - plan-migrate-from-biome-to-oxlint-oxfmt
