@@ -7861,6 +7861,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-24T20:48:57.121Z
+  - _ulid: 01KMGT0W748935V7WCXENRJGDT
+    type: friction
+    content: Dispatch reviewer worktrees lack installed dependencies (node_modules). Reviewer agents
+      must run npm install before tests, which modifies package-lock.json and triggers session
+      checkpoint hooks about uncommitted changes. The dispatch workspace bootstrap or preparation
+      step should ensure dependencies are installed so review worktrees are test-ready on arrival.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-24T20:54:16.036Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
