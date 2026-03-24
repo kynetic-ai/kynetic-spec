@@ -1,13 +1,13 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { ServerWebSocket } from 'bun';
-import { HeartbeatManager } from '../packages/daemon/src/websocket/heartbeat';
-import { PubSubManager } from '../packages/daemon/src/websocket/pubsub';
-import type { ConnectionData } from '../packages/daemon/src/websocket/types';
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import type { ServerWebSocket } from "bun";
+import { HeartbeatManager } from "../packages/daemon/src/websocket/heartbeat";
+import { PubSubManager } from "../packages/daemon/src/websocket/pubsub";
+import type { ConnectionData } from "../packages/daemon/src/websocket/types";
 
-describe('HeartbeatManager', () => {
+describe("HeartbeatManager", () => {
   beforeEach(() => {
     vi.useFakeTimers();
-    vi.setSystemTime(new Date('2026-03-03T00:00:00.000Z'));
+    vi.setSystemTime(new Date("2026-03-03T00:00:00.000Z"));
   });
 
   afterEach(() => {
@@ -16,16 +16,16 @@ describe('HeartbeatManager', () => {
   });
 
   // AC: @ws-disconnect-lifecycle-cleanup ac-3
-  it('does not ping disconnected session after pubsub cleanup', () => {
+  it("does not ping disconnected session after pubsub cleanup", () => {
     const heartbeat = new HeartbeatManager();
     const pubsub = new PubSubManager();
-    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
+    const debugSpy = vi.spyOn(console, "debug").mockImplementation(() => {});
 
-    const active = createHeartbeatSocket('active');
-    const disconnected = createHeartbeatSocket('disconnected');
+    const active = createHeartbeatSocket("active");
+    const disconnected = createHeartbeatSocket("disconnected");
 
-    pubsub.addConnection('active', active);
-    pubsub.addConnection('disconnected', disconnected);
+    pubsub.addConnection("active", active);
+    pubsub.addConnection("disconnected", disconnected);
 
     heartbeat.start(pubsub.getAllConnections());
 
@@ -36,7 +36,7 @@ describe('HeartbeatManager', () => {
 
     expect(active.ping).toHaveBeenCalledTimes(1);
     expect(disconnected.ping).not.toHaveBeenCalled();
-    expect(debugSpy.mock.calls.some(([msg]) => String(msg).includes('disconnected'))).toBe(false);
+    expect(debugSpy.mock.calls.some(([msg]) => String(msg).includes("disconnected"))).toBe(false);
 
     heartbeat.stop();
   });
@@ -50,7 +50,7 @@ function createHeartbeatSocket(sessionId: string): ServerWebSocket<ConnectionDat
     seq: 0,
     lastPing: undefined,
     lastPong: thirtyOneSecondsAgo,
-    projectPath: '/tmp/project-a',
+    projectPath: "/tmp/project-a",
   };
 
   return {

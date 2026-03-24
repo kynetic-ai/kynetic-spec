@@ -10,6 +10,7 @@ import {
   initGitRepo,
   kspecJson,
   kspecOutput,
+  readTestOutput,
   setupTempFixtures,
   testUlid,
 } from "./helpers/cli.js";
@@ -105,10 +106,14 @@ async function writeTaskBackfillSpecFixture(rootDir: string): Promise<TaskBackfi
   };
 
   await fs.mkdir(path.join(rootDir, "modules"), { recursive: true });
-  await fs.writeFile(path.join(rootDir, "modules", "tasks.yaml"), yamlStringify(tasksModule), "utf-8");
+  await fs.writeFile(
+    path.join(rootDir, "modules", "tasks.yaml"),
+    yamlStringify(tasksModule),
+    "utf-8",
+  );
 
   const configPath = path.join(rootDir, "kynetic.yaml");
-  const config = yamlParse(await fs.readFile(configPath, "utf-8")) as {
+  const config = yamlParse(await readTestOutput(configPath)) as {
     includes?: string[];
   };
   const includes = new Set(config.includes ?? []);
@@ -226,19 +231,21 @@ describe("Task system AC backfill coverage", () => {
     kspecOutput("task start @blocked-task", tempDir);
     kspecOutput('task block @blocked-task --reason "Waiting on API"', tempDir);
 
-    const blocked = kspecJson<{ status: string; blocked_by: string[]; prior_status: string | null }>(
-      "task get @blocked-task",
-      tempDir,
-    );
+    const blocked = kspecJson<{
+      status: string;
+      blocked_by: string[];
+      prior_status: string | null;
+    }>("task get @blocked-task", tempDir);
     expect(blocked.status).toBe("blocked");
     expect(blocked.blocked_by).toEqual(["Waiting on API"]);
     expect(blocked.prior_status).toBe("in_progress");
 
     kspecOutput("task unblock @blocked-task", tempDir);
-    const unblocked = kspecJson<{ status: string; blocked_by: string[]; prior_status: string | null }>(
-      "task get @blocked-task",
-      tempDir,
-    );
+    const unblocked = kspecJson<{
+      status: string;
+      blocked_by: string[];
+      prior_status: string | null;
+    }>("task get @blocked-task", tempDir);
     expect(unblocked.status).toBe("in_progress");
     expect(unblocked.blocked_by).toEqual([]);
     expect(unblocked.prior_status).toBeNull();
@@ -251,10 +258,7 @@ describe("Task system AC backfill coverage", () => {
     kspecOutput("task submit @test-task-pending", tempDir);
     kspecOutput('task needs-work @test-task-pending --reason "Needs follow-up"', tempDir);
 
-    const ready = kspecJson<Array<{ slugs: string[]; status: string }>>(
-      "tasks ready",
-      tempDir,
-    );
+    const ready = kspecJson<Array<{ slugs: string[]; status: string }>>("tasks ready", tempDir);
 
     expect(ready[0].slugs).toContain("test-task-pending");
     expect(ready[0].status).toBe("needs_work");
@@ -507,10 +511,7 @@ describe("Task storage discovery coverage", () => {
     const ctx = await initContext(tempDir);
     const tasks = await loadAllTasks(ctx);
     expect(tasks).toHaveLength(2);
-    expect(tasks.map((task) => task.slugs[0]).sort()).toEqual([
-      "active-task",
-      "backlog-task",
-    ]);
+    expect(tasks.map((task) => task.slugs[0]).toSorted()).toEqual(["active-task", "backlog-task"]);
     expect(tasks.every((task) => task._sourceFile?.startsWith(tasksDir))).toBe(true);
   });
 });
@@ -562,7 +563,9 @@ describe("Task system AC backfill spec quality", () => {
 
   // AC: @tasks-ac-backfill ac-testable
   it("keeps each exported task-system AC in concrete given/when/then form", () => {
-    expect(backfillSnapshot.items.map((item) => item.ref).sort()).toEqual([...touchedTaskRefs].sort());
+    expect(backfillSnapshot.items.map((item) => item.ref).toSorted()).toEqual(
+      [...touchedTaskRefs].toSorted(),
+    );
 
     for (const item of backfillSnapshot.items) {
       expect(item.acceptance_criteria.length).toBeGreaterThan(0);

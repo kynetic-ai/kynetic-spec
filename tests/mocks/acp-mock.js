@@ -27,9 +27,9 @@
  * - MOCK_ACP_CUSTOM_UPDATE_TYPE: Send a specific sessionUpdate type (e.g., "tool_call", "plan")
  */
 
-import * as fs from 'node:fs';
-import * as readline from 'node:readline';
-import { execSync } from 'node:child_process';
+import * as fs from "node:fs";
+import * as readline from "node:readline";
+import { execSync } from "node:child_process";
 
 // ─── State ───────────────────────────────────────────────────────────────────
 
@@ -40,34 +40,34 @@ const pendingRequests = new Map();
 
 // ─── Environment Config ──────────────────────────────────────────────────────
 
-const exitCode = parseInt(process.env.MOCK_ACP_EXIT_CODE || '0', 10);
-const failCount = parseInt(process.env.MOCK_ACP_FAIL_COUNT || '0', 10);
+const exitCode = parseInt(process.env.MOCK_ACP_EXIT_CODE || "0", 10);
+const failCount = parseInt(process.env.MOCK_ACP_FAIL_COUNT || "0", 10);
 const stateFile = process.env.MOCK_ACP_STATE_FILE;
-const delayMs = parseInt(process.env.MOCK_ACP_DELAY_MS || '0', 10);
-const responseText = process.env.MOCK_ACP_RESPONSE_TEXT || 'Mock response';
-const stopReason = process.env.MOCK_ACP_STOP_REASON || 'end_turn';
+const delayMs = parseInt(process.env.MOCK_ACP_DELAY_MS || "0", 10);
+const responseText = process.env.MOCK_ACP_RESPONSE_TEXT || "Mock response";
+const stopReason = process.env.MOCK_ACP_STOP_REASON || "end_turn";
 const completeTask = process.env.MOCK_ACP_COMPLETE_TASK;
 const needsWorkTask = process.env.MOCK_ACP_NEEDS_WORK_TASK;
 const projectDir = process.env.MOCK_ACP_PROJECT_DIR;
-const cliPath = process.env.MOCK_ACP_CLI_PATH || 'kspec';
+const cliPath = process.env.MOCK_ACP_CLI_PATH || "kspec";
 // Write specified env var values to a file for test verification
 const verifyEnvFile = process.env.MOCK_ACP_VERIFY_ENV_FILE;
 const verifyEnvVars = process.env.MOCK_ACP_VERIFY_ENV_VARS; // comma-separated var names
 // Write process.argv to a file for verifying command-line args
 const verifyArgsFile = process.env.MOCK_ACP_VERIFY_ARGS_FILE;
-const sendPermissionRequest = process.env.MOCK_ACP_SEND_PERMISSION_REQUEST === 'true';
-const emitRateLimitEvent = process.env.MOCK_ACP_EMIT_RATE_LIMIT_EVENT === 'true';
+const sendPermissionRequest = process.env.MOCK_ACP_SEND_PERMISSION_REQUEST === "true";
+const emitRateLimitEvent = process.env.MOCK_ACP_EMIT_RATE_LIMIT_EVENT === "true";
 const actionableStderr = process.env.MOCK_ACP_EMIT_ACTIONABLE_STDERR;
 // Stall watchdog testing: suppress meaningful updates or send only non-meaningful ones
-const suppressUpdates = process.env.MOCK_ACP_SUPPRESS_UPDATES === 'true';
-const sendNonMeaningfulOnly = process.env.MOCK_ACP_SEND_NON_MEANINGFUL_ONLY === 'true';
+const suppressUpdates = process.env.MOCK_ACP_SUPPRESS_UPDATES === "true";
+const sendNonMeaningfulOnly = process.env.MOCK_ACP_SEND_NON_MEANINGFUL_ONLY === "true";
 // Send a specific sessionUpdate type before responding
 const customUpdateType = process.env.MOCK_ACP_CUSTOM_UPDATE_TYPE;
 
 // ─── JSON-RPC Helpers ────────────────────────────────────────────────────────
 
 function sendResponse(id, result) {
-  const response = { jsonrpc: '2.0', id, result };
+  const response = { jsonrpc: "2.0", id, result };
   console.log(JSON.stringify(response));
 }
 
@@ -80,18 +80,18 @@ function sendOutgoingRequest(method, params) {
   return new Promise((resolve, reject) => {
     const id = `mock-req-${nextRequestId++}`;
     pendingRequests.set(id, { resolve, reject });
-    const request = { jsonrpc: '2.0', id, method, params };
+    const request = { jsonrpc: "2.0", id, method, params };
     console.log(JSON.stringify(request));
   });
 }
 
 function sendError(id, code, message) {
-  const response = { jsonrpc: '2.0', id, error: { code, message } };
+  const response = { jsonrpc: "2.0", id, error: { code, message } };
   console.log(JSON.stringify(response));
 }
 
 function sendNotification(method, params) {
-  const notification = { jsonrpc: '2.0', method, params };
+  const notification = { jsonrpc: "2.0", method, params };
   console.log(JSON.stringify(notification));
 }
 
@@ -105,7 +105,7 @@ function shouldFail() {
   // Track call count in state file
   let callCount = 0;
   try {
-    callCount = parseInt(fs.readFileSync(stateFile, 'utf-8').trim(), 10) || 0;
+    callCount = parseInt(fs.readFileSync(stateFile, "utf-8").trim(), 10) || 0;
   } catch {
     // File doesn't exist yet
   }
@@ -134,7 +134,7 @@ async function handleInitialize(id, _params) {
 
   // Write requested env var values to file for test verification
   if (verifyEnvFile && verifyEnvVars) {
-    const vars = verifyEnvVars.split(',').map(v => v.trim());
+    const vars = verifyEnvVars.split(",").map((v) => v.trim());
     const result = {};
     for (const name of vars) {
       result[name] = process.env[name] || null;
@@ -152,9 +152,9 @@ async function handleInitialize(id, _params) {
   });
 }
 
-async function handleNewSession(id, params) {
+async function handleNewSession(id, _params) {
   if (!initialized) {
-    sendError(id, -32002, 'Not initialized');
+    sendError(id, -32002, "Not initialized");
     return;
   }
 
@@ -233,9 +233,16 @@ async function handlePrompt(id, params) {
             : customUpdateType === "tool_call_update"
               ? { toolCallUpdate: "progress", toolCallId: "mock-tool-1", progress: "working..." }
               : customUpdateType === "plan"
-                ? { entries: [{ id: "1", title: "Step 1", status: "in_progress", priority: "high" }] }
+                ? {
+                    entries: [
+                      { id: "1", title: "Step 1", status: "in_progress", priority: "high" },
+                    ],
+                  }
                 : customUpdateType === "usage_update"
-                  ? { usage: { inputTokens: 100, outputTokens: 50 }, cost: { inputCostUsd: 0.01, outputCostUsd: 0.005 } }
+                  ? {
+                      usage: { inputTokens: 100, outputTokens: 50 },
+                      cost: { inputCostUsd: 0.01, outputCostUsd: 0.005 },
+                    }
                   : {}),
       },
     });
@@ -255,12 +262,13 @@ async function handlePrompt(id, params) {
     try {
       // Use --force to complete from pending_review state
       // Use node + cliPath for CI compatibility (kspec may not be globally installed)
-      const cmd = cliPath === 'kspec'
-        ? `kspec task complete ${completeTask} --reason "Mock automated completion" --force`
-        : `node ${cliPath} task complete ${completeTask} --reason "Mock automated completion" --force`;
+      const cmd =
+        cliPath === "kspec"
+          ? `kspec task complete ${completeTask} --reason "Mock automated completion" --force`
+          : `node ${cliPath} task complete ${completeTask} --reason "Mock automated completion" --force`;
       execSync(cmd, {
         cwd: projectDir,
-        stdio: ['ignore', 'pipe', 'pipe'],
+        stdio: ["ignore", "pipe", "pipe"],
       });
       console.error(`Mock ACP: Completed task ${completeTask}`);
     } catch (err) {
@@ -272,12 +280,13 @@ async function handlePrompt(id, params) {
   // Kick task back to needs_work if configured (simulates reviewer findings)
   if (needsWorkTask && projectDir) {
     try {
-      const cmd = cliPath === 'kspec'
-        ? `kspec task needs-work ${needsWorkTask} --reason "Mock review findings"`
-        : `node ${cliPath} task needs-work ${needsWorkTask} --reason "Mock review findings"`;
+      const cmd =
+        cliPath === "kspec"
+          ? `kspec task needs-work ${needsWorkTask} --reason "Mock review findings"`
+          : `node ${cliPath} task needs-work ${needsWorkTask} --reason "Mock review findings"`;
       execSync(cmd, {
         cwd: projectDir,
-        stdio: ['ignore', 'pipe', 'pipe'],
+        stdio: ["ignore", "pipe", "pipe"],
       });
       console.error(`Mock ACP: Kicked task to needs_work ${needsWorkTask}`);
     } catch (err) {
@@ -302,8 +311,7 @@ async function handleRequestPermission(id, params) {
   // Auto-approve: Find an "allow" option (prefer allow_always, then allow_once)
   // This matches the yolo mode behavior in the real dispatch command
   const allowOption =
-    options.find((o) => o.kind === "allow_always") ||
-    options.find((o) => o.kind === "allow_once");
+    options.find((o) => o.kind === "allow_always") || options.find((o) => o.kind === "allow_once");
 
   if (allowOption) {
     // Grant permission using the correct ACP response format
@@ -333,7 +341,7 @@ async function handleMessage(line) {
       if (pending) {
         pendingRequests.delete(msg.id);
         if (msg.error) {
-          pending.reject(new Error(msg.error.message || 'Request failed'));
+          pending.reject(new Error(msg.error.message || "Request failed"));
         } else {
           pending.resolve(msg.result);
         }
@@ -362,7 +370,7 @@ async function handleMessage(line) {
       default:
         sendError(msg.id, -32601, `Method not found: ${msg.method}`);
     }
-  } catch (err) {
+  } catch {
     sendError(null, -32700, "Parse error");
   }
 }
@@ -375,14 +383,14 @@ const rl = readline.createInterface({
   terminal: false,
 });
 
-rl.on('line', (line) => {
+rl.on("line", (line) => {
   if (line.trim()) {
     handleMessage(line).catch((err) => {
-      console.error('Mock ACP error:', err.message);
+      console.error("Mock ACP error:", err.message);
     });
   }
 });
 
-rl.on('close', () => {
+rl.on("close", () => {
   process.exit(0);
 });

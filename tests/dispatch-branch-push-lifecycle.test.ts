@@ -10,12 +10,7 @@ import {
   provisionDispatchWorkspace,
   reapDispatchWorkspace,
 } from "../src/agent-runtime/workspace.js";
-import {
-  cleanupTempDir,
-  createTempDir,
-  initGitRepo,
-  testUlid,
-} from "./helpers/cli.js";
+import { cleanupTempDir, createTempDir, initGitRepo, testUlid } from "./helpers/cli.js";
 
 // AC: @trait-error-guidance ac-1 — N/A: push helpers are internal engine operations, not user-facing CLI commands
 // AC: @trait-error-guidance ac-2 — N/A: push failures return structured results, not CLI error messages

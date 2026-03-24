@@ -9,7 +9,6 @@
 
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import type { AcceptanceCriterion, InboxItem } from "../schema/index.js";
 import {
   AlignmentIndex,
   buildIndexes,
@@ -49,10 +48,7 @@ import type {
 async function getKspecVersion(): Promise<string> {
   try {
     // Try to find package.json relative to this module
-    const packagePath = path.resolve(
-      import.meta.dirname || __dirname,
-      "../../package.json"
-    );
+    const packagePath = path.resolve(import.meta.dirname || __dirname, "../../package.json");
     const packageJson = JSON.parse(await fs.readFile(packagePath, "utf-8"));
     return packageJson.version || "unknown";
   } catch {
@@ -67,7 +63,7 @@ async function getKspecVersion(): Promise<string> {
 function resolveSpecRefTitle(
   specRef: string | null | undefined,
   items: LoadedSpecItem[],
-  refIndex: ReferenceIndex
+  refIndex: ReferenceIndex,
 ): string | undefined {
   if (!specRef) return undefined;
 
@@ -85,7 +81,7 @@ function resolveSpecRefTitle(
 function expandTasks(
   tasks: LoadedTask[],
   items: LoadedSpecItem[],
-  refIndex: ReferenceIndex
+  refIndex: ReferenceIndex,
 ): ExportedTask[] {
   return tasks.map((task) => {
     const exportedTask: ExportedTask = { ...task };
@@ -105,10 +101,7 @@ function expandTasks(
  * Get inherited ACs from traits for a spec item.
  * AC: @gh-pages-export ac-4
  */
-function getInheritedACs(
-  item: LoadedSpecItem,
-  traitIndex: TraitIndex
-): InheritedAC[] {
+function getInheritedACs(item: LoadedSpecItem, traitIndex: TraitIndex): InheritedAC[] {
   const inheritedAC = traitIndex.getInheritedAC(item._ulid);
 
   return inheritedAC.map(({ trait, ac }) => ({
@@ -125,7 +118,7 @@ function getInheritedACs(
 function expandItems(
   items: LoadedSpecItem[],
   traitIndex: TraitIndex,
-  coveredACs: Set<string>
+  coveredACs: Set<string>,
 ): ExportedItem[] {
   return items.map((item) => {
     // Compute coverage for acceptance criteria using shared utility
@@ -153,9 +146,7 @@ function expandItems(
  * Convert validation result to exported format.
  * AC: @gh-pages-export ac-5
  */
-function convertValidationResult(
-  result: Awaited<ReturnType<typeof validate>>
-): ExportedValidation {
+function convertValidationResult(result: Awaited<ReturnType<typeof validate>>): ExportedValidation {
   return {
     valid: result.valid,
     errorCount: result.schemaErrors.length + result.refErrors.length,
@@ -190,10 +181,7 @@ function convertValidationResult(
   };
 }
 
-function expandPlans(
-  plans: Awaited<ReturnType<typeof loadPlans>>,
-  tasks: LoadedTask[]
-) {
+function expandPlans(plans: Awaited<ReturnType<typeof loadPlans>>, tasks: LoadedTask[]) {
   return plans.map((plan) => {
     const linkedTasks = getLinkedPlanSummaryTasks(plan, tasks);
     const countedTasks = linkedTasks.filter((task) => isCountedInPlanSummary(task));
@@ -218,7 +206,11 @@ function expandPlans(
   });
 }
 
-function buildAlignmentResponse(tasks: LoadedTask[], items: LoadedSpecItem[], refIndex: ReferenceIndex) {
+function buildAlignmentResponse(
+  tasks: LoadedTask[],
+  items: LoadedSpecItem[],
+  refIndex: ReferenceIndex,
+) {
   const alignmentIndex = new AlignmentIndex(tasks, items);
   alignmentIndex.buildLinks(refIndex);
 
@@ -254,9 +246,7 @@ function buildAlignmentResponse(tasks: LoadedTask[], items: LoadedSpecItem[], re
  * Generate a JSON snapshot of all kspec data.
  * AC: @gh-pages-export ac-1, ac-2, ac-3, ac-4, ac-5
  */
-export async function generateJsonSnapshot(
-  includeValidation = false
-): Promise<KspecSnapshot> {
+export async function generateJsonSnapshot(includeValidation = false): Promise<KspecSnapshot> {
   const ctx = await initContext();
 
   // Load all data

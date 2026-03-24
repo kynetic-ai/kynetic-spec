@@ -2,13 +2,7 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { stringify as yamlStringify } from "yaml";
-import {
-  kspec,
-  kspecJson,
-  testUlid,
-  setupTempFixtures,
-  cleanupTempDir,
-} from "./helpers/cli";
+import { kspec, kspecJson, testUlid, setupTempFixtures, cleanupTempDir } from "./helpers/cli";
 
 let tempDir: string;
 
@@ -25,10 +19,7 @@ afterEach(async () => {
  */
 function addInboxItem(text: string, tags: string[] = []): string {
   const tagArgs = tags.map((t) => `--tag ${t}`).join(" ");
-  const result = kspecJson<{ item: { _ulid: string } }>(
-    `inbox add "${text}" ${tagArgs}`,
-    tempDir,
-  );
+  const result = kspecJson<{ item: { _ulid: string } }>(`inbox add "${text}" ${tagArgs}`, tempDir);
   return result.item._ulid;
 }
 
@@ -41,10 +32,9 @@ function recordTriage(
   action: string,
   reasoning: string,
 ): { _ulid: string; status: string; action: string; inbox_ref: string } {
-  const result = kspecJson<{ record: { _ulid: string; status: string; action: string; inbox_ref: string } }>(
-    `triage record @${inboxRef} --action ${action} --reasoning "${reasoning}"`,
-    tempDir,
-  );
+  const result = kspecJson<{
+    record: { _ulid: string; status: string; action: string; inbox_ref: string };
+  }>(`triage record @${inboxRef} --action ${action} --reasoning "${reasoning}"`, tempDir);
   return result.record;
 }
 
@@ -60,10 +50,9 @@ describe("kspec triage record", () => {
     expect(result.exitCode).toBe(0);
 
     // Verify the record was created
-    const records = kspecJson<Array<{ status: string; action: string; item_snapshot: string; inbox_ref: string }>>(
-      "triage list",
-      tempDir,
-    );
+    const records = kspecJson<
+      Array<{ status: string; action: string; item_snapshot: string; inbox_ref: string }>
+    >("triage list", tempDir);
     expect(records.length).toBe(1);
     expect(records[0].status).toBe("triaged");
     expect(records[0].action).toBe("promote");
@@ -88,7 +77,18 @@ describe("kspec triage record", () => {
   // AC: @trait-json-output ac-2
   it("should include all data in JSON mode that is available in human-readable mode", () => {
     const inboxUlid = addInboxItem("Comprehensive JSON test");
-    const result = kspecJson<{ record: { _ulid: string; inbox_ref: string; item_snapshot: string; status: string; action: string; reasoning: string; decided_by: string; created_at: string } }>(
+    const result = kspecJson<{
+      record: {
+        _ulid: string;
+        inbox_ref: string;
+        item_snapshot: string;
+        status: string;
+        action: string;
+        reasoning: string;
+        decided_by: string;
+        created_at: string;
+      };
+    }>(
       `triage record @${inboxUlid.slice(0, 8)} --action promote --reasoning "important feature"`,
       tempDir,
     );
@@ -142,11 +142,9 @@ describe("kspec triage record", () => {
 
   // AC: @trait-error-guidance ac-1
   it("should return error with guidance when inbox item not found", () => {
-    const result = kspec(
-      'triage record @NOTEXIST --action promote --reasoning "test"',
-      tempDir,
-      { expectFail: true },
-    );
+    const result = kspec('triage record @NOTEXIST --action promote --reasoning "test"', tempDir, {
+      expectFail: true,
+    });
     expect(result.exitCode).toBe(3); // NOT_FOUND
     expect(result.stderr).toContain("not found");
   });
@@ -180,22 +178,16 @@ describe("kspec triage list", () => {
   // AC: @triage-cli-commands ac-3
   // AC: @trait-filterable-list ac-1
   it("should filter records by status", () => {
-    const ulid1 = addInboxItem("Item pending");
+    addInboxItem("Item pending");
     const ulid2 = addInboxItem("Item triaged");
     recordTriage(ulid2, "promote", "promote it");
 
     // Pending filter should find no records (we created triaged records)
-    const pending = kspecJson<Array<{ status: string }>>(
-      "triage list --status pending",
-      tempDir,
-    );
+    const pending = kspecJson<Array<{ status: string }>>("triage list --status pending", tempDir);
     expect(pending.length).toBe(0);
 
     // Triaged filter should find one record
-    const triaged = kspecJson<Array<{ status: string }>>(
-      "triage list --status triaged",
-      tempDir,
-    );
+    const triaged = kspecJson<Array<{ status: string }>>("triage list --status triaged", tempDir);
     expect(triaged.length).toBe(1);
     expect(triaged[0].status).toBe("triaged");
   });
@@ -207,10 +199,7 @@ describe("kspec triage list", () => {
     recordTriage(ulid1, "promote", "promote");
     recordTriage(ulid2, "defer", "defer");
 
-    const result = kspecJson<{ count: number }>(
-      "triage list --count",
-      tempDir,
-    );
+    const result = kspecJson<{ count: number }>("triage list --count", tempDir);
     expect(result.count).toBe(2);
   });
 
@@ -219,10 +208,7 @@ describe("kspec triage list", () => {
     const ulid1 = addInboxItem("JSON list test");
     recordTriage(ulid1, "promote", "test");
 
-    const records = kspecJson<Array<{ _ulid: string; status: string }>>(
-      "triage list",
-      tempDir,
-    );
+    const records = kspecJson<Array<{ _ulid: string; status: string }>>("triage list", tempDir);
     expect(Array.isArray(records)).toBe(true);
     expect(records.length).toBe(1);
     expect(records[0]._ulid).toBeDefined();
@@ -335,19 +321,15 @@ describe("kspec triage act", () => {
     const inboxUlid = addInboxItem("Create this as a task");
     const record = recordTriage(inboxUlid, "promote", "clear feature");
 
-    const result = kspec(
-      `triage act @${record._ulid.slice(0, 8)}`,
-      tempDir,
-    );
+    const result = kspec(`triage act @${record._ulid.slice(0, 8)}`, tempDir);
     expect(result.stdout).toContain("Acted on triage record");
     expect(result.stdout).toContain("promote");
     expect(result.stdout).toContain("Deleted promoted inbox item");
 
     // Verify record transitioned to acted_on
-    const records = kspecJson<Array<{ _ulid: string; status: string; acted_at: string; result_ref: string }>>(
-      "triage list",
-      tempDir,
-    );
+    const records = kspecJson<
+      Array<{ _ulid: string; status: string; acted_at: string; result_ref: string }>
+    >("triage list", tempDir);
     const acted = records.find((r) => r._ulid === record._ulid);
     expect(acted).toBeDefined();
     expect(acted!.status).toBe("acted_on");
@@ -355,10 +337,7 @@ describe("kspec triage act", () => {
     expect(acted!.result_ref).toBeDefined();
 
     // Verify inbox item was consumed
-    const inbox = kspecJson<Array<{ _ulid: string }>>(
-      "inbox list",
-      tempDir,
-    );
+    const inbox = kspecJson<Array<{ _ulid: string }>>("inbox list", tempDir);
     const found = inbox.find((item) => item._ulid === inboxUlid);
     expect(found).toBeUndefined();
   });
@@ -368,18 +347,12 @@ describe("kspec triage act", () => {
     const inboxUlid = addInboxItem("Keep this inbox item");
     const record = recordTriage(inboxUlid, "promote", "keep item");
 
-    const result = kspec(
-      `triage act @${record._ulid.slice(0, 8)} --keep`,
-      tempDir,
-    );
+    const result = kspec(`triage act @${record._ulid.slice(0, 8)} --keep`, tempDir);
     expect(result.stdout).toContain("Acted on triage record");
     expect(result.stdout).toContain("promote");
     expect(result.stdout).not.toContain("Deleted promoted inbox item");
 
-    const inbox = kspecJson<Array<{ _ulid: string }>>(
-      "inbox list",
-      tempDir,
-    );
+    const inbox = kspecJson<Array<{ _ulid: string }>>("inbox list", tempDir);
     const found = inbox.find((item) => item._ulid === inboxUlid);
     expect(found).toBeDefined();
   });
@@ -392,10 +365,7 @@ describe("kspec triage act", () => {
     kspec(`triage act @${record._ulid.slice(0, 8)}`, tempDir);
 
     // Verify inbox item was deleted
-    const inboxResult = kspecJson<Array<{ _ulid: string }>>(
-      "inbox list",
-      tempDir,
-    );
+    const inboxResult = kspecJson<Array<{ _ulid: string }>>("inbox list", tempDir);
     const found = inboxResult.find((item) => item._ulid === inboxUlid);
     expect(found).toBeUndefined();
   });
@@ -408,18 +378,12 @@ describe("kspec triage act", () => {
     kspec(`triage act @${record._ulid.slice(0, 8)}`, tempDir);
 
     // Verify record transitioned to acted_on
-    const records = kspecJson<Array<{ _ulid: string; status: string }>>(
-      "triage list",
-      tempDir,
-    );
+    const records = kspecJson<Array<{ _ulid: string; status: string }>>("triage list", tempDir);
     const acted = records.find((r) => r._ulid === record._ulid);
     expect(acted!.status).toBe("acted_on");
 
     // Inbox item should still exist
-    const inboxResult = kspecJson<Array<{ _ulid: string }>>(
-      "inbox list",
-      tempDir,
-    );
+    const inboxResult = kspecJson<Array<{ _ulid: string }>>("inbox list", tempDir);
     const inboxItem = inboxResult.find((item) => item._ulid === inboxUlid);
     expect(inboxItem).toBeDefined();
   });
@@ -462,18 +426,12 @@ describe("kspec triage act", () => {
     kspec(`triage act @${record._ulid.slice(0, 8)}`, tempDir);
 
     // Verify inbox item was deleted
-    const inboxResult = kspecJson<Array<{ _ulid: string }>>(
-      "inbox list",
-      tempDir,
-    );
+    const inboxResult = kspecJson<Array<{ _ulid: string }>>("inbox list", tempDir);
     const found = inboxResult.find((item) => item._ulid === inboxUlid);
     expect(found).toBeUndefined();
 
     // Verify record is acted_on
-    const records = kspecJson<Array<{ _ulid: string; status: string }>>(
-      "triage list",
-      tempDir,
-    );
+    const records = kspecJson<Array<{ _ulid: string; status: string }>>("triage list", tempDir);
     const acted = records.find((r) => r._ulid === record._ulid);
     expect(acted!.status).toBe("acted_on");
   });
@@ -488,11 +446,7 @@ describe("kspec triage act", () => {
     kspec(`triage act @${record._ulid.slice(0, 8)}`, tempDir);
 
     // Try to act again
-    const result = kspec(
-      `triage act @${record._ulid.slice(0, 8)}`,
-      tempDir,
-      { expectFail: true },
-    );
+    const result = kspec(`triage act @${record._ulid.slice(0, 8)}`, tempDir, { expectFail: true });
     expect(result.exitCode).toBe(4); // VALIDATION_FAILED
     expect(result.stderr).toContain("already been acted on");
   });
@@ -505,24 +459,19 @@ describe("kspec triage act", () => {
     const inboxUlid = testUlid("PEND", 2);
     const triageData = {
       kynetic_triage: "1.0",
-      triage: [{
-        _ulid: pendingUlid,
-        inbox_ref: inboxUlid,
-        item_snapshot: "A pending item",
-        status: "pending",
-        created_at: new Date().toISOString(),
-      }],
+      triage: [
+        {
+          _ulid: pendingUlid,
+          inbox_ref: inboxUlid,
+          item_snapshot: "A pending item",
+          status: "pending",
+          created_at: new Date().toISOString(),
+        },
+      ],
     };
-    await fs.writeFile(
-      path.join(tempDir, "project.triage.yaml"),
-      yamlStringify(triageData),
-    );
+    await fs.writeFile(path.join(tempDir, "project.triage.yaml"), yamlStringify(triageData));
 
-    const result = kspec(
-      `triage act @${pendingUlid.slice(0, 8)}`,
-      tempDir,
-      { expectFail: true },
-    );
+    const result = kspec(`triage act @${pendingUlid.slice(0, 8)}`, tempDir, { expectFail: true });
     expect(result.exitCode).toBe(4); // VALIDATION_FAILED
     expect(result.stderr).toContain("no decision yet");
     expect(result.stderr).toContain("kspec triage record");
@@ -534,25 +483,16 @@ describe("kspec triage act", () => {
     const inboxUlid = addInboxItem("Dry run test item");
     const record = recordTriage(inboxUlid, "promote", "dry run test");
 
-    const result = kspec(
-      `triage act @${record._ulid.slice(0, 8)} --dry-run`,
-      tempDir,
-    );
+    const result = kspec(`triage act @${record._ulid.slice(0, 8)} --dry-run`, tempDir);
     expect(result.stdout).toContain("Dry run");
     expect(result.stdout).toContain("Would create task");
     expect(result.stdout).toContain("Would delete promoted inbox item");
 
-    const keepResult = kspec(
-      `triage act @${record._ulid.slice(0, 8)} --dry-run --keep`,
-      tempDir,
-    );
+    const keepResult = kspec(`triage act @${record._ulid.slice(0, 8)} --dry-run --keep`, tempDir);
     expect(keepResult.stdout).toContain("Would keep promoted inbox item");
 
     // Verify record was NOT transitioned
-    const records = kspecJson<Array<{ _ulid: string; status: string }>>(
-      "triage list",
-      tempDir,
-    );
+    const records = kspecJson<Array<{ _ulid: string; status: string }>>("triage list", tempDir);
     const unchanged = records.find((r) => r._ulid === record._ulid);
     expect(unchanged!.status).toBe("triaged");
   });
@@ -572,16 +512,15 @@ describe("kspec triage override", () => {
     expect(result.stdout).toContain("Overrode triage decision");
 
     // Verify override fields
-    const records = kspecJson<Array<{
-      _ulid: string;
-      action: string;
-      override_reasoning: string;
-      override_by: string;
-      override_at: string;
-    }>>(
-      "triage list",
-      tempDir,
-    );
+    const records = kspecJson<
+      Array<{
+        _ulid: string;
+        action: string;
+        override_reasoning: string;
+        override_by: string;
+        override_at: string;
+      }>
+    >("triage list", tempDir);
     const overridden = records.find((r) => r._ulid === record._ulid);
     expect(overridden!.action).toBe("defer");
     expect(overridden!.override_reasoning).toBe("not ready yet");
@@ -628,11 +567,7 @@ describe("kspec triage export", () => {
 
   // AC: @trait-error-guidance ac-1
   it("should error on invalid format", () => {
-    const result = kspec(
-      "triage export --format invalid",
-      tempDir,
-      { expectFail: true },
-    );
+    const result = kspec("triage export --format invalid", tempDir, { expectFail: true });
     expect(result.exitCode).toBe(4); // VALIDATION_FAILED
     expect(result.stderr).toContain("Invalid format");
   });
@@ -653,11 +588,7 @@ describe("kspec triage start (interactive)", () => {
 
     // Start interactive triage — with EOF on stdin, it will display but not record
     // The key assertion is the count and which items are shown
-    const result = kspec(
-      "triage start",
-      tempDir,
-      { stdin: "skip\n" },
-    );
+    const result = kspec("triage start", tempDir, { stdin: "skip\n" });
     // Should show only 1 item to review (the untriaged one)
     expect(result.stdout).toContain("1 item(s) to review");
     // Should show the untriaged item text
@@ -674,17 +605,10 @@ describe("kspec triage start (interactive)", () => {
     // Provide action+reasoning for first item, then skip second
     // Each triage record is committed individually, so even if the process
     // ends early, committed records are preserved
-    const result = kspec(
-      "triage start",
-      tempDir,
-      { stdin: "defer\nfirst item reasoning\nskip\n" },
-    );
+    kspec("triage start", tempDir, { stdin: "defer\nfirst item reasoning\nskip\n" });
 
     // At least one record should have been created
-    const records = kspecJson<Array<{ status: string }>>(
-      "triage list",
-      tempDir,
-    );
+    const records = kspecJson<Array<{ status: string }>>("triage list", tempDir);
     expect(records.length).toBeGreaterThanOrEqual(1);
     expect(records.some((r) => r.status === "triaged")).toBe(true);
   });
@@ -695,10 +619,7 @@ describe("kspec triage get", () => {
     const inboxUlid = addInboxItem("Get test item");
     const record = recordTriage(inboxUlid, "promote", "get test reasoning");
 
-    const result = kspec(
-      `triage get @${record._ulid.slice(0, 8)}`,
-      tempDir,
-    );
+    const result = kspec(`triage get @${record._ulid.slice(0, 8)}`, tempDir);
     expect(result.stdout).toContain(record._ulid);
     expect(result.stdout).toContain("promote");
     expect(result.stdout).toContain("get test reasoning");
@@ -710,10 +631,13 @@ describe("kspec triage get", () => {
     const inboxUlid = addInboxItem("Get JSON test");
     const record = recordTriage(inboxUlid, "defer", "json get test");
 
-    const jsonResult = kspecJson<{ _ulid: string; status: string; action: string; reasoning: string; item_snapshot: string }>(
-      `triage get @${record._ulid.slice(0, 8)}`,
-      tempDir,
-    );
+    const jsonResult = kspecJson<{
+      _ulid: string;
+      status: string;
+      action: string;
+      reasoning: string;
+      item_snapshot: string;
+    }>(`triage get @${record._ulid.slice(0, 8)}`, tempDir);
     expect(jsonResult._ulid).toBe(record._ulid);
     expect(jsonResult.status).toBe("triaged");
     expect(jsonResult.action).toBe("defer");
@@ -723,11 +647,7 @@ describe("kspec triage get", () => {
 
   // AC: @trait-error-guidance ac-1
   it("should error when triage record not found", () => {
-    const result = kspec(
-      "triage get @NOTEXIST",
-      tempDir,
-      { expectFail: true },
-    );
+    const result = kspec("triage get @NOTEXIST", tempDir, { expectFail: true });
     expect(result.exitCode).toBe(3); // NOT_FOUND
     expect(result.stderr).toContain("not found");
   });
@@ -740,10 +660,7 @@ describe("kspec triage shadow commits", () => {
     recordTriage(inboxUlid, "promote", "shadow test");
 
     // Verify the triage file exists
-    const records = kspecJson<Array<{ _ulid: string }>>(
-      "triage list",
-      tempDir,
-    );
+    const records = kspecJson<Array<{ _ulid: string }>>("triage list", tempDir);
     expect(records.length).toBe(1);
   });
 
@@ -754,10 +671,7 @@ describe("kspec triage shadow commits", () => {
     kspec(`triage act @${record._ulid.slice(0, 8)}`, tempDir);
 
     // Verify the change was persisted
-    const records = kspecJson<Array<{ _ulid: string; status: string }>>(
-      "triage list",
-      tempDir,
-    );
+    const records = kspecJson<Array<{ _ulid: string; status: string }>>("triage list", tempDir);
     expect(records[0].status).toBe("acted_on");
   });
 });
@@ -806,10 +720,7 @@ describe("triage JSON output trait compliance", () => {
     const inboxUlid = addInboxItem("Export JSON precedence test");
     recordTriage(inboxUlid, "defer", "test");
 
-    const result = kspec(
-      "triage export --format context --json",
-      tempDir,
-    );
+    const result = kspec("triage export --format context --json", tempDir);
     // When --json is active, output should be JSON, not markdown
     expect(() => JSON.parse(result.stdout)).not.toThrow();
     const parsed = JSON.parse(result.stdout);
@@ -841,10 +752,7 @@ describe("triage filterable-list trait compliance", () => {
     recordTriage(ulid3, "promote", "third");
 
     // Filter by action only
-    const promotes = kspecJson<Array<{ action: string }>>(
-      "triage list --action promote",
-      tempDir,
-    );
+    const promotes = kspecJson<Array<{ action: string }>>("triage list --action promote", tempDir);
     expect(promotes.length).toBe(2);
     expect(promotes.every((r) => r.action === "promote")).toBe(true);
 
@@ -853,7 +761,9 @@ describe("triage filterable-list trait compliance", () => {
       "triage list --status triaged --action promote",
       tempDir,
     );
-    expect(statusAndAction.every((r) => r.status === "triaged" && r.action === "promote")).toBe(true);
+    expect(statusAndAction.every((r) => r.status === "triaged" && r.action === "promote")).toBe(
+      true,
+    );
   });
 
   // AC: @trait-filterable-list ac-6
@@ -883,10 +793,7 @@ describe("triage dry-run trait compliance", () => {
     const inboxUlid = addInboxItem("Dry run preview test");
     const record = recordTriage(inboxUlid, "promote", "test");
 
-    const result = kspec(
-      `triage act @${record._ulid.slice(0, 8)} --dry-run`,
-      tempDir,
-    );
+    const result = kspec(`triage act @${record._ulid.slice(0, 8)} --dry-run`, tempDir);
     expect(result.stdout).toContain("Dry run");
   });
 
@@ -895,10 +802,7 @@ describe("triage dry-run trait compliance", () => {
     const inboxUlid = addInboxItem("Dry run precedence test");
     const record = recordTriage(inboxUlid, "delete", "test");
 
-    kspec(
-      `triage act @${record._ulid.slice(0, 8)} --dry-run`,
-      tempDir,
-    );
+    kspec(`triage act @${record._ulid.slice(0, 8)} --dry-run`, tempDir);
 
     // Record should NOT be acted_on
     const records = kspecJson<Array<{ _ulid: string; status: string }>>("triage list", tempDir);
@@ -946,11 +850,7 @@ describe("triage semantic-exit-codes trait compliance", () => {
 describe("triage error-guidance trait compliance", () => {
   // AC: @trait-error-guidance ac-2
   it("should include suggested action in error messages", () => {
-    const result = kspec(
-      "triage get @NOTEXIST",
-      tempDir,
-      { expectFail: true },
-    );
+    const result = kspec("triage get @NOTEXIST", tempDir, { expectFail: true });
     expect(result.stderr).toContain("not found");
   });
 
@@ -960,11 +860,7 @@ describe("triage error-guidance trait compliance", () => {
     const record = recordTriage(inboxUlid, "defer", "test");
     kspec(`triage act @${record._ulid.slice(0, 8)}`, tempDir);
 
-    const result = kspec(
-      `triage act @${record._ulid.slice(0, 8)}`,
-      tempDir,
-      { expectFail: true },
-    );
+    const result = kspec(`triage act @${record._ulid.slice(0, 8)}`, tempDir, { expectFail: true });
     expect(result.stderr).toContain("already been acted on");
   });
 

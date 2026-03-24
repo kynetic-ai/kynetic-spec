@@ -9,12 +9,7 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { execSync } from "node:child_process";
-import {
-  kspec,
-  createTempDir,
-  cleanupTempDir,
-  initGitRepo,
-} from "../helpers/cli.js";
+import { kspec, createTempDir, cleanupTempDir, initGitRepo } from "../helpers/cli.js";
 
 // Direct imports for unit testing
 import {
@@ -51,7 +46,7 @@ async function cleanupMemoryDir(tempDir: string): Promise<void> {
     // Remove the project-specific directory under ~/.claude/projects/
     const projectDir = path.dirname(path.dirname(memoryPath)); // up from memory/MEMORY.md
     await fs.rm(projectDir, { recursive: true, force: true });
-  } catch (_err) {
+  } catch {
     // Ignore cleanup errors
   }
 }
@@ -122,10 +117,7 @@ describe("seedPermissions", () => {
 
     expect(result.seeded).toBe(true);
     const config = JSON.parse(
-      await fs.readFile(
-        path.join(tempDir, ".claude", "settings.json"),
-        "utf-8",
-      ),
+      await fs.readFile(path.join(tempDir, ".claude", "settings.json"), "utf-8"),
     );
     expect(config.permissions).toBeDefined();
     expect(config.permissions.allow).toContain("Bash(kspec:*)");
@@ -138,9 +130,7 @@ describe("seedPermissions", () => {
     await fs.mkdir(path.join(tempDir, ".claude"), { recursive: true });
     const existing = {
       hooks: {
-        UserPromptSubmit: [
-          { hooks: [{ type: "command", command: "echo test" }] },
-        ],
+        UserPromptSubmit: [{ hooks: [{ type: "command", command: "echo test" }] }],
       },
     };
     await fs.writeFile(
@@ -153,10 +143,7 @@ describe("seedPermissions", () => {
 
     expect(result.seeded).toBe(true);
     const config = JSON.parse(
-      await fs.readFile(
-        path.join(tempDir, ".claude", "settings.json"),
-        "utf-8",
-      ),
+      await fs.readFile(path.join(tempDir, ".claude", "settings.json"), "utf-8"),
     );
     // Hooks should be preserved
     expect(config.hooks.UserPromptSubmit).toHaveLength(1);
@@ -182,10 +169,7 @@ describe("seedPermissions", () => {
 
     // Existing permissions should be unchanged
     const config = JSON.parse(
-      await fs.readFile(
-        path.join(tempDir, ".claude", "settings.json"),
-        "utf-8",
-      ),
+      await fs.readFile(path.join(tempDir, ".claude", "settings.json"), "utf-8"),
     );
     expect(config.permissions.allow).toEqual(["Bash(custom:*)"]);
   });
@@ -207,10 +191,7 @@ describe("seedPermissions", () => {
 
     expect(result.seeded).toBe(true);
     const config = JSON.parse(
-      await fs.readFile(
-        path.join(tempDir, ".claude", "settings.json"),
-        "utf-8",
-      ),
+      await fs.readFile(path.join(tempDir, ".claude", "settings.json"), "utf-8"),
     );
     // Should contain BOTH custom and kspec patterns (additive merge)
     expect(config.permissions.allow).toContain("Bash(kspec:*)");
@@ -231,9 +212,7 @@ describe("seedPermissions", () => {
 
     expect(result.seeded).toBe(true);
     // File should NOT exist
-    await expect(
-      fs.access(path.join(tempDir, ".claude", "settings.json")),
-    ).rejects.toThrow();
+    await expect(fs.access(path.join(tempDir, ".claude", "settings.json"))).rejects.toThrow();
   });
 
   it("should fail safely when settings.json contains malformed JSON", async () => {
@@ -250,10 +229,7 @@ describe("seedPermissions", () => {
     expect(result.message).toContain("invalid JSON");
 
     // Original file should be untouched
-    const content = await fs.readFile(
-      path.join(tempDir, ".claude", "settings.json"),
-      "utf-8",
-    );
+    const content = await fs.readFile(path.join(tempDir, ".claude", "settings.json"), "utf-8");
     expect(content).toBe("{ invalid json content");
   });
 });

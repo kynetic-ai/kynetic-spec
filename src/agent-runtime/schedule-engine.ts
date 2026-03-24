@@ -13,11 +13,7 @@
 import { Cron } from "croner";
 import { initContext, loadMetaContext, type LoadedSchedule } from "../parser/index.js";
 import type { EventBus, EventEnvelope } from "./event-bus.js";
-import {
-  ActionExecutor,
-  type ActionEventContext,
-  type ActionRunEvent,
-} from "./action-executor.js";
+import { ActionExecutor, type ActionEventContext } from "./action-executor.js";
 import type { Action } from "../schema/action.js";
 import type { OverlapPolicy } from "../schema/schedules.js";
 
@@ -139,11 +135,13 @@ export class ScheduleEngine {
     this.eventBus = options.eventBus;
     this.actionExecutor = options.actionExecutor;
     this.evaluationIntervalMs = options.evaluationIntervalMs ?? EVALUATION_INTERVAL_MS;
-    this.scheduleLoader = options.scheduleLoader ?? (async () => {
-      const ctx = await initContext(this.projectDir);
-      const meta = await loadMetaContext(ctx);
-      return meta.schedules;
-    });
+    this.scheduleLoader =
+      options.scheduleLoader ??
+      (async () => {
+        const ctx = await initContext(this.projectDir);
+        const meta = await loadMetaContext(ctx);
+        return meta.schedules;
+      });
   }
 
   // ─── Public API ─────────────────────────────────────────────────────────
@@ -160,13 +158,11 @@ export class ScheduleEngine {
     this.running = true;
 
     // Subscribe to action events to track active runs
-    const actionCompletedSubId = this.eventBus.subscribe(
-      "action.completed",
-      (event) => this._handleActionComplete(event),
+    const actionCompletedSubId = this.eventBus.subscribe("action.completed", (event) =>
+      this._handleActionComplete(event),
     );
-    const actionFailedSubId = this.eventBus.subscribe(
-      "action.failed",
-      (event) => this._handleActionComplete(event),
+    const actionFailedSubId = this.eventBus.subscribe("action.failed", (event) =>
+      this._handleActionComplete(event),
     );
     this.subscriptionIds.push(actionCompletedSubId, actionFailedSubId);
 
@@ -179,11 +175,13 @@ export class ScheduleEngine {
     // Start evaluation loop
     this.evalTimer = setInterval(() => {
       if (this.running) {
-        const p = this._evaluate().catch((err) => {
-          console.error("[schedule-engine] Evaluation error:", err);
-        }).finally(() => {
-          this.inFlightEvals.delete(p);
-        });
+        const p = this._evaluate()
+          .catch((err) => {
+            console.error("[schedule-engine] Evaluation error:", err);
+          })
+          .finally(() => {
+            this.inFlightEvals.delete(p);
+          });
         this.inFlightEvals.add(p);
       }
     }, this.evaluationIntervalMs);
@@ -390,7 +388,10 @@ export class ScheduleEngine {
           }
           // Additional ticks are dropped
           this._advanceNextTick(record);
-          return { accepted: false, reason: "Dropped: already have a buffered tick (overlap_policy: buffer_one)" };
+          return {
+            accepted: false,
+            reason: "Dropped: already have a buffered tick (overlap_policy: buffer_one)",
+          };
 
         case "allow":
           // AC: @dispatch-schedule-entities ac-5 — allow concurrent
@@ -556,10 +557,7 @@ export class ScheduleEngine {
   /**
    * Check if schedule configuration has changed in a way that affects evaluation.
    */
-  private _hasConfigChanged(
-    oldSchedule: LoadedSchedule,
-    newSchedule: LoadedSchedule,
-  ): boolean {
+  private _hasConfigChanged(oldSchedule: LoadedSchedule, newSchedule: LoadedSchedule): boolean {
     return (
       oldSchedule.cron !== newSchedule.cron ||
       oldSchedule.timezone !== newSchedule.timezone ||

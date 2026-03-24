@@ -23,13 +23,7 @@ import { parseIntOption } from "../validators.js";
 /**
  * Fields that contain nested spec items (mirrors yaml.ts)
  */
-const _NESTED_ITEM_FIELDS = [
-  "modules",
-  "features",
-  "requirements",
-  "constraints",
-  "decisions",
-];
+const _NESTED_ITEM_FIELDS = ["modules", "features", "requirements", "constraints", "decisions"];
 
 /**
  * Get the parent path from a child's _path.
@@ -47,10 +41,7 @@ function getParentPath(childPath: string | undefined): string {
  * Check if an item is a direct child of another item based on _path.
  * Direct children have a path that extends the parent's path by exactly one field[index].
  */
-function isDirectChildOf(
-  child: LoadedSpecItem,
-  parent: LoadedSpecItem,
-): boolean {
+function isDirectChildOf(child: LoadedSpecItem, parent: LoadedSpecItem): boolean {
   const childPath = child._path || "";
   const parentPath = parent._path || "";
 
@@ -88,22 +79,16 @@ function findParentItem(
   if (!parentPath) return undefined;
 
   // Find item with matching path in the same source file
-  return allItems.find(
-    (i) => i._path === parentPath && i._sourceFile === item._sourceFile,
-  );
+  return allItems.find((i) => i._path === parentPath && i._sourceFile === item._sourceFile);
 }
 
 /**
  * Get direct children of a spec item.
  * Only returns immediate children, not grandchildren.
  */
-function getDirectChildren(
-  parent: LoadedSpecItem,
-  allItems: LoadedSpecItem[],
-): LoadedSpecItem[] {
+function getDirectChildren(parent: LoadedSpecItem, allItems: LoadedSpecItem[]): LoadedSpecItem[] {
   return allItems.filter(
-    (item) =>
-      item._sourceFile === parent._sourceFile && isDirectChildOf(item, parent),
+    (item) => item._sourceFile === parent._sourceFile && isDirectChildOf(item, parent),
   );
 }
 
@@ -148,9 +133,7 @@ function resolveSpecRef(
         for (const candidate of result.candidates) {
           const item = items.find((i) => i._ulid === candidate);
           const slug = item?.slugs[0] || "";
-          console.error(
-            `  - ${index.shortUlid(candidate)} ${slug ? `(${slug})` : ""}`,
-          );
+          console.error(`  - ${index.shortUlid(candidate)} ${slug ? `(${slug})` : ""}`);
         }
         break;
       case "duplicate_slug":
@@ -233,9 +216,7 @@ interface DeriveResult {
  * Generate implementation notes from spec item for newly derived task.
  * Includes description and acceptance criteria summary.
  */
-function generateImplementationNotes(
-  specItem: LoadedSpecItem,
-): string | undefined {
+function generateImplementationNotes(specItem: LoadedSpecItem): string | undefined {
   const parts: string[] = [];
 
   // Add description if present
@@ -373,9 +354,7 @@ async function deriveTaskFromSpec(
  * Prefers slug over ULID for readability.
  */
 function getTaskRef(task: LoadedTask, index: ReferenceIndex): string {
-  return task.slugs[0]
-    ? `@${task.slugs[0]}`
-    : `@${index.shortUlid(task._ulid)}`;
+  return task.slugs[0] ? `@${task.slugs[0]}` : `@${index.shortUlid(task._ulid)}`;
 }
 
 /**
@@ -463,10 +442,7 @@ function sortSpecsForDerive(
 
   const ready = specs
     .filter((spec) => indegree.get(spec._ulid) === 0)
-    .sort(
-      (a, b) =>
-        (originalOrder.get(a._ulid) || 0) - (originalOrder.get(b._ulid) || 0),
-    );
+    .toSorted((a, b) => (originalOrder.get(a._ulid) || 0) - (originalOrder.get(b._ulid) || 0));
   const sorted: LoadedSpecItem[] = [];
 
   while (ready.length > 0) {
@@ -481,11 +457,7 @@ function sortSpecsForDerive(
         const nextSpec = specMap.get(target);
         if (!nextSpec) continue;
         ready.push(nextSpec);
-        ready.sort(
-          (a, b) =>
-            (originalOrder.get(a._ulid) || 0) -
-            (originalOrder.get(b._ulid) || 0),
-        );
+        ready.sort((a, b) => (originalOrder.get(a._ulid) || 0) - (originalOrder.get(b._ulid) || 0));
       }
     }
   }
@@ -524,9 +496,7 @@ function resolveSpecDependencyTaskRefs(
 
     const dependencyTask =
       specToTaskMap.get(resolved.ulid) ||
-      alignmentIndex
-        .getTasksForSpec(resolved.ulid)
-        .find((task) => task.status !== "cancelled");
+      alignmentIndex.getTasksForSpec(resolved.ulid).find((task) => task.status !== "cancelled");
 
     if (dependencyTask) {
       taskRefs.push(getTaskRef(dependencyTask, index));
@@ -551,10 +521,7 @@ export function registerDeriveCommand(program: Command): void {
   markMutating(program.command("derive [ref]"))
     .description("Create task(s) from spec item(s)")
     .option("--all", "Derive tasks for all spec items without linked tasks")
-    .option(
-      "--flat",
-      "Only derive for the specified item, not children (default: recursive)",
-    )
+    .option("--flat", "Only derive for the specified item, not children (default: recursive)")
     .option("--force", "Create task even if one already exists for the spec")
     .option("--dry-run", "Show what would be created without making changes")
     .option("--priority <n>", "Set priority for created task(s) (1-5)")
@@ -687,10 +654,7 @@ export function registerDeriveCommand(program: Command): void {
           result.warnings = warnings;
 
           // Track created/would_create tasks for dependency resolution
-          if (
-            result.task &&
-            (result.action === "created" || result.action === "would_create")
-          ) {
+          if (result.task && (result.action === "created" || result.action === "would_create")) {
             specToTaskMap.set(specItem._ulid, result.task);
           }
           // Also track skipped tasks (existing) for dependency resolution
@@ -719,25 +683,19 @@ export function registerDeriveCommand(program: Command): void {
           output(results, () => {
             const created = results.filter((r) => r.action === "created");
             const skipped = results.filter((r) => r.action === "skipped");
-            const wouldCreate = results.filter(
-              (r) => r.action === "would_create",
-            );
+            const wouldCreate = results.filter((r) => r.action === "would_create");
 
             if (options.dryRun) {
               console.log("Would create:");
               for (const r of wouldCreate) {
                 const taskSlug = r.task?.slugs[0] || "";
-                const deps = r.dependsOn?.length
-                  ? ` (depends: ${r.dependsOn.join(", ")})`
-                  : "";
+                const deps = r.dependsOn?.length ? ` (depends: ${r.dependsOn.join(", ")})` : "";
                 const acInfo = r.acCount > 0 ? ` (${r.acCount} ACs)` : "";
                 console.log(`  + ${r.specItem.title}${acInfo}`);
                 console.log(`    -> ${taskSlug}${deps}`);
                 // Complexity warning for specs with many ACs
                 if (r.acCount > 5) {
-                  warn(
-                    `This spec has ${r.acCount} ACs — consider splitting before implementing.`,
-                  );
+                  warn(`This spec has ${r.acCount} ACs — consider splitting before implementing.`);
                 }
                 for (const warningMessage of r.warnings || []) {
                   warn(warningMessage);
@@ -762,16 +720,12 @@ export function registerDeriveCommand(program: Command): void {
             if (created.length > 0) {
               for (const r of created) {
                 const taskSlug = r.task?.slugs[0] || "";
-                const deps = r.dependsOn?.length
-                  ? ` (depends: ${r.dependsOn.join(", ")})`
-                  : "";
+                const deps = r.dependsOn?.length ? ` (depends: ${r.dependsOn.join(", ")})` : "";
                 const acInfo = r.acCount > 0 ? ` (${r.acCount} ACs)` : "";
                 console.log(`OK Created task: ${taskSlug}${acInfo}${deps}`);
                 // Complexity warning for specs with many ACs
                 if (r.acCount > 5) {
-                  warn(
-                    `This spec has ${r.acCount} ACs — consider splitting before implementing.`,
-                  );
+                  warn(`This spec has ${r.acCount} ACs — consider splitting before implementing.`);
                 }
                 for (const warningMessage of r.warnings || []) {
                   warn(warningMessage);

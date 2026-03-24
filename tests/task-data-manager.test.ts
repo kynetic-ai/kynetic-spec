@@ -7,7 +7,7 @@ import {
   TaskDataManager,
   TaskDataManagerError,
 } from "../src/parser/index.js";
-import type { TaskSummary, TaskStorageBackend } from "../src/parser/task-data-manager.js";
+import type { TaskStorageBackend } from "../src/parser/task-data-manager.js";
 import { registerBackend, unregisterBackend } from "../src/parser/task-data-manager.js";
 import { splitBackend, ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
 
@@ -16,7 +16,7 @@ ensureSplitBackendRegistered();
 import { TaskSchema } from "../src/schema/task.js";
 import {
   cleanupTempDir,
-  kspec,
+  readTestOutput,
   setupTempFixtures,
   testUlid,
   testUlids,
@@ -235,10 +235,7 @@ describe("TaskDataManager", () => {
         "  todos: []",
       ].join("\n");
 
-      await fs.writeFile(
-        path.join(subDir, "nested.tasks.yaml"),
-        nestedTasksYaml,
-      );
+      await fs.writeFile(path.join(subDir, "nested.tasks.yaml"), nestedTasksYaml);
 
       // loadAllTasks (the existing loader) should find the nested tasks
       const allTasks = await loadAllTasks(ctx);
@@ -323,9 +320,7 @@ describe("TaskDataManager", () => {
       manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
 
-      await expect(
-        manager.getTask(ctx, "@nonexistent-task"),
-      ).rejects.toThrow(TaskDataManagerError);
+      await expect(manager.getTask(ctx, "@nonexistent-task")).rejects.toThrow(TaskDataManagerError);
 
       try {
         await manager.getTask(ctx, "@nonexistent-task");
@@ -368,15 +363,11 @@ describe("TaskDataManager", () => {
       manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
 
-      const updated = await manager.mutateTask(
-        ctx,
-        "@test-task-pending",
-        (task) => ({
-          ...task,
-          status: "in_progress" as const,
-          started_at: "2026-03-20T00:00:00.000Z",
-        }),
-      );
+      const updated = await manager.mutateTask(ctx, "@test-task-pending", (task) => ({
+        ...task,
+        status: "in_progress" as const,
+        started_at: "2026-03-20T00:00:00.000Z",
+      }));
 
       expect(updated.status).toBe("in_progress");
       expect(updated.started_at).toBe("2026-03-20T00:00:00.000Z");
@@ -405,9 +396,7 @@ describe("TaskDataManager", () => {
       await manager.deleteTask(ctx, "@to-delete");
 
       // Confirm it's gone
-      await expect(
-        manager.getTask(ctx, "@to-delete"),
-      ).rejects.toThrow(TaskDataManagerError);
+      await expect(manager.getTask(ctx, "@to-delete")).rejects.toThrow(TaskDataManagerError);
     });
   });
 
@@ -448,8 +437,16 @@ describe("TaskDataManager", () => {
       const ctx = await initContext(tempDir);
 
       const DELAY_MS = 100;
-      const timestamps: { task1Start: number; task1End: number; task2Start: number; task2End: number } = {
-        task1Start: 0, task1End: 0, task2Start: 0, task2End: 0,
+      const timestamps: {
+        task1Start: number;
+        task1End: number;
+        task2Start: number;
+        task2End: number;
+      } = {
+        task1Start: 0,
+        task1End: 0,
+        task2Start: 0,
+        task2End: 0,
       };
 
       // Both mutations have a significant delay in their callback.
@@ -474,8 +471,7 @@ describe("TaskDataManager", () => {
       // task1's callback starts before task2's callback ends, and vice versa.
       // With serial execution, one would start after the other finishes.
       const overlap =
-        timestamps.task1Start < timestamps.task2End &&
-        timestamps.task2Start < timestamps.task1End;
+        timestamps.task1Start < timestamps.task2End && timestamps.task2Start < timestamps.task1End;
       expect(overlap).toBe(true);
 
       // Verify both mutations persisted correctly
@@ -505,12 +501,8 @@ describe("TaskDataManager", () => {
 
       // Verify both persisted
       const reloaded = await manager.listTasks(ctx);
-      const pending = reloaded.find((t) =>
-        t.slugs.includes("test-task-pending"),
-      );
-      const secondary = reloaded.find((t) =>
-        t.slugs.includes("test-task-secondary"),
-      );
+      const pending = reloaded.find((t) => t.slugs.includes("test-task-pending"));
+      const secondary = reloaded.find((t) => t.slugs.includes("test-task-secondary"));
       expect(pending?.priority).toBe(1);
       expect(secondary?.priority).toBe(1);
     });
@@ -533,9 +525,7 @@ describe("TaskDataManager", () => {
 
       // Verify persisted
       const reloaded = await manager.getTask(ctx, "@test-task-pending");
-      expect(
-        reloaded.notes.some((n) => n.content === "First note via manager"),
-      ).toBe(true);
+      expect(reloaded.notes.some((n) => n.content === "First note via manager")).toBe(true);
     });
   });
 
@@ -598,7 +588,7 @@ describe("TaskDataManager", () => {
     it("throws at construction for an unknown backend format", () => {
       // AC: @trait-error-guidance ac-1, ac-2
       try {
-        new TaskDataManager("nonexistent" as any);
+        const _unused = new TaskDataManager("nonexistent" as any);
         expect.fail("Should have thrown for unregistered backend");
       } catch (err) {
         expect(err).toBeInstanceOf(TaskDataManagerError);
@@ -651,7 +641,7 @@ describe("TaskDataManager", () => {
         },
         async createTask(_ctx, task) {
           calls.push("createTask");
-          return { ...task, _sourceFile: "/mock/split/tasks/" + task._ulid + "/task.yaml" };
+          return { ...task, _sourceFile: `/mock/split/tasks/${task._ulid}/task.yaml` };
         },
         async mutateTask(ctx, task, mutate) {
           calls.push("mutateTask");
@@ -700,7 +690,13 @@ describe("TaskDataManager", () => {
 
         // Verify ALL operation types were routed to the split backend
         expect(calls).toEqual(
-          expect.arrayContaining(["listTasks", "getTask", "createTask", "mutateTask", "deleteTask"]),
+          expect.arrayContaining([
+            "listTasks",
+            "getTask",
+            "createTask",
+            "mutateTask",
+            "deleteTask",
+          ]),
         );
       } finally {
         // Clean up: remove mock and restore real split backend
@@ -716,14 +712,22 @@ describe("TaskDataManager", () => {
 
       const mockSplitBackend: TaskStorageBackend = {
         format: "split",
-        async listTasks() { return []; },
-        async getTask() { return undefined; },
+        async listTasks() {
+          return [];
+        },
+        async getTask() {
+          return undefined;
+        },
         async createTask(_ctx, task) {
           // Split backend assigns its own _sourceFile
-          return { ...task, _sourceFile: "/split/tasks/" + task._ulid + "/task.yaml" };
+          return { ...task, _sourceFile: `/split/tasks/${task._ulid}/task.yaml` };
         },
-        async mutateTask(_ctx, task) { return { ...task, _sourceFile: task._sourceFile }; },
-        async mutateTasks(_ctx, tasks) { return tasks; },
+        async mutateTask(_ctx, task) {
+          return { ...task, _sourceFile: task._sourceFile };
+        },
+        async mutateTasks(_ctx, tasks) {
+          return tasks;
+        },
         async deleteTask() {},
       };
 
@@ -796,9 +800,7 @@ describe("TaskDataManager", () => {
       // Reload and verify both changes are present
       const reloaded = await manager.getTask(ctx, "@test-task-pending");
       expect(reloaded.status).toBe("in_progress");
-      expect(
-        reloaded.notes.some((n) => n.content === "Concurrent note"),
-      ).toBe(true);
+      expect(reloaded.notes.some((n) => n.content === "Concurrent note")).toBe(true);
     });
 
     it("serializes overlapping mutateTask and mutateTasks on the same task", async () => {
@@ -816,14 +818,11 @@ describe("TaskDataManager", () => {
           await new Promise((resolve) => setTimeout(resolve, 20));
           return { ...task, priority: 1 as const };
         }),
-        manager.mutateTasks(
-          ctx,
-          ["@test-task-pending", "@test-task-secondary"],
-          (tasks) =>
-            tasks.map((task) => ({
-              ...task,
-              tags: [...task.tags, "batch-tagged"],
-            })),
+        manager.mutateTasks(ctx, ["@test-task-pending", "@test-task-secondary"], (tasks) =>
+          tasks.map((task) => ({
+            ...task,
+            tags: [...task.tags, "batch-tagged"],
+          })),
         ),
       ]);
 
@@ -940,9 +939,7 @@ describe("TaskDataManager", () => {
       }
 
       // Regardless of order, the task should be gone after delete ran
-      await expect(
-        manager.getTask(ctx, "@race-target"),
-      ).rejects.toThrow(TaskDataManagerError);
+      await expect(manager.getTask(ctx, "@race-target")).rejects.toThrow(TaskDataManagerError);
     });
   });
 
@@ -1015,13 +1012,10 @@ describe("TaskDataManager", () => {
       const ctx = await initContext(tempDir);
 
       await expect(
-        manager.mutateTasks(
-          ctx,
-          ["@test-task-pending", "@test-task-secondary"],
-          (tasks) =>
-            tasks.map((task, i) =>
-              i === 0 ? { ...task, title: "" } : task, // first task invalid
-            ),
+        manager.mutateTasks(ctx, ["@test-task-pending", "@test-task-secondary"], (tasks) =>
+          tasks.map(
+            (task, i) => (i === 0 ? { ...task, title: "" } : task), // first task invalid
+          ),
         ),
       ).rejects.toThrow(TaskDataManagerError);
     });
@@ -1032,14 +1026,10 @@ describe("TaskDataManager", () => {
       const ctx = await initContext(tempDir);
 
       // Valid mutation should succeed
-      const updated = await manager.mutateTask(
-        ctx,
-        "@test-task-pending",
-        (task) => ({
-          ...task,
-          tags: [...task.tags, "validated"],
-        }),
-      );
+      const updated = await manager.mutateTask(ctx, "@test-task-pending", (task) => ({
+        ...task,
+        tags: [...task.tags, "validated"],
+      }));
 
       expect(updated.tags).toContain("validated");
 
@@ -1063,9 +1053,7 @@ describe("TaskDataManager", () => {
         expect.fail("Should have thrown");
       } catch (err) {
         expect(err).toBeInstanceOf(TaskDataManagerError);
-        expect((err as TaskDataManagerError).message).toContain(
-          "Task not found",
-        );
+        expect((err as TaskDataManagerError).message).toContain("Task not found");
       }
     });
 
@@ -1081,9 +1069,7 @@ describe("TaskDataManager", () => {
       } catch (err) {
         expect(err).toBeInstanceOf(TaskDataManagerError);
         expect((err as TaskDataManagerError).suggestion).toBeDefined();
-        expect((err as TaskDataManagerError).suggestion).toContain(
-          "kspec search",
-        );
+        expect((err as TaskDataManagerError).suggestion).toContain("kspec search");
       }
     });
 
@@ -1114,9 +1100,7 @@ describe("TaskDataManager", () => {
         expect.fail("Should have thrown");
       } catch (err) {
         expect(err).toBeInstanceOf(TaskDataManagerError);
-        expect((err as TaskDataManagerError).message).toContain(
-          "Failed to create task",
-        );
+        expect((err as TaskDataManagerError).message).toContain("Failed to create task");
       }
     });
   });
@@ -1134,11 +1118,7 @@ describe("TaskDataManager", () => {
       manager = new TaskDataManager();
       const ctx = await initContext(tempDir);
 
-      const { note } = await manager.addNote(
-        ctx,
-        "@test-task-pending",
-        "Auto-generated note test",
-      );
+      const { note } = await manager.addNote(ctx, "@test-task-pending", "Auto-generated note test");
 
       expect(note._ulid).toBeDefined();
       expect(note._ulid.length).toBe(26);
@@ -1164,9 +1144,7 @@ describe("TaskDataManager", () => {
 
   describe("singleton export", () => {
     it("provides a module-level singleton instance with monolithic format", async () => {
-      const { taskDataManager } = await import(
-        "../src/parser/task-data-manager.js"
-      );
+      const { taskDataManager } = await import("../src/parser/task-data-manager.js");
       expect(taskDataManager).toBeInstanceOf(TaskDataManager);
       expect(taskDataManager.storageFormat).toBe("monolithic");
     });
@@ -1227,13 +1205,8 @@ describe("TaskDataManager", () => {
       const ctx = await initContext(tempDir);
 
       await expect(
-        manager.mutateTasks(
-          ctx,
-          ["@test-task-pending", "@test-task-secondary"],
-          (tasks) =>
-            tasks.map((task, i) =>
-              i === 0 ? { ...task, _ulid: testUlid("FAKE") } : task,
-            ),
+        manager.mutateTasks(ctx, ["@test-task-pending", "@test-task-secondary"], (tasks) =>
+          tasks.map((task, i) => (i === 0 ? { ...task, _ulid: testUlid("FAKE") } : task)),
         ),
       ).rejects.toThrow(TaskDataManagerError);
     });
@@ -1249,7 +1222,7 @@ describe("TaskDataManager", () => {
       // Inject a custom field into the raw YAML by inserting it at the
       // correct indentation level within the tasks wrapper
       const tasksFile = path.join(ctx.specDir, "project.tasks.yaml");
-      const content = await fs.readFile(tasksFile, "utf-8");
+      const content = await readTestOutput(tasksFile);
       const lines = content.split("\n");
       const ulidLineIdx = lines.findIndex((l) => l.includes("01KF1645CA45ZT43W2T6HJMVA1"));
       expect(ulidLineIdx).toBeGreaterThan(-1);
@@ -1261,7 +1234,7 @@ describe("TaskDataManager", () => {
       await manager.addNote(ctx, "@test-task-pending", "Note after custom field");
 
       // Re-read raw file to verify custom field survived
-      const afterContent = await fs.readFile(tasksFile, "utf-8");
+      const afterContent = await readTestOutput(tasksFile);
       expect(afterContent).toContain("custom_backend_field: preserved-value");
     });
 
@@ -1272,7 +1245,7 @@ describe("TaskDataManager", () => {
 
       // Inject a custom field into the raw YAML
       const tasksFile = path.join(ctx.specDir, "project.tasks.yaml");
-      const content = await fs.readFile(tasksFile, "utf-8");
+      const content = await readTestOutput(tasksFile);
       const lines = content.split("\n");
       const ulidLineIdx = lines.findIndex((l) => l.includes("01KF1645CA45ZT43W2T6HJMVA1"));
       expect(ulidLineIdx).toBeGreaterThan(-1);
@@ -1286,7 +1259,7 @@ describe("TaskDataManager", () => {
       }));
 
       // Re-read raw file to verify custom field survived
-      const afterContent = await fs.readFile(tasksFile, "utf-8");
+      const afterContent = await readTestOutput(tasksFile);
       expect(afterContent).toContain("backend_metadata: keep-me");
     });
   });
@@ -1316,10 +1289,7 @@ describe("TaskDataManager", () => {
         "todos: []",
       ].join("\n");
 
-      await fs.writeFile(
-        path.join(ctx.specDir, "single.tasks.yaml"),
-        singleTaskYaml,
-      );
+      await fs.writeFile(path.join(ctx.specDir, "single.tasks.yaml"), singleTaskYaml);
 
       // getTask should find it
       const task = await manager.getTask(ctx, "@single-task");
@@ -1343,7 +1313,9 @@ describe("TaskDataManager", () => {
       let deleteCalled = false;
       const mockSplitBackend: TaskStorageBackend = {
         format: "split",
-        async listTasks() { return []; },
+        async listTasks() {
+          return [];
+        },
         async getTask(_ctx, ref) {
           // Return a task without _sourceFile to simulate split backend
           const { loadAllTasks: load, findTaskByRef: find } = await import("../src/parser/yaml.js");
@@ -1357,10 +1329,14 @@ describe("TaskDataManager", () => {
           return undefined;
         },
         async createTask(_ctx, task) {
-          return { ...task, _sourceFile: "/split/" + task._ulid + "/task.yaml" };
+          return { ...task, _sourceFile: `/split/${task._ulid}/task.yaml` };
         },
-        async mutateTask(_ctx, task) { return task; },
-        async mutateTasks(_ctx, tasks) { return tasks; },
+        async mutateTask(_ctx, task) {
+          return task;
+        },
+        async mutateTasks(_ctx, tasks) {
+          return tasks;
+        },
         async deleteTask() {
           deleteCalled = true;
         },

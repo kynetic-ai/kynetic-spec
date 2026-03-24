@@ -41,7 +41,9 @@ export function formatTriageRecordContext(
   }
   // AC: @triage-agent-export ac-3 — include override information
   if (record.override_reasoning) {
-    lines.push(`**Override:** ${record.override_reasoning} (by ${record.override_by || "unknown"})`);
+    lines.push(
+      `**Override:** ${record.override_reasoning} (by ${record.override_by || "unknown"})`,
+    );
   }
   if (record.acted_at) {
     lines.push(`**Acted at:** ${record.acted_at}`);
@@ -64,10 +66,7 @@ export function exportTriageAsContext(records: TriageRecord[]): string {
   const recordUlids = records.map((record) => record._ulid);
   let content = "# Triage Decisions\n\n";
   for (const record of records) {
-    content += formatTriageRecordContext(
-      record,
-      shortestUniqueUlid(record._ulid, recordUlids),
-    );
+    content += formatTriageRecordContext(record, shortestUniqueUlid(record._ulid, recordUlids));
   }
   return content;
 }

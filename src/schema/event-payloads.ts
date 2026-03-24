@@ -49,9 +49,7 @@ export type TaskEventPayload = z.infer<typeof TaskEventPayloadSchema>;
  * Field names guaranteed in task.* event payloads.
  * Derived from the schema for use in registry and filter validation.
  */
-export const TASK_PAYLOAD_FIELDS = Object.keys(
-  TaskEventPayloadSchema.shape,
-) as readonly string[];
+export const TASK_PAYLOAD_FIELDS = Object.keys(TaskEventPayloadSchema.shape) as readonly string[];
 
 // ─── Invocation Event Payloads ──────────────────────────────────────────────
 
@@ -114,14 +112,16 @@ export const INVOCATION_TERMINAL_PAYLOAD_FIELDS = Object.keys(
  *
  * AC: @dispatch-event-payload ac-3
  */
-export const WorkSummarySchema = z.object({
-  /** Number of session events recorded */
-  event_count: z.number().int().nonnegative().optional(),
-  /** Number of dispatch iterations */
-  iteration_count: z.number().int().nonnegative().optional(),
-  /** Number of tasks completed during the session */
-  tasks_completed: z.number().int().nonnegative().optional(),
-}).passthrough();
+export const WorkSummarySchema = z
+  .object({
+    /** Number of session events recorded */
+    event_count: z.number().int().nonnegative().optional(),
+    /** Number of dispatch iterations */
+    iteration_count: z.number().int().nonnegative().optional(),
+    /** Number of tasks completed during the session */
+    tasks_completed: z.number().int().nonnegative().optional(),
+  })
+  .passthrough();
 
 /**
  * Payload for session.* events (ended, idle_timeout, cancelled).

@@ -5,4 +5,3 @@ export function describeEnumValues(
 ): string {
   return `${label} (${values.join(joiner)})`;
 }
-

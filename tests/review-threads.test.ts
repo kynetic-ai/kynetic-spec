@@ -14,28 +14,16 @@ import {
   resolveThreadAtomic,
   reopenThreadAtomic,
 } from "../src/parser/review-threads.js";
-import {
-  createReviewRecord,
-  saveReviewRecord,
-  loadReviewRecords,
-} from "../src/parser/reviews.js";
+import { createReviewRecord, saveReviewRecord, loadReviewRecords } from "../src/parser/reviews.js";
 import type {
-  ReviewRecord,
   ReviewRecordInput,
   ReviewCodeAnchor,
   ReviewStructuredAnchor,
 } from "../src/schema/index.js";
 import type { KspecContext } from "../src/parser/yaml.js";
-import {
-  createTempDir,
-  cleanupTempDir,
-  initGitRepo,
-  testUlid,
-} from "./helpers/cli.js";
+import { createTempDir, cleanupTempDir, initGitRepo, testUlid } from "./helpers/cli.js";
 
-function makeInput(
-  overrides: Partial<ReviewRecordInput> = {},
-): ReviewRecordInput {
+function makeInput(overrides: Partial<ReviewRecordInput> = {}): ReviewRecordInput {
   return {
     title: "Test Review",
     author: "test-author",
@@ -198,9 +186,7 @@ describe("Code anchor threads (AC-2)", () => {
       },
     });
 
-    expect(updated.events[0].payload).toEqual(
-      expect.objectContaining({ anchor_type: "code" }),
-    );
+    expect(updated.events[0].payload).toEqual(expect.objectContaining({ anchor_type: "code" }));
   });
 });
 
@@ -305,7 +291,7 @@ describe("Structured anchor threads (AC-3)", () => {
 describe("Threaded replies (AC-4)", () => {
   // AC: @review-comment-threads-and-anchors ac-4
   it("should append a reply to an existing thread", () => {
-    let review = createReviewRecord(makeInput({ _ulid: testUlid("RV") }));
+    const review = createReviewRecord(makeInput({ _ulid: testUlid("RV") }));
     const { review: withThread, thread } = addThread(review, {
       author: "reviewer@example.com",
       body: "This needs fixing.",
@@ -319,9 +305,7 @@ describe("Threaded replies (AC-4)", () => {
     });
 
     // The thread should now have 2 entries
-    const updatedThread = withReply.threads.find(
-      (t) => t._ulid === thread._ulid,
-    )!;
+    const updatedThread = withReply.threads.find((t) => t._ulid === thread._ulid)!;
     expect(updatedThread.entries).toHaveLength(2);
     expect(updatedThread.entries[0].author).toBe("reviewer@example.com");
     expect(updatedThread.entries[0].body).toBe("This needs fixing.");
@@ -332,7 +316,7 @@ describe("Threaded replies (AC-4)", () => {
 
   // AC: @review-comment-threads-and-anchors ac-4
   it("should preserve thread as a durable conversation with multiple replies", () => {
-    let review = createReviewRecord(makeInput({ _ulid: testUlid("RV") }));
+    const review = createReviewRecord(makeInput({ _ulid: testUlid("RV") }));
 
     const { review: r1, thread } = addThread(review, {
       author: "reviewer@example.com",
@@ -363,7 +347,7 @@ describe("Threaded replies (AC-4)", () => {
 
   // AC: @review-comment-threads-and-anchors ac-4
   it("should record thread_replied events for each reply", () => {
-    let review = createReviewRecord(makeInput({ _ulid: testUlid("RV") }));
+    const review = createReviewRecord(makeInput({ _ulid: testUlid("RV") }));
     const { review: r1, thread } = addThread(review, {
       author: "reviewer@example.com",
       body: "Initial comment.",
@@ -433,11 +417,7 @@ describe("Thread kind field (AC-5)", () => {
     expect(nitThread.kind).toBe("nit");
 
     expect(r3.threads).toHaveLength(3);
-    expect(r3.threads.map((t) => t.kind)).toEqual([
-      "blocker",
-      "question",
-      "nit",
-    ]);
+    expect(r3.threads.map((t) => t.kind)).toEqual(["blocker", "question", "nit"]);
   });
 
   // AC: @review-comment-threads-and-anchors ac-5
@@ -460,9 +440,7 @@ describe("Thread kind field (AC-5)", () => {
       kind: "blocker",
     });
 
-    expect(updated.events[0].payload).toEqual(
-      expect.objectContaining({ kind: "blocker" }),
-    );
+    expect(updated.events[0].payload).toEqual(expect.objectContaining({ kind: "blocker" }));
   });
 });
 
@@ -628,9 +606,7 @@ describe("Thread resolution and reopening", () => {
       actor: "author@example.com",
     });
 
-    const resolvedThread = resolved.threads.find(
-      (t) => t._ulid === thread._ulid,
-    )!;
+    const resolvedThread = resolved.threads.find((t) => t._ulid === thread._ulid)!;
     expect(resolvedThread.resolved_at).toBeDefined();
     expect(resolvedThread.resolved_by).toBe("author@example.com");
   });
@@ -647,14 +623,10 @@ describe("Thread resolution and reopening", () => {
       actor: "author@example.com",
     });
 
-    const resolveEvent = resolved.events.find(
-      (e) => e.event_type === "thread_resolved",
-    );
+    const resolveEvent = resolved.events.find((e) => e.event_type === "thread_resolved");
     expect(resolveEvent).toBeDefined();
     expect(resolveEvent!.actor).toBe("author@example.com");
-    expect(resolveEvent!.payload).toEqual(
-      expect.objectContaining({ thread_ulid: thread._ulid }),
-    );
+    expect(resolveEvent!.payload).toEqual(expect.objectContaining({ thread_ulid: thread._ulid }));
   });
 
   it("should reopen a resolved thread", () => {
@@ -674,9 +646,7 @@ describe("Thread resolution and reopening", () => {
       actor: "reviewer@example.com",
     });
 
-    const reopenedThread = reopened.threads.find(
-      (t) => t._ulid === thread._ulid,
-    )!;
+    const reopenedThread = reopened.threads.find((t) => t._ulid === thread._ulid)!;
     expect(reopenedThread.resolved_at).toBeNull();
     expect(reopenedThread.resolved_by).toBeNull();
   });
@@ -698,9 +668,7 @@ describe("Thread resolution and reopening", () => {
       actor: "reviewer@example.com",
     });
 
-    const reopenEvent = reopened.events.find(
-      (e) => e.event_type === "thread_reopened",
-    );
+    const reopenEvent = reopened.events.find((e) => e.event_type === "thread_reopened");
     expect(reopenEvent).toBeDefined();
     expect(reopenEvent!.actor).toBe("reviewer@example.com");
   });
@@ -814,15 +782,11 @@ describe("Atomic thread persistence", () => {
     await saveReviewRecord(ctx, { ...review });
 
     const loaded = await loadReviewRecords(ctx);
-    const { review: updated, thread } = await addThreadAtomic(
-      ctx,
-      loaded[0],
-      {
-        author: "reviewer@example.com",
-        body: "Persisted thread.",
-        kind: "blocker",
-      },
-    );
+    const { review: _updated, thread } = await addThreadAtomic(ctx, loaded[0], {
+      author: "reviewer@example.com",
+      body: "Persisted thread.",
+      kind: "blocker",
+    });
 
     expect(thread._ulid).toBeDefined();
 
@@ -839,14 +803,10 @@ describe("Atomic thread persistence", () => {
     await saveReviewRecord(ctx, { ...review });
 
     const loaded = await loadReviewRecords(ctx);
-    const { review: withThread, thread } = await addThreadAtomic(
-      ctx,
-      loaded[0],
-      {
-        author: "reviewer@example.com",
-        body: "Initial.",
-      },
-    );
+    const { review: withThread, thread } = await addThreadAtomic(ctx, loaded[0], {
+      author: "reviewer@example.com",
+      body: "Initial.",
+    });
 
     await addReplyAtomic(ctx, withThread, {
       threadUlid: thread._ulid,
@@ -865,15 +825,11 @@ describe("Atomic thread persistence", () => {
     await saveReviewRecord(ctx, { ...review });
 
     const loaded = await loadReviewRecords(ctx);
-    const { review: withThread, thread } = await addThreadAtomic(
-      ctx,
-      loaded[0],
-      {
-        author: "reviewer@example.com",
-        body: "Fix.",
-        kind: "blocker",
-      },
-    );
+    const { review: withThread, thread } = await addThreadAtomic(ctx, loaded[0], {
+      author: "reviewer@example.com",
+      body: "Fix.",
+      kind: "blocker",
+    });
 
     await resolveThreadAtomic(ctx, withThread, {
       threadUlid: thread._ulid,
@@ -891,15 +847,11 @@ describe("Atomic thread persistence", () => {
     await saveReviewRecord(ctx, { ...review });
 
     const loaded = await loadReviewRecords(ctx);
-    const { review: withThread, thread } = await addThreadAtomic(
-      ctx,
-      loaded[0],
-      {
-        author: "reviewer@example.com",
-        body: "Fix.",
-        kind: "blocker",
-      },
-    );
+    const { review: withThread, thread } = await addThreadAtomic(ctx, loaded[0], {
+      author: "reviewer@example.com",
+      body: "Fix.",
+      kind: "blocker",
+    });
 
     const resolved = await resolveThreadAtomic(ctx, withThread, {
       threadUlid: thread._ulid,

@@ -74,7 +74,7 @@ describe("Doctor Command", () => {
 
       // Should have shadow checks but fail on initialization
       const initCheck = report.shadow.checks.find(
-        (c) => c.name === "initialized" || c.name === "branch-exists"
+        (c) => c.name === "initialized" || c.name === "branch-exists",
       );
       expect(initCheck).toBeDefined();
       expect(initCheck!.severity).toBe("error");
@@ -101,9 +101,7 @@ describe("Doctor Command", () => {
 
       const report = await getDoctorReport(tempDir);
 
-      const branchCheck = report.shadow.checks.find(
-        (c) => c.name === "branch-exists"
-      );
+      const branchCheck = report.shadow.checks.find((c) => c.name === "branch-exists");
       expect(branchCheck).toBeDefined();
       expect(branchCheck!.severity).toBe("ok");
       expect(branchCheck!.message).toContain("exists");
@@ -116,9 +114,7 @@ describe("Doctor Command", () => {
 
       const report = await getDoctorReport(tempDir);
 
-      const worktreeCheck = report.shadow.checks.find(
-        (c) => c.name === "worktree-exists"
-      );
+      const worktreeCheck = report.shadow.checks.find((c) => c.name === "worktree-exists");
       expect(worktreeCheck).toBeDefined();
       expect(worktreeCheck!.severity).toBe("ok");
     });
@@ -130,9 +126,7 @@ describe("Doctor Command", () => {
 
       const report = await getDoctorReport(tempDir);
 
-      const linkedCheck = report.shadow.checks.find(
-        (c) => c.name === "worktree-linked"
-      );
+      const linkedCheck = report.shadow.checks.find((c) => c.name === "worktree-linked");
       expect(linkedCheck).toBeDefined();
       expect(linkedCheck!.severity).toBe("ok");
       expect(linkedCheck!.message).toContain("linked");
@@ -147,9 +141,7 @@ describe("Doctor Command", () => {
 
       const report = await getDoctorReport(tempDir);
 
-      const artifactsCheck = report.shadow.checks.find(
-        (c) => c.name === "artifacts-dir"
-      );
+      const artifactsCheck = report.shadow.checks.find((c) => c.name === "artifacts-dir");
       expect(artifactsCheck).toBeDefined();
       expect(artifactsCheck!.severity).toBe("ok");
       expect(artifactsCheck!.message).toContain("exists");
@@ -166,9 +158,7 @@ describe("Doctor Command", () => {
 
       const report = await getDoctorReport(tempDir);
 
-      const artifactsCheck = report.shadow.checks.find(
-        (c) => c.name === "artifacts-dir"
-      );
+      const artifactsCheck = report.shadow.checks.find((c) => c.name === "artifacts-dir");
       expect(artifactsCheck).toBeDefined();
       expect(artifactsCheck!.severity).toBe("warning");
       expect(artifactsCheck!.guidance).toContain("kspec setup");
@@ -183,9 +173,7 @@ describe("Doctor Command", () => {
 
       const report = await getDoctorReport(tempDir);
 
-      const agentCheck = report.setup.checks.find(
-        (c) => c.name === "agent-type"
-      );
+      const agentCheck = report.setup.checks.find((c) => c.name === "agent-type");
       expect(agentCheck).toBeDefined();
       // Agent type will be "unknown" in test environment
       expect(agentCheck!.message).toContain("Agent type");
@@ -198,9 +186,7 @@ describe("Doctor Command", () => {
 
       const report = await getDoctorReport(tempDir);
 
-      const hooksCheck = report.setup.checks.find(
-        (c) => c.name === "hooks"
-      );
+      const hooksCheck = report.setup.checks.find((c) => c.name === "hooks");
       expect(hooksCheck).toBeDefined();
       // No hooks installed in bare test
       expect(hooksCheck!.severity).toBe("error");
@@ -263,9 +249,7 @@ describe("Doctor Command", () => {
 
       const report = await getDoctorReport(tempDir);
 
-      const skillsCheck = report.setup.checks.find(
-        (c) => c.name === "skills"
-      );
+      const skillsCheck = report.setup.checks.find((c) => c.name === "skills");
       expect(skillsCheck).toBeDefined();
       // No skills rendered in bare test
       expect(skillsCheck!.message).toContain("skills");
@@ -278,9 +262,7 @@ describe("Doctor Command", () => {
 
       const report = await getDoctorReport(tempDir);
 
-      const agentsMdCheck = report.setup.checks.find(
-        (c) => c.name === "agents-md"
-      );
+      const agentsMdCheck = report.setup.checks.find((c) => c.name === "agents-md");
       expect(agentsMdCheck).toBeDefined();
       // agents.md doesn't exist in bare test
       expect(agentsMdCheck!.severity).toBe("error");
@@ -307,9 +289,7 @@ describe("Doctor Command", () => {
       try {
         const report = await getDoctorReport(tempDir);
 
-        const daemonCheck = report.daemon.checks.find(
-          (c) => c.name === "daemon-running"
-        );
+        const daemonCheck = report.daemon.checks.find((c) => c.name === "daemon-running");
         expect(daemonCheck).toBeDefined();
         expect(daemonCheck!.severity).toBe("ok");
         expect(daemonCheck!.message).toContain("PID: 99999");
@@ -340,17 +320,13 @@ describe("Doctor Command", () => {
         const report = await getDoctorReport(tempDir);
 
         // Should have daemon-running check as ok (process is alive)
-        const runningCheck = report.daemon.checks.find(
-          (c) => c.name === "daemon-running"
-        );
+        const runningCheck = report.daemon.checks.find((c) => c.name === "daemon-running");
         expect(runningCheck).toBeDefined();
         expect(runningCheck!.severity).toBe("ok");
         expect(runningCheck!.message).toContain("PID: 12345");
 
         // Should have daemon-health check as warning (unreachable)
-        const healthCheck = report.daemon.checks.find(
-          (c) => c.name === "daemon-health"
-        );
+        const healthCheck = report.daemon.checks.find((c) => c.name === "daemon-health");
         expect(healthCheck).toBeDefined();
         expect(healthCheck!.severity).toBe("warning");
         expect(healthCheck!.message).toContain("unreachable");
@@ -381,9 +357,7 @@ describe("Doctor Command", () => {
       try {
         const report = await getDoctorReport(tempDir);
 
-        const daemonCheck = report.daemon.checks.find(
-          (c) => c.name === "daemon-running"
-        );
+        const daemonCheck = report.daemon.checks.find((c) => c.name === "daemon-running");
         expect(daemonCheck).toBeDefined();
         expect(daemonCheck!.severity).toBe("warning");
         expect(daemonCheck!.message).toContain("not running");
@@ -411,7 +385,7 @@ describe("Doctor Command", () => {
         const report = await getDoctorReport(tempDir);
 
         const daemonCheck = report.daemon.checks.find(
-          (c) => c.name === "daemon-running" && c.severity === "warning"
+          (c) => c.name === "daemon-running" && c.severity === "warning",
         );
         expect(daemonCheck).toBeDefined();
         expect(daemonCheck!.guidance).toContain("kspec serve");
@@ -434,17 +408,14 @@ describe("Doctor Command", () => {
           hooks: {
             UserPromptSubmit: [{ hooks: [{ command: "prompt-check" }] }],
           },
-        })
+        }),
       );
-      await fs.writeFile(
-        path.join(tempDir, "kspec-agents.md"),
-        "# Test agents"
-      );
+      await fs.writeFile(path.join(tempDir, "kspec-agents.md"), "# Test agents");
       // Create hash file
       await fs.mkdir(path.join(tempDir, ".kspec"), { recursive: true });
       await fs.writeFile(
         path.join(tempDir, ".kspec", ".kspec-agents-hash"),
-        JSON.stringify({ metaHash: "test", generatedAt: new Date().toISOString() })
+        JSON.stringify({ metaHash: "test", generatedAt: new Date().toISOString() }),
       );
 
       const report = await getDoctorReport(tempDir);
@@ -488,15 +459,11 @@ describe("Doctor Command", () => {
 
       // Shadow should be healthy
       expect(report.shadow.initialized).toBe(true);
-      const shadowErrors = report.shadow.checks.filter(
-        (c) => c.severity === "error"
-      );
+      const shadowErrors = report.shadow.checks.filter((c) => c.severity === "error");
       expect(shadowErrors.length).toBe(0);
 
       // Setup should have errors
-      const setupErrors = report.setup.checks.filter(
-        (c) => c.severity === "error"
-      );
+      const setupErrors = report.setup.checks.filter((c) => c.severity === "error");
       expect(setupErrors.length).toBeGreaterThan(0);
     });
 
@@ -507,12 +474,8 @@ describe("Doctor Command", () => {
 
       const report = await getDoctorReport(tempDir);
 
-      const setupErrors = report.setup.checks.filter(
-        (c) => c.severity === "error"
-      );
-      const hasSetupGuidance = setupErrors.some(
-        (c) => c.guidance?.includes("kspec setup")
-      );
+      const setupErrors = report.setup.checks.filter((c) => c.severity === "error");
+      const hasSetupGuidance = setupErrors.some((c) => c.guidance?.includes("kspec setup"));
       expect(hasSetupGuidance).toBe(true);
     });
   });
@@ -524,10 +487,7 @@ describe("Doctor Command", () => {
       await initializeShadow(tempDir, { projectName: "test-project" });
 
       // Create agents.md but no hash file (simulates unknown staleness)
-      await fs.writeFile(
-        path.join(tempDir, "kspec-agents.md"),
-        "# Test agents"
-      );
+      await fs.writeFile(path.join(tempDir, "kspec-agents.md"), "# Test agents");
 
       const report = await getDoctorReport(tempDir);
 
@@ -609,15 +569,12 @@ describe("Doctor Command", () => {
           hooks: {
             UserPromptSubmit: [{ hooks: [{ command: "prompt-check" }] }],
           },
-        })
+        }),
       );
-      await fs.writeFile(
-        path.join(tempDir, "kspec-agents.md"),
-        "# Test agents"
-      );
+      await fs.writeFile(path.join(tempDir, "kspec-agents.md"), "# Test agents");
       await fs.writeFile(
         path.join(tempDir, ".kspec", ".kspec-agents-hash"),
-        JSON.stringify({ metaHash: "test", generatedAt: new Date().toISOString() })
+        JSON.stringify({ metaHash: "test", generatedAt: new Date().toISOString() }),
       );
 
       const result = kspec("doctor --json", tempDir);

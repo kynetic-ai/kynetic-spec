@@ -8,12 +8,7 @@ import {
   getDispatchWorkspaceHealth,
   provisionDispatchWorkspace,
 } from "../src/agent-runtime/workspace.js";
-import {
-  cleanupTempDir,
-  createTempDir,
-  initGitRepo,
-  testUlid,
-} from "./helpers/cli.js";
+import { cleanupTempDir, createTempDir, initGitRepo, testUlid } from "./helpers/cli.js";
 
 // AC: @trait-error-guidance ac-1 — diagnostics include description of what went wrong
 // AC: @trait-error-guidance ac-2 — diagnostics include suggested action to resolve
@@ -57,21 +52,9 @@ async function setupConfig(dir: string): Promise<void> {
   );
   await fs.writeFile(
     path.join(dir, "kspec.config.yaml"),
-    [
-      "dispatch:",
-      "  base_branch: agent-dev",
-      "  worktree_root: .kspec-worktrees",
-      "",
-    ].join("\n"),
+    ["dispatch:", "  base_branch: agent-dev", "  worktree_root: .kspec-worktrees", ""].join("\n"),
     "utf-8",
   );
-}
-
-async function readRegistryWorkspaces(registryPath: string): Promise<Array<Record<string, any>>> {
-  const raw = YAML.parse(await fs.readFile(registryPath, "utf-8")) as {
-    workspaces?: Array<Record<string, any>>;
-  };
-  return raw.workspaces ?? [];
 }
 
 // AC: @review-and-fix-cycle-workspace-discovery-before-discard ac-1
@@ -521,7 +504,7 @@ describe("review and fix-cycle workspace discovery before discard", () => {
     const taskRef = `@${testUlid("TASK", 9)}`;
 
     // Provision workspace to create worktree with metadata file
-    const workspace = await provisionDispatchWorkspace({
+    await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
       task: {

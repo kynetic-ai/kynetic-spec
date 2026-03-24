@@ -9,7 +9,7 @@
  * AC: @ui-data-freshness ac-7 — Retry config for localhost daemon
  */
 
-import { QueryClient } from '@tanstack/svelte-query';
+import { QueryClient } from "@tanstack/svelte-query";
 
 /**
  * Create a configured QueryClient instance.
@@ -22,18 +22,18 @@ import { QueryClient } from '@tanstack/svelte-query';
  * - retryDelay 1s: Short delay for localhost.
  */
 export function createQueryClientInstance(): QueryClient {
-	return new QueryClient({
-		defaultOptions: {
-			queries: {
-				staleTime: 30 * 1000,
-				gcTime: 10 * 60 * 1000,
-				retry: 1,
-				retryDelay: 1000,
-				refetchOnWindowFocus: false,
-			},
-			mutations: {
-				retry: 0,
-			},
-		},
-	});
+  return new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 30 * 1000,
+        gcTime: 10 * 60 * 1000,
+        retry: 1,
+        retryDelay: 1000,
+        refetchOnWindowFocus: false,
+      },
+      mutations: {
+        retry: 0,
+      },
+    },
+  });
 }

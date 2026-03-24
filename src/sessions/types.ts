@@ -21,7 +21,14 @@ import { z } from "zod";
  *
  * AC: @session-model-evolution ac-3
  */
-export const SessionStatusSchema = z.enum(["active", "completed", "abandoned", "timed_out", "failed", "stalled"]);
+export const SessionStatusSchema = z.enum([
+  "active",
+  "completed",
+  "abandoned",
+  "timed_out",
+  "failed",
+  "stalled",
+]);
 export type SessionStatus = z.infer<typeof SessionStatusSchema>;
 
 // ─── Session Metadata ────────────────────────────────────────────────────────

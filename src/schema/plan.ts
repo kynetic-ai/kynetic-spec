@@ -1,10 +1,5 @@
 import { z } from "zod";
-import {
-  DateTimeSchema,
-  RefSchema,
-  SlugSchema,
-  UlidSchema,
-} from "./common.js";
+import { DateTimeSchema, RefSchema, SlugSchema, UlidSchema } from "./common.js";
 import { NoteSchema } from "./task.js";
 
 /**
@@ -16,13 +11,7 @@ import { NoteSchema } from "./task.js";
  * - completed: All derived work finished
  * - rejected: Plan was rejected, terminal state
  */
-export const PlanStatusSchema = z.enum([
-  "draft",
-  "approved",
-  "active",
-  "completed",
-  "rejected",
-]);
+export const PlanStatusSchema = z.enum(["draft", "approved", "active", "completed", "rejected"]);
 
 /**
  * Full plan schema

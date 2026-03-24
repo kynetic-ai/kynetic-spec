@@ -8,7 +8,7 @@
  * - @config-daemon ac-4: deprecation warning for manifest daemon block
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import {
@@ -47,7 +47,7 @@ describe("Daemon Config", () => {
         `
 daemon:
   port: 4000
-`
+`,
       );
 
       const result = await loadProjectConfig(tempDir);
@@ -69,7 +69,7 @@ daemon:
         `
 daemon:
   port: 4000
-`
+`,
       );
 
       process.env.KSPEC_DAEMON_PORT = "5000";
@@ -95,7 +95,7 @@ daemon:
         `
 daemon:
   auto_start: false
-`
+`,
       );
 
       const result = await loadProjectConfig(tempDir);
@@ -110,7 +110,7 @@ daemon:
         `
 daemon:
   auto_start: true
-`
+`,
       );
 
       const result = await loadProjectConfig(tempDir);
@@ -126,7 +126,7 @@ daemon:
 daemon:
   port: 4500
   auto_start: false
-`
+`,
       );
 
       const result = await loadProjectConfig(tempDir);
@@ -236,7 +236,7 @@ daemon:
             auto_start: true,
             port: 5000,
           },
-        })
+        }),
       );
 
       // initContext should still load the manifest without error
@@ -259,7 +259,7 @@ daemon:
             auto_start: true,
             port: 5000,
           },
-        })
+        }),
       );
 
       // Create config file with different daemon settings
@@ -269,7 +269,7 @@ daemon:
 daemon:
   port: 6000
   auto_start: false
-`
+`,
       );
 
       const ctx = await initContext(tempDir);
@@ -295,7 +295,7 @@ daemon:
             auto_start: false,
             port: 5000,
           },
-        })
+        }),
       );
 
       // Run a CLI command that triggers maybeAutoStartDaemon()
@@ -320,7 +320,7 @@ daemon:
         stringify({
           kynetic: "1.0",
           project: { name: "Test Project" },
-        })
+        }),
       );
       await fs.writeFile(
         path.join(tempDir, "kspec.config.yaml"),
@@ -328,7 +328,7 @@ daemon:
 daemon:
   port: 7777
   auto_start: false
-`
+`,
       );
 
       const ctx = await initContext(tempDir);
@@ -343,7 +343,7 @@ daemon:
         stringify({
           kynetic: "1.0",
           project: { name: "Test Project" },
-        })
+        }),
       );
 
       const ctx = await initContext(tempDir);

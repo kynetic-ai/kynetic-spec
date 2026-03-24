@@ -123,10 +123,7 @@ tasks:
   });
 
   it("runs combined scopes when flags are combined", () => {
-    const result = kspecWithStatus(
-      "validate --alignment --completeness",
-      tmpDir,
-    );
+    const result = kspecWithStatus("validate --alignment --completeness", tmpDir);
     const output = `${result.stdout}\n${result.stderr}`;
 
     expect(result.exitCode).toBe(6);

@@ -8,19 +8,19 @@
  * of good test quality. Production tests should meaningfully
  * validate the acceptance criteria they claim to cover.
  */
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import * as fs from 'node:fs/promises';
-import * as path from 'node:path';
-import * as os from 'node:os';
-import { validate } from '../src/parser/validate.js';
-import { initContext } from '../src/parser/yaml.js';
-import { writeYamlFilePreserveFormat } from '../src/parser/yaml.js';
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
+import * as os from "node:os";
+import { validate } from "../src/parser/validate.js";
+import { initContext } from "../src/parser/yaml.js";
+import { writeYamlFilePreserveFormat } from "../src/parser/yaml.js";
 
-describe('Trait AC coverage validation', () => {
+describe("Trait AC coverage validation", () => {
   let tempDir: string;
 
   beforeEach(async () => {
-    tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'kspec-test-'));
+    tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "kspec-test-"));
   });
 
   afterEach(async () => {
@@ -28,51 +28,51 @@ describe('Trait AC coverage validation', () => {
   });
 
   // AC: @trait-validation ac-1
-  it('should warn when spec implementing trait has no test coverage for trait AC', async () => {
+  it("should warn when spec implementing trait has no test coverage for trait AC", async () => {
     // Setup minimal kspec structure
-    const specDir = path.join(tempDir, 'spec');
-    const modulesDir = path.join(specDir, 'modules');
+    const specDir = path.join(tempDir, "spec");
+    const modulesDir = path.join(specDir, "modules");
     await fs.mkdir(modulesDir, { recursive: true });
 
     // Create manifest
     const manifest = {
       project: {
-        name: 'test-project',
+        name: "test-project",
       },
-      includes: ['modules/traits.yaml'],
+      includes: ["modules/traits.yaml"],
     };
-    await writeYamlFilePreserveFormat(path.join(specDir, 'kynetic.yaml'), manifest);
+    await writeYamlFilePreserveFormat(path.join(specDir, "kynetic.yaml"), manifest);
 
     // Create a trait with AC
     const trait = {
-      _ulid: '01KFCRVY8ERZEE2MNHEQXSG90T',
-      slugs: ['test-trait'],
-      title: 'Test Trait',
-      type: 'trait',
-      description: 'A test trait with AC',
-      status: { maturity: 'draft', implementation: 'not_started' },
+      _ulid: "01KFCRVY8ERZEE2MNHEQXSG90T",
+      slugs: ["test-trait"],
+      title: "Test Trait",
+      type: "trait",
+      description: "A test trait with AC",
+      status: { maturity: "draft", implementation: "not_started" },
       acceptance_criteria: [
         {
-          id: 'ac-1',
-          given: 'test condition',
-          when: 'test action',
-          then: 'test result',
+          id: "ac-1",
+          given: "test condition",
+          when: "test action",
+          then: "test result",
         },
       ],
     };
 
     // Create a spec implementing the trait
     const spec = {
-      _ulid: '01KFCRVY8MT49H8N6JW35NN2P3',
-      slugs: ['test-spec'],
-      title: 'Test Spec',
-      type: 'requirement',
-      description: 'A spec implementing the trait',
-      status: { maturity: 'draft', implementation: 'not_started' },
-      traits: ['@test-trait'],
+      _ulid: "01KFCRVY8MT49H8N6JW35NN2P3",
+      slugs: ["test-spec"],
+      title: "Test Spec",
+      type: "requirement",
+      description: "A spec implementing the trait",
+      status: { maturity: "draft", implementation: "not_started" },
+      traits: ["@test-trait"],
     };
 
-    await writeYamlFilePreserveFormat(path.join(modulesDir, 'traits.yaml'), [trait, spec]);
+    await writeYamlFilePreserveFormat(path.join(modulesDir, "traits.yaml"), [trait, spec]);
 
     // Run validation (no tests directory = no coverage)
     const ctx = await initContext(tempDir);
@@ -80,65 +80,65 @@ describe('Trait AC coverage validation', () => {
 
     // Verify warning for missing trait AC coverage
     const coverageWarnings = result.completenessWarnings.filter(
-      w =>
-        w.type === 'missing_test_coverage' &&
-        w.itemRef.includes('test-spec') &&
-        w.message.includes('inherited trait AC')
+      (w) =>
+        w.type === "missing_test_coverage" &&
+        w.itemRef.includes("test-spec") &&
+        w.message.includes("inherited trait AC"),
     );
     expect(coverageWarnings).toHaveLength(1);
-    expect(coverageWarnings[0].subtype).toBe('trait_ac');
-    expect(coverageWarnings[0].details).toContain('@test-trait ac-1');
+    expect(coverageWarnings[0].subtype).toBe("trait_ac");
+    expect(coverageWarnings[0].details).toContain("@test-trait ac-1");
   });
 
   // AC: @trait-validation ac-2
   // AC: @spec-traits ac-2
-  it('should not warn when trait AC has test annotation', async () => {
+  it("should not warn when trait AC has test annotation", async () => {
     // Setup minimal kspec structure
-    const specDir = path.join(tempDir, 'spec');
-    const modulesDir = path.join(specDir, 'modules');
-    const testsDir = path.join(tempDir, 'tests');
+    const specDir = path.join(tempDir, "spec");
+    const modulesDir = path.join(specDir, "modules");
+    const testsDir = path.join(tempDir, "tests");
     await fs.mkdir(modulesDir, { recursive: true });
     await fs.mkdir(testsDir, { recursive: true });
 
     // Create manifest
     const manifest = {
       project: {
-        name: 'test-project',
+        name: "test-project",
       },
-      includes: ['modules/traits.yaml'],
+      includes: ["modules/traits.yaml"],
     };
-    await writeYamlFilePreserveFormat(path.join(specDir, 'kynetic.yaml'), manifest);
+    await writeYamlFilePreserveFormat(path.join(specDir, "kynetic.yaml"), manifest);
 
     // Create a trait with AC
     const trait = {
-      _ulid: '01KFCRVY8ERZEE2MNHEQXSG90T',
-      slugs: ['test-trait'],
-      title: 'Test Trait',
-      type: 'trait',
-      description: 'A test trait with AC',
-      status: { maturity: 'draft', implementation: 'not_started' },
+      _ulid: "01KFCRVY8ERZEE2MNHEQXSG90T",
+      slugs: ["test-trait"],
+      title: "Test Trait",
+      type: "trait",
+      description: "A test trait with AC",
+      status: { maturity: "draft", implementation: "not_started" },
       acceptance_criteria: [
         {
-          id: 'ac-1',
-          given: 'test condition',
-          when: 'test action',
-          then: 'test result',
+          id: "ac-1",
+          given: "test condition",
+          when: "test action",
+          then: "test result",
         },
       ],
     };
 
     // Create a spec implementing the trait
     const spec = {
-      _ulid: '01KFCRVY8MT49H8N6JW35NN2P3',
-      slugs: ['test-spec'],
-      title: 'Test Spec',
-      type: 'requirement',
-      description: 'A spec implementing the trait',
-      status: { maturity: 'draft', implementation: 'not_started' },
-      traits: ['@test-trait'],
+      _ulid: "01KFCRVY8MT49H8N6JW35NN2P3",
+      slugs: ["test-spec"],
+      title: "Test Spec",
+      type: "requirement",
+      description: "A spec implementing the trait",
+      status: { maturity: "draft", implementation: "not_started" },
+      traits: ["@test-trait"],
     };
 
-    await writeYamlFilePreserveFormat(path.join(modulesDir, 'traits.yaml'), [trait, spec]);
+    await writeYamlFilePreserveFormat(path.join(modulesDir, "traits.yaml"), [trait, spec]);
 
     // Create a test file with trait AC annotation
     const testContent = `
@@ -156,7 +156,7 @@ describe('Test spec', () => {
   });
 });
 `;
-    await fs.writeFile(path.join(testsDir, 'test-spec.test.ts'), testContent);
+    await fs.writeFile(path.join(testsDir, "test-spec.test.ts"), testContent);
 
     // Run validation
     const ctx = await initContext(tempDir);
@@ -164,60 +164,60 @@ describe('Test spec', () => {
 
     // Verify no warning for trait AC coverage
     const coverageWarnings = result.completenessWarnings.filter(
-      w =>
-        w.type === 'missing_test_coverage' &&
-        w.itemRef.includes('test-spec') &&
-        w.message.includes('inherited trait AC')
+      (w) =>
+        w.type === "missing_test_coverage" &&
+        w.itemRef.includes("test-spec") &&
+        w.message.includes("inherited trait AC"),
     );
     expect(coverageWarnings).toHaveLength(0);
   });
 
   // AC: @trait-validation ac-3
-  it('should include trait AC coverage in kspec validate without special flag', async () => {
+  it("should include trait AC coverage in kspec validate without special flag", async () => {
     // Setup minimal kspec structure
-    const specDir = path.join(tempDir, 'spec');
-    const modulesDir = path.join(specDir, 'modules');
+    const specDir = path.join(tempDir, "spec");
+    const modulesDir = path.join(specDir, "modules");
     await fs.mkdir(modulesDir, { recursive: true });
 
     // Create manifest
     const manifest = {
       project: {
-        name: 'test-project',
+        name: "test-project",
       },
-      includes: ['modules/traits.yaml'],
+      includes: ["modules/traits.yaml"],
     };
-    await writeYamlFilePreserveFormat(path.join(specDir, 'kynetic.yaml'), manifest);
+    await writeYamlFilePreserveFormat(path.join(specDir, "kynetic.yaml"), manifest);
 
     // Create a trait with AC
     const trait = {
-      _ulid: '01KFCRVY8ERZEE2MNHEQXSG90T',
-      slugs: ['test-trait'],
-      title: 'Test Trait',
-      type: 'trait',
-      description: 'A test trait with AC',
-      status: { maturity: 'draft', implementation: 'not_started' },
+      _ulid: "01KFCRVY8ERZEE2MNHEQXSG90T",
+      slugs: ["test-trait"],
+      title: "Test Trait",
+      type: "trait",
+      description: "A test trait with AC",
+      status: { maturity: "draft", implementation: "not_started" },
       acceptance_criteria: [
         {
-          id: 'ac-1',
-          given: 'test condition',
-          when: 'test action',
-          then: 'test result',
+          id: "ac-1",
+          given: "test condition",
+          when: "test action",
+          then: "test result",
         },
       ],
     };
 
     // Create a spec implementing the trait
     const spec = {
-      _ulid: '01KFCRVY8MT49H8N6JW35NN2P3',
-      slugs: ['test-spec'],
-      title: 'Test Spec',
-      type: 'requirement',
-      description: 'A spec implementing the trait',
-      status: { maturity: 'draft', implementation: 'not_started' },
-      traits: ['@test-trait'],
+      _ulid: "01KFCRVY8MT49H8N6JW35NN2P3",
+      slugs: ["test-spec"],
+      title: "Test Spec",
+      type: "requirement",
+      description: "A spec implementing the trait",
+      status: { maturity: "draft", implementation: "not_started" },
+      traits: ["@test-trait"],
     };
 
-    await writeYamlFilePreserveFormat(path.join(modulesDir, 'traits.yaml'), [trait, spec]);
+    await writeYamlFilePreserveFormat(path.join(modulesDir, "traits.yaml"), [trait, spec]);
 
     // Run validation with default options (completeness enabled)
     const ctx = await initContext(tempDir);
@@ -225,43 +225,43 @@ describe('Test spec', () => {
 
     // Verify trait AC coverage warning appears in default validation
     const coverageWarnings = result.completenessWarnings.filter(
-      w =>
-        w.type === 'missing_test_coverage' &&
-        w.itemRef.includes('test-spec') &&
-        w.message.includes('inherited trait AC')
+      (w) =>
+        w.type === "missing_test_coverage" &&
+        w.itemRef.includes("test-spec") &&
+        w.message.includes("inherited trait AC"),
     );
     expect(coverageWarnings.length).toBeGreaterThan(0);
-    expect(coverageWarnings[0].subtype).toBe('trait_ac');
+    expect(coverageWarnings[0].subtype).toBe("trait_ac");
   });
 
   // AC: @trait-validation ac-4
-  it('should report error when spec references deleted trait', async () => {
+  it("should report error when spec references deleted trait", async () => {
     // Setup minimal kspec structure
-    const specDir = path.join(tempDir, 'spec');
-    const modulesDir = path.join(specDir, 'modules');
+    const specDir = path.join(tempDir, "spec");
+    const modulesDir = path.join(specDir, "modules");
     await fs.mkdir(modulesDir, { recursive: true });
 
     // Create manifest
     const manifest = {
       project: {
-        name: 'test-project',
+        name: "test-project",
       },
-      includes: ['modules/traits.yaml'],
+      includes: ["modules/traits.yaml"],
     };
-    await writeYamlFilePreserveFormat(path.join(specDir, 'kynetic.yaml'), manifest);
+    await writeYamlFilePreserveFormat(path.join(specDir, "kynetic.yaml"), manifest);
 
     // Create a spec that references a non-existent trait
     const spec = {
-      _ulid: '01KFCRVY8MT49H8N6JW35NN2P3',
-      slugs: ['test-spec'],
-      title: 'Test Spec',
-      type: 'requirement',
-      description: 'A spec referencing deleted trait',
-      status: { maturity: 'draft', implementation: 'not_started' },
-      traits: ['@deleted-trait'],
+      _ulid: "01KFCRVY8MT49H8N6JW35NN2P3",
+      slugs: ["test-spec"],
+      title: "Test Spec",
+      type: "requirement",
+      description: "A spec referencing deleted trait",
+      status: { maturity: "draft", implementation: "not_started" },
+      traits: ["@deleted-trait"],
     };
 
-    await writeYamlFilePreserveFormat(path.join(modulesDir, 'traits.yaml'), spec);
+    await writeYamlFilePreserveFormat(path.join(modulesDir, "traits.yaml"), spec);
 
     // Run validation
     const ctx = await initContext(tempDir);
@@ -269,71 +269,67 @@ describe('Test spec', () => {
 
     // Verify broken reference error
     const traitRefErrors = result.refErrors.filter(
-      e => e.field === 'traits' && e.ref === '@deleted-trait'
+      (e) => e.field === "traits" && e.ref === "@deleted-trait",
     );
     expect(traitRefErrors).toHaveLength(1);
-    expect(traitRefErrors[0].message).toContain('not found');
+    expect(traitRefErrors[0].message).toContain("not found");
   });
 
-  it('should handle multiple specs implementing same trait', async () => {
+  it("should handle multiple specs implementing same trait", async () => {
     // Setup minimal kspec structure
-    const specDir = path.join(tempDir, 'spec');
-    const modulesDir = path.join(specDir, 'modules');
+    const specDir = path.join(tempDir, "spec");
+    const modulesDir = path.join(specDir, "modules");
     await fs.mkdir(modulesDir, { recursive: true });
 
     // Create manifest
     const manifest = {
       project: {
-        name: 'test-project',
+        name: "test-project",
       },
-      includes: ['modules/traits.yaml'],
+      includes: ["modules/traits.yaml"],
     };
-    await writeYamlFilePreserveFormat(path.join(specDir, 'kynetic.yaml'), manifest);
+    await writeYamlFilePreserveFormat(path.join(specDir, "kynetic.yaml"), manifest);
 
     // Create a trait with AC
     const trait = {
-      _ulid: '01KFCRVY8ERZEE2MNHEQXSG90T',
-      slugs: ['shared-trait'],
-      title: 'Shared Trait',
-      type: 'trait',
-      description: 'A trait shared by multiple specs',
-      status: { maturity: 'draft', implementation: 'not_started' },
+      _ulid: "01KFCRVY8ERZEE2MNHEQXSG90T",
+      slugs: ["shared-trait"],
+      title: "Shared Trait",
+      type: "trait",
+      description: "A trait shared by multiple specs",
+      status: { maturity: "draft", implementation: "not_started" },
       acceptance_criteria: [
         {
-          id: 'ac-1',
-          given: 'test condition',
-          when: 'test action',
-          then: 'test result',
+          id: "ac-1",
+          given: "test condition",
+          when: "test action",
+          then: "test result",
         },
       ],
     };
 
     // Create two specs implementing the trait
     const spec1 = {
-      _ulid: '01KFCRVY8MT49H8N6JW35NN2P3',
-      slugs: ['spec-one'],
-      title: 'Spec One',
-      type: 'requirement',
-      description: 'First spec',
-      status: { maturity: 'draft', implementation: 'not_started' },
-      traits: ['@shared-trait'],
+      _ulid: "01KFCRVY8MT49H8N6JW35NN2P3",
+      slugs: ["spec-one"],
+      title: "Spec One",
+      type: "requirement",
+      description: "First spec",
+      status: { maturity: "draft", implementation: "not_started" },
+      traits: ["@shared-trait"],
     };
 
     const spec2 = {
-      _ulid: '01KFCRVY8NPV114TGJJ5FHB4G8',
-      slugs: ['spec-two'],
-      title: 'Spec Two',
-      type: 'requirement',
-      description: 'Second spec',
-      status: { maturity: 'draft', implementation: 'not_started' },
-      traits: ['@shared-trait'],
+      _ulid: "01KFCRVY8NPV114TGJJ5FHB4G8",
+      slugs: ["spec-two"],
+      title: "Spec Two",
+      type: "requirement",
+      description: "Second spec",
+      status: { maturity: "draft", implementation: "not_started" },
+      traits: ["@shared-trait"],
     };
 
-    await writeYamlFilePreserveFormat(path.join(modulesDir, 'traits.yaml'), [
-      trait,
-      spec1,
-      spec2,
-    ]);
+    await writeYamlFilePreserveFormat(path.join(modulesDir, "traits.yaml"), [trait, spec1, spec2]);
 
     // Run validation (no tests = both should warn)
     const ctx = await initContext(tempDir);
@@ -341,88 +337,84 @@ describe('Test spec', () => {
 
     // Verify both specs get warnings for missing trait AC coverage
     const spec1Warning = result.completenessWarnings.find(
-      w =>
-        w.type === 'missing_test_coverage' &&
-        w.itemRef.includes('spec-one') &&
-        w.message.includes('inherited trait AC')
+      (w) =>
+        w.type === "missing_test_coverage" &&
+        w.itemRef.includes("spec-one") &&
+        w.message.includes("inherited trait AC"),
     );
     const spec2Warning = result.completenessWarnings.find(
-      w =>
-        w.type === 'missing_test_coverage' &&
-        w.itemRef.includes('spec-two') &&
-        w.message.includes('inherited trait AC')
+      (w) =>
+        w.type === "missing_test_coverage" &&
+        w.itemRef.includes("spec-two") &&
+        w.message.includes("inherited trait AC"),
     );
 
     expect(spec1Warning).toBeDefined();
     expect(spec2Warning).toBeDefined();
   });
 
-  it('should handle spec implementing multiple traits', async () => {
+  it("should handle spec implementing multiple traits", async () => {
     // Setup minimal kspec structure
-    const specDir = path.join(tempDir, 'spec');
-    const modulesDir = path.join(specDir, 'modules');
+    const specDir = path.join(tempDir, "spec");
+    const modulesDir = path.join(specDir, "modules");
     await fs.mkdir(modulesDir, { recursive: true });
 
     // Create manifest
     const manifest = {
       project: {
-        name: 'test-project',
+        name: "test-project",
       },
-      includes: ['modules/traits.yaml'],
+      includes: ["modules/traits.yaml"],
     };
-    await writeYamlFilePreserveFormat(path.join(specDir, 'kynetic.yaml'), manifest);
+    await writeYamlFilePreserveFormat(path.join(specDir, "kynetic.yaml"), manifest);
 
     // Create two traits with different ACs
     const trait1 = {
-      _ulid: '01KFCRVY8ERZEE2MNHEQXSG90T',
-      slugs: ['trait-one'],
-      title: 'Trait One',
-      type: 'trait',
-      description: 'First trait',
-      status: { maturity: 'draft', implementation: 'not_started' },
+      _ulid: "01KFCRVY8ERZEE2MNHEQXSG90T",
+      slugs: ["trait-one"],
+      title: "Trait One",
+      type: "trait",
+      description: "First trait",
+      status: { maturity: "draft", implementation: "not_started" },
       acceptance_criteria: [
         {
-          id: 'ac-1',
-          given: 'trait1 condition',
-          when: 'trait1 action',
-          then: 'trait1 result',
+          id: "ac-1",
+          given: "trait1 condition",
+          when: "trait1 action",
+          then: "trait1 result",
         },
       ],
     };
 
     const trait2 = {
-      _ulid: '01KFCRVY8MT49H8N6JW35NN2P3',
-      slugs: ['trait-two'],
-      title: 'Trait Two',
-      type: 'trait',
-      description: 'Second trait',
-      status: { maturity: 'draft', implementation: 'not_started' },
+      _ulid: "01KFCRVY8MT49H8N6JW35NN2P3",
+      slugs: ["trait-two"],
+      title: "Trait Two",
+      type: "trait",
+      description: "Second trait",
+      status: { maturity: "draft", implementation: "not_started" },
       acceptance_criteria: [
         {
-          id: 'ac-1',
-          given: 'trait2 condition',
-          when: 'trait2 action',
-          then: 'trait2 result',
+          id: "ac-1",
+          given: "trait2 condition",
+          when: "trait2 action",
+          then: "trait2 result",
         },
       ],
     };
 
     // Create spec implementing both traits
     const spec = {
-      _ulid: '01KFCRVY8NPV114TGJJ5FHB4G8',
-      slugs: ['multi-trait-spec'],
-      title: 'Multi Trait Spec',
-      type: 'requirement',
-      description: 'Spec implementing multiple traits',
-      status: { maturity: 'draft', implementation: 'not_started' },
-      traits: ['@trait-one', '@trait-two'],
+      _ulid: "01KFCRVY8NPV114TGJJ5FHB4G8",
+      slugs: ["multi-trait-spec"],
+      title: "Multi Trait Spec",
+      type: "requirement",
+      description: "Spec implementing multiple traits",
+      status: { maturity: "draft", implementation: "not_started" },
+      traits: ["@trait-one", "@trait-two"],
     };
 
-    await writeYamlFilePreserveFormat(path.join(modulesDir, 'traits.yaml'), [
-      trait1,
-      trait2,
-      spec,
-    ]);
+    await writeYamlFilePreserveFormat(path.join(modulesDir, "traits.yaml"), [trait1, trait2, spec]);
 
     // Run validation (no tests = should warn about both trait ACs)
     const ctx = await initContext(tempDir);
@@ -430,52 +422,52 @@ describe('Test spec', () => {
 
     // Verify warning mentions both trait ACs
     const coverageWarnings = result.completenessWarnings.filter(
-      w =>
-        w.type === 'missing_test_coverage' &&
-        w.itemRef.includes('multi-trait-spec') &&
-        w.message.includes('inherited trait AC')
+      (w) =>
+        w.type === "missing_test_coverage" &&
+        w.itemRef.includes("multi-trait-spec") &&
+        w.message.includes("inherited trait AC"),
     );
     expect(coverageWarnings).toHaveLength(1);
-    expect(coverageWarnings[0].subtype).toBe('trait_ac');
-    expect(coverageWarnings[0].details).toContain('@trait-one ac-1');
-    expect(coverageWarnings[0].details).toContain('@trait-two ac-1');
+    expect(coverageWarnings[0].subtype).toBe("trait_ac");
+    expect(coverageWarnings[0].details).toContain("@trait-one ac-1");
+    expect(coverageWarnings[0].details).toContain("@trait-two ac-1");
   });
 
   // AC: @spec-completeness ac-4
-  it('should set subtype own_ac for own AC coverage warnings', async () => {
+  it("should set subtype own_ac for own AC coverage warnings", async () => {
     // Setup minimal kspec structure
-    const specDir = path.join(tempDir, 'spec');
-    const modulesDir = path.join(specDir, 'modules');
+    const specDir = path.join(tempDir, "spec");
+    const modulesDir = path.join(specDir, "modules");
     await fs.mkdir(modulesDir, { recursive: true });
 
     // Create manifest
     const manifest = {
       project: {
-        name: 'test-project',
+        name: "test-project",
       },
-      includes: ['modules/specs.yaml'],
+      includes: ["modules/specs.yaml"],
     };
-    await writeYamlFilePreserveFormat(path.join(specDir, 'kynetic.yaml'), manifest);
+    await writeYamlFilePreserveFormat(path.join(specDir, "kynetic.yaml"), manifest);
 
     // Create a spec with own ACs but no traits
     const spec = {
-      _ulid: '01KFCRVY8MT49H8N6JW35NN2P3',
-      slugs: ['spec-with-ac'],
-      title: 'Spec With AC',
-      type: 'requirement',
-      description: 'A spec with own acceptance criteria',
-      status: { maturity: 'draft', implementation: 'not_started' },
+      _ulid: "01KFCRVY8MT49H8N6JW35NN2P3",
+      slugs: ["spec-with-ac"],
+      title: "Spec With AC",
+      type: "requirement",
+      description: "A spec with own acceptance criteria",
+      status: { maturity: "draft", implementation: "not_started" },
       acceptance_criteria: [
         {
-          id: 'ac-1',
-          given: 'some condition',
-          when: 'some action',
-          then: 'some result',
+          id: "ac-1",
+          given: "some condition",
+          when: "some action",
+          then: "some result",
         },
       ],
     };
 
-    await writeYamlFilePreserveFormat(path.join(modulesDir, 'specs.yaml'), [spec]);
+    await writeYamlFilePreserveFormat(path.join(modulesDir, "specs.yaml"), [spec]);
 
     // Run validation (no tests = missing own AC coverage)
     const ctx = await initContext(tempDir);
@@ -483,12 +475,12 @@ describe('Test spec', () => {
 
     // Verify own AC coverage warning has subtype own_ac
     const ownACWarnings = result.completenessWarnings.filter(
-      w =>
-        w.type === 'missing_test_coverage' &&
-        w.subtype === 'own_ac' &&
-        w.itemRef.includes('spec-with-ac')
+      (w) =>
+        w.type === "missing_test_coverage" &&
+        w.subtype === "own_ac" &&
+        w.itemRef.includes("spec-with-ac"),
     );
     expect(ownACWarnings).toHaveLength(1);
-    expect(ownACWarnings[0].details).toContain('ac-1');
+    expect(ownACWarnings[0].details).toContain("ac-1");
   });
 });

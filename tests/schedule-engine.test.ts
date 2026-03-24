@@ -9,14 +9,9 @@
  */
 
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import {
-  ScheduleEngine,
-} from "../src/agent-runtime/schedule-engine.js";
+import { ScheduleEngine } from "../src/agent-runtime/schedule-engine.js";
 import { EventBus, type EventEnvelope } from "../src/agent-runtime/event-bus.js";
-import {
-  ActionExecutor,
-  type ActionEventContext,
-} from "../src/agent-runtime/action-executor.js";
+import { ActionExecutor, type ActionEventContext } from "../src/agent-runtime/action-executor.js";
 import type { ActionRun } from "../src/schema/action.js";
 import type { LoadedSchedule } from "../src/parser/meta.js";
 
@@ -115,9 +110,7 @@ function createMockActionExecutor(
 /**
  * Build a test schedule definition.
  */
-function makeSchedule(
-  overrides: Partial<LoadedSchedule> = {},
-): LoadedSchedule {
+function makeSchedule(overrides: Partial<LoadedSchedule> = {}): LoadedSchedule {
   return {
     _ulid: "01TEST00000000000000000001",
     id: "test-schedule",
@@ -736,6 +729,7 @@ describe("ScheduleEngine lifecycle", () => {
     expect(engine.isRunning()).toBe(false);
   });
 
+  // oxlint-disable-next-line vitest/expect-expect -- verifies no-throw after stop
   it("should unsubscribe from bus events on stop", async () => {
     const { engine } = createEngine([]);
 

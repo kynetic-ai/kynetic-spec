@@ -9,11 +9,11 @@
  * - ac-8: Fallback to Chokidar if Bun fs.watch fails
  */
 
-import { existsSync, watch, type FSWatcher } from 'fs';
-import { readFile, lstat } from 'fs/promises';
-import { parse as parseYaml } from 'yaml';
-import chokidar, { type FSWatcher as ChokidarWatcher } from 'chokidar';
-import { join, relative } from 'path';
+import { existsSync, watch, type FSWatcher } from "fs";
+import { readFile, lstat } from "fs/promises";
+import { parse as parseYaml } from "yaml";
+import { watch as chokidarWatch, type FSWatcher as ChokidarWatcher } from "chokidar";
+import { join, relative } from "path";
 
 export interface WatcherOptions {
   kspecDir: string;
@@ -23,7 +23,7 @@ export interface WatcherOptions {
 }
 
 export interface WatcherEvent {
-  type: 'change' | 'error';
+  type: "change" | "error";
   file: string;
   content?: string;
   error?: string;
@@ -54,7 +54,7 @@ export class KspecWatcher {
       // Try Bun's native fs.watch first
       await this.startBunWatcher();
     } catch (error) {
-      console.warn('[watcher] Bun fs.watch failed, falling back to Chokidar', error);
+      console.warn("[watcher] Bun fs.watch failed, falling back to Chokidar", error);
       // AC-8: Fallback to Chokidar
       this.usingChokidar = true;
       await this.startChokidarWatcher();
@@ -65,49 +65,45 @@ export class KspecWatcher {
    * Start Bun's native file watcher
    */
   private async startBunWatcher(): Promise<void> {
-    this.watcher = watch(
-      this.options.kspecDir,
-      { recursive: true },
-      (eventType, filename) => {
-        if (!filename || !filename.endsWith('.yaml')) return;
+    this.watcher = watch(this.options.kspecDir, { recursive: true }, (eventType, filename) => {
+      if (!filename || !filename.endsWith(".yaml")) return;
 
-        const fullPath = join(this.options.kspecDir, filename);
-        // Guard against nested .kspec symlink loops (e.g. .kspec/.kspec -> .kspec)
-        if (this.isNestedKspecPath(fullPath)) return;
-        this.handleFileChange(fullPath);
-      }
-    );
-    (this.watcher as FSWatcher).on('error', (error) => {
+      const fullPath = join(this.options.kspecDir, filename);
+      // Guard against nested .kspec symlink loops (e.g. .kspec/.kspec -> .kspec)
+      if (this.isNestedKspecPath(fullPath)) return;
+      this.handleFileChange(fullPath);
+    });
+    (this.watcher as FSWatcher).on("error", (error) => {
       void this.handleWatcherError(error);
     });
 
-    console.log('[watcher] Watching .kspec directory with Bun fs.watch');
+    console.log("[watcher] Watching .kspec directory with Bun fs.watch");
   }
 
   /**
    * AC-8: Start Chokidar watcher as fallback
    */
   private async startChokidarWatcher(): Promise<void> {
-    this.watcher = chokidar.watch(join(this.options.kspecDir, '**/*.yaml'), {
+    this.watcher = chokidarWatch(join(this.options.kspecDir, "**/*.yaml"), {
       ignoreInitial: true,
       followSymlinks: false,
       ignored: (filePath: string) => this.isNestedKspecPath(filePath),
       awaitWriteFinish: {
         stabilityThreshold: 100,
-        pollInterval: 50
-      }
+        pollInterval: 50,
+      },
     });
 
-    (this.watcher as ChokidarWatcher).on('change', (path: string) => {
+    (this.watcher as ChokidarWatcher).on("change", (path: string) => {
       this.handleFileChange(path);
     });
 
-    (this.watcher as ChokidarWatcher).on('error', (err: unknown) => {
+    (this.watcher as ChokidarWatcher).on("error", (err: unknown) => {
       // AC-7: Recovery with exponential backoff
       this.handleWatcherError(err instanceof Error ? err : new Error(String(err)));
     });
 
-    console.log('[watcher] Watching .kspec directory with Chokidar');
+    console.log("[watcher] Watching .kspec directory with Chokidar");
   }
 
   /**
@@ -140,7 +136,7 @@ export class KspecWatcher {
       const stat = await lstat(filePath);
       if (stat.isSymbolicLink()) return;
 
-      const content = await readFile(filePath, 'utf-8');
+      const content = await readFile(filePath, "utf-8");
 
       // AC-6: Validate YAML before broadcasting
       try {
@@ -150,12 +146,12 @@ export class KspecWatcher {
       } catch (parseError) {
         // AC-6: Log parse error and broadcast error event
         const error = new Error(`YAML parse error in ${filePath}: ${parseError}`);
-        console.error('[watcher]', error.message);
+        console.error("[watcher]", error.message);
         this.options.onError(error, filePath);
       }
     } catch (error) {
       // AC-7: Handle file read errors (directory inaccessible, etc.)
-      console.error('[watcher] Error reading file:', error);
+      console.error("[watcher] Error reading file:", error);
       this.handleWatcherError(error as Error);
     }
   }
@@ -166,10 +162,10 @@ export class KspecWatcher {
    */
   private isNestedKspecPath(filePath: string): boolean {
     const relPath = relative(this.options.kspecDir, filePath);
-    if (!relPath || relPath === '' || relPath.startsWith('..')) return false;
+    if (!relPath || relPath === "" || relPath.startsWith("..")) return false;
 
     const [firstSegment] = relPath.split(/[\\/]+/);
-    return firstSegment === '.kspec';
+    return firstSegment === ".kspec";
   }
 
   /**
@@ -184,20 +180,24 @@ export class KspecWatcher {
 
     const nodeError = error as NodeJS.ErrnoException;
     if (this.retryCount >= this.maxRetries) {
-      if (nodeError.code === 'ENOENT' && !existsSync(this.options.kspecDir)) {
-        console.warn('[watcher] Watched .kspec directory no longer exists after recovery attempts; stopping watcher');
+      if (nodeError.code === "ENOENT" && !existsSync(this.options.kspecDir)) {
+        console.warn(
+          "[watcher] Watched .kspec directory no longer exists after recovery attempts; stopping watcher",
+        );
         await this.stop();
         await this.options.onPermanentFailure?.(this.options.kspecDir);
         return;
       }
-      console.error('[watcher] Max retries reached, giving up');
+      console.error("[watcher] Max retries reached, giving up");
       return;
     }
 
     this.retryCount++;
     const backoffMs = this.baseBackoffMs * Math.pow(2, this.retryCount - 1);
 
-    console.log(`[watcher] Attempting recovery in ${backoffMs}ms (attempt ${this.retryCount}/${this.maxRetries})`);
+    console.log(
+      `[watcher] Attempting recovery in ${backoffMs}ms (attempt ${this.retryCount}/${this.maxRetries})`,
+    );
 
     this.recoveryTimer = setTimeout(async () => {
       this.recoveryTimer = null;
@@ -206,14 +206,14 @@ export class KspecWatcher {
         await this.stop();
         this.stopped = false;
         await this.start();
-        console.log('[watcher] Recovery successful');
+        console.log("[watcher] Recovery successful");
       } catch (retryError) {
-        console.error('[watcher] Recovery failed:', retryError);
+        console.error("[watcher] Recovery failed:", retryError);
         // Will retry again if under max retries
         await this.handleWatcherError(retryError as Error);
       }
     }, backoffMs);
-    if (typeof this.recoveryTimer === 'object' && 'unref' in this.recoveryTimer) {
+    if (typeof this.recoveryTimer === "object" && "unref" in this.recoveryTimer) {
       this.recoveryTimer.unref();
     }
   }

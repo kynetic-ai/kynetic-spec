@@ -30,6 +30,7 @@ Read the full plan document. Understand the scope, the specs being introduced, a
 New specs join an existing hierarchy. This is the highest-value review step — catching conflicts, overlaps, and misplacements that the author may not have seen.
 
 **Investigate the neighborhood:**
+
 ```bash
 # For each new spec, search for related existing specs
 kspec search "<keywords from spec title/description>"
@@ -42,6 +43,7 @@ kspec item get @referenced-spec
 ```
 
 **For each new spec, answer:**
+
 - Does an existing spec already cover this behavior (even partially)?
 - Does this spec's description or ACs contradict an existing spec?
 - Are parent references valid and placed correctly in the hierarchy?
@@ -61,17 +63,20 @@ Apply the behavioral language rules and AC quality standards from `/kspec-writin
 Tasks should be executable by an agent picking them up in a fresh session with no chat history. The plan document format rules in `/kspec-plan` define the expected fields. Focus your review on:
 
 **Standalone executability:**
+
 - Does the task describe the what, why, and how concretely enough to act on?
 - Are there references to plan discussion context that didn't make it into the task? ("See above," "as discussed," implicit assumptions from the planning conversation)
 - Would an agent know which files to touch, which patterns to follow, and how to verify their work?
 
 **Red flags:**
+
 - Vague scope ("implement the feature") without concrete boundaries
 - Missing motivation — the task says what to do but not why
 - No "Covers:" line linking back to specific ACs
 - A single task claiming coverage of many ACs without clear justification
 
 **Coverage mapping:**
+
 - Every AC across all specs should be claimed by at least one task
 - If multiple tasks cover the same ACs, the division of responsibility should be annotated
 - Orphan ACs not claimed by any task will not get implemented
@@ -81,16 +86,19 @@ Tasks should be executable by an agent picking them up in a fresh session with n
 Task dependencies define execution order. Getting this wrong means tasks are attempted before their prerequisites exist, or unnecessarily serialized when they could run in parallel.
 
 **Dependency graph analysis:**
+
 - Map out the dependency chain — which tasks block which
 - Check for circular dependencies
 - Check for missing dependencies — does task X use something task Y creates without declaring the dependency?
 - Check for over-constraining — does a dependency exist that isn't actually needed, artificially serializing parallel work?
 
 **Priority alignment:**
+
 - Higher priority tasks (P1) should generally not depend on lower priority tasks (P2/P3)
 - If a P1 depends on a P2, something is likely misordered
 
 **Parallelism opportunities:**
+
 - Tasks at the same priority with no dependencies between them can run in parallel
 - Look for tasks serialized by dependency that don't actually need to be
 - Look for tasks that should be serialized but aren't
@@ -161,25 +169,25 @@ kspec review check @review-ref \
 ### Thread Kinds
 
 | Plan review severity | Thread kind |
-|---------------------|-------------|
-| MUST-FIX | `blocker` |
-| SHOULD-FIX | `question` |
-| SUGGESTION | `nit` |
+| -------------------- | ----------- |
+| MUST-FIX             | `blocker`   |
+| SHOULD-FIX           | `question`  |
+| SUGGESTION           | `nit`       |
 
 ### Structured Anchors
 
 Anchors let threads point at specific plan areas so the author knows exactly where to look. All anchor fields are optional — use whichever combination targets the finding precisely.
 
-| Anchor | Use for |
-|--------|---------|
-| `--section acceptance_criteria --anchor-ref @spec` | AC quality issues on a spec generally |
-| `--section acceptance_criteria --field ac-3 --anchor-ref @spec` | Issue with a specific AC |
-| `--section description --anchor-ref @spec` | Spec description language or clarity |
-| `--section traits --anchor-ref @spec` | Trait selection or usage issues |
-| `--anchor-ref @task` | Task executability or coverage issues |
-| `--section description --anchor-ref @task` | Task description quality (what/why/how) |
-| `--section dependencies` | Dependency ordering or priority alignment |
-| `--anchor-ref @spec` | General issue with a spec (hierarchy, boundary, overlap) |
+| Anchor                                                          | Use for                                                  |
+| --------------------------------------------------------------- | -------------------------------------------------------- |
+| `--section acceptance_criteria --anchor-ref @spec`              | AC quality issues on a spec generally                    |
+| `--section acceptance_criteria --field ac-3 --anchor-ref @spec` | Issue with a specific AC                                 |
+| `--section description --anchor-ref @spec`                      | Spec description language or clarity                     |
+| `--section traits --anchor-ref @spec`                           | Trait selection or usage issues                          |
+| `--anchor-ref @task`                                            | Task executability or coverage issues                    |
+| `--section description --anchor-ref @task`                      | Task description quality (what/why/how)                  |
+| `--section dependencies`                                        | Dependency ordering or priority alignment                |
+| `--anchor-ref @spec`                                            | General issue with a spec (hierarchy, boundary, overlap) |
 
 ### Verdict
 

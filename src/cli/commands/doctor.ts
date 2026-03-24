@@ -47,9 +47,7 @@ export function registerDoctorCommand(program: Command): void {
           // AC: @trait-json-output ac-3
           output({ error: err instanceof Error ? err.message : String(err) });
         } else {
-          console.error(
-            chalk.red(`Error: ${err instanceof Error ? err.message : String(err)}`)
-          );
+          console.error(chalk.red(`Error: ${err instanceof Error ? err.message : String(err)}`));
         }
         process.exit(EXIT_CODES.ERROR);
       }
@@ -146,9 +144,7 @@ function formatDoctorReport(report: DoctorReport): void {
   if (report.overall.healthy) {
     console.log(chalk.green.bold("✓ Healthy"));
     if (report.overall.warningCount > 0) {
-      console.log(
-        chalk.yellow(`  ${report.overall.warningCount} warning(s)`)
-      );
+      console.log(chalk.yellow(`  ${report.overall.warningCount} warning(s)`));
     }
   } else {
     console.log(chalk.red.bold("✗ Issues found"));

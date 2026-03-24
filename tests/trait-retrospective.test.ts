@@ -1,11 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import {
-  cleanupTempDir,
-  initGitRepo,
-  kspec,
-  setupTempFixtures,
-  testUlid,
-} from "./helpers/cli.js";
+import { cleanupTempDir, initGitRepo, kspec, setupTempFixtures } from "./helpers/cli.js";
 
 describe("Trait Retrospective", () => {
   let tempDir: string;
@@ -25,17 +19,13 @@ describe("Trait Retrospective", () => {
   // AC: @trait-retrospective ac-1
   it("should not warn about orphaned spec when using @trait-retrospective", async () => {
     // Create a retrospective spec with no implementing tasks
-    const specUlid = testUlid("SPEC");
     await kspec(
       `item add --under @test-core --type feature --slug retro-feature --title "Retrospective Feature" --description "Already implemented feature"`,
       tempDir,
     );
 
     // Add the trait
-    await kspec(
-      `item set @retro-feature --description "Retrospective spec" `,
-      tempDir,
-    );
+    await kspec(`item set @retro-feature --description "Retrospective spec" `, tempDir);
 
     // Manually add trait to the spec (traits array manipulation)
     // Note: In real usage, users would add traits via YAML or trait add command
@@ -119,10 +109,7 @@ describe("Trait Retrospective", () => {
 
     // Add trait and set status to implemented without verification metadata
     await kspec(`item set @retro-impl --trait @trait-retrospective`, tempDir);
-    await kspec(
-      `item set @retro-impl --status implemented --maturity draft`,
-      tempDir,
-    );
+    await kspec(`item set @retro-impl --status implemented --maturity draft`, tempDir);
     // Intentionally omit verified_at and verified_by
 
     // Run validation with completeness checks
@@ -184,10 +171,7 @@ describe("Trait Retrospective", () => {
 
     // Add trait, status, and verification metadata
     await kspec(`item set @retro-display --trait @trait-retrospective`, tempDir);
-    await kspec(
-      `item set @retro-display --status implemented --maturity stable`,
-      tempDir,
-    );
+    await kspec(`item set @retro-display --status implemented --maturity stable`, tempDir);
     await kspec(
       `item set @retro-display --verified-by @claude --verified-at 2026-01-15T12:00:00Z`,
       tempDir,
@@ -239,9 +223,7 @@ describe("Trait Retrospective", () => {
     await kspec(`item set @default-date --trait @trait-retrospective`, tempDir);
 
     // Use only --verified-by flag (should default verified_at to now)
-    const beforeTime = new Date();
     await kspec(`item set @default-date --verified-by @auto`, tempDir);
-    const afterTime = new Date();
 
     // Verify fields are set
     const result = await kspec("item get @default-date", tempDir);

@@ -7,17 +7,10 @@
 
 import chalk from "chalk";
 import type { Command } from "commander";
-import {
-  initContext,
-} from "../../../parser/index.js";
-import {
-  ShadowError,
-} from "../../../parser/shadow.js";
+import { initContext } from "../../../parser/index.js";
+import { ShadowError } from "../../../parser/shadow.js";
 import { isObject } from "../../../acp/types.js";
-import {
-  errors,
-  sessionPrompt,
-} from "../../../strings/index.js";
+import { errors, sessionPrompt } from "../../../strings/index.js";
 import { markAlwaysSync, markMutating } from "../../command-annotations.js";
 import { EXIT_CODES } from "../../exit-codes.js";
 import { error, isJsonMode, output } from "../../output.js";
@@ -138,9 +131,7 @@ async function sessionPromptCheckAction(): Promise<void> {
   console.log(sessionPrompt.specCheck);
 }
 
-async function sessionCheckpointAction(
-  options: CheckpointOptions,
-): Promise<void> {
+async function sessionCheckpointAction(options: CheckpointOptions): Promise<void> {
   try {
     // Read stdin for Claude Code hook input
     const stdin = await readStdinIfAvailable();
@@ -160,12 +151,8 @@ async function sessionCheckpointAction(
     if (isJsonMode()) {
       if (!result.ok) {
         // Build reason message with issues and instructions
-        const issueLines = result.issues
-          .map((i) => `- ${i.description}`)
-          .join("\n");
-        const instructionLines = result.instructions
-          .filter((i) => i.trim())
-          .join("\n");
+        const issueLines = result.issues.map((i) => `- ${i.description}`).join("\n");
+        const instructionLines = result.instructions.filter((i) => i.trim()).join("\n");
         const reason = `${result.message}\n\nIssues:\n${issueLines}\n\n${instructionLines}`;
         console.log(JSON.stringify({ decision: "block", reason }));
       }
@@ -201,9 +188,7 @@ async function sessionCheckpointAction(
  * Register the 'session' command group and aliases
  */
 export function registerSessionCommands(program: Command): void {
-  const session = program
-    .command("session")
-    .description("Session management and context");
+  const session = program.command("session").description("Session management and context");
 
   // Session create subcommand
   // AC: @droid-setup-status ac-3 — "droid" accepted as --agent-type value
@@ -220,24 +205,17 @@ export function registerSessionCommands(program: Command): void {
     .action(sessionCreateAction);
 
   // AC: @shadow-lazy-read-sync ac-session-start-always-pulls
-  markAlwaysSync(session
-    .command("start")
-    .alias("resume"))
+  markAlwaysSync(session.command("start").alias("resume"))
     .description("Surface relevant context for starting a new working session")
     .option("--brief", "Compact summary (default)")
     .option("--full", "Comprehensive context dump")
-    .option(
-      "--since <time>",
-      "Filter by recency (ISO8601 or relative: 1h, 2d, 1w)",
-    )
+    .option("--since <time>", "Filter by recency (ISO8601 or relative: 1h, 2d, 1w)")
     .option("--no-git", "Skip git commit information")
     .option("-n, --limit <n>", "Limit items per section", "10")
     .action(sessionStartAction);
 
   // Session log subcommand group
-  const log = session
-    .command("log")
-    .description("Session log analysis commands");
+  const log = session.command("log").description("Session log analysis commands");
 
   log
     .command("list")
@@ -273,10 +251,7 @@ export function registerSessionCommands(program: Command): void {
     .option("-t, --type <type>", "Filter events by type (e.g., tool.call)")
     .option("-n, --limit <n>", "Show only the last N events")
     .option("-c, --context <n>", "Show context snapshot for iteration N")
-    .option(
-      "--resolve-blobs",
-      "Resolve externalized event payload blobs (requires --events)",
-    )
+    .option("--resolve-blobs", "Resolve externalized event payload blobs (requires --events)")
     .action(sessionLogShowAction);
 
   log
@@ -316,22 +291,16 @@ export function registerSessionCommands(program: Command): void {
 
   // AC: @session-legacy-migration ac-migration-copy ac-migration-idempotent
   markMutating(session.command("migrate"))
-    .description(
-      "Copy sessions from legacy .kspec/sessions/ to .kspec-sessions/",
-    )
+    .description("Copy sessions from legacy .kspec/sessions/ to .kspec-sessions/")
     .action(sessionMigrateAction);
 
   markMutating(session.command("compact [session-id]"))
-    .description(
-      "Retroactively compact session events by externalizing oversized payloads",
-    )
+    .description("Retroactively compact session events by externalizing oversized payloads")
     .option("--all", "Compact all non-active sessions sequentially")
     .option("--dry-run", "Preview compaction without modifying files")
     .action(sessionCompactAction);
 
-  const stale = session
-    .command("stale")
-    .description("Stale active session cleanup commands");
+  const stale = session.command("stale").description("Stale active session cleanup commands");
 
   markMutating(stale.command("close [session-id]"))
     .description("Close stale active sessions by target or batch")
@@ -345,19 +314,14 @@ export function registerSessionCommands(program: Command): void {
       "--inactive-for <duration>",
       "Minimum inactivity duration (relative duration, e.g., 6h)",
     )
-    .option(
-      "--liveness-guard <duration>",
-      "Protect recently-active sessions (default: 5m)",
-    )
+    .option("--liveness-guard <duration>", "Protect recently-active sessions (default: 5m)")
     .option("--dry-run", "Preview stale-session closures without modifying files")
     .option("--force", "Skip confirmation prompts for destructive execution")
     .action(sessionStaleCloseAction);
 
   session
     .command("checkpoint")
-    .description(
-      "Pre-stop hook: check for uncommitted work before ending session",
-    )
+    .description("Pre-stop hook: check for uncommitted work before ending session")
     .option("--force", "Allow session end regardless of issues")
     .action(sessionCheckpointAction);
 
@@ -368,15 +332,11 @@ export function registerSessionCommands(program: Command): void {
 
   // Top-level alias: kspec context
   // AC: @shadow-lazy-read-sync ac-session-start-always-pulls
-  markAlwaysSync(program
-    .command("context"))
+  markAlwaysSync(program.command("context"))
     .description("Alias for session start - surface session context")
     .option("--brief", "Compact summary (default)")
     .option("--full", "Comprehensive context dump")
-    .option(
-      "--since <time>",
-      "Filter by recency (ISO8601 or relative: 1h, 2d, 1w)",
-    )
+    .option("--since <time>", "Filter by recency (ISO8601 or relative: 1h, 2d, 1w)")
     .option("--no-git", "Skip git commit information")
     .option("-n, --limit <n>", "Limit items per section", "10")
     .action(sessionStartAction);

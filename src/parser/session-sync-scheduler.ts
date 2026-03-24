@@ -7,10 +7,7 @@
  * AC: @session-branch-worktree ac-sync
  */
 
-import {
-  sessionBranchPull,
-  type SessionBranchConfig,
-} from "./session-branch.js";
+import { sessionBranchPull } from "./session-branch.js";
 import { hasRemoteTracking, type ShadowOptions } from "./shadow.js";
 
 export interface SessionSyncSchedulerOptions {
@@ -28,11 +25,7 @@ export interface SessionSyncSchedulerOptions {
  * Minimal pubsub interface for broadcasting sync events.
  */
 export interface SessionSyncPubSub {
-  broadcast(
-    channel: string,
-    type: string,
-    data: Record<string, unknown>,
-  ): void;
+  broadcast(channel: string, type: string, data: Record<string, unknown>): void;
 }
 
 /**
@@ -64,9 +57,7 @@ export class SessionSyncScheduler {
       return;
     }
 
-    console.log(
-      `[daemon] Session sync scheduler started (interval: ${this.intervalMs / 1000}s)`,
-    );
+    console.log(`[daemon] Session sync scheduler started (interval: ${this.intervalMs / 1000}s)`);
 
     this.timer = setInterval(() => {
       this.syncOnce().catch((err) => {
@@ -75,11 +66,7 @@ export class SessionSyncScheduler {
     }, this.intervalMs);
 
     // Don't prevent process exit
-    if (
-      this.timer &&
-      typeof this.timer === "object" &&
-      "unref" in this.timer
-    ) {
+    if (this.timer && typeof this.timer === "object" && "unref" in this.timer) {
       this.timer.unref();
     }
   }
@@ -112,10 +99,7 @@ export class SessionSyncScheduler {
 
     this.running = true;
     try {
-      const result = await sessionBranchPull(
-        this.worktreeDir,
-        this.branchName,
-      );
+      const result = await sessionBranchPull(this.worktreeDir, this.branchName);
 
       if (result.pulled) {
         console.log("[daemon] Session sync: pulled remote changes");

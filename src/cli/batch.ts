@@ -83,16 +83,8 @@ export interface BatchOperationOptions<TItem, TContext> {
 export async function executeBatchOperation<TItem, TContext>(
   options: BatchOperationOptions<TItem, TContext>,
 ): Promise<BatchResult> {
-  const {
-    positionalRef,
-    refsFlag,
-    context,
-    items,
-    index,
-    resolveRef,
-    executeOperation,
-    getUlid,
-  } = options;
+  const { positionalRef, refsFlag, context, items, index, resolveRef, executeOperation, getUlid } =
+    options;
 
   // AC: @multi-ref-batch ac-3 - Mutual exclusion check
   if (positionalRef && refsFlag && refsFlag.length > 0) {
@@ -184,10 +176,7 @@ export async function executeBatchOperation<TItem, TContext>(
  * AC: @multi-ref-batch ac-5 - Human output format
  * AC: @multi-ref-batch ac-6 - JSON output format
  */
-export function formatBatchOutput(
-  result: BatchResult,
-  operationName: string,
-): void {
+export function formatBatchOutput(result: BatchResult, operationName: string): void {
   if (isJsonMode()) {
     // AC: @multi-ref-batch ac-6 - JSON output
     console.log(JSON.stringify(result, null, 2));
@@ -213,11 +202,7 @@ export function formatBatchOutput(
     } else {
       // Multiple items - show summary
       const _verb = operationName.toLowerCase();
-      console.log(
-        `${chalk.bold(
-          `${operationName}d ${summary.succeeded} of ${summary.total}:`,
-        )}\n`,
-      );
+      console.log(`${chalk.bold(`${operationName}d ${summary.succeeded} of ${summary.total}:`)}\n`);
 
       // List each result
       for (const r of results) {

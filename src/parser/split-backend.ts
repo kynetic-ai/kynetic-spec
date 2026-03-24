@@ -190,11 +190,11 @@ export async function detectSplitFormat(ctx: KspecContext): Promise<boolean> {
 export async function listTaskDirs(ctx: KspecContext): Promise<string[]> {
   const tasksDir = getTasksDir(ctx);
   try {
-    const entries = await readdirBufferAware(tasksDir, { withFileTypes: true }) as import("node:fs").Dirent[];
+    const entries = (await readdirBufferAware(tasksDir, {
+      withFileTypes: true,
+    })) as import("node:fs").Dirent[];
     return entries
-      .filter(
-        (entry) => entry.isDirectory() && /^[0-9A-HJKMNP-TV-Z]{26}$/.test(entry.name),
-      )
+      .filter((entry) => entry.isDirectory() && /^[0-9A-HJKMNP-TV-Z]{26}$/.test(entry.name))
       .map((entry) => entry.name);
   } catch {
     return [];
@@ -226,12 +226,12 @@ export async function listTaskDirs(ctx: KspecContext): Promise<string[]> {
  * AC: @task-index-file ac-3 — note-only mutations don't touch index
  */
 export type OperationType =
-  | "list"      // Read index only
-  | "get"       // Read per-task files
-  | "create"    // Write index + per-task files
-  | "mutate"    // Write per-task file, conditionally index
-  | "note"      // Write notes.yaml only
-  | "delete";   // Remove from index + delete directory
+  | "list" // Read index only
+  | "get" // Read per-task files
+  | "create" // Write index + per-task files
+  | "mutate" // Write per-task file, conditionally index
+  | "note" // Write notes.yaml only
+  | "delete"; // Remove from index + delete directory
 
 /**
  * Describes which files an operation needs to touch.
@@ -280,10 +280,26 @@ export function getOperationRouting(operation: OperationType): OperationRouting 
  * AC: @task-index-file ac-1 — only listing/filtering/dependency fields
  */
 const INDEXED_FIELDS = [
-  "_ulid", "slugs", "title", "type", "status", "priority", "tags",
-  "depends_on", "blocked_by", "created_at", "assignee", "automation",
-  "spec_ref", "plan_ref", "review_ref", "started_at", "submitted_at",
-  "completed_at", "notes_count", "todos_count",
+  "_ulid",
+  "slugs",
+  "title",
+  "type",
+  "status",
+  "priority",
+  "tags",
+  "depends_on",
+  "blocked_by",
+  "created_at",
+  "assignee",
+  "automation",
+  "spec_ref",
+  "plan_ref",
+  "review_ref",
+  "started_at",
+  "submitted_at",
+  "completed_at",
+  "notes_count",
+  "todos_count",
 ] as const;
 
 /**
@@ -352,10 +368,7 @@ export function toIndexEntry(task: Task): Record<string, unknown> {
  *
  * AC: @task-index-file ac-2 — index updated when any indexed field changes
  */
-export function indexEntriesEqual(
-  a: Record<string, unknown>,
-  b: Record<string, unknown>,
-): boolean {
+export function indexEntriesEqual(a: Record<string, unknown>, b: Record<string, unknown>): boolean {
   for (const field of INDEXED_FIELDS) {
     const va = a[field];
     const vb = b[field];
@@ -525,7 +538,8 @@ class SplitBackend implements TaskStorageBackend {
         throw new TaskDataManagerError(
           `Storage format is set to "split" but ${trulyUnmigrated.length} task(s) in project.tasks.yaml have not been migrated to per-task directories. Run the migration command before activating split format.`,
           {
-            suggestion: "Run the task storage migration to convert monolithic entries to per-task directories, or set task_storage.format back to \"monolithic\".",
+            suggestion:
+              'Run the task storage migration to convert monolithic entries to per-task directories, or set task_storage.format back to "monolithic".',
             field: "task_storage.format",
           },
         );
@@ -716,20 +730,21 @@ class SplitBackend implements TaskStorageBackend {
 
     try {
       // Read latest state from per-task directory (includes existing history)
-      const { task: latestTask, history: existingHistory } = await this.loadTaskFromDirWithHistory(ctx, task._ulid);
+      const { task: latestTask, history: existingHistory } = await this.loadTaskFromDirWithHistory(
+        ctx,
+        task._ulid,
+      );
       if (!latestTask) {
-        throw new TaskDataManagerError(
-          `Task not found: ${task._ulid}`,
-          { suggestion: `Check the reference with: kspec search "${task._ulid}" or kspec task list` },
-        );
+        throw new TaskDataManagerError(`Task not found: ${task._ulid}`, {
+          suggestion: `Check the reference with: kspec search "${task._ulid}" or kspec task list`,
+        });
       }
 
       // Snapshot the index entry BEFORE mutation to detect changes
       const oldIndexEntry = toIndexEntry(latestTask);
 
       // Capture pre-mutation state for diff computation (excluding notes — they live in notes.yaml)
-      const { notes: _notesBefore, ...coreFieldsBefore } =
-        stripRuntimeMetadata(latestTask) as Task;
+      const { notes: _notesBefore, ...coreFieldsBefore } = stripRuntimeMetadata(latestTask) as Task;
 
       // Run mutation callback
       const mutatedTask = await mutate(latestTask);
@@ -807,12 +822,14 @@ class SplitBackend implements TaskStorageBackend {
   async mutateTasks(
     ctx: KspecContext,
     tasks: LoadedTask[],
-    mutate: (latestTasks: LoadedTask[]) => Array<Task | LoadedTask> | Promise<Array<Task | LoadedTask>>,
+    mutate: (
+      latestTasks: LoadedTask[],
+    ) => Array<Task | LoadedTask> | Promise<Array<Task | LoadedTask>>,
     metadata?: MutationMetadata,
   ): Promise<LoadedTask[]> {
     await this.ensureMigrated(ctx);
     // Acquire per-task locks in sorted order to prevent deadlocks
-    const sortedUlids = [...new Set(tasks.map((t) => t._ulid))].sort();
+    const sortedUlids = [...new Set(tasks.map((t) => t._ulid))].toSorted();
     const releases: Array<() => void> = [];
 
     try {
@@ -825,10 +842,9 @@ class SplitBackend implements TaskStorageBackend {
       for (const task of tasks) {
         const result = await this.loadTaskFromDirWithHistory(ctx, task._ulid);
         if (!result.task) {
-          throw new TaskDataManagerError(
-            `Task not found: ${task._ulid}`,
-            { suggestion: `Check the reference with: kspec search "${task._ulid}" or kspec task list` },
-          );
+          throw new TaskDataManagerError(`Task not found: ${task._ulid}`, {
+            suggestion: `Check the reference with: kspec search "${task._ulid}" or kspec task list`,
+          });
         }
         latestResults.push({ task: result.task, history: result.history });
       }
@@ -856,7 +872,11 @@ class SplitBackend implements TaskStorageBackend {
       // runWithBuffer creates an isolated async-local scope so concurrent
       // mutations on other tasks don't share this buffer. Both per-task
       // files and index writes are inside the buffer for atomicity.
-      const cleanResults: Array<{ cleanTask: Task; taskFilePath: string; oldIndexEntry: Record<string, unknown> }> = [];
+      const cleanResults: Array<{
+        cleanTask: Task;
+        taskFilePath: string;
+        oldIndexEntry: Record<string, unknown>;
+      }> = [];
 
       await runWithBuffer(ctx.specDir, async () => {
         for (let i = 0; i < mutatedTasks.length; i++) {
@@ -908,9 +928,10 @@ class SplitBackend implements TaskStorageBackend {
         }
       });
 
-      const updatedTasks: LoadedTask[] = cleanResults.map(
-        ({ cleanTask, taskFilePath }) => ({ ...cleanTask, _sourceFile: taskFilePath }),
-      );
+      const updatedTasks: LoadedTask[] = cleanResults.map(({ cleanTask, taskFilePath }) => ({
+        ...cleanTask,
+        _sourceFile: taskFilePath,
+      }));
       return updatedTasks;
     } finally {
       for (const release of releases) {
@@ -978,10 +999,7 @@ class SplitBackend implements TaskStorageBackend {
    * AC: @task-detail-loading ac-1 — assembles complete task from files
    * AC: @task-detail-loading ac-2 — handles missing per-task directory
    */
-  private async loadTaskFromDir(
-    ctx: KspecContext,
-    ulid: string,
-  ): Promise<LoadedTask | undefined> {
+  private async loadTaskFromDir(ctx: KspecContext, ulid: string): Promise<LoadedTask | undefined> {
     const result = await this.loadTaskFromDirWithHistory(ctx, ulid);
     return result.task;
   }
@@ -1073,7 +1091,7 @@ class SplitBackend implements TaskStorageBackend {
         entries = raw;
       } else if (raw && typeof raw === "object" && "tasks" in raw) {
         entries = Array.isArray((raw as Record<string, unknown>).tasks)
-          ? (raw as Record<string, unknown>).tasks as unknown[]
+          ? ((raw as Record<string, unknown>).tasks as unknown[])
           : [];
       } else {
         return undefined;
@@ -1083,8 +1101,10 @@ class SplitBackend implements TaskStorageBackend {
       const match = entries.find((entry) => {
         if (!entry || typeof entry !== "object") return false;
         const e = entry as Record<string, unknown>;
-        return typeof e._ulid === "string" &&
-          (e._ulid === ulid || (ulid.length < 26 && e._ulid.startsWith(ulid)));
+        return (
+          typeof e._ulid === "string" &&
+          (e._ulid === ulid || (ulid.length < 26 && e._ulid.startsWith(ulid)))
+        );
       });
 
       if (!match) return undefined;
@@ -1114,7 +1134,7 @@ class SplitBackend implements TaskStorageBackend {
         entries = raw;
       } else if (raw && typeof raw === "object" && "tasks" in raw) {
         entries = Array.isArray((raw as Record<string, unknown>).tasks)
-          ? (raw as Record<string, unknown>).tasks as unknown[]
+          ? ((raw as Record<string, unknown>).tasks as unknown[])
           : [];
       } else {
         return undefined;
@@ -1147,9 +1167,7 @@ class SplitBackend implements TaskStorageBackend {
    *
    * AC: @task-detail-loading ac-2 — returns index data with warning
    */
-  private indexEntryToLoadedTask(
-    entry: Record<string, unknown>,
-  ): LoadedTask | undefined {
+  private indexEntryToLoadedTask(entry: Record<string, unknown>): LoadedTask | undefined {
     // Index entries store notes_count/todos_count as scalars — strip them
     // before parsing since TaskSchema expects notes/todos arrays (which will
     // default to empty arrays via schema defaults)
@@ -1160,8 +1178,8 @@ class SplitBackend implements TaskStorageBackend {
     const ulid = parsed.data._ulid;
     process.stderr.write(
       `Warning: Per-task directory missing for task ${ulid}. ` +
-      `Returning index-only data (notes, description, and history unavailable). ` +
-      `Run "kspec task rebuild-index" or re-migrate to restore full data.\n`,
+        `Returning index-only data (notes, description, and history unavailable). ` +
+        `Run "kspec task rebuild-index" or re-migrate to restore full data.\n`,
     );
 
     return { ...parsed.data, _sourceFile: undefined };
@@ -1175,10 +1193,7 @@ class SplitBackend implements TaskStorageBackend {
    *
    * AC: @task-core-data-file ac-2 — history provides complete audit trail
    */
-  async getTaskHistory(
-    ctx: KspecContext,
-    ulid: string,
-  ): Promise<HistoryEntry[]> {
+  async getTaskHistory(ctx: KspecContext, ulid: string): Promise<HistoryEntry[]> {
     await this.ensureMigrated(ctx);
     const { history } = await this.loadTaskFromDirWithHistory(ctx, ulid);
     return history;
@@ -1204,7 +1219,7 @@ class SplitBackend implements TaskStorageBackend {
         rawTasks = raw;
       } else if (raw && typeof raw === "object" && "tasks" in raw) {
         wrapperObj = raw as Record<string, unknown>;
-        rawTasks = Array.isArray(wrapperObj.tasks) ? [...wrapperObj.tasks as unknown[]] : [];
+        rawTasks = Array.isArray(wrapperObj.tasks) ? [...(wrapperObj.tasks as unknown[])] : [];
         useWrapper = true;
       }
     } catch {
@@ -1238,7 +1253,7 @@ class SplitBackend implements TaskStorageBackend {
       rawTasks = raw;
     } else if (raw && typeof raw === "object" && "tasks" in raw) {
       wrapperObj = raw as Record<string, unknown>;
-      rawTasks = Array.isArray(wrapperObj.tasks) ? [...wrapperObj.tasks as unknown[]] : [];
+      rawTasks = Array.isArray(wrapperObj.tasks) ? [...(wrapperObj.tasks as unknown[])] : [];
       useWrapper = true;
     } else {
       rawTasks = [];
@@ -1246,7 +1261,10 @@ class SplitBackend implements TaskStorageBackend {
 
     // Find and replace the matching entry
     const existingIdx = rawTasks.findIndex(
-      (entry) => entry && typeof entry === "object" && (entry as Record<string, unknown>)._ulid === task._ulid,
+      (entry) =>
+        entry &&
+        typeof entry === "object" &&
+        (entry as Record<string, unknown>)._ulid === task._ulid,
     );
 
     if (existingIdx >= 0) {
@@ -1280,7 +1298,7 @@ class SplitBackend implements TaskStorageBackend {
       rawTasks = raw;
     } else if (raw && typeof raw === "object" && "tasks" in raw) {
       wrapperObj = raw as Record<string, unknown>;
-      rawTasks = Array.isArray(wrapperObj.tasks) ? [...wrapperObj.tasks as unknown[]] : [];
+      rawTasks = Array.isArray(wrapperObj.tasks) ? [...(wrapperObj.tasks as unknown[])] : [];
       useWrapper = true;
     } else {
       return; // No index to remove from
@@ -1288,7 +1306,8 @@ class SplitBackend implements TaskStorageBackend {
 
     // Filter out the matching entry
     rawTasks = rawTasks.filter(
-      (entry) => !(entry && typeof entry === "object" && (entry as Record<string, unknown>)._ulid === ulid),
+      (entry) =>
+        !(entry && typeof entry === "object" && (entry as Record<string, unknown>)._ulid === ulid),
     );
 
     if (useWrapper && wrapperObj) {
@@ -1379,10 +1398,7 @@ async function writeTaskFile(
  * Write a notes file (notes.yaml).
  * Uses buffer-aware writing for atomicity in batch operations.
  */
-async function writeNotesFile(
-  filePath: string,
-  notes: unknown[],
-): Promise<void> {
+async function writeNotesFile(filePath: string, notes: unknown[]): Promise<void> {
   const content = toYaml({ notes });
   await writeFileBufferAware(filePath, content);
 }

@@ -9,11 +9,7 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as path from "node:path";
 import * as fs from "node:fs/promises";
-import {
-  getAdapter,
-  resolveAdapter,
-  type AgentAdapter,
-} from "../../src/agents/adapters.js";
+import { getAdapter, resolveAdapter, type AgentAdapter } from "../../src/agents/adapters.js";
 import { spawnAgent, type SpawnedAgent } from "../../src/agents/spawner.js";
 import { setupTempFixtures, cleanupTempDir } from "../helpers/cli";
 
@@ -54,18 +50,14 @@ describe("Adapter auto-approve args registry", () => {
   it("claude-agent-acp has --dangerously-skip-permissions", () => {
     const adapter = getAdapter("claude-agent-acp");
     expect(adapter).toBeDefined();
-    expect(adapter!.autoApproveArgs).toEqual([
-      "--dangerously-skip-permissions",
-    ]);
+    expect(adapter!.autoApproveArgs).toEqual(["--dangerously-skip-permissions"]);
   });
 
   // AC: @ralph-adapter-auto-approve ac-2
   it("claude-code-acp (deprecated alias) has same autoApproveArgs", () => {
     const adapter = getAdapter("claude-code-acp");
     expect(adapter).toBeDefined();
-    expect(adapter!.autoApproveArgs).toEqual([
-      "--dangerously-skip-permissions",
-    ]);
+    expect(adapter!.autoApproveArgs).toEqual(["--dangerously-skip-permissions"]);
   });
 
   it("mock-acp has no autoApproveArgs", () => {
@@ -208,12 +200,8 @@ describe("Auto-approve args integration", () => {
     await cleanShutdown(reviewer);
 
     // Both should have the auto-approve args
-    const workerArgs = JSON.parse(
-      await fs.readFile(workerArgsFile, "utf-8"),
-    );
-    const reviewerArgs = JSON.parse(
-      await fs.readFile(reviewerArgsFile, "utf-8"),
-    );
+    const workerArgs = JSON.parse(await fs.readFile(workerArgsFile, "utf-8"));
+    const reviewerArgs = JSON.parse(await fs.readFile(reviewerArgsFile, "utf-8"));
 
     expect(workerArgs).toContain("--auto-flag-1");
     expect(workerArgs).toContain("--auto-flag-2");

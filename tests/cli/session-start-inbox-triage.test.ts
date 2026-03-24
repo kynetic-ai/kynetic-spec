@@ -40,8 +40,20 @@ describe("stat line with triage counts", () => {
     ]);
 
     seedTriageRecords(tempDir, [
-      { _ulid: testUlid("TRJG", 0), inbox_ref: ulid1, item_snapshot: "First untriaged item", action: "promote", reasoning: "clear feature request" },
-      { _ulid: testUlid("TRJG", 1), inbox_ref: ulid2, item_snapshot: "Second item to be deferred", action: "defer", reasoning: "needs more thought" },
+      {
+        _ulid: testUlid("TRJG", 0),
+        inbox_ref: ulid1,
+        item_snapshot: "First untriaged item",
+        action: "promote",
+        reasoning: "clear feature request",
+      },
+      {
+        _ulid: testUlid("TRJG", 1),
+        inbox_ref: ulid2,
+        item_snapshot: "Second item to be deferred",
+        action: "defer",
+        reasoning: "needs more thought",
+      },
     ]);
 
     const session = kspecJson<SessionContext>("session start --json", tempDir);
@@ -61,7 +73,13 @@ describe("stat line with triage counts", () => {
     ]);
 
     seedTriageRecords(tempDir, [
-      { _ulid: testUlid("TRJG", 0), inbox_ref: ulid2, item_snapshot: "Deferred idea", action: "defer", reasoning: "later" },
+      {
+        _ulid: testUlid("TRJG", 0),
+        inbox_ref: ulid2,
+        item_snapshot: "Deferred idea",
+        action: "defer",
+        reasoning: "later",
+      },
     ]);
 
     const result = kspec("session start", tempDir);
@@ -74,9 +92,7 @@ describe("stat line with triage counts", () => {
   it("should not list individual items in primer mode", () => {
     const ulid1 = testUlid("JNBX", 0);
 
-    seedInboxItems(tempDir, [
-      { _ulid: ulid1, text: "Should not appear in primer" },
-    ]);
+    seedInboxItems(tempDir, [{ _ulid: ulid1, text: "Should not appear in primer" }]);
 
     const result = kspec("session start", tempDir);
 
@@ -98,13 +114,16 @@ describe("full mode lists untriaged items", () => {
     ]);
 
     seedTriageRecords(tempDir, [
-      { _ulid: testUlid("TRJG", 0), inbox_ref: ulid2, item_snapshot: "Already triaged item", action: "promote", reasoning: "good idea" },
+      {
+        _ulid: testUlid("TRJG", 0),
+        inbox_ref: ulid2,
+        item_snapshot: "Already triaged item",
+        action: "promote",
+        reasoning: "good idea",
+      },
     ]);
 
-    const session = kspecJson<SessionContext>(
-      "session start --json --full",
-      tempDir,
-    );
+    const session = kspecJson<SessionContext>("session start --json --full", tempDir);
 
     // JSON includes ALL items with triage status
     expect(session.inbox_items.length).toBe(2);
@@ -125,7 +144,13 @@ describe("full mode lists untriaged items", () => {
     ]);
 
     seedTriageRecords(tempDir, [
-      { _ulid: testUlid("TRJG", 0), inbox_ref: ulid2, item_snapshot: "Already handled", action: "delete", reasoning: "stale" },
+      {
+        _ulid: testUlid("TRJG", 0),
+        inbox_ref: ulid2,
+        item_snapshot: "Already handled",
+        action: "delete",
+        reasoning: "stale",
+      },
     ]);
 
     const result = kspec("session start --full", tempDir);
@@ -147,10 +172,7 @@ describe("full mode lists untriaged items", () => {
       ulids.map((ulid, i) => ({ _ulid: ulid, text: `Item number ${i}` })),
     );
 
-    const session = kspecJson<SessionContext>(
-      "session start --json --full",
-      tempDir,
-    );
+    const session = kspecJson<SessionContext>("session start --json --full", tempDir);
 
     // JSON includes all 22 items
     expect(session.inbox_items.length).toBe(22);
@@ -161,9 +183,7 @@ describe("full mode lists untriaged items", () => {
     // Human output should cap displayed untriaged at 20
     const result = kspec("session start --full", tempDir);
     // Count displayed item refs (8-char ULID prefix lines)
-    const itemLines = result.stdout
-      .split("\n")
-      .filter((l: string) => l.match(/^\s+[0-9A-Z]{8}\s/));
+    const itemLines = result.stdout.split("\n").filter((l: string) => l.match(/^\s+[0-9A-Z]{8}\s/));
     expect(itemLines.length).toBeLessThanOrEqual(20);
   });
 });
@@ -179,8 +199,20 @@ describe("all items triaged", () => {
     ]);
 
     seedTriageRecords(tempDir, [
-      { _ulid: testUlid("TRJG", 0), inbox_ref: ulid1, item_snapshot: "First item", action: "promote", reasoning: "good idea" },
-      { _ulid: testUlid("TRJG", 1), inbox_ref: ulid2, item_snapshot: "Second item", action: "defer", reasoning: "later" },
+      {
+        _ulid: testUlid("TRJG", 0),
+        inbox_ref: ulid1,
+        item_snapshot: "First item",
+        action: "promote",
+        reasoning: "good idea",
+      },
+      {
+        _ulid: testUlid("TRJG", 1),
+        inbox_ref: ulid2,
+        item_snapshot: "Second item",
+        action: "defer",
+        reasoning: "later",
+      },
     ]);
 
     const session = kspecJson<SessionContext>("session start --json", tempDir);
@@ -193,12 +225,16 @@ describe("all items triaged", () => {
   it("should show 0 untriaged in human output when all triaged", () => {
     const ulid1 = testUlid("JNBX", 0);
 
-    seedInboxItems(tempDir, [
-      { _ulid: ulid1, text: "Handled item" },
-    ]);
+    seedInboxItems(tempDir, [{ _ulid: ulid1, text: "Handled item" }]);
 
     seedTriageRecords(tempDir, [
-      { _ulid: testUlid("TRJG", 0), inbox_ref: ulid1, item_snapshot: "Handled item", action: "delete", reasoning: "stale" },
+      {
+        _ulid: testUlid("TRJG", 0),
+        inbox_ref: ulid1,
+        item_snapshot: "Handled item",
+        action: "delete",
+        reasoning: "stale",
+      },
     ]);
 
     const result = kspec("session start", tempDir);
@@ -209,18 +245,19 @@ describe("all items triaged", () => {
   it("should mark all items as triaged in JSON when all have records", () => {
     const ulid1 = testUlid("JNBX", 0);
 
-    seedInboxItems(tempDir, [
-      { _ulid: ulid1, text: "All done" },
-    ]);
+    seedInboxItems(tempDir, [{ _ulid: ulid1, text: "All done" }]);
 
     seedTriageRecords(tempDir, [
-      { _ulid: testUlid("TRJG", 0), inbox_ref: ulid1, item_snapshot: "All done", action: "promote", reasoning: "shipped" },
+      {
+        _ulid: testUlid("TRJG", 0),
+        inbox_ref: ulid1,
+        item_snapshot: "All done",
+        action: "promote",
+        reasoning: "shipped",
+      },
     ]);
 
-    const session = kspecJson<SessionContext>(
-      "session start --json --full",
-      tempDir,
-    );
+    const session = kspecJson<SessionContext>("session start --json --full", tempDir);
 
     // JSON still includes the item, but marked as triaged
     expect(session.inbox_items.length).toBe(1);
@@ -234,9 +271,7 @@ describe("untriaged definition", () => {
   it("should count item as untriaged when no triage record exists", () => {
     const ulid1 = testUlid("JNBX", 0);
 
-    seedInboxItems(tempDir, [
-      { _ulid: ulid1, text: "No triage record for this" },
-    ]);
+    seedInboxItems(tempDir, [{ _ulid: ulid1, text: "No triage record for this" }]);
 
     const session = kspecJson<SessionContext>("session start --json", tempDir);
 
@@ -249,18 +284,19 @@ describe("untriaged definition", () => {
   it("should mark item as triaged when triage record exists", () => {
     const ulid1 = testUlid("JNBX", 0);
 
-    seedInboxItems(tempDir, [
-      { _ulid: ulid1, text: "Has triage record" },
-    ]);
+    seedInboxItems(tempDir, [{ _ulid: ulid1, text: "Has triage record" }]);
 
     seedTriageRecords(tempDir, [
-      { _ulid: testUlid("TRJG", 0), inbox_ref: ulid1, item_snapshot: "Has triage record", action: "defer", reasoning: "deferred" },
+      {
+        _ulid: testUlid("TRJG", 0),
+        inbox_ref: ulid1,
+        item_snapshot: "Has triage record",
+        action: "defer",
+        reasoning: "deferred",
+      },
     ]);
 
-    const session = kspecJson<SessionContext>(
-      "session start --json --full",
-      tempDir,
-    );
+    const session = kspecJson<SessionContext>("session start --json --full", tempDir);
 
     // JSON includes the item, marked as triaged
     expect(session.inbox_items.length).toBe(1);
@@ -279,20 +315,21 @@ describe("untriaged definition", () => {
     ]);
 
     seedTriageRecords(tempDir, [
-      { _ulid: testUlid("TRJG", 0), inbox_ref: ulid2, item_snapshot: "Deferred item", action: "defer", reasoning: "needs review" },
+      {
+        _ulid: testUlid("TRJG", 0),
+        inbox_ref: ulid2,
+        item_snapshot: "Deferred item",
+        action: "defer",
+        reasoning: "needs review",
+      },
     ]);
 
-    const session = kspecJson<SessionContext>(
-      "session start --json --full",
-      tempDir,
-    );
+    const session = kspecJson<SessionContext>("session start --json --full", tempDir);
 
     // JSON includes both items with correct triage status
     expect(session.inbox_items.length).toBe(2);
     const untriaged = session.inbox_items.find((i) => !i.triaged);
-    const deferred = session.inbox_items.find(
-      (i) => i.triage_action === "defer",
-    );
+    const deferred = session.inbox_items.find((i) => i.triage_action === "defer");
     expect(untriaged).toBeDefined();
     expect(untriaged!.triage_action).toBeNull();
     expect(deferred).toBeDefined();

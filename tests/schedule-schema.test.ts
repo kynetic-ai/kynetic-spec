@@ -16,7 +16,6 @@ import {
   CronExpressionSchema,
   OverlapPolicySchema,
   MetaManifestSchema,
-  ActionSchema,
 } from "../src/schema/index.js";
 import { testUlid, setupTempFixtures, cleanupTempDir, kspec as kspecRun } from "./helpers/cli.js";
 
@@ -123,7 +122,7 @@ describe("ScheduleSchema", () => {
       const result = ScheduleSchema.safeParse(schedule);
       expect(result.success).toBe(false);
       if (!result.success) {
-        const errorMessage = result.error.issues.map(i => i.message).join("; ");
+        const errorMessage = result.error.issues.map((i) => i.message).join("; ");
         expect(errorMessage).toContain("Invalid cron expression");
         expect(errorMessage).toContain("*/5 * * * *");
       }
@@ -162,7 +161,7 @@ describe("ScheduleSchema", () => {
       const result = ScheduleSchema.safeParse(schedule);
       expect(result.success).toBe(false);
       if (!result.success) {
-        const errorMessage = result.error.issues.map(i => i.message).join("; ");
+        const errorMessage = result.error.issues.map((i) => i.message).join("; ");
         expect(errorMessage).toContain("6-field");
         expect(errorMessage).toContain("second-level");
         expect(errorMessage).toContain("5-field");
@@ -174,7 +173,7 @@ describe("ScheduleSchema", () => {
       const result = CronExpressionSchema.safeParse("30 0 9 * * 1-5");
       expect(result.success).toBe(false);
       if (!result.success) {
-        const errorMessage = result.error.issues.map(i => i.message).join("; ");
+        const errorMessage = result.error.issues.map((i) => i.message).join("; ");
         expect(errorMessage).toContain("6-field");
       }
     });
@@ -569,7 +568,7 @@ describe("Schedule validation integration", () => {
 
     await fs.writeFile(
       metaPath,
-      existing + `
+      `${existing}
 schedules:
   - _ulid: ${testUlid("SCHD", 62)}
     id: bad-cron-schedule
@@ -607,7 +606,7 @@ schedules:
 
     await fs.writeFile(
       metaPath,
-      existing + `
+      `${existing}
 schedules:
   - _ulid: ${testUlid("SCHD", 63)}
     id: command-schedule

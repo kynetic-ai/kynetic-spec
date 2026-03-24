@@ -17,18 +17,13 @@ export interface CommitGuidance {
 /**
  * Generate commit guidance for a task
  */
-export function formatCommitGuidance(
-  task: Task,
-  options: { wip?: boolean } = {},
-): CommitGuidance {
+export function formatCommitGuidance(task: Task, options: { wip?: boolean } = {}): CommitGuidance {
   const prefix = options.wip ? "wip" : inferCommitType(task);
   // Remove "Implement: " prefix if present (from derive command)
   const subject = task.title.replace(/^Implement:\s*/i, "");
 
   const trailers: string[] = [];
-  const taskRef = task.slugs[0]
-    ? `@${task.slugs[0]}`
-    : `@${task._ulid}`;
+  const taskRef = task.slugs[0] ? `@${task.slugs[0]}` : `@${task._ulid}`;
   trailers.push(`Task: ${taskRef}`);
 
   if (task.spec_ref) {
@@ -79,11 +74,7 @@ export function printCommitGuidance(guidance: CommitGuidance): void {
   if (guidance.hasSpecGap) {
     console.log("");
     console.log(chalk.yellow("This task has no spec_ref."));
-    console.log(
-      chalk.gray(
-        "Is this a spec gap? Consider: kspec item add --under @parent ...",
-      ),
-    );
+    console.log(chalk.gray("Is this a spec gap? Consider: kspec item add --under @parent ..."));
     console.log(chalk.gray("Or is this intentional (infra/cleanup)?"));
   }
 }

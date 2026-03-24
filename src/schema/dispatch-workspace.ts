@@ -1,10 +1,7 @@
 import { z } from "zod";
 import { DateTimeSchema, RefSchema, SlugSchema } from "./common.js";
 
-export const DispatchWorkspaceBranchOwnershipSchema = z.enum([
-  "dispatcher-managed",
-  "adopted",
-]);
+export const DispatchWorkspaceBranchOwnershipSchema = z.enum(["dispatcher-managed", "adopted"]);
 
 export const DispatchWorkspaceBranchProvenanceSchema = z.object({
   ownership: DispatchWorkspaceBranchOwnershipSchema,
@@ -26,17 +23,9 @@ export const DispatchWorkspaceLifecycleStateSchema = z.enum([
   "closed",
 ]);
 
-export const DispatchWorkspaceHealthStatusSchema = z.enum([
-  "healthy",
-  "stale",
-  "invalid",
-]);
+export const DispatchWorkspaceHealthStatusSchema = z.enum(["healthy", "stale", "invalid"]);
 
-export const DispatchWorkspaceBootstrapStatusSchema = z.enum([
-  "not_run",
-  "succeeded",
-  "failed",
-]);
+export const DispatchWorkspaceBootstrapStatusSchema = z.enum(["not_run", "succeeded", "failed"]);
 
 export const DispatchWorkspaceIntegrationStatusSchema = z.enum([
   "pending",
@@ -55,15 +44,9 @@ export const DispatchWorkspaceCleanupStatusSchema = z.enum([
 
 export const DispatchWorkspaceRoleSchema = z.enum(["worker", "reviewer"]);
 
-export const DispatchWorkspaceBranchModeSchema = z.enum([
-  "branch",
-  "detached",
-]);
+export const DispatchWorkspaceBranchModeSchema = z.enum(["branch", "detached"]);
 
-export const DispatchWorkspacePublicationModeSchema = z.enum([
-  "pull_request",
-  "manual_merge",
-]);
+export const DispatchWorkspacePublicationModeSchema = z.enum(["pull_request", "manual_merge"]);
 
 export const DispatchWorkspaceIntegrationOutcomeSchema = z.enum([
   "pending",
@@ -208,25 +191,17 @@ export const DispatchWorkspaceRegistryFileSchema = z.object({
   workspaces: z.array(DispatchWorkspaceRecordSchema).default([]),
 });
 
-export type DispatchWorkspaceLifecycleState = z.infer<
-  typeof DispatchWorkspaceLifecycleStateSchema
->;
-export type DispatchWorkspaceHealthStatus = z.infer<
-  typeof DispatchWorkspaceHealthStatusSchema
->;
+export type DispatchWorkspaceLifecycleState = z.infer<typeof DispatchWorkspaceLifecycleStateSchema>;
+export type DispatchWorkspaceHealthStatus = z.infer<typeof DispatchWorkspaceHealthStatusSchema>;
 export type DispatchWorkspaceBootstrapStatus = z.infer<
   typeof DispatchWorkspaceBootstrapStatusSchema
 >;
 export type DispatchWorkspaceIntegrationStatus = z.infer<
   typeof DispatchWorkspaceIntegrationStatusSchema
 >;
-export type DispatchWorkspaceCleanupStatus = z.infer<
-  typeof DispatchWorkspaceCleanupStatusSchema
->;
+export type DispatchWorkspaceCleanupStatus = z.infer<typeof DispatchWorkspaceCleanupStatusSchema>;
 export type DispatchWorkspaceRole = z.infer<typeof DispatchWorkspaceRoleSchema>;
-export type DispatchWorkspaceBranchMode = z.infer<
-  typeof DispatchWorkspaceBranchModeSchema
->;
+export type DispatchWorkspaceBranchMode = z.infer<typeof DispatchWorkspaceBranchModeSchema>;
 export type DispatchWorkspacePublicationMode = z.infer<
   typeof DispatchWorkspacePublicationModeSchema
 >;
@@ -239,36 +214,20 @@ export type DispatchWorkspaceBranchOwnership = z.infer<
 export type DispatchWorkspaceBranchProvenance = z.infer<
   typeof DispatchWorkspaceBranchProvenanceSchema
 >;
-export type DispatchWorkspaceIssue = z.infer<
-  typeof DispatchWorkspaceIssueSchema
->;
-export type DispatchWorkspaceWorktree = z.infer<
-  typeof DispatchWorkspaceWorktreeSchema
->;
+export type DispatchWorkspaceIssue = z.infer<typeof DispatchWorkspaceIssueSchema>;
+export type DispatchWorkspaceWorktree = z.infer<typeof DispatchWorkspaceWorktreeSchema>;
 export type DispatchWorkspaceBootstrapStepResult = z.infer<
   typeof DispatchWorkspaceBootstrapStepResultSchema
 >;
 export type DispatchWorkspaceBootstrapRoleState = z.infer<
   typeof DispatchWorkspaceBootstrapRoleStateSchema
 >;
-export type DispatchWorkspaceBootstrapState = z.infer<
-  typeof DispatchWorkspaceBootstrapStateSchema
->;
+export type DispatchWorkspaceBootstrapState = z.infer<typeof DispatchWorkspaceBootstrapStateSchema>;
 export type DispatchWorkspaceIntegrationState = z.infer<
   typeof DispatchWorkspaceIntegrationStateSchema
 >;
-export type DispatchWorkspaceHealthState = z.infer<
-  typeof DispatchWorkspaceHealthStateSchema
->;
-export type DispatchWorkspaceCleanupState = z.infer<
-  typeof DispatchWorkspaceCleanupStateSchema
->;
-export type DispatchWorkspaceTimestamps = z.infer<
-  typeof DispatchWorkspaceTimestampsSchema
->;
-export type DispatchWorkspaceRecord = z.infer<
-  typeof DispatchWorkspaceRecordSchema
->;
-export type DispatchWorkspaceRegistryFile = z.infer<
-  typeof DispatchWorkspaceRegistryFileSchema
->;
+export type DispatchWorkspaceHealthState = z.infer<typeof DispatchWorkspaceHealthStateSchema>;
+export type DispatchWorkspaceCleanupState = z.infer<typeof DispatchWorkspaceCleanupStateSchema>;
+export type DispatchWorkspaceTimestamps = z.infer<typeof DispatchWorkspaceTimestampsSchema>;
+export type DispatchWorkspaceRecord = z.infer<typeof DispatchWorkspaceRecordSchema>;
+export type DispatchWorkspaceRegistryFile = z.infer<typeof DispatchWorkspaceRegistryFileSchema>;

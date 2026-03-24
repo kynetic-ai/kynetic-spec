@@ -3,14 +3,8 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { execSync } from "node:child_process";
 import * as shadowModule from "../src/parser/shadow.js";
-import {
-  shadowNeedsSync,
-  spawnGitWithTimeout,
-} from "../src/parser/shadow.js";
-import {
-  setSyncMode,
-  _resetSyncModeForTesting,
-} from "../src/cli/sync-mode.js";
+import { shadowNeedsSync, spawnGitWithTimeout } from "../src/parser/shadow.js";
+import { setSyncMode, _resetSyncModeForTesting } from "../src/cli/sync-mode.js";
 import { initContext } from "../src/parser/yaml.js";
 
 // ─── Test Setup ──────────────────────────────────────────────────────────────
@@ -21,12 +15,6 @@ function git(cwd: string, cmd: string): string {
 
 function initBareRepo(dir: string): void {
   execSync("git init --bare -b main", { cwd: dir, stdio: "pipe" });
-}
-
-function initRepo(dir: string): void {
-  execSync("git init -b main", { cwd: dir, stdio: "pipe" });
-  git(dir, 'config user.email "test@test.com"');
-  git(dir, 'config user.name "Test"');
 }
 
 function makeCommit(dir: string, filename: string, content: string): void {
@@ -217,11 +205,10 @@ describe("spawnGitWithTimeout", () => {
   it("rejects with timeout error when command takes too long", async () => {
     // Use a sleep-like git operation that will exceed timeout
     // git gc with a very short timeout
-    await expect(
-      spawnGitWithTimeout(testDir, ["gc", "--aggressive"], 1),
-    ).rejects.toThrow(/timed out/);
+    await expect(spawnGitWithTimeout(testDir, ["gc", "--aggressive"], 1)).rejects.toThrow(
+      /timed out/,
+    );
   });
-
 });
 
 describe("shadowNeedsSync fetch failure handling", () => {
@@ -243,13 +230,13 @@ describe("shadowNeedsSync fetch failure handling", () => {
       stdio: "pipe",
     });
     // Add a remote that will fail to fetch (non-existent path)
-    execSync('git remote add origin /tmp/this-remote-does-not-exist-kspec-test', {
+    execSync("git remote add origin /tmp/this-remote-does-not-exist-kspec-test", {
       cwd: repoDir,
       stdio: "pipe",
     });
     // Set upstream tracking (so rev-list HEAD...@{u} path is attempted)
-    execSync('git config branch.main.remote origin', { cwd: repoDir, stdio: "pipe" });
-    execSync('git config branch.main.merge refs/heads/main', { cwd: repoDir, stdio: "pipe" });
+    execSync("git config branch.main.remote origin", { cwd: repoDir, stdio: "pipe" });
+    execSync("git config branch.main.merge refs/heads/main", { cwd: repoDir, stdio: "pipe" });
   });
 
   afterEach(async () => {
@@ -273,9 +260,9 @@ describe("shadowNeedsSync fetch failure handling", () => {
     await shadowNeedsSync(repoDir, "origin", 0);
 
     const debugMessages = errorSpy.mock.calls.map((c) => c[0]);
-    expect(debugMessages.some((msg: string) =>
-      msg.includes("[DEBUG] shadow drift-check: fetch failed"),
-    )).toBe(true);
+    expect(
+      debugMessages.some((msg: string) => msg.includes("[DEBUG] shadow drift-check: fetch failed")),
+    ).toBe(true);
 
     errorSpy.mockRestore();
   });
@@ -288,9 +275,11 @@ describe("shadowNeedsSync fetch failure handling", () => {
     await shadowNeedsSync(repoDir, "origin", 0);
 
     const debugMessages = errorSpy.mock.calls.map((c) => c[0]);
-    expect(debugMessages.some((msg: string) =>
-      typeof msg === "string" && msg.includes("[DEBUG] shadow drift-check"),
-    )).toBe(false);
+    expect(
+      debugMessages.some(
+        (msg: string) => typeof msg === "string" && msg.includes("[DEBUG] shadow drift-check"),
+      ),
+    ).toBe(false);
 
     errorSpy.mockRestore();
   });
@@ -299,11 +288,8 @@ describe("shadowNeedsSync fetch failure handling", () => {
 describe("Command Annotations", () => {
   it("markAlwaysSync and getAlwaysSyncAnnotation work correctly", async () => {
     const { Command } = await import("commander");
-    const {
-      markAlwaysSync,
-      getAlwaysSyncAnnotation,
-      getMutatingAnnotation,
-    } = await import("../src/cli/command-annotations.js");
+    const { markAlwaysSync, getAlwaysSyncAnnotation, getMutatingAnnotation } =
+      await import("../src/cli/command-annotations.js");
 
     const cmd = new Command("test");
     expect(getAlwaysSyncAnnotation(cmd)).toBe(false);
@@ -315,11 +301,8 @@ describe("Command Annotations", () => {
 
   it("markMutating and getMutatingAnnotation work correctly", async () => {
     const { Command } = await import("commander");
-    const {
-      markMutating,
-      getMutatingAnnotation,
-      getAlwaysSyncAnnotation,
-    } = await import("../src/cli/command-annotations.js");
+    const { markMutating, getMutatingAnnotation, getAlwaysSyncAnnotation } =
+      await import("../src/cli/command-annotations.js");
 
     const cmd = new Command("test");
     expect(getMutatingAnnotation(cmd)).toBe(false);
@@ -332,12 +315,8 @@ describe("Command Annotations", () => {
   // AC: @shadow-lazy-read-sync ac-session-start-always-pulls
   it("session start command is annotated as always-sync", async () => {
     const { Command } = await import("commander");
-    const { getAlwaysSyncAnnotation } = await import(
-      "../src/cli/command-annotations.js"
-    );
-    const { registerSessionCommands } = await import(
-      "../src/cli/commands/session/commands.js"
-    );
+    const { getAlwaysSyncAnnotation } = await import("../src/cli/command-annotations.js");
+    const { registerSessionCommands } = await import("../src/cli/commands/session/commands.js");
 
     const program = new Command("kspec");
     registerSessionCommands(program);
@@ -355,12 +334,9 @@ describe("Command Annotations", () => {
   // AC: @shadow-write-sync ac-write-skips-read-check
   it("mutating task command is annotated as mutating (triggers skip syncMode)", async () => {
     const { Command } = await import("commander");
-    const { getMutatingAnnotation, getAlwaysSyncAnnotation } = await import(
-      "../src/cli/command-annotations.js"
-    );
-    const { registerTaskCommands } = await import(
-      "../src/cli/commands/task.js"
-    );
+    const { getMutatingAnnotation, getAlwaysSyncAnnotation } =
+      await import("../src/cli/command-annotations.js");
+    const { registerTaskCommands } = await import("../src/cli/commands/task.js");
 
     const program = new Command("kspec");
     registerTaskCommands(program);
@@ -376,7 +352,6 @@ describe("Command Annotations", () => {
     // And NOT always-sync (mutating and always-sync are independent)
     expect(getAlwaysSyncAnnotation(addCmd!)).toBe(false);
   });
-
 });
 
 // ─── Behavioral tests against real initContext() ──────────────────────────────
@@ -422,10 +397,7 @@ describe("initContext sync behavior", () => {
     // Create orphan branch kspec-meta with a manifest
     git(testDir, "checkout --orphan kspec-meta");
     execSync("git rm -rf .", { cwd: testDir, stdio: "pipe" }).toString();
-    await fs.writeFile(
-      path.join(testDir, "kynetic.yaml"),
-      "project:\n  name: Test\nmodules: []\n",
-    );
+    await fs.writeFile(path.join(testDir, "kynetic.yaml"), "project:\n  name: Test\nmodules: []\n");
     execSync("git add kynetic.yaml && git commit -m 'init shadow'", {
       cwd: testDir,
       stdio: "pipe",
@@ -454,7 +426,7 @@ describe("initContext sync behavior", () => {
     delete process.env.KSPEC_NO_SYNC;
     // Remove worktree before removing directory
     try {
-      git(testDir, 'worktree remove .kspec --force');
+      git(testDir, "worktree remove .kspec --force");
     } catch {
       // Best effort
     }

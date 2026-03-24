@@ -30,10 +30,7 @@ export interface ReviewValidationResult {
  *
  * AC: @review-record-validation ac-2
  */
-function formatActionableMessage(
-  fieldPath: string,
-  message: string,
-): string {
+function formatActionableMessage(fieldPath: string, message: string): string {
   // Subject type discrimination errors
   if (fieldPath.includes("subject") && message.includes("discriminator")) {
     return `${message}. Subject type must be one of: code, plan, task, spec, external`;
@@ -60,7 +57,10 @@ function formatActionableMessage(
   }
 
   // Invalid ULID
-  if (fieldPath.endsWith("_ulid") && (message.includes("String must contain") || message.includes("Invalid"))) {
+  if (
+    fieldPath.endsWith("_ulid") &&
+    (message.includes("String must contain") || message.includes("Invalid"))
+  ) {
     return `${message}. ULIDs must be exactly 26 uppercase alphanumeric characters (Crockford base32)`;
   }
 
@@ -83,10 +83,7 @@ function formatActionableMessage(
  *
  * AC: @review-record-validation ac-1
  */
-export function validateReviewRecord(
-  data: unknown,
-  source?: string,
-): ReviewValidationResult {
+export function validateReviewRecord(data: unknown, source?: string): ReviewValidationResult {
   const errors: SchemaValidationError[] = [];
   const file = source ?? "review-record";
 
@@ -96,10 +93,7 @@ export function validateReviewRecord(
       errors.push({
         file,
         path: issue.path.join("."),
-        message: formatActionableMessage(
-          issue.path.join("."),
-          issue.message,
-        ),
+        message: formatActionableMessage(issue.path.join("."), issue.message),
         details: issue,
       });
     }
@@ -114,10 +108,7 @@ export function validateReviewRecord(
  *
  * AC: @review-record-validation ac-1, ac-2
  */
-export function validateReviewRecordInput(
-  data: unknown,
-  source?: string,
-): ReviewValidationResult {
+export function validateReviewRecordInput(data: unknown, source?: string): ReviewValidationResult {
   const errors: SchemaValidationError[] = [];
   const file = source ?? "review-record-input";
 
@@ -127,10 +118,7 @@ export function validateReviewRecordInput(
       errors.push({
         file,
         path: issue.path.join("."),
-        message: formatActionableMessage(
-          issue.path.join("."),
-          issue.message,
-        ),
+        message: formatActionableMessage(issue.path.join("."), issue.message),
         details: issue,
       });
     }
@@ -145,9 +133,7 @@ export function validateReviewRecordInput(
  *
  * AC: @review-record-validation ac-1, ac-2
  */
-export async function validateReviewsFile(
-  filePath: string,
-): Promise<SchemaValidationError[]> {
+export async function validateReviewsFile(filePath: string): Promise<SchemaValidationError[]> {
   const errors: SchemaValidationError[] = [];
 
   try {
@@ -156,7 +142,8 @@ export async function validateReviewsFile(
     if (!raw || typeof raw !== "object") {
       errors.push({
         file: filePath,
-        message: "Invalid reviews file format: expected an object with { kynetic_reviews, reviews }",
+        message:
+          "Invalid reviews file format: expected an object with { kynetic_reviews, reviews }",
       });
       return errors;
     }
@@ -189,10 +176,7 @@ export async function validateReviewsFile(
           errors.push({
             file: filePath,
             path: issue.path.join("."),
-            message: formatActionableMessage(
-              issue.path.join("."),
-              issue.message,
-            ),
+            message: formatActionableMessage(issue.path.join("."), issue.message),
             details: issue,
           });
         }
@@ -244,7 +228,9 @@ export async function findReviewFiles(dir: string): Promise<string[]> {
 export function parseReviewRecord(
   data: unknown,
   source?: string,
-): { ok: true; data: import("../schema/review-records.js").ReviewRecord } | { ok: false; errors: SchemaValidationError[] } {
+):
+  | { ok: true; data: import("../schema/review-records.js").ReviewRecord }
+  | { ok: false; errors: SchemaValidationError[] } {
   const result = validateReviewRecord(data, source);
   if (!result.valid) {
     return { ok: false, errors: result.errors };
@@ -262,7 +248,9 @@ export function parseReviewRecord(
 export function parseReviewRecordInput(
   data: unknown,
   source?: string,
-): { ok: true; data: import("../schema/review-records.js").ReviewRecordInput } | { ok: false; errors: SchemaValidationError[] } {
+):
+  | { ok: true; data: import("../schema/review-records.js").ReviewRecordInput }
+  | { ok: false; errors: SchemaValidationError[] } {
   const result = validateReviewRecordInput(data, source);
   if (!result.valid) {
     return { ok: false, errors: result.errors };

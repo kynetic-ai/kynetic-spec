@@ -75,7 +75,7 @@ function main() {
   fs.writeFileSync(
     path.join(pluginMetaDir, "plugin.json"),
     JSON.stringify(pluginJson, null, 2) + "\n",
-    "utf-8"
+    "utf-8",
   );
 
   // Write marketplace.json (required by Claude Code for directory source marketplaces)
@@ -97,7 +97,7 @@ function main() {
   fs.writeFileSync(
     path.join(pluginMetaDir, "marketplace.json"),
     JSON.stringify(marketplaceJson, null, 2) + "\n",
-    "utf-8"
+    "utf-8",
   );
 
   // Process each skill into plugin/plugins/kspec/skills/<id>/

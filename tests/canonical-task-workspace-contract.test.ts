@@ -12,6 +12,7 @@ import {
   cleanupTempDir,
   createTempDir,
   initGitRepo,
+  readTestOutput,
   testUlid,
 } from "./helpers/cli.js";
 
@@ -25,8 +26,11 @@ function git(cwd: string, command: string): string {
   }).trim();
 }
 
-async function readWorkspaceRecord(registryPath: string, taskRef: string): Promise<Record<string, any>> {
-  const raw = YAML.parse(await fs.readFile(registryPath, "utf-8")) as {
+async function readWorkspaceRecord(
+  registryPath: string,
+  taskRef: string,
+): Promise<Record<string, any>> {
+  const raw = YAML.parse(await readTestOutput(registryPath)) as {
     workspaces?: Array<Record<string, any>>;
   };
   return raw.workspaces?.find((workspace) => workspace.task_ref === taskRef) ?? {};
@@ -99,7 +103,11 @@ describe("canonical task workspace contract", () => {
       "dispatch/task/task-implement-canonical-task-workspace-contract/01task00",
     );
     expect(workspace.cwd).toBe(
-      path.join(tempDir, ".kspec-worktrees", "task-implement-canonical-task-workspace-contract-01task00"),
+      path.join(
+        tempDir,
+        ".kspec-worktrees",
+        "task-implement-canonical-task-workspace-contract-01task00",
+      ),
     );
     expect(workspace.metadata.baseBranch).toBe("agent-dev");
     expect(workspace.metadata.baseBranchPoint).toBe(baseCommit);
@@ -208,7 +216,7 @@ describe("canonical task workspace contract", () => {
     });
 
     const workerMetadata = JSON.parse(
-      await fs.readFile(path.join(workerWorkspace.cwd, ".kspec-dispatch-workspace.json"), "utf-8"),
+      await readTestOutput(path.join(workerWorkspace.cwd, ".kspec-dispatch-workspace.json")),
     ) as Record<string, any>;
     expect(workerMetadata).toMatchObject({
       taskRef,
@@ -233,7 +241,7 @@ describe("canonical task workspace contract", () => {
     });
 
     const reviewerMetadata = JSON.parse(
-      await fs.readFile(path.join(workerWorkspace.cwd, ".kspec-dispatch-workspace.json"), "utf-8"),
+      await readTestOutput(path.join(workerWorkspace.cwd, ".kspec-dispatch-workspace.json")),
     ) as Record<string, any>;
     expect(reviewerWorkspace.cwd).toMatch(/-review$/);
     expect(reviewerMetadata).toMatchObject({

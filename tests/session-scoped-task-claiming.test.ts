@@ -2,7 +2,7 @@
  * Integration tests for session-scoped task claiming
  * AC: @session-scoped-task-claiming
  */
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import {
   kspec,
   kspecJson,
@@ -10,9 +10,9 @@ import {
   setupTempFixtures,
   cleanupTempDir,
   initGitRepo,
-} from './helpers/cli';
+} from "./helpers/cli";
 
-describe('Integration: session-scoped task claiming', () => {
+describe("Integration: session-scoped task claiming", () => {
   let tempDir: string;
 
   beforeEach(async () => {
@@ -25,42 +25,42 @@ describe('Integration: session-scoped task claiming', () => {
   });
 
   // AC: @session-scoped-task-claiming ac-schema
-  describe('ac-schema: session_id is optional and backward compatible', () => {
-    it('should load existing tasks without session_id', () => {
+  describe("ac-schema: session_id is optional and backward compatible", () => {
+    it("should load existing tasks without session_id", () => {
       // Existing fixtures have no session_id field
       const task = kspecJson<{ status: string; session_id?: string | null }>(
-        'task get @test-task-pending',
+        "task get @test-task-pending",
         tempDir,
       );
-      expect(task.status).toBe('pending');
+      expect(task.status).toBe("pending");
       // session_id should be absent or undefined — backward compatible
       expect(task.session_id).toBeUndefined();
     });
 
-    it('should accept tasks with session_id set', () => {
+    it("should accept tasks with session_id set", () => {
       // Start task with session_id to prove the field is accepted
-      kspec('task start @test-task-pending', tempDir, {
-        env: { KSPEC_SESSION_ID: '01KJ6NFBHNMBABEHHDVEYSPJFR' },
+      kspec("task start @test-task-pending", tempDir, {
+        env: { KSPEC_SESSION_ID: "01KJ6NFBHNMBABEHHDVEYSPJFR" },
       });
       const task = kspecJson<{ status: string; session_id?: string | null }>(
-        'task get @test-task-pending',
+        "task get @test-task-pending",
         tempDir,
       );
-      expect(task.status).toBe('in_progress');
-      expect(task.session_id).toBe('01KJ6NFBHNMBABEHHDVEYSPJFR');
+      expect(task.status).toBe("in_progress");
+      expect(task.session_id).toBe("01KJ6NFBHNMBABEHHDVEYSPJFR");
     });
   });
 
   // AC: @session-scoped-task-claiming ac-stamp
-  describe('ac-stamp: task start stamps session_id when env var set', () => {
-    it('should set session_id from KSPEC_SESSION_ID env var', () => {
-      const sessionId = '01KJ6NFBHNMBABEHHDVEYSPJFR';
-      kspec('task start @test-task-pending', tempDir, {
+  describe("ac-stamp: task start stamps session_id when env var set", () => {
+    it("should set session_id from KSPEC_SESSION_ID env var", () => {
+      const sessionId = "01KJ6NFBHNMBABEHHDVEYSPJFR";
+      kspec("task start @test-task-pending", tempDir, {
         env: { KSPEC_SESSION_ID: sessionId },
       });
 
       const task = kspecJson<{ session_id?: string | null }>(
-        'task get @test-task-pending',
+        "task get @test-task-pending",
         tempDir,
       );
       expect(task.session_id).toBe(sessionId);
@@ -68,16 +68,16 @@ describe('Integration: session-scoped task claiming', () => {
   });
 
   // AC: @session-scoped-task-claiming ac-no-env
-  describe('ac-no-env: no session_id stamped when env var not set', () => {
-    it('should not set session_id when KSPEC_SESSION_ID is absent', () => {
+  describe("ac-no-env: no session_id stamped when env var not set", () => {
+    it("should not set session_id when KSPEC_SESSION_ID is absent", () => {
       // Explicitly remove KSPEC_SESSION_ID if somehow set
       const originalEnv = process.env.KSPEC_SESSION_ID;
       delete process.env.KSPEC_SESSION_ID;
 
       try {
-        kspec('task start @test-task-pending', tempDir);
+        kspec("task start @test-task-pending", tempDir);
         const task = kspecJson<{ session_id?: string | null }>(
-          'task get @test-task-pending',
+          "task get @test-task-pending",
           tempDir,
         );
         // session_id should not be set
@@ -91,88 +91,88 @@ describe('Integration: session-scoped task claiming', () => {
   });
 
   // AC: @session-scoped-task-claiming ac-startable
-  describe('ac-startable: warn when starting task claimed by another session', () => {
-    it('should show warning when task has session_id from another session', async () => {
+  describe("ac-startable: warn when starting task claimed by another session", () => {
+    it("should show warning when task has session_id from another session", async () => {
       // Write a custom tasks file with session_id pre-set on a pending task
-      const fs = await import('node:fs/promises');
-      const path = await import('node:path');
-      const tasksFile = path.join(tempDir, 'project.tasks.yaml');
-      const content = await fs.readFile(tasksFile, 'utf-8');
+      const fs = await import("node:fs/promises");
+      const path = await import("node:path");
+      const tasksFile = path.join(tempDir, "project.tasks.yaml");
+      const content = await fs.readFile(tasksFile, "utf-8");
 
       // Add session_id to the first pending task
       const updatedContent = content.replace(
-        'status: pending\n    priority: 2\n    automation: eligible',
+        "status: pending\n    priority: 2\n    automation: eligible",
         'status: pending\n    priority: 2\n    automation: eligible\n    session_id: "01KJ6NFBHNMBABEHHDVEYSPJFR"',
       );
       await fs.writeFile(tasksFile, updatedContent);
 
       // Start the task with a different session
-      const result = kspec('task start @test-task-pending', tempDir, {
-        env: { KSPEC_SESSION_ID: '01KJ7AAAAAAAAAAAAAAAAAAAAAA' },
+      const result = kspec("task start @test-task-pending", tempDir, {
+        env: { KSPEC_SESSION_ID: "01KJ7AAAAAAAAAAAAAAAAAAAAAA" },
       });
 
       // Should contain warning about the other session
       const combined = result.stdout + result.stderr;
-      expect(combined).toContain('session 01KJ6NFB');
-      expect(combined).toContain('Started task');
+      expect(combined).toContain("session 01KJ6NFB");
+      expect(combined).toContain("Started task");
     });
 
-    it('should not warn when same session re-starts a task', async () => {
-      const sessionId = '01KJ6NFBHNMBABEHHDVEYSPJFR';
+    it("should not warn when same session re-starts a task", async () => {
+      const sessionId = "01KJ6NFBHNMBABEHHDVEYSPJFR";
 
       // Write a custom tasks file with session_id pre-set to same session
-      const fs = await import('node:fs/promises');
-      const path = await import('node:path');
-      const tasksFile = path.join(tempDir, 'project.tasks.yaml');
-      const content = await fs.readFile(tasksFile, 'utf-8');
+      const fs = await import("node:fs/promises");
+      const path = await import("node:path");
+      const tasksFile = path.join(tempDir, "project.tasks.yaml");
+      const content = await fs.readFile(tasksFile, "utf-8");
       const updatedContent = content.replace(
-        'status: pending\n    priority: 2\n    automation: eligible',
+        "status: pending\n    priority: 2\n    automation: eligible",
         `status: pending\n    priority: 2\n    automation: eligible\n    session_id: "${sessionId}"`,
       );
       await fs.writeFile(tasksFile, updatedContent);
 
-      const result = kspec('task start @test-task-pending', tempDir, {
+      const result = kspec("task start @test-task-pending", tempDir, {
         env: { KSPEC_SESSION_ID: sessionId },
       });
 
       // Should NOT contain warning about session claiming
       const combined = result.stdout + result.stderr;
-      expect(combined).not.toContain('claimed by session');
-      expect(combined).toContain('Started task');
+      expect(combined).not.toContain("claimed by session");
+      expect(combined).toContain("Started task");
     });
   });
 
   // AC: @session-scoped-task-claiming ac-display
-  describe('ac-display: session indicator in task list output', () => {
-    it('should show session indicator for tasks with session_id', async () => {
+  describe("ac-display: session indicator in task list output", () => {
+    it("should show session indicator for tasks with session_id", async () => {
       // Start a task with a session ID to give it session_id
-      kspec('task start @test-task-pending', tempDir, {
-        env: { KSPEC_SESSION_ID: '01KJ6NFBHNMBABEHHDVEYSPJFR' },
+      kspec("task start @test-task-pending", tempDir, {
+        env: { KSPEC_SESSION_ID: "01KJ6NFBHNMBABEHHDVEYSPJFR" },
       });
 
       // List in-progress tasks (which should include the session indicator)
-      const result = kspecOutput('tasks list --status in_progress', tempDir);
-      expect(result).toContain('[session 01KJ6NFB...]');
+      const result = kspecOutput("tasks list --status in_progress", tempDir);
+      expect(result).toContain("[session 01KJ6NFB...]");
     });
 
-    it('should show session_id in task details', () => {
-      const sessionId = '01KJ6NFBHNMBABEHHDVEYSPJFR';
-      kspec('task start @test-task-pending', tempDir, {
+    it("should show session_id in task details", () => {
+      const sessionId = "01KJ6NFBHNMBABEHHDVEYSPJFR";
+      kspec("task start @test-task-pending", tempDir, {
         env: { KSPEC_SESSION_ID: sessionId },
       });
 
-      const result = kspecOutput('task get @test-task-pending', tempDir);
+      const result = kspecOutput("task get @test-task-pending", tempDir);
       expect(result).toContain(sessionId);
     });
 
-    it('should include session_id in JSON output', () => {
-      const sessionId = '01KJ6NFBHNMBABEHHDVEYSPJFR';
-      kspec('task start @test-task-pending', tempDir, {
+    it("should include session_id in JSON output", () => {
+      const sessionId = "01KJ6NFBHNMBABEHHDVEYSPJFR";
+      kspec("task start @test-task-pending", tempDir, {
         env: { KSPEC_SESSION_ID: sessionId },
       });
 
       const task = kspecJson<{ session_id?: string | null }>(
-        'task get @test-task-pending',
+        "task get @test-task-pending",
         tempDir,
       );
       expect(task.session_id).toBe(sessionId);
@@ -180,34 +180,34 @@ describe('Integration: session-scoped task claiming', () => {
   });
 
   // AC: @session-scoped-task-claiming ac-claim-clear
-  describe('ac-claim-clear: session_id cleared on status transitions', () => {
-    it('should clear session_id when task transitions to needs_work', () => {
-      const sessionId = '01KJ6NFBHNMBABEHHDVEYSPJFR';
+  describe("ac-claim-clear: session_id cleared on status transitions", () => {
+    it("should clear session_id when task transitions to needs_work", () => {
+      const sessionId = "01KJ6NFBHNMBABEHHDVEYSPJFR";
 
       // Start with session
-      kspec('task start @test-task-pending', tempDir, {
+      kspec("task start @test-task-pending", tempDir, {
         env: { KSPEC_SESSION_ID: sessionId },
       });
 
       // Submit
-      kspec('task submit @test-task-pending', tempDir);
+      kspec("task submit @test-task-pending", tempDir);
 
       // Kick back to needs_work
       kspec('task needs-work @test-task-pending --reason "Needs fixes"', tempDir);
 
       const task = kspecJson<{ status: string; session_id?: string | null }>(
-        'task get @test-task-pending',
+        "task get @test-task-pending",
         tempDir,
       );
-      expect(task.status).toBe('needs_work');
+      expect(task.status).toBe("needs_work");
       expect(task.session_id).toBeNull();
     });
 
-    it('should clear session_id when task is unblocked', () => {
-      const sessionId = '01KJ6NFBHNMBABEHHDVEYSPJFR';
+    it("should clear session_id when task is unblocked", () => {
+      const sessionId = "01KJ6NFBHNMBABEHHDVEYSPJFR";
 
       // Start with session
-      kspec('task start @test-task-pending', tempDir, {
+      kspec("task start @test-task-pending", tempDir, {
         env: { KSPEC_SESSION_ID: sessionId },
       });
 
@@ -216,27 +216,27 @@ describe('Integration: session-scoped task claiming', () => {
 
       // Verify session_id exists while blocked (should be preserved from in_progress)
       const blocked = kspecJson<{ session_id?: string | null }>(
-        'task get @test-task-pending',
+        "task get @test-task-pending",
         tempDir,
       );
       expect(blocked.session_id).toBe(sessionId);
 
       // Unblock it — restores prior status (in_progress) but clears session_id
-      kspec('task unblock @test-task-pending', tempDir);
+      kspec("task unblock @test-task-pending", tempDir);
 
       const task = kspecJson<{ status: string; session_id?: string | null }>(
-        'task get @test-task-pending',
+        "task get @test-task-pending",
         tempDir,
       );
-      expect(task.status).toBe('in_progress');
+      expect(task.status).toBe("in_progress");
       expect(task.session_id).toBeNull();
     });
 
-    it('should clear session_id when task is reset to pending', () => {
-      const sessionId = '01KJ6NFBHNMBABEHHDVEYSPJFR';
+    it("should clear session_id when task is reset to pending", () => {
+      const sessionId = "01KJ6NFBHNMBABEHHDVEYSPJFR";
 
       // Start with session
-      kspec('task start @test-task-pending', tempDir, {
+      kspec("task start @test-task-pending", tempDir, {
         env: { KSPEC_SESSION_ID: sessionId },
       });
 
@@ -244,28 +244,28 @@ describe('Integration: session-scoped task claiming', () => {
       kspec('task complete @test-task-pending --skip-review --reason "Done"', tempDir);
 
       // Reset to pending
-      kspec('task reset @test-task-pending', tempDir);
+      kspec("task reset @test-task-pending", tempDir);
 
       const task = kspecJson<{ status: string; session_id?: string | null }>(
-        'task get @test-task-pending',
+        "task get @test-task-pending",
         tempDir,
       );
-      expect(task.status).toBe('pending');
+      expect(task.status).toBe("pending");
       expect(task.session_id).toBeNull();
     });
 
-    it('should report session_id in cleared_fields on reset', () => {
-      const sessionId = '01KJ6NFBHNMBABEHHDVEYSPJFR';
+    it("should report session_id in cleared_fields on reset", () => {
+      const sessionId = "01KJ6NFBHNMBABEHHDVEYSPJFR";
 
-      kspec('task start @test-task-pending', tempDir, {
+      kspec("task start @test-task-pending", tempDir, {
         env: { KSPEC_SESSION_ID: sessionId },
       });
 
       const resetResult = kspecJson<{ cleared_fields: string[] }>(
-        'task reset @test-task-pending',
+        "task reset @test-task-pending",
         tempDir,
       );
-      expect(resetResult.cleared_fields).toContain('session_id');
+      expect(resetResult.cleared_fields).toContain("session_id");
     });
   });
 });

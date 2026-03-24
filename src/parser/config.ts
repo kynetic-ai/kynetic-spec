@@ -139,9 +139,7 @@ const DispatchConfigSchema = z
      * - "manual_merge": agents merge locally, no PRs created
      * - "auto": detect based on environment (default, preserves existing behavior)
      */
-    publication_mode: z
-      .enum(["pull_request", "manual_merge", "auto"])
-      .optional(),
+    publication_mode: z.enum(["pull_request", "manual_merge", "auto"]).optional(),
     /**
      * Dispatcher-owned workspace bootstrap contract.
      * Steps run before agent prompts are delivered.
@@ -491,10 +489,7 @@ export interface LoadConfigResult {
  *
  * AC: @project-config ac-6 — loads from git root, not cwd subdirectory
  */
-export function findProjectRoot(
-  startDir: string,
-  mainRoot?: string,
-): string | null {
+export function findProjectRoot(startDir: string, mainRoot?: string): string | null {
   // In batch mode, the batch executor should set this to the real root
   // before redirecting KSPEC_SPEC_DIR
   const batchRoot = process.env.KSPEC_BATCH_PROJECT_ROOT;
@@ -564,9 +559,7 @@ export async function loadProjectConfig(
 
     if (!result.success) {
       // AC: ac-3 — validation error = defaults + warning
-      const issues = result.error.issues
-        .map((i) => `${i.path.join(".")}: ${i.message}`)
-        .join("; ");
+      const issues = result.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("; ");
       return {
         config: resolveConfig(null),
         configPath,
@@ -601,9 +594,7 @@ export async function loadProjectConfig(
  *
  * AC: @project-config ac-5 — env vars take precedence
  */
-export function resolveConfig(
-  fileConfig: KspecConfig | null,
-): ResolvedKspecConfig {
+export function resolveConfig(fileConfig: KspecConfig | null): ResolvedKspecConfig {
   const file = fileConfig || {};
   const agentConfig = file.agent ?? file.ralph;
 
@@ -625,22 +616,18 @@ export function resolveConfig(
       branch: file.shadow?.branch ?? DEFAULT_CONFIG.shadow.branch,
       directory: file.shadow?.directory ?? DEFAULT_CONFIG.shadow.directory,
       remote: resolvedRemote,
-      sync_interval:
-        file.shadow?.sync_interval ?? DEFAULT_CONFIG.shadow.sync_interval,
+      sync_interval: file.shadow?.sync_interval ?? DEFAULT_CONFIG.shadow.sync_interval,
     },
     identity: {
       // AC: ac-5 — env var takes precedence
-      author:
-        envAuthor ?? file.identity?.author ?? DEFAULT_CONFIG.identity.author,
+      author: envAuthor ?? file.identity?.author ?? DEFAULT_CONFIG.identity.author,
     },
     validation: {
       // AC: @config-validation ac-2 ac-3 — strict_refs from config
-      strict_refs:
-        file.validation?.strict_refs ?? DEFAULT_CONFIG.validation.strict_refs,
+      strict_refs: file.validation?.strict_refs ?? DEFAULT_CONFIG.validation.strict_refs,
       // AC: @config-validation ac-1 — require_acceptance from config
       require_acceptance:
-        file.validation?.require_acceptance ??
-        DEFAULT_CONFIG.validation.require_acceptance,
+        file.validation?.require_acceptance ?? DEFAULT_CONFIG.validation.require_acceptance,
     },
     daemon: {
       // AC: ac-5 — env vars take precedence
@@ -654,25 +641,20 @@ export function resolveConfig(
       auto_start: file.daemon?.auto_start ?? DEFAULT_CONFIG.daemon.auto_start,
     },
     dispatch: {
-      base_branch:
-        file.dispatch?.base_branch ?? DEFAULT_CONFIG.dispatch.base_branch,
-      worktree_root:
-        file.dispatch?.worktree_root ?? DEFAULT_CONFIG.dispatch.worktree_root,
-      publication_mode:
-        file.dispatch?.publication_mode ??
-        DEFAULT_CONFIG.dispatch.publication_mode,
+      base_branch: file.dispatch?.base_branch ?? DEFAULT_CONFIG.dispatch.base_branch,
+      worktree_root: file.dispatch?.worktree_root ?? DEFAULT_CONFIG.dispatch.worktree_root,
+      publication_mode: file.dispatch?.publication_mode ?? DEFAULT_CONFIG.dispatch.publication_mode,
       bootstrap: {
-        steps: (
-          file.dispatch?.bootstrap?.steps ??
-          DEFAULT_CONFIG.dispatch.bootstrap.steps
-        ).map((step) => ({
-          run: step.run,
-          ...(step.name ? { name: step.name } : {}),
-          ...(step.roles ? { roles: step.roles } : {}),
-          idempotent: step.idempotent ?? false,
-          allow_tracked_changes: step.allow_tracked_changes ?? false,
-          reviewer_rerun_allowed: step.reviewer_rerun_allowed ?? false,
-        })),
+        steps: (file.dispatch?.bootstrap?.steps ?? DEFAULT_CONFIG.dispatch.bootstrap.steps).map(
+          (step) => ({
+            run: step.run,
+            ...(step.name ? { name: step.name } : {}),
+            ...(step.roles ? { roles: step.roles } : {}),
+            idempotent: step.idempotent ?? false,
+            allow_tracked_changes: step.allow_tracked_changes ?? false,
+            reviewer_rerun_allowed: step.reviewer_rerun_allowed ?? false,
+          }),
+        ),
       },
       // AC: @dispatch-sync-configuration ac-sync-interval — from config or default 60s
       sync_interval: file.dispatch?.sync_interval ?? DEFAULT_CONFIG.dispatch.sync_interval,
@@ -681,21 +663,15 @@ export function resolveConfig(
     },
     agent: {
       skills: {
-        task_work:
-          agentConfig?.skills?.task_work ??
-          DEFAULT_CONFIG.agent.skills.task_work,
-        reflect:
-          agentConfig?.skills?.reflect ?? DEFAULT_CONFIG.agent.skills.reflect,
-        pr_review:
-          agentConfig?.skills?.pr_review ??
-          DEFAULT_CONFIG.agent.skills.pr_review,
+        task_work: agentConfig?.skills?.task_work ?? DEFAULT_CONFIG.agent.skills.task_work,
+        reflect: agentConfig?.skills?.reflect ?? DEFAULT_CONFIG.agent.skills.reflect,
+        pr_review: agentConfig?.skills?.pr_review ?? DEFAULT_CONFIG.agent.skills.pr_review,
       },
     },
     hooks: {
       // AC: @project-config ac-hooks-missing-keys — absent keys resolve to defaults
       checkpoint: file.hooks?.checkpoint ?? DEFAULT_CONFIG.hooks.checkpoint,
-      prompt_check:
-        file.hooks?.prompt_check ?? DEFAULT_CONFIG.hooks.prompt_check,
+      prompt_check: file.hooks?.prompt_check ?? DEFAULT_CONFIG.hooks.prompt_check,
     },
   };
 }

@@ -18,11 +18,7 @@ import {
  * - manual_only: Task should only be handled by humans
  * - undefined/absent: Task has not been assessed for automation (unassessed)
  */
-export const AutomationStatusSchema = z.enum([
-  "eligible",
-  "needs_review",
-  "manual_only",
-]);
+export const AutomationStatusSchema = z.enum(["eligible", "needs_review", "manual_only"]);
 
 export type AutomationStatus = z.infer<typeof AutomationStatusSchema>;
 
@@ -31,14 +27,9 @@ export type AutomationStatus = z.infer<typeof AutomationStatusSchema>;
  * Derived from task automation semantics: "eligible" stays explicit and every
  * other canonical task automation state buckets into "ineligible".
  */
-export const AgentDispatchAutomationFilterSchema = z.enum([
-  "eligible",
-  "ineligible",
-]);
+export const AgentDispatchAutomationFilterSchema = z.enum(["eligible", "ineligible"]);
 
-export type AgentDispatchAutomationFilter = z.infer<
-  typeof AgentDispatchAutomationFilterSchema
->;
+export type AgentDispatchAutomationFilter = z.infer<typeof AgentDispatchAutomationFilterSchema>;
 
 export function matchesAutomationFilter(
   status: AutomationStatus | undefined,

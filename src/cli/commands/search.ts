@@ -13,11 +13,7 @@ import type {
   LoadedObservation,
   LoadedWorkflow,
 } from "../../parser/meta.js";
-import type {
-  LoadedInboxItem,
-  LoadedSpecItem,
-  LoadedTask,
-} from "../../parser/yaml.js";
+import type { LoadedInboxItem, LoadedSpecItem, LoadedTask } from "../../parser/yaml.js";
 import { ItemTypeSchema, TaskStatusSchema } from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
 import { formatMatchedFields, grepItem } from "../../utils/grep.js";
@@ -28,11 +24,7 @@ import { validateEnumOption } from "../validators.js";
 /**
  * Format a spec item for search results
  */
-function formatSearchItem(
-  item: LoadedSpecItem,
-  matchedFields: string[],
-  shortId: string,
-): void {
+function formatSearchItem(item: LoadedSpecItem, matchedFields: string[], shortId: string): void {
   const slugStr = item.slugs.length > 0 ? chalk.cyan(`@${item.slugs[0]}`) : "";
   const typeStr = chalk.gray(`[${item.type}]`);
 
@@ -63,11 +55,7 @@ function formatSearchItem(
 /**
  * Format a task for search results
  */
-function formatSearchTask(
-  task: LoadedTask,
-  matchedFields: string[],
-  shortId: string,
-): void {
+function formatSearchTask(task: LoadedTask, matchedFields: string[], shortId: string): void {
   const slugStr = task.slugs.length > 0 ? chalk.cyan(`@${task.slugs[0]}`) : "";
 
   const statusColor =
@@ -80,9 +68,7 @@ function formatSearchTask(
           : chalk.gray;
 
   const priority =
-    task.priority <= 2
-      ? chalk.red(`P${task.priority}`)
-      : chalk.gray(`P${task.priority}`);
+    task.priority <= 2 ? chalk.red(`P${task.priority}`) : chalk.gray(`P${task.priority}`);
 
   let line = `${chalk.gray(shortId)} ${statusColor(`[${task.status}]`)} ${priority} ${task.title}`;
   if (slugStr) line += ` ${slugStr}`;
@@ -94,16 +80,11 @@ function formatSearchTask(
 /**
  * Format an inbox item for search results
  */
-function formatSearchInbox(
-  item: LoadedInboxItem,
-  matchedFields: string[],
-  shortId: string,
-): void {
+function formatSearchInbox(item: LoadedInboxItem, matchedFields: string[], shortId: string): void {
   const typeStr = chalk.gray("[inbox]");
 
   // Truncate text if too long
-  const displayText =
-    item.text.length > 60 ? `${item.text.substring(0, 57)}...` : item.text;
+  const displayText = item.text.length > 60 ? `${item.text.substring(0, 57)}...` : item.text;
 
   const line = `${chalk.gray(shortId)} ${typeStr} ${displayText}`;
 
@@ -125,10 +106,7 @@ function formatSearchMeta(
   let displayText = "";
   if (entityType === "observation") {
     const obs = entity as LoadedObservation;
-    displayText =
-      obs.content.length > 60
-        ? `${obs.content.substring(0, 57)}...`
-        : obs.content;
+    displayText = obs.content.length > 60 ? `${obs.content.substring(0, 57)}...` : obs.content;
   } else if (entityType === "agent") {
     const agent = entity as LoadedAgent;
     displayText = `${agent.id} - ${agent.name}`;
@@ -149,7 +127,14 @@ function formatSearchMeta(
 
 interface SearchResult {
   type: "item" | "task" | "inbox" | "observation" | "agent" | "workflow" | "convention";
-  item: LoadedSpecItem | LoadedTask | LoadedInboxItem | LoadedObservation | LoadedAgent | LoadedWorkflow | LoadedConvention;
+  item:
+    | LoadedSpecItem
+    | LoadedTask
+    | LoadedInboxItem
+    | LoadedObservation
+    | LoadedAgent
+    | LoadedWorkflow
+    | LoadedConvention;
   matchedFields: string[];
 }
 
@@ -182,7 +167,7 @@ export function registerSearchCommand(program: Command): void {
         }
 
         const ctx = await initContext();
-        const { itemIndex, tasks, items, refIndex } = await buildIndexes(ctx);
+        const { itemIndex: _itemIndex, tasks, items, refIndex } = await buildIndexes(ctx);
 
         const results: SearchResult[] = [];
         const limit = parseInt(options.limit, 10) || 50;
@@ -190,11 +175,7 @@ export function registerSearchCommand(program: Command): void {
         let metaUlids: string[] = [];
 
         if (options.type) {
-          const typeResult = validateEnumOption(
-            options.type,
-            ItemTypeSchema.options,
-            "item type",
-          );
+          const typeResult = validateEnumOption(options.type, ItemTypeSchema.options, "item type");
           if (!typeResult.ok) {
             error(typeResult.error);
             process.exit(EXIT_CODES.VALIDATION_FAILED);
@@ -220,10 +201,7 @@ export function registerSearchCommand(program: Command): void {
             // Apply type filter
             if (options.type && item.type !== options.type) continue;
 
-            const match = grepItem(
-              item as unknown as Record<string, unknown>,
-              pattern,
-            );
+            const match = grepItem(item as unknown as Record<string, unknown>, pattern);
             if (match) {
               results.push({
                 type: "item",
@@ -241,10 +219,7 @@ export function registerSearchCommand(program: Command): void {
             // Apply status filter
             if (options.status && task.status !== options.status) continue;
 
-            const match = grepItem(
-              task as unknown as Record<string, unknown>,
-              pattern,
-            );
+            const match = grepItem(task as unknown as Record<string, unknown>, pattern);
             if (match) {
               results.push({
                 type: "task",
@@ -261,10 +236,7 @@ export function registerSearchCommand(program: Command): void {
           const inboxItems = await loadInboxItems(ctx);
           inboxUlids = inboxItems.map((inboxItem) => inboxItem._ulid);
           for (const inboxItem of inboxItems) {
-            const match = grepItem(
-              inboxItem as unknown as Record<string, unknown>,
-              pattern,
-            );
+            const match = grepItem(inboxItem as unknown as Record<string, unknown>, pattern);
             if (match) {
               results.push({
                 type: "inbox",
@@ -288,10 +260,7 @@ export function registerSearchCommand(program: Command): void {
 
           // Search observations (always when not --items-only or --tasks-only)
           for (const observation of metaCtx.observations) {
-            const match = grepItem(
-              observation as unknown as Record<string, unknown>,
-              pattern,
-            );
+            const match = grepItem(observation as unknown as Record<string, unknown>, pattern);
             if (match) {
               results.push({
                 type: "observation",
@@ -305,10 +274,7 @@ export function registerSearchCommand(program: Command): void {
           if (!options.observationsOnly) {
             // Search agents
             for (const agent of metaCtx.agents) {
-              const match = grepItem(
-                agent as unknown as Record<string, unknown>,
-                pattern,
-              );
+              const match = grepItem(agent as unknown as Record<string, unknown>, pattern);
               if (match) {
                 results.push({
                   type: "agent",
@@ -320,10 +286,7 @@ export function registerSearchCommand(program: Command): void {
 
             // Search workflows
             for (const workflow of metaCtx.workflows) {
-              const match = grepItem(
-                workflow as unknown as Record<string, unknown>,
-                pattern,
-              );
+              const match = grepItem(workflow as unknown as Record<string, unknown>, pattern);
               if (match) {
                 results.push({
                   type: "workflow",
@@ -335,10 +298,7 @@ export function registerSearchCommand(program: Command): void {
 
             // Search conventions
             for (const convention of metaCtx.conventions) {
-              const match = grepItem(
-                convention as unknown as Record<string, unknown>,
-                pattern,
-              );
+              const match = grepItem(convention as unknown as Record<string, unknown>, pattern);
               if (match) {
                 results.push({
                   type: "convention",
@@ -410,25 +370,42 @@ export function registerSearchCommand(program: Command): void {
                   result.matchedFields,
                   shortestUniqueUlid(
                     (result.item as LoadedInboxItem)._ulid,
-                    inboxUlids.length > 0
-                      ? inboxUlids
-                      : [(result.item as LoadedInboxItem)._ulid],
+                    inboxUlids.length > 0 ? inboxUlids : [(result.item as LoadedInboxItem)._ulid],
                   ),
                 );
-              } else if (result.type === "observation" || result.type === "agent" || result.type === "workflow" || result.type === "convention") {
+              } else if (
+                result.type === "observation" ||
+                result.type === "agent" ||
+                result.type === "workflow" ||
+                result.type === "convention"
+              ) {
                 formatSearchMeta(
-                  result.item as LoadedObservation | LoadedAgent | LoadedWorkflow | LoadedConvention,
+                  result.item as
+                    | LoadedObservation
+                    | LoadedAgent
+                    | LoadedWorkflow
+                    | LoadedConvention,
                   result.type,
                   result.matchedFields,
                   shortestUniqueUlid(
                     (
-                      result.item as LoadedObservation | LoadedAgent | LoadedWorkflow | LoadedConvention
+                      result.item as
+                        | LoadedObservation
+                        | LoadedAgent
+                        | LoadedWorkflow
+                        | LoadedConvention
                     )._ulid,
                     metaUlids.length > 0
                       ? metaUlids
-                      : [(
-                        result.item as LoadedObservation | LoadedAgent | LoadedWorkflow | LoadedConvention
-                      )._ulid],
+                      : [
+                          (
+                            result.item as
+                              | LoadedObservation
+                              | LoadedAgent
+                              | LoadedWorkflow
+                              | LoadedConvention
+                          )._ulid,
+                        ],
                   ),
                 );
               }

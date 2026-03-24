@@ -27,10 +27,7 @@ describe("Integration: task plan_ref field", () => {
   // AC: @plan-derive-enhanced ac-bidirectional-links
   it("should allow creating task with plan_ref", () => {
     // Create a plan first
-    kspec(
-      'plan add --title "Test Plan" --content "Plan content" --slug test-plan-1',
-      tempDir,
-    );
+    kspec('plan add --title "Test Plan" --content "Plan content" --slug test-plan-1', tempDir);
 
     // Create task with plan_ref
     const output = kspec(
@@ -40,10 +37,7 @@ describe("Integration: task plan_ref field", () => {
     expect(output).toContain("Created task:");
 
     // Verify plan_ref is set
-    const task = kspecJson<{ plan_ref: string | null }>(
-      "task get @task-from-plan --json",
-      tempDir,
-    );
+    const task = kspecJson<{ plan_ref: string | null }>("task get @task-from-plan --json", tempDir);
     expect(task.plan_ref).toBeDefined();
     expect(task.plan_ref).toBe("@test-plan-1");
   });
@@ -51,14 +45,8 @@ describe("Integration: task plan_ref field", () => {
   // AC: @plan-derive-enhanced ac-bidirectional-links
   it("should display plan_ref in task get output", () => {
     // Create plan and task
-    kspec(
-      'plan add --title "Test Plan" --content "Content" --slug test-plan-2',
-      tempDir,
-    );
-    kspec(
-      'task add --title "Test Task" --plan-ref @test-plan-2 --slug test-task-2',
-      tempDir,
-    );
+    kspec('plan add --title "Test Plan" --content "Content" --slug test-plan-2', tempDir);
+    kspec('task add --title "Test Task" --plan-ref @test-plan-2 --slug test-task-2', tempDir);
 
     // Check task get output
     const output = kspec("task get @test-task-2", tempDir);
@@ -68,52 +56,34 @@ describe("Integration: task plan_ref field", () => {
 
   it("should allow setting plan_ref with task set", () => {
     // Create plan and task
-    kspec(
-      'plan add --title "Test Plan" --content "Content" --slug test-plan-3',
-      tempDir,
-    );
+    kspec('plan add --title "Test Plan" --content "Content" --slug test-plan-3', tempDir);
     kspec('task add --title "Test Task" --slug test-task-3', tempDir);
 
     // Set plan_ref
     kspec("task set @test-task-3 --plan-ref @test-plan-3", tempDir);
 
     // Verify it was set
-    const task = kspecJson<{ plan_ref: string | null }>(
-      "task get @test-task-3 --json",
-      tempDir,
-    );
+    const task = kspecJson<{ plan_ref: string | null }>("task get @test-task-3 --json", tempDir);
     expect(task.plan_ref).toBe("@test-plan-3");
   });
 
   // AC: @task-set ac-clear-ref
   it("should allow clearing plan_ref", () => {
     // Create plan and task with plan_ref
-    kspec(
-      'plan add --title "Test Plan" --content "Content" --slug test-plan-4',
-      tempDir,
-    );
-    kspec(
-      'task add --title "Test Task" --plan-ref @test-plan-4 --slug test-task-4',
-      tempDir,
-    );
+    kspec('plan add --title "Test Plan" --content "Content" --slug test-plan-4', tempDir);
+    kspec('task add --title "Test Task" --plan-ref @test-plan-4 --slug test-task-4', tempDir);
 
     // Clear plan_ref
     kspec("task set @test-task-4 --plan-ref null", tempDir);
 
     // Verify it was cleared
-    const task = kspecJson<{ plan_ref: string | null }>(
-      "task get @test-task-4 --json",
-      tempDir,
-    );
+    const task = kspecJson<{ plan_ref: string | null }>("task get @test-task-4 --json", tempDir);
     expect(task.plan_ref).toBeNull();
   });
 
   it("should include plan_ref in JSON output", () => {
     // Create plan and task
-    kspec(
-      'plan add --title "Test Plan" --content "Content" --slug test-plan-5',
-      tempDir,
-    );
+    kspec('plan add --title "Test Plan" --content "Content" --slug test-plan-5', tempDir);
 
     const addOutput = kspecJson<{ task: { plan_ref: string | null } }>(
       'task add --title "Test Task" --plan-ref @test-plan-5 --json',
@@ -126,11 +96,9 @@ describe("Integration: task plan_ref field", () => {
 
   // AC: @task-add ac-plan-ref-invalid
   it("should validate plan_ref exists", () => {
-    const result = kspecRun(
-      'task add --title "Test Task" --plan-ref @nonexistent',
-      tempDir,
-      { expectFail: true },
-    );
+    const result = kspecRun('task add --title "Test Task" --plan-ref @nonexistent', tempDir, {
+      expectFail: true,
+    });
 
     expect(result.stderr).toContain("not found");
     expect(result.exitCode).not.toBe(0);
@@ -153,16 +121,10 @@ describe("Integration: task plan_ref field", () => {
   });
 
   it("should handle plan_ref when task is created without it", () => {
-    const output = kspec(
-      'task add --title "No Plan Task" --slug no-plan-task',
-      tempDir,
-    );
+    const output = kspec('task add --title "No Plan Task" --slug no-plan-task', tempDir);
     expect(output).toContain("Created task:");
 
-    const task = kspecJson<{ plan_ref?: string | null }>(
-      "task get @no-plan-task --json",
-      tempDir,
-    );
+    const task = kspecJson<{ plan_ref?: string | null }>("task get @no-plan-task --json", tempDir);
     // plan_ref should be absent or null
     expect(task.plan_ref === null || task.plan_ref === undefined).toBe(true);
   });
@@ -171,14 +133,8 @@ describe("Integration: task plan_ref field", () => {
   describe("Validation", () => {
     it("should pass validation when plan_ref points to existing plan", () => {
       // Create a plan and task with valid plan_ref
-      kspec(
-        'plan add --title "Test Plan" --content "Content" --slug valid-plan',
-        tempDir,
-      );
-      kspec(
-        'task add --title "Test Task" --plan-ref @valid-plan --slug test-task-valid',
-        tempDir,
-      );
+      kspec('plan add --title "Test Plan" --content "Content" --slug valid-plan', tempDir);
+      kspec('task add --title "Test Task" --plan-ref @valid-plan --slug test-task-valid', tempDir);
 
       // Validation should pass (no reference errors for this ref)
       const output = kspec("validate", tempDir);
@@ -202,9 +158,7 @@ describe("Integration: task plan_ref field", () => {
       const data = parse(content);
 
       // Find the task and add non-existent plan_ref
-      const task = data.tasks.find((t: { slugs: string[] }) =>
-        t.slugs.includes("test-dangling"),
-      );
+      const task = data.tasks.find((t: { slugs: string[] }) => t.slugs.includes("test-dangling"));
       task.plan_ref = "@nonexistent-plan";
 
       await fs.writeFile(tasksFile, stringify(data));

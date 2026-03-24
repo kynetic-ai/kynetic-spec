@@ -3,16 +3,16 @@
  * AC: @cli-serve-commands
  */
 
-import type { Command } from 'commander';
-import { spawn, execSync } from 'child_process';
-import { existsSync, readdirSync, statSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
-import { error, info, output, success, warn, isJsonMode } from '../output.js';
-import { EXIT_CODES } from '../exit-codes.js';
-import { PidFileManager } from '../pid-utils.js';
-import { loadProjectConfig } from '../../parser/config.js';
-import { initContext } from '../../parser/yaml.js';
+import type { Command } from "commander";
+import { spawn, execSync } from "child_process";
+import { existsSync, readdirSync, statSync } from "fs";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
+import { error, info, output, success, warn, isJsonMode } from "../output.js";
+import { EXIT_CODES } from "../exit-codes.js";
+import { PidFileManager } from "../pid-utils.js";
+import { loadProjectConfig } from "../../parser/config.js";
+import { initContext } from "../../parser/yaml.js";
 
 export async function resolveDefaultKspecDir(explicitDir?: string): Promise<string> {
   if (explicitDir) {
@@ -23,7 +23,7 @@ export async function resolveDefaultKspecDir(explicitDir?: string): Promise<stri
     const ctx = await initContext();
     return ctx.specDir;
   } catch {
-    return join(process.cwd(), '.kspec');
+    return join(process.cwd(), ".kspec");
   }
 }
 
@@ -33,7 +33,7 @@ export async function resolveDefaultKspecDir(explicitDir?: string): Promise<stri
  */
 function isBunAvailable(): boolean {
   try {
-    execSync('bun --version', { stdio: 'pipe' });
+    execSync("bun --version", { stdio: "pipe" });
     return true;
   } catch {
     return false;
@@ -49,9 +49,9 @@ const __dirname = dirname(__filename);
  */
 function checkDaemonStaleness(): boolean {
   // __dirname is dist/cli/commands, go up 3 levels to package root, then into packages/daemon/src
-  const sourceDir = join(__dirname, '../../../packages/daemon/src');
+  const sourceDir = join(__dirname, "../../../packages/daemon/src");
   // dist/daemon is 2 levels up from __dirname
-  const distDir = join(__dirname, '../../daemon');
+  const distDir = join(__dirname, "../../daemon");
 
   if (!existsSync(sourceDir) || !existsSync(distDir)) return false;
 
@@ -63,7 +63,7 @@ function checkDaemonStaleness(): boolean {
         const fullPath = join(dir, f.name);
         if (f.isDirectory()) {
           newest = Math.max(newest, getNewestMtime(fullPath));
-        } else if (f.name.endsWith('.ts')) {
+        } else if (f.name.endsWith(".ts")) {
           newest = Math.max(newest, statSync(fullPath).mtimeMs);
         }
       }
@@ -84,35 +84,32 @@ function checkDaemonStaleness(): boolean {
  * Some runtimes may serialize uptime as structured objects instead of a number.
  */
 function parseUptimeSeconds(raw: unknown): number | null {
-  if (typeof raw === 'number' && Number.isFinite(raw)) {
+  if (typeof raw === "number" && Number.isFinite(raw)) {
     return raw;
   }
 
-  if (!raw || typeof raw !== 'object') {
+  if (!raw || typeof raw !== "object") {
     return null;
   }
 
   const candidate = raw as { seconds?: unknown; milliseconds?: unknown; ms?: unknown };
-  if (typeof candidate.seconds === 'number' && Number.isFinite(candidate.seconds)) {
+  if (typeof candidate.seconds === "number" && Number.isFinite(candidate.seconds)) {
     return candidate.seconds;
   }
-  if (typeof candidate.milliseconds === 'number' && Number.isFinite(candidate.milliseconds)) {
+  if (typeof candidate.milliseconds === "number" && Number.isFinite(candidate.milliseconds)) {
     return candidate.milliseconds / 1000;
   }
-  if (typeof candidate.ms === 'number' && Number.isFinite(candidate.ms)) {
+  if (typeof candidate.ms === "number" && Number.isFinite(candidate.ms)) {
     return candidate.ms / 1000;
   }
 
   return null;
 }
 
-export function buildDaemonChildEnv(
-  baseEnv: NodeJS.ProcessEnv = process.env,
-): NodeJS.ProcessEnv {
+export function buildDaemonChildEnv(baseEnv: NodeJS.ProcessEnv = process.env): NodeJS.ProcessEnv {
   const { KSPEC_NO_DAEMON: _kspecNoDaemon, ...childEnv } = baseEnv;
-  return { ...childEnv, BUN_ENV: 'production' };
+  return { ...childEnv, BUN_ENV: "production" };
 }
-
 
 /**
  * AC: @cli-serve-commands ac-11
@@ -124,13 +121,15 @@ function guardAgentContext(action: string): void {
     if (isJsonMode()) {
       output({
         error: `Cannot ${action} daemon from inside an agent invocation.`,
-        reason: 'Stopping or restarting the daemon would kill the dispatch engine hosting this agent.',
-        suggestion: 'The daemon is managed externally. Do not run kspec serve commands from agent code.',
+        reason:
+          "Stopping or restarting the daemon would kill the dispatch engine hosting this agent.",
+        suggestion:
+          "The daemon is managed externally. Do not run kspec serve commands from agent code.",
       });
     } else {
       error(`Cannot ${action} daemon from inside an agent invocation.`);
-      error('Stopping or restarting the daemon would kill the dispatch engine hosting this agent.');
-      error('The daemon is managed externally. Do not run kspec serve commands from agent code.');
+      error("Stopping or restarting the daemon would kill the dispatch engine hosting this agent.");
+      error("The daemon is managed externally. Do not run kspec serve commands from agent code.");
     }
     process.exit(EXIT_CODES.VALIDATION_FAILED);
   }
@@ -140,19 +139,17 @@ function guardAgentContext(action: string): void {
  * Register serve commands
  */
 export function registerServeCommands(program: Command): void {
-  const serve = program
-    .command('serve')
-    .description('Manage the kspec daemon server');
+  const serve = program.command("serve").description("Manage the kspec daemon server");
 
   // AC: @cli-serve-commands ac-1, ac-2, ac-3
   // AC: @config-daemon ac-1, ac-2 — port from config, CLI flag overrides
   serve
-    .command('start', { isDefault: true })
-    .description('Start the daemon server')
-    .option('-d, --daemon', 'Run in background (detached mode)')
-    .option('-p, --port <port>', 'Server port (uses config daemon.port if not specified)')
-    .option('--kspec-dir <dir>', 'Path to .kspec directory (defaults to resolved project .kspec)')
-    .option('--json', 'Output as JSON')
+    .command("start", { isDefault: true })
+    .description("Start the daemon server")
+    .option("-d, --daemon", "Run in background (detached mode)")
+    .option("-p, --port <port>", "Server port (uses config daemon.port if not specified)")
+    .option("--kspec-dir <dir>", "Path to .kspec directory (defaults to resolved project .kspec)")
+    .option("--json", "Output as JSON")
     .action(async (opts) => {
       try {
         await startServer(opts);
@@ -168,10 +165,10 @@ export function registerServeCommands(program: Command): void {
 
   // AC: @cli-serve-commands ac-4, ac-5
   serve
-    .command('stop')
-    .description('Stop the daemon server')
-    .option('--kspec-dir <dir>', 'Path to .kspec directory (defaults to resolved project .kspec)')
-    .option('--json', 'Output as JSON')
+    .command("stop")
+    .description("Stop the daemon server")
+    .option("--kspec-dir <dir>", "Path to .kspec directory (defaults to resolved project .kspec)")
+    .option("--json", "Output as JSON")
     .action(async (opts) => {
       try {
         await stopServer(opts);
@@ -187,10 +184,10 @@ export function registerServeCommands(program: Command): void {
 
   // AC: @cli-serve-commands ac-6
   serve
-    .command('status')
-    .description('Check daemon server status')
-    .option('--kspec-dir <dir>', 'Path to .kspec directory (defaults to resolved project .kspec)')
-    .option('--json', 'Output as JSON')
+    .command("status")
+    .description("Check daemon server status")
+    .option("--kspec-dir <dir>", "Path to .kspec directory (defaults to resolved project .kspec)")
+    .option("--json", "Output as JSON")
     .action(async (opts) => {
       try {
         await statusServer(opts);
@@ -206,10 +203,10 @@ export function registerServeCommands(program: Command): void {
 
   // AC: @cli-serve-commands ac-7
   serve
-    .command('restart')
-    .description('Restart the daemon server')
-    .option('--kspec-dir <dir>', 'Path to .kspec directory (defaults to resolved project .kspec)')
-    .option('--json', 'Output as JSON')
+    .command("restart")
+    .description("Restart the daemon server")
+    .option("--kspec-dir <dir>", "Path to .kspec directory (defaults to resolved project .kspec)")
+    .option("--json", "Output as JSON")
     .action(async (opts) => {
       try {
         await restartServer(opts);
@@ -235,7 +232,7 @@ async function startServer(opts: {
   kspecDir?: string;
 }): Promise<void> {
   // AC: @cli-serve-commands ac-11
-  guardAgentContext('start');
+  guardAgentContext("start");
   const jsonMode = isJsonMode();
   const kspecDir = await resolveDefaultKspecDir(opts.kspecDir);
 
@@ -250,12 +247,12 @@ async function startServer(opts: {
   if (isNaN(port) || port < 1 || port > 65535) {
     if (jsonMode) {
       output({
-        error: 'Invalid port number. Must be between 1 and 65535.',
-        hint: 'Try: kspec serve --port <PORT>',
+        error: "Invalid port number. Must be between 1 and 65535.",
+        hint: "Try: kspec serve --port <PORT>",
       });
     } else {
-      error('Invalid port number. Must be between 1 and 65535.');
-      error('Try: kspec serve --port <PORT>');
+      error("Invalid port number. Must be between 1 and 65535.");
+      error("Try: kspec serve --port <PORT>");
     }
     process.exit(EXIT_CODES.VALIDATION_FAILED);
   }
@@ -267,7 +264,7 @@ async function startServer(opts: {
     const pid = pidManager.readPid();
     const existingPort = pidManager.readPort();
     if (isJsonMode()) {
-      output({ running: true, pid, port: existingPort, message: 'Daemon already running' });
+      output({ running: true, pid, port: existingPort, message: "Daemon already running" });
     } else {
       warn(`Daemon already running on port ${existingPort}`);
     }
@@ -278,54 +275,58 @@ async function startServer(opts: {
   // Daemon source is bundled at dist/daemon/index.ts (relative to package root)
   // __dirname is dist/cli/commands, so go up 2 levels to dist/, then into daemon/
   // Note: Daemon is TypeScript source - requires Bun runtime
-  const daemonBinary = join(__dirname, '../../daemon/index.ts');
+  const daemonBinary = join(__dirname, "../../daemon/index.ts");
 
   if (!existsSync(daemonBinary)) {
     if (isJsonMode()) {
-      output({ error: `Daemon binary not found at ${daemonBinary}`, hint: 'Ensure the kspec package is properly installed' });
+      output({
+        error: `Daemon binary not found at ${daemonBinary}`,
+        hint: "Ensure the kspec package is properly installed",
+      });
     } else {
       error(`Daemon binary not found at: ${daemonBinary}`);
-      error('Ensure the kspec package is properly installed');
+      error("Ensure the kspec package is properly installed");
     }
     process.exit(EXIT_CODES.ERROR);
   }
 
   // AC: @web-ui ac-2 — clear error with install URL when Bun is missing
   if (!isBunAvailable()) {
-    const installHint = process.platform === 'win32'
-      ? 'Install Bun: powershell -c "irm bun.sh/install.ps1 | iex"'
-      : 'Install Bun: curl -fsSL https://bun.sh/install | bash';
+    const installHint =
+      process.platform === "win32"
+        ? 'Install Bun: powershell -c "irm bun.sh/install.ps1 | iex"'
+        : "Install Bun: curl -fsSL https://bun.sh/install | bash";
     if (isJsonMode()) {
       output({
-        error: 'Bun runtime is required for the kspec daemon',
+        error: "Bun runtime is required for the kspec daemon",
         hint: installHint,
-        url: 'https://bun.sh/docs/installation',
+        url: "https://bun.sh/docs/installation",
       });
     } else {
-      error('Bun runtime is required for the kspec daemon');
-      error('The daemon uses Elysia (a Bun-native framework) and cannot run on Node.js alone.');
+      error("Bun runtime is required for the kspec daemon");
+      error("The daemon uses Elysia (a Bun-native framework) and cannot run on Node.js alone.");
       info(installHint);
-      info('For more options: https://bun.sh/docs/installation');
+      info("For more options: https://bun.sh/docs/installation");
     }
     process.exit(EXIT_CODES.ERROR);
   }
 
   // Check for stale daemon build (dev experience improvement)
   if (checkDaemonStaleness() && !jsonMode) {
-    warn('Warning: dist/daemon/ may be stale (source files are newer).');
+    warn("Warning: dist/daemon/ may be stale (source files are newer).");
     warn('  Run "npm run build:daemon" to update.');
   }
 
   // AC: @cli-serve-commands ac-2 - background mode
   if (opts.daemon) {
-    const runtime = 'bun';
+    const runtime = "bun";
 
     // Spawn detached process
     // Set BUN_ENV=production to prevent Bun dev mode HTML transformation
     // which can cause asset hash mismatches in the web UI
-    const child = spawn(runtime, [daemonBinary, '--port', String(port), '--kspec-dir', kspecDir], {
+    const child = spawn(runtime, [daemonBinary, "--port", String(port), "--kspec-dir", kspecDir], {
       detached: true,
-      stdio: 'ignore', // TODO: redirect to log file when logging implemented
+      stdio: "ignore", // TODO: redirect to log file when logging implemented
       cwd: process.cwd(),
       env: buildDaemonChildEnv(),
     });
@@ -343,7 +344,7 @@ async function startServer(opts: {
       if (pid && pidManager.isDaemonRunning({ ignoreNoDaemon: true })) {
         break;
       }
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
     }
 
     if (pid && pidManager.isDaemonRunning({ ignoreNoDaemon: true })) {
@@ -355,9 +356,9 @@ async function startServer(opts: {
       }
     } else {
       if (isJsonMode()) {
-        output({ error: 'Daemon failed to start within 5 seconds' });
+        output({ error: "Daemon failed to start within 5 seconds" });
       } else {
-        error('Daemon failed to start within 5 seconds');
+        error("Daemon failed to start within 5 seconds");
       }
       process.exit(EXIT_CODES.ERROR);
     }
@@ -365,37 +366,37 @@ async function startServer(opts: {
     // AC: @cli-serve-commands ac-1 - foreground mode
     if (!isJsonMode()) {
       info(`Starting server in foreground on port ${port}...`);
-      info('Press Ctrl+C to stop');
+      info("Press Ctrl+C to stop");
     }
 
-    const runtime = 'bun';
+    const runtime = "bun";
 
     // Set BUN_ENV=production to prevent Bun dev mode HTML transformation
-    const child = spawn(runtime, [daemonBinary, '--port', String(port), '--kspec-dir', kspecDir], {
-      stdio: 'inherit',
+    const child = spawn(runtime, [daemonBinary, "--port", String(port), "--kspec-dir", kspecDir], {
+      stdio: "inherit",
       cwd: process.cwd(),
       env: buildDaemonChildEnv(),
     });
 
     // Handle Ctrl+C - forward SIGTERM to child for graceful shutdown
-    process.on('SIGINT', () => {
+    process.on("SIGINT", () => {
       if (!isJsonMode()) {
-        info('\nStopping server...');
+        info("\nStopping server...");
       }
-      child.kill('SIGTERM');
+      child.kill("SIGTERM");
 
       // Wait for graceful shutdown (max 5 seconds)
       const shutdownTimeout = setTimeout(() => {
-        child.kill('SIGKILL'); // Force kill if not stopped
+        child.kill("SIGKILL"); // Force kill if not stopped
       }, 5000);
 
-      child.on('exit', () => {
+      child.on("exit", () => {
         clearTimeout(shutdownTimeout);
       });
     });
 
     // Wait for process to exit
-    child.on('exit', (code) => {
+    child.on("exit", (code) => {
       process.exit(code ?? 0);
     });
   }
@@ -405,9 +406,9 @@ async function startServer(opts: {
  * Stop the daemon server
  * AC: @cli-serve-commands ac-4 (stop), ac-5 (idempotent)
  */
-async function stopServer(opts: { kspecDir?: string; json?: boolean }): Promise<void> {
+async function stopServer(_opts: { kspecDir?: string; json?: boolean }): Promise<void> {
   // AC: @cli-serve-commands ac-11
-  guardAgentContext('stop');
+  guardAgentContext("stop");
 
   const pidManager = new PidFileManager();
 
@@ -416,7 +417,7 @@ async function stopServer(opts: { kspecDir?: string; json?: boolean }): Promise<
     if (isJsonMode()) {
       output({ running: false });
     } else {
-      info('Daemon not running');
+      info("Daemon not running");
       output({ running: false });
     }
     process.exit(EXIT_CODES.SUCCESS);
@@ -425,9 +426,9 @@ async function stopServer(opts: { kspecDir?: string; json?: boolean }): Promise<
   const pid = pidManager.readPid();
   if (!pid) {
     if (isJsonMode()) {
-      output({ error: 'Failed to read PID file' });
+      output({ error: "Failed to read PID file" });
     } else {
-      error('Failed to read PID file');
+      error("Failed to read PID file");
     }
     process.exit(EXIT_CODES.ERROR);
   }
@@ -439,7 +440,7 @@ async function stopServer(opts: { kspecDir?: string; json?: boolean }): Promise<
 
   try {
     // Send SIGTERM
-    process.kill(pid, 'SIGTERM');
+    process.kill(pid, "SIGTERM");
 
     // Wait for clean shutdown (max 5 seconds)
     const maxWait = 5000;
@@ -448,21 +449,21 @@ async function stopServer(opts: { kspecDir?: string; json?: boolean }): Promise<
       if (!pidManager.isDaemonRunning({ ignoreNoDaemon: true })) {
         break;
       }
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
     }
 
     if (pidManager.isDaemonRunning({ ignoreNoDaemon: true })) {
       if (!isJsonMode()) {
         warn(`Daemon did not stop gracefully, forcing...`);
       }
-      process.kill(pid, 'SIGKILL');
-      await new Promise(resolve => setTimeout(resolve, 500));
+      process.kill(pid, "SIGKILL");
+      await new Promise((resolve) => setTimeout(resolve, 500));
     }
 
     if (isJsonMode()) {
       output({ stopped: true, pid });
     } else {
-      success('Daemon stopped');
+      success("Daemon stopped");
       output({ stopped: true, pid });
     }
   } catch (err) {
@@ -479,7 +480,7 @@ async function stopServer(opts: { kspecDir?: string; json?: boolean }): Promise<
  * Check daemon server status
  * AC: @cli-serve-commands ac-6, @multi-directory-daemon ac-12
  */
-async function statusServer(opts: { kspecDir?: string; json?: boolean }): Promise<void> {
+async function statusServer(_opts: { kspecDir?: string; json?: boolean }): Promise<void> {
   if (isJsonMode()) {
   }
 
@@ -505,7 +506,9 @@ async function statusServer(opts: { kspecDir?: string; json?: boolean }): Promis
     try {
       const response = await fetch(`http://localhost:${port}/api/projects`);
       if (response.ok) {
-        const data = await response.json() as { projects: Array<{ path: string; registeredAt: string; watcherStatus: string }> };
+        const data = (await response.json()) as {
+          projects: Array<{ path: string; registeredAt: string; watcherStatus: string }>;
+        };
         projects = data.projects || [];
       }
     } catch {
@@ -519,7 +522,7 @@ async function statusServer(opts: { kspecDir?: string; json?: boolean }): Promis
       try {
         const healthResponse = await fetch(`http://localhost:${port}/api/health`);
         if (healthResponse.ok) {
-          const healthData = await healthResponse.json() as { status: string; uptime?: unknown };
+          const healthData = (await healthResponse.json()) as { status: string; uptime?: unknown };
           const parsed = parseUptimeSeconds(healthData.uptime);
           if (parsed !== null) {
             uptime = parsed;
@@ -531,7 +534,7 @@ async function statusServer(opts: { kspecDir?: string; json?: boolean }): Promis
       }
 
       if (attempt < 5) {
-        await new Promise(resolve => setTimeout(resolve, 200));
+        await new Promise((resolve) => setTimeout(resolve, 200));
       }
     }
   }
@@ -575,7 +578,7 @@ async function statusServer(opts: { kspecDir?: string; json?: boolean }): Promis
         output(`\nNo projects registered`);
       }
     } else {
-      output('Daemon not running');
+      output("Daemon not running");
     }
   }
 }
@@ -586,7 +589,7 @@ async function statusServer(opts: { kspecDir?: string; json?: boolean }): Promis
  */
 async function restartServer(opts: { kspecDir?: string; json?: boolean }): Promise<void> {
   // AC: @cli-serve-commands ac-11
-  guardAgentContext('restart');
+  guardAgentContext("restart");
   const pidManager = new PidFileManager();
 
   // AC: @cli-serve-commands ac-7 - preserve port across restarts
@@ -600,13 +603,13 @@ async function restartServer(opts: { kspecDir?: string; json?: boolean }): Promi
 
   if (pidManager.isDaemonRunning({ ignoreNoDaemon: true })) {
     if (!isJsonMode()) {
-      info('Stopping daemon...');
+      info("Stopping daemon...");
     }
     await stopServer(opts);
   }
 
   if (!isJsonMode()) {
-    info('Starting daemon...');
+    info("Starting daemon...");
   }
   await startServer({ daemon: true, port, kspecDir: opts.kspecDir });
 }

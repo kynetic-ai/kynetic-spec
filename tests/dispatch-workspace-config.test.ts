@@ -19,6 +19,7 @@ import {
   cleanupTempDir,
   createTempDir,
   initGitRepo,
+  readTestOutput,
   testUlid,
 } from "./helpers/cli.js";
 
@@ -28,11 +29,10 @@ async function createToolPath(options: { gh: boolean }): Promise<string> {
     encoding: "utf-8",
     shell: "/bin/bash",
   }).trim();
-  await fs.writeFile(
-    path.join(binDir, "git"),
-    `#!/bin/sh\nexec "${gitPath}" "$@"\n`,
-    { encoding: "utf-8", mode: 0o755 },
-  );
+  await fs.writeFile(path.join(binDir, "git"), `#!/bin/sh\nexec "${gitPath}" "$@"\n`, {
+    encoding: "utf-8",
+    mode: 0o755,
+  });
   if (options.gh) {
     await fs.writeFile(
       path.join(binDir, "gh"),
@@ -53,8 +53,11 @@ function git(cwd: string, command: string): string {
   }).trim();
 }
 
-async function readWorkspaceRecord(registryPath: string, taskRef: string): Promise<Record<string, any>> {
-  const raw = YAML.parse(await fs.readFile(registryPath, "utf-8")) as {
+async function readWorkspaceRecord(
+  registryPath: string,
+  taskRef: string,
+): Promise<Record<string, any>> {
+  const raw = YAML.parse(await readTestOutput(registryPath)) as {
     workspaces?: Array<Record<string, any>>;
   };
   return raw.workspaces?.find((workspace) => workspace.task_ref === taskRef) ?? {};
@@ -166,12 +169,17 @@ describe("dispatch workspace configuration", () => {
     const first = await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
-      task: { title: "Implement Dispatch Config", slugs: ["task-implement-dispatch-workspace-config"] },
+      task: {
+        title: "Implement Dispatch Config",
+        slugs: ["task-implement-dispatch-workspace-config"],
+      },
     });
 
     const metadata = await readWorkspaceRecord(first.metadataPath, taskRef);
 
-    expect(first.cwd).toBe(path.join(tempDir, ".dispatch-root", "task-implement-dispatch-workspace-config-01task00"));
+    expect(first.cwd).toBe(
+      path.join(tempDir, ".dispatch-root", "task-implement-dispatch-workspace-config-01task00"),
+    );
     expect(metadata.resolved_base_branch).toBe("agent-dev");
     expect(metadata.integration?.target_branch).toBe("agent-dev");
 
@@ -179,7 +187,10 @@ describe("dispatch workspace configuration", () => {
     const second = await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
-      task: { title: "Implement Dispatch Config", slugs: ["task-implement-dispatch-workspace-config"] },
+      task: {
+        title: "Implement Dispatch Config",
+        slugs: ["task-implement-dispatch-workspace-config"],
+      },
     });
     const metadataAgain = await readWorkspaceRecord(second.metadataPath, taskRef);
 
@@ -347,7 +358,9 @@ describe("dispatch workspace configuration", () => {
 
     expect(runSpy).toHaveBeenCalledTimes(1);
     const invocation = runSpy.mock.calls[0][0];
-    expect(invocation.cwd).toBe(path.join(tempDir, ".dispatch-root", "dispatch-runtime-task-01task00"));
+    expect(invocation.cwd).toBe(
+      path.join(tempDir, ".dispatch-root", "dispatch-runtime-task-01task00"),
+    );
     expect(invocation.env?.KSPEC_DISPATCH_BASE_BRANCH).toBe("agent-dev");
     expect(invocation.env?.KSPEC_DISPATCH_MERGE_TARGET).toBe("agent-dev");
 
@@ -396,7 +409,7 @@ describe("dispatch workspace configuration", () => {
     await expect(resolveDispatchWorkspaceConfig(tempDir)).rejects.toMatchObject({
       name: "DispatchWorkspaceError",
       message:
-        'No base branch could be resolved: no configured dispatch.base_branch, no remote HEAD, ' +
+        "No base branch could be resolved: no configured dispatch.base_branch, no remote HEAD, " +
         'no current branch, and default "main" does not exist.',
       suggestion:
         "Set dispatch.base_branch in kspec.config.yaml, or ensure the repository has a main branch.",
@@ -458,7 +471,10 @@ describe("dispatch workspace configuration", () => {
     const slug = "foreign-collision-task";
     const canonicalBranch = `dispatch/task/${slug}/${taskRef.slice(1, 9).toLowerCase()}`;
     const foreignRoot = path.join(tempDir, ".foreign-worktrees");
-    const foreignWorktreeDir = path.join(foreignRoot, `${slug}-${taskRef.slice(1, 9).toLowerCase()}`);
+    const foreignWorktreeDir = path.join(
+      foreignRoot,
+      `${slug}-${taskRef.slice(1, 9).toLowerCase()}`,
+    );
     await fs.mkdir(foreignRoot, { recursive: true });
     git(tempDir, `worktree add -b ${canonicalBranch} ${foreignWorktreeDir} agent-dev`);
 
@@ -470,10 +486,8 @@ describe("dispatch workspace configuration", () => {
       }),
     ).rejects.toMatchObject({
       name: "DispatchWorkspaceError",
-      message:
-        `Dispatch canonical branch "${canonicalBranch}" is already attached to foreign worktree "${foreignWorktreeDir}" outside this checkout's worktree root "${path.join(tempDir, ".dispatch-root")}".`,
-      suggestion:
-        `Remove or relocate the foreign worktree in the other checkout, then retry dispatch from "${path.join(tempDir, ".dispatch-root")}".`,
+      message: `Dispatch canonical branch "${canonicalBranch}" is already attached to foreign worktree "${foreignWorktreeDir}" outside this checkout's worktree root "${path.join(tempDir, ".dispatch-root")}".`,
+      suggestion: `Remove or relocate the foreign worktree in the other checkout, then retry dispatch from "${path.join(tempDir, ".dispatch-root")}".`,
     } satisfies Partial<DispatchWorkspaceError>);
   });
 });
@@ -675,7 +689,7 @@ describe("stale integration target detection", () => {
     });
 
     // Mutate the registry to simulate active integration (merged state)
-    const raw = YAML.parse(await fs.readFile(first.metadataPath, "utf-8")) as {
+    const raw = YAML.parse(await readTestOutput(first.metadataPath)) as {
       workspaces: Array<Record<string, any>>;
     };
     const ws = raw.workspaces.find((w) => w.task_ref === taskRef);
@@ -723,7 +737,7 @@ describe("stale integration target detection", () => {
     });
 
     // Mutate to in_progress integration
-    const raw = YAML.parse(await fs.readFile(first.metadataPath, "utf-8")) as {
+    const raw = YAML.parse(await readTestOutput(first.metadataPath)) as {
       workspaces: Array<Record<string, any>>;
     };
     const ws = raw.workspaces.find((w) => w.task_ref === taskRef);
@@ -816,7 +830,7 @@ describe("stale integration target detection", () => {
 
     const taskRef = `@${testUlid("TASK", 64)}`;
 
-    const first = await provisionDispatchWorkspace({
+    await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
       task: { title: "No Change Test", slugs: ["task-no-change"] },

@@ -17,7 +17,7 @@
  * AC: @api-contract ac-26
  */
 export interface WebSocketCommand {
-  action: 'subscribe' | 'unsubscribe' | 'ping';
+  action: "subscribe" | "unsubscribe" | "ping";
   request_id?: string;
   payload?: {
     topics?: string[];
@@ -41,7 +41,7 @@ export interface CommandAck {
  * AC: @api-contract ac-25
  */
 export interface ConnectedEvent {
-  event: 'connected';
+  event: "connected";
   data: {
     session_id: string;
   };
@@ -117,41 +117,41 @@ export interface SessionEventBase {
 
 /** Agent started composing a message. */
 export interface MessageStartEventData extends SessionEventBase {
-  type: 'message_start';
+  type: "message_start";
 }
 
 /** Flushed text lines from agent message output (newline-boundary streaming). */
 export interface MessageProgressEventData extends SessionEventBase {
-  type: 'message_progress';
+  type: "message_progress";
   text: string;
 }
 
 /** Agent message completed (remaining buffer flushed on state transition). */
 export interface MessageCompleteEventData extends SessionEventBase {
-  type: 'message_complete';
+  type: "message_complete";
   text: string;
 }
 
 /** Agent started emitting thinking/reasoning content. */
 export interface ThinkingStartEventData extends SessionEventBase {
-  type: 'thinking_start';
+  type: "thinking_start";
 }
 
 /** Flushed text lines from agent thinking output. */
 export interface ThinkingProgressEventData extends SessionEventBase {
-  type: 'thinking_progress';
+  type: "thinking_progress";
   text: string;
 }
 
 /** Agent thinking completed (remaining buffer flushed). */
 export interface ThinkingCompleteEventData extends SessionEventBase {
-  type: 'thinking_complete';
+  type: "thinking_complete";
   text: string;
 }
 
 /** Agent initiated a tool call. Includes tool name and input; output excluded. */
 export interface ToolCallStartEventData extends SessionEventBase {
-  type: 'tool_call_start';
+  type: "tool_call_start";
   tool_call_id: string;
   tool_name: string;
   tool_input: unknown;
@@ -159,7 +159,7 @@ export interface ToolCallStartEventData extends SessionEventBase {
 
 /** Tool call input updated (phased streaming: populated input arrives after registration). */
 export interface ToolCallInputEventData extends SessionEventBase {
-  type: 'tool_call_input';
+  type: "tool_call_input";
   tool_call_id: string;
   tool_name: string;
   tool_input: unknown;
@@ -167,7 +167,7 @@ export interface ToolCallInputEventData extends SessionEventBase {
 
 /** Tool call finished. Includes status and duration; output excluded. */
 export interface ToolCallCompleteEventData extends SessionEventBase {
-  type: 'tool_call_complete';
+  type: "tool_call_complete";
   tool_call_id: string;
   tool_name: string;
   status: string;
@@ -187,7 +187,7 @@ export type SessionEventData =
   | ToolCallCompleteEventData;
 
 /** All possible `event` field values for session events on the 'agents' topic. */
-export type SessionEventType = SessionEventData['type'];
+export type SessionEventType = SessionEventData["type"];
 
 // ─── Review Event Data Payloads ──────────────────────────────────────────────
 // AC: @review-records-daemon-api ac-9

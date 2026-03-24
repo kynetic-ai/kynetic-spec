@@ -1,10 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import {
-  kspec,
-  kspecJson,
-  setupTempFixtures,
-  cleanupTempDir,
-} from "./helpers/cli";
+import { kspec, kspecJson, setupTempFixtures, cleanupTempDir } from "./helpers/cli";
 import { VALID_ACTIONS } from "../src/triage/constants";
 import { TriageActionSchema } from "../src/schema/triage";
 
@@ -22,10 +17,7 @@ afterEach(async () => {
  * Helper: add an inbox item and return its ULID
  */
 function addInboxItem(text: string): string {
-  const result = kspecJson<{ item: { _ulid: string } }>(
-    `inbox add "${text}"`,
-    tempDir,
-  );
+  const result = kspecJson<{ item: { _ulid: string } }>(`inbox add "${text}"`, tempDir);
   return result.item._ulid;
 }
 
@@ -37,10 +29,9 @@ function recordTriage(
   action: string,
   reasoning: string,
 ): { _ulid: string; status: string; action: string; inbox_ref: string } {
-  const result = kspecJson<{ record: { _ulid: string; status: string; action: string; inbox_ref: string } }>(
-    `triage record @${inboxRef} --action ${action} --reasoning "${reasoning}"`,
-    tempDir,
-  );
+  const result = kspecJson<{
+    record: { _ulid: string; status: string; action: string; inbox_ref: string };
+  }>(`triage record @${inboxRef} --action ${action} --reasoning "${reasoning}"`, tempDir);
   return result.record;
 }
 
@@ -72,20 +63,14 @@ describe("shared executeTriageAction via CLI", () => {
     const inboxUlid = addInboxItem("Feature: add export button");
     const record = recordTriage(inboxUlid, "promote", "clear feature request");
 
-    const actResult = kspec(
-      `triage act @${record._ulid.slice(0, 8)}`,
-      tempDir,
-    );
+    const actResult = kspec(`triage act @${record._ulid.slice(0, 8)}`, tempDir);
     expect(actResult.exitCode).toBe(0);
     expect(actResult.stdout).toContain("Created task:");
     expect(actResult.stdout).toContain("Deleted promoted inbox item");
     expect(actResult.stdout).toContain("Acted on triage record");
 
     // Verify task was created
-    const tasks = kspecJson<Array<{ title: string; description: string }>>(
-      "tasks list",
-      tempDir,
-    );
+    const tasks = kspecJson<Array<{ title: string; description: string }>>("tasks list", tempDir);
     const created = tasks.find((t) => t.description?.includes("Feature: add export button"));
     expect(created).toBeDefined();
 
@@ -100,10 +85,7 @@ describe("shared executeTriageAction via CLI", () => {
     const inboxUlid = addInboxItem("Feature: keep inbox item");
     const record = recordTriage(inboxUlid, "promote", "keep original");
 
-    const actResult = kspec(
-      `triage act @${record._ulid.slice(0, 8)} --keep`,
-      tempDir,
-    );
+    const actResult = kspec(`triage act @${record._ulid.slice(0, 8)} --keep`, tempDir);
     expect(actResult.exitCode).toBe(0);
     expect(actResult.stdout).toContain("Created task:");
     expect(actResult.stdout).toContain("Acted on triage record");
@@ -119,10 +101,7 @@ describe("shared executeTriageAction via CLI", () => {
     const inboxUlid = addInboxItem("Spam item to delete");
     const record = recordTriage(inboxUlid, "delete", "not relevant");
 
-    const actResult = kspec(
-      `triage act @${record._ulid.slice(0, 8)}`,
-      tempDir,
-    );
+    const actResult = kspec(`triage act @${record._ulid.slice(0, 8)}`, tempDir);
     expect(actResult.exitCode).toBe(0);
     expect(actResult.stdout).toContain("Deleted inbox item");
 
@@ -137,10 +116,7 @@ describe("shared executeTriageAction via CLI", () => {
     const inboxUlid = addInboxItem("Deferred idea");
     const record = recordTriage(inboxUlid, "defer", "needs more thought");
 
-    const actResult = kspec(
-      `triage act @${record._ulid.slice(0, 8)}`,
-      tempDir,
-    );
+    const actResult = kspec(`triage act @${record._ulid.slice(0, 8)}`, tempDir);
     expect(actResult.exitCode).toBe(0);
     expect(actResult.stdout).toContain("Acted on triage record");
 
@@ -155,10 +131,7 @@ describe("shared executeTriageAction via CLI", () => {
     const inboxUlid = addInboxItem("Missing spec coverage for auth");
     const record = recordTriage(inboxUlid, "spec-gap", "spec does not cover auth flow");
 
-    const actResult = kspec(
-      `triage act @${record._ulid.slice(0, 8)}`,
-      tempDir,
-    );
+    const actResult = kspec(`triage act @${record._ulid.slice(0, 8)}`, tempDir);
     expect(actResult.exitCode).toBe(0);
     expect(actResult.stdout).toContain("Created spec-gap observation");
   });
@@ -168,10 +141,7 @@ describe("shared executeTriageAction via CLI", () => {
     const inboxUlid = addInboxItem("Duplicate of existing issue");
     const record = recordTriage(inboxUlid, "duplicate", "same as existing task");
 
-    const actResult = kspec(
-      `triage act @${record._ulid.slice(0, 8)}`,
-      tempDir,
-    );
+    const actResult = kspec(`triage act @${record._ulid.slice(0, 8)}`, tempDir);
     expect(actResult.exitCode).toBe(0);
     expect(actResult.stdout).toContain("Deleted duplicate inbox item");
 
@@ -186,26 +156,17 @@ describe("shared executeTriageAction via CLI", () => {
     const inboxUlid = addInboxItem("Dry run test item");
     const record = recordTriage(inboxUlid, "promote", "testing dry run");
 
-    const actResult = kspec(
-      `triage act @${record._ulid.slice(0, 8)} --dry-run`,
-      tempDir,
-    );
+    const actResult = kspec(`triage act @${record._ulid.slice(0, 8)} --dry-run`, tempDir);
     expect(actResult.exitCode).toBe(0);
     expect(actResult.stdout).toContain("Would create task");
     expect(actResult.stdout).toContain("Would delete promoted inbox item");
 
-    const keepResult = kspec(
-      `triage act @${record._ulid.slice(0, 8)} --dry-run --keep`,
-      tempDir,
-    );
+    const keepResult = kspec(`triage act @${record._ulid.slice(0, 8)} --dry-run --keep`, tempDir);
     expect(keepResult.exitCode).toBe(0);
     expect(keepResult.stdout).toContain("Would keep promoted inbox item");
 
     // Verify no task was actually created
-    const tasks = kspecJson<Array<{ description: string }>>(
-      "tasks list",
-      tempDir,
-    );
+    const tasks = kspecJson<Array<{ description: string }>>("tasks list", tempDir);
     const created = tasks.find((t) => t.description?.includes("Dry run test item"));
     expect(created).toBeUndefined();
   });

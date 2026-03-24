@@ -246,7 +246,10 @@ describe("parseEventsToBlocks — ACP format", () => {
     // Same events, but via incrementalBlockUpdate (typed broadcast events)
     let wsBlocks: DisplayBlock[] = [];
     wsBlocks = incrementalBlockUpdate(wsBlocks, "message_start", { timestamp: 1000 });
-    wsBlocks = incrementalBlockUpdate(wsBlocks, "message_progress", { text: "Hello\n", timestamp: 1000 });
+    wsBlocks = incrementalBlockUpdate(wsBlocks, "message_progress", {
+      text: "Hello\n",
+      timestamp: 1000,
+    });
     wsBlocks = incrementalBlockUpdate(wsBlocks, "message_complete", { text: "", timestamp: 1000 });
     wsBlocks = incrementalBlockUpdate(wsBlocks, "tool_call_start", {
       tool_call_id: "tc-1",

@@ -12,10 +12,7 @@ import * as path from "node:path";
 import type { Command } from "commander";
 import { EXIT_CODES } from "../exit-codes.js";
 import { isJsonMode, output } from "../output.js";
-import {
-  SHADOW_BRANCH_NAME,
-  resolveProjectRoots,
-} from "../../parser/shadow.js";
+import { SHADOW_BRANCH_NAME, resolveProjectRoots } from "../../parser/shadow.js";
 import { loadProjectConfig } from "../../parser/config.js";
 
 /**
@@ -101,7 +98,7 @@ function isShadowWorktreePath(normalizedPath: string, shadowAbsPath: string): bo
     return true;
   }
   // Subdirectory match: cwd is inside the shadow worktree
-  return normalizedPath.startsWith(normalizedShadow + "/");
+  return normalizedPath.startsWith(`${normalizedShadow}/`);
 }
 
 /**
@@ -111,7 +108,11 @@ function isShadowWorktreePath(normalizedPath: string, shadowAbsPath: string): bo
  * For relative cd targets, resolves against cwd (if available) and compares.
  * Falls back to directory-name matching when cwd is not available.
  */
-function isCdToShadowWorktree(command: string, shadowAbsPath: string, cwd: string | undefined): boolean {
+function isCdToShadowWorktree(
+  command: string,
+  shadowAbsPath: string,
+  cwd: string | undefined,
+): boolean {
   // Extract the cd target from the command
   const cdMatch = command.match(/cd\s+(\S+)/);
   if (!cdMatch) {
@@ -124,15 +125,15 @@ function isCdToShadowWorktree(command: string, shadowAbsPath: string, cwd: strin
   // If cd target is absolute, compare directly
   if (cdTarget.startsWith("/")) {
     const normalizedTarget = cdTarget.replace(/\\/g, "/").replace(/\/+$/, "");
-    return normalizedTarget === normalizedShadow ||
-      normalizedTarget.startsWith(normalizedShadow + "/");
+    return (
+      normalizedTarget === normalizedShadow || normalizedTarget.startsWith(`${normalizedShadow}/`)
+    );
   }
 
   // For relative targets, resolve against cwd if available
   if (cwd) {
     const resolved = path.resolve(cwd, cdTarget).replace(/\\/g, "/");
-    return resolved === normalizedShadow ||
-      resolved.startsWith(normalizedShadow + "/");
+    return resolved === normalizedShadow || resolved.startsWith(`${normalizedShadow}/`);
   }
 
   // Fallback: no cwd available, use directory-name segment matching
@@ -172,10 +173,7 @@ function matchesDangerousPattern(command: string): string | null {
   for (const pattern of DANGEROUS_PATTERNS) {
     // Block if pattern is in the stripped command (actual command, not in quotes)
     // OR if pattern is in unquoted AND first command word is "git"
-    if (
-      stripped.includes(pattern) ||
-      (unquoted.includes(pattern) && firstCmd === "git")
-    ) {
+    if (stripped.includes(pattern) || (unquoted.includes(pattern) && firstCmd === "git")) {
       return pattern;
     }
   }
@@ -207,7 +205,10 @@ export interface GuardOptions {
  * AC: @native-guard-commands ac-worktree-guard
  * AC: @native-guard-commands ac-worktree-allow
  */
-export function evaluateWorktreeGuard(input: PreToolUseInput, options?: GuardOptions): GuardDecision {
+export function evaluateWorktreeGuard(
+  input: PreToolUseInput,
+  options?: GuardOptions,
+): GuardDecision {
   const command = input.tool_input?.command;
 
   // No command means not a Bash tool call — allow
@@ -219,8 +220,7 @@ export function evaluateWorktreeGuard(input: PreToolUseInput, options?: GuardOpt
   if (isShadowBranchDeletion(command)) {
     return {
       decision: "block",
-      reason:
-        `[kspec-worktree-guard] BLOCKED: Cannot delete ${SHADOW_BRANCH_NAME} branch. This is the main branch for the .kspec worktree.`,
+      reason: `[kspec-worktree-guard] BLOCKED: Cannot delete ${SHADOW_BRANCH_NAME} branch. This is the main branch for the .kspec worktree.`,
     };
   }
 
@@ -273,15 +273,11 @@ async function readStdin(): Promise<string> {
  * AC: @trait-semantic-exit-codes ac-8 - exit code meanings documented in code
  */
 export function registerGuardCommand(program: Command): void {
-  const guard = program
-    .command("guard")
-    .description("Guard commands for protecting kspec state");
+  const guard = program.command("guard").description("Guard commands for protecting kspec state");
 
   guard
     .command("worktree")
-    .description(
-      "Guard against dangerous git operations in .kspec worktree (PreToolUse hook)",
-    )
+    .description("Guard against dangerous git operations in .kspec worktree (PreToolUse hook)")
     .option("--json", "Output as JSON")
     .action(async () => {
       try {

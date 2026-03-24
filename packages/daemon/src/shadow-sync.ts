@@ -7,5 +7,8 @@
  * AC: @config-shadow ac-12
  */
 
-export { ShadowSyncScheduler } from '../parser/shadow-sync-scheduler.js';
-export type { ShadowSyncSchedulerOptions, ShadowSyncPubSub } from '../parser/shadow-sync-scheduler.js';
+export { ShadowSyncScheduler } from "../parser/shadow-sync-scheduler.js";
+export type {
+  ShadowSyncSchedulerOptions,
+  ShadowSyncPubSub,
+} from "../parser/shadow-sync-scheduler.js";

@@ -149,11 +149,15 @@ export function generateHtmlExport(snapshot: KspecSnapshot): string {
           ${snapshot.project.version ? ` • v${escapeHtml(snapshot.project.version)}` : ""}
         </div>
       </div>
-      ${snapshot.validation ? `
+      ${
+        snapshot.validation
+          ? `
         <span class="badge ${snapshot.validation.valid ? "valid" : "invalid"}">
           ${snapshot.validation.valid ? "✓ Valid" : `✗ ${snapshot.validation.errorCount} errors`}
         </span>
-      ` : ""}
+      `
+          : ""
+      }
     </header>
 
     <div class="read-only-banner">
@@ -183,7 +187,10 @@ export function generateHtmlExport(snapshot: KspecSnapshot): string {
     <div class="section">
       <div class="section-title">Recent Tasks</div>
       <div class="list">
-        ${snapshot.tasks.slice(0, 10).map(task => `
+        ${snapshot.tasks
+          .slice(0, 10)
+          .map(
+            (task) => `
           <div class="item">
             <div class="item-title">
               <span class="status status-${task.status}">${task.status}</span>
@@ -194,7 +201,9 @@ export function generateHtmlExport(snapshot: KspecSnapshot): string {
               ${task.spec_ref_title ? ` • ${escapeHtml(task.spec_ref_title)}` : ""}
             </div>
           </div>
-        `).join("")}
+        `,
+          )
+          .join("")}
         ${snapshot.tasks.length > 10 ? `<div class="item-meta">... and ${snapshot.tasks.length - 10} more tasks</div>` : ""}
       </div>
     </div>
@@ -202,7 +211,10 @@ export function generateHtmlExport(snapshot: KspecSnapshot): string {
     <div class="section">
       <div class="section-title">Spec Items</div>
       <div class="list">
-        ${snapshot.items.slice(0, 10).map(item => `
+        ${snapshot.items
+          .slice(0, 10)
+          .map(
+            (item) => `
           <div class="item">
             <div class="item-title">${escapeHtml(item.title)}</div>
             <div class="item-meta">
@@ -210,7 +222,9 @@ export function generateHtmlExport(snapshot: KspecSnapshot): string {
               ${item.acceptance_criteria?.length ? ` • ${item.acceptance_criteria.length} ACs` : ""}
             </div>
           </div>
-        `).join("")}
+        `,
+          )
+          .join("")}
         ${snapshot.items.length > 10 ? `<div class="item-meta">... and ${snapshot.items.length - 10} more items</div>` : ""}
       </div>
     </div>

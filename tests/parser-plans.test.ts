@@ -225,14 +225,8 @@ describe("Plan Parser", () => {
 
     await savePlan(ctx as any, createPlan({ title: "Draft 1" }));
     await savePlan(ctx as any, createPlan({ title: "Draft 2" }));
-    await savePlan(
-      ctx as any,
-      createPlan({ title: "Approved", status: "approved" }),
-    );
-    await savePlan(
-      ctx as any,
-      createPlan({ title: "Active", status: "active" }),
-    );
+    await savePlan(ctx as any, createPlan({ title: "Approved", status: "approved" }));
+    await savePlan(ctx as any, createPlan({ title: "Active", status: "active" }));
 
     const plans = await loadPlans(ctx as any);
     const stats = getPlanStats(plans);

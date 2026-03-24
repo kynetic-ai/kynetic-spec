@@ -1,8 +1,8 @@
-import { describe, it, expect, vi } from 'vitest';
-import type { ServerWebSocket } from 'bun';
-import { PubSubManager } from '../packages/daemon/src/websocket/pubsub';
-import { WebSocketHandler } from '../packages/daemon/src/websocket/handler';
-import type { ConnectionData, CommandAck } from '../packages/daemon/src/websocket/types';
+import { describe, it, expect, vi } from "vitest";
+import type { ServerWebSocket } from "bun";
+import { PubSubManager } from "../packages/daemon/src/websocket/pubsub";
+import { WebSocketHandler } from "../packages/daemon/src/websocket/handler";
+import type { ConnectionData, CommandAck } from "../packages/daemon/src/websocket/types";
 
 function createMockWebSocket(sessionId: string): ServerWebSocket<ConnectionData> {
   const data: ConnectionData = {
@@ -11,7 +11,7 @@ function createMockWebSocket(sessionId: string): ServerWebSocket<ConnectionData>
     seq: 0,
     lastPing: undefined,
     lastPong: Date.now(),
-    projectPath: '/tmp/ws-handler-test',
+    projectPath: "/tmp/ws-handler-test",
   };
 
   return {
@@ -25,19 +25,21 @@ function createMockWebSocket(sessionId: string): ServerWebSocket<ConnectionData>
   } as unknown as ServerWebSocket<ConnectionData>;
 }
 
-describe('WebSocketHandler', () => {
+describe("WebSocketHandler", () => {
   // AC: @trait-websocket-protocol ac-2
-  it('accepts subscribe commands sent as Uint8Array payloads', async () => {
+  it("accepts subscribe commands sent as Uint8Array payloads", async () => {
     const pubsub = new PubSubManager();
     const handler = new WebSocketHandler(pubsub);
-    const ws = createMockWebSocket('session-uint8');
-    pubsub.addConnection('session-uint8', ws);
+    const ws = createMockWebSocket("session-uint8");
+    pubsub.addConnection("session-uint8", ws);
 
-    const commandBytes = new TextEncoder().encode(JSON.stringify({
-      action: 'subscribe',
-      request_id: 'sub-uint8',
-      payload: { topics: ['agents'] },
-    }));
+    const commandBytes = new TextEncoder().encode(
+      JSON.stringify({
+        action: "subscribe",
+        request_id: "sub-uint8",
+        payload: { topics: ["agents"] },
+      }),
+    );
 
     await handler.handleMessage(ws, commandBytes);
 
@@ -46,22 +48,24 @@ describe('WebSocketHandler', () => {
 
     expect(ack.ack).toBe(true);
     expect(ack.success).toBe(true);
-    expect(ack.request_id).toBe('sub-uint8');
-    expect(ws.data.topics.has('agents')).toBe(true);
+    expect(ack.request_id).toBe("sub-uint8");
+    expect(ws.data.topics.has("agents")).toBe(true);
   });
 
   // AC: @trait-websocket-protocol ac-2
-  it('accepts subscribe commands sent as ArrayBuffer payloads', async () => {
+  it("accepts subscribe commands sent as ArrayBuffer payloads", async () => {
     const pubsub = new PubSubManager();
     const handler = new WebSocketHandler(pubsub);
-    const ws = createMockWebSocket('session-arraybuffer');
-    pubsub.addConnection('session-arraybuffer', ws);
+    const ws = createMockWebSocket("session-arraybuffer");
+    pubsub.addConnection("session-arraybuffer", ws);
 
-    const encoded = new TextEncoder().encode(JSON.stringify({
-      action: 'subscribe',
-      request_id: 'sub-arraybuffer',
-      payload: { topics: ['tasks:updates'] },
-    }));
+    const encoded = new TextEncoder().encode(
+      JSON.stringify({
+        action: "subscribe",
+        request_id: "sub-arraybuffer",
+        payload: { topics: ["tasks:updates"] },
+      }),
+    );
     const arrayBuffer = encoded.buffer.slice(
       encoded.byteOffset,
       encoded.byteOffset + encoded.byteLength,
@@ -74,22 +78,27 @@ describe('WebSocketHandler', () => {
 
     expect(ack.ack).toBe(true);
     expect(ack.success).toBe(true);
-    expect(ack.request_id).toBe('sub-arraybuffer');
-    expect(ws.data.topics.has('tasks:updates')).toBe(true);
+    expect(ack.request_id).toBe("sub-arraybuffer");
+    expect(ws.data.topics.has("tasks:updates")).toBe(true);
   });
 
   // AC: @trait-websocket-protocol ac-2
-  it('accepts subscribe commands sent as Blob payloads', async () => {
+  it("accepts subscribe commands sent as Blob payloads", async () => {
     const pubsub = new PubSubManager();
     const handler = new WebSocketHandler(pubsub);
-    const ws = createMockWebSocket('session-blob');
-    pubsub.addConnection('session-blob', ws);
+    const ws = createMockWebSocket("session-blob");
+    pubsub.addConnection("session-blob", ws);
 
-    const blob = new Blob([JSON.stringify({
-      action: 'subscribe',
-      request_id: 'sub-blob',
-      payload: { topics: ['agents'] },
-    })], { type: 'application/json' });
+    const blob = new Blob(
+      [
+        JSON.stringify({
+          action: "subscribe",
+          request_id: "sub-blob",
+          payload: { topics: ["agents"] },
+        }),
+      ],
+      { type: "application/json" },
+    );
 
     await handler.handleMessage(ws, blob);
 
@@ -98,21 +107,21 @@ describe('WebSocketHandler', () => {
 
     expect(ack.ack).toBe(true);
     expect(ack.success).toBe(true);
-    expect(ack.request_id).toBe('sub-blob');
-    expect(ws.data.topics.has('agents')).toBe(true);
+    expect(ack.request_id).toBe("sub-blob");
+    expect(ws.data.topics.has("agents")).toBe(true);
   });
 
   // AC: @trait-websocket-protocol ac-2
-  it('accepts subscribe commands when runtime already parsed JSON into an object', async () => {
+  it("accepts subscribe commands when runtime already parsed JSON into an object", async () => {
     const pubsub = new PubSubManager();
     const handler = new WebSocketHandler(pubsub);
-    const ws = createMockWebSocket('session-object');
-    pubsub.addConnection('session-object', ws);
+    const ws = createMockWebSocket("session-object");
+    pubsub.addConnection("session-object", ws);
 
     await handler.handleMessage(ws, {
-      action: 'subscribe',
-      request_id: 'sub-object',
-      payload: { topics: ['agents'] },
+      action: "subscribe",
+      request_id: "sub-object",
+      payload: { topics: ["agents"] },
     });
 
     const sent = (ws.send as unknown as ReturnType<typeof vi.fn>).mock.calls.at(-1)?.[0];
@@ -120,23 +129,23 @@ describe('WebSocketHandler', () => {
 
     expect(ack.ack).toBe(true);
     expect(ack.success).toBe(true);
-    expect(ack.request_id).toBe('sub-object');
-    expect(ws.data.topics.has('agents')).toBe(true);
+    expect(ack.request_id).toBe("sub-object");
+    expect(ws.data.topics.has("agents")).toBe(true);
   });
 
   // AC: @trait-websocket-protocol ac-2
-  it('subscribes successfully when message callback socket wrapper lacks sessionId', async () => {
+  it("subscribes successfully when message callback socket wrapper lacks sessionId", async () => {
     const pubsub = new PubSubManager();
     const handler = new WebSocketHandler(pubsub);
-    const registeredWs = createMockWebSocket('session-context');
-    pubsub.addConnection('session-context', registeredWs, 'ctx-subscribe');
+    const registeredWs = createMockWebSocket("session-context");
+    pubsub.addConnection("session-context", registeredWs, "ctx-subscribe");
 
     const wrapperWs = {
       data: {
-        id: 'ctx-subscribe',
+        id: "ctx-subscribe",
         topics: new Set<string>(),
         seq: 0,
-        projectPath: '/tmp/ws-handler-test',
+        projectPath: "/tmp/ws-handler-test",
       },
       send: vi.fn(),
       close: vi.fn(),
@@ -145,9 +154,9 @@ describe('WebSocketHandler', () => {
     } as unknown as ServerWebSocket<ConnectionData>;
 
     await handler.handleMessage(wrapperWs, {
-      action: 'subscribe',
-      request_id: 'sub-context',
-      payload: { topics: ['agents'] },
+      action: "subscribe",
+      request_id: "sub-context",
+      payload: { topics: ["agents"] },
     });
 
     const sent = (wrapperWs.send as unknown as ReturnType<typeof vi.fn>).mock.calls.at(-1)?.[0];
@@ -155,7 +164,7 @@ describe('WebSocketHandler', () => {
 
     expect(ack.ack).toBe(true);
     expect(ack.success).toBe(true);
-    expect(ack.request_id).toBe('sub-context');
-    expect(registeredWs.data.topics.has('agents')).toBe(true);
+    expect(ack.request_id).toBe("sub-context");
+    expect(registeredWs.data.topics.has("agents")).toBe(true);
   });
 });

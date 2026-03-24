@@ -12,7 +12,6 @@ import {
   resolveStaleSessionCriteria,
   selectStaleActiveSessions,
   type StaleSessionEvaluation,
-  type StaleSessionSkipped,
 } from "../../../sessions/store.js";
 import { EXIT_CODES } from "../../exit-codes.js";
 import { error, isJsonMode, output } from "../../output.js";
@@ -176,21 +175,16 @@ export async function sessionStaleCloseAction(
       process.exit(EXIT_CODES.USAGE_ERROR);
     }
 
-    const selection = await selectStaleActiveSessions(
-      ctx.sessionsDir,
-      {
-        olderThan: options.olderThan,
-        inactiveFor: options.inactiveFor,
-        livenessGuard: options.livenessGuard,
-      },
-    );
+    const selection = await selectStaleActiveSessions(ctx.sessionsDir, {
+      olderThan: options.olderThan,
+      inactiveFor: options.inactiveFor,
+      livenessGuard: options.livenessGuard,
+    });
 
     const evaluationById = new Map(
       selection.evaluations.map((evaluation) => [evaluation.sessionId, evaluation]),
     );
-    const skippedById = new Map(
-      selection.skipped.map((skipped) => [skipped.sessionId, skipped]),
-    );
+    const skippedById = new Map(selection.skipped.map((skipped) => [skipped.sessionId, skipped]));
 
     const results: SessionStaleCloseResult[] = [];
     const targetCandidates: StaleSessionEvaluation[] = [];

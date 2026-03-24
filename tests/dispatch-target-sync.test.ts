@@ -4,13 +4,8 @@ import { execSync } from "node:child_process";
 import * as path from "node:path";
 import * as invocationModule from "../src/agent-runtime/invocation.js";
 import * as workspaceModule from "../src/agent-runtime/workspace.js";
-import { DispatchEngine, type TargetSyncResult } from "../src/agent-runtime/dispatch.js";
-import {
-  cleanupTempDir,
-  createTempDir,
-  initGitRepo,
-  testUlid,
-} from "./helpers/cli.js";
+import { DispatchEngine } from "../src/agent-runtime/dispatch.js";
+import { cleanupTempDir, createTempDir, initGitRepo } from "./helpers/cli.js";
 
 function git(cwd: string, command: string): string {
   return execSync(`git ${command}`, {
@@ -90,11 +85,7 @@ async function setupProjectFiles(projectDir: string, baseBranch = "dev"): Promis
     `dispatch:\n  base_branch: ${baseBranch}\n  sync_interval: 60\n  remote_sync: true\n`,
     "utf-8",
   );
-  await fs.writeFile(
-    path.join(projectDir, "project.tasks.yaml"),
-    "tasks: []\n",
-    "utf-8",
-  );
+  await fs.writeFile(path.join(projectDir, "project.tasks.yaml"), "tasks: []\n", "utf-8");
 }
 
 async function setupWorktreeLaunchedProjectWithRemote(): Promise<{
@@ -355,7 +346,9 @@ describe("dispatch target branch sync", () => {
     ({ projectDir, remoteDir } = await setupProjectWithRemote());
     await setupProjectFiles(projectDir);
     git(projectDir, "checkout dev");
-    expect(await workspaceModule.ensureDispatchIntegrationTargetCheckoutCoherence(projectDir, "dev")).toEqual({
+    expect(
+      await workspaceModule.ensureDispatchIntegrationTargetCheckoutCoherence(projectDir, "dev"),
+    ).toEqual({
       repaired: false,
       drifted: false,
       previousCommit: null,
@@ -394,7 +387,9 @@ describe("dispatch target branch sync", () => {
     expect(git(projectDir, "rev-parse dev")).toBe(remoteTip);
     expect(gitSucceeds(projectDir, "diff --quiet")).toBe(true);
     expect(gitSucceeds(projectDir, "diff --cached --quiet")).toBe(true);
-    expect(await workspaceModule.ensureDispatchIntegrationTargetCheckoutCoherence(projectDir, "dev")).toEqual({
+    expect(
+      await workspaceModule.ensureDispatchIntegrationTargetCheckoutCoherence(projectDir, "dev"),
+    ).toEqual({
       repaired: false,
       drifted: false,
       previousCommit: null,
@@ -414,7 +409,9 @@ describe("dispatch target branch sync", () => {
     git(projectDir, "add dev.txt");
     git(projectDir, 'commit -m "advance dev tip"');
 
-    expect(await workspaceModule.ensureDispatchIntegrationTargetCheckoutCoherence(projectDir, "dev")).toEqual({
+    expect(
+      await workspaceModule.ensureDispatchIntegrationTargetCheckoutCoherence(projectDir, "dev"),
+    ).toEqual({
       repaired: false,
       drifted: false,
       previousCommit: null,
@@ -423,7 +420,9 @@ describe("dispatch target branch sync", () => {
     git(projectDir, `checkout ${previousTip} -- dev.txt`);
     git(projectDir, "add dev.txt");
 
-    expect(() => workspaceModule.ensureDispatchIntegrationTargetCheckoutCoherence(projectDir, "dev")).toThrowError(
+    expect(() =>
+      workspaceModule.ensureDispatchIntegrationTargetCheckoutCoherence(projectDir, "dev"),
+    ).toThrowError(
       /staged tracked changes after dispatch already observed this branch tip as coherent/,
     );
     expect(git(projectDir, "diff --cached --name-only")).toContain("dev.txt");
@@ -439,11 +438,10 @@ describe("dispatch target branch sync", () => {
     const poisonDir = await setupPoisonRepo();
     try {
       await withPoisonedGitContext(poisonDir, async () => {
-        const result = workspaceModule.runDispatchIntegrationTargetGit(
-          projectDir,
-          "dev",
-          ["rev-parse", "--show-toplevel"],
-        );
+        const result = workspaceModule.runDispatchIntegrationTargetGit(projectDir, "dev", [
+          "rev-parse",
+          "--show-toplevel",
+        ]);
         expect(result.status).toBe(0);
         expect(result.stdout).toBe(projectDir);
       });
@@ -585,8 +583,11 @@ describe("dispatch target branch sync", () => {
   // AC: @dispatch-integration-mutation-scope ac-2
   // AC: @dispatch-integration-mutation-scope ac-3
   it("syncs the intended linked shared checkout even when inherited git env points at another repo", async () => {
-    const { sourceDir, sharedCheckoutDir, remoteDir: worktreeRemoteDir } =
-      await setupWorktreeLaunchedProjectWithRemote();
+    const {
+      sourceDir,
+      sharedCheckoutDir,
+      remoteDir: worktreeRemoteDir,
+    } = await setupWorktreeLaunchedProjectWithRemote();
     const poisonDir = await setupPoisonRepo();
 
     try {
@@ -852,24 +853,14 @@ describe("dispatch target branch sync", () => {
 
     const targetGitSpy = vi.spyOn(workspaceModule, "runDispatchIntegrationTargetGit");
 
-    await pushRemoteCommit(
-      remoteDir,
-      "dev",
-      "timeout-check.txt",
-      "timeout\n",
-      "timeout check",
-    );
+    await pushRemoteCommit(remoteDir, "dev", "timeout-check.txt", "timeout\n", "timeout check");
 
     const result = await engine._syncTargetBranch();
 
     expect(result).toBe("synced");
-    expect(targetGitSpy).toHaveBeenNthCalledWith(
-      1,
-      projectDir,
-      "dev",
-      ["fetch", "origin", "dev"],
-      { timeout: 30_000 },
-    );
+    expect(targetGitSpy).toHaveBeenNthCalledWith(1, projectDir, "dev", ["fetch", "origin", "dev"], {
+      timeout: 30_000,
+    });
     expect(targetGitSpy).toHaveBeenNthCalledWith(
       2,
       projectDir,
@@ -957,11 +948,7 @@ describe("dispatch target branch sync", () => {
       "dispatch:\n  base_branch: dev\n",
       "utf-8",
     );
-    await fs.writeFile(
-      path.join(projectDir, "project.tasks.yaml"),
-      "tasks: []\n",
-      "utf-8",
-    );
+    await fs.writeFile(path.join(projectDir, "project.tasks.yaml"), "tasks: []\n", "utf-8");
 
     const logSpy = vi.spyOn(console, "log");
     const warnSpy = vi.spyOn(console, "warn");
@@ -977,14 +964,14 @@ describe("dispatch target branch sync", () => {
     expect(syncStatus.enabled).toBe(false);
 
     // No warnings about sync failures
-    const syncWarnings = warnSpy.mock.calls.filter(
-      (call) => String(call[0]).includes("Target sync"),
+    const syncWarnings = warnSpy.mock.calls.filter((call) =>
+      String(call[0]).includes("Target sync"),
     );
     expect(syncWarnings).toHaveLength(0);
 
     // No sync log messages
-    const syncLogs = logSpy.mock.calls.filter(
-      (call) => String(call[0]).includes("Target sync enabled"),
+    const syncLogs = logSpy.mock.calls.filter((call) =>
+      String(call[0]).includes("Target sync enabled"),
     );
     expect(syncLogs).toHaveLength(0);
 
@@ -1023,11 +1010,7 @@ describe("dispatch target branch sync", () => {
       "dispatch:\n  base_branch: dev\n  remote_sync: false\n",
       "utf-8",
     );
-    await fs.writeFile(
-      path.join(projectDir, "project.tasks.yaml"),
-      "tasks: []\n",
-      "utf-8",
-    );
+    await fs.writeFile(path.join(projectDir, "project.tasks.yaml"), "tasks: []\n", "utf-8");
 
     git(projectDir, "checkout dev");
 

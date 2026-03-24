@@ -65,8 +65,7 @@ export function assessTask(
   index: ReferenceIndex,
   items: LoadedSpecItem[],
 ): TaskAssessment {
-  const taskRef =
-    task.slugs.length > 0 ? `@${task.slugs[0]}` : `@${index.shortUlid(task._ulid)}`;
+  const taskRef = task.slugs.length > 0 ? `@${task.slugs[0]}` : `@${index.shortUlid(task._ulid)}`;
   const taskType = task.type || "task";
 
   // AC: @tasks-assess-automation ac-8, ac-9 - Check has_spec_ref
@@ -250,9 +249,7 @@ export function filterTasksForAssessment(
  * Compute summary counts from assessments
  * AC: @tasks-assess-automation ac-5, ac-25
  */
-export function computeSummary(
-  assessments: TaskAssessment[],
-): AssessmentSummary {
+export function computeSummary(assessments: TaskAssessment[]): AssessmentSummary {
   const summary: AssessmentSummary = {
     review_for_eligible: 0,
     needs_review: 0,
@@ -280,9 +277,7 @@ export interface AutoModeChange {
   reason: string;
 }
 
-export function computeAutoModeChanges(
-  assessments: TaskAssessment[],
-): AutoModeChange[] {
+export function computeAutoModeChanges(assessments: TaskAssessment[]): AutoModeChange[] {
   return assessments.map((assessment) => {
     // AC: @tasks-assess-automation ac-17 - Spikes → manual_only
     if (assessment.recommendation === "manual_only") {

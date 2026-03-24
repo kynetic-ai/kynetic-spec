@@ -1,23 +1,23 @@
-import * as fs from 'node:fs/promises';
-import * as path from 'node:path';
-import * as os from 'node:os';
-import { afterEach, describe, expect, it } from 'vitest';
-import { initContext, loadAllItems, loadAllTasks } from '../src/parser/index.js';
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
+import * as os from "node:os";
+import { afterEach, describe, expect, it } from "vitest";
+import { initContext, loadAllItems, loadAllTasks } from "../src/parser/index.js";
 import {
   getRelatedSessionsForItem,
   getRelatedSessionsForTask,
-} from '../dist/daemon/routes/session-related.ts';
+} from "../dist/daemon/routes/session-related.ts";
 
 const tempDirs: string[] = [];
 
 async function createFixtureProject(): Promise<string> {
-  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'kspec-session-related-'));
+  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "kspec-session-related-"));
   tempDirs.push(tempDir);
 
-  const kspecDir = path.join(tempDir, '.kspec');
-  await fs.mkdir(path.join(kspecDir, 'modules'), { recursive: true });
+  const kspecDir = path.join(tempDir, ".kspec");
+  await fs.mkdir(path.join(kspecDir, "modules"), { recursive: true });
   await fs.writeFile(
-    path.join(kspecDir, 'kynetic.yaml'),
+    path.join(kspecDir, "kynetic.yaml"),
     `kynetic: "1.0"
 
 project:
@@ -30,10 +30,10 @@ includes:
 
 tasks_file: project.tasks.yaml
 `,
-    'utf-8'
+    "utf-8",
   );
   await fs.writeFile(
-    path.join(kspecDir, 'modules', 'core.yaml'),
+    path.join(kspecDir, "modules", "core.yaml"),
     `_ulid: 01KF1645CB2FQ3F2XTPYVZGCFS
 slugs:
   - core
@@ -54,10 +54,10 @@ features:
         when: sessions are queried
         then: matching sessions are returned
 `,
-    'utf-8'
+    "utf-8",
   );
   await fs.writeFile(
-    path.join(kspecDir, 'project.tasks.yaml'),
+    path.join(kspecDir, "project.tasks.yaml"),
     `tasks:
   - _ulid: 01KG0RR6CA45ZT43W2T6HJMVA1
     slugs:
@@ -82,9 +82,9 @@ features:
     todos: []
     created_at: "2026-01-01T00:00:00Z"
 `,
-    'utf-8'
+    "utf-8",
   );
-  await fs.mkdir(path.join(kspecDir, '.kspec-sessions'), { recursive: true });
+  await fs.mkdir(path.join(kspecDir, ".kspec-sessions"), { recursive: true });
 
   return kspecDir;
 }
@@ -96,12 +96,12 @@ async function writeSession(
     taskId: string;
     startedAt: string;
     endedAt: string;
-  }
+  },
 ) {
-  const sessionDir = path.join(projectRoot, '.kspec-sessions', options.id);
+  const sessionDir = path.join(projectRoot, ".kspec-sessions", options.id);
   await fs.mkdir(sessionDir, { recursive: true });
   await fs.writeFile(
-    path.join(sessionDir, 'session.yaml'),
+    path.join(sessionDir, "session.yaml"),
     `id: "${options.id}"
 task_id: "${options.taskId}"
 agent_type: "claude-agent-acp"
@@ -111,82 +111,82 @@ status: "completed"
 started_at: "${options.startedAt}"
 ended_at: "${options.endedAt}"
 `,
-    'utf-8'
+    "utf-8",
   );
-  await fs.writeFile(path.join(sessionDir, 'events.jsonl'), '', 'utf-8');
+  await fs.writeFile(path.join(sessionDir, "events.jsonl"), "", "utf-8");
 }
 
 afterEach(async () => {
   await Promise.all(tempDirs.splice(0).map((dir) => fs.rm(dir, { recursive: true, force: true })));
 });
 
-describe('session-related route helpers', () => {
+describe("session-related route helpers", () => {
   // AC: @task-spec-session-context ac-api-task-sessions
-  it('returns sessions for a resolved task reference', async () => {
+  it("returns sessions for a resolved task reference", async () => {
     const projectRoot = await createFixtureProject();
     await writeSession(projectRoot, {
-      id: 'session-task-ready',
-      taskId: '@test-task-ready',
-      startedAt: '2026-03-01T10:00:00Z',
-      endedAt: '2026-03-01T10:05:00Z',
+      id: "session-task-ready",
+      taskId: "@test-task-ready",
+      startedAt: "2026-03-01T10:00:00Z",
+      endedAt: "2026-03-01T10:05:00Z",
     });
 
     const ctx = await initContext(projectRoot);
     const tasks = await loadAllTasks(ctx);
     const items = await loadAllItems(ctx);
     const result = await getRelatedSessionsForTask({
-      taskRef: '@test-task-ready',
+      taskRef: "@test-task-ready",
       tasks,
       items,
       sessionsDir: ctx.sessionsDir,
     });
 
-    expect('error' in result).toBe(false);
-    if ('error' in result) return;
+    expect("error" in result).toBe(false);
+    if ("error" in result) return;
 
-    expect(result.task.title).toBe('Ready task');
+    expect(result.task.title).toBe("Ready task");
     expect(result.sessions).toHaveLength(1);
     expect(result.sessions[0]).toMatchObject({
-      id: 'session-task-ready',
-      task_id: '@test-task-ready',
-      status: 'completed',
+      id: "session-task-ready",
+      task_id: "@test-task-ready",
+      status: "completed",
       duration_ms: 300000,
     });
   });
 
   // AC: @task-spec-session-context ac-api-item-sessions
-  it('returns sessions for tasks aligned to a spec item', async () => {
+  it("returns sessions for tasks aligned to a spec item", async () => {
     const projectRoot = await createFixtureProject();
     await writeSession(projectRoot, {
-      id: 'session-task-ready',
-      taskId: '@test-task-ready',
-      startedAt: '2026-03-01T10:00:00Z',
-      endedAt: '2026-03-01T10:05:00Z',
+      id: "session-task-ready",
+      taskId: "@test-task-ready",
+      startedAt: "2026-03-01T10:00:00Z",
+      endedAt: "2026-03-01T10:05:00Z",
     });
     await writeSession(projectRoot, {
-      id: 'session-task-progress',
-      taskId: '@test-task-in-progress',
-      startedAt: '2026-03-01T12:00:00Z',
-      endedAt: '2026-03-01T12:08:00Z',
+      id: "session-task-progress",
+      taskId: "@test-task-in-progress",
+      startedAt: "2026-03-01T12:00:00Z",
+      endedAt: "2026-03-01T12:08:00Z",
     });
 
     const ctx = await initContext(projectRoot);
     const tasks = await loadAllTasks(ctx);
     const items = await loadAllItems(ctx);
     const result = await getRelatedSessionsForItem({
-      itemRef: '@test-feature',
+      itemRef: "@test-feature",
       tasks,
       items,
       sessionsDir: ctx.sessionsDir,
     });
 
-    expect('error' in result).toBe(false);
-    if ('error' in result) return;
+    expect("error" in result).toBe(false);
+    if ("error" in result) return;
 
-    expect(result.item.title).toBe('Test Feature');
+    expect(result.item.title).toBe("Test Feature");
     expect(result.sessions.map((session) => session.id)).toEqual([
-      'session-task-progress',
-      'session-task-ready',
+      "session-task-progress",
+      "session-task-ready",
     ]);
   });
 });

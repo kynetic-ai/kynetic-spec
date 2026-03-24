@@ -70,7 +70,7 @@ describe("HTML Export", () => {
       const html = generateHtmlExport(mockSnapshot);
 
       expect(html).toContain("<!DOCTYPE html>");
-      expect(html).toContain("<html lang=\"en\">");
+      expect(html).toContain('<html lang="en">');
       expect(html).toContain("</html>");
     });
 

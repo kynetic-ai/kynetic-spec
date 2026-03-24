@@ -11,10 +11,7 @@ import {
   findStaleVerdicts,
 } from "../src/review/subject-bindings.js";
 import { computeContentHash } from "../src/parser/skill-render.js";
-import {
-  ReviewSubjectSchema,
-  ReviewSubjectVersionSchema,
-} from "../src/schema/review-records.js";
+import { ReviewSubjectSchema, ReviewSubjectVersionSchema } from "../src/schema/review-records.js";
 import type {
   ReviewCheck,
   ReviewVerdict,
@@ -594,9 +591,7 @@ describe("computeContentHash", () => {
 
   // AC: @review-subject-bindings ac-4
   it("produces different hashes for different inputs", () => {
-    expect(computeContentHash("input a")).not.toBe(
-      computeContentHash("input b"),
-    );
+    expect(computeContentHash("input a")).not.toBe(computeContentHash("input b"));
   });
 });
 

@@ -46,10 +46,7 @@ export function findClosestCommand(
   let closestDistance = Infinity;
 
   for (const cmd of validCommands) {
-    const distance = levenshteinDistance(
-      input.toLowerCase(),
-      cmd.toLowerCase(),
-    );
+    const distance = levenshteinDistance(input.toLowerCase(), cmd.toLowerCase());
 
     // Only consider if distance is within threshold
     if (distance <= threshold && distance < closestDistance) {

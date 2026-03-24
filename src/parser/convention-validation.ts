@@ -49,8 +49,7 @@ function validateRegex(
     if (!regex.test(content)) {
       return {
         domain,
-        message:
-          validation.message || `Content does not match required pattern`,
+        message: validation.message || `Content does not match required pattern`,
         expected: validation.pattern,
       };
     }
@@ -127,18 +126,14 @@ function validateRange(
   if (min !== undefined && count < min) {
     return {
       domain,
-      message:
-        validation.message ||
-        `Content too short: ${count} ${unit}, minimum ${min} ${unit}`,
+      message: validation.message || `Content too short: ${count} ${unit}, minimum ${min} ${unit}`,
     };
   }
 
   if (max !== undefined && count > max) {
     return {
       domain,
-      message:
-        validation.message ||
-        `Content too long: ${count} ${unit}, maximum ${max} ${unit}`,
+      message: validation.message || `Content too long: ${count} ${unit}, maximum ${max} ${unit}`,
     };
   }
 

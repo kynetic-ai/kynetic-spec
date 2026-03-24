@@ -1,47 +1,18 @@
 /**
- * Tests for ralph replacement — removed kspec ralph guidance and built-in agent setup.
+ * Tests for kspec setup built-in agent creation and session checkpoint.
  *
- * Verifies that removed kspec ralph commands show a helpful migration error, and that
- * kspec setup creates built-in task-worker and pr-reviewer agent definitions.
+ * Verifies that kspec setup creates built-in task-worker and pr-reviewer
+ * agent definitions with correct dispatch rules, and that session checkpoint
+ * detects uncommitted changes.
  *
- * Task: @implement-ralph-replacement
  * Spec: @ralph-replacement
  */
 
-import { spawnSync } from "node:child_process";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import * as YAML from "yaml";
-import {
-  CLI_PATH,
-  cleanupTempDir,
-  createTempDir,
-  initGitRepo,
-  kspec,
-} from "./helpers/cli.js";
-
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-
-interface CliResult {
-  stdout: string;
-  stderr: string;
-  exitCode: number;
-}
-
-function runCli(args: string[], cwd: string): CliResult {
-  const result = spawnSync("node", [CLI_PATH, ...args], {
-    cwd,
-    encoding: "utf-8",
-    timeout: 30000,
-    env: { ...process.env, KSPEC_AUTHOR: "@test" },
-  });
-  return {
-    stdout: result.stdout || "",
-    stderr: result.stderr || "",
-    exitCode: result.status ?? 1,
-  };
-}
+import { cleanupTempDir, createTempDir, initGitRepo, kspec } from "./helpers/cli.js";
 
 /**
  * Create a minimal kspec project in a temp dir (traditional layout, not shadow branch).
@@ -69,48 +40,6 @@ async function setupMinimalProject(dir: string): Promise<void> {
 }
 
 // ─── Tests ────────────────────────────────────────────────────────────────────
-
-// AC: @ralph-replacement ac-1
-describe("removed kspec ralph command guidance", () => {
-  it("shows migration error when kspec ralph run is invoked", () => {
-    const result = runCli(["ralph", "run"], process.cwd());
-
-    // Should exit with code 1
-    expect(result.exitCode).toBe(1);
-
-    // AC: @trait-error-guidance ac-1 — description of what went wrong
-    expect(result.stderr).toMatch(/kspec ralph has been replaced/i);
-
-    // AC: @ralph-replacement ac-1 — lists equivalent commands
-    expect(result.stderr).toContain("kspec ralph run");
-    expect(result.stderr).toContain("kspec agent dispatch start");
-    expect(result.stderr).toMatch(
-      /kspec ralph run\s+→\s+kspec agent dispatch start/,
-    );
-    expect(result.stderr).toContain("kspec ralph --dry-run");
-    expect(result.stderr).toContain("kspec agent dispatch start --dry-run");
-  });
-
-  it("shows migration error when kspec ralph end-loop is invoked", () => {
-    const result = runCli(["ralph", "end-loop"], process.cwd());
-
-    // Should exit with code 1
-    expect(result.exitCode).toBe(1);
-
-    // AC: @trait-error-guidance ac-1 — description of what went wrong
-    expect(result.stderr).toMatch(/kspec ralph has been replaced/i);
-
-    // AC: @ralph-replacement ac-1 — lists equivalent commands
-    expect(result.stderr).toContain("kspec agent end-loop");
-  });
-
-  it("shows kspec setup suggestion in migration message", () => {
-    const result = runCli(["ralph"], process.cwd());
-
-    // AC: @trait-error-guidance ac-2 — suggested action to resolve
-    expect(result.stderr).toContain("kspec setup");
-  });
-});
 
 // AC: @ralph-replacement ac-2
 describe("kspec setup built-in agents", () => {
@@ -214,26 +143,6 @@ describe("kspec setup built-in agents", () => {
   });
 });
 
-// AC: @ralph-replacement ac-6
-describe("agent dispatch template section", () => {
-  it("06-agent-dispatch-mode.md template references agent dispatch not ralph", async () => {
-    // Resolve the template path relative to package root
-    const templatePath = path.join(
-      __dirname,
-      "..",
-      "templates",
-      "agents-sections",
-      "06-agent-dispatch-mode.md",
-    );
-    const content = await fs.readFile(templatePath, "utf-8");
-    const lower = content.toLowerCase();
-
-    // Should be about agent dispatch, not ralph
-    expect(lower).toContain("dispatch");
-    expect(lower).not.toContain("ralph");
-  });
-});
-
 // AC: @ralph-replacement ac-8
 describe("uncommitted changes detection", () => {
   let tempDir: string;
@@ -249,11 +158,7 @@ describe("uncommitted changes detection", () => {
 
   it("session checkpoint warns about uncommitted changes when they exist", async () => {
     // Create a file change to simulate uncommitted work
-    await fs.writeFile(
-      path.join(tempDir, "uncommitted.ts"),
-      "// uncommitted work\n",
-      "utf-8",
-    );
+    await fs.writeFile(path.join(tempDir, "uncommitted.ts"), "// uncommitted work\n", "utf-8");
 
     // Session checkpoint should detect the dirty working tree and block
     const result = await kspec("session checkpoint --json", tempDir);
@@ -272,14 +177,7 @@ describe("uncommitted changes detection", () => {
 
 // ─── AC Coverage Annotations ─────────────────────────────────────────────────
 //
-// Own ACs covered indirectly (no dedicated test needed):
-// AC: @ralph-replacement ac-3 — covered by ac-2 dispatch rule tests verifying worker+reviewer lifecycle match ralph behavior
-// AC: @ralph-replacement ac-4 — N/A: workflow updates are configuration-only changes in .kspec/; verified by kspec-agents.md content, no unit test needed
-// AC: @ralph-replacement ac-5 — N/A: skill file content changes verified by kspec-agents.md generation; no unit test needed
-// AC: @ralph-replacement ac-7 — N/A: AC is satisfied by deletion of ralph test files; verified by CI passing without them
-//
-// Inherited trait ACs (@trait-error-guidance) that do not apply to the ralph deprecation stub:
-// AC: @trait-error-guidance ac-3 — N/A: ralph stub does not perform ref lookups; no 'not found' error paths
-// AC: @trait-error-guidance ac-4 — N/A: ralph stub has no state machine transitions; only shows migration error
-// AC: @trait-error-guidance ac-5 — N/A: ralph stub has no field validation; only shows migration error
-// AC: @trait-error-guidance ac-6 — N/A: ralph stub has no --json mode
+// AC: @ralph-replacement ac-3 — covered by ac-2 dispatch rule tests verifying worker+reviewer lifecycle
+// AC: @ralph-replacement ac-4 — N/A: workflow updates are configuration-only changes in .kspec/
+// AC: @ralph-replacement ac-5 — N/A: skill file content changes verified by kspec-agents.md generation
+// AC: @ralph-replacement ac-7 — N/A: AC is satisfied by deletion of ralph test files

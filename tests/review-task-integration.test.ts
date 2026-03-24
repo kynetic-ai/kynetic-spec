@@ -7,22 +7,13 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import {
-  createReviewRecord,
-  loadReviewRecords,
-  saveReviewRecord,
-} from "../src/parser/reviews.js";
+import { createReviewRecord, loadReviewRecords, saveReviewRecord } from "../src/parser/reviews.js";
 import {
   linkReviewToTasks,
   handleVerdictTaskTransition,
   checkReviewLinkageConsistency,
 } from "../src/parser/review-task-integration.js";
-import {
-  createTask,
-  loadAllTasks,
-  saveTask,
-  mutateTaskAtomically,
-} from "../src/parser/yaml.js";
+import { createTask, loadAllTasks, saveTask } from "../src/parser/yaml.js";
 import type { KspecContext, LoadedTask } from "../src/parser/yaml.js";
 import { TaskSchema } from "../src/schema/index.js";
 import type { ReviewRecordInput } from "../src/schema/index.js";
@@ -142,7 +133,7 @@ describe("Review-Task Integration", () => {
   // AC: @review-task-lifecycle-integration ac-1
   it("should persist review_ref through save and load cycle", async () => {
     const taskUlid = testUlid("TSK");
-    const task = await createAndSaveTask(ctx, {
+    await createAndSaveTask(ctx, {
       _ulid: taskUlid,
       title: "Task With Review Ref",
       slugs: ["task-with-review"],
@@ -172,16 +163,18 @@ describe("Review-Task Integration", () => {
     });
 
     // Create a review with task subject
-    const review = createReviewRecord(makeReviewInput({
-      _ulid: reviewUlid,
-      slugs: ["code-review-1"],
-      subject: {
-        type: "task",
-        ref: "@task-under-review",
-        shadow_commit: "abc123",
-        content_hash: "hash123",
-      },
-    }));
+    const review = createReviewRecord(
+      makeReviewInput({
+        _ulid: reviewUlid,
+        slugs: ["code-review-1"],
+        subject: {
+          type: "task",
+          ref: "@task-under-review",
+          shadow_commit: "abc123",
+          content_hash: "hash123",
+        },
+      }),
+    );
     await saveReviewRecord(ctx, { ...review });
 
     // Link the review to tasks
@@ -209,16 +202,18 @@ describe("Review-Task Integration", () => {
     });
 
     // Create review without slugs
-    const review = createReviewRecord(makeReviewInput({
-      _ulid: reviewUlid,
-      slugs: [],
-      subject: {
-        type: "task",
-        ref: "@task-no-slug-review",
-        shadow_commit: "abc123",
-        content_hash: "hash123",
-      },
-    }));
+    const review = createReviewRecord(
+      makeReviewInput({
+        _ulid: reviewUlid,
+        slugs: [],
+        subject: {
+          type: "task",
+          ref: "@task-no-slug-review",
+          shadow_commit: "abc123",
+          content_hash: "hash123",
+        },
+      }),
+    );
     await saveReviewRecord(ctx, { ...review });
 
     const tasks = await loadAllTasks(ctx);
@@ -245,16 +240,18 @@ describe("Review-Task Integration", () => {
     });
 
     // Create code review with task in related_refs
-    const review = createReviewRecord(makeReviewInput({
-      _ulid: reviewUlid,
-      slugs: ["code-review-related"],
-      subject: {
-        type: "code",
-        base_commit: "abc123",
-        head_commit: "def456",
-      },
-      related_refs: ["@related-task"],
-    }));
+    const review = createReviewRecord(
+      makeReviewInput({
+        _ulid: reviewUlid,
+        slugs: ["code-review-related"],
+        subject: {
+          type: "code",
+          base_commit: "abc123",
+          head_commit: "def456",
+        },
+        related_refs: ["@related-task"],
+      }),
+    );
     await saveReviewRecord(ctx, { ...review });
 
     const tasks = await loadAllTasks(ctx);
@@ -287,16 +284,18 @@ describe("Review-Task Integration", () => {
       status: "in_progress",
     });
 
-    const review = createReviewRecord(makeReviewInput({
-      _ulid: reviewUlid,
-      slugs: ["multi-task-review"],
-      subject: {
-        type: "code",
-        base_commit: "abc123",
-        head_commit: "def456",
-      },
-      related_refs: ["@first-related", "@second-related"],
-    }));
+    const review = createReviewRecord(
+      makeReviewInput({
+        _ulid: reviewUlid,
+        slugs: ["multi-task-review"],
+        subject: {
+          type: "code",
+          base_commit: "abc123",
+          head_commit: "def456",
+        },
+        related_refs: ["@first-related", "@second-related"],
+      }),
+    );
     await saveReviewRecord(ctx, { ...review });
 
     const tasks = await loadAllTasks(ctx);
@@ -313,16 +312,18 @@ describe("Review-Task Integration", () => {
   it("should not link non-task related_refs", async () => {
     const reviewUlid = testUlid("NTK");
 
-    const review = createReviewRecord(makeReviewInput({
-      _ulid: reviewUlid,
-      slugs: ["spec-review"],
-      subject: {
-        type: "code",
-        base_commit: "abc123",
-        head_commit: "def456",
-      },
-      related_refs: ["@some-spec-item"],  // Not a task
-    }));
+    const review = createReviewRecord(
+      makeReviewInput({
+        _ulid: reviewUlid,
+        slugs: ["spec-review"],
+        subject: {
+          type: "code",
+          base_commit: "abc123",
+          head_commit: "def456",
+        },
+        related_refs: ["@some-spec-item"], // Not a task
+      }),
+    );
 
     // No tasks exist
     const tasks: LoadedTask[] = [];
@@ -346,16 +347,18 @@ describe("Review-Task Integration", () => {
       review_ref: "@verdict-review",
     });
 
-    const review = createReviewRecord(makeReviewInput({
-      _ulid: reviewUlid,
-      slugs: ["verdict-review"],
-      subject: {
-        type: "task",
-        ref: "@task-needing-changes",
-        shadow_commit: "abc123",
-        content_hash: "hash123",
-      },
-    }));
+    const review = createReviewRecord(
+      makeReviewInput({
+        _ulid: reviewUlid,
+        slugs: ["verdict-review"],
+        subject: {
+          type: "task",
+          ref: "@task-needing-changes",
+          shadow_commit: "abc123",
+          content_hash: "hash123",
+        },
+      }),
+    );
     await saveReviewRecord(ctx, { ...review });
 
     const tasks = await loadAllTasks(ctx);
@@ -390,23 +393,20 @@ describe("Review-Task Integration", () => {
       status: "in_progress",
     });
 
-    const review = createReviewRecord(makeReviewInput({
-      _ulid: reviewUlid,
-      subject: {
-        type: "task",
-        ref: "@in-progress-task",
-        shadow_commit: "abc123",
-        content_hash: "hash123",
-      },
-    }));
+    const review = createReviewRecord(
+      makeReviewInput({
+        _ulid: reviewUlid,
+        subject: {
+          type: "task",
+          ref: "@in-progress-task",
+          shadow_commit: "abc123",
+          content_hash: "hash123",
+        },
+      }),
+    );
 
     const tasks = await loadAllTasks(ctx);
-    const results = await handleVerdictTaskTransition(
-      ctx,
-      review,
-      "request_changes",
-      tasks,
-    );
+    const results = await handleVerdictTaskTransition(ctx, review, "request_changes", tasks);
 
     expect(results).toHaveLength(1);
     expect(results[0].transitioned).toBe(false);
@@ -427,23 +427,20 @@ describe("Review-Task Integration", () => {
       status: "pending_review",
     });
 
-    const review = createReviewRecord(makeReviewInput({
-      _ulid: reviewUlid,
-      subject: {
-        type: "task",
-        ref: "@approved-task",
-        shadow_commit: "abc123",
-        content_hash: "hash123",
-      },
-    }));
+    const review = createReviewRecord(
+      makeReviewInput({
+        _ulid: reviewUlid,
+        subject: {
+          type: "task",
+          ref: "@approved-task",
+          shadow_commit: "abc123",
+          content_hash: "hash123",
+        },
+      }),
+    );
 
     const tasks = await loadAllTasks(ctx);
-    const results = await handleVerdictTaskTransition(
-      ctx,
-      review,
-      "approve",
-      tasks,
-    );
+    const results = await handleVerdictTaskTransition(ctx, review, "approve", tasks);
 
     // approve should not trigger any transitions
     expect(results).toHaveLength(0);
@@ -465,23 +462,20 @@ describe("Review-Task Integration", () => {
     });
 
     // Code review with related task
-    const review = createReviewRecord(makeReviewInput({
-      _ulid: reviewUlid,
-      subject: {
-        type: "code",
-        base_commit: "abc123",
-        head_commit: "def456",
-      },
-      related_refs: ["@related-code-task"],
-    }));
+    const review = createReviewRecord(
+      makeReviewInput({
+        _ulid: reviewUlid,
+        subject: {
+          type: "code",
+          base_commit: "abc123",
+          head_commit: "def456",
+        },
+        related_refs: ["@related-code-task"],
+      }),
+    );
 
     const tasks = await loadAllTasks(ctx);
-    const results = await handleVerdictTaskTransition(
-      ctx,
-      review,
-      "request_changes",
-      tasks,
-    );
+    const results = await handleVerdictTaskTransition(ctx, review, "request_changes", tasks);
 
     expect(results).toHaveLength(1);
     expect(results[0].transitioned).toBe(true);
@@ -498,23 +492,25 @@ describe("Review-Task Integration", () => {
   it("should warn when pending_review task has no review_ref", () => {
     const taskUlid = testUlid("WRN");
 
-    const tasks: LoadedTask[] = [{
-      _ulid: taskUlid,
-      title: "No Review Ref Task",
-      slugs: ["no-review-ref"],
-      status: "pending_review",
-      type: "task",
-      blocked_by: [],
-      depends_on: [],
-      context: [],
-      priority: 3,
-      tags: [],
-      vcs_refs: [],
-      notes: [],
-      todos: [],
-      created_at: new Date().toISOString(),
-      _sourceFile: "/fake/path",
-    }];
+    const tasks: LoadedTask[] = [
+      {
+        _ulid: taskUlid,
+        title: "No Review Ref Task",
+        slugs: ["no-review-ref"],
+        status: "pending_review",
+        type: "task",
+        blocked_by: [],
+        depends_on: [],
+        context: [],
+        priority: 3,
+        tags: [],
+        vcs_refs: [],
+        notes: [],
+        todos: [],
+        created_at: new Date().toISOString(),
+        _sourceFile: "/fake/path",
+      },
+    ];
 
     const warnings = checkReviewLinkageConsistency(tasks, []);
     expect(warnings).toHaveLength(1);
@@ -526,43 +522,47 @@ describe("Review-Task Integration", () => {
   it("should warn when review_ref points to a closed review", async () => {
     const [taskUlid, reviewUlid] = testUlids("WCL", 2);
 
-    const tasks: LoadedTask[] = [{
-      _ulid: taskUlid,
-      title: "Closed Review Task",
-      slugs: ["closed-review-task"],
-      status: "pending_review",
-      review_ref: "@closed-review",
-      type: "task",
-      blocked_by: [],
-      depends_on: [],
-      context: [],
-      priority: 3,
-      tags: [],
-      vcs_refs: [],
-      notes: [],
-      todos: [],
-      created_at: new Date().toISOString(),
-      _sourceFile: "/fake/path",
-    }];
+    const tasks: LoadedTask[] = [
+      {
+        _ulid: taskUlid,
+        title: "Closed Review Task",
+        slugs: ["closed-review-task"],
+        status: "pending_review",
+        review_ref: "@closed-review",
+        type: "task",
+        blocked_by: [],
+        depends_on: [],
+        context: [],
+        priority: 3,
+        tags: [],
+        vcs_refs: [],
+        notes: [],
+        todos: [],
+        created_at: new Date().toISOString(),
+        _sourceFile: "/fake/path",
+      },
+    ];
 
-    const reviews = [{
-      _ulid: reviewUlid,
-      slugs: ["closed-review"],
-      title: "Closed Review",
-      lifecycle_state: "closed" as const,
-      subject: { type: "code" as const, base_commit: "abc", head_commit: "def" },
-      author: "test",
-      related_refs: [] as string[],
-      threads: [],
-      checks: [],
-      verdicts: [],
-      events: [],
-      notes: [],
-      external_links: [],
-      created_at: new Date().toISOString(),
-      updated_at: null,
-      _sourceFile: "/fake/path",
-    }];
+    const reviews = [
+      {
+        _ulid: reviewUlid,
+        slugs: ["closed-review"],
+        title: "Closed Review",
+        lifecycle_state: "closed" as const,
+        subject: { type: "code" as const, base_commit: "abc", head_commit: "def" },
+        author: "test",
+        related_refs: [] as string[],
+        threads: [],
+        checks: [],
+        verdicts: [],
+        events: [],
+        notes: [],
+        external_links: [],
+        created_at: new Date().toISOString(),
+        updated_at: null,
+        _sourceFile: "/fake/path",
+      },
+    ];
 
     const warnings = checkReviewLinkageConsistency(tasks, reviews);
     expect(warnings).toHaveLength(1);
@@ -573,24 +573,26 @@ describe("Review-Task Integration", () => {
   it("should warn when review_ref points to nonexistent review", () => {
     const taskUlid = testUlid("WNE");
 
-    const tasks: LoadedTask[] = [{
-      _ulid: taskUlid,
-      title: "Missing Review Task",
-      slugs: ["missing-review-task"],
-      status: "pending_review",
-      review_ref: "@nonexistent-review",
-      type: "task",
-      blocked_by: [],
-      depends_on: [],
-      context: [],
-      priority: 3,
-      tags: [],
-      vcs_refs: [],
-      notes: [],
-      todos: [],
-      created_at: new Date().toISOString(),
-      _sourceFile: "/fake/path",
-    }];
+    const tasks: LoadedTask[] = [
+      {
+        _ulid: taskUlid,
+        title: "Missing Review Task",
+        slugs: ["missing-review-task"],
+        status: "pending_review",
+        review_ref: "@nonexistent-review",
+        type: "task",
+        blocked_by: [],
+        depends_on: [],
+        context: [],
+        priority: 3,
+        tags: [],
+        vcs_refs: [],
+        notes: [],
+        todos: [],
+        created_at: new Date().toISOString(),
+        _sourceFile: "/fake/path",
+      },
+    ];
 
     const warnings = checkReviewLinkageConsistency(tasks, []);
     expect(warnings).toHaveLength(1);
@@ -601,43 +603,47 @@ describe("Review-Task Integration", () => {
   it("should not warn when pending_review task has valid open review", () => {
     const [taskUlid, reviewUlid] = testUlids("WOK", 2);
 
-    const tasks: LoadedTask[] = [{
-      _ulid: taskUlid,
-      title: "Good Review Task",
-      slugs: ["good-review-task"],
-      status: "pending_review",
-      review_ref: "@good-review",
-      type: "task",
-      blocked_by: [],
-      depends_on: [],
-      context: [],
-      priority: 3,
-      tags: [],
-      vcs_refs: [],
-      notes: [],
-      todos: [],
-      created_at: new Date().toISOString(),
-      _sourceFile: "/fake/path",
-    }];
+    const tasks: LoadedTask[] = [
+      {
+        _ulid: taskUlid,
+        title: "Good Review Task",
+        slugs: ["good-review-task"],
+        status: "pending_review",
+        review_ref: "@good-review",
+        type: "task",
+        blocked_by: [],
+        depends_on: [],
+        context: [],
+        priority: 3,
+        tags: [],
+        vcs_refs: [],
+        notes: [],
+        todos: [],
+        created_at: new Date().toISOString(),
+        _sourceFile: "/fake/path",
+      },
+    ];
 
-    const reviews = [{
-      _ulid: reviewUlid,
-      slugs: ["good-review"],
-      title: "Good Review",
-      lifecycle_state: "open" as const,
-      subject: { type: "code" as const, base_commit: "abc", head_commit: "def" },
-      author: "test",
-      related_refs: [] as string[],
-      threads: [],
-      checks: [],
-      verdicts: [],
-      events: [],
-      notes: [],
-      external_links: [],
-      created_at: new Date().toISOString(),
-      updated_at: null,
-      _sourceFile: "/fake/path",
-    }];
+    const reviews = [
+      {
+        _ulid: reviewUlid,
+        slugs: ["good-review"],
+        title: "Good Review",
+        lifecycle_state: "open" as const,
+        subject: { type: "code" as const, base_commit: "abc", head_commit: "def" },
+        author: "test",
+        related_refs: [] as string[],
+        threads: [],
+        checks: [],
+        verdicts: [],
+        events: [],
+        notes: [],
+        external_links: [],
+        created_at: new Date().toISOString(),
+        updated_at: null,
+        _sourceFile: "/fake/path",
+      },
+    ];
 
     const warnings = checkReviewLinkageConsistency(tasks, reviews);
     expect(warnings).toHaveLength(0);
@@ -647,23 +653,25 @@ describe("Review-Task Integration", () => {
   it("should not warn for tasks not in pending_review", () => {
     const taskUlid = testUlid("WIP");
 
-    const tasks: LoadedTask[] = [{
-      _ulid: taskUlid,
-      title: "In Progress Task",
-      slugs: ["in-progress"],
-      status: "in_progress",
-      type: "task",
-      blocked_by: [],
-      depends_on: [],
-      context: [],
-      priority: 3,
-      tags: [],
-      vcs_refs: [],
-      notes: [],
-      todos: [],
-      created_at: new Date().toISOString(),
-      _sourceFile: "/fake/path",
-    }];
+    const tasks: LoadedTask[] = [
+      {
+        _ulid: taskUlid,
+        title: "In Progress Task",
+        slugs: ["in-progress"],
+        status: "in_progress",
+        type: "task",
+        blocked_by: [],
+        depends_on: [],
+        context: [],
+        priority: 3,
+        tags: [],
+        vcs_refs: [],
+        notes: [],
+        todos: [],
+        created_at: new Date().toISOString(),
+        _sourceFile: "/fake/path",
+      },
+    ];
 
     const warnings = checkReviewLinkageConsistency(tasks, []);
     expect(warnings).toHaveLength(0);
@@ -687,25 +695,29 @@ describe("Review-Task Integration", () => {
     });
 
     // Create the review
-    const review = createReviewRecord(makeReviewInput({
-      _ulid: reviewUlid,
-      slugs: ["fix-review"],
-      lifecycle_state: "open",
-      subject: {
-        type: "task",
-        ref: "@fix-cycle-task",
-        shadow_commit: "abc123",
-        content_hash: "hash123",
-      },
-      // Some existing verdicts and threads to prove history preservation
-      verdicts: [{
-        reviewer: "reviewer-1",
-        role: "reviewer",
-        decision: "comment",
-        applies_to_version: { type: "entity_version", content_hash: "hash123" },
-        created_at: new Date().toISOString(),
-      }],
-    }));
+    const review = createReviewRecord(
+      makeReviewInput({
+        _ulid: reviewUlid,
+        slugs: ["fix-review"],
+        lifecycle_state: "open",
+        subject: {
+          type: "task",
+          ref: "@fix-cycle-task",
+          shadow_commit: "abc123",
+          content_hash: "hash123",
+        },
+        // Some existing verdicts and threads to prove history preservation
+        verdicts: [
+          {
+            reviewer: "reviewer-1",
+            role: "reviewer",
+            decision: "comment",
+            applies_to_version: { type: "entity_version", content_hash: "hash123" },
+            created_at: new Date().toISOString(),
+          },
+        ],
+      }),
+    );
     await saveReviewRecord(ctx, { ...review });
 
     // Simulate changes_requested verdict transition
@@ -737,23 +749,27 @@ describe("Review-Task Integration", () => {
       slugs: ["multi-cycle-task"],
       status: "pending_review",
       review_ref: "@multi-review",
-      notes: [{
-        _ulid: testUlid("NT1"),
-        created_at: new Date().toISOString(),
-        content: "[FIX_CYCLE: 1] First review findings",
-      }],
+      notes: [
+        {
+          _ulid: testUlid("NT1"),
+          created_at: new Date().toISOString(),
+          content: "[FIX_CYCLE: 1] First review findings",
+        },
+      ],
     });
 
-    const review = createReviewRecord(makeReviewInput({
-      _ulid: reviewUlid,
-      slugs: ["multi-review"],
-      subject: {
-        type: "task",
-        ref: "@multi-cycle-task",
-        shadow_commit: "abc123",
-        content_hash: "hash123",
-      },
-    }));
+    const review = createReviewRecord(
+      makeReviewInput({
+        _ulid: reviewUlid,
+        slugs: ["multi-review"],
+        subject: {
+          type: "task",
+          ref: "@multi-cycle-task",
+          shadow_commit: "abc123",
+          content_hash: "hash123",
+        },
+      }),
+    );
     await saveReviewRecord(ctx, { ...review });
 
     const tasks = await loadAllTasks(ctx);
@@ -778,8 +794,8 @@ describe("Review-Task Integration", () => {
       _ulid: testUlid("EXT"),
       title: "Task with External Link",
       status: "pending_review" as const,
-      review_ref: "@my-review-record",         // Durable review linkage
-      review_url: "https://github.com/org/repo/pull/42",  // Compatibility
+      review_ref: "@my-review-record", // Durable review linkage
+      review_url: "https://github.com/org/repo/pull/42", // Compatibility
     };
 
     const result = TaskSchema.safeParse(taskData);
@@ -795,16 +811,20 @@ describe("Review-Task Integration", () => {
   it("should allow review records with external links alongside local state", async () => {
     const reviewUlid = testUlid("EXR");
 
-    const review = createReviewRecord(makeReviewInput({
-      _ulid: reviewUlid,
-      slugs: ["external-linked-review"],
-      external_links: [{
-        url: "https://github.com/org/repo/pull/42",
-        provider: "github",
-        external_id: "42",
-        label: "PR #42",
-      }],
-    }));
+    const review = createReviewRecord(
+      makeReviewInput({
+        _ulid: reviewUlid,
+        slugs: ["external-linked-review"],
+        external_links: [
+          {
+            url: "https://github.com/org/repo/pull/42",
+            provider: "github",
+            external_id: "42",
+            label: "PR #42",
+          },
+        ],
+      }),
+    );
     await saveReviewRecord(ctx, { ...review });
 
     const reviews = await loadReviewRecords(ctx);

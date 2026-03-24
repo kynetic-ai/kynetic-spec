@@ -142,10 +142,7 @@ describe("Integration: review CLI commands", () => {
     });
 
     it("should show human-readable success output", () => {
-      const output = kspec(
-        "review add --title 'Human Review' --subject-ref @task-slug",
-        tempDir,
-      );
+      const output = kspec("review add --title 'Human Review' --subject-ref @task-slug", tempDir);
       expect(output).toContain("Created review:");
     });
 
@@ -164,11 +161,9 @@ describe("Integration: review CLI commands", () => {
     it("should store examined_commit from KSPEC_DISPATCH_CANONICAL_HEAD env var", () => {
       const result = kspecJson<{
         examined_commit: string | null;
-      }>(
-        "review add --title 'Env Commit Review' --subject-ref @task-slug",
-        tempDir,
-        { env: { KSPEC_DISPATCH_CANONICAL_HEAD: "envcommit789" } },
-      );
+      }>("review add --title 'Env Commit Review' --subject-ref @task-slug", tempDir, {
+        env: { KSPEC_DISPATCH_CANONICAL_HEAD: "envcommit789" },
+      });
       expect(result.examined_commit).toBe("envcommit789");
     });
 
@@ -176,31 +171,22 @@ describe("Integration: review CLI commands", () => {
     it("should leave examined_commit null when not provided", () => {
       const result = kspecJson<{
         examined_commit: string | null;
-      }>(
-        "review add --title 'No Commit Review' --subject-ref @task-slug",
-        tempDir,
-      );
+      }>("review add --title 'No Commit Review' --subject-ref @task-slug", tempDir);
       expect(result.examined_commit).toBeNull();
     });
 
     // AC: @trait-error-guidance ac-1, ac-2, ac-5
     it("should error with guidance when subject is missing", () => {
-      const result = kspecRun(
-        "review add --title 'No Subject'",
-        tempDir,
-        { expectFail: true },
-      );
+      const result = kspecRun("review add --title 'No Subject'", tempDir, { expectFail: true });
       expect(result.exitCode).not.toBe(0);
       expect(result.stderr).toContain("Subject is required");
     });
 
     // AC: @trait-error-guidance ac-5
     it("should error when code subject is missing --head", () => {
-      const result = kspecRun(
-        "review add --title 'Bad Code' --base abc123",
-        tempDir,
-        { expectFail: true },
-      );
+      const result = kspecRun("review add --title 'Bad Code' --base abc123", tempDir, {
+        expectFail: true,
+      });
       expect(result.exitCode).not.toBe(0);
       expect(result.stderr).toContain("--base and --head");
     });
@@ -247,7 +233,12 @@ describe("Integration: review CLI commands", () => {
         disposition: string;
         gate_state: string;
         subject: { type: string };
-        thread_state: { total: number; resolved: number; unresolved: number; blockers_unresolved: number };
+        thread_state: {
+          total: number;
+          resolved: number;
+          unresolved: number;
+          blockers_unresolved: number;
+        };
         threads: unknown[];
         checks: unknown[];
         verdicts: unknown[];
@@ -420,10 +411,9 @@ describe("Integration: review CLI commands", () => {
       expect(result.review_ulid).toBeDefined();
 
       // Verify thread was stored
-      const review = kspecJson<{ threads: Array<{ kind: string; entries: Array<{ body: string }> }> }>(
-        `review get @${reviewSlug}`,
-        tempDir,
-      );
+      const review = kspecJson<{
+        threads: Array<{ kind: string; entries: Array<{ body: string }> }>;
+      }>(`review get @${reviewSlug}`, tempDir);
       expect(review.threads).toHaveLength(1);
       expect(review.threads[0].kind).toBe("blocker");
       expect(review.threads[0].entries[0].body).toBe("This needs fixing");
@@ -437,7 +427,15 @@ describe("Integration: review CLI commands", () => {
       );
 
       const review = kspecJson<{
-        threads: Array<{ anchor: { type: string; path: string; side: string; line_start: number; line_end: number } }>;
+        threads: Array<{
+          anchor: {
+            type: string;
+            path: string;
+            side: string;
+            line_start: number;
+            line_end: number;
+          };
+        }>;
       }>(`review get @${reviewSlug}`, tempDir);
 
       expect(review.threads[0].anchor.type).toBe("code");
@@ -485,10 +483,7 @@ describe("Integration: review CLI commands", () => {
 
     // AC: @review-cli-mutation-commands ac-1b
     it("should reply to an existing thread", () => {
-      kspec(
-        `review reply @${reviewSlug} --thread ${threadUlid} --body 'Fixed it'`,
-        tempDir,
-      );
+      kspec(`review reply @${reviewSlug} --thread ${threadUlid} --body 'Fixed it'`, tempDir);
 
       const review = kspecJson<{
         threads: Array<{ entries: Array<{ body: string }> }>;
@@ -548,10 +543,7 @@ describe("Integration: review CLI commands", () => {
     });
 
     it("should add an optional check", () => {
-      kspec(
-        `review check @${reviewSlug} --name 'lint' --status fail --no-required`,
-        tempDir,
-      );
+      kspec(`review check @${reviewSlug} --name 'lint' --status fail --no-required`, tempDir);
 
       const review = kspecJson<{
         checks: Array<{ name: string; required: boolean }>;
@@ -564,15 +556,11 @@ describe("Integration: review CLI commands", () => {
     });
 
     it("should compute failing gate state", () => {
-      kspec(
-        `review check @${reviewSlug} --name 'tests' --status fail`,
-        tempDir,
-      );
+      kspec(`review check @${reviewSlug} --name 'tests' --status fail`, tempDir);
 
       const review = kspecJson<{ gate_state: string }>(`review get @${reviewSlug}`, tempDir);
       expect(review.gate_state).toBe("failing");
     });
-
   });
 
   describe("review verdict", () => {
@@ -585,10 +573,7 @@ describe("Integration: review CLI commands", () => {
 
     // AC: @review-cli-mutation-commands ac-3
     it("should set an approve verdict with auto-derived version", () => {
-      kspec(
-        `review verdict @${reviewSlug} --decision approve --reviewer alice`,
-        tempDir,
-      );
+      kspec(`review verdict @${reviewSlug} --decision approve --reviewer alice`, tempDir);
 
       const review = kspecJson<{
         verdicts: Array<{
@@ -612,10 +597,7 @@ describe("Integration: review CLI commands", () => {
     });
 
     it("should compute changes_requested disposition", () => {
-      kspec(
-        `review verdict @${reviewSlug} --decision request_changes`,
-        tempDir,
-      );
+      kspec(`review verdict @${reviewSlug} --decision request_changes`, tempDir);
 
       const review = kspecJson<{ disposition: string }>(`review get @${reviewSlug}`, tempDir);
       expect(review.disposition).toBe("changes_requested");
@@ -623,10 +605,7 @@ describe("Integration: review CLI commands", () => {
 
     // AC: @review-record-per-cycle-lifecycle ac-1
     it("should auto-close review on approve verdict", () => {
-      kspec(
-        `review verdict @${reviewSlug} --decision approve --reviewer alice`,
-        tempDir,
-      );
+      kspec(`review verdict @${reviewSlug} --decision approve --reviewer alice`, tempDir);
 
       const review = kspecJson<{
         lifecycle_state: string;
@@ -643,10 +622,7 @@ describe("Integration: review CLI commands", () => {
 
     // AC: @review-record-per-cycle-lifecycle ac-1
     it("should auto-close review on request_changes verdict", () => {
-      kspec(
-        `review verdict @${reviewSlug} --decision request_changes --reviewer bob`,
-        tempDir,
-      );
+      kspec(`review verdict @${reviewSlug} --decision request_changes --reviewer bob`, tempDir);
 
       const review = kspecJson<{
         lifecycle_state: string;
@@ -660,10 +636,7 @@ describe("Integration: review CLI commands", () => {
       // Open the review first (review add creates in draft state)
       kspec(`review open @${reviewSlug}`, tempDir);
 
-      kspec(
-        `review verdict @${reviewSlug} --decision comment --reviewer carol`,
-        tempDir,
-      );
+      kspec(`review verdict @${reviewSlug} --decision comment --reviewer carol`, tempDir);
 
       const review = kspecJson<{
         lifecycle_state: string;
@@ -674,11 +647,9 @@ describe("Integration: review CLI commands", () => {
 
     // AC: @trait-error-guidance ac-5
     it("should error on invalid decision", () => {
-      const result = kspecRun(
-        `review verdict @${reviewSlug} --decision invalid`,
-        tempDir,
-        { expectFail: true },
-      );
+      const result = kspecRun(`review verdict @${reviewSlug} --decision invalid`, tempDir, {
+        expectFail: true,
+      });
       expect(result.exitCode).not.toBe(0);
       expect(result.stderr).toContain("Invalid verdict decision");
       expect(result.stderr).toContain("approve");
@@ -736,21 +707,17 @@ describe("Integration: review CLI commands", () => {
     // AC: @trait-error-guidance ac-4
     it("should error when resolving an already resolved thread", () => {
       kspec(`review resolve @${reviewSlug} --thread ${threadUlid}`, tempDir);
-      const result = kspecRun(
-        `review resolve @${reviewSlug} --thread ${threadUlid}`,
-        tempDir,
-        { expectFail: true },
-      );
+      const result = kspecRun(`review resolve @${reviewSlug} --thread ${threadUlid}`, tempDir, {
+        expectFail: true,
+      });
       expect(result.stderr).toContain("already resolved");
     });
 
     // AC: @trait-error-guidance ac-4
     it("should error when reopening an unresolved thread", () => {
-      const result = kspecRun(
-        `review reopen @${reviewSlug} --thread ${threadUlid}`,
-        tempDir,
-        { expectFail: true },
-      );
+      const result = kspecRun(`review reopen @${reviewSlug} --thread ${threadUlid}`, tempDir, {
+        expectFail: true,
+      });
       expect(result.stderr).toContain("not resolved");
     });
   });
@@ -760,7 +727,10 @@ describe("Integration: review CLI commands", () => {
 
     beforeEach(() => {
       reviewSlug = "lifecycle-test";
-      kspec(`review add --title 'Lifecycle Test' --base a1 --head b1 --slug ${reviewSlug}`, tempDir);
+      kspec(
+        `review add --title 'Lifecycle Test' --base a1 --head b1 --slug ${reviewSlug}`,
+        tempDir,
+      );
     });
 
     // AC: @review-cli-mutation-commands ac-5
@@ -773,7 +743,9 @@ describe("Integration: review CLI commands", () => {
       }>(`review get @${reviewSlug}`, tempDir);
 
       expect(review.lifecycle_state).toBe("open");
-      const event = review.events.find((e) => e.event_type === "lifecycle_change" && e.payload?.to === "open");
+      const event = review.events.find(
+        (e) => e.event_type === "lifecycle_change" && e.payload?.to === "open",
+      );
       expect(event).toBeDefined();
       expect(event?.payload.from).toBe("draft");
     });
@@ -868,11 +840,7 @@ describe("Integration: review CLI commands", () => {
 
     it("should error on non-code subject", () => {
       kspec("review add --title 'Task Review' --subject-ref @task-slug --slug task-rv", tempDir);
-      const result = kspecRun(
-        "review refresh @task-rv --head c1",
-        tempDir,
-        { expectFail: true },
-      );
+      const result = kspecRun("review refresh @task-rv --head c1", tempDir, { expectFail: true });
       expect(result.stderr).toContain("only supported for code subjects");
     });
   });
@@ -924,10 +892,7 @@ describe("Integration: review CLI commands", () => {
     });
 
     it("should show human-readable output", () => {
-      kspec(
-        "review add --title 'Linked' --base a1 --head b1 --related-ref @my-task",
-        tempDir,
-      );
+      kspec("review add --title 'Linked' --base a1 --head b1 --related-ref @my-task", tempDir);
 
       const output = kspec("review for-task @my-task", tempDir);
       expect(output).toContain("Reviews for @my-task");
@@ -1001,6 +966,7 @@ describe("Integration: review CLI commands", () => {
       const parsed = JSON.parse(result.stdout);
       expect(parsed).toBeDefined();
       // No ANSI escape codes in JSON output
+      // oxlint-disable-next-line eslint(no-control-regex) -- intentionally matching ANSI escape
       expect(result.stdout).not.toMatch(/\x1b\[/);
     });
 
@@ -1023,10 +989,7 @@ describe("Integration: review CLI commands", () => {
   describe("semantic exit codes trait compliance", () => {
     // AC: @trait-semantic-exit-codes ac-1
     it("should exit 0 on success", () => {
-      const result = kspecRun(
-        "review add --title 'Exit Test' --base a1 --head b1",
-        tempDir,
-      );
+      const result = kspecRun("review add --title 'Exit Test' --base a1 --head b1", tempDir);
       expect(result.exitCode).toBe(0);
     });
 
@@ -1038,11 +1001,7 @@ describe("Integration: review CLI commands", () => {
 
     // AC: @trait-semantic-exit-codes ac-2
     it("should exit non-zero on validation error", () => {
-      const result = kspecRun(
-        "review add --title 'No Subject'",
-        tempDir,
-        { expectFail: true },
-      );
+      const result = kspecRun("review add --title 'No Subject'", tempDir, { expectFail: true });
       expect(result.exitCode).not.toBe(0);
     });
   });

@@ -1,33 +1,15 @@
 import { z } from "zod";
-import {
-  DateTimeSchema,
-  RefSchema,
-  SlugSchema,
-  UlidSchema,
-} from "./common.js";
+import { DateTimeSchema, RefSchema, SlugSchema, UlidSchema } from "./common.js";
 import { NoteSchema } from "./task.js";
 
 // --- Lifecycle & Disposition ---
 
 // AC: @review-record-core-model ac-2
-export const ReviewLifecycleStateSchema = z.enum([
-  "draft",
-  "open",
-  "closed",
-  "archived",
-]);
+export const ReviewLifecycleStateSchema = z.enum(["draft", "open", "closed", "archived"]);
 
-export const ReviewDispositionSchema = z.enum([
-  "pending",
-  "approved",
-  "changes_requested",
-]);
+export const ReviewDispositionSchema = z.enum(["pending", "approved", "changes_requested"]);
 
-export const ReviewGateStateSchema = z.enum([
-  "passing",
-  "failing",
-  "pending",
-]);
+export const ReviewGateStateSchema = z.enum(["passing", "failing", "pending"]);
 
 // --- Subject Bindings ---
 
@@ -145,12 +127,7 @@ export const ReviewThreadSchema = z.object({
 
 // --- Checks ---
 
-export const ReviewCheckStatusSchema = z.enum([
-  "pass",
-  "fail",
-  "running",
-  "skipped",
-]);
+export const ReviewCheckStatusSchema = z.enum(["pass", "fail", "running", "skipped"]);
 
 export const ReviewCheckSchema = z.object({
   name: z.string(),
@@ -165,11 +142,7 @@ export const ReviewCheckSchema = z.object({
 
 // --- Verdicts ---
 
-export const ReviewVerdictDecisionSchema = z.enum([
-  "approve",
-  "request_changes",
-  "comment",
-]);
+export const ReviewVerdictDecisionSchema = z.enum(["approve", "request_changes", "comment"]);
 
 export const ReviewVerdictSchema = z.object({
   reviewer: z.string(),
@@ -304,15 +277,11 @@ export type ReviewTaskSubject = z.infer<typeof ReviewTaskSubjectSchema>;
 export type ReviewSpecSubject = z.infer<typeof ReviewSpecSubjectSchema>;
 export type ReviewExternalSubject = z.infer<typeof ReviewExternalSubjectSchema>;
 export type ReviewSubject = z.infer<typeof ReviewSubjectSchema>;
-export type ReviewCodeCompareVersion = z.infer<
-  typeof ReviewCodeCompareVersionSchema
->;
+export type ReviewCodeCompareVersion = z.infer<typeof ReviewCodeCompareVersionSchema>;
 export type ReviewEntityVersion = z.infer<typeof ReviewEntityVersionSchema>;
 export type ReviewSubjectVersion = z.infer<typeof ReviewSubjectVersionSchema>;
 export type ReviewCodeAnchor = z.infer<typeof ReviewCodeAnchorSchema>;
-export type ReviewStructuredAnchor = z.infer<
-  typeof ReviewStructuredAnchorSchema
->;
+export type ReviewStructuredAnchor = z.infer<typeof ReviewStructuredAnchorSchema>;
 export type ReviewAnchor = z.infer<typeof ReviewAnchorSchema>;
 export type ReviewThreadKind = z.infer<typeof ReviewThreadKindSchema>;
 export type ReviewThreadEntry = z.infer<typeof ReviewThreadEntrySchema>;

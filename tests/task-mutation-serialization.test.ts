@@ -1,28 +1,26 @@
 import { spawn } from "node:child_process";
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from "vitest";
 import {
   createNote,
   initContext,
   loadAllTasks,
   mutateTaskAtomically,
-} from '../src/parser/index.js';
-import {
-  cleanupTempDir,
-  CLI_PATH,
-  kspec,
-  setupTempFixtures,
-} from './helpers/cli.js';
+} from "../src/parser/index.js";
+import { cleanupTempDir, CLI_PATH, kspec, setupTempFixtures } from "./helpers/cli.js";
 
-function runKspecAsync(args: string, cwd: string): Promise<{ exitCode: number; stdout: string; stderr: string }> {
+function runKspecAsync(
+  args: string,
+  cwd: string,
+): Promise<{ exitCode: number; stdout: string; stderr: string }> {
   return new Promise((resolve, reject) => {
     // Strip dispatch/session env vars that pollute tests when running
     // inside a dispatch loop — mirrors the sanitization in tests/helpers/cli.ts.
     const cleanEnv = { ...process.env };
     for (const key of [
-      'KSPEC_RALPH_SESSION',
-      'KSPEC_SESSION_ID',
-      'KSPEC_SHADOW_MUTATION_LOCK_FILE',
-      'KSPEC_SHADOW_MUTATION_LOCK_TIMEOUT_MS',
+      "KSPEC_RALPH_SESSION",
+      "KSPEC_SESSION_ID",
+      "KSPEC_SHADOW_MUTATION_LOCK_FILE",
+      "KSPEC_SHADOW_MUTATION_LOCK_TIMEOUT_MS",
     ]) {
       delete cleanEnv[key];
     }
@@ -52,7 +50,7 @@ function runKspecAsync(args: string, cwd: string): Promise<{ exitCode: number; s
   });
 }
 
-describe('Task Mutation Serialization', () => {
+describe("Task Mutation Serialization", () => {
   let tempDir: string;
 
   afterEach(async () => {
@@ -61,16 +59,16 @@ describe('Task Mutation Serialization', () => {
     }
   });
 
-  it('preserves status transition when concurrent note mutation runs on the same task', async () => {
+  it("preserves status transition when concurrent note mutation runs on the same task", async () => {
     // AC: @agent-invocation-lifecycle ac-5 - runtime failure notes must not clobber concurrent task state transitions.
     tempDir = await setupTempFixtures();
     const ctx = await initContext(tempDir);
     const tasks = await loadAllTasks(ctx);
-    const target = tasks.find((task) => task.slugs.includes('test-task-pending'));
+    const target = tasks.find((task) => task.slugs.includes("test-task-pending"));
 
     expect(target).toBeDefined();
 
-    const failNote = createNote('[AGENT-FAIL] simulated failure', '@test');
+    const failNote = createNote("[AGENT-FAIL] simulated failure", "@test");
 
     await Promise.all([
       mutateTaskAtomically(ctx, target!, async (latestTask) => {
@@ -78,8 +76,8 @@ describe('Task Mutation Serialization', () => {
         await new Promise((resolve) => setTimeout(resolve, 25));
         return {
           ...latestTask,
-          status: 'in_progress',
-          started_at: '2026-03-03T00:00:00.000Z',
+          status: "in_progress",
+          started_at: "2026-03-03T00:00:00.000Z",
         };
       }),
       mutateTaskAtomically(ctx, target!, (latestTask) => ({
@@ -89,20 +87,20 @@ describe('Task Mutation Serialization', () => {
     ]);
 
     const refreshed = (await loadAllTasks(ctx)).find((task) => task._ulid === target!._ulid);
-    expect(refreshed?.status).toBe('in_progress');
+    expect(refreshed?.status).toBe("in_progress");
     expect(refreshed?.notes.some((note) => note.content === failNote.content)).toBe(true);
   });
 
-  it('keeps both notes when concurrent note appends target the same task', async () => {
+  it("keeps both notes when concurrent note appends target the same task", async () => {
     tempDir = await setupTempFixtures();
     const ctx = await initContext(tempDir);
     const tasks = await loadAllTasks(ctx);
-    const target = tasks.find((task) => task.slugs.includes('test-task-pending'));
+    const target = tasks.find((task) => task.slugs.includes("test-task-pending"));
 
     expect(target).toBeDefined();
 
-    const noteA = createNote('first concurrent note', '@test');
-    const noteB = createNote('second concurrent note', '@test');
+    const noteA = createNote("first concurrent note", "@test");
+    const noteB = createNote("second concurrent note", "@test");
 
     await Promise.all([
       mutateTaskAtomically(ctx, target!, async (latestTask) => {
@@ -198,7 +196,10 @@ describe('Task Mutation Serialization', () => {
 
     const note = createNote("concurrent note during complete --refs", "@test");
     const [completeResult] = await Promise.all([
-      runKspecAsync('task complete --refs @batch-complete-one @batch-complete-two --reason "Batch complete"', tempDir),
+      runKspecAsync(
+        'task complete --refs @batch-complete-one @batch-complete-two --reason "Batch complete"',
+        tempDir,
+      ),
       mutateTaskAtomically(ctx, target!, async (latestTask) => {
         await new Promise((resolve) => setTimeout(resolve, 15));
         return {

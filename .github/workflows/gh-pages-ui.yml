@@ -10,8 +10,8 @@ on:
   push:
     branches: [main]
     paths:
-      - 'packages/web-ui/**'
-      - '.github/workflows/gh-pages-ui.yml'
+      - "packages/web-ui/**"
+      - ".github/workflows/gh-pages-ui.yml"
   workflow_dispatch:
 
 concurrency:
@@ -35,8 +35,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
-          cache: 'npm'
+          node-version: "24"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -78,4 +78,4 @@ jobs:
           publish_dir: ./gh-pages-output
           publish_branch: gh-pages
           force_orphan: true
-          commit_message: 'Deploy web UI - ${{ github.sha }}'
+          commit_message: "Deploy web UI - ${{ github.sha }}"

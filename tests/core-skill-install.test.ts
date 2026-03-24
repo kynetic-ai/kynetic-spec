@@ -3,9 +3,9 @@
  * AC: @core-skill-install ac-1 through ac-5
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import * as fs from 'node:fs/promises';
-import * as path from 'node:path';
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
 import {
   kspec as kspecFull,
   kspecJson,
@@ -13,9 +13,9 @@ import {
   cleanupTempDir,
   createTempDir,
   initGitRepo,
-} from './helpers/cli';
+} from "./helpers/cli";
 
-describe('Core Skill Installation', () => {
+describe("Core Skill Installation", () => {
   let tempDir: string;
 
   beforeEach(async () => {
@@ -28,165 +28,171 @@ describe('Core Skill Installation', () => {
   });
 
   // AC: @core-skill-install ac-1
-  describe('ac-1: Meta entries created with origin core', () => {
+  describe("ac-1: Meta entries created with origin core", () => {
     it('should create skill meta entries with origin "core"', async () => {
-      const result = kspecFull('skill install-core', tempDir);
+      const result = kspecFull("skill install-core", tempDir);
       expect(result.exitCode).toBe(0);
 
       // Check skill was created
-      const skills = kspecJson<{ id: string; origin: string; platforms: string[] }[]>('skill list', tempDir);
-      const coreSkill = skills.find((s) => s.id === 'help');
+      const skills = kspecJson<{ id: string; origin: string; platforms: string[] }[]>(
+        "skill list",
+        tempDir,
+      );
+      const coreSkill = skills.find((s) => s.id === "help");
 
       expect(coreSkill).toBeDefined();
-      expect(coreSkill?.origin).toBe('core');
-      expect(coreSkill?.platforms).toContain('claude-code');
-      expect(coreSkill?.platforms).toContain('codex');
+      expect(coreSkill?.origin).toBe("core");
+      expect(coreSkill?.platforms).toContain("claude-code");
+      expect(coreSkill?.platforms).toContain("codex");
     });
 
     it('should include "core" tag on installed skills', async () => {
-      kspecFull('skill install-core', tempDir);
+      kspecFull("skill install-core", tempDir);
 
-      const skills = kspecJson<{ id: string; tags?: string[] }[]>('skill list', tempDir);
-      const coreSkill = skills.find((s) => s.id === 'help');
+      const skills = kspecJson<{ id: string; tags?: string[] }[]>("skill list", tempDir);
+      const coreSkill = skills.find((s) => s.id === "help");
 
-      expect(coreSkill?.tags).toContain('core');
+      expect(coreSkill?.tags).toContain("core");
     });
   });
 
   // AC: @core-skill-install ac-2
-  describe('ac-2: Content files copied to .kspec/skills/<id>/', () => {
-    it('should copy SKILL.md content from templates', async () => {
-      kspecFull('skill install-core', tempDir);
+  describe("ac-2: Content files copied to .kspec/skills/<id>/", () => {
+    it("should copy SKILL.md content from templates", async () => {
+      kspecFull("skill install-core", tempDir);
 
       // Note: In test fixtures (non-shadow mode), skills are at tempDir/skills/ not tempDir/.kspec/skills/
-      const skillMdPath = path.join(tempDir, 'skills', 'help', 'SKILL.md');
-      const content = await fs.readFile(skillMdPath, 'utf-8');
+      const skillMdPath = path.join(tempDir, "skills", "help", "SKILL.md");
+      const content = await fs.readFile(skillMdPath, "utf-8");
 
       // Check content was copied (matches the template content)
-      expect(content).toContain('# kspec Help');
-      expect(content).toContain('Get help with kspec commands');
+      expect(content).toContain("# kspec Help");
+      expect(content).toContain("Get help with kspec commands");
     });
 
-    it('should create skill directory if it does not exist', async () => {
-      kspecFull('skill install-core', tempDir);
+    it("should create skill directory if it does not exist", async () => {
+      kspecFull("skill install-core", tempDir);
 
-      const skillDir = path.join(tempDir, 'skills', 'help');
+      const skillDir = path.join(tempDir, "skills", "help");
       const stat = await fs.stat(skillDir);
       expect(stat.isDirectory()).toBe(true);
     });
 
     // AC: @core-skill-install ac-2
-    it('should copy supporting directories from templates', async () => {
-      kspecFull('skill install-core', tempDir);
+    it("should copy supporting directories from templates", async () => {
+      kspecFull("skill install-core", tempDir);
 
       // Triage skill has docs/ with inbox.md, observations.md, automation.md
-      const triageDocsDir = path.join(tempDir, 'skills', 'triage', 'docs');
+      const triageDocsDir = path.join(tempDir, "skills", "triage", "docs");
       const stat = await fs.stat(triageDocsDir);
       expect(stat.isDirectory()).toBe(true);
 
-      const inboxMd = await fs.readFile(path.join(triageDocsDir, 'inbox.md'), 'utf-8');
-      expect(inboxMd).toContain('Inbox Triage');
+      const inboxMd = await fs.readFile(path.join(triageDocsDir, "inbox.md"), "utf-8");
+      expect(inboxMd).toContain("Inbox Triage");
 
-      const observationsMd = await fs.readFile(path.join(triageDocsDir, 'observations.md'), 'utf-8');
-      expect(observationsMd).toContain('Observations Triage');
+      const observationsMd = await fs.readFile(
+        path.join(triageDocsDir, "observations.md"),
+        "utf-8",
+      );
+      expect(observationsMd).toContain("Observations Triage");
 
-      const automationMd = await fs.readFile(path.join(triageDocsDir, 'automation.md'), 'utf-8');
-      expect(automationMd).toContain('Automation Triage');
+      const automationMd = await fs.readFile(path.join(triageDocsDir, "automation.md"), "utf-8");
+      expect(automationMd).toContain("Automation Triage");
     });
   });
 
   // AC: @core-skill-install ac-3
-  describe('ac-3: Custom skills skipped with message', () => {
-    it('should skip existing custom/project origin skills', async () => {
+  describe("ac-3: Custom skills skipped with message", () => {
+    it("should skip existing custom/project origin skills", async () => {
       // First create a custom skill with the same ID
       kspecFull(
         'skill add --id help --name "My Custom Help" --description "Custom version" --origin project',
-        tempDir
+        tempDir,
       );
 
       // Try to install core skills
-      const result = kspecFull('skill install-core', tempDir);
-      expect(result.stdout).toContain('Skipped');
-      expect(result.stdout).toContain('help');
-      expect(result.stdout).toContain('use --force to overwrite');
+      const result = kspecFull("skill install-core", tempDir);
+      expect(result.stdout).toContain("Skipped");
+      expect(result.stdout).toContain("help");
+      expect(result.stdout).toContain("use --force to overwrite");
 
       // Verify the skill still has project origin
-      const skills = kspecJson<{ id: string; origin: string }[]>('skill list', tempDir);
-      const helpSkill = skills.find((s) => s.id === 'help');
-      expect(helpSkill?.origin).toBe('project');
+      const skills = kspecJson<{ id: string; origin: string }[]>("skill list", tempDir);
+      const helpSkill = skills.find((s) => s.id === "help");
+      expect(helpSkill?.origin).toBe("project");
     });
 
-    it('should update existing core origin skills', async () => {
+    it("should update existing core origin skills", async () => {
       // First install core skills
-      kspecFull('skill install-core', tempDir);
+      kspecFull("skill install-core", tempDir);
 
       // Install again - should update (not skip)
-      const result = kspecFull('skill install-core', tempDir);
+      const result = kspecFull("skill install-core", tempDir);
 
       // It should be "Updated" not "Skipped"
-      expect(result.stdout).toContain('Updated');
-      expect(result.stdout).toContain('help');
+      expect(result.stdout).toContain("Updated");
+      expect(result.stdout).toContain("help");
     });
   });
 
   // AC: @core-skill-install ac-4
-  describe('ac-4: --force overwrites custom forks', () => {
-    it('should overwrite custom skills when --force is used', async () => {
+  describe("ac-4: --force overwrites custom forks", () => {
+    it("should overwrite custom skills when --force is used", async () => {
       // First create a custom skill
       kspecFull(
         'skill add --id help --name "My Custom Help" --description "Custom version" --origin project',
-        tempDir
+        tempDir,
       );
 
       // Verify it's project origin
-      let skills = kspecJson<{ id: string; origin: string }[]>('skill list', tempDir);
-      expect(skills.find((s) => s.id === 'help')?.origin).toBe('project');
+      let skills = kspecJson<{ id: string; origin: string }[]>("skill list", tempDir);
+      expect(skills.find((s) => s.id === "help")?.origin).toBe("project");
 
       // Install with --force
-      const result = kspecFull('skill install-core --force', tempDir);
-      expect(result.stdout).toContain('Updated');
-      expect(result.stdout).toContain('help');
+      const result = kspecFull("skill install-core --force", tempDir);
+      expect(result.stdout).toContain("Updated");
+      expect(result.stdout).toContain("help");
 
       // Verify it's now core origin
-      skills = kspecJson<{ id: string; origin: string }[]>('skill list', tempDir);
-      expect(skills.find((s) => s.id === 'help')?.origin).toBe('core');
+      skills = kspecJson<{ id: string; origin: string }[]>("skill list", tempDir);
+      expect(skills.find((s) => s.id === "help")?.origin).toBe("core");
     });
 
-    it('should update SKILL.md content when --force is used', async () => {
+    it("should update SKILL.md content when --force is used", async () => {
       // Create custom skill with custom content
       kspecFull(
         'skill add --id help --name "My Custom Help" --description "Custom version" --origin project',
-        tempDir
+        tempDir,
       );
 
-      const skillMdPath = path.join(tempDir, 'skills', 'help', 'SKILL.md');
-      await fs.writeFile(skillMdPath, '# Custom Content\n\nThis is my custom content.\n', 'utf-8');
+      const skillMdPath = path.join(tempDir, "skills", "help", "SKILL.md");
+      await fs.writeFile(skillMdPath, "# Custom Content\n\nThis is my custom content.\n", "utf-8");
 
       // Install with --force
-      kspecFull('skill install-core --force', tempDir);
+      kspecFull("skill install-core --force", tempDir);
 
       // Verify content was overwritten with core content
-      const content = await fs.readFile(skillMdPath, 'utf-8');
-      expect(content).toContain('# kspec Help');
-      expect(content).not.toContain('Custom Content');
+      const content = await fs.readFile(skillMdPath, "utf-8");
+      expect(content).toContain("# kspec Help");
+      expect(content).not.toContain("Custom Content");
     });
   });
 
   // AC: @core-skill-install ac-5
-  describe('ac-5: Version matches kspec package version', () => {
-    it('should set skill version to kspec package version', async () => {
-      kspecFull('skill install-core', tempDir);
+  describe("ac-5: Version matches kspec package version", () => {
+    it("should set skill version to kspec package version", async () => {
+      kspecFull("skill install-core", tempDir);
 
-      const skills = kspecJson<{ id: string; version?: string }[]>('skill list', tempDir);
-      const coreSkill = skills.find((s) => s.id === 'help');
+      const skills = kspecJson<{ id: string; version?: string }[]>("skill list", tempDir);
+      const coreSkill = skills.find((s) => s.id === "help");
 
       expect(coreSkill?.version).toBeDefined();
       // Version should be a semver-like string (e.g., "0.1.2")
       expect(coreSkill?.version).toMatch(/^\d+\.\d+\.\d+/);
     });
 
-    it('should show version in install output', async () => {
-      const result = kspecFull('skill install-core', tempDir);
+    it("should show version in install output", async () => {
+      const result = kspecFull("skill install-core", tempDir);
 
       // Should show "(vX.Y.Z)" in output
       expect(result.stdout).toMatch(/\(v\d+\.\d+\.\d+\)/);
@@ -194,59 +200,59 @@ describe('Core Skill Installation', () => {
   });
 
   // Dry run support
-  describe('dry-run support', () => {
-    it('should not make changes with --dry-run', async () => {
-      const result = kspecFull('skill install-core --dry-run', tempDir);
+  describe("dry-run support", () => {
+    it("should not make changes with --dry-run", async () => {
+      const result = kspecFull("skill install-core --dry-run", tempDir);
 
-      expect(result.stdout).toContain('DRY RUN');
-      expect(result.stdout).toContain('No changes were made');
+      expect(result.stdout).toContain("DRY RUN");
+      expect(result.stdout).toContain("No changes were made");
 
       // Verify skill was NOT created
-      const skills = kspecJson<{ id: string }[]>('skill list', tempDir);
-      const coreSkill = skills.find((s) => s.id === 'help');
+      const skills = kspecJson<{ id: string }[]>("skill list", tempDir);
+      const coreSkill = skills.find((s) => s.id === "help");
       expect(coreSkill).toBeUndefined();
     });
 
-    it('should show what would be installed with --dry-run', async () => {
-      const result = kspecFull('skill install-core --dry-run', tempDir);
+    it("should show what would be installed with --dry-run", async () => {
+      const result = kspecFull("skill install-core --dry-run", tempDir);
 
       expect(result.stdout).toMatch(/Created: \d+ skill\(s\)/);
-      expect(result.stdout).toContain('help');
-      expect(result.stdout).toContain('triage');
+      expect(result.stdout).toContain("help");
+      expect(result.stdout).toContain("triage");
     });
   });
 
   // JSON output support
-  describe('JSON output', () => {
-    it('should return JSON with results array', async () => {
+  describe("JSON output", () => {
+    it("should return JSON with results array", async () => {
       const result = kspecJson<{ results: { id: string; action: string }[] }>(
-        'skill install-core',
-        tempDir
+        "skill install-core",
+        tempDir,
       );
 
       expect(result.results).toBeDefined();
       expect(Array.isArray(result.results)).toBe(true);
       expect(result.results.length).toBeGreaterThan(0);
 
-      const kspecHelp = result.results.find((r) => r.id === 'help');
+      const kspecHelp = result.results.find((r) => r.id === "help");
       expect(kspecHelp).toBeDefined();
-      expect(kspecHelp?.action).toBe('created');
+      expect(kspecHelp?.action).toBe("created");
     });
 
-    it('should include dry_run field in JSON output', async () => {
+    it("should include dry_run field in JSON output", async () => {
       const result = kspecJson<{ dry_run: boolean; results: unknown[] }>(
-        'skill install-core --dry-run',
-        tempDir
+        "skill install-core --dry-run",
+        tempDir,
       );
 
       expect(result.dry_run).toBe(true);
     });
   });
 
-  describe('codex render path', () => {
-    it('should render core skills to .agents/skills/kspec-*/ after install-core', async () => {
-      kspecFull('skill install-core', tempDir, {
-        env: { CLAUDECODE: '1', CODEX_THREAD_ID: '', HOME: tempDir },
+  describe("codex render path", () => {
+    it("should render core skills to .agents/skills/kspec-*/ after install-core", async () => {
+      kspecFull("skill install-core", tempDir, {
+        env: { CLAUDECODE: "1", CODEX_THREAD_ID: "", HOME: tempDir },
       });
 
       const renderResult = kspecJson<{
@@ -256,182 +262,180 @@ describe('Core Skill Installation', () => {
           action: string;
           skipCode?: string;
         }>;
-      }>('skill render', tempDir);
+      }>("skill render", tempDir);
 
       const codexHelp = renderResult.rendered.find(
-        (r) => r.id === 'help' && r.platform === 'codex'
+        (r) => r.id === "help" && r.platform === "codex",
       );
       expect(codexHelp).toBeDefined();
-      expect(codexHelp?.action).toBe('created');
+      expect(codexHelp?.action).toBe("created");
 
-      const codexPath = path.join(tempDir, '.agents', 'skills', 'kspec-help', 'SKILL.md');
-      const codexContent = await fs.readFile(codexPath, 'utf-8');
-      expect(codexContent).toContain('<!-- kspec-managed -->');
-      expect(codexContent).toContain('name: kspec-help');
+      const codexPath = path.join(tempDir, ".agents", "skills", "kspec-help", "SKILL.md");
+      const codexContent = await fs.readFile(codexPath, "utf-8");
+      expect(codexContent).toContain("<!-- kspec-managed -->");
+      expect(codexContent).toContain("name: kspec-help");
 
       const claudeHelp = renderResult.rendered.find(
-        (r) => r.id === 'help' && r.platform === 'claude-code'
+        (r) => r.id === "help" && r.platform === "claude-code",
       );
-      expect(claudeHelp?.action).toBe('skipped');
-      expect(claudeHelp?.skipCode).toBe('plugin-provided');
+      expect(claudeHelp?.action).toBe("skipped");
+      expect(claudeHelp?.skipCode).toBe("plugin-provided");
     });
 
     // AC: @new-project-bootstrapping ac-3
-    it('should auto-detect codex platform when CODEX_THREAD_ID is present', async () => {
+    it("should auto-detect codex platform when CODEX_THREAD_ID is present", async () => {
       const result = kspecJson<{
         render: { platform: string; source: string };
-      }>('skill install-core', tempDir, {
+      }>("skill install-core", tempDir, {
         env: {
-          CODEX_THREAD_ID: 'test-thread-123',
-          CLAUDECODE: '',
-          CLAUDE_CODE_ENTRYPOINT: '',
-          CLAUDE_PROJECT_DIR: '',
-          CLAUDE_CODE: '',
+          CODEX_THREAD_ID: "test-thread-123",
+          CLAUDECODE: "",
+          CLAUDE_CODE_ENTRYPOINT: "",
+          CLAUDE_PROJECT_DIR: "",
+          CLAUDE_CODE: "",
           HOME: tempDir,
         },
       });
 
-      expect(result.render.platform).toBe('codex');
-      expect(result.render.source).toBe('auto-detect');
+      expect(result.render.platform).toBe("codex");
+      expect(result.render.source).toBe("auto-detect");
 
-      const codexPath = path.join(tempDir, '.agents', 'skills', 'kspec-help', 'SKILL.md');
-      const codexContent = await fs.readFile(codexPath, 'utf-8');
-      expect(codexContent).toContain('<!-- kspec-managed -->');
-      expect(codexContent).toContain('name: kspec-help');
+      const codexPath = path.join(tempDir, ".agents", "skills", "kspec-help", "SKILL.md");
+      const codexContent = await fs.readFile(codexPath, "utf-8");
+      expect(codexContent).toContain("<!-- kspec-managed -->");
+      expect(codexContent).toContain("name: kspec-help");
 
-      const codexConfigPath = path.join(tempDir, '.codex', 'config.toml');
-      const codexConfig = await fs.readFile(codexConfigPath, 'utf-8');
-      expect(codexConfig).toContain('project_doc_fallback_filenames');
-      expect(codexConfig).toContain('kspec-agents.md');
+      const codexConfigPath = path.join(tempDir, ".codex", "config.toml");
+      const codexConfig = await fs.readFile(codexConfigPath, "utf-8");
+      expect(codexConfig).toContain("project_doc_fallback_filenames");
+      expect(codexConfig).toContain("kspec-agents.md");
     });
 
     // AC: @new-project-bootstrapping ac-3
-    it('should force codex render path with --platform codex even in claude env', async () => {
+    it("should force codex render path with --platform codex even in claude env", async () => {
       const result = kspecJson<{
         render: { platform: string; source: string };
-      }>('skill install-core --platform codex', tempDir, {
-        env: { CLAUDECODE: '1', CODEX_THREAD_ID: '', HOME: tempDir },
+      }>("skill install-core --platform codex", tempDir, {
+        env: { CLAUDECODE: "1", CODEX_THREAD_ID: "", HOME: tempDir },
       });
 
-      expect(result.render.platform).toBe('codex');
-      expect(result.render.source).toBe('override');
+      expect(result.render.platform).toBe("codex");
+      expect(result.render.source).toBe("override");
 
-      const codexPath = path.join(tempDir, '.agents', 'skills', 'kspec-help', 'SKILL.md');
+      const codexPath = path.join(tempDir, ".agents", "skills", "kspec-help", "SKILL.md");
       await expect(fs.access(codexPath)).resolves.toBeUndefined();
 
-      const codexConfigPath = path.join(tempDir, '.codex', 'config.toml');
-      const codexConfig = await fs.readFile(codexConfigPath, 'utf-8');
-      expect(codexConfig).toContain('project_doc_fallback_filenames');
-      expect(codexConfig).toContain('kspec-agents.md');
+      const codexConfigPath = path.join(tempDir, ".codex", "config.toml");
+      const codexConfig = await fs.readFile(codexConfigPath, "utf-8");
+      expect(codexConfig).toContain("project_doc_fallback_filenames");
+      expect(codexConfig).toContain("kspec-agents.md");
 
       // No local claude core render path (still plugin-provided)
-      const claudePath = path.join(tempDir, '.claude', 'skills', 'help', 'SKILL.md');
+      const claudePath = path.join(tempDir, ".claude", "skills", "help", "SKILL.md");
       await expect(fs.access(claudePath)).rejects.toThrow();
     });
   });
 
-  describe('droid render path', () => {
+  describe("droid render path", () => {
     // AC: @droid-core-skill-install ac-1
     // AC: @droid-core-skill-install ac-2
-    it('should accept --platform droid and render core skills into .factory/skills/kspec-*/', async () => {
+    it("should accept --platform droid and render core skills into .factory/skills/kspec-*/", async () => {
       const result = kspecJson<{
         render: { platform: string; source: string };
-      }>('skill install-core --platform droid', tempDir, {
-        env: { CLAUDECODE: '1', CODEX_THREAD_ID: '', FACTORY_PROJECT_DIR: '', HOME: tempDir },
+      }>("skill install-core --platform droid", tempDir, {
+        env: { CLAUDECODE: "1", CODEX_THREAD_ID: "", FACTORY_PROJECT_DIR: "", HOME: tempDir },
       });
 
-      expect(result.render.platform).toBe('droid');
-      expect(result.render.source).toBe('override');
+      expect(result.render.platform).toBe("droid");
+      expect(result.render.source).toBe("override");
 
-      const droidPath = path.join(tempDir, '.factory', 'skills', 'kspec-help', 'SKILL.md');
-      const droidContent = await fs.readFile(droidPath, 'utf-8');
-      expect(droidContent).toContain('<!-- kspec-managed -->');
-      expect(droidContent).toContain('name: kspec-help');
+      const droidPath = path.join(tempDir, ".factory", "skills", "kspec-help", "SKILL.md");
+      const droidContent = await fs.readFile(droidPath, "utf-8");
+      expect(droidContent).toContain("<!-- kspec-managed -->");
+      expect(droidContent).toContain("name: kspec-help");
     });
 
     // AC: @droid-core-skill-install ac-3
-    it('should keep claude-code as the default render target when --platform is omitted', async () => {
+    it("should keep claude-code as the default render target when --platform is omitted", async () => {
       const result = kspecJson<{
         render: { platform: string; source: string };
-      }>('skill install-core', tempDir, {
+      }>("skill install-core", tempDir, {
         env: {
-          CLAUDECODE: '1',
-          CODEX_THREAD_ID: '',
-          CLAUDE_CODE_ENTRYPOINT: '',
-          CLAUDE_PROJECT_DIR: '',
-          CLAUDE_CODE: '',
-          FACTORY_PROJECT_DIR: '',
+          CLAUDECODE: "1",
+          CODEX_THREAD_ID: "",
+          CLAUDE_CODE_ENTRYPOINT: "",
+          CLAUDE_PROJECT_DIR: "",
+          CLAUDE_CODE: "",
+          FACTORY_PROJECT_DIR: "",
           HOME: tempDir,
         },
       });
 
-      expect(result.render.platform).toBe('claude-code');
-      expect(result.render.source).toBe('auto-detect');
+      expect(result.render.platform).toBe("claude-code");
+      expect(result.render.source).toBe("auto-detect");
     });
   });
 });
 
-describe('Core Skills Manifest Loading', () => {
-  it('should load core skills from templates/skills/manifest.yaml', async () => {
+describe("Core Skills Manifest Loading", () => {
+  it("should load core skills from templates/skills/manifest.yaml", async () => {
     // Import the function for direct testing
-    const { loadCoreSkillsManifest } = await import('../src/cli/commands/skill.js');
+    const { loadCoreSkillsManifest } = await import("../src/cli/commands/skill.js");
 
     const skills = await loadCoreSkillsManifest();
 
     expect(skills.length).toBeGreaterThan(0);
 
-    const kspecHelp = skills.find((s) => s.id === 'help');
+    const kspecHelp = skills.find((s) => s.id === "help");
     expect(kspecHelp).toBeDefined();
-    expect(kspecHelp?.name).toBe('Kspec Help');
-    expect(kspecHelp?.description).toContain('help');
-    expect(kspecHelp?.platforms).toContain('claude-code');
-    expect(kspecHelp?.platforms).toContain('codex');
+    expect(kspecHelp?.name).toBe("Kspec Help");
+    expect(kspecHelp?.description).toContain("help");
+    expect(kspecHelp?.platforms).toContain("claude-code");
+    expect(kspecHelp?.platforms).toContain("codex");
   });
 
   // AC: @core-skills-droid-platform ac-1
-  it('should register droid alongside claude-code and codex for every core skill', async () => {
-    const { loadCoreSkillsManifest } = await import('../src/cli/commands/skill.js');
+  it("should register droid alongside claude-code and codex for every core skill", async () => {
+    const { loadCoreSkillsManifest } = await import("../src/cli/commands/skill.js");
 
     const skills = await loadCoreSkillsManifest();
 
     expect(skills.length).toBeGreaterThan(0);
     for (const skill of skills) {
-      expect(skill.platforms).toEqual(
-        expect.arrayContaining(['claude-code', 'codex', 'droid'])
-      );
+      expect(skill.platforms).toEqual(expect.arrayContaining(["claude-code", "codex", "droid"]));
     }
   });
 
-  it('should load SKILL.md content for core skills', async () => {
-    const { loadCoreSkillContent } = await import('../src/cli/commands/skill.js');
+  it("should load SKILL.md content for core skills", async () => {
+    const { loadCoreSkillContent } = await import("../src/cli/commands/skill.js");
 
-    const content = await loadCoreSkillContent('help');
+    const content = await loadCoreSkillContent("help");
 
     expect(content).not.toBeNull();
-    expect(content).toContain('# kspec Help');
+    expect(content).toContain("# kspec Help");
   });
 
-  it('should return null for non-existent skill content', async () => {
-    const { loadCoreSkillContent } = await import('../src/cli/commands/skill.js');
+  it("should return null for non-existent skill content", async () => {
+    const { loadCoreSkillContent } = await import("../src/cli/commands/skill.js");
 
-    const content = await loadCoreSkillContent('non-existent-skill');
+    const content = await loadCoreSkillContent("non-existent-skill");
 
     expect(content).toBeNull();
   });
 
-  it('should return kspec package version', async () => {
-    const { getKspecPackageVersion } = await import('../src/cli/commands/skill.js');
+  it("should return kspec package version", async () => {
+    const { getKspecPackageVersion } = await import("../src/cli/commands/skill.js");
 
     const version = await getKspecPackageVersion();
 
     expect(version).toBeDefined();
-    expect(version).not.toBe('unknown');
+    expect(version).not.toBe("unknown");
     expect(version).toMatch(/^\d+\.\d+\.\d+/);
   });
 });
 
 // AC: @core-skill-install ac-2
-describe('copyCoreSkillFiles error handling', () => {
+describe("copyCoreSkillFiles error handling", () => {
   let tempDir: string;
 
   beforeEach(async () => {
@@ -442,44 +446,44 @@ describe('copyCoreSkillFiles error handling', () => {
     await cleanupTempDir(tempDir);
   });
 
-  it('should silently skip when skill template does not exist (ENOENT)', async () => {
-    const { copyCoreSkillFiles } = await import('../src/cli/commands/skill.js');
-    const targetDir = path.join(tempDir, 'skills', 'nonexistent');
+  it("should silently skip when skill template does not exist (ENOENT)", async () => {
+    const { copyCoreSkillFiles } = await import("../src/cli/commands/skill.js");
+    const targetDir = path.join(tempDir, "skills", "nonexistent");
 
     // Should not throw and report no changes
-    const result = await copyCoreSkillFiles('nonexistent-skill-id', targetDir);
+    const result = await copyCoreSkillFiles("nonexistent-skill-id", targetDir);
     expect(result.changed).toBe(false);
 
     // Target dir should not have been created
     await expect(fs.access(targetDir)).rejects.toThrow();
   });
 
-  it('should copy known core skill with supporting dirs', async () => {
-    const { copyCoreSkillFiles } = await import('../src/cli/commands/skill.js');
-    const targetDir = path.join(tempDir, 'skills', 'triage');
+  it("should copy known core skill with supporting dirs", async () => {
+    const { copyCoreSkillFiles } = await import("../src/cli/commands/skill.js");
+    const targetDir = path.join(tempDir, "skills", "triage");
 
-    const result = await copyCoreSkillFiles('triage', targetDir);
+    const result = await copyCoreSkillFiles("triage", targetDir);
     expect(result.changed).toBe(true);
 
     // SKILL.md copied
-    const skillMd = await fs.readFile(path.join(targetDir, 'SKILL.md'), 'utf-8');
-    expect(skillMd).toContain('# Triage');
+    const skillMd = await fs.readFile(path.join(targetDir, "SKILL.md"), "utf-8");
+    expect(skillMd).toContain("# Triage");
 
     // docs/ copied
-    const inboxMd = await fs.readFile(path.join(targetDir, 'docs', 'inbox.md'), 'utf-8');
-    expect(inboxMd).toContain('Inbox Triage');
+    const inboxMd = await fs.readFile(path.join(targetDir, "docs", "inbox.md"), "utf-8");
+    expect(inboxMd).toContain("Inbox Triage");
   });
 
-  it('should skip writing when content is unchanged (idempotent)', async () => {
-    const { copyCoreSkillFiles } = await import('../src/cli/commands/skill.js');
-    const targetDir = path.join(tempDir, 'skills', 'triage');
+  it("should skip writing when content is unchanged (idempotent)", async () => {
+    const { copyCoreSkillFiles } = await import("../src/cli/commands/skill.js");
+    const targetDir = path.join(tempDir, "skills", "triage");
 
     // First copy — should report changed
-    const first = await copyCoreSkillFiles('triage', targetDir);
+    const first = await copyCoreSkillFiles("triage", targetDir);
     expect(first.changed).toBe(true);
 
     // Second copy with same content — should report unchanged
-    const second = await copyCoreSkillFiles('triage', targetDir);
+    const second = await copyCoreSkillFiles("triage", targetDir);
     expect(second.changed).toBe(false);
   });
 });

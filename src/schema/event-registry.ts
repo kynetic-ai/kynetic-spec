@@ -35,13 +35,7 @@ import {
 /**
  * Event domain identifiers. Each domain groups related event types.
  */
-export const EVENT_DOMAINS = [
-  "task",
-  "invocation",
-  "session",
-  "schedule",
-  "action",
-] as const;
+export const EVENT_DOMAINS = ["task", "invocation", "session", "schedule", "action"] as const;
 
 export type EventDomain = (typeof EVENT_DOMAINS)[number];
 
@@ -177,7 +171,12 @@ export const EVENT_REGISTRY: readonly EventRegistryEntry[] = [
     event_type: "action.failed",
     domain: "action",
     description: "An action run failed",
-    payload_fields: [...ACTION_TERMINAL_PAYLOAD_FIELDS, "source_event_type", "error", "failure_reason"],
+    payload_fields: [
+      ...ACTION_TERMINAL_PAYLOAD_FIELDS,
+      "source_event_type",
+      "error",
+      "failure_reason",
+    ],
   },
 ] as const;
 
@@ -208,8 +207,9 @@ export const EVENTS_BY_DOMAIN: Record<EventDomain, readonly EventRegistryEntry[]
  * Payload fields indexed by event type, derived from registry entries.
  * Used by hook filter validation.
  */
-export const PAYLOAD_FIELDS_BY_EVENT_TYPE: Record<string, readonly string[]> =
-  Object.fromEntries(EVENT_REGISTRY.map((e) => [e.event_type, e.payload_fields]));
+export const PAYLOAD_FIELDS_BY_EVENT_TYPE: Record<string, readonly string[]> = Object.fromEntries(
+  EVENT_REGISTRY.map((e) => [e.event_type, e.payload_fields]),
+);
 
 // ─── Zod Schema ───────────────────────────────────────────────────────────────
 
@@ -275,8 +275,8 @@ export function validateEventType(eventType: string): {
   }
 
   const parsedDomain = extractEventDomain(eventType);
-  const isDomainKnown = parsedDomain !== undefined &&
-    EVENT_DOMAINS.includes(parsedDomain as EventDomain);
+  const isDomainKnown =
+    parsedDomain !== undefined && EVENT_DOMAINS.includes(parsedDomain as EventDomain);
 
   let validEvents: string[];
   let message: string;
@@ -286,21 +286,25 @@ export function validateEventType(eventType: string): {
     // Domain is known but the specific event isn't registered
     const domainEvents = EVENTS_BY_DOMAIN[parsedDomain as EventDomain];
     validEvents = domainEvents.map((e) => e.event_type);
-    message = `Unknown event type '${eventType}' in domain '${parsedDomain}'. ` +
+    message =
+      `Unknown event type '${eventType}' in domain '${parsedDomain}'. ` +
       `Valid '${parsedDomain}.*' events: ${validEvents.join(", ")}`;
     suggestion = `Use one of the valid '${parsedDomain}.*' event types listed above, or check available domains: ${EVENT_DOMAINS.join(", ")}`;
   } else if (parsedDomain !== undefined) {
     // Domain prefix exists but is not recognized
     validEvents = REGISTERED_EVENT_TYPES.slice();
-    message = `Unknown event domain '${parsedDomain}' in event type '${eventType}'. ` +
+    message =
+      `Unknown event domain '${parsedDomain}' in event type '${eventType}'. ` +
       `Valid domains: ${EVENT_DOMAINS.join(", ")}`;
-    suggestion = `Use a valid event domain prefix (${EVENT_DOMAINS.join(", ")}) followed by a specific event. ` +
+    suggestion =
+      `Use a valid event domain prefix (${EVENT_DOMAINS.join(", ")}) followed by a specific event. ` +
       `Run 'kspec event types' to see all valid event types.`;
   } else {
     // No domain prefix at all
     validEvents = REGISTERED_EVENT_TYPES.slice();
     message = `Invalid event type '${eventType}'. Event types use dotted-namespace format (e.g., 'task.ready').`;
-    suggestion = `Use a dotted-namespace event type. ` +
+    suggestion =
+      `Use a dotted-namespace event type. ` +
       `Run 'kspec event types' to see all valid event types.`;
   }
 

@@ -24,20 +24,14 @@ export const referenceErrors = {
 
   // Ambiguous references
   ambiguous: (ref: string) => `Reference "${ref}" is ambiguous. Matches:`,
-  slugMapsToMultiple: (ref: string) =>
-    `Slug "${ref}" maps to multiple items. Use ULID instead:`,
+  slugMapsToMultiple: (ref: string) => `Slug "${ref}" maps to multiple items. Use ULID instead:`,
 
   // Wrong type
-  notTask: (ref: string) =>
-    `Reference "${ref}" is not a task (it's a spec item)`,
-  notItem: (ref: string) =>
-    `"${ref}" is a task, not a spec item. Use 'kspec task get' instead.`,
-  taskUseTaskCommands: (ref: string) =>
-    `"${ref}" is a task. Use 'kspec task' commands instead.`,
-  itemUseTaskCancel: (ref: string) =>
-    `"${ref}" is a task. Use 'kspec task cancel' instead.`,
-  parentIsTask: (ref: string) =>
-    `"${ref}" is a task. Items can only be added under spec items.`,
+  notTask: (ref: string) => `Reference "${ref}" is not a task (it's a spec item)`,
+  notItem: (ref: string) => `"${ref}" is a task, not a spec item. Use 'kspec task get' instead.`,
+  taskUseTaskCommands: (ref: string) => `"${ref}" is a task. Use 'kspec task' commands instead.`,
+  itemUseTaskCancel: (ref: string) => `"${ref}" is a task. Use 'kspec task cancel' instead.`,
+  parentIsTask: (ref: string) => `"${ref}" is a task. Items can only be added under spec items.`,
   notSpecItem: (ref: string) =>
     `Reference "${ref}" is a task, not a spec item. Derive only works on spec items.`,
 
@@ -48,8 +42,7 @@ export const referenceErrors = {
 
   // Spec reference errors
   specRefNotFound: (ref: string) => `Spec reference not found: ${ref}`,
-  specRefIsTask: (ref: string) =>
-    `Reference "${ref}" is a task, not a spec item`,
+  specRefIsTask: (ref: string) => `Reference "${ref}" is a task, not a spec item`,
 
   // Reference not found (generic)
   refNotFound: (ref: string) => `Reference not found: ${ref}`,
@@ -72,33 +65,24 @@ export const slugErrors = {
 export const validationErrors = {
   // JSON parsing
   invalidJson: "Invalid JSON syntax",
-  invalidJsonInData: (err: string) =>
-    `Invalid JSON in --data${err ? `: ${err}` : ""}`,
-  invalidJsonFromStdin: (err: string) =>
-    `Invalid JSON from stdin${err ? `: ${err}` : ""}`,
-  invalidPatchData: (err: string) =>
-    `Invalid patch data${err ? `: ${err}` : ""}`,
+  invalidJsonInData: (err: string) => `Invalid JSON in --data${err ? `: ${err}` : ""}`,
+  invalidJsonFromStdin: (err: string) => `Invalid JSON from stdin${err ? `: ${err}` : ""}`,
+  invalidPatchData: (err: string) => `Invalid patch data${err ? `: ${err}` : ""}`,
 
   // Data validation
   noPatchesProvided: "No patches provided",
   noPatchData: "No patch data. Use --data or pipe JSON to stdin.",
-  noInputProvided:
-    "No input provided. Use --data for single item or pipe JSONL/JSON for bulk.",
-  failedToParseBulk: (err: string) =>
-    `Failed to parse bulk input${err ? `: ${err}` : ""}`,
+  noInputProvided: "No input provided. Use --data for single item or pipe JSONL/JSON for bulk.",
+  failedToParseBulk: (err: string) => `Failed to parse bulk input${err ? `: ${err}` : ""}`,
   expectedJsonArray: "Expected JSON array",
-  patchMustBeObject: (index: number) =>
-    `Item ${index + 1}: Patch must be an object`,
-  patchMustHaveRef: (index: number) =>
-    `Item ${index + 1}: Patch must have "ref" string`,
-  patchMustHaveData: (index: number) =>
-    `Item ${index + 1}: Patch must have "data" object`,
+  patchMustBeObject: (index: number) => `Item ${index + 1}: Patch must be an object`,
+  patchMustHaveRef: (index: number) => `Item ${index + 1}: Patch must have "ref" string`,
+  patchMustHaveData: (index: number) => `Item ${index + 1}: Patch must have "data" object`,
   jsonLineError: (line: number, message: string) => `Line ${line}: ${message}`,
 
   // Field validation
   unknownFields: (fields: string[]) => `Unknown field(s): ${fields.join(", ")}`,
-  invalidPatchDataWithIssues: (issues: string) =>
-    `Invalid patch data: ${issues}`,
+  invalidPatchDataWithIssues: (issues: string) => `Invalid patch data: ${issues}`,
 
   // Constraint validation
   priorityOutOfRange: "Priority must be between 1 and 5",
@@ -117,8 +101,7 @@ export const validationErrors = {
   conventionRequiresDomain: "Convention requires --domain",
 
   // Workflow steps validation
-  invalidStepsJson: (err: string) =>
-    `Invalid JSON in --steps${err ? `: ${err}` : ""}`,
+  invalidStepsJson: (err: string) => `Invalid JSON in --steps${err ? `: ${err}` : ""}`,
   stepsNotArray: "Steps must be a JSON array",
   invalidStepsSchema: (issues: string) => `Invalid workflow steps: ${issues}`,
 } as const;
@@ -128,21 +111,18 @@ export const validationErrors = {
  */
 export const statusErrors = {
   cannotStart: (status: string) => `Cannot start task with status: ${status}`,
-  cannotComplete: (status: string) =>
-    `Cannot complete task with status: ${status}`,
+  cannotComplete: (status: string) => `Cannot complete task with status: ${status}`,
   cannotBlock: (status: string) => `Cannot block task with status: ${status}`,
   cannotNeedsWork: (status: string) =>
     `Cannot transition task to needs_work from status: ${status}. Task must be pending_review.`,
   // AC: @spec-completion-enforcement ac-2
-  completeRequiresReview:
-    "Task must be submitted for review first. Use: kspec task submit @ref",
+  completeRequiresReview: "Task must be submitted for review first. Use: kspec task submit @ref",
   // AC: @spec-completion-enforcement ac-3
   completeRequiresStart: "Task must be started and submitted first",
   // AC: @spec-completion-enforcement ac-4
   completeBlockedTask: "Cannot complete blocked task",
   // AC: @spec-completion-enforcement ac-5
-  completeCancelledTask:
-    "Cannot complete cancelled task. Use: kspec task reset @ref first",
+  completeCancelledTask: "Cannot complete cancelled task. Use: kspec task reset @ref first",
   // AC: @spec-completion-enforcement ac-6
   completeAlreadyCompleted: "Task is already completed",
   // AC: @spec-completion-enforcement ac-8
@@ -155,8 +135,7 @@ export const statusErrors = {
 export const conflictErrors = {
   acAlreadyExists: (acId: string, itemRef: string) =>
     `Acceptance criterion "${acId}" already exists on @${itemRef}`,
-  acIdAlreadyExists: (acId: string) =>
-    `Acceptance criterion "${acId}" already exists`,
+  acIdAlreadyExists: (acId: string) => `Acceptance criterion "${acId}" already exists`,
   observationAlreadyPromoted: (taskRef: string) =>
     `Observation already promoted to task ${taskRef}; resolve or delete the task first`,
   observationAlreadyResolved: (date: string, reason: string) =>
@@ -170,23 +149,14 @@ export const conflictErrors = {
  */
 export const operationErrors = {
   cannotDeleteNoSource: "Cannot delete item: no source file tracked",
-  cannotPromoteResolved:
-    "Cannot promote resolved observation; use --force to override",
+  cannotPromoteResolved: "Cannot promote resolved observation; use --force to override",
   tasksNoAcceptanceCriteria: (ref: string) =>
     `Tasks don't have acceptance criteria; "${ref}" is a task`,
   confirmRequired: (itemLabel: string) =>
     `Warning: This will delete ${itemLabel}. Use --confirm to skip this prompt`,
-  cannotDeleteReferencedByTasks: (
-    itemLabel: string,
-    count: number,
-    taskRefs: string,
-  ) =>
+  cannotDeleteReferencedByTasks: (itemLabel: string, count: number, taskRefs: string) =>
     `Cannot delete ${itemLabel}: Referenced by ${count} task(s): ${taskRefs}. Use --confirm to override.`,
-  cannotDeleteReferencedByObservations: (
-    itemLabel: string,
-    count: number,
-    obsRefs: string,
-  ) =>
+  cannotDeleteReferencedByObservations: (itemLabel: string, count: number, obsRefs: string) =>
     `Cannot delete ${itemLabel}: Referenced by ${count} observation(s): ${obsRefs}. Use --confirm to override.`,
   deleteItemFailed: (itemLabel: string) => `Failed to delete ${itemLabel}`,
 } as const;
@@ -349,8 +319,7 @@ export const operationFailures = {
   initProject: "Failed to initialize project",
 
   // Setup operations
-  installConfig: (agentType: string) =>
-    `Failed to install config for ${agentType}`,
+  installConfig: (agentType: string) => `Failed to install config for ${agentType}`,
   setupFailed: "Setup failed",
 
   // Derive operations
@@ -394,18 +363,15 @@ export const workflowRunErrors = {
   runNotFound: (ref: string) => `Workflow run not found: ${ref}`,
   cannotAbortCompleted: "Cannot abort workflow run: already completed",
   cannotAbortAborted: "Cannot abort workflow run: already aborted",
-  invalidRunStatus: (status: string) =>
-    `Cannot abort run with status: ${status}`,
+  invalidRunStatus: (status: string) => `Cannot abort run with status: ${status}`,
   noActiveRuns:
     "No active workflow runs found. Start a run with: kspec workflow start @workflow-id",
   multipleActiveRuns: (runIds: string[]) =>
     `Multiple active runs found. Specify which run:\n${runIds.map((id) => `  kspec workflow next @${id}`).join("\n")}`,
   runNotActive: (_ref: string, status: string) =>
     `Cannot advance workflow run: status is ${status} (expected active)`,
-  entryCriteriaNotConfirmed:
-    "Entry criteria not confirmed. Use --confirm to acknowledge.",
-  exitCriteriaNotConfirmed:
-    "Exit criteria not confirmed. Use --confirm to acknowledge.",
+  entryCriteriaNotConfirmed: "Entry criteria not confirmed. Use --confirm to acknowledge.",
+  exitCriteriaNotConfirmed: "Exit criteria not confirmed. Use --confirm to acknowledge.",
   skipRequiresForce: "Cannot skip step in strict mode without --force flag",
 } as const;
 

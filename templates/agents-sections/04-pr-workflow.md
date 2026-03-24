@@ -10,6 +10,7 @@ The full lifecycle:
 4. **Merge** — After review approval, merge to integration branch. See the kspec merge skill.
 
 **Review gates (from kspec review disposition):**
+
 - Review disposition = `approved`
 - All required checks passing
 - No unresolved blocker threads

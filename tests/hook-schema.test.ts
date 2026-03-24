@@ -14,7 +14,6 @@ import * as path from "node:path";
 import { stringify } from "yaml";
 import {
   HookSchema,
-  HookFilterSchema,
   HookEventTypeSchema,
   ActionSchema,
   MetaManifestSchema,
@@ -24,7 +23,6 @@ import {
   validateHookFilter,
   getValidFilterFields,
   ENVELOPE_FIELDS,
-  PAYLOAD_FIELDS_BY_EVENT,
 } from "../src/schema/hooks.js";
 import { ACTION_TYPES } from "../src/schema/action.js";
 import { testUlid, setupTempFixtures, cleanupTempDir, kspec as kspecRun } from "./helpers/cli.js";
@@ -154,7 +152,7 @@ describe("HookSchema", () => {
       expect(result.success).toBe(false);
       if (!result.success) {
         // The discriminated union error should mention the invalid discriminator
-        const errorMessage = result.error.issues.map(i => i.message).join("; ");
+        const errorMessage = result.error.issues.map((i) => i.message).join("; ");
         expect(errorMessage).toContain("Invalid discriminator value");
       }
     });
@@ -369,11 +367,9 @@ describe("HookFilter", () => {
   // AC: @dispatch-hook-filter ac-3
   describe("ac-3: unknown filter field produces warning", () => {
     it("should warn on unknown filter field for known event type", () => {
-      const warnings = validateHookFilter(
-        "test-hook",
-        "task.ready",
-        { nonexistent_field: "value" },
-      );
+      const warnings = validateHookFilter("test-hook", "task.ready", {
+        nonexistent_field: "value",
+      });
 
       expect(warnings).toHaveLength(1);
       expect(warnings[0].field).toBe("nonexistent_field");
@@ -383,43 +379,35 @@ describe("HookFilter", () => {
     });
 
     it("should not warn on known envelope fields", () => {
-      const warnings = validateHookFilter(
-        "test-hook",
-        "task.ready",
-        { source_type: "task_watcher", correlation_id: "abc" },
-      );
+      const warnings = validateHookFilter("test-hook", "task.ready", {
+        source_type: "task_watcher",
+        correlation_id: "abc",
+      });
 
       expect(warnings).toHaveLength(0);
     });
 
     it("should not warn on known payload fields for the event type", () => {
-      const warnings = validateHookFilter(
-        "test-hook",
-        "task.ready",
-        { task_title: "My task", tags: ["mvp"] },
-      );
+      const warnings = validateHookFilter("test-hook", "task.ready", {
+        task_title: "My task",
+        tags: ["mvp"],
+      });
 
       expect(warnings).toHaveLength(0);
     });
 
     it("should list envelope fields as always valid for any event type", () => {
       for (const envelopeField of ENVELOPE_FIELDS) {
-        const warnings = validateHookFilter(
-          "test-hook",
-          "schedule.tick",
-          { [envelopeField]: "value" },
-        );
+        const warnings = validateHookFilter("test-hook", "schedule.tick", {
+          [envelopeField]: "value",
+        });
         expect(warnings).toHaveLength(0);
       }
     });
 
     it("should warn on payload field from a different event type", () => {
       // agent_id is an invocation.* payload field but not a schedule.tick payload field
-      const warnings = validateHookFilter(
-        "test-hook",
-        "schedule.tick",
-        { agent_id: "worker" },
-      );
+      const warnings = validateHookFilter("test-hook", "schedule.tick", { agent_id: "worker" });
 
       expect(warnings).toHaveLength(1);
       expect(warnings[0].field).toBe("agent_id");
@@ -671,7 +659,7 @@ hooks:
     // Append hooks section to the existing meta manifest
     await fs.writeFile(
       metaPath,
-      existing + `
+      `${existing}
 hooks:
   - _ulid: ${testUlid("HOOK", 43)}
     name: command-hook

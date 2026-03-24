@@ -118,7 +118,7 @@ export interface DoctorOptions {
  */
 export async function getDoctorReport(
   cwd: string,
-  options: DoctorOptions = {}
+  options: DoctorOptions = {},
 ): Promise<DoctorReport> {
   const generatedAt = new Date().toISOString();
 
@@ -179,29 +179,33 @@ export async function getDoctorReport(
   // Shadow exists, run remaining checks in parallel
   // AC: @doctor-command ac-setup-agent-hooks, ac-setup-skills-agents-md, ac-daemon-running
   const [setupStatus, daemonStatus] = await Promise.all([
-    getSetupStatus(projectRoot).catch((err): SetupStatus => ({
-      agent: { detected: "unknown", confidence: "low" },
-      hooks: {
-        supported: false,
-        promptCheck: false,
-        stop: false,
-        preToolUse: false,
-        guardsPresent: [],
-      },
-      skills: { total: 0, rendered: 0, drifted: 0 },
-      plugin: { marketplaceRegistered: false, marketplaceHealthy: false, pluginEnabled: false },
-      agentsMd: { exists: false, status: "missing" },
-      seeding: { permissionsSeeded: false, memorySeeded: false },
-      error: err instanceof Error ? err.message : String(err),
-    })),
-    getDaemonStatus().catch((err): DaemonStatus => ({
-      running: false,
-      pid: null,
-      port: null,
-      uptime: null,
-      healthReachable: false,
-      error: err instanceof Error ? err.message : String(err),
-    })),
+    getSetupStatus(projectRoot).catch(
+      (err): SetupStatus => ({
+        agent: { detected: "unknown", confidence: "low" },
+        hooks: {
+          supported: false,
+          promptCheck: false,
+          stop: false,
+          preToolUse: false,
+          guardsPresent: [],
+        },
+        skills: { total: 0, rendered: 0, drifted: 0 },
+        plugin: { marketplaceRegistered: false, marketplaceHealthy: false, pluginEnabled: false },
+        agentsMd: { exists: false, status: "missing" },
+        seeding: { permissionsSeeded: false, memorySeeded: false },
+        error: err instanceof Error ? err.message : String(err),
+      }),
+    ),
+    getDaemonStatus().catch(
+      (err): DaemonStatus => ({
+        running: false,
+        pid: null,
+        port: null,
+        uptime: null,
+        healthReachable: false,
+        error: err instanceof Error ? err.message : String(err),
+      }),
+    ),
   ]);
 
   // Build setup section
@@ -232,9 +236,7 @@ function buildShadowSection(section: ShadowSection, status: ShadowStatus): void 
   section.checks.push({
     name: "branch-exists",
     severity: status.branchExists ? "ok" : "error",
-    message: status.branchExists
-      ? "Shadow branch exists"
-      : "Shadow branch does not exist",
+    message: status.branchExists ? "Shadow branch exists" : "Shadow branch does not exist",
     guidance: status.branchExists ? undefined : "Run `kspec init` to create shadow branch",
   });
 
@@ -244,10 +246,10 @@ function buildShadowSection(section: ShadowSection, status: ShadowStatus): void 
     section.checks.push({
       name: "worktree-exists",
       severity: status.worktreeExists ? "ok" : "error",
-      message: status.worktreeExists
-        ? "Worktree directory exists"
-        : "Worktree directory missing",
-      guidance: status.worktreeExists ? undefined : "Run `kspec shadow repair` to recreate worktree",
+      message: status.worktreeExists ? "Worktree directory exists" : "Worktree directory missing",
+      guidance: status.worktreeExists
+        ? undefined
+        : "Run `kspec shadow repair` to recreate worktree",
     });
 
     // Worktree linked check
@@ -258,7 +260,9 @@ function buildShadowSection(section: ShadowSection, status: ShadowStatus): void 
         message: status.worktreeLinked
           ? "Worktree properly linked"
           : "Worktree not properly linked",
-        guidance: status.worktreeLinked ? undefined : "Run `kspec shadow repair` to fix worktree link",
+        guidance: status.worktreeLinked
+          ? undefined
+          : "Run `kspec shadow repair` to fix worktree link",
       });
 
       // AC: @artifacts-directory ac-doctor-checks
@@ -268,7 +272,9 @@ function buildShadowSection(section: ShadowSection, status: ShadowStatus): void 
         message: status.artifactsDirExists
           ? "Artifacts directory exists"
           : "Artifacts directory missing",
-        guidance: status.artifactsDirExists ? undefined : "Run `kspec setup` to create artifacts directory",
+        guidance: status.artifactsDirExists
+          ? undefined
+          : "Run `kspec setup` to create artifacts directory",
       });
     }
   }
@@ -291,12 +297,14 @@ function buildSetupSection(section: SetupSection, status: SetupStatus): void {
   section.checks.push({
     name: "agent-type",
     severity: status.agent.detected !== "unknown" ? "ok" : "warning",
-    message: status.agent.detected !== "unknown"
-      ? `Agent type: ${status.agent.detected} (${status.agent.confidence} confidence)`
-      : "Agent type: unknown",
-    guidance: status.agent.detected === "unknown"
-      ? "Run `kspec setup` to configure agent integration"
-      : undefined,
+    message:
+      status.agent.detected !== "unknown"
+        ? `Agent type: ${status.agent.detected} (${status.agent.confidence} confidence)`
+        : "Agent type: unknown",
+    guidance:
+      status.agent.detected === "unknown"
+        ? "Run `kspec setup` to configure agent integration"
+        : undefined,
   });
 
   // Hooks check
@@ -318,15 +326,14 @@ function buildSetupSection(section: SetupSection, status: SetupStatus): void {
         message: hooksInstalled
           ? `Hooks installed (prompt-check: ${status.hooks.promptCheck}, stop: ${status.hooks.stop}, guards: ${status.hooks.guardsPresent.length})`
           : "No hooks installed",
-        guidance: hooksInstalled
-          ? undefined
-          : "Run `kspec setup` to install hooks",
+        guidance: hooksInstalled ? undefined : "Run `kspec setup` to install hooks",
       }
     : {
         severity: "ok" as const,
-        message: status.agent.detected === "droid"
-          ? "Hooks not installed: droid hooks are not yet supported"
-          : `Hooks not applicable for ${status.agent.detected}`,
+        message:
+          status.agent.detected === "droid"
+            ? "Hooks not installed: droid hooks are not yet supported"
+            : `Hooks not applicable for ${status.agent.detected}`,
         guidance: undefined,
       };
 
@@ -341,15 +348,18 @@ function buildSetupSection(section: SetupSection, status: SetupStatus): void {
   // AC: @doctor-command ac-setup-skills-agents-md
   section.checks.push({
     name: "skills",
-    severity: status.skills.rendered > 0
-      ? (status.skills.drifted > 0 ? "warning" : "ok")
-      : "warning",
-    message: status.skills.rendered > 0
-      ? `${status.skills.rendered} skills rendered${status.skills.drifted > 0 ? `, ${status.skills.drifted} drifted` : ""}`
-      : "No skills rendered",
-    guidance: status.skills.rendered === 0
-      ? "Run `kspec setup` to render skills"
-      : (status.skills.drifted > 0 ? "Run `kspec setup --force` to re-render drifted skills" : undefined),
+    severity:
+      status.skills.rendered > 0 ? (status.skills.drifted > 0 ? "warning" : "ok") : "warning",
+    message:
+      status.skills.rendered > 0
+        ? `${status.skills.rendered} skills rendered${status.skills.drifted > 0 ? `, ${status.skills.drifted} drifted` : ""}`
+        : "No skills rendered",
+    guidance:
+      status.skills.rendered === 0
+        ? "Run `kspec setup` to render skills"
+        : status.skills.drifted > 0
+          ? "Run `kspec setup --force` to re-render drifted skills"
+          : undefined,
   });
 
   // kspec-agents.md check

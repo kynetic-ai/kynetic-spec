@@ -52,17 +52,13 @@ describe("AC annotation validation", () => {
     });
 
     // Write spec items
-    await writeYamlFilePreserveFormat(
-      path.join(modulesDir, "specs.yaml"),
-      opts.specItems,
-    );
+    await writeYamlFilePreserveFormat(path.join(modulesDir, "specs.yaml"), opts.specItems);
 
     // Write tasks file
     if (opts.tasks) {
-      await writeYamlFilePreserveFormat(
-        path.join(specDir, "project.tasks.yaml"),
-        { tasks: opts.tasks },
-      );
+      await writeYamlFilePreserveFormat(path.join(specDir, "project.tasks.yaml"), {
+        tasks: opts.tasks,
+      });
     }
 
     // Write test files
@@ -109,13 +105,7 @@ it('should also work', () => {});
 
     it("should scan both tests/ and E2E directories", async () => {
       const testsDir = path.join(tempDir, "tests");
-      const e2eDir = path.join(
-        tempDir,
-        "packages",
-        "web-ui",
-        "tests",
-        "e2e",
-      );
+      const e2eDir = path.join(tempDir, "packages", "web-ui", "tests", "e2e");
       await fs.mkdir(testsDir, { recursive: true });
       await fs.mkdir(e2eDir, { recursive: true });
 
@@ -188,8 +178,7 @@ it('should also work', () => {});
           },
         ],
         testFiles: {
-          "example.test.ts":
-            '// AC: @nonexistent-spec ac-1\nit("test", () => {});',
+          "example.test.ts": '// AC: @nonexistent-spec ac-1\nit("test", () => {});',
         },
       });
 
@@ -224,8 +213,7 @@ it('should also work', () => {});
           },
         ],
         testFiles: {
-          "example.test.ts":
-            '// AC: @real-spec ac-1\nit("test", () => {});',
+          "example.test.ts": '// AC: @real-spec ac-1\nit("test", () => {});',
         },
       });
 
@@ -303,8 +291,7 @@ it('should also work', () => {});
           },
         ],
         testFiles: {
-          "example.test.ts":
-            '// AC: @my-spec ac-5\nit("test", () => {});',
+          "example.test.ts": '// AC: @my-spec ac-5\nit("test", () => {});',
         },
       });
 
@@ -339,8 +326,7 @@ it('should also work', () => {});
           },
         ],
         testFiles: {
-          "example.test.ts":
-            '// AC: @my-spec ac-1, ac-2, ac-3\nit("test", () => {});',
+          "example.test.ts": '// AC: @my-spec ac-1, ac-2, ac-3\nit("test", () => {});',
         },
       });
 
@@ -383,8 +369,7 @@ it('should also work', () => {});
           },
         ],
         testFiles: {
-          "example.test.ts":
-            '// AC: @my-spec ac-1, ac-2\nit("test", () => {});',
+          "example.test.ts": '// AC: @my-spec ac-1, ac-2\nit("test", () => {});',
         },
       });
 
@@ -463,8 +448,7 @@ it('invalid trait AC ref', () => {});
           },
         ],
         testFiles: {
-          "example.test.ts":
-            '// AC: @my-spec\nit("test", () => {});',
+          "example.test.ts": '// AC: @my-spec\nit("test", () => {});',
         },
       });
 
@@ -475,9 +459,7 @@ it('invalid trait AC ref', () => {});
       );
       const missingCoverage = result.completenessWarnings.filter(
         (w) =>
-          w.type === "missing_test_coverage" &&
-          w.subtype === "own_ac" &&
-          w.itemRef === "@my-spec",
+          w.type === "missing_test_coverage" && w.subtype === "own_ac" && w.itemRef === "@my-spec",
       );
 
       expect(invalidAnnotations).toHaveLength(1);
@@ -499,8 +481,7 @@ it('invalid trait AC ref', () => {});
           },
         ],
         testFiles: {
-          "example.test.ts":
-            '// AC: @no-ac-spec ac-1\nit("test", () => {});',
+          "example.test.ts": '// AC: @no-ac-spec ac-1\nit("test", () => {});',
         },
       });
 
@@ -526,8 +507,7 @@ it('invalid trait AC ref', () => {});
           },
         ],
         testFiles: {
-          "my-feature.test.ts":
-            '// AC: @bogus-ref ac-1\nit("test", () => {});',
+          "my-feature.test.ts": '// AC: @bogus-ref ac-1\nit("test", () => {});',
         },
       });
 
@@ -563,8 +543,7 @@ it('invalid trait AC ref', () => {});
           },
         ],
         testFiles: {
-          "example.test.ts":
-            '// AC: @task-example ac-1\nit("test", () => {});',
+          "example.test.ts": '// AC: @task-example ac-1\nit("test", () => {});',
         },
       });
 
@@ -591,8 +570,7 @@ it('invalid trait AC ref', () => {});
           },
         ],
         testFiles: {
-          "example.test.ts":
-            '// AC: @task-example\nit("test", () => {});',
+          "example.test.ts": '// AC: @task-example\nit("test", () => {});',
         },
       });
 
@@ -636,9 +614,7 @@ it('invalid trait AC ref', () => {});
           type: "requirement" as const,
           description: "test",
           status: { maturity: "draft" as const, implementation: "not_started" as const },
-          acceptance_criteria: [
-            { id: "ac-1", given: "g", when: "w", then: "t" },
-          ],
+          acceptance_criteria: [{ id: "ac-1", given: "g", when: "w", then: "t" }],
           _sourceFile: "test.yaml",
         },
       ];
@@ -752,15 +728,11 @@ it('invalid trait AC ref', () => {});
 
     it("should parse a single @ref with multiple comma-separated ACs", () => {
       const groups = parseACAnnotationLine("// AC: @spec-a ac-1, ac-2, ac-3");
-      expect(groups).toEqual([
-        { specRef: "@spec-a", acIds: ["ac-1", "ac-2", "ac-3"] },
-      ]);
+      expect(groups).toEqual([{ specRef: "@spec-a", acIds: ["ac-1", "ac-2", "ac-3"] }]);
     });
 
     it("should parse multiple @ref groups on the same line", () => {
-      const groups = parseACAnnotationLine(
-        "// AC: @spec-a ac-1, @spec-b ac-2",
-      );
+      const groups = parseACAnnotationLine("// AC: @spec-a ac-1, @spec-b ac-2");
       expect(groups).toEqual([
         { specRef: "@spec-a", acIds: ["ac-1"] },
         { specRef: "@spec-b", acIds: ["ac-2"] },
@@ -768,9 +740,7 @@ it('invalid trait AC ref', () => {});
     });
 
     it("should parse multiple @ref groups with multiple ACs each", () => {
-      const groups = parseACAnnotationLine(
-        "// AC: @spec-a ac-1, ac-2, @spec-b ac-3, ac-4",
-      );
+      const groups = parseACAnnotationLine("// AC: @spec-a ac-1, ac-2, @spec-b ac-3, ac-4");
       expect(groups).toEqual([
         { specRef: "@spec-a", acIds: ["ac-1", "ac-2"] },
         { specRef: "@spec-b", acIds: ["ac-3", "ac-4"] },
@@ -794,16 +764,12 @@ it('invalid trait AC ref', () => {});
     });
 
     it("should strip N/A suffix", () => {
-      const groups = parseACAnnotationLine(
-        "// AC: @spec-a ac-1 — N/A: reason why",
-      );
+      const groups = parseACAnnotationLine("// AC: @spec-a ac-1 — N/A: reason why");
       expect(groups).toEqual([{ specRef: "@spec-a", acIds: ["ac-1"] }]);
     });
 
     it("should strip parenthetical comments", () => {
-      const groups = parseACAnnotationLine(
-        "// AC: @cli-exit-codes (exit 4 for validation errors)",
-      );
+      const groups = parseACAnnotationLine("// AC: @cli-exit-codes (exit 4 for validation errors)");
       expect(groups).toEqual([{ specRef: "@cli-exit-codes", acIds: [] }]);
     });
 
@@ -867,9 +833,7 @@ it('test', () => {});
             type: "requirement",
             description: "A spec",
             status: { maturity: "draft", implementation: "not_started" },
-            acceptance_criteria: [
-              { id: "ac-1", given: "g", when: "w", then: "t" },
-            ],
+            acceptance_criteria: [{ id: "ac-1", given: "g", when: "w", then: "t" }],
           },
           {
             _ulid: "01KFCRVY8ERZEE2MNHEQXSG91B",
@@ -878,14 +842,11 @@ it('test', () => {});
             type: "requirement",
             description: "Another spec",
             status: { maturity: "draft", implementation: "not_started" },
-            acceptance_criteria: [
-              { id: "ac-1", given: "g", when: "w", then: "t" },
-            ],
+            acceptance_criteria: [{ id: "ac-1", given: "g", when: "w", then: "t" }],
           },
         ],
         testFiles: {
-          "multi.test.ts":
-            '// AC: @spec-a ac-1, @spec-b ac-99\nit("test", () => {});',
+          "multi.test.ts": '// AC: @spec-a ac-1, @spec-b ac-99\nit("test", () => {});',
         },
       });
 
@@ -909,14 +870,11 @@ it('test', () => {});
             type: "requirement",
             description: "A spec",
             status: { maturity: "draft", implementation: "not_started" },
-            acceptance_criteria: [
-              { id: "ac-1", given: "g", when: "w", then: "t" },
-            ],
+            acceptance_criteria: [{ id: "ac-1", given: "g", when: "w", then: "t" }],
           },
         ],
         testFiles: {
-          "multi.test.ts":
-            '// AC: @spec-a ac-1, @nonexistent ac-1\nit("test", () => {});',
+          "multi.test.ts": '// AC: @spec-a ac-1, @nonexistent ac-1\nit("test", () => {});',
         },
       });
 

@@ -453,9 +453,7 @@ function isDeprecated(item: AnyLoadedItem | LoadedMetaItem): boolean {
  * Extract all references from an item
  * AC: @agent-definitions ac-agent-3 - also checks nested notes for author refs
  */
-function extractRefs(
-  item: AnyLoadedItem,
-): Array<{ field: string; ref: string }> {
+function extractRefs(item: AnyLoadedItem): Array<{ field: string; ref: string }> {
   const refs: Array<{ field: string; ref: string }> = [];
   const obj = item as unknown as Record<string, unknown>;
 
@@ -559,8 +557,7 @@ export function validateRefs(
       } else {
         // Check if resolved target is deprecated
         if (isDeprecated(result.item)) {
-          const targetTitle =
-            (result.item as { title?: string }).title || result.ulid;
+          const targetTitle = (result.item as { title?: string }).title || result.ulid;
           warnings.push({
             ref,
             sourceFile,
@@ -587,8 +584,7 @@ export function validateRefs(
 
           // AC: @traits-field ac-5 - warn on duplicate traits
           if (seenTraits.has(result.ulid)) {
-            const targetTitle =
-              (result.item as { title?: string }).title || result.ulid;
+            const targetTitle = (result.item as { title?: string }).title || result.ulid;
             warnings.push({
               ref,
               sourceFile,
@@ -608,8 +604,7 @@ export function validateRefs(
             derived_specs?: unknown[];
           };
           // Plans have derived_tasks and derived_specs fields that tasks don't have
-          const isPlan =
-            "derived_tasks" in targetItem || "derived_specs" in targetItem;
+          const isPlan = "derived_tasks" in targetItem || "derived_specs" in targetItem;
 
           if (!isPlan) {
             warnings.push({
@@ -633,9 +628,7 @@ export function validateRefs(
  * Find duplicate slugs in the index.
  * Returns map of slug → ULIDs for slugs with multiple items.
  */
-export function findDuplicateSlugs(
-  index: ReferenceIndex,
-): Map<string, string[]> {
+export function findDuplicateSlugs(index: ReferenceIndex): Map<string, string[]> {
   const duplicates = new Map<string, string[]>();
 
   for (const [slug, ulids] of index.getAllSlugs()) {

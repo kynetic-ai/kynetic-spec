@@ -34,10 +34,9 @@ function isNotFoundError(err: unknown): boolean {
 }
 
 function createNotFoundError(filePath: string): NodeJS.ErrnoException {
-  return Object.assign(
-    new Error(`ENOENT: no such file or directory, open '${filePath}'`),
-    { code: "ENOENT" },
-  ) as NodeJS.ErrnoException;
+  return Object.assign(new Error(`ENOENT: no such file or directory, open '${filePath}'`), {
+    code: "ENOENT",
+  }) as NodeJS.ErrnoException;
 }
 
 export class SyntheticDirent {
@@ -295,7 +294,7 @@ export class WriteBuffer {
       throw createNotFoundError(resolvedDir);
     }
 
-    const names = [...mergedKinds.keys()].sort((a, b) => a.localeCompare(b));
+    const names = [...mergedKinds.keys()].toSorted((a, b) => a.localeCompare(b));
     if (!withFileTypes) {
       return names;
     }
@@ -357,6 +356,7 @@ export class WriteBuffer {
       await this._cleanupStaging(stagingMap);
       throw new Error(
         `Batch flush staging failed: ${err instanceof Error ? err.message : err}. No files were committed.`,
+        { cause: err },
       );
     }
 
@@ -388,6 +388,7 @@ export class WriteBuffer {
           `Batch flush commit failed: ${err instanceof Error ? err.message : err}.\n` +
             `Committed (${committed.length}): ${committed.join(", ") || "none"}\n` +
             `Uncommitted (${uncommitted.length + (stagingMap.size - committed.length - 1)}): remaining files`,
+          { cause: err },
         );
       }
     }
@@ -519,10 +520,7 @@ export async function readdirBufferAware(
   return fs.readdir(directory);
 }
 
-export async function accessBufferAware(
-  filePath: string,
-  mode?: number,
-): Promise<void> {
+export async function accessBufferAware(filePath: string, mode?: number): Promise<void> {
   const buffer = getActiveBatchBuffer();
   if (buffer?.isInScope(filePath)) {
     if (buffer.isDeletedInOverlay(filePath)) {

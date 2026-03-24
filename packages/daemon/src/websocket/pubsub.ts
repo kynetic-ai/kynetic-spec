@@ -10,11 +10,11 @@
  * - ac-6 (@trait-websocket-protocol): Backpressure pause
  */
 
-import type { ServerWebSocket } from 'bun';
-import { ulid } from 'ulidx';
-import type { BroadcastEvent, ConnectionData } from './types';
+import type { ServerWebSocket } from "bun";
+import { ulid } from "ulidx";
+import type { BroadcastEvent, ConnectionData } from "./types";
 
-const SESSION_TOPIC_PREFIX = '__kspec_session:';
+const SESSION_TOPIC_PREFIX = "__kspec_session:";
 
 function sessionTopic(sessionId: string): string {
   return `${SESSION_TOPIC_PREFIX}${sessionId}`;
@@ -61,7 +61,10 @@ export class PubSubManager {
    * Resolve a stable session ID for a socket and remove that connection.
    * This is resilient when ws.data.sessionId is missing in close callbacks.
    */
-  removeConnectionBySocket(ws: ServerWebSocket<ConnectionData>, contextId?: string): string | undefined {
+  removeConnectionBySocket(
+    ws: ServerWebSocket<ConnectionData>,
+    contextId?: string,
+  ): string | undefined {
     const sessionId = this.getSessionIdBySocket(ws, contextId);
     if (!sessionId) {
       return undefined;
@@ -74,7 +77,10 @@ export class PubSubManager {
   /**
    * Get stable session ID for socket from registration mapping.
    */
-  getSessionIdBySocket(ws: ServerWebSocket<ConnectionData>, contextId?: string): string | undefined {
+  getSessionIdBySocket(
+    ws: ServerWebSocket<ConnectionData>,
+    contextId?: string,
+  ): string | undefined {
     const mappedSessionId = this.sessionIdsBySocket.get(ws);
     if (mappedSessionId) {
       return mappedSessionId;
@@ -87,7 +93,9 @@ export class PubSubManager {
 
     const subscriptions = (ws as Partial<ServerWebSocket<ConnectionData>>).subscriptions;
     if (Array.isArray(subscriptions)) {
-      const sessionSubscription = subscriptions.find((topic) => topic.startsWith(SESSION_TOPIC_PREFIX));
+      const sessionSubscription = subscriptions.find((topic) =>
+        topic.startsWith(SESSION_TOPIC_PREFIX),
+      );
       if (sessionSubscription) {
         return sessionSubscription.slice(SESSION_TOPIC_PREFIX.length);
       }
@@ -159,7 +167,9 @@ export class PubSubManager {
       const MAX_BUFFER = 1024 * 1024; // 1MB threshold
 
       if (buffered > MAX_BUFFER) {
-        console.warn(`[pubsub] Skipping broadcast to ${sessionId} - backpressure (${buffered} bytes buffered)`);
+        console.warn(
+          `[pubsub] Skipping broadcast to ${sessionId} - backpressure (${buffered} bytes buffered)`,
+        );
         continue;
       }
 
@@ -173,7 +183,7 @@ export class PubSubManager {
         timestamp: new Date().toISOString(),
         topic,
         event,
-        data
+        data,
       };
 
       ws.send(JSON.stringify(message));

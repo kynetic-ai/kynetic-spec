@@ -19,9 +19,7 @@ import { registerSkillDiffCommands } from "./skill-diff.js";
  * Register all skill commands
  */
 export function registerSkillCommands(program: Command): void {
-  const skill = program
-    .command("skill")
-    .description("Skill management commands");
+  const skill = program.command("skill").description("Skill management commands");
 
   registerSkillCrudCommands(skill);
   registerSkillInstallCommands(skill);
@@ -41,10 +39,7 @@ export {
 } from "../../parser/skill-render.js";
 
 // From skill-diff.ts
-export {
-  getExpectedRenderedContent,
-  generateUnifiedDiff,
-} from "./skill-diff.js";
+export { getExpectedRenderedContent, generateUnifiedDiff } from "./skill-diff.js";
 
 // From skill-install.ts
 export {

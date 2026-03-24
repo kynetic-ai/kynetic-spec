@@ -31,6 +31,7 @@ import {
   createTempDir,
   initGitRepo,
   kspec,
+  readTestOutput,
   testUlid,
 } from "./helpers/cli.js";
 
@@ -119,7 +120,7 @@ async function readWorkspaceRecord(
   registryPath: string,
   taskRef: string,
 ): Promise<Record<string, any>> {
-  const raw = YAML.parse(await fs.readFile(registryPath, "utf-8")) as {
+  const raw = YAML.parse(await readTestOutput(registryPath)) as {
     workspaces?: Array<Record<string, any>>;
   };
   return raw.workspaces?.find((workspace) => workspace.task_ref === taskRef) ?? {};
@@ -149,17 +150,11 @@ async function waitForLoadedWorkspaceRecord(
   timeoutMs: number = 2000,
 ): Promise<NonNullable<Awaited<ReturnType<typeof findDispatchWorkspaceByTaskRef>>>> {
   const deadline = Date.now() + timeoutMs;
-  let record = await findDispatchWorkspaceByTaskRef(
-    await initContext(projectDir),
-    taskRef,
-  );
+  let record = await findDispatchWorkspaceByTaskRef(await initContext(projectDir), taskRef);
 
   while ((!record || !predicate(record)) && Date.now() < deadline) {
     await new Promise((resolve) => setTimeout(resolve, 10));
-    record = await findDispatchWorkspaceByTaskRef(
-      await initContext(projectDir),
-      taskRef,
-    );
+    record = await findDispatchWorkspaceByTaskRef(await initContext(projectDir), taskRef);
   }
 
   if (!record) {
@@ -170,9 +165,7 @@ async function waitForLoadedWorkspaceRecord(
 }
 
 async function setupProjectWithWorkerAgent(dir: string): Promise<void> {
-  const specTarget = process.env.KSPEC_SPEC_DIR
-    ? path.resolve(process.env.KSPEC_SPEC_DIR)
-    : dir;
+  const specTarget = process.env.KSPEC_SPEC_DIR ? path.resolve(process.env.KSPEC_SPEC_DIR) : dir;
   await fs.writeFile(
     path.join(specTarget, "kynetic.yaml"),
     'kynetic: "1"\ntitle: Test Project\n',
@@ -322,7 +315,10 @@ describe("dispatch workspace registry", () => {
     const taskRef = `@${testUlid("TASK", 22)}`;
     const worktreeRoot = path.join(tempDir, ".kspec-worktrees");
 
-    const makeRecord = (workspaceId: string, lifecycleState: DispatchWorkspaceMetadata["lifecycleState"]) => ({
+    const makeRecord = (
+      workspaceId: string,
+      lifecycleState: DispatchWorkspaceMetadata["lifecycleState"],
+    ) => ({
       workspace_id: workspaceId,
       task_ref: taskRef,
       task_slug: "task-duplicate-dispatch-registry",
@@ -627,240 +623,235 @@ describe("dispatch workspace registry", () => {
 
   // AC: @dispatch-workspace-registry ac-6
   // AC: @dispatch-workspace-registry ac-7
-  it("persists lifecycle transitions across explicit dispatch workspace lifecycle states", { timeout: 30_000 }, async () => {
-    await seedRepo(tempDir);
-    await setupProjectWithWorkerAgent(tempDir);
-    git(tempDir, "checkout -b agent-dev");
+  it(
+    "persists lifecycle transitions across explicit dispatch workspace lifecycle states",
+    { timeout: 30_000 },
+    async () => {
+      await seedRepo(tempDir);
+      await setupProjectWithWorkerAgent(tempDir);
+      git(tempDir, "checkout -b agent-dev");
 
-    const taskId = testUlid("TASK", 24);
-    const taskRef = `@${taskId}`;
-    let releaseInvocation!: () => void;
-    const invocationGate = new Promise<void>((resolve) => {
-      releaseInvocation = resolve;
-    });
-    const runSpy = vi.spyOn(invocationModule, "runInvocation").mockImplementation(async () => {
-      await invocationGate;
-      return { session: {} as never, outcome: "success", durationMs: 1 };
-    });
+      const taskId = testUlid("TASK", 24);
+      const taskRef = `@${taskId}`;
+      let releaseInvocation!: () => void;
+      const invocationGate = new Promise<void>((resolve) => {
+        releaseInvocation = resolve;
+      });
+      const runSpy = vi.spyOn(invocationModule, "runInvocation").mockImplementation(async () => {
+        await invocationGate;
+        return { session: {} as never, outcome: "success", durationMs: 1 };
+      });
 
-    const engine = new DispatchEngine({
-      projectDir: tempDir,
-      specDir: specDir,
-      kspecCliPath: MOCK_KSPEC_CLI,
-      // Disable periodic reconciliation to prevent timer-driven registry
-      // writes from racing with the explicit lifecycle transitions below.
-      reconcileIntervalMs: 0,
-      coalesceWindowMs: 0,
-    });
-    await engine.start();
+      const engine = new DispatchEngine({
+        projectDir: tempDir,
+        specDir: specDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+        // Disable periodic reconciliation to prevent timer-driven registry
+        // writes from racing with the explicit lifecycle transitions below.
+        reconcileIntervalMs: 0,
+        coalesceWindowMs: 0,
+      });
+      await engine.start();
 
-    await engine.handleStateChange({
-      taskId,
-      taskRef,
-      fromStatus: "in_progress",
-      toStatus: "pending",
-      timestamp: Date.now(),
-      task: {
-        _ulid: taskId,
-        title: "Lifecycle Persistence",
-        slugs: ["task-lifecycle-persistence"],
-        status: "pending",
-        type: "task",
-        priority: 1,
-        blocked_by: [],
-        depends_on: [],
-        context: [],
-        tags: [],
-        vcs_refs: [],
-        notes: [],
-        todos: [],
-        created_at: new Date().toISOString(),
-        automation: "eligible",
-      } as never,
-    });
+      await engine.handleStateChange({
+        taskId,
+        taskRef,
+        fromStatus: "in_progress",
+        toStatus: "pending",
+        timestamp: Date.now(),
+        task: {
+          _ulid: taskId,
+          title: "Lifecycle Persistence",
+          slugs: ["task-lifecycle-persistence"],
+          status: "pending",
+          type: "task",
+          priority: 1,
+          blocked_by: [],
+          depends_on: [],
+          context: [],
+          tags: [],
+          vcs_refs: [],
+          notes: [],
+          todos: [],
+          created_at: new Date().toISOString(),
+          automation: "eligible",
+        } as never,
+      });
 
-    for (let i = 0; i < 40 && runSpy.mock.calls.length === 0; i++) {
-      await new Promise((resolve) => setTimeout(resolve, 10));
-    }
-    expect(runSpy).toHaveBeenCalledTimes(1);
-
-    const registryPath = getDispatchWorkspaceRegistryPath(await initContext(tempDir));
-    for (let i = 0; i < 40; i++) {
-      try {
-        await fs.access(registryPath);
-        break;
-      } catch {
+      for (let i = 0; i < 40 && runSpy.mock.calls.length === 0; i++) {
         await new Promise((resolve) => setTimeout(resolve, 10));
       }
-    }
+      expect(runSpy).toHaveBeenCalledTimes(1);
 
-    let record = await readWorkspaceRecord(
-      registryPath,
-      taskRef,
-    );
-    expect(record.lifecycle_state).toBe("active");
-    expect(record.active_role).toBe("worker");
-    expect(record.timestamps.last_active_at).toBeTruthy();
+      const registryPath = getDispatchWorkspaceRegistryPath(await initContext(tempDir));
+      for (let i = 0; i < 40; i++) {
+        try {
+          await fs.access(registryPath);
+          break;
+        } catch {
+          await new Promise((resolve) => setTimeout(resolve, 10));
+        }
+      }
 
-    releaseInvocation();
-    for (let i = 0; i < 40 && engine.getStatus().activeInvocations > 0; i++) {
-      await new Promise((resolve) => setTimeout(resolve, 10));
-    }
+      let record = await readWorkspaceRecord(registryPath, taskRef);
+      expect(record.lifecycle_state).toBe("active");
+      expect(record.active_role).toBe("worker");
+      expect(record.timestamps.last_active_at).toBeTruthy();
 
-    await engine.handleStateChange({
-      taskId,
-      taskRef,
-      fromStatus: "in_progress",
-      toStatus: "pending_review",
-      timestamp: Date.now(),
-      task: {
-        _ulid: taskId,
-        title: "Lifecycle Persistence",
-        slugs: ["task-lifecycle-persistence"],
-        status: "pending_review",
-        type: "task",
-        priority: 1,
-        blocked_by: [],
-        depends_on: [],
-        context: [],
-        tags: [],
-        vcs_refs: [],
-        notes: [],
-        todos: [],
-        created_at: new Date().toISOString(),
-        automation: "eligible",
-      } as never,
-    });
+      releaseInvocation();
+      for (let i = 0; i < 40 && engine.getStatus().activeInvocations > 0; i++) {
+        await new Promise((resolve) => setTimeout(resolve, 10));
+      }
 
-    record = await waitForWorkspaceRecord(
-      registryPath,
-      taskRef,
-      (current) => current.lifecycle_state === "integrating",
-      5000,
-    );
-    expect(record.lifecycle_state).toBe("integrating");
-    expect(record.integration.status).toBe("pending");
+      await engine.handleStateChange({
+        taskId,
+        taskRef,
+        fromStatus: "in_progress",
+        toStatus: "pending_review",
+        timestamp: Date.now(),
+        task: {
+          _ulid: taskId,
+          title: "Lifecycle Persistence",
+          slugs: ["task-lifecycle-persistence"],
+          status: "pending_review",
+          type: "task",
+          priority: 1,
+          blocked_by: [],
+          depends_on: [],
+          context: [],
+          tags: [],
+          vcs_refs: [],
+          notes: [],
+          todos: [],
+          created_at: new Date().toISOString(),
+          automation: "eligible",
+        } as never,
+      });
 
-    // Wait for the pending_review invocation's FULL post-completion chain
-    // to finish.  The chain decrements activeInvocations before running
-    // cleanupReviewerDispatchWorkspace, so checking activeInvocations alone
-    // is not sufficient.  Instead, stop the engine to drain all running
-    // invocation promises (including their .then() cleanup chains), then
-    // restart it so the completed transition can be dispatched.
-    await engine.stop();
+      record = await waitForWorkspaceRecord(
+        registryPath,
+        taskRef,
+        (current) => current.lifecycle_state === "integrating",
+        5000,
+      );
+      expect(record.lifecycle_state).toBe("integrating");
+      expect(record.integration.status).toBe("pending");
 
-    // Restart the engine so handleStateChange(completed) can run.
-    await engine.start();
+      // Wait for the pending_review invocation's FULL post-completion chain
+      // to finish.  The chain decrements activeInvocations before running
+      // cleanupReviewerDispatchWorkspace, so checking activeInvocations alone
+      // is not sufficient.  Instead, stop the engine to drain all running
+      // invocation promises (including their .then() cleanup chains), then
+      // restart it so the completed transition can be dispatched.
+      await engine.stop();
 
-    await engine.handleStateChange({
-      taskId,
-      taskRef,
-      fromStatus: "pending_review",
-      toStatus: "completed",
-      timestamp: Date.now(),
-      task: {
-        _ulid: taskId,
-        title: "Lifecycle Persistence",
-        slugs: ["task-lifecycle-persistence"],
-        status: "completed",
-        type: "task",
-        priority: 1,
-        blocked_by: [],
-        depends_on: [],
-        context: [],
-        tags: [],
-        vcs_refs: [],
-        notes: [],
-        todos: [],
-        created_at: new Date().toISOString(),
-        automation: "eligible",
-      } as never,
-    });
+      // Restart the engine so handleStateChange(completed) can run.
+      await engine.start();
 
-    await engine.stop();
+      await engine.handleStateChange({
+        taskId,
+        taskRef,
+        fromStatus: "pending_review",
+        toStatus: "completed",
+        timestamp: Date.now(),
+        task: {
+          _ulid: taskId,
+          title: "Lifecycle Persistence",
+          slugs: ["task-lifecycle-persistence"],
+          status: "completed",
+          type: "task",
+          priority: 1,
+          blocked_by: [],
+          depends_on: [],
+          context: [],
+          tags: [],
+          vcs_refs: [],
+          notes: [],
+          todos: [],
+          created_at: new Date().toISOString(),
+          automation: "eligible",
+        } as never,
+      });
 
-    record = await readWorkspaceRecord(registryPath, taskRef);
-    expect(record.lifecycle_state).toBe("closing");
-    expect(record.integration.status).toBe("merged");
-    expect(record.cleanup).toMatchObject({
-      eligible: true,
-      reason: "integrated-into-base-branch",
-      status: "scheduled",
-    });
+      await engine.stop();
 
-    const reloaded = await waitForLoadedWorkspaceRecord(
-      tempDir,
-      taskRef,
-      (current) => current.lifecycle_state === "closing",
-      5000,
-    );
-    expect(reloaded?.lifecycle_state).toBe("closing");
+      record = await readWorkspaceRecord(registryPath, taskRef);
+      expect(record.lifecycle_state).toBe("closing");
+      expect(record.integration.status).toBe("merged");
+      expect(record.cleanup).toMatchObject({
+        eligible: true,
+        reason: "integrated-into-base-branch",
+        status: "scheduled",
+      });
 
-    await reconcileDispatchWorkspaceRegistry(
-      tempDir,
-      new Map([[taskRef, "in_progress" as const]]),
-    );
-    record = await readWorkspaceRecord(registryPath, taskRef);
-    expect(record.lifecycle_state).toBe("ready");
-    expect(record.integration.status).toBe("reset");
-    expect(record.cleanup).toMatchObject({
-      eligible: true,
-      reason: "task-reset",
-      status: "scheduled",
-    });
+      const reloaded = await waitForLoadedWorkspaceRecord(
+        tempDir,
+        taskRef,
+        (current) => current.lifecycle_state === "closing",
+        5000,
+      );
+      expect(reloaded?.lifecycle_state).toBe("closing");
 
-    await fs.rm(record.worktrees.worker.path, { recursive: true, force: true });
-    await reconcileDispatchWorkspaceRegistry(
-      tempDir,
-      new Map([[taskRef, "in_progress" as const]]),
-    );
-    record = await readWorkspaceRecord(registryPath, taskRef);
-    expect(record.lifecycle_state).toBe("stale");
-    expect(record.health.status).toBe("stale");
+      await reconcileDispatchWorkspaceRegistry(
+        tempDir,
+        new Map([[taskRef, "in_progress" as const]]),
+      );
+      record = await readWorkspaceRecord(registryPath, taskRef);
+      expect(record.lifecycle_state).toBe("ready");
+      expect(record.integration.status).toBe("reset");
+      expect(record.cleanup).toMatchObject({
+        eligible: true,
+        reason: "task-reset",
+        status: "scheduled",
+      });
 
-    git(tempDir, "worktree prune");
-    await provisionDispatchWorkspace({
-      projectDir: tempDir,
-      taskRef,
-      task: {
-        title: "Lifecycle Persistence",
-        slugs: ["task-lifecycle-persistence"],
-      },
-    });
-    record = await readWorkspaceRecord(registryPath, taskRef);
-    expect(record.health.status).toBe("healthy");
+      await fs.rm(record.worktrees.worker.path, { recursive: true, force: true });
+      await reconcileDispatchWorkspaceRegistry(
+        tempDir,
+        new Map([[taskRef, "in_progress" as const]]),
+      );
+      record = await readWorkspaceRecord(registryPath, taskRef);
+      expect(record.lifecycle_state).toBe("stale");
+      expect(record.health.status).toBe("stale");
 
-    record.cleanup.status = "blocked";
-    record.cleanup.eligible = false;
-    record.cleanup.reason = "cleanup-safety-check";
-    record.cleanup.detail = "cleanup-safety-check";
-    await saveDispatchWorkspaceRecord(await initContext(tempDir), {
-      ...record,
-      _sourceFile: registryPath,
-    });
-    await reconcileDispatchWorkspaceRegistry(
-      tempDir,
-      new Map([[taskRef, "completed" as const]]),
-    );
-    record = await readWorkspaceRecord(registryPath, taskRef);
-    expect(record.lifecycle_state).toBe("cleanup_blocked");
+      git(tempDir, "worktree prune");
+      await provisionDispatchWorkspace({
+        projectDir: tempDir,
+        taskRef,
+        task: {
+          title: "Lifecycle Persistence",
+          slugs: ["task-lifecycle-persistence"],
+        },
+      });
+      record = await readWorkspaceRecord(registryPath, taskRef);
+      expect(record.health.status).toBe("healthy");
 
-    record.cleanup.status = "completed";
-    record.cleanup.eligible = true;
-    record.cleanup.reason = "integrated-into-base-branch";
-    record.cleanup.detail = "integrated-into-base-branch";
-    await saveDispatchWorkspaceRecord(await initContext(tempDir), {
-      ...record,
-      _sourceFile: registryPath,
-    });
-    await reconcileDispatchWorkspaceRegistry(
-      tempDir,
-      new Map([[taskRef, "completed" as const]]),
-    );
-    record = await readWorkspaceRecord(registryPath, taskRef);
-    expect(record.lifecycle_state).toBe("closed");
-    expect(record.timestamps.closed_at).toBeTruthy();
-  });
+      record.cleanup.status = "blocked";
+      record.cleanup.eligible = false;
+      record.cleanup.reason = "cleanup-safety-check";
+      record.cleanup.detail = "cleanup-safety-check";
+      await saveDispatchWorkspaceRecord(await initContext(tempDir), {
+        ...record,
+        _sourceFile: registryPath,
+      });
+      await reconcileDispatchWorkspaceRegistry(tempDir, new Map([[taskRef, "completed" as const]]));
+      record = await readWorkspaceRecord(registryPath, taskRef);
+      expect(record.lifecycle_state).toBe("cleanup_blocked");
+
+      record.cleanup.status = "completed";
+      record.cleanup.eligible = true;
+      record.cleanup.reason = "integrated-into-base-branch";
+      record.cleanup.detail = "integrated-into-base-branch";
+      await saveDispatchWorkspaceRecord(await initContext(tempDir), {
+        ...record,
+        _sourceFile: registryPath,
+      });
+      await reconcileDispatchWorkspaceRegistry(tempDir, new Map([[taskRef, "completed" as const]]));
+      record = await readWorkspaceRecord(registryPath, taskRef);
+      expect(record.lifecycle_state).toBe("closed");
+      expect(record.timestamps.closed_at).toBeTruthy();
+    },
+  );
 
   it("keeps closing lifecycle when reviewer cleanup sees stale worker metadata", async () => {
     await seedRepo(tempDir);
@@ -879,7 +870,9 @@ describe("dispatch workspace registry", () => {
 
     const ctx = await initContext(tempDir);
     const registryPath = getDispatchWorkspaceRegistryPath(ctx);
-    const existingRecord = await findDispatchWorkspaceByTaskRef(ctx, taskRef, { includeClosed: true });
+    const existingRecord = await findDispatchWorkspaceByTaskRef(ctx, taskRef, {
+      includeClosed: true,
+    });
     expect(existingRecord?.worktrees.reviewer?.path).toBeTruthy();
 
     const now = new Date().toISOString();
@@ -936,9 +929,7 @@ describe("dispatch workspace registry", () => {
       "utf-8",
     );
 
-    await expect(loadDispatchWorkspaceRegistry(ctx)).rejects.toThrow(
-      /task_ref/i,
-    );
+    await expect(loadDispatchWorkspaceRegistry(ctx)).rejects.toThrow(/task_ref/i);
     await expect(
       saveDispatchWorkspaceRecord(ctx, {
         workspace_id: "dispatch-workspace-one",
@@ -996,7 +987,7 @@ describe("dispatch workspace registry", () => {
       }),
     ).rejects.toThrow(/task_ref/i);
 
-    const raw = await fs.readFile(registryPath, "utf-8");
+    const raw = await readTestOutput(registryPath);
     expect(raw).toContain("task_ref: not-a-ref");
   });
 });
@@ -1039,7 +1030,9 @@ describe("dispatch workspace registry shadow durability", () => {
       const committedProvisioning = YAML.parse(
         readCommittedShadowFile(tempDir, "project.dispatch-workspaces.yaml"),
       ) as { workspaces?: Array<Record<string, unknown>> };
-      const provisionedRecord = committedProvisioning.workspaces?.find((entry) => entry.task_ref === taskRef);
+      const provisionedRecord = committedProvisioning.workspaces?.find(
+        (entry) => entry.task_ref === taskRef,
+      );
       expect(provisionedRecord).toMatchObject({
         task_ref: taskRef,
         lifecycle_state: "ready",
@@ -1064,17 +1057,16 @@ describe("dispatch workspace registry shadow durability", () => {
       const committedReconciliation = YAML.parse(
         readCommittedShadowFile(tempDir, "project.dispatch-workspaces.yaml"),
       ) as { workspaces?: Array<Record<string, unknown>> };
-      const reconciledRecord = committedReconciliation.workspaces?.find((entry) => entry.task_ref === taskRef);
+      const reconciledRecord = committedReconciliation.workspaces?.find(
+        (entry) => entry.task_ref === taskRef,
+      );
       expect(reconciledRecord).toMatchObject({
         task_ref: taskRef,
         lifecycle_state: "active",
         active_role: "worker",
       });
 
-      const reloaded = await findDispatchWorkspaceByTaskRef(
-        await initContext(tempDir),
-        taskRef,
-      );
+      const reloaded = await findDispatchWorkspaceByTaskRef(await initContext(tempDir), taskRef);
       expect(reloaded?.lifecycle_state).toBe("active");
       expect(reloaded?.active_role).toBe("worker");
     },
@@ -1101,9 +1093,7 @@ describe("dispatch workspace registry shadow durability", () => {
             slugs: ["task-shadow-commit-failure-registry"],
           },
         }),
-      ).rejects.toThrow(
-        /could not be durably committed on the shadow branch/i,
-      );
+      ).rejects.toThrow(/could not be durably committed on the shadow branch/i);
 
       expect(commitSpy).toHaveBeenCalled();
       expect(getShadowStatus(tempDir)).toContain("project.dispatch-workspaces.yaml");
@@ -1140,9 +1130,9 @@ describe("dispatch workspace registry shadow durability", () => {
         // inside the lock scope, so blocking the lock prevents the write.
         const registryExists = existsSync(registryPath);
         if (registryExists) {
-          const registryContent = YAML.parse(
-            await fs.readFile(registryPath, "utf-8"),
-          ) as { workspaces?: unknown[] };
+          const registryContent = YAML.parse(await readTestOutput(registryPath)) as {
+            workspaces?: unknown[];
+          };
           expect(registryContent.workspaces ?? []).toHaveLength(0);
         }
       } finally {
@@ -1244,6 +1234,7 @@ describe("dispatch workspace registry shadow durability", () => {
       },
     };
 
+    // oxlint-disable-next-line unicorn/consistent-function-scoping -- co-located with baseRecord for readability
     function computedFrom(record: typeof baseRecord) {
       return {
         canonical_branch_head: record.canonical_branch_head,
@@ -1373,10 +1364,7 @@ describe("dispatch workspace registry shadow durability", () => {
 
     // Reconcile with a changed task status which triggers lifecycle_state and
     // integration changes — should trigger a save.
-    await reconcileDispatchWorkspaceRegistry(
-      tempDir,
-      new Map([[taskRef, "completed" as const]]),
-    );
+    await reconcileDispatchWorkspaceRegistry(tempDir, new Map([[taskRef, "completed" as const]]));
     expect(saveSpy).toHaveBeenCalled();
   });
 

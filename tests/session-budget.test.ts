@@ -100,12 +100,8 @@ describe("TaskBudgetSchema", () => {
 
   it("should reject missing fields", () => {
     expect(TaskBudgetSchema.safeParse({}).success).toBe(false);
-    expect(
-      TaskBudgetSchema.safeParse({ max_per_cycle: 1 }).success,
-    ).toBe(false);
-    expect(
-      TaskBudgetSchema.safeParse({ started_this_cycle: 0 }).success,
-    ).toBe(false);
+    expect(TaskBudgetSchema.safeParse({ max_per_cycle: 1 }).success).toBe(false);
+    expect(TaskBudgetSchema.safeParse({ started_this_cycle: 0 }).success).toBe(false);
   });
 });
 
@@ -130,9 +126,7 @@ describe("Budget CRUD", () => {
   const sessionId = "01KF123456789ABCDEFGHJKMNP";
 
   beforeEach(async () => {
-    testDir = await fs.mkdtemp(
-      path.join(os.tmpdir(), "kspec-budget-test-"),
-    );
+    testDir = await fs.mkdtemp(path.join(os.tmpdir(), "kspec-budget-test-"));
     sessionsDir = path.join(testDir, "sessions");
     // Create a session directory so budget operations have a home
     const input: SessionMetadataInput = {

@@ -80,9 +80,7 @@ describe("Session Storage Config in ManifestSchema", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      const storageError = result.error.issues.find(
-        (issue) => issue.path.includes("storage")
-      );
+      const storageError = result.error.issues.find((issue) => issue.path.includes("storage"));
       expect(storageError).toBeDefined();
       expect(storageError!.message).toContain("Invalid enum value");
       expect(storageError!.message).toContain("local");

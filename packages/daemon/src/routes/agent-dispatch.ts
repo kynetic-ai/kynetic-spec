@@ -19,21 +19,33 @@
  * - @agent-dispatch-engine ac-4: CLI posts state change event to daemon
  */
 
-import path from 'node:path';
-import { Elysia, t } from 'elysia';
-import { DispatchEngine } from '../../agent-runtime/dispatch.js';
-import type { TaskStateChange, TaskStatus, InvocationEvent, SyncStateEvent } from '../../agent-runtime/dispatch.js';
-import { ScheduleEngine } from '../../agent-runtime/schedule-engine.js';
-import { HookExecutor } from '../../agent-runtime/hook-executor.js';
-import { JoinAccumulator } from '../../agent-runtime/join-accumulator.js';
-import { ActionExecutor } from '../../agent-runtime/action-executor.js';
-import { DEFAULT_KSPEC_CLI_PATH } from '../../agent-runtime/invocation.js';
-import { initContext, loadMetaContext, loadAllItems, ReferenceIndex, resolveProjectRoots, resolveTaskDataManager } from '../../parser/index.js';
-import { getCompletedSessionCountsByAgent } from '../../sessions/store.js';
-import { TaskStatusSchema } from '../../schema/common.js';
-import type { PubSubManager } from '../websocket/pubsub.js';
-import type { SessionEventData } from '@kynetic-ai/shared';
-import { enumUnion } from './enum-utils.js';
+import path from "node:path";
+import { Elysia, t } from "elysia";
+import { DispatchEngine } from "../../agent-runtime/dispatch.js";
+import type {
+  TaskStateChange,
+  TaskStatus,
+  InvocationEvent,
+  SyncStateEvent,
+} from "../../agent-runtime/dispatch.js";
+import { ScheduleEngine } from "../../agent-runtime/schedule-engine.js";
+import { HookExecutor } from "../../agent-runtime/hook-executor.js";
+import { JoinAccumulator } from "../../agent-runtime/join-accumulator.js";
+import { ActionExecutor } from "../../agent-runtime/action-executor.js";
+import { DEFAULT_KSPEC_CLI_PATH } from "../../agent-runtime/invocation.js";
+import {
+  initContext,
+  loadMetaContext,
+  loadAllItems,
+  ReferenceIndex,
+  resolveProjectRoots,
+  resolveTaskDataManager,
+} from "../../parser/index.js";
+import { getCompletedSessionCountsByAgent } from "../../sessions/store.js";
+import { TaskStatusSchema } from "../../schema/common.js";
+import type { PubSubManager } from "../websocket/pubsub.js";
+import type { SessionEventData } from "@kynetic-ai/shared";
+import { enumUnion } from "./enum-utils.js";
 
 const VALID_TASK_STATUSES = new Set(TaskStatusSchema.options);
 
@@ -56,11 +68,7 @@ export interface AgentDispatchRouteOptions {
  * Create a new dispatch engine with optional WebSocket broadcast wiring.
  * AC: @daemon-agent-dispatch ac-3, ac-4
  */
-function createEngine(
-  projectDir: string,
-  cwd?: string,
-  pubsub?: PubSubManager,
-): DispatchEngine {
+function createEngine(projectDir: string, cwd?: string, pubsub?: PubSubManager): DispatchEngine {
   return new DispatchEngine({
     projectDir,
     cwd,
@@ -68,27 +76,32 @@ function createEngine(
     onInvocationEvent: pubsub
       ? (event: InvocationEvent) => {
           // AC: @ui-api-aggregation ac-4 - Include task_title for display
-          pubsub.broadcast('agents', 'agent_invocation', {
-            session_id: event.session_id,
-            agent_id: event.agent_id,
-            task_id: event.task_id ?? null,
-            task_title: event.task_title ?? null,
-            status: event.status,
-            timestamp: event.timestamp,
-          }, projectDir);
+          pubsub.broadcast(
+            "agents",
+            "agent_invocation",
+            {
+              session_id: event.session_id,
+              agent_id: event.agent_id,
+              task_id: event.task_id ?? null,
+              task_title: event.task_title ?? null,
+              status: event.status,
+              timestamp: event.timestamp,
+            },
+            projectDir,
+          );
         }
       : undefined,
     // AC: @session-event-broadcast ac-replaces-text-chunks
     // AC: @cli-agent-commands ac-13, @daemon-agent-dispatch ac-8
     onSessionEvent: pubsub
       ? (event: SessionEventData) => {
-          pubsub.broadcast('agents', event.type, event, projectDir);
+          pubsub.broadcast("agents", event.type, event, projectDir);
         }
       : undefined,
     // AC: @dispatch-remote-branch-sync ac-degraded-status-broadcast
     onSyncStateEvent: pubsub
       ? (event: SyncStateEvent) => {
-          pubsub.broadcast('agents', event.type, event, projectDir);
+          pubsub.broadcast("agents", event.type, event, projectDir);
         }
       : undefined,
   });
@@ -118,7 +131,9 @@ async function startScheduleEngine(
           action_type: event.action_run.action_type,
           schedule_id: event.event_context.schedule_id,
           source_name: event.action_run.source_name,
-          ...(event.action_run.duration_ms !== undefined && { duration_ms: event.action_run.duration_ms }),
+          ...(event.action_run.duration_ms !== undefined && {
+            duration_ms: event.action_run.duration_ms,
+          }),
           ...(event.action_run.invocation_id && { session_id: event.action_run.invocation_id }),
         },
         causation_id: event.event_context.causation_id,
@@ -176,7 +191,9 @@ async function startHookExecutor(
           action_run_id: event.action_run.action_run_id,
           action_type: event.action_run.action_type,
           source_name: event.action_run.source_name,
-          ...(event.action_run.duration_ms !== undefined && { duration_ms: event.action_run.duration_ms }),
+          ...(event.action_run.duration_ms !== undefined && {
+            duration_ms: event.action_run.duration_ms,
+          }),
           ...(event.action_run.invocation_id && { session_id: event.action_run.invocation_id }),
         },
         causation_id: event.event_context.causation_id,
@@ -240,7 +257,9 @@ async function startJoinAccumulator(
           source_name: event.action_run.source_name,
           group_id: event.event_context.group_id,
           config_id: event.event_context.config_id,
-          ...(event.action_run.duration_ms !== undefined && { duration_ms: event.action_run.duration_ms }),
+          ...(event.action_run.duration_ms !== undefined && {
+            duration_ms: event.action_run.duration_ms,
+          }),
           ...(event.action_run.invocation_id && { session_id: event.action_run.invocation_id }),
         },
         causation_id: event.event_context.causation_id,
@@ -294,11 +313,14 @@ function processStateChangeEvent(
   body: StateChangeBody,
 ): { accepted: boolean; reason?: string } {
   if (!engine || !engine.getStatus().running) {
-    return { accepted: false, reason: 'Dispatch engine not running' };
+    return { accepted: false, reason: "Dispatch engine not running" };
   }
 
   if (!VALID_TASK_STATUSES.has(body.from_status) || !VALID_TASK_STATUSES.has(body.to_status)) {
-    return { accepted: false, reason: `Invalid status: from_status="${body.from_status}" to_status="${body.to_status}". Valid values: ${[...VALID_TASK_STATUSES].join(", ")}` };
+    return {
+      accepted: false,
+      reason: `Invalid status: from_status="${body.from_status}" to_status="${body.to_status}". Valid values: ${[...VALID_TASK_STATUSES].join(", ")}`,
+    };
   }
 
   const change: TaskStateChange = {
@@ -310,18 +332,15 @@ function processStateChangeEvent(
   };
 
   engine.handleStateChange(change).catch((err) => {
-    console.error('[dispatch] Error handling state change event:', err);
+    console.error("[dispatch] Error handling state change event:", err);
   });
 
   return { accepted: true };
 }
 
-export function resolveDispatchCwd(
-  projectDir: string,
-  requestedCwd: string | null,
-): string {
+export function resolveDispatchCwd(projectDir: string, requestedCwd: string | null): string {
   if (requestedCwd && !path.isAbsolute(requestedCwd)) {
-    throw new Error('Dispatch cwd must be an absolute path');
+    throw new Error("Dispatch cwd must be an absolute path");
   }
   const cwd = requestedCwd ? path.resolve(requestedCwd) : projectDir;
 
@@ -332,7 +351,7 @@ export function resolveDispatchCwd(
   const projectRoots = resolveProjectRoots(projectDir);
   const cwdRoots = resolveProjectRoots(cwd);
   if (!projectRoots || !cwdRoots || projectRoots.mainRoot !== cwdRoots.mainRoot) {
-    throw new Error('Dispatch cwd must belong to the same git project');
+    throw new Error("Dispatch cwd must belong to the same git project");
   }
 
   return cwd;
@@ -341,31 +360,98 @@ export function resolveDispatchCwd(
 export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {}) {
   const { pubsub } = options;
 
-  return new Elysia({ prefix: '/api/agent' })
+  return (
+    new Elysia({ prefix: "/api/agent" })
 
-    // AC: @daemon-agent-dispatch ac-2, ac-7 - CLI posts state change event to daemon
-    // AC: @agent-dispatch-engine ac-4
-    .post('/events', ({ body, projectContext }) => {
-      return processStateChangeEvent(engines.get(projectContext.path), body);
-    }, { body: stateChangeBodySchema })
+      // AC: @daemon-agent-dispatch ac-2, ac-7 - CLI posts state change event to daemon
+      // AC: @agent-dispatch-engine ac-4
+      .post(
+        "/events",
+        ({ body, projectContext }) => {
+          return processStateChangeEvent(engines.get(projectContext.path), body);
+        },
+        { body: stateChangeBodySchema },
+      )
 
-    // Legacy alias — same as /events
-    .post('/event', ({ body, projectContext }) => {
-      return processStateChangeEvent(engines.get(projectContext.path), body);
-    }, { body: stateChangeBodySchema })
+      // Legacy alias — same as /events
+      .post(
+        "/event",
+        ({ body, projectContext }) => {
+          return processStateChangeEvent(engines.get(projectContext.path), body);
+        },
+        { body: stateChangeBodySchema },
+      )
 
-    // AC: @daemon-agent-dispatch ac-6 - Unified dispatch start/stop via action field
-    .post('/dispatch', async ({ body, projectContext, request, set }) => {
-      const projectDir = projectContext.path;
+      // AC: @daemon-agent-dispatch ac-6 - Unified dispatch start/stop via action field
+      .post(
+        "/dispatch",
+        async ({ body, projectContext, request, set }) => {
+          const projectDir = projectContext.path;
 
-      if (body.action === 'start') {
+          if (body.action === "start") {
+            let requestedCwd: string;
+            try {
+              requestedCwd = resolveDispatchCwd(projectDir, request.headers.get("X-Kspec-Cwd"));
+            } catch (err) {
+              set.status = 400;
+              return {
+                dispatch_enabled: false,
+                error: err instanceof Error ? err.message : String(err),
+              };
+            }
+
+            let engine = engines.get(projectDir);
+            if (engine?.getStatus().running) {
+              if (engine.getCwd() !== requestedCwd) {
+                set.status = 409;
+                return {
+                  dispatch_enabled: true,
+                  error: `Dispatch engine already running for ${projectDir} with cwd ${engine.getCwd()}`,
+                };
+              }
+              return { dispatch_enabled: true, reason: "Already running" };
+            }
+
+            engine = createEngine(projectDir, requestedCwd, pubsub);
+            engines.set(projectDir, engine);
+            await engine.start();
+            await startScheduleEngine(projectDir, engine, pubsub);
+            await startHookExecutor(projectDir, engine, pubsub);
+            await startJoinAccumulator(projectDir, engine, pubsub);
+
+            return { dispatch_enabled: true };
+          } else {
+            const engine = engines.get(projectDir);
+            if (!engine) {
+              return { dispatch_enabled: false, reason: "No engine running" };
+            }
+
+            stopJoinAccumulator(projectDir);
+            stopHookExecutor(projectDir);
+            await stopScheduleEngine(projectDir);
+            await engine.stop();
+            engines.delete(projectDir);
+
+            return { dispatch_enabled: false };
+          }
+        },
+        {
+          body: t.Object({
+            action: t.Union([t.Literal("start"), t.Literal("stop")]),
+          }),
+        },
+      )
+
+      // Start dispatch engine (legacy route)
+      .post("/dispatch/start", async ({ projectContext, request, set }) => {
+        const projectDir = projectContext.path;
         let requestedCwd: string;
         try {
-          requestedCwd = resolveDispatchCwd(projectDir, request.headers.get('X-Kspec-Cwd'));
+          requestedCwd = resolveDispatchCwd(projectDir, request.headers.get("X-Kspec-Cwd"));
         } catch (err) {
           set.status = 400;
           return {
-            dispatch_enabled: false,
+            started: false,
             error: err instanceof Error ? err.message : String(err),
           };
         }
@@ -375,25 +461,33 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
           if (engine.getCwd() !== requestedCwd) {
             set.status = 409;
             return {
-              dispatch_enabled: true,
+              started: false,
               error: `Dispatch engine already running for ${projectDir} with cwd ${engine.getCwd()}`,
+              status: engine.getStatus(),
             };
           }
-          return { dispatch_enabled: true, reason: 'Already running' };
+          return { started: false, reason: "Already running", status: engine.getStatus() };
         }
 
+        // AC: @agent-dispatch-engine ac-10 - pass kspecCliPath so task notes work from daemon-started engine
         engine = createEngine(projectDir, requestedCwd, pubsub);
         engines.set(projectDir, engine);
+
         await engine.start();
         await startScheduleEngine(projectDir, engine, pubsub);
         await startHookExecutor(projectDir, engine, pubsub);
         await startJoinAccumulator(projectDir, engine, pubsub);
 
-        return { dispatch_enabled: true };
-      } else {
+        return { started: true, status: engine.getStatus() };
+      })
+
+      // Stop dispatch engine (legacy route)
+      .post("/dispatch/stop", async ({ projectContext }) => {
+        const projectDir = projectContext.path;
         const engine = engines.get(projectDir);
+
         if (!engine) {
-          return { dispatch_enabled: false, reason: 'No engine running' };
+          return { stopped: false, reason: "No engine running" };
         }
 
         stopJoinAccumulator(projectDir);
@@ -402,158 +496,105 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
         await engine.stop();
         engines.delete(projectDir);
 
-        return { dispatch_enabled: false };
-      }
-    }, {
-      body: t.Object({
-        action: t.Union([t.Literal('start'), t.Literal('stop')]),
-      }),
-    })
+        return { stopped: true };
+      })
 
-    // Start dispatch engine (legacy route)
-    .post('/dispatch/start', async ({ projectContext, request, set }) => {
-      const projectDir = projectContext.path;
-      let requestedCwd: string;
-      try {
-        requestedCwd = resolveDispatchCwd(projectDir, request.headers.get('X-Kspec-Cwd'));
-      } catch (err) {
-        set.status = 400;
-        return {
-          started: false,
-          error: err instanceof Error ? err.message : String(err),
-        };
-      }
+      // Get dispatch engine status (internal format)
+      // AC: @dispatch-remote-branch-sync ac-degraded-status-api
+      .get("/dispatch/status", ({ projectContext }) => {
+        const engine = engines.get(projectContext.path);
 
-      let engine = engines.get(projectDir);
-      if (engine?.getStatus().running) {
-        if (engine.getCwd() !== requestedCwd) {
-          set.status = 409;
+        if (!engine) {
           return {
-            started: false,
-            error: `Dispatch engine already running for ${projectDir} with cwd ${engine.getCwd()}`,
-            status: engine.getStatus(),
+            running: false,
+            activeInvocations: 0,
+            queuedInvocations: 0,
+            invocations: [],
+            degraded: { active: false, reason: "", enteredAt: null },
           };
         }
-        return { started: false, reason: 'Already running', status: engine.getStatus() };
-      }
 
-      // AC: @agent-dispatch-engine ac-10 - pass kspecCliPath so task notes work from daemon-started engine
-      engine = createEngine(projectDir, requestedCwd, pubsub);
-      engines.set(projectDir, engine);
-
-      await engine.start();
-      await startScheduleEngine(projectDir, engine, pubsub);
-      await startHookExecutor(projectDir, engine, pubsub);
-      await startJoinAccumulator(projectDir, engine, pubsub);
-
-      return { started: true, status: engine.getStatus() };
-    })
-
-    // Stop dispatch engine (legacy route)
-    .post('/dispatch/stop', async ({ projectContext }) => {
-      const projectDir = projectContext.path;
-      const engine = engines.get(projectDir);
-
-      if (!engine) {
-        return { stopped: false, reason: 'No engine running' };
-      }
-
-      stopJoinAccumulator(projectDir);
-      stopHookExecutor(projectDir);
-      await stopScheduleEngine(projectDir);
-      await engine.stop();
-      engines.delete(projectDir);
-
-      return { stopped: true };
-    })
-
-    // Get dispatch engine status (internal format)
-    // AC: @dispatch-remote-branch-sync ac-degraded-status-api
-    .get('/dispatch/status', ({ projectContext }) => {
-      const engine = engines.get(projectContext.path);
-
-      if (!engine) {
+        const status = engine.getStatus();
+        const degraded = engine.getDegradedState();
         return {
-          running: false,
-          activeInvocations: 0,
-          queuedInvocations: 0,
-          invocations: [],
-          degraded: { active: false, reason: '', enteredAt: null },
+          ...status,
+          degraded: {
+            active: degraded.active,
+            reason: degraded.reason,
+            enteredAt: degraded.enteredAt?.toISOString() ?? null,
+          },
         };
-      }
+      })
 
-      const status = engine.getStatus();
-      const degraded = engine.getDegradedState();
-      return {
-        ...status,
-        degraded: {
-          active: degraded.active,
-          reason: degraded.reason,
-          enteredAt: degraded.enteredAt?.toISOString() ?? null,
-        },
-      };
-    })
+      // AC: @daemon-agent-dispatch ac-5 - Public status endpoint
+      // AC: @ui-api-ref-resolution ac-1 - Include task_title for active invocations
+      // AC: @dispatch-remote-branch-sync ac-degraded-status-api
+      .get("/status", async ({ projectContext }) => {
+        const projectDir = projectContext.path;
+        const engine = engines.get(projectDir);
+        const engineStatus = engine?.getStatus();
 
-    // AC: @daemon-agent-dispatch ac-5 - Public status endpoint
-    // AC: @ui-api-ref-resolution ac-1 - Include task_title for active invocations
-    // AC: @dispatch-remote-branch-sync ac-degraded-status-api
-    .get('/status', async ({ projectContext }) => {
-      const projectDir = projectContext.path;
-      const engine = engines.get(projectDir);
-      const engineStatus = engine?.getStatus();
+        let agentDefinitions: Array<{
+          id: string;
+          name: string;
+          adapter: string;
+          completed_sessions: number;
+        }> = [];
+        let completedCounts: Record<string, number> = {};
+        let refIndex: ReferenceIndex | null = null;
+        try {
+          const ctx = await initContext(projectDir);
+          const [meta, counts, tasks, items] = await Promise.all([
+            loadMetaContext(ctx),
+            getCompletedSessionCountsByAgent(ctx.specDir),
+            resolveTaskDataManager(ctx).loadAllTasks(ctx),
+            loadAllItems(ctx),
+          ]);
+          completedCounts = counts;
+          refIndex = new ReferenceIndex(tasks, items);
+          agentDefinitions = meta.agents.map((a) => ({
+            id: a.id,
+            name: a.name,
+            adapter: a.adapter ?? "claude-agent-acp",
+            completed_sessions: completedCounts[a.id] ?? 0,
+          }));
+        } catch {
+          // Agent definitions unavailable — return empty array
+        }
 
-      let agentDefinitions: Array<{ id: string; name: string; adapter: string; completed_sessions: number }> = [];
-      let completedCounts: Record<string, number> = {};
-      let refIndex: ReferenceIndex | null = null;
-      try {
-        const ctx = await initContext(projectDir);
-        const [meta, counts, tasks, items] = await Promise.all([
-          loadMetaContext(ctx),
-          getCompletedSessionCountsByAgent(ctx.specDir),
-          resolveTaskDataManager(ctx).loadAllTasks(ctx),
-          loadAllItems(ctx),
-        ]);
-        completedCounts = counts;
-        refIndex = new ReferenceIndex(tasks, items);
-        agentDefinitions = meta.agents.map((a) => ({
-          id: a.id,
-          name: a.name,
-          adapter: a.adapter ?? 'claude-agent-acp',
-          completed_sessions: completedCounts[a.id] ?? 0,
-        }));
-      } catch {
-        // Agent definitions unavailable — return empty array
-      }
-
-      const degradedState = engine?.getDegradedState();
-      return {
-        dispatch_enabled: engineStatus?.running ?? false,
-        active_invocations: engineStatus?.invocations?.map((inv) => {
-          let task_title: string | null = null;
-          if (inv.taskRef && refIndex) {
-            const result = refIndex.resolve(inv.taskRef);
-            if (result.ok) {
-              task_title = (result.item as { title?: string }).title ?? null;
-            }
-          }
-          return {
-            session_id: inv.sessionId,
-            agent_id: inv.agentId,
-            task_ref: inv.taskRef ?? null,
-            task_title,
-            elapsed_ms: inv.elapsedMs,
-          };
-        }) ?? [],
-        queue_depth: engineStatus?.queuedInvocations ?? 0,
-        agent_definitions: agentDefinitions,
-        // AC: @dispatch-remote-branch-sync ac-degraded-status-api
-        degraded: degradedState ? {
-          active: degradedState.active,
-          reason: degradedState.reason,
-          enteredAt: degradedState.enteredAt?.toISOString() ?? null,
-        } : { active: false, reason: '', enteredAt: null },
-      };
-    });
+        const degradedState = engine?.getDegradedState();
+        return {
+          dispatch_enabled: engineStatus?.running ?? false,
+          active_invocations:
+            engineStatus?.invocations?.map((inv) => {
+              let task_title: string | null = null;
+              if (inv.taskRef && refIndex) {
+                const result = refIndex.resolve(inv.taskRef);
+                if (result.ok) {
+                  task_title = (result.item as { title?: string }).title ?? null;
+                }
+              }
+              return {
+                session_id: inv.sessionId,
+                agent_id: inv.agentId,
+                task_ref: inv.taskRef ?? null,
+                task_title,
+                elapsed_ms: inv.elapsedMs,
+              };
+            }) ?? [],
+          queue_depth: engineStatus?.queuedInvocations ?? 0,
+          agent_definitions: agentDefinitions,
+          // AC: @dispatch-remote-branch-sync ac-degraded-status-api
+          degraded: degradedState
+            ? {
+                active: degradedState.active,
+                reason: degradedState.reason,
+                enteredAt: degradedState.enteredAt?.toISOString() ?? null,
+              }
+            : { active: false, reason: "", enteredAt: null },
+        };
+      })
+  );
 }
 
 /**
@@ -606,7 +647,7 @@ export async function stopAllEngines(): Promise<void> {
     stopPromises.push(
       scheduleEngine.stop().catch((err) => {
         console.error(`[schedule-engine] Error stopping for ${projectDir}:`, err);
-      })
+      }),
     );
   }
   await Promise.all(stopPromises);
@@ -619,10 +660,10 @@ export async function stopAllEngines(): Promise<void> {
     dispatchStopPromises.push(
       engine.stop().catch((err) => {
         console.error(`[dispatch] Error stopping engine for ${projectDir}:`, err);
-      })
+      }),
     );
   }
   await Promise.all(dispatchStopPromises);
   engines.clear();
-  console.log('[dispatch] All engines stopped');
+  console.log("[dispatch] All engines stopped");
 }

@@ -2,12 +2,12 @@
   "name": "@kynetic-ai/daemon",
   "version": "0.1.0",
   "description": "Kspec daemon server with WebSocket support",
-  "type": "module",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "bin": {
     "kspec-daemon": "./dist/index.js"
   },
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "build:compile": "bun build --compile --minify ../../dist/daemon/index.ts --outfile ../../dist/kspec-daemon",

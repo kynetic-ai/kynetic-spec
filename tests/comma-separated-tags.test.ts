@@ -64,10 +64,7 @@ describe("CLI integration with comma-separated tags", () => {
 
   // AC: @comma-tag-syntax ac-1
   it("should accept comma-separated tags in task add", async () => {
-    const result = kspec(
-      'task add --title "Comma Test Task" --tag cli,urgent',
-      tempDir,
-    );
+    const result = kspec('task add --title "Comma Test Task" --tag cli,urgent', tempDir);
 
     expect(result.exitCode).toBe(0);
 
@@ -80,27 +77,19 @@ describe("CLI integration with comma-separated tags", () => {
 
   // AC: @comma-tag-syntax ac-2
   it("should accept mixed comma and space-separated tags in task add", async () => {
-    const result = kspec(
-      'task add --title "Mixed Tags Test" --tag cli,urgent api',
-      tempDir,
-    );
+    const result = kspec('task add --title "Mixed Tags Test" --tag cli,urgent api', tempDir);
 
     expect(result.exitCode).toBe(0);
 
     const getResult = kspec("tasks list --json", tempDir);
     const tasks = JSON.parse(getResult.stdout);
     const testTask = tasks.find((t: any) => t.title === "Mixed Tags Test");
-    expect(testTask.tags).toEqual(
-      expect.arrayContaining(["cli", "urgent", "api"]),
-    );
+    expect(testTask.tags).toEqual(expect.arrayContaining(["cli", "urgent", "api"]));
   });
 
   // AC: @comma-tag-syntax ac-3
   it("should preserve existing --tag --tag behavior", async () => {
-    const result = kspec(
-      'task add --title "Separate Tags Test" --tag cli --tag urgent',
-      tempDir,
-    );
+    const result = kspec('task add --title "Separate Tags Test" --tag cli --tag urgent', tempDir);
 
     expect(result.exitCode).toBe(0);
 

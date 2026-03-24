@@ -30,7 +30,7 @@ async function setupWorktreeProject(): Promise<{
     "utf-8",
   );
   await fs.writeFile(path.join(mainDir, "README.md"), "# main repo\n", "utf-8");
-  execSync("git add README.md && git commit -m \"add readme\"", {
+  execSync('git add README.md && git commit -m "add readme"', {
     cwd: mainDir,
     stdio: "pipe",
   });

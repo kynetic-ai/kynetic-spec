@@ -1,33 +1,33 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from "vitest";
 
-import { buildPlanContentBlocks } from '../src/lib/utils/plan-embedded-content';
+import { buildPlanContentBlocks } from "../src/lib/utils/plan-embedded-content";
 
 const basePlan = {
-	_ulid: '01TESTPLANEMBED000000000000',
-	slugs: ['test-plan'],
-	title: 'Test Plan',
-	status: 'active',
-	created_at: '2026-03-12T00:00:00.000Z',
-	approved_at: undefined,
-	completed_at: undefined,
-	spec_count: 1,
-	task_count: 3,
-	task_progress: {
-		total: 3,
-		completed: 0,
-		in_progress: 0,
-		pending: 3,
-		blocked: 0
-	}
+  _ulid: "01TESTPLANEMBED000000000000",
+  slugs: ["test-plan"],
+  title: "Test Plan",
+  status: "active",
+  created_at: "2026-03-12T00:00:00.000Z",
+  approved_at: undefined,
+  completed_at: undefined,
+  spec_count: 1,
+  task_count: 3,
+  task_progress: {
+    total: 3,
+    completed: 0,
+    in_progress: 0,
+    pending: 3,
+    blocked: 0,
+  },
 };
 
-describe('buildPlanContentBlocks', () => {
-	// AC: @plan-embedded-views ac-1
-	it('embeds spec blocks when plan yaml omits explicit slugs but titles match derived specs', () => {
-		const blocks = buildPlanContentBlocks(
-			{
-				...basePlan,
-				content: `# Example
+describe("buildPlanContentBlocks", () => {
+  // AC: @plan-embedded-views ac-1
+  it("embeds spec blocks when plan yaml omits explicit slugs but titles match derived specs", () => {
+    const blocks = buildPlanContentBlocks(
+      {
+        ...basePlan,
+        content: `# Example
 
 ## Specs
 
@@ -36,31 +36,31 @@ describe('buildPlanContentBlocks', () => {
   type: feature
 \`\`\`
 `,
-				derived_specs: ['@dead-code-and-deduplication-sweep'],
-				derived_tasks: []
-			},
-			{ batchLoading: true }
-		);
+        derived_specs: ["@dead-code-and-deduplication-sweep"],
+        derived_tasks: [],
+      },
+      { batchLoading: true },
+    );
 
-		expect(blocks).toEqual(
-			expect.arrayContaining([
-				expect.objectContaining({
-					type: 'embedded',
-					embedType: 'spec',
-					state: 'loading',
-					refs: ['@dead-code-and-deduplication-sweep']
-				})
-			])
-		);
-	});
+    expect(blocks).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          type: "embedded",
+          embedType: "spec",
+          state: "loading",
+          refs: ["@dead-code-and-deduplication-sweep"],
+        }),
+      ]),
+    );
+  });
 
-	// AC: @plan-embedded-views ac-2
-	// AC: @plan-embedded-views ac-9
-	it('prefers derive_from_specs over adjacent manual task yaml when both are present', () => {
-		const blocks = buildPlanContentBlocks(
-			{
-				...basePlan,
-				content: `# Example
+  // AC: @plan-embedded-views ac-2
+  // AC: @plan-embedded-views ac-9
+  it("prefers derive_from_specs over adjacent manual task yaml when both are present", () => {
+    const blocks = buildPlanContentBlocks(
+      {
+        ...basePlan,
+        content: `# Example
 
 ## Tasks
 
@@ -72,39 +72,39 @@ derive_from_specs: true
   priority: 1
 \`\`\`
 `,
-				derived_specs: [],
-				derived_tasks: [
-					'@implement-markdown-rendering-trait',
-					'@implement-prose-typography-setup',
-					'@task-add-markdown-trait'
-				]
-			},
-			{ batchLoading: true }
-		);
+        derived_specs: [],
+        derived_tasks: [
+          "@implement-markdown-rendering-trait",
+          "@implement-prose-typography-setup",
+          "@task-add-markdown-trait",
+        ],
+      },
+      { batchLoading: true },
+    );
 
-		expect(blocks).toEqual(
-			expect.arrayContaining([
-				expect.objectContaining({
-					type: 'embedded',
-					embedType: 'task',
-					state: 'loading',
-					refs: [
-						'@implement-markdown-rendering-trait',
-						'@implement-prose-typography-setup',
-						'@task-add-markdown-trait'
-					]
-				})
-			])
-		);
-	});
+    expect(blocks).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          type: "embedded",
+          embedType: "task",
+          state: "loading",
+          refs: [
+            "@implement-markdown-rendering-trait",
+            "@implement-prose-typography-setup",
+            "@task-add-markdown-trait",
+          ],
+        }),
+      ]),
+    );
+  });
 
-	// AC: @plan-embedded-views ac-2
-	// AC: @plan-embedded-views ac-9
-	it('still prefers derive_from_specs when the manual task yaml appears before the directive', () => {
-		const blocks = buildPlanContentBlocks(
-			{
-				...basePlan,
-				content: `# Example
+  // AC: @plan-embedded-views ac-2
+  // AC: @plan-embedded-views ac-9
+  it("still prefers derive_from_specs when the manual task yaml appears before the directive", () => {
+    const blocks = buildPlanContentBlocks(
+      {
+        ...basePlan,
+        content: `# Example
 
 ## Tasks
 
@@ -116,38 +116,38 @@ derive_from_specs: true
 
 derive_from_specs: true
 `,
-				derived_specs: [],
-				derived_tasks: [
-					'@implement-markdown-rendering-trait',
-					'@implement-prose-typography-setup',
-					'@task-add-markdown-trait'
-				]
-			},
-			{ batchLoading: true }
-		);
+        derived_specs: [],
+        derived_tasks: [
+          "@implement-markdown-rendering-trait",
+          "@implement-prose-typography-setup",
+          "@task-add-markdown-trait",
+        ],
+      },
+      { batchLoading: true },
+    );
 
-		expect(blocks).toEqual(
-			expect.arrayContaining([
-				expect.objectContaining({
-					type: 'embedded',
-					embedType: 'task',
-					state: 'loading',
-					refs: [
-						'@implement-markdown-rendering-trait',
-						'@implement-prose-typography-setup',
-						'@task-add-markdown-trait'
-					]
-				})
-			])
-		);
-	});
+    expect(blocks).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          type: "embedded",
+          embedType: "task",
+          state: "loading",
+          refs: [
+            "@implement-markdown-rendering-trait",
+            "@implement-prose-typography-setup",
+            "@task-add-markdown-trait",
+          ],
+        }),
+      ]),
+    );
+  });
 
-	// AC: @plan-embedded-views ac-2
-	it('uses manual task refs when derive_from_specs is not enabled', () => {
-		const blocks = buildPlanContentBlocks(
-			{
-				...basePlan,
-				content: `# Example
+  // AC: @plan-embedded-views ac-2
+  it("uses manual task refs when derive_from_specs is not enabled", () => {
+    const blocks = buildPlanContentBlocks(
+      {
+        ...basePlan,
+        content: `# Example
 
 ## Tasks
 
@@ -156,25 +156,25 @@ derive_from_specs: true
   slug: task-add-markdown-trait
 \`\`\`
 `,
-				derived_specs: [],
-				derived_tasks: [
-					'@implement-markdown-rendering-trait',
-					'@implement-prose-typography-setup',
-					'@task-add-markdown-trait'
-				]
-			},
-			{ batchLoading: true }
-		);
+        derived_specs: [],
+        derived_tasks: [
+          "@implement-markdown-rendering-trait",
+          "@implement-prose-typography-setup",
+          "@task-add-markdown-trait",
+        ],
+      },
+      { batchLoading: true },
+    );
 
-		expect(blocks).toEqual(
-			expect.arrayContaining([
-				expect.objectContaining({
-					type: 'embedded',
-					embedType: 'task',
-					state: 'loading',
-					refs: ['@task-add-markdown-trait']
-				})
-			])
-		);
-	});
+    expect(blocks).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          type: "embedded",
+          embedType: "task",
+          state: "loading",
+          refs: ["@task-add-markdown-trait"],
+        }),
+      ]),
+    );
+  });
 });

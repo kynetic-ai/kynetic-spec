@@ -3,11 +3,7 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { initContext } from "../src/parser/yaml.js";
-import {
-  cleanupTempDir,
-  createTempDir,
-  initGitRepo,
-} from "./helpers/cli.js";
+import { cleanupTempDir, createTempDir, initGitRepo } from "./helpers/cli.js";
 
 const cleanupDirs: string[] = [];
 
@@ -29,7 +25,7 @@ async function setupWorktreeProject(): Promise<{
   await fs.mkdir(path.join(shadowDir, "modules"), { recursive: true });
   await fs.writeFile(
     path.join(shadowDir, "kynetic.yaml"),
-    "kynetic: \"1\"\ntitle: Worktree Test\n",
+    'kynetic: "1"\ntitle: Worktree Test\n',
     "utf-8",
   );
 

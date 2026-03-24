@@ -10,11 +10,11 @@
  * AC: @multi-directory-daemon ac-17, ac-18, ac-19
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { setupMultiDirFixtures, cleanupTempDir } from './helpers/cli';
-import { join } from 'path';
-import { writeFile } from 'fs/promises';
-import { KspecWatcher } from '../packages/daemon/src/watcher';
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { setupMultiDirFixtures, cleanupTempDir } from "./helpers/cli";
+import { join } from "path";
+import { writeFile } from "fs/promises";
+import { KspecWatcher } from "../packages/daemon/src/watcher";
 
 // CI environments (especially with Chokidar fallback) need longer timeouts
 const DEBOUNCE_WAIT = process.env.CI ? 2000 : 600;
@@ -24,33 +24,33 @@ const DEBOUNCE_WAIT = process.env.CI ? 2000 : 600;
 // Tests pass locally and implementation is verified correct.
 const describeOrSkip = process.env.CI ? describe.skip : describe;
 
-describeOrSkip('Per-Project File Watchers', () => {
+describeOrSkip("Per-Project File Watchers", () => {
   let fixturesRoot: string;
   let projectA: string;
   let projectB: string;
 
   beforeEach(async () => {
     fixturesRoot = await setupMultiDirFixtures();
-    projectA = join(fixturesRoot, 'project-a');
-    projectB = join(fixturesRoot, 'project-b');
+    projectA = join(fixturesRoot, "project-a");
+    projectB = join(fixturesRoot, "project-b");
   });
 
   afterEach(async () => {
     await cleanupTempDir(fixturesRoot);
   });
 
-  describe('Watcher isolation per project', () => {
+  describe("Watcher isolation per project", () => {
     // AC: @multi-directory-daemon ac-17
-    it('should create separate watcher for each project', async () => {
+    it("should create separate watcher for each project", async () => {
       // Create two separate watchers for different projects
       const watcherA = new KspecWatcher({
-        kspecDir: join(projectA, '.kspec'),
+        kspecDir: join(projectA, ".kspec"),
         onFileChange: vi.fn(),
         onError: vi.fn(),
       });
 
       const watcherB = new KspecWatcher({
-        kspecDir: join(projectB, '.kspec'),
+        kspecDir: join(projectB, ".kspec"),
         onFileChange: vi.fn(),
         onError: vi.fn(),
       });
@@ -66,18 +66,18 @@ describeOrSkip('Per-Project File Watchers', () => {
     });
 
     // AC: @multi-directory-daemon ac-17
-    it('should trigger events scoped to correct project when file changes', async () => {
+    it("should trigger events scoped to correct project when file changes", async () => {
       const changeHandlerA = vi.fn();
       const changeHandlerB = vi.fn();
 
       const watcherA = new KspecWatcher({
-        kspecDir: join(projectA, '.kspec'),
+        kspecDir: join(projectA, ".kspec"),
         onFileChange: changeHandlerA,
         onError: vi.fn(),
       });
 
       const watcherB = new KspecWatcher({
-        kspecDir: join(projectB, '.kspec'),
+        kspecDir: join(projectB, ".kspec"),
         onFileChange: changeHandlerB,
         onError: vi.fn(),
       });
@@ -86,11 +86,11 @@ describeOrSkip('Per-Project File Watchers', () => {
       await watcherB.start();
 
       // Change file in project A
-      const fileA = join(projectA, '.kspec', 'kynetic.yaml');
+      const fileA = join(projectA, ".kspec", "kynetic.yaml");
       await writeFile(fileA, 'kynetic: "1.0"\nproject: Modified A\n');
 
       // Wait for debounce (500ms + buffer)
-      await new Promise(resolve => setTimeout(resolve, DEBOUNCE_WAIT));
+      await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_WAIT));
 
       // Only project A's watcher should have been notified
       expect(changeHandlerA).toHaveBeenCalled();
@@ -101,18 +101,18 @@ describeOrSkip('Per-Project File Watchers', () => {
     });
 
     // AC: @multi-directory-daemon ac-18
-    it('should only notify watchers for the project that changed', async () => {
+    it("should only notify watchers for the project that changed", async () => {
       const changeHandlerA = vi.fn();
       const changeHandlerB = vi.fn();
 
       const watcherA = new KspecWatcher({
-        kspecDir: join(projectA, '.kspec'),
+        kspecDir: join(projectA, ".kspec"),
         onFileChange: changeHandlerA,
         onError: vi.fn(),
       });
 
       const watcherB = new KspecWatcher({
-        kspecDir: join(projectB, '.kspec'),
+        kspecDir: join(projectB, ".kspec"),
         onFileChange: changeHandlerB,
         onError: vi.fn(),
       });
@@ -121,11 +121,11 @@ describeOrSkip('Per-Project File Watchers', () => {
       await watcherB.start();
 
       // Change file in project B
-      const fileB = join(projectB, '.kspec', 'kynetic.yaml');
+      const fileB = join(projectB, ".kspec", "kynetic.yaml");
       await writeFile(fileB, 'kynetic: "1.0"\nproject: Modified B\n');
 
       // Wait for debounce
-      await new Promise(resolve => setTimeout(resolve, DEBOUNCE_WAIT));
+      await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_WAIT));
 
       // Only project B's watcher should have been notified
       expect(changeHandlerA).not.toHaveBeenCalled();
@@ -136,14 +136,14 @@ describeOrSkip('Per-Project File Watchers', () => {
     });
 
     // AC: @multi-directory-daemon ac-17
-    it('should receive file path scoped to project directory', async () => {
+    it("should receive file path scoped to project directory", async () => {
       let receivedPath: string | undefined;
       const changeHandler = vi.fn((path: string) => {
         receivedPath = path;
       });
 
       const watcher = new KspecWatcher({
-        kspecDir: join(projectA, '.kspec'),
+        kspecDir: join(projectA, ".kspec"),
         onFileChange: changeHandler,
         onError: vi.fn(),
       });
@@ -151,11 +151,11 @@ describeOrSkip('Per-Project File Watchers', () => {
       await watcher.start();
 
       // Modify a file
-      const testFile = join(projectA, '.kspec', 'modules', 'test.yaml');
-      await writeFile(testFile, 'test: data\n');
+      const testFile = join(projectA, ".kspec", "modules", "test.yaml");
+      await writeFile(testFile, "test: data\n");
 
       // Wait for debounce
-      await new Promise(resolve => setTimeout(resolve, DEBOUNCE_WAIT));
+      await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_WAIT));
 
       expect(changeHandler).toHaveBeenCalled();
       expect(receivedPath).toBe(testFile);
@@ -164,12 +164,12 @@ describeOrSkip('Per-Project File Watchers', () => {
     });
   });
 
-  describe('Watcher cleanup', () => {
+  describe("Watcher cleanup", () => {
     // AC: @multi-directory-daemon ac-17
-    it('should stop watcher when project is unregistered', async () => {
+    it("should stop watcher when project is unregistered", async () => {
       const changeHandler = vi.fn();
       const watcher = new KspecWatcher({
-        kspecDir: join(projectA, '.kspec'),
+        kspecDir: join(projectA, ".kspec"),
         onFileChange: changeHandler,
         onError: vi.fn(),
       });
@@ -180,21 +180,21 @@ describeOrSkip('Per-Project File Watchers', () => {
       await watcher.stop();
 
       // Change file after watcher stopped
-      const file = join(projectA, '.kspec', 'kynetic.yaml');
+      const file = join(projectA, ".kspec", "kynetic.yaml");
       await writeFile(file, 'kynetic: "1.0"\nproject: After Stop\n');
 
       // Wait for what would be debounce time
-      await new Promise(resolve => setTimeout(resolve, DEBOUNCE_WAIT));
+      await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_WAIT));
 
       // Should not have been notified (watcher stopped)
       expect(changeHandler).not.toHaveBeenCalled();
     });
 
     // AC: @multi-directory-daemon ac-17
-    it('should clean up all debounce timers on stop', async () => {
+    it("should clean up all debounce timers on stop", async () => {
       const changeHandler = vi.fn();
       const watcher = new KspecWatcher({
-        kspecDir: join(projectA, '.kspec'),
+        kspecDir: join(projectA, ".kspec"),
         onFileChange: changeHandler,
         onError: vi.fn(),
       });
@@ -202,25 +202,25 @@ describeOrSkip('Per-Project File Watchers', () => {
       await watcher.start();
 
       // Trigger multiple file changes rapidly (within debounce window)
-      const file = join(projectA, '.kspec', 'kynetic.yaml');
+      const file = join(projectA, ".kspec", "kynetic.yaml");
       await writeFile(file, 'kynetic: "1.0"\nproject: Change 1\n');
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
       await writeFile(file, 'kynetic: "1.0"\nproject: Change 2\n');
 
       // Stop watcher before debounce completes
       await watcher.stop();
 
       // Wait for what would have been debounce time
-      await new Promise(resolve => setTimeout(resolve, DEBOUNCE_WAIT));
+      await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_WAIT));
 
       // Handler should not have been called (timers cleared on stop)
       expect(changeHandler).not.toHaveBeenCalled();
     });
 
     // AC: @multi-directory-daemon ac-17
-    it('should handle stopping watcher that was never started', async () => {
+    it("should handle stopping watcher that was never started", async () => {
       const watcher = new KspecWatcher({
-        kspecDir: join(projectA, '.kspec'),
+        kspecDir: join(projectA, ".kspec"),
         onFileChange: vi.fn(),
         onError: vi.fn(),
       });
@@ -230,9 +230,9 @@ describeOrSkip('Per-Project File Watchers', () => {
     });
 
     // AC: @multi-directory-daemon ac-17
-    it('should handle multiple stop calls idempotently', async () => {
+    it("should handle multiple stop calls idempotently", async () => {
       const watcher = new KspecWatcher({
-        kspecDir: join(projectA, '.kspec'),
+        kspecDir: join(projectA, ".kspec"),
         onFileChange: vi.fn(),
         onError: vi.fn(),
       });
@@ -245,82 +245,86 @@ describeOrSkip('Per-Project File Watchers', () => {
     });
   });
 
-  describe('OS resource limit handling', () => {
+  describe("OS resource limit handling", () => {
     // AC: @multi-directory-daemon ac-19
-    it('should handle EMFILE error (too many open files)', async () => {
+    it("should handle EMFILE error (too many open files)", async () => {
       const errorHandler = vi.fn();
       const watcher = new KspecWatcher({
-        kspecDir: join(projectA, '.kspec'),
+        kspecDir: join(projectA, ".kspec"),
         onFileChange: vi.fn(),
         onError: errorHandler,
       });
 
       // Mock the start method to throw EMFILE error
-      const originalStart = watcher.start.bind(watcher);
-      vi.spyOn(watcher, 'start').mockImplementationOnce(async () => {
-        const error = new Error('EMFILE: too many open files') as NodeJS.ErrnoException;
-        error.code = 'EMFILE';
+
+      vi.spyOn(watcher, "start").mockImplementationOnce(async () => {
+        const error = new Error("EMFILE: too many open files") as NodeJS.ErrnoException;
+        error.code = "EMFILE";
         throw error;
       });
 
       // Start should propagate the error
-      await expect(watcher.start()).rejects.toThrow('EMFILE');
+      await expect(watcher.start()).rejects.toThrow("EMFILE");
     });
 
     // AC: @multi-directory-daemon ac-19
-    it('should handle ENFILE error (file table overflow)', async () => {
+    it("should handle ENFILE error (file table overflow)", async () => {
       const errorHandler = vi.fn();
       const watcher = new KspecWatcher({
-        kspecDir: join(projectA, '.kspec'),
+        kspecDir: join(projectA, ".kspec"),
         onFileChange: vi.fn(),
         onError: errorHandler,
       });
 
       // Mock the start method to throw ENFILE error
-      vi.spyOn(watcher, 'start').mockImplementationOnce(async () => {
-        const error = new Error('ENFILE: file table overflow') as NodeJS.ErrnoException;
-        error.code = 'ENFILE';
+      vi.spyOn(watcher, "start").mockImplementationOnce(async () => {
+        const error = new Error("ENFILE: file table overflow") as NodeJS.ErrnoException;
+        error.code = "ENFILE";
         throw error;
       });
 
       // Start should propagate the error
-      await expect(watcher.start()).rejects.toThrow('ENFILE');
+      await expect(watcher.start()).rejects.toThrow("ENFILE");
     });
 
     // AC: @multi-directory-daemon ac-19
-    it('should provide meaningful error message for resource limits', async () => {
+    it("should provide meaningful error message for resource limits", async () => {
       const watcher = new KspecWatcher({
-        kspecDir: join(projectA, '.kspec'),
+        kspecDir: join(projectA, ".kspec"),
         onFileChange: vi.fn(),
         onError: vi.fn(),
       });
 
       // Mock to simulate resource limit error
-      vi.spyOn(watcher, 'start').mockImplementationOnce(async () => {
-        const error = new Error('Unable to watch project - resource limit reached') as NodeJS.ErrnoException;
-        error.code = 'EMFILE';
+      vi.spyOn(watcher, "start").mockImplementationOnce(async () => {
+        const error = new Error(
+          "Unable to watch project - resource limit reached",
+        ) as NodeJS.ErrnoException;
+        error.code = "EMFILE";
         throw error;
       });
 
-      await expect(watcher.start()).rejects.toThrow('Unable to watch project - resource limit reached');
+      await expect(watcher.start()).rejects.toThrow(
+        "Unable to watch project - resource limit reached",
+      );
     });
   });
 
-  describe('Multiple projects file watching', () => {
+  describe("Multiple projects file watching", () => {
     // AC: @multi-directory-daemon ac-18
-    it('should isolate file events between projects when both are watching', async () => {
+    it("should isolate file events between projects when both are watching", async () => {
       const eventsA: string[] = [];
       const eventsB: string[] = [];
 
       const watcherA = new KspecWatcher({
-        kspecDir: join(projectA, '.kspec'),
-        onFileChange: (file, content) => eventsA.push(file),
+        kspecDir: join(projectA, ".kspec"),
+        onFileChange: (file, _content) => eventsA.push(file),
         onError: vi.fn(),
       });
 
       const watcherB = new KspecWatcher({
-        kspecDir: join(projectB, '.kspec'),
-        onFileChange: (file, content) => eventsB.push(file),
+        kspecDir: join(projectB, ".kspec"),
+        onFileChange: (file, _content) => eventsB.push(file),
         onError: vi.fn(),
       });
 
@@ -328,14 +332,14 @@ describeOrSkip('Per-Project File Watchers', () => {
       await watcherB.start();
 
       // Modify files in both projects
-      const fileA = join(projectA, '.kspec', 'kynetic.yaml');
-      const fileB = join(projectB, '.kspec', 'kynetic.yaml');
+      const fileA = join(projectA, ".kspec", "kynetic.yaml");
+      const fileB = join(projectB, ".kspec", "kynetic.yaml");
 
       await writeFile(fileA, 'kynetic: "1.0"\nproject: A Modified\n');
       await writeFile(fileB, 'kynetic: "1.0"\nproject: B Modified\n');
 
       // Wait for debounce
-      await new Promise(resolve => setTimeout(resolve, DEBOUNCE_WAIT));
+      await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_WAIT));
 
       // Each watcher should only have received its own event
       expect(eventsA).toHaveLength(1);
@@ -348,18 +352,18 @@ describeOrSkip('Per-Project File Watchers', () => {
     });
 
     // AC: @multi-directory-daemon ac-17, ac-18
-    it('should handle rapid changes in multiple projects independently', async () => {
+    it("should handle rapid changes in multiple projects independently", async () => {
       const changesA = vi.fn();
       const changesB = vi.fn();
 
       const watcherA = new KspecWatcher({
-        kspecDir: join(projectA, '.kspec'),
+        kspecDir: join(projectA, ".kspec"),
         onFileChange: changesA,
         onError: vi.fn(),
       });
 
       const watcherB = new KspecWatcher({
-        kspecDir: join(projectB, '.kspec'),
+        kspecDir: join(projectB, ".kspec"),
         onFileChange: changesB,
         onError: vi.fn(),
       });
@@ -368,23 +372,23 @@ describeOrSkip('Per-Project File Watchers', () => {
       await watcherB.start();
 
       // Rapid changes in both projects
-      const fileA = join(projectA, '.kspec', 'kynetic.yaml');
-      const fileB = join(projectB, '.kspec', 'kynetic.yaml');
+      const fileA = join(projectA, ".kspec", "kynetic.yaml");
+      const fileB = join(projectB, ".kspec", "kynetic.yaml");
 
       // Project A: 3 rapid changes
       await writeFile(fileA, 'kynetic: "1.0"\nproject: A1\n');
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
       await writeFile(fileA, 'kynetic: "1.0"\nproject: A2\n');
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
       await writeFile(fileA, 'kynetic: "1.0"\nproject: A3\n');
 
       // Project B: 2 rapid changes
       await writeFile(fileB, 'kynetic: "1.0"\nproject: B1\n');
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
       await writeFile(fileB, 'kynetic: "1.0"\nproject: B2\n');
 
       // Wait for debounce (500ms from last change + buffer)
-      await new Promise(resolve => setTimeout(resolve, 700));
+      await new Promise((resolve) => setTimeout(resolve, 700));
 
       // Each watcher should debounce to single call per project
       expect(changesA).toHaveBeenCalledTimes(1);
@@ -395,12 +399,12 @@ describeOrSkip('Per-Project File Watchers', () => {
     });
   });
 
-  describe('Watcher lifecycle management', () => {
+  describe("Watcher lifecycle management", () => {
     // AC: @multi-directory-daemon ac-17
-    it('should allow restarting watcher after stop', async () => {
+    it("should allow restarting watcher after stop", async () => {
       const changeHandler = vi.fn();
       const watcher = new KspecWatcher({
-        kspecDir: join(projectA, '.kspec'),
+        kspecDir: join(projectA, ".kspec"),
         onFileChange: changeHandler,
         onError: vi.fn(),
       });
@@ -411,11 +415,11 @@ describeOrSkip('Per-Project File Watchers', () => {
       await watcher.start();
 
       // Modify file
-      const file = join(projectA, '.kspec', 'kynetic.yaml');
+      const file = join(projectA, ".kspec", "kynetic.yaml");
       await writeFile(file, 'kynetic: "1.0"\nproject: Restarted\n');
 
       // Wait for debounce
-      await new Promise(resolve => setTimeout(resolve, DEBOUNCE_WAIT));
+      await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_WAIT));
 
       // Should have received event after restart
       expect(changeHandler).toHaveBeenCalled();
@@ -424,9 +428,10 @@ describeOrSkip('Per-Project File Watchers', () => {
     });
 
     // AC: @multi-directory-daemon ac-17
-    it('should track watcher active state correctly', async () => {
+    // oxlint-disable-next-line jest/expect-expect -- smoke test verifying start/stop lifecycle without throwing
+    it("should track watcher active state correctly", async () => {
       const watcher = new KspecWatcher({
-        kspecDir: join(projectA, '.kspec'),
+        kspecDir: join(projectA, ".kspec"),
         onFileChange: vi.fn(),
         onError: vi.fn(),
       });
@@ -440,13 +445,14 @@ describeOrSkip('Per-Project File Watchers', () => {
     });
   });
 
-  describe('Error propagation', () => {
+  describe("Error propagation", () => {
     // AC: @multi-directory-daemon ac-17, ac-19
-    it('should handle watcher failures gracefully with Chokidar fallback', async () => {
+    // oxlint-disable-next-line jest/expect-expect -- smoke test verifying graceful fallback without throwing
+    it("should handle watcher failures gracefully with Chokidar fallback", async () => {
       const errorHandler = vi.fn();
       const changeHandler = vi.fn();
       const watcher = new KspecWatcher({
-        kspecDir: '/nonexistent/path/.kspec',
+        kspecDir: "/nonexistent/path/.kspec",
         onFileChange: changeHandler,
         onError: errorHandler,
       });
@@ -461,13 +467,13 @@ describeOrSkip('Per-Project File Watchers', () => {
     });
 
     // AC: @multi-directory-daemon ac-17
-    it('should handle errors per project without affecting other watchers', async () => {
+    it("should handle errors per project without affecting other watchers", async () => {
       const errorHandlerB = vi.fn();
       const changeHandlerB = vi.fn();
 
       // Valid watcher for project B
       const watcherB = new KspecWatcher({
-        kspecDir: join(projectB, '.kspec'),
+        kspecDir: join(projectB, ".kspec"),
         onFileChange: changeHandlerB,
         onError: errorHandlerB,
       });
@@ -476,7 +482,7 @@ describeOrSkip('Per-Project File Watchers', () => {
 
       // Watcher for nonexistent path (uses Chokidar fallback, doesn't throw)
       const watcherInvalid = new KspecWatcher({
-        kspecDir: '/nonexistent/.kspec',
+        kspecDir: "/nonexistent/.kspec",
         onFileChange: vi.fn(),
         onError: vi.fn(),
       });
@@ -486,10 +492,10 @@ describeOrSkip('Per-Project File Watchers', () => {
       await watcherInvalid.stop();
 
       // Valid watcher should still work
-      const fileB = join(projectB, '.kspec', 'kynetic.yaml');
+      const fileB = join(projectB, ".kspec", "kynetic.yaml");
       await writeFile(fileB, 'kynetic: "1.0"\nproject: Still Works\n');
 
-      await new Promise(resolve => setTimeout(resolve, DEBOUNCE_WAIT));
+      await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_WAIT));
 
       // Project B's watcher should receive events
       expect(changeHandlerB).toHaveBeenCalled();

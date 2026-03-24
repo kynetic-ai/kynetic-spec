@@ -90,10 +90,7 @@ async function discardStashedWorktreeDir(backupDir: string | null): Promise<void
   await fs.rm(backupDir, { recursive: true, force: true });
 }
 
-function runGitSync(
-  cwd: string,
-  args: string[],
-): { ok: boolean; stdout: string } {
+function runGitSync(cwd: string, args: string[]): { ok: boolean; stdout: string } {
   const result = spawnSync("git", args, {
     cwd,
     stdio: ["ignore", "pipe", "pipe"],
@@ -110,9 +107,7 @@ function runGitSync(
  * Parse git version from `git --version` output.
  * Returns [major, minor, patch] or null if unparseable.
  */
-export function getGitVersion(
-  cwd?: string,
-): [number, number, number] | null {
+export function getGitVersion(cwd?: string): [number, number, number] | null {
   const result = spawnSync("git", ["--version"], {
     cwd,
     stdio: ["ignore", "pipe", "pipe"],
@@ -165,23 +160,11 @@ export async function createOrphanBranchFallback(
 
     try {
       await runGitAsync(workDir, ["clone", tmpDir, "."]);
-      await runGitAsync(workDir, [
-        "config",
-        "user.email",
-        "kspec@localhost",
-      ]);
-      await runGitAsync(workDir, [
-        "config",
-        "user.name",
-        "kspec",
-      ]);
+      await runGitAsync(workDir, ["config", "user.email", "kspec@localhost"]);
+      await runGitAsync(workDir, ["config", "user.name", "kspec"]);
 
       // Create an orphan branch (checkout --orphan works on all git versions)
-      await runGitAsync(workDir, [
-        "checkout",
-        "--orphan",
-        branchName,
-      ]);
+      await runGitAsync(workDir, ["checkout", "--orphan", branchName]);
 
       // Remove any files that might have been staged
       try {
@@ -191,56 +174,32 @@ export async function createOrphanBranchFallback(
       }
 
       // Create an empty initial commit
-      await runGitAsync(workDir, [
-        "commit",
-        "--allow-empty",
-        "-m",
-        `Initialize ${branchName}`,
-      ]);
+      await runGitAsync(workDir, ["commit", "--allow-empty", "-m", `Initialize ${branchName}`]);
 
       // Push the orphan branch back to the bare repo
-      await runGitAsync(workDir, [
-        "push",
-        "origin",
-        branchName,
-      ]);
+      await runGitAsync(workDir, ["push", "origin", branchName]);
     } finally {
       await fs.rm(workDir, { recursive: true, force: true });
     }
 
     // 3. Push from the temp bare repo to the project repo
     //    Use file:// protocol to ensure git treats it as a proper remote
-    await runGitAsync(tmpDir, [
-      "push",
-      `file://${path.resolve(projectRoot)}`,
-      branchName,
-    ]);
+    await runGitAsync(tmpDir, ["push", `file://${path.resolve(projectRoot)}`, branchName]);
   } finally {
     // 4. Clean up the temp bare repo
     await fs.rm(tmpDir, { recursive: true, force: true });
   }
 
   // 5. Attach worktree using standard git worktree add (no --orphan flag)
-  await runGitAsync(projectRoot, [
-    "worktree",
-    "add",
-    directoryName,
-    branchName,
-  ]);
+  await runGitAsync(projectRoot, ["worktree", "add", directoryName, branchName]);
 
   // 6. Remove all tracked files from the worktree since the fallback
   //    created an empty commit but `git worktree add` may still populate
   //    the index from the branch. Clear anything that appeared.
   try {
-    const { stdout } = await runGitAsync(
-      path.join(projectRoot, directoryName),
-      ["ls-files"],
-    );
+    const { stdout } = await runGitAsync(path.join(projectRoot, directoryName), ["ls-files"]);
     if (stdout.trim()) {
-      await runGitAsync(
-        path.join(projectRoot, directoryName),
-        ["rm", "-rf", "."],
-      );
+      await runGitAsync(path.join(projectRoot, directoryName), ["rm", "-rf", "."]);
     }
   } catch {
     // Nothing to remove — expected for an empty commit
@@ -392,10 +351,7 @@ function getRemoteQueryTarget(options?: ShadowOptions): string {
   }
 
   if (options.remote.startsWith("~")) {
-    return options.remote.replace(
-      /^~/,
-      process.env.HOME || process.env.USERPROFILE || "~",
-    );
+    return options.remote.replace(/^~/, process.env.HOME || process.env.USERPROFILE || "~");
   }
 
   return options.remote;
@@ -475,11 +431,7 @@ function isSubmoduleCommonDir(commonDir: string): boolean {
 }
 
 export function resolveProjectRoots(dir: string): ProjectRoots | null {
-  const result = runGitSync(dir, [
-    "rev-parse",
-    "--show-toplevel",
-    "--git-common-dir",
-  ]);
+  const result = runGitSync(dir, ["rev-parse", "--show-toplevel", "--git-common-dir"]);
   if (!result.ok) {
     return null;
   }
@@ -497,10 +449,7 @@ export function resolveProjectRoots(dir: string): ProjectRoots | null {
     ? path.resolve(rawCommonDir)
     : path.resolve(worktreeRoot, rawCommonDir);
 
-  if (
-    isSubmoduleCommonDir(commonDir) ||
-    commonDir === path.join(worktreeRoot, ".git")
-  ) {
+  if (isSubmoduleCommonDir(commonDir) || commonDir === path.join(worktreeRoot, ".git")) {
     return {
       mainRoot: worktreeRoot,
       worktreeRoot,
@@ -518,16 +467,8 @@ export function resolveProjectRoots(dir: string): ProjectRoots | null {
 /**
  * Check if a branch exists
  */
-export async function branchExists(
-  dir: string,
-  branchName: string,
-): Promise<boolean> {
-  return runGitSync(dir, [
-    "show-ref",
-    "--verify",
-    "--quiet",
-    `refs/heads/${branchName}`,
-  ]).ok;
+export async function branchExists(dir: string, branchName: string): Promise<boolean> {
+  return runGitSync(dir, ["show-ref", "--verify", "--quiet", `refs/heads/${branchName}`]).ok;
 }
 
 /**
@@ -601,10 +542,7 @@ export async function detectRunningFromShadowWorktree(
         const directoryToCheck = configuredDirectory || SHADOW_WORKTREE_DIR;
 
         // Exact shadow directory names are always considered shadow worktrees.
-        if (
-          cwdBase === SHADOW_WORKTREE_DIR ||
-          cwdBase === directoryToCheck
-        ) {
+        if (cwdBase === SHADOW_WORKTREE_DIR || cwdBase === directoryToCheck) {
           return mainProjectRoot;
         }
 
@@ -740,8 +678,7 @@ export async function getShadowStatus(
 
   // Determine overall status
   status.exists = status.branchExists || status.worktreeExists;
-  status.healthy =
-    status.branchExists && status.worktreeExists && status.worktreeLinked;
+  status.healthy = status.branchExists && status.worktreeExists && status.worktreeLinked;
 
   if (!status.healthy && status.exists) {
     if (!status.branchExists) {
@@ -830,14 +767,10 @@ export async function checkConfigMismatch(
   // Build guidance message
   const parts: string[] = [];
   if (result.branchMismatch) {
-    parts.push(
-      `branch "${SHADOW_BRANCH_NAME}" (config wants "${configuredBranch}")`,
-    );
+    parts.push(`branch "${SHADOW_BRANCH_NAME}" (config wants "${configuredBranch}")`);
   }
   if (result.directoryMismatch) {
-    parts.push(
-      `directory "${SHADOW_WORKTREE_DIR}" (config wants "${configuredDirectory}")`,
-    );
+    parts.push(`directory "${SHADOW_WORKTREE_DIR}" (config wants "${configuredDirectory}")`);
   }
 
   result.guidance = [
@@ -908,9 +841,7 @@ export async function shadowAutoCommit(
 
   try {
     if (debug) {
-      console.error(
-        `[DEBUG] Shadow auto-commit: git add -A (cwd: ${worktreeDir})`,
-      );
+      console.error(`[DEBUG] Shadow auto-commit: git add -A (cwd: ${worktreeDir})`);
     }
 
     // Stage all changes
@@ -925,11 +856,9 @@ export async function shadowAutoCommit(
         console.error(`[DEBUG] Shadow auto-commit: git diff --cached --quiet`);
       }
 
-      const diffResult = runCommandSync(
-        "git",
-        ["diff", "--cached", "--quiet"],
-        { cwd: worktreeDir },
-      );
+      const diffResult = runCommandSync("git", ["diff", "--cached", "--quiet"], {
+        cwd: worktreeDir,
+      });
       if (!diffResult.ok) {
         throw new Error("changes staged");
       }
@@ -973,11 +902,7 @@ export async function shadowAutoCommit(
 /**
  * Generate commit message for a kspec operation.
  */
-export function generateCommitMessage(
-  operation: string,
-  ref?: string,
-  detail?: string,
-): string {
+export function generateCommitMessage(operation: string, ref?: string, detail?: string): string {
   const normalizedRef = normalizeCommitRef(ref);
   const detailFromRef = !detail && shouldTreatRefAsDetail(ref) ? ref : undefined;
   const effectiveRef = detailFromRef ? undefined : normalizedRef;
@@ -1067,11 +992,7 @@ export function generateCommitMessage(
     case "review-verdict":
       return formatCommitOperation("Verdict Review", effectiveRef, effectiveDetail);
     case "review-verdict-task-transition":
-      return formatCommitOperation(
-        "Review Verdict Task Transition",
-        effectiveRef,
-        effectiveDetail,
-      );
+      return formatCommitOperation("Review Verdict Task Transition", effectiveRef, effectiveDetail);
     case "review-resolve":
       return formatCommitOperation("Resolve Review", effectiveRef, effectiveDetail);
     case "review-reopen":
@@ -1105,23 +1026,11 @@ export function generateCommitMessage(
     case "meta-observe":
       return formatCommitOperation("Observe Meta", effectiveRef, effectiveDetail);
     case "meta-observe-from-inbox":
-      return formatCommitOperation(
-        "Observe Meta from Inbox",
-        effectiveRef,
-        effectiveDetail,
-      );
+      return formatCommitOperation("Observe Meta from Inbox", effectiveRef, effectiveDetail);
     case "observation-promote":
-      return formatCommitOperation(
-        "Promote Observation",
-        effectiveRef,
-        effectiveDetail,
-      );
+      return formatCommitOperation("Promote Observation", effectiveRef, effectiveDetail);
     case "observation-resolve":
-      return formatCommitOperation(
-        "Resolve Observation",
-        effectiveRef,
-        effectiveDetail,
-      );
+      return formatCommitOperation("Resolve Observation", effectiveRef, effectiveDetail);
     case "skill-add":
       return formatCommitOperation("Add Skill", effectiveRef, effectiveDetail);
     case "skill-set":
@@ -1217,11 +1126,7 @@ function shouldTreatRefAsDetail(ref?: string): boolean {
   return Boolean(ref && ref.includes(" "));
 }
 
-function formatCommitOperation(
-  label: string,
-  ref?: string,
-  detail?: string,
-): string {
+function formatCommitOperation(label: string, ref?: string, detail?: string): string {
   if (ref && detail) return `${label}: ${ref} - ${detail}`;
   if (ref) return `${label}: ${ref}`;
   if (detail) return `${label}: ${detail}`;
@@ -1264,10 +1169,7 @@ export function resolveShadowPath(
   const worktreeDirName = path.basename(shadowConfig.worktreeDir);
 
   // Skip if path is outside project or already in shadow worktree
-  if (
-    relativePath.startsWith("..") ||
-    relativePath.startsWith(worktreeDirName)
-  ) {
+  if (relativePath.startsWith("..") || relativePath.startsWith(worktreeDirName)) {
     return originalPath;
   }
 
@@ -1278,10 +1180,7 @@ export function resolveShadowPath(
   }
 
   // For task/inbox files at root, move to shadow worktree
-  if (
-    relativePath.endsWith(".tasks.yaml") ||
-    relativePath.endsWith(".inbox.yaml")
-  ) {
+  if (relativePath.endsWith(".tasks.yaml") || relativePath.endsWith(".inbox.yaml")) {
     return path.join(shadowConfig.worktreeDir, relativePath);
   }
 
@@ -1316,11 +1215,7 @@ export async function commitIfShadow(
   }
 
   const message = generateCommitMessage(operation, ref, detail);
-  const committed = await shadowAutoCommit(
-    shadowConfig.worktreeDir,
-    message,
-    verbose,
-  );
+  const committed = await shadowAutoCommit(shadowConfig.worktreeDir, message, verbose);
 
   // AC: @shadow-sync ac-1 - Fire-and-forget push after each commit
   // AC: @shadow-write-sync ac-write-always-syncs — writes always sync via push path
@@ -1399,16 +1294,9 @@ export interface ShadowInitOptions {
 /**
  * Check if a remote exists (default: origin)
  */
-export async function hasRemote(
-  projectRoot: string,
-  remoteName = "origin",
-): Promise<boolean> {
+export async function hasRemote(projectRoot: string, remoteName = "origin"): Promise<boolean> {
   try {
-    const { stdout } = await runGitAsync(projectRoot, [
-      "remote",
-      "get-url",
-      remoteName,
-    ]);
+    const { stdout } = await runGitAsync(projectRoot, ["remote", "get-url", remoteName]);
     return stdout.trim().length > 0;
   } catch {
     return false;
@@ -1444,10 +1332,7 @@ export async function remoteBranchExists(
  * Fetch from remote to ensure refs are up to date.
  * Returns true if fetch succeeded, false otherwise.
  */
-export async function fetchRemote(
-  projectRoot: string,
-  remoteName = "origin",
-): Promise<boolean> {
+export async function fetchRemote(projectRoot: string, remoteName = "origin"): Promise<boolean> {
   try {
     await runGitAsync(projectRoot, ["fetch", remoteName]);
     return true;
@@ -1520,10 +1405,7 @@ export async function hasRemoteTracking(
 ): Promise<boolean> {
   const branchName = getBranchName(options);
   try {
-    const { stdout } = await runGitAsync(worktreeDir, [
-      "config",
-      `branch.${branchName}.remote`,
-    ]);
+    const { stdout } = await runGitAsync(worktreeDir, ["config", `branch.${branchName}.remote`]);
     return stdout.trim().length > 0;
   } catch {
     return false;
@@ -1572,7 +1454,8 @@ export async function ensureRemoteTracking(
         return {
           success: false,
           missingRemote: remoteName,
-          guidance: `Remote '${remoteName}' does not exist. To fix this:\n` +
+          guidance:
+            `Remote '${remoteName}' does not exist. To fix this:\n` +
             `  1. Add the remote: git remote add ${remoteName} <url>\n` +
             `  2. Or update kspec.config.yaml to use an existing remote\n` +
             `  3. Or remove shadow.remote to use the default 'origin' remote`,
@@ -1594,12 +1477,7 @@ export async function ensureRemoteTracking(
             );
           }
 
-          await runGitAsync(projectRoot, [
-            "remote",
-            "add",
-            specRemoteName,
-            remoteTarget,
-          ]);
+          await runGitAsync(projectRoot, ["remote", "add", specRemoteName, remoteTarget]);
         } catch {
           // Remote add failed - may already exist with different URL
           return { success: false };
@@ -1617,11 +1495,7 @@ export async function ensureRemoteTracking(
 
   // Set up tracking for shadow branch
   try {
-    await runGitAsync(worktreeDir, [
-      "config",
-      `branch.${branchName}.remote`,
-      remoteName,
-    ]);
+    await runGitAsync(worktreeDir, ["config", `branch.${branchName}.remote`, remoteName]);
     await runGitAsync(worktreeDir, [
       "config",
       `branch.${branchName}.merge`,
@@ -1717,7 +1591,7 @@ async function pullRebaseBeforePush(
   worktreeDir: string,
   branchName: string,
   debug: boolean,
-  options?: ShadowOptions,
+  _options?: ShadowOptions,
 ): Promise<boolean> {
   try {
     // Fetch latest remote state for the shadow branch specifically.
@@ -1737,10 +1611,7 @@ async function pullRebaseBeforePush(
     const projectRoot = path.dirname(worktreeDir);
     let remoteName = "origin";
     try {
-      const { stdout } = await runGitAsync(worktreeDir, [
-        "config",
-        `branch.${branchName}.remote`,
-      ]);
+      const { stdout } = await runGitAsync(worktreeDir, ["config", `branch.${branchName}.remote`]);
       const configured = stdout.trim();
       if (configured) {
         remoteName = configured;
@@ -1853,9 +1724,7 @@ export async function shadowPushAsync(
   // Check if tracking is configured before attempting push
   if (!(await hasRemoteTracking(worktreeDir, options))) {
     if (debug) {
-      console.error(
-        "[DEBUG] Shadow push: No remote tracking configured, skipping",
-      );
+      console.error("[DEBUG] Shadow push: No remote tracking configured, skipping");
     }
     return; // AC: @shadow-sync ac-4 - silently skip if no tracking
   }
@@ -1929,11 +1798,7 @@ export async function shadowPushAsync(
     }
 
     if (exit.code !== 0) {
-      const reason = summarizeShadowPushError(
-        stderrChunks.join(""),
-        exit.code,
-        exit.signal,
-      );
+      const reason = summarizeShadowPushError(stderrChunks.join(""), exit.code, exit.signal);
       noteShadowPushFailure(worktreeDir, reason);
       return;
     }
@@ -2210,11 +2075,7 @@ export async function shadowNeedsSync(
   if (fetchNeeded) {
     try {
       // AC: ac-fetch-timeout — kill if exceeds FETCH_TIMEOUT_MS
-      await spawnGitWithTimeout(
-        worktreeDir,
-        ["fetch", remoteName],
-        FETCH_TIMEOUT_MS,
-      );
+      await spawnGitWithTimeout(worktreeDir, ["fetch", remoteName], FETCH_TIMEOUT_MS);
     } catch (err) {
       // AC: ac-fetch-timeout-no-error — no error surfaced to user
       // AC: ac-fetch-timeout-debug-log — debug log if enabled
@@ -2260,11 +2121,7 @@ function isDebugEnabled(): boolean {
 async function hasUncommittedGitignore(projectRoot: string): Promise<boolean> {
   try {
     // Check both staged and unstaged changes to .gitignore
-    const { stdout } = await runGitAsync(projectRoot, [
-      "status",
-      "--porcelain",
-      ".gitignore",
-    ]);
+    const { stdout } = await runGitAsync(projectRoot, ["status", "--porcelain", ".gitignore"]);
     return stdout.trim().length > 0;
   } catch {
     return false;
@@ -2277,10 +2134,7 @@ async function hasUncommittedGitignore(projectRoot: string): Promise<boolean> {
  * @param projectRoot Git repository root
  * @param directoryName Shadow directory name (for commit message)
  */
-async function commitGitignore(
-  projectRoot: string,
-  directoryName: string,
-): Promise<void> {
+async function commitGitignore(projectRoot: string, directoryName: string): Promise<void> {
   await runGitAsync(projectRoot, ["add", ".gitignore"]);
   await runGitAsync(projectRoot, [
     "commit",
@@ -2300,10 +2154,7 @@ async function commitGitignore(
  * @param projectRoot Git repository root
  * @param options Optional shadow configuration
  */
-async function ensureGitignore(
-  projectRoot: string,
-  options?: ShadowOptions,
-): Promise<boolean> {
+async function ensureGitignore(projectRoot: string, options?: ShadowOptions): Promise<boolean> {
   const directoryName = getDirectoryName(options);
   const gitignorePath = path.join(projectRoot, ".gitignore");
   const entry = `${directoryName}/`;
@@ -2343,9 +2194,7 @@ async function ensureGitignore(
 
     // Add to gitignore
     const newContent =
-      content.endsWith("\n") || content === ""
-        ? `${content}${entry}\n`
-        : `${content}\n${entry}\n`;
+      content.endsWith("\n") || content === "" ? `${content}${entry}\n` : `${content}\n${entry}\n`;
 
     await fs.writeFile(gitignorePath, newContent, "utf-8");
 
@@ -2374,9 +2223,7 @@ async function ensureGitignore(
  * @param projectRoot Git repository root
  * @returns true if entry was added, false if already present
  */
-export async function needsSessionsGitignore(
-  projectRoot: string,
-): Promise<boolean> {
+export async function needsSessionsGitignore(projectRoot: string): Promise<boolean> {
   const gitignorePath = path.join(projectRoot, ".gitignore");
 
   let content = "";
@@ -2405,9 +2252,7 @@ export async function needsSessionsGitignore(
   return true;
 }
 
-export async function needsPlansGitignore(
-  projectRoot: string,
-): Promise<boolean> {
+export async function needsPlansGitignore(projectRoot: string): Promise<boolean> {
   const gitignorePath = path.join(projectRoot, ".gitignore");
 
   let content = "";
@@ -2435,9 +2280,7 @@ export async function needsPlansGitignore(
   return true;
 }
 
-export async function ensureSessionsGitignore(
-  projectRoot: string,
-): Promise<boolean> {
+export async function ensureSessionsGitignore(projectRoot: string): Promise<boolean> {
   const gitignorePath = path.join(projectRoot, ".gitignore");
   const entry = `${SESSIONS_WORKTREE_DIR}/`;
 
@@ -2456,9 +2299,7 @@ export async function ensureSessionsGitignore(
 
     // Add to gitignore
     const newContent =
-      content.endsWith("\n") || content === ""
-        ? `${content}${entry}\n`
-        : `${content}\n${entry}\n`;
+      content.endsWith("\n") || content === "" ? `${content}${entry}\n` : `${content}\n${entry}\n`;
 
     await fs.writeFile(gitignorePath, newContent, "utf-8");
     return true;
@@ -2471,9 +2312,7 @@ export async function ensureSessionsGitignore(
   }
 }
 
-export async function ensurePlansGitignore(
-  projectRoot: string,
-): Promise<boolean> {
+export async function ensurePlansGitignore(projectRoot: string): Promise<boolean> {
   const gitignorePath = path.join(projectRoot, ".gitignore");
   const entry = `${TRANSIENT_PLANS_DIR}/`;
 
@@ -2491,9 +2330,7 @@ export async function ensurePlansGitignore(
     }
 
     const newContent =
-      content.endsWith("\n") || content === ""
-        ? `${content}${entry}\n`
-        : `${content}\n${entry}\n`;
+      content.endsWith("\n") || content === "" ? `${content}${entry}\n` : `${content}\n${entry}\n`;
 
     await fs.writeFile(gitignorePath, newContent, "utf-8");
     return true;
@@ -2562,13 +2399,11 @@ export async function ensureShadowSessionsGitignore(
 
     // Add to gitignore
     const newContent =
-      content.endsWith("\n") || content === ""
-        ? `${content}${entry}\n`
-        : `${content}\n${entry}\n`;
+      content.endsWith("\n") || content === "" ? `${content}${entry}\n` : `${content}\n${entry}\n`;
 
     await fs.writeFile(shadowGitignorePath, newContent, "utf-8");
     return true;
-  } catch (error) {
+  } catch {
     // Non-fatal — shadow gitignore update is best-effort
     return false;
   }
@@ -2679,7 +2514,7 @@ async function installShadowHook(projectRoot: string): Promise<boolean> {
     const hookContent = await fs.readFile(sourceHookPath, "utf-8");
     await fs.writeFile(hookPath, hookContent, { mode: 0o755 });
     return true;
-  } catch (_error) {
+  } catch {
     // Silently fail - hook installation is optional
     return false;
   }
@@ -2705,10 +2540,7 @@ function toSlug(projectName: string): string {
  * @param worktreeDir Path to shadow worktree directory
  * @returns true if configuration was successful
  */
-async function configureMergeDriver(
-  projectRoot: string,
-  worktreeDir: string,
-): Promise<boolean> {
+async function configureMergeDriver(projectRoot: string, worktreeDir: string): Promise<boolean> {
   try {
     // Step 1: Configure merge driver in .git/config
     const kspecPathResult = runCommandSync("which", ["kspec"]);
@@ -2730,11 +2562,7 @@ async function configureMergeDriver(
 
       const setDriverResult = runCommandSync(
         "git",
-        [
-          "config",
-          "merge.kspec.driver",
-          `${kspecPath} merge-driver %O %A %B --non-interactive`,
-        ],
+        ["config", "merge.kspec.driver", `${kspecPath} merge-driver %O %A %B --non-interactive`],
         { cwd: projectRoot },
       );
       if (!setDriverResult.ok) {
@@ -2743,18 +2571,18 @@ async function configureMergeDriver(
     } catch (error) {
       // Config may fail if already set - check if it's set correctly
       try {
-        const existingDriverResult = runCommandSync(
-          "git",
-          ["config", "merge.kspec.driver"],
-          { cwd: projectRoot },
-        );
+        const existingDriverResult = runCommandSync("git", ["config", "merge.kspec.driver"], {
+          cwd: projectRoot,
+        });
         if (!existingDriverResult.ok) {
-          throw new Error(existingDriverResult.stderr || "failed to read merge.kspec.driver");
+          throw new Error(existingDriverResult.stderr || "failed to read merge.kspec.driver", {
+            cause: error,
+          });
         }
         const existingDriver = existingDriverResult.stdout.trim();
 
         if (!existingDriver.includes("kspec merge-driver")) {
-          throw new Error("Merge driver config exists but is incorrect");
+          throw new Error("Merge driver config exists but is incorrect", { cause: error });
         }
 
         // Ensure --non-interactive flag is present (older registrations may lack it)
@@ -2771,6 +2599,7 @@ async function configureMergeDriver(
           if (!fixResult.ok) {
             throw new Error(
               fixResult.stderr || "failed to update merge.kspec.driver with --non-interactive",
+              { cause: error },
             );
           }
         }
@@ -2793,12 +2622,12 @@ async function configureMergeDriver(
     // Check if merge driver is already configured
     if (!existingContent.includes("merge=kspec")) {
       const attributesContent = existingContent
-        ? existingContent + "\n"
+        ? `${existingContent}\n`
         : "# Git attributes for kspec\n\n";
 
       await fs.writeFile(
         gitattributesPath,
-        attributesContent + "*.yaml merge=kspec\n*.yml merge=kspec\n",
+        `${attributesContent}*.yaml merge=kspec\n*.yml merge=kspec\n`,
         "utf-8",
       );
 
@@ -2807,7 +2636,7 @@ async function configureMergeDriver(
     }
 
     return true;
-  } catch (_error) {
+  } catch {
     // Silently fail - merge driver configuration is optional
     return false;
   }
@@ -2929,12 +2758,7 @@ export async function initializeShadow(
 
       // Remove stale worktree reference if any
       try {
-        await runGitAsync(projectRoot, [
-          "worktree",
-          "remove",
-          directoryName,
-          "--force",
-        ]);
+        await runGitAsync(projectRoot, ["worktree", "remove", directoryName, "--force"]);
       } catch {
         // Ignore - worktree may not exist in git's list
       }
@@ -2943,26 +2767,13 @@ export async function initializeShadow(
         // AC: @shadow-init-remote ac-1, ac-5 - Remote has shadow branch - fetch and create worktree
         // Fetch with refspec to create a local branch ref (required in shallow clones
         // where plain `git fetch origin kspec-meta` only populates FETCH_HEAD)
-        await runGitAsync(projectRoot, [
-          "fetch",
-          remoteName,
-          `${branchName}:${branchName}`,
-        ]);
-        await runGitAsync(projectRoot, [
-          "worktree",
-          "add",
-          directoryName,
-          branchName,
-        ]);
+        await runGitAsync(projectRoot, ["fetch", remoteName, `${branchName}:${branchName}`]);
+        await runGitAsync(projectRoot, ["worktree", "add", directoryName, branchName]);
         // Set up tracking for the branch
         // Use git config directly — `git branch --set-upstream-to` requires
         // the remote tracking ref to exist locally, which may not be the case
         // in shallow clones where we only fetched the branch itself
-        await runGitAsync(projectRoot, [
-          "config",
-          `branch.${branchName}.remote`,
-          remoteName,
-        ]);
+        await runGitAsync(projectRoot, ["config", `branch.${branchName}.remote`, remoteName]);
         await runGitAsync(projectRoot, [
           "config",
           `branch.${branchName}.merge`,
@@ -2983,21 +2794,12 @@ export async function initializeShadow(
             directoryName,
           ]);
         } else {
-          await createOrphanBranchFallback(
-            projectRoot,
-            branchName,
-            directoryName,
-          );
+          await createOrphanBranchFallback(projectRoot, branchName, directoryName);
         }
         result.branchCreated = true;
       } else {
         // Attach to existing local branch
-        await runGitAsync(projectRoot, [
-          "worktree",
-          "add",
-          directoryName,
-          branchName,
-        ]);
+        await runGitAsync(projectRoot, ["worktree", "add", directoryName, branchName]);
       }
 
       result.worktreeCreated = true;
@@ -3017,10 +2819,7 @@ export async function initializeShadow(
       // Look for any .yaml manifest file (project name may differ)
       const files = await fs.readdir(worktreeDir);
       const hasManifest = files.some(
-        (f) =>
-          f.endsWith(".yaml") &&
-          !f.includes(".tasks.") &&
-          !f.includes(".inbox."),
+        (f) => f.endsWith(".yaml") && !f.includes(".tasks.") && !f.includes(".inbox."),
       );
       if (!hasManifest) {
         throw new Error("No manifest found");
@@ -3028,16 +2827,8 @@ export async function initializeShadow(
     } catch {
       // Manifest doesn't exist, create initial structure
       await fs.mkdir(modulesDir, { recursive: true });
-      await fs.writeFile(
-        manifestPath,
-        generateShadowManifest(projectName),
-        "utf-8",
-      );
-      await fs.writeFile(
-        moduleFilePath,
-        generateShadowModule(projectName),
-        "utf-8",
-      );
+      await fs.writeFile(manifestPath, generateShadowManifest(projectName), "utf-8");
+      await fs.writeFile(moduleFilePath, generateShadowModule(projectName), "utf-8");
       await fs.writeFile(tasksPath, generateShadowTasks(projectName), "utf-8");
       await fs.writeFile(inboxPath, generateShadowInbox(), "utf-8");
 
@@ -3056,10 +2847,7 @@ export async function initializeShadow(
 
     // Step 4: Initial commit if files were created
     if (filesCreated) {
-      result.initialCommit = await shadowAutoCommit(
-        worktreeDir,
-        `Initialize ${projectName} spec`,
-      );
+      result.initialCommit = await shadowAutoCommit(worktreeDir, `Initialize ${projectName} spec`);
     }
 
     // Step 5: AC-2: Push new branch to remote to establish tracking
@@ -3079,10 +2867,7 @@ export async function initializeShadow(
     if (options.sessions?.storage === "branch") {
       const { initializeSessionBranch } = await import("./session-branch.js");
       const sessionBranchName = options.sessions.branch || "kspec-sessions";
-      const sessionResult = await initializeSessionBranch(
-        projectRoot,
-        sessionBranchName,
-      );
+      const sessionResult = await initializeSessionBranch(projectRoot, sessionBranchName);
       if (sessionResult.success) {
         result.sessionBranchCreated = true;
       }
@@ -3154,12 +2939,7 @@ export async function repairShadow(
   try {
     // Remove stale worktree reference
     try {
-      await runGitAsync(projectRoot, [
-        "worktree",
-        "remove",
-        directoryName,
-        "--force",
-      ]);
+      await runGitAsync(projectRoot, ["worktree", "remove", directoryName, "--force"]);
     } catch {
       // Ignore - worktree may not be in git's list
     }
@@ -3175,31 +2955,16 @@ export async function repairShadow(
     }
 
     if (!status.branchExists && remoteHasShadow) {
-      await runGitAsync(projectRoot, [
-        "fetch",
-        remoteQueryTarget,
-        `${branchName}:${branchName}`,
-      ]);
+      await runGitAsync(projectRoot, ["fetch", remoteQueryTarget, `${branchName}:${branchName}`]);
     }
 
     // Recreate worktree
-    await runGitAsync(projectRoot, [
-      "worktree",
-      "add",
-      directoryName,
-      branchName,
-    ]);
+    await runGitAsync(projectRoot, ["worktree", "add", directoryName, branchName]);
 
     if (remoteHasShadow) {
-      const tracking = await ensureRemoteTracking(
-        worktreeDir,
-        projectRoot,
-        options,
-      );
+      const tracking = await ensureRemoteTracking(worktreeDir, projectRoot, options);
       if (!tracking.success) {
-        throw new Error(
-          tracking.guidance || "Failed to configure shadow branch remote tracking",
-        );
+        throw new Error(tracking.guidance || "Failed to configure shadow branch remote tracking");
       }
     }
 

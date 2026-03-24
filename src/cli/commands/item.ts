@@ -27,7 +27,10 @@ import {
   shortestUniqueUlid,
   updateSpecItem,
 } from "../../parser/index.js";
-import { resolveTaskDataManager, type ShadowCommitOptions } from "../../parser/task-data-manager.js";
+import {
+  resolveTaskDataManager,
+  type ShadowCommitOptions,
+} from "../../parser/task-data-manager.js";
 import type { ItemFilter } from "../../parser/items.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import type {
@@ -38,10 +41,7 @@ import type {
   SpecItemInput,
 } from "../../schema/index.js";
 import { ItemTypeSchema, SpecItemPatchSchema } from "../../schema/index.js";
-import {
-  ImplementationStatusSchema,
-  MaturitySchema,
-} from "../../schema/common.js";
+import { ImplementationStatusSchema, MaturitySchema } from "../../schema/common.js";
 import { errors } from "../../strings/errors.js";
 import { fieldLabels, sectionHeaders } from "../../strings/labels.js";
 import { formatMatchedFields, grepItem } from "../../utils/grep.js";
@@ -109,14 +109,9 @@ function formatItem(
 
   // Show matched fields if grep pattern provided
   if (grepPattern) {
-    const match = grepItem(
-      item as unknown as Record<string, unknown>,
-      grepPattern,
-    );
+    const match = grepItem(item as unknown as Record<string, unknown>, grepPattern);
     if (match && match.matchedFields.length > 0) {
-      line +=
-        "\n  " +
-        chalk.gray(`matched: ${formatMatchedFields(match.matchedFields)}`);
+      line += `\n  ${chalk.gray(`matched: ${formatMatchedFields(match.matchedFields)}`)}`;
     }
   }
 
@@ -252,10 +247,7 @@ async function handleStatusCascade(
   });
 
   const answer = await new Promise<string>((resolve) => {
-    rl.question(
-      `Update ${children.length} child item(s) to ${newStatus}? [y/n] `,
-      resolve,
-    );
+    rl.question(`Update ${children.length} child item(s) to ${newStatus}? [y/n] `, resolve);
   });
   rl.close();
 
@@ -344,11 +336,7 @@ export function registerItemCommands(program: Command): void {
         };
 
         if (options.type) {
-          const typeResult = validateEnumOption(
-            options.type,
-            ItemTypeSchema.options,
-            "item type",
-          );
+          const typeResult = validateEnumOption(options.type, ItemTypeSchema.options, "item type");
           if (!typeResult.ok) {
             error(typeResult.error);
             process.exit(EXIT_CODES.VALIDATION_FAILED);
@@ -397,7 +385,9 @@ export function registerItemCommands(program: Command): void {
           const underResult = refIndex.resolve(options.under);
           if (!underResult.ok) {
             // AC: @module-scoped-item-listing ac-under-invalid-ref
-            error(`Reference not found: ${options.under}. Check with: kspec item get ${options.under}`);
+            error(
+              `Reference not found: ${options.under}. Check with: kspec item get ${options.under}`,
+            );
             process.exit(EXIT_CODES.NOT_FOUND);
           }
           underRoot = underResult.item as LoadedSpecItem;
@@ -409,7 +399,7 @@ export function registerItemCommands(program: Command): void {
           // AC: @module-scoped-item-listing ac-nested-descendants
           // Find all descendants based on _path and _sourceFile
           const descendants = findDescendantItems(underRoot, items);
-          underDescendantUlids = new Set([underRoot._ulid, ...descendants.map(d => d._ulid)]);
+          underDescendantUlids = new Set([underRoot._ulid, ...descendants.map((d) => d._ulid)]);
         }
 
         const limit = parseInt(options.limit, 10) || 50;
@@ -428,7 +418,7 @@ export function registerItemCommands(program: Command): void {
               !("status" in item && typeof item.status === "string"),
           );
           // Apply --under filtering (AND logic with other filters)
-          const scopedItems = allSpecItems.filter(item => underDescendantUlids!.has(item._ulid));
+          const scopedItems = allSpecItems.filter((item) => underDescendantUlids!.has(item._ulid));
           effectiveTotal = scopedItems.length;
           specItems = scopedItems.slice(0, limit);
         } else {
@@ -478,7 +468,7 @@ export function registerItemCommands(program: Command): void {
     .action(async (ref) => {
       try {
         const ctx = await initContext();
-        const { refIndex, traitIndex, items } = await buildIndexes(ctx);
+        const { refIndex, traitIndex } = await buildIndexes(ctx);
 
         const result = refIndex.resolve(ref);
 
@@ -519,13 +509,11 @@ export function registerItemCommands(program: Command): void {
         // Build JSON output with inherited traits
         const jsonOutput = {
           ...serializeSpecItemForJson(item),
-          inherited_traits: Array.from(traitsByTrait.values()).map(
-            ({ trait, acs }) => ({
-              ref: `@${trait.slug}`,
-              title: trait.title,
-              acceptance_criteria: acs,
-            }),
-          ),
+          inherited_traits: Array.from(traitsByTrait.values()).map(({ trait, acs }) => ({
+            ref: `@${trait.slug}`,
+            title: trait.title,
+            acceptance_criteria: acs,
+          })),
         };
 
         output(jsonOutput, () => {
@@ -542,14 +530,11 @@ export function registerItemCommands(program: Command): void {
               maturity?: string;
               implementation?: string;
             };
-            if (s.maturity)
-              console.log(`${fieldLabels.maturity}  ${s.maturity}`);
+            if (s.maturity) console.log(`${fieldLabels.maturity}  ${s.maturity}`);
             if (s.implementation) {
               // AC: @trait-retrospective ac-4
               // Show retrospective verification source
-              const isRetrospective = item.traits?.includes(
-                "@trait-retrospective",
-              );
+              const isRetrospective = item.traits?.includes("@trait-retrospective");
               const statusLabel = isRetrospective
                 ? `${s.implementation} (retrospective)`
                 : s.implementation;
@@ -568,11 +553,7 @@ export function registerItemCommands(program: Command): void {
             console.log(`Verified:   ${verifiedDate} by ${verifiedBy}`);
           }
 
-          if (
-            "tags" in item &&
-            Array.isArray(item.tags) &&
-            item.tags.length > 0
-          ) {
+          if ("tags" in item && Array.isArray(item.tags) && item.tags.length > 0) {
             console.log(`${fieldLabels.tags}      ${item.tags.join(", ")}`);
           }
 
@@ -613,14 +594,9 @@ export function registerItemCommands(program: Command): void {
           // AC: @trait-display ac-1, ac-4, ac-5 - Show inherited AC per trait in labeled sections
           if (traitsByTrait.size > 0) {
             for (const { trait, acs } of traitsByTrait.values()) {
-              console.log(
-                chalk.gray(`\n─── Inherited from @${trait.slug} ───`),
-              );
+              console.log(chalk.gray(`\n─── Inherited from @${trait.slug} ───`));
               for (const ac of acs) {
-                console.log(
-                  chalk.cyan(`  [${ac.id}]`) +
-                    chalk.gray(` (from @${trait.slug})`),
-                );
+                console.log(chalk.cyan(`  [${ac.id}]`) + chalk.gray(` (from @${trait.slug})`));
                 if (ac.given) console.log(`    Given: ${ac.given}`);
                 if (ac.when) console.log(`    When: ${ac.when}`);
                 if (ac.then) console.log(`    Then: ${ac.then}`);
@@ -689,20 +665,13 @@ export function registerItemCommands(program: Command): void {
     .option("--under <ref>", "Parent item reference (e.g., @core-primitives)")
     .option("--root", "Create at project root (trait items only)")
     .requiredOption("--title <title>", "Item title")
-    .option(
-      "--type <type>",
-      "Item type (feature, requirement, constraint, decision)",
-      "feature",
-    )
+    .option("--type <type>", "Item type (feature, requirement, constraint, decision)", "feature")
     .option("--slug <slug>", "Human-friendly slug")
     .option("--priority <priority>", "Priority (high, medium, low)")
     .option("--tag <tag...>", "Tags")
     .option("--trait <trait...>", "Traits to apply (e.g., @trait-testable)")
     .option("--description <desc>", "Description")
-    .option(
-      "--as <field>",
-      "Child field override (e.g., requirements, constraints)",
-    )
+    .option("--as <field>", "Child field override (e.g., requirements, constraints)")
     .addHelpText(
       "after",
       `
@@ -788,9 +757,7 @@ Examples:
         if (options.slug) {
           const slugCheck = checkSlugUniqueness(refIndex, [options.slug]);
           if (!slugCheck.ok) {
-            error(
-              errors.slug.alreadyExists(slugCheck.slug, slugCheck.existingUlid),
-            );
+            error(errors.slug.alreadyExists(slugCheck.slug, slugCheck.existingUlid));
             process.exit(EXIT_CODES.CONFLICT);
           }
         }
@@ -862,10 +829,7 @@ Examples:
         } as LoadedSpecItem;
 
         // Build index including the new item for accurate short ULID
-        const index = new ReferenceIndex(
-          [],
-          [...items, resultItem],
-        );
+        const index = new ReferenceIndex([], [...items, resultItem]);
         const itemSlug = resultItem.slugs?.[0] || index.shortUlid(resultItem._ulid);
         const itemRef = `@${itemSlug}`;
         await commitIfShadow(ctx.shadow, "item-add", itemSlug);
@@ -881,13 +845,8 @@ Examples:
 
         // Derive hint
         if (!isJsonMode()) {
-          const refSlug =
-            resultItem.slugs?.[0] || index.shortUlid(resultItem._ulid);
-          console.log(
-            chalk.gray(
-              `\nDerive implementation task? kspec derive @${refSlug}`,
-            ),
-          );
+          const refSlug = resultItem.slugs?.[0] || index.shortUlid(resultItem._ulid);
+          console.log(chalk.gray(`\nDerive implementation task? kspec derive @${refSlug}`));
         }
       } catch (err) {
         error(errors.failures.createItem, err);
@@ -909,14 +868,8 @@ Examples:
       "--status <status>",
       "Set implementation status (not_started, in_progress, implemented, verified)",
     )
-    .option(
-      "--maturity <maturity>",
-      "Set maturity (draft, proposed, stable, deferred, deprecated)",
-    )
-    .option(
-      "--verified-by <agent-ref>",
-      "Set verified_by (for retrospective specs)",
-    )
+    .option("--maturity <maturity>", "Set maturity (draft, proposed, stable, deferred, deprecated)")
+    .option("--verified-by <agent-ref>", "Set verified_by (for retrospective specs)")
     .option(
       "--verified-at <iso-timestamp>",
       "Set verified_at (defaults to now if --verified-by provided)",
@@ -931,10 +884,7 @@ Examples:
     .option("--clear-relates-to", "Clear all relates_to references")
     .option("--clear-implements", "Clear all implements references")
     .option("--clear-depends-on", "Clear all depends_on references")
-    .option(
-      "--no-cascade",
-      "Skip child status cascade prompt (apply change only to target item)",
-    )
+    .option("--no-cascade", "Skip child status cascade prompt (apply change only to target item)")
     .addHelpText(
       "after",
       `
@@ -970,15 +920,9 @@ Examples:
 
         // Check slug uniqueness if adding a new slug
         if (options.slug) {
-          const slugCheck = checkSlugUniqueness(
-            refIndex,
-            [options.slug],
-            foundItem._ulid,
-          );
+          const slugCheck = checkSlugUniqueness(refIndex, [options.slug], foundItem._ulid);
           if (!slugCheck.ok) {
-            error(
-              errors.slug.alreadyExists(slugCheck.slug, slugCheck.existingUlid),
-            );
+            error(errors.slug.alreadyExists(slugCheck.slug, slugCheck.existingUlid));
             process.exit(EXIT_CODES.CONFLICT);
           }
         }
@@ -1012,9 +956,16 @@ Examples:
         }
 
         // Mutual exclusivity for trait flags
-        const traitFlagCount = [options.trait, options.addTrait, options.removeTrait, options.clearTraits].filter(Boolean).length;
+        const traitFlagCount = [
+          options.trait,
+          options.addTrait,
+          options.removeTrait,
+          options.clearTraits,
+        ].filter(Boolean).length;
         if (traitFlagCount > 1) {
-          error("Cannot combine --trait, --add-trait, --remove-trait, and --clear-traits. Use only one at a time.");
+          error(
+            "Cannot combine --trait, --add-trait, --remove-trait, and --clear-traits. Use only one at a time.",
+          );
           process.exit(EXIT_CODES.USAGE_ERROR);
         }
 
@@ -1054,7 +1005,10 @@ Examples:
 
         // Helper to validate relationship refs (must exist and be a spec item, not a task)
         // Returns { ulid, canonicalRef } for deduplication and user-friendly storage
-        const validateRelationshipRef = (refStr: string, flagName: string): { ulid: string; canonicalRef: string } => {
+        const validateRelationshipRef = (
+          refStr: string,
+          flagName: string,
+        ): { ulid: string; canonicalRef: string } => {
           const refResult = refIndex.resolve(refStr);
           if (!refResult.ok) {
             error(errors.reference.itemNotFound(refStr));
@@ -1108,11 +1062,7 @@ Examples:
 
         if (options.title) updates.title = options.title;
         if (options.type) {
-          const typeResult = validateEnumOption(
-            options.type,
-            ItemTypeSchema.options,
-            "item type",
-          );
+          const typeResult = validateEnumOption(options.type, ItemTypeSchema.options, "item type");
           if (!typeResult.ok) {
             error(typeResult.error);
             process.exit(EXIT_CODES.VALIDATION_FAILED);
@@ -1203,12 +1153,9 @@ Examples:
         // Handle status updates
         if (statusValue || maturityValue) {
           const currentStatus =
-            foundItem.status && typeof foundItem.status === "object"
-              ? foundItem.status
-              : undefined;
+            foundItem.status && typeof foundItem.status === "object" ? foundItem.status : undefined;
           updates.status = {
-            implementation:
-              statusValue ?? currentStatus?.implementation ?? "not_started",
+            implementation: statusValue ?? currentStatus?.implementation ?? "not_started",
             maturity: maturityValue ?? currentStatus?.maturity ?? "draft",
           };
         }
@@ -1282,8 +1229,7 @@ Examples:
         }
 
         const updated = await updateSpecItem(ctx, foundItem, updates);
-        const itemSlug =
-          foundItem.slugs[0] || refIndex.shortUlid(foundItem._ulid);
+        const itemSlug = foundItem.slugs[0] || refIndex.shortUlid(foundItem._ulid);
 
         // Handle cascade for implementation status updates
         const updatedItems: LoadedSpecItem[] = [updated];
@@ -1310,13 +1256,8 @@ Examples:
 
         // Derive hint
         if (!isJsonMode()) {
-          const refSlug =
-            updated.slugs?.[0] || refIndex.shortUlid(updated._ulid);
-          console.log(
-            chalk.gray(
-              `\nDerive implementation task? kspec derive @${refSlug}`,
-            ),
-          );
+          const refSlug = updated.slugs?.[0] || refIndex.shortUlid(updated._ulid);
+          console.log(chalk.gray(`\nDerive implementation task? kspec derive @${refSlug}`));
         }
       } catch (err) {
         error(errors.failures.updateItem, err);
@@ -1393,11 +1334,17 @@ Examples:
       let hasDeletedRef = false;
 
       for (const ref of task.depends_on) {
-        if (isDeletedRef(ref)) { hasDeletedRef = true; break; }
+        if (isDeletedRef(ref)) {
+          hasDeletedRef = true;
+          break;
+        }
       }
       if (!hasDeletedRef && task.context) {
         for (const ref of task.context) {
-          if (isDeletedRef(ref)) { hasDeletedRef = true; break; }
+          if (isDeletedRef(ref)) {
+            hasDeletedRef = true;
+            break;
+          }
         }
       }
       if (!hasDeletedRef && task.spec_ref && isDeletedRef(task.spec_ref)) {
@@ -1405,7 +1352,10 @@ Examples:
       }
       if (!hasDeletedRef && task.blocked_by) {
         for (const ref of task.blocked_by) {
-          if (isDeletedRef(ref)) { hasDeletedRef = true; break; }
+          if (isDeletedRef(ref)) {
+            hasDeletedRef = true;
+            break;
+          }
         }
       }
 
@@ -1419,41 +1369,46 @@ Examples:
         operation: "item-delete-ref-cleanup",
         detail: `${tasksToClean.length} task(s)`,
       };
-      await resolveTaskDataManager(ctx).mutateTasks(ctx, tasksToClean.map(t => t._ulid), (latestTasks) => {
-        return latestTasks.map((task) => {
-          let refsRemovedFromTask = 0;
-          const origDepsLen = task.depends_on.length;
-          const filteredDeps = task.depends_on.filter((ref) => !isDeletedRef(ref));
-          refsRemovedFromTask += origDepsLen - filteredDeps.length;
+      await resolveTaskDataManager(ctx).mutateTasks(
+        ctx,
+        tasksToClean.map((t) => t._ulid),
+        (latestTasks) => {
+          return latestTasks.map((task) => {
+            let refsRemovedFromTask = 0;
+            const origDepsLen = task.depends_on.length;
+            const filteredDeps = task.depends_on.filter((ref) => !isDeletedRef(ref));
+            refsRemovedFromTask += origDepsLen - filteredDeps.length;
 
-          const origCtxLen = (task.context || []).length;
-          const filteredCtx = (task.context || []).filter((ref) => !isDeletedRef(ref));
-          refsRemovedFromTask += origCtxLen - filteredCtx.length;
+            const origCtxLen = (task.context || []).length;
+            const filteredCtx = (task.context || []).filter((ref) => !isDeletedRef(ref));
+            refsRemovedFromTask += origCtxLen - filteredCtx.length;
 
-          const origBlockedLen = (task.blocked_by || []).length;
-          const filteredBlocked = (task.blocked_by || []).filter((ref) => !isDeletedRef(ref));
-          refsRemovedFromTask += origBlockedLen - filteredBlocked.length;
+            const origBlockedLen = (task.blocked_by || []).length;
+            const filteredBlocked = (task.blocked_by || []).filter((ref) => !isDeletedRef(ref));
+            refsRemovedFromTask += origBlockedLen - filteredBlocked.length;
 
-          let specRef = task.spec_ref;
-          if (specRef && isDeletedRef(specRef)) {
-            specRef = null;
-            refsRemovedFromTask += 1;
-          }
+            let specRef = task.spec_ref;
+            if (specRef && isDeletedRef(specRef)) {
+              specRef = null;
+              refsRemovedFromTask += 1;
+            }
 
-          if (refsRemovedFromTask === 0) return task;
+            if (refsRemovedFromTask === 0) return task;
 
-          totalRefsRemoved += refsRemovedFromTask;
-          itemsUpdated++;
+            totalRefsRemoved += refsRemovedFromTask;
+            itemsUpdated++;
 
-          return {
-            ...task,
-            depends_on: filteredDeps,
-            context: filteredCtx,
-            blocked_by: filteredBlocked,
-            spec_ref: specRef,
-          };
-        });
-      }, cleanupCommitOpts);
+            return {
+              ...task,
+              depends_on: filteredDeps,
+              context: filteredCtx,
+              blocked_by: filteredBlocked,
+              spec_ref: specRef,
+            };
+          });
+        },
+        cleanupCommitOpts,
+      );
     }
 
     return { totalRefsRemoved, itemsUpdated };
@@ -1546,8 +1501,7 @@ Examples:
           }
 
           // Check for non-interactive environment
-          const isTTY =
-            process.env.KSPEC_TEST_TTY === "true" || process.stdin.isTTY;
+          const isTTY = process.env.KSPEC_TEST_TTY === "true" || process.stdin.isTTY;
           if (!isTTY) {
             error("Non-interactive environment. Use --force to proceed");
             process.exit(EXIT_CODES.ERROR);
@@ -1562,9 +1516,7 @@ Examples:
 
           const response = await new Promise<string>((resolve) => {
             rl.question(
-              chalk.yellow(
-                `Delete ${itemRef} and ${children.length} descendant items? [y/N] `,
-              ),
+              chalk.yellow(`Delete ${itemRef} and ${children.length} descendant items? [y/N] `),
               (answer) => {
                 rl.close();
                 resolve(answer);
@@ -1579,13 +1531,11 @@ Examples:
         }
 
         // AC: @spec-item-delete-children ac-2 ac-3 - Delete item and all descendants with cascade
-        const itemsToDelete = options.cascade
-          ? [foundItem, ...children]
-          : [foundItem];
+        const itemsToDelete = options.cascade ? [foundItem, ...children] : [foundItem];
         let deletedCount = 0;
 
         // Delete in reverse order (deepest first) to avoid path issues
-        const sortedItems = [...itemsToDelete].sort((a, b) => {
+        const sortedItems = [...itemsToDelete].toSorted((a, b) => {
           const aDepth = a._path ? a._path.split(".").length : 0;
           const bDepth = b._path ? b._path.split(".").length : 0;
           return bDepth - aDepth;
@@ -1611,15 +1561,14 @@ Examples:
           );
 
           // AC: @spec-item-delete-children ac-6 - Single shadow commit with all deletions
-          const itemSlug =
-            foundItem.slugs[0] || refIndex.shortUlid(foundItem._ulid);
-          const commitMsg =
-            deletedCount > 1 ? `${deletedCount} items` : itemSlug;
+          const itemSlug = foundItem.slugs[0] || refIndex.shortUlid(foundItem._ulid);
+          const commitMsg = deletedCount > 1 ? `${deletedCount} items` : itemSlug;
           await commitIfShadow(ctx.shadow, "item-delete", commitMsg);
 
-          const cleanedMsg = cleanupResult.totalRefsRemoved > 0
-            ? `. Cleaned ${cleanupResult.totalRefsRemoved} reference${cleanupResult.totalRefsRemoved === 1 ? "" : "s"} from ${cleanupResult.itemsUpdated} item${cleanupResult.itemsUpdated === 1 ? "" : "s"}`
-            : "";
+          const cleanedMsg =
+            cleanupResult.totalRefsRemoved > 0
+              ? `. Cleaned ${cleanupResult.totalRefsRemoved} reference${cleanupResult.totalRefsRemoved === 1 ? "" : "s"} from ${cleanupResult.itemsUpdated} item${cleanupResult.itemsUpdated === 1 ? "" : "s"}`
+              : "";
 
           if (deletedCount > 1) {
             success(`Deleted ${deletedCount} items${cleanedMsg}`, {
@@ -1638,11 +1587,7 @@ Examples:
           }
         } else {
           error(errors.failures.deleteItem);
-          console.log(
-            chalk.gray(
-              `Edit the source file directly: ${foundItem._sourceFile}`,
-            ),
-          );
+          console.log(chalk.gray(`Edit the source file directly: ${foundItem._sourceFile}`));
           process.exit(EXIT_CODES.ERROR);
         }
       } catch (err) {
@@ -1676,9 +1621,7 @@ Examples:
             patches = parseBulkInput(stdin);
           } catch (err) {
             error(
-              errors.validation.failedToParseBulk(
-                err instanceof Error ? err.message : String(err),
-              ),
+              errors.validation.failedToParseBulk(err instanceof Error ? err.message : String(err)),
             );
             process.exit(EXIT_CODES.ERROR);
           }
@@ -1697,11 +1640,7 @@ Examples:
 
           // Shadow commit if any updates
           if (!options.dryRun && result.summary.updated > 0) {
-            await commitIfShadow(
-              ctx.shadow,
-              "item-patch",
-              `${result.summary.updated} items`,
-            );
+            await commitIfShadow(ctx.shadow, "item-patch", `${result.summary.updated} items`);
           }
 
           output(result, () => formatBulkPatchResult(result, options.dryRun));
@@ -1723,11 +1662,7 @@ Examples:
             try {
               data = JSON.parse(options.data);
             } catch (err) {
-              error(
-                errors.validation.invalidJsonInData(
-                  err instanceof Error ? err.message : "",
-                ),
-              );
+              error(errors.validation.invalidJsonInData(err instanceof Error ? err.message : ""));
               process.exit(EXIT_CODES.ERROR);
             }
           } else {
@@ -1737,9 +1672,7 @@ Examples:
                 data = JSON.parse(stdin.trim());
               } catch (err) {
                 error(
-                  errors.validation.invalidJsonFromStdin(
-                    err instanceof Error ? err.message : "",
-                  ),
+                  errors.validation.invalidJsonFromStdin(err instanceof Error ? err.message : ""),
                 );
                 process.exit(EXIT_CODES.ERROR);
               }
@@ -1787,7 +1720,7 @@ Examples:
                 wouldApplyTo: foundItem.title,
                 ulid: foundItem._ulid,
               },
-            () => {
+              () => {
                 console.log(chalk.yellow("Would patch:"), foundItem.title);
                 console.log(chalk.gray("ULID:"), refIndex.shortUlid(foundItem._ulid));
                 console.log(chalk.gray("Changes:"));
@@ -1798,8 +1731,7 @@ Examples:
           }
 
           const updated = await updateSpecItem(ctx, foundItem, data);
-          const itemSlug =
-            foundItem.slugs[0] || refIndex.shortUlid(foundItem._ulid);
+          const itemSlug = foundItem.slugs[0] || refIndex.shortUlid(foundItem._ulid);
           await commitIfShadow(ctx.shadow, "item-patch", itemSlug);
 
           success(`Patched item: ${itemSlug}`, { item: updated });
@@ -1839,9 +1771,7 @@ Examples:
         const alignmentIndex = new AlignmentIndex(tasks, items);
         alignmentIndex.buildLinks(refIndex);
 
-        const summary = alignmentIndex.getImplementationSummary(
-          foundItem._ulid,
-        );
+        const summary = alignmentIndex.getImplementationSummary(foundItem._ulid);
 
         if (!summary) {
           error(errors.project.couldNotGetImplSummary);
@@ -1866,17 +1796,11 @@ Examples:
                 ? chalk.yellow
                 : chalk.gray;
 
-          console.log(
-            `Current status:  ${currentColor(summary.currentStatus)}`,
-          );
-          console.log(
-            `Expected status: ${expectedColor(summary.expectedStatus)}`,
-          );
+          console.log(`Current status:  ${currentColor(summary.currentStatus)}`);
+          console.log(`Expected status: ${expectedColor(summary.expectedStatus)}`);
 
           if (!summary.isAligned) {
-            console.log(
-              chalk.yellow("\n⚠ Status mismatch - run task complete to sync"),
-            );
+            console.log(chalk.yellow("\n⚠ Status mismatch - run task complete to sync"));
           } else {
             console.log(chalk.green("\n✓ Aligned"));
           }
@@ -1936,13 +1860,9 @@ Examples:
         const updatedNotes = [...(foundItem.notes || []), note];
         await updateSpecItem(ctx, foundItem, { notes: updatedNotes });
 
-        const itemSlug =
-          foundItem.slugs[0] || refIndex.shortUlid(foundItem._ulid);
+        const itemSlug = foundItem.slugs[0] || refIndex.shortUlid(foundItem._ulid);
         await commitIfShadow(ctx.shadow, "item-note", itemSlug);
-        success(
-          `Added note to spec item: ${refIndex.shortUlid(foundItem._ulid)}`,
-          { note },
-        );
+        success(`Added note to spec item: ${refIndex.shortUlid(foundItem._ulid)}`, { note });
       } catch (err) {
         error(errors.failures.addNote, err);
         process.exit(EXIT_CODES.ERROR);
@@ -1992,14 +1912,11 @@ Examples:
     });
 
   // Create subcommand group for acceptance criteria operations
-  const acCmd = item
-    .command("ac")
-    .description("Manage acceptance criteria on spec items");
+  const acCmd = item.command("ac").description("Manage acceptance criteria on spec items");
 
   // Helper: Generate next AC ID based on existing AC
-  function generateNextAcId(
-    existingAc: AcceptanceCriterion[] | undefined,
-  ): string {
+  // oxlint-disable-next-line unicorn/consistent-function-scoping
+  function generateNextAcId(existingAc: AcceptanceCriterion[] | undefined): string {
     if (!existingAc || existingAc.length === 0) return "ac-1";
 
     const numericIds = existingAc
@@ -2018,7 +1935,7 @@ Examples:
     refIndex: ReferenceIndex;
   }> {
     const ctx = await initContext();
-    const { refIndex, items } = await buildIndexes(ctx);
+    const { refIndex } = await buildIndexes(ctx);
 
     const result = refIndex.resolve(ref);
     if (!result.ok) {
@@ -2146,11 +2063,7 @@ Examples:
         }
 
         // Check for duplicate ID if renaming
-        if (
-          options.id &&
-          options.id !== acId &&
-          existingAc.some((ac) => ac.id === options.id)
-        ) {
+        if (options.id && options.id !== acId && existingAc.some((ac) => ac.id === options.id)) {
           error(errors.conflict.acIdAlreadyExists(options.id));
           process.exit(EXIT_CODES.CONFLICT);
         }
@@ -2192,10 +2105,10 @@ Examples:
         const itemSlug = item.slugs[0] || refIndex.shortUlid(item._ulid);
         await commitIfShadow(ctx.shadow, "item-ac-set", itemSlug);
         const changedFields = changes.map((c) => c.field).join(", ");
-        success(
-          `Updated acceptance criterion: ${acId} on @${itemSlug} (${changedFields})`,
-          { ac: updatedAc[acIndex], changes },
-        );
+        success(`Updated acceptance criterion: ${acId} on @${itemSlug} (${changedFields})`, {
+          ac: updatedAc[acIndex],
+          changes,
+        });
 
         // Show before→after diff in text mode
         showChangeDiff(changes);
@@ -2232,8 +2145,7 @@ Examples:
 
           // AC: @spec-item-delete-children ac-6 - Non-interactive environment requires --force
           // Allow KSPEC_TEST_TTY for testing interactive prompts
-          const isTTY =
-            process.env.KSPEC_TEST_TTY === "1" || process.stdin.isTTY;
+          const isTTY = process.env.KSPEC_TEST_TTY === "1" || process.stdin.isTTY;
           if (!isTTY) {
             error("Non-interactive environment. Use --force to proceed");
             process.exit(EXIT_CODES.ERROR);
@@ -2387,10 +2299,8 @@ function parseBulkInput(input: string): PatchOperation[] {
       return validatePatchOperation(JSON.parse(line), i);
     } catch (err) {
       throw new Error(
-        errors.validation.jsonLineError(
-          i + 1,
-          err instanceof Error ? err.message : "Invalid JSON",
-        ),
+        errors.validation.jsonLineError(i + 1, err instanceof Error ? err.message : "Invalid JSON"),
+        { cause: err },
       );
     }
   });
@@ -2416,10 +2326,7 @@ function validatePatchOperation(obj: unknown, index: number): PatchOperation {
 /**
  * Format bulk patch result for human output
  */
-function formatBulkPatchResult(
-  result: BulkPatchResult,
-  isDryRun = false,
-): void {
+function formatBulkPatchResult(result: BulkPatchResult, isDryRun = false): void {
   const prefix = isDryRun ? "Would patch" : "Patched";
   const updatedUlids = result.results
     .map((entry) => entry.ulid)
@@ -2427,13 +2334,8 @@ function formatBulkPatchResult(
 
   for (const r of result.results) {
     if (r.status === "updated") {
-      const shortUlid = r.ulid
-        ? shortestUniqueUlid(r.ulid, updatedUlids)
-        : undefined;
-      console.log(
-        chalk.green("OK"),
-        `${prefix}: ${r.ref} (${shortUlid})`,
-      );
+      const shortUlid = r.ulid ? shortestUniqueUlid(r.ulid, updatedUlids) : undefined;
+      console.log(chalk.green("OK"), `${prefix}: ${r.ref} (${shortUlid})`);
     } else if (r.status === "error") {
       console.log(chalk.red("ERR"), `${r.ref}: ${r.error}`);
     } else {

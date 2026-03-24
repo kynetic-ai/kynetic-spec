@@ -51,8 +51,7 @@ export async function ensureCodexProjectDocFallback(
         success: false,
         action: "failed",
         path: configPath,
-        message:
-          "Cannot update Codex config: ~/.codex/config.toml exists but is not valid TOML.",
+        message: "Cannot update Codex config: ~/.codex/config.toml exists but is not valid TOML.",
       };
     }
   }
@@ -79,8 +78,7 @@ export async function ensureCodexProjectDocFallback(
       success: false,
       action: "failed",
       path: configPath,
-      message:
-        "Cannot update Codex config: project_doc_fallback_filenames must be an array.",
+      message: "Cannot update Codex config: project_doc_fallback_filenames must be an array.",
     };
   }
 

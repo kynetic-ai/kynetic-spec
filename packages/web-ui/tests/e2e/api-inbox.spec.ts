@@ -11,19 +11,19 @@
  * - @api-contract ac-14: DELETE /api/inbox/:ref removes item, returns success confirmation
  */
 
-import { test, expect } from '../fixtures/test-base';
+import { test, expect } from "../fixtures/test-base";
 
-test.describe('Inbox API', () => {
-  test.describe('GET /api/inbox', () => {
+test.describe("Inbox API", () => {
+  test.describe("GET /api/inbox", () => {
     // AC: @api-contract ac-12
-    test('returns inbox items as array with total', async ({ request, daemon }) => {
+    test("returns inbox items as array with total", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/inbox`);
 
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(body).toHaveProperty('items');
-      expect(body).toHaveProperty('total');
+      expect(body).toHaveProperty("items");
+      expect(body).toHaveProperty("total");
       expect(Array.isArray(body.items)).toBe(true);
       // Fixtures include 3 inbox items
       expect(body.items.length).toBeGreaterThan(0);
@@ -31,7 +31,7 @@ test.describe('Inbox API', () => {
     });
 
     // AC: @api-contract ac-12 - ordered by created_at desc
-    test('returns items ordered by created_at descending (newest first)', async ({
+    test("returns items ordered by created_at descending (newest first)", async ({
       request,
       daemon,
     }) => {
@@ -52,7 +52,7 @@ test.describe('Inbox API', () => {
     });
 
     // AC: @api-contract ac-12 - item fields
-    test('each inbox item has required fields', async ({ request, daemon }) => {
+    test("each inbox item has required fields", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/inbox`);
       expect(response.status()).toBe(200);
 
@@ -60,15 +60,15 @@ test.describe('Inbox API', () => {
       expect(body.items.length).toBeGreaterThan(0);
 
       const item = body.items[0];
-      expect(item).toHaveProperty('_ulid');
-      expect(item).toHaveProperty('text');
-      expect(item).toHaveProperty('created_at');
-      expect(item).toHaveProperty('tags');
+      expect(item).toHaveProperty("_ulid");
+      expect(item).toHaveProperty("text");
+      expect(item).toHaveProperty("created_at");
+      expect(item).toHaveProperty("tags");
       expect(Array.isArray(item.tags)).toBe(true);
     });
 
     // AC: @api-contract ac-12 - fixture data integrity
-    test('returns the fixture inbox items in correct order', async ({ request, daemon }) => {
+    test("returns the fixture inbox items in correct order", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/inbox`);
       expect(response.status()).toBe(200);
 
@@ -78,22 +78,22 @@ test.describe('Inbox API', () => {
       // 01KJNBX1CC...: 2026-01-01T09:00:00Z
       // 01KJNBX2CB...: 2026-01-01T08:00:00Z (oldest)
       expect(body.items.length).toBe(3);
-      expect(body.items[0].text).toBe('First inbox item for testing');
-      expect(body.items[1].text).toBe('Second inbox item with different tags');
-      expect(body.items[2].text).toBe('Third inbox item - oldest');
+      expect(body.items[0].text).toBe("First inbox item for testing");
+      expect(body.items[1].text).toBe("Second inbox item with different tags");
+      expect(body.items[2].text).toBe("Third inbox item - oldest");
     });
 
     // AC: @api-contract ac-12 (response format) - JSON content type
-    test('returns JSON content type', async ({ request, daemon }) => {
+    test("returns JSON content type", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/inbox`);
-      const contentType = response.headers()['content-type'] || '';
-      expect(contentType).toContain('application/json');
+      const contentType = response.headers()["content-type"] || "";
+      expect(contentType).toContain("application/json");
     });
   });
 
-  test.describe('POST /api/inbox', () => {
+  test.describe("POST /api/inbox", () => {
     // AC: @api-contract ac-13
-    test('creates inbox item and returns it with generated ULID', async ({ request, daemon }) => {
+    test("creates inbox item and returns it with generated ULID", async ({ request, daemon }) => {
       const itemText = `E2E test inbox item ${Date.now()}`;
       const response = await request.post(`${daemon.baseUrl}/api/inbox`, {
         data: { text: itemText },
@@ -102,21 +102,21 @@ test.describe('Inbox API', () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(body).toHaveProperty('success');
+      expect(body).toHaveProperty("success");
       expect(body.success).toBe(true);
-      expect(body).toHaveProperty('item');
+      expect(body).toHaveProperty("item");
 
       const item = body.item;
-      expect(item).toHaveProperty('_ulid');
-      expect(typeof item._ulid).toBe('string');
+      expect(item).toHaveProperty("_ulid");
+      expect(typeof item._ulid).toBe("string");
       expect(item._ulid.length).toBeGreaterThan(0);
       expect(item.text).toBe(itemText);
     });
 
     // AC: @api-contract ac-13 - ULID is auto-generated (not provided by client)
-    test('assigns a ULID to the new item', async ({ request, daemon }) => {
+    test("assigns a ULID to the new item", async ({ request, daemon }) => {
       const response = await request.post(`${daemon.baseUrl}/api/inbox`, {
-        data: { text: 'ULID assignment test' },
+        data: { text: "ULID assignment test" },
       });
 
       expect(response.status()).toBe(200);
@@ -127,10 +127,7 @@ test.describe('Inbox API', () => {
     });
 
     // AC: @api-contract ac-13 - created item appears in list
-    test('newly created item appears in subsequent GET /api/inbox', async ({
-      request,
-      daemon,
-    }) => {
+    test("newly created item appears in subsequent GET /api/inbox", async ({ request, daemon }) => {
       const itemText = `Created item check ${Date.now()}`;
       const createResponse = await request.post(`${daemon.baseUrl}/api/inbox`, {
         data: { text: itemText },
@@ -150,32 +147,32 @@ test.describe('Inbox API', () => {
     });
 
     // AC: @api-contract ac-13 - supports optional tags
-    test('creates item with optional tags', async ({ request, daemon }) => {
+    test("creates item with optional tags", async ({ request, daemon }) => {
       const response = await request.post(`${daemon.baseUrl}/api/inbox`, {
-        data: { text: 'Tagged item', tags: ['feature', 'dx'] },
+        data: { text: "Tagged item", tags: ["feature", "dx"] },
       });
 
       expect(response.status()).toBe(200);
       const body = await response.json();
-      expect(body.item.tags).toEqual(['feature', 'dx']);
+      expect(body.item.tags).toEqual(["feature", "dx"]);
     });
 
     // AC: @api-contract ac-13 - supports optional added_by
-    test('creates item with optional added_by field', async ({ request, daemon }) => {
+    test("creates item with optional added_by field", async ({ request, daemon }) => {
       const response = await request.post(`${daemon.baseUrl}/api/inbox`, {
-        data: { text: 'Item by author', added_by: '@testuser' },
+        data: { text: "Item by author", added_by: "@testuser" },
       });
 
       expect(response.status()).toBe(200);
       const body = await response.json();
-      expect(body.item.added_by).toBe('@testuser');
+      expect(body.item.added_by).toBe("@testuser");
     });
 
     // AC: @api-contract ac-13 - created_at is set
-    test('created item has a created_at timestamp', async ({ request, daemon }) => {
+    test("created item has a created_at timestamp", async ({ request, daemon }) => {
       const before = new Date().getTime();
       const response = await request.post(`${daemon.baseUrl}/api/inbox`, {
-        data: { text: 'Timestamp test item' },
+        data: { text: "Timestamp test item" },
       });
 
       expect(response.status()).toBe(200);
@@ -189,7 +186,7 @@ test.describe('Inbox API', () => {
     });
 
     // Error: missing text field — Elysia validates body schema, returns 422
-    test('returns 422 when text field is missing', async ({ request, daemon }) => {
+    test("returns 422 when text field is missing", async ({ request, daemon }) => {
       const response = await request.post(`${daemon.baseUrl}/api/inbox`, {
         data: {},
       });
@@ -198,37 +195,37 @@ test.describe('Inbox API', () => {
     });
 
     // Error: empty text — handler validation returns 400
-    test('returns 400 when text is empty string', async ({ request, daemon }) => {
+    test("returns 400 when text is empty string", async ({ request, daemon }) => {
       const response = await request.post(`${daemon.baseUrl}/api/inbox`, {
-        data: { text: '' },
+        data: { text: "" },
       });
 
       expect(response.status()).toBe(400);
       const body = await response.json();
-      expect(body.error).toBe('validation_error');
-      expect(body).toHaveProperty('details');
+      expect(body.error).toBe("validation_error");
+      expect(body).toHaveProperty("details");
       expect(Array.isArray(body.details)).toBe(true);
-      expect(body.details[0].field).toBe('text');
+      expect(body.details[0].field).toBe("text");
     });
 
     // Error: whitespace-only text — handler validation returns 400
-    test('returns 400 when text is whitespace only', async ({ request, daemon }) => {
+    test("returns 400 when text is whitespace only", async ({ request, daemon }) => {
       const response = await request.post(`${daemon.baseUrl}/api/inbox`, {
-        data: { text: '   ' },
+        data: { text: "   " },
       });
 
       expect(response.status()).toBe(400);
       const body = await response.json();
-      expect(body.error).toBe('validation_error');
+      expect(body.error).toBe("validation_error");
     });
   });
 
-  test.describe('DELETE /api/inbox/:ref', () => {
+  test.describe("DELETE /api/inbox/:ref", () => {
     // AC: @api-contract ac-14
-    test('deletes an inbox item and returns success confirmation', async ({ request, daemon }) => {
+    test("deletes an inbox item and returns success confirmation", async ({ request, daemon }) => {
       // First create an item to delete
       const createResponse = await request.post(`${daemon.baseUrl}/api/inbox`, {
-        data: { text: 'Item to delete' },
+        data: { text: "Item to delete" },
       });
       expect(createResponse.status()).toBe(200);
       const created = await createResponse.json();
@@ -239,17 +236,17 @@ test.describe('Inbox API', () => {
       expect(deleteResponse.status()).toBe(200);
 
       const body = await deleteResponse.json();
-      expect(body).toHaveProperty('success');
+      expect(body).toHaveProperty("success");
       expect(body.success).toBe(true);
-      expect(body).toHaveProperty('deleted');
+      expect(body).toHaveProperty("deleted");
       expect(body.deleted).toBe(ulid);
     });
 
     // AC: @api-contract ac-14 - item is actually removed from list
-    test('deleted item no longer appears in GET /api/inbox', async ({ request, daemon }) => {
+    test("deleted item no longer appears in GET /api/inbox", async ({ request, daemon }) => {
       // Create an item
       const createResponse = await request.post(`${daemon.baseUrl}/api/inbox`, {
-        data: { text: 'Item to verify deletion' },
+        data: { text: "Item to verify deletion" },
       });
       expect(createResponse.status()).toBe(200);
       const created = await createResponse.json();
@@ -267,10 +264,10 @@ test.describe('Inbox API', () => {
     });
 
     // AC: @api-contract ac-14 - can delete using full ULID ref
-    test('deletes item using full ULID ref', async ({ request, daemon }) => {
+    test("deletes item using full ULID ref", async ({ request, daemon }) => {
       // Create a new item to delete
       const createResponse = await request.post(`${daemon.baseUrl}/api/inbox`, {
-        data: { text: 'Full ULID ref deletion test' },
+        data: { text: "Full ULID ref deletion test" },
       });
       expect(createResponse.status()).toBe(200);
       const created = await createResponse.json();
@@ -286,28 +283,28 @@ test.describe('Inbox API', () => {
 
     // AC: @api-contract ac-14 - error handling
     // AC: @trait-api-endpoint ac-2 - 404 with {error, message, suggestion}
-    test('returns 404 with message and suggestion for non-existent inbox ref', async ({
+    test("returns 404 with message and suggestion for non-existent inbox ref", async ({
       request,
       daemon,
     }) => {
       const response = await request.delete(
-        `${daemon.baseUrl}/api/inbox/@nonexistent-inbox-ref-xyz`
+        `${daemon.baseUrl}/api/inbox/@nonexistent-inbox-ref-xyz`,
       );
       expect(response.status()).toBe(404);
 
       const body = await response.json();
-      expect(body).toHaveProperty('error');
-      expect(body.error).toBe('not_found');
-      expect(body).toHaveProperty('message');
-      expect(typeof body.message).toBe('string');
-      expect(body).toHaveProperty('suggestion');
-      expect(typeof body.suggestion).toBe('string');
+      expect(body).toHaveProperty("error");
+      expect(body.error).toBe("not_found");
+      expect(body).toHaveProperty("message");
+      expect(typeof body.message).toBe("string");
+      expect(body).toHaveProperty("suggestion");
+      expect(typeof body.suggestion).toBe("string");
     });
 
     // Error: can delete fixture items by ULID
-    test('can delete an existing fixture item by ULID', async ({ request, daemon }) => {
+    test("can delete an existing fixture item by ULID", async ({ request, daemon }) => {
       // Use the third fixture item (oldest) to avoid affecting ordering tests
-      const ulid = '01KJNBX2CB8N4YGP991WD7XS9R';
+      const ulid = "01KJNBX2CB8N4YGP991WD7XS9R";
 
       const deleteResponse = await request.delete(`${daemon.baseUrl}/api/inbox/@${ulid}`);
       expect(deleteResponse.status()).toBe(200);
@@ -323,9 +320,9 @@ test.describe('Inbox API', () => {
     });
   });
 
-  test.describe('Inbox ordering invariant', () => {
+  test.describe("Inbox ordering invariant", () => {
     // AC: @api-contract ac-12 - newly created items appear at top (newest first)
-    test('newly created item appears at top of list (most recent first)', async ({
+    test("newly created item appears at top of list (most recent first)", async ({
       request,
       daemon,
     }) => {
@@ -333,7 +330,7 @@ test.describe('Inbox API', () => {
       await new Promise((r) => setTimeout(r, 10));
 
       const response = await request.post(`${daemon.baseUrl}/api/inbox`, {
-        data: { text: 'Should be at top' },
+        data: { text: "Should be at top" },
       });
       expect(response.status()).toBe(200);
       const created = await response.json();

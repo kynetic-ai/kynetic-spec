@@ -515,7 +515,14 @@ describe("batch write buffer integration", () => {
     expect(result.summary.failed).toBe(1);
 
     const importedSkillMd = path.join(tempDir, ".kspec", "skills", "rollback-skill", "SKILL.md");
-    const importedDoc = path.join(tempDir, ".kspec", "skills", "rollback-skill", "docs", "guide.md");
+    const importedDoc = path.join(
+      tempDir,
+      ".kspec",
+      "skills",
+      "rollback-skill",
+      "docs",
+      "guide.md",
+    );
     await expect(fs.access(importedSkillMd)).rejects.toThrow();
     await expect(fs.access(importedDoc)).rejects.toThrow();
 
@@ -527,7 +534,7 @@ describe("batch write buffer integration", () => {
   it("atomic batch with failure leaves spec dir unchanged", () => {
     // Add baseline item
     kspec(`inbox add "baseline for rollback test"`, tempDir);
-    const inboxBefore = kspec("inbox list", tempDir);
+    const _inboxBefore = kspec("inbox list", tempDir);
 
     // This batch will fail pre-validation (nonexistent command) — nothing should execute
     const result = kspecJson<BatchExecResult>(

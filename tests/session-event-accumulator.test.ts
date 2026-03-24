@@ -267,18 +267,10 @@ describe("SessionEventAccumulator", () => {
     it("excludes tool output from tool_call_complete", () => {
       const ctx = makeCtx();
 
-      accumulator.handleUpdate(
-        ctx,
-        makeToolCallUpdate("tc-1", "Bash"),
-        emit,
-      );
+      accumulator.handleUpdate(ctx, makeToolCallUpdate("tc-1", "Bash"), emit);
       events.length = 0;
 
-      accumulator.handleUpdate(
-        ctx,
-        makeToolCallCompleteUpdate("tc-1", "completed"),
-        emit,
-      );
+      accumulator.handleUpdate(ctx, makeToolCallCompleteUpdate("tc-1", "completed"), emit);
 
       const complete = events.find((e) => e.type === "tool_call_complete") as any;
       expect(complete).toBeDefined();
@@ -291,18 +283,10 @@ describe("SessionEventAccumulator", () => {
     it("includes tool name in tool_call_complete", () => {
       const ctx = makeCtx();
 
-      accumulator.handleUpdate(
-        ctx,
-        makeToolCallUpdate("tc-1", "Read"),
-        emit,
-      );
+      accumulator.handleUpdate(ctx, makeToolCallUpdate("tc-1", "Read"), emit);
       events.length = 0;
 
-      accumulator.handleUpdate(
-        ctx,
-        makeToolCallCompleteUpdate("tc-1", "completed"),
-        emit,
-      );
+      accumulator.handleUpdate(ctx, makeToolCallCompleteUpdate("tc-1", "completed"), emit);
 
       const complete = events.find((e) => e.type === "tool_call_complete") as any;
       expect(complete.tool_name).toBe("Read");
@@ -335,11 +319,7 @@ describe("SessionEventAccumulator", () => {
       const ctx = makeCtx();
 
       // Phase 1: registration with empty input
-      accumulator.handleUpdate(
-        ctx,
-        makeToolCallUpdate("tc-1", "Bash", {}),
-        emit,
-      );
+      accumulator.handleUpdate(ctx, makeToolCallUpdate("tc-1", "Bash", {}), emit);
       events.length = 0;
 
       // Phase 2: input update with populated rawInput
@@ -362,11 +342,7 @@ describe("SessionEventAccumulator", () => {
       accumulator.handleUpdate(ctx, makeToolCallUpdate("tc-1", "Bash"), emit);
       events.length = 0;
 
-      accumulator.handleUpdate(
-        ctx,
-        makeToolCallInputUpdate("tc-1", {}),
-        emit,
-      );
+      accumulator.handleUpdate(ctx, makeToolCallInputUpdate("tc-1", {}), emit);
 
       expect(events.filter((e) => e.type === "tool_call_input")).toHaveLength(0);
     });
@@ -378,12 +354,16 @@ describe("SessionEventAccumulator", () => {
       events.length = 0;
 
       // Update with both rawInput and completed status — should only emit tool_call_complete
-      accumulator.handleUpdate(ctx, {
-        sessionUpdate: "tool_call_update",
-        toolCallId: "tc-1",
-        rawInput: { command: "git status" },
-        status: "completed",
-      } as unknown as SessionUpdate, emit);
+      accumulator.handleUpdate(
+        ctx,
+        {
+          sessionUpdate: "tool_call_update",
+          toolCallId: "tc-1",
+          rawInput: { command: "git status" },
+          status: "completed",
+        } as unknown as SessionUpdate,
+        emit,
+      );
 
       const types = events.map((e) => e.type);
       expect(types).not.toContain("tool_call_input");
@@ -394,11 +374,7 @@ describe("SessionEventAccumulator", () => {
       const ctx = makeCtx();
 
       // Phase 1: registration
-      accumulator.handleUpdate(
-        ctx,
-        makeToolCallUpdate("tc-1", "Read", null),
-        emit,
-      );
+      accumulator.handleUpdate(ctx, makeToolCallUpdate("tc-1", "Read", null), emit);
 
       // Phase 2: input
       accumulator.handleUpdate(
@@ -408,18 +384,10 @@ describe("SessionEventAccumulator", () => {
       );
 
       // Phase 3: completion
-      accumulator.handleUpdate(
-        ctx,
-        makeToolCallCompleteUpdate("tc-1", "completed"),
-        emit,
-      );
+      accumulator.handleUpdate(ctx, makeToolCallCompleteUpdate("tc-1", "completed"), emit);
 
       const types = events.map((e) => e.type);
-      expect(types).toEqual([
-        "tool_call_start",
-        "tool_call_input",
-        "tool_call_complete",
-      ]);
+      expect(types).toEqual(["tool_call_start", "tool_call_input", "tool_call_complete"]);
     });
   });
 
@@ -441,13 +409,13 @@ describe("SessionEventAccumulator", () => {
       const types = events.map((e) => e.type);
       expect(types).toEqual([
         "message_start",
-        "message_progress",    // "Hello world\n"
-        "message_complete",    // transition to idle (empty buffer)
+        "message_progress", // "Hello world\n"
+        "message_complete", // transition to idle (empty buffer)
         "tool_call_start",
         "tool_call_complete",
-        "message_start",       // re-enter message mode
-        "message_progress",    // "Done\n"
-        "message_complete",    // session end flush (empty buffer)
+        "message_start", // re-enter message mode
+        "message_progress", // "Done\n"
+        "message_complete", // session end flush (empty buffer)
       ]);
     });
 
@@ -462,10 +430,10 @@ describe("SessionEventAccumulator", () => {
       expect(types).toEqual([
         "thinking_start",
         "thinking_progress",
-        "thinking_complete",   // transition flush
+        "thinking_complete", // transition flush
         "message_start",
         "message_progress",
-        "message_complete",    // session end
+        "message_complete", // session end
       ]);
     });
   });

@@ -31,11 +31,7 @@ afterEach(async () => {
  * Helper: create a review for a task subject, which auto-links via review_ref.
  * Returns the created review's ref.
  */
-function createLinkedReview(
-  taskRef: string,
-  slug: string,
-  title = "Linked Review",
-): string {
+function createLinkedReview(taskRef: string, slug: string, title = "Linked Review"): string {
   kspec(
     `review add --title '${title}' --subject-ref ${taskRef} --subject-type task --slug ${slug}`,
     tempDir,
@@ -46,11 +42,7 @@ function createLinkedReview(
 /**
  * Helper: create a code review with a related task ref.
  */
-function createRelatedReview(
-  taskRef: string,
-  slug: string,
-  title = "Code Review",
-): string {
+function createRelatedReview(taskRef: string, slug: string, title = "Code Review"): string {
   kspec(
     `review add --title '${title}' --base aaa111 --head bbb222 --related-ref ${taskRef} --slug ${slug}`,
     tempDir,
@@ -153,10 +145,7 @@ describe("Review CLI Task Linkage", () => {
       createRelatedReview("@test-task-pending", "code-rv", "Code Review");
 
       // Verify the task now has review_ref set
-      const taskResult = kspecJson<{ review_ref: string }>(
-        "task get @test-task-pending",
-        tempDir,
-      );
+      const taskResult = kspecJson<{ review_ref: string }>("task get @test-task-pending", tempDir);
       expect(taskResult.review_ref).toBe("@code-rv");
 
       // Create ANOTHER code review that references a different task
@@ -278,6 +267,7 @@ describe("Review CLI Task Linkage", () => {
       expect(parsed).toBeDefined();
       expect(parsed.active_review).toBeDefined();
       // No ANSI escape codes
+      // oxlint-disable-next-line eslint(no-control-regex) -- intentionally matching ANSI escape
       expect(result.stdout).not.toMatch(/\x1b\[/);
     });
 
@@ -332,9 +322,7 @@ describe("Review CLI Task Linkage", () => {
         reviews: Array<{ created_at: string }>;
       }>("review list --task @test-task-pending", tempDir);
 
-      expect(result.reviews[0].created_at).toMatch(
-        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/,
-      );
+      expect(result.reviews[0].created_at).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/);
     });
 
     // AC: @trait-json-output ac-6 — N/A: review list --task has no competing format flags beyond global --json
@@ -374,10 +362,7 @@ describe("Review CLI Task Linkage", () => {
 
     // AC: @trait-semantic-exit-codes ac-5
     it("should exit 0 with empty result set for review list --task", () => {
-      const result = kspecRun(
-        "review list --task @test-task-secondary",
-        tempDir,
-      );
+      const result = kspecRun("review list --task @test-task-secondary", tempDir);
       expect(result.exitCode).toBe(0);
     });
 

@@ -3,24 +3,22 @@
  *
  * Uses fixture files to test end-to-end workflows.
  */
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import * as fs from 'node:fs/promises';
-import * as fssync from 'node:fs';
-import * as os from 'node:os';
-import * as path from 'node:path';
-import { execSync } from 'node:child_process';
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import * as fs from "node:fs/promises";
+import * as fssync from "node:fs";
+import * as os from "node:os";
+import * as path from "node:path";
+import { execSync } from "node:child_process";
 import {
   kspec as kspecRun,
   kspecOutput as kspec,
   kspecJson,
   setupTempFixtures,
   cleanupTempDir,
-  FIXTURES_DIR,
-  git,
   initGitRepo,
-} from './helpers/cli';
+} from "./helpers/cli";
 
-describe('Integration: validate', () => {
+describe("Integration: validate", () => {
   let tempDir: string;
 
   beforeEach(async () => {
@@ -31,23 +29,23 @@ describe('Integration: validate', () => {
     await cleanupTempDir(tempDir);
   });
 
-  it('should validate fixture spec without errors', () => {
-    const output = kspec('validate', tempDir);
-    expect(output).toContain('Validation passed');
+  it("should validate fixture spec without errors", () => {
+    const output = kspec("validate", tempDir);
+    expect(output).toContain("Validation passed");
   });
 
-  it('should check schema conformance', () => {
-    const output = kspec('validate --schema', tempDir);
-    expect(output).toContain('Schema: OK');
+  it("should check schema conformance", () => {
+    const output = kspec("validate --schema", tempDir);
+    expect(output).toContain("Schema: OK");
   });
 
-  it('should check references', () => {
-    const output = kspec('validate --refs', tempDir);
-    expect(output).toContain('References: OK');
+  it("should check references", () => {
+    const output = kspec("validate --refs", tempDir);
+    expect(output).toContain("References: OK");
   });
 });
 
-describe('Integration: tasks', () => {
+describe("Integration: tasks", () => {
   let tempDir: string;
 
   beforeEach(async () => {
@@ -58,80 +56,80 @@ describe('Integration: tasks', () => {
     await cleanupTempDir(tempDir);
   });
 
-  it('should list all tasks', () => {
-    const output = kspec('tasks list', tempDir);
-    expect(output).toContain('test-task-pending');
-    expect(output).toContain('test-task-blocked');
-    expect(output).toContain('test-task-completed');
+  it("should list all tasks", () => {
+    const output = kspec("tasks list", tempDir);
+    expect(output).toContain("test-task-pending");
+    expect(output).toContain("test-task-blocked");
+    expect(output).toContain("test-task-completed");
   });
 
-  it('should list ready tasks (unblocked pending)', () => {
-    const output = kspec('tasks ready', tempDir);
-    expect(output).toContain('test-task-pending');
-    expect(output).not.toContain('test-task-blocked'); // blocked by dependency
-    expect(output).not.toContain('test-task-completed'); // already done
+  it("should list ready tasks (unblocked pending)", () => {
+    const output = kspec("tasks ready", tempDir);
+    expect(output).toContain("test-task-pending");
+    expect(output).not.toContain("test-task-blocked"); // blocked by dependency
+    expect(output).not.toContain("test-task-completed"); // already done
   });
 
-  it('should get task details', () => {
-    const output = kspec('task get @test-task-pending', tempDir);
-    expect(output).toContain('Test pending task');
-    expect(output).toContain('pending');
+  it("should get task details", () => {
+    const output = kspec("task get @test-task-pending", tempDir);
+    expect(output).toContain("Test pending task");
+    expect(output).toContain("pending");
   });
 
-  it('should get task details as JSON', () => {
+  it("should get task details as JSON", () => {
     const result = kspecJson<{ _ulid: string; title: string; status: string }>(
-      'task get @test-task-pending',
-      tempDir
+      "task get @test-task-pending",
+      tempDir,
     );
-    expect(result._ulid).toBe('01KF1645CA45ZT43W2T6HJMVA1');
-    expect(result.title).toBe('Test pending task');
-    expect(result.status).toBe('pending');
+    expect(result._ulid).toBe("01KF1645CA45ZT43W2T6HJMVA1");
+    expect(result.title).toBe("Test pending task");
+    expect(result.status).toBe("pending");
   });
 
   // AC: @task-list-verbose ac-1
-  it('should show full details with --full flag', () => {
-    const output = kspec('tasks ready --full', tempDir);
+  it("should show full details with --full flag", () => {
+    const output = kspec("tasks ready --full", tempDir);
 
     // Should show timestamps (AC-1)
-    expect(output).toContain('Created:');
+    expect(output).toContain("Created:");
 
     // Tags and dependencies should be shown if present
-    expect(output).toContain('test-task-pending');
+    expect(output).toContain("test-task-pending");
   });
 
   // AC: @task-list-verbose ac-2
-  it('should preserve current -v behavior', () => {
-    const output = kspec('tasks ready -v', tempDir);
+  it("should preserve current -v behavior", () => {
+    const output = kspec("tasks ready -v", tempDir);
 
     // Should show tags inline with -v
-    expect(output).toContain('#test');
+    expect(output).toContain("#test");
 
     // Should NOT show full mode details
-    expect(output).not.toContain('Created:');
+    expect(output).not.toContain("Created:");
   });
 
   // AC: @task-list-verbose ac-3
-  it('should handle tasks with no notes or todos in full mode', () => {
-    const output = kspec('tasks ready --full', tempDir);
+  it("should handle tasks with no notes or todos in full mode", () => {
+    const output = kspec("tasks ready --full", tempDir);
 
     // Should not error when tasks have no notes/todos
-    expect(output).toContain('test-task-pending');
+    expect(output).toContain("test-task-pending");
   });
 
   // AC: @task-list-verbose ac-4
-  it('should include all fields in JSON output with --full', () => {
-    const result = kspecJson<any[]>('tasks ready --full', tempDir);
+  it("should include all fields in JSON output with --full", () => {
+    const result = kspecJson<any[]>("tasks ready --full", tempDir);
 
     // Should include notes and todos arrays
-    expect(result[0]).toHaveProperty('notes');
-    expect(result[0]).toHaveProperty('todos');
-    expect(result[0]).toHaveProperty('created_at');
+    expect(result[0]).toHaveProperty("notes");
+    expect(result[0]).toHaveProperty("todos");
+    expect(result[0]).toHaveProperty("created_at");
     expect(Array.isArray(result[0].notes)).toBe(true);
     expect(Array.isArray(result[0].todos)).toBe(true);
   });
 });
 
-describe('Integration: task lifecycle', () => {
+describe("Integration: task lifecycle", () => {
   let tempDir: string;
 
   beforeEach(async () => {
@@ -142,56 +140,56 @@ describe('Integration: task lifecycle', () => {
     await cleanupTempDir(tempDir);
   });
 
-  it('should start a task', () => {
-    const output = kspec('task start @test-task-pending', tempDir);
-    expect(output).toContain('Started task');
+  it("should start a task", () => {
+    const output = kspec("task start @test-task-pending", tempDir);
+    expect(output).toContain("Started task");
 
     // Verify status changed
-    const task = kspecJson<{ status: string }>('task get @test-task-pending', tempDir);
-    expect(task.status).toBe('in_progress');
+    const task = kspecJson<{ status: string }>("task get @test-task-pending", tempDir);
+    expect(task.status).toBe("in_progress");
   });
 
-  it('should add a note to a task', () => {
+  it("should add a note to a task", () => {
     const output = kspec('task note @test-task-pending "Test note content"', tempDir);
-    expect(output).toContain('Added note');
+    expect(output).toContain("Added note");
 
     // Verify note was added
-    const notesOutput = kspec('task notes @test-task-pending', tempDir);
-    expect(notesOutput).toContain('Test note content');
+    const notesOutput = kspec("task notes @test-task-pending", tempDir);
+    expect(notesOutput).toContain("Test note content");
   });
 
-  it('should complete a task', () => {
+  it("should complete a task", () => {
     // First start it
-    kspec('task start @test-task-pending', tempDir);
-    kspec('task submit @test-task-pending', tempDir);
+    kspec("task start @test-task-pending", tempDir);
+    kspec("task submit @test-task-pending", tempDir);
 
     // Then complete it
     const output = kspec('task complete @test-task-pending --reason "Done"', tempDir);
-    expect(output).toContain('Completed task');
+    expect(output).toContain("Completed task");
 
     // Verify status changed
-    const task = kspecJson<{ status: string }>('task get @test-task-pending', tempDir);
-    expect(task.status).toBe('completed');
+    const task = kspecJson<{ status: string }>("task get @test-task-pending", tempDir);
+    expect(task.status).toBe("completed");
   });
 
-  it('should unblock dependent task when dependency completes', () => {
+  it("should unblock dependent task when dependency completes", () => {
     // Initially blocked task should not be ready
-    let readyOutput = kspec('tasks ready', tempDir);
-    expect(readyOutput).not.toContain('test-task-blocked');
+    let readyOutput = kspec("tasks ready", tempDir);
+    expect(readyOutput).not.toContain("test-task-blocked");
 
     // Complete the blocking task
-    kspec('task start @test-task-pending', tempDir);
-    kspec('task submit @test-task-pending', tempDir);
+    kspec("task start @test-task-pending", tempDir);
+    kspec("task submit @test-task-pending", tempDir);
     kspec('task complete @test-task-pending --reason "Done"', tempDir);
 
     // Now blocked task should be ready
-    readyOutput = kspec('tasks ready', tempDir);
-    expect(readyOutput).toContain('test-task-blocked');
+    readyOutput = kspec("tasks ready", tempDir);
+    expect(readyOutput).toContain("test-task-blocked");
   });
 });
 
 // AC: @pending-review-state ac-1, ac-2, ac-9, ac-4, ac-6
-describe('Integration: task submit (pending_review state)', () => {
+describe("Integration: task submit (pending_review state)", () => {
   let tempDir: string;
 
   beforeEach(async () => {
@@ -203,77 +201,77 @@ describe('Integration: task submit (pending_review state)', () => {
   });
 
   // AC: @pending-review-state ac-9
-  it('should submit a task from in_progress to pending_review', () => {
+  it("should submit a task from in_progress to pending_review", () => {
     // Start task first
-    kspec('task start @test-task-pending', tempDir);
+    kspec("task start @test-task-pending", tempDir);
 
     // Submit for review
-    const output = kspec('task submit @test-task-pending', tempDir);
-    expect(output).toContain('Submitted task for review');
+    const output = kspec("task submit @test-task-pending", tempDir);
+    expect(output).toContain("Submitted task for review");
 
     // Verify status changed
-    const task = kspecJson<{ status: string }>('task get @test-task-pending', tempDir);
-    expect(task.status).toBe('pending_review');
+    const task = kspecJson<{ status: string }>("task get @test-task-pending", tempDir);
+    expect(task.status).toBe("pending_review");
   });
 
   // AC: @pending-review-state ac-9
-  it('should reject submit from non-in_progress state', () => {
+  it("should reject submit from non-in_progress state", () => {
     // Task is pending (not in_progress)
-    const result = kspecRun('task submit @test-task-pending', tempDir, { expectFail: true });
+    const result = kspecRun("task submit @test-task-pending", tempDir, { expectFail: true });
     expect(result.exitCode).not.toBe(0);
-    expect(result.stderr).toContain('Task must be in_progress');
+    expect(result.stderr).toContain("Task must be in_progress");
   });
 
   // AC: @pending-review-state ac-2
-  it('should complete a task from pending_review state', () => {
+  it("should complete a task from pending_review state", () => {
     // Start, then submit
-    kspec('task start @test-task-pending', tempDir);
-    kspec('task submit @test-task-pending', tempDir);
+    kspec("task start @test-task-pending", tempDir);
+    kspec("task submit @test-task-pending", tempDir);
 
     // Complete from pending_review
     const output = kspec('task complete @test-task-pending --reason "Merged"', tempDir);
-    expect(output).toContain('Completed task');
+    expect(output).toContain("Completed task");
 
     // Verify status is completed
-    const task = kspecJson<{ status: string }>('task get @test-task-pending', tempDir);
-    expect(task.status).toBe('completed');
+    const task = kspecJson<{ status: string }>("task get @test-task-pending", tempDir);
+    expect(task.status).toBe("completed");
   });
 
   // AC: @pending-review-state ac-4
-  it('should exclude pending_review tasks from ready list', () => {
+  it("should exclude pending_review tasks from ready list", () => {
     // Start and submit
-    kspec('task start @test-task-pending', tempDir);
-    kspec('task submit @test-task-pending', tempDir);
+    kspec("task start @test-task-pending", tempDir);
+    kspec("task submit @test-task-pending", tempDir);
 
     // Should not be in ready list
-    const readyOutput = kspec('tasks ready', tempDir);
-    expect(readyOutput).not.toContain('test-task-pending');
+    const readyOutput = kspec("tasks ready", tempDir);
+    expect(readyOutput).not.toContain("test-task-pending");
   });
 
   // AC: @pending-review-state ac-6
-  it('should filter tasks by pending_review status', () => {
+  it("should filter tasks by pending_review status", () => {
     // Start and submit
-    kspec('task start @test-task-pending', tempDir);
-    kspec('task submit @test-task-pending', tempDir);
+    kspec("task start @test-task-pending", tempDir);
+    kspec("task submit @test-task-pending", tempDir);
 
     // Should appear in filtered list
-    const output = kspec('tasks list --status pending_review', tempDir);
-    expect(output).toContain('test-task-pending');
+    const output = kspec("tasks list --status pending_review", tempDir);
+    expect(output).toContain("test-task-pending");
   });
 
   // AC: @pending-review-state ac-1
-  it('should accept pending_review as valid status in schema', () => {
+  it("should accept pending_review as valid status in schema", () => {
     // Start, submit, then verify get works (schema validation)
-    kspec('task start @test-task-pending', tempDir);
-    kspec('task submit @test-task-pending', tempDir);
+    kspec("task start @test-task-pending", tempDir);
+    kspec("task submit @test-task-pending", tempDir);
 
     // If schema was invalid, this would fail
-    const task = kspecJson<{ status: string }>('task get @test-task-pending', tempDir);
-    expect(task.status).toBe('pending_review');
+    const task = kspecJson<{ status: string }>("task get @test-task-pending", tempDir);
+    expect(task.status).toBe("pending_review");
   });
 });
 
-describe('Integration: task add', () => {
+describe("Integration: task add", () => {
   let tempDir: string;
 
   beforeEach(async () => {
@@ -287,24 +285,24 @@ describe('Integration: task add', () => {
   // AC: @task-add ac-create
   // AC: @task-add ac-priority-default
   // AC: @trait-priority-parameter ac-4
-  it('should create a new task', () => {
+  it("should create a new task", () => {
     const output = kspec('task add --title "New test task"', tempDir);
-    expect(output).toContain('Created task');
+    expect(output).toContain("Created task");
 
     const match = output.match(/Created task: ([A-Z0-9]{8})/);
     expect(match).not.toBeNull();
 
     const task = kspecJson<{ status: string; priority: number; type: string }>(
       `task get @${match![1]}`,
-      tempDir
+      tempDir,
     );
-    expect(task.status).toBe('pending');
+    expect(task.status).toBe("pending");
     expect(task.priority).toBe(3);
-    expect(task.type).toBe('task');
+    expect(task.type).toBe("task");
 
     // Verify task exists
-    const listOutput = kspec('tasks list', tempDir);
-    expect(listOutput).toContain('New test task');
+    const listOutput = kspec("tasks list", tempDir);
+    expect(listOutput).toContain("New test task");
   });
 
   // AC: @task-add ac-type
@@ -312,42 +310,42 @@ describe('Integration: task add', () => {
   // AC: @task-add ac-tags
   // AC: @task-add ac-slug
   // AC: @trait-priority-parameter ac-1
-  it('should create task with all options', () => {
+  it("should create task with all options", () => {
     kspec(
       'task add --title "Full task" --type bug --priority 1 --tag urgent --tag fix --slug my-bug',
-      tempDir
+      tempDir,
     );
 
     const task = kspecJson<{ type: string; priority: number; tags: string[]; slugs: string[] }>(
-      'task get @my-bug',
-      tempDir
+      "task get @my-bug",
+      tempDir,
     );
 
-    expect(task.type).toBe('bug');
+    expect(task.type).toBe("bug");
     expect(task.priority).toBe(1);
-    expect(task.tags).toContain('urgent');
-    expect(task.tags).toContain('fix');
-    expect(task.slugs).toContain('my-bug');
+    expect(task.tags).toContain("urgent");
+    expect(task.tags).toContain("fix");
+    expect(task.slugs).toContain("my-bug");
   });
 
   // AC: @task-add ac-priority-valid
   // AC: @trait-priority-parameter ac-7
-  it('should accept P-notation for --priority in task add', () => {
+  it("should accept P-notation for --priority in task add", () => {
     kspec('task add --title "P notation add" --priority p3 --slug p-notation-add', tempDir);
 
-    const task = kspecJson<{ priority: number }>('task get @p-notation-add', tempDir);
+    const task = kspecJson<{ priority: number }>("task get @p-notation-add", tempDir);
     expect(task.priority).toBe(3);
   });
 
-  it('should default task priority to 3 when omitted', () => {
+  it("should default task priority to 3 when omitted", () => {
     kspec('task add --title "Default priority add" --slug default-priority-add', tempDir);
 
-    const task = kspecJson<{ priority: number }>('task get @default-priority-add', tempDir);
+    const task = kspecJson<{ priority: number }>("task get @default-priority-add", tempDir);
     expect(task.priority).toBe(3);
   });
 });
 
-describe('Integration: task set', () => {
+describe("Integration: task set", () => {
   let tempDir: string;
 
   beforeEach(async () => {
@@ -359,173 +357,196 @@ describe('Integration: task set', () => {
   });
 
   // AC: @task-set ac-task-set-1
-  it('should update task title', () => {
+  it("should update task title", () => {
     const output = kspec('task set @test-task-pending --title "Updated Title"', tempDir);
-    expect(output).toContain('Updated task');
-    expect(output).toContain('(title)');
+    expect(output).toContain("Updated task");
+    expect(output).toContain("(title)");
 
     // Verify title changed
-    const task = kspecJson<{ title: string }>('task get @test-task-pending', tempDir);
-    expect(task.title).toBe('Updated Title');
+    const task = kspecJson<{ title: string }>("task get @test-task-pending", tempDir);
+    expect(task.title).toBe("Updated Title");
   });
 
-  it('should update task description', () => {
-    const output = kspec('task set @test-task-pending --description "Updated description"', tempDir);
-    expect(output).toContain('Updated task');
-    expect(output).toContain('(description)');
+  it("should update task description", () => {
+    const output = kspec(
+      'task set @test-task-pending --description "Updated description"',
+      tempDir,
+    );
+    expect(output).toContain("Updated task");
+    expect(output).toContain("(description)");
 
-    const task = kspecJson<{ description?: string }>('task get @test-task-pending', tempDir);
-    expect(task.description).toBe('Updated description');
+    const task = kspecJson<{ description?: string }>("task get @test-task-pending", tempDir);
+    expect(task.description).toBe("Updated description");
   });
 
-  it('should clear description with null', () => {
+  it("should clear description with null", () => {
     kspec('task set @test-task-pending --description "Needs clearing"', tempDir);
-    const before = kspecJson<{ description?: string }>('task get @test-task-pending', tempDir);
-    expect(before.description).toBe('Needs clearing');
+    const before = kspecJson<{ description?: string }>("task get @test-task-pending", tempDir);
+    expect(before.description).toBe("Needs clearing");
 
-    const output = kspec('task set @test-task-pending --description null', tempDir);
-    expect(output).toContain('description');
+    const output = kspec("task set @test-task-pending --description null", tempDir);
+    expect(output).toContain("description");
 
-    const after = kspecJson<{ description?: string }>('task get @test-task-pending', tempDir);
+    const after = kspecJson<{ description?: string }>("task get @test-task-pending", tempDir);
     expect(after.description).toBeUndefined();
   });
 
-  it('should clear description when whitespace-only value is provided', () => {
+  it("should clear description when whitespace-only value is provided", () => {
     kspec('task set @test-task-pending --description "Needs clearing"', tempDir);
     const output = kspec('task set @test-task-pending --description "   "', tempDir);
-    expect(output).toContain('description');
+    expect(output).toContain("description");
 
-    const task = kspecJson<{ description?: string }>('task get @test-task-pending', tempDir);
+    const task = kspecJson<{ description?: string }>("task get @test-task-pending", tempDir);
     expect(task.description).toBeUndefined();
   });
 
   // AC: @task-set ac-task-set-2
-  it('should set spec_ref on task', () => {
-    const output = kspec('task set @test-task-pending --spec-ref @test-feature', tempDir);
-    expect(output).toContain('Updated task');
-    expect(output).toContain('(spec_ref)');
+  it("should set spec_ref on task", () => {
+    const output = kspec("task set @test-task-pending --spec-ref @test-feature", tempDir);
+    expect(output).toContain("Updated task");
+    expect(output).toContain("(spec_ref)");
 
     // Verify spec_ref was set
-    const task = kspecJson<{ spec_ref: string }>('task get @test-task-pending', tempDir);
-    expect(task.spec_ref).toBe('@test-feature');
+    const task = kspecJson<{ spec_ref: string }>("task get @test-task-pending", tempDir);
+    expect(task.spec_ref).toBe("@test-feature");
   });
 
   // AC: @task-set ac-task-set-3
-  it('should reject nonexistent spec ref', () => {
-    const result = kspecRun('task set @test-task-pending --spec-ref @nonexistent', tempDir, { expectFail: true });
+  it("should reject nonexistent spec ref", () => {
+    const result = kspecRun("task set @test-task-pending --spec-ref @nonexistent", tempDir, {
+      expectFail: true,
+    });
     expect(result.exitCode).not.toBe(0);
   });
 
   // AC: @task-set ac-task-set-4
-  it('should reject task as spec ref', () => {
-    const result = kspecRun('task set @test-task-pending --spec-ref @test-task-blocked', tempDir, { expectFail: true });
+  it("should reject task as spec ref", () => {
+    const result = kspecRun("task set @test-task-pending --spec-ref @test-task-blocked", tempDir, {
+      expectFail: true,
+    });
     expect(result.exitCode).not.toBe(0);
   });
 
   // AC: @task-set ac-clear-ref
-  it('should clear spec_ref with null', () => {
+  it("should clear spec_ref with null", () => {
     // First set a spec_ref
-    kspec('task set @test-task-pending --spec-ref @test-feature', tempDir);
-    const before = kspecJson<{ spec_ref: string | null }>('task get @test-task-pending', tempDir);
-    expect(before.spec_ref).toBe('@test-feature');
+    kspec("task set @test-task-pending --spec-ref @test-feature", tempDir);
+    const before = kspecJson<{ spec_ref: string | null }>("task get @test-task-pending", tempDir);
+    expect(before.spec_ref).toBe("@test-feature");
 
     // Clear it with 'null'
-    const output = kspec('task set @test-task-pending --spec-ref null', tempDir);
-    expect(output).toContain('Updated task');
-    expect(output).toContain('spec_ref');
+    const output = kspec("task set @test-task-pending --spec-ref null", tempDir);
+    expect(output).toContain("Updated task");
+    expect(output).toContain("spec_ref");
 
     // Verify it was cleared
-    const after = kspecJson<{ spec_ref: string | null }>('task get @test-task-pending', tempDir);
+    const after = kspecJson<{ spec_ref: string | null }>("task get @test-task-pending", tempDir);
     expect(after.spec_ref).toBeNull();
   });
 
   // AC: @task-set ac-clear-ref
-  it('should clear meta_ref with null', () => {
+  it("should clear meta_ref with null", () => {
     // Set a meta_ref first using workflow from fixtures
-    kspec('task set @test-task-pending --meta-ref @task-start', tempDir);
-    const before = kspecJson<{ meta_ref: string | null }>('task get @test-task-pending', tempDir);
-    expect(before.meta_ref).toBe('@task-start');
+    kspec("task set @test-task-pending --meta-ref @task-start", tempDir);
+    const before = kspecJson<{ meta_ref: string | null }>("task get @test-task-pending", tempDir);
+    expect(before.meta_ref).toBe("@task-start");
 
     // Clear it with 'null'
-    const output = kspec('task set @test-task-pending --meta-ref null', tempDir);
-    expect(output).toContain('Updated task');
-    expect(output).toContain('meta_ref');
+    const output = kspec("task set @test-task-pending --meta-ref null", tempDir);
+    expect(output).toContain("Updated task");
+    expect(output).toContain("meta_ref");
 
     // Verify it was cleared
-    const after = kspecJson<{ meta_ref: string | null }>('task get @test-task-pending', tempDir);
+    const after = kspecJson<{ meta_ref: string | null }>("task get @test-task-pending", tempDir);
     expect(after.meta_ref).toBeNull();
   });
 
   // AC: @task-set ac-task-set-5
-  it('should update priority', () => {
-    kspec('task set @test-task-pending --priority 1', tempDir);
+  it("should update priority", () => {
+    kspec("task set @test-task-pending --priority 1", tempDir);
 
-    const task = kspecJson<{ priority: number }>('task get @test-task-pending', tempDir);
+    const task = kspecJson<{ priority: number }>("task get @test-task-pending", tempDir);
     expect(task.priority).toBe(1);
   });
 
-  it('should accept P-notation for --priority in task set', () => {
-    kspec('task set @test-task-pending --priority P1', tempDir);
+  it("should accept P-notation for --priority in task set", () => {
+    kspec("task set @test-task-pending --priority P1", tempDir);
 
-    const task = kspecJson<{ priority: number }>('task get @test-task-pending', tempDir);
+    const task = kspecJson<{ priority: number }>("task get @test-task-pending", tempDir);
     expect(task.priority).toBe(1);
   });
 
   // AC: @task-set ac-task-set-6
-  it('should reject invalid priority', () => {
-    const result = kspecRun('task set @test-task-pending --priority 6', tempDir, { expectFail: true });
+  it("should reject invalid priority", () => {
+    const result = kspecRun("task set @test-task-pending --priority 6", tempDir, {
+      expectFail: true,
+    });
     expect(result.exitCode).not.toBe(0);
   });
 
-  it('should reject invalid P-notation priority with clear guidance', () => {
-    const result = kspecRun('task set @test-task-pending --priority Px', tempDir, { expectFail: true });
+  it("should reject invalid P-notation priority with clear guidance", () => {
+    const result = kspecRun("task set @test-task-pending --priority Px", tempDir, {
+      expectFail: true,
+    });
     expect(result.exitCode).not.toBe(0);
-    expect(result.stderr).toContain('Priority (1-5 or P1-P5)');
+    expect(result.stderr).toContain("Priority (1-5 or P1-P5)");
   });
 
-  it('should add slug to task', () => {
-    kspec('task set @test-task-pending --slug my-new-slug', tempDir);
+  it("should add slug to task", () => {
+    kspec("task set @test-task-pending --slug my-new-slug", tempDir);
 
-    const task = kspecJson<{ slugs: string[] }>('task get @test-task-pending', tempDir);
-    expect(task.slugs).toContain('my-new-slug');
+    const task = kspecJson<{ slugs: string[] }>("task get @test-task-pending", tempDir);
+    expect(task.slugs).toContain("my-new-slug");
   });
 
-  it('should add tags to task', () => {
-    kspec('task set @test-task-pending --tag newtag1 --tag newtag2', tempDir);
+  it("should add tags to task", () => {
+    kspec("task set @test-task-pending --tag newtag1 --tag newtag2", tempDir);
 
-    const task = kspecJson<{ tags: string[] }>('task get @test-task-pending', tempDir);
-    expect(task.tags).toContain('newtag1');
-    expect(task.tags).toContain('newtag2');
+    const task = kspecJson<{ tags: string[] }>("task get @test-task-pending", tempDir);
+    expect(task.tags).toContain("newtag1");
+    expect(task.tags).toContain("newtag2");
   });
 
   // AC: @task-set ac-task-set-7
-  it('should not change task when no options specified', () => {
+  it("should not change task when no options specified", () => {
     // Get original task state
-    const before = kspecJson<{ title: string; priority: number }>('task get @test-task-pending', tempDir);
+    const before = kspecJson<{ title: string; priority: number }>(
+      "task get @test-task-pending",
+      tempDir,
+    );
 
     // Run set with no options (warns to stderr, no changes)
-    kspec('task set @test-task-pending', tempDir);
+    kspec("task set @test-task-pending", tempDir);
 
     // Verify nothing changed
-    const after = kspecJson<{ title: string; priority: number }>('task get @test-task-pending', tempDir);
+    const after = kspecJson<{ title: string; priority: number }>(
+      "task get @test-task-pending",
+      tempDir,
+    );
     expect(after.title).toBe(before.title);
     expect(after.priority).toBe(before.priority);
   });
 
-  it('should update multiple fields at once', () => {
-    const output = kspec('task set @test-task-pending --title "Multi Update" --priority 1 --tag multi', tempDir);
-    expect(output).toContain('title');
-    expect(output).toContain('priority');
-    expect(output).toContain('tags');
+  it("should update multiple fields at once", () => {
+    const output = kspec(
+      'task set @test-task-pending --title "Multi Update" --priority 1 --tag multi',
+      tempDir,
+    );
+    expect(output).toContain("title");
+    expect(output).toContain("priority");
+    expect(output).toContain("tags");
 
-    const task = kspecJson<{ title: string; priority: number; tags: string[] }>('task get @test-task-pending', tempDir);
-    expect(task.title).toBe('Multi Update');
+    const task = kspecJson<{ title: string; priority: number; tags: string[] }>(
+      "task get @test-task-pending",
+      tempDir,
+    );
+    expect(task.title).toBe("Multi Update");
     expect(task.priority).toBe(1);
-    expect(task.tags).toContain('multi');
+    expect(task.tags).toContain("multi");
   });
 });
 
-describe('Integration: task patch', () => {
+describe("Integration: task patch", () => {
   let tempDir: string;
 
   beforeEach(async () => {
@@ -537,69 +558,83 @@ describe('Integration: task patch', () => {
   });
 
   // AC: @task-patch ac-1
-  it('should update task priority with valid JSON', () => {
-    kspec('task patch @test-task-pending --data \'{"priority":1}\'', tempDir);
+  it("should update task priority with valid JSON", () => {
+    kspec("task patch @test-task-pending --data '{\"priority\":1}'", tempDir);
 
-    const task = kspecJson<{ priority: number }>('task get @test-task-pending', tempDir);
+    const task = kspecJson<{ priority: number }>("task get @test-task-pending", tempDir);
     expect(task.priority).toBe(1);
   });
 
   // AC: @task-patch ac-2
-  it('should error on invalid JSON syntax', () => {
-    const result = kspecRun("task patch @test-task-pending --data 'bad'", tempDir, { expectFail: true });
+  it("should error on invalid JSON syntax", () => {
+    const result = kspecRun("task patch @test-task-pending --data 'bad'", tempDir, {
+      expectFail: true,
+    });
     expect(result.exitCode).not.toBe(0);
   });
 
   // AC: @task-patch ac-3
-  it('should error on unknown field by default', () => {
-    const result = kspecRun('task patch @test-task-pending --data \'{"unknown":true}\'', tempDir, { expectFail: true });
+  it("should error on unknown field by default", () => {
+    const result = kspecRun("task patch @test-task-pending --data '{\"unknown\":true}'", tempDir, {
+      expectFail: true,
+    });
     expect(result.exitCode).not.toBe(0);
   });
 
   // AC: @task-patch ac-4
-  it('should allow unknown field with --allow-unknown', () => {
+  // oxlint-disable-next-line jest/expect-expect -- verifies command doesn't throw
+  it("should allow unknown field with --allow-unknown", () => {
     // This should not throw
-    kspec('task patch @test-task-pending --data \'{"unknown":true}\' --allow-unknown', tempDir);
+    kspec("task patch @test-task-pending --data '{\"unknown\":true}' --allow-unknown", tempDir);
   });
 
-  it('should update multiple fields with JSON', () => {
-    kspec('task patch @test-task-pending --data \'{"priority":1,"tags":["patched","test"]}\'', tempDir);
+  it("should update multiple fields with JSON", () => {
+    kspec(
+      'task patch @test-task-pending --data \'{"priority":1,"tags":["patched","test"]}\'',
+      tempDir,
+    );
 
-    const task = kspecJson<{ priority: number; tags: string[] }>('task get @test-task-pending', tempDir);
+    const task = kspecJson<{ priority: number; tags: string[] }>(
+      "task get @test-task-pending",
+      tempDir,
+    );
     expect(task.priority).toBe(1);
-    expect(task.tags).toContain('patched');
-    expect(task.tags).toContain('test');
+    expect(task.tags).toContain("patched");
+    expect(task.tags).toContain("test");
   });
 
-  it('should show changes with --dry-run', () => {
-    const output = kspec('task patch @test-task-pending --data \'{"priority":1}\' --dry-run', tempDir);
-    expect(output).toContain('Dry run');
-    expect(output).toContain('priority');
+  it("should show changes with --dry-run", () => {
+    const output = kspec(
+      "task patch @test-task-pending --data '{\"priority\":1}' --dry-run",
+      tempDir,
+    );
+    expect(output).toContain("Dry run");
+    expect(output).toContain("priority");
 
     // Verify no actual change
-    const task = kspecJson<{ priority: number }>('task get @test-task-pending', tempDir);
+    const task = kspecJson<{ priority: number }>("task get @test-task-pending", tempDir);
     expect(task.priority).toBe(2); // Original value from fixture
   });
 
-  it('should read patch JSON from stdin when no --data is provided', () => {
+  it("should read patch JSON from stdin when no --data is provided", () => {
     // AC: @task-patch ac-1
-    kspec('task patch @test-task-pending', tempDir, { stdin: '{"priority":1}' });
+    kspec("task patch @test-task-pending", tempDir, { stdin: '{"priority":1}' });
 
-    const task = kspecJson<{ priority: number }>('task get @test-task-pending', tempDir);
+    const task = kspecJson<{ priority: number }>("task get @test-task-pending", tempDir);
     expect(task.priority).toBe(1);
   });
 
-  it('should fail fast in interactive mode when no --data is provided', () => {
-    const result = kspecRun('task patch @test-task-pending', tempDir, {
+  it("should fail fast in interactive mode when no --data is provided", () => {
+    const result = kspecRun("task patch @test-task-pending", tempDir, {
       expectFail: true,
-      env: { KSPEC_TEST_TTY: 'true' },
+      env: { KSPEC_TEST_TTY: "true" },
     });
     expect(result.exitCode).toBe(4);
-    expect(result.stderr).toContain('No patch data. Use --data or pipe JSON to stdin.');
+    expect(result.stderr).toContain("No patch data. Use --data or pipe JSON to stdin.");
   });
 });
 
-describe('Integration: items', () => {
+describe("Integration: items", () => {
   let tempDir: string;
 
   beforeEach(async () => {
@@ -610,28 +645,28 @@ describe('Integration: items', () => {
     await cleanupTempDir(tempDir);
   });
 
-  it('should list spec items', () => {
-    const output = kspec('item list', tempDir);
-    expect(output).toContain('test-core');
-    expect(output).toContain('test-feature');
+  it("should list spec items", () => {
+    const output = kspec("item list", tempDir);
+    expect(output).toContain("test-core");
+    expect(output).toContain("test-feature");
   });
 
-  it('should get item details', () => {
-    const output = kspec('item get @test-feature', tempDir);
-    expect(output).toContain('Test Feature');
-    expect(output).toContain('feature');
+  it("should get item details", () => {
+    const output = kspec("item get @test-feature", tempDir);
+    expect(output).toContain("Test Feature");
+    expect(output).toContain("feature");
   });
 
-  it('should resolve nested requirement', () => {
-    const output = kspec('item get @test-requirement', tempDir);
-    expect(output).toContain('Test Requirement');
-    expect(output).toContain('requirement');
+  it("should resolve nested requirement", () => {
+    const output = kspec("item get @test-requirement", tempDir);
+    expect(output).toContain("Test Requirement");
+    expect(output).toContain("requirement");
   });
 
-  it('should suggest meta observe get for observation refs', () => {
+  it("should suggest meta observe get for observation refs", () => {
     const observation = kspecJson<{ _ulid: string }>(
       'meta observe idea "Observation for item-get guidance"',
-      tempDir
+      tempDir,
     );
     const observationRef = `@${observation._ulid.slice(0, 8)}`;
 
@@ -641,50 +676,50 @@ describe('Integration: items', () => {
 
     expect(result.stderr).toContain(`Item not found: ${observationRef}`);
     expect(result.stderr).toContain(
-      `Hint: ${observationRef} is an observation. Use: kspec meta observe get ${observationRef}`
+      `Hint: ${observationRef} is an observation. Use: kspec meta observe get ${observationRef}`,
     );
   });
 
   // AC: @item-get ac-1
-  it('should display acceptance criteria in item get output', () => {
+  it("should display acceptance criteria in item get output", () => {
     // First add an AC to the item
     kspec(
       'item ac add @test-feature --given "user is logged in" --when "they click logout" --then "session is terminated"',
-      tempDir
+      tempDir,
     );
 
     // Verify item get shows the AC
-    const output = kspec('item get @test-feature', tempDir);
-    expect(output).toContain('Acceptance Criteria');
-    expect(output).toContain('[ac-1]');
-    expect(output).toContain('Given: user is logged in');
-    expect(output).toContain('When: they click logout');
-    expect(output).toContain('Then: session is terminated');
+    const output = kspec("item get @test-feature", tempDir);
+    expect(output).toContain("Acceptance Criteria");
+    expect(output).toContain("[ac-1]");
+    expect(output).toContain("Given: user is logged in");
+    expect(output).toContain("When: they click logout");
+    expect(output).toContain("Then: session is terminated");
   });
   // AC: @trait-json-output ac-1, ac-2, ac-4
-  it('should return clean JSON for item list with no internal fields', () => {
+  it("should return clean JSON for item list with no internal fields", () => {
     const result = kspecJson<{
       items: Array<Record<string, unknown>>;
       total: number;
       showing: number;
-    }>('item list --limit 2', tempDir);
+    }>("item list --limit 2", tempDir);
 
-    expect(result).toHaveProperty('items');
-    expect(result).toHaveProperty('total');
-    expect(result).toHaveProperty('showing');
+    expect(result).toHaveProperty("items");
+    expect(result).toHaveProperty("total");
+    expect(result).toHaveProperty("showing");
     expect(result.items.length).toBeGreaterThan(0);
 
     for (const item of result.items) {
       // Clean field names
-      expect(item).toHaveProperty('ulid');
-      expect(item).toHaveProperty('ref');
-      expect(item).toHaveProperty('title');
-      expect(item).toHaveProperty('type');
+      expect(item).toHaveProperty("ulid");
+      expect(item).toHaveProperty("ref");
+      expect(item).toHaveProperty("title");
+      expect(item).toHaveProperty("type");
 
       // No internal fields
-      expect(item).not.toHaveProperty('_ulid');
-      expect(item).not.toHaveProperty('_sourceFile');
-      expect(item).not.toHaveProperty('_path');
+      expect(item).not.toHaveProperty("_ulid");
+      expect(item).not.toHaveProperty("_sourceFile");
+      expect(item).not.toHaveProperty("_path");
 
       // AC: @trait-json-output ac-4 — ref has @ prefix
       expect(item.ref).toMatch(/^@/);
@@ -692,28 +727,25 @@ describe('Integration: items', () => {
   });
 
   // AC: @trait-json-output ac-1, ac-2, ac-4
-  it('should return clean JSON for item get with no internal fields', () => {
-    const result = kspecJson<Record<string, unknown>>(
-      'item get @test-feature',
-      tempDir
-    );
+  it("should return clean JSON for item get with no internal fields", () => {
+    const result = kspecJson<Record<string, unknown>>("item get @test-feature", tempDir);
 
     // Clean field names
-    expect(result).toHaveProperty('ulid');
-    expect(result).toHaveProperty('ref');
-    expect(result).toHaveProperty('title');
+    expect(result).toHaveProperty("ulid");
+    expect(result).toHaveProperty("ref");
+    expect(result).toHaveProperty("title");
 
     // No internal fields
-    expect(result).not.toHaveProperty('_ulid');
-    expect(result).not.toHaveProperty('_sourceFile');
-    expect(result).not.toHaveProperty('_path');
+    expect(result).not.toHaveProperty("_ulid");
+    expect(result).not.toHaveProperty("_sourceFile");
+    expect(result).not.toHaveProperty("_path");
 
     // AC: @trait-json-output ac-4 — ref has @ prefix
-    expect(result.ref).toBe('@test-feature');
+    expect(result.ref).toBe("@test-feature");
   });
 });
 
-describe('Integration: item set', () => {
+describe("Integration: item set", () => {
   let tempDir: string;
 
   beforeEach(async () => {
@@ -725,13 +757,10 @@ describe('Integration: item set', () => {
   });
 
   // AC: @item-required-fields ac-1
-  it('should store a new item created with only its required user-provided field', () => {
+  it("should store a new item created with only its required user-provided field", () => {
     const created = kspecJson<{
       item: { _ulid: string; title: string; slugs: string[] };
-    }>(
-      'item add --under @test-core --title "Required Fields Only" --type feature',
-      tempDir
-    );
+    }>('item add --under @test-core --title "Required Fields Only" --type feature', tempDir);
 
     const stored = kspecJson<{
       ulid: string;
@@ -740,17 +769,17 @@ describe('Integration: item set', () => {
     }>(`item get @${created.item._ulid}`, tempDir);
 
     expect(stored.ulid).toMatch(/^[0-9A-HJKMNP-TV-Z]{26}$/);
-    expect(stored.title).toBe('Required Fields Only');
+    expect(stored.title).toBe("Required Fields Only");
     expect(stored.slugs).toEqual([]);
   });
 
   // AC: @item-optional-fields ac-1
-  it('should keep items valid when optional metadata is omitted at creation time', () => {
+  it("should keep items valid when optional metadata is omitted at creation time", () => {
     const created = kspecJson<{
       item: { _ulid: string };
     }>(
       'item add --under @test-core --title "Optional Metadata Omitted" --type requirement',
-      tempDir
+      tempDir,
     );
 
     const stored = kspecJson<{
@@ -763,7 +792,7 @@ describe('Integration: item set', () => {
       relates_to: string[];
     }>(`item get @${created.item._ulid}`, tempDir);
 
-    expect(stored.title).toBe('Optional Metadata Omitted');
+    expect(stored.title).toBe("Optional Metadata Omitted");
     expect(stored.slugs).toEqual([]);
     expect(stored.tags).toEqual([]);
     expect(stored.description).toBeUndefined();
@@ -773,87 +802,101 @@ describe('Integration: item set', () => {
   });
 
   // AC: @item-set ac-1
-  it('should add slug to existing slugs', () => {
+  it("should add slug to existing slugs", () => {
     // Create an item with one slug
-    kspec('item add --under @test-core --title "Slug Test" --slug slug-one --type feature', tempDir);
+    kspec(
+      'item add --under @test-core --title "Slug Test" --slug slug-one --type feature',
+      tempDir,
+    );
 
     // Add another slug
-    kspec('item set @slug-one --slug slug-two', tempDir);
+    kspec("item set @slug-one --slug slug-two", tempDir);
 
     // Verify both slugs exist
-    const output = kspec('item get @slug-one', tempDir);
-    expect(output).toContain('slug-one');
-    expect(output).toContain('slug-two');
+    const output = kspec("item get @slug-one", tempDir);
+    expect(output).toContain("slug-one");
+    expect(output).toContain("slug-two");
   });
 
   // AC: @item-set ac-2
-  it('should remove slug from item', () => {
+  it("should remove slug from item", () => {
     // Create an item with one slug, add a second
-    kspec('item add --under @test-core --title "Remove Test" --slug keep-slug --type feature', tempDir);
-    kspec('item set @keep-slug --slug remove-slug', tempDir);
+    kspec(
+      'item add --under @test-core --title "Remove Test" --slug keep-slug --type feature',
+      tempDir,
+    );
+    kspec("item set @keep-slug --slug remove-slug", tempDir);
 
     // Remove the second slug
-    kspec('item set @keep-slug --remove-slug remove-slug', tempDir);
+    kspec("item set @keep-slug --remove-slug remove-slug", tempDir);
 
     // Verify only first slug remains
-    const output = kspec('item get @keep-slug', tempDir);
-    expect(output).toContain('keep-slug');
-    expect(output).not.toContain('remove-slug');
+    const output = kspec("item get @keep-slug", tempDir);
+    expect(output).toContain("keep-slug");
+    expect(output).not.toContain("remove-slug");
   });
 
   // AC: @item-set ac-3
-  it('should prevent removing last slug', () => {
+  it("should prevent removing last slug", () => {
     // Create an item with one slug
-    kspec('item add --under @test-core --title "Last Slug Test" --slug only-slug --type feature', tempDir);
+    kspec(
+      'item add --under @test-core --title "Last Slug Test" --slug only-slug --type feature',
+      tempDir,
+    );
 
     // Try to remove the only slug
-    const result = kspecRun('item set @only-slug --remove-slug only-slug', tempDir, { expectFail: true });
+    const result = kspecRun("item set @only-slug --remove-slug only-slug", tempDir, {
+      expectFail: true,
+    });
     expect(result.exitCode).not.toBe(0);
   });
 
   // AC: @ulid-immutability ac-1
-  it('should preserve the original ULID when an item is updated or superseded', () => {
-    kspec('item add --under @test-core --title "Immutable ULID Item" --slug immutable-ulid --type feature', tempDir);
+  it("should preserve the original ULID when an item is updated or superseded", () => {
+    kspec(
+      'item add --under @test-core --title "Immutable ULID Item" --slug immutable-ulid --type feature',
+      tempDir,
+    );
     kspec(
       'item add --under @test-core --title "Immutable ULID Replacement" --slug immutable-ulid-replacement --type feature',
-      tempDir
+      tempDir,
     );
 
-    const beforeOriginal = kspecJson<{ ulid: string }>('item get @immutable-ulid --json', tempDir);
+    const beforeOriginal = kspecJson<{ ulid: string }>("item get @immutable-ulid --json", tempDir);
     const beforeReplacement = kspecJson<{ ulid: string }>(
-      'item get @immutable-ulid-replacement --json',
-      tempDir
+      "item get @immutable-ulid-replacement --json",
+      tempDir,
     );
 
     kspec(
       'item set @immutable-ulid --description "Updated without replacing identity" --maturity deprecated',
-      tempDir
+      tempDir,
     );
     kspec(
       'item patch @immutable-ulid-replacement --data \'{"supersedes":"@immutable-ulid"}\'',
-      tempDir
+      tempDir,
     );
 
     const afterOriginal = kspecJson<{
       ulid: string;
       description?: string;
       status?: { maturity?: string };
-    }>('item get @immutable-ulid --json', tempDir);
+    }>("item get @immutable-ulid --json", tempDir);
     const afterReplacement = kspecJson<{
       ulid: string;
       supersedes?: string;
-    }>('item get @immutable-ulid-replacement --json', tempDir);
+    }>("item get @immutable-ulid-replacement --json", tempDir);
 
     expect(afterOriginal.ulid).toBe(beforeOriginal.ulid);
-    expect(afterOriginal.description).toContain('Updated without replacing identity');
-    expect(afterOriginal.status?.maturity).toBe('deprecated');
+    expect(afterOriginal.description).toContain("Updated without replacing identity");
+    expect(afterOriginal.status?.maturity).toBe("deprecated");
     expect(afterReplacement.ulid).toBe(beforeReplacement.ulid);
     expect(afterReplacement.ulid).not.toBe(afterOriginal.ulid);
-    expect(afterReplacement.supersedes).toBe('@immutable-ulid');
+    expect(afterReplacement.supersedes).toBe("@immutable-ulid");
   });
 });
 
-describe('Integration: item patch', () => {
+describe("Integration: item patch", () => {
   let tempDir: string;
 
   beforeEach(async () => {
@@ -865,72 +908,108 @@ describe('Integration: item patch', () => {
   });
 
   // AC: @item-patch ac-1
-  it('should update item with --data JSON', () => {
+  it("should update item with --data JSON", () => {
     // Create a test item
-    kspec('item add --under @test-core --title "Patch Test" --slug patch-test --type feature', tempDir);
+    kspec(
+      'item add --under @test-core --title "Patch Test" --slug patch-test --type feature',
+      tempDir,
+    );
 
     // Patch with status
     kspec('item patch @patch-test --data \'{"status":{"implementation":"implemented"}}\'', tempDir);
 
     // Verify update
-    const output = kspec('item get @patch-test', tempDir);
-    expect(output).toContain('implemented');
+    const output = kspec("item get @patch-test", tempDir);
+    expect(output).toContain("implemented");
   });
 
   // AC: @item-patch ac-2
-  it('should show error for invalid JSON', () => {
-    kspec('item add --under @test-core --title "JSON Test" --slug json-test --type feature', tempDir);
+  it("should show error for invalid JSON", () => {
+    kspec(
+      'item add --under @test-core --title "JSON Test" --slug json-test --type feature',
+      tempDir,
+    );
 
-    const result = kspecRun("item patch @json-test --data 'not json'", tempDir, { expectFail: true });
+    const result = kspecRun("item patch @json-test --data 'not json'", tempDir, {
+      expectFail: true,
+    });
     expect(result.exitCode).not.toBe(0);
   });
 
   // AC: @item-patch ac-3
-  it('should accept JSON from stdin', () => {
-    kspec('item add --under @test-core --title "Stdin Test" --slug stdin-test --type feature', tempDir);
+  it("should accept JSON from stdin", () => {
+    kspec(
+      'item add --under @test-core --title "Stdin Test" --slug stdin-test --type feature',
+      tempDir,
+    );
 
-    kspecRun('item patch @stdin-test', tempDir, { stdin: '{"description":"From stdin"}' });
+    kspecRun("item patch @stdin-test", tempDir, { stdin: '{"description":"From stdin"}' });
 
-    const output = kspec('item get @stdin-test', tempDir);
-    expect(output).toContain('From stdin');
+    const output = kspec("item get @stdin-test", tempDir);
+    expect(output).toContain("From stdin");
   });
 
   // AC: @item-patch ac-4
-  it('should preview changes with --dry-run', () => {
-    kspec('item add --under @test-core --title "DryRun Test" --slug dryrun-test --type feature', tempDir);
+  it("should preview changes with --dry-run", () => {
+    kspec(
+      'item add --under @test-core --title "DryRun Test" --slug dryrun-test --type feature',
+      tempDir,
+    );
 
-    const output = kspec('item patch @dryrun-test --data \'{"title":"New Title"}\' --dry-run', tempDir);
-    expect(output).toContain('Would patch');
+    const output = kspec(
+      'item patch @dryrun-test --data \'{"title":"New Title"}\' --dry-run',
+      tempDir,
+    );
+    expect(output).toContain("Would patch");
 
     // Verify no actual change
-    const item = kspec('item get @dryrun-test', tempDir);
-    expect(item).toContain('DryRun Test');
-    expect(item).not.toContain('New Title');
+    const item = kspec("item get @dryrun-test", tempDir);
+    expect(item).toContain("DryRun Test");
+    expect(item).not.toContain("New Title");
   });
 
   // AC: @item-patch ac-5
-  it('should reject unknown fields by default', () => {
-    kspec('item add --under @test-core --title "Unknown Test" --slug unknown-test --type feature', tempDir);
+  it("should reject unknown fields by default", () => {
+    kspec(
+      'item add --under @test-core --title "Unknown Test" --slug unknown-test --type feature',
+      tempDir,
+    );
 
-    const result = kspecRun('item patch @unknown-test --data \'{"foobar":"value"}\'', tempDir, { expectFail: true });
+    const result = kspecRun('item patch @unknown-test --data \'{"foobar":"value"}\'', tempDir, {
+      expectFail: true,
+    });
     expect(result.exitCode).not.toBe(0);
   });
 
   // AC: @item-patch ac-6
-  it('should allow unknown fields with --allow-unknown', () => {
-    kspec('item add --under @test-core --title "AllowUnknown Test" --slug allow-unknown-test --type feature', tempDir);
+  // oxlint-disable-next-line jest/expect-expect -- verifies command doesn't throw
+  it("should allow unknown fields with --allow-unknown", () => {
+    kspec(
+      'item add --under @test-core --title "AllowUnknown Test" --slug allow-unknown-test --type feature',
+      tempDir,
+    );
 
     // This should not throw
-    kspec('item patch @allow-unknown-test --data \'{"custom_field":"value"}\' --allow-unknown', tempDir);
+    kspec(
+      'item patch @allow-unknown-test --data \'{"custom_field":"value"}\' --allow-unknown',
+      tempDir,
+    );
   });
 
   // AC: @item-patch ac-7
-  it('should patch multiple items from JSONL', () => {
-    kspec('item add --under @test-core --title "Bulk Test 1" --slug bulk-test-1 --type feature', tempDir);
-    kspec('item add --under @test-core --title "Bulk Test 2" --slug bulk-test-2 --type feature', tempDir);
+  it("should patch multiple items from JSONL", () => {
+    kspec(
+      'item add --under @test-core --title "Bulk Test 1" --slug bulk-test-1 --type feature',
+      tempDir,
+    );
+    kspec(
+      'item add --under @test-core --title "Bulk Test 2" --slug bulk-test-2 --type feature',
+      tempDir,
+    );
 
-    const jsonl = '{"ref":"@bulk-test-1","data":{"priority":"high"}}\n{"ref":"@bulk-test-2","data":{"priority":"low"}}';
-    const result = kspecRun('item patch --bulk --json', tempDir, { stdin: jsonl });
+    const jsonl =
+      '{"ref":"@bulk-test-1","data":{"priority":"high"}}\n{"ref":"@bulk-test-2","data":{"priority":"low"}}';
+    const result = kspecRun("item patch --bulk --json", tempDir, { stdin: jsonl });
 
     const parsed = JSON.parse(result.stdout);
     expect(parsed.summary.total).toBe(2);
@@ -938,37 +1017,57 @@ describe('Integration: item patch', () => {
   });
 
   // AC: @item-patch ac-8
-  it('should patch multiple items from JSON array', () => {
-    kspec('item add --under @test-core --title "Array Test 1" --slug array-test-1 --type feature', tempDir);
-    kspec('item add --under @test-core --title "Array Test 2" --slug array-test-2 --type feature', tempDir);
+  it("should patch multiple items from JSON array", () => {
+    kspec(
+      'item add --under @test-core --title "Array Test 1" --slug array-test-1 --type feature',
+      tempDir,
+    );
+    kspec(
+      'item add --under @test-core --title "Array Test 2" --slug array-test-2 --type feature',
+      tempDir,
+    );
 
     const json = JSON.stringify([
-      { ref: '@array-test-1', data: { priority: 'high' } },
-      { ref: '@array-test-2', data: { priority: 'low' } }
+      { ref: "@array-test-1", data: { priority: "high" } },
+      { ref: "@array-test-2", data: { priority: "low" } },
     ]);
-    const result = kspecRun('item patch --bulk --json', tempDir, { stdin: json });
+    const result = kspecRun("item patch --bulk --json", tempDir, { stdin: json });
 
     const parsed = JSON.parse(result.stdout);
     expect(parsed.summary.updated).toBe(2);
   });
 
   // AC: @item-patch ac-9
-  it('should continue on error by default in bulk mode', () => {
-    kspec('item add --under @test-core --title "Continue Test" --slug continue-test --type feature', tempDir);
+  it("should continue on error by default in bulk mode", () => {
+    kspec(
+      'item add --under @test-core --title "Continue Test" --slug continue-test --type feature',
+      tempDir,
+    );
 
-    const jsonl = '{"ref":"@nonexistent","data":{"title":"X"}}\n{"ref":"@continue-test","data":{"priority":"high"}}';
-    const result = kspecRun('item patch --bulk --json', tempDir, { stdin: jsonl, expectFail: true });
+    const jsonl =
+      '{"ref":"@nonexistent","data":{"title":"X"}}\n{"ref":"@continue-test","data":{"priority":"high"}}';
+    const result = kspecRun("item patch --bulk --json", tempDir, {
+      stdin: jsonl,
+      expectFail: true,
+    });
     const parsed = JSON.parse(result.stdout);
     expect(parsed.summary.failed).toBe(1);
     expect(parsed.summary.updated).toBe(1);
   });
 
   // AC: @item-patch ac-10
-  it('should stop on first error with --fail-fast', () => {
-    kspec('item add --under @test-core --title "Failfast Test" --slug failfast-test --type feature', tempDir);
+  it("should stop on first error with --fail-fast", () => {
+    kspec(
+      'item add --under @test-core --title "Failfast Test" --slug failfast-test --type feature',
+      tempDir,
+    );
 
-    const jsonl = '{"ref":"@nonexistent","data":{"title":"X"}}\n{"ref":"@failfast-test","data":{"priority":"high"}}';
-    const result = kspecRun('item patch --bulk --fail-fast --json', tempDir, { stdin: jsonl, expectFail: true });
+    const jsonl =
+      '{"ref":"@nonexistent","data":{"title":"X"}}\n{"ref":"@failfast-test","data":{"priority":"high"}}';
+    const result = kspecRun("item patch --bulk --fail-fast --json", tempDir, {
+      stdin: jsonl,
+      expectFail: true,
+    });
     const parsed = JSON.parse(result.stdout);
     expect(parsed.summary.failed).toBe(1);
     expect(parsed.summary.skipped).toBe(1);
@@ -976,19 +1075,23 @@ describe('Integration: item patch', () => {
   });
 
   // AC: @item-patch ac-11
-  it('should reject task refs', () => {
-    const result = kspecRun('item patch @test-task-pending --data \'{"title":"X"}\'', tempDir, { expectFail: true });
+  it("should reject task refs", () => {
+    const result = kspecRun('item patch @test-task-pending --data \'{"title":"X"}\'', tempDir, {
+      expectFail: true,
+    });
     expect(result.stderr).toMatch(/is a task, not a spec item/);
   });
 
   // AC: @item-patch ac-12
-  it('should error on nonexistent ref', () => {
-    const result = kspecRun('item patch @nonexistent --data \'{"title":"X"}\'', tempDir, { expectFail: true });
+  it("should error on nonexistent ref", () => {
+    const result = kspecRun('item patch @nonexistent --data \'{"title":"X"}\'', tempDir, {
+      expectFail: true,
+    });
     expect(result.stderr).toMatch(/Item not found/);
   });
 });
 
-describe('Integration: derive', () => {
+describe("Integration: derive", () => {
   let tempDir: string;
 
   beforeEach(async () => {
@@ -999,251 +1102,242 @@ describe('Integration: derive', () => {
     await cleanupTempDir(tempDir);
   });
 
-  it('should derive task from spec item', () => {
-    const output = kspec('derive @test-feature', tempDir);
-    expect(output).toContain('Created');
+  it("should derive task from spec item", () => {
+    const output = kspec("derive @test-feature", tempDir);
+    expect(output).toContain("Created");
 
     // Verify task was created with spec_ref
-    const listOutput = kspec('tasks list', tempDir);
-    expect(listOutput).toContain('Test Feature');
+    const listOutput = kspec("tasks list", tempDir);
+    expect(listOutput).toContain("Test Feature");
   });
 
-  it('should show dry-run without creating', () => {
-    const output = kspec('derive @test-feature --dry-run', tempDir);
-    expect(output).toContain('Would create');
+  it("should show dry-run without creating", () => {
+    const output = kspec("derive @test-feature --dry-run", tempDir);
+    expect(output).toContain("Would create");
 
     // Verify no task was actually created
-    const listOutput = kspec('tasks list', tempDir);
-    expect(listOutput).not.toContain('Implement: Test Feature');
+    const listOutput = kspec("tasks list", tempDir);
+    expect(listOutput).not.toContain("Implement: Test Feature");
   });
 
   // AC: @cmd-derive ac-2
-  it('should recursively derive tasks for parent and children', () => {
+  it("should recursively derive tasks for parent and children", () => {
     // test-feature has one child: test-requirement
-    const output = kspec('derive @test-feature', tempDir);
-    expect(output).toContain('Created 2 task(s)');
+    const output = kspec("derive @test-feature", tempDir);
+    expect(output).toContain("Created 2 task(s)");
 
     // Verify both tasks were created
-    const listOutput = kspec('tasks list', tempDir);
-    expect(listOutput).toContain('Test Feature');
-    expect(listOutput).toContain('Test Requirement');
+    const listOutput = kspec("tasks list", tempDir);
+    expect(listOutput).toContain("Test Feature");
+    expect(listOutput).toContain("Test Requirement");
   });
 
   // AC: @cmd-derive ac-3
-  it('should only derive single item with --flat', () => {
-    const output = kspec('derive @test-feature --flat', tempDir);
-    expect(output).toContain('Created 1 task(s)');
+  it("should only derive single item with --flat", () => {
+    const output = kspec("derive @test-feature --flat", tempDir);
+    expect(output).toContain("Created 1 task(s)");
 
     // Verify only parent task was created, not child
-    const listOutput = kspec('tasks list', tempDir);
-    expect(listOutput).toContain('Test Feature');
-    expect(listOutput).not.toContain('Test Requirement');
+    const listOutput = kspec("tasks list", tempDir);
+    expect(listOutput).toContain("Test Feature");
+    expect(listOutput).not.toContain("Test Requirement");
   });
 
   // AC: @cmd-derive ac-4, ac-5
-  it('should set depends_on for child tasks', () => {
+  it("should set depends_on for child tasks", () => {
     // Derive recursively to create both tasks
-    kspec('derive @test-feature', tempDir);
+    kspec("derive @test-feature", tempDir);
 
     // Get the child task details
-    const taskOutput = kspec('task get @task-test-requirement --json', tempDir);
+    const taskOutput = kspec("task get @task-test-requirement --json", tempDir);
     const task = JSON.parse(taskOutput);
 
     // Child task should depend on parent task
-    expect(task.depends_on).toContain('@task-test-feature');
+    expect(task.depends_on).toContain("@task-test-feature");
   });
 
   // AC: @cmd-derive ac-6
-  it('should use existing parent task for depends_on', () => {
+  it("should use existing parent task for depends_on", () => {
     // First derive just the parent
-    kspec('derive @test-feature --flat', tempDir);
+    kspec("derive @test-feature --flat", tempDir);
 
     // Then derive the child - should depend on existing parent task
-    kspec('derive @test-requirement', tempDir);
+    kspec("derive @test-requirement", tempDir);
 
     // Get the child task details
-    const taskOutput = kspec('task get @task-test-requirement --json', tempDir);
+    const taskOutput = kspec("task get @task-test-requirement --json", tempDir);
     const task = JSON.parse(taskOutput);
 
     // Child task should depend on existing parent task
-    expect(task.depends_on).toContain('@task-test-feature');
+    expect(task.depends_on).toContain("@task-test-feature");
   });
 
   // AC: @cmd-derive ac-7
-  it('should skip existing tasks without --force', () => {
+  it("should skip existing tasks without --force", () => {
     // First derive
-    kspec('derive @test-feature --flat', tempDir);
+    kspec("derive @test-feature --flat", tempDir);
 
     // Second derive should skip
-    const output = kspec('derive @test-feature --flat', tempDir);
-    expect(output).toContain('Skipped');
-    expect(output).toContain('task exists');
+    const output = kspec("derive @test-feature --flat", tempDir);
+    expect(output).toContain("Skipped");
+    expect(output).toContain("task exists");
   });
 
   // AC: @cmd-derive ac-8
-  it('should handle partial derivation (some children have tasks)', () => {
+  it("should handle partial derivation (some children have tasks)", () => {
     // Derive the parent flat first
-    kspec('derive @test-feature --flat', tempDir);
+    kspec("derive @test-feature --flat", tempDir);
 
     // Now recursive derive the whole tree
-    const output = kspec('derive @test-feature', tempDir);
+    const output = kspec("derive @test-feature", tempDir);
 
     // Should create only the child, skip the parent
-    expect(output).toContain('Created 1 task(s)');
-    expect(output).toContain('Skipped 1');
+    expect(output).toContain("Created 1 task(s)");
+    expect(output).toContain("Skipped 1");
   });
 
   // AC: @cmd-derive ac-10
-  it('should show dry-run for recursive derive', () => {
-    const output = kspec('derive @test-feature --dry-run', tempDir);
-    expect(output).toContain('Would create:');
-    expect(output).toContain('Test Feature');
-    expect(output).toContain('Test Requirement');
-    expect(output).toContain('depends:');
+  it("should show dry-run for recursive derive", () => {
+    const output = kspec("derive @test-feature --dry-run", tempDir);
+    expect(output).toContain("Would create:");
+    expect(output).toContain("Test Feature");
+    expect(output).toContain("Test Requirement");
+    expect(output).toContain("depends:");
   });
 
   // AC: @cmd-derive ac-11
-  it('should output JSON with correct format', () => {
-    const output = kspec('derive @test-feature --dry-run --json', tempDir);
+  it("should output JSON with correct format", () => {
+    const output = kspec("derive @test-feature --dry-run --json", tempDir);
     const results = JSON.parse(output);
 
     expect(results).toHaveLength(2);
-    expect(results[0]).toHaveProperty('ulid');
-    expect(results[0]).toHaveProperty('slug');
-    expect(results[0]).toHaveProperty('spec_ref');
-    expect(results[0]).toHaveProperty('depends_on');
-    expect(results[0]).toHaveProperty('action');
+    expect(results[0]).toHaveProperty("ulid");
+    expect(results[0]).toHaveProperty("slug");
+    expect(results[0]).toHaveProperty("spec_ref");
+    expect(results[0]).toHaveProperty("depends_on");
+    expect(results[0]).toHaveProperty("action");
 
     // First item (parent) should have no deps
     expect(results[0].depends_on).toEqual([]);
 
     // Second item (child) should depend on parent
-    expect(results[1].depends_on).toContain('@task-test-feature');
+    expect(results[1].depends_on).toContain("@task-test-feature");
   });
 
   // AC: @cmd-derive ac-13
-  it('should error on invalid reference (derive)', () => {
-    const result = kspecRun('derive @nonexistent', tempDir, { expectFail: true });
+  it("should error on invalid reference (derive)", () => {
+    const result = kspecRun("derive @nonexistent", tempDir, { expectFail: true });
     expect(result.exitCode).not.toBe(0);
   });
 
   // AC: @cmd-derive ac-17
-  it('should map spec depends_on to an existing active task dependency', () => {
+  it("should map spec depends_on to an existing active task dependency", () => {
     kspec(
       'item add --under @test-core --title "Dependency Base" --slug dependency-base --type feature',
-      tempDir
+      tempDir,
     );
     kspec(
       'item add --under @test-core --title "Dependency Consumer" --slug dependency-consumer --type feature',
-      tempDir
+      tempDir,
     );
-    kspec('item set @dependency-consumer --depends-on @dependency-base', tempDir);
+    kspec("item set @dependency-consumer --depends-on @dependency-base", tempDir);
 
-    kspec('derive @dependency-base --flat', tempDir);
-    kspec('derive @dependency-consumer --flat', tempDir);
+    kspec("derive @dependency-base --flat", tempDir);
+    kspec("derive @dependency-consumer --flat", tempDir);
 
-    const task = kspecJson<{ depends_on: string[] }>(
-      'task get @task-dependency-consumer',
-      tempDir
-    );
-    expect(task.depends_on).toContain('@task-dependency-base');
+    const task = kspecJson<{ depends_on: string[] }>("task get @task-dependency-consumer", tempDir);
+    expect(task.depends_on).toContain("@task-dependency-base");
   });
 
   // AC: @cmd-derive ac-17
-  it('should map spec depends_on when both tasks are created in the same derive --all run', () => {
+  it("should map spec depends_on when both tasks are created in the same derive --all run", () => {
     kspec(
       'item add --under @test-core --title "Same Run Consumer" --slug same-run-consumer --type feature',
-      tempDir
+      tempDir,
     );
     kspec(
       'item add --under @test-core --title "Same Run Base" --slug same-run-base --type feature',
-      tempDir
+      tempDir,
     );
-    kspec('item set @same-run-consumer --depends-on @same-run-base', tempDir);
+    kspec("item set @same-run-consumer --depends-on @same-run-base", tempDir);
 
-    kspec('derive --all', tempDir);
+    kspec("derive --all", tempDir);
 
-    const task = kspecJson<{ depends_on: string[] }>(
-      'task get @task-same-run-consumer',
-      tempDir
-    );
-    expect(task.depends_on).toContain('@task-same-run-base');
+    const task = kspecJson<{ depends_on: string[] }>("task get @task-same-run-consumer", tempDir);
+    expect(task.depends_on).toContain("@task-same-run-base");
   });
 
   // AC: @cmd-derive ac-16
-  it('should warn and still create the task when spec dependency has no task', () => {
+  it("should warn and still create the task when spec dependency has no task", () => {
     kspec(
       'item add --under @test-core --title "Unlinked Base" --slug unlinked-base --type feature',
-      tempDir
+      tempDir,
     );
     kspec(
       'item add --under @test-core --title "Warn Consumer" --slug warn-consumer --type feature',
-      tempDir
+      tempDir,
     );
-    kspec('item set @warn-consumer --depends-on @unlinked-base', tempDir);
+    kspec("item set @warn-consumer --depends-on @unlinked-base", tempDir);
 
-    const result = kspecRun('derive @warn-consumer --flat', tempDir);
-    expect(result.stdout).toContain('Created 1 task(s)');
-    expect(result.stderr).toContain('has no active derived task');
+    const result = kspecRun("derive @warn-consumer --flat", tempDir);
+    expect(result.stdout).toContain("Created 1 task(s)");
+    expect(result.stderr).toContain("has no active derived task");
 
-    const task = kspecJson<{ depends_on: string[] }>(
-      'task get @task-warn-consumer',
-      tempDir
-    );
+    const task = kspecJson<{ depends_on: string[] }>("task get @task-warn-consumer", tempDir);
     expect(task.depends_on).toEqual([]);
   });
 
-  it('should add implementation notes from spec description', () => {
+  it("should add implementation notes from spec description", () => {
     // test-feature has a description in fixtures
-    kspec('derive @test-feature --flat', tempDir);
+    kspec("derive @test-feature --flat", tempDir);
 
     // Get the task details
-    const taskOutput = kspec('task get @task-test-feature --json', tempDir);
+    const taskOutput = kspec("task get @task-test-feature --json", tempDir);
     const task = JSON.parse(taskOutput);
 
     // Task should have a note with implementation context
     // AC: @cmd-derive ac-author - author set via getAuthor()
     expect(task.notes).toHaveLength(1);
-    expect(task.notes[0].content).toContain('Implementation notes (auto-generated from spec)');
-    expect(task.notes[0].content).toContain('A test feature for integration testing'); // From description
-    expect(task.notes[0].author).toBe('@test'); // From KSPEC_AUTHOR env in test helper
+    expect(task.notes[0].content).toContain("Implementation notes (auto-generated from spec)");
+    expect(task.notes[0].content).toContain("A test feature for integration testing"); // From description
+    expect(task.notes[0].author).toBe("@test"); // From KSPEC_AUTHOR env in test helper
   });
 
-  it('should add implementation notes with acceptance criteria', () => {
+  it("should add implementation notes with acceptance criteria", () => {
     // First add ACs to test-feature
     kspec(
       'item ac add @test-feature --given "spec has ACs" --when "task is derived" --then "ACs are included in notes"',
-      tempDir
+      tempDir,
     );
 
     // Now derive the task
-    kspec('derive @test-feature --flat', tempDir);
+    kspec("derive @test-feature --flat", tempDir);
 
     // Get the task details
-    const taskOutput = kspec('task get @task-test-feature --json', tempDir);
+    const taskOutput = kspec("task get @task-test-feature --json", tempDir);
     const task = JSON.parse(taskOutput);
 
     // Task note should include AC summary
     expect(task.notes).toHaveLength(1);
-    expect(task.notes[0].content).toContain('Acceptance Criteria:');
-    expect(task.notes[0].content).toContain('ac-1:');
-    expect(task.notes[0].content).toContain('Given spec has ACs');
-    expect(task.notes[0].content).toContain('when task is derived');
-    expect(task.notes[0].content).toContain('then ACs are included in notes');
+    expect(task.notes[0].content).toContain("Acceptance Criteria:");
+    expect(task.notes[0].content).toContain("ac-1:");
+    expect(task.notes[0].content).toContain("Given spec has ACs");
+    expect(task.notes[0].content).toContain("when task is derived");
+    expect(task.notes[0].content).toContain("then ACs are included in notes");
   });
 
-  it('should not add empty notes when spec has no description or ACs', () => {
+  it("should not add empty notes when spec has no description or ACs", () => {
     // Create a minimal spec item with no description
     kspec(
       'item add --under @test-core --title "Minimal Item" --slug minimal-item --type feature',
-      tempDir
+      tempDir,
     );
 
     // Derive task from it
-    kspec('derive @minimal-item', tempDir);
+    kspec("derive @minimal-item", tempDir);
 
     // Get the task details
-    const taskOutput = kspec('task get @task-minimal-item --json', tempDir);
+    const taskOutput = kspec("task get @task-minimal-item --json", tempDir);
     const task = JSON.parse(taskOutput);
 
     // Task should have no notes (empty array)
@@ -1251,19 +1345,19 @@ describe('Integration: derive', () => {
   });
 
   // AC: @cmd-derive ac-15
-  it('should exclude cancelled parent tasks from depends_on', () => {
+  it("should exclude cancelled parent tasks from depends_on", () => {
     // Use existing test-feature and test-requirement from fixtures
     // First derive parent task
-    kspec('derive @test-feature --flat', tempDir);
+    kspec("derive @test-feature --flat", tempDir);
 
     // Cancel the parent task
     kspec('task cancel @task-test-feature --reason "testing cancelled parent"', tempDir);
 
     // Derive the child requirement - should NOT include cancelled parent in depends_on
-    kspec('derive @test-requirement', tempDir);
+    kspec("derive @test-requirement", tempDir);
 
     // Get the child task details
-    const taskOutput = kspec('task get @task-test-requirement --json', tempDir);
+    const taskOutput = kspec("task get @task-test-requirement --json", tempDir);
     const task = JSON.parse(taskOutput);
 
     // Child task should have empty depends_on (cancelled parent excluded)
@@ -1271,20 +1365,20 @@ describe('Integration: derive', () => {
   });
 
   // AC: @cmd-derive ac-15 (variant: multiple parent tasks, one cancelled)
-  it('should use non-cancelled parent task when multiple tasks exist', () => {
+  it("should use non-cancelled parent task when multiple tasks exist", () => {
     // Use existing test-feature from fixtures
     // Create first task and cancel it
-    kspec('derive @test-feature --flat', tempDir);
+    kspec("derive @test-feature --flat", tempDir);
     kspec('task cancel @task-test-feature --reason "cancelled first task"', tempDir);
 
     // Create second task with --force (should not be cancelled)
-    kspec('derive @test-feature --flat --force', tempDir);
+    kspec("derive @test-feature --flat --force", tempDir);
 
     // Now derive the child requirement - should use the non-cancelled parent task
-    kspec('derive @test-requirement', tempDir);
+    kspec("derive @test-requirement", tempDir);
 
     // Get the child task details
-    const taskOutput = kspec('task get @task-test-requirement --json', tempDir);
+    const taskOutput = kspec("task get @task-test-requirement --json", tempDir);
     const task = JSON.parse(taskOutput);
 
     // Child should depend on the second (non-cancelled) parent task
@@ -1293,150 +1387,152 @@ describe('Integration: derive', () => {
     expect(task.depends_on[0]).toMatch(/^@task-test-feature/);
 
     // Verify it's not the cancelled task (which has slug @task-test-feature)
-    const parentTaskOutput = kspec('task get @task-test-feature --json', tempDir);
+    const parentTaskOutput = kspec("task get @task-test-feature --json", tempDir);
     const parentTask = JSON.parse(parentTaskOutput);
-    expect(parentTask.status).toBe('cancelled');
+    expect(parentTask.status).toBe("cancelled");
     // Should be the -1 variant, not the base slug
-    expect(task.depends_on[0]).not.toBe('@task-test-feature');
+    expect(task.depends_on[0]).not.toBe("@task-test-feature");
   });
 
   // AC: @cmd-derive ac-15 (variant: spec with only cancelled tasks should allow re-derivation)
-  it('should allow re-derivation when only cancelled tasks exist', () => {
+  it("should allow re-derivation when only cancelled tasks exist", () => {
     // Use existing test-feature from fixtures
     // Create task and cancel it
-    kspec('derive @test-feature --flat', tempDir);
+    kspec("derive @test-feature --flat", tempDir);
     kspec('task cancel @task-test-feature --reason "cancelled"', tempDir);
 
     // Should be able to derive again without --force since only cancelled task exists
-    const output = kspec('derive @test-feature --flat', tempDir);
-    expect(output).toContain('Created 1 task(s)');
+    const output = kspec("derive @test-feature --flat", tempDir);
+    expect(output).toContain("Created 1 task(s)");
 
     // Verify a new task was created (check that it has a different slug)
-    const cancelledOutput = kspec('task get @task-test-feature --json', tempDir);
+    const cancelledOutput = kspec("task get @task-test-feature --json", tempDir);
     const cancelledTask = JSON.parse(cancelledOutput);
-    expect(cancelledTask.status).toBe('cancelled');
+    expect(cancelledTask.status).toBe("cancelled");
 
     // The new task should have a different slug (task-test-feature-1 or similar)
-    const allTasks = kspecJson('tasks list --status pending', tempDir);
-    const pendingForSpec = allTasks.filter((t: any) => t.slugs.some((s: string) => s.startsWith('task-test-feature')));
+    const allTasks = kspecJson("tasks list --status pending", tempDir);
+    const pendingForSpec = allTasks.filter((t: any) =>
+      t.slugs.some((s: string) => s.startsWith("task-test-feature")),
+    );
     expect(pendingForSpec.length).toBe(1); // One new pending task for the spec
   });
 
   // AC: @derive-title-override ac-1
-  it('should use --title override instead of default title', () => {
+  it("should use --title override instead of default title", () => {
     const output = kspec('derive @test-feature --flat --title "Custom Task Title"', tempDir);
-    expect(output).toContain('Created');
+    expect(output).toContain("Created");
 
     // Verify task was created with custom title
-    const taskOutput = kspec('task get @task-test-feature --json', tempDir);
+    const taskOutput = kspec("task get @task-test-feature --json", tempDir);
     const task = JSON.parse(taskOutput);
-    expect(task.title).toBe('Custom Task Title');
+    expect(task.title).toBe("Custom Task Title");
   });
 
-  it('should display AC count in derive output', () => {
+  it("should display AC count in derive output", () => {
     // Add ACs to test-feature
     kspec(
       'item ac add @test-feature --given "condition one" --when "action one" --then "result one"',
-      tempDir
+      tempDir,
     );
     kspec(
       'item ac add @test-feature --given "condition two" --when "action two" --then "result two"',
-      tempDir
+      tempDir,
     );
     kspec(
       'item ac add @test-feature --given "condition three" --when "action three" --then "result three"',
-      tempDir
+      tempDir,
     );
 
     // Derive task - should show AC count
-    const output = kspec('derive @test-feature --flat', tempDir);
-    expect(output).toContain('(3 ACs)');
+    const output = kspec("derive @test-feature --flat", tempDir);
+    expect(output).toContain("(3 ACs)");
   });
 
-  it('should display AC count in dry-run output', () => {
+  it("should display AC count in dry-run output", () => {
     // Add ACs to test-feature
     kspec(
       'item ac add @test-feature --given "dry run condition" --when "dry run action" --then "dry run result"',
-      tempDir
+      tempDir,
     );
     kspec(
       'item ac add @test-feature --given "another condition" --when "another action" --then "another result"',
-      tempDir
+      tempDir,
     );
 
     // Dry run - should show AC count
-    const output = kspec('derive @test-feature --flat --dry-run', tempDir);
-    expect(output).toContain('(2 ACs)');
+    const output = kspec("derive @test-feature --flat --dry-run", tempDir);
+    expect(output).toContain("(2 ACs)");
   });
 
-  it('should include ac_count in JSON output', () => {
+  it("should include ac_count in JSON output", () => {
     // Add ACs to test-feature
     kspec(
       'item ac add @test-feature --given "json condition" --when "json action" --then "json result"',
-      tempDir
+      tempDir,
     );
     kspec(
       'item ac add @test-feature --given "second condition" --when "second action" --then "second result"',
-      tempDir
+      tempDir,
     );
     kspec(
       'item ac add @test-feature --given "third condition" --when "third action" --then "third result"',
-      tempDir
+      tempDir,
     );
     kspec(
       'item ac add @test-feature --given "fourth condition" --when "fourth action" --then "fourth result"',
-      tempDir
+      tempDir,
     );
 
     // Derive with JSON output
-    const output = kspec('derive @test-feature --flat --json', tempDir);
+    const output = kspec("derive @test-feature --flat --json", tempDir);
     const results = JSON.parse(output);
 
     expect(results).toHaveLength(1);
     expect(results[0].ac_count).toBe(4);
   });
 
-  it('should show complexity warning for specs with >5 ACs', () => {
+  it("should show complexity warning for specs with >5 ACs", () => {
     // Add 6 ACs to test-feature
     for (let i = 1; i <= 6; i++) {
       kspec(
         `item ac add @test-feature --given "condition ${i}" --when "action ${i}" --then "result ${i}"`,
-        tempDir
+        tempDir,
       );
     }
 
     // Derive task - should show warning (warning goes to stderr)
-    const result = kspecRun('derive @test-feature --flat', tempDir);
-    expect(result.stdout).toContain('6 ACs');
-    expect(result.stderr).toContain('consider splitting before implementing');
+    const result = kspecRun("derive @test-feature --flat", tempDir);
+    expect(result.stdout).toContain("6 ACs");
+    expect(result.stderr).toContain("consider splitting before implementing");
   });
 
-  it('should show complexity warning in dry-run for specs with >5 ACs', () => {
+  it("should show complexity warning in dry-run for specs with >5 ACs", () => {
     // Add 7 ACs to test-feature
     for (let i = 1; i <= 7; i++) {
       kspec(
         `item ac add @test-feature --given "dry condition ${i}" --when "dry action ${i}" --then "dry result ${i}"`,
-        tempDir
+        tempDir,
       );
     }
 
     // Dry run - should show warning (warning goes to stderr)
-    const result = kspecRun('derive @test-feature --flat --dry-run', tempDir);
-    expect(result.stdout).toContain('7 ACs');
-    expect(result.stderr).toContain('consider splitting before implementing');
+    const result = kspecRun("derive @test-feature --flat --dry-run", tempDir);
+    expect(result.stdout).toContain("7 ACs");
+    expect(result.stderr).toContain("consider splitting before implementing");
   });
 
-  it('should not show AC count for specs with 0 ACs', () => {
+  it("should not show AC count for specs with 0 ACs", () => {
     // test-feature has no ACs in fixtures by default (after fresh setup)
     // Derive task
-    const output = kspec('derive @test-feature --flat', tempDir);
-    expect(output).toContain('Created');
+    const output = kspec("derive @test-feature --flat", tempDir);
+    expect(output).toContain("Created");
     // Should NOT contain "(0 ACs)"
-    expect(output).not.toContain('ACs)');
+    expect(output).not.toContain("ACs)");
   });
 });
 
-describe('Integration: session', () => {
+describe("Integration: session", () => {
   let tempDir: string;
 
   beforeEach(async () => {
@@ -1447,33 +1543,33 @@ describe('Integration: session', () => {
     await cleanupTempDir(tempDir);
   });
 
-  it('should show session context', () => {
-    const output = kspec('session start', tempDir);
-    expect(output).toContain('Session Context');
-    expect(output).toContain('Ready to Pick Up');
+  it("should show session context", () => {
+    const output = kspec("session start", tempDir);
+    expect(output).toContain("Session Context");
+    expect(output).toContain("Ready to Pick Up");
   });
 
   // AC: @session-start-hints ac-1
-  it('should show Quick Commands with ready tasks', () => {
-    const output = kspec('session start', tempDir);
+  it("should show Quick Commands with ready tasks", () => {
+    const output = kspec("session start", tempDir);
     // Should show Quick Commands section when ready tasks exist
-    expect(output).toContain('Quick Commands');
-    expect(output).toContain('kspec task start');
+    expect(output).toContain("Quick Commands");
+    expect(output).toContain("kspec task start");
   });
 
   // AC: @session-start-hints ac-2
-  it('should show Quick Commands for active task', () => {
+  it("should show Quick Commands for active task", () => {
     // Start a task
-    kspec('task start @test-task-pending', tempDir);
+    kspec("task start @test-task-pending", tempDir);
 
-    const output = kspec('session start', tempDir);
-    expect(output).toContain('Quick Commands');
-    expect(output).toContain('kspec task note');
-    expect(output).toContain('kspec task submit');
+    const output = kspec("session start", tempDir);
+    expect(output).toContain("Quick Commands");
+    expect(output).toContain("kspec task note");
+    expect(output).toContain("kspec task submit");
   });
 });
 
-describe('Integration: item ac', () => {
+describe("Integration: item ac", () => {
   let tempDir: string;
 
   beforeEach(async () => {
@@ -1484,155 +1580,160 @@ describe('Integration: item ac', () => {
     await cleanupTempDir(tempDir);
   });
 
-  it('should list acceptance criteria (empty)', () => {
-    const output = kspec('item ac list @test-feature', tempDir);
-    expect(output).toContain('No acceptance criteria');
-    expect(output).toContain('0 acceptance criteria');
+  it("should list acceptance criteria (empty)", () => {
+    const output = kspec("item ac list @test-feature", tempDir);
+    expect(output).toContain("No acceptance criteria");
+    expect(output).toContain("0 acceptance criteria");
   });
 
-  it('should add acceptance criterion with auto-generated ID', () => {
+  it("should add acceptance criterion with auto-generated ID", () => {
     const output = kspec(
       'item ac add @test-feature --given "a test precondition" --when "action is taken" --then "result is achieved"',
-      tempDir
+      tempDir,
     );
-    expect(output).toContain('Added acceptance criterion');
-    expect(output).toContain('ac-1');
+    expect(output).toContain("Added acceptance criterion");
+    expect(output).toContain("ac-1");
 
     // Verify it was added
-    const listOutput = kspec('item ac list @test-feature', tempDir);
-    expect(listOutput).toContain('[ac-1]');
-    expect(listOutput).toContain('Given: a test precondition');
-    expect(listOutput).toContain('When:  action is taken');
-    expect(listOutput).toContain('Then:  result is achieved');
-    expect(listOutput).toContain('1 acceptance criteria');
+    const listOutput = kspec("item ac list @test-feature", tempDir);
+    expect(listOutput).toContain("[ac-1]");
+    expect(listOutput).toContain("Given: a test precondition");
+    expect(listOutput).toContain("When:  action is taken");
+    expect(listOutput).toContain("Then:  result is achieved");
+    expect(listOutput).toContain("1 acceptance criteria");
   });
 
-  it('should add acceptance criterion with custom ID', () => {
+  it("should add acceptance criterion with custom ID", () => {
     kspec(
       'item ac add @test-feature --id my-custom-ac --given "custom given" --when "custom when" --then "custom then"',
-      tempDir
+      tempDir,
     );
 
-    const listOutput = kspec('item ac list @test-feature', tempDir);
-    expect(listOutput).toContain('[my-custom-ac]');
+    const listOutput = kspec("item ac list @test-feature", tempDir);
+    expect(listOutput).toContain("[my-custom-ac]");
   });
 
-  it('should reject duplicate AC ID', () => {
-    kspec(
-      'item ac add @test-feature --id unique-ac --given "g" --when "w" --then "t"',
-      tempDir
-    );
+  it("should reject duplicate AC ID", () => {
+    kspec('item ac add @test-feature --id unique-ac --given "g" --when "w" --then "t"', tempDir);
 
-    const result = kspecRun('item ac add @test-feature --id unique-ac --given "g2" --when "w2" --then "t2"', tempDir, { expectFail: true });
+    const result = kspecRun(
+      'item ac add @test-feature --id unique-ac --given "g2" --when "w2" --then "t2"',
+      tempDir,
+      { expectFail: true },
+    );
     expect(result.exitCode).not.toBe(0);
   });
 
-  it('should reject adding AC to a task', () => {
-    const result = kspecRun('item ac add @test-task-pending --given "g" --when "w" --then "t"', tempDir, { expectFail: true });
+  it("should reject adding AC to a task", () => {
+    const result = kspecRun(
+      'item ac add @test-task-pending --given "g" --when "w" --then "t"',
+      tempDir,
+      { expectFail: true },
+    );
     expect(result.exitCode).not.toBe(0);
   });
 
-  it('should update acceptance criterion', () => {
+  it("should update acceptance criterion", () => {
     // First add an AC
     kspec(
       'item ac add @test-feature --id ac-to-update --given "original given" --when "original when" --then "original then"',
-      tempDir
+      tempDir,
     );
 
     // Update it
-    const output = kspec(
-      'item ac set @test-feature ac-to-update --then "updated then"',
-      tempDir
-    );
-    expect(output).toContain('Updated acceptance criterion');
-    expect(output).toContain('ac-to-update');
-    expect(output).toContain('(then)');
+    const output = kspec('item ac set @test-feature ac-to-update --then "updated then"', tempDir);
+    expect(output).toContain("Updated acceptance criterion");
+    expect(output).toContain("ac-to-update");
+    expect(output).toContain("(then)");
 
     // Verify the update
-    const listOutput = kspec('item ac list @test-feature', tempDir);
-    expect(listOutput).toContain('Then:  updated then');
+    const listOutput = kspec("item ac list @test-feature", tempDir);
+    expect(listOutput).toContain("Then:  updated then");
   });
 
-  it('should reject updating nonexistent AC', () => {
-    const result = kspecRun('item ac set @test-feature nonexistent-ac --then "new value"', tempDir, { expectFail: true });
+  it("should reject updating nonexistent AC", () => {
+    const result = kspecRun(
+      'item ac set @test-feature nonexistent-ac --then "new value"',
+      tempDir,
+      { expectFail: true },
+    );
     expect(result.exitCode).not.toBe(0);
   });
 
-  it('should remove acceptance criterion', () => {
+  it("should remove acceptance criterion", () => {
     // First add an AC
-    kspec(
-      'item ac add @test-feature --id ac-to-remove --given "g" --when "w" --then "t"',
-      tempDir
-    );
+    kspec('item ac add @test-feature --id ac-to-remove --given "g" --when "w" --then "t"', tempDir);
 
     // Verify it exists
-    let listOutput = kspec('item ac list @test-feature', tempDir);
-    expect(listOutput).toContain('[ac-to-remove]');
+    let listOutput = kspec("item ac list @test-feature", tempDir);
+    expect(listOutput).toContain("[ac-to-remove]");
 
     // Remove it
-    const output = kspec('item ac remove @test-feature ac-to-remove --force', tempDir);
-    expect(output).toContain('Removed acceptance criterion');
-    expect(output).toContain('ac-to-remove');
+    const output = kspec("item ac remove @test-feature ac-to-remove --force", tempDir);
+    expect(output).toContain("Removed acceptance criterion");
+    expect(output).toContain("ac-to-remove");
 
     // Verify it's gone
-    listOutput = kspec('item ac list @test-feature', tempDir);
-    expect(listOutput).not.toContain('[ac-to-remove]');
-    expect(listOutput).toContain('0 acceptance criteria');
+    listOutput = kspec("item ac list @test-feature", tempDir);
+    expect(listOutput).not.toContain("[ac-to-remove]");
+    expect(listOutput).toContain("0 acceptance criteria");
   });
 
-  it('should reject removing nonexistent AC', () => {
-    const result = kspecRun('item ac remove @test-feature nonexistent-ac --force', tempDir, { expectFail: true });
+  it("should reject removing nonexistent AC", () => {
+    const result = kspecRun("item ac remove @test-feature nonexistent-ac --force", tempDir, {
+      expectFail: true,
+    });
     expect(result.exitCode).not.toBe(0);
   });
 
-  it('should handle YAML special characters correctly', () => {
+  it("should handle YAML special characters correctly", () => {
     // Test that colons and other special chars are properly escaped
     kspec(
       'item ac add @test-feature --given "user has: credentials" --when "they submit: form" --then "result: success message shown"',
-      tempDir
+      tempDir,
     );
 
     // Should not cause YAML parsing errors
-    const listOutput = kspec('item ac list @test-feature', tempDir);
-    expect(listOutput).toContain('Given: user has: credentials');
-    expect(listOutput).toContain('Then:  result: success message shown');
+    const listOutput = kspec("item ac list @test-feature", tempDir);
+    expect(listOutput).toContain("Given: user has: credentials");
+    expect(listOutput).toContain("Then:  result: success message shown");
 
     // Validation should pass
-    const validateOutput = kspec('validate --schema', tempDir);
-    expect(validateOutput).toContain('Schema: OK');
+    const validateOutput = kspec("validate --schema", tempDir);
+    expect(validateOutput).toContain("Schema: OK");
   });
 
-  it('should auto-increment AC IDs correctly', () => {
+  it("should auto-increment AC IDs correctly", () => {
     // Add multiple ACs
     kspec('item ac add @test-feature --given "g1" --when "w1" --then "t1"', tempDir);
     kspec('item ac add @test-feature --given "g2" --when "w2" --then "t2"', tempDir);
     kspec('item ac add @test-feature --given "g3" --when "w3" --then "t3"', tempDir);
 
-    const listOutput = kspec('item ac list @test-feature', tempDir);
-    expect(listOutput).toContain('[ac-1]');
-    expect(listOutput).toContain('[ac-2]');
-    expect(listOutput).toContain('[ac-3]');
-    expect(listOutput).toContain('3 acceptance criteria');
+    const listOutput = kspec("item ac list @test-feature", tempDir);
+    expect(listOutput).toContain("[ac-1]");
+    expect(listOutput).toContain("[ac-2]");
+    expect(listOutput).toContain("[ac-3]");
+    expect(listOutput).toContain("3 acceptance criteria");
   });
 
-  it('should return JSON output', () => {
+  it("should return JSON output", () => {
     kspec('item ac add @test-feature --given "g" --when "w" --then "t"', tempDir);
 
     const acList = kspecJson<Array<{ id: string; given: string; when: string; then: string }>>(
-      'item ac list @test-feature',
-      tempDir
+      "item ac list @test-feature",
+      tempDir,
     );
 
     expect(Array.isArray(acList)).toBe(true);
     expect(acList.length).toBe(1);
-    expect(acList[0].id).toBe('ac-1');
-    expect(acList[0].given).toBe('g');
-    expect(acList[0].when).toBe('w');
-    expect(acList[0].then).toBe('t');
+    expect(acList[0].id).toBe("ac-1");
+    expect(acList[0].given).toBe("g");
+    expect(acList[0].when).toBe("w");
+    expect(acList[0].then).toBe("t");
   });
 });
 
-describe('Integration: task delete', () => {
+describe("Integration: task delete", () => {
   let tempDir: string;
 
   beforeEach(async () => {
@@ -1644,50 +1745,50 @@ describe('Integration: task delete', () => {
   });
 
   // AC: @cmd-task-delete ac-1
-  it('should show dry-run output without deleting', () => {
+  it("should show dry-run output without deleting", () => {
     // First create a task to delete
     kspec('task add --title "Task to Delete" --slug delete-test', tempDir);
 
     // Verify task exists
-    const before = kspec('tasks list', tempDir);
-    expect(before).toContain('Task to Delete');
+    const before = kspec("tasks list", tempDir);
+    expect(before).toContain("Task to Delete");
 
     // Run dry-run
-    const output = kspec('task delete @delete-test --dry-run', tempDir);
-    expect(output).toContain('Would delete');
-    expect(output).toContain('Task to Delete');
+    const output = kspec("task delete @delete-test --dry-run", tempDir);
+    expect(output).toContain("Would delete");
+    expect(output).toContain("Task to Delete");
 
     // Verify task still exists
-    const after = kspec('tasks list', tempDir);
-    expect(after).toContain('Task to Delete');
+    const after = kspec("tasks list", tempDir);
+    expect(after).toContain("Task to Delete");
   });
 
   // AC: @cmd-task-delete ac-2
-  it('should delete task with --force', () => {
+  it("should delete task with --force", () => {
     // First create a task to delete
     kspec('task add --title "Task to Force Delete" --slug force-delete-test', tempDir);
 
     // Verify task exists
-    const before = kspec('tasks list', tempDir);
-    expect(before).toContain('Task to Force Delete');
+    const before = kspec("tasks list", tempDir);
+    expect(before).toContain("Task to Force Delete");
 
     // Delete with --force
-    const output = kspec('task delete @force-delete-test --force', tempDir);
-    expect(output).toContain('Deleted task');
-    expect(output).toContain('Task to Force Delete');
+    const output = kspec("task delete @force-delete-test --force", tempDir);
+    expect(output).toContain("Deleted task");
+    expect(output).toContain("Task to Force Delete");
 
     // Verify task is gone
-    const after = kspec('tasks list', tempDir);
-    expect(after).not.toContain('Task to Force Delete');
+    const after = kspec("tasks list", tempDir);
+    expect(after).not.toContain("Task to Force Delete");
   });
 
-  it('should reject deleting nonexistent task', () => {
-    const result = kspecRun('task delete @nonexistent-task --force', tempDir, { expectFail: true });
+  it("should reject deleting nonexistent task", () => {
+    const result = kspecRun("task delete @nonexistent-task --force", tempDir, { expectFail: true });
     expect(result.exitCode).not.toBe(0);
   });
 });
 
-describe('Integration: derive hints', () => {
+describe("Integration: derive hints", () => {
   let tempDir: string;
 
   beforeEach(async () => {
@@ -1699,39 +1800,42 @@ describe('Integration: derive hints', () => {
   });
 
   // AC: @item-derive-hint ac-1
-  it('should show derive hint after item add', () => {
+  it("should show derive hint after item add", () => {
     const output = kspec(
       'item add --under @test-core --title "Hint Test Item" --slug hint-test --type feature',
-      tempDir
+      tempDir,
     );
-    expect(output).toContain('Created item');
-    expect(output).toContain('Derive implementation task? kspec derive @hint-test');
+    expect(output).toContain("Created item");
+    expect(output).toContain("Derive implementation task? kspec derive @hint-test");
   });
 
   // AC: @item-derive-hint ac-2
-  it('should show derive hint after item set', () => {
+  it("should show derive hint after item set", () => {
     // First create an item
-    kspec('item add --under @test-core --title "Set Hint Test" --slug set-hint --type feature', tempDir);
+    kspec(
+      'item add --under @test-core --title "Set Hint Test" --slug set-hint --type feature',
+      tempDir,
+    );
 
     // Update it
     const output = kspec('item set @set-hint --description "Updated description"', tempDir);
-    expect(output).toContain('Updated item');
-    expect(output).toContain('Derive implementation task? kspec derive @set-hint');
+    expect(output).toContain("Updated item");
+    expect(output).toContain("Derive implementation task? kspec derive @set-hint");
   });
 
-  it('should not show derive hint in JSON mode', () => {
+  it("should not show derive hint in JSON mode", () => {
     const output = kspec(
       'item add --under @test-core --title "JSON Hint Test" --slug json-hint --type feature --json',
-      tempDir
+      tempDir,
     );
-    expect(output).not.toContain('Derive implementation task?');
+    expect(output).not.toContain("Derive implementation task?");
     // Should be valid JSON
     const parsed = JSON.parse(output);
     expect(parsed.success).toBe(true);
   });
 });
 
-describe('Integration: alignment guidance', () => {
+describe("Integration: alignment guidance", () => {
   let tempDir: string;
 
   beforeEach(async () => {
@@ -1743,64 +1847,88 @@ describe('Integration: alignment guidance', () => {
   });
 
   // AC: @alignment-guidance ac-1
-  it('should show AC count in alignment guidance for task with spec_ref', () => {
+  it("should show AC count in alignment guidance for task with spec_ref", () => {
     // Create a spec item with acceptance criteria
-    kspec('item add --under @test-core --title "AC Test Spec" --slug ac-test-spec --type requirement', tempDir);
-    kspec('item ac add @ac-test-spec --given "precondition" --when "action" --then "result"', tempDir);
+    kspec(
+      'item add --under @test-core --title "AC Test Spec" --slug ac-test-spec --type requirement',
+      tempDir,
+    );
+    kspec(
+      'item ac add @ac-test-spec --given "precondition" --when "action" --then "result"',
+      tempDir,
+    );
     kspec('item ac add @ac-test-spec --given "another" --when "trigger" --then "outcome"', tempDir);
 
     // Create a task linked to the spec
     kspec('task add --title "Test AC Task" --spec-ref @ac-test-spec --slug ac-test-task', tempDir);
-    kspec('task start @ac-test-task', tempDir);
+    kspec("task start @ac-test-task", tempDir);
 
     // Add a note (triggers alignment guidance)
     const output = kspec('task note @ac-test-task "Testing alignment guidance"', tempDir);
-    expect(output).toContain('Alignment Check');
-    expect(output).toContain('Linked spec has 2 acceptance criteria - consider test coverage');
+    expect(output).toContain("Alignment Check");
+    expect(output).toContain("Linked spec has 2 acceptance criteria - consider test coverage");
   });
 
-  it('should show spec context when starting task with spec_ref', () => {
+  it("should show spec context when starting task with spec_ref", () => {
     // Create a spec item with description and acceptance criteria
-    kspec('item add --under @test-core --title "Start Context Test" --slug start-context-spec --type requirement', tempDir);
-    kspec('item set @start-context-spec --description "Test description for context display"', tempDir);
-    kspec('item ac add @start-context-spec --given "initial state" --when "action occurs" --then "expected result"', tempDir);
+    kspec(
+      'item add --under @test-core --title "Start Context Test" --slug start-context-spec --type requirement',
+      tempDir,
+    );
+    kspec(
+      'item set @start-context-spec --description "Test description for context display"',
+      tempDir,
+    );
+    kspec(
+      'item ac add @start-context-spec --given "initial state" --when "action occurs" --then "expected result"',
+      tempDir,
+    );
 
     // Create a task linked to the spec
-    kspec('task add --title "Test Start Context" --spec-ref @start-context-spec --slug start-context-task', tempDir);
+    kspec(
+      'task add --title "Test Start Context" --spec-ref @start-context-spec --slug start-context-task',
+      tempDir,
+    );
 
     // Start the task and check for spec context
-    const output = kspec('task start @start-context-task', tempDir);
-    expect(output).toContain('Spec Context');
-    expect(output).toContain('Implementing: Start Context Test');
-    expect(output).toContain('Test description for context display');
-    expect(output).toContain('Acceptance Criteria (1)');
-    expect(output).toContain('[ac-1]');
-    expect(output).toContain('Given: initial state');
-    expect(output).toContain('When: action occurs');
-    expect(output).toContain('Then: expected result');
-    expect(output).toContain('Add test coverage for each AC');
+    const output = kspec("task start @start-context-task", tempDir);
+    expect(output).toContain("Spec Context");
+    expect(output).toContain("Implementing: Start Context Test");
+    expect(output).toContain("Test description for context display");
+    expect(output).toContain("Acceptance Criteria (1)");
+    expect(output).toContain("[ac-1]");
+    expect(output).toContain("Given: initial state");
+    expect(output).toContain("When: action occurs");
+    expect(output).toContain("Then: expected result");
+    expect(output).toContain("Add test coverage for each AC");
   });
 
-  it('should not show spec context when starting task without spec_ref', () => {
+  it("should not show spec context when starting task without spec_ref", () => {
     // Create a task without spec_ref
     kspec('task add --title "No Spec Task" --slug no-spec-task', tempDir);
 
-    const output = kspec('task start @no-spec-task', tempDir);
-    expect(output).not.toContain('Spec Context');
-    expect(output).toContain('Started task');
+    const output = kspec("task start @no-spec-task", tempDir);
+    expect(output).not.toContain("Spec Context");
+    expect(output).toContain("Started task");
   });
 
-  it('should suppress spec context in JSON mode', () => {
+  it("should suppress spec context in JSON mode", () => {
     // Create a spec item with ACs
-    kspec('item add --under @test-core --title "JSON Mode Spec" --slug json-mode-spec --type requirement', tempDir);
+    kspec(
+      'item add --under @test-core --title "JSON Mode Spec" --slug json-mode-spec --type requirement',
+      tempDir,
+    );
     kspec('item ac add @json-mode-spec --given "state" --when "action" --then "result"', tempDir);
 
     // Create a task linked to the spec
-    kspec('task add --title "JSON Mode Task" --spec-ref @json-mode-spec --slug json-mode-task', tempDir);
+    kspec(
+      'task add --title "JSON Mode Task" --spec-ref @json-mode-spec --slug json-mode-task',
+      tempDir,
+    );
 
     // Start in JSON mode
-    const output = kspec('task start @json-mode-task --json', tempDir);
-    expect(output).not.toContain('Spec Context');
+    const output = kspec("task start @json-mode-task --json", tempDir);
+    expect(output).not.toContain("Spec Context");
 
     // Should be valid JSON
     const parsed = JSON.parse(output);
@@ -1809,7 +1937,7 @@ describe('Integration: alignment guidance', () => {
   });
 });
 
-describe('Integration: commit guidance', () => {
+describe("Integration: commit guidance", () => {
   let tempDir: string;
 
   beforeEach(async () => {
@@ -1821,49 +1949,55 @@ describe('Integration: commit guidance', () => {
   });
 
   // AC: @commit-guidance ac-1
-  it('should show commit guidance with spec_ref after task complete', () => {
+  it("should show commit guidance with spec_ref after task complete", () => {
     // Create a spec item
-    kspec('item add --under @test-core --title "Commit Test Spec" --slug commit-test-spec --type requirement', tempDir);
+    kspec(
+      'item add --under @test-core --title "Commit Test Spec" --slug commit-test-spec --type requirement',
+      tempDir,
+    );
 
     // Create a task linked to the spec
-    kspec('task add --title "Test Commit Task" --spec-ref @commit-test-spec --slug commit-test-task', tempDir);
-    kspec('task start @commit-test-task', tempDir);
-    kspec('task submit @commit-test-task', tempDir);
+    kspec(
+      'task add --title "Test Commit Task" --spec-ref @commit-test-spec --slug commit-test-task',
+      tempDir,
+    );
+    kspec("task start @commit-test-task", tempDir);
+    kspec("task submit @commit-test-task", tempDir);
 
     const output = kspec('task complete @commit-test-task --reason "Done"', tempDir);
-    expect(output).toContain('Suggested Commit');
-    expect(output).toContain('Task: @commit-test-task');
-    expect(output).toContain('Spec: @commit-test-spec');
+    expect(output).toContain("Suggested Commit");
+    expect(output).toContain("Task: @commit-test-task");
+    expect(output).toContain("Spec: @commit-test-spec");
   });
 
   // AC: @commit-guidance ac-2
-  it('should warn about spec gap when no spec_ref', () => {
+  it("should warn about spec gap when no spec_ref", () => {
     // Create a task without spec_ref
     kspec('task add --title "Orphan Task" --slug orphan-task', tempDir);
-    kspec('task start @orphan-task', tempDir);
-    kspec('task submit @orphan-task', tempDir);
+    kspec("task start @orphan-task", tempDir);
+    kspec("task submit @orphan-task", tempDir);
 
     const output = kspec('task complete @orphan-task --reason "Done"', tempDir);
-    expect(output).toContain('Suggested Commit');
-    expect(output).toContain('Task: @orphan-task');
-    expect(output).toContain('no spec_ref');
+    expect(output).toContain("Suggested Commit");
+    expect(output).toContain("Task: @orphan-task");
+    expect(output).toContain("no spec_ref");
   });
 
   // AC: @commit-guidance ac-4
-  it('should not show guidance in JSON mode', () => {
+  it("should not show guidance in JSON mode", () => {
     kspec('task add --title "JSON Test Task" --slug json-test-task', tempDir);
-    kspec('task start @json-test-task', tempDir);
-    kspec('task submit @json-test-task', tempDir);
+    kspec("task start @json-test-task", tempDir);
+    kspec("task submit @json-test-task", tempDir);
 
     const output = kspec('task complete @json-test-task --reason "Done" --json', tempDir);
-    expect(output).not.toContain('Suggested Commit');
+    expect(output).not.toContain("Suggested Commit");
     // Should be valid JSON
     const parsed = JSON.parse(output);
     expect(parsed.success).toBe(true);
   });
 });
 
-describe('Integration: item notes', () => {
+describe("Integration: item notes", () => {
   let tempDir: string;
 
   beforeEach(async () => {
@@ -1874,68 +2008,71 @@ describe('Integration: item notes', () => {
     await fs.rm(tempDir, { recursive: true, force: true });
   });
 
-  it('should add a note to a spec item', () => {
+  it("should add a note to a spec item", () => {
     const output = kspec('item note @test-core "Test note for spec item"', tempDir);
-    expect(output).toContain('Added note');
+    expect(output).toContain("Added note");
 
     // Verify note was added
-    const notesOutput = kspec('item notes @test-core', tempDir);
-    expect(notesOutput).toContain('Test note for spec item');
+    const notesOutput = kspec("item notes @test-core", tempDir);
+    expect(notesOutput).toContain("Test note for spec item");
   });
 
-  it('should add a note with author', () => {
+  it("should add a note with author", () => {
     const output = kspec('item note @test-core "Note with author" --author "@claude"', tempDir);
-    expect(output).toContain('Added note');
+    expect(output).toContain("Added note");
 
     // Verify note has author
-    const notesOutput = kspec('item notes @test-core', tempDir);
-    expect(notesOutput).toContain('@claude');
-    expect(notesOutput).toContain('Note with author');
+    const notesOutput = kspec("item notes @test-core", tempDir);
+    expect(notesOutput).toContain("@claude");
+    expect(notesOutput).toContain("Note with author");
   });
 
-  it('should list all notes for a spec item', () => {
+  it("should list all notes for a spec item", () => {
     // Add multiple notes
     kspec('item note @test-core "First note"', tempDir);
     kspec('item note @test-core "Second note"', tempDir);
 
-    const output = kspec('item notes @test-core', tempDir);
-    expect(output).toContain('First note');
-    expect(output).toContain('Second note');
+    const output = kspec("item notes @test-core", tempDir);
+    expect(output).toContain("First note");
+    expect(output).toContain("Second note");
   });
 
   it('should show "No notes" when spec item has no notes', () => {
     // Create a new item
-    kspec('item add --under @test-core --title "Test Item" --type feature --slug test-new-item', tempDir);
+    kspec(
+      'item add --under @test-core --title "Test Item" --type feature --slug test-new-item',
+      tempDir,
+    );
 
-    const output = kspec('item notes @test-new-item', tempDir);
-    expect(output).toContain('No notes');
+    const output = kspec("item notes @test-new-item", tempDir);
+    expect(output).toContain("No notes");
   });
 
-  it('should output notes as JSON', () => {
+  it("should output notes as JSON", () => {
     kspec('item note @test-core "JSON test note"', tempDir);
 
-    const output = kspec('item notes @test-core --json', tempDir);
+    const output = kspec("item notes @test-core --json", tempDir);
     const parsed = JSON.parse(output);
     expect(Array.isArray(parsed)).toBe(true);
     expect(parsed.length).toBeGreaterThan(0);
-    expect(parsed[0]).toHaveProperty('_ulid');
-    expect(parsed[0]).toHaveProperty('content');
-    expect(parsed[0]).toHaveProperty('created_at');
+    expect(parsed[0]).toHaveProperty("_ulid");
+    expect(parsed[0]).toHaveProperty("content");
+    expect(parsed[0]).toHaveProperty("created_at");
   });
 });
 
-describe('Integration: kspec log', () => {
+describe("Integration: kspec log", () => {
   let tempDir: string;
 
   beforeEach(async () => {
     tempDir = await setupTempFixtures();
     // Initialize git repo for log tests
-    execSync('git init', { cwd: tempDir, stdio: 'ignore' });
-    execSync('git config user.email "test@test.com"', { cwd: tempDir, stdio: 'ignore' });
-    execSync('git config user.name "Test"', { cwd: tempDir, stdio: 'ignore' });
+    execSync("git init", { cwd: tempDir, stdio: "ignore" });
+    execSync('git config user.email "test@test.com"', { cwd: tempDir, stdio: "ignore" });
+    execSync('git config user.name "Test"', { cwd: tempDir, stdio: "ignore" });
     // Create initial commit (required for git log to work)
-    execSync('git add .', { cwd: tempDir, stdio: 'ignore' });
-    execSync('git commit -m "Initial commit"', { cwd: tempDir, stdio: 'ignore' });
+    execSync("git add .", { cwd: tempDir, stdio: "ignore" });
+    execSync('git commit -m "Initial commit"', { cwd: tempDir, stdio: "ignore" });
   });
 
   afterEach(async () => {
@@ -1943,210 +2080,212 @@ describe('Integration: kspec log', () => {
   });
 
   // AC: @cmd-log ac-5
-  it('should error on invalid reference (log)', () => {
-    const result = kspecRun('log @nonexistent-ref', tempDir, { expectFail: true });
+  it("should error on invalid reference (log)", () => {
+    const result = kspecRun("log @nonexistent-ref", tempDir, { expectFail: true });
     expect(result.exitCode).not.toBe(0);
   });
 
   // AC: @cmd-log ac-3
-  it('should show no commits found message', () => {
-    const output = kspec('log @test-task-pending', tempDir);
-    expect(output).toContain('No commits found');
+  it("should show no commits found message", () => {
+    const output = kspec("log @test-task-pending", tempDir);
+    expect(output).toContain("No commits found");
   });
 
   // AC: @cmd-log list-all-tracked
-  it('should list all commits with Task: or Spec: trailers when no ref provided', () => {
+  it("should list all commits with Task: or Spec: trailers when no ref provided", () => {
     // Create commits with Task: and Spec: trailers
-    execSync('touch test1.txt', { cwd: tempDir, stdio: 'ignore' });
-    execSync('git add test1.txt', { cwd: tempDir, stdio: 'ignore' });
+    execSync("touch test1.txt", { cwd: tempDir, stdio: "ignore" });
+    execSync("git add test1.txt", { cwd: tempDir, stdio: "ignore" });
     execSync('git commit -m "feat: test feature\n\nTask: @test-task-pending"', {
       cwd: tempDir,
-      stdio: 'ignore',
+      stdio: "ignore",
     });
-    execSync('touch test2.txt', { cwd: tempDir, stdio: 'ignore' });
-    execSync('git add test2.txt', { cwd: tempDir, stdio: 'ignore' });
+    execSync("touch test2.txt", { cwd: tempDir, stdio: "ignore" });
+    execSync("git add test2.txt", { cwd: tempDir, stdio: "ignore" });
     execSync('git commit -m "feat: another feature\n\nSpec: @test-feature"', {
       cwd: tempDir,
-      stdio: 'ignore',
+      stdio: "ignore",
     });
 
     // Run kspec log without ref
-    const output = kspec('log', tempDir);
+    const output = kspec("log", tempDir);
 
     // Should show both commits
-    expect(output).toContain('test feature');
-    expect(output).toContain('another feature');
-    expect(output).toContain('2 commit(s) found');
+    expect(output).toContain("test feature");
+    expect(output).toContain("another feature");
+    expect(output).toContain("2 commit(s) found");
   });
 
   // AC: @cmd-log list-all-tracked
-  it('should respect --limit flag when listing all tracked commits', () => {
+  it("should respect --limit flag when listing all tracked commits", () => {
     // Create 3 commits with trailers
     for (let i = 0; i < 3; i++) {
-      execSync(`touch test-${i}.txt`, { cwd: tempDir, stdio: 'ignore' });
-      execSync(`git add test-${i}.txt`, { cwd: tempDir, stdio: 'ignore' });
+      execSync(`touch test-${i}.txt`, { cwd: tempDir, stdio: "ignore" });
+      execSync(`git add test-${i}.txt`, { cwd: tempDir, stdio: "ignore" });
       execSync(`git commit -m "feat: commit ${i}\n\nTask: @test-task-pending"`, {
         cwd: tempDir,
-        stdio: 'ignore',
+        stdio: "ignore",
       });
     }
 
     // Limit to 2 results
-    const output = kspec('log --limit 2', tempDir);
+    const output = kspec("log --limit 2", tempDir);
 
-    expect(output).toContain('2 commit(s) found');
+    expect(output).toContain("2 commit(s) found");
   });
 
   // AC: @cmd-log passthrough-args
-  it('should pass through git log arguments after --', () => {
+  it("should pass through git log arguments after --", () => {
     // Create a commit with Task: trailer
-    execSync('touch passthrough-test.txt', { cwd: tempDir, stdio: 'ignore' });
-    execSync('git add passthrough-test.txt', { cwd: tempDir, stdio: 'ignore' });
+    execSync("touch passthrough-test.txt", { cwd: tempDir, stdio: "ignore" });
+    execSync("git add passthrough-test.txt", { cwd: tempDir, stdio: "ignore" });
     execSync('git commit -m "feat: test feature\n\nTask: @test-task-pending"', {
       cwd: tempDir,
-      stdio: 'ignore',
+      stdio: "ignore",
     });
 
     // Use passthrough arg to show stat
-    const output = kspec('log @test-task-pending -- --stat', tempDir);
+    const output = kspec("log @test-task-pending -- --stat", tempDir);
 
     // Should contain stat output (file changes)
-    expect(output).toContain('changed');
+    expect(output).toContain("changed");
   });
 
   // AC: @cmd-log passthrough-invalid
-  it('should show git error for invalid passthrough arguments', () => {
+  it("should show git error for invalid passthrough arguments", () => {
     // Create a commit with Task: trailer
-    execSync('touch invalid-arg-test.txt', { cwd: tempDir, stdio: 'ignore' });
-    execSync('git add invalid-arg-test.txt', { cwd: tempDir, stdio: 'ignore' });
+    execSync("touch invalid-arg-test.txt", { cwd: tempDir, stdio: "ignore" });
+    execSync("git add invalid-arg-test.txt", { cwd: tempDir, stdio: "ignore" });
     execSync('git commit -m "feat: test feature\n\nTask: @test-task-pending"', {
       cwd: tempDir,
-      stdio: 'ignore',
+      stdio: "ignore",
     });
 
     // Try to use invalid git flag
-    const result = kspecRun('log @test-task-pending -- --invalid-git-flag', tempDir, { expectFail: true });
+    const result = kspecRun("log @test-task-pending -- --invalid-git-flag", tempDir, {
+      expectFail: true,
+    });
     expect(result.exitCode).not.toBe(0);
   });
 
-  it('should show log command help', () => {
-    const output = kspec('log --help', tempDir);
-    expect(output).toContain('Search git history');
-    expect(output).toContain('--spec');
-    expect(output).toContain('--task');
-    expect(output).toContain('--oneline');
+  it("should show log command help", () => {
+    const output = kspec("log --help", tempDir);
+    expect(output).toContain("Search git history");
+    expect(output).toContain("--spec");
+    expect(output).toContain("--task");
+    expect(output).toContain("--oneline");
   });
 
   // AC: @spec-log-empty-repo ac-1
-  it('should show friendly message when repo has no commits', () => {
+  it("should show friendly message when repo has no commits", () => {
     // Create a fresh repo with no commits
-    const emptyTempDir = fssync.mkdtempSync(path.join(os.tmpdir(), 'kspec-test-empty-'));
+    const emptyTempDir = fssync.mkdtempSync(path.join(os.tmpdir(), "kspec-test-empty-"));
     try {
-      execSync('git init', { cwd: emptyTempDir, stdio: 'ignore' });
+      execSync("git init", { cwd: emptyTempDir, stdio: "ignore" });
 
-      const output = kspec('log', emptyTempDir);
-      expect(output).toContain('No commits in repository yet');
-      expect(output).not.toContain('fatal');
+      const output = kspec("log", emptyTempDir);
+      expect(output).toContain("No commits in repository yet");
+      expect(output).not.toContain("fatal");
     } finally {
       fssync.rmSync(emptyTempDir, { recursive: true, force: true });
     }
   });
 
   // AC: @spec-log-empty-repo ac-2
-  it('should show friendly message when repo has no commits and ref is provided', async () => {
+  it("should show friendly message when repo has no commits and ref is provided", async () => {
     // Create a NEW temp dir with fixtures but NO git commits
     const emptyWithFixtures = await setupTempFixtures();
     try {
       // setupTempFixtures creates git repo and makes one commit, so we need fresh repo
       // Remove .git and reinit without commits
-      fssync.rmSync(path.join(emptyWithFixtures, '.git'), { recursive: true, force: true });
-      execSync('git init', { cwd: emptyWithFixtures, stdio: 'ignore' });
+      fssync.rmSync(path.join(emptyWithFixtures, ".git"), { recursive: true, force: true });
+      execSync("git init", { cwd: emptyWithFixtures, stdio: "ignore" });
 
-      const output = kspec('log @test-task-pending', emptyWithFixtures);
-      expect(output).toContain('No commits in repository yet');
-      expect(output).not.toContain('fatal');
+      const output = kspec("log @test-task-pending", emptyWithFixtures);
+      expect(output).toContain("No commits in repository yet");
+      expect(output).not.toContain("fatal");
     } finally {
       await cleanupTempDir(emptyWithFixtures);
     }
   });
 
   // AC: @spec-log-empty-repo ac-3
-  it('should differentiate between no commits and no matching commits', () => {
+  it("should differentiate between no commits and no matching commits", () => {
     // This test uses the existing tempDir which has commits
     // When looking for a non-existent ref, should show "No commits found" not "No commits in repository yet"
-    const output = kspec('log @test-task-pending', tempDir);
+    const output = kspec("log @test-task-pending", tempDir);
     // Should show "No commits found" because there ARE commits, just none matching
-    expect(output).toContain('No commits found');
-    expect(output).not.toContain('No commits in repository yet');
+    expect(output).toContain("No commits found");
+    expect(output).not.toContain("No commits in repository yet");
   });
 
   // AC: @spec-log-empty-repo ac-4
-  it('should return proper JSON for empty repo', () => {
-    const emptyTempDir = fssync.mkdtempSync(path.join(os.tmpdir(), 'kspec-test-empty-'));
+  it("should return proper JSON for empty repo", () => {
+    const emptyTempDir = fssync.mkdtempSync(path.join(os.tmpdir(), "kspec-test-empty-"));
     try {
-      execSync('git init', { cwd: emptyTempDir, stdio: 'ignore' });
+      execSync("git init", { cwd: emptyTempDir, stdio: "ignore" });
 
-      const output = kspec('log --json', emptyTempDir);
+      const output = kspec("log --json", emptyTempDir);
       const parsed = JSON.parse(output);
 
-      expect(parsed).toHaveProperty('commits');
+      expect(parsed).toHaveProperty("commits");
       expect(parsed.commits).toEqual([]);
-      expect(parsed).toHaveProperty('message');
-      expect(parsed.message).toBe('No commits in repository yet');
+      expect(parsed).toHaveProperty("message");
+      expect(parsed.message).toBe("No commits in repository yet");
     } finally {
       fssync.rmSync(emptyTempDir, { recursive: true, force: true });
     }
   });
 
   // AC: @spec-log-empty-repo ac-5
-  it('should show friendly message with passthrough args in empty repo', async () => {
+  it("should show friendly message with passthrough args in empty repo", async () => {
     const emptyWithFixtures = await setupTempFixtures();
     try {
       // Remove .git and reinit without commits
-      fssync.rmSync(path.join(emptyWithFixtures, '.git'), { recursive: true, force: true });
-      execSync('git init', { cwd: emptyWithFixtures, stdio: 'ignore' });
+      fssync.rmSync(path.join(emptyWithFixtures, ".git"), { recursive: true, force: true });
+      execSync("git init", { cwd: emptyWithFixtures, stdio: "ignore" });
 
       // Use a ref with passthrough args (ref comes before --)
-      const output = kspec('log @test-task-pending -- --stat', emptyWithFixtures);
-      expect(output).toContain('No commits in repository yet');
-      expect(output).not.toContain('fatal');
+      const output = kspec("log @test-task-pending -- --stat", emptyWithFixtures);
+      expect(output).toContain("No commits in repository yet");
+      expect(output).not.toContain("fatal");
     } finally {
       await cleanupTempDir(emptyWithFixtures);
     }
   });
 
   // AC: @spec-log-empty-repo ac-6
-  it('should search shadow branch when main is empty but shadow has commits', () => {
-    const emptyTempDir = fssync.mkdtempSync(path.join(os.tmpdir(), 'kspec-test-shadow-'));
+  it("should search shadow branch when main is empty but shadow has commits", () => {
+    const emptyTempDir = fssync.mkdtempSync(path.join(os.tmpdir(), "kspec-test-shadow-"));
     try {
       // Create a repo with only shadow branch commits
-      execSync('git init', { cwd: emptyTempDir, stdio: 'ignore' });
-      execSync('git config user.email "test@test.com"', { cwd: emptyTempDir, stdio: 'ignore' });
-      execSync('git config user.name "Test"', { cwd: emptyTempDir, stdio: 'ignore' });
+      execSync("git init", { cwd: emptyTempDir, stdio: "ignore" });
+      execSync('git config user.email "test@test.com"', { cwd: emptyTempDir, stdio: "ignore" });
+      execSync('git config user.name "Test"', { cwd: emptyTempDir, stdio: "ignore" });
 
       // Create an orphan shadow branch with a commit
-      execSync('git checkout --orphan kspec-meta', { cwd: emptyTempDir, stdio: 'ignore' });
-      fssync.writeFileSync(path.join(emptyTempDir, 'test.txt'), 'test');
-      execSync('git add test.txt', { cwd: emptyTempDir, stdio: 'ignore' });
+      execSync("git checkout --orphan kspec-meta", { cwd: emptyTempDir, stdio: "ignore" });
+      fssync.writeFileSync(path.join(emptyTempDir, "test.txt"), "test");
+      execSync("git add test.txt", { cwd: emptyTempDir, stdio: "ignore" });
       execSync('git commit -m "test: shadow commit\n\nTask: @test-task"', {
         cwd: emptyTempDir,
-        stdio: 'ignore',
+        stdio: "ignore",
       });
 
       // Switch back to main (which has no commits)
-      execSync('git checkout -b main', { cwd: emptyTempDir, stdio: 'ignore' });
+      execSync("git checkout -b main", { cwd: emptyTempDir, stdio: "ignore" });
 
       // Should find commits from shadow branch
-      const output = kspec('log', emptyTempDir);
-      expect(output).toContain('test: shadow commit');
-      expect(output).not.toContain('No commits in repository yet');
+      const output = kspec("log", emptyTempDir);
+      expect(output).toContain("test: shadow commit");
+      expect(output).not.toContain("No commits in repository yet");
     } finally {
       fssync.rmSync(emptyTempDir, { recursive: true, force: true });
     }
   });
 });
 
-describe('Integration: link commands', () => {
+describe("Integration: link commands", () => {
   let tempDir: string;
 
   beforeEach(async () => {
@@ -2157,76 +2296,82 @@ describe('Integration: link commands', () => {
     await cleanupTempDir(tempDir);
   });
 
-  it('should create a relationship between items', () => {
-    const output = kspec('link create @test-core @test-feature --type depends_on', tempDir);
-    expect(output).toContain('OK');
-    expect(output).toContain('Created relationship');
-    expect(output).toContain('depends_on');
+  it("should create a relationship between items", () => {
+    const output = kspec("link create @test-core @test-feature --type depends_on", tempDir);
+    expect(output).toContain("OK");
+    expect(output).toContain("Created relationship");
+    expect(output).toContain("depends_on");
   });
 
-  it('should list relationships from an item', () => {
+  it("should list relationships from an item", () => {
     // Create a relationship first
-    kspec('link create @test-feature @test-requirement --type implements', tempDir);
+    kspec("link create @test-feature @test-requirement --type implements", tempDir);
 
     // List it
-    const output = kspec('link list --from @test-feature', tempDir);
-    expect(output).toContain('Relationships from @test-feature');
-    expect(output).toContain('implements');
-    expect(output).toContain('@test-requirement');
+    const output = kspec("link list --from @test-feature", tempDir);
+    expect(output).toContain("Relationships from @test-feature");
+    expect(output).toContain("implements");
+    expect(output).toContain("@test-requirement");
   });
 
-  it('should list relationships to an item (reverse lookup)', () => {
+  it("should list relationships to an item (reverse lookup)", () => {
     // Create a relationship
-    kspec('link create @test-feature @test-requirement --type implements', tempDir);
+    kspec("link create @test-feature @test-requirement --type implements", tempDir);
 
     // List reverse
-    const output = kspec('link list --to @test-requirement', tempDir);
-    expect(output).toContain('Relationships to @test-requirement');
-    expect(output).toContain('implements');
-    expect(output).toContain('@test-feature');
+    const output = kspec("link list --to @test-requirement", tempDir);
+    expect(output).toContain("Relationships to @test-requirement");
+    expect(output).toContain("implements");
+    expect(output).toContain("@test-feature");
   });
 
-  it('should filter relationships by type', () => {
+  it("should filter relationships by type", () => {
     // Create different types of relationships
-    kspec('link create @test-feature @test-requirement --type implements', tempDir);
-    kspec('link create @test-feature @test-core --type depends_on', tempDir);
+    kspec("link create @test-feature @test-requirement --type implements", tempDir);
+    kspec("link create @test-feature @test-core --type depends_on", tempDir);
 
     // Filter by type
-    const output = kspec('link list --from @test-feature --type implements', tempDir);
-    expect(output).toContain('implements');
-    expect(output).not.toContain('depends_on');
+    const output = kspec("link list --from @test-feature --type implements", tempDir);
+    expect(output).toContain("implements");
+    expect(output).not.toContain("depends_on");
   });
 
-  it('should delete a relationship', () => {
+  it("should delete a relationship", () => {
     // Create relationship
-    kspec('link create @test-feature @test-requirement --type relates_to', tempDir);
+    kspec("link create @test-feature @test-requirement --type relates_to", tempDir);
 
     // Delete it
-    const output = kspec('link delete @test-feature @test-requirement --type relates_to', tempDir);
-    expect(output).toContain('OK');
-    expect(output).toContain('Removed relationship');
+    const output = kspec("link delete @test-feature @test-requirement --type relates_to", tempDir);
+    expect(output).toContain("OK");
+    expect(output).toContain("Removed relationship");
 
     // Verify it's gone
-    const listOutput = kspec('link list --from @test-feature', tempDir);
-    expect(listOutput).toContain('No relationships found');
+    const listOutput = kspec("link list --from @test-feature", tempDir);
+    expect(listOutput).toContain("No relationships found");
   });
 
-  it('should not create duplicate relationships', () => {
+  it("should not create duplicate relationships", () => {
     // Create relationship
-    kspec('link create @test-feature @test-requirement --type depends_on', tempDir);
+    kspec("link create @test-feature @test-requirement --type depends_on", tempDir);
 
     // Try to create again
-    const output = kspec('link create @test-feature @test-requirement --type depends_on', tempDir);
-    expect(output).toContain('already exists');
+    const output = kspec("link create @test-feature @test-requirement --type depends_on", tempDir);
+    expect(output).toContain("already exists");
   });
 
-  it('should error on invalid relationship type', () => {
-    const result = kspecRun('link create @test-feature @test-requirement --type invalid_type', tempDir, { expectFail: true });
+  it("should error on invalid relationship type", () => {
+    const result = kspecRun(
+      "link create @test-feature @test-requirement --type invalid_type",
+      tempDir,
+      { expectFail: true },
+    );
     expect(result.exitCode).not.toBe(0);
   });
 
-  it('should error when referencing non-existent item', () => {
-    const result = kspecRun('link create @test-feature @nonexistent --type depends_on', tempDir, { expectFail: true });
+  it("should error when referencing non-existent item", () => {
+    const result = kspecRun("link create @test-feature @nonexistent --type depends_on", tempDir, {
+      expectFail: true,
+    });
     expect(result.exitCode).not.toBe(0);
   });
 
@@ -2234,53 +2379,56 @@ describe('Integration: link commands', () => {
   // AC: @trait-shadow-commit ac-2
   // AC: @trait-shadow-commit ac-3
   // AC: @trait-shadow-commit ac-8 — link create/delete each perform a single save, so each command should produce one semantic shadow commit.
-  it('should create semantic shadow commit messages for link mutations', () => {
+  it("should create semantic shadow commit messages for link mutations", () => {
     initGitRepo(tempDir);
     execSync('git add . && git commit -m "test: fixtures"', {
       cwd: tempDir,
-      stdio: 'pipe',
+      stdio: "pipe",
     });
-    const initResult = kspecRun('init --no-prompt', tempDir, {
-      env: { KSPEC_AUTHOR: '@test' },
+    const initResult = kspecRun("init --no-prompt", tempDir, {
+      env: { KSPEC_AUTHOR: "@test" },
     });
     expect(initResult.exitCode).toBe(0);
     kspec('module add --title "Test Core" --slug test-core', tempDir);
-    kspec('item add --under @test-core --title "Feature" --type feature --slug test-feature', tempDir);
+    kspec(
+      'item add --under @test-core --title "Feature" --type feature --slug test-feature',
+      tempDir,
+    );
     kspec(
       'item add --under @test-core --title "Requirement" --type requirement --slug test-requirement',
       tempDir,
     );
 
-    kspec('link create @test-feature @test-requirement --type implements', tempDir);
-    let shadowHead = execSync('git log --format=%s -1', {
-      cwd: path.join(tempDir, '.kspec'),
-      encoding: 'utf-8',
-      stdio: ['pipe', 'pipe', 'pipe'],
+    kspec("link create @test-feature @test-requirement --type implements", tempDir);
+    let shadowHead = execSync("git log --format=%s -1", {
+      cwd: path.join(tempDir, ".kspec"),
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "pipe"],
     }).trim();
-    expect(shadowHead).toBe('Add Link: @test-feature - implements @test-requirement');
+    expect(shadowHead).toBe("Add Link: @test-feature - implements @test-requirement");
 
-    kspec('link delete @test-feature @test-requirement --type implements', tempDir);
-    shadowHead = execSync('git log --format=%s -1', {
-      cwd: path.join(tempDir, '.kspec'),
-      encoding: 'utf-8',
-      stdio: ['pipe', 'pipe', 'pipe'],
+    kspec("link delete @test-feature @test-requirement --type implements", tempDir);
+    shadowHead = execSync("git log --format=%s -1", {
+      cwd: path.join(tempDir, ".kspec"),
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "pipe"],
     }).trim();
-    expect(shadowHead).toBe('Remove Link: @test-feature - implements @test-requirement');
+    expect(shadowHead).toBe("Remove Link: @test-feature - implements @test-requirement");
   });
 
-  it('should return JSON with --json flag', () => {
+  it("should return JSON with --json flag", () => {
     const result = kspecJson<{ success: boolean; from: string; to: string; type: string }>(
-      'link create @test-feature @test-requirement --type depends_on',
-      tempDir
+      "link create @test-feature @test-requirement --type depends_on",
+      tempDir,
     );
     expect(result.success).toBe(true);
-    expect(result.from).toBe('@test-feature');
-    expect(result.to).toBe('@test-requirement');
-    expect(result.type).toBe('depends_on');
+    expect(result.from).toBe("@test-feature");
+    expect(result.to).toBe("@test-requirement");
+    expect(result.type).toBe("depends_on");
   });
 });
 
-describe('Integration: status cascade', () => {
+describe("Integration: status cascade", () => {
   let tempDir: string;
 
   beforeEach(async () => {
@@ -2292,109 +2440,111 @@ describe('Integration: status cascade', () => {
   });
 
   // AC: @status-cascade ac-1
-  it('should prompt to cascade status to children', () => {
+  it("should prompt to cascade status to children", () => {
     // test-feature has a child requirement
     // Pipe "n" to reject the cascade
-    const result = kspecRun('item set @test-feature --status implemented', tempDir, { stdin: 'n' });
+    const result = kspecRun("item set @test-feature --status implemented", tempDir, { stdin: "n" });
 
-    expect(result.stdout).toContain('Update');
-    expect(result.stdout).toContain('child item(s) to implemented? [y/n]');
-    expect(result.stdout).toContain('Updated item');
+    expect(result.stdout).toContain("Update");
+    expect(result.stdout).toContain("child item(s) to implemented? [y/n]");
+    expect(result.stdout).toContain("Updated item");
   });
 
-  it('should update children when cascade accepted', () => {
+  it("should update children when cascade accepted", () => {
     // Get initial status of child
     const beforeChild = kspecJson<{ status?: { implementation?: string } }>(
-      'item get @test-requirement',
-      tempDir
+      "item get @test-requirement",
+      tempDir,
     );
-    const beforeImpl = beforeChild.status?.implementation || 'not_started';
+    const beforeImpl = beforeChild.status?.implementation || "not_started";
 
     // Cascade update by piping "y"
-    kspecRun('item set @test-feature --status verified', tempDir, { stdin: 'y' });
+    kspecRun("item set @test-feature --status verified", tempDir, { stdin: "y" });
 
     // Check child status was updated
     const afterChild = kspecJson<{ status?: { implementation?: string } }>(
-      'item get @test-requirement',
-      tempDir
+      "item get @test-requirement",
+      tempDir,
     );
-    expect(afterChild.status?.implementation).toBe('verified');
-    expect(beforeImpl).not.toBe('verified'); // Ensure it changed
+    expect(afterChild.status?.implementation).toBe("verified");
+    expect(beforeImpl).not.toBe("verified"); // Ensure it changed
   });
 
-  it('should not update children when cascade rejected', () => {
+  it("should not update children when cascade rejected", () => {
     // Get initial status of child
     const beforeChild = kspecJson<{ status?: { implementation?: string } }>(
-      'item get @test-requirement',
-      tempDir
+      "item get @test-requirement",
+      tempDir,
     );
-    const beforeImpl = beforeChild.status?.implementation || 'not_started';
+    const beforeImpl = beforeChild.status?.implementation || "not_started";
 
     // Reject cascade by piping "n"
-    kspecRun('item set @test-feature --status implemented', tempDir, { stdin: 'n' });
+    kspecRun("item set @test-feature --status implemented", tempDir, { stdin: "n" });
 
     // Check child status was NOT updated
     const afterChild = kspecJson<{ status?: { implementation?: string } }>(
-      'item get @test-requirement',
-      tempDir
+      "item get @test-requirement",
+      tempDir,
     );
     expect(afterChild.status?.implementation).toBe(beforeImpl);
   });
 
-  it('should skip prompt in JSON mode', () => {
-    const result = kspecRun('item set @test-feature --status in_progress --json', tempDir);
+  it("should skip prompt in JSON mode", () => {
+    const result = kspecRun("item set @test-feature --status in_progress --json", tempDir);
 
     // Should not prompt in JSON mode
-    expect(result.stdout).not.toContain('child item(s) to');
-    expect(result.stdout).not.toContain('[y/n]');
+    expect(result.stdout).not.toContain("child item(s) to");
+    expect(result.stdout).not.toContain("[y/n]");
 
     // Should return valid JSON
     const parsed = JSON.parse(result.stdout);
     expect(parsed.item).toBeDefined();
   });
 
-  it('should handle items with no children', () => {
+  it("should handle items with no children", () => {
     // test-requirement has no children
-    const result = kspecRun('item set @test-requirement --status implemented', tempDir, { stdin: 'n' });
+    const result = kspecRun("item set @test-requirement --status implemented", tempDir, {
+      stdin: "n",
+    });
 
     // Should not show cascade prompt when no children
-    expect(result.stdout).not.toContain('child item(s) to');
-    expect(result.stdout).not.toContain('[y/n]');
-    expect(result.stdout).toContain('Updated item');
+    expect(result.stdout).not.toContain("child item(s) to");
+    expect(result.stdout).not.toContain("[y/n]");
+    expect(result.stdout).toContain("Updated item");
   });
 
   // AC: @trait-confirmation-prompt ac-4
-  it('should skip cascade prompt when --no-cascade is provided', () => {
+  it("should skip cascade prompt when --no-cascade is provided", () => {
     // test-feature has a child requirement
-    const result = kspecRun('item set @test-feature --status implemented --no-cascade', tempDir);
+    const result = kspecRun("item set @test-feature --status implemented --no-cascade", tempDir);
 
     // Should not prompt for cascade
-    expect(result.stdout).not.toContain('child item(s) to');
-    expect(result.stdout).not.toContain('[y/n]');
-    expect(result.stdout).toContain('Updated item');
+    expect(result.stdout).not.toContain("child item(s) to");
+    expect(result.stdout).not.toContain("[y/n]");
+    expect(result.stdout).toContain("Updated item");
   });
 
-  it('should not update children when --no-cascade is provided', () => {
+  it("should not update children when --no-cascade is provided", () => {
     // Get initial status of child
     const beforeChild = kspecJson<{ status?: { implementation?: string } }>(
-      'item get @test-requirement',
-      tempDir
+      "item get @test-requirement",
+      tempDir,
     );
-    const beforeImpl = beforeChild.status?.implementation || 'not_started';
+    const beforeImpl = beforeChild.status?.implementation || "not_started";
 
     // Update parent with --no-cascade
-    kspecRun('item set @test-feature --status verified --no-cascade', tempDir);
+    kspecRun("item set @test-feature --status verified --no-cascade", tempDir);
 
     // Check child status was NOT updated
     const afterChild = kspecJson<{ status?: { implementation?: string } }>(
-      'item get @test-requirement',
-      tempDir
+      "item get @test-requirement",
+      tempDir,
     );
     expect(afterChild.status?.implementation).toBe(beforeImpl);
   });
 });
 
-describe('Integration: inbox promote', () => {
+describe("Integration: inbox promote", () => {
   let tempDir: string;
 
   beforeEach(async () => {
@@ -2405,70 +2555,70 @@ describe('Integration: inbox promote', () => {
     await cleanupTempDir(tempDir);
   });
 
-  it('should use inbox text as description by default', () => {
+  it("should use inbox text as description by default", () => {
     // Add an inbox item
     kspec('inbox add "Test idea for a new feature"', tempDir);
 
     // Get the inbox item
-    const inboxItems = kspecJson<Array<{ _ulid: string; text: string }>>('inbox list', tempDir);
+    const inboxItems = kspecJson<Array<{ _ulid: string; text: string }>>("inbox list", tempDir);
     const itemRef = `@${inboxItems[0]._ulid}`;
 
     // Promote without --description flag
-    const promoteOutput = kspecJson<{ task: { _ulid: string; title: string; description?: string } }>(
-      `inbox promote ${itemRef} --title "New Feature Task"`,
-      tempDir
-    );
+    const promoteOutput = kspecJson<{
+      task: { _ulid: string; title: string; description?: string };
+    }>(`inbox promote ${itemRef} --title "New Feature Task"`, tempDir);
 
     // Verify the task was created with inbox text as description
     expect(promoteOutput.task).toBeDefined();
-    expect(promoteOutput.task.title).toBe('New Feature Task');
-    expect(promoteOutput.task.description).toBe('Test idea for a new feature');
+    expect(promoteOutput.task.title).toBe("New Feature Task");
+    expect(promoteOutput.task.description).toBe("Test idea for a new feature");
   });
 
-  it('should use custom description when --description flag provided', () => {
+  it("should use custom description when --description flag provided", () => {
     // Add an inbox item
     kspec('inbox add "Original inbox text"', tempDir);
 
     // Get the inbox item
-    const inboxItems = kspecJson<Array<{ _ulid: string }>>('inbox list', tempDir);
+    const inboxItems = kspecJson<Array<{ _ulid: string }>>("inbox list", tempDir);
     const itemRef = `@${inboxItems[0]._ulid}`;
 
     // Promote with custom --description
-    const promoteOutput = kspecJson<{ task: { _ulid: string; title: string; description?: string } }>(
+    const promoteOutput = kspecJson<{
+      task: { _ulid: string; title: string; description?: string };
+    }>(
       `inbox promote ${itemRef} --title "Task Title" --description "Custom description for the task"`,
-      tempDir
+      tempDir,
     );
 
     // Verify the task was created with custom description
     expect(promoteOutput.task).toBeDefined();
-    expect(promoteOutput.task.title).toBe('Task Title');
-    expect(promoteOutput.task.description).toBe('Custom description for the task');
-    expect(promoteOutput.task.description).not.toBe('Original inbox text');
+    expect(promoteOutput.task.title).toBe("Task Title");
+    expect(promoteOutput.task.description).toBe("Custom description for the task");
+    expect(promoteOutput.task.description).not.toBe("Original inbox text");
   });
 
-  it('should handle empty description flag', () => {
+  it("should handle empty description flag", () => {
     // Add an inbox item
     kspec('inbox add "Inbox item text"', tempDir);
 
     // Get the inbox item
-    const inboxItems = kspecJson<Array<{ _ulid: string }>>('inbox list', tempDir);
+    const inboxItems = kspecJson<Array<{ _ulid: string }>>("inbox list", tempDir);
     const itemRef = `@${inboxItems[0]._ulid}`;
 
     // Promote with empty --description (should use empty string, not inbox text)
-    const promoteOutput = kspecJson<{ task: { _ulid: string; title: string; description?: string } }>(
-      `inbox promote ${itemRef} --title "Empty Desc Task" --description ""`,
-      tempDir
-    );
+    const promoteOutput = kspecJson<{
+      task: { _ulid: string; title: string; description?: string };
+    }>(`inbox promote ${itemRef} --title "Empty Desc Task" --description ""`, tempDir);
 
     // Verify the task was created with empty description
     expect(promoteOutput.task).toBeDefined();
-    expect(promoteOutput.task.title).toBe('Empty Desc Task');
-    expect(promoteOutput.task.description).toBe('');
+    expect(promoteOutput.task.title).toBe("Empty Desc Task");
+    expect(promoteOutput.task.description).toBe("");
   });
 });
 
 // AC: @inbox-set ac-1
-describe('Integration: inbox set --content', () => {
+describe("Integration: inbox set --content", () => {
   let tempDir: string;
 
   beforeEach(async () => {
@@ -2479,11 +2629,11 @@ describe('Integration: inbox set --content', () => {
     await cleanupTempDir(tempDir);
   });
 
-  it('should replace item content while preserving ULID and timestamp', () => {
+  it("should replace item content while preserving ULID and timestamp", () => {
     // Create inbox item
     const createOutput = kspecJson<{ item: { _ulid: string; text: string; created_at: string } }>(
       'inbox add "Original text content"',
-      tempDir
+      tempDir,
     );
     const originalUlid = createOutput.item._ulid;
     const originalCreatedAt = createOutput.item.created_at;
@@ -2495,17 +2645,17 @@ describe('Integration: inbox set --content', () => {
     // Verify update preserved ULID and timestamp
     const updated = kspecJson<{ _ulid: string; text: string; created_at: string; tags: string[] }>(
       `inbox get ${itemRef}`,
-      tempDir
+      tempDir,
     );
     expect(updated._ulid).toBe(originalUlid);
     expect(updated.created_at).toBe(originalCreatedAt);
-    expect(updated.text).toBe('New text content');
+    expect(updated.text).toBe("New text content");
   });
 
-  it('should preserve tags when only updating content', () => {
+  it("should preserve tags when only updating content", () => {
     // Create inbox item with tags
     kspec('inbox add "Text with tags" --tag foo --tag bar', tempDir);
-    const items = kspecJson<Array<{ _ulid: string }>>('inbox list', tempDir);
+    const items = kspecJson<Array<{ _ulid: string }>>("inbox list", tempDir);
     const itemRef = `@${items[0]._ulid.slice(0, 8)}`;
 
     // Update content only
@@ -2513,13 +2663,13 @@ describe('Integration: inbox set --content', () => {
 
     // Verify tags preserved
     const updated = kspecJson<{ text: string; tags: string[] }>(`inbox get ${itemRef}`, tempDir);
-    expect(updated.text).toBe('Updated text');
-    expect(updated.tags).toEqual(['foo', 'bar']);
+    expect(updated.text).toBe("Updated text");
+    expect(updated.tags).toEqual(["foo", "bar"]);
   });
 });
 
 // AC: @inbox-set ac-2
-describe('Integration: inbox set --tag', () => {
+describe("Integration: inbox set --tag", () => {
   let tempDir: string;
 
   beforeEach(async () => {
@@ -2530,10 +2680,10 @@ describe('Integration: inbox set --tag', () => {
     await cleanupTempDir(tempDir);
   });
 
-  it('should add new tags to existing tags', () => {
+  it("should add new tags to existing tags", () => {
     // Create inbox item with initial tag
     kspec('inbox add "Test item" --tag initial', tempDir);
-    const items = kspecJson<Array<{ _ulid: string }>>('inbox list', tempDir);
+    const items = kspecJson<Array<{ _ulid: string }>>("inbox list", tempDir);
     const itemRef = `@${items[0]._ulid.slice(0, 8)}`;
 
     // Add more tags
@@ -2541,14 +2691,14 @@ describe('Integration: inbox set --tag', () => {
 
     // Verify both tags present
     const updated = kspecJson<{ tags: string[] }>(`inbox get ${itemRef}`, tempDir);
-    expect(updated.tags).toContain('initial');
-    expect(updated.tags).toContain('newtag');
+    expect(updated.tags).toContain("initial");
+    expect(updated.tags).toContain("newtag");
   });
 
-  it('should not duplicate tags', () => {
+  it("should not duplicate tags", () => {
     // Create inbox item with tag
     kspec('inbox add "Test item" --tag duplicate', tempDir);
-    const items = kspecJson<Array<{ _ulid: string }>>('inbox list', tempDir);
+    const items = kspecJson<Array<{ _ulid: string }>>("inbox list", tempDir);
     const itemRef = `@${items[0]._ulid.slice(0, 8)}`;
 
     // Try to add same tag again
@@ -2556,13 +2706,13 @@ describe('Integration: inbox set --tag', () => {
 
     // Verify no duplicates
     const updated = kspecJson<{ tags: string[] }>(`inbox get ${itemRef}`, tempDir);
-    expect(updated.tags.filter(t => t === 'duplicate').length).toBe(1);
+    expect(updated.tags.filter((t) => t === "duplicate").length).toBe(1);
   });
 
-  it('should support --clear-tags to replace all tags', () => {
+  it("should support --clear-tags to replace all tags", () => {
     // Create inbox item with multiple tags
     kspec('inbox add "Test item" --tag old1 --tag old2', tempDir);
-    const items = kspecJson<Array<{ _ulid: string }>>('inbox list', tempDir);
+    const items = kspecJson<Array<{ _ulid: string }>>("inbox list", tempDir);
     const itemRef = `@${items[0]._ulid.slice(0, 8)}`;
 
     // Clear and add new tags
@@ -2570,15 +2720,15 @@ describe('Integration: inbox set --tag', () => {
 
     // Verify only new tags present
     const updated = kspecJson<{ tags: string[] }>(`inbox get ${itemRef}`, tempDir);
-    expect(updated.tags).not.toContain('old1');
-    expect(updated.tags).not.toContain('old2');
-    expect(updated.tags).toContain('new1');
-    expect(updated.tags).toContain('new2');
+    expect(updated.tags).not.toContain("old1");
+    expect(updated.tags).not.toContain("old2");
+    expect(updated.tags).toContain("new1");
+    expect(updated.tags).toContain("new2");
   });
 });
 
 // AC: @inbox-note ac-1
-describe('Integration: inbox note', () => {
+describe("Integration: inbox note", () => {
   let tempDir: string;
 
   beforeEach(async () => {
@@ -2589,10 +2739,10 @@ describe('Integration: inbox note', () => {
     await cleanupTempDir(tempDir);
   });
 
-  it('should append note to existing text with separator', () => {
+  it("should append note to existing text with separator", () => {
     // Create inbox item
     kspec('inbox add "Original idea"', tempDir);
-    const items = kspecJson<Array<{ _ulid: string }>>('inbox list', tempDir);
+    const items = kspecJson<Array<{ _ulid: string }>>("inbox list", tempDir);
     const itemRef = `@${items[0]._ulid.slice(0, 8)}`;
 
     // Append note
@@ -2600,15 +2750,15 @@ describe('Integration: inbox note', () => {
 
     // Verify note was appended
     const updated = kspecJson<{ text: string }>(`inbox get ${itemRef}`, tempDir);
-    expect(updated.text).toContain('Original idea');
-    expect(updated.text).toContain('---'); // Separator
-    expect(updated.text).toContain('Additional context added later');
+    expect(updated.text).toContain("Original idea");
+    expect(updated.text).toContain("---"); // Separator
+    expect(updated.text).toContain("Additional context added later");
   });
 
-  it('should support multiple notes', () => {
+  it("should support multiple notes", () => {
     // Create inbox item
     kspec('inbox add "Initial thought"', tempDir);
-    const items = kspecJson<Array<{ _ulid: string }>>('inbox list', tempDir);
+    const items = kspecJson<Array<{ _ulid: string }>>("inbox list", tempDir);
     const itemRef = `@${items[0]._ulid.slice(0, 8)}`;
 
     // Add multiple notes
@@ -2617,18 +2767,18 @@ describe('Integration: inbox note', () => {
 
     // Verify all content present
     const updated = kspecJson<{ text: string }>(`inbox get ${itemRef}`, tempDir);
-    expect(updated.text).toContain('Initial thought');
-    expect(updated.text).toContain('First update');
-    expect(updated.text).toContain('Second update');
+    expect(updated.text).toContain("Initial thought");
+    expect(updated.text).toContain("First update");
+    expect(updated.text).toContain("Second update");
     // Should have two separators
     const separatorCount = (updated.text.match(/---/g) || []).length;
     expect(separatorCount).toBe(2);
   });
 
-  it('should preserve tags when adding notes', () => {
+  it("should preserve tags when adding notes", () => {
     // Create inbox item with tags
     kspec('inbox add "Tagged item" --tag important', tempDir);
-    const items = kspecJson<Array<{ _ulid: string }>>('inbox list', tempDir);
+    const items = kspecJson<Array<{ _ulid: string }>>("inbox list", tempDir);
     const itemRef = `@${items[0]._ulid.slice(0, 8)}`;
 
     // Add note
@@ -2636,12 +2786,12 @@ describe('Integration: inbox note', () => {
 
     // Verify tags preserved
     const updated = kspecJson<{ tags: string[] }>(`inbox get ${itemRef}`, tempDir);
-    expect(updated.tags).toContain('important');
+    expect(updated.tags).toContain("important");
   });
 });
 
 // AC: @meta-observe-cmd from-inbox-conversion
-describe('Integration: meta observe --from-inbox', () => {
+describe("Integration: meta observe --from-inbox", () => {
   let tempDir: string;
 
   beforeEach(async () => {
@@ -2652,89 +2802,98 @@ describe('Integration: meta observe --from-inbox', () => {
     await cleanupTempDir(tempDir);
   });
 
-  it('should convert inbox item to observation with default type', () => {
+  it("should convert inbox item to observation with default type", () => {
     // Add inbox item
     kspec('inbox add "This should have been an observation"', tempDir);
 
     // Get inbox item ref
-    const inboxItems = kspecJson<Array<{ _ulid: string; text: string }>>('inbox list', tempDir);
+    const inboxItems = kspecJson<Array<{ _ulid: string; text: string }>>("inbox list", tempDir);
     expect(inboxItems.length).toBe(1);
     const itemRef = `@${inboxItems[0]._ulid.substring(0, 8)}`;
 
     // Convert to observation using --from-inbox
-    const result = kspecJson<{ _ulid: string; type: string; content: string }>('meta observe --from-inbox ' + itemRef, tempDir);
+    const result = kspecJson<{ _ulid: string; type: string; content: string }>(
+      `meta observe --from-inbox ${itemRef}`,
+      tempDir,
+    );
 
     expect(result._ulid).toBeDefined();
-    expect(result.type).toBe('idea'); // Default type
-    expect(result.content).toBe('This should have been an observation');
+    expect(result.type).toBe("idea"); // Default type
+    expect(result.content).toBe("This should have been an observation");
 
     // Verify inbox item was deleted
-    const remainingItems = kspecJson<Array<{ _ulid: string }>>('inbox list', tempDir);
+    const remainingItems = kspecJson<Array<{ _ulid: string }>>("inbox list", tempDir);
     expect(remainingItems.length).toBe(0);
   });
 
-  it('should convert inbox item with explicit type override', () => {
+  it("should convert inbox item with explicit type override", () => {
     // Add inbox item
     kspec('inbox add "Found a performance bottleneck"', tempDir);
 
     // Get inbox item ref
-    const inboxItems = kspecJson<Array<{ _ulid: string; text: string }>>('inbox list', tempDir);
+    const inboxItems = kspecJson<Array<{ _ulid: string; text: string }>>("inbox list", tempDir);
     const itemRef = `@${inboxItems[0]._ulid.substring(0, 8)}`;
 
     // Convert to friction observation with --type override
-    const result = kspecJson<{ _ulid: string; type: string; content: string }>('meta observe --from-inbox ' + itemRef + ' --type friction', tempDir);
+    const result = kspecJson<{ _ulid: string; type: string; content: string }>(
+      `meta observe --from-inbox ${itemRef} --type friction`,
+      tempDir,
+    );
 
-    expect(result.type).toBe('friction');
-    expect(result.content).toBe('Found a performance bottleneck');
+    expect(result.type).toBe("friction");
+    expect(result.content).toBe("Found a performance bottleneck");
 
     // Verify inbox item was deleted
-    const remainingItems = kspecJson<Array<{ _ulid: string }>>('inbox list', tempDir);
+    const remainingItems = kspecJson<Array<{ _ulid: string }>>("inbox list", tempDir);
     expect(remainingItems.length).toBe(0);
   });
 
-  it('should preserve workflow reference when converting from inbox', () => {
+  it("should preserve workflow reference when converting from inbox", () => {
     // Add inbox item
     kspec('inbox add "Workflow specific observation"', tempDir);
 
     // Get inbox item ref
-    const inboxItems = kspecJson<Array<{ _ulid: string }>>('inbox list', tempDir);
+    const inboxItems = kspecJson<Array<{ _ulid: string }>>("inbox list", tempDir);
     const itemRef = `@${inboxItems[0]._ulid.substring(0, 8)}`;
 
     // Convert with workflow reference
-    const result = kspecJson<{ _ulid: string; type: string; workflow_ref: string | null }>('meta observe --from-inbox ' + itemRef + ' --type success --workflow @some-workflow', tempDir);
+    const result = kspecJson<{ _ulid: string; type: string; workflow_ref: string | null }>(
+      `meta observe --from-inbox ${itemRef} --type success --workflow @some-workflow`,
+      tempDir,
+    );
 
-    expect(result.type).toBe('success');
-    expect(result.workflow_ref).toBe('@some-workflow');
+    expect(result.type).toBe("success");
+    expect(result.workflow_ref).toBe("@some-workflow");
   });
 
-  it('should fail with invalid inbox reference', () => {
+  it("should fail with invalid inbox reference", () => {
     try {
-      kspec('meta observe --from-inbox @nonexistent', tempDir);
-      expect.fail('Should have thrown error for invalid inbox reference');
+      kspec("meta observe --from-inbox @nonexistent", tempDir);
+      expect.fail("Should have thrown error for invalid inbox reference");
     } catch (error) {
-      expect(String(error)).toContain('not found');
+      expect(String(error)).toContain("not found");
     }
   });
 
-  it('should fail with invalid type when using --from-inbox', () => {
+  it("should fail with invalid type when using --from-inbox", () => {
     // Add inbox item
     kspec('inbox add "Test item"', tempDir);
 
     // Get inbox item ref
-    const inboxItems = kspecJson<Array<{ _ulid: string }>>('inbox list', tempDir);
+    const inboxItems = kspecJson<Array<{ _ulid: string }>>("inbox list", tempDir);
     const itemRef = `@${inboxItems[0]._ulid.substring(0, 8)}`;
 
     // Try to convert with invalid type
     try {
-      kspec('meta observe --from-inbox ' + itemRef + ' --type invalid', tempDir);
-      expect.fail('Should have thrown error for invalid type');
+      kspec(`meta observe --from-inbox ${itemRef} --type invalid`, tempDir);
+      expect.fail("Should have thrown error for invalid type");
     } catch (error) {
-      expect(String(error)).toContain('invalid');
+      expect(String(error)).toContain("invalid");
     }
   });
 });
 
-describe('Integration: Batch operations', () => {
+describe("Integration: Batch operations", () => {
   let tempDir: string;
 
   beforeEach(async () => {
@@ -2746,19 +2905,19 @@ describe('Integration: Batch operations', () => {
   });
 
   // AC: @multi-ref-batch ac-1 - Basic multi-ref syntax
-  it('should support --refs flag with multiple references', () => {
+  it("should support --refs flag with multiple references", () => {
     // Create three tasks and start them
     const task1 = kspecJson<{ task: { _ulid: string } }>(
       'task add --title "Task 1" --priority 3',
-      tempDir
+      tempDir,
     );
     const task2 = kspecJson<{ task: { _ulid: string } }>(
       'task add --title "Task 2" --priority 3',
-      tempDir
+      tempDir,
     );
     const task3 = kspecJson<{ task: { _ulid: string } }>(
       'task add --title "Task 3" --priority 3',
-      tempDir
+      tempDir,
     );
 
     // Start and submit each task individually
@@ -2774,7 +2933,10 @@ describe('Integration: Batch operations', () => {
       success: boolean;
       summary: { total: number; succeeded: number; failed: number };
       results: Array<{ ref: string; ulid: string; status: string }>;
-    }>(`task complete --refs @${task1.task._ulid} @${task2.task._ulid} @${task3.task._ulid} --reason "Test"`, tempDir);
+    }>(
+      `task complete --refs @${task1.task._ulid} @${task2.task._ulid} @${task3.task._ulid} --reason "Test"`,
+      tempDir,
+    );
 
     // AC: @multi-ref-batch ac-6 - JSON output format
     expect(result.success).toBe(true);
@@ -2782,17 +2944,17 @@ describe('Integration: Batch operations', () => {
     expect(result.summary.succeeded).toBe(3);
     expect(result.summary.failed).toBe(0);
     expect(result.results).toHaveLength(3);
-    expect(result.results[0].status).toBe('success');
-    expect(result.results[1].status).toBe('success');
-    expect(result.results[2].status).toBe('success');
+    expect(result.results[0].status).toBe("success");
+    expect(result.results[1].status).toBe("success");
+    expect(result.results[2].status).toBe("success");
   });
 
   // AC: @multi-ref-batch ac-2 - Backward compatibility
-  it('should maintain backward compatibility with positional ref', () => {
+  it("should maintain backward compatibility with positional ref", () => {
     // Create and start a task
     const task = kspecJson<{ task: { _ulid: string } }>(
       'task add --title "Backward Compat Task" --priority 3',
-      tempDir
+      tempDir,
     );
     kspec(`task start @${task.task._ulid}`, tempDir);
 
@@ -2808,31 +2970,31 @@ describe('Integration: Batch operations', () => {
   });
 
   // AC: @multi-ref-batch ac-3 - Mutual exclusion error
-  it('should error when both positional ref and --refs are provided', () => {
+  it("should error when both positional ref and --refs are provided", () => {
     const task = kspecJson<{ task: { _ulid: string } }>(
       'task add --title "Test Task" --priority 3',
-      tempDir
+      tempDir,
     );
     kspec(`task start @${task.task._ulid}`, tempDir);
 
     try {
       kspec(`task complete @${task.task._ulid} --refs @${task.task._ulid}`, tempDir);
-      expect.fail('Should have thrown error for mutual exclusion');
+      expect.fail("Should have thrown error for mutual exclusion");
     } catch (error) {
-      expect(String(error)).toContain('Cannot use both positional ref and --refs flag');
+      expect(String(error)).toContain("Cannot use both positional ref and --refs flag");
     }
   });
 
   // AC: @multi-ref-batch ac-4 - Partial failure handling
-  it('should continue processing after errors and report partial failures', () => {
+  it("should continue processing after errors and report partial failures", () => {
     // Create two valid tasks
     const task1 = kspecJson<{ task: { _ulid: string } }>(
       'task add --title "Valid Task 1" --priority 3',
-      tempDir
+      tempDir,
     );
     const task2 = kspecJson<{ task: { _ulid: string } }>(
       'task add --title "Valid Task 2" --priority 3',
-      tempDir
+      tempDir,
     );
 
     // Start and submit both tasks
@@ -2846,7 +3008,10 @@ describe('Integration: Batch operations', () => {
       success: boolean;
       summary: { total: number; succeeded: number; failed: number };
       results: Array<{ ref: string; status: string; error?: string }>;
-    }>(`task complete --refs @${task1.task._ulid} @invalid-ref-12345 @${task2.task._ulid} --reason "Test"`, tempDir);
+    }>(
+      `task complete --refs @${task1.task._ulid} @invalid-ref-12345 @${task2.task._ulid} --reason "Test"`,
+      tempDir,
+    );
 
     // Should have partial success
     expect(result.success).toBe(false);
@@ -2855,103 +3020,107 @@ describe('Integration: Batch operations', () => {
     expect(result.summary.failed).toBe(1);
 
     // Check individual results
-    expect(result.results[0].status).toBe('success');
-    expect(result.results[1].status).toBe('error');
-    expect(result.results[1].error).toContain('not found');
-    expect(result.results[2].status).toBe('success');
+    expect(result.results[0].status).toBe("success");
+    expect(result.results[1].status).toBe("error");
+    expect(result.results[1].error).toContain("not found");
+    expect(result.results[2].status).toBe("success");
   });
 
   // AC: @multi-ref-batch ac-7 - Empty refs error
-  it('should error when --refs is provided without values', () => {
+  it("should error when --refs is provided without values", () => {
     try {
-      kspec('task cancel --refs', tempDir);
-      expect.fail('Should have thrown error for empty refs');
+      kspec("task cancel --refs", tempDir);
+      expect.fail("Should have thrown error for empty refs");
     } catch (error) {
       // Commander handles this case with "argument missing" error
-      expect(String(error)).toContain('argument missing');
+      expect(String(error)).toContain("argument missing");
     }
   });
 
   // AC: @multi-ref-batch ac-8 - Ref resolution uses existing logic
-  it('should resolve refs using existing resolution logic (slugs, ULID prefixes)', { timeout: 15000 }, () => {
-    // Create two tasks with slugs
-    const task1 = kspecJson<{ task: { _ulid: string } }>(
-      'task add --title "Slug Test 1" --slug test-slug-1 --priority 3',
-      tempDir
-    );
-    const task2 = kspecJson<{ task: { _ulid: string } }>(
-      'task add --title "Slug Test 2" --slug test-slug-2 --priority 3',
-      tempDir
-    );
+  it(
+    "should resolve refs using existing resolution logic (slugs, ULID prefixes)",
+    { timeout: 15000 },
+    () => {
+      // Create two tasks with slugs
+      const task1 = kspecJson<{ task: { _ulid: string } }>(
+        'task add --title "Slug Test 1" --slug test-slug-1 --priority 3',
+        tempDir,
+      );
+      const task2 = kspecJson<{ task: { _ulid: string } }>(
+        'task add --title "Slug Test 2" --slug test-slug-2 --priority 3',
+        tempDir,
+      );
 
-    const ulid1 = task1.task._ulid;
-    const ulid2 = task2.task._ulid;
-    const shortUlid1 = ulid1.slice(0, 8);
-    const shortUlid2 = ulid2.slice(0, 8);
+      const ulid1 = task1.task._ulid;
+      const ulid2 = task2.task._ulid;
+      const _shortUlid1 = ulid1.slice(0, 8);
+      const _shortUlid2 = ulid2.slice(0, 8);
 
-    // Start and submit both tasks
-    kspec(`task start @${ulid1}`, tempDir);
-    kspec(`task start @${ulid2}`, tempDir);
-    kspec(`task submit @${ulid1}`, tempDir);
-    kspec(`task submit @${ulid2}`, tempDir);
+      // Start and submit both tasks
+      kspec(`task start @${ulid1}`, tempDir);
+      kspec(`task start @${ulid2}`, tempDir);
+      kspec(`task submit @${ulid1}`, tempDir);
+      kspec(`task submit @${ulid2}`, tempDir);
 
-    // Test slug resolution
-    const slugResult = kspecJson<{
-      success: boolean;
-      results: Array<{ ref: string; status: string }>;
-    }>('task complete --refs @test-slug-1 @test-slug-2 --reason "Test"', tempDir);
-    expect(slugResult.success).toBe(true);
-    expect(slugResult.results[0].status).toBe('success');
-    expect(slugResult.results[1].status).toBe('success');
+      // Test slug resolution
+      const slugResult = kspecJson<{
+        success: boolean;
+        results: Array<{ ref: string; status: string }>;
+      }>('task complete --refs @test-slug-1 @test-slug-2 --reason "Test"', tempDir);
+      expect(slugResult.success).toBe(true);
+      expect(slugResult.results[0].status).toBe("success");
+      expect(slugResult.results[1].status).toBe("success");
 
-    // Create two more tasks for ULID prefix test
-    // Use full ULIDs since short prefixes (8 chars) can be ambiguous when
-    // tasks are created in quick succession (ULID first 10 chars are timestamp)
-    const task3 = kspecJson<{ task: { _ulid: string } }>(
-      'task add --title "Prefix Test 1" --priority 3',
-      tempDir
-    );
-    const task4 = kspecJson<{ task: { _ulid: string } }>(
-      'task add --title "Prefix Test 2" --priority 3',
-      tempDir
-    );
-    const ulid3 = task3.task._ulid;
-    const ulid4 = task4.task._ulid;
+      // Create two more tasks for ULID prefix test
+      // Use full ULIDs since short prefixes (8 chars) can be ambiguous when
+      // tasks are created in quick succession (ULID first 10 chars are timestamp)
+      const task3 = kspecJson<{ task: { _ulid: string } }>(
+        'task add --title "Prefix Test 1" --priority 3',
+        tempDir,
+      );
+      const task4 = kspecJson<{ task: { _ulid: string } }>(
+        'task add --title "Prefix Test 2" --priority 3',
+        tempDir,
+      );
+      const ulid3 = task3.task._ulid;
+      const ulid4 = task4.task._ulid;
 
-    // Start and submit both
-    kspec(`task start @${ulid3}`, tempDir);
-    kspec(`task start @${ulid4}`, tempDir);
-    kspec(`task submit @${ulid3}`, tempDir);
-    kspec(`task submit @${ulid4}`, tempDir);
+      // Start and submit both
+      kspec(`task start @${ulid3}`, tempDir);
+      kspec(`task start @${ulid4}`, tempDir);
+      kspec(`task submit @${ulid3}`, tempDir);
+      kspec(`task submit @${ulid4}`, tempDir);
 
-    // Test ULID resolution with full ULIDs (ref resolution still uses the same logic)
-    const prefixResult = kspecJson<{
-      success: boolean;
-      summary: { total: number; succeeded: number; failed: number };
-      results: Array<{ ref: string; status: string; error?: string }>;
-    }>(`task complete --refs @${ulid3} @${ulid4} --reason "Test"`, tempDir);
+      // Test ULID resolution with full ULIDs (ref resolution still uses the same logic)
+      const prefixResult = kspecJson<{
+        success: boolean;
+        summary: { total: number; succeeded: number; failed: number };
+        results: Array<{ ref: string; status: string; error?: string }>;
+      }>(`task complete --refs @${ulid3} @${ulid4} --reason "Test"`, tempDir);
 
-    // Full ULIDs should always resolve uniquely
-    expect(prefixResult.success).toBe(true);
-    expect(prefixResult.summary.succeeded).toBe(2);
-    expect(prefixResult.results[0].status).toBe('success');
-    expect(prefixResult.results[1].status).toBe('success');
-  });
+      // Full ULIDs should always resolve uniquely
+      expect(prefixResult.success).toBe(true);
+      expect(prefixResult.summary.succeeded).toBe(2);
+      expect(prefixResult.results[0].status).toBe("success");
+      expect(prefixResult.results[1].status).toBe("success");
+    },
+  );
 
   // Test task complete batch
-  it('should batch complete multiple tasks', () => {
+  it("should batch complete multiple tasks", () => {
     // Create and start three tasks
     const task1 = kspecJson<{ task: { _ulid: string } }>(
       'task add --title "Complete 1" --priority 3',
-      tempDir
+      tempDir,
     );
     const task2 = kspecJson<{ task: { _ulid: string } }>(
       'task add --title "Complete 2" --priority 3',
-      tempDir
+      tempDir,
     );
     const task3 = kspecJson<{ task: { _ulid: string } }>(
       'task add --title "Complete 3" --priority 3',
-      tempDir
+      tempDir,
     );
 
     kspec(`task start @${task1.task._ulid}`, tempDir);
@@ -2965,7 +3134,10 @@ describe('Integration: Batch operations', () => {
     const result = kspecJson<{
       success: boolean;
       summary: { total: number; succeeded: number };
-    }>(`task complete --refs @${task1.task._ulid} @${task2.task._ulid} @${task3.task._ulid} --reason "Batch completed"`, tempDir);
+    }>(
+      `task complete --refs @${task1.task._ulid} @${task2.task._ulid} @${task3.task._ulid} --reason "Batch completed"`,
+      tempDir,
+    );
 
     expect(result.success).toBe(true);
     expect(result.summary.total).toBe(3);
@@ -2973,15 +3145,15 @@ describe('Integration: Batch operations', () => {
   });
 
   // Test task cancel batch
-  it('should batch cancel multiple tasks', () => {
+  it("should batch cancel multiple tasks", () => {
     // Create and start two tasks
     const task1 = kspecJson<{ task: { _ulid: string } }>(
       'task add --title "Cancel 1" --priority 3',
-      tempDir
+      tempDir,
     );
     const task2 = kspecJson<{ task: { _ulid: string } }>(
       'task add --title "Cancel 2" --priority 3',
-      tempDir
+      tempDir,
     );
 
     kspec(`task start @${task1.task._ulid}`, tempDir);
@@ -2999,26 +3171,29 @@ describe('Integration: Batch operations', () => {
   });
 
   // Test task delete batch
-  it('should batch delete multiple tasks', () => {
+  it("should batch delete multiple tasks", () => {
     // Create three tasks
     const task1 = kspecJson<{ task: { _ulid: string } }>(
       'task add --title "Delete 1" --priority 3',
-      tempDir
+      tempDir,
     );
     const task2 = kspecJson<{ task: { _ulid: string } }>(
       'task add --title "Delete 2" --priority 3',
-      tempDir
+      tempDir,
     );
     const task3 = kspecJson<{ task: { _ulid: string } }>(
       'task add --title "Delete 3" --priority 3',
-      tempDir
+      tempDir,
     );
 
     // Batch delete (requires --force)
     const result = kspecJson<{
       success: boolean;
       summary: { total: number; succeeded: number };
-    }>(`task delete --refs @${task1.task._ulid} @${task2.task._ulid} @${task3.task._ulid} --force`, tempDir);
+    }>(
+      `task delete --refs @${task1.task._ulid} @${task2.task._ulid} @${task3.task._ulid} --force`,
+      tempDir,
+    );
 
     expect(result.success).toBe(true);
     expect(result.summary.total).toBe(3);

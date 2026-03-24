@@ -18,7 +18,6 @@ import {
   appendEvent,
   getSession,
   getSessionLogSummary,
-  getSessionLogDetail,
   type SessionLogSummary,
   type SessionLogDetail,
 } from "../src/sessions/store.js";
@@ -27,13 +26,7 @@ import {
   EventTypeSchema,
   SessionMetadataSchema,
 } from "../src/sessions/types.js";
-import {
-  setupTempFixtures,
-  cleanupTempDir,
-  kspec,
-  kspecJson,
-  testUlid,
-} from "./helpers/cli.js";
+import { setupTempFixtures, cleanupTempDir, kspec, kspecJson, testUlid } from "./helpers/cli.js";
 
 // ─── AC-3: SessionStatusSchema extension ────────────────────────────────────
 
@@ -177,13 +170,16 @@ describe("Legacy session backward compatibility", () => {
     // Write a legacy session.yaml directly (old format, no trigger/agent_id)
     const sessionDir = path.join(testDir, "sessions", sessionId);
     await fs.mkdir(sessionDir, { recursive: true });
-    await fs.writeFile(path.join(sessionDir, "session.yaml"), YAML.stringify({
-      id: sessionId,
-      agent_type: "ralph",
-      status: "completed",
-      started_at: "2026-01-15T10:00:00.000Z",
-      ended_at: "2026-01-15T12:00:00.000Z",
-    }));
+    await fs.writeFile(
+      path.join(sessionDir, "session.yaml"),
+      YAML.stringify({
+        id: sessionId,
+        agent_type: "ralph",
+        status: "completed",
+        started_at: "2026-01-15T10:00:00.000Z",
+        ended_at: "2026-01-15T12:00:00.000Z",
+      }),
+    );
 
     // Should parse without error
     const loaded = await getSession(sessionsDir, sessionId);
@@ -198,13 +194,16 @@ describe("Legacy session backward compatibility", () => {
     const sessionId = testUlid("SESS");
     const sessionDir = path.join(testDir, "sessions", sessionId);
     await fs.mkdir(sessionDir, { recursive: true });
-    await fs.writeFile(path.join(sessionDir, "session.yaml"), YAML.stringify({
-      id: sessionId,
-      agent_type: "ralph",
-      status: "completed",
-      started_at: "2026-01-15T10:00:00.000Z",
-      ended_at: "2026-01-15T12:00:00.000Z",
-    }));
+    await fs.writeFile(
+      path.join(sessionDir, "session.yaml"),
+      YAML.stringify({
+        id: sessionId,
+        agent_type: "ralph",
+        status: "completed",
+        started_at: "2026-01-15T10:00:00.000Z",
+        ended_at: "2026-01-15T12:00:00.000Z",
+      }),
+    );
     await fs.writeFile(path.join(sessionDir, "events.jsonl"), "");
 
     const summary = await getSessionLogSummary(sessionsDir, sessionId);
@@ -217,14 +216,17 @@ describe("Legacy session backward compatibility", () => {
     const sessionId = testUlid("SESS", 1);
     const sessionDir = path.join(testDir, "sessions", sessionId);
     await fs.mkdir(sessionDir, { recursive: true });
-    await fs.writeFile(path.join(sessionDir, "session.yaml"), YAML.stringify({
-      id: sessionId,
-      agent_type: "ralph",
-      trigger: "legacy",
-      status: "completed",
-      started_at: "2026-01-15T10:00:00.000Z",
-      ended_at: "2026-01-15T12:00:00.000Z",
-    }));
+    await fs.writeFile(
+      path.join(sessionDir, "session.yaml"),
+      YAML.stringify({
+        id: sessionId,
+        agent_type: "ralph",
+        trigger: "legacy",
+        status: "completed",
+        started_at: "2026-01-15T10:00:00.000Z",
+        ended_at: "2026-01-15T12:00:00.000Z",
+      }),
+    );
     await fs.writeFile(path.join(sessionDir, "events.jsonl"), "");
 
     const summary = await getSessionLogSummary(sessionsDir, sessionId);
@@ -318,29 +320,35 @@ describe("kspec session log list session type display (CLI)", () => {
     const s1 = testUlid("SESS", 1);
     const s1Dir = path.join(sessionsDir, s1);
     await fs.mkdir(s1Dir);
-    await fs.writeFile(path.join(s1Dir, "session.yaml"), YAML.stringify({
-      id: s1,
-      agent_type: "ralph",
-      status: "completed",
-      started_at: "2026-01-15T10:00:00.000Z",
-      ended_at: "2026-01-15T11:30:00.000Z",
-    }));
+    await fs.writeFile(
+      path.join(s1Dir, "session.yaml"),
+      YAML.stringify({
+        id: s1,
+        agent_type: "ralph",
+        status: "completed",
+        started_at: "2026-01-15T10:00:00.000Z",
+        ended_at: "2026-01-15T11:30:00.000Z",
+      }),
+    );
     await fs.writeFile(path.join(s1Dir, "events.jsonl"), "");
 
     // New invocation session (with trigger = task.ready)
     const s2 = testUlid("SESS", 2);
     const s2Dir = path.join(sessionsDir, s2);
     await fs.mkdir(s2Dir);
-    await fs.writeFile(path.join(s2Dir, "session.yaml"), YAML.stringify({
-      id: s2,
-      agent_type: "claude-agent-acp",
-      agent_id: "@agent-worker",
-      trigger: "task.ready",
-      task_id: "@my-task",
-      status: "completed",
-      started_at: "2026-02-10T10:00:00.000Z",
-      ended_at: "2026-02-10T11:00:00.000Z",
-    }));
+    await fs.writeFile(
+      path.join(s2Dir, "session.yaml"),
+      YAML.stringify({
+        id: s2,
+        agent_type: "claude-agent-acp",
+        agent_id: "@agent-worker",
+        trigger: "task.ready",
+        task_id: "@my-task",
+        status: "completed",
+        started_at: "2026-02-10T10:00:00.000Z",
+        ended_at: "2026-02-10T11:00:00.000Z",
+      }),
+    );
     await fs.writeFile(path.join(s2Dir, "events.jsonl"), "");
   });
 
@@ -386,22 +394,43 @@ describe("kspec session log show agent.* event rendering (CLI)", () => {
 
     const sDir = path.join(sessionsDir, sessionId);
     await fs.mkdir(sDir);
-    await fs.writeFile(path.join(sDir, "session.yaml"), YAML.stringify({
-      id: sessionId,
-      agent_type: "claude-agent-acp",
-      agent_id: "@agent-worker",
-      trigger: "task.ready",
-      task_id: "@my-task",
-      status: "completed",
-      started_at: "2026-02-10T10:00:00.000Z",
-      ended_at: "2026-02-10T11:00:00.000Z",
-    }));
+    await fs.writeFile(
+      path.join(sDir, "session.yaml"),
+      YAML.stringify({
+        id: sessionId,
+        agent_type: "claude-agent-acp",
+        agent_id: "@agent-worker",
+        trigger: "task.ready",
+        task_id: "@my-task",
+        status: "completed",
+        started_at: "2026-02-10T10:00:00.000Z",
+        ended_at: "2026-02-10T11:00:00.000Z",
+      }),
+    );
 
     // Write events including agent.* types
     const events = [
-      JSON.stringify({ ts: 1000, seq: 0, type: "agent.dispatched", session_id: sessionId, data: { task_id: "@my-task" } }),
-      JSON.stringify({ ts: 2000, seq: 1, type: "agent.started", session_id: sessionId, data: { task_id: "@my-task" } }),
-      JSON.stringify({ ts: 5000, seq: 2, type: "agent.completed", session_id: sessionId, data: { task_id: "@my-task", outcome: "success", duration_ms: 3000 } }),
+      JSON.stringify({
+        ts: 1000,
+        seq: 0,
+        type: "agent.dispatched",
+        session_id: sessionId,
+        data: { task_id: "@my-task" },
+      }),
+      JSON.stringify({
+        ts: 2000,
+        seq: 1,
+        type: "agent.started",
+        session_id: sessionId,
+        data: { task_id: "@my-task" },
+      }),
+      JSON.stringify({
+        ts: 5000,
+        seq: 2,
+        type: "agent.completed",
+        session_id: sessionId,
+        data: { task_id: "@my-task", outcome: "success", duration_ms: 3000 },
+      }),
     ];
     await fs.writeFile(path.join(sDir, "events.jsonl"), events.join("\n") + "\n");
   });
@@ -431,10 +460,9 @@ describe("kspec session log show agent.* event rendering (CLI)", () => {
   });
 
   it("should include agent.* events in JSON output with --events", () => {
-    const detail = kspecJson<SessionLogDetail & { events?: Array<{ type: string; data: Record<string, unknown> }> }>(
-      `session log show ${sessionId} --events`,
-      tempDir,
-    );
+    const detail = kspecJson<
+      SessionLogDetail & { events?: Array<{ type: string; data: Record<string, unknown> }> }
+    >(`session log show ${sessionId} --events`, tempDir);
     expect(detail.events).toBeDefined();
     expect(detail.events!.length).toBe(3);
 

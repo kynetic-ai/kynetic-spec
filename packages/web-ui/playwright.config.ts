@@ -1,12 +1,12 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
-  testDir: './tests/e2e',
+  testDir: "./tests/e2e",
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: 1, // Sequential: each test gets its own ephemeral-port daemon
-  reporter: process.env.CI ? 'github' : 'html',
+  reporter: process.env.CI ? "github" : "html",
   timeout: 30_000,
 
   expect: {
@@ -16,9 +16,9 @@ export default defineConfig({
   use: {
     // No baseURL — each test gets a daemon on an ephemeral port via the daemon fixture
     // Tests use daemon.baseUrl for API calls and page.goto(`${daemon.baseUrl}/...`) for navigation
-    trace: 'on-first-retry',
-    screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
+    trace: "on-first-retry",
+    screenshot: "only-on-failure",
+    video: "retain-on-failure",
     actionTimeout: 10_000,
   },
 
@@ -27,10 +27,10 @@ export default defineConfig({
 
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      name: "chromium",
+      use: { ...devices["Desktop Chrome"] },
     },
   ],
 
-  outputDir: 'test-results',
+  outputDir: "test-results",
 });

@@ -17,12 +17,7 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import * as YAML from "yaml";
-import {
-  kspec,
-  setupTempFixtures,
-  cleanupTempDir,
-  initGitRepo,
-} from "../helpers/cli";
+import { kspec, setupTempFixtures, cleanupTempDir, initGitRepo } from "../helpers/cli";
 
 const SESSION_ID = "01KJ7CCCHNMBABEHHDVEYSPJFR";
 
@@ -57,12 +52,7 @@ async function readTestSession(
   specDir: string,
   sessionId: string,
 ): Promise<Record<string, unknown> | null> {
-  const sessionPath = path.join(
-    specDir,
-    ".kspec-sessions",
-    sessionId,
-    "session.yaml",
-  );
+  const sessionPath = path.join(specDir, ".kspec-sessions", sessionId, "session.yaml");
   try {
     const content = await fs.readFile(sessionPath, "utf-8");
     return YAML.parse(content);
@@ -105,11 +95,9 @@ describe("Session-scoped end-loop signal", () => {
       await createTestSession(tempDir, SESSION_ID);
 
       // AC: @session-end-loop-signal ac-signal
-      const result = kspec(
-        'agent end-loop --reason "No eligible tasks"',
-        tempDir,
-        { env: { KSPEC_SESSION_ID: SESSION_ID } },
-      );
+      const result = kspec('agent end-loop --reason "No eligible tasks"', tempDir, {
+        env: { KSPEC_SESSION_ID: SESSION_ID },
+      });
 
       expect(result.exitCode).toBe(0);
       expect(result.stdout).toContain("Reason: No eligible tasks");
@@ -270,11 +258,9 @@ describe("Session store: requestEndLoop and isEndLoopRequested", () => {
     await createTestSession(tempDir, SESSION_ID);
 
     // Use end-loop command with session
-    const result = kspec(
-      'agent end-loop --reason "Testing"',
-      tempDir,
-      { env: { KSPEC_SESSION_ID: SESSION_ID } },
-    );
+    const result = kspec('agent end-loop --reason "Testing"', tempDir, {
+      env: { KSPEC_SESSION_ID: SESSION_ID },
+    });
     expect(result.exitCode).toBe(0);
 
     // Verify the session YAML was updated

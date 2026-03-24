@@ -1,42 +1,42 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from "vitest";
 import {
   parseCommitMessage,
   parseDiffChanges,
   normalizeTaskActivity,
   type RawTaskCommit,
-} from '../src/utils/activity';
+} from "../src/utils/activity";
 
 // ─── Helpers ───
 
 function makeCommit(overrides: Partial<RawTaskCommit> = {}): RawTaskCommit {
   return {
-    hash: 'abc1234',
-    fullHash: 'abc1234567890abcdef1234567890abcdef123456',
-    timestamp: '2026-03-16T12:00:00Z',
-    author: 'Test User',
-    message: 'Some commit',
-    diff: '',
+    hash: "abc1234",
+    fullHash: "abc1234567890abcdef1234567890abcdef123456",
+    timestamp: "2026-03-16T12:00:00Z",
+    author: "Test User",
+    message: "Some commit",
+    diff: "",
     ...overrides,
   };
 }
 
 // AC: @task-activity-git-query ac-3
-describe('parseCommitMessage — ac-3: parse operation type from commit message', () => {
+describe("parseCommitMessage — ac-3: parse operation type from commit message", () => {
   const cases: Array<[string, string, string]> = [
-    ['Start @task-foo', 'started', 'Task started'],
-    ['Complete @task-foo', 'completed', 'Task completed'],
-    ['Complete @task-foo: Merged to dev.', 'completed', 'Task completed: Merged to dev.'],
-    ['Note on @task-foo', 'note_added', 'Note added'],
-    ['Add task @task-foo: Some title', 'created', 'Task created'],
-    ['task-submit @task-foo', 'submitted', 'Task submitted for review'],
-    ['task-needs-work @task-foo', 'needs_work', 'Task returned for changes'],
-    ['task-block @task-foo', 'blocked', 'Task blocked'],
-    ['task-cancel @task-foo', 'cancelled', 'Task cancelled'],
-    ['task-set @task-foo', 'field_updated', 'Task updated'],
-    ['Update @task-foo', 'field_updated', 'Task updated'],
-    ['batch: 3 commands', 'field_updated', 'batch: 3 commands'],
-    ['batch: 1 command', 'field_updated', 'batch: 1 command'],
-    ['spec-sync @01ABC', 'field_updated', 'Spec sync'],
+    ["Start @task-foo", "started", "Task started"],
+    ["Complete @task-foo", "completed", "Task completed"],
+    ["Complete @task-foo: Merged to dev.", "completed", "Task completed: Merged to dev."],
+    ["Note on @task-foo", "note_added", "Note added"],
+    ["Add task @task-foo: Some title", "created", "Task created"],
+    ["task-submit @task-foo", "submitted", "Task submitted for review"],
+    ["task-needs-work @task-foo", "needs_work", "Task returned for changes"],
+    ["task-block @task-foo", "blocked", "Task blocked"],
+    ["task-cancel @task-foo", "cancelled", "Task cancelled"],
+    ["task-set @task-foo", "field_updated", "Task updated"],
+    ["Update @task-foo", "field_updated", "Task updated"],
+    ["batch: 3 commands", "field_updated", "batch: 3 commands"],
+    ["batch: 1 command", "field_updated", "batch: 1 command"],
+    ["spec-sync @01ABC", "field_updated", "Spec sync"],
   ];
 
   it.each(cases)('"%s" → type=%s, summary="%s"', (message, expectedType, expectedSummary) => {
@@ -46,342 +46,340 @@ describe('parseCommitMessage — ac-3: parse operation type from commit message'
   });
 
   it('returns "unknown" for unrecognized messages', () => {
-    const result = parseCommitMessage('some random message');
-    expect(result.type).toBe('unknown');
-    expect(result.summary).toBe('some random message');
+    const result = parseCommitMessage("some random message");
+    expect(result.type).toBe("unknown");
+    expect(result.summary).toBe("some random message");
   });
 });
 
 // AC: @task-activity-git-query ac-4
-describe('parseDiffChanges — ac-4: extract field-level changes from diff', () => {
-  it('detects status field change', () => {
+describe("parseDiffChanges — ac-4: extract field-level changes from diff", () => {
+  it("detects status field change", () => {
     const diff = [
-      'diff --git a/project.tasks.yaml b/project.tasks.yaml',
-      '--- a/project.tasks.yaml',
-      '+++ b/project.tasks.yaml',
-      '@@ -1,3 +1,3 @@',
-      ' - _ulid: 01ABC',
-      '-  status: pending',
-      '+  status: in_progress',
-      '   title: Test Task',
-    ].join('\n');
+      "diff --git a/project.tasks.yaml b/project.tasks.yaml",
+      "--- a/project.tasks.yaml",
+      "+++ b/project.tasks.yaml",
+      "@@ -1,3 +1,3 @@",
+      " - _ulid: 01ABC",
+      "-  status: pending",
+      "+  status: in_progress",
+      "   title: Test Task",
+    ].join("\n");
 
     const changes = parseDiffChanges(diff);
     expect(changes).toContainEqual({
-      field: 'status',
-      oldValue: 'pending',
-      newValue: 'in_progress',
+      field: "status",
+      oldValue: "pending",
+      newValue: "in_progress",
     });
   });
 
-  it('detects new note added', () => {
+  it("detects new note added", () => {
     const diff = [
-      'diff --git a/project.tasks.yaml b/project.tasks.yaml',
-      '@@ -3,2 +3,8 @@',
-      '   title: Test Task',
-      '+  notes:',
-      '+    - _ulid: 01NOTE000000000000000000',
-      '+      content: My note content',
+      "diff --git a/project.tasks.yaml b/project.tasks.yaml",
+      "@@ -3,2 +3,8 @@",
+      "   title: Test Task",
+      "+  notes:",
+      "+    - _ulid: 01NOTE000000000000000000",
+      "+      content: My note content",
       '+      author: "@claude"',
-    ].join('\n');
+    ].join("\n");
 
     const changes = parseDiffChanges(diff);
-    expect(changes.some(c => c.field === 'notes')).toBe(true);
+    expect(changes.some((c) => c.field === "notes")).toBe(true);
   });
 
-  it('detects review_ref linkage', () => {
+  it("detects review_ref linkage", () => {
     const diff = [
-      'diff --git a/project.tasks.yaml b/project.tasks.yaml',
-      '@@ -1,3 +1,4 @@',
-      ' - _ulid: 01ABC',
-      '   status: pending_review',
-      '-  review_ref: null',
+      "diff --git a/project.tasks.yaml b/project.tasks.yaml",
+      "@@ -1,3 +1,4 @@",
+      " - _ulid: 01ABC",
+      "   status: pending_review",
+      "-  review_ref: null",
       '+  review_ref: "@01REVIEW"',
-    ].join('\n');
+    ].join("\n");
 
     const changes = parseDiffChanges(diff);
     expect(changes).toContainEqual({
-      field: 'review_ref',
-      oldValue: 'null',
+      field: "review_ref",
+      oldValue: "null",
       newValue: '"@01REVIEW"',
     });
   });
 
-  it('detects priority change', () => {
+  it("detects priority change", () => {
     const diff = [
-      'diff --git a/project.tasks.yaml b/project.tasks.yaml',
-      '@@ -1,3 +1,3 @@',
-      ' - _ulid: 01ABC',
-      '-  priority: 3',
-      '+  priority: 1',
-    ].join('\n');
+      "diff --git a/project.tasks.yaml b/project.tasks.yaml",
+      "@@ -1,3 +1,3 @@",
+      " - _ulid: 01ABC",
+      "-  priority: 3",
+      "+  priority: 1",
+    ].join("\n");
 
     const changes = parseDiffChanges(diff);
     expect(changes).toContainEqual({
-      field: 'priority',
-      oldValue: '3',
-      newValue: '1',
+      field: "priority",
+      oldValue: "3",
+      newValue: "1",
     });
   });
 
-  it('detects new field added (not previously present)', () => {
+  it("detects new field added (not previously present)", () => {
     const diff = [
-      'diff --git a/project.tasks.yaml b/project.tasks.yaml',
-      '@@ -1,3 +1,4 @@',
-      ' - _ulid: 01ABC',
-      '   status: pending',
-      '+  started_at: 2026-03-16T12:00:00Z',
-    ].join('\n');
+      "diff --git a/project.tasks.yaml b/project.tasks.yaml",
+      "@@ -1,3 +1,4 @@",
+      " - _ulid: 01ABC",
+      "   status: pending",
+      "+  started_at: 2026-03-16T12:00:00Z",
+    ].join("\n");
 
     const changes = parseDiffChanges(diff);
     expect(changes).toContainEqual({
-      field: 'started_at',
-      newValue: '2026-03-16T12:00:00Z',
+      field: "started_at",
+      newValue: "2026-03-16T12:00:00Z",
     });
   });
 
-  it('returns empty for empty diff', () => {
-    expect(parseDiffChanges('')).toEqual([]);
+  it("returns empty for empty diff", () => {
+    expect(parseDiffChanges("")).toEqual([]);
   });
 
-  it('handles multiple field changes in one diff', () => {
+  it("handles multiple field changes in one diff", () => {
     const diff = [
-      'diff --git a/project.tasks.yaml b/project.tasks.yaml',
-      '@@ -1,5 +1,5 @@',
-      ' - _ulid: 01ABC',
-      '-  status: pending',
-      '+  status: in_progress',
-      '-  priority: 3',
-      '+  priority: 1',
-      '   title: Test',
-    ].join('\n');
+      "diff --git a/project.tasks.yaml b/project.tasks.yaml",
+      "@@ -1,5 +1,5 @@",
+      " - _ulid: 01ABC",
+      "-  status: pending",
+      "+  status: in_progress",
+      "-  priority: 3",
+      "+  priority: 1",
+      "   title: Test",
+    ].join("\n");
 
     const changes = parseDiffChanges(diff);
     expect(changes.length).toBe(2);
-    expect(changes.map(c => c.field).sort()).toEqual(['priority', 'status']);
+    expect(changes.map((c) => c.field).toSorted()).toEqual(["priority", "status"]);
   });
 
   // AC: @task-activity-git-query ac-4
-  it('detects submission_linkage map added (null → map)', () => {
+  it("detects submission_linkage map added (null → map)", () => {
     const diff = [
-      'diff --git a/project.tasks.yaml b/project.tasks.yaml',
-      '@@ -5,3 +5,8 @@',
-      '   status: pending_review',
-      '-  submission_linkage: null',
-      '+  submission_linkage:',
-      '+    branch: dispatch/task/foo/01abc',
-      '+    commit: abc1234567890',
-      '+    remote: origin',
-      '+    captured_at: 2026-03-16T12:00:00Z',
-    ].join('\n');
+      "diff --git a/project.tasks.yaml b/project.tasks.yaml",
+      "@@ -5,3 +5,8 @@",
+      "   status: pending_review",
+      "-  submission_linkage: null",
+      "+  submission_linkage:",
+      "+    branch: dispatch/task/foo/01abc",
+      "+    commit: abc1234567890",
+      "+    remote: origin",
+      "+    captured_at: 2026-03-16T12:00:00Z",
+    ].join("\n");
 
     const changes = parseDiffChanges(diff);
     // Should produce a single submission_linkage change, not individual child fields
     expect(changes).toContainEqual({
-      field: 'submission_linkage',
-      oldValue: 'null',
-      newValue: '(map)',
+      field: "submission_linkage",
+      oldValue: "null",
+      newValue: "(map)",
     });
     // Child fields should NOT appear as top-level changes
-    expect(changes.find(c => c.field === 'branch')).toBeUndefined();
-    expect(changes.find(c => c.field === 'commit')).toBeUndefined();
-    expect(changes.find(c => c.field === 'remote')).toBeUndefined();
-    expect(changes.find(c => c.field === 'captured_at')).toBeUndefined();
+    expect(changes.find((c) => c.field === "branch")).toBeUndefined();
+    expect(changes.find((c) => c.field === "commit")).toBeUndefined();
+    expect(changes.find((c) => c.field === "remote")).toBeUndefined();
+    expect(changes.find((c) => c.field === "captured_at")).toBeUndefined();
   });
 
   // AC: @task-activity-git-query ac-4
-  it('detects submission_linkage map removed (map → null)', () => {
+  it("detects submission_linkage map removed (map → null)", () => {
     const diff = [
-      'diff --git a/project.tasks.yaml b/project.tasks.yaml',
-      '@@ -5,8 +5,3 @@',
-      '   status: in_progress',
-      '-  submission_linkage:',
-      '-    branch: dispatch/task/foo/01abc',
-      '-    commit: abc1234567890',
-      '-    remote: origin',
-      '-    captured_at: 2026-03-16T12:00:00Z',
-      '+  submission_linkage: null',
-    ].join('\n');
+      "diff --git a/project.tasks.yaml b/project.tasks.yaml",
+      "@@ -5,8 +5,3 @@",
+      "   status: in_progress",
+      "-  submission_linkage:",
+      "-    branch: dispatch/task/foo/01abc",
+      "-    commit: abc1234567890",
+      "-    remote: origin",
+      "-    captured_at: 2026-03-16T12:00:00Z",
+      "+  submission_linkage: null",
+    ].join("\n");
 
     const changes = parseDiffChanges(diff);
     expect(changes).toContainEqual({
-      field: 'submission_linkage',
-      oldValue: '(map)',
-      newValue: 'null',
+      field: "submission_linkage",
+      oldValue: "(map)",
+      newValue: "null",
     });
-    expect(changes.find(c => c.field === 'branch')).toBeUndefined();
-    expect(changes.find(c => c.field === 'commit')).toBeUndefined();
+    expect(changes.find((c) => c.field === "branch")).toBeUndefined();
+    expect(changes.find((c) => c.field === "commit")).toBeUndefined();
   });
 
   // AC: @task-activity-git-query ac-4
-  it('detects submission_linkage map added where field was absent', () => {
+  it("detects submission_linkage map added where field was absent", () => {
     const diff = [
-      'diff --git a/project.tasks.yaml b/project.tasks.yaml',
-      '@@ -5,2 +5,7 @@',
-      '   status: pending_review',
-      '+  submission_linkage:',
-      '+    branch: dispatch/task/foo/01abc',
-      '+    commit: abc1234567890',
-      '+    captured_at: 2026-03-16T12:00:00Z',
-    ].join('\n');
+      "diff --git a/project.tasks.yaml b/project.tasks.yaml",
+      "@@ -5,2 +5,7 @@",
+      "   status: pending_review",
+      "+  submission_linkage:",
+      "+    branch: dispatch/task/foo/01abc",
+      "+    commit: abc1234567890",
+      "+    captured_at: 2026-03-16T12:00:00Z",
+    ].join("\n");
 
     const changes = parseDiffChanges(diff);
     expect(changes).toContainEqual({
-      field: 'submission_linkage',
-      newValue: '(map)',
+      field: "submission_linkage",
+      newValue: "(map)",
     });
-    expect(changes.find(c => c.field === 'branch')).toBeUndefined();
+    expect(changes.find((c) => c.field === "branch")).toBeUndefined();
   });
 
   // AC: @task-activity-git-query ac-4
-  it('handles scalar fields alongside map fields in same diff', () => {
+  it("handles scalar fields alongside map fields in same diff", () => {
     const diff = [
-      'diff --git a/project.tasks.yaml b/project.tasks.yaml',
-      '@@ -5,5 +5,10 @@',
-      '-  status: in_progress',
-      '+  status: pending_review',
-      '-  submission_linkage: null',
-      '+  submission_linkage:',
-      '+    branch: dispatch/task/foo/01abc',
-      '+    commit: abc1234567890',
-      '+    captured_at: 2026-03-16T12:00:00Z',
-      '   title: Test Task',
-    ].join('\n');
+      "diff --git a/project.tasks.yaml b/project.tasks.yaml",
+      "@@ -5,5 +5,10 @@",
+      "-  status: in_progress",
+      "+  status: pending_review",
+      "-  submission_linkage: null",
+      "+  submission_linkage:",
+      "+    branch: dispatch/task/foo/01abc",
+      "+    commit: abc1234567890",
+      "+    captured_at: 2026-03-16T12:00:00Z",
+      "   title: Test Task",
+    ].join("\n");
 
     const changes = parseDiffChanges(diff);
     // Both scalar change and map change should be detected
-    expect(changes.find(c => c.field === 'status')).toBeDefined();
-    expect(changes.find(c => c.field === 'submission_linkage')).toBeDefined();
+    expect(changes.find((c) => c.field === "status")).toBeDefined();
+    expect(changes.find((c) => c.field === "submission_linkage")).toBeDefined();
     // No child fields leaked
-    expect(changes.find(c => c.field === 'branch')).toBeUndefined();
-    expect(changes.find(c => c.field === 'commit')).toBeUndefined();
+    expect(changes.find((c) => c.field === "branch")).toBeUndefined();
+    expect(changes.find((c) => c.field === "commit")).toBeUndefined();
   });
 });
 
 // AC: @task-activity-git-query ac-3, ac-4
-describe('normalizeTaskActivity — integration', () => {
-  it('uses diff-based detection when diff has field changes', () => {
+describe("normalizeTaskActivity — integration", () => {
+  it("uses diff-based detection when diff has field changes", () => {
     const diff = [
-      'diff --git a/project.tasks.yaml b/project.tasks.yaml',
-      '@@ -1,3 +1,3 @@',
-      ' - _ulid: 01ABC',
-      '-  status: pending',
-      '+  status: in_progress',
-    ].join('\n');
+      "diff --git a/project.tasks.yaml b/project.tasks.yaml",
+      "@@ -1,3 +1,3 @@",
+      " - _ulid: 01ABC",
+      "-  status: pending",
+      "+  status: in_progress",
+    ].join("\n");
 
-    const commits = [makeCommit({ message: 'Start @task-foo', diff })];
+    const commits = [makeCommit({ message: "Start @task-foo", diff })];
     const entries = normalizeTaskActivity(commits);
 
     expect(entries).toHaveLength(1);
-    expect(entries[0].type).toBe('state_change');
-    expect(entries[0].detail?.from).toBe('pending');
-    expect(entries[0].detail?.to).toBe('in_progress');
+    expect(entries[0].type).toBe("state_change");
+    expect(entries[0].detail?.from).toBe("pending");
+    expect(entries[0].detail?.to).toBe("in_progress");
   });
 
-  it('falls back to commit message when diff is empty', () => {
-    const commits = [makeCommit({ message: 'Start @task-foo', diff: '' })];
+  it("falls back to commit message when diff is empty", () => {
+    const commits = [makeCommit({ message: "Start @task-foo", diff: "" })];
     const entries = normalizeTaskActivity(commits);
 
     expect(entries).toHaveLength(1);
-    expect(entries[0].type).toBe('started');
-    expect(entries[0].summary).toBe('Task started');
+    expect(entries[0].type).toBe("started");
+    expect(entries[0].summary).toBe("Task started");
   });
 
-  it('falls back to commit message when diff has no parseable changes', () => {
+  it("falls back to commit message when diff has no parseable changes", () => {
     // Diff with only context lines (no +/- changes to scalar fields)
     const diff = [
-      'diff --git a/project.tasks.yaml b/project.tasks.yaml',
-      '@@ -1,3 +1,3 @@',
-      '  - _ulid: 01ABC',
-      '    status: pending',
-    ].join('\n');
+      "diff --git a/project.tasks.yaml b/project.tasks.yaml",
+      "@@ -1,3 +1,3 @@",
+      "  - _ulid: 01ABC",
+      "    status: pending",
+    ].join("\n");
 
-    const commits = [makeCommit({ message: 'Note on @task-foo', diff })];
+    const commits = [makeCommit({ message: "Note on @task-foo", diff })];
     const entries = normalizeTaskActivity(commits);
 
     expect(entries).toHaveLength(1);
-    expect(entries[0].type).toBe('note_added');
+    expect(entries[0].type).toBe("note_added");
   });
 
-  it('produces multiple entries for multi-field changes in one commit', () => {
+  it("produces multiple entries for multi-field changes in one commit", () => {
     const diff = [
-      'diff --git a/project.tasks.yaml b/project.tasks.yaml',
-      '@@ -1,5 +1,5 @@',
-      ' - _ulid: 01ABC',
-      '-  status: pending',
-      '+  status: in_progress',
-      '-  priority: 3',
-      '+  priority: 1',
-    ].join('\n');
+      "diff --git a/project.tasks.yaml b/project.tasks.yaml",
+      "@@ -1,5 +1,5 @@",
+      " - _ulid: 01ABC",
+      "-  status: pending",
+      "+  status: in_progress",
+      "-  priority: 3",
+      "+  priority: 1",
+    ].join("\n");
 
-    const commits = [makeCommit({ message: 'task-set @task-foo', diff })];
+    const commits = [makeCommit({ message: "task-set @task-foo", diff })];
     const entries = normalizeTaskActivity(commits);
 
     expect(entries.length).toBe(2);
-    const types = entries.map(e => e.type);
-    expect(types).toContain('state_change');
-    expect(types).toContain('field_updated');
+    const types = entries.map((e) => e.type);
+    expect(types).toContain("state_change");
+    expect(types).toContain("field_updated");
   });
 
-  it('returns chronological order (oldest first)', () => {
+  it("returns chronological order (oldest first)", () => {
     const commits = [
       makeCommit({
-        message: 'Start @task-foo',
-        timestamp: '2026-03-16T14:00:00Z',
-        hash: 'newer01',
+        message: "Start @task-foo",
+        timestamp: "2026-03-16T14:00:00Z",
+        hash: "newer01",
       }),
       makeCommit({
-        message: 'Add task @task-foo: Title',
-        timestamp: '2026-03-16T12:00:00Z',
-        hash: 'older01',
+        message: "Add task @task-foo: Title",
+        timestamp: "2026-03-16T12:00:00Z",
+        hash: "older01",
       }),
     ];
 
     const entries = normalizeTaskActivity(commits);
 
     // Input is newest-first (git log order), output should be oldest-first
-    expect(entries[0].commitHash).toBe('older01');
-    expect(entries[1].commitHash).toBe('newer01');
+    expect(entries[0].commitHash).toBe("older01");
+    expect(entries[1].commitHash).toBe("newer01");
   });
 
-  it('preserves commit hash on all entries', () => {
-    const commits = [
-      makeCommit({ hash: 'aaa1111', message: 'Start @task-foo' }),
-    ];
+  it("preserves commit hash on all entries", () => {
+    const commits = [makeCommit({ hash: "aaa1111", message: "Start @task-foo" })];
     const entries = normalizeTaskActivity(commits);
 
-    expect(entries[0].commitHash).toBe('aaa1111');
+    expect(entries[0].commitHash).toBe("aaa1111");
   });
 
-  it('handles review_ref change in diff', () => {
+  it("handles review_ref change in diff", () => {
     const diff = [
-      'diff --git a/project.tasks.yaml b/project.tasks.yaml',
-      '@@ -1,4 +1,4 @@',
-      ' - _ulid: 01ABC',
-      '   status: pending_review',
-      '-  review_ref: null',
+      "diff --git a/project.tasks.yaml b/project.tasks.yaml",
+      "@@ -1,4 +1,4 @@",
+      " - _ulid: 01ABC",
+      "   status: pending_review",
+      "-  review_ref: null",
       '+  review_ref: "@01REVIEWREF"',
-    ].join('\n');
+    ].join("\n");
 
-    const commits = [makeCommit({ message: 'review-task-link @01REVIEW', diff })];
+    const commits = [makeCommit({ message: "review-task-link @01REVIEW", diff })];
     const entries = normalizeTaskActivity(commits);
 
-    expect(entries.some(e => e.type === 'review_linked')).toBe(true);
+    expect(entries.some((e) => e.type === "review_linked")).toBe(true);
   });
 
-  it('handles creation commit (all adds, no removes)', () => {
+  it("handles creation commit (all adds, no removes)", () => {
     const diff = [
-      'diff --git a/project.tasks.yaml b/project.tasks.yaml',
-      '--- /dev/null',
-      '+++ b/project.tasks.yaml',
-      '@@ -0,0 +1,5 @@',
-      '+- _ulid: 01ABC',
-      '+  title: New Task',
-      '+  status: pending',
-      '+  priority: 2',
-    ].join('\n');
+      "diff --git a/project.tasks.yaml b/project.tasks.yaml",
+      "--- /dev/null",
+      "+++ b/project.tasks.yaml",
+      "@@ -0,0 +1,5 @@",
+      "+- _ulid: 01ABC",
+      "+  title: New Task",
+      "+  status: pending",
+      "+  priority: 2",
+    ].join("\n");
 
-    const commits = [makeCommit({ message: 'Add task @task-foo: New Task', diff })];
+    const commits = [makeCommit({ message: "Add task @task-foo: New Task", diff })];
     const entries = normalizeTaskActivity(commits);
 
     // Creation has new fields but no old values — should produce entries or fall back
@@ -391,27 +389,31 @@ describe('normalizeTaskActivity — integration', () => {
   // AC: @task-activity-git-query ac-4
   it('produces "submitted" entry for submission_linkage map change', () => {
     const diff = [
-      'diff --git a/project.tasks.yaml b/project.tasks.yaml',
-      '@@ -5,3 +5,8 @@',
-      '-  status: in_progress',
-      '+  status: pending_review',
-      '-  submission_linkage: null',
-      '+  submission_linkage:',
-      '+    branch: dispatch/task/foo/01abc',
-      '+    commit: abc1234567890',
-      '+    remote: origin',
-      '+    captured_at: 2026-03-16T12:00:00Z',
-    ].join('\n');
+      "diff --git a/project.tasks.yaml b/project.tasks.yaml",
+      "@@ -5,3 +5,8 @@",
+      "-  status: in_progress",
+      "+  status: pending_review",
+      "-  submission_linkage: null",
+      "+  submission_linkage:",
+      "+    branch: dispatch/task/foo/01abc",
+      "+    commit: abc1234567890",
+      "+    remote: origin",
+      "+    captured_at: 2026-03-16T12:00:00Z",
+    ].join("\n");
 
-    const commits = [makeCommit({ message: 'task-submit @task-foo', diff })];
+    const commits = [makeCommit({ message: "task-submit @task-foo", diff })];
     const entries = normalizeTaskActivity(commits);
 
-    const types = entries.map(e => e.type);
-    expect(types).toContain('state_change');
-    expect(types).toContain('submitted');
+    const types = entries.map((e) => e.type);
+    expect(types).toContain("state_change");
+    expect(types).toContain("submitted");
     // submission_linkage produces "submitted", not spurious "field_updated" for child fields
-    expect(entries.find(e => e.summary === 'Submission linkage captured')).toBeDefined();
-    expect(entries.find(e => e.type === 'field_updated' && e.detail?.field === 'branch')).toBeUndefined();
-    expect(entries.find(e => e.type === 'field_updated' && e.detail?.field === 'commit')).toBeUndefined();
+    expect(entries.find((e) => e.summary === "Submission linkage captured")).toBeDefined();
+    expect(
+      entries.find((e) => e.type === "field_updated" && e.detail?.field === "branch"),
+    ).toBeUndefined();
+    expect(
+      entries.find((e) => e.type === "field_updated" && e.detail?.field === "commit"),
+    ).toBeUndefined();
   });
 });

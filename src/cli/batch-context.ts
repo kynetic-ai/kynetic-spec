@@ -77,11 +77,7 @@ export class OutputCapture {
     this._origWarn = console.warn;
 
     const capture = (...args: unknown[]) => {
-      this._lines.push(
-        args
-          .map((a) => (typeof a === "string" ? a : JSON.stringify(a)))
-          .join(" "),
-      );
+      this._lines.push(args.map((a) => (typeof a === "string" ? a : JSON.stringify(a))).join(" "));
     };
 
     console.log = capture;

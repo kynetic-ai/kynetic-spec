@@ -2,11 +2,7 @@ import { execSync } from "node:child_process";
 import * as path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { resolveProjectRoots } from "../../src/parser/shadow.js";
-import {
-  cleanupTempDir,
-  createTempDir,
-  initGitRepo,
-} from "../helpers/cli.js";
+import { cleanupTempDir, createTempDir, initGitRepo } from "../helpers/cli.js";
 
 const cleanupDirs: string[] = [];
 

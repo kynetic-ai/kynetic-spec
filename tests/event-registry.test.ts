@@ -21,19 +21,13 @@ import {
   extractEventDomain,
   validateEventType,
   getEventRegistryEntry,
-  type EventDomain,
-  type DispatchEventType,
 } from "../src/schema/event-registry.js";
 import {
   AgentDispatchEventSchema,
   AgentDispatchRuleSchema,
   MetaManifestSchema,
 } from "../src/schema/meta.js";
-import {
-  HookEventTypeSchema,
-  HookSchema,
-  PAYLOAD_FIELDS_BY_EVENT,
-} from "../src/schema/hooks.js";
+import { HookEventTypeSchema, HookSchema, PAYLOAD_FIELDS_BY_EVENT } from "../src/schema/hooks.js";
 import { SessionTriggerSchema } from "../src/sessions/types.js";
 import { EventBus } from "../src/agent-runtime/event-bus.js";
 import { testUlid } from "./helpers/cli.js";
@@ -449,7 +443,12 @@ describe("Event Registry structure", () => {
 
 describe("SessionTriggerSchema expansion", () => {
   it("should accept new invocation event triggers", () => {
-    for (const event of ["invocation.started", "invocation.completed", "invocation.failed", "invocation.stalled"]) {
+    for (const event of [
+      "invocation.started",
+      "invocation.completed",
+      "invocation.failed",
+      "invocation.stalled",
+    ]) {
       const result = SessionTriggerSchema.safeParse(event);
       expect(result.success).toBe(true);
     }

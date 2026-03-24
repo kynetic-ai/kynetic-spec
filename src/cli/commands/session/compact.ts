@@ -5,9 +5,7 @@
  * oversized-payload externalization pipeline used by appendEvent().
  */
 
-import {
-  initContext,
-} from "../../../parser/index.js";
+import { initContext } from "../../../parser/index.js";
 import { commitIfShadow } from "../../../parser/shadow.js";
 import {
   compactSessionEvents,
@@ -44,10 +42,7 @@ interface SessionCompactionEntry {
   error?: string;
 }
 
-function toEntry(
-  sessionId: string,
-  result: CompactSessionEventsResult,
-): SessionCompactionEntry {
+function toEntry(sessionId: string, result: CompactSessionEventsResult): SessionCompactionEntry {
   return {
     session_id: sessionId,
     status: result.reason,
@@ -251,7 +246,9 @@ export async function sessionCompactAction(
         console.log(`Status:  ${e.status}`);
         console.log(`Events:  ${e.events_processed}`);
         console.log(`Blobs:   ${e.blobs_created}`);
-        console.log(`Bytes:   ${e.bytes_before.toLocaleString()} -> ${e.bytes_after.toLocaleString()}`);
+        console.log(
+          `Bytes:   ${e.bytes_before.toLocaleString()} -> ${e.bytes_after.toLocaleString()}`,
+        );
         console.log(`Saved:   ${e.bytes_reclaimed.toLocaleString()} bytes`);
       }
     });

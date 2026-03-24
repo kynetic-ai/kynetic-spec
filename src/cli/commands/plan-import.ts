@@ -20,11 +20,7 @@ import {
   type LoadedSpecItem,
 } from "../../parser/index.js";
 import { commitIfShadow } from "../../parser/shadow.js";
-import {
-  type Note,
-  type PlanInput,
-  PlanStatusSchema,
-} from "../../schema/index.js";
+import { type Note, type PlanInput, PlanStatusSchema } from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, isJsonMode, output, success, warn } from "../output.js";
@@ -113,7 +109,9 @@ async function importPlan(planPath: string, options: ImportOptions): Promise<voi
   }
 
   if (options.update) {
-    warn("--update is ignored for content-only import. Use `kspec plan derive` to materialize specs and tasks.");
+    warn(
+      "--update is ignored for content-only import. Use `kspec plan derive` to materialize specs and tasks.",
+    );
   }
 
   const statusResult = PlanStatusSchema.safeParse(options.status || "draft");
@@ -141,9 +139,7 @@ async function importPlan(planPath: string, options: ImportOptions): Promise<voi
       process.exit(EXIT_CODES.USAGE_ERROR);
     }
 
-    storedModuleRef = options.module.startsWith("@")
-      ? options.module
-      : `@${options.module}`;
+    storedModuleRef = options.module.startsWith("@") ? options.module : `@${options.module}`;
   }
 
   const title = extractOptionalPlanTitle(content) ?? "Untitled Plan";
@@ -185,7 +181,12 @@ async function saveImportedPlan(
   preview: ImportPreview,
 ): Promise<void> {
   await savePlan(ctx, plan);
-  await commitIfShadow(ctx.shadow, "plan-import", plan.slugs[0] || plan._ulid.slice(0, 8), plan.title);
+  await commitIfShadow(
+    ctx.shadow,
+    "plan-import",
+    plan.slugs[0] || plan._ulid.slice(0, 8),
+    plan.title,
+  );
   emitImportResult(
     {
       ...preview,

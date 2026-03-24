@@ -98,8 +98,7 @@ export function getRecentCommits(options: {
       .map((record) => record.trim())
       .filter(Boolean)
       .map((record) => {
-        const [fullHash, dateStr, message, author, ...bodyParts] =
-          record.split("\x00");
+        const [fullHash, dateStr, message, author, ...bodyParts] = record.split("\x00");
         const body = bodyParts.join("\x00").trim();
 
         // Parse Task: @slug trailers from body (anchored to line start per git trailer convention)
@@ -201,27 +200,21 @@ export function getWorkingTreeStatus(cwd?: string): GitWorkingTree {
 export function getDiffSince(since: Date, cwd?: string): string | null {
   try {
     // Get the commit hash at the given time
-    const sinceCommit = execSync(
-      `git log --format="%H" --before="${since.toISOString()}" -n 1`,
-      {
-        cwd,
-        encoding: "utf-8",
-        stdio: ["pipe", "pipe", "ignore"],
-      },
-    ).trim();
+    const sinceCommit = execSync(`git log --format="%H" --before="${since.toISOString()}" -n 1`, {
+      cwd,
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "ignore"],
+    }).trim();
 
     if (!sinceCommit) {
       // No commit before this time, diff from the beginning
       // Using Git's magic empty tree hash - this is the hash of an empty tree object
       // that exists conceptually in every Git repo (commonly used for initial diffs)
-      const diff = execSync(
-        "git diff 4b825dc642cb6eb9a060e54bf8d69288fbee4904..HEAD",
-        {
-          cwd,
-          encoding: "utf-8",
-          stdio: ["pipe", "pipe", "ignore"],
-        },
-      ).trim();
+      const diff = execSync("git diff 4b825dc642cb6eb9a060e54bf8d69288fbee4904..HEAD", {
+        cwd,
+        encoding: "utf-8",
+        stdio: ["pipe", "pipe", "ignore"],
+      }).trim();
 
       return diff || null;
     }
@@ -241,9 +234,7 @@ export function getDiffSince(since: Date, cwd?: string): string | null {
     }).trim();
 
     // Combine both diffs
-    const combined = [committedDiff, workingTreeDiff]
-      .filter(Boolean)
-      .join("\n\n");
+    const combined = [committedDiff, workingTreeDiff].filter(Boolean).join("\n\n");
     return combined || null;
   } catch {
     return null;
@@ -280,10 +271,11 @@ export function getBranchRemote(
   cwd?: string,
 ): { remote: string; url: string; upstream_ref: string | null } | null {
   try {
-    const remote = execSync(
-      `git config --get branch.${branch}.remote`,
-      { cwd, encoding: "utf-8", stdio: ["pipe", "pipe", "ignore"] },
-    ).trim();
+    const remote = execSync(`git config --get branch.${branch}.remote`, {
+      cwd,
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "ignore"],
+    }).trim();
     if (!remote) return null;
 
     const url = execSync(`git remote get-url ${remote}`, {
@@ -362,9 +354,7 @@ export function captureSubmissionLinkage(
   };
 }
 
-function parseStatusCode(
-  code: string,
-): "modified" | "added" | "deleted" | "renamed" | "untracked" {
+function parseStatusCode(code: string): "modified" | "added" | "deleted" | "renamed" | "untracked" {
   switch (code) {
     case "M":
       return "modified";

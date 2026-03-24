@@ -7,7 +7,7 @@
  * AC: @ui-api-ref-resolution ac-1, ac-2, ac-3
  */
 
-import type { ReferenceIndex } from '../../parser/index.js';
+import type { ReferenceIndex } from "../../parser/index.js";
 
 /**
  * Resolved metadata for a single-valued reference.
@@ -86,9 +86,7 @@ export function resolveRefEntries(
  *
  * AC: @ui-api-ref-resolution ac-4, ac-5
  */
-export function buildRefIndex(
-  index: ReferenceIndex,
-): Record<string, RefIndexEntry> {
+export function buildRefIndex(index: ReferenceIndex): Record<string, RefIndexEntry> {
   const result: Record<string, RefIndexEntry> = {};
 
   for (const ulid of index.getAllUlids()) {
@@ -100,7 +98,7 @@ export function buildRefIndex(
 
     const entry: RefIndexEntry = {
       title: typed.title,
-      type: typed.type ?? 'unknown',
+      type: typed.type ?? "unknown",
       ...(typed.status ? { status: typed.status } : {}),
     };
 

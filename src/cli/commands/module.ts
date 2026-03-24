@@ -21,9 +21,7 @@ import { parseTagsArray } from "../parse-utils.js";
  * Register module commands
  */
 export function registerModuleCommands(program: Command): void {
-  const module = program
-    .command("module")
-    .description("Module management commands");
+  const module = program.command("module").description("Module management commands");
 
   // kspec module add - create a new module YAML file
   markMutating(module.command("add"))
@@ -53,9 +51,7 @@ Examples:
         if (options.slug) {
           const slugCheck = checkSlugUniqueness(refIndex, [options.slug]);
           if (!slugCheck.ok) {
-            error(
-              errors.slug.alreadyExists(slugCheck.slug, slugCheck.existingUlid),
-            );
+            error(errors.slug.alreadyExists(slugCheck.slug, slugCheck.existingUlid));
             process.exit(EXIT_CODES.CONFLICT);
           }
         }

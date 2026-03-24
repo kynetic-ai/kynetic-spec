@@ -34,13 +34,13 @@ kspec triage act @triage-ref
 
 ### Actions
 
-| Action | What `act` does |
-|--------|-----------------|
-| `promote` | Creates task from inbox item snapshot |
-| `delete` | Deletes the inbox item |
-| `defer` | Records deferral, no side effect |
-| `spec-gap` | Creates observation tagged spec-gap |
-| `duplicate` | Deletes the inbox item |
+| Action      | What `act` does                       |
+| ----------- | ------------------------------------- |
+| `promote`   | Creates task from inbox item snapshot |
+| `delete`    | Deletes the inbox item                |
+| `defer`     | Records deferral, no side effect      |
+| `spec-gap`  | Creates observation tagged spec-gap   |
+| `duplicate` | Deletes the inbox item                |
 
 ### Lifecycle
 
@@ -61,6 +61,7 @@ kspec inbox list
 ### 2. Categorize Items
 
 Group inbox items by type:
+
 - **Bugs** — implementation issues, errors
 - **Spec gaps** — missing or incomplete specs
 - **Quick wins** — small, well-defined improvements
@@ -151,12 +152,12 @@ kspec meta observations --pending-resolution
 
 For each observation:
 
-| Type | How to Process |
-|------|----------------|
+| Type         | How to Process                                                              |
+| ------------ | --------------------------------------------------------------------------- |
 | **friction** | Reveals spec gap? → Create spec or inbox item. Already addressed? → Resolve |
-| **success** | Document in relevant spec or AGENTS.md if broadly useful → Resolve |
-| **question** | Answer if you can. Needs investigation? → Promote to task |
-| **idea** | Clear scope? → Inbox or task. Unclear? → Leave or delete if stale |
+| **success**  | Document in relevant spec or AGENTS.md if broadly useful → Resolve          |
+| **question** | Answer if you can. Needs investigation? → Promote to task                   |
+| **idea**     | Clear scope? → Inbox or task. Unclear? → Leave or delete if stale           |
 
 ```bash
 # Promote observation to task
@@ -197,15 +198,15 @@ Use `--dry-run` to preview. See `$kspec-help` for full batch documentation.
 
 ## Common Patterns
 
-| Pattern | Action |
-|---------|--------|
-| Already implemented | Verify impl exists → check spec gaps → record delete |
-| Duplicate of existing | Verify original covers scope → record duplicate |
-| Small flag/option | Update spec + AC → record promote |
-| New command | Plan mode → design spec → record promote with evidence |
-| Bug report | Check spec coverage → update spec → record promote |
-| Vague idea | Record defer, or leave untriaged for later |
-| Missing spec | Record spec-gap → creates observation for follow-up |
+| Pattern               | Action                                                 |
+| --------------------- | ------------------------------------------------------ |
+| Already implemented   | Verify impl exists → check spec gaps → record delete   |
+| Duplicate of existing | Verify original covers scope → record duplicate        |
+| Small flag/option     | Update spec + AC → record promote                      |
+| New command           | Plan mode → design spec → record promote with evidence |
+| Bug report            | Check spec coverage → update spec → record promote     |
+| Vague idea            | Record defer, or leave untriaged for later             |
+| Missing spec          | Record spec-gap → creates observation for follow-up    |
 
 ## Key Principles
 
@@ -219,6 +220,7 @@ Use `--dry-run` to preview. See `$kspec-help` for full batch documentation.
 ## Progress Tracking
 
 At session end, provide summary:
+
 - Items triaged (recorded decisions)
 - Actions executed (promoted, deleted, deferred, spec-gap, duplicate)
 - Tasks created/updated

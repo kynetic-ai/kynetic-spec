@@ -22,10 +22,7 @@ import type {
   ReviewEvent,
   ReviewVerdictDecision,
 } from "../schema/index.js";
-import {
-  extractSubjectVersion,
-  isVersionStale,
-} from "../review/subject-bindings.js";
+import { extractSubjectVersion, isVersionStale } from "../review/subject-bindings.js";
 import { evaluateGates } from "../review/checks.js";
 import { getUnresolvedBlockers } from "./review-threads.js";
 
@@ -87,23 +84,14 @@ export function getEffectiveVerdicts(
  */
 export function computeDisposition(review: ReviewRecord): ReviewDisposition {
   const currentVersion = extractSubjectVersion(review.subject);
-  const effectiveVerdicts = getEffectiveVerdicts(
-    review.verdicts,
-    currentVersion,
-  );
+  const effectiveVerdicts = getEffectiveVerdicts(review.verdicts, currentVersion);
   const gateResult = evaluateGates(review.checks, currentVersion);
   const unresolvedBlockers = getUnresolvedBlockers(review);
 
-  const hasChangesRequested = effectiveVerdicts.some(
-    (v) => v.decision === "request_changes",
-  );
+  const hasChangesRequested = effectiveVerdicts.some((v) => v.decision === "request_changes");
 
   // Any blocker → changes_requested
-  if (
-    gateResult.state === "failing" ||
-    unresolvedBlockers.length > 0 ||
-    hasChangesRequested
-  ) {
+  if (gateResult.state === "failing" || unresolvedBlockers.length > 0 || hasChangesRequested) {
     return "changes_requested";
   }
 
@@ -219,13 +207,12 @@ export function refreshSubject(
 // Lifecycle transitions
 // ---------------------------------------------------------------------------
 
-export const VALID_TRANSITIONS: Record<ReviewLifecycleState, ReviewLifecycleState[]> =
-  {
-    draft: ["open", "closed"],
-    open: ["closed"],
-    closed: ["open", "archived"],
-    archived: [],
-  };
+export const VALID_TRANSITIONS: Record<ReviewLifecycleState, ReviewLifecycleState[]> = {
+  draft: ["open", "closed"],
+  open: ["closed"],
+  closed: ["open", "archived"],
+  archived: [],
+};
 
 /**
  * Transition a review to a new lifecycle state.
@@ -239,9 +226,7 @@ export function transitionLifecycle(
 ): ReviewRecord {
   const allowed = VALID_TRANSITIONS[review.lifecycle_state];
   if (!allowed.includes(newState)) {
-    throw new Error(
-      `Invalid lifecycle transition: ${review.lifecycle_state} → ${newState}`,
-    );
+    throw new Error(`Invalid lifecycle transition: ${review.lifecycle_state} → ${newState}`);
   }
 
   const now = new Date().toISOString();

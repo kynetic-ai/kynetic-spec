@@ -42,15 +42,9 @@ describe("Integration: task review_url field", () => {
   it("should persist review_url when submitted with --review-url", () => {
     kspec('task add --title "URL test" --slug url-test', tempDir);
     kspec("task start @url-test", tempDir);
-    kspec(
-      'task submit @url-test --review-url "https://github.com/org/repo/pull/42"',
-      tempDir,
-    );
+    kspec('task submit @url-test --review-url "https://github.com/org/repo/pull/42"', tempDir);
 
-    const task = kspecJson<{ review_url?: string }>(
-      "task get @url-test --json",
-      tempDir,
-    );
+    const task = kspecJson<{ review_url?: string }>("task get @url-test --json", tempDir);
     expect(task.review_url).toBe("https://github.com/org/repo/pull/42");
   });
 
@@ -58,10 +52,7 @@ describe("Integration: task review_url field", () => {
   it("should display review_url in task get human output", () => {
     kspec('task add --title "Display test" --slug display-test', tempDir);
     kspec("task start @display-test", tempDir);
-    kspec(
-      'task submit @display-test --review-url "https://github.com/org/repo/pull/99"',
-      tempDir,
-    );
+    kspec('task submit @display-test --review-url "https://github.com/org/repo/pull/99"', tempDir);
 
     const output = kspec("task get @display-test", tempDir);
     expect(output).toContain("https://github.com/org/repo/pull/99");
@@ -72,19 +63,14 @@ describe("Integration: task review_url field", () => {
     kspec('task add --title "Invalid URL test" --slug invalid-url', tempDir);
     kspec("task start @invalid-url", tempDir);
 
-    const result = kspecRun(
-      'task submit @invalid-url --review-url "not-a-url"',
-      tempDir,
-      { expectFail: true },
-    );
+    const result = kspecRun('task submit @invalid-url --review-url "not-a-url"', tempDir, {
+      expectFail: true,
+    });
     expect(result.exitCode).not.toBe(0);
     expect(result.stderr).toContain("Invalid review URL");
 
     // Task should still be in_progress
-    const task = kspecJson<{ status: string }>(
-      "task get @invalid-url --json",
-      tempDir,
-    );
+    const task = kspecJson<{ status: string }>("task get @invalid-url --json", tempDir);
     expect(task.status).toBe("in_progress");
   });
 
@@ -93,19 +79,14 @@ describe("Integration: task review_url field", () => {
     kspec('task add --title "Empty URL test" --slug empty-url', tempDir);
     kspec("task start @empty-url", tempDir);
 
-    const result = kspecRun(
-      'task submit @empty-url --review-url ""',
-      tempDir,
-      { expectFail: true },
-    );
+    const result = kspecRun('task submit @empty-url --review-url ""', tempDir, {
+      expectFail: true,
+    });
     expect(result.exitCode).not.toBe(0);
     expect(result.stderr).toContain("Invalid review URL");
 
     // Task should still be in_progress
-    const task = kspecJson<{ status: string }>(
-      "task get @empty-url --json",
-      tempDir,
-    );
+    const task = kspecJson<{ status: string }>("task get @empty-url --json", tempDir);
     expect(task.status).toBe("in_progress");
   });
 
@@ -114,52 +95,35 @@ describe("Integration: task review_url field", () => {
     kspec("task start @no-url", tempDir);
     kspec("task submit @no-url", tempDir);
 
-    const task = kspecJson<{ review_url?: string }>(
-      "task get @no-url --json",
-      tempDir,
-    );
+    const task = kspecJson<{ review_url?: string }>("task get @no-url --json", tempDir);
     expect(task.review_url).toBeUndefined();
   });
 
   // task set --review-url
   it("should set review_url via task set", () => {
     kspec('task add --title "Set URL test" --slug set-url', tempDir);
-    kspec(
-      'task set @set-url --review-url "https://github.com/org/repo/pull/7"',
-      tempDir,
-    );
+    kspec('task set @set-url --review-url "https://github.com/org/repo/pull/7"', tempDir);
 
-    const task = kspecJson<{ review_url?: string }>(
-      "task get @set-url --json",
-      tempDir,
-    );
+    const task = kspecJson<{ review_url?: string }>("task get @set-url --json", tempDir);
     expect(task.review_url).toBe("https://github.com/org/repo/pull/7");
   });
 
   // task set --review-url null (clear)
   it("should clear review_url via task set --review-url null", () => {
     kspec('task add --title "Clear URL test" --slug clear-url', tempDir);
-    kspec(
-      'task set @clear-url --review-url "https://github.com/org/repo/pull/1"',
-      tempDir,
-    );
+    kspec('task set @clear-url --review-url "https://github.com/org/repo/pull/1"', tempDir);
     kspec("task set @clear-url --review-url null", tempDir);
 
-    const task = kspecJson<{ review_url?: string }>(
-      "task get @clear-url --json",
-      tempDir,
-    );
+    const task = kspecJson<{ review_url?: string }>("task get @clear-url --json", tempDir);
     expect(task.review_url).toBeUndefined();
   });
 
   // task set --review-url with invalid URL
   it("should reject invalid URL in task set", () => {
     kspec('task add --title "Bad set URL" --slug bad-set-url', tempDir);
-    const result = kspecRun(
-      'task set @bad-set-url --review-url "not-valid"',
-      tempDir,
-      { expectFail: true },
-    );
+    const result = kspecRun('task set @bad-set-url --review-url "not-valid"', tempDir, {
+      expectFail: true,
+    });
     expect(result.exitCode).not.toBe(0);
     expect(result.stderr).toContain("Invalid review URL");
   });
