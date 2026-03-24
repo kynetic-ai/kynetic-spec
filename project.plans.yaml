@@ -27477,6 +27477,97 @@ plans:
 
       6. The existing @ui-design-system spec needs audit — it's implementation-oriented where the
       new approach is behavioral.
+
+
+      ## Design Exploration Log (WIP)
+
+
+      Tracking design ideas explored in design.pen. These are not committed decisions —
+
+      they're directions being tested visually before becoming specs.
+
+
+      ### Sidebar — Project-Level Navigation
+
+
+      The sidebar is the primary navigation surface. Projects are top-level items
+
+      (not hidden behind a dropdown). Each project expands to reveal its sections.
+
+
+      **Structure explored:**
+
+      - Logo/brand at top ("ordica")
+
+      - Project rows: chevron + color icon + name + status indicator (right-aligned)
+
+      - Expanded project shows grouped sections: AGENTS, WORK, SPECS, CONFIG
+
+      - Section headers are uppercase labels with chevrons, collapsible
+
+      - Nav items within sections: icon + label, optionally with badge counts
+
+      - Collapsed projects show just chevron + icon + name
+
+      - All chevrons align on a single vertical line; sub-item text aligns with section header text
+
+
+      **Visual treatment:**
+
+      - Dark neutral sidebar (#141414), no blue/purple cast
+
+      - Expanded project content area uses a slightly darker background (#1A1A1A) to denote depth
+
+      - Projects separated by shared 1px borders (#2A2A2A), flush with no gaps or rounded corners
+
+      - Deep amber accent (#B5682A) — warm, earthy, avoids purple
+
+
+      **Agent indicators:**
+
+      - Each agent shows a distinctive icon identifying its provider (e.g. sparkle for Claude,
+      hexagon for OpenAI)
+
+      - Green dot for active/running, grey for idle — provider icon replaces generic status dots
+
+      - Agent section does not show a count; individual agent status is visible directly
+
+
+      ### Status Chrome (Bottom of Sidebar)
+
+
+      Persistent bar pinned to sidebar bottom showing system health at a glance:
+
+      - Daemon connection status + port
+
+      - Dispatch engine status + active count
+
+      - Updates in real time
+
+
+      ### Color Direction
+
+
+      - Primary accent: deep amber (#B5682A) — warm, grounded, not corporate
+
+      - Status greens for healthy/active, amber for idle/standby, grey for offline, red reserved for
+      errors
+
+      - Avoid purple throughout
+
+      - Potential rebrand from kynetic-spec/kspec to "ordica" (by lepahc) — being tested in design
+
+
+      ### Open Questions
+
+
+      - What exactly does the project-row number represent? Leaning toward "attention items
+        needing focus" (project pulse) rather than task counts. Needs more exploration.
+      - Idle dispatch state color: amber vs teal vs dim green — not yet decided
+
+      - How does project pulse expand? Inline in sidebar, or navigates to a dashboard view?
+
+      - Section groupings (AGENTS, WORK, SPECS, CONFIG) — are these the right buckets?
     status: draft
     approved_at: null
     derived_specs: []
@@ -27490,6 +27581,10 @@ plans:
         content: Added project-pulse and dispatch-status-indicator specs
         author: "@claude"
         created_at: 2026-03-24T19:39:21.054Z
+      - _ulid: 01KMGQWYXYBVEWB69T6XTAJ00Z
+        content: Added design exploration log from sidebar design session
+        author: "@claude"
+        created_at: 2026-03-24T20:17:10.590Z
   - _ulid: 01KMF3HCKSZ1F8M9WVGV26DHJ1
     slugs:
       - plan-delete-static-analysis-tests-and-replace-with-beha
