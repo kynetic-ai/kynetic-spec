@@ -50191,7 +50191,17 @@ reviews:
     slugs: []
     title: Review task-readtestoutput-skill-cli
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: All 96 tests passed in tests/skill-cli.test.ts (45.41s)
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-24T22:01:51.135Z
+        completed_at: 2026-03-24T22:01:51.135Z
     events:
       - _ulid: 01KMGXVMGVPPDD8SXE4XC2214W
         actor: "@claude"
@@ -50206,6 +50216,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-24T22:01:38.923Z
+      - _ulid: 01KMGXWMN9193N1V721AD6D2YY
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-24T22:01:51.529Z
     examined_commit: fd19af112e50f3aa7ab053e2aafa7c76c3e0cae2
     external_links: []
     lifecycle_state: open
@@ -50218,5 +50235,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-24T22:01:18.619Z
-    updated_at: 2026-03-24T22:01:38.536Z
+    updated_at: 2026-03-24T22:01:51.135Z
     notes: []
