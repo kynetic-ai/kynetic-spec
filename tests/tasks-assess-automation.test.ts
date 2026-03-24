@@ -9,6 +9,7 @@ import {
   kspec as kspecRun,
   kspecOutput as kspec,
   kspecJson,
+  readTestOutput,
   setupTempFixtures,
   cleanupTempDir,
 } from "./helpers/cli";
@@ -126,7 +127,7 @@ describe("kspec tasks assess automation", () => {
     it("should check spec_has_acs only when spec_ref exists", async () => {
       // Add acceptance criteria to test-feature
       const coreYamlPath = path.join(tempDir, "modules", "core.yaml");
-      const coreYaml = await fs.readFile(coreYamlPath, "utf-8");
+      const coreYaml = await readTestOutput(coreYamlPath);
       const updatedYaml = coreYaml.replace(
         'implements:\n          - "@test-feature"',
         `implements:
@@ -197,7 +198,7 @@ describe("kspec tasks assess automation", () => {
     it("should recommend review_for_eligible when all criteria pass", async () => {
       // Add acceptance criteria to test-feature
       const coreYamlPath = path.join(tempDir, "modules", "core.yaml");
-      const coreYaml = await fs.readFile(coreYamlPath, "utf-8");
+      const coreYaml = await readTestOutput(coreYamlPath);
       const updatedYaml = coreYaml.replace(
         "description: A test feature for integration testing",
         `description: A test feature for integration testing
@@ -245,7 +246,7 @@ describe("kspec tasks assess automation", () => {
     it("should NOT auto-mark eligible when all criteria pass", async () => {
       // Add acceptance criteria to test-feature
       const coreYamlPath = path.join(tempDir, "modules", "core.yaml");
-      const coreYaml = await fs.readFile(coreYamlPath, "utf-8");
+      const coreYaml = await readTestOutput(coreYamlPath);
       const updatedYaml = coreYaml.replace(
         "description: A test feature for integration testing",
         `description: A test feature for integration testing

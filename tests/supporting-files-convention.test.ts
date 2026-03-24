@@ -6,7 +6,7 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { stringify as yamlStringify } from "yaml";
-import { createTempDir, cleanupTempDir, testUlid, initGitRepo } from "./helpers/cli";
+import { createTempDir, cleanupTempDir, testUlid, initGitRepo, readTestOutput } from "./helpers/cli";
 import {
   loadSkillSupportingFiles,
   listSkillSupportingDirs,
@@ -293,8 +293,8 @@ describe("Supporting Files Convention", () => {
         "data.json",
       );
 
-      const scriptsContent = await fs.readFile(targetScriptsPath, "utf-8");
-      const assetsContent = await fs.readFile(targetAssetsPath, "utf-8");
+      const scriptsContent = await readTestOutput(targetScriptsPath);
+      const assetsContent = await readTestOutput(targetAssetsPath);
 
       expect(scriptsContent).toContain("#!/bin/bash");
       expect(assetsContent).toContain('"data"');
@@ -336,7 +336,7 @@ describe("Supporting Files Convention", () => {
 
       // Verify docs were copied to .claude/skills/
       const targetDocsPath = path.join(tempDir, ".claude", "skills", skillId, "docs", "guide.md");
-      const content = await fs.readFile(targetDocsPath, "utf-8");
+      const content = await readTestOutput(targetDocsPath);
       expect(content).toContain("# Guide");
     });
 
