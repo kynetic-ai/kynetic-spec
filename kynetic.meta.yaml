@@ -7782,6 +7782,27 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-24T00:12:25.785Z
+  - _ulid: 01KMF3R1A2ZDC2QE5G4WZYARN5
+    type: friction
+    content: Skill template dev workflow requires npm run build + kspec setup + delete rendered files +
+      kspec skill render to propagate changes from templates/skills/ to .agents/skills/. The render
+      command reads from shadow branch (.kspec/skills/), not templates/ directly, so edits to
+      templates are invisible until setup syncs them. This multi-step dance is error-prone during
+      development.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-24T05:05:43.234Z
+  - _ulid: 01KMF3R1EKASFGBTZCJKB5A93R
+    type: success
+    content: Iterative proposal refinement for skill guidance. Going through JS-specific →
+      generic-but-enumerated → principle-based rounds produced guidance that cannot be gamed by
+      aliasing APIs or using different file-reading techniques. The key insight was targeting the
+      technique (reading source and asserting on strings) rather than specific function names.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-24T05:05:43.379Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
