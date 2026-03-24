@@ -29,7 +29,6 @@ function runTestRunner(
 }
 
 // Import the shipped module — tests exercise this, not reimplemented logic
-// eslint-disable-next-line @typescript-eslint/no-require-imports
 const runner = require("../scripts/test.cjs");
 
 describe("test runner environment checks", () => {

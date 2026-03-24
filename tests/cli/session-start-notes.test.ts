@@ -399,7 +399,7 @@ describe("session start notes enrichment", () => {
         const result = kspec("session start --json", tempDir);
 
         // ANSI escape sequences start with \x1b[ or \u001b[
-        // eslint-disable-next-line no-control-regex
+        // oxlint-disable-next-line eslint(no-control-regex) -- intentionally matching ANSI escape
         expect(result.stdout).not.toMatch(/\x1b\[/);
       },
     );

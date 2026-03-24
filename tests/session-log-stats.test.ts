@@ -808,7 +808,7 @@ describe("kspec session log stats (CLI)", () => {
   // AC: @trait-json-output ac-1
   it("should have no ANSI codes in JSON output", () => {
     const result = kspec("session log stats --json", tempDir);
-    // eslint-disable-next-line no-control-regex
+    // oxlint-disable-next-line eslint(no-control-regex) -- intentionally matching ANSI escape
     expect(result.stdout).not.toMatch(/\x1b\[\d+m/);
   });
 

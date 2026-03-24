@@ -959,7 +959,7 @@ describe("kspec session log show (CLI)", () => {
   // AC: @trait-json-output ac-1
   it("should have no ANSI codes in JSON output", () => {
     const result = kspec(`session log show ${sessionId1} --json`, tempDir);
-    // eslint-disable-next-line no-control-regex
+    // oxlint-disable-next-line eslint(no-control-regex) -- intentionally matching ANSI escape
     expect(result.stdout).not.toMatch(/\x1b\[\d+m/);
   });
 
@@ -1099,7 +1099,7 @@ describe("kspec session log show (CLI)", () => {
     expect(parsed.id).toBe(sessionId1);
     expect(parsed.events).toBeDefined();
     // Should have no ANSI escape codes
-    // eslint-disable-next-line no-control-regex
+    // oxlint-disable-next-line eslint(no-control-regex) -- intentionally matching ANSI escape
     expect(result.stdout).not.toMatch(/\x1b\[\d+m/);
   });
 

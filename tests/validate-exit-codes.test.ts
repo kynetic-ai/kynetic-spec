@@ -154,7 +154,7 @@ items:
     // AC: @trait-json-output ac-1 — no ANSI color codes in JSON output
     it("should not contain ANSI escape codes in JSON output", () => {
       const result = kspec("validate --json", tempDir);
-      // eslint-disable-next-line no-control-regex
+      // oxlint-disable-next-line eslint(no-control-regex) -- intentionally matching ANSI escape
       expect(result.stdout).not.toMatch(/\u001b\[/);
     });
 
