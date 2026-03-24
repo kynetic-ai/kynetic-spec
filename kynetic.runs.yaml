@@ -14825,7 +14825,7 @@ runs:
     started_at: 2026-03-24T23:10:05.249Z
     completed_at: 2026-03-24T23:11:22.000Z
   - _ulid: 01KMH2AF5E8XD6S8WC498PM48Z
-    status: active
+    status: completed
     current_step: 5
     initiated_by: "@claude"
     step_results:
@@ -14915,10 +14915,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-03-24T23:22:57.032Z
-        completed_at: 2026-03-24T23:22:57.032Z
+        completed_at: 2026-03-24T23:23:21.799Z
+        notes: Captured 2 inbox items (step 5) and 2 success observations. Session reflection complete.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-03-24T23:19:18.958Z
+    completed_at: 2026-03-24T23:23:21.800Z
   - _ulid: 01KMH2B6EK24Z4CBF7EMN91YRZ
     status: completed
     current_step: 3
