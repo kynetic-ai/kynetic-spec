@@ -1,1 +1,22 @@
-notes: []
+notes:
+  - _ulid: 01KMGRFT4FPC6WE18WEPFCK0DA
+    content: >-
+      Approach: Two root causes identified.
+
+
+      1. agent-dispatch-engine.test.ts "worker completion guardrails":
+         - Inline polling loop (20 * 5ms = 100ms max) is too short
+         - handleStateChange returns after markInvocationStarted(), but runInvocation is called later after shadow mutex acquisition
+         - Under load, mutex + provisioning can take >100ms
+         - Fix: Replace inline polling with existing waitForMockCall helper (2000ms)
+         - Also: Add workspace provisioning mock (like the sibling reviewer test) to avoid real git ops
+
+      2. canonical-task-workspace-contract.test.ts "cleanup eligibility":
+         - Test takes ~5.8s solo against 15s timeout
+         - DispatchEngine.start() does heavy I/O (initTargetSync, reconcileRegistry, reconcileArtifacts, bootstrap) on real git repo
+         - handleStateChange calls reconcileDispatchWorkspaceLifecycle 3x, each with shadowMutex + disk I/O
+         - Under full suite load, can approach/exceed 15s timeout
+         - Fix: Mock initContext/loadAllTasks in engine.start() to avoid loading tasks (empty project anyway), and increase timeout
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-24T20:27:28.272Z
