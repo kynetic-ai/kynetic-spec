@@ -51769,6 +51769,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-24T23:30:19.927Z
+      - _ulid: 01KMH3VAE1538FTSSVTGN9MNZC
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMH3V9RP3W50NYS7Z53QVSMD
+        timestamp: 2026-03-24T23:45:59.745Z
     examined_commit: cc9e378eef103bfbe9e4d028633005fc89e74eea
     external_links: []
     lifecycle_state: open
@@ -51778,8 +51785,28 @@ reviews:
       content_hash: ""
       ref: "@task-readtestoutput-small-batch"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMH3V9RP3W50NYS7Z53QVSMD
+        anchor:
+          type: code
+          commit: cc9e378eef10
+          line_end: 2064
+          line_start: 2064
+          path: tests/cli-agent-commands.test.ts
+          side: head
+        entries:
+          - _ulid: 01KMH3V9RQ1R2KTTQMT1THNCKW
+            author: "@claude"
+            body: "Static fixture file converted to readTestOutputSync — violates task rule #4 ('Only convert
+              reads of test-generated output'). loadDispatchWatchFixture reads from
+              __dirname/fixtures/dispatch-watch-transcripts/ which is a checked-in static fixture
+              directory, not test-generated output. Functionally harmless since readTestOutputSync
+              is currently a thin wrapper, but semantically incorrect and could trigger false
+              positives if a future lint rule distinguishes test-generated output from static
+              fixtures."
+            created_at: 2026-03-24T23:45:59.063Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-24T23:30:11.414Z
-    updated_at: 2026-03-24T23:30:19.524Z
+    updated_at: 2026-03-24T23:45:59.063Z
     notes: []
