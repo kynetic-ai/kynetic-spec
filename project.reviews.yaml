@@ -51211,9 +51211,25 @@ reviews:
           kind: nit
           thread_ulid: 01KMH0EJRVEG322HCWBNJZVREF
         timestamp: 2026-03-24T22:46:37.007Z
+      - _ulid: 01KMH0FJZ3ES314PDG8H6JWTPW
+        actor: claude
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-03-24T22:47:09.540Z
+      - _ulid: 01KMH0FJZ4XNR4TYWKZED2HFW6
+        actor: claude
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: closed
+        timestamp: 2026-03-24T22:47:09.540Z
     examined_commit: null
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -51253,7 +51269,14 @@ reviews:
               apply.
             created_at: 2026-03-24T22:46:36.571Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: claude
+        role: reviewer
+        created_at: 2026-03-24T22:47:09.539Z
     created_at: 2026-03-24T22:44:19.062Z
-    updated_at: 2026-03-24T22:46:36.571Z
+    updated_at: 2026-03-24T22:47:09.540Z
     notes: []
