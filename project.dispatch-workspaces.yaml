@@ -23085,18 +23085,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-readtestoutput-medium-batch-2/01kmfcp5
-    canonical_branch_head: 25037298cf828f23a1b0966d113d7f295f917e4a
+    canonical_branch_head: fe2d058cc72fde6f6fd9678b2f828851760f3d77
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-24T23:01:57.807Z
+      updated_at: 2026-03-24T23:09:03.454Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-24T23:02:04.411Z
+      updated_at: 2026-03-24T23:09:03.454Z
     integration:
       status: pending
       detail: null
@@ -23104,7 +23104,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 25037298cf828f23a1b0966d113d7f295f917e4a
-      updated_at: 2026-03-24T23:01:57.807Z
+      updated_at: 2026-03-24T23:09:03.454Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KMFCP508X12G225QP0RYQ0RY"
@@ -23112,9 +23112,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-24T23:02:04.411Z
-      last_reconciled_at: 2026-03-24T23:02:04.411Z
+      last_reconciled_at: 2026-03-24T23:09:03.454Z
       created_at: 2026-03-24T23:01:57.807Z
-      updated_at: 2026-03-24T23:02:04.411Z
+      updated_at: 2026-03-24T23:09:03.454Z
     workspace_id: dispatch-workspace-01KMFCP508X12G225QP0RYQ0RY
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
