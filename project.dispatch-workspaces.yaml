@@ -20308,7 +20308,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-24T00:23:15.456Z
+      updated_at: 2026-03-24T00:23:24.272Z
     integration:
       status: merged
       detail: integration:merged
@@ -20324,18 +20324,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-24T00:13:05.183Z
-      last_reconciled_at: 2026-03-24T00:23:21.869Z
+      last_reconciled_at: 2026-03-24T00:23:24.272Z
       created_at: 2026-03-23T23:58:26.691Z
-      updated_at: 2026-03-24T00:23:21.869Z
+      updated_at: 2026-03-24T00:23:24.272Z
     workspace_id: dispatch-workspace-01KMEHRD4KBZG06321TVPA67HB
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 4043b05296911b0a7bcbb1d6547f32bddd1412ad
-        last_seen_at: 2026-03-24T00:12:57.958Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-web-ui-pages-not-rendering-on-initial-load-01kmehrd-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/fix-web-ui-pages-not-rendering-on-initial-load/01kmehrd
