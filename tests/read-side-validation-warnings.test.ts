@@ -13,7 +13,7 @@ import {
   toYaml,
   type KspecContext,
 } from "../src/parser/index.js";
-import { cleanupTempDir, createTempDir, initGitRepo, testUlid } from "./helpers/cli.js";
+import { cleanupTempDir, createTempDir, initGitRepo, readTestOutput, testUlid } from "./helpers/cli.js";
 
 function makeContext(specDir: string): KspecContext {
   const projectRoot = path.dirname(specDir);
@@ -150,7 +150,7 @@ describe("read-side validation warnings (@read-side-validation-warnings)", () =>
 
     await loadAllTasks(ctx);
     const rawItems = parseYaml<unknown>(
-      await fs.readFile(path.join(specDir, "modules.yaml"), "utf-8"),
+      await readTestOutput(path.join(specDir, "modules.yaml")),
     );
     extractItemsFromRaw(rawItems, "modules.yaml");
     await loadInboxItems(ctx);
@@ -195,7 +195,7 @@ describe("read-side validation warnings (@read-side-validation-warnings)", () =>
 
     const tasks = await loadAllTasks(ctx);
     const rawItems = parseYaml<unknown>(
-      await fs.readFile(path.join(specDir, "modules.yaml"), "utf-8"),
+      await readTestOutput(path.join(specDir, "modules.yaml")),
     );
     const items = extractItemsFromRaw(rawItems, "modules.yaml");
     const inbox = await loadInboxItems(ctx);
@@ -267,7 +267,7 @@ describe("read-side validation warnings (@read-side-validation-warnings)", () =>
 
     await loadAllTasks(ctx);
     const rawItems = parseYaml<unknown>(
-      await fs.readFile(path.join(specDir, "modules.yaml"), "utf-8"),
+      await readTestOutput(path.join(specDir, "modules.yaml")),
     );
     extractItemsFromRaw(rawItems, "modules.yaml");
     await loadInboxItems(ctx);

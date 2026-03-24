@@ -11,6 +11,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import * as path from "node:path";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
+import { readTestOutput } from "./helpers/cli.js";
 import {
   ActionSchema,
   CommandActionSchema,
@@ -441,7 +442,7 @@ describe("ActionExecutor", () => {
       const run = await executor.execute(action, ctx);
       expect(run.status).toBe("completed");
 
-      const output = await fs.readFile(path.join(tempDir, "output.txt"), "utf-8");
+      const output = await readTestOutput(path.join(tempDir, "output.txt"));
       expect(output.trim()).toBe("@task-resolve-test");
     });
   });
@@ -496,7 +497,7 @@ process.exit(0);`,
       expect(run.status).toBe("completed");
       expect(run.action_type).toBe("kspec");
 
-      const envOutput = await fs.readFile(path.join(tempDir, "kspec-env.txt"), "utf-8");
+      const envOutput = await readTestOutput(path.join(tempDir, "kspec-env.txt"));
 
       // AC: @dispatch-action-model ac-3 — correlation_id injected via KSPEC_CORRELATION_ID
       expect(envOutput).toContain("CORRELATION=01CORR_TEST_VALUE_00000001");
@@ -811,7 +812,7 @@ process.exit(0);`,
       // AC: @dispatch-action-model ac-8 — action still executes
       expect(run.status).toBe("completed");
 
-      const output = await fs.readFile(path.join(tempDir, "arg-output.txt"), "utf-8");
+      const output = await readTestOutput(path.join(tempDir, "arg-output.txt"));
       // The unresolved placeholder passes through unchanged
       expect(output).toBe("{{absent_field}}");
     });

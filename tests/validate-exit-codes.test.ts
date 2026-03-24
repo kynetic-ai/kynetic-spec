@@ -11,7 +11,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { kspec, setupTempFixtures, cleanupTempDir, testUlid, createTempDir } from "./helpers/cli";
+import { kspec, setupTempFixtures, cleanupTempDir, testUlid, createTempDir, readTestOutput } from "./helpers/cli";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
@@ -43,7 +43,7 @@ items:
 
       // Update manifest to include the invalid file
       const manifestPath = path.join(tempDir, "kynetic.yaml");
-      const manifest = await fs.readFile(manifestPath, "utf-8");
+      const manifest = await readTestOutput(manifestPath);
       const updatedManifest = manifest.replace("includes:", "includes:\n  - modules/invalid.yaml");
       await fs.writeFile(manifestPath, updatedManifest);
 
@@ -55,7 +55,7 @@ items:
     it("should exit 4 when reference errors are present", async () => {
       // Add a task with an invalid spec_ref
       const tasksFile = path.join(tempDir, "project.tasks.yaml");
-      const content = await fs.readFile(tasksFile, "utf-8");
+      const content = await readTestOutput(tasksFile);
       const newContent = content.replace(
         "tasks:",
         `tasks:
@@ -108,7 +108,7 @@ items:
 
       // Update manifest to include the orphan file
       const manifestPath = path.join(tempDir, "kynetic.yaml");
-      const manifest = await fs.readFile(manifestPath, "utf-8");
+      const manifest = await readTestOutput(manifestPath);
       const updatedManifest = manifest.replace("includes:", "includes:\n  - modules/orphan.yaml");
       await fs.writeFile(manifestPath, updatedManifest);
 

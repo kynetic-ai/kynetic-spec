@@ -8,6 +8,7 @@ import {
   initGitRepo,
   kspec,
   kspecJson,
+  readTestOutput,
   testUlid,
 } from "./helpers/cli.js";
 
@@ -102,7 +103,7 @@ async function addLeanIndexEntry(
   overrides: Record<string, unknown> = {},
 ): Promise<void> {
   const indexPath = path.join(specDir, "project.tasks.yaml");
-  const content = await fs.readFile(indexPath, "utf-8");
+  const content = await readTestOutput(indexPath);
   const existing = parseYaml(content) || [];
   const entries = Array.isArray(existing) ? existing : [];
 
@@ -155,7 +156,7 @@ describe("kspec task storage activate (@task-storage-activation)", () => {
     expect(result.stdout).toContain("Split storage format activated");
 
     // Verify the manifest was updated
-    const manifest = parseYaml(await fs.readFile(path.join(specDir, "kynetic.yaml"), "utf-8"));
+    const manifest = parseYaml(await readTestOutput(path.join(specDir, "kynetic.yaml")));
     expect(manifest.task_storage).toBeDefined();
     expect(manifest.task_storage.format).toBe("split");
   });
@@ -184,7 +185,7 @@ describe("kspec task storage activate (@task-storage-activation)", () => {
     expect(taskDirs.length).toBe(1);
 
     // Verify task.yaml exists in the per-task dir
-    const taskYaml = await fs.readFile(path.join(tasksDir, taskDirs[0], "task.yaml"), "utf-8");
+    const taskYaml = await readTestOutput(path.join(tasksDir, taskDirs[0], "task.yaml"));
     expect(taskYaml).toContain("post-activate-task");
   });
 
@@ -262,7 +263,7 @@ describe("kspec task storage activate (@task-storage-activation)", () => {
     expect(result.stdout).toContain("Split storage format activated");
 
     // Verify manifest updated
-    const manifest = parseYaml(await fs.readFile(path.join(specDir, "kynetic.yaml"), "utf-8"));
+    const manifest = parseYaml(await readTestOutput(path.join(specDir, "kynetic.yaml")));
     expect(manifest.task_storage.format).toBe("split");
   });
 
