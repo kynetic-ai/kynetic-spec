@@ -21910,7 +21910,7 @@
   title: Install oxlint and oxfmt, remove Biome
   type: task
   plan_ref: "@plan-migrate-from-biome-to-oxlint-oxfmt"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 1
@@ -21922,6 +21922,7 @@
   todos_count: 0
   created_at: 2026-03-24T06:16:25.055Z
   started_at: 2026-03-24T06:20:21.148Z
+  submitted_at: 2026-03-24T06:29:06.887Z
 - _ulid: 01KMF7SG03MKXNMG2GAZJ4AV7Y
   slugs:
     - task-oxlint-vitest-plugin
