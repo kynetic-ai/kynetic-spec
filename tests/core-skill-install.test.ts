@@ -13,6 +13,7 @@ import {
   cleanupTempDir,
   createTempDir,
   initGitRepo,
+  readTestOutput,
 } from "./helpers/cli";
 
 describe("Core Skill Installation", () => {
@@ -63,7 +64,7 @@ describe("Core Skill Installation", () => {
 
       // Note: In test fixtures (non-shadow mode), skills are at tempDir/skills/ not tempDir/.kspec/skills/
       const skillMdPath = path.join(tempDir, "skills", "help", "SKILL.md");
-      const content = await fs.readFile(skillMdPath, "utf-8");
+      const content = await readTestOutput(skillMdPath);
 
       // Check content was copied (matches the template content)
       expect(content).toContain("# kspec Help");
@@ -87,16 +88,15 @@ describe("Core Skill Installation", () => {
       const stat = await fs.stat(triageDocsDir);
       expect(stat.isDirectory()).toBe(true);
 
-      const inboxMd = await fs.readFile(path.join(triageDocsDir, "inbox.md"), "utf-8");
+      const inboxMd = await readTestOutput(path.join(triageDocsDir, "inbox.md"));
       expect(inboxMd).toContain("Inbox Triage");
 
-      const observationsMd = await fs.readFile(
+      const observationsMd = await readTestOutput(
         path.join(triageDocsDir, "observations.md"),
-        "utf-8",
       );
       expect(observationsMd).toContain("Observations Triage");
 
-      const automationMd = await fs.readFile(path.join(triageDocsDir, "automation.md"), "utf-8");
+      const automationMd = await readTestOutput(path.join(triageDocsDir, "automation.md"));
       expect(automationMd).toContain("Automation Triage");
     });
   });
@@ -172,7 +172,7 @@ describe("Core Skill Installation", () => {
       kspecFull("skill install-core --force", tempDir);
 
       // Verify content was overwritten with core content
-      const content = await fs.readFile(skillMdPath, "utf-8");
+      const content = await readTestOutput(skillMdPath);
       expect(content).toContain("# kspec Help");
       expect(content).not.toContain("Custom Content");
     });
@@ -271,7 +271,7 @@ describe("Core Skill Installation", () => {
       expect(codexHelp?.action).toBe("created");
 
       const codexPath = path.join(tempDir, ".agents", "skills", "kspec-help", "SKILL.md");
-      const codexContent = await fs.readFile(codexPath, "utf-8");
+      const codexContent = await readTestOutput(codexPath);
       expect(codexContent).toContain("<!-- kspec-managed -->");
       expect(codexContent).toContain("name: kspec-help");
 
@@ -301,12 +301,12 @@ describe("Core Skill Installation", () => {
       expect(result.render.source).toBe("auto-detect");
 
       const codexPath = path.join(tempDir, ".agents", "skills", "kspec-help", "SKILL.md");
-      const codexContent = await fs.readFile(codexPath, "utf-8");
+      const codexContent = await readTestOutput(codexPath);
       expect(codexContent).toContain("<!-- kspec-managed -->");
       expect(codexContent).toContain("name: kspec-help");
 
       const codexConfigPath = path.join(tempDir, ".codex", "config.toml");
-      const codexConfig = await fs.readFile(codexConfigPath, "utf-8");
+      const codexConfig = await readTestOutput(codexConfigPath);
       expect(codexConfig).toContain("project_doc_fallback_filenames");
       expect(codexConfig).toContain("kspec-agents.md");
     });
@@ -326,7 +326,7 @@ describe("Core Skill Installation", () => {
       await expect(fs.access(codexPath)).resolves.toBeUndefined();
 
       const codexConfigPath = path.join(tempDir, ".codex", "config.toml");
-      const codexConfig = await fs.readFile(codexConfigPath, "utf-8");
+      const codexConfig = await readTestOutput(codexConfigPath);
       expect(codexConfig).toContain("project_doc_fallback_filenames");
       expect(codexConfig).toContain("kspec-agents.md");
 
@@ -350,7 +350,7 @@ describe("Core Skill Installation", () => {
       expect(result.render.source).toBe("override");
 
       const droidPath = path.join(tempDir, ".factory", "skills", "kspec-help", "SKILL.md");
-      const droidContent = await fs.readFile(droidPath, "utf-8");
+      const droidContent = await readTestOutput(droidPath);
       expect(droidContent).toContain("<!-- kspec-managed -->");
       expect(droidContent).toContain("name: kspec-help");
     });
@@ -466,11 +466,11 @@ describe("copyCoreSkillFiles error handling", () => {
     expect(result.changed).toBe(true);
 
     // SKILL.md copied
-    const skillMd = await fs.readFile(path.join(targetDir, "SKILL.md"), "utf-8");
+    const skillMd = await readTestOutput(path.join(targetDir, "SKILL.md"));
     expect(skillMd).toContain("# Triage");
 
     // docs/ copied
-    const inboxMd = await fs.readFile(path.join(targetDir, "docs", "inbox.md"), "utf-8");
+    const inboxMd = await readTestOutput(path.join(targetDir, "docs", "inbox.md"));
     expect(inboxMd).toContain("Inbox Triage");
   });
 
