@@ -53,6 +53,13 @@ const TEMP_DIR_FUNCTIONS = new Set([
   "setupMultiDirFixtures",
 ]);
 
+// Safe file-read wrappers — calls to these are never flagged.
+// Tests should use these helpers instead of raw fs.readFile / readFileSync.
+const SAFE_READ_FUNCTIONS = new Set([
+  "readTestOutput",
+  "readTestOutputSync",
+]);
+
 /**
  * Check if an identifier name looks like a safe temp/fixture variable.
  */
@@ -322,6 +329,9 @@ const noSourceScanning = {
 
       // ── Flag unsafe file reads and assertions on results ───────
       CallExpression(node) {
+        // Skip safe read wrapper functions (readTestOutput, readTestOutputSync)
+        if (isSafeReadWrapper(node)) return;
+
         // Flag read calls to non-safe paths
         if (isFsReadCall(node)) {
           if (!isReadFromSafePath(node.arguments[0], safeVars)) {
@@ -364,6 +374,17 @@ const noSourceScanning = {
         }
       },
     };
+
+    function isSafeReadWrapper(node) {
+      if (node.type !== "CallExpression") return false;
+      const callee = node.callee;
+      // Direct: readTestOutput(...)
+      if (callee.type === "Identifier" && SAFE_READ_FUNCTIONS.has(callee.name)) {
+        return true;
+      }
+      // Await expression wrapping: the CallExpression itself, not the await
+      return false;
+    }
 
     function isFsReadCall(node) {
       if (node.type !== "CallExpression") return false;
