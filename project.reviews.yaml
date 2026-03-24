@@ -50419,6 +50419,18 @@ reviews:
         required: true
         created_at: 2026-03-24T22:17:38.684Z
         completed_at: 2026-03-24T22:17:38.684Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "P1 chain: design -> impl -> migrate-read-routes. P2 chain: impl -> command-api ->
+          cli-proxy-routing. P2 also: design -> update-related-specs. No cycles. P1 tasks never
+          depend on P2. Parallelism possible: command-api and migrate-read-routes can run
+          concurrently after impl. update-related-specs can run concurrently with impl."
+        name: Dependency ordering
+        required: true
+        created_at: 2026-03-24T22:17:42.974Z
+        completed_at: 2026-03-24T22:17:42.974Z
     events:
       - _ulid: 01KMGYQTS9JPQGA49J953K0HJM
         actor: "@claude"
@@ -50468,6 +50480,13 @@ reviews:
           status: pass
           name: Task standalone executability
         timestamp: 2026-03-24T22:17:39.093Z
+      - _ulid: 01KMGYSP6D8GJFM4X23KD7BXPP
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Dependency ordering
+        timestamp: 2026-03-24T22:17:43.373Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -50511,5 +50530,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-24T22:16:42.537Z
-    updated_at: 2026-03-24T22:17:38.684Z
+    updated_at: 2026-03-24T22:17:42.974Z
     notes: []
