@@ -51388,3 +51388,29 @@ reviews:
     created_at: 2026-03-24T22:48:30.436Z
     updated_at: 2026-03-24T22:49:42.553Z
     notes: []
+  - _ulid: 01KMH1RRN8E7JRBZ6JZSDAS3D8
+    slugs: []
+    title: "Plan review: Daemon Optimistic Data Layer (v4)"
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KMH1RRN7ZY3FAN4P2ZANV6MB
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-24T23:09:38.855Z
+    examined_commit: null
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-daemon-optimistic-data-layer"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-24T23:09:38.856Z
+    updated_at: null
+    notes: []
