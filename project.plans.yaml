@@ -27341,6 +27341,83 @@ plans:
             then: |
               the page spec does not restate the trait's ACs; it only
               adds page-specific variations if needed
+
+      - title: Project Pulse
+        slug: project-pulse
+        type: feature
+        parent: "@ux"
+        description: |
+          A per-project attention signal visible in the sidebar and expandable
+          into a deeper view. Surfaces what needs focus across the entire project
+          at a glance — blocked tasks, pending reviews, inbox backlog, agent
+          errors, stale work. Functions as project-level triage: not just
+          counts, but a prioritized summary of where attention is needed.
+
+          The sidebar shows a compact indicator (count or health signal).
+          Clicking into it opens a project-scoped dashboard showing categorized
+          attention items with the ability to dig into each area.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              a project in the sidebar
+            when: |
+              the project has items needing attention
+            then: |
+              a compact indicator shows how many items need attention,
+              distinguishable from general activity counts
+          - id: ac-2
+            given: |
+              a project in the sidebar
+            when: |
+              the user expands or clicks the attention indicator
+            then: |
+              a view shows categorized attention items (blocked tasks,
+              pending reviews, inbox items, agent errors) with the ability
+              to navigate directly to each item
+          - id: ac-3
+            given: |
+              a project with no items needing attention
+            when: |
+              displayed in the sidebar
+            then: |
+              the indicator is absent or visually minimal, not showing "0"
+
+      - title: Dispatch Status Indicator
+        slug: dispatch-status-indicator
+        type: feature
+        parent: "@ux"
+        description: |
+          Visual indicator of dispatch engine state per project, shown in
+          the sidebar project row. Communicates whether automated agents are
+          actively working, idle and ready, offline, or in an error state.
+
+          Four states:
+          - Active (green): dispatch running, agents processing work
+          - Idle (amber/teal): dispatch connected, no work queued
+          - Offline (grey): dispatch not running or project not connected
+          - Error (red): dispatch blocked or agent failures needing attention
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              a project row in the sidebar
+            when: |
+              the dispatch engine is actively processing tasks
+            then: |
+              a status indicator shows the active state
+          - id: ac-2
+            given: |
+              a project row in the sidebar
+            when: |
+              dispatch states change (active, idle, offline, error)
+            then: |
+              the indicator updates in real time without page refresh
+          - id: ac-3
+            given: |
+              dispatch is in an error state
+            when: |
+              the user sees the error indicator
+            then: |
+              hovering or clicking reveals what went wrong
       ```
 
 
@@ -27408,7 +27485,11 @@ plans:
     source_path: /home/chapel/Projects/kynetic-spec/plans/ux-design-system.md
     created_at: 2026-03-23T22:55:42.919Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KMGNQPJY3D76VAAJ4E27W2JV
+        content: Added project-pulse and dispatch-status-indicator specs
+        author: "@claude"
+        created_at: 2026-03-24T19:39:21.054Z
   - _ulid: 01KMF3HCKSZ1F8M9WVGV26DHJ1
     slugs:
       - plan-delete-static-analysis-tests-and-replace-with-beha
