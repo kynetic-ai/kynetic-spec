@@ -48499,3 +48499,29 @@ reviews:
     created_at: 2026-03-24T00:13:48.891Z
     updated_at: 2026-03-24T00:21:44.042Z
     notes: []
+  - _ulid: 01KMF8BTR71VP5CXECN7QZAWFM
+    slugs: []
+    title: Review task-install-oxlint-oxfmt
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KMF8BTR7F1MHB2VHAVN1EK15
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-24T06:26:26.183Z
+    examined_commit: null
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@task-install-oxlint-oxfmt"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-24T06:26:26.183Z
+    updated_at: null
+    notes: []
