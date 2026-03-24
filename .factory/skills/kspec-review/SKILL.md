@@ -117,6 +117,14 @@ If a trait AC genuinely doesn't apply, annotate it with a reason:
 
 Annotations must be standalone line comments, not embedded in block comments.
 
+### Source-Scanning Tests (Reject on Sight)
+
+Any test whose mechanism is reading implementation source files and asserting on their textual content is an automatic MUST-FIX — regardless of what AC it claims to cover, what language it's in, or how the file reading is accomplished. The technique is the problem, not the specific API used.
+
+The test: "does this source file contain this string?" The answer tells you nothing about whether the feature works. These tests create the illusion of coverage while testing nothing, and they are the most common shortcut agents take when ACs are difficult to test behaviorally.
+
+When you encounter source-scanning tests, flag them as MUST-FIX with a request to replace with behavioral tests that exercise the system. If an AC genuinely cannot be tested by exercising behavior, that signals the AC needs revision — not that source scanning is acceptable.
+
 ### Spec Alignment
 
 Implementation must match spec intent, not just pass tests:

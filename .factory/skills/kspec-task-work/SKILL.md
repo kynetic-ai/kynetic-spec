@@ -165,6 +165,12 @@ Test plan: N ACs × 1+ test each, plus trait ACs."
 
 Write test skeletons from your AC analysis **before** implementing production code. For each AC, create an annotated test with the expected behavior described — then implement code to make the tests pass. This ensures coverage is driven by the spec, not retrofitted to the implementation.
 
+**Tests must exercise behavior, not inspect source code.** A test that reads implementation files and asserts on their textual content is never valid AC coverage — regardless of language, framework, or technique used to read the file. These tests fail when the implementation is refactored (even though behavior is preserved) and pass when behavior breaks (as long as the string is still there). They create false coverage and false regressions simultaneously.
+
+The distinction: a behavioral test *runs* the system and checks what it *does*. A source-scanning test *reads* the code and checks what it *says*. Only behavioral tests count as AC coverage.
+
+Valid approaches: call the function, run the command, make the request, render the component, execute the pipeline. Check outputs, side effects, exit codes, responses, and rendered results.
+
 ### 7. Implement and Note
 
 Add notes during work, not just at the end:
