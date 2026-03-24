@@ -7852,6 +7852,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-24T20:19:00.260Z
+  - _ulid: 01KMGSQ4S13N19HTC31DN429EP
+    type: success
+    content: "readTestOutput migration tasks are well-scoped for automation: mechanical sed replacement,
+      clear verification (test + lint), minimal judgment. Task
+      @task-readtestoutput-yaml-round-trip-stability completed in one pass with no issues."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-24T20:48:57.121Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
