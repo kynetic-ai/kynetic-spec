@@ -22259,7 +22259,7 @@
     - task-readtestoutput-command-action
   title: Convert command-action.test.ts to readTestOutput (11 calls)
   type: task
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 4
@@ -22273,6 +22273,7 @@
   created_at: 2026-03-24T07:41:55.026Z
   started_at: 2026-03-24T22:12:54.868Z
   submitted_at: 2026-03-24T22:17:33.605Z
+  completed_at: 2026-03-24T22:25:42.143Z
   automation: eligible
 - _ulid: 01KMFCP24R2GG8J8DYY4MR1RV7
   slugs:
