@@ -21816,7 +21816,7 @@ workspaces:
         head: 4c1f1edfd72c0d60efd3765175a558cb1d4aca4f
         last_seen_at: 2026-03-24T21:47:58.241Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-readtestoutput-agents-instruction-gen-01kmfcny
-  - active_role: worker
+  - active_role: null
     base_branch_point: f95fb1f27a703a7c8a893d150cbe8184d6267fb5
     bootstrap:
       status: succeeded
@@ -21900,12 +21900,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-24T21:58:19.803Z
+      updated_at: 2026-03-24T21:58:26.157Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-24T21:58:19.803Z
+      updated_at: 2026-03-24T21:58:26.157Z
     integration:
       status: pending
       detail: null
@@ -21913,17 +21913,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: f95fb1f27a703a7c8a893d150cbe8184d6267fb5
-      updated_at: 2026-03-24T21:58:19.803Z
-    lifecycle_state: active
+      updated_at: 2026-03-24T21:58:26.157Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMFCNZBNE5TEH6SPME8DKPVA"
     task_slug: task-readtestoutput-skill-cli
     timestamps:
       closed_at: null
       last_active_at: 2026-03-24T21:48:44.688Z
-      last_reconciled_at: 2026-03-24T21:58:19.803Z
+      last_reconciled_at: 2026-03-24T21:58:26.157Z
       created_at: 2026-03-24T21:48:05.825Z
-      updated_at: 2026-03-24T21:58:19.803Z
+      updated_at: 2026-03-24T21:58:26.157Z
     workspace_id: dispatch-workspace-01KMFCNZBNE5TEH6SPME8DKPVA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
