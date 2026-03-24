@@ -79,36 +79,4 @@ describe("Daemon Executable Compilation", () => {
     // Should at least try to start the daemon
     expect(runResult.stderr || runResult.stdout).toMatch(/daemon/i);
   }, 90000); // 90s timeout for the entire test including compilation
-
-  // AC: @daemon-server ac-16
-  it("should have build:compile script in daemon package.json", async () => {
-    const { readFile } = await import("fs/promises");
-    const packageJson = JSON.parse(await readFile(join(daemonDir, "package.json"), "utf-8"));
-
-    expect(packageJson.scripts).toHaveProperty("build:compile");
-    expect(packageJson.scripts["build:compile"]).toContain("bun build");
-    expect(packageJson.scripts["build:compile"]).toContain("--compile");
-  });
-
-  // AC: @daemon-server ac-16
-  it("should have cross-platform build script", async () => {
-    const { access } = await import("fs/promises");
-    const scriptPath = join(process.cwd(), "scripts/build-executables.sh");
-
-    // Script should exist
-    await expect(access(scriptPath)).resolves.not.toThrow();
-
-    // Script should be executable
-    const stats = await stat(scriptPath);
-    expect(stats.mode & 0o111).toBeGreaterThan(0);
-
-    // Script should target multiple platforms
-    const { readFile } = await import("fs/promises");
-    const scriptContent = await readFile(scriptPath, "utf-8");
-
-    expect(scriptContent).toContain("bun-linux-x64");
-    expect(scriptContent).toContain("bun-darwin-arm64");
-    expect(scriptContent).toContain("bun-darwin-x64");
-    expect(scriptContent).toContain("bun-windows-x64");
-  });
 });

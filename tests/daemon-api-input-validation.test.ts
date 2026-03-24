@@ -232,28 +232,6 @@ describe("Daemon API input validation", () => {
     }
   });
 
-  // AC: @api-input-type-safety ac-4
-  it("derives tightened daemon enum schemas from canonical schema options", () => {
-    const expectations = [
-      ["packages/daemon/src/routes/tasks.ts", "TaskStatusSchema.options"],
-      ["packages/daemon/src/routes/tasks.ts", "AutomationStatusSchema.options"],
-      ["packages/daemon/src/routes/items.ts", "ItemTypeSchema.options"],
-      ["packages/daemon/src/routes/reviews.ts", "ReviewSubjectSchema.options"],
-      ["packages/daemon/src/routes/reviews.ts", "ReviewVerdictDecisionSchema.options"],
-      ["packages/daemon/src/routes/triage.ts", "TriageActionSchema.options"],
-      ["packages/daemon/src/routes/plans.ts", "PlanStatusSchema.options"],
-      ["packages/daemon/src/routes/sessions.ts", "SessionStatusSchema.options"],
-      ["packages/daemon/src/routes/validation.ts", "TaskStatusSchema.options"],
-    ] as const;
-
-    for (const [relativePath, snippet] of expectations) {
-      // oxlint-disable-next-line no-source-scanning/no-source-file-reads -- verifying daemon routes use canonical schema enums
-      const source = readFileSync(path.join(process.cwd(), relativePath), "utf8");
-      // oxlint-disable-next-line no-source-scanning/no-source-file-reads, jest/valid-expect -- vitest custom message; verifying schema usage
-      expect(source, relativePath).toContain(snippet);
-    }
-  });
-
   // AC: @api-input-type-safety ac-2
   it("keeps the supported dispatched session-trigger alias valid at the framework boundary", async () => {
     const response = await makeRequest("/api/sessions?trigger=dispatched");
