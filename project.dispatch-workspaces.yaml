@@ -20934,7 +20934,7 @@ workspaces:
         head: 8283aa44562d51c75908a9a89a36e914b14f984f
         last_seen_at: 2026-03-24T21:00:19.584Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-readtestoutput-skill-rendering-01kmfcnt
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 9ae71df9a2921ca858f772c5b02f4a5dd864430a
     bootstrap:
       status: succeeded
@@ -20999,10 +20999,15 @@ workspaces:
       reason: null
       updated_at: 2026-03-24T21:07:53.367Z
     health:
-      status: healthy
-      issues: []
-      summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-24T21:07:53.367Z
+      status: stale
+      issues:
+        - code: missing_reviewer_worktree
+          message: Reviewer worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-readtestoutput-workflow-runs-01kmfcnv-review"
+            is missing or no longer registered.
+          suggestion: Recreate the detached reviewer snapshot before running review again.
+      summary: Workspace registry record is stale and needs reconciliation.
+      updated_at: 2026-03-24T21:08:04.139Z
     integration:
       status: pending
       detail: null
@@ -21011,16 +21016,16 @@ workspaces:
       target_branch: dev
       target_commit: 9ae71df9a2921ca858f772c5b02f4a5dd864430a
       updated_at: 2026-03-24T21:07:53.367Z
-    lifecycle_state: integrating
+    lifecycle_state: stale
     resolved_base_branch: dev
     task_ref: "@01KMFCNV6MRGT4BRKY8BZ29QJX"
     task_slug: task-readtestoutput-workflow-runs
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-24T21:01:03.093Z
-      last_reconciled_at: 2026-03-24T21:07:53.367Z
+      last_active_at: 2026-03-24T21:08:04.139Z
+      last_reconciled_at: 2026-03-24T21:08:04.139Z
       created_at: 2026-03-24T21:00:26.846Z
-      updated_at: 2026-03-24T21:07:59.632Z
+      updated_at: 2026-03-24T21:08:04.139Z
     workspace_id: dispatch-workspace-01KMFCNV6MRGT4BRKY8BZ29QJX
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
