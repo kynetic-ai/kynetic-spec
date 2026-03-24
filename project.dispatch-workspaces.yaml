@@ -21925,12 +21925,20 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-24T22:04:19.333Z
+      updated_at: 2026-03-24T22:10:05.509Z
     health:
-      status: healthy
-      issues: []
-      summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-24T22:07:43.915Z
+      status: invalid
+      issues:
+        - code: missing_canonical_branch
+          message: Canonical branch "dispatch/task/task-readtestoutput-skill-cli/01kmfcnz" is missing.
+          suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
+        - code: missing_worker_worktree
+          message: Worker worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-readtestoutput-skill-cli-01kmfcnz"
+            is missing or no longer registered.
+          suggestion: Re-provision the worker worktree from the recorded canonical branch.
+      summary: Workspace registry record is invalid because required git state is missing.
+      updated_at: 2026-03-24T22:10:05.509Z
     integration:
       status: merged
       detail: integration:merged
@@ -21938,17 +21946,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: f95fb1f27a703a7c8a893d150cbe8184d6267fb5
-      updated_at: 2026-03-24T22:04:19.333Z
-    lifecycle_state: closing
+      updated_at: 2026-03-24T22:10:05.509Z
+    lifecycle_state: stale
     resolved_base_branch: dev
     task_ref: "@01KMFCNZBNE5TEH6SPME8DKPVA"
     task_slug: task-readtestoutput-skill-cli
     timestamps:
       closed_at: null
       last_active_at: 2026-03-24T21:58:40.742Z
-      last_reconciled_at: 2026-03-24T22:07:43.915Z
+      last_reconciled_at: 2026-03-24T22:10:05.509Z
       created_at: 2026-03-24T21:48:05.825Z
-      updated_at: 2026-03-24T22:07:43.915Z
+      updated_at: 2026-03-24T22:10:05.509Z
     workspace_id: dispatch-workspace-01KMFCNZBNE5TEH6SPME8DKPVA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
