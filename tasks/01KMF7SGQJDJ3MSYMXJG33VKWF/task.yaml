@@ -11,7 +11,7 @@ description: |
 spec_ref: null
 plan_ref: "@plan-migrate-from-biome-to-oxlint-oxfmt"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-install-oxlint-oxfmt"
@@ -22,6 +22,14 @@ tags:
   - infra
   - cleanup
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-24T19:39:56.138Z
+  commit: 1053b623d26e19a217913185932850a73e46c387
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
 session_id: 01KM0XRFH87T3QWPVXDQZCA2XK
 history:
   - author: "@claude"
@@ -37,6 +45,27 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-03-24T08:25:11.120Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-03-24T19:39:56.138Z
+          commit: 1053b623d26e19a217913185932850a73e46c387
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous: null
+      submitted_at:
+        new: 2026-03-24T19:39:56.141Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-03-24T19:39:56.142Z
 created_at: 2026-03-24T06:16:26.098Z
 started_at: 2026-03-24T08:25:11.119Z
+submitted_at: 2026-03-24T19:39:56.141Z
 todos: []
