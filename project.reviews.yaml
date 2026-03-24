@@ -50202,6 +50202,16 @@ reviews:
         runner: vitest
         created_at: 2026-03-24T22:01:51.135Z
         completed_at: 2026-03-24T22:01:51.135Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 0 warnings and 0 errors on tests/skill-cli.test.ts
+        name: oxlint
+        required: true
+        runner: oxlint
+        created_at: 2026-03-24T22:01:55.417Z
+        completed_at: 2026-03-24T22:01:55.417Z
     events:
       - _ulid: 01KMGXVMGVPPDD8SXE4XC2214W
         actor: "@claude"
@@ -50223,6 +50233,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-24T22:01:51.529Z
+      - _ulid: 01KMGXWRSVKXA4KEQF744TGTH2
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: oxlint
+        timestamp: 2026-03-24T22:01:55.771Z
     examined_commit: fd19af112e50f3aa7ab053e2aafa7c76c3e0cae2
     external_links: []
     lifecycle_state: open
@@ -50235,5 +50252,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-24T22:01:18.619Z
-    updated_at: 2026-03-24T22:01:51.135Z
+    updated_at: 2026-03-24T22:01:55.417Z
     notes: []
