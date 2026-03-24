@@ -830,7 +830,7 @@ describe("stale integration target detection", () => {
 
     const taskRef = `@${testUlid("TASK", 64)}`;
 
-    const first = await provisionDispatchWorkspace({
+    await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
       task: { title: "No Change Test", slugs: ["task-no-change"] },

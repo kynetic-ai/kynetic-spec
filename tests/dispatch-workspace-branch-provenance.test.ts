@@ -173,7 +173,7 @@ describe("dispatch workspace branch provenance", () => {
     git(tempDir, "checkout -b dev");
 
     const taskRef = `@${testUlid("PROV", 4)}`;
-    const workspace = await provisionDispatchWorkspace({
+    await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
       task: {
@@ -394,7 +394,7 @@ describe("dispatch workspace branch provenance", () => {
     git(tempDir, "checkout -b dev");
 
     const taskRef = `@${testUlid("PROV", 7)}`;
-    const workspace = await provisionDispatchWorkspace({
+    await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
       task: {
@@ -641,7 +641,7 @@ describe("dispatch workspace branch provenance", () => {
     git(tempDir, "checkout -b dev");
 
     const taskRef = `@${testUlid("PROV", 8)}`;
-    const workspace = await provisionDispatchWorkspace({
+    await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
       task: {

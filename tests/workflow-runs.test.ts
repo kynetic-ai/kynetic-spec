@@ -149,8 +149,6 @@ describe("workflow start with task link", () => {
     const result = kspec("workflow start @test-workflow --task @test-task --json", tempDir);
 
     expect(result.exitCode).toBe(0);
-    const output = JSON.parse(result.stdout);
-
     // Verify output includes task reference
     const runsPath = path.join(tempDir, "kynetic.runs.yaml");
     const runsContent = await fs.readFile(runsPath, "utf-8");

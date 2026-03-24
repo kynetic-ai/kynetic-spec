@@ -2604,7 +2604,6 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
         else if (event === "error") this.onerror = handler;
         else if (event === "close") this.onclose = handler as () => void;
       }
-      onclose: (() => void) | null = null;
       constructor(_url: string) {
         instances.push(this);
       }
@@ -2669,7 +2668,6 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
         else if (event === "error") this.onerror = handler;
         else if (event === "close") this.onclose = handler as () => void;
       }
-      onclose: (() => void) | null = null;
       constructor(_url: string) {
         instances.push(this);
       }
@@ -2751,7 +2749,6 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
         else if (event === "error") this.onerror = handler;
         else if (event === "close") this.onclose = handler as () => void;
       }
-      onclose: (() => void) | null = null;
       constructor(_url: string) {
         instances.push(this);
       }
@@ -2818,7 +2815,6 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
         else if (event === "error") this.onerror = handler;
         else if (event === "close") this.onclose = handler as () => void;
       }
-      onclose: (() => void) | null = null;
       constructor(_url: string) {
         instances.push(this);
       }

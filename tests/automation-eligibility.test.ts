@@ -351,10 +351,6 @@ describe("Task Automation Eligibility", () => {
         tempDir,
       );
 
-      // Get the task to find its ULID
-      const tasks = kspecJson<any[]>("tasks list", tempDir);
-      const task = tasks.find((t) => t.title === "Bad spec ref");
-
       // Manually patch the task file to have an unresolvable spec_ref
       // This simulates a spec being deleted after the task was created
       const tasksFile = path.join(tempDir, "project.tasks.yaml");

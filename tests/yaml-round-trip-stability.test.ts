@@ -682,8 +682,6 @@ describe("round-trip stability — savePlan path", () => {
     const { ctx, plansFilePath } = await setupPlanContext(plans);
 
     // Snapshot the first plan's raw YAML before deletion
-    const beforeContent = await fs.readFile(plansFilePath, "utf-8");
-
     // Delete the second plan
     const deleted = await deletePlan(ctx, testUlid("PLAN", 7));
     expect(deleted).toBe(true);
@@ -896,8 +894,6 @@ describe("round-trip stability — saveReviewRecord path", () => {
         },
       ],
     });
-    const initialContent = await fs.readFile(reviewsPath, "utf-8");
-
     // Mutate only the first review
     const loaded = await loadReviewRecords(ctx);
     await mutateReviewAtomically(ctx, loaded[0], (r) => ({
@@ -1019,8 +1015,6 @@ describe("round-trip stability — saveObservation path", () => {
         },
       ],
     });
-    const initialContent = await fs.readFile(manifestPath, "utf-8");
-
     // Mutate the observation (resolve it)
     const meta = await loadMetaContext(ctx);
     const obs = meta.observations[0];
@@ -1412,8 +1406,6 @@ describe("round-trip stability — saveInboxItem path", () => {
         },
       ],
     });
-    const initialContent = await fs.readFile(inboxPath, "utf-8");
-
     // Mutate only the first item (add tags)
     const loaded = await loadInboxItems(ctx);
     await mutateInboxItemAtomically(ctx, loaded[0], (i) => ({
@@ -1602,8 +1594,6 @@ describe("round-trip stability — saveTriageRecord path", () => {
         },
       ],
     });
-    const initialContent = await fs.readFile(triagePath, "utf-8");
-
     // Load all records — verify none gain Zod defaults just from loading+saving
     const loaded = await loadTriageRecords(ctx);
     expect(loaded).toHaveLength(3);
@@ -1654,10 +1644,6 @@ describe("round-trip stability — saveTriageRecord path", () => {
         },
       ],
     });
-
-    // Capture what the first (non-target) record looks like in YAML
-    const initialContent = await fs.readFile(triagePath, "utf-8");
-    const initialFirstRecordYaml = initialContent.split(`- _ulid: ${ulid2}`)[0];
 
     // Save the second record multiple times through different mutations
     const loaded = await loadTriageRecords(ctx);
@@ -1938,8 +1924,6 @@ describe("round-trip stability — saveWorkflowRun path", () => {
         },
       ],
     });
-    const initialContent = await fs.readFile(runsPath, "utf-8");
-
     // Mutate only the first run
     const loaded = await loadWorkflowRuns(ctx);
     await mutateWorkflowRunAtomically(ctx, loaded[0], (r) => ({
@@ -2177,8 +2161,6 @@ describe("round-trip stability — saveDispatchWorkspaceRecord path", () => {
       kynetic_dispatch_workspaces: "1.0",
       workspaces: [ws1, ws2],
     });
-    const initialContent = await fs.readFile(registryPath, "utf-8");
-
     // Mutate only the first workspace (change lifecycle_state)
     await mutateDispatchWorkspaceRecordAtomically(ctx, "ws-005", (r) => ({
       ...r,

@@ -459,12 +459,6 @@ exit 0`,
         { mode: 0o755 },
       );
 
-      const kspecExecutor = new ActionExecutor({
-        projectDir: tempDir,
-        kspecCliPath: scriptPath,
-        onActionRunEvent: (event) => events.push(event),
-      });
-
       const action: Action = {
         type: "kspec",
         command: "task list --json",
@@ -491,13 +485,13 @@ fs.writeFileSync(
 process.exit(0);`,
       );
 
-      const kspecExecutor2 = new ActionExecutor({
+      const kspecExecutor = new ActionExecutor({
         projectDir: tempDir,
         kspecCliPath: nodeScriptPath,
         onActionRunEvent: (event) => events.push(event),
       });
 
-      const run = await kspecExecutor2.execute(action, ctx);
+      const run = await kspecExecutor.execute(action, ctx);
 
       expect(run.status).toBe("completed");
       expect(run.action_type).toBe("kspec");

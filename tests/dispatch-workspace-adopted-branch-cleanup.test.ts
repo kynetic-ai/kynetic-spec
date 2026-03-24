@@ -415,7 +415,7 @@ describe("adopted branch cleanup and recoverability", () => {
     await fs.writeFile(path.join(tempDir, "project.tasks.yaml"), "tasks: []\n", "utf-8");
 
     const taskRef = `@${testUlid("ACLEAN", 6)}`;
-    const workspace = await provisionDispatchWorkspace({
+    await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
       task: {

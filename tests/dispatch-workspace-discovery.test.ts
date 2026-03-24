@@ -504,7 +504,7 @@ describe("review and fix-cycle workspace discovery before discard", () => {
     const taskRef = `@${testUlid("TASK", 9)}`;
 
     // Provision workspace to create worktree with metadata file
-    const workspace = await provisionDispatchWorkspace({
+    await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
       task: {
