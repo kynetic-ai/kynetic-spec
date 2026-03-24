@@ -14050,7 +14050,7 @@ runs:
     completed_at: 2026-03-23T21:35:00.080Z
   - _ulid: 01KMGRHP4TFT396FPE1G5QT31C
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -14080,7 +14080,32 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-24T20:28:54.212Z
-        completed_at: 2026-03-24T20:28:54.212Z
+        completed_at: 2026-03-24T20:29:23.286Z
+        notes: >-
+          Searched existing observations and inbox. Relevant existing item: observation 01KMGR0A
+          about 'kspec skill render does not pick up local template changes' — this was exactly the
+          friction the worker encountered and documented in their notes (had to manually update
+          rendered files for core template skills since kspec skill render reads from installed
+          package, not local templates).
+
+
+          No new high-confidence friction or success patterns from this session:
+
+          - The review itself was clean and efficient — no friction beyond what's already tracked.
+
+          - The worktree checkout conflict (dev already used by main worktree) is standard git
+          worktree behavior, not friction — the reviewer correctly ran merge commands against the
+          main worktree.
+
+          - The npm install creating a package-lock.json diff is trivial/expected in review
+          worktrees — not systemic friction.
+
+
+          Nothing new to capture.
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-24T20:29:23.286Z
+        completed_at: 2026-03-24T20:29:23.286Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-24T20:28:29.722Z
