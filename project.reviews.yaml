@@ -51632,6 +51632,12 @@ reviews:
         payload:
           thread_ulid: 01KMH1VB3R60PFP4ESX8CDWYZ1
         timestamp: 2026-03-24T23:51:55.124Z
+      - _ulid: 01KMH46CX3BTKZKPM3EW7YG103
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMH1T5NW11WEA37ZVRH4J4E1
+        timestamp: 2026-03-24T23:52:02.723Z
     examined_commit: 35d3b6f1a176412e832773ee8055c90bed2b3f8b
     external_links: []
     lifecycle_state: closed
@@ -51666,6 +51672,8 @@ reviews:
               zero diff against dev and retains its readTestOutput calls from commit f8471212e."
             created_at: 2026-03-24T23:51:51.161Z
         kind: blocker
+        resolved_at: 2026-03-24T23:52:02.326Z
+        resolved_by: "@claude"
       - _ulid: 01KMH1VB3R60PFP4ESX8CDWYZ1
         anchor:
           type: code
@@ -51697,7 +51705,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-24T23:11:26.900Z
     created_at: 2026-03-24T23:10:02.654Z
-    updated_at: 2026-03-24T23:51:54.702Z
+    updated_at: 2026-03-24T23:52:02.326Z
     notes: []
   - _ulid: 01KMH26WVJN5PFB7Y8DBE015DG
     slugs: []
