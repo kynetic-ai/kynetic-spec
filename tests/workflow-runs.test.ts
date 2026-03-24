@@ -3,7 +3,7 @@
  * Spec: @workflow-run-foundation
  */
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { kspec, createTempDir, cleanupTempDir, initGitRepo } from "./helpers/cli.js";
+import { kspec, createTempDir, cleanupTempDir, initGitRepo, readTestOutput } from "./helpers/cli.js";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import * as YAML from "yaml";
@@ -109,7 +109,7 @@ describe("workflow start", () => {
 
     // Verify run was saved to file
     const runsPath = path.join(tempDir, "kynetic.runs.yaml");
-    const runsContent = await fs.readFile(runsPath, "utf-8");
+    const runsContent = await readTestOutput(runsPath);
     const doc = parseDocument(runsContent);
     const runsData = doc.toJS() as { runs: any[] };
 
@@ -151,7 +151,7 @@ describe("workflow start with task link", () => {
     expect(result.exitCode).toBe(0);
     // Verify output includes task reference
     const runsPath = path.join(tempDir, "kynetic.runs.yaml");
-    const runsContent = await fs.readFile(runsPath, "utf-8");
+    const runsContent = await readTestOutput(runsPath);
     const doc = parseDocument(runsContent);
     const runsData = doc.toJS() as { runs: any[] };
 
@@ -185,7 +185,7 @@ describe("workflow runs list", () => {
 
     // Abort one of them
     const runsPath = path.join(tempDir, "kynetic.runs.yaml");
-    const runsContent = await fs.readFile(runsPath, "utf-8");
+    const runsContent = await readTestOutput(runsPath);
     const doc = parseDocument(runsContent);
     const runsData = doc.toJS() as { runs: any[] };
 
@@ -193,7 +193,7 @@ describe("workflow runs list", () => {
     runsData.runs[1].status = "completed";
     runsData.runs[1].completed_at = new Date().toISOString();
 
-    const doc2 = parseDocument(await fs.readFile(runsPath, "utf-8"));
+    const doc2 = parseDocument(await readTestOutput(runsPath));
     doc2.setIn(["runs", 1, "status"], "completed");
     doc2.setIn(["runs", 1, "completed_at"], runsData.runs[1].completed_at);
     await fs.writeFile(runsPath, doc2.toString(), "utf-8");
@@ -394,7 +394,7 @@ describe("workflow abort", () => {
 
     // Verify in file
     const runsPath = path.join(tempDir, "kynetic.runs.yaml");
-    const runsContent = await fs.readFile(runsPath, "utf-8");
+    const runsContent = await readTestOutput(runsPath);
     const doc = parseDocument(runsContent);
     const runsData = doc.toJS() as { runs: any[] };
 
@@ -419,7 +419,7 @@ describe("workflow abort", () => {
 
     // Verify in file
     const runsPath = path.join(tempDir, "kynetic.runs.yaml");
-    const runsContent = await fs.readFile(runsPath, "utf-8");
+    const runsContent = await readTestOutput(runsPath);
     const doc = parseDocument(runsContent);
     const runsData = doc.toJS() as { runs: any[] };
 
@@ -437,14 +437,14 @@ describe("workflow abort validation", () => {
     const { run_id } = JSON.parse(startResult.stdout);
 
     const runsPath = path.join(tempDir, "kynetic.runs.yaml");
-    const runsContent = await fs.readFile(runsPath, "utf-8");
+    const runsContent = await readTestOutput(runsPath);
     const doc = parseDocument(runsContent);
     const runsData = doc.toJS() as { runs: any[] };
 
     runsData.runs[0].status = "completed";
     runsData.runs[0].completed_at = new Date().toISOString();
 
-    const doc3 = parseDocument(await fs.readFile(runsPath, "utf-8"));
+    const doc3 = parseDocument(await readTestOutput(runsPath));
     doc3.setIn(["runs", 0, "status"], "completed");
     doc3.setIn(["runs", 0, "completed_at"], runsData.runs[0].completed_at);
     await fs.writeFile(runsPath, doc3.toString(), "utf-8");
@@ -490,7 +490,7 @@ describe("workflow next - basic step advancement", () => {
 
     // Verify step result was recorded
     const runsPath = path.join(tempDir, "kynetic.runs.yaml");
-    const runsContent = await fs.readFile(runsPath, "utf-8");
+    const runsContent = await readTestOutput(runsPath);
     const doc = parseDocument(runsContent);
     const runsData = doc.toJS() as { runs: any[] };
 
@@ -533,7 +533,7 @@ describe("workflow next - basic step advancement", () => {
     expect(result.stdout).toContain("Step 3/3: [check] Validate results");
 
     const runsPath = path.join(tempDir, "kynetic.runs.yaml");
-    const runsContent = await fs.readFile(runsPath, "utf-8");
+    const runsContent = await readTestOutput(runsPath);
     const doc = parseDocument(runsContent);
     const runsData = doc.toJS() as { runs: any[] };
 
@@ -570,7 +570,7 @@ describe("workflow next - completing last step", () => {
 
     // Verify run is completed
     const runsPath = path.join(tempDir, "kynetic.runs.yaml");
-    const runsContent = await fs.readFile(runsPath, "utf-8");
+    const runsContent = await readTestOutput(runsPath);
     const doc = parseDocument(runsContent);
     const runsData = doc.toJS() as { runs: any[] };
 
@@ -623,7 +623,7 @@ describe("workflow next - run reference inference", () => {
 
     // Verify the correct run was advanced
     const runsPath = path.join(tempDir, "kynetic.runs.yaml");
-    const runsContent = await fs.readFile(runsPath, "utf-8");
+    const runsContent = await readTestOutput(runsPath);
     const doc = parseDocument(runsContent);
     const runsData = doc.toJS() as { runs: any[] };
 
@@ -679,7 +679,7 @@ describe("workflow next - no active runs error", () => {
     JSON.parse(startResult.stdout); // verify valid JSON
 
     const runsPath = path.join(tempDir, "kynetic.runs.yaml");
-    const runsContent = await fs.readFile(runsPath, "utf-8");
+    const runsContent = await readTestOutput(runsPath);
     const doc = parseDocument(runsContent);
     doc.setIn(["runs", 0, "status"], "completed");
     doc.setIn(["runs", 0, "completed_at"], new Date().toISOString());
@@ -712,7 +712,7 @@ describe("workflow next - notes capture", () => {
 
     // Verify notes were saved
     const runsPath = path.join(tempDir, "kynetic.runs.yaml");
-    const runsContent = await fs.readFile(runsPath, "utf-8");
+    const runsContent = await readTestOutput(runsPath);
     const doc = parseDocument(runsContent);
     const runsData = doc.toJS() as { runs: any[] };
 
@@ -729,7 +729,7 @@ describe("workflow next - notes capture", () => {
     expect(result.exitCode).toBe(0);
 
     const runsPath = path.join(tempDir, "kynetic.runs.yaml");
-    const runsContent = await fs.readFile(runsPath, "utf-8");
+    const runsContent = await readTestOutput(runsPath);
     const doc = parseDocument(runsContent);
     const runsData = doc.toJS() as { runs: any[] };
 
@@ -744,7 +744,7 @@ describe("workflow next - notes capture", () => {
     expect(result.exitCode).toBe(0);
 
     const runsPath = path.join(tempDir, "kynetic.runs.yaml");
-    const runsContent = await fs.readFile(runsPath, "utf-8");
+    const runsContent = await readTestOutput(runsPath);
     const doc = parseDocument(runsContent);
     const runsData = doc.toJS() as { runs: any[] };
 
@@ -844,7 +844,7 @@ describe("workflow next - error guidance trait", () => {
 
     // Manually set run to completed
     const runsPath = path.join(tempDir, "kynetic.runs.yaml");
-    const runsContent = await fs.readFile(runsPath, "utf-8");
+    const runsContent = await readTestOutput(runsPath);
     const doc = parseDocument(runsContent);
     doc.setIn(["runs", 0, "status"], "completed");
     await fs.writeFile(runsPath, doc.toString(), "utf-8");
@@ -874,7 +874,7 @@ describe("entry criteria display and enforcement", () => {
 
     // Create workflows with entry criteria
     const metaPath = path.join(tempDir, "kynetic.meta.yaml");
-    const metaContent = await fs.readFile(metaPath, "utf-8");
+    const metaContent = await readTestOutput(metaPath);
     const doc = parseDocument(metaContent);
     const metaData = doc.toJS() as any;
 
@@ -987,7 +987,7 @@ describe("exit criteria display and enforcement", () => {
 
     // Create workflows with exit criteria
     const metaPath = path.join(tempDir, "kynetic.meta.yaml");
-    const metaContent = await fs.readFile(metaPath, "utf-8");
+    const metaContent = await readTestOutput(metaPath);
     const doc = parseDocument(metaContent);
     const metaData = doc.toJS() as any;
 
@@ -1080,7 +1080,7 @@ describe("strict mode enforcement", () => {
 
     // Create strict workflow with both entry and exit criteria
     const metaPath = path.join(tempDir, "kynetic.meta.yaml");
-    const metaContent = await fs.readFile(metaPath, "utf-8");
+    const metaContent = await readTestOutput(metaPath);
     const doc = parseDocument(metaContent);
     const metaData = doc.toJS() as any;
 
@@ -1149,7 +1149,7 @@ describe("strict mode enforcement", () => {
 
     // Check that confirmation was recorded
     const runsPath = path.join(tempDir, "kynetic.runs.yaml");
-    const runsContent = await fs.readFile(runsPath, "utf-8");
+    const runsContent = await readTestOutput(runsPath);
     const doc = parseDocument(runsContent);
     const runsData = doc.toJS() as { runs: any[] };
 
@@ -1173,7 +1173,7 @@ describe("advisory mode behavior", () => {
 
     // Create advisory workflow (default or explicit)
     const metaPath = path.join(tempDir, "kynetic.meta.yaml");
-    const metaContent = await fs.readFile(metaPath, "utf-8");
+    const metaContent = await readTestOutput(metaPath);
     const doc = parseDocument(metaContent);
     const metaData = doc.toJS() as any;
 
@@ -1222,7 +1222,7 @@ describe("advisory mode behavior", () => {
 
     // Verify step was marked as skipped
     const runsPath = path.join(tempDir, "kynetic.runs.yaml");
-    const runsContent = await fs.readFile(runsPath, "utf-8");
+    const runsContent = await readTestOutput(runsPath);
     const doc = parseDocument(runsContent);
     const runsData = doc.toJS() as { runs: any[] };
 
@@ -1241,7 +1241,7 @@ describe("workflow next JSON output", () => {
 
     // Create simple workflow for JSON testing
     const metaPath = path.join(tempDir, "kynetic.meta.yaml");
-    const metaContent = await fs.readFile(metaPath, "utf-8");
+    const metaContent = await readTestOutput(metaPath);
     const doc = parseDocument(metaContent);
     const metaData = doc.toJS() as any;
 
@@ -1323,7 +1323,7 @@ describe("workflow pause", () => {
 
     // Verify paused state is persisted
     const runsPath = path.join(tempDir, "kynetic.runs.yaml");
-    const runsContent = await fs.readFile(runsPath, "utf-8");
+    const runsContent = await readTestOutput(runsPath);
     const doc = parseDocument(runsContent);
     const runsData = doc.toJS() as { runs: any[] };
 
@@ -1354,7 +1354,7 @@ describe("workflow pause", () => {
     const { run_id } = JSON.parse(startResult.stdout);
 
     const runsPath = path.join(tempDir, "kynetic.runs.yaml");
-    const doc = parseDocument(await fs.readFile(runsPath, "utf-8"));
+    const doc = parseDocument(await readTestOutput(runsPath));
     doc.setIn(["runs", 0, "status"], "completed");
     await fs.writeFile(runsPath, doc.toString(), "utf-8");
 
@@ -1388,7 +1388,7 @@ describe("workflow resume", () => {
 
     // Verify paused_at is cleared
     const runsPath = path.join(tempDir, "kynetic.runs.yaml");
-    const runsContent = await fs.readFile(runsPath, "utf-8");
+    const runsContent = await readTestOutput(runsPath);
     const doc = parseDocument(runsContent);
     const runsData = doc.toJS() as { runs: any[] };
 
@@ -1436,7 +1436,7 @@ describe("workflow resume validation", () => {
     const { run_id } = JSON.parse(startResult.stdout);
 
     const runsPath = path.join(tempDir, "kynetic.runs.yaml");
-    const doc = parseDocument(await fs.readFile(runsPath, "utf-8"));
+    const doc = parseDocument(await readTestOutput(runsPath));
     doc.setIn(["runs", 0, "status"], "completed");
     await fs.writeFile(runsPath, doc.toString(), "utf-8");
 
@@ -1457,7 +1457,7 @@ describe("workflow next with step inputs", () => {
 
     // Create workflow with step inputs
     const metaPath = path.join(tempDir, "kynetic.meta.yaml");
-    const metaContent = await fs.readFile(metaPath, "utf-8");
+    const metaContent = await readTestOutput(metaPath);
     const doc = parseDocument(metaContent);
     const metaData = doc.toJS() as any;
 
@@ -1517,7 +1517,7 @@ describe("workflow next with step inputs", () => {
 
     // Verify inputs were captured
     const runsPath = path.join(tempDir, "kynetic.runs.yaml");
-    const runsContent = await fs.readFile(runsPath, "utf-8");
+    const runsContent = await readTestOutput(runsPath);
     const doc = parseDocument(runsContent);
     const runsData = doc.toJS() as { runs: any[] };
 
@@ -1548,7 +1548,7 @@ describe("workflow next with step inputs", () => {
 
     // Verify only required input was captured
     const runsPath = path.join(tempDir, "kynetic.runs.yaml");
-    const runsContent = await fs.readFile(runsPath, "utf-8");
+    const runsContent = await readTestOutput(runsPath);
     const doc = parseDocument(runsContent);
     const runsData = doc.toJS() as { runs: any[] };
 
@@ -1566,7 +1566,7 @@ describe("workflow next with step inputs", () => {
     expect(nextResult.exitCode).toBe(0);
 
     const runsPath = path.join(tempDir, "kynetic.runs.yaml");
-    const runsContent = await fs.readFile(runsPath, "utf-8");
+    const runsContent = await readTestOutput(runsPath);
     const doc = parseDocument(runsContent);
     const runsData = doc.toJS() as { runs: any[] };
 
@@ -1614,7 +1614,7 @@ describe("workflow complete", () => {
 
     // Verify in file
     const runsPath = path.join(tempDir, "kynetic.runs.yaml");
-    const runsContent = await fs.readFile(runsPath, "utf-8");
+    const runsContent = await readTestOutput(runsPath);
     const doc = parseDocument(runsContent);
     const runsData = doc.toJS() as { runs: any[] };
 
@@ -1636,7 +1636,7 @@ describe("workflow complete", () => {
 
     // Verify in file
     const runsPath = path.join(tempDir, "kynetic.runs.yaml");
-    const runsContent = await fs.readFile(runsPath, "utf-8");
+    const runsContent = await readTestOutput(runsPath);
     const doc = parseDocument(runsContent);
     const runsData = doc.toJS() as { runs: any[] };
 
