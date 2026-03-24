@@ -21519,3 +21519,79 @@ workspaces:
         head: c1f48a0e9e1aa25c67c821f83a4db1360cb91646
         last_seen_at: 2026-03-24T21:32:09.211Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-readtestoutput-session-create-01kmfcnx
+  - active_role: null
+    base_branch_point: 933b4a707d5691bd132462d605f6349ca2d95fd1
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-readtestoutput-meta/01kmfcnx
+    canonical_branch_head: 933b4a707d5691bd132462d605f6349ca2d95fd1
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-03-24T21:32:15.868Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-03-24T21:32:15.868Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: 933b4a707d5691bd132462d605f6349ca2d95fd1
+      updated_at: 2026-03-24T21:32:15.868Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KMFCNXZQBJME3WVXJ646MCKN"
+    task_slug: task-readtestoutput-meta
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-03-24T21:32:15.868Z
+      created_at: 2026-03-24T21:32:15.868Z
+      updated_at: 2026-03-24T21:32:15.868Z
+    workspace_id: dispatch-workspace-01KMFCNXZQBJME3WVXJ646MCKN
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-readtestoutput-meta/01kmfcnx
+        head: 933b4a707d5691bd132462d605f6349ca2d95fd1
+        last_seen_at: 2026-03-24T21:32:15.868Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-readtestoutput-meta-01kmfcnx
