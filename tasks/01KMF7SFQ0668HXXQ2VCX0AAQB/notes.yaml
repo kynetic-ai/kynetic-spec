@@ -1,1 +1,12 @@
-notes: []
+notes:
+  - _ulid: 01KMF83HJYCZ9X4FMDR4EA5JKZ
+    content: "Installed oxlint 1.56.0 and oxfmt 0.41.0. Removed @biomejs/biome 2.3.11. Created
+      .oxlintrc.json with eslint, typescript, unicorn, oxc, import plugins and correctness (error) +
+      suspicious (warn) categories. Created .oxfmtrc.json matching Biome formatter settings
+      (2-space, no tabs, double quotes, import sorting). Updated npm scripts: lint → oxlint, added
+      format and format:check. oxlint finds 192 warnings + 106 errors on src/ (broader rule set).
+      oxfmt finds 149 files with formatting diffs. Both expected — fixing violations is
+      task-format-and-fix-violations."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-24T06:21:54.654Z
