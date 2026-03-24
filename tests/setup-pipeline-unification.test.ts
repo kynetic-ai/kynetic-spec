@@ -14,7 +14,7 @@ import { kspec, createTempDir, cleanupTempDir, initGitRepo, readTestOutput } fro
  */
 async function setupKspecProject(tempDir: string): Promise<void> {
   initGitRepo(tempDir);
-  await fs.writeFile(path.join(tempDir, "README.md"), "# Test");
+  await fs.writeFile(path.join(tempDir, "README.md"), "# Test", "utf-8");
   execSync('git add README.md && git commit -m "Initial"', {
     cwd: tempDir,
     stdio: "pipe",
@@ -261,7 +261,7 @@ describe("Setup Pipeline Unification", () => {
       const errorDir = await createTempDir("kspec-debug-error-");
       try {
         initGitRepo(errorDir);
-        await fs.writeFile(path.join(errorDir, "README.md"), "# Test");
+        await fs.writeFile(path.join(errorDir, "README.md"), "# Test", "utf-8");
         execSync('git add README.md && git commit -m "Initial"', {
           cwd: errorDir,
           stdio: "pipe",
@@ -310,7 +310,7 @@ describe("Setup Pipeline Unification", () => {
         // Set up both directories
         for (const dir of [initDir, setupDir]) {
           initGitRepo(dir);
-          await fs.writeFile(path.join(dir, "README.md"), "# Test");
+          await fs.writeFile(path.join(dir, "README.md"), "# Test", "utf-8");
           execSync('git add README.md && git commit -m "Initial"', {
             cwd: dir,
             stdio: "pipe",
