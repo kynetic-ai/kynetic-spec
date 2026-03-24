@@ -21228,7 +21228,7 @@ workspaces:
         head: 1c7893b3a190744d649091f4a215ef8455776ee6
         last_seen_at: 2026-03-24T21:17:27.009Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-readtestoutput-enhanced-setup-01kmfcnv
-  - active_role: worker
+  - active_role: null
     base_branch_point: 10d0b34c70bb44db90256d5ba2d42a97d37d2464
     bootstrap:
       status: succeeded
@@ -21312,12 +21312,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-24T21:21:48.761Z
+      updated_at: 2026-03-24T21:23:16.762Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-24T21:21:48.761Z
+      updated_at: 2026-03-24T21:23:16.762Z
     integration:
       status: pending
       detail: null
@@ -21325,17 +21325,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 10d0b34c70bb44db90256d5ba2d42a97d37d2464
-      updated_at: 2026-03-24T21:21:48.761Z
-    lifecycle_state: active
+      updated_at: 2026-03-24T21:23:16.762Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMFCNWK7PM3FJBVT727HG6AF"
     task_slug: task-readtestoutput-task-migrate
     timestamps:
       closed_at: null
       last_active_at: 2026-03-24T21:15:36.010Z
-      last_reconciled_at: 2026-03-24T21:21:48.761Z
+      last_reconciled_at: 2026-03-24T21:23:16.762Z
       created_at: 2026-03-24T21:15:28.024Z
-      updated_at: 2026-03-24T21:21:48.761Z
+      updated_at: 2026-03-24T21:23:16.762Z
     workspace_id: dispatch-workspace-01KMFCNWK7PM3FJBVT727HG6AF
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
