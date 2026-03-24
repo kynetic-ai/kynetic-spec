@@ -20594,34 +20594,34 @@ workspaces:
     canonical_branch: dispatch/task/fix-flaky-tests-canonical-task-workspace-contract-and-agent-dispatch-engine/01kmgn92
     canonical_branch_head: f99e417cb5641fddbfc863130de02dc550f0cc5b
     cleanup:
-      status: not_scheduled
-      detail: null
-      eligible: false
-      reason: null
-      updated_at: 2026-03-24T20:41:12.221Z
+      status: scheduled
+      detail: integrated-into-base-branch
+      eligible: true
+      reason: integrated-into-base-branch
+      updated_at: 2026-03-24T20:51:41.798Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-24T20:41:12.221Z
+      updated_at: 2026-03-24T20:51:41.798Z
     integration:
-      status: pending
-      detail: null
-      outcome: manual_merge
+      status: merged
+      detail: integration:merged
+      outcome: merged
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 1053b623d26e19a217913185932850a73e46c387
-      updated_at: 2026-03-24T20:41:12.221Z
-    lifecycle_state: integrating
+      updated_at: 2026-03-24T20:51:41.798Z
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KMGN921HM61YB644E7ZQ2XX9"
     task_slug: fix-flaky-tests-canonical-task-workspace-contract-and-agent-dispatch-engine
     timestamps:
       closed_at: null
       last_active_at: 2026-03-24T20:40:22.789Z
-      last_reconciled_at: 2026-03-24T20:41:12.221Z
+      last_reconciled_at: 2026-03-24T20:51:41.798Z
       created_at: 2026-03-24T20:18:21.452Z
-      updated_at: 2026-03-24T20:41:12.221Z
+      updated_at: 2026-03-24T20:51:41.798Z
     workspace_id: dispatch-workspace-01KMGN921HM61YB644E7ZQ2XX9
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -20859,18 +20859,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-readtestoutput-skill-rendering/01kmfcnt
-    canonical_branch_head: 3e26d874f93e676dc62e0001d1a8e850662a5595
+    canonical_branch_head: 86c0b21953c006c2ce760dbc3881c6e64a828ef9
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-24T20:49:57.672Z
+      updated_at: 2026-03-24T20:51:43.643Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-24T20:50:05.683Z
+      updated_at: 2026-03-24T20:51:43.643Z
     integration:
       status: pending
       detail: null
@@ -20878,7 +20878,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 3e26d874f93e676dc62e0001d1a8e850662a5595
-      updated_at: 2026-03-24T20:49:57.672Z
+      updated_at: 2026-03-24T20:51:43.643Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KMFCNTETP3KE52EAWC9BE47D"
@@ -20886,9 +20886,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-24T20:50:05.683Z
-      last_reconciled_at: 2026-03-24T20:50:05.683Z
+      last_reconciled_at: 2026-03-24T20:51:43.643Z
       created_at: 2026-03-24T20:49:57.672Z
-      updated_at: 2026-03-24T20:50:05.683Z
+      updated_at: 2026-03-24T20:51:43.643Z
     workspace_id: dispatch-workspace-01KMFCNTETP3KE52EAWC9BE47D
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
