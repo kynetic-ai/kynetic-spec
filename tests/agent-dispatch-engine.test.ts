@@ -27,6 +27,8 @@ import {
   testUlids,
   kspec,
   initGitRepo,
+  readTestOutput,
+  readTestOutputSync,
 } from "./helpers/cli.js";
 import * as http from "node:http";
 import type { Agent } from "../src/schema/meta.js";
@@ -1519,7 +1521,7 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
       vi.restoreAllMocks();
 
       // Verify task note was added
-      const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{
+      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{
         args: string[];
       }>;
       const noteCall = calls.find((c) => c.args.includes("note") && c.args.includes(taskRef));
@@ -1564,7 +1566,7 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
       expect(spawned).toBe(false);
       expect(runSpy).not.toHaveBeenCalled();
 
-      const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{
+      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{
         args: string[];
       }>;
       const noteCall = calls.find(
@@ -1624,7 +1626,7 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
       expect(runSpy).not.toHaveBeenCalled();
       expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("Failed to block task"));
 
-      const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{
+      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{
         args: string[];
       }>;
       const noteCall = calls.find(
@@ -1679,7 +1681,7 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
       expect(spawned).toBe(false);
       expect(runSpy).not.toHaveBeenCalled();
 
-      const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{
+      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{
         args: string[];
       }>;
       const noteCall = calls.find(
@@ -3306,7 +3308,7 @@ describe("Dispatch role workflow entrypoints", () => {
       expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining("Failed to build prompt"));
       expect(internal.inFlightTaskKeys.has(`${agent.id}:${taskRef}`)).toBe(false);
 
-      const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{
+      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{
         args: string[];
       }>;
       const noteCall = calls.find((c) => c.args.includes("note") && c.args.includes(taskRef));
@@ -3422,7 +3424,7 @@ describe("Dispatch role workflow entrypoints", () => {
       expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining("Failed to build prompt"));
       expect(internal.inFlightTaskKeys.has(`${agent.id}:${taskRef}`)).toBe(false);
 
-      const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{
+      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{
         args: string[];
       }>;
       const noteCall = calls.find((c) => c.args.includes("note") && c.args.includes(taskRef));
@@ -4274,7 +4276,7 @@ describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
     git(workspace.cwd, `checkout -b ${legacyBranch}`);
     git(testDir, `branch -D ${workspace.metadata.canonicalBranch}`);
     const metadataPath = path.join(workspace.cwd, ".kspec-dispatch-workspace.json");
-    const metadata = JSON.parse(await fs.readFile(metadataPath, "utf-8")) as {
+    const metadata = JSON.parse(await readTestOutput(metadataPath)) as {
       canonicalBranch: string;
       canonicalBranchHead: string;
     };
@@ -4311,7 +4313,7 @@ describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
     expect(spawnSpy).toHaveBeenCalledTimes(1);
     expect(git(workspace.cwd, "branch --show-current")).toBe(workspace.metadata.canonicalBranch);
     const registry = YAML.parse(
-      await fs.readFile(path.join(testDir, "project.dispatch-workspaces.yaml"), "utf-8"),
+      await readTestOutput(path.join(testDir, "project.dispatch-workspaces.yaml")),
     ) as { workspaces?: Array<{ task_ref: string; canonical_branch: string }> };
     expect(registry.workspaces).toEqual(
       expect.arrayContaining([
@@ -4351,7 +4353,7 @@ describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
     git(workspace.cwd, `checkout -b ${legacyBranch}`);
     git(testDir, `branch -D ${workspace.metadata.canonicalBranch}`);
     const metadataPath = path.join(workspace.cwd, ".kspec-dispatch-workspace.json");
-    const metadata = JSON.parse(await fs.readFile(metadataPath, "utf-8")) as {
+    const metadata = JSON.parse(await readTestOutput(metadataPath)) as {
       canonicalBranch: string;
       canonicalBranchHead: string;
     };
@@ -4388,7 +4390,7 @@ describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
     expect(spawnSpy).toHaveBeenCalledTimes(1);
     expect(git(workspace.cwd, "branch --show-current")).toBe(workspace.metadata.canonicalBranch);
     const registry = YAML.parse(
-      await fs.readFile(path.join(testDir, "project.dispatch-workspaces.yaml"), "utf-8"),
+      await readTestOutput(path.join(testDir, "project.dispatch-workspaces.yaml")),
     ) as { workspaces?: Array<{ task_ref: string; canonical_branch: string }> };
     expect(registry.workspaces).toEqual(
       expect.arrayContaining([
@@ -4547,7 +4549,7 @@ describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
 
     // The registry should have been recovered from the reviewer metadata.
     const registry = YAML.parse(
-      await fs.readFile(path.join(testDir, "project.dispatch-workspaces.yaml"), "utf-8"),
+      await readTestOutput(path.join(testDir, "project.dispatch-workspaces.yaml")),
     ) as { workspaces?: Array<{ task_ref: string }> };
     expect(registry.workspaces).toEqual(
       expect.arrayContaining([
@@ -7057,7 +7059,7 @@ describe("AC-11: Idle grace period backward compatibility", () => {
     // Add a session.idle hook to the meta YAML and re-commit
     const hookUlid = testUlid("HOOK");
     const metaContent = YAML.parse(
-      await fs.readFile(path.join(testDir, "kynetic.meta.yaml"), "utf-8"),
+      await readTestOutput(path.join(testDir, "kynetic.meta.yaml")),
     );
     metaContent.hooks = [
       {
@@ -7150,7 +7152,7 @@ describe("AC-11: Idle grace period backward compatibility", () => {
     // Now add a session.idle hook to meta on disk
     const hookUlid = testUlid("HOOK", 2);
     const metaContent = YAML.parse(
-      await fs.readFile(path.join(testDir, "kynetic.meta.yaml"), "utf-8"),
+      await readTestOutput(path.join(testDir, "kynetic.meta.yaml")),
     );
     metaContent.hooks = [
       {
