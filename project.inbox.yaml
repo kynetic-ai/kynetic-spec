@@ -1902,3 +1902,24 @@ inbox:
       - feature
     added_by: "@claude"
     created_at: 2026-03-23T21:37:12.006Z
+  - _ulid: 01KMH2GVWFRF4GQ0AK67X8GVH5
+    text: "Update writing-specs skill with description anti-patterns: no non-goals sections, no
+      relationship-to-existing-specs sections, no justification references (consistent with @foo),
+      no implementation commentary in descriptions. Descriptions focus purely on what the system
+      does. Learned through correction during daemon optimistic data layer planning."
+    tags:
+      - skills
+      - writing
+    added_by: "@claude"
+    created_at: 2026-03-24T23:22:48.591Z
+  - _ulid: 01KMH2GVY8J82A8DVHY9YV6JPH
+    text: "Update plan skill: plans do the design work, tasks are purely implementation. Architecture
+      and design decisions belong in Implementation Notes section, not in design tasks. Tasks should
+      be connecting dots the plan already figured out, not making architectural decisions solo.
+      Anti-pattern: creating a design task separate from an implementation task leads to bad designs
+      and review churn."
+    tags:
+      - skills
+      - planning
+    added_by: "@claude"
+    created_at: 2026-03-24T23:22:48.648Z
