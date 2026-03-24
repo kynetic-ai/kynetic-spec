@@ -8,6 +8,7 @@ import {
   provisionDispatchWorkspace,
   resolveDispatchWorkspaceCleanupState,
 } from "../src/agent-runtime/workspace.js";
+import * as workspaceModule from "../src/agent-runtime/workspace.js";
 import {
   cleanupTempDir,
   createTempDir,
@@ -303,6 +304,13 @@ describe("canonical task workspace contract", () => {
         slugs: ["task-cleanup-eligibility-cancelled"],
       },
     });
+
+    // Mock heavy engine.start() operations that aren't needed for this test.
+    // The test validates handleStateChange → reconcileDispatchWorkspaceLifecycle,
+    // not engine bootstrap or registry reconciliation. Without these mocks,
+    // cumulative I/O under full-suite concurrent load can exceed the test timeout.
+    vi.spyOn(workspaceModule, "reconcileDispatchWorkspaceRegistry").mockResolvedValue();
+    vi.spyOn(workspaceModule, "reconcileDispatchWorkspaceArtifacts").mockResolvedValue(undefined as any);
 
     const engine = new DispatchEngine({
       projectDir: tempDir,

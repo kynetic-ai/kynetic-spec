@@ -2493,6 +2493,19 @@ describe("Autonomous dispatch prompt guardrails", () => {
       durationMs: 1,
     });
 
+    // Mock workspace provisioning and bootstrap — this test validates prompt content,
+    // not workspace setup. Without mocks, real git worktree operations cause timing
+    // flakiness under concurrent test load.
+    const mockMetadata = buildMockWorkspaceMetadata(testDir);
+    vi.spyOn(workspaceModule, "provisionDispatchWorkspace").mockResolvedValue({
+      cwd: testDir,
+      metadataPath: path.join(testDir, ".kspec-dispatch-workspace.json"),
+      metadata: mockMetadata,
+    });
+    vi.spyOn(bootstrapModule, "ensureWorkspaceBootstrap").mockResolvedValue({
+      metadata: mockMetadata,
+    });
+
     const engine = new DispatchEngine({
       projectDir: testDir,
       specDir: testDir,
@@ -2510,9 +2523,7 @@ describe("Autonomous dispatch prompt guardrails", () => {
       task: { automation: "eligible", tags: [] } as any,
     });
 
-    for (let i = 0; i < 20 && runSpy.mock.calls.length === 0; i++) {
-      await new Promise((resolve) => setTimeout(resolve, 5));
-    }
+    await waitForMockCall(runSpy);
 
     expect(runSpy).toHaveBeenCalled();
     const invocationOpts = runSpy.mock.calls[0][0];
@@ -2572,9 +2583,7 @@ describe("Autonomous dispatch prompt guardrails", () => {
       timestamp: Date.now(),
     });
 
-    for (let i = 0; i < 20 && runSpy.mock.calls.length === 0; i++) {
-      await new Promise((resolve) => setTimeout(resolve, 5));
-    }
+    await waitForMockCall(runSpy);
 
     expect(runSpy).toHaveBeenCalled();
     const invocationOpts = runSpy.mock.calls[0][0];
