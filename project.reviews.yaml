@@ -50457,6 +50457,22 @@ reviews:
         required: true
         created_at: 2026-03-24T22:17:50.775Z
         completed_at: 2026-03-24T22:17:50.775Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "All 6 threads from review 01KMGWR3 addressed: (1) session-summary-cache relationship —
+          absorption documented in description + task. (2) shadow-lazy-read-sync scope — explicitly
+          narrowed in daemon-read-path description + task. (3) KSPEC_NO_DAEMON=1 — references
+          @multi-directory-daemon ac-32. (4) Cache warming latency — new ACs ac-warming-availability
+          and ac-progressive-loading added. (5) Memory bounds — explicit non-goal in description,
+          follows multi-directory-daemon precedent. (6) Dispatch re-entrancy — addressed in
+          cli-daemon-proxy and daemon-command-api descriptions. Both previously failing checks (AC
+          coverage, spec conflict) now pass."
+        name: Previous review findings addressed
+        required: true
+        created_at: 2026-03-24T22:18:01.636Z
+        completed_at: 2026-03-24T22:18:01.636Z
     events:
       - _ulid: 01KMGYQTS9JPQGA49J953K0HJM
         actor: "@claude"
@@ -50527,6 +50543,13 @@ reviews:
           status: pass
           name: Existing spec conflict check
         timestamp: 2026-03-24T22:17:51.166Z
+      - _ulid: 01KMGYT8DEBB0KN1TG3266D2S2
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Previous review findings addressed
+        timestamp: 2026-03-24T22:18:02.030Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -50570,5 +50593,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-24T22:16:42.537Z
-    updated_at: 2026-03-24T22:17:50.775Z
+    updated_at: 2026-03-24T22:18:01.636Z
     notes: []
