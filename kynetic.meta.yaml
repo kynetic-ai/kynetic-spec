@@ -7762,6 +7762,26 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-23T21:37:22.474Z
+  - _ulid: 01KMEJZ04STJFNQCSR8BMM317S
+    type: success
+    content: Task fix-web-ui-pages-not-rendering-on-initial-load completed cleanly in a single pass.
+      Well-scoped task description with root cause, fix strategy, and file list made implementation
+      fast and error-free. All 7210 tests passed.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-24T00:12:25.625Z
+  - _ulid: 01KMEJZ09SBJ590DGRWB2NZHG9
+    type: friction
+    content: TanStack Query v6 for Svelte 5 has a known issue where $effect subscriptions fail when
+      query enabled conditions have multiple $state dependencies. This caused pages to not render on
+      initial load. The fix (moving guards to API layer) works but the pattern constraint is not
+      documented anywhere — future development could reintroduce the problem by adding
+      !isStaticMode() or similar $state reads back into query enabled conditions.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-24T00:12:25.785Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
