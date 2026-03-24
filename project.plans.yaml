@@ -27794,12 +27794,38 @@ plans:
 
       oxfmt beta is production-viable for JS/TS projects (used by Vue.js core, Turborepo,
       Sentry). Known gaps in Vue SFC and YAML formatting don't affect this codebase.
-    status: approved
+    status: active
     approved_at: 2026-03-24T06:16:18.030Z
     derived_specs: []
-    derived_tasks: []
+    derived_tasks:
+      - "@task-install-oxlint-oxfmt"
+      - "@task-oxlint-vitest-plugin"
+      - "@task-custom-no-source-scanning-rule"
+      - "@task-update-scripts-ci"
+      - "@task-format-and-fix-violations"
+      - "@task-delete-static-analysis-lint-test"
     module_ref: null
     source_path: /home/chapel/Projects/kynetic-spec/plans/migrate-biome-to-oxlint-oxfmt.md
     created_at: 2026-03-24T06:16:12.648Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KMF7SH75Y4SRPQFPMC6CC476
+        content: |-
+          Migrating from Biome 2.3.11 to oxlint (stable, v1.56.0) + oxfmt (beta, v0.41.0).
+          Biome is a single tool for lint + format; this replaces it with two tools from the
+          same oxc project. Key motivations:
+
+          - oxlint ships 44 jest + 15 vitest rules for test quality linting
+          - JS Plugins Alpha enables a custom rule to catch source-scanning test anti-pattern
+          - Broader rule coverage (699 rules, 15 plugin namespaces vs Biome's curated set)
+          - Opportunity to add lint enforcement to CI (currently missing)
+          - oxfmt has built-in import sorting and 100% Prettier JS/TS conformance
+
+          No Biome-to-oxlint migration tool exists — rule mapping is manual but straightforward
+          since the project uses Biome's recommended rules with no custom overrides. Both tools
+          derive their rule sets from ESLint origins.
+
+          oxfmt beta is production-viable for JS/TS projects (used by Vue.js core, Turborepo,
+          Sentry). Known gaps in Vue SFC and YAML formatting don't affect this codebase.
+        author: "@claude"
+        created_at: 2026-03-24T06:16:26.597Z

@@ -21904,3 +21904,105 @@
   submitted_at: 2026-03-24T00:11:08.271Z
   completed_at: 2026-03-24T00:22:20.394Z
   automation: eligible
+- _ulid: 01KMF7SFQ0668HXXQ2VCX0AAQB
+  slugs:
+    - task-install-oxlint-oxfmt
+  title: Install oxlint and oxfmt, remove Biome
+  type: task
+  plan_ref: "@plan-migrate-from-biome-to-oxlint-oxfmt"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - infra
+    - tooling
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-24T06:16:25.055Z
+- _ulid: 01KMF7SG03MKXNMG2GAZJ4AV7Y
+  slugs:
+    - task-oxlint-vitest-plugin
+  title: Configure oxlint vitest plugin for test files
+  type: task
+  plan_ref: "@plan-migrate-from-biome-to-oxlint-oxfmt"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-install-oxlint-oxfmt"
+  priority: 1
+  tags:
+    - infra
+    - testing
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-24T06:16:25.347Z
+- _ulid: 01KMF7SG832M4PW4C1GJX4AFM7
+  slugs:
+    - task-custom-no-source-scanning-rule
+  title: Write custom no-source-scanning lint rule
+  type: task
+  plan_ref: "@plan-migrate-from-biome-to-oxlint-oxfmt"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-oxlint-vitest-plugin"
+  priority: 2
+  tags:
+    - infra
+    - testing
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-24T06:16:25.603Z
+- _ulid: 01KMF7SGFAG8K64044F2WVZQ49
+  slugs:
+    - task-update-scripts-ci
+  title: Update npm scripts and CI workflow
+  type: task
+  plan_ref: "@plan-migrate-from-biome-to-oxlint-oxfmt"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-install-oxlint-oxfmt"
+  priority: 2
+  tags:
+    - infra
+    - ci
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-24T06:16:25.834Z
+- _ulid: 01KMF7SGQJDJ3MSYMXJG33VKWF
+  slugs:
+    - task-format-and-fix-violations
+  title: Run oxfmt on codebase and fix lint violations
+  type: task
+  plan_ref: "@plan-migrate-from-biome-to-oxlint-oxfmt"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-install-oxlint-oxfmt"
+    - "@task-update-scripts-ci"
+  priority: 3
+  tags:
+    - infra
+    - cleanup
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-24T06:16:26.098Z
+- _ulid: 01KMF7SGZ4ZWXQX4Y31H6Q6FZ0
+  slugs:
+    - task-delete-static-analysis-lint-test
+  title: Delete no-static-analysis.test.ts
+  type: task
+  plan_ref: "@plan-migrate-from-biome-to-oxlint-oxfmt"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-custom-no-source-scanning-rule"
+  priority: 3
+  tags:
+    - testing
+    - cleanup
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-24T06:16:26.340Z

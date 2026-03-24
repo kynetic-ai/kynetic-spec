@@ -1,0 +1,28 @@
+_ulid: 01KMF7SG03MKXNMG2GAZJ4AV7Y
+slugs:
+  - task-oxlint-vitest-plugin
+title: Configure oxlint vitest plugin for test files
+type: task
+description: |
+  Add an overrides entry in .oxlintrc.json scoping the vitest plugin to test
+  file globs (tests/**/*.ts, packages/*/tests/**/*.ts). Enable key rules:
+  no-focused-tests (error), no-disabled-tests (warn), expect-expect (error),
+  no-conditional-tests (warn), valid-expect (error).
+
+  Evaluate the full vitest + jest rule sets against the existing test suite and
+  enable additional rules that catch real issues without false positives.
+spec_ref: null
+plan_ref: "@plan-migrate-from-biome-to-oxlint-oxfmt"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-install-oxlint-oxfmt"
+context: []
+priority: 1
+tags:
+  - infra
+  - testing
+vcs_refs: []
+created_at: 2026-03-24T06:16:25.347Z
+todos: []

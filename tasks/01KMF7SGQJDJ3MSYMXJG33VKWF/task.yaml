@@ -1,0 +1,26 @@
+_ulid: 01KMF7SGQJDJ3MSYMXJG33VKWF
+slugs:
+  - task-format-and-fix-violations
+title: Run oxfmt on codebase and fix lint violations
+type: task
+description: |
+  Run oxfmt on the full codebase to reformat to the new formatter's output.
+  Run oxlint and fix or suppress any new violations surfaced by the broader
+  rule set. Commit the formatting change separately from any lint fixes for
+  clean git history.
+spec_ref: null
+plan_ref: "@plan-migrate-from-biome-to-oxlint-oxfmt"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-install-oxlint-oxfmt"
+  - "@task-update-scripts-ci"
+context: []
+priority: 3
+tags:
+  - infra
+  - cleanup
+vcs_refs: []
+created_at: 2026-03-24T06:16:26.098Z
+todos: []
