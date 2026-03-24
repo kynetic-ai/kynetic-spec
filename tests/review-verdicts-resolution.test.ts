@@ -15,10 +15,7 @@ import {
   refreshSubject,
   transitionLifecycle,
 } from "../src/parser/review-operations.js";
-import {
-  extractSubjectVersion,
-  isVersionStale,
-} from "../src/review/subject-bindings.js";
+import { extractSubjectVersion, isVersionStale } from "../src/review/subject-bindings.js";
 import { evaluateGates } from "../src/review/checks.js";
 import {
   resolveThread,
@@ -39,17 +36,12 @@ const COMMIT_BASE = "aaa111bbb222";
 const COMMIT_HEAD = "ccc333ddd444";
 const COMMIT_BASE_2 = "eee555fff666";
 const COMMIT_HEAD_2 = "ggg777hhh888";
-const CONTENT_HASH_1 =
-  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
-const CONTENT_HASH_2 =
-  "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2";
+const CONTENT_HASH_1 = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
+const CONTENT_HASH_2 = "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2";
 
 // --- Helpers ---
 
-function codeSubject(
-  base = COMMIT_BASE,
-  head = COMMIT_HEAD,
-): ReviewSubject {
+function codeSubject(base = COMMIT_BASE, head = COMMIT_HEAD): ReviewSubject {
   return { type: "code", base_commit: base, head_commit: head };
 }
 
@@ -882,17 +874,10 @@ describe("AC-8: Latest verdict per reviewer wins", () => {
       ],
     });
 
-    const effective = getEffectiveVerdicts(
-      review.verdicts,
-      extractSubjectVersion(review.subject),
-    );
+    const effective = getEffectiveVerdicts(review.verdicts, extractSubjectVersion(review.subject));
     expect(effective).toHaveLength(2);
-    expect(effective.find((v) => v.reviewer === "alice@example.com")?.decision).toBe(
-      "approve",
-    );
-    expect(effective.find((v) => v.reviewer === "bob@example.com")?.decision).toBe(
-      "approve",
-    );
+    expect(effective.find((v) => v.reviewer === "alice@example.com")?.decision).toBe("approve");
+    expect(effective.find((v) => v.reviewer === "bob@example.com")?.decision).toBe("approve");
   });
 
   // AC: @review-verdicts-and-resolution-lifecycle ac-8
@@ -976,26 +961,26 @@ describe("AC-9: Lifecycle finalization", () => {
   // AC: @review-verdicts-and-resolution-lifecycle ac-9
   it("rejects invalid transitions", () => {
     const openReview = makeReview({ lifecycle_state: "open" });
-    expect(() =>
-      transitionLifecycle(openReview, "draft", "admin@example.com"),
-    ).toThrow("Invalid lifecycle transition: open → draft");
+    expect(() => transitionLifecycle(openReview, "draft", "admin@example.com")).toThrow(
+      "Invalid lifecycle transition: open → draft",
+    );
 
     const archivedReview = makeReview({ lifecycle_state: "archived" });
-    expect(() =>
-      transitionLifecycle(archivedReview, "open", "admin@example.com"),
-    ).toThrow("Invalid lifecycle transition: archived → open");
+    expect(() => transitionLifecycle(archivedReview, "open", "admin@example.com")).toThrow(
+      "Invalid lifecycle transition: archived → open",
+    );
   });
 
   // AC: @review-verdicts-and-resolution-lifecycle ac-9
   it("archived is a terminal state", () => {
     const review = makeReview({ lifecycle_state: "archived" });
 
-    expect(() =>
-      transitionLifecycle(review, "open", "admin@example.com"),
-    ).toThrow("Invalid lifecycle transition");
-    expect(() =>
-      transitionLifecycle(review, "closed", "admin@example.com"),
-    ).toThrow("Invalid lifecycle transition");
+    expect(() => transitionLifecycle(review, "open", "admin@example.com")).toThrow(
+      "Invalid lifecycle transition",
+    );
+    expect(() => transitionLifecycle(review, "closed", "admin@example.com")).toThrow(
+      "Invalid lifecycle transition",
+    );
   });
 });
 
@@ -1032,9 +1017,7 @@ describe("Gate evaluation via evaluateGates", () => {
 
   // AC: @review-verdicts-and-resolution-lifecycle ac-4
   it("returns pending when required check is running", () => {
-    const checks: ReviewCheck[] = [
-      makeCheck({ name: "tests", status: "running", required: true }),
-    ];
+    const checks: ReviewCheck[] = [makeCheck({ name: "tests", status: "running", required: true })];
 
     expect(evaluateGates(checks, codeVersion()).state).toBe("pending");
   });
@@ -1187,19 +1170,15 @@ describe("isVersionStale", () => {
 
   it("returns stale when base_commit differs", () => {
     expect(
-      isVersionStale(
-        codeVersion(COMMIT_BASE_2, COMMIT_HEAD),
-        codeVersion(COMMIT_BASE, COMMIT_HEAD),
-      ).stale,
+      isVersionStale(codeVersion(COMMIT_BASE_2, COMMIT_HEAD), codeVersion(COMMIT_BASE, COMMIT_HEAD))
+        .stale,
     ).toBe(true);
   });
 
   it("returns stale when head_commit differs", () => {
     expect(
-      isVersionStale(
-        codeVersion(COMMIT_BASE, COMMIT_HEAD_2),
-        codeVersion(COMMIT_BASE, COMMIT_HEAD),
-      ).stale,
+      isVersionStale(codeVersion(COMMIT_BASE, COMMIT_HEAD_2), codeVersion(COMMIT_BASE, COMMIT_HEAD))
+        .stale,
     ).toBe(true);
   });
 
@@ -1208,9 +1187,9 @@ describe("isVersionStale", () => {
   });
 
   it("returns stale when entity content_hash differs", () => {
-    expect(
-      isVersionStale(entityVersion(CONTENT_HASH_1), entityVersion(CONTENT_HASH_2)).stale,
-    ).toBe(true);
+    expect(isVersionStale(entityVersion(CONTENT_HASH_1), entityVersion(CONTENT_HASH_2)).stale).toBe(
+      true,
+    );
   });
 
   it("returns stale when version types mismatch", () => {

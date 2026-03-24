@@ -63,7 +63,12 @@ export class SessionEventAccumulator {
   /**
    * Build the common base fields for session events.
    */
-  private baseFields(ctx: SessionContext): Omit<SessionEventData, "type" | "text" | "tool_call_id" | "tool_name" | "tool_input" | "status" | "duration_ms"> {
+  private baseFields(
+    ctx: SessionContext,
+  ): Omit<
+    SessionEventData,
+    "type" | "text" | "tool_call_id" | "tool_name" | "tool_input" | "status" | "duration_ms"
+  > {
     return {
       session_id: ctx.sessionId,
       agent_id: ctx.agentId,
@@ -147,11 +152,7 @@ export class SessionEventAccumulator {
    *
    * This is the main entry point — replaces the old onTextChunk callback.
    */
-  handleUpdate(
-    ctx: SessionContext,
-    update: SessionUpdate,
-    emit: SessionEventEmitter,
-  ): void {
+  handleUpdate(ctx: SessionContext, update: SessionUpdate, emit: SessionEventEmitter): void {
     const state = this.getState(ctx.sessionId);
 
     switch (update.sessionUpdate) {

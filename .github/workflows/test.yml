@@ -5,18 +5,18 @@ on:
     branches:
       - main
     paths:
-      - 'src/**'
-      - 'tests/**'
-      - 'packages/**'
-      - 'scripts/**'
-      - 'templates/**'
-      - 'package.json'
-      - 'package-lock.json'
-      - 'tsconfig.json'
-      - 'vitest.config.ts'
-      - '.oxlintrc.json'
-      - '.oxfmtrc.json'
-      - '.github/workflows/test.yml'
+      - "src/**"
+      - "tests/**"
+      - "packages/**"
+      - "scripts/**"
+      - "templates/**"
+      - "package.json"
+      - "package-lock.json"
+      - "tsconfig.json"
+      - "vitest.config.ts"
+      - ".oxlintrc.json"
+      - ".oxfmtrc.json"
+      - ".github/workflows/test.yml"
   push:
     branches:
       - main
@@ -33,8 +33,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
-          cache: 'npm'
+          node-version: "24"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -62,13 +62,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Full history for proper git operations
+          fetch-depth: 0 # Full history for proper git operations
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
-          cache: 'npm'
+          node-version: "24"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -101,8 +101,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
-          cache: 'npm'
+          node-version: "24"
+          cache: "npm"
 
       - name: Restore Playwright browser cache
         uses: actions/cache@v4

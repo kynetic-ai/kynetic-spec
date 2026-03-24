@@ -42,14 +42,14 @@
 	};
 
 	// Derive filter values from URL - use $derived with $page store
-	let status = $derived($page.url.searchParams.get('status') || '');
-	let tag = $derived($page.url.searchParams.get('tag') || '');
-	let assignee = $derived($page.url.searchParams.get('assignee') || '');
-	let automation = $derived($page.url.searchParams.get('automation') || '');
+	const status = $derived($page.url.searchParams.get('status') || '');
+	const tag = $derived($page.url.searchParams.get('tag') || '');
+	const assignee = $derived($page.url.searchParams.get('assignee') || '');
+	const automation = $derived($page.url.searchParams.get('automation') || '');
 
 	// AC: @web-dashboard ac-default-active-filter — non-default filters are: explicit status, tag, assignee, automation
 	// Empty status means "active" (the default), so only count as filtered if it's a specific single status or "all"
-	let hasFilters = $derived(status || tag || assignee || automation);
+	const hasFilters = $derived(status || tag || assignee || automation);
 
 	function updateFilter(key: string, value: string | string[] | undefined) {
 		// Handle the case where value might be an array (bits-ui Svelte 5 quirk)
@@ -92,8 +92,8 @@
 	}
 
 	// AC: @web-dashboard ac-default-active-filter — empty status means "active" (default)
-	let statusDisplay = $derived(status || 'active');
-	let automationDisplay = $derived(automation || 'all');
+	const statusDisplay = $derived(status || 'active');
+	const automationDisplay = $derived(automation || 'all');
 </script>
 
 <div class="flex flex-wrap gap-4 p-4 bg-muted/50 rounded-lg" data-testid="filter-controls">

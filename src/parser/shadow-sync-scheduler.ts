@@ -21,7 +21,7 @@ import {
   pushShadowBranch,
   getRemoteName,
   type ShadowOptions,
-} from './shadow.js';
+} from "./shadow.js";
 
 export interface ShadowSyncSchedulerOptions {
   /** Path to shadow worktree (e.g., /project/.kspec) */
@@ -73,18 +73,16 @@ export class ShadowSyncScheduler {
       return;
     }
 
-    console.log(
-      `[daemon] Shadow sync scheduler started (interval: ${this.intervalMs / 1000}s)`
-    );
+    console.log(`[daemon] Shadow sync scheduler started (interval: ${this.intervalMs / 1000}s)`);
 
     this.timer = setInterval(() => {
       this.syncOnce().catch((err) => {
-        console.error('[daemon] Shadow sync error:', err);
+        console.error("[daemon] Shadow sync error:", err);
       });
     }, this.intervalMs);
 
     // Don't prevent process exit
-    if (this.timer && typeof this.timer === 'object' && 'unref' in this.timer) {
+    if (this.timer && typeof this.timer === "object" && "unref" in this.timer) {
       this.timer.unref();
     }
   }
@@ -96,7 +94,7 @@ export class ShadowSyncScheduler {
     if (this.timer !== null) {
       clearInterval(this.timer);
       this.timer = null;
-      console.log('[daemon] Shadow sync scheduler stopped');
+      console.log("[daemon] Shadow sync scheduler stopped");
     }
   }
 
@@ -134,11 +132,11 @@ export class ShadowSyncScheduler {
       const result = await shadowPull(this.worktreeDir, this.shadowOptions);
 
       if (result.pulled) {
-        console.log('[daemon] Shadow sync: pulled remote changes');
+        console.log("[daemon] Shadow sync: pulled remote changes");
 
         // Broadcast so the UI refreshes
         if (this.pubsub) {
-          this.pubsub.broadcast('shadow', 'shadow_sync', {
+          this.pubsub.broadcast("shadow", "shadow_sync", {
             pulled: true,
             hadConflict: false,
           });
@@ -146,12 +144,10 @@ export class ShadowSyncScheduler {
       }
 
       if (result.hadConflict) {
-        console.warn(
-          '[daemon] Shadow sync: conflict detected. Run `kspec shadow resolve` to fix.'
-        );
+        console.warn("[daemon] Shadow sync: conflict detected. Run `kspec shadow resolve` to fix.");
 
         if (this.pubsub) {
-          this.pubsub.broadcast('shadow', 'shadow_sync', {
+          this.pubsub.broadcast("shadow", "shadow_sync", {
             pulled: false,
             hadConflict: true,
           });
@@ -164,16 +160,20 @@ export class ShadowSyncScheduler {
       if (!result.hadConflict) {
         const ahead = await isAheadOfUpstream(this.worktreeDir);
         if (ahead) {
-          const pushed = await pushShadowBranch(this.worktreeDir, getRemoteName(this.shadowOptions), this.shadowOptions);
+          const pushed = await pushShadowBranch(
+            this.worktreeDir,
+            getRemoteName(this.shadowOptions),
+            this.shadowOptions,
+          );
           if (pushed) {
-            console.log('[daemon] Shadow sync: pushed local changes');
+            console.log("[daemon] Shadow sync: pushed local changes");
             if (this.pubsub) {
-              this.pubsub.broadcast('shadow', 'shadow_sync', {
+              this.pubsub.broadcast("shadow", "shadow_sync", {
                 pushed: true,
               });
             }
           } else {
-            console.warn('[daemon] Shadow sync: push failed (non-fatal)');
+            console.warn("[daemon] Shadow sync: push failed (non-fatal)");
           }
         }
       }

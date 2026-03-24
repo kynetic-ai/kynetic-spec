@@ -11,50 +11,36 @@ describe("detectFileType", () => {
     expect(detectFileType("project.tasks.yaml")).toBe(FileType.Tasks);
     expect(detectFileType("kynetic.tasks.yaml")).toBe(FileType.Tasks);
     expect(detectFileType(".kspec/project.tasks.yaml")).toBe(FileType.Tasks);
-    expect(detectFileType("/absolute/path/to/my.tasks.yaml")).toBe(
-      FileType.Tasks,
-    );
+    expect(detectFileType("/absolute/path/to/my.tasks.yaml")).toBe(FileType.Tasks);
   });
 
   it("should detect inbox files (*.inbox.yaml)", () => {
     // AC: @merge-file-detection ac-2
     expect(detectFileType("project.inbox.yaml")).toBe(FileType.Inbox);
     expect(detectFileType(".kspec/project.inbox.yaml")).toBe(FileType.Inbox);
-    expect(detectFileType("/absolute/path/to/my.inbox.yaml")).toBe(
-      FileType.Inbox,
-    );
+    expect(detectFileType("/absolute/path/to/my.inbox.yaml")).toBe(FileType.Inbox);
   });
 
   it("should detect spec module files (modules/*.yaml)", () => {
     // AC: @merge-file-detection ac-3
     expect(detectFileType("modules/core.yaml")).toBe(FileType.SpecModules);
-    expect(detectFileType(".kspec/modules/tasks.yaml")).toBe(
-      FileType.SpecModules,
-    );
-    expect(detectFileType("/absolute/path/modules/feature.yaml")).toBe(
-      FileType.SpecModules,
-    );
-    expect(detectFileType("nested/path/modules/spec.yaml")).toBe(
-      FileType.SpecModules,
-    );
+    expect(detectFileType(".kspec/modules/tasks.yaml")).toBe(FileType.SpecModules);
+    expect(detectFileType("/absolute/path/modules/feature.yaml")).toBe(FileType.SpecModules);
+    expect(detectFileType("nested/path/modules/spec.yaml")).toBe(FileType.SpecModules);
   });
 
   it("should detect manifest file (kynetic.yaml)", () => {
     // AC: @merge-file-detection ac-4
     expect(detectFileType("kynetic.yaml")).toBe(FileType.Manifest);
     expect(detectFileType(".kspec/kynetic.yaml")).toBe(FileType.Manifest);
-    expect(detectFileType("/absolute/path/to/kynetic.yaml")).toBe(
-      FileType.Manifest,
-    );
+    expect(detectFileType("/absolute/path/to/kynetic.yaml")).toBe(FileType.Manifest);
   });
 
   it("should detect meta file (kynetic.meta.yaml)", () => {
     // AC: @merge-file-detection ac-5
     expect(detectFileType("kynetic.meta.yaml")).toBe(FileType.Meta);
     expect(detectFileType(".kspec/kynetic.meta.yaml")).toBe(FileType.Meta);
-    expect(detectFileType("/absolute/path/to/kynetic.meta.yaml")).toBe(
-      FileType.Meta,
-    );
+    expect(detectFileType("/absolute/path/to/kynetic.meta.yaml")).toBe(FileType.Meta);
   });
 
   it("should detect unknown files and return Unknown", () => {
@@ -68,12 +54,8 @@ describe("detectFileType", () => {
 
   it("should handle Windows-style paths", () => {
     // Cross-platform compatibility
-    expect(detectFileType("C:\\path\\to\\project.tasks.yaml")).toBe(
-      FileType.Tasks,
-    );
-    expect(detectFileType("C:\\path\\modules\\core.yaml")).toBe(
-      FileType.SpecModules,
-    );
+    expect(detectFileType("C:\\path\\to\\project.tasks.yaml")).toBe(FileType.Tasks);
+    expect(detectFileType("C:\\path\\modules\\core.yaml")).toBe(FileType.SpecModules);
     expect(detectFileType("D:\\kspec\\kynetic.yaml")).toBe(FileType.Manifest);
   });
 

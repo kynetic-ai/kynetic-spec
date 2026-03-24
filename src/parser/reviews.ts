@@ -69,9 +69,7 @@ function parseReviewsFromRaw(raw: unknown): ReviewRecord[] {
 /**
  * Load review records from an explicit file path.
  */
-async function loadReviewsFromFile(
-  reviewsPath: string,
-): Promise<ReviewRecord[]> {
+async function loadReviewsFromFile(reviewsPath: string): Promise<ReviewRecord[]> {
   const raw = await readYamlFile<unknown>(reviewsPath);
   return parseReviewsFromRaw(raw);
 }
@@ -123,8 +121,7 @@ async function writeRawReviewArray(
  */
 function findRawReviewIndex(rawReviews: unknown[], ulid: string): number {
   return rawReviews.findIndex(
-    (r) =>
-      r && typeof r === "object" && (r as Record<string, unknown>)._ulid === ulid,
+    (r) => r && typeof r === "object" && (r as Record<string, unknown>)._ulid === ulid,
   );
 }
 
@@ -160,9 +157,7 @@ function mergeReviewPreservingRawShape(
 /**
  * Strip runtime metadata before serialization.
  */
-function stripReviewMetadata(
-  review: ReviewRecord | LoadedReviewRecord,
-): ReviewRecord {
+function stripReviewMetadata(review: ReviewRecord | LoadedReviewRecord): ReviewRecord {
   const { _sourceFile, ...cleanReview } = review as LoadedReviewRecord;
   return cleanReview as ReviewRecord;
 }
@@ -172,9 +167,7 @@ function stripReviewMetadata(
  * AC: @review-record-storage-and-identity ac-1 - dedicated first-party review storage
  * AC: @review-record-storage-and-identity ac-3 - single dedicated file per project
  */
-export async function loadReviewRecords(
-  ctx: KspecContext,
-): Promise<LoadedReviewRecord[]> {
+export async function loadReviewRecords(ctx: KspecContext): Promise<LoadedReviewRecord[]> {
   const reviewsPath = getReviewsFilePath(ctx);
 
   try {
@@ -256,8 +249,7 @@ export async function saveReviewRecord(
     await fs.mkdir(dir, { recursive: true });
 
     // Load raw review data without schema normalization
-    const { rawReviews, wrapperObj } =
-      await extractRawReviewArray(reviewsPath);
+    const { rawReviews, wrapperObj } = await extractRawReviewArray(reviewsPath);
 
     // Strip runtime metadata before saving
     const cleanReview = stripReviewMetadata(review);
@@ -267,7 +259,10 @@ export async function saveReviewRecord(
     if (existingIndex >= 0) {
       // Merge onto raw data to avoid adding Zod defaults for absent fields
       const rawTarget = rawReviews[existingIndex] as Record<string, unknown>;
-      rawReviews[existingIndex] = mergeReviewPreservingRawShape(rawTarget, cleanReview as Record<string, unknown>);
+      rawReviews[existingIndex] = mergeReviewPreservingRawShape(
+        rawTarget,
+        cleanReview as Record<string, unknown>,
+      );
     } else {
       rawReviews.push(cleanReview);
     }
@@ -298,8 +293,7 @@ export async function mutateReviewAtomically(
     await fs.mkdir(dir, { recursive: true });
 
     // Load raw review data without schema normalization for non-target reviews
-    const { rawReviews, wrapperObj } =
-      await extractRawReviewArray(reviewsPath);
+    const { rawReviews, wrapperObj } = await extractRawReviewArray(reviewsPath);
 
     if (rawReviews.length === 0) {
       throw new Error(`Reviews file not found: ${reviewsPath}`);
@@ -348,17 +342,13 @@ export async function mutateReviewAtomically(
 /**
  * Delete a review record by ULID.
  */
-export async function deleteReviewRecord(
-  ctx: KspecContext,
-  reviewUlid: string,
-): Promise<boolean> {
+export async function deleteReviewRecord(ctx: KspecContext, reviewUlid: string): Promise<boolean> {
   const reviewsPath = getReviewsFilePath(ctx);
 
   return withFileLock(reviewsPath, async () => {
     try {
       // Load raw review data without schema normalization for round-trip stability
-      const { rawReviews, wrapperObj } =
-        await extractRawReviewArray(reviewsPath);
+      const { rawReviews, wrapperObj } = await extractRawReviewArray(reviewsPath);
 
       const index = findRawReviewIndex(rawReviews, reviewUlid);
       if (index < 0) {

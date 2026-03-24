@@ -98,10 +98,12 @@ async function getMultiPlatformSyncStatus(
   ctx: KspecContext,
   projectRoot: string,
   skill: LoadedSkill,
-  renderer: PlatformRenderer
+  renderer: PlatformRenderer,
 ): Promise<MultiPlatformStatusResult> {
   // Use the renderer's drift check
-  const driftStatus = await renderer.checkDrift(ctx.specDir, projectRoot, skill.id, { origin: skill.origin });
+  const driftStatus = await renderer.checkDrift(ctx.specDir, projectRoot, skill.id, {
+    origin: skill.origin,
+  });
 
   // Core skills on claude-code are plugin-provided, not locally rendered
   if (driftStatus === "plugin-provided") {
@@ -134,7 +136,7 @@ async function getMultiPlatformSyncStatus(
         projectRoot,
         effectiveOutputDir,
         getSkillSubdir(skill.id, skill.origin, renderer.platform),
-        "SKILL.md"
+        "SKILL.md",
       );
       try {
         await fs.readFile(renderedPath, "utf-8");
@@ -149,8 +151,10 @@ async function getMultiPlatformSyncStatus(
   // Check docs status for this platform
   const sourceDocsDir = path.join(ctx.specDir, "skills", skill.id, "docs");
   const targetDocsDir = path.join(
-    projectRoot, effectiveOutputDir,
-    getSkillSubdir(skill.id, skill.origin, renderer.platform), "docs"
+    projectRoot,
+    effectiveOutputDir,
+    getSkillSubdir(skill.id, skill.origin, renderer.platform),
+    "docs",
   );
   let docsStatus: "in-sync" | "drifted" | "not-rendered" | "no-docs" = "no-docs";
 
@@ -183,7 +187,7 @@ async function getMultiPlatformSyncStatus(
  */
 export async function getExpectedRenderedContent(
   ctx: KspecContext,
-  skill: LoadedSkill
+  skill: LoadedSkill,
 ): Promise<string> {
   const sourceContent = await loadSkillContent(ctx, skill);
 
@@ -215,7 +219,7 @@ export function generateUnifiedDiff(
   actual: string,
   expected: string,
   actualPath: string,
-  expectedPath: string
+  expectedPath: string,
 ): string[] {
   if (contentsEqual(actual, expected)) {
     return [];
@@ -257,9 +261,7 @@ export function registerSkillDiffCommands(skill: Command): void {
   // AC: @trait-error-guidance - provides error guidance
   skill
     .command("render [ref]")
-    .description(
-      "Render skills from shadow branch to platform-specific files on main branch"
-    )
+    .description("Render skills from shadow branch to platform-specific files on main branch")
     .option("--clean", "Remove orphaned managed skill directories")
     .option("--dry-run", "Show what would be changed without applying")
     .option("--force", "Overwrite drifted skill files (manually edited)")
@@ -271,9 +273,7 @@ export function registerSkillDiffCommands(skill: Command): void {
 
         if (!ctx.manifestPath) {
           error(errors.project.noKspecProject);
-          console.log(
-            chalk.gray("Try: kspec init to initialize a kspec project")
-          );
+          console.log(chalk.gray("Try: kspec init to initialize a kspec project"));
           process.exit(EXIT_CODES.ERROR);
         }
 
@@ -357,12 +357,10 @@ export function registerSkillDiffCommands(skill: Command): void {
 
             // Check for drift before rendering
             // AC: @skill-drift-detection ac-3, ac-4 - Check drift and skip without --force
-            const driftStatus = await renderer.checkDrift(
-              ctx.specDir,
-              projectRoot,
-              skill.id,
-              { outputDir: customOutputDir, origin: skill.origin }
-            );
+            const driftStatus = await renderer.checkDrift(ctx.specDir, projectRoot, skill.id, {
+              outputDir: customOutputDir,
+              origin: skill.origin,
+            });
 
             // AC: @skill-drift-detection ac-3 - Skip drifted skills without --force
             if (driftStatus === "drifted" && !force) {
@@ -370,7 +368,7 @@ export function registerSkillDiffCommands(skill: Command): void {
                 projectRoot,
                 effectiveDir,
                 getSkillSubdir(skill.id, skill.origin, platform),
-                "SKILL.md"
+                "SKILL.md",
               );
               results.push({
                 id: skill.id,
@@ -412,9 +410,9 @@ export function registerSkillDiffCommands(skill: Command): void {
               if (!activeSubdirsByPlatform.has(platform)) {
                 activeSubdirsByPlatform.set(platform, new Set());
               }
-              activeSubdirsByPlatform.get(platform)!.add(
-                getSkillSubdir(skill.id, skill.origin, platform)
-              );
+              activeSubdirsByPlatform
+                .get(platform)!
+                .add(getSkillSubdir(skill.id, skill.origin, platform));
             }
           }
 
@@ -425,7 +423,7 @@ export function registerSkillDiffCommands(skill: Command): void {
             activeSubdirs: Set<string>,
             subdir: string,
             platform: string,
-            hasNestedSkills?: boolean
+            hasNestedSkills?: boolean,
           ): Promise<void> {
             const skillMdPath = path.join(skillDir, "SKILL.md");
 
@@ -468,7 +466,7 @@ export function registerSkillDiffCommands(skill: Command): void {
           async function scanAndClean(
             targetSkillsDir: string,
             activeSubdirs: Set<string>,
-            platform: string
+            platform: string,
           ): Promise<void> {
             try {
               const entries = await fs.readdir(targetSkillsDir, {
@@ -481,7 +479,10 @@ export function registerSkillDiffCommands(skill: Command): void {
                 const skillDir = path.join(targetSkillsDir, entry.name);
 
                 // Check for SKILL.md in this directory
-                const hasSkillMd = await fs.access(path.join(skillDir, "SKILL.md")).then(() => true, () => false);
+                const hasSkillMd = await fs.access(path.join(skillDir, "SKILL.md")).then(
+                  () => true,
+                  () => false,
+                );
                 if (hasSkillMd) {
                   await cleanSkillDir(entry.name, skillDir, activeSubdirs, entry.name, platform);
                 }
@@ -506,9 +507,9 @@ export function registerSkillDiffCommands(skill: Command): void {
                 if (!nonCoreActiveByPlatform.has(platform)) {
                   nonCoreActiveByPlatform.set(platform, new Set());
                 }
-                nonCoreActiveByPlatform.get(platform)!.add(
-                  getSkillSubdir(skill.id, skill.origin, platform)
-                );
+                nonCoreActiveByPlatform
+                  .get(platform)!
+                  .add(getSkillSubdir(skill.id, skill.origin, platform));
               }
             }
           }
@@ -519,18 +520,20 @@ export function registerSkillDiffCommands(skill: Command): void {
             // Clean platform default directory (project/local skills only)
             const nonCoreActive = nonCoreActiveByPlatform.get(renderer.platform) || new Set();
             const outputDir = customOutputDir || renderer.defaultOutputDir;
-            await scanAndClean(
-              path.join(projectRoot, outputDir),
-              nonCoreActive,
-              renderer.platform
-            );
+            await scanAndClean(path.join(projectRoot, outputDir), nonCoreActive, renderer.platform);
 
             // Core skills on claude-code are now plugin-provided.
             // Clean old namespaced dirs and legacy plugin-rendered paths.
             if (renderer.platform === "claude-code" && !customOutputDir) {
               // Clean orphaned legacy plugin-rendered core skills (.claude/plugins/kspec/skills/<id>/)
               const coreActive = coreActiveByPlatform.get(renderer.platform) || new Set();
-              const legacyPluginSkillsDir = path.join(projectRoot, ".claude", "plugins", "kspec", "skills");
+              const legacyPluginSkillsDir = path.join(
+                projectRoot,
+                ".claude",
+                "plugins",
+                "kspec",
+                "skills",
+              );
               await scanAndClean(legacyPluginSkillsDir, coreActive, renderer.platform);
 
               // Clean old namespaced dirs (.claude/skills/kspec/<id>/) that may remain from PR #440
@@ -558,7 +561,10 @@ export function registerSkillDiffCommands(skill: Command): void {
                     continue;
                   }
                   const nestedDir = path.join(oldNamespaceDir, entry.name);
-                  const nestedHasSkillMd = await fs.access(path.join(nestedDir, "SKILL.md")).then(() => true, () => false);
+                  const nestedHasSkillMd = await fs.access(path.join(nestedDir, "SKILL.md")).then(
+                    () => true,
+                    () => false,
+                  );
                   if (nestedHasSkillMd) {
                     const isManaged = await isKspecManaged(path.join(nestedDir, "SKILL.md"));
                     if (isManaged) {
@@ -595,17 +601,18 @@ export function registerSkillDiffCommands(skill: Command): void {
         // Commit render hash changes to shadow branch
         // AC: @trait-shadow-commit ac-1 - render hashes written to shadow worktree must be committed
         // Regression: skill render wrote .render-hash-<platform> files to .kspec/ but did not commit them
-        const renderedOrCleaned = results.some((r) => r.action === "created" || r.action === "updated")
-          || cleanResults.some((r) => r.action === "removed");
+        const renderedOrCleaned =
+          results.some((r) => r.action === "created" || r.action === "updated") ||
+          cleanResults.some((r) => r.action === "removed");
         if (!dryRun && renderedOrCleaned) {
-          const renderedIds = [...new Set(
-            results
-              .filter((r) => r.action === "created" || r.action === "updated")
-              .map((r) => r.id)
-          )];
-          const detail = renderedIds.length === 1
-            ? renderedIds[0]
-            : `${renderedIds.length} skills`;
+          const renderedIds = [
+            ...new Set(
+              results
+                .filter((r) => r.action === "created" || r.action === "updated")
+                .map((r) => r.id),
+            ),
+          ];
+          const detail = renderedIds.length === 1 ? renderedIds[0] : `${renderedIds.length} skills`;
           await commitIfShadow(ctx.shadow, "skill-render", detail);
         }
 
@@ -640,10 +647,10 @@ export function registerSkillDiffCommands(skill: Command): void {
             const unchanged = results.filter((r) => r.action === "unchanged");
             // AC: @skill-drift-detection ac-3 - Track skipped drifted skills
             const skippedDrifted = results.filter(
-              (r) => r.action === "skipped" && r.skipReason?.includes("drifted")
+              (r) => r.action === "skipped" && r.skipReason?.includes("drifted"),
             );
             const skippedUnregistered = results.filter(
-              (r) => r.action === "skipped" && r.skipReason?.includes("unregistered")
+              (r) => r.action === "skipped" && r.skipReason?.includes("unregistered"),
             );
 
             // AC: @multi-platform-render-cli ac-6 - Include Platform column in output
@@ -670,7 +677,9 @@ export function registerSkillDiffCommands(skill: Command): void {
               console.log();
               console.log(chalk.yellow(`Skipped: ${skippedDrifted.length} drifted skill(s)`));
               for (const r of skippedDrifted) {
-                console.log(`  ${chalk.yellow("!")} ${r.id} ${chalk.gray(`[${r.platform}]`)}: ${r.skipReason || "drifted"}`);
+                console.log(
+                  `  ${chalk.yellow("!")} ${r.id} ${chalk.gray(`[${r.platform}]`)}: ${r.skipReason || "drifted"}`,
+                );
               }
               console.log();
               console.log(chalk.yellow("Use --force to overwrite drifted skills"));
@@ -691,32 +700,26 @@ export function registerSkillDiffCommands(skill: Command): void {
               }
 
               if (skipped.length > 0) {
-                console.log(
-                  chalk.gray(`Skipped: ${skipped.length} unmanaged skill(s)`)
-                );
+                console.log(chalk.gray(`Skipped: ${skipped.length} unmanaged skill(s)`));
               }
             }
 
             // Summary
             console.log();
             if (dryRun) {
-              console.log(
-                chalk.yellow("No changes were made. Run without --dry-run to apply.")
-              );
+              console.log(chalk.yellow("No changes were made. Run without --dry-run to apply."));
             } else {
               const changedCount = created.length + updated.length;
-              const cleanedCount = cleanResults.filter(
-                (r) => r.action === "removed"
-              ).length;
+              const cleanedCount = cleanResults.filter((r) => r.action === "removed").length;
               if (changedCount > 0 || cleanedCount > 0) {
                 success(
-                  `Rendered ${changedCount} skill(s)${cleanedCount > 0 ? `, cleaned ${cleanedCount}` : ""}`
+                  `Rendered ${changedCount} skill(s)${cleanedCount > 0 ? `, cleaned ${cleanedCount}` : ""}`,
                 );
               } else {
                 console.log(chalk.gray("No changes needed"));
               }
             }
-          }
+          },
         );
       } catch (err) {
         error("Failed to render skills", err);
@@ -735,9 +738,7 @@ export function registerSkillDiffCommands(skill: Command): void {
 
         if (!ctx.manifestPath) {
           error(errors.project.noKspecProject);
-          console.log(
-            chalk.gray("Try: kspec init to initialize a kspec project")
-          );
+          console.log(chalk.gray("Try: kspec init to initialize a kspec project"));
           process.exit(EXIT_CODES.ERROR);
         }
 
@@ -776,75 +777,74 @@ export function registerSkillDiffCommands(skill: Command): void {
         }
 
         // Output results
-        output(
-          statusResults,
-          () => {
-            // AC: @multi-platform-render-cli ac-3 - Table shows Platform column
-            const table = new Table({
-              head: [
-                chalk.bold("ID"),
-                chalk.bold("Platform"),
-                chalk.bold("Status"),
-                chalk.bold("Docs"),
-              ],
-              style: {
-                head: [],
-                border: [],
-              },
-            });
+        output(statusResults, () => {
+          // AC: @multi-platform-render-cli ac-3 - Table shows Platform column
+          const table = new Table({
+            head: [
+              chalk.bold("ID"),
+              chalk.bold("Platform"),
+              chalk.bold("Status"),
+              chalk.bold("Docs"),
+            ],
+            style: {
+              head: [],
+              border: [],
+            },
+          });
 
-            for (const result of statusResults) {
-              const statusColor =
-                result.status === "in-sync"
-                  ? chalk.green
-                  : result.status === "drifted"
-                    ? chalk.yellow
-                    : result.status === "plugin-provided"
-                      ? chalk.cyan
-                      : chalk.gray;
-
-              const docsStatusColor =
-                result.docsStatus === "in-sync"
-                  ? chalk.green
-                  : result.docsStatus === "drifted"
-                    ? chalk.yellow
+          for (const result of statusResults) {
+            const statusColor =
+              result.status === "in-sync"
+                ? chalk.green
+                : result.status === "drifted"
+                  ? chalk.yellow
+                  : result.status === "plugin-provided"
+                    ? chalk.cyan
                     : chalk.gray;
 
-              table.push([
-                result.id,
-                result.platform,
-                statusColor(result.status + (result.warning ? " (!)" : "")),
-                docsStatusColor(result.docsStatus || "-"),
-              ]);
-            }
+            const docsStatusColor =
+              result.docsStatus === "in-sync"
+                ? chalk.green
+                : result.docsStatus === "drifted"
+                  ? chalk.yellow
+                  : chalk.gray;
 
-            console.log(table.toString());
-
-            // Summary
-            const inSync = statusResults.filter((r) => r.status === "in-sync").length;
-            const drifted = statusResults.filter((r) => r.status === "drifted").length;
-            const notRendered = statusResults.filter((r) => r.status === "not-rendered").length;
-            const pluginProvided = statusResults.filter((r) => r.status === "plugin-provided").length;
-            const warningCount = statusResults.filter((r) => r.warning).length;
-
-            console.log();
-            if (drifted > 0) {
-              console.log(chalk.yellow(`${drifted} skill(s) drifted - run 'kspec skill render' to sync`));
-            }
-            if (notRendered > 0) {
-              console.log(chalk.gray(`${notRendered} skill(s) not rendered`));
-            }
-            if (pluginProvided > 0) {
-              console.log(chalk.cyan(`${pluginProvided} skill(s) plugin-provided`));
-            }
-            if (warningCount > 0) {
-              console.log(chalk.yellow(`${warningCount} skill(s) with warnings`));
-            }
-            if (inSync + pluginProvided === statusResults.length) {
-              console.log(chalk.green("All skills in sync"));
-            }
+            table.push([
+              result.id,
+              result.platform,
+              statusColor(result.status + (result.warning ? " (!)" : "")),
+              docsStatusColor(result.docsStatus || "-"),
+            ]);
           }
-        );
+
+          console.log(table.toString());
+
+          // Summary
+          const inSync = statusResults.filter((r) => r.status === "in-sync").length;
+          const drifted = statusResults.filter((r) => r.status === "drifted").length;
+          const notRendered = statusResults.filter((r) => r.status === "not-rendered").length;
+          const pluginProvided = statusResults.filter((r) => r.status === "plugin-provided").length;
+          const warningCount = statusResults.filter((r) => r.warning).length;
+
+          console.log();
+          if (drifted > 0) {
+            console.log(
+              chalk.yellow(`${drifted} skill(s) drifted - run 'kspec skill render' to sync`),
+            );
+          }
+          if (notRendered > 0) {
+            console.log(chalk.gray(`${notRendered} skill(s) not rendered`));
+          }
+          if (pluginProvided > 0) {
+            console.log(chalk.cyan(`${pluginProvided} skill(s) plugin-provided`));
+          }
+          if (warningCount > 0) {
+            console.log(chalk.yellow(`${warningCount} skill(s) with warnings`));
+          }
+          if (inSync + pluginProvided === statusResults.length) {
+            console.log(chalk.green("All skills in sync"));
+          }
+        });
       } catch (err) {
         error("Failed to check skill status", err);
         process.exit(EXIT_CODES.ERROR);
@@ -861,9 +861,7 @@ export function registerSkillDiffCommands(skill: Command): void {
 
         if (!ctx.manifestPath) {
           error(errors.project.noKspecProject);
-          console.log(
-            chalk.gray("Try: kspec init to initialize a kspec project")
-          );
+          console.log(chalk.gray("Try: kspec init to initialize a kspec project"));
           process.exit(EXIT_CODES.ERROR);
         }
 
@@ -896,7 +894,7 @@ export function registerSkillDiffCommands(skill: Command): void {
             },
             () => {
               console.log(chalk.blue(`${skill.id}: plugin-provided (no local render to diff)`));
-            }
+            },
           );
           return;
         }
@@ -905,12 +903,7 @@ export function registerSkillDiffCommands(skill: Command): void {
         const expectedContent = await getExpectedRenderedContent(ctx, skill);
 
         // Get actual rendered content
-        const renderedPath = path.join(
-          projectRoot,
-          ".claude/skills",
-          skill.id,
-          "SKILL.md"
-        );
+        const renderedPath = path.join(projectRoot, ".claude/skills", skill.id, "SKILL.md");
 
         let actualContent = "";
         try {
@@ -924,7 +917,7 @@ export function registerSkillDiffCommands(skill: Command): void {
           actualContent,
           expectedContent,
           `a/${skill.id}/SKILL.md`,
-          `b/${skill.id}/SKILL.md`
+          `b/${skill.id}/SKILL.md`,
         );
 
         // Output
@@ -953,7 +946,7 @@ export function registerSkillDiffCommands(skill: Command): void {
                 }
               }
             }
-          }
+          },
         );
       } catch (err) {
         error("Failed to generate diff", err);
@@ -972,9 +965,7 @@ export function registerSkillDiffCommands(skill: Command): void {
 
         if (!ctx.manifestPath) {
           error(errors.project.noKspecProject);
-          console.log(
-            chalk.gray("Try: kspec init to initialize a kspec project")
-          );
+          console.log(chalk.gray("Try: kspec init to initialize a kspec project"));
           process.exit(EXIT_CODES.ERROR);
         }
 
@@ -1012,12 +1003,9 @@ export function registerSkillDiffCommands(skill: Command): void {
               continue;
             }
 
-            const driftStatus = await renderer.checkDrift(
-              ctx.specDir,
-              projectRoot,
-              skill.id,
-              { origin: skill.origin }
-            );
+            const driftStatus = await renderer.checkDrift(ctx.specDir, projectRoot, skill.id, {
+              origin: skill.origin,
+            });
 
             switch (driftStatus) {
               case "in-sync":
@@ -1065,68 +1053,71 @@ export function registerSkillDiffCommands(skill: Command): void {
         const noHashResults = results.filter((r) => r.status === "no-hash");
         const pluginProvidedResults = results.filter((r) => r.status === "plugin-provided");
 
-        output(
-          results,
-          () => {
-            if (driftedResults.length === 0 && notRenderedResults.length === 0 && noHashResults.length === 0) {
-              const parts: string[] = [];
-              if (okResults.length > 0) parts.push(`${okResults.length} rendered`);
-              if (pluginProvidedResults.length > 0) parts.push(`${pluginProvidedResults.length} plugin-provided`);
-              console.log(chalk.green(`All ${parts.join(", ")} skill(s) verified — no drift detected.`));
-              return;
-            }
+        output(results, () => {
+          if (
+            driftedResults.length === 0 &&
+            notRenderedResults.length === 0 &&
+            noHashResults.length === 0
+          ) {
+            const parts: string[] = [];
+            if (okResults.length > 0) parts.push(`${okResults.length} rendered`);
+            if (pluginProvidedResults.length > 0)
+              parts.push(`${pluginProvidedResults.length} plugin-provided`);
+            console.log(
+              chalk.green(`All ${parts.join(", ")} skill(s) verified — no drift detected.`),
+            );
+            return;
+          }
 
-            // Show drifted skills with guidance
-            if (driftedResults.length > 0) {
-              console.log(chalk.yellow.bold(`\nDrifted (${driftedResults.length}):`));
-              for (const r of driftedResults) {
-                console.log(`  ${chalk.yellow("●")} ${r.id} [${r.platform}]`);
-                console.log(`    ${chalk.gray(r.guidance!)}`);
-              }
-            }
-
-            // Show not-rendered
-            if (notRenderedResults.length > 0) {
-              console.log(chalk.gray.bold(`\nNot rendered (${notRenderedResults.length}):`));
-              for (const r of notRenderedResults) {
-                console.log(`  ${chalk.gray("○")} ${r.id} [${r.platform}]`);
-                console.log(`    ${chalk.gray(r.guidance!)}`);
-              }
-            }
-
-            // Show no-hash
-            if (noHashResults.length > 0) {
-              console.log(chalk.gray.bold(`\nNo hash (${noHashResults.length}):`));
-              for (const r of noHashResults) {
-                console.log(`  ${chalk.gray("○")} ${r.id} [${r.platform}]`);
-                console.log(`    ${chalk.gray(r.guidance!)}`);
-              }
-            }
-
-            // Show plugin-provided
-            if (pluginProvidedResults.length > 0) {
-              console.log(chalk.cyan.bold(`\nPlugin-provided (${pluginProvidedResults.length}):`));
-              for (const r of pluginProvidedResults) {
-                console.log(`  ${chalk.cyan("◆")} ${r.id} [${r.platform}]`);
-              }
-            }
-
-            // Summary line
-            const summaryParts: string[] = [];
-            if (okResults.length > 0) summaryParts.push(`${okResults.length} OK`);
-            if (pluginProvidedResults.length > 0) summaryParts.push(`${pluginProvidedResults.length} plugin-provided`);
-            if (summaryParts.length > 0) {
-              console.log(chalk.green(`\n${summaryParts.join(", ")} skill(s) verified.`));
-            }
-
-            // Actionable summary
-            if (driftedResults.length > 0) {
-              console.log(
-                chalk.yellow(`\nTo sync all drifted skills: kspec skill render --force`)
-              );
+          // Show drifted skills with guidance
+          if (driftedResults.length > 0) {
+            console.log(chalk.yellow.bold(`\nDrifted (${driftedResults.length}):`));
+            for (const r of driftedResults) {
+              console.log(`  ${chalk.yellow("●")} ${r.id} [${r.platform}]`);
+              console.log(`    ${chalk.gray(r.guidance!)}`);
             }
           }
-        );
+
+          // Show not-rendered
+          if (notRenderedResults.length > 0) {
+            console.log(chalk.gray.bold(`\nNot rendered (${notRenderedResults.length}):`));
+            for (const r of notRenderedResults) {
+              console.log(`  ${chalk.gray("○")} ${r.id} [${r.platform}]`);
+              console.log(`    ${chalk.gray(r.guidance!)}`);
+            }
+          }
+
+          // Show no-hash
+          if (noHashResults.length > 0) {
+            console.log(chalk.gray.bold(`\nNo hash (${noHashResults.length}):`));
+            for (const r of noHashResults) {
+              console.log(`  ${chalk.gray("○")} ${r.id} [${r.platform}]`);
+              console.log(`    ${chalk.gray(r.guidance!)}`);
+            }
+          }
+
+          // Show plugin-provided
+          if (pluginProvidedResults.length > 0) {
+            console.log(chalk.cyan.bold(`\nPlugin-provided (${pluginProvidedResults.length}):`));
+            for (const r of pluginProvidedResults) {
+              console.log(`  ${chalk.cyan("◆")} ${r.id} [${r.platform}]`);
+            }
+          }
+
+          // Summary line
+          const summaryParts: string[] = [];
+          if (okResults.length > 0) summaryParts.push(`${okResults.length} OK`);
+          if (pluginProvidedResults.length > 0)
+            summaryParts.push(`${pluginProvidedResults.length} plugin-provided`);
+          if (summaryParts.length > 0) {
+            console.log(chalk.green(`\n${summaryParts.join(", ")} skill(s) verified.`));
+          }
+
+          // Actionable summary
+          if (driftedResults.length > 0) {
+            console.log(chalk.yellow(`\nTo sync all drifted skills: kspec skill render --force`));
+          }
+        });
 
         // Exit with non-zero if any skills drifted
         if (driftedResults.length > 0) {

@@ -4,9 +4,7 @@
  * Creates new sessions with optional budget and injects session ID into agent environments.
  */
 
-import {
-  initContext,
-} from "../../../parser/index.js";
+import { initContext } from "../../../parser/index.js";
 import {
   type EnvInjectionResult,
   createSessionWithBudget,
@@ -28,9 +26,7 @@ import { error, info, output, success, warn } from "../../output.js";
  * AC: @session-creation-and-env-injection ac-inject-codex
  * AC: @session-creation-and-env-injection ac-inject-fallback
  */
-async function performEnvInjection(
-  sessionId: string,
-): Promise<EnvInjectionResult> {
+async function performEnvInjection(sessionId: string): Promise<EnvInjectionResult> {
   // Detect Claude Code
   if (
     process.env.CLAUDECODE === "1" ||
@@ -91,9 +87,7 @@ export async function sessionCreateAction(options: {
     if (existingSessionId) {
       const validation = await validateSessionId(ctx.sessionsDir, existingSessionId);
       if (!validation.valid) {
-        warn(
-          `Current KSPEC_SESSION_ID (${existingSessionId}) is invalid: ${validation.error}`,
-        );
+        warn(`Current KSPEC_SESSION_ID (${existingSessionId}) is invalid: ${validation.error}`);
         info(validation.suggestion || "Creating a new session will generate a fresh ID.");
       }
     }
@@ -104,13 +98,17 @@ export async function sessionCreateAction(options: {
     if (options.budget !== undefined) {
       // Use Number() instead of parseInt to reject "3.5", "3abc", "1e2" etc.
       budgetNum = Number(options.budget);
-      if (isNaN(budgetNum) || budgetNum <= 0 || !Number.isInteger(budgetNum) || !/^\d+$/.test(options.budget)) {
+      if (
+        isNaN(budgetNum) ||
+        budgetNum <= 0 ||
+        !Number.isInteger(budgetNum) ||
+        !/^\d+$/.test(options.budget)
+      ) {
         // AC: @trait-error-guidance ac-2, ac-5 - include suggested action and field info
         // AC: @trait-error-guidance ac-6 - guidance included in structured error
-        error(
-          `Invalid budget value: "${options.budget}". Must be a positive integer.`,
-          { suggestion: "Usage: kspec session create --budget <positive-integer>" },
-        );
+        error(`Invalid budget value: "${options.budget}". Must be a positive integer.`, {
+          suggestion: "Usage: kspec session create --budget <positive-integer>",
+        });
         process.exit(EXIT_CODES.USAGE_ERROR);
       }
     }
@@ -167,9 +165,7 @@ export async function sessionCreateAction(options: {
       info(`Agent type: ${options.agentType}`);
 
       if (result.budget) {
-        info(
-          `Budget: ${result.budget.max_per_cycle} tasks per cycle`,
-        );
+        info(`Budget: ${result.budget.max_per_cycle} tasks per cycle`);
       }
 
       if (injection) {

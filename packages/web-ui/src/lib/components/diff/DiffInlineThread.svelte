@@ -14,12 +14,12 @@
 		onReopen: (threadId: string) => void;
 	}
 
-	let { thread, isInteractive, onReply, onResolve, onReopen }: Props = $props();
+	const { thread, isInteractive, onReply, onResolve, onReopen }: Props = $props();
 
 	let showReplyForm = $state(false);
 	let replyBody = $state('');
-	let userCollapsed = $state<boolean | null>(null);
-	let collapsed = $derived(userCollapsed ?? !!thread.resolved_at);
+	const userCollapsed = $state<boolean | null>(null);
+	const collapsed = $derived(userCollapsed ?? !!thread.resolved_at);
 
 	function getKindColor(kind: string): string {
 		const colors: Record<string, string> = {

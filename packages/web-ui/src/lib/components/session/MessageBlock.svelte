@@ -9,7 +9,7 @@
 	import { renderMarkdown } from '$lib/utils/markdown';
 	import StreamingMarkdown from '$lib/components/markdown/StreamingMarkdown.svelte';
 
-	let { block }: { block: MessageBlockType } = $props();
+	const { block }: { block: MessageBlockType } = $props();
 
 	const html = $derived(block.isStreaming ? '' : renderMarkdown(block.content));
 </script>

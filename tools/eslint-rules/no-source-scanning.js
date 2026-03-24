@@ -19,13 +19,7 @@
 
 const FS_MODULE_PATTERN = /^(node:)?fs(\/promises)?$/;
 const READ_FUNCTIONS = new Set(["readFileSync", "readFile"]);
-const ASSERTION_METHODS = new Set([
-  "toContain",
-  "toMatch",
-  "toBe",
-  "toEqual",
-  "toHaveProperty",
-]);
+const ASSERTION_METHODS = new Set(["toContain", "toMatch", "toBe", "toEqual", "toHaveProperty"]);
 const STRING_SEARCH_METHODS = new Set([
   "includes",
   "match",
@@ -37,12 +31,7 @@ const STRING_SEARCH_METHODS = new Set([
 const PATH_FUNCTIONS = new Set(["join", "resolve"]);
 
 // Path segments that indicate temp/fixture directories (safe to read from)
-const SAFE_PATH_SEGMENTS = [
-  "fixtures",
-  "fixture",
-  "/tmp",
-  ".kspec",
-];
+const SAFE_PATH_SEGMENTS = ["fixtures", "fixture", "/tmp", ".kspec"];
 
 // Function names that return temp directory paths
 const TEMP_DIR_FUNCTIONS = new Set([
@@ -55,10 +44,7 @@ const TEMP_DIR_FUNCTIONS = new Set([
 
 // Safe file-read wrappers — calls to these are never flagged.
 // Tests should use these helpers instead of raw fs.readFile / readFileSync.
-const SAFE_READ_FUNCTIONS = new Set([
-  "readTestOutput",
-  "readTestOutputSync",
-]);
+const SAFE_READ_FUNCTIONS = new Set(["readTestOutput", "readTestOutputSync"]);
 
 /**
  * Check if an identifier name looks like a safe temp/fixture variable.
@@ -83,10 +69,7 @@ function isTempDirCall(node) {
   }
 
   // Namespace: fs.mkdtemp(...), os.tmpdir()
-  if (
-    callee.type === "MemberExpression" &&
-    callee.property.type === "Identifier"
-  ) {
+  if (callee.type === "MemberExpression" && callee.property.type === "Identifier") {
     if (TEMP_DIR_FUNCTIONS.has(callee.property.name)) return true;
     if (callee.property.name === "tmpdir") return true;
   }
@@ -201,8 +184,7 @@ const noSourceScanning = {
   meta: {
     type: "problem",
     docs: {
-      description:
-        "Disallow reading project files and asserting on their contents in tests",
+      description: "Disallow reading project files and asserting on their contents in tests",
     },
     messages: {
       noFileRead:
@@ -225,10 +207,7 @@ const noSourceScanning = {
         if (!FS_MODULE_PATTERN.test(node.source.value)) return;
 
         for (const spec of node.specifiers) {
-          if (
-            spec.type === "ImportSpecifier" &&
-            READ_FUNCTIONS.has(spec.imported.name)
-          ) {
+          if (spec.type === "ImportSpecifier" && READ_FUNCTIONS.has(spec.imported.name)) {
             fsBindings.add(spec.local.name);
           } else if (
             spec.type === "ImportDefaultSpecifier" ||
@@ -258,10 +237,7 @@ const noSourceScanning = {
                 prop.key.type === "Identifier" &&
                 READ_FUNCTIONS.has(prop.key.name)
               ) {
-                const local =
-                  prop.value.type === "Identifier"
-                    ? prop.value.name
-                    : prop.key.name;
+                const local = prop.value.type === "Identifier" ? prop.value.name : prop.key.name;
                 fsBindings.add(local);
               }
             }
@@ -273,8 +249,7 @@ const noSourceScanning = {
         if (!node.init || node.id.type !== "Identifier") return;
         const varName = node.id.name;
         const init = node.init;
-        const callNode =
-          init.type === "AwaitExpression" ? init.argument : init;
+        const callNode = init.type === "AwaitExpression" ? init.argument : init;
 
         // Track variables assigned from temp-dir-creating functions
         // e.g. const testDir = await mkdtemp(...), const dir = await setupTempFixtures()
@@ -290,7 +265,11 @@ const noSourceScanning = {
         }
 
         // Track variables assigned from path.join(safeVar, ...) or path.join('/tmp', ...)
-        if (callNode && callNode.type === "CallExpression" && isPathCallFromSafeRoot(callNode, safeVars)) {
+        if (
+          callNode &&
+          callNode.type === "CallExpression" &&
+          isPathCallFromSafeRoot(callNode, safeVars)
+        ) {
           safeVars.add(varName);
           return;
         }
@@ -298,7 +277,11 @@ const noSourceScanning = {
         // Track variables assigned from any function call that receives a safe var as argument.
         // Heuristic: if a function is called with a safe variable, its return value is
         // likely a path derived from that safe root (e.g. getIndexFilePath(ctx), getSessionBudgetPath(sessionsDir, id))
-        if (callNode && callNode.type === "CallExpression" && callReceivesSafeArg(callNode, safeVars)) {
+        if (
+          callNode &&
+          callNode.type === "CallExpression" &&
+          callReceivesSafeArg(callNode, safeVars)
+        ) {
           safeVars.add(varName);
           return;
         }
@@ -316,11 +299,14 @@ const noSourceScanning = {
         if (node.left.type !== "Identifier" || !node.right) return;
         const varName = node.left.name;
         const rhs = node.right;
-        const callNode =
-          rhs.type === "AwaitExpression" ? rhs.argument : rhs;
+        const callNode = rhs.type === "AwaitExpression" ? rhs.argument : rhs;
 
         if (callNode && callNode.type === "CallExpression") {
-          if (isTempDirCall(callNode) || isPathCallFromSafeRoot(callNode, safeVars) || callReceivesSafeArg(callNode, safeVars)) {
+          if (
+            isTempDirCall(callNode) ||
+            isPathCallFromSafeRoot(callNode, safeVars) ||
+            callReceivesSafeArg(callNode, safeVars)
+          ) {
             safeVars.add(varName);
             return;
           }
@@ -339,9 +325,7 @@ const noSourceScanning = {
         if (isFsReadCall(node)) {
           if (!isReadFromSafePath(node.arguments[0], safeVars)) {
             const firstArg = node.arguments[0];
-            const argText = firstArg
-              ? context.sourceCode.getText(firstArg)
-              : "unknown";
+            const argText = firstArg ? context.sourceCode.getText(firstArg) : "unknown";
             context.report({
               node,
               messageId: "noFileRead",
@@ -382,12 +366,21 @@ const noSourceScanning = {
       let current = node.parent;
       while (current) {
         // Check FunctionDeclaration: function readTestOutput(...) { ... }
-        if (current.type === "FunctionDeclaration" && current.id && SAFE_READ_FUNCTIONS.has(current.id.name)) {
+        if (
+          current.type === "FunctionDeclaration" &&
+          current.id &&
+          SAFE_READ_FUNCTIONS.has(current.id.name)
+        ) {
           return true;
         }
         // Check VariableDeclarator with function: const readTestOutput = function(...) { ... }
         // or const readTestOutput = (...) => { ... }
-        if (current.type === "VariableDeclarator" && current.id && current.id.type === "Identifier" && SAFE_READ_FUNCTIONS.has(current.id.name)) {
+        if (
+          current.type === "VariableDeclarator" &&
+          current.id &&
+          current.id.type === "Identifier" &&
+          SAFE_READ_FUNCTIONS.has(current.id.name)
+        ) {
           return true;
         }
         current = current.parent;
@@ -435,10 +428,7 @@ const noSourceScanning = {
       ) {
         return node;
       }
-      if (
-        node.type === "MemberExpression" &&
-        node.object.type === "CallExpression"
-      ) {
+      if (node.type === "MemberExpression" && node.object.type === "CallExpression") {
         return findExpectCall(node.object);
       }
       return null;
@@ -448,10 +438,7 @@ const noSourceScanning = {
       if (memberExpr.property.type === "Identifier") {
         return memberExpr.property.name;
       }
-      if (
-        memberExpr.property.type === "Literal" &&
-        typeof memberExpr.property.value === "string"
-      ) {
+      if (memberExpr.property.type === "Literal" && typeof memberExpr.property.value === "string") {
         return memberExpr.property.value;
       }
       return null;

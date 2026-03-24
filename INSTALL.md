@@ -42,6 +42,7 @@ node scripts/bootstrap.cjs
 ```
 
 The bootstrap script:
+
 - Detects current state (skips steps that aren't needed)
 - Runs install, build, link, and init as required
 - Reports what actions it took (transparency)
@@ -111,6 +112,7 @@ kspec session start    # Should display project context
 ```
 
 Also check:
+
 - `.kspec/` directory exists
 - `.kspec/` is listed in `.gitignore`
 
@@ -140,16 +142,16 @@ See [docs/getting-started.md](docs/getting-started.md) for the full first-task w
 
 ## Troubleshooting
 
-| Issue | Solution |
-|-------|----------|
-| "Bun runtime is required" | Install Bun: `curl -fsSL https://bun.sh/install \| bash` (only needed for `kspec serve`) |
-| "kspec: command not found" | Run `npm install -g @kynetic-ai/spec`, or if using source: `npm link` |
-| "Not a git repository" | Run `git init` first, or use `kspec init --no-shadow` |
-| "Cannot find .kspec" | Run `kspec init` (fresh project) or `kspec setup --auto-worktree` (cloned repo) |
-| ".kspec already exists" | Use `kspec init --force` to reinitialize |
-| "Cannot run from inside .kspec/" | Run `cd ..` to return to project root |
-| Shadow branch errors | Run `kspec shadow repair` |
-| Sync conflicts | Run `kspec shadow resolve` |
+| Issue                            | Solution                                                                                 |
+| -------------------------------- | ---------------------------------------------------------------------------------------- |
+| "Bun runtime is required"        | Install Bun: `curl -fsSL https://bun.sh/install \| bash` (only needed for `kspec serve`) |
+| "kspec: command not found"       | Run `npm install -g @kynetic-ai/spec`, or if using source: `npm link`                    |
+| "Not a git repository"           | Run `git init` first, or use `kspec init --no-shadow`                                    |
+| "Cannot find .kspec"             | Run `kspec init` (fresh project) or `kspec setup --auto-worktree` (cloned repo)          |
+| ".kspec already exists"          | Use `kspec init --force` to reinitialize                                                 |
+| "Cannot run from inside .kspec/" | Run `cd ..` to return to project root                                                    |
+| Shadow branch errors             | Run `kspec shadow repair`                                                                |
+| Sync conflicts                   | Run `kspec shadow resolve`                                                               |
 
 ### Recovery Commands
 

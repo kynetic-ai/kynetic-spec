@@ -19,9 +19,7 @@ export const alignment = {
   },
 
   statusMismatches: {
-    header: chalk.yellow(
-      "\nStatus mismatches (task status != spec implementation):",
-    ),
+    header: chalk.yellow("\nStatus mismatches (task status != spec implementation):"),
     item: (ref: string, title: string, taskStatus: string, specImpl: string) =>
       `  ${ref}: ${title} (task=${taskStatus}, spec=${specImpl})`,
   },
@@ -71,11 +69,7 @@ export const validation = {
   nowPasses: chalk.green.bold("✓ Validation now passes"),
   issuesRemain: chalk.yellow("Some issues remain after auto-fix"),
 
-  alignmentStats: (
-    specsWithTasks: number,
-    totalSpecs: number,
-    aligned: number,
-  ) =>
+  alignmentStats: (specsWithTasks: number, totalSpecs: number, aligned: number) =>
     chalk.gray(
       `\nAlignment stats: ${specsWithTasks}/${totalSpecs} specs have tasks, ${aligned} aligned`,
     ),
@@ -95,8 +89,7 @@ export const shadowCommands = {
     repairing: "Repairing shadow branch worktree...",
     stillHealthy: "Shadow branch is already healthy",
     repaired: "Shadow branch repaired",
-    worktreeCreated: (dir: string) =>
-      chalk.green(`  ✓ Recreated worktree: ${dir}/`),
+    worktreeCreated: (dir: string) => chalk.green(`  ✓ Recreated worktree: ${dir}/`),
     failed: (error: string) => `Repair failed: ${error}`,
     commandFailed: "Failed to repair shadow branch",
   },
@@ -118,9 +111,7 @@ export const shadowCommands = {
     keepingLocal: "Keeping local changes...",
     keptLocal: "Resolved: kept local changes and pushed to remote",
     pushFailed: "Could not push local changes to remote",
-    localPreserved: chalk.gray(
-      "Local changes are preserved, but remote may differ",
-    ),
+    localPreserved: chalk.gray("Local changes are preserved, but remote may differ"),
     failed: "Failed to resolve conflicts",
 
     interactive: {
@@ -131,15 +122,11 @@ export const shadowCommands = {
 
       theirs: {
         command: chalk.cyan("  kspec shadow resolve --theirs"),
-        description: chalk.gray(
-          "    Accept all remote changes, discard local uncommitted work",
-        ),
+        description: chalk.gray("    Accept all remote changes, discard local uncommitted work"),
       },
       ours: {
         command: chalk.cyan("  kspec shadow resolve --ours"),
-        description: chalk.gray(
-          "    Keep local changes and force-push to remote",
-        ),
+        description: chalk.gray("    Keep local changes and force-push to remote"),
       },
       manual: {
         header: chalk.cyan("  Manual resolution:"),

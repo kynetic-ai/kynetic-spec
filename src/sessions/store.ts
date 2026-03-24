@@ -29,9 +29,7 @@ import {
   type TaskBudget,
   TaskBudgetSchema,
 } from "./types.js";
-import {
-  sessionBranchAutoCommit,
-} from "../parser/session-branch.js";
+import { sessionBranchAutoCommit } from "../parser/session-branch.js";
 import {
   unwrapSessionUpdate,
   extractToolCallFields,
@@ -86,10 +84,7 @@ async function isSessionWorktree(sessionsDir: string): Promise<boolean> {
  * Auto-commit to session branch at lifecycle boundaries.
  * No-op if sessionsDir is not a git worktree.
  */
-async function commitAtLifecycleBoundary(
-  sessionsDir: string,
-  message: string,
-): Promise<void> {
+async function commitAtLifecycleBoundary(sessionsDir: string, message: string): Promise<void> {
   if (await isSessionWorktree(sessionsDir)) {
     await sessionBranchAutoCommit(sessionsDir, message);
   }
@@ -118,20 +113,14 @@ export function getSessionDir(sessionsDir: string, sessionId: string): string {
 /**
  * Get the path to a session's metadata file.
  */
-export function getSessionMetadataPath(
-  sessionsDir: string,
-  sessionId: string,
-): string {
+export function getSessionMetadataPath(sessionsDir: string, sessionId: string): string {
   return path.join(getSessionDir(sessionsDir, sessionId), METADATA_FILE);
 }
 
 /**
  * Get the path to a session's events file.
  */
-export function getSessionEventsPath(
-  sessionsDir: string,
-  sessionId: string,
-): string {
+export function getSessionEventsPath(sessionsDir: string, sessionId: string): string {
   return path.join(getSessionDir(sessionsDir, sessionId), EVENTS_FILE);
 }
 
@@ -143,20 +132,14 @@ export function getSessionContextPath(
   sessionId: string,
   iteration: number,
 ): string {
-  return path.join(
-    getSessionDir(sessionsDir, sessionId),
-    `context-iter-${iteration}.json`,
-  );
+  return path.join(getSessionDir(sessionsDir, sessionId), `context-iter-${iteration}.json`);
 }
 
 /**
  * Get the path to a session's budget file.
  * AC: @session-creation-and-env-injection ac-budget-local
  */
-export function getSessionBudgetPath(
-  sessionsDir: string,
-  sessionId: string,
-): string {
+export function getSessionBudgetPath(sessionsDir: string, sessionId: string): string {
   return path.join(getSessionDir(sessionsDir, sessionId), BUDGET_FILE);
 }
 
@@ -212,10 +195,7 @@ export async function createSession(
   await fsPromises.writeFile(metadataPath, content, "utf-8");
 
   // AC: @session-branch-worktree ac-commit-boundaries — commit on session create
-  await commitAtLifecycleBoundary(
-    sessionsDir,
-    `session: create (${input.id})`,
-  );
+  await commitAtLifecycleBoundary(sessionsDir, `session: create (${input.id})`);
 
   return validated;
 }
@@ -272,8 +252,7 @@ export async function updateSessionStatus(
   const updated: SessionMetadata = {
     ...metadata,
     status,
-    ended_at:
-      status !== "active" ? new Date().toISOString() : metadata.ended_at,
+    ended_at: status !== "active" ? new Date().toISOString() : metadata.ended_at,
   };
 
   const metadataPath = getSessionMetadataPath(sessionsDir, sessionId);
@@ -320,9 +299,7 @@ export async function getCompletedSessionCountsByAgent(
   const counts: Record<string, number> = {};
 
   // Read metadata in parallel for performance
-  const metadataResults = await Promise.all(
-    sessionIds.map((id) => getSession(sessionsDir, id)),
-  );
+  const metadataResults = await Promise.all(sessionIds.map((id) => getSession(sessionsDir, id)));
 
   for (const metadata of metadataResults) {
     if (!metadata) continue;
@@ -337,10 +314,7 @@ export async function getCompletedSessionCountsByAgent(
 /**
  * Check if a session exists.
  */
-export async function sessionExists(
-  sessionsDir: string,
-  sessionId: string,
-): Promise<boolean> {
+export async function sessionExists(sessionsDir: string, sessionId: string): Promise<boolean> {
   const metadataPath = getSessionMetadataPath(sessionsDir, sessionId);
   try {
     await fsPromises.access(metadataPath);
@@ -473,10 +447,7 @@ export async function closeSession(
   await fsPromises.writeFile(metadataPath, content, "utf-8");
 
   // AC: @session-branch-worktree ac-commit-boundaries — commit on session close
-  await commitAtLifecycleBoundary(
-    sessionsDir,
-    `session: close ${status} (${sessionId})`,
-  );
+  await commitAtLifecycleBoundary(sessionsDir, `session: close ${status} (${sessionId})`);
 
   return updated;
 }
@@ -654,10 +625,14 @@ async function externalizeOversizedPayloads(
   if (Array.isArray(value)) {
     return Promise.all(
       value.map((entry, idx) =>
-        externalizeOversizedPayloads(sessionsDir, sessionId, seq, entry, [
-          ...pathSegments,
-          String(idx),
-        ], context),
+        externalizeOversizedPayloads(
+          sessionsDir,
+          sessionId,
+          seq,
+          entry,
+          [...pathSegments, String(idx)],
+          context,
+        ),
       ),
     );
   }
@@ -687,10 +662,7 @@ function resolveBlobAbsolutePath(
 ): string | null {
   const sessionDir = path.resolve(getSessionDir(sessionsDir, sessionId));
   const absolutePath = path.resolve(sessionDir, relativePath);
-  if (
-    absolutePath === sessionDir ||
-    absolutePath.startsWith(`${sessionDir}${path.sep}`)
-  ) {
+  if (absolutePath === sessionDir || absolutePath.startsWith(`${sessionDir}${path.sep}`)) {
     return absolutePath;
   }
   return null;
@@ -778,10 +750,7 @@ function extractLastEventSeq(content: string): number | null {
  * Reads a bounded tail slice for O(1) seq lookup; falls back to full scan only
  * if the tail slice cannot be parsed (for example, partial line boundary).
  */
-async function getNextEventSeq(
-  sessionsDir: string,
-  sessionId: string,
-): Promise<number> {
+async function getNextEventSeq(sessionsDir: string, sessionId: string): Promise<number> {
   const eventsPath = getSessionEventsPath(sessionsDir, sessionId);
 
   let fileHandle: fsPromises.FileHandle | null = null;
@@ -920,10 +889,7 @@ export async function appendEvent(
 
 export interface CompactSessionEventsOptions {
   dryRun?: boolean;
-  renameFn?: (
-    oldPath: string,
-    newPath: string,
-  ) => Promise<void>;
+  renameFn?: (oldPath: string, newPath: string) => Promise<void>;
 }
 
 export type CompactSessionReason =
@@ -983,9 +949,7 @@ export async function compactSessionEvents(
   }
 
   const bytesBefore = Buffer.byteLength(content, "utf-8");
-  const sourceLines = content
-    .split("\n")
-    .filter((line) => line.trim().length > 0);
+  const sourceLines = content.split("\n").filter((line) => line.trim().length > 0);
 
   if (sourceLines.length === 0) {
     return {
@@ -1016,7 +980,7 @@ export async function compactSessionEvents(
       parsed = JSON.parse(line);
     } catch (err: unknown) {
       throw new Error(
-        `Invalid JSON in events log at line ${i + 1}: ${err instanceof Error ? err.message : String(err)}`,
+        `Invalid JSON in events log at line ${i + 1}: ${err instanceof Error ? err.message : String(err)}`, { cause: err },
       );
     }
 
@@ -1074,10 +1038,7 @@ export async function compactSessionEvents(
 
   if (!dryRun) {
     const sessionDir = getSessionDir(sessionsDir, sessionId);
-    const tmpPath = path.join(
-      sessionDir,
-      `.${EVENTS_FILE}.${process.pid}.${Date.now()}.tmp`,
-    );
+    const tmpPath = path.join(sessionDir, `.${EVENTS_FILE}.${process.pid}.${Date.now()}.tmp`);
     try {
       await fsPromises.writeFile(tmpPath, compactedContent, "utf-8");
       await renameFn(tmpPath, eventsPath);
@@ -1089,10 +1050,7 @@ export async function compactSessionEvents(
 
   // AC: @session-branch-worktree ac-commit-boundaries — commit on compact
   if (!dryRun) {
-    await commitAtLifecycleBoundary(
-      sessionsDir,
-      `session: compact (${sessionId})`,
-    );
+    await commitAtLifecycleBoundary(sessionsDir, `session: compact (${sessionId})`);
   }
 
   return {
@@ -1116,10 +1074,7 @@ export async function compactSessionEvents(
  * @param sessionId - Session ID
  * @returns Array of events sorted by sequence number
  */
-export async function readEvents(
-  sessionsDir: string,
-  sessionId: string,
-): Promise<SessionEvent[]> {
+export async function readEvents(sessionsDir: string, sessionId: string): Promise<SessionEvent[]> {
   const eventsPath = getSessionEventsPath(sessionsDir, sessionId);
 
   try {
@@ -1141,7 +1096,7 @@ export async function readEvents(
     }
 
     // AC: @session-events ac-4 - Sort by sequence number
-    return events.sort((a, b) => a.seq - b.seq);
+    return events.toSorted((a, b) => a.seq - b.seq);
   } catch {
     return [];
   }
@@ -1199,9 +1154,7 @@ export async function readEventBySeq(
  * then with populated rawInput. This merges them by keeping only the version
  * with populated rawInput per toolCallId.
  */
-export function deduplicatePhasedToolCalls(
-  events: SessionEvent[],
-): SessionEvent[] {
+export function deduplicatePhasedToolCalls(events: SessionEvent[]): SessionEvent[] {
   // First pass: find toolCallIds that have a populated rawInput version
   const populatedToolCalls = new Map<string, number>(); // toolCallId → index
   for (let i = 0; i < events.length; i++) {
@@ -1299,24 +1252,22 @@ export interface StaleSessionCriteria {
 
 export type StaleSessionCriteriaValidation =
   | {
-    ok: true;
-    criteria: StaleSessionCriteria;
-  }
+      ok: true;
+      criteria: StaleSessionCriteria;
+    }
   | {
-    ok: false;
-    field: "older-than" | "inactive-for" | "liveness-guard";
-    value: string;
-    message: string;
-    guidance: string;
-  };
+      ok: false;
+      field: "older-than" | "inactive-for" | "liveness-guard";
+      value: string;
+      message: string;
+      guidance: string;
+    };
 
 function durationGuidance(flag: "older-than" | "inactive-for" | "liveness-guard"): string {
   return `--${flag} accepts relative durations only (h, d, w, m), for example 6h, 7d, 2w, 1m`;
 }
 
-function parseRelativeDurationMs(
-  rawValue: string,
-): number | null {
+function parseRelativeDurationMs(rawValue: string): number | null {
   const match = rawValue.match(RELATIVE_DURATION_PATTERN);
   if (!match) return null;
   const amount = parseInt(match[1], 10);
@@ -1340,16 +1291,18 @@ function parseRelativeDurationMs(
 function parseCriteriaDuration(
   field: "older-than" | "inactive-for" | "liveness-guard",
   value: string,
-): {
-  ok: true;
-  ms: number;
-} | {
-  ok: false;
-  field: "older-than" | "inactive-for" | "liveness-guard";
-  value: string;
-  message: string;
-  guidance: string;
-} {
+):
+  | {
+      ok: true;
+      ms: number;
+    }
+  | {
+      ok: false;
+      field: "older-than" | "inactive-for" | "liveness-guard";
+      value: string;
+      message: string;
+      guidance: string;
+    } {
   const parsed = parseRelativeDurationMs(value);
   if (parsed !== null) {
     return { ok: true, ms: parsed };
@@ -1383,10 +1336,7 @@ export function resolveStaleSessionCriteria(
   if (!inactiveForParsed.ok) return inactiveForParsed;
   const inactiveForMs = inactiveForParsed.ms;
 
-  const livenessGuardParsed = parseCriteriaDuration(
-    "liveness-guard",
-    livenessGuard,
-  );
+  const livenessGuardParsed = parseCriteriaDuration("liveness-guard", livenessGuard);
   if (!livenessGuardParsed.ok) return livenessGuardParsed;
   const livenessGuardMs = livenessGuardParsed.ms;
 
@@ -1411,14 +1361,14 @@ export interface StaleSessionActivity {
 
 export type StaleSessionActivityResult =
   | {
-    ok: true;
-    activity: StaleSessionActivity;
-  }
+      ok: true;
+      activity: StaleSessionActivity;
+    }
   | {
-    ok: false;
-    reason: "events_unreadable" | "events_corrupt" | "invalid_started_at";
-    detail: string;
-  };
+      ok: false;
+      reason: "events_unreadable" | "events_corrupt" | "invalid_started_at";
+      detail: string;
+    };
 
 /**
  * Resolve most recent activity timestamp for stale-session candidate checks.
@@ -1559,20 +1509,14 @@ export function evaluateStaleSession(
   activity: StaleSessionActivity,
   criteria: StaleSessionCriteria,
   nowMs: number = Date.now(),
-): Omit<
-  StaleSessionEvaluation,
-  "sessionId"
-> {
+): Omit<StaleSessionEvaluation, "sessionId"> {
   const startedAtMs = new Date(startedAt).getTime();
   const ageMs = nowMs - startedAtMs;
   const inactivityMs = nowMs - activity.lastActivityTs;
   const meetsAgeThreshold = ageMs >= criteria.olderThanMs;
   const meetsInactivityThreshold = inactivityMs >= criteria.inactiveForMs;
   const blockedByLivenessGuard = inactivityMs < criteria.livenessGuardMs;
-  const eligible =
-    meetsAgeThreshold &&
-    meetsInactivityThreshold &&
-    !blockedByLivenessGuard;
+  const eligible = meetsAgeThreshold && meetsInactivityThreshold && !blockedByLivenessGuard;
 
   return {
     startedAt,
@@ -1594,9 +1538,7 @@ export async function selectStaleActiveSessions(
 ): Promise<StaleSessionCandidateSelection> {
   const criteriaResolved = resolveStaleSessionCriteria(criteriaInput);
   if (!criteriaResolved.ok) {
-    throw new Error(
-      `${criteriaResolved.message}. ${criteriaResolved.guidance}`,
-    );
+    throw new Error(`${criteriaResolved.message}. ${criteriaResolved.guidance}`);
   }
   const criteria = criteriaResolved.criteria;
 
@@ -1609,10 +1551,7 @@ export async function selectStaleActiveSessions(
     const metadata = await getSession(sessionsDir, sessionId);
     if (!metadata || metadata.status !== "active") continue;
 
-    const activityResult = await getSessionActivityForStaleCheck(
-      sessionsDir,
-      sessionId,
-    );
+    const activityResult = await getSessionActivityForStaleCheck(sessionsDir, sessionId);
     if (!activityResult.ok) {
       skipped.push({
         sessionId,
@@ -1697,10 +1636,7 @@ export async function applyAutoAbandonMetadata(
   const updates: AutoAbandonMetadataPreview[] = [];
 
   for (const candidate of selection.candidates) {
-    const closeReason = buildAutoAbandonedCloseReason(
-      selection.criteria,
-      candidate,
-    );
+    const closeReason = buildAutoAbandonedCloseReason(selection.criteria, candidate);
     updates.push({
       sessionId: candidate.sessionId,
       status: "abandoned",
@@ -1800,10 +1736,7 @@ export interface SessionLogSummary {
  * Count lines in events.jsonl without parsing JSON.
  * Much faster than readEvents() for large files.
  */
-async function countEventLines(
-  sessionsDir: string,
-  sessionId: string,
-): Promise<number> {
+async function countEventLines(sessionsDir: string, sessionId: string): Promise<number> {
   const eventsPath = getSessionEventsPath(sessionsDir, sessionId);
   try {
     const content = await fsPromises.readFile(eventsPath, "utf-8");
@@ -1817,16 +1750,11 @@ async function countEventLines(
 /**
  * Count context-iter-*.json files for a session (iteration count).
  */
-async function countIterations(
-  sessionsDir: string,
-  sessionId: string,
-): Promise<number> {
+async function countIterations(sessionsDir: string, sessionId: string): Promise<number> {
   const sessionDir = getSessionDir(sessionsDir, sessionId);
   try {
     const entries = await fsPromises.readdir(sessionDir);
-    return entries.filter(
-      (e) => e.startsWith("context-iter-") && e.endsWith(".json"),
-    ).length;
+    return entries.filter((e) => e.startsWith("context-iter-") && e.endsWith(".json")).length;
   } catch {
     return 0;
   }
@@ -1845,10 +1773,7 @@ async function countIterations(
  *
  * We use a fast substring check before JSON parsing for performance.
  */
-async function countTaskCompletions(
-  sessionsDir: string,
-  sessionId: string,
-): Promise<number> {
+async function countTaskCompletions(sessionsDir: string, sessionId: string): Promise<number> {
   const eventsPath = getSessionEventsPath(sessionsDir, sessionId);
   try {
     const content = await fsPromises.readFile(eventsPath, "utf-8");
@@ -1905,9 +1830,7 @@ export async function getSessionLogSummary(
   ]);
 
   const startMs = new Date(metadata.started_at).getTime();
-  const endMs = metadata.ended_at
-    ? new Date(metadata.ended_at).getTime()
-    : Date.now();
+  const endMs = metadata.ended_at ? new Date(metadata.ended_at).getTime() : Date.now();
   const durationMs = endMs - startMs;
 
   return {
@@ -1943,9 +1866,7 @@ export async function getSessionMetadataOnly(
   if (!metadata) return null;
 
   const startMs = new Date(metadata.started_at).getTime();
-  const endMs = metadata.ended_at
-    ? new Date(metadata.ended_at).getTime()
-    : Date.now();
+  const endMs = metadata.ended_at ? new Date(metadata.ended_at).getTime() : Date.now();
   const durationMs = endMs - startMs;
 
   return {
@@ -1971,9 +1892,7 @@ export async function getSessionMetadataOnly(
  * @param sessionsDir - The .kspec directory path
  * @returns Array of session summaries
  */
-export async function getAllSessionLogSummaries(
-  sessionsDir: string,
-): Promise<SessionLogSummary[]> {
+export async function getAllSessionLogSummaries(sessionsDir: string): Promise<SessionLogSummary[]> {
   const sessionIds = await listSessions(sessionsDir);
   const summaries = await Promise.all(
     sessionIds.map((id) => getSessionLogSummary(sessionsDir, id)),
@@ -2124,10 +2043,7 @@ export interface SessionLogDetail {
 /**
  * Get iteration number from a context snapshot file.
  */
-async function getIterationNumbers(
-  sessionsDir: string,
-  sessionId: string,
-): Promise<number[]> {
+async function getIterationNumbers(sessionsDir: string, sessionId: string): Promise<number[]> {
   const sessionDir = getSessionDir(sessionsDir, sessionId);
   try {
     const entries = await fsPromises.readdir(sessionDir);
@@ -2138,7 +2054,7 @@ async function getIterationNumbers(
         iterations.push(parseInt(match[1], 10));
       }
     }
-    return iterations.sort((a, b) => a - b);
+    return iterations.toSorted((a, b) => a - b);
   } catch {
     return [];
   }
@@ -2186,10 +2102,7 @@ function findIterationBoundaries(events: SessionEvent[]): IterationBoundary[] {
       iteration?: number;
     } | null;
 
-    if (
-      data?.phase !== "task-work" ||
-      typeof data?.iteration !== "number"
-    ) {
+    if (data?.phase !== "task-work" || typeof data?.iteration !== "number") {
       continue;
     }
 
@@ -2223,7 +2136,10 @@ function extractTaskTransitions(events: SessionEvent[]): {
   for (const event of events) {
     if (event.type === "session.update") {
       const update = unwrapSessionUpdate(event.data as Record<string, unknown> | null);
-      const rawCommand = (update?.rawInput as Record<string, unknown> | undefined)?.command as string | string[] | undefined;
+      const rawCommand = (update?.rawInput as Record<string, unknown> | undefined)?.command as
+        | string
+        | string[]
+        | undefined;
       // Normalize: string (claude-*-acp) or array like [bash, -lc, cmd] (codex-acp)
       const command =
         typeof rawCommand === "string"
@@ -2284,7 +2200,7 @@ function legacyIterationGrouping(
   }
 
   // Create buckets for all known iterations
-  const iterations = Array.from(allIterations).sort((a, b) => a - b);
+  const iterations = Array.from(allIterations).toSorted((a, b) => a - b);
   const iterationMap = new Map<number, SessionEvent[]>();
   for (const n of iterations) {
     iterationMap.set(n, []);
@@ -2312,7 +2228,7 @@ function legacyIterationGrouping(
     });
   }
 
-  return summaries.sort((a, b) => a.iteration - b.iteration);
+  return summaries.toSorted((a, b) => a.iteration - b.iteration);
 }
 
 /**
@@ -2433,9 +2349,7 @@ export async function getSessionLogDetail(
   ]);
 
   const startMs = new Date(metadata.started_at).getTime();
-  const endMs = metadata.ended_at
-    ? new Date(metadata.ended_at).getTime()
-    : Date.now();
+  const endMs = metadata.ended_at ? new Date(metadata.ended_at).getTime() : Date.now();
   const durationMs = endMs - startMs;
 
   return {
@@ -2516,9 +2430,7 @@ export interface TimePeriodStats {
  * @param summaries - Array of session log summaries
  * @returns Aggregate statistics
  */
-export function computeSessionLogStats(
-  summaries: SessionLogSummary[],
-): SessionLogStats {
+export function computeSessionLogStats(summaries: SessionLogSummary[]): SessionLogStats {
   if (summaries.length === 0) {
     return {
       total_sessions: 0,
@@ -2559,7 +2471,14 @@ export function computeSessionLogStats(
 
   // Build status breakdown
   const statusBreakdown: { status: SessionStatus; count: number; percentage: number }[] = [];
-  for (const status of ["completed", "active", "abandoned", "timed_out", "failed", "stalled"] as SessionStatus[]) {
+  for (const status of [
+    "completed",
+    "active",
+    "abandoned",
+    "timed_out",
+    "failed",
+    "stalled",
+  ] as SessionStatus[]) {
     const count = statusCounts[status] || 0;
     if (count > 0) {
       statusBreakdown.push({
@@ -2638,11 +2557,9 @@ export async function computeToolUsageStats(
     .map(([tool_name, count]) => ({
       tool_name,
       count,
-      percentage: totalToolCalls > 0
-        ? Math.round((count / totalToolCalls) * 100 * 10) / 10
-        : 0,
+      percentage: totalToolCalls > 0 ? Math.round((count / totalToolCalls) * 100 * 10) / 10 : 0,
     }))
-    .sort((a, b) => b.count - a.count)
+    .toSorted((a, b) => b.count - a.count)
     .slice(0, limit);
 
   return sorted;
@@ -2660,11 +2577,7 @@ export async function computeToolUsageStats(
  */
 function getISOWeekUTC(date: Date): [number, number] {
   // Clone and normalize to UTC midnight
-  const d = new Date(Date.UTC(
-    date.getUTCFullYear(),
-    date.getUTCMonth(),
-    date.getUTCDate()
-  ));
+  const d = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
 
   // Get day of week (ISO: Monday=1, Sunday=7)
   const dayOfWeek = d.getUTCDay() || 7;
@@ -2728,7 +2641,7 @@ export function computeTimePeriodStats(
       tasks_completed: data.tasks,
       total_duration_ms: data.duration,
     }))
-    .sort((a, b) => b.period.localeCompare(a.period));
+    .toSorted((a, b) => b.period.localeCompare(a.period));
 
   return result;
 }
@@ -2792,11 +2705,7 @@ export interface SearchOptions {
  *
  * AC: @session-log-search ac-4
  */
-function extractContentExcerpt(
-  data: unknown,
-  pattern: string,
-  maxLength: number = 200,
-): string {
+function extractContentExcerpt(data: unknown, pattern: string, maxLength: number = 200): string {
   // Stringify the data for searching
   const str = JSON.stringify(data);
   const lowerStr = str.toLowerCase();
@@ -2873,9 +2782,7 @@ export async function searchSessionEvents(
 
     // AC: @session-log-search ac-7 - Pre-filter by --agent
     if (options.agentType) {
-      filteredSummaries = filteredSummaries.filter(
-        (s) => s.agent_type === options.agentType,
-      );
+      filteredSummaries = filteredSummaries.filter((s) => s.agent_type === options.agentType);
     }
   }
 
@@ -3040,10 +2947,7 @@ export interface EnvInjectionResult {
  * Write or update KSPEC_SESSION_ID in a dotenv-style file.
  * Replaces an existing KSPEC_SESSION_ID line or appends a new one.
  */
-async function upsertDotenvSessionId(
-  filePath: string,
-  sessionId: string,
-): Promise<void> {
+async function upsertDotenvSessionId(filePath: string, sessionId: string): Promise<void> {
   let content = "";
   try {
     content = await fsPromises.readFile(filePath, "utf-8");
@@ -3056,9 +2960,7 @@ async function upsertDotenvSessionId(
   }
 
   const lines = content.split("\n");
-  const existingIdx = lines.findIndex((l) =>
-    l.startsWith("KSPEC_SESSION_ID="),
-  );
+  const existingIdx = lines.findIndex((l) => l.startsWith("KSPEC_SESSION_ID="));
   if (existingIdx >= 0) {
     lines[existingIdx] = `KSPEC_SESSION_ID=${sessionId}`;
   } else {
@@ -3082,9 +2984,7 @@ async function upsertDotenvSessionId(
  *
  * AC: @session-creation-and-env-injection ac-inject-claude
  */
-export async function injectClaudeCodeEnv(
-  sessionId: string,
-): Promise<EnvInjectionResult> {
+export async function injectClaudeCodeEnv(sessionId: string): Promise<EnvInjectionResult> {
   const envFile = process.env.CLAUDE_ENV_FILE;
 
   if (envFile) {
@@ -3118,7 +3018,7 @@ export async function injectClaudeCodeEnv(
     } else {
       throw new Error(
         `Cannot inject env: .claude/settings.local.json exists but is not valid JSON. ` +
-        `Fix the file manually or remove it, then retry.`,
+          `Fix the file manually or remove it, then retry.`, { cause: err },
       );
     }
   }
@@ -3135,11 +3035,7 @@ export async function injectClaudeCodeEnv(
   }
   (settings.env as Record<string, string>).KSPEC_SESSION_ID = sessionId;
 
-  await fsPromises.writeFile(
-    settingsPath,
-    JSON.stringify(settings, null, 2) + "\n",
-    "utf-8",
-  );
+  await fsPromises.writeFile(settingsPath, JSON.stringify(settings, null, 2) + "\n", "utf-8");
 
   return {
     injected: true,
@@ -3159,9 +3055,7 @@ export async function injectClaudeCodeEnv(
  *
  * @param previousValue - Value to restore, or null/undefined to delete
  */
-export async function removeClaudeCodeEnv(
-  previousValue?: string | null,
-): Promise<void> {
+export async function removeClaudeCodeEnv(previousValue?: string | null): Promise<void> {
   const envFile = process.env.CLAUDE_ENV_FILE;
 
   if (envFile) {
@@ -3192,11 +3086,7 @@ export async function removeClaudeCodeEnv(
         }
       }
 
-      await fsPromises.writeFile(
-        settingsPath,
-        JSON.stringify(settings, null, 2) + "\n",
-        "utf-8",
-      );
+      await fsPromises.writeFile(settingsPath, JSON.stringify(settings, null, 2) + "\n", "utf-8");
     }
   } catch {
     // Best-effort cleanup — file may not exist or may not be valid JSON
@@ -3240,13 +3130,8 @@ async function removeDotenvSessionId(filePath: string): Promise<void> {
  *
  * AC: @session-creation-and-env-injection ac-inject-codex
  */
-export async function injectCodexEnv(
-  sessionId: string,
-): Promise<EnvInjectionResult> {
-  const configDir = path.join(
-    process.env.HOME || process.env.USERPROFILE || "",
-    ".codex",
-  );
+export async function injectCodexEnv(sessionId: string): Promise<EnvInjectionResult> {
+  const configDir = path.join(process.env.HOME || process.env.USERPROFILE || "", ".codex");
   const configPath = path.join(configDir, "config.toml");
 
   await fsPromises.mkdir(configDir, { recursive: true });
@@ -3262,7 +3147,7 @@ export async function injectCodexEnv(
     } else {
       throw new Error(
         `Cannot inject env: ~/.codex/config.toml exists but is not valid TOML. ` +
-        `Fix the file manually or remove it, then retry.`,
+          `Fix the file manually or remove it, then retry.`, { cause: err },
       );
     }
   }
@@ -3273,14 +3158,12 @@ export async function injectCodexEnv(
     typeof config.shell_environment_policy === "object" &&
     (config.shell_environment_policy as Record<string, unknown>).set &&
     typeof (config.shell_environment_policy as Record<string, unknown>).set === "object"
-      ? ((config.shell_environment_policy as Record<string, Record<string, string>>).set.KSPEC_SESSION_ID ?? null)
+      ? ((config.shell_environment_policy as Record<string, Record<string, string>>).set
+          .KSPEC_SESSION_ID ?? null)
       : null;
 
   // Ensure shell_environment_policy.set exists
-  if (
-    !config.shell_environment_policy ||
-    typeof config.shell_environment_policy !== "object"
-  ) {
+  if (!config.shell_environment_policy || typeof config.shell_environment_policy !== "object") {
     config.shell_environment_policy = {};
   }
   const policy = config.shell_environment_policy as Record<string, unknown>;
@@ -3289,11 +3172,7 @@ export async function injectCodexEnv(
   }
   (policy.set as Record<string, string>).KSPEC_SESSION_ID = sessionId;
 
-  await fsPromises.writeFile(
-    configPath,
-    stringifyTOML(config) + "\n",
-    "utf-8",
-  );
+  await fsPromises.writeFile(configPath, stringifyTOML(config) + "\n", "utf-8");
 
   return {
     injected: true,
@@ -3313,13 +3192,8 @@ export async function injectCodexEnv(
  *
  * @param previousValue - Value to restore, or null/undefined to delete
  */
-export async function removeCodexEnv(
-  previousValue?: string | null,
-): Promise<void> {
-  const configDir = path.join(
-    process.env.HOME || process.env.USERPROFILE || "",
-    ".codex",
-  );
+export async function removeCodexEnv(previousValue?: string | null): Promise<void> {
+  const configDir = path.join(process.env.HOME || process.env.USERPROFILE || "", ".codex");
   const configPath = path.join(configDir, "config.toml");
 
   try {
@@ -3347,11 +3221,7 @@ export async function removeCodexEnv(
         }
       }
 
-      await fsPromises.writeFile(
-        configPath,
-        stringifyTOML(config) + "\n",
-        "utf-8",
-      );
+      await fsPromises.writeFile(configPath, stringifyTOML(config) + "\n", "utf-8");
     }
   } catch {
     // Best-effort cleanup — file may not exist or may not be valid TOML
@@ -3363,9 +3233,7 @@ export async function removeCodexEnv(
  *
  * Writes to .gemini/.env in project root (auto-loaded by Gemini CLI).
  */
-export async function injectGeminiEnv(
-  sessionId: string,
-): Promise<EnvInjectionResult> {
+export async function injectGeminiEnv(sessionId: string): Promise<EnvInjectionResult> {
   const dotenvDir = path.join(process.cwd(), ".gemini");
   const dotenvPath = path.join(dotenvDir, ".env");
 
@@ -3386,9 +3254,7 @@ export async function injectGeminiEnv(
  * Writes to project root .env file (auto-loaded by OpenCode via Bun runtime).
  * Uses the same dotenv append/replace pattern as other injectors.
  */
-export async function injectOpenCodeEnv(
-  sessionId: string,
-): Promise<EnvInjectionResult> {
+export async function injectOpenCodeEnv(sessionId: string): Promise<EnvInjectionResult> {
   const dotenvPath = path.join(process.cwd(), ".env");
 
   await upsertDotenvSessionId(dotenvPath, sessionId);
@@ -3406,9 +3272,7 @@ export async function injectOpenCodeEnv(
  *
  * AC: @session-creation-and-env-injection ac-inject-fallback
  */
-export function getFallbackInjectionInstructions(
-  sessionId: string,
-): EnvInjectionResult {
+export function getFallbackInjectionInstructions(sessionId: string): EnvInjectionResult {
   return {
     injected: false,
     method: "fallback",
@@ -3524,10 +3388,7 @@ export async function validateSessionId(
  * Prevents corruption on crash.
  * AC: @task-budget-enforcement ac-atomic-write
  */
-async function writeBudgetAtomic(
-  filePath: string,
-  budget: TaskBudget,
-): Promise<void> {
+async function writeBudgetAtomic(filePath: string, budget: TaskBudget): Promise<void> {
   const dir = path.dirname(filePath);
   await fsPromises.mkdir(dir, { recursive: true });
   const tmpPath = `${filePath}.${process.pid}.tmp`;

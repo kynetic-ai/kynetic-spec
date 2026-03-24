@@ -62,32 +62,37 @@ async function setupProjectWithReviewerAgent(dir: string): Promise<void> {
   await fs.writeFile(path.join(dir, "project.tasks.yaml"), "tasks: []\n", "utf-8");
 }
 
-async function writeTask(dir: string, task: {
-  id: string;
-  title: string;
-  slugs: string[];
-  status: "pending_review";
-}): Promise<void> {
+async function writeTask(
+  dir: string,
+  task: {
+    id: string;
+    title: string;
+    slugs: string[];
+    status: "pending_review";
+  },
+): Promise<void> {
   await fs.writeFile(
     path.join(dir, "project.tasks.yaml"),
     YAML.stringify({
-      tasks: [{
-        _ulid: task.id,
-        title: task.title,
-        slugs: task.slugs,
-        status: task.status,
-        type: "task",
-        priority: 1,
-        blocked_by: [],
-        depends_on: [],
-        context: [],
-        tags: [],
-        vcs_refs: [],
-        notes: [],
-        todos: [],
-        created_at: new Date().toISOString(),
-        automation: "eligible",
-      }],
+      tasks: [
+        {
+          _ulid: task.id,
+          title: task.title,
+          slugs: task.slugs,
+          status: task.status,
+          type: "task",
+          priority: 1,
+          blocked_by: [],
+          depends_on: [],
+          context: [],
+          tags: [],
+          vcs_refs: [],
+          notes: [],
+          todos: [],
+          created_at: new Date().toISOString(),
+          automation: "eligible",
+        },
+      ],
     }),
     "utf-8",
   );
@@ -196,7 +201,9 @@ describe("dispatch workspace cleanup", () => {
     await reconcileDispatchWorkspaceArtifacts(tempDir);
 
     await expect(fs.access(workspace.cwd)).rejects.toThrow();
-    expect(git(tempDir, "branch --list dispatch/task/task-reap-closed-workspace/01task00")).toBe("");
+    expect(git(tempDir, "branch --list dispatch/task/task-reap-closed-workspace/01task00")).toBe(
+      "",
+    );
   });
 
   // AC: @dispatch-workspace-cleanup-policy ac-4
@@ -238,15 +245,16 @@ describe("dispatch workspace cleanup", () => {
       blockedReason: "Cleanup blocked: canonical branch still has an active dispatch invocation.",
     });
 
-    const metadata = JSON.parse(
-      await readTestOutput(workspaceMetadataPath(workspace.cwd)),
-    ) as { lifecycleState: string; cleanupBlockedReason: string | null };
+    const metadata = JSON.parse(await readTestOutput(workspaceMetadataPath(workspace.cwd))) as {
+      lifecycleState: string;
+      cleanupBlockedReason: string | null;
+    };
     expect(metadata.lifecycleState).toBe("cleanup_blocked");
     expect(metadata.cleanupBlockedReason).toContain("active dispatch invocation");
     await fs.access(workspace.cwd);
-    expect(git(tempDir, "branch --list dispatch/task/task-blocked-cleanup-workspace/01task00")).toContain(
-      "dispatch/task/task-blocked-cleanup-workspace/01task00",
-    );
+    expect(
+      git(tempDir, "branch --list dispatch/task/task-blocked-cleanup-workspace/01task00"),
+    ).toContain("dispatch/task/task-blocked-cleanup-workspace/01task00");
   });
 
   // AC: @dispatch-workspace-cleanup-policy ac-4
@@ -278,9 +286,7 @@ describe("dispatch workspace cleanup", () => {
         "Cleanup blocked: workspace integration outcome is unresolved, so the canonical branch must be retained.",
     });
 
-    const metadata = JSON.parse(
-      await readTestOutput(workspaceMetadataPath(workspace.cwd)),
-    ) as {
+    const metadata = JSON.parse(await readTestOutput(workspaceMetadataPath(workspace.cwd))) as {
       lifecycleState: string;
       cleanupBlockedReason: string | null;
       cleanupScheduledAt: string | null;
@@ -314,14 +320,20 @@ describe("dispatch workspace cleanup", () => {
 
     await fs.rm(workspaceMetadataPath(workspace.cwd), { force: true });
     await fs.mkdir(path.join(tempDir, ".kspec-worktrees", "orphan-dir"), { recursive: true });
-    await fs.writeFile(path.join(tempDir, ".kspec-worktrees", "orphan-dir", "leftover.txt"), "orphan\n", "utf-8");
+    await fs.writeFile(
+      path.join(tempDir, ".kspec-worktrees", "orphan-dir", "leftover.txt"),
+      "orphan\n",
+      "utf-8",
+    );
     git(tempDir, "branch dispatch/task/orphaned/no-metadata");
 
     await reconcileDispatchWorkspaceArtifacts(tempDir);
 
     await expect(fs.access(workspace.cwd)).rejects.toThrow();
     await expect(fs.access(path.join(tempDir, ".kspec-worktrees", "orphan-dir"))).rejects.toThrow();
-    expect(git(tempDir, "branch --list dispatch/task/task-orphan-cleanup-workspace/01task00")).toBe("");
+    expect(git(tempDir, "branch --list dispatch/task/task-orphan-cleanup-workspace/01task00")).toBe(
+      "",
+    );
     expect(git(tempDir, "branch --list dispatch/task/orphaned/no-metadata")).toBe("");
   });
 
@@ -346,9 +358,7 @@ describe("dispatch workspace cleanup", () => {
     git(tempDir, `branch -D ${workspace.metadata.canonicalBranch}`);
 
     const metadataFile = workspaceMetadataPath(workspace.cwd);
-    const metadata = JSON.parse(
-      await readTestOutput(metadataFile),
-    ) as {
+    const metadata = JSON.parse(await readTestOutput(metadataFile)) as {
       canonicalBranch: string;
       canonicalBranchHead: string;
     };

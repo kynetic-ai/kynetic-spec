@@ -7,21 +7,10 @@
 
 import chalk from "chalk";
 import type { Command } from "commander";
-import {
-  buildIndexes,
-  initContext,
-  loadMetaContext,
-} from "../../parser/index.js";
-import type {
-  LoadedMetaItem,
-  LoadedWorkflow,
-} from "../../parser/meta.js";
+import { buildIndexes, initContext, loadMetaContext } from "../../parser/index.js";
+import type { LoadedMetaItem, LoadedWorkflow } from "../../parser/meta.js";
 import { ReferenceIndex } from "../../parser/refs.js";
-import type {
-  AnyLoadedItem,
-  LoadedSpecItem,
-  LoadedTask,
-} from "../../parser/yaml.js";
+import type { AnyLoadedItem, LoadedSpecItem, LoadedTask } from "../../parser/yaml.js";
 import { errors } from "../../strings/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, output } from "../output.js";
@@ -33,14 +22,7 @@ const REFERENCE_FIELDS = {
   // Task reference fields
   task: ["spec_ref", "depends_on", "meta_ref", "plan_ref", "blocked_by"],
   // Spec item reference fields
-  spec: [
-    "depends_on",
-    "implements",
-    "relates_to",
-    "supersedes",
-    "traits",
-    "tests",
-  ],
+  spec: ["depends_on", "implements", "relates_to", "supersedes", "traits", "tests"],
 } as const;
 
 /**
@@ -64,37 +46,33 @@ interface FoundReference {
  */
 interface GroupedReferences {
   /** Tasks with spec_ref pointing to target */
-  "tasks_spec_ref": FoundReference[];
+  tasks_spec_ref: FoundReference[];
   /** Tasks with depends_on including target */
-  "tasks_depends_on": FoundReference[];
+  tasks_depends_on: FoundReference[];
   /** Tasks with meta_ref pointing to target */
-  "tasks_meta_ref": FoundReference[];
+  tasks_meta_ref: FoundReference[];
   /** Tasks with plan_ref pointing to target */
-  "tasks_plan_ref": FoundReference[];
+  tasks_plan_ref: FoundReference[];
   /** Tasks with blocked_by including target */
-  "tasks_blocked_by": FoundReference[];
+  tasks_blocked_by: FoundReference[];
   /** Specs with depends_on including target */
-  "specs_depends_on": FoundReference[];
+  specs_depends_on: FoundReference[];
   /** Specs with implements including target */
-  "specs_implements": FoundReference[];
+  specs_implements: FoundReference[];
   /** Specs with relates_to including target */
-  "specs_relates_to": FoundReference[];
+  specs_relates_to: FoundReference[];
   /** Specs with supersedes including target */
-  "specs_supersedes": FoundReference[];
+  specs_supersedes: FoundReference[];
   /** Specs with traits including target */
-  "specs_traits": FoundReference[];
+  specs_traits: FoundReference[];
   /** Specs with tests including target */
-  "specs_tests": FoundReference[];
+  specs_tests: FoundReference[];
 }
 
 /**
  * Check if a reference field value contains the target
  */
-function containsRef(
-  value: unknown,
-  targetUlid: string,
-  refIndex: ReferenceIndex,
-): boolean {
+function containsRef(value: unknown, targetUlid: string, refIndex: ReferenceIndex): boolean {
   if (!value) return false;
 
   if (typeof value === "string") {
@@ -113,10 +91,7 @@ function containsRef(
 /**
  * Get display reference for an entity
  */
-function getDisplayRef(
-  entity: AnyLoadedItem | LoadedMetaItem,
-  refIndex: ReferenceIndex,
-): string {
+function getDisplayRef(entity: AnyLoadedItem | LoadedMetaItem, refIndex: ReferenceIndex): string {
   // Prefer slug
   if ("slugs" in entity && entity.slugs.length > 0) {
     return `@${entity.slugs[0]}`;
@@ -232,10 +207,7 @@ function findAllReferences(
  * Format section header for human output
  * AC: @unified-cross-reference-lookup ac-grouped-output
  */
-function formatSectionHeader(
-  entityType: string,
-  field: string,
-): string {
+function formatSectionHeader(entityType: string, field: string): string {
   const fieldLabel = field.replace(/_/g, " ");
   return `${entityType} (${fieldLabel})`;
 }
@@ -251,10 +223,7 @@ function countTotalReferences(groups: GroupedReferences): number {
  * Format human-readable output
  * AC: @unified-cross-reference-lookup ac-grouped-output, ac-no-refs
  */
-function formatHumanOutput(
-  targetRef: string,
-  groups: GroupedReferences,
-): void {
+function formatHumanOutput(targetRef: string, groups: GroupedReferences): void {
   const total = countTotalReferences(groups);
 
   if (total === 0) {
@@ -289,9 +258,7 @@ function formatHumanOutput(
     const refs = groups[section.key];
     if (refs.length === 0) continue;
 
-    console.log(
-      `\n${chalk.cyan(formatSectionHeader(section.entityType, section.field))}`,
-    );
+    console.log(`\n${chalk.cyan(formatSectionHeader(section.entityType, section.field))}`);
 
     for (const ref of refs) {
       const typeLabel = chalk.gray(`[${ref.type}]`);
@@ -340,9 +307,7 @@ function buildJsonOutput(
 export function registerRefsCommand(program: Command): void {
   program
     .command("refs <ref>")
-    .description(
-      "Show all inbound references to an entity (reverse lookup)",
-    )
+    .description("Show all inbound references to an entity (reverse lookup)")
     .action(async (ref: string) => {
       try {
         const ctx = await initContext();
@@ -366,10 +331,7 @@ export function registerRefsCommand(program: Command): void {
         const resolved = refIndex.resolve(ref);
         if (!resolved.ok) {
           if (resolved.error === "not_found") {
-            error(
-              errors.reference.itemNotFound(ref),
-              "Try: kspec search <pattern>",
-            );
+            error(errors.reference.itemNotFound(ref), "Try: kspec search <pattern>");
             process.exit(EXIT_CODES.NOT_FOUND);
           } else if (resolved.error === "ambiguous") {
             error(errors.reference.ambiguous(ref));
@@ -390,13 +352,7 @@ export function registerRefsCommand(program: Command): void {
         const targetRef = getDisplayRef(resolved.item, refIndex);
 
         // Find all references
-        const groups = findAllReferences(
-          targetUlid,
-          tasks,
-          items,
-          metaCtx.workflows,
-          refIndex,
-        );
+        const groups = findAllReferences(targetUlid, tasks, items, metaCtx.workflows, refIndex);
 
         // Output
         output(buildJsonOutput(targetRef, targetUlid, groups), () => {

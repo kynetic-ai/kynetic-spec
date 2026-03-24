@@ -34,12 +34,7 @@ import {
   type PlanSpec,
   type PlanTask,
 } from "../../parser/plan-document.js";
-import type {
-  Note,
-  PlanInput,
-  SpecItemInput,
-  TaskInput,
-} from "../../schema/index.js";
+import type { Note, PlanInput, SpecItemInput, TaskInput } from "../../schema/index.js";
 import { PlanStatusSchema } from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
 import { fieldLabels } from "../../strings/labels.js";
@@ -49,10 +44,7 @@ import { error, info, isJsonMode, output, success, warn } from "../output.js";
 import { validateEnumOption } from "../validators.js";
 import { ulid } from "ulid";
 import { registerPlanImportCommand } from "./plan-import.js";
-import {
-  getLinkedPlanSummaryTasks,
-  isCountedInPlanSummary,
-} from "../../lib/plan-summary.js";
+import { getLinkedPlanSummaryTasks, isCountedInPlanSummary } from "../../lib/plan-summary.js";
 
 /**
  * Format relative time for display
@@ -493,10 +485,7 @@ function buildTaskPlans(
 
   if (shouldDeriveFromSpecs) {
     for (const specItem of specItems) {
-      const taskSlug = nextUniqueSlug(
-        slugify(`implement-${specItem.source.title}`),
-        reservedSlugs,
-      );
+      const taskSlug = nextUniqueSlug(slugify(`implement-${specItem.source.title}`), reservedSlugs);
       const taskRef = `@${taskSlug}`;
       specTaskRefByLocalSlug.set(specItem.localSlug, taskRef);
       taskRefByLocalKey.set(specItem.localSlug, taskRef);
@@ -552,9 +541,7 @@ function buildTaskPlans(
           const localSpec = specItems.find(
             (candidate) =>
               candidate.localSlug ===
-              (task.spec_ref!.startsWith("@")
-                ? task.spec_ref!.slice(1)
-                : task.spec_ref!),
+              (task.spec_ref!.startsWith("@") ? task.spec_ref!.slice(1) : task.spec_ref!),
           );
           if (localSpec) {
             return localSpec.ref;
@@ -631,9 +618,7 @@ function buildTaskPlans(
  * Register the 'plan' command group
  */
 export function registerPlanCommands(program: Command): void {
-  const plan = program
-    .command("plan")
-    .description("Manage implementation plans");
+  const plan = program.command("plan").description("Manage implementation plans");
 
   // Register plan import subcommand
   registerPlanImportCommand(plan);
@@ -660,9 +645,7 @@ Examples:
 
         // Validate content options
         if (options.content && options.contentFile) {
-          error(
-            "Cannot specify both --content and --content-file. Choose one.",
-          );
+          error("Cannot specify both --content and --content-file. Choose one.");
           process.exit(EXIT_CODES.USAGE_ERROR);
         }
 
@@ -705,7 +688,9 @@ Examples:
         if (options.slug) {
           // Manual slug: check for collision across all namespaces (specs/tasks/plans)
           if (!refIndex.isSlugAvailable(options.slug)) {
-            error(`Slug "${options.slug}" collides with existing item. Use a different slug or omit --slug for auto-namespaced slug.`);
+            error(
+              `Slug "${options.slug}" collides with existing item. Use a different slug or omit --slug for auto-namespaced slug.`,
+            );
             process.exit(EXIT_CODES.CONFLICT);
           }
         } else {
@@ -740,7 +725,12 @@ Examples:
         const planRef = shortPlanRef(newPlan, [...plans, newPlan]);
 
         // AC: @plan-crud ac-1 - auto-commit to shadow branch
-        await commitIfShadow(ctx.shadow, "plan-add", newPlan.slugs[0] || newPlan._ulid.slice(0, 8), options.title);
+        await commitIfShadow(
+          ctx.shadow,
+          "plan-add",
+          newPlan.slugs[0] || newPlan._ulid.slice(0, 8),
+          options.title,
+        );
 
         success(`Created plan: ${planRef} - ${newPlan.title}`, {
           plan: newPlan,
@@ -799,20 +789,13 @@ Examples:
           }
 
           // Show derived work
-          if (
-            foundPlan.derived_tasks.length > 0 ||
-            foundPlan.derived_specs.length > 0
-          ) {
+          if (foundPlan.derived_tasks.length > 0 || foundPlan.derived_specs.length > 0) {
             console.log("\nDerived Work:");
             if (foundPlan.derived_specs.length > 0) {
-              console.log(
-                `  Specs: ${foundPlan.derived_specs.join(", ")}`,
-              );
+              console.log(`  Specs: ${foundPlan.derived_specs.join(", ")}`);
             }
             if (foundPlan.derived_tasks.length > 0) {
-              console.log(
-                `  Tasks: ${foundPlan.derived_tasks.join(", ")}`,
-              );
+              console.log(`  Tasks: ${foundPlan.derived_tasks.join(", ")}`);
             }
           }
 
@@ -945,8 +928,7 @@ Examples:
             // AC: @plan-crud ac-4 - prevent transitions from terminal states
             if (
               statusValue &&
-              (latestPlan.status === "completed" ||
-                latestPlan.status === "rejected")
+              (latestPlan.status === "completed" || latestPlan.status === "rejected")
             ) {
               throw new Error(terminalTransitionError);
             }
@@ -983,10 +965,7 @@ Examples:
             return nextPlan;
           });
         } catch (err) {
-          if (
-            err instanceof Error &&
-            err.message === terminalTransitionError
-          ) {
+          if (err instanceof Error && err.message === terminalTransitionError) {
             error("Cannot transition from terminal status");
             process.exit(EXIT_CODES.CONFLICT);
           }
@@ -1043,10 +1022,7 @@ Examples:
         }
 
         // Sort by created date (newest first)
-        plans.sort(
-          (a, b) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-        );
+        plans.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
         // AC: @plan-crud ac-31 - JSON output
         output(plans, () => {
@@ -1066,15 +1042,11 @@ Examples:
             const taskLabel =
               taskCount > 0 ? ` [${taskCount} task${taskCount > 1 ? "s" : ""}]` : "";
 
-            console.log(
-              `  ${ref} [${p.status}]${taskLabel} ${p.title}`,
-            );
+            console.log(`  ${ref} [${p.status}]${taskLabel} ${p.title}`);
             console.log(`         Created ${age}`);
 
             if (p.approved_at) {
-              console.log(
-                `         Approved ${formatRelativeTime(p.approved_at)}`,
-              );
+              console.log(`         Approved ${formatRelativeTime(p.approved_at)}`);
             }
 
             console.log("");
@@ -1106,14 +1078,10 @@ Examples:
           content: text,
         };
 
-        const updatedPlan = await mutatePlanAtomically(
-          ctx,
-          foundPlan,
-          (latestPlan) => ({
-            ...latestPlan,
-            notes: [...latestPlan.notes, note],
-          }),
-        );
+        const updatedPlan = await mutatePlanAtomically(ctx, foundPlan, (latestPlan) => ({
+          ...latestPlan,
+          notes: [...latestPlan.notes, note],
+        }));
 
         await commitIfShadow(
           ctx.shadow,
@@ -1134,10 +1102,7 @@ Examples:
   // AC: @plan-derive-enhanced ac-parse-content through ac-commit
   markMutating(plan.command("derive <ref>"))
     .description("Materialize plan content into specs and optional tasks")
-    .option(
-      "--module <ref>",
-      "Module context for derivation (overrides stored plan module)",
-    )
+    .option("--module <ref>", "Module context for derivation (overrides stored plan module)")
     .option("--tasks", "Also derive implementation tasks after creating specs")
     .option("--dry-run", "Preview derived specs/tasks without saving changes")
     .addHelpText(
@@ -1205,8 +1170,8 @@ Examples:
         const hasSpecsToMaterialize = parsedPlan.specs.length > 0;
         const hasManualTasksToMaterialize = Boolean(
           options.tasks &&
-            parsedPlan.tasks.additional_tasks &&
-            parsedPlan.tasks.additional_tasks.length > 0,
+          parsedPlan.tasks.additional_tasks &&
+          parsedPlan.tasks.additional_tasks.length > 0,
         );
 
         if (!hasSpecsToMaterialize && !hasManualTasksToMaterialize) {

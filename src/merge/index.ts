@@ -15,12 +15,7 @@ export type {
 
 export { parseYamlVersions } from "./parse.js";
 
-export {
-  mergeUlidArrays,
-  mergeSetArray,
-  normalizeRef,
-  detectDeletion,
-} from "./arrays.js";
+export { mergeUlidArrays, mergeSetArray, normalizeRef, detectDeletion } from "./arrays.js";
 
 export { mergeObjects } from "./objects.js";
 export type { ObjectMergeResult } from "./objects.js";

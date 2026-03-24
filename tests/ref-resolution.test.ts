@@ -6,24 +6,20 @@
  * include resolved titles alongside raw refs.
  */
 
-import { describe, it, expect } from 'vitest';
-import {
-  ReferenceIndex,
-  type LoadedSpecItem,
-  type LoadedTask,
-} from '../src/parser/index.js';
+import { describe, it, expect } from "vitest";
+import { ReferenceIndex, type LoadedSpecItem, type LoadedTask } from "../src/parser/index.js";
 import {
   resolveRefTitle,
   resolveRefEntries,
   buildRefIndex,
-} from '../dist/daemon/routes/ref-resolution.ts';
-import { testUlid, testUlids } from './helpers/cli.js';
+} from "../dist/daemon/routes/ref-resolution.ts";
+import { testUlid, testUlids } from "./helpers/cli.js";
 
 function makeTask(overrides: Partial<LoadedTask> & { _ulid: string; title: string }): LoadedTask {
   return {
     slugs: [],
-    type: 'task',
-    status: 'pending',
+    type: "task",
+    status: "pending",
     priority: 2,
     tags: [],
     depends_on: [],
@@ -33,10 +29,12 @@ function makeTask(overrides: Partial<LoadedTask> & { _ulid: string; title: strin
   } as LoadedTask;
 }
 
-function makeItem(overrides: Partial<LoadedSpecItem> & { _ulid: string; title: string }): LoadedSpecItem {
+function makeItem(
+  overrides: Partial<LoadedSpecItem> & { _ulid: string; title: string },
+): LoadedSpecItem {
   return {
     slugs: [],
-    type: 'feature',
+    type: "feature",
     tags: [],
     depends_on: [],
     traits: [],
@@ -45,111 +43,111 @@ function makeItem(overrides: Partial<LoadedSpecItem> & { _ulid: string; title: s
   } as LoadedSpecItem;
 }
 
-describe('Reference Resolution Utility', () => {
-  const taskUlid = testUlid('TASK', 1);
-  const specUlid = testUlid('SPEC', 1);
-  const depUlid = testUlid('DEP0', 1);
-  const deletedUlid = testUlid('DELT', 1);
+describe("Reference Resolution Utility", () => {
+  const taskUlid = testUlid("TASK", 1);
+  const specUlid = testUlid("SPEC", 1);
+  const depUlid = testUlid("DEP0", 1);
+  const deletedUlid = testUlid("DELT", 1);
 
   const tasks: LoadedTask[] = [
     makeTask({
       _ulid: taskUlid,
-      slugs: ['task-auth'],
-      title: 'Add user authentication',
-      status: 'in_progress',
+      slugs: ["task-auth"],
+      title: "Add user authentication",
+      status: "in_progress",
       spec_ref: `@spec-login`,
       depends_on: [`@${depUlid}`],
     }),
     makeTask({
       _ulid: depUlid,
-      slugs: ['task-dep'],
-      title: 'Setup database',
-      status: 'completed',
+      slugs: ["task-dep"],
+      title: "Setup database",
+      status: "completed",
     }),
   ];
 
   const items: LoadedSpecItem[] = [
     makeItem({
       _ulid: specUlid,
-      slugs: ['spec-login'],
-      title: 'Login Feature',
-      type: 'feature',
-      status: 'draft',
+      slugs: ["spec-login"],
+      title: "Login Feature",
+      type: "feature",
+      status: "draft",
     }),
   ];
 
   const index = new ReferenceIndex(tasks, items);
 
   // AC: @ui-api-ref-resolution ac-1
-  describe('resolveRefTitle (ac-1: single-valued ref → title)', () => {
-    it('resolves a valid spec_ref to its title', () => {
-      const title = resolveRefTitle(index, '@spec-login');
-      expect(title).toBe('Login Feature');
+  describe("resolveRefTitle (ac-1: single-valued ref → title)", () => {
+    it("resolves a valid spec_ref to its title", () => {
+      const title = resolveRefTitle(index, "@spec-login");
+      expect(title).toBe("Login Feature");
     });
 
-    it('resolves a valid task ref by ULID', () => {
+    it("resolves a valid task ref by ULID", () => {
       const title = resolveRefTitle(index, taskUlid);
-      expect(title).toBe('Add user authentication');
+      expect(title).toBe("Add user authentication");
     });
 
-    it('returns null for undefined ref', () => {
+    it("returns null for undefined ref", () => {
       const title = resolveRefTitle(index, undefined);
       expect(title).toBeNull();
     });
 
-    it('returns null for null ref', () => {
+    it("returns null for null ref", () => {
       const title = resolveRefTitle(index, null);
       expect(title).toBeNull();
     });
   });
 
   // AC: @ui-api-ref-resolution ac-2
-  describe('resolveRefEntries (ac-2: array refs → title + status)', () => {
-    it('resolves array of refs with titles and status', () => {
+  describe("resolveRefEntries (ac-2: array refs → title + status)", () => {
+    it("resolves array of refs with titles and status", () => {
       const entries = resolveRefEntries(index, [`@${depUlid}`]);
       expect(entries).toHaveLength(1);
       expect(entries[0].ref).toBe(`@${depUlid}`);
-      expect(entries[0].title).toBe('Setup database');
-      expect(entries[0].status).toBe('completed');
+      expect(entries[0].title).toBe("Setup database");
+      expect(entries[0].status).toBe("completed");
     });
 
-    it('returns empty array for undefined refs', () => {
+    it("returns empty array for undefined refs", () => {
       const entries = resolveRefEntries(index, undefined);
       expect(entries).toEqual([]);
     });
 
-    it('returns empty array for empty refs', () => {
+    it("returns empty array for empty refs", () => {
       const entries = resolveRefEntries(index, []);
       expect(entries).toEqual([]);
     });
 
-    it('resolves multiple refs', () => {
-      const entries = resolveRefEntries(index, [`@${depUlid}`, '@spec-login']);
+    it("resolves multiple refs", () => {
+      const entries = resolveRefEntries(index, [`@${depUlid}`, "@spec-login"]);
       expect(entries).toHaveLength(2);
-      expect(entries[0].title).toBe('Setup database');
-      expect(entries[1].title).toBe('Login Feature');
+      expect(entries[0].title).toBe("Setup database");
+      expect(entries[1].title).toBe("Login Feature");
     });
   });
 
   // AC: @ui-api-ref-resolution ac-3
-  describe('resolveRefTitle/resolveRefEntries (ac-3: deleted/invalid refs)', () => {
-    it('returns null title for invalid single ref', () => {
-      const title = resolveRefTitle(index, '@nonexistent-ref');
+  describe("resolveRefTitle/resolveRefEntries (ac-3: deleted/invalid refs)", () => {
+    it("returns null title for invalid single ref", () => {
+      const title = resolveRefTitle(index, "@nonexistent-ref");
       expect(title).toBeNull();
     });
 
-    it('preserves raw ref and returns null title for invalid array entry', () => {
-      const entries = resolveRefEntries(index, ['@nonexistent-ref', `@${depUlid}`]);
+    it("preserves raw ref and returns null title for invalid array entry", () => {
+      const entries = resolveRefEntries(index, ["@nonexistent-ref", `@${depUlid}`]);
       expect(entries).toHaveLength(2);
       // Invalid ref preserved with null title
-      expect(entries[0].ref).toBe('@nonexistent-ref');
+      expect(entries[0].ref).toBe("@nonexistent-ref");
       expect(entries[0].title).toBeNull();
       expect(entries[0].status).toBeNull();
       // Valid ref resolved
-      expect(entries[1].title).toBe('Setup database');
+      expect(entries[1].title).toBe("Setup database");
     });
 
-    it('preserves raw ref for deleted entity ULID', () => {
+    it("preserves raw ref for deleted entity ULID", () => {
       const entries = resolveRefEntries(index, [deletedUlid]);
       expect(entries).toHaveLength(1);
       expect(entries[0].ref).toBe(deletedUlid);
@@ -159,81 +157,88 @@ describe('Reference Resolution Utility', () => {
   });
 
   // AC: @ui-api-ref-resolution ac-4
-  describe('buildRefIndex (ac-4: lightweight index with all refs)', () => {
-    it('returns map with ULID and slug keys for each entity', () => {
+  describe("buildRefIndex (ac-4: lightweight index with all refs)", () => {
+    it("returns map with ULID and slug keys for each entity", () => {
       const refIndex = buildRefIndex(index);
 
       // Task by ULID
       expect(refIndex[taskUlid]).toBeDefined();
-      expect(refIndex[taskUlid].title).toBe('Add user authentication');
-      expect(refIndex[taskUlid].type).toBe('task');
+      expect(refIndex[taskUlid].title).toBe("Add user authentication");
+      expect(refIndex[taskUlid].type).toBe("task");
 
       // Task by slug
-      expect(refIndex['task-auth']).toBeDefined();
-      expect(refIndex['task-auth'].title).toBe('Add user authentication');
+      expect(refIndex["task-auth"]).toBeDefined();
+      expect(refIndex["task-auth"].title).toBe("Add user authentication");
 
       // Spec by ULID
       expect(refIndex[specUlid]).toBeDefined();
-      expect(refIndex[specUlid].title).toBe('Login Feature');
-      expect(refIndex[specUlid].type).toBe('feature');
+      expect(refIndex[specUlid].title).toBe("Login Feature");
+      expect(refIndex[specUlid].type).toBe("feature");
 
       // Spec by slug
-      expect(refIndex['spec-login']).toBeDefined();
-      expect(refIndex['spec-login'].title).toBe('Login Feature');
+      expect(refIndex["spec-login"]).toBeDefined();
+      expect(refIndex["spec-login"].title).toBe("Login Feature");
     });
 
-    it('includes status when available', () => {
+    it("includes status when available", () => {
       const refIndex = buildRefIndex(index);
 
       // Task has status
-      expect(refIndex[taskUlid].status).toBe('in_progress');
+      expect(refIndex[taskUlid].status).toBe("in_progress");
 
       // Spec has status
-      expect(refIndex[specUlid].status).toBe('draft');
+      expect(refIndex[specUlid].status).toBe("draft");
     });
 
-    it('omits status when not present', () => {
+    it("omits status when not present", () => {
       const noStatusItem = makeItem({
-        _ulid: testUlid('NS00', 1),
-        slugs: ['no-status'],
-        title: 'No Status Item',
-        type: 'requirement',
+        _ulid: testUlid("NS00", 1),
+        slugs: ["no-status"],
+        title: "No Status Item",
+        type: "requirement",
       });
       const indexWithNoStatus = new ReferenceIndex([], [noStatusItem]);
       const refIndex = buildRefIndex(indexWithNoStatus);
 
-      expect(refIndex[testUlid('NS00', 1)]).toBeDefined();
-      expect(refIndex[testUlid('NS00', 1)].status).toBeUndefined();
+      expect(refIndex[testUlid("NS00", 1)]).toBeDefined();
+      expect(refIndex[testUlid("NS00", 1)].status).toBeUndefined();
     });
   });
 
   // AC: @ui-api-ref-resolution ac-5
-  describe('buildRefIndex (ac-5: smaller than full entity lists)', () => {
-    it('returns only display metadata (title, type, status) not full entities', () => {
+  describe("buildRefIndex (ac-5: smaller than full entity lists)", () => {
+    it("returns only display metadata (title, type, status) not full entities", () => {
       const refIndex = buildRefIndex(index);
       const entry = refIndex[taskUlid];
 
       // Should only have display fields
-      expect(Object.keys(entry).sort()).toEqual(['status', 'title', 'type']);
+      expect(Object.keys(entry).toSorted()).toEqual(["status", "title", "type"]);
 
       // Should NOT have full entity fields
-      expect(entry).not.toHaveProperty('notes');
-      expect(entry).not.toHaveProperty('depends_on');
-      expect(entry).not.toHaveProperty('description');
-      expect(entry).not.toHaveProperty('priority');
+      expect(entry).not.toHaveProperty("notes");
+      expect(entry).not.toHaveProperty("depends_on");
+      expect(entry).not.toHaveProperty("description");
+      expect(entry).not.toHaveProperty("priority");
     });
 
-    it('payload is smaller than full entity list', () => {
+    it("payload is smaller than full entity list", () => {
       // Generate a realistic set of entities
       const manyTasks = Array.from({ length: 100 }, (_, i) =>
         makeTask({
-          _ulid: testUlid('MT' + String(i).padStart(2, '0'), 0),
+          _ulid: testUlid("MT" + String(i).padStart(2, "0"), 0),
           slugs: [`task-${i}`],
           title: `Task number ${i}`,
-          status: i % 3 === 0 ? 'completed' : 'pending',
-          description: 'A long description that would bloat a full response payload significantly',
-          notes: [{ _ulid: testUlid('NT' + String(i).padStart(2, '0'), 0), content: 'note', author: 'test', created_at: new Date().toISOString() }],
-        })
+          status: i % 3 === 0 ? "completed" : "pending",
+          description: "A long description that would bloat a full response payload significantly",
+          notes: [
+            {
+              _ulid: testUlid("NT" + String(i).padStart(2, "0"), 0),
+              content: "note",
+              author: "test",
+              created_at: new Date().toISOString(),
+            },
+          ],
+        }),
       );
       const bigIndex = new ReferenceIndex(manyTasks, []);
       const refMap = buildRefIndex(bigIndex);
@@ -246,13 +251,13 @@ describe('Reference Resolution Utility', () => {
   });
 
   // AC: @trait-api-endpoint ac-1
-  describe('trait-api-endpoint ac-1: valid request returns 2xx JSON', () => {
-    it('resolveRefTitle returns a string or null (valid JSON-serializable values)', () => {
-      const title = resolveRefTitle(index, '@spec-login');
-      expect(typeof title === 'string' || title === null).toBe(true);
+  describe("trait-api-endpoint ac-1: valid request returns 2xx JSON", () => {
+    it("resolveRefTitle returns a string or null (valid JSON-serializable values)", () => {
+      const title = resolveRefTitle(index, "@spec-login");
+      expect(typeof title === "string" || title === null).toBe(true);
     });
 
-    it('resolveRefEntries returns JSON-serializable array', () => {
+    it("resolveRefEntries returns JSON-serializable array", () => {
       const entries = resolveRefEntries(index, [`@${depUlid}`]);
       expect(Array.isArray(entries)).toBe(true);
       // Verify JSON round-trip
@@ -260,7 +265,7 @@ describe('Reference Resolution Utility', () => {
       expect(roundTripped).toEqual(entries);
     });
 
-    it('buildRefIndex returns JSON-serializable object', () => {
+    it("buildRefIndex returns JSON-serializable object", () => {
       const refIndex = buildRefIndex(index);
       const roundTripped = JSON.parse(JSON.stringify({ refs: refIndex }));
       expect(roundTripped.refs).toEqual(refIndex);

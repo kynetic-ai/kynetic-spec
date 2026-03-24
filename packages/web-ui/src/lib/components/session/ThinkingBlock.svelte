@@ -8,11 +8,11 @@
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
 	import Brain from '@lucide/svelte/icons/brain';
 
-	let { block }: { block: ThinkingBlockType } = $props();
+	const { block }: { block: ThinkingBlockType } = $props();
 
-	let expanded = $state(false);
+	const expanded = $state(false);
 
-	let preview = $derived(
+	const preview = $derived(
 		block.content.length > 80 ? block.content.slice(0, 80) + '\u2026' : block.content
 	);
 </script>

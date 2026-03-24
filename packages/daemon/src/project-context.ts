@@ -7,11 +7,11 @@
  * AC: @multi-directory-daemon ac-1 through ac-20b
  */
 
-import { existsSync } from 'fs';
-import { isAbsolute, join, normalize, relative } from 'path';
-import { KspecWatcher } from './watcher';
-import { SessionWatcher } from './session-watcher';
-import type { PubSubManager } from './websocket/pubsub';
+import { existsSync } from "fs";
+import { isAbsolute, join, normalize, relative } from "path";
+import { KspecWatcher } from "./watcher";
+import { SessionWatcher } from "./session-watcher";
+import type { PubSubManager } from "./websocket/pubsub";
 
 /**
  * Optional callback for file change events from the watcher.
@@ -88,8 +88,8 @@ export class ProjectContextManager {
       return; // Watcher already running
     }
 
-    const kspecDir = join(normalizedPath, '.kspec');
-    const sessionsDir = join(normalizedPath, '.kspec-sessions');
+    const kspecDir = join(normalizedPath, ".kspec");
+    const sessionsDir = join(normalizedPath, ".kspec-sessions");
     let kspecWatcher: KspecWatcher | null = null;
     let sessionWatcher: SessionWatcher | null = null;
 
@@ -101,10 +101,15 @@ export class ProjectContextManager {
           // AC: @multi-directory-daemon ac-17 - File changes trigger events scoped to project
           if (this.pubsub) {
             const relativePath = relative(kspecDir, file);
-            this.pubsub.broadcast('files:updates', 'file_changed', {
-              ref: relativePath,
-              action: 'modified'
-            }, normalizedPath);
+            this.pubsub.broadcast(
+              "files:updates",
+              "file_changed",
+              {
+                ref: relativePath,
+                action: "modified",
+              },
+              normalizedPath,
+            );
           }
           // AC: @agent-dispatch-engine ac-5 - Notify dispatch engine of file changes
           if (this.fileChangeCallback) {
@@ -115,15 +120,20 @@ export class ProjectContextManager {
           // Broadcast error event scoped to project
           if (this.pubsub) {
             const relativePath = file ? relative(kspecDir, file) : undefined;
-            this.pubsub.broadcast('files:errors', 'file_error', {
-              ref: relativePath,
-              error: error.message
-            }, normalizedPath);
+            this.pubsub.broadcast(
+              "files:errors",
+              "file_error",
+              {
+                ref: relativePath,
+                error: error.message,
+              },
+              normalizedPath,
+            );
           }
         },
         onPermanentFailure: () => {
           this.unregisterProject(normalizedPath);
-        }
+        },
       });
 
       sessionWatcher = new SessionWatcher({
@@ -131,21 +141,31 @@ export class ProjectContextManager {
         onSessionChange: (file) => {
           if (this.pubsub) {
             const relativePath = relative(sessionsDir, file);
-            this.pubsub.broadcast('sessions', 'session_changed', {
-              ref: relativePath,
-              action: 'modified'
-            }, normalizedPath);
+            this.pubsub.broadcast(
+              "sessions",
+              "session_changed",
+              {
+                ref: relativePath,
+                action: "modified",
+              },
+              normalizedPath,
+            );
           }
         },
         onError: (error, file) => {
           if (this.pubsub) {
             const relativePath = file ? relative(sessionsDir, file) : undefined;
-            this.pubsub.broadcast('sessions', 'session_error', {
-              ref: relativePath,
-              error: error.message
-            }, normalizedPath);
+            this.pubsub.broadcast(
+              "sessions",
+              "session_error",
+              {
+                ref: relativePath,
+                error: error.message,
+              },
+              normalizedPath,
+            );
           }
-        }
+        },
       });
 
       await kspecWatcher.start();
@@ -166,9 +186,12 @@ export class ProjectContextManager {
       }
 
       // AC: @multi-directory-daemon ac-19 - Handle OS limits (EMFILE/ENFILE)
-      const code = error instanceof Error && 'code' in error ? (error as NodeJS.ErrnoException).code : undefined;
-      if (code === 'EMFILE' || code === 'ENFILE') {
-        throw new Error('Unable to watch project - resource limit reached');
+      const code =
+        error instanceof Error && "code" in error
+          ? (error as NodeJS.ErrnoException).code
+          : undefined;
+      if (code === "EMFILE" || code === "ENFILE") {
+        throw new Error("Unable to watch project - resource limit reached", { cause: error });
       }
       throw error;
     }
@@ -204,9 +227,7 @@ export class ProjectContextManager {
    * AC: @multi-directory-daemon ac-11b - Shutdown stops all watchers
    */
   async stopAllWatchers(): Promise<void> {
-    const stopPromises = Array.from(this.watchers.keys()).map(path =>
-      this.stopWatcher(path)
-    );
+    const stopPromises = Array.from(this.watchers.keys()).map((path) => this.stopWatcher(path));
     await Promise.all(stopPromises);
   }
 
@@ -225,19 +246,19 @@ export class ProjectContextManager {
   registerProject(projectPath: string, isDefault = false): ProjectContext {
     // AC: @multi-directory-daemon ac-6 - reject relative paths
     if (!this.isAbsolutePath(projectPath)) {
-      throw new Error('Path must be absolute');
+      throw new Error("Path must be absolute");
     }
 
     // AC: @multi-directory-daemon ac-7 - reject parent traversal
-    if (projectPath.includes('..')) {
-      throw new Error('Path must not contain parent traversal');
+    if (projectPath.includes("..")) {
+      throw new Error("Path must not contain parent traversal");
     }
 
     // AC: @multi-directory-daemon ac-8 - normalize path (but don't resolve symlinks)
     const normalizedPath = this.normalizePath(projectPath);
 
     // AC: @multi-directory-daemon ac-5 - validate .kspec/ exists
-    const kspecDir = join(normalizedPath, '.kspec');
+    const kspecDir = join(normalizedPath, ".kspec");
     if (!existsSync(kspecDir)) {
       throw new Error(`Invalid kspec project - .kspec/ not found at ${normalizedPath}`);
     }
@@ -289,18 +310,18 @@ export class ProjectContextManager {
 
     // AC: @multi-directory-daemon ac-2, ac-3 - use default or error
     if (!this.defaultProjectPath) {
-      throw new Error('No default project configured. Specify X-Kspec-Dir header.');
+      throw new Error("No default project configured. Specify X-Kspec-Dir header.");
     }
 
     // AC: @multi-directory-daemon ac-20b - check if default project still valid
-    const kspecDir = join(this.defaultProjectPath, '.kspec');
+    const kspecDir = join(this.defaultProjectPath, ".kspec");
     if (!existsSync(kspecDir)) {
-      throw new Error('Default project no longer valid. Specify X-Kspec-Dir header.');
+      throw new Error("Default project no longer valid. Specify X-Kspec-Dir header.");
     }
 
     const context = this.projects.get(this.defaultProjectPath);
     if (!context) {
-      throw new Error('Default project not registered');
+      throw new Error("Default project not registered");
     }
 
     return context;
@@ -335,7 +356,7 @@ export class ProjectContextManager {
   setDefaultProject(projectPath: string): void {
     const normalizedPath = this.normalizePath(projectPath);
     if (!this.projects.has(normalizedPath)) {
-      throw new Error('Project must be registered before setting as default');
+      throw new Error("Project must be registered before setting as default");
     }
     this.defaultProjectPath = normalizedPath;
   }
@@ -402,7 +423,7 @@ export class ProjectContextManager {
     let normalized = normalize(projectPath);
 
     // Remove trailing slash (normalize doesn't always do this)
-    if (normalized !== '/' && normalized.endsWith('/')) {
+    if (normalized !== "/" && normalized.endsWith("/")) {
       normalized = normalized.slice(0, -1);
     }
 

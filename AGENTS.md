@@ -35,17 +35,18 @@ kynetic-spec/
 
 `kspec agents generate` produces `kspec-agents.md` by combining two types of content:
 
-| Source | What it provides | How to change |
-|--------|-----------------|---------------|
-| **Dynamic data** (from `.kspec/`) | Conventions, workflows, skills | `kspec meta set`, `kspec meta add` |
-| **Static templates** (`templates/agents-sections/`) | Quick start, shadow branch, task lifecycle, PR workflow, commit convention, agent dispatch mode, batch usage | Edit the markdown files directly |
+| Source                                              | What it provides                                                                                             | How to change                      |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ | ---------------------------------- |
+| **Dynamic data** (from `.kspec/`)                   | Conventions, workflows, skills                                                                               | `kspec meta set`, `kspec meta add` |
+| **Static templates** (`templates/agents-sections/`) | Quick start, shadow branch, task lifecycle, PR workflow, commit convention, agent dispatch mode, batch usage | Edit the markdown files directly   |
 
 Templates ship with the npm package and provide the structural documentation that doesn't change per-project. Dynamic data is project-specific and lives in the shadow branch.
 
 **When to edit templates vs meta:**
+
 - New convention rule → `kspec meta set <domain> --add-rule "..."`
 - New workflow → `kspec meta add workflow`
-- Changing how a workflow section is *explained* → edit the template file
+- Changing how a workflow section is _explained_ → edit the template file
 - Adding a new documentation section → create `NN-section-name.md` (numeric prefix controls order)
 
 ## Skill Source of Truth
@@ -58,15 +59,15 @@ Do not edit rendered skill files directly in `.agents/skills/`.
 
 ## Test Helpers
 
-| Helper | Purpose |
-|--------|---------|
-| `setupTempFixtures()` | Copy pre-built fixtures to temp dir |
-| `createTempDir()` | Create empty temp dir |
-| `initGitRepo(dir)` | Initialize git with test config |
-| `testUlid(prefix?)` | Generate valid test ULID |
-| `testUlids(prefix, count)` | Generate multiple unique ULIDs |
-| `kspec(args, cwd)` | Run CLI command, return result |
-| `kspecJson<T>(args, cwd)` | Run CLI with --json, return parsed |
+| Helper                     | Purpose                             |
+| -------------------------- | ----------------------------------- |
+| `setupTempFixtures()`      | Copy pre-built fixtures to temp dir |
+| `createTempDir()`          | Create empty temp dir               |
+| `initGitRepo(dir)`         | Initialize git with test config     |
+| `testUlid(prefix?)`        | Generate valid test ULID            |
+| `testUlids(prefix, count)` | Generate multiple unique ULIDs      |
+| `kspec(args, cwd)`         | Run CLI command, return result      |
+| `kspecJson<T>(args, cwd)`  | Run CLI with --json, return parsed  |
 
 See `tests/helpers/cli.ts` for full documentation.
 

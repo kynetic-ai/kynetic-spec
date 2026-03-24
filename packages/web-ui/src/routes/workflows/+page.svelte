@@ -40,9 +40,9 @@
 		enabled: isProjectInitialized(),
 	}));
 
-	let workflows = $derived<Workflow[]>(workflowsQuery.data?.items ?? []);
-	let loading = $derived(workflowsQuery.isLoading);
-	let error = $derived(workflowsQuery.error?.message ?? '');
+	const workflows = $derived<Workflow[]>(workflowsQuery.data?.items ?? []);
+	const loading = $derived(workflowsQuery.isLoading);
+	const error = $derived(workflowsQuery.error?.message ?? '');
 
 	// ── Copy start command ──
 	let copiedId = $state<string | null>(null);

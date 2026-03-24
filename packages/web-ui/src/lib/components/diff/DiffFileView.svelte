@@ -31,7 +31,7 @@
 		loading?: boolean;
 	}
 
-	let {
+	const {
 		file,
 		threads,
 		headCommit,
@@ -101,10 +101,10 @@
 		return extMap[ext];
 	}
 
-	let language = $derived(detectLanguage(getFilePath()));
+	const language = $derived(detectLanguage(getFilePath()));
 
 	// Filter threads for this file
-	let fileThreads = $derived(
+	const fileThreads = $derived(
 		threads.filter((t) =>
 			t.anchor?.type === 'code' &&
 			t.anchor.path === getFilePath()
@@ -139,8 +139,8 @@
 		onExpandContext?.(getFilePath(), direction, hunkIndex, lineNumber);
 	}
 
-	let threadCount = $derived(fileThreads.length);
-	let unresolvedCount = $derived(fileThreads.filter(t => !t.resolved_at).length);
+	const threadCount = $derived(fileThreads.length);
+	const unresolvedCount = $derived(fileThreads.filter(t => !t.resolved_at).length);
 </script>
 
 <div class="border rounded-lg overflow-hidden" data-testid="diff-file-view" data-file-path={getFilePath()}>

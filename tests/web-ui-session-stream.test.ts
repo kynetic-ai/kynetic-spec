@@ -41,12 +41,12 @@ let incrementalBlockUpdate: SessionUtils["incrementalBlockUpdate"];
 let stripToolOutput: SessionUtils["stripToolOutput"];
 let getLastSeq: SessionUtils["getLastSeq"];
 let renderMarkdown: MarkdownUtils["renderMarkdown"];
-let sanitizeHtml: typeof import("../packages/web-ui/src/lib/utils/sanitize")["sanitizeHtml"];
-let isLanguageSupported: typeof import("../packages/web-ui/src/lib/utils/highlight")["isLanguageSupported"];
-let INLINE_CODE_CLASS_NAMES: typeof import("../packages/web-ui/src/lib/utils/highlight")["INLINE_CODE_CLASS_NAMES"];
-let createStreamingMarkdownRenderer: typeof import("../packages/web-ui/src/lib/utils/streaming-markdown")["createStreamingMarkdownRenderer"];
-let createStreamingMarkdownController: typeof import("../packages/web-ui/src/lib/utils/streaming-markdown")["createStreamingMarkdownController"];
-let finalizeStreamingMarkdown: typeof import("../packages/web-ui/src/lib/utils/streaming-markdown")["finalizeStreamingMarkdown"];
+let sanitizeHtml: (typeof import("../packages/web-ui/src/lib/utils/sanitize"))["sanitizeHtml"];
+let isLanguageSupported: (typeof import("../packages/web-ui/src/lib/utils/highlight"))["isLanguageSupported"];
+let INLINE_CODE_CLASS_NAMES: (typeof import("../packages/web-ui/src/lib/utils/highlight"))["INLINE_CODE_CLASS_NAMES"];
+let createStreamingMarkdownRenderer: (typeof import("../packages/web-ui/src/lib/utils/streaming-markdown"))["createStreamingMarkdownRenderer"];
+let createStreamingMarkdownController: (typeof import("../packages/web-ui/src/lib/utils/streaming-markdown"))["createStreamingMarkdownController"];
+let finalizeStreamingMarkdown: (typeof import("../packages/web-ui/src/lib/utils/streaming-markdown"))["finalizeStreamingMarkdown"];
 let webUiViteServer: WebUiViteServer;
 const ORIGINAL_CWD = process.cwd();
 
@@ -59,9 +59,7 @@ beforeAll(async () => {
   });
   process.chdir(ORIGINAL_CWD);
 
-  const sessionMod = await import(
-    "../packages/web-ui/src/lib/components/session/session-utils"
-  );
+  const sessionMod = await import("../packages/web-ui/src/lib/components/session/session-utils");
   parseEventsToBlocks = sessionMod.parseEventsToBlocks;
   getToolIcon = sessionMod.getToolIcon;
   getToolInputPreview = sessionMod.getToolInputPreview;
@@ -78,25 +76,17 @@ beforeAll(async () => {
   stripToolOutput = sessionMod.stripToolOutput;
   getLastSeq = sessionMod.getLastSeq;
 
-  const markdownMod = await import(
-    "../packages/web-ui/src/lib/utils/markdown"
-  );
+  const markdownMod = await import("../packages/web-ui/src/lib/utils/markdown");
   renderMarkdown = markdownMod.renderMarkdown;
 
-  const sanitizeMod = await import(
-    "../packages/web-ui/src/lib/utils/sanitize"
-  );
+  const sanitizeMod = await import("../packages/web-ui/src/lib/utils/sanitize");
   sanitizeHtml = sanitizeMod.sanitizeHtml;
 
-  const highlightMod = await import(
-    "../packages/web-ui/src/lib/utils/highlight"
-  );
+  const highlightMod = await import("../packages/web-ui/src/lib/utils/highlight");
   isLanguageSupported = highlightMod.isLanguageSupported;
   INLINE_CODE_CLASS_NAMES = highlightMod.INLINE_CODE_CLASS_NAMES;
 
-  const streamingMod = await import(
-    "../packages/web-ui/src/lib/utils/streaming-markdown"
-  );
+  const streamingMod = await import("../packages/web-ui/src/lib/utils/streaming-markdown");
   createStreamingMarkdownRenderer = streamingMod.createStreamingMarkdownRenderer;
   createStreamingMarkdownController = streamingMod.createStreamingMarkdownController;
   finalizeStreamingMarkdown = streamingMod.finalizeStreamingMarkdown;
@@ -149,7 +139,7 @@ function createTestScheduler() {
       callbacks.delete(frameId);
     },
     flushAll() {
-      for (const frameId of [...callbacks.keys()].sort((left, right) => left - right)) {
+      for (const frameId of [...callbacks.keys()].toSorted((left, right) => left - right)) {
         const callback = callbacks.get(frameId);
         if (!callback) continue;
         callbacks.delete(frameId);
@@ -165,9 +155,7 @@ function createTestScheduler() {
 describe("structured event blocks (@ui-session-stream ac-1)", () => {
   describe("component files exist", () => {
     it("session route exists at /sessions/[id]", () => {
-      expect(
-        existsSync(join(WEB_UI_SRC, "routes", "sessions", "[id]", "+page.svelte")),
-      ).toBe(true);
+      expect(existsSync(join(WEB_UI_SRC, "routes", "sessions", "[id]", "+page.svelte"))).toBe(true);
     });
 
     it("all block components exist", () => {
@@ -830,9 +818,7 @@ describe("structured event blocks (@ui-session-stream ac-1)", () => {
       const blocks = parseEventsToBlocks(events);
       expect(blocks).toHaveLength(5);
 
-      const labels = blocks.map((b) =>
-        b.type === "system" ? b.label : "",
-      );
+      const labels = blocks.map((b) => (b.type === "system" ? b.label : ""));
       expect(labels).toEqual([
         "Agent dispatched",
         "Agent started",
@@ -889,9 +875,7 @@ describe("structured event blocks (@ui-session-stream ac-1)", () => {
 
     // AC: @ui-session-stream ac-1
     it("skips events with null data", () => {
-      const events = [
-        { ts: 1000, seq: 0, type: "session.start", session_id: "s1", data: null },
-      ];
+      const events = [{ ts: 1000, seq: 0, type: "session.start", session_id: "s1", data: null }];
       const blocks = parseEventsToBlocks(events);
       expect(blocks).toHaveLength(0);
     });
@@ -931,14 +915,82 @@ describe("structured event blocks (@ui-session-stream ac-1)", () => {
     // AC: @ui-session-stream ac-1
     it("produces correct block sequence for a realistic agent session", () => {
       const events = [
-        { ts: 1000, seq: 0, type: "session.start", session_id: "s1", data: { agent_type: "worker" } },
-        { ts: 1100, seq: 1, type: "session.update", session_id: "s1", data: { update: { sessionUpdate: "thinking", text: "Planning..." } } },
-        { ts: 1200, seq: 2, type: "session.update", session_id: "s1", data: { update: { sessionUpdate: "assistant_text", text: "I'll read the file." } } },
-        { ts: 1300, seq: 3, type: "session.update", session_id: "s1", data: { update: { sessionUpdate: "tool_call", toolCallId: "r1", tool: "Read", rawInput: { file_path: "/src/main.ts" } } } },
-        { ts: 1800, seq: 4, type: "session.update", session_id: "s1", data: { update: { sessionUpdate: "tool_result", toolCallId: "r1", output: "export function main() {}" } } },
-        { ts: 1900, seq: 5, type: "session.update", session_id: "s1", data: { update: { sessionUpdate: "assistant_text", text: "Now editing." } } },
-        { ts: 2000, seq: 6, type: "session.update", session_id: "s1", data: { update: { sessionUpdate: "tool_call", toolCallId: "e1", tool: "Edit", rawInput: { file_path: "/src/main.ts", old_string: "main", new_string: "start" } } } },
-        { ts: 2500, seq: 7, type: "session.update", session_id: "s1", data: { update: { sessionUpdate: "tool_result", toolCallId: "e1", output: "OK" } } },
+        {
+          ts: 1000,
+          seq: 0,
+          type: "session.start",
+          session_id: "s1",
+          data: { agent_type: "worker" },
+        },
+        {
+          ts: 1100,
+          seq: 1,
+          type: "session.update",
+          session_id: "s1",
+          data: { update: { sessionUpdate: "thinking", text: "Planning..." } },
+        },
+        {
+          ts: 1200,
+          seq: 2,
+          type: "session.update",
+          session_id: "s1",
+          data: { update: { sessionUpdate: "assistant_text", text: "I'll read the file." } },
+        },
+        {
+          ts: 1300,
+          seq: 3,
+          type: "session.update",
+          session_id: "s1",
+          data: {
+            update: {
+              sessionUpdate: "tool_call",
+              toolCallId: "r1",
+              tool: "Read",
+              rawInput: { file_path: "/src/main.ts" },
+            },
+          },
+        },
+        {
+          ts: 1800,
+          seq: 4,
+          type: "session.update",
+          session_id: "s1",
+          data: {
+            update: {
+              sessionUpdate: "tool_result",
+              toolCallId: "r1",
+              output: "export function main() {}",
+            },
+          },
+        },
+        {
+          ts: 1900,
+          seq: 5,
+          type: "session.update",
+          session_id: "s1",
+          data: { update: { sessionUpdate: "assistant_text", text: "Now editing." } },
+        },
+        {
+          ts: 2000,
+          seq: 6,
+          type: "session.update",
+          session_id: "s1",
+          data: {
+            update: {
+              sessionUpdate: "tool_call",
+              toolCallId: "e1",
+              tool: "Edit",
+              rawInput: { file_path: "/src/main.ts", old_string: "main", new_string: "start" },
+            },
+          },
+        },
+        {
+          ts: 2500,
+          seq: 7,
+          type: "session.update",
+          session_id: "s1",
+          data: { update: { sessionUpdate: "tool_result", toolCallId: "e1", output: "OK" } },
+        },
         { ts: 3000, seq: 8, type: "session.end", session_id: "s1", data: { reason: "completed" } },
       ];
 
@@ -976,14 +1028,91 @@ describe("structured event blocks (@ui-session-stream ac-1)", () => {
     // AC: @ui-session-stream ac-1
     it("produces correct block sequence for an ACP-format agent session", () => {
       const events = [
-        { ts: 1000, seq: 0, type: "session.start", session_id: "s1", data: { agent_type: "worker" } },
-        { ts: 1100, seq: 1, type: "session.update", session_id: "s1", data: { sessionUpdate: "agent_thought_chunk", content: { type: "text", text: "Planning..." } } },
-        { ts: 1200, seq: 2, type: "session.update", session_id: "s1", data: { sessionUpdate: "agent_message_chunk", content: { type: "text", text: "I'll read the file." } } },
-        { ts: 1300, seq: 3, type: "session.update", session_id: "s1", data: { sessionUpdate: "tool_call", toolCallId: "r1", title: "Read", rawInput: { file_path: "/src/main.ts" } } },
-        { ts: 1800, seq: 4, type: "session.update", session_id: "s1", data: { sessionUpdate: "tool_call_update", toolCallId: "r1", status: "completed", rawOutput: "export function main() {}" } },
-        { ts: 1900, seq: 5, type: "session.update", session_id: "s1", data: { sessionUpdate: "agent_message_chunk", content: { type: "text", text: "Now editing." } } },
-        { ts: 2000, seq: 6, type: "session.update", session_id: "s1", data: { sessionUpdate: "tool_call", toolCallId: "e1", title: "Edit", rawInput: { file_path: "/src/main.ts", old_string: "main", new_string: "start" } } },
-        { ts: 2500, seq: 7, type: "session.update", session_id: "s1", data: { sessionUpdate: "tool_call_update", toolCallId: "e1", status: "completed", rawOutput: "OK" } },
+        {
+          ts: 1000,
+          seq: 0,
+          type: "session.start",
+          session_id: "s1",
+          data: { agent_type: "worker" },
+        },
+        {
+          ts: 1100,
+          seq: 1,
+          type: "session.update",
+          session_id: "s1",
+          data: {
+            sessionUpdate: "agent_thought_chunk",
+            content: { type: "text", text: "Planning..." },
+          },
+        },
+        {
+          ts: 1200,
+          seq: 2,
+          type: "session.update",
+          session_id: "s1",
+          data: {
+            sessionUpdate: "agent_message_chunk",
+            content: { type: "text", text: "I'll read the file." },
+          },
+        },
+        {
+          ts: 1300,
+          seq: 3,
+          type: "session.update",
+          session_id: "s1",
+          data: {
+            sessionUpdate: "tool_call",
+            toolCallId: "r1",
+            title: "Read",
+            rawInput: { file_path: "/src/main.ts" },
+          },
+        },
+        {
+          ts: 1800,
+          seq: 4,
+          type: "session.update",
+          session_id: "s1",
+          data: {
+            sessionUpdate: "tool_call_update",
+            toolCallId: "r1",
+            status: "completed",
+            rawOutput: "export function main() {}",
+          },
+        },
+        {
+          ts: 1900,
+          seq: 5,
+          type: "session.update",
+          session_id: "s1",
+          data: {
+            sessionUpdate: "agent_message_chunk",
+            content: { type: "text", text: "Now editing." },
+          },
+        },
+        {
+          ts: 2000,
+          seq: 6,
+          type: "session.update",
+          session_id: "s1",
+          data: {
+            sessionUpdate: "tool_call",
+            toolCallId: "e1",
+            title: "Edit",
+            rawInput: { file_path: "/src/main.ts", old_string: "main", new_string: "start" },
+          },
+        },
+        {
+          ts: 2500,
+          seq: 7,
+          type: "session.update",
+          session_id: "s1",
+          data: {
+            sessionUpdate: "tool_call_update",
+            toolCallId: "e1",
+            status: "completed",
+            rawOutput: "OK",
+          },
+        },
         { ts: 3000, seq: 8, type: "session.end", session_id: "s1", data: { reason: "completed" } },
       ];
 
@@ -1041,7 +1170,9 @@ describe("structured event blocks (@ui-session-stream ac-1)", () => {
     // AC: @ui-session-stream ac-1
     it("renders inline code", () => {
       const html = renderMarkdown("Use `npm install`");
-      expect(html).toContain('<code class="rounded-sm bg-muted px-1 py-0.5 font-mono text-[0.9em]">npm install</code>');
+      expect(html).toContain(
+        '<code class="rounded-sm bg-muted px-1 py-0.5 font-mono text-[0.9em]">npm install</code>',
+      );
     });
 
     // AC: @ui-session-stream ac-1
@@ -1090,9 +1221,7 @@ describe("structured event blocks (@ui-session-stream ac-1)", () => {
 
     // AC: @ui-session-stream ac-1
     it("renders tables (GFM)", () => {
-      const html = renderMarkdown(
-        "| A | B |\n| --- | --- |\n| 1 | 2 |",
-      );
+      const html = renderMarkdown("| A | B |\n| --- | --- |\n| 1 | 2 |");
       expect(html).toContain("<table>");
       expect(html).toContain("<th>A</th>");
       expect(html).toContain("<td>1</td>");
@@ -1260,7 +1389,9 @@ describe("structured event blocks (@ui-session-stream ac-1)", () => {
       const html = renderMarkdown(
         "# Title\n\n- [x] done\n- item\n\n| A | B |\n| --- | --- |\n| 1 | 2 |\n\n> quoted\n\n~~old~~ and *italic* [docs](https://example.com)",
       );
-      const componentCode = await transformWebUiModule("/src/lib/components/markdown/StreamingMarkdown.svelte");
+      const componentCode = await transformWebUiModule(
+        "/src/lib/components/markdown/StreamingMarkdown.svelte",
+      );
 
       expect(html).toContain("<h1>Title</h1>");
       expect(html).toContain('type="checkbox"');
@@ -1282,7 +1413,11 @@ describe("structured event blocks (@ui-session-stream ac-1)", () => {
       expect(inlineCode).not.toBeNull();
       expect(inlineCode?.textContent).toBe("npm install");
       expect(inlineCode?.closest("pre")).toBeNull();
-      expect(Array.from(INLINE_CODE_CLASS_NAMES).every((className) => inlineCode?.classList.contains(className))).toBe(true);
+      expect(
+        Array.from(INLINE_CODE_CLASS_NAMES).every((className) =>
+          inlineCode?.classList.contains(className),
+        ),
+      ).toBe(true);
       expect(inlineCode?.classList.contains("hljs")).toBe(false);
     });
 
@@ -1296,7 +1431,11 @@ describe("structured event blocks (@ui-session-stream ac-1)", () => {
       expect(inlineCodes).toHaveLength(2);
       for (const inlineCode of inlineCodes) {
         expect(inlineCode.closest("pre")).toBeNull();
-        expect(Array.from(INLINE_CODE_CLASS_NAMES).every((className) => inlineCode.classList.contains(className))).toBe(true);
+        expect(
+          Array.from(INLINE_CODE_CLASS_NAMES).every((className) =>
+            inlineCode.classList.contains(className),
+          ),
+        ).toBe(true);
         expect(inlineCode.classList.contains("hljs")).toBe(false);
       }
     });
@@ -1315,7 +1454,7 @@ describe("structured event blocks (@ui-session-stream ac-1)", () => {
       const scheduler = createTestScheduler();
       const controller = createStreamingMarkdownController(root, { scheduler });
 
-      controller.update('<script>alert(1)</script>\n\n```js\nconst value = 1;\n```', false);
+      controller.update("<script>alert(1)</script>\n\n```js\nconst value = 1;\n```", false);
 
       expect(scheduler.requestCount).toBe(0);
       expect(root.innerHTML).not.toContain("<script>");
@@ -1358,7 +1497,9 @@ describe("structured event blocks (@ui-session-stream ac-1)", () => {
       const { root } = await createDomHarness();
       const scheduler = createTestScheduler();
       const controller = createStreamingMarkdownController(root, { scheduler });
-      const largeMarkdown = Array.from({ length: 10_000 }, (_, index) => `- item ${index}`).join("\n");
+      const largeMarkdown = Array.from({ length: 10_000 }, (_, index) => `- item ${index}`).join(
+        "\n",
+      );
       const start = Date.now();
 
       controller.update(largeMarkdown, true);
@@ -1408,16 +1549,12 @@ describe("structured event blocks (@ui-session-stream ac-1)", () => {
 
     // AC: @ui-session-stream ac-1
     it("getToolInputPreview extracts command from Bash input", () => {
-      expect(getToolInputPreview("Bash", { command: "ls -la" })).toBe(
-        "ls -la",
-      );
+      expect(getToolInputPreview("Bash", { command: "ls -la" })).toBe("ls -la");
     });
 
     // AC: @ui-session-stream ac-1
     it("getToolInputPreview extracts file_path from Read/Write/Edit", () => {
-      expect(
-        getToolInputPreview("Read", { file_path: "/foo/bar.ts" }),
-      ).toBe("/foo/bar.ts");
+      expect(getToolInputPreview("Read", { file_path: "/foo/bar.ts" })).toBe("/foo/bar.ts");
       expect(
         getToolInputPreview("Edit", {
           file_path: "/src/lib.ts",
@@ -1516,8 +1653,20 @@ describe("live streaming logic (@ui-session-stream ac-2)", () => {
     it("parseEventsToBlocks handles incremental event appending", () => {
       // Simulate first load
       const batch1 = [
-        { ts: 1000, seq: 0, type: "session.start", session_id: "s1", data: { agent_type: "worker" } },
-        { ts: 1100, seq: 1, type: "session.update", session_id: "s1", data: { update: { sessionUpdate: "assistant_text", text: "Hello" } } },
+        {
+          ts: 1000,
+          seq: 0,
+          type: "session.start",
+          session_id: "s1",
+          data: { agent_type: "worker" },
+        },
+        {
+          ts: 1100,
+          seq: 1,
+          type: "session.update",
+          session_id: "s1",
+          data: { update: { sessionUpdate: "assistant_text", text: "Hello" } },
+        },
       ];
       let allEvents = [...batch1];
       let blocks = parseEventsToBlocks(allEvents);
@@ -1526,8 +1675,27 @@ describe("live streaming logic (@ui-session-stream ac-2)", () => {
 
       // Simulate incremental refresh (new events appended)
       const batch2 = [
-        { ts: 1200, seq: 2, type: "session.update", session_id: "s1", data: { update: { sessionUpdate: "tool_call", toolCallId: "tc1", tool: "Bash", rawInput: { command: "echo test" } } } },
-        { ts: 1500, seq: 3, type: "session.update", session_id: "s1", data: { update: { sessionUpdate: "tool_result", toolCallId: "tc1", output: "test" } } },
+        {
+          ts: 1200,
+          seq: 2,
+          type: "session.update",
+          session_id: "s1",
+          data: {
+            update: {
+              sessionUpdate: "tool_call",
+              toolCallId: "tc1",
+              tool: "Bash",
+              rawInput: { command: "echo test" },
+            },
+          },
+        },
+        {
+          ts: 1500,
+          seq: 3,
+          type: "session.update",
+          session_id: "s1",
+          data: { update: { sessionUpdate: "tool_result", toolCallId: "tc1", output: "test" } },
+        },
       ];
       allEvents = [...allEvents, ...batch2];
       blocks = parseEventsToBlocks(allEvents);
@@ -1550,11 +1718,7 @@ describe("live streaming logic (@ui-session-stream ac-2)", () => {
 
     // AC: @ui-session-stream ac-2
     it("returns the seq of the last event", () => {
-      const events = [
-        { seq: 0 },
-        { seq: 5 },
-        { seq: 10 },
-      ];
+      const events = [{ seq: 0 }, { seq: 5 }, { seq: 10 }];
       expect(getLastSeq(events)).toBe(10);
     });
 
@@ -1582,7 +1746,13 @@ describe("live streaming logic (@ui-session-stream ac-2)", () => {
     it("streaming text clears when structured refresh provides new blocks", () => {
       // parseEventsToBlocks produces blocks from the refreshed events
       const newEvents = [
-        { ts: 5000, seq: 50, type: "session.update", session_id: "s1", data: { update: { sessionUpdate: "assistant_text", text: "partial text from chunks" } } },
+        {
+          ts: 5000,
+          seq: 50,
+          type: "session.update",
+          session_id: "s1",
+          data: { update: { sessionUpdate: "assistant_text", text: "partial text from chunks" } },
+        },
       ];
       const blocks = parseEventsToBlocks(newEvents);
       expect(blocks.length).toBeGreaterThan(0);
@@ -1696,9 +1866,7 @@ describe("session context panel (@ui-session-stream ac-4)", () => {
   describe("component and route exist", () => {
     // AC: @ui-session-stream ac-4
     it("context panel component exists", () => {
-      expect(
-        existsSync(join(SESSION_COMPONENTS, "SessionContextPanel.svelte")),
-      ).toBe(true);
+      expect(existsSync(join(SESSION_COMPONENTS, "SessionContextPanel.svelte"))).toBe(true);
     });
   });
 
@@ -1752,9 +1920,7 @@ describe("session context panel (@ui-session-stream ac-4)", () => {
           seq: 0,
         },
       ];
-      expect(extractFilesChanged(blocks)).toEqual([
-        "/notebooks/analysis.ipynb",
-      ]);
+      expect(extractFilesChanged(blocks)).toEqual(["/notebooks/analysis.ipynb"]);
     });
 
     // AC: @ui-session-stream ac-4
@@ -1857,11 +2023,7 @@ describe("session context panel (@ui-session-stream ac-4)", () => {
           seq: 2,
         },
       ];
-      expect(extractFilesChanged(blocks)).toEqual([
-        "/src/a.ts",
-        "/src/m.ts",
-        "/src/z.ts",
-      ]);
+      expect(extractFilesChanged(blocks)).toEqual(["/src/a.ts", "/src/m.ts", "/src/z.ts"]);
     });
 
     // AC: @ui-session-stream ac-4
@@ -1885,13 +2047,76 @@ describe("session context panel (@ui-session-stream ac-4)", () => {
     // AC: @ui-session-stream ac-4
     it("end-to-end: parse events then extract files changed", () => {
       const events = [
-        { ts: 1000, seq: 0, type: "session.start", session_id: "s1", data: { agent_type: "worker" } },
-        { ts: 1100, seq: 1, type: "session.update", session_id: "s1", data: { update: { sessionUpdate: "tool_call", toolCallId: "r1", tool: "Read", rawInput: { file_path: "/src/old.ts" } } } },
-        { ts: 1200, seq: 2, type: "session.update", session_id: "s1", data: { update: { sessionUpdate: "tool_result", toolCallId: "r1", output: "content" } } },
-        { ts: 1300, seq: 3, type: "session.update", session_id: "s1", data: { update: { sessionUpdate: "tool_call", toolCallId: "e1", tool: "Edit", rawInput: { file_path: "/src/old.ts", old_string: "a", new_string: "b" } } } },
-        { ts: 1400, seq: 4, type: "session.update", session_id: "s1", data: { update: { sessionUpdate: "tool_result", toolCallId: "e1", output: "OK" } } },
-        { ts: 1500, seq: 5, type: "session.update", session_id: "s1", data: { update: { sessionUpdate: "tool_call", toolCallId: "w1", tool: "Write", rawInput: { file_path: "/src/new.ts" } } } },
-        { ts: 1600, seq: 6, type: "session.update", session_id: "s1", data: { update: { sessionUpdate: "tool_result", toolCallId: "w1", output: "OK" } } },
+        {
+          ts: 1000,
+          seq: 0,
+          type: "session.start",
+          session_id: "s1",
+          data: { agent_type: "worker" },
+        },
+        {
+          ts: 1100,
+          seq: 1,
+          type: "session.update",
+          session_id: "s1",
+          data: {
+            update: {
+              sessionUpdate: "tool_call",
+              toolCallId: "r1",
+              tool: "Read",
+              rawInput: { file_path: "/src/old.ts" },
+            },
+          },
+        },
+        {
+          ts: 1200,
+          seq: 2,
+          type: "session.update",
+          session_id: "s1",
+          data: { update: { sessionUpdate: "tool_result", toolCallId: "r1", output: "content" } },
+        },
+        {
+          ts: 1300,
+          seq: 3,
+          type: "session.update",
+          session_id: "s1",
+          data: {
+            update: {
+              sessionUpdate: "tool_call",
+              toolCallId: "e1",
+              tool: "Edit",
+              rawInput: { file_path: "/src/old.ts", old_string: "a", new_string: "b" },
+            },
+          },
+        },
+        {
+          ts: 1400,
+          seq: 4,
+          type: "session.update",
+          session_id: "s1",
+          data: { update: { sessionUpdate: "tool_result", toolCallId: "e1", output: "OK" } },
+        },
+        {
+          ts: 1500,
+          seq: 5,
+          type: "session.update",
+          session_id: "s1",
+          data: {
+            update: {
+              sessionUpdate: "tool_call",
+              toolCallId: "w1",
+              tool: "Write",
+              rawInput: { file_path: "/src/new.ts" },
+            },
+          },
+        },
+        {
+          ts: 1600,
+          seq: 6,
+          type: "session.update",
+          session_id: "s1",
+          data: { update: { sessionUpdate: "tool_result", toolCallId: "w1", output: "OK" } },
+        },
       ];
 
       const blocks = parseEventsToBlocks(events);
@@ -1960,10 +2185,7 @@ describe("session context panel (@ui-session-stream ac-4)", () => {
     it("budget progress calculation is correct", () => {
       // The context panel displays a progress bar: (started / max) * 100
       const budget = { max_per_cycle: 10, started_this_cycle: 3 };
-      const progress = Math.min(
-        100,
-        (budget.started_this_cycle / budget.max_per_cycle) * 100,
-      );
+      const progress = Math.min(100, (budget.started_this_cycle / budget.max_per_cycle) * 100);
       expect(progress).toBe(30);
 
       // Capped at 100% even if over budget
@@ -1985,10 +2207,7 @@ describe("collapsed tool call row layout (@ui-session-stream ac-5)", () => {
 
   beforeAll(() => {
     const { readFileSync } = require("node:fs");
-    toolCallSrc = readFileSync(
-      join(SESSION_COMPONENTS, "ToolCallView.svelte"),
-      "utf-8",
-    );
+    toolCallSrc = readFileSync(join(SESSION_COMPONENTS, "ToolCallView.svelte"), "utf-8");
   });
 
   // AC: @ui-session-stream ac-5
@@ -2027,9 +2246,7 @@ describe("collapsed tool call row layout (@ui-session-stream ac-5)", () => {
   it("tool name badge allows truncation (not flex-shrink-0)", () => {
     // The tool name badge must use min-w-0 to allow flex shrinking
     // and must NOT be flex-shrink-0 (which would prevent truncation)
-    const badgeMatch = toolCallSrc.match(
-      /class="[^"]*font-mono bg-secondary[^"]*"/,
-    );
+    const badgeMatch = toolCallSrc.match(/class="[^"]*font-mono bg-secondary[^"]*"/);
     expect(badgeMatch).not.toBeNull();
     const badgeClasses = badgeMatch![0];
     expect(badgeClasses).toContain("min-w-0");
@@ -2053,15 +2270,11 @@ describe("collapsed tool call row layout (@ui-session-stream ac-5)", () => {
 
 describe("view states", () => {
   it("loading skeleton component exists", () => {
-    expect(
-      existsSync(join(SESSION_COMPONENTS, "SessionStreamSkeleton.svelte")),
-    ).toBe(true);
+    expect(existsSync(join(SESSION_COMPONENTS, "SessionStreamSkeleton.svelte"))).toBe(true);
   });
 
   it("sessions list page exists", () => {
-    expect(
-      existsSync(join(WEB_UI_SRC, "routes", "sessions", "+page.svelte")),
-    ).toBe(true);
+    expect(existsSync(join(WEB_UI_SRC, "routes", "sessions", "+page.svelte"))).toBe(true);
   });
 });
 
@@ -2088,10 +2301,7 @@ describe("design tokens and accessibility", () => {
       if (existsSync(path)) {
         const src = readFileSync(path, "utf-8");
         const matches = src.match(rawColorPattern);
-        expect(
-          matches,
-          `${file} contains raw Tailwind colors: ${matches?.join(", ")}`,
-        ).toBeNull();
+        expect(matches, `${file} contains raw Tailwind colors: ${matches?.join(", ")}`).toBeNull();
       }
     }
   });
@@ -2103,18 +2313,12 @@ describe("design tokens and accessibility", () => {
     const rawColorPattern =
       /\b(?:text|bg|border(?:-[lrtb])?)-(?:emerald|red|blue|purple|green)-\d+\b/g;
     const matches = src.match(rawColorPattern);
-    expect(
-      matches,
-      `Session page contains raw Tailwind colors: ${matches?.join(", ")}`,
-    ).toBeNull();
+    expect(matches, `Session page contains raw Tailwind colors: ${matches?.join(", ")}`).toBeNull();
   });
 
   it("session stream has aria-live and role=log for screen readers", () => {
     const { readFileSync } = require("node:fs");
-    const src = readFileSync(
-      join(SESSION_COMPONENTS, "SessionStream.svelte"),
-      "utf-8",
-    );
+    const src = readFileSync(join(SESSION_COMPONENTS, "SessionStream.svelte"), "utf-8");
     // Verify the stream container has accessibility attributes
     expect(src).toContain("aria-live");
     expect(src).toContain('role="log"');

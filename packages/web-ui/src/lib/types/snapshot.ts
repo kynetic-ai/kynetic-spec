@@ -6,10 +6,10 @@
  */
 
 export type {
-	Convention,
-	ExportedTask,
-	ExportedItem,
-	ExportedValidation,
-	KspecSnapshot,
-	InheritedAC
-} from '@kynetic-ai/shared';
+  Convention,
+  ExportedTask,
+  ExportedItem,
+  ExportedValidation,
+  KspecSnapshot,
+  InheritedAC,
+} from "@kynetic-ai/shared";

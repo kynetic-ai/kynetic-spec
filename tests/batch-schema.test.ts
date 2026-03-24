@@ -1,9 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { Command } from "commander";
-import {
-  BatchCommandSchema,
-  BatchInputSchema,
-} from "../src/schema/batch.js";
+import { BatchCommandSchema, BatchInputSchema } from "../src/schema/batch.js";
 import {
   parseBatchInput,
   validateBatchCommands,
@@ -33,10 +30,7 @@ function createTestProgram(): Command {
     .description("Add a note to a task")
     .argument("<ref>", "Task reference")
     .argument("<content>", "Note content");
-  task
-    .command("start")
-    .description("Start a task")
-    .argument("<ref>", "Task reference");
+  task.command("start").description("Start a task").argument("<ref>", "Task reference");
   task
     .command("complete")
     .description("Complete a task")
@@ -66,10 +60,7 @@ function createTestProgram(): Command {
     .option("--force", "Skip confirmation");
 
   // validate (leaf command, no subcommands)
-  program
-    .command("validate")
-    .description("Validate spec files")
-    .option("--strict", "Strict mode");
+  program.command("validate").description("Validate spec files").option("--strict", "Strict mode");
 
   return program;
 }
@@ -125,9 +116,7 @@ describe("BatchInputSchema", () => {
   });
 
   it("rejects empty array", () => {
-    expect(() => BatchInputSchema.parse([])).toThrow(
-      /at least one command/i,
-    );
+    expect(() => BatchInputSchema.parse([])).toThrow(/at least one command/i);
   });
 
   it("rejects non-array input", () => {
@@ -139,9 +128,7 @@ describe("BatchInputSchema", () => {
 
 describe("parseBatchInput", () => {
   it("parses inline JSON", async () => {
-    const input = JSON.stringify([
-      { command: "task start", args: { ref: "@my-task" } },
-    ]);
+    const input = JSON.stringify([{ command: "task start", args: { ref: "@my-task" } }]);
     const result = await parseBatchInput({ type: "inline", json: input });
     expect(result).toHaveLength(1);
     expect(result[0].command).toBe("task start");
@@ -160,35 +147,33 @@ describe("parseBatchInput", () => {
 
   // AC: @batch-exec ac-invalid-json — invalid JSON throws with position info
   it("throws BatchParseError on invalid JSON with position info", async () => {
-    await expect(
-      parseBatchInput({ type: "inline", json: "{bad json" }),
-    ).rejects.toThrow(BatchParseError);
+    await expect(parseBatchInput({ type: "inline", json: "{bad json" })).rejects.toThrow(
+      BatchParseError,
+    );
 
     // Must include "Invalid JSON" label and position info from native parser
-    await expect(
-      parseBatchInput({ type: "inline", json: "{bad json" }),
-    ).rejects.toThrow(/Invalid JSON.*position \d+/i);
+    await expect(parseBatchInput({ type: "inline", json: "{bad json" })).rejects.toThrow(
+      /Invalid JSON.*position \d+/i,
+    );
   });
 
   // AC: @batch-exec ac-invalid-json — non-array valid JSON is rejected with schema error
   it("throws BatchParseError on valid JSON that is not an array", async () => {
-    await expect(
-      parseBatchInput({ type: "inline", json: '{"command":"test"}' }),
-    ).rejects.toThrow(BatchParseError);
-    await expect(
-      parseBatchInput({ type: "inline", json: '{"command":"test"}' }),
-    ).rejects.toThrow(/Expected array/);
+    await expect(parseBatchInput({ type: "inline", json: '{"command":"test"}' })).rejects.toThrow(
+      BatchParseError,
+    );
+    await expect(parseBatchInput({ type: "inline", json: '{"command":"test"}' })).rejects.toThrow(
+      /Expected array/,
+    );
   });
 
   // AC: parent ac-empty-batch — empty array rejected
   it("throws BatchParseError on empty array", async () => {
-    await expect(
-      parseBatchInput({ type: "inline", json: "[]" }),
-    ).rejects.toThrow(BatchParseError);
+    await expect(parseBatchInput({ type: "inline", json: "[]" })).rejects.toThrow(BatchParseError);
 
-    await expect(
-      parseBatchInput({ type: "inline", json: "[]" }),
-    ).rejects.toThrow(/at least one command/i);
+    await expect(parseBatchInput({ type: "inline", json: "[]" })).rejects.toThrow(
+      /at least one command/i,
+    );
   });
 
   it("throws BatchParseError when command field is missing", async () => {
@@ -201,13 +186,13 @@ describe("parseBatchInput", () => {
   });
 
   it("throws BatchParseError on non-existent file", async () => {
-    await expect(
-      parseBatchInput({ type: "file", path: "/nonexistent/file.json" }),
-    ).rejects.toThrow(BatchParseError);
+    await expect(parseBatchInput({ type: "file", path: "/nonexistent/file.json" })).rejects.toThrow(
+      BatchParseError,
+    );
 
-    await expect(
-      parseBatchInput({ type: "file", path: "/nonexistent/file.json" }),
-    ).rejects.toThrow(/Failed to read batch file/);
+    await expect(parseBatchInput({ type: "file", path: "/nonexistent/file.json" })).rejects.toThrow(
+      /Failed to read batch file/,
+    );
   });
 });
 
@@ -219,10 +204,7 @@ describe("validateBatchCommands", () => {
   // AC: @batch-command-schema ac-command-field
   describe("command path resolution", () => {
     it("accepts valid single-level command", () => {
-      const result = validateBatchCommands(
-        [{ command: "validate", args: {} }],
-        tree,
-      );
+      const result = validateBatchCommands([{ command: "validate", args: {} }], tree);
       expect(result.valid).toBe(true);
       expect(result.errors).toHaveLength(0);
     });
@@ -233,9 +215,7 @@ describe("validateBatchCommands", () => {
         tree,
       );
       // May have missing required errors but not unknown_command errors
-      const unknownErrs = result.errors.filter(
-        (e) => e.type === "unknown_command",
-      );
+      const unknownErrs = result.errors.filter((e) => e.type === "unknown_command");
       expect(unknownErrs).toHaveLength(0);
     });
 
@@ -249,43 +229,30 @@ describe("validateBatchCommands", () => {
         ],
         tree,
       );
-      const unknownErrs = result.errors.filter(
-        (e) => e.type === "unknown_command",
-      );
+      const unknownErrs = result.errors.filter((e) => e.type === "unknown_command");
       expect(unknownErrs).toHaveLength(0);
     });
 
     it("rejects command group (non-leaf)", () => {
-      const result = validateBatchCommands(
-        [{ command: "task", args: {} }],
-        tree,
-      );
+      const result = validateBatchCommands([{ command: "task", args: {} }], tree);
       expect(result.valid).toBe(false);
       expect(result.errors[0].type).toBe("unknown_command");
       expect(result.errors[0].message).toContain("command group");
     });
 
     it("rejects with commandFilter", () => {
-      const result = validateBatchCommands(
-        [{ command: "validate", args: {} }],
-        tree,
-        {
-          commandFilter: (cmd) => cmd.name !== "validate",
-        },
-      );
+      const result = validateBatchCommands([{ command: "validate", args: {} }], tree, {
+        commandFilter: (cmd) => cmd.name !== "validate",
+      });
       expect(result.valid).toBe(false);
       expect(result.errors[0].type).toBe("rejected_command");
       expect(result.errors[0].message).toContain("not allowed");
     });
 
     it("allows commands passing commandFilter", () => {
-      const result = validateBatchCommands(
-        [{ command: "validate", args: {} }],
-        tree,
-        {
-          commandFilter: () => true,
-        },
-      );
+      const result = validateBatchCommands([{ command: "validate", args: {} }], tree, {
+        commandFilter: () => true,
+      });
       expect(result.valid).toBe(true);
     });
   });
@@ -302,9 +269,7 @@ describe("validateBatchCommands", () => {
         ],
         tree,
       );
-      const unknownArgErrs = result.errors.filter(
-        (e) => e.type === "unknown_arg",
-      );
+      const unknownArgErrs = result.errors.filter((e) => e.type === "unknown_arg");
       expect(unknownArgErrs).toHaveLength(0);
     });
 
@@ -318,9 +283,7 @@ describe("validateBatchCommands", () => {
         ],
         tree,
       );
-      const unknownArgErrs = result.errors.filter(
-        (e) => e.type === "unknown_arg",
-      );
+      const unknownArgErrs = result.errors.filter((e) => e.type === "unknown_arg");
       expect(unknownArgErrs).toHaveLength(0);
     });
 
@@ -337,9 +300,7 @@ describe("validateBatchCommands", () => {
         ],
         tree,
       );
-      const unknownArgErrs = result.errors.filter(
-        (e) => e.type === "unknown_arg",
-      );
+      const unknownArgErrs = result.errors.filter((e) => e.type === "unknown_arg");
       expect(unknownArgErrs).toHaveLength(0);
     });
 
@@ -348,9 +309,7 @@ describe("validateBatchCommands", () => {
         [{ command: "task start", args: { ref: "@my-task" } }],
         tree,
       );
-      const unknownArgErrs = result.errors.filter(
-        (e) => e.type === "unknown_arg",
-      );
+      const unknownArgErrs = result.errors.filter((e) => e.type === "unknown_arg");
       expect(unknownArgErrs).toHaveLength(0);
     });
 
@@ -360,9 +319,7 @@ describe("validateBatchCommands", () => {
         [{ command: "item ac remove", args: { ref: "@item", id: "ac-1" } }],
         tree,
       );
-      const unknownArgErrs = result.errors.filter(
-        (e) => e.type === "unknown_arg",
-      );
+      const unknownArgErrs = result.errors.filter((e) => e.type === "unknown_arg");
       expect(unknownArgErrs).toHaveLength(0);
       expect(result.valid).toBe(true);
     });
@@ -388,9 +345,7 @@ describe("validateBatchCommands", () => {
         ],
         tree,
       );
-      const unknownArgErrs = result.errors.filter(
-        (e) => e.type === "unknown_arg",
-      );
+      const unknownArgErrs = result.errors.filter((e) => e.type === "unknown_arg");
       expect(unknownArgErrs).toHaveLength(1);
       expect(unknownArgErrs[0].message).toContain("tittle");
       expect(unknownArgErrs[0].suggestion).toBe("title");
@@ -400,10 +355,7 @@ describe("validateBatchCommands", () => {
   // AC: @batch-command-schema ac-unknown-command
   describe("unknown command handling", () => {
     it("reports unknown command with index", () => {
-      const result = validateBatchCommands(
-        [{ command: "taks add", args: {} }],
-        tree,
-      );
+      const result = validateBatchCommands([{ command: "taks add", args: {} }], tree);
       expect(result.valid).toBe(false);
       expect(result.errors).toHaveLength(1);
       expect(result.errors[0].type).toBe("unknown_command");
@@ -412,19 +364,13 @@ describe("validateBatchCommands", () => {
     });
 
     it("suggests closest valid command", () => {
-      const result = validateBatchCommands(
-        [{ command: "task ad", args: {} }],
-        tree,
-      );
+      const result = validateBatchCommands([{ command: "task ad", args: {} }], tree);
       expect(result.errors[0].type).toBe("unknown_command");
       expect(result.errors[0].suggestion).toBe("task add");
     });
 
     it("handles completely invalid command with no suggestion", () => {
-      const result = validateBatchCommands(
-        [{ command: "zzzzzzzzzzzzzzz", args: {} }],
-        tree,
-      );
+      const result = validateBatchCommands([{ command: "zzzzzzzzzzzzzzz", args: {} }], tree);
       expect(result.errors[0].type).toBe("unknown_command");
       expect(result.errors[0].suggestion).toBeUndefined();
     });
@@ -437,34 +383,22 @@ describe("validateBatchCommands", () => {
         [{ command: "task add", args: { ref: "@parent" } }],
         tree,
       );
-      const missingErrs = result.errors.filter(
-        (e) => e.type === "missing_required",
-      );
+      const missingErrs = result.errors.filter((e) => e.type === "missing_required");
       expect(missingErrs.length).toBeGreaterThanOrEqual(1);
       const titleErr = missingErrs.find((e) => e.message.includes("title"));
       expect(titleErr).toBeDefined();
     });
 
     it("detects missing required positional arg", () => {
-      const result = validateBatchCommands(
-        [{ command: "task start", args: {} }],
-        tree,
-      );
-      const missingErrs = result.errors.filter(
-        (e) => e.type === "missing_required",
-      );
+      const result = validateBatchCommands([{ command: "task start", args: {} }], tree);
+      const missingErrs = result.errors.filter((e) => e.type === "missing_required");
       expect(missingErrs.length).toBeGreaterThanOrEqual(1);
       expect(missingErrs[0].message).toContain("ref");
     });
 
     it("identifies missing args by name", () => {
-      const result = validateBatchCommands(
-        [{ command: "task note", args: {} }],
-        tree,
-      );
-      const missingErrs = result.errors.filter(
-        (e) => e.type === "missing_required",
-      );
+      const result = validateBatchCommands([{ command: "task note", args: {} }], tree);
+      const missingErrs = result.errors.filter((e) => e.type === "missing_required");
       const names = missingErrs.map((e) => e.message);
       expect(names.some((m) => m.includes("ref"))).toBe(true);
       expect(names.some((m) => m.includes("content"))).toBe(true);
@@ -480,9 +414,7 @@ describe("validateBatchCommands", () => {
         ],
         tree,
       );
-      const missingErrs = result.errors.filter(
-        (e) => e.type === "missing_required",
-      );
+      const missingErrs = result.errors.filter((e) => e.type === "missing_required");
       expect(missingErrs).toHaveLength(0);
     });
   });
@@ -498,10 +430,7 @@ describe("validateBatchCommands", () => {
     });
 
     it("uses index when id is absent", () => {
-      const result = validateBatchCommands(
-        [{ command: "nonexistent", args: {} }],
-        tree,
-      );
+      const result = validateBatchCommands([{ command: "nonexistent", args: {} }], tree);
       expect(result.errors[0].index).toBe(0);
       expect(result.errors[0].id).toBeUndefined();
     });
@@ -651,10 +580,7 @@ describe("reportBatchValidationErrors", () => {
   });
 
   it("returns valid JSON for valid result in json mode", () => {
-    const output = reportBatchValidationErrors(
-      { valid: true, commands: [], errors: [] },
-      true,
-    );
+    const output = reportBatchValidationErrors({ valid: true, commands: [], errors: [] }, true);
     const parsed = JSON.parse(output);
     expect(parsed.valid).toBe(true);
     expect(parsed.errors).toHaveLength(0);

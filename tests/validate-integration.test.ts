@@ -14,12 +14,7 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { stringify } from "yaml";
-import {
-  testUlid,
-  setupTempFixtures,
-  cleanupTempDir,
-  kspec as kspecRun,
-} from "./helpers/cli.js";
+import { testUlid, setupTempFixtures, cleanupTempDir, kspec as kspecRun } from "./helpers/cli.js";
 
 describe("Validate integration: hook/schedule/composition rules", () => {
   let tempDir: string;
@@ -511,9 +506,7 @@ describe("Validate integration: hook/schedule/composition rules", () => {
 describe("Template variable validation", () => {
   // AC: @dispatch-action-model ac-7
   it("extractActionTemplates collects all template strings from actions", async () => {
-    const { extractActionTemplates } = await import(
-      "../src/agent-runtime/action-executor.js"
-    );
+    const { extractActionTemplates } = await import("../src/agent-runtime/action-executor.js");
 
     // Command action
     const cmdTemplates = extractActionTemplates({
@@ -545,9 +538,7 @@ describe("Template variable validation", () => {
 
   // AC: @dispatch-action-model ac-7
   it("validateActionTemplates warns on unknown variables for event type", async () => {
-    const { validateActionTemplates } = await import(
-      "../src/agent-runtime/action-executor.js"
-    );
+    const { validateActionTemplates } = await import("../src/agent-runtime/action-executor.js");
 
     const warnings = validateActionTemplates(
       ["Hello {{task_title}} {{unknown_var}}"],
@@ -562,9 +553,7 @@ describe("Template variable validation", () => {
 
   // AC: @dispatch-action-model ac-7
   it("validateActionTemplates returns no warnings for known variables", async () => {
-    const { validateActionTemplates } = await import(
-      "../src/agent-runtime/action-executor.js"
-    );
+    const { validateActionTemplates } = await import("../src/agent-runtime/action-executor.js");
 
     const warnings = validateActionTemplates(
       ["{{task_ref}} {{event_type}} {{source_type}}"],

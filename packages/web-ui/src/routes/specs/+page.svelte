@@ -22,7 +22,7 @@
 	let detailOpen = $state(false);
 
 	// Plan filter from URL query param (set by "View Specs" on plans page)
-	let planFilter = $derived($page.url.searchParams.get('plan') ?? undefined);
+	const planFilter = $derived($page.url.searchParams.get('plan') ?? undefined);
 
 	// AC: @ui-data-freshness ac-1 — createQuery caches; revisits render from cache
 	// AC: @ui-data-freshness ac-2 — Concurrent uses share the same in-flight request
@@ -33,9 +33,9 @@
 		enabled: isProjectInitialized(),
 	}));
 
-	let items = $derived(itemsQuery.data?.items ?? []);
-	let loading = $derived(itemsQuery.isLoading);
-	let error = $derived(itemsQuery.error?.message ?? null);
+	const items = $derived(itemsQuery.data?.items ?? []);
+	const loading = $derived(itemsQuery.isLoading);
+	const error = $derived(itemsQuery.error?.message ?? null);
 
 	function handleSelect(event: CustomEvent<string>) {
 		selectedRef = event.detail;

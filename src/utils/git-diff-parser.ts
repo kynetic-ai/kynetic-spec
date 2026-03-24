@@ -11,7 +11,7 @@
  * A single change line within a diff hunk.
  */
 export interface DiffChangeLine {
-  type: 'added' | 'deleted' | 'unchanged';
+  type: "added" | "deleted" | "unchanged";
   content: string;
   oldLineNumber: number | null;
   newLineNumber: number | null;
@@ -43,7 +43,7 @@ export interface DiffFileStats {
 export interface DiffFile {
   oldPath: string;
   newPath: string;
-  status: 'added' | 'deleted' | 'modified' | 'renamed';
+  status: "added" | "deleted" | "modified" | "renamed";
   stats: DiffFileStats;
   hunks: DiffHunk[];
 }
@@ -74,7 +74,7 @@ export function parseUnifiedDiff(diffOutput: string, base: string, head: string)
   const fileDiffs = diffOutput.split(/^diff --git /m).filter(Boolean);
 
   for (const fileDiff of fileDiffs) {
-    const lines = fileDiff.split('\n');
+    const lines = fileDiff.split("\n");
 
     // Parse file paths from the first line: "a/path b/path"
     const headerMatch = lines[0].match(/^a\/(.+?)\s+b\/(.+)$/);
@@ -84,21 +84,21 @@ export function parseUnifiedDiff(diffOutput: string, base: string, head: string)
     const newPath = headerMatch[2];
 
     // Determine file status from diff metadata
-    let status: DiffFile['status'] = 'modified';
+    let status: DiffFile["status"] = "modified";
     const metaLines = lines.slice(1);
     for (const line of metaLines) {
-      if (line.startsWith('new file mode')) {
-        status = 'added';
+      if (line.startsWith("new file mode")) {
+        status = "added";
         break;
       }
-      if (line.startsWith('deleted file mode')) {
-        status = 'deleted';
+      if (line.startsWith("deleted file mode")) {
+        status = "deleted";
         break;
       }
-      if (line.startsWith('rename from') || line.startsWith('similarity index')) {
-        status = 'renamed';
+      if (line.startsWith("rename from") || line.startsWith("similarity index")) {
+        status = "renamed";
       }
-      if (line.startsWith('@@')) break;
+      if (line.startsWith("@@")) break;
     }
 
     // Parse hunks
@@ -137,28 +137,28 @@ export function parseUnifiedDiff(diffOutput: string, base: string, head: string)
       if (!currentHunk) continue;
 
       // Skip the "\ No newline at end of file" marker
-      if (line.startsWith('\\ No newline at end of file')) continue;
+      if (line.startsWith("\\ No newline at end of file")) continue;
 
-      if (line.startsWith('+')) {
+      if (line.startsWith("+")) {
         currentHunk.changes.push({
-          type: 'added',
+          type: "added",
           content: line.slice(1),
           oldLineNumber: null,
           newLineNumber: newLine,
         });
         newLine++;
-      } else if (line.startsWith('-')) {
+      } else if (line.startsWith("-")) {
         currentHunk.changes.push({
-          type: 'deleted',
+          type: "deleted",
           content: line.slice(1),
           oldLineNumber: oldLine,
           newLineNumber: null,
         });
         oldLine++;
-      } else if (line.startsWith(' ')) {
+      } else if (line.startsWith(" ")) {
         // Context line (unchanged)
         currentHunk.changes.push({
-          type: 'unchanged',
+          type: "unchanged",
           content: line.slice(1),
           oldLineNumber: oldLine,
           newLineNumber: newLine,
@@ -177,8 +177,8 @@ export function parseUnifiedDiff(diffOutput: string, base: string, head: string)
     let deletions = 0;
     for (const hunk of hunks) {
       for (const change of hunk.changes) {
-        if (change.type === 'added') additions++;
-        if (change.type === 'deleted') deletions++;
+        if (change.type === "added") additions++;
+        if (change.type === "deleted") deletions++;
       }
     }
 

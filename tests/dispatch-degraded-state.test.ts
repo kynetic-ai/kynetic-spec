@@ -3,12 +3,12 @@ import * as fs from "node:fs/promises";
 import { execSync } from "node:child_process";
 import * as path from "node:path";
 import * as invocationModule from "../src/agent-runtime/invocation.js";
-import { DispatchEngine, type TargetSyncResult, type SyncStateEvent } from "../src/agent-runtime/dispatch.js";
 import {
-  cleanupTempDir,
-  createTempDir,
-  initGitRepo,
-} from "./helpers/cli.js";
+  DispatchEngine,
+  type TargetSyncResult,
+  type SyncStateEvent,
+} from "../src/agent-runtime/dispatch.js";
+import { cleanupTempDir, createTempDir, initGitRepo } from "./helpers/cli.js";
 
 function git(cwd: string, command: string): string {
   return execSync(`git ${command}`, {
@@ -73,20 +73,13 @@ async function setupProjectFiles(projectDir: string, baseBranch = "dev"): Promis
     `dispatch:\n  base_branch: ${baseBranch}\n  sync_interval: 60\n  remote_sync: true\n`,
     "utf-8",
   );
-  await fs.writeFile(
-    path.join(projectDir, "project.tasks.yaml"),
-    "tasks: []\n",
-    "utf-8",
-  );
+  await fs.writeFile(path.join(projectDir, "project.tasks.yaml"), "tasks: []\n", "utf-8");
 }
 
 /**
  * Create divergence: commit locally on dev AND push a different commit on remote.
  */
-async function createDivergence(
-  projectDir: string,
-  remoteDir: string,
-): Promise<void> {
+async function createDivergence(projectDir: string, remoteDir: string): Promise<void> {
   // Local commit on dev
   await fs.writeFile(path.join(projectDir, "local-only.txt"), "local\n", "utf-8");
   git(projectDir, "add local-only.txt");
@@ -112,10 +105,7 @@ async function createDivergence(
  * Create remote-only divergence (force push rebase) to simulate rewritten history
  * where the local branch has no unique commits ahead.
  */
-async function createRemoteRewrite(
-  projectDir: string,
-  remoteDir: string,
-): Promise<void> {
+async function createRemoteRewrite(projectDir: string, remoteDir: string): Promise<void> {
   // First, ensure local is in sync with remote
   git(projectDir, "fetch origin");
   git(projectDir, "merge --ff-only origin/dev");
@@ -140,10 +130,7 @@ async function createRemoteRewrite(
   // new tip, and local dev is still at the old tip — git merge --ff-only will fail.
 }
 
-async function createUnsafeSharedCheckoutDrift(
-  projectDir: string,
-  branch: string,
-): Promise<void> {
+async function createUnsafeSharedCheckoutDrift(projectDir: string, branch: string): Promise<void> {
   const previousTip = git(projectDir, `rev-parse ${branch}`);
 
   git(projectDir, "checkout --detach");
@@ -471,8 +458,8 @@ describe("dispatch engine degraded state", () => {
     await engine._syncTargetBranch();
 
     // Check that recovery was logged with duration
-    const recoveryLogs = logSpy.mock.calls.filter(
-      (call) => String(call[0]).includes("Recovered from degraded state"),
+    const recoveryLogs = logSpy.mock.calls.filter((call) =>
+      String(call[0]).includes("Recovered from degraded state"),
     );
     expect(recoveryLogs.length).toBeGreaterThanOrEqual(1);
     expect(String(recoveryLogs[0][0])).toMatch(/after \d+s/);
@@ -504,8 +491,8 @@ describe("dispatch engine degraded state", () => {
     }
 
     // Check escalation warning
-    const escalationWarnings = warnSpy.mock.calls.filter(
-      (call) => String(call[0]).includes("Persistent connectivity issues"),
+    const escalationWarnings = warnSpy.mock.calls.filter((call) =>
+      String(call[0]).includes("Persistent connectivity issues"),
     );
     expect(escalationWarnings.length).toBeGreaterThanOrEqual(1);
     const lastWarning = String(escalationWarnings[escalationWarnings.length - 1][0]);

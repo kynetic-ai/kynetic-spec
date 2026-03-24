@@ -39,8 +39,20 @@ describe("computed.inbox fields", () => {
     ]);
 
     seedTriageRecords(tempDir, [
-      { _ulid: testUlid("TRJG", 0), inbox_ref: ulid2, item_snapshot: "Item to defer", action: "defer", reasoning: "needs thought" },
-      { _ulid: testUlid("TRJG", 1), inbox_ref: ulid3, item_snapshot: "Item to promote", action: "promote", reasoning: "good idea" },
+      {
+        _ulid: testUlid("TRJG", 0),
+        inbox_ref: ulid2,
+        item_snapshot: "Item to defer",
+        action: "defer",
+        reasoning: "needs thought",
+      },
+      {
+        _ulid: testUlid("TRJG", 1),
+        inbox_ref: ulid3,
+        item_snapshot: "Item to promote",
+        action: "promote",
+        reasoning: "good idea",
+      },
     ]);
 
     const session = kspecJson<SessionContext>("session start --json", tempDir);
@@ -61,19 +73,27 @@ describe("computed.inbox fields", () => {
     ]);
 
     seedTriageRecords(tempDir, [
-      { _ulid: testUlid("TRJG", 0), inbox_ref: ulid1, item_snapshot: "Deferred A", action: "defer", reasoning: "later" },
-      { _ulid: testUlid("TRJG", 1), inbox_ref: ulid2, item_snapshot: "Deferred B", action: "defer", reasoning: "later too" },
+      {
+        _ulid: testUlid("TRJG", 0),
+        inbox_ref: ulid1,
+        item_snapshot: "Deferred A",
+        action: "defer",
+        reasoning: "later",
+      },
+      {
+        _ulid: testUlid("TRJG", 1),
+        inbox_ref: ulid2,
+        item_snapshot: "Deferred B",
+        action: "defer",
+        reasoning: "later too",
+      },
     ]);
 
     const session = kspecJson<SessionContext>("session start --json", tempDir);
 
     // computed inbox fields should match inbox_stats
-    expect(session.computed.inbox_untriaged_count).toBe(
-      session.inbox_stats.untriaged,
-    );
-    expect(session.computed.inbox_deferred_count).toBe(
-      session.inbox_stats.deferred,
-    );
+    expect(session.computed.inbox_untriaged_count).toBe(session.inbox_stats.untriaged);
+    expect(session.computed.inbox_deferred_count).toBe(session.inbox_stats.deferred);
     expect(session.computed.inbox_total).toBe(session.inbox_stats.total);
   });
 
@@ -89,10 +109,7 @@ describe("computed.inbox fields", () => {
 // AC: @session-start-computed-json ac-computed-unlocks
 describe("computed.task_unlocks", () => {
   it("should contain ref-to-count map for tasks with pending dependents", () => {
-    kspec(
-      'task add --title "Parent task" --slug task-parent-computed',
-      tempDir,
-    );
+    kspec('task add --title "Parent task" --slug task-parent-computed', tempDir);
     kspec(
       'task add --title "Child one" --slug task-child-one-c --depends-on @task-parent-computed',
       tempDir,
@@ -106,18 +123,13 @@ describe("computed.task_unlocks", () => {
 
     expect(session.computed.task_unlocks).toBeDefined();
     // Resolve the parent task's short ULID ref from ready_tasks
-    const parentTask = session.ready_tasks.find(
-      (t) => t.title === "Parent task",
-    );
+    const parentTask = session.ready_tasks.find((t) => t.title === "Parent task");
     expect(parentTask).toBeDefined();
     expect(session.computed.task_unlocks[parentTask!.ref]).toBe(2);
   });
 
   it("should omit tasks with zero dependents from the map", () => {
-    kspec(
-      'task add --title "Standalone computed" --slug task-standalone-c',
-      tempDir,
-    );
+    kspec('task add --title "Standalone computed" --slug task-standalone-c', tempDir);
 
     const session = kspecJson<SessionContext>("session start --json", tempDir);
 
@@ -147,10 +159,7 @@ describe("computed.task_unlocks", () => {
     // Complete one child
     kspec("task start @task-dep-child-done-c", tempDir);
     kspec("task submit @task-dep-child-done-c", tempDir);
-    kspec(
-      'task complete @task-dep-child-done-c --reason "Done"',
-      tempDir,
-    );
+    kspec('task complete @task-dep-child-done-c --reason "Done"', tempDir);
 
     // Start another child (in_progress should not count)
     kspec("task start @task-dep-child-ip-c", tempDir);
@@ -158,9 +167,7 @@ describe("computed.task_unlocks", () => {
     const session = kspecJson<SessionContext>("session start --json", tempDir);
 
     // Resolve parent ref and assert only the pending child counts
-    const parentTask = session.ready_tasks.find(
-      (t) => t.title === "Dep parent",
-    );
+    const parentTask = session.ready_tasks.find((t) => t.title === "Dep parent");
     expect(parentTask).toBeDefined();
     expect(session.computed.task_unlocks[parentTask!.ref]).toBe(1);
   });
@@ -172,9 +179,7 @@ describe("computed.task_unlocks", () => {
     const session = kspecJson<SessionContext>("session start --json", tempDir);
 
     // The standalone task should NOT appear in task_unlocks
-    const standaloneTask = session.ready_tasks.find(
-      (t) => t.title === "No deps",
-    );
+    const standaloneTask = session.ready_tasks.find((t) => t.title === "No deps");
     expect(standaloneTask).toBeDefined();
     expect(session.computed.task_unlocks[standaloneTask!.ref]).toBeUndefined();
 
@@ -192,19 +197,14 @@ describe("computed.recent_activity", () => {
     kspec('task add --title "Activity task" --slug task-activity-c', tempDir);
     kspec("task start @task-activity-c", tempDir);
     kspec("task submit @task-activity-c", tempDir);
-    kspec(
-      'task complete @task-activity-c --reason "Done for computed test"',
-      tempDir,
-    );
+    kspec('task complete @task-activity-c --reason "Done for computed test"', tempDir);
 
     const session = kspecJson<SessionContext>("session start --json", tempDir);
 
     expect(session.computed.recent_activity).toBeDefined();
     expect(Array.isArray(session.computed.recent_activity)).toBe(true);
     // Should match the top-level activity_timeline
-    expect(session.computed.recent_activity).toEqual(
-      session.activity_timeline,
-    );
+    expect(session.computed.recent_activity).toEqual(session.activity_timeline);
   });
 
   it("should be an empty array when no recent activity", () => {
@@ -215,16 +215,10 @@ describe("computed.recent_activity", () => {
   });
 
   it("should include task_completion entries for completed tasks", () => {
-    kspec(
-      'task add --title "Timeline task" --slug task-timeline-c',
-      tempDir,
-    );
+    kspec('task add --title "Timeline task" --slug task-timeline-c', tempDir);
     kspec("task start @task-timeline-c", tempDir);
     kspec("task submit @task-timeline-c", tempDir);
-    kspec(
-      'task complete @task-timeline-c --reason "For timeline test"',
-      tempDir,
-    );
+    kspec('task complete @task-timeline-c --reason "For timeline test"', tempDir);
 
     const session = kspecJson<SessionContext>("session start --json", tempDir);
 
@@ -232,9 +226,7 @@ describe("computed.recent_activity", () => {
       (a) => a.type === "task_completion",
     );
     expect(taskCompletions.length).toBeGreaterThanOrEqual(1);
-    const found = taskCompletions.find(
-      (a) => a.task?.title === "Timeline task",
-    );
+    const found = taskCompletions.find((a) => a.task?.title === "Timeline task");
     expect(found).toBeDefined();
   });
 });

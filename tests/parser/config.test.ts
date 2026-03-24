@@ -75,11 +75,9 @@ describe("Project Config", () => {
       expect(result.config.daemon.port).toBe(defaults.daemon.port);
       expect(result.config.daemon.host).toBe(defaults.daemon.host);
       // AC: @config-validation — validation defaults
-      expect(result.config.validation.strict_refs).toBe(
-        defaults.validation.strict_refs
-      );
+      expect(result.config.validation.strict_refs).toBe(defaults.validation.strict_refs);
       expect(result.config.validation.require_acceptance).toBe(
-        defaults.validation.require_acceptance
+        defaults.validation.require_acceptance,
       );
     });
 
@@ -109,7 +107,7 @@ identity:
 validation:
   strict_refs: true
   require_acceptance: true
-`
+`,
       );
 
       const result = await loadProjectConfig(tempDir);
@@ -148,7 +146,7 @@ validation:
 shadow:
   branch: [invalid yaml
   this is broken:
-`
+`,
       );
 
       const result = await loadProjectConfig(tempDir);
@@ -165,7 +163,7 @@ shadow:
         `
 daemon:
   port: "not-a-number"
-`
+`,
       );
 
       const result = await loadProjectConfig(tempDir);
@@ -184,7 +182,7 @@ daemon:
 unknown_top_level_field: "should be ignored"
 another_unknown:
   nested: value
-`
+`,
       );
 
       const result = await loadProjectConfig(tempDir);
@@ -204,7 +202,7 @@ agent:
     task_work: "/task-work"
     reflect: "/reflect"
     pr_review: "/pr-review"
-`
+`,
       );
 
       const result = await loadProjectConfig(tempDir);
@@ -221,7 +219,7 @@ agent:
         `
 daemon:
   port: 5000
-`
+`,
       );
 
       const result = await loadProjectConfig(tempDir);
@@ -238,7 +236,7 @@ daemon:
 agent:
   skills:
     pr_review: "/my-review"
-`
+`,
       );
 
       const result = await loadProjectConfig(tempDir);
@@ -255,7 +253,7 @@ agent:
 ralph:
   skills:
     reflect: "/legacy-reflect"
-`
+`,
       );
 
       const result = await loadProjectConfig(tempDir);
@@ -276,7 +274,7 @@ agent:
 ralph:
   skills:
     reflect: "/legacy-reflect"
-`
+`,
       );
 
       const result = await loadProjectConfig(tempDir);
@@ -296,7 +294,7 @@ identity:
 daemon:
   port: 5000
   host: from-config.local
-`
+`,
       );
 
       process.env.KSPEC_AUTHOR = "@env-author";
@@ -329,7 +327,7 @@ daemon:
         `
 daemon:
   port: 8000
-`
+`,
       );
 
       // Create subdirectory
@@ -350,7 +348,7 @@ daemon:
         `
 daemon:
   port: 9000
-`
+`,
       );
 
       // Create a separate temp dir to simulate batch mode
@@ -576,14 +574,14 @@ daemon:
         `
 kynetic: "1.0"
 title: Test Project
-`
+`,
       );
       await fs.writeFile(
         path.join(tempDir, "kspec.config.yaml"),
         `
 daemon:
   port: 5555
-`
+`,
       );
 
       const ctx = await initContext(tempDir);
@@ -603,7 +601,7 @@ daemon:
         `
 kynetic: "1.0"
 title: Test Project
-`
+`,
       );
 
       const ctx = await initContext(tempDir);
@@ -659,7 +657,7 @@ title: Test Project
         `
 identity:
   author: "@bot-agent"
-`
+`,
       );
 
       const result = await loadProjectConfig(tempDir);
@@ -674,7 +672,7 @@ identity:
         `
 identity:
   author: "@config-author"
-`
+`,
       );
 
       process.env.KSPEC_AUTHOR = "@env-author";
@@ -766,7 +764,7 @@ identity:
         `
 validation:
   require_acceptance: true
-`
+`,
       );
 
       const result = await loadProjectConfig(tempDir);
@@ -781,7 +779,7 @@ validation:
         `
 validation:
   strict_refs: true
-`
+`,
       );
 
       const result = await loadProjectConfig(tempDir);
@@ -804,7 +802,7 @@ validation:
 validation:
   strict_refs: false
   require_acceptance: true
-`
+`,
       );
 
       const result = await loadProjectConfig(tempDir);
@@ -822,7 +820,7 @@ validation:
 dispatch:
   base_branch: agent-dev
   worktree_root: /tmp/kspec-worktrees
-`
+`,
       );
 
       const result = await loadProjectConfig(tempDir);
@@ -848,7 +846,7 @@ dispatch:
         `
 dispatch:
   sync_interval: 120
-`
+`,
       );
 
       const result = await loadProjectConfig(tempDir);
@@ -871,7 +869,7 @@ dispatch:
         `
 dispatch:
   sync_interval: 0
-`
+`,
       );
 
       const result = await loadProjectConfig(tempDir);
@@ -887,7 +885,7 @@ dispatch:
         `
 dispatch:
   sync_interval: -1
-`
+`,
       );
 
       const result = await loadProjectConfig(tempDir);
@@ -904,7 +902,7 @@ dispatch:
         `
 dispatch:
   sync_interval: 30.5
-`
+`,
       );
 
       const result = await loadProjectConfig(tempDir);
@@ -920,7 +918,7 @@ dispatch:
         `
 dispatch:
   remote_sync: false
-`
+`,
       );
 
       const result = await loadProjectConfig(tempDir);
@@ -936,7 +934,7 @@ dispatch:
         `
 dispatch:
   remote_sync: true
-`
+`,
       );
 
       const result = await loadProjectConfig(tempDir);
@@ -959,7 +957,7 @@ dispatch:
 dispatch:
   sync_interval: 30
   remote_sync: true
-`
+`,
       );
 
       const result = await loadProjectConfig(tempDir);
@@ -1017,7 +1015,7 @@ dispatch:
 hooks:
   checkpoint: true
   prompt_check: false
-`
+`,
       );
 
       const result = await loadProjectConfig(tempDir);
@@ -1035,7 +1033,7 @@ hooks:
 hooks:
   checkpoint: false
   prompt_check: true
-`
+`,
       );
 
       const result = await loadProjectConfig(tempDir);
@@ -1051,7 +1049,7 @@ hooks:
         `
 hooks:
   prompt_check: false
-`
+`,
       );
 
       const result = await loadProjectConfig(tempDir);
@@ -1067,7 +1065,7 @@ hooks:
         `
 hooks:
   checkpoint: true
-`
+`,
       );
 
       const result = await loadProjectConfig(tempDir);
@@ -1083,7 +1081,7 @@ hooks:
         `
 daemon:
   port: 5000
-`
+`,
       );
 
       const result = await loadProjectConfig(tempDir);
@@ -1107,7 +1105,7 @@ daemon:
         `
 hooks:
   checkpoint: "yes"
-`
+`,
       );
 
       const result = await loadProjectConfig(tempDir);
@@ -1125,7 +1123,7 @@ hooks:
         `
 hooks:
   prompt_check: 42
-`
+`,
       );
 
       const result = await loadProjectConfig(tempDir);
@@ -1141,7 +1139,7 @@ hooks:
 hooks:
   checkpoint: true
   unknown_hook: true
-`
+`,
       );
 
       const result = await loadProjectConfig(tempDir);
@@ -1259,7 +1257,7 @@ hooks:
         `
 dispatch:
   sync_interval: -10
-`
+`,
       );
 
       const result = await loadProjectConfig(tempDir);
@@ -1275,7 +1273,7 @@ dispatch:
         `
 dispatch:
   sync_interval: 1.5
-`
+`,
       );
 
       const result = await loadProjectConfig(tempDir);
@@ -1291,7 +1289,7 @@ dispatch:
         `
 dispatch:
   remote_sync: "yes"
-`
+`,
       );
 
       const result = await loadProjectConfig(tempDir);

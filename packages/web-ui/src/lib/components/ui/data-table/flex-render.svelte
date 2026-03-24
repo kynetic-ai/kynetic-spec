@@ -19,7 +19,7 @@
 		attach?: Attachment;
 	};
 
-	let { content, context, attach }: Props = $props();
+	const { content, context, attach }: Props = $props();
 </script>
 
 {#if typeof content === "string"}

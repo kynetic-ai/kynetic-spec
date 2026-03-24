@@ -13,7 +13,10 @@ import {
   ReferenceIndex,
   type TaskAssessment,
 } from "../../parser/index.js";
-import { resolveTaskDataManager, type ShadowCommitOptions } from "../../parser/task-data-manager.js";
+import {
+  resolveTaskDataManager,
+  type ShadowCommitOptions,
+} from "../../parser/task-data-manager.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import { errors } from "../../strings/index.js";
 import { grepItem } from "../../utils/grep.js";
@@ -27,11 +30,7 @@ import {
   success,
 } from "../output.js";
 import { findClosestCommand } from "../suggest.js";
-import {
-  normalizeRefInput,
-  TaskTypeSchema,
-  TaskStatusSchema,
-} from "../../schema/common.js";
+import { normalizeRefInput, TaskTypeSchema, TaskStatusSchema } from "../../schema/common.js";
 import { validateEnumOption } from "../validators.js";
 
 /** List options shared between tasks list subcommand and default action */
@@ -109,21 +108,13 @@ export async function listTasksAction(options: ListTasksOptions): Promise<void> 
     // Apply filters
     // AC: @multi-value-status-filter ac-comma-separated, ac-repeated-flag, ac-single-value-unchanged
     if (options.status) {
-      const statuses = parseMultiStatus(
-        options.status,
-        TaskStatusSchema.options,
-        "task status",
-      );
+      const statuses = parseMultiStatus(options.status, TaskStatusSchema.options, "task status");
       if (statuses) {
         taskList = taskList.filter((t) => statuses.includes(t.status as any));
       }
     }
     if (options.type) {
-      const typeResult = validateEnumOption(
-        options.type,
-        TaskTypeSchema.options,
-        "task type",
-      );
+      const typeResult = validateEnumOption(options.type, TaskTypeSchema.options, "task type");
       if (!typeResult.ok) {
         error(typeResult.error);
         process.exit(EXIT_CODES.VALIDATION_FAILED);
@@ -142,17 +133,12 @@ export async function listTasksAction(options: ListTasksOptions): Promise<void> 
         process.exit(EXIT_CODES.NOT_FOUND);
       }
       const targetRef = normalizeRefInput(options.metaRef);
-      taskList = taskList.filter(
-        (t) => t.meta_ref === targetRef || t.meta_ref === options.metaRef,
-      );
+      taskList = taskList.filter((t) => t.meta_ref === targetRef || t.meta_ref === options.metaRef);
     }
     if (options.grep) {
       const pattern = options.grep;
       taskList = taskList.filter((t) => {
-        const match = grepItem(
-          t as unknown as Record<string, unknown>,
-          pattern,
-        );
+        const match = grepItem(t as unknown as Record<string, unknown>, pattern);
         return match !== null;
       });
     }
@@ -166,13 +152,7 @@ export async function listTasksAction(options: ListTasksOptions): Promise<void> 
     }
 
     output(taskList, () =>
-      formatTaskList(
-        taskList,
-        options.verbose,
-        index,
-        options.grep,
-        options.full,
-      ),
+      formatTaskList(taskList, options.verbose, index, options.grep, options.full),
     );
   } catch (err) {
     error(errors.failures.listTasks, err);
@@ -197,7 +177,9 @@ export function addListOptions(cmd: Command): Command {
  * Register the 'tasks' command group
  */
 export function registerTasksCommands(program: Command): void {
-  const tasks = program.command("tasks").description("Query and list tasks")
+  const tasks = program
+    .command("tasks")
+    .description("Query and list tasks")
     .allowUnknownOption()
     .allowExcessArguments();
 
@@ -236,10 +218,11 @@ export function registerTasksCommands(program: Command): void {
   });
 
   // kspec tasks list
-  addListOptions(tasks.command("list").description("List all tasks"))
-    .action(async (options: ListTasksOptions) => {
+  addListOptions(tasks.command("list").description("List all tasks")).action(
+    async (options: ListTasksOptions) => {
       await listTasksAction(options);
-    });
+    },
+  );
 
   // kspec tasks ready
   // AC: @task-automation-eligibility ac-14, ac-19, ac-20, ac-24
@@ -271,17 +254,13 @@ export function registerTasksCommands(program: Command): void {
 
         // AC: @task-automation-eligibility ac-24 - filter by --needs-review
         if (options.needsReview) {
-          readyTasks = readyTasks.filter(
-            (t) => t.automation === "needs_review",
-          );
+          readyTasks = readyTasks.filter((t) => t.automation === "needs_review");
         }
 
         output(readyTasks, () => {
           if (readyTasks.length === 0) {
             if (options.eligible) {
-              info(
-                "No eligible tasks ready - no tasks with automation: eligible",
-              );
+              info("No eligible tasks ready - no tasks with automation: eligible");
             } else if (options.unassessed) {
               info("No unassessed tasks ready");
             } else if (options.needsReview) {
@@ -349,13 +328,7 @@ export function registerTasksCommands(program: Command): void {
         const blockedTasks = allTasks.filter((t) => t.status === "blocked");
 
         output(blockedTasks, () =>
-          formatTaskList(
-            blockedTasks,
-            options.verbose,
-            index,
-            undefined,
-            options.full,
-          ),
+          formatTaskList(blockedTasks, options.verbose, index, undefined, options.full),
         );
       } catch (err) {
         error(errors.failures.getBlockedTasks, err);
@@ -381,13 +354,7 @@ export function registerTasksCommands(program: Command): void {
         );
 
         output(activeTasks, () =>
-          formatTaskList(
-            activeTasks,
-            options.verbose,
-            index,
-            undefined,
-            options.full,
-          ),
+          formatTaskList(activeTasks, options.verbose, index, undefined, options.full),
         );
       } catch (err) {
         error(errors.failures.getActiveTasks, err);
@@ -397,9 +364,7 @@ export function registerTasksCommands(program: Command): void {
 
   // kspec tasks assess - assess command group
   // AC: @tasks-assess-automation
-  const assess = tasks
-    .command("assess")
-    .description("Assess tasks for various criteria");
+  const assess = tasks.command("assess").description("Assess tasks for various criteria");
 
   // kspec tasks assess automation [taskRef]
   // AC: @tasks-assess-automation ac-1 through ac-28
@@ -449,9 +414,7 @@ export function registerTasksCommands(program: Command): void {
             },
             () => {
               if (taskRef) {
-                info(
-                  `Task ${taskRef} is not pending or already assessed (use --all to include)`,
-                );
+                info(`Task ${taskRef} is not pending or already assessed (use --all to include)`);
               } else {
                 info("No unassessed pending tasks");
               }
@@ -487,9 +450,7 @@ export function registerTasksCommands(program: Command): void {
                 );
               }
               if (actualChanges.length === 0) {
-                console.log(
-                  "  (no changes - all tasks need agent/human review)",
-                );
+                console.log("  (no changes - all tasks need agent/human review)");
               }
             });
             return;
@@ -510,21 +471,21 @@ export function registerTasksCommands(program: Command): void {
               operation: "tasks-assess",
               skipCommit: true,
             };
-            await resolveTaskDataManager(ctx).mutateTask(ctx, task._ulid, (latestTask) => ({
-              ...latestTask,
-              automation: change.newStatus,
-              notes: [...latestTask.notes, note],
-            }), assessCommitOpts);
+            await resolveTaskDataManager(ctx).mutateTask(
+              ctx,
+              task._ulid,
+              (latestTask) => ({
+                ...latestTask,
+                automation: change.newStatus,
+                notes: [...latestTask.notes, note],
+              }),
+              assessCommitOpts,
+            );
             changeCount++;
           }
 
           if (changeCount > 0) {
-            await commitIfShadow(
-              ctx.shadow,
-              "tasks-assess",
-              undefined,
-              `${changeCount} task(s)`,
-            );
+            await commitIfShadow(ctx.shadow, "tasks-assess", undefined, `${changeCount} task(s)`);
           }
 
           output({ assessments, summary, changes, applied: true }, () => {
@@ -533,9 +494,7 @@ export function registerTasksCommands(program: Command): void {
             if (changeCount > 0) {
               success(`Applied ${changeCount} change(s)`);
             } else {
-              info(
-                "No changes applied - all tasks need agent/human review to mark eligible",
-              );
+              info("No changes applied - all tasks need agent/human review to mark eligible");
             }
           });
           return;
@@ -600,9 +559,7 @@ function formatAssessmentOutput(
         : assessment.recommendation === "needs_review"
           ? chalk.yellow
           : chalk.red;
-    console.log(
-      `  → ${recColor(assessment.recommendation)} (${assessment.reason})`,
-    );
+    console.log(`  → ${recColor(assessment.recommendation)} (${assessment.reason})`);
     console.log("");
   }
 

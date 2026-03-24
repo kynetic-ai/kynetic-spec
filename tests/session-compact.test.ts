@@ -113,10 +113,7 @@ describe("session compact", () => {
     await createSessionWithStatus(sessionId, "completed");
     await writeRawEventWithOversizedPayload(sessionId, rawOutput);
 
-    const result = kspecJson<SessionCompactJson>(
-      `session compact ${sessionId}`,
-      tempDir,
-    );
+    const result = kspecJson<SessionCompactJson>(`session compact ${sessionId}`, tempDir);
 
     expect(result.dry_run).toBe(false);
     expect(result.session?.status).toBe("compacted");
@@ -171,10 +168,7 @@ describe("session compact", () => {
     const blobsDir = path.join(getSessionDir(sessionsDir, sessionId), "blobs");
     const firstBlobCount = (await fs.readdir(blobsDir)).length;
 
-    const second = kspecJson<SessionCompactJson>(
-      `session compact ${sessionId}`,
-      tempDir,
-    );
+    const second = kspecJson<SessionCompactJson>(`session compact ${sessionId}`, tempDir);
     const secondContent = await readTestOutput(eventsPath);
     const secondBlobCount = (await fs.readdir(blobsDir)).length;
 
@@ -228,10 +222,7 @@ describe("session compact", () => {
     const sessionId = testUlid("SESS", 8);
     await createSessionWithStatus(sessionId, "completed");
 
-    const result = kspecJson<SessionCompactJson>(
-      `session compact ${sessionId}`,
-      tempDir,
-    );
+    const result = kspecJson<SessionCompactJson>(`session compact ${sessionId}`, tempDir);
     expect(result.session?.status).toBe("missing_events_file");
     expect(result.session?.changed).toBe(false);
   });
@@ -252,10 +243,7 @@ describe("session compact", () => {
       `session compact ${sessionId} --dry-run`,
       tempDir,
     );
-    const humanResult = kspec(
-      `session compact ${sessionId} --dry-run`,
-      tempDir,
-    );
+    const humanResult = kspec(`session compact ${sessionId} --dry-run`, tempDir);
     const after = await readTestOutput(eventsPath);
 
     expect(jsonResult.dry_run).toBe(true);
@@ -277,11 +265,9 @@ describe("session compact", () => {
     await fs.writeFile(eventsPath, "{not-json}\n", "utf-8");
     const before = await readTestOutput(eventsPath);
 
-    const result = kspec(
-      `session compact ${sessionId} --dry-run --json`,
-      tempDir,
-      { expectFail: true },
-    );
+    const result = kspec(`session compact ${sessionId} --dry-run --json`, tempDir, {
+      expectFail: true,
+    });
     expect(result.exitCode).toBe(3);
 
     const errJson = JSON.parse(result.stderr);

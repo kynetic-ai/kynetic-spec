@@ -59,11 +59,10 @@ async function createToolPath(options: { gh: boolean }): Promise<string> {
     encoding: "utf-8",
     shell: "/bin/bash",
   }).trim();
-  await fs.writeFile(
-    path.join(binDir, "git"),
-    `#!/bin/sh\nexec "${gitPath}" "$@"\n`,
-    { encoding: "utf-8", mode: 0o755 },
-  );
+  await fs.writeFile(path.join(binDir, "git"), `#!/bin/sh\nexec "${gitPath}" "$@"\n`, {
+    encoding: "utf-8",
+    mode: 0o755,
+  });
   if (options.gh) {
     await fs.writeFile(
       path.join(binDir, "gh"),
@@ -272,7 +271,11 @@ describe("dispatch branch integration contract", () => {
             active_role: null,
             worktrees: {
               worker: {
-                path: path.join(tempDir, ".kspec-worktrees", "task-legacy-branch-integration-legacy"),
+                path: path.join(
+                  tempDir,
+                  ".kspec-worktrees",
+                  "task-legacy-branch-integration-legacy",
+                ),
                 branch_mode: "branch",
                 branch_ref: "dispatch/task/task-legacy-branch-integration/legacy",
                 head: baseCommit,

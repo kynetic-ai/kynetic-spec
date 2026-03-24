@@ -5,6 +5,7 @@ These test whether an agent reading only AGENTS.md (plus skill blurbs injected a
 ## Scoring
 
 For each scenario, the agent should identify the correct action AND reasoning.
+
 - **PASS**: Correct action with correct reasoning
 - **PARTIAL**: Correct action but wrong/missing reasoning
 - **FAIL**: Wrong action
@@ -16,6 +17,7 @@ For each scenario, the agent should identify the correct action AND reasoning.
 **Situation:** You just cloned this repo and need to start working.
 
 **Expected answer:**
+
 - Run `node scripts/bootstrap.cjs` first
 - This handles install, build, link, init automatically
 - Then check `kspec session start` for context
@@ -30,6 +32,7 @@ For each scenario, the agent should identify the correct action AND reasoning.
 **Situation:** You ran `ls .kspec/` and see YAML files. You want to fix a typo in a task's title. What do you do?
 
 **Expected answer:**
+
 - NEVER manually edit YAML in `.kspec/` — use `kspec task set @ref --title "Fixed title"`
 - `.kspec/` is a git worktree on the `kspec-meta` shadow branch
 - CLI auto-commits changes to shadow branch
@@ -44,6 +47,7 @@ For each scenario, the agent should identify the correct action AND reasoning.
 **Situation:** You run `kspec session start` and see a task in `pending_review` state and two `pending` tasks.
 
 **Expected answer:**
+
 - Inherit the `pending_review` task first — it takes priority
 - Check if its PR exists and needs attention (review, CI, merge)
 - Don't start new pending tasks until pending_review is resolved
@@ -58,6 +62,7 @@ For each scenario, the agent should identify the correct action AND reasoning.
 **Situation:** You're in agent dispatch mode. Your current task requires implementing a new CLI command, but the tests are failing because a dependency function has a bug. Should you block the task?
 
 **Expected answer:**
+
 - NO — "tests are failing" is NOT a valid blocking reason
 - Fix the bug in the dependency function as part of the task
 - Valid blockers are: human decisions needed, spec gaps, external dependencies
@@ -72,6 +77,7 @@ For each scenario, the agent should identify the correct action AND reasoning.
 **Situation:** You blocked task @foo because it needs an architectural decision from the user. What do you do next?
 
 **Expected answer:**
+
 - MUST run `kspec tasks ready --eligible`
 - If tasks are returned: pick one and continue working
 - If empty: stop responding (dispatch exits automatically)
@@ -87,6 +93,7 @@ For each scenario, the agent should identify the correct action AND reasoning.
 **Situation:** User asks you to add a `kspec export --format csv` command. Where do you start?
 
 **Expected answer:**
+
 - This is a behavior change — check spec coverage first
 - Look for existing spec items covering export functionality
 - If no spec coverage: create spec item with ACs before implementing
@@ -102,6 +109,7 @@ For each scenario, the agent should identify the correct action AND reasoning.
 **Situation:** You've finished implementing a task and committed your code. What's the full flow to get it reviewed and merged?
 
 **Expected answer:**
+
 - Verify quality: AC coverage (own + trait), tests pass, `kspec validate`
 - Submit: `kspec task submit @ref` (transitions to pending_review)
 - Reviewer creates kspec review record, investigates, submits verdict
@@ -119,6 +127,7 @@ For each scenario, the agent should identify the correct action AND reasoning.
 **Situation:** You're writing a test fixture YAML file and need a task ULID. You write `01TRAIT10000000000000000000`. Will this work?
 
 **Expected answer:**
+
 - NO — contains `I` which is invalid in Crockford base32
 - ULIDs exclude: I, L, O, U
 - Use `testUlid('TRAIT')` helper which auto-replaces invalid chars
@@ -134,6 +143,7 @@ For each scenario, the agent should identify the correct action AND reasoning.
 **Situation:** You need to write a new E2E test for the web UI. How do you set it up?
 
 **Expected answer:**
+
 - Tests go in `packages/web-ui/tests/e2e/`
 - Import from `../fixtures/test-base` (NOT main `tests/fixtures/`)
 - Do NOT start a daemon manually — test-base handles lifecycle
@@ -150,6 +160,7 @@ For each scenario, the agent should identify the correct action AND reasoning.
 **Situation:** You're working on task @add-csv-export. While implementing, you notice the existing JSON export has a bug. Should you fix it?
 
 **Expected answer:**
+
 - This is scope expansion — recognize it
 - Capture the bug separately (inbox item or new task), don't fix it inline
 - Add a note to your current task documenting what you found
@@ -165,6 +176,7 @@ For each scenario, the agent should identify the correct action AND reasoning.
 **Situation:** You need to know how to manage session observations. Where do you look?
 
 **Expected answer:**
+
 - Invoke `/meta` skill — it has full observation commands and workflows
 - AGENTS.md tells you which skills exist and when to use them
 - Skills provide detailed step-by-step workflows when invoked
@@ -179,6 +191,7 @@ For each scenario, the agent should identify the correct action AND reasoning.
 **Situation:** You need to capture 5 inbox items and resolve 3 observations. What's the most efficient approach?
 
 **Expected answer:**
+
 - Use `kspec batch` — one atomic shadow branch commit instead of 8 separate ones
 - Pipe JSON array with commands
 - Better than 8 sequential `kspec` calls
@@ -192,6 +205,7 @@ For each scenario, the agent should identify the correct action AND reasoning.
 **Situation:** Your PR's CI is failing because `daemon-watcher-multi-project.test.ts` fails in GitHub Actions but passes locally.
 
 **Expected answer:**
+
 - File watcher tests are known to skip in CI — GitHub Actions doesn't support recursive `fs.watch`
 - If it's failing rather than skipping, the skip condition may be broken — investigate
 - Run watcher tests locally before committing watcher changes
@@ -205,6 +219,7 @@ For each scenario, the agent should identify the correct action AND reasoning.
 **Situation:** Your plan was approved in plan mode. What do you do before writing code?
 
 **Expected answer:**
+
 - Translate plan to specs FIRST — plans without specs are incomplete
 - Create spec items under appropriate parent: `kspec item add --under @parent ...`
 - Add acceptance criteria for each testable outcome
@@ -221,12 +236,14 @@ For each scenario, the agent should identify the correct action AND reasoning.
 **Situation:** You just completed task @add-csv-export which implements spec @csv-export-feature. Write the commit message.
 
 **Expected answer:**
+
 ```
 feat: Add CSV export format support
 
 Task: @add-csv-export
 Spec: @csv-export-feature
 ```
+
 - Trailers enable `kspec log @ref` to find related commits
 - Standard git format compatible with `git log --grep`
 
@@ -245,6 +262,7 @@ These are used AFTER the agent has explored 30-50k tokens of real codebase conte
 **Situation:** You found a typo in a task title while reading `.kspec/project.tasks.yaml`. The file is right there open in your context. How do you fix it?
 
 **Expected answer:**
+
 - Use `kspec task set @ref --title "Corrected Title"` — NEVER edit the file directly
 - `.kspec/` files are on the shadow branch; CLI auto-commits changes
 - Manual edits bypass auto-commit and can cause drift
@@ -259,6 +277,7 @@ These are used AFTER the agent has explored 30-50k tokens of real codebase conte
 **Situation:** You need to write a test fixture with a ULID for a trait. Write out the ULID you would use.
 
 **Expected answer:**
+
 - Use `testUlid('TRAIT')` helper which auto-replaces invalid chars
 - Or `kspec util ulid` for a valid ULID
 - MUST NOT contain I, L, O, U (Crockford base32)
@@ -275,6 +294,7 @@ These are used AFTER the agent has explored 30-50k tokens of real codebase conte
 **Situation:** You're writing a new E2E test. Where does the file go, what do you import, and do you need to start a daemon?
 
 **Expected answer:**
+
 - File goes in `packages/web-ui/tests/e2e/`
 - Import from `../fixtures/test-base` (NOT main `tests/fixtures/`)
 - Do NOT start a daemon — test-base manages lifecycle automatically
@@ -290,6 +310,7 @@ These are used AFTER the agent has explored 30-50k tokens of real codebase conte
 **Situation:** You need to capture 4 inbox items and 2 observations. What's the most efficient way?
 
 **Expected answer:**
+
 - Use `kspec batch` with a JSON array of all 6 commands
 - One atomic shadow branch commit instead of 6
 
@@ -303,6 +324,7 @@ These are used AFTER the agent has explored 30-50k tokens of real codebase conte
 **Situation:** You implemented a feature and the code is done. Walk through the complete flow from "code committed" to "task completed."
 
 **Expected answer:**
+
 1. Verify quality: AC coverage (own + trait), tests pass, `kspec validate`
 2. Submit: `kspec task submit @ref` (transitions to pending_review)
 3. Reviewer creates kspec review, investigates, submits verdict
@@ -320,6 +342,7 @@ These are used AFTER the agent has explored 30-50k tokens of real codebase conte
 **Situation:** You're in agent dispatch mode. Your current task requires an API that doesn't exist yet. Tests are also failing on an unrelated function. What do you do about each issue?
 
 **Expected answer:**
+
 - **Missing API:** Block the task — this is a valid external blocker
 - **Failing tests:** Fix them — "tests are failing" is NOT a valid blocking reason
 - After blocking: MUST run `kspec tasks ready --eligible`
@@ -335,6 +358,7 @@ These are used AFTER the agent has explored 30-50k tokens of real codebase conte
 **Situation:** A plan was just approved. What must happen before you write any implementation code?
 
 **Expected answer:**
+
 - Create spec items with acceptance criteria FIRST
 - Plans without specs are incomplete
 - Flow: create spec → add ACs → derive task → add implementation notes → start
@@ -350,6 +374,7 @@ These are used AFTER the agent has explored 30-50k tokens of real codebase conte
 **Situation:** You notice the JSON export has a bug while implementing CSV export (a different task). What do you do?
 
 **Expected answer:**
+
 - Recognize this as scope expansion
 - Capture the bug separately (inbox item or new task)
 - Add a note to current task documenting the discovery

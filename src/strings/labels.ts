@@ -71,20 +71,12 @@ export const sectionHeaders = {
  */
 export const hints = {
   inboxPromote: chalk.gray("Use: kspec inbox promote <ref> to convert to task"),
-  inboxTriage: chalk.gray(
-    "Use: kspec triage inbox to triage untriaged items",
-  ),
-  taskNote: (ref: string) =>
-    chalk.gray(`Use: kspec task note ${ref} "<note>" to add context`),
+  inboxTriage: chalk.gray("Use: kspec triage inbox to triage untriaged items"),
+  taskNote: (ref: string) => chalk.gray(`Use: kspec task note ${ref} "<note>" to add context`),
   taskComplete: (ref: string) =>
-    chalk.gray(
-      `Use: kspec task complete ${ref} --reason "<summary>" when done`,
-    ),
-  taskStart: (ref: string) =>
-    chalk.gray(`Use: kspec task start ${ref} to begin work`),
-  gitCommit: chalk.gray(
-    'Use: git add -A && git commit -m "..." to commit changes',
-  ),
+    chalk.gray(`Use: kspec task complete ${ref} --reason "<summary>" when done`),
+  taskStart: (ref: string) => chalk.gray(`Use: kspec task start ${ref} to begin work`),
+  gitCommit: chalk.gray('Use: git add -A && git commit -m "..." to commit changes'),
 } as const;
 
 /**

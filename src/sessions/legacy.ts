@@ -10,9 +10,7 @@
 
 import * as path from "node:path";
 import * as fsPromises from "node:fs/promises";
-import {
-  listSessions,
-} from "./store.js";
+import { listSessions } from "./store.js";
 
 // ─── Legacy Path Resolution ─────────────────────────────────────────────────
 
@@ -22,9 +20,7 @@ import {
  * @param specDir - The .kspec/ directory (shadow branch worktree)
  * @returns Path to legacy sessions directory, or null if specDir is not available
  */
-export function getLegacySessionsDir(
-  specDir: string | undefined,
-): string | null {
+export function getLegacySessionsDir(specDir: string | undefined): string | null {
   if (!specDir) return null;
   return path.join(specDir, "sessions");
 }
@@ -32,9 +28,7 @@ export function getLegacySessionsDir(
 /**
  * Check if a legacy sessions directory exists and has session subdirectories.
  */
-export async function hasLegacySessions(
-  specDir: string | undefined,
-): Promise<boolean> {
+export async function hasLegacySessions(specDir: string | undefined): Promise<boolean> {
   const legacyDir = getLegacySessionsDir(specDir);
   if (!legacyDir) return false;
 
@@ -53,9 +47,7 @@ export async function hasLegacySessions(
  *
  * @returns Number of session directories in .kspec/sessions/
  */
-export async function countLegacySessions(
-  specDir: string | undefined,
-): Promise<number> {
+export async function countLegacySessions(specDir: string | undefined): Promise<number> {
   const legacyDir = getLegacySessionsDir(specDir);
   if (!legacyDir) return 0;
 
@@ -84,10 +76,11 @@ let deprecationWarningEmitted = false;
  */
 export function emitLegacyDeprecationWarning(count?: number): void {
   if (!deprecationWarningEmitted) {
-    const countMsg = count !== undefined ? `${count} legacy session(s) found` : "Legacy sessions found";
+    const countMsg =
+      count !== undefined ? `${count} legacy session(s) found` : "Legacy sessions found";
     console.error(
       `Warning: ${countMsg} in .kspec/sessions/. ` +
-      "Run `kspec session migrate` to move them to .kspec-sessions/.",
+        "Run `kspec session migrate` to move them to .kspec-sessions/.",
     );
     deprecationWarningEmitted = true;
   }
@@ -110,9 +103,7 @@ export function resetDeprecationWarning(): void {
  *
  * @returns true if legacy sessions were detected (warning was emitted)
  */
-export async function warnIfLegacySessions(
-  specDir: string | undefined,
-): Promise<boolean> {
+export async function warnIfLegacySessions(specDir: string | undefined): Promise<boolean> {
   const count = await countLegacySessions(specDir);
   if (count > 0) {
     emitLegacyDeprecationWarning(count);

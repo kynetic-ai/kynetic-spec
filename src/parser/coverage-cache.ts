@@ -65,9 +65,7 @@ function isValid(entry: CacheEntry): boolean {
  * @param rootDir - Project root directory containing tests/
  * @returns Set of covered AC references (e.g., "@spec-ref ac-1")
  */
-export async function getCachedTestCoverage(
-  rootDir: string
-): Promise<Set<string>> {
+export async function getCachedTestCoverage(rootDir: string): Promise<Set<string>> {
   const key = normalizePath(rootDir);
   const existing = cache.get(key);
 

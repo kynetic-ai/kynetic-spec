@@ -14,8 +14,8 @@
 	import { createEventDispatcher } from 'svelte';
 
 	export let tasks: TaskSummary[];
-	export let updatedTaskIds: Set<string> = new Set();
-	export let onSelectTask: ((taskId: string) => void) | undefined = undefined;
+	export const updatedTaskIds: Set<string> = new Set();
+	export const onSelectTask: ((taskId: string) => void) | undefined = undefined;
 
 	const dispatch = createEventDispatcher<{
 		select: string;

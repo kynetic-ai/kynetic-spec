@@ -21,10 +21,7 @@ import {
   type ConflictInfo,
   type ObjectMergeResult,
 } from "../../merge/index.js";
-import {
-  initContext,
-  loadAllItems,
-} from "../../parser/yaml.js";
+import { initContext, loadAllItems } from "../../parser/yaml.js";
 import { resolveTaskDataManager } from "../../parser/task-data-manager.js";
 import { loadMetaContext } from "../../parser/meta.js";
 import { ReferenceIndex } from "../../parser/refs.js";
@@ -209,10 +206,10 @@ function hasUlidItems(arr: unknown[]): boolean {
   if (arr.length === 0) return false;
   const first = arr[0];
   return (
-    typeof first === 'object' &&
+    typeof first === "object" &&
     first !== null &&
-    '_ulid' in first &&
-    typeof (first as any)._ulid === 'string'
+    "_ulid" in first &&
+    typeof (first as any)._ulid === "string"
   );
 }
 
@@ -227,11 +224,7 @@ function isRootArray(value: unknown): value is unknown[] {
  * Merge root-level arrays with ULID-based deduplication and field-level conflict detection.
  * AC: @merge-file-detection ac-7
  */
-function mergeRootArrays(
-  base: unknown,
-  ours: unknown,
-  theirs: unknown,
-): RootMergeResult {
+function mergeRootArrays(base: unknown, ours: unknown, theirs: unknown): RootMergeResult {
   const baseArr = Array.isArray(base) ? base : [];
   const oursArr = Array.isArray(ours) ? ours : [];
   const theirsArr = Array.isArray(theirs) ? theirs : [];
@@ -327,9 +320,7 @@ async function performSemanticMerge(
   }
 
   // Detect file type for future specialized merging
-  const _fileType = options.filePath
-    ? detectFileType(options.filePath)
-    : FileType.Unknown;
+  const _fileType = options.filePath ? detectFileType(options.filePath) : FileType.Unknown;
 
   // For now, use generic object merging for all types
   // Future: Specialized merging based on _fileType
@@ -340,7 +331,8 @@ async function performSemanticMerge(
 
   // Check if root is array vs object (check all three versions)
   // AC: @merge-file-detection ac-7
-  const isRootLevelArray = isRootArray(versions.base) || isRootArray(versions.ours) || isRootArray(versions.theirs);
+  const isRootLevelArray =
+    isRootArray(versions.base) || isRootArray(versions.ours) || isRootArray(versions.theirs);
 
   let finalMerged: Record<string, unknown> | unknown[];
   let conflicts: ConflictInfo[];
@@ -490,10 +482,7 @@ export function registerMergeDriverCommand(program: Command): void {
   program
     .command("merge-driver <base> <ours> <theirs> [markerSize] [path]")
     .description("Git merge driver for semantic YAML merging")
-    .option(
-      "--non-interactive",
-      "Run in non-interactive mode (write conflicts as comments)",
-    )
+    .option("--non-interactive", "Run in non-interactive mode (write conflicts as comments)")
     .action(
       async (
         basePath: string,
@@ -506,15 +495,10 @@ export function registerMergeDriverCommand(program: Command): void {
         try {
           // AC: @merge-driver-cli ac-1
           // Perform semantic merge
-          const result = await performSemanticMerge(
-            basePath,
-            oursPath,
-            theirsPath,
-            {
-              nonInteractive: options.nonInteractive || !process.stdin.isTTY,
-              filePath,
-            },
-          );
+          const result = await performSemanticMerge(basePath, oursPath, theirsPath, {
+            nonInteractive: options.nonInteractive || !process.stdin.isTTY,
+            filePath,
+          });
 
           // If parse failed, exit with error code to trigger git's fallback
           if (result.parseFailed) {

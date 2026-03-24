@@ -15,10 +15,7 @@
 
 import { ulid } from "ulid";
 import type { EventBus, EventEnvelope } from "./event-bus.js";
-import type {
-  ActionExecutor,
-  ActionEventContext,
-} from "./action-executor.js";
+import type { ActionExecutor, ActionEventContext } from "./action-executor.js";
 import type { Composition } from "../schema/composition.js";
 import type { ActionRun } from "../schema/action.js";
 
@@ -125,13 +122,11 @@ export class JoinAccumulator {
     }
 
     // Subscribe to action.completed and action.failed events
-    const completedSubId = this.eventBus.subscribe(
-      "action.completed",
-      (event) => this.handleActionEvent(event),
+    const completedSubId = this.eventBus.subscribe("action.completed", (event) =>
+      this.handleActionEvent(event),
     );
-    const failedSubId = this.eventBus.subscribe(
-      "action.failed",
-      (event) => this.handleActionEvent(event),
+    const failedSubId = this.eventBus.subscribe("action.failed", (event) =>
+      this.handleActionEvent(event),
     );
     this.subscriptionIds.push(completedSubId, failedSubId);
   }
@@ -312,9 +307,7 @@ export class JoinAccumulator {
     }
 
     // Build the event context for the on_complete action
-    const completedRuns = group.members.filter(
-      (m) => m.status === "completed",
-    );
+    const completedRuns = group.members.filter((m) => m.status === "completed");
     const failedRuns = group.members.filter((m) => m.status === "failed");
 
     const eventContext: ActionEventContext = {
@@ -331,9 +324,7 @@ export class JoinAccumulator {
       completed_count: group.completed_count,
       failed_count: group.failed_count,
       total_members: group.members.length,
-      completed_run_ids: completedRuns
-        .map((m) => m.action_run_id)
-        .join(","),
+      completed_run_ids: completedRuns.map((m) => m.action_run_id).join(","),
       completed_session_ids: completedRuns
         .filter((m) => m.session_id)
         .map((m) => m.session_id!)
@@ -342,11 +333,7 @@ export class JoinAccumulator {
     };
 
     // Execute the on_complete action
-    await this.actionExecutor.execute(
-      config.on_complete,
-      eventContext,
-      `composition:${config.id}`,
-    );
+    await this.actionExecutor.execute(config.on_complete, eventContext, `composition:${config.id}`);
 
     // Clean up group state
     this.groups.delete(groupId);

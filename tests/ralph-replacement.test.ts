@@ -13,13 +13,7 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import * as YAML from "yaml";
-import {
-  CLI_PATH,
-  cleanupTempDir,
-  createTempDir,
-  initGitRepo,
-  kspec,
-} from "./helpers/cli.js";
+import { CLI_PATH, cleanupTempDir, createTempDir, initGitRepo, kspec } from "./helpers/cli.js";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -84,9 +78,7 @@ describe("removed kspec ralph command guidance", () => {
     // AC: @ralph-replacement ac-1 — lists equivalent commands
     expect(result.stderr).toContain("kspec ralph run");
     expect(result.stderr).toContain("kspec agent dispatch start");
-    expect(result.stderr).toMatch(
-      /kspec ralph run\s+→\s+kspec agent dispatch start/,
-    );
+    expect(result.stderr).toMatch(/kspec ralph run\s+→\s+kspec agent dispatch start/);
     expect(result.stderr).toContain("kspec ralph --dry-run");
     expect(result.stderr).toContain("kspec agent dispatch start --dry-run");
   });
@@ -249,11 +241,7 @@ describe("uncommitted changes detection", () => {
 
   it("session checkpoint warns about uncommitted changes when they exist", async () => {
     // Create a file change to simulate uncommitted work
-    await fs.writeFile(
-      path.join(tempDir, "uncommitted.ts"),
-      "// uncommitted work\n",
-      "utf-8",
-    );
+    await fs.writeFile(path.join(tempDir, "uncommitted.ts"), "// uncommitted work\n", "utf-8");
 
     // Session checkpoint should detect the dirty working tree and block
     const result = await kspec("session checkpoint --json", tempDir);

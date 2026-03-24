@@ -90,10 +90,9 @@ describe("ReviewLifecycleStateSchema", () => {
   // AC: @review-record-core-model ac-2
   it("should accept valid lifecycle states", () => {
     for (const state of ["draft", "open", "closed", "archived"]) {
-      expect(
-        ReviewLifecycleStateSchema.safeParse(state).success,
-        `should accept ${state}`,
-      ).toBe(true);
+      expect(ReviewLifecycleStateSchema.safeParse(state).success, `should accept ${state}`).toBe(
+        true,
+      );
     }
   });
 
@@ -108,10 +107,7 @@ describe("ReviewDispositionSchema", () => {
   // AC: @review-record-core-model ac-2
   it("should accept valid dispositions", () => {
     for (const d of ["pending", "approved", "changes_requested"]) {
-      expect(
-        ReviewDispositionSchema.safeParse(d).success,
-        `should accept ${d}`,
-      ).toBe(true);
+      expect(ReviewDispositionSchema.safeParse(d).success, `should accept ${d}`).toBe(true);
     }
   });
 
@@ -123,10 +119,7 @@ describe("ReviewDispositionSchema", () => {
 describe("ReviewGateStateSchema", () => {
   it("should accept valid gate states", () => {
     for (const s of ["passing", "failing", "pending"]) {
-      expect(
-        ReviewGateStateSchema.safeParse(s).success,
-        `should accept ${s}`,
-      ).toBe(true);
+      expect(ReviewGateStateSchema.safeParse(s).success, `should accept ${s}`).toBe(true);
     }
   });
 });
@@ -226,9 +219,7 @@ describe("ReviewSubjectSchema", () => {
 
 describe("ReviewSubjectVersionSchema", () => {
   it("should accept code_compare version", () => {
-    const result = ReviewSubjectVersionSchema.safeParse(
-      validCodeCompareVersion(),
-    );
+    const result = ReviewSubjectVersionSchema.safeParse(validCodeCompareVersion());
     expect(result.success).toBe(true);
   });
 
@@ -429,10 +420,7 @@ describe("ReviewThreadSchema", () => {
 describe("ReviewThreadKindSchema", () => {
   it("should accept valid kinds", () => {
     for (const kind of ["blocker", "question", "nit"]) {
-      expect(
-        ReviewThreadKindSchema.safeParse(kind).success,
-        `should accept ${kind}`,
-      ).toBe(true);
+      expect(ReviewThreadKindSchema.safeParse(kind).success, `should accept ${kind}`).toBe(true);
     }
   });
 
@@ -484,10 +472,9 @@ describe("ReviewCheckSchema", () => {
 
   it("should accept all check statuses", () => {
     for (const status of ["pass", "fail", "running", "skipped"]) {
-      expect(
-        ReviewCheckStatusSchema.safeParse(status).success,
-        `should accept ${status}`,
-      ).toBe(true);
+      expect(ReviewCheckStatusSchema.safeParse(status).success, `should accept ${status}`).toBe(
+        true,
+      );
     }
   });
 
@@ -553,10 +540,7 @@ describe("ReviewVerdictSchema", () => {
 
   it("should accept all verdict decisions", () => {
     for (const d of ["approve", "request_changes", "comment"]) {
-      expect(
-        ReviewVerdictDecisionSchema.safeParse(d).success,
-        `should accept ${d}`,
-      ).toBe(true);
+      expect(ReviewVerdictDecisionSchema.safeParse(d).success, `should accept ${d}`).toBe(true);
     }
   });
 
@@ -612,17 +596,12 @@ describe("ReviewEventSchema", () => {
       "subject_refreshed",
     ];
     for (const t of eventTypes) {
-      expect(
-        ReviewEventTypeSchema.safeParse(t).success,
-        `should accept ${t}`,
-      ).toBe(true);
+      expect(ReviewEventTypeSchema.safeParse(t).success, `should accept ${t}`).toBe(true);
     }
   });
 
   it("should reject invalid event type", () => {
-    expect(ReviewEventTypeSchema.safeParse("comment_added").success).toBe(
-      false,
-    );
+    expect(ReviewEventTypeSchema.safeParse("comment_added").success).toBe(false);
   });
 });
 
@@ -672,9 +651,7 @@ describe("ReviewRecordSchema", () => {
 
   // AC: @review-record-core-model ac-1
   it("should accept valid review record with task subject", () => {
-    const result = ReviewRecordSchema.safeParse(
-      validReviewRecord({ subject: validTaskSubject() }),
-    );
+    const result = ReviewRecordSchema.safeParse(validReviewRecord({ subject: validTaskSubject() }));
     expect(result.success).toBe(true);
   });
 

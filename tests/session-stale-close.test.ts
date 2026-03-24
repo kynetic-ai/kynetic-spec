@@ -15,13 +15,7 @@ import {
   getSessionEventsPath,
   updateSessionStatus,
 } from "../src/sessions/store.js";
-import {
-  cleanupTempDir,
-  kspec,
-  kspecJson,
-  setupTempFixtures,
-  testUlid,
-} from "./helpers/cli.js";
+import { cleanupTempDir, kspec, kspecJson, setupTempFixtures, testUlid } from "./helpers/cli.js";
 
 interface SessionStaleCloseJson {
   dry_run: boolean;
@@ -101,11 +95,7 @@ describe("session stale close", () => {
   // AC: @trait-json-output ac-2
   it("reports would-close sessions in --all --dry-run with per-session reasons", async () => {
     const staleId = testUlid("SESS", 1);
-    await createActiveSession(
-      staleId,
-      "2024-01-01T00:00:00.000Z",
-      "2024-01-02T00:00:00.000Z",
-    );
+    await createActiveSession(staleId, "2024-01-01T00:00:00.000Z", "2024-01-02T00:00:00.000Z");
 
     const result = kspecJson<SessionStaleCloseJson>(
       "session stale close --all --dry-run --older-than 24h --inactive-for 6h",
@@ -118,9 +108,7 @@ describe("session stale close", () => {
     expect(result.totals.changed_sessions).toBe(0);
     expect(result.sessions[0].status).toBe("would_abandon");
     expect(result.sessions[0].reason).toContain("dry run");
-    expect(result.sessions[0].close_reason?.startsWith("auto-abandoned:")).toBe(
-      true,
-    );
+    expect(result.sessions[0].close_reason?.startsWith("auto-abandoned:")).toBe(true);
 
     const unchanged = await getSession(sessionsDir, staleId);
     expect(unchanged?.status).toBe("active");
@@ -132,16 +120,8 @@ describe("session stale close", () => {
   it("closes only the targeted stale active session in single-target mode", async () => {
     const targetId = testUlid("SESS", 2);
     const otherId = testUlid("SESS", 3);
-    await createActiveSession(
-      targetId,
-      "2024-01-01T00:00:00.000Z",
-      "2024-01-02T00:00:00.000Z",
-    );
-    await createActiveSession(
-      otherId,
-      "2024-01-01T00:00:00.000Z",
-      "2024-01-02T00:00:00.000Z",
-    );
+    await createActiveSession(targetId, "2024-01-01T00:00:00.000Z", "2024-01-02T00:00:00.000Z");
+    await createActiveSession(otherId, "2024-01-01T00:00:00.000Z", "2024-01-02T00:00:00.000Z");
 
     const output = kspecJson<SessionStaleCloseJson>(
       `session stale close ${targetId} --older-than 24h --inactive-for 6h --force`,
@@ -185,17 +165,9 @@ describe("session stale close", () => {
     const freshId = testUlid("SESS", 6);
     const brokenId = testUlid("SESS", 7);
 
-    await createActiveSession(
-      staleId,
-      "2024-01-01T00:00:00.000Z",
-      "2024-01-02T00:00:00.000Z",
-    );
+    await createActiveSession(staleId, "2024-01-01T00:00:00.000Z", "2024-01-02T00:00:00.000Z");
     await createActiveSession(freshId, new Date().toISOString());
-    await createActiveSession(
-      brokenId,
-      "2024-01-01T00:00:00.000Z",
-      undefined,
-    );
+    await createActiveSession(brokenId, "2024-01-01T00:00:00.000Z", undefined);
     await fs.mkdir(getSessionEventsPath(sessionsDir, brokenId), { recursive: true });
 
     const dryRun = kspecJson<SessionStaleCloseJson>(
@@ -235,11 +207,7 @@ describe("session stale close", () => {
     const sessionId = testUlid("SESS", 8);
     await createActiveSession(sessionId, "2024-01-01T00:00:00.000Z");
 
-    const result = kspec(
-      `session stale close ${sessionId} --all`,
-      tempDir,
-      { expectFail: true },
-    );
+    const result = kspec(`session stale close ${sessionId} --all`, tempDir, { expectFail: true });
     expect(result.exitCode).toBe(2);
     expect(result.stderr).toContain("Cannot use <session-id> together with --all");
   });
@@ -251,11 +219,7 @@ describe("session stale close", () => {
   it("evaluates unique sessions only once in --refs mode", async () => {
     const staleId = testUlid("SESS", 9);
     const freshId = testUlid("SESS", 10);
-    await createActiveSession(
-      staleId,
-      "2024-01-01T00:00:00.000Z",
-      "2024-01-02T00:00:00.000Z",
-    );
+    await createActiveSession(staleId, "2024-01-01T00:00:00.000Z", "2024-01-02T00:00:00.000Z");
     await createActiveSession(freshId, new Date().toISOString());
 
     const output = kspecJson<SessionStaleCloseJson>(
@@ -274,19 +238,15 @@ describe("session stale close", () => {
     const sessionId = testUlid("SESS", 11);
     await createActiveSession(sessionId, "2024-01-01T00:00:00.000Z");
 
-    const withAll = kspec(
-      `session stale close --refs ${sessionId} --all`,
-      tempDir,
-      { expectFail: true },
-    );
+    const withAll = kspec(`session stale close --refs ${sessionId} --all`, tempDir, {
+      expectFail: true,
+    });
     expect(withAll.exitCode).toBe(2);
     expect(withAll.stderr).toContain("Cannot use --refs together with --all");
 
-    const withPositional = kspec(
-      `session stale close ${sessionId} --refs ${sessionId}`,
-      tempDir,
-      { expectFail: true },
-    );
+    const withPositional = kspec(`session stale close ${sessionId} --refs ${sessionId}`, tempDir, {
+      expectFail: true,
+    });
     expect(withPositional.exitCode).toBe(2);
     expect(withPositional.stderr).toContain("Cannot use <session-id> together with --refs");
   });
@@ -302,11 +262,7 @@ describe("session stale close", () => {
   // AC: @trait-error-guidance ac-6
   it("continues refs batch after resolution errors and returns partial-failure exit", async () => {
     const staleId = testUlid("SESS", 12);
-    await createActiveSession(
-      staleId,
-      "2024-01-01T00:00:00.000Z",
-      "2024-01-02T00:00:00.000Z",
-    );
+    await createActiveSession(staleId, "2024-01-01T00:00:00.000Z", "2024-01-02T00:00:00.000Z");
 
     const result = kspec(
       `session stale close --refs ${staleId} BADREF --dry-run --older-than 24h --inactive-for 6h --json`,
@@ -319,12 +275,8 @@ describe("session stale close", () => {
     expect(payload.totals.candidates).toBe(1);
     expect(payload.totals.changed_sessions).toBe(0);
     expect(payload.totals.failures).toBe(1);
-    expect(payload.sessions.some((row) => row.status === "resolution_error")).toBe(
-      true,
-    );
-    const resolutionError = payload.sessions.find(
-      (row) => row.status === "resolution_error",
-    );
+    expect(payload.sessions.some((row) => row.status === "resolution_error")).toBe(true);
+    const resolutionError = payload.sessions.find((row) => row.status === "resolution_error");
     expect(resolutionError?.reason).toContain("Session not found");
     expect(resolutionError?.reason).toContain("kspec session list --status active");
 
@@ -344,11 +296,9 @@ describe("session stale close", () => {
 
   // AC: @trait-error-guidance ac-5
   it("includes validation field/value details for invalid criteria in JSON mode", async () => {
-    const result = kspec(
-      "session stale close --all --older-than nope --json",
-      tempDir,
-      { expectFail: true },
-    );
+    const result = kspec("session stale close --all --older-than nope --json", tempDir, {
+      expectFail: true,
+    });
     expect(result.exitCode).toBe(2);
 
     const payload = JSON.parse(result.stderr) as JsonErrorPayload;
@@ -361,11 +311,7 @@ describe("session stale close", () => {
   // AC: @trait-confirmation-prompt ac-6
   it("requires --force in non-interactive destructive mode", async () => {
     const staleId = testUlid("SESS", 13);
-    await createActiveSession(
-      staleId,
-      "2024-01-01T00:00:00.000Z",
-      "2024-01-02T00:00:00.000Z",
-    );
+    await createActiveSession(staleId, "2024-01-01T00:00:00.000Z", "2024-01-02T00:00:00.000Z");
 
     const result = kspec(
       `session stale close ${staleId} --older-than 24h --inactive-for 6h`,
@@ -380,11 +326,7 @@ describe("session stale close", () => {
   // AC: @trait-semantic-exit-codes ac-3
   it("returns cancellation exit when user declines interactive confirmation", async () => {
     const staleId = testUlid("SESS", 14);
-    await createActiveSession(
-      staleId,
-      "2024-01-01T00:00:00.000Z",
-      "2024-01-02T00:00:00.000Z",
-    );
+    await createActiveSession(staleId, "2024-01-01T00:00:00.000Z", "2024-01-02T00:00:00.000Z");
 
     const result = kspec(
       `session stale close ${staleId} --older-than 24h --inactive-for 6h`,
@@ -405,11 +347,7 @@ describe("session stale close", () => {
   // AC: @trait-confirmation-prompt ac-2
   it("proceeds when user confirms interactive prompt in single-target mode", async () => {
     const staleId = testUlid("SESS", 15);
-    await createActiveSession(
-      staleId,
-      "2024-01-01T00:00:00.000Z",
-      "2024-01-02T00:00:00.000Z",
-    );
+    await createActiveSession(staleId, "2024-01-01T00:00:00.000Z", "2024-01-02T00:00:00.000Z");
 
     const result = kspec(
       `session stale close ${staleId} --older-than 24h --inactive-for 6h`,
@@ -434,16 +372,8 @@ describe("session stale close", () => {
   it("uses a single confirmation prompt for destructive --refs batch mode", async () => {
     const staleA = testUlid("SESS", 16);
     const staleB = testUlid("SESS", 17);
-    await createActiveSession(
-      staleA,
-      "2024-01-01T00:00:00.000Z",
-      "2024-01-02T00:00:00.000Z",
-    );
-    await createActiveSession(
-      staleB,
-      "2024-01-01T00:00:00.000Z",
-      "2024-01-02T00:00:00.000Z",
-    );
+    await createActiveSession(staleA, "2024-01-01T00:00:00.000Z", "2024-01-02T00:00:00.000Z");
+    await createActiveSession(staleB, "2024-01-01T00:00:00.000Z", "2024-01-02T00:00:00.000Z");
 
     const result = kspec(
       `session stale close --refs ${staleA} ${staleB} --older-than 24h --inactive-for 6h`,

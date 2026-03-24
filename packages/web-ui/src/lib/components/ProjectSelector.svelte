@@ -42,9 +42,9 @@
 	}
 
 	// Get current selection for the select component
-	let selectedValue = $derived(getSelectedProjectPath() ?? undefined);
-	let projects = $derived(getProjects());
-	let loading = $derived(isProjectLoading());
+	const selectedValue = $derived(getSelectedProjectPath() ?? undefined);
+	const projects = $derived(getProjects());
+	const loading = $derived(isProjectLoading());
 </script>
 
 <!-- AC: @multi-directory-daemon ac-25 - Project selector component -->

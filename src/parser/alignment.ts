@@ -128,18 +128,13 @@ export class AlignmentIndex<T extends AlignmentTask = AlignmentTask> {
    */
   getTasksForSpec(specUlid: string): T[] {
     const taskUlids = this.specToTasks.get(specUlid) || [];
-    return taskUlids
-      .map((ulid) => this.tasks.get(ulid))
-      .filter((t): t is T => t !== undefined);
+    return taskUlids.map((ulid) => this.tasks.get(ulid)).filter((t): t is T => t !== undefined);
   }
 
   /**
    * Get the spec item a task implements
    */
-  getSpecForTask(
-    taskUlid: string,
-    refIndex: ReferenceIndex,
-  ): LoadedSpecItem | undefined {
+  getSpecForTask(taskUlid: string, refIndex: ReferenceIndex): LoadedSpecItem | undefined {
     const specRef = this.taskToSpec.get(taskUlid);
     if (!specRef) return undefined;
 
@@ -170,9 +165,7 @@ export class AlignmentIndex<T extends AlignmentTask = AlignmentTask> {
     // Check task statuses
     const hasActiveWork = tasks.some(
       (t) =>
-        t.status === "in_progress" ||
-        t.status === "pending_review" ||
-        t.status === "needs_work",
+        t.status === "in_progress" || t.status === "pending_review" || t.status === "needs_work",
     );
     const allCompleted = tasks.every((t) => t.status === "completed");
     const someCompleted = tasks.some((t) => t.status === "completed");
@@ -189,9 +182,7 @@ export class AlignmentIndex<T extends AlignmentTask = AlignmentTask> {
   /**
    * Get implementation summary for a spec item
    */
-  getImplementationSummary(
-    specUlid: string,
-  ): SpecImplementationSummary | undefined {
+  getImplementationSummary(specUlid: string): SpecImplementationSummary | undefined {
     const spec = this.specItems.get(specUlid);
     if (!spec) return undefined;
 

@@ -7,5 +7,8 @@
  * AC: @session-branch-worktree ac-sync
  */
 
-export { SessionSyncScheduler } from '../parser/session-sync-scheduler.js';
-export type { SessionSyncSchedulerOptions, SessionSyncPubSub } from '../parser/session-sync-scheduler.js';
+export { SessionSyncScheduler } from "../parser/session-sync-scheduler.js";
+export type {
+  SessionSyncSchedulerOptions,
+  SessionSyncPubSub,
+} from "../parser/session-sync-scheduler.js";

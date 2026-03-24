@@ -164,9 +164,7 @@ function formatScheduleDetails(schedule: LoadedSchedule): void {
 // ─── Command Registration ────────────────────────────────────────────────────
 
 export function registerScheduleCommands(program: Command): void {
-  const schedule = program
-    .command("schedule")
-    .description("Manage scheduled actions");
+  const schedule = program.command("schedule").description("Manage scheduled actions");
 
   // ── schedule list ──────────────────────────────────────────────────────────
 
@@ -213,10 +211,7 @@ export function registerScheduleCommands(program: Command): void {
             if (ctx.projectRoot) {
               headers["X-Kspec-Dir"] = ctx.projectRoot;
             }
-            const response = await fetch(
-              `${daemonConn.url}/api/schedules`,
-              { headers },
-            );
+            const response = await fetch(`${daemonConn.url}/api/schedules`, { headers });
             if (response.ok) {
               const data = (await response.json()) as {
                 items: ScheduleListItem[];
@@ -257,35 +252,29 @@ export function registerScheduleCommands(program: Command): void {
         const limit = options.limit ? Number(options.limit) : schedules.length;
 
         if (options.limit && (Number.isNaN(limit) || limit < 0)) {
-          error(`Invalid --limit value: ${options.limit}`, { hint: "--limit must be a non-negative integer" });
+          error(`Invalid --limit value: ${options.limit}`, {
+            hint: "--limit must be a non-negative integer",
+          });
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
         if (options.offset && (Number.isNaN(offset) || offset < 0)) {
-          error(`Invalid --offset value: ${options.offset}`, { hint: "--offset must be a non-negative integer" });
+          error(`Invalid --offset value: ${options.offset}`, {
+            hint: "--offset must be a non-negative integer",
+          });
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
 
         const paginated = schedules.slice(offset, offset + limit);
 
         // AC: @trait-json-output ac-1, ac-2 — JSON includes all data
-        output(
-          { items: paginated, total, offset, limit },
-          () => {
-            formatSchedulesTable(paginated);
-            // AC: @trait-filterable-list ac-7 — summary with total and filter state
-            const filterParts: string[] = [];
-            if (options.status) filterParts.push(`status=${options.status}`);
-            const filterDesc =
-              filterParts.length > 0
-                ? ` (${filterParts.join(", ")})`
-                : "";
-            console.log(
-              chalk.gray(
-                `\n${paginated.length} of ${total} schedule(s)${filterDesc}`,
-              ),
-            );
-          },
-        );
+        output({ items: paginated, total, offset, limit }, () => {
+          formatSchedulesTable(paginated);
+          // AC: @trait-filterable-list ac-7 — summary with total and filter state
+          const filterParts: string[] = [];
+          if (options.status) filterParts.push(`status=${options.status}`);
+          const filterDesc = filterParts.length > 0 ? ` (${filterParts.join(", ")})` : "";
+          console.log(chalk.gray(`\n${paginated.length} of ${total} schedule(s)${filterDesc}`));
+        });
       } catch (err) {
         error("Failed to list schedules", err);
         process.exit(EXIT_CODES.ERROR);
@@ -311,7 +300,9 @@ export function registerScheduleCommands(program: Command): void {
 
         if (!found) {
           // AC: @trait-error-guidance ac-1, ac-2, ac-3
-          error(`Schedule not found: ${ref}`, { hint: "Check available schedules with: kspec schedule list" });
+          error(`Schedule not found: ${ref}`, {
+            hint: "Check available schedules with: kspec schedule list",
+          });
           if (!isStructuredMode()) console.log(chalk.gray("Try: kspec schedule list"));
           process.exit(EXIT_CODES.NOT_FOUND);
         }
@@ -344,15 +335,9 @@ export function registerScheduleCommands(program: Command): void {
     .requiredOption("--id <id>", "Schedule ID (machine-readable)")
     .requiredOption("--name <name>", "Schedule name (human-readable)")
     .requiredOption("--cron <expr>", "Cron expression (5-field)")
-    .requiredOption(
-      "--action-type <type>",
-      `Action type (${ACTION_TYPES.join(", ")})`,
-    )
+    .requiredOption("--action-type <type>", `Action type (${ACTION_TYPES.join(", ")})`)
     .option("--timezone <tz>", "IANA timezone (default: UTC)")
-    .option(
-      "--overlap-policy <policy>",
-      "Overlap policy (skip, buffer_one, allow)",
-    )
+    .option("--overlap-policy <policy>", "Overlap policy (skip, buffer_one, allow)")
     .option("--backfill", "Enable backfill for missed ticks")
     .option("--no-enabled", "Create in disabled state")
     .option("--command <cmd>", "Command to run (for command/kspec actions)")
@@ -382,18 +367,15 @@ export function registerScheduleCommands(program: Command): void {
             notify: "--message",
           };
           const requiredOpt = required[options.actionType] || "(unknown)";
-          error(
-            `Missing required option for action type '${options.actionType}': ${requiredOpt}`,
-            { hint: `Action type '${options.actionType}' requires ${requiredOpt}` },
-          );
+          error(`Missing required option for action type '${options.actionType}': ${requiredOpt}`, {
+            hint: `Action type '${options.actionType}' requires ${requiredOpt}`,
+          });
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
 
         // Check for duplicate ID
         const metaCtx = await loadMetaContext(ctx);
-        const existing = metaCtx.schedules.find(
-          (s) => s.id === options.id,
-        );
+        const existing = metaCtx.schedules.find((s) => s.id === options.id);
         if (existing) {
           error(`Schedule with ID '${options.id}' already exists`);
           process.exit(EXIT_CODES.CONFLICT);
@@ -428,12 +410,7 @@ export function registerScheduleCommands(program: Command): void {
         const newSchedule: LoadedSchedule = { ...parsed.data };
 
         await saveSchedule(ctx, newSchedule);
-        await commitIfShadow(
-          ctx.shadow,
-          "schedule-add",
-          newSchedule.id,
-          newSchedule.name,
-        );
+        await commitIfShadow(ctx.shadow, "schedule-add", newSchedule.id, newSchedule.name);
 
         output(
           { success: true, message: `Created schedule: ${newSchedule.id}`, schedule: newSchedule },
@@ -452,10 +429,7 @@ export function registerScheduleCommands(program: Command): void {
     .option("--name <name>", "Update name")
     .option("--cron <expr>", "Update cron expression")
     .option("--timezone <tz>", "Update timezone")
-    .option(
-      "--overlap-policy <policy>",
-      "Update overlap policy (skip, buffer_one, allow)",
-    )
+    .option("--overlap-policy <policy>", "Update overlap policy (skip, buffer_one, allow)")
     .option("--backfill <value>", "Enable/disable backfill (true/false)")
     .option("--enabled <value>", "Enable/disable schedule (true/false)")
     .action(async (ref: string, options) => {
@@ -471,7 +445,9 @@ export function registerScheduleCommands(program: Command): void {
         const found = resolveScheduleRef(metaCtx, ref);
 
         if (!found) {
-          error(`Schedule not found: ${ref}`, { hint: "Check available schedules with: kspec schedule list" });
+          error(`Schedule not found: ${ref}`, {
+            hint: "Check available schedules with: kspec schedule list",
+          });
           if (!isStructuredMode()) console.log(chalk.gray("Try: kspec schedule list"));
           process.exit(EXIT_CODES.NOT_FOUND);
         }
@@ -481,12 +457,9 @@ export function registerScheduleCommands(program: Command): void {
         if (options.name !== undefined) updated.name = options.name;
         if (options.cron !== undefined) updated.cron = options.cron;
         if (options.timezone !== undefined) updated.timezone = options.timezone;
-        if (options.overlapPolicy !== undefined)
-          updated.overlap_policy = options.overlapPolicy;
-        if (options.backfill !== undefined)
-          updated.backfill = options.backfill === "true";
-        if (options.enabled !== undefined)
-          updated.enabled = options.enabled === "true";
+        if (options.overlapPolicy !== undefined) updated.overlap_policy = options.overlapPolicy;
+        if (options.backfill !== undefined) updated.backfill = options.backfill === "true";
+        if (options.enabled !== undefined) updated.enabled = options.enabled === "true";
 
         // Re-validate
         const parsed = ScheduleSchema.safeParse(updated);
@@ -499,12 +472,7 @@ export function registerScheduleCommands(program: Command): void {
         }
 
         await saveSchedule(ctx, { ...parsed.data, _sourceFile: found._sourceFile });
-        await commitIfShadow(
-          ctx.shadow,
-          "schedule-set",
-          updated.id,
-          updated.name,
-        );
+        await commitIfShadow(ctx.shadow, "schedule-set", updated.id, updated.name);
 
         output(parsed.data, () => success(`Updated schedule: ${updated.id}`));
       } catch (err) {
@@ -530,7 +498,9 @@ export function registerScheduleCommands(program: Command): void {
         const found = resolveScheduleRef(metaCtx, ref);
 
         if (!found) {
-          error(`Schedule not found: ${ref}`, { hint: "Check available schedules with: kspec schedule list" });
+          error(`Schedule not found: ${ref}`, {
+            hint: "Check available schedules with: kspec schedule list",
+          });
           if (!isStructuredMode()) console.log(chalk.gray("Try: kspec schedule list"));
           process.exit(EXIT_CODES.NOT_FOUND);
         }
@@ -542,15 +512,10 @@ export function registerScheduleCommands(program: Command): void {
 
         const updated: LoadedSchedule = { ...found, enabled: true };
         await saveSchedule(ctx, updated);
-        await commitIfShadow(
-          ctx.shadow,
-          "schedule-enable",
-          updated.id,
-        );
+        await commitIfShadow(ctx.shadow, "schedule-enable", updated.id);
 
-        output(
-          { success: true, message: `Enabled schedule: ${updated.id}` },
-          () => success(`Enabled schedule: ${updated.id}`),
+        output({ success: true, message: `Enabled schedule: ${updated.id}` }, () =>
+          success(`Enabled schedule: ${updated.id}`),
         );
       } catch (err) {
         error("Failed to enable schedule", err);
@@ -575,7 +540,9 @@ export function registerScheduleCommands(program: Command): void {
         const found = resolveScheduleRef(metaCtx, ref);
 
         if (!found) {
-          error(`Schedule not found: ${ref}`, { hint: "Check available schedules with: kspec schedule list" });
+          error(`Schedule not found: ${ref}`, {
+            hint: "Check available schedules with: kspec schedule list",
+          });
           if (!isStructuredMode()) console.log(chalk.gray("Try: kspec schedule list"));
           process.exit(EXIT_CODES.NOT_FOUND);
         }
@@ -587,15 +554,10 @@ export function registerScheduleCommands(program: Command): void {
 
         const updated: LoadedSchedule = { ...found, enabled: false };
         await saveSchedule(ctx, updated);
-        await commitIfShadow(
-          ctx.shadow,
-          "schedule-disable",
-          updated.id,
-        );
+        await commitIfShadow(ctx.shadow, "schedule-disable", updated.id);
 
-        output(
-          { success: true, message: `Disabled schedule: ${updated.id}` },
-          () => success(`Disabled schedule: ${updated.id}`),
+        output({ success: true, message: `Disabled schedule: ${updated.id}` }, () =>
+          success(`Disabled schedule: ${updated.id}`),
         );
       } catch (err) {
         error("Failed to disable schedule", err);
@@ -621,15 +583,15 @@ export function registerScheduleCommands(program: Command): void {
         const found = resolveScheduleRef(metaCtx, ref);
 
         if (!found) {
-          error(`Schedule not found: ${ref}`, { hint: "Check available schedules with: kspec schedule list" });
+          error(`Schedule not found: ${ref}`, {
+            hint: "Check available schedules with: kspec schedule list",
+          });
           if (!isStructuredMode()) console.log(chalk.gray("Try: kspec schedule list"));
           process.exit(EXIT_CODES.NOT_FOUND);
         }
 
         if (!options.confirm) {
-          error(
-            `Confirm deletion of schedule '${found.id}' with --confirm flag`,
-          );
+          error(`Confirm deletion of schedule '${found.id}' with --confirm flag`);
           process.exit(EXIT_CODES.ERROR);
         }
 
@@ -642,9 +604,8 @@ export function registerScheduleCommands(program: Command): void {
 
         await commitIfShadow(ctx.shadow, "schedule-remove", found.id);
 
-        output(
-          { success: true, message: `Removed schedule: ${found.id}` },
-          () => success(`Removed schedule: ${found.id}`),
+        output({ success: true, message: `Removed schedule: ${found.id}` }, () =>
+          success(`Removed schedule: ${found.id}`),
         );
       } catch (err) {
         error("Failed to remove schedule", err);
@@ -672,7 +633,9 @@ export function registerScheduleCommands(program: Command): void {
         const found = resolveScheduleRef(metaCtx, ref);
 
         if (!found) {
-          error(`Schedule not found: ${ref}`, { hint: "Check available schedules with: kspec schedule list" });
+          error(`Schedule not found: ${ref}`, {
+            hint: "Check available schedules with: kspec schedule list",
+          });
           if (!isStructuredMode()) console.log(chalk.gray("Try: kspec schedule list"));
           process.exit(EXIT_CODES.NOT_FOUND);
         }
@@ -680,8 +643,11 @@ export function registerScheduleCommands(program: Command): void {
         const daemonConn = getDaemonUrl();
         if (!daemonConn) {
           // AC: @trait-error-guidance ac-1, ac-2
-          error("Daemon is not running. The trigger command requires the daemon.", { suggestion: "Start the daemon with: kspec serve" });
-          if (!isStructuredMode()) console.log(chalk.gray("Suggestion: Start the daemon with: kspec serve"));
+          error("Daemon is not running. The trigger command requires the daemon.", {
+            suggestion: "Start the daemon with: kspec serve",
+          });
+          if (!isStructuredMode())
+            console.log(chalk.gray("Suggestion: Start the daemon with: kspec serve"));
           process.exit(EXIT_CODES.ERROR);
         }
 
@@ -699,7 +665,10 @@ export function registerScheduleCommands(program: Command): void {
 
         if (!response.ok) {
           const body = await response.text();
-          error(`Trigger failed: ${response.status} ${response.statusText}`, body ? { details: body } : undefined);
+          error(
+            `Trigger failed: ${response.status} ${response.statusText}`,
+            body ? { details: body } : undefined,
+          );
           process.exit(EXIT_CODES.ERROR);
         }
 
@@ -711,9 +680,7 @@ export function registerScheduleCommands(program: Command): void {
 
         output(result, () => {
           if (result.accepted) {
-            success(
-              `Triggered schedule '${found.id}': ${result.outcome}`,
-            );
+            success(`Triggered schedule '${found.id}': ${result.outcome}`);
           } else {
             info(
               `Schedule '${found.id}' not executed: ${result.outcome}${result.reason ? ` — ${result.reason}` : ""}`,

@@ -12,7 +12,7 @@
  * - ac-14: DELETE /api/inbox/:ref removes item
  */
 
-import { Elysia, t } from 'elysia';
+import { Elysia, t } from "elysia";
 import {
   initContext,
   loadInboxItems,
@@ -24,9 +24,9 @@ import {
   loadAllItems,
   resolveTaskDataManager,
   type InboxItemInput,
-} from '../../parser/index.js';
-import { commitIfShadow } from '../../parser/shadow.js';
-import type { PubSubManager } from '../websocket/pubsub';
+} from "../../parser/index.js";
+import { commitIfShadow } from "../../parser/shadow.js";
+import type { PubSubManager } from "../websocket/pubsub";
 
 interface InboxRouteOptions {
   pubsub: PubSubManager;
@@ -35,135 +35,147 @@ interface InboxRouteOptions {
 export function createInboxRoutes(options: InboxRouteOptions) {
   const { pubsub } = options;
 
-  return new Elysia({ prefix: '/api/inbox' })
-    // AC: @api-contract ac-12 - List inbox items ordered by created_at desc
-    .get('/', async ({ projectContext }) => {
-      // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-      const ctx = await initContext(projectContext.path);
-      const items = await loadInboxItems(ctx);
-
-      // AC: @api-contract ac-12 - Sort by created_at descending (newest first)
-      const sorted = [...items].sort(
-        (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-      );
-
-      return {
-        items: sorted,
-        total: sorted.length,
-      };
-    })
-
-    // AC: @api-contract ac-13 - Create inbox item
-    .post(
-      '/',
-      async ({ body, error: errorResponse, projectContext }) => {
+  return (
+    new Elysia({ prefix: "/api/inbox" })
+      // AC: @api-contract ac-12 - List inbox items ordered by created_at desc
+      .get("/", async ({ projectContext }) => {
         // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
         const ctx = await initContext(projectContext.path);
+        const items = await loadInboxItems(ctx);
 
-        // AC: @trait-api-endpoint ac-3 - Validate body
-        if (!body.text || typeof body.text !== 'string' || body.text.trim().length === 0) {
-          return errorResponse(400, {
-            error: 'validation_error',
-            details: [
-              {
-                field: 'text',
-                message: 'Text is required and must be a non-empty string',
-              },
-            ],
-          });
-        }
+        // AC: @api-contract ac-12 - Sort by created_at descending (newest first)
+        const sorted = [...items].toSorted(
+          (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+        );
 
-        // Create inbox item input
-        const input: InboxItemInput = {
-          text: body.text,
-          tags: body.tags,
-          added_by: body.added_by,
-        };
-
-        // AC: @api-contract ac-13 - Generate ULID and create item
-        const item = createInboxItem(input, ctx.config?.identity?.author);
-
-        // Save and commit
-        await saveInboxItem(ctx, item);
-        await commitIfShadow(ctx.shadow, `inbox: add item ${item._ulid}`);
-
-        // Broadcast update
-        // AC: @ui-api-aggregation ac-4 - Include full item data for in-place UI updates
-        // AC: @multi-directory-daemon ac-18 - Broadcast scoped to request project
-        pubsub.broadcast('inbox:updates', 'inbox_item_created', {
-          ulid: item._ulid,
-          text: item.text,
-          tags: item.tags,
-          added_by: item.added_by,
-          created_at: item.created_at,
-        }, projectContext.path);
-
-        // AC: @api-contract ac-13 - Return item with generated ULID
         return {
-          success: true,
-          item,
+          items: sorted,
+          total: sorted.length,
         };
-      },
-      {
-        body: t.Object({
-          text: t.String(),
-          tags: t.Optional(t.Array(t.String())),
-          added_by: t.Optional(t.String()),
-        }),
-      }
-    )
+      })
 
-    // AC: @api-contract ac-14 - Delete inbox item
-    .delete(
-      '/:ref',
-      async ({ params, error: errorResponse, projectContext }) => {
-        // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-        const ctx = await initContext(projectContext.path);
-        const inboxItems = await loadInboxItems(ctx);
-        const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
-        const specItems = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, specItems);
+      // AC: @api-contract ac-13 - Create inbox item
+      .post(
+        "/",
+        async ({ body, error: errorResponse, projectContext }) => {
+          // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+          const ctx = await initContext(projectContext.path);
 
-        // Resolve ref
-        const result = index.resolve(params.ref);
-        if (!result.ok) {
-          return errorResponse(404, {
-            error: 'not_found',
-            message: `Inbox item reference "${params.ref}" not found`,
-            suggestion: 'Use kspec inbox list to find valid inbox item references',
-          });
-        }
+          // AC: @trait-api-endpoint ac-3 - Validate body
+          if (!body.text || typeof body.text !== "string" || body.text.trim().length === 0) {
+            return errorResponse(400, {
+              error: "validation_error",
+              details: [
+                {
+                  field: "text",
+                  message: "Text is required and must be a non-empty string",
+                },
+              ],
+            });
+          }
 
-        // Verify it's an inbox item
-        const item = findInboxItemByRef(inboxItems, result.ulid);
-        if (!item) {
-          return errorResponse(404, {
-            error: 'not_found',
-            message: `Reference "${params.ref}" is not an inbox item`,
-          });
-        }
+          // Create inbox item input
+          const input: InboxItemInput = {
+            text: body.text,
+            tags: body.tags,
+            added_by: body.added_by,
+          };
 
-        // AC: @api-contract ac-14 - Delete item
-        await deleteInboxItem(ctx, result.ulid);
-        await commitIfShadow(ctx.shadow, `inbox: delete ${params.ref}`);
+          // AC: @api-contract ac-13 - Generate ULID and create item
+          const item = createInboxItem(input, ctx.config?.identity?.author);
 
-        // Broadcast update
-        // AC: @multi-directory-daemon ac-18 - Broadcast scoped to request project
-        pubsub.broadcast('inbox:updates', 'inbox_item_deleted', {
-          ref: params.ref,
-          ulid: result.ulid,
-        }, projectContext.path);
+          // Save and commit
+          await saveInboxItem(ctx, item);
+          await commitIfShadow(ctx.shadow, `inbox: add item ${item._ulid}`);
 
-        // AC: @api-contract ac-14 - Return success confirmation
-        return {
-          success: true,
-          deleted: result.ulid,
-        };
-      },
-      {
-        params: t.Object({
-          ref: t.String(),
-        }),
-      }
-    );
+          // Broadcast update
+          // AC: @ui-api-aggregation ac-4 - Include full item data for in-place UI updates
+          // AC: @multi-directory-daemon ac-18 - Broadcast scoped to request project
+          pubsub.broadcast(
+            "inbox:updates",
+            "inbox_item_created",
+            {
+              ulid: item._ulid,
+              text: item.text,
+              tags: item.tags,
+              added_by: item.added_by,
+              created_at: item.created_at,
+            },
+            projectContext.path,
+          );
+
+          // AC: @api-contract ac-13 - Return item with generated ULID
+          return {
+            success: true,
+            item,
+          };
+        },
+        {
+          body: t.Object({
+            text: t.String(),
+            tags: t.Optional(t.Array(t.String())),
+            added_by: t.Optional(t.String()),
+          }),
+        },
+      )
+
+      // AC: @api-contract ac-14 - Delete inbox item
+      .delete(
+        "/:ref",
+        async ({ params, error: errorResponse, projectContext }) => {
+          // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+          const ctx = await initContext(projectContext.path);
+          const inboxItems = await loadInboxItems(ctx);
+          const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+          const specItems = await loadAllItems(ctx);
+          const index = new ReferenceIndex(tasks, specItems);
+
+          // Resolve ref
+          const result = index.resolve(params.ref);
+          if (!result.ok) {
+            return errorResponse(404, {
+              error: "not_found",
+              message: `Inbox item reference "${params.ref}" not found`,
+              suggestion: "Use kspec inbox list to find valid inbox item references",
+            });
+          }
+
+          // Verify it's an inbox item
+          const item = findInboxItemByRef(inboxItems, result.ulid);
+          if (!item) {
+            return errorResponse(404, {
+              error: "not_found",
+              message: `Reference "${params.ref}" is not an inbox item`,
+            });
+          }
+
+          // AC: @api-contract ac-14 - Delete item
+          await deleteInboxItem(ctx, result.ulid);
+          await commitIfShadow(ctx.shadow, `inbox: delete ${params.ref}`);
+
+          // Broadcast update
+          // AC: @multi-directory-daemon ac-18 - Broadcast scoped to request project
+          pubsub.broadcast(
+            "inbox:updates",
+            "inbox_item_deleted",
+            {
+              ref: params.ref,
+              ulid: result.ulid,
+            },
+            projectContext.path,
+          );
+
+          // AC: @api-contract ac-14 - Return success confirmation
+          return {
+            success: true,
+            deleted: result.ulid,
+          };
+        },
+        {
+          params: t.Object({
+            ref: t.String(),
+          }),
+        },
+      )
+  );
 }

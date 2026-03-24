@@ -143,9 +143,7 @@ export interface MetaContext {
  *
  * AC: @meta-manifest-discovery ac-1, ac-2, ac-3
  */
-export async function findMetaManifest(
-  specDir: string,
-): Promise<string | null> {
+export async function findMetaManifest(specDir: string): Promise<string | null> {
   // AC: @meta-manifest-discovery ac-1, ac-3 - explicit name has priority
   const priorityPath = path.join(specDir, "kynetic.meta.yaml");
   try {
@@ -157,11 +155,9 @@ export async function findMetaManifest(
 
   // AC: @meta-manifest-discovery ac-2, ac-3 - glob fallback with validation
   try {
-    const entries = await readdirBufferAware(specDir) as string[];
+    const entries = (await readdirBufferAware(specDir)) as string[];
     // AC: @meta-manifest-discovery ac-3 - alphabetical order
-    const candidates = entries
-      .filter((f) => f.endsWith(".meta.yaml"))
-      .sort();
+    const candidates = entries.filter((f) => f.endsWith(".meta.yaml")).toSorted();
 
     for (const candidate of candidates) {
       const filePath = path.join(specDir, candidate);
@@ -443,12 +439,7 @@ export function getMetaStats(meta: MetaContext): {
 /**
  * Meta item type string literal
  */
-export type MetaItemTypeName =
-  | "agent"
-  | "workflow"
-  | "convention"
-  | "observation"
-  | "skill";
+export type MetaItemTypeName = "agent" | "workflow" | "convention" | "observation" | "skill";
 
 /**
  * Result of resolving a meta reference
@@ -470,10 +461,7 @@ export interface ResolvedMetaRef {
  * AC: @skill-meta-type ac-6 - skills returned by ULID prefix lookup
  * AC: @skill-meta-integration ac-4 - skills included in resolution
  */
-export function resolveMetaRef(
-  meta: MetaContext,
-  ref: string,
-): ResolvedMetaRef | null {
+export function resolveMetaRef(meta: MetaContext, ref: string): ResolvedMetaRef | null {
   const cleanRef = ref.startsWith("@") ? ref.slice(1) : ref;
 
   // Search all item types
@@ -519,10 +507,7 @@ export function resolveMetaRef(
  * AC: @skill-meta-type ac-5 - skills returned by semantic id lookup
  * AC: @skill-meta-type ac-6 - skills returned by ULID prefix lookup
  */
-export function findMetaItemByRef(
-  meta: MetaContext,
-  ref: string,
-): LoadedMetaItem | undefined {
+export function findMetaItemByRef(meta: MetaContext, ref: string): LoadedMetaItem | undefined {
   const result = resolveMetaRef(meta, ref);
   return result?.item;
 }
@@ -531,9 +516,7 @@ export function findMetaItemByRef(
  * Determine if an item is a meta item type
  */
 export function isMetaItemType(type: string): boolean {
-  return ["agent", "workflow", "convention", "observation", "skill"].includes(
-    type,
-  );
+  return ["agent", "workflow", "convention", "observation", "skill"].includes(type);
 }
 
 // ============================================================
@@ -635,9 +618,7 @@ async function writeRawMetaManifest(
 function findRawMetaItemIndex(rawItems: unknown[], itemUlid: string): number {
   return rawItems.findIndex(
     (item) =>
-      item &&
-      typeof item === "object" &&
-      (item as Record<string, unknown>)._ulid === itemUlid,
+      item && typeof item === "object" && (item as Record<string, unknown>)._ulid === itemUlid,
   );
 }
 
@@ -679,9 +660,7 @@ function mergeMetaItemPreservingRawShape(
 /**
  * Strip runtime metadata before serialization
  */
-function stripMetaMetadata<T extends LoadedMetaItem>(
-  item: T,
-): Omit<T, "_sourceFile"> {
+function stripMetaMetadata<T extends LoadedMetaItem>(item: T): Omit<T, "_sourceFile"> {
   const { _sourceFile, ...cleanItem } = item;
   return cleanItem as Omit<T, "_sourceFile">;
 }
@@ -755,10 +734,7 @@ export async function saveObservation(
  * Delete an observation from the meta manifest.
  * Uses raw-data-preservation pattern to avoid adding Zod defaults for absent sections.
  */
-export async function deleteObservation(
-  ctx: KspecContext,
-  targetUlid: string,
-): Promise<boolean> {
+export async function deleteObservation(ctx: KspecContext, targetUlid: string): Promise<boolean> {
   const manifestPath = getMetaManifestPath(ctx);
 
   return withFileLock(manifestPath, async () => {
@@ -787,10 +763,7 @@ export async function deleteObservation(
  * Uses raw-data-preservation pattern to avoid adding Zod defaults for absent sections.
  * AC: @dispatch-event-cli ac-4 — hook is persisted and available for event matching
  */
-export async function saveHook(
-  ctx: KspecContext,
-  hook: LoadedHook,
-): Promise<void> {
+export async function saveHook(ctx: KspecContext, hook: LoadedHook): Promise<void> {
   const manifestPath = getMetaManifestPath(ctx);
 
   await withFileLock(manifestPath, async () => {
@@ -799,7 +772,9 @@ export async function saveHook(
 
     const { wrapperObj } = await extractRawMetaManifest(manifestPath);
     const rawHooks = wrapperObj
-      ? (Array.isArray(wrapperObj.hooks) ? wrapperObj.hooks as unknown[] : [])
+      ? Array.isArray(wrapperObj.hooks)
+        ? (wrapperObj.hooks as unknown[])
+        : []
       : [];
 
     const { _sourceFile: _, ...cleanHook } = hook;
@@ -825,17 +800,16 @@ export async function saveHook(
  * Delete a hook from the meta manifest.
  * Uses raw-data-preservation pattern to avoid adding Zod defaults for absent sections.
  */
-export async function deleteHook(
-  ctx: KspecContext,
-  targetUlid: string,
-): Promise<boolean> {
+export async function deleteHook(ctx: KspecContext, targetUlid: string): Promise<boolean> {
   const manifestPath = getMetaManifestPath(ctx);
 
   return withFileLock(manifestPath, async () => {
     try {
       const { wrapperObj } = await extractRawMetaManifest(manifestPath);
       const rawHooks = wrapperObj
-        ? (Array.isArray(wrapperObj.hooks) ? wrapperObj.hooks as unknown[] : [])
+        ? Array.isArray(wrapperObj.hooks)
+          ? (wrapperObj.hooks as unknown[])
+          : []
         : [];
 
       const index = findRawMetaItemIndex(rawHooks, targetUlid);
@@ -926,15 +900,12 @@ export function getSkillDocsPath(ctx: KspecContext, skillId: string): string {
  * Load skill documentation files from the docs/ subdirectory.
  * AC: @skill-content-model ac-2 - loadSkillDocs returns array of doc objects
  */
-export async function loadSkillDocs(
-  ctx: KspecContext,
-  skill: LoadedSkill,
-): Promise<SkillDoc[]> {
+export async function loadSkillDocs(ctx: KspecContext, skill: LoadedSkill): Promise<SkillDoc[]> {
   const docsPath = getSkillDocsPath(ctx, skill.id);
   const docs: SkillDoc[] = [];
 
   try {
-    const entries = await readdirBufferAware(docsPath, { withFileTypes: true }) as Dirent[];
+    const entries = (await readdirBufferAware(docsPath, { withFileTypes: true })) as Dirent[];
 
     for (const entry of entries) {
       if (entry.isFile() && entry.name.endsWith(".md")) {
@@ -965,7 +936,7 @@ export async function loadSkillDocs(
 export function getSkillSupportingDirPath(
   ctx: KspecContext,
   skillId: string,
-  dirType: SupportingDirType
+  dirType: SupportingDirType,
 ): string {
   return path.join(ctx.specDir, "skills", skillId, dirType);
 }
@@ -982,13 +953,13 @@ export function getSkillSupportingDirPath(
 export async function loadSkillSupportingFiles(
   ctx: KspecContext,
   skill: LoadedSkill,
-  dirType: SupportingDirType
+  dirType: SupportingDirType,
 ): Promise<SupportingFile[]> {
   const dirPath = getSkillSupportingDirPath(ctx, skill.id, dirType);
   const files: SupportingFile[] = [];
 
   try {
-    const entries = await readdirBufferAware(dirPath, { withFileTypes: true }) as Dirent[];
+    const entries = (await readdirBufferAware(dirPath, { withFileTypes: true })) as Dirent[];
 
     for (const entry of entries) {
       if (entry.isFile()) {
@@ -1021,7 +992,7 @@ export async function loadSkillSupportingFiles(
  */
 export async function listSkillSupportingDirs(
   ctx: KspecContext,
-  skillId: string
+  skillId: string,
 ): Promise<SupportingDirType[]> {
   const dirs: SupportingDirType[] = [];
   const allDirs: SupportingDirType[] = ["references", "scripts", "assets", "docs"];
@@ -1049,10 +1020,7 @@ export async function listSkillSupportingDirs(
  * Save a schedule to the meta manifest.
  * Uses raw-data-preservation pattern to avoid adding Zod defaults for absent sections.
  */
-export async function saveSchedule(
-  ctx: KspecContext,
-  schedule: LoadedSchedule,
-): Promise<void> {
+export async function saveSchedule(ctx: KspecContext, schedule: LoadedSchedule): Promise<void> {
   const manifestPath = getMetaManifestPath(ctx);
 
   await withFileLock(manifestPath, async () => {
@@ -1085,10 +1053,7 @@ export async function saveSchedule(
  * Delete a schedule from the meta manifest.
  * Uses raw-data-preservation pattern to avoid adding Zod defaults for absent sections.
  */
-export async function deleteSchedule(
-  ctx: KspecContext,
-  targetUlid: string,
-): Promise<boolean> {
+export async function deleteSchedule(ctx: KspecContext, targetUlid: string): Promise<boolean> {
   const manifestPath = getMetaManifestPath(ctx);
 
   return withFileLock(manifestPath, async () => {
@@ -1115,10 +1080,7 @@ export async function deleteSchedule(
 /**
  * Resolve a schedule reference by id, ULID, or ULID prefix.
  */
-export function resolveScheduleRef(
-  meta: MetaContext,
-  ref: string,
-): LoadedSchedule | undefined {
+export function resolveScheduleRef(meta: MetaContext, ref: string): LoadedSchedule | undefined {
   const cleanRef = ref.startsWith("@") ? ref.slice(1) : ref;
 
   for (const schedule of meta.schedules) {
@@ -1264,9 +1226,7 @@ export function getSessionContextPath(ctx: KspecContext): string {
 /**
  * Load session context (or return empty context if not exists)
  */
-export async function loadSessionContext(
-  ctx: KspecContext,
-): Promise<SessionContext> {
+export async function loadSessionContext(ctx: KspecContext): Promise<SessionContext> {
   const contextPath = getSessionContextPath(ctx);
 
   try {
@@ -1382,8 +1342,7 @@ async function writeRawRunArray(
  */
 function findRawRunIndex(rawRuns: unknown[], ulid: string): number {
   return rawRuns.findIndex(
-    (r) =>
-      r && typeof r === "object" && (r as Record<string, unknown>)._ulid === ulid,
+    (r) => r && typeof r === "object" && (r as Record<string, unknown>)._ulid === ulid,
   );
 }
 
@@ -1419,9 +1378,7 @@ function mergeRunPreservingRawShape(
 /**
  * Load workflow runs from file
  */
-export async function loadWorkflowRuns(
-  ctx: KspecContext,
-): Promise<WorkflowRun[]> {
+export async function loadWorkflowRuns(ctx: KspecContext): Promise<WorkflowRun[]> {
   const runsPath = getWorkflowRunsPath(ctx);
 
   try {
@@ -1446,10 +1403,7 @@ export async function loadWorkflowRuns(
  * round-trip stability — fields not present in the original YAML won't be
  * added by Zod defaults.
  */
-export async function saveWorkflowRun(
-  ctx: KspecContext,
-  run: WorkflowRun,
-): Promise<void> {
+export async function saveWorkflowRun(ctx: KspecContext, run: WorkflowRun): Promise<void> {
   const runsPath = getWorkflowRunsPath(ctx);
 
   await withFileLock(runsPath, async () => {
@@ -1464,7 +1418,10 @@ export async function saveWorkflowRun(
     if (existingIndex >= 0) {
       // Merge onto raw data to avoid adding Zod defaults for absent fields
       const rawTarget = rawRuns[existingIndex] as Record<string, unknown>;
-      rawRuns[existingIndex] = mergeRunPreservingRawShape(rawTarget, run as unknown as Record<string, unknown>);
+      rawRuns[existingIndex] = mergeRunPreservingRawShape(
+        rawTarget,
+        run as unknown as Record<string, unknown>,
+      );
     } else {
       rawRuns.push(run);
     }
@@ -1476,10 +1433,7 @@ export async function saveWorkflowRun(
 /**
  * Update an existing workflow run
  */
-export async function updateWorkflowRun(
-  ctx: KspecContext,
-  run: WorkflowRun,
-): Promise<void> {
+export async function updateWorkflowRun(ctx: KspecContext, run: WorkflowRun): Promise<void> {
   await saveWorkflowRun(ctx, run);
 }
 
@@ -1551,18 +1505,14 @@ export async function findWorkflowRunByRef(
   const cleanRef = ref.startsWith("@") ? ref.slice(1) : ref;
 
   return runs.find(
-    (r) =>
-      r._ulid === cleanRef ||
-      r._ulid.toLowerCase().startsWith(cleanRef.toLowerCase()),
+    (r) => r._ulid === cleanRef || r._ulid.toLowerCase().startsWith(cleanRef.toLowerCase()),
   );
 }
 
 /**
  * Find active workflow runs
  */
-export async function findActiveRuns(
-  ctx: KspecContext,
-): Promise<WorkflowRun[]> {
+export async function findActiveRuns(ctx: KspecContext): Promise<WorkflowRun[]> {
   const runs = await loadWorkflowRuns(ctx);
   return runs.filter((r) => r.status === "active");
 }

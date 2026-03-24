@@ -137,8 +137,7 @@ function extractSpecsSection(content: string, errors: ParseError[]): PlanSpec[] 
   if (!yamlMatch) {
     errors.push({
       type: "validation",
-      message:
-        "Specs section found but contains no YAML code block. Wrap specs in ```yaml ... ```",
+      message: "Specs section found but contains no YAML code block. Wrap specs in ```yaml ... ```",
     });
     return [];
   }
@@ -155,7 +154,7 @@ function extractSpecsSection(content: string, errors: ParseError[]): PlanSpec[] 
 
     if (diagnostics.length > 0) {
       const hints = diagnostics
-        .map(d => `  Line ${d.line}: ${d.field} value contains unquoted colon: "${d.value}"`)
+        .map((d) => `  Line ${d.line}: ${d.field} value contains unquoted colon: "${d.value}"`)
         .join("\n");
       errors.push({
         type: "yaml",
@@ -267,7 +266,7 @@ function extractTasksSection(content: string, errors: ParseError[]): TasksSectio
 
       if (diagnostics.length > 0) {
         const hints = diagnostics
-          .map(d => `  Line ${d.line}: ${d.field} value contains unquoted colon: "${d.value}"`)
+          .map((d) => `  Line ${d.line}: ${d.field} value contains unquoted colon: "${d.value}"`)
           .join("\n");
         errors.push({
           type: "yaml",
@@ -315,9 +314,10 @@ function extractImplementationNotes(content: string): string | null {
  *
  * @returns Sorted specs or null if circular dependency detected
  */
-export function topologicalSort(
-  specs: PlanSpec[],
-): { sorted: PlanSpec[]; error: ParseError | null } {
+export function topologicalSort(specs: PlanSpec[]): {
+  sorted: PlanSpec[];
+  error: ParseError | null;
+} {
   // Build adjacency list
   const graph = new Map<string, string[]>();
   const specBySlug = new Map<string, PlanSpec>();
@@ -378,7 +378,7 @@ export function topologicalSort(
     if (!visited.has(slug)) {
       const cyclePath = hasCycle(slug, [slug]);
       if (cyclePath) {
-        const cycleRefs = cyclePath.map(s => `@${s}`).join(" -> ");
+        const cycleRefs = cyclePath.map((s) => `@${s}`).join(" -> ");
         return {
           sorted: [],
           error: {
@@ -439,14 +439,9 @@ function slugify(title: string): string {
  * @param existingRefs Set of existing spec refs in the project
  * @returns Errors for specs with invalid parents
  */
-export function validateParentRefs(
-  specs: PlanSpec[],
-  existingRefs: Set<string>,
-): ParseError[] {
+export function validateParentRefs(specs: PlanSpec[], existingRefs: Set<string>): ParseError[] {
   const errors: ParseError[] = [];
-  const planSlugs = new Set(
-    specs.map(s => s.slug || slugify(s.title))
-  );
+  const planSlugs = new Set(specs.map((s) => s.slug || slugify(s.title)));
 
   for (const spec of specs) {
     if (!spec.parent) continue;
@@ -494,7 +489,8 @@ export function detectYamlUnsafeValues(yamlText: string): YamlUnsafeDiagnostic[]
 
   // AC fields and other prose fields where colons commonly appear
   // Allow optional YAML list marker (- ) before field name
-  const proseFields = /^\s*(?:-\s+)?(given|when|then|description|title|implementation_notes):\s+(.+)$/;
+  const proseFields =
+    /^\s*(?:-\s+)?(given|when|then|description|title|implementation_notes):\s+(.+)$/;
 
   for (let i = 0; i < lines.length; i++) {
     const match = lines[i].match(proseFields);
@@ -504,7 +500,7 @@ export function detectYamlUnsafeValues(yamlText: string): YamlUnsafeDiagnostic[]
     const value = match[2];
 
     // Skip values that are already quoted or use block scalar indicators
-    if (/^["']/.test(value) || /^\|/.test(value) || /^>/.test(value)) continue;
+    if (/^["']/.test(value) || value.startsWith('|') || value.startsWith('>')) continue;
 
     // Check if value contains a colon followed by a space (YAML mapping indicator)
     if (/:\s/.test(value)) {

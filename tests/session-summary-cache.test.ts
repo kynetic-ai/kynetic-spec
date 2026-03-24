@@ -51,11 +51,7 @@ async function createTestEvents(
 }
 
 // Helper to create context-iter-*.json files (iteration markers)
-async function createTestIterations(
-  sessionsDir: string,
-  id: string,
-  count: number,
-): Promise<void> {
+async function createTestIterations(sessionsDir: string, id: string, count: number): Promise<void> {
   const sessionDir = path.join(sessionsDir, id);
   await fs.mkdir(sessionDir, { recursive: true });
   for (let i = 0; i < count; i++) {
@@ -101,7 +97,7 @@ describe("SessionSummaryCache", () => {
 
       const summaries = await cache.getAll(sessionsDir);
       expect(summaries).toHaveLength(3);
-      expect(summaries.map((s) => s.id).sort()).toEqual([
+      expect(summaries.map((s) => s.id).toSorted()).toEqual([
         "session-001",
         "session-002",
         "session-003",
@@ -158,10 +154,7 @@ describe("SessionSummaryCache", () => {
       // Cache should detect the new session
       const second = await cache.getAll(sessionsDir);
       expect(second).toHaveLength(2);
-      expect(second.map((s) => s.id).sort()).toEqual([
-        "session-001",
-        "session-002",
-      ]);
+      expect(second.map((s) => s.id).toSorted()).toEqual(["session-001", "session-002"]);
     });
 
     it("should detect removed sessions after initial build", async () => {
@@ -294,18 +287,11 @@ describe("SessionSummaryCache", () => {
       // Create corrupt session between them
       const corruptDir = path.join(sessionsDir, "session-002");
       await fs.mkdir(corruptDir, { recursive: true });
-      await fs.writeFile(
-        path.join(corruptDir, "session.yaml"),
-        "not valid yaml {{{",
-        "utf-8",
-      );
+      await fs.writeFile(path.join(corruptDir, "session.yaml"), "not valid yaml {{{", "utf-8");
 
       const summaries = await cache.getAll(sessionsDir);
       expect(summaries).toHaveLength(2);
-      expect(summaries.map((s) => s.id).sort()).toEqual([
-        "session-001",
-        "session-003",
-      ]);
+      expect(summaries.map((s) => s.id).toSorted()).toEqual(["session-001", "session-003"]);
     });
   });
 

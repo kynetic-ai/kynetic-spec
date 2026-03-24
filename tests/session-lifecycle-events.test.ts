@@ -10,19 +10,14 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import {
-  EventBus,
-  type EventEnvelope,
-} from "../src/agent-runtime/event-bus.js";
+import { EventBus, type EventEnvelope } from "../src/agent-runtime/event-bus.js";
 import {
   PAYLOAD_FIELDS_BY_EVENT,
   HookEventTypeSchema,
   getValidFilterFields,
   matchesFilter,
 } from "../src/schema/hooks.js";
-import {
-  KNOWN_EVENT_FIELDS,
-} from "../src/agent-runtime/action-executor.js";
+import { KNOWN_EVENT_FIELDS } from "../src/agent-runtime/action-executor.js";
 import type { InvocationResult } from "../src/agent-runtime/invocation.js";
 import type { SessionMetadata } from "../src/sessions/types.js";
 
@@ -31,9 +26,7 @@ import type { SessionMetadata } from "../src/sessions/types.js";
 /**
  * Build a minimal InvocationResult for testing.
  */
-function buildInvocationResult(
-  overrides: Partial<InvocationResult> = {},
-): InvocationResult {
+function buildInvocationResult(overrides: Partial<InvocationResult> = {}): InvocationResult {
   const session: SessionMetadata = {
     id: "TEST_SESSION_001",
     agent_type: "claude-agent-acp",
@@ -44,7 +37,7 @@ function buildInvocationResult(
     event_count: 42,
     iteration_count: 3,
     tasks_completed: 2,
-    ...(overrides.session ?? {}),
+    ...overrides.session,
   };
 
   return {
@@ -75,8 +68,9 @@ function emitSessionLifecycleEvent(
   invocationResult: InvocationResult | null,
   startedAtMs: number,
 ): void {
-  const outcome = invocationResult?.outcome ?? (terminalEvent.type === "completed" ? "success" : "failed");
-  const durationMs = invocationResult?.durationMs ?? (Date.now() - startedAtMs);
+  const outcome =
+    invocationResult?.outcome ?? (terminalEvent.type === "completed" ? "success" : "failed");
+  const durationMs = invocationResult?.durationMs ?? Date.now() - startedAtMs;
 
   let sessionEventType: string;
   let terminalReason: string;

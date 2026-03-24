@@ -170,10 +170,7 @@ export function evaluateGates(
     // "Latest" = last in array order (checks are appended chronologically).
     let latestFreshRun: ReviewCheck | undefined;
     for (let i = runs.length - 1; i >= 0; i--) {
-      const staleness = isVersionStale(
-        runs[i].applies_to_version,
-        currentVersion,
-      );
+      const staleness = isVersionStale(runs[i].applies_to_version, currentVersion);
       if (!staleness.stale) {
         latestFreshRun = runs[i];
         break;
@@ -198,10 +195,7 @@ export function evaluateGates(
         } else {
           pendingCount++;
         }
-      } else if (
-        latestFreshRun.status === "pass" ||
-        latestFreshRun.status === "skipped"
-      ) {
+      } else if (latestFreshRun.status === "pass" || latestFreshRun.status === "skipped") {
         satisfied = true;
         passingCount++;
       } else if (latestFreshRun.status === "running") {
@@ -233,10 +227,7 @@ export function evaluateGates(
     state = "passing";
   } else if (
     requiredGates.some(
-      (g) =>
-        !g.satisfied &&
-        g.latestRun !== undefined &&
-        g.latestRun.status === "fail",
+      (g) => !g.satisfied && g.latestRun !== undefined && g.latestRun.status === "fail",
     )
   ) {
     state = "failing";

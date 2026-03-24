@@ -45,7 +45,11 @@ export function extractToolCallFields(update: Record<string, unknown>): {
   rawInput: unknown;
 } {
   const toolCallId = (update.toolCallId ?? update.tool_call_id ?? update.id ?? "") as string;
-  const toolName = (update.title ?? update.tool ?? update.toolName ?? update.name ?? "unknown") as string;
+  const toolName = (update.title ??
+    update.tool ??
+    update.toolName ??
+    update.name ??
+    "unknown") as string;
   const rawInput = update.rawInput ?? update.input;
   return { toolCallId, toolName, rawInput };
 }
@@ -77,7 +81,9 @@ export function extractToolCallResult(update: Record<string, unknown>): {
  */
 export function extractToolName(update: Record<string, unknown>): string {
   // Prefer direct title field (ACP standard)
-  const direct = (update.title ?? update.tool ?? update.toolName ?? update.name) as string | undefined;
+  const direct = (update.title ?? update.tool ?? update.toolName ?? update.name) as
+    | string
+    | undefined;
   if (direct) return direct;
 
   // Fallback: _meta.claudeCode.toolName

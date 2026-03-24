@@ -207,12 +207,7 @@ export const ConventionSchema = z.object({
 /**
  * Observation types
  */
-export const ObservationTypeSchema = z.enum([
-  "friction",
-  "success",
-  "question",
-  "idea",
-]);
+export const ObservationTypeSchema = z.enum(["friction", "success", "question", "idea"]);
 
 /**
  * Observation - feedback about workflows and conventions
@@ -343,11 +338,7 @@ export const SessionContextSchema = z.object({
 /**
  * Step result status
  */
-export const StepResultStatusSchema = z.enum([
-  "completed",
-  "skipped",
-  "failed",
-]);
+export const StepResultStatusSchema = z.enum(["completed", "skipped", "failed"]);
 
 /**
  * Step result schema - result of executing a workflow step
@@ -366,12 +357,7 @@ export const StepResultSchema = z.object({
 /**
  * Workflow run status
  */
-export const WorkflowRunStatusSchema = z.enum([
-  "active",
-  "paused",
-  "completed",
-  "aborted",
-]);
+export const WorkflowRunStatusSchema = z.enum(["active", "paused", "completed", "aborted"]);
 
 /**
  * Workflow run result - distinguishes between different completion types

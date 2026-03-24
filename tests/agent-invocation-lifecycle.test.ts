@@ -39,11 +39,7 @@ import { SANITIZED_ENV_VARS } from "../src/agents/spawner.js";
 import { ACPClient } from "../src/acp/index.js";
 import type { Agent } from "../src/schema/meta.js";
 import * as shadowModule from "../src/parser/shadow.js";
-import {
-  testUlid,
-  createTempDir,
-  cleanupTempDir,
-} from "./helpers/cli.js";
+import { testUlid, createTempDir, cleanupTempDir } from "./helpers/cli.js";
 
 // ─── Fixtures ─────────────────────────────────────────────────────────────────
 
@@ -105,7 +101,9 @@ async function seedInvocationOutcome(
 
 describe("DEFAULT_KSPEC_CLI_PATH resolution", () => {
   it("should resolve to the cli entrypoint instead of the removed bin/kspec.cjs path", () => {
-    expect(DEFAULT_KSPEC_CLI_PATH).toMatch(new RegExp(`dist\\${path.sep}cli\\${path.sep}index\\.js$`));
+    expect(DEFAULT_KSPEC_CLI_PATH).toMatch(
+      new RegExp(`dist\\${path.sep}cli\\${path.sep}index\\.js$`),
+    );
     expect(DEFAULT_KSPEC_CLI_PATH).not.toContain(`${path.sep}bin${path.sep}kspec.cjs`);
   });
 
@@ -383,7 +381,11 @@ describe("Timeout handling", { timeout: 60_000 }, () => {
     // Read the events.jsonl
     const eventsPath = path.join(testDir, "sessions", result.session.id, "events.jsonl");
     const content = await fs.readFile(eventsPath, "utf-8");
-    const events = content.trim().split("\n").filter(Boolean).map((l) => JSON.parse(l));
+    const events = content
+      .trim()
+      .split("\n")
+      .filter(Boolean)
+      .map((l) => JSON.parse(l));
 
     const timeoutEvent = events.find((e: { type: string }) => e.type === "agent.timeout");
     expect(timeoutEvent).toBeDefined();
@@ -416,9 +418,11 @@ describe("Timeout handling", { timeout: 60_000 }, () => {
     }
 
     // Verify that kspec task note was called with the task ref and AGENT-TIMEOUT marker
-    const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{ args: string[] }>;
-    const noteCall = calls.find((c) =>
-      c.args.includes("task") && c.args.includes("note") && c.args.includes(taskRef)
+    const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{
+      args: string[];
+    }>;
+    const noteCall = calls.find(
+      (c) => c.args.includes("task") && c.args.includes("note") && c.args.includes(taskRef),
     );
     expect(noteCall).toBeDefined();
     const noteText = noteCall!.args[noteCall!.args.indexOf(taskRef) + 1] ?? "";
@@ -465,9 +469,11 @@ describe("Timeout handling", { timeout: 60_000 }, () => {
     // Use a closure to track cancel calls — vi.spyOn prototype mocks don't reliably
     // track ESM cross-module calls in spy.mock.calls.
     let cancelCalledWith: string | undefined;
-    const cancelSpy = vi.spyOn(ACPClient.prototype, "cancel").mockImplementation(async (sessionId) => {
-      cancelCalledWith = sessionId;
-    });
+    const cancelSpy = vi
+      .spyOn(ACPClient.prototype, "cancel")
+      .mockImplementation(async (sessionId) => {
+        cancelCalledWith = sessionId;
+      });
 
     const agent = makeTestAgent({ adapter: "slow-mock-acp" });
     try {
@@ -512,9 +518,11 @@ describe("Timeout handling", { timeout: 60_000 }, () => {
       kill: vi.fn(() => undefined),
     };
 
-    const spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
-      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
-    );
+    const spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
     let spawnOptions: Parameters<typeof spawnerModule.spawnAndInitialize>[1] | undefined;
 
     try {
@@ -573,7 +581,11 @@ describe("Successful invocation completion", { timeout: 60_000 }, () => {
 
     const eventsPath = path.join(testDir, "sessions", result.session.id, "events.jsonl");
     const content = await fs.readFile(eventsPath, "utf-8");
-    const events = content.trim().split("\n").filter(Boolean).map((l) => JSON.parse(l));
+    const events = content
+      .trim()
+      .split("\n")
+      .filter(Boolean)
+      .map((l) => JSON.parse(l));
 
     const completedEvent = events.find((e: { type: string }) => e.type === "agent.completed");
     expect(completedEvent).toBeDefined();
@@ -660,7 +672,11 @@ describe("Failure handling", { timeout: 60_000 }, () => {
 
     const eventsPath = path.join(testDir, "sessions", result.session.id, "events.jsonl");
     const content = await fs.readFile(eventsPath, "utf-8");
-    const events = content.trim().split("\n").filter(Boolean).map((l) => JSON.parse(l));
+    const events = content
+      .trim()
+      .split("\n")
+      .filter(Boolean)
+      .map((l) => JSON.parse(l));
 
     const failedEvent = events.find((e: { type: string }) => e.type === "agent.failed");
     expect(failedEvent).toBeDefined();
@@ -711,9 +727,11 @@ describe("Failure handling", { timeout: 60_000 }, () => {
     }
 
     // Verify that kspec task note was called with the task ref and AGENT-FAIL marker
-    const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{ args: string[] }>;
-    const noteCall = calls.find((c) =>
-      c.args.includes("task") && c.args.includes("note") && c.args.includes(taskRef)
+    const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{
+      args: string[];
+    }>;
+    const noteCall = calls.find(
+      (c) => c.args.includes("task") && c.args.includes("note") && c.args.includes(taskRef),
     );
     expect(noteCall).toBeDefined();
     const noteText = noteCall!.args[noteCall!.args.indexOf(taskRef) + 1] ?? "";
@@ -818,34 +836,42 @@ describe("Streaming event logging", { timeout: 60_000 }, () => {
       kill: vi.fn(() => undefined),
     };
 
-    const spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
-      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
-    );
+    const spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
 
     const originalAppendEvent = storeModule.appendEvent;
     let inFlightUpdateWrites = 0;
     let maxInFlightUpdateWrites = 0;
-    const appendSpy = vi.spyOn(storeModule, "appendEvent").mockImplementation(async (specDir, input) => {
-      if (input.type !== "session.update") {
-        return originalAppendEvent(specDir, input);
-      }
+    const appendSpy = vi
+      .spyOn(storeModule, "appendEvent")
+      .mockImplementation(async (specDir, input) => {
+        if (input.type !== "session.update") {
+          return originalAppendEvent(specDir, input);
+        }
 
-      const update = input.data as { sessionUpdate?: string; content?: { type?: string; text?: string } };
-      const text = update.sessionUpdate === "agent_message_chunk" && update.content?.type === "text"
-        ? update.content.text ?? ""
-        : "";
-      const index = Number.parseInt(text.replace("chunk-", ""), 10);
-      const delayMs = Number.isNaN(index) ? 0 : (chunks.length - index) * 8;
+        const update = input.data as {
+          sessionUpdate?: string;
+          content?: { type?: string; text?: string };
+        };
+        const text =
+          update.sessionUpdate === "agent_message_chunk" && update.content?.type === "text"
+            ? (update.content.text ?? "")
+            : "";
+        const index = Number.parseInt(text.replace("chunk-", ""), 10);
+        const delayMs = Number.isNaN(index) ? 0 : (chunks.length - index) * 8;
 
-      inFlightUpdateWrites += 1;
-      maxInFlightUpdateWrites = Math.max(maxInFlightUpdateWrites, inFlightUpdateWrites);
-      try {
-        await new Promise((resolve) => setTimeout(resolve, delayMs));
-        return originalAppendEvent(specDir, input);
-      } finally {
-        inFlightUpdateWrites -= 1;
-      }
-    });
+        inFlightUpdateWrites += 1;
+        maxInFlightUpdateWrites = Math.max(maxInFlightUpdateWrites, inFlightUpdateWrites);
+        try {
+          await new Promise((resolve) => setTimeout(resolve, delayMs));
+          return originalAppendEvent(specDir, input);
+        } finally {
+          inFlightUpdateWrites -= 1;
+        }
+      });
 
     try {
       const result = await runInvocation({
@@ -869,7 +895,11 @@ describe("Streaming event logging", { timeout: 60_000 }, () => {
 
       const eventsPath = path.join(testDir, "sessions", result.session.id, "events.jsonl");
       const content = await fs.readFile(eventsPath, "utf-8");
-      const events = content.trim().split("\n").filter(Boolean).map((line) => JSON.parse(line));
+      const events = content
+        .trim()
+        .split("\n")
+        .filter(Boolean)
+        .map((line) => JSON.parse(line));
       const seqs = events.map((event: { seq: number }) => event.seq);
       const uniqueSeqCount = new Set(seqs).size;
       expect(uniqueSeqCount).toBe(seqs.length);
@@ -1307,9 +1337,11 @@ describe("Consecutive failure threshold and task blocking", { timeout: 60_000 },
     }
 
     // Verify task block was called
-    const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{ args: string[] }>;
-    const blockCall = calls.find((c) =>
-      c.args.includes("task") && c.args.includes("block") && c.args.includes(taskRef)
+    const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{
+      args: string[];
+    }>;
+    const blockCall = calls.find(
+      (c) => c.args.includes("task") && c.args.includes("block") && c.args.includes(taskRef),
     );
     expect(blockCall).toBeDefined();
 
@@ -1346,17 +1378,19 @@ describe("Consecutive failure threshold and task blocking", { timeout: 60_000 },
       delete process.env.KSPEC_CAPTURE_FILE;
     }
 
-    const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{ args: string[] }>;
+    const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{
+      args: string[];
+    }>;
 
     // Note should be written
-    const noteCall = calls.find((c) =>
-      c.args.includes("task") && c.args.includes("note") && c.args.includes(taskRef)
+    const noteCall = calls.find(
+      (c) => c.args.includes("task") && c.args.includes("note") && c.args.includes(taskRef),
     );
     expect(noteCall).toBeDefined();
 
     // Block should NOT be called (only 1 failure, limit is 3)
-    const blockCall = calls.find((c) =>
-      c.args.includes("task") && c.args.includes("block") && c.args.includes(taskRef)
+    const blockCall = calls.find(
+      (c) => c.args.includes("task") && c.args.includes("block") && c.args.includes(taskRef),
     );
     expect(blockCall).toBeUndefined();
   });
@@ -1394,17 +1428,19 @@ describe("Consecutive failure threshold and task blocking", { timeout: 60_000 },
       delete process.env.KSPEC_CAPTURE_FILE;
     }
 
-    const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{ args: string[] }>;
+    const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{
+      args: string[];
+    }>;
 
     // Failure note should be written
-    const noteCall = calls.find((c) =>
-      c.args.includes("task") && c.args.includes("note") && c.args.includes(taskRef)
+    const noteCall = calls.find(
+      (c) => c.args.includes("task") && c.args.includes("note") && c.args.includes(taskRef),
     );
     expect(noteCall).toBeDefined();
 
     // Block should NOT be called — the completed invocation reset the failure streak
-    const blockCall = calls.find((c) =>
-      c.args.includes("task") && c.args.includes("block") && c.args.includes(taskRef)
+    const blockCall = calls.find(
+      (c) => c.args.includes("task") && c.args.includes("block") && c.args.includes(taskRef),
     );
     expect(blockCall).toBeUndefined();
   });
@@ -1585,119 +1621,123 @@ describe("Host environment variable sanitization", { timeout: 60_000 }, () => {
 // ─── No shadow commit on session end ──────────────────────────────────────────
 
 // AC: @session-remove-shadow-commits ac-invocation-end
-describe("No shadow commit on session close (session storage separation)", { timeout: 60_000 }, () => {
-  let testDir: string;
-  let commitSpy: ReturnType<typeof vi.spyOn>;
+describe(
+  "No shadow commit on session close (session storage separation)",
+  { timeout: 60_000 },
+  () => {
+    let testDir: string;
+    let commitSpy: ReturnType<typeof vi.spyOn>;
 
-  beforeEach(async () => {
-    testDir = await createTempDir("kspec-invoc-shadow-");
-    commitSpy = vi.spyOn(shadowModule, "shadowAutoCommit").mockResolvedValue(true);
-  });
-
-  afterEach(async () => {
-    commitSpy.mockRestore();
-    await cleanupTempDir(testDir);
-  });
-
-  it("should NOT call shadowAutoCommit after successful invocation", async () => {
-    registerMockAdapter();
-    const agent = makeTestAgent();
-
-    const result = await runInvocation({
-      agent,
-      specDir: testDir,
-      sessionsDir: path.join(testDir, "sessions"),
-      cwd: process.cwd(),
-      taskRef: "@" + testUlid("TASK"),
-      prompt: "No shadow commit on success",
-      trigger: "task.ready",
+    beforeEach(async () => {
+      testDir = await createTempDir("kspec-invoc-shadow-");
+      commitSpy = vi.spyOn(shadowModule, "shadowAutoCommit").mockResolvedValue(true);
     });
 
-    expect(result.outcome).toBe("success");
-    expect(commitSpy).not.toHaveBeenCalled();
-  });
-
-  it("should NOT call shadowAutoCommit after timed-out invocation", async () => {
-    registerAdapter("slow-mock-acp-shadow", {
-      command: "node",
-      args: [MOCK_ACP],
-      env: {
-        MOCK_ACP_DELAY_MS: "5000",
-      },
-      description: "Slow mock for shadow commit timeout test",
-    });
-    const agent = makeTestAgent({ adapter: "slow-mock-acp-shadow" });
-
-    const result = await runInvocation({
-      agent,
-      specDir: testDir,
-      sessionsDir: path.join(testDir, "sessions"),
-      cwd: process.cwd(),
-      taskRef: "@" + testUlid("TASK"),
-      prompt: "No shadow commit on timeout",
-      trigger: "task.ready",
-      timeoutMinutes: 0.001,
+    afterEach(async () => {
+      commitSpy.mockRestore();
+      await cleanupTempDir(testDir);
     });
 
-    expect(result.outcome).toBe("timed_out");
-    expect(commitSpy).not.toHaveBeenCalled();
-  });
+    it("should NOT call shadowAutoCommit after successful invocation", async () => {
+      registerMockAdapter();
+      const agent = makeTestAgent();
 
-  it("should NOT call shadowAutoCommit after failed invocation", async () => {
-    registerAdapter("failing-mock-acp-shadow", {
-      command: "node",
-      args: [MOCK_ACP],
-      env: {
-        MOCK_ACP_EXIT_CODE: "1",
-      },
-      description: "Failing mock for shadow commit test",
-    });
-    const agent = makeTestAgent({ adapter: "failing-mock-acp-shadow" });
+      const result = await runInvocation({
+        agent,
+        specDir: testDir,
+        sessionsDir: path.join(testDir, "sessions"),
+        cwd: process.cwd(),
+        taskRef: "@" + testUlid("TASK"),
+        prompt: "No shadow commit on success",
+        trigger: "task.ready",
+      });
 
-    const result = await runInvocation({
-      agent,
-      specDir: testDir,
-      sessionsDir: path.join(testDir, "sessions"),
-      cwd: process.cwd(),
-      taskRef: "@" + testUlid("TASK"),
-      prompt: "No shadow commit on failure",
-      trigger: "task.ready",
+      expect(result.outcome).toBe("success");
+      expect(commitSpy).not.toHaveBeenCalled();
     });
 
-    expect(result.outcome).toBe("failed");
-    expect(commitSpy).not.toHaveBeenCalled();
-  });
+    it("should NOT call shadowAutoCommit after timed-out invocation", async () => {
+      registerAdapter("slow-mock-acp-shadow", {
+        command: "node",
+        args: [MOCK_ACP],
+        env: {
+          MOCK_ACP_DELAY_MS: "5000",
+        },
+        description: "Slow mock for shadow commit timeout test",
+      });
+      const agent = makeTestAgent({ adapter: "slow-mock-acp-shadow" });
 
-  it("should NOT call shadowAutoCommit after aborted invocation", async () => {
-    registerAdapter("slow-mock-acp-abort", {
-      command: "node",
-      args: [MOCK_ACP],
-      env: {
-        MOCK_ACP_DELAY_MS: "5000",
-      },
-      description: "Slow mock for abort test",
-    });
-    const agent = makeTestAgent({ adapter: "slow-mock-acp-abort" });
-    const controller = new AbortController();
+      const result = await runInvocation({
+        agent,
+        specDir: testDir,
+        sessionsDir: path.join(testDir, "sessions"),
+        cwd: process.cwd(),
+        taskRef: "@" + testUlid("TASK"),
+        prompt: "No shadow commit on timeout",
+        trigger: "task.ready",
+        timeoutMinutes: 0.001,
+      });
 
-    // Abort shortly after starting
-    setTimeout(() => controller.abort(), 100);
-
-    const result = await runInvocation({
-      agent,
-      specDir: testDir,
-      sessionsDir: path.join(testDir, "sessions"),
-      cwd: process.cwd(),
-      taskRef: "@" + testUlid("TASK"),
-      prompt: "No shadow commit on abort",
-      trigger: "task.ready",
-      abortSignal: controller.signal,
+      expect(result.outcome).toBe("timed_out");
+      expect(commitSpy).not.toHaveBeenCalled();
     });
 
-    expect(result.outcome).toBe("failed");
-    expect(commitSpy).not.toHaveBeenCalled();
-  });
-});
+    it("should NOT call shadowAutoCommit after failed invocation", async () => {
+      registerAdapter("failing-mock-acp-shadow", {
+        command: "node",
+        args: [MOCK_ACP],
+        env: {
+          MOCK_ACP_EXIT_CODE: "1",
+        },
+        description: "Failing mock for shadow commit test",
+      });
+      const agent = makeTestAgent({ adapter: "failing-mock-acp-shadow" });
+
+      const result = await runInvocation({
+        agent,
+        specDir: testDir,
+        sessionsDir: path.join(testDir, "sessions"),
+        cwd: process.cwd(),
+        taskRef: "@" + testUlid("TASK"),
+        prompt: "No shadow commit on failure",
+        trigger: "task.ready",
+      });
+
+      expect(result.outcome).toBe("failed");
+      expect(commitSpy).not.toHaveBeenCalled();
+    });
+
+    it("should NOT call shadowAutoCommit after aborted invocation", async () => {
+      registerAdapter("slow-mock-acp-abort", {
+        command: "node",
+        args: [MOCK_ACP],
+        env: {
+          MOCK_ACP_DELAY_MS: "5000",
+        },
+        description: "Slow mock for abort test",
+      });
+      const agent = makeTestAgent({ adapter: "slow-mock-acp-abort" });
+      const controller = new AbortController();
+
+      // Abort shortly after starting
+      setTimeout(() => controller.abort(), 100);
+
+      const result = await runInvocation({
+        agent,
+        specDir: testDir,
+        sessionsDir: path.join(testDir, "sessions"),
+        cwd: process.cwd(),
+        taskRef: "@" + testUlid("TASK"),
+        prompt: "No shadow commit on abort",
+        trigger: "task.ready",
+        abortSignal: controller.signal,
+      });
+
+      expect(result.outcome).toBe("failed");
+      expect(commitSpy).not.toHaveBeenCalled();
+    });
+  },
+);
 
 // ─── Trait: error-guidance ────────────────────────────────────────────────────
 

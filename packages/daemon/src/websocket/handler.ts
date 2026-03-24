@@ -8,9 +8,9 @@
  * - ac-30 (@api-contract): Malformed command error
  */
 
-import type { ServerWebSocket } from 'bun';
-import type { WebSocketCommand, CommandAck, ConnectionData } from './types';
-import type { PubSubManager } from './pubsub';
+import type { ServerWebSocket } from "bun";
+import type { WebSocketCommand, CommandAck, ConnectionData } from "./types";
+import type { PubSubManager } from "./pubsub";
 
 type WebSocketRawMessage =
   | string
@@ -27,13 +27,13 @@ type WebSocketRawMessage =
  * or Blob instead of plain strings.
  */
 async function decodeWebSocketMessage(rawMessage: WebSocketRawMessage): Promise<string> {
-  if (typeof rawMessage === 'string') {
+  if (typeof rawMessage === "string") {
     return rawMessage;
   }
 
-  if (typeof rawMessage === 'object' && rawMessage !== null && !ArrayBuffer.isView(rawMessage)) {
+  if (typeof rawMessage === "object" && rawMessage !== null && !ArrayBuffer.isView(rawMessage)) {
     if (rawMessage instanceof ArrayBuffer) {
-      return Buffer.from(rawMessage).toString('utf-8');
+      return Buffer.from(rawMessage).toString("utf-8");
     }
 
     if (rawMessage instanceof Blob) {
@@ -45,11 +45,9 @@ async function decodeWebSocketMessage(rawMessage: WebSocketRawMessage): Promise<
   }
 
   if (ArrayBuffer.isView(rawMessage)) {
-    return Buffer.from(
-      rawMessage.buffer,
-      rawMessage.byteOffset,
-      rawMessage.byteLength,
-    ).toString('utf-8');
+    return Buffer.from(rawMessage.buffer, rawMessage.byteOffset, rawMessage.byteLength).toString(
+      "utf-8",
+    );
   }
 
   return String(rawMessage);
@@ -83,37 +81,43 @@ export class WebSocketHandler {
       // Validate command structure
       if (!command.action) {
         // AC: @api-contract ac-30
-        this.sendAck(ws, undefined, false, 'validation_error', 'Missing action field');
+        this.sendAck(ws, undefined, false, "validation_error", "Missing action field");
         return;
       }
-    } catch (error) {
+    } catch  {
       // AC: @api-contract ac-30
-      this.sendAck(ws, undefined, false, 'validation_error', 'Invalid JSON');
+      this.sendAck(ws, undefined, false, "validation_error", "Invalid JSON");
       return;
     }
 
     // Process command
     try {
       switch (command.action) {
-        case 'subscribe':
+        case "subscribe":
           this.handleSubscribe(ws, command);
           break;
 
-        case 'unsubscribe':
+        case "unsubscribe":
           this.handleUnsubscribe(ws, command);
           break;
 
-        case 'ping':
+        case "ping":
           this.handlePing(ws, command);
           break;
 
         default:
           // AC: @api-contract ac-30
-          this.sendAck(ws, command.request_id, false, 'unknown_action', `Unknown action: ${command.action}`);
+          this.sendAck(
+            ws,
+            command.request_id,
+            false,
+            "unknown_action",
+            `Unknown action: ${command.action}`,
+          );
       }
     } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : 'Internal error';
-      this.sendAck(ws, command.request_id, false, 'error', errorMsg);
+      const errorMsg = error instanceof Error ? error.message : "Internal error";
+      this.sendAck(ws, command.request_id, false, "error", errorMsg);
     }
   }
 
@@ -125,7 +129,13 @@ export class WebSocketHandler {
     const topics = command.payload?.topics;
 
     if (!topics || !Array.isArray(topics) || topics.length === 0) {
-      this.sendAck(ws, command.request_id, false, 'validation_error', 'Missing or invalid topics array');
+      this.sendAck(
+        ws,
+        command.request_id,
+        false,
+        "validation_error",
+        "Missing or invalid topics array",
+      );
       return;
     }
 
@@ -134,9 +144,9 @@ export class WebSocketHandler {
 
     if (success) {
       this.sendAck(ws, command.request_id, true);
-      console.log(`[ws] ${sessionId} subscribed to: ${topics.join(', ')}`);
+      console.log(`[ws] ${sessionId} subscribed to: ${topics.join(", ")}`);
     } else {
-      this.sendAck(ws, command.request_id, false, 'not_found', 'Session not found');
+      this.sendAck(ws, command.request_id, false, "not_found", "Session not found");
     }
   }
 
@@ -147,7 +157,13 @@ export class WebSocketHandler {
     const topics = command.payload?.topics;
 
     if (!topics || !Array.isArray(topics) || topics.length === 0) {
-      this.sendAck(ws, command.request_id, false, 'validation_error', 'Missing or invalid topics array');
+      this.sendAck(
+        ws,
+        command.request_id,
+        false,
+        "validation_error",
+        "Missing or invalid topics array",
+      );
       return;
     }
 
@@ -156,9 +172,9 @@ export class WebSocketHandler {
 
     if (success) {
       this.sendAck(ws, command.request_id, true);
-      console.log(`[ws] ${sessionId} unsubscribed from: ${topics.join(', ')}`);
+      console.log(`[ws] ${sessionId} unsubscribed from: ${topics.join(", ")}`);
     } else {
-      this.sendAck(ws, command.request_id, false, 'not_found', 'Session not found');
+      this.sendAck(ws, command.request_id, false, "not_found", "Session not found");
     }
   }
 
@@ -171,7 +187,7 @@ export class WebSocketHandler {
 
   private resolveSessionId(ws: ServerWebSocket<ConnectionData>): string | undefined {
     const data = ws.data as { id?: unknown } | undefined;
-    const contextId = typeof data?.id === 'string' ? data.id : undefined;
+    const contextId = typeof data?.id === "string" ? data.id : undefined;
     return this.pubsub.getSessionIdBySocket(ws, contextId);
   }
 
@@ -184,14 +200,14 @@ export class WebSocketHandler {
     request_id: string | undefined,
     success: boolean,
     error?: string,
-    details?: string
+    details?: string,
   ) {
     const ack: CommandAck = {
       ack: true,
       request_id,
       success,
       error,
-      details
+      details,
     };
 
     ws.send(JSON.stringify(ack));

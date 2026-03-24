@@ -80,22 +80,22 @@
 	}));
 
 	// --- Derived state ---
-	let projectConfig = $derived<ProjectConfig | null>(projectConfigQuery.data ?? null);
-	let health = $derived<HealthResponse | null>(healthQuery.data ?? null);
-	let shadowStatus = $derived<ShadowStatusResponse | null>(shadowQuery.data ?? null);
-	let conventions = $derived<Convention[]>(conventionsQuery.data?.items ?? []);
+	const projectConfig = $derived<ProjectConfig | null>(projectConfigQuery.data ?? null);
+	const health = $derived<HealthResponse | null>(healthQuery.data ?? null);
+	const shadowStatus = $derived<ShadowStatusResponse | null>(shadowQuery.data ?? null);
+	const conventions = $derived<Convention[]>(conventionsQuery.data?.items ?? []);
 
-	let loadingConfig = $derived(projectConfigQuery.isLoading);
-	let loadingHealth = $derived(healthQuery.isLoading);
-	let loadingShadow = $derived(shadowQuery.isLoading);
-	let loadingConventions = $derived(conventionsQuery.isLoading);
+	const loadingConfig = $derived(projectConfigQuery.isLoading);
+	const loadingHealth = $derived(healthQuery.isLoading);
+	const loadingShadow = $derived(shadowQuery.isLoading);
+	const loadingConventions = $derived(conventionsQuery.isLoading);
 
-	let errorConfig = $derived(projectConfigQuery.error?.message ?? '');
-	let errorHealth = $derived(healthQuery.error?.message ?? '');
-	let errorShadow = $derived(shadowQuery.error?.message ?? '');
-	let errorConventions = $derived(conventionsQuery.error?.message ?? '');
+	const errorConfig = $derived(projectConfigQuery.error?.message ?? '');
+	const errorHealth = $derived(healthQuery.error?.message ?? '');
+	const errorShadow = $derived(shadowQuery.error?.message ?? '');
+	const errorConventions = $derived(conventionsQuery.error?.message ?? '');
 
-	let loading = $derived(loadingConfig && loadingHealth && loadingShadow && loadingConventions);
+	const loading = $derived(loadingConfig && loadingHealth && loadingShadow && loadingConventions);
 
 	// ── Helpers ──
 	function formatUptime(seconds: number): string {

@@ -26,12 +26,8 @@ beforeAll(() => {
     );
   }
 
-  const cssFiles = readdirSync(CSS_ASSETS_DIR).filter((f) =>
-    f.endsWith(".css"),
-  );
-  mainCss = cssFiles
-    .map((f) => readFileSync(join(CSS_ASSETS_DIR, f), "utf-8"))
-    .join("\n");
+  const cssFiles = readdirSync(CSS_ASSETS_DIR).filter((f) => f.endsWith(".css"));
+  mainCss = cssFiles.map((f) => readFileSync(join(CSS_ASSETS_DIR, f), "utf-8")).join("\n");
 });
 
 // AC: @ui-design-system ac-1
@@ -74,9 +70,7 @@ describe("design system tokens (@ui-design-system ac-1)", () => {
   describe("4 radius tokens", () => {
     it("includes all 4 design radius CSS custom properties", () => {
       for (const suffix of ["sm", "md", "lg", "xl"]) {
-        expect(mainCss, `missing --design-radius-${suffix}`).toContain(
-          `--design-radius-${suffix}`,
-        );
+        expect(mainCss, `missing --design-radius-${suffix}`).toContain(`--design-radius-${suffix}`);
       }
     });
   });
@@ -93,18 +87,8 @@ describe("design system tokens (@ui-design-system ac-1)", () => {
 
   describe("7 z-index layers", () => {
     it("includes all 7 design z-index CSS custom properties", () => {
-      for (const suffix of [
-        "base",
-        "dropdown",
-        "sticky",
-        "overlay",
-        "modal",
-        "popover",
-        "toast",
-      ]) {
-        expect(mainCss, `missing --design-z-${suffix}`).toContain(
-          `--design-z-${suffix}`,
-        );
+      for (const suffix of ["base", "dropdown", "sticky", "overlay", "modal", "popover", "toast"]) {
+        expect(mainCss, `missing --design-z-${suffix}`).toContain(`--design-z-${suffix}`);
       }
     });
   });
@@ -146,19 +130,15 @@ describe("status colors and dark theme (@ui-design-system ac-2)", () => {
 
   it("includes all 7 status color CSS custom properties", () => {
     for (const status of statuses) {
-      expect(
-        mainCss,
-        `missing --design-status-${status}`,
-      ).toContain(`--design-status-${status}`);
+      expect(mainCss, `missing --design-status-${status}`).toContain(`--design-status-${status}`);
     }
   });
 
   it("includes foreground variants for all 7 status colors", () => {
     for (const status of statuses) {
-      expect(
-        mainCss,
-        `missing --design-status-${status}-fg`,
-      ).toContain(`--design-status-${status}-fg`);
+      expect(mainCss, `missing --design-status-${status}-fg`).toContain(
+        `--design-status-${status}-fg`,
+      );
     }
   });
 
@@ -172,9 +152,7 @@ describe("status colors and dark theme (@ui-design-system ac-2)", () => {
     // The .dark selector should exist and contain status overrides
     expect(mainCss).toMatch(/\.dark\b/);
     // Count occurrences — light (:root) + dark (.dark) = at least 2
-    const pendingMatches = (
-      mainCss.match(/--design-status-pending:/g) || []
-    ).length;
+    const pendingMatches = (mainCss.match(/--design-status-pending:/g) || []).length;
     expect(
       pendingMatches,
       "status-pending should appear in both :root and .dark",
@@ -184,8 +162,7 @@ describe("status colors and dark theme (@ui-design-system ac-2)", () => {
   it("status colors use distinct oklch hues for visual differentiation", () => {
     // Extract all status hue values to verify they're distinct
     // Minified CSS uses percentage lightness: oklch(76.9% .188 70.08)
-    const huePattern =
-      /--design-status-([\w-]+):\s*oklch\(\s*[\d.]+%?\s+([\d.]+)\s+([\d.]+)/g;
+    const huePattern = /--design-status-([\w-]+):\s*oklch\(\s*[\d.]+%?\s+([\d.]+)\s+([\d.]+)/g;
     const hues: Record<string, number> = {};
     let match: RegExpExecArray | null;
 

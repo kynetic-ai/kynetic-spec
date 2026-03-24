@@ -26,9 +26,9 @@ kspec shadow sync     # Sync with remote
 
 ### Troubleshooting
 
-| Issue | Fix |
-|-------|-----|
-| `.kspec/` doesn't exist | `kspec init` |
-| Worktree disconnected | `kspec shadow repair` |
-| Sync conflicts | `kspec shadow resolve` |
-| Commands seem broken | Check `pwd` — must be project root |
+| Issue                   | Fix                                |
+| ----------------------- | ---------------------------------- |
+| `.kspec/` doesn't exist | `kspec init`                       |
+| Worktree disconnected   | `kspec shadow repair`              |
+| Sync conflicts          | `kspec shadow resolve`             |
+| Commands seem broken    | Check `pwd` — must be project root |

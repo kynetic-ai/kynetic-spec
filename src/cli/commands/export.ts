@@ -24,22 +24,10 @@ export function registerExportCommand(program: Command): void {
   program
     .command("export")
     .description("Export kspec data to JSON or HTML format")
-    .requiredOption(
-      "--format <format>",
-      "Output format (json or html)",
-      "json"
-    )
+    .requiredOption("--format <format>", "Output format (json or html)", "json")
     .option("-o, --output <path>", "Output file path (defaults to stdout for JSON)")
-    .option(
-      "--include-validation",
-      "Include validation results in the export",
-      false
-    )
-    .option(
-      "--dry-run",
-      "Show what would be exported without writing files",
-      false
-    )
+    .option("--include-validation", "Include validation results in the export", false)
+    .option("--dry-run", "Show what would be exported without writing files", false)
     .action(async (options) => {
       try {
         // Validate format
@@ -114,19 +102,17 @@ export function registerExportCommand(program: Command): void {
             console.log(`  Workflows:    ${stats.workflowCount}`);
             console.log(`  Conventions:  ${stats.conventionCount}`);
             console.log();
-            console.log(
-              `  Estimated size: ${chalk.cyan(formatBytes(stats.estimatedSizeBytes))}`
-            );
+            console.log(`  Estimated size: ${chalk.cyan(formatBytes(stats.estimatedSizeBytes))}`);
 
             if (options.includeValidation && snapshot.validation) {
               console.log();
               console.log(chalk.gray("─".repeat(40)));
               console.log(chalk.bold("Validation:"));
               console.log(chalk.gray("─".repeat(40)));
-              const validIcon = snapshot.validation.valid
-                ? chalk.green("✓")
-                : chalk.red("✗");
-              console.log(`  Status: ${validIcon} ${snapshot.validation.valid ? "Valid" : "Invalid"}`);
+              const validIcon = snapshot.validation.valid ? chalk.green("✓") : chalk.red("✗");
+              console.log(
+                `  Status: ${validIcon} ${snapshot.validation.valid ? "Valid" : "Invalid"}`,
+              );
               console.log(`  Errors: ${snapshot.validation.errorCount}`);
               console.log(`  Warnings: ${snapshot.validation.warningCount}`);
             }

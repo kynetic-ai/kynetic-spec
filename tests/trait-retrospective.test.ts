@@ -1,11 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import {
-  cleanupTempDir,
-  initGitRepo,
-  kspec,
-  setupTempFixtures,
-  testUlid,
-} from "./helpers/cli.js";
+import { cleanupTempDir, initGitRepo, kspec, setupTempFixtures, testUlid } from "./helpers/cli.js";
 
 describe("Trait Retrospective", () => {
   let tempDir: string;
@@ -32,10 +26,7 @@ describe("Trait Retrospective", () => {
     );
 
     // Add the trait
-    await kspec(
-      `item set @retro-feature --description "Retrospective spec" `,
-      tempDir,
-    );
+    await kspec(`item set @retro-feature --description "Retrospective spec" `, tempDir);
 
     // Manually add trait to the spec (traits array manipulation)
     // Note: In real usage, users would add traits via YAML or trait add command
@@ -119,10 +110,7 @@ describe("Trait Retrospective", () => {
 
     // Add trait and set status to implemented without verification metadata
     await kspec(`item set @retro-impl --trait @trait-retrospective`, tempDir);
-    await kspec(
-      `item set @retro-impl --status implemented --maturity draft`,
-      tempDir,
-    );
+    await kspec(`item set @retro-impl --status implemented --maturity draft`, tempDir);
     // Intentionally omit verified_at and verified_by
 
     // Run validation with completeness checks
@@ -184,10 +172,7 @@ describe("Trait Retrospective", () => {
 
     // Add trait, status, and verification metadata
     await kspec(`item set @retro-display --trait @trait-retrospective`, tempDir);
-    await kspec(
-      `item set @retro-display --status implemented --maturity stable`,
-      tempDir,
-    );
+    await kspec(`item set @retro-display --status implemented --maturity stable`, tempDir);
     await kspec(
       `item set @retro-display --verified-by @claude --verified-at 2026-01-15T12:00:00Z`,
       tempDir,

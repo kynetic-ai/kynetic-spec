@@ -155,31 +155,21 @@ function extractSourceReference(text: string): string | null {
     return directSrcMatch[1];
   }
 
-  const directPackagesMatch = text.match(
-    /['"`]([^'"`]*packages\/[^'"`]+\/src\/[^'"`]*)['"`]/,
-  );
+  const directPackagesMatch = text.match(/['"`]([^'"`]*packages\/[^'"`]+\/src\/[^'"`]*)['"`]/);
   if (directPackagesMatch?.[1]) {
     return directPackagesMatch[1];
   }
 
   if (/(?:path\.)?(?:join|resolve)\([\s\S]*?['"`]src['"`]/.test(text)) {
-    const segments = [...text.matchAll(/['"`]([^'"`]+)['"`]/g)].map(
-      (m) => m[1],
-    );
+    const segments = [...text.matchAll(/['"`]([^'"`]+)['"`]/g)].map((m) => m[1]);
 
     if (segments.includes("src")) {
       return segments.join("/");
     }
   }
 
-  if (
-    /(?:path\.)?(?:join|resolve)\([\s\S]*?['"`]packages['"`][\s\S]*?['"`]src['"`]/.test(
-      text,
-    )
-  ) {
-    const segments = [...text.matchAll(/['"`]([^'"`]+)['"`]/g)].map(
-      (m) => m[1],
-    );
+  if (/(?:path\.)?(?:join|resolve)\([\s\S]*?['"`]packages['"`][\s\S]*?['"`]src['"`]/.test(text)) {
+    const segments = [...text.matchAll(/['"`]([^'"`]+)['"`]/g)].map((m) => m[1]);
     return segments.join("/");
   }
 
@@ -200,8 +190,7 @@ function collectSourceVariableHints(content: string): Map<string, string> {
     }
   }
 
-  const forOfPattern =
-    /for\s*\(\s*const\s+([A-Za-z_$][\w$]*)\s+of\s+([A-Za-z_$][\w$]*)\s*\)/g;
+  const forOfPattern = /for\s*\(\s*const\s+([A-Za-z_$][\w$]*)\s+of\s+([A-Za-z_$][\w$]*)\s*\)/g;
   while ((match = forOfPattern.exec(content)) !== null) {
     const itemVariable = match[1];
     const iterableVariable = match[2];
@@ -243,10 +232,7 @@ describe("no static analysis test pattern", () => {
       const readCalls = parseReadCalls(content);
 
       for (const readCall of readCalls) {
-        const sourcePath = resolveReferencedSourcePath(
-          readCall.firstArg,
-          sourceHints,
-        );
+        const sourcePath = resolveReferencedSourcePath(readCall.firstArg, sourceHints);
         if (!sourcePath) {
           continue;
         }
@@ -258,6 +244,6 @@ describe("no static analysis test pattern", () => {
       }
     }
 
-    expect([...violations].sort()).toEqual([]);
+    expect([...violations].toSorted()).toEqual([]);
   });
 });

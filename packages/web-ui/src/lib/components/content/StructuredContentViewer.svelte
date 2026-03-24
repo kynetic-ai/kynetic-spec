@@ -30,7 +30,7 @@
 		isInteractive: boolean;
 	}
 
-	let { review, threads, isInteractive }: Props = $props();
+	const { review, threads, isInteractive }: Props = $props();
 
 	const queryClient = useQueryClient();
 
@@ -41,9 +41,9 @@
 		enabled: isProjectInitialized() && !!review._ulid,
 	}));
 
-	let content = $derived<ReviewContentResponse | null>(contentQuery.data ?? null);
-	let contentLoading = $derived(contentQuery.isLoading);
-	let contentError = $derived(contentQuery.error?.message ?? '');
+	const content = $derived<ReviewContentResponse | null>(contentQuery.data ?? null);
+	const contentLoading = $derived(contentQuery.isLoading);
+	const contentError = $derived(contentQuery.error?.message ?? '');
 
 	// Track which section has an open comment form
 	let commentingOnSection = $state<string | null>(null);

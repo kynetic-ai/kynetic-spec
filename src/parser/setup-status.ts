@@ -9,15 +9,8 @@
 
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import {
-  detectAgentFromEnv,
-  type AgentType,
-  type AgentConfidence,
-} from "./agent-detection.js";
-import {
-  type ClaudeHookEntry,
-  isKspecManagedStopHookEntry,
-} from "../lib/claude-hooks.js";
+import { detectAgentFromEnv, type AgentType, type AgentConfidence } from "./agent-detection.js";
+import { type ClaudeHookEntry, isKspecManagedStopHookEntry } from "../lib/claude-hooks.js";
 
 /**
  * Detected agent type
@@ -81,10 +74,7 @@ const GUARD_SCRIPTS: Record<string, boolean> = {
 };
 
 const NATIVE_GUARD_COMMAND = "kspec guard worktree";
-const LEGACY_GUARD_SCRIPTS = [
-  "kspec-worktree-guard.sh",
-  "ralph-task-limit-guard.sh",
-];
+const LEGACY_GUARD_SCRIPTS = ["kspec-worktree-guard.sh", "ralph-task-limit-guard.sh"];
 
 /**
  * Detect the agent type in use.
@@ -96,7 +86,8 @@ export async function detectAgent(): Promise<{
 }> {
   const detected = detectAgentFromEnv();
   if (detected.type !== "unknown") {
-    const configPath = detected.configPath ??
+    const configPath =
+      detected.configPath ??
       (detected.type === "claude-code"
         ? path.join(process.env.HOME ?? "", ".claude", "settings.json")
         : detected.type === "droid"
@@ -212,13 +203,11 @@ export async function getSetupStatus(
         | undefined;
       hooks.promptCheck =
         promptHooks?.some((entry) =>
-          entry.hooks?.some((h) => h.command?.includes("prompt-check"))
+          entry.hooks?.some((h) => h.command?.includes("prompt-check")),
         ) ?? false;
 
       // Check Stop
-      const stopHooks = hooksConfig.Stop as
-        | ClaudeHookEntry[]
-        | undefined;
+      const stopHooks = hooksConfig.Stop as ClaudeHookEntry[] | undefined;
       hooks.stop = stopHooks?.some(isKspecManagedStopHookEntry) ?? false;
 
       // Check PreToolUse
@@ -227,22 +216,23 @@ export async function getSetupStatus(
         | undefined;
       hooks.preToolUse =
         preToolUseHooks?.some((entry) =>
-          entry.hooks?.some((h) =>
-            h.command === NATIVE_GUARD_COMMAND ||
-            h.command?.includes(".claude/hooks/")
-          )
+          entry.hooks?.some(
+            (h) => h.command === NATIVE_GUARD_COMMAND || h.command?.includes(".claude/hooks/"),
+          ),
         ) ?? false;
 
-      if (preToolUseHooks?.some((entry) =>
-        entry.hooks?.some((h) => h.command === NATIVE_GUARD_COMMAND)
-      )) {
+      if (
+        preToolUseHooks?.some((entry) =>
+          entry.hooks?.some((h) => h.command === NATIVE_GUARD_COMMAND),
+        )
+      ) {
         hooks.guardsPresent.push(NATIVE_GUARD_COMMAND);
       }
-      if (preToolUseHooks?.some((entry) =>
-        entry.hooks?.some((h) =>
-          LEGACY_GUARD_SCRIPTS.some((name) => h.command?.includes(name))
+      if (
+        preToolUseHooks?.some((entry) =>
+          entry.hooks?.some((h) => LEGACY_GUARD_SCRIPTS.some((name) => h.command?.includes(name))),
         )
-      )) {
+      ) {
         hooks.guardsPresent.push("legacy:bash-scripts");
       }
     } catch (err) {
@@ -317,9 +307,7 @@ export async function getSetupStatus(
   };
 
   try {
-    const { checkMarketplaceHealth } = await import(
-      "../lib/claude-plugin-registry.js"
-    );
+    const { checkMarketplaceHealth } = await import("../lib/claude-plugin-registry.js");
     const health = await checkMarketplaceHealth();
     plugin.marketplaceRegistered = health.status !== "missing";
     plugin.marketplaceHealthy = health.status === "healthy";
@@ -359,9 +347,8 @@ export async function getSetupStatus(
       try {
         const { initContext, loadMetaContext } = await import("./index.js");
         // Dynamic import agents.js from CLI commands
-        const { computeMetaHash, loadTemplateSections, getPackageRoot } = await import(
-          "../cli/commands/agents.js"
-        );
+        const { computeMetaHash, loadTemplateSections, getPackageRoot } =
+          await import("../cli/commands/agents.js");
         const ctx = await initContext();
         if (ctx.manifestPath) {
           const metaCtx = await loadMetaContext(ctx);
@@ -374,7 +361,7 @@ export async function getSetupStatus(
           const currentHash = computeMetaHash(
             metaCtx.conventions,
             metaCtx.workflows,
-            templateSections
+            templateSections,
           );
           agentsMd.status = hashData.metaHash === currentHash ? "current" : "stale";
         } else {
@@ -403,7 +390,7 @@ export async function getSetupStatus(
   try {
     const configContent = await fs.readFile(
       path.join(projectDir, ".claude", "settings.json"),
-      "utf-8"
+      "utf-8",
     );
     const config = JSON.parse(configContent);
     seeding.permissionsSeeded = !!config.permissions;
@@ -413,9 +400,7 @@ export async function getSetupStatus(
 
   if (detected.type === "claude-code") {
     try {
-      const { claudeCodeMemoryWriter } = await import(
-        "../cli/commands/setup-seeding.js"
-      );
+      const { claudeCodeMemoryWriter } = await import("../cli/commands/setup-seeding.js");
       const memoryExists = await claudeCodeMemoryWriter.exists(projectDir);
       seeding.memorySeeded = memoryExists;
       if (memoryExists) {

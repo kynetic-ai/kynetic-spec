@@ -32,7 +32,7 @@
 		isFirstHunk: boolean;
 	}
 
-	let {
+	const {
 		hunk,
 		filePath,
 		language,
@@ -128,7 +128,7 @@
 	}
 
 	// Check if there are hidden lines before/after this hunk
-	let hiddenLinesBefore = $derived(
+	const hiddenLinesBefore = $derived(
 		isFirstHunk && hunk.newStart > 1
 			? hunk.newStart - 1
 			: 0

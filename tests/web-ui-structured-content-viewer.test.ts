@@ -14,29 +14,14 @@ import { join } from "node:path";
 
 const WEB_UI_SRC = join(process.cwd(), "packages", "web-ui", "src");
 const CONTENT_DIR = join(WEB_UI_SRC, "lib", "components", "content");
-const REVIEW_DETAIL_PATH = join(
-  WEB_UI_SRC,
-  "routes",
-  "reviews",
-  "[id]",
-  "+page.svelte",
-);
+const REVIEW_DETAIL_PATH = join(WEB_UI_SRC, "routes", "reviews", "[id]", "+page.svelte");
 const API_PATH = join(WEB_UI_SRC, "lib", "api.ts");
 const QUERY_KEYS_PATH = join(WEB_UI_SRC, "lib", "query", "keys.ts");
 
 // Load source files
-const viewerSrc = readFileSync(
-  join(CONTENT_DIR, "StructuredContentViewer.svelte"),
-  "utf-8",
-);
-const commentFormSrc = readFileSync(
-  join(CONTENT_DIR, "ContentCommentForm.svelte"),
-  "utf-8",
-);
-const inlineThreadSrc = readFileSync(
-  join(CONTENT_DIR, "ContentInlineThread.svelte"),
-  "utf-8",
-);
+const viewerSrc = readFileSync(join(CONTENT_DIR, "StructuredContentViewer.svelte"), "utf-8");
+const commentFormSrc = readFileSync(join(CONTENT_DIR, "ContentCommentForm.svelte"), "utf-8");
+const inlineThreadSrc = readFileSync(join(CONTENT_DIR, "ContentInlineThread.svelte"), "utf-8");
 const indexSrc = readFileSync(join(CONTENT_DIR, "index.ts"), "utf-8");
 const reviewDetailSrc = readFileSync(REVIEW_DETAIL_PATH, "utf-8");
 const apiSrc = readFileSync(API_PATH, "utf-8");
@@ -106,9 +91,7 @@ describe("Spec content rendering (ac-2)", () => {
 
   it("should make each AC individually targetable for comments", () => {
     expect(viewerSrc).toContain("ac-comment-button");
-    expect(viewerSrc).toContain(
-      "openCommentForm('acceptance_criteria', ac.id)",
-    );
+    expect(viewerSrc).toContain("openCommentForm('acceptance_criteria', ac.id)");
   });
 
   it("should make each section targetable for comments", () => {
@@ -163,25 +146,19 @@ describe("Inline thread rendering at anchored positions (ac-4)", () => {
 
   it("should find threads matching AC field anchors", () => {
     expect(viewerSrc).toContain("getThreadsForAcField");
-    expect(viewerSrc).toContain(
-      "t.anchor.section === 'acceptance_criteria'",
-    );
+    expect(viewerSrc).toContain("t.anchor.section === 'acceptance_criteria'");
     expect(viewerSrc).toContain("t.anchor.field === acId");
   });
 
   it("should render inline threads within AC items", () => {
     // Threads are rendered per-AC within the acceptance_criteria loop
     expect(viewerSrc).toContain("acThreads");
-    expect(viewerSrc).toMatch(
-      /each acThreads as thread/,
-    );
+    expect(viewerSrc).toMatch(/each acThreads as thread/);
   });
 
   it("should render inline threads within non-AC sections", () => {
     expect(viewerSrc).toContain("sectionThreads");
-    expect(viewerSrc).toMatch(
-      /each sectionThreads as thread/,
-    );
+    expect(viewerSrc).toMatch(/each sectionThreads as thread/);
   });
 
   it("should render ContentInlineThread with interaction callbacks", () => {
@@ -234,18 +211,10 @@ describe("Integration with review detail page", () => {
   });
 
   it("should have AC annotations for structured content viewer spec", () => {
-    expect(reviewDetailSrc).toContain(
-      "AC: @review-structured-content-viewer ac-1",
-    );
-    expect(reviewDetailSrc).toContain(
-      "AC: @review-structured-content-viewer ac-2",
-    );
-    expect(reviewDetailSrc).toContain(
-      "AC: @review-structured-content-viewer ac-3",
-    );
-    expect(reviewDetailSrc).toContain(
-      "AC: @review-structured-content-viewer ac-4",
-    );
+    expect(reviewDetailSrc).toContain("AC: @review-structured-content-viewer ac-1");
+    expect(reviewDetailSrc).toContain("AC: @review-structured-content-viewer ac-2");
+    expect(reviewDetailSrc).toContain("AC: @review-structured-content-viewer ac-3");
+    expect(reviewDetailSrc).toContain("AC: @review-structured-content-viewer ac-4");
   });
 });
 
@@ -262,9 +231,7 @@ describe("API and query infrastructure", () => {
   it("should export content section types", () => {
     expect(apiSrc).toContain("export interface ContentSectionMarkdown");
     expect(apiSrc).toContain("export interface ContentSectionRefList");
-    expect(apiSrc).toContain(
-      "export interface ContentSectionAcceptanceCriteria",
-    );
+    expect(apiSrc).toContain("export interface ContentSectionAcceptanceCriteria");
     expect(apiSrc).toContain("export interface ContentSectionNotes");
     expect(apiSrc).toContain("export interface ContentSectionMetadata");
     expect(apiSrc).toContain("export type ContentSection");
@@ -301,15 +268,9 @@ describe("Component barrel exports", () => {
 
 describe("Component file structure", () => {
   it("should have all required component files", () => {
-    expect(
-      existsSync(join(CONTENT_DIR, "StructuredContentViewer.svelte")),
-    ).toBe(true);
-    expect(
-      existsSync(join(CONTENT_DIR, "ContentCommentForm.svelte")),
-    ).toBe(true);
-    expect(
-      existsSync(join(CONTENT_DIR, "ContentInlineThread.svelte")),
-    ).toBe(true);
+    expect(existsSync(join(CONTENT_DIR, "StructuredContentViewer.svelte"))).toBe(true);
+    expect(existsSync(join(CONTENT_DIR, "ContentCommentForm.svelte"))).toBe(true);
+    expect(existsSync(join(CONTENT_DIR, "ContentInlineThread.svelte"))).toBe(true);
     expect(existsSync(join(CONTENT_DIR, "index.ts"))).toBe(true);
   });
 });

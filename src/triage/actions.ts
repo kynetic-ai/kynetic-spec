@@ -66,7 +66,9 @@ export async function executeTriageAction(
       // AC: @triage-cli-commands ac-4
       if (dryRun) {
         const inboxRef = await getShortInboxRef();
-        onInfo?.(`Would create task from inbox item snapshot: "${truncateText(record.item_snapshot)}"`);
+        onInfo?.(
+          `Would create task from inbox item snapshot: "${truncateText(record.item_snapshot)}"`,
+        );
         if (consume) {
           onInfo?.(`Would delete promoted inbox item: ${inboxRef}`);
         } else {

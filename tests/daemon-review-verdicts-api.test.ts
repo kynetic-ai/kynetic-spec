@@ -8,23 +8,23 @@
  * and PATCH /api/reviews/:id/lifecycle route handlers.
  */
 
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { execSync } from 'node:child_process';
-import { mkdirSync, writeFileSync } from 'node:fs';
-import * as path from 'node:path';
-import { Elysia } from 'elysia';
-import { createTempDir, cleanupTempDir, initGitRepo, testUlid } from './helpers/cli';
-import { projectContextMiddleware } from '../dist/daemon/middleware/project-context.ts';
-import { createReviewsRoutes } from '../dist/daemon/routes/reviews.ts';
-import { PubSubManager } from '../dist/daemon/websocket/pubsub.ts';
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { execSync } from "node:child_process";
+import { mkdirSync, writeFileSync } from "node:fs";
+import * as path from "node:path";
+import { Elysia } from "elysia";
+import { createTempDir, cleanupTempDir, initGitRepo, testUlid } from "./helpers/cli";
+import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.ts";
+import { createReviewsRoutes } from "../dist/daemon/routes/reviews.ts";
+import { PubSubManager } from "../dist/daemon/websocket/pubsub.ts";
 
 // Test ULIDs
-const REVIEW_DRAFT_ULID = testUlid('RVDR', 1);
-const REVIEW_OPEN_ULID = testUlid('RVOP', 2);
-const REVIEW_CLOSED_ULID = testUlid('RVCL', 3);
-const REVIEW_ARCHIVED_ULID = testUlid('RVAR', 4);
-const REVIEW_CODE_ULID = testUlid('RVCO', 5);
-const TASK_ULID = testUlid('TASK', 6);
+const REVIEW_DRAFT_ULID = testUlid("RVDR", 1);
+const REVIEW_OPEN_ULID = testUlid("RVOP", 2);
+const REVIEW_CLOSED_ULID = testUlid("RVCL", 3);
+const REVIEW_ARCHIVED_ULID = testUlid("RVAR", 4);
+const REVIEW_CODE_ULID = testUlid("RVCO", 5);
+const TASK_ULID = testUlid("TASK", 6);
 
 let tempDir: string;
 let app: Elysia;
@@ -35,9 +35,9 @@ function makeRequest(method: string, urlPath: string, body?: unknown) {
   const opts: RequestInit = {
     method,
     headers: {
-      Host: 'localhost',
-      'X-Kspec-Dir': tempDir,
-      'Content-Type': 'application/json',
+      Host: "localhost",
+      "X-Kspec-Dir": tempDir,
+      "Content-Type": "application/json",
     },
   };
   if (body) {
@@ -48,12 +48,12 @@ function makeRequest(method: string, urlPath: string, body?: unknown) {
 
 function setupFixtures() {
   // Create .kspec/ so projectContextMiddleware accepts the directory
-  mkdirSync(path.join(tempDir, '.kspec'), { recursive: true });
-  mkdirSync(path.join(tempDir, 'modules'), { recursive: true });
+  mkdirSync(path.join(tempDir, ".kspec"), { recursive: true });
+  mkdirSync(path.join(tempDir, "modules"), { recursive: true });
 
   // Manifest
   writeFileSync(
-    path.join(tempDir, 'kynetic.yaml'),
+    path.join(tempDir, "kynetic.yaml"),
     `kynetic: "1.0"
 project:
   name: Test Project
@@ -67,9 +67,9 @@ tasks_file: project.tasks.yaml
 
   // Spec item
   writeFileSync(
-    path.join(tempDir, 'modules', 'test.yaml'),
+    path.join(tempDir, "modules", "test.yaml"),
     `features:
-  - _ulid: "${testUlid('SPEC', 1)}"
+  - _ulid: "${testUlid("SPEC", 1)}"
     slugs:
       - test-feature
     title: "Test Feature"
@@ -81,7 +81,7 @@ tasks_file: project.tasks.yaml
 
   // Tasks
   writeFileSync(
-    path.join(tempDir, 'project.tasks.yaml'),
+    path.join(tempDir, "project.tasks.yaml"),
     `tasks:
   - _ulid: "${TASK_ULID}"
     slugs:
@@ -97,7 +97,7 @@ tasks_file: project.tasks.yaml
 
   // Reviews — various lifecycle states
   writeFileSync(
-    path.join(tempDir, 'project.reviews.yaml'),
+    path.join(tempDir, "project.reviews.yaml"),
     `kynetic_reviews: "1.0"
 reviews:
   - _ulid: "${REVIEW_DRAFT_ULID}"
@@ -192,20 +192,18 @@ reviews:
 `,
   );
 
-  execSync('git add -A && git commit -m "kspec project setup"', { cwd: tempDir, stdio: 'pipe' });
+  execSync('git add -A && git commit -m "kspec project setup"', { cwd: tempDir, stdio: "pipe" });
 }
 
-describe('Review Verdicts API', () => {
+describe("Review Verdicts API", () => {
   beforeEach(async () => {
-    tempDir = await createTempDir('kspec-review-verdicts-');
+    tempDir = await createTempDir("kspec-review-verdicts-");
     initGitRepo(tempDir);
     setupFixtures();
 
     pubsub = new PubSubManager();
     const { middleware } = projectContextMiddleware();
-    app = new Elysia()
-      .use(middleware)
-      .use(createReviewsRoutes({ pubsub }));
+    app = new Elysia().use(middleware).use(createReviewsRoutes({ pubsub }));
   });
 
   afterEach(async () => {
@@ -213,68 +211,68 @@ describe('Review Verdicts API', () => {
   });
 
   // AC: @review-records-daemon-api ac-6
-  it('should record a verdict and return recomputed disposition', async () => {
-    const response = await makeRequest('POST', `/api/reviews/${REVIEW_OPEN_ULID}/verdicts`, {
-      decision: 'approve',
-      reviewer: 'test@example.com',
+  it("should record a verdict and return recomputed disposition", async () => {
+    const response = await makeRequest("POST", `/api/reviews/${REVIEW_OPEN_ULID}/verdicts`, {
+      decision: "approve",
+      reviewer: "test@example.com",
     });
 
     expect(response.status).toBe(200);
     const body = await response.json();
     expect(body.review_ulid).toBe(REVIEW_OPEN_ULID);
-    expect(body.decision).toBe('approve');
-    expect(body.reviewer).toBe('test@example.com');
+    expect(body.decision).toBe("approve");
+    expect(body.reviewer).toBe("test@example.com");
     expect(body.disposition).toBeDefined();
     // approve verdict with no failing gates → approved
-    expect(body.disposition).toBe('approved');
+    expect(body.disposition).toBe("approved");
   });
 
   // AC: @review-records-daemon-api ac-6
-  it('should record a comment verdict without auto-closing', async () => {
-    const response = await makeRequest('POST', `/api/reviews/${REVIEW_OPEN_ULID}/verdicts`, {
-      decision: 'comment',
-      reviewer: 'test@example.com',
+  it("should record a comment verdict without auto-closing", async () => {
+    const response = await makeRequest("POST", `/api/reviews/${REVIEW_OPEN_ULID}/verdicts`, {
+      decision: "comment",
+      reviewer: "test@example.com",
     });
 
     expect(response.status).toBe(200);
     const body = await response.json();
-    expect(body.decision).toBe('comment');
+    expect(body.decision).toBe("comment");
     // Comment verdict does not auto-close
-    expect(body.lifecycle_state).toBe('open');
+    expect(body.lifecycle_state).toBe("open");
     // Comment only → pending disposition
-    expect(body.disposition).toBe('pending');
+    expect(body.disposition).toBe("pending");
   });
 
   // AC: @review-records-daemon-api ac-6
-  it('should auto-close on approve verdict', async () => {
-    const response = await makeRequest('POST', `/api/reviews/${REVIEW_OPEN_ULID}/verdicts`, {
-      decision: 'approve',
-      reviewer: 'test@example.com',
+  it("should auto-close on approve verdict", async () => {
+    const response = await makeRequest("POST", `/api/reviews/${REVIEW_OPEN_ULID}/verdicts`, {
+      decision: "approve",
+      reviewer: "test@example.com",
     });
 
     expect(response.status).toBe(200);
     const body = await response.json();
-    expect(body.lifecycle_state).toBe('closed');
+    expect(body.lifecycle_state).toBe("closed");
   });
 
   // AC: @review-records-daemon-api ac-6
-  it('should auto-close on request_changes verdict', async () => {
-    const response = await makeRequest('POST', `/api/reviews/${REVIEW_OPEN_ULID}/verdicts`, {
-      decision: 'request_changes',
-      reviewer: 'test@example.com',
+  it("should auto-close on request_changes verdict", async () => {
+    const response = await makeRequest("POST", `/api/reviews/${REVIEW_OPEN_ULID}/verdicts`, {
+      decision: "request_changes",
+      reviewer: "test@example.com",
     });
 
     expect(response.status).toBe(200);
     const body = await response.json();
-    expect(body.lifecycle_state).toBe('closed');
-    expect(body.disposition).toBe('changes_requested');
+    expect(body.lifecycle_state).toBe("closed");
+    expect(body.disposition).toBe("changes_requested");
   });
 
   // AC: @review-records-daemon-api ac-6
-  it('should record verdict by slug reference', async () => {
-    const response = await makeRequest('POST', '/api/reviews/review-open/verdicts', {
-      decision: 'approve',
-      reviewer: 'test@example.com',
+  it("should record verdict by slug reference", async () => {
+    const response = await makeRequest("POST", "/api/reviews/review-open/verdicts", {
+      decision: "approve",
+      reviewer: "test@example.com",
     });
 
     expect(response.status).toBe(200);
@@ -284,83 +282,81 @@ describe('Review Verdicts API', () => {
 
   // AC: @review-records-daemon-api ac-10
   // AC: @schema-derived-type-definitions ac-1
-  it('should return 400 at the API boundary for invalid decision', async () => {
-    const response = await makeRequest('POST', `/api/reviews/${REVIEW_OPEN_ULID}/verdicts`, {
-      decision: 'invalid_decision',
-      reviewer: 'test@example.com',
+  it("should return 400 at the API boundary for invalid decision", async () => {
+    const response = await makeRequest("POST", `/api/reviews/${REVIEW_OPEN_ULID}/verdicts`, {
+      decision: "invalid_decision",
+      reviewer: "test@example.com",
     });
 
     expect(response.status).toBe(400);
     const body = await response.json();
-    expect(body.error).toBe('validation_error');
-    expect(body.details[0].field).toBe('decision');
-    expect(body.details[0].message).toContain('approve');
+    expect(body.error).toBe("validation_error");
+    expect(body.details[0].field).toBe("decision");
+    expect(body.details[0].message).toContain("approve");
   });
 
   // AC: @review-records-daemon-api ac-10
-  it('should return 400 for missing reviewer', async () => {
-    const response = await makeRequest('POST', `/api/reviews/${REVIEW_OPEN_ULID}/verdicts`, {
-      decision: 'approve',
-      reviewer: '',
+  it("should return 400 for missing reviewer", async () => {
+    const response = await makeRequest("POST", `/api/reviews/${REVIEW_OPEN_ULID}/verdicts`, {
+      decision: "approve",
+      reviewer: "",
     });
 
     expect(response.status).toBe(400);
     const body = await response.json();
-    expect(body.error).toBe('validation_error');
-    expect(body.details[0].field).toBe('reviewer');
+    expect(body.error).toBe("validation_error");
+    expect(body.details[0].field).toBe("reviewer");
   });
 
   // AC: @review-records-daemon-api ac-10
-  it('should return 404 for non-existent review', async () => {
-    const response = await makeRequest('POST', '/api/reviews/nonexistent/verdicts', {
-      decision: 'approve',
-      reviewer: 'test@example.com',
+  it("should return 404 for non-existent review", async () => {
+    const response = await makeRequest("POST", "/api/reviews/nonexistent/verdicts", {
+      decision: "approve",
+      reviewer: "test@example.com",
     });
 
     expect(response.status).toBe(404);
     const body = await response.json();
-    expect(body.error).toBe('not_found');
+    expect(body.error).toBe("not_found");
     expect(body.suggestion).toBeDefined();
   });
 
   // AC: @review-records-daemon-api ac-10
-  it('should return 400 for verdict on archived review', async () => {
-    const response = await makeRequest('POST', `/api/reviews/${REVIEW_ARCHIVED_ULID}/verdicts`, {
-      decision: 'approve',
-      reviewer: 'test@example.com',
+  it("should return 400 for verdict on archived review", async () => {
+    const response = await makeRequest("POST", `/api/reviews/${REVIEW_ARCHIVED_ULID}/verdicts`, {
+      decision: "approve",
+      reviewer: "test@example.com",
     });
 
     expect(response.status).toBe(400);
     const body = await response.json();
-    expect(body.error).toBe('invalid_state');
-    expect(body.current_state).toBe('archived');
-    expect(body.suggestion).toContain('terminal state');
+    expect(body.error).toBe("invalid_state");
+    expect(body.current_state).toBe("archived");
+    expect(body.suggestion).toContain("terminal state");
   });
 
   // AC: @review-records-daemon-api ac-10
-  it('should return 400 for comment verdict on archived review', async () => {
-    const response = await makeRequest('POST', `/api/reviews/${REVIEW_ARCHIVED_ULID}/verdicts`, {
-      decision: 'comment',
-      reviewer: 'test@example.com',
+  it("should return 400 for comment verdict on archived review", async () => {
+    const response = await makeRequest("POST", `/api/reviews/${REVIEW_ARCHIVED_ULID}/verdicts`, {
+      decision: "comment",
+      reviewer: "test@example.com",
     });
 
     expect(response.status).toBe(400);
     const body = await response.json();
-    expect(body.error).toBe('invalid_state');
+    expect(body.error).toBe("invalid_state");
   });
 });
 
-describe('Review Checks API', () => {
+describe("Review Checks API", () => {
   beforeEach(async () => {
-    tempDir = await createTempDir('kspec-review-checks-api-');
+    tempDir = await createTempDir("kspec-review-checks-api-");
     initGitRepo(tempDir);
     setupFixtures();
 
     pubsub = new PubSubManager();
     const { middleware } = projectContextMiddleware();
-    app = new Elysia()
-      .use(middleware)
-      .use(createReviewsRoutes({ pubsub }));
+    app = new Elysia().use(middleware).use(createReviewsRoutes({ pubsub }));
   });
 
   afterEach(async () => {
@@ -368,62 +364,62 @@ describe('Review Checks API', () => {
   });
 
   // AC: @review-records-daemon-api ac-7
-  it('should record a passing check and return gate evaluation', async () => {
-    const response = await makeRequest('POST', `/api/reviews/${REVIEW_OPEN_ULID}/checks`, {
-      name: 'vitest',
-      status: 'pass',
-      runner: 'vitest',
-      evidence: 'All 342 tests passed',
+  it("should record a passing check and return gate evaluation", async () => {
+    const response = await makeRequest("POST", `/api/reviews/${REVIEW_OPEN_ULID}/checks`, {
+      name: "vitest",
+      status: "pass",
+      runner: "vitest",
+      evidence: "All 342 tests passed",
     });
 
     expect(response.status).toBe(200);
     const body = await response.json();
     expect(body.review_ulid).toBe(REVIEW_OPEN_ULID);
     expect(body.check).toBeDefined();
-    expect(body.check.name).toBe('vitest');
-    expect(body.check.status).toBe('pass');
+    expect(body.check.name).toBe("vitest");
+    expect(body.check.status).toBe("pass");
     expect(body.check.required).toBe(true);
     expect(body.gate_state).toBeDefined();
-    expect(body.gate_state).toBe('passing');
+    expect(body.gate_state).toBe("passing");
     expect(body.gate_summary).toBeDefined();
   });
 
   // AC: @review-records-daemon-api ac-7
-  it('should record a failing check and report failing gate state', async () => {
-    const response = await makeRequest('POST', `/api/reviews/${REVIEW_OPEN_ULID}/checks`, {
-      name: 'lint',
-      status: 'fail',
-      runner: 'eslint',
-      evidence: '3 errors found',
+  it("should record a failing check and report failing gate state", async () => {
+    const response = await makeRequest("POST", `/api/reviews/${REVIEW_OPEN_ULID}/checks`, {
+      name: "lint",
+      status: "fail",
+      runner: "eslint",
+      evidence: "3 errors found",
     });
 
     expect(response.status).toBe(200);
     const body = await response.json();
-    expect(body.check.status).toBe('fail');
-    expect(body.gate_state).toBe('failing');
+    expect(body.check.status).toBe("fail");
+    expect(body.gate_state).toBe("failing");
   });
 
   // AC: @review-records-daemon-api ac-7
-  it('should record a non-required (informational) check', async () => {
-    const response = await makeRequest('POST', `/api/reviews/${REVIEW_OPEN_ULID}/checks`, {
-      name: 'coverage',
-      status: 'pass',
+  it("should record a non-required (informational) check", async () => {
+    const response = await makeRequest("POST", `/api/reviews/${REVIEW_OPEN_ULID}/checks`, {
+      name: "coverage",
+      status: "pass",
       required: false,
-      evidence: '87% coverage',
+      evidence: "87% coverage",
     });
 
     expect(response.status).toBe(200);
     const body = await response.json();
     expect(body.check.required).toBe(false);
     // Informational check doesn't affect gate state
-    expect(body.gate_state).toBe('passing');
+    expect(body.gate_state).toBe("passing");
   });
 
   // AC: @review-records-daemon-api ac-7
-  it('should record check by slug reference', async () => {
-    const response = await makeRequest('POST', '/api/reviews/review-open/checks', {
-      name: 'test-suite',
-      status: 'pass',
+  it("should record check by slug reference", async () => {
+    const response = await makeRequest("POST", "/api/reviews/review-open/checks", {
+      name: "test-suite",
+      status: "pass",
     });
 
     expect(response.status).toBe(200);
@@ -432,86 +428,84 @@ describe('Review Checks API', () => {
   });
 
   // AC: @review-records-daemon-api ac-7
-  it('should derive applies_to_version from review subject', async () => {
+  it("should derive applies_to_version from review subject", async () => {
     // Code review has code_compare version
-    const response = await makeRequest('POST', `/api/reviews/${REVIEW_CODE_ULID}/checks`, {
-      name: 'build',
-      status: 'pass',
+    const response = await makeRequest("POST", `/api/reviews/${REVIEW_CODE_ULID}/checks`, {
+      name: "build",
+      status: "pass",
     });
 
     expect(response.status).toBe(200);
     const body = await response.json();
     expect(body.check.applies_to_version).toBeDefined();
-    expect(body.check.applies_to_version.type).toBe('code_compare');
-    expect(body.check.applies_to_version.base_commit).toBe('aaa111');
-    expect(body.check.applies_to_version.head_commit).toBe('bbb222');
+    expect(body.check.applies_to_version.type).toBe("code_compare");
+    expect(body.check.applies_to_version.base_commit).toBe("aaa111");
+    expect(body.check.applies_to_version.head_commit).toBe("bbb222");
   });
 
   // AC: @review-records-daemon-api ac-10
-  it('should return 400 at the API boundary for invalid check status', async () => {
-    const response = await makeRequest('POST', `/api/reviews/${REVIEW_OPEN_ULID}/checks`, {
-      name: 'test',
-      status: 'invalid_status',
+  it("should return 400 at the API boundary for invalid check status", async () => {
+    const response = await makeRequest("POST", `/api/reviews/${REVIEW_OPEN_ULID}/checks`, {
+      name: "test",
+      status: "invalid_status",
     });
 
     expect(response.status).toBe(400);
     const body = await response.json();
-    expect(body.error).toBe('validation_error');
-    expect(body.details[0].field).toBe('status');
-    expect(body.details[0].message).toContain('pass');
+    expect(body.error).toBe("validation_error");
+    expect(body.details[0].field).toBe("status");
+    expect(body.details[0].message).toContain("pass");
   });
 
   // AC: @review-records-daemon-api ac-10
-  it('should return 400 for missing name', async () => {
-    const response = await makeRequest('POST', `/api/reviews/${REVIEW_OPEN_ULID}/checks`, {
-      name: '',
-      status: 'pass',
+  it("should return 400 for missing name", async () => {
+    const response = await makeRequest("POST", `/api/reviews/${REVIEW_OPEN_ULID}/checks`, {
+      name: "",
+      status: "pass",
     });
 
     expect(response.status).toBe(400);
     const body = await response.json();
-    expect(body.error).toBe('validation_error');
-    expect(body.details[0].field).toBe('name');
+    expect(body.error).toBe("validation_error");
+    expect(body.details[0].field).toBe("name");
   });
 
   // AC: @review-records-daemon-api ac-10
-  it('should return 404 for non-existent review', async () => {
-    const response = await makeRequest('POST', '/api/reviews/nonexistent/checks', {
-      name: 'test',
-      status: 'pass',
+  it("should return 404 for non-existent review", async () => {
+    const response = await makeRequest("POST", "/api/reviews/nonexistent/checks", {
+      name: "test",
+      status: "pass",
     });
 
     expect(response.status).toBe(404);
     const body = await response.json();
-    expect(body.error).toBe('not_found');
+    expect(body.error).toBe("not_found");
   });
 
   // AC: @review-records-daemon-api ac-10
-  it('should return 400 for check on archived review', async () => {
-    const response = await makeRequest('POST', `/api/reviews/${REVIEW_ARCHIVED_ULID}/checks`, {
-      name: 'vitest',
-      status: 'pass',
+  it("should return 400 for check on archived review", async () => {
+    const response = await makeRequest("POST", `/api/reviews/${REVIEW_ARCHIVED_ULID}/checks`, {
+      name: "vitest",
+      status: "pass",
     });
 
     expect(response.status).toBe(400);
     const body = await response.json();
-    expect(body.error).toBe('invalid_state');
-    expect(body.current_state).toBe('archived');
-    expect(body.suggestion).toContain('terminal state');
+    expect(body.error).toBe("invalid_state");
+    expect(body.current_state).toBe("archived");
+    expect(body.suggestion).toContain("terminal state");
   });
 });
 
-describe('Review Lifecycle API', () => {
+describe("Review Lifecycle API", () => {
   beforeEach(async () => {
-    tempDir = await createTempDir('kspec-review-lifecycle-api-');
+    tempDir = await createTempDir("kspec-review-lifecycle-api-");
     initGitRepo(tempDir);
     setupFixtures();
 
     pubsub = new PubSubManager();
     const { middleware } = projectContextMiddleware();
-    app = new Elysia()
-      .use(middleware)
-      .use(createReviewsRoutes({ pubsub }));
+    app = new Elysia().use(middleware).use(createReviewsRoutes({ pubsub }));
   });
 
   afterEach(async () => {
@@ -519,75 +513,75 @@ describe('Review Lifecycle API', () => {
   });
 
   // AC: @review-records-daemon-api ac-8
-  it('should transition draft → open', async () => {
-    const response = await makeRequest('PATCH', `/api/reviews/${REVIEW_DRAFT_ULID}/lifecycle`, {
-      target: 'open',
-      actor: 'test@example.com',
+  it("should transition draft → open", async () => {
+    const response = await makeRequest("PATCH", `/api/reviews/${REVIEW_DRAFT_ULID}/lifecycle`, {
+      target: "open",
+      actor: "test@example.com",
     });
 
     expect(response.status).toBe(200);
     const body = await response.json();
     expect(body.review_ulid).toBe(REVIEW_DRAFT_ULID);
-    expect(body.lifecycle_state).toBe('open');
-    expect(body.previous_state).toBe('draft');
+    expect(body.lifecycle_state).toBe("open");
+    expect(body.previous_state).toBe("draft");
   });
 
   // AC: @review-records-daemon-api ac-8
-  it('should transition draft → closed', async () => {
-    const response = await makeRequest('PATCH', `/api/reviews/${REVIEW_DRAFT_ULID}/lifecycle`, {
-      target: 'closed',
-      actor: 'test@example.com',
+  it("should transition draft → closed", async () => {
+    const response = await makeRequest("PATCH", `/api/reviews/${REVIEW_DRAFT_ULID}/lifecycle`, {
+      target: "closed",
+      actor: "test@example.com",
     });
 
     expect(response.status).toBe(200);
     const body = await response.json();
-    expect(body.lifecycle_state).toBe('closed');
-    expect(body.previous_state).toBe('draft');
+    expect(body.lifecycle_state).toBe("closed");
+    expect(body.previous_state).toBe("draft");
   });
 
   // AC: @review-records-daemon-api ac-8
-  it('should transition open → closed', async () => {
-    const response = await makeRequest('PATCH', `/api/reviews/${REVIEW_OPEN_ULID}/lifecycle`, {
-      target: 'closed',
-      actor: 'test@example.com',
+  it("should transition open → closed", async () => {
+    const response = await makeRequest("PATCH", `/api/reviews/${REVIEW_OPEN_ULID}/lifecycle`, {
+      target: "closed",
+      actor: "test@example.com",
     });
 
     expect(response.status).toBe(200);
     const body = await response.json();
-    expect(body.lifecycle_state).toBe('closed');
-    expect(body.previous_state).toBe('open');
+    expect(body.lifecycle_state).toBe("closed");
+    expect(body.previous_state).toBe("open");
   });
 
   // AC: @review-records-daemon-api ac-8
-  it('should transition closed → open (reopen)', async () => {
-    const response = await makeRequest('PATCH', `/api/reviews/${REVIEW_CLOSED_ULID}/lifecycle`, {
-      target: 'open',
-      actor: 'test@example.com',
+  it("should transition closed → open (reopen)", async () => {
+    const response = await makeRequest("PATCH", `/api/reviews/${REVIEW_CLOSED_ULID}/lifecycle`, {
+      target: "open",
+      actor: "test@example.com",
     });
 
     expect(response.status).toBe(200);
     const body = await response.json();
-    expect(body.lifecycle_state).toBe('open');
-    expect(body.previous_state).toBe('closed');
+    expect(body.lifecycle_state).toBe("open");
+    expect(body.previous_state).toBe("closed");
   });
 
   // AC: @review-records-daemon-api ac-8
-  it('should transition closed → archived', async () => {
-    const response = await makeRequest('PATCH', `/api/reviews/${REVIEW_CLOSED_ULID}/lifecycle`, {
-      target: 'archived',
-      actor: 'test@example.com',
+  it("should transition closed → archived", async () => {
+    const response = await makeRequest("PATCH", `/api/reviews/${REVIEW_CLOSED_ULID}/lifecycle`, {
+      target: "archived",
+      actor: "test@example.com",
     });
 
     expect(response.status).toBe(200);
     const body = await response.json();
-    expect(body.lifecycle_state).toBe('archived');
-    expect(body.previous_state).toBe('closed');
+    expect(body.lifecycle_state).toBe("archived");
+    expect(body.previous_state).toBe("closed");
   });
 
   // AC: @review-records-daemon-api ac-8
-  it('should transition by slug reference', async () => {
-    const response = await makeRequest('PATCH', '/api/reviews/review-draft/lifecycle', {
-      target: 'open',
+  it("should transition by slug reference", async () => {
+    const response = await makeRequest("PATCH", "/api/reviews/review-draft/lifecycle", {
+      target: "open",
     });
 
     expect(response.status).toBe(200);
@@ -596,80 +590,80 @@ describe('Review Lifecycle API', () => {
   });
 
   // AC: @review-records-daemon-api ac-8, ac-10 - invalid transition returns 400
-  it('should return 400 at the API boundary for invalid transition target open → draft', async () => {
-    const response = await makeRequest('PATCH', `/api/reviews/${REVIEW_OPEN_ULID}/lifecycle`, {
-      target: 'draft',
+  it("should return 400 at the API boundary for invalid transition target open → draft", async () => {
+    const response = await makeRequest("PATCH", `/api/reviews/${REVIEW_OPEN_ULID}/lifecycle`, {
+      target: "draft",
     });
 
     expect(response.status).toBe(400);
     const body = await response.json();
-    expect(body.error).toBe('validation_error');
-    expect(body.details[0].field).toBe('target');
-    expect(body.details[0].message).toContain('open');
+    expect(body.error).toBe("validation_error");
+    expect(body.details[0].field).toBe("target");
+    expect(body.details[0].message).toContain("open");
   });
 
   // AC: @review-records-daemon-api ac-8, ac-10 - invalid transition returns 400
-  it('should return 400 for invalid transition open → archived (skip closed)', async () => {
-    const response = await makeRequest('PATCH', `/api/reviews/${REVIEW_OPEN_ULID}/lifecycle`, {
-      target: 'archived',
+  it("should return 400 for invalid transition open → archived (skip closed)", async () => {
+    const response = await makeRequest("PATCH", `/api/reviews/${REVIEW_OPEN_ULID}/lifecycle`, {
+      target: "archived",
     });
 
     expect(response.status).toBe(400);
     const body = await response.json();
-    expect(body.error).toBe('invalid_transition');
-    expect(body.current_state).toBe('open');
-    expect(body.valid_transitions).toContain('closed');
+    expect(body.error).toBe("invalid_transition");
+    expect(body.current_state).toBe("open");
+    expect(body.valid_transitions).toContain("closed");
     expect(body.suggestion).toBeDefined();
   });
 
   // AC: @review-records-daemon-api ac-8, ac-10
-  it('should return 400 for transitions from archived (terminal state)', async () => {
-    const response = await makeRequest('PATCH', `/api/reviews/${REVIEW_ARCHIVED_ULID}/lifecycle`, {
-      target: 'open',
+  it("should return 400 for transitions from archived (terminal state)", async () => {
+    const response = await makeRequest("PATCH", `/api/reviews/${REVIEW_ARCHIVED_ULID}/lifecycle`, {
+      target: "open",
     });
 
     expect(response.status).toBe(400);
     const body = await response.json();
-    expect(body.error).toBe('invalid_transition');
-    expect(body.current_state).toBe('archived');
+    expect(body.error).toBe("invalid_transition");
+    expect(body.current_state).toBe("archived");
     expect(body.valid_transitions).toHaveLength(0);
-    expect(body.suggestion).toContain('terminal state');
+    expect(body.suggestion).toContain("terminal state");
   });
 
   // AC: @review-records-daemon-api ac-10
-  it('should return 400 for missing target', async () => {
-    const response = await makeRequest('PATCH', `/api/reviews/${REVIEW_OPEN_ULID}/lifecycle`, {
-      actor: 'test@example.com',
+  it("should return 400 for missing target", async () => {
+    const response = await makeRequest("PATCH", `/api/reviews/${REVIEW_OPEN_ULID}/lifecycle`, {
+      actor: "test@example.com",
     });
 
     expect(response.status).toBe(400);
     const body = await response.json();
-    expect(body.error).toBe('validation_error');
-    expect(body.details[0].field).toBe('target');
+    expect(body.error).toBe("validation_error");
+    expect(body.details[0].field).toBe("target");
   });
 
   // AC: @review-records-daemon-api ac-10
-  it('should return 400 at the API boundary for invalid target value', async () => {
-    const response = await makeRequest('PATCH', `/api/reviews/${REVIEW_OPEN_ULID}/lifecycle`, {
-      target: 'invalid_state',
+  it("should return 400 at the API boundary for invalid target value", async () => {
+    const response = await makeRequest("PATCH", `/api/reviews/${REVIEW_OPEN_ULID}/lifecycle`, {
+      target: "invalid_state",
     });
 
     expect(response.status).toBe(400);
     const body = await response.json();
-    expect(body.error).toBe('validation_error');
-    expect(body.details[0].field).toBe('target');
-    expect(body.details[0].message).toContain('closed');
+    expect(body.error).toBe("validation_error");
+    expect(body.details[0].field).toBe("target");
+    expect(body.details[0].message).toContain("closed");
   });
 
   // AC: @review-records-daemon-api ac-10
-  it('should return 404 for non-existent review', async () => {
-    const response = await makeRequest('PATCH', '/api/reviews/nonexistent/lifecycle', {
-      target: 'open',
+  it("should return 404 for non-existent review", async () => {
+    const response = await makeRequest("PATCH", "/api/reviews/nonexistent/lifecycle", {
+      target: "open",
     });
 
     expect(response.status).toBe(404);
     const body = await response.json();
-    expect(body.error).toBe('not_found');
+    expect(body.error).toBe("not_found");
   });
 });
 

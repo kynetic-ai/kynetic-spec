@@ -11,10 +11,7 @@
 import { z } from "zod";
 import { UlidSchema } from "./common.js";
 import { ActionSchema } from "./action.js";
-import {
-  DispatchEventTypeSchema,
-  PAYLOAD_FIELDS_BY_EVENT_TYPE,
-} from "./event-registry.js";
+import { DispatchEventTypeSchema, PAYLOAD_FIELDS_BY_EVENT_TYPE } from "./event-registry.js";
 
 // ─── Event Type Schema ───────────────────────────────────────────────────────
 
@@ -79,12 +76,7 @@ export function getValidFilterFields(eventType: string): string[] {
  */
 export const HookFilterSchema = z.record(
   z.string(),
-  z.union([
-    z.string(),
-    z.number(),
-    z.boolean(),
-    z.array(z.string()),
-  ]),
+  z.union([z.string(), z.number(), z.boolean(), z.array(z.string())]),
 );
 
 // ─── Hook Schema ─────────────────────────────────────────────────────────────

@@ -77,7 +77,7 @@ export async function getPackagePluginDir(): Promise<string> {
   // Resolve relative to this file: src/lib/ -> ../../plugin
   const rawPath = path.resolve(
     import.meta.dirname || path.dirname(new URL(import.meta.url).pathname),
-    "../../plugin"
+    "../../plugin",
   );
   try {
     return await fs.realpath(rawPath);
@@ -146,7 +146,7 @@ async function modifyJsonAtomic<T>(
   filePath: string,
   defaultValue: T,
   mutator: (data: T) => T,
-  options?: { strict?: boolean }
+  options?: { strict?: boolean },
 ): Promise<T> {
   const maxAttempts = 3;
 
@@ -201,9 +201,9 @@ const MARKETPLACE_KEY = "kspec-plugins";
  *
  * AC: @core-skill-install ac-6, ac-8
  */
-export async function registerCorePluginMarketplace(
-  opts?: { dryRun?: boolean }
-): Promise<RegisterResult> {
+export async function registerCorePluginMarketplace(opts?: {
+  dryRun?: boolean;
+}): Promise<RegisterResult> {
   const dryRun = opts?.dryRun ?? false;
 
   try {
@@ -246,20 +246,16 @@ export async function registerCorePluginMarketplace(
 
     // Register or update
     const action = currentEntry ? "updated" : "registered";
-    await modifyJsonAtomic<KnownMarketplacesJson>(
-      marketplacesPath,
-      {},
-      (data) => ({
-        ...data,
-        [MARKETPLACE_KEY]: {
-          ...data[MARKETPLACE_KEY],
-          source: { source: "directory", path: pluginDir },
-          installLocation: pluginDir,
-          lastUpdated: new Date().toISOString(),
-          autoUpdate: false,
-        },
-      })
-    );
+    await modifyJsonAtomic<KnownMarketplacesJson>(marketplacesPath, {}, (data) => ({
+      ...data,
+      [MARKETPLACE_KEY]: {
+        ...data[MARKETPLACE_KEY],
+        source: { source: "directory", path: pluginDir },
+        installLocation: pluginDir,
+        lastUpdated: new Date().toISOString(),
+        autoUpdate: false,
+      },
+    }));
 
     return {
       success: true,
@@ -285,7 +281,7 @@ export async function registerCorePluginMarketplace(
  */
 export async function enablePluginInProject(
   projectDir: string,
-  opts?: { dryRun?: boolean }
+  opts?: { dryRun?: boolean },
 ): Promise<EnableResult> {
   const dryRun = opts?.dryRun ?? false;
 
@@ -322,7 +318,7 @@ export async function enablePluginInProject(
           "kspec@kspec-plugins": true,
         },
       }),
-      { strict: true }
+      { strict: true },
     );
 
     return {
@@ -372,7 +368,7 @@ export async function checkMarketplaceHealth(): Promise<MarketplaceHealth> {
       try {
         const pkgPath = path.resolve(
           import.meta.dirname || path.dirname(new URL(import.meta.url).pathname),
-          "../../package.json"
+          "../../package.json",
         );
         const pkg = JSON.parse(await fs.readFile(pkgPath, "utf-8"));
         packageVersion = pkg.version;

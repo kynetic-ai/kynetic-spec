@@ -58,10 +58,7 @@ async function setupSplitFixture(tempDir: string): Promise<KspecContext> {
   await fs.mkdir(tasksDir, { recursive: true });
 
   // Write an empty index file
-  await fs.writeFile(
-    path.join(specDir, "project.tasks.yaml"),
-    toYaml([]),
-  );
+  await fs.writeFile(path.join(specDir, "project.tasks.yaml"), toYaml([]));
 
   // Set up shadow-like context
   const ctx: KspecContext = {
@@ -85,7 +82,10 @@ async function createSplitTask(
   ctx: KspecContext,
   ulid: string,
   slug: string,
-  options: { notes?: Array<{ _ulid: string; content: string; created_at: string }>; extraFiles?: Record<string, string> } = {},
+  options: {
+    notes?: Array<{ _ulid: string; content: string; created_at: string }>;
+    extraFiles?: Record<string, string>;
+  } = {},
 ): Promise<void> {
   const taskDir = getTaskDir(ctx, ulid);
   await fs.mkdir(taskDir, { recursive: true });
@@ -104,17 +104,11 @@ async function createSplitTask(
     created_at: "2026-03-20T00:00:00.000Z",
     todos: [],
   };
-  await fs.writeFile(
-    path.join(taskDir, "task.yaml"),
-    toYaml(coreData),
-  );
+  await fs.writeFile(path.join(taskDir, "task.yaml"), toYaml(coreData));
 
   // Write notes.yaml
   const notes = options.notes || [];
-  await fs.writeFile(
-    path.join(taskDir, "notes.yaml"),
-    toYaml({ notes }),
-  );
+  await fs.writeFile(path.join(taskDir, "notes.yaml"), toYaml({ notes }));
 
   // Write any extra files
   if (options.extraFiles) {
@@ -277,9 +271,7 @@ describe("SplitBackend", () => {
       const ulid = testUlid("N0TE");
       const noteUlid = testUlid("ANOT", 1);
       await createSplitTask(ctx, ulid, "notes-test", {
-        notes: [
-          { _ulid: noteUlid, content: "Test note", created_at: "2026-03-20T00:00:00.000Z" },
-        ],
+        notes: [{ _ulid: noteUlid, content: "Test note", created_at: "2026-03-20T00:00:00.000Z" }],
       });
 
       const notesFilePath = getNotesFilePath(ctx, ulid);
@@ -750,10 +742,7 @@ describe("SplitBackend", () => {
       });
 
       // Read task.yaml content before note
-      const taskFileBefore = await readTestOutput(
-        getTaskFilePath(ctx, created._ulid),
-        "utf-8",
-      );
+      const taskFileBefore = await readTestOutput(getTaskFilePath(ctx, created._ulid), "utf-8");
 
       // Add a note
       await manager.addNote(ctx, "@note-test", "Test note content", "@tester");
@@ -761,19 +750,13 @@ describe("SplitBackend", () => {
       // task.yaml should still not contain notes
       // (it will be rewritten because addNote goes through mutateTask,
       // but notes should not appear in task.yaml)
-      const taskFileAfter = await readTestOutput(
-        getTaskFilePath(ctx, created._ulid),
-        "utf-8",
-      );
+      const taskFileAfter = await readTestOutput(getTaskFilePath(ctx, created._ulid), "utf-8");
       const { parse } = await import("yaml");
       const parsedAfter = parse(taskFileAfter);
       expect(parsedAfter.notes).toBeUndefined();
 
       // Notes should be in notes.yaml
-      const notesContent = await readTestOutput(
-        getNotesFilePath(ctx, created._ulid),
-        "utf-8",
-      );
+      const notesContent = await readTestOutput(getNotesFilePath(ctx, created._ulid), "utf-8");
       const parsedNotes = parse(notesContent);
       expect(parsedNotes.notes.length).toBe(1);
       expect(parsedNotes.notes[0].content).toBe("Test note content");
@@ -835,10 +818,8 @@ describe("SplitBackend", () => {
         slugs: ["batch-2"],
       });
 
-      const updated = await manager.mutateTasks(
-        ctx,
-        ["@batch-1", "@batch-2"],
-        (tasks) => tasks.map((t) => ({ ...t, priority: 1 })),
+      const updated = await manager.mutateTasks(ctx, ["@batch-1", "@batch-2"], (tasks) =>
+        tasks.map((t) => ({ ...t, priority: 1 })),
       );
 
       expect(updated.length).toBe(2);
@@ -911,7 +892,13 @@ describe("SplitBackend", () => {
         depends_on: [],
         blocked_by: [],
         created_at: "2026-03-20T00:00:00.000Z",
-        notes: [{ _ulid: testUlid("TNOT", 1), content: "note text", created_at: "2026-03-20T00:00:00.000Z" }],
+        notes: [
+          {
+            _ulid: testUlid("TNOT", 1),
+            content: "note text",
+            created_at: "2026-03-20T00:00:00.000Z",
+          },
+        ],
         todos: [{ id: "t1", text: "todo item", done: false }],
         description: "A description",
         context: ["some-context"],
@@ -1048,10 +1035,12 @@ describe("SplitBackend", () => {
         slugs: ["batch-idx-2"],
       });
 
-      await manager.mutateTasks(
-        ctx,
-        ["@batch-idx-1", "@batch-idx-2"],
-        (tasks) => tasks.map((t) => ({ ...t, status: "in_progress" as const, started_at: "2026-03-20T01:00:00.000Z" })),
+      await manager.mutateTasks(ctx, ["@batch-idx-1", "@batch-idx-2"], (tasks) =>
+        tasks.map((t) => ({
+          ...t,
+          status: "in_progress" as const,
+          started_at: "2026-03-20T01:00:00.000Z",
+        })),
       );
 
       const summaries = await manager.listTasks(ctx);
@@ -1074,7 +1063,12 @@ describe("SplitBackend", () => {
       });
 
       // Add a note (goes through mutateTask)
-      await manager.addNote(ctx, "@note-no-index", "A note with content that stays out of the index", "@tester");
+      await manager.addNote(
+        ctx,
+        "@note-no-index",
+        "A note with content that stays out of the index",
+        "@tester",
+      );
 
       // The index should update notes_count (it's an indexed field)
       const summaries = await manager.listTasks(ctx);
@@ -1750,9 +1744,7 @@ describe("SplitBackend", () => {
       await fs.rm(taskDir, { recursive: true });
 
       // Should not throw
-      await expect(
-        manager.getTask(ctx, created._ulid),
-      ).resolves.toBeDefined();
+      await expect(manager.getTask(ctx, created._ulid)).resolves.toBeDefined();
     });
 
     // AC: @task-detail-loading ac-2
@@ -1789,9 +1781,7 @@ describe("SplitBackend", () => {
 
       // No task created — neither index nor directory exists
       const nonExistentUlid = testUlid("NOPE");
-      await expect(
-        manager.getTask(ctx, nonExistentUlid),
-      ).rejects.toThrow("Task not found");
+      await expect(manager.getTask(ctx, nonExistentUlid)).rejects.toThrow("Task not found");
     });
   });
 });

@@ -44,14 +44,11 @@ describe("Manifest Cleanup", () => {
       const kspecDir = path.join(tempDir, ".kspec");
       const files = await fs.readdir(kspecDir);
       const manifestFile = files.find(
-        (f) => f.endsWith(".yaml") && !f.endsWith(".tasks.yaml") && !f.startsWith("project.")
+        (f) => f.endsWith(".yaml") && !f.endsWith(".tasks.yaml") && !f.startsWith("project."),
       );
       expect(manifestFile).toBeDefined();
 
-      const manifestContent = await fs.readFile(
-        path.join(kspecDir, manifestFile!),
-        "utf-8"
-      );
+      const manifestContent = await fs.readFile(path.join(kspecDir, manifestFile!), "utf-8");
 
       // Should NOT contain config block
       expect(manifestContent).not.toMatch(/^config:/m);
@@ -70,14 +67,11 @@ describe("Manifest Cleanup", () => {
       const kspecDir = path.join(tempDir, ".kspec");
       const files = await fs.readdir(kspecDir);
       const manifestFile = files.find(
-        (f) => f.endsWith(".yaml") && !f.endsWith(".tasks.yaml") && !f.startsWith("project.")
+        (f) => f.endsWith(".yaml") && !f.endsWith(".tasks.yaml") && !f.startsWith("project."),
       );
       expect(manifestFile).toBeDefined();
 
-      const manifestContent = await fs.readFile(
-        path.join(kspecDir, manifestFile!),
-        "utf-8"
-      );
+      const manifestContent = await fs.readFile(path.join(kspecDir, manifestFile!), "utf-8");
 
       // Should NOT contain daemon block
       expect(manifestContent).not.toMatch(/^daemon:/m);
@@ -250,7 +244,7 @@ project:
 daemon:
   port: 5000
   auto_start: false
-`
+`,
       );
 
       // Run CLI command with KSPEC_DEBUG=1 to see debug output
@@ -276,7 +270,7 @@ project:
 config:
   validation:
     strict_refs: true
-`
+`,
       );
 
       // Run CLI command with KSPEC_DEBUG=1 to see debug output
@@ -304,7 +298,7 @@ daemon:
 config:
   validation:
     strict_refs: true
-`
+`,
       );
 
       // Run CLI command without KSPEC_DEBUG

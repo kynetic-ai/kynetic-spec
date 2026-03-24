@@ -32,7 +32,7 @@
 		agentTypes: string[];
 	}
 
-	let { filteredTotal, unfilteredTotal, agentIds, agentTypes }: Props = $props();
+	const { filteredTotal, unfilteredTotal, agentIds, agentTypes }: Props = $props();
 
 	const SESSION_STATUSES = ['active', 'completed', 'failed', 'abandoned', 'timed_out', 'stalled'] as const;
 
@@ -63,20 +63,20 @@
 	};
 
 	// AC: @ui-url-panel-state ac-4 — Derive filter values from $page.url.searchParams
-	let statuses = $derived($page.url.searchParams.getAll('status'));
-	let agentId = $derived($page.url.searchParams.get('agent_id') || '');
-	let agentType = $derived($page.url.searchParams.get('agent_type') || '');
-	let trigger = $derived($page.url.searchParams.get('trigger') || '');
-	let since = $derived($page.url.searchParams.get('since') || '');
-	let taskId = $derived($page.url.searchParams.get('task_id') || '');
-	let specRef = $derived($page.url.searchParams.get('spec_ref') || '');
+	const statuses = $derived($page.url.searchParams.getAll('status'));
+	const agentId = $derived($page.url.searchParams.get('agent_id') || '');
+	const agentType = $derived($page.url.searchParams.get('agent_type') || '');
+	const trigger = $derived($page.url.searchParams.get('trigger') || '');
+	const since = $derived($page.url.searchParams.get('since') || '');
+	const taskId = $derived($page.url.searchParams.get('task_id') || '');
+	const specRef = $derived($page.url.searchParams.get('spec_ref') || '');
 
-	let hasFilters = $derived(
+	const hasFilters = $derived(
 		statuses.length > 0 || agentId || agentType || trigger || since || taskId || specRef
 	);
 
-	let triggerDisplay = $derived(trigger || 'all');
-	let dateRangeDisplay = $derived(getDateRangeDisplay(since));
+	const triggerDisplay = $derived(trigger || 'all');
+	const dateRangeDisplay = $derived(getDateRangeDisplay(since));
 
 	function getPresetSince(preset: string): string | undefined {
 		const now = new Date();

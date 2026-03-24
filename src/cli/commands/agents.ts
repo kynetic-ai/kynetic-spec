@@ -87,7 +87,7 @@ export async function loadTemplateSections(packageRoot: string): Promise<string[
   const mdFiles = entries
     .filter((e) => e.isFile() && e.name.endsWith(".md"))
     .map((e) => e.name)
-    .sort(); // Sort to ensure consistent ordering by filename prefix
+    .toSorted(); // Sort to ensure consistent ordering by filename prefix
 
   if (mdFiles.length === 0) {
     throw new Error(
@@ -279,9 +279,7 @@ async function checkAgentStatus(
  * Register agent instruction generation commands
  */
 export function registerAgentsCommands(program: Command): void {
-  const agents = program
-    .command("agents")
-    .description("Agent instruction generation commands");
+  const agents = program.command("agents").description("Agent instruction generation commands");
 
   // AC: @agent-instruction-gen ac-1 - kspec agents generate
   // AC: @agent-templates ac-3 - error if template directory missing
@@ -305,8 +303,7 @@ export function registerAgentsCommands(program: Command): void {
         try {
           templateSections = await loadTemplateSections(packageRoot);
         } catch (err) {
-          const message =
-            err instanceof Error ? err.message : "Unknown error loading templates";
+          const message = err instanceof Error ? err.message : "Unknown error loading templates";
           error(message, {
             suggestion: `Verify that ${TEMPLATES_DIR}/ exists with markdown files.`,
           });
@@ -326,11 +323,7 @@ export function registerAgentsCommands(program: Command): void {
         );
 
         // Compute meta hash for freshness tracking (includes templates)
-        const metaHash = computeMetaHash(
-          metaCtx.conventions,
-          metaCtx.workflows,
-          templateSections,
-        );
+        const metaHash = computeMetaHash(metaCtx.conventions, metaCtx.workflows, templateSections);
 
         const outputPath = path.join(ctx.rootDir, GENERATED_FILE_NAME);
         const hashPath = path.join(ctx.projectRoot, ".kspec", HASH_FILE_NAME);
@@ -374,9 +367,7 @@ export function registerAgentsCommands(program: Command): void {
               console.log(content);
               console.log(chalk.gray("--- End content ---"));
               console.log();
-              console.log(
-                chalk.yellow("No changes were made. Run without --dry-run to apply."),
-              );
+              console.log(chalk.yellow("No changes were made. Run without --dry-run to apply."));
             },
           );
           return;
@@ -446,16 +437,12 @@ export function registerAgentsCommands(program: Command): void {
         let templateSections: string[] = [];
         try {
           templateSections = await loadTemplateSections(getPackageRoot());
-        } catch (_err) {
+        } catch  {
           // Templates may not exist in all environments
         }
 
         // Compute current meta hash (includes templates)
-        const metaHash = computeMetaHash(
-          metaCtx.conventions,
-          metaCtx.workflows,
-          templateSections,
-        );
+        const metaHash = computeMetaHash(metaCtx.conventions, metaCtx.workflows, templateSections);
 
         const status = await checkAgentStatus(ctx.rootDir, ctx.projectRoot, metaHash);
 
@@ -464,24 +451,14 @@ export function registerAgentsCommands(program: Command): void {
             case "missing":
               console.log(chalk.yellow(`${GENERATED_FILE_NAME} does not exist`));
               console.log();
-              console.log(
-                chalk.gray("Run 'kspec agents generate' to create it."),
-              );
+              console.log(chalk.gray("Run 'kspec agents generate' to create it."));
               break;
 
             case "stale":
-              console.log(
-                chalk.yellow(`${GENERATED_FILE_NAME} is stale`),
-              );
+              console.log(chalk.yellow(`${GENERATED_FILE_NAME} is stale`));
               console.log();
-              console.log(
-                chalk.gray(
-                  "Meta has changed since the file was generated.",
-                ),
-              );
-              console.log(
-                chalk.gray("Run 'kspec agents generate' to regenerate."),
-              );
+              console.log(chalk.gray("Meta has changed since the file was generated."));
+              console.log(chalk.gray("Run 'kspec agents generate' to regenerate."));
               break;
 
             case "current":

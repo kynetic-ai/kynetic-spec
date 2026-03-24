@@ -5,7 +5,7 @@
 	import { SIDEBAR_WIDTH_MOBILE } from "./constants.js";
 	import { useSidebar } from "./context.svelte.js";
 
-	let {
+	const {
 		ref = $bindable(null),
 		side = "left",
 		variant = "sidebar",

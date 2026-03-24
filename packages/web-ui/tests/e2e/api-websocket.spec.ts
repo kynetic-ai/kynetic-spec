@@ -54,7 +54,7 @@
 // AC: @api-contract ac-32 — N/A: backpressure requires sustained flooding beyond E2E capability; implementation verified in pubsub.ts
 // AC: @api-contract ac-33 — N/A: daemon shutdown sends WebSocket close frame (code 1000, reason 'Server shutting down') directly without a preceding JSON shutdown event; the ac-31 clean-close test confirms code 1000 is used for graceful closure
 
-import { test, expect } from '../fixtures/test-base';
+import { test, expect } from "../fixtures/test-base";
 
 /**
  * Connect to the daemon WebSocket from the browser context.
@@ -64,12 +64,12 @@ import { test, expect } from '../fixtures/test-base';
  * which properly handles WebSocket HTTP upgrades (101 Switching Protocols).
  */
 async function connectWebSocket(
-  page: import('@playwright/test').Page,
+  page: import("@playwright/test").Page,
   baseUrl: string,
   wsUrl: string,
 ): Promise<{ sessionId: string; wsHandle: unknown }> {
   // Navigate to daemon root first so browser is in the right origin
-  await page.goto(baseUrl + '/api/health');
+  await page.goto(baseUrl + "/api/health");
 
   // Open WebSocket and wait for the 'connected' event
   const sessionId = await page.evaluate((wsUrl: string) => {
@@ -79,7 +79,7 @@ async function connectWebSocket(
 
       const timeout = setTimeout(() => {
         ws.close();
-        reject(new Error('WebSocket connection timed out after 5s'));
+        reject(new Error("WebSocket connection timed out after 5s"));
       }, 5000);
 
       ws.onopen = () => {
@@ -89,7 +89,7 @@ async function connectWebSocket(
       ws.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
-          if (data.event === 'connected' && data.data?.session_id) {
+          if (data.event === "connected" && data.data?.session_id) {
             clearTimeout(timeout);
             resolve(data.data.session_id);
           }
@@ -100,7 +100,7 @@ async function connectWebSocket(
 
       ws.onerror = (_event) => {
         clearTimeout(timeout);
-        reject(new Error('WebSocket error occurred'));
+        reject(new Error("WebSocket error occurred"));
       };
 
       ws.onclose = (event) => {
@@ -110,7 +110,7 @@ async function connectWebSocket(
         }
       };
     });
-  }, wsUrl + '/ws');
+  }, wsUrl + "/ws");
 
   return { sessionId, wsHandle: null };
 }
@@ -119,19 +119,25 @@ async function connectWebSocket(
  * Send a WebSocket command and wait for the ack response.
  */
 async function sendAndWaitForAck(
-  page: import('@playwright/test').Page,
-  command: { action: string; request_id?: string; payload?: unknown }
-): Promise<{ ack: boolean; request_id?: string; success: boolean; error?: string; details?: string }> {
+  page: import("@playwright/test").Page,
+  command: { action: string; request_id?: string; payload?: unknown },
+): Promise<{
+  ack: boolean;
+  request_id?: string;
+  success: boolean;
+  error?: string;
+  details?: string;
+}> {
   return page.evaluate((cmd: unknown) => {
     return new Promise((resolve, reject) => {
       const ws = (window as unknown as Record<string, WebSocket>).__testWs;
       if (!ws || ws.readyState !== WebSocket.OPEN) {
-        reject(new Error('WebSocket not connected'));
+        reject(new Error("WebSocket not connected"));
         return;
       }
 
       const timeout = setTimeout(() => {
-        reject(new Error('Timed out waiting for ack'));
+        reject(new Error("Timed out waiting for ack"));
       }, 5000);
 
       const originalOnMessage = ws.onmessage;
@@ -163,51 +169,63 @@ async function sendAndWaitForAck(
  * Subscribes to the given topic, then waits for a broadcast event.
  */
 async function subscribeAndWaitForBroadcast(
-  page: import('@playwright/test').Page,
+  page: import("@playwright/test").Page,
   topic: string,
-  trigger: () => Promise<void>
-): Promise<{ msg_id: string; seq: number; timestamp: string; topic: string; event: string; data: unknown }> {
+  trigger: () => Promise<void>,
+): Promise<{
+  msg_id: string;
+  seq: number;
+  timestamp: string;
+  topic: string;
+  event: string;
+  data: unknown;
+}> {
   // Subscribe first
   await sendAndWaitForAck(page, {
-    action: 'subscribe',
-    request_id: 'sub-' + topic,
+    action: "subscribe",
+    request_id: "sub-" + topic,
     payload: { topics: [topic] },
   });
 
   // Set up listener for broadcast, then trigger the action
   const broadcastPromise = page.evaluate((expectedTopic: string) => {
-    return new Promise<{ msg_id: string; seq: number; timestamp: string; topic: string; event: string; data: unknown }>(
-      (resolve, reject) => {
-        const ws = (window as unknown as Record<string, WebSocket>).__testWs;
-        if (!ws || ws.readyState !== WebSocket.OPEN) {
-          reject(new Error('WebSocket not connected'));
-          return;
-        }
-
-        const timeout = setTimeout(() => {
-          reject(new Error(`Timed out waiting for broadcast on topic: ${expectedTopic}`));
-        }, 10000);
-
-        const originalOnMessage = ws.onmessage;
-        ws.onmessage = (event) => {
-          try {
-            const data = JSON.parse(event.data);
-            // Broadcast events have msg_id, seq, timestamp, topic, event, data fields
-            if (data.topic === expectedTopic && data.msg_id) {
-              clearTimeout(timeout);
-              ws.onmessage = originalOnMessage;
-              resolve(data);
-              return;
-            }
-          } catch {
-            // not JSON or not the expected format
-          }
-          if (originalOnMessage) {
-            originalOnMessage.call(ws, event);
-          }
-        };
+    return new Promise<{
+      msg_id: string;
+      seq: number;
+      timestamp: string;
+      topic: string;
+      event: string;
+      data: unknown;
+    }>((resolve, reject) => {
+      const ws = (window as unknown as Record<string, WebSocket>).__testWs;
+      if (!ws || ws.readyState !== WebSocket.OPEN) {
+        reject(new Error("WebSocket not connected"));
+        return;
       }
-    );
+
+      const timeout = setTimeout(() => {
+        reject(new Error(`Timed out waiting for broadcast on topic: ${expectedTopic}`));
+      }, 10000);
+
+      const originalOnMessage = ws.onmessage;
+      ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          // Broadcast events have msg_id, seq, timestamp, topic, event, data fields
+          if (data.topic === expectedTopic && data.msg_id) {
+            clearTimeout(timeout);
+            ws.onmessage = originalOnMessage;
+            resolve(data);
+            return;
+          }
+        } catch {
+          // not JSON or not the expected format
+        }
+        if (originalOnMessage) {
+          originalOnMessage.call(ws, event);
+        }
+      };
+    });
   }, topic);
 
   // Trigger the action that should cause a broadcast
@@ -216,11 +234,14 @@ async function subscribeAndWaitForBroadcast(
   return broadcastPromise;
 }
 
-test.describe('WebSocket Protocol API', () => {
-  test.describe('Connection Lifecycle', () => {
+test.describe("WebSocket Protocol API", () => {
+  test.describe("Connection Lifecycle", () => {
     // AC: @api-contract ac-25, @trait-websocket-protocol ac-1
-    test('connects to /ws and receives connected event with session_id', async ({ page, daemon }) => {
-      await page.goto(daemon.baseUrl + '/api/health');
+    test("connects to /ws and receives connected event with session_id", async ({
+      page,
+      daemon,
+    }) => {
+      await page.goto(daemon.baseUrl + "/api/health");
 
       const result = await page.evaluate((wsUrl: string) => {
         return new Promise<{ event: string; session_id: string; rawMessage: string }>(
@@ -230,7 +251,7 @@ test.describe('WebSocket Protocol API', () => {
 
             const timeout = setTimeout(() => {
               ws.close();
-              reject(new Error('WebSocket connection timed out'));
+              reject(new Error("WebSocket connection timed out"));
             }, 5000);
 
             ws.onmessage = (event) => {
@@ -244,47 +265,47 @@ test.describe('WebSocket Protocol API', () => {
                 });
               } catch {
                 clearTimeout(timeout);
-                reject(new Error('Could not parse connected event: ' + event.data));
+                reject(new Error("Could not parse connected event: " + event.data));
               }
             };
 
             ws.onerror = () => {
               clearTimeout(timeout);
-              reject(new Error('WebSocket error'));
+              reject(new Error("WebSocket error"));
             };
-          }
+          },
         );
-      }, daemon.wsUrl + '/ws');
+      }, daemon.wsUrl + "/ws");
 
       // AC: @api-contract ac-25
-      expect(result.event).toBe('connected');
+      expect(result.event).toBe("connected");
       // AC: @trait-websocket-protocol ac-1 — unique session_id assigned
       expect(result.session_id).toBeTruthy();
-      expect(typeof result.session_id).toBe('string');
+      expect(typeof result.session_id).toBe("string");
       expect(result.session_id.length).toBeGreaterThan(0);
     });
 
     // AC: @api-contract ac-25, @trait-websocket-protocol ac-1
-    test('each connection gets a unique session_id', async ({ page, daemon }) => {
-      await page.goto(daemon.baseUrl + '/api/health');
+    test("each connection gets a unique session_id", async ({ page, daemon }) => {
+      await page.goto(daemon.baseUrl + "/api/health");
 
       const sessionIds = await page.evaluate((wsUrl: string) => {
         return new Promise<string[]>((resolve, reject) => {
           const ids: string[] = [];
-          let connected = 0;
+          const connected = 0;
 
           function connectAndGetId(): Promise<string> {
             return new Promise((res, rej) => {
               const ws = new WebSocket(wsUrl);
               const timeout = setTimeout(() => {
                 ws.close();
-                rej(new Error('Timeout'));
+                rej(new Error("Timeout"));
               }, 5000);
 
               ws.onmessage = (event) => {
                 try {
                   const data = JSON.parse(event.data);
-                  if (data.event === 'connected') {
+                  if (data.event === "connected") {
                     clearTimeout(timeout);
                     ws.close();
                     res(data.data.session_id);
@@ -296,7 +317,7 @@ test.describe('WebSocket Protocol API', () => {
 
               ws.onerror = () => {
                 clearTimeout(timeout);
-                rej(new Error('WebSocket error'));
+                rej(new Error("WebSocket error"));
               };
             });
           }
@@ -313,19 +334,19 @@ test.describe('WebSocket Protocol API', () => {
             })
             .catch(reject);
         });
-      }, daemon.wsUrl + '/ws');
+      }, daemon.wsUrl + "/ws");
 
       expect(sessionIds).toHaveLength(2);
       expect(sessionIds[0]).not.toBe(sessionIds[1]);
     });
 
     // AC: @ws-disconnect-lifecycle-cleanup ac-1
-    test('api health connection count decrements after one of multiple clients disconnects', async ({
+    test("api health connection count decrements after one of multiple clients disconnects", async ({
       page,
       daemon,
       request,
     }) => {
-      await page.goto(daemon.baseUrl + '/api/health');
+      await page.goto(daemon.baseUrl + "/api/health");
 
       const baselineResponse = await request.get(`${daemon.baseUrl}/api/health`);
       expect(baselineResponse.ok()).toBe(true);
@@ -338,7 +359,7 @@ test.describe('WebSocket Protocol API', () => {
           let connected = 0;
 
           const timeout = setTimeout(() => {
-            reject(new Error('Timed out waiting for two websocket connections'));
+            reject(new Error("Timed out waiting for two websocket connections"));
           }, 5000);
 
           const onConnected = () => {
@@ -357,7 +378,7 @@ test.describe('WebSocket Protocol API', () => {
             ws.onmessage = (event) => {
               try {
                 const data = JSON.parse(event.data);
-                if (data.event === 'connected' && data.data?.session_id) {
+                if (data.event === "connected" && data.data?.session_id) {
                   onConnected();
                 }
               } catch {
@@ -367,11 +388,11 @@ test.describe('WebSocket Protocol API', () => {
 
             ws.onerror = () => {
               clearTimeout(timeout);
-              reject(new Error('WebSocket error while opening connection-count test clients'));
+              reject(new Error("WebSocket error while opening connection-count test clients"));
             };
           }
         });
-      }, daemon.wsUrl + '/ws');
+      }, daemon.wsUrl + "/ws");
 
       const afterConnectResponse = await request.get(`${daemon.baseUrl}/api/health`);
       expect(afterConnectResponse.ok()).toBe(true);
@@ -380,19 +401,23 @@ test.describe('WebSocket Protocol API', () => {
 
       await page.evaluate(() => {
         return new Promise<void>((resolve, reject) => {
-          const sockets = (window as unknown as Record<string, WebSocket[]>).__disconnectCountSockets;
+          const sockets = (window as unknown as Record<string, WebSocket[]>)
+            .__disconnectCountSockets;
           const first = sockets?.[0];
           if (!first) {
-            reject(new Error('Missing first socket'));
+            reject(new Error("Missing first socket"));
             return;
           }
 
-          const timeout = setTimeout(() => reject(new Error('Timed out waiting for first socket close')), 5000);
+          const timeout = setTimeout(
+            () => reject(new Error("Timed out waiting for first socket close")),
+            5000,
+          );
           first.onclose = () => {
             clearTimeout(timeout);
             resolve();
           };
-          first.close(1000, 'count test close');
+          first.close(1000, "count test close");
         });
       });
 
@@ -413,39 +438,39 @@ test.describe('WebSocket Protocol API', () => {
         const sockets = (window as unknown as Record<string, WebSocket[]>).__disconnectCountSockets;
         const second = sockets?.[1];
         if (second && second.readyState === WebSocket.OPEN) {
-          second.close(1000, 'cleanup');
+          second.close(1000, "cleanup");
         }
         delete (window as unknown as Record<string, unknown>).__disconnectCountSockets;
       });
     });
   });
 
-  test.describe('Command Protocol', () => {
+  test.describe("Command Protocol", () => {
     test.beforeEach(async ({ page, daemon }) => {
       // Establish WebSocket connection before each test
       await connectWebSocket(page, daemon.baseUrl, daemon.wsUrl);
     });
 
     // AC: @api-contract ac-26, @api-contract ac-27, @trait-websocket-protocol ac-2
-    test('subscribe command receives ack with request_id and success', async ({ page, daemon }) => {
+    test("subscribe command receives ack with request_id and success", async ({ page, daemon }) => {
       const ack = await sendAndWaitForAck(page, {
-        action: 'subscribe',
-        request_id: 'req-subscribe-001',
-        payload: { topics: ['files:updates'] },
+        action: "subscribe",
+        request_id: "req-subscribe-001",
+        payload: { topics: ["files:updates"] },
       });
 
       // AC: @api-contract ac-27 — ack format
       expect(ack.ack).toBe(true);
       expect(ack.success).toBe(true);
-      expect(ack.request_id).toBe('req-subscribe-001');
+      expect(ack.request_id).toBe("req-subscribe-001");
       expect(ack.error).toBeUndefined();
     });
 
     // AC: @api-contract ac-26, @api-contract ac-27
-    test('subscribe command works without request_id', async ({ page, daemon }) => {
+    test("subscribe command works without request_id", async ({ page, daemon }) => {
       const ack = await sendAndWaitForAck(page, {
-        action: 'subscribe',
-        payload: { topics: ['files:updates'] },
+        action: "subscribe",
+        payload: { topics: ["files:updates"] },
       });
 
       expect(ack.ack).toBe(true);
@@ -453,31 +478,31 @@ test.describe('WebSocket Protocol API', () => {
     });
 
     // AC: @api-contract ac-26, @api-contract ac-27
-    test('ping command receives ack', async ({ page, daemon }) => {
+    test("ping command receives ack", async ({ page, daemon }) => {
       const ack = await sendAndWaitForAck(page, {
-        action: 'ping',
-        request_id: 'req-ping-001',
+        action: "ping",
+        request_id: "req-ping-001",
       });
 
       expect(ack.ack).toBe(true);
       expect(ack.success).toBe(true);
-      expect(ack.request_id).toBe('req-ping-001');
+      expect(ack.request_id).toBe("req-ping-001");
     });
 
     // AC: @api-contract ac-30
     // Note: implementation sends {ack: true, success: false, error: 'validation_error'} for ALL
     // error responses (ack always confirms receipt; success: false indicates the error).
-    test('malformed JSON command returns validation_error ack', async ({ page, daemon }) => {
+    test("malformed JSON command returns validation_error ack", async ({ page, daemon }) => {
       const result = await page.evaluate(() => {
         return new Promise<{ ack: boolean; success: boolean; error: string }>((resolve, reject) => {
           const ws = (window as unknown as Record<string, WebSocket>).__testWs;
           if (!ws || ws.readyState !== WebSocket.OPEN) {
-            reject(new Error('WebSocket not connected'));
+            reject(new Error("WebSocket not connected"));
             return;
           }
 
           const timeout = setTimeout(() => {
-            reject(new Error('Timed out waiting for error ack'));
+            reject(new Error("Timed out waiting for error ack"));
           }, 5000);
 
           const originalOnMessage = ws.onmessage;
@@ -500,29 +525,29 @@ test.describe('WebSocket Protocol API', () => {
           };
 
           // Send malformed JSON
-          ws.send('not-valid-json{{{');
+          ws.send("not-valid-json{{{");
         });
       });
 
       // AC: @api-contract ac-30
       expect(result.ack).toBe(true); // ack always confirms receipt
       expect(result.success).toBe(false);
-      expect(result.error).toBe('validation_error');
+      expect(result.error).toBe("validation_error");
     });
 
     // AC: @api-contract ac-30
-    test('command missing action field returns validation_error', async ({ page, daemon }) => {
+    test("command missing action field returns validation_error", async ({ page, daemon }) => {
       const result = await page.evaluate(() => {
         return new Promise<{ ack: boolean; success: boolean; error: string; details?: string }>(
           (resolve, reject) => {
             const ws = (window as unknown as Record<string, WebSocket>).__testWs;
             if (!ws || ws.readyState !== WebSocket.OPEN) {
-              reject(new Error('WebSocket not connected'));
+              reject(new Error("WebSocket not connected"));
               return;
             }
 
             const timeout = setTimeout(() => {
-              reject(new Error('Timed out'));
+              reject(new Error("Timed out"));
             }, 5000);
 
             const originalOnMessage = ws.onmessage;
@@ -545,86 +570,86 @@ test.describe('WebSocket Protocol API', () => {
             };
 
             // Send JSON without required action field
-            ws.send(JSON.stringify({ payload: { topics: ['files:updates'] } }));
-          }
+            ws.send(JSON.stringify({ payload: { topics: ["files:updates"] } }));
+          },
         );
       });
 
       // AC: @api-contract ac-30
       expect(result.ack).toBe(true); // ack always confirms receipt
       expect(result.success).toBe(false);
-      expect(result.error).toBe('validation_error');
-      expect(result.details).toContain('Missing action field');
+      expect(result.error).toBe("validation_error");
+      expect(result.details).toContain("Missing action field");
     });
 
     // AC: @api-contract ac-28, @api-contract ac-30
-    test('subscribe with missing topics returns validation_error', async ({ page, daemon }) => {
+    test("subscribe with missing topics returns validation_error", async ({ page, daemon }) => {
       const ack = await sendAndWaitForAck(page, {
-        action: 'subscribe',
-        request_id: 'req-bad-sub',
+        action: "subscribe",
+        request_id: "req-bad-sub",
         payload: {}, // missing topics
       });
 
       expect(ack.ack).toBe(true); // ack frame is always true
       expect(ack.success).toBe(false);
-      expect(ack.error).toBe('validation_error');
+      expect(ack.error).toBe("validation_error");
     });
   });
 
-  test.describe('Broadcast Events', () => {
+  test.describe("Broadcast Events", () => {
     test.beforeEach(async ({ page, daemon }) => {
       await connectWebSocket(page, daemon.baseUrl, daemon.wsUrl);
     });
 
     // AC: @api-contract ac-28, @api-contract ac-29, @trait-websocket-protocol ac-2, ac-3, @daemon-server ac-4
-    test('subscribed client receives broadcast when task note is added', async ({ page, daemon, request }) => {
+    test("subscribed client receives broadcast when task note is added", async ({
+      page,
+      daemon,
+      request,
+    }) => {
       // Subscribe to files:updates then add a task note to trigger broadcast
-      const broadcast = await subscribeAndWaitForBroadcast(
-        page,
-        'files:updates',
-        async () => {
-          // Trigger a mutation via HTTP API that causes file change broadcast
-          // Add a note to an existing task (fixture tasks exist)
-          const tasksResponse = await request.get(`${daemon.baseUrl}/api/tasks`);
-          const tasksBody = await tasksResponse.json();
-          expect(tasksBody.items.length).toBeGreaterThan(0);
+      const broadcast = await subscribeAndWaitForBroadcast(page, "files:updates", async () => {
+        // Trigger a mutation via HTTP API that causes file change broadcast
+        // Add a note to an existing task (fixture tasks exist)
+        const tasksResponse = await request.get(`${daemon.baseUrl}/api/tasks`);
+        const tasksBody = await tasksResponse.json();
+        expect(tasksBody.items.length).toBeGreaterThan(0);
 
-          const taskRef = tasksBody.items[0]._ulid;
-          const noteResponse = await request.post(`${daemon.baseUrl}/api/tasks/${taskRef}/note`, {
-            data: {
-              content: 'E2E WebSocket broadcast test note',
-              author: '@test',
-            },
-          });
-          expect(noteResponse.status()).toBe(200);
-        }
-      );
+        const taskRef = tasksBody.items[0]._ulid;
+        const noteResponse = await request.post(`${daemon.baseUrl}/api/tasks/${taskRef}/note`, {
+          data: {
+            content: "E2E WebSocket broadcast test note",
+            author: "@test",
+          },
+        });
+        expect(noteResponse.status()).toBe(200);
+      });
 
       // AC: @api-contract ac-29, @trait-websocket-protocol ac-3 — broadcast format
-      expect(broadcast).toHaveProperty('msg_id');
-      expect(typeof broadcast.msg_id).toBe('string');
+      expect(broadcast).toHaveProperty("msg_id");
+      expect(typeof broadcast.msg_id).toBe("string");
       expect(broadcast.msg_id.length).toBeGreaterThan(0);
 
-      expect(broadcast).toHaveProperty('seq');
-      expect(typeof broadcast.seq).toBe('number');
+      expect(broadcast).toHaveProperty("seq");
+      expect(typeof broadcast.seq).toBe("number");
       expect(broadcast.seq).toBeGreaterThan(0);
 
-      expect(broadcast).toHaveProperty('timestamp');
-      expect(typeof broadcast.timestamp).toBe('string');
+      expect(broadcast).toHaveProperty("timestamp");
+      expect(typeof broadcast.timestamp).toBe("string");
       // Verify ISO timestamp format — new Date(invalid) returns Invalid Date (not NaN/throw)
       expect(isNaN(new Date(broadcast.timestamp).getTime())).toBe(false);
 
-      expect(broadcast).toHaveProperty('topic');
-      expect(broadcast.topic).toBe('files:updates');
+      expect(broadcast).toHaveProperty("topic");
+      expect(broadcast.topic).toBe("files:updates");
 
-      expect(broadcast).toHaveProperty('event');
-      expect(typeof broadcast.event).toBe('string');
+      expect(broadcast).toHaveProperty("event");
+      expect(typeof broadcast.event).toBe("string");
 
-      expect(broadcast).toHaveProperty('data');
+      expect(broadcast).toHaveProperty("data");
     });
 
     // AC: @api-contract ac-29, @trait-websocket-protocol ac-3
-    test('sequence numbers increment across broadcasts', async ({ page, daemon, request }) => {
+    test("sequence numbers increment across broadcasts", async ({ page, daemon, request }) => {
       // Get first task from fixture
       const tasksResponse = await request.get(`${daemon.baseUrl}/api/tasks`);
       const tasksBody = await tasksResponse.json();
@@ -632,9 +657,9 @@ test.describe('WebSocket Protocol API', () => {
 
       // Subscribe to files:updates
       await sendAndWaitForAck(page, {
-        action: 'subscribe',
-        request_id: 'seq-test-sub',
-        payload: { topics: ['files:updates'] },
+        action: "subscribe",
+        request_id: "seq-test-sub",
+        payload: { topics: ["files:updates"] },
       });
 
       // Helper to wait for next broadcast
@@ -643,17 +668,17 @@ test.describe('WebSocket Protocol API', () => {
           return new Promise<{ seq: number }>((resolve, reject) => {
             const ws = (window as unknown as Record<string, WebSocket>).__testWs;
             if (!ws) {
-              reject(new Error('No WebSocket'));
+              reject(new Error("No WebSocket"));
               return;
             }
 
-            const timeout = setTimeout(() => reject(new Error('Timeout')), 8000);
+            const timeout = setTimeout(() => reject(new Error("Timeout")), 8000);
             const original = ws.onmessage;
 
             ws.onmessage = (event) => {
               try {
                 const data = JSON.parse(event.data);
-                if (data.topic === 'files:updates' && data.msg_id) {
+                if (data.topic === "files:updates" && data.msg_id) {
                   clearTimeout(timeout);
                   ws.onmessage = original;
                   resolve({ seq: data.seq });
@@ -671,14 +696,14 @@ test.describe('WebSocket Protocol API', () => {
       // Trigger first broadcast
       const firstBroadcastPromise = waitForNextBroadcast(page);
       await request.post(`${daemon.baseUrl}/api/tasks/${taskRef}/note`, {
-        data: { content: 'Seq test note 1', author: '@test' },
+        data: { content: "Seq test note 1", author: "@test" },
       });
       const first = await firstBroadcastPromise;
 
       // Trigger second broadcast
       const secondBroadcastPromise = waitForNextBroadcast(page);
       await request.post(`${daemon.baseUrl}/api/tasks/${taskRef}/note`, {
-        data: { content: 'Seq test note 2', author: '@test' },
+        data: { content: "Seq test note 2", author: "@test" },
       });
       const second = await secondBroadcastPromise;
 
@@ -687,22 +712,22 @@ test.describe('WebSocket Protocol API', () => {
     });
 
     // AC: @api-contract ac-28
-    test('unsubscribed client does NOT receive broadcasts for that topic', async ({
+    test("unsubscribed client does NOT receive broadcasts for that topic", async ({
       page,
       daemon,
       request,
     }) => {
       // Subscribe then unsubscribe
       await sendAndWaitForAck(page, {
-        action: 'subscribe',
-        request_id: 'unsub-test-sub',
-        payload: { topics: ['files:updates'] },
+        action: "subscribe",
+        request_id: "unsub-test-sub",
+        payload: { topics: ["files:updates"] },
       });
 
       const unsubAck = await sendAndWaitForAck(page, {
-        action: 'unsubscribe',
-        request_id: 'unsub-test-unsub',
-        payload: { topics: ['files:updates'] },
+        action: "unsubscribe",
+        request_id: "unsub-test-unsub",
+        payload: { topics: ["files:updates"] },
       });
 
       expect(unsubAck.ack).toBe(true);
@@ -729,7 +754,7 @@ test.describe('WebSocket Protocol API', () => {
             ws.onmessage = (event) => {
               try {
                 const data = JSON.parse(event.data);
-                if (data.topic === 'files:updates' && data.msg_id) {
+                if (data.topic === "files:updates" && data.msg_id) {
                   broadcastReceived = true;
                 }
               } catch {
@@ -741,9 +766,9 @@ test.describe('WebSocket Protocol API', () => {
             // Trigger mutation via fetch — verify it succeeds so we know the broadcast
             // would have been sent (but shouldn't arrive since we're unsubscribed)
             fetch(`${daemonUrl}/api/tasks/${taskRefParam}/note`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ content: 'Unsub test note', author: '@test' }),
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ content: "Unsub test note", author: "@test" }),
             }).then((response) => {
               if (!response.ok) {
                 ws.onmessage = original;
@@ -758,7 +783,7 @@ test.describe('WebSocket Protocol API', () => {
             });
           });
         },
-        { taskRefParam: taskRef, daemonUrl: daemon.baseUrl }
+        { taskRefParam: taskRef, daemonUrl: daemon.baseUrl },
       );
 
       // AC: @api-contract ac-28 — unsubscribed clients don't receive broadcasts
@@ -766,27 +791,27 @@ test.describe('WebSocket Protocol API', () => {
     });
   });
 
-  test.describe('Connection Lifecycle - Clean Close', () => {
+  test.describe("Connection Lifecycle - Clean Close", () => {
     // AC: @api-contract ac-31 — close code 1000 for clean close
-    test('clean close uses code 1000', async ({ page, daemon }) => {
-      await page.goto(daemon.baseUrl + '/api/health');
+    test("clean close uses code 1000", async ({ page, daemon }) => {
+      await page.goto(daemon.baseUrl + "/api/health");
 
       const closeCode = await page.evaluate((wsUrl: string) => {
         return new Promise<number>((resolve, reject) => {
           const ws = new WebSocket(wsUrl);
 
           const timeout = setTimeout(() => {
-            reject(new Error('Timeout waiting for connection'));
+            reject(new Error("Timeout waiting for connection"));
           }, 5000);
 
           ws.onmessage = (event) => {
             try {
               const data = JSON.parse(event.data);
-              if (data.event === 'connected') {
+              if (data.event === "connected") {
                 clearTimeout(timeout);
                 // Initiate clean close from client side
                 // Server will echo close with 1000
-                ws.close(1000, 'Test clean close');
+                ws.close(1000, "Test clean close");
               }
             } catch {
               // ignore
@@ -798,22 +823,22 @@ test.describe('WebSocket Protocol API', () => {
           };
 
           ws.onerror = () => {
-            reject(new Error('WebSocket error'));
+            reject(new Error("WebSocket error"));
           };
         });
-      }, daemon.wsUrl + '/ws');
+      }, daemon.wsUrl + "/ws");
 
       // AC: @api-contract ac-31 — clean close uses code 1000
       expect(closeCode).toBe(1000);
     });
   });
 
-  test.describe('Heartbeat Protocol', () => {
+  test.describe("Heartbeat Protocol", () => {
     // AC: @trait-websocket-protocol ac-4 — connection stays alive (implicitly: heartbeat mechanism
     // prevents premature close when connections are active but not sending messages)
     // Note: 30s ping interval and 90s pong timeout cannot be verified within E2E timeout budget.
     // This test verifies the connection remains functional after a brief idle period.
-    test('connection remains active and responsive after idle', async ({ page, daemon }) => {
+    test("connection remains active and responsive after idle", async ({ page, daemon }) => {
       await connectWebSocket(page, daemon.baseUrl, daemon.wsUrl);
 
       // Wait 2 seconds and verify connection is still active by sending a ping
@@ -829,8 +854,8 @@ test.describe('WebSocket Protocol API', () => {
 
       // Verify we can still send commands on the alive connection
       const ack = await sendAndWaitForAck(page, {
-        action: 'ping',
-        request_id: 'heartbeat-alive-test',
+        action: "ping",
+        request_id: "heartbeat-alive-test",
       });
 
       expect(ack.success).toBe(true);

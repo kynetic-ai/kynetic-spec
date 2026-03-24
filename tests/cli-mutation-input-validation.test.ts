@@ -82,28 +82,20 @@ describe("Integration: CLI mutation input validation", () => {
       tempDir,
     );
 
-    result = kspecRun(
-      "item set @mutable-item --type invalid-type",
-      tempDir,
-      { expectFail: true },
-    );
+    result = kspecRun("item set @mutable-item --type invalid-type", tempDir, { expectFail: true });
     expect(result.exitCode).toBe(4);
     expect(result.stderr).toContain("Invalid item type");
 
-    result = kspecRun(
-      "item set @mutable-item --status invalid-status",
-      tempDir,
-      { expectFail: true },
-    );
+    result = kspecRun("item set @mutable-item --status invalid-status", tempDir, {
+      expectFail: true,
+    });
     expect(result.exitCode).toBe(4);
     expect(result.stderr).toContain("Invalid implementation status");
     expect(result.stderr).toContain("not_started, in_progress, implemented, verified");
 
-    result = kspecRun(
-      "item set @mutable-item --maturity invalid-maturity",
-      tempDir,
-      { expectFail: true },
-    );
+    result = kspecRun("item set @mutable-item --maturity invalid-maturity", tempDir, {
+      expectFail: true,
+    });
     expect(result.exitCode).toBe(4);
     expect(result.stderr).toContain("Invalid maturity");
     expect(result.stderr).toContain("draft, proposed, stable, deferred, deprecated");
@@ -137,11 +129,9 @@ describe("Integration: CLI mutation input validation", () => {
 
     kspec('plan add --title "Valid plan" --content "text" --slug valid-plan', tempDir);
 
-    result = kspecRun(
-      "plan set @valid-plan --status invalid-status",
-      tempDir,
-      { expectFail: true },
-    );
+    result = kspecRun("plan set @valid-plan --status invalid-status", tempDir, {
+      expectFail: true,
+    });
     expect(result.exitCode).toBe(4);
     expect(result.stderr).toContain("Invalid plan status");
 
@@ -157,7 +147,10 @@ describe("Integration: CLI mutation input validation", () => {
   // AC: @trait-type-safe-input ac-3
   // AC: @trait-semantic-exit-codes ac-2
   it("rejects invalid review check statuses before recording checks", () => {
-    kspec("review add --title 'Check status review' --base a1 --head b1 --slug check-status-review", tempDir);
+    kspec(
+      "review add --title 'Check status review' --base a1 --head b1 --slug check-status-review",
+      tempDir,
+    );
 
     const result = kspecRun(
       "review check @check-status-review --name tests --status invalid-status",
@@ -179,10 +172,7 @@ describe("Integration: CLI mutation input validation", () => {
   // AC: @cli-input-type-safety ac-4
   // AC: @trait-semantic-exit-codes ac-1
   it("accepts valid values and valid defaults for the mutated commands", () => {
-    kspec(
-      'task add --title "Valid bug task" --type bug --slug valid-bug-task',
-      tempDir,
-    );
+    kspec('task add --title "Valid bug task" --type bug --slug valid-bug-task', tempDir);
     const task = kspecJson<{ type: string }>("task get @valid-bug-task", tempDir);
     expect(task.type).toBe("bug");
 
@@ -190,11 +180,9 @@ describe("Integration: CLI mutation input validation", () => {
       'item add --under @test-core --title "Valid requirement item" --type requirement --slug valid-requirement-item',
       tempDir,
     );
-    kspec(
-      "item set @valid-requirement-item --status implemented --maturity stable",
-      tempDir,
-      { stdin: "n" },
-    );
+    kspec("item set @valid-requirement-item --status implemented --maturity stable", tempDir, {
+      stdin: "n",
+    });
     const item = kspecJson<{
       type: string;
       status?: { implementation?: string; maturity?: string };
@@ -205,24 +193,24 @@ describe("Integration: CLI mutation input validation", () => {
 
     kspec('inbox add "Inbox to promote"', tempDir);
     const inboxItems = kspecJson<Array<{ _ulid: string }>>("inbox list", tempDir);
+    kspec(`inbox promote @${inboxItems[0]._ulid} --title "Default promote type"`, tempDir);
+    const promotedTasks = kspecJson<Array<{ title: string; type: string }>>("tasks list", tempDir);
+    expect(promotedTasks.find((entry) => entry.title === "Default promote type")?.type).toBe(
+      "task",
+    );
+
     kspec(
-      `inbox promote @${inboxItems[0]._ulid} --title "Default promote type"`,
+      'plan add --title "Default status plan" --content "body" --slug default-status-plan',
       tempDir,
     );
-    const promotedTasks = kspecJson<Array<{ title: string; type: string }>>("tasks list", tempDir);
-    expect(
-      promotedTasks.find((entry) => entry.title === "Default promote type")?.type,
-    ).toBe("task");
-
-    kspec('plan add --title "Default status plan" --content "body" --slug default-status-plan', tempDir);
     const plan = kspecJson<{ status: string }>("plan get @default-status-plan", tempDir);
     expect(plan.status).toBe("draft");
 
-    kspec("review add --title 'Valid check review' --base a1 --head b1 --slug valid-check-review", tempDir);
     kspec(
-      "review check @valid-check-review --name tests --status pass",
+      "review add --title 'Valid check review' --base a1 --head b1 --slug valid-check-review",
       tempDir,
     );
+    kspec("review check @valid-check-review --name tests --status pass", tempDir);
     const review = kspecJson<{ checks: Array<{ status: string }> }>(
       "review get @valid-check-review",
       tempDir,

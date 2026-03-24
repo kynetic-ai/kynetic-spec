@@ -19,56 +19,21 @@ const LAYOUT_PATH = join(WEB_UI_SRC, "routes", "+layout.svelte");
 const DASHBOARD_PATH = join(WEB_UI_SRC, "routes", "+page.svelte");
 const AGENTS_PATH = join(WEB_UI_SRC, "routes", "agents", "+page.svelte");
 const SESSIONS_PATH = join(WEB_UI_SRC, "routes", "sessions", "+page.svelte");
-const SESSION_DETAIL_PATH = join(
-  WEB_UI_SRC,
-  "routes",
-  "sessions",
-  "[id]",
-  "+page.svelte",
-);
+const SESSION_DETAIL_PATH = join(WEB_UI_SRC, "routes", "sessions", "[id]", "+page.svelte");
 const SETTINGS_PATH = join(WEB_UI_SRC, "routes", "settings", "+page.svelte");
 const WORKFLOWS_PATH = join(WEB_UI_SRC, "routes", "workflows", "+page.svelte");
-const OBSERVATIONS_PATH = join(
-  WEB_UI_SRC,
-  "routes",
-  "observations",
-  "+page.svelte",
-);
-const PROJECT_STORE_PATH = join(
-  WEB_UI_SRC,
-  "lib",
-  "stores",
-  "project.svelte.ts",
-);
+const OBSERVATIONS_PATH = join(WEB_UI_SRC, "routes", "observations", "+page.svelte");
+const PROJECT_STORE_PATH = join(WEB_UI_SRC, "lib", "stores", "project.svelte.ts");
 const API_PATH = join(WEB_UI_SRC, "lib", "api.ts");
-const PACKAGE_JSON_PATH = join(
-  process.cwd(),
-  "packages",
-  "web-ui",
-  "package.json",
-);
+const PACKAGE_JSON_PATH = join(process.cwd(), "packages", "web-ui", "package.json");
 
-const SIDEBAR_PATH = join(
-  WEB_UI_SRC,
-  "lib",
-  "components",
-  "Sidebar.svelte",
-);
-const TOOL_CALL_VIEW_PATH = join(
-  WEB_UI_SRC,
-  "lib",
-  "components",
-  "session",
-  "ToolCallView.svelte",
-);
+const SIDEBAR_PATH = join(WEB_UI_SRC, "lib", "components", "Sidebar.svelte");
+const TOOL_CALL_VIEW_PATH = join(WEB_UI_SRC, "lib", "components", "session", "ToolCallView.svelte");
 
 // Load source files
 const clientSrc = readFileSync(join(QUERY_DIR, "client.ts"), "utf-8");
 const keysSrc = readFileSync(join(QUERY_DIR, "keys.ts"), "utf-8");
-const wsInvalidationSrc = readFileSync(
-  join(QUERY_DIR, "ws-invalidation.ts"),
-  "utf-8",
-);
+const wsInvalidationSrc = readFileSync(join(QUERY_DIR, "ws-invalidation.ts"), "utf-8");
 const contextSrc = readFileSync(join(QUERY_DIR, "context.ts"), "utf-8");
 const indexSrc = readFileSync(join(QUERY_DIR, "index.ts"), "utf-8");
 const layoutSrc = readFileSync(LAYOUT_PATH, "utf-8");
@@ -174,9 +139,7 @@ describe("WebSocket invalidation wiring (@ui-data-freshness ac-3, ac-4)", () => 
   });
 
   it("exports teardownWsInvalidation function", () => {
-    expect(wsInvalidationSrc).toContain(
-      "export function teardownWsInvalidation",
-    );
+    expect(wsInvalidationSrc).toContain("export function teardownWsInvalidation");
   });
 
   it("subscribes to relevant broadcast topics", () => {
@@ -241,41 +204,38 @@ describe("project switch cache clearing (@ui-data-freshness ac-5)", () => {
 });
 
 // AC: @ui-data-freshness ac-1, ac-2
-describe(
-  "QueryClientProvider in root layout (@ui-data-freshness ac-1, ac-2)",
-  () => {
-    it("imports QueryClientProvider from @tanstack/svelte-query", () => {
-      expect(layoutSrc).toContain("QueryClientProvider");
-      expect(layoutSrc).toContain("@tanstack/svelte-query");
-    });
+describe("QueryClientProvider in root layout (@ui-data-freshness ac-1, ac-2)", () => {
+  it("imports QueryClientProvider from @tanstack/svelte-query", () => {
+    expect(layoutSrc).toContain("QueryClientProvider");
+    expect(layoutSrc).toContain("@tanstack/svelte-query");
+  });
 
-    it("creates a QueryClient instance", () => {
-      expect(layoutSrc).toContain("createQueryClientInstance");
-    });
+  it("creates a QueryClient instance", () => {
+    expect(layoutSrc).toContain("createQueryClientInstance");
+  });
 
-    it("wraps app content with QueryClientProvider", () => {
-      expect(layoutSrc).toContain("<QueryClientProvider");
-      expect(layoutSrc).toContain("</QueryClientProvider>");
-    });
+  it("wraps app content with QueryClientProvider", () => {
+    expect(layoutSrc).toContain("<QueryClientProvider");
+    expect(layoutSrc).toContain("</QueryClientProvider>");
+  });
 
-    it("passes client prop to QueryClientProvider", () => {
-      expect(layoutSrc).toContain("client={queryClient}");
-    });
+  it("passes client prop to QueryClientProvider", () => {
+    expect(layoutSrc).toContain("client={queryClient}");
+  });
 
-    it("sets up WebSocket invalidation in daemon mode", () => {
-      expect(layoutSrc).toContain("setupWsInvalidation");
-    });
+  it("sets up WebSocket invalidation in daemon mode", () => {
+    expect(layoutSrc).toContain("setupWsInvalidation");
+  });
 
-    it("does not set up WS invalidation in static mode (conditional)", () => {
-      // Verify WS setup is within the daemon code path
-      const staticBlock = layoutSrc.slice(
-        layoutSrc.indexOf("if (isStaticMode())"),
-        layoutSrc.indexOf("return;") + 10,
-      );
-      expect(staticBlock).not.toContain("setupWsInvalidation");
-    });
-  },
-);
+  it("does not set up WS invalidation in static mode (conditional)", () => {
+    // Verify WS setup is within the daemon code path
+    const staticBlock = layoutSrc.slice(
+      layoutSrc.indexOf("if (isStaticMode())"),
+      layoutSrc.indexOf("return;") + 10,
+    );
+    expect(staticBlock).not.toContain("setupWsInvalidation");
+  });
+});
 
 // AC: @ui-data-freshness ac-1
 describe("dashboard migration — cache-then-revalidate (@ui-data-freshness ac-1)", () => {
@@ -359,7 +319,7 @@ describe("dashboard error handling (@ui-data-freshness ac-7)", () => {
   });
 
   it("shows error message with retry button", () => {
-    expect(dashboardSrc).toContain("data-testid=\"dashboard-error\"");
+    expect(dashboardSrc).toContain('data-testid="dashboard-error"');
     expect(dashboardSrc).toContain("Retry");
   });
 
@@ -673,7 +633,6 @@ describe("session detail page migration (@ui-data-freshness ac-1)", () => {
 
 // AC: @ws-session-event-streaming ac-tool-output-on-demand
 describe("on-demand tool output via TanStack Query (@ws-session-event-streaming ac-tool-output-on-demand)", () => {
-
   it("uses createQuery for on-demand output fetch", () => {
     expect(toolCallViewSrc).toContain("createQuery");
     expect(toolCallViewSrc).toContain("fetchSessionEventDetail");
@@ -811,10 +770,7 @@ describe("query key factory additions for core pages", () => {
   it("sessions key factory includes list method with filters", () => {
     expect(keysSrc).toContain("sessions:");
     // Verify sessions has a list factory function
-    const sessionsBlock = keysSrc.slice(
-      keysSrc.indexOf("sessions:"),
-      keysSrc.indexOf("plans:"),
-    );
+    const sessionsBlock = keysSrc.slice(keysSrc.indexOf("sessions:"), keysSrc.indexOf("plans:"));
     expect(sessionsBlock).toContain("list:");
   });
 
@@ -830,21 +786,10 @@ describe("query key factory additions for core pages", () => {
 // ===================================================================
 
 const TASKS_PAGE_PATH = join(WEB_UI_SRC, "routes", "tasks", "+page.svelte");
-const BOARD_PAGE_PATH = join(
-  WEB_UI_SRC,
-  "routes",
-  "tasks",
-  "board",
-  "+page.svelte",
-);
+const BOARD_PAGE_PATH = join(WEB_UI_SRC, "routes", "tasks", "board", "+page.svelte");
 const SPECS_PAGE_PATH = join(WEB_UI_SRC, "routes", "specs", "+page.svelte");
 const PLANS_PAGE_PATH = join(WEB_UI_SRC, "routes", "plans", "+page.svelte");
-const VALIDATE_PAGE_PATH = join(
-  WEB_UI_SRC,
-  "routes",
-  "validate",
-  "+page.svelte",
-);
+const VALIDATE_PAGE_PATH = join(WEB_UI_SRC, "routes", "validate", "+page.svelte");
 
 const tasksPageSrc = readFileSync(TASKS_PAGE_PATH, "utf-8");
 const boardPageSrc = readFileSync(BOARD_PAGE_PATH, "utf-8");
@@ -1014,9 +959,7 @@ describe("validate page migration (@ui-data-freshness ac-1)", () => {
 // Aggregation API functions exist
 describe("aggregation API functions", () => {
   it("exports fetchValidationAggregation function", () => {
-    expect(apiSrc).toContain(
-      "export async function fetchValidationAggregation",
-    );
+    expect(apiSrc).toContain("export async function fetchValidationAggregation");
     expect(apiSrc).toContain("/api/aggregation/validation");
   });
 

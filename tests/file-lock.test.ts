@@ -1,10 +1,7 @@
 import { describe, it, expect, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import {
-  acquireFileLock,
-  withFileLock,
-} from "../src/parser/file-lock.js";
+import { acquireFileLock, withFileLock } from "../src/parser/file-lock.js";
 import { createTempDir, cleanupTempDir, readTestOutput } from "./helpers/cli.js";
 
 describe("File Lock", () => {
@@ -28,9 +25,7 @@ describe("File Lock", () => {
     expect(stat.isDirectory()).toBe(true);
 
     // PID file should contain our PID
-    const pidContent = await readTestOutput(
-      path.join(lockDir, "pid"),
-    );
+    const pidContent = await readTestOutput(path.join(lockDir, "pid"));
     expect(pidContent).toContain(String(process.pid));
 
     await release();
@@ -75,9 +70,9 @@ describe("File Lock", () => {
     const release = await acquireFileLock(lockTarget);
 
     // Try to acquire with short timeout
-    await expect(
-      acquireFileLock(lockTarget, 200),
-    ).rejects.toThrow(/Timed out waiting for file lock/);
+    await expect(acquireFileLock(lockTarget, 200)).rejects.toThrow(
+      /Timed out waiting for file lock/,
+    );
 
     await release();
   });
@@ -90,18 +85,13 @@ describe("File Lock", () => {
     // Create a fake stale lock with a non-existent PID
     await fs.mkdir(lockDir);
     // PID 999999 almost certainly doesn't exist
-    await fs.writeFile(
-      path.join(lockDir, "pid"),
-      `999999\n${Date.now()}`,
-    );
+    await fs.writeFile(path.join(lockDir, "pid"), `999999\n${Date.now()}`);
 
     // Should be able to acquire despite stale lock (dead PID)
     const release = await acquireFileLock(lockTarget, 1000);
 
     // Verify we own the lock
-    const pidContent = await readTestOutput(
-      path.join(lockDir, "pid"),
-    );
+    const pidContent = await readTestOutput(path.join(lockDir, "pid"));
     expect(pidContent).toContain(String(process.pid));
 
     await release();
@@ -116,15 +106,12 @@ describe("File Lock", () => {
     const release = await acquireFileLock(lockTarget);
 
     // Overwrite the PID file with an old timestamp but our (alive) PID
-    await fs.writeFile(
-      path.join(lockDir, "pid"),
-      `${process.pid}\n${Date.now() - 60000}`,
-    );
+    await fs.writeFile(path.join(lockDir, "pid"), `${process.pid}\n${Date.now() - 60000}`);
 
     // Second acquire should still timeout (lock is held by live process)
-    await expect(
-      acquireFileLock(lockTarget, 200),
-    ).rejects.toThrow(/Timed out waiting for file lock/);
+    await expect(acquireFileLock(lockTarget, 200)).rejects.toThrow(
+      /Timed out waiting for file lock/,
+    );
 
     await release();
   });
@@ -267,18 +254,13 @@ describe("File Lock", () => {
 
     // Create a fake stale lock with a non-existent PID
     await fs.mkdir(lockDir);
-    await fs.writeFile(
-      path.join(lockDir, "pid"),
-      `999999\n${Date.now()}`,
-    );
+    await fs.writeFile(path.join(lockDir, "pid"), `999999\n${Date.now()}`);
 
     // Should acquire via stale PID detection even with no timeout
     const release = await acquireFileLock(lockTarget, 0);
 
     // Verify we own the lock
-    const pidContent = await readTestOutput(
-      path.join(lockDir, "pid"),
-    );
+    const pidContent = await readTestOutput(path.join(lockDir, "pid"));
     expect(pidContent).toContain(String(process.pid));
 
     await release();

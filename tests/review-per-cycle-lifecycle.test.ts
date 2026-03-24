@@ -44,10 +44,7 @@ describe("review per-cycle lifecycle", () => {
     expect(taskAfterLink1.review_ref).toBe("@cycle1-review");
 
     // Reviewer submits request_changes verdict (auto-closes review, kicks task to needs_work)
-    kspec(
-      "review verdict @cycle1-review --decision request_changes --reviewer alice",
-      tempDir,
-    );
+    kspec("review verdict @cycle1-review --decision request_changes --reviewer alice", tempDir);
 
     // Verify cycle 1 review is closed
     const cycle1Review = kspecJson<{ lifecycle_state: string }>(
@@ -57,10 +54,7 @@ describe("review per-cycle lifecycle", () => {
     expect(cycle1Review.lifecycle_state).toBe("closed");
 
     // Verify task is in needs_work
-    const taskNeedsWork = kspecJson<{ status: string }>(
-      "task get @fix-cycle-test --json",
-      tempDir,
-    );
+    const taskNeedsWork = kspecJson<{ status: string }>("task get @fix-cycle-test --json", tempDir);
     expect(taskNeedsWork.status).toBe("needs_work");
 
     // Worker addresses feedback, resubmits
@@ -101,10 +95,7 @@ describe("review per-cycle lifecycle", () => {
       'review add --title "History review 1" --slug hist-review-1 --subject-type task --subject-ref @history-test',
       tempDir,
     );
-    kspec(
-      "review verdict @hist-review-1 --decision request_changes --reviewer alice",
-      tempDir,
-    );
+    kspec("review verdict @hist-review-1 --decision request_changes --reviewer alice", tempDir);
 
     // Worker fixes and resubmits
     kspec("task start @history-test", tempDir);
@@ -115,10 +106,7 @@ describe("review per-cycle lifecycle", () => {
       'review add --title "History review 2" --slug hist-review-2 --subject-type task --subject-ref @history-test',
       tempDir,
     );
-    kspec(
-      "review verdict @hist-review-2 --decision approve --reviewer bob",
-      tempDir,
-    );
+    kspec("review verdict @hist-review-2 --decision approve --reviewer bob", tempDir);
 
     // Both reviews should be findable via for-task
     const forTask = kspecJson<{
@@ -156,10 +144,7 @@ describe("review per-cycle lifecycle", () => {
       'review add --title "Independent R1" --slug indep-r1 --subject-type task --subject-ref @indep-test',
       tempDir,
     );
-    kspec(
-      "review verdict @indep-r1 --decision request_changes --reviewer alice",
-      tempDir,
-    );
+    kspec("review verdict @indep-r1 --decision request_changes --reviewer alice", tempDir);
     kspec("task start @indep-test", tempDir);
     kspec("task submit @indep-test", tempDir);
 
@@ -168,10 +153,7 @@ describe("review per-cycle lifecycle", () => {
       'review add --title "Independent R2" --slug indep-r2 --subject-type task --subject-ref @indep-test',
       tempDir,
     );
-    kspec(
-      "review verdict @indep-r2 --decision request_changes --reviewer alice",
-      tempDir,
-    );
+    kspec("review verdict @indep-r2 --decision request_changes --reviewer alice", tempDir);
     kspec("task start @indep-test", tempDir);
     kspec("task submit @indep-test", tempDir);
 
@@ -180,10 +162,7 @@ describe("review per-cycle lifecycle", () => {
       'review add --title "Independent R3" --slug indep-r3 --subject-type task --subject-ref @indep-test',
       tempDir,
     );
-    kspec(
-      "review verdict @indep-r3 --decision approve --reviewer bob",
-      tempDir,
-    );
+    kspec("review verdict @indep-r3 --decision approve --reviewer bob", tempDir);
 
     // All 3 reviews findable and each has its own distinct disposition
     const forTask = kspecJson<{
@@ -205,10 +184,7 @@ describe("review per-cycle lifecycle", () => {
     expect(r3!.disposition).toBe("approved");
 
     // Task's review_ref points to the latest review
-    const task = kspecJson<{ review_ref: string | null }>(
-      "task get @indep-test --json",
-      tempDir,
-    );
+    const task = kspecJson<{ review_ref: string | null }>("task get @indep-test --json", tempDir);
     expect(task.review_ref).toBe("@indep-r3");
   });
 });

@@ -50,9 +50,9 @@
 		enabled: isProjectInitialized(),
 	}));
 
-	let observations = $derived<Observation[]>(observationsQuery.data?.items ?? []);
-	let loading = $derived(observationsQuery.isLoading);
-	let error = $derived(observationsQuery.error?.message ?? '');
+	const observations = $derived<Observation[]>(observationsQuery.data?.items ?? []);
+	const loading = $derived(observationsQuery.isLoading);
+	const error = $derived(observationsQuery.error?.message ?? '');
 
 	function formatDate(dateString: string): string {
 		const date = new Date(dateString);

@@ -19,7 +19,7 @@
 	import Zap from '@lucide/svelte/icons/zap';
 	import Terminal from '@lucide/svelte/icons/terminal';
 
-	let {
+	const {
 		session,
 		blocks = [],
 		taskTitle = null,
@@ -29,7 +29,7 @@
 		taskTitle?: string | null;
 	} = $props();
 
-	let statusColor = $derived(
+	const statusColor = $derived(
 		session.status === 'active'
 			? 'bg-status-in-progress text-status-in-progress-fg'
 			: session.status === 'completed'
@@ -39,7 +39,7 @@
 					: 'bg-status-cancelled text-status-cancelled-fg'
 	);
 
-	let statusLabel = $derived(
+	const statusLabel = $derived(
 		session.status === 'active'
 			? 'Active'
 			: session.status === 'completed'
@@ -53,10 +53,10 @@
 							: session.status
 	);
 
-	let triggerLabel = $derived(getTriggerLabel(session.trigger));
+	const triggerLabel = $derived(getTriggerLabel(session.trigger));
 
 	// AC: @ui-session-stream ac-4 — Files changed during session
-	let filesChanged = $derived(extractFilesChanged(blocks));
+	const filesChanged = $derived(extractFilesChanged(blocks));
 
 	// Shorten file paths for display — show last 2 segments
 	function shortenPath(filePath: string): string {

@@ -15,11 +15,7 @@ import {
   shortestUniqueUlid,
 } from "../../parser/index.js";
 import { commitIfShadow } from "../../parser/shadow.js";
-import {
-  normalizeRefInput,
-  TriageActionSchema,
-  TriageStatusSchema,
-} from "../../schema/index.js";
+import { normalizeRefInput, TriageActionSchema, TriageStatusSchema } from "../../schema/index.js";
 import type { TriageAction } from "../../schema/index.js";
 import { exportTriageAsContext, truncateText } from "../../export/triage.js";
 import { errors } from "../../strings/index.js";
@@ -39,10 +35,7 @@ function formatRelativeTime(dateStr: string): string {
 /**
  * Resolve triage record ref with error handling
  */
-function resolveTriageRef(
-  ref: string,
-  records: LoadedTriageRecord[],
-): LoadedTriageRecord {
+function resolveTriageRef(ref: string, records: LoadedTriageRecord[]): LoadedTriageRecord {
   const record = findTriageRecordByRef(records, ref);
   if (!record) {
     error(`Triage record not found: ${ref}`);
@@ -70,7 +63,9 @@ async function persistAndReloadTriageRecord(
   const persistedRecord = findTriageRecordByInboxRef(records, record.inbox_ref);
 
   if (!persistedRecord) {
-    throw new Error(`Persisted triage record for inbox item ${record.inbox_ref} was not found after save`);
+    throw new Error(
+      `Persisted triage record for inbox item ${record.inbox_ref} was not found after save`,
+    );
   }
 
   return { persistedRecord, records };
@@ -92,7 +87,10 @@ export function registerTriageCommands(program: Command): void {
   // AC: @triage-cli-commands ac-1, ac-11
   markMutating(triage.command("record <inbox-ref>"))
     .description("Record a triage decision for an inbox item")
-    .requiredOption("--action <action>", "Triage action (promote, delete, defer, spec-gap, duplicate)")
+    .requiredOption(
+      "--action <action>",
+      "Triage action (promote, delete, defer, spec-gap, duplicate)",
+    )
     .requiredOption("--reasoning <text>", "Reasoning for the decision")
     .option("--decided-by <author>", "Who made the decision")
     .option("--evidence <refs...>", "Evidence references")
@@ -125,14 +123,14 @@ Examples:
         const inboxRefDisplay = shortestUniqueUlid(item._ulid, inboxUlids);
 
         if (options.dryRun) {
-          info(`Would create triage record for inbox item ${inboxRefDisplay} with action: ${options.action}`);
+          info(
+            `Would create triage record for inbox item ${inboxRefDisplay} with action: ${options.action}`,
+          );
           return;
         }
 
         const author = options.decidedBy || getAuthor(ctx.config?.identity?.author);
-        const evidenceRefs = options.evidence
-          ? options.evidence.map(normalizeRefInput)
-          : [];
+        const evidenceRefs = options.evidence ? options.evidence.map(normalizeRefInput) : [];
 
         const record: LoadedTriageRecord = {
           _ulid: ulid(),
@@ -258,15 +256,10 @@ Examples:
           }
 
           // AC: @trait-filterable-list ac-7 — summary with total matching items and filter state
-          const filterInfo = activeFilters.length > 0
-            ? ` (${activeFilters.join(", ")})`
-            : "";
-          const showing = filteredCount < totalCount
-            ? `${filteredCount} of ${totalCount}`
-            : `${filteredCount}`;
-          console.log(
-            `Triage records (${showing}${filterInfo}):\n`,
-          );
+          const filterInfo = activeFilters.length > 0 ? ` (${activeFilters.join(", ")})` : "";
+          const showing =
+            filteredCount < totalCount ? `${filteredCount} of ${totalCount}` : `${filteredCount}`;
+          console.log(`Triage records (${showing}${filterInfo}):\n`);
 
           // AC: @triage-cli-commands ac-2
           for (const record of records) {
@@ -302,14 +295,18 @@ Examples:
         // AC: @triage-cli-commands ac-15 — already acted on
         // AC: @trait-error-guidance ac-1, ac-2
         if (record.status === "acted_on") {
-          error(`Triage record ${recordRef} has already been acted on. No further action is possible.`);
+          error(
+            `Triage record ${recordRef} has already been acted on. No further action is possible.`,
+          );
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
 
         // AC: @triage-cli-commands ac-16 — no decision yet
         // AC: @trait-error-guidance ac-1, ac-2
         if (record.status === "pending") {
-          error(`Triage record ${recordRef} has no decision yet. Record a decision first with: kspec triage record <inbox-ref> --action <action> --reasoning <text>`);
+          error(
+            `Triage record ${recordRef} has no decision yet. Record a decision first with: kspec triage record <inbox-ref> --action <action> --reasoning <text>`,
+          );
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
 
@@ -339,12 +336,7 @@ Examples:
         record.updated_at = new Date().toISOString();
 
         await saveTriageRecord(ctx, record);
-        await commitIfShadow(
-          ctx.shadow,
-          "triage-act",
-          record._ulid.slice(0, 8),
-          record.action,
-        );
+        await commitIfShadow(ctx.shadow, "triage-act", record._ulid.slice(0, 8), record.action);
 
         success(`Acted on triage record: ${recordRef} (${record.action})`, { record });
       } catch (err) {
@@ -527,7 +519,9 @@ Examples:
           console.log("");
 
           // AC: @triage-cli-commands ac-10 — Ctrl+C preserves committed records
-          const action = await askQuestion("Action (promote/delete/defer/spec-gap/duplicate/skip): ");
+          const action = await askQuestion(
+            "Action (promote/delete/defer/spec-gap/duplicate/skip): ",
+          );
 
           if (action === null) {
             // Ctrl+C or closed input
@@ -614,7 +608,9 @@ Examples:
           if (record.evidence_refs.length > 0) {
             console.log(`Evidence:    ${record.evidence_refs.join(", ")}`);
           }
-          console.log(`Created:     ${record.created_at} (${formatRelativeTime(record.created_at)})`);
+          console.log(
+            `Created:     ${record.created_at} (${formatRelativeTime(record.created_at)})`,
+          );
           if (record.updated_at) {
             console.log(`Updated:     ${record.updated_at}`);
           }

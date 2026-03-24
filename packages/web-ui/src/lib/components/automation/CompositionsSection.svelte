@@ -24,7 +24,7 @@
 		enabled: isProjectInitialized() && !isStaticMode(),
 	}));
 
-	let compositionConfigs = $derived<CompositionConfigSummary[]>(
+	const compositionConfigs = $derived<CompositionConfigSummary[]>(
 		compositionConfigsQuery.data?.items ?? []
 	);
 

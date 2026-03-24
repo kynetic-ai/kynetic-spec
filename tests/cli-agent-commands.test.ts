@@ -81,10 +81,7 @@ function makeTestAgent(overrides: Partial<Agent> = {}): Agent {
  * Set up a minimal kspec project directory with meta containing agents.
  * Uses traditional (non-shadow) layout.
  */
-async function setupProjectWithAgents(
-  dir: string,
-  agents: Agent[],
-): Promise<void> {
+async function setupProjectWithAgents(dir: string, agents: Agent[]): Promise<void> {
   initGitRepo(dir);
 
   await fs.writeFile(
@@ -112,11 +109,7 @@ async function setupProjectWithAgents(
     "utf-8",
   );
 
-  await fs.writeFile(
-    path.join(dir, "project.tasks.yaml"),
-    YAML.stringify({ tasks: [] }),
-    "utf-8",
-  );
+  await fs.writeFile(path.join(dir, "project.tasks.yaml"), YAML.stringify({ tasks: [] }), "utf-8");
 }
 
 // ─── AC-1: kspec agent list ───────────────────────────────────────────────────
@@ -192,15 +185,17 @@ describe("AC-1: kspec agent list", () => {
       path_sync.join(testDir, "kynetic.meta.yaml"),
       YAML.stringify({
         kynetic_meta: "1.0",
-        agents: [{
-          _ulid: agent._ulid,
-          id: agent.id,
-          name: agent.name,
-          dispatch: agent.dispatch ?? [],
-          concurrency: agent.concurrency,
-          adapter: agent.adapter,
-          auto_approve: false,
-        }],
+        agents: [
+          {
+            _ulid: agent._ulid,
+            id: agent.id,
+            name: agent.name,
+            dispatch: agent.dispatch ?? [],
+            concurrency: agent.concurrency,
+            adapter: agent.adapter,
+            auto_approve: false,
+          },
+        ],
       }),
     );
     fs_sync.writeFileSync(
@@ -255,15 +250,17 @@ describe("AC-1: kspec agent list", () => {
       path_sync.join(testDir, "kynetic.meta.yaml"),
       YAML.stringify({
         kynetic_meta: "1.0",
-        agents: [{
-          _ulid: agent._ulid,
-          id: agent.id,
-          name: agent.name,
-          dispatch: agent.dispatch ?? [],
-          concurrency: agent.concurrency,
-          adapter: agent.adapter,
-          auto_approve: false,
-        }],
+        agents: [
+          {
+            _ulid: agent._ulid,
+            id: agent.id,
+            name: agent.name,
+            dispatch: agent.dispatch ?? [],
+            concurrency: agent.concurrency,
+            adapter: agent.adapter,
+            auto_approve: false,
+          },
+        ],
       }),
     );
     fs_sync.writeFileSync(
@@ -290,15 +287,17 @@ describe("AC-1: kspec agent list", () => {
       path_sync.join(testDir, "kynetic.meta.yaml"),
       YAML.stringify({
         kynetic_meta: "1.0",
-        agents: [{
-          _ulid: agent._ulid,
-          id: agent.id,
-          name: agent.name,
-          dispatch: agent.dispatch ?? [],
-          concurrency: agent.concurrency,
-          adapter: agent.adapter,
-          auto_approve: false,
-        }],
+        agents: [
+          {
+            _ulid: agent._ulid,
+            id: agent.id,
+            name: agent.name,
+            dispatch: agent.dispatch ?? [],
+            concurrency: agent.concurrency,
+            adapter: agent.adapter,
+            auto_approve: false,
+          },
+        ],
       }),
     );
     fs_sync.writeFileSync(
@@ -325,15 +324,17 @@ describe("AC-1: kspec agent list", () => {
       path_sync.join(testDir, "kynetic.meta.yaml"),
       YAML.stringify({
         kynetic_meta: "1.0",
-        agents: [{
-          _ulid: agent._ulid,
-          id: agent.id,
-          name: agent.name,
-          dispatch: agent.dispatch ?? [],
-          concurrency: agent.concurrency,
-          adapter: agent.adapter,
-          auto_approve: false,
-        }],
+        agents: [
+          {
+            _ulid: agent._ulid,
+            id: agent.id,
+            name: agent.name,
+            dispatch: agent.dispatch ?? [],
+            concurrency: agent.concurrency,
+            adapter: agent.adapter,
+            auto_approve: false,
+          },
+        ],
       }),
     );
     fs_sync.writeFileSync(
@@ -450,9 +451,35 @@ describe("trait-filterable-list ac-2/3/4/5/7: kspec agent list filters and pagin
 
   it("should filter by --tag and show only matching agents", () => {
     writeProject([
-      { _ulid: testUlid("AGNT"), id: "cli-worker", name: "CLI Worker", dispatch: [], concurrency: { max_concurrent: 1 }, adapter: "claude-agent-acp", auto_approve: false, tags: ["cli", "infra"] },
-      { _ulid: testUlid("AGNT", 2), id: "review-worker", name: "Review Worker", dispatch: [], concurrency: { max_concurrent: 1 }, adapter: "claude-agent-acp", auto_approve: false, tags: ["review"] },
-      { _ulid: testUlid("AGNT", 3), id: "no-tags-worker", name: "No Tags Worker", dispatch: [], concurrency: { max_concurrent: 1 }, adapter: "claude-agent-acp", auto_approve: false },
+      {
+        _ulid: testUlid("AGNT"),
+        id: "cli-worker",
+        name: "CLI Worker",
+        dispatch: [],
+        concurrency: { max_concurrent: 1 },
+        adapter: "claude-agent-acp",
+        auto_approve: false,
+        tags: ["cli", "infra"],
+      },
+      {
+        _ulid: testUlid("AGNT", 2),
+        id: "review-worker",
+        name: "Review Worker",
+        dispatch: [],
+        concurrency: { max_concurrent: 1 },
+        adapter: "claude-agent-acp",
+        auto_approve: false,
+        tags: ["review"],
+      },
+      {
+        _ulid: testUlid("AGNT", 3),
+        id: "no-tags-worker",
+        name: "No Tags Worker",
+        dispatch: [],
+        concurrency: { max_concurrent: 1 },
+        adapter: "claude-agent-acp",
+        auto_approve: false,
+      },
     ]);
 
     // AC: @trait-filterable-list ac-2 - tag filter shows only matching agents
@@ -466,9 +493,33 @@ describe("trait-filterable-list ac-2/3/4/5/7: kspec agent list filters and pagin
 
   it("should limit results to --limit N agents", () => {
     writeProject([
-      { _ulid: testUlid("AGNT"), id: "agent-a", name: "Agent A", dispatch: [], concurrency: { max_concurrent: 1 }, adapter: "claude-agent-acp", auto_approve: false },
-      { _ulid: testUlid("AGNT", 2), id: "agent-b", name: "Agent B", dispatch: [], concurrency: { max_concurrent: 1 }, adapter: "claude-agent-acp", auto_approve: false },
-      { _ulid: testUlid("AGNT", 3), id: "agent-c", name: "Agent C", dispatch: [], concurrency: { max_concurrent: 1 }, adapter: "claude-agent-acp", auto_approve: false },
+      {
+        _ulid: testUlid("AGNT"),
+        id: "agent-a",
+        name: "Agent A",
+        dispatch: [],
+        concurrency: { max_concurrent: 1 },
+        adapter: "claude-agent-acp",
+        auto_approve: false,
+      },
+      {
+        _ulid: testUlid("AGNT", 2),
+        id: "agent-b",
+        name: "Agent B",
+        dispatch: [],
+        concurrency: { max_concurrent: 1 },
+        adapter: "claude-agent-acp",
+        auto_approve: false,
+      },
+      {
+        _ulid: testUlid("AGNT", 3),
+        id: "agent-c",
+        name: "Agent C",
+        dispatch: [],
+        concurrency: { max_concurrent: 1 },
+        adapter: "claude-agent-acp",
+        auto_approve: false,
+      },
     ]);
 
     // AC: @trait-filterable-list ac-3 - limit returns at most N results
@@ -482,9 +533,33 @@ describe("trait-filterable-list ac-2/3/4/5/7: kspec agent list filters and pagin
 
   it("should skip first N agents with --offset", () => {
     writeProject([
-      { _ulid: testUlid("AGNT"), id: "first-agent", name: "First Agent", dispatch: [], concurrency: { max_concurrent: 1 }, adapter: "claude-agent-acp", auto_approve: false },
-      { _ulid: testUlid("AGNT", 2), id: "second-agent", name: "Second Agent", dispatch: [], concurrency: { max_concurrent: 1 }, adapter: "claude-agent-acp", auto_approve: false },
-      { _ulid: testUlid("AGNT", 3), id: "third-agent", name: "Third Agent", dispatch: [], concurrency: { max_concurrent: 1 }, adapter: "claude-agent-acp", auto_approve: false },
+      {
+        _ulid: testUlid("AGNT"),
+        id: "first-agent",
+        name: "First Agent",
+        dispatch: [],
+        concurrency: { max_concurrent: 1 },
+        adapter: "claude-agent-acp",
+        auto_approve: false,
+      },
+      {
+        _ulid: testUlid("AGNT", 2),
+        id: "second-agent",
+        name: "Second Agent",
+        dispatch: [],
+        concurrency: { max_concurrent: 1 },
+        adapter: "claude-agent-acp",
+        auto_approve: false,
+      },
+      {
+        _ulid: testUlid("AGNT", 3),
+        id: "third-agent",
+        name: "Third Agent",
+        dispatch: [],
+        concurrency: { max_concurrent: 1 },
+        adapter: "claude-agent-acp",
+        auto_approve: false,
+      },
     ]);
 
     // AC: @trait-filterable-list ac-4 - offset skips first N results
@@ -499,9 +574,38 @@ describe("trait-filterable-list ac-2/3/4/5/7: kspec agent list filters and pagin
 
   it("should apply --status and --tag as AND logic (both must match)", () => {
     writeProject([
-      { _ulid: testUlid("AGNT"), id: "eligible-cli", name: "Eligible CLI", dispatch: [], concurrency: { max_concurrent: 1 }, adapter: "claude-agent-acp", auto_approve: false, automation: "eligible", tags: ["cli"] },
-      { _ulid: testUlid("AGNT", 2), id: "eligible-review", name: "Eligible Review", dispatch: [], concurrency: { max_concurrent: 1 }, adapter: "claude-agent-acp", auto_approve: false, automation: "eligible", tags: ["review"] },
-      { _ulid: testUlid("AGNT", 3), id: "ineligible-cli", name: "Ineligible CLI", dispatch: [], concurrency: { max_concurrent: 1 }, adapter: "claude-agent-acp", auto_approve: false, tags: ["cli"] },
+      {
+        _ulid: testUlid("AGNT"),
+        id: "eligible-cli",
+        name: "Eligible CLI",
+        dispatch: [],
+        concurrency: { max_concurrent: 1 },
+        adapter: "claude-agent-acp",
+        auto_approve: false,
+        automation: "eligible",
+        tags: ["cli"],
+      },
+      {
+        _ulid: testUlid("AGNT", 2),
+        id: "eligible-review",
+        name: "Eligible Review",
+        dispatch: [],
+        concurrency: { max_concurrent: 1 },
+        adapter: "claude-agent-acp",
+        auto_approve: false,
+        automation: "eligible",
+        tags: ["review"],
+      },
+      {
+        _ulid: testUlid("AGNT", 3),
+        id: "ineligible-cli",
+        name: "Ineligible CLI",
+        dispatch: [],
+        concurrency: { max_concurrent: 1 },
+        adapter: "claude-agent-acp",
+        auto_approve: false,
+        tags: ["cli"],
+      },
     ]);
 
     // AC: @trait-filterable-list ac-5 - multiple filters are AND logic
@@ -515,7 +619,16 @@ describe("trait-filterable-list ac-2/3/4/5/7: kspec agent list filters and pagin
 
   it("should include filter state in summary line when filters are active", () => {
     writeProject([
-      { _ulid: testUlid("AGNT"), id: "eligible-worker", name: "Eligible Worker", dispatch: [], concurrency: { max_concurrent: 1 }, adapter: "claude-agent-acp", auto_approve: false, automation: "eligible" },
+      {
+        _ulid: testUlid("AGNT"),
+        id: "eligible-worker",
+        name: "Eligible Worker",
+        dispatch: [],
+        concurrency: { max_concurrent: 1 },
+        adapter: "claude-agent-acp",
+        auto_approve: false,
+        automation: "eligible",
+      },
     ]);
 
     // AC: @trait-filterable-list ac-7 - summary shows total and filter state
@@ -554,15 +667,17 @@ describe("AC-7: kspec agent run --adapter override", () => {
       path_sync.join(testDir, "kynetic.meta.yaml"),
       YAML.stringify({
         kynetic_meta: "1.0",
-        agents: [{
-          _ulid: agent._ulid,
-          id: agent.id,
-          name: agent.name,
-          dispatch: [],
-          concurrency: agent.concurrency,
-          adapter: agent.adapter,
-          auto_approve: false,
-        }],
+        agents: [
+          {
+            _ulid: agent._ulid,
+            id: agent.id,
+            name: agent.name,
+            dispatch: [],
+            concurrency: agent.concurrency,
+            adapter: agent.adapter,
+            auto_approve: false,
+          },
+        ],
       }),
     );
     fs_sync.writeFileSync(
@@ -594,15 +709,17 @@ describe("AC-7: kspec agent run --adapter override", () => {
       path_sync.join(testDir, "kynetic.meta.yaml"),
       YAML.stringify({
         kynetic_meta: "1.0",
-        agents: [{
-          _ulid: agent._ulid,
-          id: agent.id,
-          name: agent.name,
-          dispatch: [],
-          concurrency: agent.concurrency,
-          adapter: agent.adapter,
-          auto_approve: false,
-        }],
+        agents: [
+          {
+            _ulid: agent._ulid,
+            id: agent.id,
+            name: agent.name,
+            dispatch: [],
+            concurrency: agent.concurrency,
+            adapter: agent.adapter,
+            auto_approve: false,
+          },
+        ],
       }),
     );
     fs_sync.writeFileSync(
@@ -685,7 +802,9 @@ describe("agent run --task respects prompt_template", () => {
 
     expect(result.exitCode).toBe(0);
     const data = JSON.parse(result.stdout);
-    expect(data.prompt).toContain("Work on task @TASK456 according to your configuration and skills.");
+    expect(data.prompt).toContain(
+      "Work on task @TASK456 according to your configuration and skills.",
+    );
   });
 
   it("should prefer explicit prompt over prompt_template", () => {
@@ -695,7 +814,10 @@ describe("agent run --task respects prompt_template", () => {
     });
     setupProject([agent]);
 
-    const result = kspec("agent run override-agent 'My custom prompt' --task @TASK789 --dry-run --json", testDir);
+    const result = kspec(
+      "agent run override-agent 'My custom prompt' --task @TASK789 --dry-run --json",
+      testDir,
+    );
 
     expect(result.exitCode).toBe(0);
     const data = JSON.parse(result.stdout);
@@ -726,7 +848,9 @@ describe("AC-2: One-shot agent run with --task binding", () => {
   let testDir: string;
 
   beforeEach(() => {
-    testDir = require("node:fs").mkdtempSync(require("node:path").join(require("node:os").tmpdir(), "kspec-agent-run-ac2-"));
+    testDir = require("node:fs").mkdtempSync(
+      require("node:path").join(require("node:os").tmpdir(), "kspec-agent-run-ac2-"),
+    );
     registerMockAdapter();
   });
 
@@ -761,7 +885,9 @@ describe("AC-3: One-shot agent run without task binding", () => {
   let testDir: string;
 
   beforeEach(() => {
-    testDir = require("node:fs").mkdtempSync(require("node:path").join(require("node:os").tmpdir(), "kspec-agent-run-ac3-"));
+    testDir = require("node:fs").mkdtempSync(
+      require("node:path").join(require("node:os").tmpdir(), "kspec-agent-run-ac3-"),
+    );
     registerMockAdapter();
   });
 
@@ -796,8 +922,14 @@ describe("AC-4: kspec agent dispatch start with running daemon", () => {
 
   beforeEach(async () => {
     testDir = await createTempDir("kspec-agent-dispatch-start-");
-    fsSync.writeFileSync(path.join(testDir, "kynetic.yaml"), YAML.stringify({ kynetic: "1", title: "Test" }));
-    fsSync.writeFileSync(path.join(testDir, "kynetic.meta.yaml"), YAML.stringify({ kynetic_meta: "1.0", agents: [] }));
+    fsSync.writeFileSync(
+      path.join(testDir, "kynetic.yaml"),
+      YAML.stringify({ kynetic: "1", title: "Test" }),
+    );
+    fsSync.writeFileSync(
+      path.join(testDir, "kynetic.meta.yaml"),
+      YAML.stringify({ kynetic_meta: "1.0", agents: [] }),
+    );
     fsSync.writeFileSync(path.join(testDir, "project.tasks.yaml"), YAML.stringify({ tasks: [] }));
   });
 
@@ -827,7 +959,9 @@ describe("AC-4: kspec agent dispatch start with running daemon", () => {
     const program = createTestProgram();
     const logs: string[] = [];
     const origLog = console.log;
-    console.log = (...args) => { logs.push(args.join(" ")); };
+    console.log = (...args) => {
+      logs.push(args.join(" "));
+    };
 
     try {
       // Change cwd to testDir so initContext picks up the project
@@ -958,7 +1092,9 @@ describe("AC-4: kspec agent dispatch start with running daemon", () => {
     const program = createTestProgram();
     const errors: string[] = [];
     const origError = console.error;
-    console.error = (...args) => { errors.push(args.join(" ")); };
+    console.error = (...args) => {
+      errors.push(args.join(" "));
+    };
 
     try {
       await program.parseAsync(["agent", "dispatch", "start"], { from: "user" });
@@ -981,8 +1117,14 @@ describe("AC-5: kspec agent dispatch stop graceful shutdown", () => {
 
   beforeEach(async () => {
     testDir = await createTempDir("kspec-agent-dispatch-stop-");
-    fsSync.writeFileSync(path.join(testDir, "kynetic.yaml"), YAML.stringify({ kynetic: "1", title: "Test" }));
-    fsSync.writeFileSync(path.join(testDir, "kynetic.meta.yaml"), YAML.stringify({ kynetic_meta: "1.0", agents: [] }));
+    fsSync.writeFileSync(
+      path.join(testDir, "kynetic.yaml"),
+      YAML.stringify({ kynetic: "1", title: "Test" }),
+    );
+    fsSync.writeFileSync(
+      path.join(testDir, "kynetic.meta.yaml"),
+      YAML.stringify({ kynetic_meta: "1.0", agents: [] }),
+    );
     fsSync.writeFileSync(path.join(testDir, "project.tasks.yaml"), YAML.stringify({ tasks: [] }));
   });
 
@@ -1006,7 +1148,9 @@ describe("AC-5: kspec agent dispatch stop graceful shutdown", () => {
     const program = createTestProgram();
     const logs: string[] = [];
     const origLog = console.log;
-    console.log = (...args) => { logs.push(args.join(" ")); };
+    console.log = (...args) => {
+      logs.push(args.join(" "));
+    };
 
     try {
       const origCwd = process.cwd();
@@ -1039,8 +1183,14 @@ describe("AC-6: kspec agent status with running daemon", () => {
 
   beforeEach(async () => {
     testDir = await createTempDir("kspec-agent-status-ac6-");
-    fsSync.writeFileSync(path.join(testDir, "kynetic.yaml"), YAML.stringify({ kynetic: "1", title: "Test" }));
-    fsSync.writeFileSync(path.join(testDir, "kynetic.meta.yaml"), YAML.stringify({ kynetic_meta: "1.0", agents: [] }));
+    fsSync.writeFileSync(
+      path.join(testDir, "kynetic.yaml"),
+      YAML.stringify({ kynetic: "1", title: "Test" }),
+    );
+    fsSync.writeFileSync(
+      path.join(testDir, "kynetic.meta.yaml"),
+      YAML.stringify({ kynetic_meta: "1.0", agents: [] }),
+    );
     fsSync.writeFileSync(path.join(testDir, "project.tasks.yaml"), YAML.stringify({ tasks: [] }));
   });
 
@@ -1082,7 +1232,9 @@ describe("AC-6: kspec agent status with running daemon", () => {
     const program = createTestProgram();
     const logs: string[] = [];
     const origLog = console.log;
-    console.log = (...args) => { logs.push(args.join(" ")); };
+    console.log = (...args) => {
+      logs.push(args.join(" "));
+    };
 
     try {
       const origCwd = process.cwd();
@@ -1151,7 +1303,9 @@ describe("AC-6: kspec agent status with running daemon", () => {
     const program = createTestProgram();
     const logs: string[] = [];
     const origLog = console.log;
-    console.log = (...args) => { logs.push(args.join(" ")); };
+    console.log = (...args) => {
+      logs.push(args.join(" "));
+    };
 
     try {
       const origCwd = process.cwd();
@@ -1198,23 +1352,31 @@ describe("AC-7: CLI flags override agent definition defaults", () => {
     initGitRepo(testDir);
     const fs_sync = require("node:fs");
     const path_sync = require("node:path");
-    fs_sync.writeFileSync(path_sync.join(testDir, "kynetic.yaml"), YAML.stringify({ kynetic: "1", title: "Test" }));
+    fs_sync.writeFileSync(
+      path_sync.join(testDir, "kynetic.yaml"),
+      YAML.stringify({ kynetic: "1", title: "Test" }),
+    );
     fs_sync.writeFileSync(
       path_sync.join(testDir, "kynetic.meta.yaml"),
       YAML.stringify({
         kynetic_meta: "1.0",
-        agents: [{
-          _ulid: agent._ulid,
-          id: agent.id,
-          name: agent.name,
-          dispatch: [],
-          concurrency: agent.concurrency,
-          adapter: "claude-agent-acp",
-          auto_approve: false,
-        }],
+        agents: [
+          {
+            _ulid: agent._ulid,
+            id: agent.id,
+            name: agent.name,
+            dispatch: [],
+            concurrency: agent.concurrency,
+            adapter: "claude-agent-acp",
+            auto_approve: false,
+          },
+        ],
       }),
     );
-    fs_sync.writeFileSync(path_sync.join(testDir, "project.tasks.yaml"), YAML.stringify({ tasks: [] }));
+    fs_sync.writeFileSync(
+      path_sync.join(testDir, "project.tasks.yaml"),
+      YAML.stringify({ tasks: [] }),
+    );
 
     // AC: @cli-agent-commands ac-7 - --adapter overrides definition default
     const result = kspec("agent run override-agent --adapter custom-acp --dry-run --json", testDir);
@@ -1232,24 +1394,32 @@ describe("AC-7: CLI flags override agent definition defaults", () => {
     initGitRepo(testDir);
     const fs_sync = require("node:fs");
     const path_sync = require("node:path");
-    fs_sync.writeFileSync(path_sync.join(testDir, "kynetic.yaml"), YAML.stringify({ kynetic: "1", title: "Test" }));
+    fs_sync.writeFileSync(
+      path_sync.join(testDir, "kynetic.yaml"),
+      YAML.stringify({ kynetic: "1", title: "Test" }),
+    );
     fs_sync.writeFileSync(
       path_sync.join(testDir, "kynetic.meta.yaml"),
       YAML.stringify({
         kynetic_meta: "1.0",
-        agents: [{
-          _ulid: agent._ulid,
-          id: agent.id,
-          name: agent.name,
-          dispatch: [],
-          concurrency: agent.concurrency,
-          adapter: agent.adapter,
-          auto_approve: false,
-          budget: { timeout_minutes: 30, max_tasks: 5 },
-        }],
+        agents: [
+          {
+            _ulid: agent._ulid,
+            id: agent.id,
+            name: agent.name,
+            dispatch: [],
+            concurrency: agent.concurrency,
+            adapter: agent.adapter,
+            auto_approve: false,
+            budget: { timeout_minutes: 30, max_tasks: 5 },
+          },
+        ],
       }),
     );
-    fs_sync.writeFileSync(path_sync.join(testDir, "project.tasks.yaml"), YAML.stringify({ tasks: [] }));
+    fs_sync.writeFileSync(
+      path_sync.join(testDir, "project.tasks.yaml"),
+      YAML.stringify({ tasks: [] }),
+    );
 
     // AC: @cli-agent-commands ac-7 - --timeout overrides definition default
     const result = kspec("agent run timeout-agent --timeout 5 --dry-run --json", testDir);
@@ -1295,7 +1465,9 @@ describe("AC-2/3: kspec agent run error handling", () => {
 
     // AC: @trait-error-guidance ac-3 - suggests checking ref
     // AC: @trait-semantic-exit-codes ac-2 - exit 1 on validation error
-    const result = kspec("agent run nonexistent-agent 'prompt' --dry-run", testDir, { expectFail: true });
+    const result = kspec("agent run nonexistent-agent 'prompt' --dry-run", testDir, {
+      expectFail: true,
+    });
 
     expect(result.exitCode).not.toBe(0);
     expect(result.stderr + result.stdout).toContain("nonexistent-agent");
@@ -1322,10 +1494,7 @@ describe("AC-10: kspec agent dispatch start without daemon", () => {
       path_sync.join(dir, "kynetic.meta.yaml"),
       YAML.stringify({ kynetic_meta: "1.0", agents: [] }),
     );
-    fs_sync.writeFileSync(
-      path_sync.join(dir, "project.tasks.yaml"),
-      YAML.stringify({ tasks: [] }),
-    );
+    fs_sync.writeFileSync(path_sync.join(dir, "project.tasks.yaml"), YAML.stringify({ tasks: [] }));
     // Keep this fixture fully isolated from daemon state outside the test process.
     fs_sync.writeFileSync(
       path_sync.join(dir, "kspec.config.yaml"),
@@ -1417,7 +1586,9 @@ describe("AC-11: JSON mode suppresses streaming output", () => {
   let testDir: string;
 
   beforeEach(() => {
-    testDir = require("node:fs").mkdtempSync(require("node:path").join(require("node:os").tmpdir(), "kspec-agent-stream-json-"));
+    testDir = require("node:fs").mkdtempSync(
+      require("node:path").join(require("node:os").tmpdir(), "kspec-agent-stream-json-"),
+    );
     registerMockAdapter();
   });
 
@@ -1472,7 +1643,9 @@ describe("AC-12: Interactive mode streams text as it arrives", () => {
   let testDir: string;
 
   beforeEach(() => {
-    testDir = require("node:fs").mkdtempSync(require("node:path").join(require("node:os").tmpdir(), "kspec-agent-stream-interactive-"));
+    testDir = require("node:fs").mkdtempSync(
+      require("node:path").join(require("node:os").tmpdir(), "kspec-agent-stream-interactive-"),
+    );
     registerMockAdapter();
   });
 
@@ -1494,10 +1667,7 @@ describe("AC-12: Interactive mode streams text as it arrives", () => {
       trigger: "manual",
       env: { MOCK_ACP_RESPONSE_TEXT: responseText },
       onUpdate: (update) => {
-        if (
-          update.sessionUpdate === "agent_message_chunk" &&
-          update.content.type === "text"
-        ) {
+        if (update.sessionUpdate === "agent_message_chunk" && update.content.type === "text") {
           receivedChunks.push(update.content.text);
         }
       },
@@ -1515,7 +1685,9 @@ describe("AC-12: suppress adapter rate_limit_event noise on stderr", () => {
   let testDir: string;
 
   beforeEach(() => {
-    testDir = require("node:fs").mkdtempSync(require("node:path").join(require("node:os").tmpdir(), "kspec-agent-stderr-filter-"));
+    testDir = require("node:fs").mkdtempSync(
+      require("node:path").join(require("node:os").tmpdir(), "kspec-agent-stderr-filter-"),
+    );
     registerMockAdapter();
   });
 
@@ -1565,7 +1737,10 @@ interface FakeWsInstance {
   onclose: (() => void) | null;
 }
 
-function makeFakeWsClass(): { FakeWs: new (url: string) => FakeWsInstance; getLastInstance: () => FakeWsInstance | null } {
+function makeFakeWsClass(): {
+  FakeWs: new (url: string) => FakeWsInstance;
+  getLastInstance: () => FakeWsInstance | null;
+} {
   let last: FakeWsInstance | null = null;
   class FakeWs implements FakeWsInstance {
     send = vi.fn();
@@ -1580,11 +1755,7 @@ function makeFakeWsClass(): { FakeWs: new (url: string) => FakeWsInstance; getLa
   return { FakeWs: FakeWs as new (url: string) => FakeWsInstance, getLastInstance: () => last };
 }
 
-const DISPATCH_WATCH_FIXTURE_DIR = path.join(
-  __dirname,
-  "fixtures",
-  "dispatch-watch-transcripts",
-);
+const DISPATCH_WATCH_FIXTURE_DIR = path.join(__dirname, "fixtures", "dispatch-watch-transcripts");
 
 type DispatchWatchTextChunk = {
   session_id: string;
@@ -1649,9 +1820,7 @@ async function waitFor(
       const ok = condition();
       return {
         ok,
-        details: ok
-          ? "condition met"
-          : `condition not yet met (waited up to ${maxWaitMs}ms)`,
+        details: ok ? "condition met" : `condition not yet met (waited up to ${maxWaitMs}ms)`,
       };
     },
     { timeoutMs: maxWaitMs, intervalMs: 10 },
@@ -1682,7 +1851,9 @@ describe("AC-15: dispatch watch — daemon not running", () => {
     const program = createTestProgram();
     const errors: string[] = [];
     const origError = console.error;
-    console.error = (...args) => { errors.push(args.join(" ")); };
+    console.error = (...args) => {
+      errors.push(args.join(" "));
+    };
 
     let exitCode: number | undefined;
     vi.spyOn(process, "exit").mockImplementation((code?: number) => {
@@ -1741,7 +1912,9 @@ describe("AC-18: dispatch watch — subscribe handshake failure", () => {
     const program = createTestProgram();
     const runPromise = program
       .parseAsync(["agent", "dispatch", "watch"], { from: "user" })
-      .catch(() => {/* mocked process.exit throws */});
+      .catch(() => {
+        /* mocked process.exit throws */
+      });
 
     await waitFor(() => getLastInstance() !== null);
     const ws = getLastInstance()!;
@@ -1772,7 +1945,9 @@ describe("AC-18: dispatch watch — subscribe handshake failure", () => {
     expect(allInfo).toContain("kspec serve");
     expect(allInfo).toContain("daemon logs");
 
-    runPromise.catch(() => {/* ignore */});
+    runPromise.catch(() => {
+      /* ignore */
+    });
   });
 });
 
@@ -1833,7 +2008,9 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     expect(output).toContain("hello from agent");
 
     // Clean up — the promise never resolves, but that's expected
-    runPromise.catch(() => {/* ignore */});
+    runPromise.catch(() => {
+      /* ignore */
+    });
   });
 
   it("should render one section header and stream token-sized chunks as body text", async () => {
@@ -1879,7 +2056,9 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     expect(output).toContain("\nNext line");
     expect((output.match(/\[worker sess-abc\]/g) ?? []).length).toBe(1);
 
-    runPromise.catch(() => {/* ignore */});
+    runPromise.catch(() => {
+      /* ignore */
+    });
   });
 
   it("should start a new prefixed line when output switches between streams", async () => {
@@ -1922,7 +2101,9 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     const output = written.join("");
     expect(output).toContain("[worker-a sess-a]\nhello\n[worker-b sess-b]\nworld");
 
-    runPromise.catch(() => {/* ignore */});
+    runPromise.catch(() => {
+      /* ignore */
+    });
   });
 
   it("should place distinct same-stream messages on separate lines at empty-chunk boundary", async () => {
@@ -1973,7 +2154,9 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     const output = written.join("");
     expect(output).toContain("[worker sess-abc]\nFirst update.\n\nSecond update.");
 
-    runPromise.catch(() => {/* ignore */});
+    runPromise.catch(() => {
+      /* ignore */
+    });
   });
 
   it("should collapse repeated boundary events to a single spacer line", async () => {
@@ -2029,7 +2212,9 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     expect(output).toContain("[worker sess-abc]\nFirst block.\n\nSecond block.");
     expect(output).not.toContain("First block.\n\n\nSecond block.");
 
-    runPromise.catch(() => {/* ignore */});
+    runPromise.catch(() => {
+      /* ignore */
+    });
   });
 
   it("should ignore empty-boundary events from other streams while current stream is mid-line", async () => {
@@ -2080,7 +2265,9 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     expect(output).not.toContain("\nworld\n[worker-a sess-a]");
     expect(output).not.toContain("[worker-b sess-b]");
 
-    runPromise.catch(() => {/* ignore */});
+    runPromise.catch(() => {
+      /* ignore */
+    });
   });
 
   it("should handle empty-first statement boundaries without adding blank lines", async () => {
@@ -2137,7 +2324,9 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     expect(output).toContain("[worker sess-abc]\nFirst statement.\n\nSecond statement.");
     expect(output.startsWith("\n")).toBe(false);
 
-    runPromise.catch(() => {/* ignore */});
+    runPromise.catch(() => {
+      /* ignore */
+    });
   });
 
   // AC: @cli-agent-commands ac-17
@@ -2179,7 +2368,9 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     expect(output).toContain("[worker 01KJVFYR]\nhello");
     expect(output).not.toContain("01KJVFYRKXXQG7N3BYC68KSX6H");
 
-    runPromise.catch(() => {/* ignore */});
+    runPromise.catch(() => {
+      /* ignore */
+    });
   });
 
   it("should keep continuation bursts on one line when chunks split mid-token", async () => {
@@ -2225,7 +2416,9 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
       "[worker sess-abc]\nI’m taking ownership with the `kspec-task-work` flow first, and I’ll explicitly load project instructions before editing.",
     );
 
-    runPromise.catch(() => {/* ignore */});
+    runPromise.catch(() => {
+      /* ignore */
+    });
   });
 });
 
@@ -2289,7 +2482,9 @@ describe("AC-13: dispatch watch — transcript fixture regressions", () => {
       expect((output.match(/\[worker-b sess-b\]/g) ?? []).length).toBe(1);
     }
 
-    runPromise.catch(() => {/* ignore */});
+    runPromise.catch(() => {
+      /* ignore */
+    });
   });
 });
 
@@ -2350,7 +2545,9 @@ describe("AC-16: dispatch watch — filter by agent or session", () => {
     expect(output).toContain("visible");
     expect(output).toContain("[target-agent s2]");
 
-    runPromise.catch(() => {/* ignore */});
+    runPromise.catch(() => {
+      /* ignore */
+    });
   });
 
   it("should only show chunks matching --session filter, drop others", async () => {
@@ -2397,7 +2594,9 @@ describe("AC-16: dispatch watch — filter by agent or session", () => {
     expect(output).not.toContain("dropped");
     expect(output).toContain("shown");
 
-    runPromise.catch(() => {/* ignore */});
+    runPromise.catch(() => {
+      /* ignore */
+    });
   });
 });
 
@@ -2423,7 +2622,9 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
       onmessage: ((e: { data: string }) => void) | null = null;
       onerror: ((e: unknown) => void) | null = null;
       onclose: (() => void) | null = null;
-      constructor(_url: string) { instances.push(this); }
+      constructor(_url: string) {
+        instances.push(this);
+      }
     }
     _setWebSocketCtor(TrackingFakeWs as unknown as typeof WebSocket);
     vi.useFakeTimers({ shouldAdvanceTime: true });
@@ -2435,14 +2636,17 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
     });
 
     const program = createTestProgram();
-    const runPromise = program.parseAsync(
-      ["agent", "dispatch", "watch", "--retries", "2"],
-      { from: "user" },
-    );
+    const runPromise = program.parseAsync(["agent", "dispatch", "watch", "--retries", "2"], {
+      from: "user",
+    });
 
     // Poll for first WebSocket to be created (initContext is async)
     await vi.runAllTimersAsync();
-    await waitFor(() => instances.length >= 1, 2000, "WebSocket instance created for reconnect test");
+    await waitFor(
+      () => instances.length >= 1,
+      2000,
+      "WebSocket instance created for reconnect test",
+    );
 
     instances[0].onopen?.({});
 
@@ -2458,7 +2662,9 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
     expect(instances.length).toBeGreaterThanOrEqual(2);
 
     vi.useRealTimers();
-    runPromise.catch(() => {/* ignore */});
+    runPromise.catch(() => {
+      /* ignore */
+    });
   });
 
   it("should flush active output line before reconnect message", async () => {
@@ -2474,7 +2680,9 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
       onmessage: ((e: { data: string }) => void) | null = null;
       onerror: ((e: unknown) => void) | null = null;
       onclose: (() => void) | null = null;
-      constructor(_url: string) { instances.push(this); }
+      constructor(_url: string) {
+        instances.push(this);
+      }
     }
     _setWebSocketCtor(CaptureWs as unknown as typeof WebSocket);
 
@@ -2490,12 +2698,15 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
     });
 
     const program = createTestProgram();
-    const runPromise = program.parseAsync(
-      ["agent", "dispatch", "watch", "--retries", "1"],
-      { from: "user" },
-    );
+    const runPromise = program.parseAsync(["agent", "dispatch", "watch", "--retries", "1"], {
+      from: "user",
+    });
 
-    await waitFor(() => instances.length >= 1, 2000, "WebSocket instance created for output flush test");
+    await waitFor(
+      () => instances.length >= 1,
+      2000,
+      "WebSocket instance created for output flush test",
+    );
     instances[0].onopen?.({});
     instances[0].onmessage?.({
       data: JSON.stringify({
@@ -2523,13 +2734,14 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
     expect(stdout).toContain("[worker sess-abc]\nline without newline\n");
     expect(stderrWrites.some((l) => l.includes("[watch] Connection lost"))).toBe(true);
 
-    runPromise.catch(() => {/* ignore */});
+    runPromise.catch(() => {
+      /* ignore */
+    });
   });
 
   it("should preserve reconnect boundary formatting from transcript fixture", async () => {
-    const fixture = loadDispatchWatchFixture<DispatchWatchReconnectFixture>(
-      "reconnect-boundary.json",
-    );
+    const fixture =
+      loadDispatchWatchFixture<DispatchWatchReconnectFixture>("reconnect-boundary.json");
 
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
@@ -2543,7 +2755,9 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
       onmessage: ((e: { data: string }) => void) | null = null;
       onerror: ((e: unknown) => void) | null = null;
       onclose: (() => void) | null = null;
-      constructor(_url: string) { instances.push(this); }
+      constructor(_url: string) {
+        instances.push(this);
+      }
     }
     _setWebSocketCtor(CaptureWs as unknown as typeof WebSocket);
     vi.useFakeTimers({ shouldAdvanceTime: true });
@@ -2560,12 +2774,15 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
     });
 
     const program = createTestProgram();
-    const runPromise = program.parseAsync(
-      ["agent", "dispatch", "watch", "--retries", "1"],
-      { from: "user" },
-    );
+    const runPromise = program.parseAsync(["agent", "dispatch", "watch", "--retries", "1"], {
+      from: "user",
+    });
 
-    await waitFor(() => instances.length >= 1, 2000, "WebSocket instance created for reconnect boundary test");
+    await waitFor(
+      () => instances.length >= 1,
+      2000,
+      "WebSocket instance created for reconnect boundary test",
+    );
     instances[0].onopen?.({});
     for (const chunk of fixture.chunks_before_close) {
       emitSessionTextEvent(instances[0], chunk);
@@ -2579,7 +2796,9 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
     expect(stderr).toContain(fixture.expected_stderr_substring);
     expect(stdout.endsWith("\n")).toBe(true);
 
-    runPromise.catch(() => {/* ignore */});
+    runPromise.catch(() => {
+      /* ignore */
+    });
   });
 
   it("should exit code 3 when retries exhausted (--retries 0)", async () => {
@@ -2596,7 +2815,9 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
       onmessage: ((e: { data: string }) => void) | null = null;
       onerror: ((e: unknown) => void) | null = null;
       onclose: (() => void) | null = null;
-      constructor(_url: string) { instances.push(this); }
+      constructor(_url: string) {
+        instances.push(this);
+      }
     }
     _setWebSocketCtor(CaptureFakeWs as unknown as typeof WebSocket);
 
@@ -2612,10 +2833,16 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
     // --retries 0: retryLimit=0, so first close immediately exits
     const runPromise = program
       .parseAsync(["agent", "dispatch", "watch", "--retries", "0"], { from: "user" })
-      .catch(() => {/* mocked exit throws */});
+      .catch(() => {
+        /* mocked exit throws */
+      });
 
     // Wait for WebSocket to be created
-    await waitFor(() => instances.length >= 1, 2000, "WebSocket instance created for retries-exhausted test");
+    await waitFor(
+      () => instances.length >= 1,
+      2000,
+      "WebSocket instance created for retries-exhausted test",
+    );
 
     // First connection drops — retryCount(0) >= retryLimit(0), so exit immediately
     // process.exit mock throws synchronously, so wrap in try/catch
@@ -2628,55 +2855,61 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
     // AC: @cli-agent-commands ac-14 - exit code 3 on reconnection failure
     expect(exitCode).toBe(3);
 
-    runPromise.catch(() => {/* ignore */});
-  });
-
-  it.each(["foo", "-1"])("should exit code 4 for invalid --retries value %s", async (retriesValue) => {
-    const { PidFileManager } = await import("../src/cli/pid-utils.js");
-    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
-    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
-    await mockInitContextFast();
-
-    const wsCtor = vi.fn();
-    class GuardWs implements FakeWsInstance {
-      send = vi.fn();
-      onopen: ((e: unknown) => void) | null = null;
-      onmessage: ((e: { data: string }) => void) | null = null;
-      onerror: ((e: unknown) => void) | null = null;
-      onclose: (() => void) | null = null;
-      constructor(_url: string) { wsCtor(); }
-    }
-    _setWebSocketCtor(GuardWs as unknown as typeof WebSocket);
-
-    const consoleErrors: string[] = [];
-    const origError = console.error;
-    console.error = (...args) => {
-      consoleErrors.push(args.join(" "));
-    };
-
-    let exitCode: number | undefined;
-    vi.spyOn(process, "exit").mockImplementation((code?: number) => {
-      exitCode = code as number;
-      throw new Error(`process.exit(${code})`);
+    runPromise.catch(() => {
+      /* ignore */
     });
-
-    const program = createTestProgram();
-    try {
-      await program.parseAsync(
-        ["agent", "dispatch", "watch", "--retries", retriesValue],
-        { from: "user" },
-      );
-    } catch {
-      // expected: mocked process.exit throws
-    } finally {
-      console.error = origError;
-    }
-
-    // AC: @trait-semantic-exit-codes ac-2 - invalid numeric input exits with validation error
-    expect(exitCode).toBe(4);
-    expect(consoleErrors.join(" ")).toContain("Invalid --retries value");
-    expect(wsCtor).not.toHaveBeenCalled();
   });
+
+  it.each(["foo", "-1"])(
+    "should exit code 4 for invalid --retries value %s",
+    async (retriesValue) => {
+      const { PidFileManager } = await import("../src/cli/pid-utils.js");
+      vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+      vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+      await mockInitContextFast();
+
+      const wsCtor = vi.fn();
+      class GuardWs implements FakeWsInstance {
+        send = vi.fn();
+        onopen: ((e: unknown) => void) | null = null;
+        onmessage: ((e: { data: string }) => void) | null = null;
+        onerror: ((e: unknown) => void) | null = null;
+        onclose: (() => void) | null = null;
+        constructor(_url: string) {
+          wsCtor();
+        }
+      }
+      _setWebSocketCtor(GuardWs as unknown as typeof WebSocket);
+
+      const consoleErrors: string[] = [];
+      const origError = console.error;
+      console.error = (...args) => {
+        consoleErrors.push(args.join(" "));
+      };
+
+      let exitCode: number | undefined;
+      vi.spyOn(process, "exit").mockImplementation((code?: number) => {
+        exitCode = code as number;
+        throw new Error(`process.exit(${code})`);
+      });
+
+      const program = createTestProgram();
+      try {
+        await program.parseAsync(["agent", "dispatch", "watch", "--retries", retriesValue], {
+          from: "user",
+        });
+      } catch {
+        // expected: mocked process.exit throws
+      } finally {
+        console.error = origError;
+      }
+
+      // AC: @trait-semantic-exit-codes ac-2 - invalid numeric input exits with validation error
+      expect(exitCode).toBe(4);
+      expect(consoleErrors.join(" ")).toContain("Invalid --retries value");
+      expect(wsCtor).not.toHaveBeenCalled();
+    },
+  );
 });
 
 // AC: @ws-session-event-streaming ac-cli-watch-parity
@@ -2740,7 +2973,9 @@ describe("ac-cli-watch-parity: dispatch watch — typed event stream", () => {
     const output = written.join("");
     expect(output).toContain("[worker sess-1]\nLine one\nLine two\nFinal partial");
 
-    runPromise.catch(() => {/* ignore */});
+    runPromise.catch(() => {
+      /* ignore */
+    });
   });
 
   // AC: @ws-session-event-streaming ac-cli-watch-parity — tool calls show name and status transitions
@@ -2784,7 +3019,9 @@ describe("ac-cli-watch-parity: dispatch watch — typed event stream", () => {
     expect(output).toContain("⚡ Tool: Read");
     expect(output).toContain("/src/main.ts");
 
-    runPromise.catch(() => {/* ignore */});
+    runPromise.catch(() => {
+      /* ignore */
+    });
   });
 
   // AC: @ws-session-event-streaming ac-cli-watch-parity — tool calls show status transitions
@@ -2828,7 +3065,9 @@ describe("ac-cli-watch-parity: dispatch watch — typed event stream", () => {
     const output = written.join("");
     expect(output).toContain("✓ Read completed (1.5s)");
 
-    runPromise.catch(() => {/* ignore */});
+    runPromise.catch(() => {
+      /* ignore */
+    });
   });
 
   // AC: @ws-session-event-streaming ac-cli-watch-parity — tool call with sub-second duration
@@ -2872,7 +3111,9 @@ describe("ac-cli-watch-parity: dispatch watch — typed event stream", () => {
     const output = written.join("");
     expect(output).toContain("✓ Bash completed (250ms)");
 
-    runPromise.catch(() => {/* ignore */});
+    runPromise.catch(() => {
+      /* ignore */
+    });
   });
 
   // AC: @ws-session-event-streaming ac-cli-watch-parity — thinking blocks hidden by default
@@ -2924,7 +3165,9 @@ describe("ac-cli-watch-parity: dispatch watch — typed event stream", () => {
     expect(output).not.toContain("done thinking");
     expect(output).toContain("visible output");
 
-    runPromise.catch(() => {/* ignore */});
+    runPromise.catch(() => {
+      /* ignore */
+    });
   });
 
   // AC: @ws-session-event-streaming ac-cli-watch-parity — thinking blocks shown with --verbose
@@ -2944,10 +3187,9 @@ describe("ac-cli-watch-parity: dispatch watch — typed event stream", () => {
     });
 
     const program = createTestProgram();
-    const runPromise = program.parseAsync(
-      ["agent", "dispatch", "watch", "--verbose"],
-      { from: "user" },
-    );
+    const runPromise = program.parseAsync(["agent", "dispatch", "watch", "--verbose"], {
+      from: "user",
+    });
 
     await waitFor(() => getLastInstance() !== null);
     const ws = getLastInstance()!;
@@ -2967,7 +3209,9 @@ describe("ac-cli-watch-parity: dispatch watch — typed event stream", () => {
     expect(output).toContain("\x1b[2m"); // dim start
     expect(output).toContain("\x1b[22m"); // dim end
 
-    runPromise.catch(() => {/* ignore */});
+    runPromise.catch(() => {
+      /* ignore */
+    });
   });
 
   // AC: @ws-session-event-streaming ac-cli-watch-parity — full lifecycle sequence
@@ -2995,26 +3239,37 @@ describe("ac-cli-watch-parity: dispatch watch — typed event stream", () => {
 
     const events = [
       { event: "message_start", data: { session_id: "sess-1", agent_id: "worker" } },
-      { event: "message_progress", data: { session_id: "sess-1", agent_id: "worker", text: "Let me read that file.\n" } },
+      {
+        event: "message_progress",
+        data: { session_id: "sess-1", agent_id: "worker", text: "Let me read that file.\n" },
+      },
       { event: "message_complete", data: { session_id: "sess-1", agent_id: "worker", text: "" } },
       {
         event: "tool_call_start",
         data: {
-          session_id: "sess-1", agent_id: "worker",
-          tool_call_id: "tc-1", tool_name: "Read",
+          session_id: "sess-1",
+          agent_id: "worker",
+          tool_call_id: "tc-1",
+          tool_name: "Read",
           tool_input: { file_path: "/src/index.ts" },
         },
       },
       {
         event: "tool_call_complete",
         data: {
-          session_id: "sess-1", agent_id: "worker",
-          tool_call_id: "tc-1", tool_name: "Read",
-          status: "completed", duration_ms: 45,
+          session_id: "sess-1",
+          agent_id: "worker",
+          tool_call_id: "tc-1",
+          tool_name: "Read",
+          status: "completed",
+          duration_ms: 45,
         },
       },
       { event: "message_start", data: { session_id: "sess-1", agent_id: "worker" } },
-      { event: "message_progress", data: { session_id: "sess-1", agent_id: "worker", text: "Here is the content.\n" } },
+      {
+        event: "message_progress",
+        data: { session_id: "sess-1", agent_id: "worker", text: "Here is the content.\n" },
+      },
       { event: "message_complete", data: { session_id: "sess-1", agent_id: "worker", text: "" } },
     ];
 
@@ -3029,7 +3284,9 @@ describe("ac-cli-watch-parity: dispatch watch — typed event stream", () => {
     expect(output).toContain("✓ Read completed (45ms)");
     expect(output).toContain("Here is the content.");
 
-    runPromise.catch(() => {/* ignore */});
+    runPromise.catch(() => {
+      /* ignore */
+    });
   });
 
   // AC: @ws-session-event-streaming ac-cli-watch-parity — tool input summary truncation
@@ -3063,7 +3320,11 @@ describe("ac-cli-watch-parity: dispatch watch — typed event stream", () => {
           agent_id: "worker",
           tool_call_id: "tc-3",
           tool_name: "Write",
-          tool_input: { file_path: "/very/long/path/to/some/deeply/nested/file/that/exceeds/eighty/characters/definitely.ts", content: "lots of content here" },
+          tool_input: {
+            file_path:
+              "/very/long/path/to/some/deeply/nested/file/that/exceeds/eighty/characters/definitely.ts",
+            content: "lots of content here",
+          },
         },
       }),
     });
@@ -3074,12 +3335,14 @@ describe("ac-cli-watch-parity: dispatch watch — typed event stream", () => {
     // Should contain truncation marker
     expect(output).toContain("...");
     // The parenthesized input summary should be <= 83 chars (80 content + parens + space)
-    const toolLine = output.split("\n").find(l => l.includes("⚡ Tool: Write"))!;
+    const toolLine = output.split("\n").find((l) => l.includes("⚡ Tool: Write"))!;
     const inputPart = toolLine.match(/\(.*\)/)?.[0];
     expect(inputPart).toBeDefined();
     expect(inputPart!.length).toBeLessThanOrEqual(82); // ( + 77 chars + ... + ) = 82
 
-    runPromise.catch(() => {/* ignore */});
+    runPromise.catch(() => {
+      /* ignore */
+    });
   });
 });
 
@@ -3143,11 +3406,10 @@ describe("AC-3: waitFor timeout floor and diagnostic messages", () => {
     // AC-3: "configurable override" — callers can pass a custom timeout.
     const start = Date.now();
     await expect(
-      waitForStartup(
-        "short override test",
-        async () => ({ ok: false, details: "still waiting" }),
-        { timeoutMs: 100, intervalMs: 10 },
-      ),
+      waitForStartup("short override test", async () => ({ ok: false, details: "still waiting" }), {
+        timeoutMs: 100,
+        intervalMs: 10,
+      }),
     ).rejects.toThrow(/timed out/i);
     const elapsed = Date.now() - start;
     // Should respect the override (100ms), not the default
@@ -3177,9 +3439,7 @@ describe("AC-4: crypto polyfill prevents ReferenceError", () => {
     expect(() => globalThis.crypto.randomUUID()).not.toThrow();
 
     const uuid = globalThis.crypto.randomUUID();
-    expect(uuid).toMatch(
-      /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/,
-    );
+    expect(uuid).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
 
     // Restore original to avoid polluting other tests
     (globalThis as Record<string, unknown>).crypto = originalCrypto;

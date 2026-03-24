@@ -54,17 +54,8 @@ import {
   registerWorkflowCommand,
 } from "./commands/index.js";
 import { EXIT_CODES } from "./exit-codes.js";
-import {
-  getVerboseMode,
-  setJsonMode,
-  setVerboseMode,
-  setYamlMode,
-} from "./output.js";
-import {
-  COMMAND_ALIASES,
-  findClosestCommand,
-  getAllCommands,
-} from "./suggest.js";
+import { getVerboseMode, setJsonMode, setVerboseMode, setYamlMode } from "./output.js";
+import { COMMAND_ALIASES, findClosestCommand, getAllCommands } from "./suggest.js";
 import { isNoDaemonModeEnabled, PidFileManager } from "./pid-utils.js";
 import { getAlwaysSyncAnnotation, getMutatingAnnotation } from "./command-annotations.js";
 import { setSyncMode, clearSyncMode } from "./sync-mode.js";
@@ -101,10 +92,7 @@ async function maybeAcquireDispatchMutationLock(isMutating: boolean): Promise<vo
   if (!lockFile) return;
 
   const timeoutRaw = process.env.KSPEC_SHADOW_MUTATION_LOCK_TIMEOUT_MS;
-  const timeoutMs =
-    timeoutRaw && Number.isFinite(Number(timeoutRaw))
-      ? Number(timeoutRaw)
-      : 0;
+  const timeoutMs = timeoutRaw && Number.isFinite(Number(timeoutRaw)) ? Number(timeoutRaw) : 0;
 
   try {
     heldMutationLockRelease = await acquireFileLock(lockFile, timeoutMs);
@@ -137,21 +125,11 @@ async function maybeAutoStartDaemon(): Promise<void> {
     // AC: @config-daemon ac-4 — emit deprecation warning if manifest has daemon block
     if (context.manifest?.daemon && !manifestDaemonWarningShown) {
       manifestDaemonWarningShown = true;
-      console.error(
-        chalk.yellow('Warning: Manifest "daemon" block is deprecated.')
-      );
-      console.error(
-        chalk.yellow('  Migrate to kspec.config.yaml:')
-      );
-      console.error(
-        chalk.gray('    daemon:')
-      );
-      console.error(
-        chalk.gray(`      port: ${context.manifest.daemon.port ?? 3456}`)
-      );
-      console.error(
-        chalk.gray(`      auto_start: ${context.manifest.daemon.auto_start ?? true}`)
-      );
+      console.error(chalk.yellow('Warning: Manifest "daemon" block is deprecated.'));
+      console.error(chalk.yellow("  Migrate to kspec.config.yaml:"));
+      console.error(chalk.gray("    daemon:"));
+      console.error(chalk.gray(`      port: ${context.manifest.daemon.port ?? 3456}`));
+      console.error(chalk.gray(`      auto_start: ${context.manifest.daemon.auto_start ?? true}`));
     }
 
     // AC: @config-daemon ac-3 — auto_start from config (defaults to true)
@@ -177,8 +155,8 @@ async function maybeAutoStartDaemon(): Promise<void> {
     }
 
     // Get path to daemon entry point - resolve relative to installed package
-    const packageRoot = join(import.meta.dirname, '../../');
-    const daemonBinary = join(packageRoot, 'dist/daemon/index.js');
+    const packageRoot = join(import.meta.dirname, "../../");
+    const daemonBinary = join(packageRoot, "dist/daemon/index.js");
     if (!existsSync(daemonBinary)) {
       // Daemon not available, skip silently
       return;
@@ -186,12 +164,16 @@ async function maybeAutoStartDaemon(): Promise<void> {
 
     // Start daemon in background using current runtime
     // Set BUN_ENV=production to prevent Bun dev mode HTML transformation
-    const child = spawn(process.execPath, [daemonBinary, '--port', String(port), '--kspec-dir', kspecDir], {
-      detached: true,
-      stdio: 'ignore',
-      cwd: process.cwd(),
-      env: { ...process.env, BUN_ENV: 'production' },
-    });
+    const child = spawn(
+      process.execPath,
+      [daemonBinary, "--port", String(port), "--kspec-dir", kspecDir],
+      {
+        detached: true,
+        stdio: "ignore",
+        cwd: process.cwd(),
+        env: { ...process.env, BUN_ENV: "production" },
+      },
+    );
 
     // Detach from parent
     child.unref();
@@ -263,9 +245,7 @@ program
     if (opts.raw) formatFlags.push("--raw");
 
     if (formatFlags.length > 1) {
-      console.error(
-        chalk.red(`error: Conflicting format options: ${formatFlags.join(", ")}`)
-      );
+      console.error(chalk.red(`error: Conflicting format options: ${formatFlags.join(", ")}`));
       console.error(chalk.gray("Use only one of: --json, --yaml, --raw"));
       process.exit(EXIT_CODES.ERROR);
     }
@@ -300,7 +280,7 @@ program
 
     // Auto-start daemon if configured and not running
     // Skip for init, serve, and help commands
-    const skipCommands = ['init', 'serve', 'help', 'kspec'];
+    const skipCommands = ["init", "serve", "help", "kspec"];
 
     if (!skipCommands.includes(executingCommandName)) {
       await maybeAutoStartDaemon();
@@ -376,9 +356,7 @@ program.on("command:*", (operands) => {
   // Check for direct alias match
   if (COMMAND_ALIASES[unknownCommand]) {
     console.error(chalk.red(`error: unknown command '${unknownCommand}'`));
-    console.error(
-      chalk.yellow(`Did you mean: kspec ${COMMAND_ALIASES[unknownCommand]}?`),
-    );
+    console.error(chalk.yellow(`Did you mean: kspec ${COMMAND_ALIASES[unknownCommand]}?`));
     process.exit(EXIT_CODES.ERROR);
   }
 

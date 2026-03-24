@@ -102,9 +102,7 @@ export class JsonRpcFraming extends EventEmitter {
     if ("setEncoding" in this.stdin) {
       (this.stdin as NodeJS.ReadStream).setEncoding("utf8");
     }
-    this.stdin.on("data", (chunk: string | Buffer) =>
-      this.handleData(chunk.toString()),
-    );
+    this.stdin.on("data", (chunk: string | Buffer) => this.handleData(chunk.toString()));
     this.stdin.on("end", () => this.handleEnd());
     this.stdin.on("error", (err) => this.handleError(err));
     this.stdout.on("error", (err) => this.handleOutputError(err));
@@ -137,11 +135,7 @@ export class JsonRpcFraming extends EventEmitter {
       // Set up timeout
       const timer = setTimeout(() => {
         this.pending.delete(id);
-        reject(
-          new Error(
-            `Request ${id} timed out after ${timeoutMs}ms (method: ${method})`,
-          ),
-        );
+        reject(new Error(`Request ${id} timed out after ${timeoutMs}ms (method: ${method})`));
       }, timeoutMs);
 
       // Store pending request with timeout info for potential resets
@@ -353,9 +347,7 @@ export class JsonRpcFraming extends EventEmitter {
       pending.resolve(response.result);
     } else {
       // Unexpected response
-      console.error(
-        `Warning: Received response for unknown request ID: ${response.id}`,
-      );
+      console.error(`Warning: Received response for unknown request ID: ${response.id}`);
     }
   }
 
@@ -379,8 +371,7 @@ export class JsonRpcFraming extends EventEmitter {
 
       // Skip logging for expected "Method not found" errors on optional methods
       const isSilentMethodNotFound =
-        pending.options?.silentMethodNotFound &&
-        error.error.code === METHOD_NOT_FOUND;
+        pending.options?.silentMethodNotFound && error.error.code === METHOD_NOT_FOUND;
 
       if (!isSilentMethodNotFound) {
         console.error(
@@ -395,9 +386,7 @@ export class JsonRpcFraming extends EventEmitter {
       pending.reject(err);
     } else {
       // Unexpected error response
-      console.error(
-        `Warning: Received error for unknown request ID: ${error.id}`,
-      );
+      console.error(`Warning: Received error for unknown request ID: ${error.id}`);
     }
   }
 

@@ -6,10 +6,7 @@
 
 import chalk from "chalk";
 import { formatRelativeTime } from "../../../utils/index.js";
-import {
-  hints,
-  sessionHeaders,
-} from "../../../strings/index.js";
+import { hints, sessionHeaders } from "../../../strings/index.js";
 import type {
   CheckpointResult,
   CompletedTaskSummary,
@@ -34,9 +31,7 @@ export function getDisplayRef(item: { ref: string; slug?: string | null }): stri
  * P1-P2: red (high priority), P3+: gray.
  */
 export function formatPriority(level: number): string {
-  return level <= 2
-    ? chalk.red(`P${level}`)
-    : chalk.gray(`P${level}`);
+  return level <= 2 ? chalk.red(`P${level}`) : chalk.gray(`P${level}`);
 }
 
 /**
@@ -62,14 +57,9 @@ export function statusColor(status: string): ReturnType<typeof chalk.red> {
 /**
  * Format an inline note for display under a task entry.
  */
-function formatInlineNote(
-  note: NoteSummary,
-  isFull: boolean,
-): void {
+function formatInlineNote(note: NoteSummary, isFull: boolean): void {
   const noteAge = formatRelativeTime(new Date(note.created_at));
-  const author = note.author
-    ? chalk.gray(` by ${note.author}`)
-    : "";
+  const author = note.author ? chalk.gray(` by ${note.author}`) : "";
   console.log(`    ${chalk.yellow("Note")} ${chalk.gray(`(${noteAge}${author})`)}`);
 
   let content = note.content.trim();
@@ -82,11 +72,7 @@ function formatInlineNote(
     console.log(`      ${chalk.white(line)}`);
   }
   if (!isFull && lines.length > maxLines) {
-    console.log(
-      chalk.gray(
-        `      ... (${lines.length - maxLines} more lines)`,
-      ),
-    );
+    console.log(chalk.gray(`      ... (${lines.length - maxLines} more lines)`));
   }
 }
 
@@ -114,10 +100,7 @@ export function formatCheckpointResult(result: CheckpointResult): void {
 
 // ─── Session Context Formatting ─────────────────────────────────────────────
 
-export function formatSessionContext(
-  ctx: SessionStartContext,
-  options: SessionOptions,
-): void {
+export function formatSessionContext(ctx: SessionStartContext, options: SessionOptions): void {
   const isFull = !!options.full;
 
   // Header
@@ -131,11 +114,8 @@ export function formatSessionContext(
 
   // Stats summary
   const pendingReviewNote =
-    ctx.stats.pending_review > 0
-      ? `${ctx.stats.pending_review} awaiting review, `
-      : "";
-  const inboxNote =
-    ctx.stats.inbox_items > 0 ? ` | Inbox: ${ctx.stats.inbox_items}` : "";
+    ctx.stats.pending_review > 0 ? `${ctx.stats.pending_review} awaiting review, ` : "";
+  const inboxNote = ctx.stats.inbox_items > 0 ? ` | Inbox: ${ctx.stats.inbox_items}` : "";
   console.log(
     chalk.gray(
       `Tasks: ${ctx.stats.in_progress} active, ${pendingReviewNote}${ctx.stats.ready} ready, ` +
@@ -146,9 +126,7 @@ export function formatSessionContext(
   // Session context section (focus, threads, questions)
   if (
     ctx.context &&
-    (ctx.context.focus ||
-      ctx.context.threads.length > 0 ||
-      ctx.context.open_questions.length > 0)
+    (ctx.context.focus || ctx.context.threads.length > 0 || ctx.context.open_questions.length > 0)
   ) {
     console.log("\n--- Session Context ---");
 
@@ -182,15 +160,12 @@ export function formatSessionContext(
 
     // Collect notes relevant to active tasks for inline display
     const activeTaskNotes = ctx.recent_notes.filter(
-      (n) =>
-        n.task_status === "in_progress" || n.task_status === "needs_work",
+      (n) => n.task_status === "in_progress" || n.task_status === "needs_work",
     );
 
     for (const task of ctx.active_tasks) {
       const started = task.started_at
-        ? chalk.gray(
-            ` (started ${formatRelativeTime(new Date(task.started_at))})`,
-          )
+        ? chalk.gray(` (started ${formatRelativeTime(new Date(task.started_at))})`)
         : "";
 
       // AC: @cmd-session-start ac-needs-work-indicator
@@ -206,9 +181,7 @@ export function formatSessionContext(
       }
 
       // AC: @cmd-session-start ac-active-detail — show recent notes inline
-      const taskNotes = activeTaskNotes.filter(
-        (n) => n.task_ref === task.ref,
-      );
+      const taskNotes = activeTaskNotes.filter((n) => n.task_ref === task.ref);
       if (taskNotes.length > 0) {
         formatInlineNote(taskNotes[0], isFull); // already sorted most recent first
       }
@@ -220,9 +193,7 @@ export function formatSessionContext(
   if (ctx.pending_review_tasks.length > 0) {
     console.log(`\n${sessionHeaders.awaitingReview}`);
 
-    const reviewNotes = ctx.recent_notes.filter(
-      (n) => n.task_status === "pending_review",
-    );
+    const reviewNotes = ctx.recent_notes.filter((n) => n.task_status === "pending_review");
 
     for (const task of ctx.pending_review_tasks) {
       console.log(
@@ -241,18 +212,13 @@ export function formatSessionContext(
   if (ctx.blocked_tasks.length > 0) {
     console.log(`\n${sessionHeaders.blocked}`);
     for (const task of ctx.blocked_tasks) {
-      const unlocks =
-        task.unlocks > 0 ? chalk.green(` unlocks ${task.unlocks}`) : "";
-      console.log(
-        `  ${chalk.red("[blocked]")} ${getDisplayRef(task)} ${task.title}${unlocks}`,
-      );
+      const unlocks = task.unlocks > 0 ? chalk.green(` unlocks ${task.unlocks}`) : "";
+      console.log(`  ${chalk.red("[blocked]")} ${getDisplayRef(task)} ${task.title}${unlocks}`);
       if (task.blocked_by.length > 0) {
         console.log(chalk.gray(`    Blockers: ${task.blocked_by.join(", ")}`));
       }
       if (task.unmet_deps.length > 0) {
-        console.log(
-          chalk.gray(`    Waiting on: ${task.unmet_deps.join(", ")}`),
-        );
+        console.log(chalk.gray(`    Waiting on: ${task.unmet_deps.join(", ")}`));
       }
     }
   }
@@ -261,10 +227,8 @@ export function formatSessionContext(
   if (ctx.ready_tasks.length > 0) {
     console.log(`\n${sessionHeaders.readyTasks}`);
     for (const task of ctx.ready_tasks) {
-      const tags =
-        task.tags.length > 0 ? chalk.cyan(` #${task.tags.join(" #")}`) : "";
-      const unlocks =
-        task.unlocks > 0 ? chalk.green(` unlocks ${task.unlocks}`) : "";
+      const tags = task.tags.length > 0 ? chalk.cyan(` #${task.tags.join(" #")}`) : "";
+      const unlocks = task.unlocks > 0 ? chalk.green(` unlocks ${task.unlocks}`) : "";
       console.log(
         `  ${formatPriority(task.priority)} ${getDisplayRef(task)} ${task.title}${unlocks}${tags}`,
       );
@@ -292,18 +256,13 @@ export function formatSessionContext(
     // AC: @cmd-session-start ac-full-sections, @session-start-inbox-triage ac-inbox-full-list
     // Full mode: list untriaged items (up to 20)
     // AC: @cmd-session-start ac-slug-fallback — inbox uses @short-ulid
-    const untriagedItems = ctx.inbox_items
-      .filter((i) => !i.triaged)
-      .slice(0, 20);
+    const untriagedItems = ctx.inbox_items.filter((i) => !i.triaged).slice(0, 20);
     if (isFull && untriagedItems.length > 0) {
       console.log("");
       for (const item of untriagedItems) {
         const itemAge = formatRelativeTime(new Date(item.created_at));
         const author = item.added_by ? ` by ${item.added_by}` : "";
-        const tags =
-          item.tags.length > 0
-            ? chalk.cyan(` [${item.tags.join(", ")}]`)
-            : "";
+        const tags = item.tags.length > 0 ? chalk.cyan(` [${item.tags.join(", ")}]`) : "";
         console.log(
           `  ${chalk.magenta(`@${item.ref}`)} ${chalk.gray(`(${itemAge}${author})`)}${tags}`,
         );
@@ -332,16 +291,10 @@ export function formatSessionContext(
 
   // ── Session metadata section (full mode only) ──
   // AC: @cmd-session-start ac-full-sections
-  if (
-    isFull &&
-    ctx.context &&
-    ctx.context.updated_at
-  ) {
+  if (isFull && ctx.context && ctx.context.updated_at) {
     console.log(`\n${chalk.gray.bold("--- Session Metadata ---")}`);
     console.log(
-      chalk.gray(
-        `  Last updated: ${formatRelativeTime(new Date(ctx.context.updated_at))}`,
-      ),
+      chalk.gray(`  Last updated: ${formatRelativeTime(new Date(ctx.context.updated_at))}`),
     );
   }
 
@@ -353,37 +306,26 @@ export function formatSessionContext(
     if (ctx.working_tree.staged.length > 0) {
       console.log(chalk.green("  Staged:"));
       for (const file of ctx.working_tree.staged) {
-        console.log(
-          `    ${chalk.green(file.status[0].toUpperCase())} ${file.path}`,
-        );
+        console.log(`    ${chalk.green(file.status[0].toUpperCase())} ${file.path}`);
       }
     }
 
     if (ctx.working_tree.unstaged.length > 0) {
       console.log(chalk.red("  Modified:"));
       for (const file of ctx.working_tree.unstaged) {
-        console.log(
-          `    ${chalk.red(file.status[0].toUpperCase())} ${file.path}`,
-        );
+        console.log(`    ${chalk.red(file.status[0].toUpperCase())} ${file.path}`);
       }
     }
 
     if (ctx.working_tree.untracked.length > 0) {
       console.log(chalk.gray("  Untracked:"));
-      const untrackedLimit = isFull
-        ? ctx.working_tree.untracked.length
-        : 5;
-      for (const filePath of ctx.working_tree.untracked.slice(
-        0,
-        untrackedLimit,
-      )) {
+      const untrackedLimit = isFull ? ctx.working_tree.untracked.length : 5;
+      for (const filePath of ctx.working_tree.untracked.slice(0, untrackedLimit)) {
         console.log(`    ${chalk.gray("?")} ${filePath}`);
       }
       if (!isFull && ctx.working_tree.untracked.length > untrackedLimit) {
         console.log(
-          chalk.gray(
-            `    ... and ${ctx.working_tree.untracked.length - untrackedLimit} more`,
-          ),
+          chalk.gray(`    ... and ${ctx.working_tree.untracked.length - untrackedLimit} more`),
         );
       }
     }
@@ -394,29 +336,19 @@ export function formatSessionContext(
 
   if (ctx.active_tasks.length > 0) {
     const ref = getDisplayRef(ctx.active_tasks[0]);
-    quickCommands.push(
-      `kspec task note ${ref} "Progress..."  ${chalk.gray("# document work")}`,
-    );
-    quickCommands.push(
-      `kspec task submit ${ref}  ${chalk.gray("# submit for review")}`,
-    );
+    quickCommands.push(`kspec task note ${ref} "Progress..."  ${chalk.gray("# document work")}`);
+    quickCommands.push(`kspec task submit ${ref}  ${chalk.gray("# submit for review")}`);
   } else if (ctx.ready_tasks.length > 0) {
     const ref = getDisplayRef(ctx.ready_tasks[0]);
-    quickCommands.push(
-      `kspec task start ${ref}  ${chalk.gray("# begin work")}`,
-    );
+    quickCommands.push(`kspec task start ${ref}  ${chalk.gray("# begin work")}`);
   }
 
   if (ctx.inbox_stats.untriaged > 0) {
-    quickCommands.push(
-      `kspec triage inbox  ${chalk.gray("# triage untriaged inbox items")}`,
-    );
+    quickCommands.push(`kspec triage inbox  ${chalk.gray("# triage untriaged inbox items")}`);
   }
 
   if (ctx.working_tree && !ctx.working_tree.clean) {
-    quickCommands.push(
-      `git add . && git commit -m "..."  ${chalk.gray("# commit changes")}`,
-    );
+    quickCommands.push(`git add . && git commit -m "..."  ${chalk.gray("# commit changes")}`);
   }
 
   if (quickCommands.length > 0) {
@@ -474,9 +406,7 @@ function formatActivityTimeline(
       }
       group.commits.push({ commit: item.commit, date: item.commit.date });
       // Update sortDate to the most recent event in the group
-      if (
-        new Date(item.date).getTime() > new Date(group.sortDate).getTime()
-      ) {
+      if (new Date(item.date).getTime() > new Date(group.sortDate).getTime()) {
         group.sortDate = item.date;
       }
     } else if (item.type === "task_completion") {
@@ -490,9 +420,7 @@ function formatActivityTimeline(
   for (const group of taskGroups.values()) {
     // AC: @session-start-activity-timeline ac-activity-sort
     // Sort commits within a group chronologically (oldest first)
-    group.commits.sort(
-      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
-    );
+    group.commits.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
     groups.push({ kind: "task_group", ...group });
   }
 
@@ -564,8 +492,6 @@ function formatActivityTimeline(
         `\n  ℹ Consider resolving linked observations: ${observationPromotedTasks.join(", ")}`,
       ),
     );
-    console.log(
-      chalk.gray(`    Run: kspec meta observations --pending-resolution`),
-    );
+    console.log(chalk.gray(`    Run: kspec meta observations --pending-resolution`));
   }
 }

@@ -41,10 +41,7 @@ import {
 import { createRequire } from "node:module";
 import { acquireFileLock } from "./file-lock.js";
 import { commitIfShadow } from "./shadow.js";
-import {
-  getActiveBatchBuffer,
-  runWithBuffer,
-} from "../cli/batch-write-buffer.js";
+import { getActiveBatchBuffer, runWithBuffer } from "../cli/batch-write-buffer.js";
 
 /** Synchronous require for ESM — used for lazy backend registration. */
 const esmRequire = createRequire(import.meta.url);
@@ -110,19 +107,43 @@ export function rawToSummary(raw: unknown): TaskSummary | null {
     status: typeof r.status === "string" ? r.status : "pending",
     priority: typeof r.priority === "number" ? r.priority : 3,
     tags: Array.isArray(r.tags) ? r.tags.filter((t): t is string => typeof t === "string") : [],
-    assignee: typeof r.assignee === "string" ? r.assignee : (r.assignee === null ? null : undefined),
+    assignee: typeof r.assignee === "string" ? r.assignee : r.assignee === null ? null : undefined,
     automation: typeof r.automation === "string" ? r.automation : undefined,
-    spec_ref: typeof r.spec_ref === "string" ? r.spec_ref : (r.spec_ref === null ? null : undefined),
-    plan_ref: typeof r.plan_ref === "string" ? r.plan_ref : (r.plan_ref === null ? null : undefined),
-    review_ref: typeof r.review_ref === "string" ? r.review_ref : (r.review_ref === null ? null : undefined),
-    depends_on: Array.isArray(r.depends_on) ? r.depends_on.filter((d): d is string => typeof d === "string") : [],
-    blocked_by: Array.isArray(r.blocked_by) ? r.blocked_by.filter((b): b is string => typeof b === "string") : [],
+    spec_ref: typeof r.spec_ref === "string" ? r.spec_ref : r.spec_ref === null ? null : undefined,
+    plan_ref: typeof r.plan_ref === "string" ? r.plan_ref : r.plan_ref === null ? null : undefined,
+    review_ref:
+      typeof r.review_ref === "string" ? r.review_ref : r.review_ref === null ? null : undefined,
+    depends_on: Array.isArray(r.depends_on)
+      ? r.depends_on.filter((d): d is string => typeof d === "string")
+      : [],
+    blocked_by: Array.isArray(r.blocked_by)
+      ? r.blocked_by.filter((b): b is string => typeof b === "string")
+      : [],
     created_at: typeof r.created_at === "string" ? r.created_at : new Date().toISOString(),
-    started_at: typeof r.started_at === "string" ? r.started_at : (r.started_at === null ? null : undefined),
-    submitted_at: typeof r.submitted_at === "string" ? r.submitted_at : (r.submitted_at === null ? null : undefined),
-    completed_at: typeof r.completed_at === "string" ? r.completed_at : (r.completed_at === null ? null : undefined),
-    notes_count: Array.isArray(r.notes) ? r.notes.length : (typeof r.notes_count === "number" ? r.notes_count : 0),
-    todos_count: Array.isArray(r.todos) ? r.todos.length : (typeof r.todos_count === "number" ? r.todos_count : 0),
+    started_at:
+      typeof r.started_at === "string" ? r.started_at : r.started_at === null ? null : undefined,
+    submitted_at:
+      typeof r.submitted_at === "string"
+        ? r.submitted_at
+        : r.submitted_at === null
+          ? null
+          : undefined,
+    completed_at:
+      typeof r.completed_at === "string"
+        ? r.completed_at
+        : r.completed_at === null
+          ? null
+          : undefined,
+    notes_count: Array.isArray(r.notes)
+      ? r.notes.length
+      : typeof r.notes_count === "number"
+        ? r.notes_count
+        : 0,
+    todos_count: Array.isArray(r.todos)
+      ? r.todos.length
+      : typeof r.todos_count === "number"
+        ? r.todos_count
+        : 0,
   };
 }
 
@@ -248,10 +269,7 @@ export class TaskDataManagerError extends Error {
   /** The field or value that failed, if applicable */
   readonly field?: string;
 
-  constructor(
-    message: string,
-    options?: { suggestion?: string; field?: string },
-  ) {
+  constructor(message: string, options?: { suggestion?: string; field?: string }) {
     super(message);
     this.name = "TaskDataManagerError";
     this.suggestion = options?.suggestion;
@@ -283,7 +301,9 @@ export interface TaskStorageBackend {
   mutateTasks(
     ctx: KspecContext,
     tasks: LoadedTask[],
-    mutate: (latestTasks: LoadedTask[]) => Array<Task | LoadedTask> | Promise<Array<Task | LoadedTask>>,
+    mutate: (
+      latestTasks: LoadedTask[],
+    ) => Array<Task | LoadedTask> | Promise<Array<Task | LoadedTask>>,
     metadata?: MutationMetadata,
   ): Promise<LoadedTask[]>;
   deleteTask(ctx: KspecContext, task: LoadedTask): Promise<void>;
@@ -436,10 +456,7 @@ async function loadAllTaskSummaries(ctx: KspecContext): Promise<TaskSummary[]> {
     // Use the same recursive findTaskFiles as loadAllTasks
     const taskFiles = await findTaskFiles(ctx.rootDir);
 
-    const additionalPaths = [
-      path.join(ctx.rootDir, "tasks"),
-      path.join(ctx.rootDir, "spec"),
-    ];
+    const additionalPaths = [path.join(ctx.rootDir, "tasks"), path.join(ctx.rootDir, "spec")];
 
     for (const additionalPath of additionalPaths) {
       const files = await findTaskFiles(additionalPath);
@@ -544,10 +561,9 @@ class MonolithicBackend implements TaskStorageBackend {
       const preRead = await extractRawTaskArray(taskFilePath);
       const preIndex = findRawTaskIndex(preRead.rawTasks, task._ulid);
       if (preIndex === -1) {
-        throw new TaskDataManagerError(
-          `Task not found: ${task._ulid}`,
-          { suggestion: `Check the reference with: kspec search "${task._ulid}" or kspec task list` },
-        );
+        throw new TaskDataManagerError(`Task not found: ${task._ulid}`, {
+          suggestion: `Check the reference with: kspec search "${task._ulid}" or kspec task list`,
+        });
       }
 
       const rawTarget = preRead.rawTasks[preIndex];
@@ -568,15 +584,13 @@ class MonolithicBackend implements TaskStorageBackend {
       let updatedTask: LoadedTask | undefined;
       const releaseFileLock = await acquireFileLock(taskFilePath);
       try {
-        const { rawTasks, useTasksWrapper, wrapperObj } =
-          await extractRawTaskArray(taskFilePath);
+        const { rawTasks, useTasksWrapper, wrapperObj } = await extractRawTaskArray(taskFilePath);
 
         const taskIndex = findRawTaskIndex(rawTasks, task._ulid);
         if (taskIndex === -1) {
-          throw new TaskDataManagerError(
-            `Task not found: ${task._ulid}`,
-            { suggestion: `Check the reference with: kspec search "${task._ulid}" or kspec task list` },
-          );
+          throw new TaskDataManagerError(`Task not found: ${task._ulid}`, {
+            suggestion: `Check the reference with: kspec search "${task._ulid}" or kspec task list`,
+          });
         }
 
         rawTasks[taskIndex] = mergeTaskPreservingRawShape(
@@ -618,11 +632,13 @@ class MonolithicBackend implements TaskStorageBackend {
   async mutateTasks(
     ctx: KspecContext,
     tasks: LoadedTask[],
-    mutate: (latestTasks: LoadedTask[]) => Array<Task | LoadedTask> | Promise<Array<Task | LoadedTask>>,
+    mutate: (
+      latestTasks: LoadedTask[],
+    ) => Array<Task | LoadedTask> | Promise<Array<Task | LoadedTask>>,
     _metadata?: MutationMetadata,
   ): Promise<LoadedTask[]> {
     // Acquire per-task locks in sorted order to prevent deadlocks
-    const sortedUlids = [...new Set(tasks.map((t) => t._ulid))].sort();
+    const sortedUlids = [...new Set(tasks.map((t) => t._ulid))].toSorted();
     const releases: Array<() => void> = [];
 
     try {
@@ -736,7 +752,8 @@ function validateMutationOutput(task: Task | LoadedTask, originalUlid?: string):
     throw new TaskDataManagerError(
       `Mutation must not change a task's ULID. Original: ${originalUlid}, received: ${task._ulid}`,
       {
-        suggestion: "The mutation callback must preserve the task's _ulid. Return the task with its original identity.",
+        suggestion:
+          "The mutation callback must preserve the task's _ulid. Return the task with its original identity.",
         field: "_ulid",
       },
     );
@@ -747,13 +764,11 @@ function validateMutationOutput(task: Task | LoadedTask, originalUlid?: string):
   if (!result.success) {
     const firstIssue = result.error.issues[0];
     const fieldPath = firstIssue?.path?.join(".") || "unknown";
-    throw new TaskDataManagerError(
-      `Mutation produced invalid task data: ${result.error.message}`,
-      {
-        suggestion: "Check the mutation callback returns a valid task record matching the task schema",
-        field: fieldPath,
-      },
-    );
+    throw new TaskDataManagerError(`Mutation produced invalid task data: ${result.error.message}`, {
+      suggestion:
+        "Check the mutation callback returns a valid task record matching the task schema",
+      field: fieldPath,
+    });
   }
 }
 
@@ -809,10 +824,7 @@ export class TaskDataManager {
    * AC: @task-data-manager ac-2 — only index data read from storage
    * AC: @task-data-manager ac-7 — monolithic format used until split activated
    */
-  async listTasks(
-    ctx: KspecContext,
-    filters?: TaskListFilters,
-  ): Promise<TaskSummary[]> {
+  async listTasks(ctx: KspecContext, filters?: TaskListFilters): Promise<TaskSummary[]> {
     const summaries = await this.backend.listTasks(ctx);
 
     if (!filters) {
@@ -821,14 +833,11 @@ export class TaskDataManager {
 
     return summaries.filter((task) => {
       if (filters.status) {
-        const statuses = Array.isArray(filters.status)
-          ? filters.status
-          : [filters.status];
+        const statuses = Array.isArray(filters.status) ? filters.status : [filters.status];
         if (!statuses.includes(task.status)) return false;
       }
       if (filters.tags && filters.tags.length > 0) {
-        if (!filters.tags.some((tag) => task.tags.includes(tag)))
-          return false;
+        if (!filters.tags.some((tag) => task.tags.includes(tag))) return false;
       }
       if (filters.assignee !== undefined) {
         if (task.assignee !== filters.assignee) return false;
@@ -873,13 +882,9 @@ export class TaskDataManager {
     const task = await this.backend.getTask(ctx, ref);
     if (!task) {
       // AC: @trait-error-guidance ac-1, ac-2, ac-3
-      throw new TaskDataManagerError(
-        `Task not found: ${ref}`,
-        {
-          suggestion:
-            `Check the reference with: kspec search "${ref}" or kspec task list`,
-        },
-      );
+      throw new TaskDataManagerError(`Task not found: ${ref}`, {
+        suggestion: `Check the reference with: kspec search "${ref}" or kspec task list`,
+      });
     }
     return task;
   }
@@ -1023,9 +1028,7 @@ export class TaskDataManager {
   async mutateTask(
     ctx: KspecContext,
     ref: string,
-    mutate: (
-      latestTask: LoadedTask,
-    ) => Task | LoadedTask | Promise<Task | LoadedTask>,
+    mutate: (latestTask: LoadedTask) => Task | LoadedTask | Promise<Task | LoadedTask>,
     commitOpts?: ShadowCommitOptions,
   ): Promise<LoadedTask> {
     // Resolve the task first to get _sourceFile for locking
@@ -1075,9 +1078,7 @@ export class TaskDataManager {
     commitOpts?: ShadowCommitOptions,
   ): Promise<LoadedTask[]> {
     // Resolve all refs to loaded tasks
-    const tasks = await Promise.all(
-      refs.map((ref) => this.getTask(ctx, ref)),
-    );
+    const tasks = await Promise.all(refs.map((ref) => this.getTask(ctx, ref)));
 
     // Build mutation metadata from commitOpts for history tracking
     // AC: @task-core-data-file ac-3 — author resolved via full priority chain (env → config → git → system)

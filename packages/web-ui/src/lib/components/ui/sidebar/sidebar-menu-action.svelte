@@ -3,7 +3,7 @@
 	import type { Snippet } from "svelte";
 	import type { HTMLButtonAttributes } from "svelte/elements";
 
-	let {
+	const {
 		ref = $bindable(null),
 		class: className,
 		showOnHover = false,

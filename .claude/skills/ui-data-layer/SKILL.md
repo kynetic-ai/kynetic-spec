@@ -4,6 +4,7 @@ description: Svelte + TanStack Query v6 data fetching patterns. Use when
   building or migrating web UI data fetching, cache management, WebSocket
   invalidation, or query/mutation patterns.
 ---
+
 <!-- kspec-managed -->
 
 # UI Data Layer — Svelte + TanStack Query
@@ -17,6 +18,7 @@ Patterns and conventions for the web UI data fetching layer. Covers TanStack Que
 **@tanstack/svelte-query v6** — Svelte 5 runes-native (~13 kB gzip).
 
 Key capabilities used in this project:
+
 - Automatic caching with stale-while-revalidate
 - Request deduplication (concurrent identical requests share one fetch)
 - Background revalidation on navigation
@@ -37,15 +39,15 @@ Key capabilities used in this project:
 
 ## Quick Reference
 
-| Need | Pattern |
-|------|---------|
-| Fetch and cache data | `createQuery(() => ({ queryKey, queryFn }))` |
-| Paginated / infinite scroll | `createInfiniteQuery(() => ({ queryKey, queryFn, getNextPageParam, initialPageParam }))` |
-| Write operation with cache update | `createMutation(() => ({ mutationFn, onSuccess: invalidate }))` |
-| Invalidate after WS event | `queryClient.invalidateQueries({ queryKey: ['tasks'] })` |
-| Update cache without refetch | `queryClient.setQueryData(['tasks', ref], newData)` |
-| Clear all cache (project switch) | `queryClient.clear()` |
-| Access QueryClient in component | `useQueryClient()` |
+| Need                              | Pattern                                                                                  |
+| --------------------------------- | ---------------------------------------------------------------------------------------- |
+| Fetch and cache data              | `createQuery(() => ({ queryKey, queryFn }))`                                             |
+| Paginated / infinite scroll       | `createInfiniteQuery(() => ({ queryKey, queryFn, getNextPageParam, initialPageParam }))` |
+| Write operation with cache update | `createMutation(() => ({ mutationFn, onSuccess: invalidate }))`                          |
+| Invalidate after WS event         | `queryClient.invalidateQueries({ queryKey: ['tasks'] })`                                 |
+| Update cache without refetch      | `queryClient.setQueryData(['tasks', ref], newData)`                                      |
+| Clear all cache (project switch)  | `queryClient.clear()`                                                                    |
+| Access QueryClient in component   | `useQueryClient()`                                                                       |
 
 ## Setup
 
@@ -53,17 +55,17 @@ Key capabilities used in this project:
 
 ```typescript
 // src/lib/query/client.ts
-import { QueryClient } from '@tanstack/svelte-query';
+import { QueryClient } from "@tanstack/svelte-query";
 
 export function createAppQueryClient(): QueryClient {
   return new QueryClient({
     defaultOptions: {
       queries: {
         // Localhost daemon — data changes via WS events, not staleness
-        staleTime: 30_000,        // 30s — lists and frequently changing data
-        gcTime: 10 * 60_000,      // 10min — keep in memory for session
-        retry: 1,                 // Localhost: one retry is enough
-        retryDelay: 500,          // Short delay — daemon is local
+        staleTime: 30_000, // 30s — lists and frequently changing data
+        gcTime: 10 * 60_000, // 10min — keep in memory for session
+        retry: 1, // Localhost: one retry is enough
+        retryDelay: 500, // Short delay — daemon is local
         refetchOnWindowFocus: false, // WS events handle freshness
       },
     },
@@ -94,13 +96,13 @@ In v6, **all query/mutation functions take a thunk** (function returning options
 ```typescript
 // v5 (WRONG in v6)
 const query = createQuery({
-  queryKey: ['tasks'],
+  queryKey: ["tasks"],
   queryFn: fetchTasks,
 });
 
 // v6 (CORRECT) — options wrapped in () => ({...})
 const query = createQuery(() => ({
-  queryKey: ['tasks'],
+  queryKey: ["tasks"],
   queryFn: fetchTasks,
 }));
 ```
@@ -159,30 +161,21 @@ Use hierarchical arrays with entity type first, then qualifiers:
 
 ```typescript
 // Entity lists
-['tasks']
-['tasks', { status: 'pending', tag: 'web-ui' }]
-['items']
-['items', { type: 'feature' }]
-['inbox']
-['sessions', { status: 'active' }]
-
-// Entity detail
-['tasks', ref]          // e.g. ['tasks', '@task-add-auth']
-['items', ref]
-['sessions', sessionId]
-
-// Aggregations / summaries
-['tasks', 'summary']   // Status counts
-['validation']
-['alignment']
-
-// Lightweight indexes
-['refs', 'index']       // Ref → title/type/status map
-
-// Counts (sidebar badges)
-['inbox', 'count']
-['observations', 'count']
-['tasks', 'pending-review-count']
+["tasks"][("tasks", { status: "pending", tag: "web-ui" })]["items"][("items", { type: "feature" })][
+  "inbox"
+][("sessions", { status: "active" })][
+  // Entity detail
+  ("tasks", ref)
+][("items", ref)][("sessions", sessionId)][ // e.g. ['tasks', '@task-add-auth']
+  // Aggregations / summaries
+  ("tasks", "summary")
+]["validation"]["alignment"][ // Status counts
+  // Lightweight indexes
+  ("refs", "index")
+][ // Ref → title/type/status map
+  // Counts (sidebar badges)
+  ("inbox", "count")
+][("observations", "count")][("tasks", "pending-review-count")];
 ```
 
 ### Query Key Factory
@@ -193,43 +186,43 @@ Centralize keys to prevent typos and enable targeted invalidation:
 // src/lib/query/keys.ts
 export const queryKeys = {
   tasks: {
-    all: ['tasks'] as const,
+    all: ["tasks"] as const,
     lists: () => [...queryKeys.tasks.all] as const,
     list: (filters: TaskFilters) => [...queryKeys.tasks.all, filters] as const,
     detail: (ref: string) => [...queryKeys.tasks.all, ref] as const,
-    summary: () => [...queryKeys.tasks.all, 'summary'] as const,
-    pendingReviewCount: () => [...queryKeys.tasks.all, 'pending-review-count'] as const,
+    summary: () => [...queryKeys.tasks.all, "summary"] as const,
+    pendingReviewCount: () => [...queryKeys.tasks.all, "pending-review-count"] as const,
   },
   items: {
-    all: ['items'] as const,
+    all: ["items"] as const,
     lists: () => [...queryKeys.items.all] as const,
     list: (filters: ItemFilters) => [...queryKeys.items.all, filters] as const,
     detail: (ref: string) => [...queryKeys.items.all, ref] as const,
   },
   inbox: {
-    all: ['inbox'] as const,
+    all: ["inbox"] as const,
     list: (filters?: InboxFilters) => [...queryKeys.inbox.all, filters] as const,
-    count: () => [...queryKeys.inbox.all, 'count'] as const,
+    count: () => [...queryKeys.inbox.all, "count"] as const,
   },
   sessions: {
-    all: ['sessions'] as const,
+    all: ["sessions"] as const,
     list: (filters: SessionFilters) => [...queryKeys.sessions.all, filters] as const,
     detail: (id: string) => [...queryKeys.sessions.all, id] as const,
   },
   agents: {
-    all: ['agents'] as const,
-    status: () => [...queryKeys.agents.all, 'status'] as const,
-    definitions: () => [...queryKeys.agents.all, 'definitions'] as const,
+    all: ["agents"] as const,
+    status: () => [...queryKeys.agents.all, "status"] as const,
+    definitions: () => [...queryKeys.agents.all, "definitions"] as const,
   },
   refs: {
-    index: () => ['refs', 'index'] as const,
+    index: () => ["refs", "index"] as const,
   },
-  validation: () => ['validation'] as const,
-  alignment: () => ['alignment'] as const,
+  validation: () => ["validation"] as const,
+  alignment: () => ["alignment"] as const,
   observations: {
-    all: ['observations'] as const,
+    all: ["observations"] as const,
     list: (filters?: ObservationFilters) => [...queryKeys.observations.all, filters] as const,
-    count: () => [...queryKeys.observations.all, 'count'] as const,
+    count: () => [...queryKeys.observations.all, "count"] as const,
   },
 } as const;
 ```
@@ -239,8 +232,8 @@ export const queryKeys = {
 ```typescript
 // In a query
 const tasks = createQuery(() => ({
-  queryKey: queryKeys.tasks.list({ status: 'pending' }),
-  queryFn: () => fetchTasks({ status: 'pending' }),
+  queryKey: queryKeys.tasks.list({ status: "pending" }),
+  queryFn: () => fetchTasks({ status: "pending" }),
 }));
 
 // For invalidation — invalidate all tasks queries
@@ -252,15 +245,15 @@ queryClient.invalidateQueries({ queryKey: queryKeys.tasks.lists() });
 
 ## Cache Timing Conventions
 
-| Data Type | staleTime | gcTime | Rationale |
-|-----------|-----------|--------|-----------|
-| Entity lists (tasks, items) | 30s | 10 min | Frequently changing, WS handles freshness |
-| Entity detail | 30s | 10 min | Same as lists |
-| Ref index (title resolution) | 5 min | 30 min | Rarely changes, expensive to compute |
-| Sidebar badge counts | 30s | 5 min | Small payload, WS-invalidated |
-| Validation / alignment | 60s | 10 min | Expensive to compute, rarely polled |
-| Agent status | 10s | 5 min | Needs near-real-time feel |
-| Session context | 5 min | 30 min | Changes on project switch only |
+| Data Type                    | staleTime | gcTime | Rationale                                 |
+| ---------------------------- | --------- | ------ | ----------------------------------------- |
+| Entity lists (tasks, items)  | 30s       | 10 min | Frequently changing, WS handles freshness |
+| Entity detail                | 30s       | 10 min | Same as lists                             |
+| Ref index (title resolution) | 5 min     | 30 min | Rarely changes, expensive to compute      |
+| Sidebar badge counts         | 30s       | 5 min  | Small payload, WS-invalidated             |
+| Validation / alignment       | 60s       | 10 min | Expensive to compute, rarely polled       |
+| Agent status                 | 10s       | 5 min  | Needs near-real-time feel                 |
+| Session context              | 5 min     | 30 min | Changes on project switch only            |
 
 Override per-query in the factory:
 
@@ -268,8 +261,8 @@ Override per-query in the factory:
 const refIndex = createQuery(() => ({
   queryKey: queryKeys.refs.index(),
   queryFn: () => fetchRefIndex(),
-  staleTime: 5 * 60_000,  // 5 minutes — titles rarely change
-  gcTime: 30 * 60_000,    // 30 minutes
+  staleTime: 5 * 60_000, // 5 minutes — titles rarely change
+  gcTime: 30 * 60_000, // 30 minutes
 }));
 ```
 
@@ -282,7 +275,7 @@ const refIndex = createQuery(() => ({
 export const queryKeys = {
   // ...existing keys...
   workflows: {
-    all: ['workflows'] as const,
+    all: ["workflows"] as const,
     list: () => [...queryKeys.workflows.all] as const,
   },
 };
@@ -368,8 +361,7 @@ For mutations where you want the UI to update instantly:
 
 ```typescript
 const addNoteMutation = createMutation(() => ({
-  mutationFn: ({ ref, content }: { ref: string; content: string }) =>
-    addTaskNote(ref, content),
+  mutationFn: ({ ref, content }: { ref: string; content: string }) => addTaskNote(ref, content),
   onMutate: async ({ ref, content }) => {
     // Cancel outgoing refetches
     await queryClient.cancelQueries({ queryKey: queryKeys.tasks.detail(ref) });
@@ -406,36 +398,30 @@ The WebSocket manager receives broadcast events. Wire these to query invalidatio
 
 ```typescript
 // src/lib/query/ws-invalidation.ts
-import type { QueryClient } from '@tanstack/svelte-query';
-import type { BroadcastEvent } from '@kynetic-ai/shared';
-import { queryKeys } from './keys';
+import type { QueryClient } from "@tanstack/svelte-query";
+import type { BroadcastEvent } from "@kynetic-ai/shared";
+import { queryKeys } from "./keys";
 
-export function handleBroadcastInvalidation(
-  queryClient: QueryClient,
-  event: BroadcastEvent,
-): void {
+export function handleBroadcastInvalidation(queryClient: QueryClient, event: BroadcastEvent): void {
   switch (event.topic) {
-    case 'tasks':
+    case "tasks":
       queryClient.invalidateQueries({ queryKey: queryKeys.tasks.all });
       queryClient.invalidateQueries({ queryKey: queryKeys.tasks.pendingReviewCount() });
       // If enriched payload includes the full task, update cache directly
       if (event.data?.task) {
-        queryClient.setQueryData(
-          queryKeys.tasks.detail(event.data.ref),
-          event.data.task,
-        );
+        queryClient.setQueryData(queryKeys.tasks.detail(event.data.ref), event.data.task);
       }
       break;
 
-    case 'inbox':
+    case "inbox":
       queryClient.invalidateQueries({ queryKey: queryKeys.inbox.all });
       break;
 
-    case 'agents':
+    case "agents":
       queryClient.invalidateQueries({ queryKey: queryKeys.agents.all });
       break;
 
-    case 'files':
+    case "files":
       // Settings/config changes
       queryClient.invalidateQueries({ queryKey: queryKeys.validation() });
       queryClient.invalidateQueries({ queryKey: queryKeys.alignment() });
@@ -450,21 +436,21 @@ export function handleBroadcastInvalidation(
 
 ```typescript
 // In root layout or connection setup
-import { on } from '$lib/stores/connection.svelte';
-import { handleBroadcastInvalidation } from '$lib/query/ws-invalidation';
+import { on } from "$lib/stores/connection.svelte";
+import { handleBroadcastInvalidation } from "$lib/query/ws-invalidation";
 
 // Subscribe to all relevant topics
-subscribe(['tasks', 'agents', 'inbox', 'files']);
+subscribe(["tasks", "agents", "inbox", "files"]);
 
 // Single handler for all invalidations
 function handleBroadcast(event: BroadcastEvent) {
   handleBroadcastInvalidation(queryClient, event);
 }
 
-on('tasks', handleBroadcast);
-on('agents', handleBroadcast);
-on('inbox', handleBroadcast);
-on('files', handleBroadcast);
+on("tasks", handleBroadcast);
+on("agents", handleBroadcast);
+on("inbox", handleBroadcast);
+on("files", handleBroadcast);
 ```
 
 **Key principle:** After wiring WS → invalidation, individual pages no longer need `on('tasks', reloadEverything)` handlers. TanStack Query handles refetching active queries automatically.
@@ -496,7 +482,7 @@ When the user switches projects, all cached data must be discarded:
 
 ```typescript
 // In project switch handler
-import { useQueryClient } from '@tanstack/svelte-query';
+import { useQueryClient } from "@tanstack/svelte-query";
 
 function handleProjectSwitch(newPath: string) {
   const queryClient = useQueryClient();
@@ -520,7 +506,7 @@ Key considerations:
 ```typescript
 // Mutations should be disabled in static mode
 const startTaskMutation = createMutation(() => ({
-  mutationFn: (ref: string) => startTask(ref),  // Throws ReadOnlyModeError in static mode
+  mutationFn: (ref: string) => startTask(ref), // Throws ReadOnlyModeError in static mode
   // ...
 }));
 
@@ -528,7 +514,7 @@ const startTaskMutation = createMutation(() => ({
 const agentStatus = createQuery(() => ({
   queryKey: queryKeys.agents.status(),
   queryFn: () => fetchAgentStatus(),
-  enabled: !isStaticMode() && isProjectInitialized(),  // Skip in static mode
+  enabled: !isStaticMode() && isProjectInitialized(), // Skip in static mode
 }));
 ```
 
@@ -606,13 +592,13 @@ The sessions page uses `createInfiniteQuery` for paginated data with scroll-to-l
 
 ### Key Properties
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `data.pages` | `Page[]` | Array of fetched pages |
-| `data.pageParams` | `number[]` | Array of page params used |
-| `fetchNextPage()` | `() => void` | Trigger next page fetch |
-| `hasNextPage` | `boolean` | Whether more pages exist |
-| `isFetchingNextPage` | `boolean` | Currently loading next page |
+| Property             | Type         | Description                 |
+| -------------------- | ------------ | --------------------------- |
+| `data.pages`         | `Page[]`     | Array of fetched pages      |
+| `data.pageParams`    | `number[]`   | Array of page params used   |
+| `fetchNextPage()`    | `() => void` | Trigger next page fetch     |
+| `hasNextPage`        | `boolean`    | Whether more pages exist    |
+| `isFetchingNextPage` | `boolean`    | Currently loading next page |
 
 ## Migration Guide — Page from Manual Fetch to Queries
 
@@ -709,16 +695,16 @@ The sessions page uses `createInfiniteQuery` for paginated data with scroll-to-l
 
 ### What Changed
 
-| Before | After |
-|--------|-------|
-| `let data = $state([])` | `createQuery()` manages state |
-| `let loading = $state(true)` | `query.isPending` |
-| `let error = $state(null)` | `query.isError` / `query.error` |
-| `$effect(() => loadData())` | `enabled` option + reactive queryKey |
-| `on('tasks', loadData)` | Centralized WS → `invalidateQueries` |
+| Before                          | After                                                    |
+| ------------------------------- | -------------------------------------------------------- |
+| `let data = $state([])`         | `createQuery()` manages state                            |
+| `let loading = $state(true)`    | `query.isPending`                                        |
+| `let error = $state(null)`      | `query.isError` / `query.error`                          |
+| `$effect(() => loadData())`     | `enabled` option + reactive queryKey                     |
+| `on('tasks', loadData)`         | Centralized WS → `invalidateQueries`                     |
 | `Promise.all([fetch1, fetch2])` | Multiple independent `createQuery` calls (auto-parallel) |
-| Manual try/catch/finally | Query error/loading states |
-| `fetchTasks({ limit: 1000 })` | Proper pagination or ref index |
+| Manual try/catch/finally        | Query error/loading states                               |
+| `fetchTasks({ limit: 1000 })`   | Proper pagination or ref index                           |
 
 ### Migration Checklist
 
@@ -738,15 +724,15 @@ Every component using queries needs a QueryClientProvider in tests:
 
 ```typescript
 // tests/helpers/query.ts
-import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
+import { QueryClient, QueryClientProvider } from "@tanstack/svelte-query";
 
 export function createTestQueryClient(): QueryClient {
   return new QueryClient({
     defaultOptions: {
       queries: {
-        retry: false,         // No retries in tests
-        staleTime: Infinity,  // Prevent background refetches
-        gcTime: Infinity,     // Keep data for test duration
+        retry: false, // No retries in tests
+        staleTime: Infinity, // Prevent background refetches
+        gcTime: Infinity, // Keep data for test duration
       },
     },
   });
@@ -756,32 +742,32 @@ export function createTestQueryClient(): QueryClient {
 ### Mocking queryFn
 
 ```typescript
-import { render } from '@testing-library/svelte';
-import { vi } from 'vitest';
+import { render } from "@testing-library/svelte";
+import { vi } from "vitest";
 
 // Mock the API module
-vi.mock('$lib/api', () => ({
+vi.mock("$lib/api", () => ({
   fetchTasks: vi.fn().mockResolvedValue({
-    items: [{ _ulid: '01ABC', title: 'Test task', status: 'pending' }],
+    items: [{ _ulid: "01ABC", title: "Test task", status: "pending" }],
     total: 1,
   }),
 }));
 
 // Render with provider
 const { getByText } = render(TasksPage);
-await waitFor(() => expect(getByText('Test task')).toBeInTheDocument());
+await waitFor(() => expect(getByText("Test task")).toBeInTheDocument());
 ```
 
 ### Testing Mutations
 
 ```typescript
-const { getByRole } = render(TaskActions, { props: { taskRef: '@test-task' } });
+const { getByRole } = render(TaskActions, { props: { taskRef: "@test-task" } });
 
 // Trigger mutation
-await fireEvent.click(getByRole('button', { name: 'Start Task' }));
+await fireEvent.click(getByRole("button", { name: "Start Task" }));
 
 // Verify API called
-expect(startTask).toHaveBeenCalledWith('@test-task');
+expect(startTask).toHaveBeenCalledWith("@test-task");
 
 // Verify cache invalidated (check via query client spy or re-render)
 ```
@@ -794,7 +780,7 @@ expect(startTask).toHaveBeenCalledWith('@test-task');
 // BAD — bypasses cache, dedup, and revalidation
 let tasks = $state<Task[]>([]);
 $effect(() => {
-  fetchTasks().then(res => tasks = res.items);
+  fetchTasks().then((res) => (tasks = res.items));
 });
 
 // GOOD — uses query cache
@@ -809,7 +795,7 @@ const tasks = createQuery(() => ({
 ```typescript
 // BAD — fetches all tasks just to show a title
 const allTasks = await fetchTasks({ limit: 1000 });
-const title = allTasks.items.find(t => t._ulid === ref)?.title ?? ref;
+const title = allTasks.items.find((t) => t._ulid === ref)?.title ?? ref;
 
 // GOOD — use ref index (lightweight endpoint)
 const refIndex = createQuery(() => ({
@@ -838,10 +824,14 @@ setInterval(loadCounts, 30_000);
 ```typescript
 // BAD — every page manages its own WS handlers
 onMount(() => {
-  on('tasks', () => { loadTasks(); loadSummary(); loadAgentStatus(); });
+  on("tasks", () => {
+    loadTasks();
+    loadSummary();
+    loadAgentStatus();
+  });
 });
 onDestroy(() => {
-  off('tasks', handler);
+  off("tasks", handler);
 });
 
 // GOOD — centralized WS → invalidation wiring
@@ -852,7 +842,7 @@ onDestroy(() => {
 
 ```typescript
 // BAD — fetches everything, O(n) memory, slow on large projects
-fetchTasks({ limit: 999 })
+fetchTasks({ limit: 999 });
 
 // GOOD — paginate with limit/offset, or use summary endpoints
 // For counts: use summary endpoint or limit: 0 with total
@@ -864,6 +854,7 @@ fetchTasks({ limit: 999 })
 ### What Goes Through TanStack Query
 
 All **request-response** data fetching:
+
 - Entity lists and details (tasks, items, inbox, sessions, etc.)
 - Aggregation endpoints (counts, validation, alignment)
 - Ref index for title resolution

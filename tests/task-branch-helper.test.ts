@@ -53,10 +53,7 @@ describe("Integration: task branch helper", () => {
   it("should derive branch name from task slug and short ULID", () => {
     kspec('task add --title "My Feature Task" --slug my-feature-task', tempDir);
 
-    const task = kspecJson<{ _ulid: string }>(
-      "task get @my-feature-task",
-      tempDir,
-    );
+    const task = kspecJson<{ _ulid: string }>("task get @my-feature-task", tempDir);
     const shortId = task._ulid.slice(0, 8).toLowerCase();
 
     kspec("task branch @my-feature-task", tempDir);
@@ -171,9 +168,7 @@ describe("Integration: task branch helper", () => {
       guidance: string;
     }>("task branch @json-test", tempDir);
 
-    expect(result.branch).toMatch(
-      /^dispatch\/task\/json-test\/[a-z0-9]{8}$/,
-    );
+    expect(result.branch).toMatch(/^dispatch\/task\/json-test\/[a-z0-9]{8}$/);
     expect(result.action).toBe("created");
     expect(result.task_ref).toBe("@json-test");
     expect(result.source).toBeNull();
@@ -217,10 +212,7 @@ describe("Integration: task branch helper", () => {
   it("should use @ prefix for references in JSON output", () => {
     kspec('task add --title "Ref prefix" --slug ref-prefix', tempDir);
 
-    const result = kspecJson<{ task_ref: string }>(
-      "task branch @ref-prefix",
-      tempDir,
-    );
+    const result = kspecJson<{ task_ref: string }>("task branch @ref-prefix", tempDir);
     expect(result.task_ref).toMatch(/^@/);
   });
 

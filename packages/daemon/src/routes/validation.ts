@@ -12,7 +12,7 @@
  * - ac-21: GET /api/alignment returns AlignmentIndex stats
  */
 
-import { Elysia, t } from 'elysia';
+import { Elysia, t } from "elysia";
 import {
   initContext,
   buildIndexes,
@@ -23,228 +23,223 @@ import {
   type LoadedSpecItem,
   type LoadedTask,
   type LoadedInboxItem,
-} from '../../parser/index.js';
+} from "../../parser/index.js";
 import type {
   LoadedAgent,
   LoadedWorkflow,
   LoadedObservation,
   LoadedConvention,
-} from '../../parser/meta.js';
-import { ItemTypeSchema, TaskStatusSchema } from '../../schema/common.js';
-import { grepItem } from '../../utils/grep.js';
-import { enumUnion } from './enum-utils.js';
+} from "../../parser/meta.js";
+import { ItemTypeSchema, TaskStatusSchema } from "../../schema/common.js";
+import { grepItem } from "../../utils/grep.js";
+import { enumUnion } from "./enum-utils.js";
 
 interface ValidationRouteOptions {}
 
 export function createValidationRoutes(options: ValidationRouteOptions = {}) {
   // No closure-scoped kspecDir needed - comes from middleware
 
-  return new Elysia({ prefix: '/api' })
-    // AC: @api-contract ac-19 - Search across all entities
-    .get(
-      '/search',
-      async ({ query, projectContext }) => {
+  return (
+    new Elysia({ prefix: "/api" })
+      // AC: @api-contract ac-19 - Search across all entities
+      .get(
+        "/search",
+        async ({ query, projectContext }) => {
+          // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+          const ctx = await initContext(projectContext.path);
+          const { tasks, items } = await buildIndexes(ctx);
+
+          const pattern = query.q;
+          if (!pattern) {
+            return {
+              results: [],
+              total: 0,
+            };
+          }
+
+          const limit = query.limit ? parseInt(query.limit, 10) : 50;
+
+          interface SearchResult {
+            type: "item" | "task" | "inbox" | "observation" | "agent" | "workflow" | "convention";
+            ulid: string;
+            title: string;
+            matchedFields: string[];
+          }
+
+          const results: SearchResult[] = [];
+
+          // AC: @api-contract ac-19 - Search spec items
+          if (!query.tasksOnly) {
+            for (const item of items) {
+              // Apply type filter if provided
+              if (query.type && item.type !== query.type) continue;
+
+              const match = grepItem(item as unknown as Record<string, unknown>, pattern);
+              if (match) {
+                results.push({
+                  type: "item",
+                  ulid: item._ulid,
+                  title: item.title,
+                  matchedFields: match.matchedFields,
+                });
+              }
+            }
+          }
+
+          // AC: @api-contract ac-19 - Search tasks
+          if (!query.itemsOnly) {
+            for (const task of tasks) {
+              // Apply status filter if provided
+              if (query.status && task.status !== query.status) continue;
+
+              const match = grepItem(task as unknown as Record<string, unknown>, pattern);
+              if (match) {
+                results.push({
+                  type: "task",
+                  ulid: task._ulid,
+                  title: task.title,
+                  matchedFields: match.matchedFields,
+                });
+              }
+            }
+          }
+
+          // AC: @api-contract ac-19 - Search inbox items
+          if (!query.itemsOnly && !query.tasksOnly) {
+            const inboxItems = await loadInboxItems(ctx);
+            for (const inboxItem of inboxItems) {
+              const match = grepItem(inboxItem as unknown as Record<string, unknown>, pattern);
+              if (match) {
+                results.push({
+                  type: "inbox",
+                  ulid: inboxItem._ulid,
+                  title: inboxItem.text,
+                  matchedFields: match.matchedFields,
+                });
+              }
+            }
+          }
+
+          // AC: @api-contract ac-19 - Search meta entities
+          if (!query.itemsOnly && !query.tasksOnly) {
+            const metaCtx = await loadMetaContext(ctx);
+
+            // Search observations
+            for (const observation of metaCtx.observations) {
+              const match = grepItem(observation as unknown as Record<string, unknown>, pattern);
+              if (match) {
+                results.push({
+                  type: "observation",
+                  ulid: observation._ulid,
+                  title: observation.content,
+                  matchedFields: match.matchedFields,
+                });
+              }
+            }
+
+            // Search agents
+            for (const agent of metaCtx.agents) {
+              const match = grepItem(agent as unknown as Record<string, unknown>, pattern);
+              if (match) {
+                results.push({
+                  type: "agent",
+                  ulid: agent._ulid,
+                  title: `${agent.id} - ${agent.name}`,
+                  matchedFields: match.matchedFields,
+                });
+              }
+            }
+
+            // Search workflows
+            for (const workflow of metaCtx.workflows) {
+              const match = grepItem(workflow as unknown as Record<string, unknown>, pattern);
+              if (match) {
+                results.push({
+                  type: "workflow",
+                  ulid: workflow._ulid,
+                  title: workflow.id,
+                  matchedFields: match.matchedFields,
+                });
+              }
+            }
+
+            // Search conventions
+            for (const convention of metaCtx.conventions) {
+              const match = grepItem(convention as unknown as Record<string, unknown>, pattern);
+              if (match) {
+                results.push({
+                  type: "convention",
+                  ulid: convention._ulid,
+                  title: convention.domain,
+                  matchedFields: match.matchedFields,
+                });
+              }
+            }
+          }
+
+          // Apply limit
+          const limitedResults = results.slice(0, limit);
+
+          // AC: @api-contract ac-19 - Return search results with matched fields
+          return {
+            results: limitedResults,
+            total: results.length,
+            showing: limitedResults.length,
+          };
+        },
+        {
+          query: t.Object({
+            q: t.Optional(t.String()),
+            type: t.Optional(enumUnion(ItemTypeSchema.options)),
+            status: t.Optional(enumUnion(TaskStatusSchema.options)),
+            itemsOnly: t.Optional(t.String()),
+            tasksOnly: t.Optional(t.String()),
+            limit: t.Optional(t.String()),
+          }),
+        },
+      )
+
+      // AC: @api-contract ac-20 - Run full validation
+      .get("/validate", async ({ projectContext }) => {
         // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
         const ctx = await initContext(projectContext.path);
-        const { tasks, items } = await buildIndexes(ctx);
 
-        const pattern = query.q;
-        if (!pattern) {
-          return {
-            results: [],
-            total: 0,
-          };
-        }
+        // AC: @api-contract ac-20 - Run validation and return ValidationResult
+        const result = await validate(ctx);
 
-        const limit = query.limit ? parseInt(query.limit, 10) : 50;
-
-        interface SearchResult {
-          type:
-            | 'item'
-            | 'task'
-            | 'inbox'
-            | 'observation'
-            | 'agent'
-            | 'workflow'
-            | 'convention';
-          ulid: string;
-          title: string;
-          matchedFields: string[];
-        }
-
-        const results: SearchResult[] = [];
-
-        // AC: @api-contract ac-19 - Search spec items
-        if (!query.tasksOnly) {
-          for (const item of items) {
-            // Apply type filter if provided
-            if (query.type && item.type !== query.type) continue;
-
-            const match = grepItem(item as unknown as Record<string, unknown>, pattern);
-            if (match) {
-              results.push({
-                type: 'item',
-                ulid: item._ulid,
-                title: item.title,
-                matchedFields: match.matchedFields,
-              });
-            }
-          }
-        }
-
-        // AC: @api-contract ac-19 - Search tasks
-        if (!query.itemsOnly) {
-          for (const task of tasks) {
-            // Apply status filter if provided
-            if (query.status && task.status !== query.status) continue;
-
-            const match = grepItem(task as unknown as Record<string, unknown>, pattern);
-            if (match) {
-              results.push({
-                type: 'task',
-                ulid: task._ulid,
-                title: task.title,
-                matchedFields: match.matchedFields,
-              });
-            }
-          }
-        }
-
-        // AC: @api-contract ac-19 - Search inbox items
-        if (!query.itemsOnly && !query.tasksOnly) {
-          const inboxItems = await loadInboxItems(ctx);
-          for (const inboxItem of inboxItems) {
-            const match = grepItem(inboxItem as unknown as Record<string, unknown>, pattern);
-            if (match) {
-              results.push({
-                type: 'inbox',
-                ulid: inboxItem._ulid,
-                title: inboxItem.text,
-                matchedFields: match.matchedFields,
-              });
-            }
-          }
-        }
-
-        // AC: @api-contract ac-19 - Search meta entities
-        if (!query.itemsOnly && !query.tasksOnly) {
-          const metaCtx = await loadMetaContext(ctx);
-
-          // Search observations
-          for (const observation of metaCtx.observations) {
-            const match = grepItem(observation as unknown as Record<string, unknown>, pattern);
-            if (match) {
-              results.push({
-                type: 'observation',
-                ulid: observation._ulid,
-                title: observation.content,
-                matchedFields: match.matchedFields,
-              });
-            }
-          }
-
-          // Search agents
-          for (const agent of metaCtx.agents) {
-            const match = grepItem(agent as unknown as Record<string, unknown>, pattern);
-            if (match) {
-              results.push({
-                type: 'agent',
-                ulid: agent._ulid,
-                title: `${agent.id} - ${agent.name}`,
-                matchedFields: match.matchedFields,
-              });
-            }
-          }
-
-          // Search workflows
-          for (const workflow of metaCtx.workflows) {
-            const match = grepItem(workflow as unknown as Record<string, unknown>, pattern);
-            if (match) {
-              results.push({
-                type: 'workflow',
-                ulid: workflow._ulid,
-                title: workflow.id,
-                matchedFields: match.matchedFields,
-              });
-            }
-          }
-
-          // Search conventions
-          for (const convention of metaCtx.conventions) {
-            const match = grepItem(convention as unknown as Record<string, unknown>, pattern);
-            if (match) {
-              results.push({
-                type: 'convention',
-                ulid: convention._ulid,
-                title: convention.domain,
-                matchedFields: match.matchedFields,
-              });
-            }
-          }
-        }
-
-        // Apply limit
-        const limitedResults = results.slice(0, limit);
-
-        // AC: @api-contract ac-19 - Return search results with matched fields
         return {
-          results: limitedResults,
-          total: results.length,
-          showing: limitedResults.length,
+          valid: result.valid,
+          schemaErrors: result.schemaErrors,
+          refErrors: result.refErrors,
+          refWarnings: result.refWarnings,
+          orphans: result.orphans,
+          completenessWarnings: result.completenessWarnings,
+          traitCycles: result.traitCycleErrors,
         };
-      },
-      {
-        query: t.Object({
-          q: t.Optional(t.String()),
-          type: t.Optional(enumUnion(ItemTypeSchema.options)),
-          status: t.Optional(enumUnion(TaskStatusSchema.options)),
-          itemsOnly: t.Optional(t.String()),
-          tasksOnly: t.Optional(t.String()),
-          limit: t.Optional(t.String()),
-        }),
-      }
-    )
+      })
 
-    // AC: @api-contract ac-20 - Run full validation
-    .get('/validate', async ({ projectContext }) => {
-      // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-      const ctx = await initContext(projectContext.path);
+      // AC: @api-contract ac-21 - Get alignment stats and warnings
+      .get("/alignment", async ({ projectContext }) => {
+        // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+        const ctx = await initContext(projectContext.path);
+        const { tasks, items, refIndex } = await buildIndexes(ctx);
 
-      // AC: @api-contract ac-20 - Run validation and return ValidationResult
-      const result = await validate(ctx);
+        // AC: @api-contract ac-21 - Create AlignmentIndex and get stats
+        const alignIndex = new AlignmentIndex(tasks, items);
+        alignIndex.buildLinks(refIndex);
 
-      return {
-        valid: result.valid,
-        schemaErrors: result.schemaErrors,
-        refErrors: result.refErrors,
-        refWarnings: result.refWarnings,
-        orphans: result.orphans,
-        completenessWarnings: result.completenessWarnings,
-        traitCycles: result.traitCycleErrors,
-      };
-    })
+        const stats = alignIndex.getStats();
+        const warnings = alignIndex.findAlignmentWarnings();
 
-    // AC: @api-contract ac-21 - Get alignment stats and warnings
-    .get('/alignment', async ({ projectContext }) => {
-      // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-      const ctx = await initContext(projectContext.path);
-      const { tasks, items, refIndex } = await buildIndexes(ctx);
-
-      // AC: @api-contract ac-21 - Create AlignmentIndex and get stats
-      const alignIndex = new AlignmentIndex(tasks, items);
-      alignIndex.buildLinks(refIndex);
-
-      const stats = alignIndex.getStats();
-      const warnings = alignIndex.findAlignmentWarnings();
-
-      return {
-        stats: {
-          totalSpecs: stats.totalSpecs,
-          specsWithTasks: stats.specsWithTasks,
-          alignedSpecs: stats.alignedSpecs,
-          orphanedSpecs: stats.orphanedSpecs,
-        },
-        warnings,
-      };
-    });
+        return {
+          stats: {
+            totalSpecs: stats.totalSpecs,
+            specsWithTasks: stats.specsWithTasks,
+            alignedSpecs: stats.alignedSpecs,
+            orphanedSpecs: stats.orphanedSpecs,
+          },
+          warnings,
+        };
+      })
+  );
 }

@@ -17,10 +17,7 @@ import {
   type ActionEventContext,
   type ActionRunEvent,
 } from "../src/agent-runtime/action-executor.js";
-import {
-  JoinAccumulator,
-  type GroupState,
-} from "../src/agent-runtime/join-accumulator.js";
+import { JoinAccumulator, type GroupState } from "../src/agent-runtime/join-accumulator.js";
 import { CompositionSchema, type Composition } from "../src/schema/composition.js";
 import { MetaManifestSchema } from "../src/schema/meta.js";
 import type { Action } from "../src/schema/action.js";
@@ -230,19 +227,17 @@ describe("JoinAccumulator", () => {
     });
 
     // Spy on execute to capture calls without actually running actions
-    vi.spyOn(executor, "execute").mockImplementation(
-      async (action, context, sourceName) => {
-        executedActions.push({ action, context });
-        return {
-          action_run_id: ulid(),
-          action_type: action.type,
-          status: "completed",
-          started_at: new Date().toISOString(),
-          completed_at: new Date().toISOString(),
-          duration_ms: 0,
-        };
-      },
-    );
+    vi.spyOn(executor, "execute").mockImplementation(async (action, context, sourceName) => {
+      executedActions.push({ action, context });
+      return {
+        action_run_id: ulid(),
+        action_type: action.type,
+        status: "completed",
+        started_at: new Date().toISOString(),
+        completed_at: new Date().toISOString(),
+        duration_ms: 0,
+      };
+    });
 
     accumulator = new JoinAccumulator({ eventBus: bus, actionExecutor: executor });
   });
@@ -372,7 +367,7 @@ describe("JoinAccumulator", () => {
     expect(ctx.join_count).toBe(3);
     expect(ctx.completed_session_ids).toContain("partial-session");
     // Failed run IDs should be present
-    const failedIds = (ctx.failed_run_ids as string);
+    const failedIds = ctx.failed_run_ids as string;
     expect(failedIds.length).toBeGreaterThan(0);
 
     vi.useRealTimers();

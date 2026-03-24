@@ -19,11 +19,7 @@ import {
 } from "../../parser/index.js";
 import { resolveTaskDataManager } from "../../parser/task-data-manager.js";
 import { commitIfShadow } from "../../parser/shadow.js";
-import {
-  TaskTypeSchema,
-  type InboxItemInput,
-  type TaskInput,
-} from "../../schema/index.js";
+import { TaskTypeSchema, type InboxItemInput, type TaskInput } from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
 import { fieldLabels } from "../../strings/labels.js";
 import { formatRelativeTime as formatRelativeTimeUtil } from "../../utils/time.js";
@@ -31,11 +27,7 @@ import { describeEnumValues } from "../enum-help.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, output, success } from "../output.js";
 import { parseTagsArray } from "../parse-utils.js";
-import {
-  parseIntOption,
-  validateEnumOption,
-  validateSpecRef,
-} from "../validators.js";
+import { parseIntOption, validateEnumOption, validateSpecRef } from "../validators.js";
 
 /**
  * Format relative time for display (wrapper for utils function)
@@ -47,10 +39,7 @@ function formatRelativeTime(dateStr: string): string {
 /**
  * Resolve inbox item ref with error handling
  */
-function resolveInboxRef(
-  ref: string,
-  items: LoadedInboxItem[],
-): LoadedInboxItem {
+function resolveInboxRef(ref: string, items: LoadedInboxItem[]): LoadedInboxItem {
   const item = findInboxItemByRef(items, ref);
   if (!item) {
     error(errors.reference.inboxNotFound(ref));
@@ -170,13 +159,10 @@ Examples:
             return;
           }
 
-          console.log(
-            `Inbox (${items.length} item${items.length === 1 ? "" : "s"}):\n`,
-          );
+          console.log(`Inbox (${items.length} item${items.length === 1 ? "" : "s"}):\n`);
 
           for (const item of items) {
-            const tags =
-              item.tags.length > 0 ? ` [${item.tags.join(", ")}]` : "";
+            const tags = item.tags.length > 0 ? ` [${item.tags.join(", ")}]` : "";
             const age = formatRelativeTime(item.created_at);
             const author = item.added_by ? ` by ${item.added_by}` : "";
             const itemRef = shortestUniqueUlid(item._ulid, allInboxUlids);
@@ -195,16 +181,9 @@ Examples:
   markMutating(inbox.command("promote <ref>"))
     .description("Convert inbox item to task")
     .option("--title <title>", "Task title (prompts if not provided)")
-    .option(
-      "--description <text>",
-      "Task description (defaults to inbox item text)",
-    )
+    .option("--description <text>", "Task description (defaults to inbox item text)")
     .option("--priority <n>", "Priority (1-5)", "3")
-    .option(
-      "--type <type>",
-      describeEnumValues("Task type", TaskTypeSchema.options),
-      "task",
-    )
+    .option("--type <type>", describeEnumValues("Task type", TaskTypeSchema.options), "task")
     .option("--spec-ref <ref>", "Link to spec item")
     .option("--tag <tag...>", "Tags for the task")
     .option("--note <text>", "Add initial note to the created task")
@@ -281,8 +260,7 @@ Examples:
           priority: priorityResult.value,
           spec_ref: options.specRef || null,
           tags: options.tag ? parseTagsArray(options.tag) : item.tags, // Inherit tags from inbox item if not specified
-          description:
-            options.description !== undefined ? options.description : item.text, // Use provided description (even if empty) or fall back to inbox item text
+          description: options.description !== undefined ? options.description : item.text, // Use provided description (even if empty) or fall back to inbox item text
         };
 
         // AC: @cmd-inbox-promote ac-2
@@ -342,11 +320,7 @@ Examples:
 
         const deleted = await deleteInboxItem(ctx, item._ulid);
         if (deleted) {
-          await commitIfShadow(
-            ctx.shadow,
-            "inbox-delete",
-            item._ulid.slice(0, 8),
-          );
+          await commitIfShadow(ctx.shadow, "inbox-delete", item._ulid.slice(0, 8));
           success(`Deleted inbox item: ${itemRef}`);
         } else {
           error(errors.failures.deleteInboxItem);
@@ -433,33 +407,29 @@ Examples:
           return;
         }
 
-        const updatedItem = await mutateInboxItemAtomically(
-          ctx,
-          item,
-          (latestItem) => {
-            const nextItem: LoadedInboxItem = {
-              ...latestItem,
-              tags: [...latestItem.tags],
-            };
+        const updatedItem = await mutateInboxItemAtomically(ctx, item, (latestItem) => {
+          const nextItem: LoadedInboxItem = {
+            ...latestItem,
+            tags: [...latestItem.tags],
+          };
 
-            if (options.content !== undefined) {
-              nextItem.text = options.content;
+          if (options.content !== undefined) {
+            nextItem.text = options.content;
+          }
+
+          if (options.clearTags) {
+            nextItem.tags = [];
+          }
+
+          // Append new tags, avoiding duplicates
+          for (const tag of newTags) {
+            if (!nextItem.tags.includes(tag)) {
+              nextItem.tags.push(tag);
             }
+          }
 
-            if (options.clearTags) {
-              nextItem.tags = [];
-            }
-
-            // Append new tags, avoiding duplicates
-            for (const tag of newTags) {
-              if (!nextItem.tags.includes(tag)) {
-                nextItem.tags.push(tag);
-              }
-            }
-
-            return nextItem;
-          },
-        );
+          return nextItem;
+        });
 
         await commitIfShadow(
           ctx.shadow,
@@ -495,20 +465,12 @@ Examples:
 
         // Append note with separator
         const separator = "\n\n---\n\n";
-        const updatedItem = await mutateInboxItemAtomically(
-          ctx,
-          item,
-          (latestItem) => ({
-            ...latestItem,
-            text: latestItem.text + separator + text,
-          }),
-        );
+        const updatedItem = await mutateInboxItemAtomically(ctx, item, (latestItem) => ({
+          ...latestItem,
+          text: latestItem.text + separator + text,
+        }));
 
-        await commitIfShadow(
-          ctx.shadow,
-          "inbox-note",
-          updatedItem._ulid.slice(0, 8),
-        );
+        await commitIfShadow(ctx.shadow, "inbox-note", updatedItem._ulid.slice(0, 8));
 
         success(`Added note to inbox item: ${itemRef}`, { item: updatedItem });
       } catch (err) {

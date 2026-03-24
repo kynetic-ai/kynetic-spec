@@ -40,9 +40,8 @@ describe("Claude Plugin Registry", () => {
 
   describe("registerCorePluginMarketplace", () => {
     it("should register marketplace with correct structure", async () => {
-      const { registerCorePluginMarketplace, getClaudePluginsDir } = await import(
-        "../src/lib/claude-plugin-registry"
-      );
+      const { registerCorePluginMarketplace, getClaudePluginsDir } =
+        await import("../src/lib/claude-plugin-registry");
 
       const result = await registerCorePluginMarketplace();
 
@@ -54,16 +53,18 @@ describe("Claude Plugin Registry", () => {
       const marketplacesPath = path.join(getClaudePluginsDir(), "known_marketplaces.json");
       const content = JSON.parse(await readTestOutput(marketplacesPath));
       expect(content["kspec-plugins"]).toBeDefined();
-      expect(content["kspec-plugins"].source).toEqual({ source: "directory", path: expect.any(String) });
+      expect(content["kspec-plugins"].source).toEqual({
+        source: "directory",
+        path: expect.any(String),
+      });
       expect(content["kspec-plugins"].installLocation).toBeTruthy();
       expect(content["kspec-plugins"].lastUpdated).toBeTruthy();
     });
 
     // AC: @core-skill-install ac-8
     it("should be idempotent (no lastUpdated change on re-run)", async () => {
-      const { registerCorePluginMarketplace, getClaudePluginsDir } = await import(
-        "../src/lib/claude-plugin-registry"
-      );
+      const { registerCorePluginMarketplace, getClaudePluginsDir } =
+        await import("../src/lib/claude-plugin-registry");
 
       // First registration
       await registerCorePluginMarketplace();
@@ -87,9 +88,8 @@ describe("Claude Plugin Registry", () => {
     });
 
     it("should preserve unrelated marketplace entries", async () => {
-      const { registerCorePluginMarketplace, getClaudePluginsDir } = await import(
-        "../src/lib/claude-plugin-registry"
-      );
+      const { registerCorePluginMarketplace, getClaudePluginsDir } =
+        await import("../src/lib/claude-plugin-registry");
 
       // Pre-populate with another marketplace
       const pluginsDir = getClaudePluginsDir();
@@ -104,7 +104,7 @@ describe("Claude Plugin Registry", () => {
             lastUpdated: "2025-01-01T00:00:00.000Z",
           },
         }),
-        "utf-8"
+        "utf-8",
       );
 
       await registerCorePluginMarketplace();
@@ -116,9 +116,7 @@ describe("Claude Plugin Registry", () => {
     });
 
     it("should handle missing JSON file gracefully", async () => {
-      const { registerCorePluginMarketplace } = await import(
-        "../src/lib/claude-plugin-registry"
-      );
+      const { registerCorePluginMarketplace } = await import("../src/lib/claude-plugin-registry");
 
       // Don't create anything - start from scratch
       const result = await registerCorePluginMarketplace();
@@ -126,16 +124,15 @@ describe("Claude Plugin Registry", () => {
     });
 
     it("should handle corrupt JSON file gracefully", async () => {
-      const { registerCorePluginMarketplace, getClaudePluginsDir } = await import(
-        "../src/lib/claude-plugin-registry"
-      );
+      const { registerCorePluginMarketplace, getClaudePluginsDir } =
+        await import("../src/lib/claude-plugin-registry");
 
       const pluginsDir = getClaudePluginsDir();
       await fs.mkdir(pluginsDir, { recursive: true });
       await fs.writeFile(
         path.join(pluginsDir, "known_marketplaces.json"),
         "not valid json{{{",
-        "utf-8"
+        "utf-8",
       );
 
       const result = await registerCorePluginMarketplace();
@@ -143,9 +140,8 @@ describe("Claude Plugin Registry", () => {
     });
 
     it("should not write in dry-run mode", async () => {
-      const { registerCorePluginMarketplace, getClaudePluginsDir } = await import(
-        "../src/lib/claude-plugin-registry"
-      );
+      const { registerCorePluginMarketplace, getClaudePluginsDir } =
+        await import("../src/lib/claude-plugin-registry");
 
       const result = await registerCorePluginMarketplace({ dryRun: true });
       expect(result.success).toBe(true);
@@ -160,16 +156,10 @@ describe("Claude Plugin Registry", () => {
   describe("enablePluginInProject", () => {
     // AC: @core-skill-install ac-7
     it("should enable plugin in project settings", async () => {
-      const { enablePluginInProject } = await import(
-        "../src/lib/claude-plugin-registry"
-      );
+      const { enablePluginInProject } = await import("../src/lib/claude-plugin-registry");
 
       // Create empty settings
-      await fs.writeFile(
-        path.join(tempProject, ".claude", "settings.json"),
-        "{}",
-        "utf-8"
-      );
+      await fs.writeFile(path.join(tempProject, ".claude", "settings.json"), "{}", "utf-8");
 
       const result = await enablePluginInProject(tempProject);
 
@@ -177,17 +167,13 @@ describe("Claude Plugin Registry", () => {
       expect(result.action).toBe("enabled");
 
       const settings = JSON.parse(
-        await readTestOutput(
-          path.join(tempProject, ".claude", "settings.json"),
-        )
+        await readTestOutput(path.join(tempProject, ".claude", "settings.json")),
       );
       expect(settings.enabledPlugins?.["kspec@kspec-plugins"]).toBe(true);
     });
 
     it("should preserve existing hooks config", async () => {
-      const { enablePluginInProject } = await import(
-        "../src/lib/claude-plugin-registry"
-      );
+      const { enablePluginInProject } = await import("../src/lib/claude-plugin-registry");
 
       // Create settings with hooks
       const existingSettings = {
@@ -198,15 +184,13 @@ describe("Claude Plugin Registry", () => {
       await fs.writeFile(
         path.join(tempProject, ".claude", "settings.json"),
         JSON.stringify(existingSettings),
-        "utf-8"
+        "utf-8",
       );
 
       await enablePluginInProject(tempProject);
 
       const settings = JSON.parse(
-        await readTestOutput(
-          path.join(tempProject, ".claude", "settings.json"),
-        )
+        await readTestOutput(path.join(tempProject, ".claude", "settings.json")),
       );
       // Hooks should still be there
       expect(settings.hooks?.UserPromptSubmit).toBeDefined();
@@ -214,14 +198,12 @@ describe("Claude Plugin Registry", () => {
     });
 
     it("should be idempotent when already enabled", async () => {
-      const { enablePluginInProject } = await import(
-        "../src/lib/claude-plugin-registry"
-      );
+      const { enablePluginInProject } = await import("../src/lib/claude-plugin-registry");
 
       await fs.writeFile(
         path.join(tempProject, ".claude", "settings.json"),
         JSON.stringify({ enabledPlugins: { "kspec@kspec-plugins": true } }),
-        "utf-8"
+        "utf-8",
       );
 
       const result = await enablePluginInProject(tempProject);
@@ -230,9 +212,7 @@ describe("Claude Plugin Registry", () => {
     });
 
     it("should fail without overwriting when settings.json is invalid JSON", async () => {
-      const { enablePluginInProject } = await import(
-        "../src/lib/claude-plugin-registry"
-      );
+      const { enablePluginInProject } = await import("../src/lib/claude-plugin-registry");
 
       const settingsPath = path.join(tempProject, ".claude", "settings.json");
       await fs.writeFile(settingsPath, "not valid json{{{", "utf-8");
@@ -250,18 +230,15 @@ describe("Claude Plugin Registry", () => {
 
   describe("checkMarketplaceHealth", () => {
     it("should return missing when not registered", async () => {
-      const { checkMarketplaceHealth } = await import(
-        "../src/lib/claude-plugin-registry"
-      );
+      const { checkMarketplaceHealth } = await import("../src/lib/claude-plugin-registry");
 
       const health = await checkMarketplaceHealth();
       expect(health.status).toBe("missing");
     });
 
     it("should return healthy when registered with valid path", async () => {
-      const { registerCorePluginMarketplace, checkMarketplaceHealth } = await import(
-        "../src/lib/claude-plugin-registry"
-      );
+      const { registerCorePluginMarketplace, checkMarketplaceHealth } =
+        await import("../src/lib/claude-plugin-registry");
 
       await registerCorePluginMarketplace();
 
@@ -271,9 +248,8 @@ describe("Claude Plugin Registry", () => {
     });
 
     it("should detect version-mismatch when plugin version differs from package", async () => {
-      const { checkMarketplaceHealth, getClaudePluginsDir, getPackagePluginDir } = await import(
-        "../src/lib/claude-plugin-registry"
-      );
+      const { checkMarketplaceHealth, getClaudePluginsDir, getPackagePluginDir } =
+        await import("../src/lib/claude-plugin-registry");
 
       // Register the real marketplace first to get the real path
       const pluginDir = await getPackagePluginDir();
@@ -287,7 +263,7 @@ describe("Claude Plugin Registry", () => {
       await fs.writeFile(
         path.join(fakePluginDir, ".claude-plugin", "plugin.json"),
         JSON.stringify({ version: "0.0.0-fake" }),
-        "utf-8"
+        "utf-8",
       );
 
       await fs.writeFile(
@@ -299,7 +275,7 @@ describe("Claude Plugin Registry", () => {
             lastUpdated: new Date().toISOString(),
           },
         }),
-        "utf-8"
+        "utf-8",
       );
 
       const health = await checkMarketplaceHealth();
@@ -310,9 +286,8 @@ describe("Claude Plugin Registry", () => {
     });
 
     it("should detect path-broken when registered path is invalid", async () => {
-      const { checkMarketplaceHealth, getClaudePluginsDir } = await import(
-        "../src/lib/claude-plugin-registry"
-      );
+      const { checkMarketplaceHealth, getClaudePluginsDir } =
+        await import("../src/lib/claude-plugin-registry");
 
       // Manually register with a broken path
       const pluginsDir = getClaudePluginsDir();
@@ -326,7 +301,7 @@ describe("Claude Plugin Registry", () => {
             lastUpdated: new Date().toISOString(),
           },
         }),
-        "utf-8"
+        "utf-8",
       );
 
       const health = await checkMarketplaceHealth();

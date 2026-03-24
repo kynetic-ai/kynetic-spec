@@ -11,17 +11,26 @@
  * AC: @multi-directory-daemon ac-9, ac-9b, ac-9c, ac-10, ac-11, ac-13
  */
 
-import { readFileSync, writeFileSync, unlinkSync, existsSync, mkdirSync, openSync, closeSync, constants } from 'fs';
-import { join } from 'path';
-import { homedir } from 'os';
+import {
+  readFileSync,
+  writeFileSync,
+  unlinkSync,
+  existsSync,
+  mkdirSync,
+  openSync,
+  closeSync,
+  constants,
+} from "fs";
+import { join } from "path";
+import { homedir } from "os";
 
 function isFalsyNoDaemonValue(value: string): boolean {
   switch (value.trim().toLowerCase()) {
-    case '':
-    case '0':
-    case 'false':
-    case 'no':
-    case 'off':
+    case "":
+    case "0":
+    case "false":
+    case "no":
+    case "off":
       return true;
     default:
       return false;
@@ -41,10 +50,10 @@ export class PidFileManager {
   private pidFilePath: string;
   private portFilePath: string;
 
-  constructor(configDir: string = join(homedir(), '.config', 'kspec')) {
+  constructor(configDir: string = join(homedir(), ".config", "kspec")) {
     this.configDir = configDir;
-    this.pidFilePath = join(configDir, 'daemon.pid');
-    this.portFilePath = join(configDir, 'daemon.port');
+    this.pidFilePath = join(configDir, "daemon.pid");
+    this.portFilePath = join(configDir, "daemon.port");
   }
 
   /**
@@ -70,23 +79,31 @@ export class PidFileManager {
     // Use O_CREAT | O_EXCL flags for atomic file creation
     // This prevents race conditions between concurrent daemon starts
     try {
-      const fd = openSync(this.pidFilePath, constants.O_CREAT | constants.O_EXCL | constants.O_WRONLY, 0o644);
+      const fd = openSync(
+        this.pidFilePath,
+        constants.O_CREAT | constants.O_EXCL | constants.O_WRONLY,
+        0o644,
+      );
       try {
-        writeFileSync(fd, process.pid.toString(), 'utf-8');
+        writeFileSync(fd, process.pid.toString(), "utf-8");
       } finally {
         closeSync(fd);
       }
     } catch (err: any) {
-      if (err.code === 'EEXIST') {
+      if (err.code === "EEXIST") {
         // File already exists - check if daemon is actually running
         if (this.isDaemonRunning()) {
-          throw new Error('Daemon already running');
+          throw new Error("Daemon already running", { cause: err });
         }
         // Stale PID file - remove it and retry inline (not recursive)
         this.remove();
-        const fd = openSync(this.pidFilePath, constants.O_CREAT | constants.O_EXCL | constants.O_WRONLY, 0o644);
+        const fd = openSync(
+          this.pidFilePath,
+          constants.O_CREAT | constants.O_EXCL | constants.O_WRONLY,
+          0o644,
+        );
         try {
-          writeFileSync(fd, process.pid.toString(), 'utf-8');
+          writeFileSync(fd, process.pid.toString(), "utf-8");
         } finally {
           closeSync(fd);
         }
@@ -103,7 +120,7 @@ export class PidFileManager {
    */
   writePort(port: number): void {
     this.ensureConfigDir();
-    writeFileSync(this.portFilePath, port.toString(), 'utf-8');
+    writeFileSync(this.portFilePath, port.toString(), "utf-8");
   }
 
   /**
@@ -116,7 +133,7 @@ export class PidFileManager {
     }
 
     try {
-      const content = readFileSync(this.pidFilePath, 'utf-8').trim();
+      const content = readFileSync(this.pidFilePath, "utf-8").trim();
       const pid = parseInt(content, 10);
       return isNaN(pid) ? null : pid;
     } catch {
@@ -131,21 +148,21 @@ export class PidFileManager {
    */
   readPort(): number {
     if (!existsSync(this.portFilePath)) {
-      throw new Error('Invalid daemon port file');
+      throw new Error("Invalid daemon port file");
     }
 
     try {
-      const content = readFileSync(this.portFilePath, 'utf-8').trim();
+      const content = readFileSync(this.portFilePath, "utf-8").trim();
       const port = parseInt(content, 10);
 
       // AC: @multi-directory-daemon ac-9c - validate port content
       if (isNaN(port) || port < 1 || port > 65535) {
-        throw new Error('Invalid daemon port file');
+        throw new Error("Invalid daemon port file");
       }
 
       return port;
     } catch (err) {
-      throw new Error('Invalid daemon port file');
+      throw new Error("Invalid daemon port file", { cause: err });
     }
   }
 

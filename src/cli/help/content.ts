@@ -146,11 +146,7 @@ Creates:
 
 Run in an existing directory or specify a path.
 `,
-    examples: [
-      "kspec init",
-      "kspec init --name my-project",
-      "kspec init ./new-project --yes",
-    ],
+    examples: ["kspec init", "kspec init --name my-project", "kspec init ./new-project --yes"],
   },
 
   setup: {
@@ -167,11 +163,7 @@ including quick-start commands and workflow guidance.
 
 Run this after 'kspec init' to set up agent integration.
 `,
-    examples: [
-      "kspec setup",
-      "kspec setup --agent claude-code",
-      "kspec setup --dry-run",
-    ],
+    examples: ["kspec setup", "kspec setup --agent claude-code", "kspec setup --dry-run"],
     seeAlso: ["init", "task-workflow"],
   },
 

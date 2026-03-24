@@ -14,13 +14,7 @@ export const TriageStatusSchema = z.enum(["pending", "triaged", "acted_on"]);
  * Triage action types
  * AC: @triage-record-schema ac-2
  */
-export const TriageActionSchema = z.enum([
-  "promote",
-  "delete",
-  "defer",
-  "spec-gap",
-  "duplicate",
-]);
+export const TriageActionSchema = z.enum(["promote", "delete", "defer", "spec-gap", "duplicate"]);
 
 /**
  * Full triage record schema
@@ -81,8 +75,7 @@ export const TriageRecordSchema = z
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           path: ["decided_by"],
-          message:
-            "Triaged records require decided_by to attribute the decision",
+          message: "Triaged records require decided_by to attribute the decision",
         });
       }
     }
@@ -103,8 +96,7 @@ export const TriageRecordSchema = z
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           path: ["action"],
-          message:
-            "Acted-on records require an action. Record must be triaged before acting.",
+          message: "Acted-on records require an action. Record must be triaged before acting.",
         });
       }
       if (!data.reasoning) {

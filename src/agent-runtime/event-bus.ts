@@ -223,9 +223,7 @@ export class EventBus {
     if (causation_id && !correlation_id) {
       // The correlation_id of a caused event is the correlation_id of its cause,
       // or the cause's event_id if the cause was a root event
-      const causingEvent = this.getRecentEvents().find(
-        (e) => e.event_id === causation_id,
-      );
+      const causingEvent = this.getRecentEvents().find((e) => e.event_id === causation_id);
       if (causingEvent) {
         correlation_id = causingEvent.correlation_id ?? causingEvent.event_id;
       } else {
@@ -246,7 +244,8 @@ export class EventBus {
         );
         return {
           accepted: false,
-          reason: `Chain depth limit exceeded: ${newDepth}/${this.maxChainDepth} ` +
+          reason:
+            `Chain depth limit exceeded: ${newDepth}/${this.maxChainDepth} ` +
             `(correlation_id=${correlation_id})`,
         };
       }
@@ -389,10 +388,7 @@ export class EventBus {
         try {
           await sub.handler(event);
         } catch (err) {
-          console.error(
-            `[event-bus] Subscriber error for ${event.event_type}:`,
-            err,
-          );
+          console.error(`[event-bus] Subscriber error for ${event.event_type}:`, err);
         }
       }
     });

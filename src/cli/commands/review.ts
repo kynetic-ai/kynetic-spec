@@ -95,10 +95,7 @@ function exitWithGuidance(
  * Resolve a review reference (ULID, short ULID, or slug).
  * AC: @trait-error-guidance ac-3
  */
-function resolveReviewRef(
-  ref: string,
-  reviews: LoadedReviewRecord[],
-): LoadedReviewRecord {
+function resolveReviewRef(ref: string, reviews: LoadedReviewRecord[]): LoadedReviewRecord {
   const found = findReviewByRef(reviews, ref);
   if (!found) {
     exitWithGuidance(
@@ -111,10 +108,7 @@ function resolveReviewRef(
   return found;
 }
 
-function shortReviewRef(
-  review: LoadedReviewRecord,
-  reviews: LoadedReviewRecord[],
-): string {
+function shortReviewRef(review: LoadedReviewRecord, reviews: LoadedReviewRecord[]): string {
   return shortestUniqueUlid(
     review._ulid,
     reviews.map((r) => r._ulid),
@@ -204,10 +198,7 @@ function buildReviewOutput(
  * Format review details for human-readable output.
  * AC: @review-cli-commands ac-2
  */
-function formatReviewDetails(
-  review: LoadedReviewRecord,
-  reviews: LoadedReviewRecord[],
-): void {
+function formatReviewDetails(review: LoadedReviewRecord, reviews: LoadedReviewRecord[]): void {
   const shortRef = shortReviewRef(review, reviews);
   const disposition = computeDisposition(review);
   const gateState = computeGateState(review);
@@ -248,7 +239,9 @@ function formatReviewDetails(
   }
 
   if (review.threads.length > 0) {
-    console.log(`\n─── Threads (${threadState.unresolved} unresolved, ${threadState.blockers_unresolved} blockers) ───`);
+    console.log(
+      `\n─── Threads (${threadState.unresolved} unresolved, ${threadState.blockers_unresolved} blockers) ───`,
+    );
     for (const thread of review.threads) {
       const resolved = thread.resolved_at ? "✓" : "○";
       const anchor = thread.anchor
@@ -271,21 +264,27 @@ function formatReviewDetails(
     console.log(`\n─── Checks ───`);
     for (const check of review.checks) {
       const required = check.required ? "(required)" : "(optional)";
-      console.log(`  ${check.status === "pass" ? "✓" : check.status === "fail" ? "✗" : "○"} ${check.name} ${required} — ${check.status}`);
+      console.log(
+        `  ${check.status === "pass" ? "✓" : check.status === "fail" ? "✗" : "○"} ${check.name} ${required} — ${check.status}`,
+      );
     }
   }
 
   if (review.verdicts.length > 0) {
     console.log(`\n─── Verdicts ───`);
     for (const verdict of review.verdicts) {
-      console.log(`  ${verdict.reviewer} (${verdict.role}): ${verdict.decision} — ${formatRelativeTime(verdict.created_at)}`);
+      console.log(
+        `  ${verdict.reviewer} (${verdict.role}): ${verdict.decision} — ${formatRelativeTime(verdict.created_at)}`,
+      );
     }
   }
 
   if (review.events.length > 0) {
     console.log(`\n─── Events (${review.events.length}) ───`);
     for (const event of review.events.slice(-10)) {
-      console.log(`  ${event.event_type} by ${event.actor} — ${formatRelativeTime(event.timestamp)}`);
+      console.log(
+        `  ${event.event_type} by ${event.actor} — ${formatRelativeTime(event.timestamp)}`,
+      );
     }
     if (review.events.length > 10) {
       console.log(`  ... and ${review.events.length - 10} more`);
@@ -321,15 +320,9 @@ function parseSubjectFromOptions(options: Record<string, unknown>): ReviewSubjec
   const subjectType = options.subjectType as string | undefined;
   const hasRefSubjectInput = Boolean(options.subjectRef);
   const hasCodeSubjectInput = Boolean(
-    options.base ||
-      options.head ||
-      options.mergeBase ||
-      options.baseBranch ||
-      options.headBranch,
+    options.base || options.head || options.mergeBase || options.baseBranch || options.headBranch,
   );
-  const hasExternalSubjectInput = Boolean(
-    options.url || options.externalId || options.provider,
-  );
+  const hasExternalSubjectInput = Boolean(options.url || options.externalId || options.provider);
 
   const inferSubjectType = (): "task" | "code" | "external" => {
     const inferredTypes = [
@@ -462,9 +455,7 @@ function parseSubjectFromOptions(options: Record<string, unknown>): ReviewSubjec
 // --- Command Registration ---
 
 export function registerReviewCommands(program: Command): void {
-  const review = program
-    .command("review")
-    .description("Manage first-party review records");
+  const review = program.command("review").description("Manage first-party review records");
 
   // --- review add ---
   // AC: @review-cli-creation-and-query ac-1, ac-2, ac-5
@@ -519,9 +510,10 @@ export function registerReviewCommands(program: Command): void {
 
           // AC: @trait-shadow-commit ac-1, ac-2, ac-3
           // Single atomic commit: review creation + task linkage
-          const linkSuffix = linkResult.linkedTasks.length > 0
-            ? ` (linked to ${linkResult.linkedTasks.length} task(s))`
-            : "";
+          const linkSuffix =
+            linkResult.linkedTasks.length > 0
+              ? ` (linked to ${linkResult.linkedTasks.length} task(s))`
+              : "";
           await commitIfShadow(
             ctx.shadow,
             "review-add",
@@ -530,19 +522,13 @@ export function registerReviewCommands(program: Command): void {
           );
 
           const reviews = await loadReviewRecords(ctx);
-          const shortRef = shortReviewRef(
-            { ...review, _sourceFile: undefined },
-            reviews,
-          );
+          const shortRef = shortReviewRef({ ...review, _sourceFile: undefined }, reviews);
 
-          output(
-            buildReviewOutput({ ...review, _sourceFile: undefined }, reviews),
-            () => {
-              success(
-                `Created review: ${shortRef}${review.slugs.length > 0 ? ` (${review.slugs[0]})` : ""}`,
-              );
-            },
-          );
+          output(buildReviewOutput({ ...review, _sourceFile: undefined }, reviews), () => {
+            success(
+              `Created review: ${shortRef}${review.slugs.length > 0 ? ` (${review.slugs[0]})` : ""}`,
+            );
+          });
         } catch (err) {
           error(errors.failures.createReview, err);
           process.exit(EXIT_CODES.ERROR);
@@ -578,10 +564,16 @@ export function registerReviewCommands(program: Command): void {
     .command("list")
     .description("List review records")
     .option("--status <status>", "Filter by lifecycle state (draft, open, closed, archived)")
-    .option("--disposition <disposition>", "Filter by computed disposition (pending, approved, changes_requested)")
+    .option(
+      "--disposition <disposition>",
+      "Filter by computed disposition (pending, approved, changes_requested)",
+    )
     .option("--subject-type <type>", "Filter by subject type")
     .option("--reviewer <reviewer>", "Filter by reviewer who has submitted a verdict")
-    .option("--task <ref>", "Filter reviews linked to a specific task (via subject, related_refs, or review_ref)")
+    .option(
+      "--task <ref>",
+      "Filter reviews linked to a specific task (via subject, related_refs, or review_ref)",
+    )
     .option("--limit <n>", "Limit results", parseInt)
     .option("--offset <n>", "Skip first N results", parseInt)
     .option("--count", "Show only the count of matching items")
@@ -606,9 +598,7 @@ export function registerReviewCommands(program: Command): void {
               { field: "status", value: options.status },
             );
           }
-          reviews = reviews.filter(
-            (r) => r.lifecycle_state === statusResult.value,
-          );
+          reviews = reviews.filter((r) => r.lifecycle_state === statusResult.value);
         }
 
         if (options.disposition) {
@@ -625,21 +615,15 @@ export function registerReviewCommands(program: Command): void {
               { field: "disposition", value: options.disposition },
             );
           }
-          reviews = reviews.filter(
-            (r) => computeDisposition(r) === dispositionResult.value,
-          );
+          reviews = reviews.filter((r) => computeDisposition(r) === dispositionResult.value);
         }
 
         if (options.subjectType) {
-          reviews = reviews.filter(
-            (r) => r.subject.type === options.subjectType,
-          );
+          reviews = reviews.filter((r) => r.subject.type === options.subjectType);
         }
 
         if (options.reviewer) {
-          reviews = reviews.filter((r) =>
-            r.verdicts.some((v) => v.reviewer === options.reviewer),
-          );
+          reviews = reviews.filter((r) => r.verdicts.some((v) => v.reviewer === options.reviewer));
         }
 
         // AC: @review-cli-task-linkage ac-1, ac-2 — filter by task ref
@@ -661,10 +645,9 @@ export function registerReviewCommands(program: Command): void {
             (r) =>
               r.related_refs.includes(taskRef) ||
               (r.subject.type === "task" && r.subject.ref === taskRef) ||
-              (reviewRefFromTask && (
-                r._ulid === reviewRefFromTask.replace(/^@/, "") ||
-                r.slugs.includes(reviewRefFromTask.replace(/^@/, ""))
-              )),
+              (reviewRefFromTask &&
+                (r._ulid === reviewRefFromTask.replace(/^@/, "") ||
+                  r.slugs.includes(reviewRefFromTask.replace(/^@/, "")))),
           );
         }
 
@@ -723,9 +706,10 @@ export function registerReviewCommands(program: Command): void {
             const shortRef = shortReviewRef(r, allReviews);
             const disposition = computeDisposition(r);
             const threadState = computeThreadState(r);
-            const threadSummary = threadState.total > 0
-              ? ` [${threadState.unresolved}/${threadState.total} threads]`
-              : "";
+            const threadSummary =
+              threadState.total > 0
+                ? ` [${threadState.unresolved}/${threadState.total} threads]`
+                : "";
             console.log(
               `  ${shortRef} ${r.lifecycle_state}/${disposition} ${r.title}${threadSummary}`,
             );
@@ -834,12 +818,9 @@ export function registerReviewCommands(program: Command): void {
             found.slugs[0] || found._ulid.slice(0, 8),
           );
 
-          output(
-            { thread_ulid: threadId, review_ulid: found._ulid },
-            () => {
-              success(`Added ${options.kind} thread to review ${shortReviewRef(found, reviews)}`);
-            },
-          );
+          output({ thread_ulid: threadId, review_ulid: found._ulid }, () => {
+            success(`Added ${options.kind} thread to review ${shortReviewRef(found, reviews)}`);
+          });
         } catch (err) {
           error(errors.failures.addReviewComment, err);
           process.exit(EXIT_CODES.ERROR);
@@ -869,8 +850,7 @@ export function registerReviewCommands(program: Command): void {
             : options.thread;
           const threadIndex = found.threads.findIndex(
             (t) =>
-              t._ulid === threadRef ||
-              t._ulid.toLowerCase().startsWith(threadRef.toLowerCase()),
+              t._ulid === threadRef || t._ulid.toLowerCase().startsWith(threadRef.toLowerCase()),
           );
           if (threadIndex === -1) {
             exitWithGuidance(
@@ -1003,7 +983,9 @@ export function registerReviewCommands(program: Command): void {
           output(
             { check_name: options.name, status: statusResult.value, review_ulid: found._ulid },
             () => {
-              success(`Added check "${options.name}" (${statusResult.value}) to review ${shortReviewRef(found, reviews)}`);
+              success(
+                `Added check "${options.name}" (${statusResult.value}) to review ${shortReviewRef(found, reviews)}`,
+              );
             },
           );
         } catch (err) {
@@ -1081,9 +1063,16 @@ export function registerReviewCommands(program: Command): void {
           );
 
           output(
-            { decision: options.decision, reviewer, review_ulid: found._ulid, lifecycle_state: updated.lifecycle_state },
+            {
+              decision: options.decision,
+              reviewer,
+              review_ulid: found._ulid,
+              lifecycle_state: updated.lifecycle_state,
+            },
             () => {
-              success(`Recorded verdict "${options.decision}" by ${reviewer} on review ${shortReviewRef(found, reviews)}`);
+              success(
+                `Recorded verdict "${options.decision}" by ${reviewer} on review ${shortReviewRef(found, reviews)}`,
+              );
               if (shouldAutoClose) {
                 info(`Review auto-closed`);
               }
@@ -1120,8 +1109,7 @@ export function registerReviewCommands(program: Command): void {
             : options.thread;
           const threadIndex = found.threads.findIndex(
             (t) =>
-              t._ulid === threadRef ||
-              t._ulid.toLowerCase().startsWith(threadRef.toLowerCase()),
+              t._ulid === threadRef || t._ulid.toLowerCase().startsWith(threadRef.toLowerCase()),
           );
           if (threadIndex === -1) {
             exitWithGuidance(
@@ -1201,8 +1189,7 @@ export function registerReviewCommands(program: Command): void {
             : options.thread;
           const threadIndex = found.threads.findIndex(
             (t) =>
-              t._ulid === threadRef ||
-              t._ulid.toLowerCase().startsWith(threadRef.toLowerCase()),
+              t._ulid === threadRef || t._ulid.toLowerCase().startsWith(threadRef.toLowerCase()),
           );
           if (threadIndex === -1) {
             exitWithGuidance(
@@ -1308,12 +1295,9 @@ export function registerReviewCommands(program: Command): void {
             found.slugs[0] || found._ulid.slice(0, 8),
           );
 
-          output(
-            { lifecycle_state: "open", review_ulid: found._ulid },
-            () => {
-              success(`Opened review ${shortReviewRef(found, reviews)}`);
-            },
-          );
+          output({ lifecycle_state: "open", review_ulid: found._ulid }, () => {
+            success(`Opened review ${shortReviewRef(found, reviews)}`);
+          });
         } catch (err) {
           error(errors.failures.openReview, err);
           process.exit(EXIT_CODES.ERROR);
@@ -1373,12 +1357,9 @@ export function registerReviewCommands(program: Command): void {
             found.slugs[0] || found._ulid.slice(0, 8),
           );
 
-          output(
-            { lifecycle_state: "closed", review_ulid: found._ulid },
-            () => {
-              success(`Closed review ${shortReviewRef(found, reviews)}`);
-            },
-          );
+          output({ lifecycle_state: "closed", review_ulid: found._ulid }, () => {
+            success(`Closed review ${shortReviewRef(found, reviews)}`);
+          });
         } catch (err) {
           error(errors.failures.closeReview, err);
           process.exit(EXIT_CODES.ERROR);
@@ -1433,12 +1414,9 @@ export function registerReviewCommands(program: Command): void {
             found.slugs[0] || found._ulid.slice(0, 8),
           );
 
-          output(
-            { lifecycle_state: "archived", review_ulid: found._ulid },
-            () => {
-              success(`Archived review ${shortReviewRef(found, reviews)}`);
-            },
-          );
+          output({ lifecycle_state: "archived", review_ulid: found._ulid }, () => {
+            success(`Archived review ${shortReviewRef(found, reviews)}`);
+          });
         } catch (err) {
           error(errors.failures.archiveReview, err);
           process.exit(EXIT_CODES.ERROR);
@@ -1500,12 +1478,9 @@ export function registerReviewCommands(program: Command): void {
             found.slugs[0] || found._ulid.slice(0, 8),
           );
 
-          output(
-            { review_ulid: found._ulid, new_head: options.head },
-            () => {
-              success(`Refreshed subject on review ${shortReviewRef(found, reviews)}`);
-            },
-          );
+          output({ review_ulid: found._ulid, new_head: options.head }, () => {
+            success(`Refreshed subject on review ${shortReviewRef(found, reviews)}`);
+          });
         } catch (err) {
           error(errors.failures.refreshReview, err);
           process.exit(EXIT_CODES.ERROR);
@@ -1573,9 +1548,7 @@ export function registerReviewCommands(program: Command): void {
           for (const r of matches) {
             const shortRef = shortReviewRef(r, reviews);
             const disposition = computeDisposition(r);
-            console.log(
-              `  ${shortRef} ${r.lifecycle_state}/${disposition} ${r.title}`,
-            );
+            console.log(`  ${shortRef} ${r.lifecycle_state}/${disposition} ${r.title}`);
           }
         });
       } catch (err) {

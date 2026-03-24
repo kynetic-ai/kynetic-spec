@@ -91,34 +91,44 @@ describe("Review Record Storage and Identity", () => {
     const ctx = makeCtx(kspecDir);
     const [reviewUlid, threadUlid, entryUlid, eventUlid] = testUlids("REV", 4);
 
-    const review = createReviewRecord(makeInput({
-      _ulid: reviewUlid,
-      slugs: ["my-code-review"],
-      lifecycle_state: "open",
-      related_refs: ["@some-task"],
-      threads: [{
-        _ulid: threadUlid,
-        kind: "blocker",
-        entries: [{
-          _ulid: entryUlid,
-          author: "reviewer",
-          body: "This needs fixing",
-          created_at: new Date().toISOString(),
-        }],
-      }],
-      events: [{
-        _ulid: eventUlid,
-        event_type: "lifecycle_change",
-        actor: "test-author",
-        timestamp: new Date().toISOString(),
-        payload: { from: "draft", to: "open" },
-      }],
-      external_links: [{
-        url: "https://github.com/org/repo/pull/42",
-        provider: "github",
-        external_id: "42",
-      }],
-    }));
+    const review = createReviewRecord(
+      makeInput({
+        _ulid: reviewUlid,
+        slugs: ["my-code-review"],
+        lifecycle_state: "open",
+        related_refs: ["@some-task"],
+        threads: [
+          {
+            _ulid: threadUlid,
+            kind: "blocker",
+            entries: [
+              {
+                _ulid: entryUlid,
+                author: "reviewer",
+                body: "This needs fixing",
+                created_at: new Date().toISOString(),
+              },
+            ],
+          },
+        ],
+        events: [
+          {
+            _ulid: eventUlid,
+            event_type: "lifecycle_change",
+            actor: "test-author",
+            timestamp: new Date().toISOString(),
+            payload: { from: "draft", to: "open" },
+          },
+        ],
+        external_links: [
+          {
+            url: "https://github.com/org/repo/pull/42",
+            provider: "github",
+            external_id: "42",
+          },
+        ],
+      }),
+    );
 
     await saveReviewRecord(ctx, { ...review });
     const loaded = await loadReviewRecords(ctx);
@@ -165,13 +175,19 @@ describe("Review Record Storage and Identity", () => {
     const ctx = makeCtx(kspecDir);
     const [ulid1, ulid2, ulid3] = testUlids("REV", 3);
 
-    await saveReviewRecord(ctx, { ...createReviewRecord(makeInput({ _ulid: ulid1, title: "Review 1" })) });
-    await saveReviewRecord(ctx, { ...createReviewRecord(makeInput({ _ulid: ulid2, title: "Review 2" })) });
-    await saveReviewRecord(ctx, { ...createReviewRecord(makeInput({ _ulid: ulid3, title: "Review 3" })) });
+    await saveReviewRecord(ctx, {
+      ...createReviewRecord(makeInput({ _ulid: ulid1, title: "Review 1" })),
+    });
+    await saveReviewRecord(ctx, {
+      ...createReviewRecord(makeInput({ _ulid: ulid2, title: "Review 2" })),
+    });
+    await saveReviewRecord(ctx, {
+      ...createReviewRecord(makeInput({ _ulid: ulid3, title: "Review 3" })),
+    });
 
     const loaded = await loadReviewRecords(ctx);
     expect(loaded).toHaveLength(3);
-    expect(loaded.map(r => r.title)).toEqual(["Review 1", "Review 2", "Review 3"]);
+    expect(loaded.map((r) => r.title)).toEqual(["Review 1", "Review 2", "Review 3"]);
   });
 
   // ============================================================
@@ -226,10 +242,12 @@ describe("Review Record Storage and Identity", () => {
   // AC: @review-record-storage-and-identity ac-2
   it("should find review by slug ref", async () => {
     const ctx = makeCtx(kspecDir);
-    const review = createReviewRecord(makeInput({
-      _ulid: testUlid("REV"),
-      slugs: ["my-review"],
-    }));
+    const review = createReviewRecord(
+      makeInput({
+        _ulid: testUlid("REV"),
+        slugs: ["my-review"],
+      }),
+    );
     await saveReviewRecord(ctx, { ...review });
 
     const loaded = await loadReviewRecords(ctx);
@@ -243,10 +261,12 @@ describe("Review Record Storage and Identity", () => {
   it("should resolve review through ReferenceIndex by ULID", async () => {
     const ctx = makeCtx(kspecDir);
     const reviewUlid = testUlid("REV");
-    const review = createReviewRecord(makeInput({
-      _ulid: reviewUlid,
-      slugs: ["review-for-task-42"],
-    }));
+    const review = createReviewRecord(
+      makeInput({
+        _ulid: reviewUlid,
+        slugs: ["review-for-task-42"],
+      }),
+    );
     await saveReviewRecord(ctx, { ...review });
 
     const loaded = await loadReviewRecords(ctx);
@@ -282,10 +302,12 @@ describe("Review Record Storage and Identity", () => {
     const reviewUlid = testUlid("REV");
     const taskUlid = testUlid("TASK");
 
-    const review = createReviewRecord(makeInput({
-      _ulid: reviewUlid,
-      slugs: ["code-review-1"],
-    }));
+    const review = createReviewRecord(
+      makeInput({
+        _ulid: reviewUlid,
+        slugs: ["code-review-1"],
+      }),
+    );
 
     const task = {
       _ulid: taskUlid,
@@ -299,13 +321,7 @@ describe("Review Record Storage and Identity", () => {
       created_at: new Date().toISOString(),
     };
 
-    const index = new ReferenceIndex(
-      [task as any],
-      [],
-      [],
-      [],
-      [review as any],
-    );
+    const index = new ReferenceIndex([task as any], [], [], [], [review as any]);
 
     // Both should be resolvable
     const resolvedReview = index.resolve("@code-review-1");
@@ -348,7 +364,7 @@ describe("Review Record Storage and Identity", () => {
     // Both records should be in the same file
     const loaded = await loadReviewRecords(ctx);
     expect(loaded).toHaveLength(2);
-    expect(loaded.every(r => r._sourceFile === reviewsPath)).toBe(true);
+    expect(loaded.every((r) => r._sourceFile === reviewsPath)).toBe(true);
   });
 
   // AC: @review-record-storage-and-identity ac-3
@@ -377,7 +393,7 @@ describe("Review Record Storage and Identity", () => {
 
     // Check that only the reviews file was created
     const filesAfter = await fs.readdir(kspecDir);
-    const newFiles = filesAfter.filter(f => !filesBefore.includes(f));
+    const newFiles = filesAfter.filter((f) => !filesBefore.includes(f));
     expect(newFiles).toEqual(["project.reviews.yaml"]);
   });
 
@@ -407,10 +423,12 @@ describe("Review Record Storage and Identity", () => {
   it("should mutate review atomically", async () => {
     const ctx = makeCtx(kspecDir);
     const reviewUlid = testUlid("REV");
-    const review = createReviewRecord(makeInput({
-      _ulid: reviewUlid,
-      lifecycle_state: "draft",
-    }));
+    const review = createReviewRecord(
+      makeInput({
+        _ulid: reviewUlid,
+        lifecycle_state: "draft",
+      }),
+    );
     await saveReviewRecord(ctx, { ...review });
 
     const loaded = await loadReviewRecords(ctx);
@@ -477,10 +495,12 @@ describe("Review Record Storage and Identity", () => {
     ctx.shadow = null;
 
     const reviewUlid = testUlid("BRI");
-    const review = createReviewRecord(makeInput({
-      _ulid: reviewUlid,
-      slugs: ["build-ref-idx-review"],
-    }));
+    const review = createReviewRecord(
+      makeInput({
+        _ulid: reviewUlid,
+        slugs: ["build-ref-idx-review"],
+      }),
+    );
     await saveReviewRecord(ctx, { ...review });
 
     const { index } = await buildReferenceIndex(ctx);
@@ -506,10 +526,12 @@ describe("Review Record Storage and Identity", () => {
     ctx.shadow = null;
 
     const reviewUlid = testUlid("BDX");
-    const review = createReviewRecord(makeInput({
-      _ulid: reviewUlid,
-      slugs: ["build-indexes-review"],
-    }));
+    const review = createReviewRecord(
+      makeInput({
+        _ulid: reviewUlid,
+        slugs: ["build-indexes-review"],
+      }),
+    );
     await saveReviewRecord(ctx, { ...review });
 
     const { refIndex } = await buildIndexes(ctx);

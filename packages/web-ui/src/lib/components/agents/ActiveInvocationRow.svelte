@@ -12,9 +12,9 @@
 		taskTitle?: string | null;
 	}
 
-	let { invocation, taskTitle = null }: Props = $props();
+	const { invocation, taskTitle = null }: Props = $props();
 
-	let elapsedFormatted = $derived(formatElapsed(invocation.elapsed_ms));
+	const elapsedFormatted = $derived(formatElapsed(invocation.elapsed_ms));
 
 	function formatElapsed(ms: number): string {
 		const seconds = Math.floor(ms / 1000);

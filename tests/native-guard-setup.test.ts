@@ -32,15 +32,12 @@ describe("kspec setup native guard migration", () => {
     expect(result.exitCode).toBe(0);
 
     const settingsPath = path.join(tempDir, ".claude", "settings.json");
-    const settings = JSON.parse(
-      require("fs").readFileSync(settingsPath, "utf-8"),
-    );
+    const settings = JSON.parse(require("fs").readFileSync(settingsPath, "utf-8"));
     const preToolUse = settings.hooks?.PreToolUse;
 
     expect(preToolUse).toBeDefined();
-    const hasNativeGuard = preToolUse.some(
-      (entry: { hooks?: Array<{ command?: string }> }) =>
-        entry.hooks?.some((h) => h.command === "kspec guard worktree"),
+    const hasNativeGuard = preToolUse.some((entry: { hooks?: Array<{ command?: string }> }) =>
+      entry.hooks?.some((h) => h.command === "kspec guard worktree"),
     );
     expect(hasNativeGuard).toBe(true);
   });
@@ -65,16 +62,11 @@ describe("kspec setup native guard migration", () => {
     kspec("setup", tempDir, { env: { CLAUDECODE: "1" } });
 
     const settingsPath = path.join(tempDir, ".claude", "settings.json");
-    const settings = JSON.parse(
-      require("fs").readFileSync(settingsPath, "utf-8"),
-    );
+    const settings = JSON.parse(require("fs").readFileSync(settingsPath, "utf-8"));
     const preToolUse = settings.hooks?.PreToolUse || [];
 
-    const hasTaskLimit = preToolUse.some(
-      (entry: { hooks?: Array<{ command?: string }> }) =>
-        entry.hooks?.some((h) =>
-          h.command?.includes("ralph-task-limit-guard"),
-        ),
+    const hasTaskLimit = preToolUse.some((entry: { hooks?: Array<{ command?: string }> }) =>
+      entry.hooks?.some((h) => h.command?.includes("ralph-task-limit-guard")),
     );
     expect(hasTaskLimit).toBe(false);
   });
@@ -87,11 +79,9 @@ describe("kspec setup native guard migration", () => {
     await fs.mkdir(hooksDir, { recursive: true });
 
     // Write old bash script
-    await fs.writeFile(
-      path.join(hooksDir, "kspec-worktree-guard.sh"),
-      "#!/bin/bash\necho 'old'",
-      { mode: 0o755 },
-    );
+    await fs.writeFile(path.join(hooksDir, "kspec-worktree-guard.sh"), "#!/bin/bash\necho 'old'", {
+      mode: 0o755,
+    });
 
     // Write old-style settings
     const settingsPath = path.join(claudeDir, "settings.json");
@@ -118,24 +108,18 @@ describe("kspec setup native guard migration", () => {
     kspec("setup", tempDir, { env: { CLAUDECODE: "1" } });
 
     // Verify old entries replaced
-    const settings = JSON.parse(
-      require("fs").readFileSync(settingsPath, "utf-8"),
-    );
+    const settings = JSON.parse(require("fs").readFileSync(settingsPath, "utf-8"));
     const preToolUse = settings.hooks?.PreToolUse || [];
 
     // No old bash script references
-    const hasOldScript = preToolUse.some(
-      (entry: { hooks?: Array<{ command?: string }> }) =>
-        entry.hooks?.some((h) =>
-          h.command?.includes("kspec-worktree-guard.sh"),
-        ),
+    const hasOldScript = preToolUse.some((entry: { hooks?: Array<{ command?: string }> }) =>
+      entry.hooks?.some((h) => h.command?.includes("kspec-worktree-guard.sh")),
     );
     expect(hasOldScript).toBe(false);
 
     // Has native command
-    const hasNativeGuard = preToolUse.some(
-      (entry: { hooks?: Array<{ command?: string }> }) =>
-        entry.hooks?.some((h) => h.command === "kspec guard worktree"),
+    const hasNativeGuard = preToolUse.some((entry: { hooks?: Array<{ command?: string }> }) =>
+      entry.hooks?.some((h) => h.command === "kspec guard worktree"),
     );
     expect(hasNativeGuard).toBe(true);
   });
@@ -196,9 +180,7 @@ describe("kspec setup native guard migration", () => {
     kspec("setup", tempDir, { env: { CLAUDECODE: "1" } });
 
     const settingsPath = path.join(tempDir, ".claude", "settings.json");
-    const settings = JSON.parse(
-      require("fs").readFileSync(settingsPath, "utf-8"),
-    );
+    const settings = JSON.parse(require("fs").readFileSync(settingsPath, "utf-8"));
     const preToolUse = settings.hooks?.PreToolUse || [];
 
     // Count entries with native guard command
@@ -247,22 +229,18 @@ describe("kspec setup native guard migration", () => {
 
     kspec("setup", tempDir, { env: { CLAUDECODE: "1" } });
 
-    const settings = JSON.parse(
-      require("fs").readFileSync(settingsPath, "utf-8"),
-    );
+    const settings = JSON.parse(require("fs").readFileSync(settingsPath, "utf-8"));
     const preToolUse = settings.hooks?.PreToolUse || [];
 
     // Custom guard should still be present
-    const hasCustom = preToolUse.some(
-      (entry: { hooks?: Array<{ command?: string }> }) =>
-        entry.hooks?.some((h) => h.command === "my-custom-guard.sh"),
+    const hasCustom = preToolUse.some((entry: { hooks?: Array<{ command?: string }> }) =>
+      entry.hooks?.some((h) => h.command === "my-custom-guard.sh"),
     );
     expect(hasCustom).toBe(true);
 
     // Native guard should be present
-    const hasNative = preToolUse.some(
-      (entry: { hooks?: Array<{ command?: string }> }) =>
-        entry.hooks?.some((h) => h.command === "kspec guard worktree"),
+    const hasNative = preToolUse.some((entry: { hooks?: Array<{ command?: string }> }) =>
+      entry.hooks?.some((h) => h.command === "kspec guard worktree"),
     );
     expect(hasNative).toBe(true);
   });

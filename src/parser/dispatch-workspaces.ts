@@ -18,10 +18,7 @@ export function getDispatchWorkspaceRegistryPath(ctx: KspecContext): string {
   return path.join(ctx.specDir, "project.dispatch-workspaces.yaml");
 }
 
-function defaultLegacyIntegrationOutcome(
-  status: unknown,
-  publicationMode: unknown,
-): string {
+function defaultLegacyIntegrationOutcome(status: unknown, publicationMode: unknown): string {
   switch (status) {
     case "merged":
     case "abandoned":
@@ -69,18 +66,20 @@ function normalizeLegacyRegistryRaw(raw: unknown): unknown {
         return workspace;
       }
 
-      const publicationMode = integration.publication_mode === "pull_request"
-        || integration.publication_mode === "manual_merge"
-        ? integration.publication_mode
-        : integration.outcome === "pull_request"
-          || integration.outcome === "manual_merge"
-          ? integration.outcome
-          : "manual_merge";
-      const targetCommit = typeof integration.target_commit === "string" && integration.target_commit.trim().length > 0
-        ? integration.target_commit
-        : typeof record.base_branch_point === "string" && record.base_branch_point.trim().length > 0
-          ? record.base_branch_point
-          : record.canonical_branch_head;
+      const publicationMode =
+        integration.publication_mode === "pull_request" ||
+        integration.publication_mode === "manual_merge"
+          ? integration.publication_mode
+          : integration.outcome === "pull_request" || integration.outcome === "manual_merge"
+            ? integration.outcome
+            : "manual_merge";
+      const targetCommit =
+        typeof integration.target_commit === "string" && integration.target_commit.trim().length > 0
+          ? integration.target_commit
+          : typeof record.base_branch_point === "string" &&
+              record.base_branch_point.trim().length > 0
+            ? record.base_branch_point
+            : record.canonical_branch_head;
 
       return {
         ...record,
@@ -88,7 +87,9 @@ function normalizeLegacyRegistryRaw(raw: unknown): unknown {
           ...integration,
           target_commit: targetCommit,
           publication_mode: publicationMode,
-          outcome: integration.outcome ?? defaultLegacyIntegrationOutcome(integration.status, publicationMode),
+          outcome:
+            integration.outcome ??
+            defaultLegacyIntegrationOutcome(integration.status, publicationMode),
         },
       };
     }),
@@ -122,18 +123,19 @@ function normalizeLegacyWorkspaceRaw(workspace: unknown): unknown {
     return workspace;
   }
 
-  const publicationMode = integration.publication_mode === "pull_request"
-    || integration.publication_mode === "manual_merge"
-    ? integration.publication_mode
-    : integration.outcome === "pull_request"
-      || integration.outcome === "manual_merge"
-      ? integration.outcome
-      : "manual_merge";
-  const targetCommit = typeof integration.target_commit === "string" && integration.target_commit.trim().length > 0
-    ? integration.target_commit
-    : typeof record.base_branch_point === "string" && record.base_branch_point.trim().length > 0
-      ? record.base_branch_point
-      : record.canonical_branch_head;
+  const publicationMode =
+    integration.publication_mode === "pull_request" ||
+    integration.publication_mode === "manual_merge"
+      ? integration.publication_mode
+      : integration.outcome === "pull_request" || integration.outcome === "manual_merge"
+        ? integration.outcome
+        : "manual_merge";
+  const targetCommit =
+    typeof integration.target_commit === "string" && integration.target_commit.trim().length > 0
+      ? integration.target_commit
+      : typeof record.base_branch_point === "string" && record.base_branch_point.trim().length > 0
+        ? record.base_branch_point
+        : record.canonical_branch_head;
 
   return {
     ...record,
@@ -141,33 +143,29 @@ function normalizeLegacyWorkspaceRaw(workspace: unknown): unknown {
       ...integration,
       target_commit: targetCommit,
       publication_mode: publicationMode,
-      outcome: integration.outcome ?? defaultLegacyIntegrationOutcome(integration.status, publicationMode),
+      outcome:
+        integration.outcome ?? defaultLegacyIntegrationOutcome(integration.status, publicationMode),
     },
   };
 }
 
 function formatRegistryValidationError(raw: unknown): string {
-  const parsed = DispatchWorkspaceRegistryFileSchema.safeParse(
-    normalizeLegacyRegistryRaw(raw),
-  );
+  const parsed = DispatchWorkspaceRegistryFileSchema.safeParse(normalizeLegacyRegistryRaw(raw));
   if (parsed.success) {
     return "Unknown dispatch workspace registry validation error";
   }
 
   return parsed.error.issues
     .map((issue) => {
-      const issuePath = issue.path.length > 0
-        ? issue.path.map((segment) => String(segment)).join(".")
-        : "root";
+      const issuePath =
+        issue.path.length > 0 ? issue.path.map((segment) => String(segment)).join(".") : "root";
       return `${issuePath}: ${issue.message}`;
     })
     .join("; ");
 }
 
 function parseRegistryFromRaw(raw: unknown): DispatchWorkspaceRecord[] {
-  const parsed = DispatchWorkspaceRegistryFileSchema.safeParse(
-    normalizeLegacyRegistryRaw(raw),
-  );
+  const parsed = DispatchWorkspaceRegistryFileSchema.safeParse(normalizeLegacyRegistryRaw(raw));
   if (parsed.success) {
     return parsed.data.workspaces;
   }
@@ -175,9 +173,7 @@ function parseRegistryFromRaw(raw: unknown): DispatchWorkspaceRecord[] {
   throw new Error(formatRegistryValidationError(raw));
 }
 
-async function loadRegistryFile(
-  registryPath: string,
-): Promise<DispatchWorkspaceRecord[]> {
+async function loadRegistryFile(registryPath: string): Promise<DispatchWorkspaceRecord[]> {
   let raw: unknown;
   try {
     raw = await readYamlFile<unknown>(registryPath);
@@ -201,9 +197,7 @@ function isOpenWorkspace(record: DispatchWorkspaceRecord): boolean {
   return record.lifecycle_state !== "closed";
 }
 
-function validateSingleOpenWorkspacePerTask(
-  records: DispatchWorkspaceRecord[],
-): void {
+function validateSingleOpenWorkspacePerTask(records: DispatchWorkspaceRecord[]): void {
   const openCounts = new Map<string, string[]>();
   for (const record of records) {
     if (!isOpenWorkspace(record)) continue;
@@ -242,9 +236,7 @@ export async function findDispatchWorkspaceByTaskRef(
   const filtered = options.includeClosed
     ? matches
     : matches.filter((workspace) => workspace.lifecycle_state !== "closed");
-  return filtered.sort((a, b) =>
-    a.timestamps.updated_at < b.timestamps.updated_at ? 1 : -1
-  )[0];
+  return filtered.toSorted((a, b) => (a.timestamps.updated_at < b.timestamps.updated_at ? 1 : -1))[0];
 }
 
 export async function findDispatchWorkspaceById(
@@ -273,11 +265,7 @@ function isClosedBeyondRetention(
  * Check if a raw workspace record is closed beyond the retention threshold.
  * Operates on untyped raw data to avoid schema parsing for non-target records.
  */
-function isRawClosedBeyondRetention(
-  rawRecord: unknown,
-  now: number,
-  retentionMs: number,
-): boolean {
+function isRawClosedBeyondRetention(rawRecord: unknown, now: number, retentionMs: number): boolean {
   if (!rawRecord || typeof rawRecord !== "object") return false;
   const rec = rawRecord as Record<string, unknown>;
   if (rec.lifecycle_state !== "closed") return false;
@@ -380,15 +368,21 @@ function mergeWorkspacePreservingRawShape(
       const rawValue = rawWorkspace[key];
       // Both values are plain objects — recurse to preserve nested raw shape
       if (
-        rawValue != null && typeof rawValue === "object" && !Array.isArray(rawValue) &&
-        value != null && typeof value === "object" && !Array.isArray(value)
+        rawValue != null &&
+        typeof rawValue === "object" &&
+        !Array.isArray(rawValue) &&
+        value != null &&
+        typeof value === "object" &&
+        !Array.isArray(value)
       ) {
         const preMutationNested = preMutationWorkspace?.[key];
         result[key] = mergeWorkspacePreservingRawShape(
           rawValue as Record<string, unknown>,
           value as Record<string, unknown>,
-          preMutationNested != null && typeof preMutationNested === "object" && !Array.isArray(preMutationNested)
-            ? preMutationNested as Record<string, unknown>
+          preMutationNested != null &&
+            typeof preMutationNested === "object" &&
+            !Array.isArray(preMutationNested)
+            ? (preMutationNested as Record<string, unknown>)
             : undefined,
         );
       } else {
@@ -435,9 +429,7 @@ function deepEqual(a: unknown, b: unknown): boolean {
  * Validate the single-open-workspace-per-task constraint on raw data.
  * Operates on untyped raw records to avoid schema parsing.
  */
-function validateSingleOpenWorkspacePerTaskRaw(
-  rawWorkspaces: unknown[],
-): void {
+function validateSingleOpenWorkspacePerTaskRaw(rawWorkspaces: unknown[]): void {
   const openCounts = new Map<string, string[]>();
   for (const rawWs of rawWorkspaces) {
     if (!rawWs || typeof rawWs !== "object") continue;
@@ -480,8 +472,7 @@ export async function saveDispatchWorkspaceRecord(
     await fs.mkdir(dir, { recursive: true });
 
     // Load raw workspace data without schema normalization
-    let { rawWorkspaces, wrapperObj } =
-      await extractRawWorkspaceArray(registryPath);
+    let { rawWorkspaces, wrapperObj } = await extractRawWorkspaceArray(registryPath);
 
     // Validate existing registry content to catch corruption early.
     // This is a read-only check — the parsed result is not used for writing.
@@ -491,9 +482,11 @@ export async function saveDispatchWorkspaceRecord(
       ),
     );
     if (!registryCheck.success) {
-      throw new Error(formatRegistryValidationError(
-        wrapperObj ? { ...wrapperObj, workspaces: rawWorkspaces } : { workspaces: rawWorkspaces },
-      ));
+      throw new Error(
+        formatRegistryValidationError(
+          wrapperObj ? { ...wrapperObj, workspaces: rawWorkspaces } : { workspaces: rawWorkspaces },
+        ),
+      );
     }
 
     const cleanRecord = stripRuntimeMetadata(record);
@@ -501,16 +494,17 @@ export async function saveDispatchWorkspaceRecord(
     if (existingIndex >= 0) {
       // Merge onto raw data to avoid adding Zod defaults for absent fields
       const rawTarget = rawWorkspaces[existingIndex] as Record<string, unknown>;
-      rawWorkspaces[existingIndex] = mergeWorkspacePreservingRawShape(rawTarget, cleanRecord as unknown as Record<string, unknown>);
+      rawWorkspaces[existingIndex] = mergeWorkspacePreservingRawShape(
+        rawTarget,
+        cleanRecord as unknown as Record<string, unknown>,
+      );
     } else {
       rawWorkspaces.push(cleanRecord);
     }
 
     // Purge closed records older than the retention threshold (ac-9)
     const now = Date.now();
-    rawWorkspaces = rawWorkspaces.filter(
-      (ws) => !isRawClosedBeyondRetention(ws, now, retentionMs),
-    );
+    rawWorkspaces = rawWorkspaces.filter((ws) => !isRawClosedBeyondRetention(ws, now, retentionMs));
 
     validateSingleOpenWorkspacePerTaskRaw(rawWorkspaces);
 
@@ -530,7 +524,10 @@ export async function mutateDispatchWorkspaceRecordAtomically(
   workspaceId: string,
   mutate: (
     latestRecord: LoadedDispatchWorkspaceRecord,
-  ) => DispatchWorkspaceRecord | LoadedDispatchWorkspaceRecord | Promise<DispatchWorkspaceRecord | LoadedDispatchWorkspaceRecord>,
+  ) =>
+    | DispatchWorkspaceRecord
+    | LoadedDispatchWorkspaceRecord
+    | Promise<DispatchWorkspaceRecord | LoadedDispatchWorkspaceRecord>,
 ): Promise<LoadedDispatchWorkspaceRecord> {
   const registryPath = getDispatchWorkspaceRegistryPath(ctx);
   let updatedRecord: LoadedDispatchWorkspaceRecord | undefined;
@@ -540,10 +537,9 @@ export async function mutateDispatchWorkspaceRecordAtomically(
     await fs.mkdir(dir, { recursive: true });
 
     // Load raw workspace data without schema normalization for non-target workspaces
-    const { rawWorkspaces, wrapperObj } =
-      await extractRawWorkspaceArray(registryPath).catch(() => {
-        throw new Error(`Dispatch workspace registry not found: ${registryPath}`);
-      });
+    const { rawWorkspaces, wrapperObj } = await extractRawWorkspaceArray(registryPath).catch(() => {
+      throw new Error(`Dispatch workspace registry not found: ${registryPath}`);
+    });
 
     if (rawWorkspaces.length === 0) {
       throw new Error(`Dispatch workspace registry not found: ${registryPath}`);
@@ -557,9 +553,11 @@ export async function mutateDispatchWorkspaceRecordAtomically(
       ),
     );
     if (!registryCheck.success) {
-      throw new Error(formatRegistryValidationError(
-        wrapperObj ? { ...wrapperObj, workspaces: rawWorkspaces } : { workspaces: rawWorkspaces },
-      ));
+      throw new Error(
+        formatRegistryValidationError(
+          wrapperObj ? { ...wrapperObj, workspaces: rawWorkspaces } : { workspaces: rawWorkspaces },
+        ),
+      );
     }
 
     const wsIndex = findRawWorkspaceIndex(rawWorkspaces, workspaceId);
@@ -572,7 +570,9 @@ export async function mutateDispatchWorkspaceRecordAtomically(
     const normalizedTarget = normalizeLegacyWorkspaceRaw(rawTarget);
     const parsed = DispatchWorkspaceRecordSchema.safeParse(normalizedTarget);
     if (!parsed.success) {
-      throw new Error(`Invalid dispatch workspace data for ${workspaceId}: ${parsed.error.message}`);
+      throw new Error(
+        `Invalid dispatch workspace data for ${workspaceId}: ${parsed.error.message}`,
+      );
     }
     const latestRecord: LoadedDispatchWorkspaceRecord = {
       ...parsed.data,

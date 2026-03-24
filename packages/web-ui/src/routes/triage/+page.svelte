@@ -84,15 +84,15 @@
 
 	// Filter state — derived from URL params (single source of truth)
 	// AC: @interactive-triage-ui ac-7
-	let filterTag = $derived(page.url.searchParams.get('tag') || '');
-	let filterStatus = $derived.by((): TriageFilterStatus => {
+	const filterTag = $derived(page.url.searchParams.get('tag') || '');
+	const filterStatus = $derived.by((): TriageFilterStatus => {
 		const raw = page.url.searchParams.get('status');
 		if (raw && TRIAGE_STATUS_VALUES.includes(raw as TriageFilterStatus)) {
 			return raw as TriageFilterStatus;
 		}
 		return 'all';
 	});
-	let filterAction = $derived.by((): TriageAction | '' => {
+	const filterAction = $derived.by((): TriageAction | '' => {
 		const raw = page.url.searchParams.get('action');
 		if (raw && TRIAGE_ACTION_VALUES.includes(raw as TriageAction)) {
 			return raw as TriageAction;
@@ -101,7 +101,7 @@
 	});
 
 	// Build a map of triage records by inbox_ref for fast lookup in the detail card
-	let triageRecordsByInboxRef = $derived.by((): Map<string, TriageRecord> => {
+	const triageRecordsByInboxRef = $derived.by((): Map<string, TriageRecord> => {
 		const records = triageRecordsQuery.data?.items ?? [];
 		const map = new Map<string, TriageRecord>();
 		for (const r of records) {
@@ -117,7 +117,7 @@
 	}
 
 	// AC: @interactive-triage-ui ac-7 - Filtered items
-	let allItems = $derived.by((): TriageCardItem[] => {
+	const allItems = $derived.by((): TriageCardItem[] => {
 		const items = mergedInboxQuery.data?.items ?? [];
 		return items.map((item) => {
 			const record = triageRecordsByInboxRef.get(item._ulid) ?? null;
@@ -125,7 +125,7 @@
 		});
 	});
 
-	let filteredItems = $derived.by(() => {
+	const filteredItems = $derived.by(() => {
 		let items = allItems;
 
 		// Tag filter
@@ -150,16 +150,16 @@
 		return items;
 	});
 
-	let currentItem = $derived(filteredItems[currentIndex] ?? null);
+	const currentItem = $derived(filteredItems[currentIndex] ?? null);
 
 	// AC: @interactive-triage-ui ac-7 - Progress count
-	let triagedCount = $derived(
+	const triagedCount = $derived(
 		allItems.filter((i) => i.inbox.triage && i.inbox.triage.status !== 'pending').length
 	);
-	let totalCount = $derived(allItems.length);
+	const totalCount = $derived(allItems.length);
 
 	// All unique tags for filter
-	let allTags = $derived.by(() => {
+	const allTags = $derived.by(() => {
 		const items = mergedInboxQuery.data?.items ?? [];
 		const tagSet = new Set<string>();
 		items.forEach((item) => item.tags.forEach((t) => tagSet.add(t)));
@@ -167,10 +167,10 @@
 	});
 
 	// AC: @ui-data-freshness ac-1 — Only show loading on initial fetch (no cache)
-	let loading = $derived(mergedInboxQuery.isLoading || triageRecordsQuery.isLoading);
+	const loading = $derived(mergedInboxQuery.isLoading || triageRecordsQuery.isLoading);
 
 	// AC: @ui-data-freshness ac-7 — Surface error from query or write operations
-	let error = $derived(
+	const error = $derived(
 		writeError ||
 		(mergedInboxQuery.error ? mergedInboxQuery.error.message : '') ||
 		(triageRecordsQuery.error ? triageRecordsQuery.error.message : '')

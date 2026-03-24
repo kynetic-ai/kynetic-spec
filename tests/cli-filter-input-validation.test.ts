@@ -29,10 +29,7 @@ function writeMetaProject(
       schedules: opts.schedules ?? [],
     }),
   );
-  fs.writeFileSync(
-    path.join(dir, "project.tasks.yaml"),
-    stringify({ tasks: [] }),
-  );
+  fs.writeFileSync(path.join(dir, "project.tasks.yaml"), stringify({ tasks: [] }));
 }
 
 describe("Integration: CLI filter input validation", () => {
@@ -54,7 +51,10 @@ describe("Integration: CLI filter input validation", () => {
   // AC: @trait-error-guidance ac-5
   // AC: @trait-semantic-exit-codes ac-2
   it("rejects invalid typed query filters instead of silently returning empty results", () => {
-    kspec("review add --title 'Validation review' --base a1 --head b1 --slug validation-review", tempDir);
+    kspec(
+      "review add --title 'Validation review' --base a1 --head b1 --slug validation-review",
+      tempDir,
+    );
     kspec('inbox add "Validation triage item"', tempDir);
     const inboxItems = kspecJson<Array<{ _ulid: string }>>("inbox list", tempDir);
     kspec(
@@ -70,8 +70,8 @@ describe("Integration: CLI filter input validation", () => {
       ["review list --disposition invalid-disposition", "Invalid review disposition"],
       ["triage list --status invalid-status", "Invalid triage status"],
       ["triage list --action invalid-action", "Invalid triage action"],
-      ['search test --type invalid-type', "Invalid item type"],
-      ['search test --status invalid-status', "Invalid task status"],
+      ["search test --type invalid-type", "Invalid item type"],
+      ["search test --status invalid-status", "Invalid task status"],
     ] as const;
 
     for (const [command, expected] of cases) {
@@ -93,26 +93,17 @@ describe("Integration: CLI filter input validation", () => {
       tempDir,
     );
 
-    const taskResults = kspecJson<Array<{ type: string }>>(
-      "tasks list --type task",
-      tempDir,
-    );
+    const taskResults = kspecJson<Array<{ type: string }>>("tasks list --type task", tempDir);
     expect(taskResults.length).toBeGreaterThan(0);
     expect(taskResults.every((task) => task.type === "task")).toBe(true);
 
     const itemResults = kspecJson<{
       items: Array<{ type: string }>;
-    }>(
-      "item list --type feature",
-      tempDir,
-    );
+    }>("item list --type feature", tempDir);
     expect(itemResults.items.length).toBeGreaterThan(0);
     expect(itemResults.items.every((item) => item.type === "feature")).toBe(true);
 
-    const planResults = kspecJson<Array<{ status: string }>>(
-      "plan list --status draft",
-      tempDir,
-    );
+    const planResults = kspecJson<Array<{ status: string }>>("plan list --status draft", tempDir);
     expect(planResults.every((plan) => plan.status === "draft")).toBe(true);
 
     const reviewResults = kspecJson<{ reviews: Array<{ lifecycle_state: string }> }>(
@@ -131,7 +122,7 @@ describe("Integration: CLI filter input validation", () => {
 
     const searchResults = kspecJson<{
       results: Array<{ type: string; title: string }>;
-    }>('search test --status pending', tempDir);
+    }>("search test --status pending", tempDir);
     const searchTaskResults = searchResults.results.filter((result) => result.type === "task");
     expect(searchTaskResults.length).toBeGreaterThan(0);
   });

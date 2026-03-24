@@ -172,10 +172,7 @@ derive_from_specs: true
 
     kspecOutput(`plan import "${planPath}" --module @test-core`, tempDir);
 
-    const plan = kspecJson<{ module_ref: string | null }>(
-      "plan get @plan-test-plan",
-      tempDir,
-    );
+    const plan = kspecJson<{ module_ref: string | null }>("plan get @plan-test-plan", tempDir);
     expect(plan.module_ref).toBe("@test-core");
   });
 
@@ -450,37 +447,40 @@ Edited content.
     expect(plan.notes).toEqual([]);
   });
 
-  it.runIf(canRunShadowTests)("creates a single clean shadow-branch commit when --into succeeds", async () => {
-    // AC: @plan-import-into ac-into-commit
-    // AC: @trait-shadow-commit ac-1, ac-8
-    const shadowDir = await createTempDir("kspec-plan-import-into-shadow-");
+  it.runIf(canRunShadowTests)(
+    "creates a single clean shadow-branch commit when --into succeeds",
+    async () => {
+      // AC: @plan-import-into ac-into-commit
+      // AC: @trait-shadow-commit ac-1, ac-8
+      const shadowDir = await createTempDir("kspec-plan-import-into-shadow-");
 
-    try {
-      await setupShadowProject(shadowDir);
-      kspecOutput('plan add --title "Shadow Plan" --content "Original content"', shadowDir);
+      try {
+        await setupShadowProject(shadowDir);
+        kspecOutput('plan add --title "Shadow Plan" --content "Original content"', shadowDir);
 
-      const editedPath = path.join(shadowDir, "shadow-edit.md");
-      await fs.writeFile(
-        editedPath,
-        `# Shadow Plan Updated
+        const editedPath = path.join(shadowDir, "shadow-edit.md");
+        await fs.writeFile(
+          editedPath,
+          `# Shadow Plan Updated
 
 Updated body.
 `,
-      );
+        );
 
-      const commitsBefore = getShadowCommitCount(shadowDir);
-      kspecOutput(`plan import "${editedPath}" --into @plan-shadow-plan`, shadowDir);
-      const commitsAfter = getShadowCommitCount(shadowDir);
+        const commitsBefore = getShadowCommitCount(shadowDir);
+        kspecOutput(`plan import "${editedPath}" --into @plan-shadow-plan`, shadowDir);
+        const commitsAfter = getShadowCommitCount(shadowDir);
 
-      expect(commitsAfter).toBe(commitsBefore + 1);
-      expect(getShadowStatus(shadowDir)).toBe("");
-      expect(getShadowHeadSubject(shadowDir)).toBe(
-        "Import Plan: @plan-shadow-plan - Shadow Plan Updated",
-      );
-    } finally {
-      await cleanupTempDir(shadowDir);
-    }
-  });
+        expect(commitsAfter).toBe(commitsBefore + 1);
+        expect(getShadowStatus(shadowDir)).toBe("");
+        expect(getShadowHeadSubject(shadowDir)).toBe(
+          "Import Plan: @plan-shadow-plan - Shadow Plan Updated",
+        );
+      } finally {
+        await cleanupTempDir(shadowDir);
+      }
+    },
+  );
 
   // AC: @plan-import-into ac-into-active
   // AC: @trait-error-guidance ac-1
@@ -491,11 +491,9 @@ Updated body.
     kspecOutput("plan set @plan-active-plan --status active", tempDir);
     const editedPath = await writePlan("active-edit.md", "# Active Plan Updated\n");
 
-    const result = kspecRun(
-      `plan import "${editedPath}" --into @plan-active-plan`,
-      tempDir,
-      { expectFail: true },
-    );
+    const result = kspecRun(`plan import "${editedPath}" --into @plan-active-plan`, tempDir, {
+      expectFail: true,
+    });
 
     expect(result.exitCode).toBe(5);
     expect(result.stderr).toContain("Cannot update active plan. Derive is a one-shot operation.");
@@ -515,9 +513,7 @@ Updated body.
 
     expect(textResult.exitCode).toBe(3);
     expect(textResult.stderr).toContain("Plan not found: @plan-does-not-exist");
-    expect(textResult.stderr).toContain(
-      "Suggestion: Check available plans with: kspec plan list",
-    );
+    expect(textResult.stderr).toContain("Suggestion: Check available plans with: kspec plan list");
 
     const jsonResult = kspecRun(
       `plan import "${editedPath}" --into @plan-does-not-exist --json`,
@@ -544,11 +540,9 @@ Updated body.
     kspecOutput("plan set @plan-completed-plan --status completed", tempDir);
     const editedPath = await writePlan("completed-edit.md", "# Completed Plan Updated\n");
 
-    const result = kspecRun(
-      `plan import "${editedPath}" --into @plan-completed-plan`,
-      tempDir,
-      { expectFail: true },
-    );
+    const result = kspecRun(`plan import "${editedPath}" --into @plan-completed-plan`, tempDir, {
+      expectFail: true,
+    });
 
     expect(result.exitCode).toBe(5);
     expect(result.stderr).toContain("Cannot update plan in terminal status");

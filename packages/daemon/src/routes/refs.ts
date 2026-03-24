@@ -12,31 +12,33 @@
  * - @trait-api-endpoint ac-6: Includes X-Request-Id header (via middleware)
  */
 
-import { Elysia } from 'elysia';
+import { Elysia } from "elysia";
 import {
   initContext,
   loadAllItems,
   loadPlans,
   ReferenceIndex,
   resolveTaskDataManager,
-} from '../../parser/index.js';
-import { buildRefIndex } from './ref-resolution.js';
+} from "../../parser/index.js";
+import { buildRefIndex } from "./ref-resolution.js";
 
 export function createRefsRoutes() {
-  return new Elysia({ prefix: '/api/refs' })
+  return (
+    new Elysia({ prefix: "/api/refs" })
 
-    // AC: @ui-api-ref-resolution ac-4, ac-5 - Lightweight ref index endpoint
-    // AC: @trait-api-endpoint ac-1 - Returns 2xx with JSON body
-    .get('/', async ({ projectContext }) => {
-      const ctx = await initContext(projectContext.path);
-      const [tasks, items, plans] = await Promise.all([
-        resolveTaskDataManager(ctx).loadAllTasks(ctx),
-        loadAllItems(ctx),
-        loadPlans(ctx),
-      ]);
-      const index = new ReferenceIndex(tasks, items, [], plans);
-      const refs = buildRefIndex(index);
+      // AC: @ui-api-ref-resolution ac-4, ac-5 - Lightweight ref index endpoint
+      // AC: @trait-api-endpoint ac-1 - Returns 2xx with JSON body
+      .get("/", async ({ projectContext }) => {
+        const ctx = await initContext(projectContext.path);
+        const [tasks, items, plans] = await Promise.all([
+          resolveTaskDataManager(ctx).loadAllTasks(ctx),
+          loadAllItems(ctx),
+          loadPlans(ctx),
+        ]);
+        const index = new ReferenceIndex(tasks, items, [], plans);
+        const refs = buildRefIndex(index);
 
-      return { refs };
-    });
+        return { refs };
+      })
+  );
 }

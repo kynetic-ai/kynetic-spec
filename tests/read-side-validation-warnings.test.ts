@@ -13,12 +13,7 @@ import {
   toYaml,
   type KspecContext,
 } from "../src/parser/index.js";
-import {
-  cleanupTempDir,
-  createTempDir,
-  initGitRepo,
-  testUlid,
-} from "./helpers/cli.js";
+import { cleanupTempDir, createTempDir, initGitRepo, testUlid } from "./helpers/cli.js";
 
 function makeContext(specDir: string): KspecContext {
   const projectRoot = path.dirname(specDir);
@@ -154,7 +149,9 @@ describe("read-side validation warnings (@read-side-validation-warnings)", () =>
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
     await loadAllTasks(ctx);
-    const rawItems = parseYaml<unknown>(await fs.readFile(path.join(specDir, "modules.yaml"), "utf-8"));
+    const rawItems = parseYaml<unknown>(
+      await fs.readFile(path.join(specDir, "modules.yaml"), "utf-8"),
+    );
     extractItemsFromRaw(rawItems, "modules.yaml");
     await loadInboxItems(ctx);
     await loadTriageRecords(ctx);
@@ -169,7 +166,9 @@ describe("read-side validation warnings (@read-side-validation-warnings)", () =>
     expect(warnings.join("\n")).toContain(`triage record ${ids.triageId}`);
     expect(warnings.join("\n")).toContain(`plan ${ids.planId}`);
     expect(warnings.join("\n")).toContain("status=");
-    expect(warnings.join("\n")).toContain("Suggested action: fix the invalid field in the YAML record and rerun the command.");
+    expect(warnings.join("\n")).toContain(
+      "Suggested action: fix the invalid field in the YAML record and rerun the command.",
+    );
   });
 
   // AC: @read-side-validation-warnings ac-1
@@ -179,10 +178,7 @@ describe("read-side validation warnings (@read-side-validation-warnings)", () =>
       ...createTask({ title: "Broken automation task", slugs: ["broken-automation-task"] }),
       automation: "ineligible",
     };
-    await fs.writeFile(
-      path.join(specDir, "project.tasks.yaml"),
-      toYaml({ tasks: [brokenTask] }),
-    );
+    await fs.writeFile(path.join(specDir, "project.tasks.yaml"), toYaml({ tasks: [brokenTask] }));
 
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
@@ -198,7 +194,9 @@ describe("read-side validation warnings (@read-side-validation-warnings)", () =>
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
     const tasks = await loadAllTasks(ctx);
-    const rawItems = parseYaml<unknown>(await fs.readFile(path.join(specDir, "modules.yaml"), "utf-8"));
+    const rawItems = parseYaml<unknown>(
+      await fs.readFile(path.join(specDir, "modules.yaml"), "utf-8"),
+    );
     const items = extractItemsFromRaw(rawItems, "modules.yaml");
     const inbox = await loadInboxItems(ctx);
     const triage = await loadTriageRecords(ctx);
@@ -233,16 +231,18 @@ describe("read-side validation warnings (@read-side-validation-warnings)", () =>
       path.join(specDir, "project.triage.yaml"),
       toYaml({
         kynetic_triage: "1.0",
-        triage: [{
-          _ulid: testUlid("TRJG"),
-          inbox_ref: validInbox._ulid,
-          item_snapshot: "Valid inbox idea",
-          status: "triaged",
-          action: "promote",
-          reasoning: "clear feature",
-          decided_by: "@claude",
-          created_at: "2026-03-20T00:00:00.000Z",
-        }],
+        triage: [
+          {
+            _ulid: testUlid("TRJG"),
+            inbox_ref: validInbox._ulid,
+            item_snapshot: "Valid inbox idea",
+            status: "triaged",
+            action: "promote",
+            reasoning: "clear feature",
+            decided_by: "@claude",
+            created_at: "2026-03-20T00:00:00.000Z",
+          },
+        ],
       }),
     );
     await fs.writeFile(
@@ -252,19 +252,23 @@ describe("read-side validation warnings (@read-side-validation-warnings)", () =>
     await fs.writeFile(
       path.join(specDir, "modules.yaml"),
       toYaml({
-        features: [{
-          _ulid: testUlid("SPCA"),
-          title: "Valid item",
-          slugs: ["valid-item"],
-          type: "feature",
-        }],
+        features: [
+          {
+            _ulid: testUlid("SPCA"),
+            title: "Valid item",
+            slugs: ["valid-item"],
+            type: "feature",
+          },
+        ],
       }),
     );
 
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
     await loadAllTasks(ctx);
-    const rawItems = parseYaml<unknown>(await fs.readFile(path.join(specDir, "modules.yaml"), "utf-8"));
+    const rawItems = parseYaml<unknown>(
+      await fs.readFile(path.join(specDir, "modules.yaml"), "utf-8"),
+    );
     extractItemsFromRaw(rawItems, "modules.yaml");
     await loadInboxItems(ctx);
     await loadTriageRecords(ctx);

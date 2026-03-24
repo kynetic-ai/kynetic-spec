@@ -132,14 +132,18 @@ export function parseFrontmatter(content: string): ParsedFrontmatter | null {
       // Claude Code platform fields (AC: ac-3)
       // Support both underscore and hyphen naming for user-invocable
       if (typeof parsed.user_invocable === "boolean") result.user_invocable = parsed.user_invocable;
-      if (typeof parsed["user-invocable"] === "boolean") result.user_invocable = parsed["user-invocable"];
-      if (typeof parsed.disable_model_invocation === "boolean") result.disable_model_invocation = parsed.disable_model_invocation;
-      if (typeof parsed["disable-model-invocation"] === "boolean") result.disable_model_invocation = parsed["disable-model-invocation"];
+      if (typeof parsed["user-invocable"] === "boolean")
+        result.user_invocable = parsed["user-invocable"];
+      if (typeof parsed.disable_model_invocation === "boolean")
+        result.disable_model_invocation = parsed.disable_model_invocation;
+      if (typeof parsed["disable-model-invocation"] === "boolean")
+        result.disable_model_invocation = parsed["disable-model-invocation"];
       if (typeof parsed.context === "string") result.context = parsed.context;
       if (typeof parsed.agent === "string") result.agent = parsed.agent;
       if (typeof parsed.model === "string") result.model = parsed.model;
       if (typeof parsed.argument_hint === "string") result.argument_hint = parsed.argument_hint;
-      if (typeof parsed["argument-hint"] === "string") result.argument_hint = parsed["argument-hint"];
+      if (typeof parsed["argument-hint"] === "string")
+        result.argument_hint = parsed["argument-hint"];
 
       return result;
     }
@@ -322,11 +326,7 @@ export function registerSkillCrudCommands(skill: Command): void {
     .requiredOption("--id <id>", "Skill ID (kebab-case)")
     .requiredOption("--name <name>", "Skill name")
     .option("--description <desc>", "Skill description")
-    .option(
-      "--origin <origin>",
-      "Skill origin (core, project, local)",
-      "project",
-    )
+    .option("--origin <origin>", "Skill origin (core, project, local)", "project")
     .option("--skill-version <version>", "Skill version")
     .option("--platform <platform...>", "Target platforms")
     .option("--tag <tag...>", "Tags for the skill")
@@ -344,9 +344,7 @@ export function registerSkillCrudCommands(skill: Command): void {
         // Validate origin
         const validOrigins: SkillOrigin[] = ["core", "project", "local"];
         if (!validOrigins.includes(options.origin as SkillOrigin)) {
-          error(
-            `Invalid origin: ${options.origin}. Valid origins: ${validOrigins.join(", ")}`,
-          );
+          error(`Invalid origin: ${options.origin}. Valid origins: ${validOrigins.join(", ")}`);
           process.exit(EXIT_CODES.ERROR);
         }
 
@@ -367,7 +365,8 @@ export function registerSkillCrudCommands(skill: Command): void {
           origin: options.origin as SkillOrigin,
           version: options.skillVersion,
           ...(options.platform && options.platform.length > 0 && { platforms: options.platform }),
-          ...(options.dependsOn && options.dependsOn.length > 0 && { depends_on: options.dependsOn }),
+          ...(options.dependsOn &&
+            options.dependsOn.length > 0 && { depends_on: options.dependsOn }),
           allowed_tools: [],
           ...(options.tag && options.tag.length > 0 && { tags: parseTagsArray(options.tag) }),
         };
@@ -400,7 +399,7 @@ export function registerSkillCrudCommands(skill: Command): void {
 
           try {
             initialContent = await fs.readFile(contentFilePath, "utf-8");
-          } catch (err) {
+          } catch  {
             // Clean up: remove the skill we just created
             await deleteMetaItem(ctx, skill._ulid, "skill");
             error(`Failed to read content file: ${contentFilePath}`);
@@ -415,9 +414,7 @@ export function registerSkillCrudCommands(skill: Command): void {
         // Commit changes
         await commitIfShadow(ctx.shadow, "skill-add", skill.id, skill.name);
 
-        output(skill, () =>
-          success(`Created skill: ${skill.id}`, { skill }),
-        );
+        output(skill, () => success(`Created skill: ${skill.id}`, { skill }));
       } catch (err) {
         error("Failed to create skill", err);
         process.exit(EXIT_CODES.ERROR);
@@ -550,9 +547,7 @@ export function registerSkillCrudCommands(skill: Command): void {
         if (options.origin !== undefined) {
           const validOrigins: SkillOrigin[] = ["core", "project", "local"];
           if (!validOrigins.includes(options.origin as SkillOrigin)) {
-            error(
-              `Invalid origin: ${options.origin}. Valid origins: ${validOrigins.join(", ")}`,
-            );
+            error(`Invalid origin: ${options.origin}. Valid origins: ${validOrigins.join(", ")}`);
             process.exit(EXIT_CODES.ERROR);
           }
           skill.origin = options.origin as SkillOrigin;
@@ -647,15 +642,12 @@ export function registerSkillCrudCommands(skill: Command): void {
 
             // Deep merge: initialize platform object if needed
             if (!(platform in skill.platform_config)) {
-              (skill.platform_config as Record<string, Record<string, unknown>>)[
-                platform
-              ] = {};
+              (skill.platform_config as Record<string, Record<string, unknown>>)[platform] = {};
             }
 
             // Set the value
-            (
-              skill.platform_config as Record<string, Record<string, unknown>>
-            )[platform][key] = value;
+            (skill.platform_config as Record<string, Record<string, unknown>>)[platform][key] =
+              value;
           }
         }
 
@@ -674,17 +666,10 @@ export function registerSkillCrudCommands(skill: Command): void {
 
           let errorMsg = `Invalid skill data: ${issues}`;
           if (hasPlatformConfigError) {
-            const validPlatformConfigKeys = Object.entries(
-              PLATFORM_CONFIG_GUIDANCE_SCHEMAS,
-            )
-              .map(
-                ([platform, schema]) =>
-                  `  ${platform}: ${Object.keys(schema.shape).join(", ")}`,
-              )
+            const validPlatformConfigKeys = Object.entries(PLATFORM_CONFIG_GUIDANCE_SCHEMAS)
+              .map(([platform, schema]) => `  ${platform}: ${Object.keys(schema.shape).join(", ")}`)
               .join("\n");
-            errorMsg +=
-              `\n\nValid platform config keys:` +
-              `\n${validPlatformConfigKeys}`;
+            errorMsg += `\n\nValid platform config keys:` + `\n${validPlatformConfigKeys}`;
           }
 
           error(errorMsg);
@@ -785,11 +770,7 @@ export function registerSkillCrudCommands(skill: Command): void {
     .option("--id <id>", "Custom skill ID (defaults to directory name)")
     .option("--name <name>", "Skill name (required if no frontmatter)")
     .option("--description <desc>", "Skill description (required if no frontmatter)")
-    .option(
-      "--origin <origin>",
-      "Skill origin (core, project, local)",
-      "project",
-    )
+    .option("--origin <origin>", "Skill origin (core, project, local)", "project")
     .option("--skill-version <version>", "Skill version")
     .action(async (file: string, options) => {
       try {
@@ -801,9 +782,7 @@ export function registerSkillCrudCommands(skill: Command): void {
         }
 
         // Resolve file path
-        const filePath = path.isAbsolute(file)
-          ? file
-          : path.resolve(process.cwd(), file);
+        const filePath = path.isAbsolute(file) ? file : path.resolve(process.cwd(), file);
 
         // Check file exists
         try {
@@ -827,14 +806,26 @@ export function registerSkillCrudCommands(skill: Command): void {
 
         // AC: @skill-import ac-6, @import-frontmatter-strip ac-6 - Error if no name/description and no frontmatter
         if (!skillName) {
-          error("Name is required. Either add YAML frontmatter with 'name' field or use --name option.");
-          console.log(chalk.gray("Example frontmatter:\n---\nname: my-skill\ndescription: My skill description\n---"));
+          error(
+            "Name is required. Either add YAML frontmatter with 'name' field or use --name option.",
+          );
+          console.log(
+            chalk.gray(
+              "Example frontmatter:\n---\nname: my-skill\ndescription: My skill description\n---",
+            ),
+          );
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
 
         if (!skillDescription) {
-          error("Description is required. Either add YAML frontmatter with 'description' field or use --description option.");
-          console.log(chalk.gray("Example frontmatter:\n---\nname: my-skill\ndescription: My skill description\n---"));
+          error(
+            "Description is required. Either add YAML frontmatter with 'description' field or use --description option.",
+          );
+          console.log(
+            chalk.gray(
+              "Example frontmatter:\n---\nname: my-skill\ndescription: My skill description\n---",
+            ),
+          );
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
 
@@ -846,9 +837,7 @@ export function registerSkillCrudCommands(skill: Command): void {
         // Validate origin
         const validOrigins: SkillOrigin[] = ["core", "project", "local"];
         if (!validOrigins.includes(options.origin as SkillOrigin)) {
-          error(
-            `Invalid origin: ${options.origin}. Valid origins: ${validOrigins.join(", ")}`,
-          );
+          error(`Invalid origin: ${options.origin}. Valid origins: ${validOrigins.join(", ")}`);
           process.exit(EXIT_CODES.ERROR);
         }
 
@@ -953,9 +942,7 @@ export function registerSkillCrudCommands(skill: Command): void {
         // Commit changes
         await commitIfShadow(ctx.shadow, "skill-import", skill.id, skill.name);
 
-        output(skill, () =>
-          success(`Imported skill: ${skill.id}`, { skill }),
-        );
+        output(skill, () => success(`Imported skill: ${skill.id}`, { skill }));
       } catch (err) {
         error("Failed to import skill", err);
         process.exit(EXIT_CODES.ERROR);

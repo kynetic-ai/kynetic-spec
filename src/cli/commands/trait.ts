@@ -21,9 +21,7 @@ import { error, output, success, warn } from "../output.js";
  * Register trait commands
  */
 export function registerTraitCommands(program: Command): void {
-  const trait = program
-    .command("trait")
-    .description("Trait management commands");
+  const trait = program.command("trait").description("Trait management commands");
 
   // kspec trait add <title>
   // AC: @trait-cli ac-1, ac-2
@@ -40,9 +38,7 @@ export function registerTraitCommands(program: Command): void {
         if (options.slug) {
           const slugCheck = checkSlugUniqueness(refIndex, [options.slug]);
           if (!slugCheck.ok) {
-            error(
-              errors.slug.alreadyExists(slugCheck.slug, slugCheck.existingUlid),
-            );
+            error(errors.slug.alreadyExists(slugCheck.slug, slugCheck.existingUlid));
             process.exit(EXIT_CODES.CONFLICT);
           }
         }
@@ -77,8 +73,7 @@ export function registerTraitCommands(program: Command): void {
 
         // Build index with new item for short ULID
         const index = new ReferenceIndex([], [...items, result.item]);
-        const itemSlug =
-          result.item.slugs?.[0] || index.shortUlid(result.item._ulid);
+        const itemSlug = result.item.slugs?.[0] || index.shortUlid(result.item._ulid);
 
         await commitIfShadow(ctx.shadow, "trait-add", itemSlug);
         success(`Created trait: ${itemSlug}`, { trait: result.item });
@@ -113,10 +108,7 @@ export function registerTraitCommands(program: Command): void {
           for (const trait of traits) {
             const shortId = trait.ulid.slice(0, 8);
             const acCount = trait.acceptanceCriteria.length;
-            const acInfo =
-              acCount > 0
-                ? chalk.gray(` (${acCount} AC)`)
-                : chalk.gray(" (no AC)");
+            const acInfo = acCount > 0 ? chalk.gray(` (${acCount} AC)`) : chalk.gray(" (no AC)");
 
             console.log(
               `${chalk.gray(shortId)} ${trait.title} ${chalk.cyan(`@${trait.slug}`)}${acInfo}`,
@@ -187,9 +179,7 @@ export function registerTraitCommands(program: Command): void {
           }
 
           if (specsUsingTrait.length > 0) {
-            console.log(
-              chalk.gray(`\nUsed by ${specsUsingTrait.length} spec(s)`),
-            );
+            console.log(chalk.gray(`\nUsed by ${specsUsingTrait.length} spec(s)`));
           }
         });
       } catch (err) {
@@ -203,9 +193,7 @@ export function registerTraitCommands(program: Command): void {
  * Register item trait subcommands (for adding/removing traits from specs)
  */
 export function registerItemTraitCommands(itemCommand: Command): void {
-  const traitCmd = itemCommand
-    .command("trait")
-    .description("Manage traits on spec items");
+  const traitCmd = itemCommand.command("trait").description("Manage traits on spec items");
 
   // kspec item trait add <spec-ref> <trait-refs...>
   // AC: @trait-cli ac-5, ac-6, ac-7, ac-9, ac-10

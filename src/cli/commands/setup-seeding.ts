@@ -107,14 +107,10 @@ export async function seedPermissions(
     }
 
     // Merge kspec patterns into existing permissions (additive, never destructive)
-    const existingAllow = Array.isArray(
-      (config.permissions as Record<string, unknown>)?.allow,
-    )
+    const existingAllow = Array.isArray((config.permissions as Record<string, unknown>)?.allow)
       ? ((config.permissions as Record<string, unknown>).allow as string[])
       : [];
-    const merged = [
-      ...new Set([...existingAllow, ...KSPEC_PERMISSION_PATTERNS]),
-    ];
+    const merged = [...new Set([...existingAllow, ...KSPEC_PERMISSION_PATTERNS])];
     config.permissions = {
       ...(config.permissions as Record<string, unknown>),
       allow: merged,
@@ -122,11 +118,7 @@ export async function seedPermissions(
 
     if (!dryRun) {
       await fs.mkdir(path.dirname(configPath), { recursive: true });
-      await fs.writeFile(
-        configPath,
-        `${JSON.stringify(config, null, 2)}\n`,
-        "utf-8",
-      );
+      await fs.writeFile(configPath, `${JSON.stringify(config, null, 2)}\n`, "utf-8");
     }
 
     return {
@@ -180,7 +172,7 @@ export interface MemorySeedWriter {
  */
 export function encodeProjectPath(projectPath: string): string {
   // Normalize trailing slashes/backslashes
-  let normalized = projectPath.replace(/[\\/]+$/, "");
+  const normalized = projectPath.replace(/[\\/]+$/, "");
   // Replace all path separators (both / and \) with -
   let encoded = normalized.replace(/[\\/]/g, "-");
   // Strip leading -
@@ -195,14 +187,7 @@ export function encodeProjectPath(projectPath: string): string {
 function getClaudeCodeMemoryPath(projectDir: string): string {
   const homedir = os.homedir();
   const encoded = encodeProjectPath(projectDir);
-  return path.join(
-    homedir,
-    ".claude",
-    "projects",
-    encoded,
-    "memory",
-    "MEMORY.md",
-  );
+  return path.join(homedir, ".claude", "projects", encoded, "memory", "MEMORY.md");
 }
 
 /**
@@ -219,7 +204,7 @@ export const claudeCodeMemoryWriter: MemorySeedWriter = {
     try {
       await fs.access(getClaudeCodeMemoryPath(projectDir));
       return true;
-    } catch (_err) {
+    } catch  {
       return false;
     }
   },
@@ -256,9 +241,7 @@ function getMemoryWriter(agentType: AgentType): MemorySeedWriter | null {
  *
  * Content is platform-agnostic — only stable project info, no volatile data.
  */
-export async function generateProjectSeedContent(
-  projectDir: string,
-): Promise<string> {
+export async function generateProjectSeedContent(projectDir: string): Promise<string> {
   const projectName = await getProjectName(projectDir);
   const moduleNames = await getModuleNames(projectDir);
   const timestamp = new Date().toISOString();
@@ -321,7 +304,7 @@ async function getModuleNames(projectDir: string): Promise<string[]> {
     return entries
       .filter((e) => e.isDirectory())
       .map((e) => e.name)
-      .sort();
+      .toSorted();
   } catch (err) {
     debugLog("Could not read modules directory", err);
     return [];
@@ -354,9 +337,7 @@ export async function seedMemory(
     return {
       seeded: codexResult.success && codexResult.action === "added",
       path: codexResult.path,
-      message: codexResult.success
-        ? codexResult.message
-        : `failed: ${codexResult.message}`,
+      message: codexResult.success ? codexResult.message : `failed: ${codexResult.message}`,
     };
   }
 

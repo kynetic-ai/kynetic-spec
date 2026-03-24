@@ -264,10 +264,7 @@ describe("remote branch fallback in workspace health reconciliation", () => {
     git(tempDir, `branch -D ${canonicalBranch}`);
 
     // Run reconciliation (which updates canonical_branch_head)
-    await reconcileDispatchWorkspaceRegistry(
-      tempDir,
-      new Map([[taskRef, "in_progress" as const]]),
-    );
+    await reconcileDispatchWorkspaceRegistry(tempDir, new Map([[taskRef, "in_progress" as const]]));
 
     // Read the registry record and verify canonical_branch_head was updated
     const registryPath = path.join(specDir, "project.dispatch-workspaces.yaml");

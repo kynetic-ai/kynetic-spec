@@ -124,9 +124,7 @@ export function createExternalSubject(opts: {
  * Extract the current subject version from a subject binding.
  * This is used to create applies_to_version values for checks and verdicts.
  */
-export function extractSubjectVersion(
-  subject: ReviewSubject,
-): ReviewSubjectVersion {
+export function extractSubjectVersion(subject: ReviewSubject): ReviewSubjectVersion {
   if (subject.type === "code") {
     return {
       type: "code_compare",
@@ -135,11 +133,7 @@ export function extractSubjectVersion(
     };
   }
   // plan, task, spec all use content_hash
-  if (
-    subject.type === "plan" ||
-    subject.type === "task" ||
-    subject.type === "spec"
-  ) {
+  if (subject.type === "plan" || subject.type === "task" || subject.type === "spec") {
     return {
       type: "entity_version",
       content_hash: subject.content_hash,
@@ -183,10 +177,7 @@ export function isVersionStale(
     };
   }
 
-  if (
-    appliesTo.type === "code_compare" &&
-    currentVersion.type === "code_compare"
-  ) {
+  if (appliesTo.type === "code_compare" && currentVersion.type === "code_compare") {
     const commitChanged =
       appliesTo.base_commit !== currentVersion.base_commit ||
       appliesTo.head_commit !== currentVersion.head_commit;
@@ -199,10 +190,7 @@ export function isVersionStale(
     return { stale: false };
   }
 
-  if (
-    appliesTo.type === "entity_version" &&
-    currentVersion.type === "entity_version"
-  ) {
+  if (appliesTo.type === "entity_version" && currentVersion.type === "entity_version") {
     if (appliesTo.content_hash !== currentVersion.content_hash) {
       return {
         stale: true,

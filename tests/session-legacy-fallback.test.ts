@@ -24,12 +24,7 @@ import {
   emitLegacyDeprecationWarning,
   resetDeprecationWarning,
 } from "../src/sessions/legacy.js";
-import {
-  createSession,
-  appendEvent,
-  getSession,
-  listSessions,
-} from "../src/sessions/store.js";
+import { createSession, appendEvent, getSession, listSessions } from "../src/sessions/store.js";
 
 // ─── Test Helpers ────────────────────────────────────────────────────────────
 
@@ -71,10 +66,7 @@ async function createTestSession(
     started_at: "2026-03-01T00:00:00.000Z",
     ended_at: status !== "active" ? "2026-03-01T01:00:00.000Z" : undefined,
   };
-  await fs.writeFile(
-    path.join(sessionDir, "session.yaml"),
-    YAML.stringify(metadata),
-  );
+  await fs.writeFile(path.join(sessionDir, "session.yaml"), YAML.stringify(metadata));
 }
 
 /**
@@ -233,11 +225,7 @@ describe("Legacy Session Detection and Warning", () => {
       });
 
       // Verify events file in primary
-      const eventsPath = path.join(
-        primaryDir,
-        "01NEWSESS02",
-        "events.jsonl",
-      );
+      const eventsPath = path.join(primaryDir, "01NEWSESS02", "events.jsonl");
       const exists = await fs
         .access(eventsPath)
         .then(() => true)
@@ -245,11 +233,7 @@ describe("Legacy Session Detection and Warning", () => {
       expect(exists).toBe(true);
 
       // Verify no events in legacy
-      const legacyPath = path.join(
-        legacyDir,
-        "01NEWSESS02",
-        "events.jsonl",
-      );
+      const legacyPath = path.join(legacyDir, "01NEWSESS02", "events.jsonl");
       const legacyExists = await fs
         .access(legacyPath)
         .then(() => true)
@@ -263,22 +247,14 @@ describe("Legacy Session Detection and Warning", () => {
   // AC: @session-legacy-migration ac-deprecation-warning
   describe("ac-deprecation-warning: warning when legacy sessions detected", () => {
     it("emits deprecation warning to stderr with session count", async () => {
-      const stderrSpy = vi
-        .spyOn(console, "error")
-        .mockImplementation(() => {});
+      const stderrSpy = vi.spyOn(console, "error").mockImplementation(() => {});
       emitLegacyDeprecationWarning(3);
-      expect(stderrSpy).toHaveBeenCalledWith(
-        expect.stringContaining("3 legacy session(s) found"),
-      );
-      expect(stderrSpy).toHaveBeenCalledWith(
-        expect.stringContaining("kspec session migrate"),
-      );
+      expect(stderrSpy).toHaveBeenCalledWith(expect.stringContaining("3 legacy session(s) found"));
+      expect(stderrSpy).toHaveBeenCalledWith(expect.stringContaining("kspec session migrate"));
     });
 
     it("emits warning only once per process", async () => {
-      const stderrSpy = vi
-        .spyOn(console, "error")
-        .mockImplementation(() => {});
+      const stderrSpy = vi.spyOn(console, "error").mockImplementation(() => {});
       emitLegacyDeprecationWarning(2);
       emitLegacyDeprecationWarning(5);
       // Should only have been called once
@@ -286,31 +262,23 @@ describe("Legacy Session Detection and Warning", () => {
     });
 
     it("warnIfLegacySessions emits warning when legacy sessions exist", async () => {
-      const stderrSpy = vi
-        .spyOn(console, "error")
-        .mockImplementation(() => {});
+      const stderrSpy = vi.spyOn(console, "error").mockImplementation(() => {});
       await createTestSession(legacyDir, "01LEGACY01");
       await createTestSession(legacyDir, "01LEGACY02");
       const result = await warnIfLegacySessions(specDir);
       expect(result).toBe(true);
-      expect(stderrSpy).toHaveBeenCalledWith(
-        expect.stringContaining("2 legacy session(s) found"),
-      );
+      expect(stderrSpy).toHaveBeenCalledWith(expect.stringContaining("2 legacy session(s) found"));
     });
 
     it("warnIfLegacySessions returns false when no legacy sessions", async () => {
-      const stderrSpy = vi
-        .spyOn(console, "error")
-        .mockImplementation(() => {});
+      const stderrSpy = vi.spyOn(console, "error").mockImplementation(() => {});
       const result = await warnIfLegacySessions(specDir);
       expect(result).toBe(false);
       expect(stderrSpy).not.toHaveBeenCalled();
     });
 
     it("warnIfLegacySessions returns false when specDir is undefined", async () => {
-      const stderrSpy = vi
-        .spyOn(console, "error")
-        .mockImplementation(() => {});
+      const stderrSpy = vi.spyOn(console, "error").mockImplementation(() => {});
       const result = await warnIfLegacySessions(undefined);
       expect(result).toBe(false);
       expect(stderrSpy).not.toHaveBeenCalled();
@@ -330,18 +298,12 @@ describe("Legacy Session Detection and Warning", () => {
     });
 
     it("warnIfLegacySessions warns about the count of unmigrated sessions", async () => {
-      const stderrSpy = vi
-        .spyOn(console, "error")
-        .mockImplementation(() => {});
+      const stderrSpy = vi.spyOn(console, "error").mockImplementation(() => {});
       await createTestSession(legacyDir, "01LEGACY01");
       await createTestSession(legacyDir, "01LEGACY02");
       await warnIfLegacySessions(specDir);
-      expect(stderrSpy).toHaveBeenCalledWith(
-        expect.stringContaining("2 legacy session(s)"),
-      );
-      expect(stderrSpy).toHaveBeenCalledWith(
-        expect.stringContaining("kspec session migrate"),
-      );
+      expect(stderrSpy).toHaveBeenCalledWith(expect.stringContaining("2 legacy session(s)"));
+      expect(stderrSpy).toHaveBeenCalledWith(expect.stringContaining("kspec session migrate"));
     });
   });
 
@@ -350,9 +312,7 @@ describe("Legacy Session Detection and Warning", () => {
   // AC: @session-legacy-migration ac-migration-copy
   describe("ac-migration-copy: migrateLegacySessions", () => {
     it("copies session directories from legacy to primary", async () => {
-      await createTestSessionWithEvents(legacyDir, "01LEGACY01", [
-        { type: "session.start" },
-      ]);
+      await createTestSessionWithEvents(legacyDir, "01LEGACY01", [{ type: "session.start" }]);
       const result = await migrateLegacySessions(primaryDir, specDir);
       expect(result.migrated).toBe(1);
       expect(result.migratedIds).toContain("01LEGACY01");

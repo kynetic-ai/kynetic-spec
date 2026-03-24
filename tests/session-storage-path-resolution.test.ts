@@ -23,13 +23,7 @@ import {
   createSession,
 } from "../src/sessions/store.js";
 import { initContext } from "../src/parser/yaml.js";
-import {
-  kspec,
-  kspecJson,
-  setupTempFixtures,
-  cleanupTempDir,
-  testUlid,
-} from "./helpers/cli";
+import { kspec, kspecJson, setupTempFixtures, cleanupTempDir, testUlid } from "./helpers/cli";
 
 describe("Session Storage Path Resolution", () => {
   const sessionsDir = "/project/.kspec-sessions";
@@ -107,7 +101,11 @@ describe("Session Storage Path Resolution", () => {
     });
 
     it("KspecContext type has sessionsDir field (compile-time check)", () => {
-      type AssertHasSessionsDir = import("../src/parser/yaml.js").KspecContext extends { sessionsDir: string } ? true : false;
+      type AssertHasSessionsDir = import("../src/parser/yaml.js").KspecContext extends {
+        sessionsDir: string;
+      }
+        ? true
+        : false;
       const check: AssertHasSessionsDir = true;
       expect(check).toBe(true);
     });
@@ -148,7 +146,10 @@ describe("Session Storage Path Resolution", () => {
 
       // Session metadata should be at .kspec-sessions/{id}/session.yaml
       const expectedPath = path.join(tempDir, ".kspec-sessions", createdId, "session.yaml");
-      const fileExists = await fs.access(expectedPath).then(() => true).catch(() => false);
+      const fileExists = await fs
+        .access(expectedPath)
+        .then(() => true)
+        .catch(() => false);
       expect(fileExists).toBe(true);
     });
 
@@ -209,7 +210,7 @@ describe("Session Storage Path Resolution", () => {
         // Verify the session is accessible via the same sessionsDir
         const { getAllSessionLogSummaries } = await import("../src/sessions/store.js");
         const summaries = await getAllSessionLogSummaries(ctx.sessionsDir);
-        expect(summaries.some(s => s.id === sid)).toBe(true);
+        expect(summaries.some((s) => s.id === sid)).toBe(true);
       } finally {
         await cleanupTempDir(tempDir);
       }

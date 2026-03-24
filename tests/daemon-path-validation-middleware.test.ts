@@ -7,11 +7,11 @@
  * AC: @multi-directory-daemon ac-1, ac-2, ac-3, ac-4, ac-5, ac-6, ac-7, ac-8, ac-8b, ac-8c, ac-20b
  */
 
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { setupMultiDirFixtures, cleanupTempDir } from './helpers/cli';
-import { join } from 'path';
-import { chmodSync } from 'fs';
-import { symlink as symlinkAsync } from 'fs/promises';
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { setupMultiDirFixtures, cleanupTempDir } from "./helpers/cli";
+import { join } from "path";
+import { chmodSync } from "fs";
+import { symlink as symlinkAsync } from "fs/promises";
 
 // Mock types for Hono-like middleware
 interface Context {
@@ -44,18 +44,18 @@ class ProjectContextManager {
 
   registerProject(projectPath: string, isDefault = false): ProjectContext {
     if (!this.isAbsolutePath(projectPath)) {
-      throw new Error('Path must be absolute');
+      throw new Error("Path must be absolute");
     }
 
-    if (projectPath.includes('..')) {
-      throw new Error('Path must not contain parent traversal');
+    if (projectPath.includes("..")) {
+      throw new Error("Path must not contain parent traversal");
     }
 
     const normalizedPath = this.normalizePath(projectPath);
 
     // Check .kspec/ exists and is readable
-    const { existsSync, readdirSync } = require('fs');
-    const kspecDir = join(normalizedPath, '.kspec');
+    const { existsSync, readdirSync } = require("fs");
+    const kspecDir = join(normalizedPath, ".kspec");
     if (!existsSync(kspecDir)) {
       throw new Error(`Invalid kspec project - .kspec/ not found at ${normalizedPath}`);
     }
@@ -64,8 +64,8 @@ class ProjectContextManager {
     try {
       readdirSync(kspecDir);
     } catch (err: any) {
-      if (err.code === 'EACCES') {
-        throw new Error(`Permission denied - cannot read ${normalizedPath}`);
+      if (err.code === "EACCES") {
+        throw new Error(`Permission denied - cannot read ${normalizedPath}`, { cause: err });
       }
       throw err;
     }
@@ -94,45 +94,45 @@ class ProjectContextManager {
       const normalizedPath = this.normalizePath(projectPath);
       const context = this.projects.get(normalizedPath);
       if (!context) {
-        throw new Error('Project not registered');
+        throw new Error("Project not registered");
       }
       return context;
     }
 
     // No path provided - use default
     if (!this.defaultProjectPath) {
-      throw new Error('No default project configured. Specify X-Kspec-Dir header.');
+      throw new Error("No default project configured. Specify X-Kspec-Dir header.");
     }
 
     // Check if default project still valid
-    const { existsSync } = require('fs');
-    const kspecDir = join(this.defaultProjectPath, '.kspec');
+    const { existsSync } = require("fs");
+    const kspecDir = join(this.defaultProjectPath, ".kspec");
     if (!existsSync(kspecDir)) {
-      throw new Error('Default project no longer valid. Specify X-Kspec-Dir header.');
+      throw new Error("Default project no longer valid. Specify X-Kspec-Dir header.");
     }
 
     const context = this.projects.get(this.defaultProjectPath);
     if (!context) {
-      throw new Error('Default project not registered');
+      throw new Error("Default project not registered");
     }
 
     return context;
   }
 
   private isAbsolutePath(path: string): boolean {
-    return path.startsWith('/') || /^[a-zA-Z]:[\\/]/.test(path);
+    return path.startsWith("/") || /^[a-zA-Z]:[\\/]/.test(path);
   }
 
   private normalizePath(path: string): string {
     // Remove trailing slashes
-    let normalized = path.replace(/\/+$/, '');
+    let normalized = path.replace(/\/+$/, "");
 
     // Resolve "." and ".." segments BUT preserve symlinks
     // Since we reject ".." earlier, we only handle "."
-    normalized = normalized.replace(/\/\.\//g, '/').replace(/\/\.$/, '');
+    normalized = normalized.replace(/\/\.\//g, "/").replace(/\/\.$/, "");
 
     // Collapse multiple slashes
-    normalized = normalized.replace(/\/+/g, '/');
+    normalized = normalized.replace(/\/+/g, "/");
 
     return normalized;
   }
@@ -142,7 +142,7 @@ class ProjectContextManager {
 function createPathValidationMiddleware(manager: ProjectContextManager) {
   return async (ctx: Context, next: Next) => {
     try {
-      const projectPath = ctx.req.header('X-Kspec-Dir');
+      const projectPath = ctx.req.header("X-Kspec-Dir");
 
       if (projectPath) {
         // AC: @multi-directory-daemon ac-1, ac-4, ac-5, ac-6, ac-7, ac-8, ac-8b, ac-8c
@@ -150,17 +150,17 @@ function createPathValidationMiddleware(manager: ProjectContextManager) {
         let projectContext: ProjectContext;
         try {
           projectContext = manager.getProject(projectPath);
-        } catch (err) {
+        } catch  {
           // Not registered - try to register
           projectContext = manager.registerProject(projectPath);
         }
 
-        ctx.set('projectContext', projectContext);
+        ctx.set("projectContext", projectContext);
       } else {
         // AC: @multi-directory-daemon ac-2, ac-3, ac-20b
         // No header - use default project
         const projectContext = manager.getProject();
-        ctx.set('projectContext', projectContext);
+        ctx.set("projectContext", projectContext);
       }
 
       await next();
@@ -168,38 +168,43 @@ function createPathValidationMiddleware(manager: ProjectContextManager) {
       const message = err.message;
 
       // AC: @multi-directory-daemon ac-3, ac-20b
-      if (message.includes('No default project configured') ||
-          message.includes('Default project no longer valid')) {
+      if (
+        message.includes("No default project configured") ||
+        message.includes("Default project no longer valid")
+      ) {
         ctx.json({ error: message }, 400);
         return; // Don't call next()
       }
 
       // AC: @multi-directory-daemon ac-5
-      if (message.includes('Invalid kspec project')) {
+      if (message.includes("Invalid kspec project")) {
         ctx.json({ error: message }, 400);
         return;
       }
 
       // AC: @multi-directory-daemon ac-6
-      if (message.includes('Path must be absolute')) {
-        ctx.json({ error: 'Path must be absolute' }, 400);
+      if (message.includes("Path must be absolute")) {
+        ctx.json({ error: "Path must be absolute" }, 400);
         return;
       }
 
       // AC: @multi-directory-daemon ac-7
-      if (message.includes('Path must not contain parent traversal')) {
-        ctx.json({ error: 'Path must not contain parent traversal' }, 400);
+      if (message.includes("Path must not contain parent traversal")) {
+        ctx.json({ error: "Path must not contain parent traversal" }, 400);
         return;
       }
 
       // AC: @multi-directory-daemon ac-8b - permission denied
-      if (message.includes('Permission denied') || message.includes('EACCES')) {
-        ctx.json({ error: `Permission denied - cannot read ${ctx.req.header('X-Kspec-Dir')}` }, 403);
+      if (message.includes("Permission denied") || message.includes("EACCES")) {
+        ctx.json(
+          { error: `Permission denied - cannot read ${ctx.req.header("X-Kspec-Dir")}` },
+          403,
+        );
         return;
       }
 
       // Other errors
-      ctx.json({ error: 'Internal server error' }, 500);
+      ctx.json({ error: "Internal server error" }, 500);
     }
   };
 }
@@ -231,7 +236,7 @@ function createMockContext(headers: Record<string, string> = {}): {
   return { ctx, state, responseRef };
 }
 
-describe('Path Validation Middleware', () => {
+describe("Path Validation Middleware", () => {
   let fixturesRoot: string;
   let projectA: string;
   let projectB: string;
@@ -239,21 +244,21 @@ describe('Path Validation Middleware', () => {
 
   beforeEach(async () => {
     fixturesRoot = await setupMultiDirFixtures();
-    projectA = join(fixturesRoot, 'project-a');
-    projectB = join(fixturesRoot, 'project-b');
-    projectInvalid = join(fixturesRoot, 'project-invalid');
+    projectA = join(fixturesRoot, "project-a");
+    projectB = join(fixturesRoot, "project-b");
+    projectInvalid = join(fixturesRoot, "project-invalid");
   });
 
   afterEach(async () => {
     await cleanupTempDir(fixturesRoot);
   });
 
-  describe('X-Kspec-Dir header validation', () => {
+  describe("X-Kspec-Dir header validation", () => {
     // AC: @multi-directory-daemon ac-1
-    it('should use project from X-Kspec-Dir header when provided', async () => {
+    it("should use project from X-Kspec-Dir header when provided", async () => {
       const manager = new ProjectContextManager();
       const middleware = createPathValidationMiddleware(manager);
-      const { ctx, state } = createMockContext({ 'X-Kspec-Dir': projectA });
+      const { ctx, state } = createMockContext({ "X-Kspec-Dir": projectA });
 
       await middleware(ctx, async () => {});
 
@@ -262,10 +267,10 @@ describe('Path Validation Middleware', () => {
     });
 
     // AC: @multi-directory-daemon ac-4
-    it('should auto-register unknown project when valid', async () => {
+    it("should auto-register unknown project when valid", async () => {
       const manager = new ProjectContextManager();
       const middleware = createPathValidationMiddleware(manager);
-      const { ctx, state } = createMockContext({ 'X-Kspec-Dir': projectB });
+      const { ctx, state } = createMockContext({ "X-Kspec-Dir": projectB });
 
       await middleware(ctx, async () => {});
 
@@ -273,63 +278,65 @@ describe('Path Validation Middleware', () => {
       expect((state.projectContext as ProjectContext).path).toBe(projectB);
 
       // Verify cached by making second request
-      const { ctx: ctx2, state: state2 } = createMockContext({ 'X-Kspec-Dir': projectB });
+      const { ctx: ctx2, state: state2 } = createMockContext({ "X-Kspec-Dir": projectB });
       await middleware(ctx2, async () => {});
 
       expect(state2.projectContext).toBe(state.projectContext);
     });
 
     // AC: @multi-directory-daemon ac-5
-    it('should reject invalid project path (no .kspec/)', async () => {
+    it("should reject invalid project path (no .kspec/)", async () => {
       const manager = new ProjectContextManager();
       const middleware = createPathValidationMiddleware(manager);
-      const { ctx, responseRef } = createMockContext({ 'X-Kspec-Dir': projectInvalid });
+      const { ctx, responseRef } = createMockContext({ "X-Kspec-Dir": projectInvalid });
 
       await middleware(ctx, async () => {});
 
       expect(responseRef.current).toBeTruthy();
       expect(responseRef.current!.status).toBe(400);
-      expect((responseRef.current!.data as any).error).toContain('Invalid kspec project');
+      expect((responseRef.current!.data as any).error).toContain("Invalid kspec project");
       expect((responseRef.current!.data as any).error).toContain(projectInvalid);
     });
 
     // AC: @multi-directory-daemon ac-6
-    it('should reject relative paths', async () => {
+    it("should reject relative paths", async () => {
       const manager = new ProjectContextManager();
       const middleware = createPathValidationMiddleware(manager);
-      const { ctx, responseRef } = createMockContext({ 'X-Kspec-Dir': './relative/path' });
+      const { ctx, responseRef } = createMockContext({ "X-Kspec-Dir": "./relative/path" });
 
       await middleware(ctx, async () => {});
 
       expect(responseRef.current).toBeTruthy();
       expect(responseRef.current!.status).toBe(400);
-      expect((responseRef.current!.data as any).error).toBe('Path must be absolute');
+      expect((responseRef.current!.data as any).error).toBe("Path must be absolute");
     });
 
     // AC: @multi-directory-daemon ac-7
-    it('should reject paths with parent traversal', async () => {
+    it("should reject paths with parent traversal", async () => {
       const manager = new ProjectContextManager();
       const middleware = createPathValidationMiddleware(manager);
-      const { ctx, responseRef } = createMockContext({ 'X-Kspec-Dir': projectA + '/../something' });
+      const { ctx, responseRef } = createMockContext({ "X-Kspec-Dir": projectA + "/../something" });
 
       await middleware(ctx, async () => {});
 
       expect(responseRef.current).toBeTruthy();
       expect(responseRef.current!.status).toBe(400);
-      expect((responseRef.current!.data as any).error).toBe('Path must not contain parent traversal');
+      expect((responseRef.current!.data as any).error).toBe(
+        "Path must not contain parent traversal",
+      );
     });
 
     // AC: @multi-directory-daemon ac-8
-    it('should normalize paths (remove trailing slashes)', async () => {
+    it("should normalize paths (remove trailing slashes)", async () => {
       const manager = new ProjectContextManager();
       const middleware = createPathValidationMiddleware(manager);
 
       // Register with trailing slash
-      const { ctx: ctx1, state: state1 } = createMockContext({ 'X-Kspec-Dir': projectA + '/' });
+      const { ctx: ctx1, state: state1 } = createMockContext({ "X-Kspec-Dir": projectA + "/" });
       await middleware(ctx1, async () => {});
 
       // Request without trailing slash - should get same context
-      const { ctx: ctx2, state: state2 } = createMockContext({ 'X-Kspec-Dir': projectA });
+      const { ctx: ctx2, state: state2 } = createMockContext({ "X-Kspec-Dir": projectA });
       await middleware(ctx2, async () => {});
 
       expect(state1.projectContext).toBe(state2.projectContext);
@@ -337,44 +344,44 @@ describe('Path Validation Middleware', () => {
     });
 
     // AC: @multi-directory-daemon ac-8 (multiple slashes)
-    it('should normalize paths (collapse multiple slashes)', async () => {
+    it("should normalize paths (collapse multiple slashes)", async () => {
       const manager = new ProjectContextManager();
       const middleware = createPathValidationMiddleware(manager);
 
-      const pathWithMultipleSlashes = projectA.replace(/\//g, '//');
-      const { ctx, state } = createMockContext({ 'X-Kspec-Dir': pathWithMultipleSlashes });
+      const pathWithMultipleSlashes = projectA.replace(/\//g, "//");
+      const { ctx, state } = createMockContext({ "X-Kspec-Dir": pathWithMultipleSlashes });
       await middleware(ctx, async () => {});
 
       expect((state.projectContext as ProjectContext).path).toBe(projectA);
     });
 
     // AC: @multi-directory-daemon ac-8 (dot segments)
-    it('should normalize paths (resolve dot segments)', async () => {
+    it("should normalize paths (resolve dot segments)", async () => {
       const manager = new ProjectContextManager();
       const middleware = createPathValidationMiddleware(manager);
 
-      const pathWithDots = projectA + '/.';
-      const { ctx, state } = createMockContext({ 'X-Kspec-Dir': pathWithDots });
+      const pathWithDots = projectA + "/.";
+      const { ctx, state } = createMockContext({ "X-Kspec-Dir": pathWithDots });
       await middleware(ctx, async () => {});
 
       expect((state.projectContext as ProjectContext).path).toBe(projectA);
     });
 
     // AC: @multi-directory-daemon ac-8c
-    it('should NOT resolve symlinks during normalization', async () => {
+    it("should NOT resolve symlinks during normalization", async () => {
       const manager = new ProjectContextManager();
       const middleware = createPathValidationMiddleware(manager);
 
       // Create symlink to projectA
-      const symlinkPath = join(fixturesRoot, 'symlink-to-a');
+      const symlinkPath = join(fixturesRoot, "symlink-to-a");
       await symlinkAsync(projectA, symlinkPath);
 
       // Register via symlink
-      const { ctx: ctx1, state: state1 } = createMockContext({ 'X-Kspec-Dir': symlinkPath });
+      const { ctx: ctx1, state: state1 } = createMockContext({ "X-Kspec-Dir": symlinkPath });
       await middleware(ctx1, async () => {});
 
       // Register via real path
-      const { ctx: ctx2, state: state2 } = createMockContext({ 'X-Kspec-Dir': projectA });
+      const { ctx: ctx2, state: state2 } = createMockContext({ "X-Kspec-Dir": projectA });
       await middleware(ctx2, async () => {});
 
       // Should be different contexts (symlinks NOT resolved)
@@ -384,9 +391,9 @@ describe('Path Validation Middleware', () => {
     });
   });
 
-  describe('Default project handling', () => {
+  describe("Default project handling", () => {
     // AC: @multi-directory-daemon ac-2
-    it('should use default project when no X-Kspec-Dir header', async () => {
+    it("should use default project when no X-Kspec-Dir header", async () => {
       const manager = new ProjectContextManager(projectA);
       manager.registerProject(projectA, true);
 
@@ -400,7 +407,7 @@ describe('Path Validation Middleware', () => {
     });
 
     // AC: @multi-directory-daemon ac-3
-    it('should return 400 when no default configured and no header', async () => {
+    it("should return 400 when no default configured and no header", async () => {
       const manager = new ProjectContextManager();
       const middleware = createPathValidationMiddleware(manager);
       const { ctx, responseRef } = createMockContext();
@@ -409,19 +416,21 @@ describe('Path Validation Middleware', () => {
 
       expect(responseRef.current).toBeTruthy();
       expect(responseRef.current!.status).toBe(400);
-      expect((responseRef.current!.data as any).error).toBe('No default project configured. Specify X-Kspec-Dir header.');
+      expect((responseRef.current!.data as any).error).toBe(
+        "No default project configured. Specify X-Kspec-Dir header.",
+      );
     });
 
     // AC: @multi-directory-daemon ac-20b
-    it('should return 400 when default project .kspec/ deleted', async () => {
+    it("should return 400 when default project .kspec/ deleted", async () => {
       const manager = new ProjectContextManager(projectA);
       manager.registerProject(projectA, true);
 
       const middleware = createPathValidationMiddleware(manager);
 
       // Delete .kspec/ directory
-      const { rmSync } = require('fs');
-      const kspecDir = join(projectA, '.kspec');
+      const { rmSync } = require("fs");
+      const kspecDir = join(projectA, ".kspec");
       rmSync(kspecDir, { recursive: true, force: true });
 
       const { ctx, responseRef } = createMockContext();
@@ -429,15 +438,17 @@ describe('Path Validation Middleware', () => {
 
       expect(responseRef.current).toBeTruthy();
       expect(responseRef.current!.status).toBe(400);
-      expect((responseRef.current!.data as any).error).toBe('Default project no longer valid. Specify X-Kspec-Dir header.');
+      expect((responseRef.current!.data as any).error).toBe(
+        "Default project no longer valid. Specify X-Kspec-Dir header.",
+      );
     });
   });
 
-  describe('Permission handling', () => {
+  describe("Permission handling", () => {
     // AC: @multi-directory-daemon ac-8b
-    it('should return 403 for permission denied errors', async () => {
+    it("should return 403 for permission denied errors", async () => {
       // Skip on Windows (chmod behavior differs)
-      if (process.platform === 'win32') {
+      if (process.platform === "win32") {
         return;
       }
 
@@ -445,16 +456,16 @@ describe('Path Validation Middleware', () => {
       const middleware = createPathValidationMiddleware(manager);
 
       // Make .kspec/ unreadable
-      const kspecDir = join(projectA, '.kspec');
+      const kspecDir = join(projectA, ".kspec");
       chmodSync(kspecDir, 0o000);
 
       try {
-        const { ctx, responseRef } = createMockContext({ 'X-Kspec-Dir': projectA });
+        const { ctx, responseRef } = createMockContext({ "X-Kspec-Dir": projectA });
         await middleware(ctx, async () => {});
 
         expect(responseRef.current).toBeTruthy();
         expect(responseRef.current!.status).toBe(403);
-        expect((responseRef.current!.data as any).error).toContain('Permission denied');
+        expect((responseRef.current!.data as any).error).toContain("Permission denied");
         expect((responseRef.current!.data as any).error).toContain(projectA);
       } finally {
         // Restore permissions for cleanup
@@ -463,11 +474,11 @@ describe('Path Validation Middleware', () => {
     });
   });
 
-  describe('Middleware integration', () => {
-    it('should call next() when validation succeeds', async () => {
+  describe("Middleware integration", () => {
+    it("should call next() when validation succeeds", async () => {
       const manager = new ProjectContextManager();
       const middleware = createPathValidationMiddleware(manager);
-      const { ctx } = createMockContext({ 'X-Kspec-Dir': projectA });
+      const { ctx } = createMockContext({ "X-Kspec-Dir": projectA });
 
       let nextCalled = false;
       await middleware(ctx, async () => {
@@ -477,10 +488,10 @@ describe('Path Validation Middleware', () => {
       expect(nextCalled).toBe(true);
     });
 
-    it('should not call next() when validation fails', async () => {
+    it("should not call next() when validation fails", async () => {
       const manager = new ProjectContextManager();
       const middleware = createPathValidationMiddleware(manager);
-      const { ctx } = createMockContext({ 'X-Kspec-Dir': './relative' });
+      const { ctx } = createMockContext({ "X-Kspec-Dir": "./relative" });
 
       let nextCalled = false;
       await middleware(ctx, async () => {
@@ -490,19 +501,19 @@ describe('Path Validation Middleware', () => {
       expect(nextCalled).toBe(false);
     });
 
-    it('should attach projectContext to context state', async () => {
+    it("should attach projectContext to context state", async () => {
       const manager = new ProjectContextManager();
       const middleware = createPathValidationMiddleware(manager);
-      const { ctx, state } = createMockContext({ 'X-Kspec-Dir': projectA });
+      const { ctx, state } = createMockContext({ "X-Kspec-Dir": projectA });
 
       await middleware(ctx, async () => {});
 
-      expect(state).toHaveProperty('projectContext');
+      expect(state).toHaveProperty("projectContext");
       expect((state.projectContext as ProjectContext).path).toBe(projectA);
     });
   });
 
-  describe('Non-API route bypass (static files, SPA, health)', () => {
+  describe("Non-API route bypass (static files, SPA, health)", () => {
     /**
      * Recreates the derive middleware's URL-based routing logic from
      * packages/daemon/src/middleware/project-context.ts (lines 51-58).
@@ -520,16 +531,15 @@ describe('Path Validation Middleware', () => {
         error?: string;
         status?: number;
       }> => {
-        const url = new URL(requestUrl, 'http://localhost:3456');
-        const needsProject =
-          url.pathname.startsWith('/api/') && url.pathname !== '/api/health';
+        const url = new URL(requestUrl, "http://localhost:3456");
+        const needsProject = url.pathname.startsWith("/api/") && url.pathname !== "/api/health";
 
         if (!needsProject) {
           return { projectContext: undefined };
         }
 
         try {
-          const projectPath = headers['X-Kspec-Dir'];
+          const projectPath = headers["X-Kspec-Dir"];
           let projectContext: ProjectContext;
 
           if (projectPath) {
@@ -546,13 +556,13 @@ describe('Path Validation Middleware', () => {
           const message = err instanceof Error ? err.message : String(err);
 
           if (
-            message.includes('No default project configured') ||
-            message.includes('Default project no longer valid')
+            message.includes("No default project configured") ||
+            message.includes("Default project no longer valid")
           ) {
             return { error: message, status: 400, projectContext: undefined };
           }
           return {
-            error: 'Internal server error',
+            error: "Internal server error",
             status: 500,
             projectContext: undefined,
           };
@@ -560,16 +570,16 @@ describe('Path Validation Middleware', () => {
       };
     }
 
-    it('should skip project context for static file paths (no 400)', async () => {
+    it("should skip project context for static file paths (no 400)", async () => {
       // No default project configured — would 400 for API routes
       const manager = new ProjectContextManager();
       const derive = createDeriveMiddleware(manager);
 
       const staticPaths = [
-        'http://localhost:3456/_app/immutable/entry/start.abc123.js',
-        'http://localhost:3456/_app/immutable/chunks/index.def456.js',
-        'http://localhost:3456/favicon.ico',
-        'http://localhost:3456/styles.css',
+        "http://localhost:3456/_app/immutable/entry/start.abc123.js",
+        "http://localhost:3456/_app/immutable/chunks/index.def456.js",
+        "http://localhost:3456/favicon.ico",
+        "http://localhost:3456/styles.css",
       ];
 
       for (const url of staticPaths) {
@@ -580,27 +590,27 @@ describe('Path Validation Middleware', () => {
       }
     });
 
-    it('should skip project context for /api/health (no 400)', async () => {
+    it("should skip project context for /api/health (no 400)", async () => {
       // No default project configured — would 400 for other API routes
       const manager = new ProjectContextManager();
       const derive = createDeriveMiddleware(manager);
 
-      const result = await derive('http://localhost:3456/api/health');
+      const result = await derive("http://localhost:3456/api/health");
       expect(result.status).toBeUndefined();
       expect(result.error).toBeUndefined();
       expect(result.projectContext).toBeUndefined();
     });
 
-    it('should skip project context for SPA fallback routes (no 400)', async () => {
+    it("should skip project context for SPA fallback routes (no 400)", async () => {
       const manager = new ProjectContextManager();
       const derive = createDeriveMiddleware(manager);
 
       const spaRoutes = [
-        'http://localhost:3456/',
-        'http://localhost:3456/tasks',
-        'http://localhost:3456/items',
-        'http://localhost:3456/inbox',
-        'http://localhost:3456/settings',
+        "http://localhost:3456/",
+        "http://localhost:3456/tasks",
+        "http://localhost:3456/items",
+        "http://localhost:3456/inbox",
+        "http://localhost:3456/settings",
       ];
 
       for (const url of spaRoutes) {
@@ -611,26 +621,25 @@ describe('Path Validation Middleware', () => {
       }
     });
 
-    it('should still require project context for API routes', async () => {
+    it("should still require project context for API routes", async () => {
       // No default project configured — API routes should 400
       const manager = new ProjectContextManager();
       const derive = createDeriveMiddleware(manager);
 
-      const result = await derive('http://localhost:3456/api/tasks');
+      const result = await derive("http://localhost:3456/api/tasks");
       expect(result.status).toBe(400);
-      expect(result.error).toContain('No default project configured');
+      expect(result.error).toContain("No default project configured");
     });
 
-    it('should resolve project context for API routes when project is available', async () => {
+    it("should resolve project context for API routes when project is available", async () => {
       const manager = new ProjectContextManager(projectA);
       manager.registerProject(projectA, true);
       const derive = createDeriveMiddleware(manager);
 
-      const result = await derive('http://localhost:3456/api/tasks');
+      const result = await derive("http://localhost:3456/api/tasks");
       expect(result.projectContext).toBeDefined();
       expect(result.projectContext!.path).toBe(projectA);
       expect(result.status).toBeUndefined();
     });
   });
-
 });

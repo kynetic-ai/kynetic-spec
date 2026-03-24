@@ -27,9 +27,9 @@ function logicalGraph(items: LoadedSpecItem[]) {
     .map((item) => ({
       title: item.title,
       type: item.type,
-      slugs: [...item.slugs].sort(),
+      slugs: [...item.slugs].toSorted(),
     }))
-    .sort((a, b) => a.title.localeCompare(b.title));
+    .toSorted((a, b) => a.title.localeCompare(b.title));
 }
 
 async function setupSchemaBackfillProject(): Promise<string> {
@@ -393,9 +393,9 @@ notes:
     const alignment = new AlignmentIndex(tasks, items);
     alignment.buildLinks(refIndex);
 
-    expect(alignment.getTasksForSpec("01KMB00000000000000000011").map((task) => task.title)).toEqual([
-      "Implement aligned spec",
-    ]);
+    expect(
+      alignment.getTasksForSpec("01KMB00000000000000000011").map((task) => task.title),
+    ).toEqual(["Implement aligned spec"]);
     expect(alignment.getSpecForTask("01KMB00000000000000000022", refIndex)?.title).toBe(
       "Aligned Spec",
     );
@@ -439,7 +439,10 @@ notes:
       const warnings = result.completenessWarnings.filter(
         (warning) =>
           warning.type === "missing_acceptance_criteria" &&
-          schemaItems.some((item) => warning.itemRef === `@${item.slugs[0]}` || warning.itemRef === `@${item._ulid}`),
+          schemaItems.some(
+            (item) =>
+              warning.itemRef === `@${item.slugs[0]}` || warning.itemRef === `@${item._ulid}`,
+          ),
       );
 
       expect(warnings).toEqual([]);

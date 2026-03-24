@@ -3,7 +3,7 @@
  * Spec: @cli-serve-commands
  */
 
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import {
   createTempDir,
   cleanupTempDir,
@@ -13,23 +13,25 @@ import {
   readTestOutputSync,
   waitForStartup,
   type KspecOptions,
-} from './helpers/cli';
-import { spawn, execSync } from 'child_process';
-import { once } from 'events';
-import { dirname, join } from 'path';
-import { existsSync, mkdirSync } from 'fs';
-import { createServer } from 'net';
+} from "./helpers/cli";
+import { spawn, execSync } from "child_process";
+import { once } from "events";
+import { dirname, join } from "path";
+import { existsSync, mkdirSync } from "fs";
+import { createServer } from "net";
 
 // Check if Bun runtime is available
 let bunAvailable = false;
 try {
-  execSync('which bun', { stdio: 'pipe' });
+  execSync("which bun", { stdio: "pipe" });
   bunAvailable = true;
 } catch {
-  console.log('⊘ Bun runtime not available - skipping daemon tests requiring actual daemon process');
+  console.log(
+    "⊘ Bun runtime not available - skipping daemon tests requiring actual daemon process",
+  );
 }
 
-describe('kspec serve commands', () => {
+describe("kspec serve commands", () => {
   let tempDir: string;
   let isolatedHome: string;
   let testEnv: Record<string, string>;
@@ -39,11 +41,11 @@ describe('kspec serve commands', () => {
   async function getAvailablePort(): Promise<number> {
     return await new Promise((resolve, reject) => {
       const server = createServer();
-      server.once('error', reject);
-      server.listen(0, '127.0.0.1', () => {
+      server.once("error", reject);
+      server.listen(0, "127.0.0.1", () => {
         const address = server.address();
-        if (!address || typeof address === 'string') {
-          server.close(() => reject(new Error('Failed to allocate ephemeral port')));
+        if (!address || typeof address === "string") {
+          server.close(() => reject(new Error("Failed to allocate ephemeral port")));
           return;
         }
         const { port } = address;
@@ -61,45 +63,53 @@ describe('kspec serve commands', () => {
   function runKspec(args: string, cwd = tempDir, options: KspecOptions = {}) {
     return kspec(args, cwd, {
       ...options,
-      env: { ...testEnv, ...(options.env ?? {}) },
+      env: { ...testEnv, ...options.env },
     });
   }
 
   async function waitForDaemonHealth(port: number): Promise<void> {
-    await waitForStartup(`daemon health endpoint on port ${port}`, async () => {
-      const url = `http://localhost:${port}/api/health`;
-      try {
-        const response = await fetch(url);
-        const body = (await response.text()).trim();
-        const bodyReportsHealthy = body.includes('"status":"ok"');
-        return {
-          ok: response.ok || bodyReportsHealthy,
-          details: `status=${response.status} body=${body || '<empty>'}`,
-        };
-      } catch (error) {
-        const message = error instanceof Error ? error.message : String(error);
-        return { ok: false, details: `fetch error=${message}` };
-      }
-    }, { timeoutMs: 10_000 });
+    await waitForStartup(
+      `daemon health endpoint on port ${port}`,
+      async () => {
+        const url = `http://localhost:${port}/api/health`;
+        try {
+          const response = await fetch(url);
+          const body = (await response.text()).trim();
+          const bodyReportsHealthy = body.includes('"status":"ok"');
+          return {
+            ok: response.ok || bodyReportsHealthy,
+            details: `status=${response.status} body=${body || "<empty>"}`,
+          };
+        } catch (error) {
+          const message = error instanceof Error ? error.message : String(error);
+          return { ok: false, details: `fetch error=${message}` };
+        }
+      },
+      { timeoutMs: 10_000 },
+    );
   }
 
   async function waitForDaemonUptime(minUptimeSeconds: number): Promise<void> {
     await waitForStartup(
       `daemon uptime >= ${minUptimeSeconds}s`,
       async () => {
-        const result = runKspec(`serve status --json --kspec-dir ${join(tempDir, '.kspec')}`, tempDir, {
-          expectFail: true
-        });
+        const result = runKspec(
+          `serve status --json --kspec-dir ${join(tempDir, ".kspec")}`,
+          tempDir,
+          {
+            expectFail: true,
+          },
+        );
         if (result.exitCode !== 0) {
           return {
             ok: false,
-            details: `exit=${result.exitCode} stderr=${result.stderr || '<empty>'}`,
+            details: `exit=${result.exitCode} stderr=${result.stderr || "<empty>"}`,
           };
         }
 
         try {
           const status = JSON.parse(result.stdout);
-          const uptime = typeof status.uptime === 'number' ? status.uptime : -1;
+          const uptime = typeof status.uptime === "number" ? status.uptime : -1;
           return {
             ok: uptime >= minUptimeSeconds,
             details: `running=${Boolean(status.running)} uptime=${uptime}`,
@@ -109,14 +119,14 @@ describe('kspec serve commands', () => {
           return { ok: false, details: `invalid-json=${message}` };
         }
       },
-      { timeoutMs: 10_000 }
+      { timeoutMs: 10_000 },
     );
   }
 
   beforeEach(async () => {
     tempDir = await createTempDir();
     await initGitRepo(tempDir);
-    mkdirSync(join(tempDir, '.kspec'), { recursive: true });
+    mkdirSync(join(tempDir, ".kspec"), { recursive: true });
     const isolated = await createIsolatedKspecHome(tempDir);
     isolatedHome = isolated.homeDir;
     testEnv = isolated.env;
@@ -125,7 +135,7 @@ describe('kspec serve commands', () => {
 
     // Ensure this test HOME starts from clean daemon state.
     try {
-      runKspec(`serve stop --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
+      runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
     } catch {
       // Ignore: this is best-effort cleanup.
     }
@@ -134,7 +144,7 @@ describe('kspec serve commands', () => {
   afterEach(async () => {
     // Stop daemon scoped to isolated HOME so we never touch ambient daemon state.
     try {
-      runKspec(`serve stop --kspec-dir ${join(tempDir, '.kspec')}`, tempDir, { expectFail: true });
+      runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir, { expectFail: true });
     } catch {
       // Ignore cleanup errors
     }
@@ -143,19 +153,21 @@ describe('kspec serve commands', () => {
   });
 
   // AC: @daemon-sensitive-cli-test-determinism ac-1
-  it('should include actionable context when readiness wait times out', async () => {
-    await expect(waitForStartup(
-      'synthetic daemon readiness',
-      async () => ({ ok: false, details: 'status=503 body=warming-up' }),
-      { timeoutMs: 120, intervalMs: 20 }
-    )).rejects.toThrow(/Last observation: status=503 body=warming-up/);
+  it("should include actionable context when readiness wait times out", async () => {
+    await expect(
+      waitForStartup(
+        "synthetic daemon readiness",
+        async () => ({ ok: false, details: "status=503 body=warming-up" }),
+        { timeoutMs: 120, intervalMs: 20 },
+      ),
+    ).rejects.toThrow(/Last observation: status=503 body=warming-up/);
   });
 
   // AC: @cli-serve-commands ac-1
   // AC: @daemon-server ac-12
-  it('should start in foreground mode with Ctrl+C support', async () => {
+  it("should start in foreground mode with Ctrl+C support", async () => {
     if (!bunAvailable) {
-      console.log('  ⊘ Skipping test - Bun runtime required');
+      console.log("  ⊘ Skipping test - Bun runtime required");
       return;
     }
 
@@ -166,26 +178,30 @@ describe('kspec serve commands', () => {
     // Strip KSPEC_SESSION_ID to prevent dispatch guard from blocking
     // when tests run inside an agent dispatch session
     const { KSPEC_SESSION_ID: _, ...cleanProcessEnv } = process.env;
-    const child = spawn('node', [
-      join(__dirname, '../dist/cli/index.js'),
-      'serve',
-      'start',
-      '--port',
-      String(port),
-      '--kspec-dir',
-      join(tempDir, '.kspec')
-    ], {
-      cwd: tempDir,
-      stdio: ['pipe', 'pipe', 'pipe'],
-      env: { ...cleanProcessEnv, ...testEnv },
-    });
+    const child = spawn(
+      "node",
+      [
+        join(__dirname, "../dist/cli/index.js"),
+        "serve",
+        "start",
+        "--port",
+        String(port),
+        "--kspec-dir",
+        join(tempDir, ".kspec"),
+      ],
+      {
+        cwd: tempDir,
+        stdio: ["pipe", "pipe", "pipe"],
+        env: { ...cleanProcessEnv, ...testEnv },
+      },
+    );
 
-    let output = '';
-    child.stdout?.on('data', (data) => {
+    let output = "";
+    child.stdout?.on("data", (data) => {
       output += data.toString();
     });
 
-    child.stderr?.on('data', (data) => {
+    child.stderr?.on("data", (data) => {
       output += data.toString();
     });
 
@@ -193,10 +209,7 @@ describe('kspec serve commands', () => {
     const started = await new Promise<boolean>((resolve) => {
       const start = Date.now();
       const interval = setInterval(() => {
-        if (
-          output.includes('Starting server in foreground')
-          && output.includes(`port ${port}`)
-        ) {
+        if (output.includes("Starting server in foreground") && output.includes(`port ${port}`)) {
           clearInterval(interval);
           resolve(true);
           return;
@@ -212,20 +225,20 @@ describe('kspec serve commands', () => {
 
     // Send SIGINT (Ctrl+C)
     if (child.exitCode === null) {
-      child.kill('SIGINT');
+      child.kill("SIGINT");
     }
 
     // Wait for shutdown
     if (child.exitCode === null) {
       await Promise.race([
-        once(child, 'exit'),
+        once(child, "exit"),
         waitForStartup(
-          'foreground daemon child exit',
+          "foreground daemon child exit",
           async () => ({
             ok: child.exitCode !== null,
             details: `exitCode=${child.exitCode} killed=${child.killed}`,
           }),
-          { timeoutMs: 10_000, intervalMs: 50 }
+          { timeoutMs: 10_000, intervalMs: 50 },
         ),
       ]);
     }
@@ -235,30 +248,30 @@ describe('kspec serve commands', () => {
     //   exitCode === null, signalCode === 'SIGINT'.
     // Both are valid Ctrl+C outcomes; accept either.
     const exitedCleanly = child.exitCode === 0;
-    const killedBySignal = child.exitCode === null && child.signalCode === 'SIGINT';
+    const killedBySignal = child.exitCode === null && child.signalCode === "SIGINT";
     expect(
       exitedCleanly || killedBySignal,
-      `expected clean exit (0) or SIGINT kill, got exitCode=${child.exitCode} signalCode=${child.signalCode}`
+      `expected clean exit (0) or SIGINT kill, got exitCode=${child.exitCode} signalCode=${child.signalCode}`,
     ).toBe(true);
   });
 
   // AC: @cli-serve-commands ac-2
   // AC: @daemon-sensitive-cli-test-determinism ac-2
-  it('should start in daemon mode and detach', async () => {
+  it("should start in daemon mode and detach", async () => {
     if (!bunAvailable) {
-      console.log('  ⊘ Skipping test - Bun runtime required');
+      console.log("  ⊘ Skipping test - Bun runtime required");
       return;
     }
 
     const port = await getAvailablePort();
 
     const result = runKspec(
-      `serve start --daemon --port ${port} --kspec-dir ${join(tempDir, '.kspec')}`,
-      tempDir
+      `serve start --daemon --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`,
+      tempDir,
     );
 
     // Should report success
-    expect(result.stdout).toContain('Daemon started');
+    expect(result.stdout).toContain("Daemon started");
     expect(result.stdout).toContain(`port ${port}`);
 
     // PID file should exist
@@ -281,53 +294,50 @@ describe('kspec serve commands', () => {
     expect(processRunning).toBe(true);
 
     // Cleanup
-    runKspec(`serve stop --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
+    runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
   });
 
   // AC: @cli-serve-commands ac-3
-  it('should accept custom port via --port flag', async () => {
+  it("should accept custom port via --port flag", async () => {
     if (!bunAvailable) {
-      console.log('  ⊘ Skipping test - Bun runtime required');
+      console.log("  ⊘ Skipping test - Bun runtime required");
       return;
     }
 
     const customPort = await getAvailablePort();
 
     const result = runKspec(
-      `serve start --daemon --port ${customPort} --kspec-dir ${join(tempDir, '.kspec')}`,
-      tempDir
+      `serve start --daemon --port ${customPort} --kspec-dir ${join(tempDir, ".kspec")}`,
+      tempDir,
     );
 
     expect(result.stdout).toContain(`port ${customPort}`);
 
     // Cleanup
-    runKspec(`serve stop --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
+    runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
   });
 
   // AC: @cli-serve-commands ac-4
   // AC: @daemon-server ac-12
-  it('should send SIGTERM and wait for shutdown', async () => {
+  it("should send SIGTERM and wait for shutdown", async () => {
     if (!bunAvailable) {
-      console.log('  ⊘ Skipping test - Bun runtime required');
+      console.log("  ⊘ Skipping test - Bun runtime required");
       return;
     }
 
     const port = await getAvailablePort();
 
     // Start daemon
-    runKspec(
-      `serve start --daemon --port ${port} --kspec-dir ${join(tempDir, '.kspec')}`,
-      tempDir
-    );
+    runKspec(`serve start --daemon --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
 
     const pid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
 
     // Stop daemon
-    const result = runKspec(`serve stop --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
+    const result = runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
 
-    expect(result.stdout).toContain('Stopping daemon');
+    expect(result.stdout).toContain("Stopping daemon");
     expect(result.stdout).toContain(`PID ${pid}`);
-    expect(result.stdout).toContain('Daemon stopped');
+    expect(result.stdout).toContain("Daemon stopped");
 
     // PID file should be removed (eventually by daemon cleanup, but may still exist during test)
     // Process should not be running
@@ -342,31 +352,28 @@ describe('kspec serve commands', () => {
   });
 
   // AC: @cli-serve-commands ac-5
-  it('should return success when stopping non-running daemon (idempotent)', async () => {
-    const result = runKspec(`serve stop --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
+  it("should return success when stopping non-running daemon (idempotent)", async () => {
+    const result = runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
 
     expect(result.exitCode).toBe(0);
-    expect(result.stdout).toContain('Daemon not running');
+    expect(result.stdout).toContain("Daemon not running");
   });
 
   // AC: @cli-serve-commands ac-6
-  it('should return JSON status with process info', async () => {
+  it("should return JSON status with process info", async () => {
     if (!bunAvailable) {
-      console.log('  ⊘ Skipping test - Bun runtime required');
+      console.log("  ⊘ Skipping test - Bun runtime required");
       return;
     }
 
     // Start daemon
     const port = await getAvailablePort();
-    runKspec(
-      `serve start --daemon --port ${port} --kspec-dir ${join(tempDir, '.kspec')}`,
-      tempDir
-    );
+    runKspec(`serve start --daemon --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
 
     const pid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
 
     // Check status with --json flag
-    const result = runKspec(`serve status --json --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
+    const result = runKspec(`serve status --json --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
 
     // Should output valid JSON with process info
     const status = JSON.parse(result.stdout);
@@ -376,95 +383,89 @@ describe('kspec serve commands', () => {
     });
 
     // Cleanup
-    runKspec(`serve stop --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
+    runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
   });
 
   // AC: @multi-directory-daemon ac-12
   // AC: @daemon-sensitive-cli-test-determinism ac-3
-  it('should show registered projects with paths in status output', async () => {
+  it("should show registered projects with paths in status output", async () => {
     if (!bunAvailable) {
-      console.log('  ⊘ Skipping test - Bun runtime required');
+      console.log("  ⊘ Skipping test - Bun runtime required");
       return;
     }
 
     const port = await getAvailablePort();
 
     // Start daemon
-    runKspec(
-      `serve start --daemon --port ${port} --kspec-dir ${join(tempDir, '.kspec')}`,
-      tempDir
-    );
+    runKspec(`serve start --daemon --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
 
     await waitForDaemonHealth(port);
 
     // Register a project via API
     const testProjectPath = tempDir;
     await fetch(`http://localhost:${port}/api/projects`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ path: testProjectPath }),
     });
 
     // Check status - should list registered projects
-    const result = runKspec(`serve status --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
+    const result = runKspec(`serve status --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
 
     // Human-readable output should mention projects
-    expect(result.stdout).toContain('Registered projects');
+    expect(result.stdout).toContain("Registered projects");
     expect(result.stdout).toContain(testProjectPath);
-    expect(result.stdout).toContain('watcher:');
+    expect(result.stdout).toContain("watcher:");
 
     // Cleanup
-    runKspec(`serve stop --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
+    runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
   });
 
   // AC: @multi-directory-daemon ac-12
-  it('should include projects list in JSON status output', async () => {
+  it("should include projects list in JSON status output", async () => {
     if (!bunAvailable) {
-      console.log('  ⊘ Skipping test - Bun runtime required');
+      console.log("  ⊘ Skipping test - Bun runtime required");
       return;
     }
 
     const port = await getAvailablePort();
 
     // Start daemon
-    runKspec(
-      `serve start --daemon --port ${port} --kspec-dir ${join(tempDir, '.kspec')}`,
-      tempDir
-    );
+    runKspec(`serve start --daemon --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
 
     await waitForDaemonHealth(port);
 
     // Register a project via API
     const testProjectPath = tempDir;
     await fetch(`http://localhost:${port}/api/projects`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ path: testProjectPath }),
     });
 
     // Check status with --json
-    const result = runKspec(`serve status --json --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
+    const result = runKspec(`serve status --json --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
 
     const status = JSON.parse(result.stdout);
-    expect(status).toHaveProperty('projects');
+    expect(status).toHaveProperty("projects");
     expect(status.projects).toBeInstanceOf(Array);
     expect(status.projects.length).toBeGreaterThan(0);
 
     // Verify project details
     const project = status.projects.find((p: any) => p.path === testProjectPath);
     expect(project).toBeDefined();
-    expect(project).toHaveProperty('path', testProjectPath);
-    expect(project).toHaveProperty('registeredAt');
-    expect(project).toHaveProperty('watcherStatus');
+    expect(project).toHaveProperty("path", testProjectPath);
+    expect(project).toHaveProperty("registeredAt");
+    expect(project).toHaveProperty("watcherStatus");
 
     // Cleanup
-    runKspec(`serve stop --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
+    runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
   });
 
   // AC: @multi-directory-daemon ac-12
   it('should show "No projects registered" when no projects exist', async () => {
     if (!bunAvailable) {
-      console.log('  ⊘ Skipping test - Bun runtime required');
+      console.log("  ⊘ Skipping test - Bun runtime required");
       return;
     }
 
@@ -478,18 +479,14 @@ describe('kspec serve commands', () => {
 
     // Start daemon from directory without .kspec/ (AC: @multi-directory-daemon ac-3)
     // This ensures no default project is registered
-    runKspec(
-      `serve start --daemon --port ${port}`,
-      emptyTempDir,
-      { env }
-    );
+    runKspec(`serve start --daemon --port ${port}`, emptyTempDir, { env });
 
     await waitForDaemonHealth(port);
 
     // Check status - should indicate no projects
     const result = runKspec(`serve status`, emptyTempDir, { env });
 
-    expect(result.stdout).toContain('No projects registered');
+    expect(result.stdout).toContain("No projects registered");
 
     // Cleanup
     runKspec(`serve stop`, emptyTempDir, { env });
@@ -497,61 +494,58 @@ describe('kspec serve commands', () => {
   });
 
   // AC: @multi-directory-daemon ac-12
-  it('should show uptime in status output', async () => {
+  it("should show uptime in status output", async () => {
     if (!bunAvailable) {
-      console.log('  ⊘ Skipping test - Bun runtime required');
+      console.log("  ⊘ Skipping test - Bun runtime required");
       return;
     }
 
     const port = await getAvailablePort();
 
     // Start daemon
-    runKspec(
-      `serve start --daemon --port ${port} --kspec-dir ${join(tempDir, '.kspec')}`,
-      tempDir
-    );
+    runKspec(`serve start --daemon --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
 
     await waitForDaemonHealth(port);
     await waitForDaemonUptime(1);
 
     // Check status - should show uptime
-    const result = runKspec(`serve status --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
+    const result = runKspec(`serve status --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
 
-    expect(result.stdout).toContain('Uptime:');
+    expect(result.stdout).toContain("Uptime:");
 
     // Check JSON output includes uptime
-    const jsonResult = runKspec(`serve status --json --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
+    const jsonResult = runKspec(
+      `serve status --json --kspec-dir ${join(tempDir, ".kspec")}`,
+      tempDir,
+    );
     const status = JSON.parse(jsonResult.stdout);
-    expect(status).toHaveProperty('uptime');
-    expect(typeof status.uptime).toBe('number');
+    expect(status).toHaveProperty("uptime");
+    expect(typeof status.uptime).toBe("number");
     expect(status.uptime).toBeGreaterThan(0);
 
     // Cleanup
-    runKspec(`serve stop --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
+    runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
   });
 
   // AC: @cli-serve-commands ac-7
-  it('should stop then start on restart', async () => {
+  it("should stop then start on restart", async () => {
     if (!bunAvailable) {
-      console.log('  ⊘ Skipping test - Bun runtime required');
+      console.log("  ⊘ Skipping test - Bun runtime required");
       return;
     }
 
     const port = await getAvailablePort();
 
     // Start daemon
-    runKspec(
-      `serve start --daemon --port ${port} --kspec-dir ${join(tempDir, '.kspec')}`,
-      tempDir
-    );
+    runKspec(`serve start --daemon --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
 
     const originalPid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
 
     // Restart
-    const result = runKspec(`serve restart --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
+    const result = runKspec(`serve restart --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
 
-    expect(result.stdout).toContain('Stopping daemon');
-    expect(result.stdout).toContain('Starting daemon');
+    expect(result.stdout).toContain("Stopping daemon");
+    expect(result.stdout).toContain("Starting daemon");
 
     // Should have new PID
     const newPid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
@@ -568,60 +562,60 @@ describe('kspec serve commands', () => {
     expect(processRunning).toBe(true);
 
     // Cleanup
-    runKspec(`serve stop --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
+    runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
   });
 
   // AC: @cli-serve-commands ac-10
-  it('should show error with recovery hint for invalid port', async () => {
+  it("should show error with recovery hint for invalid port", async () => {
     const result = runKspec(
-      `serve start --port 99999 --kspec-dir ${join(tempDir, '.kspec')}`,
+      `serve start --port 99999 --kspec-dir ${join(tempDir, ".kspec")}`,
       tempDir,
-      { expectFail: true }
+      { expectFail: true },
     );
 
     expect(result.exitCode).not.toBe(0);
 
     // Error and hint should be in stderr
-    expect(result.stderr).toContain('Invalid port number');
-    expect(result.stderr).toContain('Try: kspec serve --port');
+    expect(result.stderr).toContain("Invalid port number");
+    expect(result.stderr).toContain("Try: kspec serve --port");
   });
 
   // AC: @web-ui ac-1
-  it('should start daemon from npm-installed package with all deps available', async () => {
+  it("should start daemon from npm-installed package with all deps available", async () => {
     if (!bunAvailable) {
-      console.log('  ⊘ Skipping test - Bun runtime required');
+      console.log("  ⊘ Skipping test - Bun runtime required");
       return;
     }
 
     // Pack the project, install the tarball, then run the installed CLI's
     // `kspec serve start --daemon` to verify all runtime dependencies
     // (elysia, @elysiajs/cors, @elysiajs/static) resolve at execution time.
-    const projectRoot = join(__dirname, '..');
+    const projectRoot = join(__dirname, "..");
     const installDir = await createTempDir();
 
     try {
       // Fresh pack so we test the current build output
-      const packOutput = execSync('npm pack --pack-destination ' + installDir, {
+      const packOutput = execSync("npm pack --pack-destination " + installDir, {
         cwd: projectRoot,
-        encoding: 'utf-8',
-        stdio: ['pipe', 'pipe', 'pipe'],
+        encoding: "utf-8",
+        stdio: ["pipe", "pipe", "pipe"],
       }).trim();
-      const tarball = join(installDir, packOutput.split('\n').pop()!.trim());
+      const tarball = join(installDir, packOutput.split("\n").pop()!.trim());
 
       // Install the tarball into the temp dir (brings transitive deps)
       execSync(`npm init -y && npm install --no-save "${tarball}"`, {
         cwd: installDir,
-        encoding: 'utf-8',
-        stdio: ['pipe', 'pipe', 'pipe'],
+        encoding: "utf-8",
+        stdio: ["pipe", "pipe", "pipe"],
         timeout: 60_000,
       });
 
       // The installed CLI binary
-      const installedCli = join(installDir, 'node_modules', '.bin', 'kspec');
+      const installedCli = join(installDir, "node_modules", ".bin", "kspec");
       expect(existsSync(installedCli), `installed CLI not found at ${installedCli}`).toBe(true);
 
       // Create a minimal .kspec/ directory so serve has something to point at
-      const kspecDir = join(installDir, '.kspec');
+      const kspecDir = join(installDir, ".kspec");
       mkdirSync(kspecDir, { recursive: true });
 
       // Isolated HOME so PID/port files don't collide with real daemon
@@ -636,11 +630,11 @@ describe('kspec serve commands', () => {
         `"${installedCli}" serve start --daemon --port ${port} --kspec-dir "${kspecDir}"`,
         {
           cwd: installDir,
-          encoding: 'utf-8',
-          stdio: ['pipe', 'pipe', 'pipe'],
+          encoding: "utf-8",
+          stdio: ["pipe", "pipe", "pipe"],
           timeout: 30_000,
           env: { ...cleanProcessEnv, ...isolated.env },
-        }
+        },
       );
 
       // Daemon should have started — output contains PID and port
@@ -650,30 +644,29 @@ describe('kspec serve commands', () => {
 
       // Verify health endpoint responds (daemon is actually running with Elysia)
       const healthResponse = await fetch(`http://localhost:${port}/api/health`);
-      expect(healthResponse.ok, 'daemon health endpoint should respond').toBe(true);
+      expect(healthResponse.ok, "daemon health endpoint should respond").toBe(true);
       const healthBody = await healthResponse.json();
-      expect(healthBody).toHaveProperty('status', 'ok');
+      expect(healthBody).toHaveProperty("status", "ok");
 
       // Cleanup: stop the daemon
       try {
-        execSync(
-          `"${installedCli}" serve stop --kspec-dir "${kspecDir}"`,
-          {
-            cwd: installDir,
-            encoding: 'utf-8',
-            stdio: ['pipe', 'pipe', 'pipe'],
-            timeout: 10_000,
-            env: { ...cleanProcessEnv, ...isolated.env },
-          }
-        );
+        execSync(`"${installedCli}" serve stop --kspec-dir "${kspecDir}"`, {
+          cwd: installDir,
+          encoding: "utf-8",
+          stdio: ["pipe", "pipe", "pipe"],
+          timeout: 10_000,
+          env: { ...cleanProcessEnv, ...isolated.env },
+        });
       } catch {
         // Best-effort cleanup; PID file has the PID if we need to kill manually
         const pidFile = isolated.daemonPidFilePath;
         if (existsSync(pidFile)) {
           try {
             const pid = parseInt(readTestOutputSync(pidFile).trim(), 10);
-            process.kill(pid, 'SIGTERM');
-          } catch { /* ignore */ }
+            process.kill(pid, "SIGTERM");
+          } catch {
+            /* ignore */
+          }
         }
       }
     } finally {
@@ -682,150 +675,156 @@ describe('kspec serve commands', () => {
   }, 120_000);
 
   // AC: @web-ui ac-2
-  it('should show clear error with Bun install URL when Bun is not available', () => {
+  it("should show clear error with Bun install URL when Bun is not available", () => {
     // Build PATH that includes node but excludes bun
-    const nodeDir = dirname(execSync('which node', { encoding: 'utf-8' }).trim());
-    const noBunPath = (process.env.PATH || '')
-      .split(':')
-      .filter(p => {
-        try { return !existsSync(join(p, 'bun')); } catch { return true; }
+    const nodeDir = dirname(execSync("which node", { encoding: "utf-8" }).trim());
+    const noBunPath = (process.env.PATH || "")
+      .split(":")
+      .filter((p) => {
+        try {
+          return !existsSync(join(p, "bun"));
+        } catch {
+          return true;
+        }
       })
-      .join(':');
+      .join(":");
     // Ensure node's directory is always present
     const pathWithNode = noBunPath.includes(nodeDir) ? noBunPath : `${nodeDir}:${noBunPath}`;
 
-    const result = runKspec(
-      `serve start --kspec-dir ${join(tempDir, '.kspec')}`,
-      tempDir,
-      { expectFail: true, env: { PATH: pathWithNode } }
-    );
+    const result = runKspec(`serve start --kspec-dir ${join(tempDir, ".kspec")}`, tempDir, {
+      expectFail: true,
+      env: { PATH: pathWithNode },
+    });
 
     expect(result.exitCode).not.toBe(0);
-    expect(result.stderr).toContain('Bun runtime is required');
+    expect(result.stderr).toContain("Bun runtime is required");
     // Install instructions go to stdout via info()
-    expect(result.stdout).toContain('bun.sh');
+    expect(result.stdout).toContain("bun.sh");
   });
 
   // AC: @web-ui ac-2
-  it('should show Bun install URL in JSON mode when Bun is not available', () => {
+  it("should show Bun install URL in JSON mode when Bun is not available", () => {
     // Build PATH that includes node but excludes bun
-    const nodeDir = dirname(execSync('which node', { encoding: 'utf-8' }).trim());
-    const noBunPath = (process.env.PATH || '')
-      .split(':')
-      .filter(p => {
-        try { return !existsSync(join(p, 'bun')); } catch { return true; }
+    const nodeDir = dirname(execSync("which node", { encoding: "utf-8" }).trim());
+    const noBunPath = (process.env.PATH || "")
+      .split(":")
+      .filter((p) => {
+        try {
+          return !existsSync(join(p, "bun"));
+        } catch {
+          return true;
+        }
       })
-      .join(':');
+      .join(":");
     const pathWithNode = noBunPath.includes(nodeDir) ? noBunPath : `${nodeDir}:${noBunPath}`;
 
-    const result = runKspec(
-      `serve start --json --kspec-dir ${join(tempDir, '.kspec')}`,
-      tempDir,
-      { expectFail: true, env: { PATH: pathWithNode } }
-    );
+    const result = runKspec(`serve start --json --kspec-dir ${join(tempDir, ".kspec")}`, tempDir, {
+      expectFail: true,
+      env: { PATH: pathWithNode },
+    });
 
     expect(result.exitCode).not.toBe(0);
     const parsed = JSON.parse(result.stdout);
-    expect(parsed).toHaveProperty('error');
-    expect(parsed.error).toContain('Bun runtime is required');
-    expect(parsed).toHaveProperty('hint');
-    expect(parsed.hint).toContain('bun.sh');
-    expect(parsed).toHaveProperty('url');
-    expect(parsed.url).toBe('https://bun.sh/docs/installation');
+    expect(parsed).toHaveProperty("error");
+    expect(parsed.error).toContain("Bun runtime is required");
+    expect(parsed).toHaveProperty("hint");
+    expect(parsed.hint).toContain("bun.sh");
+    expect(parsed).toHaveProperty("url");
+    expect(parsed.url).toBe("https://bun.sh/docs/installation");
   });
 
   // AC: @cli-serve-commands ac-11
-  describe('dispatch agent guard', () => {
+  describe("dispatch agent guard", () => {
     // AC: @trait-semantic-exit-codes ac-2 — validation error exit code
-    it('should refuse serve start when KSPEC_SESSION_ID is set', async () => {
-      const result = runKspec(
-        `serve start --kspec-dir ${join(tempDir, '.kspec')}`,
-        tempDir,
-        { expectFail: true, env: { KSPEC_SESSION_ID: 'test-session-id' } }
-      );
+    it("should refuse serve start when KSPEC_SESSION_ID is set", async () => {
+      const result = runKspec(`serve start --kspec-dir ${join(tempDir, ".kspec")}`, tempDir, {
+        expectFail: true,
+        env: { KSPEC_SESSION_ID: "test-session-id" },
+      });
 
       expect(result.exitCode).toBe(4); // VALIDATION_FAILED
-      expect(result.stderr).toContain('Cannot start daemon from inside an agent invocation');
-      expect(result.stderr).toContain('dispatch engine');
+      expect(result.stderr).toContain("Cannot start daemon from inside an agent invocation");
+      expect(result.stderr).toContain("dispatch engine");
     });
 
-    it('should refuse serve stop when KSPEC_SESSION_ID is set', async () => {
-      const result = runKspec(
-        `serve stop --kspec-dir ${join(tempDir, '.kspec')}`,
-        tempDir,
-        { expectFail: true, env: { KSPEC_SESSION_ID: 'test-session-id' } }
-      );
+    it("should refuse serve stop when KSPEC_SESSION_ID is set", async () => {
+      const result = runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir, {
+        expectFail: true,
+        env: { KSPEC_SESSION_ID: "test-session-id" },
+      });
 
       expect(result.exitCode).toBe(4); // VALIDATION_FAILED
-      expect(result.stderr).toContain('Cannot stop daemon from inside an agent invocation');
-      expect(result.stderr).toContain('dispatch engine');
+      expect(result.stderr).toContain("Cannot stop daemon from inside an agent invocation");
+      expect(result.stderr).toContain("dispatch engine");
     });
 
-    it('should refuse serve restart when KSPEC_SESSION_ID is set', async () => {
-      const result = runKspec(
-        `serve restart --kspec-dir ${join(tempDir, '.kspec')}`,
-        tempDir,
-        { expectFail: true, env: { KSPEC_SESSION_ID: 'test-session-id' } }
-      );
+    it("should refuse serve restart when KSPEC_SESSION_ID is set", async () => {
+      const result = runKspec(`serve restart --kspec-dir ${join(tempDir, ".kspec")}`, tempDir, {
+        expectFail: true,
+        env: { KSPEC_SESSION_ID: "test-session-id" },
+      });
 
       expect(result.exitCode).toBe(4); // VALIDATION_FAILED
-      expect(result.stderr).toContain('Cannot restart daemon from inside an agent invocation');
-      expect(result.stderr).toContain('dispatch engine');
+      expect(result.stderr).toContain("Cannot restart daemon from inside an agent invocation");
+      expect(result.stderr).toContain("dispatch engine");
     });
 
     // AC: @trait-json-output ac-3 — JSON error output for dispatch guard
-    it('should output JSON error when guard triggers with --json', async () => {
+    it("should output JSON error when guard triggers with --json", async () => {
       const result = runKspec(
-        `serve start --json --kspec-dir ${join(tempDir, '.kspec')}`,
+        `serve start --json --kspec-dir ${join(tempDir, ".kspec")}`,
         tempDir,
-        { expectFail: true, env: { KSPEC_SESSION_ID: 'test-session-id' } }
+        { expectFail: true, env: { KSPEC_SESSION_ID: "test-session-id" } },
       );
 
       expect(result.exitCode).toBe(4); // VALIDATION_FAILED
       const output = JSON.parse(result.stdout);
-      expect(output).toHaveProperty('error');
-      expect(output.error).toContain('Cannot start daemon');
-      expect(output).toHaveProperty('reason');
-      expect(output).toHaveProperty('suggestion');
+      expect(output).toHaveProperty("error");
+      expect(output.error).toContain("Cannot start daemon");
+      expect(output).toHaveProperty("reason");
+      expect(output).toHaveProperty("suggestion");
     });
   });
 
   // Trait tests: @trait-json-output
-  describe('JSON output mode', () => {
+  describe("JSON output mode", () => {
     // AC: @trait-json-output ac-1, ac-2
-    it('should output valid JSON with --json for serve status', async () => {
-      const result = runKspec(`serve status --json --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
-
-      // Should be valid JSON
-      expect(() => JSON.parse(result.stdout)).not.toThrow();
-
-      const output = JSON.parse(result.stdout);
-      expect(output).toHaveProperty('running');
-      expect(output).toHaveProperty('pid');
-    });
-
-    // AC: @trait-json-output ac-3, @trait-error-guidance ac-6
-    it('should output errors as JSON with --json flag', async () => {
+    it("should output valid JSON with --json for serve status", async () => {
       const result = runKspec(
-        `serve start --port 99999 --json --kspec-dir ${join(tempDir, '.kspec')}`,
+        `serve status --json --kspec-dir ${join(tempDir, ".kspec")}`,
         tempDir,
-        { expectFail: true }
       );
 
       // Should be valid JSON
       expect(() => JSON.parse(result.stdout)).not.toThrow();
 
       const output = JSON.parse(result.stdout);
-      expect(output).toHaveProperty('error');
-      expect(output.error).toContain('Invalid port number');
-      expect(output).toHaveProperty('hint');
-      expect(output.hint).toContain('Try: kspec serve --port');
+      expect(output).toHaveProperty("running");
+      expect(output).toHaveProperty("pid");
+    });
+
+    // AC: @trait-json-output ac-3, @trait-error-guidance ac-6
+    it("should output errors as JSON with --json flag", async () => {
+      const result = runKspec(
+        `serve start --port 99999 --json --kspec-dir ${join(tempDir, ".kspec")}`,
+        tempDir,
+        { expectFail: true },
+      );
+
+      // Should be valid JSON
+      expect(() => JSON.parse(result.stdout)).not.toThrow();
+
+      const output = JSON.parse(result.stdout);
+      expect(output).toHaveProperty("error");
+      expect(output.error).toContain("Invalid port number");
+      expect(output).toHaveProperty("hint");
+      expect(output.hint).toContain("Try: kspec serve --port");
     });
 
     // AC: @trait-json-output ac-2
-    it('should include all data in JSON mode that appears in human mode', async () => {
+    it("should include all data in JSON mode that appears in human mode", async () => {
       if (!bunAvailable) {
-        console.log('  ⊘ Skipping test - Bun runtime required');
+        console.log("  ⊘ Skipping test - Bun runtime required");
         return;
       }
 
@@ -833,29 +832,35 @@ describe('kspec serve commands', () => {
 
       // Start daemon
       runKspec(
-        `serve start --daemon --port ${port} --kspec-dir ${join(tempDir, '.kspec')}`,
-        tempDir
+        `serve start --daemon --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`,
+        tempDir,
       );
 
       // Compare JSON vs human output
-      const humanResult = runKspec(`serve status --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
-      const jsonResult = runKspec(`serve status --json --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
+      const humanResult = runKspec(`serve status --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
+      const jsonResult = runKspec(
+        `serve status --json --kspec-dir ${join(tempDir, ".kspec")}`,
+        tempDir,
+      );
 
       const jsonData = JSON.parse(jsonResult.stdout);
 
       // Human output should contain the same data
       expect(humanResult.stdout).toContain(String(jsonData.pid));
-      expect(humanResult.stdout).toContain(jsonData.running ? 'running' : 'not running');
+      expect(humanResult.stdout).toContain(jsonData.running ? "running" : "not running");
 
       // Cleanup
-      runKspec(`serve stop --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
+      runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
     });
 
     // AC: @trait-json-output ac-4
-    it('should use @ prefix for references in JSON output', async () => {
+    it("should use @ prefix for references in JSON output", async () => {
       // serve commands don't output references, but we can verify the pattern if they did
       // This test ensures future additions follow the trait
-      const result = runKspec(`serve status --json --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
+      const result = runKspec(
+        `serve status --json --kspec-dir ${join(tempDir, ".kspec")}`,
+        tempDir,
+      );
       const output = JSON.parse(result.stdout);
 
       // Defensive test: if refs are ever added, they should use @ prefix
@@ -865,9 +870,12 @@ describe('kspec serve commands', () => {
     });
 
     // AC: @trait-json-output ac-5
-    it('should use ISO 8601 timestamps in JSON output', async () => {
+    it("should use ISO 8601 timestamps in JSON output", async () => {
       // serve status doesn't currently include timestamps, but when it does they should be ISO 8601
-      const result = runKspec(`serve status --json --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
+      const result = runKspec(
+        `serve status --json --kspec-dir ${join(tempDir, ".kspec")}`,
+        tempDir,
+      );
       const output = JSON.parse(result.stdout);
 
       // Defensive test for when uptime/timestamps are added
@@ -877,41 +885,44 @@ describe('kspec serve commands', () => {
     });
 
     // AC: @trait-json-output ac-6
-    it('should make --json take precedence over other format flags', async () => {
+    it("should make --json take precedence over other format flags", async () => {
       // Test that --json always produces JSON even with other flags
-      const result = runKspec(`serve status --json --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
+      const result = runKspec(
+        `serve status --json --kspec-dir ${join(tempDir, ".kspec")}`,
+        tempDir,
+      );
 
       // Should be valid JSON, not human-readable text
       expect(() => JSON.parse(result.stdout)).not.toThrow();
 
       // Should not contain human-readable markers
-      expect(result.stdout).not.toContain('Daemon running');
-      expect(result.stdout).not.toContain('Daemon not running');
+      expect(result.stdout).not.toContain("Daemon running");
+      expect(result.stdout).not.toContain("Daemon not running");
     });
   });
 
   // Trait tests: @trait-semantic-exit-codes
-  describe('Exit codes', () => {
+  describe("Exit codes", () => {
     // AC: @trait-semantic-exit-codes ac-1
-    it('should exit with code 0 on success', async () => {
-      const result = runKspec(`serve status --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
+    it("should exit with code 0 on success", async () => {
+      const result = runKspec(`serve status --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
       expect(result.exitCode).toBe(0);
     });
 
     // AC: @trait-semantic-exit-codes ac-2
-    it('should exit with code 4 on validation errors', async () => {
+    it("should exit with code 4 on validation errors", async () => {
       const result = runKspec(
-        `serve start --port 99999 --kspec-dir ${join(tempDir, '.kspec')}`,
+        `serve start --port 99999 --kspec-dir ${join(tempDir, ".kspec")}`,
         tempDir,
-        { expectFail: true }
+        { expectFail: true },
       );
       expect(result.exitCode).toBe(4); // VALIDATION_FAILED
     });
 
     // AC: @trait-semantic-exit-codes ac-5
-    it('should exit with code 0 for idempotent operations', async () => {
+    it("should exit with code 0 for idempotent operations", async () => {
       // Stopping non-running daemon should succeed
-      const result = runKspec(`serve stop --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
+      const result = runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
       expect(result.exitCode).toBe(0);
     });
   });

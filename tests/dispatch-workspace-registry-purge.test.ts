@@ -10,11 +10,7 @@ import {
   saveDispatchWorkspaceRecord,
   type LoadedDispatchWorkspaceRecord,
 } from "../src/parser/dispatch-workspaces.js";
-import {
-  cleanupTempDir,
-  createTempDir,
-  testUlid,
-} from "./helpers/cli.js";
+import { cleanupTempDir, createTempDir, testUlid } from "./helpers/cli.js";
 
 function makeRecord(
   tempDir: string,
@@ -211,7 +207,7 @@ describe("dispatch workspace registry purge", () => {
     // Verify: recently closed record retained
     const workspaces = await loadDispatchWorkspaceRegistry(ctx);
     expect(workspaces).toHaveLength(2);
-    const ids = workspaces.map((ws) => ws.workspace_id).sort();
+    const ids = workspaces.map((ws) => ws.workspace_id).toSorted();
     expect(ids).toEqual(["ws-new-active", "ws-recent-closed"]);
   });
 

@@ -17,9 +17,7 @@ import {
  * Creates the necessary directory structure for per-task storage.
  * Returns the env overrides needed for CLI commands.
  */
-async function setupSplitEnv(
-  tempDir: string,
-): Promise<{ env: Record<string, string> }> {
+async function setupSplitEnv(tempDir: string): Promise<{ env: Record<string, string> }> {
   initGitRepo(tempDir);
 
   const specDir = path.join(tempDir, ".kspec");
@@ -35,10 +33,7 @@ async function setupSplitEnv(
   await fs.mkdir(path.join(specDir, "tasks"), { recursive: true });
 
   // Write an empty index file
-  await fs.writeFile(
-    path.join(specDir, "project.tasks.yaml"),
-    toYaml([]),
-  );
+  await fs.writeFile(path.join(specDir, "project.tasks.yaml"), toYaml([]));
 
   return { env: { KSPEC_SPEC_DIR: specDir } };
 }
@@ -72,10 +67,7 @@ async function createTaskDir(
 
   await fs.writeFile(path.join(taskDir, "task.yaml"), toYaml(coreData));
 
-  await fs.writeFile(
-    path.join(taskDir, "notes.yaml"),
-    toYaml({ notes: [] }),
-  );
+  await fs.writeFile(path.join(taskDir, "notes.yaml"), toYaml({ notes: [] }));
 }
 
 /**

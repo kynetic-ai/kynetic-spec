@@ -16,17 +16,16 @@ import {
   type ActionEventContext,
   type ActionRunEvent,
 } from "../src/agent-runtime/action-executor.js";
-import {
-  HookExecutor,
-  type HookExecutorOptions,
-} from "../src/agent-runtime/hook-executor.js";
+import { HookExecutor, type HookExecutorOptions } from "../src/agent-runtime/hook-executor.js";
 import type { Hook } from "../src/schema/hooks.js";
 import type { Action, ActionRun } from "../src/schema/action.js";
 import { testUlid, testUlids } from "./helpers/cli.js";
 
 // ─── Test Helpers ────────────────────────────────────────────────────────────
 
-function makeHook(overrides: Partial<Hook> & { on: string; action?: Action } = { on: "task.ready" }): Hook {
+function makeHook(
+  overrides: Partial<Hook> & { on: string; action?: Action } = { on: "task.ready" },
+): Hook {
   return {
     _ulid: testUlid("H00K", Math.floor(Math.random() * 1000)),
     name: "test-hook",
@@ -86,9 +85,7 @@ beforeEach(() => {
     projectDir: "/tmp/test-project",
   });
   // Spy on execute to intercept actual action execution
-  executeSpy = vi.spyOn(actionExecutor, "execute").mockResolvedValue(
-    makeCompletedActionRun(),
-  );
+  executeSpy = vi.spyOn(actionExecutor, "execute").mockResolvedValue(makeCompletedActionRun());
 });
 
 afterEach(() => {
@@ -275,11 +272,7 @@ describe("ac-2: disabled hooks are silently skipped", () => {
     await emitAndDrain(eventBus, "task.ready");
 
     expect(executeSpy).toHaveBeenCalledTimes(1);
-    expect(executeSpy).toHaveBeenCalledWith(
-      enabledHook.action,
-      expect.anything(),
-      "enabled-hook",
-    );
+    expect(executeSpy).toHaveBeenCalledWith(enabledHook.action, expect.anything(), "enabled-hook");
 
     executor.stop();
   });
@@ -442,9 +435,14 @@ describe("ac-4: hooks with filters skip non-matching events", () => {
     expect(executeSpy).not.toHaveBeenCalled();
 
     // Has all required tags plus extras — should match
-    await emitAndDrain(eventBus, "task.ready", {
-      tags: ["dispatch", "hooks", "mvp"],
-    }, "source-2");
+    await emitAndDrain(
+      eventBus,
+      "task.ready",
+      {
+        tags: ["dispatch", "hooks", "mvp"],
+      },
+      "source-2",
+    );
     expect(executeSpy).toHaveBeenCalledTimes(1);
 
     executor.stop();

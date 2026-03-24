@@ -203,10 +203,7 @@ describe("dispatch workspace branch provenance", () => {
     });
 
     // Reconcile and verify provenance is preserved
-    await reconcileDispatchWorkspaceRegistry(
-      tempDir,
-      new Map([[taskRef, "in_progress" as const]]),
-    );
+    await reconcileDispatchWorkspaceRegistry(tempDir, new Map([[taskRef, "in_progress" as const]]));
 
     const record = await readWorkspaceRecord(registryPath, taskRef);
     expect(record.branch_provenance).toMatchObject({

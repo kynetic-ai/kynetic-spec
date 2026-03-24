@@ -34,10 +34,7 @@ import {
   setBatchMode,
   isBatchMode,
 } from "./batch-context.js";
-import {
-  activateBatchBuffer,
-  deactivateBatchBuffer,
-} from "./batch-write-buffer.js";
+import { activateBatchBuffer, deactivateBatchBuffer } from "./batch-write-buffer.js";
 
 // ── Input Source Types ───────────────────────────────────────────────
 
@@ -164,9 +161,7 @@ async function readSource(source: BatchInputSource): Promise<string> {
       try {
         return await fs.readFile(source.path, "utf-8");
       } catch (err) {
-        throw new BatchParseError(
-          `Failed to read batch file: ${(err as Error).message}`,
-        );
+        throw new BatchParseError(`Failed to read batch file: ${(err as Error).message}`);
       }
 
     case "stdin": {
@@ -195,9 +190,7 @@ async function readSource(source: BatchInputSource): Promise<string> {
  *
  * @throws {BatchParseError} on invalid JSON, empty array, or schema violations
  */
-export async function parseBatchInput(
-  source: BatchInputSource,
-): Promise<BatchInput> {
+export async function parseBatchInput(source: BatchInputSource): Promise<BatchInput> {
   const raw = await readSource(source);
 
   // Parse JSON — preserve the native error message which includes position
@@ -205,9 +198,7 @@ export async function parseBatchInput(
   try {
     parsed = JSON.parse(raw);
   } catch (err) {
-    throw new BatchParseError(
-      `Invalid JSON: ${(err as SyntaxError).message}`,
-    );
+    throw new BatchParseError(`Invalid JSON: ${(err as SyntaxError).message}`);
   }
 
   // Validate against schema
@@ -219,9 +210,7 @@ export async function parseBatchInput(
         const path = e.path.length > 0 ? ` at ${e.path.join(".")}` : "";
         return `${e.message}${path}`;
       });
-      throw new BatchParseError(
-        `Batch validation failed: ${messages.join("; ")}`,
-      );
+      throw new BatchParseError(`Batch validation failed: ${messages.join("; ")}`);
     }
     throw err;
   }
@@ -282,9 +271,11 @@ function resolveBatchArgAlias(key: string): string {
  * Get all known argument and option names for a command, returning both
  * kebab-case, camelCase, and underscore variants.
  */
-function getKnownArgNames(
-  cmd: CommandMeta,
-): { names: Set<string>; canonicalNames: Set<string>; required: string[] } {
+function getKnownArgNames(cmd: CommandMeta): {
+  names: Set<string>;
+  canonicalNames: Set<string>;
+  required: string[];
+} {
   const names = new Set<string>();
   const canonicalNames = new Set<string>();
   const required: string[] = [];
@@ -411,8 +402,7 @@ export function validateBatchCommands(
       names: knownNames,
       canonicalNames: knownCanonicalNames,
       required: requiredNames,
-    } =
-      getKnownArgNames(found);
+    } = getKnownArgNames(found);
 
     // Collect all known names as flat array for suggestion matching
     const knownNamesArray = Array.from(knownNames);
@@ -434,11 +424,7 @@ export function validateBatchCommands(
     // 5. Check for missing required args
     for (const reqName of requiredNames) {
       const normalizedReqName = normalizeArgKey(reqName);
-      if (
-        !Object.keys(cmd.args).some(
-          (k) => resolveBatchArgAlias(k) === normalizedReqName,
-        )
-      ) {
+      if (!Object.keys(cmd.args).some((k) => resolveBatchArgAlias(k) === normalizedReqName)) {
         errors.push({
           index: i,
           id: cmd.id,
@@ -563,7 +549,7 @@ function isNumericPriorityArgument(arg: { name: string; description?: string }):
 }
 
 export function buildCommandArgv(cmd: BatchCommand, cmdMeta: CommandMeta): string[] {
-  const argv: string[] = [...cmd.command.trim().split(/\s+/)];
+  const argv: string[] = cmd.command.trim().split(/\s+/);
   const consumedKeys = new Set<string>();
 
   // Build sets for classification
@@ -573,12 +559,15 @@ export function buildCommandArgv(cmd: BatchCommand, cmdMeta: CommandMeta): strin
     positionalCanonicalNameSet.add(normalizeArgKey(arg.name));
   }
 
-  const optionMap = new Map<string, {
-    flags: string;
-    variadic: boolean;
-    name: string;
-    description: string;
-  }>();
+  const optionMap = new Map<
+    string,
+    {
+      flags: string;
+      variadic: boolean;
+      name: string;
+      description: string;
+    }
+  >();
   for (const opt of cmdMeta.options) {
     const name = extractOptionName(opt.flags);
     if (name) {
@@ -594,9 +583,7 @@ export function buildCommandArgv(cmd: BatchCommand, cmdMeta: CommandMeta): strin
   // Phase 1: Emit positional args in Commander definition order
   for (const argDef of positionalDefs) {
     const canonicalName = normalizeArgKey(argDef.name);
-    const matchedKey = Object.keys(cmd.args).find(
-      (k) => resolveBatchArgAlias(k) === canonicalName,
-    );
+    const matchedKey = Object.keys(cmd.args).find((k) => resolveBatchArgAlias(k) === canonicalName);
     const value = matchedKey ? cmd.args[matchedKey] : undefined;
     if (value === undefined) continue;
     consumedKeys.add(matchedKey!);
@@ -1012,8 +999,7 @@ async function dispatchCommand(
   }
 
   // Commander errors (e.g., missing required arg at runtime)
-  const isCommanderError =
-    err && typeof err === "object" && "code" in err && "exitCode" in err;
+  const isCommanderError = err && typeof err === "object" && "code" in err && "exitCode" in err;
   if (isCommanderError) {
     const cmdErr = err as unknown as { message: string; exitCode: number };
     return {

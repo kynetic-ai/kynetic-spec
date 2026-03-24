@@ -9,62 +9,44 @@
  * Task status values
  */
 export type TaskStatus =
-  | 'pending'
-  | 'in_progress'
-  | 'pending_review'
-  | 'blocked'
-  | 'completed'
-  | 'cancelled';
+  | "pending"
+  | "in_progress"
+  | "pending_review"
+  | "blocked"
+  | "completed"
+  | "cancelled";
 
 /**
  * Task type values
  */
-export type TaskType =
-  | 'epic'
-  | 'task'
-  | 'bug'
-  | 'spike'
-  | 'infra';
+export type TaskType = "epic" | "task" | "bug" | "spike" | "infra";
 
 /**
  * Spec item type values
  */
 export type ItemType =
-  | 'module'
-  | 'feature'
-  | 'requirement'
-  | 'constraint'
-  | 'decision'
-  | 'task'
-  | 'trait';
+  | "module"
+  | "feature"
+  | "requirement"
+  | "constraint"
+  | "decision"
+  | "task"
+  | "trait";
 
 /**
  * Implementation status values
  */
-export type ImplementationStatus =
-  | 'not_started'
-  | 'in_progress'
-  | 'implemented'
-  | 'verified';
+export type ImplementationStatus = "not_started" | "in_progress" | "implemented" | "verified";
 
 /**
  * Maturity status values
  */
-export type Maturity =
-  | 'draft'
-  | 'proposed'
-  | 'stable'
-  | 'deferred'
-  | 'deprecated';
+export type Maturity = "draft" | "proposed" | "stable" | "deferred" | "deprecated";
 
 /**
  * Observation type values
  */
-export type ObservationType =
-  | 'friction'
-  | 'success'
-  | 'question'
-  | 'idea';
+export type ObservationType = "friction" | "success" | "question" | "idea";
 
 /**
  * Agent dispatch event values — mirrors DispatchEventTypeSchema from src/schema/event-registry.ts.
@@ -74,25 +56,25 @@ export type ObservationType =
  */
 export type AgentDispatchEvent =
   // Task lifecycle events (existing, unchanged)
-  | 'task.in_progress'
-  | 'task.ready'
-  | 'task.needs_work'
-  | 'task.pending_review'
+  | "task.in_progress"
+  | "task.ready"
+  | "task.needs_work"
+  | "task.pending_review"
   // Invocation lifecycle events
-  | 'invocation.started'
-  | 'invocation.completed'
-  | 'invocation.failed'
-  | 'invocation.stalled'
+  | "invocation.started"
+  | "invocation.completed"
+  | "invocation.failed"
+  | "invocation.stalled"
   // Session lifecycle events
-  | 'session.ended'
-  | 'session.idle_timeout'
-  | 'session.cancelled'
+  | "session.ended"
+  | "session.idle_timeout"
+  | "session.cancelled"
   // Schedule events
-  | 'schedule.tick'
+  | "schedule.tick"
   // Action run tracking events
-  | 'action.started'
-  | 'action.completed'
-  | 'action.failed';
+  | "action.started"
+  | "action.completed"
+  | "action.failed";
 
 /**
  * All valid dispatch events as a const array — for form dropdowns and validation.
@@ -100,21 +82,21 @@ export type AgentDispatchEvent =
  * AC: @ui-agent-dispatch ac-4
  */
 export const AGENT_DISPATCH_EVENTS: readonly AgentDispatchEvent[] = [
-  'task.in_progress',
-  'task.ready',
-  'task.needs_work',
-  'task.pending_review',
-  'invocation.started',
-  'invocation.completed',
-  'invocation.failed',
-  'invocation.stalled',
-  'session.ended',
-  'session.idle_timeout',
-  'session.cancelled',
-  'schedule.tick',
-  'action.started',
-  'action.completed',
-  'action.failed',
+  "task.in_progress",
+  "task.ready",
+  "task.needs_work",
+  "task.pending_review",
+  "invocation.started",
+  "invocation.completed",
+  "invocation.failed",
+  "invocation.stalled",
+  "session.ended",
+  "session.idle_timeout",
+  "session.cancelled",
+  "schedule.tick",
+  "action.started",
+  "action.completed",
+  "action.failed",
 ] as const;
 
 /**
@@ -122,7 +104,7 @@ export const AGENT_DISPATCH_EVENTS: readonly AgentDispatchEvent[] = [
  * AC: @ui-agent-dispatch ac-4
  */
 export interface AgentDispatchFilter {
-  automation?: 'eligible' | 'ineligible';
+  automation?: "eligible" | "ineligible";
   tags?: string[];
   priority?: number;
 }
@@ -177,7 +159,7 @@ export interface AgentDefinition {
   concurrency: AgentConcurrency;
   auto_approve: boolean;
   prompt_template?: string;
-  automation?: 'eligible' | 'ineligible';
+  automation?: "eligible" | "ineligible";
   tags?: string[];
 }
 
@@ -189,16 +171,16 @@ export interface AgentDefinition {
 export type AgentUpdatePayload = Partial<
   Pick<
     AgentDefinition,
-    | 'name'
-    | 'description'
-    | 'adapter'
-    | 'dispatch'
-    | 'capabilities'
-    | 'tools'
-    | 'skills'
-    | 'budget'
-    | 'concurrency'
-    | 'auto_approve'
-    | 'prompt_template'
+    | "name"
+    | "description"
+    | "adapter"
+    | "dispatch"
+    | "capabilities"
+    | "tools"
+    | "skills"
+    | "budget"
+    | "concurrency"
+    | "auto_approve"
+    | "prompt_template"
   >
 >;

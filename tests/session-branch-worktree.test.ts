@@ -216,10 +216,7 @@ describe("session branch auto-commit", () => {
     );
 
     // Auto-commit
-    const committed = await sessionBranchAutoCommit(
-      worktreeDir,
-      "session: create (test-session)",
-    );
+    const committed = await sessionBranchAutoCommit(worktreeDir, "session: create (test-session)");
     expect(committed).toBe(true);
 
     // Verify commit exists on session branch
@@ -235,10 +232,7 @@ describe("session branch auto-commit", () => {
     await initializeSessionBranch(tempDir);
 
     const worktreeDir = path.join(tempDir, SESSIONS_WORKTREE_DIR);
-    const committed = await sessionBranchAutoCommit(
-      worktreeDir,
-      "session: no-op",
-    );
+    const committed = await sessionBranchAutoCommit(worktreeDir, "session: no-op");
     expect(committed).toBe(false);
   });
 });
@@ -253,9 +247,7 @@ describe("resolveSessionBranchConfig", () => {
     expect(config).not.toBeNull();
     expect(config!.enabled).toBe(true);
     expect(config!.branchName).toBe("my-sessions");
-    expect(config!.worktreeDir).toBe(
-      path.join("/project", SESSIONS_WORKTREE_DIR),
-    );
+    expect(config!.worktreeDir).toBe(path.join("/project", SESSIONS_WORKTREE_DIR));
   });
 
   it("uses default branch name when not configured", () => {
@@ -329,16 +321,12 @@ describe("session branch sync", () => {
       cwd: cloneDir,
       stdio: "pipe",
     });
-    await fs.writeFile(
-      path.join(cloneDir, "remote-session.yaml"),
-      "id: remote-session\n",
-      "utf-8",
-    );
+    await fs.writeFile(path.join(cloneDir, "remote-session.yaml"), "id: remote-session\n", "utf-8");
     execSync("git add -A", { cwd: cloneDir, stdio: "pipe" });
-    execSync(
-      'git -c user.name="Test" -c user.email="test@test.com" commit -m "Remote session"',
-      { cwd: cloneDir, stdio: "pipe" },
-    );
+    execSync('git -c user.name="Test" -c user.email="test@test.com" commit -m "Remote session"', {
+      cwd: cloneDir,
+      stdio: "pipe",
+    });
     execSync(`git push origin ${SESSION_BRANCH_NAME}`, {
       cwd: cloneDir,
       stdio: "pipe",
@@ -429,14 +417,14 @@ describe("session branch sync", () => {
     });
 
     // Configure tracking to the custom remote
-    execSync(
-      `git config branch.${SESSION_BRANCH_NAME}.remote upstream`,
-      { cwd: worktreeDir, stdio: "pipe" },
-    );
-    execSync(
-      `git config branch.${SESSION_BRANCH_NAME}.merge refs/heads/${SESSION_BRANCH_NAME}`,
-      { cwd: worktreeDir, stdio: "pipe" },
-    );
+    execSync(`git config branch.${SESSION_BRANCH_NAME}.remote upstream`, {
+      cwd: worktreeDir,
+      stdio: "pipe",
+    });
+    execSync(`git config branch.${SESSION_BRANCH_NAME}.merge refs/heads/${SESSION_BRANCH_NAME}`, {
+      cwd: worktreeDir,
+      stdio: "pipe",
+    });
 
     // Simulate a remote change by pushing from a clone
     const cloneDir = await createTempDir("session-custom-clone-");

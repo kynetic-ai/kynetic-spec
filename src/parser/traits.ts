@@ -113,9 +113,7 @@ export class TraitIndex {
    * Get all acceptance criteria inherited from implemented traits
    * AC: @trait-index ac-2
    */
-  getInheritedAC(
-    specUlid: string,
-  ): Array<{ trait: TraitInfo; ac: AcceptanceCriterion }> {
+  getInheritedAC(specUlid: string): Array<{ trait: TraitInfo; ac: AcceptanceCriterion }> {
     const traits = this.getTraitsForSpec(specUlid);
     const inherited: Array<{ trait: TraitInfo; ac: AcceptanceCriterion }> = [];
 
@@ -159,8 +157,7 @@ export class TraitIndex {
     return {
       totalTraits: this.traits.size,
       specsWithTraits,
-      avgTraitsPerSpec:
-        specsWithTraits > 0 ? totalTraitRefs / specsWithTraits : 0,
+      avgTraitsPerSpec: specsWithTraits > 0 ? totalTraitRefs / specsWithTraits : 0,
     };
   }
 }

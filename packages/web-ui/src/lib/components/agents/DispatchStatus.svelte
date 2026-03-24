@@ -17,7 +17,7 @@
 		isToggling: boolean;
 	}
 
-	let { enabled, activeCount, queueDepth, onStart, onStop, isToggling }: Props = $props();
+	const { enabled, activeCount, queueDepth, onStart, onStop, isToggling }: Props = $props();
 </script>
 
 <!-- AC: @ui-agent-dispatch ac-2, ac-3 -->

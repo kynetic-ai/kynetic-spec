@@ -45,7 +45,7 @@
 	import { StructuredContentViewer } from '$lib/components/content';
 	import { CodeDiffViewer } from '$lib/components/diff';
 
-	let reviewId = $derived($page.params.id);
+	const reviewId = $derived($page.params.id);
 
 	const queryClient = useQueryClient();
 
@@ -56,17 +56,17 @@
 		enabled: isProjectInitialized() && !!reviewId,
 	}));
 
-	let review = $derived<ReviewDetail | null>(reviewQuery.data ?? null);
-	let loading = $derived(reviewQuery.isLoading);
-	let error = $derived(reviewQuery.error?.message ?? '');
+	const review = $derived<ReviewDetail | null>(reviewQuery.data ?? null);
+	const loading = $derived(reviewQuery.isLoading);
+	const error = $derived(reviewQuery.error?.message ?? '');
 
 	// AC: @review-records-web-ui ac-11 — Fetch sibling reviews for revision selector
-	let subjectRef = $derived(review?.subject && 'ref' in review.subject ? review.subject.ref : undefined);
-	let subjectType = $derived(review?.subject.type ?? '');
-	let headBranch = $derived(
+	const subjectRef = $derived(review?.subject && 'ref' in review.subject ? review.subject.ref : undefined);
+	const subjectType = $derived(review?.subject.type ?? '');
+	const headBranch = $derived(
 		review?.subject.type === 'code' ? review.subject.head_branch : undefined
 	);
-	let siblingFilters = $derived({
+	const siblingFilters = $derived({
 		subject_type: subjectType,
 		subject_ref: subjectRef,
 		head_branch: headBranch
@@ -78,8 +78,8 @@
 		enabled: isProjectInitialized() && !!review && (!!subjectRef || !!headBranch),
 	}));
 
-	let siblings = $derived<ReviewSummary[]>(siblingsQuery.data ?? []);
-	let hasMultipleRevisions = $derived(siblings.length > 1);
+	const siblings = $derived<ReviewSummary[]>(siblingsQuery.data ?? []);
+	const hasMultipleRevisions = $derived(siblings.length > 1);
 
 	// --- Badge helpers (reused from list page) ---
 	function getDispositionColor(disposition: string): string {
@@ -253,10 +253,10 @@
 	}
 
 	// --- Thread grouping ---
-	let unresolvedThreads = $derived(
+	const unresolvedThreads = $derived(
 		review?.threads.filter((t) => !t.resolved_at) ?? []
 	);
-	let resolvedThreads = $derived(
+	const resolvedThreads = $derived(
 		review?.threads.filter((t) => t.resolved_at) ?? []
 	);
 
@@ -393,7 +393,7 @@
 	}));
 
 	// AC: @review-records-web-ui ac-6 — Verdict submission state
-	let verdictDecision = $state<'approve' | 'request_changes' | 'comment'>('approve');
+	const verdictDecision = $state<'approve' | 'request_changes' | 'comment'>('approve');
 	let verdictReviewer = $state('');
 
 	const verdictMutation = createMutation(() => ({
@@ -419,24 +419,24 @@
 	}
 
 	// Check if review is in a state that accepts interactions
-	let isInteractive = $derived(
+	const isInteractive = $derived(
 		review != null &&
 		review.lifecycle_state !== 'archived' &&
 		!isStaticMode()
 	);
 
 	// AC: @review-structured-content-viewer ac-1, ac-2 — Detect entity reviews for structured content
-	let hasStructuredContent = $derived(
+	const hasStructuredContent = $derived(
 		review != null &&
 		(review.subject.type === 'plan' || review.subject.type === 'spec' || review.subject.type === 'task')
 	);
 
 	// AC: @review-code-diff-viewer ac-1 — Detect code review subject for diff viewer
-	let isCodeReview = $derived(review?.subject.type === 'code');
-	let baseCommit = $derived(
+	const isCodeReview = $derived(review?.subject.type === 'code');
+	const baseCommit = $derived(
 		review?.subject.type === 'code' ? review.subject.base_commit : ''
 	);
-	let headCommitValue = $derived(
+	const headCommitValue = $derived(
 		review?.subject.type === 'code' ? review.subject.head_commit : ''
 	);
 </script>

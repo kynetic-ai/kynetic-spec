@@ -8,25 +8,29 @@ Pipe a JSON array of command objects:
 
 ```json
 [
-  {"command": "task set", "args": {"ref": "@task-slug", "automation": "eligible"}},
-  {"command": "task note", "args": {"ref": "@task-slug", "message": "Assessed and marked eligible"}},
-  {"command": "inbox add", "args": {"text": "New idea to triage", "tag": ["mvp", "cli"]}}
+  { "command": "task set", "args": { "ref": "@task-slug", "automation": "eligible" } },
+  {
+    "command": "task note",
+    "args": { "ref": "@task-slug", "message": "Assessed and marked eligible" }
+  },
+  { "command": "inbox add", "args": { "text": "New idea to triage", "tag": ["mvp", "cli"] } }
 ]
 ```
 
 Each object has:
+
 - `command` — command path without `kspec` (e.g. `"task add"`, `"item ac add"`)
 - `args` — object mapping parameter names to values
 - `id` — optional correlation label for error messages
 
 ### Argument Rules
 
-| Type | Key format | Example |
-|------|-----------|---------|
-| Positional (`<ref>`) | Parameter name from signature | `"ref": "@task-slug"` |
-| Option (`--spec-ref`) | camelCase or kebab, no `--` | `"specRef": "@spec"` or `"spec-ref": "@spec"` |
-| Boolean flag (`--force`) | Flag name, no `--` | `"force": true` |
-| Repeatable (`--tag`) | Same key with array value | `"tag": ["cli", "bug"]` |
+| Type                     | Key format                    | Example                                       |
+| ------------------------ | ----------------------------- | --------------------------------------------- |
+| Positional (`<ref>`)     | Parameter name from signature | `"ref": "@task-slug"`                         |
+| Option (`--spec-ref`)    | camelCase or kebab, no `--`   | `"specRef": "@spec"` or `"spec-ref": "@spec"` |
+| Boolean flag (`--force`) | Flag name, no `--`            | `"force": true`                               |
+| Repeatable (`--tag`)     | Same key with array value     | `"tag": ["cli", "bug"]`                       |
 
 Boolean `true` emits the flag; `false` omits it. Arrays repeat the flag: `--tag cli --tag bug`.
 

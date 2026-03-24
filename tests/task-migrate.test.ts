@@ -38,10 +38,7 @@ async function setupMonolithicEnv(
   );
 
   // Start with empty tasks file
-  await fs.writeFile(
-    path.join(specDir, "project.tasks.yaml"),
-    toYaml([]),
-  );
+  await fs.writeFile(path.join(specDir, "project.tasks.yaml"), toYaml([]));
 
   return { env: { KSPEC_SPEC_DIR: specDir }, specDir };
 }
@@ -54,10 +51,7 @@ async function writeMonolithicTasks(
   specDir: string,
   tasks: Array<Record<string, unknown>>,
 ): Promise<void> {
-  await fs.writeFile(
-    path.join(specDir, "project.tasks.yaml"),
-    toYaml(tasks),
-  );
+  await fs.writeFile(path.join(specDir, "project.tasks.yaml"), toYaml(tasks));
 }
 
 /**
@@ -113,10 +107,7 @@ async function createPerTaskDir(
   };
 
   await fs.writeFile(path.join(taskDir, "task.yaml"), toYaml(coreData));
-  await fs.writeFile(
-    path.join(taskDir, "notes.yaml"),
-    toYaml({ notes: [] }),
-  );
+  await fs.writeFile(path.join(taskDir, "notes.yaml"), toYaml({ notes: [] }));
 }
 
 /**
@@ -177,7 +168,12 @@ describe("kspec task migrate", () => {
     ({ env, specDir } = await setupMonolithicEnv(tempDir));
     const [id1, id2] = testUlids("MGRN", 2);
     const notes1 = [
-      { _ulid: testUlid("NTE", 10), created_at: "2026-03-20T01:00:00.000Z", author: "@test", content: "Note one" },
+      {
+        _ulid: testUlid("NTE", 10),
+        created_at: "2026-03-20T01:00:00.000Z",
+        author: "@test",
+        content: "Note one",
+      },
     ];
     await writeMonolithicTasks(specDir, [
       makeMonolithicTask(id1, "task-alpha", { notes: notes1 }),
@@ -224,8 +220,18 @@ describe("kspec task migrate", () => {
     ({ env, specDir } = await setupMonolithicEnv(tempDir));
     const [id1] = testUlids("MGDX", 1);
     const notes = [
-      { _ulid: testUlid("NTE", 20), created_at: "2026-03-20T01:00:00.000Z", author: "@test", content: "A note" },
-      { _ulid: testUlid("NTE", 21), created_at: "2026-03-20T02:00:00.000Z", author: "@test", content: "Another note" },
+      {
+        _ulid: testUlid("NTE", 20),
+        created_at: "2026-03-20T01:00:00.000Z",
+        author: "@test",
+        content: "A note",
+      },
+      {
+        _ulid: testUlid("NTE", 21),
+        created_at: "2026-03-20T02:00:00.000Z",
+        author: "@test",
+        content: "Another note",
+      },
     ];
     await writeMonolithicTasks(specDir, [
       makeMonolithicTask(id1, "task-indexed", { notes, assignee: "@user" }),
@@ -262,7 +268,12 @@ describe("kspec task migrate", () => {
     ({ env, specDir } = await setupMonolithicEnv(tempDir));
     const [id1, id2] = testUlids("MGDR", 2);
     const notes1 = [
-      { _ulid: testUlid("NTE", 30), created_at: "2026-03-20T01:00:00.000Z", author: "@test", content: "Note" },
+      {
+        _ulid: testUlid("NTE", 30),
+        created_at: "2026-03-20T01:00:00.000Z",
+        author: "@test",
+        content: "Note",
+      },
     ];
     await writeMonolithicTasks(specDir, [
       makeMonolithicTask(id1, "task-dry-a", { notes: notes1 }),
@@ -298,11 +309,14 @@ describe("kspec task migrate", () => {
     ({ env, specDir } = await setupMonolithicEnv(tempDir));
     const [id1] = testUlids("MGJS", 1);
     const notes = [
-      { _ulid: testUlid("NTE", 40), created_at: "2026-03-20T01:00:00.000Z", author: "@test", content: "Note" },
+      {
+        _ulid: testUlid("NTE", 40),
+        created_at: "2026-03-20T01:00:00.000Z",
+        author: "@test",
+        content: "Note",
+      },
     ];
-    await writeMonolithicTasks(specDir, [
-      makeMonolithicTask(id1, "task-json-dry", { notes }),
-    ]);
+    await writeMonolithicTasks(specDir, [makeMonolithicTask(id1, "task-json-dry", { notes })]);
 
     // AC: @trait-dry-run ac-6 — JSON includes dry_run boolean
     const json = kspecJson<{ dry_run: boolean; migrated: number; notes_total: number }>(
@@ -325,8 +339,18 @@ describe("kspec task migrate", () => {
     ({ env, specDir } = await setupMonolithicEnv(tempDir));
     const [id1] = testUlids("MGFD", 1);
     const notes = [
-      { _ulid: testUlid("NTE", 50), created_at: "2026-03-20T01:00:00.000Z", author: "@dev", content: "Detailed note content" },
-      { _ulid: testUlid("NTE", 51), created_at: "2026-03-20T02:00:00.000Z", author: "@dev", content: "Follow-up note" },
+      {
+        _ulid: testUlid("NTE", 50),
+        created_at: "2026-03-20T01:00:00.000Z",
+        author: "@dev",
+        content: "Detailed note content",
+      },
+      {
+        _ulid: testUlid("NTE", 51),
+        created_at: "2026-03-20T02:00:00.000Z",
+        author: "@dev",
+        content: "Follow-up note",
+      },
     ];
     const task = makeMonolithicTask(id1, "task-fidelity", {
       title: "Fidelity Test Task",
@@ -350,7 +374,11 @@ describe("kspec task migrate", () => {
       specDir,
       sessionsDir: path.join(tempDir, ".kspec-sessions"),
       manifestPath: path.join(specDir, "kynetic.yaml"),
-      manifest: { kynetic_spec: "1.0", title: "Test Project", task_storage: { format: "split" } } as any,
+      manifest: {
+        kynetic_spec: "1.0",
+        title: "Test Project",
+        task_storage: { format: "split" },
+      } as any,
       shadow: null,
       config: {} as any,
     };
@@ -397,7 +425,12 @@ describe("kspec task migrate", () => {
       priority: 999, // Out of range (probably)
       tags: "not-an-array", // Should be an array
       notes: [
-        { _ulid: testUlid("NTE", 60), created_at: "2026-03-20T01:00:00.000Z", author: "@test", content: "Bad task note" },
+        {
+          _ulid: testUlid("NTE", 60),
+          created_at: "2026-03-20T01:00:00.000Z",
+          author: "@test",
+          content: "Bad task note",
+        },
       ],
     };
 
@@ -440,7 +473,10 @@ describe("kspec task migrate", () => {
       notes: null,
     };
     // Task with notes missing entirely (delete notes from the spread)
-    const { notes: _n, ...missingNotesBase } = makeMonolithicTask(idMissingNotes, "task-missing-notes");
+    const { notes: _n, ...missingNotesBase } = makeMonolithicTask(
+      idMissingNotes,
+      "task-missing-notes",
+    );
     const missingNotesTask = missingNotesBase;
 
     await writeMonolithicTasks(specDir, [stringNotesTask, nullNotesTask, missingNotesTask]);
@@ -458,9 +494,9 @@ describe("kspec task migrate", () => {
     }
 
     // String-notes task should have warning and empty notes
-    const strNotesYaml = parseYaml(await fs.readFile(
-      path.join(specDir, "tasks", idStringNotes, "notes.yaml"), "utf-8",
-    )) as Record<string, unknown>;
+    const strNotesYaml = parseYaml(
+      await fs.readFile(path.join(specDir, "tasks", idStringNotes, "notes.yaml"), "utf-8"),
+    ) as Record<string, unknown>;
     expect(Array.isArray(strNotesYaml.notes)).toBe(true);
     expect((strNotesYaml.notes as unknown[]).length).toBe(0);
   });
@@ -521,7 +557,12 @@ describe("kspec task migrate", () => {
       makeMonolithicTask(idNew, "task-new-backfill", {
         title: "New Backfill Task",
         notes: [
-          { _ulid: testUlid("NTE", 70), created_at: "2026-03-20T03:00:00.000Z", author: "@test", content: "Backfill note" },
+          {
+            _ulid: testUlid("NTE", 70),
+            created_at: "2026-03-20T03:00:00.000Z",
+            author: "@test",
+            content: "Backfill note",
+          },
         ],
       }),
     );
@@ -533,14 +574,10 @@ describe("kspec task migrate", () => {
 
     // New task should have a per-task directory
     const newTaskDir = path.join(specDir, "tasks", idNew);
-    const newTaskYaml = parseYaml(
-      await fs.readFile(path.join(newTaskDir, "task.yaml"), "utf-8"),
-    );
+    const newTaskYaml = parseYaml(await fs.readFile(path.join(newTaskDir, "task.yaml"), "utf-8"));
     expect(newTaskYaml.title).toBe("New Backfill Task");
 
-    const newNotesYaml = parseYaml(
-      await fs.readFile(path.join(newTaskDir, "notes.yaml"), "utf-8"),
-    );
+    const newNotesYaml = parseYaml(await fs.readFile(path.join(newTaskDir, "notes.yaml"), "utf-8"));
     expect(newNotesYaml.notes).toHaveLength(1);
     expect(newNotesYaml.notes[0].content).toBe("Backfill note");
 
@@ -623,15 +660,17 @@ describe("kspec task migrate", () => {
       makeMonolithicTask(id1, "task-atomic-a"),
       makeMonolithicTask(id2, "task-atomic-b", {
         notes: [
-          { _ulid: testUlid("NTE", 95), created_at: "2026-03-20T01:00:00.000Z", author: "@test", content: "A note" },
+          {
+            _ulid: testUlid("NTE", 95),
+            created_at: "2026-03-20T01:00:00.000Z",
+            author: "@test",
+            content: "A note",
+          },
         ],
       }),
       makeMonolithicTask(id3, "task-atomic-c"),
     ];
-    await fs.writeFile(
-      path.join(shadowDir, "project.tasks.yaml"),
-      toYaml(monolithicTasks),
-    );
+    await fs.writeFile(path.join(shadowDir, "project.tasks.yaml"), toYaml(monolithicTasks));
     // Stage and commit the monolithic data so migrate sees it
     // KSPEC_SHADOW_COMMIT=1 authorizes the commit past the pre-commit hook
     execSync("git add -A && git commit -m 'add monolithic tasks'", {
@@ -659,10 +698,7 @@ describe("kspec task migrate", () => {
 
     // Verify all three per-task directories were created in that single commit
     for (const id of [id1, id2, id3]) {
-      const taskYaml = await fs.readFile(
-        path.join(shadowDir, "tasks", id, "task.yaml"),
-        "utf-8",
-      );
+      const taskYaml = await fs.readFile(path.join(shadowDir, "tasks", id, "task.yaml"), "utf-8");
       expect(taskYaml).toContain(id);
     }
 
@@ -850,10 +886,7 @@ describe("kspec task migrate", () => {
     const task = makeMonolithicTask(id1, "task-wrapper");
 
     // Write in wrapper format
-    await fs.writeFile(
-      path.join(specDir, "project.tasks.yaml"),
-      toYaml({ tasks: [task] }),
-    );
+    await fs.writeFile(path.join(specDir, "project.tasks.yaml"), toYaml({ tasks: [task] }));
 
     const result = kspec("task migrate --force", tempDir, { env });
     expect(result.exitCode).toBe(0);
@@ -888,13 +921,15 @@ describe("kspec task migrate", () => {
     };
     const monoEntry = makeMonolithicTask(idMono, "task-mono-new", {
       notes: [
-        { _ulid: testUlid("NTE", 80), created_at: "2026-03-20T04:00:00.000Z", author: "@test", content: "Mixed note" },
+        {
+          _ulid: testUlid("NTE", 80),
+          created_at: "2026-03-20T04:00:00.000Z",
+          author: "@test",
+          content: "Mixed note",
+        },
       ],
     });
-    await fs.writeFile(
-      path.join(specDir, "project.tasks.yaml"),
-      toYaml([leanEntry, monoEntry]),
-    );
+    await fs.writeFile(path.join(specDir, "project.tasks.yaml"), toYaml([leanEntry, monoEntry]));
 
     const result = kspec("task migrate --force", tempDir, { env });
     expect(result.exitCode).toBe(0);
@@ -906,9 +941,7 @@ describe("kspec task migrate", () => {
     expect(newTaskYaml._ulid).toBe(idMono);
 
     // Index should be all lean
-    const index = parseYaml(
-      await fs.readFile(path.join(specDir, "project.tasks.yaml"), "utf-8"),
-    );
+    const index = parseYaml(await fs.readFile(path.join(specDir, "project.tasks.yaml"), "utf-8"));
     expect(index).toHaveLength(2);
     for (const entry of index) {
       expect(entry.notes).toBeUndefined();
@@ -919,9 +952,7 @@ describe("kspec task migrate", () => {
   it("tasks with no notes get empty notes.yaml", async () => {
     ({ env, specDir } = await setupMonolithicEnv(tempDir));
     const [id1] = testUlids("MGEN", 1);
-    await writeMonolithicTasks(specDir, [
-      makeMonolithicTask(id1, "task-no-notes"),
-    ]);
+    await writeMonolithicTasks(specDir, [makeMonolithicTask(id1, "task-no-notes")]);
 
     kspec("task migrate --force", tempDir, { env });
 
@@ -953,7 +984,12 @@ describe("kspec task migrate", () => {
       blocked_by: [],
       created_at: "2026-03-20T00:00:00.000Z",
       notes: [
-        { _ulid: testUlid("NTE", 90), created_at: "2026-03-20T01:00:00.000Z", author: "@test", content: "Note on missing-ulid task" },
+        {
+          _ulid: testUlid("NTE", 90),
+          created_at: "2026-03-20T01:00:00.000Z",
+          author: "@test",
+          content: "Note on missing-ulid task",
+        },
       ],
       todos: [],
     };
@@ -1021,7 +1057,12 @@ describe("kspec task migrate", () => {
       blocked_by: [],
       created_at: "2026-03-20T00:00:00.000Z",
       notes: [
-        { _ulid: testUlid("NTE", 91), created_at: "2026-03-20T01:00:00.000Z", author: "@test", content: "Note on malformed-ulid task" },
+        {
+          _ulid: testUlid("NTE", 91),
+          created_at: "2026-03-20T01:00:00.000Z",
+          author: "@test",
+          content: "Note on malformed-ulid task",
+        },
       ],
       todos: [],
     };
@@ -1093,8 +1134,18 @@ describe("kspec task migrate", () => {
       path.join(specDir, "tasks", idExisting, "notes.yaml"),
       toYaml({
         notes: [
-          { _ulid: testUlid("NTE", 91), created_at: "2026-03-20T01:00:00.000Z", author: "@dev", content: "A canonical note" },
-          { _ulid: testUlid("NTE", 92), created_at: "2026-03-20T02:00:00.000Z", author: "@dev", content: "Another canonical note" },
+          {
+            _ulid: testUlid("NTE", 91),
+            created_at: "2026-03-20T01:00:00.000Z",
+            author: "@dev",
+            content: "A canonical note",
+          },
+          {
+            _ulid: testUlid("NTE", 92),
+            created_at: "2026-03-20T02:00:00.000Z",
+            author: "@dev",
+            content: "Another canonical note",
+          },
         ],
       }),
     );

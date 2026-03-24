@@ -61,8 +61,7 @@ export function detectFileType(filePath: string): FileType {
   // Check for spec modules (in modules/ directory)
   // Match both "/modules/" and "modules/" at start of path
   if (
-    (normalizedPath.includes("/modules/") ||
-      normalizedPath.startsWith("modules/")) &&
+    (normalizedPath.includes("/modules/") || normalizedPath.startsWith("modules/")) &&
     fileName.endsWith(".yaml")
   ) {
     return FileType.SpecModules;

@@ -5,7 +5,7 @@
 	import * as Dialog from "$lib/components/ui/dialog/index.js";
 	import type { WithoutChildrenOrChild } from "$lib/utils.js";
 
-	let {
+	const {
 		open = $bindable(false),
 		ref = $bindable(null),
 		value = $bindable(""),

@@ -36,10 +36,7 @@ describe("Integration: plan commands", () => {
       expect(output).toContain("User Auth Plan");
 
       // Verify plan was saved
-      const plans = kspecJson<Array<{ title: string }>>(
-        "plan list --json",
-        tempDir,
-      );
+      const plans = kspecJson<Array<{ title: string }>>("plan list --json", tempDir);
       expect(plans).toHaveLength(1);
       expect(plans[0].title).toBe("User Auth Plan");
     });
@@ -49,16 +46,10 @@ describe("Integration: plan commands", () => {
       const contentPath = path.join(tempDir, "test-plan.md");
       await fs.writeFile(contentPath, "# Plan Content\n\nDetailed steps...");
 
-      const output = kspec(
-        `plan add --title "File Plan" --content-file "${contentPath}"`,
-        tempDir,
-      );
+      const output = kspec(`plan add --title "File Plan" --content-file "${contentPath}"`, tempDir);
       expect(output).toContain("Created plan:");
 
-      const plan = kspecJson<{ content: string }>(
-        "plan get @01 --json",
-        tempDir,
-      );
+      const plan = kspecJson<{ content: string }>("plan get @01 --json", tempDir);
       expect(plan.content).toContain("# Plan Content");
       expect(plan.content).toContain("Detailed steps...");
     });
@@ -67,23 +58,14 @@ describe("Integration: plan commands", () => {
     it("should create plan with default draft status", () => {
       kspec('plan add --title "Draft Plan" --content "Draft content"', tempDir);
 
-      const plan = kspecJson<{ status: string }>(
-        "plan get @01 --json",
-        tempDir,
-      );
+      const plan = kspecJson<{ status: string }>("plan get @01 --json", tempDir);
       expect(plan.status).toBe("draft");
     });
 
     it("should support custom status", () => {
-      kspec(
-        'plan add --title "Approved Plan" --content "Content" --status approved',
-        tempDir,
-      );
+      kspec('plan add --title "Approved Plan" --content "Content" --status approved', tempDir);
 
-      const plan = kspecJson<{ status: string }>(
-        "plan get @01 --json",
-        tempDir,
-      );
+      const plan = kspecJson<{ status: string }>("plan get @01 --json", tempDir);
       expect(plan.status).toBe("approved");
     });
 
@@ -95,10 +77,7 @@ describe("Integration: plan commands", () => {
       expect(output).toContain("Created plan:");
 
       // Should be able to reference by slug
-      const plan = kspecJson<{ slugs: string[] }>(
-        "plan get @my-plan --json",
-        tempDir,
-      );
+      const plan = kspecJson<{ slugs: string[] }>("plan get @my-plan --json", tempDir);
       expect(plan.slugs).toContain("my-plan");
     });
 
@@ -108,9 +87,7 @@ describe("Integration: plan commands", () => {
         tempDir,
         { expectFail: true },
       );
-      expect(result.stderr).toContain(
-        "Cannot specify both --content and --content-file",
-      );
+      expect(result.stderr).toContain("Cannot specify both --content and --content-file");
       expect(result.exitCode).toBe(2); // EXIT_CODES.USAGE_ERROR
     });
 
@@ -118,23 +95,14 @@ describe("Integration: plan commands", () => {
     it("should auto-generate slug with plan- prefix when no slug provided", () => {
       kspec('plan add --title "My Feature" --content "Content"', tempDir);
 
-      const plan = kspecJson<{ slugs: string[] }>(
-        "plan get @plan-my-feature --json",
-        tempDir,
-      );
+      const plan = kspecJson<{ slugs: string[] }>("plan get @plan-my-feature --json", tempDir);
       expect(plan.slugs).toContain("plan-my-feature");
     });
 
     it("should use provided slug as-is (no auto-prefix)", () => {
-      kspec(
-        'plan add --title "Another Feature" --content "Content" --slug custom-slug',
-        tempDir,
-      );
+      kspec('plan add --title "Another Feature" --content "Content" --slug custom-slug', tempDir);
 
-      const plan = kspecJson<{ slugs: string[] }>(
-        "plan get @custom-slug --json",
-        tempDir,
-      );
+      const plan = kspecJson<{ slugs: string[] }>("plan get @custom-slug --json", tempDir);
       expect(plan.slugs).toContain("custom-slug");
       expect(plan.slugs).not.toContain("plan-custom-slug");
     });
@@ -145,8 +113,7 @@ describe("Integration: plan commands", () => {
       const parsed = JSON.parse(itemsOutput) as { items: Array<{ slugs: string[] }> };
 
       // Find an existing slug from spec items
-      const existingSlug =
-        parsed.items.flatMap((i) => i.slugs).find((s) => s) || "test-module";
+      const existingSlug = parsed.items.flatMap((i) => i.slugs).find((s) => s) || "test-module";
 
       const result = kspecRun(
         `plan add --title "Collision Test" --content "Content" --slug ${existingSlug}`,
@@ -194,11 +161,7 @@ describe("Integration: plan commands", () => {
 
     it("should reject missing title", () => {
       // --title is a required option in Commander
-      const result = kspec(
-        "plan add --content Content",
-        tempDir,
-        { expectFail: true },
-      );
+      const result = kspec("plan add --content Content", tempDir, { expectFail: true });
       // Commander itself rejects missing required options
       expect(result.exitCode).not.toBe(0);
     });
@@ -211,10 +174,7 @@ describe("Integration: plan commands", () => {
       );
 
       // Create a plan whose auto-generated slug would be plan-collision-test
-      kspec(
-        'plan add --title "Collision Test" --content "Content"',
-        tempDir,
-      );
+      kspec('plan add --title "Collision Test" --content "Content"', tempDir);
 
       // Plan slug should have been incremented to avoid the spec collision
       const plan = kspecJson<{ slugs: string[] }>(
@@ -267,10 +227,7 @@ describe("Integration: plan commands", () => {
     });
 
     it("should resolve by ULID prefix", () => {
-      const list = kspecJson<Array<{ _ulid: string }>>(
-        "plan list --json",
-        tempDir,
-      );
+      const list = kspecJson<Array<{ _ulid: string }>>("plan list --json", tempDir);
       const ulid = list[0]._ulid;
       const prefix = ulid.slice(0, 6);
 
@@ -302,10 +259,7 @@ describe("Integration: plan commands", () => {
 
     // AC: @plan-crud ac-3
     it("should update status and set approved_at when transitioning to approved", () => {
-      const beforePlan = kspecJson<{ approved_at: string | null }>(
-        "plan get @01 --json",
-        tempDir,
-      );
+      const beforePlan = kspecJson<{ approved_at: string | null }>("plan get @01 --json", tempDir);
       expect(beforePlan.approved_at).toBeNull();
 
       kspec("plan set @01 --status approved", tempDir);
@@ -369,14 +323,9 @@ describe("Integration: plan commands", () => {
       // Get an existing spec item slug from fixtures
       const itemsOutput = kspec("item list --json", tempDir);
       const parsed = JSON.parse(itemsOutput) as { items: Array<{ slugs: string[] }> };
-      const existingSlug =
-        parsed.items.flatMap((i) => i.slugs).find((s) => s) || "test-module";
+      const existingSlug = parsed.items.flatMap((i) => i.slugs).find((s) => s) || "test-module";
 
-      const result = kspecRun(
-        `plan set @01 --slug ${existingSlug}`,
-        tempDir,
-        { expectFail: true },
-      );
+      const result = kspecRun(`plan set @01 --slug ${existingSlug}`, tempDir, { expectFail: true });
 
       expect(result.stderr).toContain("collides with existing item");
       expect(result.exitCode).toBe(5); // EXIT_CODES.CONFLICT
@@ -387,11 +336,7 @@ describe("Integration: plan commands", () => {
       kspec('plan add --title "Other Plan" --content "Content" --slug other-plan-slug', tempDir);
 
       // Try to add that slug to the first plan
-      const result = kspecRun(
-        "plan set @01 --slug other-plan-slug",
-        tempDir,
-        { expectFail: true },
-      );
+      const result = kspecRun("plan set @01 --slug other-plan-slug", tempDir, { expectFail: true });
 
       expect(result.stderr).toContain("collides with existing item");
       expect(result.exitCode).toBe(5); // EXIT_CODES.CONFLICT
@@ -419,10 +364,7 @@ describe("Integration: plan commands", () => {
     // AC: @plan-export ac-output-file
     it("should write plan content to the specified file", async () => {
       const outputPath = path.join(tempDir, "exported-plan.md");
-      const output = kspec(
-        `plan export @export-plan --output "${outputPath}"`,
-        tempDir,
-      );
+      const output = kspec(`plan export @export-plan --output "${outputPath}"`, tempDir);
 
       expect(output).toContain("Exported plan content");
       const fileContents = await fs.readFile(outputPath, "utf-8");
@@ -486,9 +428,7 @@ describe("Integration: plan commands", () => {
       expect(exported.status).toBe("approved");
       expect(exported.derived_specs).toEqual([]);
       expect(exported.derived_tasks).toEqual([]);
-      expect(exported.created_at).toMatch(
-        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/,
-      );
+      expect(exported.created_at).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/);
     });
 
     // AC: @trait-json-output ac-6 — N/A: plan export has no competing output-format flags beyond global --json.
@@ -503,14 +443,8 @@ describe("Integration: plan commands", () => {
     beforeEach(() => {
       // Create multiple plans
       kspec('plan add --title "Draft Plan" --content "Draft"', tempDir);
-      kspec(
-        'plan add --title "Approved Plan" --content "Approved" --status approved',
-        tempDir,
-      );
-      kspec(
-        'plan add --title "Completed Plan" --content "Done" --status completed',
-        tempDir,
-      );
+      kspec('plan add --title "Approved Plan" --content "Approved" --status approved', tempDir);
+      kspec('plan add --title "Completed Plan" --content "Done" --status completed', tempDir);
     });
 
     // AC: @plan-crud ac-7
@@ -592,8 +526,8 @@ describe("Integration: plan commands", () => {
       kspec('task cancel @cancelled-work --reason "No longer needed"', isolatedTempDir);
 
       const output = kspec("plan list", isolatedTempDir);
-      expect(output).toContain('[1 task] Plan Metrics');
-      expect(output).not.toContain('[2 tasks] Plan Metrics');
+      expect(output).toContain("[1 task] Plan Metrics");
+      expect(output).not.toContain("[2 tasks] Plan Metrics");
       await cleanupTempDir(isolatedTempDir);
     });
   });
@@ -629,10 +563,7 @@ describe("Integration: plan commands", () => {
       kspec('plan note @01 "Note 2"', tempDir);
       kspec('plan note @01 "Note 3"', tempDir);
 
-      const plan = kspecJson<{ notes: Array<{ content: string }> }>(
-        "plan get @01 --json",
-        tempDir,
-      );
+      const plan = kspecJson<{ notes: Array<{ content: string }> }>("plan get @01 --json", tempDir);
 
       expect(plan.notes).toHaveLength(3);
       expect(plan.notes[0].content).toBe("Note 1");

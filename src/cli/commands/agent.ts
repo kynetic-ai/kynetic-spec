@@ -14,11 +14,7 @@
 
 import type { Command } from "commander";
 import chalk from "chalk";
-import {
-  initContext,
-  loadMetaContext,
-  findTaskByRef,
-} from "../../parser/index.js";
+import { initContext, loadMetaContext, findTaskByRef } from "../../parser/index.js";
 import { resolveTaskDataManager } from "../../parser/task-data-manager.js";
 import { runInvocation } from "../../agent-runtime/invocation.js";
 import type { SessionUpdate } from "../../acp/index.js";
@@ -70,14 +66,16 @@ function formatDispatchRules(agent: LoadedAgent): string {
   if (!agent.dispatch || agent.dispatch.length === 0) {
     return "(none)";
   }
-  return agent.dispatch.map((r) => {
-    const filterParts: string[] = [];
-    if (r.filter?.automation) filterParts.push(`automation=${r.filter.automation}`);
-    if (r.filter?.tags?.length) filterParts.push(`tags=${r.filter.tags.join(",")}`);
-    if (r.filter?.priority !== undefined) filterParts.push(`priority=${r.filter.priority}`);
-    const filterStr = filterParts.length > 0 ? ` [${filterParts.join(", ")}]` : "";
-    return `${r.on}${filterStr}`;
-  }).join(", ");
+  return agent.dispatch
+    .map((r) => {
+      const filterParts: string[] = [];
+      if (r.filter?.automation) filterParts.push(`automation=${r.filter.automation}`);
+      if (r.filter?.tags?.length) filterParts.push(`tags=${r.filter.tags.join(",")}`);
+      if (r.filter?.priority !== undefined) filterParts.push(`priority=${r.filter.priority}`);
+      const filterStr = filterParts.length > 0 ? ` [${filterParts.join(", ")}]` : "";
+      return `${r.on}${filterStr}`;
+    })
+    .join(", ");
 }
 
 // ─── Command Registration ─────────────────────────────────────────────────────
@@ -87,9 +85,7 @@ function formatDispatchRules(agent: LoadedAgent): string {
  * AC: @cli-agent-commands ac-1 through ac-10
  */
 export function registerAgentCommands(program: Command): void {
-  const agent = program
-    .command("agent")
-    .description("Manage and run agents");
+  const agent = program.command("agent").description("Manage and run agents");
 
   // ─── kspec agent list ─────────────────────────────────────────────────────
 
@@ -107,7 +103,12 @@ export function registerAgentCommands(program: Command): void {
         "|",
       ),
     )
-    .option("--tag <tag>", "Filter by tag (repeatable)", (val: string, arr: string[]) => [...arr, val], [] as string[])
+    .option(
+      "--tag <tag>",
+      "Filter by tag (repeatable)",
+      (val: string, arr: string[]) => [...arr, val],
+      [] as string[],
+    )
     .option("--limit <n>", "Maximum number of results")
     .option("--offset <n>", "Skip first N results")
     .option("--count", "Output only the count")
@@ -136,8 +137,8 @@ export function registerAgentCommands(program: Command): void {
             });
             process.exit(EXIT_CODES.VALIDATION_FAILED);
           }
-          agents = agents.filter((a) =>
-            (a as LoadedAgent & { automation?: string }).automation === statusResult.value,
+          agents = agents.filter(
+            (a) => (a as LoadedAgent & { automation?: string }).automation === statusResult.value,
           );
         }
 
@@ -193,16 +194,13 @@ export function registerAgentCommands(program: Command): void {
         // AC: @trait-semantic-exit-codes ac-5 - empty result set exits 0
         // AC: @trait-filterable-list ac-6 - empty list with informative message
         if (paginated.length === 0) {
-          output(
-            { items: [], total, offset, limit },
-            () => {
-              if (opts.status || tags.length > 0) {
-                console.log("No agents match the specified filters.");
-              } else {
-                console.log("No agent definitions found.");
-              }
-            },
-          );
+          output({ items: [], total, offset, limit }, () => {
+            if (opts.status || tags.length > 0) {
+              console.log("No agents match the specified filters.");
+            } else {
+              console.log("No agent definitions found.");
+            }
+          });
           return;
         }
 
@@ -225,7 +223,9 @@ export function registerAgentCommands(program: Command): void {
             const filterDesc = [
               opts.status ? `status=${opts.status}` : "",
               tags.length > 0 ? `tags=${tags.join(",")}` : "",
-            ].filter(Boolean).join(", ");
+            ]
+              .filter(Boolean)
+              .join(", ");
             const summaryStr = filterDesc ? ` (filtered: ${filterDesc})` : "";
             console.log(chalk.bold(`Agents${summaryStr}: ${paginated.length} of ${total}`));
             console.log();
@@ -233,7 +233,9 @@ export function registerAgentCommands(program: Command): void {
             for (const a of paginated) {
               console.log(`  ${chalk.cyan(a.id)}  ${chalk.gray(a.adapter ?? "claude-agent-acp")}`);
               console.log(`    ${chalk.gray("dispatch:")} ${formatDispatchRules(a)}`);
-              console.log(`    ${chalk.gray("concurrency:")} max ${a.concurrency?.max_concurrent ?? 1}`);
+              console.log(
+                `    ${chalk.gray("concurrency:")} max ${a.concurrency?.max_concurrent ?? 1}`,
+              );
             }
           },
         );
@@ -270,12 +272,9 @@ export function registerAgentCommands(program: Command): void {
 
         // AC: @trait-error-guidance ac-3 - not found error with suggestion
         if (!agentDef) {
-          error(
-            `Agent "${agentId}" not found.`,
-            {
-              suggestion: `Check available agents with: kspec agent list`,
-            },
-          );
+          error(`Agent "${agentId}" not found.`, {
+            suggestion: `Check available agents with: kspec agent list`,
+          });
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
 
@@ -331,7 +330,9 @@ export function registerAgentCommands(program: Command): void {
           if (opts.timeout) {
             const parsed = parseIntOption(opts.timeout, { min: 1, max: 10080, name: "Timeout" });
             if (!parsed.ok) {
-              error(`Invalid --timeout value: ${parsed.error}`, { suggestion: "Example: --timeout 30" });
+              error(`Invalid --timeout value: ${parsed.error}`, {
+                suggestion: "Example: --timeout 30",
+              });
               process.exit(EXIT_CODES.VALIDATION_FAILED);
             }
             dryTimeoutOverride = parsed.value;
@@ -340,7 +341,9 @@ export function registerAgentCommands(program: Command): void {
           if (opts.budget) {
             const parsed = parseIntOption(opts.budget, { min: 1, max: 99999, name: "Budget" });
             if (!parsed.ok) {
-              error(`Invalid --budget value: ${parsed.error}`, { suggestion: "Example: --budget 10" });
+              error(`Invalid --budget value: ${parsed.error}`, {
+                suggestion: "Example: --budget 10",
+              });
               process.exit(EXIT_CODES.VALIDATION_FAILED);
             }
             dryBudgetOverride = parsed.value;
@@ -387,7 +390,9 @@ export function registerAgentCommands(program: Command): void {
         if (opts.timeout) {
           const parsed = parseIntOption(opts.timeout, { min: 1, max: 10080, name: "Timeout" });
           if (!parsed.ok) {
-            error(`Invalid --timeout value: ${parsed.error}`, { suggestion: "Example: --timeout 30" });
+            error(`Invalid --timeout value: ${parsed.error}`, {
+              suggestion: "Example: --timeout 30",
+            });
             process.exit(EXIT_CODES.VALIDATION_FAILED);
           }
           timeoutOverride = parsed.value;
@@ -396,7 +401,9 @@ export function registerAgentCommands(program: Command): void {
         if (opts.budget) {
           const parsed = parseIntOption(opts.budget, { min: 1, max: 99999, name: "Budget" });
           if (!parsed.ok) {
-            error(`Invalid --budget value: ${parsed.error}`, { suggestion: "Example: --budget 10" });
+            error(`Invalid --budget value: ${parsed.error}`, {
+              suggestion: "Example: --budget 10",
+            });
             process.exit(EXIT_CODES.VALIDATION_FAILED);
           }
           budgetOverride = parsed.value;
@@ -405,13 +412,14 @@ export function registerAgentCommands(program: Command): void {
         const effectiveAgent = {
           ...agentDef,
           adapter: adapterId,
-          budget: timeoutOverride !== undefined || budgetOverride !== undefined
-            ? {
-                ...agentDef.budget,
-                timeout_minutes: timeoutOverride ?? agentDef.budget?.timeout_minutes,
-                max_tasks: budgetOverride ?? agentDef.budget?.max_tasks,
-              }
-            : agentDef.budget,
+          budget:
+            timeoutOverride !== undefined || budgetOverride !== undefined
+              ? {
+                  ...agentDef.budget,
+                  timeout_minutes: timeoutOverride ?? agentDef.budget?.timeout_minutes,
+                  max_tasks: budgetOverride ?? agentDef.budget?.max_tasks,
+                }
+              : agentDef.budget,
         };
 
         console.log(chalk.gray(`Running agent "${agentId}"...`));
@@ -487,10 +495,9 @@ export function registerAgentCommands(program: Command): void {
 
         // AC: @trait-error-guidance ac-1, ac-2
         if (!daemonConn) {
-          error(
-            "Daemon is not running. Cannot retrieve agent status.",
-            { suggestion: "Start the daemon with: kspec serve" },
-          );
+          error("Daemon is not running. Cannot retrieve agent status.", {
+            suggestion: "Start the daemon with: kspec serve",
+          });
           process.exit(EXIT_CODES.ERROR);
         }
 
@@ -508,7 +515,7 @@ export function registerAgentCommands(program: Command): void {
         }
 
         // AC: @cli-agent-commands ac-6
-        const data = await response.json() as {
+        const data = (await response.json()) as {
           running: boolean;
           activeInvocations: number;
           queuedInvocations: number;
@@ -531,7 +538,9 @@ export function registerAgentCommands(program: Command): void {
         output(data, () => {
           console.log(chalk.bold("Agent Status"));
           console.log();
-          console.log(`  Dispatch engine: ${data.running ? chalk.green("running") : chalk.gray("stopped")}`);
+          console.log(
+            `  Dispatch engine: ${data.running ? chalk.green("running") : chalk.gray("stopped")}`,
+          );
           console.log(`  Active invocations: ${chalk.cyan(String(data.activeInvocations))}`);
           console.log(`  Queued invocations: ${chalk.cyan(String(data.queuedInvocations))}`);
 
@@ -543,7 +552,9 @@ export function registerAgentCommands(program: Command): void {
               const elapsed = Math.round(inv.elapsedMs / 1000);
               const taskStr = inv.taskRef ? `  task: ${chalk.yellow(inv.taskRef)}` : "";
               console.log(`  ${chalk.cyan(inv.agentId)}  ${chalk.gray(inv.agentName)}`);
-              console.log(`    session: ${chalk.gray(inv.sessionId)}  elapsed: ${elapsed}s${taskStr}`);
+              console.log(
+                `    session: ${chalk.gray(inv.sessionId)}  elapsed: ${elapsed}s${taskStr}`,
+              );
             }
           }
 
@@ -567,9 +578,7 @@ export function registerAgentCommands(program: Command): void {
 
   // ─── kspec agent dispatch ─────────────────────────────────────────────────
 
-  const dispatch = agent
-    .command("dispatch")
-    .description("Manage the agent dispatch engine");
+  const dispatch = agent.command("dispatch").description("Manage the agent dispatch engine");
 
   // AC: @cli-agent-commands ac-4
   // AC: @cli-agent-commands ac-10
@@ -583,10 +592,9 @@ export function registerAgentCommands(program: Command): void {
 
         // AC: @cli-agent-commands ac-10 - error when daemon not running
         if (!daemonConn) {
-          error(
-            "Daemon is not running. The dispatch engine requires the daemon.",
-            { suggestion: "Start the daemon first with: kspec serve" },
-          );
+          error("Daemon is not running. The dispatch engine requires the daemon.", {
+            suggestion: "Start the daemon first with: kspec serve",
+          });
           process.exit(EXIT_CODES.ERROR);
         }
 
@@ -613,7 +621,7 @@ export function registerAgentCommands(program: Command): void {
           process.exit(EXIT_CODES.ERROR);
         }
 
-        const data = await response.json() as {
+        const data = (await response.json()) as {
           started: boolean;
           reason?: string;
           status?: { running: boolean; activeInvocations: number; queuedInvocations: number };
@@ -642,10 +650,7 @@ export function registerAgentCommands(program: Command): void {
         const daemonConn = getDaemonUrl();
 
         if (!daemonConn) {
-          error(
-            "Daemon is not running.",
-            { suggestion: "Start the daemon with: kspec serve" },
-          );
+          error("Daemon is not running.", { suggestion: "Start the daemon with: kspec serve" });
           process.exit(EXIT_CODES.ERROR);
         }
 
@@ -669,7 +674,7 @@ export function registerAgentCommands(program: Command): void {
           process.exit(EXIT_CODES.ERROR);
         }
 
-        const data = await response.json() as { stopped: boolean; reason?: string };
+        const data = (await response.json()) as { stopped: boolean; reason?: string };
 
         output(data, () => {
           if (data.stopped) {
@@ -695,15 +700,12 @@ export function registerAgentCommands(program: Command): void {
 
         if (!daemonConn) {
           // Daemon not running — show as disabled
-          output(
-            { running: false, activeInvocations: 0, queuedInvocations: 0, agents: [] },
-            () => {
-              console.log(chalk.bold("Dispatch Status"));
-              console.log();
-              console.log(`  Dispatch engine: ${chalk.gray("not available (daemon offline)")}`);
-              console.log(chalk.gray("  Start daemon with: kspec serve"));
-            },
-          );
+          output({ running: false, activeInvocations: 0, queuedInvocations: 0, agents: [] }, () => {
+            console.log(chalk.bold("Dispatch Status"));
+            console.log();
+            console.log(`  Dispatch engine: ${chalk.gray("not available (daemon offline)")}`);
+            console.log(chalk.gray("  Start daemon with: kspec serve"));
+          });
           return;
         }
 
@@ -715,13 +717,15 @@ export function registerAgentCommands(program: Command): void {
         }
 
         // Get dispatch status
-        const statusResponse = await fetch(`${daemonConn.url}/api/agent/dispatch/status`, { headers });
+        const statusResponse = await fetch(`${daemonConn.url}/api/agent/dispatch/status`, {
+          headers,
+        });
         if (!statusResponse.ok) {
           error(`Daemon returned error: ${statusResponse.status}`);
           process.exit(EXIT_CODES.ERROR);
         }
 
-        const statusData = await statusResponse.json() as {
+        const statusData = (await statusResponse.json()) as {
           running: boolean;
           activeInvocations: number;
           queuedInvocations: number;
@@ -748,17 +752,25 @@ export function registerAgentCommands(program: Command): void {
           console.log();
           // AC: @dispatch-remote-branch-sync ac-degraded-status-api — prominent warning
           if (statusData.degraded?.active) {
-            console.log(chalk.bgRed.white.bold("  ⚠ DEGRADED  ") + " " + chalk.red("New workspace provisioning is paused"));
+            console.log(
+              chalk.bgRed.white.bold("  ⚠ DEGRADED  ") +
+                " " +
+                chalk.red("New workspace provisioning is paused"),
+            );
             console.log(`  ${chalk.red("Reason:")} ${statusData.degraded.reason}`);
             if (statusData.degraded.enteredAt) {
               const enteredAt = new Date(statusData.degraded.enteredAt);
               const durationMs = Date.now() - enteredAt.getTime();
               const durationMin = Math.round(durationMs / 60_000);
-              console.log(`  ${chalk.red("Since:")} ${enteredAt.toLocaleString()} (${durationMin}m ago)`);
+              console.log(
+                `  ${chalk.red("Since:")} ${enteredAt.toLocaleString()} (${durationMin}m ago)`,
+              );
             }
             console.log();
           }
-          console.log(`  Engine:             ${statusData.running ? chalk.green("enabled") : chalk.yellow("disabled")}`);
+          console.log(
+            `  Engine:             ${statusData.running ? chalk.green("enabled") : chalk.yellow("disabled")}`,
+          );
           console.log(`  Active invocations: ${chalk.cyan(String(statusData.activeInvocations))}`);
           console.log(`  Queued invocations: ${chalk.cyan(String(statusData.queuedInvocations))}`);
           console.log();
@@ -796,9 +808,7 @@ export function registerAgentCommands(program: Command): void {
       // AC: @cli-agent-commands ac-15 — error when daemon not running
       const daemonConn = getDaemonUrl();
       if (!daemonConn) {
-        error(
-          "Daemon is not running. The watch command requires the daemon.",
-        );
+        error("Daemon is not running. The watch command requires the daemon.");
         info("Suggestion: Start the daemon with: kspec serve");
         // AC: @cli-agent-commands ac-15 — exit code 3
         process.exit(EXIT_CODES.NOT_FOUND);
@@ -865,11 +875,7 @@ export function registerAgentCommands(program: Command): void {
         activeStreamKey = streamKey;
       }
 
-      function queuePrefixedChunk(
-        streamKey: string,
-        prefix: string,
-        text: string,
-      ): void {
+      function queuePrefixedChunk(streamKey: string, prefix: string, text: string): void {
         if (!text) return;
         const switchingSpeaker = activeStreamKey !== null && activeStreamKey !== streamKey;
         startSpeakerSection(streamKey, prefix);
@@ -939,11 +945,13 @@ export function registerAgentCommands(program: Command): void {
         ws.onopen = () => {
           retryCount = 0;
           // Subscribe to agents topic
-          ws.send(JSON.stringify({
-            action: "subscribe",
-            request_id: "watch-subscribe",
-            payload: { topics: ["agents"] },
-          }));
+          ws.send(
+            JSON.stringify({
+              action: "subscribe",
+              request_id: "watch-subscribe",
+              payload: { topics: ["agents"] },
+            }),
+          );
         };
 
         ws.onmessage = (event: MessageEvent) => {
@@ -958,14 +966,17 @@ export function registerAgentCommands(program: Command): void {
           if (msg.ack === true && msg.request_id === "watch-subscribe") {
             if (msg.success === false) {
               shouldReconnect = false;
-              const reasonParts = [msg.error, msg.details]
-                .filter((value): value is string => typeof value === "string" && value.length > 0);
+              const reasonParts = [msg.error, msg.details].filter(
+                (value): value is string => typeof value === "string" && value.length > 0,
+              );
               const reason = reasonParts.length > 0 ? ` (${reasonParts.join(": ")})` : "";
               if (activeStreamKey) {
                 ensureLineBreak();
               }
               error(`Failed to subscribe to daemon agent output stream${reason}.`);
-              info("Suggestion: Verify daemon logs for subscribe errors, then restart with: kspec serve");
+              info(
+                "Suggestion: Verify daemon logs for subscribe errors, then restart with: kspec serve",
+              );
               process.exit(EXIT_CODES.NOT_FOUND);
             }
             return;
@@ -975,9 +986,15 @@ export function registerAgentCommands(program: Command): void {
           // AC: @session-event-broadcast ac-replaces-text-chunks
           const eventType = msg.event as string;
           const sessionEventTypes = new Set([
-            "message_start", "message_progress", "message_complete",
-            "thinking_start", "thinking_progress", "thinking_complete",
-            "tool_call_start", "tool_call_input", "tool_call_complete",
+            "message_start",
+            "message_progress",
+            "message_complete",
+            "thinking_start",
+            "thinking_progress",
+            "thinking_complete",
+            "tool_call_start",
+            "tool_call_input",
+            "tool_call_complete",
           ]);
 
           if (sessionEventTypes.has(eventType) && msg.data) {
@@ -1058,9 +1075,8 @@ export function registerAgentCommands(program: Command): void {
                 const toolName = data.tool_name ?? "unknown";
                 const status = data.status ?? "unknown";
                 const durationMs = data.duration_ms ?? 0;
-                const durationStr = durationMs >= 1000
-                  ? `${(durationMs / 1000).toFixed(1)}s`
-                  : `${durationMs}ms`;
+                const durationStr =
+                  durationMs >= 1000 ? `${(durationMs / 1000).toFixed(1)}s` : `${durationMs}ms`;
                 startSpeakerSection(streamKey, prefix);
                 writeRaw(`  ✓ ${toolName} ${status} (${durationStr})\n`);
                 break;
@@ -1094,10 +1110,7 @@ export function registerAgentCommands(program: Command): void {
           }
 
           retryCount++;
-          const backoffMs = Math.min(
-            RETRY_BASE_MS * Math.pow(2, retryCount - 1),
-            MAX_RETRY_MS,
-          );
+          const backoffMs = Math.min(RETRY_BASE_MS * Math.pow(2, retryCount - 1), MAX_RETRY_MS);
           // AC: @cli-agent-commands ac-14 — print reconnecting message
           process.stderr.write(
             `[watch] Connection lost. Reconnecting in ${Math.round(backoffMs / 1000)}s (attempt ${retryCount}/${retryLimit})...\n`,
@@ -1110,7 +1123,9 @@ export function registerAgentCommands(program: Command): void {
 
       // Keep process alive (WebSocket is non-blocking in Node)
       // Users interrupt with Ctrl+C
-      await new Promise<void>(() => {/* intentionally never resolves */});
+      await new Promise<void>(() => {
+        /* intentionally never resolves */
+      });
     });
 
   // ─── kspec agent end-loop ─────────────────────────────────────────────────
@@ -1140,11 +1155,7 @@ export function registerAgentCommands(program: Command): void {
         }
 
         // Write end-loop state to session
-        const updated = await requestEndLoop(
-          ctx.sessionsDir,
-          sessionId,
-          options.reason,
-        );
+        const updated = await requestEndLoop(ctx.sessionsDir, sessionId, options.reason);
 
         if (!updated) {
           // AC: @trait-error-guidance ac-1, ac-2

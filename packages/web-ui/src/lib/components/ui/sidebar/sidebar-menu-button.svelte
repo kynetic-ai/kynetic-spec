@@ -35,7 +35,7 @@
 	import type { HTMLAttributes } from "svelte/elements";
 	import { useSidebar } from "./context.svelte.js";
 
-	let {
+	const {
 		ref = $bindable(null),
 		class: className,
 		children,

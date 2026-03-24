@@ -28,9 +28,7 @@ export const CONVENTIONS_INTRO =
  * @param conventions - Array of loaded conventions from meta
  * @returns Markdown section string with domain headers, rules as list items, and examples
  */
-export function generateConventionsSummary(
-  conventions: LoadedConvention[],
-): string {
+export function generateConventionsSummary(conventions: LoadedConvention[]): string {
   if (conventions.length === 0) {
     return "";
   }
@@ -57,9 +55,7 @@ export function generateConventionsSummary(
           lines.push(`- Bad: "${example.bad}"`);
         } else {
           // Short format: inline code with em-dash
-          lines.push(
-            `- Good: \`${example.good}\` — Bad: \`${example.bad}\``,
-          );
+          lines.push(`- Good: \`${example.good}\` — Bad: \`${example.bad}\``);
         }
       }
     }

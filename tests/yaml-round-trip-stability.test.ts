@@ -20,12 +20,7 @@ import {
   saveTriageRecord,
 } from "../src/parser/yaml.js";
 import type { LoadedTask, LoadedInboxItem, LoadedTriageRecord } from "../src/parser/yaml.js";
-import {
-  loadPlans,
-  savePlan,
-  mutatePlanAtomically,
-  deletePlan,
-} from "../src/parser/plans.js";
+import { loadPlans, savePlan, mutatePlanAtomically, deletePlan } from "../src/parser/plans.js";
 import {
   createReviewRecord,
   loadReviewRecords,
@@ -192,8 +187,7 @@ describe("round-trip stability — toYaml", () => {
           _ulid: testUlid("N0TE", 1),
           created_at: "2026-01-15T10:05:00.000Z",
           author: "@reviewer",
-          content:
-            "Found an issue with the implementation.\nNeeds to handle edge case.",
+          content: "Found an issue with the implementation.\nNeeds to handle edge case.",
         },
       ],
     };
@@ -415,8 +409,7 @@ describe("round-trip stability — saveTask path", () => {
       created_at: "2026-01-01T00:00:00.000Z",
     };
 
-    const { ctx, taskFilePath, initialContent } =
-      await setupTaskContext([taskData]);
+    const { ctx, taskFilePath, initialContent } = await setupTaskContext([taskData]);
 
     // Load tasks and save the first one back with no modifications
     const loadedTasks = await loadAllTasks(ctx);
@@ -465,8 +458,7 @@ describe("round-trip stability — saveTask path", () => {
       started_at: "2026-01-15T00:00:00.000Z",
     };
 
-    const { ctx, taskFilePath, initialContent } =
-      await setupTaskContext([taskData]);
+    const { ctx, taskFilePath, initialContent } = await setupTaskContext([taskData]);
 
     const loadedTasks = await loadAllTasks(ctx);
     // Identity mutation: return the task unchanged
@@ -516,8 +508,7 @@ describe("round-trip stability — saveTask path", () => {
       },
     ];
 
-    const { ctx, taskFilePath, initialContent } =
-      await setupTaskContext(tasks);
+    const { ctx, taskFilePath, initialContent } = await setupTaskContext(tasks);
 
     // Load and save each task individually — file should not change
     const loadedTasks = await loadAllTasks(ctx);
@@ -566,8 +557,7 @@ describe("round-trip stability — savePlan path", () => {
       created_at: "2026-01-01T00:00:00.000Z",
     };
 
-    const { ctx, plansFilePath, initialContent } =
-      await setupPlanContext([planData]);
+    const { ctx, plansFilePath, initialContent } = await setupPlanContext([planData]);
 
     // Load plans and save the first one back with no modifications
     const loadedPlans = await loadPlans(ctx);
@@ -589,8 +579,7 @@ describe("round-trip stability — savePlan path", () => {
       created_at: "2026-01-01T00:00:00.000Z",
     };
 
-    const { ctx, plansFilePath, initialContent } =
-      await setupPlanContext([planData]);
+    const { ctx, plansFilePath, initialContent } = await setupPlanContext([planData]);
 
     const loadedPlans = await loadPlans(ctx);
     await savePlan(ctx, loadedPlans[0]);
@@ -620,8 +609,7 @@ describe("round-trip stability — savePlan path", () => {
       ],
     };
 
-    const { ctx, plansFilePath, initialContent } =
-      await setupPlanContext([planData]);
+    const { ctx, plansFilePath, initialContent } = await setupPlanContext([planData]);
 
     const loadedPlans = await loadPlans(ctx);
     // Identity mutation: return the plan unchanged
@@ -661,8 +649,7 @@ describe("round-trip stability — savePlan path", () => {
       },
     ];
 
-    const { ctx, plansFilePath, initialContent } =
-      await setupPlanContext(plans);
+    const { ctx, plansFilePath, initialContent } = await setupPlanContext(plans);
 
     // Load and save each plan individually — file should not change
     const loadedPlans = await loadPlans(ctx);
@@ -736,8 +723,7 @@ describe("round-trip stability — savePlan path", () => {
       ],
     };
 
-    const { ctx, plansFilePath, initialContent } =
-      await setupPlanContext([planData]);
+    const { ctx, plansFilePath, initialContent } = await setupPlanContext([planData]);
 
     // Multiple cycles — load and save each time
     for (let i = 0; i < 5; i++) {
@@ -775,28 +761,24 @@ describe("round-trip stability — saveReviewRecord path", () => {
     const ctx = makeReviewCtx(kspecDir);
 
     const reviewUlid = testUlid("RRTK");
-    const review = createReviewRecord(makeReviewInput({
-      _ulid: reviewUlid,
-      slugs: ["no-change-review"],
-      lifecycle_state: "open",
-      related_refs: ["@some-task"],
-    }));
+    const review = createReviewRecord(
+      makeReviewInput({
+        _ulid: reviewUlid,
+        slugs: ["no-change-review"],
+        lifecycle_state: "open",
+        related_refs: ["@some-task"],
+      }),
+    );
 
     // Save review initially
     await saveReviewRecord(ctx, { ...review });
-    const initialContent = await fs.readFile(
-      path.join(kspecDir, "project.reviews.yaml"),
-      "utf-8",
-    );
+    const initialContent = await fs.readFile(path.join(kspecDir, "project.reviews.yaml"), "utf-8");
 
     // Load and save back with no modifications
     const loaded = await loadReviewRecords(ctx);
     expect(loaded).toHaveLength(1);
     await saveReviewRecord(ctx, loaded[0]);
-    const afterContent = await fs.readFile(
-      path.join(kspecDir, "project.reviews.yaml"),
-      "utf-8",
-    );
+    const afterContent = await fs.readFile(path.join(kspecDir, "project.reviews.yaml"), "utf-8");
 
     expect(afterContent).toBe(initialContent);
   });
@@ -807,35 +789,35 @@ describe("round-trip stability — saveReviewRecord path", () => {
     const ctx = makeReviewCtx(kspecDir);
 
     const [reviewUlid, threadUlid, entryUlid] = testUlids("RRTM", 3);
-    const review = createReviewRecord(makeReviewInput({
-      _ulid: reviewUlid,
-      slugs: ["identity-mutate-review"],
-      lifecycle_state: "open",
-      threads: [{
-        _ulid: threadUlid,
-        kind: "blocker",
-        entries: [{
-          _ulid: entryUlid,
-          author: "reviewer",
-          body: "Needs fixing",
-          created_at: "2026-01-15T10:00:00.000Z",
-        }],
-      }],
-    }));
+    const review = createReviewRecord(
+      makeReviewInput({
+        _ulid: reviewUlid,
+        slugs: ["identity-mutate-review"],
+        lifecycle_state: "open",
+        threads: [
+          {
+            _ulid: threadUlid,
+            kind: "blocker",
+            entries: [
+              {
+                _ulid: entryUlid,
+                author: "reviewer",
+                body: "Needs fixing",
+                created_at: "2026-01-15T10:00:00.000Z",
+              },
+            ],
+          },
+        ],
+      }),
+    );
 
     await saveReviewRecord(ctx, { ...review });
-    const initialContent = await fs.readFile(
-      path.join(kspecDir, "project.reviews.yaml"),
-      "utf-8",
-    );
+    const initialContent = await fs.readFile(path.join(kspecDir, "project.reviews.yaml"), "utf-8");
 
     // Identity mutation: return the review unchanged
     const loaded = await loadReviewRecords(ctx);
     await mutateReviewAtomically(ctx, loaded[0], (r) => r);
-    const afterContent = await fs.readFile(
-      path.join(kspecDir, "project.reviews.yaml"),
-      "utf-8",
-    );
+    const afterContent = await fs.readFile(path.join(kspecDir, "project.reviews.yaml"), "utf-8");
 
     expect(afterContent).toBe(initialContent);
   });
@@ -847,42 +829,42 @@ describe("round-trip stability — saveReviewRecord path", () => {
 
     const [ulid1, ulid2, ulid3] = testUlids("RRTX", 3);
     const reviews = [
-      createReviewRecord(makeReviewInput({
-        _ulid: ulid1,
-        slugs: ["multi-review-1"],
-        lifecycle_state: "draft",
-      })),
-      createReviewRecord(makeReviewInput({
-        _ulid: ulid2,
-        slugs: ["multi-review-2"],
-        lifecycle_state: "open",
-        related_refs: ["@task-foo"],
-      })),
-      createReviewRecord(makeReviewInput({
-        _ulid: ulid3,
-        slugs: ["multi-review-3"],
-        lifecycle_state: "closed",
-      })),
+      createReviewRecord(
+        makeReviewInput({
+          _ulid: ulid1,
+          slugs: ["multi-review-1"],
+          lifecycle_state: "draft",
+        }),
+      ),
+      createReviewRecord(
+        makeReviewInput({
+          _ulid: ulid2,
+          slugs: ["multi-review-2"],
+          lifecycle_state: "open",
+          related_refs: ["@task-foo"],
+        }),
+      ),
+      createReviewRecord(
+        makeReviewInput({
+          _ulid: ulid3,
+          slugs: ["multi-review-3"],
+          lifecycle_state: "closed",
+        }),
+      ),
     ];
 
     // Save all reviews initially
     for (const review of reviews) {
       await saveReviewRecord(ctx, { ...review });
     }
-    const initialContent = await fs.readFile(
-      path.join(kspecDir, "project.reviews.yaml"),
-      "utf-8",
-    );
+    const initialContent = await fs.readFile(path.join(kspecDir, "project.reviews.yaml"), "utf-8");
 
     // Load and save each review individually — file should not change
     const loaded = await loadReviewRecords(ctx);
     for (const review of loaded) {
       await saveReviewRecord(ctx, review);
     }
-    const afterContent = await fs.readFile(
-      path.join(kspecDir, "project.reviews.yaml"),
-      "utf-8",
-    );
+    const afterContent = await fs.readFile(path.join(kspecDir, "project.reviews.yaml"), "utf-8");
 
     expect(afterContent).toBe(initialContent);
   });
@@ -2066,7 +2048,11 @@ describe("round-trip stability — saveDispatchWorkspaceRecord path", () => {
    * Build a minimal dispatch workspace record that satisfies the schema.
    * Only includes fields that are required — no Zod defaults.
    */
-  function makeMinimalWorkspaceYaml(workspaceId: string, taskRef: string, overrides: Record<string, unknown> = {}) {
+  function makeMinimalWorkspaceYaml(
+    workspaceId: string,
+    taskRef: string,
+    overrides: Record<string, unknown> = {},
+  ) {
     const now = "2026-03-01T00:00:00.000Z";
     return {
       workspace_id: workspaceId,

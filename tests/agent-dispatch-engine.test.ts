@@ -47,8 +47,23 @@ const MOCK_KSPEC_CLI = path.join(__dirname, "mocks", "kspec-capture-mock.cjs");
  * about workspace setup details.
  */
 function buildMockWorkspaceMetadata(worktreeDir: string, overrides: Record<string, unknown> = {}) {
-  const emptyBootstrapRoleState = { status: "not_run" as const, configHash: null, canonicalBranchHead: null, lastRunAt: null, invalidationReasons: [] as string[], steps: [] as any[], failureMessage: null };
-  const mockBootstrap = { ...emptyBootstrapRoleState, lastRole: null, roleStates: { worker: { ...emptyBootstrapRoleState }, reviewer: { ...emptyBootstrapRoleState } } };
+  const emptyBootstrapRoleState = {
+    status: "not_run" as const,
+    configHash: null,
+    canonicalBranchHead: null,
+    lastRunAt: null,
+    invalidationReasons: [] as string[],
+    steps: [] as any[],
+    failureMessage: null,
+  };
+  const mockBootstrap = {
+    ...emptyBootstrapRoleState,
+    lastRole: null,
+    roleStates: {
+      worker: { ...emptyBootstrapRoleState },
+      reviewer: { ...emptyBootstrapRoleState },
+    },
+  };
   return {
     workspaceId: "mock-workspace",
     taskRef: "@mock",
@@ -60,7 +75,13 @@ function buildMockWorkspaceMetadata(worktreeDir: string, overrides: Record<strin
     integrationTargetCommit: "abc123",
     canonicalBranch: "dispatch/task/mock/abc12345",
     canonicalBranchHead: "abc123",
-    branchProvenance: { ownership: "dispatcher-managed" as const, source: "provisioned", remote_ref: null, adopted_from: null, adopted_at: null },
+    branchProvenance: {
+      ownership: "dispatcher-managed" as const,
+      source: "provisioned",
+      remote_ref: null,
+      adopted_from: null,
+      adopted_at: null,
+    },
     publicationMode: "pull_request" as const,
     integrationState: "pending" as const,
     integrationOutcome: "pending" as const,
@@ -71,8 +92,19 @@ function buildMockWorkspaceMetadata(worktreeDir: string, overrides: Record<strin
     lifecycleState: "ready" as const,
     activeRole: null,
     bootstrapState: mockBootstrap,
-    healthState: { status: "healthy" as const, summary: "Healthy", issues: [] as any[], updated_at: new Date().toISOString() },
-    cleanupState: { status: "not_scheduled" as const, eligible: false, reason: null, detail: null, updated_at: new Date().toISOString() },
+    healthState: {
+      status: "healthy" as const,
+      summary: "Healthy",
+      issues: [] as any[],
+      updated_at: new Date().toISOString(),
+    },
+    cleanupState: {
+      status: "not_scheduled" as const,
+      eligible: false,
+      reason: null,
+      detail: null,
+      updated_at: new Date().toISOString(),
+    },
     healthStatus: "healthy" as const,
     healthReason: null,
     bootstrap: mockBootstrap,
@@ -145,17 +177,22 @@ function makeProvisionedWorkspace(
         canonicalBranchHead: "abcdef1234567890abcdef1234567890abcdef12",
         lastRunAt: "2026-03-12T00:00:00.000Z",
         invalidationReasons: [],
-        steps: role === "reviewer" ? [] : [{
-          source: "dispatch",
-          name: "prepare",
-          run: "npm install",
-          idempotent: true,
-          allowTrackedChanges: false,
-          reviewerRerunAllowed: false,
-          status: "succeeded",
-          role: "worker",
-          output: "ok",
-        }],
+        steps:
+          role === "reviewer"
+            ? []
+            : [
+                {
+                  source: "dispatch",
+                  name: "prepare",
+                  run: "npm install",
+                  idempotent: true,
+                  allowTrackedChanges: false,
+                  reviewerRerunAllowed: false,
+                  status: "succeeded",
+                  role: "worker",
+                  output: "ok",
+                },
+              ],
         failureMessage: null,
         lastRole: role === "reviewer" ? "worker" : "worker",
         roleStates: {
@@ -165,17 +202,19 @@ function makeProvisionedWorkspace(
             canonicalBranchHead: "abcdef1234567890abcdef1234567890abcdef12",
             lastRunAt: "2026-03-12T00:00:00.000Z",
             invalidationReasons: [],
-            steps: [{
-              source: "dispatch",
-              name: "prepare",
-              run: "npm install",
-              idempotent: true,
-              allowTrackedChanges: false,
-              reviewerRerunAllowed: false,
-              status: "succeeded",
-              role: "worker",
-              output: "ok",
-            }],
+            steps: [
+              {
+                source: "dispatch",
+                name: "prepare",
+                run: "npm install",
+                idempotent: true,
+                allowTrackedChanges: false,
+                reviewerRerunAllowed: false,
+                status: "succeeded",
+                role: "worker",
+                output: "ok",
+              },
+            ],
             failureMessage: null,
           },
           reviewer: {
@@ -210,17 +249,22 @@ function makeProvisionedWorkspace(
         canonicalBranchHead: "abcdef1234567890abcdef1234567890abcdef12",
         lastRunAt: "2026-03-12T00:00:00.000Z",
         invalidationReasons: [],
-        steps: role === "reviewer" ? [] : [{
-          source: "dispatch",
-          name: "prepare",
-          run: "npm install",
-          idempotent: true,
-          allowTrackedChanges: false,
-          reviewerRerunAllowed: false,
-          status: "succeeded",
-          role: "worker",
-          output: "ok",
-        }],
+        steps:
+          role === "reviewer"
+            ? []
+            : [
+                {
+                  source: "dispatch",
+                  name: "prepare",
+                  run: "npm install",
+                  idempotent: true,
+                  allowTrackedChanges: false,
+                  reviewerRerunAllowed: false,
+                  status: "succeeded",
+                  role: "worker",
+                  output: "ok",
+                },
+              ],
         failureMessage: null,
         lastRole: role === "reviewer" ? "worker" : "worker",
         roleStates: {
@@ -230,17 +274,19 @@ function makeProvisionedWorkspace(
             canonicalBranchHead: "abcdef1234567890abcdef1234567890abcdef12",
             lastRunAt: "2026-03-12T00:00:00.000Z",
             invalidationReasons: [],
-            steps: [{
-              source: "dispatch",
-              name: "prepare",
-              run: "npm install",
-              idempotent: true,
-              allowTrackedChanges: false,
-              reviewerRerunAllowed: false,
-              status: "succeeded",
-              role: "worker",
-              output: "ok",
-            }],
+            steps: [
+              {
+                source: "dispatch",
+                name: "prepare",
+                run: "npm install",
+                idempotent: true,
+                allowTrackedChanges: false,
+                reviewerRerunAllowed: false,
+                status: "succeeded",
+                role: "worker",
+                output: "ok",
+              },
+            ],
             failureMessage: null,
           },
           reviewer: {
@@ -281,10 +327,7 @@ function git(cwd: string, command: string): string {
  * Uses traditional (non-shadow) layout: manifest and meta in the specDir directly.
  * Sets KSPEC_SPEC_DIR to point to the spec directory so initContext can find it.
  */
-async function setupProjectWithAgents(
-  dir: string,
-  agents: Agent[],
-): Promise<void> {
+async function setupProjectWithAgents(dir: string, agents: Agent[]): Promise<void> {
   initGitRepo(dir);
 
   // Use traditional layout: manifest in the dir root itself
@@ -316,11 +359,7 @@ async function setupProjectWithAgents(
   );
 
   // Write empty tasks file
-  await fs.writeFile(
-    path.join(dir, "project.tasks.yaml"),
-    YAML.stringify({ tasks: [] }),
-    "utf-8",
-  );
+  await fs.writeFile(path.join(dir, "project.tasks.yaml"), YAML.stringify({ tasks: [] }), "utf-8");
 
   execSync("git add -A && git commit -m init", { cwd: dir, stdio: "pipe" });
 }
@@ -354,15 +393,18 @@ async function waitForMockCall(
 /**
  * Write tasks to the project tasks file.
  */
-async function writeTasks(dir: string, tasks: Array<{
-  _ulid: string;
-  status: string;
-  automation?: string;
-  tags?: string[];
-  priority?: number;
-  depends_on?: string[];
-  blocked_by?: string[];
-}>): Promise<void> {
+async function writeTasks(
+  dir: string,
+  tasks: Array<{
+    _ulid: string;
+    status: string;
+    automation?: string;
+    tags?: string[];
+    priority?: number;
+    depends_on?: string[];
+    blocked_by?: string[];
+  }>,
+): Promise<void> {
   await fs.writeFile(
     path.join(dir, "project.tasks.yaml"),
     YAML.stringify({
@@ -454,7 +496,8 @@ describe("Dispatch in-progress priority", () => {
 
     // Provide inline task data with automation: eligible so task.ready/task.needs_work
     // default filter passes (AC-21). Tasks are not on disk to avoid staleness discard.
-    const makeEligibleTask = (priority: number) => ({ automation: "eligible", tags: [], priority }) as any;
+    const makeEligibleTask = (priority: number) =>
+      ({ automation: "eligible", tags: [], priority }) as any;
 
     await engine.handleStateChange(
       makeStateChange({
@@ -616,7 +659,10 @@ describe("Dispatch scheduling priority model", () => {
   });
 
   function mockWorkspaceHealth(
-    resolver: (taskRef: string, role: "worker" | "reviewer") => { exists?: boolean; healthy?: boolean } = () => ({
+    resolver: (
+      taskRef: string,
+      role: "worker" | "reviewer",
+    ) => { exists?: boolean; healthy?: boolean } = () => ({
       exists: false,
       healthy: true,
     }),
@@ -668,14 +714,20 @@ describe("Dispatch scheduling priority model", () => {
     });
 
     const spawned: string[] = [];
-    vi.spyOn(engine as unknown as { _spawnInvocation: (agent: unknown, entry: unknown) => Promise<boolean> }, "_spawnInvocation")
-      .mockImplementation(async (_agent, entry) => {
-        spawned.push(((entry as { change: TaskStateChange }).change.taskRef));
-        return true;
-      });
+    vi.spyOn(
+      engine as unknown as {
+        _spawnInvocation: (agent: unknown, entry: unknown) => Promise<boolean>;
+      },
+      "_spawnInvocation",
+    ).mockImplementation(async (_agent, entry) => {
+      spawned.push((entry as { change: TaskStateChange }).change.taskRef);
+      return true;
+    });
 
     await engine.start();
-    await (engine as unknown as { _drainQueues: (agents: Agent[]) => Promise<void> })._drainQueues([worker]);
+    await (engine as unknown as { _drainQueues: (agents: Agent[]) => Promise<void> })._drainQueues([
+      worker,
+    ]);
 
     expect(spawned).toEqual([]);
     expect(engine.getStatus().queued).toHaveLength(0);
@@ -712,7 +764,11 @@ describe("Dispatch scheduling priority model", () => {
       recentTaskAffinityRef: string | null;
       _drainQueues: (agents: Agent[]) => Promise<void>;
     };
-    const drainSpy = vi.spyOn(engine as unknown as { _drainQueues: (agents: Agent[]) => Promise<void> }, "_drainQueues")
+    const drainSpy = vi
+      .spyOn(
+        engine as unknown as { _drainQueues: (agents: Agent[]) => Promise<void> },
+        "_drainQueues",
+      )
       .mockResolvedValue();
 
     await engine.start();
@@ -720,11 +776,15 @@ describe("Dispatch scheduling priority model", () => {
     internal.recentTaskAffinityRef = `@${taskB}`;
 
     const spawned: string[] = [];
-    vi.spyOn(engine as unknown as { _spawnInvocation: (agent: unknown, entry: unknown) => Promise<boolean> }, "_spawnInvocation")
-      .mockImplementation(async (_agent, entry) => {
-        spawned.push(((entry as { change: TaskStateChange }).change.taskRef));
-        return true;
-      });
+    vi.spyOn(
+      engine as unknown as {
+        _spawnInvocation: (agent: unknown, entry: unknown) => Promise<boolean>;
+      },
+      "_spawnInvocation",
+    ).mockImplementation(async (_agent, entry) => {
+      spawned.push((entry as { change: TaskStateChange }).change.taskRef);
+      return true;
+    });
 
     await internal._drainQueues([reviewer]);
 
@@ -762,7 +822,11 @@ describe("Dispatch scheduling priority model", () => {
       recentTaskAffinityRef: string | null;
       _drainQueues: (agents: Agent[]) => Promise<void>;
     };
-    const drainSpy = vi.spyOn(engine as unknown as { _drainQueues: (agents: Agent[]) => Promise<void> }, "_drainQueues")
+    const drainSpy = vi
+      .spyOn(
+        engine as unknown as { _drainQueues: (agents: Agent[]) => Promise<void> },
+        "_drainQueues",
+      )
       .mockResolvedValue();
 
     await engine.start();
@@ -775,11 +839,15 @@ describe("Dispatch scheduling priority model", () => {
     older!.starvationDeferrals = 2;
 
     const spawned: string[] = [];
-    vi.spyOn(engine as unknown as { _spawnInvocation: (agent: unknown, entry: unknown) => Promise<boolean> }, "_spawnInvocation")
-      .mockImplementation(async (_agent, entry) => {
-        spawned.push(((entry as { change: TaskStateChange }).change.taskRef));
-        return true;
-      });
+    vi.spyOn(
+      engine as unknown as {
+        _spawnInvocation: (agent: unknown, entry: unknown) => Promise<boolean>;
+      },
+      "_spawnInvocation",
+    ).mockImplementation(async (_agent, entry) => {
+      spawned.push((entry as { change: TaskStateChange }).change.taskRef);
+      return true;
+    });
 
     await internal._drainQueues([reviewer]);
 
@@ -821,21 +889,32 @@ describe("Dispatch scheduling priority model", () => {
     });
 
     const spawned: Array<{ agentId: string; taskRef: string }> = [];
-    vi.spyOn(engine as unknown as { _spawnInvocation: (agent: unknown, entry: unknown) => Promise<boolean> }, "_spawnInvocation")
-      .mockImplementation(async (agent, entry) => {
-        spawned.push({
-          agentId: (agent as Agent).id,
-          taskRef: (entry as { change: TaskStateChange }).change.taskRef,
-        });
-        return true;
+    vi.spyOn(
+      engine as unknown as {
+        _spawnInvocation: (agent: unknown, entry: unknown) => Promise<boolean>;
+      },
+      "_spawnInvocation",
+    ).mockImplementation(async (agent, entry) => {
+      spawned.push({
+        agentId: (agent as Agent).id,
+        taskRef: (entry as { change: TaskStateChange }).change.taskRef,
       });
+      return true;
+    });
 
-    const drainSpy = vi.spyOn(engine as unknown as { _drainQueues: (agents: Agent[]) => Promise<void> }, "_drainQueues")
+    const drainSpy = vi
+      .spyOn(
+        engine as unknown as { _drainQueues: (agents: Agent[]) => Promise<void> },
+        "_drainQueues",
+      )
       .mockResolvedValue();
 
     await engine.start();
     drainSpy.mockRestore();
-    await (engine as unknown as { _drainQueues: (agents: Agent[]) => Promise<void> })._drainQueues([worker, reviewer]);
+    await (engine as unknown as { _drainQueues: (agents: Agent[]) => Promise<void> })._drainQueues([
+      worker,
+      reviewer,
+    ]);
 
     expect(spawned[0]).toEqual({
       agentId: "pr-reviewer",
@@ -877,7 +956,10 @@ describe("AC-1: Task state change queues matching agents", () => {
 
     // Spy on _enqueue before start so all enqueue calls are captured
     let enqueueCount = 0;
-    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+    vi.spyOn(
+      engine as unknown as { _enqueue: (a: unknown, c: unknown) => void },
+      "_enqueue",
+    ).mockImplementation(() => {
       enqueueCount++;
     });
 
@@ -927,11 +1009,19 @@ describe("AC-2: Multiple matching agents queued independently", () => {
     const taskId = testUlid("TASK");
     await writeTasks(testDir, [{ _ulid: taskId, status: "in_progress", automation: "eligible" }]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
 
     // Track enqueue calls per agent
     const enqueuedAgentIds: string[] = [];
-    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation((agent: unknown) => {
+    vi.spyOn(
+      engine as unknown as { _enqueue: (a: unknown, c: unknown) => void },
+      "_enqueue",
+    ).mockImplementation((agent: unknown) => {
       enqueuedAgentIds.push((agent as { id: string }).id);
     });
 
@@ -939,7 +1029,12 @@ describe("AC-2: Multiple matching agents queued independently", () => {
     // Reset after bootstrap
     enqueuedAgentIds.length = 0;
 
-    const change = makeStateChange({ taskId, taskRef: `@${taskId}`, toStatus: "pending", fromStatus: "in_progress" });
+    const change = makeStateChange({
+      taskId,
+      taskRef: `@${taskId}`,
+      toStatus: "pending",
+      fromStatus: "in_progress",
+    });
     await engine.handleStateChange(change);
 
     // Both agents should be enqueued independently
@@ -972,7 +1067,12 @@ describe("AC-3: max_concurrent limit enforced", () => {
     });
     await setupProjectWithAgents(testDir, [agent]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
     await engine.start();
 
     const status = engine.getStatus();
@@ -1004,7 +1104,12 @@ describe("AC-5: File watcher diffs task states", () => {
     // Start with in_progress
     await writeTasks(testDir, [{ _ulid: taskId, status: "in_progress" }]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
     await engine.start();
 
     // Update task to pending (task.ready event)
@@ -1036,7 +1141,12 @@ describe("AC-5: File watcher diffs task states", () => {
     const taskId = testUlid("TASK");
     await writeTasks(testDir, [{ _ulid: taskId, status: "in_progress" }]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
     await engine.start();
 
     // Same status again — no change
@@ -1079,17 +1189,24 @@ describe("AC-6: Dispatch rule filters applied", () => {
       { _ulid: taskId, status: "in_progress", automation: "manual_only" },
     ]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
     await engine.start();
 
     // Transition to pending — should NOT be queued (automation: ineligible)
-    await writeTasks(testDir, [
-      { _ulid: taskId, status: "pending", automation: "manual_only" },
-    ]);
+    await writeTasks(testDir, [{ _ulid: taskId, status: "pending", automation: "manual_only" }]);
 
     let dispatchedCount = 0;
-    const originalEnqueue = (engine as unknown as { _enqueue: (a: unknown, c: unknown) => void })._enqueue;
-    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+    const originalEnqueue = (engine as unknown as { _enqueue: (a: unknown, c: unknown) => void })
+      ._enqueue;
+    vi.spyOn(
+      engine as unknown as { _enqueue: (a: unknown, c: unknown) => void },
+      "_enqueue",
+    ).mockImplementation(() => {
       dispatchedCount++;
     });
 
@@ -1112,7 +1229,12 @@ describe("AC-6: Dispatch rule filters applied", () => {
       { _ulid: taskId, status: "in_progress", automation: "eligible", tags: ["mvp"] },
     ]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
     await engine.start();
 
     await writeTasks(testDir, [
@@ -1120,7 +1242,10 @@ describe("AC-6: Dispatch rule filters applied", () => {
     ]);
 
     let dispatchedCount = 0;
-    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+    vi.spyOn(
+      engine as unknown as { _enqueue: (a: unknown, c: unknown) => void },
+      "_enqueue",
+    ).mockImplementation(() => {
       dispatchedCount++;
     });
 
@@ -1164,7 +1289,10 @@ describe("AC-7: Event deduplication within time window", () => {
 
     // Spy before start to capture all enqueue calls
     let enqueueCount = 0;
-    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+    vi.spyOn(
+      engine as unknown as { _enqueue: (a: unknown, c: unknown) => void },
+      "_enqueue",
+    ).mockImplementation(() => {
       enqueueCount++;
     });
 
@@ -1210,7 +1338,10 @@ describe("AC-7: Event deduplication within time window", () => {
 
     // Spy before start
     let enqueueCount = 0;
-    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+    vi.spyOn(
+      engine as unknown as { _enqueue: (a: unknown, c: unknown) => void },
+      "_enqueue",
+    ).mockImplementation(() => {
       enqueueCount++;
     });
 
@@ -1261,11 +1392,19 @@ describe("AC-8: Bootstrap evaluates existing tasks on start", () => {
     const taskId = testUlid("TASK");
     await writeTasks(testDir, [{ _ulid: taskId, status: "pending", automation: "eligible" }]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
 
     // Spy before start() so bootstrap calls are captured
     let enqueueCount = 0;
-    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+    vi.spyOn(
+      engine as unknown as { _enqueue: (a: unknown, c: unknown) => void },
+      "_enqueue",
+    ).mockImplementation(() => {
       enqueueCount++;
     });
 
@@ -1284,7 +1423,12 @@ describe("AC-8: Bootstrap evaluates existing tasks on start", () => {
     const taskId = testUlid("TASK");
     await writeTasks(testDir, [{ _ulid: taskId, status: "in_progress" }]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
     await engine.start();
 
     // After bootstrap, in_progress is seeded as prevState
@@ -1330,7 +1474,12 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
 
     const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
     (engine as unknown as { running: boolean }).running = true;
 
     // Manually call _spawnInvocation with the bad agent via type assertion
@@ -1340,9 +1489,7 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
 
     await (engine as unknown as EngineInternal)._spawnInvocation(agentBadAdapter, entry);
 
-    expect(errorSpy).toHaveBeenCalledWith(
-      expect.stringContaining("nonexistent-adapter-xyz"),
-    );
+    expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining("nonexistent-adapter-xyz"));
 
     errorSpy.mockRestore();
   });
@@ -1360,7 +1507,12 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
     process.env.KSPEC_CAPTURE_FILE = captureFile;
 
     try {
-      const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+        coalesceWindowMs: 0,
+      });
       (engine as unknown as { running: boolean }).running = true;
 
       type EngineInternal = { _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean> };
@@ -1373,7 +1525,9 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
       vi.restoreAllMocks();
 
       // Verify task note was added
-      const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{ args: string[] }>;
+      const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{
+        args: string[];
+      }>;
       const noteCall = calls.find((c) => c.args.includes("note") && c.args.includes(taskRef));
       expect(noteCall).toBeTruthy();
       expect(noteCall!.args.join(" ")).toContain("AGENT-SKIP");
@@ -1397,7 +1551,12 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
     process.env.KSPEC_CAPTURE_FILE = captureFile;
 
     try {
-      const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+        coalesceWindowMs: 0,
+      });
       (engine as unknown as { running: boolean }).running = true;
       const taskRef = `@${testUlid("TASK", 33)}`;
       const change = makeStateChange({ toStatus: "pending", fromStatus: "in_progress", taskRef });
@@ -1411,15 +1570,23 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
       expect(spawned).toBe(false);
       expect(runSpy).not.toHaveBeenCalled();
 
-      const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{ args: string[] }>;
-      const noteCall = calls.find((c) => c.args.includes("task") && c.args.includes("note") && c.args.includes(taskRef));
-      const blockCall = calls.find((c) => c.args.includes("task") && c.args.includes("block") && c.args.includes(taskRef));
+      const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{
+        args: string[];
+      }>;
+      const noteCall = calls.find(
+        (c) => c.args.includes("task") && c.args.includes("note") && c.args.includes(taskRef),
+      );
+      const blockCall = calls.find(
+        (c) => c.args.includes("task") && c.args.includes("block") && c.args.includes(taskRef),
+      );
 
       expect(noteCall).toBeDefined();
       expect(noteCall!.args.join(" ")).toContain("DISPATCH-WORKSPACE");
       expect(blockCall).toBeDefined();
       expect(blockCall!.args.join(" ")).toContain("Dispatch workspace provisioning failed");
-      expect(blockCall!.args.join(" ")).toContain("Set dispatch.worktree_root to a directory outside .kspec/.");
+      expect(blockCall!.args.join(" ")).toContain(
+        "Set dispatch.worktree_root to a directory outside .kspec/.",
+      );
     } finally {
       delete process.env.KSPEC_CAPTURE_FILE;
       vi.restoreAllMocks();
@@ -1442,7 +1609,12 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
     process.env.KSPEC_CAPTURE_FAIL_ON = "task:block";
 
     try {
-      const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+        coalesceWindowMs: 0,
+      });
       (engine as unknown as { running: boolean }).running = true;
       const taskRef = `@${testUlid("TASK", 34)}`;
       const change = makeStateChange({ toStatus: "pending", fromStatus: "in_progress", taskRef });
@@ -1456,13 +1628,17 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
 
       expect(spawned).toBe(false);
       expect(runSpy).not.toHaveBeenCalled();
-      expect(warnSpy).toHaveBeenCalledWith(
-        expect.stringContaining("Failed to block task"),
-      );
+      expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("Failed to block task"));
 
-      const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{ args: string[] }>;
-      const noteCall = calls.find((c) => c.args.includes("task") && c.args.includes("note") && c.args.includes(taskRef));
-      const blockCall = calls.find((c) => c.args.includes("task") && c.args.includes("block") && c.args.includes(taskRef));
+      const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{
+        args: string[];
+      }>;
+      const noteCall = calls.find(
+        (c) => c.args.includes("task") && c.args.includes("note") && c.args.includes(taskRef),
+      );
+      const blockCall = calls.find(
+        (c) => c.args.includes("task") && c.args.includes("block") && c.args.includes(taskRef),
+      );
 
       expect(noteCall).toBeDefined();
       expect(blockCall).toBeDefined();
@@ -1489,7 +1665,12 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
     process.env.KSPEC_CAPTURE_FAIL_ON = "task:note";
 
     try {
-      const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+        coalesceWindowMs: 0,
+      });
       (engine as unknown as { running: boolean }).running = true;
       const taskRef = `@${testUlid("TASK", 35)}`;
       const change = makeStateChange({ toStatus: "pending", fromStatus: "in_progress", taskRef });
@@ -1504,9 +1685,15 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
       expect(spawned).toBe(false);
       expect(runSpy).not.toHaveBeenCalled();
 
-      const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{ args: string[] }>;
-      const noteCall = calls.find((c) => c.args.includes("task") && c.args.includes("note") && c.args.includes(taskRef));
-      const blockCall = calls.find((c) => c.args.includes("task") && c.args.includes("block") && c.args.includes(taskRef));
+      const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{
+        args: string[];
+      }>;
+      const noteCall = calls.find(
+        (c) => c.args.includes("task") && c.args.includes("note") && c.args.includes(taskRef),
+      );
+      const blockCall = calls.find(
+        (c) => c.args.includes("task") && c.args.includes("block") && c.args.includes(taskRef),
+      );
 
       expect(noteCall).toBeDefined();
       expect(blockCall).toBeDefined();
@@ -1537,7 +1724,12 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
     process.env.KSPEC_CAPTURE_FILE = captureFile;
 
     try {
-      const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+        coalesceWindowMs: 0,
+      });
       const taskId = testUlid("TASK", 35);
       const taskRef = `@${taskId}`;
       const change = makeStateChange({
@@ -1604,7 +1796,12 @@ describe("AC-11: Graceful shutdown waits for active invocations", () => {
     const agent = makeTestAgent({ dispatch: [{ on: "task.ready" }] });
     await setupProjectWithAgents(testDir, [agent]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
     await engine.start();
 
     expect(engine.getStatus().running).toBe(true);
@@ -1615,7 +1812,10 @@ describe("AC-11: Graceful shutdown waits for active invocations", () => {
 
     // Triggering changes after stop should be no-ops
     let enqueueCount = 0;
-    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+    vi.spyOn(
+      engine as unknown as { _enqueue: (a: unknown, c: unknown) => void },
+      "_enqueue",
+    ).mockImplementation(() => {
       enqueueCount++;
     });
 
@@ -1628,7 +1828,12 @@ describe("AC-11: Graceful shutdown waits for active invocations", () => {
     const agent = makeTestAgent({ dispatch: [{ on: "task.ready" }] });
     await setupProjectWithAgents(testDir, [agent]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
     await engine.start();
 
     // Inject a fake long-running invocation
@@ -1639,7 +1844,9 @@ describe("AC-11: Graceful shutdown waits for active invocations", () => {
         resolve();
       }, 50);
     });
-    (engine as unknown as { runningInvocations: Set<Promise<void>> }).runningInvocations.add(invocationPromise);
+    (engine as unknown as { runningInvocations: Set<Promise<void>> }).runningInvocations.add(
+      invocationPromise,
+    );
 
     const stopStarted = Date.now();
     await engine.stop();
@@ -1654,14 +1861,23 @@ describe("AC-11: Graceful shutdown waits for active invocations", () => {
     const agent = makeTestAgent({ dispatch: [{ on: "task.ready" }] });
     await setupProjectWithAgents(testDir, [agent]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
     await engine.start();
 
     // Inject a fake abort controller to verify it gets aborted
     const fakeController = new AbortController();
     let aborted = false;
-    fakeController.signal.addEventListener("abort", () => { aborted = true; });
-    (engine as unknown as { invocationAbortControllers: Set<AbortController> }).invocationAbortControllers.add(fakeController);
+    fakeController.signal.addEventListener("abort", () => {
+      aborted = true;
+    });
+    (
+      engine as unknown as { invocationAbortControllers: Set<AbortController> }
+    ).invocationAbortControllers.add(fakeController);
 
     await engine.stop();
 
@@ -1673,7 +1889,12 @@ describe("AC-11: Graceful shutdown waits for active invocations", () => {
     const agent = makeTestAgent({ dispatch: [{ on: "task.ready" }] });
     await setupProjectWithAgents(testDir, [agent]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
     await engine.start();
     await engine.stop();
 
@@ -1692,7 +1913,10 @@ describe("AC-11: Graceful shutdown waits for active invocations", () => {
     };
     internal.queues.set(agent.id, [queueEntry]);
 
-    const spawnSpy = vi.spyOn(engine as unknown as { _spawnInvocation: (a: unknown, e: unknown) => boolean }, "_spawnInvocation");
+    const spawnSpy = vi.spyOn(
+      engine as unknown as { _spawnInvocation: (a: unknown, e: unknown) => boolean },
+      "_spawnInvocation",
+    );
 
     await internal._drainQueues([agent]);
 
@@ -1721,7 +1945,12 @@ describe("AC-12: Shadow branch mutations serialized via mutex", () => {
     const agent = makeTestAgent();
     await setupProjectWithAgents(testDir, [agent]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
     await engine.start();
 
     const mutex = engine.getShadowMutex();
@@ -1735,7 +1964,12 @@ describe("AC-12: Shadow branch mutations serialized via mutex", () => {
     const agent = makeTestAgent();
     await setupProjectWithAgents(testDir, [agent]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
     await engine.start();
 
     const mutex = engine.getShadowMutex();
@@ -1792,7 +2026,12 @@ describe("AC-12: Shadow branch mutations serialized via mutex", () => {
       return { session: {} as any, outcome: "success", durationMs: 1 };
     });
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
     await engine.start();
 
     const [taskA, taskB] = testUlids("TASK", 2);
@@ -1834,7 +2073,12 @@ describe("AC-12: Shadow branch mutations serialized via mutex", () => {
       durationMs: 1,
     });
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
     await engine.start();
 
     try {
@@ -1996,7 +2240,8 @@ describe("Active fleet cleanup on invocation completion", () => {
     const quietInvocationGate = new Promise<void>((resolve) => {
       releaseQuietInvocation = resolve;
     });
-    const runSpy = vi.spyOn(invocationModule, "runInvocation")
+    const runSpy = vi
+      .spyOn(invocationModule, "runInvocation")
       .mockImplementationOnce(async () => {
         await quietInvocationGate;
         return { session: {} as never, outcome: "success", durationMs: 1 };
@@ -2088,12 +2333,22 @@ describe("AC-4: CLI posts state change event via handleStateChange", () => {
 
     // Write task with automation: eligible so default filter passes (AC-21)
     const taskId = testUlid("TASK");
-    await writeTasks(testDir, [{ _ulid: taskId, status: "pending_review", automation: "eligible" }]);
+    await writeTasks(testDir, [
+      { _ulid: taskId, status: "pending_review", automation: "eligible" },
+    ]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
 
     let enqueueCount = 0;
-    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+    vi.spyOn(
+      engine as unknown as { _enqueue: (a: unknown, c: unknown) => void },
+      "_enqueue",
+    ).mockImplementation(() => {
       enqueueCount++;
     });
 
@@ -2171,7 +2426,11 @@ describe("Session event accumulator integration", () => {
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
       onSessionEvent: (event) => {
-        seenEvents.push({ type: event.type, ...("text" in event ? { text: event.text } : {}), ...("tool_name" in event ? { tool_name: event.tool_name } : {}) });
+        seenEvents.push({
+          type: event.type,
+          ...("text" in event ? { text: event.text } : {}),
+          ...("tool_name" in event ? { tool_name: event.tool_name } : {}),
+        });
       },
       coalesceWindowMs: 0,
     });
@@ -2199,7 +2458,7 @@ describe("Session event accumulator integration", () => {
     // 6. message_start (re-entering message mode)
     // 7. message_progress (newline-flushed "after tool\n")
     // 8. message_complete (session end flush)
-    const types = seenEvents.map(e => e.type);
+    const types = seenEvents.map((e) => e.type);
     expect(types).toContain("message_start");
     expect(types).toContain("message_progress");
     expect(types).toContain("message_complete");
@@ -2207,7 +2466,7 @@ describe("Session event accumulator integration", () => {
     expect(types).toContain("tool_call_complete");
 
     // Tool call start should include the tool name
-    const toolStart = seenEvents.find(e => e.type === "tool_call_start");
+    const toolStart = seenEvents.find((e) => e.type === "tool_call_start");
     expect(toolStart?.tool_name).toBe("Bash");
 
     await engine.stop();
@@ -2351,7 +2610,7 @@ describe("Dispatch prompt orientation context and interpolation", () => {
         task_ref: "@my-task",
         task_title: "Fix the bug",
       });
-      expect(result).toBe('Work on @my-task — Fix the bug');
+      expect(result).toBe("Work on @my-task — Fix the bug");
     });
 
     it("should pass through unresolved variables unchanged", () => {
@@ -2529,7 +2788,8 @@ describe("Dispatch prompt orientation context and interpolation", () => {
 
     // AC: @review-fix-cycle-diff ac-2
     it("should include fix-cycle diff summary when provided for pending_review", () => {
-      const diffSummary = "Changes since prior review (abc123..def456):\n src/foo.ts | 5 ++---\n 1 file changed, 2 insertions(+), 3 deletions(-)";
+      const diffSummary =
+        "Changes since prior review (abc123..def456):\n src/foo.ts | 5 ++---\n 1 file changed, 2 insertions(+), 3 deletions(-)";
       const result = buildOrientationContext(
         "@my-task",
         "task.pending_review",
@@ -2613,7 +2873,23 @@ describe("Dispatch prompt orientation context and interpolation", () => {
         fromStatus: "in_progress",
         toStatus: "pending",
         timestamp: Date.now(),
-        task: { _ulid: taskId, title: "Test task title", slugs: [], status: "pending", type: "task", priority: 3, blocked_by: [], depends_on: [], context: [], tags: [], vcs_refs: [], notes: [], todos: [], created_at: new Date().toISOString(), automation: "eligible" } as any,
+        task: {
+          _ulid: taskId,
+          title: "Test task title",
+          slugs: [],
+          status: "pending",
+          type: "task",
+          priority: 3,
+          blocked_by: [],
+          depends_on: [],
+          context: [],
+          tags: [],
+          vcs_refs: [],
+          notes: [],
+          todos: [],
+          created_at: new Date().toISOString(),
+          automation: "eligible",
+        } as any,
       });
 
       for (let i = 0; i < 200 && runSpy.mock.calls.length === 0; i++) {
@@ -2625,7 +2901,9 @@ describe("Dispatch prompt orientation context and interpolation", () => {
       expect(prompt).toContain("## Task Context");
       expect(prompt).toContain("Test task title");
       expect(prompt).toContain("New task assignment");
-      expect(prompt).toContain(`Workspace (your working directory): ${path.join(testDir, ".kspec-worktrees", `test-task-title-${taskId.slice(0, 8).toLowerCase()}`)}`);
+      expect(prompt).toContain(
+        `Workspace (your working directory): ${path.join(testDir, ".kspec-worktrees", `test-task-title-${taskId.slice(0, 8).toLowerCase()}`)}`,
+      );
       expect(prompt).toContain("Canonical branch: dispatch/task/test-task-title/");
       expect(prompt).toContain("Integration target: main");
       expect(prompt).toContain("Workspace mode: mutable worker branch");
@@ -2659,7 +2937,23 @@ describe("Dispatch prompt orientation context and interpolation", () => {
         fromStatus: "in_progress",
         toStatus: "pending",
         timestamp: Date.now(),
-        task: { _ulid: taskId, title: "Workspace dir test", slugs: [], status: "pending", type: "task", priority: 3, blocked_by: [], depends_on: [], context: [], tags: [], vcs_refs: [], notes: [], todos: [], created_at: new Date().toISOString(), automation: "eligible" } as any,
+        task: {
+          _ulid: taskId,
+          title: "Workspace dir test",
+          slugs: [],
+          status: "pending",
+          type: "task",
+          priority: 3,
+          blocked_by: [],
+          depends_on: [],
+          context: [],
+          tags: [],
+          vcs_refs: [],
+          notes: [],
+          todos: [],
+          created_at: new Date().toISOString(),
+          automation: "eligible",
+        } as any,
       });
 
       for (let i = 0; i < 200 && runSpy.mock.calls.length === 0; i++) {
@@ -2668,7 +2962,11 @@ describe("Dispatch prompt orientation context and interpolation", () => {
 
       expect(runSpy).toHaveBeenCalled();
       const prompt = runSpy.mock.calls[0][0].prompt;
-      const worktreePath = path.join(testDir, ".kspec-worktrees", `workspace-dir-test-${taskId.slice(0, 8).toLowerCase()}`);
+      const worktreePath = path.join(
+        testDir,
+        ".kspec-worktrees",
+        `workspace-dir-test-${taskId.slice(0, 8).toLowerCase()}`,
+      );
       expect(prompt).toContain("CRITICAL: Your working directory is your assigned workspace");
       expect(prompt).toContain(worktreePath);
       expect(prompt).toContain("Do NOT cd to the project root");
@@ -2706,7 +3004,23 @@ describe("Dispatch prompt orientation context and interpolation", () => {
         fromStatus: "in_progress",
         toStatus: "pending",
         timestamp: Date.now(),
-        task: { _ulid: taskId, title: "My task", slugs: [], status: "pending", type: "task", priority: 3, blocked_by: [], depends_on: [], context: [], tags: [], vcs_refs: [], notes: [], todos: [], created_at: new Date().toISOString(), automation: "eligible" } as any,
+        task: {
+          _ulid: taskId,
+          title: "My task",
+          slugs: [],
+          status: "pending",
+          type: "task",
+          priority: 3,
+          blocked_by: [],
+          depends_on: [],
+          context: [],
+          tags: [],
+          vcs_refs: [],
+          notes: [],
+          todos: [],
+          created_at: new Date().toISOString(),
+          automation: "eligible",
+        } as any,
       });
 
       for (let i = 0; i < 200 && runSpy.mock.calls.length === 0; i++) {
@@ -2752,11 +3066,14 @@ describe("Dispatch role workflow entrypoints", () => {
         "  base_branch: main",
         "agent:",
         "  skills:",
-        "    task_work: \"/kspec:task-work\"",
+        '    task_work: "/kspec:task-work"',
       ].join("\n"),
       "utf-8",
     );
-    execSync("git remote add origin https://github.com/example/repo.git", { cwd: testDir, stdio: "pipe" });
+    execSync("git remote add origin https://github.com/example/repo.git", {
+      cwd: testDir,
+      stdio: "pipe",
+    });
     const fakeGh = await installFakeGh(testDir);
 
     try {
@@ -2783,7 +3100,23 @@ describe("Dispatch role workflow entrypoints", () => {
           fromStatus: "in_progress",
           toStatus: "pending",
           timestamp: Date.now(),
-          task: { _ulid: taskId, title: "Worker role task", slugs: ["worker-role-task"], status: "pending", type: "task", priority: 1, blocked_by: [], depends_on: [], context: [], tags: [], vcs_refs: [], notes: [], todos: [], created_at: new Date().toISOString(), automation: "eligible" } as any,
+          task: {
+            _ulid: taskId,
+            title: "Worker role task",
+            slugs: ["worker-role-task"],
+            status: "pending",
+            type: "task",
+            priority: 1,
+            blocked_by: [],
+            depends_on: [],
+            context: [],
+            tags: [],
+            vcs_refs: [],
+            notes: [],
+            todos: [],
+            created_at: new Date().toISOString(),
+            automation: "eligible",
+          } as any,
         });
 
         await waitForMockCall(runSpy);
@@ -2819,7 +3152,7 @@ describe("Dispatch role workflow entrypoints", () => {
         "  base_branch: main",
         "agent:",
         "  skills:",
-        "    pr_review: \"{skill:pr-review}\"",
+        '    pr_review: "{skill:pr-review}"',
       ].join("\n"),
       "utf-8",
     );
@@ -2851,7 +3184,24 @@ describe("Dispatch role workflow entrypoints", () => {
         fromStatus: "in_progress",
         toStatus: "pending_review",
         timestamp: Date.now(),
-        task: { _ulid: taskId, title: "Reviewer role task", slugs: ["reviewer-role-task"], status: "pending_review", type: "task", priority: 1, blocked_by: [], depends_on: [], context: [], tags: [], vcs_refs: [], notes: [], todos: [], created_at: new Date().toISOString(), automation: "eligible", review_url: "https://example.com/pr/1" } as any,
+        task: {
+          _ulid: taskId,
+          title: "Reviewer role task",
+          slugs: ["reviewer-role-task"],
+          status: "pending_review",
+          type: "task",
+          priority: 1,
+          blocked_by: [],
+          depends_on: [],
+          context: [],
+          tags: [],
+          vcs_refs: [],
+          notes: [],
+          todos: [],
+          created_at: new Date().toISOString(),
+          automation: "eligible",
+          review_url: "https://example.com/pr/1",
+        } as any,
       });
 
       await waitForMockCall(runSpy);
@@ -2879,13 +3229,9 @@ describe("Dispatch role workflow entrypoints", () => {
     await setupProjectWithAgents(testDir, [agent]);
     await fs.writeFile(
       path.join(testDir, "kspec.config.yaml"),
-      [
-        "dispatch:",
-        "  base_branch: main",
-        "agent:",
-        "  skills:",
-        "    task_work: \"   \"",
-      ].join("\n"),
+      ["dispatch:", "  base_branch: main", "agent:", "  skills:", '    task_work: "   "'].join(
+        "\n",
+      ),
       "utf-8",
     );
 
@@ -2921,20 +3267,43 @@ describe("Dispatch role workflow entrypoints", () => {
         toStatus: "pending",
         fromStatus: "in_progress",
         taskRef,
-        task: { _ulid: taskId, title: "Blank entrypoint task", slugs: ["blank-entrypoint-task"], status: "pending", type: "task", priority: 1, blocked_by: [], depends_on: [], context: [], tags: [], vcs_refs: [], notes: [], todos: [], created_at: new Date().toISOString(), automation: "eligible" } as any,
+        task: {
+          _ulid: taskId,
+          title: "Blank entrypoint task",
+          slugs: ["blank-entrypoint-task"],
+          status: "pending",
+          type: "task",
+          priority: 1,
+          blocked_by: [],
+          depends_on: [],
+          context: [],
+          tags: [],
+          vcs_refs: [],
+          notes: [],
+          todos: [],
+          created_at: new Date().toISOString(),
+          automation: "eligible",
+        } as any,
       });
-      const entry = { agent, change, retryCount: 0, nextRetryAt: 0, enqueuedAtMs: Date.now(), sequence: 1 };
+      const entry = {
+        agent,
+        change,
+        retryCount: 0,
+        nextRetryAt: 0,
+        enqueuedAtMs: Date.now(),
+        sequence: 1,
+      };
 
       const started = await internal._spawnInvocation(agent, entry);
 
       expect(started).toBe(false);
       expect(runSpy).not.toHaveBeenCalled();
-      expect(errorSpy).toHaveBeenCalledWith(
-        expect.stringContaining("Failed to build prompt"),
-      );
+      expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining("Failed to build prompt"));
       expect(internal.inFlightTaskKeys.has(`${agent.id}:${taskRef}`)).toBe(false);
 
-      const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{ args: string[] }>;
+      const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{
+        args: string[];
+      }>;
       const noteCall = calls.find((c) => c.args.includes("note") && c.args.includes(taskRef));
       expect(noteCall).toBeTruthy();
       expect(noteCall!.args.join(" ")).toContain("DISPATCH-PROMPT");
@@ -2958,7 +3327,7 @@ describe("Dispatch role workflow entrypoints", () => {
         "  base_branch: main",
         "agent:",
         "  skills:",
-        "    task_work: \"/kspec:task-work\"",
+        '    task_work: "/kspec:task-work"',
       ].join("\n"),
       "utf-8",
     );
@@ -2969,7 +3338,8 @@ describe("Dispatch role workflow entrypoints", () => {
     const originalProvision = workspaceModule.provisionDispatchWorkspace;
 
     try {
-      const provisionSpy = vi.spyOn(workspaceModule, "provisionDispatchWorkspace")
+      const provisionSpy = vi
+        .spyOn(workspaceModule, "provisionDispatchWorkspace")
         .mockImplementationOnce(async (options) => {
           const workspace = await originalProvision(options);
           if (!workspace) {
@@ -2979,7 +3349,8 @@ describe("Dispatch role workflow entrypoints", () => {
             ...workspace,
             metadata: {
               ...workspace.metadata,
-              publicationMode: "broken-mode" as unknown as ProvisionedDispatchWorkspace["metadata"]["publicationMode"],
+              publicationMode:
+                "broken-mode" as unknown as ProvisionedDispatchWorkspace["metadata"]["publicationMode"],
             },
           };
         });
@@ -3011,25 +3382,48 @@ describe("Dispatch role workflow entrypoints", () => {
         toStatus: "pending",
         fromStatus: "in_progress",
         taskRef,
-        task: { _ulid: taskId, title: "Invalid publication mode task", slugs: ["invalid-publication-mode-task"], status: "pending", type: "task", priority: 1, blocked_by: [], depends_on: [], context: [], tags: [], vcs_refs: [], notes: [], todos: [], created_at: new Date().toISOString(), automation: "eligible" } as any,
+        task: {
+          _ulid: taskId,
+          title: "Invalid publication mode task",
+          slugs: ["invalid-publication-mode-task"],
+          status: "pending",
+          type: "task",
+          priority: 1,
+          blocked_by: [],
+          depends_on: [],
+          context: [],
+          tags: [],
+          vcs_refs: [],
+          notes: [],
+          todos: [],
+          created_at: new Date().toISOString(),
+          automation: "eligible",
+        } as any,
       });
-      const entry = { agent, change, retryCount: 0, nextRetryAt: 0, enqueuedAtMs: Date.now(), sequence: 1 };
+      const entry = {
+        agent,
+        change,
+        retryCount: 0,
+        nextRetryAt: 0,
+        enqueuedAtMs: Date.now(),
+        sequence: 1,
+      };
 
       const started = await internal._spawnInvocation(agent, entry);
 
       expect(started).toBe(false);
       expect(provisionSpy).toHaveBeenCalledOnce();
       expect(runSpy).not.toHaveBeenCalled();
-      expect(errorSpy).toHaveBeenCalledWith(
-        expect.stringContaining("Failed to build prompt"),
-      );
+      expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining("Failed to build prompt"));
       expect(internal.inFlightTaskKeys.has(`${agent.id}:${taskRef}`)).toBe(false);
 
-      const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{ args: string[] }>;
+      const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{
+        args: string[];
+      }>;
       const noteCall = calls.find((c) => c.args.includes("note") && c.args.includes(taskRef));
       expect(noteCall).toBeTruthy();
       expect(noteCall!.args.join(" ")).toContain("DISPATCH-PROMPT");
-      expect(noteCall!.args.join(" ")).toContain("publication mode \"broken-mode\" is invalid");
+      expect(noteCall!.args.join(" ")).toContain('publication mode "broken-mode" is invalid');
       expect(noteCall!.args.join(" ")).toContain("publicationMode is pull_request or manual_merge");
     } finally {
       delete process.env.KSPEC_CAPTURE_FILE;
@@ -3055,7 +3449,12 @@ describe("AC-9: Retry transient errors with exponential backoff", () => {
     const agent = makeTestAgent({ dispatch: [{ on: "task.ready" }] });
     await setupProjectWithAgents(testDir, [agent]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
     await engine.start();
 
     // Verify retry logic by checking the queue re-enqueue behavior
@@ -3105,12 +3504,19 @@ describe("AC-9: Retry transient errors with exponential backoff", () => {
     const agent = makeTestAgent({ dispatch: [{ on: "task.ready" }] });
     await setupProjectWithAgents(testDir, [agent]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
     await engine.start();
 
     // Track drain calls via _loadAgents spy
     let drainCallCount = 0;
-    const origLoadAgents = (engine as unknown as { _loadAgents: () => Promise<unknown[]> })._loadAgents.bind(engine);
+    const origLoadAgents = (
+      engine as unknown as { _loadAgents: () => Promise<unknown[]> }
+    )._loadAgents.bind(engine);
     (engine as unknown as { _loadAgents: () => Promise<unknown[]> })._loadAgents = async () => {
       drainCallCount++;
       return origLoadAgents();
@@ -3134,8 +3540,11 @@ describe("AC-9: Retry transient errors with exponential backoff", () => {
     const backoffMs = 1000;
     setTimeout(() => {
       if ((engine as unknown as { running: boolean }).running) {
-        (engine as unknown as { _loadAgents: () => Promise<unknown[]> })._loadAgents()
-          .then(() => {/* drain */})
+        (engine as unknown as { _loadAgents: () => Promise<unknown[]> })
+          ._loadAgents()
+          .then(() => {
+            /* drain */
+          })
           .catch(() => {});
       }
     }, backoffMs);
@@ -3220,9 +3629,15 @@ describe("Stale queue entry discard", () => {
     });
     // Mock workspace lifecycle functions to avoid real git/filesystem I/O
     // that is slow and unreliable under parallel test load.
-    vi.spyOn(workspaceModule, "reconcileDispatchWorkspaceRegistry" as any).mockResolvedValue(undefined);
-    vi.spyOn(workspaceModule, "reconcileDispatchWorkspaceArtifacts" as any).mockResolvedValue(undefined);
-    vi.spyOn(workspaceModule, "reconcileDispatchWorkspaceLifecycle" as any).mockResolvedValue(undefined);
+    vi.spyOn(workspaceModule, "reconcileDispatchWorkspaceRegistry" as any).mockResolvedValue(
+      undefined,
+    );
+    vi.spyOn(workspaceModule, "reconcileDispatchWorkspaceArtifacts" as any).mockResolvedValue(
+      undefined,
+    );
+    vi.spyOn(workspaceModule, "reconcileDispatchWorkspaceLifecycle" as any).mockResolvedValue(
+      undefined,
+    );
     // Mock workspace provisioning and bootstrap to prevent real I/O during
     // _spawnInvocation — these tests validate queue staleness, not workspace setup.
     const mockMetadata = buildMockWorkspaceMetadata(testDir, { workspaceId: "mock-stale-test" });
@@ -3267,7 +3682,9 @@ describe("Stale queue entry discard", () => {
     // increments activeCount, then completes asynchronously.
     const spawned: string[] = [];
     let completeFirst!: () => void;
-    const firstCompletion = new Promise<void>((r) => { completeFirst = r; });
+    const firstCompletion = new Promise<void>((r) => {
+      completeFirst = r;
+    });
     type EngineInternal = {
       _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean>;
       activeCount: Map<string, number>;
@@ -3357,7 +3774,9 @@ describe("Stale queue entry discard", () => {
     // increments activeCount, then completes asynchronously.
     const spawned: string[] = [];
     let completeFirst!: () => void;
-    const firstCompletion = new Promise<void>((r) => { completeFirst = r; });
+    const firstCompletion = new Promise<void>((r) => {
+      completeFirst = r;
+    });
     type EngineInternal = {
       _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean>;
       activeCount: Map<string, number>;
@@ -3432,7 +3851,9 @@ describe("Stale queue entry discard", () => {
     // increments activeCount, then completes asynchronously.
     const spawned: string[] = [];
     let completeFirst!: () => void;
-    const firstCompletion = new Promise<void>((r) => { completeFirst = r; });
+    const firstCompletion = new Promise<void>((r) => {
+      completeFirst = r;
+    });
     type EngineInternal = {
       _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean>;
       activeCount: Map<string, number>;
@@ -3501,7 +3922,9 @@ describe("Stale queue entry discard", () => {
     await setupProjectWithAgents(testDir, [agent]);
 
     const taskId = testUlid("TASK");
-    await writeTasks(testDir, [{ _ulid: taskId, status: "pending_review", automation: "eligible" }]);
+    await writeTasks(testDir, [
+      { _ulid: taskId, status: "pending_review", automation: "eligible" },
+    ]);
 
     vi.spyOn(workspaceModule, "getDispatchWorkspaceHealth").mockResolvedValue({
       exists: true,
@@ -3516,12 +3939,14 @@ describe("Stale queue entry discard", () => {
       recovered: false,
       recoverySource: null,
       health: { exists: true, healthy: false, reason: "missing-registry-record", metadata: null },
-      diagnostics: [{
-        taskRef: `@${taskId}`,
-        code: "no-recoverable-workspace",
-        message: `No trustworthy recovery path exists for @${taskId}.`,
-        suggestion: "Ensure the task was submitted with kspec task submit.",
-      }],
+      diagnostics: [
+        {
+          taskRef: `@${taskId}`,
+          code: "no-recoverable-workspace",
+          message: `No trustworthy recovery path exists for @${taskId}.`,
+          suggestion: "Ensure the task was submitted with kspec task submit.",
+        },
+      ],
       conflictingSignals: null,
     });
     const consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => {});
@@ -3547,7 +3972,9 @@ describe("Stale queue entry discard", () => {
       expect.stringContaining(`[dispatch] Workspace discovery diagnostic for @${taskId}`),
     );
     expect(consoleLogSpy).toHaveBeenCalledWith(
-      expect.stringContaining(`[dispatch] Discarded queue entry @${taskId} for agent "pr-reviewer": workspace is unhealthy (no-recoverable-workspace)`),
+      expect.stringContaining(
+        `[dispatch] Discarded queue entry @${taskId} for agent "pr-reviewer": workspace is unhealthy (no-recoverable-workspace)`,
+      ),
     );
     expect(consoleLogSpy).toHaveBeenCalledWith(
       expect.stringContaining('Discarded 1 ineligible queue entry for agent "pr-reviewer"'),
@@ -3573,9 +4000,15 @@ describe("Self-trigger suppression", () => {
     server = http.createServer((req, res) => {
       if (req.url === "/api/agent/events" && req.method === "POST") {
         let body = "";
-        req.on("data", (chunk: Buffer) => { body += chunk.toString(); });
+        req.on("data", (chunk: Buffer) => {
+          body += chunk.toString();
+        });
         req.on("end", () => {
-          try { receivedEvents.push(JSON.parse(body)); } catch { /* ignore */ }
+          try {
+            receivedEvents.push(JSON.parse(body));
+          } catch {
+            /* ignore */
+          }
           res.writeHead(200, { "Content-Type": "application/json" });
           res.end(JSON.stringify({ accepted: true }));
         });
@@ -3608,16 +4041,18 @@ describe("Self-trigger suppression", () => {
     await fs.writeFile(
       path.join(testDir, "project.tasks.yaml"),
       YAML.stringify({
-        tasks: [{
-          _ulid: taskId,
-          type: "task",
-          title: "Test task",
-          status: "pending",
-          tags: [],
-          notes: [],
-          todos: [],
-          created_at: new Date().toISOString(),
-        }],
+        tasks: [
+          {
+            _ulid: taskId,
+            type: "task",
+            title: "Test task",
+            status: "pending",
+            tags: [],
+            notes: [],
+            todos: [],
+            created_at: new Date().toISOString(),
+          },
+        ],
       }),
     );
     // Initial git commit so kspec commands work
@@ -3645,16 +4080,18 @@ describe("Self-trigger suppression", () => {
     await fs.writeFile(
       path.join(testDir, "project.tasks.yaml"),
       YAML.stringify({
-        tasks: [{
-          _ulid: taskId,
-          type: "task",
-          title: "Test task",
-          status: "pending",
-          tags: [],
-          notes: [],
-          todos: [],
-          created_at: new Date().toISOString(),
-        }],
+        tasks: [
+          {
+            _ulid: taskId,
+            type: "task",
+            title: "Test task",
+            status: "pending",
+            tags: [],
+            notes: [],
+            todos: [],
+            created_at: new Date().toISOString(),
+          },
+        ],
       }),
     );
     execSync("git add -A && git commit -m reset", { cwd: testDir, stdio: "pipe" });
@@ -3707,9 +4144,14 @@ describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
     });
 
     // Mock _drainQueues to prevent actual invocation spawning
-    vi.spyOn(engine as unknown as { _drainQueues: (a: unknown) => Promise<void> }, "_drainQueues")
-      .mockResolvedValue(undefined);
-    const enqueueSpy = vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue");
+    vi.spyOn(
+      engine as unknown as { _drainQueues: (a: unknown) => Promise<void> },
+      "_drainQueues",
+    ).mockResolvedValue(undefined);
+    const enqueueSpy = vi.spyOn(
+      engine as unknown as { _enqueue: (a: unknown, c: unknown) => void },
+      "_enqueue",
+    );
 
     await engine.start();
 
@@ -3745,9 +4187,14 @@ describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
     });
 
     // Mock _drainQueues to prevent actual invocation spawning
-    vi.spyOn(engine as unknown as { _drainQueues: (a: unknown) => Promise<void> }, "_drainQueues")
-      .mockResolvedValue(undefined);
-    const enqueueSpy = vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue");
+    vi.spyOn(
+      engine as unknown as { _drainQueues: (a: unknown) => Promise<void> },
+      "_drainQueues",
+    ).mockResolvedValue(undefined);
+    const enqueueSpy = vi.spyOn(
+      engine as unknown as { _enqueue: (a: unknown, c: unknown) => void },
+      "_enqueue",
+    );
 
     await engine.start();
 
@@ -3778,7 +4225,10 @@ describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
       coalesceWindowMs: 0,
     });
 
-    const enqueueSpy = vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue");
+    const enqueueSpy = vi.spyOn(
+      engine as unknown as { _enqueue: (a: unknown, c: unknown) => void },
+      "_enqueue",
+    );
     await engine.start();
 
     // Neither bootstrap nor reconcile should enqueue completed tasks
@@ -3802,7 +4252,9 @@ describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
 
     const taskId = testUlid("TASK", 29);
     const taskRef = `@${taskId}`;
-    await writeTasks(testDir, [{ _ulid: taskId, status: "pending_review", automation: "eligible" }]);
+    await writeTasks(testDir, [
+      { _ulid: taskId, status: "pending_review", automation: "eligible" },
+    ]);
 
     const workspace = await provisionDispatchWorkspace({
       projectDir: testDir,
@@ -3840,10 +4292,14 @@ describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
       reconcileIntervalMs: 0,
       coalesceWindowMs: 0,
     });
-    const spawnSpy = vi.spyOn(
-      engine as unknown as { _spawnInvocation: (agent: unknown, entry: unknown) => Promise<boolean> },
-      "_spawnInvocation",
-    ).mockResolvedValue(true);
+    const spawnSpy = vi
+      .spyOn(
+        engine as unknown as {
+          _spawnInvocation: (agent: unknown, entry: unknown) => Promise<boolean>;
+        },
+        "_spawnInvocation",
+      )
+      .mockResolvedValue(true);
 
     await engine.start();
 
@@ -3913,10 +4369,14 @@ describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
       reconcileIntervalMs: 0,
       coalesceWindowMs: 0,
     });
-    const spawnSpy = vi.spyOn(
-      engine as unknown as { _spawnInvocation: (agent: unknown, entry: unknown) => Promise<boolean> },
-      "_spawnInvocation",
-    ).mockResolvedValue(true);
+    const spawnSpy = vi
+      .spyOn(
+        engine as unknown as {
+          _spawnInvocation: (agent: unknown, entry: unknown) => Promise<boolean>;
+        },
+        "_spawnInvocation",
+      )
+      .mockResolvedValue(true);
 
     await engine.start();
 
@@ -4022,7 +4482,9 @@ describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
       title: "Missing Worker Registration Recovery",
       slugs: ["task-missing-worker-registration-recovery"],
     };
-    await writeTasks(testDir, [{ _ulid: taskId, status: "pending_review", automation: "eligible" }]);
+    await writeTasks(testDir, [
+      { _ulid: taskId, status: "pending_review", automation: "eligible" },
+    ]);
 
     const workerWorkspace = await provisionDispatchWorkspace({
       projectDir: testDir,
@@ -4058,10 +4520,14 @@ describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
       reconcileIntervalMs: 0,
       coalesceWindowMs: 0,
     });
-    const spawnSpy = vi.spyOn(
-      engine as unknown as { _spawnInvocation: (agent: unknown, entry: unknown) => Promise<boolean> },
-      "_spawnInvocation",
-    ).mockResolvedValue(true);
+    const spawnSpy = vi
+      .spyOn(
+        engine as unknown as {
+          _spawnInvocation: (agent: unknown, entry: unknown) => Promise<boolean>;
+        },
+        "_spawnInvocation",
+      )
+      .mockResolvedValue(true);
     const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
 
     await engine.start();
@@ -4245,10 +4711,18 @@ describe("AC-21: Default automation:eligible for task.ready/task.needs_work with
       { _ulid: taskId, status: "in_progress", automation: "manual_only" },
     ]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
 
     let enqueueCount = 0;
-    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+    vi.spyOn(
+      engine as unknown as { _enqueue: (a: unknown, c: unknown) => void },
+      "_enqueue",
+    ).mockImplementation(() => {
       enqueueCount++;
     });
 
@@ -4256,9 +4730,7 @@ describe("AC-21: Default automation:eligible for task.ready/task.needs_work with
     enqueueCount = 0; // reset after bootstrap
 
     // Transition to pending (task.ready) — should NOT be queued because task is ineligible
-    await writeTasks(testDir, [
-      { _ulid: taskId, status: "pending", automation: "manual_only" },
-    ]);
+    await writeTasks(testDir, [{ _ulid: taskId, status: "pending", automation: "manual_only" }]);
 
     await engine.handleFileChange(testDir);
 
@@ -4275,23 +4747,27 @@ describe("AC-21: Default automation:eligible for task.ready/task.needs_work with
     await setupProjectWithAgents(testDir, [agent]);
 
     const taskId = testUlid("TASK");
-    await writeTasks(testDir, [
-      { _ulid: taskId, status: "in_progress", automation: "eligible" },
-    ]);
+    await writeTasks(testDir, [{ _ulid: taskId, status: "in_progress", automation: "eligible" }]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
 
     let enqueueCount = 0;
-    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+    vi.spyOn(
+      engine as unknown as { _enqueue: (a: unknown, c: unknown) => void },
+      "_enqueue",
+    ).mockImplementation(() => {
       enqueueCount++;
     });
 
     await engine.start();
     enqueueCount = 0;
 
-    await writeTasks(testDir, [
-      { _ulid: taskId, status: "pending", automation: "eligible" },
-    ]);
+    await writeTasks(testDir, [{ _ulid: taskId, status: "pending", automation: "eligible" }]);
 
     await engine.handleFileChange(testDir);
 
@@ -4312,19 +4788,25 @@ describe("AC-21: Default automation:eligible for task.ready/task.needs_work with
       { _ulid: taskId, status: "pending_review", automation: "manual_only" },
     ]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
 
     let enqueueCount = 0;
-    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+    vi.spyOn(
+      engine as unknown as { _enqueue: (a: unknown, c: unknown) => void },
+      "_enqueue",
+    ).mockImplementation(() => {
       enqueueCount++;
     });
 
     await engine.start();
     enqueueCount = 0;
 
-    await writeTasks(testDir, [
-      { _ulid: taskId, status: "needs_work", automation: "manual_only" },
-    ]);
+    await writeTasks(testDir, [{ _ulid: taskId, status: "needs_work", automation: "manual_only" }]);
 
     await engine.handleFileChange(testDir);
 
@@ -4347,7 +4829,12 @@ describe("AC-21: Default automation:eligible for task.ready/task.needs_work with
       { _ulid: taskId, status: "in_progress", automation: "manual_only" },
     ]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
     await engine.start();
 
     // Transition to pending_review — should be queued even though task is ineligible
@@ -4366,7 +4853,10 @@ describe("AC-21: Default automation:eligible for task.ready/task.needs_work with
     };
 
     let enqueueCount = 0;
-    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+    vi.spyOn(
+      engine as unknown as { _enqueue: (a: unknown, c: unknown) => void },
+      "_enqueue",
+    ).mockImplementation(() => {
       enqueueCount++;
     });
 
@@ -4390,10 +4880,18 @@ describe("AC-21: Default automation:eligible for task.ready/task.needs_work with
       { _ulid: taskId, status: "in_progress", automation: "manual_only", tags: ["mvp"] },
     ]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
 
     let enqueueCount = 0;
-    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+    vi.spyOn(
+      engine as unknown as { _enqueue: (a: unknown, c: unknown) => void },
+      "_enqueue",
+    ).mockImplementation(() => {
       enqueueCount++;
     });
 
@@ -4439,10 +4937,18 @@ describe("Priority filter uses threshold semantics (<=)", () => {
       { _ulid: taskId, status: "in_progress", automation: "eligible", priority: 3 },
     ]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
 
     let enqueueCount = 0;
-    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+    vi.spyOn(
+      engine as unknown as { _enqueue: (a: unknown, c: unknown) => void },
+      "_enqueue",
+    ).mockImplementation(() => {
       enqueueCount++;
     });
 
@@ -4470,10 +4976,18 @@ describe("Priority filter uses threshold semantics (<=)", () => {
       { _ulid: taskId, status: "in_progress", automation: "eligible", priority: 1 },
     ]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
 
     let enqueueCount = 0;
-    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+    vi.spyOn(
+      engine as unknown as { _enqueue: (a: unknown, c: unknown) => void },
+      "_enqueue",
+    ).mockImplementation(() => {
       enqueueCount++;
     });
 
@@ -4501,10 +5015,18 @@ describe("Priority filter uses threshold semantics (<=)", () => {
       { _ulid: taskId, status: "in_progress", automation: "eligible", priority: 5 },
     ]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
 
     let enqueueCount = 0;
-    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+    vi.spyOn(
+      engine as unknown as { _enqueue: (a: unknown, c: unknown) => void },
+      "_enqueue",
+    ).mockImplementation(() => {
       enqueueCount++;
     });
 
@@ -4530,23 +5052,27 @@ describe("Priority filter uses threshold semantics (<=)", () => {
     await setupProjectWithAgents(testDir, [agent]);
 
     const taskId = testUlid("TASK");
-    await writeTasks(testDir, [
-      { _ulid: taskId, status: "in_progress", automation: "eligible" },
-    ]);
+    await writeTasks(testDir, [{ _ulid: taskId, status: "in_progress", automation: "eligible" }]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
 
     let enqueueCount = 0;
-    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+    vi.spyOn(
+      engine as unknown as { _enqueue: (a: unknown, c: unknown) => void },
+      "_enqueue",
+    ).mockImplementation(() => {
       enqueueCount++;
     });
 
     await engine.start();
     enqueueCount = 0;
 
-    await writeTasks(testDir, [
-      { _ulid: taskId, status: "pending", automation: "eligible" },
-    ]);
+    await writeTasks(testDir, [{ _ulid: taskId, status: "pending", automation: "eligible" }]);
     await engine.handleFileChange(testDir);
 
     expect(enqueueCount).toBe(0);
@@ -4577,7 +5103,8 @@ describe("Task readiness checks in dispatch (trait-task-readiness)", () => {
     });
     await setupProjectWithAgents(testDir, [agent]);
 
-    const [readyId, needsWorkId, inProgressId, reviewId, completedId, blockedId, cancelledId] = testUlids("STAT", 7);
+    const [readyId, needsWorkId, inProgressId, reviewId, completedId, blockedId, cancelledId] =
+      testUlids("STAT", 7);
     await writeTasks(testDir, [
       { _ulid: readyId, status: "pending", automation: "eligible" },
       { _ulid: needsWorkId, status: "needs_work", automation: "eligible" },
@@ -4597,7 +5124,10 @@ describe("Task readiness checks in dispatch (trait-task-readiness)", () => {
     });
 
     const enqueuedTaskIds: string[] = [];
-    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation((_agent, change) => {
+    vi.spyOn(
+      engine as unknown as { _enqueue: (a: unknown, c: unknown) => void },
+      "_enqueue",
+    ).mockImplementation((_agent, change) => {
       enqueuedTaskIds.push((change as TaskStateChange).taskId);
     });
 
@@ -4639,7 +5169,10 @@ describe("Task readiness checks in dispatch (trait-task-readiness)", () => {
     });
 
     let enqueueCount = 0;
-    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+    vi.spyOn(
+      engine as unknown as { _enqueue: (a: unknown, c: unknown) => void },
+      "_enqueue",
+    ).mockImplementation(() => {
       enqueueCount++;
     });
 
@@ -4684,7 +5217,10 @@ describe("Task readiness checks in dispatch (trait-task-readiness)", () => {
     });
 
     let enqueueCount = 0;
-    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+    vi.spyOn(
+      engine as unknown as { _enqueue: (a: unknown, c: unknown) => void },
+      "_enqueue",
+    ).mockImplementation(() => {
       enqueueCount++;
     });
 
@@ -4714,7 +5250,12 @@ describe("Task readiness checks in dispatch (trait-task-readiness)", () => {
     await setupProjectWithAgents(testDir, [agent]);
 
     await writeTasks(testDir, [
-      { _ulid: taskId, status: "pending", automation: "eligible", blocked_by: ["Waiting for API key"] },
+      {
+        _ulid: taskId,
+        status: "pending",
+        automation: "eligible",
+        blocked_by: ["Waiting for API key"],
+      },
     ]);
 
     const engine = new DispatchEngine({
@@ -4726,7 +5267,10 @@ describe("Task readiness checks in dispatch (trait-task-readiness)", () => {
     });
 
     let enqueueCount = 0;
-    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+    vi.spyOn(
+      engine as unknown as { _enqueue: (a: unknown, c: unknown) => void },
+      "_enqueue",
+    ).mockImplementation(() => {
       enqueueCount++;
     });
 
@@ -4755,7 +5299,12 @@ describe("Task readiness checks in dispatch (trait-task-readiness)", () => {
     await setupProjectWithAgents(testDir, [agent]);
 
     await writeTasks(testDir, [
-      { _ulid: taskId, status: "needs_work", automation: "eligible", blocked_by: ["Needs clarification"] },
+      {
+        _ulid: taskId,
+        status: "needs_work",
+        automation: "eligible",
+        blocked_by: ["Needs clarification"],
+      },
     ]);
 
     const engine = new DispatchEngine({
@@ -4767,7 +5316,10 @@ describe("Task readiness checks in dispatch (trait-task-readiness)", () => {
     });
 
     let enqueueCount = 0;
-    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+    vi.spyOn(
+      engine as unknown as { _enqueue: (a: unknown, c: unknown) => void },
+      "_enqueue",
+    ).mockImplementation(() => {
       enqueueCount++;
     });
 
@@ -4798,7 +5350,13 @@ describe("Task readiness checks in dispatch (trait-task-readiness)", () => {
     // Task matches all consumer filters but has unmet dep — should NOT dispatch
     await writeTasks(testDir, [
       { _ulid: depId, status: "pending", automation: "eligible" },
-      { _ulid: taskId, status: "pending", automation: "eligible", tags: ["cli"], depends_on: [`@${depId}`] },
+      {
+        _ulid: taskId,
+        status: "pending",
+        automation: "eligible",
+        tags: ["cli"],
+        depends_on: [`@${depId}`],
+      },
     ]);
 
     const engine = new DispatchEngine({
@@ -4810,7 +5368,10 @@ describe("Task readiness checks in dispatch (trait-task-readiness)", () => {
     });
 
     let enqueueCount = 0;
-    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+    vi.spyOn(
+      engine as unknown as { _enqueue: (a: unknown, c: unknown) => void },
+      "_enqueue",
+    ).mockImplementation(() => {
       enqueueCount++;
     });
 
@@ -4853,7 +5414,10 @@ describe("Task readiness checks in dispatch (trait-task-readiness)", () => {
     });
 
     let enqueueCount = 0;
-    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+    vi.spyOn(
+      engine as unknown as { _enqueue: (a: unknown, c: unknown) => void },
+      "_enqueue",
+    ).mockImplementation(() => {
       enqueueCount++;
     });
 
@@ -4889,7 +5453,12 @@ describe("Task readiness checks in dispatch (trait-task-readiness)", () => {
     });
 
     // Block draining entirely during enqueue so entries stay in queue
-    const drainSpy = vi.spyOn(engine as unknown as { _drainQueues: (...args: unknown[]) => Promise<void> }, "_drainQueues").mockResolvedValue(undefined);
+    const drainSpy = vi
+      .spyOn(
+        engine as unknown as { _drainQueues: (...args: unknown[]) => Promise<void> },
+        "_drainQueues",
+      )
+      .mockResolvedValue(undefined);
     vi.spyOn(invocationModule, "runInvocation").mockResolvedValue(undefined as never);
 
     await engine.start();
@@ -4929,17 +5498,20 @@ describe("Task readiness checks in dispatch (trait-task-readiness)", () => {
   it("should exclude in_progress and pending_review events when dependencies or blockers are unresolved", async () => {
     const [depId, taskId] = testUlids("RNRR", 2);
     const agent = makeTestAgent({
-      dispatch: [
-        { on: "task.in_progress" },
-        { on: "task.pending_review" },
-      ],
+      dispatch: [{ on: "task.in_progress" }, { on: "task.pending_review" }],
     });
     await setupProjectWithAgents(testDir, [agent]);
 
     // Task has unmet dep and blocked_by.
     await writeTasks(testDir, [
       { _ulid: depId, status: "pending", automation: "eligible" },
-      { _ulid: taskId, status: "in_progress", automation: "eligible", depends_on: [`@${depId}`], blocked_by: ["something"] },
+      {
+        _ulid: taskId,
+        status: "in_progress",
+        automation: "eligible",
+        depends_on: [`@${depId}`],
+        blocked_by: ["something"],
+      },
     ]);
 
     const engine = new DispatchEngine({
@@ -4951,7 +5523,10 @@ describe("Task readiness checks in dispatch (trait-task-readiness)", () => {
     });
 
     let enqueueCount = 0;
-    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+    vi.spyOn(
+      engine as unknown as { _enqueue: (a: unknown, c: unknown) => void },
+      "_enqueue",
+    ).mockImplementation(() => {
       enqueueCount++;
     });
 
@@ -5016,13 +5591,13 @@ describe("Post-invocation re-evaluation", () => {
     const [taskA, taskB] = testUlids("PREV", 2);
 
     // Initially: only taskA is pending (ready for worker). No pending_review tasks yet.
-    await writeTasks(testDir, [
-      { _ulid: taskA, status: "pending", automation: "eligible" },
-    ]);
+    await writeTasks(testDir, [{ _ulid: taskA, status: "pending", automation: "eligible" }]);
 
     const spawned: Array<{ agentId: string; taskRef: string }> = [];
     let resolveFirst!: () => void;
-    const firstBlock = new Promise<void>((r) => { resolveFirst = r; });
+    const firstBlock = new Promise<void>((r) => {
+      resolveFirst = r;
+    });
     let invocationCount = 0;
 
     vi.spyOn(invocationModule, "runInvocation").mockImplementation(async (opts) => {
@@ -5092,7 +5667,9 @@ describe("Post-invocation re-evaluation", () => {
     ]);
 
     let resolveFirst!: () => void;
-    const firstBlock = new Promise<void>((r) => { resolveFirst = r; });
+    const firstBlock = new Promise<void>((r) => {
+      resolveFirst = r;
+    });
     let invocationCount = 0;
 
     vi.spyOn(invocationModule, "runInvocation").mockImplementation(async () => {
@@ -5150,7 +5727,8 @@ describe("Post-invocation re-evaluation", () => {
       releaseProvision = resolve;
     });
     const originalProvision = workspaceModule.provisionDispatchWorkspace;
-    const provisionSpy = vi.spyOn(workspaceModule, "provisionDispatchWorkspace")
+    const provisionSpy = vi
+      .spyOn(workspaceModule, "provisionDispatchWorkspace")
       .mockImplementationOnce(async (options) => {
         await provisionGate;
         return originalProvision(options);
@@ -5171,9 +5749,7 @@ describe("Post-invocation re-evaluation", () => {
 
     await engine.start();
 
-    await writeTasks(testDir, [
-      { _ulid: taskId, status: "pending", automation: "eligible" },
-    ]);
+    await writeTasks(testDir, [{ _ulid: taskId, status: "pending", automation: "eligible" }]);
 
     const handlePromise = engine.handleStateChange({
       taskId,
@@ -5234,7 +5810,9 @@ describe("Post-invocation re-evaluation", () => {
     ]);
 
     let resolveFirst!: () => void;
-    const firstBlock = new Promise<void>((r) => { resolveFirst = r; });
+    const firstBlock = new Promise<void>((r) => {
+      resolveFirst = r;
+    });
     let invocationCount = 0;
 
     vi.spyOn(invocationModule, "runInvocation").mockImplementation(async () => {
@@ -5264,7 +5842,9 @@ describe("Post-invocation re-evaluation", () => {
     // Sabotage _evaluateAllTasks so it throws on the next call (post-invocation re-eval).
     // The already-queued taskB should still drain.
     const evaluateSpy = vi.spyOn(
-      engine as unknown as { _evaluateAllTasks: (opts: { skipIfActive: boolean }) => Promise<number> },
+      engine as unknown as {
+        _evaluateAllTasks: (opts: { skipIfActive: boolean }) => Promise<number>;
+      },
       "_evaluateAllTasks",
     );
     evaluateSpy.mockRejectedValueOnce(new Error("simulated disk failure"));
@@ -5325,10 +5905,9 @@ describe("Per-task dispatch drain coalescing", () => {
 
     // Track _serializedDrain calls (the coalescing timer callback target).
     // Mock it to avoid real I/O in the async chain (_loadAgents → _drainQueues).
-    const serializedDrainSpy = vi.spyOn(
-      engine as unknown as { _serializedDrain: () => Promise<void> },
-      "_serializedDrain",
-    ).mockResolvedValue();
+    const serializedDrainSpy = vi
+      .spyOn(engine as unknown as { _serializedDrain: () => Promise<void> }, "_serializedDrain")
+      .mockResolvedValue();
 
     // Mock _drainQueues so bootstrap doesn't do real I/O
     vi.spyOn(
@@ -5377,10 +5956,9 @@ describe("Per-task dispatch drain coalescing", () => {
       coalesceWindowMs: 5000,
     });
 
-    const serializedDrainSpy = vi.spyOn(
-      engine as unknown as { _serializedDrain: () => Promise<void> },
-      "_serializedDrain",
-    ).mockResolvedValue();
+    const serializedDrainSpy = vi
+      .spyOn(engine as unknown as { _serializedDrain: () => Promise<void> }, "_serializedDrain")
+      .mockResolvedValue();
 
     vi.spyOn(
       engine as unknown as { _drainQueues: (agents: unknown[]) => Promise<void> },
@@ -5432,11 +6010,7 @@ describe("Per-task dispatch drain coalescing", () => {
   it("should rely on stale-entry pruning to discard intermediate states after coalescing", async () => {
     const agent = makeTestAgent({
       id: "worker",
-      dispatch: [
-        { on: "task.ready" },
-        { on: "task.in_progress" },
-        { on: "task.pending_review" },
-      ],
+      dispatch: [{ on: "task.ready" }, { on: "task.in_progress" }, { on: "task.pending_review" }],
       concurrency: { max_concurrent: 1 },
     });
     await setupProjectWithAgents(testDir, [agent]);
@@ -5453,10 +6027,14 @@ describe("Per-task dispatch drain coalescing", () => {
       reconcileIntervalMs: 0,
     });
 
-    const spawnSpy = vi.spyOn(
-      engine as unknown as { _spawnInvocation: (agent: unknown, entry: unknown) => Promise<boolean> },
-      "_spawnInvocation",
-    ).mockResolvedValue(true);
+    const spawnSpy = vi
+      .spyOn(
+        engine as unknown as {
+          _spawnInvocation: (agent: unknown, entry: unknown) => Promise<boolean>;
+        },
+        "_spawnInvocation",
+      )
+      .mockResolvedValue(true);
 
     await engine.start();
 
@@ -5492,7 +6070,7 @@ describe("Per-task dispatch drain coalescing", () => {
     // Only the final state (pending_review) should have survived stale pruning.
     // The pending and in_progress entries get discarded because on-disk status is pending_review.
     const spawnedStatuses = spawnSpy.mock.calls.map(
-      (call) => ((call[1] as { change: TaskStateChange }).change.toStatus),
+      (call) => (call[1] as { change: TaskStateChange }).change.toStatus,
     );
     expect(spawnedStatuses).not.toContain("pending");
     expect(spawnedStatuses).not.toContain("in_progress");
@@ -5522,10 +6100,9 @@ describe("Per-task dispatch drain coalescing", () => {
       reconcileIntervalMs: 0,
     });
 
-    const serializedDrainSpy = vi.spyOn(
-      engine as unknown as { _serializedDrain: () => Promise<void> },
-      "_serializedDrain",
-    ).mockResolvedValue();
+    const serializedDrainSpy = vi
+      .spyOn(engine as unknown as { _serializedDrain: () => Promise<void> }, "_serializedDrain")
+      .mockResolvedValue();
 
     vi.spyOn(
       engine as unknown as { _drainQueues: (agents: unknown[]) => Promise<void> },
@@ -5583,10 +6160,12 @@ describe("Per-task dispatch drain coalescing", () => {
       coalesceWindowMs: 0,
     });
 
-    const drainSpy = vi.spyOn(
-      engine as unknown as { _drainQueues: (agents: unknown[]) => Promise<void> },
-      "_drainQueues",
-    ).mockResolvedValue();
+    const drainSpy = vi
+      .spyOn(
+        engine as unknown as { _drainQueues: (agents: unknown[]) => Promise<void> },
+        "_drainQueues",
+      )
+      .mockResolvedValue();
 
     await engine.start();
     const drainCountAfterBoot = drainSpy.mock.calls.length;
@@ -5622,10 +6201,12 @@ describe("Per-task dispatch drain coalescing", () => {
       coalesceWindowMs: 5000,
     });
 
-    const drainSpy = vi.spyOn(
-      engine as unknown as { _drainQueues: (agents: unknown[]) => Promise<void> },
-      "_drainQueues",
-    ).mockResolvedValue();
+    const drainSpy = vi
+      .spyOn(
+        engine as unknown as { _drainQueues: (agents: unknown[]) => Promise<void> },
+        "_drainQueues",
+      )
+      .mockResolvedValue();
 
     await engine.start();
     const drainCountAfterBoot = drainSpy.mock.calls.length;
@@ -5672,9 +6253,7 @@ describe("Per-task dispatch drain coalescing", () => {
     await setupProjectWithAgents(testDir, [agent]);
 
     const taskId = testUlid("TASK", 66);
-    await writeTasks(testDir, [
-      { _ulid: taskId, status: "pending", automation: "eligible" },
-    ]);
+    await writeTasks(testDir, [{ _ulid: taskId, status: "pending", automation: "eligible" }]);
 
     const engine = new DispatchEngine({
       projectDir: testDir,
@@ -5686,10 +6265,9 @@ describe("Per-task dispatch drain coalescing", () => {
 
     // Use _serializedDrain spy since it's what the coalescing timer calls.
     // Mocking avoids real async I/O that doesn't complete with fake timers.
-    const serializedDrainSpy = vi.spyOn(
-      engine as unknown as { _serializedDrain: () => Promise<void> },
-      "_serializedDrain",
-    ).mockResolvedValue();
+    const serializedDrainSpy = vi
+      .spyOn(engine as unknown as { _serializedDrain: () => Promise<void> }, "_serializedDrain")
+      .mockResolvedValue();
 
     vi.spyOn(
       engine as unknown as { _drainQueues: (agents: unknown[]) => Promise<void> },
@@ -5731,9 +6309,7 @@ describe("Per-task dispatch drain coalescing", () => {
     await setupProjectWithAgents(testDir, [agent]);
 
     const taskId = testUlid("TASK", 67);
-    await writeTasks(testDir, [
-      { _ulid: taskId, status: "pending", automation: "eligible" },
-    ]);
+    await writeTasks(testDir, [{ _ulid: taskId, status: "pending", automation: "eligible" }]);
 
     const engine = new DispatchEngine({
       projectDir: testDir,
@@ -5743,10 +6319,12 @@ describe("Per-task dispatch drain coalescing", () => {
       reconcileIntervalMs: 0,
     });
 
-    const drainSpy = vi.spyOn(
-      engine as unknown as { _drainQueues: (agents: unknown[]) => Promise<void> },
-      "_drainQueues",
-    ).mockResolvedValue();
+    const drainSpy = vi
+      .spyOn(
+        engine as unknown as { _drainQueues: (agents: unknown[]) => Promise<void> },
+        "_drainQueues",
+      )
+      .mockResolvedValue();
 
     // Bootstrap calls _drainQueues via _serializedDrain (no coalescing delay)
     await engine.start();
@@ -5784,9 +6362,11 @@ describe("Per-task dispatch drain coalescing", () => {
 
     let drainConcurrency = 0;
     let maxConcurrency = 0;
-    const originalDrain = (engine as unknown as {
-      _drainQueues: (agents: unknown[]) => Promise<void>;
-    })._drainQueues.bind(engine);
+    const originalDrain = (
+      engine as unknown as {
+        _drainQueues: (agents: unknown[]) => Promise<void>;
+      }
+    )._drainQueues.bind(engine);
 
     vi.spyOn(
       engine as unknown as { _drainQueues: (agents: unknown[]) => Promise<void> },
@@ -5933,7 +6513,9 @@ describe("AC-27: All drain paths go through _serializedDrain to prevent max_conc
 
     // Mock _spawnInvocation to avoid real spawning
     vi.spyOn(
-      engine as unknown as { _spawnInvocation: (agent: unknown, entry: unknown) => Promise<boolean> },
+      engine as unknown as {
+        _spawnInvocation: (agent: unknown, entry: unknown) => Promise<boolean>;
+      },
       "_spawnInvocation",
     ).mockResolvedValue(true);
 
@@ -5947,7 +6529,15 @@ describe("AC-27: All drain paths go through _serializedDrain to prevent max_conc
       fromStatus: "in_progress",
       toStatus: "pending",
       timestamp: Date.now(),
-      task: { automation: "eligible", tags: [], _ulid: taskA, status: "pending", blocked_by: [], depends_on: [], slugs: [] } as any,
+      task: {
+        automation: "eligible",
+        tags: [],
+        _ulid: taskA,
+        status: "pending",
+        blocked_by: [],
+        depends_on: [],
+        slugs: [],
+      } as any,
     });
 
     // _serializedDrain should have been called (not _drainQueues directly)
@@ -5964,9 +6554,7 @@ describe("AC-27: All drain paths go through _serializedDrain to prevent max_conc
     await setupProjectWithAgents(testDir, [agent]);
 
     const taskId = testUlid("TASK", 91);
-    await writeTasks(testDir, [
-      { _ulid: taskId, status: "pending", automation: "eligible" },
-    ]);
+    await writeTasks(testDir, [{ _ulid: taskId, status: "pending", automation: "eligible" }]);
 
     const engine = new DispatchEngine({
       projectDir: testDir,
@@ -5983,7 +6571,9 @@ describe("AC-27: All drain paths go through _serializedDrain to prevent max_conc
 
     // Mock _spawnInvocation to avoid real spawning
     vi.spyOn(
-      engine as unknown as { _spawnInvocation: (agent: unknown, entry: unknown) => Promise<boolean> },
+      engine as unknown as {
+        _spawnInvocation: (agent: unknown, entry: unknown) => Promise<boolean>;
+      },
       "_spawnInvocation",
     ).mockResolvedValue(true);
 
@@ -6004,9 +6594,7 @@ describe("AC-27: All drain paths go through _serializedDrain to prevent max_conc
     await setupProjectWithAgents(testDir, [agent]);
 
     const taskId = testUlid("TASK", 92);
-    await writeTasks(testDir, [
-      { _ulid: taskId, status: "pending", automation: "eligible" },
-    ]);
+    await writeTasks(testDir, [{ _ulid: taskId, status: "pending", automation: "eligible" }]);
 
     const engine = new DispatchEngine({
       projectDir: testDir,
@@ -6018,7 +6606,9 @@ describe("AC-27: All drain paths go through _serializedDrain to prevent max_conc
 
     // Mock _spawnInvocation to avoid real spawning
     vi.spyOn(
-      engine as unknown as { _spawnInvocation: (agent: unknown, entry: unknown) => Promise<boolean> },
+      engine as unknown as {
+        _spawnInvocation: (agent: unknown, entry: unknown) => Promise<boolean>;
+      },
       "_spawnInvocation",
     ).mockResolvedValue(true);
 
@@ -6053,10 +6643,18 @@ describe("Cross-agent task dispatch exclusivity", () => {
       reason: null,
       metadata: null,
     });
-    vi.spyOn(workspaceModule, "reconcileDispatchWorkspaceRegistry" as any).mockResolvedValue(undefined);
-    vi.spyOn(workspaceModule, "reconcileDispatchWorkspaceArtifacts" as any).mockResolvedValue(undefined);
-    vi.spyOn(workspaceModule, "reconcileDispatchWorkspaceLifecycle" as any).mockResolvedValue(undefined);
-    const mockMetadata = buildMockWorkspaceMetadata(testDir, { workspaceId: "mock-exclusivity-test" });
+    vi.spyOn(workspaceModule, "reconcileDispatchWorkspaceRegistry" as any).mockResolvedValue(
+      undefined,
+    );
+    vi.spyOn(workspaceModule, "reconcileDispatchWorkspaceArtifacts" as any).mockResolvedValue(
+      undefined,
+    );
+    vi.spyOn(workspaceModule, "reconcileDispatchWorkspaceLifecycle" as any).mockResolvedValue(
+      undefined,
+    );
+    const mockMetadata = buildMockWorkspaceMetadata(testDir, {
+      workspaceId: "mock-exclusivity-test",
+    });
     vi.spyOn(workspaceModule, "provisionDispatchWorkspace").mockResolvedValue({
       cwd: testDir,
       metadataPath: path.join(testDir, ".kspec-dispatch-workspace.json"),
@@ -6090,12 +6688,12 @@ describe("Cross-agent task dispatch exclusivity", () => {
     await setupProjectWithAgents(testDir, [worker, reviewer]);
 
     const taskId = testUlid("EXCL");
-    await writeTasks(testDir, [
-      { _ulid: taskId, status: "pending", automation: "eligible" },
-    ]);
+    await writeTasks(testDir, [{ _ulid: taskId, status: "pending", automation: "eligible" }]);
 
     let resolveWorker!: () => void;
-    const workerBlock = new Promise<void>((r) => { resolveWorker = r; });
+    const workerBlock = new Promise<void>((r) => {
+      resolveWorker = r;
+    });
     const spawned: Array<{ agentId: string; taskRef: string }> = [];
     let invocationCount = 0;
 
@@ -6185,12 +6783,12 @@ describe("Cross-agent task dispatch exclusivity", () => {
     await setupProjectWithAgents(testDir, [agentA, agentB]);
 
     const taskId = testUlid("ONLYONE");
-    await writeTasks(testDir, [
-      { _ulid: taskId, status: "pending", automation: "eligible" },
-    ]);
+    await writeTasks(testDir, [{ _ulid: taskId, status: "pending", automation: "eligible" }]);
 
     let resolveFirst!: () => void;
-    const firstBlock = new Promise<void>((r) => { resolveFirst = r; });
+    const firstBlock = new Promise<void>((r) => {
+      resolveFirst = r;
+    });
     const spawned: Array<{ agentId: string; taskRef: string }> = [];
     let invocationCount = 0;
 
@@ -6263,7 +6861,9 @@ describe("Cross-agent task dispatch exclusivity", () => {
     ]);
 
     let resolveAll!: () => void;
-    const allBlock = new Promise<void>((r) => { resolveAll = r; });
+    const allBlock = new Promise<void>((r) => {
+      resolveAll = r;
+    });
     const spawned: Array<{ agentId: string; taskRef: string }> = [];
     let invocationCount = 0;
 
@@ -6318,12 +6918,12 @@ describe("Cross-agent task dispatch exclusivity", () => {
     await setupProjectWithAgents(testDir, [worker, reviewer]);
 
     const taskId = testUlid("STALE");
-    await writeTasks(testDir, [
-      { _ulid: taskId, status: "pending", automation: "eligible" },
-    ]);
+    await writeTasks(testDir, [{ _ulid: taskId, status: "pending", automation: "eligible" }]);
 
     let resolveWorker!: () => void;
-    const workerBlock = new Promise<void>((r) => { resolveWorker = r; });
+    const workerBlock = new Promise<void>((r) => {
+      resolveWorker = r;
+    });
     const spawned: Array<{ agentId: string; taskRef: string }> = [];
     let invocationCount = 0;
 
@@ -6370,9 +6970,7 @@ describe("Cross-agent task dispatch exclusivity", () => {
     });
 
     // Now change the task to completed on disk (making the pending_review entry stale)
-    await writeTasks(testDir, [
-      { _ulid: taskId, status: "completed", automation: "eligible" },
-    ]);
+    await writeTasks(testDir, [{ _ulid: taskId, status: "completed", automation: "eligible" }]);
 
     // Release worker — drain should run staleness check and discard the stale entry
     resolveWorker();

@@ -11,11 +11,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import * as fsSync from "node:fs";
 import * as path from "node:path";
-import {
-  createSession,
-  closeSession,
-  getSession,
-} from "../src/sessions/store.js";
+import { createSession, closeSession, getSession } from "../src/sessions/store.js";
 import {
   runInvocation,
   InvocationStallError,
@@ -24,12 +20,7 @@ import {
 import { registerAdapter } from "../src/agents/adapters.js";
 import { ACPClient } from "../src/acp/index.js";
 import type { Agent } from "../src/schema/meta.js";
-import {
-  testUlid,
-  createTempDir,
-  cleanupTempDir,
-  readTestOutputSync,
-} from "./helpers/cli.js";
+import { testUlid, createTempDir, cleanupTempDir, readTestOutputSync } from "./helpers/cli.js";
 
 // ─── Fixtures ─────────────────────────────────────────────────────────────────
 
@@ -122,9 +113,15 @@ async function seedFailedSession(
   await new Promise((resolve) => setTimeout(resolve, 2));
 }
 
-function readEventsJsonl(eventsPath: string): Array<{ type: string; data: Record<string, unknown> }> {
+function readEventsJsonl(
+  eventsPath: string,
+): Array<{ type: string; data: Record<string, unknown> }> {
   const content = readTestOutputSync(eventsPath);
-  return content.trim().split("\n").filter(Boolean).map((l) => JSON.parse(l));
+  return content
+    .trim()
+    .split("\n")
+    .filter(Boolean)
+    .map((l) => JSON.parse(l));
 }
 
 // ─── AC-1: Stall detection when no meaningful updates arrive ──────────────────
@@ -289,9 +286,7 @@ describe("Stall handling — session close and cleanup", () => {
     // kspec-capture-mock writes calls to capture file; if no calls, file doesn't exist
     if (fsSync.existsSync(captureFile)) {
       const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{ args: string[] }>;
-      const noteCall = calls.find((c) =>
-        c.args.includes("task") && c.args.includes("note"),
-      );
+      const noteCall = calls.find((c) => c.args.includes("task") && c.args.includes("note"));
       expect(noteCall).toBeUndefined();
     }
     // If file doesn't exist, no CLI calls were made — test passes
@@ -300,9 +295,11 @@ describe("Stall handling — session close and cleanup", () => {
   it("should cancel ACP session on stall detection", async () => {
     // AC: @invocation-initial-activity-watchdog ac-1, ac-2
     let cancelCalledWith: string | undefined;
-    const cancelSpy = vi.spyOn(ACPClient.prototype, "cancel").mockImplementation(async (sessionId) => {
-      cancelCalledWith = sessionId;
-    });
+    const cancelSpy = vi
+      .spyOn(ACPClient.prototype, "cancel")
+      .mockImplementation(async (sessionId) => {
+        cancelCalledWith = sessionId;
+      });
 
     const agent = makeTestAgent({
       budget: { initial_response_timeout_seconds: TEST_STALL_TIMEOUT_SECONDS },
@@ -451,9 +448,7 @@ describe("Stalled sessions excluded from failure count", () => {
     // which meets the max_retries threshold → task should be blocked.
     if (fsSync.existsSync(captureFile)) {
       const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{ args: string[] }>;
-      const blockCall = calls.find((c) =>
-        c.args.includes("task") && c.args.includes("block"),
-      );
+      const blockCall = calls.find((c) => c.args.includes("task") && c.args.includes("block"));
       expect(blockCall).toBeDefined();
     }
   });
@@ -516,9 +511,7 @@ describe("Stalled sessions excluded from failure count", () => {
     // Should NOT be blocked — only 2 consecutive failures (< 3)
     if (fsSync.existsSync(captureFile)) {
       const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{ args: string[] }>;
-      const blockCall = calls.find((c) =>
-        c.args.includes("task") && c.args.includes("block"),
-      );
+      const blockCall = calls.find((c) => c.args.includes("task") && c.args.includes("block"));
       expect(blockCall).toBeUndefined();
     }
   });

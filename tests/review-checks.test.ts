@@ -5,18 +5,9 @@ import {
   mirrorExternalCheck,
   evaluateGates,
 } from "../src/review/checks.js";
-import type {
-  CheckGateResult,
-  GateEvaluationResult,
-} from "../src/review/checks.js";
-import {
-  ReviewCheckSchema,
-  ReviewSubjectVersionSchema,
-} from "../src/schema/review-records.js";
-import type {
-  ReviewCheck,
-  ReviewSubjectVersion,
-} from "../src/schema/review-records.js";
+import type { CheckGateResult, GateEvaluationResult } from "../src/review/checks.js";
+import { ReviewCheckSchema, ReviewSubjectVersionSchema } from "../src/schema/review-records.js";
+import type { ReviewCheck, ReviewSubjectVersion } from "../src/schema/review-records.js";
 
 const CODE_V1: ReviewSubjectVersion = {
   type: "code_compare",
@@ -133,9 +124,7 @@ describe("Check recording (AC-1)", () => {
       created_at: NOW,
     });
     expect(check.applies_to_version.type).toBe("entity_version");
-    const result = ReviewSubjectVersionSchema.safeParse(
-      check.applies_to_version,
-    );
+    const result = ReviewSubjectVersionSchema.safeParse(check.applies_to_version);
     expect(result.success).toBe(true);
   });
 });
@@ -220,9 +209,7 @@ describe("External CI mirroring (AC-3)", () => {
     expect(check.name).toBe("ci/github-actions");
     expect(check.status).toBe("pass");
     expect(check.runner).toBe("github-actions");
-    expect(check.evidence).toBe(
-      "https://github.com/org/repo/actions/runs/12345",
-    );
+    expect(check.evidence).toBe("https://github.com/org/repo/actions/runs/12345");
     expect(check.required).toBe(true);
   });
 
@@ -367,12 +354,8 @@ describe("Required vs informational gates (AC-4)", () => {
     ];
 
     const result = evaluateGates(checks, CODE_V1);
-    const testGate = result.checks.find(
-      (g: CheckGateResult) => g.name === "tests",
-    );
-    const coverageGate = result.checks.find(
-      (g: CheckGateResult) => g.name === "coverage",
-    );
+    const testGate = result.checks.find((g: CheckGateResult) => g.name === "tests");
+    const coverageGate = result.checks.find((g: CheckGateResult) => g.name === "coverage");
 
     expect(testGate?.required).toBe(true);
     expect(testGate?.satisfied).toBe(true);
@@ -463,9 +446,7 @@ describe("Multiple check runs and latest-run resolution (AC-5)", () => {
     const result = evaluateGates(checks, CODE_V1);
     expect(result.state).toBe("passing");
 
-    const testGate = result.checks.find(
-      (g: CheckGateResult) => g.name === "tests",
-    );
+    const testGate = result.checks.find((g: CheckGateResult) => g.name === "tests");
     expect(testGate?.latestRun?.status).toBe("pass");
     expect(testGate?.latestRun?.created_at).toBe(LATER);
 
@@ -551,9 +532,7 @@ describe("Multiple check runs and latest-run resolution (AC-5)", () => {
     const result = evaluateGates(checks, CODE_V1);
     expect(result.state).toBe("failing");
 
-    const testGate = result.checks.find(
-      (g: CheckGateResult) => g.name === "tests",
-    );
+    const testGate = result.checks.find((g: CheckGateResult) => g.name === "tests");
     expect(testGate?.latestRun?.status).toBe("fail");
   });
 });
@@ -575,9 +554,7 @@ describe("Stale check handling (AC-6)", () => {
 
     // Evaluate against v2 (different head_commit)
     const result = evaluateGates(checks, CODE_V2);
-    const testGate = result.checks.find(
-      (g: CheckGateResult) => g.name === "tests",
-    );
+    const testGate = result.checks.find((g: CheckGateResult) => g.name === "tests");
     expect(testGate?.stale).toBe(true);
     expect(testGate?.satisfied).toBe(false);
   });
@@ -613,9 +590,7 @@ describe("Stale check handling (AC-6)", () => {
 
     const result = evaluateGates(checks, CODE_V2);
     expect(result.state).toBe("passing"); // no required gates
-    const gate = result.checks.find(
-      (g: CheckGateResult) => g.name === "optional-lint",
-    );
+    const gate = result.checks.find((g: CheckGateResult) => g.name === "optional-lint");
     expect(gate?.satisfied).toBe(true); // informational always satisfied
   });
 
@@ -636,9 +611,7 @@ describe("Stale check handling (AC-6)", () => {
     expect(result.state).toBe("failing");
     expect(result.summary.stale).toBe(1);
 
-    const gate = result.checks.find(
-      (g: CheckGateResult) => g.name === "spec-validation",
-    );
+    const gate = result.checks.find((g: CheckGateResult) => g.name === "spec-validation");
     expect(gate?.stale).toBe(true);
     expect(gate?.latestRun).toBeUndefined();
   });
@@ -668,12 +641,8 @@ describe("Stale check handling (AC-6)", () => {
     const result = evaluateGates(checks, CODE_V2);
     expect(result.state).toBe("failing"); // tests is stale
 
-    const testGate = result.checks.find(
-      (g: CheckGateResult) => g.name === "tests",
-    );
-    const lintGate = result.checks.find(
-      (g: CheckGateResult) => g.name === "lint",
-    );
+    const testGate = result.checks.find((g: CheckGateResult) => g.name === "tests");
+    const lintGate = result.checks.find((g: CheckGateResult) => g.name === "lint");
 
     expect(testGate?.stale).toBe(true);
     expect(testGate?.satisfied).toBe(false);
@@ -705,9 +674,7 @@ describe("Stale check handling (AC-6)", () => {
     const result = evaluateGates(checks, CODE_V2);
     expect(result.state).toBe("passing");
 
-    const testGate = result.checks.find(
-      (g: CheckGateResult) => g.name === "tests",
-    );
+    const testGate = result.checks.find((g: CheckGateResult) => g.name === "tests");
     expect(testGate?.stale).toBe(false);
     expect(testGate?.latestRun?.applies_to_version).toEqual(CODE_V2);
   });
@@ -877,9 +844,7 @@ describe("Gate evaluation integration scenarios", () => {
     ];
 
     const result = evaluateGates(checks, CODE_V1);
-    const testGate = result.checks.find(
-      (g: CheckGateResult) => g.name === "tests",
-    );
+    const testGate = result.checks.find((g: CheckGateResult) => g.name === "tests");
     expect(testGate?.required).toBe(true);
     expect(testGate?.satisfied).toBe(true);
   });

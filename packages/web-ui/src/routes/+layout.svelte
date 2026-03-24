@@ -15,7 +15,7 @@
 	import { createQueryClientInstance, setQueryClient } from '$lib/query';
 	import { setupWsInvalidation } from '$lib/query/ws-invalidation.js';
 
-	let { children } = $props();
+	const { children } = $props();
 
 	// AC: @ui-data-freshness ac-1 — QueryClient provides caching and deduplication
 	// AC: @ui-data-freshness ac-2 — Request deduplication built into QueryClient
@@ -54,7 +54,7 @@
 	});
 
 	// SSR is disabled globally via +layout.ts — ready tracks appReady directly
-	let ready = $derived(appReady);
+	const ready = $derived(appReady);
 </script>
 
 <svelte:head>

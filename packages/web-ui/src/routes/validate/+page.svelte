@@ -47,15 +47,15 @@
 		enabled: isProjectInitialized(),
 	}));
 
-	let validation = $derived<ValidationResponse | null>(validationQuery.data ?? null);
-	let aggregation = $derived<ValidationAggregation | null>(aggregationQuery.data ?? null);
-	let loading = $derived(validationQuery.isLoading || aggregationQuery.isLoading);
-	let error = $derived(validationQuery.error?.message ?? aggregationQuery.error?.message ?? '');
+	const validation = $derived<ValidationResponse | null>(validationQuery.data ?? null);
+	const aggregation = $derived<ValidationAggregation | null>(aggregationQuery.data ?? null);
+	const loading = $derived(validationQuery.isLoading || aggregationQuery.isLoading);
+	const error = $derived(validationQuery.error?.message ?? aggregationQuery.error?.message ?? '');
 
 	// --- Derived counts ---
 	// AC: @ui-validation-view ac-1 — error count, warning count, valid item count
 
-	let errorCount = $derived.by(() => {
+	const errorCount = $derived.by(() => {
 		if (!validation) return 0;
 		return (
 			validation.schemaErrors.length +
@@ -64,7 +64,7 @@
 		);
 	});
 
-	let warningCount = $derived.by(() => {
+	const warningCount = $derived.by(() => {
 		if (!validation) return 0;
 		return (
 			validation.refWarnings.length +
@@ -74,13 +74,13 @@
 	});
 
 	// Stats from server-side aggregation — replaces manual fetchItems/fetchTasks
-	let totalItemCount = $derived(aggregation?.entity_counts.items ?? 0);
-	let totalAcCount = $derived(aggregation?.ac_counts.total ?? 0);
-	let uncoveredAcCount = $derived(aggregation?.ac_counts.uncovered ?? 0);
-	let orphanedTaskCount = $derived(aggregation?.orphan_count ?? 0);
+	const totalItemCount = $derived(aggregation?.entity_counts.items ?? 0);
+	const totalAcCount = $derived(aggregation?.ac_counts.total ?? 0);
+	const uncoveredAcCount = $derived(aggregation?.ac_counts.uncovered ?? 0);
+	const orphanedTaskCount = $derived(aggregation?.orphan_count ?? 0);
 
 	// AC: @ui-validation-view ac-1 — valid item count
-	let validItemCount = $derived.by(() => {
+	const validItemCount = $derived.by(() => {
 		if (!validation) return 0;
 		const itemsWithErrors = new Set<string>();
 		for (const e of validation.schemaErrors) {
@@ -97,7 +97,7 @@
 	});
 
 	// AC: @ui-validation-view ac-1 — spec coverage %, AC coverage %
-	let specCoverage = $derived.by(() => {
+	const specCoverage = $derived.by(() => {
 		if (!aggregation || aggregation.stats.totalSpecs === 0) return 0;
 		return Math.round(
 			(aggregation.stats.specsWithTasks / aggregation.stats.totalSpecs) * 100
@@ -105,7 +105,7 @@
 	});
 
 	// AC: @ui-validation-view ac-1 — AC coverage %
-	let acCoverage = $derived.by(() => {
+	const acCoverage = $derived.by(() => {
 		if (totalAcCount === 0) return 100;
 		const covered = totalAcCount - uncoveredAcCount;
 		return Math.round((covered / totalAcCount) * 100);
@@ -120,7 +120,7 @@
 		detail?: string;
 	};
 
-	let groupedIssues = $derived.by((): GroupedIssue[] => {
+	const groupedIssues = $derived.by((): GroupedIssue[] => {
 		if (!validation && !aggregation) return [];
 		const issues: GroupedIssue[] = [];
 
@@ -189,9 +189,9 @@
 		return issues;
 	});
 
-	let errorIssues = $derived(groupedIssues.filter((i) => i.severity === 'error'));
-	let warningIssues = $derived(groupedIssues.filter((i) => i.severity === 'warning'));
-	let infoIssues = $derived(groupedIssues.filter((i) => i.severity === 'info'));
+	const errorIssues = $derived(groupedIssues.filter((i) => i.severity === 'error'));
+	const warningIssues = $derived(groupedIssues.filter((i) => i.severity === 'warning'));
+	const infoIssues = $derived(groupedIssues.filter((i) => i.severity === 'info'));
 
 	function refreshAll() {
 		queryClient.invalidateQueries({ queryKey: queryKeys.validation.all });

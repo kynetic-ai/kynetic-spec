@@ -25,7 +25,7 @@
 		schedules: ScheduleSummary[];
 	}
 
-	let { schedules }: Props = $props();
+	const { schedules }: Props = $props();
 
 	const queryClient = useQueryClient();
 
@@ -41,7 +41,7 @@
 		staleTime: 5 * 1000,
 	}));
 
-	let scheduleStatus = $derived<ScheduleRuntimeStatus | null>(scheduleStatusQuery.data ?? null);
+	const scheduleStatus = $derived<ScheduleRuntimeStatus | null>(scheduleStatusQuery.data ?? null);
 
 	// AC: @ui-automation-view ac-3 — Trigger schedule manually
 	const triggerMutation = createMutation(() => ({

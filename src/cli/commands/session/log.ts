@@ -5,9 +5,7 @@
  */
 
 import chalk from "chalk";
-import {
-  initContext,
-} from "../../../parser/index.js";
+import { initContext } from "../../../parser/index.js";
 import {
   type SessionLogSummary,
   type SessionLogDetail,
@@ -27,17 +25,15 @@ import {
   deduplicatePhasedToolCalls,
   resolveSessionBlobPointers,
 } from "../../../sessions/store.js";
-import {
-  warnIfLegacySessions,
-} from "../../../sessions/legacy.js";
+import { warnIfLegacySessions } from "../../../sessions/legacy.js";
 import type { SessionEvent } from "../../../sessions/types.js";
 import { SessionStatusSchema } from "../../../sessions/types.js";
-import {
-  formatRelativeTime,
-  parseTimeSpec,
-} from "../../../utils/index.js";
+import { formatRelativeTime, parseTimeSpec } from "../../../utils/index.js";
 import { isObject } from "../../../acp/types.js";
-import { unwrapSessionUpdate, extractToolName } from "../../../agent-runtime/session-event-fields.js";
+import {
+  unwrapSessionUpdate,
+  extractToolName,
+} from "../../../agent-runtime/session-event-fields.js";
 import { EXIT_CODES } from "../../exit-codes.js";
 import { error, isStructuredMode, output, warn } from "../../output.js";
 
@@ -88,9 +84,7 @@ function formatDurationVerbose(ms: number): string {
  * Unlike statusColor() in format.ts (which handles task statuses),
  * this handles session lifecycle statuses: completed, active, abandoned.
  */
-function sessionStatusColor(
-  status: string,
-): typeof chalk.green {
+function sessionStatusColor(status: string): typeof chalk.green {
   switch (status) {
     case "completed":
       return chalk.green;
@@ -185,9 +179,7 @@ export function filterSessions(
   if (options.since) {
     const sinceDate = parseTimeSpec(options.since);
     if (sinceDate) {
-      result = result.filter(
-        (s) => new Date(s.started_at) >= sinceDate,
-      );
+      result = result.filter((s) => new Date(s.started_at) >= sinceDate);
     }
   }
 
@@ -203,12 +195,7 @@ interface SessionLogListOptions extends SessionFilterOptions {
   offset?: string;
 }
 
-type SortField =
-  | "started_at"
-  | "duration"
-  | "events"
-  | "iterations"
-  | "tasks_completed";
+type SortField = "started_at" | "duration" | "events" | "iterations" | "tasks_completed";
 
 const VALID_SORT_FIELDS: SortField[] = [
   "started_at",
@@ -224,16 +211,11 @@ const VALID_SORT_FIELDS: SortField[] = [
  *
  * AC: @session-log-list ac-5
  */
-function sortSessions(
-  sessions: SessionLogSummary[],
-  sortField: SortField,
-): SessionLogSummary[] {
-  return [...sessions].sort((a, b) => {
+function sortSessions(sessions: SessionLogSummary[], sortField: SortField): SessionLogSummary[] {
+  return [...sessions].toSorted((a, b) => {
     switch (sortField) {
       case "started_at":
-        return (
-          new Date(b.started_at).getTime() - new Date(a.started_at).getTime()
-        );
+        return new Date(b.started_at).getTime() - new Date(a.started_at).getTime();
       case "duration":
         return b.duration_ms - a.duration_ms;
       case "events":
@@ -243,16 +225,12 @@ function sortSessions(
       case "tasks_completed":
         return b.tasks_completed - a.tasks_completed;
       default:
-        return (
-          new Date(b.started_at).getTime() - new Date(a.started_at).getTime()
-        );
+        return new Date(b.started_at).getTime() - new Date(a.started_at).getTime();
     }
   });
 }
 
-function getActiveSessionFilterDescriptions(
-  options: SessionFilterOptions,
-): string[] {
+function getActiveSessionFilterDescriptions(options: SessionFilterOptions): string[] {
   const agentType = options.agent ?? options.agentType;
   const descriptions: string[] = [];
 
@@ -278,9 +256,7 @@ function formatSessionLogList(
   filterDescriptions: string[] = [],
 ): void {
   const hasFilters = filterDescriptions.length > 0;
-  const filterInfo = hasFilters
-    ? ` (filtered: ${filterDescriptions.join(", ")})`
-    : "";
+  const filterInfo = hasFilters ? ` (filtered: ${filterDescriptions.join(", ")})` : "";
 
   // AC: @trait-filterable-list ac-6 — empty list with informative message
   if (sessions.length === 0) {
@@ -304,9 +280,10 @@ function formatSessionLogList(
     const id = s.id.slice(0, 8);
     const colorFn = sessionStatusColor(s.status);
     const status = colorFn(s.status.padEnd(11));
-    const sessionType = s.session_type === "invocation"
-      ? chalk.cyan(s.session_type.padEnd(12))
-      : chalk.gray(s.session_type.padEnd(12));
+    const sessionType =
+      s.session_type === "invocation"
+        ? chalk.cyan(s.session_type.padEnd(12))
+        : chalk.gray(s.session_type.padEnd(12));
     const agent = s.agent_type.slice(0, 20).padEnd(20);
     const started = formatRelativeTime(new Date(s.started_at)).padEnd(16);
     const duration = formatDurationCompact(s.duration_ms).padEnd(10);
@@ -331,9 +308,7 @@ function formatSessionLogList(
 /**
  * Session log list action handler.
  */
-export async function sessionLogListAction(
-  options: SessionLogListOptions,
-): Promise<void> {
+export async function sessionLogListAction(options: SessionLogListOptions): Promise<void> {
   try {
     const ctx = await initContext();
     // AC: @session-legacy-migration ac-read-fallback ac-list-merge — read only from primary, warn if legacy exists
@@ -384,16 +359,20 @@ export async function sessionLogListAction(
       total: totalFiltered,
       offset,
       limit: options.limit ? parseInt(options.limit, 10) : null,
-      ...(hasFilters ? {
-        filters: {
-          ...(options.status ? { status: options.status } : {}),
-          ...((options.agent ?? options.agentType) ? { agent_type: options.agent ?? options.agentType } : {}),
-          ...(options.agentId ? { agent_id: options.agentId } : {}),
-          ...(options.trigger ? { trigger: options.trigger } : {}),
-          ...(options.task ? { task_id: options.task } : {}),
-          ...(options.since ? { since: options.since } : {}),
-        },
-      } : {}),
+      ...(hasFilters
+        ? {
+            filters: {
+              ...(options.status ? { status: options.status } : {}),
+              ...((options.agent ?? options.agentType)
+                ? { agent_type: options.agent ?? options.agentType }
+                : {}),
+              ...(options.agentId ? { agent_id: options.agentId } : {}),
+              ...(options.trigger ? { trigger: options.trigger } : {}),
+              ...(options.task ? { task_id: options.task } : {}),
+              ...(options.since ? { since: options.since } : {}),
+            },
+          }
+        : {}),
     };
 
     // AC: @trait-filterable-list ac-7 — summary shows total matching items and filter state
@@ -454,10 +433,7 @@ function extractReplayTextFromSessionUpdate(data: unknown): string {
 /**
  * Format an event timestamp as relative time from session start.
  */
-function formatEventTimestamp(
-  eventTs: number,
-  sessionStartTs: number,
-): string {
+function formatEventTimestamp(eventTs: number, sessionStartTs: number): string {
   const relativeMs = eventTs - sessionStartTs;
   const totalSec = Math.floor(relativeMs / 1000);
   const minutes = Math.floor(totalSec / 60);
@@ -486,8 +462,7 @@ function summarizeEventData(event: SessionEvent): string {
       const rawInput = update.rawInput;
       if (isObject(rawInput) && typeof rawInput.command === "string") {
         const command = rawInput.command;
-        const truncated =
-          command.length > 60 ? command.slice(0, 57) + "..." : command;
+        const truncated = command.length > 60 ? command.slice(0, 57) + "..." : command;
         return `${toolName}: ${truncated}`;
       }
       return toolName;
@@ -498,8 +473,7 @@ function summarizeEventData(event: SessionEvent): string {
   if (event.type === "prompt.sent") {
     const prompt = data.prompt;
     if (typeof prompt === "string" && prompt.length > 0) {
-      const truncated =
-        prompt.length > 60 ? prompt.slice(0, 57) + "..." : prompt;
+      const truncated = prompt.length > 60 ? prompt.slice(0, 57) + "..." : prompt;
       return truncated;
     }
   }
@@ -581,9 +555,10 @@ function formatSessionLogShow(
 
   console.log(`  Status:    ${sessionStatusColor(detail.status)(detail.status)}`);
   // AC: @session-model-evolution ac-6 — show session type
-  const sessionTypeDisplay = detail.session_type === "invocation"
-    ? chalk.cyan(detail.session_type)
-    : chalk.gray(detail.session_type);
+  const sessionTypeDisplay =
+    detail.session_type === "invocation"
+      ? chalk.cyan(detail.session_type)
+      : chalk.gray(detail.session_type);
   console.log(`  Type:      ${sessionTypeDisplay}`);
   console.log(`  Agent:     ${detail.agent_type}`);
   if (detail.task_id) {
@@ -610,9 +585,7 @@ function formatSessionLogShow(
         taskInfo.push(`completed: ${iter.tasks_completed.join(", ")}`);
       }
       const taskStr = taskInfo.length > 0 ? ` | ${taskInfo.join(" | ")}` : "";
-      console.log(
-        `  ${chalk.cyan(`[${iter.iteration}]`)} ${iter.event_count} events${taskStr}`,
-      );
+      console.log(`  ${chalk.cyan(`[${iter.iteration}]`)} ${iter.event_count} events${taskStr}`);
     }
   }
 
@@ -697,9 +670,7 @@ export async function sessionLogShowAction(
     // AC: @session-log-show ac-3, ac-4, ac-5 - Event timeline
     let events: SessionEvent[] | null = null;
     if (options.events) {
-      let allEvents = deduplicatePhasedToolCalls(
-        await readEvents(effectiveDir, sessionId),
-      );
+      let allEvents = deduplicatePhasedToolCalls(await readEvents(effectiveDir, sessionId));
 
       // AC: @session-log-show ac-4 - Filter by type
       if (options.type) {
@@ -719,11 +690,7 @@ export async function sessionLogShowAction(
         allEvents = await Promise.all(
           allEvents.map(async (event) => ({
             ...event,
-            data: await resolveSessionBlobPointers(
-              effectiveDir,
-              sessionId,
-              event.data,
-            ),
+            data: await resolveSessionBlobPointers(effectiveDir, sessionId, event.data),
           })),
         );
       }
@@ -740,11 +707,7 @@ export async function sessionLogShowAction(
         if (event.type !== "session.update") {
           continue;
         }
-        const resolvedData = await resolveSessionBlobPointers(
-          effectiveDir,
-          sessionId,
-          event.data,
-        );
+        const resolvedData = await resolveSessionBlobPointers(effectiveDir, sessionId, event.data);
         const textChunk = extractReplayTextFromSessionUpdate(resolvedData);
         if (textChunk.length > 0) {
           chunks.push(textChunk);
@@ -758,11 +721,7 @@ export async function sessionLogShowAction(
     if (options.context) {
       const iterNum = parseInt(options.context, 10);
       if (!Number.isNaN(iterNum) && iterNum > 0) {
-        contextSnapshot = await readSessionContext(
-          effectiveDir,
-          sessionId,
-          iterNum,
-        );
+        contextSnapshot = await readSessionContext(effectiveDir, sessionId, iterNum);
         if (contextSnapshot === null) {
           error(`No context snapshot found for iteration ${iterNum}`);
           process.exit(EXIT_CODES.NOT_FOUND);
@@ -880,9 +839,7 @@ function formatSessionLogStats(
     console.log("\n" + chalk.bold(label));
     console.log(chalk.gray("─".repeat(50)));
     console.log(
-      chalk.gray(
-        `  ${"Period".padEnd(14)} ${"Sessions".padEnd(10)} ${"Tasks".padEnd(8)} Duration`,
-      ),
+      chalk.gray(`  ${"Period".padEnd(14)} ${"Sessions".padEnd(10)} ${"Tasks".padEnd(8)} Duration`),
     );
     for (const period of timePeriods) {
       console.log(
@@ -895,9 +852,7 @@ function formatSessionLogStats(
 /**
  * Session log stats action handler.
  */
-export async function sessionLogStatsAction(
-  options: SessionLogStatsOptions,
-): Promise<void> {
+export async function sessionLogStatsAction(options: SessionLogStatsOptions): Promise<void> {
   try {
     const ctx = await initContext();
     // AC: @session-legacy-migration ac-read-fallback ac-list-merge — read only from primary, warn if legacy exists
@@ -945,9 +900,7 @@ export async function sessionLogStatsAction(
       jsonOutput.time_periods = timePeriods;
     }
 
-    output(jsonOutput, () =>
-      formatSessionLogStats(stats, toolUsage, timePeriods, groupBy),
-    );
+    output(jsonOutput, () => formatSessionLogStats(stats, toolUsage, timePeriods, groupBy));
   } catch (err) {
     error("Failed to compute session log stats", err);
     process.exit(EXIT_CODES.ERROR);
@@ -986,7 +939,7 @@ function formatSessionLogSearch(results: SessionSearchResult[]): void {
     // Session header
     console.log(
       `\n${chalk.cyan(`Session ${session.session_id.slice(0, 8)}`)} ` +
-        `${chalk.gray(`(${session.agent_type}, started ${formatRelativeTime(new Date(session.started_at))})`)}`
+        `${chalk.gray(`(${session.agent_type}, started ${formatRelativeTime(new Date(session.started_at))})`)}`,
     );
 
     // AC: @session-log-search ac-4 - Show matches with session ID, timestamp, type, excerpt
@@ -998,9 +951,7 @@ function formatSessionLogSearch(results: SessionSearchResult[]): void {
           : match.event_type === "session.update"
             ? chalk.blue
             : chalk.gray;
-      console.log(
-        `  ${chalk.yellow(ts)} ${typeColor(match.event_type.padEnd(16))}`,
-      );
+      console.log(`  ${chalk.yellow(ts)} ${typeColor(match.event_type.padEnd(16))}`);
       // Content excerpt on next line, indented
       console.log(`    ${chalk.gray(match.content_excerpt)}`);
     }
@@ -1038,16 +989,12 @@ export async function sessionLogSearchAction(
     const filteredSummaries = filterSessions(allSummaries, options);
 
     // AC: @session-log-search ac-1, ac-2, ac-3, ac-5, ac-7
-    const results = await searchSessionEvents(
-      ctx.sessionsDir,
-      pattern,
-      {
-        eventType: options.type,
-        sessionSummaries: filteredSummaries,
-        limit,
-        resolveBlobs: options.resolveBlobs,
-      },
-    );
+    const results = await searchSessionEvents(ctx.sessionsDir, pattern, {
+      eventType: options.type,
+      sessionSummaries: filteredSummaries,
+      limit,
+      resolveBlobs: options.resolveBlobs,
+    });
 
     // AC: @session-log-search ac-6 - No matches found message
     // exit code 0 regardless (per @trait-semantic-exit-codes ac-5)

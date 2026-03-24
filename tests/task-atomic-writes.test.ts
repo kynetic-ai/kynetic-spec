@@ -12,9 +12,7 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import {
-  TaskDataManager,
-} from "../src/parser/task-data-manager.js";
+import { TaskDataManager } from "../src/parser/task-data-manager.js";
 import {
   ensureSplitBackendRegistered,
   getTaskDir,
@@ -59,10 +57,7 @@ async function setupSplitFixture(tempDir: string): Promise<KspecContext> {
   const tasksDir = path.join(specDir, "tasks");
   await fs.mkdir(tasksDir, { recursive: true });
 
-  await fs.writeFile(
-    path.join(specDir, "project.tasks.yaml"),
-    toYaml([]),
-  );
+  await fs.writeFile(path.join(specDir, "project.tasks.yaml"), toYaml([]));
 
   const ctx: KspecContext = {
     rootDir: tempDir,
@@ -85,7 +80,10 @@ async function createSplitTask(
   ctx: KspecContext,
   ulid: string,
   slug: string,
-  options: { status?: string; notes?: Array<{ _ulid: string; content: string; created_at: string }> } = {},
+  options: {
+    status?: string;
+    notes?: Array<{ _ulid: string; content: string; created_at: string }>;
+  } = {},
 ): Promise<void> {
   const taskDir = path.join(ctx.specDir, "tasks", ulid);
   await fs.mkdir(taskDir, { recursive: true });
@@ -197,11 +195,11 @@ describe("Atomic Multi-File Task Writes", () => {
       const [ulid] = testUlids("ATWR", 1);
       await createSplitTask(ctx, ulid, "atomic-mutate-test");
 
-      const updated = await manager.mutateTask(
-        ctx,
-        `@${ulid}`,
-        (task) => ({ ...task, status: "in_progress", started_at: "2026-03-20T12:00:00.000Z" }),
-      );
+      const updated = await manager.mutateTask(ctx, `@${ulid}`, (task) => ({
+        ...task,
+        status: "in_progress",
+        started_at: "2026-03-20T12:00:00.000Z",
+      }));
 
       expect(updated.status).toBe("in_progress");
 
@@ -245,15 +243,11 @@ describe("Atomic Multi-File Task Writes", () => {
 
       let bufferWasActive = false;
 
-      await manager.mutateTask(
-        ctx,
-        `@${ulid}`,
-        (task) => {
-          // Inside the mutation callback, the manager's buffer should be active
-          bufferWasActive = getActiveBatchBuffer() !== null;
-          return { ...task, title: "Updated via buffer" };
-        },
-      );
+      await manager.mutateTask(ctx, `@${ulid}`, (task) => {
+        // Inside the mutation callback, the manager's buffer should be active
+        bufferWasActive = getActiveBatchBuffer() !== null;
+        return { ...task, title: "Updated via buffer" };
+      });
 
       expect(bufferWasActive).toBe(true);
 
@@ -278,13 +272,9 @@ describe("Atomic Multi-File Task Writes", () => {
 
       // Mutation that throws after modifying the task
       await expect(
-        manager.mutateTask(
-          ctx,
-          `@${ulid}`,
-          (_task) => {
-            throw new Error("Simulated mutation failure");
-          },
-        ),
+        manager.mutateTask(ctx, `@${ulid}`, (_task) => {
+          throw new Error("Simulated mutation failure");
+        }),
       ).rejects.toThrow("Simulated mutation failure");
 
       // Verify files are unchanged — the buffer was discarded
@@ -311,7 +301,8 @@ describe("Atomic Multi-File Task Writes", () => {
       // Monkey-patch the manager to inject a failure after the backend
       // queues deletions but before flush completes. We do this by
       // activating a buffer that will throw on flush.
-      const realFlush = (await import("../src/cli/batch-write-buffer.js")).WriteBuffer.prototype.flush;
+      const realFlush = (await import("../src/cli/batch-write-buffer.js")).WriteBuffer.prototype
+        .flush;
       const { WriteBuffer } = await import("../src/cli/batch-write-buffer.js");
       const originalFlush = WriteBuffer.prototype.flush;
       WriteBuffer.prototype.flush = async function () {
@@ -321,9 +312,9 @@ describe("Atomic Multi-File Task Writes", () => {
       };
 
       try {
-        await expect(
-          manager.deleteTask(ctx, `@${ulid}`),
-        ).rejects.toThrow("Simulated flush failure");
+        await expect(manager.deleteTask(ctx, `@${ulid}`)).rejects.toThrow(
+          "Simulated flush failure",
+        );
       } finally {
         WriteBuffer.prototype.flush = originalFlush;
       }
@@ -367,15 +358,11 @@ describe("Atomic Multi-File Task Writes", () => {
 
       try {
         await expect(
-          manager.mutateTask(
-            ctx,
-            `@${ulid}`,
-            (task) => ({
-              ...task,
-              status: "in_progress",
-              started_at: "2026-03-20T12:00:00.000Z",
-            }),
-          ),
+          manager.mutateTask(ctx, `@${ulid}`, (task) => ({
+            ...task,
+            status: "in_progress",
+            started_at: "2026-03-20T12:00:00.000Z",
+          })),
         ).rejects.toThrow("Simulated index write failure");
       } finally {
         vi.restoreAllMocks();
@@ -427,10 +414,8 @@ describe("Atomic Multi-File Task Writes", () => {
       await createSplitTask(ctx, ulid1, "batch-task-1");
       await createSplitTask(ctx, ulid2, "batch-task-2");
 
-      const updated = await manager.mutateTasks(
-        ctx,
-        [`@${ulid1}`, `@${ulid2}`],
-        (tasks) => tasks.map((t) => ({
+      const updated = await manager.mutateTasks(ctx, [`@${ulid1}`, `@${ulid2}`], (tasks) =>
+        tasks.map((t) => ({
           ...t,
           status: "in_progress",
           started_at: "2026-03-20T12:00:00.000Z",
@@ -464,14 +449,10 @@ describe("Atomic Multi-File Task Writes", () => {
 
       let bufferDuringMutation: ReturnType<typeof getActiveBatchBuffer> = null;
 
-      await manager.mutateTask(
-        ctx,
-        `@${ulid}`,
-        (task) => {
-          bufferDuringMutation = getActiveBatchBuffer();
-          return { ...task, title: "Updated in batch" };
-        },
-      );
+      await manager.mutateTask(ctx, `@${ulid}`, (task) => {
+        bufferDuringMutation = getActiveBatchBuffer();
+        return { ...task, title: "Updated in batch" };
+      });
 
       // The same batch buffer should have been used (not a new one)
       expect(bufferDuringMutation).toBe(batchBuffer);
@@ -504,12 +485,10 @@ describe("Atomic Multi-File Task Writes", () => {
       const batchBuffer = activateBatchBuffer(ctx.specDir);
 
       try {
-        await manager.mutateTask(
-          ctx,
-          `@${ulid}`,
-          (task) => ({ ...task, priority: 1 }),
-          { operation: "test-nested-commit", ref: `@${ulid}` },
-        );
+        await manager.mutateTask(ctx, `@${ulid}`, (task) => ({ ...task, priority: 1 }), {
+          operation: "test-nested-commit",
+          ref: `@${ulid}`,
+        });
 
         // commitIfShadow must NOT be called — the parent buffer hasn't
         // flushed yet, so disk state is stale. The parent (batch-exec)
@@ -544,10 +523,11 @@ describe("Atomic Multi-File Task Writes", () => {
       const updated = await manager.mutateTasks(
         ctx,
         [`@${ulid1}`, `@${ulid2}`, `@${ulid3}`],
-        (tasks) => tasks.map((t) => ({
-          ...t,
-          status: "cancelled",
-        })),
+        (tasks) =>
+          tasks.map((t) => ({
+            ...t,
+            status: "cancelled",
+          })),
       );
 
       expect(updated).toHaveLength(3);
@@ -584,13 +564,9 @@ describe("Atomic Multi-File Task Writes", () => {
       const task2Before = await readTestOutput(getTaskFilePath(ctx, ulid2), "utf-8");
 
       await expect(
-        manager.mutateTasks(
-          ctx,
-          [`@${ulid1}`, `@${ulid2}`],
-          (_tasks) => {
-            throw new Error("Simulated batch failure");
-          },
-        ),
+        manager.mutateTasks(ctx, [`@${ulid1}`, `@${ulid2}`], (_tasks) => {
+          throw new Error("Simulated batch failure");
+        }),
       ).rejects.toThrow("Simulated batch failure");
 
       // All files should be unchanged — nothing persisted
@@ -652,22 +628,14 @@ describe("Atomic Multi-File Task Writes", () => {
       await createSplitTask(ctx, ulidB, "concurrent-b", { status: "pending" });
 
       // Mutation A: will throw after a short delay
-      const mutationA = manager.mutateTask(
-        ctx,
-        `@${ulidA}`,
-        async (task) => {
-          // Yield to let mutation B start concurrently
-          await new Promise((r) => setTimeout(r, 10));
-          throw new Error("Simulated failure in mutation A");
-        },
-      );
+      const mutationA = manager.mutateTask(ctx, `@${ulidA}`, async (task) => {
+        // Yield to let mutation B start concurrently
+        await new Promise((r) => setTimeout(r, 10));
+        throw new Error("Simulated failure in mutation A");
+      });
 
       // Mutation B: succeeds immediately
-      const mutationB = manager.mutateTask(
-        ctx,
-        `@${ulidB}`,
-        (task) => ({ ...task, priority: 1 }),
-      );
+      const mutationB = manager.mutateTask(ctx, `@${ulidB}`, (task) => ({ ...task, priority: 1 }));
 
       // Both run concurrently; A should fail, B should succeed
       const results = await Promise.allSettled([mutationA, mutationB]);
@@ -697,32 +665,26 @@ describe("Atomic Multi-File Task Writes", () => {
 
       // Use a barrier to ensure both mutations are in-flight simultaneously
       let resolveBarrier: () => void;
-      const barrier = new Promise<void>((r) => { resolveBarrier = r; });
+      const barrier = new Promise<void>((r) => {
+        resolveBarrier = r;
+      });
       let arrivals = 0;
 
-      const mutationC = manager.mutateTask(
-        ctx,
-        `@${ulidC}`,
-        async (task) => {
-          bufferC = getActiveBatchBuffer();
-          arrivals++;
-          if (arrivals === 2) resolveBarrier!();
-          await barrier;
-          return { ...task, title: "Updated C" };
-        },
-      );
+      const mutationC = manager.mutateTask(ctx, `@${ulidC}`, async (task) => {
+        bufferC = getActiveBatchBuffer();
+        arrivals++;
+        if (arrivals === 2) resolveBarrier!();
+        await barrier;
+        return { ...task, title: "Updated C" };
+      });
 
-      const mutationD = manager.mutateTask(
-        ctx,
-        `@${ulidD}`,
-        async (task) => {
-          bufferD = getActiveBatchBuffer();
-          arrivals++;
-          if (arrivals === 2) resolveBarrier!();
-          await barrier;
-          return { ...task, title: "Updated D" };
-        },
-      );
+      const mutationD = manager.mutateTask(ctx, `@${ulidD}`, async (task) => {
+        bufferD = getActiveBatchBuffer();
+        arrivals++;
+        if (arrivals === 2) resolveBarrier!();
+        await barrier;
+        return { ...task, title: "Updated D" };
+      });
 
       // Both mutations run concurrently — we only care that they have
       // distinct buffer instances (isolation), not that they both flush
@@ -745,31 +707,32 @@ describe("Atomic Multi-File Task Writes", () => {
       // Set up monolithic fixture (task in project.tasks.yaml)
       const monoTasksPath = path.join(ctx.specDir, "project.tasks.yaml");
       const [ulid] = testUlids("AMNO", 1);
-      await fs.writeFile(monoTasksPath, toYaml([{
-        _ulid: ulid,
-        slugs: ["mono-test"],
-        title: "Monolithic test",
-        type: "task",
-        status: "pending",
-        priority: 3,
-        tags: [],
-        depends_on: [],
-        blocked_by: [],
-        created_at: "2026-03-20T00:00:00.000Z",
-        notes: [],
-        todos: [],
-      }]));
+      await fs.writeFile(
+        monoTasksPath,
+        toYaml([
+          {
+            _ulid: ulid,
+            slugs: ["mono-test"],
+            title: "Monolithic test",
+            type: "task",
+            status: "pending",
+            priority: 3,
+            tags: [],
+            depends_on: [],
+            blocked_by: [],
+            created_at: "2026-03-20T00:00:00.000Z",
+            notes: [],
+            todos: [],
+          },
+        ]),
+      );
 
       let bufferDuringMutation: ReturnType<typeof getActiveBatchBuffer> = null;
 
-      await monoManager.mutateTask(
-        ctx,
-        `@${ulid}`,
-        (task) => {
-          bufferDuringMutation = getActiveBatchBuffer();
-          return { ...task, title: "Updated mono" };
-        },
-      );
+      await monoManager.mutateTask(ctx, `@${ulid}`, (task) => {
+        bufferDuringMutation = getActiveBatchBuffer();
+        return { ...task, title: "Updated mono" };
+      });
 
       // No buffer should be active during monolithic mutations
       expect(bufferDuringMutation).toBeNull();

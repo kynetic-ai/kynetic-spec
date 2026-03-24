@@ -186,18 +186,14 @@ describe("validateReviewRecord", () => {
 
   // AC: @review-record-validation ac-1
   it("should reject invalid subject type", () => {
-    const result = validateReviewRecord(
-      validReviewRecord({ subject: { type: "unknown_type" } }),
-    );
+    const result = validateReviewRecord(validReviewRecord({ subject: { type: "unknown_type" } }));
     expect(result.valid).toBe(false);
     expect(result.errors.some((e) => e.path?.includes("subject"))).toBe(true);
   });
 
   // AC: @review-record-validation ac-1
   it("should reject invalid lifecycle state", () => {
-    const result = validateReviewRecord(
-      validReviewRecord({ lifecycle_state: "invalid_state" }),
-    );
+    const result = validateReviewRecord(validReviewRecord({ lifecycle_state: "invalid_state" }));
     expect(result.valid).toBe(false);
   });
 
@@ -325,9 +321,7 @@ describe("validateReviewRecordInput", () => {
 describe("actionable validation feedback", () => {
   // AC: @review-record-validation ac-2
   it("should provide actionable message for invalid subject type", () => {
-    const result = validateReviewRecord(
-      validReviewRecord({ subject: { type: "bad_type" } }),
-    );
+    const result = validateReviewRecord(validReviewRecord({ subject: { type: "bad_type" } }));
     expect(result.valid).toBe(false);
     const subjectError = result.errors.find((e) => e.path?.includes("subject"));
     expect(subjectError).toBeDefined();
@@ -349,9 +343,7 @@ describe("actionable validation feedback", () => {
       }),
     );
     expect(result.valid).toBe(false);
-    const versionError = result.errors.find((e) =>
-      e.path?.includes("applies_to_version"),
-    );
+    const versionError = result.errors.find((e) => e.path?.includes("applies_to_version"));
     expect(versionError).toBeDefined();
     expect(versionError!.message).toContain("code_compare, entity_version");
   });
@@ -373,9 +365,7 @@ describe("actionable validation feedback", () => {
       }),
     );
     expect(result.valid).toBe(false);
-    const urlError = result.errors.find(
-      (e) => e.message.toLowerCase().includes("url"),
-    );
+    const urlError = result.errors.find((e) => e.message.toLowerCase().includes("url"));
     expect(urlError).toBeDefined();
   });
 
@@ -400,8 +390,8 @@ describe("actionable validation feedback", () => {
     );
     expect(result.valid).toBe(false);
     // Should have a dotted path like "threads.0.entries.0._ulid"
-    const nestedError = result.errors.find((e) =>
-      e.path?.includes("threads") && e.path?.includes("entries"),
+    const nestedError = result.errors.find(
+      (e) => e.path?.includes("threads") && e.path?.includes("entries"),
     );
     expect(nestedError).toBeDefined();
     expect(nestedError!.path).toMatch(/threads.*entries/);
@@ -439,10 +429,7 @@ describe("validateReviewsFile", () => {
   it("should report per-review errors with index path for invalid records", async () => {
     const content = YAML.stringify({
       kynetic_reviews: "1.0",
-      reviews: [
-        validReviewRecord(),
-        validReviewRecord({ _ulid: "INVALID", title: "" }),
-      ],
+      reviews: [validReviewRecord(), validReviewRecord({ _ulid: "INVALID", title: "" })],
     });
     const filePath = path.join(tmpDir, "project.reviews.yaml");
     await fs.writeFile(filePath, content);

@@ -7,7 +7,7 @@
 	import type { ComponentProps } from "svelte";
 	import type { WithoutChildrenOrChild } from "$lib/utils.js";
 
-	let {
+	const {
 		ref = $bindable(null),
 		class: className,
 		sideOffset = 4,

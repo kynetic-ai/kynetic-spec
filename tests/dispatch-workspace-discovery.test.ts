@@ -58,12 +58,7 @@ async function setupConfig(dir: string): Promise<void> {
   );
   await fs.writeFile(
     path.join(dir, "kspec.config.yaml"),
-    [
-      "dispatch:",
-      "  base_branch: agent-dev",
-      "  worktree_root: .kspec-worktrees",
-      "",
-    ].join("\n"),
+    ["dispatch:", "  base_branch: agent-dev", "  worktree_root: .kspec-worktrees", ""].join("\n"),
     "utf-8",
   );
 }

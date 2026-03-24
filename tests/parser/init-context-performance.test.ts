@@ -2,11 +2,7 @@ import { execSync } from "node:child_process";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import {
-  cleanupTempDir,
-  createTempDir,
-  initGitRepo,
-} from "../helpers/cli.js";
+import { cleanupTempDir, createTempDir, initGitRepo } from "../helpers/cli.js";
 
 const cleanupDirs: string[] = [];
 

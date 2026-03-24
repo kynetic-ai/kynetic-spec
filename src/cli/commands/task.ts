@@ -18,20 +18,17 @@ import {
   scanTestCoverage,
   syncSpecImplementationStatus,
 } from "../../parser/index.js";
-import { resolveTaskDataManager, type ShadowCommitOptions, type TaskSummary } from "../../parser/task-data-manager.js";
-import { commitIfShadow } from "../../parser/shadow.js";
 import {
-  AutomationStatusSchema,
-  normalizeRefInput,
-  TaskTypeSchema,
-} from "../../schema/index.js";
+  resolveTaskDataManager,
+  type ShadowCommitOptions,
+  type TaskSummary,
+} from "../../parser/task-data-manager.js";
+import { commitIfShadow } from "../../parser/shadow.js";
+import { AutomationStatusSchema, normalizeRefInput, TaskTypeSchema } from "../../schema/index.js";
 import { ulidPattern } from "../../schema/common.js";
 import type { AutomationStatus, Task, TaskInput } from "../../schema/index.js";
 import { alignmentCheck, errors } from "../../strings/index.js";
-import {
-  formatCommitGuidance,
-  printCommitGuidance,
-} from "../../utils/commit.js";
+import { formatCommitGuidance, printCommitGuidance } from "../../utils/commit.js";
 import { captureSubmissionLinkage, getCurrentBranch, isGitRepo } from "../../utils/git.js";
 import { executeBatchOperation, formatBatchOutput } from "../batch.js";
 import { EXIT_CODES } from "../exit-codes.js";
@@ -47,11 +44,7 @@ import {
   success,
   warn,
 } from "../output.js";
-import {
-  parsePriority,
-  validateEnumOption,
-  validateSpecRef,
-} from "../validators.js";
+import { parsePriority, validateEnumOption, validateSpecRef } from "../validators.js";
 import { describeEnumValues } from "../enum-help.js";
 import { addListOptions, listTasksAction } from "./tasks.js";
 import { findClosestCommand } from "../suggest.js";
@@ -90,14 +83,14 @@ async function postDispatchEvent(opts: {
     return; // Daemon running but port unreadable — silent fail
   }
 
-  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
   if (opts.projectPath) {
-    headers['X-Kspec-Dir'] = opts.projectPath;
+    headers["X-Kspec-Dir"] = opts.projectPath;
   }
 
   try {
     await fetch(`http://localhost:${port}/api/agent/events`, {
-      method: 'POST',
+      method: "POST",
       headers,
       body: JSON.stringify({
         task_id: opts.taskId,
@@ -137,9 +130,7 @@ async function resolveTaskRef(
         for (const candidate of result.candidates) {
           const task = tasks.find((t) => t._ulid === candidate);
           const slug = task?.slugs[0] || "";
-          console.error(
-            `  - ${index.shortUlid(candidate)} ${slug ? `(${slug})` : ""}`,
-          );
+          console.error(`  - ${index.shortUlid(candidate)} ${slug ? `(${slug})` : ""}`);
         }
         break;
       case "duplicate_slug":
@@ -218,11 +209,12 @@ function computeDispatchBranchName(
   task?: { title?: string; slugs?: string[] },
 ): string {
   const preferred = task?.slugs?.[0] ?? task?.title ?? taskRef.replace(/^@/, "task");
-  const slug = preferred
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .replace(/--+/g, "-") || "task";
+  const slug =
+    preferred
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .replace(/--+/g, "-") || "task";
   const shortId = taskRef.replace(/^@/, "").slice(0, 8).toLowerCase();
   return `dispatch/task/${slug}/${shortId}`;
 }
@@ -246,11 +238,11 @@ function listRemotes(): string[] {
   try {
     const output = execSync("git remote", { encoding: "utf-8", stdio: "pipe" }).trim();
     if (!output) return [];
-    const remotes = output.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
-    return [
-      ...remotes.filter((r) => r === "origin"),
-      ...remotes.filter((r) => r !== "origin"),
-    ];
+    const remotes = output
+      .split(/\r?\n/)
+      .map((l) => l.trim())
+      .filter(Boolean);
+    return [...remotes.filter((r) => r === "origin"), ...remotes.filter((r) => r !== "origin")];
   } catch {
     return [];
   }
@@ -358,11 +350,7 @@ async function setTaskFields(
   try {
     // Check slug uniqueness if adding a new slug
     if (options.slug) {
-      const slugCheck = checkSlugUniqueness(
-        index,
-        [options.slug],
-        foundTask._ulid,
-      );
+      const slugCheck = checkSlugUniqueness(index, [options.slug], foundTask._ulid);
       if (!slugCheck.ok) {
         return {
           success: false,
@@ -521,8 +509,7 @@ async function setTaskFields(
       if (options.automation === "needs_review" && !options.reason) {
         return {
           success: false,
-          error:
-            "Setting automation to needs_review requires --reason flag explaining why",
+          error: "Setting automation to needs_review requires --reason flag explaining why",
         };
       }
 
@@ -533,170 +520,221 @@ async function setTaskFields(
       operation: "task-set",
       ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
     };
-    const updatedTask = await resolveTaskDataManager(ctx).mutateTask(ctx, foundTask._ulid, (latestTask) => {
-      const nextTask: Task = { ...latestTask };
-      const mutationChanges: Array<{ field: string; before: unknown; after: unknown }> = [];
+    const updatedTask = await resolveTaskDataManager(ctx).mutateTask(
+      ctx,
+      foundTask._ulid,
+      (latestTask) => {
+        const nextTask: Task = { ...latestTask };
+        const mutationChanges: Array<{ field: string; before: unknown; after: unknown }> = [];
 
-      if (options.title && options.title !== latestTask.title) {
-        nextTask.title = options.title;
-        mutationChanges.push({ field: "title", before: latestTask.title, after: options.title });
-      }
-
-      if (options.description !== undefined) {
-        if (options.description === "null" || options.description.trim() === "") {
-          if (latestTask.description !== undefined) {
-            const before = latestTask.description;
-            delete nextTask.description;
-            mutationChanges.push({ field: "description", before, after: null });
-          }
-        } else if (options.description !== latestTask.description) {
-          mutationChanges.push({ field: "description", before: latestTask.description, after: options.description });
-          nextTask.description = options.description;
+        if (options.title && options.title !== latestTask.title) {
+          nextTask.title = options.title;
+          mutationChanges.push({ field: "title", before: latestTask.title, after: options.title });
         }
-      }
 
-      if (options.specRef !== undefined) {
-        if (options.specRef === "null") {
-          if (latestTask.spec_ref != null) {
-            mutationChanges.push({ field: "spec_ref", before: latestTask.spec_ref, after: null });
-            nextTask.spec_ref = null;
-          }
-        } else {
-          const newVal = normalizeRefInput(options.specRef);
-          if (newVal !== latestTask.spec_ref) {
-            mutationChanges.push({ field: "spec_ref", before: latestTask.spec_ref, after: newVal });
-            nextTask.spec_ref = newVal;
+        if (options.description !== undefined) {
+          if (options.description === "null" || options.description.trim() === "") {
+            if (latestTask.description !== undefined) {
+              const before = latestTask.description;
+              delete nextTask.description;
+              mutationChanges.push({ field: "description", before, after: null });
+            }
+          } else if (options.description !== latestTask.description) {
+            mutationChanges.push({
+              field: "description",
+              before: latestTask.description,
+              after: options.description,
+            });
+            nextTask.description = options.description;
           }
         }
-      }
 
-      if (options.metaRef !== undefined) {
-        if (options.metaRef === "null") {
-          if (latestTask.meta_ref != null) {
-            mutationChanges.push({ field: "meta_ref", before: latestTask.meta_ref, after: null });
-            nextTask.meta_ref = null;
-          }
-        } else {
-          const newVal = normalizeRefInput(options.metaRef);
-          if (newVal !== latestTask.meta_ref) {
-            mutationChanges.push({ field: "meta_ref", before: latestTask.meta_ref, after: newVal });
-            nextTask.meta_ref = newVal;
-          }
-        }
-      }
-
-      if (options.planRef !== undefined) {
-        if (options.planRef === "null") {
-          if (latestTask.plan_ref != null) {
-            mutationChanges.push({ field: "plan_ref", before: latestTask.plan_ref, after: null });
-            nextTask.plan_ref = null;
-          }
-        } else {
-          const newVal = normalizeRefInput(options.planRef);
-          if (newVal !== latestTask.plan_ref) {
-            mutationChanges.push({ field: "plan_ref", before: latestTask.plan_ref, after: newVal });
-            nextTask.plan_ref = newVal;
+        if (options.specRef !== undefined) {
+          if (options.specRef === "null") {
+            if (latestTask.spec_ref != null) {
+              mutationChanges.push({ field: "spec_ref", before: latestTask.spec_ref, after: null });
+              nextTask.spec_ref = null;
+            }
+          } else {
+            const newVal = normalizeRefInput(options.specRef);
+            if (newVal !== latestTask.spec_ref) {
+              mutationChanges.push({
+                field: "spec_ref",
+                before: latestTask.spec_ref,
+                after: newVal,
+              });
+              nextTask.spec_ref = newVal;
+            }
           }
         }
-      }
 
-      if (options.reviewUrl !== undefined) {
-        if (options.reviewUrl === "null") {
-          if (latestTask.review_url != null) {
-            mutationChanges.push({ field: "review_url", before: latestTask.review_url, after: null });
-            delete nextTask.review_url;
+        if (options.metaRef !== undefined) {
+          if (options.metaRef === "null") {
+            if (latestTask.meta_ref != null) {
+              mutationChanges.push({ field: "meta_ref", before: latestTask.meta_ref, after: null });
+              nextTask.meta_ref = null;
+            }
+          } else {
+            const newVal = normalizeRefInput(options.metaRef);
+            if (newVal !== latestTask.meta_ref) {
+              mutationChanges.push({
+                field: "meta_ref",
+                before: latestTask.meta_ref,
+                after: newVal,
+              });
+              nextTask.meta_ref = newVal;
+            }
           }
-        } else if (options.reviewUrl !== latestTask.review_url) {
-          mutationChanges.push({ field: "review_url", before: latestTask.review_url, after: options.reviewUrl });
-          nextTask.review_url = options.reviewUrl;
         }
-      }
 
-      if (parsedPriority !== undefined && parsedPriority !== latestTask.priority) {
-        mutationChanges.push({ field: "priority", before: latestTask.priority, after: parsedPriority });
-        nextTask.priority = parsedPriority;
-      }
-
-      if (options.slug && !nextTask.slugs.includes(options.slug)) {
-        const before = [...latestTask.slugs];
-        nextTask.slugs = [...nextTask.slugs, options.slug];
-        mutationChanges.push({ field: "slugs", before, after: nextTask.slugs });
-      }
-
-      if (parsedTags.length > 0) {
-        const newTags = parsedTags.filter(
-          (tag: string) => !nextTask.tags.includes(tag),
-        );
-        if (newTags.length > 0) {
-          const before = [...latestTask.tags];
-          nextTask.tags = [...nextTask.tags, ...newTags];
-          mutationChanges.push({ field: "tags", before, after: nextTask.tags });
+        if (options.planRef !== undefined) {
+          if (options.planRef === "null") {
+            if (latestTask.plan_ref != null) {
+              mutationChanges.push({ field: "plan_ref", before: latestTask.plan_ref, after: null });
+              nextTask.plan_ref = null;
+            }
+          } else {
+            const newVal = normalizeRefInput(options.planRef);
+            if (newVal !== latestTask.plan_ref) {
+              mutationChanges.push({
+                field: "plan_ref",
+                before: latestTask.plan_ref,
+                after: newVal,
+              });
+              nextTask.plan_ref = newVal;
+            }
+          }
         }
-      }
 
-      if (options.dependsOn) {
-        const before = [...latestTask.depends_on];
-        nextTask.depends_on = options.dependsOn.map(normalizeRefInput);
-        mutationChanges.push({ field: "depends_on", before, after: nextTask.depends_on });
-      }
-
-      if (options.clearDeps) {
-        if (latestTask.depends_on.length === 0) {
-          // AC: @spec-task-clear-deps ac-2 - No changes needed
-          noChangesMessage = "No changes: task has no dependencies to clear";
-          return latestTask;
+        if (options.reviewUrl !== undefined) {
+          if (options.reviewUrl === "null") {
+            if (latestTask.review_url != null) {
+              mutationChanges.push({
+                field: "review_url",
+                before: latestTask.review_url,
+                after: null,
+              });
+              delete nextTask.review_url;
+            }
+          } else if (options.reviewUrl !== latestTask.review_url) {
+            mutationChanges.push({
+              field: "review_url",
+              before: latestTask.review_url,
+              after: options.reviewUrl,
+            });
+            nextTask.review_url = options.reviewUrl;
+          }
         }
-        const before = [...latestTask.depends_on];
-        nextTask.depends_on = [];
-        mutationChanges.push({ field: "depends_on", before, after: [] });
 
-        // AC: @task-set ac-author
-        const note = createNote(
-          `Dependencies cleared (was: ${latestTask.depends_on.join(", ")})`,
-          getAuthor(ctx.config?.identity?.author),
-        );
-        nextTask.notes = [...nextTask.notes, note];
-      }
-
-      if (options.automation === false) {
-        if (latestTask.automation != null) {
-          mutationChanges.push({ field: "automation", before: latestTask.automation, after: null });
-          delete nextTask.automation;
+        if (parsedPriority !== undefined && parsedPriority !== latestTask.priority) {
+          mutationChanges.push({
+            field: "priority",
+            before: latestTask.priority,
+            after: parsedPriority,
+          });
+          nextTask.priority = parsedPriority;
         }
-      } else if (validatedAutomation && validatedAutomation !== latestTask.automation) {
-        mutationChanges.push({ field: "automation", before: latestTask.automation, after: validatedAutomation });
-        nextTask.automation = validatedAutomation;
 
-        if (options.reason) {
+        if (options.slug && !nextTask.slugs.includes(options.slug)) {
+          const before = [...latestTask.slugs];
+          nextTask.slugs = [...nextTask.slugs, options.slug];
+          mutationChanges.push({ field: "slugs", before, after: nextTask.slugs });
+        }
+
+        if (parsedTags.length > 0) {
+          const newTags = parsedTags.filter((tag: string) => !nextTask.tags.includes(tag));
+          if (newTags.length > 0) {
+            const before = [...latestTask.tags];
+            nextTask.tags = [...nextTask.tags, ...newTags];
+            mutationChanges.push({ field: "tags", before, after: nextTask.tags });
+          }
+        }
+
+        if (options.dependsOn) {
+          const before = [...latestTask.depends_on];
+          nextTask.depends_on = options.dependsOn.map(normalizeRefInput);
+          mutationChanges.push({ field: "depends_on", before, after: nextTask.depends_on });
+        }
+
+        if (options.clearDeps) {
+          if (latestTask.depends_on.length === 0) {
+            // AC: @spec-task-clear-deps ac-2 - No changes needed
+            noChangesMessage = "No changes: task has no dependencies to clear";
+            return latestTask;
+          }
+          const before = [...latestTask.depends_on];
+          nextTask.depends_on = [];
+          mutationChanges.push({ field: "depends_on", before, after: [] });
+
+          // AC: @task-set ac-author
           const note = createNote(
-            `Automation status set to ${validatedAutomation}: ${options.reason}`,
+            `Dependencies cleared (was: ${latestTask.depends_on.join(", ")})`,
             getAuthor(ctx.config?.identity?.author),
           );
           nextTask.notes = [...nextTask.notes, note];
         }
-      }
 
-      // AC: @portable-task-submission-linkage ac-4 — repair/backfill or clear submission linkage
-      if (options.clearSubmissionLinkage) {
-        if (latestTask.submission_linkage != null) {
-          mutationChanges.push({ field: "submission_linkage", before: latestTask.submission_linkage, after: null });
-          nextTask.submission_linkage = null;
-        }
-      } else if (options.submissionLinkage) {
-        const linkage = isGitRepo(ctx.projectRoot)
-          ? captureSubmissionLinkage(ctx.projectRoot, latestTask.review_url, ctx.config?.dispatch?.base_branch)
-          : null;
-        if (linkage) {
-          mutationChanges.push({ field: "submission_linkage", before: latestTask.submission_linkage, after: linkage });
-          nextTask.submission_linkage = linkage;
-        }
-      }
+        if (options.automation === false) {
+          if (latestTask.automation != null) {
+            mutationChanges.push({
+              field: "automation",
+              before: latestTask.automation,
+              after: null,
+            });
+            delete nextTask.automation;
+          }
+        } else if (validatedAutomation && validatedAutomation !== latestTask.automation) {
+          mutationChanges.push({
+            field: "automation",
+            before: latestTask.automation,
+            after: validatedAutomation,
+          });
+          nextTask.automation = validatedAutomation;
 
-      changes.splice(0, changes.length, ...mutationChanges);
-      // Set detail on commitOpts so TaskDataManager's shadow commit includes changed fields
-      setCommitOpts.detail = mutationChanges.map((c) => c.field).join(", ");
-      return nextTask;
-    }, setCommitOpts);
+          if (options.reason) {
+            const note = createNote(
+              `Automation status set to ${validatedAutomation}: ${options.reason}`,
+              getAuthor(ctx.config?.identity?.author),
+            );
+            nextTask.notes = [...nextTask.notes, note];
+          }
+        }
+
+        // AC: @portable-task-submission-linkage ac-4 — repair/backfill or clear submission linkage
+        if (options.clearSubmissionLinkage) {
+          if (latestTask.submission_linkage != null) {
+            mutationChanges.push({
+              field: "submission_linkage",
+              before: latestTask.submission_linkage,
+              after: null,
+            });
+            nextTask.submission_linkage = null;
+          }
+        } else if (options.submissionLinkage) {
+          const linkage = isGitRepo(ctx.projectRoot)
+            ? captureSubmissionLinkage(
+                ctx.projectRoot,
+                latestTask.review_url,
+                ctx.config?.dispatch?.base_branch,
+              )
+            : null;
+          if (linkage) {
+            mutationChanges.push({
+              field: "submission_linkage",
+              before: latestTask.submission_linkage,
+              after: linkage,
+            });
+            nextTask.submission_linkage = linkage;
+          }
+        }
+
+        changes.splice(0, changes.length, ...mutationChanges);
+        // Set detail on commitOpts so TaskDataManager's shadow commit includes changed fields
+        setCommitOpts.detail = mutationChanges.map((c) => c.field).join(", ");
+        return nextTask;
+      },
+      setCommitOpts,
+    );
 
     if (noChangesMessage) {
       return {
@@ -913,8 +951,9 @@ export function registerTaskCommands(program: Command): void {
             // to recover field-change history for migrated tasks.
             // Filter out note_added entries from fallback since notes are
             // already represented from notes.yaml (prevents duplication).
-            const fallbackEntries = getPreMigrationActivity(ctx.specDir, foundTask._ulid)
-              .filter((e) => e.type !== "note_added");
+            const fallbackEntries = getPreMigrationActivity(ctx.specDir, foundTask._ulid).filter(
+              (e) => e.type !== "note_added",
+            );
             if (fallbackEntries.length > 0) {
               activity = [...activity, ...fallbackEntries];
             }
@@ -926,19 +965,21 @@ export function registerTaskCommands(program: Command): void {
             (r) =>
               r.related_refs.includes(taskRef) ||
               (r.subject.type === "task" && r.subject.ref === taskRef) ||
-              r._ulid === (foundTask.review_ref?.startsWith("@")
-                ? foundTask.review_ref.slice(1)
-                : foundTask.review_ref),
+              r._ulid ===
+                (foundTask.review_ref?.startsWith("@")
+                  ? foundTask.review_ref.slice(1)
+                  : foundTask.review_ref),
           );
           for (const review of linkedReviews) {
             const reviewRef = `@${review.slugs[0] || review._ulid}`;
             for (const event of review.events) {
               activity.push({
-                type: event.event_type === "verdict_submitted"
-                  ? "submitted"
-                  : event.event_type === "lifecycle_change"
-                    ? "state_change"
-                    : "review_linked",
+                type:
+                  event.event_type === "verdict_submitted"
+                    ? "submitted"
+                    : event.event_type === "lifecycle_change"
+                      ? "state_change"
+                      : "review_linked",
                 timestamp: event.timestamp,
                 author: event.actor,
                 summary: `Review ${reviewRef}: ${event.event_type.replace(/_/g, " ")}`,
@@ -950,8 +991,7 @@ export function registerTaskCommands(program: Command): void {
 
           // Re-sort chronologically (oldest first) after merging all sources
           activity.sort(
-            (a, b) =>
-              new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
+            (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
           );
         } catch {
           // Activity is best-effort — don't fail task get if activity assembly fails
@@ -986,14 +1026,9 @@ export function registerTaskCommands(program: Command): void {
           // AC: @trait-display ac-3, ac-4, ac-5 - Show inherited AC per trait in labeled sections
           if (inheritedTraits.length > 0) {
             for (const { trait, acs } of inheritedTraits) {
-              console.log(
-                chalk.gray(`\n─── Inherited from @${trait.slug} ───`),
-              );
+              console.log(chalk.gray(`\n─── Inherited from @${trait.slug} ───`));
               for (const ac of acs) {
-                console.log(
-                  chalk.cyan(`  [${ac.id}]`) +
-                    chalk.gray(` (from @${trait.slug})`),
-                );
+                console.log(chalk.cyan(`  [${ac.id}]`) + chalk.gray(` (from @${trait.slug})`));
                 if (ac.given) console.log(`    Given: ${ac.given}`);
                 if (ac.when) console.log(`    When: ${ac.when}`);
                 if (ac.then) console.log(`    Then: ${ac.then}`);
@@ -1012,16 +1047,9 @@ export function registerTaskCommands(program: Command): void {
     .description("Create a new task")
     .requiredOption("--title <title>", "Task title")
     .option("--description <description>", "Task description")
-    .option(
-      "--type <type>",
-      describeEnumValues("Task type", TaskTypeSchema.options),
-      "task",
-    )
+    .option("--type <type>", describeEnumValues("Task type", TaskTypeSchema.options), "task")
     .option("--spec-ref <ref>", "Reference to spec item")
-    .option(
-      "--meta-ref <ref>",
-      "Reference to meta item (workflow, agent, or convention)",
-    )
+    .option("--meta-ref <ref>", "Reference to meta item (workflow, agent, or convention)")
     .option("--plan-ref <ref>", "Reference to plan this task is derived from")
     .option("--priority <n>", "Priority (1-5 or P1-P5)", "3")
     .option("--slug <slug>", "Human-friendly slug")
@@ -1029,10 +1057,7 @@ export function registerTaskCommands(program: Command): void {
     .option("--depends-on <refs...>", "Set task dependencies")
     .option(
       "--automation <status>",
-      describeEnumValues(
-        "Automation eligibility",
-        AutomationStatusSchema.options,
-      ),
+      describeEnumValues("Automation eligibility", AutomationStatusSchema.options),
     )
     .addHelpText(
       "after",
@@ -1065,9 +1090,7 @@ Examples:
         if (options.slug) {
           const slugCheck = checkSlugUniqueness(refIndex, [options.slug]);
           if (!slugCheck.ok) {
-            error(
-              errors.slug.alreadyExists(slugCheck.slug, slugCheck.existingUlid),
-            );
+            error(errors.slug.alreadyExists(slugCheck.slug, slugCheck.existingUlid));
             process.exit(EXIT_CODES.CONFLICT);
           }
         }
@@ -1234,20 +1257,11 @@ Examples:
   // kspec task set <ref>
   markMutating(task.command("set [ref]"))
     .description("Update task fields")
-    .option(
-      "--refs <refs...>",
-      "Update multiple tasks (AC: @spec-task-set-batch ac-1)",
-    )
+    .option("--refs <refs...>", "Update multiple tasks (AC: @spec-task-set-batch ac-1)")
     .option("--title <title>", "Update task title")
-    .option(
-      "--description <description>",
-      "Update task description (use 'null' to clear)",
-    )
+    .option("--description <description>", "Update task description (use 'null' to clear)")
     .option("--spec-ref <ref>", "Link to spec item (use 'null' to clear)")
-    .option(
-      "--meta-ref <ref>",
-      "Link to meta item (use 'null' to clear)",
-    )
+    .option("--meta-ref <ref>", "Link to meta item (use 'null' to clear)")
     .option("--plan-ref <ref>", "Link to plan (use 'null' to clear)")
     .option("--review-url <url>", "Set review URL (use 'null' to clear)")
     .option("--priority <n>", "Set priority (1-5 or P1-P5)")
@@ -1257,20 +1271,11 @@ Examples:
     .option("--clear-deps", "Clear all dependencies")
     .option(
       "--automation <status>",
-      describeEnumValues(
-        "Set automation eligibility",
-        AutomationStatusSchema.options,
-      ),
+      describeEnumValues("Set automation eligibility", AutomationStatusSchema.options),
     )
     .option("--no-automation", "Clear automation status (return to unassessed)")
-    .option(
-      "--reason <reason>",
-      "Reason for status change (required when setting needs_review)",
-    )
-    .option(
-      "--status <status>",
-      "Reject with error - use state transition commands instead",
-    )
+    .option("--reason <reason>", "Reason for status change (required when setting needs_review)")
+    .option("--status <status>", "Reject with error - use state transition commands instead")
     .option(
       "--submission-linkage",
       "Repair/backfill submission linkage from current git context (AC: @portable-task-submission-linkage ac-4)",
@@ -1294,9 +1299,7 @@ Examples:
       try {
         // AC: @spec-task-set-batch ac-3 - Reject --status flag
         if (options.status !== undefined) {
-          error(
-            "Use state transition commands (start, complete, block, etc.) to change status",
-          );
+          error("Use state transition commands (start, complete, block, etc.) to change status");
           process.exit(EXIT_CODES.USAGE_ERROR);
         }
 
@@ -1323,9 +1326,7 @@ Examples:
         const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items, allMetaItems);
 
         // AC: @trait-multi-ref-batch ac-8 - Deduplicate refs
-        const refsFlag = options.refs
-          ? [...new Set(options.refs as string[])]
-          : undefined;
+        const refsFlag = options.refs ? [...new Set(options.refs as string[])] : undefined;
 
         // Batch mode or single mode?
         if (refsFlag && refsFlag.length > 0) {
@@ -1336,11 +1337,7 @@ Examples:
             context: { ctx, tasks, items, allMetaItems, index, options },
             items: tasks,
             index,
-            resolveRef: (
-              refStr: string,
-              taskList: TaskSummary[],
-              idx: ReferenceIndex,
-            ) => {
+            resolveRef: (refStr: string, taskList: TaskSummary[], idx: ReferenceIndex) => {
               const result = resolveTaskRefForBatch(refStr, taskList, idx);
               return { item: result.task, error: result.error };
             },
@@ -1391,13 +1388,12 @@ Examples:
                 warn(result.message);
               }
             } else {
-              success(
-                result.message,
-                result.data as Record<string, unknown> | undefined,
-              );
+              success(result.message, result.data as Record<string, unknown> | undefined);
 
               // Show before→after diff in text mode
-              const data = result.data as { changes?: Array<{ field: string; before: unknown; after: unknown }> } | undefined;
+              const data = result.data as
+                | { changes?: Array<{ field: string; before: unknown; after: unknown }> }
+                | undefined;
               if (data?.changes) {
                 showChangeDiff(data.changes);
               }
@@ -1482,10 +1478,7 @@ Examples:
         try {
           validatedPatch = partialSchema.parse(patchData);
         } catch (validationErr) {
-          error(
-            errors.validation.invalidPatchData(String(validationErr)),
-            validationErr,
-          );
+          error(errors.validation.invalidPatchData(String(validationErr)), validationErr);
           process.exit(EXIT_CODES.ERROR);
         }
 
@@ -1493,9 +1486,7 @@ Examples:
         if (!options.allowUnknown) {
           const knownFields = Object.keys(TaskInputSchema.shape);
           const providedFields = Object.keys(patchData);
-          const unknownFields = providedFields.filter(
-            (f) => !knownFields.includes(f),
-          );
+          const unknownFields = providedFields.filter((f) => !knownFields.includes(f));
 
           if (unknownFields.length > 0) {
             error(errors.validation.unknownFields(unknownFields));
@@ -1531,10 +1522,9 @@ Examples:
             detail: changes.join(", "),
           },
         );
-        success(
-          `Patched task: ${index.shortUlid(updatedTask._ulid)} (${changes.join(", ")})`,
-          { task: updatedTask },
-        );
+        success(`Patched task: ${index.shortUlid(updatedTask._ulid)} (${changes.join(", ")})`, {
+          task: updatedTask,
+        });
       } catch (err) {
         error(errors.failures.patchTask, err);
         process.exit(EXIT_CODES.ERROR);
@@ -1566,14 +1556,8 @@ Examples:
 
         // AC: @session-scoped-task-claiming ac-startable - warn if claimed by another session
         const sessionId = process.env.KSPEC_SESSION_ID || null;
-        if (
-          foundTask.session_id &&
-          sessionId &&
-          foundTask.session_id !== sessionId
-        ) {
-          warn(
-            `Task was claimed by session ${foundTask.session_id.slice(0, 8)}...`,
-          );
+        if (foundTask.session_id && sessionId && foundTask.session_id !== sessionId) {
+          warn(`Task was claimed by session ${foundTask.session_id.slice(0, 8)}...`);
         }
 
         // AC: @session-end-loop-signal ac-block-task - Block if end-loop requested
@@ -1582,9 +1566,11 @@ Examples:
           if (endLoopState?.requested) {
             error(
               `Cannot start task: loop is ending for session ${sessionId.slice(0, 8)}...` +
-              (endLoopState.reason ? ` Reason: ${endLoopState.reason}` : ""),
+                (endLoopState.reason ? ` Reason: ${endLoopState.reason}` : ""),
             );
-            info("The current session has been signaled to end. Wrap up current work instead of starting new tasks.");
+            info(
+              "The current session has been signaled to end. Wrap up current work instead of starting new tasks.",
+            );
             process.exit(EXIT_CODES.VALIDATION_FAILED);
           }
         }
@@ -1595,10 +1581,7 @@ Examples:
         // already consumed a budget slot when originally started; blocking it
         // would prevent completing already-assigned work.
         if (foundTask.status !== "needs_work") {
-          const budgetCheck = await checkBudget(
-            ctx.sessionsDir,
-            sessionId || undefined,
-          );
+          const budgetCheck = await checkBudget(ctx.sessionsDir, sessionId || undefined);
           if (!budgetCheck.allowed) {
             error(budgetCheck.reason!);
             process.exit(EXIT_CODES.VALIDATION_FAILED);
@@ -1662,13 +1645,8 @@ Examples:
                 console.log(`\n${specItem.description}`);
               }
 
-              if (
-                specItem.acceptance_criteria &&
-                specItem.acceptance_criteria.length > 0
-              ) {
-                console.log(
-                  `\nAcceptance Criteria (${specItem.acceptance_criteria.length}):`,
-                );
+              if (specItem.acceptance_criteria && specItem.acceptance_criteria.length > 0) {
+                console.log(`\nAcceptance Criteria (${specItem.acceptance_criteria.length}):`);
                 for (const ac of specItem.acceptance_criteria) {
                   console.log(`  [${ac.id}]`);
                   console.log(`    Given: ${ac.given}`);
@@ -1724,10 +1702,7 @@ Examples:
     .option("--refs <refs...>", "Complete multiple tasks by ref")
     .option("--reason <reason>", "Completion reason/notes")
     .option("--skip-review", "Skip review requirement (requires --reason)")
-    .option(
-      "--force",
-      "Force completion from any state (bypasses submit requirement)",
-    )
+    .option("--force", "Force completion from any state (bypasses submit requirement)")
     .option("--no-sync", "Skip syncing spec implementation status")
     .addHelpText(
       "after",
@@ -1761,10 +1736,7 @@ Examples:
             const resolved = resolveTaskRefForBatch(refStr, taskList, idx);
             return { item: resolved.task, error: resolved.error };
           },
-          executeOperation: async (
-            foundTask,
-            { ctx, tasks, items, index, options },
-          ) => {
+          executeOperation: async (foundTask, { ctx, tasks, items, index, options }) => {
             try {
               const forcingCompletion = options.force;
               const now = new Date().toISOString();
@@ -1824,8 +1796,7 @@ Examples:
 
                   // AC: @task-commands ac-1 - Document force completion from non-standard state
                   forcedFromNonStandard =
-                    forcingCompletion &&
-                    latestTask.status !== "pending_review";
+                    forcingCompletion && latestTask.status !== "pending_review";
                   if (forcedFromNonStandard) {
                     forceStateDetail = `from ${latestTask.status} state`;
                     if (latestTask.status === "blocked") {
@@ -1897,13 +1868,8 @@ Examples:
               if (!options.refs && foundTask.spec_ref && !isJsonMode()) {
                 const specResult = index.resolve(foundTask.spec_ref);
                 if (specResult.ok && specResult.item) {
-                  const specItem = items.find(
-                    (i) => i._ulid === specResult.ulid,
-                  );
-                  if (
-                    specItem?.acceptance_criteria &&
-                    specItem.acceptance_criteria.length > 0
-                  ) {
+                  const specItem = items.find((i) => i._ulid === specResult.ulid);
+                  if (specItem?.acceptance_criteria && specItem.acceptance_criteria.length > 0) {
                     const count = specItem.acceptance_criteria.length;
                     console.log(
                       `\n⚠ Linked spec ${foundTask.spec_ref} has ${count} acceptance criteri${count === 1 ? "on" : "a"} - verify they are covered\n`,
@@ -1941,12 +1907,7 @@ Examples:
         formatBatchOutput(result, "Complete");
 
         // Show commit guidance for single-ref mode only
-        if (
-          !options.refs &&
-          result.success &&
-          result.results.length === 1 &&
-          !isJsonMode()
-        ) {
+        if (!options.refs && result.success && result.results.length === 1 && !isJsonMode()) {
           const taskData = result.results[0].data as Task | undefined;
           if (taskData) {
             const guidance = formatCommitGuidance(taskData);
@@ -1985,7 +1946,11 @@ Examples:
 
         // AC: @portable-task-submission-linkage ac-1, ac-3, ac-5 — capture git context
         const linkage = isGitRepo(ctx.projectRoot)
-          ? captureSubmissionLinkage(ctx.projectRoot, options.reviewUrl, ctx.config?.dispatch?.base_branch)
+          ? captureSubmissionLinkage(
+              ctx.projectRoot,
+              options.reviewUrl,
+              ctx.config?.dispatch?.base_branch,
+            )
           : null;
 
         // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
@@ -2031,10 +1996,9 @@ Examples:
           projectPath: ctx.projectRoot,
         });
 
-        success(
-          `Submitted task for review: ${index.shortUlid(updatedTask._ulid)}`,
-          { task: updatedTask },
-        );
+        success(`Submitted task for review: ${index.shortUlid(updatedTask._ulid)}`, {
+          task: updatedTask,
+        });
 
         // AC: @portable-task-submission-linkage ac-3 — warn on detached HEAD
         if (linkage && !linkage.branch) {
@@ -2053,9 +2017,7 @@ Examples:
   // kspec task needs-work <ref>
   // Reviewer kicks back a task for worker to fix
   markMutating(task.command("needs-work <ref>"))
-    .description(
-      "Kick task back to worker for fixes (pending_review -> needs_work)",
-    )
+    .description("Kick task back to worker for fixes (pending_review -> needs_work)")
     .requiredOption("--reason <reason>", "Description of issues found")
     .action(async (ref: string, options) => {
       try {
@@ -2149,10 +2111,7 @@ Examples:
           foundTask._ulid,
           (latestTask) => {
             transitionFromStatus = latestTask.status;
-            if (
-              latestTask.status === "completed" ||
-              latestTask.status === "cancelled"
-            ) {
+            if (latestTask.status === "completed" || latestTask.status === "cancelled") {
               return latestTask;
             }
 
@@ -2162,9 +2121,7 @@ Examples:
               ...latestTask,
               status: "blocked",
               prior_status:
-                latestTask.status === "blocked"
-                  ? latestTask.prior_status
-                  : latestTask.status,
+                latestTask.status === "blocked" ? latestTask.prior_status : latestTask.status,
               blocked_by: [...latestTask.blocked_by, options.reason],
             };
           },
@@ -2174,10 +2131,7 @@ Examples:
           },
         );
 
-        if (
-          transitionFromStatus === "completed" ||
-          transitionFromStatus === "cancelled"
-        ) {
+        if (transitionFromStatus === "completed" || transitionFromStatus === "cancelled") {
           error(errors.status.cannotBlock(transitionFromStatus));
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
@@ -2293,10 +2247,7 @@ Examples:
           },
           executeOperation: async (foundTask, { ctx, tasks, index, options }) => {
             try {
-              if (
-                foundTask.status === "completed" ||
-                foundTask.status === "cancelled"
-              ) {
+              if (foundTask.status === "completed" || foundTask.status === "cancelled") {
                 return {
                   success: false,
                   error: `Task is already ${foundTask.status}`,
@@ -2307,7 +2258,7 @@ Examples:
                 task.depends_on.some((depRef) => {
                   const resolved = index.resolve(depRef);
                   return resolved.ok && resolved.ulid === foundTask._ulid;
-                })
+                }),
               );
 
               // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
@@ -2318,9 +2269,7 @@ Examples:
                 (latestTasks) => {
                   const latestCancelledTask = latestTasks[0];
                   const cancelledTaskRef = getTaskDisplayRef(latestCancelledTask);
-                  const cancellationReason = options.reason
-                    ? ` Reason: ${options.reason}`
-                    : "";
+                  const cancellationReason = options.reason ? ` Reason: ${options.reason}` : "";
 
                   const updatedTasks = latestTasks.map((latestTask, taskIndex) => {
                     if (taskIndex === 0) {
@@ -2404,76 +2353,68 @@ Examples:
           operation: "task-reset",
           ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
         };
-        const updatedTask = await resolveTaskDataManager(ctx).mutateTask(ctx, foundTask._ulid, (latestTask) => {
-          previousStatus = latestTask.status;
+        const updatedTask = await resolveTaskDataManager(ctx).mutateTask(
+          ctx,
+          foundTask._ulid,
+          (latestTask) => {
+            previousStatus = latestTask.status;
 
-          // AC: @spec-task-reset ac-2 - Error if already pending
-          if (latestTask.status === "pending") {
-            return latestTask;
-          }
+            // AC: @spec-task-reset ac-2 - Error if already pending
+            if (latestTask.status === "pending") {
+              return latestTask;
+            }
 
-          // Set detail on commitOpts so TaskDataManager's shadow commit includes previous status
-          resetCommitOpts.detail = `from ${latestTask.status}`;
+            // Set detail on commitOpts so TaskDataManager's shadow commit includes previous status
+            resetCommitOpts.detail = `from ${latestTask.status}`;
 
-          // AC: @spec-task-reset ac-1 - Reset to pending, clear completion-related fields
-          const nextTask: Task = {
-            ...latestTask,
-            status: "pending",
-          };
-          clearedFields.splice(0, clearedFields.length);
+            // AC: @spec-task-reset ac-1 - Reset to pending, clear completion-related fields
+            const nextTask: Task = {
+              ...latestTask,
+              status: "pending",
+            };
+            clearedFields.splice(0, clearedFields.length);
 
-          // Clear timestamps and reasons based on previous status
-          if (
-            latestTask.completed_at !== undefined &&
-            latestTask.completed_at !== null
-          ) {
-            nextTask.completed_at = null;
-            clearedFields.push("completed_at");
-          }
-          if (
-            latestTask.started_at !== undefined &&
-            latestTask.started_at !== null
-          ) {
-            nextTask.started_at = null;
-            clearedFields.push("started_at");
-          }
-          if (
-            latestTask.closed_reason !== undefined &&
-            latestTask.closed_reason !== null
-          ) {
-            nextTask.closed_reason = null;
-            clearedFields.push("closed_reason");
-          }
-          if (latestTask.blocked_by.length > 0) {
-            nextTask.blocked_by = [];
-            clearedFields.push("blocked_by");
-          }
-          if (latestTask.prior_status) {
-            nextTask.prior_status = null;
-            clearedFields.push("prior_status");
-          }
-          // AC: @session-scoped-task-claiming ac-claim-clear
-          if (latestTask.session_id) {
-            nextTask.session_id = null;
-            clearedFields.push("session_id");
-          }
+            // Clear timestamps and reasons based on previous status
+            if (latestTask.completed_at !== undefined && latestTask.completed_at !== null) {
+              nextTask.completed_at = null;
+              clearedFields.push("completed_at");
+            }
+            if (latestTask.started_at !== undefined && latestTask.started_at !== null) {
+              nextTask.started_at = null;
+              clearedFields.push("started_at");
+            }
+            if (latestTask.closed_reason !== undefined && latestTask.closed_reason !== null) {
+              nextTask.closed_reason = null;
+              clearedFields.push("closed_reason");
+            }
+            if (latestTask.blocked_by.length > 0) {
+              nextTask.blocked_by = [];
+              clearedFields.push("blocked_by");
+            }
+            if (latestTask.prior_status) {
+              nextTask.prior_status = null;
+              clearedFields.push("prior_status");
+            }
+            // AC: @session-scoped-task-claiming ac-claim-clear
+            if (latestTask.session_id) {
+              nextTask.session_id = null;
+              clearedFields.push("session_id");
+            }
 
-          // AC: @spec-task-reset ac-4 - Add note documenting the reset
-          // AC: @spec-task-reset ac-author
-          const hadCancelReason =
-            latestTask.closed_reason && latestTask.status === "cancelled";
-          const cancelReasonText = hadCancelReason
-            ? ` (was cancelled: ${latestTask.closed_reason})`
-            : "";
-          const noteContent = `Reset from ${latestTask.status} to pending${cancelReasonText}`;
-          const note = createNote(
-            noteContent,
-            getAuthor(ctx.config?.identity?.author),
-          );
-          nextTask.notes = [...nextTask.notes, note];
+            // AC: @spec-task-reset ac-4 - Add note documenting the reset
+            // AC: @spec-task-reset ac-author
+            const hadCancelReason = latestTask.closed_reason && latestTask.status === "cancelled";
+            const cancelReasonText = hadCancelReason
+              ? ` (was cancelled: ${latestTask.closed_reason})`
+              : "";
+            const noteContent = `Reset from ${latestTask.status} to pending${cancelReasonText}`;
+            const note = createNote(noteContent, getAuthor(ctx.config?.identity?.author));
+            nextTask.notes = [...nextTask.notes, note];
 
-          return nextTask;
-        }, resetCommitOpts);
+            return nextTask;
+          },
+          resetCommitOpts,
+        );
 
         if (previousStatus === "pending") {
           error("Task is already pending");
@@ -2526,12 +2467,7 @@ Examples:
         const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
 
         // For batch mode (--refs), require --force
-        if (
-          options.refs &&
-          options.refs.length > 0 &&
-          !options.force &&
-          !options.dryRun
-        ) {
+        if (options.refs && options.refs.length > 0 && !options.force && !options.dryRun) {
           error("Batch delete requires --force flag");
           process.exit(EXIT_CODES.USAGE_ERROR);
         }
@@ -2652,16 +2588,9 @@ Examples:
             const specItem = specResult.item as {
               acceptance_criteria?: unknown[];
             };
-            if (
-              specItem.acceptance_criteria &&
-              specItem.acceptance_criteria.length > 0
-            ) {
+            if (specItem.acceptance_criteria && specItem.acceptance_criteria.length > 0) {
               console.log("");
-              console.log(
-                alignmentCheck.testCoverage(
-                  specItem.acceptance_criteria.length,
-                ),
-              );
+              console.log(alignmentCheck.testCoverage(specItem.acceptance_criteria.length));
             }
           }
         }
@@ -2704,9 +2633,7 @@ Examples:
   // kspec task review <ref>
   task
     .command("review <ref>")
-    .description(
-      "Get task context for review (task details, spec, ACs, git diff)",
-    )
+    .description("Get task context for review (task details, spec, ACs, git diff)")
     .action(async (ref: string) => {
       try {
         const ctx = await initContext();
@@ -2740,10 +2667,7 @@ Examples:
             reviewContext.spec = specItem || null;
 
             // Check test coverage for ACs if spec has them
-            if (
-              specItem?.acceptance_criteria &&
-              specItem.acceptance_criteria.length > 0
-            ) {
+            if (specItem?.acceptance_criteria && specItem.acceptance_criteria.length > 0) {
               const coveredACs = await scanTestCoverage(ctx.rootDir);
               const covered: string[] = [];
               const uncovered: string[] = [];
@@ -2761,9 +2685,7 @@ Examples:
                   possibleRefs.push(`@${prefix}`);
                 }
 
-                const isCovered = possibleRefs.some((ref) =>
-                  coveredACs.has(ref),
-                );
+                const isCovered = possibleRefs.some((ref) => coveredACs.has(ref));
                 if (isCovered) {
                   covered.push(ac.id);
                 } else {
@@ -2811,12 +2733,8 @@ Examples:
                 `\nAcceptance Criteria (${reviewContext.spec.acceptance_criteria.length}):`,
               );
               for (const ac of reviewContext.spec.acceptance_criteria) {
-                const isCovered = reviewContext.testCoverage?.covered.includes(
-                  ac.id,
-                );
-                const coverageMarker = isCovered
-                  ? chalk.green("✓")
-                  : chalk.yellow("○");
+                const isCovered = reviewContext.testCoverage?.covered.includes(ac.id);
+                const coverageMarker = isCovered ? chalk.green("✓") : chalk.yellow("○");
                 console.log(`  ${coverageMarker} [${ac.id}]`);
                 console.log(`    Given: ${ac.given}`);
                 console.log(`    When: ${ac.when}`);
@@ -2828,22 +2746,14 @@ Examples:
                 const { covered, uncovered } = reviewContext.testCoverage;
                 console.log();
                 if (uncovered.length === 0) {
-                  console.log(
-                    chalk.green(
-                      `  ✓ All ${covered.length} AC(s) have test coverage`,
-                    ),
-                  );
+                  console.log(chalk.green(`  ✓ All ${covered.length} AC(s) have test coverage`));
                 } else {
                   console.log(
                     chalk.yellow(
                       `  Test coverage: ${covered.length}/${covered.length + uncovered.length} ACs covered`,
                     ),
                   );
-                  console.log(
-                    chalk.yellow(
-                      `  Missing coverage for: ${uncovered.join(", ")}`,
-                    ),
-                  );
+                  console.log(chalk.yellow(`  Missing coverage for: ${uncovered.join(", ")}`));
                 }
               }
             }
@@ -2900,8 +2810,7 @@ Examples:
           } else {
             for (const todo of foundTask.todos) {
               const status = todo.done ? "[x]" : "[ ]";
-              const doneInfo =
-                todo.done && todo.done_at ? ` (done ${todo.done_at})` : "";
+              const doneInfo = todo.done && todo.done_at ? ` (done ${todo.done_at})` : "";
               console.log(`${status} ${todo.id}. ${todo.text}${doneInfo}`);
             }
           }
@@ -2951,10 +2860,7 @@ Examples:
             ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
           },
         );
-        success(
-          `Added todo #${todo.id} to task: ${index.shortUlid(updatedTask._ulid)}`,
-          { todo },
-        );
+        success(`Added todo #${todo.id} to task: ${index.shortUlid(updatedTask._ulid)}`, { todo });
       } catch (err) {
         error(errors.failures.addTodo, err);
         process.exit(EXIT_CODES.ERROR);
@@ -2981,34 +2887,39 @@ Examples:
         // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
         let todoState: "not_found" | "already_done" | "updated" | undefined;
         let updatedTodo: Task["todos"][number] | undefined;
-        await resolveTaskDataManager(ctx).mutateTask(ctx, foundTask._ulid, (latestTask) => {
-          const todoIndex = latestTask.todos.findIndex((todo) => todo.id === id);
-          if (todoIndex === -1) {
-            todoState = "not_found";
-            return latestTask;
-          }
+        await resolveTaskDataManager(ctx).mutateTask(
+          ctx,
+          foundTask._ulid,
+          (latestTask) => {
+            const todoIndex = latestTask.todos.findIndex((todo) => todo.id === id);
+            if (todoIndex === -1) {
+              todoState = "not_found";
+              return latestTask;
+            }
 
-          if (latestTask.todos[todoIndex].done) {
-            todoState = "already_done";
-            updatedTodo = latestTask.todos[todoIndex];
-            return latestTask;
-          }
+            if (latestTask.todos[todoIndex].done) {
+              todoState = "already_done";
+              updatedTodo = latestTask.todos[todoIndex];
+              return latestTask;
+            }
 
-          const updatedTodos = [...latestTask.todos];
-          updatedTodos[todoIndex] = {
-            ...updatedTodos[todoIndex],
-            done: true,
-            done_at: new Date().toISOString(),
-          };
-          updatedTodo = updatedTodos[todoIndex];
-          return {
-            ...latestTask,
-            todos: updatedTodos,
-          };
-        }, {
-          operation: "task-todo-done",
-          ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
-        });
+            const updatedTodos = [...latestTask.todos];
+            updatedTodos[todoIndex] = {
+              ...updatedTodos[todoIndex],
+              done: true,
+              done_at: new Date().toISOString(),
+            };
+            updatedTodo = updatedTodos[todoIndex];
+            return {
+              ...latestTask,
+              todos: updatedTodos,
+            };
+          },
+          {
+            operation: "task-todo-done",
+            ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
+          },
+        );
 
         if (todoState === "not_found") {
           error(errors.todo.notFound(id));
@@ -3046,40 +2957,41 @@ Examples:
         }
 
         // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
-        let todoState:
-          | "not_found"
-          | "already_not_done"
-          | "updated"
-          | undefined;
+        let todoState: "not_found" | "already_not_done" | "updated" | undefined;
         let updatedTodo: Task["todos"][number] | undefined;
-        await resolveTaskDataManager(ctx).mutateTask(ctx, foundTask._ulid, (latestTask) => {
-          const todoIndex = latestTask.todos.findIndex((todo) => todo.id === id);
-          if (todoIndex === -1) {
-            todoState = "not_found";
-            return latestTask;
-          }
+        await resolveTaskDataManager(ctx).mutateTask(
+          ctx,
+          foundTask._ulid,
+          (latestTask) => {
+            const todoIndex = latestTask.todos.findIndex((todo) => todo.id === id);
+            if (todoIndex === -1) {
+              todoState = "not_found";
+              return latestTask;
+            }
 
-          if (!latestTask.todos[todoIndex].done) {
-            todoState = "already_not_done";
-            updatedTodo = latestTask.todos[todoIndex];
-            return latestTask;
-          }
+            if (!latestTask.todos[todoIndex].done) {
+              todoState = "already_not_done";
+              updatedTodo = latestTask.todos[todoIndex];
+              return latestTask;
+            }
 
-          const updatedTodos = [...latestTask.todos];
-          updatedTodos[todoIndex] = {
-            ...updatedTodos[todoIndex],
-            done: false,
-            done_at: undefined,
-          };
-          updatedTodo = updatedTodos[todoIndex];
-          return {
-            ...latestTask,
-            todos: updatedTodos,
-          };
-        }, {
-          operation: "task-todo-undone",
-          ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
-        });
+            const updatedTodos = [...latestTask.todos];
+            updatedTodos[todoIndex] = {
+              ...updatedTodos[todoIndex],
+              done: false,
+              done_at: undefined,
+            };
+            updatedTodo = updatedTodos[todoIndex];
+            return {
+              ...latestTask,
+              todos: updatedTodos,
+            };
+          },
+          {
+            operation: "task-todo-undone",
+            ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
+          },
+        );
 
         if (todoState === "not_found") {
           error(errors.todo.notFound(id));
@@ -3103,9 +3015,7 @@ Examples:
   // AC: @deterministic-task-branch-helper ac-1, ac-2, ac-3
   task
     .command("branch <ref>")
-    .description(
-      "Create or resume the deterministic dispatch-compatible branch for a task",
-    )
+    .description("Create or resume the deterministic dispatch-compatible branch for a task")
     .action(async (ref: string) => {
       try {
         const ctx = await initContext();
@@ -3116,18 +3026,13 @@ Examples:
 
         // AC: @trait-error-guidance ac-1, ac-2
         if (!isGitRepo()) {
-          error(
-            "Not a git repository. Run this command from inside a git repo.",
-          );
+          error("Not a git repository. Run this command from inside a git repo.");
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
 
         // AC: @deterministic-task-branch-helper ac-1
         // Compute the deterministic branch name using the dispatch naming contract
-        const branchName = computeDispatchBranchName(
-          foundTask._ulid,
-          foundTask,
-        );
+        const branchName = computeDispatchBranchName(foundTask._ulid, foundTask);
 
         // AC: @deterministic-task-branch-helper ac-2
         // Check if the branch already exists locally
@@ -3190,7 +3095,7 @@ Examples:
     storage
       .command("activate")
       .description("Activate split per-task directory storage format")
-      .option("--force", "Skip confirmation prompt")
+      .option("--force", "Skip confirmation prompt"),
   ).action(async (options) => {
     try {
       const ctx = await initContext();
@@ -3201,9 +3106,7 @@ Examples:
       }
 
       const { readYamlFile, writeYamlFilePreserveFormat } = await import("../../parser/yaml.js");
-      const {
-        getIndexFilePath, listTaskDirs,
-      } = await import("../../parser/split-backend.js");
+      const { getIndexFilePath, listTaskDirs } = await import("../../parser/split-backend.js");
 
       // Check if already activated
       const currentFormat = ctx.manifest?.task_storage?.format;
@@ -3275,7 +3178,9 @@ Examples:
         });
         const answer = await new Promise<string>((resolve) => {
           rl.question(
-            chalk.yellow("Activate split storage format? This changes how tasks are read and written. [y/N] "),
+            chalk.yellow(
+              "Activate split storage format? This changes how tasks are read and written. [y/N] ",
+            ),
             resolve,
           );
         });
@@ -3302,15 +3207,14 @@ Examples:
       await writeYamlFilePreserveFormat(ctx.manifestPath, manifest);
 
       // AC: @task-storage-activation ac-4 — commit the setting change
-      await commitIfShadow(
-        ctx.shadow,
-        "feat: activate split task storage format",
-      );
+      await commitIfShadow(ctx.shadow, "feat: activate split task storage format");
 
       if (isJsonMode()) {
         output({ success: true, format: "split", already_active: false });
       } else {
-        success("Split storage format activated. All subsequent operations will use per-task directories.");
+        success(
+          "Split storage format activated. All subsequent operations will use per-task directories.",
+        );
       }
     } catch (err) {
       if (isJsonMode()) {
@@ -3320,10 +3224,7 @@ Examples:
           suggestion: "Check that .kspec/ directory exists and shadow branch is healthy.",
         });
       } else {
-        error(
-          "Failed to activate split storage format",
-          err instanceof Error ? err.message : err,
-        );
+        error("Failed to activate split storage format", err instanceof Error ? err.message : err);
         info(
           "Check that .kspec/ directory exists and shadow branch is healthy. Run 'kspec shadow status' for diagnostics.",
         );
@@ -3353,10 +3254,7 @@ Examples:
             error: String(err instanceof Error ? err.message : err),
           });
         } else {
-          error(
-            "Failed to check storage format",
-            err instanceof Error ? err.message : err,
-          );
+          error("Failed to check storage format", err instanceof Error ? err.message : err);
         }
         process.exit(EXIT_CODES.ERROR);
       }
@@ -3369,7 +3267,7 @@ Examples:
       .command("migrate")
       .description("Migrate tasks from monolithic format to per-task directory format")
       .option("--dry-run", "Preview migration without making changes")
-      .option("--force", "Skip confirmation prompt")
+      .option("--force", "Skip confirmation prompt"),
   ).action(async (options) => {
     try {
       const ctx = await initContext();
@@ -3379,17 +3277,20 @@ Examples:
 
       // Import split backend utilities
       const {
-        getTasksDir, getTaskDir, getTaskFilePath, getNotesFilePath,
-        getIndexFilePath, toIndexEntry, listTaskDirs,
+        getTasksDir,
+        getTaskDir,
+        getTaskFilePath,
+        getNotesFilePath,
+        getIndexFilePath,
+        toIndexEntry,
+        listTaskDirs,
       } = await import("../../parser/split-backend.js");
-      const {
-        extractRawTaskArray, toYaml, readYamlFile, stripRuntimeMetadata,
-      } = await import("../../parser/yaml.js");
+      const { extractRawTaskArray, toYaml, readYamlFile, stripRuntimeMetadata } =
+        await import("../../parser/yaml.js");
       const { TaskSchema } = await import("../../schema/task.js");
       const { ulid: generateUlid } = await import("ulid");
-      const {
-        runWithBuffer, mkdirBufferAware, writeFileBufferAware,
-      } = await import("../../cli/batch-write-buffer.js");
+      const { runWithBuffer, mkdirBufferAware, writeFileBufferAware } =
+        await import("../../cli/batch-write-buffer.js");
 
       const indexPath = getIndexFilePath(ctx);
 
@@ -3452,13 +3353,11 @@ Examples:
       }
 
       // Entries that need migration: monolithic entries without existing dirs
-      const toMigrate = monolithicEntries.filter(
-        (e) => !existingDirs.has(e.raw._ulid as string),
-      );
+      const toMigrate = monolithicEntries.filter((e) => !existingDirs.has(e.raw._ulid as string));
 
       // Entries that are already in both formats (monolithic + dir exists) — just need index cleanup
-      const alreadyMigrated = monolithicEntries.filter(
-        (e) => existingDirs.has(e.raw._ulid as string),
+      const alreadyMigrated = monolithicEntries.filter((e) =>
+        existingDirs.has(e.raw._ulid as string),
       );
 
       if (toMigrate.length === 0 && alreadyMigrated.length === 0) {
@@ -3504,7 +3403,9 @@ Examples:
 
         // AC: @task-storage-migration ac-5 — warn when _ulid was missing/invalid and generated
         if (generatedUlids.has(ulid)) {
-          warnings.push(`Task "${raw.title ?? "(untitled)"}": missing or invalid _ulid — generated ${ulid}`);
+          warnings.push(
+            `Task "${raw.title ?? "(untitled)"}": missing or invalid _ulid — generated ${ulid}`,
+          );
         }
 
         // AC: @task-storage-migration ac-5 — try validation, warn on failure, migrate raw data
@@ -3542,7 +3443,16 @@ Examples:
             todos_count: Array.isArray(raw.todos) ? raw.todos.length : 0,
           };
           // Include optional fields if present
-          for (const field of ["assignee", "automation", "spec_ref", "plan_ref", "review_ref", "started_at", "submitted_at", "completed_at"]) {
+          for (const field of [
+            "assignee",
+            "automation",
+            "spec_ref",
+            "plan_ref",
+            "review_ref",
+            "started_at",
+            "submitted_at",
+            "completed_at",
+          ]) {
             if (raw[field] !== undefined && raw[field] !== null) {
               indexEntry[field] = raw[field];
             }
@@ -3601,7 +3511,9 @@ Examples:
           for (const t of migrationTasks) {
             const label = t.isBackfill ? chalk.cyan("[backfill]") : chalk.green("[migrate]");
             const warnLabel = t.validationWarning ? chalk.yellow(" [warning]") : "";
-            console.log(`  ${label}${warnLabel} ${t.coreData.title || t.ulid} (${t.notes.length} notes)`);
+            console.log(
+              `  ${label}${warnLabel} ${t.coreData.title || t.ulid} (${t.notes.length} notes)`,
+            );
           }
         });
         return;
@@ -3684,7 +3596,17 @@ Examples:
                 notes_count: notesCount,
                 todos_count: Array.isArray(coreObj.todos) ? coreObj.todos.length : 0,
               };
-              for (const field of ["assignee", "automation", "spec_ref", "plan_ref", "review_ref", "started_at", "submitted_at", "completed_at", "session_id"]) {
+              for (const field of [
+                "assignee",
+                "automation",
+                "spec_ref",
+                "plan_ref",
+                "review_ref",
+                "started_at",
+                "submitted_at",
+                "completed_at",
+                "session_id",
+              ]) {
                 if (coreObj[field] !== undefined && coreObj[field] !== null) {
                   indexEntry[field] = coreObj[field];
                 }
@@ -3714,7 +3636,17 @@ Examples:
               notes_count: notes.length,
               todos_count: Array.isArray(raw.todos) ? raw.todos.length : 0,
             };
-            for (const field of ["assignee", "automation", "spec_ref", "plan_ref", "review_ref", "started_at", "submitted_at", "completed_at", "session_id"]) {
+            for (const field of [
+              "assignee",
+              "automation",
+              "spec_ref",
+              "plan_ref",
+              "review_ref",
+              "started_at",
+              "submitted_at",
+              "completed_at",
+              "session_id",
+            ]) {
               if (raw[field] !== undefined && raw[field] !== null) {
                 fallbackEntry[field] = raw[field];
               }
@@ -3773,13 +3705,11 @@ Examples:
         output({
           success: false,
           error: String(err instanceof Error ? err.message : err),
-          suggestion: "Check that .kspec/ directory exists and shadow branch is healthy. Run 'kspec shadow status' for diagnostics.",
+          suggestion:
+            "Check that .kspec/ directory exists and shadow branch is healthy. Run 'kspec shadow status' for diagnostics.",
         });
       } else {
-        error(
-          "Failed to migrate tasks",
-          err instanceof Error ? err.message : err,
-        );
+        error("Failed to migrate tasks", err instanceof Error ? err.message : err);
         info(
           "Check that .kspec/ directory exists and shadow branch is healthy. Run 'kspec shadow status' for diagnostics.",
         );
@@ -3805,13 +3735,10 @@ Examples:
         const isRepair = !!options.repair && !isDryRun;
 
         // Import split backend utilities
-        const { listTaskDirs, toIndexEntry, getIndexFilePath } = await import(
-          "../../parser/split-backend.js"
-        );
+        const { listTaskDirs, toIndexEntry, getIndexFilePath } =
+          await import("../../parser/split-backend.js");
         const { readYamlFile } = await import("../../parser/yaml.js");
-        const { TaskDataManager } = await import(
-          "../../parser/task-data-manager.js"
-        );
+        const { TaskDataManager } = await import("../../parser/task-data-manager.js");
 
         // AC: @task-index-rebuild ac-4 — report when no per-task directories exist
         const ulids = await listTaskDirs(ctx);
@@ -3819,12 +3746,14 @@ Examples:
           // AC: @trait-error-guidance ac-1 — description of what went wrong
           // AC: @trait-error-guidance ac-2 — suggested action to resolve
           // AC: @trait-error-guidance ac-6 — guidance in structured error object
-          error(
-            "No per-task directories found in .kspec/tasks/",
-            { suggestion: "Run 'kspec task migrate' to convert monolithic task storage to per-task directories." },
-          );
+          error("No per-task directories found in .kspec/tasks/", {
+            suggestion:
+              "Run 'kspec task migrate' to convert monolithic task storage to per-task directories.",
+          });
           if (!isJsonMode()) {
-            info("Run 'kspec task migrate' to convert monolithic task storage to per-task directories.");
+            info(
+              "Run 'kspec task migrate' to convert monolithic task storage to per-task directories.",
+            );
           }
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
@@ -3833,12 +3762,8 @@ Examples:
         // Use a split-mode TaskDataManager to load tasks from per-task files
         const splitManager = new TaskDataManager("split");
         const allTasks = await splitManager.loadAllTasks(ctx);
-        const newEntries: Record<string, unknown>[] = allTasks.map((t) =>
-          toIndexEntry(t),
-        );
-        const newEntriesByUlid = new Map(
-          newEntries.map((e) => [e._ulid as string, e]),
-        );
+        const newEntries: Record<string, unknown>[] = allTasks.map((t) => toIndexEntry(t));
+        const newEntriesByUlid = new Map(newEntries.map((e) => [e._ulid as string, e]));
 
         // Read current index entries for comparison
         const indexPath = getIndexFilePath(ctx);
@@ -3847,19 +3772,13 @@ Examples:
           const raw = await readYamlFile<unknown>(indexPath);
           if (Array.isArray(raw)) {
             currentEntries = raw.filter(
-              (e): e is Record<string, unknown> =>
-                !!e && typeof e === "object",
+              (e): e is Record<string, unknown> => !!e && typeof e === "object",
             );
-          } else if (
-            raw &&
-            typeof raw === "object" &&
-            "tasks" in raw
-          ) {
+          } else if (raw && typeof raw === "object" && "tasks" in raw) {
             const wrapper = raw as Record<string, unknown>;
             if (Array.isArray(wrapper.tasks)) {
               currentEntries = wrapper.tasks.filter(
-                (e): e is Record<string, unknown> =>
-                  !!e && typeof e === "object",
+                (e): e is Record<string, unknown> => !!e && typeof e === "object",
               );
             }
           }
@@ -3873,9 +3792,7 @@ Examples:
         );
 
         // AC: @task-index-rebuild ac-2 — report differences
-        const { indexEntriesEqual } = await import(
-          "../../parser/split-backend.js"
-        );
+        const { indexEntriesEqual } = await import("../../parser/split-backend.js");
 
         interface IndexDiff {
           type: "added" | "removed" | "changed";
@@ -3901,10 +3818,7 @@ Examples:
           } else if (!indexEntriesEqual(currentEntry, newEntry)) {
             // Changed entries — compare all fields present in the new entry
             const fields: IndexDiff["fields"] = [];
-            const allKeys = new Set([
-              ...Object.keys(newEntry),
-              ...Object.keys(currentEntry),
-            ]);
+            const allKeys = new Set([...Object.keys(newEntry), ...Object.keys(currentEntry)]);
             for (const field of allKeys) {
               if (field === "_ulid") continue; // Skip identity field
               const before = currentEntry[field];
@@ -3915,9 +3829,7 @@ Examples:
               if (Array.isArray(before) && Array.isArray(after)) {
                 if (
                   before.length === after.length &&
-                  before.every(
-                    (v: unknown, i: number) => v === after[i],
-                  )
+                  before.every((v: unknown, i: number) => v === after[i])
                 )
                   continue;
               }
@@ -3960,9 +3872,7 @@ Examples:
               warn("DRY RUN — no changes will be written");
               console.log();
             }
-            success(
-              `Index is up to date (${newEntries.length} tasks)`,
-            );
+            success(`Index is up to date (${newEntries.length} tasks)`);
           });
           return;
         }
@@ -3974,9 +3884,7 @@ Examples:
             console.log();
             printDiffs(diffs);
             console.log();
-            info(
-              `${diffs.length} difference(s) found. Use --repair to apply changes.`,
-            );
+            info(`${diffs.length} difference(s) found. Use --repair to apply changes.`);
           });
           return;
         }
@@ -3986,9 +3894,7 @@ Examples:
           output(resultData, () => {
             printDiffs(diffs);
             console.log();
-            info(
-              `${diffs.length} difference(s) found. Use --repair to overwrite the index.`,
-            );
+            info(`${diffs.length} difference(s) found. Use --repair to overwrite the index.`);
           });
           return;
         }
@@ -4031,19 +3937,14 @@ Examples:
         // AC: @task-index-rebuild ac-3 — repair mode: overwrite index
         const result = await splitManager.rebuildIndex(ctx);
 
-        await commitIfShadow(
-          ctx.shadow,
-          `fix: rebuild task index from per-task directories`,
-        );
+        await commitIfShadow(ctx.shadow, `fix: rebuild task index from per-task directories`);
 
         resultData.repaired = true;
 
         output(resultData, () => {
           printDiffs(diffs);
           console.log();
-          success(
-            `Index rebuilt from ${result.count} per-task directories`,
-          );
+          success(`Index rebuilt from ${result.count} per-task directories`);
         });
       } catch (err) {
         // AC: @trait-error-guidance ac-1 — includes description of what went wrong
@@ -4057,10 +3958,7 @@ Examples:
               "Check that .kspec/ directory exists and shadow branch is healthy. Run 'kspec shadow status' for diagnostics.",
           });
         } else {
-          error(
-            "Failed to rebuild index",
-            err instanceof Error ? err.message : err,
-          );
+          error("Failed to rebuild index", err instanceof Error ? err.message : err);
           info(
             "Check that .kspec/ directory exists and shadow branch is healthy. Run 'kspec shadow status' for diagnostics.",
           );

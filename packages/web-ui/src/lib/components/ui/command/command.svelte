@@ -4,7 +4,7 @@
 
 	export type CommandRootApi = CommandPrimitive.Root;
 
-	let {
+	const {
 		api = $bindable(null),
 		ref = $bindable(null),
 		value = $bindable(""),

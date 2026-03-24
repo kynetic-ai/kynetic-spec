@@ -3,6 +3,7 @@ name: e2e
 description: E2E testing patterns for kspec web UI. Use when writing Playwright
   tests, debugging hydration issues, or working with daemon fixtures.
 ---
+
 <!-- kspec-managed -->
 
 # E2E Testing Skill
@@ -11,15 +12,15 @@ Learnings and patterns from completed E2E work (tasks.spec.ts, items.spec.ts).
 
 ## Quick Reference
 
-| Scenario | Pattern | Example |
-|----------|---------|---------|
-| Isolated daemon | `import { test } from '../fixtures/test-base'` | Every E2E test |
-| Select dropdown (bits-ui) | Click trigger → `getByRole('option')` or `locator('[data-slot="select-item"]')` | Filter tests |
-| Text input | `pressSequentially()` with delay | Tag filter |
-| Wait for API | `waitForRequest()` | Action tests |
-| Wait for URL | `waitForURL(/pattern/)` | Navigation tests |
-| Scoped selectors | `.locator('> div').first().getByTestId()` | Tree nav |
-| Content check | `toContainText()` not just `toBeVisible()` | All tests |
+| Scenario                  | Pattern                                                                         | Example          |
+| ------------------------- | ------------------------------------------------------------------------------- | ---------------- |
+| Isolated daemon           | `import { test } from '../fixtures/test-base'`                                  | Every E2E test   |
+| Select dropdown (bits-ui) | Click trigger → `getByRole('option')` or `locator('[data-slot="select-item"]')` | Filter tests     |
+| Text input                | `pressSequentially()` with delay                                                | Tag filter       |
+| Wait for API              | `waitForRequest()`                                                              | Action tests     |
+| Wait for URL              | `waitForURL(/pattern/)`                                                         | Navigation tests |
+| Scoped selectors          | `.locator('> div').first().getByTestId()`                                       | Tree nav         |
+| Content check             | `toContainText()` not just `toBeVisible()`                                      | All tests        |
 
 ## Fixture Architecture
 
@@ -44,6 +45,7 @@ The `test-base.ts` fixture creates a completely isolated environment per test:
 ```
 
 **Key file locations:**
+
 - `packages/web-ui/tests/fixtures/` - E2E YAML fixtures
 - `packages/web-ui/tests/fixtures/test-base.ts` - Fixture setup
 - `packages/web-ui/tests/e2e/*.spec.ts` - Test files
@@ -65,23 +67,23 @@ packages/web-ui/tests/fixtures/  ← E2E fixtures (isolated)
 
 ```typescript
 // INVALID ULIDs - contain forbidden characters
-'01TASK100...'   // I is invalid
-'01MODULE0...'   // O and U are invalid
-'01TRAIT10...'   // I is invalid
+"01TASK100..."; // I is invalid
+"01MODULE0..."; // O and U are invalid
+"01TRAIT10..."; // I is invalid
 
 // VALID ULIDs - only 0-9, A-H, J-K, M-N, P-T, V-Z
-'01TASK0000...'  // T, A, S, K are all valid
-'01TRATT100...'  // No I, L, O, U
+"01TASK0000..."; // T, A, S, K are all valid
+"01TRATT100..."; // No I, L, O, U
 ```
 
 **Recommendation:** Use `testUlid()` helper from `tests/helpers/cli.ts`:
 
 ```typescript
-import { testUlid, testUlids } from '../../helpers/cli';
+import { testUlid, testUlids } from "../../helpers/cli";
 
-const taskId = testUlid('TASK');     // '01TASK00000000000000000000'
-const traitId = testUlid('TRAIT');   // '01TRAJT0000000000000000000' (I auto-replaced)
-const [id1, id2, id3] = testUlids('TASK', 3);
+const taskId = testUlid("TASK"); // '01TASK00000000000000000000'
+const traitId = testUlid("TRAIT"); // '01TRAJT0000000000000000000' (I auto-replaced)
+const [id1, id2, id3] = testUlids("TASK", 3);
 ```
 
 ## Svelte 5 SSR/Hydration Gotchas
@@ -104,11 +106,11 @@ export const ssr = false;
 ```typescript
 let panel = $state<{ open: boolean; task: Task | null }>({
   open: false,
-  task: null
+  task: null,
 });
 
 // When updating, use flushSync for synchronous DOM update
-import { flushSync } from 'svelte';
+import { flushSync } from "svelte";
 
 flushSync(() => {
   panel.task = task;
@@ -138,7 +140,7 @@ $: if (ref && open) {
 
 ### Problem: bits-ui Select Returns Array
 
-**Symptom:** Selecting "in_progress" produces `['i', 'n', '_', 'p', 'r', 'o', 'g', 'r', 'e', 's', 's', 'in_progress']`
+**Symptom:** Selecting "in*progress" produces `['i', 'n', '*', 'p', 'r', 'o', 'g', 'r', 'e', 's', 's', 'in_progress']`
 
 **Solution:** Take last element if array:
 
@@ -148,14 +150,14 @@ bits-ui Select components use **both** standard ARIA roles and `data-slot` attri
 
 ```typescript
 // Open dropdown
-await page.getByTestId('my-select-trigger').click();
+await page.getByTestId("my-select-trigger").click();
 
 // Option 1: Standard ARIA role (recommended - more semantic)
-await page.getByRole('option', { name: 'Option Name' }).click();
+await page.getByRole("option", { name: "Option Name" }).click();
 
 // Option 2: data-slot attribute (alternative)
 const dropdown = page.locator('[data-slot="select-content"]');
-await dropdown.locator('[data-slot="select-item"]').filter({ hasText: 'Option Name' }).click();
+await dropdown.locator('[data-slot="select-item"]').filter({ hasText: "Option Name" }).click();
 ```
 
 **Note:** Each select item element has both `role="option"` and `data-slot="select-item"` attributes.
@@ -178,17 +180,17 @@ function updateFilter(key: string, value: string | string[] | undefined) {
 
 ```typescript
 // Select dropdown - both role="option" and data-slot work
-const filterStatus = page.getByTestId('filter-status');
+const filterStatus = page.getByTestId("filter-status");
 await filterStatus.click();
 
 // Click option using ARIA role (recommended)
-await page.getByRole('option', { name: 'Pending', exact: true }).click();
+await page.getByRole("option", { name: "Pending", exact: true }).click();
 await page.waitForURL(/status=pending/);
 
 // Text input - use pressSequentially, not fill()
-const filterTag = page.getByTestId('filter-tag');
+const filterTag = page.getByTestId("filter-tag");
 await filterTag.click();
-await filterTag.pressSequentially('e2e', { delay: 50 });
+await filterTag.pressSequentially("e2e", { delay: 50 });
 await page.waitForURL(/tag=e2e/);
 ```
 
@@ -196,40 +198,40 @@ await page.waitForURL(/tag=e2e/);
 
 ```typescript
 // Open panel
-const item = page.getByTestId('list-item').first();
+const item = page.getByTestId("list-item").first();
 await item.click();
 
 // Verify panel content
-const panel = page.getByTestId('detail-panel');
+const panel = page.getByTestId("detail-panel");
 await expect(panel).toBeVisible();
-await expect(panel.getByTestId('title')).toContainText('Expected Title');
+await expect(panel.getByTestId("title")).toContainText("Expected Title");
 ```
 
 ### API Request Verification
 
 ```typescript
 // Verify API call was made, not just UI state
-const requestPromise = page.waitForRequest((req) =>
-  req.url().includes('/api/tasks/') && req.url().includes('/start')
+const requestPromise = page.waitForRequest(
+  (req) => req.url().includes("/api/tasks/") && req.url().includes("/start"),
 );
 await startButton.click();
 const request = await requestPromise;
-expect(request.method()).toBe('POST');
+expect(request.method()).toBe("POST");
 ```
 
 ### Tree/Hierarchy Navigation
 
 ```typescript
 // Get module node
-const specTree = page.getByTestId('spec-tree').first();
+const specTree = page.getByTestId("spec-tree").first();
 const moduleNode = specTree.locator('[data-testid*="tree-node-module"]').first();
 
 // Expand module (expand toggle is sibling to node-title)
-const expandToggle = moduleNode.locator('> div').first().getByTestId('expand-toggle');
+const expandToggle = moduleNode.locator("> div").first().getByTestId("expand-toggle");
 await expandToggle.click();
 
 // Find child feature after expansion
-const childContainer = moduleNode.getByTestId('tree-node-child');
+const childContainer = moduleNode.getByTestId("tree-node-child");
 const featureNode = childContainer.locator('[data-testid*="tree-node-feature"]').first();
 await expect(featureNode).toBeVisible();
 ```
@@ -238,26 +240,26 @@ await expect(featureNode).toBeVisible();
 
 ```typescript
 // Verify navigation occurred
-const link = page.getByTestId('spec-ref-link');
+const link = page.getByTestId("spec-ref-link");
 await link.click();
 await page.waitForURL(/\/items\?ref=/);
 
 // Verify content loaded after navigation
-const detail = page.getByTestId('item-detail');
+const detail = page.getByTestId("item-detail");
 await expect(detail).toBeVisible();
 ```
 
 ## data-testid Conventions
 
-| Component | Pattern | Example |
-|-----------|---------|---------|
-| Lists | `{entity}-list` | `task-list`, `spec-tree` |
-| List items | `{entity}-list-item` or `tree-node-{type}` | `task-list-item`, `tree-node-module` |
-| Detail panels | `{entity}-detail-panel` | `task-detail-panel`, `spec-detail-panel` |
-| Filters | `filter-{name}` | `filter-status`, `filter-tag` |
-| Badges | `{entity}-{field}` | `task-status-badge`, `task-priority` |
-| Buttons | `{action}-{entity}-button` or `{action}-button` | `start-task-button`, `expand-toggle` |
-| Counts | `{entity}-count-{status}` | `task-count-ready`, `task-count-blocked` |
+| Component     | Pattern                                         | Example                                  |
+| ------------- | ----------------------------------------------- | ---------------------------------------- |
+| Lists         | `{entity}-list`                                 | `task-list`, `spec-tree`                 |
+| List items    | `{entity}-list-item` or `tree-node-{type}`      | `task-list-item`, `tree-node-module`     |
+| Detail panels | `{entity}-detail-panel`                         | `task-detail-panel`, `spec-detail-panel` |
+| Filters       | `filter-{name}`                                 | `filter-status`, `filter-tag`            |
+| Badges        | `{entity}-{field}`                              | `task-status-badge`, `task-priority`     |
+| Buttons       | `{action}-{entity}-button` or `{action}-button` | `start-task-button`, `expand-toggle`     |
+| Counts        | `{entity}-count-{status}`                       | `task-count-ready`, `task-count-blocked` |
 
 ## WebSocket Testing
 
@@ -270,41 +272,44 @@ Daemon WebSocket in E2E tests returns 200 instead of 101 for upgrade handshake.
 ### Workaround Options
 
 1. **Skip with documentation:**
+
    ```typescript
-   test.skip('counts animate on WebSocket update', async ({ page }) => {
+   test.skip("counts animate on WebSocket update", async ({ page }) => {
      // Skipped: Daemon WebSocket upgrade returns 200 in E2E environment
      // See: AGENTS.md "CI Limitations" section
    });
    ```
 
 2. **Test API triggers instead:** Verify API calls that would trigger WebSocket events:
+
    ```typescript
-   test('task update triggers refetch', async ({ page, daemon }) => {
+   test("task update triggers refetch", async ({ page, daemon }) => {
      // Trigger update via API
      const response = await fetch(`${daemon.url}/api/tasks/${id}/start`, {
-       method: 'POST'
+       method: "POST",
      });
      expect(response.ok).toBe(true);
 
      // Verify UI updates (without WebSocket, need page reload)
      await page.reload();
-     await expect(page.getByTestId('task-status')).toContainText('In Progress');
+     await expect(page.getByTestId("task-status")).toContainText("In Progress");
    });
    ```
 
 ### When WebSocket Works
 
 Full test pattern for future:
+
 ```typescript
-test('counts animate on update', async ({ page, daemon }) => {
-  await page.goto('/');
+test("counts animate on update", async ({ page, daemon }) => {
+  await page.goto("/");
 
   // Get initial count
-  const countEl = page.getByTestId('task-count-in_progress');
+  const countEl = page.getByTestId("task-count-in_progress");
   const initialCount = await countEl.textContent();
 
   // Trigger task start via API
-  await fetch(`${daemon.url}/api/tasks/${taskId}/start`, { method: 'POST' });
+  await fetch(`${daemon.url}/api/tasks/${taskId}/start`, { method: "POST" });
 
   // Wait for animation class
   await expect(countEl).toHaveClass(/animate-pulse/);
@@ -334,6 +339,7 @@ Before writing a new E2E test:
 ### Task Status Variety
 
 Fixtures should include tasks with all statuses:
+
 - `pending` (ready - no unmet dependencies)
 - `in_progress` (started)
 - `pending_review` (code done, awaiting merge)
@@ -387,22 +393,22 @@ modules:
 ```typescript
 // BAD - hides failures
 if (await element.isVisible()) {
-  await expect(element).toContainText('value');
+  await expect(element).toContainText("value");
 }
 
 // GOOD - fails clearly
 await expect(element).toBeVisible();
-await expect(element).toContainText('value');
+await expect(element).toContainText("value");
 ```
 
 ### Don't: Share Fixtures with Unit Tests
 
 ```typescript
 // BAD - mutations affect unit tests
-await copyFixtures('../../tests/fixtures/');
+await copyFixtures("../../tests/fixtures/");
 
 // GOOD - isolated E2E fixtures
-await copyFixtures('../fixtures/');  // packages/web-ui/tests/fixtures/
+await copyFixtures("../fixtures/"); // packages/web-ui/tests/fixtures/
 ```
 
 ### Don't: Test UI State Only
@@ -410,12 +416,12 @@ await copyFixtures('../fixtures/');  // packages/web-ui/tests/fixtures/
 ```typescript
 // BAD - doesn't verify API call
 await startButton.click();
-await expect(statusBadge).toContainText('In Progress');
+await expect(statusBadge).toContainText("In Progress");
 
 // GOOD - verifies both
-const req = await page.waitForRequest(r => r.url().includes('/start'));
-expect(req.method()).toBe('POST');
-await expect(statusBadge).toContainText('In Progress');
+const req = await page.waitForRequest((r) => r.url().includes("/start"));
+expect(req.method()).toBe("POST");
+await expect(statusBadge).toContainText("In Progress");
 ```
 
 ## Related Skills

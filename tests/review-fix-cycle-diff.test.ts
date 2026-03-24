@@ -9,15 +9,8 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as path from "node:path";
 import * as fs from "node:fs/promises";
 import { execSync } from "node:child_process";
-import {
-  findPriorExaminedCommit,
-  computeDiffStat,
-} from "../src/agent-runtime/dispatch.js";
-import {
-  createTempDir,
-  cleanupTempDir,
-  initGitRepo,
-} from "./helpers/cli.js";
+import { findPriorExaminedCommit, computeDiffStat } from "../src/agent-runtime/dispatch.js";
+import { createTempDir, cleanupTempDir, initGitRepo } from "./helpers/cli.js";
 
 // ─── findPriorExaminedCommit ─────────────────────────────────────────────────
 
@@ -43,18 +36,14 @@ describe("findPriorExaminedCommit", () => {
   });
 
   it("should return null when no reviews have examined_commit", () => {
-    const reviews = [
-      makeReview({ examined_commit: null }),
-    ];
+    const reviews = [makeReview({ examined_commit: null })];
 
     const result = findPriorExaminedCommit(reviews, "@task-slug");
     expect(result).toBeNull();
   });
 
   it("should ignore open reviews", () => {
-    const reviews = [
-      makeReview({ lifecycle_state: "open", examined_commit: "aaa111" }),
-    ];
+    const reviews = [makeReview({ lifecycle_state: "open", examined_commit: "aaa111" })];
 
     const result = findPriorExaminedCommit(reviews, "@task-slug");
     expect(result).toBeNull();
@@ -100,9 +89,7 @@ describe("findPriorExaminedCommit", () => {
   });
 
   it("should strip @ prefix from taskRef", () => {
-    const reviews = [
-      makeReview({ examined_commit: "aaa111" }),
-    ];
+    const reviews = [makeReview({ examined_commit: "aaa111" })];
 
     // Both with and without @ should work
     expect(findPriorExaminedCommit(reviews, "@task-slug")).toBe("aaa111");
@@ -158,11 +145,7 @@ describe("computeDiffStat", () => {
     execSync("git add . && git commit -m 'initial'", { cwd: tempDir });
     const commit = execSync("git rev-parse HEAD", { cwd: tempDir, encoding: "utf-8" }).trim();
 
-    const result = computeDiffStat(
-      "0000000000000000000000000000000000000000",
-      commit,
-      tempDir,
-    );
+    const result = computeDiffStat("0000000000000000000000000000000000000000", commit, tempDir);
 
     expect(result).toBeNull();
   });

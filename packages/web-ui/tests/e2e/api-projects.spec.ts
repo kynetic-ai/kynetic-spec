@@ -24,12 +24,12 @@
 // AC: @trait-websocket-protocol ac-7 — N/A: WebSocket close codes tested in future api-websocket.spec.ts
 // AC: @trait-websocket-protocol ac-8 — N/A: WebSocket reconnection tested in future api-websocket.spec.ts
 
-import { test, expect } from '../fixtures/test-base';
+import { test, expect } from "../fixtures/test-base";
 
-test.describe('Projects API', () => {
-  test.describe('GET /api/projects', () => {
+test.describe("Projects API", () => {
+  test.describe("GET /api/projects", () => {
     // AC: @multi-directory-daemon ac-28
-    test('returns list of registered projects with paths, registeredAt, and watcherStatus', async ({
+    test("returns list of registered projects with paths, registeredAt, and watcherStatus", async ({
       request,
       daemon,
     }) => {
@@ -39,8 +39,8 @@ test.describe('Projects API', () => {
 
       const body = await response.json();
       // Response shape: { projects: [...], total: N }
-      expect(body).toHaveProperty('projects');
-      expect(body).toHaveProperty('total');
+      expect(body).toHaveProperty("projects");
+      expect(body).toHaveProperty("total");
       expect(Array.isArray(body.projects)).toBe(true);
 
       // Daemon always has at least the default project registered
@@ -49,7 +49,7 @@ test.describe('Projects API', () => {
     });
 
     // AC: @multi-directory-daemon ac-28
-    test('each project has required fields: path, registeredAt, watcherStatus', async ({
+    test("each project has required fields: path, registeredAt, watcherStatus", async ({
       request,
       daemon,
     }) => {
@@ -61,31 +61,31 @@ test.describe('Projects API', () => {
 
       const project = body.projects[0];
       // AC: @multi-directory-daemon ac-28 — include paths, registration time, watcher status
-      expect(project).toHaveProperty('path');
-      expect(typeof project.path).toBe('string');
+      expect(project).toHaveProperty("path");
+      expect(typeof project.path).toBe("string");
       expect(project.path.length).toBeGreaterThan(0);
 
-      expect(project).toHaveProperty('registeredAt');
-      expect(typeof project.registeredAt).toBe('string');
+      expect(project).toHaveProperty("registeredAt");
+      expect(typeof project.registeredAt).toBe("string");
       // registeredAt should be a valid ISO 8601 date
       expect(() => new Date(project.registeredAt)).not.toThrow();
       expect(new Date(project.registeredAt).getTime()).not.toBeNaN();
 
-      expect(project).toHaveProperty('watcherStatus');
-      expect(['active', 'stopped']).toContain(project.watcherStatus);
+      expect(project).toHaveProperty("watcherStatus");
+      expect(["active", "stopped"]).toContain(project.watcherStatus);
     });
 
     // AC: @multi-directory-daemon ac-28
-    test('returns JSON content type', async ({ request, daemon }) => {
+    test("returns JSON content type", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/projects`);
       expect(response.status()).toBe(200);
 
-      const contentType = response.headers()['content-type'] || '';
-      expect(contentType).toContain('application/json');
+      const contentType = response.headers()["content-type"] || "";
+      expect(contentType).toContain("application/json");
     });
 
     // AC: @multi-directory-daemon ac-28 — default project path is absolute
-    test('project paths are absolute filesystem paths', async ({ request, daemon }) => {
+    test("project paths are absolute filesystem paths", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/projects`);
       expect(response.status()).toBe(200);
 
@@ -97,7 +97,7 @@ test.describe('Projects API', () => {
     });
 
     // AC: @multi-directory-daemon ac-28 — after registering a second project, list updates
-    test('registered second project appears in project list', async ({ request, daemon }) => {
+    test("registered second project appears in project list", async ({ request, daemon }) => {
       // Register a second project
       const secondPath = await daemon.createSecondProject();
 
@@ -109,19 +109,17 @@ test.describe('Projects API', () => {
       expect(body.projects.length).toBeGreaterThanOrEqual(2);
 
       // The second project should be in the list
-      const found = body.projects.find(
-        (p: { path: string }) => p.path === secondPath
-      );
+      const found = body.projects.find((p: { path: string }) => p.path === secondPath);
       expect(found).toBeDefined();
       expect(found.path).toBe(secondPath);
       expect(found.registeredAt).toBeTruthy();
-      expect(['active', 'stopped']).toContain(found.watcherStatus);
+      expect(["active", "stopped"]).toContain(found.watcherStatus);
     });
   });
 
-  test.describe('POST /api/projects', () => {
+  test.describe("POST /api/projects", () => {
     // AC: @multi-directory-daemon ac-29 — POST /api/projects returns {success, project} shape
-    test('accepts {path} body and returns {success: true, project: {path, registeredAt, watcherStatus}}', async ({
+    test("accepts {path} body and returns {success: true, project: {path, registeredAt, watcherStatus}}", async ({
       request,
       daemon,
     }) => {
@@ -140,82 +138,77 @@ test.describe('Projects API', () => {
       expect(registerResponse.status()).toBe(200);
 
       const body = await registerResponse.json();
-      expect(body).toHaveProperty('success');
+      expect(body).toHaveProperty("success");
       expect(body.success).toBe(true);
-      expect(body).toHaveProperty('project');
+      expect(body).toHaveProperty("project");
 
       const project = body.project;
-      expect(project).toHaveProperty('path');
+      expect(project).toHaveProperty("path");
       expect(project.path).toBe(secondPath);
-      expect(project).toHaveProperty('registeredAt');
-      expect(typeof project.registeredAt).toBe('string');
-      expect(project).toHaveProperty('watcherStatus');
-      expect(['active', 'stopped']).toContain(project.watcherStatus);
+      expect(project).toHaveProperty("registeredAt");
+      expect(typeof project.registeredAt).toBe("string");
+      expect(project).toHaveProperty("watcherStatus");
+      expect(["active", "stopped"]).toContain(project.watcherStatus);
     });
 
     // AC: @multi-directory-daemon ac-29 — POST /api/projects validates path is absolute
     // (Note: ac-6/ac-7/ac-5 are for X-Kspec-Dir header validation; POST /api/projects
     // mirrors those rules for the request body {path} field as part of ac-29 path validation)
-    test('returns 400 when path is not absolute', async ({ request, daemon }) => {
+    test("returns 400 when path is not absolute", async ({ request, daemon }) => {
       const response = await request.post(`${daemon.baseUrl}/api/projects`, {
-        data: { path: 'relative/path/without/slash' },
+        data: { path: "relative/path/without/slash" },
       });
 
       expect(response.status()).toBe(400);
 
       const body = await response.json();
-      expect(body).toHaveProperty('error');
+      expect(body).toHaveProperty("error");
       expect(body.error).toMatch(/absolute|Path must be/i);
     });
 
     // AC: @multi-directory-daemon ac-29 — POST /api/projects rejects parent traversal in path
     test('returns 400 when path contains ".." segments', async ({ request, daemon }) => {
       const response = await request.post(`${daemon.baseUrl}/api/projects`, {
-        data: { path: '/tmp/../etc' },
+        data: { path: "/tmp/../etc" },
       });
 
       expect(response.status()).toBe(400);
 
       const body = await response.json();
-      expect(body).toHaveProperty('error');
+      expect(body).toHaveProperty("error");
       expect(body.error).toMatch(/parent traversal/i);
     });
 
     // AC: @multi-directory-daemon ac-29 — POST /api/projects rejects paths without .kspec/
-    test('returns 400 for path without .kspec/ directory', async ({ request, daemon }) => {
+    test("returns 400 for path without .kspec/ directory", async ({ request, daemon }) => {
       const response = await request.post(`${daemon.baseUrl}/api/projects`, {
-        data: { path: '/tmp' }, // /tmp exists but has no .kspec/
+        data: { path: "/tmp" }, // /tmp exists but has no .kspec/
       });
 
       expect(response.status()).toBe(400);
 
       const body = await response.json();
-      expect(body).toHaveProperty('error');
+      expect(body).toHaveProperty("error");
       expect(body.error).toMatch(/\.kspec\//i);
     });
 
     // AC: @multi-directory-daemon ac-29 — registered project appears in list
-    test('newly registered project appears in GET /api/projects', async ({
-      request,
-      daemon,
-    }) => {
+    test("newly registered project appears in GET /api/projects", async ({ request, daemon }) => {
       const secondPath = await daemon.createSecondProject();
 
       const listResponse = await request.get(`${daemon.baseUrl}/api/projects`);
       expect(listResponse.status()).toBe(200);
 
       const listBody = await listResponse.json();
-      const found = listBody.projects.find(
-        (p: { path: string }) => p.path === secondPath
-      );
+      const found = listBody.projects.find((p: { path: string }) => p.path === secondPath);
       expect(found).toBeDefined();
       expect(found.watcherStatus).toMatch(/active|stopped/);
     });
   });
 
-  test.describe('DELETE /api/projects/:encodedPath', () => {
+  test.describe("DELETE /api/projects/:encodedPath", () => {
     // AC: @multi-directory-daemon ac-30
-    test('unregisters project and returns success', async ({ request, daemon }) => {
+    test("unregisters project and returns success", async ({ request, daemon }) => {
       // Register a second project first
       const secondPath = await daemon.createSecondProject();
 
@@ -223,19 +216,17 @@ test.describe('Projects API', () => {
       const encodedPath = encodeURIComponent(secondPath);
 
       // AC: @multi-directory-daemon ac-30 — DELETE to unregister
-      const response = await request.delete(
-        `${daemon.baseUrl}/api/projects/${encodedPath}`
-      );
+      const response = await request.delete(`${daemon.baseUrl}/api/projects/${encodedPath}`);
 
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(body).toHaveProperty('success');
+      expect(body).toHaveProperty("success");
       expect(body.success).toBe(true);
     });
 
     // AC: @multi-directory-daemon ac-30 — project no longer appears in list after unregister
-    test('unregistered project no longer appears in GET /api/projects', async ({
+    test("unregistered project no longer appears in GET /api/projects", async ({
       request,
       daemon,
     }) => {
@@ -245,66 +236,56 @@ test.describe('Projects API', () => {
       // Verify it's registered
       const beforeResponse = await request.get(`${daemon.baseUrl}/api/projects`);
       const beforeBody = await beforeResponse.json();
-      const foundBefore = beforeBody.projects.find(
-        (p: { path: string }) => p.path === secondPath
-      );
+      const foundBefore = beforeBody.projects.find((p: { path: string }) => p.path === secondPath);
       expect(foundBefore).toBeDefined();
 
       // Unregister it
       const encodedPath = encodeURIComponent(secondPath);
-      const deleteResponse = await request.delete(
-        `${daemon.baseUrl}/api/projects/${encodedPath}`
-      );
+      const deleteResponse = await request.delete(`${daemon.baseUrl}/api/projects/${encodedPath}`);
       expect(deleteResponse.status()).toBe(200);
 
       // Verify it's gone from the list
       const afterResponse = await request.get(`${daemon.baseUrl}/api/projects`);
       const afterBody = await afterResponse.json();
-      const foundAfter = afterBody.projects.find(
-        (p: { path: string }) => p.path === secondPath
-      );
+      const foundAfter = afterBody.projects.find((p: { path: string }) => p.path === secondPath);
       expect(foundAfter).toBeUndefined();
     });
 
     // AC: @multi-directory-daemon ac-30 — 404 for non-registered project
-    test('returns 404 when deleting a project that is not registered', async ({
+    test("returns 404 when deleting a project that is not registered", async ({
       request,
       daemon,
     }) => {
-      const fakePath = '/tmp/nonexistent-project-xyz-99999';
+      const fakePath = "/tmp/nonexistent-project-xyz-99999";
       const encodedPath = encodeURIComponent(fakePath);
 
-      const response = await request.delete(
-        `${daemon.baseUrl}/api/projects/${encodedPath}`
-      );
+      const response = await request.delete(`${daemon.baseUrl}/api/projects/${encodedPath}`);
 
       expect(response.status()).toBe(404);
 
       const body = await response.json();
-      expect(body).toHaveProperty('error');
+      expect(body).toHaveProperty("error");
       expect(body.error).toMatch(/not registered|not_found/i);
     });
 
     // AC: @multi-directory-daemon ac-30 — URL-encoded paths are decoded correctly
-    test('decodes URL-encoded path correctly', async ({ request, daemon }) => {
+    test("decodes URL-encoded path correctly", async ({ request, daemon }) => {
       const secondPath = await daemon.createSecondProject();
 
       // Encode the path (paths with special chars)
       const encodedPath = encodeURIComponent(secondPath);
 
       // Verify encoding is applied (path should have URL-encoded chars if it has /)
-      expect(encodedPath).not.toContain('/');
+      expect(encodedPath).not.toContain("/");
 
-      const response = await request.delete(
-        `${daemon.baseUrl}/api/projects/${encodedPath}`
-      );
+      const response = await request.delete(`${daemon.baseUrl}/api/projects/${encodedPath}`);
 
       // Should successfully decode and delete
       expect(response.status()).toBe(200);
     });
 
     // AC: @multi-directory-daemon ac-30 — watcher stops on unregister
-    test('project list shows removed project after unregister (watcher cleanup implicit)', async ({
+    test("project list shows removed project after unregister (watcher cleanup implicit)", async ({
       request,
       daemon,
     }) => {
@@ -317,9 +298,7 @@ test.describe('Projects API', () => {
       // Project should not be in list (verifies cleanup happened)
       const listResponse = await request.get(`${daemon.baseUrl}/api/projects`);
       const listBody = await listResponse.json();
-      const found = listBody.projects.find(
-        (p: { path: string }) => p.path === secondPath
-      );
+      const found = listBody.projects.find((p: { path: string }) => p.path === secondPath);
       expect(found).toBeUndefined();
     });
   });

@@ -5,7 +5,9 @@ description: How to review work and use kspec review records. Covers both
   coverage verification, review principles, and the full review record
   interface.
 ---
+
 <!-- kspec-managed -->
+
 # Review
 
 How to review work and use kspec review records. Covers creating reviews, structuring findings, AC coverage verification, and the full review record interface.
@@ -43,6 +45,7 @@ How to review work and use kspec review records. Covers creating reviews, struct
 Before rendering any verdict, complete both deterministic and analytical checks:
 
 **Deterministic checks** (run these, don't reason about them):
+
 ```bash
 kspec item get @spec-ref                    # Own ACs + inherited trait ACs
 kspec validate                              # Trait coverage warnings
@@ -52,6 +55,7 @@ grep -rn "AC: @trait-" tests/               # Trait AC annotations
 ```
 
 **Analytical checks** (require reading and judgment):
+
 1. Read the diff — every changed file, not just the interesting ones
 2. Read surrounding context — unchanged files that interact with changed code
 3. Verify spec alignment — for each AC, confirm the code satisfies the behavior
@@ -147,12 +151,12 @@ draft → open → closed
               archived (terminal)
 ```
 
-| State | Meaning |
-|-------|---------|
-| `draft` | Review created but not yet started |
-| `open` | Active review in progress |
-| `closed` | Review concluded (auto-closed on approve/request_changes verdict) |
-| `archived` | Permanently archived |
+| State      | Meaning                                                           |
+| ---------- | ----------------------------------------------------------------- |
+| `draft`    | Review created but not yet started                                |
+| `open`     | Active review in progress                                         |
+| `closed`   | Review concluded (auto-closed on approve/request_changes verdict) |
+| `archived` | Permanently archived                                              |
 
 **Auto-close on verdict:** When a reviewer submits an `approve` or `request_changes` verdict, the review record automatically transitions to `closed`. A `comment` verdict leaves the review open since it doesn't represent a final assessment. Each closed review is a point-in-time artifact.
 
@@ -161,6 +165,7 @@ draft → open → closed
 Each review cycle produces its own review record. This is analogous to individual PR reviews on GitHub — each review is a discrete artifact with its own verdict, and the collection of reviews across cycles comprises the full review history for the task.
 
 **How it works:**
+
 - When a task enters `pending_review`, the reviewer creates a **new** review record
 - If a prior closed review exists, it remains as a historical artifact
 - The task's `review_ref` is updated to point to the new record
@@ -172,11 +177,11 @@ Each review cycle produces its own review record. This is analogous to individua
 
 The disposition is computed from verdicts, checks, and threads — not set directly:
 
-| Disposition | Condition |
-|-------------|-----------|
-| `pending` | No verdicts, or only `comment` verdicts |
-| `approved` | At least one `approve` verdict matching current version, no blocking `request_changes`, all required gates passing, no unresolved blocker threads |
-| `changes_requested` | Any `request_changes` verdict matching current version, or required gates failing, or unresolved blocker threads |
+| Disposition         | Condition                                                                                                                                         |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pending`           | No verdicts, or only `comment` verdicts                                                                                                           |
+| `approved`          | At least one `approve` verdict matching current version, no blocking `request_changes`, all required gates passing, no unresolved blocker threads |
+| `changes_requested` | Any `request_changes` verdict matching current version, or required gates failing, or unresolved blocker threads                                  |
 
 ### Creating Reviews
 
@@ -248,6 +253,7 @@ Common `--section` values: `acceptance_criteria`, `description`, `context`, `tod
 Anchored comments are machine-parseable and enable richer tooling: the UI can render findings inline at the exact location, agents can programmatically match findings to code or ACs, and fix-cycle workers can jump directly to the problem without re-reading the entire diff or spec.
 
 **Unanchored (avoid):**
+
 ```bash
 # Finding describes location in body text — not machine-parseable
 kspec review comment @review-ref \
@@ -256,6 +262,7 @@ kspec review comment @review-ref \
 ```
 
 **Anchored (preferred):**
+
 ```bash
 # Finding anchored to exact file and lines — UI renders inline, agents can match
 kspec review comment @review-ref \
@@ -265,6 +272,7 @@ kspec review comment @review-ref \
 ```
 
 **Unanchored plan comment (avoid):**
+
 ```bash
 kspec review comment @review-ref \
   --body "The third acceptance criterion on @spec-auth is too vague" \
@@ -272,6 +280,7 @@ kspec review comment @review-ref \
 ```
 
 **Anchored plan comment (preferred):**
+
 ```bash
 kspec review comment @review-ref \
   --body "AC is too vague — 'handles errors properly' needs specific error types" \
@@ -383,6 +392,7 @@ Before emitting any finding, apply the **claim-disprove-emit** cycle:
 ### Finding Quality
 
 Every finding must include:
+
 - **Path and line** — exactly where the issue is
 - **Anchor** — use CLI anchor flags (`--path`/`--line-start`/`--line-end` for code, `--section`/`--field`/`--anchor-ref` for plans/specs) so the finding is machine-parseable, not just described in body text
 - **Claim** — what is wrong, stated precisely
@@ -391,11 +401,11 @@ Every finding must include:
 
 ### Severity Guide
 
-| Severity | When to use |
-|----------|-------------|
-| **MUST-FIX** | Correctness, security, spec violation, coverage loss. High or medium confidence required. |
-| **SHOULD-FIX** | Likely correctness issue, missing boundary case, fragile code. |
-| **SUGGESTION** | Pure style, naming, formatting. Zero correctness implications. |
+| Severity       | When to use                                                                               |
+| -------------- | ----------------------------------------------------------------------------------------- |
+| **MUST-FIX**   | Correctness, security, spec violation, coverage loss. High or medium confidence required. |
+| **SHOULD-FIX** | Likely correctness issue, missing boundary case, fragile code.                            |
+| **SUGGESTION** | Pure style, naming, formatting. Zero correctness implications.                            |
 
 **Default to MUST-FIX.** Only downgrade when you are certain the issue is cosmetic.
 
@@ -418,16 +428,16 @@ Every finding must include:
 
 ## CLI Lookups
 
-| Need | Command |
-|------|---------|
-| Spec + all ACs (own + inherited) | `kspec item get @spec-ref` |
-| Trait definition + ACs | `kspec item get @trait-slug` |
-| Review details | `kspec review get @review-ref` |
-| Reviews for a task | `kspec review for-task @task-ref` |
-| All open reviews | `kspec review list --status open` |
-| Search by keyword | `kspec search "keyword"` |
-| All traits | `kspec trait list` |
-| Validation | `kspec validate` |
+| Need                             | Command                           |
+| -------------------------------- | --------------------------------- |
+| Spec + all ACs (own + inherited) | `kspec item get @spec-ref`        |
+| Trait definition + ACs           | `kspec item get @trait-slug`      |
+| Review details                   | `kspec review get @review-ref`    |
+| Reviews for a task               | `kspec review for-task @task-ref` |
+| All open reviews                 | `kspec review list --status open` |
+| Search by keyword                | `kspec search "keyword"`          |
+| All traits                       | `kspec trait list`                |
+| Validation                       | `kspec validate`                  |
 
 ## Command Reference
 

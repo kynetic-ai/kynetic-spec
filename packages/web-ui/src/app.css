@@ -201,7 +201,6 @@
   --color-status-blocked-fg: var(--design-status-blocked-fg);
   --color-status-cancelled: var(--design-status-cancelled);
   --color-status-cancelled-fg: var(--design-status-cancelled-fg);
-
 }
 
 @layer base {

@@ -36,7 +36,7 @@
 		isInteractive: boolean;
 	}
 
-	let { review, baseCommit, headCommit, threads, isInteractive }: Props = $props();
+	const { review, baseCommit, headCommit, threads, isInteractive }: Props = $props();
 
 	const queryClient = useQueryClient();
 	const LAZY_LOAD_THRESHOLD = 20;
@@ -53,12 +53,12 @@
 		enabled: isProjectInitialized() && !!baseCommit && !!headCommit,
 	}));
 
-	let diff = $derived<ParsedDiff | null>(diffQuery.data ?? null);
-	let diffLoading = $derived(diffQuery.isLoading);
-	let diffError = $derived(diffQuery.error?.message ?? '');
+	const diff = $derived<ParsedDiff | null>(diffQuery.data ?? null);
+	const diffLoading = $derived(diffQuery.isLoading);
+	const diffError = $derived(diffQuery.error?.message ?? '');
 
 	// AC: @review-code-diff-viewer ac-6 — For 20+ files, use lazy loading
-	let useLazyLoading = $derived((diff?.files.length ?? 0) > LAZY_LOAD_THRESHOLD);
+	const useLazyLoading = $derived((diff?.files.length ?? 0) > LAZY_LOAD_THRESHOLD);
 
 	// Track which files have their full diff loaded (for lazy mode)
 	let lazyLoadedFiles = $state<Map<string, DiffFile>>(new Map());
@@ -267,7 +267,7 @@
 	}
 
 	// Filter code-anchored threads only
-	let codeThreads = $derived(
+	const codeThreads = $derived(
 		threads.filter((t) => t.anchor?.type === 'code')
 	);
 

@@ -4,6 +4,7 @@ description: Use when the user asks to run Codex CLI (codex exec, codex resume)
   or wants Codex to review PRs, plans, or specs. Delegates to GPT-5.3-codex with
   preset reasoning modes.
 ---
+
 <!-- kspec-managed -->
 
 # Codex Skill
@@ -33,13 +34,13 @@ Run OpenAI Codex CLI for code analysis, reviews, and automated editing. Defaults
 
 ## Modes and Reasoning Presets
 
-| Mode | Reasoning | Sandbox | Output |
-|------|-----------|---------|--------|
-| `review` (PR) | `high` | `danger-full-access` | Inline GitHub comments via `gh` + `/tmp` |
-| `review-plan` | `high` | `danger-full-access` | Feedback file in `/tmp` |
-| `review-spec` | `high` | `danger-full-access` | Feedback file in `/tmp` |
-| general (default) | `medium` | `danger-full-access` | Feedback file in `/tmp` |
-| general with edits | `medium` | `danger-full-access` | Direct file changes |
+| Mode               | Reasoning | Sandbox              | Output                                   |
+| ------------------ | --------- | -------------------- | ---------------------------------------- |
+| `review` (PR)      | `high`    | `danger-full-access` | Inline GitHub comments via `gh` + `/tmp` |
+| `review-plan`      | `high`    | `danger-full-access` | Feedback file in `/tmp`                  |
+| `review-spec`      | `high`    | `danger-full-access` | Feedback file in `/tmp`                  |
+| general (default)  | `medium`  | `danger-full-access` | Feedback file in `/tmp`                  |
+| general with edits | `medium`  | `danger-full-access` | Direct file changes                      |
 
 **Model:** `gpt-5.3-codex` unless the user specifies otherwise.
 
@@ -147,6 +148,7 @@ PROMPT
 ### AC Coverage Check
 
 When a task ref is provided, Codex is instructed to verify:
+
 - Every own AC has test coverage via `// AC: @spec-ref ac-N` annotations
 - Every inherited trait AC has test coverage via `// AC: @trait-slug ac-N` annotations
 - `kspec validate` shows no trait AC coverage warnings for the spec
@@ -329,14 +331,15 @@ When resuming, config flags (`-c`, `-m`, `-s`) are accepted and override the ori
 
 All Codex output is written to `/tmp/codex-*` files:
 
-| Mode | Output file |
-|------|------------|
-| PR review | `/tmp/codex-pr-{number}-review.md` |
-| Plan review | `/tmp/codex-plan-review.md` |
-| Spec review | `/tmp/codex-spec-review.md` |
-| General | `/tmp/codex-output.md` |
+| Mode        | Output file                        |
+| ----------- | ---------------------------------- |
+| PR review   | `/tmp/codex-pr-{number}-review.md` |
+| Plan review | `/tmp/codex-plan-review.md`        |
+| Spec review | `/tmp/codex-spec-review.md`        |
+| General     | `/tmp/codex-output.md`             |
 
 After every Codex run:
+
 1. Report the output file path to the user
 2. Summarize key findings
 3. For PR reviews, also post comments to GitHub via `gh`
@@ -368,6 +371,7 @@ Users can override any preset:
 ```
 
 Parse overrides from the user's message and map to CLI flags:
+
 - `--model X` or `-m X` → `-m X`
 - `--effort X` → `-c model_reasoning_effort="X"` (translate to config flag)
 
@@ -399,12 +403,12 @@ rm -f "$PROMPT_FILE"
 
 ### When to Use This Pattern
 
-| Prompt Content | Approach |
-|----------------|----------|
-| Simple one-liner | Inline quotes work fine |
-| Contains `$`, backticks, quotes | Use prompt file |
-| Multi-line with formatting | Use prompt file |
-| Generated or dynamic content | Use prompt file |
+| Prompt Content                  | Approach                |
+| ------------------------------- | ----------------------- |
+| Simple one-liner                | Inline quotes work fine |
+| Contains `$`, backticks, quotes | Use prompt file         |
+| Multi-line with formatting      | Use prompt file         |
+| Generated or dynamic content    | Use prompt file         |
 
 ### Why Prompt-File Over Heredocs?
 

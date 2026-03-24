@@ -132,16 +132,10 @@ describe("parsePriority", () => {
 // ─── validateEnumOption ─────────────────────────────────────
 
 describe("validateEnumOption", () => {
-  const automationStatuses = [
-    "eligible",
-    "needs_review",
-    "manual_only",
-  ] as const;
+  const automationStatuses = ["eligible", "needs_review", "manual_only"] as const;
 
   it("accepts valid enum value", () => {
-    expect(
-      validateEnumOption("eligible", automationStatuses, "automation status"),
-    ).toEqual({
+    expect(validateEnumOption("eligible", automationStatuses, "automation status")).toEqual({
       ok: true,
       value: "eligible",
     });
@@ -149,21 +143,13 @@ describe("validateEnumOption", () => {
 
   it("accepts all valid values", () => {
     for (const status of automationStatuses) {
-      const result = validateEnumOption(
-        status,
-        automationStatuses,
-        "automation status",
-      );
+      const result = validateEnumOption(status, automationStatuses, "automation status");
       expect(result.ok).toBe(true);
     }
   });
 
   it("rejects invalid enum value", () => {
-    const result = validateEnumOption(
-      "foo",
-      automationStatuses,
-      "automation status",
-    );
+    const result = validateEnumOption("foo", automationStatuses, "automation status");
     expect(result.ok).toBe(false);
     if (!result.ok) {
       expect(result.error).toContain("Invalid automation status: foo");
@@ -174,11 +160,7 @@ describe("validateEnumOption", () => {
   });
 
   it("is case sensitive", () => {
-    const result = validateEnumOption(
-      "Eligible",
-      automationStatuses,
-      "automation status",
-    );
+    const result = validateEnumOption("Eligible", automationStatuses, "automation status");
     expect(result.ok).toBe(false);
   });
 });
@@ -187,13 +169,9 @@ describe("validateEnumOption", () => {
 
 describe("validateSpecRef", () => {
   // Minimal mocks matching the interfaces used by validateSpecRef
-  const mockTasks = [
-    { _ulid: "01TASK00000000000000000000", slugs: ["my-task"] },
-  ] as any[];
+  const mockTasks = [{ _ulid: "01TASK00000000000000000000", slugs: ["my-task"] }] as any[];
 
-  const mockItems = [
-    { _ulid: "01SPEC00000000000000000000", slugs: ["my-spec"] },
-  ] as any[];
+  const mockItems = [{ _ulid: "01SPEC00000000000000000000", slugs: ["my-spec"] }] as any[];
 
   // Create a mock ReferenceIndex that resolves refs to ULIDs
   function createMockIndex(

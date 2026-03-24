@@ -44,9 +44,7 @@ function isValidRelationshipType(type: string): type is RelationshipType {
  * Register link commands
  */
 export function registerLinkCommands(program: Command): void {
-  const link = program
-    .command("link")
-    .description("Manage relationships between spec items");
+  const link = program.command("link").description("Manage relationships between spec items");
 
   // kspec link create
   markMutating(link.command("create"))
@@ -65,12 +63,7 @@ export function registerLinkCommands(program: Command): void {
 
         // Validate relationship type
         if (!isValidRelationshipType(options.type)) {
-          error(
-            errors.relationship.invalidType(
-              options.type,
-              RELATIONSHIP_TYPES.join(", "),
-            ),
-          );
+          error(errors.relationship.invalidType(options.type, RELATIONSHIP_TYPES.join(", ")));
           process.exit(EXIT_CODES.ERROR);
         }
 
@@ -110,9 +103,7 @@ export function registerLinkCommands(program: Command): void {
 
         // Check if relationship already exists
         if (existingRels.includes(toRef)) {
-          warn(
-            `Relationship already exists: ${fromRef} --[${relType}]--> ${toRef}`,
-          );
+          warn(`Relationship already exists: ${fromRef} --[${relType}]--> ${toRef}`);
           output({ success: true, message: "Relationship already exists" });
           return;
         }
@@ -122,12 +113,7 @@ export function registerLinkCommands(program: Command): void {
         const updates = { [relType]: newRels };
 
         await updateSpecItem(ctx, fromSpecItem, updates);
-        await commitIfShadow(
-          ctx.shadow,
-          "link-add",
-          fromRef,
-          `${relType} ${toRef}`,
-        );
+        await commitIfShadow(ctx.shadow, "link-add", fromRef, `${relType} ${toRef}`);
 
         success(`Created relationship: ${fromRef} --[${relType}]--> ${toRef}`, {
           from: fromRef,
@@ -154,12 +140,7 @@ export function registerLinkCommands(program: Command): void {
 
         // Validate type if provided
         if (options.type && !isValidRelationshipType(options.type)) {
-          error(
-            errors.relationship.invalidType(
-              options.type,
-              RELATIONSHIP_TYPES.join(", "),
-            ),
-          );
+          error(errors.relationship.invalidType(options.type, RELATIONSHIP_TYPES.join(", ")));
           process.exit(EXIT_CODES.ERROR);
         }
 
@@ -197,9 +178,7 @@ export function registerLinkCommands(program: Command): void {
           }
 
           if (relationships.length === 0) {
-            console.log(
-              chalk.gray(`No relationships found from ${options.from}`),
-            );
+            console.log(chalk.gray(`No relationships found from ${options.from}`));
             output({ success: true, relationships: [] });
             return;
           }
@@ -210,9 +189,7 @@ export function registerLinkCommands(program: Command): void {
             const targetTitle = targetResult.ok
               ? getDisplayName(targetResult.item)
               : chalk.gray("(not found)");
-            console.log(
-              `  ${chalk.cyan(rel.type)}: ${chalk.yellow(rel.target)} - ${targetTitle}`,
-            );
+            console.log(`  ${chalk.cyan(rel.type)}: ${chalk.yellow(rel.target)} - ${targetTitle}`);
           }
           console.log(chalk.gray(`\n${relationships.length} relationship(s)`));
 
@@ -229,8 +206,7 @@ export function registerLinkCommands(program: Command): void {
             process.exit(EXIT_CODES.NOT_FOUND);
           }
 
-          const relationships: Array<{ type: RelationshipType; from: string }> =
-            [];
+          const relationships: Array<{ type: RelationshipType; from: string }> = [];
 
           // Search all spec items for links to this target
           for (const item of items) {
@@ -239,8 +215,7 @@ export function registerLinkCommands(program: Command): void {
 
               const targets = (item[relType] || []) as string[];
               if (targets.includes(targetRef)) {
-                const fromRef =
-                  item.slugs.length > 0 ? `@${item.slugs[0]}` : item._ulid;
+                const fromRef = item.slugs.length > 0 ? `@${item.slugs[0]}` : item._ulid;
                 relationships.push({ type: relType, from: fromRef });
               }
             }
@@ -278,8 +253,7 @@ export function registerLinkCommands(program: Command): void {
         }> = [];
 
         for (const item of items) {
-          const fromRef =
-            item.slugs.length > 0 ? `@${item.slugs[0]}` : item._ulid;
+          const fromRef = item.slugs.length > 0 ? `@${item.slugs[0]}` : item._ulid;
 
           for (const relType of RELATIONSHIP_TYPES) {
             if (typeFilter && relType !== typeFilter) continue;
@@ -292,9 +266,7 @@ export function registerLinkCommands(program: Command): void {
                 fromTitle: getDisplayName(item),
                 type: relType,
                 to: target,
-                toTitle: toResult.ok
-                  ? getDisplayName(toResult.item)
-                  : "(not found)",
+                toTitle: toResult.ok ? getDisplayName(toResult.item) : "(not found)",
               });
             }
           }
@@ -337,12 +309,7 @@ export function registerLinkCommands(program: Command): void {
 
         // Validate type if provided
         if (options.type && !isValidRelationshipType(options.type)) {
-          error(
-            errors.relationship.invalidType(
-              options.type,
-              RELATIONSHIP_TYPES.join(", "),
-            ),
-          );
+          error(errors.relationship.invalidType(options.type, RELATIONSHIP_TYPES.join(", ")));
           process.exit(EXIT_CODES.ERROR);
         }
 
@@ -393,18 +360,14 @@ export function registerLinkCommands(program: Command): void {
         }
 
         await updateSpecItem(ctx, fromSpecItem, updates);
-        await commitIfShadow(
-          ctx.shadow,
-          "link-remove",
-          fromRef,
-          `${removed.join(", ")} ${toRef}`,
-        );
+        await commitIfShadow(ctx.shadow, "link-remove", fromRef, `${removed.join(", ")} ${toRef}`);
 
         const typesStr = removed.join(", ");
-        success(
-          `Removed relationship(s): ${fromRef} --[${typesStr}]--> ${toRef}`,
-          { from: fromRef, to: toRef, types: removed },
-        );
+        success(`Removed relationship(s): ${fromRef} --[${typesStr}]--> ${toRef}`, {
+          from: fromRef,
+          to: toRef,
+          types: removed,
+        });
       } catch (err) {
         error((err as Error).message);
         process.exit(EXIT_CODES.ERROR);

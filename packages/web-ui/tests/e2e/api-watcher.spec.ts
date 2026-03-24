@@ -52,16 +52,20 @@
 // AC: @trait-websocket-protocol ac-7 — N/A: close codes tested in api-websocket.spec.ts
 // AC: @trait-websocket-protocol ac-8 — N/A: client reconnection sequence reset tested in connection.spec.ts
 
-import { mkdirSync, writeFileSync } from 'fs';
-import { join } from 'path';
-import { test, expect } from '../fixtures/test-base';
+import { mkdirSync, writeFileSync } from "fs";
+import { join } from "path";
+import { test, expect } from "../fixtures/test-base";
 
 /**
  * Connect to the daemon WebSocket from the browser context.
  * Stores WebSocket in window.__testWs for subsequent calls.
  */
-async function connectWebSocket(page: import('@playwright/test').Page, baseUrl: string, wsUrl: string): Promise<void> {
-  await page.goto(baseUrl + '/api/health');
+async function connectWebSocket(
+  page: import("@playwright/test").Page,
+  baseUrl: string,
+  wsUrl: string,
+): Promise<void> {
+  await page.goto(baseUrl + "/api/health");
 
   await page.evaluate((wsUrl: string) => {
     return new Promise<void>((resolve, reject) => {
@@ -70,13 +74,13 @@ async function connectWebSocket(page: import('@playwright/test').Page, baseUrl: 
 
       const timeout = setTimeout(() => {
         ws.close();
-        reject(new Error('WebSocket connection timed out after 5s'));
+        reject(new Error("WebSocket connection timed out after 5s"));
       }, 5000);
 
       ws.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
-          if (data.event === 'connected') {
+          if (data.event === "connected") {
             clearTimeout(timeout);
             resolve();
           }
@@ -87,7 +91,7 @@ async function connectWebSocket(page: import('@playwright/test').Page, baseUrl: 
 
       ws.onerror = () => {
         clearTimeout(timeout);
-        reject(new Error('WebSocket error during connection'));
+        reject(new Error("WebSocket error during connection"));
       };
 
       ws.onclose = (event) => {
@@ -97,19 +101,19 @@ async function connectWebSocket(page: import('@playwright/test').Page, baseUrl: 
         }
       };
     });
-  }, wsUrl + '/ws');
+  }, wsUrl + "/ws");
 }
 
 /**
  * Subscribe to a WebSocket topic and wait for the ack.
  */
-async function subscribeTopic(page: import('@playwright/test').Page, topic: string): Promise<void> {
+async function subscribeTopic(page: import("@playwright/test").Page, topic: string): Promise<void> {
   await page.evaluate(
     ({ topicName }: { topicName: string }) => {
       return new Promise<void>((resolve, reject) => {
         const ws = (window as unknown as Record<string, WebSocket>).__testWs;
         if (!ws || ws.readyState !== WebSocket.OPEN) {
-          reject(new Error('WebSocket not connected'));
+          reject(new Error("WebSocket not connected"));
           return;
         }
 
@@ -135,14 +139,14 @@ async function subscribeTopic(page: import('@playwright/test').Page, topic: stri
 
         ws.send(
           JSON.stringify({
-            action: 'subscribe',
+            action: "subscribe",
             request_id: `sub-${topicName}-${Date.now()}`,
             payload: { topics: [topicName] },
-          })
+          }),
         );
       });
     },
-    { topicName: topic }
+    { topicName: topic },
   );
 }
 
@@ -151,9 +155,9 @@ async function subscribeTopic(page: import('@playwright/test').Page, topic: stri
  * Must call subscribeTopic() before this.
  */
 async function waitForBroadcast(
-  page: import('@playwright/test').Page,
+  page: import("@playwright/test").Page,
   topic: string,
-  timeoutMs = 10000
+  timeoutMs = 10000,
 ): Promise<{
   msg_id: string;
   seq: number;
@@ -174,15 +178,15 @@ async function waitForBroadcast(
       }>((resolve, reject) => {
         const ws = (window as unknown as Record<string, WebSocket>).__testWs;
         if (!ws || ws.readyState !== WebSocket.OPEN) {
-          reject(new Error('WebSocket not connected'));
+          reject(new Error("WebSocket not connected"));
           return;
         }
 
         const timeout = setTimeout(() => {
           reject(
             new Error(
-              `Timed out after ${waitMs}ms waiting for broadcast on topic: ${expectedTopic}`
-            )
+              `Timed out after ${waitMs}ms waiting for broadcast on topic: ${expectedTopic}`,
+            ),
           );
         }, waitMs);
 
@@ -204,7 +208,7 @@ async function waitForBroadcast(
         };
       });
     },
-    { expectedTopic: topic, waitMs: timeoutMs }
+    { expectedTopic: topic, waitMs: timeoutMs },
   );
 }
 
@@ -221,44 +225,50 @@ async function waitForBroadcast(
  * debounced broadcast has already fired.
  */
 async function installBroadcastCounter(
-  page: import('@playwright/test').Page,
-  topic: string
+  page: import("@playwright/test").Page,
+  topic: string,
 ): Promise<() => Promise<number>> {
   // Install the counter in the browser and confirm it's ready
-  await page.evaluate(({ expectedTopic }: { expectedTopic: string }) => {
-    const ws = (window as unknown as Record<string, WebSocket>).__testWs;
-    if (!ws || ws.readyState !== WebSocket.OPEN) return;
+  await page.evaluate(
+    ({ expectedTopic }: { expectedTopic: string }) => {
+      const ws = (window as unknown as Record<string, WebSocket>).__testWs;
+      if (!ws || ws.readyState !== WebSocket.OPEN) return;
 
-    // Attach a named counter that accumulates broadcast count
-    (window as unknown as Record<string, number>).__broadcastCount = 0;
-    const countKey = `__broadcastCount_${expectedTopic.replace(/:/g, '_')}`;
-    (window as unknown as Record<string, number>)[countKey] = 0;
+      // Attach a named counter that accumulates broadcast count
+      (window as unknown as Record<string, number>).__broadcastCount = 0;
+      const countKey = `__broadcastCount_${expectedTopic.replace(/:/g, "_")}`;
+      (window as unknown as Record<string, number>)[countKey] = 0;
 
-    const original = ws.onmessage;
-    const counter = (event: MessageEvent) => {
-      try {
-        const data = JSON.parse(event.data);
-        if (data.topic === expectedTopic && data.msg_id) {
-          (window as unknown as Record<string, number>)[countKey]++;
+      const original = ws.onmessage;
+      const counter = (event: MessageEvent) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.topic === expectedTopic && data.msg_id) {
+            (window as unknown as Record<string, number>)[countKey]++;
+          }
+        } catch {
+          // ignore
         }
-      } catch {
-        // ignore
-      }
-      if (original) original.call(ws, event);
-    };
+        if (original) original.call(ws, event);
+      };
 
-    ws.onmessage = counter;
-    // Store for cleanup
-    (window as unknown as Record<string, unknown>).__broadcastCounter = counter;
-    (window as unknown as Record<string, string>).__broadcastCounterTopic = expectedTopic;
-  }, { expectedTopic: topic });
+      ws.onmessage = counter;
+      // Store for cleanup
+      (window as unknown as Record<string, unknown>).__broadcastCounter = counter;
+      (window as unknown as Record<string, string>).__broadcastCounterTopic = expectedTopic;
+    },
+    { expectedTopic: topic },
+  );
 
   // Return a collector function that reads the count after writes have settled
   return async () => {
-    return page.evaluate(({ expectedTopic }: { expectedTopic: string }) => {
-      const countKey = `__broadcastCount_${expectedTopic.replace(/:/g, '_')}`;
-      return (window as unknown as Record<string, number>)[countKey] ?? 0;
-    }, { expectedTopic: topic });
+    return page.evaluate(
+      ({ expectedTopic }: { expectedTopic: string }) => {
+        const countKey = `__broadcastCount_${expectedTopic.replace(/:/g, "_")}`;
+        return (window as unknown as Record<string, number>)[countKey] ?? 0;
+      },
+      { expectedTopic: topic },
+    );
   };
 }
 
@@ -266,9 +276,14 @@ async function installBroadcastCounter(
  * Wait for a broadcast on the files:errors topic.
  */
 async function waitForErrorBroadcast(
-  page: import('@playwright/test').Page,
-  timeoutMs = 10000
-): Promise<{ msg_id: string; topic: string; event: string; data: { error: string; ref?: string } }> {
+  page: import("@playwright/test").Page,
+  timeoutMs = 10000,
+): Promise<{
+  msg_id: string;
+  topic: string;
+  event: string;
+  data: { error: string; ref?: string };
+}> {
   return page.evaluate(
     ({ waitMs }: { waitMs: number }) => {
       return new Promise<{
@@ -279,19 +294,19 @@ async function waitForErrorBroadcast(
       }>((resolve, reject) => {
         const ws = (window as unknown as Record<string, WebSocket>).__testWs;
         if (!ws || ws.readyState !== WebSocket.OPEN) {
-          reject(new Error('WebSocket not connected'));
+          reject(new Error("WebSocket not connected"));
           return;
         }
 
         const timeout = setTimeout(() => {
-          reject(new Error('Timed out waiting for files:errors broadcast'));
+          reject(new Error("Timed out waiting for files:errors broadcast"));
         }, waitMs);
 
         const original = ws.onmessage;
         ws.onmessage = (event) => {
           try {
             const data = JSON.parse(event.data);
-            if (data.topic === 'files:errors' && data.msg_id) {
+            if (data.topic === "files:errors" && data.msg_id) {
               clearTimeout(timeout);
               ws.onmessage = original;
               resolve(data);
@@ -304,11 +319,11 @@ async function waitForErrorBroadcast(
         };
       });
     },
-    { waitMs: timeoutMs }
+    { waitMs: timeoutMs },
   );
 }
 
-test.describe('File Watcher API', () => {
+test.describe("File Watcher API", () => {
   // Skip all file watcher tests in CI — GitHub Actions does not support recursive fs.watch.
   // The CI environment's Chokidar fallback doesn't reliably emit events, causing flaky tests.
   // Tests pass locally where native fs.watch with recursive mode works correctly.
@@ -316,7 +331,7 @@ test.describe('File Watcher API', () => {
     if (process.env.CI) {
       testInfo.skip(
         true,
-        'File watcher tests skip in CI — GitHub Actions does not support recursive fs.watch'
+        "File watcher tests skip in CI — GitHub Actions does not support recursive fs.watch",
       );
     }
   });
@@ -326,62 +341,62 @@ test.describe('File Watcher API', () => {
   });
 
   // AC: @daemon-server ac-4
-  test('broadcasts files:updates when a YAML file in .kspec is modified', async ({
+  test("broadcasts files:updates when a YAML file in .kspec is modified", async ({
     page,
     daemon,
   }) => {
-    await subscribeTopic(page, 'files:updates');
+    await subscribeTopic(page, "files:updates");
 
     // Set up broadcast listener BEFORE modifying the file to avoid race conditions
-    const broadcastPromise = waitForBroadcast(page, 'files:updates');
+    const broadcastPromise = waitForBroadcast(page, "files:updates");
 
     // Modify a YAML file directly in the daemon's .kspec directory
-    const targetFile = join(daemon.kspecDir, 'kynetic.yaml');
+    const targetFile = join(daemon.kspecDir, "kynetic.yaml");
     writeFileSync(
       targetFile,
       [
         'kynetic: "1.0"',
-        '',
-        'project:',
+        "",
+        "project:",
         '  name: "E2E Watcher Test Project"',
         '  version: "0.2.0"',
-        '  status: draft',
-        '  description: Modified by file watcher E2E test',
-        '',
-      ].join('\n')
+        "  status: draft",
+        "  description: Modified by file watcher E2E test",
+        "",
+      ].join("\n"),
     );
 
     // Wait for watcher to debounce and broadcast
     const broadcast = await broadcastPromise;
 
     // AC: @daemon-server ac-4 — file change triggers WebSocket broadcast with correct structure
-    expect(broadcast).toHaveProperty('msg_id');
-    expect(typeof broadcast.msg_id).toBe('string');
+    expect(broadcast).toHaveProperty("msg_id");
+    expect(typeof broadcast.msg_id).toBe("string");
     expect(broadcast.msg_id.length).toBeGreaterThan(0);
 
-    expect(broadcast.topic).toBe('files:updates');
+    expect(broadcast.topic).toBe("files:updates");
 
-    expect(broadcast).toHaveProperty('seq');
-    expect(typeof broadcast.seq).toBe('number');
+    expect(broadcast).toHaveProperty("seq");
+    expect(typeof broadcast.seq).toBe("number");
     expect(broadcast.seq).toBeGreaterThan(0);
 
-    expect(broadcast).toHaveProperty('timestamp');
-    expect(typeof broadcast.timestamp).toBe('string');
+    expect(broadcast).toHaveProperty("timestamp");
+    expect(typeof broadcast.timestamp).toBe("string");
     expect(isNaN(new Date(broadcast.timestamp as string).getTime())).toBe(false);
 
-    expect(broadcast).toHaveProperty('event');
-    expect(typeof broadcast.event).toBe('string');
+    expect(broadcast).toHaveProperty("event");
+    expect(typeof broadcast.event).toBe("string");
 
-    expect(broadcast).toHaveProperty('data');
+    expect(broadcast).toHaveProperty("data");
   });
 
   // AC: @daemon-server ac-4
-  test('file change via HTTP API mutation triggers watcher broadcast', async ({
+  test("file change via HTTP API mutation triggers watcher broadcast", async ({
     page,
     daemon,
     request,
   }) => {
-    await subscribeTopic(page, 'files:updates');
+    await subscribeTopic(page, "files:updates");
 
     // Get a task from the fixture
     const tasksResponse = await request.get(`${daemon.baseUrl}/api/tasks`);
@@ -390,52 +405,52 @@ test.describe('File Watcher API', () => {
     const taskRef = tasksBody.items[0]._ulid;
 
     // Set up listener before triggering mutation
-    const broadcastPromise = waitForBroadcast(page, 'files:updates');
+    const broadcastPromise = waitForBroadcast(page, "files:updates");
 
     // Add a note via HTTP API — daemon writes to project.tasks.yaml, watcher detects it
     const noteResponse = await request.post(`${daemon.baseUrl}/api/tasks/${taskRef}/note`, {
       data: {
-        content: 'E2E file watcher detection test note',
-        author: '@test',
+        content: "E2E file watcher detection test note",
+        author: "@test",
       },
     });
     expect(noteResponse.status()).toBe(200);
 
     // AC: @daemon-server ac-4 — broadcast received after API-triggered file change
     const broadcast = await broadcastPromise;
-    expect(broadcast.topic).toBe('files:updates');
-    expect(broadcast).toHaveProperty('msg_id');
+    expect(broadcast.topic).toBe("files:updates");
+    expect(broadcast).toHaveProperty("msg_id");
   });
 
   // AC: @daemon-server ac-5
-  test('rapid successive file changes are debounced — fewer broadcasts than writes', async ({
+  test("rapid successive file changes are debounced — fewer broadcasts than writes", async ({
     page,
     daemon,
   }) => {
-    await subscribeTopic(page, 'files:updates');
+    await subscribeTopic(page, "files:updates");
 
-    const targetFile = join(daemon.kspecDir, 'kynetic.yaml');
+    const targetFile = join(daemon.kspecDir, "kynetic.yaml");
     const base = [
       'kynetic: "1.0"',
-      '',
-      'project:',
+      "",
+      "project:",
       '  name: "Debounce Test"',
       '  version: "0.1.0"',
-      '  status: draft',
-    ].join('\n');
+      "  status: draft",
+    ].join("\n");
 
     // Phase 1: Install the counter listener in the browser and await confirmation.
     // This guarantees the listener is installed BEFORE any Node.js writes happen,
     // eliminating the race where page.evaluate() round-trip occurs after the broadcast.
-    const collectCount = await installBroadcastCounter(page, 'files:updates');
+    const collectCount = await installBroadcastCounter(page, "files:updates");
 
     // Phase 2: Make 3 rapid writes within ~120ms — all within the 500ms debounce window.
     // The counter listener is already installed, so no broadcasts will be missed.
-    writeFileSync(targetFile, base + '\n  description: rapid write 1\n');
+    writeFileSync(targetFile, base + "\n  description: rapid write 1\n");
     await new Promise((r) => setTimeout(r, 40));
-    writeFileSync(targetFile, base + '\n  description: rapid write 2\n');
+    writeFileSync(targetFile, base + "\n  description: rapid write 2\n");
     await new Promise((r) => setTimeout(r, 40));
-    writeFileSync(targetFile, base + '\n  description: rapid write 3\n');
+    writeFileSync(targetFile, base + "\n  description: rapid write 3\n");
 
     // Phase 3: Wait for debounce to settle (500ms window + 300ms buffer), then collect count.
     await new Promise((r) => setTimeout(r, 1200));
@@ -449,45 +464,45 @@ test.describe('File Watcher API', () => {
   });
 
   // AC: @daemon-server ac-5
-  test('no second broadcast arrives within 400ms after debounced rapid writes', async ({
+  test("no second broadcast arrives within 400ms after debounced rapid writes", async ({
     page,
     daemon,
   }) => {
-    await subscribeTopic(page, 'files:updates');
+    await subscribeTopic(page, "files:updates");
 
-    const targetFile = join(daemon.kspecDir, 'kynetic.yaml');
+    const targetFile = join(daemon.kspecDir, "kynetic.yaml");
     const base = [
       'kynetic: "1.0"',
-      '',
-      'project:',
+      "",
+      "project:",
       '  name: "Debounce Verify"',
       '  version: "0.1.0"',
-      '  status: draft',
-    ].join('\n');
+      "  status: draft",
+    ].join("\n");
 
     // Set up broadcast listener BEFORE any writes to eliminate the race where the
     // debounce fires (500ms after last write) before waitForBroadcast is called.
     // waitForBroadcast returns a Promise that resolves on the NEXT broadcast.
-    const firstBroadcastPromise = waitForBroadcast(page, 'files:updates');
+    const firstBroadcastPromise = waitForBroadcast(page, "files:updates");
 
     // 3 rapid writes within ~100ms — all within 500ms debounce.
     // The listener is already installed before the first write.
-    writeFileSync(targetFile, base + '\n  description: write A\n');
+    writeFileSync(targetFile, base + "\n  description: write A\n");
     await new Promise((r) => setTimeout(r, 40));
-    writeFileSync(targetFile, base + '\n  description: write B\n');
+    writeFileSync(targetFile, base + "\n  description: write B\n");
     await new Promise((r) => setTimeout(r, 40));
-    writeFileSync(targetFile, base + '\n  description: write C\n');
+    writeFileSync(targetFile, base + "\n  description: write C\n");
 
     // The debounce fires 500ms after the last write (write C + 500ms)
     const firstBroadcast = await firstBroadcastPromise;
 
     // AC: @daemon-server ac-5 — debounced broadcast arrives
-    expect(firstBroadcast.topic).toBe('files:updates');
-    expect(firstBroadcast).toHaveProperty('msg_id');
+    expect(firstBroadcast.topic).toBe("files:updates");
+    expect(firstBroadcast).toHaveProperty("msg_id");
 
     // Install a fresh counter for the 400ms window AFTER the first broadcast.
     // (400ms < 500ms debounce, so any lingering timer would have fired by now)
-    const collectExtra = await installBroadcastCounter(page, 'files:updates');
+    const collectExtra = await installBroadcastCounter(page, "files:updates");
     await new Promise((r) => setTimeout(r, 400));
     const extraCount = await collectExtra();
 
@@ -496,21 +511,21 @@ test.describe('File Watcher API', () => {
   });
 
   // AC: @daemon-server ac-6
-  test('YAML parse error does not crash daemon — broadcasts error event on files:errors', async ({
+  test("YAML parse error does not crash daemon — broadcasts error event on files:errors", async ({
     page,
     daemon,
     request,
   }) => {
-    await subscribeTopic(page, 'files:updates');
-    await subscribeTopic(page, 'files:errors');
+    await subscribeTopic(page, "files:updates");
+    await subscribeTopic(page, "files:errors");
 
-    const targetFile = join(daemon.kspecDir, 'kynetic.yaml');
+    const targetFile = join(daemon.kspecDir, "kynetic.yaml");
     // Write invalid YAML that will fail to parse
     const invalidYaml = [
       'kynetic: "1.0"',
-      '{ invalid yaml: [unclosed bracket',
-      '  bad indentation:',
-    ].join('\n');
+      "{ invalid yaml: [unclosed bracket",
+      "  bad indentation:",
+    ].join("\n");
 
     // Set up error listener before writing the bad file
     const errorBroadcastPromise = waitForErrorBroadcast(page);
@@ -521,30 +536,30 @@ test.describe('File Watcher API', () => {
     const errorBroadcast = await errorBroadcastPromise;
 
     // AC: @daemon-server ac-6 — error event is broadcast with correct structure
-    expect(errorBroadcast.topic).toBe('files:errors');
-    expect(errorBroadcast.event).toBe('file_error');
-    expect(errorBroadcast).toHaveProperty('msg_id');
-    expect(errorBroadcast.data).toHaveProperty('error');
-    expect(typeof errorBroadcast.data.error).toBe('string');
+    expect(errorBroadcast.topic).toBe("files:errors");
+    expect(errorBroadcast.event).toBe("file_error");
+    expect(errorBroadcast).toHaveProperty("msg_id");
+    expect(errorBroadcast.data).toHaveProperty("error");
+    expect(typeof errorBroadcast.data.error).toBe("string");
     expect(errorBroadcast.data.error.length).toBeGreaterThan(0);
 
     // AC: @daemon-server ac-6 — daemon did NOT crash, still responds to health check
     const healthResponse = await request.get(`${daemon.baseUrl}/api/health`);
     expect(healthResponse.status()).toBe(200);
     const health = await healthResponse.json();
-    expect(health.status).toBe('ok');
+    expect(health.status).toBe("ok");
   });
 
   // AC: @daemon-server ac-6
-  test('daemon recovers after YAML parse error and processes subsequent valid file change', async ({
+  test("daemon recovers after YAML parse error and processes subsequent valid file change", async ({
     page,
     daemon,
     request,
   }) => {
-    await subscribeTopic(page, 'files:updates');
-    await subscribeTopic(page, 'files:errors');
+    await subscribeTopic(page, "files:updates");
+    await subscribeTopic(page, "files:errors");
 
-    const targetFile = join(daemon.kspecDir, 'kynetic.yaml');
+    const targetFile = join(daemon.kspecDir, "kynetic.yaml");
 
     // Step 1: Write invalid YAML — should broadcast error, not crash
     const errorPromise = waitForErrorBroadcast(page);
@@ -552,53 +567,53 @@ test.describe('File Watcher API', () => {
     await errorPromise; // Confirm error was detected and broadcast (watcher still active)
 
     // Step 2: Fix the file with valid YAML — watcher should resume processing normally
-    const recoveryPromise = waitForBroadcast(page, 'files:updates');
+    const recoveryPromise = waitForBroadcast(page, "files:updates");
     writeFileSync(
       targetFile,
       [
         'kynetic: "1.0"',
-        '',
-        'project:',
+        "",
+        "project:",
         '  name: "Recovered Project"',
         '  version: "0.1.0"',
-        '  status: draft',
-        '  description: Recovered after YAML parse error',
-        '',
-      ].join('\n')
+        "  status: draft",
+        "  description: Recovered after YAML parse error",
+        "",
+      ].join("\n"),
     );
     const recoveryBroadcast = await recoveryPromise;
 
     // AC: @daemon-server ac-6 — daemon processes valid file after error (not crashed/frozen)
-    expect(recoveryBroadcast.topic).toBe('files:updates');
-    expect(recoveryBroadcast).toHaveProperty('msg_id');
+    expect(recoveryBroadcast.topic).toBe("files:updates");
+    expect(recoveryBroadcast).toHaveProperty("msg_id");
 
     // Final health check
     const healthResponse = await request.get(`${daemon.baseUrl}/api/health`);
     expect(healthResponse.status()).toBe(200);
   });
 
-  test('broadcasts sessions updates when a session file changes', async ({ page, daemon }) => {
-    await subscribeTopic(page, 'sessions');
+  test("broadcasts sessions updates when a session file changes", async ({ page, daemon }) => {
+    await subscribeTopic(page, "sessions");
 
-    const sessionDir = join(daemon.projectDir, '.kspec-sessions', '01JTESTWATCHERSESSION00000001');
-    const metadataPath = join(sessionDir, 'session.yaml');
+    const sessionDir = join(daemon.projectDir, ".kspec-sessions", "01JTESTWATCHERSESSION00000001");
+    const metadataPath = join(sessionDir, "session.yaml");
     mkdirSync(sessionDir, { recursive: true });
     writeFileSync(
       metadataPath,
       [
-        'id: 01JTESTWATCHERSESSION00000001',
-        'agent_type: task-worker',
-        'status: active',
+        "id: 01JTESTWATCHERSESSION00000001",
+        "agent_type: task-worker",
+        "status: active",
         'started_at: "2026-03-19T12:00:00.000Z"',
-        'trigger: manual',
-        ''
-      ].join('\n')
+        "trigger: manual",
+        "",
+      ].join("\n"),
     );
 
-    const broadcast = await waitForBroadcast(page, 'sessions');
+    const broadcast = await waitForBroadcast(page, "sessions");
 
-    expect(broadcast.topic).toBe('sessions');
-    expect(broadcast.event).toBe('session_changed');
-    expect(broadcast).toHaveProperty('msg_id');
+    expect(broadcast.topic).toBe("sessions");
+    expect(broadcast.event).toBe("session_changed");
+    expect(broadcast).toHaveProperty("msg_id");
   });
 });

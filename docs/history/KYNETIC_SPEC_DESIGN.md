@@ -28,6 +28,7 @@
 **Kynetic Spec** is a structured, living specification format designed for collaborative authoring between humans and AI agents. It serves as the **single source of truth** for project requirements, features, and architecture decisions.
 
 **Key Properties**:
+
 - Plain text, git-diffable format
 - Agent-assisted authoring via conversational interaction
 - Hybrid structure: fixed hierarchy at top levels, graph-based cross-references for relationships
@@ -43,6 +44,7 @@
 ### Primary Vision
 
 A specification system where you can:
+
 1. Describe a feature idea conversationally to an agent
 2. The agent helps structure it into the Kynetic Spec format
 3. The spec evolves as the living source of truth
@@ -51,14 +53,14 @@ A specification system where you can:
 
 ### Design Goals
 
-| Goal | Description |
-|------|-------------|
-| **Source of Truth** | The spec is canonical; everything else derives from it |
-| **Agent-Friendly** | Designed for AI agents to read, write, and reason about |
-| **Human-Editable** | Readable and editable by humans when needed |
-| **Git-Native** | Plain text, diffable, mergeable, branchable |
-| **Progressive Complexity** | Simple by default, advanced features opt-in |
-| **Extensible** | Plugin architecture for outputs; format handles diverse needs |
+| Goal                       | Description                                                   |
+| -------------------------- | ------------------------------------------------------------- |
+| **Source of Truth**        | The spec is canonical; everything else derives from it        |
+| **Agent-Friendly**         | Designed for AI agents to read, write, and reason about       |
+| **Human-Editable**         | Readable and editable by humans when needed                   |
+| **Git-Native**             | Plain text, diffable, mergeable, branchable                   |
+| **Progressive Complexity** | Simple by default, advanced features opt-in                   |
+| **Extensible**             | Plugin architecture for outputs; format handles diverse needs |
 
 ### Non-Goals (Explicitly Out of Scope)
 
@@ -104,25 +106,25 @@ Requirement
 
 ### Item Types (Extensible)
 
-| Type | Purpose | Example |
-|------|---------|---------|
-| `module` | High-level organizational unit | "Authentication", "API" |
-| `feature` | User-facing capability | "User Login", "Data Export" |
-| `requirement` | Specific requirement | "Passwords must be hashed with bcrypt" |
-| `constraint` | Limitation or boundary | "Must support 10k concurrent users" |
-| `decision` | Architectural decision (ADR-style) | "Use PostgreSQL for persistence" |
-| `task` | Actionable work item (derived) | "Implement login endpoint" |
+| Type          | Purpose                            | Example                                |
+| ------------- | ---------------------------------- | -------------------------------------- |
+| `module`      | High-level organizational unit     | "Authentication", "API"                |
+| `feature`     | User-facing capability             | "User Login", "Data Export"            |
+| `requirement` | Specific requirement               | "Passwords must be hashed with bcrypt" |
+| `constraint`  | Limitation or boundary             | "Must support 10k concurrent users"    |
+| `decision`    | Architectural decision (ADR-style) | "Use PostgreSQL for persistence"       |
+| `task`        | Actionable work item (derived)     | "Implement login endpoint"             |
 
 ### Relationship Types
 
-| Relationship | Semantics |
-|--------------|-----------|
+| Relationship | Semantics                                    |
+| ------------ | -------------------------------------------- |
 | `depends_on` | Must be completed/available before this item |
-| `implements` | This item implements a higher-level item |
-| `blocks` | This item blocks progress on another |
-| `relates_to` | General association |
-| `tests` | This item tests/validates another |
-| `supersedes` | This item replaces an older item |
+| `implements` | This item implements a higher-level item     |
+| `blocks`     | This item blocks progress on another         |
+| `relates_to` | General association                          |
+| `tests`      | This item tests/validates another            |
+| `supersedes` | This item replaces an older item             |
 
 ---
 
@@ -152,12 +154,14 @@ To avoid YAML pitfalls:
 ### File Structure Options
 
 **Option A: Single File** (small projects)
+
 ```
 project/
   kynetic.spec.yaml    # Everything in one file
 ```
 
 **Option B: Directory Structure** (larger projects)
+
 ```
 project/
   spec/
@@ -178,10 +182,10 @@ features:
   - id: auth-login
     title: User Login
     depends_on:
-      - auth-session    # Reference by ID
+      - auth-session # Reference by ID
       - user-model
     implements:
-      - module:auth     # Prefixed reference (optional)
+      - module:auth # Prefixed reference (optional)
 ```
 
 References are **validated** by the CLI/tooling, not by YAML itself.
@@ -194,11 +198,11 @@ References are **validated** by the CLI/tooling, not by YAML itself.
 
 ```yaml
 # kynetic.yaml - Root manifest
-kynetic: "1.0"                     # Spec format version
+kynetic: "1.0" # Spec format version
 project:
   name: "My Project"
-  version: "0.1.0"                 # Current spec version
-  status: draft                    # draft | proposed | stable | deprecated
+  version: "0.1.0" # Current spec version
+  status: draft # draft | proposed | stable | deprecated
 
 # Inline items (small projects)
 modules:
@@ -219,19 +223,19 @@ includes:
 
 ```yaml
 # Full item schema
-_ulid: 01HQ3K5XJ8MPVB2XCJZ0KE9YWN  # Auto-generated canonical ID
-slugs: [auth-login]                # Human-friendly aliases (agent-managed)
-title: User Login                  # REQUIRED: Human-readable name
-type: feature                      # Item type (default: inferred from context)
+_ulid: 01HQ3K5XJ8MPVB2XCJZ0KE9YWN # Auto-generated canonical ID
+slugs: [auth-login] # Human-friendly aliases (agent-managed)
+title: User Login # REQUIRED: Human-readable name
+type: feature # Item type (default: inferred from context)
 
 # Status and lifecycle
 status:
-  maturity: stable                 # draft | proposed | stable | deprecated
-  implementation: in_progress      # not_started | in_progress | implemented | verified
+  maturity: stable # draft | proposed | stable | deprecated
+  implementation: in_progress # not_started | in_progress | implemented | verified
 
 # Classification
-priority: high                     # high | medium | low (or numeric)
-tags: [security, mvp]              # Freeform labels
+priority: high # high | medium | low (or numeric)
+tags: [security, mvp] # Freeform labels
 
 # Content
 description: |
@@ -245,8 +249,8 @@ acceptance_criteria:
     then: they are logged in and redirected to dashboard
 
 # Relationships (graph edges) - use @ prefix for references
-depends_on: ["@auth-session", "@user-model"]  # Slug references
-implements: ["@01HQ3K"]                        # Short ULID reference
+depends_on: ["@auth-session", "@user-model"] # Slug references
+implements: ["@01HQ3K"] # Short ULID reference
 relates_to: ["@auth-logout"]
 tests: []
 supersedes: null
@@ -263,9 +267,9 @@ traceability:
 
 # Lifecycle metadata (mostly auto-populated)
 created: 2025-01-10
-created_by: "@developer"           # Optional, git has this
-deprecated_in: null                # Spec version when deprecated
-superseded_by: null                # ID of replacement
+created_by: "@developer" # Optional, git has this
+deprecated_in: null # Spec version when deprecated
+superseded_by: null # ID of replacement
 ```
 
 ### JSON Schema Validation
@@ -299,12 +303,12 @@ A JSON Schema will be provided for validation:
 
 **Layered approach leveraging git**:
 
-| Layer | Mechanism | Purpose |
-|-------|-----------|---------|
-| History | Git commits | Who changed what, when |
-| Baselines | Git tags | Named release points |
-| Spec version | Semantic versioning | Communicate stability |
-| Item UIDs | Stable IDs | Reference stability |
+| Layer        | Mechanism           | Purpose                |
+| ------------ | ------------------- | ---------------------- |
+| History      | Git commits         | Who changed what, when |
+| Baselines    | Git tags            | Named release points   |
+| Spec version | Semantic versioning | Communicate stability  |
+| Item UIDs    | Stable IDs          | Reference stability    |
 
 ### Semantic Versioning for Specs
 
@@ -319,18 +323,21 @@ PATCH: Typo fixes, editorial improvements
 ### Unique Identifiers (ULIDs + Slugs)
 
 **Canonical ID (ULID)**:
+
 - Auto-generated, time-sortable, globally unique
 - Format: `01HQ3K5XJ8...` (26 characters, Crockford base32)
 - Can be shortened for display: `01HQ3K` (like git short hashes)
 - Never changes, never reused
 
 **Slugs (Aliases)**:
+
 - Human-friendly names that point to ULIDs
 - Agent-generated based on content and context
 - Multiple slugs can point to same item
 - Can be added/changed without affecting references
 
 **Example**:
+
 ```yaml
 # Item with ULID and slugs
 _ulid: 01HQ3K5XJ8MPVB2XCJZ0KE9YWN
@@ -340,11 +347,13 @@ slugs: [auth-login, user-authentication]
 ### Lifecycle States
 
 **Spec-level**:
+
 ```
 draft -> proposed -> stable -> deprecated -> archived
 ```
 
 **Item-level**:
+
 ```yaml
 status:
   maturity: draft | proposed | stable | deprecated
@@ -360,6 +369,7 @@ git tag -a spec-v1.0.0 -m "Release 1.0.0: Initial stable release"
 ```
 
 Compare between versions:
+
 ```bash
 git diff spec-v1.0.0..spec-v1.1.0 -- spec/
 kspec diff --since spec-v1.0.0
@@ -389,13 +399,13 @@ Tasks are first-class primitives in Kynetic Spec, enabling specs to naturally de
 
 ### Task Types
 
-| Type | Spec-linked | Description |
-|------|-------------|-------------|
-| `epic` | Usually | Groups related tasks, often derived from features |
-| `task` | Often | Atomic unit of work |
-| `bug` | Optional | Defect fix, may or may not relate to spec item |
-| `spike` | Optional | Research/investigation, time-boxed |
-| `infra` | No | Infrastructure, tooling, not spec-derived |
+| Type    | Spec-linked | Description                                       |
+| ------- | ----------- | ------------------------------------------------- |
+| `epic`  | Usually     | Groups related tasks, often derived from features |
+| `task`  | Often       | Atomic unit of work                               |
+| `bug`   | Optional    | Defect fix, may or may not relate to spec item    |
+| `spike` | Optional    | Research/investigation, time-boxed                |
+| `infra` | No          | Infrastructure, tooling, not spec-derived         |
 
 ### Task States (State Machine)
 
@@ -428,6 +438,7 @@ Tasks are first-class primitives in Kynetic Spec, enabling specs to naturally de
 ```
 
 **Derived states**:
+
 - `blocked`: Auto-set when `depends_on` tasks aren't completed
 - `ready`: Computed view = `pending` + all deps met + no blockers
 
@@ -437,34 +448,34 @@ Tasks are first-class primitives in Kynetic Spec, enabling specs to naturally de
 
 ```yaml
 # Task item schema
-_ulid: 01XYZ...                    # Auto-generated canonical ID
-slugs: [impl-user-login]           # Human-friendly aliases
-title: "Implement login endpoint"  # Brief title (details live in spec)
-type: task                         # task | epic | bug | spike | infra
+_ulid: 01XYZ... # Auto-generated canonical ID
+slugs: [impl-user-login] # Human-friendly aliases
+title: "Implement login endpoint" # Brief title (details live in spec)
+type: task # task | epic | bug | spike | infra
 
 # Spec relationship - THE source of "what to build"
-spec_ref: "@user-login"            # Reference to spec item (has full details)
-derivation: auto                   # auto | manual
+spec_ref: "@user-login" # Reference to spec item (has full details)
+derivation: auto # auto | manual
 
 # State
-status: pending                    # pending | in_progress | blocked | completed | cancelled
-blocked_by: []                     # External blockers (manual, strings)
-closed_reason: null                # Why completed/cancelled
+status: pending # pending | in_progress | blocked | completed | cancelled
+blocked_by: [] # External blockers (manual, strings)
+closed_reason: null # Why completed/cancelled
 
 # Dependencies
-depends_on: ["@impl-session"]      # Must complete first (auto-blocks if not met)
-context: ["@design-auth"]          # Tasks whose output is needed as input
+depends_on: ["@impl-session"] # Must complete first (auto-blocks if not met)
+context: ["@design-auth"] # Tasks whose output is needed as input
 
 # Work metadata
-priority: 2                        # 1 (highest) to 5
-complexity: 3                      # Relative sizing (fibonacci or 1-5)
-tags: [auth, mvp]                  # Labels
-assignee: null                     # Agent or human (optional)
+priority: 2 # 1 (highest) to 5
+complexity: 3 # Relative sizing (fibonacci or 1-5)
+tags: [auth, mvp] # Labels
+assignee: null # Agent or human (optional)
 
 # VCS References (minimal + extensible)
 vcs_refs:
-  - ref: "feat/user-login"         # Branch, tag, or commit
-    type: branch                   # branch | tag | commit (optional)
+  - ref: "feat/user-login" # Branch, tag, or commit
+    type: branch # branch | tag | commit (optional)
   - ref: "abc123"
     type: commit
 
@@ -481,13 +492,13 @@ Notes are **append-only** entries that track progress, findings, and decisions d
 ```yaml
 # Notes array on a task
 notes:
-  - _ulid: 01NOTE1...              # Entry ID
+  - _ulid: 01NOTE1... # Entry ID
     created_at: 2025-01-14T10:30:00Z
-    author: "@agent-1"             # Who added this
+    author: "@agent-1" # Who added this
     content: |
       Started investigating the auth flow.
       Found existing session middleware we can reuse.
-    supersedes: null               # This is an original entry
+    supersedes: null # This is an original entry
 
   - _ulid: 01NOTE2...
     created_at: 2025-01-14T14:00:00Z
@@ -495,7 +506,7 @@ notes:
     content: |
       Correction: The session middleware has a bug.
       Need to fix it first - adding blocker.
-    supersedes: 01NOTE1...         # Updates/corrects earlier entry
+    supersedes: 01NOTE1... # Updates/corrects earlier entry
 
   - _ulid: 01NOTE3...
     created_at: 2025-01-14T16:00:00Z
@@ -506,6 +517,7 @@ notes:
 ```
 
 **CLI**:
+
 ```bash
 kspec task note <ref> "Found issue with middleware"
 kspec task note <ref> --supersedes 01NOTE1 "Correction: ..."
@@ -519,7 +531,7 @@ Todos are **lightweight checklist items** that emerge during work. They start si
 ```yaml
 # Todos array on a task
 todos:
-  - id: 1                          # Local ID (within task)
+  - id: 1 # Local ID (within task)
     text: "Set up JWT signing"
     done: false
     added_at: 2025-01-14T11:00:00Z
@@ -535,12 +547,13 @@ todos:
   - id: 3
     text: "Handle OAuth flow"
     done: false
-    promoted_to: "@impl-oauth"     # Promoted to full subtask
+    promoted_to: "@impl-oauth" # Promoted to full subtask
     added_at: 2025-01-14T12:00:00Z
     added_by: "@agent-2"
 ```
 
 **Promote pattern**: When a todo becomes complex, promote it to a full task:
+
 ```bash
 kspec todo add <task-ref> "Handle OAuth flow"
 kspec todo done <task-ref> 2
@@ -548,6 +561,7 @@ kspec todo promote <task-ref> 3    # Creates new task, links back
 ```
 
 **CLI for agent handoff**:
+
 ```bash
 # Agent 1 is done for now, leaves state for Agent 2
 kspec task note @impl-login "Pausing here. JWT signing done, OAuth todo needs attention."
@@ -562,6 +576,7 @@ kspec task todos @impl-login       # See remaining work
 ### Task Storage
 
 **Auto-adaptive** (consistent with spec file structure):
+
 - Start: Tasks alongside specs (`auth.tasks.yaml` next to `auth.yaml`)
 - Grow: Separate `tasks/` directory when volume increases
 
@@ -626,6 +641,7 @@ feature: User Login ──────────► epic: Implement User Login
 ```
 
 **Referential integrity**:
+
 - `kspec validate --task-refs` checks all spec_refs resolve
 - Orphaned tasks (spec deleted) flagged as warnings
 - Tasks without spec_ref allowed for free-form types (infra, bugs)
@@ -720,13 +736,13 @@ kspec history auth-login
 
 ### Agent-Friendly Features
 
-| Feature | Implementation |
-|---------|----------------|
-| **JSON output** | `--json` or `--output json` on all commands |
-| **Idempotency** | `--if-not-exists`, `--if-changed` flags |
-| **Non-interactive** | `--no-prompt` flag, `KSPEC_NO_PROMPT=1` env |
-| **Dry-run** | `--dry-run` shows what would change |
-| **Clear errors** | Structured JSON errors with codes and suggestions |
+| Feature                 | Implementation                                    |
+| ----------------------- | ------------------------------------------------- |
+| **JSON output**         | `--json` or `--output json` on all commands       |
+| **Idempotency**         | `--if-not-exists`, `--if-changed` flags           |
+| **Non-interactive**     | `--no-prompt` flag, `KSPEC_NO_PROMPT=1` env       |
+| **Dry-run**             | `--dry-run` shows what would change               |
+| **Clear errors**        | Structured JSON errors with codes and suggestions |
 | **Semantic exit codes** | 0=success, 3=not found, 4=validation failed, etc. |
 
 ### Example Session
@@ -828,11 +844,13 @@ export async function handleLogin(credentials: Credentials) {
 Kynetic Spec follows the **Unix philosophy**: do one thing well, compose with other tools.
 
 Instead of a plugin architecture where plugins integrate INTO kspec:
+
 ```
 kspec → [plugin system] → outputs  ❌
 ```
 
 Kspec is a **clean primitive** that other tools consume:
+
 ```
 kspec (library/CLI) → JSON/structured output → any tool  ✅
 ```
@@ -840,16 +858,17 @@ kspec (library/CLI) → JSON/structured output → any tool  ✅
 ### Library-First Design
 
 The core is a **TypeScript library** that can be consumed by:
+
 - The `kspec` CLI (primary interface)
 - Kynetic project integration
 - Custom tooling
 - CI/CD pipelines
 
 ```typescript
-import { KyneticSpec, Item } from '@kynetic/spec';
+import { KyneticSpec, Item } from "@kynetic/spec";
 
-const spec = await KyneticSpec.load('./spec');
-const features = spec.items.filter(i => i.type === 'feature');
+const spec = await KyneticSpec.load("./spec");
+const features = spec.items.filter((i) => i.type === "feature");
 const json = spec.toJSON();
 ```
 
@@ -865,6 +884,7 @@ Zod schemas (source of truth)
 ```
 
 **Why Zod**:
+
 - Largest ecosystem in TypeScript validation space
 - Native type inference (no separate type definitions)
 - JSON Schema export in v4
@@ -874,12 +894,12 @@ Zod schemas (source of truth)
 
 Tools that might consume the kspec library/output:
 
-| Tool | Purpose | Integration |
-|------|---------|-------------|
-| `kspec-docs` | Generate markdown documentation | Library consumer |
-| `kspec-github` | Sync to GitHub Issues | Library consumer |
-| Kynetic | Task orchestration | Library integration |
-| CI pipelines | Validation, reports | CLI JSON output |
+| Tool           | Purpose                         | Integration         |
+| -------------- | ------------------------------- | ------------------- |
+| `kspec-docs`   | Generate markdown documentation | Library consumer    |
+| `kspec-github` | Sync to GitHub Issues           | Library consumer    |
+| Kynetic        | Task orchestration              | Library integration |
+| CI pipelines   | Validation, reports             | CLI JSON output     |
 
 Each tool is independent, maintained separately, and composes with kspec rather than being embedded in it.
 
@@ -890,7 +910,7 @@ Hooks are **declarative in config** + **opt-in installation**:
 ```yaml
 # In spec manifest
 hooks:
-  commit-msg: validate-refs    # What hooks are wanted
+  commit-msg: validate-refs # What hooks are wanted
   pre-commit: lint
 ```
 
@@ -952,68 +972,71 @@ The following decisions were made through collaborative exploration:
 
 ### Format and Structure
 
-| Decision | Resolution |
-|----------|------------|
+| Decision           | Resolution                                                                                                        |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------- |
 | **File structure** | **Auto-adaptive**: Start as single file, CLI offers to split when spec grows (threshold: ~500 lines or 20+ items) |
-| **ID system** | **ULID + Slugs**: ULID is canonical (shortenable like git hashes), slugs are agent-generated aliases |
-| **Schema layer** | **Zod**: TypeScript-native, exports JSON Schema, largest ecosystem |
-| **Runtime** | **TypeScript/Node**: Library-first design, CLI as one consumer |
+| **ID system**      | **ULID + Slugs**: ULID is canonical (shortenable like git hashes), slugs are agent-generated aliases              |
+| **Schema layer**   | **Zod**: TypeScript-native, exports JSON Schema, largest ecosystem                                                |
+| **Runtime**        | **TypeScript/Node**: Library-first design, CLI as one consumer                                                    |
 
 ### Architecture
 
-| Decision | Resolution |
-|----------|------------|
-| **Plugin model** | **Inverted**: No plugin system. Kspec is a clean primitive; other tools consume it (Unix philosophy) |
-| **Library design** | **Library-first**: Core is a TS library; CLI and Kynetic integration consume it |
-| **Git hooks** | **Declarative config + opt-in install**: Manifest declares hooks, `kspec hooks install` sets them up |
+| Decision           | Resolution                                                                                           |
+| ------------------ | ---------------------------------------------------------------------------------------------------- |
+| **Plugin model**   | **Inverted**: No plugin system. Kspec is a clean primitive; other tools consume it (Unix philosophy) |
+| **Library design** | **Library-first**: Core is a TS library; CLI and Kynetic integration consume it                      |
+| **Git hooks**      | **Declarative config + opt-in install**: Manifest declares hooks, `kspec hooks install` sets them up |
 
 ### Traceability and Workflow
 
-| Decision | Resolution |
-|----------|------------|
-| **Traceability** | **Opt-in enforcement**: Configurable in manifest, validated when enabled |
-| **Issue sync** | **One-way default**: Spec is authoritative; sync tools can add bidirectionality |
+| Decision           | Resolution                                                                                |
+| ------------------ | ----------------------------------------------------------------------------------------- |
+| **Traceability**   | **Opt-in enforcement**: Configurable in manifest, validated when enabled                  |
+| **Issue sync**     | **One-way default**: Spec is authoritative; sync tools can add bidirectionality           |
 | **Approval state** | **Optional metadata**: Fields exist but are optional; teams needing audit trails use them |
 
 ### Multi-Repository and Templates
 
-| Decision | Resolution |
-|----------|------------|
-| **Multi-repo** | **Scaffold pattern**: One-time import, not live dependency. `kspec scaffold <url>` copies items |
-| **Templates** | **Dual support**: Regular specs can be scaffolded; optional template format with markers for dynamic generation |
+| Decision       | Resolution                                                                                                      |
+| -------------- | --------------------------------------------------------------------------------------------------------------- |
+| **Multi-repo** | **Scaffold pattern**: One-time import, not live dependency. `kspec scaffold <url>` copies items                 |
+| **Templates**  | **Dual support**: Regular specs can be scaffolded; optional template format with markers for dynamic generation |
 
 ### Task System
 
-| Decision | Resolution |
-|----------|------------|
-| **Task-spec relationship** | **Hybrid with types**: Spec-derived tasks follow stricter rules; free-form tasks (infra, bugs) are looser |
-| **Data duplication** | **Reference, don't copy**: Tasks reference spec via `spec_ref`; don't duplicate spec content |
-| **Task storage** | **Auto-adaptive**: Start alongside specs, separate `tasks/` directory when volume grows |
-| **Task IDs** | **Same as specs**: ULID + slugs, unified ID system |
-| **Task states** | **Standard 5-state + derived**: pending, in_progress, blocked, completed, cancelled. Blocked auto-computed from deps |
-| **Concurrency** | **External constraint**: Kspec doesn't enforce WIP limits; orchestration layer handles that |
-| **Task derivation** | **Command-triggered**: `kspec derive @feature` when explicitly requested, not automatic |
-| **Notes/updates** | **Append-only with supersession**: Entries never deleted, but new entries can supersede old ones |
-| **Todos** | **Promote pattern**: Start as lightweight checklist items, promote to full subtasks when complex |
-| **VCS linking** | **Minimal + extensible**: Simple refs (branch/commit/tag), type optional, extend schema as needed |
+| Decision                   | Resolution                                                                                                           |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| **Task-spec relationship** | **Hybrid with types**: Spec-derived tasks follow stricter rules; free-form tasks (infra, bugs) are looser            |
+| **Data duplication**       | **Reference, don't copy**: Tasks reference spec via `spec_ref`; don't duplicate spec content                         |
+| **Task storage**           | **Auto-adaptive**: Start alongside specs, separate `tasks/` directory when volume grows                              |
+| **Task IDs**               | **Same as specs**: ULID + slugs, unified ID system                                                                   |
+| **Task states**            | **Standard 5-state + derived**: pending, in_progress, blocked, completed, cancelled. Blocked auto-computed from deps |
+| **Concurrency**            | **External constraint**: Kspec doesn't enforce WIP limits; orchestration layer handles that                          |
+| **Task derivation**        | **Command-triggered**: `kspec derive @feature` when explicitly requested, not automatic                              |
+| **Notes/updates**          | **Append-only with supersession**: Entries never deleted, but new entries can supersede old ones                     |
+| **Todos**                  | **Promote pattern**: Start as lightweight checklist items, promote to full subtasks when complex                     |
+| **VCS linking**            | **Minimal + extensible**: Simple refs (branch/commit/tag), type optional, extend schema as needed                    |
 
 ### ID System Details
 
 **Canonical ID**: ULID (Universally Unique Lexicographically Sortable Identifier)
+
 - Time-sortable
 - Can be shortened like git hashes: `01HQ3K5X...` → `01HQ3K`
 - Never changes, never reused
 
 **Slugs**: Human-friendly aliases
+
 - Agent-generated based on content/context
 - Multiple slugs can point to same ULID
 - Can evolve over time
 
 **Reference syntax**:
+
 ```yaml
 depends_on:
-  - "@01HQ3K"        # Short ULID reference
-  - "@auth-login"    # Slug reference (resolved to ULID)
+  - "@01HQ3K" # Short ULID reference
+  - "@auth-login" # Slug reference (resolved to ULID)
 ```
 
 ---
@@ -1027,6 +1050,7 @@ See [FORMAT_COMPARISON.md](./FORMAT_COMPARISON.md) for detailed format compariso
 ### B. Research Sources
 
 The design was informed by research into:
+
 - Requirements management tools (IBM DOORS, Jama Connect, ReqIF)
 - Documentation-as-code tools (OpenAPI, Cucumber/Gherkin, ADRs)
 - CLI design patterns (kubectl, gh, terraform)
@@ -1035,15 +1059,15 @@ The design was informed by research into:
 
 ### C. Glossary
 
-| Term | Definition |
-|------|------------|
-| **Item** | The fundamental unit in a spec (feature, requirement, etc.) |
-| **UID** | Unique identifier for an item (stable, never reused) |
-| **Baseline** | A named snapshot of the spec at a point in time |
-| **Traceability** | Links between spec items and implementation artifacts |
-| **Plumbing** | Low-level CLI commands for scripting |
-| **Porcelain** | High-level CLI commands for humans |
+| Term             | Definition                                                  |
+| ---------------- | ----------------------------------------------------------- |
+| **Item**         | The fundamental unit in a spec (feature, requirement, etc.) |
+| **UID**          | Unique identifier for an item (stable, never reused)        |
+| **Baseline**     | A named snapshot of the spec at a point in time             |
+| **Traceability** | Links between spec items and implementation artifacts       |
+| **Plumbing**     | Low-level CLI commands for scripting                        |
+| **Porcelain**    | High-level CLI commands for humans                          |
 
 ---
 
-*This document is itself a Kynetic Spec artifact, demonstrating the format it describes.*
+_This document is itself a Kynetic Spec artifact, demonstrating the format it describes._

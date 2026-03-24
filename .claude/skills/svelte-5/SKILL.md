@@ -4,6 +4,7 @@ description: Svelte 5 patterns, gotchas, and solutions. Use when working with
   Svelte 5/SvelteKit, especially for reactivity, SSR, and state management
   issues.
 ---
+
 <!-- kspec-managed -->
 
 # Svelte 5 Patterns and Gotchas
@@ -12,19 +13,20 @@ Svelte 5 introduces runes (`$state`, `$derived`, `$effect`) as the primary react
 
 ## Quick Reference
 
-| Scenario | Use This | Not This |
-|----------|----------|----------|
-| Component state | `let x = $state(value)` | `let x = writable(value)` |
-| Derived values | `let y = $derived(x * 2)` | `$: y = x * 2` |
-| Side effects | `$effect(() => { ... })` | `$: { ... }` |
-| Shared state | Context API or `.svelte.ts` modules | Module-level writable stores |
-| Client-only rendering | `export const ssr = false` in +page.ts | `{#if browser}` wrappers |
+| Scenario              | Use This                               | Not This                     |
+| --------------------- | -------------------------------------- | ---------------------------- |
+| Component state       | `let x = $state(value)`                | `let x = writable(value)`    |
+| Derived values        | `let y = $derived(x * 2)`              | `$: y = x * 2`               |
+| Side effects          | `$effect(() => { ... })`               | `$: { ... }`                 |
+| Shared state          | Context API or `.svelte.ts` modules    | Module-level writable stores |
+| Client-only rendering | `export const ssr = false` in +page.ts | `{#if browser}` wrappers     |
 
 ## SSR + Hydration Issues
 
 ### Problem: Conditional Blocks Don't Re-render After Hydration
 
 **Symptoms:**
+
 - State updates correctly (confirmed via console.log)
 - But `{#if condition}` blocks don't show/hide
 - Works in dev, breaks in production build with adapter-static
@@ -128,6 +130,7 @@ For state shared across components in SSR context:
 ```
 
 **Key Changes:**
+
 - `writable()` → `$state()`
 - `derived()` → `$derived()`
 - `$storeName` → `stateName` (no $ prefix needed)
@@ -139,26 +142,35 @@ For shared reactive state across components:
 
 ```typescript
 // lib/stores/panel.svelte.ts
-import type { Item } from '$lib/types';
+import type { Item } from "$lib/types";
 
 let _open = $state(false);
 let _item = $state<Item | null>(null);
 
 export const panelState = {
-  get open() { return _open; },
-  set open(v: boolean) { _open = v; },
+  get open() {
+    return _open;
+  },
+  set open(v: boolean) {
+    _open = v;
+  },
 
-  get item() { return _item; },
-  set item(v: Item | null) { _item = v; },
+  get item() {
+    return _item;
+  },
+  set item(v: Item | null) {
+    _item = v;
+  },
 
   close() {
     _open = false;
     _item = null;
-  }
+  },
 };
 ```
 
 Usage:
+
 ```svelte
 <script>
   import { panelState } from '$lib/stores/panel.svelte';
@@ -245,12 +257,14 @@ In Svelte 5, this pattern causes `invalid_default_snippet` errors because `let:`
 ```
 
 **Key differences:**
+
 - Remove `asChild` attribute
 - Remove `let:builder` directive
 - Use `{#snippet child({ props })}` instead
 - Spread `{...props}` onto the child element instead of `builders={[builder]}`
 
 This applies to all bits-ui trigger components:
+
 - `Tooltip.Trigger`
 - `Dialog.Trigger`
 - `Popover.Trigger`
@@ -260,6 +274,7 @@ This applies to all bits-ui trigger components:
 ### Why This Breaks
 
 The bits-ui trigger components support two rendering modes:
+
 1. **Default children**: `{@render children?.()}` - renders child content directly
 2. **Child snippet**: `{@render child({ props })}` - passes builder props to child
 
@@ -270,6 +285,7 @@ Using `let:builder` expects mode 2 but the component tries to render mode 1, cau
 ### Problem: replaceState/pushState Don't Update $page.url
 
 **Symptoms:**
+
 - Detail panels or modals reopen immediately after being dismissed
 - URL bar shows updated params but `$page.url.searchParams` still has old values
 - `$effect` watching `$page.url` doesn't fire after URL change
@@ -314,6 +330,7 @@ Using `let:builder` expects mode 2 but the component tries to render mode 1, cau
 ```
 
 **Key `goto()` options:**
+
 - `replaceState: true` — don't pollute browser history with param changes
 - `keepFocus: true` — don't steal focus from the current element
 - `noScroll: true` — don't scroll to top of page
@@ -362,20 +379,20 @@ Don't mix `writable()` stores with `$state` in the same component for related st
 
 ```typescript
 // lib/state.ts - BAD
-let count = $state(0);  // Won't work!
+let count = $state(0); // Won't work!
 
 // lib/state.svelte.ts - GOOD
-let count = $state(0);  // Works
+let count = $state(0); // Works
 ```
 
 ## When to Use SSR vs Client-Only
 
-| Use SSR (`ssr: true`) | Use Client-Only (`ssr: false`) |
-|----------------------|-------------------------------|
-| Content pages (SEO matters) | Dashboards |
-| Landing pages | Admin panels |
-| Blog posts | Interactive tools |
-| Static marketing | Real-time data views |
+| Use SSR (`ssr: true`)       | Use Client-Only (`ssr: false`) |
+| --------------------------- | ------------------------------ |
+| Content pages (SEO matters) | Dashboards                     |
+| Landing pages               | Admin panels                   |
+| Blog posts                  | Interactive tools              |
+| Static marketing            | Real-time data views           |
 
 ## References
 

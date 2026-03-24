@@ -515,7 +515,14 @@ describe("batch write buffer integration", () => {
     expect(result.summary.failed).toBe(1);
 
     const importedSkillMd = path.join(tempDir, ".kspec", "skills", "rollback-skill", "SKILL.md");
-    const importedDoc = path.join(tempDir, ".kspec", "skills", "rollback-skill", "docs", "guide.md");
+    const importedDoc = path.join(
+      tempDir,
+      ".kspec",
+      "skills",
+      "rollback-skill",
+      "docs",
+      "guide.md",
+    );
     await expect(fs.access(importedSkillMd)).rejects.toThrow();
     await expect(fs.access(importedDoc)).rejects.toThrow();
 

@@ -11,11 +11,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import * as path from "node:path";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
-import {
-  AgentActionSchema,
-  type AgentAction,
-  type Action,
-} from "../src/schema/action.js";
+import { AgentActionSchema, type AgentAction, type Action } from "../src/schema/action.js";
 import {
   ActionExecutor,
   resolveTemplateVars,
@@ -247,9 +243,7 @@ describe("Agent action prompt resolution", () => {
 
     await executor.execute(action, ctx);
 
-    expect(spawnerCalls[0].prompt).toBe(
-      "Handle task.needs_work for @task-template: Template Task",
-    );
+    expect(spawnerCalls[0].prompt).toBe("Handle task.needs_work for @task-template: Template Task");
   });
 
   // AC: @dispatch-agent-action-input ac-1

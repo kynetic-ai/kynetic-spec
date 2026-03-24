@@ -32,10 +32,7 @@ async function setupMonolithicEnv(
     }),
   );
 
-  await fs.writeFile(
-    path.join(specDir, "project.tasks.yaml"),
-    toYaml([]),
-  );
+  await fs.writeFile(path.join(specDir, "project.tasks.yaml"), toYaml([]));
 
   return { env: { KSPEC_SPEC_DIR: specDir }, specDir };
 }
@@ -93,10 +90,7 @@ async function createPerTaskDir(
   };
 
   await fs.writeFile(path.join(taskDir, "task.yaml"), toYaml(coreData));
-  await fs.writeFile(
-    path.join(taskDir, "notes.yaml"),
-    toYaml({ notes: [] }),
-  );
+  await fs.writeFile(path.join(taskDir, "notes.yaml"), toYaml({ notes: [] }));
 }
 
 /**
@@ -162,9 +156,7 @@ describe("kspec task storage activate (@task-storage-activation)", () => {
     expect(result.stdout).toContain("Split storage format activated");
 
     // Verify the manifest was updated
-    const manifest = parseYaml(
-      await fs.readFile(path.join(specDir, "kynetic.yaml"), "utf-8"),
-    );
+    const manifest = parseYaml(await fs.readFile(path.join(specDir, "kynetic.yaml"), "utf-8"));
     expect(manifest.task_storage).toBeDefined();
     expect(manifest.task_storage.format).toBe("split");
   });
@@ -193,10 +185,7 @@ describe("kspec task storage activate (@task-storage-activation)", () => {
     expect(taskDirs.length).toBe(1);
 
     // Verify task.yaml exists in the per-task dir
-    const taskYaml = await fs.readFile(
-      path.join(tasksDir, taskDirs[0], "task.yaml"),
-      "utf-8",
-    );
+    const taskYaml = await fs.readFile(path.join(tasksDir, taskDirs[0], "task.yaml"), "utf-8");
     expect(taskYaml).toContain("post-activate-task");
   });
 
@@ -274,9 +263,7 @@ describe("kspec task storage activate (@task-storage-activation)", () => {
     expect(result.stdout).toContain("Split storage format activated");
 
     // Verify manifest updated
-    const manifest = parseYaml(
-      await fs.readFile(path.join(specDir, "kynetic.yaml"), "utf-8"),
-    );
+    const manifest = parseYaml(await fs.readFile(path.join(specDir, "kynetic.yaml"), "utf-8"));
     expect(manifest.task_storage.format).toBe("split");
   });
 
@@ -333,11 +320,7 @@ describe("kspec task storage status", () => {
   it("reports monolithic when no format setting exists", async () => {
     ({ env, specDir } = await setupMonolithicEnv(tempDir));
 
-    const result = kspecJson<{ format: string }>(
-      "task storage status",
-      tempDir,
-      { env },
-    );
+    const result = kspecJson<{ format: string }>("task storage status", tempDir, { env });
     expect(result.format).toBe("monolithic");
   });
 
@@ -354,11 +337,7 @@ describe("kspec task storage status", () => {
       }),
     );
 
-    const result = kspecJson<{ format: string }>(
-      "task storage status",
-      tempDir,
-      { env },
-    );
+    const result = kspecJson<{ format: string }>("task storage status", tempDir, { env });
     expect(result.format).toBe("split");
   });
 });

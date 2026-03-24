@@ -49,11 +49,11 @@
 	}));
 
 	// --- Derived state ---
-	let dispatchStatus = $derived<AgentDispatchStatus | null>(agentStatusQuery.data ?? null);
-	let agentDefinitions = $derived<AgentDefinition[]>(agentDefsQuery.data?.items ?? []);
+	const dispatchStatus = $derived<AgentDispatchStatus | null>(agentStatusQuery.data ?? null);
+	const agentDefinitions = $derived<AgentDefinition[]>(agentDefsQuery.data?.items ?? []);
 
 	// AC: @ui-data-freshness ac-1 — Only show loading skeleton on initial fetch (no cache)
-	let loading = $derived(agentStatusQuery.isLoading || agentDefsQuery.isLoading);
+	const loading = $derived(agentStatusQuery.isLoading || agentDefsQuery.isLoading);
 	let error = $state('');
 
 	// Agent edit dialog state
@@ -80,7 +80,7 @@
 	});
 
 	// Derive active counts per agent from dispatch status
-	let activeCounts = $derived.by(() => {
+	const activeCounts = $derived.by(() => {
 		const counts: Record<string, number> = {};
 		if (dispatchStatus?.active_invocations) {
 			for (const inv of dispatchStatus.active_invocations) {
@@ -106,7 +106,7 @@
 		},
 	}));
 
-	let isToggling = $derived(dispatchMutation.isPending);
+	const isToggling = $derived(dispatchMutation.isPending);
 
 	function handleStartDispatch() {
 		if (isStaticMode()) return;

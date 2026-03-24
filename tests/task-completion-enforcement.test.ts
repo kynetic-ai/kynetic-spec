@@ -2,9 +2,9 @@
  * Integration tests for kspec task complete state enforcement
  * AC: @spec-completion-enforcement
  */
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import * as fs from 'node:fs/promises';
-import * as path from 'node:path';
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
 import {
   kspecOutput as kspec,
   kspecJson,
@@ -12,9 +12,9 @@ import {
   setupTempFixtures,
   cleanupTempDir,
   initGitRepo,
-} from './helpers/cli';
+} from "./helpers/cli";
 
-describe('Integration: task completion enforcement', () => {
+describe("Integration: task completion enforcement", () => {
   let tempDir: string;
 
   beforeEach(async () => {
@@ -27,125 +27,117 @@ describe('Integration: task completion enforcement', () => {
   });
 
   // AC: @spec-completion-enforcement ac-1
-  it('should complete task successfully when status is pending_review', () => {
+  it("should complete task successfully when status is pending_review", () => {
     // Start and submit a task
-    kspec('task start @test-task-pending', tempDir);
-    kspec('task submit @test-task-pending', tempDir);
+    kspec("task start @test-task-pending", tempDir);
+    kspec("task submit @test-task-pending", tempDir);
 
     // Verify it's in pending_review
-    const beforeComplete = kspecJson<{ status: string }>(
-      'task get @test-task-pending',
-      tempDir
-    );
-    expect(beforeComplete.status).toBe('pending_review');
+    const beforeComplete = kspecJson<{ status: string }>("task get @test-task-pending", tempDir);
+    expect(beforeComplete.status).toBe("pending_review");
 
     // Complete should succeed
     const output = kspec('task complete @test-task-pending --reason "All tests pass"', tempDir);
-    expect(output).toContain('Completed task');
+    expect(output).toContain("Completed task");
 
     // Verify it's completed
     const afterComplete = kspecJson<{ status: string; closed_reason: string | null }>(
-      'task get @test-task-pending',
-      tempDir
+      "task get @test-task-pending",
+      tempDir,
     );
-    expect(afterComplete.status).toBe('completed');
-    expect(afterComplete.closed_reason).toBe('All tests pass');
+    expect(afterComplete.status).toBe("completed");
+    expect(afterComplete.closed_reason).toBe("All tests pass");
   });
 
   // AC: @spec-completion-enforcement ac-2
-  it('should error when trying to complete in_progress task', () => {
+  it("should error when trying to complete in_progress task", () => {
     // Start a task (in_progress)
-    kspec('task start @test-task-pending', tempDir);
+    kspec("task start @test-task-pending", tempDir);
 
     // Verify it's in_progress
-    const taskData = kspecJson<{ status: string }>(
-      'task get @test-task-pending',
-      tempDir
-    );
-    expect(taskData.status).toBe('in_progress');
+    const taskData = kspecJson<{ status: string }>("task get @test-task-pending", tempDir);
+    expect(taskData.status).toBe("in_progress");
 
     // Complete should fail with specific error
-    const { stdout, stderr, exitCode } = kspecWithStatus('task complete @test-task-pending --reason "Done"', tempDir);
+    const { stdout, stderr, exitCode } = kspecWithStatus(
+      'task complete @test-task-pending --reason "Done"',
+      tempDir,
+    );
     expect(exitCode).toBe(1);
-    expect(stdout + stderr).toContain('Task must be submitted for review first');
-    expect(stdout + stderr).toContain('kspec task submit');
+    expect(stdout + stderr).toContain("Task must be submitted for review first");
+    expect(stdout + stderr).toContain("kspec task submit");
   });
 
   // AC: @spec-completion-enforcement ac-3
-  it('should error when trying to complete pending task', () => {
+  it("should error when trying to complete pending task", () => {
     // Task starts in pending state
-    const taskData = kspecJson<{ status: string }>(
-      'task get @test-task-pending',
-      tempDir
-    );
-    expect(taskData.status).toBe('pending');
+    const taskData = kspecJson<{ status: string }>("task get @test-task-pending", tempDir);
+    expect(taskData.status).toBe("pending");
 
     // Complete should fail with specific error
-    const { stdout, stderr, exitCode } = kspecWithStatus('task complete @test-task-pending --reason "Done"', tempDir);
+    const { stdout, stderr, exitCode } = kspecWithStatus(
+      'task complete @test-task-pending --reason "Done"',
+      tempDir,
+    );
     expect(exitCode).toBe(1);
-    expect(stdout + stderr).toContain('Task must be started and submitted first');
+    expect(stdout + stderr).toContain("Task must be started and submitted first");
   });
 
   // AC: @spec-completion-enforcement ac-4
-  it('should error when trying to complete blocked task', () => {
+  it("should error when trying to complete blocked task", () => {
     // Block a task
     kspec('task block @test-task-pending --reason "Waiting for API"', tempDir);
 
     // Verify it's blocked
-    const taskData = kspecJson<{ status: string }>(
-      'task get @test-task-pending',
-      tempDir
-    );
-    expect(taskData.status).toBe('blocked');
+    const taskData = kspecJson<{ status: string }>("task get @test-task-pending", tempDir);
+    expect(taskData.status).toBe("blocked");
 
     // Complete should fail with specific error
-    const { stdout, stderr, exitCode } = kspecWithStatus('task complete @test-task-pending --reason "Done"', tempDir);
+    const { stdout, stderr, exitCode } = kspecWithStatus(
+      'task complete @test-task-pending --reason "Done"',
+      tempDir,
+    );
     expect(exitCode).toBe(1);
-    expect(stdout + stderr).toContain('Cannot complete blocked task');
+    expect(stdout + stderr).toContain("Cannot complete blocked task");
   });
 
   // AC: @task-commands ac-1
-  it('should complete blocked task with --force flag and show warning', () => {
+  it("should complete blocked task with --force flag and show warning", () => {
     // Block a task
     kspec('task block @test-task-pending --reason "Waiting for API"', tempDir);
 
     // Verify it's blocked
-    const taskData = kspecJson<{ status: string }>(
-      'task get @test-task-pending',
-      tempDir
-    );
-    expect(taskData.status).toBe('blocked');
+    const taskData = kspecJson<{ status: string }>("task get @test-task-pending", tempDir);
+    expect(taskData.status).toBe("blocked");
 
     // Complete with --force should succeed with warning
     const { stdout, stderr, exitCode } = kspecWithStatus(
       'task complete @test-task-pending --force --reason "Work done by other task"',
-      tempDir
+      tempDir,
     );
     expect(exitCode).toBe(0);
     const output = stdout + stderr;
-    expect(output).toContain('Completed task');
-    expect(output).toContain('Waiting for API'); // Warning shows what it was blocked by
+    expect(output).toContain("Completed task");
+    expect(output).toContain("Waiting for API"); // Warning shows what it was blocked by
 
     // Verify it's completed
     const afterComplete = kspecJson<{
       status: string;
       closed_reason: string | null;
       notes: Array<{ content: string; author: string }>;
-    }>('task get @test-task-pending', tempDir);
-    expect(afterComplete.status).toBe('completed');
-    expect(afterComplete.closed_reason).toBe('Work done by other task');
+    }>("task get @test-task-pending", tempDir);
+    expect(afterComplete.status).toBe("completed");
+    expect(afterComplete.closed_reason).toBe("Work done by other task");
 
     // Check that a note was added documenting the forced completion
-    const forceNote = afterComplete.notes.find((n) =>
-      n.content.includes('--force')
-    );
+    const forceNote = afterComplete.notes.find((n) => n.content.includes("--force"));
     expect(forceNote).toBeTruthy();
-    expect(forceNote?.content).toContain('blocked state');
-    expect(forceNote?.content).toContain('Waiting for API');
+    expect(forceNote?.content).toContain("blocked state");
+    expect(forceNote?.content).toContain("Waiting for API");
   });
 
   // AC: @task-commands ac-1 - JSON output includes warning
-  it('should include warning in JSON output when force-completing blocked task', () => {
+  it("should include warning in JSON output when force-completing blocked task", () => {
     // Block a task
     kspec('task block @test-task-pending --reason "Dependency missing"', tempDir);
 
@@ -157,277 +149,245 @@ describe('Integration: task completion enforcement', () => {
         status: string;
         warning?: string;
       }>;
-    }>(
-      'task complete @test-task-pending --force --reason "Covered elsewhere"',
-      tempDir
-    );
+    }>('task complete @test-task-pending --force --reason "Covered elsewhere"', tempDir);
 
     expect(result.success).toBe(true);
-    expect(result.results[0].status).toBe('success');
-    expect(result.results[0].warning).toContain('Dependency missing');
+    expect(result.results[0].status).toBe("success");
+    expect(result.results[0].warning).toContain("Dependency missing");
   });
 
   // AC: @task-commands ac-1 - Force from in_progress bypasses submit requirement
-  it('should complete in_progress task with --force flag', () => {
+  it("should complete in_progress task with --force flag", () => {
     // Start a task (in_progress)
-    kspec('task start @test-task-pending', tempDir);
+    kspec("task start @test-task-pending", tempDir);
 
-    const taskData = kspecJson<{ status: string }>(
-      'task get @test-task-pending',
-      tempDir
-    );
-    expect(taskData.status).toBe('in_progress');
+    const taskData = kspecJson<{ status: string }>("task get @test-task-pending", tempDir);
+    expect(taskData.status).toBe("in_progress");
 
     // Complete with --force should succeed
     const { stdout, stderr, exitCode } = kspecWithStatus(
       'task complete @test-task-pending --force --reason "Design task, no code to review"',
-      tempDir
+      tempDir,
     );
     expect(exitCode).toBe(0);
     const output = stdout + stderr;
-    expect(output).toContain('Completed task');
-    expect(output).toContain('in_progress'); // Warning about prior state
+    expect(output).toContain("Completed task");
+    expect(output).toContain("in_progress"); // Warning about prior state
 
     // Verify completed and note documents force
     const afterComplete = kspecJson<{
       status: string;
       closed_reason: string | null;
       notes: Array<{ content: string }>;
-    }>('task get @test-task-pending', tempDir);
-    expect(afterComplete.status).toBe('completed');
-    expect(afterComplete.closed_reason).toBe('Design task, no code to review');
+    }>("task get @test-task-pending", tempDir);
+    expect(afterComplete.status).toBe("completed");
+    expect(afterComplete.closed_reason).toBe("Design task, no code to review");
 
-    const forceNote = afterComplete.notes.find((n) =>
-      n.content.includes('--force')
-    );
+    const forceNote = afterComplete.notes.find((n) => n.content.includes("--force"));
     expect(forceNote).toBeTruthy();
-    expect(forceNote?.content).toContain('in_progress state');
+    expect(forceNote?.content).toContain("in_progress state");
   });
 
   // AC: @task-commands ac-1 - Force from pending bypasses start+submit requirement
-  it('should complete pending task with --force flag', () => {
+  it("should complete pending task with --force flag", () => {
     // Task starts in pending
-    const taskData = kspecJson<{ status: string }>(
-      'task get @test-task-pending',
-      tempDir
-    );
-    expect(taskData.status).toBe('pending');
+    const taskData = kspecJson<{ status: string }>("task get @test-task-pending", tempDir);
+    expect(taskData.status).toBe("pending");
 
     // Complete with --force should succeed
     const { stdout, stderr, exitCode } = kspecWithStatus(
       'task complete @test-task-pending --force --reason "Already implemented elsewhere"',
-      tempDir
+      tempDir,
     );
     expect(exitCode).toBe(0);
-    expect(stdout + stderr).toContain('Completed task');
+    expect(stdout + stderr).toContain("Completed task");
 
     // Verify completed
     const afterComplete = kspecJson<{
       status: string;
       closed_reason: string | null;
       notes: Array<{ content: string }>;
-    }>('task get @test-task-pending', tempDir);
-    expect(afterComplete.status).toBe('completed');
+    }>("task get @test-task-pending", tempDir);
+    expect(afterComplete.status).toBe("completed");
 
-    const forceNote = afterComplete.notes.find((n) =>
-      n.content.includes('--force')
-    );
+    const forceNote = afterComplete.notes.find((n) => n.content.includes("--force"));
     expect(forceNote).toBeTruthy();
-    expect(forceNote?.content).toContain('pending state');
+    expect(forceNote?.content).toContain("pending state");
   });
 
   // AC: @task-commands ac-1 - Force from cancelled bypasses reset requirement
-  it('should complete cancelled task with --force flag', () => {
+  it("should complete cancelled task with --force flag", () => {
     kspec('task cancel @test-task-pending --reason "No longer needed"', tempDir);
 
-    const taskData = kspecJson<{ status: string }>(
-      'task get @test-task-pending',
-      tempDir
-    );
-    expect(taskData.status).toBe('cancelled');
+    const taskData = kspecJson<{ status: string }>("task get @test-task-pending", tempDir);
+    expect(taskData.status).toBe("cancelled");
 
     // Complete with --force should succeed
     const { stdout, stderr, exitCode } = kspecWithStatus(
       'task complete @test-task-pending --force --reason "Actually done"',
-      tempDir
+      tempDir,
     );
     expect(exitCode).toBe(0);
-    expect(stdout + stderr).toContain('Completed task');
+    expect(stdout + stderr).toContain("Completed task");
 
     // Verify completed
     const afterComplete = kspecJson<{
       status: string;
       notes: Array<{ content: string }>;
-    }>('task get @test-task-pending', tempDir);
-    expect(afterComplete.status).toBe('completed');
+    }>("task get @test-task-pending", tempDir);
+    expect(afterComplete.status).toBe("completed");
 
-    const forceNote = afterComplete.notes.find((n) =>
-      n.content.includes('--force')
-    );
+    const forceNote = afterComplete.notes.find((n) => n.content.includes("--force"));
     expect(forceNote).toBeTruthy();
-    expect(forceNote?.content).toContain('cancelled state');
+    expect(forceNote?.content).toContain("cancelled state");
   });
 
   // AC: @task-commands ac-1 - Force does NOT bypass already-completed check
-  it('should still error when force-completing already completed task', () => {
-    kspec('task start @test-task-pending', tempDir);
-    kspec('task submit @test-task-pending', tempDir);
+  it("should still error when force-completing already completed task", () => {
+    kspec("task start @test-task-pending", tempDir);
+    kspec("task submit @test-task-pending", tempDir);
     kspec('task complete @test-task-pending --reason "Done"', tempDir);
 
-    const taskData = kspecJson<{ status: string }>(
-      'task get @test-task-pending',
-      tempDir
-    );
-    expect(taskData.status).toBe('completed');
+    const taskData = kspecJson<{ status: string }>("task get @test-task-pending", tempDir);
+    expect(taskData.status).toBe("completed");
 
     // --force should NOT bypass already-completed
     const { stdout, stderr, exitCode } = kspecWithStatus(
       'task complete @test-task-pending --force --reason "Done again"',
-      tempDir
+      tempDir,
     );
     expect(exitCode).toBe(1);
-    expect(stdout + stderr).toContain('Task is already completed');
+    expect(stdout + stderr).toContain("Task is already completed");
   });
 
   // AC: @task-commands ac-1 - Force from pending_review adds no extra note
-  it('should not add force note when --force used on pending_review task', () => {
-    kspec('task start @test-task-pending', tempDir);
-    kspec('task submit @test-task-pending', tempDir);
+  it("should not add force note when --force used on pending_review task", () => {
+    kspec("task start @test-task-pending", tempDir);
+    kspec("task submit @test-task-pending", tempDir);
 
-    const taskData = kspecJson<{ status: string }>(
-      'task get @test-task-pending',
-      tempDir
-    );
-    expect(taskData.status).toBe('pending_review');
+    const taskData = kspecJson<{ status: string }>("task get @test-task-pending", tempDir);
+    expect(taskData.status).toBe("pending_review");
 
     // --force on pending_review is a no-op (already valid state)
     const { exitCode } = kspecWithStatus(
       'task complete @test-task-pending --force --reason "Reviewed and merged"',
-      tempDir
+      tempDir,
     );
     expect(exitCode).toBe(0);
 
     const afterComplete = kspecJson<{
       status: string;
       notes: Array<{ content: string }>;
-    }>('task get @test-task-pending', tempDir);
-    expect(afterComplete.status).toBe('completed');
+    }>("task get @test-task-pending", tempDir);
+    expect(afterComplete.status).toBe("completed");
 
     // Should NOT have a force note since pending_review is the normal path
-    const forceNote = afterComplete.notes.find((n) =>
-      n.content.includes('--force')
-    );
+    const forceNote = afterComplete.notes.find((n) => n.content.includes("--force"));
     expect(forceNote).toBeFalsy();
   });
 
   // AC: @spec-completion-enforcement ac-5
-  it('should error when trying to complete cancelled task', () => {
+  it("should error when trying to complete cancelled task", () => {
     // Cancel a task
     kspec('task cancel @test-task-pending --reason "No longer needed"', tempDir);
 
     // Verify it's cancelled
-    const taskData = kspecJson<{ status: string }>(
-      'task get @test-task-pending',
-      tempDir
-    );
-    expect(taskData.status).toBe('cancelled');
+    const taskData = kspecJson<{ status: string }>("task get @test-task-pending", tempDir);
+    expect(taskData.status).toBe("cancelled");
 
     // Complete should fail with specific error and suggest reset
-    const { stdout, stderr, exitCode } = kspecWithStatus('task complete @test-task-pending --reason "Done"', tempDir);
+    const { stdout, stderr, exitCode } = kspecWithStatus(
+      'task complete @test-task-pending --reason "Done"',
+      tempDir,
+    );
     expect(exitCode).toBe(1);
-    expect(stdout + stderr).toContain('Cannot complete cancelled task');
-    expect(stdout + stderr).toContain('kspec task reset');
+    expect(stdout + stderr).toContain("Cannot complete cancelled task");
+    expect(stdout + stderr).toContain("kspec task reset");
   });
 
   // AC: @spec-completion-enforcement ac-6
-  it('should error when trying to complete already completed task', () => {
+  it("should error when trying to complete already completed task", () => {
     // Start, submit, and complete a task
-    kspec('task start @test-task-pending', tempDir);
-    kspec('task submit @test-task-pending', tempDir);
+    kspec("task start @test-task-pending", tempDir);
+    kspec("task submit @test-task-pending", tempDir);
     kspec('task complete @test-task-pending --reason "Done"', tempDir);
 
     // Verify it's completed
-    const taskData = kspecJson<{ status: string }>(
-      'task get @test-task-pending',
-      tempDir
-    );
-    expect(taskData.status).toBe('completed');
+    const taskData = kspecJson<{ status: string }>("task get @test-task-pending", tempDir);
+    expect(taskData.status).toBe("completed");
 
     // Complete should fail with specific error
-    const { stdout, stderr, exitCode } = kspecWithStatus('task complete @test-task-pending --reason "Done again"', tempDir);
+    const { stdout, stderr, exitCode } = kspecWithStatus(
+      'task complete @test-task-pending --reason "Done again"',
+      tempDir,
+    );
     expect(exitCode).toBe(1);
-    expect(stdout + stderr).toContain('Task is already completed');
+    expect(stdout + stderr).toContain("Task is already completed");
   });
 
   // AC: @spec-completion-enforcement ac-7
-  it('should allow skip-review to bypass enforcement and document reason', () => {
+  it("should allow skip-review to bypass enforcement and document reason", () => {
     // Start a task (in_progress, not submitted)
-    kspec('task start @test-task-pending', tempDir);
+    kspec("task start @test-task-pending", tempDir);
 
-    const beforeComplete = kspecJson<{ status: string }>(
-      'task get @test-task-pending',
-      tempDir
-    );
-    expect(beforeComplete.status).toBe('in_progress');
+    const beforeComplete = kspecJson<{ status: string }>("task get @test-task-pending", tempDir);
+    expect(beforeComplete.status).toBe("in_progress");
 
     // Complete with skip-review should succeed
-    const output = kspec('task complete @test-task-pending --skip-review --reason "Hotfix, no review needed"', tempDir);
-    expect(output).toContain('Completed task');
+    const output = kspec(
+      'task complete @test-task-pending --skip-review --reason "Hotfix, no review needed"',
+      tempDir,
+    );
+    expect(output).toContain("Completed task");
 
     // Verify it's completed and reason is documented
     const afterComplete = kspecJson<{
       status: string;
       closed_reason: string | null;
       notes: Array<{ content: string; author: string }>;
-    }>(
-      'task get @test-task-pending',
-      tempDir
-    );
-    expect(afterComplete.status).toBe('completed');
-    expect(afterComplete.closed_reason).toBe('Hotfix, no review needed');
+    }>("task get @test-task-pending", tempDir);
+    expect(afterComplete.status).toBe("completed");
+    expect(afterComplete.closed_reason).toBe("Hotfix, no review needed");
 
     // Check that a note was added documenting the skip-review
-    const skipNote = afterComplete.notes.find(n => n.content.includes('skip-review'));
+    const skipNote = afterComplete.notes.find((n) => n.content.includes("skip-review"));
     expect(skipNote).toBeTruthy();
-    expect(skipNote?.content).toContain('Hotfix, no review needed');
+    expect(skipNote?.content).toContain("Hotfix, no review needed");
   });
 
   // AC: @spec-completion-enforcement ac-8
-  it('should error when skip-review provided without reason', () => {
+  it("should error when skip-review provided without reason", () => {
     // Start a task
-    kspec('task start @test-task-pending', tempDir);
+    kspec("task start @test-task-pending", tempDir);
 
     // Complete with skip-review but no reason should fail
-    const { stdout, stderr, exitCode } = kspecWithStatus('task complete @test-task-pending --skip-review', tempDir);
+    const { stdout, stderr, exitCode } = kspecWithStatus(
+      "task complete @test-task-pending --skip-review",
+      tempDir,
+    );
     expect(exitCode).toBe(1);
-    expect(stdout + stderr).toContain('--skip-review requires --reason to document why');
+    expect(stdout + stderr).toContain("--skip-review requires --reason to document why");
   });
 
   // AC: @spec-completion-enforcement ac-9
-  it('should handle batch mode with mixed states correctly', () => {
+  it("should handle batch mode with mixed states correctly", () => {
     // Prepare first task: pending_review (can complete)
-    kspec('task start @test-task-pending', tempDir);
-    kspec('task submit @test-task-pending', tempDir);
+    kspec("task start @test-task-pending", tempDir);
+    kspec("task submit @test-task-pending", tempDir);
 
     // Prepare second task: in_progress (cannot complete)
-    kspec('task start @test-task-blocked', tempDir);
+    kspec("task start @test-task-blocked", tempDir);
 
     // Verify states
-    const task1 = kspecJson<{ status: string }>(
-      'task get @test-task-pending',
-      tempDir
-    );
-    const task2 = kspecJson<{ status: string }>(
-      'task get @test-task-blocked',
-      tempDir
-    );
-    expect(task1.status).toBe('pending_review');
-    expect(task2.status).toBe('in_progress');
+    const task1 = kspecJson<{ status: string }>("task get @test-task-pending", tempDir);
+    const task2 = kspecJson<{ status: string }>("task get @test-task-blocked", tempDir);
+    expect(task1.status).toBe("pending_review");
+    expect(task2.status).toBe("in_progress");
 
     // Batch complete with mixed states
     const { stdout, stderr, exitCode } = kspecWithStatus(
       'task complete --refs @test-task-pending @test-task-blocked --reason "Done"',
-      tempDir
+      tempDir,
     );
 
     // Should exit with error (at least one failed)
@@ -435,46 +395,37 @@ describe('Integration: task completion enforcement', () => {
 
     // Output should show both success and failure
     const output = stdout + stderr;
-    expect(output).toContain('Completed 1 of 2');
-    expect(output).toContain('✓'); // Success indicator
-    expect(output).toContain('✗'); // Failure indicator
+    expect(output).toContain("Completed 1 of 2");
+    expect(output).toContain("✓"); // Success indicator
+    expect(output).toContain("✗"); // Failure indicator
 
     // First task should be completed
-    const task1After = kspecJson<{ status: string }>(
-      'task get @test-task-pending',
-      tempDir
-    );
-    expect(task1After.status).toBe('completed');
+    const task1After = kspecJson<{ status: string }>("task get @test-task-pending", tempDir);
+    expect(task1After.status).toBe("completed");
 
     // Second task should still be in_progress
-    const task2After = kspecJson<{ status: string }>(
-      'task get @test-task-blocked',
-      tempDir
-    );
-    expect(task2After.status).toBe('in_progress');
+    const task2After = kspecJson<{ status: string }>("task get @test-task-blocked", tempDir);
+    expect(task2After.status).toBe("in_progress");
 
     // Error should provide guidance
-    expect(output).toContain('Task must be submitted for review first');
+    expect(output).toContain("Task must be submitted for review first");
   });
 
   // Additional test: Verify skip-review works from pending state too
-  it('should allow skip-review from pending state', () => {
+  it("should allow skip-review from pending state", () => {
     // Task starts in pending
-    const taskData = kspecJson<{ status: string }>(
-      'task get @test-task-pending',
-      tempDir
-    );
-    expect(taskData.status).toBe('pending');
+    const taskData = kspecJson<{ status: string }>("task get @test-task-pending", tempDir);
+    expect(taskData.status).toBe("pending");
 
     // Complete with skip-review should succeed
-    const output = kspec('task complete @test-task-pending --skip-review --reason "Trivial change"', tempDir);
-    expect(output).toContain('Completed task');
+    const output = kspec(
+      'task complete @test-task-pending --skip-review --reason "Trivial change"',
+      tempDir,
+    );
+    expect(output).toContain("Completed task");
 
     // Verify it's completed
-    const afterComplete = kspecJson<{ status: string }>(
-      'task get @test-task-pending',
-      tempDir
-    );
-    expect(afterComplete.status).toBe('completed');
+    const afterComplete = kspecJson<{ status: string }>("task get @test-task-pending", tempDir);
+    expect(afterComplete.status).toBe("completed");
   });
 });

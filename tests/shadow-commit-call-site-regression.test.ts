@@ -3,13 +3,7 @@ import { existsSync } from "node:fs";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import {
-  cleanupTempDir,
-  createTempDir,
-  initGitRepo,
-  kspec,
-  kspecJson,
-} from "./helpers/cli.js";
+import { cleanupTempDir, createTempDir, initGitRepo, kspec, kspecJson } from "./helpers/cli.js";
 import { SHADOW_WORKTREE_DIR } from "../src/parser/shadow.js";
 
 const projectCli = path.resolve(__dirname, "..", "dist", "cli", "index.js");
@@ -79,10 +73,7 @@ describe("shadow commit call-site regressions", () => {
       // AC: @trait-shadow-commit ac-3
       kspec('inbox add "Shadow ref regression"', tempDir);
 
-      const inboxItems = kspecJson<Array<{ _ulid: string; text: string }>>(
-        "inbox list",
-        tempDir,
-      );
+      const inboxItems = kspecJson<Array<{ _ulid: string; text: string }>>("inbox list", tempDir);
       const created = inboxItems.find((item) => item.text === "Shadow ref regression");
       expect(created).toBeDefined();
       expect(getShadowHeadSubject(tempDir)).toBe(
@@ -98,71 +89,45 @@ describe("shadow commit call-site regressions", () => {
       // AC: @trait-shadow-commit ac-3
       await addTestWorkflow(tempDir, "shadow-flow");
 
-      const started = kspecJson<{ run_id: string }>(
-        "workflow start @shadow-flow --json",
-        tempDir,
-      );
-      expect(getShadowHeadSubject(tempDir)).toBe(
-        `Start Workflow: @${started.run_id}`,
-      );
+      const started = kspecJson<{ run_id: string }>("workflow start @shadow-flow --json", tempDir);
+      expect(getShadowHeadSubject(tempDir)).toBe(`Start Workflow: @${started.run_id}`);
 
       kspec(`workflow pause @${started.run_id}`, tempDir);
-      expect(getShadowHeadSubject(tempDir)).toBe(
-        `Pause Workflow: @${started.run_id}`,
-      );
+      expect(getShadowHeadSubject(tempDir)).toBe(`Pause Workflow: @${started.run_id}`);
 
       kspec(`workflow resume @${started.run_id}`, tempDir);
-      expect(getShadowHeadSubject(tempDir)).toBe(
-        `Resume Workflow: @${started.run_id}`,
-      );
+      expect(getShadowHeadSubject(tempDir)).toBe(`Resume Workflow: @${started.run_id}`);
 
       const completed = kspecJson<{ run_id: string }>(
         "workflow start @shadow-flow --json",
         tempDir,
       );
       kspec(`workflow complete @${completed.run_id}`, tempDir);
-      expect(getShadowHeadSubject(tempDir)).toBe(
-        `Complete Workflow: @${completed.run_id}`,
-      );
+      expect(getShadowHeadSubject(tempDir)).toBe(`Complete Workflow: @${completed.run_id}`);
 
-      const advanced = kspecJson<{ run_id: string }>(
-        "workflow start @shadow-flow --json",
-        tempDir,
-      );
+      const advanced = kspecJson<{ run_id: string }>("workflow start @shadow-flow --json", tempDir);
       kspec(`workflow next @${advanced.run_id}`, tempDir);
-      expect(getShadowHeadSubject(tempDir)).toBe(
-        `Advance Workflow: @${advanced.run_id}`,
-      );
+      expect(getShadowHeadSubject(tempDir)).toBe(`Advance Workflow: @${advanced.run_id}`);
 
-      const aborted = kspecJson<{ run_id: string }>(
-        "workflow start @shadow-flow --json",
-        tempDir,
-      );
+      const aborted = kspecJson<{ run_id: string }>("workflow start @shadow-flow --json", tempDir);
       kspec(`workflow abort @${aborted.run_id}`, tempDir);
-      expect(getShadowHeadSubject(tempDir)).toBe(
-        `Abort Workflow: @${aborted.run_id}`,
-      );
+      expect(getShadowHeadSubject(tempDir)).toBe(`Abort Workflow: @${aborted.run_id}`);
     },
   );
 
-  it.skipIf(!canRunShadowTests)(
-    "uses a workflow run ref when pruning a single run",
-    async () => {
-      // AC: @trait-shadow-commit ac-2
-      // AC: @trait-shadow-commit ac-3
-      await addTestWorkflow(tempDir, "shadow-prune-flow");
+  it.skipIf(!canRunShadowTests)("uses a workflow run ref when pruning a single run", async () => {
+    // AC: @trait-shadow-commit ac-2
+    // AC: @trait-shadow-commit ac-3
+    await addTestWorkflow(tempDir, "shadow-prune-flow");
 
-      const pruned = kspecJson<{ run_id: string }>(
-        "workflow start @shadow-prune-flow --json",
-        tempDir,
-      );
-      kspec("workflow prune --older-than 0m", tempDir);
+    const pruned = kspecJson<{ run_id: string }>(
+      "workflow start @shadow-prune-flow --json",
+      tempDir,
+    );
+    kspec("workflow prune --older-than 0m", tempDir);
 
-      expect(getShadowHeadSubject(tempDir)).toBe(
-        `Prune Workflow: @${pruned.run_id} - 1 run(s)`,
-      );
-    },
-  );
+    expect(getShadowHeadSubject(tempDir)).toBe(`Prune Workflow: @${pruned.run_id} - 1 run(s)`);
+  });
 
   it.skipIf(!canRunShadowTests)(
     "keeps batch task assessment shadow commits detail-only instead of inventing a ref",

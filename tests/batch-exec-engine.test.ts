@@ -8,10 +8,7 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { Command } from "commander";
 import { spawn } from "node:child_process";
-import {
-  buildCommandArgv,
-  resetCommandTree,
-} from "../src/cli/batch-exec.js";
+import { buildCommandArgv, resetCommandTree } from "../src/cli/batch-exec.js";
 import {
   BatchExitError,
   OutputCapture,
@@ -39,7 +36,8 @@ function createTestProgram(): Command {
   const program = new Command("kspec");
   const task = program.command("task").description("Task management");
   markMutating(
-    task.command("add")
+    task
+      .command("add")
       .description("Add a task")
       .requiredOption("--title <title>", "Task title")
       .option("--spec-ref <ref>", "Spec reference")
@@ -47,18 +45,18 @@ function createTestProgram(): Command {
       .option("--force", "Skip confirmation"),
   );
   markMutating(
-    task.command("start")
-      .description("Start a task")
-      .argument("<ref>", "Task reference"),
+    task.command("start").description("Start a task").argument("<ref>", "Task reference"),
   );
   markMutating(
-    task.command("note")
+    task
+      .command("note")
       .description("Add a note")
       .argument("<ref>", "Task reference")
       .argument("<content>", "Note content"),
   );
   markMutating(
-    task.command("patch")
+    task
+      .command("patch")
       .description("Patch a task")
       .argument("<ref>", "Task reference")
       .option("--data <json>", "JSON object with fields to update"),
@@ -66,7 +64,8 @@ function createTestProgram(): Command {
 
   const inbox = program.command("inbox").description("Inbox");
   markMutating(
-    inbox.command("add")
+    inbox
+      .command("add")
       .description("Add inbox item")
       .argument("<text>", "Idea text")
       .option("--tag <tag...>", "Tags"),
@@ -74,7 +73,8 @@ function createTestProgram(): Command {
 
   const item = program.command("item").description("Items");
   markMutating(
-    item.command("add")
+    item
+      .command("add")
       .description("Add an item")
       .option("--priority <priority>", "Priority (high, medium, low)"),
   );
@@ -98,10 +98,7 @@ describe("buildCommandArgv", () => {
     const cmdMeta = tree.subcommands
       .find((c) => c.name === "inbox")!
       .subcommands.find((c) => c.name === "add")!;
-    const argv = buildCommandArgv(
-      { command: "inbox add", args: { text: "hello world" } },
-      cmdMeta,
-    );
+    const argv = buildCommandArgv({ command: "inbox add", args: { text: "hello world" } }, cmdMeta);
     expect(argv).toEqual(["inbox", "add", "hello world"]);
   });
 
@@ -136,10 +133,7 @@ describe("buildCommandArgv", () => {
     const cmdMeta = tree.subcommands
       .find((c) => c.name === "item")!
       .subcommands.find((c) => c.name === "add")!;
-    const argv = buildCommandArgv(
-      { command: "item add", args: { priority: "P2" } },
-      cmdMeta,
-    );
+    const argv = buildCommandArgv({ command: "item add", args: { priority: "P2" } }, cmdMeta);
     expect(argv).toContain("--priority");
     expect(argv).toContain("P2");
     expect(argv).not.toContain("2");
@@ -177,9 +171,7 @@ describe("buildCommandArgv", () => {
     );
     // Should produce: inbox add idea --tag a --tag b
     expect(argv).toContain("idea");
-    const tagIndices = argv
-      .map((v, i) => (v === "--tag" ? i : -1))
-      .filter((i) => i >= 0);
+    const tagIndices = argv.map((v, i) => (v === "--tag" ? i : -1)).filter((i) => i >= 0);
     expect(tagIndices.length).toBe(2);
     expect(argv[tagIndices[0] + 1]).toBe("a");
     expect(argv[tagIndices[1] + 1]).toBe("b");
@@ -193,9 +185,7 @@ describe("buildCommandArgv", () => {
       { command: "inbox add", args: { text: "idea", tags: ["cli", "dx"] } },
       cmdMeta,
     );
-    const tagIndices = argv
-      .map((v, i) => (v === "--tag" ? i : -1))
-      .filter((i) => i >= 0);
+    const tagIndices = argv.map((v, i) => (v === "--tag" ? i : -1)).filter((i) => i >= 0);
     expect(tagIndices).toHaveLength(2);
     expect(argv[tagIndices[0] + 1]).toBe("cli");
     expect(argv[tagIndices[1] + 1]).toBe("dx");
@@ -512,11 +502,7 @@ describe("batch command integration", () => {
   // AC: @batch-exec ac-invalid-json
   // AC: @trait-semantic-exit-codes ac-2 — validation error exits non-zero
   it("rejects malformed JSON with error details including position info", () => {
-    const result = kspec(
-      `batch --commands '{bad json}'`,
-      tempDir,
-      { expectFail: true },
-    );
+    const result = kspec(`batch --commands '{bad json}'`, tempDir, { expectFail: true });
     expect(result.exitCode).toBe(1);
     // Must surface error message (not silent), including position info
     expect(result.stderr).toContain("Invalid JSON");
@@ -527,11 +513,7 @@ describe("batch command integration", () => {
   // AC: @batch-exec ac-invalid-json
   // AC: @trait-semantic-exit-codes ac-2 — validation error exits non-zero
   it("rejects empty --commands value instead of falling back to stdin", () => {
-    const result = kspec(
-      "batch --commands ''",
-      tempDir,
-      { expectFail: true },
-    );
+    const result = kspec("batch --commands ''", tempDir, { expectFail: true });
     expect(result.exitCode).toBe(1);
     expect(result.stderr).toContain("Invalid JSON");
     expect(result.stderr).not.toContain("No input received on stdin");
@@ -540,11 +522,7 @@ describe("batch command integration", () => {
   // AC: @batch-exec ac-inline — whitespace --commands still uses inline source
   // AC: @batch-exec ac-invalid-json
   it("rejects whitespace-only --commands value instead of falling back to stdin", () => {
-    const result = kspec(
-      "batch --commands '   '",
-      tempDir,
-      { expectFail: true },
-    );
+    const result = kspec("batch --commands '   '", tempDir, { expectFail: true });
     expect(result.exitCode).toBe(1);
     expect(result.stderr).toContain("Invalid JSON");
     expect(result.stderr).not.toContain("No input received on stdin");
@@ -587,11 +565,7 @@ describe("batch command integration", () => {
   // AC: @batch-exec ac-invalid-json — JSON mode returns structured error
   // AC: @trait-json-output ac-3 — error returned as JSON with error field
   it("returns structured JSON error for malformed JSON in --json mode", () => {
-    const result = kspec(
-      `batch --json --commands '{bad json}'`,
-      tempDir,
-      { expectFail: true },
-    );
+    const result = kspec(`batch --json --commands '{bad json}'`, tempDir, { expectFail: true });
     expect(result.exitCode).toBe(1);
     const parsed = JSON.parse(result.stdout);
     expect(parsed.success).toBe(false);
@@ -601,11 +575,7 @@ describe("batch command integration", () => {
 
   // AC: @batch-exec ac-empty-batch
   it("rejects empty batch with descriptive error", () => {
-    const result = kspec(
-      `batch --commands '[]'`,
-      tempDir,
-      { expectFail: true },
-    );
+    const result = kspec(`batch --commands '[]'`, tempDir, { expectFail: true });
     expect(result.exitCode).toBe(1);
     expect(result.stderr).toMatch(/at least one command|no commands/i);
   });
@@ -639,10 +609,7 @@ describe("batch command integration", () => {
         args: { title: "batch priority alias 3", priority: "P3" },
       },
     ]);
-    const result = kspecJson<BatchExecResult>(
-      `batch --commands '${commands}'`,
-      tempDir,
-    );
+    const result = kspecJson<BatchExecResult>(`batch --commands '${commands}'`, tempDir);
 
     expect(result.success).toBe(true);
     expect(result.summary.succeeded).toBe(3);
@@ -650,9 +617,7 @@ describe("batch command integration", () => {
       "tasks list --json",
       tempDir,
     );
-    const prioritiesByTitle = new Map(
-      tasks.map((task) => [task.title, task.priority] as const),
-    );
+    const prioritiesByTitle = new Map(tasks.map((task) => [task.title, task.priority] as const));
     expect(prioritiesByTitle.get("batch priority alias 1")).toBe(1);
     expect(prioritiesByTitle.get("batch priority alias 2")).toBe(2);
     expect(prioritiesByTitle.get("batch priority alias 3")).toBe(3);
@@ -668,20 +633,15 @@ describe("batch command integration", () => {
         },
       },
     ]);
-    const result = kspecJson<BatchExecResult>(
-      `batch --commands '${commands}'`,
-      tempDir,
-    );
+    const result = kspecJson<BatchExecResult>(`batch --commands '${commands}'`, tempDir);
 
     expect(result.success).toBe(true);
     expect(result.summary.succeeded).toBe(1);
 
     const listOutput = kspec("inbox list --json", tempDir);
     const parsed = JSON.parse(listOutput.stdout);
-    const items = Array.isArray(parsed) ? parsed : parsed.items ?? [];
-    const createdItem = items.find(
-      (item: any) => item?.text === "batch tags alias check",
-    );
+    const items = Array.isArray(parsed) ? parsed : (parsed.items ?? []);
+    const createdItem = items.find((item: any) => item?.text === "batch tags alias check");
     expect(createdItem).toBeTruthy();
     expect(createdItem.tags).toEqual(expect.arrayContaining(["cli", "dx"]));
   });
@@ -709,10 +669,7 @@ No fenced YAML block in this section.
       },
     ]);
 
-    const result = kspecJson<BatchExecResult>(
-      `batch --commands '${commands}'`,
-      tempDir,
-    );
+    const result = kspecJson<BatchExecResult>(`batch --commands '${commands}'`, tempDir);
 
     expect(result.success).toBe(true);
     expect(result.summary.succeeded).toBe(1);
@@ -725,13 +682,11 @@ No fenced YAML block in this section.
     const { writeFile } = await import("node:fs/promises");
     const { join } = await import("node:path");
     const cmdFile = join(tempDir, "cmds.json");
-    await writeFile(cmdFile, JSON.stringify([
-      { command: "inbox add", args: { text: "file-test" } },
-    ]));
-    const result = kspecJson<BatchExecResult>(
-      `batch --file ${cmdFile}`,
-      tempDir,
+    await writeFile(
+      cmdFile,
+      JSON.stringify([{ command: "inbox add", args: { text: "file-test" } }]),
     );
+    const result = kspecJson<BatchExecResult>(`batch --file ${cmdFile}`, tempDir);
     expect(result.success).toBe(true);
     expect(result.summary.succeeded).toBe(1);
   });
@@ -879,10 +834,7 @@ No fenced YAML block in this section.
   // AC: @batch-exec ac-confirmation-suppressed
   it("auto-appends --force for commands that support it", () => {
     // Create an inbox item to delete
-    const addResult = kspecJson<{ item: { _ulid: string } }>(
-      'inbox add "to-delete-test"',
-      tempDir,
-    );
+    const addResult = kspecJson<{ item: { _ulid: string } }>('inbox add "to-delete-test"', tempDir);
     const ref = addResult.item._ulid;
     expect(ref).toBeTruthy();
 
@@ -929,7 +881,7 @@ No fenced YAML block in this section.
     );
     expect(result.success).toBe(false);
     // "tex" is close to "text" - should suggest it
-    const unknownArgError = result.results.find(r => r.error?.includes("Unknown argument"));
+    const unknownArgError = result.results.find((r) => r.error?.includes("Unknown argument"));
     expect(unknownArgError?.suggestion).toBe("text");
   });
 
@@ -1013,7 +965,7 @@ No fenced YAML block in this section.
     const listOutput = kspec("inbox list --json", tempDir);
     const parsed = JSON.parse(listOutput.stdout);
     // inbox list --json returns array or object with items
-    const items = Array.isArray(parsed) ? parsed : parsed.items ?? parsed;
+    const items = Array.isArray(parsed) ? parsed : (parsed.items ?? parsed);
     const item = (Array.isArray(items) ? items : []).find(
       (i: any) => typeof i === "object" && JSON.stringify(i).includes("timestamp-check"),
     );
@@ -1090,10 +1042,7 @@ No fenced YAML block in this section.
         args: { ref: `@${taskRef}`, data: patchData },
       },
     ]);
-    const result = kspecJson<BatchExecResult>(
-      `batch --commands '${batchCmd}'`,
-      tempDir,
-    );
+    const result = kspecJson<BatchExecResult>(`batch --commands '${batchCmd}'`, tempDir);
     expect(result.success).toBe(true);
     expect(result.summary.succeeded).toBe(1);
 

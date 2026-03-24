@@ -42,7 +42,7 @@
 </script>
 
 <script lang="ts">
-	let {
+	const {
 		class: className,
 		variant = "default",
 		size = "default",

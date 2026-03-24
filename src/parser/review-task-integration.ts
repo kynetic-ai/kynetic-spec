@@ -45,9 +45,7 @@ export async function linkReviewToTasks(
   allTasks: LoadedTask[],
 ): Promise<ReviewTaskLinkResult> {
   const result: ReviewTaskLinkResult = { linkedTasks: [] };
-  const reviewRef = review.slugs.length > 0
-    ? `@${review.slugs[0]}`
-    : `@${review._ulid}`;
+  const reviewRef = review.slugs.length > 0 ? `@${review.slugs[0]}` : `@${review._ulid}`;
 
   // Collect task refs to link
   const taskRefsToLink = new Set<string>();
@@ -83,15 +81,20 @@ export async function linkReviewToTasks(
     );
     if (!task) continue;
 
-    await resolveTaskDataManager(ctx).mutateTask(ctx, task._ulid, (latestTask) => ({
-      ...latestTask,
-      review_ref: reviewRef,
-    }), {
-      operation: "review-link",
-      ref: task.slugs[0] || task._ulid,
-      detail: `set review_ref to ${reviewRef}`,
-      skipCommit: true,
-    });
+    await resolveTaskDataManager(ctx).mutateTask(
+      ctx,
+      task._ulid,
+      (latestTask) => ({
+        ...latestTask,
+        review_ref: reviewRef,
+      }),
+      {
+        operation: "review-link",
+        ref: task.slugs[0] || task._ulid,
+        detail: `set review_ref to ${reviewRef}`,
+        skipCommit: true,
+      },
+    );
 
     result.linkedTasks.push({
       ulid: task._ulid,
@@ -168,28 +171,33 @@ export async function handleVerdictTaskTransition(
     ).length;
     const cycleNumber = existingKickbacks + 1;
 
-    await resolveTaskDataManager(ctx).mutateTask(ctx, task._ulid, (latestTask) => {
-      if (latestTask.status !== "pending_review") {
-        return latestTask;
-      }
+    await resolveTaskDataManager(ctx).mutateTask(
+      ctx,
+      task._ulid,
+      (latestTask) => {
+        if (latestTask.status !== "pending_review") {
+          return latestTask;
+        }
 
-      const note = createNote(
-        `[FIX_CYCLE: ${cycleNumber}] Review verdict: changes_requested${reviewer ? ` by ${reviewer}` : ""}`,
-        getAuthor(ctx.config?.identity?.author),
-      );
+        const note = createNote(
+          `[FIX_CYCLE: ${cycleNumber}] Review verdict: changes_requested${reviewer ? ` by ${reviewer}` : ""}`,
+          getAuthor(ctx.config?.identity?.author),
+        );
 
-      return {
-        ...latestTask,
-        status: "needs_work" as const,
-        session_id: null,
-        notes: [...latestTask.notes, note],
-      };
-    }, {
-      operation: "review-verdict-needs-work",
-      ref: task.slugs[0] || task._ulid,
-      detail: `changes_requested → needs_work (cycle ${cycleNumber})`,
-      skipCommit: true,
-    });
+        return {
+          ...latestTask,
+          status: "needs_work" as const,
+          session_id: null,
+          notes: [...latestTask.notes, note],
+        };
+      },
+      {
+        operation: "review-verdict-needs-work",
+        ref: task.slugs[0] || task._ulid,
+        detail: `changes_requested → needs_work (cycle ${cycleNumber})`,
+        skipCommit: true,
+      },
+    );
 
     results.push({ ulid: task._ulid, slug: task.slugs[0], transitioned: true });
   }

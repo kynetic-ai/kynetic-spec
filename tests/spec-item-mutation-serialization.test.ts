@@ -8,11 +8,7 @@ import {
   writeYamlFilePreserveFormat,
   type LoadedSpecItem,
 } from "../src/parser/index.js";
-import {
-  cleanupTempDir,
-  setupTempFixtures,
-  testUlid,
-} from "./helpers/cli.js";
+import { cleanupTempDir, setupTempFixtures, testUlid } from "./helpers/cli.js";
 
 function findItemBySlug(items: LoadedSpecItem[], slug: string): LoadedSpecItem {
   const found = items.find((item) => item.slugs.includes(slug));

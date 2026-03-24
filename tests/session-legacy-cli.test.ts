@@ -21,13 +21,7 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import * as YAML from "yaml";
 import type { SessionLogSummary } from "../src/sessions/store.js";
-import {
-  setupTempFixtures,
-  cleanupTempDir,
-  kspec,
-  kspecJson,
-  testUlid,
-} from "./helpers/cli";
+import { setupTempFixtures, cleanupTempDir, kspec, kspecJson, testUlid } from "./helpers/cli";
 
 // ─── Test Helpers ────────────────────────────────────────────────────────────
 
@@ -59,10 +53,7 @@ async function writeSession(
     started_at: opts.startedAt ?? "2026-03-01T10:00:00.000Z",
     ended_at: opts.endedAt ?? "2026-03-01T11:00:00.000Z",
   };
-  await fs.writeFile(
-    path.join(sessionDir, "session.yaml"),
-    YAML.stringify(metadata),
-  );
+  await fs.writeFile(path.join(sessionDir, "session.yaml"), YAML.stringify(metadata));
 
   if (opts.events && opts.events.length > 0) {
     const lines = opts.events.map((e, i) =>
@@ -74,10 +65,7 @@ async function writeSession(
         data: e.data ?? {},
       }),
     );
-    await fs.writeFile(
-      path.join(sessionDir, "events.jsonl"),
-      lines.join("\n") + "\n",
-    );
+    await fs.writeFile(path.join(sessionDir, "events.jsonl"), lines.join("\n") + "\n");
   }
 }
 
@@ -114,10 +102,7 @@ describe("Legacy session detect-and-warn (CLI)", () => {
         agentType: "legacy-agent",
       });
 
-      const result = kspecJson<{ items: SessionLogSummary[] }>(
-        "session log list",
-        tempDir,
-      );
+      const result = kspecJson<{ items: SessionLogSummary[] }>("session log list", tempDir);
       expect(result.items).toHaveLength(1);
       expect(result.items[0].id).toBe(PRIMARY_SESSION_ID);
     });
@@ -131,10 +116,7 @@ describe("Legacy session detect-and-warn (CLI)", () => {
       });
       await writeSession(legacyDir, LEGACY_SESSION_ID);
 
-      const result = kspecJson<{ items: SessionLogSummary[] }>(
-        "session log list",
-        tempDir,
-      );
+      const result = kspecJson<{ items: SessionLogSummary[] }>("session log list", tempDir);
       expect(result.items).toHaveLength(1);
       expect(result.items[0].id).toBe(BOTH_SESSION_ID);
       expect(result.items[0].agent_type).toBe("primary-agent");
@@ -372,17 +354,11 @@ describe("kspec session migrate (CLI)", () => {
     await writeSession(legacyDir, id);
 
     // First run
-    const first = kspecJson<{ migrated: number; skipped: number }>(
-      "session migrate",
-      tempDir,
-    );
+    const first = kspecJson<{ migrated: number; skipped: number }>("session migrate", tempDir);
     expect(first.migrated).toBe(1);
 
     // Second run — should skip
-    const second = kspecJson<{ migrated: number; skipped: number }>(
-      "session migrate",
-      tempDir,
-    );
+    const second = kspecJson<{ migrated: number; skipped: number }>("session migrate", tempDir);
     expect(second.migrated).toBe(0);
     expect(second.skipped).toBe(1);
   });

@@ -127,10 +127,7 @@ export class ACPClient extends EventEmitter {
       }),
     };
 
-    const result = (await this.framing.sendRequest(
-      "initialize",
-      params,
-    )) as InitializeResponse;
+    const result = (await this.framing.sendRequest("initialize", params)) as InitializeResponse;
 
     this.agentCapabilities = result.agentCapabilities ?? {};
     this.initialized = true;
@@ -150,10 +147,7 @@ export class ACPClient extends EventEmitter {
       throw new Error("Client not initialized");
     }
 
-    const result = (await this.framing.sendRequest(
-      "session/new",
-      params,
-    )) as NewSessionResponse;
+    const result = (await this.framing.sendRequest("session/new", params)) as NewSessionResponse;
 
     // Track session state
     this.sessions.set(result.sessionId, {
@@ -189,10 +183,7 @@ export class ACPClient extends EventEmitter {
     session.status = "prompting";
 
     try {
-      const result = (await this.framing.sendRequest(
-        "session/prompt",
-        params,
-      )) as PromptResponse;
+      const result = (await this.framing.sendRequest("session/prompt", params)) as PromptResponse;
 
       // Update session state based on stop reason
       if (result.stopReason === "cancelled") {
@@ -324,10 +315,7 @@ export class ACPClient extends EventEmitter {
    * @param id - The request ID to respond to
    * @param response - The permission response
    */
-  respondPermission(
-    id: string | number,
-    response: RequestPermissionResponse,
-  ): void {
+  respondPermission(id: string | number, response: RequestPermissionResponse): void {
     this.framing.sendResponse(id, response);
   }
 
@@ -337,10 +325,7 @@ export class ACPClient extends EventEmitter {
    * @param id - The request ID to respond to
    * @param response - The file read response
    */
-  respondReadTextFile(
-    id: string | number,
-    response: ReadTextFileResponse,
-  ): void {
+  respondReadTextFile(id: string | number, response: ReadTextFileResponse): void {
     this.framing.sendResponse(id, response);
   }
 
@@ -350,10 +335,7 @@ export class ACPClient extends EventEmitter {
    * @param id - The request ID to respond to
    * @param response - The file write response
    */
-  respondWriteTextFile(
-    id: string | number,
-    response: WriteTextFileResponse,
-  ): void {
+  respondWriteTextFile(id: string | number, response: WriteTextFileResponse): void {
     this.framing.sendResponse(id, response);
   }
 
@@ -389,11 +371,7 @@ export class ACPClient extends EventEmitter {
   private handleNotification(notification: JsonRpcNotification): void {
     if (notification.method === "session/update") {
       const sessionNotification = notification.params as SessionNotification;
-      this.emit(
-        "update",
-        sessionNotification.sessionId,
-        sessionNotification.update,
-      );
+      this.emit("update", sessionNotification.sessionId, sessionNotification.update);
     }
   }
 }

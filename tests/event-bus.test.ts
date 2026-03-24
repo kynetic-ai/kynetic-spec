@@ -9,18 +9,11 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import {
-  EventBus,
-  type EventEnvelope,
-  type EmitResult,
-} from "../src/agent-runtime/event-bus.js";
+import { EventBus, type EventEnvelope, type EmitResult } from "../src/agent-runtime/event-bus.js";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-function emitBasicEvent(
-  bus: EventBus,
-  overrides: Record<string, unknown> = {},
-): EmitResult {
+function emitBasicEvent(bus: EventBus, overrides: Record<string, unknown> = {}): EmitResult {
   return bus.emit({
     event_type: "test.basic",
     source_type: "manual",
@@ -474,9 +467,7 @@ describe("ac-5: chain depth limit", () => {
     expect(rejected.reason).toContain(correlationId);
 
     // Should log a warning
-    expect(consoleSpy).toHaveBeenCalledWith(
-      expect.stringContaining("Chain depth limit exceeded"),
-    );
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining("Chain depth limit exceeded"));
 
     consoleSpy.mockRestore();
   });
@@ -783,8 +774,17 @@ describe("subscribe and unsubscribe", () => {
       received.push(event);
     });
 
-    bus.emit({ event_type: "task.ready", source_type: "api", source_id: "a", payload: { taskId: "t", fromStatus: "x", toStatus: "y" } });
-    bus.emit({ event_type: "invocation.started", source_type: "invocation_lifecycle", source_id: "b" });
+    bus.emit({
+      event_type: "task.ready",
+      source_type: "api",
+      source_id: "a",
+      payload: { taskId: "t", fromStatus: "x", toStatus: "y" },
+    });
+    bus.emit({
+      event_type: "invocation.started",
+      source_type: "invocation_lifecycle",
+      source_id: "b",
+    });
 
     await new Promise((r) => setTimeout(r, 10));
 

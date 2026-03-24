@@ -11,18 +11,18 @@
 	import { getConnectionState, isConnectionLost } from '$lib/stores/connection.svelte';
 
 	// AC: @web-dashboard ac-29
-	let state = $derived(getConnectionState());
-	let lost = $derived(isConnectionLost());
+	const state = $derived(getConnectionState());
+	const lost = $derived(isConnectionLost());
 
 	// Compute badge variant and label
-	let variant = $derived.by(() => {
+	const variant = $derived.by(() => {
 		if (lost) return 'destructive';
 		if (state === 'connected') return 'default';
 		if (state === 'connecting' || state === 'reconnecting') return 'secondary';
 		return 'outline';
 	});
 
-	let label = $derived.by(() => {
+	const label = $derived.by(() => {
 		if (lost) return 'Connection Lost';
 		if (state === 'connected') return 'Connected';
 		if (state === 'reconnecting') return 'Reconnecting...';

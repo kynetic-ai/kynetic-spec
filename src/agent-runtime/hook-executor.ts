@@ -212,10 +212,7 @@ export class HookExecutor {
     const promise = this.actionExecutor
       .execute(hook.action, eventContext, hook.name)
       .catch((err) => {
-        console.error(
-          `[hook-executor] Unexpected error executing hook '${hook.name}':`,
-          err,
-        );
+        console.error(`[hook-executor] Unexpected error executing hook '${hook.name}':`, err);
         return undefined;
       });
 
@@ -235,11 +232,7 @@ export class HookExecutor {
   ): Record<string, string | number | boolean | undefined> {
     const flat: Record<string, string | number | boolean | undefined> = {};
     for (const [key, value] of Object.entries(payload)) {
-      if (
-        typeof value === "string" ||
-        typeof value === "number" ||
-        typeof value === "boolean"
-      ) {
+      if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
         flat[key] = value;
       } else if (value === null || value === undefined) {
         flat[key] = undefined;

@@ -53,8 +53,7 @@ function resolvePkgRunner(): { command: string; prependArgs: string[] } {
   return { command: "npx", prependArgs: [] };
 }
 
-const { command: PKG_RUNNER_CMD, prependArgs: PKG_RUNNER_PREPEND } =
-  resolvePkgRunner();
+const { command: PKG_RUNNER_CMD, prependArgs: PKG_RUNNER_PREPEND } = resolvePkgRunner();
 
 /**
  * Built-in adapter registry.
@@ -94,12 +93,7 @@ const ADAPTERS: Record<string, AgentAdapter> = {
     args: [...PKG_RUNNER_PREPEND, "@zed-industries/codex-acp"],
     shell: process.platform === "win32" && !IS_BUN,
     description: "Codex agent via ACP protocol",
-    autoApproveArgs: [
-      "-c",
-      'approval_policy="never"',
-      "-c",
-      'sandbox_mode="danger-full-access"',
-    ],
+    autoApproveArgs: ["-c", 'approval_policy="never"', "-c", 'sandbox_mode="danger-full-access"'],
   },
 
   /**
@@ -108,13 +102,7 @@ const ADAPTERS: Record<string, AgentAdapter> = {
    */
   "droid-acp": {
     command: "droid",
-    args: [
-      "exec",
-      "--input-format",
-      "stream-jsonrpc",
-      "--output-format",
-      "stream-jsonrpc",
-    ],
+    args: ["exec", "--input-format", "stream-jsonrpc", "--output-format", "stream-jsonrpc"],
     description: "Droid agent via native ACP protocol",
     autoApproveArgs: ["--skip-permissions-unsafe"],
   },

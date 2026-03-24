@@ -9,7 +9,7 @@
 			({ type: "file"; files?: FileList } | { type?: InputType; files?: undefined })
 	>;
 
-	let {
+	const {
 		ref = $bindable(null),
 		value = $bindable(),
 		type,

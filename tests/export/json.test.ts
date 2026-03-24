@@ -18,24 +18,18 @@ import { setupTempFixtures, cleanupTempDir } from "../helpers/cli.js";
 describe("JSON Export", () => {
   let tempDir: string;
   let originalCwd: string;
-  const webUiFixtureDir = path.resolve(
-    process.cwd(),
-    "packages",
-    "web-ui",
-    "tests",
-    "fixtures"
-  );
+  const webUiFixtureDir = path.resolve(process.cwd(), "packages", "web-ui", "tests", "fixtures");
 
   beforeAll(async () => {
     originalCwd = process.cwd();
     tempDir = await setupTempFixtures();
     await fs.copyFile(
       path.join(webUiFixtureDir, "project.plans.yaml"),
-      path.join(tempDir, "project.plans.yaml")
+      path.join(tempDir, "project.plans.yaml"),
     );
     await fs.copyFile(
       path.join(webUiFixtureDir, "project.triage.yaml"),
-      path.join(tempDir, "project.triage.yaml")
+      path.join(tempDir, "project.triage.yaml"),
     );
     process.chdir(tempDir);
   });
@@ -81,9 +75,7 @@ describe("JSON Export", () => {
       expect(typeof snapshot.version).toBe("string");
 
       // Timestamp should be valid ISO 8601
-      expect(snapshot.exported_at).toMatch(
-        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/
-      );
+      expect(snapshot.exported_at).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/);
 
       // Project metadata
       expect(snapshot.project).toHaveProperty("name");
@@ -113,7 +105,7 @@ describe("JSON Export", () => {
 
       // Check if any items have inherited_acs
       const itemsWithInheritedACs = snapshot.items.filter(
-        (i) => i.inherited_acs && i.inherited_acs.length > 0
+        (i) => i.inherited_acs && i.inherited_acs.length > 0,
       );
 
       // If there are items with inherited ACs, verify structure
@@ -251,7 +243,7 @@ plans:
     notes: []
     todos: []
     created_at: "2026-01-01T00:00:00Z"
-`
+`,
       );
 
       const snapshot = await generateJsonSnapshot();

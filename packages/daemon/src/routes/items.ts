@@ -13,7 +13,7 @@
  * - ac-11: GET /api/items/:ref/tasks via AlignmentIndex
  */
 
-import { Elysia, t } from 'elysia';
+import { Elysia, t } from "elysia";
 import {
   initContext,
   loadAllItems,
@@ -27,14 +27,10 @@ import {
   resolveTaskDataManager,
   type LoadedSpecItem,
   type LoadedTask,
-} from '../../parser/index.js';
-import {
-  ImplementationStatusSchema,
-  ItemTypeSchema,
-  MaturitySchema,
-} from '../../schema/common.js';
-import { enumArrayUnion } from './enum-utils.js';
-import { getRelatedSessionsForItem } from './session-related.js';
+} from "../../parser/index.js";
+import { ImplementationStatusSchema, ItemTypeSchema, MaturitySchema } from "../../schema/common.js";
+import { enumArrayUnion } from "./enum-utils.js";
+import { getRelatedSessionsForItem } from "./session-related.js";
 
 interface ItemsRouteOptions {}
 
@@ -49,7 +45,7 @@ function computeParentMap(items: LoadedSpecItem[]): Map<string, string | undefin
   // Group items by source file
   const byFile = new Map<string, LoadedSpecItem[]>();
   for (const item of items) {
-    const file = item._sourceFile || '';
+    const file = item._sourceFile || "";
     if (!byFile.has(file)) {
       byFile.set(file, []);
     }
@@ -59,7 +55,7 @@ function computeParentMap(items: LoadedSpecItem[]): Map<string, string | undefin
   // For each file, determine parent relationships based on path
   for (const [, fileItems] of byFile) {
     // Sort by path length (shorter paths are potential parents)
-    const sorted = [...fileItems].sort((a, b) => {
+    const sorted = [...fileItems].toSorted((a, b) => {
       const aLen = a._path?.length || 0;
       const bLen = b._path?.length || 0;
       return aLen - bLen;
@@ -77,18 +73,18 @@ function computeParentMap(items: LoadedSpecItem[]): Map<string, string | undefin
       // Find the closest parent by matching path prefix
       // Path format: "features[0].requirements[0]"
       // Parent path: "features[0]" or undefined (root item)
-      const lastDot = itemPath.lastIndexOf('.');
+      const lastDot = itemPath.lastIndexOf(".");
       const parentPath = lastDot > -1 ? itemPath.substring(0, lastDot) : undefined;
 
       // Find parent item
       let parentUlid: string | undefined;
       if (parentPath === undefined) {
         // Direct child of the root item (the item with no path)
-        const rootItem = fileItems.find(i => !i._path);
+        const rootItem = fileItems.find((i) => !i._path);
         parentUlid = rootItem?._ulid;
       } else {
         // Find item with matching parent path
-        const parentItem = fileItems.find(i => i._path === parentPath);
+        const parentItem = fileItems.find((i) => i._path === parentPath);
         parentUlid = parentItem?._ulid;
       }
 
@@ -100,7 +96,7 @@ function computeParentMap(items: LoadedSpecItem[]): Map<string, string | undefin
 }
 
 function getItemImplementationStatus(item: LoadedSpecItem): string | undefined {
-  if (typeof item.status === 'string') {
+  if (typeof item.status === "string") {
     return item.status;
   }
 
@@ -108,7 +104,7 @@ function getItemImplementationStatus(item: LoadedSpecItem): string | undefined {
 }
 
 function getItemMaturity(item: LoadedSpecItem): string | undefined {
-  if (typeof item.status === 'object') {
+  if (typeof item.status === "object") {
     return item.status?.maturity;
   }
 
@@ -117,7 +113,7 @@ function getItemMaturity(item: LoadedSpecItem): string | undefined {
 
 function toBatchSpecItemSummary(item: LoadedSpecItem) {
   return {
-    kind: 'item',
+    kind: "item",
     ulid: item._ulid,
     slugs: item.slugs,
     title: item.title,
@@ -131,7 +127,7 @@ function toBatchSpecItemSummary(item: LoadedSpecItem) {
 
 function toBatchTaskSummary(task: LoadedTask) {
   return {
-    kind: 'task',
+    kind: "task",
     ulid: task._ulid,
     slugs: task.slugs,
     title: task.title,
@@ -145,351 +141,349 @@ function toBatchTaskSummary(task: LoadedTask) {
 export function createItemsRoutes(options: ItemsRouteOptions = {}) {
   // No closure-scoped kspecDir needed - comes from middleware
 
-  return new Elysia({ prefix: '/api/items' })
-    // AC: @api-contract ac-8, ac-9 - List items with type filter
-    .get(
-      '/',
-      async ({ query, projectContext }) => {
-        // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-        const ctx = await initContext(projectContext.path);
-        const items = await loadAllItems(ctx);
+  return (
+    new Elysia({ prefix: "/api/items" })
+      // AC: @api-contract ac-8, ac-9 - List items with type filter
+      .get(
+        "/",
+        async ({ query, projectContext }) => {
+          // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+          const ctx = await initContext(projectContext.path);
+          const items = await loadAllItems(ctx);
 
-        // Compute parent relationships from path structure
-        const parentMap = computeParentMap(items);
+          // Compute parent relationships from path structure
+          const parentMap = computeParentMap(items);
 
-        // Apply filters
-        let filtered = items;
+          // Apply filters
+          let filtered = items;
 
-        // AC: @api-contract ac-9 - Multi-value type filter
-        if (query.type) {
-          const typeFilters = Array.isArray(query.type) ? query.type : [query.type];
-          filtered = filtered.filter((item) => typeFilters.includes(item.type));
-        }
+          // AC: @api-contract ac-9 - Multi-value type filter
+          if (query.type) {
+            const typeFilters = Array.isArray(query.type) ? query.type : [query.type];
+            filtered = filtered.filter((item) => typeFilters.includes(item.type));
+          }
 
-        // Optional maturity filter (not in ACs but useful)
-        if (query.maturity) {
-          const maturityFilters = Array.isArray(query.maturity) ? query.maturity : [query.maturity];
-          filtered = filtered.filter((item) => {
-            if (typeof item.status === 'object' && item.status?.maturity) {
-              return maturityFilters.includes(item.status.maturity);
+          // Optional maturity filter (not in ACs but useful)
+          if (query.maturity) {
+            const maturityFilters = Array.isArray(query.maturity)
+              ? query.maturity
+              : [query.maturity];
+            filtered = filtered.filter((item) => {
+              if (typeof item.status === "object" && item.status?.maturity) {
+                return maturityFilters.includes(item.status.maturity);
+              }
+              return false;
+            });
+          }
+
+          // Optional implementation filter (not in ACs but useful)
+          if (query.implementation) {
+            const implFilters = Array.isArray(query.implementation)
+              ? query.implementation
+              : [query.implementation];
+            filtered = filtered.filter((item) => {
+              if (typeof item.status === "object" && item.status?.implementation) {
+                return implFilters.includes(item.status.implementation);
+              }
+              return false;
+            });
+          }
+
+          // Tag filter (not in ACs but useful)
+          if (query.tag) {
+            const tagFilters = Array.isArray(query.tag) ? query.tag : [query.tag];
+            filtered = filtered.filter((item) => item.tags?.some((t) => tagFilters.includes(t)));
+          }
+
+          // Plan filter — show only specs derived from a given plan
+          if (query.plan) {
+            const plans = await loadPlans(ctx);
+            const plan = plans.find((p) => p._ulid === query.plan || p.slugs.includes(query.plan!));
+            if (plan) {
+              const derivedRefs = new Set(
+                plan.derived_specs.map((r) => (r.startsWith("@") ? r.slice(1) : r)),
+              );
+              filtered = filtered.filter(
+                (item) => derivedRefs.has(item._ulid) || item.slugs.some((s) => derivedRefs.has(s)),
+              );
+            } else {
+              filtered = [];
             }
-            return false;
-          });
-        }
+          }
 
-        // Optional implementation filter (not in ACs but useful)
-        if (query.implementation) {
-          const implFilters = Array.isArray(query.implementation)
-            ? query.implementation
-            : [query.implementation];
-          filtered = filtered.filter((item) => {
-            if (typeof item.status === 'object' && item.status?.implementation) {
-              return implFilters.includes(item.status.implementation);
+          // Pagination
+          const total = filtered.length;
+          const offset = Number(query.offset) || 0;
+          const limit = Number(query.limit) || total;
+
+          const paginated = filtered.slice(offset, offset + limit);
+
+          // AC: @api-contract ac-8 - Return spec items (modules, features, requirements)
+          const result = paginated.map((item) => ({
+            _ulid: item._ulid,
+            slugs: item.slugs,
+            title: item.title,
+            type: item.type,
+            status: item.status,
+            tags: item.tags,
+            parent: parentMap.get(item._ulid),
+            created_at: item.created_at,
+            acceptance_criteria_count: item.acceptance_criteria?.length || 0,
+          }));
+
+          // AC: @trait-api-endpoint ac-4 - Return pagination wrapper
+          return {
+            items: result,
+            total,
+            offset,
+            limit,
+          };
+        },
+        {
+          query: t.Object({
+            type: t.Optional(enumArrayUnion(ItemTypeSchema.options)),
+            maturity: t.Optional(enumArrayUnion(MaturitySchema.options)),
+            implementation: t.Optional(enumArrayUnion(ImplementationStatusSchema.options)),
+            tag: t.Optional(t.Union([t.String(), t.Array(t.String())])),
+            plan: t.Optional(t.String()),
+            limit: t.Optional(t.String()),
+            offset: t.Optional(t.String()),
+          }),
+        },
+      )
+
+      .post(
+        "/batch",
+        async ({ body, error: errorResponse, projectContext }) => {
+          const refs = body.refs;
+
+          // AC: @trait-api-endpoint ac-3 - Validate body
+          if (!Array.isArray(refs)) {
+            return errorResponse(400, {
+              error: "validation_error",
+              details: [
+                {
+                  field: "refs",
+                  message: "Refs is required and must be an array of item references",
+                },
+              ],
+            });
+          }
+
+          // AC: @batch-item-fetch-api ac-5 - Enforce max batch size
+          if (refs.length > 100) {
+            return errorResponse(400, {
+              error: "validation_error",
+              details: [
+                {
+                  field: "refs",
+                  message: "Maximum batch size is 100 refs",
+                },
+              ],
+            });
+          }
+
+          // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+          const ctx = await initContext(projectContext.path);
+          const items = await loadAllItems(ctx);
+          const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+
+          const resolvedItems = [];
+          const unresolved: string[] = [];
+
+          for (const ref of refs) {
+            const task = findTaskByRef(tasks, ref);
+            if (task) {
+              resolvedItems.push(toBatchTaskSummary(task));
+              continue;
             }
-            return false;
-          });
-        }
 
-        // Tag filter (not in ACs but useful)
-        if (query.tag) {
-          const tagFilters = Array.isArray(query.tag) ? query.tag : [query.tag];
-          filtered = filtered.filter((item) =>
-            item.tags?.some((t) => tagFilters.includes(t))
-          );
-        }
+            const item = findItemByRef(items, ref);
+            if (item) {
+              resolvedItems.push(toBatchSpecItemSummary(item));
+              continue;
+            }
 
-        // Plan filter — show only specs derived from a given plan
-        if (query.plan) {
-          const plans = await loadPlans(ctx);
-          const plan = plans.find(
-            (p) => p._ulid === query.plan || p.slugs.includes(query.plan!)
-          );
-          if (plan) {
-            const derivedRefs = new Set(
-              plan.derived_specs.map((r) => (r.startsWith('@') ? r.slice(1) : r))
-            );
-            filtered = filtered.filter(
-              (item) =>
-                derivedRefs.has(item._ulid) ||
-                item.slugs.some((s) => derivedRefs.has(s))
-            );
-          } else {
-            filtered = [];
-          }
-        }
-
-        // Pagination
-        const total = filtered.length;
-        const offset = Number(query.offset) || 0;
-        const limit = Number(query.limit) || total;
-
-        const paginated = filtered.slice(offset, offset + limit);
-
-        // AC: @api-contract ac-8 - Return spec items (modules, features, requirements)
-        const result = paginated.map((item) => ({
-          _ulid: item._ulid,
-          slugs: item.slugs,
-          title: item.title,
-          type: item.type,
-          status: item.status,
-          tags: item.tags,
-          parent: parentMap.get(item._ulid),
-          created_at: item.created_at,
-          acceptance_criteria_count: item.acceptance_criteria?.length || 0,
-        }));
-
-        // AC: @trait-api-endpoint ac-4 - Return pagination wrapper
-        return {
-          items: result,
-          total,
-          offset,
-          limit,
-        };
-      },
-      {
-        query: t.Object({
-          type: t.Optional(enumArrayUnion(ItemTypeSchema.options)),
-          maturity: t.Optional(enumArrayUnion(MaturitySchema.options)),
-          implementation: t.Optional(enumArrayUnion(ImplementationStatusSchema.options)),
-          tag: t.Optional(t.Union([t.String(), t.Array(t.String())])),
-          plan: t.Optional(t.String()),
-          limit: t.Optional(t.String()),
-          offset: t.Optional(t.String()),
-        }),
-      }
-    )
-
-    .post(
-      '/batch',
-      async ({ body, error: errorResponse, projectContext }) => {
-        const refs = body.refs;
-
-        // AC: @trait-api-endpoint ac-3 - Validate body
-        if (!Array.isArray(refs)) {
-          return errorResponse(400, {
-            error: 'validation_error',
-            details: [
-              {
-                field: 'refs',
-                message: 'Refs is required and must be an array of item references',
-              },
-            ],
-          });
-        }
-
-        // AC: @batch-item-fetch-api ac-5 - Enforce max batch size
-        if (refs.length > 100) {
-          return errorResponse(400, {
-            error: 'validation_error',
-            details: [
-              {
-                field: 'refs',
-                message: 'Maximum batch size is 100 refs',
-              },
-            ],
-          });
-        }
-
-        // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-        const ctx = await initContext(projectContext.path);
-        const items = await loadAllItems(ctx);
-        const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
-
-        const resolvedItems = [];
-        const unresolved: string[] = [];
-
-        for (const ref of refs) {
-          const task = findTaskByRef(tasks, ref);
-          if (task) {
-            resolvedItems.push(toBatchTaskSummary(task));
-            continue;
+            unresolved.push(ref);
           }
 
-          const item = findItemByRef(items, ref);
-          if (item) {
-            resolvedItems.push(toBatchSpecItemSummary(item));
-            continue;
+          return {
+            items: resolvedItems,
+            unresolved,
+          };
+        },
+        {
+          body: t.Object({
+            refs: t.Optional(t.Array(t.String())),
+          }),
+        },
+      )
+
+      // AC: @api-contract ac-10 - Get single item by ref
+      .get(
+        "/:ref",
+        async ({ params, error: errorResponse, projectContext }) => {
+          // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+          const ctx = await initContext(projectContext.path);
+          const items = await loadAllItems(ctx);
+          const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+          const index = new ReferenceIndex(tasks, items);
+
+          // Compute parent relationships from path structure
+          const parentMap = computeParentMap(items);
+
+          // AC: @api-contract ac-10, @trait-api-endpoint ac-2 - Resolve ref via ReferenceIndex
+          const result = index.resolve(params.ref);
+
+          if (!result.ok) {
+            // AC: @trait-api-endpoint ac-2 - Return 404 with error details
+            return errorResponse(404, {
+              error: "not_found",
+              message: `Item reference "${params.ref}" not found`,
+              suggestion: "Use kspec item list or kspec search to find valid item references",
+            });
           }
 
-          unresolved.push(ref);
-        }
-
-        return {
-          items: resolvedItems,
-          unresolved,
-        };
-      },
-      {
-        body: t.Object({
-          refs: t.Optional(t.Array(t.String())),
-        }),
-      }
-    )
-
-    // AC: @api-contract ac-10 - Get single item by ref
-    .get(
-      '/:ref',
-      async ({ params, error: errorResponse, projectContext }) => {
-        // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-        const ctx = await initContext(projectContext.path);
-        const items = await loadAllItems(ctx);
-        const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
-        const index = new ReferenceIndex(tasks, items);
-
-        // Compute parent relationships from path structure
-        const parentMap = computeParentMap(items);
-
-        // AC: @api-contract ac-10, @trait-api-endpoint ac-2 - Resolve ref via ReferenceIndex
-        const result = index.resolve(params.ref);
-
-        if (!result.ok) {
-          // AC: @trait-api-endpoint ac-2 - Return 404 with error details
-          return errorResponse(404, {
-            error: 'not_found',
-            message: `Item reference "${params.ref}" not found`,
-            suggestion: 'Use kspec item list or kspec search to find valid item references',
-          });
-        }
-
-        // Find the item
-        const item = items.find((i) => i._ulid === result.ulid);
-        if (!item) {
-          return errorResponse(404, {
-            error: 'not_found',
-            message: `Reference "${params.ref}" is not a spec item`,
-            suggestion: 'This reference might point to a task instead',
-          });
-        }
-
-        // AC: @web-dashboard ac-15 - Compute test coverage for acceptance criteria
-        // Uses cached coverage scan for performance (avoids re-scanning on every request)
-        let acceptanceCriteriaWithCoverage = item.acceptance_criteria;
-        if (item.acceptance_criteria && item.acceptance_criteria.length > 0) {
-          try {
-            const coveredACs = await getCachedTestCoverage(projectContext.path);
-            acceptanceCriteriaWithCoverage = computeACCoverage(item, coveredACs);
-          } catch (err) {
-            // Coverage scan failed - leave as undefined
-            console.warn('AC coverage scan failed:', err);
+          // Find the item
+          const item = items.find((i) => i._ulid === result.ulid);
+          if (!item) {
+            return errorResponse(404, {
+              error: "not_found",
+              message: `Reference "${params.ref}" is not a spec item`,
+              suggestion: "This reference might point to a task instead",
+            });
           }
-        }
 
-        // AC: @api-contract ac-10 - Return full item with acceptance_criteria, traits, relationships
-        return {
-          _ulid: item._ulid,
-          slugs: item.slugs,
-          title: item.title,
-          type: item.type,
-          status: item.status,
-          tags: item.tags,
-          parent: parentMap.get(item._ulid),
-          description: item.description,
-          acceptance_criteria: acceptanceCriteriaWithCoverage,
-          traits: item.traits,
-          relationships: item.relationships,
-          created_at: item.created_at,
-          _sourceFile: item._sourceFile,
-        };
-      },
-      {
-        params: t.Object({
-          ref: t.String(),
-        }),
-      }
-    )
+          // AC: @web-dashboard ac-15 - Compute test coverage for acceptance criteria
+          // Uses cached coverage scan for performance (avoids re-scanning on every request)
+          let acceptanceCriteriaWithCoverage = item.acceptance_criteria;
+          if (item.acceptance_criteria && item.acceptance_criteria.length > 0) {
+            try {
+              const coveredACs = await getCachedTestCoverage(projectContext.path);
+              acceptanceCriteriaWithCoverage = computeACCoverage(item, coveredACs);
+            } catch (err) {
+              // Coverage scan failed - leave as undefined
+              console.warn("AC coverage scan failed:", err);
+            }
+          }
 
-    // AC: @api-contract ac-11 - Get tasks linked to spec item
-    .get(
-      '/:ref/tasks',
-      async ({ params, error: errorResponse, projectContext }) => {
-        // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-        const ctx = await initContext(projectContext.path);
-        const items = await loadAllItems(ctx);
-        const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
-        const refIndex = new ReferenceIndex(tasks, items);
-        const alignIndex = new AlignmentIndex(tasks, items);
-        alignIndex.buildLinks(refIndex);
+          // AC: @api-contract ac-10 - Return full item with acceptance_criteria, traits, relationships
+          return {
+            _ulid: item._ulid,
+            slugs: item.slugs,
+            title: item.title,
+            type: item.type,
+            status: item.status,
+            tags: item.tags,
+            parent: parentMap.get(item._ulid),
+            description: item.description,
+            acceptance_criteria: acceptanceCriteriaWithCoverage,
+            traits: item.traits,
+            relationships: item.relationships,
+            created_at: item.created_at,
+            _sourceFile: item._sourceFile,
+          };
+        },
+        {
+          params: t.Object({
+            ref: t.String(),
+          }),
+        },
+      )
 
-        // Resolve ref
-        const result = refIndex.resolve(params.ref);
+      // AC: @api-contract ac-11 - Get tasks linked to spec item
+      .get(
+        "/:ref/tasks",
+        async ({ params, error: errorResponse, projectContext }) => {
+          // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+          const ctx = await initContext(projectContext.path);
+          const items = await loadAllItems(ctx);
+          const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+          const refIndex = new ReferenceIndex(tasks, items);
+          const alignIndex = new AlignmentIndex(tasks, items);
+          alignIndex.buildLinks(refIndex);
 
-        if (!result.ok) {
-          return errorResponse(404, {
-            error: 'not_found',
-            message: `Item reference "${params.ref}" not found`,
-            suggestion: 'Use kspec item list to find valid item references',
+          // Resolve ref
+          const result = refIndex.resolve(params.ref);
+
+          if (!result.ok) {
+            return errorResponse(404, {
+              error: "not_found",
+              message: `Item reference "${params.ref}" not found`,
+              suggestion: "Use kspec item list to find valid item references",
+            });
+          }
+
+          const item = items.find((i) => i._ulid === result.ulid);
+          if (!item) {
+            return errorResponse(404, {
+              error: "not_found",
+              message: `Reference "${params.ref}" is not a spec item`,
+            });
+          }
+
+          // AC: @api-contract ac-11 - Get tasks via AlignmentIndex
+          const linkedTasks = alignIndex.getTasksForSpec(result.ulid);
+
+          // Return tasks with summary info
+          const result_items = linkedTasks.map((task) => ({
+            _ulid: task._ulid,
+            slugs: task.slugs,
+            title: task.title,
+            type: task.type || "task",
+            status: task.status,
+            priority: task.priority,
+            spec_ref: task.spec_ref,
+            tags: task.tags || [],
+            depends_on: task.depends_on || [],
+            started_at: task.started_at,
+            completed_at: task.completed_at,
+            created_at: task.created_at,
+            notes_count: task.notes?.length || 0,
+            todos_count: task.todos?.length || 0,
+          }));
+
+          return {
+            items: result_items,
+            total: result_items.length,
+          };
+        },
+        {
+          params: t.Object({
+            ref: t.String(),
+          }),
+        },
+      )
+
+      .get(
+        "/:ref/sessions",
+        async ({ params, error: errorResponse, projectContext }) => {
+          const ctx = await initContext(projectContext.path);
+          const items = await loadAllItems(ctx);
+          const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+          const result = await getRelatedSessionsForItem({
+            itemRef: params.ref,
+            items,
+            tasks,
+            sessionsDir: ctx.sessionsDir,
           });
-        }
 
-        const item = items.find((i) => i._ulid === result.ulid);
-        if (!item) {
-          return errorResponse(404, {
-            error: 'not_found',
-            message: `Reference "${params.ref}" is not a spec item`,
-          });
-        }
+          if ("error" in result) {
+            return errorResponse(404, result.error);
+          }
 
-        // AC: @api-contract ac-11 - Get tasks via AlignmentIndex
-        const linkedTasks = alignIndex.getTasksForSpec(result.ulid);
-
-        // Return tasks with summary info
-        const result_items = linkedTasks.map((task) => ({
-          _ulid: task._ulid,
-          slugs: task.slugs,
-          title: task.title,
-          type: task.type || 'task',
-          status: task.status,
-          priority: task.priority,
-          spec_ref: task.spec_ref,
-          tags: task.tags || [],
-          depends_on: task.depends_on || [],
-          started_at: task.started_at,
-          completed_at: task.completed_at,
-          created_at: task.created_at,
-          notes_count: task.notes?.length || 0,
-          todos_count: task.todos?.length || 0,
-        }));
-
-        return {
-          items: result_items,
-          total: result_items.length,
-        };
-      },
-      {
-        params: t.Object({
-          ref: t.String(),
-        }),
-      }
-    )
-
-    .get(
-      '/:ref/sessions',
-      async ({ params, error: errorResponse, projectContext }) => {
-        const ctx = await initContext(projectContext.path);
-        const items = await loadAllItems(ctx);
-        const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
-        const result = await getRelatedSessionsForItem({
-          itemRef: params.ref,
-          items,
-          tasks,
-          sessionsDir: ctx.sessionsDir,
-        });
-
-        if ('error' in result) {
-          return errorResponse(404, result.error);
-        }
-
-        return {
-          items: result.sessions,
-          total: result.sessions.length,
-          offset: 0,
-          limit: result.sessions.length,
-        };
-      },
-      {
-        params: t.Object({
-          ref: t.String(),
-        }),
-      }
-    );
+          return {
+            items: result.sessions,
+            total: result.sessions.length,
+            offset: 0,
+            limit: result.sessions.length,
+          };
+        },
+        {
+          params: t.Object({
+            ref: t.String(),
+          }),
+        },
+      )
+  );
 }

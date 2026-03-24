@@ -68,7 +68,11 @@ async function setupProject(
       "    adapter: mock-acp",
       "    auto_approve: false",
       ...(options?.agentBootstrap
-        ? ["    bootstrap:", "      steps:", ...options.agentBootstrap.split("\n").map((line) => `        ${line}`)]
+        ? [
+            "    bootstrap:",
+            "      steps:",
+            ...options.agentBootstrap.split("\n").map((line) => `        ${line}`),
+          ]
         : []),
       "",
     ].join("\n"),
@@ -106,24 +110,32 @@ async function setupLocalFileDependencyProject(dir: string): Promise<void> {
   await fs.mkdir(dependencyDir, { recursive: true });
   await fs.writeFile(
     path.join(dependencyDir, "package.json"),
-    JSON.stringify({
-      name: "local-dep",
-      version: "1.0.0",
-      main: "index.js",
-    }, null, 2),
+    JSON.stringify(
+      {
+        name: "local-dep",
+        version: "1.0.0",
+        main: "index.js",
+      },
+      null,
+      2,
+    ),
     "utf-8",
   );
   await fs.writeFile(path.join(dependencyDir, "index.js"), "module.exports = 'ok';\n", "utf-8");
   await fs.writeFile(
     path.join(dir, "package.json"),
-    JSON.stringify({
-      name: "dispatch-bootstrap-fixture",
-      private: true,
-      version: "1.0.0",
-      dependencies: {
-        "local-dep": "file:./deps/local-dep",
+    JSON.stringify(
+      {
+        name: "dispatch-bootstrap-fixture",
+        private: true,
+        version: "1.0.0",
+        dependencies: {
+          "local-dep": "file:./deps/local-dep",
+        },
       },
-    }, null, 2),
+      null,
+      2,
+    ),
     "utf-8",
   );
   execSync("npm install --package-lock-only", {
@@ -131,7 +143,10 @@ async function setupLocalFileDependencyProject(dir: string): Promise<void> {
     stdio: "pipe",
     encoding: "utf-8",
   });
-  git(dir, "add package.json package-lock.json deps/local-dep/package.json deps/local-dep/index.js");
+  git(
+    dir,
+    "add package.json package-lock.json deps/local-dep/package.json deps/local-dep/index.js",
+  );
   git(dir, 'commit -m "fixture: add local dependency bootstrap project"');
 }
 
@@ -160,10 +175,14 @@ async function updateWorkspaceRecord(
     throw new Error(`Workspace record not found for ${taskRef}`);
   }
   mutate(workspace);
-  await fs.writeFile(registryPath, YAML.stringify({
-    kynetic_dispatch_workspaces: raw.kynetic_dispatch_workspaces ?? "1.0",
-    workspaces,
-  }), "utf-8");
+  await fs.writeFile(
+    registryPath,
+    YAML.stringify({
+      kynetic_dispatch_workspaces: raw.kynetic_dispatch_workspaces ?? "1.0",
+      workspaces,
+    }),
+    "utf-8",
+  );
 }
 
 describe("dispatch runtime bootstrap contract", () => {
@@ -201,15 +220,21 @@ describe("dispatch runtime bootstrap contract", () => {
       ].join("\n"),
     });
 
-    const runSpy = vi.spyOn(invocationModule, "runInvocation").mockImplementation(async (options) => {
-      await expect(readTestOutput(path.join(options.cwd, ".dispatch-cache", "project.txt"))).resolves.toBe("project");
-      await expect(readTestOutput(path.join(options.cwd, ".dispatch-cache", "agent.txt"))).resolves.toBe("agent");
-      return {
-        session: {} as never,
-        outcome: "success",
-        durationMs: 1,
-      };
-    });
+    const runSpy = vi
+      .spyOn(invocationModule, "runInvocation")
+      .mockImplementation(async (options) => {
+        await expect(
+          readTestOutput(path.join(options.cwd, ".dispatch-cache", "project.txt")),
+        ).resolves.toBe("project");
+        await expect(
+          readTestOutput(path.join(options.cwd, ".dispatch-cache", "agent.txt")),
+        ).resolves.toBe("agent");
+        return {
+          session: {} as never,
+          outcome: "success",
+          durationMs: 1,
+        };
+      });
 
     const engine = new DispatchEngine({
       projectDir: tempDir,
@@ -534,7 +559,9 @@ describe("dispatch runtime bootstrap contract", () => {
       agent: makeAgent(),
       env: {},
     });
-    expect(bootstrapped.metadata.bootstrap.invalidationReasons).toContain("bootstrap-config-changed");
+    expect(bootstrapped.metadata.bootstrap.invalidationReasons).toContain(
+      "bootstrap-config-changed",
+    );
 
     await fs.writeFile(path.join(workspace.cwd, "runtime.txt"), "runtime\n", "utf-8");
     git(workspace.cwd, "add runtime.txt");
@@ -553,7 +580,9 @@ describe("dispatch runtime bootstrap contract", () => {
       agent: makeAgent(),
       env: {},
     });
-    expect(bootstrapped.metadata.bootstrap.invalidationReasons).toContain("canonical-branch-head-changed");
+    expect(bootstrapped.metadata.bootstrap.invalidationReasons).toContain(
+      "canonical-branch-head-changed",
+    );
 
     await updateWorkspaceRecord(workspace.metadataPath, taskRef, (record) => {
       record.bootstrap.status = "failed";
@@ -586,7 +615,7 @@ describe("dispatch runtime bootstrap contract", () => {
         "  base_branch: agent-dev",
         "  bootstrap:",
         "    steps:",
-        "      - run: mkdir -p .dispatch-cache && count_file=.dispatch-cache/count && count=$(cat \"$count_file\" 2>/dev/null || echo 0) && echo $((count + 1)) > \"$count_file\"",
+        '      - run: mkdir -p .dispatch-cache && count_file=.dispatch-cache/count && count=$(cat "$count_file" 2>/dev/null || echo 0) && echo $((count + 1)) > "$count_file"',
       ].join("\n"),
       "utf-8",
     );
@@ -612,14 +641,11 @@ describe("dispatch runtime bootstrap contract", () => {
       metadataPath: workspace.metadataPath,
       metadata: {
         ...workspace.metadata,
-        bootstrap: (await readWorkspaceRecord(
-          workspace.metadataPath,
-          workspace.metadata.taskRef,
-        )).bootstrap,
-        bootstrapState: (await readWorkspaceRecord(
-          workspace.metadataPath,
-          workspace.metadata.taskRef,
-        )).bootstrap,
+        bootstrap: (await readWorkspaceRecord(workspace.metadataPath, workspace.metadata.taskRef))
+          .bootstrap,
+        bootstrapState: (
+          await readWorkspaceRecord(workspace.metadataPath, workspace.metadata.taskRef)
+        ).bootstrap,
       },
       role: "worker",
       agent: makeAgent(),
@@ -637,10 +663,7 @@ describe("dispatch runtime bootstrap contract", () => {
     await setupLocalFileDependencyProject(tempDir);
     await fs.writeFile(
       path.join(tempDir, "kspec.config.yaml"),
-      [
-        "dispatch:",
-        "  base_branch: agent-dev",
-      ].join("\n"),
+      ["dispatch:", "  base_branch: agent-dev"].join("\n"),
       "utf-8",
     );
 
@@ -688,9 +711,13 @@ describe("dispatch runtime bootstrap contract", () => {
 
     expect(repaired.reused).toBe(false);
     expect(repaired.ranSteps).toBe(true);
-    expect(repaired.metadata.bootstrap.invalidationReasons).toContain("workspace-dependencies-missing");
+    expect(repaired.metadata.bootstrap.invalidationReasons).toContain(
+      "workspace-dependencies-missing",
+    );
     expect(
-      repaired.metadata.bootstrap.steps.some((step) => step.name === "install-workspace-dependencies"),
+      repaired.metadata.bootstrap.steps.some(
+        (step) => step.name === "install-workspace-dependencies",
+      ),
     ).toBe(true);
     await expect(
       fs.stat(path.join(workspace.cwd, "node_modules", "local-dep")),
@@ -786,7 +813,14 @@ describe("dispatch runtime bootstrap contract", () => {
 
     expect(runSpy).not.toHaveBeenCalled();
     const calls = await readJson<Array<{ args: string[] }>>(captureFile);
-    expect(calls.some((call) => call.args[0] === "task" && call.args[1] === "note" && call.args[3].includes("Suggested action"))).toBe(true);
+    expect(
+      calls.some(
+        (call) =>
+          call.args[0] === "task" &&
+          call.args[1] === "note" &&
+          call.args[3].includes("Suggested action"),
+      ),
+    ).toBe(true);
     expect(calls.some((call) => call.args[0] === "task" && call.args[1] === "block")).toBe(true);
 
     const registryPath = path.join(tempDir, "project.dispatch-workspaces.yaml");

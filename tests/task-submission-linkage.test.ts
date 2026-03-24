@@ -59,10 +59,7 @@ describe("Integration: task submission linkage", () => {
     kspec("task start @linkage-test", tempDir);
     kspec("task submit @linkage-test", tempDir);
 
-    const task = kspecJson<TaskWithLinkage>(
-      "task get @linkage-test --json",
-      tempDir,
-    );
+    const task = kspecJson<TaskWithLinkage>("task get @linkage-test --json", tempDir);
     expect(task.status).toBe("pending_review");
     expect(task.submission_linkage).toBeDefined();
     expect(task.submission_linkage!.branch).toBe("feat/test-branch");
@@ -74,19 +71,11 @@ describe("Integration: task submission linkage", () => {
   it("should include review URL in submission linkage when provided", () => {
     kspec('task add --title "URL linkage" --slug url-linkage', tempDir);
     kspec("task start @url-linkage", tempDir);
-    kspec(
-      'task submit @url-linkage --review-url "https://github.com/org/repo/pull/42"',
-      tempDir,
-    );
+    kspec('task submit @url-linkage --review-url "https://github.com/org/repo/pull/42"', tempDir);
 
-    const task = kspecJson<TaskWithLinkage>(
-      "task get @url-linkage --json",
-      tempDir,
-    );
+    const task = kspecJson<TaskWithLinkage>("task get @url-linkage --json", tempDir);
     expect(task.submission_linkage).toBeDefined();
-    expect(task.submission_linkage!.review_url).toBe(
-      "https://github.com/org/repo/pull/42",
-    );
+    expect(task.submission_linkage!.review_url).toBe("https://github.com/org/repo/pull/42");
   });
 
   // AC: @portable-task-submission-linkage ac-1
@@ -102,16 +91,11 @@ describe("Integration: task submission linkage", () => {
     kspec("task start @remote-test", tempDir);
     kspec("task submit @remote-test", tempDir);
 
-    const task = kspecJson<TaskWithLinkage>(
-      "task get @remote-test --json",
-      tempDir,
-    );
+    const task = kspecJson<TaskWithLinkage>("task get @remote-test --json", tempDir);
     expect(task.submission_linkage).toBeDefined();
     expect(task.submission_linkage!.remote).toBe("origin");
     expect(task.submission_linkage!.remote_url).toContain(bareDir);
-    expect(task.submission_linkage!.upstream_ref).toBe(
-      "refs/heads/feat/remote-test",
-    );
+    expect(task.submission_linkage!.upstream_ref).toBe("refs/heads/feat/remote-test");
 
     // Cleanup bare repo
     execSync(`rm -rf "${bareDir}"`, { stdio: "pipe" });
@@ -131,24 +115,16 @@ describe("Integration: task submission linkage", () => {
     git("branch --set-upstream-to=origin/release/v1", tempDir);
     git("commit --allow-empty -m 'diverge work'", tempDir);
 
-    kspec(
-      'task add --title "Diverge upstream" --slug diverge-upstream',
-      tempDir,
-    );
+    kspec('task add --title "Diverge upstream" --slug diverge-upstream', tempDir);
     kspec("task start @diverge-upstream", tempDir);
     kspec("task submit @diverge-upstream", tempDir);
 
-    const task = kspecJson<TaskWithLinkage>(
-      "task get @diverge-upstream --json",
-      tempDir,
-    );
+    const task = kspecJson<TaskWithLinkage>("task get @diverge-upstream --json", tempDir);
     expect(task.submission_linkage).toBeDefined();
     expect(task.submission_linkage!.branch).toBe("my-local-branch");
     expect(task.submission_linkage!.remote).toBe("origin");
     // The upstream ref should be the REMOTE branch name, not the local branch name
-    expect(task.submission_linkage!.upstream_ref).toBe(
-      "refs/heads/release/v1",
-    );
+    expect(task.submission_linkage!.upstream_ref).toBe("refs/heads/release/v1");
 
     // Cleanup bare repo
     execSync(`rm -rf "${bareDir}"`, { stdio: "pipe" });
@@ -173,10 +149,7 @@ describe("Integration: task submission linkage", () => {
     kspec("task start @json-linkage", tempDir);
     kspec("task submit @json-linkage", tempDir);
 
-    const task = kspecJson<TaskWithLinkage>(
-      "task get @json-linkage --json",
-      tempDir,
-    );
+    const task = kspecJson<TaskWithLinkage>("task get @json-linkage --json", tempDir);
     expect(task.submission_linkage).toBeDefined();
     expect(typeof task.submission_linkage!.commit).toBe("string");
     expect(typeof task.submission_linkage!.captured_at).toBe("string");
@@ -197,24 +170,16 @@ describe("Integration: task submission linkage", () => {
     }).trim();
     git(`checkout ${commitHash}`, tempDir);
 
-    kspec(
-      'task add --title "Detached test" --slug detached-test',
-      tempDir,
-    );
+    kspec('task add --title "Detached test" --slug detached-test', tempDir);
     kspec("task start @detached-test", tempDir);
 
     const result = kspecRun("task submit @detached-test", tempDir);
     expect(result.stdout).toContain("Submitted task for review");
 
     // Should warn about detached HEAD
-    expect(result.stdout + result.stderr).toMatch(
-      /detached HEAD|no branch name/i,
-    );
+    expect(result.stdout + result.stderr).toMatch(/detached HEAD|no branch name/i);
 
-    const task = kspecJson<TaskWithLinkage>(
-      "task get @detached-test --json",
-      tempDir,
-    );
+    const task = kspecJson<TaskWithLinkage>("task get @detached-test --json", tempDir);
     expect(task.submission_linkage).toBeDefined();
     expect(task.submission_linkage!.branch).toBeNull();
     expect(task.submission_linkage!.commit).toMatch(/^[0-9a-f]{40}$/);
@@ -229,10 +194,7 @@ describe("Integration: task submission linkage", () => {
     }).trim();
     git(`checkout ${commitHash}`, tempDir);
 
-    kspec(
-      'task add --title "Detached display" --slug detached-display',
-      tempDir,
-    );
+    kspec('task add --title "Detached display" --slug detached-display', tempDir);
     kspec("task start @detached-display", tempDir);
     kspec("task submit @detached-display", tempDir);
 
@@ -247,10 +209,7 @@ describe("Integration: task submission linkage", () => {
     kspec("task start @repair-test", tempDir);
     kspec("task submit @repair-test", tempDir);
 
-    const before = kspecJson<TaskWithLinkage>(
-      "task get @repair-test --json",
-      tempDir,
-    );
+    const before = kspecJson<TaskWithLinkage>("task get @repair-test --json", tempDir);
     expect(before.submission_linkage).toBeDefined();
     const originalCommit = before.submission_linkage!.commit;
 
@@ -260,10 +219,7 @@ describe("Integration: task submission linkage", () => {
     // Repair: re-capture from current git context
     kspec("task set @repair-test --submission-linkage", tempDir);
 
-    const after = kspecJson<TaskWithLinkage>(
-      "task get @repair-test --json",
-      tempDir,
-    );
+    const after = kspecJson<TaskWithLinkage>("task get @repair-test --json", tempDir);
     expect(after.submission_linkage).toBeDefined();
     // Commit should be different after repair
     expect(after.submission_linkage!.commit).not.toBe(originalCommit);
@@ -277,18 +233,12 @@ describe("Integration: task submission linkage", () => {
     kspec("task start @clear-linkage", tempDir);
     kspec("task submit @clear-linkage", tempDir);
 
-    const before = kspecJson<TaskWithLinkage>(
-      "task get @clear-linkage --json",
-      tempDir,
-    );
+    const before = kspecJson<TaskWithLinkage>("task get @clear-linkage --json", tempDir);
     expect(before.submission_linkage).toBeDefined();
 
     kspec("task set @clear-linkage --clear-submission-linkage", tempDir);
 
-    const after = kspecJson<TaskWithLinkage>(
-      "task get @clear-linkage --json",
-      tempDir,
-    );
+    const after = kspecJson<TaskWithLinkage>("task get @clear-linkage --json", tempDir);
     expect(after.submission_linkage).toBeNull();
     // Status preserved
     expect(after.status).toBe("pending_review");
@@ -299,19 +249,13 @@ describe("Integration: task submission linkage", () => {
     // Create task without going through submit (simulating old task)
     kspec('task add --title "Backfill test" --slug backfill-test', tempDir);
 
-    const before = kspecJson<TaskWithLinkage>(
-      "task get @backfill-test --json",
-      tempDir,
-    );
+    const before = kspecJson<TaskWithLinkage>("task get @backfill-test --json", tempDir);
     expect(before.submission_linkage).toBeUndefined();
 
     // Backfill from current git context
     kspec("task set @backfill-test --submission-linkage", tempDir);
 
-    const after = kspecJson<TaskWithLinkage>(
-      "task get @backfill-test --json",
-      tempDir,
-    );
+    const after = kspecJson<TaskWithLinkage>("task get @backfill-test --json", tempDir);
     expect(after.submission_linkage).toBeDefined();
     expect(after.submission_linkage!.commit).toMatch(/^[0-9a-f]{40}$/);
   });
@@ -319,10 +263,7 @@ describe("Integration: task submission linkage", () => {
   // AC: @portable-task-submission-linkage ac-5
   it("should fall back to dispatch config base_branch for upstream_ref when no git upstream tracking", () => {
     // Write dispatch config with base_branch
-    fs.writeFileSync(
-      path.join(tempDir, "kspec.config.yaml"),
-      "dispatch:\n  base_branch: dev\n",
-    );
+    fs.writeFileSync(path.join(tempDir, "kspec.config.yaml"), "dispatch:\n  base_branch: dev\n");
 
     // Create a branch without upstream tracking
     git("checkout -b feat/no-upstream", tempDir);
@@ -332,10 +273,7 @@ describe("Integration: task submission linkage", () => {
     kspec("task start @dispatch-fallback", tempDir);
     kspec("task submit @dispatch-fallback", tempDir);
 
-    const task = kspecJson<TaskWithLinkage>(
-      "task get @dispatch-fallback --json",
-      tempDir,
-    );
+    const task = kspecJson<TaskWithLinkage>("task get @dispatch-fallback --json", tempDir);
     expect(task.submission_linkage).toBeDefined();
     expect(task.submission_linkage!.branch).toBe("feat/no-upstream");
     // No git upstream tracking, but dispatch config provides fallback
@@ -345,10 +283,7 @@ describe("Integration: task submission linkage", () => {
   // AC: @portable-task-submission-linkage ac-5
   it("should prefer git upstream tracking over dispatch config fallback", () => {
     // Write dispatch config with base_branch
-    fs.writeFileSync(
-      path.join(tempDir, "kspec.config.yaml"),
-      "dispatch:\n  base_branch: dev\n",
-    );
+    fs.writeFileSync(path.join(tempDir, "kspec.config.yaml"), "dispatch:\n  base_branch: dev\n");
 
     // Create bare remote and set up upstream tracking
     const bareDir = tempDir + "-bare-precedence";
@@ -361,10 +296,7 @@ describe("Integration: task submission linkage", () => {
     kspec("task start @upstream-precedence", tempDir);
     kspec("task submit @upstream-precedence", tempDir);
 
-    const task = kspecJson<TaskWithLinkage>(
-      "task get @upstream-precedence --json",
-      tempDir,
-    );
+    const task = kspecJson<TaskWithLinkage>("task get @upstream-precedence --json", tempDir);
     expect(task.submission_linkage).toBeDefined();
     // Git upstream tracking takes precedence over dispatch config
     expect(task.submission_linkage!.upstream_ref).toBe("refs/heads/feat/with-upstream");

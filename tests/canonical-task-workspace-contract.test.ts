@@ -26,7 +26,10 @@ function git(cwd: string, command: string): string {
   }).trim();
 }
 
-async function readWorkspaceRecord(registryPath: string, taskRef: string): Promise<Record<string, any>> {
+async function readWorkspaceRecord(
+  registryPath: string,
+  taskRef: string,
+): Promise<Record<string, any>> {
   const raw = YAML.parse(await readTestOutput(registryPath)) as {
     workspaces?: Array<Record<string, any>>;
   };
@@ -100,7 +103,11 @@ describe("canonical task workspace contract", () => {
       "dispatch/task/task-implement-canonical-task-workspace-contract/01task00",
     );
     expect(workspace.cwd).toBe(
-      path.join(tempDir, ".kspec-worktrees", "task-implement-canonical-task-workspace-contract-01task00"),
+      path.join(
+        tempDir,
+        ".kspec-worktrees",
+        "task-implement-canonical-task-workspace-contract-01task00",
+      ),
     );
     expect(workspace.metadata.baseBranch).toBe("agent-dev");
     expect(workspace.metadata.baseBranchPoint).toBe(baseCommit);

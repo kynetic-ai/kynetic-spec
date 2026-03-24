@@ -2,11 +2,7 @@ import { spawn } from "node:child_process";
 import * as path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { acquireFileLock } from "../src/parser/file-lock.js";
-import {
-  cleanupTempDir,
-  CLI_PATH,
-  setupTempFixtures,
-} from "./helpers/cli.js";
+import { cleanupTempDir, CLI_PATH, setupTempFixtures } from "./helpers/cli.js";
 
 function runKspecAsync(
   args: string,
@@ -60,21 +56,17 @@ describe("Dispatch shadow mutation lock", () => {
     const release = await acquireFileLock(lockFile);
 
     let mutationSettled = false;
-    const mutation = runKspecAsync(
-      'task note @test-task-pending "serialized note"',
-      tempDir,
-      { KSPEC_SHADOW_MUTATION_LOCK_FILE: lockFile },
-    ).finally(() => {
+    const mutation = runKspecAsync('task note @test-task-pending "serialized note"', tempDir, {
+      KSPEC_SHADOW_MUTATION_LOCK_FILE: lockFile,
+    }).finally(() => {
       mutationSettled = true;
     });
 
     await sleep(100);
 
-    const readResult = await runKspecAsync(
-      "task get @test-task-pending",
-      tempDir,
-      { KSPEC_SHADOW_MUTATION_LOCK_FILE: lockFile },
-    );
+    const readResult = await runKspecAsync("task get @test-task-pending", tempDir, {
+      KSPEC_SHADOW_MUTATION_LOCK_FILE: lockFile,
+    });
 
     expect(readResult.exitCode).toBe(0);
     expect(mutationSettled).toBe(false);
@@ -92,14 +84,10 @@ describe("Dispatch shadow mutation lock", () => {
     const release = await acquireFileLock(lockFile);
 
     let mutationSettled = false;
-    const mutation = runKspecAsync(
-      'task note @test-task-pending "waited note"',
-      tempDir,
-      {
-        KSPEC_SHADOW_MUTATION_LOCK_FILE: lockFile,
-        // No KSPEC_SHADOW_MUTATION_LOCK_TIMEOUT_MS — default is wait indefinitely
-      },
-    ).finally(() => {
+    const mutation = runKspecAsync('task note @test-task-pending "waited note"', tempDir, {
+      KSPEC_SHADOW_MUTATION_LOCK_FILE: lockFile,
+      // No KSPEC_SHADOW_MUTATION_LOCK_TIMEOUT_MS — default is wait indefinitely
+    }).finally(() => {
       mutationSettled = true;
     });
 
@@ -121,14 +109,10 @@ describe("Dispatch shadow mutation lock", () => {
     const lockFile = path.join(tempDir, "dispatch-shadow-mutation");
     const release = await acquireFileLock(lockFile);
 
-    const result = await runKspecAsync(
-      'task note @test-task-pending "blocked note"',
-      tempDir,
-      {
-        KSPEC_SHADOW_MUTATION_LOCK_FILE: lockFile,
-        KSPEC_SHADOW_MUTATION_LOCK_TIMEOUT_MS: "50",
-      },
-    );
+    const result = await runKspecAsync('task note @test-task-pending "blocked note"', tempDir, {
+      KSPEC_SHADOW_MUTATION_LOCK_FILE: lockFile,
+      KSPEC_SHADOW_MUTATION_LOCK_TIMEOUT_MS: "50",
+    });
 
     await release();
 

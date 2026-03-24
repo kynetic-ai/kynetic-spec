@@ -30,7 +30,7 @@ describe("Claude Code Skill Renderer", () => {
     // Create a test skill with known content
     const result = kspecFull(
       'skill add --id task-work --name "Task Work Skill" --description "A skill for task work" --platform claude-code',
-      tempDir
+      tempDir,
     );
     if (result.exitCode !== 0) {
       throw new Error(`skill add failed: ${result.stderr || result.stdout}`);
@@ -41,7 +41,7 @@ describe("Claude Code Skill Renderer", () => {
     await fs.writeFile(
       skillMdPath,
       "# Task Work Session\n\nStructured workflow for working on tasks.\n",
-      "utf-8"
+      "utf-8",
     );
   });
 
@@ -63,9 +63,7 @@ describe("Claude Code Skill Renderer", () => {
 
       // Verify file was created
       expect(result.action).toBe("created");
-      expect(result.path).toBe(
-        path.join(tempDir, ".claude", "skills", "task-work", "SKILL.md")
-      );
+      expect(result.path).toBe(path.join(tempDir, ".claude", "skills", "task-work", "SKILL.md"));
 
       // Verify content has YAML frontmatter
       const content = await readTestOutput(result.path);
@@ -81,13 +79,7 @@ describe("Claude Code Skill Renderer", () => {
       await renderClaudeCodeSkill(ctx, tempDir, skill!);
 
       // Verify directory structure
-      const expectedPath = path.join(
-        tempDir,
-        ".claude",
-        "skills",
-        "task-work",
-        "SKILL.md"
-      );
+      const expectedPath = path.join(tempDir, ".claude", "skills", "task-work", "SKILL.md");
       const stats = await fs.stat(expectedPath);
       expect(stats.isFile()).toBe(true);
     });
@@ -174,8 +166,8 @@ describe("Claude Code Skill Renderer", () => {
       const skillMdPath = path.join(tempDir, "skills", "task-work", "SKILL.md");
       await fs.writeFile(
         skillMdPath,
-        '---\nname: old-name\ndescription: old description\n---\n\n# Actual Content\n',
-        "utf-8"
+        "---\nname: old-name\ndescription: old description\n---\n\n# Actual Content\n",
+        "utf-8",
       );
 
       const ctx = await initContext(tempDir);
@@ -266,13 +258,7 @@ describe("Claude Code Skill Renderer", () => {
       expect(result.path).not.toContain(".kspec");
 
       // Verify the file exists at the expected location
-      const renderedPath = path.join(
-        tempDir,
-        ".claude",
-        "skills",
-        "task-work",
-        "SKILL.md"
-      );
+      const renderedPath = path.join(tempDir, ".claude", "skills", "task-work", "SKILL.md");
       const stats = await fs.stat(renderedPath);
       expect(stats.isFile()).toBe(true);
     });

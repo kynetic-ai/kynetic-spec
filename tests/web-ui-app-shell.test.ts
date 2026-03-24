@@ -13,18 +13,8 @@ import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 
 const WEB_UI_SRC = join(process.cwd(), "packages", "web-ui", "src");
-const SIDEBAR_PATH = join(
-  WEB_UI_SRC,
-  "lib",
-  "components",
-  "Sidebar.svelte",
-);
-const MOBILE_NAV_PATH = join(
-  WEB_UI_SRC,
-  "lib",
-  "components",
-  "MobileNav.svelte",
-);
+const SIDEBAR_PATH = join(WEB_UI_SRC, "lib", "components", "Sidebar.svelte");
+const MOBILE_NAV_PATH = join(WEB_UI_SRC, "lib", "components", "MobileNav.svelte");
 const ITEMS_REDIRECT_PATH = join(WEB_UI_SRC, "routes", "items", "+page.svelte");
 const SPECS_PAGE_PATH = join(WEB_UI_SRC, "routes", "specs", "+page.svelte");
 const LAYOUT_PATH = join(WEB_UI_SRC, "routes", "+layout.svelte");
@@ -145,15 +135,7 @@ describe("grouped sidebar navigation (@ui-app-shell ac-1)", () => {
   });
 
   it("all new route pages exist", () => {
-    const routes = [
-      "agents",
-      "sessions",
-      "specs",
-      "plans",
-      "validate",
-      "workflows",
-      "settings",
-    ];
+    const routes = ["agents", "sessions", "specs", "plans", "validate", "workflows", "settings"];
     for (const route of routes) {
       const routePath = join(WEB_UI_SRC, "routes", route, "+page.svelte");
       expect(existsSync(routePath), `route /${route} should exist`).toBe(true);

@@ -3,7 +3,7 @@
 	import type { Snippet } from "svelte";
 	import type { HTMLAnchorAttributes } from "svelte/elements";
 
-	let {
+	const {
 		ref = $bindable(null),
 		children,
 		child,

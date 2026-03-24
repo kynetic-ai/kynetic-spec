@@ -12,11 +12,11 @@
  * - ac-3 (@trait-websocket-protocol): Broadcast event format
  */
 
-import type { ServerWebSocket } from 'bun';
+import type { ServerWebSocket } from "bun";
 
 // AC: @api-contract ac-26
 export interface WebSocketCommand {
-  action: 'subscribe' | 'unsubscribe' | 'ping';
+  action: "subscribe" | "unsubscribe" | "ping";
   request_id?: string;
   payload?: {
     topics?: string[];
@@ -34,7 +34,7 @@ export interface CommandAck {
 
 // AC: @api-contract ac-25, @trait-websocket-protocol ac-1
 export interface ConnectedEvent {
-  event: 'connected';
+  event: "connected";
   data: {
     session_id: string;
   };

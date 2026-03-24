@@ -8,10 +8,7 @@ import {
   isGitRepo,
   checkConfigMismatch,
 } from "../../parser/shadow.js";
-import {
-  loadProjectConfig,
-  detectRemoteType,
-} from "../../parser/config.js";
+import { loadProjectConfig, detectRemoteType } from "../../parser/config.js";
 import { errors } from "../../strings/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, success, warn } from "../output.js";
@@ -82,10 +79,7 @@ tasks: []
 /**
  * Prompt user for input
  */
-async function prompt(
-  question: string,
-  defaultValue?: string,
-): Promise<string> {
+async function prompt(question: string, defaultValue?: string): Promise<string> {
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
@@ -134,10 +128,7 @@ export function registerInitCommand(program: Command): void {
     .option("--single-file", "Create manifest only (no modules directory)")
     .option("--no-prompt", "Skip interactive prompts, use defaults")
     .option("--force", "Overwrite existing files")
-    .option(
-      "--no-shadow",
-      "Skip shadow branch setup (create spec/ in main branch)",
-    )
+    .option("--no-shadow", "Skip shadow branch setup (create spec/ in main branch)")
     .option(
       "--setup",
       "Run full setup after initialization (install core skills, hooks, render skills, generate agents.md)",
@@ -169,9 +160,7 @@ export function registerInitCommand(program: Command): void {
               process.exit(EXIT_CODES.ERROR);
             }
             // Not a git repo - fall back to non-shadow mode with warning
-            warn(
-              "Not a git repository. Using non-shadow mode (spec/ in main branch).",
-            );
+            warn("Not a git repository. Using non-shadow mode (spec/ in main branch).");
             await initNonShadow(targetDir, projectName, options);
             return;
           }
@@ -196,11 +185,7 @@ export function registerInitCommand(program: Command): void {
           };
 
           // AC: @config-shadow ac-9 — check for config mismatch
-          const mismatch = await checkConfigMismatch(
-            gitRoot,
-            branchName,
-            directoryName,
-          );
+          const mismatch = await checkConfigMismatch(gitRoot, branchName, directoryName);
           if (mismatch.hasMismatch && !options.force) {
             warn("Shadow branch settings mismatch detected!");
             console.log("");
@@ -234,9 +219,7 @@ export function registerInitCommand(program: Command): void {
           });
 
           if (!result.success) {
-            error(
-              errors.project.shadowInitFailed(result.error || "Unknown error"),
-            );
+            error(errors.project.shadowInitFailed(result.error || "Unknown error"));
             process.exit(EXIT_CODES.ERROR);
           }
 
@@ -251,7 +234,9 @@ export function registerInitCommand(program: Command): void {
             } else if (result.branchCreated) {
               console.log(`  Created orphan branch: ${branchName}`);
               if (result.pushedToRemote) {
-                console.log(`  Pushed to remote: ${shadowOptions.remote || "origin"}/${branchName}`);
+                console.log(
+                  `  Pushed to remote: ${shadowOptions.remote || "origin"}/${branchName}`,
+                );
               }
             }
             if (result.worktreeCreated) {
@@ -293,9 +278,7 @@ export function registerInitCommand(program: Command): void {
               console.log();
               success("Setup complete. Your project is ready for use.");
             } else {
-              warn(
-                "Setup encountered issues. Run 'kspec setup --status' for details.",
-              );
+              warn("Setup encountered issues. Run 'kspec setup --status' for details.");
             }
           } else {
             // AC: @init-setup-integration ac-4 - Without --setup, behavior unchanged
@@ -351,11 +334,7 @@ async function initNonShadow(
 
   // Create manifest
   const manifestPath = path.join(specDir, `${slug}.yaml`);
-  await fs.writeFile(
-    manifestPath,
-    generateManifest(projectName, singleFile),
-    "utf-8",
-  );
+  await fs.writeFile(manifestPath, generateManifest(projectName, singleFile), "utf-8");
   console.log(`  Created ${path.relative(targetDir, manifestPath)}`);
 
   // Create tasks file
@@ -369,30 +348,21 @@ async function initNonShadow(
     await fs.mkdir(modulesDir, { recursive: true });
 
     const mainModulePath = path.join(modulesDir, "main.yaml");
-    await fs.writeFile(
-      mainModulePath,
-      generateMainModule(projectName),
-      "utf-8",
-    );
+    await fs.writeFile(mainModulePath, generateMainModule(projectName), "utf-8");
     console.log(`  Created ${path.relative(targetDir, mainModulePath)}`);
   }
 
-  success(
-    `Initialized kspec project in ${path.relative(process.cwd(), specDir) || "spec/"}`,
-    {
-      projectName,
-      specDir,
-      singleFile,
-      mode: "non-shadow",
-    },
-  );
+  success(`Initialized kspec project in ${path.relative(process.cwd(), specDir) || "spec/"}`, {
+    projectName,
+    specDir,
+    singleFile,
+    mode: "non-shadow",
+  });
 
   console.log("\nNext steps:");
   console.log(`  1. Edit spec/${slug}.yaml to customize your project`);
   if (!singleFile) {
     console.log("  2. Add spec items to spec/modules/main.yaml");
   }
-  console.log(
-    `  ${singleFile ? "2" : "3"}. Run \`kspec tasks ready\` to see available tasks`,
-  );
+  console.log(`  ${singleFile ? "2" : "3"}. Run \`kspec tasks ready\` to see available tasks`);
 }

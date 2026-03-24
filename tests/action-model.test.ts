@@ -275,10 +275,7 @@ describe("Template Interpolation", () => {
       task_ref: "@task-x",
       event_type: "task.ready",
     });
-    const result = resolveTemplateVars(
-      "Event {{event_type}} for {{task_ref}}",
-      ctx,
-    );
+    const result = resolveTemplateVars("Event {{event_type}} for {{task_ref}}", ctx);
     expect(result).toBe("Event task.ready for @task-x");
   });
 
@@ -433,11 +430,9 @@ describe("ActionExecutor", () => {
     it("resolves template variables in command and args", async () => {
       // Write a small script to verify the resolved value
       const scriptPath = path.join(tempDir, "echo-arg.sh");
-      await fs.writeFile(
-        scriptPath,
-        '#!/bin/sh\necho "$1" > ' + path.join(tempDir, "output.txt"),
-        { mode: 0o755 },
-      );
+      await fs.writeFile(scriptPath, '#!/bin/sh\necho "$1" > ' + path.join(tempDir, "output.txt"), {
+        mode: 0o755,
+      });
 
       const action: Action = {
         type: "command",
@@ -449,10 +444,7 @@ describe("ActionExecutor", () => {
       const run = await executor.execute(action, ctx);
       expect(run.status).toBe("completed");
 
-      const output = await fs.readFile(
-        path.join(tempDir, "output.txt"),
-        "utf-8",
-      );
+      const output = await fs.readFile(path.join(tempDir, "output.txt"), "utf-8");
       expect(output.trim()).toBe("@task-resolve-test");
     });
   });
@@ -513,10 +505,7 @@ process.exit(0);`,
       expect(run.status).toBe("completed");
       expect(run.action_type).toBe("kspec");
 
-      const envOutput = await fs.readFile(
-        path.join(tempDir, "kspec-env.txt"),
-        "utf-8",
-      );
+      const envOutput = await fs.readFile(path.join(tempDir, "kspec-env.txt"), "utf-8");
 
       // AC: @dispatch-action-model ac-3 — correlation_id injected via KSPEC_CORRELATION_ID
       expect(envOutput).toContain("CORRELATION=01CORR_TEST_VALUE_00000001");
@@ -526,10 +515,7 @@ process.exit(0);`,
 
     it("handles kspec command timeout", async () => {
       const nodeScriptPath = path.join(tempDir, "mock-kspec-slow.cjs");
-      await fs.writeFile(
-        nodeScriptPath,
-        `setTimeout(() => process.exit(0), 60000);`,
-      );
+      await fs.writeFile(nodeScriptPath, `setTimeout(() => process.exit(0), 60000);`);
 
       const kspecExecutor = new ActionExecutor({
         projectDir: tempDir,
@@ -643,9 +629,7 @@ process.exit(0);`,
     });
 
     it("handles agent spawner failure", async () => {
-      const mockSpawner = vi
-        .fn()
-        .mockRejectedValue(new Error("Agent pool exhausted"));
+      const mockSpawner = vi.fn().mockRejectedValue(new Error("Agent pool exhausted"));
 
       const agentExecutor = new ActionExecutor({
         projectDir: tempDir,
@@ -701,9 +685,7 @@ process.exit(0);`,
       expect(broadcastCalls.length).toBe(1);
       expect(broadcastCalls[0].topic).toBe("automation");
       expect(broadcastCalls[0].event).toBe("action.notify");
-      expect(broadcastCalls[0].data.message).toBe(
-        "Task @task-notify-test is ready for review",
-      );
+      expect(broadcastCalls[0].data.message).toBe("Task @task-notify-test is ready for review");
       expect(broadcastCalls[0].data.source_name).toBe("review-hook");
       expect(broadcastCalls[0].data.event_type).toBe("task.pending_review");
     });
@@ -734,9 +716,7 @@ process.exit(0);`,
       expect(taskRefWarning).toBeUndefined();
 
       // unknown_status is not a known field — produces a warning
-      const unknownWarning = warnings.find(
-        (w) => w.variable === "unknown_status",
-      );
+      const unknownWarning = warnings.find((w) => w.variable === "unknown_status");
       expect(unknownWarning).toBeDefined();
       expect(unknownWarning!.available_fields).toContain("task_ref");
       expect(unknownWarning!.available_fields).toContain("event_id");
@@ -752,9 +732,7 @@ process.exit(0);`,
     });
 
     it("validates against all domains when event_type is not specified", () => {
-      const warnings = validateActionTemplates(
-        ["Agent {{agent_id}} with session {{session_id}}"],
-      );
+      const warnings = validateActionTemplates(["Agent {{agent_id}} with session {{session_id}}"]);
       // agent_id and session_id are known fields across domains
       expect(warnings).toEqual([]);
     });
@@ -813,10 +791,7 @@ process.exit(0);`,
     it("passes through absent field placeholders unchanged", () => {
       const ctx = makeEventContext();
       // absent_field is not in the event context
-      const result = resolveTemplateVars(
-        "Value: {{absent_field}}",
-        ctx,
-      );
+      const result = resolveTemplateVars("Value: {{absent_field}}", ctx);
       expect(result).toBe("Value: {{absent_field}}");
     });
 
@@ -845,10 +820,7 @@ process.exit(0);`,
       // AC: @dispatch-action-model ac-8 — action still executes
       expect(run.status).toBe("completed");
 
-      const output = await fs.readFile(
-        path.join(tempDir, "arg-output.txt"),
-        "utf-8",
-      );
+      const output = await fs.readFile(path.join(tempDir, "arg-output.txt"), "utf-8");
       // The unresolved placeholder passes through unchanged
       expect(output).toBe("{{absent_field}}");
     });
@@ -935,9 +907,7 @@ process.exit(0);`,
       expect(events[1].action_run.status).toBe("completed");
 
       // Same action_run_id across events
-      expect(events[0].action_run.action_run_id).toBe(
-        events[1].action_run.action_run_id,
-      );
+      expect(events[0].action_run.action_run_id).toBe(events[1].action_run.action_run_id);
     });
 
     it("emits action.started before action.failed for failed actions", async () => {
@@ -955,9 +925,7 @@ process.exit(0);`,
       expect(events[1].type).toBe("action.failed");
 
       // Same action_run_id
-      expect(events[0].action_run.action_run_id).toBe(
-        events[1].action_run.action_run_id,
-      );
+      expect(events[0].action_run.action_run_id).toBe(events[1].action_run.action_run_id);
     });
 
     it("includes event_context in all emitted events", async () => {

@@ -7,11 +7,7 @@
 
 import chalk from "chalk";
 import type { Command } from "commander";
-import {
-  parseBatchInput,
-  BatchParseError,
-  executeBatch,
-} from "../batch-exec.js";
+import { parseBatchInput, BatchParseError, executeBatch } from "../batch-exec.js";
 import { createBatchCommandFilter } from "../command-annotations.js";
 import { extractCommandTree, flattenCommandTree, type CommandMeta } from "../introspection.js";
 import { isJsonMode, output } from "../output.js";
@@ -120,105 +116,114 @@ Examples:
   $ kspec batch --dry-run --commands '[...]'
   $ kspec batch commands           # list allowed commands`,
     )
-    .action(async (options: {
-      file?: string;
-      commands?: string;
-      atomic: boolean;
-      continue?: boolean;
-      dryRun?: boolean;
-    }) => {
-      const json = isJsonMode();
+    .action(
+      async (options: {
+        file?: string;
+        commands?: string;
+        atomic: boolean;
+        continue?: boolean;
+        dryRun?: boolean;
+      }) => {
+        const json = isJsonMode();
 
-      // --continue implies --no-atomic
-      // AC: ac-continue-implies-immediate
-      let atomic = options.atomic;
-      if (options.continue && atomic) {
-        if (!json) {
-          console.error(
-            "Notice: --continue implies immediate mode (--no-atomic)",
-          );
-        }
-        atomic = false;
-      }
-
-      // Determine input source
-      let source: { type: "stdin" } | { type: "file"; path: string } | { type: "inline"; json: string };
-      if (options.file) {
-        source = { type: "file", path: options.file };
-      } else if (options.commands !== undefined) {
-        source = { type: "inline", json: options.commands };
-      } else {
-        source = { type: "stdin" };
-      }
-
-      // Parse input
-      let commands;
-      try {
-        commands = await parseBatchInput(source);
-      } catch (err) {
-        if (err instanceof BatchParseError) {
-          if (json) {
-            console.log(JSON.stringify({
-              success: false,
-              error: err.message,
-            }, null, 2));
-          } else {
-            console.error(`Error: ${err.message}`);
+        // --continue implies --no-atomic
+        // AC: ac-continue-implies-immediate
+        let atomic = options.atomic;
+        if (options.continue && atomic) {
+          if (!json) {
+            console.error("Notice: --continue implies immediate mode (--no-atomic)");
           }
+          atomic = false;
+        }
+
+        // Determine input source
+        let source:
+          | { type: "stdin" }
+          | { type: "file"; path: string }
+          | { type: "inline"; json: string };
+        if (options.file) {
+          source = { type: "file", path: options.file };
+        } else if (options.commands !== undefined) {
+          source = { type: "inline", json: options.commands };
+        } else {
+          source = { type: "stdin" };
+        }
+
+        // Parse input
+        let commands;
+        try {
+          commands = await parseBatchInput(source);
+        } catch (err) {
+          if (err instanceof BatchParseError) {
+            if (json) {
+              console.log(
+                JSON.stringify(
+                  {
+                    success: false,
+                    error: err.message,
+                  },
+                  null,
+                  2,
+                ),
+              );
+            } else {
+              console.error(`Error: ${err.message}`);
+            }
+            process.exit(EXIT_CODES.ERROR);
+          }
+          throw err;
+        }
+
+        // Execute
+        const result = await executeBatch(commands, program, {
+          atomic,
+          continueOnError: options.continue ?? false,
+          dryRun: options.dryRun ?? false,
+          json,
+        });
+
+        // Output
+        if (json) {
+          console.log(JSON.stringify(result, null, 2));
+        } else {
+          // Human-readable output
+          const modeLabel = result.mode === "atomic" ? "atomic" : "immediate";
+          if (result.success) {
+            console.log(
+              `Batch complete (${modeLabel}): ${result.summary.succeeded}/${result.summary.total} succeeded`,
+            );
+          } else {
+            console.error(
+              `Batch failed (${modeLabel}): ${result.summary.succeeded}/${result.summary.total} succeeded, ${result.summary.failed} failed`,
+            );
+          }
+
+          // Show per-command results
+          for (const r of result.results) {
+            const label = r.id ?? `#${r.index}`;
+            if (r.success) {
+              console.log(`  [${label}] ${r.command}: OK`);
+            } else {
+              let errorLine = `  [${label}] ${r.command}: FAILED — ${r.error}`;
+              if (r.suggestion) {
+                errorLine += ` Did you mean: ${r.suggestion}?`;
+              }
+              console.error(errorLine);
+            }
+          }
+
+          // Show helpful hint only for validation failures (not runtime execution failures)
+          if (result.validationFailed) {
+            console.error("");
+            console.error("Run 'kspec batch commands' for a list of available commands.");
+          }
+        }
+
+        if (!result.success) {
           process.exit(EXIT_CODES.ERROR);
         }
-        throw err;
-      }
-
-      // Execute
-      const result = await executeBatch(commands, program, {
-        atomic,
-        continueOnError: options.continue ?? false,
-        dryRun: options.dryRun ?? false,
-        json,
-      });
-
-      // Output
-      if (json) {
-        console.log(JSON.stringify(result, null, 2));
-      } else {
-        // Human-readable output
-        const modeLabel = result.mode === "atomic" ? "atomic" : "immediate";
-        if (result.success) {
-          console.log(
-            `Batch complete (${modeLabel}): ${result.summary.succeeded}/${result.summary.total} succeeded`,
-          );
-        } else {
-          console.error(
-            `Batch failed (${modeLabel}): ${result.summary.succeeded}/${result.summary.total} succeeded, ${result.summary.failed} failed`,
-          );
-        }
-
-        // Show per-command results
-        for (const r of result.results) {
-          const label = r.id ?? `#${r.index}`;
-          if (r.success) {
-            console.log(`  [${label}] ${r.command}: OK`);
-          } else {
-            let errorLine = `  [${label}] ${r.command}: FAILED — ${r.error}`;
-            if (r.suggestion) {
-              errorLine += ` Did you mean: ${r.suggestion}?`;
-            }
-            console.error(errorLine);
-          }
-        }
-
-        // Show helpful hint only for validation failures (not runtime execution failures)
-        if (result.validationFailed) {
-          console.error("");
-          console.error("Run 'kspec batch commands' for a list of available commands.");
-        }
-      }
-
-      if (!result.success) {
-        process.exit(EXIT_CODES.ERROR);
-      }
-    });
+      },
+    );
 
   // Register the `batch commands` subcommand
   batchCmd
@@ -260,9 +265,7 @@ Examples:
               error: `No batch-allowed command found matching '${normalizedFilter}'`,
             });
           } else {
-            console.error(
-              `No batch-allowed command found matching '${normalizedFilter}'`,
-            );
+            console.error(`No batch-allowed command found matching '${normalizedFilter}'`);
             console.error(
               "Run 'kspec batch commands' without arguments to see all available commands.",
             );

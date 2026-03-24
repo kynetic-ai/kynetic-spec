@@ -37,10 +37,7 @@ export interface RawTaskCommit {
  *
  * @returns [startLine, endLine] (1-indexed, inclusive) or null if not found
  */
-export function findTaskBlockLines(
-  specDir: string,
-  taskUlid: string,
-): [number, number] | null {
+export function findTaskBlockLines(specDir: string, taskUlid: string): [number, number] | null {
   const tasksFile = path.join(specDir, "project.tasks.yaml");
   let content: string;
   try {
@@ -94,10 +91,7 @@ export function findTaskBlockLines(
  * @param taskUlid - The task's full ULID
  * @returns Array of raw commit objects in reverse chronological order (newest first)
  */
-export function getRawTaskCommits(
-  specDir: string,
-  taskUlid: string,
-): RawTaskCommit[] {
+export function getRawTaskCommits(specDir: string, taskUlid: string): RawTaskCommit[] {
   const blockLines = findTaskBlockLines(specDir, taskUlid);
   if (!blockLines) return [];
 
@@ -433,10 +427,7 @@ export function parseDiffChanges(diff: string): DiffChange[] {
         mapChildFields.add(trimmed.match(/^-?\s*(\w[\w_]*?):/)?.[1] ?? "");
 
         // Still detect new notes inside nested sections
-        if (
-          inNotesSection &&
-          (trimmed.startsWith("_ulid:") || trimmed.startsWith("- _ulid:"))
-        ) {
+        if (inNotesSection && (trimmed.startsWith("_ulid:") || trimmed.startsWith("- _ulid:"))) {
           foundNewNote = true;
         }
         continue;
@@ -452,10 +443,7 @@ export function parseDiffChanges(diff: string): DiffChange[] {
 
       // Detect new note (_ulid added inside notes section)
       // In YAML arrays, entries start with "- _ulid:" so check both forms
-      if (
-        inNotesSection &&
-        (trimmed.startsWith("_ulid:") || trimmed.startsWith("- _ulid:"))
-      ) {
+      if (inNotesSection && (trimmed.startsWith("_ulid:") || trimmed.startsWith("- _ulid:"))) {
         foundNewNote = true;
       }
     } else {
@@ -520,10 +508,7 @@ export function parseDiffChanges(diff: string): DiffChange[] {
  *
  * AC: @task-activity-git-query ac-4
  */
-function diffChangesToEntries(
-  changes: DiffChange[],
-  commit: RawTaskCommit,
-): ActivityEntry[] {
+function diffChangesToEntries(changes: DiffChange[], commit: RawTaskCommit): ActivityEntry[] {
   const entries: ActivityEntry[] = [];
 
   for (const change of changes) {
@@ -607,9 +592,7 @@ function diffChangesToEntries(
  * AC: @task-activity-git-query ac-3 — commit message → activity type
  * AC: @task-activity-git-query ac-4 — diff → typed field changes
  */
-export function normalizeTaskActivity(
-  rawCommits: RawTaskCommit[],
-): ActivityEntry[] {
+export function normalizeTaskActivity(rawCommits: RawTaskCommit[]): ActivityEntry[] {
   const entries: ActivityEntry[] = [];
 
   for (const commit of rawCommits) {
@@ -634,7 +617,7 @@ export function normalizeTaskActivity(
 
   // Reverse: rawCommits are newest-first (git log order),
   // but activity timeline should be chronological (oldest first)
-  return entries.reverse();
+  return entries.toReversed();
 }
 
 // ─── In-File Activity Timeline ───────────────────────────────────────────────
@@ -646,10 +629,7 @@ export function normalizeTaskActivity(
  * (e.g., "task-start", "task-set", "task-submit"). This maps them
  * to the same ActivityType used by the legacy git-based approach.
  */
-function commandToActivityType(
-  command: string,
-  changes: Record<string, unknown>,
-): ActivityType {
+function commandToActivityType(command: string, changes: Record<string, unknown>): ActivityType {
   // Status-changing commands have specific types
   switch (command) {
     case "task-add":
@@ -828,19 +808,13 @@ export function notesToActivity(notes: Note[]): ActivityEntry[] {
  * @param notes - Note entries from notes.yaml
  * @returns ActivityEntry[] in chronological order (oldest first)
  */
-export function assembleActivityFromFiles(
-  history: HistoryEntry[],
-  notes: Note[],
-): ActivityEntry[] {
+export function assembleActivityFromFiles(history: HistoryEntry[], notes: Note[]): ActivityEntry[] {
   const historyEntries = historyToActivity(history);
   const noteEntries = notesToActivity(notes);
 
   // Merge and sort chronologically (oldest first)
   const merged = [...historyEntries, ...noteEntries];
-  merged.sort(
-    (a, b) =>
-      new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
-  );
+  merged.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
 
   return merged;
 }
@@ -858,10 +832,7 @@ export function assembleActivityFromFiles(
  * @param taskUlid - The task's full ULID
  * @returns ActivityEntry[] in chronological order, each marked with source: "git_fallback"
  */
-export function getPreMigrationActivity(
-  specDir: string,
-  taskUlid: string,
-): ActivityEntry[] {
+export function getPreMigrationActivity(specDir: string, taskUlid: string): ActivityEntry[] {
   try {
     const output = execSync(
       `git log --format="%H%x00%aI%x00%an%x00%s%x00" -- "tasks/${taskUlid}/"`,
@@ -895,7 +866,7 @@ export function getPreMigrationActivity(
     }
 
     // git log returns newest-first, reverse to chronological
-    return entries.reverse();
+    return entries.toReversed();
   } catch {
     return [];
   }

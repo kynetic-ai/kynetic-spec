@@ -74,9 +74,7 @@ export function isCountedInPlanSummary(task: PlanSummaryTask): boolean {
   return task.status !== "cancelled";
 }
 
-export function countPlanTaskProgress(
-  tasks: Iterable<PlanSummaryTask>,
-): PlanTaskProgress {
+export function countPlanTaskProgress(tasks: Iterable<PlanSummaryTask>): PlanTaskProgress {
   const progress: PlanTaskProgress = {
     total: 0,
     completed: 0,

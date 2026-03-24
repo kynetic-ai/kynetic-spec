@@ -81,7 +81,7 @@ export async function acquireFileLock(
         if (Date.now() >= deadline) {
           throw new Error(
             `Timed out waiting for file lock on ${filePath} after ${timeoutMs}ms. ` +
-              `If no other kspec process is running, remove ${lockDir} manually.`,
+              `If no other kspec process is running, remove ${lockDir} manually.`, { cause: err },
           );
         }
 
