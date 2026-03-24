@@ -22702,7 +22702,7 @@ workspaces:
         head: 1dfda3ea8c385cfb9dd4cc8cbe0bd68b3eb296f6
         last_seen_at: 2026-03-24T22:35:36.523Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-readtestoutput-trait-cli-01kmfcp2
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 3c013290137d63d65590b5e2f2eb14641265c679
     bootstrap:
       status: succeeded
@@ -22812,7 +22812,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-24T22:42:14.488Z
+      updated_at: 2026-03-24T22:43:06.365Z
     integration:
       status: pending
       detail: null
@@ -22827,10 +22827,10 @@ workspaces:
     task_slug: task-readtestoutput-task-rebuild-index
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-24T22:36:25.397Z
-      last_reconciled_at: 2026-03-24T22:42:14.488Z
+      last_active_at: 2026-03-24T22:43:06.365Z
+      last_reconciled_at: 2026-03-24T22:43:06.365Z
       created_at: 2026-03-24T22:35:44.637Z
-      updated_at: 2026-03-24T22:42:24.133Z
+      updated_at: 2026-03-24T22:43:06.365Z
     workspace_id: dispatch-workspace-01KMFCP3KGRNYA17C8T27XM2EQ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
