@@ -16,6 +16,7 @@
     {
       "files": ["tests/**/*.ts", "packages/*/tests/**/*.ts"],
       "plugins": ["vitest"],
+      "jsPlugins": ["./tools/eslint-rules/no-source-scanning.js"],
       "rules": {
         "vitest/no-focused-tests": "error",
         "vitest/no-disabled-tests": "warn",
@@ -23,7 +24,8 @@
         "vitest/expect-expect": "error",
         "vitest/valid-expect": "error",
         "vitest/no-identical-title": "error",
-        "vitest/no-standalone-expect": "error"
+        "vitest/no-standalone-expect": "error",
+        "no-source-scanning/no-source-file-reads": "error"
       }
     }
   ]
