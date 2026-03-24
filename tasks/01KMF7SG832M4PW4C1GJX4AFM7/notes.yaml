@@ -1,1 +1,25 @@
-notes: []
+notes:
+  - _ulid: 01KMF9SS3CNW696RWDKYA5ZZCD
+    content: >-
+      Implementation plan:
+
+
+      1. Create tools/eslint-rules/no-source-scanning.js — ESM plugin with a single rule
+
+      2. Four-phase AST detection:
+         - Phase 1: Track fs imports (readFileSync/readFile from fs/node:fs/node:fs/promises)
+         - Phase 2: Track source-path variables (paths containing src/, templates/, packages/*/src/)
+         - Phase 3: Detect read calls where arg resolves to a source path (direct or via variable)
+         - Phase 4: Track read result variables and flag assertions on them (expect().toContain/toMatch, .includes, .match)
+      3. Register in .oxlintrc.json test file overrides via jsPlugins
+
+      4. Verify it catches known offending tests
+
+      5. Verify it does NOT flag legitimate tests (reading fixtures, temp dirs, generated output)
+
+
+      Key constraint: oxlint JS Plugin runtime is sandboxed — no Node.js built-ins. Pure AST
+      analysis only.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-24T06:51:31.820Z
