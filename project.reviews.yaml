@@ -51638,6 +51638,12 @@ reviews:
         payload:
           thread_ulid: 01KMH1T5NW11WEA37ZVRH4J4E1
         timestamp: 2026-03-24T23:52:02.723Z
+      - _ulid: 01KMH46GDPZCV2FWTYK31TNY1E
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMH1VB3R60PFP4ESX8CDWYZ1
+        timestamp: 2026-03-24T23:52:06.326Z
     examined_commit: 35d3b6f1a176412e832773ee8055c90bed2b3f8b
     external_links: []
     lifecycle_state: closed
@@ -51696,6 +51702,8 @@ reviews:
               calls (out of scope) and should not have been modified."
             created_at: 2026-03-24T23:51:54.702Z
         kind: nit
+        resolved_at: 2026-03-24T23:52:05.931Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -51705,7 +51713,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-24T23:11:26.900Z
     created_at: 2026-03-24T23:10:02.654Z
-    updated_at: 2026-03-24T23:52:02.326Z
+    updated_at: 2026-03-24T23:52:05.931Z
     notes: []
   - _ulid: 01KMH26WVJN5PFB7Y8DBE015DG
     slugs: []
