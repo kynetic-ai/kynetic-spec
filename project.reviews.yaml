@@ -44108,6 +44108,48 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-03-24T21:41:54.104Z
+      - _ulid: 01KMGWS46Q1N5T6Q5NB8EQ4M3C
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KMGWS3VH0R1ESVWZE145P4CW
+        timestamp: 2026-03-24T21:42:27.799Z
+      - _ulid: 01KMGWS5542A2WJDMGVBP61MTA
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KMGWS4S0FJ0GMJ4N7ZMAQNJ6
+        timestamp: 2026-03-24T21:42:28.772Z
+      - _ulid: 01KMGWS63807JNAPN34MW03K2F
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMGWS5QQWG4D0GQ1QMVCTR3H
+        timestamp: 2026-03-24T21:42:29.736Z
+      - _ulid: 01KMGWS70KEQVR84022D9SA9TW
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KMGWS6N87KPJGGAXH3718W34
+        timestamp: 2026-03-24T21:42:30.675Z
+      - _ulid: 01KMGWS82313GS3F7NR6WFD0EJ
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMGWS7NJJPZD6GAMAMRDCMF1
+        timestamp: 2026-03-24T21:42:31.747Z
+      - _ulid: 01KMGWS8ZDMBHWTGDJVPCBVKAD
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KMGWS8KT9HW7B2TMMTZ5WX65
+        timestamp: 2026-03-24T21:42:32.685Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -44117,8 +44159,76 @@ reviews:
       content_hash: ""
       ref: "@plan-daemon-optimistic-data-layer"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMGWS3VH0R1ESVWZE145P4CW
+        anchor:
+          type: structured
+          ref: "@daemon-entity-cache"
+          section: specs
+        entries:
+          - _ulid: 01KMGWS3VH8F5FA2HR114BY0EX
+            author: "@claude"
+            body: "@session-summary-cache already specifies in-memory caching with watcher invalidation for sessions. The plan says it generalizes this pattern but declares no relationship (replaces, extends, relates_to). Should @daemon-entity-cache explicitly subsume @session-summary-cache, or should sessions remain a separate cache with its own spec? The loading trigger also differs: existing spec is lazy (first request), plan is eager (on registration). Clarify the relationship and whether session caching migrates into the entity cache or stays independent."
+            created_at: 2026-03-24T21:42:27.441Z
+        kind: question
+      - _ulid: 01KMGWS4S0FJ0GMJ4N7ZMAQNJ6
+        anchor:
+          type: structured
+          ref: "@daemon-read-path"
+          section: specs
+        entries:
+          - _ulid: 01KMGWS4S034Z7Q4MS705WGHHQ
+            author: "@claude"
+            body: "@shadow-lazy-read-sync specifies drift-check on every CLI/daemon read via initContext(). The plan's ac-no-per-request-sync removes per-request git operations for daemon reads, moving sync to the background scheduler. This modifies the existing spec's contract for the daemon context. The plan should explicitly note that @daemon-read-path narrows @shadow-lazy-read-sync's scope to CLI direct-mode only, and that daemon reads rely on @shadow-daemon-push-sync's background scheduler plus cache invalidation instead."
+            created_at: 2026-03-24T21:42:28.384Z
+        kind: question
+      - _ulid: 01KMGWS5QQWG4D0GQ1QMVCTR3H
+        anchor:
+          type: structured
+          field: ac-force-direct
+          ref: "@cli-daemon-proxy"
+          section: specs
+        entries:
+          - _ulid: 01KMGWS5QQTQXGK3VVTP5RNDME
+            author: "@claude"
+            body: "KSPEC_NO_DAEMON=1 is already specified in @multi-directory-daemon (ac-32/33) with defined semantics (suppresses incidental daemon communication, exempts explicit serve commands). The plan's ac-force-direct should reference this existing contract rather than re-specifying the env var's behavior. Also consider: should --daemon flag be a new global CLI flag? That's a broader change to the CLI contract worth noting."
+            created_at: 2026-03-24T21:42:29.367Z
+        kind: nit
+      - _ulid: 01KMGWS6N87KPJGGAXH3718W34
+        anchor:
+          type: structured
+          field: description
+          ref: "@daemon-entity-cache"
+          section: specs
+        entries:
+          - _ulid: 01KMGWS6N9CK07QA9Z6EJ4PHPJ
+            author: "@claude"
+            body: "No AC addresses cache warming latency. For projects with hundreds of YAML files, loading everything on registration could take seconds. Should there be an AC for: (a) API routes returning a loading/warming indicator while cache populates? (b) Progressive availability — serve what's loaded, indicate what's still loading? (c) Registration completing asynchronously so the registering request isn't blocked? The @session-summary-cache spec handles this with lazy loading (first request triggers build) — the eager approach needs its own latency story."
+            created_at: 2026-03-24T21:42:30.313Z
+        kind: question
+      - _ulid: 01KMGWS7NJJPZD6GAMAMRDCMF1
+        anchor:
+          type: structured
+          ref: "@daemon-entity-cache"
+          section: specs
+        entries:
+          - _ulid: 01KMGWS7NJ2PEWEMQQ3GMGM7BT
+            author: "@claude"
+            body: No memory bounds or eviction policy. With @multi-directory-daemon supporting many projects, each with full entity sets cached, memory could grow unbounded. The existing spec for multi-directory daemon says 'no memory limit on cached projects' as a design decision — does that extend to entity data too? At minimum, an AC for memory release on project unregister (ac-unregister-cleanup covers this) and possibly a note that memory limits are explicitly out of scope.
+            created_at: 2026-03-24T21:42:31.346Z
+        kind: nit
+      - _ulid: 01KMGWS8KT9HW7B2TMMTZ5WX65
+        anchor:
+          type: structured
+          ref: "@daemon-command-api"
+          section: specs
+        entries:
+          - _ulid: 01KMGWS8KTQ00M31Q9Y14D4ZC7
+            author: "@claude"
+            body: "The dispatch engine runs agents that call kspec CLI commands. If daemon is running (required for dispatch), all agent CLI calls would auto-detect and route through the command API. This is desirable (single writer) but creates a feedback loop: daemon spawns agent → agent calls CLI → CLI calls back into daemon API. What happens if the command API is processing a long mutation when the agent's next command arrives? ac-concurrent-mutations says 'mutations are serialized' but doesn't address timeout behavior or queue depth. Consider an AC for dispatch-originated commands specifically."
+            created_at: 2026-03-24T21:42:32.314Z
+        kind: question
     verdicts: []
     created_at: 2026-03-24T21:41:54.104Z
-    updated_at: null
+    updated_at: 2026-03-24T21:42:32.314Z
     notes: []
