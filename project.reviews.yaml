@@ -50724,6 +50724,17 @@ reviews:
         runner: vitest
         created_at: 2026-03-24T22:24:55.104Z
         completed_at: 2026-03-24T22:24:55.104Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 6827 passed, 3 skipped, 1 unrelated timeout failure in agent-invocation-lifecycle.test.ts
+          (pre-existing flaky test, not in changed files)
+        name: vitest (full suite)
+        required: true
+        runner: vitest
+        created_at: 2026-03-24T22:24:58.849Z
+        completed_at: 2026-03-24T22:24:58.849Z
     events:
       - _ulid: 01KMGZ6BFCQ178WZR501DPZCS5
         actor: "@claude"
@@ -50745,6 +50756,13 @@ reviews:
           status: pass
           name: vitest (command-action)
         timestamp: 2026-03-24T22:24:55.488Z
+      - _ulid: 01KMGZ6ZVJ6XATY0VTHGF15MB8
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest (full suite)
+        timestamp: 2026-03-24T22:24:59.251Z
     examined_commit: dfb3a8859af17c0c76eba76e42faca2f4c125fcd
     external_links: []
     lifecycle_state: open
@@ -50757,5 +50775,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-24T22:24:38.380Z
-    updated_at: 2026-03-24T22:24:55.104Z
+    updated_at: 2026-03-24T22:24:58.849Z
     notes: []
