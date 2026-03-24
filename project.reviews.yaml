@@ -51117,6 +51117,30 @@ reviews:
         required: true
         created_at: 2026-03-24T22:45:58.535Z
         completed_at: 2026-03-24T22:45:58.535Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: >-
+          All cross-references validated against live spec graph:
+
+          - Parents: @daemon-server (exists), @cli (exists), @daemon-entity-cache (defined in plan),
+          @cli-daemon-proxy (defined in plan)
+
+          - Traits: @trait-api-endpoint (exists, 6 ACs), @trait-error-guidance (exists, 5 ACs),
+          @trait-localhost-security (exists, 3 ACs)
+
+          - depends_on: all task refs are internal to the plan
+
+          - Implementation Notes refs: @session-summary-cache (exists), @shadow-lazy-read-sync
+          (exists), @shadow-daemon-push-sync (exists), @batch-item-fetch-api (exists),
+          @multi-directory-daemon (exists)
+
+          - task-update-related-specs refs: all 4 specs exist
+        name: Cross-references — all valid
+        required: true
+        created_at: 2026-03-24T22:46:03.661Z
+        completed_at: 2026-03-24T22:46:03.661Z
     events:
       - _ulid: 01KMH0ACFN344DN3TVCXW86CKC
         actor: "@claude"
@@ -51166,6 +51190,13 @@ reviews:
           status: pass
           name: Implementation Notes — architectural detail
         timestamp: 2026-03-24T22:45:59.261Z
+      - _ulid: 01KMH0DKCF3V8DWAY2RKX2MR2M
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Cross-references — all valid
+        timestamp: 2026-03-24T22:46:04.431Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -51178,5 +51209,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-24T22:44:19.062Z
-    updated_at: 2026-03-24T22:45:58.535Z
+    updated_at: 2026-03-24T22:46:03.661Z
     notes: []
