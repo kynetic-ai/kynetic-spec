@@ -14742,7 +14742,7 @@ runs:
     started_at: 2026-03-24T22:39:18.540Z
   - _ulid: 01KMH0SC2FHJVY27F138PQNPDZ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -14755,7 +14755,20 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-24T22:52:44.711Z
-        completed_at: 2026-03-24T22:52:44.711Z
+        completed_at: 2026-03-24T22:54:02.010Z
+        notes: "Searched existing observations, inbox, and tasks. Found: @01KMGXBF and @01KMGXRB already
+          track the detached-worktree-cannot-merge friction I hit (had to merge from main worktree
+          at /home/chapel/Projects/kynetic-spec-dispatch because dev branch was locked to that
+          worktree). One minor friction: using git stash during pre-existing test verification left
+          a merge artifact (unmerged project.dispatch-workspaces.yaml) that required manual cleanup
+          — but this is a one-off from my own investigation technique, not systemic. No new
+          high-confidence friction to capture. Success: the review itself was clean and
+          straightforward — the task was well-scoped (10 mechanical replacements), worker note was
+          accurate, all claims verified."
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-24T22:54:02.010Z
+        completed_at: 2026-03-24T22:54:02.010Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-24T22:52:30.159Z
