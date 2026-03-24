@@ -7940,6 +7940,25 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-24T23:01:29.756Z
+  - _ulid: 01KMH2HN7CDG25Z9RP9DHHX5B8
+    type: success
+    content: "Iterative plan refinement with review between each version. 4 versions of daemon
+      optimistic data layer plan, each round of user feedback materially improved the output: spec
+      purity rules, design-as-task anti-pattern, tiered caching model, session staleness.
+      Lightweight planning iterations are cheaper than implementation rework."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-24T23:23:14.540Z
+  - _ulid: 01KMH2HNG8XFQFWNAYG8FWHWZY
+    type: success
+    content: Using an approved example plan as quality reference. Comparing task detail against
+      @plan-dispatch-event-system-expansion immediately surfaced the gap between vague and
+      executable task descriptions. Example plans are effective calibration tools.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-24T23:23:14.824Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
