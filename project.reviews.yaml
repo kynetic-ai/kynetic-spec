@@ -48742,6 +48742,17 @@ reviews:
         runner: manual
         created_at: 2026-03-24T07:48:20.477Z
         completed_at: 2026-03-24T07:48:20.477Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Verified: shadow.test.ts and claude-code-renderer.test.ts (both converted to use
+          readTestOutput) produce 0 violations. Mechanical conversions are correct."
+        name: converted-files-clean
+        required: true
+        runner: manual
+        created_at: 2026-03-24T07:48:28.320Z
+        completed_at: 2026-03-24T07:48:28.320Z
     events:
       - _ulid: 01KMFD0M2X9QBNPZ6R7RQ4Y0F8
         actor: "@claude"
@@ -48777,6 +48788,13 @@ reviews:
           status: pass
           name: no-false-positives-on-behavioral-tests
         timestamp: 2026-03-24T07:48:20.822Z
+      - _ulid: 01KMFD21WN838DKYY1ZESWSZ78
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: converted-files-clean
+        timestamp: 2026-03-24T07:48:28.693Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -48808,5 +48826,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-24T07:47:41.790Z
-    updated_at: 2026-03-24T07:48:20.477Z
+    updated_at: 2026-03-24T07:48:28.320Z
     notes: []
