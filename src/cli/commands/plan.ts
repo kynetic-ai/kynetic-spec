@@ -617,7 +617,7 @@ function buildTaskPlans(
  * Register the 'plan' command group
  */
 export function registerPlanCommands(program: Command): void {
-  const planCmd = program.command("plan").description("Manage implementation plans");
+  const plan = program.command("plan").description("Manage implementation plans");
 
   // Register plan import subcommand
   registerPlanImportCommand(plan);
@@ -667,6 +667,7 @@ Examples:
           process.exit(EXIT_CODES.USAGE_ERROR);
         }
 
+        // Generate URL-safe slug from title
         // oxlint-disable-next-line unicorn/consistent-function-scoping
         const generateSlug = (title: string): string => {
           return title
@@ -742,7 +743,7 @@ Examples:
 
   // kspec plan get <ref>
   // AC: @plan-crud ac-8, ac-30
-  planCmd
+  plan
     .command("get <ref>")
     .description("Show plan details")
     .option("--json", "Output as JSON")
@@ -823,7 +824,7 @@ Examples:
 
   // kspec plan export <ref>
   // AC: @plan-export ac-stdout, ac-output-file, ac-empty, ac-not-found, ac-json
-  planCmd
+  plan
     .command("export <ref>")
     .description("Export stored plan content to stdout or a file")
     .option("--output <path>", "Write plan content to the specified file")
@@ -995,7 +996,7 @@ Examples:
 
   // kspec plan list
   // AC: @plan-crud ac-7, ac-31
-  planCmd
+  plan
     .command("list")
     .description("List plans")
     .option("--status <status>", "Filter by status")

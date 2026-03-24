@@ -269,9 +269,9 @@ function formatSkillDetails(skill: LoadedSkill, content: string | null): void {
 /**
  * Register CRUD skill commands (list, add, get, set, delete, import)
  */
-export function registerSkillCrudCommands(skillCmd: Command): void {
+export function registerSkillCrudCommands(skill: Command): void {
   // AC: @skill-cli ac-1, ac-2 - kspec skill list
-  skillCmd
+  skill
     .command("list")
     .description("List all skills")
     .option("--origin <origin>", "Filter by origin (core, project, local)")
@@ -422,7 +422,7 @@ export function registerSkillCrudCommands(skillCmd: Command): void {
     });
 
   // AC: @skill-cli ac-5, ac-6 - kspec skill get
-  skillCmd
+  skill
     .command("get <ref>")
     .description("Show skill details")
     .action(async (ref: string) => {

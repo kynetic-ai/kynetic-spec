@@ -235,7 +235,7 @@ export async function findDispatchWorkspaceByTaskRef(
   const filtered = options.includeClosed
     ? matches
     : matches.filter((workspace) => workspace.lifecycle_state !== "closed");
-  return filtered.toSorted((a, b) =>
+  return [...filtered].sort((a, b) =>
     a.timestamps.updated_at < b.timestamps.updated_at ? 1 : -1,
   )[0];
 }

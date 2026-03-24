@@ -288,10 +288,10 @@ async function handleStatusCascade(
  * Register item commands
  */
 export function registerItemCommands(program: Command): void {
-  const itemCmd = program.command("item").description("Spec item commands");
+  const item = program.command("item").description("Spec item commands");
 
   // kspec item list
-  itemCmd
+  item
     .command("list")
     .description("List spec items with optional filters")
     .option(
@@ -462,13 +462,13 @@ export function registerItemCommands(program: Command): void {
     });
 
   // kspec item get <ref>
-  itemCmd
+  item
     .command("get <ref>")
     .description("Get details for a specific item")
     .action(async (ref) => {
       try {
         const ctx = await initContext();
-        const { refIndex, traitIndex, items: _items } = await buildIndexes(ctx);
+        const { refIndex, traitIndex } = await buildIndexes(ctx);
 
         const result = refIndex.resolve(ref);
 
@@ -611,7 +611,7 @@ export function registerItemCommands(program: Command): void {
     });
 
   // kspec item types - show available types and counts
-  itemCmd
+  item
     .command("types")
     .description("Show item types and counts")
     .action(async () => {
@@ -636,7 +636,7 @@ export function registerItemCommands(program: Command): void {
     });
 
   // kspec item tags - show available tags and counts
-  itemCmd
+  item
     .command("tags")
     .description("Show tags and counts")
     .action(async () => {
@@ -1743,7 +1743,7 @@ Examples:
     });
 
   // kspec item status - show implementation status with linked tasks
-  itemCmd
+  item
     .command("status <ref>")
     .description("Show implementation status and linked tasks for a spec item")
     .action(async (ref) => {
@@ -1870,7 +1870,7 @@ Examples:
     });
 
   // kspec item notes <ref>
-  itemCmd
+  item
     .command("notes <ref>")
     .description("Show notes for a spec item")
     .action(async (ref: string) => {
@@ -1912,9 +1912,10 @@ Examples:
     });
 
   // Create subcommand group for acceptance criteria operations
-  const acCmd = itemCmd.command("ac").description("Manage acceptance criteria on spec items");
+  const acCmd = item.command("ac").description("Manage acceptance criteria on spec items");
 
   // Helper: Generate next AC ID based on existing AC
+  // oxlint-disable-next-line unicorn/consistent-function-scoping
   function generateNextAcId(existingAc: AcceptanceCriterion[] | undefined): string {
     if (!existingAc || existingAc.length === 0) return "ac-1";
 
@@ -1934,7 +1935,7 @@ Examples:
     refIndex: ReferenceIndex;
   }> {
     const ctx = await initContext();
-    const { refIndex, items: _items2 } = await buildIndexes(ctx);
+    const { refIndex } = await buildIndexes(ctx);
 
     const result = refIndex.resolve(ref);
     if (!result.ok) {
