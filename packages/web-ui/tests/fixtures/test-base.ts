@@ -68,7 +68,8 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
   },
 
   daemon: [
-    async (_fixtures, use) => {
+    // oxlint-disable-next-line no-empty-pattern
+    async ({}, use) => {
       // Check Bun is available (daemon requires it)
       if (!(await checkBunAvailable())) {
         throw new Error(

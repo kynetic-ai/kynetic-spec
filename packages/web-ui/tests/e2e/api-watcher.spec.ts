@@ -337,7 +337,8 @@ test.describe("File Watcher API", () => {
   // Skip all file watcher tests in CI — GitHub Actions does not support recursive fs.watch.
   // The CI environment's Chokidar fallback doesn't reliably emit events, causing flaky tests.
   // Tests pass locally where native fs.watch with recursive mode works correctly.
-  test.beforeEach(async (_fixtures, testInfo) => {
+  // oxlint-disable-next-line no-empty-pattern
+  test.beforeEach(async ({}, testInfo) => {
     if (process.env.CI) {
       testInfo.skip(
         true,
