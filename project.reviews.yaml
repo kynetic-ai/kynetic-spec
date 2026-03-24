@@ -50397,6 +50397,16 @@ reviews:
         required: true
         created_at: 2026-03-24T22:17:31.059Z
         completed_at: 2026-03-24T22:17:31.059Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: All 34 ACs across 5 specs describe single testable behaviors. No compound ACs found. Each
+          AC has a clear given/when/then with one observable outcome.
+        name: AC atomicity
+        required: true
+        created_at: 2026-03-24T22:17:34.794Z
+        completed_at: 2026-03-24T22:17:34.794Z
     events:
       - _ulid: 01KMGYQTS9JPQGA49J953K0HJM
         actor: "@claude"
@@ -50432,6 +50442,13 @@ reviews:
           status: pass
           name: Trait selection
         timestamp: 2026-03-24T22:17:31.472Z
+      - _ulid: 01KMGYSE720J8QE3X6PWFF0D8K
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: AC atomicity
+        timestamp: 2026-03-24T22:17:35.202Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -50475,5 +50492,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-24T22:16:42.537Z
-    updated_at: 2026-03-24T22:17:31.059Z
+    updated_at: 2026-03-24T22:17:34.794Z
     notes: []
