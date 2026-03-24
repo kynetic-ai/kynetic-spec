@@ -30,3 +30,34 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-24T00:01:29.591Z
+  - _ulid: 01KMEJWE8PFC4TNCR7BHVCP4DJ
+    content: >-
+      Implementation complete. All 7210 tests pass across 310 test files.
+
+
+      Changes:
+
+      - API layer (api.ts): Added isStaticMode() guards returning empty/default data to 13
+      daemon-only fetch functions: fetchAgentStatus, fetchAgentDefinitions, fetchHooks,
+      fetchSchedules, fetchScheduleStatus, fetchRecentEvents, fetchCompositionConfigs,
+      fetchCompositionActivations, fetchHealth, fetchProjectConfig, fetchShadowStatus,
+      fetchConventions, fetchValidationAggregation
+
+      - 8 page/component files: Simplified query enabled conditions to isProjectInitialized() only,
+      removing the && !isStaticMode() that caused dual- dependency issues with TanStack Query
+      v6  subscription
+
+      - Updated 3 test assertions in web-ui-tanstack-query.test.ts to reflect the new pattern
+
+
+      Files NOT changed (correctly kept !isStaticMode() for non-query UI concerns):
+
+      - WebSocket subscription guards in dashboard, agents, automation, board, sessions pages
+
+      - UI conditional rendering (button visibility) in triage, workflows, inbox, reviews,
+      AgentCard, SchedulesSection, DispatchTriggersSection
+
+      -  event loading guard in sessions/[id]
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-24T00:11:01.782Z
