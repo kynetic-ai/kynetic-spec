@@ -14826,7 +14826,7 @@ runs:
     completed_at: 2026-03-24T23:11:22.000Z
   - _ulid: 01KMH2AF5E8XD6S8WC498PM48Z
     status: active
-    current_step: 4
+    current_step: 5
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -14906,7 +14906,16 @@ runs:
       - status: completed
         step_index: 4
         started_at: 2026-03-24T23:20:58.284Z
-        completed_at: 2026-03-24T23:20:58.284Z
+        completed_at: 2026-03-24T23:22:57.032Z
+        notes: |-
+          User approved both items as inbox. Captured via batch:
+          1. Writing-specs skill description anti-patterns — inbox added
+          2. Plan skill: plans-as-design guidance — inbox added
+          No observations to capture.
+      - status: completed
+        step_index: 5
+        started_at: 2026-03-24T23:22:57.032Z
+        completed_at: 2026-03-24T23:22:57.032Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-03-24T23:19:18.958Z
