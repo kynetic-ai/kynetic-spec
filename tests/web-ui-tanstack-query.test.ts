@@ -342,8 +342,11 @@ describe("dashboard static mode compatibility (@ui-data-freshness ac-6)", () => 
     expect(dashboardSrc).toContain("fetchValidation");
   });
 
-  it("disables agent status query in static mode", () => {
-    expect(dashboardSrc).toContain("!isStaticMode()");
+  it("delegates static mode handling to API fetch functions", () => {
+    // Static mode guards are in the API layer (fetchAgentStatus, etc.),
+    // not in query enabled conditions. This eliminates dual-$state
+    // dependencies that prevent TanStack Query $effect from firing.
+    expect(apiSrc).toContain("if (isStaticMode())");
   });
 
   it("gates queries on project initialization", () => {
@@ -577,8 +580,10 @@ describe("settings page migration (@ui-data-freshness ac-1)", () => {
     expect(settingsSrc).not.toContain("async function loadAllData");
   });
 
-  it("disables daemon-only queries in static mode", () => {
-    expect(settingsSrc).toContain("!isStaticMode()");
+  it("delegates static mode handling to API fetch functions", () => {
+    // Static mode guards are in the API layer (fetchHealth, fetchShadowStatus, etc.),
+    // not in query enabled conditions
+    expect(apiSrc).toContain("if (isStaticMode())");
   });
 });
 
@@ -913,7 +918,9 @@ describe("board page migration (@ui-data-freshness ac-1, ac-4)", () => {
     expect(boardPageSrc).toContain("tasksQuery.isLoading");
   });
 
-  it("gates agent status query on non-static mode", () => {
+  it("gates WebSocket subscriptions on non-static mode", () => {
+    // Static mode guards for queries are in the API layer;
+    // !isStaticMode() remains for WebSocket subscription guards
     expect(boardPageSrc).toContain("!isStaticMode()");
   });
 
