@@ -51296,6 +51296,16 @@ reviews:
         runner: vitest
         created_at: 2026-03-24T22:48:59.222Z
         completed_at: 2026-03-24T22:48:59.222Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 20/20 tests pass
+        name: vitest (task-rebuild-index)
+        required: true
+        runner: vitest
+        created_at: 2026-03-24T22:49:30.524Z
+        completed_at: 2026-03-24T22:49:30.524Z
     events:
       - _ulid: 01KMH0J1Z3S8YW1NFDSXN9SNQB
         actor: "@claude"
@@ -51317,6 +51327,13 @@ reviews:
           status: pass
           name: vitest (full suite)
         timestamp: 2026-03-24T22:48:59.649Z
+      - _ulid: 01KMH0KX0ZCPXH5PBXHGZ4DJNE
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest (task-rebuild-index)
+        timestamp: 2026-03-24T22:49:30.911Z
     examined_commit: f8471212e94da528c8d2048f0a085fc7eeceec00
     external_links: []
     lifecycle_state: open
@@ -51329,5 +51346,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-24T22:48:30.436Z
-    updated_at: 2026-03-24T22:48:59.222Z
+    updated_at: 2026-03-24T22:49:30.524Z
     notes: []
