@@ -27736,6 +27736,12 @@ plans:
         content: Content updated from file
         author: "@claude"
         created_at: 2026-03-24T19:44:51.456Z
+      - _ulid: 01KMGP229FVQCJYBB87VV9AQX9
+        content: "Deletion task completed as part of oxlint migration (PR #905). Removed delete task from
+          plan, updated with completed work summary. Remaining tasks are behavioral replacement
+          coverage for ~30 at-risk ACs. Removed depends_on references since deletion is done."
+        author: "@claude"
+        created_at: 2026-03-24T19:45:00.719Z
   - _ulid: 01KMF7S3K8Z0SQNR3C51HXKBF3
     slugs:
       - plan-migrate-from-biome-to-oxlint-oxfmt
