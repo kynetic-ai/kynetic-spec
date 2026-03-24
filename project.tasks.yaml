@@ -22353,7 +22353,7 @@
   slugs: []
   title: "Fix flaky tests: canonical-task-workspace-contract and agent-dispatch-engine"
   type: task
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 3
@@ -22364,4 +22364,5 @@
   todos_count: 0
   created_at: 2026-03-24T19:31:21.265Z
   started_at: 2026-03-24T20:19:06.184Z
+  submitted_at: 2026-03-24T20:37:16.930Z
   automation: eligible
