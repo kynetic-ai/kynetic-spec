@@ -23,7 +23,7 @@ The following are **always MUST-FIX** in this project — no exceptions, no down
 - Bypassing Zod validation — creating parallel validation instead of using schemas in `src/schema/`
 
 ### Build and Verification Config
-Any change to tsconfig, Biome config, or vitest config that makes the pipeline report *fewer* problems:
+Any change to tsconfig, oxlint/oxfmt config, or vitest config that makes the pipeline report *fewer* problems:
 - Adding excludes/ignores to suppress errors instead of fixing them
 - Loosening compiler strictness, disabling rules, skipping test suites
 - Modifying test sharding or timeouts to mask failures
