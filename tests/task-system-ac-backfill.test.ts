@@ -10,6 +10,7 @@ import {
   initGitRepo,
   kspecJson,
   kspecOutput,
+  readTestOutput,
   setupTempFixtures,
   testUlid,
 } from "./helpers/cli.js";
@@ -108,7 +109,7 @@ async function writeTaskBackfillSpecFixture(rootDir: string): Promise<TaskBackfi
   await fs.writeFile(path.join(rootDir, "modules", "tasks.yaml"), yamlStringify(tasksModule), "utf-8");
 
   const configPath = path.join(rootDir, "kynetic.yaml");
-  const config = yamlParse(await fs.readFile(configPath, "utf-8")) as {
+  const config = yamlParse(await readTestOutput(configPath)) as {
     includes?: string[];
   };
   const includes = new Set(config.includes ?? []);

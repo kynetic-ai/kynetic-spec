@@ -11,6 +11,7 @@ import {
   setupTempFixtures,
   cleanupTempDir,
   initGitRepo,
+  readTestOutput,
 } from './helpers/cli';
 import {
   claudeCodeRenderer,
@@ -79,7 +80,7 @@ describe('Platform Renderer Contract', () => {
       expect(result.paths[0]).toBe(path.join(tempDir, '.claude', 'skills', 'test-skill', 'SKILL.md'));
 
       // Verify file exists
-      const content = await fs.readFile(result.paths[0], 'utf-8');
+      const content = await readTestOutput(result.paths[0], 'utf-8');
       expect(content).toContain('# Test Skill');
     });
 
@@ -161,7 +162,7 @@ describe('Platform Renderer Contract', () => {
 
       // Verify docs were copied
       const targetDocsPath = path.join(tempDir, '.claude', 'skills', 'test-skill', 'docs', 'guide.md');
-      const content = await fs.readFile(targetDocsPath, 'utf-8');
+      const content = await readTestOutput(targetDocsPath, 'utf-8');
       expect(content).toContain('# Guide');
     });
 
@@ -181,7 +182,7 @@ describe('Platform Renderer Contract', () => {
 
       // Verify references were copied
       const targetRefsPath = path.join(tempDir, '.claude', 'skills', 'test-skill', 'references', 'api.md');
-      const content = await fs.readFile(targetRefsPath, 'utf-8');
+      const content = await readTestOutput(targetRefsPath, 'utf-8');
       expect(content).toContain('# API Reference');
     });
 
@@ -201,7 +202,7 @@ describe('Platform Renderer Contract', () => {
 
       // Verify scripts were copied
       const targetScriptsPath = path.join(tempDir, '.claude', 'skills', 'test-skill', 'scripts', 'helper.sh');
-      const content = await fs.readFile(targetScriptsPath, 'utf-8');
+      const content = await readTestOutput(targetScriptsPath, 'utf-8');
       expect(content).toContain('#!/bin/bash');
     });
 
@@ -221,7 +222,7 @@ describe('Platform Renderer Contract', () => {
 
       // Verify assets were copied
       const targetAssetsPath = path.join(tempDir, '.claude', 'skills', 'test-skill', 'assets', 'config.json');
-      const content = await fs.readFile(targetAssetsPath, 'utf-8');
+      const content = await readTestOutput(targetAssetsPath, 'utf-8');
       expect(content).toContain('"key"');
     });
 
@@ -276,7 +277,7 @@ describe('Platform Renderer Contract', () => {
       expect(result.supportingDirsAction!.references).toBe('created');
       expect(result.paths).toContain(path.join(tempDir, '.factory', 'skills', 'droid-support', 'references'));
 
-      const copied = await fs.readFile(
+      const copied = await readTestOutput(
         path.join(tempDir, '.factory', 'skills', 'droid-support', 'references', 'api.md'),
         'utf-8'
       );
@@ -378,7 +379,7 @@ describe('Platform Renderer Contract', () => {
       expect(result.paths[0]).toBe(path.join(tempDir, customOutputDir, 'test-skill', 'SKILL.md'));
 
       // Verify file exists at custom location
-      const content = await fs.readFile(result.paths[0], 'utf-8');
+      const content = await readTestOutput(result.paths[0], 'utf-8');
       expect(content).toContain('# Test Skill');
     });
 
@@ -412,7 +413,7 @@ describe('Platform Renderer Contract', () => {
 
       // Verify docs at custom location
       const targetDocsPath = path.join(tempDir, customOutputDir, 'test-skill', 'docs', 'guide.md');
-      const content = await fs.readFile(targetDocsPath, 'utf-8');
+      const content = await readTestOutput(targetDocsPath, 'utf-8');
       expect(content).toContain('# Guide');
     });
 
@@ -441,7 +442,7 @@ describe('Platform Renderer Contract', () => {
         fs.access(path.join(tempDir, '.factory', 'skills', 'droid-custom', 'SKILL.md'))
       ).rejects.toThrow();
 
-      const copied = await fs.readFile(
+      const copied = await readTestOutput(
         path.join(tempDir, customOutputDir, 'droid-custom', 'assets', 'config.json'),
         'utf-8'
       );
@@ -460,7 +461,7 @@ describe('Platform Renderer Contract', () => {
 
       // Check for per-platform hash file
       const hashPath = getPlatformRenderHashPath(ctx.specDir, 'test-skill', 'claude-code');
-      const hash = await fs.readFile(hashPath, 'utf-8');
+      const hash = await readTestOutput(hashPath, 'utf-8');
       expect(hash.trim()).toMatch(/^[a-f0-9]{64}$/);
     });
 
@@ -473,7 +474,7 @@ describe('Platform Renderer Contract', () => {
 
       // Check for legacy hash file (without platform suffix)
       const legacyHashPath = path.join(ctx.specDir, 'skills', 'test-skill', '.render-hash');
-      const hash = await fs.readFile(legacyHashPath, 'utf-8');
+      const hash = await readTestOutput(legacyHashPath, 'utf-8');
       expect(hash.trim()).toMatch(/^[a-f0-9]{64}$/);
     });
 
@@ -512,7 +513,7 @@ describe('Platform Renderer Contract', () => {
 
       // Modify the rendered file
       const renderedPath = path.join(tempDir, '.claude', 'skills', 'test-skill', 'SKILL.md');
-      const content = await fs.readFile(renderedPath, 'utf-8');
+      const content = await readTestOutput(renderedPath, 'utf-8');
       await fs.writeFile(renderedPath, content + '\n# Manual edit\n', 'utf-8');
 
       // Check drift - should be drifted
@@ -644,7 +645,7 @@ describe('Droid Skill Renderer', () => {
     expect(result.platform).toBe('droid');
     expect(result.paths[0]).toBe(path.join(tempDir, '.factory', 'skills', 'droid-skill', 'SKILL.md'));
 
-    const rendered = await fs.readFile(result.paths[0], 'utf-8');
+    const rendered = await readTestOutput(result.paths[0], 'utf-8');
     expect(rendered).toContain('---');
     expect(rendered).toContain('name: droid-skill');
     expect(rendered).toContain('description: A skill for Droid');
@@ -658,7 +659,7 @@ describe('Droid Skill Renderer', () => {
     );
 
     const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
-    let metaContent = await fs.readFile(metaPath, 'utf-8');
+    let metaContent = await readTestOutput(metaPath, 'utf-8');
     metaContent = metaContent.replace(
       /id: droid-ui\n/,
       'id: droid-ui\n    platform_config:\n      droid:\n        user_invocable: false\n'
@@ -687,7 +688,7 @@ describe('Droid Skill Renderer', () => {
     const { ctx, skill } = await loadDroidSkill('droid-marker');
     await droidRenderer.render(ctx, tempDir, skill!);
 
-    const rendered = await fs.readFile(
+    const rendered = await readTestOutput(
       path.join(tempDir, '.factory', 'skills', 'droid-marker', 'SKILL.md'),
       'utf-8'
     );
@@ -713,7 +714,7 @@ describe('Droid Skill Renderer', () => {
     const { ctx, skill } = await loadDroidSkill('helper');
     await droidRenderer.render(ctx, tempDir, skill!);
 
-    const rendered = await fs.readFile(
+    const rendered = await readTestOutput(
       path.join(tempDir, '.factory', 'skills', 'helper', 'SKILL.md'),
       'utf-8'
     );
@@ -739,7 +740,7 @@ describe('Droid Skill Renderer', () => {
     await droidRenderer.render(ctx, tempDir, skill!, { storeHash: true });
 
     const hashPath = getPlatformRenderHashPath(ctx.specDir, 'droid-hash', 'droid');
-    const hash = await fs.readFile(hashPath, 'utf-8');
+    const hash = await readTestOutput(hashPath, 'utf-8');
     expect(hash.trim()).toMatch(/^[a-f0-9]{64}$/);
   });
 
@@ -757,7 +758,7 @@ describe('Droid Skill Renderer', () => {
     );
 
     const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
-    let metaContent = await fs.readFile(metaPath, 'utf-8');
+    let metaContent = await readTestOutput(metaPath, 'utf-8');
     metaContent = metaContent.replace(
       /id: droid-dmi\n/,
       'id: droid-dmi\n    platform_config:\n      droid:\n        disable_model_invocation: true\n'
