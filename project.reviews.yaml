@@ -51559,9 +51559,25 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-24T23:11:18.489Z
+      - _ulid: 01KMH1W25NHVBTQZTMD0EDYDJ8
+        actor: agent@kspec-dispatch
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-24T23:11:26.901Z
+      - _ulid: 01KMH1W25NNNJR5R1PWSV1YMQM
+        actor: agent@kspec-dispatch
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-24T23:11:26.901Z
     examined_commit: 35d3b6f1a176412e832773ee8055c90bed2b3f8b
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -51605,7 +51621,14 @@ reviews:
               defaults to utf-8 for string data, but the change is unnecessary.'
             created_at: 2026-03-24T23:11:03.288Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: agent@kspec-dispatch
+        role: reviewer
+        created_at: 2026-03-24T23:11:26.900Z
     created_at: 2026-03-24T23:10:02.654Z
-    updated_at: 2026-03-24T23:11:18.086Z
+    updated_at: 2026-03-24T23:11:26.901Z
     notes: []
