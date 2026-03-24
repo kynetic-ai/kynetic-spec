@@ -14538,7 +14538,7 @@ runs:
     completed_at: 2026-03-24T21:59:39.242Z
   - _ulid: 01KMGXZY4PK44DPK40J24NHXQC
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -14554,7 +14554,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-24T22:04:27.549Z
-        completed_at: 2026-03-24T22:04:27.549Z
+        completed_at: 2026-03-24T22:04:35.785Z
+        notes: This was a straightforward mechanical refactoring task. No friction — the task description
+          was precise, the helpers existed, the tests passed immediately. No high-confidence
+          friction or success patterns to capture beyond what's already tracked. The batch of
+          readTestOutput conversion tasks is a well-scoped pattern that works smoothly.
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-24T22:04:35.785Z
+        completed_at: 2026-03-24T22:04:35.785Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-24T22:03:39.543Z
