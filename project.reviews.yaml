@@ -49214,7 +49214,18 @@ reviews:
     slugs: []
     title: Review task-readtestoutput-skill-rendering (cycle 1)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "89/89 skill-rendering tests pass. Full suite: 6827 pass, 1 fail (pre-existing flaky
+          timeout in canonical-task-workspace-contract — fix merged to dev after branch diverged)."
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-24T21:10:56.298Z
+        completed_at: 2026-03-24T21:10:56.298Z
     events:
       - _ulid: 01KMGTDP34XRN77ZD8TH4GWREJ
         actor: "@claude"
@@ -49229,6 +49240,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-24T21:01:23.177Z
+      - _ulid: 01KMGTZDD7KK7T1EMT6VATF2Z8
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-24T21:10:56.679Z
     examined_commit: 8283aa44562d51c75908a9a89a36e914b14f984f
     external_links: []
     lifecycle_state: open
@@ -49241,5 +49259,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-24T21:01:15.748Z
-    updated_at: 2026-03-24T21:01:22.779Z
+    updated_at: 2026-03-24T21:10:56.298Z
     notes: []
