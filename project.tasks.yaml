@@ -21950,7 +21950,7 @@
   title: Write custom no-source-scanning lint rule
   type: task
   plan_ref: "@plan-migrate-from-biome-to-oxlint-oxfmt"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-oxlint-vitest-plugin"
@@ -21963,7 +21963,7 @@
   todos_count: 0
   created_at: 2026-03-24T06:16:25.603Z
   started_at: 2026-03-24T07:52:19.113Z
-  submitted_at: 2026-03-24T07:43:29.952Z
+  submitted_at: 2026-03-24T07:52:22.186Z
 - _ulid: 01KMF7SGFAG8K64044F2WVZQ49
   slugs:
     - task-update-scripts-ci

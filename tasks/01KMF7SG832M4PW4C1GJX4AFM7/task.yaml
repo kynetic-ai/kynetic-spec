@@ -23,7 +23,7 @@ description: |
 spec_ref: null
 plan_ref: "@plan-migrate-from-biome-to-oxlint-oxfmt"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-oxlint-vitest-plugin"
@@ -36,12 +36,12 @@ vcs_refs: []
 review_ref: "@01KMFD0M2YMSSJ3K8A6JFZ996F"
 submission_linkage:
   review_url: null
-  branch: dispatch/task/task-custom-no-source-scanning-rule/01kmf7sg
-  captured_at: 2026-03-24T07:43:29.950Z
-  commit: 6c2d8a3f1174a14c8e30521f8b83dd14e97cbf00
-  remote: null
-  remote_url: null
-  upstream_ref: dev
+  branch: main
+  captured_at: 2026-03-24T07:52:22.183Z
+  commit: 34173553c2bc23dc698e3777f79fd2de93ca955f
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/main
 session_id: 01KM0XRFH87T3QWPVXDQZCA2XK
 history:
   - author: "@claude"
@@ -107,7 +107,34 @@ history:
         previous: 2026-03-24T06:51:18.883Z
     command: task-start
     timestamp: 2026-03-24T07:52:19.114Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: main
+          captured_at: 2026-03-24T07:52:22.183Z
+          commit: 34173553c2bc23dc698e3777f79fd2de93ca955f
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/main
+        previous:
+          review_url: null
+          branch: dispatch/task/task-custom-no-source-scanning-rule/01kmf7sg
+          captured_at: 2026-03-24T07:43:29.950Z
+          commit: 6c2d8a3f1174a14c8e30521f8b83dd14e97cbf00
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+      submitted_at:
+        new: 2026-03-24T07:52:22.186Z
+        previous: 2026-03-24T07:43:29.952Z
+    command: task-submit
+    timestamp: 2026-03-24T07:52:22.186Z
 created_at: 2026-03-24T06:16:25.603Z
 started_at: 2026-03-24T07:52:19.113Z
-submitted_at: 2026-03-24T07:43:29.952Z
+submitted_at: 2026-03-24T07:52:22.186Z
 todos: []
