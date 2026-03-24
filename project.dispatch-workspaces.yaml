@@ -22786,12 +22786,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-24T22:42:03.010Z
+      updated_at: 2026-03-24T22:42:14.488Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-24T22:42:03.010Z
+      updated_at: 2026-03-24T22:42:14.488Z
     integration:
       status: pending
       detail: null
@@ -22799,24 +22799,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 3c013290137d63d65590b5e2f2eb14641265c679
-      updated_at: 2026-03-24T22:42:03.010Z
-    lifecycle_state: ready
+      updated_at: 2026-03-24T22:42:14.488Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KMFCP3KGRNYA17C8T27XM2EQ"
     task_slug: task-readtestoutput-task-rebuild-index
     timestamps:
       closed_at: null
       last_active_at: 2026-03-24T22:36:25.397Z
-      last_reconciled_at: 2026-03-24T22:42:03.010Z
+      last_reconciled_at: 2026-03-24T22:42:14.488Z
       created_at: 2026-03-24T22:35:44.637Z
-      updated_at: 2026-03-24T22:42:03.010Z
+      updated_at: 2026-03-24T22:42:14.488Z
     workspace_id: dispatch-workspace-01KMFCP3KGRNYA17C8T27XM2EQ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: f8471212e94da528c8d2048f0a085fc7eeceec00
+        last_seen_at: 2026-03-24T22:42:14.488Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-readtestoutput-task-rebuild-index-01kmfcp3-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-readtestoutput-task-rebuild-index/01kmfcp3
-        head: 3c013290137d63d65590b5e2f2eb14641265c679
-        last_seen_at: 2026-03-24T22:35:44.637Z
+        head: f8471212e94da528c8d2048f0a085fc7eeceec00
+        last_seen_at: 2026-03-24T22:42:14.488Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-readtestoutput-task-rebuild-index-01kmfcp3
