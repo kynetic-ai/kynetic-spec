@@ -1,1 +1,13 @@
-notes: []
+notes:
+  - _ulid: 01KMFKD24ZYGC9147TRT15HF6X
+    content: "Completed formatting and lint fix pass. Auto-formatted 675 files with oxfmt, auto-fixed
+      ~800 lint violations with oxlint --fix/--fix-suggestions, then dispatched 4 parallel subagents
+      to fix ~1100 manual violations. Had to correct agent-introduced issues: Commander.js command
+      group variable renames that broke references, and one .toSorted() call requiring es2023. Final
+      state: 0 errors in kept files, 212 warnings (all acceptable: no-shadow in Commander patterns,
+      prefer-template in complex expressions). 490 errors remain in static analysis test files
+      scheduled for deletion. Disabled unicorn/no-thenable rule (false positive on AC
+      given/when/then domain concept)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-24T09:39:20.863Z
