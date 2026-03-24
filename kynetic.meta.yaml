@@ -7930,6 +7930,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-24T22:11:20.944Z
+  - _ulid: 01KMH19V0WZ6AME3VC2ETVM9JD
+    type: success
+    content: "readTestOutput batch conversion: correctly identified and excluded bootstrap.test.ts from
+      conversion because its readFileSync references are dependency-injected mock stubs (fsApi
+      parameters), not actual file system reads. This pattern — DI stubs that look like fs calls —
+      is worth checking for in future batch conversions."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-24T23:01:29.756Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
