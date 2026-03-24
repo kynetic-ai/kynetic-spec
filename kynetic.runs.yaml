@@ -14284,9 +14284,20 @@ runs:
     completed_at: 2026-03-24T20:57:53.550Z
   - _ulid: 01KMGV7EXVQVVY7K5G04HFY832
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-03-24T21:15:20.379Z
+        completed_at: 2026-03-24T21:16:07.801Z
+        notes: "Session review of task-readtestoutput-skill-rendering. Clean review, merged to dev. Key
+          learning: merge-base diffs essential for dispatch reviews where dev moves during branch
+          lifetime. Captured as success observation."
+      - status: completed
+        step_index: 1
+        started_at: 2026-03-24T21:16:07.801Z
+        completed_at: 2026-03-24T21:16:07.801Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-24T21:15:20.379Z
