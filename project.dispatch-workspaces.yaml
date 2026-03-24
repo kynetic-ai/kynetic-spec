@@ -22048,12 +22048,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-24T22:05:24.846Z
+      updated_at: 2026-03-24T22:05:33.128Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-24T22:05:24.846Z
+      updated_at: 2026-03-24T22:05:33.128Z
     integration:
       status: pending
       detail: null
@@ -22061,24 +22061,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: a8b88073e056993a94134d558dba1e8d7df97325
-      updated_at: 2026-03-24T22:05:24.846Z
-    lifecycle_state: ready
+      updated_at: 2026-03-24T22:05:33.128Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KMFCP01S3NZTH4GZNEEVH8RH"
     task_slug: task-readtestoutput-agent-invocation-lifecycle
     timestamps:
       closed_at: null
       last_active_at: 2026-03-24T21:58:48.379Z
-      last_reconciled_at: 2026-03-24T22:05:24.846Z
+      last_reconciled_at: 2026-03-24T22:05:33.128Z
       created_at: 2026-03-24T21:58:41.160Z
-      updated_at: 2026-03-24T22:05:24.846Z
+      updated_at: 2026-03-24T22:05:33.128Z
     workspace_id: dispatch-workspace-01KMFCP01S3NZTH4GZNEEVH8RH
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: a809faab7ae42057da3536a7eab83ed364b0b1bc
+        last_seen_at: 2026-03-24T22:05:33.128Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-readtestoutput-agent-invocation-lifecycle-01kmfcp0-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-readtestoutput-agent-invocation-lifecycle/01kmfcp0
-        head: a8b88073e056993a94134d558dba1e8d7df97325
-        last_seen_at: 2026-03-24T21:58:41.160Z
+        head: a809faab7ae42057da3536a7eab83ed364b0b1bc
+        last_seen_at: 2026-03-24T22:05:33.128Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-readtestoutput-agent-invocation-lifecycle-01kmfcp0
