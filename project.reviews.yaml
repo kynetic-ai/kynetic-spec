@@ -49119,3 +49119,29 @@ reviews:
     created_at: 2026-03-24T20:48:54.824Z
     updated_at: 2026-03-24T20:49:48.685Z
     notes: []
+  - _ulid: 01KMGT0WFTCNGRQYHDJGSDGF9K
+    slugs: []
+    title: Review readTestOutput conversion in yaml-round-trip-stability
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KMGT0WFT1ZN9MZKYFVWK080N
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-24T20:54:16.314Z
+    examined_commit: 0cf7d7b8a2bce1ea566445f29e03c812c9a2e0b3
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMFCNSPSBX86MHYDF4HM4M2C"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-24T20:54:16.314Z
+    updated_at: null
+    notes: []
