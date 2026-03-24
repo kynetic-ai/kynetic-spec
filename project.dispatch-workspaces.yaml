@@ -22928,12 +22928,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-24T23:54:02.792Z
+      updated_at: 2026-03-24T23:54:05.853Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-24T23:54:02.792Z
+      updated_at: 2026-03-24T23:54:05.853Z
     integration:
       status: pending
       detail: null
@@ -22941,26 +22941,31 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: f6afca8a55b1e8ec489a0b72a795dc5336771cc9
-      updated_at: 2026-03-24T23:54:02.792Z
-    lifecycle_state: ready
+      updated_at: 2026-03-24T23:54:05.853Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KMFCP49MHKRVNFJ57HA8M9FB"
     task_slug: task-readtestoutput-medium-batch-1
     timestamps:
       closed_at: null
       last_active_at: 2026-03-24T23:29:12.245Z
-      last_reconciled_at: 2026-03-24T23:54:02.792Z
+      last_reconciled_at: 2026-03-24T23:54:05.853Z
       created_at: 2026-03-24T22:43:09.720Z
-      updated_at: 2026-03-24T23:54:02.792Z
+      updated_at: 2026-03-24T23:54:05.853Z
     workspace_id: dispatch-workspace-01KMFCP49MHKRVNFJ57HA8M9FB
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 75605e384afdb99bb7d275474684f1885a678c11
+        last_seen_at: 2026-03-24T23:54:05.853Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-readtestoutput-medium-batch-1-01kmfcp4-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-readtestoutput-medium-batch-1/01kmfcp4
-        head: 35d3b6f1a176412e832773ee8055c90bed2b3f8b
-        last_seen_at: 2026-03-24T23:29:09.107Z
+        head: 75605e384afdb99bb7d275474684f1885a678c11
+        last_seen_at: 2026-03-24T23:54:05.853Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-readtestoutput-medium-batch-1-01kmfcp4
   - active_role: null
     base_branch_point: 25037298cf828f23a1b0966d113d7f295f917e4a
