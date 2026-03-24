@@ -48333,7 +48333,20 @@ reviews:
     slugs: []
     title: Review fix-web-ui-pages-not-rendering-on-initial-load (cycle 1)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 02ef0686e50d
+          head_commit: 4043b0529691
+        evidence: "160/160 tests pass in web-ui-tanstack-query.test.ts (the modified test file). Full suite:
+          7207 pass, 3 fail (pre-existing timeouts in canonical-task-workspace-contract.test.ts —
+          unrelated to this change)."
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-24T00:21:23.986Z
+        completed_at: 2026-03-24T00:21:23.986Z
     events:
       - _ulid: 01KMEK1HEVPDVDGJP906PJT6Z2
         actor: "@claude"
@@ -48355,6 +48368,13 @@ reviews:
           kind: nit
           thread_ulid: 01KMEKE9XXCK0K92RYQ9RPR81M
         timestamp: 2026-03-24T00:20:47.537Z
+      - _ulid: 01KMEKFE7SQDQ908P6R5XHSS0R
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-24T00:21:24.345Z
     examined_commit: 4043b05296911b0a7bcbb1d6547f32bddd1412ad
     external_links: []
     lifecycle_state: open
@@ -48390,5 +48410,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-24T00:13:48.891Z
-    updated_at: 2026-03-24T00:20:47.166Z
+    updated_at: 2026-03-24T00:21:23.986Z
     notes: []
