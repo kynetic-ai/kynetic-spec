@@ -51713,9 +51713,25 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-24T23:17:39.996Z
+      - _ulid: 01KMH28S7WQM1EPBAN577DY0B9
+        actor: agent@dispatch
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-03-24T23:18:23.740Z
+      - _ulid: 01KMH28S7WBCVVKHBNRSSGF7YB
+        actor: agent@dispatch
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-24T23:18:23.740Z
     examined_commit: fe2d058cc72fde6f6fd9678b2f828851760f3d77
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -51723,7 +51739,14 @@ reviews:
       ref: "@task-readtestoutput-medium-batch-2"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: agent@dispatch
+        role: reviewer
+        created_at: 2026-03-24T23:18:23.740Z
     created_at: 2026-03-24T23:17:21.906Z
-    updated_at: 2026-03-24T23:17:39.588Z
+    updated_at: 2026-03-24T23:18:23.740Z
     notes: []
