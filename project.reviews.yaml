@@ -49577,9 +49577,25 @@ reviews:
           status: pass
           name: scope-correctness
         timestamp: 2026-03-24T21:31:26.278Z
+      - _ulid: 01KMGW5V3Y5ZTHTNQRQ4KJ85BC
+        actor: agent@dispatch
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-03-24T21:31:55.903Z
+      - _ulid: 01KMGW5V3ZSAW2PK2MBNQWCT34
+        actor: agent@dispatch
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-24T21:31:55.903Z
     examined_commit: dfcc0de2f66f05b1c90ec3f05ba89fb08ce2ae10
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -49587,7 +49603,14 @@ reviews:
       ref: "@01KMFCNWK7PM3FJBVT727HG6AF"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: agent@dispatch
+        role: reviewer
+        created_at: 2026-03-24T21:31:55.902Z
     created_at: 2026-03-24T21:30:57.983Z
-    updated_at: 2026-03-24T21:31:25.909Z
+    updated_at: 2026-03-24T21:31:55.903Z
     notes: []
