@@ -51204,6 +51204,13 @@ reviews:
           kind: nit
           thread_ulid: 01KMH0E2W8ZQW7XAFJ6PYHQAHY
         timestamp: 2026-03-24T22:46:21.056Z
+      - _ulid: 01KMH0EK6FCNSCXVJ6AZFK63SK
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMH0EJRVEG322HCWBNJZVREF
+        timestamp: 2026-03-24T22:46:37.007Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -51230,7 +51237,23 @@ reviews:
               whether it should ref the plan itself.
             created_at: 2026-03-24T22:46:20.296Z
         kind: nit
+      - _ulid: 01KMH0EJRVEG322HCWBNJZVREF
+        anchor:
+          type: structured
+          field: daemon-entity-cache
+          section: Specs
+        entries:
+          - _ulid: 01KMH0EJRVZ352R68DR3YG180K
+            author: "@claude"
+            body: Trait ACs not listed in task coverage. @daemon-entity-cache uses @trait-api-endpoint (6 ACs)
+              and @daemon-command-api uses both @trait-api-endpoint and @trait-localhost-security (3
+              ACs). The tasks don't explicitly list trait AC coverage. This is standard practice
+              (trait ACs are inherited and tested implicitly), but worth noting — during
+              implementation, trait ACs should be annotated per the N/A convention where they don't
+              apply.
+            created_at: 2026-03-24T22:46:36.571Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-24T22:44:19.062Z
-    updated_at: 2026-03-24T22:46:20.296Z
+    updated_at: 2026-03-24T22:46:36.571Z
     notes: []
