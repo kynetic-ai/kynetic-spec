@@ -50,6 +50,14 @@ jobs:
         if: matrix.shard == 1
         run: npm run typecheck
 
+      - name: Lint
+        if: matrix.shard == 1
+        run: npm run lint
+
+      - name: Format check
+        if: matrix.shard == 1
+        run: npm run format:check
+
       - name: Build
         run: npm run build
 
