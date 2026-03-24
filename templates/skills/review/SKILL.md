@@ -289,7 +289,7 @@ kspec review check @review-ref --name "vitest" --status pass \
 
 # Failing check
 kspec review check @review-ref --name "lint" --status fail \
-  --runner eslint --evidence "3 errors found"
+  --runner oxlint --evidence "3 errors found"
 
 # Informational (non-required) check
 kspec review check @review-ref --name "coverage" --status pass \

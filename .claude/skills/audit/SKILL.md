@@ -181,7 +181,7 @@ Use these prompts for the parallel Explore agents:
 > Review src/ directory for code cruft. Look for: dead code, unused exports, unresolved TODO/FIXME comments, duplicate functions, commented-out code, debug artifacts, unused imports. Note file paths and line numbers.
 
 **Config:**
-> Review configuration files for cruft. Look for: unused dependencies, misplaced deps (devDeps vs deps), broken npm scripts, stale tsconfig/eslint options, version inconsistencies. Check package.json, tsconfig.json, and config files.
+> Review configuration files for cruft. Look for: unused dependencies, misplaced deps (devDeps vs deps), broken npm scripts, stale tsconfig/oxlint/oxfmt options, version inconsistencies. Check package.json, tsconfig.json, and config files.
 
 **Tests:**
 > Review tests/ for cruft. Look for: skipped tests (.skip/.todo), dead mock files, duplicate test names, flaky patterns, missing coverage, outdated fixtures. Verify temp directory isolation pattern.
