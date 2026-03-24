@@ -23,3 +23,27 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-24T06:51:31.820Z
+  - _ulid: 01KMFA0TN4RE0B37HJP0WM83JA
+    content: >-
+      Rule implemented and tested. Coverage:
+
+      - 9 of 12 offending files caught (466+ violations detected)
+
+      - 1 file correctly excluded (web-ui-design-system reads build output, not source)
+
+      - 2 edge cases missed: daemon-api-input-validation (for-of destructuring over inline array of
+      source paths) and daemon-executable (dynamic import('fs/promises'))
+
+      - 0 false positives on legitimate test files (integration, module, meta, etc.)
+
+
+      Patterns detected: ESM imports, require() destructuring, direct paths, path.join/resolve
+      calls, variable indirection through sourcePathVars, expect().toContain/toMatch assertions,
+      string .includes()/.match() calls.
+
+
+      The 2 missed edge cases are niche — dynamic import() and array destructuring iteration. These
+      can be added later if needed but the rule catches the vast majority of the anti-pattern.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-24T06:55:22.788Z
