@@ -64,6 +64,7 @@ tags:
   - cleanup
   - automation-eligible
 vcs_refs: []
+review_ref: "@01KMH1SFWY8FMPJ44MKXPGVJX0"
 submission_linkage:
   review_url: null
   branch: dev
@@ -114,6 +115,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-03-24T22:59:57.579Z
+  - author: "@claude"
+    changes:
+      review_ref:
+        new: "@01KMH1SFWY8FMPJ44MKXPGVJX0"
+        previous: null
+    command: review-link
+    timestamp: 2026-03-24T23:10:04.269Z
 created_at: 2026-03-24T07:41:57.940Z
 started_at: 2026-03-24T22:45:55.936Z
 submitted_at: 2026-03-24T22:59:57.579Z
