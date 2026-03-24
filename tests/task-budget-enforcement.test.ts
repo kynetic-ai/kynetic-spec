@@ -11,7 +11,7 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { kspec, setupTempFixtures, cleanupTempDir, initGitRepo } from "./helpers/cli";
+import { kspec, setupTempFixtures, cleanupTempDir, initGitRepo, readTestOutput } from "./helpers/cli";
 
 /**
  * Helper to create a budget file for a session in the test fixture directory.
@@ -41,7 +41,7 @@ async function readTestBudget(
 ): Promise<{ max_per_cycle: number; started_this_cycle: number } | null> {
   const budgetPath = path.join(projectRoot, ".kspec-sessions", sessionId, "budget.json");
   try {
-    const content = await fs.readFile(budgetPath, "utf-8");
+    const content = await readTestOutput(budgetPath);
     return JSON.parse(content);
   } catch {
     return null;
@@ -258,7 +258,7 @@ describe("Integration: task budget enforcement", () => {
       });
 
       const budgetPath = path.join(tempDir, ".kspec-sessions", SESSION_ID, "budget.json");
-      const content = await fs.readFile(budgetPath, "utf-8");
+      const content = await readTestOutput(budgetPath);
       // Should parse without error
       const budget = JSON.parse(content);
       expect(budget.max_per_cycle).toBe(3);

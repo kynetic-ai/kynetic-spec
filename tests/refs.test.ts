@@ -5,7 +5,7 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { kspec, kspecJson, setupTempFixtures, cleanupTempDir, testUlid } from "./helpers/cli";
+import { kspec, kspecJson, readTestOutput, setupTempFixtures, cleanupTempDir, testUlid } from "./helpers/cli";
 
 describe("kspec refs", () => {
   let tempDir: string;
@@ -205,7 +205,7 @@ meta_file: kynetic.meta.yaml
 
     // Add tasks that reference specs
     // Read existing tasks and add spec_ref to them
-    const existingTasks = await fs.readFile(path.join(tempDir, "project.tasks.yaml"), "utf-8");
+    const existingTasks = await readTestOutput(path.join(tempDir, "project.tasks.yaml"));
     const updatedTasks = existingTasks.replace('spec_ref: "@test-core"', 'spec_ref: "@test-core"');
 
     // Add new tasks with spec_ref pointing to test-core

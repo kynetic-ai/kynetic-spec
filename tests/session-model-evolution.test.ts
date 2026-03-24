@@ -26,7 +26,7 @@ import {
   EventTypeSchema,
   SessionMetadataSchema,
 } from "../src/sessions/types.js";
-import { setupTempFixtures, cleanupTempDir, kspec, kspecJson, testUlid } from "./helpers/cli.js";
+import { setupTempFixtures, cleanupTempDir, kspec, kspecJson, readTestOutput, testUlid } from "./helpers/cli.js";
 
 // ─── AC-3: SessionStatusSchema extension ────────────────────────────────────
 
@@ -271,7 +271,7 @@ describe("agent.completed event structure", () => {
 
     // Read back events to verify
     const eventsPath = path.join(testDir, "sessions", sessionId, "events.jsonl");
-    const content = await fs.readFile(eventsPath, "utf-8");
+    const content = await readTestOutput(eventsPath);
     const lines = content.trim().split("\n").filter(Boolean);
     expect(lines.length).toBe(1);
 
@@ -298,7 +298,7 @@ describe("agent.completed event structure", () => {
     }
 
     const eventsPath = path.join(testDir, "sessions", sessionId, "events.jsonl");
-    const content = await fs.readFile(eventsPath, "utf-8");
+    const content = await readTestOutput(eventsPath);
     const lines = content.trim().split("\n").filter(Boolean);
     expect(lines.length).toBe(3);
   });

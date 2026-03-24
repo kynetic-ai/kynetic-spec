@@ -7,6 +7,7 @@ import {
   kspec,
   kspecJson,
   kspecOutput,
+  readTestOutput,
   setupTempFixtures,
   cleanupTempDir,
   initGitRepo,
@@ -97,7 +98,7 @@ describe("Integration: session-scoped task claiming", () => {
       const fs = await import("node:fs/promises");
       const path = await import("node:path");
       const tasksFile = path.join(tempDir, "project.tasks.yaml");
-      const content = await fs.readFile(tasksFile, "utf-8");
+      const content = await readTestOutput(tasksFile);
 
       // Add session_id to the first pending task
       const updatedContent = content.replace(
@@ -124,7 +125,7 @@ describe("Integration: session-scoped task claiming", () => {
       const fs = await import("node:fs/promises");
       const path = await import("node:path");
       const tasksFile = path.join(tempDir, "project.tasks.yaml");
-      const content = await fs.readFile(tasksFile, "utf-8");
+      const content = await readTestOutput(tasksFile);
       const updatedContent = content.replace(
         "status: pending\n    priority: 2\n    automation: eligible",
         `status: pending\n    priority: 2\n    automation: eligible\n    session_id: "${sessionId}"`,

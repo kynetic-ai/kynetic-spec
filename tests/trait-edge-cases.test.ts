@@ -6,7 +6,7 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import * as path from "node:path";
 import * as fs from "node:fs/promises";
-import { setupTempFixtures, kspecOutput as kspec } from "./helpers/cli";
+import { setupTempFixtures, kspecOutput as kspec, readTestOutput } from "./helpers/cli";
 
 describe("trait edge cases", () => {
   let tempDir: string;
@@ -58,7 +58,7 @@ describe("trait edge cases", () => {
     // Create a feature with a trait reference in core.yaml
     const corePath = path.join(tempDir, "modules/core.yaml");
     const yaml = require("yaml");
-    const coreContent = await fs.readFile(corePath, "utf-8");
+    const coreContent = await readTestOutput(corePath);
     const doc = yaml.parseDocument(coreContent);
 
     // Add traits field to the first feature
@@ -74,7 +74,7 @@ describe("trait edge cases", () => {
 
     // Delete the trait from manifest
     const manifestPath = path.join(tempDir, "kynetic.yaml");
-    const manifestContent = await fs.readFile(manifestPath, "utf-8");
+    const manifestContent = await readTestOutput(manifestPath);
     const manifestDoc = yaml.parseDocument(manifestContent);
     manifestDoc.set("traits", []);
     await fs.writeFile(manifestPath, manifestDoc.toString(), "utf-8");
