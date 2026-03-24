@@ -22,6 +22,7 @@ import {
   type ActionEventContext,
   type ActionRunEvent,
 } from "../src/agent-runtime/action-executor.js";
+import { readTestOutput } from "./helpers/cli.js";
 
 // ─── Test Helpers ────────────────────────────────────────────────────────────
 
@@ -185,7 +186,7 @@ process.exit(0);`,
     const run = await executor.execute(action, ctx);
     expect(run.status).toBe("completed");
 
-    const output = await fs.readFile(path.join(tempDir, "args-output.txt"), "utf-8");
+    const output = await readTestOutput(path.join(tempDir, "args-output.txt"));
     const args = JSON.parse(output);
     // Each arg is a separate element — template values don't merge or split
     expect(args).toEqual(["@task-interpolation-test", "literal-arg", "task.ready"]);
@@ -218,7 +219,7 @@ process.exit(0);`,
     const run = await executor.execute(action, ctx);
     expect(run.status).toBe("completed");
 
-    const output = await fs.readFile(path.join(tempDir, "literal-output.txt"), "utf-8");
+    const output = await readTestOutput(path.join(tempDir, "literal-output.txt"));
     // The value is passed as a literal string, not executed as shell
     expect(output).toBe("; rm -rf / && echo pwned");
   });
@@ -249,7 +250,7 @@ process.exit(0);`,
     const run = await executor.execute(action, ctx);
     expect(run.status).toBe("completed");
 
-    const output = await fs.readFile(path.join(tempDir, "metachar-output.txt"), "utf-8");
+    const output = await readTestOutput(path.join(tempDir, "metachar-output.txt"));
     const args = JSON.parse(output);
     // All values are literal — no shell expansion occurred
     expect(args).toEqual(["$HOME/../../etc/passwd", "$(echo injection)", "`backtick`"]);
@@ -286,7 +287,7 @@ process.exit(0);`,
     const run = await executor.execute(action, ctx);
     // The cwd was resolved from template — verify it ran in the right dir
     if (run.status === "completed") {
-      const output = await fs.readFile(path.join(tempDir, "cwd-output.txt"), "utf-8");
+      const output = await readTestOutput(path.join(tempDir, "cwd-output.txt"));
       expect(output).toBe(subDir);
     }
   });
@@ -335,7 +336,7 @@ process.exit(0);`,
     const run = await executor.execute(action, ctx);
     expect(run.status).toBe("completed");
 
-    const output = await fs.readFile(path.join(tempDir, "env-output.json"), "utf-8");
+    const output = await readTestOutput(path.join(tempDir, "env-output.json"));
     const kspecVars = JSON.parse(output);
 
     // Verify expected KSPEC_* variables are set
@@ -385,7 +386,7 @@ process.exit(0);`,
     const run = await executor.execute(action, ctx);
     expect(run.status).toBe("completed");
 
-    const output = await fs.readFile(path.join(tempDir, "env-filter-output.json"), "utf-8");
+    const output = await readTestOutput(path.join(tempDir, "env-filter-output.json"));
     const kspecVars = JSON.parse(output);
 
     // Non-allowlisted fields should NOT have KSPEC_* env vars
@@ -531,7 +532,7 @@ process.exit(0);`,
     const run = await executor.execute(action, ctx);
     expect(run.status).toBe("completed");
 
-    const output = await fs.readFile(path.join(tempDir, "verify-env-output.json"), "utf-8");
+    const output = await readTestOutput(path.join(tempDir, "verify-env-output.json"));
     const results = JSON.parse(output);
 
     expect(results.event_type).toBe("task.in_progress");
@@ -568,7 +569,7 @@ process.exit(0);`,
     const run = await executor.execute(action, ctx);
     expect(run.status).toBe("completed");
 
-    const output = await fs.readFile(path.join(tempDir, "precedence-output.txt"), "utf-8");
+    const output = await readTestOutput(path.join(tempDir, "precedence-output.txt"));
     // action.env overrides the auto-injected KSPEC_* value
     expect(output).toBe("custom-override");
   });
@@ -620,7 +621,7 @@ process.exit(0);`,
     const run = await executor.execute(action, ctx);
     expect(run.status).toBe("completed");
 
-    const output = await fs.readFile(path.join(tempDir, "dir-output.txt"), "utf-8");
+    const output = await readTestOutput(path.join(tempDir, "dir-output.txt"));
     // Runs in project root (tempDir), not in .kspec/
     expect(output).toBe(tempDir);
     expect(output).not.toContain(".kspec");
@@ -654,7 +655,7 @@ process.exit(0);`,
     const run = await executor.execute(action, ctx);
     expect(run.status).toBe("completed");
 
-    const output = await fs.readFile(path.join(tempDir, "custom-dir-output.txt"), "utf-8");
+    const output = await readTestOutput(path.join(tempDir, "custom-dir-output.txt"));
     expect(output).toBe(customDir);
   });
 
@@ -685,7 +686,7 @@ process.exit(0);`,
     const run = await executor.execute(action, ctx);
     expect(run.status).toBe("completed");
 
-    const output = await fs.readFile(path.join(tempDir, "no-shell-output.txt"), "utf-8");
+    const output = await readTestOutput(path.join(tempDir, "no-shell-output.txt"));
     // The pipe character is literal, not interpreted
     expect(output).toBe("hello | cat");
   });
