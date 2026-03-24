@@ -1,1 +1,8 @@
-notes: []
+notes:
+  - _ulid: 01KMH1QQDXE1YEKP0ZT5DXZ7XJ
+    content: Replaced 28 fs.readFile calls with readTestOutput across 9 test files. All 166 tests pass.
+      Each file had readTestOutput added to its imports from ./helpers/cli. fs imports retained
+      where writeFile/mkdir/stat/readdir still used.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-24T23:09:04.829Z
