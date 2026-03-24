@@ -50431,6 +50431,18 @@ reviews:
         required: true
         created_at: 2026-03-24T22:17:42.974Z
         completed_at: 2026-03-24T22:17:42.974Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "All 34 ACs covered: @daemon-entity-cache (13 ACs) by design+impl tasks, @daemon-read-path
+          (4 ACs) by migrate-read-routes, @cli-daemon-proxy (8 ACs) by cli-proxy-routing,
+          @daemon-command-api (5 ACs) by daemon-command-api, @daemon-proxy-detection (4 ACs) by
+          cli-proxy-routing. derive_from_specs: false with explicit manual coverage. No orphan ACs."
+        name: AC coverage by tasks
+        required: true
+        created_at: 2026-03-24T22:17:46.913Z
+        completed_at: 2026-03-24T22:17:46.913Z
     events:
       - _ulid: 01KMGYQTS9JPQGA49J953K0HJM
         actor: "@claude"
@@ -50487,6 +50499,13 @@ reviews:
           status: pass
           name: Dependency ordering
         timestamp: 2026-03-24T22:17:43.373Z
+      - _ulid: 01KMGYST1YR3WKB7D2AX7XAKB1
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: AC coverage by tasks
+        timestamp: 2026-03-24T22:17:47.326Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -50530,5 +50549,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-24T22:16:42.537Z
-    updated_at: 2026-03-24T22:17:42.974Z
+    updated_at: 2026-03-24T22:17:46.913Z
     notes: []
