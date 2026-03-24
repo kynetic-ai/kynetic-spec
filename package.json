@@ -38,7 +38,9 @@
     "test:e2e": "npm run build:e2e && npm link && npm --workspace packages/web-ui run test:e2e:ci:run --",
     "test:e2e:full": "npm run build:e2e && npm link && npm --workspace packages/web-ui run test:e2e:run --",
     "test:watch": "vitest",
-    "lint": "biome check src/",
+    "lint": "oxlint src/ tests/ packages/",
+    "format": "oxfmt --write .",
+    "format:check": "oxfmt --check .",
     "typecheck": "tsc --noEmit"
   },
   "engines": {
@@ -64,7 +66,6 @@
   },
   "devDependencies": {
     "@agentclientprotocol/sdk": "^0.14.0",
-    "@biomejs/biome": "2.3.11",
     "@tailwindcss/postcss": "^4.1.18",
     "@types/diff": "^7.0.2",
     "@types/js-yaml": "^4.0.9",
@@ -72,6 +73,8 @@
     "@types/ws": "^8.18.1",
     "autoprefixer": "^10.4.23",
     "clsx": "^2.1.1",
+    "oxfmt": "^0.41.0",
+    "oxlint": "^1.56.0",
     "postcss": "^8.5.6",
     "shx": "^0.4.0",
     "tailwind-merge": "^3.4.0",
