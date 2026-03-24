@@ -28030,74 +28030,86 @@ plans:
       ## Specs
 
       ```yaml
+      # ─── Server-Side Cache ───
+
       - title: Daemon Entity Cache
         slug: daemon-entity-cache
         type: feature
         parent: "@daemon-server"
         description: |
-          Server-side in-memory cache for all entity types served by the daemon API.
-          Entities are loaded once on project registration and served from memory on
-          subsequent requests. Cache is invalidated by the file watcher when .kspec/
-          files change, triggering selective reload of affected data. Generalizes the
-          pattern established by @session-summary-cache to tasks, items, plans, inbox,
-          triage records, reviews, and meta.
-        traits:
-          - trait-api-endpoint
+          Server-side in-memory cache for entity data served by the daemon API.
+          Entities are loaded on project registration and served from memory on
+          subsequent requests. The file watcher drives cache invalidation —
+          when shadow branch files change, affected data is selectively reloaded.
+
+          This generalizes the caching pattern established by @session-summary-cache.
+          Session data uses a bounded approach: active sessions are always cached,
+          while the session index retains a configurable window of recent entries.
+
+          Relationship to existing specs:
+          - Extends @daemon-server (file watcher now drives cache, not just WebSocket)
+          - Complements @ui-data-freshness (server cache + client cache = full stack)
+          - Narrows @shadow-lazy-read-sync for daemon context (daemon reads use cache
+            instead of per-request drift-check; CLI direct-mode is unchanged)
+          - @session-summary-cache's pattern is absorbed here; session caching becomes
+            one domain within the unified entity cache
+
+          Non-goals: persistent disk cache, cross-daemon-restart state, memory limits
+          per project (follows @multi-directory-daemon precedent of no eviction).
         acceptance_criteria:
           - id: ac-load-on-register
             given: |
               a project is registered with the daemon
             when: |
-              the project's .kspec/ directory is accessible
+              the project's shadow branch directory is accessible
             then: |
-              all entity data (tasks, items, plans, inbox, triage, reviews, meta) is
-              loaded into memory and available for serving
+              entity data is loaded into memory and available for serving
           - id: ac-serve-from-memory
             given: |
               a project's entity data has been loaded into the cache
             when: |
               an API read request arrives for that project
             then: |
-              the response is served from the in-memory cache without reading files
-              from disk or running git operations
+              the response is served from the in-memory cache without reading
+              files from disk or running git operations
           - id: ac-watcher-invalidation
             given: |
-              the file watcher detects a change to a .kspec/ file
+              the file watcher detects a change to a shadow branch file
             when: |
               the changed file belongs to a registered project
             then: |
-              only the affected entity type is reloaded from disk and the cache is
+              the affected data domain is reloaded from disk and the cache is
               updated before any subsequent request is served
           - id: ac-granular-reload
             given: |
-              a single task file changes on disk
+              a file change affects only one data domain
             when: |
               the cache processes the invalidation
             then: |
-              only task data is reloaded, not items, plans, inbox, or other entity types
+              only the affected domain is reloaded, not unrelated domains
           - id: ac-write-through
             given: |
               a write operation mutates entity data through the daemon API
             when: |
               the mutation succeeds and is committed to the shadow branch
             then: |
-              the cache is updated with the new state before the response is sent,
-              without waiting for the file watcher to detect the change
+              the cache is updated with the new state before the response is
+              sent, without waiting for the file watcher to detect the change
           - id: ac-concurrent-reads
             given: |
               multiple API requests arrive concurrently for the same project
             when: |
               the cache is populated
             then: |
-              all requests are served from the same cached data without blocking on
-              each other or triggering redundant loads
+              all requests are served from the same cached data without
+              blocking on each other or triggering redundant loads
           - id: ac-reload-dedup
             given: |
               multiple file changes arrive within a short window
             when: |
               the cache processes the invalidation events
             then: |
-              only a single reload is performed for each affected entity type,
+              only a single reload is performed for each affected data domain,
               not one per file change event
           - id: ac-graceful-degradation
             given: |
@@ -28105,8 +28117,8 @@ plans:
             when: |
               an API request arrives
             then: |
-              the request falls back to direct file reading and the error is logged,
-              rather than failing the request entirely
+              the request falls back to direct file reading and the error is
+              logged, rather than failing the request entirely
           - id: ac-project-isolation
             given: |
               multiple projects are registered with the daemon
@@ -28121,16 +28133,43 @@ plans:
               the project context is removed
             then: |
               all cached data for that project is released from memory
+          - id: ac-session-bounded-index
+            given: |
+              a project has more sessions than the configured retention window
+            when: |
+              the session index is loaded or refreshed
+            then: |
+              only the most recent sessions (up to the configured limit) are
+              retained in the index; older sessions are accessible on demand
+              but not held in the cache
+          - id: ac-warming-availability
+            given: |
+              a project is registered and cache loading is in progress
+            when: |
+              an API request arrives before loading completes
+            then: |
+              the request receives a response indicating the data is still
+              loading rather than blocking until the full cache is ready
+          - id: ac-progressive-loading
+            given: |
+              a project begins cache loading on registration
+            when: |
+              high-priority data domains finish loading before others
+            then: |
+              requests for loaded domains are served from cache immediately
+              while remaining domains continue loading
 
       - title: Daemon Read Path Optimization
         slug: daemon-read-path
         type: requirement
         parent: "@daemon-entity-cache"
         description: |
-          API read routes serve responses from the entity cache without calling
-          initContext() for data loading or running drift-check sync on every request.
-          Drift-check sync moves to the background sync scheduler rather than being
-          triggered per-request.
+          API read routes serve responses from the entity cache. Per-request
+          drift-check sync moves to the background sync scheduler. This narrows
+          the scope of @shadow-lazy-read-sync: the drift-check contract continues
+          to apply in CLI direct-mode, but daemon-served reads rely on the
+          background scheduler from @shadow-daemon-push-sync plus watcher-driven
+          cache invalidation instead.
         acceptance_criteria:
           - id: ac-no-per-request-sync
             given: |
@@ -28138,34 +28177,54 @@ plans:
             when: |
               a read-only API request arrives
             then: |
-              no git operations (rev-parse, fetch, rev-list) are performed as part of
-              handling the request
+              no git operations are performed as part of handling the request
           - id: ac-background-sync
             given: |
               the daemon's sync interval elapses
             when: |
               the background sync scheduler runs
             then: |
-              drift-check and pull happen in the background, and if new data is pulled,
-              the entity cache is invalidated and reloaded
+              drift-check and pull happen in the background, and if new data
+              is pulled, the entity cache is invalidated and reloaded
           - id: ac-index-from-cache
             given: |
-              a route needs a ReferenceIndex or AlignmentIndex
+              a route needs a reference index or alignment index
             when: |
               the request handler builds the index
             then: |
-              the index is built from cached entity data, not from fresh disk reads
+              the index is built from cached entity data, not from fresh
+              disk reads
+          - id: ac-write-routes-sync
+            given: |
+              a write operation is received through the daemon API
+            when: |
+              the daemon processes the mutation
+            then: |
+              the daemon applies the mutation using pull-rebase-commit-push
+              consistent with the existing shadow branch write contract
+
+      # ─── CLI Proxy ───
 
       - title: CLI Daemon Proxy Mode
         slug: cli-daemon-proxy
         type: feature
         parent: "@cli"
         description: |
-          When a daemon is running, the CLI can route commands through it instead of
-          operating directly on the shadow branch. This makes the daemon the single
-          writer to the shadow branch, eliminating cache coherence issues between CLI
-          mutations and daemon state. The CLI auto-detects whether a daemon is available
+          When a daemon is running, the CLI routes commands through it instead
+          of operating directly on the shadow branch. This makes the daemon the
+          single writer, eliminating cache coherence issues between CLI mutations
+          and daemon state. The CLI auto-detects whether a daemon is available
           and routes accordingly. Users can force either mode explicitly.
+
+          KSPEC_NO_DAEMON=1 behavior is defined by @multi-directory-daemon
+          (ac-32/33). This spec extends that: when set, the CLI bypasses
+          daemon routing entirely regardless of daemon availability.
+
+          Dispatch interaction: when the dispatch engine spawns agents, agent
+          CLI calls auto-detect the daemon and route through the command API.
+          This is the intended behavior — the daemon is the single writer.
+          The command API handles re-entrant calls from dispatched agents the
+          same as any other client.
         traits:
           - trait-error-guidance
         acceptance_criteria:
@@ -28173,63 +28232,74 @@ plans:
             given: |
               the user runs a kspec command
             when: |
-              a daemon is running and the project is registered
+              a daemon is running and reachable for the current project
             then: |
-              the command is routed through the daemon's API rather than operating
-              directly on the shadow branch
+              the command is routed through the daemon's API rather than
+              operating directly on the shadow branch
           - id: ac-direct-fallback
             given: |
               the user runs a kspec command
             when: |
               no daemon is running or the daemon is unreachable
             then: |
-              the command operates directly on the shadow branch as it does today
+              the command operates directly on the shadow branch
           - id: ac-force-direct
             given: |
-              the user runs a kspec command with KSPEC_NO_DAEMON=1 set
+              KSPEC_NO_DAEMON=1 is set
             when: |
-              a daemon is running
+              the user runs a kspec command
             then: |
-              the command operates directly on the shadow branch, bypassing the daemon
+              the command operates directly on the shadow branch, bypassing
+              daemon routing, consistent with @multi-directory-daemon ac-32
           - id: ac-force-proxy
             given: |
               the user runs a kspec command with --daemon flag
             when: |
               no daemon is running
             then: |
-              the command fails with a clear error indicating no daemon is available
+              the command fails with a clear error indicating no daemon is
+              available
           - id: ac-transparent-output
             given: |
               a command is routed through the daemon
             when: |
               the command completes
             then: |
-              the output format (text, JSON, exit code) is identical to direct mode
+              the output format, content, and exit code are identical to
+              direct mode
           - id: ac-mutation-coherence
             given: |
               a CLI mutation is routed through the daemon
             when: |
               the mutation succeeds
             then: |
-              the daemon's entity cache reflects the change immediately and subsequent
-              API requests from any client see the updated data
+              the daemon's entity cache reflects the change immediately and
+              subsequent requests from any client see the updated data
           - id: ac-read-from-cache
             given: |
               a CLI read command is routed through the daemon
             when: |
               the daemon has cached data for the project
             then: |
-              the response is served from the daemon's cache without additional
-              disk reads
+              the response is served from the daemon's cache
+          - id: ac-timeout-fallback
+            given: |
+              the daemon is reachable via health check
+            when: |
+              a routed command does not respond within the timeout period
+            then: |
+              the CLI falls back to direct mode and emits a warning on stderr
+              indicating the daemon is running but not responding correctly
 
       - title: Daemon Command API
         slug: daemon-command-api
         type: requirement
         parent: "@cli-daemon-proxy"
         description: |
-          REST endpoint that accepts CLI command payloads and executes them within the
-          daemon process, returning structured results. This is the server-side
-          counterpart to CLI daemon proxy mode.
+          REST endpoint that accepts CLI command payloads and executes them
+          within the daemon process, returning structured results. This is
+          the server-side counterpart to CLI daemon proxy mode. Follows the
+          existing API patterns defined in @api-contract.
         traits:
           - trait-api-endpoint
           - trait-localhost-security
@@ -28238,44 +28308,54 @@ plans:
             given: |
               the daemon is running
             when: |
-              a POST request is sent to the command execution endpoint with a command
-              payload
+              a POST request is sent to the command execution endpoint with
+              a command payload
             then: |
-              the daemon executes the command and returns the result with stdout,
-              stderr, and exit code
+              the daemon executes the command and returns the result with
+              stdout, stderr, and exit code
           - id: ac-mutation-cache-update
             given: |
               a command payload contains a mutating command
             when: |
               the command executes successfully
             then: |
-              the entity cache is updated before the response is sent and a WebSocket
-              event is broadcast to connected clients
+              the entity cache is updated before the response is sent and
+              a WebSocket event is broadcast to connected clients
           - id: ac-batch-support
             given: |
               a command payload contains a batch of commands
             when: |
               the batch is executed
             then: |
-              all commands in the batch execute atomically and the cache is updated
-              once after the batch completes
+              all commands in the batch execute atomically and the cache
+              is updated once after the batch completes
           - id: ac-concurrent-mutations
             given: |
               two command requests arrive concurrently with mutating commands
             when: |
               both attempt to modify shadow branch state
             then: |
-              mutations are serialized to prevent conflicts and both callers receive
-              correct results
+              mutations are serialized to prevent conflicts and both callers
+              receive correct results
+          - id: ac-response-parity
+            given: |
+              a command is executed through the command API
+            when: |
+              the result is returned
+            then: |
+              the response body contains the same stdout and stderr content
+              that would be produced by direct CLI execution of the same
+              command
 
       - title: Daemon Proxy Detection
         slug: daemon-proxy-detection
         type: requirement
         parent: "@cli-daemon-proxy"
         description: |
-          The CLI detects whether a daemon is available and whether to route commands
-          through it. Detection is fast and does not add perceptible latency to
-          command startup.
+          The CLI detects whether a daemon is available and whether to route
+          commands through it. Detection is fast and does not add perceptible
+          latency to command startup. Uses the existing port file location
+          defined by @multi-directory-daemon.
         acceptance_criteria:
           - id: ac-port-file-check
             given: |
@@ -28283,106 +28363,328 @@ plans:
             when: |
               it checks for daemon availability
             then: |
-              it reads the daemon port file at the standard location and attempts a
-              health check on that port
+              it reads the daemon port file at the standard location and
+              attempts a health check on that port
           - id: ac-fast-detection
             given: |
               no daemon is running
             when: |
               the CLI checks for daemon availability
             then: |
-              the check completes within 50ms by failing fast on missing port file
-              or connection refused
+              the check completes within 50ms by failing fast on missing
+              port file or connection refused
           - id: ac-health-timeout
             given: |
               a port file exists but the daemon is unresponsive
             when: |
               the CLI sends a health check
             then: |
-              the health check times out within 200ms and the CLI falls back to
-              direct mode
+              the health check times out within 200ms and the CLI falls
+              back to direct mode
           - id: ac-project-registered
             given: |
               the daemon is running but the current project is not registered
             when: |
               the CLI detects the daemon
             then: |
-              the CLI registers the project with the daemon before routing the command
+              the CLI registers the project with the daemon before routing
+              the command
       ```
 
       ## Tasks
 
-      derive_from_specs: true
+      derive_from_specs: false
 
       ```yaml
-      - title: Design entity cache data structures and invalidation protocol
+      - title: Design entity cache architecture and invalidation protocol
         slug: task-entity-cache-design
-        description: |
-          Design the cache layer that sits between daemon API routes and the filesystem.
-          Define cache entry types per entity domain, invalidation granularity mapping
-          (which file changes invalidate which cache entries), and the write-through
-          protocol for daemon-originated mutations.
         priority: 1
-        tags:
-          - daemon
-          - architecture
+        tags: [daemon, architecture, cache]
         spec_ref: "@daemon-entity-cache"
+        description: |
+          Design the cache layer that sits between daemon API routes and the
+          filesystem. This is a design task — produce a documented architecture,
+          not implementation code.
+
+          Why: The daemon currently re-reads all YAML files and rebuilds indexes
+          on every API request. initContext() + loadAllItems() + loadAllTasks()
+          runs on every route handler. The entity cache eliminates this by
+          serving from memory. The design must be right before implementation
+          because it touches every route, the watcher, and the project lifecycle.
+
+          What:
+          - Define the cache data model: what is cached per project, how domains
+            map to invalidation units (e.g. task file change → reload tasks only)
+          - Map file watcher events to cache invalidation: which file patterns
+            trigger which domain reloads, how debouncing interacts with the
+            existing 500ms watcher aggregation from @daemon-server ac-5
+          - Define the write-through protocol: when a daemon API write mutates
+            state and commits to shadow branch, how the cache updates before
+            the response without double-loading from the watcher
+          - Define progressive loading: which domains load first on registration
+            (tasks and items are highest priority for sidebar/dashboard), how
+            in-progress loading is communicated to API consumers
+          - Define session index bounding: how the configurable retention window
+            works, what "accessible on demand" means for sessions outside the
+            window
+          - Address @session-summary-cache absorption: how the existing session
+            cache (lazy-load, directory-listing invalidation) migrates into or
+            is replaced by the unified cache
+          - Document how indexes (ReferenceIndex, AlignmentIndex, ItemIndex)
+            relate to the cache — rebuilt on invalidation or cached separately
+
+          How: Review the existing patterns: SessionSummaryCache in
+          src/sessions/cache.ts (TTL + in-flight dedup), coverage-cache.ts
+          (60s TTL + watcher invalidation), and shadow pull dedup in
+          src/parser/shadow.ts. The entity cache should use in-flight promise
+          dedup (not TTL) since the watcher provides event-driven invalidation.
+          Review ProjectContextManager in packages/daemon/src/project-context.ts
+          for the registration lifecycle hooks.
+
+          Covers: @daemon-entity-cache ac-load-on-register, ac-watcher-invalidation,
+          ac-granular-reload, ac-write-through, ac-reload-dedup, ac-project-isolation,
+          ac-session-bounded-index, ac-warming-availability, ac-progressive-loading.
 
       - title: Implement entity cache with watcher-driven invalidation
         slug: task-entity-cache-impl
-        description: |
-          Build the entity cache, wire it to the existing file watcher for invalidation,
-          and integrate with project registration lifecycle. Include reload dedup and
-          graceful degradation.
         priority: 1
-        tags:
-          - daemon
-          - implementation
+        tags: [daemon, implementation, cache]
         spec_ref: "@daemon-entity-cache"
         depends_on:
           - "@task-entity-cache-design"
-
-      - title: Migrate daemon read routes to serve from cache
-        slug: task-migrate-read-routes
         description: |
-          Update all daemon API read routes to serve from the entity cache instead of
-          calling initContext() + loadAll* per request. Move drift-check to background
-          sync scheduler.
+          Build the entity cache and wire it to the existing file watcher for
+          invalidation. Integrate with the project registration lifecycle so
+          cache loading begins on registration and cleanup happens on
+          unregistration.
+
+          Why: This is the core of the performance improvement. Every daemon
+          route currently calls initContext() which does git operations +
+          YAML parsing on every request. With the cache, reads serve from
+          memory and only the watcher triggers reloads.
+
+          What:
+          - Implement the cache data structures from the design task
+          - Wire file watcher callbacks to cache invalidation (the watcher in
+            packages/daemon/src/watcher.ts already fires on .kspec/ changes —
+            add cache invalidation alongside the existing WebSocket broadcast)
+          - Implement reload dedup: multiple file changes within the debounce
+            window produce a single reload per affected domain
+          - Implement write-through: daemon API write routes update the cache
+            before returning, suppressing the redundant watcher-triggered reload
+          - Implement graceful degradation: if cache load fails for a domain,
+            fall back to direct file reading and log the error
+          - Implement progressive loading: register project → start loading
+            high-priority domains first → serve what's ready, indicate what's
+            still loading → complete remaining domains
+          - Implement session index bounding: keep configurable N most recent
+            sessions in the index, allow on-demand access to older ones
+          - Implement project isolation: per-project cache instances, no
+            cross-contamination
+          - Implement unregister cleanup: release all cached data when project
+            context is removed
+          - Migrate or replace @session-summary-cache with the unified cache
+
+          How: The cache lives in packages/daemon/ alongside project-context.ts.
+          Use in-flight promise dedup (Map<key, Promise>) for concurrent
+          reload protection — proven pattern from shadowPull(). The watcher
+          already has debouncing; add a callback that maps changed file paths
+          to cache domains and triggers selective reload. For write-through,
+          the mutation handler sets a flag that causes the watcher callback to
+          skip the redundant reload for that domain.
+
+          Covers: @daemon-entity-cache ac-load-on-register, ac-serve-from-memory,
+          ac-watcher-invalidation, ac-granular-reload, ac-write-through,
+          ac-concurrent-reads, ac-reload-dedup, ac-graceful-degradation,
+          ac-project-isolation, ac-unregister-cleanup, ac-session-bounded-index,
+          ac-warming-availability, ac-progressive-loading.
+
+      - title: Migrate daemon read routes to serve from entity cache
+        slug: task-migrate-read-routes
         priority: 1
-        tags:
-          - daemon
-          - implementation
+        tags: [daemon, implementation, routes]
         spec_ref: "@daemon-read-path"
         depends_on:
           - "@task-entity-cache-impl"
+        description: |
+          Update all daemon API read routes to serve from the entity cache
+          instead of calling initContext() + loadAll* per request. Move
+          per-request drift-check to the background sync scheduler.
+
+          Why: The cache exists but routes still bypass it. This task connects
+          routes to the cache and eliminates per-request filesystem I/O and
+          git operations. This is where the user-visible performance improvement
+          actually happens.
+
+          What:
+          - Replace initContext() + loadAllItems/loadAllTasks/loadPlans calls
+            in every read route with cache lookups. Affected route files in
+            packages/daemon/src/routes/: tasks.ts, items.ts, inbox.ts,
+            plans.ts, triage.ts, reviews.ts, meta.ts, sessions.ts,
+            aggregation.ts, search.ts, validation.ts, refs.ts
+          - Build ReferenceIndex and AlignmentIndex from cached data rather
+            than fresh disk reads
+          - Move drift-check sync from per-request to background scheduler:
+            the existing ShadowSyncScheduler in shadow-sync.ts already runs
+            periodically — extend it to invalidate the entity cache when new
+            data is pulled
+          - Ensure write routes still apply mutations through the normal
+            shadow branch commit path, using write-through to update the cache
+          - Ensure API response payloads remain identical — field names,
+            nesting, ordering must not change from the migration
+          - Batch endpoints (e.g. @batch-item-fetch-api) also serve from cache
+
+          How: Each route currently does:
+            const ctx = await initContext(projectPath);
+            const items = await loadAllItems(ctx);
+          Replace with:
+            const cache = getProjectCache(projectPath);
+            const items = cache.getItems();
+          The cache accessor throws if the project isn't registered (which
+          can't happen for routes that go through the project context
+          middleware). Background sync: add a post-pull hook to the existing
+          scheduler that calls cache.invalidate() when shadowPull() returns
+          changes.
+
+          Covers: @daemon-read-path ac-no-per-request-sync, ac-background-sync,
+          ac-index-from-cache, ac-write-routes-sync.
 
       - title: Implement daemon command API endpoint
         slug: task-daemon-command-api
-        description: |
-          Build the REST endpoint that accepts CLI command payloads and executes them
-          within the daemon process. Handle mutation serialization, cache updates, and
-          WebSocket broadcast on completion.
         priority: 2
-        tags:
-          - daemon
-          - api
+        tags: [daemon, api, proxy]
         spec_ref: "@daemon-command-api"
         depends_on:
           - "@task-entity-cache-impl"
+        description: |
+          Build the REST endpoint that accepts CLI command payloads and executes
+          them within the daemon process, returning structured results.
+
+          Why: For the CLI to proxy through the daemon, the daemon needs an
+          endpoint that can execute arbitrary kspec commands. This is the
+          server-side counterpart to CLI proxy mode. Without it, CLI mutations
+          would still write directly to the shadow branch, creating cache
+          coherence issues.
+
+          What:
+          - POST /api/command endpoint that accepts a command payload (command
+            path + args, same structure as kspec batch command objects)
+          - Execute the command within the daemon process using the existing
+            CLI command infrastructure (Commander command tree)
+          - Capture stdout, stderr, and exit code; return as structured JSON
+          - For mutating commands: serialize execution to prevent concurrent
+            shadow branch conflicts (reuse the existing dispatch mutation lock
+            pattern from @scoped-dispatch-shadow-serialization)
+          - After successful mutation: update entity cache (write-through)
+            before returning the response, broadcast WebSocket event
+          - Support batch payloads: accept an array of commands, execute
+            atomically (single shadow branch commit), update cache once after
+            the batch completes
+          - Response parity: stdout/stderr content must match what direct CLI
+            execution would produce for the same command
+          - Handle re-entrant calls from dispatched agents: agent CLI calls
+            route through this endpoint when daemon is running; the endpoint
+            handles them the same as any other client, with mutation
+            serialization preventing conflicts
+
+          How: Follow the pattern in packages/daemon/src/routes/agent-dispatch.ts
+          for route structure. For command execution, use Commander's parseAsync
+          with captured output streams rather than spawning a child process —
+          this avoids process overhead and keeps everything in the daemon's
+          event loop. Mutation serialization uses acquireFileLock with the
+          dispatch mutation lock pattern. Batch execution reuses the existing
+          batch runner from src/cli/batch.ts.
+
+          Covers: @daemon-command-api ac-command-endpoint, ac-mutation-cache-update,
+          ac-batch-support, ac-concurrent-mutations, ac-response-parity.
 
       - title: Implement CLI daemon proxy detection and routing
         slug: task-cli-proxy-routing
-        description: |
-          Add daemon detection to CLI startup (port file check + health ping) and
-          command routing logic. Ensure output parity between proxy and direct modes.
-          Honor KSPEC_NO_DAEMON and --daemon flags.
         priority: 2
-        tags:
-          - cli
-          - daemon
+        tags: [cli, daemon, proxy]
         spec_ref: "@cli-daemon-proxy"
         depends_on:
           - "@task-daemon-command-api"
+        description: |
+          Add daemon detection to CLI startup and command routing logic so
+          commands are transparently proxied through the daemon when available.
+
+          Why: With the entity cache and command API in place, the CLI can
+          route through the daemon to make it the single writer. This
+          eliminates cache coherence issues: CLI mutations go through the
+          daemon, which updates its cache immediately, and all clients see
+          consistent state.
+
+          What:
+          - Daemon detection on CLI startup: read port file from
+            ~/.config/kspec/daemon.port (location defined by
+            @multi-directory-daemon), send health check ping to that port
+          - Fast failure: if port file doesn't exist or connection is refused,
+            skip to direct mode within 50ms; if health check doesn't respond,
+            timeout within 200ms and skip to direct mode
+          - Command routing: when daemon is detected, serialize the CLI
+            command into a command API payload and POST to the daemon's
+            command endpoint; deserialize the response and write stdout/stderr
+            with matching exit code
+          - Timeout with fallback: if the daemon health check succeeds but
+            the command request times out, fall back to direct mode and emit
+            a warning on stderr (e.g. "daemon is running but not responding,
+            falling back to direct mode")
+          - KSPEC_NO_DAEMON=1 support: skip daemon detection entirely,
+            consistent with @multi-directory-daemon ac-32/33
+          - --daemon flag: require daemon routing, fail with clear error if
+            daemon is unavailable (no fallback to direct mode)
+          - Output parity: proxied commands produce identical stdout, stderr,
+            and exit codes as direct execution
+          - Project registration: if daemon is running but current project
+            is not registered, register it before routing the command
+
+          How: Detection runs early in CLI startup (preAction hook in
+          src/cli/index.ts). The detection result is cached for the duration
+          of the CLI process — don't re-detect per subcommand. Use the
+          existing port file reading logic from src/cli/commands/serve.ts.
+          For command serialization, reuse the batch command JSON format
+          (command path + args object). For output deserialization, write
+          stdout/stderr to process streams and call process.exit with the
+          returned exit code.
+
+          Covers: @cli-daemon-proxy ac-auto-detect, ac-direct-fallback,
+          ac-force-direct, ac-force-proxy, ac-transparent-output,
+          ac-mutation-coherence, ac-read-from-cache, ac-timeout-fallback.
+          @daemon-proxy-detection ac-port-file-check, ac-fast-detection,
+          ac-health-timeout, ac-project-registered.
+
+      - title: Update related specs for daemon cache context
+        slug: task-update-related-specs
+        priority: 2
+        tags: [specs, documentation]
+        spec_ref: "@daemon-entity-cache"
+        depends_on:
+          - "@task-entity-cache-design"
+        description: |
+          Update existing specs whose contracts are affected by the entity cache
+          and CLI proxy mode.
+
+          Why: The entity cache changes the daemon's read path and the CLI proxy
+          changes who writes to the shadow branch. Existing specs need to
+          reflect these changes so the spec graph is accurate.
+
+          What:
+          - @shadow-lazy-read-sync: add a note or AC clarifying that drift-check
+            applies to CLI direct-mode; daemon reads use the entity cache with
+            background sync instead
+          - @session-summary-cache: mark as absorbed by @daemon-entity-cache or
+            add a relates_to/superseded_by relationship
+          - @daemon-server: update description to note that the file watcher
+            drives both WebSocket broadcast and cache invalidation
+          - @multi-directory-daemon: add relates_to for @cli-daemon-proxy
+            (KSPEC_NO_DAEMON behavior extended)
+
+          How: Use kspec item set and kspec item ac add/set to update the specs.
+          Use kspec batch for atomic updates.
+
+          Covers: review finding on @shadow-lazy-read-sync scope narrowing,
+          review finding on @session-summary-cache relationship.
       ```
 
       ## Implementation Notes
@@ -28390,17 +28692,24 @@ plans:
       This plan addresses the daemon performance bottleneck where every API request
       re-reads all YAML files from disk and rebuilds indexes from scratch. The approach
       generalizes the pattern proven by @session-summary-cache (load once, serve from
-      memory, invalidate on change) to all entity types.
+      memory, invalidate on change) to all entity domains.
 
       The CLI daemon proxy mode makes the daemon the single writer to the shadow branch
-      when it's running, which eliminates cache coherence issues. Without it, CLI
-      mutations would change files that the daemon's cache doesn't know about until
-      the file watcher fires.
+      when it's running, eliminating cache coherence issues. Without it, CLI mutations
+      change files that the daemon's cache doesn't know about until the file watcher
+      fires — which introduces a window of stale data.
 
       Ordering: entity cache first (daemon-internal improvement with no external API
       changes), then command API (new endpoint), then CLI proxy (client-side routing).
       Each phase is independently valuable — the entity cache alone eliminates the
-      per-request disk I/O even without proxy mode.
+      per-request disk I/O even without proxy mode. The spec update task can run in
+      parallel with implementation once the design is done.
+
+      Session caching note: active sessions are always cached. The session index
+      (list of session summaries) is bounded to a configurable window of recent entries
+      (suggested default ~100). Sessions outside the window are accessible on demand
+      but not held in cache memory. This balances memory with the common access pattern
+      (users care about recent sessions, not historical ones).
     status: draft
     approved_at: null
     derived_specs: []
@@ -28409,4 +28718,10 @@ plans:
     source_path: /home/chapel/Projects/kynetic-spec/plans/daemon-optimistic-data-layer.md
     created_at: 2026-03-24T21:39:18.402Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KMGYM2BQJ37MEB9QR1Z1B2ES
+        content: "Address review findings: broader ACs, detailed tasks, session bounding,
+          warming/progressive loading, spec relationship clarity, timeout fallback,
+          derive_from_specs false"
+        author: "@claude"
+        created_at: 2026-03-24T22:14:39.223Z
