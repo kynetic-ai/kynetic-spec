@@ -48731,6 +48731,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-24T07:47:50.744Z
+      - _ulid: 01KMFD191JNC821FM44C1CDKK5
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMFD18PFH0KY6X6ANXRGVYXJ
+        timestamp: 2026-03-24T07:48:03.250Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -48740,8 +48747,27 @@ reviews:
       content_hash: ""
       ref: "@task-custom-no-source-scanning-rule"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMFD18PFH0KY6X6ANXRGVYXJ
+        anchor:
+          type: code
+          commit: ""
+          line_end: 395
+          line_start: 382
+          path: tests/helpers/cli.ts
+          side: head
+        entries:
+          - _ulid: 01KMFD18PFN3JT80V5XPVHVXPT
+            author: "@claude"
+            body: "readTestOutput and readTestOutputSync implementations are flagged by their own rule. The
+              isSafeReadWrapper check only protects call sites (readTestOutput(...)) but not the
+              function definitions themselves where the underlying fs.readFile/readFileSync calls
+              happen. Running oxlint on tests/helpers/cli.ts produces 2 errors. Fix: add
+              eslint-disable comments on the two internal read calls, or teach the rule to detect
+              when it is inside a SAFE_READ_FUNCTIONS body."
+            created_at: 2026-03-24T07:48:02.895Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-24T07:47:41.790Z
-    updated_at: 2026-03-24T07:47:50.364Z
+    updated_at: 2026-03-24T07:48:02.895Z
     notes: []
