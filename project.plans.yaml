@@ -28024,13 +28024,17 @@ plans:
     slugs:
       - plan-daemon-optimistic-data-layer
     title: Daemon Optimistic Data Layer
-    content: |
+    content: >
       # Daemon Optimistic Data Layer
+
 
       ## Specs
 
+
       ```yaml
+
       # ─── Server-Side Cache ───
+
 
       - title: Daemon Entity Cache
         slug: daemon-entity-cache
@@ -28038,11 +28042,12 @@ plans:
         parent: "@daemon-server"
         description: |
           Server-side in-memory cache for entity data served by the daemon API.
-          Entities are loaded on project registration and served from memory on
-          subsequent requests. The file watcher drives cache invalidation —
-          when shadow branch files change, affected data is selectively reloaded.
-          Data domains load progressively so high-priority data is available
-          before the full cache is ready.
+          The cache uses a two-tier model: index data (summaries, counts,
+          references) is kept hot in memory, while detail data (full content,
+          notes, event logs) is loaded on demand when accessed. The file watcher
+          drives cache invalidation — when shadow branch files change, affected
+          data is selectively reloaded. Data domains load progressively so
+          high-priority data is available before the full cache is ready.
         traits:
           - trait-api-endpoint
         acceptance_criteria:
@@ -28052,15 +28057,24 @@ plans:
             when: |
               the project's shadow branch directory is accessible
             then: |
-              entity data is loaded into memory and available for serving
+              index-tier entity data is loaded into memory and available for
+              serving
           - id: ac-serve-from-memory
             given: |
-              a project's entity data has been loaded into the cache
+              a project's index data has been loaded into the cache
             when: |
-              an API read request arrives for that project
+              an API list or summary request arrives for that project
             then: |
               the response is served from the in-memory cache without reading
               files from disk or running git operations
+          - id: ac-detail-on-demand
+            given: |
+              a request arrives for a single entity's full detail
+            when: |
+              the detail data is not in the cache
+            then: |
+              the detail is loaded from disk, served, and optionally retained
+              in cache until the next invalidation
           - id: ac-watcher-invalidation
             given: |
               the file watcher detects a change to a shadow branch file
@@ -28131,6 +28145,14 @@ plans:
               only the most recent sessions (up to the configured limit) are
               retained in the index; older sessions are accessible on demand
               but not held in the cache
+          - id: ac-session-stale-exclusion
+            given: |
+              a session has active status but exceeds the stale session
+              criteria (age and inactivity thresholds)
+            when: |
+              the session index is loaded or refreshed
+            then: |
+              the session is not treated as active in the cached index
           - id: ac-warming-availability
             given: |
               a project is registered and cache loading is in progress
@@ -28190,6 +28212,7 @@ plans:
               standard write path before updating the cache
 
       # ─── CLI Proxy ───
+
 
       - title: CLI Daemon Proxy Mode
         slug: cli-daemon-proxy
@@ -28366,45 +28389,47 @@ plans:
               the command
       ```
 
+
       ## Tasks
+
 
       derive_from_specs: false
 
+
       ```yaml
-      - title: Implement entity cache with watcher-driven invalidation
+
+      - title: Implement entity cache with tiered storage and watcher invalidation
         slug: task-entity-cache-impl
         priority: 1
         tags: [daemon, implementation, cache]
         spec_ref: "@daemon-entity-cache"
         description: |
-          Build the entity cache and wire it to the existing file watcher for
-          invalidation. Integrate with the project registration lifecycle so
-          cache loading begins on registration and cleanup happens on
-          unregistration.
+          Build the entity cache with two-tier storage (index hot, detail on
+          demand) and wire it to the existing file watcher for invalidation.
+          Integrate with the project registration lifecycle.
 
           Why: The daemon currently re-reads all YAML files and rebuilds indexes
           on every API request. initContext() + loadAllItems() + loadAllTasks()
           runs on every route handler. The entity cache eliminates this by
-          loading once on project registration and serving from memory, with
-          the file watcher driving selective reloads on change.
+          loading index data once on project registration and serving from
+          memory, with the file watcher driving selective reloads on change.
 
           What:
-          - Implement ProjectEntityCache class with per-domain storage: tasks,
-            items, plans, inbox, triage, reviews, meta, sessions. Each domain
-            has its own load function and invalidation state.
+          - Implement ProjectEntityCache class with per-domain storage. Each
+            domain has an index tier (always hot) and a detail tier (loaded on
+            demand, evicted on invalidation). See the cache tiering table in
+            Implementation Notes for what goes where per domain.
           - Wire to file watcher in packages/daemon/src/watcher.ts — add cache
             invalidation alongside the existing WebSocket broadcast. Map changed
             file paths to domains using the domain mapping table (see
-            Implementation Notes below).
+            Implementation Notes).
           - Implement reload dedup using in-flight promise dedup (Map<domain,
             Promise>) — proven pattern from shadowPull(). Multiple file changes
             within the watcher's existing 500ms debounce window produce a single
             reload per affected domain.
           - Implement write-through: daemon API write routes update the cache
             before returning. Use a write-through flag that causes the watcher
-            callback to skip the redundant reload for that domain (the watcher
-            will still fire from the git commit, but the cache was already
-            updated).
+            callback to skip the redundant reload for that domain.
           - Implement graceful degradation: if cache load fails for a domain,
             mark the domain as degraded, fall back to direct file reading for
             requests to that domain, and log the error.
@@ -28413,8 +28438,12 @@ plans:
             triage → reviews → sessions). Serve loaded domains from cache
             immediately; unloaded domains return a loading indicator.
           - Implement session index bounding: cache only the N most recent
-            session summaries (configurable, default 100). Sessions outside
-            the window are loaded on demand when accessed by ID.
+            session summaries (configurable, default 100). Apply stale session
+            exclusion: sessions with active status that exceed the existing
+            stale criteria (older-than + inactive-for thresholds from
+            @session-stale-criteria) are not treated as active in the index.
+            Sessions outside the window are loaded on demand when accessed by
+            ID.
           - Implement project isolation: each registered project gets its own
             ProjectEntityCache instance. Watcher events are scoped to the
             project whose files changed.
@@ -28432,10 +28461,24 @@ plans:
           calls cache.invalidateDomain(). Build the domain mapping from the
           same file patterns used by the existing YAML loading functions.
 
+          For tasks: TaskDataManager already has listTasks() returning
+          TaskSummary[] and rawToSummary() — use this as the index tier. Full
+          task detail (notes, todos) loaded via getTask() on demand.
+
+          For items: No ItemSummary type exists yet. Create one with the index
+          fields (ulid, title, type, status, priority, tags, traits, parent
+          path). Full item detail (ACs, description, notes) loaded on demand.
+
+          For sessions: Reuse the existing stale criteria resolution from
+          src/sessions/store.ts (resolveStaleSessionCriteria) to determine
+          whether an active-status session should be treated as stale in the
+          cache index.
+
           Covers: @daemon-entity-cache ac-load-on-register, ac-serve-from-memory,
-          ac-watcher-invalidation, ac-granular-reload, ac-write-through,
-          ac-concurrent-reads, ac-reload-dedup, ac-graceful-degradation,
-          ac-project-isolation, ac-unregister-cleanup, ac-session-bounded-index,
+          ac-detail-on-demand, ac-watcher-invalidation, ac-granular-reload,
+          ac-write-through, ac-concurrent-reads, ac-reload-dedup,
+          ac-graceful-degradation, ac-project-isolation, ac-unregister-cleanup,
+          ac-session-bounded-index, ac-session-stale-exclusion,
           ac-warming-availability, ac-progressive-loading.
 
       - title: Migrate daemon read routes to serve from entity cache
@@ -28461,8 +28504,10 @@ plans:
             packages/daemon/src/routes/: tasks.ts, items.ts, inbox.ts,
             plans.ts, triage.ts, reviews.ts, meta.ts, sessions.ts,
             aggregation.ts, search.ts, validation.ts, refs.ts
-          - Build ReferenceIndex and AlignmentIndex from cached data rather
-            than fresh disk reads
+          - List routes use the index tier; detail routes (GET by ref) use
+            the detail tier (on-demand load if not cached)
+          - Build ReferenceIndex and AlignmentIndex from cached index data
+            rather than fresh disk reads
           - Move drift-check sync from per-request to background scheduler:
             the existing ShadowSyncScheduler in shadow-sync.ts already runs
             periodically — extend it to invalidate the entity cache when new
@@ -28478,10 +28523,10 @@ plans:
             const items = await loadAllItems(ctx);
           Replace with:
             const cache = getProjectCache(projectPath);
-            const items = cache.getItems();
-          The cache accessor throws if the project isn't registered (which
-          can't happen for routes that go through the project context
-          middleware). Background sync: add a post-pull hook to the existing
+            const items = cache.getItemIndex();  // hot index tier
+          For detail routes:
+            const item = await cache.getItemDetail(ref);  // on-demand
+          Background sync: add a post-pull hook to the existing
           ShadowSyncScheduler that calls cache.invalidate() when shadowPull()
           returns changes.
 
@@ -28618,84 +28663,203 @@ plans:
           @session-summary-cache.
       ```
 
+
       ## Implementation Notes
 
-      ### Cache Architecture
 
-      The entity cache is a per-project in-memory store organized by data domain.
-      Each domain maps to a specific set of shadow branch files and has independent
-      load/invalidation lifecycle.
+      ### Cache Tiering Model
 
-      **Domain mapping** (file patterns → cache domain):
 
-      | Domain | Source files | Load function |
-      |--------|-------------|---------------|
-      | tasks | `*.tasks.yaml` | loadAllTasks() |
+      The cache uses a two-tier model: **index** (always hot in memory) and
+
+      **detail** (loaded on demand, evicted on domain invalidation).
+
+
+      | Domain | Index tier (hot) | Detail tier (on-demand) |
+
+      |--------|-----------------|------------------------|
+
+      | **Tasks** | TaskSummary[]: ulid, title, status, priority, tags, spec_ref, depends_on,
+      timestamps, notes_count, todos_count | Full task: notes[], todos[], description, context |
+
+      | **Items** | ItemSummary[] (new type): ulid, title, type, status, priority, tags, traits[],
+      parent path | Full item: acceptance_criteria[], description, notes[], implementation refs |
+
+      | **Meta** | All of it (~200KB, referenced constantly for agents, conventions, hooks) | — |
+
+      | **Inbox** | All of it (~30KB, items are tiny) | — |
+
+      | **Triage** | All of it (records are small, ~500B-2KB each) | — |
+
+      | **Plans** | PlanSummary: ulid, title, status, derived_tasks/specs counts, timestamps | Full
+      content (markdown body, 5-50KB each) |
+
+      | **Reviews** | ReviewSummary: ulid, title, lifecycle_state, author, thread_count,
+      verdict_count | Full threads[], checks[], verdicts[], events[] |
+
+      | **Sessions** | Bounded index of N recent session summaries (session.yaml metadata only) |
+      events.jsonl (1.6MB+ per session, never cached) |
+
+
+      **Why these splits:**
+
+      - Tasks: `project.tasks.yaml` is 400KB+ but notes are the bulk. TaskSummary
+        already exists via `rawToSummary()` in TaskDataManager. Most routes only
+        need summaries for listing/filtering.
+      - Items: Module files total 1.2MB but ACs and descriptions are the bulk.
+        List views only need title/status/type. ItemSummary doesn't exist yet —
+        this task creates it.
+      - Plans: content field is 5-50KB of imported markdown. List views need title
+        and status only. Currently plans are in a single file so detail loading
+        means re-reading the whole file — acceptable for now, future optimization
+        could split storage.
+      - Reviews: threads and verdicts can be substantial. List views only need
+        counts and state.
+      - Sessions: events.jsonl is unbounded and should never be cached. Only
+        session.yaml metadata (270 bytes) goes in the index.
+      - Meta, inbox, triage: small enough to keep entirely hot.
+
+
+      ### Domain Mapping (file patterns → cache domain)
+
+
+      | Domain | File patterns | Load function |
+
+      |--------|---------------|---------------|
+
+      | tasks | `*.tasks.yaml` | loadAllTasks() / loadAllTaskSummaries() |
+
       | items | `modules/*.yaml`, manifest includes | loadAllItems() |
-      | plans | `*.plans.yaml`, `plans/` | loadPlans() |
-      | inbox | `project.inbox.yaml` | loadInbox() |
-      | triage | `triage/` | loadTriageRecords() |
-      | reviews | `reviews/` | loadReviews() |
-      | meta | `kynetic.meta.yaml` | loadMeta() |
-      | sessions | `.kspec-sessions/` | SessionSummaryCache (bounded) |
 
-      When a file watcher event fires, the changed file path is matched against
-      these patterns to determine which domain(s) to invalidate. Most changes
-      affect exactly one domain (e.g. a task file change only invalidates tasks).
+      | plans | `*.plans.yaml` | loadPlans() |
+
+      | inbox | `project.inbox.yaml` | loadInbox() |
+
+      | triage | `triage/` | loadTriageRecords() |
+
+      | reviews | `reviews/` | loadReviews() |
+
+      | meta | `kynetic.meta.yaml` | loadMeta() |
+
+      | sessions | `.kspec-sessions/*/session.yaml` | SessionSummaryCache |
+
+
       The manifest (`kynetic.yaml`) invalidates items since it controls includes.
 
-      **Progressive loading priority:**
+
+      ### Indexes
+
+
+      ReferenceIndex, AlignmentIndex, ItemIndex, and TraitIndex are rebuilt when
+
+      any of their source domains are invalidated. They are cached alongside
+
+      domain data and served to route handlers. This eliminates the per-request
+
+      buildIndexes() call. Indexes are built from index-tier data only — they
+
+      don't need full item/task detail.
+
+
+      ### Progressive Loading Priority
+
+
       1. Tasks and items (sidebar counts, dashboard, most-visited pages)
+
       2. Meta (agent definitions, convention rules)
+
       3. Inbox (badge counts)
+
       4. Plans, triage, reviews, sessions (visited less frequently)
 
-      **Indexes** (ReferenceIndex, AlignmentIndex, ItemIndex, TraitIndex) are
-      rebuilt when any of their source domains are invalidated. They are cached
-      alongside domain data and served to route handlers. This eliminates the
-      per-request buildIndexes() call.
 
-      **Write-through protocol:**
+      ### Write-Through Protocol
+
+
       1. Route handler receives mutation request
+
       2. Handler executes the mutation (shadow branch commit)
+
       3. Handler updates the cache with the new state directly
+
       4. Handler sets a domain-level "just-written" flag
+
       5. Handler returns the response
+
       6. File watcher fires (from the git commit) — sees the flag, skips reload
+
       7. Flag is cleared
 
-      This avoids the double-load problem where the watcher would redundantly
-      reload data that the write handler just put into cache.
 
-      **Session index bounding:**
+      ### Session Index Bounding and Staleness
+
+
       The session domain caches at most N recent session summaries (default 100).
-      Active sessions (non-terminal status) are always included regardless of the
-      bound. When a session is accessed by ID and isn't in the index, it's loaded
-      on demand from disk but not added to the bounded index.
 
-      ### Relationship to existing caching
+      Sessions are sorted by recency (started_at descending).
+
+
+      **Stale session exclusion:** Sessions with `active` status that meet the
+
+      existing stale criteria from `@session-stale-criteria` (older-than 24h AND
+
+      inactive-for 6h, resolved via `resolveStaleSessionCriteria()` in
+
+      `src/sessions/store.ts`) are not treated as active in the cache index.
+
+      This prevents old stuck sessions from inflating the active count and
+
+      consuming cache slots. The cache applies the same deterministic criteria
+
+      the CLI uses for `kspec session stale-close`.
+
+
+      Sessions outside the bounded window are loaded on demand when accessed by
+
+      ID but not retained in the index.
+
+
+      ### Relationship to Existing Caching
+
 
       @session-summary-cache established the pattern: load once, serve from memory,
+
       invalidate on change. The entity cache generalizes this to all domains.
+
       The standalone SessionSummaryCache is absorbed — the session domain in the
+
       entity cache replaces it, keeping the same semantics (incremental invalidation,
+
       active session refresh, persistent stats for terminal sessions).
 
+
       @shadow-lazy-read-sync's drift-check contract continues for CLI direct-mode.
+
       For daemon-served reads, the background sync scheduler (already running via
+
       @shadow-daemon-push-sync) handles sync, and the entity cache handles serving.
+
       The per-request initContext() drift-check is removed for daemon routes only.
 
-      ### CLI proxy routing
+
+      ### CLI Proxy Routing
+
 
       The CLI serializes commands using the same JSON format as `kspec batch`
+
       command objects. This means the command API endpoint can reuse the existing
+
       batch command parser for both single commands and batch payloads.
 
+
       Dispatch engine interaction: when agents are spawned by the dispatch engine,
+
       their CLI calls auto-detect the running daemon and route through the command
+
       API. This is the intended behavior — the daemon remains the single writer.
+
       The command API's mutation serialization handles re-entrant calls the same
+
       as any other client.
     status: draft
     approved_at: null
@@ -28717,3 +28881,8 @@ plans:
           task (plan IS the design), add architecture to Implementation Notes
         author: "@claude"
         created_at: 2026-03-24T22:43:07.716Z
+      - _ulid: 01KMH1QPAHFCS8ETJNBNCB8VKZ
+        content: Add two-tier cache model (index hot, detail on-demand), session stale exclusion AC, cache
+          tiering table, data shape analysis
+        author: "@claude"
+        created_at: 2026-03-24T23:09:03.697Z
