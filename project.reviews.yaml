@@ -51011,6 +51011,34 @@ reviews:
         required: true
         created_at: 2026-03-24T22:45:06.174Z
         completed_at: 2026-03-24T22:45:06.174Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: >-
+          AC coverage mapping:
+
+
+          @daemon-entity-cache (13 ACs):
+            task-entity-cache-impl covers ALL: ac-load-on-register, ac-serve-from-memory, ac-watcher-invalidation, ac-granular-reload, ac-write-through, ac-concurrent-reads, ac-reload-dedup, ac-graceful-degradation, ac-project-isolation, ac-unregister-cleanup, ac-session-bounded-index, ac-warming-availability, ac-progressive-loading. COMPLETE.
+
+          @daemon-read-path (4 ACs):
+            task-migrate-read-routes covers ALL: ac-no-per-request-sync, ac-background-sync, ac-index-from-cache, ac-write-routes-sync. COMPLETE.
+
+          @cli-daemon-proxy (8 ACs):
+            task-cli-proxy-routing covers ALL: ac-auto-detect, ac-direct-fallback, ac-force-direct, ac-force-proxy, ac-transparent-output, ac-mutation-coherence, ac-read-from-cache, ac-timeout-fallback. COMPLETE.
+
+          @daemon-command-api (5 ACs):
+            task-daemon-command-api covers ALL: ac-command-endpoint, ac-mutation-cache-update, ac-batch-support, ac-concurrent-mutations, ac-response-parity. COMPLETE.
+
+          @daemon-proxy-detection (4 ACs):
+            task-cli-proxy-routing covers ALL: ac-port-file-check, ac-fast-detection, ac-health-timeout, ac-project-registered. COMPLETE.
+
+          No orphan ACs. Total: 34 ACs across 5 specs, all covered.
+        name: AC coverage — all ACs mapped to tasks
+        required: true
+        created_at: 2026-03-24T22:45:26.557Z
+        completed_at: 2026-03-24T22:45:26.557Z
     events:
       - _ulid: 01KMH0ACFN344DN3TVCXW86CKC
         actor: "@claude"
@@ -51032,6 +51060,13 @@ reviews:
           status: pass
           name: AC observability — behavioral only
         timestamp: 2026-03-24T22:45:06.958Z
+      - _ulid: 01KMH0CF4A2V057W3Y51ST68JC
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: AC coverage — all ACs mapped to tasks
+        timestamp: 2026-03-24T22:45:27.306Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -51044,5 +51079,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-24T22:44:19.062Z
-    updated_at: 2026-03-24T22:45:06.174Z
+    updated_at: 2026-03-24T22:45:26.557Z
     notes: []
