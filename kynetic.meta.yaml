@@ -7880,6 +7880,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-24T20:59:12.458Z
+  - _ulid: 01KMGV8JK1E9DQNZH3EKNW78K5
+    type: success
+    content: Reviewer used merge-base diff (git diff $(git merge-base HEAD dev)..HEAD) instead of
+      dev..HEAD to avoid false findings from parallel branch divergence. This correctly identified
+      that yaml-round-trip-stability.test.ts and package-lock.json diffs were artifacts of dev
+      moving forward, not actual branch changes.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-24T21:15:56.897Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
