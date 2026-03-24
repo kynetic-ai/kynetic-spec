@@ -1,0 +1,86 @@
+_ulid: 01KMFCP5N7S1FPDPA9N7ZMM0AF
+slugs:
+  - task-readtestoutput-small-batch
+title: Convert small test files to readTestOutput (28 calls, 19 files)
+type: task
+description: >-
+  Replace raw fs.readFile/readFileSync with readTestOutput/readTestOutputSync across 19 small test
+  files (1-2 calls each).
+
+
+  What: 28 file read calls across 19 files.
+
+  Why: Standardize test file reads for no-source-scanning lint rule compatibility.
+
+  How:
+
+  1. Add readTestOutput (and readTestOutputSync if sync reads used) to import from ./helpers/cli
+
+  2. Replace await fs.readFile(path, "utf-8") with await readTestOutput(path)
+
+  3. Replace readFileSync(path, "utf-8") with readTestOutputSync(path)
+
+  4. Only convert reads of test-generated output — leave reads of project source files as-is
+
+  5. Only remove fs/readFileSync import if no other fs functions remain (writeFile, stat, mkdir,
+  etc.)
+
+  6. Run npx vitest run tests/<file> to verify tests pass
+
+  7. Run npx oxlint tests/<file> and confirm 0 no-source-scanning hits
+
+
+  Files:
+
+  - tests/trait-edge-cases.test.ts (2 calls)
+
+  - tests/task-unblock-prior-status.test.ts (2 calls)
+
+  - tests/task-cancel-dependency-cleanup.test.ts (2 calls)
+
+  - tests/task-budget-enforcement.test.ts (2 calls)
+
+  - tests/session-scoped-task-claiming.test.ts (2 calls)
+
+  - tests/session-model-evolution.test.ts (2 calls)
+
+  - tests/schedule-schema.test.ts (2 calls)
+
+  - tests/core-skill-update.test.ts (2 calls)
+
+  - tests/core-skill-namespace.test.ts (2 calls)
+
+  - tests/triage-parser.test.ts (1 calls)
+
+  - tests/task-plan-ref.test.ts (1 calls)
+
+  - tests/skill-parser-integration.test.ts (1 calls)
+
+  - tests/session-budget.test.ts (1 calls)
+
+  - tests/refs.test.ts (1 calls)
+
+  - tests/observation-content-search.test.ts (1 calls)
+
+  - tests/hook-schema.test.ts (1 calls)
+
+  - tests/daemon-pid.test.ts (1 calls)
+
+  - tests/cli-plan.test.ts (1 calls)
+
+  - tests/cli-agent-commands.test.ts (1 calls)
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 5
+tags:
+  - testing
+  - cleanup
+  - automation-eligible
+vcs_refs: []
+created_at: 2026-03-24T07:41:59.335Z
+todos: []

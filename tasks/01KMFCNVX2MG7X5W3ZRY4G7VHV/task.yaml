@@ -1,0 +1,46 @@
+_ulid: 01KMFCNVX2MG7X5W3ZRY4G7VHV
+slugs:
+  - task-readtestoutput-enhanced-setup
+title: Convert enhanced-setup.test.ts to readTestOutput (31 calls)
+type: task
+description: >-
+  Replace raw fs.readFile/readFileSync calls with readTestOutput/readTestOutputSync in
+  tests/enhanced-setup.test.ts.
+
+
+  What: 31 file read calls need converting to the readTestOutput helper.
+
+  Why: Standardize test file reads so the no-source-scanning lint rule can distinguish legitimate
+  test output verification from the source-scanning anti-pattern.
+
+  How:
+
+  1. Add readTestOutput (and readTestOutputSync if sync reads used) to import from ./helpers/cli
+
+  2. Replace await fs.readFile(path, "utf-8") with await readTestOutput(path)
+
+  3. Replace readFileSync(path, "utf-8") with readTestOutputSync(path)
+
+  4. Only convert reads of test-generated output — leave reads of project source files as-is
+
+  5. Only remove fs/readFileSync import if no other fs functions remain (writeFile, stat, mkdir,
+  etc.)
+
+  6. Run npx vitest run tests/<file> to verify tests pass
+
+  7. Run npx oxlint tests/<file> and confirm 0 no-source-scanning hits
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 4
+tags:
+  - testing
+  - cleanup
+  - automation-eligible
+vcs_refs: []
+created_at: 2026-03-24T07:41:49.346Z
+todos: []

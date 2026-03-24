@@ -1,0 +1,68 @@
+_ulid: 01KMFCP49MHKRVNFJ57HA8M9FB
+slugs:
+  - task-readtestoutput-medium-batch-1
+title: Convert medium test files batch 1 to readTestOutput (63 calls, 10 files)
+type: task
+description: >-
+  Replace raw fs.readFile/readFileSync with readTestOutput/readTestOutputSync across 10 medium-sized
+  test files.
+
+
+  What: 63 file read calls across 10 files.
+
+  Why: Standardize test file reads for no-source-scanning lint rule compatibility.
+
+  How:
+
+  1. Add readTestOutput (and readTestOutputSync if sync reads used) to import from ./helpers/cli
+
+  2. Replace await fs.readFile(path, "utf-8") with await readTestOutput(path)
+
+  3. Replace readFileSync(path, "utf-8") with readTestOutputSync(path)
+
+  4. Only convert reads of test-generated output — leave reads of project source files as-is
+
+  5. Only remove fs/readFileSync import if no other fs functions remain (writeFile, stat, mkdir,
+  etc.)
+
+  6. Run npx vitest run tests/<file> to verify tests pass
+
+  7. Run npx oxlint tests/<file> and confirm 0 no-source-scanning hits
+
+
+  Files:
+
+  - tests/merge-driver-cli.test.ts (9 calls)
+
+  - tests/setup-pipeline-unification.test.ts (8 calls)
+
+  - tests/init-setup-sessions-dir.test.ts (8 calls)
+
+  - tests/batch-write-buffer.test.ts (7 calls)
+
+  - tests/multi-platform-render-cli.test.ts (6 calls)
+
+  - tests/bootstrap.test.ts (6 calls)
+
+  - tests/native-guard-setup.test.ts (5 calls)
+
+  - tests/module.test.ts (5 calls)
+
+  - tests/automation-eligibility.test.ts (5 calls)
+
+  - tests/trait-display.test.ts (4 calls)
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 5
+tags:
+  - testing
+  - cleanup
+  - automation-eligible
+vcs_refs: []
+created_at: 2026-03-24T07:41:57.940Z
+todos: []
