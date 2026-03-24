@@ -1657,7 +1657,7 @@ describe("round-trip stability — saveTriageRecord path", () => {
 
     // Capture what the first (non-target) record looks like in YAML
     const _initialContent = await fs.readFile(triagePath, "utf-8");
-    const _initialFirstRecordYaml = initialContent.split("- _ulid: " + ulid2)[0];
+    const _initialFirstRecordYaml = initialContent.split(`- _ulid: ${ulid2}`)[0];
 
     // Save the second record multiple times through different mutations
     const loaded = await loadTriageRecords(ctx);
@@ -1691,7 +1691,7 @@ describe("round-trip stability — saveTriageRecord path", () => {
 
     // The first record should not have gained evidence_refs or other Zod defaults
     // after 3 save cycles targeting the second record
-    const evidenceInFirstRecord = finalContent.split("- _ulid: " + ulid2)[0];
+    const evidenceInFirstRecord = finalContent.split(`- _ulid: ${ulid2}`)[0];
     expect(evidenceInFirstRecord).not.toContain("evidence_refs");
 
     // Verify data integrity
@@ -1745,7 +1745,7 @@ describe("round-trip stability — saveTriageRecord path", () => {
     // Only the new record might have it (since it was explicitly in the input)
     // But since evidence_refs: [] is an empty array and this is a new record (not merged),
     // it will appear in the file. The key is the existing record is untouched.
-    const existingRecordYaml = afterContent.split("- _ulid: " + newUlid)[0];
+    const existingRecordYaml = afterContent.split(`- _ulid: ${newUlid}`)[0];
     expect(existingRecordYaml).not.toContain("evidence_refs");
 
     // Verify both records load correctly

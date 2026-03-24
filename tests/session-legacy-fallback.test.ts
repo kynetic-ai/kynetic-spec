@@ -88,7 +88,7 @@ async function createTestSessionWithEvents(
       data: e.data ?? {},
     }),
   );
-  await fs.writeFile(eventsPath, lines.join("\n") + "\n");
+  await fs.writeFile(eventsPath, `${lines.join("\n")}\n`);
 }
 
 // ─── Tests ───────────────────────────────────────────────────────────────────

@@ -568,8 +568,7 @@ describe("Schedule validation integration", () => {
 
     await fs.writeFile(
       metaPath,
-      existing +
-        `
+      `${existing}
 schedules:
   - _ulid: ${testUlid("SCHD", 62)}
     id: bad-cron-schedule
@@ -607,8 +606,7 @@ schedules:
 
     await fs.writeFile(
       metaPath,
-      existing +
-        `
+      `${existing}
 schedules:
   - _ulid: ${testUlid("SCHD", 63)}
     id: command-schedule

@@ -61,7 +61,7 @@
 	// Shorten file paths for display — show last 2 segments
 	function shortenPath(filePath: string): string {
 		const parts = filePath.split('/');
-		return parts.length > 2 ? '.../' + parts.slice(-2).join('/') : filePath;
+		return parts.length > 2 ? `.../${parts.slice(-2).join('/')}` : filePath;
 	}
 </script>
 

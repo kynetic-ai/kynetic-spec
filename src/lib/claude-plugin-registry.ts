@@ -132,7 +132,7 @@ async function writeJsonAtomic(filePath: string, data: unknown): Promise<void> {
   await fs.mkdir(dir, { recursive: true });
 
   const tmpPath = `${filePath}.${Date.now()}.tmp`;
-  const content = JSON.stringify(data, null, 2) + "\n";
+  const content = `${JSON.stringify(data, null, 2)}\n`;
 
   await fs.writeFile(tmpPath, content, "utf-8");
   await fs.rename(tmpPath, filePath);

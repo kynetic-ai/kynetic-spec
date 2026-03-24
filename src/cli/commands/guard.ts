@@ -98,7 +98,7 @@ function isShadowWorktreePath(normalizedPath: string, shadowAbsPath: string): bo
     return true;
   }
   // Subdirectory match: cwd is inside the shadow worktree
-  return normalizedPath.startsWith(normalizedShadow + "/");
+  return normalizedPath.startsWith(`${normalizedShadow}/`);
 }
 
 /**
@@ -126,14 +126,14 @@ function isCdToShadowWorktree(
   if (cdTarget.startsWith("/")) {
     const normalizedTarget = cdTarget.replace(/\\/g, "/").replace(/\/+$/, "");
     return (
-      normalizedTarget === normalizedShadow || normalizedTarget.startsWith(normalizedShadow + "/")
+      normalizedTarget === normalizedShadow || normalizedTarget.startsWith(`${normalizedShadow}/`)
     );
   }
 
   // For relative targets, resolve against cwd if available
   if (cwd) {
     const resolved = path.resolve(cwd, cdTarget).replace(/\\/g, "/");
-    return resolved === normalizedShadow || resolved.startsWith(normalizedShadow + "/");
+    return resolved === normalizedShadow || resolved.startsWith(`${normalizedShadow}/`);
   }
 
   // Fallback: no cwd available, use directory-name segment matching

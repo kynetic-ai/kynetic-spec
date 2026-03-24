@@ -245,7 +245,7 @@ describe("Session storage", () => {
       // Check metadata file was created
       const metadataPath = getSessionMetadataPath(sessionsDir, input.id);
       const content = await readTestOutput(metadataPath, "utf-8");
-      expect(content).toContain("id: " + input.id);
+      expect(content).toContain(`id: ${input.id}`);
       expect(content).toContain("agent_type: claude-code");
       expect(content).toContain("status: active");
     });
@@ -697,7 +697,7 @@ describe("Event storage", () => {
           data: null,
         }),
       ].join("\n");
-      await fs.writeFile(eventsPath, content + "\n", "utf-8");
+      await fs.writeFile(eventsPath, `${content}\n`, "utf-8");
 
       const events = await readEvents(sessionsDir, sessionId);
 

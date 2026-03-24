@@ -213,7 +213,7 @@ describe("computeToolUsageStats", () => {
         },
       },
     ].map((e, i) => JSON.stringify({ ts: Date.now(), seq: i, session_id: sessionId, ...e }));
-    await fs.writeFile(eventsPath, events.join("\n") + "\n");
+    await fs.writeFile(eventsPath, `${events.join("\n")}\n`);
 
     const toolUsage = await computeToolUsageStats(sessionsDir, [sessionId]);
 
@@ -255,7 +255,7 @@ describe("computeToolUsageStats", () => {
         data: { update: { sessionUpdate: "tool_call", _meta: { claudeCode: { toolName: name } } } },
       }),
     );
-    await fs.writeFile(eventsPath, events.join("\n") + "\n");
+    await fs.writeFile(eventsPath, `${events.join("\n")}\n`);
 
     // Default limit is 10
     const toolUsage = await computeToolUsageStats(sessionsDir, [sessionId]);
@@ -324,7 +324,7 @@ describe("computeToolUsageStats", () => {
         },
       },
     ].map((e, i) => JSON.stringify({ ts: Date.now(), seq: i, session_id: sessionId, ...e }));
-    await fs.writeFile(eventsPath, events.join("\n") + "\n");
+    await fs.writeFile(eventsPath, `${events.join("\n")}\n`);
 
     const toolUsage = await computeToolUsageStats(sessionsDir, [sessionId]);
 
@@ -517,7 +517,7 @@ describe("kspec session log stats (CLI)", () => {
     );
     await fs.writeFile(
       path.join(s1Dir, "events.jsonl"),
-      [
+      `${[
         JSON.stringify({ ts: 1000, seq: 0, type: "session.start", session_id: s1, data: null }),
         JSON.stringify({
           ts: 2000,
@@ -529,7 +529,7 @@ describe("kspec session log stats (CLI)", () => {
           },
         }),
         JSON.stringify({ ts: 3000, seq: 2, type: "session.end", session_id: s1, data: null }),
-      ].join("\n") + "\n",
+      ].join("\n")}\n`,
     );
     await fs.writeFile(path.join(s1Dir, "context-iter-1.json"), "{}");
 
@@ -548,7 +548,7 @@ describe("kspec session log stats (CLI)", () => {
     );
     await fs.writeFile(
       path.join(s2Dir, "events.jsonl"),
-      [
+      `${[
         JSON.stringify({ ts: 1000, seq: 0, type: "session.start", session_id: s2, data: null }),
         JSON.stringify({
           ts: 2000,
@@ -578,7 +578,7 @@ describe("kspec session log stats (CLI)", () => {
           },
         }),
         JSON.stringify({ ts: 5000, seq: 4, type: "prompt.sent", session_id: s2, data: null }),
-      ].join("\n") + "\n",
+      ].join("\n")}\n`,
     );
     await fs.writeFile(path.join(s2Dir, "context-iter-1.json"), "{}");
     await fs.writeFile(path.join(s2Dir, "context-iter-2.json"), "{}");
@@ -600,7 +600,7 @@ describe("kspec session log stats (CLI)", () => {
     );
     await fs.writeFile(
       path.join(s3Dir, "events.jsonl"),
-      [
+      `${[
         JSON.stringify({ ts: 1000, seq: 0, type: "session.start", session_id: s3, data: null }),
         JSON.stringify({
           ts: 2000,
@@ -616,7 +616,7 @@ describe("kspec session log stats (CLI)", () => {
             },
           },
         }),
-      ].join("\n") + "\n",
+      ].join("\n")}\n`,
     );
   });
 

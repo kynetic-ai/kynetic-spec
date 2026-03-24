@@ -88,7 +88,7 @@ process.stdin.on("data", (chunk) => {
         // Only respond to requests (have an id), ignore notifications
         if (msg.id !== undefined) {
           const response = handleRequest(msg);
-          process.stdout.write(JSON.stringify(response) + "\n");
+          process.stdout.write(`${JSON.stringify(response)}\n`);
         }
       } catch {
         // Ignore parse errors

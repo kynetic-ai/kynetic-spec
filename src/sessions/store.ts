@@ -2715,7 +2715,7 @@ function extractContentExcerpt(data: unknown, pattern: string, maxLength: number
   const matchIndex = lowerStr.indexOf(lowerPattern);
   if (matchIndex === -1) {
     // Shouldn't happen since we pre-filtered, but return start of content
-    return str.length > maxLength ? str.slice(0, maxLength - 3) + "..." : str;
+    return str.length > maxLength ? `${str.slice(0, maxLength - 3)}...` : str;
   }
 
   // Calculate excerpt window centered on match
@@ -2728,10 +2728,10 @@ function extractContentExcerpt(data: unknown, pattern: string, maxLength: number
 
   // Add ellipsis indicators
   if (start > 0) {
-    excerpt = "..." + excerpt.slice(3);
+    excerpt = `...${excerpt.slice(3)}`;
   }
   if (end < str.length) {
-    excerpt = excerpt.slice(0, -3) + "...";
+    excerpt = `${excerpt.slice(0, -3)}...`;
   }
 
   return excerpt;
@@ -3037,7 +3037,7 @@ export async function injectClaudeCodeEnv(sessionId: string): Promise<EnvInjecti
   }
   (settings.env as Record<string, string>).KSPEC_SESSION_ID = sessionId;
 
-  await fsPromises.writeFile(settingsPath, JSON.stringify(settings, null, 2) + "\n", "utf-8");
+  await fsPromises.writeFile(settingsPath, `${JSON.stringify(settings, null, 2)}\n`, "utf-8");
 
   return {
     injected: true,
@@ -3088,7 +3088,7 @@ export async function removeClaudeCodeEnv(previousValue?: string | null): Promis
         }
       }
 
-      await fsPromises.writeFile(settingsPath, JSON.stringify(settings, null, 2) + "\n", "utf-8");
+      await fsPromises.writeFile(settingsPath, `${JSON.stringify(settings, null, 2)}\n`, "utf-8");
     }
   } catch {
     // Best-effort cleanup — file may not exist or may not be valid JSON
@@ -3175,7 +3175,7 @@ export async function injectCodexEnv(sessionId: string): Promise<EnvInjectionRes
   }
   (policy.set as Record<string, string>).KSPEC_SESSION_ID = sessionId;
 
-  await fsPromises.writeFile(configPath, stringifyTOML(config) + "\n", "utf-8");
+  await fsPromises.writeFile(configPath, `${stringifyTOML(config)}\n`, "utf-8");
 
   return {
     injected: true,
@@ -3224,7 +3224,7 @@ export async function removeCodexEnv(previousValue?: string | null): Promise<voi
         }
       }
 
-      await fsPromises.writeFile(configPath, stringifyTOML(config) + "\n", "utf-8");
+      await fsPromises.writeFile(configPath, `${stringifyTOML(config)}\n`, "utf-8");
     }
   } catch {
     // Best-effort cleanup — file may not exist or may not be valid TOML
@@ -3395,7 +3395,7 @@ async function writeBudgetAtomic(filePath: string, budget: TaskBudget): Promise<
   const dir = path.dirname(filePath);
   await fsPromises.mkdir(dir, { recursive: true });
   const tmpPath = `${filePath}.${process.pid}.tmp`;
-  const content = JSON.stringify(budget, null, 2) + "\n";
+  const content = `${JSON.stringify(budget, null, 2)}\n`;
   await fsPromises.writeFile(tmpPath, content, "utf-8");
   await fsPromises.rename(tmpPath, filePath);
 }

@@ -225,14 +225,14 @@ describe("Reference Resolution Utility", () => {
       // Generate a realistic set of entities
       const manyTasks = Array.from({ length: 100 }, (_, i) =>
         makeTask({
-          _ulid: testUlid("MT" + String(i).padStart(2, "0"), 0),
+          _ulid: testUlid(`MT${String(i).padStart(2, "0")}`, 0),
           slugs: [`task-${i}`],
           title: `Task number ${i}`,
           status: i % 3 === 0 ? "completed" : "pending",
           description: "A long description that would bloat a full response payload significantly",
           notes: [
             {
-              _ulid: testUlid("NT" + String(i).padStart(2, "0"), 0),
+              _ulid: testUlid(`NT${String(i).padStart(2, "0")}`, 0),
               content: "note",
               author: "test",
               created_at: new Date().toISOString(),

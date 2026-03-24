@@ -175,7 +175,7 @@ describe("getSessionLogSummary", () => {
         },
       },
     });
-    await fs.appendFile(eventsPath, toolCallEvent1 + "\n");
+    await fs.appendFile(eventsPath, `${toolCallEvent1}\n`);
     const toolCallEvent2 = JSON.stringify({
       ts: Date.now(),
       seq: 2,
@@ -190,7 +190,7 @@ describe("getSessionLogSummary", () => {
         },
       },
     });
-    await fs.appendFile(eventsPath, toolCallEvent2 + "\n");
+    await fs.appendFile(eventsPath, `${toolCallEvent2}\n`);
 
     const summary = await getSessionLogSummary(sessionsDir, sessionId);
     expect(summary!.tasks_completed).toBe(2);
@@ -211,7 +211,7 @@ describe("getSessionLogSummary", () => {
       session_id: sessionId,
       data: { update: { sessionUpdate: "tool_call", rawInput: {}, toolCallId: "tc-1" } },
     });
-    await fs.appendFile(eventsPath, emptyToolCall + "\n");
+    await fs.appendFile(eventsPath, `${emptyToolCall}\n`);
     const populatedUpdate = JSON.stringify({
       ts: Date.now(),
       seq: 2,
@@ -228,7 +228,7 @@ describe("getSessionLogSummary", () => {
         },
       },
     });
-    await fs.appendFile(eventsPath, populatedUpdate + "\n");
+    await fs.appendFile(eventsPath, `${populatedUpdate}\n`);
 
     const summary = await getSessionLogSummary(sessionsDir, sessionId);
     expect(summary!.tasks_completed).toBe(1);
@@ -253,7 +253,7 @@ describe("getSessionLogSummary", () => {
         },
       },
     });
-    await fs.appendFile(eventsPath, arrayCommandEvent + "\n");
+    await fs.appendFile(eventsPath, `${arrayCommandEvent}\n`);
 
     const summary = await getSessionLogSummary(sessionsDir, sessionId);
     expect(summary!.tasks_completed).toBe(1);
@@ -323,11 +323,11 @@ describe("kspec session log list (CLI)", () => {
     );
     await fs.writeFile(
       path.join(s1Dir, "events.jsonl"),
-      [
+      `${[
         JSON.stringify({ ts: 1000, seq: 0, type: "session.start", session_id: s1, data: null }),
         JSON.stringify({ ts: 2000, seq: 1, type: "prompt.sent", session_id: s1, data: null }),
         JSON.stringify({ ts: 3000, seq: 2, type: "session.end", session_id: s1, data: null }),
-      ].join("\n") + "\n",
+      ].join("\n")}\n`,
     );
     await fs.writeFile(path.join(s1Dir, "context-iter-1.json"), "{}");
 
@@ -347,13 +347,13 @@ describe("kspec session log list (CLI)", () => {
     );
     await fs.writeFile(
       path.join(s2Dir, "events.jsonl"),
-      [
+      `${[
         JSON.stringify({ ts: 1000, seq: 0, type: "session.start", session_id: s2, data: null }),
         JSON.stringify({ ts: 2000, seq: 1, type: "prompt.sent", session_id: s2, data: null }),
         JSON.stringify({ ts: 3000, seq: 2, type: "prompt.sent", session_id: s2, data: null }),
         JSON.stringify({ ts: 4000, seq: 3, type: "prompt.sent", session_id: s2, data: null }),
         JSON.stringify({ ts: 5000, seq: 4, type: "prompt.sent", session_id: s2, data: null }),
-      ].join("\n") + "\n",
+      ].join("\n")}\n`,
     );
     await fs.writeFile(path.join(s2Dir, "context-iter-1.json"), "{}");
     await fs.writeFile(path.join(s2Dir, "context-iter-2.json"), "{}");
@@ -378,7 +378,7 @@ describe("kspec session log list (CLI)", () => {
     );
     await fs.writeFile(
       path.join(s3Dir, "events.jsonl"),
-      [
+      `${[
         JSON.stringify({ ts: 1000, seq: 0, type: "session.start", session_id: s3, data: null }),
         JSON.stringify({
           ts: 2000,
@@ -394,7 +394,7 @@ describe("kspec session log list (CLI)", () => {
             },
           },
         }),
-      ].join("\n") + "\n",
+      ].join("\n")}\n`,
     );
 
     // Session 4: completed, agent_id=worker, trigger=task.needs_work, different task
@@ -416,9 +416,9 @@ describe("kspec session log list (CLI)", () => {
     );
     await fs.writeFile(
       path.join(s4Dir, "events.jsonl"),
-      [
+      `${[
         JSON.stringify({ ts: 1000, seq: 0, type: "session.start", session_id: s4, data: null }),
-      ].join("\n") + "\n",
+      ].join("\n")}\n`,
     );
   });
 

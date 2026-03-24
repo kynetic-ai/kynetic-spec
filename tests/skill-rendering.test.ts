@@ -749,7 +749,7 @@ describe("Skill Drift Detection", () => {
       // Manually edit the rendered file
       const renderedPath = path.join(tempDir, ".claude", "skills", "test-skill", "SKILL.md");
       const originalContent = await fs.readFile(renderedPath, "utf-8");
-      const editedContent = originalContent + "\n\n# Manually Added\n";
+      const editedContent = `${originalContent}\n\n# Manually Added\n`;
       await fs.writeFile(renderedPath, editedContent, "utf-8");
 
       // Try to render again without --force
@@ -793,7 +793,7 @@ describe("Skill Drift Detection", () => {
       const originalContent = await fs.readFile(renderedPath, "utf-8");
 
       // Manually edit the rendered file
-      await fs.writeFile(renderedPath, originalContent + "\n\n# Manually Added\n", "utf-8");
+      await fs.writeFile(renderedPath, `${originalContent}\n\n# Manually Added\n`, "utf-8");
 
       // Verify it's drifted
       let status = kspecFull("skill status", tempDir);

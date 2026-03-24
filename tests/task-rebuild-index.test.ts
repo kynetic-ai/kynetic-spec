@@ -291,7 +291,7 @@ describe("kspec task rebuild-index", () => {
 
     const result = kspec("task rebuild-index --dry-run", tempDir, { env });
     expect(result.exitCode).toBe(0);
-    const combined = result.stdout + " " + result.stderr;
+    const combined = `${result.stdout} ${result.stderr}`;
     expect(combined).toMatch(/DRY RUN/i);
     expect(combined).toContain("Added");
     expect(combined).toContain("task-dry-preview");
@@ -329,7 +329,7 @@ describe("kspec task rebuild-index", () => {
 
     const result = kspec("task rebuild-index --dry-run", tempDir, { env });
     expect(result.exitCode).toBe(0);
-    expect(result.stdout + " " + result.stderr).toMatch(/DRY RUN/i);
+    expect(`${result.stdout} ${result.stderr}`).toMatch(/DRY RUN/i);
   });
 
   // AC: @trait-dry-run ac-3
@@ -341,7 +341,7 @@ describe("kspec task rebuild-index", () => {
 
     const result = kspec("task rebuild-index --dry-run", tempDir, { env });
     expect(result.exitCode).toBe(0);
-    expect(result.stdout + " " + result.stderr).toMatch(/DRY RUN/i);
+    expect(`${result.stdout} ${result.stderr}`).toMatch(/DRY RUN/i);
     expect(result.stdout).toContain("up to date");
   });
 
@@ -387,7 +387,7 @@ describe("kspec task rebuild-index", () => {
       env,
     });
     expect(result.exitCode).toBe(0);
-    expect(result.stdout + " " + result.stderr).toMatch(/DRY RUN/i);
+    expect(`${result.stdout} ${result.stderr}`).toMatch(/DRY RUN/i);
 
     // Index should not have been modified
     const indexAfter = await fs.readFile(indexPath, "utf-8");

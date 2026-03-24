@@ -40,8 +40,7 @@ describe("session log list --status validation", () => {
     );
     await fs.writeFile(
       path.join(s1Dir, "events.jsonl"),
-      JSON.stringify({ ts: 1000, seq: 0, type: "session.start", session_id: s1, data: null }) +
-        "\n",
+      `${JSON.stringify({ ts: 1000, seq: 0, type: "session.start", session_id: s1, data: null })}\n`,
     );
   });
 
@@ -136,7 +135,7 @@ describe("session log show --events with malformed event data", () => {
       }),
       JSON.stringify({ ts: 3000, seq: 2, type: "session.end", session_id: sessionId, data: null }),
     ];
-    await fs.writeFile(eventsPath, events.join("\n") + "\n");
+    await fs.writeFile(eventsPath, `${events.join("\n")}\n`);
 
     const result = kspec(`session log show ${sessionId} --events`, tempDir);
     expect(result.exitCode).toBe(0);
@@ -162,7 +161,7 @@ describe("session log show --events with malformed event data", () => {
       }),
       JSON.stringify({ ts: 3000, seq: 2, type: "prompt.sent", session_id: sessionId, data: 42 }),
     ];
-    await fs.writeFile(eventsPath, events.join("\n") + "\n");
+    await fs.writeFile(eventsPath, `${events.join("\n")}\n`);
 
     const result = kspec(`session log show ${sessionId} --events`, tempDir);
     expect(result.exitCode).toBe(0);
@@ -186,7 +185,7 @@ describe("session log show --events with malformed event data", () => {
         data: { reason: 123 },
       }),
     ];
-    await fs.writeFile(eventsPath, events.join("\n") + "\n");
+    await fs.writeFile(eventsPath, `${events.join("\n")}\n`);
 
     const result = kspec(`session log show ${sessionId} --events`, tempDir);
     expect(result.exitCode).toBe(0);
@@ -224,7 +223,7 @@ describe("session log show --events with malformed event data", () => {
         data: { update: [1, 2] },
       }),
     ];
-    await fs.writeFile(eventsPath, events.join("\n") + "\n");
+    await fs.writeFile(eventsPath, `${events.join("\n")}\n`);
 
     const result = kspec(`session log show ${sessionId} --events`, tempDir);
     expect(result.exitCode).toBe(0);
@@ -281,7 +280,7 @@ describe("session log show --events with malformed event data", () => {
         },
       }),
     ];
-    await fs.writeFile(eventsPath, events.join("\n") + "\n");
+    await fs.writeFile(eventsPath, `${events.join("\n")}\n`);
 
     const result = kspec(`session log show ${sessionId} --events`, tempDir);
     expect(result.exitCode).toBe(0);
@@ -313,7 +312,7 @@ describe("session log show --events with malformed event data", () => {
       }),
       JSON.stringify({ ts: 4000, seq: 3, type: "prompt.sent", session_id: sessionId, data: {} }),
     ];
-    await fs.writeFile(eventsPath, events.join("\n") + "\n");
+    await fs.writeFile(eventsPath, `${events.join("\n")}\n`);
 
     const result = kspec(`session log show ${sessionId} --events`, tempDir);
     expect(result.exitCode).toBe(0);
@@ -337,7 +336,7 @@ describe("session log show --events with malformed event data", () => {
         data: { reason: 123 },
       }),
     ];
-    await fs.writeFile(eventsPath, events.join("\n") + "\n");
+    await fs.writeFile(eventsPath, `${events.join("\n")}\n`);
 
     const result = kspec(`session log show ${sessionId} --events`, tempDir);
     expect(result.exitCode).toBe(0);
@@ -383,7 +382,7 @@ describe("session log show --events with malformed event data", () => {
         data: { reason: "completed normally" },
       }),
     ];
-    await fs.writeFile(eventsPath, events.join("\n") + "\n");
+    await fs.writeFile(eventsPath, `${events.join("\n")}\n`);
 
     const result = kspec(`session log show ${sessionId} --events`, tempDir);
     expect(result.exitCode).toBe(0);

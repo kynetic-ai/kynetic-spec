@@ -198,7 +198,7 @@ describe("getSessionLogDetail", () => {
         },
       },
     ];
-    await fs.writeFile(eventsPath, events.map((e) => JSON.stringify(e)).join("\n") + "\n");
+    await fs.writeFile(eventsPath, `${events.map((e) => JSON.stringify(e)).join("\n")}\n`);
 
     const detail = await getSessionLogDetail(sessionsDir, sessionId);
     expect(detail).not.toBeNull();
@@ -269,7 +269,7 @@ describe("getSessionLogDetail", () => {
         },
       },
     ];
-    await fs.writeFile(eventsPath, events.map((e) => JSON.stringify(e)).join("\n") + "\n");
+    await fs.writeFile(eventsPath, `${events.map((e) => JSON.stringify(e)).join("\n")}\n`);
 
     const detail = await getSessionLogDetail(sessionsDir, sessionId);
     expect(detail).not.toBeNull();
@@ -316,7 +316,7 @@ describe("getSessionLogDetail", () => {
         },
       },
     ];
-    await fs.writeFile(eventsPath, events.map((e) => JSON.stringify(e)).join("\n") + "\n");
+    await fs.writeFile(eventsPath, `${events.map((e) => JSON.stringify(e)).join("\n")}\n`);
 
     const detail = await getSessionLogDetail(sessionsDir, sessionId);
     expect(detail).not.toBeNull();
@@ -365,7 +365,7 @@ describe("getSessionLogDetail", () => {
         data: { iteration: 1, update: { sessionUpdate: "tool_call", rawInput: { command: "ls" } } },
       },
     ];
-    await fs.writeFile(eventsPath, events.map((e) => JSON.stringify(e)).join("\n") + "\n");
+    await fs.writeFile(eventsPath, `${events.map((e) => JSON.stringify(e)).join("\n")}\n`);
 
     const detail = await getSessionLogDetail(sessionsDir, sessionId);
     expect(detail).not.toBeNull();
@@ -408,7 +408,7 @@ describe("getSessionLogDetail", () => {
         data: { reason: "completed" },
       },
     ];
-    await fs.writeFile(eventsPath, events.map((e) => JSON.stringify(e)).join("\n") + "\n");
+    await fs.writeFile(eventsPath, `${events.map((e) => JSON.stringify(e)).join("\n")}\n`);
 
     const detail = await getSessionLogDetail(sessionsDir, sessionId);
     expect(detail).not.toBeNull();
@@ -452,7 +452,7 @@ describe("getSessionLogDetail", () => {
       },
       { ts: 5000, seq: 4, type: "session.update", session_id: sessionId, data: { iteration: 2 } },
     ];
-    await fs.writeFile(eventsPath, events.map((e) => JSON.stringify(e)).join("\n") + "\n");
+    await fs.writeFile(eventsPath, `${events.map((e) => JSON.stringify(e)).join("\n")}\n`);
 
     const detail = await getSessionLogDetail(sessionsDir, sessionId);
     expect(detail).not.toBeNull();
@@ -497,7 +497,7 @@ describe("getSessionLogDetail", () => {
         data: { phase: "task-work" },
       },
     ];
-    await fs.writeFile(eventsPath, events.map((e) => JSON.stringify(e)).join("\n") + "\n");
+    await fs.writeFile(eventsPath, `${events.map((e) => JSON.stringify(e)).join("\n")}\n`);
 
     const detail = await getSessionLogDetail(sessionsDir, sessionId);
     expect(detail).not.toBeNull();
@@ -535,7 +535,7 @@ describe("getSessionLogDetail", () => {
       },
       { ts: 4000, seq: 3, type: "session.update", session_id: sessionId, data: { iteration: 2 } },
     ];
-    await fs.writeFile(eventsPath, events.map((e) => JSON.stringify(e)).join("\n") + "\n");
+    await fs.writeFile(eventsPath, `${events.map((e) => JSON.stringify(e)).join("\n")}\n`);
 
     const detail = await getSessionLogDetail(sessionsDir, sessionId);
     expect(detail).not.toBeNull();
@@ -582,7 +582,7 @@ describe("kspec session log show (CLI)", () => {
     await fs.writeFile(path.join(s1Dir, blobRelPath), blobContent, "utf-8");
     await fs.writeFile(
       path.join(s1Dir, "events.jsonl"),
-      [
+      `${[
         JSON.stringify({
           ts: 1000,
           seq: 0,
@@ -640,7 +640,7 @@ describe("kspec session log show (CLI)", () => {
           session_id: sessionId1,
           data: { reason: "completed" },
         }),
-      ].join("\n") + "\n",
+      ].join("\n")}\n`,
     );
     await fs.writeFile(
       path.join(s1Dir, "context-iter-1.json"),
@@ -661,7 +661,7 @@ describe("kspec session log show (CLI)", () => {
     );
     await fs.writeFile(
       path.join(s2Dir, "events.jsonl"),
-      [
+      `${[
         JSON.stringify({
           ts: 1000,
           seq: 0,
@@ -669,7 +669,7 @@ describe("kspec session log show (CLI)", () => {
           session_id: sessionId2,
           data: null,
         }),
-      ].join("\n") + "\n",
+      ].join("\n")}\n`,
     );
   });
 
@@ -868,7 +868,7 @@ describe("kspec session log show (CLI)", () => {
 
     await fs.writeFile(
       path.join(s1Dir, "events.jsonl"),
-      [
+      `${[
         JSON.stringify({
           ts: 1000,
           seq: 0,
@@ -909,7 +909,7 @@ describe("kspec session log show (CLI)", () => {
             content: [{ type: "content", content: { type: "text", text: "TOOL_NOISE" } }],
           },
         }),
-      ].join("\n") + "\n",
+      ].join("\n")}\n`,
     );
 
     const result = kspec(`session log show ${sessionId1} --text`, tempDir);
@@ -925,7 +925,7 @@ describe("kspec session log show (CLI)", () => {
     const s1Dir = path.join(tempDir, ".kspec-sessions", sessionId1);
     await fs.writeFile(
       path.join(s1Dir, "events.jsonl"),
-      [
+      `${[
         JSON.stringify({
           ts: 1000,
           seq: 0,
@@ -940,7 +940,7 @@ describe("kspec session log show (CLI)", () => {
           session_id: sessionId1,
           data: { content: [{ type: "text", text: "beta" }] },
         }),
-      ].join("\n") + "\n",
+      ].join("\n")}\n`,
     );
 
     const detail = kspecJson<

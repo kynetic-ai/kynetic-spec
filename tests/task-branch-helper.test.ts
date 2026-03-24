@@ -111,7 +111,7 @@ describe("Integration: task branch helper", () => {
   // AC: @deterministic-task-branch-helper ac-2
   it("should rehydrate a branch from a remote when not present locally", () => {
     // Create a bare remote
-    const bareDir = tempDir + "-bare";
+    const bareDir = `${tempDir}-bare`;
     execSync(`git init --bare --initial-branch=main "${bareDir}"`, { stdio: "pipe" });
     git(`remote add origin "${bareDir}"`, tempDir);
     git("push -u origin main", tempDir);

@@ -29,7 +29,7 @@ async function createTestBudget(
     max_per_cycle: maxPerCycle,
     started_this_cycle: startedThisCycle,
   };
-  await fs.writeFile(path.join(sessionDir, "budget.json"), JSON.stringify(budget, null, 2) + "\n");
+  await fs.writeFile(path.join(sessionDir, "budget.json"), `${JSON.stringify(budget, null, 2)}\n`);
 }
 
 /**

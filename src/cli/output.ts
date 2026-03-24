@@ -228,7 +228,7 @@ export function showChangeDiff(
   if (isStructuredMode()) return;
   for (const change of changes) {
     console.log(
-      `  ${chalk.gray(change.field + ":")} ${chalk.red(formatChangeValue(change.before))} → ${chalk.green(formatChangeValue(change.after))}`,
+      `  ${chalk.gray(`${change.field}:`)} ${chalk.red(formatChangeValue(change.before))} → ${chalk.green(formatChangeValue(change.after))}`,
     );
   }
 }
@@ -820,8 +820,7 @@ export function formatTaskDetails(
       const icon = activityIcon(entry.type);
       const time = formatRelativeTime(new Date(entry.timestamp));
       console.log(
-        `${icon} ${chalk.gray(time)} ${entry.summary}` +
-          (entry.author ? chalk.gray(` (${entry.author})`) : ""),
+        `${icon} ${chalk.gray(time)} ${entry.summary}${entry.author ? chalk.gray(` (${entry.author})`) : ""}`,
       );
     }
     if (hiddenCount > 0) {

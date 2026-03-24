@@ -282,7 +282,7 @@ export function registerEventCommands(program: Command): void {
           const validation = validateEventType(options.type);
           if (!validation.valid) {
             // AC: @trait-error-guidance ac-1, ac-2, ac-5
-            error(`${validation.error!.message} ` + `${validation.error!.suggestion}`);
+            error(`${validation.error!.message} ${validation.error!.suggestion}`);
             process.exit(EXIT_CODES.VALIDATION_FAILED);
           }
         }
@@ -359,7 +359,7 @@ export function registerEventCommands(program: Command): void {
         // AC: @trait-error-guidance ac-5 — indicate which field/value failed
         const validation = validateEventType(eventType);
         if (!validation.valid) {
-          error(`${validation.error!.message} ` + `${validation.error!.suggestion}`);
+          error(`${validation.error!.message} ${validation.error!.suggestion}`);
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
 
@@ -408,9 +408,7 @@ export function registerEventCommands(program: Command): void {
 
         if (!daemonConn) {
           // AC: @trait-error-guidance ac-1, ac-2
-          error(
-            "Daemon is not running. " + "Start the daemon with 'kspec serve start' to emit events.",
-          );
+          error("Daemon is not running. Start the daemon with 'kspec serve start' to emit events.");
           process.exit(EXIT_CODES.ERROR);
         }
 

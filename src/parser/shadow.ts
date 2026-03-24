@@ -2622,12 +2622,12 @@ async function configureMergeDriver(projectRoot: string, worktreeDir: string): P
     // Check if merge driver is already configured
     if (!existingContent.includes("merge=kspec")) {
       const attributesContent = existingContent
-        ? existingContent + "\n"
+        ? `${existingContent}\n`
         : "# Git attributes for kspec\n\n";
 
       await fs.writeFile(
         gitattributesPath,
-        attributesContent + "*.yaml merge=kspec\n*.yml merge=kspec\n",
+        `${attributesContent}*.yaml merge=kspec\n*.yml merge=kspec\n`,
         "utf-8",
       );
 

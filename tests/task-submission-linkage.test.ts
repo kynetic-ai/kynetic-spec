@@ -81,7 +81,7 @@ describe("Integration: task submission linkage", () => {
   // AC: @portable-task-submission-linkage ac-1
   it("should capture remote, remote_url, and upstream_ref when upstream is configured", () => {
     // Create a bare remote to track
-    const bareDir = tempDir + "-bare";
+    const bareDir = `${tempDir}-bare`;
     execSync(`git init --bare "${bareDir}"`, { stdio: "pipe" });
     git(`remote add origin "${bareDir}"`, tempDir);
     git("checkout -b feat/remote-test", tempDir);
@@ -104,7 +104,7 @@ describe("Integration: task submission linkage", () => {
   // AC: @portable-task-submission-linkage ac-1
   it("should capture upstream_ref when local branch tracks a differently named remote branch", () => {
     // Create a bare remote and push a branch under a different name
-    const bareDir = tempDir + "-bare-diverge";
+    const bareDir = `${tempDir}-bare-diverge`;
     execSync(`git init --bare "${bareDir}"`, { stdio: "pipe" });
     git(`remote add origin "${bareDir}"`, tempDir);
 
@@ -286,7 +286,7 @@ describe("Integration: task submission linkage", () => {
     fs.writeFileSync(path.join(tempDir, "kspec.config.yaml"), "dispatch:\n  base_branch: dev\n");
 
     // Create bare remote and set up upstream tracking
-    const bareDir = tempDir + "-bare-precedence";
+    const bareDir = `${tempDir}-bare-precedence`;
     execSync(`git init --bare "${bareDir}"`, { stdio: "pipe" });
     git(`remote add origin "${bareDir}"`, tempDir);
     git("checkout -b feat/with-upstream", tempDir);

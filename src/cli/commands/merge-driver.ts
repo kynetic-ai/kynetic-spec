@@ -385,7 +385,7 @@ async function performSemanticMerge(
     for (const conflict of conflicts) {
       conflictComments.push(...formatConflictComment(conflict));
     }
-    mergedYaml = conflictComments.join("\n") + "\n\n" + mergedYaml;
+    mergedYaml = `${conflictComments.join("\n")}\n\n${mergedYaml}`;
   }
 
   return {

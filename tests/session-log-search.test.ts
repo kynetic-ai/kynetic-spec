@@ -41,7 +41,7 @@ describe("searchSessionEvents", () => {
     );
     await fs.writeFile(
       path.join(s1Dir, "events.jsonl"),
-      [
+      `${[
         JSON.stringify({
           ts: 1000,
           seq: 0,
@@ -75,7 +75,7 @@ describe("searchSessionEvents", () => {
           session_id: s1,
           data: { reason: "completed successfully" },
         }),
-      ].join("\n") + "\n",
+      ].join("\n")}\n`,
     );
 
     // Session 2: different agent, more recent
@@ -93,7 +93,7 @@ describe("searchSessionEvents", () => {
     );
     await fs.writeFile(
       path.join(s2Dir, "events.jsonl"),
-      [
+      `${[
         JSON.stringify({
           ts: 5000,
           seq: 0,
@@ -113,7 +113,7 @@ describe("searchSessionEvents", () => {
             },
           },
         }),
-      ].join("\n") + "\n",
+      ].join("\n")}\n`,
     );
 
     // Session 3: no matches for common patterns
@@ -132,7 +132,7 @@ describe("searchSessionEvents", () => {
     );
     await fs.writeFile(
       path.join(s3Dir, "events.jsonl"),
-      [
+      `${[
         JSON.stringify({
           ts: 7000,
           seq: 0,
@@ -147,7 +147,7 @@ describe("searchSessionEvents", () => {
           session_id: s3,
           data: { reason: "done" },
         }),
-      ].join("\n") + "\n",
+      ].join("\n")}\n`,
     );
 
     // Session 4: externalized blob pointer payload
@@ -171,7 +171,7 @@ describe("searchSessionEvents", () => {
     );
     await fs.writeFile(
       path.join(s4Dir, "events.jsonl"),
-      [
+      `${[
         JSON.stringify({
           ts: 9000,
           seq: 0,
@@ -187,7 +187,7 @@ describe("searchSessionEvents", () => {
             },
           },
         }),
-      ].join("\n") + "\n",
+      ].join("\n")}\n`,
     );
   });
 
@@ -375,7 +375,7 @@ describe("kspec session log search (CLI)", () => {
     );
     await fs.writeFile(
       path.join(s1Dir, "events.jsonl"),
-      [
+      `${[
         JSON.stringify({
           ts: 1000,
           seq: 0,
@@ -402,7 +402,7 @@ describe("kspec session log search (CLI)", () => {
           session_id: s1,
           data: { prompt: "Please analyze the TypeScript compiler errors" },
         }),
-      ].join("\n") + "\n",
+      ].join("\n")}\n`,
     );
 
     // Session 2: different agent, recent
@@ -423,7 +423,7 @@ describe("kspec session log search (CLI)", () => {
     );
     await fs.writeFile(
       path.join(s2Dir, "events.jsonl"),
-      [
+      `${[
         JSON.stringify({
           ts: 4000,
           seq: 0,
@@ -443,7 +443,7 @@ describe("kspec session log search (CLI)", () => {
             },
           },
         }),
-      ].join("\n") + "\n",
+      ].join("\n")}\n`,
     );
 
     // Session 3: no matches for common patterns
@@ -463,7 +463,7 @@ describe("kspec session log search (CLI)", () => {
     );
     await fs.writeFile(
       path.join(s3Dir, "events.jsonl"),
-      [
+      `${[
         JSON.stringify({
           ts: 6000,
           seq: 0,
@@ -478,7 +478,7 @@ describe("kspec session log search (CLI)", () => {
           session_id: s3,
           data: { reason: "done" },
         }),
-      ].join("\n") + "\n",
+      ].join("\n")}\n`,
     );
 
     // Session 4: event containing externalized blob pointer
@@ -502,7 +502,7 @@ describe("kspec session log search (CLI)", () => {
     );
     await fs.writeFile(
       path.join(s4Dir, "events.jsonl"),
-      [
+      `${[
         JSON.stringify({
           ts: 8000,
           seq: 0,
@@ -518,7 +518,7 @@ describe("kspec session log search (CLI)", () => {
             },
           },
         }),
-      ].join("\n") + "\n",
+      ].join("\n")}\n`,
     );
   });
 

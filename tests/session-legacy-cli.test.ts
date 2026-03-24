@@ -65,7 +65,7 @@ async function writeSession(
         data: e.data ?? {},
       }),
     );
-    await fs.writeFile(path.join(sessionDir, "events.jsonl"), lines.join("\n") + "\n");
+    await fs.writeFile(path.join(sessionDir, "events.jsonl"), `${lines.join("\n")}\n`);
   }
 }
 

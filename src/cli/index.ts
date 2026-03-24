@@ -191,10 +191,7 @@ function showRemovedRalphCommandError(): never {
     "",
     header,
     "",
-    chalk.bold("kspec ralph has been removed.") +
-      " Use " +
-      chalk.cyan("kspec agent") +
-      " for equivalent functionality.",
+    `${chalk.bold("kspec ralph has been removed.")} Use ${chalk.cyan("kspec agent")} for equivalent functionality.`,
     "",
     chalk.bold("Equivalent commands:"),
     `  ${chalk.yellow("kspec ralph run")}      → ${chalk.cyan("kspec agent dispatch start")}`,
@@ -211,7 +208,7 @@ function showRemovedRalphCommandError(): never {
     `Run ${chalk.cyan("kspec agent --help")} for full documentation.`,
   ].join("\n");
 
-  process.stderr.write(msg + "\n");
+  process.stderr.write(`${msg}\n`);
   process.exit(EXIT_CODES.ERROR);
 }
 

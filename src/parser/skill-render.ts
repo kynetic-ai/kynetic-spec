@@ -482,7 +482,7 @@ export async function writeRenderHash(
 ): Promise<void> {
   const hashPath = getRenderHashPath(specDir, skillId);
   await fs.mkdir(path.dirname(hashPath), { recursive: true });
-  await fs.writeFile(hashPath, hash + "\n", "utf-8");
+  await fs.writeFile(hashPath, `${hash}\n`, "utf-8");
 }
 
 /**
@@ -886,7 +886,7 @@ export async function writePlatformRenderHash(
 ): Promise<void> {
   const hashPath = getPlatformRenderHashPath(specDir, skillId, platform);
   await fs.mkdir(path.dirname(hashPath), { recursive: true });
-  await fs.writeFile(hashPath, hash + "\n", "utf-8");
+  await fs.writeFile(hashPath, `${hash}\n`, "utf-8");
 }
 
 /**
@@ -1077,7 +1077,7 @@ export async function renderSkillBase(
     // Get additional content for hash (e.g., sidecar content)
     const additionalHashContent = config.getAdditionalHashContent?.(renderedContent);
     const hashContent = additionalHashContent
-      ? renderedContent + "\n" + additionalHashContent
+      ? `${renderedContent}\n${additionalHashContent}`
       : renderedContent;
     const hash = computeContentHash(hashContent);
     await writePlatformRenderHash(ctx.specDir, skill.id, config.platform, hash);
@@ -1495,7 +1495,7 @@ export const codexRenderer: PlatformRenderer = {
 
     // Combine content for hash (must match render-time computation)
     const combinedContent = sidecarContent
-      ? renderedContent + "\n" + sidecarContent
+      ? `${renderedContent}\n${sidecarContent}`
       : renderedContent;
     const currentHash = computeContentHash(combinedContent);
     return currentHash === storedHash ? "in-sync" : "drifted";

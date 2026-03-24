@@ -137,9 +137,7 @@ features:
     // Add second trait
     const traitModule = await fs.readFile(path.join(tempDir, "modules/traits.yaml"), "utf-8");
 
-    const updatedTraits =
-      traitModule +
-      `
+    const updatedTraits = `${traitModule}
 ---
 _ulid: 01KFCVXQCCAABBCCDDEEFF00XX
 slugs:

@@ -131,7 +131,7 @@ export function kspec(args: string, cwd: string, options: KspecOptions = {}): Ks
     encoding: "utf-8",
     timeout: 30_000,
     env: { ...cleanEnv, KSPEC_AUTHOR: "@test", ...env },
-    input: stdin !== undefined ? (stdin.endsWith("\n") ? stdin : stdin + "\n") : undefined,
+    input: stdin !== undefined ? (stdin.endsWith("\n") ? stdin : `${stdin}\n`) : undefined,
   });
 
   // Detect timeout (spawnSync kills the process and sets signal)
@@ -436,7 +436,7 @@ export function testUlid(prefix = "", sequence = 0): string {
     .replace(/U/g, "V");
 
   // Start with timestamp-like prefix (01 = valid ULID start)
-  const base = "01" + safePrefix;
+  const base = `01${safePrefix}`;
 
   // Pad with zeros, leaving room for sequence and checksum
   const padLength = 24 - base.length; // 26 - 2 for suffix
