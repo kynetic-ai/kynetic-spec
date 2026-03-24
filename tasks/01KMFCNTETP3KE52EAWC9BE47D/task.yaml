@@ -42,6 +42,7 @@ tags:
   - cleanup
   - automation-eligible
 vcs_refs: []
+review_ref: "@01KMGTDP34V1DM5A955HRNEC3P"
 submission_linkage:
   review_url: null
   branch: dev
@@ -92,6 +93,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-03-24T20:57:54.492Z
+  - author: "@claude"
+    changes:
+      review_ref:
+        new: "@01KMGTDP34V1DM5A955HRNEC3P"
+        previous: null
+    command: review-link
+    timestamp: 2026-03-24T21:01:17.329Z
 created_at: 2026-03-24T07:41:47.866Z
 started_at: 2026-03-24T20:50:38.414Z
 submitted_at: 2026-03-24T20:57:54.492Z
