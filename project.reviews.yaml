@@ -49524,6 +49524,17 @@ reviews:
         runner: manual
         created_at: 2026-03-24T21:31:22.583Z
         completed_at: 2026-03-24T21:31:22.583Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Only tests/task-migrate.test.ts modified (single commit dfcc0de2f). No out-of-scope
+          changes. workflow-runs.test.ts diff is branch ancestry, not worker change.
+        name: scope-correctness
+        required: true
+        runner: manual
+        created_at: 2026-03-24T21:31:25.909Z
+        completed_at: 2026-03-24T21:31:25.909Z
     events:
       - _ulid: 01KMGW42HZE0A8DT5WFVZR1K3Z
         actor: "@claude"
@@ -49559,6 +49570,13 @@ reviews:
           status: pass
           name: fs-import-retained
         timestamp: 2026-03-24T21:31:22.937Z
+      - _ulid: 01KMGW4Y66YE43EHKC1SR61M3B
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: scope-correctness
+        timestamp: 2026-03-24T21:31:26.278Z
     examined_commit: dfcc0de2f66f05b1c90ec3f05ba89fb08ce2ae10
     external_links: []
     lifecycle_state: open
@@ -49571,5 +49589,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-24T21:30:57.983Z
-    updated_at: 2026-03-24T21:31:22.583Z
+    updated_at: 2026-03-24T21:31:25.909Z
     notes: []
