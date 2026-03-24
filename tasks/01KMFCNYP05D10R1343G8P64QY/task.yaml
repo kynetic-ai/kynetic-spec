@@ -32,7 +32,7 @@ description: >-
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -42,6 +42,14 @@ tags:
   - cleanup
   - automation-eligible
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-24T21:45:25.016Z
+  commit: f00f83c5bbd771bcebbb635b1a492448374b2787
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
 session_id: 01KMGWQDSYJQMZY0XTVV27PB30
 history:
   - author: "@claude"
@@ -64,7 +72,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-03-24T21:41:53.040Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-03-24T21:45:25.016Z
+          commit: f00f83c5bbd771bcebbb635b1a492448374b2787
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous: null
+      submitted_at:
+        new: 2026-03-24T21:45:25.018Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-03-24T21:45:25.019Z
 created_at: 2026-03-24T07:41:52.192Z
 started_at: 2026-03-24T21:41:53.040Z
+submitted_at: 2026-03-24T21:45:25.018Z
 todos: []
 automation: eligible
