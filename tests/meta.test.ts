@@ -13,6 +13,7 @@ import {
   setupTempFixtures,
   cleanupTempDir,
   testUlid,
+  readTestOutput,
 } from "./helpers/cli";
 
 describe("Integration: meta agents", () => {
@@ -100,7 +101,7 @@ describe("Integration: meta agents", () => {
 
     // Also remove reference from kynetic.yaml
     const manifestPath = path.join(tempDir, "kynetic.yaml");
-    let content = await fs.readFile(manifestPath, "utf-8");
+    let content = await readTestOutput(manifestPath);
     content = content.replace("meta_file: kynetic.meta.yaml\n", "");
     await fs.writeFile(manifestPath, content);
 
@@ -113,7 +114,7 @@ describe("Integration: meta agents", () => {
   it("should validate agent references in notes", async () => {
     // Add a task with a note that references a valid agent
     const tasksPath = path.join(tempDir, "project.tasks.yaml");
-    let tasksContent = await fs.readFile(tasksPath, "utf-8");
+    let tasksContent = await readTestOutput(tasksPath);
 
     // Add a task with a note containing a valid agent reference
     const newTask = `
@@ -146,7 +147,7 @@ describe("Integration: meta agents", () => {
   it("should error on invalid agent reference in notes", async () => {
     // Add a task with a note that references a non-existent agent
     const tasksPath = path.join(tempDir, "project.tasks.yaml");
-    let tasksContent = await fs.readFile(tasksPath, "utf-8");
+    let tasksContent = await readTestOutput(tasksPath);
 
     const newTask = `
   - _ulid: 01KF79C0H1C6H77ZSGMMVJF994
@@ -311,7 +312,7 @@ describe("Integration: meta workflows", () => {
   it("should validate workflow references in meta_ref", async () => {
     // Add a task with meta_ref pointing to a valid workflow
     const tasksPath = path.join(tempDir, "project.tasks.yaml");
-    let tasksContent = await fs.readFile(tasksPath, "utf-8");
+    let tasksContent = await readTestOutput(tasksPath);
 
     const newTask = `
   - _ulid: 01KF7A2Z00TESTWORKFLOWREF01
@@ -340,7 +341,7 @@ describe("Integration: meta workflows", () => {
   it("should error on invalid workflow reference in meta_ref", async () => {
     // Add a task with meta_ref pointing to a non-existent workflow
     const tasksPath = path.join(tempDir, "project.tasks.yaml");
-    let tasksContent = await fs.readFile(tasksPath, "utf-8");
+    let tasksContent = await readTestOutput(tasksPath);
 
     const newTask = `
   - _ulid: 01KF7AP9FXVDKXDFPSNFWS11SW
@@ -396,7 +397,7 @@ describe("Integration: loop mode workflows", () => {
   ): Promise<void> {
     const ulid = testUlid("WFTEST", testSeq++);
     const metaPath = path.join(tempDir, "kynetic.meta.yaml");
-    let metaContent = await fs.readFile(metaPath, "utf-8");
+    let metaContent = await readTestOutput(metaPath);
 
     const lines: string[] = [
       `  - _ulid: ${ulid}`,
@@ -475,7 +476,7 @@ describe("Integration: loop mode workflows", () => {
     // Manually add a workflow with invalid mode (bypass helper validation)
     const ulid = testUlid("WFBAD", 0);
     const metaPath = path.join(tempDir, "kynetic.meta.yaml");
-    let metaContent = await fs.readFile(metaPath, "utf-8");
+    let metaContent = await readTestOutput(metaPath);
     const invalidWorkflow = `  - _ulid: ${ulid}
     id: bad-mode-workflow
     trigger: manual
@@ -1926,7 +1927,7 @@ describe("Integration: meta includes", () => {
 
     // Update the meta manifest to include these files
     const metaPath = path.join(tempDir, "kynetic.meta.yaml");
-    let metaContent = await fs.readFile(metaPath, "utf-8");
+    let metaContent = await readTestOutput(metaPath);
 
     // Add includes section if not present
     if (!metaContent.includes("includes:")) {
@@ -1989,7 +1990,7 @@ describe("Integration: meta includes", () => {
 
     // Add includes to meta manifest
     const metaPath = path.join(tempDir, "kynetic.meta.yaml");
-    let metaContent = await fs.readFile(metaPath, "utf-8");
+    let metaContent = await readTestOutput(metaPath);
     metaContent += "\nincludes:\n  - meta/conventions.yaml\n";
     await fs.writeFile(metaPath, metaContent);
 
@@ -2035,7 +2036,7 @@ describe("Integration: meta includes", () => {
 
     // Update meta manifest to include all agent-*.yaml files
     const metaPath = path.join(tempDir, "kynetic.meta.yaml");
-    let metaContent = await fs.readFile(metaPath, "utf-8");
+    let metaContent = await readTestOutput(metaPath);
     metaContent += "\nincludes:\n  - meta/agent-*.yaml\n";
     await fs.writeFile(metaPath, metaContent);
 
@@ -2048,7 +2049,7 @@ describe("Integration: meta includes", () => {
   it("should gracefully handle missing include files", async () => {
     // Add an include that doesn't exist
     const metaPath = path.join(tempDir, "kynetic.meta.yaml");
-    let metaContent = await fs.readFile(metaPath, "utf-8");
+    let metaContent = await readTestOutput(metaPath);
     metaContent += "\nincludes:\n  - meta/nonexistent.yaml\n";
     await fs.writeFile(metaPath, metaContent);
 
@@ -2078,13 +2079,13 @@ describe("Integration: meta includes", () => {
 
     // Add includes to meta manifest
     const metaPath = path.join(tempDir, "kynetic.meta.yaml");
-    let metaContent = await fs.readFile(metaPath, "utf-8");
+    let metaContent = await readTestOutput(metaPath);
     metaContent += "\nincludes:\n  - meta/test-workflows.yaml\n";
     await fs.writeFile(metaPath, metaContent);
 
     // Create a task that references the workflow from the included file
     const tasksPath = path.join(tempDir, "project.tasks.yaml");
-    let tasksContent = await fs.readFile(tasksPath, "utf-8");
+    let tasksContent = await readTestOutput(tasksPath);
 
     const newTask = `
   - _ulid: 01KF8850000000000000000031
@@ -2124,7 +2125,7 @@ describe("Integration: conventions", () => {
   it("should list conventions with domain, rules, and validation", async () => {
     // Replace conventions in meta manifest with test-specific ones
     const metaPath = path.join(tempDir, "kynetic.meta.yaml");
-    const metaContent = await fs.readFile(metaPath, "utf-8");
+    const metaContent = await readTestOutput(metaPath);
 
     // Remove any existing conventions block to avoid duplicate YAML keys
     const withoutConventions = metaContent.replace(/^conventions:\n(?:[ \t]+.*\n|[ \t]*\n)*/m, "");
@@ -2844,7 +2845,7 @@ describe("Integration: agent definition schema", () => {
   // AC: @agent-definition-schema ac-1 - adapter field accepted as string
   it("should accept adapter field when added to an agent", async () => {
     const metaPath = path.join(tempDir, "kynetic.meta.yaml");
-    const content = await fs.readFile(metaPath, "utf-8");
+    const content = await readTestOutput(metaPath);
     const withAdapter = content.replace(
       "    id: test-agent",
       '    id: test-agent\n    adapter: "npx @kynetic/claude-adapter"',
@@ -2858,7 +2859,7 @@ describe("Integration: agent definition schema", () => {
   // AC: @agent-definition-schema ac-2 - dispatch array with event types
   it("should accept dispatch rules with valid event types", async () => {
     const metaPath = path.join(tempDir, "kynetic.meta.yaml");
-    const content = await fs.readFile(metaPath, "utf-8");
+    const content = await readTestOutput(metaPath);
     const withDispatch = content.replace(
       "    id: test-agent",
       "    id: test-agent\n    dispatch:\n      - on: task.in_progress\n      - on: task.ready\n      - on: task.needs_work",
@@ -2872,7 +2873,7 @@ describe("Integration: agent definition schema", () => {
   // AC: @agent-definition-schema ac-3 - filter fields validated independently
   it("should accept dispatch filters with automation, tags, and priority", async () => {
     const metaPath = path.join(tempDir, "kynetic.meta.yaml");
-    const content = await fs.readFile(metaPath, "utf-8");
+    const content = await readTestOutput(metaPath);
     const withFilters = content.replace(
       "    id: test-agent",
       [
@@ -2895,7 +2896,7 @@ describe("Integration: agent definition schema", () => {
   // AC: @agent-definition-schema ac-4 - budget fields accepted as optional positive numbers
   it("should accept budget fields as optional positive numbers", async () => {
     const metaPath = path.join(tempDir, "kynetic.meta.yaml");
-    const content = await fs.readFile(metaPath, "utf-8");
+    const content = await readTestOutput(metaPath);
     const withBudget = content.replace(
       "    id: test-agent",
       "    id: test-agent\n    budget:\n      max_tasks: 10\n      timeout_minutes: 60",
@@ -2909,7 +2910,7 @@ describe("Integration: agent definition schema", () => {
   // AC: @agent-definition-schema ac-5 - skills accepted as string array
   it("should accept skills as a string array", async () => {
     const metaPath = path.join(tempDir, "kynetic.meta.yaml");
-    const content = await fs.readFile(metaPath, "utf-8");
+    const content = await readTestOutput(metaPath);
     const withSkills = content.replace(
       "    id: test-agent",
       "    id: test-agent\n    skills:\n      - task-work\n      - review",
@@ -2923,7 +2924,7 @@ describe("Integration: agent definition schema", () => {
   // AC: @agent-definition-schema ac-6 - max_concurrent defaults to 1
   it("should accept concurrency settings with max_concurrent", async () => {
     const metaPath = path.join(tempDir, "kynetic.meta.yaml");
-    const content = await fs.readFile(metaPath, "utf-8");
+    const content = await readTestOutput(metaPath);
     const withConcurrency = content.replace(
       "    id: test-agent",
       "    id: test-agent\n    concurrency:\n      max_concurrent: 3",
@@ -2937,7 +2938,7 @@ describe("Integration: agent definition schema", () => {
   // AC: @agent-definition-schema ac-7 - auto_approve defaults to false
   it("should accept auto_approve boolean field", async () => {
     const metaPath = path.join(tempDir, "kynetic.meta.yaml");
-    const content = await fs.readFile(metaPath, "utf-8");
+    const content = await readTestOutput(metaPath);
     const withAutoApprove = content.replace(
       "    id: test-agent",
       "    id: test-agent\n    auto_approve: true",
