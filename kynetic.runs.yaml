@@ -11893,7 +11893,7 @@ runs:
     completed_at: 2026-03-24T23:11:22.000Z
   - _ulid: 01KMH2AF5E8XD6S8WC498PM48Z
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -11919,7 +11919,17 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-03-24T23:20:20.851Z
-        completed_at: 2026-03-24T23:20:20.851Z
+        completed_at: 2026-03-24T23:20:42.862Z
+        notes: |-
+          Coverage check:
+          1. Stale workflow runs — ALREADY TRACKED: inbox item 01KHVCPEXG 'Stale workflow runs accumulate: no way to prune or auto-expire'. Also inbox 01KJQWT3 about a kspec cleanup umbrella command.
+          2. Spec description purity rules — NOT TRACKED in writing-specs skill. The rules (no non-goals, no relationship sections, no justification refs in descriptions) were learned through user correction this session.
+          3. Plans directory convention — low priority, not tracked, probably not worth tracking separately.
+          4. Review agent speed for plan reviews — NOT TRACKED, but could be a lightweight review mode.
+      - status: completed
+        step_index: 3
+        started_at: 2026-03-24T23:20:42.862Z
+        completed_at: 2026-03-24T23:20:42.862Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-03-24T23:19:18.958Z
