@@ -27409,3 +27409,238 @@ plans:
     created_at: 2026-03-23T22:55:42.919Z
     completed_at: null
     notes: []
+  - _ulid: 01KMF3HCKSZ1F8M9WVGV26DHJ1
+    slugs:
+      - plan-delete-static-analysis-tests-and-replace-with-beha
+    title: Delete Static Analysis Tests and Replace with Behavioral Coverage
+    content: >
+      # Delete Static Analysis Tests and Replace with Behavioral Coverage
+
+
+      ## Specs
+
+
+      ```yaml
+
+      []
+
+      ```
+
+
+      ## Tasks
+
+
+      derive_from_specs: false
+
+
+      ```yaml
+
+      - title: Delete all static analysis test files
+        slug: task-delete-static-analysis-tests-all
+        description: |
+          Delete all test files that are entirely static analysis (read source files, assert on string
+          patterns). These tests create false coverage and false regressions — they pass when behavior
+          breaks and fail when code is refactored.
+
+          Files to delete entirely (100% static analysis):
+          - tests/web-ui-tanstack-query.test.ts (1060 lines, 160 tests)
+          - tests/web-ui-session-stream.test.ts (2498 lines, 132 tests)
+          - tests/web-ui-settings.test.ts (337 lines, 57 tests)
+          - tests/web-ui-app-shell.test.ts (304 lines, 43 tests)
+          - tests/web-ui-structured-content-viewer.test.ts (315 lines, 41 tests)
+          - tests/web-ui-workflows.test.ts (174 lines, 27 tests)
+          - tests/package-distribution.test.ts (171 lines, 13 tests)
+          - tests/web-ui-design-system.test.ts (255 lines, 18 tests)
+          - packages/web-ui/tests/prose-typography.test.ts (68 lines, 2 tests)
+
+          Files with mixed behavioral/static tests — remove only the static analysis tests:
+          - tests/daemon-executable.test.ts: remove 2 of 3 tests (keep "should compile standalone
+            executable with bun build --compile", remove the tests reading package.json and
+            build-executables.sh)
+          - tests/daemon-api-input-validation.test.ts: remove 1 of 5 tests (remove "derives tightened
+            daemon enum schemas" which reads 9 daemon route source files)
+          - tests/ralph-replacement.test.ts: remove 1 of 9 tests (remove "06-agent-dispatch-mode.md
+            template references agent dispatch not ralph" which reads a template file)
+
+          Total: ~5,840 lines, ~500 static analysis test cases removed.
+        priority: 1
+        tags:
+          - testing
+          - cleanup
+
+      - title: Behavioral tests for markdown rendering trait ACs
+        slug: task-behavioral-tests-markdown-rendering
+        description: |
+          Replace static analysis coverage for @trait-markdown-rendering ac-1 through ac-9 and
+          @streaming-markdown-component ac-1 through ac-6 with behavioral tests.
+
+          These 15 ACs had their only test coverage in tests/web-ui-session-stream.test.ts which was
+          deleted. The ACs cover markdown rendering behavior (code blocks, inline formatting, links,
+          lists, tables, streaming incremental updates, etc.).
+
+          Write E2E or component-level tests that render actual markdown content and verify the output,
+          not tests that read .svelte source files and check for string patterns.
+        priority: 2
+        tags:
+          - testing
+          - web-ui
+        spec_ref: "@trait-markdown-rendering"
+        depends_on:
+          - "@task-delete-static-analysis-tests-all"
+
+      - title: Behavioral tests for design system ACs
+        slug: task-behavioral-tests-design-system
+        description: |
+          Replace static analysis coverage for @ui-design-system ac-1 through ac-4 with behavioral
+          tests.
+
+          These 4 ACs had their only test coverage in tests/web-ui-design-system.test.ts which was
+          deleted. The ACs cover CSS custom properties, design tokens, status colors, and animation
+          keyframes.
+
+          Write E2E tests that render components and verify computed styles, or build-pipeline tests
+          that check the CSS output (not source files) contains the expected tokens.
+        priority: 2
+        tags:
+          - testing
+          - web-ui
+        spec_ref: "@ui-design-system"
+        depends_on:
+          - "@task-delete-static-analysis-tests-all"
+
+      - title: Behavioral tests for API input type safety ACs
+        slug: task-behavioral-tests-api-input-safety
+        description: |
+          Replace static analysis coverage for @api-input-type-safety ac-1 through ac-4 with behavioral
+          tests.
+
+          These 4 ACs had their only test coverage in tests/daemon-api-input-validation.test.ts (the one
+          static test that was removed). The ACs cover that daemon API endpoints reject invalid enum
+          values, validate input types, and return structured error responses.
+
+          Write E2E tests that make actual HTTP requests to the daemon with invalid input and verify the
+          error responses. The 4 behavioral tests already in that file demonstrate the correct pattern.
+        priority: 2
+        tags:
+          - testing
+          - daemon
+        spec_ref: "@api-input-type-safety"
+        depends_on:
+          - "@task-delete-static-analysis-tests-all"
+
+      - title: Behavioral tests for package distribution ACs
+        slug: task-behavioral-tests-package-distribution
+        description: |
+          Replace static analysis coverage for @package-distribution ac-1, ac-2, ac-3, ac-5, ac-6 with
+          behavioral tests.
+
+          These 5 ACs had their only test coverage in tests/package-distribution.test.ts which was
+          deleted. The ACs cover that the npm package includes required templates, skills manifest,
+          hooks, and agent section files.
+
+          Write tests that run npm pack (or equivalent) and verify the package tarball contents, or
+          tests that import from the package and verify the expected exports are available. Do not read
+          source files from templates/ and assert on their content.
+        priority: 3
+        tags:
+          - testing
+          - packaging
+        spec_ref: "@package-distribution"
+        depends_on:
+          - "@task-delete-static-analysis-tests-all"
+
+      - title: Behavioral tests for prose typography ACs
+        slug: task-behavioral-tests-prose-typography
+        description: |
+          Replace static analysis coverage for @prose-typography-setup ac-1 and ac-2 with behavioral
+          tests.
+
+          These 2 ACs had their only test coverage in packages/web-ui/tests/prose-typography.test.ts
+          which was deleted. The ACs cover that prose/markdown content uses appropriate typography classes
+          and that the Tailwind typography plugin is active.
+
+          Write E2E tests that render a page with markdown content and verify the computed styles show
+          proper typography treatment (font sizes, line heights, margins on headings/paragraphs).
+        priority: 3
+        tags:
+          - testing
+          - web-ui
+        spec_ref: "@prose-typography-setup"
+        depends_on:
+          - "@task-delete-static-analysis-tests-all"
+
+      - title: Behavioral tests for remaining at-risk ACs
+        slug: task-behavioral-tests-remaining-gaps
+        description: |
+          Replace static analysis coverage for the remaining 4 at-risk ACs:
+
+          - @ralph-replacement ac-6, ac-8 (from tests/ralph-replacement.test.ts static test)
+          - @gh-pages-export ac-24 (from tests/web-ui-settings.test.ts)
+          - @daemon-server ac-16 (from tests/daemon-executable.test.ts)
+          - @agent-dispatch-engine ac-22 (from tests/ralph-replacement.test.ts static test)
+
+          For each AC, write a behavioral test that exercises the feature:
+          - ac-6/@ralph-replacement: run the relevant CLI command and verify output
+          - ac-8/@ralph-replacement: run setup and verify agent definitions created
+          - ac-24/@gh-pages-export: build static export and verify settings page renders
+          - ac-16/@daemon-server: build the daemon executable and verify it runs
+          - ac-22/@agent-dispatch-engine: run dispatch and verify behavior
+        priority: 3
+        tags:
+          - testing
+        depends_on:
+          - "@task-delete-static-analysis-tests-all"
+      ```
+
+
+      ## Implementation Notes
+
+
+      This plan addresses the systemic static analysis test problem identified during audit. The
+      project
+
+      had ~500 test cases across 12 files (5,840 lines) that read source .ts/.svelte files and
+      asserted
+
+      on string patterns instead of testing behavior. These tests were evading the existing lint
+
+      (tests/lint/no-static-analysis.test.ts) through variable indirection chains, non-src/ paths,
+      and
+
+      scanning outside the tests/ directory.
+
+
+      The skill-level guidance banning source-scanning tests was merged in PR #904. This plan
+      handles
+
+      the remaining work: deleting the tests and creating behavioral replacements for the 35 ACs
+      that
+
+      would lose their only test coverage.
+
+
+      The existing lint test (tests/lint/no-static-analysis.test.ts) has known evasion gaps but is
+      kept
+
+      for now as a baseline. A proper linter migration (e.g., to oxlint with custom rules) is
+      tracked
+
+      separately.
+
+
+      Deletion is task 1 because the static analysis tests actively interfere with refactoring —
+      they
+
+      create false regressions on any code change. Behavioral replacement tasks are independent of
+      each
+
+      other and grouped by spec domain for parallelism.
+    status: draft
+    approved_at: null
+    derived_specs: []
+    derived_tasks: []
+    module_ref: null
+    source_path: /home/chapel/Projects/kynetic-spec/plans/delete-static-analysis-tests.md
+    created_at: 2026-03-24T05:02:05.433Z
+    completed_at: null
+    notes: []
