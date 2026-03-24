@@ -48348,6 +48348,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-24T00:14:04.925Z
+      - _ulid: 01KMEKEA9HG08Y23JC6VGZ10Q3
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMEKE9XXCK0K92RYQ9RPR81M
+        timestamp: 2026-03-24T00:20:47.537Z
     examined_commit: 4043b05296911b0a7bcbb1d6547f32bddd1412ad
     external_links: []
     lifecycle_state: open
@@ -48359,8 +48366,29 @@ reviews:
       base_commit: 02ef0686e50d
       head_branch: dispatch/task/fix-web-ui-pages-not-rendering-on-initial-load/01kmehrd
       head_commit: 4043b0529691
-    threads: []
+    threads:
+      - _ulid: 01KMEKE9XXCK0K92RYQ9RPR81M
+        anchor:
+          type: code
+          commit: 4043b0529691
+          line_end: 2258
+          line_start: 2258
+          path: packages/web-ui/src/lib/api.ts
+          side: head
+        entries:
+          - _ulid: 01KMEKE9XYN0MJ7QGQ63838NA1
+            author: "@claude"
+            body: Static mode return value does not match ValidationAggregation interface. The return is {
+              entity_count, ac_count, trait_ac_count, trait_count, coverage_percent } but the
+              interface has { stats, warnings, entity_counts, ac_counts, orphan_count, valid,
+              error_count, warning_count }. The 'as ValidationAggregation' cast hides the type
+              error. In practice, the validate page uses optional chaining
+              (aggregation?.entity_counts.items ?? 0) so the missing fields produce 0/undefined
+              which falls to the ?? default — behavior is accidentally correct. However, the cast is
+              a type-safety violation that could break if consumption code changes.
+            created_at: 2026-03-24T00:20:47.166Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-24T00:13:48.891Z
-    updated_at: 2026-03-24T00:14:04.537Z
+    updated_at: 2026-03-24T00:20:47.166Z
     notes: []
