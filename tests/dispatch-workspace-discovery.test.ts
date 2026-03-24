@@ -96,7 +96,7 @@ describe("review and fix-cycle workspace discovery before discard", () => {
     git(tempDir, `remote add origin "${remoteDir}"`);
 
     const taskRef = `@${testUlid("TASK", 1)}`;
-    const _workspace = await provisionDispatchWorkspace({
+    const workspace = await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
       task: {
@@ -275,7 +275,7 @@ describe("review and fix-cycle workspace discovery before discard", () => {
     git(tempDir, `remote add origin "${remoteDir}"`);
 
     const taskRef = `@${testUlid("TASK", 5)}`;
-    const _workspace = await provisionDispatchWorkspace({
+    const workspace = await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
       task: {
@@ -334,7 +334,7 @@ describe("review and fix-cycle workspace discovery before discard", () => {
     const taskRef = `@${testUlid("TASK", 6)}`;
 
     // Provision a workspace with one canonical branch
-    const _workspace = await provisionDispatchWorkspace({
+    const workspace = await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
       task: {
@@ -460,7 +460,7 @@ describe("review and fix-cycle workspace discovery before discard", () => {
 
     // Provision workspace, then destroy everything so it becomes unhealthy
     // with no remote to recover from.
-    const _workspace = await provisionDispatchWorkspace({
+    const workspace = await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
       task: {
@@ -504,7 +504,7 @@ describe("review and fix-cycle workspace discovery before discard", () => {
     const taskRef = `@${testUlid("TASK", 9)}`;
 
     // Provision workspace to create worktree with metadata file
-    const _workspace = await provisionDispatchWorkspace({
+    const workspace = await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
       task: {

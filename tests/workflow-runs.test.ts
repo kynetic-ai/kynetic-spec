@@ -101,7 +101,7 @@ describe("workflow start", () => {
     const result = kspec("workflow start @test-workflow --json", tempDir);
 
     expect(result.exitCode).toBe(0);
-    JSON.parse(result.stdout); // verify valid JSON
+    const output = JSON.parse(result.stdout);
 
     expect(output).toHaveProperty("run_id");
     expect(output.workflow_ref).toBe(`@${testWorkflowUlid}`);
@@ -149,7 +149,7 @@ describe("workflow start with task link", () => {
     const result = kspec("workflow start @test-workflow --task @test-task --json", tempDir);
 
     expect(result.exitCode).toBe(0);
-    JSON.parse(result.stdout); // verify valid JSON
+    const output = JSON.parse(result.stdout);
 
     // Verify output includes task reference
     const runsPath = path.join(tempDir, "kynetic.runs.yaml");
@@ -215,7 +215,7 @@ describe("workflow runs list", () => {
     const result = kspec("workflow runs --json", tempDir);
 
     expect(result.exitCode).toBe(0);
-    JSON.parse(result.stdout); // verify valid JSON
+    const output = JSON.parse(result.stdout);
 
     expect(output.runs).toHaveLength(2);
     expect(output.runs[0].status).toBe("active");
@@ -226,7 +226,7 @@ describe("workflow runs list", () => {
     const result = kspec("workflow runs --active --json", tempDir);
 
     expect(result.exitCode).toBe(0);
-    JSON.parse(result.stdout); // verify valid JSON
+    const output = JSON.parse(result.stdout);
 
     expect(output.runs).toHaveLength(1);
     expect(output.runs[0].status).toBe("active");
@@ -236,7 +236,7 @@ describe("workflow runs list", () => {
     const result = kspec("workflow runs --completed --json", tempDir);
 
     expect(result.exitCode).toBe(0);
-    JSON.parse(result.stdout); // verify valid JSON
+    const output = JSON.parse(result.stdout);
 
     expect(output.runs).toHaveLength(1);
     expect(output.runs[0].status).toBe("completed");
@@ -246,7 +246,7 @@ describe("workflow runs list", () => {
     const result = kspec("workflow runs --workflow @test-workflow --json", tempDir);
 
     expect(result.exitCode).toBe(0);
-    JSON.parse(result.stdout); // verify valid JSON
+    const output = JSON.parse(result.stdout);
 
     expect(output.runs).toHaveLength(1);
     expect(output.runs[0].workflow_ref).toBe(`@${testWorkflowUlid}`);
@@ -276,7 +276,7 @@ describe("workflow runs --json includes step_results content", () => {
 
     const result = kspec("workflow runs --json", tempDir);
     expect(result.exitCode).toBe(0);
-    JSON.parse(result.stdout); // verify valid JSON
+    const output = JSON.parse(result.stdout);
 
     // Find the run with step results
     const run = output.runs.find((r: any) => r._ulid === run_id);
@@ -297,7 +297,7 @@ describe("workflow runs --json includes step_results content", () => {
 
     const result = kspec("workflow runs --json", tempDir);
     expect(result.exitCode).toBe(0);
-    JSON.parse(result.stdout); // verify valid JSON
+    const output = JSON.parse(result.stdout);
 
     const run = output.runs.find((r: any) => r._ulid === run_id);
     expect(run).toBeDefined();
@@ -312,7 +312,7 @@ describe("workflow show", () => {
   beforeEach(async () => {
     // Create a run
     const result = kspec("workflow start @test-workflow --task @test-task --json", tempDir);
-    JSON.parse(result.stdout); // verify valid JSON
+    const output = JSON.parse(result.stdout);
     runId = output.run_id;
   });
 
@@ -332,7 +332,7 @@ describe("workflow show", () => {
     const result = kspec(`workflow show @${runId} --json`, tempDir);
 
     expect(result.exitCode).toBe(0);
-    JSON.parse(result.stdout); // verify valid JSON
+    const output = JSON.parse(result.stdout);
 
     expect(output.run._ulid).toBe(runId);
     expect(output.run.workflow_ref).toBe(`@${testWorkflowUlid}`);
@@ -356,7 +356,7 @@ describe("workflow show", () => {
 
     const result = kspec(`workflow show @${runId} --json`, tempDir);
     expect(result.exitCode).toBe(0);
-    JSON.parse(result.stdout); // verify valid JSON
+    const output = JSON.parse(result.stdout);
 
     expect(output.run.step_results).toBeDefined();
     // After advancing one step in a 3-step workflow, step 0 is complete + step 1 stub
@@ -381,7 +381,7 @@ describe("workflow abort", () => {
 
   beforeEach(async () => {
     const result = kspec("workflow start @test-workflow --json", tempDir);
-    JSON.parse(result.stdout); // verify valid JSON
+    const output = JSON.parse(result.stdout);
     runId = output.run_id;
   });
 
@@ -389,7 +389,7 @@ describe("workflow abort", () => {
     const result = kspec(`workflow abort @${runId} --reason "Testing abort" --json`, tempDir);
 
     expect(result.exitCode).toBe(0);
-    JSON.parse(result.stdout); // verify valid JSON
+    const output = JSON.parse(result.stdout);
 
     expect(output.run_id).toBe(runId);
     expect(output.status).toBe("aborted");
@@ -479,7 +479,7 @@ describe("workflow next - basic step advancement", () => {
 
   beforeEach(async () => {
     const result = kspec("workflow start @test-workflow --json", tempDir);
-    JSON.parse(result.stdout); // verify valid JSON
+    const output = JSON.parse(result.stdout);
     runId = output.run_id;
   });
 
@@ -513,7 +513,7 @@ describe("workflow next - basic step advancement", () => {
     const result = kspec(`workflow next @${runId} --json`, tempDir);
 
     expect(result.exitCode).toBe(0);
-    JSON.parse(result.stdout); // verify valid JSON
+    const output = JSON.parse(result.stdout);
 
     expect(output.run_id).toBe(runId);
     expect(output.current_step).toBe(1);
@@ -552,7 +552,7 @@ describe("workflow next - completing last step", () => {
 
   beforeEach(async () => {
     const result = kspec("workflow start @test-workflow --json", tempDir);
-    JSON.parse(result.stdout); // verify valid JSON
+    const output = JSON.parse(result.stdout);
     runId = output.run_id;
 
     // Advance to last step
@@ -586,7 +586,7 @@ describe("workflow next - completing last step", () => {
     const result = kspec(`workflow next @${runId} --json`, tempDir);
 
     expect(result.exitCode).toBe(0);
-    JSON.parse(result.stdout); // verify valid JSON
+    const output = JSON.parse(result.stdout);
 
     expect(output.run_id).toBe(runId);
     expect(output.status).toBe("completed");
@@ -640,7 +640,7 @@ describe("workflow next - run reference inference", () => {
     const result = kspec("workflow next --json", tempDir);
 
     expect(result.exitCode).toBe(0);
-    JSON.parse(result.stdout); // verify valid JSON
+    const output = JSON.parse(result.stdout);
 
     expect(output.run_id).toBeDefined();
     expect(output.current_step).toBe(1);
@@ -700,7 +700,7 @@ describe("workflow next - notes capture", () => {
 
   beforeEach(async () => {
     const result = kspec("workflow start @test-workflow --json", tempDir);
-    JSON.parse(result.stdout); // verify valid JSON
+    const output = JSON.parse(result.stdout);
     runId = output.run_id;
   });
 
@@ -761,7 +761,7 @@ describe("workflow next - JSON output trait", () => {
 
   beforeEach(async () => {
     const result = kspec("workflow start @test-workflow --json", tempDir);
-    JSON.parse(result.stdout); // verify valid JSON
+    const output = JSON.parse(result.stdout);
     runId = output.run_id;
   });
 
@@ -777,7 +777,7 @@ describe("workflow next - JSON output trait", () => {
   it("should include all data in JSON output", async () => {
     const result = kspec(`workflow next @${runId} --json`, tempDir);
 
-    JSON.parse(result.stdout); // verify valid JSON
+    const output = JSON.parse(result.stdout);
     expect(output.run_id).toBeDefined();
     expect(output.current_step).toBeDefined();
     expect(output.total_steps).toBeDefined();
@@ -795,7 +795,7 @@ describe("workflow next - JSON output trait", () => {
   it("should use @ prefix for references", async () => {
     const result = kspec(`workflow next @${runId} --json`, tempDir);
 
-    JSON.parse(result.stdout); // verify valid JSON
+    const output = JSON.parse(result.stdout);
     expect(output.run_id).toMatch(/^[A-Z0-9]{26}$/); // ULID without @
   });
 
@@ -806,7 +806,7 @@ describe("workflow next - JSON output trait", () => {
 
     const result = kspec(`workflow next @${runId} --json`, tempDir);
 
-    JSON.parse(result.stdout); // verify valid JSON
+    const output = JSON.parse(result.stdout);
     expect(output.completed_at).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/);
   });
 });
@@ -1599,7 +1599,7 @@ describe("workflow complete", () => {
 
   beforeEach(async () => {
     const result = kspec("workflow start @test-workflow --json", tempDir);
-    JSON.parse(result.stdout); // verify valid JSON
+    const output = JSON.parse(result.stdout);
     runId = output.run_id;
   });
 
@@ -1607,7 +1607,7 @@ describe("workflow complete", () => {
     const result = kspec(`workflow complete @${runId} --json`, tempDir);
 
     expect(result.exitCode).toBe(0);
-    JSON.parse(result.stdout); // verify valid JSON
+    const output = JSON.parse(result.stdout);
 
     expect(output.run_id).toBe(runId);
     expect(output.status).toBe("completed");
@@ -1630,7 +1630,7 @@ describe("workflow complete", () => {
     const result = kspec(`workflow complete @${runId} --result no_work_available --json`, tempDir);
 
     expect(result.exitCode).toBe(0);
-    JSON.parse(result.stdout); // verify valid JSON
+    const output = JSON.parse(result.stdout);
 
     expect(output.run_id).toBe(runId);
     expect(output.status).toBe("completed");
@@ -1651,7 +1651,7 @@ describe("workflow complete", () => {
     const result = kspec(`workflow complete @${runId} --result success --json`, tempDir);
 
     expect(result.exitCode).toBe(0);
-    JSON.parse(result.stdout); // verify valid JSON
+    const output = JSON.parse(result.stdout);
 
     expect(output.result).toBe("success");
   });
@@ -1660,7 +1660,7 @@ describe("workflow complete", () => {
     const result = kspec(`workflow complete @${runId} --result early_exit --json`, tempDir);
 
     expect(result.exitCode).toBe(0);
-    JSON.parse(result.stdout); // verify valid JSON
+    const output = JSON.parse(result.stdout);
 
     expect(output.result).toBe("early_exit");
   });
@@ -1736,7 +1736,7 @@ describe("workflow complete", () => {
     const result = kspec(`workflow complete @${runId} --result early_exit --json`, tempDir);
 
     expect(result.exitCode).toBe(0);
-    JSON.parse(result.stdout); // verify valid JSON
+    const output = JSON.parse(result.stdout);
     expect(output.status).toBe("completed");
     expect(output.result).toBe("early_exit");
   });

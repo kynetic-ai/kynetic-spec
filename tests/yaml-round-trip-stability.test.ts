@@ -383,7 +383,7 @@ describe("round-trip stability — saveTask path", () => {
     await writeYamlFile(taskFilePath, { tasks });
 
     // Get the content after initial canonical write
-    const _initialContent = await fs.readFile(taskFilePath, "utf-8");
+    const initialContent = await fs.readFile(taskFilePath, "utf-8");
 
     // Init context pointing at tempDir as specDir
     const ctx = await initContext(tempDir);
@@ -537,7 +537,7 @@ describe("round-trip stability — savePlan path", () => {
     await writeYamlFile(plansFilePath, { kynetic_plans: "1.0", plans });
 
     // Get the content after initial canonical write
-    const _initialContent = await fs.readFile(plansFilePath, "utf-8");
+    const initialContent = await fs.readFile(plansFilePath, "utf-8");
 
     // Init context pointing at tempDir as specDir
     const ctx = await initContext(tempDir);
@@ -682,7 +682,7 @@ describe("round-trip stability — savePlan path", () => {
     const { ctx, plansFilePath } = await setupPlanContext(plans);
 
     // Snapshot the first plan's raw YAML before deletion
-    const _beforeContent = await fs.readFile(plansFilePath, "utf-8");
+    const beforeContent = await fs.readFile(plansFilePath, "utf-8");
 
     // Delete the second plan
     const deleted = await deletePlan(ctx, testUlid("PLAN", 7));
@@ -770,7 +770,7 @@ describe("round-trip stability — saveReviewRecord path", () => {
 
     // Save review initially
     await saveReviewRecord(ctx, { ...review });
-    const _initialContent = await fs.readFile(path.join(kspecDir, "project.reviews.yaml"), "utf-8");
+    const initialContent = await fs.readFile(path.join(kspecDir, "project.reviews.yaml"), "utf-8");
 
     // Load and save back with no modifications
     const loaded = await loadReviewRecords(ctx);
@@ -810,7 +810,7 @@ describe("round-trip stability — saveReviewRecord path", () => {
     );
 
     await saveReviewRecord(ctx, { ...review });
-    const _initialContent = await fs.readFile(path.join(kspecDir, "project.reviews.yaml"), "utf-8");
+    const initialContent = await fs.readFile(path.join(kspecDir, "project.reviews.yaml"), "utf-8");
 
     // Identity mutation: return the review unchanged
     const loaded = await loadReviewRecords(ctx);
@@ -855,7 +855,7 @@ describe("round-trip stability — saveReviewRecord path", () => {
     for (const review of reviews) {
       await saveReviewRecord(ctx, { ...review });
     }
-    const _initialContent = await fs.readFile(path.join(kspecDir, "project.reviews.yaml"), "utf-8");
+    const initialContent = await fs.readFile(path.join(kspecDir, "project.reviews.yaml"), "utf-8");
 
     // Load and save each review individually — file should not change
     const loaded = await loadReviewRecords(ctx);
@@ -896,7 +896,7 @@ describe("round-trip stability — saveReviewRecord path", () => {
         },
       ],
     });
-    const _initialContent = await fs.readFile(reviewsPath, "utf-8");
+    const initialContent = await fs.readFile(reviewsPath, "utf-8");
 
     // Mutate only the first review
     const loaded = await loadReviewRecords(ctx);
@@ -987,7 +987,7 @@ describe("round-trip stability — saveObservation path", () => {
     // Save observation initially
     await saveObservation(ctx, { ...obs });
     const manifestPath = getMetaManifestPath(ctx);
-    const _initialContent = await fs.readFile(manifestPath, "utf-8");
+    const initialContent = await fs.readFile(manifestPath, "utf-8");
 
     // Load and save back with no modifications
     const meta = await loadMetaContext(ctx);
@@ -1019,7 +1019,7 @@ describe("round-trip stability — saveObservation path", () => {
         },
       ],
     });
-    const _initialContent = await fs.readFile(manifestPath, "utf-8");
+    const initialContent = await fs.readFile(manifestPath, "utf-8");
 
     // Mutate the observation (resolve it)
     const meta = await loadMetaContext(ctx);
@@ -1312,7 +1312,7 @@ describe("round-trip stability — saveInboxItem path", () => {
         },
       ],
     });
-    const _initialContent = await fs.readFile(inboxPath, "utf-8");
+    const initialContent = await fs.readFile(inboxPath, "utf-8");
 
     // Load and save back with no modifications
     const loaded = await loadInboxItems(ctx);
@@ -1340,7 +1340,7 @@ describe("round-trip stability — saveInboxItem path", () => {
         },
       ],
     });
-    const _initialContent = await fs.readFile(inboxPath, "utf-8");
+    const initialContent = await fs.readFile(inboxPath, "utf-8");
 
     // Identity mutation: return the item unchanged
     const loaded = await loadInboxItems(ctx);
@@ -1378,7 +1378,7 @@ describe("round-trip stability — saveInboxItem path", () => {
         },
       ],
     });
-    const _initialContent = await fs.readFile(inboxPath, "utf-8");
+    const initialContent = await fs.readFile(inboxPath, "utf-8");
 
     // Load and save each item individually — file should not change
     const loaded = await loadInboxItems(ctx);
@@ -1412,7 +1412,7 @@ describe("round-trip stability — saveInboxItem path", () => {
         },
       ],
     });
-    const _initialContent = await fs.readFile(inboxPath, "utf-8");
+    const initialContent = await fs.readFile(inboxPath, "utf-8");
 
     // Mutate only the first item (add tags)
     const loaded = await loadInboxItems(ctx);
@@ -1602,7 +1602,7 @@ describe("round-trip stability — saveTriageRecord path", () => {
         },
       ],
     });
-    const _initialContent = await fs.readFile(triagePath, "utf-8");
+    const initialContent = await fs.readFile(triagePath, "utf-8");
 
     // Load all records — verify none gain Zod defaults just from loading+saving
     const loaded = await loadTriageRecords(ctx);
@@ -1656,8 +1656,8 @@ describe("round-trip stability — saveTriageRecord path", () => {
     });
 
     // Capture what the first (non-target) record looks like in YAML
-    const _initialContent = await fs.readFile(triagePath, "utf-8");
-    const _initialFirstRecordYaml = initialContent.split(`- _ulid: ${ulid2}`)[0];
+    const initialContent = await fs.readFile(triagePath, "utf-8");
+    const initialFirstRecordYaml = initialContent.split(`- _ulid: ${ulid2}`)[0];
 
     // Save the second record multiple times through different mutations
     const loaded = await loadTriageRecords(ctx);
@@ -1784,7 +1784,7 @@ describe("round-trip stability — saveWorkflowRun path", () => {
         },
       ],
     });
-    const _initialContent = await fs.readFile(runsPath, "utf-8");
+    const initialContent = await fs.readFile(runsPath, "utf-8");
 
     // Load and save back with no modifications
     const loaded = await loadWorkflowRuns(ctx);
@@ -1816,7 +1816,7 @@ describe("round-trip stability — saveWorkflowRun path", () => {
         },
       ],
     });
-    const _initialContent = await fs.readFile(runsPath, "utf-8");
+    const initialContent = await fs.readFile(runsPath, "utf-8");
 
     const loaded = await loadWorkflowRuns(ctx);
     await saveWorkflowRun(ctx, loaded[0]);
@@ -1848,7 +1848,7 @@ describe("round-trip stability — saveWorkflowRun path", () => {
         },
       ],
     });
-    const _initialContent = await fs.readFile(runsPath, "utf-8");
+    const initialContent = await fs.readFile(runsPath, "utf-8");
 
     // Identity mutation: return the run unchanged
     const loaded = await loadWorkflowRuns(ctx);
@@ -1897,7 +1897,7 @@ describe("round-trip stability — saveWorkflowRun path", () => {
         },
       ],
     });
-    const _initialContent = await fs.readFile(runsPath, "utf-8");
+    const initialContent = await fs.readFile(runsPath, "utf-8");
 
     // Load and save each run individually — file should not change
     const loaded = await loadWorkflowRuns(ctx);
@@ -1938,7 +1938,7 @@ describe("round-trip stability — saveWorkflowRun path", () => {
         },
       ],
     });
-    const _initialContent = await fs.readFile(runsPath, "utf-8");
+    const initialContent = await fs.readFile(runsPath, "utf-8");
 
     // Mutate only the first run
     const loaded = await loadWorkflowRuns(ctx);
@@ -2023,7 +2023,7 @@ describe("round-trip stability — saveWorkflowRun path", () => {
         },
       ],
     });
-    const _initialContent = await fs.readFile(runsPath, "utf-8");
+    const initialContent = await fs.readFile(runsPath, "utf-8");
 
     // Multiple cycles — load and save each time
     for (let i = 0; i < 5; i++) {
@@ -2108,7 +2108,7 @@ describe("round-trip stability — saveDispatchWorkspaceRecord path", () => {
       kynetic_dispatch_workspaces: "1.0",
       workspaces: [ws1],
     });
-    const _initialContent = await fs.readFile(registryPath, "utf-8");
+    const initialContent = await fs.readFile(registryPath, "utf-8");
 
     // Load and save back with no modifications
     const loaded = await loadDispatchWorkspaceRegistry(ctx);
@@ -2130,7 +2130,7 @@ describe("round-trip stability — saveDispatchWorkspaceRecord path", () => {
       kynetic_dispatch_workspaces: "1.0",
       workspaces: [ws1],
     });
-    const _initialContent = await fs.readFile(registryPath, "utf-8");
+    const initialContent = await fs.readFile(registryPath, "utf-8");
 
     // Identity mutation: return the record unchanged
     await mutateDispatchWorkspaceRecordAtomically(ctx, "ws-002", (r) => r);
@@ -2151,7 +2151,7 @@ describe("round-trip stability — saveDispatchWorkspaceRecord path", () => {
       kynetic_dispatch_workspaces: "1.0",
       workspaces: [ws1, ws2],
     });
-    const _initialContent = await fs.readFile(registryPath, "utf-8");
+    const initialContent = await fs.readFile(registryPath, "utf-8");
 
     // Load and save each workspace individually — file should not change
     const loaded = await loadDispatchWorkspaceRegistry(ctx);
@@ -2177,7 +2177,7 @@ describe("round-trip stability — saveDispatchWorkspaceRecord path", () => {
       kynetic_dispatch_workspaces: "1.0",
       workspaces: [ws1, ws2],
     });
-    const _initialContent = await fs.readFile(registryPath, "utf-8");
+    const initialContent = await fs.readFile(registryPath, "utf-8");
 
     // Mutate only the first workspace (change lifecycle_state)
     await mutateDispatchWorkspaceRecordAtomically(ctx, "ws-005", (r) => ({
@@ -2222,7 +2222,7 @@ describe("round-trip stability — saveDispatchWorkspaceRecord path", () => {
       kynetic_dispatch_workspaces: "1.0",
       workspaces: [ws1, ws2],
     });
-    const _initialContent = await fs.readFile(registryPath, "utf-8");
+    const initialContent = await fs.readFile(registryPath, "utf-8");
 
     // Multiple round-trip cycles — save each workspace in turn
     for (let cycle = 0; cycle < 3; cycle++) {

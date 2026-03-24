@@ -1699,6 +1699,7 @@ describe("AC-12: suppress adapter rate_limit_event noise on stderr", () => {
 // Helper: create a fake WebSocket instance for testing
 interface FakeWsInstance {
   send: ReturnType<typeof vi.fn>;
+  addEventListener: (event: string, handler: (...args: any[]) => void) => void;
   onopen: ((e: unknown) => void) | null;
   onmessage: ((e: { data: string }) => void) | null;
   onerror: ((e: unknown) => void) | null;
@@ -1716,6 +1717,12 @@ function makeFakeWsClass(): {
     onmessage: ((e: { data: string }) => void) | null = null;
     onerror: ((e: unknown) => void) | null = null;
     onclose: (() => void) | null = null;
+    addEventListener(event: string, handler: (...args: any[]) => void): void {
+      if (event === "open") this.onopen = handler;
+      else if (event === "message") this.onmessage = handler as (e: { data: string }) => void;
+      else if (event === "error") this.onerror = handler;
+      else if (event === "close") this.onclose = handler as () => void;
+    }
     constructor(_url: string) {
       // oxlint-disable-next-line typescript-eslint/no-this-alias -- intentionally capturing instance for test inspection
       last = this;
@@ -2591,6 +2598,13 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
       onmessage: ((e: { data: string }) => void) | null = null;
       onerror: ((e: unknown) => void) | null = null;
       onclose: (() => void) | null = null;
+      addEventListener(event: string, handler: (...args: any[]) => void): void {
+        if (event === "open") this.onopen = handler;
+        else if (event === "message") this.onmessage = handler as (e: { data: string }) => void;
+        else if (event === "error") this.onerror = handler;
+        else if (event === "close") this.onclose = handler as () => void;
+      }
+      onclose: (() => void) | null = null;
       constructor(_url: string) {
         instances.push(this);
       }
@@ -2648,6 +2662,13 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
       onopen: ((e: unknown) => void) | null = null;
       onmessage: ((e: { data: string }) => void) | null = null;
       onerror: ((e: unknown) => void) | null = null;
+      onclose: (() => void) | null = null;
+      addEventListener(event: string, handler: (...args: any[]) => void): void {
+        if (event === "open") this.onopen = handler;
+        else if (event === "message") this.onmessage = handler as (e: { data: string }) => void;
+        else if (event === "error") this.onerror = handler;
+        else if (event === "close") this.onclose = handler as () => void;
+      }
       onclose: (() => void) | null = null;
       constructor(_url: string) {
         instances.push(this);
@@ -2724,6 +2745,13 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
       onmessage: ((e: { data: string }) => void) | null = null;
       onerror: ((e: unknown) => void) | null = null;
       onclose: (() => void) | null = null;
+      addEventListener(event: string, handler: (...args: any[]) => void): void {
+        if (event === "open") this.onopen = handler;
+        else if (event === "message") this.onmessage = handler as (e: { data: string }) => void;
+        else if (event === "error") this.onerror = handler;
+        else if (event === "close") this.onclose = handler as () => void;
+      }
+      onclose: (() => void) | null = null;
       constructor(_url: string) {
         instances.push(this);
       }
@@ -2783,6 +2811,13 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
       onopen: ((e: unknown) => void) | null = null;
       onmessage: ((e: { data: string }) => void) | null = null;
       onerror: ((e: unknown) => void) | null = null;
+      onclose: (() => void) | null = null;
+      addEventListener(event: string, handler: (...args: any[]) => void): void {
+        if (event === "open") this.onopen = handler;
+        else if (event === "message") this.onmessage = handler as (e: { data: string }) => void;
+        else if (event === "error") this.onerror = handler;
+        else if (event === "close") this.onclose = handler as () => void;
+      }
       onclose: (() => void) | null = null;
       constructor(_url: string) {
         instances.push(this);
@@ -2844,6 +2879,12 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
         onmessage: ((e: { data: string }) => void) | null = null;
         onerror: ((e: unknown) => void) | null = null;
         onclose: (() => void) | null = null;
+        addEventListener(event: string, handler: (...args: any[]) => void): void {
+          if (event === "open") this.onopen = handler;
+          else if (event === "message") this.onmessage = handler as (e: { data: string }) => void;
+          else if (event === "error") this.onerror = handler;
+          else if (event === "close") this.onclose = handler as () => void;
+        }
         constructor(_url: string) {
           wsCtor();
         }

@@ -48,6 +48,7 @@ vi.mock("chokidar", () => ({
   default: {
     watch: mockState.chokidarWatch,
   },
+  watch: mockState.chokidarWatch,
 }));
 
 describe("KspecWatcher Chokidar fallback", () => {

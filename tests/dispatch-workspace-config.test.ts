@@ -166,7 +166,7 @@ describe("dispatch workspace configuration", () => {
     );
 
     const taskRef = `@${testUlid("TASK", 1)}`;
-    const _first = await provisionDispatchWorkspace({
+    const first = await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
       task: {
@@ -637,7 +637,7 @@ describe("stale integration target detection", () => {
     const taskRef = `@${testUlid("TASK", 60)}`;
 
     // Initial provision with base_branch=main
-    const _first = await provisionDispatchWorkspace({
+    const first = await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
       task: { title: "Stale Target Test", slugs: ["task-stale-target"] },
@@ -682,7 +682,7 @@ describe("stale integration target detection", () => {
     const taskRef = `@${testUlid("TASK", 61)}`;
 
     // Initial provision with base_branch=main
-    const _first = await provisionDispatchWorkspace({
+    const first = await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
       task: { title: "Active Integration Test", slugs: ["task-active-integration"] },
@@ -730,7 +730,7 @@ describe("stale integration target detection", () => {
     );
 
     const taskRef = `@${testUlid("TASK", 62)}`;
-    const _first = await provisionDispatchWorkspace({
+    const first = await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
       task: { title: "Error Guidance Test", slugs: ["task-error-guidance"] },
@@ -830,7 +830,7 @@ describe("stale integration target detection", () => {
 
     const taskRef = `@${testUlid("TASK", 64)}`;
 
-    const _first = await provisionDispatchWorkspace({
+    const first = await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
       task: { title: "No Change Test", slugs: ["task-no-change"] },

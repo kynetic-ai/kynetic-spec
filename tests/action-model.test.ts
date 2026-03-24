@@ -459,7 +459,7 @@ exit 0`,
         { mode: 0o755 },
       );
 
-      const _kspecExecutor = new ActionExecutor({
+      const kspecExecutor = new ActionExecutor({
         projectDir: tempDir,
         kspecCliPath: scriptPath,
         onActionRunEvent: (event) => events.push(event),
@@ -514,7 +514,7 @@ process.exit(0);`,
       const nodeScriptPath = path.join(tempDir, "mock-kspec-slow.cjs");
       await fs.writeFile(nodeScriptPath, `setTimeout(() => process.exit(0), 60000);`);
 
-      const _kspecExecutor = new ActionExecutor({
+      const kspecExecutor = new ActionExecutor({
         projectDir: tempDir,
         kspecCliPath: nodeScriptPath,
         onActionRunEvent: (event) => events.push(event),
