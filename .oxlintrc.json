@@ -12,7 +12,7 @@
     "prefer-optional-chain": "warn",
     "unicorn/no-thenable": "off"
   },
-  "ignorePatterns": ["dist/", "node_modules/", ".kspec/", ".agents/", ".claude/", ".factory/", "packages/web-ui/build/"],
+  "ignorePatterns": ["dist/", "node_modules/", ".kspec/", ".agents/", ".claude/", ".factory/", "**/*.svelte", "packages/web-ui/build/"],
   "overrides": [
     {
       "files": ["tests/**/*.ts", "packages/*/tests/**/*.ts"],
