@@ -21378,7 +21378,7 @@ workspaces:
         head: dfcc0de2f66f05b1c90ec3f05ba89fb08ce2ae10
         last_seen_at: 2026-03-24T21:23:26.084Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-readtestoutput-task-migrate-01kmfcnw
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 9a5b5f7cb2d611b937d19e0b44376ee81573778a
     bootstrap:
       status: succeeded
@@ -21504,9 +21504,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-24T21:32:15.270Z
-      last_reconciled_at: 2026-03-24T21:40:22.320Z
+      last_reconciled_at: 2026-03-24T21:42:28.149Z
       created_at: 2026-03-24T21:23:33.789Z
-      updated_at: 2026-03-24T21:40:22.320Z
+      updated_at: 2026-03-24T21:42:28.149Z
     workspace_id: dispatch-workspace-01KMFCNX9QJH82RQMZGE719PB7
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
