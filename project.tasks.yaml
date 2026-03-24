@@ -22320,7 +22320,7 @@
     - task-readtestoutput-task-rebuild-index
   title: Convert task-rebuild-index.test.ts to readTestOutput (10 calls)
   type: task
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 4
@@ -22331,6 +22331,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-03-24T07:41:57.232Z
+  started_at: 2026-03-24T22:38:23.403Z
   automation: eligible
 - _ulid: 01KMFCP49MHKRVNFJ57HA8M9FB
   slugs:
