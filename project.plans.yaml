@@ -27794,8 +27794,8 @@ plans:
 
       oxfmt beta is production-viable for JS/TS projects (used by Vue.js core, Turborepo,
       Sentry). Known gaps in Vue SFC and YAML formatting don't affect this codebase.
-    status: draft
-    approved_at: null
+    status: approved
+    approved_at: 2026-03-24T06:16:18.030Z
     derived_specs: []
     derived_tasks: []
     module_ref: null
