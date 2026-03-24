@@ -51284,7 +51284,18 @@ reviews:
     slugs: []
     title: Review task-readtestoutput-task-rebuild-index (cycle 1)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 6827 passed, 3 skipped, 1 unrelated flaky timeout (agent-invocation-lifecycle timeout in
+          full suite only, passes in isolation)
+        name: vitest (full suite)
+        required: true
+        runner: vitest
+        created_at: 2026-03-24T22:48:59.222Z
+        completed_at: 2026-03-24T22:48:59.222Z
     events:
       - _ulid: 01KMH0J1Z3S8YW1NFDSXN9SNQB
         actor: "@claude"
@@ -51299,6 +51310,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-24T22:48:38.951Z
+      - _ulid: 01KMH0JYG14GE19PWJF1TGQ7HC
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest (full suite)
+        timestamp: 2026-03-24T22:48:59.649Z
     examined_commit: f8471212e94da528c8d2048f0a085fc7eeceec00
     external_links: []
     lifecycle_state: open
@@ -51311,5 +51329,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-24T22:48:30.436Z
-    updated_at: 2026-03-24T22:48:38.541Z
+    updated_at: 2026-03-24T22:48:59.222Z
     notes: []
