@@ -49123,7 +49123,17 @@ reviews:
     slugs: []
     title: Review readTestOutput conversion in yaml-round-trip-stability
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: All 6828 tests passed (56 in yaml-round-trip-stability.test.ts). 0 failures, 3 skipped.
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-24T20:54:56.919Z
+        completed_at: 2026-03-24T20:54:56.919Z
     events:
       - _ulid: 01KMGT0WFT1ZN9MZKYFVWK080N
         actor: "@claude"
@@ -49138,6 +49148,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-24T20:54:48.531Z
+      - _ulid: 01KMGT24FQ04KZ3RTJBBDY2FTC
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-24T20:54:57.271Z
     examined_commit: 0cf7d7b8a2bce1ea566445f29e03c812c9a2e0b3
     external_links: []
     lifecycle_state: open
@@ -49150,5 +49167,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-24T20:54:16.314Z
-    updated_at: 2026-03-24T20:54:48.154Z
+    updated_at: 2026-03-24T20:54:56.919Z
     notes: []
