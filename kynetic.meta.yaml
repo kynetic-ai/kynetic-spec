@@ -7812,6 +7812,34 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-24T08:09:16.573Z
+  - _ulid: 01KMGP8593QSFYG15MZ09EA0EJ
+    type: friction
+    content: "oxfmt converts let $state() to const in Svelte files, breaking bind: directives. No config
+      option to disable const promotion. Required excluding all *.svelte from both oxfmt and oxlint.
+      Watch for this if oxfmt adds Svelte-aware mode in future versions."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-24T19:48:20.388Z
+  - _ulid: 01KMGP85DWX9AVPR25522BMR8Y
+    type: friction
+    content: Subagents making bulk no-unused-vars fixes frequently misidentify variables as unused when
+      they are used in nested/sibling scopes (destructuring, Commander.js patterns, Playwright
+      fixtures). When dispatching lint-fix agents, instruct them to verify usage by searching the
+      file before removing any variable, and run tests after fixes.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-24T19:48:20.540Z
+  - _ulid: 01KMGP85HCG3Q2E2N8JFDJW4KB
+    type: success
+    content: "Parallel subagent dispatch by non-overlapping file domains (4 agents across e2e tests,
+      unit tests A-M, unit tests N-Z, source code) resolved ~1100 lint violations in a single round.
+      Key: partition files so agents never touch the same file."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-24T19:48:20.652Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
