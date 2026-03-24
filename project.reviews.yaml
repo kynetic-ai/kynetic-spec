@@ -51039,6 +51039,36 @@ reviews:
         required: true
         created_at: 2026-03-24T22:45:26.557Z
         completed_at: 2026-03-24T22:45:26.557Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: >-
+          All 5 tasks checked for what/why/how structure, file references, AC coverage lists:
+
+
+          1. task-entity-cache-impl: Detailed what (9 bullet points), clear why, concrete how with
+          file paths (watcher.ts, project-context.ts, sessions/cache.ts). Covers 13 ACs listed.
+
+          2. task-migrate-read-routes: Lists all affected route files by name. Clear why separating
+          from cache creation. Covers 4 ACs.
+
+          3. task-daemon-command-api: Concrete endpoint spec, serialization approach, references
+          agent-dispatch.ts pattern. Covers 5 ACs.
+
+          4. task-cli-proxy-routing: References specific files (index.ts, serve.ts). Detection
+          approach detailed. Covers 12 ACs across 2 specs.
+
+          5. task-update-related-specs: Lists specific specs to update and specific changes per
+          spec.
+
+
+          No design tasks — all are implementation. An agent could execute any of these without chat
+          history.
+        name: Task quality — agent-executable
+        required: true
+        created_at: 2026-03-24T22:45:40.647Z
+        completed_at: 2026-03-24T22:45:40.647Z
     events:
       - _ulid: 01KMH0ACFN344DN3TVCXW86CKC
         actor: "@claude"
@@ -51067,6 +51097,13 @@ reviews:
           status: pass
           name: AC coverage — all ACs mapped to tasks
         timestamp: 2026-03-24T22:45:27.306Z
+      - _ulid: 01KMH0CWWNECH7W368JBRKN52Y
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Task quality — agent-executable
+        timestamp: 2026-03-24T22:45:41.397Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -51079,5 +51116,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-24T22:44:19.062Z
-    updated_at: 2026-03-24T22:45:26.557Z
+    updated_at: 2026-03-24T22:45:40.647Z
     notes: []
