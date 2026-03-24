@@ -45,3 +45,13 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-24T16:28:29.278Z
+  - _ulid: 01KMGNREADCAC0K8PVSTNEAQ0X
+    content: "Work complete. PR #905 merged to main, main merged into dev with conflicts resolved. Final
+      state: 0 lint errors, ~134 warnings (acceptable: no-shadow Commander patterns,
+      consistent-function-scoping). All static analysis tests deleted except web-ui-session-stream
+      (restored with only static portions removed) and ralph-replacement (renamed to
+      setup-builtin-agents, kept behavioral tests). Two flaky tests identified and tracked as
+      separate task @01KMGN92."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-24T19:39:45.357Z
