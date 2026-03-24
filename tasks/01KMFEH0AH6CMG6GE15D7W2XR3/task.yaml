@@ -1,0 +1,50 @@
+_ulid: 01KMFEH0AH6CMG6GE15D7W2XR3
+slugs:
+  - task-update-skill-docs-oxlint
+title: Update skill templates and docs for oxlint/oxfmt references
+type: task
+description: >-
+  Update skill source templates and project skills that still reference Biome or eslint after the
+  oxlint/oxfmt migration.
+
+
+  What: 3 skill files reference the old Biome/eslint tooling:
+
+  - templates/skills/review/SKILL.md (~line 285): example uses --runner eslint
+
+  - .kspec/skills/work-gates/SKILL.md (~line 32): says "Biome config" in MUST-FIX patterns
+
+  - .kspec/skills/audit/SKILL.md (~line 177): references "eslint options" in exploration prompt
+
+
+  Why: These are agent-facing instructions. Agents reading them will look for biome.json or eslint
+  configs that no longer exist. Should reference .oxlintrc.json, .oxfmtrc.json, and oxlint/oxfmt
+  commands.
+
+
+  How:
+
+  1. Edit templates/skills/review/SKILL.md — update the example runner reference
+
+  2. Edit .kspec/skills/work-gates/SKILL.md — replace "Biome config" with "oxlint/oxfmt config"
+  (.oxlintrc.json, .oxfmtrc.json)
+
+  3. Edit .kspec/skills/audit/SKILL.md — replace eslint references with oxlint
+
+  4. Run kspec skill render to regenerate .agents/skills/ and .claude/skills/
+
+  5. Commit rendered output alongside source changes
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - infra
+  - documentation
+vcs_refs: []
+created_at: 2026-03-24T08:14:07.184Z
+todos: []
