@@ -51392,7 +51392,59 @@ reviews:
     slugs: []
     title: "Plan review: Daemon Optimistic Data Layer (v4)"
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: All 5 spec descriptions are behavioral contracts. No non-goals, no relationship sections,
+          no justification refs in descriptions.
+        name: Spec purity
+        required: true
+        created_at: 2026-03-24T23:10:57.474Z
+        completed_at: 2026-03-24T23:10:57.474Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: All 36 ACs mapped to task Covers lines. Both new ACs (ac-detail-on-demand,
+          ac-session-stale-exclusion) properly covered by task-entity-cache-impl.
+        name: AC coverage
+        required: true
+        created_at: 2026-03-24T23:10:58.521Z
+        completed_at: 2026-03-24T23:10:58.521Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: All 5 tasks have what/why/how, file refs, Covers lines. task-entity-cache-impl covers 15
+          ACs but they are tightly coupled.
+        name: Task quality
+        required: true
+        created_at: 2026-03-24T23:10:59.497Z
+        completed_at: 2026-03-24T23:10:59.497Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Cache tiering table, domain mapping, index rebuild, progressive loading, write-through
+          protocol, session bounding with staleness, CLI proxy routing. Sufficient for unambiguous
+          execution.
+        name: Implementation notes
+        required: true
+        created_at: 2026-03-24T23:11:00.446Z
+        completed_at: 2026-03-24T23:11:00.446Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Two-tier model consistently referenced across spec description, task description, and
+          implementation notes. New ACs well-specified. Cache tiering table adds concrete data
+          shapes.
+        name: v4 delta integration
+        required: true
+        created_at: 2026-03-24T23:11:01.398Z
+        completed_at: 2026-03-24T23:11:01.398Z
     events:
       - _ulid: 01KMH1RRN7ZY3FAN4P2ZANV6MB
         actor: "@claude"
@@ -51400,6 +51452,41 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-03-24T23:09:38.855Z
+      - _ulid: 01KMH1V5V8DTC7YHVMD7WP263T
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Spec purity
+        timestamp: 2026-03-24T23:10:57.896Z
+      - _ulid: 01KMH1V6T753NFYDWMR2B2K3KE
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: AC coverage
+        timestamp: 2026-03-24T23:10:58.887Z
+      - _ulid: 01KMH1V7RB97V8JCP6RMVKSW4K
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Task quality
+        timestamp: 2026-03-24T23:10:59.852Z
+      - _ulid: 01KMH1V8P3MK023X220RFWFMKD
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Implementation notes
+        timestamp: 2026-03-24T23:11:00.803Z
+      - _ulid: 01KMH1V9M14YECYQENTM2FF6BJ
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: v4 delta integration
+        timestamp: 2026-03-24T23:11:01.761Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -51412,7 +51499,7 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-24T23:09:38.856Z
-    updated_at: null
+    updated_at: 2026-03-24T23:11:01.398Z
     notes: []
   - _ulid: 01KMH1SFWY8FMPJ44MKXPGVJX0
     slugs: []
