@@ -22558,7 +22558,7 @@ workspaces:
         head: 03adf7c2e9523d50ad151e7cf75d8f066a5d4a26
         last_seen_at: 2026-03-24T22:28:54.793Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-readtestoutput-agent-dispatch-engine-01kmfcp2
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 3c013290137d63d65590b5e2f2eb14641265c679
     bootstrap:
       status: succeeded
@@ -22659,34 +22659,34 @@ workspaces:
     canonical_branch: dispatch/task/task-readtestoutput-trait-cli/01kmfcp2
     canonical_branch_head: 1dfda3ea8c385cfb9dd4cc8cbe0bd68b3eb296f6
     cleanup:
-      status: not_scheduled
-      detail: null
-      eligible: false
-      reason: null
-      updated_at: 2026-03-24T22:43:26.248Z
+      status: scheduled
+      detail: integrated-into-base-branch
+      eligible: true
+      reason: integrated-into-base-branch
+      updated_at: 2026-03-24T22:44:03.362Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-24T22:43:26.248Z
+      updated_at: 2026-03-24T22:44:03.362Z
     integration:
-      status: pending
-      detail: null
-      outcome: manual_merge
+      status: merged
+      detail: integration:merged
+      outcome: merged
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 3c013290137d63d65590b5e2f2eb14641265c679
-      updated_at: 2026-03-24T22:43:26.248Z
-    lifecycle_state: integrating
+      updated_at: 2026-03-24T22:44:03.362Z
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KMFCP2WYJ9RTCEXJQXC2XFT3"
     task_slug: task-readtestoutput-trait-cli
     timestamps:
       closed_at: null
       last_active_at: 2026-03-24T22:35:43.980Z
-      last_reconciled_at: 2026-03-24T22:43:26.248Z
+      last_reconciled_at: 2026-03-24T22:44:03.362Z
       created_at: 2026-03-24T22:29:02.819Z
-      updated_at: 2026-03-24T22:43:26.248Z
+      updated_at: 2026-03-24T22:44:03.362Z
     workspace_id: dispatch-workspace-01KMFCP2WYJ9RTCEXJQXC2XFT3
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -22846,7 +22846,7 @@ workspaces:
         head: f8471212e94da528c8d2048f0a085fc7eeceec00
         last_seen_at: 2026-03-24T22:42:14.488Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-readtestoutput-task-rebuild-index-01kmfcp3
-  - active_role: null
+  - active_role: worker
     base_branch_point: f6afca8a55b1e8ec489a0b72a795dc5336771cc9
     bootstrap:
       status: succeeded
@@ -22930,12 +22930,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-24T22:43:09.720Z
+      updated_at: 2026-03-24T22:44:04.330Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-24T22:43:09.720Z
+      updated_at: 2026-03-24T22:44:04.330Z
     integration:
       status: pending
       detail: null
@@ -22943,17 +22943,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: f6afca8a55b1e8ec489a0b72a795dc5336771cc9
-      updated_at: 2026-03-24T22:43:09.720Z
-    lifecycle_state: ready
+      updated_at: 2026-03-24T22:44:04.330Z
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KMFCP49MHKRVNFJ57HA8M9FB"
     task_slug: task-readtestoutput-medium-batch-1
     timestamps:
       closed_at: null
       last_active_at: null
-      last_reconciled_at: 2026-03-24T22:43:09.720Z
+      last_reconciled_at: 2026-03-24T22:44:04.330Z
       created_at: 2026-03-24T22:43:09.720Z
-      updated_at: 2026-03-24T22:43:23.801Z
+      updated_at: 2026-03-24T22:44:04.330Z
     workspace_id: dispatch-workspace-01KMFCP49MHKRVNFJ57HA8M9FB
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
