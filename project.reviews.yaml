@@ -48525,6 +48525,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMF8CZA37A6FZ0WFDR03FC05
         timestamp: 2026-03-24T06:27:03.980Z
+      - _ulid: 01KMF8D84VS1YY7180YK9Z0Y0N
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMF8D7SX902TBT9F34P5PSFX
+        timestamp: 2026-03-24T06:27:12.667Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -48551,7 +48558,24 @@ reviews:
               linter/formatter won't trigger CI runs.
             created_at: 2026-03-24T06:27:03.619Z
         kind: blocker
+      - _ulid: 01KMF8D7SX902TBT9F34P5PSFX
+        anchor:
+          type: code
+          commit: ""
+          line_end: 32
+          line_start: 32
+          path: .agents/skills/work-gates/SKILL.md
+          side: head
+        entries:
+          - _ulid: 01KMF8D7SX6PKBVPMA5RG7QJKB
+            author: "@claude"
+            body: Rendered skill files (.agents/skills/work-gates/SKILL.md, .claude/skills/work-gates/SKILL.md,
+              .factory/skills/work-gates/SKILL.md) still reference 'Biome config' in prose. The
+              source template (templates/skills/) is already clean. A kspec skill render would fix
+              this. Not blocking since it is a downstream task, but worth noting for the chain.
+            created_at: 2026-03-24T06:27:12.317Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-24T06:26:26.183Z
-    updated_at: 2026-03-24T06:27:03.619Z
+    updated_at: 2026-03-24T06:27:12.317Z
     notes: []
