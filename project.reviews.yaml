@@ -48909,3 +48909,29 @@ reviews:
     created_at: 2026-03-24T07:47:41.790Z
     updated_at: 2026-03-24T07:48:59.274Z
     notes: []
+  - _ulid: 01KMGR0M5WX56X97Y6DRVXXZ4H
+    slugs: []
+    title: Review task-update-skill-docs-oxlint
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KMGR0M5VDHCD3A0Z1Z5C2T6F
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-24T20:19:10.652Z
+    examined_commit: bd0c54c6c9d6aa2f0df42d83cd246ee7cb4d04eb
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMFEH0AH6CMG6GE15D7W2XR3"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-24T20:19:10.652Z
+    updated_at: null
+    notes: []
