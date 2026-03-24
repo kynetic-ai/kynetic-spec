@@ -23,8 +23,13 @@ description: >-
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: "Merged to dev. Fixed two flaky tests: (1) agent-dispatch-engine worker guardrails —
+  added workspace provisioning/bootstrap mocks and replaced 100ms inline polling with
+  waitForMockCall (2s timeout), (2) canonical-task-workspace-contract cleanup eligibility — mocked
+  heavy engine.start() reconciliation I/O to prevent timeout under concurrent load. All 6828 tests
+  pass."
 depends_on: []
 context: []
 priority: 3
@@ -90,8 +95,26 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-03-24T20:48:56.355Z
+  - author: "@claude"
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: "Merged to dev. Fixed two flaky tests: (1) agent-dispatch-engine worker guardrails — added
+          workspace provisioning/bootstrap mocks and replaced 100ms inline polling with
+          waitForMockCall (2s timeout), (2) canonical-task-workspace-contract cleanup eligibility —
+          mocked heavy engine.start() reconciliation I/O to prevent timeout under concurrent load.
+          All 6828 tests pass."
+        previous: null
+      completed_at:
+        new: 2026-03-24T20:50:39.479Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-03-24T20:50:39.483Z
 created_at: 2026-03-24T19:31:21.265Z
 started_at: 2026-03-24T20:19:06.184Z
 submitted_at: 2026-03-24T20:37:16.930Z
+completed_at: 2026-03-24T20:50:39.479Z
 todos: []
 automation: eligible
