@@ -21930,7 +21930,7 @@
   title: Configure oxlint vitest plugin for test files
   type: task
   plan_ref: "@plan-migrate-from-biome-to-oxlint-oxfmt"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-install-oxlint-oxfmt"
@@ -21943,6 +21943,7 @@
   created_at: 2026-03-24T06:16:25.347Z
   started_at: 2026-03-24T06:30:17.806Z
   submitted_at: 2026-03-24T06:33:46.127Z
+  completed_at: 2026-03-24T06:33:57.191Z
 - _ulid: 01KMF7SG832M4PW4C1GJX4AFM7
   slugs:
     - task-custom-no-source-scanning-rule

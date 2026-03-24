@@ -14,8 +14,9 @@ description: |
 spec_ref: null
 plan_ref: "@plan-migrate-from-biome-to-oxlint-oxfmt"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to main. Vitest plugin configured with 7 rules scoped to test files.
 depends_on:
   - "@task-install-oxlint-oxfmt"
 context: []
@@ -67,7 +68,21 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-03-24T06:33:46.127Z
+  - author: "@claude"
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to main. Vitest plugin configured with 7 rules scoped to test files.
+        previous: null
+      completed_at:
+        new: 2026-03-24T06:33:57.191Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-03-24T06:33:57.194Z
 created_at: 2026-03-24T06:16:25.347Z
 started_at: 2026-03-24T06:30:17.806Z
 submitted_at: 2026-03-24T06:33:46.127Z
+completed_at: 2026-03-24T06:33:57.191Z
 todos: []
