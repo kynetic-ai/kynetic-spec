@@ -37,7 +37,7 @@
 	const scheduleStatusQuery = createQuery(() => ({
 		queryKey: queryKeys.automation.scheduleStatus(expandedScheduleId ?? ''),
 		queryFn: () => fetchScheduleStatus(expandedScheduleId!),
-		enabled: isProjectInitialized() && !isStaticMode() && !!expandedScheduleId,
+		enabled: isProjectInitialized() && !!expandedScheduleId,
 		staleTime: 5 * 1000,
 	}));
 

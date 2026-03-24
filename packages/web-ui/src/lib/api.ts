@@ -732,6 +732,9 @@ export interface AgentDispatchStatus {
  * AC: @ui-agent-dispatch ac-1, ac-2, ac-3
  */
 export async function fetchAgentStatus(): Promise<AgentDispatchStatus> {
+	if (isStaticMode()) {
+		return { dispatch_enabled: false, active_invocations: [], queue_depth: 0, agent_definitions: [] };
+	}
 	const response = await fetch(`${API_BASE}/api/agent/status`, {
 		headers: getProjectHeaders()
 	});
@@ -746,6 +749,9 @@ export async function fetchAgentStatus(): Promise<AgentDispatchStatus> {
  * AC: @ui-agent-dispatch ac-1
  */
 export async function fetchAgentDefinitions(): Promise<{ items: AgentDefinition[]; total: number }> {
+	if (isStaticMode()) {
+		return { items: [], total: 0 };
+	}
 	const response = await fetch(`${API_BASE}/api/meta/agents`, {
 		headers: getProjectHeaders()
 	});
@@ -898,6 +904,9 @@ export async function fetchHooks(params?: {
 	limit?: number;
 	offset?: number;
 }): Promise<PaginatedResponse<HookSummary>> {
+	if (isStaticMode()) {
+		return { items: [], total: 0 };
+	}
 	const url = new URL(`${API_BASE}/api/hooks`);
 	if (params?.limit !== undefined) url.searchParams.set('limit', String(params.limit));
 	if (params?.offset !== undefined) url.searchParams.set('offset', String(params.offset));
@@ -919,6 +928,9 @@ export async function fetchSchedules(params?: {
 	limit?: number;
 	offset?: number;
 }): Promise<PaginatedResponse<ScheduleSummary>> {
+	if (isStaticMode()) {
+		return { items: [], total: 0 };
+	}
 	const url = new URL(`${API_BASE}/api/schedules`);
 	if (params?.limit !== undefined) url.searchParams.set('limit', String(params.limit));
 	if (params?.offset !== undefined) url.searchParams.set('offset', String(params.offset));
@@ -937,6 +949,13 @@ export async function fetchSchedules(params?: {
  * AC: @ui-automation-view ac-4
  */
 export async function fetchScheduleStatus(id: string): Promise<ScheduleRuntimeStatus> {
+	if (isStaticMode()) {
+		return {
+			id, name: '', enabled: false, cron: '', timezone: 'UTC',
+			overlap_policy: 'skip', next_tick: null, last_tick: null,
+			run_count: 0, active_run_count: 0, active_run_ids: [], overlap_state: 'idle'
+		};
+	}
 	const response = await fetch(`${API_BASE}/api/schedules/${encodeURIComponent(id)}/status`, {
 		headers: getProjectHeaders()
 	});
@@ -976,6 +995,9 @@ export async function fetchRecentEvents(params?: {
 	limit?: number;
 	offset?: number;
 }): Promise<PaginatedResponse<EventEnvelopeSummary>> {
+	if (isStaticMode()) {
+		return { items: [], total: 0 };
+	}
 	const url = new URL(`${API_BASE}/api/events/recent`);
 	if (params?.type) url.searchParams.set('type', params.type);
 	if (params?.limit !== undefined) url.searchParams.set('limit', String(params.limit));
@@ -1006,6 +1028,9 @@ export interface CompositionConfigSummary {
  * AC: @ui-automation-view ac-6
  */
 export async function fetchCompositionConfigs(): Promise<PaginatedResponse<CompositionConfigSummary>> {
+	if (isStaticMode()) {
+		return { items: [], total: 0 };
+	}
 	const response = await fetch(`${API_BASE}/api/compositions`, {
 		headers: getProjectHeaders()
 	});
@@ -1023,6 +1048,9 @@ export async function fetchCompositionActivations(configId: string): Promise<{
 	config_id: string;
 	activations: CompositionActivation[];
 }> {
+	if (isStaticMode()) {
+		return { config_id: configId, activations: [] };
+	}
 	const response = await fetch(
 		`${API_BASE}/api/compositions/${encodeURIComponent(configId)}/activations`,
 		{ headers: getProjectHeaders() }
@@ -2157,6 +2185,9 @@ export interface ShadowStatusResponse {
  * AC: @ui-settings-view ac-1
  */
 export async function fetchHealth(): Promise<HealthResponse> {
+	if (isStaticMode()) {
+		return { status: 'static', uptime: 0, connections: 0, version: '' };
+	}
 	const response = await fetch(`${API_BASE}/api/health`);
 	if (!response.ok) {
 		await handleResponseError(response);
@@ -2169,6 +2200,12 @@ export async function fetchHealth(): Promise<HealthResponse> {
  * AC: @ui-settings-view ac-1
  */
 export async function fetchProjectConfig(): Promise<ProjectConfig> {
+	if (isStaticMode()) {
+		return {
+			project: null, spec_version: null, root_dir: '',
+			remote_tracking: null, daemon: { port: 0, host: '', auto_start: false }
+		};
+	}
 	const response = await fetch(`${API_BASE}/api/meta/config`, {
 		headers: getProjectHeaders()
 	});
@@ -2183,6 +2220,9 @@ export async function fetchProjectConfig(): Promise<ProjectConfig> {
  * AC: @ui-settings-view ac-1
  */
 export async function fetchShadowStatus(): Promise<ShadowStatusResponse> {
+	if (isStaticMode()) {
+		return { enabled: false, branch_name: null, worktree_dir: null, healthy: false, remote_tracking: false };
+	}
 	const response = await fetch(`${API_BASE}/api/meta/shadow`, {
 		headers: getProjectHeaders()
 	});
@@ -2197,6 +2237,9 @@ export async function fetchShadowStatus(): Promise<ShadowStatusResponse> {
  * AC: @ui-settings-view ac-1
  */
 export async function fetchConventions(): Promise<{ items: Convention[]; total: number }> {
+	if (isStaticMode()) {
+		return { items: [], total: 0 };
+	}
 	const response = await fetch(`${API_BASE}/api/meta/conventions`, {
 		headers: getProjectHeaders()
 	});
@@ -2211,6 +2254,9 @@ export async function fetchConventions(): Promise<{ items: Convention[]; total: 
  * AC: @ui-api-aggregation ac-2
  */
 export async function fetchValidationAggregation(): Promise<ValidationAggregation> {
+	if (isStaticMode()) {
+		return { entity_count: 0, ac_count: 0, trait_ac_count: 0, trait_count: 0, coverage_percent: 0 } as ValidationAggregation;
+	}
 	const response = await fetch(`${API_BASE}/api/aggregation/validation`, {
 		headers: getProjectHeaders()
 	});

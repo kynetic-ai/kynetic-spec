@@ -39,10 +39,11 @@
 
 	// --- Queries ---
 	// AC: @ui-automation-view ac-1 — Fetch agent definitions for dispatch triggers
+	// AC: @ui-data-freshness ac-6 — Static mode guards moved to API layer
 	const agentStatusQuery = createQuery(() => ({
 		queryKey: queryKeys.agents.status(),
 		queryFn: () => fetchAgentStatus(),
-		enabled: isProjectInitialized() && !isStaticMode(),
+		enabled: isProjectInitialized(),
 		staleTime: 10 * 1000,
 	}));
 
@@ -56,21 +57,21 @@
 	const hooksQuery = createQuery(() => ({
 		queryKey: queryKeys.automation.hooks(),
 		queryFn: () => fetchHooks(),
-		enabled: isProjectInitialized() && !isStaticMode(),
+		enabled: isProjectInitialized(),
 	}));
 
 	// AC: @ui-automation-view ac-1, ac-4 — Fetch schedules with runtime state
 	const schedulesQuery = createQuery(() => ({
 		queryKey: queryKeys.automation.schedules(),
 		queryFn: () => fetchSchedules(),
-		enabled: isProjectInitialized() && !isStaticMode(),
+		enabled: isProjectInitialized(),
 	}));
 
 	// AC: @ui-automation-view ac-2 — Fetch recent events
 	const eventsQuery = createQuery(() => ({
 		queryKey: queryKeys.automation.events(),
 		queryFn: () => fetchRecentEvents({ limit: 50 }),
-		enabled: isProjectInitialized() && !isStaticMode(),
+		enabled: isProjectInitialized(),
 		staleTime: 5 * 1000,
 	}));
 
