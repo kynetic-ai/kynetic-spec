@@ -50987,7 +50987,18 @@ reviews:
     slugs: []
     title: "Plan re-review: Daemon Optimistic Data Layer (v3)"
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "All 5 spec descriptions checked for: non-goals language, relationship-to sections,
+          justification references, implementation details. All clean. Descriptions are pure
+          behavioral contracts."
+        name: Spec purity — no anti-patterns
+        required: true
+        created_at: 2026-03-24T22:44:58.566Z
+        completed_at: 2026-03-24T22:44:58.566Z
     events:
       - _ulid: 01KMH0ACFN344DN3TVCXW86CKC
         actor: "@claude"
@@ -50995,6 +51006,13 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-03-24T22:44:19.062Z
+      - _ulid: 01KMH0BKR2FN9HJN2G8JDY19SE
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Spec purity — no anti-patterns
+        timestamp: 2026-03-24T22:44:59.266Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -51007,5 +51025,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-24T22:44:19.062Z
-    updated_at: null
+    updated_at: 2026-03-24T22:44:58.566Z
     notes: []
