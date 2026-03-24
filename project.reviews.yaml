@@ -51197,6 +51197,13 @@ reviews:
           status: pass
           name: Cross-references — all valid
         timestamp: 2026-03-24T22:46:04.431Z
+      - _ulid: 01KMH0E3M0T5E1Q9V5Y7A19ZJH
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMH0E2W8ZQW7XAFJ6PYHQAHY
+        timestamp: 2026-03-24T22:46:21.056Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -51206,8 +51213,24 @@ reviews:
       content_hash: ""
       ref: "@plan-daemon-optimistic-data-layer"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMH0E2W8ZQW7XAFJ6PYHQAHY
+        anchor:
+          type: structured
+          field: task-update-related-specs
+          section: Tasks
+        entries:
+          - _ulid: 01KMH0E2W8GRWXHA161E2MPB6M
+            author: "@claude"
+            body: This task's Covers line says "Ensures spec graph accurately reflects..." which is a prose
+              justification rather than AC IDs. All other tasks list specific AC IDs. This is fine
+              since it's a spec maintenance task without its own ACs, but noting for consistency.
+              The task has spec_ref @daemon-read-path which is a loose fit — it's really a
+              cross-cutting maintenance task. Consider whether it needs a spec_ref at all, or
+              whether it should ref the plan itself.
+            created_at: 2026-03-24T22:46:20.296Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-24T22:44:19.062Z
-    updated_at: 2026-03-24T22:46:03.661Z
+    updated_at: 2026-03-24T22:46:20.296Z
     notes: []
