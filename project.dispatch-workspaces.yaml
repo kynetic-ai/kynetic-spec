@@ -22402,7 +22402,7 @@ workspaces:
         head: dfb3a8859af17c0c76eba76e42faca2f4c125fcd
         last_seen_at: 2026-03-24T22:19:31.649Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-readtestoutput-command-action-01kmfcp1
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 8abc54e906cbd370eca62fad555e028831bbd51c
     bootstrap:
       status: succeeded
@@ -22512,7 +22512,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-24T22:28:54.793Z
+      updated_at: 2026-03-24T22:29:02.342Z
     integration:
       status: pending
       detail: null
@@ -22527,10 +22527,10 @@ workspaces:
     task_slug: task-readtestoutput-agent-dispatch-engine
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-24T22:19:48.941Z
-      last_reconciled_at: 2026-03-24T22:28:54.793Z
+      last_active_at: 2026-03-24T22:29:02.342Z
+      last_reconciled_at: 2026-03-24T22:29:02.342Z
       created_at: 2026-03-24T22:19:40.114Z
-      updated_at: 2026-03-24T22:28:59.862Z
+      updated_at: 2026-03-24T22:29:02.342Z
     workspace_id: dispatch-workspace-01KMFCP24R2GG8J8DYY4MR1RV7
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
