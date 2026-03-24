@@ -54,12 +54,7 @@ function isValidUlid(value: unknown): boolean {
  * Recursively fix issues in a data structure
  * Returns the number of fixes applied
  */
-function fixObject(
-  obj: unknown,
-  file: string,
-  pathPrefix: string,
-  fixes: AppliedFix[],
-): boolean {
+function fixObject(obj: unknown, file: string, pathPrefix: string, fixes: AppliedFix[]): boolean {
   if (!obj || typeof obj !== "object") return false;
 
   let modified = false;
@@ -84,11 +79,7 @@ function fixObject(
 
   // Fix missing created timestamp on items that have _ulid (spec items, tasks)
   // Tasks use created_at, spec items use created - check for both
-  if (
-    "_ulid" in record &&
-    !("created" in record) &&
-    !("created_at" in record)
-  ) {
+  if ("_ulid" in record && !("created" in record) && !("created_at" in record)) {
     const newValue = new Date().toISOString();
     record.created = newValue;
     fixes.push({
@@ -137,9 +128,7 @@ function fixObject(
     if (field in record && Array.isArray(record[field])) {
       const arr = record[field] as unknown[];
       for (let i = 0; i < arr.length; i++) {
-        const newPath = pathPrefix
-          ? `${pathPrefix}.${field}[${i}]`
-          : `${field}[${i}]`;
+        const newPath = pathPrefix ? `${pathPrefix}.${field}[${i}]` : `${field}[${i}]`;
         if (fixObject(arr[i], file, newPath, fixes)) {
           modified = true;
         }

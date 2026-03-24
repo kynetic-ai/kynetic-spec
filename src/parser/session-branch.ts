@@ -90,15 +90,9 @@ function isDebugMode(): boolean {
  *
  * AC: @session-branch-worktree ac-sync — resolve configured remote instead of hardcoding "origin"
  */
-async function resolveRemoteName(
-  cwd: string,
-  branchName: string,
-): Promise<string> {
+async function resolveRemoteName(cwd: string, branchName: string): Promise<string> {
   try {
-    const { stdout } = await runGitAsync(cwd, [
-      "config",
-      `branch.${branchName}.remote`,
-    ]);
+    const { stdout } = await runGitAsync(cwd, ["config", `branch.${branchName}.remote`]);
     const configured = stdout.trim();
     if (configured) {
       return configured;
@@ -153,8 +147,7 @@ export async function getSessionBranchStatus(
 
   // Determine overall status
   status.exists = status.branchExists || status.worktreeExists;
-  status.healthy =
-    status.branchExists && status.worktreeExists && status.worktreeLinked;
+  status.healthy = status.branchExists && status.worktreeExists && status.worktreeLinked;
 
   if (!status.healthy && status.exists) {
     if (!status.branchExists) {
@@ -211,11 +204,7 @@ export async function initializeSessionBranch(
     const remoteName = await resolveRemoteName(projectRoot, branchName);
     let remoteHasBranch = false;
     try {
-      const { stdout } = await runGitAsync(projectRoot, [
-        "remote",
-        "get-url",
-        remoteName,
-      ]);
+      const { stdout } = await runGitAsync(projectRoot, ["remote", "get-url", remoteName]);
       if (stdout.trim().length > 0) {
         const { stdout: lsOut } = await runGitAsync(projectRoot, [
           "ls-remote",
@@ -236,12 +225,7 @@ export async function initializeSessionBranch(
 
     // Remove stale worktree reference
     try {
-      await runGitAsync(projectRoot, [
-        "worktree",
-        "remove",
-        directoryName,
-        "--force",
-      ]);
+      await runGitAsync(projectRoot, ["worktree", "remove", directoryName, "--force"]);
     } catch {
       // Ignore
     }
@@ -255,23 +239,10 @@ export async function initializeSessionBranch(
 
     if (remoteHasBranch) {
       // Fetch from remote and create worktree
-      await runGitAsync(projectRoot, [
-        "fetch",
-        remoteName,
-        `${branchName}:${branchName}`,
-      ]);
-      await runGitAsync(projectRoot, [
-        "worktree",
-        "add",
-        directoryName,
-        branchName,
-      ]);
+      await runGitAsync(projectRoot, ["fetch", remoteName, `${branchName}:${branchName}`]);
+      await runGitAsync(projectRoot, ["worktree", "add", directoryName, branchName]);
       // Set up tracking
-      await runGitAsync(projectRoot, [
-        "config",
-        `branch.${branchName}.remote`,
-        remoteName,
-      ]);
+      await runGitAsync(projectRoot, ["config", `branch.${branchName}.remote`, remoteName]);
       await runGitAsync(projectRoot, [
         "config",
         `branch.${branchName}.merge`,
@@ -289,11 +260,7 @@ export async function initializeSessionBranch(
           directoryName,
         ]);
       } else {
-        await createOrphanBranchFallback(
-          projectRoot,
-          branchName,
-          directoryName,
-        );
+        await createOrphanBranchFallback(projectRoot, branchName, directoryName);
       }
       result.branchCreated = true;
 
@@ -312,38 +279,23 @@ export async function initializeSessionBranch(
         ...process.env,
         KSPEC_SHADOW_COMMIT: "1",
       });
-      await runGitAsync(
-        worktreeDir,
-        ["commit", "-m", "Initialize session storage"],
-        { ...process.env, KSPEC_SHADOW_COMMIT: "1" },
-      );
+      await runGitAsync(worktreeDir, ["commit", "-m", "Initialize session storage"], {
+        ...process.env,
+        KSPEC_SHADOW_COMMIT: "1",
+      });
 
       // Push to remote if available
       try {
-        const { stdout } = await runGitAsync(projectRoot, [
-          "remote",
-          "get-url",
-          remoteName,
-        ]);
+        const { stdout } = await runGitAsync(projectRoot, ["remote", "get-url", remoteName]);
         if (stdout.trim().length > 0) {
-          await runGitAsync(worktreeDir, [
-            "push",
-            "-u",
-            remoteName,
-            branchName,
-          ]);
+          await runGitAsync(worktreeDir, ["push", "-u", remoteName, branchName]);
         }
       } catch {
         // No remote, fine
       }
     } else {
       // Attach to existing local branch
-      await runGitAsync(projectRoot, [
-        "worktree",
-        "add",
-        directoryName,
-        branchName,
-      ]);
+      await runGitAsync(projectRoot, ["worktree", "add", directoryName, branchName]);
     }
 
     result.worktreeCreated = true;
@@ -394,12 +346,7 @@ export async function repairSessionBranch(
   try {
     // Remove stale worktree reference
     try {
-      await runGitAsync(projectRoot, [
-        "worktree",
-        "remove",
-        directoryName,
-        "--force",
-      ]);
+      await runGitAsync(projectRoot, ["worktree", "remove", directoryName, "--force"]);
     } catch {
       // Ignore
     }
@@ -415,12 +362,7 @@ export async function repairSessionBranch(
     }
 
     // Recreate worktree
-    await runGitAsync(projectRoot, [
-      "worktree",
-      "add",
-      directoryName,
-      branchName,
-    ]);
+    await runGitAsync(projectRoot, ["worktree", "add", directoryName, branchName]);
 
     return {
       success: true,
@@ -455,9 +397,7 @@ export async function sessionBranchAutoCommit(
 
   try {
     if (debug) {
-      console.error(
-        `[DEBUG] Session branch auto-commit: git add -A (cwd: ${worktreeDir})`,
-      );
+      console.error(`[DEBUG] Session branch auto-commit: git add -A (cwd: ${worktreeDir})`);
     }
 
     // Stage all changes
@@ -471,29 +411,21 @@ export async function sessionBranchAutoCommit(
     }
 
     // Check if there are staged changes
-    const diffResult = spawnSync(
-      "git",
-      ["diff", "--cached", "--quiet"],
-      {
-        cwd: worktreeDir,
-        stdio: ["ignore", "pipe", "pipe"],
-        encoding: "utf-8",
-      },
-    );
+    const diffResult = spawnSync("git", ["diff", "--cached", "--quiet"], {
+      cwd: worktreeDir,
+      stdio: ["ignore", "pipe", "pipe"],
+      encoding: "utf-8",
+    });
     if (!diffResult.error && diffResult.status === 0) {
       // No changes
       if (debug) {
-        console.error(
-          `[DEBUG] Session branch auto-commit: No changes to commit`,
-        );
+        console.error(`[DEBUG] Session branch auto-commit: No changes to commit`);
       }
       return false;
     }
 
     if (debug) {
-      console.error(
-        `[DEBUG] Session branch auto-commit: git commit -m "${message}"`,
-      );
+      console.error(`[DEBUG] Session branch auto-commit: git commit -m "${message}"`);
     }
 
     // Commit with KSPEC_SHADOW_COMMIT=1 to authorize past git hooks
@@ -540,9 +472,7 @@ export async function commitIfSessionBranch(
     return false;
   }
 
-  const message = sessionId
-    ? `session: ${operation} (${sessionId})`
-    : `session: ${operation}`;
+  const message = sessionId ? `session: ${operation} (${sessionId})` : `session: ${operation}`;
 
   return sessionBranchAutoCommit(config.worktreeDir, message);
 }
@@ -629,12 +559,7 @@ async function sessionBranchPullImpl(
   // Stash uncommitted changes
   let stashed = false;
   try {
-    const { stdout } = await runGitAsync(worktreeDir, [
-      "stash",
-      "push",
-      "-m",
-      "session-sync-auto",
-    ]);
+    const { stdout } = await runGitAsync(worktreeDir, ["stash", "push", "-m", "session-sync-auto"]);
     stashed = !stdout.includes("No local changes");
   } catch {
     result.success = true;
@@ -682,8 +607,7 @@ async function sessionBranchPullImpl(
 
   await unstash();
   result.hadConflict = true;
-  result.error =
-    "Session branch sync conflict detected. Run `kspec shadow resolve` to fix.";
+  result.error = "Session branch sync conflict detected. Run `kspec shadow resolve` to fix.";
   return result;
 }
 

@@ -9,17 +9,8 @@ import { generateUnifiedDiff } from "../src/cli/commands/skill-diff.js";
 describe("generateUnifiedDiff", () => {
   // AC: @guard-script-and-diff-quality ac-2
   it("should show only the insertion when a single line is inserted", () => {
-    const original = ["line 1", "line 2", "line 3", "line 4", "line 5"].join(
-      "\n"
-    );
-    const modified = [
-      "line 1",
-      "line 2",
-      "inserted line",
-      "line 3",
-      "line 4",
-      "line 5",
-    ].join("\n");
+    const original = ["line 1", "line 2", "line 3", "line 4", "line 5"].join("\n");
+    const modified = ["line 1", "line 2", "inserted line", "line 3", "line 4", "line 5"].join("\n");
 
     const diff = generateUnifiedDiff(original, modified, "a/file", "b/file");
 
@@ -27,12 +18,8 @@ describe("generateUnifiedDiff", () => {
     expect(diff.length).toBeGreaterThan(0);
 
     // Count added/removed lines (excluding --- and +++ headers)
-    const added = diff.filter(
-      (l) => l.startsWith("+") && !l.startsWith("+++")
-    );
-    const removed = diff.filter(
-      (l) => l.startsWith("-") && !l.startsWith("---")
-    );
+    const added = diff.filter((l) => l.startsWith("+") && !l.startsWith("+++"));
+    const removed = diff.filter((l) => l.startsWith("-") && !l.startsWith("---"));
 
     // A single insertion should show 1 added line and 0 removed lines
     expect(added).toHaveLength(1);
@@ -52,12 +39,8 @@ describe("generateUnifiedDiff", () => {
 
     const diff = generateUnifiedDiff(original, modified, "a/file", "b/file");
 
-    const added = diff.filter(
-      (l) => l.startsWith("+") && !l.startsWith("+++")
-    );
-    const removed = diff.filter(
-      (l) => l.startsWith("-") && !l.startsWith("---")
-    );
+    const added = diff.filter((l) => l.startsWith("+") && !l.startsWith("+++"));
+    const removed = diff.filter((l) => l.startsWith("-") && !l.startsWith("---"));
 
     expect(removed).toHaveLength(1);
     expect(added).toHaveLength(1);

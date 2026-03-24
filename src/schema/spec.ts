@@ -133,15 +133,19 @@ export const ManifestSchema = z.object({
   // AC: @task-storage-activation ac-1, ac-2 — explicit setting controls format
   // Named task_storage to avoid collision with the `tasks:` array used
   // in manifests for task file includes.
-  task_storage: z.object({
-    format: z.enum(["monolithic", "split"]).default("monolithic"),
-  }).optional(),
+  task_storage: z
+    .object({
+      format: z.enum(["monolithic", "split"]).default("monolithic"),
+    })
+    .optional(),
 
   // Session storage configuration
-  sessions: z.object({
-    storage: z.enum(["local", "branch"]).default("local"),
-    branch: z.string().optional(),
-  }).default({}),
+  sessions: z
+    .object({
+      storage: z.enum(["local", "branch"]).default("local"),
+      branch: z.string().optional(),
+    })
+    .default({}),
 
   // Hooks configuration
   hooks: z.record(z.string()).optional(),
@@ -153,10 +157,12 @@ export const ManifestSchema = z.object({
   // AC: @config-manifest-cleanup ac-4 — backward compat for existing manifests with daemon block
   // DEPRECATED: Use kspec.config.yaml daemon settings instead
   // Kept as explicit optional for backward compat parsing (do not use .passthrough())
-  daemon: z.object({
-    auto_start: z.boolean().default(true),
-    port: z.number().int().min(1).max(65535).default(3456),
-  }).optional(),
+  daemon: z
+    .object({
+      auto_start: z.boolean().default(true),
+      port: z.number().int().min(1).max(65535).default(3456),
+    })
+    .optional(),
 });
 
 export type Status = z.infer<typeof StatusSchema>;

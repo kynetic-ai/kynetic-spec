@@ -130,14 +130,8 @@ export async function rewriteSkillReferencesForAdapter(
  * agent prompt_template variables (e.g. {{task_ref}}, {{task_title}}).
  * Unrecognized placeholders are left as-is.
  */
-export function interpolateTemplate(
-  template: string,
-  vars: Record<string, string>,
-): string {
-  return template.replace(
-    /\{\{(\w+)\}\}/g,
-    (match, key: string) => vars[key] ?? match,
-  );
+export function interpolateTemplate(template: string, vars: Record<string, string>): string {
+  return template.replace(/\{\{(\w+)\}\}/g, (match, key: string) => vars[key] ?? match);
 }
 
 // ─── Skill Resolution ─────────────────────────────────────────────────────────
@@ -150,10 +144,7 @@ export function interpolateTemplate(
  *
  * AC: @agent-invocation-lifecycle ac-7
  */
-export async function resolveSkills(
-  skillIds: string[],
-  specDir: string,
-): Promise<ResolvedSkill[]> {
+export async function resolveSkills(skillIds: string[], specDir: string): Promise<ResolvedSkill[]> {
   const resolved: ResolvedSkill[] = [];
 
   for (const skillId of skillIds) {
@@ -178,12 +169,7 @@ export async function resolveSkills(
  * AC: @agent-invocation-lifecycle ac-7
  */
 export async function buildPromptWithSkills(options: BuildPromptOptions): Promise<string> {
-  const {
-    basePrompt,
-    skillIds,
-    specDir,
-    adapterId,
-  } = options;
+  const { basePrompt, skillIds, specDir, adapterId } = options;
 
   if (skillIds.length === 0) {
     return basePrompt;

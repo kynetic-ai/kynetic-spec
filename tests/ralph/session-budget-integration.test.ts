@@ -20,13 +20,7 @@ import {
   getSessionBudgetPath,
 } from "../../src/sessions/store.js";
 import { spawnAgent } from "../../src/agents/spawner.js";
-import {
-  kspec,
-  setupTempFixtures,
-  cleanupTempDir,
-  testUlid,
-  FIXTURES_DIR,
-} from "../helpers/cli";
+import { kspec, setupTempFixtures, cleanupTempDir, testUlid, FIXTURES_DIR } from "../helpers/cli";
 
 /** Path to the mock ACP agent script */
 const MOCK_AGENT_PATH = path.join(FIXTURES_DIR, "mock-acp-agent.mjs");

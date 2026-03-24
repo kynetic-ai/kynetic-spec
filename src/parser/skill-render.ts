@@ -110,7 +110,7 @@ export interface PlatformRenderer {
     ctx: KspecContext,
     projectRoot: string,
     skill: LoadedSkill,
-    options?: PlatformRenderOptions
+    options?: PlatformRenderOptions,
   ): Promise<PlatformRenderResult>;
   /**
    * Check if a rendered skill has drifted from its source
@@ -120,7 +120,7 @@ export interface PlatformRenderer {
     specDir: string,
     projectRoot: string,
     skillId: string,
-    options?: { outputDir?: string; origin?: string }
+    options?: { outputDir?: string; origin?: string },
   ): Promise<DriftStatus>;
 }
 
@@ -173,7 +173,7 @@ type ClaudeStyleFrontmatterConfig = {
 function applyClaudeStyleFrontmatterFields(
   frontmatter: Record<string, unknown>,
   config: ClaudeStyleFrontmatterConfig | undefined,
-  options: { includeAgent: boolean }
+  options: { includeAgent: boolean },
 ): void {
   if (!config) {
     return;
@@ -322,7 +322,11 @@ async function loadSkillOrigins(ctx: KspecContext): Promise<Map<string, LoadedSk
  * - Claude: core skills use /kspec:<id>, others use /<id>
  * - Codex: uses $<rendered-name>, where rendered-name may include core namespace
  */
-export function formatSkillInvocation(skillId: string, platform: string, origin?: LoadedSkill["origin"]): string {
+export function formatSkillInvocation(
+  skillId: string,
+  platform: string,
+  origin?: LoadedSkill["origin"],
+): string {
   switch (platform) {
     case "claude-code":
       return origin === "core" ? `/kspec:${skillId}` : `/${skillId}`;
@@ -346,11 +350,12 @@ export function resolveSkillReferenceTokensForPlatform(
   body: string,
   platform: string,
   skillOrigins: Map<string, LoadedSkill["origin"]> = new Map(),
-  currentSkillOrigin?: LoadedSkill["origin"]
+  currentSkillOrigin?: LoadedSkill["origin"],
 ): string {
   return body.replace(SKILL_REFERENCE_TOKEN_RE, (_match, refId: string) => {
     // If reference isn't in loaded meta, core templates usually point to core skills.
-    const referencedOrigin = skillOrigins.get(refId) ?? (currentSkillOrigin === "core" ? "core" : undefined);
+    const referencedOrigin =
+      skillOrigins.get(refId) ?? (currentSkillOrigin === "core" ? "core" : undefined);
     return formatSkillInvocation(refId, platform, referencedOrigin);
   });
 }
@@ -363,7 +368,7 @@ function resolveSkillReferenceTokens(
   body: string,
   platform: string,
   skill: LoadedSkill,
-  skillOrigins: Map<string, LoadedSkill["origin"]>
+  skillOrigins: Map<string, LoadedSkill["origin"]>,
 ): string {
   return resolveSkillReferenceTokensForPlatform(body, platform, skillOrigins, skill.origin);
 }
@@ -374,7 +379,11 @@ function resolveSkillReferenceTokens(
  * Project/local skills go to .claude/skills/.
  * AC: @skill-rendering ac-7
  */
-function getRenderedSkillPath(projectRoot: string, skillId: string, origin?: string): string | null {
+function getRenderedSkillPath(
+  projectRoot: string,
+  skillId: string,
+  origin?: string,
+): string | null {
   if (origin === "core") {
     // Core skills are plugin-provided, not locally rendered
     return null;
@@ -401,7 +410,7 @@ function isMarkdownFile(filePath: string): boolean {
 export async function copyDirectory(
   src: string,
   dest: string,
-  options?: { baseSrc?: string; transformFileContent?: FileContentTransform }
+  options?: { baseSrc?: string; transformFileContent?: FileContentTransform },
 ): Promise<void> {
   const entries = await fs.readdir(src, { withFileTypes: true });
   const baseSrc = options?.baseSrc || src;
@@ -466,10 +475,14 @@ export async function readRenderHash(specDir: string, skillId: string): Promise<
  * AC: @skill-drift-detection ac-5 - Store hash in .kspec/skills/<id>/.render-hash
  * AC: @consolidate-skill-render ac-3 - exported from skill-render.ts
  */
-export async function writeRenderHash(specDir: string, skillId: string, hash: string): Promise<void> {
+export async function writeRenderHash(
+  specDir: string,
+  skillId: string,
+  hash: string,
+): Promise<void> {
   const hashPath = getRenderHashPath(specDir, skillId);
   await fs.mkdir(path.dirname(hashPath), { recursive: true });
-  await fs.writeFile(hashPath, hash + "\n", "utf-8");
+  await fs.writeFile(hashPath, `${hash}\n`, "utf-8");
 }
 
 /**
@@ -487,7 +500,7 @@ export async function checkSkillDrift(
   specDir: string,
   projectRoot: string,
   skillId: string,
-  origin?: string
+  origin?: string,
 ): Promise<DriftStatus> {
   const basePath = getRenderedSkillPath(projectRoot, skillId, origin);
   if (!basePath) {
@@ -524,7 +537,7 @@ export async function directoriesEqual(src: string, dest: string): Promise<boole
 async function directoriesEqualWithTransform(
   src: string,
   dest: string,
-  options?: { baseSrc?: string; transformFileContent?: FileContentTransform }
+  options?: { baseSrc?: string; transformFileContent?: FileContentTransform },
 ): Promise<boolean> {
   try {
     const srcEntries = await fs.readdir(src, { withFileTypes: true });
@@ -591,7 +604,7 @@ async function copySupportingDirectories(
   sourceSkillDir: string,
   targetSkillDir: string,
   dryRun: boolean,
-  transformFileContent?: FileContentTransform
+  transformFileContent?: FileContentTransform,
 ): Promise<Record<string, "created" | "updated" | "unchanged" | "skipped">> {
   const results: Record<string, "created" | "updated" | "unchanged" | "skipped"> = {};
 
@@ -723,7 +736,7 @@ export async function renderClaudeCodeSkill(
     contentWithoutFrontmatter,
     "claude-code",
     skill,
-    skillOrigins
+    skillOrigins,
   );
 
   // AC: @claude-code-renderer ac-1, ac-3 - Build rendered content with frontmatter + verbatim body
@@ -768,7 +781,7 @@ export async function renderClaudeCodeSkill(
     targetDir,
     dryRun,
     (_relativePath, content) =>
-      resolveSkillReferenceTokens(content, "claude-code", skill, skillOrigins)
+      resolveSkillReferenceTokens(content, "claude-code", skill, skillOrigins),
   );
 
   // For backward compatibility, also expose docsAction
@@ -803,7 +816,11 @@ export async function isKspecManagedSkill(skillMdPath: string): Promise<boolean>
  * Get the path to the per-platform render hash file for a skill
  * AC: @platform-renderer-trait ac-6 - Per-platform hash stored in .render-hash-<platform>
  */
-export function getPlatformRenderHashPath(specDir: string, skillId: string, platform: string): string {
+export function getPlatformRenderHashPath(
+  specDir: string,
+  skillId: string,
+  platform: string,
+): string {
   return path.join(specDir, "skills", skillId, `.render-hash-${platform}`);
 }
 
@@ -815,7 +832,7 @@ export function getPlatformRenderHashPath(specDir: string, skillId: string, plat
 export async function readPlatformRenderHash(
   specDir: string,
   skillId: string,
-  platform: string
+  platform: string,
 ): Promise<string | null> {
   try {
     const hashPath = getPlatformRenderHashPath(specDir, skillId, platform);
@@ -834,7 +851,7 @@ export async function readPlatformRenderHash(
 export async function migrateLegacyRenderHash(
   specDir: string,
   skillId: string,
-  platform: string
+  platform: string,
 ): Promise<boolean> {
   const legacyHashPath = getRenderHashPath(specDir, skillId);
   const platformHashPath = getPlatformRenderHashPath(specDir, skillId, platform);
@@ -865,11 +882,11 @@ export async function writePlatformRenderHash(
   specDir: string,
   skillId: string,
   platform: string,
-  hash: string
+  hash: string,
 ): Promise<void> {
   const hashPath = getPlatformRenderHashPath(specDir, skillId, platform);
   await fs.mkdir(path.dirname(hashPath), { recursive: true });
-  await fs.writeFile(hashPath, hash + "\n", "utf-8");
+  await fs.writeFile(hashPath, `${hash}\n`, "utf-8");
 }
 
 /**
@@ -882,7 +899,7 @@ export async function checkPlatformSkillDrift(
   skillId: string,
   platform: string,
   outputDir?: string,
-  origin?: string
+  origin?: string,
 ): Promise<DriftStatus> {
   // Core skills on claude-code are plugin-provided, not locally rendered
   if (origin === "core" && platform === "claude-code" && !outputDir) {
@@ -958,7 +975,7 @@ interface BaseRenderConfig {
     ctx: KspecContext,
     skill: LoadedSkill,
     targetDir: string,
-    dryRun: boolean
+    dryRun: boolean,
   ) => Promise<{ paths: string[]; contentChanged: boolean }>;
   /** Optional: transform source skill body content before rendering */
   transformBody?: (body: string, skill: LoadedSkill) => string;
@@ -966,7 +983,7 @@ interface BaseRenderConfig {
   transformSupportingFileContent?: (
     relativePath: string,
     content: string,
-    skill: LoadedSkill
+    skill: LoadedSkill,
   ) => string;
   /** Optional: additional hash computation for drift check */
   getAdditionalDriftContent?: (skillDir: string) => Promise<string | null>;
@@ -989,7 +1006,7 @@ export async function renderSkillBase(
   options: PlatformRenderOptions,
   config: BaseRenderConfig,
   defaultOutputDir: string,
-  skillSubdir?: string
+  skillSubdir?: string,
 ): Promise<PlatformRenderResult> {
   const dryRun = options.dryRun ?? false;
   const storeHash = options.storeHash ?? false;
@@ -1060,7 +1077,7 @@ export async function renderSkillBase(
     // Get additional content for hash (e.g., sidecar content)
     const additionalHashContent = config.getAdditionalHashContent?.(renderedContent);
     const hashContent = additionalHashContent
-      ? renderedContent + "\n" + additionalHashContent
+      ? `${renderedContent}\n${additionalHashContent}`
       : renderedContent;
     const hash = computeContentHash(hashContent);
     await writePlatformRenderHash(ctx.specDir, skill.id, config.platform, hash);
@@ -1078,7 +1095,7 @@ export async function renderSkillBase(
     config.transformSupportingFileContent
       ? (relativePath, content) =>
           config.transformSupportingFileContent!(relativePath, content, skill)
-      : undefined
+      : undefined,
   );
 
   for (const [dirName, dirAction] of Object.entries(supportingDirsAction)) {
@@ -1114,7 +1131,10 @@ export async function migrateOldPluginPaths(projectRoot: string, skillId: string
   try {
     const content = await fs.readFile(oldFlatPath, "utf-8");
     if (content.includes(KSPEC_MANAGED_MARKER)) {
-      await fs.rm(path.join(projectRoot, defaultOutputDir, skillId), { recursive: true, force: true });
+      await fs.rm(path.join(projectRoot, defaultOutputDir, skillId), {
+        recursive: true,
+        force: true,
+      });
     }
   } catch {
     // Old path doesn't exist
@@ -1125,7 +1145,10 @@ export async function migrateOldPluginPaths(projectRoot: string, skillId: string
   try {
     const content = await fs.readFile(oldNamespacedPath, "utf-8");
     if (content.includes(KSPEC_MANAGED_MARKER)) {
-      await fs.rm(path.join(projectRoot, defaultOutputDir, "kspec", skillId), { recursive: true, force: true });
+      await fs.rm(path.join(projectRoot, defaultOutputDir, "kspec", skillId), {
+        recursive: true,
+        force: true,
+      });
     }
   } catch {
     // Old path doesn't exist
@@ -1147,7 +1170,10 @@ export async function migrateOldPluginPaths(projectRoot: string, skillId: string
   try {
     const content = await fs.readFile(oldPluginPath, "utf-8");
     if (content.includes(KSPEC_MANAGED_MARKER)) {
-      await fs.rm(path.join(projectRoot, PLUGIN_SKILLS_DIR, skillId), { recursive: true, force: true });
+      await fs.rm(path.join(projectRoot, PLUGIN_SKILLS_DIR, skillId), {
+        recursive: true,
+        force: true,
+      });
     }
   } catch {
     // Old path doesn't exist
@@ -1182,7 +1208,7 @@ export const claudeCodeRenderer: PlatformRenderer = {
     ctx: KspecContext,
     projectRoot: string,
     skill: LoadedSkill,
-    options: PlatformRenderOptions = {}
+    options: PlatformRenderOptions = {},
   ): Promise<PlatformRenderResult> {
     const dryRun = options.dryRun ?? false;
 
@@ -1207,15 +1233,23 @@ export const claudeCodeRenderer: PlatformRenderer = {
     const skillOrigins = await loadSkillOrigins(ctx);
 
     // Project/local skills render to .claude/skills/
-    const result = await renderSkillBase(ctx, projectRoot, skill, options, {
-      platform: this.platform,
-      generateFrontmatter,
-      transformBody: (body, loadedSkill) =>
-        resolveSkillReferenceTokens(body, this.platform, loadedSkill, skillOrigins),
-      transformSupportingFileContent: (_relativePath, content, loadedSkill) =>
-        resolveSkillReferenceTokens(content, this.platform, loadedSkill, skillOrigins),
-      writeLegacyHash: true,
-    }, this.defaultOutputDir, skill.id);
+    const result = await renderSkillBase(
+      ctx,
+      projectRoot,
+      skill,
+      options,
+      {
+        platform: this.platform,
+        generateFrontmatter,
+        transformBody: (body, loadedSkill) =>
+          resolveSkillReferenceTokens(body, this.platform, loadedSkill, skillOrigins),
+        transformSupportingFileContent: (_relativePath, content, loadedSkill) =>
+          resolveSkillReferenceTokens(content, this.platform, loadedSkill, skillOrigins),
+        writeLegacyHash: true,
+      },
+      this.defaultOutputDir,
+      skill.id,
+    );
 
     return result;
   },
@@ -1224,7 +1258,7 @@ export const claudeCodeRenderer: PlatformRenderer = {
     specDir: string,
     projectRoot: string,
     skillId: string,
-    options?: { outputDir?: string; origin?: string }
+    options?: { outputDir?: string; origin?: string },
   ): Promise<DriftStatus> {
     return checkPlatformSkillDrift(
       specDir,
@@ -1232,7 +1266,7 @@ export const claudeCodeRenderer: PlatformRenderer = {
       skillId,
       this.platform,
       options?.outputDir,
-      options?.origin
+      options?.origin,
     );
   },
 };
@@ -1333,7 +1367,7 @@ export const codexRenderer: PlatformRenderer = {
     ctx: KspecContext,
     projectRoot: string,
     skill: LoadedSkill,
-    options: PlatformRenderOptions = {}
+    options: PlatformRenderOptions = {},
   ): Promise<PlatformRenderResult> {
     // Pre-compute sidecar content so it's available for both hash and write
     const sidecarContent = generateCodexSidecarYaml(skill);
@@ -1341,76 +1375,84 @@ export const codexRenderer: PlatformRenderer = {
 
     const codexSubdir = getSkillSubdir(skill.id, skill.origin, "codex");
 
-    return renderSkillBase(ctx, projectRoot, skill, options, {
-      platform: this.platform,
-      generateFrontmatter: generateCodexFrontmatter,
-      // Resolve portable {skill:<id>} tokens for all skills.
-      // Keep legacy /kspec:* rewrite only for core skills for backward compatibility.
-      transformBody: (body, loadedSkill) => {
-        const tokenResolved = resolveSkillReferenceTokens(
-          body,
-          this.platform,
-          loadedSkill,
-          skillOrigins
-        );
-        if (loadedSkill.origin === "core") {
-          return transformLegacyCodexCoreReferences(tokenResolved);
-        }
-        return tokenResolved;
-      },
-      transformSupportingFileContent: (_relativePath, content, loadedSkill) => {
-        const tokenResolved = resolveSkillReferenceTokens(
-          content,
-          this.platform,
-          loadedSkill,
-          skillOrigins
-        );
-        if (loadedSkill.origin === "core") {
-          return transformLegacyCodexCoreReferences(tokenResolved);
-        }
-        return tokenResolved;
-      },
+    return renderSkillBase(
+      ctx,
+      projectRoot,
+      skill,
+      options,
+      {
+        platform: this.platform,
+        generateFrontmatter: generateCodexFrontmatter,
+        // Resolve portable {skill:<id>} tokens for all skills.
+        // Keep legacy /kspec:* rewrite only for core skills for backward compatibility.
+        transformBody: (body, loadedSkill) => {
+          const tokenResolved = resolveSkillReferenceTokens(
+            body,
+            this.platform,
+            loadedSkill,
+            skillOrigins,
+          );
+          if (loadedSkill.origin === "core") {
+            return transformLegacyCodexCoreReferences(tokenResolved);
+          }
+          return tokenResolved;
+        },
+        transformSupportingFileContent: (_relativePath, content, loadedSkill) => {
+          const tokenResolved = resolveSkillReferenceTokens(
+            content,
+            this.platform,
+            loadedSkill,
+            skillOrigins,
+          );
+          if (loadedSkill.origin === "core") {
+            return transformLegacyCodexCoreReferences(tokenResolved);
+          }
+          return tokenResolved;
+        },
 
-      // AC: @skill-drift-detection-improvements ac-1 - Include sidecar in hash
-      getAdditionalHashContent: () => sidecarContent,
+        // AC: @skill-drift-detection-improvements ac-1 - Include sidecar in hash
+        getAdditionalHashContent: () => sidecarContent,
 
-      // AC: @codex-renderer ac-2, ac-3 - Write sidecar agents/openai.yaml
-      writeAdditionalFiles: async (_ctx, _skill, targetDir, dryRun) => {
-        const paths: string[] = [];
-        let contentChanged = false;
+        // AC: @codex-renderer ac-2, ac-3 - Write sidecar agents/openai.yaml
+        writeAdditionalFiles: async (_ctx, _skill, targetDir, dryRun) => {
+          const paths: string[] = [];
+          let contentChanged = false;
 
-        if (sidecarContent) {
-          const sidecarDir = path.join(targetDir, "agents");
-          const sidecarPath = path.join(sidecarDir, "openai.yaml");
+          if (sidecarContent) {
+            const sidecarDir = path.join(targetDir, "agents");
+            const sidecarPath = path.join(sidecarDir, "openai.yaml");
 
-          // Check existing sidecar
-          let sidecarExists = false;
-          let existingSidecar = "";
-          try {
-            existingSidecar = await fs.readFile(sidecarPath, "utf-8");
-            sidecarExists = true;
-          } catch {
-            // Doesn't exist
+            // Check existing sidecar
+            let sidecarExists = false;
+            let existingSidecar = "";
+            try {
+              existingSidecar = await fs.readFile(sidecarPath, "utf-8");
+              sidecarExists = true;
+            } catch {
+              // Doesn't exist
+            }
+
+            const sidecarAction = !sidecarExists
+              ? "created"
+              : contentsEqual(sidecarContent, existingSidecar)
+                ? "unchanged"
+                : "updated";
+
+            if (!dryRun && sidecarAction !== "unchanged") {
+              await fs.mkdir(sidecarDir, { recursive: true });
+              await fs.writeFile(sidecarPath, sidecarContent, "utf-8");
+            }
+
+            paths.push(sidecarPath);
+            contentChanged = sidecarAction !== "unchanged";
           }
 
-          const sidecarAction = !sidecarExists
-            ? "created"
-            : contentsEqual(sidecarContent, existingSidecar)
-              ? "unchanged"
-              : "updated";
-
-          if (!dryRun && sidecarAction !== "unchanged") {
-            await fs.mkdir(sidecarDir, { recursive: true });
-            await fs.writeFile(sidecarPath, sidecarContent, "utf-8");
-          }
-
-          paths.push(sidecarPath);
-          contentChanged = sidecarAction !== "unchanged";
-        }
-
-        return { paths, contentChanged };
+          return { paths, contentChanged };
+        },
       },
-    }, this.defaultOutputDir, codexSubdir);
+      this.defaultOutputDir,
+      codexSubdir,
+    );
   },
 
   // AC: @skill-drift-detection-improvements ac-1 - Include sidecar content in drift hash
@@ -1418,7 +1460,7 @@ export const codexRenderer: PlatformRenderer = {
     specDir: string,
     projectRoot: string,
     skillId: string,
-    options?: { outputDir?: string; origin?: string }
+    options?: { outputDir?: string; origin?: string },
   ): Promise<DriftStatus> {
     const codexSubdir = getSkillSubdir(skillId, options?.origin, "codex");
     const platformOutputDir = options?.outputDir || this.defaultOutputDir;
@@ -1453,7 +1495,7 @@ export const codexRenderer: PlatformRenderer = {
 
     // Combine content for hash (must match render-time computation)
     const combinedContent = sidecarContent
-      ? renderedContent + "\n" + sidecarContent
+      ? `${renderedContent}\n${sidecarContent}`
       : renderedContent;
     const currentHash = computeContentHash(combinedContent);
     return currentHash === storedHash ? "in-sync" : "drifted";
@@ -1477,26 +1519,34 @@ export const droidRenderer: PlatformRenderer = {
     ctx: KspecContext,
     projectRoot: string,
     skill: LoadedSkill,
-    options: PlatformRenderOptions = {}
+    options: PlatformRenderOptions = {},
   ): Promise<PlatformRenderResult> {
     const skillOrigins = await loadSkillOrigins(ctx);
     const droidSubdir = getSkillSubdir(skill.id, skill.origin, "droid");
 
-    return renderSkillBase(ctx, projectRoot, skill, options, {
-      platform: this.platform,
-      generateFrontmatter: generateDroidFrontmatter,
-      transformBody: (body, loadedSkill) =>
-        resolveSkillReferenceTokens(body, this.platform, loadedSkill, skillOrigins),
-      transformSupportingFileContent: (_relativePath, content, loadedSkill) =>
-        resolveSkillReferenceTokens(content, this.platform, loadedSkill, skillOrigins),
-    }, this.defaultOutputDir, droidSubdir);
+    return renderSkillBase(
+      ctx,
+      projectRoot,
+      skill,
+      options,
+      {
+        platform: this.platform,
+        generateFrontmatter: generateDroidFrontmatter,
+        transformBody: (body, loadedSkill) =>
+          resolveSkillReferenceTokens(body, this.platform, loadedSkill, skillOrigins),
+        transformSupportingFileContent: (_relativePath, content, loadedSkill) =>
+          resolveSkillReferenceTokens(content, this.platform, loadedSkill, skillOrigins),
+      },
+      this.defaultOutputDir,
+      droidSubdir,
+    );
   },
 
   async checkDrift(
     specDir: string,
     projectRoot: string,
     skillId: string,
-    options?: { outputDir?: string; origin?: string }
+    options?: { outputDir?: string; origin?: string },
   ): Promise<DriftStatus> {
     return checkPlatformSkillDrift(
       specDir,
@@ -1504,7 +1554,7 @@ export const droidRenderer: PlatformRenderer = {
       skillId,
       this.platform,
       options?.outputDir,
-      options?.origin
+      options?.origin,
     );
   },
 };

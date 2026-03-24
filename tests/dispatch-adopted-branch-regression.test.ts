@@ -15,6 +15,7 @@ import {
   cleanupTempDir,
   createTempDir,
   initGitRepo,
+  readTestOutput,
   testUlid,
 } from "./helpers/cli.js";
 
@@ -49,7 +50,7 @@ async function setupShadowSpecDir(dir: string): Promise<string> {
 async function readRegistryWorkspaces(
   registryPath: string,
 ): Promise<Array<Record<string, unknown>>> {
-  const raw = YAML.parse(await fs.readFile(registryPath, "utf-8")) as {
+  const raw = YAML.parse(await readTestOutput(registryPath)) as {
     workspaces?: Array<Record<string, unknown>>;
   };
   return raw.workspaces ?? [];

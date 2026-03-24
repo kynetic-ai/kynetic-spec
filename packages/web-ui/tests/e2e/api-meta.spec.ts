@@ -53,12 +53,12 @@
 // AC: @trait-websocket-protocol ac-8 — N/A: WebSocket reconnection; tested separately in api-websocket E2E tests
 // AC: @multi-directory-daemon ac-24 — covered: meta/validation routes use projectContext from middleware (daemon fixture provides this)
 
-import { test, expect } from '../fixtures/test-base';
+import { test, expect } from "../fixtures/test-base";
 
-test.describe('Meta API', () => {
-  test.describe('GET /api/meta/session', () => {
+test.describe("Meta API", () => {
+  test.describe("GET /api/meta/session", () => {
     // AC: @api-contract ac-15
-    test('returns session context with focus, threads, and questions', async ({
+    test("returns session context with focus, threads, and questions", async ({
       request,
       daemon,
     }) => {
@@ -69,9 +69,9 @@ test.describe('Meta API', () => {
       const body = await response.json();
 
       // Required fields per ac-15
-      expect(body).toHaveProperty('focus');
-      expect(body).toHaveProperty('threads');
-      expect(body).toHaveProperty('questions');
+      expect(body).toHaveProperty("focus");
+      expect(body).toHaveProperty("threads");
+      expect(body).toHaveProperty("questions");
 
       // threads and questions are arrays
       expect(Array.isArray(body.threads)).toBe(true);
@@ -79,42 +79,42 @@ test.describe('Meta API', () => {
     });
 
     // AC: @api-contract ac-15 - fixture data integrity
-    test('returns fixture session context values', async ({ request, daemon }) => {
+    test("returns fixture session context values", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/meta/session`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
       // Fixture has focus: "E2E testing", threads: [], questions: []
-      expect(body.focus).toBe('E2E testing');
+      expect(body.focus).toBe("E2E testing");
       expect(body.threads).toEqual([]);
       expect(body.questions).toEqual([]);
     });
 
     // AC: @api-contract ac-15 - JSON content type
-    test('returns JSON content type', async ({ request, daemon }) => {
+    test("returns JSON content type", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/meta/session`);
-      const contentType = response.headers()['content-type'] || '';
-      expect(contentType).toContain('application/json');
+      const contentType = response.headers()["content-type"] || "";
+      expect(contentType).toContain("application/json");
     });
   });
 
-  test.describe('GET /api/meta/agents', () => {
+  test.describe("GET /api/meta/agents", () => {
     // AC: @api-contract ac-16
-    test('returns paginated response with items and total', async ({ request, daemon }) => {
+    test("returns paginated response with items and total", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/meta/agents`);
 
       expect(response.status()).toBe(200);
 
       const body = await response.json();
 
-      expect(body).toHaveProperty('items');
-      expect(body).toHaveProperty('total');
+      expect(body).toHaveProperty("items");
+      expect(body).toHaveProperty("total");
       expect(Array.isArray(body.items)).toBe(true);
-      expect(typeof body.total).toBe('number');
+      expect(typeof body.total).toBe("number");
     });
 
     // AC: @api-contract ac-16 - fixture data consistency
-    test('items count matches total field', async ({ request, daemon }) => {
+    test("items count matches total field", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/meta/agents`);
       expect(response.status()).toBe(200);
 
@@ -126,23 +126,23 @@ test.describe('Meta API', () => {
     });
   });
 
-  test.describe('GET /api/meta/workflows', () => {
+  test.describe("GET /api/meta/workflows", () => {
     // AC: @api-contract ac-17
-    test('returns paginated response with items and total', async ({ request, daemon }) => {
+    test("returns paginated response with items and total", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/meta/workflows`);
 
       expect(response.status()).toBe(200);
 
       const body = await response.json();
 
-      expect(body).toHaveProperty('items');
-      expect(body).toHaveProperty('total');
+      expect(body).toHaveProperty("items");
+      expect(body).toHaveProperty("total");
       expect(Array.isArray(body.items)).toBe(true);
-      expect(typeof body.total).toBe('number');
+      expect(typeof body.total).toBe("number");
     });
 
     // AC: @api-contract ac-17 - fixture data consistency
-    test('items count matches total field', async ({ request, daemon }) => {
+    test("items count matches total field", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/meta/workflows`);
       expect(response.status()).toBe(200);
 
@@ -154,17 +154,17 @@ test.describe('Meta API', () => {
     });
   });
 
-  test.describe('GET /api/meta/observations', () => {
+  test.describe("GET /api/meta/observations", () => {
     // AC: @api-contract ac-18
-    test('returns all observations without filter', async ({ request, daemon }) => {
+    test("returns all observations without filter", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/meta/observations`);
 
       expect(response.status()).toBe(200);
 
       const body = await response.json();
 
-      expect(body).toHaveProperty('items');
-      expect(body).toHaveProperty('total');
+      expect(body).toHaveProperty("items");
+      expect(body).toHaveProperty("total");
       expect(Array.isArray(body.items)).toBe(true);
       // Fixture has 2 observations
       expect(body.items.length).toBe(2);
@@ -172,7 +172,7 @@ test.describe('Meta API', () => {
     });
 
     // AC: @api-contract ac-18 - each observation has required fields
-    test('observations have required fields', async ({ request, daemon }) => {
+    test("observations have required fields", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/meta/observations`);
       expect(response.status()).toBe(200);
 
@@ -180,14 +180,14 @@ test.describe('Meta API', () => {
       expect(body.items.length).toBeGreaterThan(0);
 
       const obs = body.items[0];
-      expect(obs).toHaveProperty('_ulid');
-      expect(obs).toHaveProperty('created_at');
-      expect(obs).toHaveProperty('type');
-      expect(obs).toHaveProperty('content');
+      expect(obs).toHaveProperty("_ulid");
+      expect(obs).toHaveProperty("created_at");
+      expect(obs).toHaveProperty("type");
+      expect(obs).toHaveProperty("content");
     });
 
     // AC: @api-contract ac-18 - observations ordered by created_at descending
-    test('returns observations ordered by created_at descending (newest first)', async ({
+    test("returns observations ordered by created_at descending (newest first)", async ({
       request,
       daemon,
     }) => {
@@ -207,7 +207,7 @@ test.describe('Meta API', () => {
     });
 
     // AC: @api-contract ac-18 - filter by resolved=false returns unresolved
-    test('filters unresolved observations with ?resolved=false', async ({ request, daemon }) => {
+    test("filters unresolved observations with ?resolved=false", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/meta/observations?resolved=false`);
 
       expect(response.status()).toBe(200);
@@ -224,7 +224,7 @@ test.describe('Meta API', () => {
     });
 
     // AC: @api-contract ac-18 - filter by resolved=true returns no results (fixture has none)
-    test('filters resolved observations with ?resolved=true', async ({ request, daemon }) => {
+    test("filters resolved observations with ?resolved=true", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/meta/observations?resolved=true`);
 
       expect(response.status()).toBe(200);
@@ -237,7 +237,7 @@ test.describe('Meta API', () => {
     });
 
     // AC: @api-contract ac-18 - fixture content check
-    test('returns fixture observations with correct content', async ({ request, daemon }) => {
+    test("returns fixture observations with correct content", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/meta/observations`);
       expect(response.status()).toBe(200);
 
@@ -245,35 +245,35 @@ test.describe('Meta API', () => {
       const types = body.items.map((obs: { type: string }) => obs.type);
 
       // Fixture has friction and success observations
-      expect(types).toContain('friction');
-      expect(types).toContain('success');
+      expect(types).toContain("friction");
+      expect(types).toContain("success");
 
-      const frictionObs = body.items.find((obs: { type: string }) => obs.type === 'friction');
-      expect(frictionObs.content).toBe('Test friction observation');
+      const frictionObs = body.items.find((obs: { type: string }) => obs.type === "friction");
+      expect(frictionObs.content).toBe("Test friction observation");
 
-      const successObs = body.items.find((obs: { type: string }) => obs.type === 'success');
-      expect(successObs.content).toBe('Test success observation');
+      const successObs = body.items.find((obs: { type: string }) => obs.type === "success");
+      expect(successObs.content).toBe("Test success observation");
     });
   });
 });
 
-test.describe('Search API', () => {
-  test.describe('GET /api/search', () => {
+test.describe("Search API", () => {
+  test.describe("GET /api/search", () => {
     // AC: @api-contract ac-19
-    test('returns search results with results array and total', async ({ request, daemon }) => {
+    test("returns search results with results array and total", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/search?q=test`);
 
       expect(response.status()).toBe(200);
 
       const body = await response.json();
 
-      expect(body).toHaveProperty('results');
-      expect(body).toHaveProperty('total');
+      expect(body).toHaveProperty("results");
+      expect(body).toHaveProperty("total");
       expect(Array.isArray(body.results)).toBe(true);
     });
 
     // AC: @api-contract ac-19 - each result has type, ulid, title, matchedFields
-    test('each search result has required fields', async ({ request, daemon }) => {
+    test("each search result has required fields", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/search?q=test`);
       expect(response.status()).toBe(200);
 
@@ -281,66 +281,62 @@ test.describe('Search API', () => {
       expect(body.results.length).toBeGreaterThan(0);
 
       const result = body.results[0];
-      expect(result).toHaveProperty('type');
-      expect(result).toHaveProperty('ulid');
-      expect(result).toHaveProperty('title');
-      expect(result).toHaveProperty('matchedFields');
+      expect(result).toHaveProperty("type");
+      expect(result).toHaveProperty("ulid");
+      expect(result).toHaveProperty("title");
+      expect(result).toHaveProperty("matchedFields");
       expect(Array.isArray(result.matchedFields)).toBe(true);
     });
 
     // AC: @api-contract ac-19 - searches across spec items
-    test('finds spec items matching query', async ({ request, daemon }) => {
+    test("finds spec items matching query", async ({ request, daemon }) => {
       // Fixture has "Test Feature", "Test Requirement", etc. matching "Core"
       const response = await request.get(`${daemon.baseUrl}/api/search?q=Core+Module`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      const itemResults = body.results.filter(
-        (r: { type: string }) => r.type === 'item'
-      );
+      const itemResults = body.results.filter((r: { type: string }) => r.type === "item");
       expect(itemResults.length).toBeGreaterThan(0);
     });
 
     // AC: @api-contract ac-19 - searches across tasks
-    test('finds tasks matching query', async ({ request, daemon }) => {
+    test("finds tasks matching query", async ({ request, daemon }) => {
       // Fixture has "Ready task", "In progress task", etc.
       const response = await request.get(`${daemon.baseUrl}/api/search?q=Ready+task`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      const taskResults = body.results.filter((r: { type: string }) => r.type === 'task');
+      const taskResults = body.results.filter((r: { type: string }) => r.type === "task");
       expect(taskResults.length).toBeGreaterThan(0);
-      expect(taskResults[0].type).toBe('task');
+      expect(taskResults[0].type).toBe("task");
     });
 
     // AC: @api-contract ac-19 - searches inbox items
-    test('finds inbox items matching query', async ({ request, daemon }) => {
+    test("finds inbox items matching query", async ({ request, daemon }) => {
       // Fixture inbox has "First inbox item for testing"
       const response = await request.get(`${daemon.baseUrl}/api/search?q=First+inbox+item`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      const inboxResults = body.results.filter((r: { type: string }) => r.type === 'inbox');
+      const inboxResults = body.results.filter((r: { type: string }) => r.type === "inbox");
       expect(inboxResults.length).toBeGreaterThan(0);
     });
 
     // AC: @api-contract ac-19 - searches meta entities (observations)
-    test('finds observations matching query', async ({ request, daemon }) => {
+    test("finds observations matching query", async ({ request, daemon }) => {
       // Fixture has "Test friction observation"
       const response = await request.get(`${daemon.baseUrl}/api/search?q=friction+observation`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      const obsResults = body.results.filter(
-        (r: { type: string }) => r.type === 'observation'
-      );
+      const obsResults = body.results.filter((r: { type: string }) => r.type === "observation");
       expect(obsResults.length).toBeGreaterThan(0);
     });
 
     // AC: @api-contract ac-19 - returns empty results for no match
-    test('returns empty results for non-matching query', async ({ request, daemon }) => {
+    test("returns empty results for non-matching query", async ({ request, daemon }) => {
       const response = await request.get(
-        `${daemon.baseUrl}/api/search?q=zzznomatch_unique_xyz_99999`
+        `${daemon.baseUrl}/api/search?q=zzznomatch_unique_xyz_99999`,
       );
       expect(response.status()).toBe(200);
 
@@ -350,7 +346,7 @@ test.describe('Search API', () => {
     });
 
     // AC: @api-contract ac-19 - returns empty results for empty query
-    test('returns empty results when no query provided', async ({ request, daemon }) => {
+    test("returns empty results when no query provided", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/search`);
       expect(response.status()).toBe(200);
 
@@ -360,12 +356,20 @@ test.describe('Search API', () => {
     });
 
     // AC: @api-contract ac-19 - result types are from known set
-    test('result types are from known entity types', async ({ request, daemon }) => {
+    test("result types are from known entity types", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/search?q=test`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      const knownTypes = ['item', 'task', 'inbox', 'observation', 'agent', 'workflow', 'convention'];
+      const knownTypes = [
+        "item",
+        "task",
+        "inbox",
+        "observation",
+        "agent",
+        "workflow",
+        "convention",
+      ];
 
       for (const result of body.results) {
         expect(knownTypes).toContain(result.type);
@@ -373,7 +377,7 @@ test.describe('Search API', () => {
     });
 
     // AC: @api-contract ac-19 - limit parameter restricts results
-    test('limits results with ?limit parameter', async ({ request, daemon }) => {
+    test("limits results with ?limit parameter", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/search?q=test&limit=2`);
       expect(response.status()).toBe(200);
 
@@ -381,25 +385,25 @@ test.describe('Search API', () => {
       // Should have at most 2 results
       expect(body.results.length).toBeLessThanOrEqual(2);
       // Total may be higher than shown
-      expect(body).toHaveProperty('showing');
+      expect(body).toHaveProperty("showing");
     });
 
     // AC: @api-contract ac-19 - showing field
-    test('includes showing field in response', async ({ request, daemon }) => {
+    test("includes showing field in response", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/search?q=test`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(body).toHaveProperty('showing');
+      expect(body).toHaveProperty("showing");
       expect(body.showing).toBe(body.results.length);
     });
   });
 });
 
-test.describe('Validation API', () => {
-  test.describe('GET /api/validate', () => {
+test.describe("Validation API", () => {
+  test.describe("GET /api/validate", () => {
     // AC: @api-contract ac-20
-    test('returns ValidationResult with required fields', async ({ request, daemon }) => {
+    test("returns ValidationResult with required fields", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/validate`);
 
       expect(response.status()).toBe(200);
@@ -407,19 +411,19 @@ test.describe('Validation API', () => {
       const body = await response.json();
 
       // Required ValidationResult fields per ac-20
-      expect(body).toHaveProperty('valid');
-      expect(body).toHaveProperty('schemaErrors');
-      expect(body).toHaveProperty('refErrors');
-      expect(body).toHaveProperty('orphans');
+      expect(body).toHaveProperty("valid");
+      expect(body).toHaveProperty("schemaErrors");
+      expect(body).toHaveProperty("refErrors");
+      expect(body).toHaveProperty("orphans");
 
-      expect(typeof body.valid).toBe('boolean');
+      expect(typeof body.valid).toBe("boolean");
       expect(Array.isArray(body.schemaErrors)).toBe(true);
       expect(Array.isArray(body.refErrors)).toBe(true);
       expect(Array.isArray(body.orphans)).toBe(true);
     });
 
     // AC: @api-contract ac-20 - fixture data is valid
-    test('fixture data passes validation', async ({ request, daemon }) => {
+    test("fixture data passes validation", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/validate`);
       expect(response.status()).toBe(200);
 
@@ -430,71 +434,71 @@ test.describe('Validation API', () => {
     });
 
     // AC: @api-contract ac-20 - includes refWarnings and completenessWarnings
-    test('includes refWarnings and completenessWarnings fields', async ({ request, daemon }) => {
+    test("includes refWarnings and completenessWarnings fields", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/validate`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
 
-      expect(body).toHaveProperty('refWarnings');
-      expect(body).toHaveProperty('completenessWarnings');
+      expect(body).toHaveProperty("refWarnings");
+      expect(body).toHaveProperty("completenessWarnings");
       expect(Array.isArray(body.refWarnings)).toBe(true);
       expect(Array.isArray(body.completenessWarnings)).toBe(true);
     });
 
     // AC: @api-contract ac-20 - includes traitCycles field
-    test('includes traitCycles field', async ({ request, daemon }) => {
+    test("includes traitCycles field", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/validate`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(body).toHaveProperty('traitCycles');
+      expect(body).toHaveProperty("traitCycles");
       expect(Array.isArray(body.traitCycles)).toBe(true);
     });
 
     // AC: @api-contract ac-20 - JSON content type
-    test('returns JSON content type', async ({ request, daemon }) => {
+    test("returns JSON content type", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/validate`);
-      const contentType = response.headers()['content-type'] || '';
-      expect(contentType).toContain('application/json');
+      const contentType = response.headers()["content-type"] || "";
+      expect(contentType).toContain("application/json");
     });
   });
 
-  test.describe('GET /api/alignment', () => {
+  test.describe("GET /api/alignment", () => {
     // AC: @api-contract ac-21
-    test('returns alignment stats and warnings', async ({ request, daemon }) => {
+    test("returns alignment stats and warnings", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/alignment`);
 
       expect(response.status()).toBe(200);
 
       const body = await response.json();
 
-      expect(body).toHaveProperty('stats');
-      expect(body).toHaveProperty('warnings');
+      expect(body).toHaveProperty("stats");
+      expect(body).toHaveProperty("warnings");
       expect(Array.isArray(body.warnings)).toBe(true);
     });
 
     // AC: @api-contract ac-21 - stats has required fields
-    test('stats contains required alignment fields', async ({ request, daemon }) => {
+    test("stats contains required alignment fields", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/alignment`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
       const stats = body.stats;
 
-      expect(stats).toHaveProperty('totalSpecs');
-      expect(stats).toHaveProperty('specsWithTasks');
-      expect(stats).toHaveProperty('alignedSpecs');
-      expect(stats).toHaveProperty('orphanedSpecs');
+      expect(stats).toHaveProperty("totalSpecs");
+      expect(stats).toHaveProperty("specsWithTasks");
+      expect(stats).toHaveProperty("alignedSpecs");
+      expect(stats).toHaveProperty("orphanedSpecs");
 
-      expect(typeof stats.totalSpecs).toBe('number');
-      expect(typeof stats.specsWithTasks).toBe('number');
-      expect(typeof stats.alignedSpecs).toBe('number');
-      expect(typeof stats.orphanedSpecs).toBe('number');
+      expect(typeof stats.totalSpecs).toBe("number");
+      expect(typeof stats.specsWithTasks).toBe("number");
+      expect(typeof stats.alignedSpecs).toBe("number");
+      expect(typeof stats.orphanedSpecs).toBe("number");
     });
 
     // AC: @api-contract ac-21 - stats values are non-negative
-    test('alignment stats values are non-negative integers', async ({ request, daemon }) => {
+    test("alignment stats values are non-negative integers", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/alignment`);
       expect(response.status()).toBe(200);
 
@@ -508,7 +512,7 @@ test.describe('Validation API', () => {
     });
 
     // AC: @api-contract ac-21 - fixture has spec items
-    test('fixture has spec items reflected in totalSpecs', async ({ request, daemon }) => {
+    test("fixture has spec items reflected in totalSpecs", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/alignment`);
       expect(response.status()).toBe(200);
 
@@ -518,10 +522,10 @@ test.describe('Validation API', () => {
     });
 
     // AC: @api-contract ac-21 - JSON content type
-    test('returns JSON content type', async ({ request, daemon }) => {
+    test("returns JSON content type", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/alignment`);
-      const contentType = response.headers()['content-type'] || '';
-      expect(contentType).toContain('application/json');
+      const contentType = response.headers()["content-type"] || "";
+      expect(contentType).toContain("application/json");
     });
   });
 });

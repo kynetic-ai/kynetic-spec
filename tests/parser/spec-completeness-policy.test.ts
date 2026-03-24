@@ -79,8 +79,7 @@ description: Missing AC on purpose
       const result = await validate(ctx, { completeness: true });
       const warning = result.completenessWarnings.find(
         (entry) =>
-          entry.type === "missing_acceptance_criteria" &&
-          entry.itemRef === `@${testCase.slug}`,
+          entry.type === "missing_acceptance_criteria" && entry.itemRef === `@${testCase.slug}`,
       );
 
       expect(warning?.message).toContain("has no acceptance criteria");
@@ -105,8 +104,7 @@ acceptance_criteria:
     const result = await validate(ctx, { completeness: true });
     const warning = result.completenessWarnings.find(
       (entry) =>
-        entry.type === "missing_description" &&
-        entry.itemRef === "@decision-without-description",
+        entry.type === "missing_description" && entry.itemRef === "@decision-without-description",
     );
 
     expect(warning?.message).toContain("has no description");
@@ -126,8 +124,7 @@ description: Decisions must still carry rationale in acceptance criteria
     const result = await validate(ctx, { completeness: true });
     const warning = result.completenessWarnings.find(
       (entry) =>
-        entry.type === "missing_acceptance_criteria" &&
-        entry.itemRef === "@decision-without-ac",
+        entry.type === "missing_acceptance_criteria" && entry.itemRef === "@decision-without-ac",
     );
 
     expect(warning?.message).toContain("has no acceptance criteria");

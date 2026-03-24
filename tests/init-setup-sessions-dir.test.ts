@@ -1,7 +1,7 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import * as fs from 'node:fs/promises';
-import * as path from 'node:path';
-import { execSync } from 'node:child_process';
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
+import { execSync } from "node:child_process";
 import {
   initializeShadow,
   SHADOW_WORKTREE_DIR,
@@ -13,12 +13,12 @@ import {
   needsPlansGitignore,
   needsSessionsGitignore,
   needsShadowSessionsGitignore,
-} from '../src/parser/shadow.js';
+} from "../src/parser/shadow.js";
 
 // Check if git supports --orphan worktree (requires >= 2.42)
 const canRunInitTests = (() => {
   try {
-    const version = execSync('git --version', { encoding: 'utf-8' }).trim();
+    const version = execSync("git --version", { encoding: "utf-8" }).trim();
     const match = version.match(/(\d+)\.(\d+)/);
     if (!match) return false;
     const [, major, minor] = match.map(Number);
@@ -28,8 +28,8 @@ const canRunInitTests = (() => {
   }
 })();
 
-describe('Init/Setup Sessions Directory', () => {
-  const testDir = path.join('/tmp', `kspec-sessions-dir-test-${Date.now()}`);
+describe("Init/Setup Sessions Directory", () => {
+  const testDir = path.join("/tmp", `kspec-sessions-dir-test-${Date.now()}`);
 
   beforeEach(async () => {
     try {
@@ -49,34 +49,34 @@ describe('Init/Setup Sessions Directory', () => {
   });
 
   function initGit(dir: string): void {
-    execSync('git init', { cwd: dir, stdio: 'pipe' });
-    execSync('git config user.email "test@test.com"', { cwd: dir, stdio: 'pipe' });
-    execSync('git config user.name "Test"', { cwd: dir, stdio: 'pipe' });
-    execSync('git branch -M main', { cwd: dir, stdio: 'pipe' });
+    execSync("git init", { cwd: dir, stdio: "pipe" });
+    execSync('git config user.email "test@test.com"', { cwd: dir, stdio: "pipe" });
+    execSync('git config user.name "Test"', { cwd: dir, stdio: "pipe" });
+    execSync("git branch -M main", { cwd: dir, stdio: "pipe" });
   }
 
   function initialCommit(dir: string): void {
     execSync('echo "# Test" > README.md && git add README.md && git commit -m "initial"', {
       cwd: dir,
-      stdio: 'pipe',
+      stdio: "pipe",
     });
   }
 
-  describe('ensureSessionsGitignore', () => {
+  describe("ensureSessionsGitignore", () => {
     // AC: @session-storage-modes ac-gitignore
-    it('adds .kspec-sessions/ to root .gitignore', async () => {
+    it("adds .kspec-sessions/ to root .gitignore", async () => {
       initGit(testDir);
       initialCommit(testDir);
 
       const result = await ensureSessionsGitignore(testDir);
 
       expect(result).toBe(true);
-      const content = await fs.readFile(path.join(testDir, '.gitignore'), 'utf-8');
-      expect(content).toContain('.kspec-sessions/');
+      const content = await fs.readFile(path.join(testDir, ".gitignore"), "utf-8");
+      expect(content).toContain(".kspec-sessions/");
     });
 
     // AC: @session-storage-modes ac-gitignore
-    it('is idempotent — does not add duplicate entries', async () => {
+    it("is idempotent — does not add duplicate entries", async () => {
       initGit(testDir);
       initialCommit(testDir);
 
@@ -86,19 +86,19 @@ describe('Init/Setup Sessions Directory', () => {
       const result2 = await ensureSessionsGitignore(testDir);
       expect(result2).toBe(false);
 
-      const content = await fs.readFile(path.join(testDir, '.gitignore'), 'utf-8');
-      const matches = content.split('\n').filter((l) => l.trim() === '.kspec-sessions/');
+      const content = await fs.readFile(path.join(testDir, ".gitignore"), "utf-8");
+      const matches = content.split("\n").filter((l) => l.trim() === ".kspec-sessions/");
       expect(matches).toHaveLength(1);
     });
 
     // AC: @session-storage-modes ac-gitignore
-    it('creates .gitignore if it does not exist', async () => {
+    it("creates .gitignore if it does not exist", async () => {
       initGit(testDir);
       initialCommit(testDir);
 
       // Remove .gitignore if it exists
       try {
-        await fs.unlink(path.join(testDir, '.gitignore'));
+        await fs.unlink(path.join(testDir, ".gitignore"));
       } catch {
         // Doesn't exist
       }
@@ -106,36 +106,36 @@ describe('Init/Setup Sessions Directory', () => {
       const result = await ensureSessionsGitignore(testDir);
 
       expect(result).toBe(true);
-      const content = await fs.readFile(path.join(testDir, '.gitignore'), 'utf-8');
-      expect(content).toContain('.kspec-sessions/');
+      const content = await fs.readFile(path.join(testDir, ".gitignore"), "utf-8");
+      expect(content).toContain(".kspec-sessions/");
     });
 
     // AC: @session-storage-modes ac-gitignore
-    it('detects various existing patterns as already present', async () => {
+    it("detects various existing patterns as already present", async () => {
       initGit(testDir);
       initialCommit(testDir);
 
       // Write .gitignore with the entry in a different format
-      await fs.writeFile(path.join(testDir, '.gitignore'), '/.kspec-sessions/\n', 'utf-8');
+      await fs.writeFile(path.join(testDir, ".gitignore"), "/.kspec-sessions/\n", "utf-8");
 
       const result = await ensureSessionsGitignore(testDir);
       expect(result).toBe(false);
     });
   });
 
-  describe('ensurePlansGitignore', () => {
-    it('adds plans/ to root .gitignore', async () => {
+  describe("ensurePlansGitignore", () => {
+    it("adds plans/ to root .gitignore", async () => {
       initGit(testDir);
       initialCommit(testDir);
 
       const result = await ensurePlansGitignore(testDir);
 
       expect(result).toBe(true);
-      const content = await fs.readFile(path.join(testDir, '.gitignore'), 'utf-8');
+      const content = await fs.readFile(path.join(testDir, ".gitignore"), "utf-8");
       expect(content).toContain(`${TRANSIENT_PLANS_DIR}/`);
     });
 
-    it('is idempotent — does not add duplicate entries', async () => {
+    it("is idempotent — does not add duplicate entries", async () => {
       initGit(testDir);
       initialCommit(testDir);
 
@@ -145,84 +145,84 @@ describe('Init/Setup Sessions Directory', () => {
       const result2 = await ensurePlansGitignore(testDir);
       expect(result2).toBe(false);
 
-      const content = await fs.readFile(path.join(testDir, '.gitignore'), 'utf-8');
-      const matches = content.split('\n').filter((l) => l.trim() === `${TRANSIENT_PLANS_DIR}/`);
+      const content = await fs.readFile(path.join(testDir, ".gitignore"), "utf-8");
+      const matches = content.split("\n").filter((l) => l.trim() === `${TRANSIENT_PLANS_DIR}/`);
       expect(matches).toHaveLength(1);
     });
 
-    it('detects various existing patterns as already present', async () => {
+    it("detects various existing patterns as already present", async () => {
       initGit(testDir);
       initialCommit(testDir);
 
-      await fs.writeFile(path.join(testDir, '.gitignore'), '/plans/\n', 'utf-8');
+      await fs.writeFile(path.join(testDir, ".gitignore"), "/plans/\n", "utf-8");
 
       const result = await ensurePlansGitignore(testDir);
       expect(result).toBe(false);
     });
   });
 
-  describe('needsSessionsGitignore', () => {
-    it('returns true when .gitignore does not exist', async () => {
+  describe("needsSessionsGitignore", () => {
+    it("returns true when .gitignore does not exist", async () => {
       const result = await needsSessionsGitignore(testDir);
       expect(result).toBe(true);
     });
 
-    it('returns true when entry is not present', async () => {
-      await fs.writeFile(path.join(testDir, '.gitignore'), 'node_modules/\n', 'utf-8');
+    it("returns true when entry is not present", async () => {
+      await fs.writeFile(path.join(testDir, ".gitignore"), "node_modules/\n", "utf-8");
       const result = await needsSessionsGitignore(testDir);
       expect(result).toBe(true);
     });
 
-    it('returns false when entry already present', async () => {
-      await fs.writeFile(path.join(testDir, '.gitignore'), '.kspec-sessions/\n', 'utf-8');
+    it("returns false when entry already present", async () => {
+      await fs.writeFile(path.join(testDir, ".gitignore"), ".kspec-sessions/\n", "utf-8");
       const result = await needsSessionsGitignore(testDir);
       expect(result).toBe(false);
     });
   });
 
-  describe('needsPlansGitignore', () => {
-    it('returns true when .gitignore does not exist', async () => {
+  describe("needsPlansGitignore", () => {
+    it("returns true when .gitignore does not exist", async () => {
       const result = await needsPlansGitignore(testDir);
       expect(result).toBe(true);
     });
 
-    it('returns true when entry is not present', async () => {
-      await fs.writeFile(path.join(testDir, '.gitignore'), 'node_modules/\n', 'utf-8');
+    it("returns true when entry is not present", async () => {
+      await fs.writeFile(path.join(testDir, ".gitignore"), "node_modules/\n", "utf-8");
       const result = await needsPlansGitignore(testDir);
       expect(result).toBe(true);
     });
 
-    it('returns false when entry already present', async () => {
-      await fs.writeFile(path.join(testDir, '.gitignore'), 'plans/\n', 'utf-8');
+    it("returns false when entry already present", async () => {
+      await fs.writeFile(path.join(testDir, ".gitignore"), "plans/\n", "utf-8");
       const result = await needsPlansGitignore(testDir);
       expect(result).toBe(false);
     });
   });
 
-  describe('ensureShadowSessionsGitignore', () => {
+  describe("ensureShadowSessionsGitignore", () => {
     // AC: @session-legacy-migration ac-shadow-gitignore
-    it('adds sessions/ to .kspec/.gitignore', async () => {
+    it("adds sessions/ to .kspec/.gitignore", async () => {
       initGit(testDir);
       initialCommit(testDir);
 
       // Create a .kspec directory with an existing .gitignore
       const kspecDir = path.join(testDir, SHADOW_WORKTREE_DIR);
       await fs.mkdir(kspecDir, { recursive: true });
-      await fs.writeFile(path.join(kspecDir, '.gitignore'), 'artifacts/\n', 'utf-8');
+      await fs.writeFile(path.join(kspecDir, ".gitignore"), "artifacts/\n", "utf-8");
 
       const result = await ensureShadowSessionsGitignore(testDir);
 
       expect(result).toBe(true);
-      const content = await fs.readFile(path.join(kspecDir, '.gitignore'), 'utf-8');
-      expect(content).toContain('sessions/');
-      expect(content).toContain('artifacts/');
+      const content = await fs.readFile(path.join(kspecDir, ".gitignore"), "utf-8");
+      expect(content).toContain("sessions/");
+      expect(content).toContain("artifacts/");
     });
 
     // AC: @session-legacy-migration ac-shadow-gitignore
-    it('is idempotent', async () => {
+    it("is idempotent", async () => {
       const kspecDir = path.join(testDir, SHADOW_WORKTREE_DIR);
       await fs.mkdir(kspecDir, { recursive: true });
-      await fs.writeFile(path.join(kspecDir, '.gitignore'), 'artifacts/\n', 'utf-8');
+      await fs.writeFile(path.join(kspecDir, ".gitignore"), "artifacts/\n", "utf-8");
 
       await ensureShadowSessionsGitignore(testDir);
       const result2 = await ensureShadowSessionsGitignore(testDir);
@@ -230,111 +230,102 @@ describe('Init/Setup Sessions Directory', () => {
       expect(result2).toBe(false);
     });
 
-    it('returns false when .kspec/.gitignore does not exist', async () => {
+    it("returns false when .kspec/.gitignore does not exist", async () => {
       const result = await ensureShadowSessionsGitignore(testDir);
       expect(result).toBe(false);
     });
   });
 
-  describe('needsShadowSessionsGitignore', () => {
-    it('returns true when sessions/ not in .kspec/.gitignore', async () => {
+  describe("needsShadowSessionsGitignore", () => {
+    it("returns true when sessions/ not in .kspec/.gitignore", async () => {
       const kspecDir = path.join(testDir, SHADOW_WORKTREE_DIR);
       await fs.mkdir(kspecDir, { recursive: true });
-      await fs.writeFile(path.join(kspecDir, '.gitignore'), 'artifacts/\n', 'utf-8');
+      await fs.writeFile(path.join(kspecDir, ".gitignore"), "artifacts/\n", "utf-8");
 
       const result = await needsShadowSessionsGitignore(testDir);
       expect(result).toBe(true);
     });
 
-    it('returns false when sessions/ already present', async () => {
+    it("returns false when sessions/ already present", async () => {
       const kspecDir = path.join(testDir, SHADOW_WORKTREE_DIR);
       await fs.mkdir(kspecDir, { recursive: true });
-      await fs.writeFile(path.join(kspecDir, '.gitignore'), 'artifacts/\nsessions/\n', 'utf-8');
+      await fs.writeFile(path.join(kspecDir, ".gitignore"), "artifacts/\nsessions/\n", "utf-8");
 
       const result = await needsShadowSessionsGitignore(testDir);
       expect(result).toBe(false);
     });
 
-    it('returns false when .kspec/.gitignore does not exist', async () => {
+    it("returns false when .kspec/.gitignore does not exist", async () => {
       const result = await needsShadowSessionsGitignore(testDir);
       expect(result).toBe(false);
     });
   });
 
-  describe('initializeShadow — sessions directory', () => {
+  describe("initializeShadow — sessions directory", () => {
     // AC: @session-storage-modes ac-sessions-dir-autocreate
-    it.skipIf(!canRunInitTests)(
-      'creates .kspec-sessions/ directory during init',
-      async () => {
-        initGit(testDir);
-        initialCommit(testDir);
+    it.skipIf(!canRunInitTests)("creates .kspec-sessions/ directory during init", async () => {
+      initGit(testDir);
+      initialCommit(testDir);
 
-        const result = await initializeShadow(testDir, { projectName: 'Test Project' });
+      const result = await initializeShadow(testDir, { projectName: "Test Project" });
 
-        expect(result.success).toBe(true);
-        expect(result.sessionsDirectoryCreated).toBe(true);
+      expect(result.success).toBe(true);
+      expect(result.sessionsDirectoryCreated).toBe(true);
 
-        const sessionsDir = path.join(testDir, SESSIONS_WORKTREE_DIR);
-        const stat = await fs.stat(sessionsDir);
-        expect(stat.isDirectory()).toBe(true);
-      },
-    );
+      const sessionsDir = path.join(testDir, SESSIONS_WORKTREE_DIR);
+      const stat = await fs.stat(sessionsDir);
+      expect(stat.isDirectory()).toBe(true);
+    });
 
     // AC: @session-storage-modes ac-gitignore
     it.skipIf(!canRunInitTests)(
-      'adds .kspec-sessions/ to root .gitignore during init',
+      "adds .kspec-sessions/ to root .gitignore during init",
       async () => {
         initGit(testDir);
         initialCommit(testDir);
 
-        await initializeShadow(testDir, { projectName: 'Test Project' });
+        await initializeShadow(testDir, { projectName: "Test Project" });
 
-        const content = await fs.readFile(path.join(testDir, '.gitignore'), 'utf-8');
-        expect(content).toContain('.kspec-sessions/');
-        expect(content).toContain('plans/');
-        expect(content).toContain('.kspec/');
+        const content = await fs.readFile(path.join(testDir, ".gitignore"), "utf-8");
+        expect(content).toContain(".kspec-sessions/");
+        expect(content).toContain("plans/");
+        expect(content).toContain(".kspec/");
       },
     );
 
     // AC: @session-legacy-migration ac-shadow-gitignore
-    it.skipIf(!canRunInitTests)(
-      'adds sessions/ to .kspec/.gitignore during init',
-      async () => {
-        initGit(testDir);
-        initialCommit(testDir);
+    it.skipIf(!canRunInitTests)("adds sessions/ to .kspec/.gitignore during init", async () => {
+      initGit(testDir);
+      initialCommit(testDir);
 
-        await initializeShadow(testDir, { projectName: 'Test Project' });
+      await initializeShadow(testDir, { projectName: "Test Project" });
 
-        const shadowGitignore = await fs.readFile(
-          path.join(testDir, SHADOW_WORKTREE_DIR, '.gitignore'),
-          'utf-8',
-        );
-        expect(shadowGitignore).toContain('sessions/');
-        expect(shadowGitignore).toContain('artifacts/');
-      },
-    );
+      const shadowGitignore = await fs.readFile(
+        path.join(testDir, SHADOW_WORKTREE_DIR, ".gitignore"),
+        "utf-8",
+      );
+      expect(shadowGitignore).toContain("sessions/");
+      expect(shadowGitignore).toContain("artifacts/");
+    });
 
     // AC: @session-storage-modes ac-sessions-dir
-    it.skipIf(!canRunInitTests)(
-      '.kspec-sessions/ is separate from .kspec/ worktree',
-      async () => {
-        initGit(testDir);
-        initialCommit(testDir);
+    it.skipIf(!canRunInitTests)(".kspec-sessions/ is separate from .kspec/ worktree", async () => {
+      initGit(testDir);
+      initialCommit(testDir);
 
-        await initializeShadow(testDir, { projectName: 'Test Project' });
+      await initializeShadow(testDir, { projectName: "Test Project" });
 
-        const sessionsDir = path.join(testDir, SESSIONS_WORKTREE_DIR);
-        const kspecDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+      const sessionsDir = path.join(testDir, SESSIONS_WORKTREE_DIR);
+      const kspecDir = path.join(testDir, SHADOW_WORKTREE_DIR);
 
-        // Both should exist
-        expect((await fs.stat(sessionsDir)).isDirectory()).toBe(true);
-        expect((await fs.stat(kspecDir)).isDirectory()).toBe(true);
+      // Both should exist
+      expect((await fs.stat(sessionsDir)).isDirectory()).toBe(true);
+      expect((await fs.stat(kspecDir)).isDirectory()).toBe(true);
 
-        // Sessions dir should NOT be inside .kspec/
-        expect(sessionsDir).not.toContain(kspecDir + '/');
-        expect(path.dirname(sessionsDir)).toBe(testDir);
-        expect(path.dirname(kspecDir)).toBe(testDir);
-      },
-    );
+      // Sessions dir should NOT be inside .kspec/
+      expect(sessionsDir).not.toContain(`${kspecDir}/`);
+      expect(path.dirname(sessionsDir)).toBe(testDir);
+      expect(path.dirname(kspecDir)).toBe(testDir);
+    });
   });
 });

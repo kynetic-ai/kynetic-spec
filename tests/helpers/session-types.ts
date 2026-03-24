@@ -11,7 +11,7 @@ export interface ActiveTaskSummary {
   slug: string | null;
   title: string;
   description: string | null;
-  status: 'in_progress' | 'needs_work' | 'pending_review';
+  status: "in_progress" | "needs_work" | "pending_review";
   started_at: string | null;
   priority: number;
   spec_ref: string | null;
@@ -60,7 +60,7 @@ export interface CommitSummary {
 }
 
 export interface ActivityItem {
-  type: 'task_completion' | 'commit' | 'linked_commit';
+  type: "task_completion" | "commit" | "linked_commit";
   date: string;
   commit?: CommitSummary;
   task?: CompletedTaskSummary;
@@ -69,7 +69,7 @@ export interface ActivityItem {
 export interface NoteSummary {
   task_ref: string;
   task_title: string;
-  task_status: 'in_progress' | 'pending_review' | 'needs_work' | 'completed';
+  task_status: "in_progress" | "pending_review" | "needs_work" | "completed";
   note_ulid: string;
   created_at: string;
   author: string | null;

@@ -37,14 +37,14 @@ kspec derive @slug
 
 ### When to Use Which
 
-| Situation | Path |
-|-----------|------|
-| Plan mode just approved, complex feature | Import |
-| Adding a requirement to existing feature | Manual |
-| Multiple related specs with parent/child | Import |
-| Quick bug fix that needs spec coverage | Manual |
-| Translating design doc with many specs | Import |
-| Iterating on previously imported plan | Import (`--into`) |
+| Situation                                | Path              |
+| ---------------------------------------- | ----------------- |
+| Plan mode just approved, complex feature | Import            |
+| Adding a requirement to existing feature | Manual            |
+| Multiple related specs with parent/child | Import            |
+| Quick bug fix that needs spec coverage   | Manual            |
+| Translating design doc with many specs   | Import            |
+| Iterating on previously imported plan    | Import (`--into`) |
 
 ## Three-Phase Workflow
 
@@ -150,24 +150,24 @@ Use passport.js for OAuth, following existing auth patterns.
 
 ### Section Reference
 
-| Section | Content | Notes |
-|---------|---------|-------|
-| `## Specs` | YAML code block — array of spec objects | **Must** use fenced code block (triple-backtick yaml) |
-| `## Tasks` | `derive_from_specs: true` + optional manual tasks | Manual tasks get `plan_ref`; can optionally set `spec_ref`, `depends_on`, `description` |
-| `## Implementation Notes` | Plain text | Attached to plan record; per-spec notes use `implementation_notes` field |
+| Section                   | Content                                           | Notes                                                                                   |
+| ------------------------- | ------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `## Specs`                | YAML code block — array of spec objects           | **Must** use fenced code block (triple-backtick yaml)                                   |
+| `## Tasks`                | `derive_from_specs: true` + optional manual tasks | Manual tasks get `plan_ref`; can optionally set `spec_ref`, `depends_on`, `description` |
+| `## Implementation Notes` | Plain text                                        | Attached to plan record; per-spec notes use `implementation_notes` field                |
 
 ### Spec Fields
 
-| Field | Required | Description |
-|-------|----------|-------------|
-| `title` | Yes | Spec title |
-| `slug` | No | Human-friendly ID (auto-generated if omitted) |
-| `type` | No | `feature`, `requirement`, `constraint`, `decision` (default: `feature`) |
-| `parent` | No | Parent ref (e.g., `"@parent-slug"`) |
-| `description` | No | What and why |
-| `acceptance_criteria` | No | Array of `{id, given, when, then}` |
-| `traits` | No | Array of trait slugs (e.g., `trait-json-output`) |
-| `implementation_notes` | No | Scoped to this spec's derived task |
+| Field                  | Required | Description                                                             |
+| ---------------------- | -------- | ----------------------------------------------------------------------- |
+| `title`                | Yes      | Spec title                                                              |
+| `slug`                 | No       | Human-friendly ID (auto-generated if omitted)                           |
+| `type`                 | No       | `feature`, `requirement`, `constraint`, `decision` (default: `feature`) |
+| `parent`               | No       | Parent ref (e.g., `"@parent-slug"`)                                     |
+| `description`          | No       | What and why                                                            |
+| `acceptance_criteria`  | No       | Array of `{id, given, when, then}`                                      |
+| `traits`               | No       | Array of trait slugs (e.g., `trait-json-output`)                        |
+| `implementation_notes` | No       | Scoped to this spec's derived task                                      |
 
 ### Spec Language Quality
 
@@ -180,15 +180,15 @@ Specs in plan documents must follow the same behavioral language rules as any sp
 
 ### Task Fields
 
-| Field | Required | Description |
-|-------|----------|-------------|
-| `title` | Yes | Task title |
-| `slug` | No | Human-friendly ID (auto-generated from title if omitted) |
-| `description` | No | Task context — what to do and why |
-| `priority` | No | 1 (highest) to 5 (lowest), default: 3 |
-| `tags` | No | Array of tags (e.g., `docs`, `cli`) |
-| `spec_ref` | No | Link to a spec — local spec slug or existing `@ref` |
-| `depends_on` | No | Array of refs — local task/spec slugs or existing `@ref`s |
+| Field         | Required | Description                                               |
+| ------------- | -------- | --------------------------------------------------------- |
+| `title`       | Yes      | Task title                                                |
+| `slug`        | No       | Human-friendly ID (auto-generated from title if omitted)  |
+| `description` | No       | Task context — what to do and why                         |
+| `priority`    | No       | 1 (highest) to 5 (lowest), default: 3                     |
+| `tags`        | No       | Array of tags (e.g., `docs`, `cli`)                       |
+| `spec_ref`    | No       | Link to a spec — local spec slug or existing `@ref`       |
+| `depends_on`  | No       | Array of refs — local task/spec slugs or existing `@ref`s |
 
 ## Trait Selection
 
@@ -201,16 +201,16 @@ kspec trait get @trait-json-output  # See inherited ACs
 
 ### Common Trait Applications
 
-| Building... | Consider these traits |
-|-------------|---------------------|
+| Building...             | Consider these traits                              |
+| ----------------------- | -------------------------------------------------- |
 | CLI command with output | `@trait-json-output`, `@trait-semantic-exit-codes` |
-| Destructive operation | `@trait-confirmation-prompt`, `@trait-dry-run` |
-| List/search command | `@trait-filterable-list`, `@trait-json-output` |
-| Shadow branch mutation | `@trait-shadow-commit` |
-| User-facing error paths | `@trait-error-guidance` |
-| Batch operations | `@trait-multi-ref-batch` |
-| API endpoint | `@trait-api-endpoint`, `@trait-localhost-security` |
-| WebSocket feature | `@trait-websocket-protocol` |
+| Destructive operation   | `@trait-confirmation-prompt`, `@trait-dry-run`     |
+| List/search command     | `@trait-filterable-list`, `@trait-json-output`     |
+| Shadow branch mutation  | `@trait-shadow-commit`                             |
+| User-facing error paths | `@trait-error-guidance`                            |
+| Batch operations        | `@trait-multi-ref-batch`                           |
+| API endpoint            | `@trait-api-endpoint`, `@trait-localhost-security` |
+| WebSocket feature       | `@trait-websocket-protocol`                        |
 
 ### Trait Naming in Plan Documents
 
@@ -281,6 +281,7 @@ kspec plan import ./plan.md --dry-run
 ```
 
 Import dry-run confirms:
+
 - Title, status, and stored module look right
 - The file is readable and the full document will be stored as plan content
 - No plan state is changed while previewing

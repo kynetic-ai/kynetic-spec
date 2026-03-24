@@ -32,11 +32,7 @@ import {
 } from "../src/schema/event-payloads.js";
 import { registerAdapter } from "../src/agents/adapters.js";
 import * as spawnerModule from "../src/agents/spawner.js";
-import {
-  testUlid,
-  createTempDir,
-  cleanupTempDir,
-} from "./helpers/cli.js";
+import { testUlid, createTempDir, cleanupTempDir } from "./helpers/cli.js";
 import type { Agent } from "../src/schema/meta.js";
 
 // ─── Fixtures ─────────────────────────────────────────────────────────────────
@@ -152,9 +148,11 @@ describe("Dispatch terminal event includes turn_count", { timeout: 60_000 }, () 
   // AC: @multi-turn-session-lifecycle ac-14
   it("should include turn_count=1 in invocation.completed event for single-turn sessions", async () => {
     const { spawnedAgent } = createMockSpawnedAgent();
-    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
-      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
-    );
+    spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
 
     const eventBus = new EventBus();
     const registry = new SessionRegistry();
@@ -173,9 +171,7 @@ describe("Dispatch terminal event includes turn_count", { timeout: 60_000 }, () 
     expect(result.outcome).toBe("success");
     expect(result.turnCount).toBe(1);
 
-    const completedEvents = emittedEvents.filter(
-      (e) => e.event_type === "invocation.completed",
-    );
+    const completedEvents = emittedEvents.filter((e) => e.event_type === "invocation.completed");
     expect(completedEvents).toHaveLength(1);
 
     const payload = completedEvents[0].payload;
@@ -190,9 +186,11 @@ describe("Dispatch terminal event includes turn_count", { timeout: 60_000 }, () 
   // AC: @multi-turn-session-lifecycle ac-14
   it("should include correct turn_count in invocation.completed event for multi-turn sessions", async () => {
     const { spawnedAgent } = createMockSpawnedAgent();
-    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
-      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
-    );
+    spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
 
     const eventBus = new EventBus();
     const registry = new SessionRegistry();
@@ -216,9 +214,7 @@ describe("Dispatch terminal event includes turn_count", { timeout: 60_000 }, () 
     expect(result.outcome).toBe("success");
     expect(result.turnCount).toBe(3);
 
-    const completedEvents = emittedEvents.filter(
-      (e) => e.event_type === "invocation.completed",
-    );
+    const completedEvents = emittedEvents.filter((e) => e.event_type === "invocation.completed");
     expect(completedEvents).toHaveLength(1);
 
     const payload = completedEvents[0].payload;
@@ -232,9 +228,11 @@ describe("Dispatch terminal event includes turn_count", { timeout: 60_000 }, () 
   // AC: @multi-turn-session-lifecycle ac-14
   it("should emit invocation.completed exactly once per session even with multiple turns", async () => {
     const { spawnedAgent } = createMockSpawnedAgent();
-    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
-      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
-    );
+    spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
 
     const eventBus = new EventBus();
     const registry = new SessionRegistry();
@@ -256,9 +254,7 @@ describe("Dispatch terminal event includes turn_count", { timeout: 60_000 }, () 
     });
 
     // Only one invocation.completed event, despite 5 turns
-    const completedEvents = emittedEvents.filter(
-      (e) => e.event_type === "invocation.completed",
-    );
+    const completedEvents = emittedEvents.filter((e) => e.event_type === "invocation.completed");
     expect(completedEvents).toHaveLength(1);
     expect(completedEvents[0].payload.turn_count).toBe(5);
   });
@@ -308,9 +304,11 @@ describe("Dispatch emits session.idle events on event bus", { timeout: 60_000 },
   // AC: @multi-turn-session-lifecycle ac-3
   it("should emit session.idle event on event bus when session transitions to idle", async () => {
     const { spawnedAgent } = createMockSpawnedAgent();
-    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
-      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
-    );
+    spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
 
     const eventBus = new EventBus();
     const registry = new SessionRegistry();
@@ -418,9 +416,11 @@ describe("Dispatch wires session registry for prompt delivery", { timeout: 60_00
   // AC: @multi-turn-session-lifecycle ac-2
   it("should keep session registered and idle-capable during multi-turn session", async () => {
     const { spawnedAgent } = createMockSpawnedAgent();
-    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
-      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
-    );
+    spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
 
     const registry = new SessionRegistry();
     const statesSeenDuringIdle: string[] = [];
@@ -461,9 +461,11 @@ describe("Dispatch wires session registry for prompt delivery", { timeout: 60_00
       return { stopReason: "end_turn" };
     });
 
-    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
-      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
-    );
+    spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
 
     const registry = new SessionRegistry();
 
@@ -509,9 +511,11 @@ describe("All turns recorded in same session event history", { timeout: 60_000 }
   // AC: @multi-turn-session-lifecycle ac-12
   it("should record all turns in the same session's events.jsonl", async () => {
     const { spawnedAgent } = createMockSpawnedAgent();
-    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
-      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
-    );
+    spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
 
     const registry = new SessionRegistry();
 
@@ -537,7 +541,11 @@ describe("All turns recorded in same session event history", { timeout: 60_000 }
     const eventsPath = path.join(testDir, "sessions", result.session.id, "events.jsonl");
     const { readFile } = await import("node:fs/promises");
     const content = await readFile(eventsPath, "utf-8");
-    const events = content.trim().split("\n").filter(Boolean).map((l) => JSON.parse(l));
+    const events = content
+      .trim()
+      .split("\n")
+      .filter(Boolean)
+      .map((l) => JSON.parse(l));
 
     // All events should share the same session
     const sessionIds = [...new Set(events.map((e: Record<string, unknown>) => e.session_id))];
@@ -579,9 +587,11 @@ describe("Multi-turn session metadata reflects totals", { timeout: 60_000 }, () 
   // AC: @multi-turn-session-lifecycle ac-13
   it("should reflect total turn count and cumulative duration in InvocationResult", async () => {
     const { spawnedAgent } = createMockSpawnedAgent();
-    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
-      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
-    );
+    spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
 
     const registry = new SessionRegistry();
 
@@ -634,9 +644,11 @@ describe("Per-task exclusivity held for entire multi-turn session", { timeout: 6
 
   it("should maintain session identity across all turns", async () => {
     const { spawnedAgent } = createMockSpawnedAgent();
-    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
-      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
-    );
+    spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
 
     const registry = new SessionRegistry();
     const sessionIdsSeenDuringIdle: string[] = [];

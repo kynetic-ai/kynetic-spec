@@ -5,12 +5,7 @@
  * Complements ReferenceIndex which handles @reference resolution.
  */
 
-import type {
-  ImplementationStatus,
-  ItemType,
-  Maturity,
-  TaskStatus,
-} from "../schema/index.js";
+import type { ImplementationStatus, ItemType, Maturity, TaskStatus } from "../schema/index.js";
 import { grepItem } from "../utils/grep.js";
 import type { AnyLoadedItem, LoadedSpecItem, LoadedTask } from "./yaml.js";
 
@@ -89,10 +84,7 @@ export class ItemIndex {
   private maturityIndex = new Map<Maturity, LoadedSpecItem[]>();
 
   /** Index by implementation status */
-  private implementationIndex = new Map<
-    ImplementationStatus,
-    LoadedSpecItem[]
-  >();
+  private implementationIndex = new Map<ImplementationStatus, LoadedSpecItem[]>();
 
   /**
    * Build index from loaded items
@@ -132,11 +124,7 @@ export class ItemIndex {
     }
 
     // Index spec items by maturity/implementation
-    if (
-      "status" in item &&
-      typeof item.status === "object" &&
-      item.status !== null
-    ) {
+    if ("status" in item && typeof item.status === "object" && item.status !== null) {
       const specItem = item as LoadedSpecItem;
       const status = specItem.status as {
         maturity?: Maturity;
@@ -150,8 +138,7 @@ export class ItemIndex {
       }
 
       if (status.implementation) {
-        const implList =
-          this.implementationIndex.get(status.implementation) || [];
+        const implList = this.implementationIndex.get(status.implementation) || [];
         implList.push(specItem);
         this.implementationIndex.set(status.implementation, implList);
       }
@@ -197,28 +184,18 @@ export class ItemIndex {
 
     // Apply task status filter
     if (filter.status) {
-      const statuses = Array.isArray(filter.status)
-        ? filter.status
-        : [filter.status];
+      const statuses = Array.isArray(filter.status) ? filter.status : [filter.status];
       results = results.filter((item) => {
-        if (!("status" in item) || typeof item.status !== "string")
-          return false;
+        if (!("status" in item) || typeof item.status !== "string") return false;
         return statuses.includes(item.status as TaskStatus);
       });
     }
 
     // Apply maturity filter
     if (filter.maturity) {
-      const maturities = Array.isArray(filter.maturity)
-        ? filter.maturity
-        : [filter.maturity];
+      const maturities = Array.isArray(filter.maturity) ? filter.maturity : [filter.maturity];
       results = results.filter((item) => {
-        if (
-          !("status" in item) ||
-          typeof item.status !== "object" ||
-          !item.status
-        )
-          return false;
+        if (!("status" in item) || typeof item.status !== "object" || !item.status) return false;
         const status = item.status as { maturity?: Maturity };
         return status.maturity && maturities.includes(status.maturity);
       });
@@ -230,12 +207,7 @@ export class ItemIndex {
         ? filter.implementation
         : [filter.implementation];
       results = results.filter((item) => {
-        if (
-          !("status" in item) ||
-          typeof item.status !== "object" ||
-          !item.status
-        )
-          return false;
+        if (!("status" in item) || typeof item.status !== "object" || !item.status) return false;
         const status = item.status as { implementation?: ImplementationStatus };
         return status.implementation && impls.includes(status.implementation);
       });
@@ -266,18 +238,13 @@ export class ItemIndex {
     // Apply title search
     if (filter.titleContains) {
       const search = filter.titleContains.toLowerCase();
-      results = results.filter((item) =>
-        item.title.toLowerCase().includes(search),
-      );
+      results = results.filter((item) => item.title.toLowerCase().includes(search));
     }
 
     // Apply grep search (regex across all text content)
     if (filter.grepSearch) {
       results = results.filter((item) => {
-        const match = grepItem(
-          item as unknown as Record<string, unknown>,
-          filter.grepSearch!,
-        );
+        const match = grepItem(item as unknown as Record<string, unknown>, filter.grepSearch!);
         return match !== null;
       });
     }
@@ -288,11 +255,7 @@ export class ItemIndex {
   /**
    * Query with pagination
    */
-  queryPaginated(
-    filter: ItemFilter = {},
-    offset = 0,
-    limit = 50,
-  ): QueryResult<AnyLoadedItem> {
+  queryPaginated(filter: ItemFilter = {}, offset = 0, limit = 50): QueryResult<AnyLoadedItem> {
     const allResults = this.query(filter);
     const items = allResults.slice(offset, offset + limit);
 
@@ -343,14 +306,14 @@ export class ItemIndex {
    * Get all unique types in the index
    */
   getTypes(): string[] {
-    return [...this.typeIndex.keys()].sort();
+    return [...this.typeIndex.keys()].toSorted();
   }
 
   /**
    * Get all unique tags in the index
    */
   getTags(): string[] {
-    return [...this.tagIndex.keys()].sort();
+    return [...this.tagIndex.keys()].toSorted();
   }
 
   /**

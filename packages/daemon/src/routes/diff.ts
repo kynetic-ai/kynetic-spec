@@ -11,20 +11,17 @@
  * - @review-content-diff-api ac-4: GET /api/reviews/:id/content returns parsed entity content
  */
 
-import { Elysia, t } from 'elysia';
-import { execFileSync } from 'node:child_process';
+import { Elysia, t } from "elysia";
+import { execFileSync } from "node:child_process";
 import {
   initContext,
   loadAllItems,
   findPlanByRef,
   ReferenceIndex,
   resolveTaskDataManager,
-} from '../../parser/index.js';
-import {
-  loadReviewRecords,
-  findReviewByRef,
-} from '../../parser/reviews.js';
-import { parseUnifiedDiff } from '../../utils/git-diff-parser.js';
+} from "../../parser/index.js";
+import { loadReviewRecords, findReviewByRef } from "../../parser/reviews.js";
+import { parseUnifiedDiff } from "../../utils/git-diff-parser.js";
 
 // ─── Git Helpers ───
 
@@ -32,14 +29,14 @@ import { parseUnifiedDiff } from '../../utils/git-diff-parser.js';
  * Run git diff between two refs and return raw output.
  */
 function runGitDiff(base: string, head: string, cwd: string, filePath?: string): string {
-  const args = ['diff', `${base}..${head}`];
+  const args = ["diff", `${base}..${head}`];
   if (filePath) {
-    args.push('--', filePath);
+    args.push("--", filePath);
   }
-  return execFileSync('git', args, {
+  return execFileSync("git", args, {
     cwd,
-    encoding: 'utf-8',
-    stdio: ['pipe', 'pipe', 'pipe'],
+    encoding: "utf-8",
+    stdio: ["pipe", "pipe", "pipe"],
     maxBuffer: 10 * 1024 * 1024, // 10MB buffer for large diffs
   });
 }
@@ -49,10 +46,10 @@ function runGitDiff(base: string, head: string, cwd: string, filePath?: string):
  */
 function getFileAtCommit(commit: string, filePath: string, cwd: string): string | null {
   try {
-    return execFileSync('git', ['show', `${commit}:${filePath}`], {
+    return execFileSync("git", ["show", `${commit}:${filePath}`], {
       cwd,
-      encoding: 'utf-8',
-      stdio: ['pipe', 'pipe', 'pipe'],
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "pipe"],
       maxBuffer: 10 * 1024 * 1024,
     });
   } catch {
@@ -65,10 +62,10 @@ function getFileAtCommit(commit: string, filePath: string, cwd: string): string 
  */
 function isValidGitRef(ref: string, cwd: string): boolean {
   try {
-    execFileSync('git', ['rev-parse', '--verify', ref], {
+    execFileSync("git", ["rev-parse", "--verify", ref], {
       cwd,
-      encoding: 'utf-8',
-      stdio: ['pipe', 'pipe', 'pipe'],
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "pipe"],
     });
     return true;
   } catch {
@@ -79,479 +76,481 @@ function isValidGitRef(ref: string, cwd: string): boolean {
 // ─── Routes ───
 
 export function createDiffRoutes() {
-  return new Elysia()
+  return (
+    new Elysia()
 
-    // AC: @review-content-diff-api ac-1 - Full diff with file list, stats, and structured hunks
-    .get(
-      '/api/diff',
-      async ({ query, set, projectContext }) => {
-        const { base, head } = query;
+      // AC: @review-content-diff-api ac-1 - Full diff with file list, stats, and structured hunks
+      .get(
+        "/api/diff",
+        async ({ query, set, projectContext }) => {
+          const { base, head } = query;
 
-        if (!base || !head) {
-          set.status = 400;
-          return {
-            error: 'validation_error',
-            message: 'Both "base" and "head" query parameters are required',
-            suggestion: 'Provide base and head commit refs, e.g. GET /api/diff?base=abc123&head=def456',
-          };
-        }
-
-        const projectPath = projectContext.path;
-
-        // Validate refs exist
-        if (!isValidGitRef(base, projectPath)) {
-          set.status = 400;
-          return {
-            error: 'invalid_ref',
-            message: `Base ref "${base}" is not a valid git reference`,
-            suggestion: 'Check the ref exists with: git rev-parse --verify <ref>',
-          };
-        }
-
-        if (!isValidGitRef(head, projectPath)) {
-          set.status = 400;
-          return {
-            error: 'invalid_ref',
-            message: `Head ref "${head}" is not a valid git reference`,
-            suggestion: 'Check the ref exists with: git rev-parse --verify <ref>',
-          };
-        }
-
-        try {
-          const diffOutput = runGitDiff(base, head, projectPath);
-          const parsed = parseUnifiedDiff(diffOutput, base, head);
-          return parsed;
-        } catch (err) {
-          set.status = 500;
-          return {
-            error: 'git_error',
-            message: `Failed to compute diff: ${err instanceof Error ? err.message : String(err)}`,
-            suggestion: 'Ensure both refs are valid and the repository is accessible',
-          };
-        }
-      },
-      {
-        query: t.Object({
-          base: t.String(),
-          head: t.String(),
-        }),
-      }
-    )
-
-    // AC: @review-content-diff-api ac-3 - Single file diff for lazy loading
-    .get(
-      '/api/diff/file',
-      async ({ query, set, projectContext }) => {
-        const { base, head, path: filePath } = query;
-
-        if (!base || !head || !filePath) {
-          set.status = 400;
-          return {
-            error: 'validation_error',
-            message: '"base", "head", and "path" query parameters are required',
-            suggestion: 'Provide all parameters, e.g. GET /api/diff/file?base=abc&head=def&path=src/index.ts',
-          };
-        }
-
-        const projectPath = projectContext.path;
-
-        if (!isValidGitRef(base, projectPath)) {
-          set.status = 400;
-          return {
-            error: 'invalid_ref',
-            message: `Base ref "${base}" is not a valid git reference`,
-            suggestion: 'Check the ref exists with: git rev-parse --verify <ref>',
-          };
-        }
-
-        if (!isValidGitRef(head, projectPath)) {
-          set.status = 400;
-          return {
-            error: 'invalid_ref',
-            message: `Head ref "${head}" is not a valid git reference`,
-            suggestion: 'Check the ref exists with: git rev-parse --verify <ref>',
-          };
-        }
-
-        try {
-          const diffOutput = runGitDiff(base, head, projectPath, filePath);
-
-          if (!diffOutput.trim()) {
-            set.status = 404;
+          if (!base || !head) {
+            set.status = 400;
             return {
-              error: 'no_diff',
-              message: `No diff found for file "${filePath}" between ${base} and ${head}`,
-              suggestion: 'The file may not have changed between these refs',
+              error: "validation_error",
+              message: 'Both "base" and "head" query parameters are required',
+              suggestion:
+                "Provide base and head commit refs, e.g. GET /api/diff?base=abc123&head=def456",
             };
           }
 
-          const parsed = parseUnifiedDiff(diffOutput, base, head);
-          const file = parsed.files[0];
+          const projectPath = projectContext.path;
 
-          if (!file) {
-            set.status = 404;
+          // Validate refs exist
+          if (!isValidGitRef(base, projectPath)) {
+            set.status = 400;
             return {
-              error: 'no_diff',
-              message: `No diff found for file "${filePath}" between ${base} and ${head}`,
-              suggestion: 'The file may not have changed between these refs',
+              error: "invalid_ref",
+              message: `Base ref "${base}" is not a valid git reference`,
+              suggestion: "Check the ref exists with: git rev-parse --verify <ref>",
             };
           }
 
-          return {
-            base,
-            head,
-            file,
-          };
-        } catch (err) {
-          set.status = 500;
-          return {
-            error: 'git_error',
-            message: `Failed to compute file diff: ${err instanceof Error ? err.message : String(err)}`,
-            suggestion: 'Ensure the file path and refs are valid',
-          };
-        }
-      },
-      {
-        query: t.Object({
-          base: t.String(),
-          head: t.String(),
-          path: t.String(),
-        }),
-      }
-    )
-
-    // AC: @review-content-diff-api ac-2 - Context expansion for a file region
-    .get(
-      '/api/diff/context',
-      async ({ query, set, projectContext }) => {
-        const { base, head, path: filePath, start, end } = query;
-
-        if (!base || !head || !filePath || !start || !end) {
-          set.status = 400;
-          return {
-            error: 'validation_error',
-            message: '"base", "head", "path", "start", and "end" query parameters are required',
-            suggestion: 'Provide all parameters for context expansion',
-          };
-        }
-
-        const startLine = parseInt(start, 10);
-        const endLine = parseInt(end, 10);
-
-        if (isNaN(startLine) || isNaN(endLine) || startLine < 1 || endLine < startLine) {
-          set.status = 400;
-          return {
-            error: 'validation_error',
-            message: '"start" and "end" must be positive integers with start <= end',
-            suggestion: 'Line numbers are 1-based',
-          };
-        }
-
-        const projectPath = projectContext.path;
-
-        if (!isValidGitRef(head, projectPath)) {
-          set.status = 400;
-          return {
-            error: 'invalid_ref',
-            message: `Head ref "${head}" is not a valid git reference`,
-            suggestion: 'Check the ref exists with: git rev-parse --verify <ref>',
-          };
-        }
-
-        try {
-          const fileContent = getFileAtCommit(head, filePath, projectPath);
-
-          if (fileContent === null) {
-            set.status = 404;
+          if (!isValidGitRef(head, projectPath)) {
+            set.status = 400;
             return {
-              error: 'file_not_found',
-              message: `File "${filePath}" not found at commit ${head}`,
-              suggestion: 'Check the file path and commit ref are correct',
+              error: "invalid_ref",
+              message: `Head ref "${head}" is not a valid git reference`,
+              suggestion: "Check the ref exists with: git rev-parse --verify <ref>",
             };
           }
 
-          const allLines = fileContent.split('\n');
-          // Clamp to file bounds
-          const clampedStart = Math.max(1, startLine);
-          const clampedEnd = Math.min(allLines.length, endLine);
+          try {
+            const diffOutput = runGitDiff(base, head, projectPath);
+            const parsed = parseUnifiedDiff(diffOutput, base, head);
+            return parsed;
+          } catch (err) {
+            set.status = 500;
+            return {
+              error: "git_error",
+              message: `Failed to compute diff: ${err instanceof Error ? err.message : String(err)}`,
+              suggestion: "Ensure both refs are valid and the repository is accessible",
+            };
+          }
+        },
+        {
+          query: t.Object({
+            base: t.String(),
+            head: t.String(),
+          }),
+        },
+      )
 
-          const contextLines = allLines
-            .slice(clampedStart - 1, clampedEnd)
-            .map((content, i) => ({
+      // AC: @review-content-diff-api ac-3 - Single file diff for lazy loading
+      .get(
+        "/api/diff/file",
+        async ({ query, set, projectContext }) => {
+          const { base, head, path: filePath } = query;
+
+          if (!base || !head || !filePath) {
+            set.status = 400;
+            return {
+              error: "validation_error",
+              message: '"base", "head", and "path" query parameters are required',
+              suggestion:
+                "Provide all parameters, e.g. GET /api/diff/file?base=abc&head=def&path=src/index.ts",
+            };
+          }
+
+          const projectPath = projectContext.path;
+
+          if (!isValidGitRef(base, projectPath)) {
+            set.status = 400;
+            return {
+              error: "invalid_ref",
+              message: `Base ref "${base}" is not a valid git reference`,
+              suggestion: "Check the ref exists with: git rev-parse --verify <ref>",
+            };
+          }
+
+          if (!isValidGitRef(head, projectPath)) {
+            set.status = 400;
+            return {
+              error: "invalid_ref",
+              message: `Head ref "${head}" is not a valid git reference`,
+              suggestion: "Check the ref exists with: git rev-parse --verify <ref>",
+            };
+          }
+
+          try {
+            const diffOutput = runGitDiff(base, head, projectPath, filePath);
+
+            if (!diffOutput.trim()) {
+              set.status = 404;
+              return {
+                error: "no_diff",
+                message: `No diff found for file "${filePath}" between ${base} and ${head}`,
+                suggestion: "The file may not have changed between these refs",
+              };
+            }
+
+            const parsed = parseUnifiedDiff(diffOutput, base, head);
+            const file = parsed.files[0];
+
+            if (!file) {
+              set.status = 404;
+              return {
+                error: "no_diff",
+                message: `No diff found for file "${filePath}" between ${base} and ${head}`,
+                suggestion: "The file may not have changed between these refs",
+              };
+            }
+
+            return {
+              base,
+              head,
+              file,
+            };
+          } catch (err) {
+            set.status = 500;
+            return {
+              error: "git_error",
+              message: `Failed to compute file diff: ${err instanceof Error ? err.message : String(err)}`,
+              suggestion: "Ensure the file path and refs are valid",
+            };
+          }
+        },
+        {
+          query: t.Object({
+            base: t.String(),
+            head: t.String(),
+            path: t.String(),
+          }),
+        },
+      )
+
+      // AC: @review-content-diff-api ac-2 - Context expansion for a file region
+      .get(
+        "/api/diff/context",
+        async ({ query, set, projectContext }) => {
+          const { base, head, path: filePath, start, end } = query;
+
+          if (!base || !head || !filePath || !start || !end) {
+            set.status = 400;
+            return {
+              error: "validation_error",
+              message: '"base", "head", "path", "start", and "end" query parameters are required',
+              suggestion: "Provide all parameters for context expansion",
+            };
+          }
+
+          const startLine = parseInt(start, 10);
+          const endLine = parseInt(end, 10);
+
+          if (isNaN(startLine) || isNaN(endLine) || startLine < 1 || endLine < startLine) {
+            set.status = 400;
+            return {
+              error: "validation_error",
+              message: '"start" and "end" must be positive integers with start <= end',
+              suggestion: "Line numbers are 1-based",
+            };
+          }
+
+          const projectPath = projectContext.path;
+
+          if (!isValidGitRef(head, projectPath)) {
+            set.status = 400;
+            return {
+              error: "invalid_ref",
+              message: `Head ref "${head}" is not a valid git reference`,
+              suggestion: "Check the ref exists with: git rev-parse --verify <ref>",
+            };
+          }
+
+          try {
+            const fileContent = getFileAtCommit(head, filePath, projectPath);
+
+            if (fileContent === null) {
+              set.status = 404;
+              return {
+                error: "file_not_found",
+                message: `File "${filePath}" not found at commit ${head}`,
+                suggestion: "Check the file path and commit ref are correct",
+              };
+            }
+
+            const allLines = fileContent.split("\n");
+            // Clamp to file bounds
+            const clampedStart = Math.max(1, startLine);
+            const clampedEnd = Math.min(allLines.length, endLine);
+
+            const contextLines = allLines.slice(clampedStart - 1, clampedEnd).map((content, i) => ({
               lineNumber: clampedStart + i,
               content,
             }));
 
-          return {
-            base,
-            head,
-            path: filePath,
-            startLine: clampedStart,
-            endLine: clampedEnd,
-            totalLines: allLines.length,
-            lines: contextLines,
-          };
-        } catch (err) {
-          set.status = 500;
-          return {
-            error: 'git_error',
-            message: `Failed to get file context: ${err instanceof Error ? err.message : String(err)}`,
-            suggestion: 'Ensure the file path and commit ref are valid',
-          };
-        }
-      },
-      {
-        query: t.Object({
-          base: t.String(),
-          head: t.String(),
-          path: t.String(),
-          start: t.String(),
-          end: t.String(),
-        }),
-      }
-    )
+            return {
+              base,
+              head,
+              path: filePath,
+              startLine: clampedStart,
+              endLine: clampedEnd,
+              totalLines: allLines.length,
+              lines: contextLines,
+            };
+          } catch (err) {
+            set.status = 500;
+            return {
+              error: "git_error",
+              message: `Failed to get file context: ${err instanceof Error ? err.message : String(err)}`,
+              suggestion: "Ensure the file path and commit ref are valid",
+            };
+          }
+        },
+        {
+          query: t.Object({
+            base: t.String(),
+            head: t.String(),
+            path: t.String(),
+            start: t.String(),
+            end: t.String(),
+          }),
+        },
+      )
 
-    // AC: @review-content-diff-api ac-4 - Review content (plans/specs)
-    .get(
-      '/api/reviews/:id/content',
-      async ({ params, set, projectContext }) => {
-        const ctx = await initContext(projectContext.path);
-        const reviews = await loadReviewRecords(ctx);
-        const review = findReviewByRef(reviews, params.id);
+      // AC: @review-content-diff-api ac-4 - Review content (plans/specs)
+      .get(
+        "/api/reviews/:id/content",
+        async ({ params, set, projectContext }) => {
+          const ctx = await initContext(projectContext.path);
+          const reviews = await loadReviewRecords(ctx);
+          const review = findReviewByRef(reviews, params.id);
 
-        if (!review) {
-          set.status = 404;
-          return {
-            error: 'not_found',
-            message: `Review "${params.id}" not found`,
-            suggestion: 'Use kspec review list or kspec search to find valid review references',
-          };
-        }
-
-        const subject = review.subject;
-
-        // Plan content
-        if (subject.type === 'plan') {
-          const plan = await findPlanByRef(ctx, subject.ref);
-          if (!plan) {
+          if (!review) {
             set.status = 404;
             return {
-              error: 'not_found',
-              message: `Plan "${subject.ref}" referenced by review not found`,
-              suggestion: 'The plan may have been deleted or the reference is invalid',
+              error: "not_found",
+              message: `Review "${params.id}" not found`,
+              suggestion: "Use kspec review list or kspec search to find valid review references",
             };
           }
 
-          return {
-            review_id: review._ulid,
-            subject_type: 'plan',
-            subject_ref: subject.ref,
-            content: {
-              title: plan.title,
-              sections: [
-                {
-                  id: 'content',
-                  type: 'markdown',
-                  title: 'Plan Content',
-                  content: plan.content,
-                },
-                {
-                  id: 'specs',
-                  type: 'ref_list',
-                  title: 'Derived Specs',
-                  refs: plan.derived_specs,
-                },
-                {
-                  id: 'tasks',
-                  type: 'ref_list',
-                  title: 'Derived Tasks',
-                  refs: plan.derived_tasks,
-                },
-                ...(plan.notes && plan.notes.length > 0
-                  ? [
-                      {
-                        id: 'notes',
-                        type: 'notes',
-                        title: 'Notes',
-                        notes: plan.notes,
-                      },
-                    ]
-                  : []),
-              ],
-            },
-          };
-        }
+          const subject = review.subject;
 
-        // Spec content
-        if (subject.type === 'spec') {
-          const items = await loadAllItems(ctx);
-          const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
-          const index = new ReferenceIndex(tasks, items);
-          const resolved = index.resolve(subject.ref);
+          // Plan content
+          if (subject.type === "plan") {
+            const plan = await findPlanByRef(ctx, subject.ref);
+            if (!plan) {
+              set.status = 404;
+              return {
+                error: "not_found",
+                message: `Plan "${subject.ref}" referenced by review not found`,
+                suggestion: "The plan may have been deleted or the reference is invalid",
+              };
+            }
 
-          if (!resolved.ok) {
-            set.status = 404;
             return {
-              error: 'not_found',
-              message: `Spec "${subject.ref}" referenced by review not found`,
-              suggestion: 'The spec may have been deleted or the reference is invalid',
+              review_id: review._ulid,
+              subject_type: "plan",
+              subject_ref: subject.ref,
+              content: {
+                title: plan.title,
+                sections: [
+                  {
+                    id: "content",
+                    type: "markdown",
+                    title: "Plan Content",
+                    content: plan.content,
+                  },
+                  {
+                    id: "specs",
+                    type: "ref_list",
+                    title: "Derived Specs",
+                    refs: plan.derived_specs,
+                  },
+                  {
+                    id: "tasks",
+                    type: "ref_list",
+                    title: "Derived Tasks",
+                    refs: plan.derived_tasks,
+                  },
+                  ...(plan.notes && plan.notes.length > 0
+                    ? [
+                        {
+                          id: "notes",
+                          type: "notes",
+                          title: "Notes",
+                          notes: plan.notes,
+                        },
+                      ]
+                    : []),
+                ],
+              },
             };
           }
 
-          const specItem = items.find((i) => i._ulid === resolved.ulid);
-          if (!specItem) {
-            set.status = 404;
-            return {
-              error: 'not_found',
-              message: `Spec "${subject.ref}" not found in items`,
-              suggestion: 'The reference might point to a task instead of a spec item',
-            };
-          }
+          // Spec content
+          if (subject.type === "spec") {
+            const items = await loadAllItems(ctx);
+            const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+            const index = new ReferenceIndex(tasks, items);
+            const resolved = index.resolve(subject.ref);
 
-          const sections: Array<{
-            id: string;
-            type: string;
-            title: string;
-            content?: string;
-            criteria?: Array<{ id: string; given?: string; when?: string; then?: string }>;
-            refs?: string[];
-            metadata?: Record<string, unknown>;
-          }> = [
-            {
-              id: 'description',
-              type: 'markdown',
-              title: 'Description',
-              content: specItem.description || '',
-            },
-          ];
+            if (!resolved.ok) {
+              set.status = 404;
+              return {
+                error: "not_found",
+                message: `Spec "${subject.ref}" referenced by review not found`,
+                suggestion: "The spec may have been deleted or the reference is invalid",
+              };
+            }
 
-          if (specItem.acceptance_criteria && specItem.acceptance_criteria.length > 0) {
+            const specItem = items.find((i) => i._ulid === resolved.ulid);
+            if (!specItem) {
+              set.status = 404;
+              return {
+                error: "not_found",
+                message: `Spec "${subject.ref}" not found in items`,
+                suggestion: "The reference might point to a task instead of a spec item",
+              };
+            }
+
+            const sections: Array<{
+              id: string;
+              type: string;
+              title: string;
+              content?: string;
+              criteria?: Array<{ id: string; given?: string; when?: string; then?: string }>;
+              refs?: string[];
+              metadata?: Record<string, unknown>;
+            }> = [
+              {
+                id: "description",
+                type: "markdown",
+                title: "Description",
+                content: specItem.description || "",
+              },
+            ];
+
+            if (specItem.acceptance_criteria && specItem.acceptance_criteria.length > 0) {
+              sections.push({
+                id: "acceptance_criteria",
+                type: "acceptance_criteria",
+                title: "Acceptance Criteria",
+                criteria: specItem.acceptance_criteria.map((ac) => ({
+                  id: ac.id,
+                  given: ac.given,
+                  when: ac.when,
+                  then: ac.then,
+                })),
+              });
+            }
+
+            if (specItem.traits && specItem.traits.length > 0) {
+              sections.push({
+                id: "traits",
+                type: "ref_list",
+                title: "Traits",
+                refs: specItem.traits,
+              });
+            }
+
             sections.push({
-              id: 'acceptance_criteria',
-              type: 'acceptance_criteria',
-              title: 'Acceptance Criteria',
-              criteria: specItem.acceptance_criteria.map((ac) => ({
-                id: ac.id,
-                given: ac.given,
-                when: ac.when,
-                then: ac.then,
-              })),
+              id: "metadata",
+              type: "metadata",
+              title: "Metadata",
+              metadata: {
+                _ulid: specItem._ulid,
+                slugs: specItem.slugs,
+                type: specItem.type,
+                parent: specItem.parent,
+                tags: specItem.tags,
+                created_at: specItem.created_at,
+              },
             });
+
+            return {
+              review_id: review._ulid,
+              subject_type: "spec",
+              subject_ref: subject.ref,
+              content: {
+                title: specItem.title,
+                sections,
+              },
+            };
           }
 
-          if (specItem.traits && specItem.traits.length > 0) {
-            sections.push({
-              id: 'traits',
-              type: 'ref_list',
-              title: 'Traits',
-              refs: specItem.traits,
-            });
+          // Code reviews don't have entity content — they use the diff endpoints
+          if (subject.type === "code") {
+            return {
+              review_id: review._ulid,
+              subject_type: "code",
+              subject_ref: null,
+              content: null,
+              diff_params: {
+                base: subject.base_commit,
+                head: subject.head_commit,
+              },
+            };
           }
 
-          sections.push({
-            id: 'metadata',
-            type: 'metadata',
-            title: 'Metadata',
-            metadata: {
-              _ulid: specItem._ulid,
-              slugs: specItem.slugs,
-              type: specItem.type,
-              parent: specItem.parent,
-              tags: specItem.tags,
-              created_at: specItem.created_at,
-            },
-          });
+          // Task subject — return task details
+          if (subject.type === "task") {
+            const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+            const items = await loadAllItems(ctx);
+            const index = new ReferenceIndex(tasks, items);
+            const resolved = index.resolve(subject.ref);
 
+            if (!resolved.ok) {
+              set.status = 404;
+              return {
+                error: "not_found",
+                message: `Task "${subject.ref}" referenced by review not found`,
+                suggestion: "The task may have been deleted or the reference is invalid",
+              };
+            }
+
+            const task = tasks.find((tk) => tk._ulid === resolved.ulid);
+            if (!task) {
+              set.status = 404;
+              return {
+                error: "not_found",
+                message: `Task "${subject.ref}" not found`,
+              };
+            }
+
+            return {
+              review_id: review._ulid,
+              subject_type: "task",
+              subject_ref: subject.ref,
+              content: {
+                title: task.title,
+                sections: [
+                  {
+                    id: "description",
+                    type: "markdown",
+                    title: "Description",
+                    content: task.description || "",
+                  },
+                  ...(task.notes && task.notes.length > 0
+                    ? [
+                        {
+                          id: "notes",
+                          type: "notes",
+                          title: "Notes",
+                          notes: task.notes,
+                        },
+                      ]
+                    : []),
+                ],
+              },
+            };
+          }
+
+          // External subject — no structured content available
           return {
             review_id: review._ulid,
-            subject_type: 'spec',
-            subject_ref: subject.ref,
-            content: {
-              title: specItem.title,
-              sections,
-            },
-          };
-        }
-
-        // Code reviews don't have entity content — they use the diff endpoints
-        if (subject.type === 'code') {
-          return {
-            review_id: review._ulid,
-            subject_type: 'code',
+            subject_type: subject.type,
             subject_ref: null,
             content: null,
-            diff_params: {
-              base: subject.base_commit,
-              head: subject.head_commit,
-            },
           };
-        }
-
-        // Task subject — return task details
-        if (subject.type === 'task') {
-          const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
-          const items = await loadAllItems(ctx);
-          const index = new ReferenceIndex(tasks, items);
-          const resolved = index.resolve(subject.ref);
-
-          if (!resolved.ok) {
-            set.status = 404;
-            return {
-              error: 'not_found',
-              message: `Task "${subject.ref}" referenced by review not found`,
-              suggestion: 'The task may have been deleted or the reference is invalid',
-            };
-          }
-
-          const task = tasks.find((t) => t._ulid === resolved.ulid);
-          if (!task) {
-            set.status = 404;
-            return {
-              error: 'not_found',
-              message: `Task "${subject.ref}" not found`,
-            };
-          }
-
-          return {
-            review_id: review._ulid,
-            subject_type: 'task',
-            subject_ref: subject.ref,
-            content: {
-              title: task.title,
-              sections: [
-                {
-                  id: 'description',
-                  type: 'markdown',
-                  title: 'Description',
-                  content: task.description || '',
-                },
-                ...(task.notes && task.notes.length > 0
-                  ? [
-                      {
-                        id: 'notes',
-                        type: 'notes',
-                        title: 'Notes',
-                        notes: task.notes,
-                      },
-                    ]
-                  : []),
-              ],
-            },
-          };
-        }
-
-        // External subject — no structured content available
-        return {
-          review_id: review._ulid,
-          subject_type: subject.type,
-          subject_ref: null,
-          content: null,
-        };
-      },
-      {
-        params: t.Object({
-          id: t.String(),
-        }),
-      }
-    );
+        },
+        {
+          params: t.Object({
+            id: t.String(),
+          }),
+        },
+      )
+  );
 }

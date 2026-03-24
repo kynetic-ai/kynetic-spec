@@ -9,8 +9,8 @@
  * - ac-7 (@trait-websocket-protocol): Close code 1001 for timeout
  */
 
-import type { ServerWebSocket } from 'bun';
-import type { ConnectionData } from './types';
+import type { ServerWebSocket } from "bun";
+import type { ConnectionData } from "./types";
 
 export class HeartbeatManager {
   private pingInterval?: NodeJS.Timeout;
@@ -33,7 +33,7 @@ export class HeartbeatManager {
           // AC: @daemon-server ac-14, @trait-websocket-protocol ac-5, ac-7
           if (timeSincePing > this.PONG_TIMEOUT) {
             console.warn(`[heartbeat] Closing ${sessionId} - no pong for ${timeSincePing}ms`);
-            ws.close(1001, 'Ping timeout'); // AC: @trait-websocket-protocol ac-7
+            ws.close(1001, "Ping timeout"); // AC: @trait-websocket-protocol ac-7
             continue;
           }
         }

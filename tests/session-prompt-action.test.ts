@@ -73,18 +73,22 @@ function makeSessionIdleContext(overrides: Partial<ActionEventContext> = {}): Ac
 /**
  * Create a mock session handle with configurable state and tracking.
  */
-function createMockHandle(options: {
-  state?: SessionState;
-  sendPromptFn?: (prompt: string) => Promise<void>;
-} = {}): SessionHandle & { prompts: string[] } {
+function createMockHandle(
+  options: {
+    state?: SessionState;
+    sendPromptFn?: (prompt: string) => Promise<void>;
+  } = {},
+): SessionHandle & { prompts: string[] } {
   const prompts: string[] = [];
   const state = options.state ?? "idle";
 
   return {
     prompts,
-    sendPrompt: options.sendPromptFn ?? vi.fn(async (prompt: string) => {
-      prompts.push(prompt);
-    }),
+    sendPrompt:
+      options.sendPromptFn ??
+      vi.fn(async (prompt: string) => {
+        prompts.push(prompt);
+      }),
     getState: vi.fn(() => state),
     requestClose: vi.fn(),
   };
@@ -343,9 +347,7 @@ describe("ActionExecutor — session_prompt", () => {
     expect(events[1].action_run.status).toBe("completed");
 
     // Same action_run_id across events
-    expect(events[0].action_run.action_run_id).toBe(
-      events[1].action_run.action_run_id,
-    );
+    expect(events[0].action_run.action_run_id).toBe(events[1].action_run.action_run_id);
     expect(events[0].action_run.action_run_id).toBe(run.action_run_id);
   });
 
@@ -483,7 +485,8 @@ describe("ActionExecutor — session_prompt", () => {
     const executor = makeExecutor();
     const action: Action = {
       type: "session_prompt",
-      prompt_template: "Turn {{turn_count}} complete (stop: {{stop_reason}}). Continue working on {{task_ref}}.",
+      prompt_template:
+        "Turn {{turn_count}} complete (stop: {{stop_reason}}). Continue working on {{task_ref}}.",
     };
     const ctx = makeSessionIdleContext({
       session_id: "session-template-001",
@@ -778,7 +781,10 @@ describe("ActionExecutor — session_prompt skills resolution", () => {
     const metaSpy = vi.spyOn(metaModule, "loadMetaContext").mockResolvedValue({
       agents: [{ id: "task-worker", adapter: "claude-code-acp", skills: [] }],
       hooks: [],
-      skills: [{ id: "session-reflect", origin: "core" }, { id: "task-work", origin: "core" }],
+      skills: [
+        { id: "session-reflect", origin: "core" },
+        { id: "task-work", origin: "core" },
+      ],
       schedules: [],
       conventions: [],
       workflows: [],
@@ -952,9 +958,9 @@ describe("ActionExecutor — session_prompt skills resolution", () => {
     registry.register("session-initfail-001", handle);
 
     const yamlModule = await import("../src/parser/yaml.js");
-    const initSpy = vi.spyOn(yamlModule, "initContext").mockRejectedValue(
-      new Error("Cannot find kspec project"),
-    );
+    const initSpy = vi
+      .spyOn(yamlModule, "initContext")
+      .mockRejectedValue(new Error("Cannot find kspec project"));
 
     const executor = makeExecutor();
     const action: Action = {
@@ -1023,10 +1029,7 @@ describe("validateActionTemplates — session_prompt templates", () => {
   });
 
   it("warns about unknown variables in session_prompt templates", () => {
-    const warnings = validateActionTemplates(
-      ["Continue {{bogus_field}}"],
-      "session.idle",
-    );
+    const warnings = validateActionTemplates(["Continue {{bogus_field}}"], "session.idle");
     expect(warnings.length).toBe(1);
     expect(warnings[0].variable).toBe("bogus_field");
   });
@@ -1126,7 +1129,9 @@ describe("InvocationOptions.sessionRegistry — session handle lifecycle", () =>
         }
       },
       getState: () => sessionState,
-      requestClose: () => { sessionState = "closed"; },
+      requestClose: () => {
+        sessionState = "closed";
+      },
     });
 
     // During invocation: handle is discoverable
@@ -1159,7 +1164,9 @@ describe("InvocationOptions.sessionRegistry — session handle lifecycle", () =>
         }
       },
       getState: () => sessionState,
-      requestClose: () => { sessionState = "closed"; },
+      requestClose: () => {
+        sessionState = "closed";
+      },
     });
 
     const handle = registry.get(sessionId)!;
@@ -1167,7 +1174,9 @@ describe("InvocationOptions.sessionRegistry — session handle lifecycle", () =>
     // Transition to idle and set up a pending resolver
     sessionState = "idle";
     let receivedPrompt: string | null = null;
-    pendingResolve = (p: string) => { receivedPrompt = p; };
+    pendingResolve = (p: string) => {
+      receivedPrompt = p;
+    };
 
     // sendPrompt on idle handle should resolve the pending prompt
     await handle.sendPrompt("Follow-up question");
@@ -1183,7 +1192,11 @@ describe("InvocationOptions.sessionRegistry — session handle lifecycle", () =>
 
     let sessionState: SessionState = "prompting";
     let pendingResolve: ((p: string) => void) | null = null;
-    interface QueueEntry { prompt: string; resolve: () => void; reject: (e: Error) => void }
+    interface QueueEntry {
+      prompt: string;
+      resolve: () => void;
+      reject: (e: Error) => void;
+    }
     const queue: QueueEntry[] = [];
 
     // Mirror the production sendPrompt: idle path pushes to queue, wakes idle loop
@@ -1212,7 +1225,9 @@ describe("InvocationOptions.sessionRegistry — session handle lifecycle", () =>
         return Promise.reject(new Error("not ready"));
       },
       getState: () => sessionState,
-      requestClose: () => { sessionState = "closed"; },
+      requestClose: () => {
+        sessionState = "closed";
+      },
     });
 
     const handle = registry.get(sessionId)!;
@@ -1223,7 +1238,9 @@ describe("InvocationOptions.sessionRegistry — session handle lifecycle", () =>
 
     // sendPrompt should NOT resolve immediately — the promise is deferred
     let resolved = false;
-    const sendPromise = handle.sendPrompt("Deferred prompt").then(() => { resolved = true; });
+    const sendPromise = handle.sendPrompt("Deferred prompt").then(() => {
+      resolved = true;
+    });
 
     // Promise should still be pending; prompt is in the queue
     expect(resolved).toBe(false);
@@ -1246,7 +1263,11 @@ describe("InvocationOptions.sessionRegistry — session handle lifecycle", () =>
 
     let sessionState: SessionState = "prompting";
     let pendingResolve: ((p: string) => void) | null = null;
-    interface QueueEntry { prompt: string; resolve: () => void; reject: (e: Error) => void }
+    interface QueueEntry {
+      prompt: string;
+      resolve: () => void;
+      reject: (e: Error) => void;
+    }
     const queue: QueueEntry[] = [];
 
     // Mirror the production sendPrompt — handles idle WITHOUT pendingResolve
@@ -1275,7 +1296,9 @@ describe("InvocationOptions.sessionRegistry — session handle lifecycle", () =>
         return Promise.reject(new Error("not ready"));
       },
       getState: () => sessionState,
-      requestClose: () => { sessionState = "closed"; },
+      requestClose: () => {
+        sessionState = "closed";
+      },
     });
 
     const handle = registry.get(sessionId)!;
@@ -1287,7 +1310,9 @@ describe("InvocationOptions.sessionRegistry — session handle lifecycle", () =>
 
     // sendPrompt must NOT reject — it should queue the prompt
     let resolved = false;
-    const sendPromise = handle.sendPrompt("Race prompt").then(() => { resolved = true; });
+    const sendPromise = handle.sendPrompt("Race prompt").then(() => {
+      resolved = true;
+    });
 
     // Prompt should be queued, state transitioned to prompting
     expect(queue.length).toBe(1);
@@ -1317,7 +1342,9 @@ describe("InvocationOptions.sessionRegistry — session handle lifecycle", () =>
         }
       },
       getState: () => sessionState,
-      requestClose: () => { sessionState = "closed"; },
+      requestClose: () => {
+        sessionState = "closed";
+      },
     });
 
     const handle = registry.get(sessionId)!;
@@ -1331,7 +1358,11 @@ describe("InvocationOptions.sessionRegistry — session handle lifecycle", () =>
     const sessionId = "queue-001";
 
     let sessionState: SessionState = "prompting";
-    interface QueueEntry { prompt: string; resolve: () => void; reject: (e: Error) => void }
+    interface QueueEntry {
+      prompt: string;
+      resolve: () => void;
+      reject: (e: Error) => void;
+    }
     const queue: QueueEntry[] = [];
 
     registry.register(sessionId, {
@@ -1345,14 +1376,18 @@ describe("InvocationOptions.sessionRegistry — session handle lifecycle", () =>
         return Promise.resolve();
       },
       getState: () => sessionState,
-      requestClose: () => { sessionState = "closed"; },
+      requestClose: () => {
+        sessionState = "closed";
+      },
     });
 
     const handle = registry.get(sessionId)!;
 
     // sendPrompt while prompting should queue and NOT resolve yet
     let resolved = false;
-    const sendPromise = handle.sendPrompt("Queued for later").then(() => { resolved = true; });
+    const sendPromise = handle.sendPrompt("Queued for later").then(() => {
+      resolved = true;
+    });
 
     // Queue should have the entry but promise should not have resolved
     expect(queue.length).toBe(1);
@@ -1374,7 +1409,11 @@ describe("InvocationOptions.sessionRegistry — session handle lifecycle", () =>
     const sessionId = "multi-queue-001";
 
     let sessionState: SessionState = "prompting";
-    interface QueueEntry { prompt: string; resolve: () => void; reject: (e: Error) => void }
+    interface QueueEntry {
+      prompt: string;
+      resolve: () => void;
+      reject: (e: Error) => void;
+    }
     const queue: QueueEntry[] = [];
 
     registry.register(sessionId, {
@@ -1390,15 +1429,21 @@ describe("InvocationOptions.sessionRegistry — session handle lifecycle", () =>
         return Promise.resolve();
       },
       getState: () => sessionState,
-      requestClose: () => { sessionState = "closed"; },
+      requestClose: () => {
+        sessionState = "closed";
+      },
     });
 
     const handle = registry.get(sessionId)!;
 
     // Fire two session_prompt actions while the session is prompting
     const results: boolean[] = [];
-    const p1 = handle.sendPrompt("Prompt A").then(() => { results.push(true); });
-    const p2 = handle.sendPrompt("Prompt B").then(() => { results.push(true); });
+    const p1 = handle.sendPrompt("Prompt A").then(() => {
+      results.push(true);
+    });
+    const p2 = handle.sendPrompt("Prompt B").then(() => {
+      results.push(true);
+    });
 
     // Both should be queued, neither lost
     expect(queue.length).toBe(2);
@@ -1422,7 +1467,11 @@ describe("InvocationOptions.sessionRegistry — session handle lifecycle", () =>
     const sessionId = "close-reject-001";
 
     let sessionState: SessionState = "prompting";
-    interface QueueEntry { prompt: string; resolve: () => void; reject: (e: Error) => void }
+    interface QueueEntry {
+      prompt: string;
+      resolve: () => void;
+      reject: (e: Error) => void;
+    }
     const queue: QueueEntry[] = [];
 
     registry.register(sessionId, {
@@ -1495,7 +1544,7 @@ describe("SessionIdleContext — onIdle callback contract", () => {
       });
     }
 
-    expect(turns.map(t => t.turnCount)).toEqual([1, 2, 3]);
+    expect(turns.map((t) => t.turnCount)).toEqual([1, 2, 3]);
     expect(turns[2].turnDurationMs).toBe(3000);
   });
 
@@ -1568,8 +1617,10 @@ describe("session_prompt on schedules and compositions", () => {
     });
     expect(result.success).toBe(false);
     if (!result.success) {
-      const messages = result.error.issues.map(i => i.message);
-      expect(messages.some(m => m.includes("prompt") || m.includes("prompt_template"))).toBe(true);
+      const messages = result.error.issues.map((i) => i.message);
+      expect(messages.some((m) => m.includes("prompt") || m.includes("prompt_template"))).toBe(
+        true,
+      );
     }
   });
 
@@ -1617,8 +1668,10 @@ describe("session_prompt on schedules and compositions", () => {
     });
     expect(result.success).toBe(false);
     if (!result.success) {
-      const messages = result.error.issues.map(i => i.message);
-      expect(messages.some(m => m.includes("prompt") || m.includes("prompt_template"))).toBe(true);
+      const messages = result.error.issues.map((i) => i.message);
+      expect(messages.some((m) => m.includes("prompt") || m.includes("prompt_template"))).toBe(
+        true,
+      );
     }
   });
 });
@@ -1638,9 +1691,7 @@ describe("daemon wiring — session registry threaded to ActionExecutor", () => 
    * AC: @session-prompt-action ac-1
    */
   it("getSessionRegistry returns undefined when no engine is running", async () => {
-    const {
-      getSessionRegistry,
-    } = await import("../dist/daemon/routes/agent-dispatch.ts");
+    const { getSessionRegistry } = await import("../dist/daemon/routes/agent-dispatch.ts");
 
     // Before any engine starts, no registry exists for a random project path
     const fakePath = "/nonexistent/project";

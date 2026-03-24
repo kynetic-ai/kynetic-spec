@@ -5,15 +5,8 @@
  */
 
 import type { KspecContext } from "../../../parser/index.js";
-import {
-  getWorkingTreeStatus,
-  isGitRepo,
-} from "../../../utils/index.js";
-import type {
-  CheckpointIssue,
-  CheckpointOptions,
-  CheckpointResult,
-} from "./types.js";
+import { getWorkingTreeStatus, isGitRepo } from "../../../utils/index.js";
+import type { CheckpointIssue, CheckpointOptions, CheckpointResult } from "./types.js";
 
 /**
  * Perform session checkpoint - check for uncommitted work before ending session.
@@ -36,9 +29,7 @@ export async function performCheckpoint(
     const workingTree = getWorkingTreeStatus(ctx.rootDir);
     if (!workingTree.clean) {
       const changeCount =
-        workingTree.staged.length +
-        workingTree.unstaged.length +
-        workingTree.untracked.length;
+        workingTree.staged.length + workingTree.unstaged.length + workingTree.untracked.length;
 
       issues.push({
         type: "uncommitted_changes",
@@ -54,12 +45,8 @@ export async function performCheckpoint(
 
   // Build instructions based on issues
   if (issues.length > 0 && !options.force) {
-    instructions.push(
-      "Before ending this session, please commit your changes:",
-    );
-    instructions.push(
-      "1. Commit your changes with a descriptive message",
-    );
+    instructions.push("Before ending this session, please commit your changes:");
+    instructions.push("1. Commit your changes with a descriptive message");
   }
 
   // Allow stop if:

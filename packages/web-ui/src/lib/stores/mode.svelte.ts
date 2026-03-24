@@ -12,19 +12,19 @@
  * - ac-20 (@gh-pages-export): Base path prefix for snapshot URL
  */
 
-import type { KspecSnapshot } from '$lib/types/snapshot';
-import { DAEMON_API_BASE } from '$lib/constants';
-import { base } from '$app/paths';
+import type { KspecSnapshot } from "$lib/types/snapshot";
+import { DAEMON_API_BASE } from "$lib/constants";
+import { base } from "$app/paths";
 
 // Build-time static mode flag (set via VITE_STATIC_MODE=true)
 // When true, skip daemon detection entirely and load static snapshot directly
-const BUILD_STATIC_MODE = import.meta.env.VITE_STATIC_MODE === 'true';
+const BUILD_STATIC_MODE = import.meta.env.VITE_STATIC_MODE === "true";
 
 // Application modes
-export type AppMode = 'loading' | 'daemon' | 'static';
+export type AppMode = "loading" | "daemon" | "static";
 
 // Reactive state
-let mode = $state<AppMode>('loading');
+let mode = $state<AppMode>("loading");
 let snapshotData = $state<KspecSnapshot | null>(null);
 let initError = $state<string | null>(null);
 
@@ -39,43 +39,43 @@ let initError = $state<string | null>(null);
  * AC: @gh-pages-export ac-11, ac-19
  */
 export async function initMode(): Promise<void> {
-	// AC: @gh-pages-export ac-19 - Build flag bypasses daemon check
-	if (BUILD_STATIC_MODE) {
-		await loadStaticSnapshot();
-		return;
-	}
+  // AC: @gh-pages-export ac-19 - Build flag bypasses daemon check
+  if (BUILD_STATIC_MODE) {
+    await loadStaticSnapshot();
+    return;
+  }
 
-	// 1. Try daemon health check
-	try {
-		const response = await fetch(`${DAEMON_API_BASE}/api/health`, {
-			signal: AbortSignal.timeout(2000)
-		});
-		if (response.ok) {
-			mode = 'daemon';
-			return;
-		}
-	} catch {
-		// Daemon not available, try static fallback
-	}
+  // 1. Try daemon health check
+  try {
+    const response = await fetch(`${DAEMON_API_BASE}/api/health`, {
+      signal: AbortSignal.timeout(2000),
+    });
+    if (response.ok) {
+      mode = "daemon";
+      return;
+    }
+  } catch {
+    // Daemon not available, try static fallback
+  }
 
-	// 2. Fall back to static JSON
-	// AC: @gh-pages-export ac-11, ac-20 - Fetch kspec-snapshot.json with base path
-	try {
-		const response = await fetch(`${base}/kspec-snapshot.json`, {
-			signal: AbortSignal.timeout(5000)
-		});
-		if (response.ok) {
-			snapshotData = await response.json();
-			mode = 'static';
-			return;
-		}
-	} catch {
-		// Static JSON not available either
-	}
+  // 2. Fall back to static JSON
+  // AC: @gh-pages-export ac-11, ac-20 - Fetch kspec-snapshot.json with base path
+  try {
+    const response = await fetch(`${base}/kspec-snapshot.json`, {
+      signal: AbortSignal.timeout(5000),
+    });
+    if (response.ok) {
+      snapshotData = await response.json();
+      mode = "static";
+      return;
+    }
+  } catch {
+    // Static JSON not available either
+  }
 
-	// 3. Neither available - default to daemon mode and let connection error handling show message
-	mode = 'daemon';
-	initError = 'Unable to connect to daemon and no static snapshot available';
+  // 3. Neither available - default to daemon mode and let connection error handling show message
+  mode = "daemon";
+  initError = "Unable to connect to daemon and no static snapshot available";
 }
 
 /**
@@ -83,23 +83,23 @@ export async function initMode(): Promise<void> {
  * AC: @gh-pages-export ac-19, ac-20
  */
 async function loadStaticSnapshot(): Promise<void> {
-	try {
-		const response = await fetch(`${base}/kspec-snapshot.json`, {
-			signal: AbortSignal.timeout(5000)
-		});
-		if (response.ok) {
-			snapshotData = await response.json();
-			mode = 'static';
-			return;
-		}
-		console.error('[Mode] Static snapshot fetch failed:', response.status);
-	} catch (err) {
-		console.error('[Mode] Static snapshot fetch error:', err);
-	}
-	// If static mode forced but load fails, stay in static mode with error
-	// (Don't fall back to daemon - that would cause WebSocket attempts)
-	mode = 'static';
-	initError = 'Failed to load static snapshot';
+  try {
+    const response = await fetch(`${base}/kspec-snapshot.json`, {
+      signal: AbortSignal.timeout(5000),
+    });
+    if (response.ok) {
+      snapshotData = await response.json();
+      mode = "static";
+      return;
+    }
+    console.error("[Mode] Static snapshot fetch failed:", response.status);
+  } catch (err) {
+    console.error("[Mode] Static snapshot fetch error:", err);
+  }
+  // If static mode forced but load fails, stay in static mode with error
+  // (Don't fall back to daemon - that would cause WebSocket attempts)
+  mode = "static";
+  initError = "Failed to load static snapshot";
 }
 
 /**
@@ -110,28 +110,28 @@ async function loadStaticSnapshot(): Promise<void> {
  * to prevent race conditions where API calls run before initMode() completes.
  */
 export function isStaticMode(): boolean {
-	return BUILD_STATIC_MODE || mode === 'static';
+  return BUILD_STATIC_MODE || mode === "static";
 }
 
 /**
  * Check if running in daemon mode
  */
 export function isDaemonMode(): boolean {
-	return mode === 'daemon';
+  return mode === "daemon";
 }
 
 /**
  * Check if mode is still loading
  */
 export function isLoading(): boolean {
-	return mode === 'loading';
+  return mode === "loading";
 }
 
 /**
  * Get the current mode
  */
 export function getMode(): AppMode {
-	return mode;
+  return mode;
 }
 
 /**
@@ -139,7 +139,7 @@ export function getMode(): AppMode {
  * AC: @gh-pages-export ac-11
  */
 export function getSnapshot(): KspecSnapshot | null {
-	return snapshotData;
+  return snapshotData;
 }
 
 /**
@@ -147,29 +147,29 @@ export function getSnapshot(): KspecSnapshot | null {
  * AC: @gh-pages-export ac-15
  */
 export function getExportedAt(): string | null {
-	return snapshotData?.exported_at ?? null;
+  return snapshotData?.exported_at ?? null;
 }
 
 /**
  * Get project info from snapshot
  */
 export function getSnapshotProject(): { name: string; version?: string } | null {
-	return snapshotData?.project ?? null;
+  return snapshotData?.project ?? null;
 }
 
 /**
  * Get validation info from snapshot
  * AC: @gh-pages-export ac-14
  */
-export function getSnapshotValidation(): KspecSnapshot['validation'] | null {
-	return snapshotData?.validation ?? null;
+export function getSnapshotValidation(): KspecSnapshot["validation"] | null {
+  return snapshotData?.validation ?? null;
 }
 
 /**
  * Get initialization error if any
  */
 export function getInitError(): string | null {
-	return initError;
+  return initError;
 }
 
 /**
@@ -179,10 +179,10 @@ export function getInitError(): string | null {
  * AC: @gh-pages-export ac-18
  */
 export class ReadOnlyModeError extends Error {
-	constructor(operation: string) {
-		super(`Cannot ${operation} in read-only mode. Use the kspec CLI to make changes.`);
-		this.name = 'ReadOnlyModeError';
-	}
+  constructor(operation: string) {
+    super(`Cannot ${operation} in read-only mode. Use the kspec CLI to make changes.`);
+    this.name = "ReadOnlyModeError";
+  }
 }
 
 /**
@@ -190,7 +190,7 @@ export class ReadOnlyModeError extends Error {
  * AC: @gh-pages-export ac-18
  */
 export function assertWritable(operation: string): void {
-	if (isStaticMode()) {
-		throw new ReadOnlyModeError(operation);
-	}
+  if (isStaticMode()) {
+    throw new ReadOnlyModeError(operation);
+  }
 }

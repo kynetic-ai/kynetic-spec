@@ -100,10 +100,7 @@ function extractArgumentsMeta(command: Command): ArgumentMeta[] {
  * @param parentPath - Parent command path (for recursion)
  * @returns Complete command metadata tree
  */
-export function extractCommandTree(
-  command: Command,
-  parentPath: string[] = [],
-): CommandMeta {
+export function extractCommandTree(command: Command, parentPath: string[] = []): CommandMeta {
   // Get command name - use first name if command has multiple
   const commandName = command.name();
   const fullPath = [...parentPath, commandName];
@@ -142,10 +139,7 @@ export function extractCommandTree(
  * @param path - Command path (e.g., ["task", "add"])
  * @returns Command metadata if found, null otherwise
  */
-export function findCommand(
-  tree: CommandMeta,
-  path: string[],
-): CommandMeta | null {
+export function findCommand(tree: CommandMeta, path: string[]): CommandMeta | null {
   if (path.length === 0) {
     return tree;
   }

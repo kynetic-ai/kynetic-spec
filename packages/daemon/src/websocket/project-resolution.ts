@@ -7,7 +7,7 @@
  * Task: @01KKBD6KH5F5MVC5BXV2NQG474
  */
 
-import type { ProjectContextManager } from '../project-context';
+import type { ProjectContextManager } from "../project-context";
 
 export interface ResolveWebSocketProjectOptions {
   request: Request;
@@ -37,10 +37,9 @@ export function resolveWebSocketProject(
 
   // AC: @multi-directory-daemon ac-34 - Browser WebSocket API doesn't support custom headers,
   // so we also accept project path as query parameter
-  const url = new URL(request.url, `http://${request.headers.get('host')}`);
-  const projectPath = request.headers.get('X-Kspec-Dir')
-                  || url.searchParams.get('project')
-                  || undefined;
+  const url = new URL(request.url, `http://${request.headers.get("host")}`);
+  const projectPath =
+    request.headers.get("X-Kspec-Dir") || url.searchParams.get("project") || undefined;
 
   if (!manager) {
     return { resolvedPath: fallbackPath, wasRegistered: false };
@@ -57,7 +56,10 @@ export function resolveWebSocketProject(
     if (result.wasRegistered && onProjectRegistered) {
       // Start session sync for newly auto-registered project (don't block upgrade)
       void onProjectRegistered(projectContext.path).catch((syncError) => {
-        console.error(`[daemon] Failed to start session sync for WebSocket-registered ${projectContext.path}:`, syncError);
+        console.error(
+          `[daemon] Failed to start session sync for WebSocket-registered ${projectContext.path}:`,
+          syncError,
+        );
       });
     }
   } else {
@@ -66,8 +68,8 @@ export function resolveWebSocketProject(
       projectContext = manager.getProject();
     } catch (err: unknown) {
       // AC: @multi-directory-daemon ac-23 - Reject when no default
-      if (err instanceof Error && err.message.includes('No default project configured')) {
-        throw new Error('No project specified');
+      if (err instanceof Error && err.message.includes("No default project configured")) {
+        throw new Error("No project specified", { cause: err });
       }
       throw err;
     }

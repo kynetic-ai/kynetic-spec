@@ -179,11 +179,7 @@ export const ACTION_TYPES = ["command", "kspec", "agent", "notify", "session_pro
 /**
  * Action run status — tracks the lifecycle of a single action execution.
  */
-export const ActionRunStatusSchema = z.enum([
-  "running",
-  "completed",
-  "failed",
-]);
+export const ActionRunStatusSchema = z.enum(["running", "completed", "failed"]);
 
 /**
  * Action run — lightweight tracking record for a single action execution.

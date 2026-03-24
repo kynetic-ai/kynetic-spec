@@ -11,13 +11,7 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import {
-  kspec,
-  kspecJson,
-  setupTempFixtures,
-  cleanupTempDir,
-  initGitRepo,
-} from "./helpers/cli";
+import { kspec, setupTempFixtures, cleanupTempDir, initGitRepo } from "./helpers/cli";
 
 /**
  * Helper to create a budget file for a session in the test fixture directory.
@@ -35,10 +29,7 @@ async function createTestBudget(
     max_per_cycle: maxPerCycle,
     started_this_cycle: startedThisCycle,
   };
-  await fs.writeFile(
-    path.join(sessionDir, "budget.json"),
-    JSON.stringify(budget, null, 2) + "\n",
-  );
+  await fs.writeFile(path.join(sessionDir, "budget.json"), `${JSON.stringify(budget, null, 2)}\n`);
 }
 
 /**
@@ -48,12 +39,7 @@ async function readTestBudget(
   projectRoot: string,
   sessionId: string,
 ): Promise<{ max_per_cycle: number; started_this_cycle: number } | null> {
-  const budgetPath = path.join(
-    projectRoot,
-    ".kspec-sessions",
-    sessionId,
-    "budget.json",
-  );
+  const budgetPath = path.join(projectRoot, ".kspec-sessions", sessionId, "budget.json");
   try {
     const content = await fs.readFile(budgetPath, "utf-8");
     return JSON.parse(content);
@@ -195,10 +181,7 @@ describe("Integration: task budget enforcement", () => {
       // These run without budget env to avoid budget interference during setup
       kspec("task start @test-task-pending", tempDir);
       kspec("task submit @test-task-pending", tempDir);
-      kspec(
-        'task needs-work @test-task-pending --reason "Fix cycle test"',
-        tempDir,
-      );
+      kspec('task needs-work @test-task-pending --reason "Fix cycle test"', tempDir);
 
       // Now restart from needs_work WITH session — should NOT increment
       kspec("task start @test-task-pending", tempDir, {
@@ -218,10 +201,7 @@ describe("Integration: task budget enforcement", () => {
       // Put task into needs_work without budget env
       kspec("task start @test-task-pending", tempDir);
       kspec("task submit @test-task-pending", tempDir);
-      kspec(
-        'task needs-work @test-task-pending --reason "Fix cycle test"',
-        tempDir,
-      );
+      kspec('task needs-work @test-task-pending --reason "Fix cycle test"', tempDir);
 
       // Restart from needs_work even though budget is exhausted
       const result = kspec("task start @test-task-pending", tempDir, {
@@ -277,12 +257,7 @@ describe("Integration: task budget enforcement", () => {
         env: { KSPEC_SESSION_ID: SESSION_ID },
       });
 
-      const budgetPath = path.join(
-        tempDir,
-        ".kspec-sessions",
-        SESSION_ID,
-        "budget.json",
-      );
+      const budgetPath = path.join(tempDir, ".kspec-sessions", SESSION_ID, "budget.json");
       const content = await fs.readFile(budgetPath, "utf-8");
       // Should parse without error
       const budget = JSON.parse(content);

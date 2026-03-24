@@ -4,19 +4,16 @@
  * Extracted from session-start-computed-json.test.ts and session-start-inbox-triage.test.ts
  * where these helpers were duplicated identically.
  */
-import { writeFileSync } from 'node:fs';
-import path from 'node:path';
-import { stringify as yamlStringify } from 'yaml';
-import { kspec, kspecJson } from './cli';
+import { writeFileSync } from "node:fs";
+import path from "node:path";
+import { stringify as yamlStringify } from "yaml";
+import { kspec, kspecJson } from "./cli";
 
 /**
  * Add an inbox item and return its full ULID.
  */
 export function addInboxItem(tempDir: string, text: string): string {
-  const result = kspecJson<{ item: { _ulid: string } }>(
-    `inbox add "${text}"`,
-    tempDir,
-  );
+  const result = kspecJson<{ item: { _ulid: string } }>(`inbox add "${text}"`, tempDir);
   return result.item._ulid;
 }
 
@@ -30,10 +27,7 @@ export function triageItem(
   action: string,
   reasoning: string,
 ): void {
-  kspec(
-    `triage record @${inboxUlid} --action ${action} --reasoning "${reasoning}"`,
-    tempDir,
-  );
+  kspec(`triage record @${inboxUlid} --action ${action} --reasoning "${reasoning}"`, tempDir);
 }
 
 /**
@@ -52,14 +46,14 @@ export function seedInboxItems(
   }>,
 ): void {
   writeFileSync(
-    path.join(tempDir, 'project.inbox.yaml'),
+    path.join(tempDir, "project.inbox.yaml"),
     yamlStringify({
       inbox: items.map((item) => ({
         _ulid: item._ulid,
         text: item.text,
-        created_at: item.created_at ?? '2026-01-01T00:00:00.000Z',
+        created_at: item.created_at ?? "2026-01-01T00:00:00.000Z",
         tags: item.tags ?? [],
-        added_by: '@test',
+        added_by: "@test",
       })),
     }),
   );
@@ -83,19 +77,19 @@ export function seedTriageRecords(
   }>,
 ): void {
   writeFileSync(
-    path.join(tempDir, 'project.triage.yaml'),
+    path.join(tempDir, "project.triage.yaml"),
     yamlStringify({
-      kynetic_triage: '1.0',
+      kynetic_triage: "1.0",
       triage: records.map((r) => ({
         _ulid: r._ulid,
         inbox_ref: r.inbox_ref,
         item_snapshot: r.item_snapshot,
-        status: 'triaged',
+        status: "triaged",
         action: r.action,
         reasoning: r.reasoning,
-        decided_by: '@test',
+        decided_by: "@test",
         evidence_refs: [],
-        created_at: r.created_at ?? '2026-01-01T00:00:00.000Z',
+        created_at: r.created_at ?? "2026-01-01T00:00:00.000Z",
       })),
     }),
   );

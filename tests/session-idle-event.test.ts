@@ -302,21 +302,18 @@ describe("ac-3: hook filter on turn_count or agent filters session.idle events",
   });
 
   it("should warn when filtering on unknown fields for session.idle", () => {
-    const warnings = validateHookFilter(
-      "test-hook",
-      "session.idle",
-      { nonexistent_field: "value" },
-    );
+    const warnings = validateHookFilter("test-hook", "session.idle", {
+      nonexistent_field: "value",
+    });
     expect(warnings.length).toBeGreaterThan(0);
     expect(warnings[0].field).toBe("nonexistent_field");
   });
 
   it("should not warn when filtering on valid session.idle payload fields", () => {
-    const warnings = validateHookFilter(
-      "test-hook",
-      "session.idle",
-      { turn_count: 3, agent_id: "task-worker" },
-    );
+    const warnings = validateHookFilter("test-hook", "session.idle", {
+      turn_count: 3,
+      agent_id: "task-worker",
+    });
     expect(warnings).toHaveLength(0);
   });
 
@@ -414,12 +411,18 @@ describe("ac-4: existing hooks and dispatch rules targeting other event types ar
 
   it("should still accept all existing event types in SessionTriggerSchema", () => {
     const allExisting = [
-      "manual", "legacy",
+      "manual",
+      "legacy",
       ...existingTaskEvents,
       ...existingSessionEvents,
-      "invocation.started", "invocation.completed", "invocation.failed", "invocation.stalled",
+      "invocation.started",
+      "invocation.completed",
+      "invocation.failed",
+      "invocation.stalled",
       "schedule.tick",
-      "action.started", "action.completed", "action.failed",
+      "action.started",
+      "action.completed",
+      "action.failed",
     ];
     for (const event of allExisting) {
       const result = SessionTriggerSchema.safeParse(event);

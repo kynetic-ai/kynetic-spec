@@ -74,10 +74,7 @@ function resolveMetaRefToUlid(
   return { ulid: result.ulid, type: result.type };
 }
 
-function collectRepeatedOptionValues(
-  value: string,
-  previous: string[] = [],
-): string[] {
+function collectRepeatedOptionValues(value: string, previous: string[] = []): string[] {
   return [...previous, value];
 }
 
@@ -87,7 +84,7 @@ function parseDispatchRuleOption(rawRule: string): AgentDispatchRule {
     parsedRule = JSON.parse(rawRule);
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    throw new Error(`Invalid JSON in --add-dispatch-rule: ${message}`);
+    throw new Error(`Invalid JSON in --add-dispatch-rule: ${message}`, { cause: err });
   }
 
   const parsed = AgentDispatchRuleSchema.safeParse(parsedRule);
@@ -101,9 +98,7 @@ function parseDispatchRuleOption(rawRule: string): AgentDispatchRule {
   return parsed.data;
 }
 
-function parseDispatchEventOption(
-  rawEvent: string,
-): z.infer<typeof AgentDispatchEventSchema> {
+function parseDispatchEventOption(rawEvent: string): z.infer<typeof AgentDispatchEventSchema> {
   const parsed = AgentDispatchEventSchema.safeParse(rawEvent);
   if (!parsed.success) {
     throw new Error(
@@ -155,9 +150,7 @@ function resolveObservationRefForBatch(
   observations: Observation[],
 ): { item: Observation | null; error?: string } {
   const normalizedRef = ref.startsWith("@") ? ref.substring(1) : ref;
-  const observation = observations.find((o) =>
-    o._ulid.startsWith(normalizedRef),
-  );
+  const observation = observations.find((o) => o._ulid.startsWith(normalizedRef));
 
   if (!observation) {
     return { item: null, error: `Observation not found: ${ref}` };
@@ -176,9 +169,7 @@ function formatMetaShow(meta: MetaContext): void {
   if (!meta.manifest) {
     console.log(chalk.yellow("No meta manifest found (kynetic.meta.yaml)"));
     console.log(
-      chalk.gray(
-        "Create one to define agents, workflows, conventions, observations, and skills",
-      ),
+      chalk.gray("Create one to define agents, workflows, conventions, observations, and skills"),
     );
     return;
   }
@@ -188,9 +179,7 @@ function formatMetaShow(meta: MetaContext): void {
   console.log(`Agents:       ${stats.agents}`);
   console.log(`Workflows:    ${stats.workflows}`);
   console.log(`Conventions:  ${stats.conventions}`);
-  console.log(
-    `Observations: ${stats.observations} (${stats.unresolvedObservations} unresolved)`,
-  );
+  console.log(`Observations: ${stats.observations} (${stats.unresolvedObservations} unresolved)`);
   // AC: @skill-meta-integration ac-3 - include skill count
   console.log(`Skills:       ${stats.skills}`);
 }
@@ -231,12 +220,7 @@ function formatWorkflows(workflows: Workflow[]): void {
   }
 
   const table = new Table({
-    head: [
-      chalk.bold("ID"),
-      chalk.bold("Trigger"),
-      chalk.bold("Steps"),
-      chalk.bold("Mode"),
-    ],
+    head: [chalk.bold("ID"), chalk.bold("Trigger"), chalk.bold("Steps"), chalk.bold("Mode")],
     style: {
       head: [],
       border: [],
@@ -374,19 +358,12 @@ function formatConventionDetail(convention: Convention): void {
  * AC-obs-2: outputs table with columns: ID, Type, Workflow, Created, Content (truncated)
  * AC: @obs-list-display ac-1 - When --all flag used, show Resolved column with ✓/✗
  */
-function formatObservations(
-  observations: Observation[],
-  showResolved: boolean,
-): void {
-  const filtered = showResolved
-    ? observations
-    : observations.filter((o) => !o.resolved);
+function formatObservations(observations: Observation[], showResolved: boolean): void {
+  const filtered = showResolved ? observations : observations.filter((o) => !o.resolved);
 
   if (filtered.length === 0) {
     console.log(
-      chalk.yellow(
-        showResolved ? "No observations found" : "No unresolved observations",
-      ),
+      chalk.yellow(showResolved ? "No observations found" : "No unresolved observations"),
     );
     return;
   }
@@ -409,9 +386,7 @@ function formatObservations(
         chalk.bold("Content"),
       ];
 
-  const colWidths = showResolved
-    ? [10, 10, 10, 20, 12, 40]
-    : [10, 10, 20, 12, 50];
+  const colWidths = showResolved ? [10, 10, 10, 20, 12, 40] : [10, 10, 20, 12, 50];
 
   const table = new Table({
     head: headers,
@@ -436,9 +411,7 @@ function formatObservations(
 
     // AC: @obs-list-display ac-1 - Show ✓ for resolved, ✗ for unresolved
     if (showResolved) {
-      const resolvedIndicator = obs.resolved
-        ? chalk.green("✓")
-        : chalk.red("✗");
+      const resolvedIndicator = obs.resolved ? chalk.green("✓") : chalk.red("✗");
       table.push([id, obs.type, resolvedIndicator, workflow, created, content]);
     } else {
       table.push([id, obs.type, workflow, created, content]);
@@ -454,9 +427,7 @@ function formatObservations(
 export function registerMetaCommands(program: Command): void {
   const meta = program
     .command("meta")
-    .description(
-      "Meta-spec commands (agents, workflows, conventions, observations)",
-    );
+    .description("Meta-spec commands (agents, workflows, conventions, observations)");
 
   // AC-meta-manifest-1: kspec meta show outputs summary with counts
   meta
@@ -667,9 +638,7 @@ export function registerMetaCommands(program: Command): void {
         // Output the item
         output(found, () => {
           console.log(
-            chalk.bold(
-              `${itemType.charAt(0).toUpperCase() + itemType.slice(1)}: ${ref}`,
-            ),
+            chalk.bold(`${itemType.charAt(0).toUpperCase() + itemType.slice(1)}: ${ref}`),
           );
           console.log(chalk.gray("─".repeat(60)));
           console.log(JSON.stringify(found, null, 2));
@@ -685,10 +654,7 @@ export function registerMetaCommands(program: Command): void {
   meta
     .command("list")
     .description("List all meta items")
-    .option(
-      "--type <type>",
-      "Filter by type (agent, workflow, convention, observation, skill)",
-    )
+    .option("--type <type>", "Filter by type (agent, workflow, convention, observation, skill)")
     .action(async (options) => {
       try {
         const ctx = await initContext();
@@ -802,173 +768,130 @@ export function registerMetaCommands(program: Command): void {
   // AC: @meta-observe-cmd from-inbox-conversion
   markMutating(meta.command("observe [type] [content]"))
     .description("Create an observation (friction, success, question, idea)")
-    .option(
-      "--workflow <ref>",
-      "Reference to workflow this observation relates to",
-    )
+    .option("--workflow <ref>", "Reference to workflow this observation relates to")
     .option("--author <author>", "Author of the observation")
     .option("--from-inbox <ref>", "Convert inbox item to observation")
-    .option(
-      "--type <type>",
-      "Override type when using --from-inbox (defaults to idea)",
-    )
-    .action(
-      async (
-        type: string | undefined,
-        content: string | undefined,
-        options,
-      ) => {
-        try {
-          const ctx = await initContext();
+    .option("--type <type>", "Override type when using --from-inbox (defaults to idea)")
+    .action(async (type: string | undefined, content: string | undefined, options) => {
+      try {
+        const ctx = await initContext();
 
-          if (!ctx.manifestPath) {
-            error(errors.project.noKspecProject);
-            process.exit(EXIT_CODES.ERROR);
+        if (!ctx.manifestPath) {
+          error(errors.project.noKspecProject);
+          process.exit(EXIT_CODES.ERROR);
+        }
+
+        // AC: @meta-observe-cmd from-inbox-conversion
+        // Handle --from-inbox flag
+        if (options.fromInbox) {
+          // Load inbox items
+          const inboxItems = await loadInboxItems(ctx);
+          const item = findInboxItemByRef(inboxItems, options.fromInbox);
+
+          if (!item) {
+            error(errors.reference.inboxNotFound(options.fromInbox));
+            process.exit(EXIT_CODES.NOT_FOUND);
           }
 
-          // AC: @meta-observe-cmd from-inbox-conversion
-          // Handle --from-inbox flag
-          if (options.fromInbox) {
-            // Load inbox items
-            const inboxItems = await loadInboxItems(ctx);
-            const item = findInboxItemByRef(inboxItems, options.fromInbox);
+          // Use inbox item content
+          const observationContent = item.text;
 
-            if (!item) {
-              error(errors.reference.inboxNotFound(options.fromInbox));
-              process.exit(EXIT_CODES.NOT_FOUND);
-            }
-
-            // Use inbox item content
-            const observationContent = item.text;
-
-            // Type defaults to 'idea' but can be overridden with --type flag
-            const observationType = (options.type || "idea") as ObservationType;
-
-            // Validate observation type
-            const validTypes: ObservationType[] = [
-              "friction",
-              "success",
-              "question",
-              "idea",
-            ];
-            if (!validTypes.includes(observationType)) {
-              error(errors.validation.invalidObservationType(observationType));
-              console.log(`Valid types: ${validTypes.join(", ")}`);
-              process.exit(EXIT_CODES.ERROR);
-            }
-
-            // Create observation
-            const observation = createObservation(
-              observationType,
-              observationContent,
-              {
-                workflow_ref: options.workflow,
-                author: options.author,
-                configAuthor: ctx.config?.identity?.author,
-              },
-            );
-
-            // Save observation
-            await saveObservation(ctx, observation);
-
-            // Delete inbox item
-            const deleted = await deleteInboxItem(ctx, item._ulid);
-            if (!deleted) {
-              error("Failed to delete inbox item after creating observation");
-              process.exit(EXIT_CODES.ERROR);
-            }
-
-            await commitIfShadow(
-              ctx.shadow,
-              "meta-observe-from-inbox",
-              observation._ulid.substring(0, 8),
-              `Convert inbox item to ${observationType} observation`,
-            );
-
-            // Return observation ref
-            output(observation, () =>
-              success(
-                `Created observation: ${observation._ulid.substring(0, 8)}`,
-              ),
-            );
-            return;
-          }
-
-          // Standard observe flow (without --from-inbox)
-          if (!type || !content) {
-            error("Type and content are required when not using --from-inbox");
-            process.exit(EXIT_CODES.ERROR);
-          }
+          // Type defaults to 'idea' but can be overridden with --type flag
+          const observationType = (options.type || "idea") as ObservationType;
 
           // Validate observation type
-          const validTypes: ObservationType[] = [
-            "friction",
-            "success",
-            "question",
-            "idea",
-          ];
-          if (!validTypes.includes(type as ObservationType)) {
-            error(errors.validation.invalidObservationType(type));
+          const validTypes: ObservationType[] = ["friction", "success", "question", "idea"];
+          if (!validTypes.includes(observationType)) {
+            error(errors.validation.invalidObservationType(observationType));
             console.log(`Valid types: ${validTypes.join(", ")}`);
             process.exit(EXIT_CODES.ERROR);
           }
 
           // Create observation
-          const observation = createObservation(
-            type as ObservationType,
-            content,
-            {
-              workflow_ref: options.workflow,
-              author: options.author,
-              configAuthor: ctx.config?.identity?.author,
-            },
-          );
+          const observation = createObservation(observationType, observationContent, {
+            workflow_ref: options.workflow,
+            author: options.author,
+            configAuthor: ctx.config?.identity?.author,
+          });
 
-          // Save to manifest
+          // Save observation
           await saveObservation(ctx, observation);
 
-          // AC: @trait-shadow-commit ac-1
+          // Delete inbox item
+          const deleted = await deleteInboxItem(ctx, item._ulid);
+          if (!deleted) {
+            error("Failed to delete inbox item after creating observation");
+            process.exit(EXIT_CODES.ERROR);
+          }
+
           await commitIfShadow(
             ctx.shadow,
-            "meta-observe",
+            "meta-observe-from-inbox",
             observation._ulid.substring(0, 8),
-            type as string,
+            `Convert inbox item to ${observationType} observation`,
           );
 
-          // AC-obs-1: outputs "OK Created observation: <ULID-prefix>"
-          // In JSON mode, return the created observation object
+          // Return observation ref
           output(observation, () =>
-            success(
-              `Created observation: ${observation._ulid.substring(0, 8)}`,
-            ),
+            success(`Created observation: ${observation._ulid.substring(0, 8)}`),
           );
-        } catch (err) {
-          error(errors.failures.createObservation, err);
+          return;
+        }
+
+        // Standard observe flow (without --from-inbox)
+        if (!type || !content) {
+          error("Type and content are required when not using --from-inbox");
           process.exit(EXIT_CODES.ERROR);
         }
-      },
-    );
+
+        // Validate observation type
+        const validTypes: ObservationType[] = ["friction", "success", "question", "idea"];
+        if (!validTypes.includes(type as ObservationType)) {
+          error(errors.validation.invalidObservationType(type));
+          console.log(`Valid types: ${validTypes.join(", ")}`);
+          process.exit(EXIT_CODES.ERROR);
+        }
+
+        // Create observation
+        const observation = createObservation(type as ObservationType, content, {
+          workflow_ref: options.workflow,
+          author: options.author,
+          configAuthor: ctx.config?.identity?.author,
+        });
+
+        // Save to manifest
+        await saveObservation(ctx, observation);
+
+        // AC: @trait-shadow-commit ac-1
+        await commitIfShadow(
+          ctx.shadow,
+          "meta-observe",
+          observation._ulid.substring(0, 8),
+          type as string,
+        );
+
+        // AC-obs-1: outputs "OK Created observation: <ULID-prefix>"
+        // In JSON mode, return the created observation object
+        output(observation, () =>
+          success(`Created observation: ${observation._ulid.substring(0, 8)}`),
+        );
+      } catch (err) {
+        error(errors.failures.createObservation, err);
+        process.exit(EXIT_CODES.ERROR);
+      }
+    });
 
   // AC-obs-2, AC-obs-5: kspec meta observations
   // AC: @observation-content-search ac-search-flag, ac-regex-support, ac-combined-filters
   meta
     .command("observations")
     .description("List observations (shows unresolved by default)")
-    .option(
-      "--type <type>",
-      "Filter by observation type (friction/success/question/idea)",
-    )
+    .option("--type <type>", "Filter by observation type (friction/success/question/idea)")
     .option("--workflow <ref>", "Filter by workflow reference")
     .option("--all", "Include resolved observations")
     .option("--promoted", "Show only observations promoted to tasks")
-    .option(
-      "--pending-resolution",
-      "Show observations with completed tasks awaiting resolution",
-    )
-    .option(
-      "--search <pattern>",
-      "Search observations by regex pattern (matches content)",
-    )
+    .option("--pending-resolution", "Show observations with completed tasks awaiting resolution")
+    .option("--search <pattern>", "Search observations by regex pattern (matches content)")
     .action(async (options) => {
       try {
         const ctx = await initContext();
@@ -983,21 +906,15 @@ export function registerMetaCommands(program: Command): void {
 
         // Apply filters
         if (options.type) {
-          observations = observations.filter(
-            (obs) => obs.type === options.type,
-          );
+          observations = observations.filter((obs) => obs.type === options.type);
         }
 
         if (options.workflow) {
-          observations = observations.filter(
-            (obs) => obs.workflow_ref === options.workflow,
-          );
+          observations = observations.filter((obs) => obs.workflow_ref === options.workflow);
         }
 
         if (options.promoted) {
-          observations = observations.filter(
-            (obs) => obs.promoted_to !== undefined,
-          );
+          observations = observations.filter((obs) => obs.promoted_to !== undefined);
         }
 
         if (options.pendingResolution) {
@@ -1012,11 +929,7 @@ export function registerMetaCommands(program: Command): void {
             if (!taskResult.ok) return false;
             const item = taskResult.item;
             // Type guard: check if item is a task (has status and depends_on properties)
-            return (
-              "status" in item &&
-              "depends_on" in item &&
-              item.status === "completed"
-            );
+            return "status" in item && "depends_on" in item && item.status === "completed";
           });
         }
 
@@ -1025,10 +938,7 @@ export function registerMetaCommands(program: Command): void {
         if (options.search) {
           const { grepItem } = await import("../../utils/grep.js");
           observations = observations.filter((obs) => {
-            const match = grepItem(
-              obs as unknown as Record<string, unknown>,
-              options.search,
-            );
+            const match = grepItem(obs as unknown as Record<string, unknown>, options.search);
             return match !== null;
           });
         }
@@ -1083,9 +993,7 @@ export function registerMetaCommands(program: Command): void {
         }
 
         if (resolved.type !== "observation") {
-          error(
-            `Cannot promote ${resolved.type}. Only observations can be promoted to tasks.`,
-          );
+          error(`Cannot promote ${resolved.type}. Only observations can be promoted to tasks.`);
           process.exit(EXIT_CODES.ERROR);
         }
 
@@ -1093,9 +1001,7 @@ export function registerMetaCommands(program: Command): void {
 
         // AC-obs-6: Check if already promoted
         if (observation.promoted_to) {
-          error(
-            errors.conflict.observationAlreadyPromoted(observation.promoted_to),
-          );
+          error(errors.conflict.observationAlreadyPromoted(observation.promoted_to));
           process.exit(EXIT_CODES.CONFLICT);
         }
 
@@ -1117,17 +1023,21 @@ export function registerMetaCommands(program: Command): void {
         }
 
         // AC-obs-3: Create task with title, description from observation, meta_ref, and origin
-        const task = await resolveTaskDataManager(ctx).createTask(ctx, {
-          title: options.title,
-          description: observation.content,
-          priority: priorityResult.value,
-          meta_ref: observation.workflow_ref,
-          origin: "observation_promotion",
-        }, {
-          operation: "task-add",
-          ref: options.title,
-          detail: options.title,
-        });
+        const task = await resolveTaskDataManager(ctx).createTask(
+          ctx,
+          {
+            title: options.title,
+            description: observation.content,
+            priority: priorityResult.value,
+            meta_ref: observation.workflow_ref,
+            origin: "observation_promotion",
+          },
+          {
+            operation: "task-add",
+            ref: options.title,
+            detail: options.title,
+          },
+        );
         const taskRef = `@${task._ulid.substring(0, 8)}`;
 
         // Update observation with promoted_to field
@@ -1135,11 +1045,7 @@ export function registerMetaCommands(program: Command): void {
         await saveObservation(ctx, observation);
 
         // AC: @trait-shadow-commit ac-1
-        await commitIfShadow(
-          ctx.shadow,
-          "observation-promote",
-          observation._ulid.substring(0, 8),
-        );
+        await commitIfShadow(ctx.shadow, "observation-promote", observation._ulid.substring(0, 8));
 
         // AC-obs-3: outputs "OK Created task: <ULID-prefix>"
         // In JSON mode, return the created task object
@@ -1166,142 +1072,129 @@ Examples:
   $ kspec meta resolve @obs-ref "Fixed in PR #123"
   $ kspec meta resolve --refs @obs1 @obs2 --resolution "Resolved in batch"`,
     )
-    .action(
-      async (
-        ref: string | undefined,
-        resolutionArg: string | undefined,
-        options,
-      ) => {
-        try {
-          const ctx = await initContext();
+    .action(async (ref: string | undefined, resolutionArg: string | undefined, options) => {
+      try {
+        const ctx = await initContext();
 
-          if (!ctx.manifestPath) {
-            error(errors.project.noKspecProject);
-            process.exit(EXIT_CODES.ERROR);
-          }
+        if (!ctx.manifestPath) {
+          error(errors.project.noKspecProject);
+          process.exit(EXIT_CODES.ERROR);
+        }
 
-          const metaCtx = await loadMetaContext(ctx);
-          const observations = metaCtx.observations || [];
+        const metaCtx = await loadMetaContext(ctx);
+        const observations = metaCtx.observations || [];
 
-          // Load tasks/items for auto-resolution from promoted tasks
-          // Full task data needed: closed_reason is used for auto-resolution text (AC-obs-9)
-          const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
-          const items = await loadAllItems(ctx);
-          const index = new ReferenceIndex(tasks, items);
+        // Load tasks/items for auto-resolution from promoted tasks
+        // Full task data needed: closed_reason is used for auto-resolution text (AC-obs-9)
+        const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+        const items = await loadAllItems(ctx);
+        const index = new ReferenceIndex(tasks, items);
 
-          // Resolution can come from positional arg or --resolution flag
-          const resolution = resolutionArg || options.resolution;
+        // Resolution can come from positional arg or --resolution flag
+        const resolution = resolutionArg || options.resolution;
 
-          // AC: @trait-multi-ref-batch ac-8 - Deduplicate refs
-          const refsFlag = options.refs
-            ? [...new Set(options.refs as string[])]
-            : undefined;
+        // AC: @trait-multi-ref-batch ac-8 - Deduplicate refs
+        const refsFlag = options.refs ? [...new Set(options.refs as string[])] : undefined;
 
-          // AC: @trait-multi-ref-batch ac-1, ac-2, ac-3, ac-4, ac-5
-          const result = await executeBatchOperation({
-            positionalRef: ref,
-            refsFlag,
-            context: { ctx, observations, tasks, items, index, resolution },
-            items: observations,
-            index: index,
-            resolveRef: (refStr, obsList) => {
-              return resolveObservationRefForBatch(
-                refStr,
-                obsList as Observation[],
-              );
-            },
-            executeOperation: async (
-              observation: Observation,
-              { ctx, tasks, items, index, resolution },
-            ) => {
-              // AC-obs-7: Check if already resolved
-              if (observation.resolved) {
-                const resolvedDate = new Date(observation.resolved_at!)
-                  .toISOString()
-                  .split("T")[0];
-                const resolutionText = observation.resolution || "";
-                const truncated =
-                  resolutionText.length > 50
-                    ? `${resolutionText.substring(0, 50)}...`
-                    : resolutionText;
-                return {
-                  success: false,
-                  error: `Already resolved on ${resolvedDate}: ${truncated}`,
-                };
-              }
+        // AC: @trait-multi-ref-batch ac-1, ac-2, ac-3, ac-4, ac-5
+        const result = await executeBatchOperation({
+          positionalRef: ref,
+          refsFlag,
+          context: { ctx, observations, tasks, items, index, resolution },
+          items: observations,
+          index: index,
+          resolveRef: (refStr, obsList) => {
+            return resolveObservationRefForBatch(refStr, obsList as Observation[]);
+          },
+          executeOperation: async (
+            observation: Observation,
+            { ctx, tasks: _tasks, items: _items, index, resolution },
+          ) => {
+            // AC-obs-7: Check if already resolved
+            if (observation.resolved) {
+              const resolvedDate = new Date(observation.resolved_at!).toISOString().split("T")[0];
+              const resolutionText = observation.resolution || "";
+              const truncated =
+                resolutionText.length > 50
+                  ? `${resolutionText.substring(0, 50)}...`
+                  : resolutionText;
+              return {
+                success: false,
+                error: `Already resolved on ${resolvedDate}: ${truncated}`,
+              };
+            }
 
-              // AC-obs-9: Auto-populate resolution from task completion if promoted
-              let finalResolution = resolution;
-              if (!finalResolution && observation.promoted_to) {
-                const taskResult = index.resolve(observation.promoted_to);
+            // AC-obs-9: Auto-populate resolution from task completion if promoted
+            let finalResolution = resolution;
+            if (!finalResolution && observation.promoted_to) {
+              const taskResult = index.resolve(observation.promoted_to);
 
-                if (taskResult.ok) {
-                  const item = taskResult.item;
-                  // Type guard: ensure this is a task
-                  if ("status" in item && "depends_on" in item) {
-                    const task = item as LoadedTask;
-                    if (task.status === "completed" && task.closed_reason) {
-                      finalResolution = `Resolved via task ${observation.promoted_to}: ${task.closed_reason}`;
-                    } else if (task.status === "completed") {
-                      finalResolution = `Resolved via task ${observation.promoted_to}`;
-                    } else {
-                      return {
-                        success: false,
-                        error: `Task ${observation.promoted_to} is not completed yet`,
-                      };
-                    }
+              if (taskResult.ok) {
+                const item = taskResult.item;
+                // Type guard: ensure this is a task
+                if ("status" in item && "depends_on" in item) {
+                  const task = item as LoadedTask;
+                  if (task.status === "completed" && task.closed_reason) {
+                    finalResolution = `Resolved via task ${observation.promoted_to}: ${task.closed_reason}`;
+                  } else if (task.status === "completed") {
+                    finalResolution = `Resolved via task ${observation.promoted_to}`;
                   } else {
                     return {
                       success: false,
-                      error: `Reference ${observation.promoted_to} is not a task`,
+                      error: `Task ${observation.promoted_to} is not completed yet`,
                     };
                   }
                 } else {
                   return {
                     success: false,
-                    error: `Task ${observation.promoted_to} not found`,
+                    error: `Reference ${observation.promoted_to} is not a task`,
                   };
                 }
-              }
-
-              if (!finalResolution) {
+              } else {
                 return {
                   success: false,
-                  error: "Resolution text required",
+                  error: `Task ${observation.promoted_to} not found`,
                 };
               }
+            }
 
-              // AC-obs-4: Update observation
-              observation.resolved = true;
-              observation.resolution = finalResolution;
-              observation.resolved_at = new Date().toISOString();
-              observation.resolved_by = observation.author;
-
-              await saveObservation(ctx, observation);
-
-              // AC: @trait-shadow-commit ac-1
-              await commitIfShadow(
-                ctx.shadow,
-                "observation-resolve",
-                observation._ulid.substring(0, 8),
-              );
-
+            if (!finalResolution) {
               return {
-                success: true,
-                message: `Resolved: ${observation._ulid.substring(0, 8)}`,
+                success: false,
+                error: "Resolution text required",
               };
-            },
-            getUlid: (obs: Observation) => obs._ulid,
-          });
+            }
 
-          // AC: @trait-multi-ref-batch ac-5, ac-7 - Output formatting
-          formatBatchOutput(result, "Resolve");
-        } catch (err) {
-          error(errors.failures.resolveObservation, err);
-          process.exit(EXIT_CODES.ERROR);
-        }
-      },
-    );
+            // AC-obs-4: Update observation
+            observation.resolved = true;
+            observation.resolution = finalResolution;
+            observation.resolved_at = new Date().toISOString();
+            observation.resolved_by = observation.author;
+
+            await saveObservation(ctx, observation);
+
+            // AC: @trait-shadow-commit ac-1
+            await commitIfShadow(
+              ctx.shadow,
+              "observation-resolve",
+              observation._ulid.substring(0, 8),
+            );
+
+            return {
+              success: true,
+              message: `Resolved: ${observation._ulid.substring(0, 8)}`,
+            };
+          },
+          getUlid: (obs: Observation) => obs._ulid,
+        });
+
+        // AC: @trait-multi-ref-batch ac-5, ac-7 - Output formatting
+        formatBatchOutput(result, "Resolve");
+      } catch (err) {
+        error(errors.failures.resolveObservation, err);
+        process.exit(EXIT_CODES.ERROR);
+      }
+    });
 
   // Meta add command - create new meta items
   markMutating(meta.command("add <type>"))
@@ -1314,10 +1207,7 @@ Examples:
     .option("--capability <cap...>", "Capabilities (for agents)")
     .option("--tool <tool...>", "Tools (for agents)")
     .option("--convention <conv...>", "Convention references (for agents)")
-    .option(
-      "--adapter <adapter>",
-      "Adapter reference or npx package name (for agents)",
-    )
+    .option("--adapter <adapter>", "Adapter reference or npx package name (for agents)")
     .option("--skill <skill...>", "Skill slugs (for agents)")
     .option(
       "--add-dispatch-rule <json>",
@@ -1325,28 +1215,16 @@ Examples:
       collectRepeatedOptionValues,
       [],
     )
-    .option(
-      "--remove-dispatch-rule <on>",
-      "Remove dispatch rules by event type (for agents)",
-    )
+    .option("--remove-dispatch-rule <on>", "Remove dispatch rules by event type (for agents)")
     .option("--clear-dispatch-rules", "Remove all dispatch rules (for agents)")
-    .option(
-      "--auto-approve",
-      "Auto-approve tasks without human confirmation (for agents)",
-    )
+    .option("--auto-approve", "Auto-approve tasks without human confirmation (for agents)")
     .option("--max-tasks <n>", "Maximum tasks budget (for agents)")
     .option("--max-retries <n>", "Maximum retry attempts on failure (for agents, default 3)")
     .option("--timeout-minutes <n>", "Timeout in minutes budget (for agents)")
-    .option(
-      "--max-concurrent <n>",
-      "Max concurrent tasks (for agents, default 1)",
-    )
+    .option("--max-concurrent <n>", "Max concurrent tasks (for agents, default 1)")
     .option("--rule <rule...>", "Rules (for conventions)")
     .option("--steps <json>", "Workflow steps as JSON array (for workflows)")
-    .option(
-      "--mode <mode>",
-      "Workflow mode: interactive (default) or loop (for workflows)",
-    )
+    .option("--mode <mode>", "Workflow mode: interactive (default) or loop (for workflows)")
     .option("--based-on <ref>", "Base workflow reference (for loop workflows)")
     .option("--tag <tag...>", "Tags for the workflow (for workflows)")
     .addHelpText(
@@ -1386,18 +1264,12 @@ Examples:
           }
 
           // AC: @agent-definition-schema ac-4, ac-6 — parse integer budget/concurrency fields
-          const maxTasks = options.maxTasks
-            ? parseInt(options.maxTasks, 10)
-            : undefined;
-          const maxRetries = options.maxRetries
-            ? parseInt(options.maxRetries, 10)
-            : undefined;
+          const maxTasks = options.maxTasks ? parseInt(options.maxTasks, 10) : undefined;
+          const maxRetries = options.maxRetries ? parseInt(options.maxRetries, 10) : undefined;
           const timeoutMinutes = options.timeoutMinutes
             ? parseInt(options.timeoutMinutes, 10)
             : undefined;
-          const maxConcurrent = options.maxConcurrent
-            ? parseInt(options.maxConcurrent, 10)
-            : 1;
+          const maxConcurrent = options.maxConcurrent ? parseInt(options.maxConcurrent, 10) : 1;
           let dispatchRules: AgentDispatchRule[] = [];
           try {
             dispatchRules = applyDispatchRuleMutations([], options);
@@ -1479,9 +1351,7 @@ Examples:
           // Validate mode if provided
           const validModes = ["interactive", "loop"];
           if (options.mode && !validModes.includes(options.mode)) {
-            error(
-              `Invalid mode: ${options.mode}. Valid modes: ${validModes.join(", ")}`,
-            );
+            error(`Invalid mode: ${options.mode}. Valid modes: ${validModes.join(", ")}`);
             process.exit(EXIT_CODES.ERROR);
           }
 
@@ -1493,8 +1363,7 @@ Examples:
             steps,
             ...(options.mode && { mode: options.mode }),
             ...(options.basedOn && { based_on: options.basedOn }),
-            ...(options.tag &&
-              options.tag.length > 0 && { tags: parseTagsArray(options.tag) }),
+            ...(options.tag && options.tag.length > 0 && { tags: parseTagsArray(options.tag) }),
           };
         } else {
           // convention
@@ -1512,11 +1381,7 @@ Examples:
         }
 
         // Save the item
-        await saveMetaItem(
-          ctx,
-          item,
-          type as "agent" | "workflow" | "convention",
-        );
+        await saveMetaItem(ctx, item, type as "agent" | "workflow" | "convention");
 
         // AC: @trait-shadow-commit ac-1
         await commitIfShadow(
@@ -1530,11 +1395,8 @@ Examples:
           // In JSON mode, output the item data directly
           console.log(JSON.stringify(item, null, 2));
         } else {
-          const idOrDomain =
-            "id" in item ? item.id : "domain" in item ? item.domain : itemUlid;
-          success(
-            `Created ${type}: ${idOrDomain} (@${itemUlid.substring(0, 8)})`,
-          );
+          const idOrDomain = "id" in item ? item.id : "domain" in item ? item.domain : itemUlid;
+          success(`Created ${type}: ${idOrDomain} (@${itemUlid.substring(0, 8)})`);
         }
       } catch (err) {
         error(errors.failures.createMeta(type), err);
@@ -1551,10 +1413,7 @@ Examples:
     .option("--add-capability <cap>", "Add capability (for agents)")
     .option("--add-tool <tool>", "Add tool (for agents)")
     .option("--add-convention <conv>", "Add convention reference (for agents)")
-    .option(
-      "--adapter <adapter>",
-      "Set adapter reference or npx package (for agents)",
-    )
+    .option("--adapter <adapter>", "Set adapter reference or npx package (for agents)")
     .option("--add-skill <skill>", "Add skill slug (for agents)")
     .option(
       "--add-dispatch-rule <json>",
@@ -1562,10 +1421,7 @@ Examples:
       collectRepeatedOptionValues,
       [],
     )
-    .option(
-      "--remove-dispatch-rule <on>",
-      "Remove dispatch rules by event type (for agents)",
-    )
+    .option("--remove-dispatch-rule <on>", "Remove dispatch rules by event type (for agents)")
     .option("--clear-dispatch-rules", "Remove all dispatch rules (for agents)")
     .option("--auto-approve", "Enable auto-approve (for agents)")
     .option("--no-auto-approve", "Disable auto-approve (for agents)")
@@ -1578,8 +1434,14 @@ Examples:
     .option("--idle-timeout-ms <n>", "Set session idle timeout in ms (for agents)")
     .option("--clear-session", "Remove session configuration entirely (for agents)")
     .option("--prompt-template <text>", "Set prompt template (for agents)")
-    .option("--automation <status>", "Set automation eligibility: eligible or ineligible (for agents)")
-    .option("--initial-response-timeout-seconds <n>", "Set initial response timeout in seconds (for agents)")
+    .option(
+      "--automation <status>",
+      "Set automation eligibility: eligible or ineligible (for agents)",
+    )
+    .option(
+      "--initial-response-timeout-seconds <n>",
+      "Set initial response timeout in seconds (for agents)",
+    )
     .option("--remove-capability <cap>", "Remove capability (for agents)")
     .option("--remove-tool <tool>", "Remove tool (for agents)")
     .option("--remove-convention <conv>", "Remove convention reference (for agents)")
@@ -1603,11 +1465,7 @@ Examples:
         // meta set only supports agent, workflow, convention
         // Skills have their own `kspec skill set` command
         const { item, type: itemType } = resolved;
-        if (
-          itemType !== "agent" &&
-          itemType !== "workflow" &&
-          itemType !== "convention"
-        ) {
+        if (itemType !== "agent" && itemType !== "workflow" && itemType !== "convention") {
           error(
             `Cannot use 'meta set' with ${itemType}. Use 'kspec ${itemType === "skill" ? "skill" : "meta"} ${itemType === "observation" ? "resolve" : "set"} ${ref}' instead.`,
           );
@@ -1620,8 +1478,7 @@ Examples:
         if (itemType === "agent") {
           const item = found as Agent;
           if (options.name) item.name = options.name;
-          if (options.description !== undefined)
-            item.description = options.description;
+          if (options.description !== undefined) item.description = options.description;
           if (options.addCapability) {
             if (!item.capabilities.includes(options.addCapability)) {
               item.capabilities.push(options.addCapability);
@@ -1642,15 +1499,11 @@ Examples:
           if (
             options.clearDispatchRules ||
             options.removeDispatchRule ||
-            (Array.isArray(options.addDispatchRule) &&
-              options.addDispatchRule.length > 0)
+            (Array.isArray(options.addDispatchRule) && options.addDispatchRule.length > 0)
           ) {
             try {
               // AC: @agent-definition-schema ac-12
-              item.dispatch = applyDispatchRuleMutations(
-                item.dispatch,
-                options,
-              );
+              item.dispatch = applyDispatchRuleMutations(item.dispatch, options);
             } catch (err) {
               const message = err instanceof Error ? err.message : String(err);
               error(message);
@@ -1676,17 +1529,11 @@ Examples:
             if (options.maxRetries !== undefined)
               item.budget.max_retries = parseInt(options.maxRetries, 10);
             if (options.timeoutMinutes !== undefined)
-              item.budget.timeout_minutes = parseInt(
-                options.timeoutMinutes,
-                10,
-              );
+              item.budget.timeout_minutes = parseInt(options.timeoutMinutes, 10);
           }
           if (options.maxConcurrent !== undefined) {
             if (!item.concurrency) item.concurrency = { max_concurrent: 1 };
-            item.concurrency.max_concurrent = parseInt(
-              options.maxConcurrent,
-              10,
-            );
+            item.concurrency.max_concurrent = parseInt(options.maxConcurrent, 10);
           }
           // AC: @agent-definition-schema ac-13 — session config flags
           if (
@@ -1694,8 +1541,7 @@ Examples:
             options.idleGracePeriodMs !== undefined ||
             options.idleTimeoutMs !== undefined
           ) {
-            if (!item.session)
-              item.session = { mode: "auto_close" as const };
+            if (!item.session) item.session = { mode: "auto_close" as const };
             const session = item.session;
             if (options.sessionMode !== undefined) {
               const parsed = SessionModeSchema.safeParse(options.sessionMode);
@@ -1741,9 +1587,7 @@ Examples:
             item.prompt_template = options.promptTemplate;
           }
           if (options.automation !== undefined) {
-            const parsed = AgentDispatchAutomationFilterSchema.safeParse(
-              options.automation,
-            );
+            const parsed = AgentDispatchAutomationFilterSchema.safeParse(options.automation);
             if (!parsed.success) {
               error(
                 `Invalid automation status: ${options.automation}. Valid values: ${AgentDispatchAutomationFilterSchema.options.join(", ")}`,
@@ -1754,14 +1598,11 @@ Examples:
           }
           if (options.initialResponseTimeoutSeconds !== undefined) {
             if (!item.budget) item.budget = {};
-            const result = parseIntOption(
-              options.initialResponseTimeoutSeconds,
-              {
-                min: 1,
-                max: Number.MAX_SAFE_INTEGER,
-                name: "initial-response-timeout-seconds",
-              },
-            );
+            const result = parseIntOption(options.initialResponseTimeoutSeconds, {
+              min: 1,
+              max: Number.MAX_SAFE_INTEGER,
+              name: "initial-response-timeout-seconds",
+            });
             if (!result.ok) {
               error(result.error);
               process.exit(EXIT_CODES.ERROR);
@@ -1775,9 +1616,7 @@ Examples:
             );
           }
           if (options.removeTool) {
-            item.tools = item.tools.filter(
-              (t: string) => t !== options.removeTool,
-            );
+            item.tools = item.tools.filter((t: string) => t !== options.removeTool);
           }
           if (options.removeConvention) {
             item.conventions = item.conventions.filter(
@@ -1786,9 +1625,7 @@ Examples:
           }
           if (options.removeSkill) {
             if (item.skills) {
-              item.skills = item.skills.filter(
-                (s: string) => s !== options.removeSkill,
-              );
+              item.skills = item.skills.filter((s: string) => s !== options.removeSkill);
             }
           }
           if (options.addTag) {
@@ -1799,16 +1636,13 @@ Examples:
           }
           if (options.removeTag) {
             if (item.tags) {
-              item.tags = item.tags.filter(
-                (t: string) => t !== options.removeTag,
-              );
+              item.tags = item.tags.filter((t: string) => t !== options.removeTag);
             }
           }
         } else if (itemType === "workflow") {
           const item = found as Workflow;
           if (options.trigger) item.trigger = options.trigger;
-          if (options.description !== undefined)
-            item.description = options.description;
+          if (options.description !== undefined) item.description = options.description;
         } else {
           const item = found as Convention;
           // Convention doesn't have a description field
@@ -1823,11 +1657,7 @@ Examples:
         await saveMetaItem(ctx, found, itemType);
 
         // AC: @trait-shadow-commit ac-1
-        await commitIfShadow(
-          ctx.shadow,
-          `meta-set-${itemType}`,
-          found._ulid.substring(0, 8),
-        );
+        await commitIfShadow(ctx.shadow, `meta-set-${itemType}`, found._ulid.substring(0, 8));
 
         if (isJsonMode()) {
           // In JSON mode, output the item data directly
@@ -1866,17 +1696,11 @@ Examples:
 
         // meta delete does not support skills - they use `kspec skill delete`
         if (resolved.type === "skill") {
-          error(
-            `Cannot use 'meta delete' with skills. Use 'kspec skill delete ${ref}' instead.`,
-          );
+          error(`Cannot use 'meta delete' with skills. Use 'kspec skill delete ${ref}' instead.`);
           process.exit(EXIT_CODES.ERROR);
         }
 
-        const itemType = resolved.type as
-          | "agent"
-          | "workflow"
-          | "convention"
-          | "observation";
+        const itemType = resolved.type as "agent" | "workflow" | "convention" | "observation";
         const itemUlid = resolved.ulid;
 
         // Build human-readable label for the item
@@ -1924,10 +1748,7 @@ Examples:
             const referencingObservations = observations.filter((o) => {
               if (!o.workflow_ref) return false;
               // Resolve the observation's workflow_ref to a ULID
-              const obsWorkflowRef = resolveMetaRefToUlid(
-                o.workflow_ref,
-                metaCtx,
-              );
+              const obsWorkflowRef = resolveMetaRefToUlid(o.workflow_ref, metaCtx);
               // Compare ULIDs to handle both semantic IDs and ULID prefixes
               return obsWorkflowRef && obsWorkflowRef.ulid === itemUlid;
             });
@@ -1961,11 +1782,7 @@ Examples:
         }
 
         // AC: @trait-shadow-commit ac-1
-        await commitIfShadow(
-          ctx.shadow,
-          `meta-delete-${itemType}`,
-          itemUlid.substring(0, 8),
-        );
+        await commitIfShadow(ctx.shadow, `meta-delete-${itemType}`, itemUlid.substring(0, 8));
 
         success(`Deleted ${itemLabel}`);
       } catch (err) {
@@ -2014,9 +1831,7 @@ Examples:
         sessionCtx.focus = normalizeRefInput(ref);
         await saveSessionContext(ctx, sessionCtx);
 
-        output({ focus: sessionCtx.focus }, () =>
-          success(`Set focus to: ${sessionCtx.focus}`),
-        );
+        output({ focus: sessionCtx.focus }, () => success(`Set focus to: ${sessionCtx.focus}`));
       } catch (err) {
         error(errors.failures.updateSessionContext, err);
         process.exit(EXIT_CODES.ERROR);
@@ -2085,14 +1900,8 @@ Examples:
           }
 
           const index = parseInt(text, 10);
-          if (
-            Number.isNaN(index) ||
-            index < 1 ||
-            index > sessionCtx.threads.length
-          ) {
-            error(
-              `Invalid index: ${text}. Must be between 1 and ${sessionCtx.threads.length}`,
-            );
+          if (Number.isNaN(index) || index < 1 || index > sessionCtx.threads.length) {
+            error(`Invalid index: ${text}. Must be between 1 and ${sessionCtx.threads.length}`);
             process.exit(EXIT_CODES.ERROR);
           }
 
@@ -2176,11 +1985,7 @@ Examples:
           }
 
           const index = parseInt(text, 10);
-          if (
-            Number.isNaN(index) ||
-            index < 1 ||
-            index > sessionCtx.open_questions.length
-          ) {
+          if (Number.isNaN(index) || index < 1 || index > sessionCtx.open_questions.length) {
             error(
               `Invalid index: ${text}. Must be between 1 and ${sessionCtx.open_questions.length}`,
             );

@@ -25,12 +25,15 @@
  * AC: @trait-websocket-protocol ac-8 — N/A: WebSocket enrichment is a separate task
  */
 
-import { test, expect } from '../fixtures/test-base';
+import { test, expect } from "../fixtures/test-base";
 
-test.describe('Aggregation API', () => {
-  test.describe('GET /api/aggregation/tasks/summary', () => {
+test.describe("Aggregation API", () => {
+  test.describe("GET /api/aggregation/tasks/summary", () => {
     // AC: @ui-api-aggregation ac-1
-    test('returns task status counts with dependency-aware distinctions', async ({ request, daemon }) => {
+    test("returns task status counts with dependency-aware distinctions", async ({
+      request,
+      daemon,
+    }) => {
       const response = await request.get(`${daemon.baseUrl}/api/aggregation/tasks/summary`);
 
       expect(response.status()).toBe(200);
@@ -38,13 +41,13 @@ test.describe('Aggregation API', () => {
       const body = await response.json();
 
       // Must have required fields
-      expect(body).toHaveProperty('counts');
-      expect(body).toHaveProperty('ready');
-      expect(body).toHaveProperty('blocked_by_dependencies');
-      expect(body).toHaveProperty('total');
+      expect(body).toHaveProperty("counts");
+      expect(body).toHaveProperty("ready");
+      expect(body).toHaveProperty("blocked_by_dependencies");
+      expect(body).toHaveProperty("total");
 
       // counts should be an object with status keys
-      expect(typeof body.counts).toBe('object');
+      expect(typeof body.counts).toBe("object");
       expect(body.total).toBeGreaterThan(0);
 
       // ready and blocked_by_dependencies should be non-negative integers
@@ -53,21 +56,21 @@ test.describe('Aggregation API', () => {
     });
 
     // AC: @ui-api-aggregation ac-1
-    test('counts include known status values from fixture data', async ({ request, daemon }) => {
+    test("counts include known status values from fixture data", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/aggregation/tasks/summary`);
       const body = await response.json();
 
       // Fixture has pending, in_progress, pending_review, and completed tasks
-      expect(body.counts).toHaveProperty('pending');
+      expect(body.counts).toHaveProperty("pending");
       expect(body.counts.pending).toBeGreaterThan(0);
-      expect(body.counts).toHaveProperty('in_progress');
+      expect(body.counts).toHaveProperty("in_progress");
       expect(body.counts.in_progress).toBeGreaterThan(0);
-      expect(body.counts).toHaveProperty('completed');
+      expect(body.counts).toHaveProperty("completed");
       expect(body.counts.completed).toBeGreaterThan(0);
     });
 
     // AC: @ui-api-aggregation ac-1
-    test('distinguishes ready vs blocked by dependencies', async ({ request, daemon }) => {
+    test("distinguishes ready vs blocked by dependencies", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/aggregation/tasks/summary`);
       const body = await response.json();
 
@@ -81,29 +84,29 @@ test.describe('Aggregation API', () => {
     });
 
     // AC: @ui-api-aggregation ac-1
-    test('total equals sum of all status counts', async ({ request, daemon }) => {
+    test("total equals sum of all status counts", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/aggregation/tasks/summary`);
       const body = await response.json();
 
       const countSum = Object.values(body.counts as Record<string, number>).reduce(
         (sum: number, count: number) => sum + count,
-        0
+        0,
       );
       expect(countSum).toBe(body.total);
     });
 
     // AC: @trait-api-endpoint ac-1
-    test('returns 200 with JSON body', async ({ request, daemon }) => {
+    test("returns 200 with JSON body", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/aggregation/tasks/summary`);
       expect(response.status()).toBe(200);
-      const contentType = response.headers()['content-type'];
-      expect(contentType).toContain('json');
+      const contentType = response.headers()["content-type"];
+      expect(contentType).toContain("json");
     });
   });
 
-  test.describe('GET /api/aggregation/validation', () => {
+  test.describe("GET /api/aggregation/validation", () => {
     // AC: @ui-api-aggregation ac-2
-    test('returns validation stats with entity counts', async ({ request, daemon }) => {
+    test("returns validation stats with entity counts", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/aggregation/validation`);
 
       expect(response.status()).toBe(200);
@@ -111,35 +114,35 @@ test.describe('Aggregation API', () => {
       const body = await response.json();
 
       // Must have alignment stats
-      expect(body).toHaveProperty('stats');
-      expect(body.stats).toHaveProperty('totalSpecs');
-      expect(body.stats).toHaveProperty('specsWithTasks');
-      expect(body.stats).toHaveProperty('alignedSpecs');
-      expect(body.stats).toHaveProperty('orphanedSpecs');
+      expect(body).toHaveProperty("stats");
+      expect(body.stats).toHaveProperty("totalSpecs");
+      expect(body.stats).toHaveProperty("specsWithTasks");
+      expect(body.stats).toHaveProperty("alignedSpecs");
+      expect(body.stats).toHaveProperty("orphanedSpecs");
 
       // Must have warnings array
-      expect(body).toHaveProperty('warnings');
+      expect(body).toHaveProperty("warnings");
       expect(Array.isArray(body.warnings)).toBe(true);
 
       // Must have entity counts
-      expect(body).toHaveProperty('entity_counts');
-      expect(body.entity_counts).toHaveProperty('items');
-      expect(body.entity_counts).toHaveProperty('tasks');
-      expect(body.entity_counts).toHaveProperty('traits');
+      expect(body).toHaveProperty("entity_counts");
+      expect(body.entity_counts).toHaveProperty("items");
+      expect(body.entity_counts).toHaveProperty("tasks");
+      expect(body.entity_counts).toHaveProperty("traits");
       expect(body.entity_counts.items).toBeGreaterThan(0);
       expect(body.entity_counts.tasks).toBeGreaterThan(0);
     });
 
     // AC: @ui-api-aggregation ac-2
-    test('returns AC counts as pre-computed fields', async ({ request, daemon }) => {
+    test("returns AC counts as pre-computed fields", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/aggregation/validation`);
       const body = await response.json();
 
       // Must have AC counts
-      expect(body).toHaveProperty('ac_counts');
-      expect(body.ac_counts).toHaveProperty('total');
-      expect(body.ac_counts).toHaveProperty('covered');
-      expect(body.ac_counts).toHaveProperty('uncovered');
+      expect(body).toHaveProperty("ac_counts");
+      expect(body.ac_counts).toHaveProperty("total");
+      expect(body.ac_counts).toHaveProperty("covered");
+      expect(body.ac_counts).toHaveProperty("uncovered");
 
       // Total should be non-negative
       expect(body.ac_counts.total).toBeGreaterThanOrEqual(0);
@@ -151,40 +154,40 @@ test.describe('Aggregation API', () => {
     });
 
     // AC: @ui-api-aggregation ac-2
-    test('returns orphan count as pre-computed field', async ({ request, daemon }) => {
+    test("returns orphan count as pre-computed field", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/aggregation/validation`);
       const body = await response.json();
 
-      expect(body).toHaveProperty('orphan_count');
-      expect(typeof body.orphan_count).toBe('number');
+      expect(body).toHaveProperty("orphan_count");
+      expect(typeof body.orphan_count).toBe("number");
       expect(body.orphan_count).toBeGreaterThanOrEqual(0);
     });
 
     // AC: @ui-api-aggregation ac-2
-    test('returns validation status and error/warning counts', async ({ request, daemon }) => {
+    test("returns validation status and error/warning counts", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/aggregation/validation`);
       const body = await response.json();
 
-      expect(body).toHaveProperty('valid');
-      expect(typeof body.valid).toBe('boolean');
-      expect(body).toHaveProperty('error_count');
-      expect(typeof body.error_count).toBe('number');
-      expect(body).toHaveProperty('warning_count');
-      expect(typeof body.warning_count).toBe('number');
+      expect(body).toHaveProperty("valid");
+      expect(typeof body.valid).toBe("boolean");
+      expect(body).toHaveProperty("error_count");
+      expect(typeof body.error_count).toBe("number");
+      expect(body).toHaveProperty("warning_count");
+      expect(typeof body.warning_count).toBe("number");
     });
 
     // AC: @trait-api-endpoint ac-1
-    test('returns 200 with JSON body', async ({ request, daemon }) => {
+    test("returns 200 with JSON body", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/aggregation/validation`);
       expect(response.status()).toBe(200);
-      const contentType = response.headers()['content-type'];
-      expect(contentType).toContain('json');
+      const contentType = response.headers()["content-type"];
+      expect(contentType).toContain("json");
     });
   });
 
-  test.describe('GET /api/aggregation/inbox', () => {
+  test.describe("GET /api/aggregation/inbox", () => {
     // AC: @ui-api-aggregation ac-3
-    test('returns inbox items with inline triage status', async ({ request, daemon }) => {
+    test("returns inbox items with inline triage status", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/aggregation/inbox`);
 
       expect(response.status()).toBe(200);
@@ -192,52 +195,52 @@ test.describe('Aggregation API', () => {
       const body = await response.json();
 
       // Must have items array and total
-      expect(body).toHaveProperty('items');
-      expect(body).toHaveProperty('total');
+      expect(body).toHaveProperty("items");
+      expect(body).toHaveProperty("total");
       expect(Array.isArray(body.items)).toBe(true);
       expect(body.items.length).toBeGreaterThan(0);
 
       // Each item should have standard inbox fields
       const item = body.items[0];
-      expect(item).toHaveProperty('_ulid');
-      expect(item).toHaveProperty('text');
-      expect(item).toHaveProperty('tags');
-      expect(item).toHaveProperty('added_by');
-      expect(item).toHaveProperty('created_at');
+      expect(item).toHaveProperty("_ulid");
+      expect(item).toHaveProperty("text");
+      expect(item).toHaveProperty("tags");
+      expect(item).toHaveProperty("added_by");
+      expect(item).toHaveProperty("created_at");
     });
 
     // AC: @ui-api-aggregation ac-3
-    test('includes triage data for triaged items', async ({ request, daemon }) => {
+    test("includes triage data for triaged items", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/aggregation/inbox`);
       const body = await response.json();
 
       // Fixture has first inbox item (01KJNBX0CA45ZT43W2T6HJMVA1) with triage record
       const triagedItem = body.items.find(
-        (item: { triage?: { status: string } }) => item.triage && item.triage.status === 'triaged'
+        (item: { triage?: { status: string } }) => item.triage && item.triage.status === "triaged",
       );
       expect(triagedItem).toBeDefined();
-      expect(triagedItem.triage).toHaveProperty('_ulid');
-      expect(triagedItem.triage).toHaveProperty('status');
-      expect(triagedItem.triage).toHaveProperty('action');
-      expect(triagedItem.triage).toHaveProperty('reasoning');
+      expect(triagedItem.triage).toHaveProperty("_ulid");
+      expect(triagedItem.triage).toHaveProperty("status");
+      expect(triagedItem.triage).toHaveProperty("action");
+      expect(triagedItem.triage).toHaveProperty("reasoning");
     });
 
     // AC: @ui-api-aggregation ac-3
-    test('includes triage data for acted_on items', async ({ request, daemon }) => {
+    test("includes triage data for acted_on items", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/aggregation/inbox`);
       const body = await response.json();
 
       // Fixture has second inbox item (01KJNBX1CC9N4YGP991WD7XS8S) with acted_on triage
       const actedItem = body.items.find(
-        (item: { triage?: { status: string } }) => item.triage && item.triage.status === 'acted_on'
+        (item: { triage?: { status: string } }) => item.triage && item.triage.status === "acted_on",
       );
       expect(actedItem).toBeDefined();
-      expect(actedItem.triage.action).toBe('promote');
+      expect(actedItem.triage.action).toBe("promote");
       expect(actedItem.triage.result_ref).toBeDefined();
     });
 
     // AC: @ui-api-aggregation ac-3
-    test('omits triage field for items without triage records', async ({ request, daemon }) => {
+    test("omits triage field for items without triage records", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/aggregation/inbox`);
       const body = await response.json();
 
@@ -246,14 +249,14 @@ test.describe('Aggregation API', () => {
       // The pending one has action: null, so it should still have triage data
       for (const item of body.items) {
         if (item.triage) {
-          expect(item.triage).toHaveProperty('_ulid');
-          expect(item.triage).toHaveProperty('status');
+          expect(item.triage).toHaveProperty("_ulid");
+          expect(item.triage).toHaveProperty("status");
         }
       }
     });
 
     // AC: @ui-api-aggregation ac-3
-    test('returns items sorted by created_at descending', async ({ request, daemon }) => {
+    test("returns items sorted by created_at descending", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/aggregation/inbox`);
       const body = await response.json();
 
@@ -267,11 +270,11 @@ test.describe('Aggregation API', () => {
     });
 
     // AC: @trait-api-endpoint ac-1
-    test('returns 200 with JSON body', async ({ request, daemon }) => {
+    test("returns 200 with JSON body", async ({ request, daemon }) => {
       const response = await request.get(`${daemon.baseUrl}/api/aggregation/inbox`);
       expect(response.status()).toBe(200);
-      const contentType = response.headers()['content-type'];
-      expect(contentType).toContain('json');
+      const contentType = response.headers()["content-type"];
+      expect(contentType).toContain("json");
     });
   });
 });

@@ -57,9 +57,7 @@ function formatShadowStatus(
   } else {
     console.log(chalk.red.bold("✗ Shadow branch has issues"));
     console.log(
-      status.branchExists
-        ? chalk.green("  ✓ Branch exists")
-        : chalk.red("  ✗ Branch missing"),
+      status.branchExists ? chalk.green("  ✓ Branch exists") : chalk.red("  ✗ Branch missing"),
     );
     console.log(
       status.worktreeExists
@@ -102,11 +100,7 @@ function formatShadowStatus(
       console.log(chalk.green("  ✓ Worktree linked"));
     } else if (!sessionStatus.exists) {
       console.log(chalk.gray("○ Session branch not configured"));
-      console.log(
-        chalk.gray(
-          '  Set sessions.storage: "branch" in manifest and run `kspec setup`',
-        ),
-      );
+      console.log(chalk.gray('  Set sessions.storage: "branch" in manifest and run `kspec setup`'));
     } else {
       console.log(chalk.red.bold("✗ Session branch has issues"));
       console.log(
@@ -140,9 +134,7 @@ function formatShadowStatus(
  * Register shadow commands
  */
 export function registerShadowCommands(program: Command): void {
-  const shadow = program
-    .command("shadow")
-    .description("Manage shadow branch for spec storage");
+  const shadow = program.command("shadow").description("Manage shadow branch for spec storage");
 
   shadow
     .command("status")
@@ -174,12 +166,8 @@ export function registerShadowCommands(program: Command): void {
           const { initContext } = await import("../../parser/index.js");
           const ctx = await initContext();
           if (ctx.manifest?.sessions?.storage === "branch") {
-            sessionBranchName =
-              ctx.manifest.sessions.branch || "kspec-sessions";
-            sessionStatus = await getSessionBranchStatus(
-              gitRoot,
-              sessionBranchName,
-            );
+            sessionBranchName = ctx.manifest.sessions.branch || "kspec-sessions";
+            sessionStatus = await getSessionBranchStatus(gitRoot, sessionBranchName);
           }
         } catch {
           // Context not available — skip session branch status
@@ -238,13 +226,9 @@ export function registerShadowCommands(program: Command): void {
           remote: config.shadow.remote?.value,
           remoteType: config.shadow.remote?.type,
         };
-        const branchName = shadowOptions.branchName || SHADOW_BRANCH_NAME;
         const worktreeDir = shadowOptions.directory || SHADOW_WORKTREE_DIR;
         const status = await getShadowStatus(gitRoot, shadowOptions);
-        const remoteHasShadow = await remoteShadowBranchExists(
-          gitRoot,
-          shadowOptions,
-        );
+        const remoteHasShadow = await remoteShadowBranchExists(gitRoot, shadowOptions);
         let hadError = false;
 
         if (status.healthy) {
@@ -261,9 +245,7 @@ export function registerShadowCommands(program: Command): void {
               success(shadowCommands.repair.repaired, {
                 worktreeCreated: result.worktreeCreated,
               });
-              console.log(
-                shadowCommands.repair.worktreeCreated(worktreeDir),
-              );
+              console.log(shadowCommands.repair.worktreeCreated(worktreeDir));
             }
           } else {
             error(shadowCommands.repair.failed(result.error || "Unknown error"));
@@ -280,18 +262,11 @@ export function registerShadowCommands(program: Command): void {
           const { initContext } = await import("../../parser/index.js");
           const ctx = await initContext();
           if (ctx.manifest?.sessions?.storage === "branch") {
-            const sessionBranchName =
-              ctx.manifest.sessions.branch || "kspec-sessions";
-            const sessionStatus = await getSessionBranchStatus(
-              gitRoot,
-              sessionBranchName,
-            );
+            const sessionBranchName = ctx.manifest.sessions.branch || "kspec-sessions";
+            const sessionStatus = await getSessionBranchStatus(gitRoot, sessionBranchName);
             if (!sessionStatus.healthy && sessionStatus.exists) {
               info("Repairing session branch worktree...");
-              const sessionResult = await repairSessionBranch(
-                gitRoot,
-                sessionBranchName,
-              );
+              const sessionResult = await repairSessionBranch(gitRoot, sessionBranchName);
               if (sessionResult.success) {
                 if (sessionResult.alreadyExists) {
                   info("Session branch already healthy");
@@ -301,9 +276,7 @@ export function registerShadowCommands(program: Command): void {
                   });
                 }
               } else {
-                warn(
-                  `Session branch repair failed: ${sessionResult.error || "Unknown error"}`,
-                );
+                warn(`Session branch repair failed: ${sessionResult.error || "Unknown error"}`);
               }
             }
           }
@@ -348,10 +321,10 @@ export function registerShadowCommands(program: Command): void {
 
         const count = parseInt(options.count, 10) || 10;
 
-        const log = execSync(
-          `git log --oneline -n ${count} ${SHADOW_BRANCH_NAME}`,
-          { cwd: gitRoot, encoding: "utf-8" },
-        ).trim();
+        const log = execSync(`git log --oneline -n ${count} ${SHADOW_BRANCH_NAME}`, {
+          cwd: gitRoot,
+          encoding: "utf-8",
+        }).trim();
 
         if (!log) {
           info(shadowCommands.log.noCommits);
@@ -461,18 +434,14 @@ export function registerShadowCommands(program: Command): void {
           console.log(shadowCommands.resolve.interactive.ours.description);
           console.log();
           console.log(shadowCommands.resolve.interactive.manual.header);
-          console.log(
-            shadowCommands.resolve.interactive.manual.cdCommand(
-              SHADOW_WORKTREE_DIR,
-            ),
-          );
+          console.log(shadowCommands.resolve.interactive.manual.cdCommand(SHADOW_WORKTREE_DIR));
           if (inRebase) {
-            shadowCommands.resolve.interactive.manual.rebaseSteps.forEach(
-              (step) => console.log(step),
+            shadowCommands.resolve.interactive.manual.rebaseSteps.forEach((step) =>
+              console.log(step),
             );
           } else {
-            shadowCommands.resolve.interactive.manual.pullSteps.forEach(
-              (step) => console.log(step),
+            shadowCommands.resolve.interactive.manual.pullSteps.forEach((step) =>
+              console.log(step),
             );
           }
         }

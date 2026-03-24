@@ -22,7 +22,7 @@ import {
   validateEventType,
 } from "../../schema/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
-import { error, isJsonMode, output, warn } from "../output.js";
+import { error, isJsonMode, output } from "../output.js";
 import { PidFileManager } from "../pid-utils.js";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -74,7 +74,11 @@ function formatEventTypesByDomain(
   }
 
   const total = entries.length;
-  console.log(chalk.gray(`\n${total} event type${total === 1 ? "" : "s"} across ${domains.length} domain${domains.length === 1 ? "" : "s"}`));
+  console.log(
+    chalk.gray(
+      `\n${total} event type${total === 1 ? "" : "s"} across ${domains.length} domain${domains.length === 1 ? "" : "s"}`,
+    ),
+  );
 }
 
 /**
@@ -127,7 +131,11 @@ function formatEmitResult(result: EmitApiResponse): void {
   if (result.matched_hooks.length === 0) {
     console.log(chalk.gray("  No hooks matched this event"));
   } else {
-    console.log(chalk.bold(`  ${result.matched_hooks.length} hook${result.matched_hooks.length === 1 ? "" : "s"} matched:`));
+    console.log(
+      chalk.bold(
+        `  ${result.matched_hooks.length} hook${result.matched_hooks.length === 1 ? "" : "s"} matched:`,
+      ),
+    );
     for (const hook of result.matched_hooks) {
       console.log(`    ${chalk.cyan(hook.name)}`);
     }
@@ -178,11 +186,14 @@ function eventTypesToJson(
     ? [domainFilter as EventDomain]
     : ([...EVENT_DOMAINS] as EventDomain[]);
 
-  const grouped: Record<string, Array<{
-    event_type: string;
-    description: string;
-    payload_fields: readonly string[];
-  }>> = {};
+  const grouped: Record<
+    string,
+    Array<{
+      event_type: string;
+      description: string;
+      payload_fields: readonly string[];
+    }>
+  > = {};
 
   for (const domain of domains) {
     const domainEntries = entries.filter((e) => e.domain === domain);
@@ -207,9 +218,7 @@ function eventTypesToJson(
  * AC: @dispatch-event-cli ac-5, ac-6
  */
 export function registerEventCommands(program: Command): void {
-  const event = program
-    .command("event")
-    .description("Event inspection and testing commands");
+  const event = program.command("event").description("Event inspection and testing commands");
 
   // ── kspec event types ──────────────────────────────────────────────────
   // AC: @dispatch-event-cli ac-5 — list event taxonomy grouped by domain
@@ -228,8 +237,8 @@ export function registerEventCommands(program: Command): void {
             // AC: @trait-error-guidance ac-1, ac-2, ac-5 — describe error and suggest fix
             error(
               `Unknown event domain: '${options.domain}'. ` +
-              `Valid domains: ${EVENT_DOMAINS.join(", ")}. ` +
-              `Run 'kspec event types' to see all event types.`,
+                `Valid domains: ${EVENT_DOMAINS.join(", ")}. ` +
+                `Run 'kspec event types' to see all event types.`,
             );
             process.exit(EXIT_CODES.VALIDATION_FAILED);
           }
@@ -238,18 +247,16 @@ export function registerEventCommands(program: Command): void {
 
         // AC: @trait-filterable-list ac-8 — count mode
         if (options.count) {
-          output(
-            isJsonMode() ? { count: entries.length } : entries.length,
-            () => console.log(entries.length),
+          output(isJsonMode() ? { count: entries.length } : entries.length, () =>
+            console.log(entries.length),
           );
           return;
         }
 
         // AC: @trait-json-output ac-1, ac-2
         // AC: @dispatch-event-cli ac-5 — all identifiers grouped by domain with payload fields
-        output(
-          eventTypesToJson(entries, options.domain),
-          () => formatEventTypesByDomain(entries, options.domain),
+        output(eventTypesToJson(entries, options.domain), () =>
+          formatEventTypesByDomain(entries, options.domain),
         );
       } catch (err) {
         // AC: @trait-error-guidance ac-1 — description of what went wrong
@@ -275,10 +282,7 @@ export function registerEventCommands(program: Command): void {
           const validation = validateEventType(options.type);
           if (!validation.valid) {
             // AC: @trait-error-guidance ac-1, ac-2, ac-5
-            error(
-              `${validation.error!.message} ` +
-              `${validation.error!.suggestion}`,
-            );
+            error(`${validation.error!.message} ${validation.error!.suggestion}`);
             process.exit(EXIT_CODES.VALIDATION_FAILED);
           }
         }
@@ -289,7 +293,7 @@ export function registerEventCommands(program: Command): void {
           // AC: @trait-error-guidance ac-1, ac-2
           error(
             "Daemon is not running. " +
-            "Start the daemon with 'kspec serve start' to view event log.",
+              "Start the daemon with 'kspec serve start' to view event log.",
           );
           process.exit(EXIT_CODES.ERROR);
         }
@@ -306,7 +310,7 @@ export function registerEventCommands(program: Command): void {
         const response = await fetch(url);
 
         if (!response.ok) {
-          const body = await response.json().catch(() => null) as Record<string, unknown> | null;
+          const body = (await response.json().catch(() => null)) as Record<string, unknown> | null;
           const msg = body?.message ?? body?.error ?? `HTTP ${response.status}`;
           error(`Failed to fetch event log: ${msg}`);
           process.exit(EXIT_CODES.ERROR);
@@ -316,10 +320,7 @@ export function registerEventCommands(program: Command): void {
 
         // AC: @trait-filterable-list ac-8 — count mode
         if (options.count) {
-          output(
-            isJsonMode() ? { count: data.total } : data.total,
-            () => console.log(data.total),
-          );
+          output(isJsonMode() ? { count: data.total } : data.total, () => console.log(data.total));
           return;
         }
 
@@ -346,17 +347,19 @@ export function registerEventCommands(program: Command): void {
     .command("emit <event-type>")
     .description("Emit a manual event on the daemon bus for testing")
     .option("--payload <json>", "Event payload as JSON object")
-    .option("--field <key=value>", "Set a payload field (repeatable)", (val: string, arr: string[]) => [...arr, val], [] as string[])
+    .option(
+      "--field <key=value>",
+      "Set a payload field (repeatable)",
+      (val: string, arr: string[]) => [...arr, val],
+      [] as string[],
+    )
     .action(async (eventType: string, options) => {
       try {
         // Validate event type against registry
         // AC: @trait-error-guidance ac-5 — indicate which field/value failed
         const validation = validateEventType(eventType);
         if (!validation.valid) {
-          error(
-            `${validation.error!.message} ` +
-            `${validation.error!.suggestion}`,
-          );
+          error(`${validation.error!.message} ${validation.error!.suggestion}`);
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
 
@@ -386,7 +389,7 @@ export function registerEventCommands(program: Command): void {
             if (eqIdx < 1) {
               error(
                 `Invalid --field format: '${fieldArg}'. ` +
-                `Expected key=value (e.g., --field task_id=abc123).`,
+                  `Expected key=value (e.g., --field task_id=abc123).`,
               );
               process.exit(EXIT_CODES.VALIDATION_FAILED);
             }
@@ -405,10 +408,7 @@ export function registerEventCommands(program: Command): void {
 
         if (!daemonConn) {
           // AC: @trait-error-guidance ac-1, ac-2
-          error(
-            "Daemon is not running. " +
-            "Start the daemon with 'kspec serve start' to emit events.",
-          );
+          error("Daemon is not running. Start the daemon with 'kspec serve start' to emit events.");
           process.exit(EXIT_CODES.ERROR);
         }
 
@@ -422,13 +422,15 @@ export function registerEventCommands(program: Command): void {
         });
 
         if (!response.ok) {
-          const body = await response.json().catch(() => null) as Record<string, unknown> | null;
+          const body = (await response.json().catch(() => null)) as Record<string, unknown> | null;
           if (body?.error) {
             // AC: @trait-error-guidance ac-1, ac-2
-            const detailsArr = body.details as Array<{ field: string; message: string }> | undefined;
+            const detailsArr = body.details as
+              | Array<{ field: string; message: string }>
+              | undefined;
             const details = detailsArr
               ? detailsArr.map((d) => `${d.field}: ${d.message}`).join("; ")
-              : (body.message as string) ?? (body.error as string);
+              : ((body.message as string) ?? (body.error as string));
             error(`Failed to emit event: ${details}`);
           } else {
             error(`Failed to emit event: HTTP ${response.status}`);

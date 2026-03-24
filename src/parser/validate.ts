@@ -26,7 +26,15 @@ import {
   extractActionTemplates,
   validateActionTemplates,
 } from "../agent-runtime/action-executor.js";
-import { findMetaManifest, getSkillContentPath, loadMetaContext, type LoadedHook, type LoadedSchedule, type LoadedComposition, type LoadedSkill } from "./meta.js";
+import {
+  findMetaManifest,
+  getSkillContentPath,
+  loadMetaContext,
+  type LoadedHook,
+  type LoadedSchedule,
+  type LoadedComposition,
+  type LoadedSkill,
+} from "./meta.js";
 import { loadPlans } from "./plans.js";
 import { findReviewFiles, validateReviewsFile } from "./review-validation.js";
 import {
@@ -166,9 +174,7 @@ export interface ValidateOptions {
 /**
  * Validate a manifest file against schema
  */
-async function validateManifestFile(
-  filePath: string,
-): Promise<SchemaValidationError[]> {
+async function validateManifestFile(filePath: string): Promise<SchemaValidationError[]> {
   const errors: SchemaValidationError[] = [];
 
   try {
@@ -198,9 +204,7 @@ async function validateManifestFile(
 /**
  * Validate a tasks file against schema
  */
-async function validateTasksFile(
-  filePath: string,
-): Promise<SchemaValidationError[]> {
+async function validateTasksFile(filePath: string): Promise<SchemaValidationError[]> {
   const errors: SchemaValidationError[] = [];
 
   try {
@@ -224,8 +228,7 @@ async function validateTasksFile(
     } else {
       errors.push({
         file: filePath,
-        message:
-          "Invalid tasks file format: expected array or { tasks: [...] }",
+        message: "Invalid tasks file format: expected array or { tasks: [...] }",
       });
       return errors;
     }
@@ -259,9 +262,7 @@ async function validateTasksFile(
 /**
  * Validate a spec module file against schema
  */
-async function validateSpecFile(
-  filePath: string,
-): Promise<SchemaValidationError[]> {
+async function validateSpecFile(filePath: string): Promise<SchemaValidationError[]> {
   const errors: SchemaValidationError[] = [];
 
   try {
@@ -283,9 +284,7 @@ async function validateSpecFile(
  * Validate meta manifest file with strict ULID validation
  * AC-meta-manifest-3: Invalid schema exits with code 1 and shows field path + expected type
  */
-async function validateMetaManifestFile(
-  filePath: string,
-): Promise<SchemaValidationError[]> {
+async function validateMetaManifestFile(filePath: string): Promise<SchemaValidationError[]> {
   const errors: SchemaValidationError[] = [];
 
   try {
@@ -329,9 +328,7 @@ async function validateMetaManifestFile(
 
         // Strict ULID validation
         if (agent && typeof agent === "object" && "_ulid" in agent) {
-          const ulidResult = UlidSchema.safeParse(
-            (agent as Record<string, unknown>)._ulid,
-          );
+          const ulidResult = UlidSchema.safeParse((agent as Record<string, unknown>)._ulid);
           if (!ulidResult.success) {
             errors.push({
               file: filePath,
@@ -367,9 +364,7 @@ async function validateMetaManifestFile(
 
         // Strict ULID validation
         if (workflow && typeof workflow === "object" && "_ulid" in workflow) {
-          const ulidResult = UlidSchema.safeParse(
-            (workflow as Record<string, unknown>)._ulid,
-          );
+          const ulidResult = UlidSchema.safeParse((workflow as Record<string, unknown>)._ulid);
           if (!ulidResult.success) {
             errors.push({
               file: filePath,
@@ -388,8 +383,7 @@ async function validateMetaManifestFile(
       "conventions" in raw &&
       Array.isArray((raw as Record<string, unknown>).conventions)
     ) {
-      const conventions = (raw as Record<string, unknown>)
-        .conventions as unknown[];
+      const conventions = (raw as Record<string, unknown>).conventions as unknown[];
       for (let i = 0; i < conventions.length; i++) {
         const convention = conventions[i];
         const conventionResult = ConventionSchema.safeParse(convention);
@@ -405,14 +399,8 @@ async function validateMetaManifestFile(
         }
 
         // Strict ULID validation
-        if (
-          convention &&
-          typeof convention === "object" &&
-          "_ulid" in convention
-        ) {
-          const ulidResult = UlidSchema.safeParse(
-            (convention as Record<string, unknown>)._ulid,
-          );
+        if (convention && typeof convention === "object" && "_ulid" in convention) {
+          const ulidResult = UlidSchema.safeParse((convention as Record<string, unknown>)._ulid);
           if (!ulidResult.success) {
             errors.push({
               file: filePath,
@@ -431,8 +419,7 @@ async function validateMetaManifestFile(
       "observations" in raw &&
       Array.isArray((raw as Record<string, unknown>).observations)
     ) {
-      const observations = (raw as Record<string, unknown>)
-        .observations as unknown[];
+      const observations = (raw as Record<string, unknown>).observations as unknown[];
       for (let i = 0; i < observations.length; i++) {
         const observation = observations[i];
         const observationResult = ObservationSchema.safeParse(observation);
@@ -448,14 +435,8 @@ async function validateMetaManifestFile(
         }
 
         // Strict ULID validation
-        if (
-          observation &&
-          typeof observation === "object" &&
-          "_ulid" in observation
-        ) {
-          const ulidResult = UlidSchema.safeParse(
-            (observation as Record<string, unknown>)._ulid,
-          );
+        if (observation && typeof observation === "object" && "_ulid" in observation) {
+          const ulidResult = UlidSchema.safeParse((observation as Record<string, unknown>)._ulid);
           if (!ulidResult.success) {
             errors.push({
               file: filePath,
@@ -491,9 +472,7 @@ async function validateMetaManifestFile(
 
         // Strict ULID validation
         if (skill && typeof skill === "object" && "_ulid" in skill) {
-          const ulidResult = UlidSchema.safeParse(
-            (skill as Record<string, unknown>)._ulid,
-          );
+          const ulidResult = UlidSchema.safeParse((skill as Record<string, unknown>)._ulid);
           if (!ulidResult.success) {
             errors.push({
               file: filePath,
@@ -529,9 +508,7 @@ async function validateMetaManifestFile(
 
         // Strict ULID validation
         if (hook && typeof hook === "object" && "_ulid" in hook) {
-          const ulidResult = UlidSchema.safeParse(
-            (hook as Record<string, unknown>)._ulid,
-          );
+          const ulidResult = UlidSchema.safeParse((hook as Record<string, unknown>)._ulid);
           if (!ulidResult.success) {
             errors.push({
               file: filePath,
@@ -570,9 +547,7 @@ function validateSpecItemRecursive(
       for (const issue of result.error.issues) {
         errors.push({
           file,
-          path: pathPrefix
-            ? `${pathPrefix}.${issue.path.join(".")}`
-            : issue.path.join("."),
+          path: pathPrefix ? `${pathPrefix}.${issue.path.join(".")}` : issue.path.join("."),
           message: issue.message,
           details: issue,
         });
@@ -581,23 +556,14 @@ function validateSpecItemRecursive(
   }
 
   // Recurse into nested structures
-  const nestedFields = [
-    "modules",
-    "features",
-    "requirements",
-    "constraints",
-    "decisions",
-    "items",
-  ];
+  const nestedFields = ["modules", "features", "requirements", "constraints", "decisions", "items"];
   const obj = raw as Record<string, unknown>;
 
   for (const field of nestedFields) {
     if (field in obj && Array.isArray(obj[field])) {
       const arr = obj[field] as unknown[];
       for (let i = 0; i < arr.length; i++) {
-        const newPath = pathPrefix
-          ? `${pathPrefix}.${field}[${i}]`
-          : `${field}[${i}]`;
+        const newPath = pathPrefix ? `${pathPrefix}.${field}[${i}]` : `${field}[${i}]`;
         validateSpecItemRecursive(arr[i], file, newPath, errors);
       }
     }
@@ -693,10 +659,7 @@ function findOrphans(
  * Detect circular trait references
  * AC: @trait-edge-cases ac-2
  */
-function detectTraitCycles(
-  items: LoadedSpecItem[],
-  index: ReferenceIndex,
-): TraitCycleError[] {
+function detectTraitCycles(items: LoadedSpecItem[], index: ReferenceIndex): TraitCycleError[] {
   const errors: TraitCycleError[] = [];
   const traits = items.filter((item) => item.type === "trait");
 
@@ -705,9 +668,7 @@ function detectTraitCycles(
   const traitInfo = new Map<string, { ref: string; title: string }>();
 
   for (const trait of traits) {
-    const ref = trait.slugs?.[0]
-      ? `@${trait.slugs[0]}`
-      : `@${index.shortUlid(trait._ulid)}`;
+    const ref = trait.slugs?.[0] ? `@${trait.slugs[0]}` : `@${index.shortUlid(trait._ulid)}`;
     traitInfo.set(trait._ulid, { ref, title: trait.title });
 
     const dependencies: string[] = [];
@@ -836,9 +797,7 @@ const AC_LINE_PREFIX = /\/\/\s*AC:\s*/;
  *   "// AC: @spec-a ac-1, @spec-b ac-2"          → [{specRef:"@spec-a", acIds:["ac-1"]}, {specRef:"@spec-b", acIds:["ac-2"]}]
  *   "// AC: @spec-a ac-1 — N/A: reason"          → [{specRef:"@spec-a", acIds:["ac-1"]}]
  */
-export function parseACAnnotationLine(
-  lineText: string,
-): { specRef: string; acIds: string[] }[] {
+export function parseACAnnotationLine(lineText: string): { specRef: string; acIds: string[] }[] {
   const prefixMatch = AC_LINE_PREFIX.exec(lineText);
   if (!prefixMatch) return [];
 
@@ -880,10 +839,7 @@ export function parseACAnnotationLine(
 /**
  * Scan a directory of test files for AC annotations and add to the coverage set.
  */
-async function scanDirForACAnnotations(
-  dir: string,
-  coveredACs: Set<string>
-): Promise<void> {
+async function scanDirForACAnnotations(dir: string, coveredACs: Set<string>): Promise<void> {
   try {
     await fs.access(dir);
   } catch {
@@ -926,7 +882,7 @@ export async function scanTestCoverage(rootDir: string): Promise<Set<string>> {
   // Scan E2E test directory (Playwright specs)
   await scanDirForACAnnotations(
     path.join(rootDir, "packages", "web-ui", "tests", "e2e"),
-    coveredACs
+    coveredACs,
   );
 
   return coveredACs;
@@ -1060,15 +1016,11 @@ export function validateACAnnotations(
       continue;
     }
 
-    const existingACs = new Set(
-      (item.acceptance_criteria || []).map((ac) => ac.id),
-    );
+    const existingACs = new Set((item.acceptance_criteria || []).map((ac) => ac.id));
 
     for (const acId of acIds) {
       if (!existingACs.has(acId)) {
-        const itemRef = item.slugs?.[0]
-          ? `@${item.slugs[0]}`
-          : `@${index.shortUlid(item._ulid)}`;
+        const itemRef = item.slugs?.[0] ? `@${item.slugs[0]}` : `@${index.shortUlid(item._ulid)}`;
         warnings.push({
           type: "invalid_ac_annotation",
           itemRef,
@@ -1138,9 +1090,7 @@ async function checkCompleteness(
   const coveredACs = await scanTestCoverage(rootDir);
 
   for (const item of items) {
-    const itemRef = item.slugs?.[0]
-      ? `@${item.slugs[0]}`
-      : `@${index.shortUlid(item._ulid)}`;
+    const itemRef = item.slugs?.[0] ? `@${item.slugs[0]}` : `@${index.shortUlid(item._ulid)}`;
     const isTrait = item.type === "trait";
     const isModule = item.type === "module";
 
@@ -1195,9 +1145,9 @@ async function checkCompleteness(
                 ? `@${child.slugs[0]}`
                 : child._ulid
                   ? `@${shortestUniqueUlid(
-                    child._ulid,
-                    items.map((candidate) => candidate._ulid),
-                  )}`
+                      child._ulid,
+                      items.map((candidate) => candidate._ulid),
+                    )}`
                   : "@unknown";
               warnings.push({
                 type: "status_inconsistency",
@@ -1300,8 +1250,7 @@ async function checkCompleteness(
     const isRetrospective = item.traits?.includes("@trait-retrospective");
     if (isRetrospective) {
       const isImplementedOrVerified =
-        item.status?.implementation === "implemented" ||
-        item.status?.implementation === "verified";
+        item.status?.implementation === "implemented" || item.status?.implementation === "verified";
 
       // AC: @trait-retrospective ac-2
       // Retrospective specs with implemented/verified status must have verification metadata
@@ -1415,7 +1364,8 @@ function extractFieldReferences(text: string): Array<{ context: string; field: s
 
   // Pattern: "the <field>" when discussing items/tasks (common in ACs)
   // Only match known schema-like words to avoid false positives
-  const thePattern = /\bthe\s+(status|children|parent|spec_ref|depends_on|traits|tags|notes|todos|acceptance_criteria)\b/gi;
+  const thePattern =
+    /\bthe\s+(status|children|parent|spec_ref|depends_on|traits|tags|notes|todos|acceptance_criteria)\b/gi;
   while ((match = thePattern.exec(text)) !== null) {
     references.push({ context: "item", field: match[1].toLowerCase() });
   }
@@ -1429,7 +1379,10 @@ function extractFieldReferences(text: string): Array<{ context: string; field: s
 function isValidSchemaField(context: string, field: string): { valid: boolean; reason?: string } {
   // If it's a known conceptual field, it's technically invalid but we can give a specific message
   if (CONCEPTUAL_FIELDS.has(field)) {
-    return { valid: false, reason: `'${field}' is a parse-time/conceptual field, not stored in schema` };
+    return {
+      valid: false,
+      reason: `'${field}' is a parse-time/conceptual field, not stored in schema`,
+    };
   }
 
   // Check based on context
@@ -1459,7 +1412,10 @@ function isValidSchemaField(context: string, field: string): { valid: boolean; r
     case "meta_ref":
     case "plan_ref":
       // These are string references, not objects with fields
-      return { valid: false, reason: `'${context}' is a reference string, not an object with fields` };
+      return {
+        valid: false,
+        reason: `'${context}' is a reference string, not an object with fields`,
+      };
   }
 
   // Check if field exists in either schema (might be ambiguous context)
@@ -1474,9 +1430,7 @@ function isValidSchemaField(context: string, field: string): { valid: boolean; r
  * Check acceptance criteria for field references that don't exist in schema
  * Catches drift between spec prose and implementation reality.
  */
-export function checkACSchemaReferences(
-  items: LoadedSpecItem[],
-): CompletenessWarning[] {
+export function checkACSchemaReferences(items: LoadedSpecItem[]): CompletenessWarning[] {
   const warnings: CompletenessWarning[] = [];
   const itemUlids = items.map((item) => item._ulid);
 
@@ -1563,9 +1517,7 @@ function checkAutomationEligibility(
     // AC: @task-automation-eligibility ac-21 — skip terminal statuses
     if (terminalStatuses.has(task.status)) continue;
 
-    const taskRef = task.slugs?.[0]
-      ? `@${task.slugs[0]}`
-      : `@${index.shortUlid(task._ulid)}`;
+    const taskRef = task.slugs?.[0] ? `@${task.slugs[0]}` : `@${index.shortUlid(task._ulid)}`;
 
     // AC: @task-automation-eligibility ac-21
     // Warn if eligible but no spec_ref
@@ -1662,10 +1614,10 @@ async function findOrphanedSkillDirectories(
 
     // Read all directories in skills/
     const entries = await fs.readdir(skillsDir, { withFileTypes: true });
-    const directories = entries.filter(entry => entry.isDirectory());
+    const directories = entries.filter((entry) => entry.isDirectory());
 
     // Build set of skill IDs from meta
-    const skillIds = new Set(skills.map(s => s.id));
+    const skillIds = new Set(skills.map((s) => s.id));
 
     // Find orphaned directories
     for (const dir of directories) {
@@ -1701,7 +1653,7 @@ function validateHookAgentRefs(
   agents: { id: string }[],
 ): { file: string; path: string; message: string }[] {
   const errors: { file: string; path: string; message: string }[] = [];
-  const knownAgentIds = new Set(agents.map(a => a.id));
+  const knownAgentIds = new Set(agents.map((a) => a.id));
 
   for (let i = 0; i < hooks.length; i++) {
     const hook = hooks[i];
@@ -1726,10 +1678,20 @@ function validateHookAgentRefs(
  *
  * AC: @dispatch-hook-filter ac-3
  */
-function validateHookFilters(
-  hooks: LoadedHook[],
-): { ref: string; sourceFile?: string; field: string; warning: "deprecated_target"; message: string }[] {
-  const warnings: { ref: string; sourceFile?: string; field: string; warning: "deprecated_target"; message: string }[] = [];
+function validateHookFilters(hooks: LoadedHook[]): {
+  ref: string;
+  sourceFile?: string;
+  field: string;
+  warning: "deprecated_target";
+  message: string;
+}[] {
+  const warnings: {
+    ref: string;
+    sourceFile?: string;
+    field: string;
+    warning: "deprecated_target";
+    message: string;
+  }[] = [];
 
   for (const hook of hooks) {
     if (!hook.filter) continue;
@@ -1763,8 +1725,20 @@ function validateHookFilters(
  */
 function validateSessionPromptActions(
   hooks: LoadedHook[],
-): { ref: string; sourceFile?: string; field: string; warning: "deprecated_target"; message: string }[] {
-  const warnings: { ref: string; sourceFile?: string; field: string; warning: "deprecated_target"; message: string }[] = [];
+): {
+  ref: string;
+  sourceFile?: string;
+  field: string;
+  warning: "deprecated_target";
+  message: string;
+}[] {
+  const warnings: {
+    ref: string;
+    sourceFile?: string;
+    field: string;
+    warning: "deprecated_target";
+    message: string;
+  }[] = [];
 
   for (const hook of hooks) {
     if (hook.action.type !== "session_prompt") continue;
@@ -1796,8 +1770,20 @@ function validateSessionPromptActions(
  */
 function validateScheduleSessionPromptActions(
   schedules: LoadedSchedule[],
-): { ref: string; sourceFile?: string; field: string; warning: "deprecated_target"; message: string }[] {
-  const warnings: { ref: string; sourceFile?: string; field: string; warning: "deprecated_target"; message: string }[] = [];
+): {
+  ref: string;
+  sourceFile?: string;
+  field: string;
+  warning: "deprecated_target";
+  message: string;
+}[] {
+  const warnings: {
+    ref: string;
+    sourceFile?: string;
+    field: string;
+    warning: "deprecated_target";
+    message: string;
+  }[] = [];
 
   for (const schedule of schedules) {
     if (schedule.action.type !== "session_prompt") continue;
@@ -1826,8 +1812,20 @@ function validateScheduleSessionPromptActions(
  */
 function validateCompositionSessionPromptActions(
   compositions: LoadedComposition[],
-): { ref: string; sourceFile?: string; field: string; warning: "deprecated_target"; message: string }[] {
-  const warnings: { ref: string; sourceFile?: string; field: string; warning: "deprecated_target"; message: string }[] = [];
+): {
+  ref: string;
+  sourceFile?: string;
+  field: string;
+  warning: "deprecated_target";
+  message: string;
+}[] {
+  const warnings: {
+    ref: string;
+    sourceFile?: string;
+    field: string;
+    warning: "deprecated_target";
+    message: string;
+  }[] = [];
 
   for (const composition of compositions) {
     if (composition.on_complete.type !== "session_prompt") continue;
@@ -1862,7 +1860,7 @@ function validateScheduleAgentRefs(
   agents: { id: string }[],
 ): { file: string; path: string; message: string }[] {
   const errors: { file: string; path: string; message: string }[] = [];
-  const knownAgentIds = new Set(agents.map(a => a.id));
+  const knownAgentIds = new Set(agents.map((a) => a.id));
 
   for (let i = 0; i < schedules.length; i++) {
     const schedule = schedules[i];
@@ -1896,7 +1894,7 @@ function validateCompositionAgentRefs(
   agents: { id: string }[],
 ): { file: string; path: string; message: string }[] {
   const errors: { file: string; path: string; message: string }[] = [];
-  const knownAgentIds = new Set(agents.map(a => a.id));
+  const knownAgentIds = new Set(agents.map((a) => a.id));
 
   for (let i = 0; i < compositions.length; i++) {
     const comp = compositions[i];
@@ -1930,8 +1928,20 @@ function validateTemplateVars(
   hooks: LoadedHook[],
   schedules: LoadedSchedule[],
   compositions: LoadedComposition[],
-): { ref: string; sourceFile?: string; field: string; warning: "deprecated_target"; message: string }[] {
-  const warnings: { ref: string; sourceFile?: string; field: string; warning: "deprecated_target"; message: string }[] = [];
+): {
+  ref: string;
+  sourceFile?: string;
+  field: string;
+  warning: "deprecated_target";
+  message: string;
+}[] {
+  const warnings: {
+    ref: string;
+    sourceFile?: string;
+    field: string;
+    warning: "deprecated_target";
+    message: string;
+  }[] = [];
 
   // Validate hook action templates
   for (const hook of hooks) {
@@ -2127,17 +2137,9 @@ export async function validate(
   const needsRefIndex = runRefs || runOrphans || runCompleteness;
   if (
     needsRefIndex &&
-    (allTasks.length > 0 ||
-      allItems.length > 0 ||
-      allMetaItems.length > 0 ||
-      allPlans.length > 0)
+    (allTasks.length > 0 || allItems.length > 0 || allMetaItems.length > 0 || allPlans.length > 0)
   ) {
-    const index = new ReferenceIndex(
-      allTasks,
-      allItems,
-      allMetaItems,
-      allPlans,
-    );
+    const index = new ReferenceIndex(allTasks, allItems, allMetaItems, allPlans);
 
     if (runRefs) {
       const refResult = validateRefs(index, allTasks, allItems);
@@ -2282,11 +2284,13 @@ export async function validate(
     // AC: @dispatch-hook-filter ac-3 - validate hook filter fields
     if (metaCtx.hooks.length > 0) {
       const hookErrors = validateHookAgentRefs(metaCtx.hooks, metaCtx.agents);
-      result.schemaErrors.push(...hookErrors.map(e => ({
-        file: e.file,
-        path: e.path,
-        message: e.message,
-      })));
+      result.schemaErrors.push(
+        ...hookErrors.map((e) => ({
+          file: e.file,
+          path: e.path,
+          message: e.message,
+        })),
+      );
 
       const hookFilterWarnings = validateHookFilters(metaCtx.hooks);
       result.refWarnings.push(...hookFilterWarnings);
@@ -2299,11 +2303,13 @@ export async function validate(
     // AC: @dispatch-schedule-schema ac-3 - validate schedule agent action references
     if (metaCtx.schedules.length > 0) {
       const scheduleErrors = validateScheduleAgentRefs(metaCtx.schedules, metaCtx.agents);
-      result.schemaErrors.push(...scheduleErrors.map(e => ({
-        file: e.file,
-        path: e.path,
-        message: e.message,
-      })));
+      result.schemaErrors.push(
+        ...scheduleErrors.map((e) => ({
+          file: e.file,
+          path: e.path,
+          message: e.message,
+        })),
+      );
 
       // AC: @session-prompt-action-schema ac-4 — warn on session_prompt without session_id on schedules
       const scheduleSessionPromptWarnings = validateScheduleSessionPromptActions(metaCtx.schedules);
@@ -2313,14 +2319,18 @@ export async function validate(
     // Validate composition on_complete agent action references
     if (metaCtx.compositions.length > 0) {
       const compositionErrors = validateCompositionAgentRefs(metaCtx.compositions, metaCtx.agents);
-      result.schemaErrors.push(...compositionErrors.map(e => ({
-        file: e.file,
-        path: e.path,
-        message: e.message,
-      })));
+      result.schemaErrors.push(
+        ...compositionErrors.map((e) => ({
+          file: e.file,
+          path: e.path,
+          message: e.message,
+        })),
+      );
 
       // AC: @session-prompt-action-schema ac-4 — warn on session_prompt without session_id on compositions
-      const compositionSessionPromptWarnings = validateCompositionSessionPromptActions(metaCtx.compositions);
+      const compositionSessionPromptWarnings = validateCompositionSessionPromptActions(
+        metaCtx.compositions,
+      );
       result.refWarnings.push(...compositionSessionPromptWarnings);
     }
 

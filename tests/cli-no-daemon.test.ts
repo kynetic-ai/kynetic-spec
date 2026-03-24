@@ -3,7 +3,13 @@ import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { PidFileManager } from "../src/cli/pid-utils";
 import { buildDaemonChildEnv } from "../src/cli/commands/serve";
-import { cleanupTempDir, createIsolatedKspecHome, createTempDir, initGitRepo, kspec } from "./helpers/cli";
+import {
+  cleanupTempDir,
+  createIsolatedKspecHome,
+  createTempDir,
+  initGitRepo,
+  kspec,
+} from "./helpers/cli";
 
 describe("KSPEC_NO_DAEMON", () => {
   let tempDir: string;

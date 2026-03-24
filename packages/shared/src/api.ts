@@ -204,8 +204,8 @@ export interface Workflow {
   trigger: string;
   description?: string;
   steps: WorkflowStep[];
-  enforcement?: 'advisory' | 'strict';
-  mode?: 'interactive' | 'loop';
+  enforcement?: "advisory" | "strict";
+  mode?: "interactive" | "loop";
   based_on?: string;
   tags?: string[];
 }
@@ -214,7 +214,7 @@ export interface Workflow {
  * Workflow step
  */
 export interface WorkflowStep {
-  type: 'action' | 'check' | 'decision';
+  type: "action" | "check" | "decision";
   content: string;
   on_fail?: string;
   options?: string[];
@@ -226,7 +226,7 @@ export interface WorkflowStep {
  */
 export interface Observation {
   _ulid: string;
-  type: 'friction' | 'success' | 'question' | 'idea';
+  type: "friction" | "success" | "question" | "idea";
   content: string;
   context?: string;
   created_at: string;
@@ -315,15 +315,15 @@ export interface ReviewThreadEntry {
  */
 export type ReviewAnchor =
   | {
-      type: 'code';
+      type: "code";
       path: string;
-      side: 'base' | 'head';
+      side: "base" | "head";
       line_start: number;
       line_end: number;
       commit: string;
     }
   | {
-      type: 'structured';
+      type: "structured";
       section?: string;
       field?: string;
       path?: string;
@@ -336,7 +336,7 @@ export type ReviewAnchor =
  */
 export interface ReviewThread {
   _ulid: string;
-  kind: 'blocker' | 'question' | 'nit';
+  kind: "blocker" | "question" | "nit";
   anchor?: ReviewAnchor;
   entries: ReviewThreadEntry[];
   resolved_at?: string | null;
@@ -347,8 +347,8 @@ export interface ReviewThread {
  * Subject version for checks and verdicts
  */
 export type ReviewSubjectVersion =
-  | { type: 'code_compare'; base_commit: string; head_commit: string }
-  | { type: 'entity_version'; content_hash: string };
+  | { type: "code_compare"; base_commit: string; head_commit: string }
+  | { type: "entity_version"; content_hash: string };
 
 /**
  * Review check result
@@ -356,7 +356,7 @@ export type ReviewSubjectVersion =
  */
 export interface ReviewCheck {
   name: string;
-  status: 'pass' | 'fail' | 'running' | 'skipped';
+  status: "pass" | "fail" | "running" | "skipped";
   required: boolean;
   runner?: string;
   evidence?: string;
@@ -372,7 +372,7 @@ export interface ReviewCheck {
 export interface ReviewVerdict {
   reviewer: string;
   role: string;
-  decision: 'approve' | 'request_changes' | 'comment';
+  decision: "approve" | "request_changes" | "comment";
   applies_to_version: ReviewSubjectVersion;
   created_at: string;
 }
@@ -382,11 +382,18 @@ export interface ReviewVerdict {
  * AC: @review-records-web-ui ac-2
  */
 export type ReviewSubject =
-  | { type: 'code'; base_commit: string; head_commit: string; merge_base_commit?: string; base_branch?: string; head_branch?: string }
-  | { type: 'plan'; ref: string; shadow_commit: string; content_hash: string }
-  | { type: 'task'; ref: string; shadow_commit: string; content_hash: string }
-  | { type: 'spec'; ref: string; shadow_commit: string; content_hash: string }
-  | { type: 'external'; url: string; external_id?: string; provider?: string };
+  | {
+      type: "code";
+      base_commit: string;
+      head_commit: string;
+      merge_base_commit?: string;
+      base_branch?: string;
+      head_branch?: string;
+    }
+  | { type: "plan"; ref: string; shadow_commit: string; content_hash: string }
+  | { type: "task"; ref: string; shadow_commit: string; content_hash: string }
+  | { type: "spec"; ref: string; shadow_commit: string; content_hash: string }
+  | { type: "external"; url: string; external_id?: string; provider?: string };
 
 /**
  * Full review detail for the detail endpoint
@@ -429,7 +436,7 @@ export interface ReviewDetail {
 }
 
 export interface BatchSpecItemSummary {
-  kind: 'item';
+  kind: "item";
   ulid: string;
   slugs: string[];
   title: string;
@@ -441,7 +448,7 @@ export interface BatchSpecItemSummary {
 }
 
 export interface BatchTaskSummary {
-  kind: 'task';
+  kind: "task";
   ulid: string;
   slugs: string[];
   title: string;
@@ -464,7 +471,7 @@ export interface BatchItemsResponse {
  * AC: @web-dashboard ac-24
  */
 export interface SearchResult {
-  type: 'item' | 'task' | 'inbox' | 'observation' | 'agent' | 'workflow' | 'convention';
+  type: "item" | "task" | "inbox" | "observation" | "agent" | "workflow" | "convention";
   ulid: string;
   title: string;
   matchedFields: string[];
@@ -512,7 +519,7 @@ export interface RefValidationError {
   sourceFile?: string;
   sourceUlid?: string;
   field: string;
-  error: 'not_found' | 'ambiguous' | 'duplicate_slug';
+  error: "not_found" | "ambiguous" | "duplicate_slug";
   message: string;
 }
 
@@ -521,7 +528,7 @@ export interface RefValidationWarning {
   sourceFile?: string;
   sourceUlid?: string;
   field: string;
-  warning: 'deprecated_target';
+  warning: "deprecated_target";
   message: string;
 }
 
@@ -533,16 +540,16 @@ export interface OrphanItem {
 }
 
 export type CompletenessWarningType =
-  | 'missing_acceptance_criteria'
-  | 'missing_description'
-  | 'status_inconsistency'
-  | 'missing_test_coverage'
-  | 'automation_eligible_no_spec'
-  | 'ac_schema_field_mismatch';
+  | "missing_acceptance_criteria"
+  | "missing_description"
+  | "status_inconsistency"
+  | "missing_test_coverage"
+  | "automation_eligible_no_spec"
+  | "ac_schema_field_mismatch";
 
 export interface CompletenessWarning {
   type: CompletenessWarningType;
-  subtype?: 'own_ac' | 'trait_ac';
+  subtype?: "own_ac" | "trait_ac";
   itemRef: string;
   itemTitle: string;
   message: string;
@@ -582,7 +589,7 @@ export interface AlignmentStats {
 }
 
 export interface AlignmentWarning {
-  type: 'orphaned_spec' | 'status_mismatch' | 'stale_implementation';
+  type: "orphaned_spec" | "status_mismatch" | "stale_implementation";
   specUlid?: string;
   specTitle?: string;
   taskUlid?: string;
@@ -603,25 +610,25 @@ export interface Convention {
   rules: string[];
   examples?: Array<{ good: string; bad: string }>;
   validation?: {
-    type: 'regex' | 'enum' | 'range' | 'prose';
+    type: "regex" | "enum" | "range" | "prose";
     pattern?: string;
     message?: string;
     allowed?: string[];
     min?: number;
     max?: number;
-    unit?: 'words' | 'chars' | 'lines';
+    unit?: "words" | "chars" | "lines";
   };
 }
 
 /**
  * Triage status lifecycle
  */
-export type TriageStatus = 'pending' | 'triaged' | 'acted_on';
+export type TriageStatus = "pending" | "triaged" | "acted_on";
 
 /**
  * Triage action types
  */
-export type TriageAction = 'promote' | 'delete' | 'defer' | 'spec-gap' | 'duplicate';
+export type TriageAction = "promote" | "delete" | "defer" | "spec-gap" | "duplicate";
 
 /**
  * Triage record

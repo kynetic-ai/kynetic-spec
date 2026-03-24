@@ -12,10 +12,7 @@ import {
   CONVENTIONS_INTRO,
 } from "../src/parser/agent-data-sections.js";
 import { computeMetaHash } from "../src/cli/commands/agents.js";
-import type {
-  LoadedConvention,
-  LoadedWorkflow,
-} from "../src/parser/meta.js";
+import type { LoadedConvention, LoadedWorkflow } from "../src/parser/meta.js";
 
 // AC: @agent-data-sections ac-2
 describe("generateConventionsSummary", () => {
@@ -57,11 +54,7 @@ describe("generateConventionsSummary", () => {
       const conventions: LoadedConvention[] = [
         {
           domain: "commits",
-          rules: [
-            "Use conventional commits",
-            "Include task trailer",
-            "Sign commits with GPG",
-          ],
+          rules: ["Use conventional commits", "Include task trailer", "Sign commits with GPG"],
           _sourceFile: "conventions.yaml",
         },
       ];
@@ -147,9 +140,7 @@ describe("generateConventionsSummary", () => {
         {
           domain: "commits",
           rules: ["Use conventional commits"],
-          examples: [
-            { good: "feat: add login", bad: "Added login" },
-          ],
+          examples: [{ good: "feat: add login", bad: "Added login" }],
           _sourceFile: "conventions.yaml",
         },
       ];
@@ -157,9 +148,7 @@ describe("generateConventionsSummary", () => {
       const result = generateConventionsSummary(conventions);
 
       expect(result).toContain("**Examples:**");
-      expect(result).toContain(
-        "- Good: `feat: add login` — Bad: `Added login`",
-      );
+      expect(result).toContain("- Good: `feat: add login` — Bad: `Added login`");
     });
 
     it("should render long examples as quoted multi-line format", () => {
@@ -199,12 +188,8 @@ describe("generateConventionsSummary", () => {
 
       const result = generateConventionsSummary(conventions);
 
-      expect(result).toContain(
-        "- Good: `feat: add login` — Bad: `Added login`",
-      );
-      expect(result).toContain(
-        "- Good: `fix(auth): handle expired tokens` — Bad: `fixed bug`",
-      );
+      expect(result).toContain("- Good: `feat: add login` — Bad: `Added login`");
+      expect(result).toContain("- Good: `fix(auth): handle expired tokens` — Bad: `fixed bug`");
     });
 
     it("should not include Examples section when examples array is empty", () => {
@@ -227,9 +212,7 @@ describe("generateConventionsSummary", () => {
         {
           domain: "commits",
           rules: ["Use conventional commits"],
-          examples: [
-            { good: "feat: add login", bad: "Added login" },
-          ],
+          examples: [{ good: "feat: add login", bad: "Added login" }],
           _sourceFile: "conventions.yaml",
         },
         {
@@ -258,9 +241,7 @@ describe("generateConventionsSummary", () => {
         {
           domain: "commits",
           rules: ["Use conventional commits"],
-          examples: [
-            { good: "feat: add login", bad: "Added login" },
-          ],
+          examples: [{ good: "feat: add login", bad: "Added login" }],
           _sourceFile: "conventions.yaml",
         },
       ];
@@ -372,9 +353,7 @@ describe("generateWorkflowsSummary", () => {
 
       const result = generateWorkflowsSummary(workflows);
 
-      expect(result).toContain(
-        "Use `kspec workflow start @workflow-id` to start a workflow.",
-      );
+      expect(result).toContain("Use `kspec workflow start @workflow-id` to start a workflow.");
     });
   });
 });
@@ -412,18 +391,8 @@ describe("computeMetaHash", () => {
     const conventions: LoadedConvention[] = [];
     const workflows: LoadedWorkflow[] = [];
 
-    const hashV1 = computeMetaHash(
-      conventions,
-      workflows,
-      undefined,
-      "0.9.0",
-    );
-    const hashV2 = computeMetaHash(
-      conventions,
-      workflows,
-      undefined,
-      "0.9.1",
-    );
+    const hashV1 = computeMetaHash(conventions, workflows, undefined, "0.9.0");
+    const hashV2 = computeMetaHash(conventions, workflows, undefined, "0.9.1");
 
     expect(hashV1).not.toBe(hashV2);
   });

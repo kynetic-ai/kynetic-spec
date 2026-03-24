@@ -1,17 +1,12 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import {
-  TaskDataManager,
-  resolveTaskDataManager,
-} from "../src/parser/task-data-manager.js";
+import { TaskDataManager, resolveTaskDataManager } from "../src/parser/task-data-manager.js";
 import {
   splitBackend,
   ensureSplitBackendRegistered,
-  getTaskDir,
   getTaskFilePath,
   getNotesFilePath,
-  getIndexFilePath,
 } from "../src/parser/split-backend.js";
 import type { HistoryEntry } from "../src/parser/split-backend.js";
 
@@ -23,6 +18,7 @@ import {
   cleanupTempDir,
   createTempDir,
   initGitRepo,
+  readTestOutput,
   testUlid,
 } from "./helpers/cli.js";
 
@@ -43,10 +39,7 @@ async function setupSplitFixture(tempDir: string): Promise<KspecContext> {
   const tasksDir = path.join(specDir, "tasks");
   await fs.mkdir(tasksDir, { recursive: true });
 
-  await fs.writeFile(
-    path.join(specDir, "project.tasks.yaml"),
-    toYaml([]),
-  );
+  await fs.writeFile(path.join(specDir, "project.tasks.yaml"), toYaml([]));
 
   const ctx: KspecContext = {
     rootDir: tempDir,
@@ -66,7 +59,7 @@ async function setupSplitFixture(tempDir: string): Promise<KspecContext> {
  * Helper: read and parse a YAML file.
  */
 async function readYaml(filePath: string): Promise<Record<string, unknown>> {
-  const content = await fs.readFile(filePath, "utf-8");
+  const content = await readTestOutput(filePath);
   const { parse } = await import("yaml");
   return parse(content);
 }
@@ -237,12 +230,10 @@ describe("Per-Task Core Data File (@task-core-data-file)", () => {
       });
 
       // Mutate with commitOpts to provide command metadata
-      await manager.mutateTask(
-        ctx,
-        "@metadata-test",
-        (task) => ({ ...task, priority: 1 }),
-        { operation: "task-set", ref: "@metadata-test" },
-      );
+      await manager.mutateTask(ctx, "@metadata-test", (task) => ({ ...task, priority: 1 }), {
+        operation: "task-set",
+        ref: "@metadata-test",
+      });
 
       const taskFile = await readYaml(getTaskFilePath(ctx, created._ulid));
       const history = taskFile.history as HistoryEntry[];
@@ -459,12 +450,10 @@ describe("Per-Task Core Data File (@task-core-data-file)", () => {
       });
 
       // Provide commitOpts with operation to set the command
-      await manager.mutateTask(
-        ctx,
-        "@command-test",
-        (task) => ({ ...task, priority: 1 }),
-        { operation: "task-set", ref: "@command-test" },
-      );
+      await manager.mutateTask(ctx, "@command-test", (task) => ({ ...task, priority: 1 }), {
+        operation: "task-set",
+        ref: "@command-test",
+      });
 
       const history = await splitBackend.getTaskHistory(ctx, created._ulid);
       expect(history.length).toBe(1);
@@ -520,24 +509,20 @@ describe("Per-Task Core Data File (@task-core-data-file)", () => {
         priority: 3,
       });
 
-      await manager.mutateTask(
-        ctx,
-        "@persist-test",
-        (task) => ({ ...task, priority: 1 }),
-        { operation: "task-set", ref: "@persist-test" },
-      );
+      await manager.mutateTask(ctx, "@persist-test", (task) => ({ ...task, priority: 1 }), {
+        operation: "task-set",
+        ref: "@persist-test",
+      });
 
       // Read history — it should survive file reads
       const history1 = await splitBackend.getTaskHistory(ctx, created._ulid);
       expect(history1.length).toBe(1);
 
       // Mutate again and verify accumulated history
-      await manager.mutateTask(
-        ctx,
-        "@persist-test",
-        (task) => ({ ...task, priority: 5 }),
-        { operation: "task-set", ref: "@persist-test" },
-      );
+      await manager.mutateTask(ctx, "@persist-test", (task) => ({ ...task, priority: 5 }), {
+        operation: "task-set",
+        ref: "@persist-test",
+      });
 
       const history2 = await splitBackend.getTaskHistory(ctx, created._ulid);
       expect(history2.length).toBe(2);
@@ -569,10 +554,8 @@ describe("Per-Task Core Data File (@task-core-data-file)", () => {
         priority: 3,
       });
 
-      await manager.mutateTasks(
-        ctx,
-        ["@batch-hist-1", "@batch-hist-2"],
-        (tasks) => tasks.map((t) => ({ ...t, priority: 1 })),
+      await manager.mutateTasks(ctx, ["@batch-hist-1", "@batch-hist-2"], (tasks) =>
+        tasks.map((t) => ({ ...t, priority: 1 })),
       );
 
       const history1 = await splitBackend.getTaskHistory(ctx, task1._ulid);
@@ -601,9 +584,7 @@ describe("Per-Task Core Data File (@task-core-data-file)", () => {
       // Add a todo via mutation (todo-only change)
       await manager.mutateTask(ctx, "@todo-mutation", (task) => ({
         ...task,
-        todos: [
-          { id: 1, text: "Do something", done: false, added_at: "2026-03-20T01:00:00.000Z" },
-        ],
+        todos: [{ id: 1, text: "Do something", done: false, added_at: "2026-03-20T01:00:00.000Z" }],
       }));
 
       // task.yaml should contain the todo
@@ -627,10 +608,8 @@ describe("Per-Task Core Data File (@task-core-data-file)", () => {
         slugs: ["batch-todo-1"],
       });
 
-      await manager.mutateTasks(
-        ctx,
-        ["@batch-todo-1"],
-        (tasks) => tasks.map((t) => ({
+      await manager.mutateTasks(ctx, ["@batch-todo-1"], (tasks) =>
+        tasks.map((t) => ({
           ...t,
           todos: [{ id: 1, text: "Batch todo", done: false, added_at: "2026-03-20T01:00:00.000Z" }],
         })),
@@ -770,19 +749,13 @@ describe("Per-Task Notes File (@task-notes-file)", () => {
       });
 
       // Read task.yaml content before adding a note
-      const taskFileBefore = await fs.readFile(
-        getTaskFilePath(ctx, created._ulid),
-        "utf-8",
-      );
+      const taskFileBefore = await readTestOutput(getTaskFilePath(ctx, created._ulid));
 
       // Add a note
       await manager.addNote(ctx, "@note-isolation", "Test note content", "@tester");
 
       // task.yaml should be unchanged
-      const taskFileAfter = await fs.readFile(
-        getTaskFilePath(ctx, created._ulid),
-        "utf-8",
-      );
+      const taskFileAfter = await readTestOutput(getTaskFilePath(ctx, created._ulid));
       expect(taskFileAfter).toBe(taskFileBefore);
 
       // Note should be in notes.yaml
@@ -913,10 +886,7 @@ describe("Per-Task Notes File (@task-notes-file)", () => {
       });
 
       // Write an explicit empty notes array
-      await fs.writeFile(
-        getNotesFilePath(ctx, created._ulid),
-        toYaml({ notes: [] }),
-      );
+      await fs.writeFile(getNotesFilePath(ctx, created._ulid), toYaml({ notes: [] }));
 
       const task = await manager.getTask(ctx, "@empty-array");
       expect(task.notes.length).toBe(0);
@@ -933,7 +903,7 @@ describe("Per-Task Notes File (@task-notes-file)", () => {
     it("superseding note is appended with supersedes reference", async () => {
       const manager = new TaskDataManager("split");
 
-      const created = await manager.createTask(ctx, {
+      await manager.createTask(ctx, {
         title: "Supersede test",
         slugs: ["supersede-test"],
       });
@@ -1032,10 +1002,7 @@ describe("Per-Task Notes File (@task-notes-file)", () => {
       await manager.addNote(ctx, "@mixed-mutation", "First note", "@tester");
 
       // Read notes.yaml before field mutation
-      const notesBefore = await fs.readFile(
-        getNotesFilePath(ctx, created._ulid),
-        "utf-8",
-      );
+      const _notesBefore = await readTestOutput(getNotesFilePath(ctx, created._ulid));
 
       // Now mutate a core field (not notes)
       await manager.mutateTask(ctx, "@mixed-mutation", (task) => ({
@@ -1146,9 +1113,7 @@ describe("Per-Task Notes File (@task-notes-file)", () => {
         };
 
         const manager = new TaskDataManager("split");
-        await expect(manager.listTasks(migCtx)).rejects.toThrow(
-          /migration/i,
-        );
+        await expect(manager.listTasks(migCtx)).rejects.toThrow(/migration/i);
       } finally {
         await cleanupTempDir(migrationDir);
       }
@@ -1162,10 +1127,7 @@ describe("Per-Task Notes File (@task-notes-file)", () => {
         const specDir = path.join(emptyDir, ".kspec");
         await fs.mkdir(specDir, { recursive: true });
         await fs.mkdir(path.join(specDir, "tasks"), { recursive: true });
-        await fs.writeFile(
-          path.join(specDir, "project.tasks.yaml"),
-          toYaml([]),
-        );
+        await fs.writeFile(path.join(specDir, "project.tasks.yaml"), toYaml([]));
 
         const emptyCtx: KspecContext = {
           rootDir: emptyDir,
@@ -1220,10 +1182,7 @@ describe("Per-Task Notes File (@task-notes-file)", () => {
             created_at: "2026-03-20T00:00:00.000Z",
           }),
         );
-        await fs.writeFile(
-          path.join(taskDir, "notes.yaml"),
-          toYaml({ notes: [] }),
-        );
+        await fs.writeFile(path.join(taskDir, "notes.yaml"), toYaml({ notes: [] }));
 
         // Index still has monolithic-style entry (notes array)
         await fs.writeFile(

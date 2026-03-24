@@ -11,7 +11,6 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import * as os from "node:os";
 import { parse as parseTOML, stringify as stringifyTOML } from "smol-toml";
 import {
   createSessionWithBudget,
@@ -25,12 +24,9 @@ import {
   getFallbackInjectionInstructions,
   injectEnvForAdapter,
   removeEnvForAdapter,
-  getSession,
-  getBudget,
   getSessionBudgetPath,
   createSession,
 } from "../src/sessions/store.js";
-import type { SessionMetadataInput } from "../src/sessions/types.js";
 import { listAdapters, resolveAdapter } from "../src/agents/adapters.js";
 import { EXIT_CODES } from "../src/cli/exit-codes.js";
 import {
@@ -423,17 +419,12 @@ describe("Environment Injection", () => {
         const sessionId = testUlid("CDEX", 2);
         await injectCodexEnv(sessionId);
 
-        const content = await fs.readFile(
-          path.join(configDir, "config.toml"),
-          "utf-8",
-        );
+        const content = await fs.readFile(path.join(configDir, "config.toml"), "utf-8");
         const config = parseTOML(content) as Record<string, unknown>;
         expect(config.model).toBe("gpt-5");
         const policy = config.shell_environment_policy as Record<string, unknown>;
         expect((policy.set as Record<string, string>).EXISTING_VAR).toBe("keep");
-        expect((policy.set as Record<string, string>).KSPEC_SESSION_ID).toBe(
-          sessionId,
-        );
+        expect((policy.set as Record<string, string>).KSPEC_SESSION_ID).toBe(sessionId);
         expect(policy.inherit).toBe("all");
       } finally {
         process.env.HOME = originalHome;
@@ -518,9 +509,7 @@ describe("Environment Injection", () => {
         );
 
         const sessionId = testUlid("CRPT", 1);
-        await expect(injectClaudeCodeEnv(sessionId)).rejects.toThrow(
-          "not valid JSON",
-        );
+        await expect(injectClaudeCodeEnv(sessionId)).rejects.toThrow("not valid JSON");
       } finally {
         process.chdir(originalCwd);
         if (originalEnv !== undefined) {
@@ -532,20 +521,14 @@ describe("Environment Injection", () => {
     it("should throw on corrupt codex config.toml instead of overwriting", async () => {
       const configDir = path.join(testDir, ".codex");
       await fs.mkdir(configDir, { recursive: true });
-      await fs.writeFile(
-        path.join(configDir, "config.toml"),
-        "not valid toml [[[",
-        "utf-8",
-      );
+      await fs.writeFile(path.join(configDir, "config.toml"), "not valid toml [[[", "utf-8");
 
       const originalHome = process.env.HOME;
       process.env.HOME = testDir;
 
       try {
         const sessionId = testUlid("CRPT", 2);
-        await expect(injectCodexEnv(sessionId)).rejects.toThrow(
-          "not valid TOML",
-        );
+        await expect(injectCodexEnv(sessionId)).rejects.toThrow("not valid TOML");
       } finally {
         process.env.HOME = originalHome;
       }
@@ -589,10 +572,7 @@ describe("Environment Injection", () => {
         const sessionId = testUlid("GEMI", 2);
         await injectGeminiEnv(sessionId);
 
-        const content = await fs.readFile(
-          path.join(dotenvDir, ".env"),
-          "utf-8",
-        );
+        const content = await fs.readFile(path.join(dotenvDir, ".env"), "utf-8");
         expect(content).toContain(`KSPEC_SESSION_ID=${sessionId}`);
         expect(content).not.toContain("old-session");
         expect(content).toContain("GEMINI_API_KEY=abc123");
@@ -654,10 +634,7 @@ describe("Environment Injection", () => {
         const sessionId = testUlid("OPEN", 2);
         await injectOpenCodeEnv(sessionId);
 
-        const content = await fs.readFile(
-          path.join(testDir, ".env"),
-          "utf-8",
-        );
+        const content = await fs.readFile(path.join(testDir, ".env"), "utf-8");
         expect(content).toContain(`KSPEC_SESSION_ID=${sessionId}`);
         expect(content).not.toContain("old-session");
         expect(content).toContain("API_KEY=secret");
@@ -692,9 +669,7 @@ describe("Environment Injection", () => {
 
       expect(result.injected).toBe(false);
       expect(result.method).toBe("fallback");
-      expect(result.description).toBe(
-        `export KSPEC_SESSION_ID=${sessionId}`,
-      );
+      expect(result.description).toBe(`export KSPEC_SESSION_ID=${sessionId}`);
     });
   });
 
@@ -746,10 +721,7 @@ describe("Environment Injection", () => {
 
         await removeClaudeCodeEnv();
 
-        const content = await fs.readFile(
-          path.join(settingsDir, "settings.local.json"),
-          "utf-8",
-        );
+        const content = await fs.readFile(path.join(settingsDir, "settings.local.json"), "utf-8");
         const settings = JSON.parse(content);
         expect(settings.env.KSPEC_SESSION_ID).toBeUndefined();
         expect(settings.env.OTHER).toBe("keep");
@@ -782,10 +754,7 @@ describe("Environment Injection", () => {
 
         await removeClaudeCodeEnv();
 
-        const content = await fs.readFile(
-          path.join(settingsDir, "settings.local.json"),
-          "utf-8",
-        );
+        const content = await fs.readFile(path.join(settingsDir, "settings.local.json"), "utf-8");
         const settings = JSON.parse(content);
         expect(settings.env).toBeUndefined();
         expect(settings.hooks).toBeDefined();
@@ -816,11 +785,7 @@ describe("Environment Injection", () => {
 
     it("should restore previous value in CLAUDE_ENV_FILE when provided", async () => {
       const envFile = path.join(testDir, "claude-env-restore");
-      await fs.writeFile(
-        envFile,
-        "OTHER_VAR=foo\nKSPEC_SESSION_ID=ralph-session\n",
-        "utf-8",
-      );
+      await fs.writeFile(envFile, "OTHER_VAR=foo\nKSPEC_SESSION_ID=ralph-session\n", "utf-8");
 
       const originalEnv = process.env.CLAUDE_ENV_FILE;
       process.env.CLAUDE_ENV_FILE = envFile;
@@ -860,10 +825,7 @@ describe("Environment Injection", () => {
 
         await removeClaudeCodeEnv("original-user-session");
 
-        const content = await fs.readFile(
-          path.join(settingsDir, "settings.local.json"),
-          "utf-8",
-        );
+        const content = await fs.readFile(path.join(settingsDir, "settings.local.json"), "utf-8");
         const settings = JSON.parse(content);
         expect(settings.env.KSPEC_SESSION_ID).toBe("original-user-session");
       } finally {
@@ -973,11 +935,7 @@ describe("Environment Injection", () => {
     // AC: @droid-acp-adapter ac-2
     it("should include droid-acp in the registered adapter list", () => {
       expect(listAdapters()).toEqual(
-        expect.arrayContaining([
-          "claude-agent-acp",
-          "codex-acp",
-          "droid-acp",
-        ]),
+        expect.arrayContaining(["claude-agent-acp", "codex-acp", "droid-acp"]),
       );
     });
 
@@ -1002,7 +960,10 @@ describe("Environment Injection", () => {
         expect(result!.method).toBe("codex_config");
 
         const configPath = path.join(testDir, ".codex", "config.toml");
-        const content = parseTOML(await fs.readFile(configPath, "utf-8")) as Record<string, unknown>;
+        const content = parseTOML(await fs.readFile(configPath, "utf-8")) as Record<
+          string,
+          unknown
+        >;
         const policy = content.shell_environment_policy as Record<string, Record<string, string>>;
         expect(policy.set.KSPEC_SESSION_ID).toBe(sessionId);
       } finally {
@@ -1051,7 +1012,10 @@ describe("Environment Injection", () => {
         await removeEnvForAdapter("codex-acp", previousValue);
 
         const configPath = path.join(testDir, ".codex", "config.toml");
-        const content = parseTOML(await fs.readFile(configPath, "utf-8")) as Record<string, unknown>;
+        const content = parseTOML(await fs.readFile(configPath, "utf-8")) as Record<
+          string,
+          unknown
+        >;
         const policy = content.shell_environment_policy as Record<string, Record<string, string>>;
         expect(policy.set.KSPEC_SESSION_ID).toBe(previousValue);
       } finally {
@@ -1086,7 +1050,10 @@ describe("Environment Injection", () => {
         await removeEnvForAdapter("codex-acp", result!.previousValue);
 
         const configPath = path.join(codexDir, "config.toml");
-        const content = parseTOML(await fs.readFile(configPath, "utf-8")) as Record<string, unknown>;
+        const content = parseTOML(await fs.readFile(configPath, "utf-8")) as Record<
+          string,
+          unknown
+        >;
         const policy = content.shell_environment_policy as Record<string, Record<string, string>>;
         expect(policy.set.KSPEC_SESSION_ID).toBe("old-session");
       } finally {
@@ -1124,13 +1091,10 @@ describe("session create CLI", () => {
 
   // AC: @session-creation-and-env-injection ac-budget
   it("should create budget when --budget flag provided", () => {
-    const result = kspec(
-      "session create --agent-type test-agent --budget 5",
-      testDir,
-    );
+    const result = kspec("session create --agent-type test-agent --budget 5", testDir);
     expect(result.exitCode).toBe(0);
     // info() routes to stdout in text mode
-    const allOutput = result.stdout + "\n" + result.stderr;
+    const allOutput = `${result.stdout}\n${result.stderr}`;
     expect(allOutput).toContain("Budget: 5 tasks per cycle");
   });
 
@@ -1164,10 +1128,7 @@ describe("session create CLI", () => {
 
   // AC: @trait-json-output ac-5 - timestamps use ISO 8601
   it("should use ISO 8601 timestamps in JSON output", () => {
-    const result = kspecJson<Record<string, unknown>>(
-      "session create --agent-type test",
-      testDir,
-    );
+    const result = kspecJson<Record<string, unknown>>("session create --agent-type test", testDir);
     const startedAt = result.started_at as string;
     // ISO 8601 pattern
     expect(startedAt).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/);
@@ -1176,33 +1137,27 @@ describe("session create CLI", () => {
   // AC: @trait-semantic-exit-codes ac-2 - validation error exits non-zero
   // Project uses EXIT_CODES.USAGE_ERROR (2) for input validation errors
   it("should exit with non-zero code for invalid budget value", () => {
-    const result = kspec(
-      "session create --agent-type test --budget abc",
-      testDir,
-      { expectFail: true },
-    );
+    const result = kspec("session create --agent-type test --budget abc", testDir, {
+      expectFail: true,
+    });
     expect(result.exitCode).toBeGreaterThan(0);
     expect(result.stderr).toContain("Invalid budget value");
   });
 
   // AC: @trait-semantic-exit-codes ac-6 - invalid arguments exit non-zero with usage info
   it("should show usage info for invalid budget", () => {
-    const result = kspec(
-      "session create --agent-type test --budget 0",
-      testDir,
-      { expectFail: true },
-    );
+    const result = kspec("session create --agent-type test --budget 0", testDir, {
+      expectFail: true,
+    });
     expect(result.exitCode).toBeGreaterThan(0);
     expect(result.stderr).toContain("positive integer");
   });
 
   // AC: @trait-error-guidance ac-5 - indicate field/value that failed
   it("should indicate the invalid field in error message", () => {
-    const result = kspec(
-      "session create --agent-type test --budget -5",
-      testDir,
-      { expectFail: true },
-    );
+    const result = kspec("session create --agent-type test --budget -5", testDir, {
+      expectFail: true,
+    });
     expect(result.stderr).toContain("-5");
     expect(result.stderr).toContain("budget");
   });
@@ -1210,22 +1165,18 @@ describe("session create CLI", () => {
   // AC: @session-creation-and-env-injection ac-inject-fallback
   it("should print export command when --inject with no known harness", () => {
     // Run without any agent env vars set
-    const result = kspec(
-      "session create --agent-type unknown --inject",
-      testDir,
-      {
-        env: {
-          // Clear any agent-detection env vars
-          CLAUDECODE: "",
-          CLAUDE_CODE_ENTRYPOINT: "",
-          CLAUDE_PROJECT_DIR: "",
-          CODEX_SANDBOX: "",
-          GEMINI_CLI: "",
-          OPENCODE_CONFIG_DIR: "",
-          OPENCODE_CONFIG: "",
-        },
+    const result = kspec("session create --agent-type unknown --inject", testDir, {
+      env: {
+        // Clear any agent-detection env vars
+        CLAUDECODE: "",
+        CLAUDE_CODE_ENTRYPOINT: "",
+        CLAUDE_PROJECT_DIR: "",
+        CODEX_SANDBOX: "",
+        GEMINI_CLI: "",
+        OPENCODE_CONFIG_DIR: "",
+        OPENCODE_CONFIG: "",
       },
-    );
+    });
     expect(result.exitCode).toBe(0);
     expect(result.stdout).toContain("export KSPEC_SESSION_ID=");
   });
@@ -1278,21 +1229,16 @@ describe("session create CLI", () => {
 
   // AC: @trait-json-output ac-3 - error as JSON object
   it("should return error as JSON when --json is active and validation fails", () => {
-    const result = kspec(
-      "session create --agent-type test --budget abc --json",
-      testDir,
-      { expectFail: true },
-    );
+    const result = kspec("session create --agent-type test --budget abc --json", testDir, {
+      expectFail: true,
+    });
     const parsed = JSON.parse(result.stderr);
     expect(parsed.error).toContain("Invalid budget value");
   });
 
   // AC: @trait-json-output ac-6 - --json takes precedence
   it("should output JSON even when other formatting might apply", () => {
-    const result = kspec(
-      "session create --agent-type test --json",
-      testDir,
-    );
+    const result = kspec("session create --agent-type test --json", testDir);
     expect(result.exitCode).toBe(0);
     const parsed = JSON.parse(result.stdout);
     expect(parsed.session_id).toBeTruthy();
@@ -1300,20 +1246,15 @@ describe("session create CLI", () => {
 
   // Default agent-type test
   it("should default agent-type to claude-code", () => {
-    const result = kspecJson<Record<string, unknown>>(
-      "session create",
-      testDir,
-    );
+    const result = kspecJson<Record<string, unknown>>("session create", testDir);
     expect(result.agent_type).toBe("claude-code");
   });
 
   // AC: @trait-semantic-exit-codes ac-8 - documented exit code behavior
   it("should return USAGE_ERROR for invalid session create input", () => {
-    const result = kspec(
-      "session create --agent-type test --budget abc",
-      testDir,
-      { expectFail: true },
-    );
+    const result = kspec("session create --agent-type test --budget abc", testDir, {
+      expectFail: true,
+    });
     expect(result.exitCode).toBe(EXIT_CODES.USAGE_ERROR);
   });
 
@@ -1321,10 +1262,7 @@ describe("session create CLI", () => {
   it("should not include @ references in session create output", () => {
     // session create doesn't output references, so this is N/A for this command
     // but verify JSON output is clean and consistent
-    const result = kspecJson<Record<string, unknown>>(
-      "session create --agent-type test",
-      testDir,
-    );
+    const result = kspecJson<Record<string, unknown>>("session create --agent-type test", testDir);
     // No ref fields expected in session create output
     expect(result.session_id).not.toContain("@");
   });
@@ -1342,32 +1280,26 @@ describe("session create CLI", () => {
 
   // AC: @trait-error-guidance ac-1 - error includes description of what went wrong
   it("should describe what went wrong in error messages", () => {
-    const result = kspec(
-      "session create --agent-type test --budget 0",
-      testDir,
-      { expectFail: true },
-    );
+    const result = kspec("session create --agent-type test --budget 0", testDir, {
+      expectFail: true,
+    });
     expect(result.stderr).toContain("Invalid budget value");
     expect(result.stderr).toContain("Must be a positive integer");
   });
 
   // AC: @trait-error-guidance ac-2 - error includes suggested action
   it("should include suggestion in error output", () => {
-    const result = kspec(
-      "session create --agent-type test --budget abc",
-      testDir,
-      { expectFail: true },
-    );
+    const result = kspec("session create --agent-type test --budget abc", testDir, {
+      expectFail: true,
+    });
     expect(result.stderr).toContain("kspec session create --budget");
   });
 
   // AC: @trait-error-guidance ac-6 - guidance in structured error object
   it("should include guidance in JSON error object", () => {
-    const result = kspec(
-      "session create --agent-type test --budget xyz --json",
-      testDir,
-      { expectFail: true },
-    );
+    const result = kspec("session create --agent-type test --budget xyz --json", testDir, {
+      expectFail: true,
+    });
     const parsed = JSON.parse(result.stderr);
     expect(parsed.error).toBeTruthy();
     expect(parsed.details).toBeDefined();
@@ -1403,27 +1335,23 @@ describe("session create CLI", () => {
       env: { KSPEC_SESSION_ID: "NONEXISTENT_SESSION_12345" },
     });
     expect(result.exitCode).toBe(0); // Should still create successfully
-    const allOutput = result.stdout + "\n" + result.stderr;
+    const allOutput = `${result.stdout}\n${result.stderr}`;
     expect(allOutput).toContain("invalid");
   });
 
   // Additional budget validation tests per Codex review
   it("should reject fractional budget values like 3.5", () => {
-    const result = kspec(
-      "session create --agent-type test --budget 3.5",
-      testDir,
-      { expectFail: true },
-    );
+    const result = kspec("session create --agent-type test --budget 3.5", testDir, {
+      expectFail: true,
+    });
     expect(result.exitCode).toBeGreaterThan(0);
     expect(result.stderr).toContain("Invalid budget value");
   });
 
   it("should reject string-prefixed budget values like 3abc", () => {
-    const result = kspec(
-      "session create --agent-type test --budget 3abc",
-      testDir,
-      { expectFail: true },
-    );
+    const result = kspec("session create --agent-type test --budget 3abc", testDir, {
+      expectFail: true,
+    });
     expect(result.exitCode).toBeGreaterThan(0);
     expect(result.stderr).toContain("Invalid budget value");
   });

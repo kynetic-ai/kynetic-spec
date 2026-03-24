@@ -18,11 +18,7 @@
 
 import * as path from "node:path";
 import * as fsPromises from "node:fs/promises";
-import {
-  type SessionLogSummary,
-  getSessionLogSummary,
-  getSessionMetadataOnly,
-} from "./store.js";
+import { type SessionLogSummary, getSessionLogSummary, getSessionMetadataOnly } from "./store.js";
 
 /**
  * Cached entry: session summary plus mtime for change detection.
@@ -82,10 +78,7 @@ export class SessionSummaryCache {
    * Get a single session's full summary, including stats from events.jsonl.
    * Always computes fresh stats (not metadata-only) for detail views.
    */
-  async get(
-    sessionsDir: string,
-    sessionId: string,
-  ): Promise<SessionLogSummary | null> {
+  async get(sessionsDir: string, sessionId: string): Promise<SessionLogSummary | null> {
     const summary = await getSessionLogSummary(sessionsDir, sessionId);
     return summary;
   }
@@ -204,9 +197,7 @@ export class SessionSummaryCache {
     const newIds = currentIds.filter((id) => !this.knownSessionIds.has(id));
 
     // Find removed sessions (in cache but not in current listing)
-    const removedIds = [...this.knownSessionIds].filter(
-      (id) => !currentSet.has(id),
-    );
+    const removedIds = [...this.knownSessionIds].filter((id) => !currentSet.has(id));
 
     // Find active sessions that need stats refresh
     // AC: @session-summary-cache ac-active-refresh
@@ -279,10 +270,7 @@ export class SessionSummaryCache {
    * Get mtime of session.yaml for change detection.
    * Returns 0 if the file doesn't exist.
    */
-  private async getMetadataMtime(
-    sessionsDir: string,
-    sessionId: string,
-  ): Promise<number> {
+  private async getMetadataMtime(sessionsDir: string, sessionId: string): Promise<number> {
     try {
       const metadataPath = path.join(sessionsDir, sessionId, "session.yaml");
       const stat = await fsPromises.stat(metadataPath);

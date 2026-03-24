@@ -57,11 +57,7 @@ export interface ActionRunEvent {
  * Callback signature for broadcasting notifications (notify action).
  * AC: @dispatch-action-model ac-6
  */
-export type NotifyBroadcast = (
-  topic: string,
-  event: string,
-  data: Record<string, unknown>,
-) => void;
+export type NotifyBroadcast = (topic: string, event: string, data: Record<string, unknown>) => void;
 
 /**
  * Callback for spawning agent invocations (agent action).
@@ -134,9 +130,7 @@ export const KSPEC_ENV_ALLOWLIST: ReadonlySet<string> = new Set([
  * Only allowlisted fields are exposed. Values exceeding 1KB are truncated.
  * AC: @dispatch-command-action ac-3
  */
-export function buildKspecEnvVars(
-  eventContext: ActionEventContext,
-): Record<string, string> {
+export function buildKspecEnvVars(eventContext: ActionEventContext): Record<string, string> {
   const env: Record<string, string> = {};
   for (const field of KSPEC_ENV_ALLOWLIST) {
     const value = eventContext[field];
@@ -163,10 +157,7 @@ export function buildKspecEnvVars(
  * Unresolved placeholders pass through unchanged.
  * AC: @dispatch-action-model ac-8
  */
-export function resolveTemplateVars(
-  template: string,
-  context: ActionEventContext,
-): string {
+export function resolveTemplateVars(template: string, context: ActionEventContext): string {
   const vars: Record<string, string> = {};
   for (const [key, value] of Object.entries(context)) {
     if (value !== undefined) {
@@ -189,16 +180,12 @@ export function resolveTemplateVars(
  *
  * AC: @dispatch-agent-action-input ac-1, ac-2
  */
-export function buildDefaultAgentPrompt(
-  context: ActionEventContext,
-): string {
+export function buildDefaultAgentPrompt(context: ActionEventContext): string {
   const eventType = context.event_type;
 
   // AC: @dispatch-agent-action-input ac-2 — invocation.completed default prompt
   if (eventType === "invocation.completed") {
-    const parts = [
-      `Upstream invocation completed.`,
-    ];
+    const parts = [`Upstream invocation completed.`];
     if (context.session_id) parts.push(`Session: ${context.session_id}`);
     if (context.agent_id) parts.push(`Agent: ${context.agent_id}`);
     if (context.task_ref) parts.push(`Task: ${context.task_ref}`);
@@ -253,7 +240,7 @@ export const KNOWN_EVENT_FIELDS: Record<string, Set<string>> = {
     "group_id",
   ]),
   // Task event payload fields — AC: @dispatch-event-payload ac-1
-  "task": new Set([
+  task: new Set([
     "task_id",
     "task_ref",
     "from_status",
@@ -264,16 +251,9 @@ export const KNOWN_EVENT_FIELDS: Record<string, Set<string>> = {
     "automation",
   ]),
   // Invocation event payload fields — AC: @dispatch-event-payload ac-2
-  "invocation": new Set([
-    "session_id",
-    "agent_id",
-    "trigger",
-    "duration_ms",
-    "task_ref",
-    "outcome",
-  ]),
+  invocation: new Set(["session_id", "agent_id", "trigger", "duration_ms", "task_ref", "outcome"]),
   // Session event payload fields — AC: @dispatch-event-payload ac-3, @multi-turn-session-lifecycle ac-3
-  "session": new Set([
+  session: new Set([
     "session_id",
     "agent_id",
     "task_ref",
@@ -286,7 +266,7 @@ export const KNOWN_EVENT_FIELDS: Record<string, Set<string>> = {
     "turn_duration_ms",
   ]),
   // Action event payload fields — AC: @dispatch-event-payload ac-5
-  "action": new Set([
+  action: new Set([
     "action_run_id",
     "action_type",
     "hook_id",
@@ -296,12 +276,7 @@ export const KNOWN_EVENT_FIELDS: Record<string, Set<string>> = {
     "session_id",
   ]),
   // Schedule event payload fields — AC: @dispatch-event-payload ac-4
-  "schedule": new Set([
-    "schedule_id",
-    "schedule_name",
-    "tick_time",
-    "run_count",
-  ]),
+  schedule: new Set(["schedule_id", "schedule_name", "tick_time", "run_count"]),
 };
 
 /**
@@ -349,7 +324,7 @@ export function validateActionTemplates(
     }
   }
 
-  const availableFields = [...knownFields].sort();
+  const availableFields = [...knownFields].toSorted();
 
   for (const template of templates) {
     const vars = extractTemplateVars(template);
@@ -499,9 +474,7 @@ export class ActionExecutor {
       // This shouldn't happen since execute() catches errors internally,
       // but handle defensively.
       const errorMessage =
-        result.reason instanceof Error
-          ? result.reason.message
-          : String(result.reason);
+        result.reason instanceof Error ? result.reason.message : String(result.reason);
       return {
         action_run_id: ulid(),
         action_type: "command" as const,
@@ -551,12 +524,8 @@ export class ActionExecutor {
       // AC: @dispatch-command-action ac-2 — each arg is a separate array element;
       // template values are interpolated as literal strings, never shell syntax
       const resolvedCommand = resolveTemplateVars(action.command, eventContext);
-      const resolvedArgs = action.args.map((arg) =>
-        resolveTemplateVars(arg, eventContext),
-      );
-      const cwd = action.cwd
-        ? resolveTemplateVars(action.cwd, eventContext)
-        : this.projectDir;
+      const resolvedArgs = action.args.map((arg) => resolveTemplateVars(arg, eventContext));
+      const cwd = action.cwd ? resolveTemplateVars(action.cwd, eventContext) : this.projectDir;
 
       // AC: @dispatch-command-action ac-3 — inject KSPEC_* namespaced env vars
       const kspecEnv = buildKspecEnvVars(eventContext);
@@ -700,7 +669,7 @@ export class ActionExecutor {
 
       // AC: @dispatch-action-model ac-3 — inject correlation_id via env var
       const env: Record<string, string> = {
-        ...process.env as Record<string, string>,
+        ...(process.env as Record<string, string>),
       };
       if (eventContext.correlation_id) {
         env.KSPEC_CORRELATION_ID = eventContext.correlation_id;
@@ -780,9 +749,7 @@ export class ActionExecutor {
             completed_at: completedAt,
             duration_ms: durationMs,
             exit_code: code ?? undefined,
-            error: signal
-              ? `Kspec killed by signal: ${signal}`
-              : `Kspec exited with code ${code}`,
+            error: signal ? `Kspec killed by signal: ${signal}` : `Kspec exited with code ${code}`,
             failure_reason: signal ? "signal" : "exit_code",
           };
           this.emitEvent("action.failed", failedRun, eventContext);
@@ -968,7 +935,8 @@ export class ActionExecutor {
         status: "failed",
         completed_at: completedAt,
         duration_ms: durationMs,
-        error: "No session registry configured — cannot execute session_prompt action. Ensure the dispatch engine is running with session registry support.",
+        error:
+          "No session registry configured — cannot execute session_prompt action. Ensure the dispatch engine is running with session registry support.",
         failure_reason: "error",
       };
       this.emitEvent("action.failed", failedRun, eventContext);
@@ -976,8 +944,9 @@ export class ActionExecutor {
     }
 
     // AC: @session-prompt-action ac-3, ac-7 — resolve session_id
-    const sessionId = action.session_id
-      ?? (typeof eventContext.session_id === "string" ? eventContext.session_id : undefined);
+    const sessionId =
+      action.session_id ??
+      (typeof eventContext.session_id === "string" ? eventContext.session_id : undefined);
 
     if (!sessionId) {
       const completedAt = new Date().toISOString();
@@ -987,7 +956,8 @@ export class ActionExecutor {
         status: "failed",
         completed_at: completedAt,
         duration_ms: durationMs,
-        error: "No session_id available — session_prompt action requires either an explicit session_id or a triggering event with a session_id field (e.g. session.idle). Check your hook configuration.",
+        error:
+          "No session_id available — session_prompt action requires either an explicit session_id or a triggering event with a session_id field (e.g. session.idle). Check your hook configuration.",
         failure_reason: "error",
       };
       this.emitEvent("action.failed", failedRun, eventContext);
@@ -1025,7 +995,8 @@ export class ActionExecutor {
 
         // Resolve adapter from agent_id in event context
         let adapterId: string | undefined;
-        const agentId = typeof eventContext.agent_id === "string" ? eventContext.agent_id : undefined;
+        const agentId =
+          typeof eventContext.agent_id === "string" ? eventContext.agent_id : undefined;
         if (agentId) {
           try {
             const meta = await loadMetaContext(ctx);
@@ -1150,9 +1121,7 @@ export class ActionExecutor {
     });
   }
 
-  private buildPayloadSummary(
-    context: ActionEventContext,
-  ): Record<string, unknown> {
+  private buildPayloadSummary(context: ActionEventContext): Record<string, unknown> {
     const summary: Record<string, unknown> = {};
     for (const [key, value] of Object.entries(context)) {
       if (

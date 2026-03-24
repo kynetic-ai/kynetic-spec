@@ -11,18 +11,9 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { ulid } from "ulid";
 import { withFileLock } from "./file-lock.js";
-import {
-  type Plan,
-  type PlanInput,
-  PlanSchema,
-  PlansFileSchema,
-} from "../schema/index.js";
+import { type Plan, type PlanInput, PlanSchema, PlansFileSchema } from "../schema/index.js";
 import type { KspecContext } from "./yaml.js";
-import {
-  readYamlFile,
-  warnSkippedRecord,
-  writeYamlFilePreserveFormat,
-} from "./yaml.js";
+import { readYamlFile, warnSkippedRecord, writeYamlFilePreserveFormat } from "./yaml.js";
 
 /**
  * Loaded plan with runtime metadata
@@ -61,9 +52,8 @@ function parsePlansFromRaw(raw: unknown, source = "project.plans.yaml"): Plan[] 
           plans.push(planResult.data);
         } else {
           const rawPlan = plan as Record<string, unknown> | null;
-          const planId = rawPlan && typeof rawPlan._ulid === "string"
-            ? rawPlan._ulid
-            : "<unknown-plan>";
+          const planId =
+            rawPlan && typeof rawPlan._ulid === "string" ? rawPlan._ulid : "<unknown-plan>";
           warnSkippedRecord("plan", planId, source, planResult.error);
         }
       }
@@ -134,8 +124,7 @@ async function writeRawPlanArray(
  */
 function findRawPlanIndex(rawPlans: unknown[], ulid: string): number {
   return rawPlans.findIndex(
-    (p) =>
-      p && typeof p === "object" && (p as Record<string, unknown>)._ulid === ulid,
+    (p) => p && typeof p === "object" && (p as Record<string, unknown>)._ulid === ulid,
   );
 }
 
@@ -225,7 +214,7 @@ export async function findPlanByRef(
  * Create a new plan from input
  * AC: @plan-crud ac-1, ac-2 - creating plans
  */
-export function createPlan(input: PlanInput, author?: string): Plan {
+export function createPlan(input: PlanInput, _author?: string): Plan {
   const now = new Date().toISOString();
 
   return {
@@ -254,10 +243,7 @@ export function createPlan(input: PlanInput, author?: string): Plan {
  * round-trip stability — fields not present in the original YAML won't be
  * added by Zod defaults.
  */
-export async function savePlan(
-  ctx: KspecContext,
-  plan: LoadedPlan,
-): Promise<void> {
+export async function savePlan(ctx: KspecContext, plan: LoadedPlan): Promise<void> {
   const plansPath = getPlansFilePath(ctx);
 
   // Lock the file to prevent concurrent read-modify-write races
@@ -277,7 +263,10 @@ export async function savePlan(
     if (existingIndex >= 0) {
       // Merge onto raw data to avoid adding Zod defaults for absent fields
       const rawTarget = rawPlans[existingIndex] as Record<string, unknown>;
-      rawPlans[existingIndex] = mergePlanPreservingRawShape(rawTarget, cleanPlan as Record<string, unknown>);
+      rawPlans[existingIndex] = mergePlanPreservingRawShape(
+        rawTarget,
+        cleanPlan as Record<string, unknown>,
+      );
     } else {
       rawPlans.push(cleanPlan);
     }
@@ -354,10 +343,7 @@ export async function mutatePlanAtomically(
  * Non-target plans are preserved as raw data (no schema parsing) to ensure
  * round-trip stability.
  */
-export async function deletePlan(
-  ctx: KspecContext,
-  planUlid: string,
-): Promise<boolean> {
+export async function deletePlan(ctx: KspecContext, planUlid: string): Promise<boolean> {
   const plansPath = getPlansFilePath(ctx);
 
   // Lock the file to prevent concurrent read-modify-write races
@@ -387,10 +373,7 @@ export async function deletePlan(
  * Filter plans by status
  * AC: @plan-crud ac-7 - list with status filter
  */
-export function filterPlansByStatus(
-  plans: LoadedPlan[],
-  status?: string,
-): LoadedPlan[] {
+export function filterPlansByStatus(plans: LoadedPlan[], status?: string): LoadedPlan[] {
   if (!status) return plans;
   return plans.filter((p) => p.status === status);
 }

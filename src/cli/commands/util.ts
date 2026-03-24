@@ -7,9 +7,7 @@ import { output } from "../output.js";
  * AC: @cli-utilities
  */
 export function registerUtilCommands(program: Command): void {
-  const util = program
-    .command("util")
-    .description("Utility commands for development tasks");
+  const util = program.command("util").description("Utility commands for development tasks");
 
   // kspec util ulid - generate valid ULIDs
   // AC: @cli-utilities ac-1

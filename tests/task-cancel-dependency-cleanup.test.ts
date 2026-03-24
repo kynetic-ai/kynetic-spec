@@ -28,7 +28,10 @@ describe("Integration: task cancel dependency cleanup", () => {
   // AC: @cancelled-task-dependency-cleanup ac-4
   it("removes a cancelled task from one downstream dependency list, records a note, and makes the downstream ready", () => {
     kspec('task add --title "Upstream task" --slug cancel-parent', tempDir);
-    kspec('task add --title "Downstream task" --slug cancel-child --depends-on @cancel-parent', tempDir);
+    kspec(
+      'task add --title "Downstream task" --slug cancel-child --depends-on @cancel-parent',
+      tempDir,
+    );
 
     const readyBefore = kspecJson<Array<{ slugs: string[] }>>("tasks ready", tempDir);
     expect(readyBefore.some((task) => task.slugs.includes("cancel-child"))).toBe(false);
@@ -62,13 +65,25 @@ describe("Integration: task cancel dependency cleanup", () => {
   // AC: @cancelled-task-dependency-cleanup ac-2
   it("removes a cancelled task from every downstream dependency list", () => {
     kspec('task add --title "Shared upstream" --slug shared-upstream', tempDir);
-    kspec('task add --title "First dependent" --slug first-dependent --depends-on @shared-upstream', tempDir);
-    kspec('task add --title "Second dependent" --slug second-dependent --depends-on @shared-upstream', tempDir);
+    kspec(
+      'task add --title "First dependent" --slug first-dependent --depends-on @shared-upstream',
+      tempDir,
+    );
+    kspec(
+      'task add --title "Second dependent" --slug second-dependent --depends-on @shared-upstream',
+      tempDir,
+    );
 
     kspec("task cancel @shared-upstream", tempDir);
 
-    const firstDependent = kspecJson<{ depends_on: string[] }>("task get @first-dependent", tempDir);
-    const secondDependent = kspecJson<{ depends_on: string[] }>("task get @second-dependent", tempDir);
+    const firstDependent = kspecJson<{ depends_on: string[] }>(
+      "task get @first-dependent",
+      tempDir,
+    );
+    const secondDependent = kspecJson<{ depends_on: string[] }>(
+      "task get @second-dependent",
+      tempDir,
+    );
 
     expect(firstDependent.depends_on).toEqual([]);
     expect(secondDependent.depends_on).toEqual([]);
@@ -77,7 +92,10 @@ describe("Integration: task cancel dependency cleanup", () => {
   // AC: @cancelled-task-dependency-cleanup ac-5
   it("does not modify unrelated tasks when no downstream dependency cleanup is needed", () => {
     kspec('task add --title "Standalone upstream" --slug standalone-upstream', tempDir);
-    kspec('task add --title "Unrelated task" --slug unrelated-task --depends-on @test-task-pending', tempDir);
+    kspec(
+      'task add --title "Unrelated task" --slug unrelated-task --depends-on @test-task-pending',
+      tempDir,
+    );
 
     const unrelatedBefore = kspecJson<{
       depends_on: string[];
@@ -105,7 +123,10 @@ describe("Integration: task cancel dependency cleanup", () => {
     kspec("init --no-prompt", tempDir);
 
     kspec('task add --title "Atomic upstream" --slug atomic-upstream', tempDir);
-    kspec('task add --title "Atomic downstream" --slug atomic-downstream --depends-on @atomic-upstream', tempDir);
+    kspec(
+      'task add --title "Atomic downstream" --slug atomic-downstream --depends-on @atomic-upstream',
+      tempDir,
+    );
 
     const shadowDir = `${tempDir}/.kspec`;
     const commitsBefore = Number.parseInt(
@@ -129,9 +150,9 @@ describe("Integration: task cancel dependency cleanup", () => {
 
     expect(parent.status).toBe("cancelled");
     expect(child.depends_on).toEqual([]);
-    expect(
-      child.notes.some((note) => note.content.includes("Cancelled dependency cleanup")),
-    ).toBe(true);
+    expect(child.notes.some((note) => note.content.includes("Cancelled dependency cleanup"))).toBe(
+      true,
+    );
   });
 
   // AC: @cancelled-task-dependency-cleanup ac-2
@@ -146,17 +167,22 @@ describe("Integration: task cancel dependency cleanup", () => {
     kspec("init --no-prompt", tempDir);
 
     kspec('task add --title "Split upstream" --slug split-upstream', tempDir);
-    kspec('task add --title "Split downstream" --slug split-downstream --depends-on @split-upstream', tempDir);
+    kspec(
+      'task add --title "Split downstream" --slug split-downstream --depends-on @split-upstream',
+      tempDir,
+    );
 
     const shadowDir = path.join(tempDir, ".kspec");
     const primaryTaskFile = path.join(shadowDir, "project.tasks.yaml");
     const secondaryTaskFile = path.join(shadowDir, "tasks", "split-downstream.tasks.yaml");
-    const primaryDoc = YAML.parse(await fs.readFile(primaryTaskFile, "utf-8")) as {
-      tasks?: Array<Record<string, unknown>>;
-    } | Array<Record<string, unknown>>;
+    const primaryDoc = YAML.parse(await fs.readFile(primaryTaskFile, "utf-8")) as
+      | {
+          tasks?: Array<Record<string, unknown>>;
+        }
+      | Array<Record<string, unknown>>;
     const primaryTasks = Array.isArray(primaryDoc) ? primaryDoc : (primaryDoc.tasks ?? []);
-    const downstreamTask = primaryTasks.find((task) =>
-      Array.isArray(task.slugs) && task.slugs.includes("split-downstream")
+    const downstreamTask = primaryTasks.find(
+      (task) => Array.isArray(task.slugs) && task.slugs.includes("split-downstream"),
     );
 
     expect(downstreamTask).toBeDefined();
@@ -172,11 +198,7 @@ describe("Integration: task cancel dependency cleanup", () => {
       ),
       "utf-8",
     );
-    await fs.writeFile(
-      secondaryTaskFile,
-      YAML.stringify({ tasks: [downstreamTask] }),
-      "utf-8",
-    );
+    await fs.writeFile(secondaryTaskFile, YAML.stringify({ tasks: [downstreamTask] }), "utf-8");
 
     const commitsBefore = Number.parseInt(
       execSync("git rev-list --count HEAD", { cwd: shadowDir, encoding: "utf-8" }).trim(),
@@ -196,19 +218,21 @@ describe("Integration: task cancel dependency cleanup", () => {
       tempDir,
     );
     expect(downstream.depends_on).toEqual([]);
-    expect(
-      downstream.notes.some((note) => note.content.includes("Cross-file atomic cancel")),
-    ).toBe(true);
+    expect(downstream.notes.some((note) => note.content.includes("Cross-file atomic cancel"))).toBe(
+      true,
+    );
 
-    const downstreamFileDoc = YAML.parse(
-      await fs.readFile(secondaryTaskFile, "utf-8"),
-    ) as { tasks: Array<{ slugs?: string[]; depends_on?: string[]; notes?: Array<{ content: string }> }> };
+    const downstreamFileDoc = YAML.parse(await fs.readFile(secondaryTaskFile, "utf-8")) as {
+      tasks: Array<{ slugs?: string[]; depends_on?: string[]; notes?: Array<{ content: string }> }>;
+    };
     const persistedDownstream = downstreamFileDoc.tasks.find((task) =>
-      task.slugs?.includes("split-downstream")
+      task.slugs?.includes("split-downstream"),
     );
     expect(persistedDownstream?.depends_on).toEqual([]);
     expect(
-      persistedDownstream?.notes?.some((note) => note.content.includes("Cancelled dependency cleanup")),
+      persistedDownstream?.notes?.some((note) =>
+        note.content.includes("Cancelled dependency cleanup"),
+      ),
     ).toBe(true);
   });
 });

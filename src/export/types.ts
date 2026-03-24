@@ -58,7 +58,7 @@ export interface InheritedAC extends AcceptanceCriterion {
  * Exported spec item with nested hierarchy and inherited ACs.
  * AC: @gh-pages-export ac-4
  */
-export interface ExportedItem extends Omit<LoadedSpecItem, 'acceptance_criteria'> {
+export interface ExportedItem extends Omit<LoadedSpecItem, "acceptance_criteria"> {
   /** Own acceptance criteria */
   acceptance_criteria?: AcceptanceCriterion[];
   /** Nested child items */
@@ -170,7 +170,7 @@ export interface KspecSnapshot {
  */
 export interface ExportOptions {
   /** Output format */
-  format: 'json' | 'html';
+  format: "json" | "html";
   /** Output path (optional, defaults to stdout for json) */
   output?: string;
   /** Include validation results */

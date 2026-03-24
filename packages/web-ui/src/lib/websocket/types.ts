@@ -9,15 +9,15 @@
  * WebSocket connection state
  * AC: @web-dashboard ac-28, ac-29
  */
-export type ConnectionState = 'disconnected' | 'connecting' | 'connected' | 'reconnecting';
+export type ConnectionState = "disconnected" | "connecting" | "connected" | "reconnecting";
 
 /**
  * Subscription topic
  * AC: @web-dashboard ac-32
  */
 export interface Subscription {
-	topic: string;
-	subscribed_at: Date;
+  topic: string;
+  subscribed_at: Date;
 }
 
 /**
@@ -25,10 +25,10 @@ export interface Subscription {
  * AC: @web-dashboard ac-28
  */
 export interface ConnectionStats {
-	connect_count: number;
-	reconnect_count: number;
-	last_connected_at: Date | null;
-	last_disconnected_at: Date | null;
+  connect_count: number;
+  reconnect_count: number;
+  last_connected_at: Date | null;
+  last_disconnected_at: Date | null;
 }
 
 /**

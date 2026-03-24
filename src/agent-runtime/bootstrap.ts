@@ -9,10 +9,7 @@ import type {
   DispatchWorkspaceMetadata,
   DispatchWorkspaceRole,
 } from "./workspace.js";
-import {
-  normalizeDispatchBootstrapState,
-  persistDispatchWorkspaceMetadata,
-} from "./workspace.js";
+import { normalizeDispatchBootstrapState, persistDispatchWorkspaceMetadata } from "./workspace.js";
 
 export interface DispatchBootstrapStep {
   source: "dispatch" | "agent";
@@ -78,15 +75,11 @@ function runShell(
 }
 
 function trackedStatus(cwd: string): string {
-  const result = spawnSync(
-    "git",
-    ["status", "--porcelain", "--untracked-files=no"],
-    {
-      cwd,
-      encoding: "utf-8",
-      stdio: "pipe",
-    },
-  );
+  const result = spawnSync("git", ["status", "--porcelain", "--untracked-files=no"], {
+    cwd,
+    encoding: "utf-8",
+    stdio: "pipe",
+  });
   return result.status === 0 ? (result.stdout ?? "").trim() : "";
 }
 
@@ -114,15 +107,9 @@ function hashConfig(steps: DispatchBootstrapStep[]): string {
     .digest("hex");
 }
 
-function collectDirectDependencies(
-  packageJson: Record<string, unknown>,
-): string[] {
+function collectDirectDependencies(packageJson: Record<string, unknown>): string[] {
   const names = new Set<string>();
-  for (const sectionName of [
-    "dependencies",
-    "devDependencies",
-    "optionalDependencies",
-  ]) {
+  for (const sectionName of ["dependencies", "devDependencies", "optionalDependencies"]) {
     const section = packageJson[sectionName];
     if (!section || typeof section !== "object") {
       continue;
@@ -131,7 +118,7 @@ function collectDirectDependencies(
       names.add(name);
     }
   }
-  return [...names].sort();
+  return [...names].toSorted();
 }
 
 function checkWorkspaceDependencies(workspaceDir: string): DependencyHealth {
@@ -158,9 +145,9 @@ function checkWorkspaceDependencies(workspaceDir: string): DependencyHealth {
     };
   }
 
-  const missingPackages = collectDirectDependencies(packageJson).filter((packageName) => (
-    !fs.existsSync(path.join(nodeModulesDir, ...packageName.split("/")))
-  ));
+  const missingPackages = collectDirectDependencies(packageJson).filter(
+    (packageName) => !fs.existsSync(path.join(nodeModulesDir, ...packageName.split("/"))),
+  );
 
   if (missingPackages.length > 0) {
     return {
@@ -221,10 +208,7 @@ function resolveBootstrapSteps(
   return [...projectSteps, ...agentSteps];
 }
 
-function stepAppliesToRole(
-  step: DispatchBootstrapStep,
-  role: DispatchWorkspaceRole,
-): boolean {
+function stepAppliesToRole(step: DispatchBootstrapStep, role: DispatchWorkspaceRole): boolean {
   return !step.roles || step.roles.includes(role);
 }
 
@@ -284,14 +268,7 @@ function updateBootstrapState(
 export async function ensureWorkspaceBootstrap(
   options: EnsureWorkspaceBootstrapOptions,
 ): Promise<EnsureWorkspaceBootstrapResult> {
-  const {
-    projectDir,
-    workspaceDir,
-    metadataPath,
-    role,
-    agent,
-    env,
-  } = options;
+  const { projectDir, workspaceDir, metadataPath, role, agent, env } = options;
   const { config } = await loadProjectConfig(projectDir, projectDir);
   const steps = resolveBootstrapSteps(agent, config.dispatch.bootstrap.steps);
   const dependencyStep = implicitDependencyStep(workspaceDir);
@@ -316,15 +293,11 @@ export async function ensureWorkspaceBootstrap(
     Boolean(dependencyStep),
   );
   const workerBootstrapSucceeded =
-    workerState.status === "succeeded" &&
-    workerInvalidationReasons.length === 0;
+    workerState.status === "succeeded" && workerInvalidationReasons.length === 0;
   const reviewerBootstrapSucceeded =
-    reviewerState.status === "succeeded" &&
-    reviewerInvalidationReasons.length === 0;
+    reviewerState.status === "succeeded" && reviewerInvalidationReasons.length === 0;
   const canReuseWorkerStateForReviewer =
-    role === "reviewer" &&
-    roleSteps.length === 0 &&
-    workerBootstrapSucceeded;
+    role === "reviewer" && roleSteps.length === 0 && workerBootstrapSucceeded;
   const invalidationReasons =
     role === "reviewer" && !reviewerBootstrapSucceeded && canReuseWorkerStateForReviewer
       ? workerInvalidationReasons
@@ -396,7 +369,8 @@ export async function ensureWorkspaceBootstrap(
     metadata.healthReason = metadata.bootstrap.failureMessage ?? null;
     metadata.updatedAt = new Date().toISOString();
     await persistMetadata(projectDir, metadataPath, metadata);
-    const failureMessage = metadata.bootstrap.failureMessage ?? "Reviewer bootstrap rerun was rejected.";
+    const failureMessage =
+      metadata.bootstrap.failureMessage ?? "Reviewer bootstrap rerun was rejected.";
     throw new DispatchBootstrapError(
       failureMessage,
       "Run or repair bootstrap from the worker workspace, or mark the affected reviewer-safe steps as idempotent/reviewer_rerun_allowed.",
@@ -443,8 +417,7 @@ export async function ensureWorkspaceBootstrap(
       metadata.healthReason = failureMessage;
       metadata.updatedAt = new Date().toISOString();
       await persistMetadata(projectDir, metadataPath, metadata);
-      const failureMessageWithOutput =
-        metadata.bootstrap.failureMessage ?? failureMessage;
+      const failureMessageWithOutput = metadata.bootstrap.failureMessage ?? failureMessage;
       throw new DispatchBootstrapError(
         failureMessageWithOutput,
         "Inspect the failing bootstrap command, dependency prerequisites, and workspace health before retrying dispatch.",

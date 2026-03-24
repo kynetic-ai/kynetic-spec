@@ -30,12 +30,12 @@ multi-dir/
 Use the helper function to copy fixtures to a temp directory:
 
 ```typescript
-import { setupMultiDirFixtures } from '../helpers/cli';
+import { setupMultiDirFixtures } from "../helpers/cli";
 
 const fixturesRoot = await setupMultiDirFixtures();
-const projectA = path.join(fixturesRoot, 'project-a');
-const projectB = path.join(fixturesRoot, 'project-b');
-const projectInvalid = path.join(fixturesRoot, 'project-invalid');
+const projectA = path.join(fixturesRoot, "project-a");
+const projectB = path.join(fixturesRoot, "project-b");
+const projectInvalid = path.join(fixturesRoot, "project-invalid");
 ```
 
 ### Symlink Testing (AC-8c)
@@ -43,11 +43,11 @@ const projectInvalid = path.join(fixturesRoot, 'project-invalid');
 For symlink tests, create symlinks at test runtime:
 
 ```typescript
-import { symlink } from 'node:fs/promises';
+import { symlink } from "node:fs/promises";
 
 // Create symlink to project-a
-const symlinkPath = path.join(fixturesRoot, 'project-a-symlink');
-await symlink(projectA, symlinkPath, 'dir');
+const symlinkPath = path.join(fixturesRoot, "project-a-symlink");
+await symlink(projectA, symlinkPath, "dir");
 ```
 
 ## Test Coverage
@@ -74,11 +74,13 @@ These fixtures support testing:
 ## Project Data
 
 ### Project A
+
 - Project name: "Test Project A"
 - Task: @task-a-sample (pending, priority 1)
 - Spec: @spec-a-sample (requirement)
 
 ### Project B
+
 - Project name: "Test Project B"
 - Task: @task-b-sample (in_progress, priority 2)
 - Spec: @spec-b-sample (feature)

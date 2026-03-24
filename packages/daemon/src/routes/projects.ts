@@ -14,9 +14,9 @@
  * - ac-30: DELETE /api/projects/:encodedPath unregisters and stops watcher
  */
 
-import { Elysia, t } from 'elysia';
-import { isAbsolute } from 'path';
-import type { ProjectContextManager } from '../project-context';
+import { Elysia, t } from "elysia";
+import { isAbsolute } from "path";
+import type { ProjectContextManager } from "../project-context";
 
 interface ProjectsRouteOptions {
   projectManager: ProjectContextManager;
@@ -29,156 +29,161 @@ interface ProjectsRouteOptions {
 export function createProjectsRoutes(options: ProjectsRouteOptions) {
   const { projectManager, onProjectRegistered, onProjectUnregistered } = options;
 
-  return new Elysia({ prefix: '/api/projects' })
-    // AC: @multi-directory-daemon ac-28 - List registered projects
-    .get('/', async () => {
-      const projects = projectManager.listProjects();
+  return (
+    new Elysia({ prefix: "/api/projects" })
+      // AC: @multi-directory-daemon ac-28 - List registered projects
+      .get("/", async () => {
+        const projects = projectManager.listProjects();
 
-      // AC: @multi-directory-daemon ac-28 - Include paths, registration time, watcher status
-      return {
-        projects: projects.map(project => ({
-          path: project.path,
-          registeredAt: project.registeredAt.toISOString(),
-          watcherStatus: project.watcherActive ? 'active' : 'stopped',
-        })),
-        total: projects.length,
-      };
-    })
+        // AC: @multi-directory-daemon ac-28 - Include paths, registration time, watcher status
+        return {
+          projects: projects.map((project) => ({
+            path: project.path,
+            registeredAt: project.registeredAt.toISOString(),
+            watcherStatus: project.watcherActive ? "active" : "stopped",
+          })),
+          total: projects.length,
+        };
+      })
 
-    // AC: @multi-directory-daemon ac-29 - Manual project registration
-    .post(
-      '/',
-      async ({ body, error: errorResponse }) => {
-        // AC: @multi-directory-daemon ac-29 - Accept {path: string} body
-        // Validate path is provided
-        if (!body.path || typeof body.path !== 'string' || body.path.trim().length === 0) {
-          return errorResponse(400, {
-            error: 'validation_error',
-            details: [
-              {
-                field: 'path',
-                message: 'Path is required and must be a non-empty string',
+      // AC: @multi-directory-daemon ac-29 - Manual project registration
+      .post(
+        "/",
+        async ({ body, error: errorResponse }) => {
+          // AC: @multi-directory-daemon ac-29 - Accept {path: string} body
+          // Validate path is provided
+          if (!body.path || typeof body.path !== "string" || body.path.trim().length === 0) {
+            return errorResponse(400, {
+              error: "validation_error",
+              details: [
+                {
+                  field: "path",
+                  message: "Path is required and must be a non-empty string",
+                },
+              ],
+            });
+          }
+
+          // AC: @multi-directory-daemon ac-6 - Path must be absolute
+          if (!isAbsolute(body.path)) {
+            return errorResponse(400, {
+              error: "Path must be absolute",
+            });
+          }
+
+          // AC: @multi-directory-daemon ac-7 - Reject parent traversal (..)
+          if (body.path.includes("..")) {
+            return errorResponse(400, {
+              error: "Path must not contain parent traversal",
+            });
+          }
+
+          try {
+            // AC: @multi-directory-daemon ac-29 - Use ProjectContextManager.registerProject()
+            const context = projectManager.registerProject(body.path);
+
+            // Start watcher for the registered project
+            try {
+              await projectManager.startWatcher(body.path);
+            } catch (error: unknown) {
+              // AC: @multi-directory-daemon ac-19 - Handle OS limits
+              const message = error instanceof Error ? error.message : String(error);
+              if (message.includes("resource limit")) {
+                return errorResponse(503, {
+                  error: "Unable to watch project - resource limit reached",
+                });
+              }
+              throw error;
+            }
+
+            // Start session sync for the newly registered project
+            if (onProjectRegistered) {
+              try {
+                await onProjectRegistered(context.path);
+              } catch (error) {
+                // Session sync init failure does not block project registration
+                console.error(`[daemon] Failed to start session sync for ${context.path}:`, error);
+              }
+            }
+
+            return {
+              success: true,
+              project: {
+                path: context.path,
+                registeredAt: context.registeredAt.toISOString(),
+                watcherStatus: context.watcherActive ? "active" : "stopped",
               },
-            ],
-          });
-        }
+            };
+          } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : String(error);
+            const code =
+              error instanceof Error && "code" in error
+                ? (error as NodeJS.ErrnoException).code
+                : undefined;
 
-        // AC: @multi-directory-daemon ac-6 - Path must be absolute
-        if (!isAbsolute(body.path)) {
-          return errorResponse(400, {
-            error: 'Path must be absolute',
-          });
-        }
+            // AC: @multi-directory-daemon ac-5 - Invalid project (no .kspec/)
+            if (message.includes(".kspec/ not found")) {
+              return errorResponse(400, {
+                error: `Invalid kspec project - .kspec/ not found at ${body.path}`,
+              });
+            }
 
-        // AC: @multi-directory-daemon ac-7 - Reject parent traversal (..)
-        if (body.path.includes('..')) {
-          return errorResponse(400, {
-            error: 'Path must not contain parent traversal',
+            // AC: @multi-directory-daemon ac-8b - Permission denied
+            if (code === "EACCES" || code === "EPERM") {
+              return errorResponse(403, {
+                error: `Permission denied - cannot read ${body.path}`,
+              });
+            }
+
+            // Generic error
+            return errorResponse(500, {
+              error: message || "Failed to register project",
+            });
+          }
+        },
+        {
+          body: t.Object({
+            path: t.String(),
+          }),
+        },
+      )
+
+      // AC: @multi-directory-daemon ac-30 - Unregister project
+      .delete("/:encodedPath", async ({ params, error: errorResponse }) => {
+        // AC: @multi-directory-daemon ac-30 - Decode path from URL parameter
+        const projectPath = decodeURIComponent(params.encodedPath);
+
+        // Validate project exists and get normalized context
+        let context;
+        try {
+          context = projectManager.getProject(projectPath);
+        } catch {
+          return errorResponse(404, {
+            error: `Project not registered: ${projectPath}`,
           });
         }
 
         try {
-          // AC: @multi-directory-daemon ac-29 - Use ProjectContextManager.registerProject()
-          const context = projectManager.registerProject(body.path);
-
-          // Start watcher for the registered project
-          try {
-            await projectManager.startWatcher(body.path);
-          } catch (error: unknown) {
-            // AC: @multi-directory-daemon ac-19 - Handle OS limits
-            const message = error instanceof Error ? error.message : String(error);
-            if (message.includes('resource limit')) {
-              return errorResponse(503, {
-                error: 'Unable to watch project - resource limit reached',
-              });
-            }
-            throw error;
+          // Stop session sync before unregistering (use normalized path)
+          if (onProjectUnregistered) {
+            onProjectUnregistered(context.path);
           }
 
-          // Start session sync for the newly registered project
-          if (onProjectRegistered) {
-            try {
-              await onProjectRegistered(context.path);
-            } catch (error) {
-              // Session sync init failure does not block project registration
-              console.error(`[daemon] Failed to start session sync for ${context.path}:`, error);
-            }
-          }
+          // AC: @multi-directory-daemon ac-30 - Stop file watcher
+          await projectManager.stopWatcher(context.path);
+
+          // AC: @multi-directory-daemon ac-30 - Unregister project
+          projectManager.unregisterProject(context.path);
 
           return {
             success: true,
-            project: {
-              path: context.path,
-              registeredAt: context.registeredAt.toISOString(),
-              watcherStatus: context.watcherActive ? 'active' : 'stopped',
-            },
+            message: `Project unregistered: ${context.path}`,
           };
         } catch (error: unknown) {
-          const message = error instanceof Error ? error.message : String(error);
-          const code = error instanceof Error && 'code' in error ? (error as NodeJS.ErrnoException).code : undefined;
-
-          // AC: @multi-directory-daemon ac-5 - Invalid project (no .kspec/)
-          if (message.includes('.kspec/ not found')) {
-            return errorResponse(400, {
-              error: `Invalid kspec project - .kspec/ not found at ${body.path}`,
-            });
-          }
-
-          // AC: @multi-directory-daemon ac-8b - Permission denied
-          if (code === 'EACCES' || code === 'EPERM') {
-            return errorResponse(403, {
-              error: `Permission denied - cannot read ${body.path}`,
-            });
-          }
-
-          // Generic error
           return errorResponse(500, {
-            error: message || 'Failed to register project',
+            error: error instanceof Error ? error.message : "Failed to unregister project",
           });
         }
-      },
-      {
-        body: t.Object({
-          path: t.String(),
-        }),
-      }
-    )
-
-    // AC: @multi-directory-daemon ac-30 - Unregister project
-    .delete('/:encodedPath', async ({ params, error: errorResponse }) => {
-      // AC: @multi-directory-daemon ac-30 - Decode path from URL parameter
-      const projectPath = decodeURIComponent(params.encodedPath);
-
-      // Validate project exists and get normalized context
-      let context;
-      try {
-        context = projectManager.getProject(projectPath);
-      } catch {
-        return errorResponse(404, {
-          error: `Project not registered: ${projectPath}`,
-        });
-      }
-
-      try {
-        // Stop session sync before unregistering (use normalized path)
-        if (onProjectUnregistered) {
-          onProjectUnregistered(context.path);
-        }
-
-        // AC: @multi-directory-daemon ac-30 - Stop file watcher
-        await projectManager.stopWatcher(context.path);
-
-        // AC: @multi-directory-daemon ac-30 - Unregister project
-        projectManager.unregisterProject(context.path);
-
-        return {
-          success: true,
-          message: `Project unregistered: ${context.path}`,
-        };
-      } catch (error: unknown) {
-        return errorResponse(500, {
-          error: error instanceof Error ? error.message : 'Failed to unregister project',
-        });
-      }
-    });
+      })
+  );
 }

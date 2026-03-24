@@ -5,11 +5,7 @@
 import { execSync } from "node:child_process";
 import chalk from "chalk";
 import type { Command } from "commander";
-import {
-  initContext,
-  loadAllItems,
-  ReferenceIndex,
-} from "../../parser/index.js";
+import { initContext, loadAllItems, ReferenceIndex } from "../../parser/index.js";
 import { resolveTaskDataManager } from "../../parser/task-data-manager.js";
 import { normalizeRefInput } from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
@@ -120,10 +116,7 @@ function searchCommits(
     if (err.stderr) {
       const stderr = err.stderr.toString();
       // Detect "does not have any commits yet" or "bad revision" (empty repo)
-      if (
-        stderr.includes("does not have any commits yet") ||
-        stderr.includes("bad revision")
-      ) {
+      if (stderr.includes("does not have any commits yet") || stderr.includes("bad revision")) {
         // Return empty array - caller will handle empty repo message
         return [];
       }
@@ -174,10 +167,7 @@ function searchCommitsRaw(
     if (err.stderr) {
       const stderr = err.stderr.toString();
       // Detect "does not have any commits yet" or "bad revision" (empty repo)
-      if (
-        stderr.includes("does not have any commits yet") ||
-        stderr.includes("bad revision")
-      ) {
+      if (stderr.includes("does not have any commits yet") || stderr.includes("bad revision")) {
         // Return empty string - caller will handle empty repo message
         return "";
       }
@@ -225,11 +215,11 @@ export function registerLogCommand(program: Command): void {
 
           // Parse passthrough args (everything after --)
           const dashDashIndex = process.argv.indexOf("--");
-          const passthroughArgs =
-            dashDashIndex !== -1 ? process.argv.slice(dashDashIndex + 1) : [];
+          const passthroughArgs = dashDashIndex !== -1 ? process.argv.slice(dashDashIndex + 1) : [];
 
           // Determine what to search for
-          const tasks = needsSpecContext && ctx ? await resolveTaskDataManager(ctx).loadAllTasks(ctx) : [];
+          const tasks =
+            needsSpecContext && ctx ? await resolveTaskDataManager(ctx).loadAllTasks(ctx) : [];
           const items = needsSpecContext && ctx ? await loadAllItems(ctx) : [];
           const index = new ReferenceIndex(tasks, items);
 
@@ -256,9 +246,7 @@ export function registerLogCommand(program: Command): void {
               // Also find tasks that reference this spec
               const linkedTasks = tasks.filter((t) => t.spec_ref === refString);
               for (const t of linkedTasks) {
-                const taskRef = t.slugs[0]
-                  ? `@${t.slugs[0]}`
-                  : `@${index.shortUlid(t._ulid)}`;
+                const taskRef = t.slugs[0] ? `@${t.slugs[0]}` : `@${index.shortUlid(t._ulid)}`;
                 patterns.push(`Task: ${taskRef}`);
               }
             }
@@ -308,8 +296,7 @@ export function registerLogCommand(program: Command): void {
           // AC: @spec-log-empty-repo ac-6
           // Check if we should search shadow branch (main has no commits but shadow does)
           const mainHasCommits = hasCommits(rootDir, false);
-          const shadowHasCommits =
-            !mainHasCommits && hasCommits(rootDir, true);
+          const shadowHasCommits = !mainHasCommits && hasCommits(rootDir, true);
           const searchBranch = shadowHasCommits ? "kspec-meta " : undefined;
 
           // Search for all patterns and dedupe
@@ -343,17 +330,12 @@ export function registerLogCommand(program: Command): void {
           if (limited.length === 0) {
             if (!hasCommits(rootDir)) {
               // AC: @spec-log-empty-repo ac-4
-              output(
-                { commits: [], message: "No commits in repository yet" },
-                () => {
-                  info("No commits in repository yet");
-                },
-              );
+              output({ commits: [], message: "No commits in repository yet" }, () => {
+                info("No commits in repository yet");
+              });
             } else {
               // AC: @spec-log-empty-repo ac-3 - existing behavior for no matches
-              const refStr = ref
-                ? ` for ${normalizeRefInput(ref)}`
-                : "";
+              const refStr = ref ? ` for ${normalizeRefInput(ref)}` : "";
               output({ commits: [] }, () => {
                 info(`No commits found${refStr}`);
               });

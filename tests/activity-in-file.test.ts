@@ -324,7 +324,10 @@ describe("assembleActivityFromFiles — ac-1, ac-2: assembled timeline from pers
     // If execSync were called, it would throw in this test context since
     // there's no git repo. The function should not import or use execSync.
     const history: HistoryEntry[] = [
-      makeHistory({ command: "task-add", changes: { status: { previous: undefined, new: "pending" } } }),
+      makeHistory({
+        command: "task-add",
+        changes: { status: { previous: undefined, new: "pending" } },
+      }),
     ];
     const notes: Note[] = [makeNote()];
 
@@ -442,7 +445,7 @@ describe("getPreMigrationActivity — ac-3: pre-migration fallback", () => {
     const noteEntries = notesToActivity([
       makeNote({ created_at: "2026-03-20T11:00:00.000Z", author: "alice" }),
     ]);
-    const combined = [...noteEntries, ...filtered].sort(
+    const combined = [...noteEntries, ...filtered].toSorted(
       (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
     );
     const noteCount = combined.filter((e) => e.type === "note_added").length;

@@ -19,15 +19,11 @@ import {
   createIsolatedKspecHome,
   initGitRepo,
   testUlid,
-  testUlids,
 } from "./helpers/cli.js";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-function writeProject(
-  dir: string,
-  opts: { schedules?: unknown[]; hooks?: unknown[] } = {},
-) {
+function writeProject(dir: string, opts: { schedules?: unknown[]; hooks?: unknown[] } = {}) {
   fs.writeFileSync(
     path.join(dir, "kynetic.yaml"),
     stringify({ kynetic: "1", title: "Test Project" }),
@@ -41,10 +37,7 @@ function writeProject(
       ...(opts.hooks && { hooks: opts.hooks }),
     }),
   );
-  fs.writeFileSync(
-    path.join(dir, "project.tasks.yaml"),
-    stringify({ tasks: [] }),
-  );
+  fs.writeFileSync(path.join(dir, "project.tasks.yaml"), stringify({ tasks: [] }));
 }
 
 function makeSchedule(id: string, seq: number, overrides: Record<string, unknown> = {}) {
@@ -105,6 +98,7 @@ describe("schedule list", () => {
     const result = kspec("schedule list --json", testDir);
     expect(result.exitCode).toBe(0);
     // Must not contain ANSI escape codes
+    // oxlint-disable-next-line eslint/no-control-regex -- intentionally matching ANSI escape sequence
     expect(result.stdout).not.toMatch(/\x1b\[/);
     // Must parse as valid JSON
     const data = JSON.parse(result.stdout);
@@ -154,28 +148,17 @@ describe("schedule list", () => {
 
   // AC: @trait-filterable-list ac-3 — pagination with --limit
   it("should limit output to N items with --limit", () => {
-    const schedules = [
-      makeSchedule("s1", 1),
-      makeSchedule("s2", 2),
-      makeSchedule("s3", 3),
-    ];
+    const schedules = [makeSchedule("s1", 1), makeSchedule("s2", 2), makeSchedule("s3", 3)];
     writeProject(testDir, { schedules });
 
-    const data = kspecJson<{ items: unknown[]; total: number }>(
-      "schedule list --limit 2",
-      testDir,
-    );
+    const data = kspecJson<{ items: unknown[]; total: number }>("schedule list --limit 2", testDir);
     expect(data.items).toHaveLength(2);
     expect(data.total).toBe(3);
   });
 
   // AC: @trait-filterable-list ac-4 — pagination with --offset
   it("should skip first N items with --offset", () => {
-    const schedules = [
-      makeSchedule("s1", 1),
-      makeSchedule("s2", 2),
-      makeSchedule("s3", 3),
-    ];
+    const schedules = [makeSchedule("s1", 1), makeSchedule("s2", 2), makeSchedule("s3", 3)];
     writeProject(testDir, { schedules });
 
     const data = kspecJson<{ items: Array<{ id: string }>; total: number }>(
@@ -220,10 +203,7 @@ describe("schedule list", () => {
     const schedules = [makeSchedule("s1", 1), makeSchedule("s2", 2)];
     writeProject(testDir, { schedules });
 
-    const data = kspecJson<{ count: number }>(
-      "schedule list --count",
-      testDir,
-    );
+    const data = kspecJson<{ count: number }>("schedule list --count", testDir);
     expect(data.count).toBe(2);
   });
 
@@ -307,10 +287,7 @@ describe("schedule add", () => {
     expect(result.stdout).toContain("nightly");
 
     // Verify it persists
-    const data = kspecJson<{ items: Array<{ id: string }> }>(
-      "schedule list",
-      testDir,
-    );
+    const data = kspecJson<{ items: Array<{ id: string }> }>("schedule list", testDir);
     expect(data.items.some((s) => s.id === "nightly")).toBe(true);
   });
 
@@ -396,10 +373,7 @@ describe("schedule add", () => {
     );
 
     // Read back
-    const data = kspecJson<{ items: Array<{ id: string }> }>(
-      "schedule list",
-      testDir,
-    );
+    const data = kspecJson<{ items: Array<{ id: string }> }>("schedule list", testDir);
     expect(data.items.some((s) => s.id === "persisted")).toBe(true);
   });
 
@@ -494,10 +468,7 @@ describe("schedule set", () => {
     );
     expect(result.exitCode).toBe(0);
 
-    const data = kspecJson<{ name: string; cron: string }>(
-      "schedule get updatable",
-      testDir,
-    );
+    const data = kspecJson<{ name: string; cron: string }>("schedule get updatable", testDir);
     expect(data.name).toBe("Updated Name");
     expect(data.cron).toBe("0 12 * * *");
   });
@@ -507,10 +478,7 @@ describe("schedule set", () => {
 
     kspec("schedule set updatable --overlap-policy allow", testDir);
 
-    const data = kspecJson<{ overlap_policy: string }>(
-      "schedule get updatable",
-      testDir,
-    );
+    const data = kspecJson<{ overlap_policy: string }>("schedule get updatable", testDir);
     expect(data.overlap_policy).toBe("allow");
   });
 
@@ -528,11 +496,9 @@ describe("schedule set", () => {
   it("should reject invalid cron on set", () => {
     writeProject(testDir, { schedules: [makeSchedule("updatable", 1)] });
 
-    const result = kspec(
-      'schedule set updatable --cron "not valid"',
-      testDir,
-      { expectFail: true },
-    );
+    const result = kspec('schedule set updatable --cron "not valid"', testDir, {
+      expectFail: true,
+    });
     expect(result.exitCode).not.toBe(0);
   });
 });
@@ -550,10 +516,7 @@ describe("schedule enable", () => {
     const result = kspec("schedule enable disabled-one", testDir);
     expect(result.exitCode).toBe(0);
 
-    const data = kspecJson<{ enabled: boolean }>(
-      "schedule get disabled-one",
-      testDir,
-    );
+    const data = kspecJson<{ enabled: boolean }>("schedule get disabled-one", testDir);
     expect(data.enabled).toBe(true);
   });
 
@@ -582,10 +545,7 @@ describe("schedule disable", () => {
     const result = kspec("schedule disable active-one", testDir);
     expect(result.exitCode).toBe(0);
 
-    const data = kspecJson<{ enabled: boolean }>(
-      "schedule get active-one",
-      testDir,
-    );
+    const data = kspecJson<{ enabled: boolean }>("schedule get active-one", testDir);
     expect(data.enabled).toBe(false);
   });
 
@@ -685,10 +645,7 @@ describe("trait-json-output", () => {
   it("should use @ prefix for references in JSON output", () => {
     writeProject(testDir, { schedules: [makeSchedule("ref-test", 1)] });
 
-    const data = kspecJson<{ items: Array<{ id: string }> }>(
-      "schedule list",
-      testDir,
-    );
+    const data = kspecJson<{ items: Array<{ id: string }> }>("schedule list", testDir);
     // Schedule IDs are plain strings, not refs — this AC is about item references
     // For schedule commands, verify JSON structure is consistent
     expect(data.items[0].id).toBe("ref-test");

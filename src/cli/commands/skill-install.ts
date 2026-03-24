@@ -108,7 +108,7 @@ export async function getKspecPackageVersion(): Promise<string | null> {
     // Try to find package.json relative to this module
     const packagePath = path.resolve(
       import.meta.dirname || path.dirname(new URL(import.meta.url).pathname),
-      "../../../package.json"
+      "../../../package.json",
     );
     const packageJson = JSON.parse(await fs.readFile(packagePath, "utf-8"));
     return packageJson.version || null;
@@ -124,7 +124,7 @@ function getTemplatesDir(): string {
   // Templates are at <package-root>/templates/skills/
   return path.resolve(
     import.meta.dirname || path.dirname(new URL(import.meta.url).pathname),
-    "../../../templates/skills"
+    "../../../templates/skills",
   );
 }
 
@@ -143,12 +143,14 @@ export async function loadCoreSkillsManifest(): Promise<CoreSkillDefinition[]> {
       return [];
     }
 
-    return parsed.skills.map((s: Record<string, unknown>) => ({
-      id: String(s.id || ""),
-      name: String(s.name || s.id || ""),
-      description: s.description ? String(s.description) : undefined,
-      platforms: Array.isArray(s.platforms) ? s.platforms.map(String) : undefined,
-    })).filter((s: CoreSkillDefinition) => s.id);
+    return parsed.skills
+      .map((s: Record<string, unknown>) => ({
+        id: String(s.id || ""),
+        name: String(s.name || s.id || ""),
+        description: s.description ? String(s.description) : undefined,
+        platforms: Array.isArray(s.platforms) ? s.platforms.map(String) : undefined,
+      }))
+      .filter((s: CoreSkillDefinition) => s.id);
   } catch {
     return [];
   }
@@ -191,10 +193,9 @@ async function copyDirRecursive(src: string, dest: string): Promise<void> {
 }
 
 function createNotFoundError(filePath: string): NodeJS.ErrnoException {
-  return Object.assign(
-    new Error(`ENOENT: no such file or directory, open '${filePath}'`),
-    { code: "ENOENT" },
-  ) as NodeJS.ErrnoException;
+  return Object.assign(new Error(`ENOENT: no such file or directory, open '${filePath}'`), {
+    code: "ENOENT",
+  }) as NodeJS.ErrnoException;
 }
 
 async function readBinaryBufferAware(filePath: string): Promise<Buffer> {
@@ -209,9 +210,7 @@ async function readBinaryBufferAware(filePath: string): Promise<Buffer> {
       if (buffered === null) {
         throw createNotFoundError(filePath);
       }
-      return typeof buffered === "string"
-        ? Buffer.from(buffered, "utf-8")
-        : Buffer.from(buffered);
+      return typeof buffered === "string" ? Buffer.from(buffered, "utf-8") : Buffer.from(buffered);
     }
   }
 
@@ -226,7 +225,7 @@ async function readBinaryBufferAware(filePath: string): Promise<Buffer> {
 async function sourceMatchesDest(src: string, dest: string): Promise<boolean> {
   try {
     const srcEntries = await fs.readdir(src, { withFileTypes: true });
-    const destEntries = new Set(await readdirBufferAware(dest) as string[]);
+    const destEntries = new Set((await readdirBufferAware(dest)) as string[]);
 
     for (const srcEntry of srcEntries) {
       if (!destEntries.has(srcEntry.name)) return false;
@@ -246,7 +245,7 @@ async function sourceMatchesDest(src: string, dest: string): Promise<boolean> {
       }
     }
     return true;
-  } catch (_err) {
+  } catch {
     return false;
   }
 }
@@ -259,7 +258,7 @@ async function sourceMatchesDest(src: string, dest: string): Promise<boolean> {
  */
 export async function copyCoreSkillFiles(
   skillId: string,
-  targetDir: string
+  targetDir: string,
 ): Promise<{ changed: boolean }> {
   const templatesDir = getTemplatesDir();
   const sourceDir = path.join(templatesDir, skillId);
@@ -299,7 +298,11 @@ export async function copyCoreSkillFiles(
       await fs.access(srcSubDir);
     } catch (err) {
       // ENOENT: directory doesn't exist in template, skip
-      if (err instanceof Error && "code" in err && (err as NodeJS.ErrnoException).code === "ENOENT") {
+      if (
+        err instanceof Error &&
+        "code" in err &&
+        (err as NodeJS.ErrnoException).code === "ENOENT"
+      ) {
         continue;
       }
       throw err; // Propagate real I/O errors
@@ -317,9 +320,10 @@ export async function copyCoreSkillFiles(
   return { changed };
 }
 
-function resolveCoreInstallPlatform(
-  override?: string
-): { platform: CoreInstallPlatform; source: "auto-detect" | "override" } {
+function resolveCoreInstallPlatform(override?: string): {
+  platform: CoreInstallPlatform;
+  source: "auto-detect" | "override";
+} {
   if (override === "claude-code" || override === "codex" || override === "droid") {
     return { platform: override, source: "override" };
   }
@@ -341,24 +345,17 @@ function resolveCoreInstallPlatform(
 export function registerSkillInstallCommands(skill: Command): void {
   // AC: @core-skill-install - kspec skill install-core
   markMutating(skill.command("install-core"))
-    .description(
-      "Install core skills from kspec package templates"
-    )
+    .description("Install core skills from kspec package templates")
     .option("--force", "Overwrite custom forks with core versions")
     .option("--dry-run", "Show what would be installed without making changes")
-    .option(
-      "--platform <platform>",
-      "Render target platform override (claude-code|codex|droid)"
-    )
+    .option("--platform <platform>", "Render target platform override (claude-code|codex|droid)")
     .action(async (options) => {
       try {
         const ctx = await initContext();
 
         if (!ctx.manifestPath) {
           error(errors.project.noKspecProject);
-          console.log(
-            chalk.gray("Try: kspec init to initialize a kspec project")
-          );
+          console.log(chalk.gray("Try: kspec init to initialize a kspec project"));
           process.exit(EXIT_CODES.ERROR);
         }
 
@@ -367,13 +364,13 @@ export function registerSkillInstallCommands(skill: Command): void {
         const force = options.force || false;
         const platformOverride = options.platform as string | undefined;
         if (
-          platformOverride
-          && platformOverride !== "claude-code"
-          && platformOverride !== "codex"
-          && platformOverride !== "droid"
+          platformOverride &&
+          platformOverride !== "claude-code" &&
+          platformOverride !== "codex" &&
+          platformOverride !== "droid"
         ) {
           error(
-            `Invalid --platform value "${platformOverride}". Expected "claude-code", "codex", or "droid".`
+            `Invalid --platform value "${platformOverride}". Expected "claude-code", "codex", or "droid".`,
           );
           process.exit(EXIT_CODES.ERROR);
         }
@@ -392,7 +389,11 @@ export function registerSkillInstallCommands(skill: Command): void {
         // AC: @cross-platform-and-version-robustness ac-3
         const kspecVersion = await getKspecPackageVersion();
         if (!kspecVersion) {
-          console.log(chalk.yellow("Warning: Could not determine kspec version — skills installed without version tracking"));
+          console.log(
+            chalk.yellow(
+              "Warning: Could not determine kspec version — skills installed without version tracking",
+            ),
+          );
         }
 
         // Process each core skill
@@ -516,15 +517,15 @@ export function registerSkillInstallCommands(skill: Command): void {
         }
 
         // AC: @core-skill-install ac-6, ac-7 - Register marketplace and enable plugin
-        const { registerCorePluginMarketplace, enablePluginInProject } = await import(
-          "../../lib/claude-plugin-registry.js"
-        );
+        const { registerCorePluginMarketplace, enablePluginInProject } =
+          await import("../../lib/claude-plugin-registry.js");
         const marketplaceResult = await registerCorePluginMarketplace({ dryRun });
         const enableResult = await enablePluginInProject(ctx.rootDir, { dryRun });
         // AC: @new-project-bootstrapping ac-3 - Codex fallback includes kspec-agents.md
-        const codexProjectDocsResult = renderTarget.platform === "codex"
-          ? await ensureCodexProjectDocFallback("kspec-agents.md", { dryRun })
-          : null;
+        const codexProjectDocsResult =
+          renderTarget.platform === "codex"
+            ? await ensureCodexProjectDocFallback("kspec-agents.md", { dryRun })
+            : null;
 
         // Output results
         output(
@@ -576,22 +577,18 @@ export function registerSkillInstallCommands(skill: Command): void {
             }
             console.log();
             console.log(
-              chalk.gray(
-                `Render target: ${renderSummary.platform} (${renderSummary.source})`
-              )
+              chalk.gray(`Render target: ${renderSummary.platform} (${renderSummary.source})`),
             );
             if (renderSummary.created > 0 || renderSummary.updated > 0) {
               console.log(
-                chalk.green(
-                  `Rendered: ${renderSummary.created + renderSummary.updated} skill(s)`
-                )
+                chalk.green(`Rendered: ${renderSummary.created + renderSummary.updated} skill(s)`),
               );
             }
             if (renderSummary.pluginProvided > 0) {
               console.log(
                 chalk.gray(
-                  `Plugin-provided: ${renderSummary.pluginProvided} skill(s) skipped local render`
-                )
+                  `Plugin-provided: ${renderSummary.pluginProvided} skill(s) skipped local render`,
+                ),
               );
             }
             if (renderSummary.unchanged > 0) {
@@ -603,9 +600,7 @@ export function registerSkillInstallCommands(skill: Command): void {
 
             console.log();
             if (dryRun) {
-              console.log(
-                chalk.yellow("No changes were made. Run without --dry-run to apply.")
-              );
+              console.log(chalk.yellow("No changes were made. Run without --dry-run to apply."));
             } else {
               const changedCount = created.length + updated.length;
               if (changedCount > 0) {
@@ -619,7 +614,9 @@ export function registerSkillInstallCommands(skill: Command): void {
             if (marketplaceResult.success && marketplaceResult.action !== "skipped") {
               console.log(chalk.green(`Plugin marketplace ${marketplaceResult.action}`));
             } else if (!marketplaceResult.success) {
-              console.log(chalk.red(`Marketplace registration failed: ${marketplaceResult.message}`));
+              console.log(
+                chalk.red(`Marketplace registration failed: ${marketplaceResult.message}`),
+              );
             }
 
             // AC: @core-skill-install ac-7 - Report plugin enablement
@@ -635,18 +632,20 @@ export function registerSkillInstallCommands(skill: Command): void {
               } else if (codexProjectDocsResult.success) {
                 console.log(chalk.gray(codexProjectDocsResult.message));
               } else {
-                console.log(chalk.red(`Codex fallback update failed: ${codexProjectDocsResult.message}`));
+                console.log(
+                  chalk.red(`Codex fallback update failed: ${codexProjectDocsResult.message}`),
+                );
               }
             }
-          }
+          },
         );
 
         // Exit non-zero if plugin registration or enablement failed
         if (
-          !marketplaceResult.success
-          || !enableResult.success
-          || renderSummary.failed > 0
-          || (codexProjectDocsResult && !codexProjectDocsResult.success)
+          !marketplaceResult.success ||
+          !enableResult.success ||
+          renderSummary.failed > 0 ||
+          (codexProjectDocsResult && !codexProjectDocsResult.success)
         ) {
           process.exit(EXIT_CODES.ERROR);
         }
@@ -658,9 +657,7 @@ export function registerSkillInstallCommands(skill: Command): void {
 
   // AC: @core-skill-update - kspec skill update
   markMutating(skill.command("update"))
-    .description(
-      "Update core skills to match the installed kspec package version"
-    )
+    .description("Update core skills to match the installed kspec package version")
     .option("--dry-run", "Show what would be updated without making changes")
     .action(async (options) => {
       try {
@@ -668,9 +665,7 @@ export function registerSkillInstallCommands(skill: Command): void {
 
         if (!ctx.manifestPath) {
           error(errors.project.noKspecProject);
-          console.log(
-            chalk.gray("Try: kspec init to initialize a kspec project")
-          );
+          console.log(chalk.gray("Try: kspec init to initialize a kspec project"));
           process.exit(EXIT_CODES.ERROR);
         }
 
@@ -682,14 +677,16 @@ export function registerSkillInstallCommands(skill: Command): void {
         // AC: @cross-platform-and-version-robustness ac-3
         const kspecVersion = await getKspecPackageVersion();
         if (!kspecVersion) {
-          console.log(chalk.yellow("Warning: Could not determine kspec version — updating based on content changes only"));
+          console.log(
+            chalk.yellow(
+              "Warning: Could not determine kspec version — updating based on content changes only",
+            ),
+          );
         }
 
         // Load core skills manifest to get current content
         const coreSkillsManifest = await loadCoreSkillsManifest();
-        const coreSkillsMap = new Map(
-          coreSkillsManifest.map((s) => [s.id, s])
-        );
+        const coreSkillsMap = new Map(coreSkillsManifest.map((s) => [s.id, s]));
 
         // AC: @core-skill-update ac-3 - Only process skills with origin core
         const coreSkills = metaCtx.skills.filter((s) => s.origin === "core");
@@ -765,7 +762,7 @@ export function registerSkillInstallCommands(skill: Command): void {
           await commitIfShadow(
             ctx.shadow,
             "skill-update",
-            `${results.filter((r) => r.action === "updated").length} core skills`
+            `${results.filter((r) => r.action === "updated").length} core skills`,
           );
         }
 
@@ -792,7 +789,7 @@ export function registerSkillInstallCommands(skill: Command): void {
               console.log(chalk.green(`Updated: ${updated.length} skill(s)`));
               for (const r of updated) {
                 console.log(
-                  `  ${chalk.green("~")} ${r.id}: ${r.previousVersion || "unknown"} → ${r.newVersion || "unavailable"}`
+                  `  ${chalk.green("~")} ${r.id}: ${r.previousVersion || "unknown"} → ${r.newVersion || "unavailable"}`,
                 );
               }
             }
@@ -801,7 +798,7 @@ export function registerSkillInstallCommands(skill: Command): void {
               console.log(chalk.gray(`Skipped: ${skipped.length} skill(s)`));
               for (const r of skipped) {
                 console.log(
-                  `  ${chalk.gray("-")} ${r.id}: ${r.reason}${r.currentVersion ? ` (v${r.currentVersion})` : ""}`
+                  `  ${chalk.gray("-")} ${r.id}: ${r.reason}${r.currentVersion ? ` (v${r.currentVersion})` : ""}`,
                 );
                 if (r.guidance) {
                   console.log(`    ${chalk.yellow("→")} ${r.guidance}`);
@@ -811,15 +808,13 @@ export function registerSkillInstallCommands(skill: Command): void {
 
             console.log();
             if (dryRun) {
-              console.log(
-                chalk.yellow("No changes were made. Run without --dry-run to apply.")
-              );
+              console.log(chalk.yellow("No changes were made. Run without --dry-run to apply."));
             } else if (updated.length > 0) {
               success(`Updated ${updated.length} core skill(s)`);
             } else {
               console.log(chalk.gray("No skills needed updating"));
             }
-          }
+          },
         );
       } catch (err) {
         error("Failed to update core skills", err);

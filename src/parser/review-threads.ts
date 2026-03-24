@@ -124,9 +124,7 @@ export function addReply(
   const now = new Date().toISOString();
   const entryUlid = ulid();
 
-  const threadIndex = review.threads.findIndex(
-    (t) => t._ulid === input.threadUlid,
-  );
+  const threadIndex = review.threads.findIndex((t) => t._ulid === input.threadUlid);
   if (threadIndex === -1) {
     throw new Error(`Thread not found: ${input.threadUlid}`);
   }
@@ -165,15 +163,10 @@ export function addReply(
 /**
  * Resolve a thread.
  */
-export function resolveThread(
-  review: ReviewRecord,
-  input: ResolveThreadInput,
-): ReviewRecord {
+export function resolveThread(review: ReviewRecord, input: ResolveThreadInput): ReviewRecord {
   const now = new Date().toISOString();
 
-  const threadIndex = review.threads.findIndex(
-    (t) => t._ulid === input.threadUlid,
-  );
+  const threadIndex = review.threads.findIndex((t) => t._ulid === input.threadUlid);
   if (threadIndex === -1) {
     throw new Error(`Thread not found: ${input.threadUlid}`);
   }
@@ -202,15 +195,10 @@ export function resolveThread(
 /**
  * Reopen a previously resolved thread.
  */
-export function reopenThread(
-  review: ReviewRecord,
-  input: ResolveThreadInput,
-): ReviewRecord {
+export function reopenThread(review: ReviewRecord, input: ResolveThreadInput): ReviewRecord {
   const now = new Date().toISOString();
 
-  const threadIndex = review.threads.findIndex(
-    (t) => t._ulid === input.threadUlid,
-  );
+  const threadIndex = review.threads.findIndex((t) => t._ulid === input.threadUlid);
   if (threadIndex === -1) {
     throw new Error(`Thread not found: ${input.threadUlid}`);
   }
@@ -246,12 +234,8 @@ export function reopenThread(
  * Only unresolved threads with kind "blocker" prevent approval.
  * Unresolved "nit" and "question" threads do not block.
  */
-export function computeThreadDisposition(
-  review: ReviewRecord,
-): ReviewDisposition {
-  const hasUnresolvedBlockers = review.threads.some(
-    (t) => t.kind === "blocker" && !t.resolved_at,
-  );
+export function computeThreadDisposition(review: ReviewRecord): ReviewDisposition {
+  const hasUnresolvedBlockers = review.threads.some((t) => t.kind === "blocker" && !t.resolved_at);
 
   if (hasUnresolvedBlockers) {
     return "changes_requested";
@@ -263,20 +247,14 @@ export function computeThreadDisposition(
 /**
  * Get unresolved blocking threads from a review.
  */
-export function getUnresolvedBlockers(
-  review: ReviewRecord,
-): ReviewThread[] {
-  return review.threads.filter(
-    (t) => t.kind === "blocker" && !t.resolved_at,
-  );
+export function getUnresolvedBlockers(review: ReviewRecord): ReviewThread[] {
+  return review.threads.filter((t) => t.kind === "blocker" && !t.resolved_at);
 }
 
 /**
  * Get all unresolved threads from a review (any kind).
  */
-export function getUnresolvedThreads(
-  review: ReviewRecord,
-): ReviewThread[] {
+export function getUnresolvedThreads(review: ReviewRecord): ReviewThread[] {
   return review.threads.filter((t) => !t.resolved_at);
 }
 
@@ -328,9 +306,7 @@ export async function resolveThreadAtomic(
   review: LoadedReviewRecord,
   input: ResolveThreadInput,
 ): Promise<LoadedReviewRecord> {
-  return mutateReviewAtomically(ctx, review, (latest) =>
-    resolveThread(latest, input),
-  );
+  return mutateReviewAtomically(ctx, review, (latest) => resolveThread(latest, input));
 }
 
 /**
@@ -341,7 +317,5 @@ export async function reopenThreadAtomic(
   review: LoadedReviewRecord,
   input: ResolveThreadInput,
 ): Promise<LoadedReviewRecord> {
-  return mutateReviewAtomically(ctx, review, (latest) =>
-    reopenThread(latest, input),
-  );
+  return mutateReviewAtomically(ctx, review, (latest) => reopenThread(latest, input));
 }

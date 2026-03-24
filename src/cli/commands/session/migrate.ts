@@ -7,10 +7,7 @@
  */
 
 import { initContext } from "../../../parser/index.js";
-import {
-  hasLegacySessions,
-  migrateLegacySessions,
-} from "../../../sessions/legacy.js";
+import { hasLegacySessions, migrateLegacySessions } from "../../../sessions/legacy.js";
 import { EXIT_CODES } from "../../exit-codes.js";
 import { error, output } from "../../output.js";
 
@@ -21,12 +18,9 @@ export async function sessionMigrateAction(): Promise<void> {
     // Check if there are legacy sessions to migrate
     const hasLegacy = await hasLegacySessions(ctx.specDir);
     if (!hasLegacy) {
-      output(
-        { migrated: 0, skipped: 0, message: "No legacy sessions found" },
-        () => {
-          console.log("No legacy sessions found in .kspec/sessions/.");
-        },
-      );
+      output({ migrated: 0, skipped: 0, message: "No legacy sessions found" }, () => {
+        console.log("No legacy sessions found in .kspec/sessions/.");
+      });
       return;
     }
 
@@ -44,18 +38,14 @@ export async function sessionMigrateAction(): Promise<void> {
       }
 
       if (result.skipped > 0) {
-        console.log(
-          `Skipped ${result.skipped} session(s) (already exist in .kspec-sessions/).`,
-        );
+        console.log(`Skipped ${result.skipped} session(s) (already exist in .kspec-sessions/).`);
       }
 
       if (result.migrated === 0 && result.skipped > 0) {
         console.log("All legacy sessions already migrated.");
       }
 
-      console.log(
-        "\nNote: Original sessions in .kspec/sessions/ were not deleted.",
-      );
+      console.log("\nNote: Original sessions in .kspec/sessions/ were not deleted.");
     });
   } catch (err) {
     error("Failed to migrate sessions", err);

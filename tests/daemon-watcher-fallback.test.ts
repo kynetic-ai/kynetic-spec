@@ -1,7 +1,7 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { mkdir, symlink, writeFile } from 'fs/promises';
-import { join } from 'path';
-import { cleanupTempDir, createTempDir } from './helpers/cli';
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { mkdir, symlink, writeFile } from "fs/promises";
+import { join } from "path";
+import { cleanupTempDir, createTempDir } from "./helpers/cli";
 
 class MockChokidarWatcher {
   private handlers = new Map<string, (value: unknown) => void>();
@@ -18,14 +18,14 @@ class MockChokidarWatcher {
   emitChange(filePath: string): void {
     const ignored = this.options.ignored;
     const shouldIgnore =
-      typeof ignored === 'function'
+      typeof ignored === "function"
         ? Boolean(ignored(filePath))
         : ignored instanceof RegExp
           ? ignored.test(filePath)
           : false;
 
     if (!shouldIgnore) {
-      this.handlers.get('change')?.(filePath);
+      this.handlers.get("change")?.(filePath);
     }
   }
 }
@@ -36,21 +36,22 @@ const mockState = vi.hoisted(() => ({
   latestWatcher: null as MockChokidarWatcher | null,
 }));
 
-vi.mock('fs', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('fs')>();
+vi.mock("fs", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("fs")>();
   return {
     ...actual,
     watch: mockState.fsWatch,
   };
 });
 
-vi.mock('chokidar', () => ({
+vi.mock("chokidar", () => ({
   default: {
     watch: mockState.chokidarWatch,
   },
+  watch: mockState.chokidarWatch,
 }));
 
-describe('KspecWatcher Chokidar fallback', () => {
+describe("KspecWatcher Chokidar fallback", () => {
   let tempDir: string;
   let kspecDir: string;
   let rootYamlPath: string;
@@ -59,23 +60,25 @@ describe('KspecWatcher Chokidar fallback', () => {
     vi.resetModules();
     vi.clearAllMocks();
 
-    tempDir = await createTempDir('kspec-daemon-watcher-fallback-');
-    kspecDir = join(tempDir, '.kspec');
-    rootYamlPath = join(kspecDir, 'kynetic.yaml');
+    tempDir = await createTempDir("kspec-daemon-watcher-fallback-");
+    kspecDir = join(tempDir, ".kspec");
+    rootYamlPath = join(kspecDir, "kynetic.yaml");
 
     await mkdir(kspecDir, { recursive: true });
     await writeFile(rootYamlPath, 'kynetic: "1.0"\nproject: Fallback Delivery\n');
-    await symlink(kspecDir, join(kspecDir, '.kspec'), 'dir');
+    await symlink(kspecDir, join(kspecDir, ".kspec"), "dir");
 
     mockState.fsWatch.mockImplementation(() => {
-      throw new Error('Bun watcher unavailable');
+      throw new Error("Bun watcher unavailable");
     });
 
-    mockState.chokidarWatch.mockImplementation((_glob: string, options: Record<string, unknown>) => {
-      const watcher = new MockChokidarWatcher(options);
-      mockState.latestWatcher = watcher;
-      return watcher;
-    });
+    mockState.chokidarWatch.mockImplementation(
+      (_glob: string, options: Record<string, unknown>) => {
+        const watcher = new MockChokidarWatcher(options);
+        mockState.latestWatcher = watcher;
+        return watcher;
+      },
+    );
   });
 
   afterEach(async () => {
@@ -84,11 +87,11 @@ describe('KspecWatcher Chokidar fallback', () => {
   });
 
   // AC: @daemon-server ac-8
-  it('ignores nested .kspec loop paths while still delivering fallback YAML changes', async () => {
+  it("ignores nested .kspec loop paths while still delivering fallback YAML changes", async () => {
     const changeHandler = vi.fn();
     const errorHandler = vi.fn();
 
-    const { KspecWatcher } = await import('../packages/daemon/src/watcher');
+    const { KspecWatcher } = await import("../packages/daemon/src/watcher");
     const watcher = new KspecWatcher({
       kspecDir,
       onFileChange: changeHandler,
@@ -103,10 +106,11 @@ describe('KspecWatcher Chokidar fallback', () => {
     const options = mockState.latestWatcher?.options;
     expect(options?.followSymlinks).toBe(false);
 
-    const loopYamlPath = join(kspecDir, '.kspec', 'kynetic.yaml');
-    expect(typeof options?.ignored).toBe('function');
-    expect((options?.ignored as (filePath: string) => boolean)(rootYamlPath)).toBe(false);
-    expect((options?.ignored as (filePath: string) => boolean)(loopYamlPath)).toBe(true);
+    const loopYamlPath = join(kspecDir, ".kspec", "kynetic.yaml");
+    expect(typeof options?.ignored).toBe("function");
+    const ignored = options!.ignored as (filePath: string) => boolean;
+    expect(ignored(rootYamlPath)).toBe(false);
+    expect(ignored(loopYamlPath)).toBe(true);
 
     mockState.latestWatcher?.emitChange(loopYamlPath);
     await new Promise((resolve) => setTimeout(resolve, 25));
@@ -116,7 +120,7 @@ describe('KspecWatcher Chokidar fallback', () => {
     await vi.waitFor(() => {
       expect(changeHandler).toHaveBeenCalledWith(
         rootYamlPath,
-        expect.stringContaining('project: Fallback Delivery')
+        expect.stringContaining("project: Fallback Delivery"),
       );
     });
     expect(errorHandler).not.toHaveBeenCalled();

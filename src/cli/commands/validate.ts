@@ -21,10 +21,7 @@ import {
   validate,
   validateConventions,
 } from "../../parser/index.js";
-import {
-  type SkillValidationResult,
-  validateSkills,
-} from "../../parser/validate-skills.js";
+import { type SkillValidationResult, validateSkills } from "../../parser/validate-skills.js";
 import { validation as validationStrings } from "../../strings/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, isStructuredMode, output, warn } from "../output.js";
@@ -161,13 +158,10 @@ function checkStaleness(
     );
 
     // Filter for eligible children
-    const eligibleChildren = dependentTasks.filter(
-      (t) => t.automation === "eligible",
-    );
+    const eligibleChildren = dependentTasks.filter((t) => t.automation === "eligible");
 
     if (eligibleChildren.length > 0) {
-      const parentRef =
-        parentTask.slugs[0] || refIndex.shortUlid(parentTask._ulid);
+      const parentRef = parentTask.slugs[0] || refIndex.shortUlid(parentTask._ulid);
       const childRefs = eligibleChildren.map(
         (c) => `@${c.slugs[0] || refIndex.shortUlid(c._ulid)}`,
       );
@@ -187,10 +181,7 @@ function checkStaleness(
  * Format staleness warnings for display
  * AC: @stale-status-detection ac-4
  */
-function formatStalenessWarnings(
-  warnings: StalenessWarning[],
-  verbose: boolean,
-): void {
+function formatStalenessWarnings(warnings: StalenessWarning[], verbose: boolean): void {
   if (warnings.length === 0) {
     console.log(chalk.green("Staleness: OK"));
     return;
@@ -199,23 +190,13 @@ function formatStalenessWarnings(
   console.log(chalk.yellow(`\nStaleness warnings: ${warnings.length}`));
 
   // Group by type
-  const parentPending = warnings.filter(
-    (w) => w.type === "parent-pending-children-done",
-  );
-  const specNoTask = warnings.filter(
-    (w) => w.type === "spec-implemented-no-task",
-  );
-  const taskDoneSpecNot = warnings.filter(
-    (w) => w.type === "task-done-spec-not-started",
-  );
-  const automationBlocking = warnings.filter(
-    (w) => w.type === "automation-blocking",
-  );
+  const parentPending = warnings.filter((w) => w.type === "parent-pending-children-done");
+  const specNoTask = warnings.filter((w) => w.type === "spec-implemented-no-task");
+  const taskDoneSpecNot = warnings.filter((w) => w.type === "task-done-spec-not-started");
+  const automationBlocking = warnings.filter((w) => w.type === "automation-blocking");
 
   if (parentPending.length > 0) {
-    console.log(
-      chalk.yellow(`  Parent pending, children done: ${parentPending.length}`),
-    );
+    console.log(chalk.yellow(`  Parent pending, children done: ${parentPending.length}`));
     const shown = verbose ? parentPending : parentPending.slice(0, 3);
     for (const w of shown) {
       console.log(chalk.yellow(`    ! ${w.message}`));
@@ -226,9 +207,7 @@ function formatStalenessWarnings(
   }
 
   if (specNoTask.length > 0) {
-    console.log(
-      chalk.yellow(`  Spec implemented, no task: ${specNoTask.length}`),
-    );
+    console.log(chalk.yellow(`  Spec implemented, no task: ${specNoTask.length}`));
     const shown = verbose ? specNoTask : specNoTask.slice(0, 3);
     for (const w of shown) {
       console.log(chalk.yellow(`    ! ${w.message}`));
@@ -239,9 +218,7 @@ function formatStalenessWarnings(
   }
 
   if (taskDoneSpecNot.length > 0) {
-    console.log(
-      chalk.yellow(`  Task done, spec not started: ${taskDoneSpecNot.length}`),
-    );
+    console.log(chalk.yellow(`  Task done, spec not started: ${taskDoneSpecNot.length}`));
     const shown = verbose ? taskDoneSpecNot : taskDoneSpecNot.slice(0, 3);
     for (const w of shown) {
       console.log(chalk.yellow(`    ! ${w.message}`));
@@ -252,17 +229,13 @@ function formatStalenessWarnings(
   }
 
   if (automationBlocking.length > 0) {
-    console.log(
-      chalk.yellow(`  Automation blocking: ${automationBlocking.length}`),
-    );
+    console.log(chalk.yellow(`  Automation blocking: ${automationBlocking.length}`));
     const shown = verbose ? automationBlocking : automationBlocking.slice(0, 3);
     for (const w of shown) {
       console.log(chalk.yellow(`    ! ${w.message}`));
     }
     if (!verbose && automationBlocking.length > 3) {
-      console.log(
-        chalk.gray(`    ... and ${automationBlocking.length - 3} more`),
-      );
+      console.log(chalk.gray(`    ... and ${automationBlocking.length - 3} more`));
     }
   }
 }
@@ -281,10 +254,7 @@ interface ACDriftWarning {
 /**
  * Format AC schema drift warnings for display
  */
-function formatDriftWarnings(
-  warnings: CompletenessWarning[],
-  verbose: boolean,
-): void {
+function formatDriftWarnings(warnings: CompletenessWarning[], verbose: boolean): void {
   // Filter to only drift warnings
   const driftWarnings = warnings.filter(
     (w) => w.type === "ac_schema_field_mismatch",
@@ -320,9 +290,7 @@ function formatDriftWarnings(
   }
 
   if (!verbose && itemEntries.length > 5) {
-    console.log(
-      chalk.gray(`  ... and ${itemEntries.length - 5} more items with drift`),
-    );
+    console.log(chalk.gray(`  ... and ${itemEntries.length - 5} more items with drift`));
   }
 }
 
@@ -330,9 +298,7 @@ function formatDriftWarnings(
  * Format convention validation results for display
  * AC: @convention-definitions ac-3, ac-4
  */
-function formatConventionValidationResult(
-  result: ConventionValidationResult,
-): void {
+function formatConventionValidationResult(result: ConventionValidationResult): void {
   if (result.valid && result.skipped.length === 0) {
     console.log(chalk.green("Conventions: OK"));
     return;
@@ -365,30 +331,21 @@ function formatConventionValidationResult(
   }
 
   // Stats
-  console.log(
-    chalk.gray(`\nConventions checked: ${result.stats.conventionsChecked}`),
-  );
-  console.log(
-    chalk.gray(`Conventions skipped: ${result.stats.conventionsSkipped}`),
-  );
+  console.log(chalk.gray(`\nConventions checked: ${result.stats.conventionsChecked}`));
+  console.log(chalk.gray(`Conventions skipped: ${result.stats.conventionsSkipped}`));
 }
 
 /**
  * Format skill validation results for display
  */
-function formatSkillValidationResult(
-  result: SkillValidationResult,
-  verbose: boolean,
-): void {
+function formatSkillValidationResult(result: SkillValidationResult, verbose: boolean): void {
   if (result.filesChecked === 0) {
     console.log(chalk.gray("Skills: No skill files found"));
     return;
   }
 
   if (result.valid) {
-    console.log(
-      chalk.green(`Skills: OK (${result.filesChecked} files checked)`),
-    );
+    console.log(chalk.green(`Skills: OK (${result.filesChecked} files checked)`));
     return;
   }
 
@@ -421,10 +378,7 @@ function formatSkillValidationResult(
  * Format completeness warnings for display
  * AC: @spec-completeness ac-4
  */
-function formatCompletenessWarnings(
-  warnings: CompletenessWarning[],
-  verbose: boolean,
-): void {
+function formatCompletenessWarnings(warnings: CompletenessWarning[], verbose: boolean): void {
   if (warnings.length === 0) {
     console.log(chalk.green("Completeness: OK"));
     return;
@@ -433,29 +387,21 @@ function formatCompletenessWarnings(
   console.log(chalk.yellow(`\nCompleteness warnings: ${warnings.length}`));
 
   // Group by type
-  const missingAC = warnings.filter(
-    (w) => w.type === "missing_acceptance_criteria",
-  );
+  const missingAC = warnings.filter((w) => w.type === "missing_acceptance_criteria");
   const missingDesc = warnings.filter((w) => w.type === "missing_description");
-  const statusMismatch = warnings.filter(
-    (w) => w.type === "status_inconsistency",
-  );
+  const statusMismatch = warnings.filter((w) => w.type === "status_inconsistency");
   const missingOwnACCoverage = warnings.filter(
     (w) => w.type === "missing_test_coverage" && w.subtype !== "trait_ac",
   );
   const missingTraitACCoverage = warnings.filter(
     (w) => w.type === "missing_test_coverage" && w.subtype === "trait_ac",
   );
-  const automationNoSpec = warnings.filter(
-    (w) => w.type === "automation_eligible_no_spec",
-  );
+  const automationNoSpec = warnings.filter((w) => w.type === "automation_eligible_no_spec");
 
   // AC: @spec-completeness ac-4
   // Show summary with counts by issue type
   if (missingAC.length > 0) {
-    console.log(
-      chalk.yellow(`  Missing acceptance criteria: ${missingAC.length}`),
-    );
+    console.log(chalk.yellow(`  Missing acceptance criteria: ${missingAC.length}`));
     const shown = verbose ? missingAC : missingAC.slice(0, 3);
     for (const w of shown) {
       console.log(chalk.gray(`    ○ ${w.itemRef} - ${w.itemTitle}`));
@@ -477,9 +423,7 @@ function formatCompletenessWarnings(
   }
 
   if (statusMismatch.length > 0) {
-    console.log(
-      chalk.yellow(`  Status inconsistencies: ${statusMismatch.length}`),
-    );
+    console.log(chalk.yellow(`  Status inconsistencies: ${statusMismatch.length}`));
     for (const w of statusMismatch) {
       console.log(chalk.yellow(`    ! ${w.message}`));
       if (w.details) {
@@ -489,12 +433,8 @@ function formatCompletenessWarnings(
   }
 
   if (missingOwnACCoverage.length > 0) {
-    console.log(
-      chalk.yellow(`  Missing own AC coverage: ${missingOwnACCoverage.length}`),
-    );
-    const shown = verbose
-      ? missingOwnACCoverage
-      : missingOwnACCoverage.slice(0, 3);
+    console.log(chalk.yellow(`  Missing own AC coverage: ${missingOwnACCoverage.length}`));
+    const shown = verbose ? missingOwnACCoverage : missingOwnACCoverage.slice(0, 3);
     for (const w of shown) {
       console.log(chalk.yellow(`    ! ${w.itemRef} - ${w.itemTitle}`));
       if (w.details) {
@@ -502,19 +442,13 @@ function formatCompletenessWarnings(
       }
     }
     if (!verbose && missingOwnACCoverage.length > 3) {
-      console.log(
-        chalk.gray(`    ... and ${missingOwnACCoverage.length - 3} more`),
-      );
+      console.log(chalk.gray(`    ... and ${missingOwnACCoverage.length - 3} more`));
     }
   }
 
   if (missingTraitACCoverage.length > 0) {
-    console.log(
-      chalk.yellow(`  Missing trait AC coverage: ${missingTraitACCoverage.length}`),
-    );
-    const shown = verbose
-      ? missingTraitACCoverage
-      : missingTraitACCoverage.slice(0, 3);
+    console.log(chalk.yellow(`  Missing trait AC coverage: ${missingTraitACCoverage.length}`));
+    const shown = verbose ? missingTraitACCoverage : missingTraitACCoverage.slice(0, 3);
     for (const w of shown) {
       console.log(chalk.yellow(`    ! ${w.itemRef} - ${w.itemTitle}`));
       if (w.details) {
@@ -522,37 +456,27 @@ function formatCompletenessWarnings(
       }
     }
     if (!verbose && missingTraitACCoverage.length > 3) {
-      console.log(
-        chalk.gray(`    ... and ${missingTraitACCoverage.length - 3} more`),
-      );
+      console.log(chalk.gray(`    ... and ${missingTraitACCoverage.length - 3} more`));
     }
   }
 
   // AC: @task-automation-eligibility ac-21, ac-23
   if (automationNoSpec.length > 0) {
-    console.log(
-      chalk.yellow(`  Automation without spec: ${automationNoSpec.length}`),
-    );
+    console.log(chalk.yellow(`  Automation without spec: ${automationNoSpec.length}`));
     const shown = verbose ? automationNoSpec : automationNoSpec.slice(0, 3);
     for (const w of shown) {
       console.log(chalk.yellow(`    ! ${w.itemRef} - ${w.itemTitle}`));
       console.log(chalk.gray(`      ${w.message}`));
     }
     if (!verbose && automationNoSpec.length > 3) {
-      console.log(
-        chalk.gray(`    ... and ${automationNoSpec.length - 3} more`),
-      );
+      console.log(chalk.gray(`    ... and ${automationNoSpec.length - 3} more`));
     }
   }
 
   // Invalid AC annotations in test files
-  const invalidAnnotations = warnings.filter(
-    (w) => w.type === "invalid_ac_annotation",
-  );
+  const invalidAnnotations = warnings.filter((w) => w.type === "invalid_ac_annotation");
   if (invalidAnnotations.length > 0) {
-    console.log(
-      chalk.yellow(`  Invalid AC annotations: ${invalidAnnotations.length}`),
-    );
+    console.log(chalk.yellow(`  Invalid AC annotations: ${invalidAnnotations.length}`));
     const shown = verbose ? invalidAnnotations : invalidAnnotations.slice(0, 5);
     for (const w of shown) {
       console.log(chalk.yellow(`    ! ${w.message}`));
@@ -561,9 +485,7 @@ function formatCompletenessWarnings(
       }
     }
     if (!verbose && invalidAnnotations.length > 5) {
-      console.log(
-        chalk.gray(`    ... and ${invalidAnnotations.length - 5} more`),
-      );
+      console.log(chalk.gray(`    ... and ${invalidAnnotations.length - 5} more`));
     }
   }
 }
@@ -571,10 +493,7 @@ function formatCompletenessWarnings(
 /**
  * Format alignment warnings for display
  */
-function formatAlignmentWarnings(
-  warnings: AlignmentWarning[],
-  verbose: boolean,
-): void {
+function formatAlignmentWarnings(warnings: AlignmentWarning[], verbose: boolean): void {
   if (warnings.length === 0) {
     console.log(chalk.green("Alignment: OK"));
     return;
@@ -588,9 +507,7 @@ function formatAlignmentWarnings(
   const stale = warnings.filter((w) => w.type === "stale_implementation");
 
   if (orphaned.length > 0) {
-    console.log(
-      chalk.yellow(`  Orphaned specs (no tasks): ${orphaned.length}`),
-    );
+    console.log(chalk.yellow(`  Orphaned specs (no tasks): ${orphaned.length}`));
     const shown = verbose ? orphaned : orphaned.slice(0, 3);
     for (const w of shown) {
       console.log(chalk.gray(`    ○ ${w.specTitle}`));
@@ -665,11 +582,7 @@ async function collectFixableFiles(ctx: {
   const taskFiles = await findTaskFiles(ctx.rootDir);
   const specTaskFiles = await findTaskFiles(path.join(ctx.rootDir, "spec"));
   const allTaskFiles = [...new Set([...taskFiles, ...specTaskFiles])];
-  files.push(
-    ...allTaskFiles.filter(
-      (f) => !f.includes("fixtures") && !f.includes("test"),
-    ),
-  );
+  files.push(...allTaskFiles.filter((f) => !f.includes("fixtures") && !f.includes("test")));
 
   // Spec files from includes
   if (ctx.manifest && ctx.manifestPath) {
@@ -697,10 +610,7 @@ async function collectFixableFiles(ctx: {
 /**
  * Format validation result for display
  */
-function formatValidationResult(
-  result: ValidationResult,
-  verbose: boolean,
-): void {
+function formatValidationResult(result: ValidationResult, verbose: boolean): void {
   // Header
   if (result.valid) {
     console.log(chalk.green.bold("✓ Validation passed"));
@@ -752,9 +662,7 @@ function formatValidationResult(
 
   // Reference warnings (deprecated targets)
   if (result.refWarnings.length > 0) {
-    console.log(
-      chalk.yellow(`\nReference warnings: ${result.refWarnings.length}`),
-    );
+    console.log(chalk.yellow(`\nReference warnings: ${result.refWarnings.length}`));
     const shown = verbose ? result.refWarnings : result.refWarnings.slice(0, 5);
     for (const warn of shown) {
       const location = warn.sourceFile
@@ -766,9 +674,7 @@ function formatValidationResult(
     }
     if (!verbose && result.refWarnings.length > 5) {
       console.log(
-        chalk.gray(
-          `  ... and ${result.refWarnings.length - 5} more (use -v to see all)`,
-        ),
+        chalk.gray(`  ... and ${result.refWarnings.length - 5} more (use -v to see all)`),
       );
     }
   }
@@ -776,9 +682,7 @@ function formatValidationResult(
   // AC: @trait-edge-cases ac-2
   // Trait cycle errors
   if (result.traitCycleErrors.length > 0) {
-    console.log(
-      chalk.red(`\nTrait cycle errors: ${result.traitCycleErrors.length}`),
-    );
+    console.log(chalk.red(`\nTrait cycle errors: ${result.traitCycleErrors.length}`));
     for (const err of result.traitCycleErrors) {
       console.log(chalk.red(`  ✗ ${err.traitRef} - ${err.traitTitle}`));
       console.log(chalk.gray(`    ${err.message}`));
@@ -787,15 +691,11 @@ function formatValidationResult(
 
   // Orphans (warnings, not errors)
   if (result.orphans.length > 0) {
-    console.log(
-      chalk.yellow(`\nOrphans (not referenced): ${result.orphans.length}`),
-    );
+    console.log(chalk.yellow(`\nOrphans (not referenced): ${result.orphans.length}`));
     if (verbose) {
       for (const orphan of result.orphans) {
         console.log(
-          chalk.yellow(
-            `  ○ ${orphan.ulid.slice(0, 8)} [${orphan.type}] ${orphan.title}`,
-          ),
+          chalk.yellow(`  ○ ${orphan.ulid.slice(0, 8)} [${orphan.type}] ${orphan.title}`),
         );
       }
     } else {
@@ -803,17 +703,11 @@ function formatValidationResult(
       const shown = result.orphans.slice(0, 5);
       for (const orphan of shown) {
         console.log(
-          chalk.yellow(
-            `  ○ ${orphan.ulid.slice(0, 8)} [${orphan.type}] ${orphan.title}`,
-          ),
+          chalk.yellow(`  ○ ${orphan.ulid.slice(0, 8)} [${orphan.type}] ${orphan.title}`),
         );
       }
       if (result.orphans.length > 5) {
-        console.log(
-          chalk.gray(
-            `  ... and ${result.orphans.length - 5} more (use -v to see all)`,
-          ),
-        );
+        console.log(chalk.gray(`  ... and ${result.orphans.length - 5} more (use -v to see all)`));
       }
     }
   }
@@ -835,25 +729,13 @@ export function registerValidateCommand(program: Command): void {
       "Check spec completeness (missing AC, descriptions, status inconsistencies)",
     )
     .option("--conventions", "Validate conventions")
-    .option(
-      "--staleness",
-      "Check for stale status mismatches between specs and tasks",
-    )
+    .option("--staleness", "Check for stale status mismatches between specs and tasks")
     .option("--skills", "Validate skill files (.claude/skills/*/SKILL.md)")
-    .option(
-      "--drift",
-      "Check AC field references against actual schema (catches spec prose drift)",
-    )
-    .option(
-      "--fix",
-      "Auto-fix issues where possible (invalid ULIDs, missing timestamps)",
-    )
+    .option("--drift", "Check AC field references against actual schema (catches spec prose drift)")
+    .option("--fix", "Auto-fix issues where possible (invalid ULIDs, missing timestamps)")
     .option("-v, --verbose", "Show detailed output")
     .option("--strict", "Treat orphans and staleness warnings as errors")
-    .option(
-      "--warnings-ok",
-      "Return success exit code (0) when warnings are present but no errors",
-    )
+    .option("--warnings-ok", "Return success exit code (0) when warnings are present but no errors")
     .action(async (options) => {
       try {
         const ctx = await initContext();
@@ -939,7 +821,9 @@ export function registerValidateCommand(program: Command): void {
 
         // Run alignment check if requested or running all checks
         let alignmentWarnings: AlignmentWarning[] | undefined;
-        let alignmentStats: { specsWithTasks: number; totalSpecs: number; alignedSpecs: number } | undefined;
+        let alignmentStats:
+          | { specsWithTasks: number; totalSpecs: number; alignedSpecs: number }
+          | undefined;
         if (selectedChecks.alignment || runAll) {
           const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
           const items = await loadAllItems(ctx);
@@ -959,16 +843,13 @@ export function registerValidateCommand(program: Command): void {
           try {
             const metaCtx = await loadMetaContext(ctx);
             if (metaCtx && metaCtx.conventions.length > 0) {
-              conventionResult = validateConventions(
-                metaCtx.conventions,
-                {},
-              );
+              conventionResult = validateConventions(metaCtx.conventions, {});
 
               if (!conventionResult.valid) {
                 result.valid = false;
               }
             }
-          } catch (_err) {
+          } catch {
             // Convention loading failure is non-fatal
           }
         }
@@ -1063,10 +944,7 @@ export function registerValidateCommand(program: Command): void {
 
           // AC: @spec-completeness ac-4
           if (result.completenessWarnings.length > 0) {
-            formatCompletenessWarnings(
-              result.completenessWarnings,
-              options.verbose,
-            );
+            formatCompletenessWarnings(result.completenessWarnings, options.verbose);
           }
 
           // AC: @convention-definitions ac-3, ac-4
@@ -1074,9 +952,7 @@ export function registerValidateCommand(program: Command): void {
             if (conventionResult) {
               formatConventionValidationResult(conventionResult);
             } else {
-              console.log(
-                chalk.gray("No conventions defined in meta manifest"),
-              );
+              console.log(chalk.gray("No conventions defined in meta manifest"));
             }
           }
 
@@ -1137,16 +1013,10 @@ export function registerValidateCommand(program: Command): void {
       "--completeness",
       "Check spec completeness (missing AC, descriptions, status inconsistencies)",
     )
-    .option(
-      "--fix",
-      "Auto-fix issues where possible (invalid ULIDs, missing timestamps)",
-    )
+    .option("--fix", "Auto-fix issues where possible (invalid ULIDs, missing timestamps)")
     .option("-v, --verbose", "Show detailed output")
     .option("--strict", "Treat orphans as errors")
-    .option(
-      "--warnings-ok",
-      "Return success exit code (0) when warnings are present but no errors",
-    )
+    .option("--warnings-ok", "Return success exit code (0) when warnings are present but no errors")
     .action(async (options) => {
       try {
         const ctx = await initContext();

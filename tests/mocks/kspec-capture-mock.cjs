@@ -12,9 +12,9 @@
  *   (example: "task:block" or "task:note")
  */
 
-'use strict';
+"use strict";
 
-const fs = require('node:fs');
+const fs = require("node:fs");
 
 const captureFile = process.env.KSPEC_CAPTURE_FILE;
 const args = process.argv.slice(2);
@@ -22,7 +22,7 @@ const args = process.argv.slice(2);
 if (captureFile) {
   let calls = [];
   try {
-    calls = JSON.parse(fs.readFileSync(captureFile, 'utf-8'));
+    calls = JSON.parse(fs.readFileSync(captureFile, "utf-8"));
   } catch {
     // File doesn't exist yet
   }
@@ -32,7 +32,7 @@ if (captureFile) {
 
 const failOn = process.env.KSPEC_CAPTURE_FAIL_ON;
 if (failOn) {
-  const expected = failOn.split(':');
+  const expected = failOn.split(":");
   const matches = expected.every((part, index) => args[index] === part);
   if (matches) {
     process.stderr.write(`Forced failure for ${failOn}\n`);

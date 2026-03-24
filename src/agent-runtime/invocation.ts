@@ -370,7 +370,12 @@ function blockTask(
   env?: Record<string, string>,
   strict = false,
 ): void {
-  const result = runKspecCli(["task", "block", taskRef, "--reason", reason], cwd, kspecCliPath, env);
+  const result = runKspecCli(
+    ["task", "block", taskRef, "--reason", reason],
+    cwd,
+    kspecCliPath,
+    env,
+  );
   if (strict && result.status !== 0) {
     throw new DispatchMutationError(
       `Dispatch mutation failed while blocking ${taskRef}: ${result.stderr || result.stdout || "kspec task block exited non-zero"}`,
@@ -406,13 +411,15 @@ async function getConsecutiveFailureCount(
   agentId: string,
 ): Promise<number> {
   const sessionIds = await listSessions(sessionsDir);
-  const sessions = await Promise.all(sessionIds.map((sessionId) => getSession(sessionsDir, sessionId)));
+  const sessions = await Promise.all(
+    sessionIds.map((sessionId) => getSession(sessionsDir, sessionId)),
+  );
 
   const relevantSessions = sessions
     .filter((session): session is SessionMetadata => session !== null)
-    .filter((session) =>
-      session.task_id === taskRef &&
-      (session.agent_id ?? session.agent_type) === agentId,
+    .filter(
+      (session) =>
+        session.task_id === taskRef && (session.agent_id ?? session.agent_type) === agentId,
     )
     .map((session) => ({
       ...session,
@@ -420,7 +427,7 @@ async function getConsecutiveFailureCount(
       sortMs: new Date(session.ended_at ?? session.started_at).getTime(),
     }))
     .filter((session) => session.invocationOutcome !== null && Number.isFinite(session.sortMs))
-    .sort((a, b) => b.sortMs - a.sortMs);
+    .toSorted((a, b) => b.sortMs - a.sortMs);
 
   let consecutiveFailures = 0;
   for (const session of relevantSessions) {
@@ -505,10 +512,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
   const extraArgs = autoApprove ? (adapter.autoApproveArgs ?? []) : [];
 
   // Resolve timeout: option overrides agent budget (applies to total session duration)
-  const timeoutMinutes =
-    options.timeoutMinutes ??
-    agent.budget?.timeout_minutes ??
-    30;
+  const timeoutMinutes = options.timeoutMinutes ?? agent.budget?.timeout_minutes ?? 30;
   const timeoutMs = timeoutMinutes * 60 * 1000;
   // Keep ACP request timeout slightly above invocation timeout so the outer
   // lifecycle controls timeout behavior (cancel + timeout note), not framing.
@@ -636,9 +640,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       env: {
         ...env,
         KSPEC_SESSION_ID: sessionId,
-        ...(mutationLockFile
-          ? { KSPEC_SHADOW_MUTATION_LOCK_FILE: mutationLockFile }
-          : {}),
+        ...(mutationLockFile ? { KSPEC_SHADOW_MUTATION_LOCK_FILE: mutationLockFile } : {}),
       },
       extraArgs,
       clientOptions: {
@@ -744,8 +746,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
 
     // AC: @invocation-initial-activity-watchdog ac-1, ac-5
     const stallTimeoutSeconds =
-      agent.budget?.initial_response_timeout_seconds ??
-      DEFAULT_INITIAL_RESPONSE_TIMEOUT_SECONDS;
+      agent.budget?.initial_response_timeout_seconds ?? DEFAULT_INITIAL_RESPONSE_TIMEOUT_SECONDS;
     const stallPromise = new Promise<never>((_, reject) => {
       stallHandle = setTimeout(() => {
         if (!stallResolved) {
@@ -760,7 +761,9 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
           if (abortSignal.aborted) {
             reject(new InvocationAbortedError());
           } else {
-            abortSignal.addEventListener("abort", () => reject(new InvocationAbortedError()), { once: true });
+            abortSignal.addEventListener("abort", () => reject(new InvocationAbortedError()), {
+              once: true,
+            });
           }
         })
       : null;
@@ -784,7 +787,10 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
           prompt: [{ type: "text", text: currentPromptText }],
         });
 
-        const racers: Array<Promise<{ stopReason: string } | never>> = [promptPromise, timeoutPromise];
+        const racers: Array<Promise<{ stopReason: string } | never>> = [
+          promptPromise,
+          timeoutPromise,
+        ];
         // Stall watchdog only applies to the first turn
         if (turnCount === 0) {
           racers.push(stallPromise);
@@ -908,7 +914,10 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
 
         // Race the prompt queue against the session timeout, idle timeout, and abort
         const nextPromptPromise = promptQueue.waitForPrompt();
-        const idleRacers: Array<Promise<string | null | never>> = [nextPromptPromise, timeoutPromise as Promise<never>];
+        const idleRacers: Array<Promise<string | null | never>> = [
+          nextPromptPromise,
+          timeoutPromise as Promise<never>,
+        ];
         if (idleTimeoutPromise) idleRacers.push(idleTimeoutPromise);
         if (abortPromise) idleRacers.push(abortPromise as Promise<never>);
 
@@ -963,7 +972,12 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
 
     // ─── Close session as completed ───────────────────────────────────────
     const sessionCloseReason = closeReason ?? "Invocation completed normally";
-    const finalSession = await closeSession(sessionsDir, sessionId, "completed", sessionCloseReason);
+    const finalSession = await closeSession(
+      sessionsDir,
+      sessionId,
+      "completed",
+      sessionCloseReason,
+    );
 
     return {
       session: finalSession ?? session,
@@ -1011,7 +1025,12 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
         },
       });
 
-      const finalSession = await closeSession(sessionsDir, sessionId, "timed_out", `Timeout after ${timeoutMinutes} minutes`);
+      const finalSession = await closeSession(
+        sessionsDir,
+        sessionId,
+        "timed_out",
+        `Timeout after ${timeoutMinutes} minutes`,
+      );
 
       // Add timeout note to task (only when a task is bound)
       if (taskRef) {
@@ -1020,9 +1039,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
           `[AGENT-TIMEOUT] Invocation timed out after ${timeoutMinutes} minutes`,
           cwd,
           kspecCliPath,
-          mutationLockFile
-            ? { KSPEC_SHADOW_MUTATION_LOCK_FILE: mutationLockFile }
-            : undefined,
+          mutationLockFile ? { KSPEC_SHADOW_MUTATION_LOCK_FILE: mutationLockFile } : undefined,
           Boolean(mutationLockFile),
         );
       }
@@ -1047,7 +1064,12 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
         // Best-effort cancel
       }
 
-      const finalSession = await closeSession(sessionsDir, sessionId, "failed", "Invocation aborted by shutdown");
+      const finalSession = await closeSession(
+        sessionsDir,
+        sessionId,
+        "failed",
+        "Invocation aborted by shutdown",
+      );
 
       return {
         session: finalSession ?? session,
@@ -1153,7 +1175,12 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       },
     });
 
-    const finalSession = await closeSession(sessionsDir, sessionId, "failed", `Invocation failed: ${errorMessage}`);
+    const finalSession = await closeSession(
+      sessionsDir,
+      sessionId,
+      "failed",
+      `Invocation failed: ${errorMessage}`,
+    );
 
     // Add failure note to task and check retry threshold (only when a task is bound)
     if (taskRef) {
@@ -1162,9 +1189,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
         `[AGENT-FAIL] Invocation failed: ${errorMessage}`,
         cwd,
         kspecCliPath,
-        mutationLockFile
-          ? { KSPEC_SHADOW_MUTATION_LOCK_FILE: mutationLockFile }
-          : undefined,
+        mutationLockFile ? { KSPEC_SHADOW_MUTATION_LOCK_FILE: mutationLockFile } : undefined,
         Boolean(mutationLockFile),
       );
 
@@ -1179,9 +1204,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
           `Agent ${agent.id} failed ${consecutiveFailures} consecutive times: ${errorMessage}`,
           cwd,
           kspecCliPath,
-          mutationLockFile
-            ? { KSPEC_SHADOW_MUTATION_LOCK_FILE: mutationLockFile }
-            : undefined,
+          mutationLockFile ? { KSPEC_SHADOW_MUTATION_LOCK_FILE: mutationLockFile } : undefined,
           Boolean(mutationLockFile),
         );
       }

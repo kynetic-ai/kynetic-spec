@@ -60,7 +60,7 @@ describe("batch commands", () => {
       // Should not list 'batch' or 'batch commands'
       const lines = result.stdout.split("\n");
       const batchLines = lines.filter(
-        (l) => l.trim().startsWith("batch ") && !l.includes("Batch-Allowed")
+        (l) => l.trim().startsWith("batch ") && !l.includes("Batch-Allowed"),
       );
       expect(batchLines).toHaveLength(0);
     });
@@ -153,7 +153,7 @@ describe("batch commands", () => {
       // Dry-run a valid mutating command
       const result = kspec(
         'batch --dry-run --commands \'[{"command":"inbox add","args":{"text":"test"}}]\'',
-        tempDir
+        tempDir,
       );
       expect(result.exitCode).toBe(0);
       expect(result.stdout).toContain("succeeded");
@@ -252,7 +252,7 @@ describe("batch commands", () => {
       const result = kspec(
         'batch --dry-run --commands \'[{"command":"batch commands","args":{}}]\'',
         tempDir,
-        { expectFail: true }
+        { expectFail: true },
       );
       expect(result.exitCode).not.toBe(0);
       // Should get specific nested-batch rejection, not generic mutating-only error
@@ -265,7 +265,7 @@ describe("batch commands", () => {
       const result = kspec(
         'batch --dry-run --commands \'[{"command":"batch","args":{}}]\'',
         tempDir,
-        { expectFail: true }
+        { expectFail: true },
       );
       expect(result.exitCode).not.toBe(0);
       expect(result.stdout + result.stderr).toContain("is a command group");

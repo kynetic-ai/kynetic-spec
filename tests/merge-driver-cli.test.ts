@@ -13,7 +13,7 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import * as os from "node:os";
-import { kspec, type KspecResult } from "./helpers/cli.js";
+import { kspec } from "./helpers/cli.js";
 
 describe("merge-driver CLI", () => {
   let tempDir: string;
@@ -73,10 +73,7 @@ tasks:
     );
 
     // Run merge driver
-    const result = kspec(
-      `merge-driver ${baseFile} ${oursFile} ${theirsFile}`,
-      tempDir,
-    );
+    const result = kspec(`merge-driver ${baseFile} ${oursFile} ${theirsFile}`, tempDir);
 
     // Should exit with code 0 (clean merge, no conflicts)
     expect(result.exitCode).toBe(0);
@@ -95,15 +92,9 @@ tasks:
     // Simple non-conflicting merge
     await fs.writeFile(baseFile, "kynetic: '1.0'\nfield: base");
     await fs.writeFile(oursFile, "kynetic: '1.0'\nfield: base\nadded_ours: ours");
-    await fs.writeFile(
-      theirsFile,
-      "kynetic: '1.0'\nfield: base\nadded_theirs: theirs",
-    );
+    await fs.writeFile(theirsFile, "kynetic: '1.0'\nfield: base\nadded_theirs: theirs");
 
-    const result = kspec(
-      `merge-driver ${baseFile} ${oursFile} ${theirsFile}`,
-      tempDir,
-    );
+    const result = kspec(`merge-driver ${baseFile} ${oursFile} ${theirsFile}`, tempDir);
 
     expect(result.exitCode).toBe(0);
     expect(result.stderr).toContain("Merged successfully");
@@ -217,11 +208,9 @@ tasks:
     await fs.writeFile(oursFile, "kynetic: '1.0'");
     await fs.writeFile(theirsFile, "kynetic: '1.0'");
 
-    const result = kspec(
-      `merge-driver ${baseFile} ${oursFile} ${theirsFile}`,
-      tempDir,
-      { expectFail: true },
-    );
+    const result = kspec(`merge-driver ${baseFile} ${oursFile} ${theirsFile}`, tempDir, {
+      expectFail: true,
+    });
 
     // Should exit with error code
     expect(result.exitCode).not.toBe(0);
@@ -330,10 +319,7 @@ tasks:
 `,
     );
 
-    const result = kspec(
-      `merge-driver ${baseFile} ${oursFile} ${theirsFile}`,
-      tempDir,
-    );
+    const result = kspec(`merge-driver ${baseFile} ${oursFile} ${theirsFile}`, tempDir);
 
     expect(result.exitCode).toBe(0);
 
@@ -349,24 +335,33 @@ tasks:
   // AC: @merge-file-detection ac-7
   describe("root-level array handling", () => {
     it("should merge root-level task arrays", async () => {
-      await fs.writeFile(baseFile, `- _ulid: 01TASK0000000000000000000
+      await fs.writeFile(
+        baseFile,
+        `- _ulid: 01TASK0000000000000000000
   title: Original task
   status: pending
-`);
-      await fs.writeFile(oursFile, `- _ulid: 01TASK0000000000000000000
+`,
+      );
+      await fs.writeFile(
+        oursFile,
+        `- _ulid: 01TASK0000000000000000000
   title: Original task
   status: pending
 - _ulid: 01OURS0000000000000000000
   title: Ours task
   status: pending
-`);
-      await fs.writeFile(theirsFile, `- _ulid: 01TASK0000000000000000000
+`,
+      );
+      await fs.writeFile(
+        theirsFile,
+        `- _ulid: 01TASK0000000000000000000
   title: Original task
   status: pending
 - _ulid: 01THRS0000000000000000000
   title: Theirs task
   status: pending
-`);
+`,
+      );
 
       const result = kspec(`merge-driver ${baseFile} ${oursFile} ${theirsFile}`, tempDir);
       expect(result.exitCode).toBe(0);
@@ -380,12 +375,18 @@ tasks:
 
     it("should handle empty base with root-level array additions", async () => {
       await fs.writeFile(baseFile, "[]");
-      await fs.writeFile(oursFile, `- _ulid: 01OURS0000000000000000000
+      await fs.writeFile(
+        oursFile,
+        `- _ulid: 01OURS0000000000000000000
   title: Ours task
-`);
-      await fs.writeFile(theirsFile, `- _ulid: 01THRS0000000000000000000
+`,
+      );
+      await fs.writeFile(
+        theirsFile,
+        `- _ulid: 01THRS0000000000000000000
   title: Theirs task
-`);
+`,
+      );
 
       const result = kspec(`merge-driver ${baseFile} ${oursFile} ${theirsFile}`, tempDir);
       expect(result.exitCode).toBe(0);
@@ -396,18 +397,27 @@ tasks:
     });
 
     it("should detect field conflicts within root-level array items", async () => {
-      await fs.writeFile(baseFile, `- _ulid: 01TASK0000000000000000000
+      await fs.writeFile(
+        baseFile,
+        `- _ulid: 01TASK0000000000000000000
   title: Original
   status: pending
-`);
-      await fs.writeFile(oursFile, `- _ulid: 01TASK0000000000000000000
+`,
+      );
+      await fs.writeFile(
+        oursFile,
+        `- _ulid: 01TASK0000000000000000000
   title: Ours title
   status: pending
-`);
-      await fs.writeFile(theirsFile, `- _ulid: 01TASK0000000000000000000
+`,
+      );
+      await fs.writeFile(
+        theirsFile,
+        `- _ulid: 01TASK0000000000000000000
   title: Theirs title
   status: pending
-`);
+`,
+      );
 
       const result = kspec(
         `merge-driver ${baseFile} ${oursFile} ${theirsFile} --non-interactive`,
@@ -423,17 +433,26 @@ tasks:
     });
 
     it("should handle root array with non-conflicting field additions", async () => {
-      await fs.writeFile(baseFile, `- _ulid: 01TASK0000000000000000000
+      await fs.writeFile(
+        baseFile,
+        `- _ulid: 01TASK0000000000000000000
   title: Task
-`);
-      await fs.writeFile(oursFile, `- _ulid: 01TASK0000000000000000000
+`,
+      );
+      await fs.writeFile(
+        oursFile,
+        `- _ulid: 01TASK0000000000000000000
   title: Task
   status: in_progress
-`);
-      await fs.writeFile(theirsFile, `- _ulid: 01TASK0000000000000000000
+`,
+      );
+      await fs.writeFile(
+        theirsFile,
+        `- _ulid: 01TASK0000000000000000000
   title: Task
   priority: 2
-`);
+`,
+      );
 
       const result = kspec(`merge-driver ${baseFile} ${oursFile} ${theirsFile}`, tempDir);
       expect(result.exitCode).toBe(0);

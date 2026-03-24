@@ -17,9 +17,7 @@ import {
  * Creates the necessary directory structure for per-task storage.
  * Returns the env overrides needed for CLI commands.
  */
-async function setupSplitEnv(
-  tempDir: string,
-): Promise<{ env: Record<string, string> }> {
+async function setupSplitEnv(tempDir: string): Promise<{ env: Record<string, string> }> {
   initGitRepo(tempDir);
 
   const specDir = path.join(tempDir, ".kspec");
@@ -35,10 +33,7 @@ async function setupSplitEnv(
   await fs.mkdir(path.join(specDir, "tasks"), { recursive: true });
 
   // Write an empty index file
-  await fs.writeFile(
-    path.join(specDir, "project.tasks.yaml"),
-    toYaml([]),
-  );
+  await fs.writeFile(path.join(specDir, "project.tasks.yaml"), toYaml([]));
 
   return { env: { KSPEC_SPEC_DIR: specDir } };
 }
@@ -72,10 +67,7 @@ async function createTaskDir(
 
   await fs.writeFile(path.join(taskDir, "task.yaml"), toYaml(coreData));
 
-  await fs.writeFile(
-    path.join(taskDir, "notes.yaml"),
-    toYaml({ notes: [] }),
-  );
+  await fs.writeFile(path.join(taskDir, "notes.yaml"), toYaml({ notes: [] }));
 }
 
 /**
@@ -299,7 +291,7 @@ describe("kspec task rebuild-index", () => {
 
     const result = kspec("task rebuild-index --dry-run", tempDir, { env });
     expect(result.exitCode).toBe(0);
-    const combined = result.stdout + " " + result.stderr;
+    const combined = `${result.stdout} ${result.stderr}`;
     expect(combined).toMatch(/DRY RUN/i);
     expect(combined).toContain("Added");
     expect(combined).toContain("task-dry-preview");
@@ -337,7 +329,7 @@ describe("kspec task rebuild-index", () => {
 
     const result = kspec("task rebuild-index --dry-run", tempDir, { env });
     expect(result.exitCode).toBe(0);
-    expect(result.stdout + " " + result.stderr).toMatch(/DRY RUN/i);
+    expect(`${result.stdout} ${result.stderr}`).toMatch(/DRY RUN/i);
   });
 
   // AC: @trait-dry-run ac-3
@@ -349,7 +341,7 @@ describe("kspec task rebuild-index", () => {
 
     const result = kspec("task rebuild-index --dry-run", tempDir, { env });
     expect(result.exitCode).toBe(0);
-    expect(result.stdout + " " + result.stderr).toMatch(/DRY RUN/i);
+    expect(`${result.stdout} ${result.stderr}`).toMatch(/DRY RUN/i);
     expect(result.stdout).toContain("up to date");
   });
 
@@ -395,7 +387,7 @@ describe("kspec task rebuild-index", () => {
       env,
     });
     expect(result.exitCode).toBe(0);
-    expect(result.stdout + " " + result.stderr).toMatch(/DRY RUN/i);
+    expect(`${result.stdout} ${result.stderr}`).toMatch(/DRY RUN/i);
 
     // Index should not have been modified
     const indexAfter = await fs.readFile(indexPath, "utf-8");

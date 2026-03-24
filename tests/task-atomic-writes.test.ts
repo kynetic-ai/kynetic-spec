@@ -12,9 +12,7 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import {
-  TaskDataManager,
-} from "../src/parser/task-data-manager.js";
+import { TaskDataManager } from "../src/parser/task-data-manager.js";
 import {
   ensureSplitBackendRegistered,
   getTaskDir,
@@ -22,10 +20,7 @@ import {
   getNotesFilePath,
   getIndexFilePath,
 } from "../src/parser/split-backend.js";
-import {
-  getActiveBatchBuffer,
-  runWithBatchBuffer,
-} from "../src/cli/batch-write-buffer.js";
+import { getActiveBatchBuffer, runWithBatchBuffer } from "../src/cli/batch-write-buffer.js";
 
 // Register the split backend (no longer auto-registered at module scope)
 ensureSplitBackendRegistered();
@@ -36,7 +31,7 @@ import {
   cleanupTempDir,
   createTempDir,
   initGitRepo,
-  testUlid,
+  readTestOutput,
   testUlids,
 } from "./helpers/cli.js";
 
@@ -57,10 +52,7 @@ async function setupSplitFixture(tempDir: string): Promise<KspecContext> {
   const tasksDir = path.join(specDir, "tasks");
   await fs.mkdir(tasksDir, { recursive: true });
 
-  await fs.writeFile(
-    path.join(specDir, "project.tasks.yaml"),
-    toYaml([]),
-  );
+  await fs.writeFile(path.join(specDir, "project.tasks.yaml"), toYaml([]));
 
   const ctx: KspecContext = {
     rootDir: tempDir,
@@ -83,7 +75,10 @@ async function createSplitTask(
   ctx: KspecContext,
   ulid: string,
   slug: string,
-  options: { status?: string; notes?: Array<{ _ulid: string; content: string; created_at: string }> } = {},
+  options: {
+    status?: string;
+    notes?: Array<{ _ulid: string; content: string; created_at: string }>;
+  } = {},
 ): Promise<void> {
   const taskDir = path.join(ctx.specDir, "tasks", ulid);
   await fs.mkdir(taskDir, { recursive: true });
@@ -110,7 +105,7 @@ async function createSplitTask(
   const indexPath = getIndexFilePath(ctx);
   let indexTasks: unknown[] = [];
   try {
-    const indexContent = await fs.readFile(indexPath, "utf-8");
+    const indexContent = await readTestOutput(indexPath, "utf-8");
     const { parse } = await import("yaml");
     const parsed = parse(indexContent);
     if (Array.isArray(parsed)) {
@@ -181,7 +176,7 @@ describe("Atomic Multi-File Task Writes", () => {
       const notesStat = await fs.stat(notesFilePath);
       expect(notesStat.isFile()).toBe(true);
 
-      const indexContent = await fs.readFile(indexPath, "utf-8");
+      const indexContent = await readTestOutput(indexPath, "utf-8");
       expect(indexContent).toContain(created._ulid);
 
       // No buffer should be active after the operation completes
@@ -193,19 +188,19 @@ describe("Atomic Multi-File Task Writes", () => {
       const [ulid] = testUlids("ATWR", 1);
       await createSplitTask(ctx, ulid, "atomic-mutate-test");
 
-      const updated = await manager.mutateTask(
-        ctx,
-        `@${ulid}`,
-        (task) => ({ ...task, status: "in_progress", started_at: "2026-03-20T12:00:00.000Z" }),
-      );
+      const updated = await manager.mutateTask(ctx, `@${ulid}`, (task) => ({
+        ...task,
+        status: "in_progress",
+        started_at: "2026-03-20T12:00:00.000Z",
+      }));
 
       expect(updated.status).toBe("in_progress");
 
       // Verify both files were updated on disk
-      const taskContent = await fs.readFile(getTaskFilePath(ctx, ulid), "utf-8");
+      const taskContent = await readTestOutput(getTaskFilePath(ctx, ulid), "utf-8");
       expect(taskContent).toContain("in_progress");
 
-      const indexContent = await fs.readFile(getIndexFilePath(ctx), "utf-8");
+      const indexContent = await readTestOutput(getIndexFilePath(ctx), "utf-8");
       expect(indexContent).toContain("in_progress");
 
       // No buffer should be active after the operation completes
@@ -224,7 +219,7 @@ describe("Atomic Multi-File Task Writes", () => {
       await manager.deleteTask(ctx, `@${ulid}`);
 
       // Verify index no longer contains the task
-      const indexContent = await fs.readFile(getIndexFilePath(ctx), "utf-8");
+      const indexContent = await readTestOutput(getIndexFilePath(ctx), "utf-8");
       expect(indexContent).not.toContain(ulid);
 
       // Verify the task directory was removed
@@ -241,15 +236,11 @@ describe("Atomic Multi-File Task Writes", () => {
 
       let bufferWasActive = false;
 
-      await manager.mutateTask(
-        ctx,
-        `@${ulid}`,
-        (task) => {
-          // Inside the mutation callback, the manager's buffer should be active
-          bufferWasActive = getActiveBatchBuffer() !== null;
-          return { ...task, title: "Updated via buffer" };
-        },
-      );
+      await manager.mutateTask(ctx, `@${ulid}`, (task) => {
+        // Inside the mutation callback, the manager's buffer should be active
+        bufferWasActive = getActiveBatchBuffer() !== null;
+        return { ...task, title: "Updated via buffer" };
+      });
 
       expect(bufferWasActive).toBe(true);
 
@@ -269,23 +260,19 @@ describe("Atomic Multi-File Task Writes", () => {
       await createSplitTask(ctx, ulid, "rollback-test");
 
       // Snapshot the state before the failed mutation
-      const indexBefore = await fs.readFile(getIndexFilePath(ctx), "utf-8");
-      const taskBefore = await fs.readFile(getTaskFilePath(ctx, ulid), "utf-8");
+      const indexBefore = await readTestOutput(getIndexFilePath(ctx), "utf-8");
+      const taskBefore = await readTestOutput(getTaskFilePath(ctx, ulid), "utf-8");
 
       // Mutation that throws after modifying the task
       await expect(
-        manager.mutateTask(
-          ctx,
-          `@${ulid}`,
-          (_task) => {
-            throw new Error("Simulated mutation failure");
-          },
-        ),
+        manager.mutateTask(ctx, `@${ulid}`, (_task) => {
+          throw new Error("Simulated mutation failure");
+        }),
       ).rejects.toThrow("Simulated mutation failure");
 
       // Verify files are unchanged — the buffer was discarded
-      const indexAfter = await fs.readFile(getIndexFilePath(ctx), "utf-8");
-      const taskAfter = await fs.readFile(getTaskFilePath(ctx, ulid), "utf-8");
+      const indexAfter = await readTestOutput(getIndexFilePath(ctx), "utf-8");
+      const taskAfter = await readTestOutput(getTaskFilePath(ctx, ulid), "utf-8");
 
       expect(indexAfter).toBe(indexBefore);
       expect(taskAfter).toBe(taskBefore);
@@ -300,14 +287,15 @@ describe("Atomic Multi-File Task Writes", () => {
       await createSplitTask(ctx, ulid, "delete-rollback-test");
 
       // Snapshot state before the failed deletion
-      const indexBefore = await fs.readFile(getIndexFilePath(ctx), "utf-8");
+      const indexBefore = await readTestOutput(getIndexFilePath(ctx), "utf-8");
       const taskDir = getTaskDir(ctx, ulid);
-      const taskBefore = await fs.readFile(getTaskFilePath(ctx, ulid), "utf-8");
+      const taskBefore = await readTestOutput(getTaskFilePath(ctx, ulid), "utf-8");
 
       // Monkey-patch the manager to inject a failure after the backend
       // queues deletions but before flush completes. We do this by
       // activating a buffer that will throw on flush.
-      const realFlush = (await import("../src/cli/batch-write-buffer.js")).WriteBuffer.prototype.flush;
+      const _realFlush = (await import("../src/cli/batch-write-buffer.js")).WriteBuffer.prototype
+        .flush;
       const { WriteBuffer } = await import("../src/cli/batch-write-buffer.js");
       const originalFlush = WriteBuffer.prototype.flush;
       WriteBuffer.prototype.flush = async function () {
@@ -317,9 +305,9 @@ describe("Atomic Multi-File Task Writes", () => {
       };
 
       try {
-        await expect(
-          manager.deleteTask(ctx, `@${ulid}`),
-        ).rejects.toThrow("Simulated flush failure");
+        await expect(manager.deleteTask(ctx, `@${ulid}`)).rejects.toThrow(
+          "Simulated flush failure",
+        );
       } finally {
         WriteBuffer.prototype.flush = originalFlush;
       }
@@ -328,11 +316,11 @@ describe("Atomic Multi-File Task Writes", () => {
       await expect(fs.stat(taskDir)).resolves.toBeTruthy();
 
       // Task files should be unchanged
-      const taskAfter = await fs.readFile(getTaskFilePath(ctx, ulid), "utf-8");
+      const taskAfter = await readTestOutput(getTaskFilePath(ctx, ulid), "utf-8");
       expect(taskAfter).toBe(taskBefore);
 
       // Index should be unchanged
-      const indexAfter = await fs.readFile(getIndexFilePath(ctx), "utf-8");
+      const indexAfter = await readTestOutput(getIndexFilePath(ctx), "utf-8");
       expect(indexAfter).toBe(indexBefore);
 
       // Buffer should be cleaned up
@@ -345,8 +333,8 @@ describe("Atomic Multi-File Task Writes", () => {
       await createSplitTask(ctx, ulid, "index-fail-test");
 
       // Snapshot state before
-      const indexBefore = await fs.readFile(getIndexFilePath(ctx), "utf-8");
-      const taskBefore = await fs.readFile(getTaskFilePath(ctx, ulid), "utf-8");
+      const indexBefore = await readTestOutput(getIndexFilePath(ctx), "utf-8");
+      const taskBefore = await readTestOutput(getTaskFilePath(ctx, ulid), "utf-8");
 
       // Monkey-patch writeYamlFile to throw only when writing the index file
       const yamlModule = await import("../src/parser/yaml.js");
@@ -363,15 +351,11 @@ describe("Atomic Multi-File Task Writes", () => {
 
       try {
         await expect(
-          manager.mutateTask(
-            ctx,
-            `@${ulid}`,
-            (task) => ({
-              ...task,
-              status: "in_progress",
-              started_at: "2026-03-20T12:00:00.000Z",
-            }),
-          ),
+          manager.mutateTask(ctx, `@${ulid}`, (task) => ({
+            ...task,
+            status: "in_progress",
+            started_at: "2026-03-20T12:00:00.000Z",
+          })),
         ).rejects.toThrow("Simulated index write failure");
       } finally {
         vi.restoreAllMocks();
@@ -379,11 +363,11 @@ describe("Atomic Multi-File Task Writes", () => {
 
       // Per-task files should be unchanged — the buffer was discarded
       // because the index write (inside the buffer) threw
-      const taskAfter = await fs.readFile(getTaskFilePath(ctx, ulid), "utf-8");
+      const taskAfter = await readTestOutput(getTaskFilePath(ctx, ulid), "utf-8");
       expect(taskAfter).toBe(taskBefore);
 
       // Index should also be unchanged
-      const indexAfter = await fs.readFile(getIndexFilePath(ctx), "utf-8");
+      const indexAfter = await readTestOutput(getIndexFilePath(ctx), "utf-8");
       expect(indexAfter).toBe(indexBefore);
 
       // Buffer should be cleaned up
@@ -394,7 +378,7 @@ describe("Atomic Multi-File Task Writes", () => {
     it("createTask failure does not leave partial files on disk", async () => {
       // Create a conflicting task directory to prevent task creation from
       // being fully processed — we rely on Zod validation failure instead
-      const indexBefore = await fs.readFile(getIndexFilePath(ctx), "utf-8");
+      const indexBefore = await readTestOutput(getIndexFilePath(ctx), "utf-8");
 
       await expect(
         manager.createTask(ctx, {
@@ -403,7 +387,7 @@ describe("Atomic Multi-File Task Writes", () => {
       ).rejects.toThrow();
 
       // Index should be unchanged
-      const indexAfter = await fs.readFile(getIndexFilePath(ctx), "utf-8");
+      const indexAfter = await readTestOutput(getIndexFilePath(ctx), "utf-8");
       expect(indexAfter).toBe(indexBefore);
 
       // Buffer should be cleaned up after failure
@@ -423,10 +407,8 @@ describe("Atomic Multi-File Task Writes", () => {
       await createSplitTask(ctx, ulid1, "batch-task-1");
       await createSplitTask(ctx, ulid2, "batch-task-2");
 
-      const updated = await manager.mutateTasks(
-        ctx,
-        [`@${ulid1}`, `@${ulid2}`],
-        (tasks) => tasks.map((t) => ({
+      const updated = await manager.mutateTasks(ctx, [`@${ulid1}`, `@${ulid2}`], (tasks) =>
+        tasks.map((t) => ({
           ...t,
           status: "in_progress",
           started_at: "2026-03-20T12:00:00.000Z",
@@ -438,9 +420,9 @@ describe("Atomic Multi-File Task Writes", () => {
       expect(updated[1].status).toBe("in_progress");
 
       // Verify both per-task files and index were updated
-      const task1Content = await fs.readFile(getTaskFilePath(ctx, ulid1), "utf-8");
-      const task2Content = await fs.readFile(getTaskFilePath(ctx, ulid2), "utf-8");
-      const indexContent = await fs.readFile(getIndexFilePath(ctx), "utf-8");
+      const task1Content = await readTestOutput(getTaskFilePath(ctx, ulid1), "utf-8");
+      const task2Content = await readTestOutput(getTaskFilePath(ctx, ulid2), "utf-8");
+      const indexContent = await readTestOutput(getIndexFilePath(ctx), "utf-8");
 
       expect(task1Content).toContain("in_progress");
       expect(task2Content).toContain("in_progress");
@@ -459,14 +441,10 @@ describe("Atomic Multi-File Task Writes", () => {
       await runWithBatchBuffer(ctx.specDir, async (batchBuffer) => {
         let bufferDuringMutation: ReturnType<typeof getActiveBatchBuffer> = null;
 
-        await manager.mutateTask(
-          ctx,
-          `@${ulid}`,
-          (task) => {
-            bufferDuringMutation = getActiveBatchBuffer();
-            return { ...task, title: "Updated in batch" };
-          },
-        );
+        await manager.mutateTask(ctx, `@${ulid}`, (task) => {
+          bufferDuringMutation = getActiveBatchBuffer();
+          return { ...task, title: "Updated in batch" };
+        });
 
         // The same batch buffer should have been used (not a new one)
         expect(bufferDuringMutation).toBe(batchBuffer);
@@ -482,7 +460,7 @@ describe("Atomic Multi-File Task Writes", () => {
       });
 
       // Now verify files are on disk
-      const taskContent = await fs.readFile(getTaskFilePath(ctx, ulid), "utf-8");
+      const taskContent = await readTestOutput(getTaskFilePath(ctx, ulid), "utf-8");
       expect(taskContent).toContain("Updated in batch");
     });
 
@@ -498,12 +476,10 @@ describe("Atomic Multi-File Task Writes", () => {
       try {
         // Simulate batch-exec scenario: run within a parent buffer scope
         await runWithBatchBuffer(ctx.specDir, async (batchBuffer) => {
-          await manager.mutateTask(
-            ctx,
-            `@${ulid}`,
-            (task) => ({ ...task, priority: 1 }),
-            { operation: "test-nested-commit", ref: `@${ulid}` },
-          );
+          await manager.mutateTask(ctx, `@${ulid}`, (task) => ({ ...task, priority: 1 }), {
+            operation: "test-nested-commit",
+            ref: `@${ulid}`,
+          });
 
           // commitIfShadow must NOT be called — the parent buffer hasn't
           // flushed yet, so disk state is stale. The parent (batch-exec)
@@ -540,22 +516,23 @@ describe("Atomic Multi-File Task Writes", () => {
       const updated = await manager.mutateTasks(
         ctx,
         [`@${ulid1}`, `@${ulid2}`, `@${ulid3}`],
-        (tasks) => tasks.map((t) => ({
-          ...t,
-          status: "cancelled",
-        })),
+        (tasks) =>
+          tasks.map((t) => ({
+            ...t,
+            status: "cancelled",
+          })),
       );
 
       expect(updated).toHaveLength(3);
 
       // Verify all three per-task files were updated
       for (const ulid of [ulid1, ulid2, ulid3]) {
-        const taskContent = await fs.readFile(getTaskFilePath(ctx, ulid), "utf-8");
+        const taskContent = await readTestOutput(getTaskFilePath(ctx, ulid), "utf-8");
         expect(taskContent).toContain("cancelled");
       }
 
       // Verify index was updated for all three tasks
-      const indexContent = await fs.readFile(getIndexFilePath(ctx), "utf-8");
+      const indexContent = await readTestOutput(getIndexFilePath(ctx), "utf-8");
       const { parse } = await import("yaml");
       const indexTasks = parse(indexContent) as Array<{ _ulid: string; status: string }>;
 
@@ -575,24 +552,20 @@ describe("Atomic Multi-File Task Writes", () => {
       await createSplitTask(ctx, ulid2, "multi-fail-2");
 
       // Snapshot state before
-      const index1Before = await fs.readFile(getIndexFilePath(ctx), "utf-8");
-      const task1Before = await fs.readFile(getTaskFilePath(ctx, ulid1), "utf-8");
-      const task2Before = await fs.readFile(getTaskFilePath(ctx, ulid2), "utf-8");
+      const index1Before = await readTestOutput(getIndexFilePath(ctx), "utf-8");
+      const task1Before = await readTestOutput(getTaskFilePath(ctx, ulid1), "utf-8");
+      const task2Before = await readTestOutput(getTaskFilePath(ctx, ulid2), "utf-8");
 
       await expect(
-        manager.mutateTasks(
-          ctx,
-          [`@${ulid1}`, `@${ulid2}`],
-          (_tasks) => {
-            throw new Error("Simulated batch failure");
-          },
-        ),
+        manager.mutateTasks(ctx, [`@${ulid1}`, `@${ulid2}`], (_tasks) => {
+          throw new Error("Simulated batch failure");
+        }),
       ).rejects.toThrow("Simulated batch failure");
 
       // All files should be unchanged — nothing persisted
-      const indexAfter = await fs.readFile(getIndexFilePath(ctx), "utf-8");
-      const task1After = await fs.readFile(getTaskFilePath(ctx, ulid1), "utf-8");
-      const task2After = await fs.readFile(getTaskFilePath(ctx, ulid2), "utf-8");
+      const indexAfter = await readTestOutput(getIndexFilePath(ctx), "utf-8");
+      const task1After = await readTestOutput(getTaskFilePath(ctx, ulid1), "utf-8");
+      const task2After = await readTestOutput(getTaskFilePath(ctx, ulid2), "utf-8");
 
       expect(indexAfter).toBe(index1Before);
       expect(task1After).toBe(task1Before);
@@ -622,11 +595,11 @@ describe("Atomic Multi-File Task Writes", () => {
       expect(note.content).toBe("Test note content");
 
       // Verify notes file was updated on disk
-      const notesContent = await fs.readFile(getNotesFilePath(ctx, ulid), "utf-8");
+      const notesContent = await readTestOutput(getNotesFilePath(ctx, ulid), "utf-8");
       expect(notesContent).toContain("Test note content");
 
       // Verify index updated with notes_count
-      const indexContent = await fs.readFile(getIndexFilePath(ctx), "utf-8");
+      const indexContent = await readTestOutput(getIndexFilePath(ctx), "utf-8");
       expect(indexContent).toContain("notes_count: 1");
 
       // No buffer should remain active
@@ -648,22 +621,14 @@ describe("Atomic Multi-File Task Writes", () => {
       await createSplitTask(ctx, ulidB, "concurrent-b", { status: "pending" });
 
       // Mutation A: will throw after a short delay
-      const mutationA = manager.mutateTask(
-        ctx,
-        `@${ulidA}`,
-        async (task) => {
-          // Yield to let mutation B start concurrently
-          await new Promise((r) => setTimeout(r, 10));
-          throw new Error("Simulated failure in mutation A");
-        },
-      );
+      const mutationA = manager.mutateTask(ctx, `@${ulidA}`, async (_task) => {
+        // Yield to let mutation B start concurrently
+        await new Promise((r) => setTimeout(r, 10));
+        throw new Error("Simulated failure in mutation A");
+      });
 
       // Mutation B: succeeds immediately
-      const mutationB = manager.mutateTask(
-        ctx,
-        `@${ulidB}`,
-        (task) => ({ ...task, priority: 1 }),
-      );
+      const mutationB = manager.mutateTask(ctx, `@${ulidB}`, (task) => ({ ...task, priority: 1 }));
 
       // Both run concurrently; A should fail, B should succeed
       const results = await Promise.allSettled([mutationA, mutationB]);
@@ -672,11 +637,11 @@ describe("Atomic Multi-File Task Writes", () => {
       expect(results[1].status).toBe("fulfilled");
 
       // B's writes should be persisted — NOT discarded by A's failure
-      const taskBContent = await fs.readFile(getTaskFilePath(ctx, ulidB), "utf-8");
+      const taskBContent = await readTestOutput(getTaskFilePath(ctx, ulidB), "utf-8");
       expect(taskBContent).toContain("priority: 1");
 
       // A's task should be unchanged (its buffer was discarded)
-      const taskAContent = await fs.readFile(getTaskFilePath(ctx, ulidA), "utf-8");
+      const taskAContent = await readTestOutput(getTaskFilePath(ctx, ulidA), "utf-8");
       expect(taskAContent).toContain("priority: 3");
 
       // No buffer should remain active
@@ -693,32 +658,26 @@ describe("Atomic Multi-File Task Writes", () => {
 
       // Use a barrier to ensure both mutations are in-flight simultaneously
       let resolveBarrier: () => void;
-      const barrier = new Promise<void>((r) => { resolveBarrier = r; });
+      const barrier = new Promise<void>((r) => {
+        resolveBarrier = r;
+      });
       let arrivals = 0;
 
-      const mutationC = manager.mutateTask(
-        ctx,
-        `@${ulidC}`,
-        async (task) => {
-          bufferC = getActiveBatchBuffer();
-          arrivals++;
-          if (arrivals === 2) resolveBarrier!();
-          await barrier;
-          return { ...task, title: "Updated C" };
-        },
-      );
+      const mutationC = manager.mutateTask(ctx, `@${ulidC}`, async (task) => {
+        bufferC = getActiveBatchBuffer();
+        arrivals++;
+        if (arrivals === 2) resolveBarrier!();
+        await barrier;
+        return { ...task, title: "Updated C" };
+      });
 
-      const mutationD = manager.mutateTask(
-        ctx,
-        `@${ulidD}`,
-        async (task) => {
-          bufferD = getActiveBatchBuffer();
-          arrivals++;
-          if (arrivals === 2) resolveBarrier!();
-          await barrier;
-          return { ...task, title: "Updated D" };
-        },
-      );
+      const mutationD = manager.mutateTask(ctx, `@${ulidD}`, async (task) => {
+        bufferD = getActiveBatchBuffer();
+        arrivals++;
+        if (arrivals === 2) resolveBarrier!();
+        await barrier;
+        return { ...task, title: "Updated D" };
+      });
 
       // Both mutations run concurrently — we only care that they have
       // distinct buffer instances (isolation), not that they both flush
@@ -741,31 +700,32 @@ describe("Atomic Multi-File Task Writes", () => {
       // Set up monolithic fixture (task in project.tasks.yaml)
       const monoTasksPath = path.join(ctx.specDir, "project.tasks.yaml");
       const [ulid] = testUlids("AMNO", 1);
-      await fs.writeFile(monoTasksPath, toYaml([{
-        _ulid: ulid,
-        slugs: ["mono-test"],
-        title: "Monolithic test",
-        type: "task",
-        status: "pending",
-        priority: 3,
-        tags: [],
-        depends_on: [],
-        blocked_by: [],
-        created_at: "2026-03-20T00:00:00.000Z",
-        notes: [],
-        todos: [],
-      }]));
+      await fs.writeFile(
+        monoTasksPath,
+        toYaml([
+          {
+            _ulid: ulid,
+            slugs: ["mono-test"],
+            title: "Monolithic test",
+            type: "task",
+            status: "pending",
+            priority: 3,
+            tags: [],
+            depends_on: [],
+            blocked_by: [],
+            created_at: "2026-03-20T00:00:00.000Z",
+            notes: [],
+            todos: [],
+          },
+        ]),
+      );
 
       let bufferDuringMutation: ReturnType<typeof getActiveBatchBuffer> = null;
 
-      await monoManager.mutateTask(
-        ctx,
-        `@${ulid}`,
-        (task) => {
-          bufferDuringMutation = getActiveBatchBuffer();
-          return { ...task, title: "Updated mono" };
-        },
-      );
+      await monoManager.mutateTask(ctx, `@${ulid}`, (task) => {
+        bufferDuringMutation = getActiveBatchBuffer();
+        return { ...task, title: "Updated mono" };
+      });
 
       // No buffer should be active during monolithic mutations
       expect(bufferDuringMutation).toBeNull();

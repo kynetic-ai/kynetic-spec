@@ -15,11 +15,7 @@ import { createTempDir, initGitRepo, git } from "./helpers/cli.js";
 
 import { initializeSessionBranch } from "../src/parser/session-branch.js";
 import { SESSIONS_WORKTREE_DIR } from "../src/parser/shadow.js";
-import {
-  createSession,
-  closeSession,
-  appendEvent,
-} from "../src/sessions/store.js";
+import { createSession, closeSession, appendEvent } from "../src/sessions/store.js";
 
 let tempDir: string;
 let sessionsDir: string;
@@ -46,6 +42,7 @@ beforeEach(async () => {
 
   // Initialize session branch worktree
   const result = await initializeSessionBranch(tempDir);
+  // oxlint-disable-next-line jest/no-standalone-expect -- inside beforeEach hook
   expect(result.success).toBe(true);
 
   sessionsDir = path.join(tempDir, SESSIONS_WORKTREE_DIR);
@@ -53,10 +50,10 @@ beforeEach(async () => {
 
 afterEach(async () => {
   try {
-    execSync(
-      `git worktree remove ${SESSIONS_WORKTREE_DIR} --force 2>/dev/null || true`,
-      { cwd: tempDir, stdio: "pipe" },
-    );
+    execSync(`git worktree remove ${SESSIONS_WORKTREE_DIR} --force 2>/dev/null || true`, {
+      cwd: tempDir,
+      stdio: "pipe",
+    });
   } catch {
     // Ignore
   }

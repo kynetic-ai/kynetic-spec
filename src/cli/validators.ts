@@ -13,9 +13,7 @@ import { errors } from "../strings/index.js";
 
 // ─── Result type ────────────────────────────────────────────
 
-export type Result<T> =
-  | { ok: true; value: T }
-  | { ok: false; error: string };
+export type Result<T> = { ok: true; value: T } | { ok: false; error: string };
 
 // ─── parseIntOption ─────────────────────────────────────────
 
@@ -33,10 +31,7 @@ export interface IntOptionConfig {
  *
  * Uses Number(value) (not parseInt) to reject partial parses like "3abc" or "1.9".
  */
-export function parseIntOption(
-  value: string,
-  config: IntOptionConfig,
-): Result<number> {
+export function parseIntOption(value: string, config: IntOptionConfig): Result<number> {
   const num = Number(value);
 
   if (Number.isNaN(num) || !Number.isFinite(num)) {

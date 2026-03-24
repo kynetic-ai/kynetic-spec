@@ -14,7 +14,7 @@ import { randomUUID } from "node:crypto";
 
 const DEFAULT_TIMEOUT_MS = 5000;
 const RETRY_INTERVAL_MS = 50;
-const STALE_LOCK_MS = 30000; // Consider locks older than 30s stale (only if PID is dead)
+const _STALE_LOCK_MS = 30000; // Consider locks older than 30s stale (only if PID is dead)
 
 /**
  * Acquire an advisory file lock using mkdir (atomic across processes).
@@ -82,6 +82,7 @@ export async function acquireFileLock(
           throw new Error(
             `Timed out waiting for file lock on ${filePath} after ${timeoutMs}ms. ` +
               `If no other kspec process is running, remove ${lockDir} manually.`,
+            { cause: err },
           );
         }
 

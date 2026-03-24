@@ -14,14 +14,14 @@
  * - ac-27 (@multi-directory-daemon): Reconnect with different project
  */
 
-import { WebSocketManager, type WebSocketManagerOptions } from '../websocket/manager.js';
-import type { ConnectionState } from '../websocket/types.js';
+import { WebSocketManager, type WebSocketManagerOptions } from "../websocket/manager.js";
+import type { ConnectionState } from "../websocket/types.js";
 
 // Global WebSocket manager instance
 let manager: WebSocketManager | null = null;
 
 // Reactive state
-let connectionState = $state<ConnectionState>('disconnected');
+let connectionState = $state<ConnectionState>("disconnected");
 let connectionLost = $state(false);
 
 /**
@@ -30,20 +30,20 @@ let connectionLost = $state(false);
  * AC: @multi-directory-daemon ac-34 - Supports project path option
  */
 export function initConnection(options?: WebSocketManagerOptions | string): void {
-	if (manager) {
-		console.warn('[ConnectionStore] Already initialized');
-		return;
-	}
+  if (manager) {
+    console.warn("[ConnectionStore] Already initialized");
+    return;
+  }
 
-	manager = new WebSocketManager(options);
+  manager = new WebSocketManager(options);
 
-	// AC: @web-dashboard ac-29 - Track connection state
-	manager.onStateChange((state) => {
-		connectionState = state;
-		connectionLost = manager!.isConnectionLost();
-	});
+  // AC: @web-dashboard ac-29 - Track connection state
+  manager.onStateChange((state) => {
+    connectionState = state;
+    connectionLost = manager!.isConnectionLost();
+  });
 
-	manager.connect();
+  manager.connect();
 }
 
 /**
@@ -51,12 +51,12 @@ export function initConnection(options?: WebSocketManagerOptions | string): void
  * AC: @multi-directory-daemon ac-27
  */
 export function reconnectWithProject(projectPath: string | null): void {
-	if (!manager) {
-		console.warn('[ConnectionStore] Not initialized, cannot reconnect with project');
-		return;
-	}
+  if (!manager) {
+    console.warn("[ConnectionStore] Not initialized, cannot reconnect with project");
+    return;
+  }
 
-	manager.setProjectPath(projectPath);
+  manager.setProjectPath(projectPath);
 }
 
 /**
@@ -64,7 +64,7 @@ export function reconnectWithProject(projectPath: string | null): void {
  * AC: @web-dashboard ac-29
  */
 export function getConnectionState(): ConnectionState {
-	return connectionState;
+  return connectionState;
 }
 
 /**
@@ -72,14 +72,14 @@ export function getConnectionState(): ConnectionState {
  * AC: @web-dashboard ac-29
  */
 export function isConnectionLost(): boolean {
-	return connectionLost;
+  return connectionLost;
 }
 
 /**
  * Check if connected
  */
 export function isConnected(): boolean {
-	return manager?.isConnected() ?? false;
+  return manager?.isConnected() ?? false;
 }
 
 /**
@@ -87,22 +87,22 @@ export function isConnected(): boolean {
  * AC: @web-dashboard ac-32
  */
 export function subscribe(topics: string[]): void {
-	if (!manager) {
-		// No-op during SSR or before initialization
-		return;
-	}
-	manager.subscribe(topics);
+  if (!manager) {
+    // No-op during SSR or before initialization
+    return;
+  }
+  manager.subscribe(topics);
 }
 
 /**
  * Unsubscribe from topics
  */
 export function unsubscribe(topics: string[]): void {
-	if (!manager) {
-		// No-op during SSR or before initialization
-		return;
-	}
-	manager.unsubscribe(topics);
+  if (!manager) {
+    // No-op during SSR or before initialization
+    return;
+  }
+  manager.unsubscribe(topics);
 }
 
 /**
@@ -110,22 +110,22 @@ export function unsubscribe(topics: string[]): void {
  * AC: @web-dashboard ac-33
  */
 export function on(topic: string, handler: (event: any) => void): void {
-	if (!manager) {
-		// No-op during SSR or before initialization
-		return;
-	}
-	manager.on(topic, handler);
+  if (!manager) {
+    // No-op during SSR or before initialization
+    return;
+  }
+  manager.on(topic, handler);
 }
 
 /**
  * Unregister event handler
  */
 export function off(topic: string, handler: (event: any) => void): void {
-	if (!manager) {
-		// No-op during SSR or before initialization
-		return;
-	}
-	manager.off(topic, handler);
+  if (!manager) {
+    // No-op during SSR or before initialization
+    return;
+  }
+  manager.off(topic, handler);
 }
 
 /**
@@ -133,38 +133,38 @@ export function off(topic: string, handler: (event: any) => void): void {
  * AC: @ws-session-event-streaming ac-reconnect-recovery
  */
 export function onStateChange(handler: (state: ConnectionState) => void): void {
-	if (!manager) return;
-	manager.onStateChange(handler);
+  if (!manager) return;
+  manager.onStateChange(handler);
 }
 
 /**
  * Unregister a state change handler.
  */
 export function offStateChange(handler: (state: ConnectionState) => void): void {
-	if (!manager) return;
-	manager.offStateChange(handler);
+  if (!manager) return;
+  manager.offStateChange(handler);
 }
 
 /**
  * Disconnect
  */
 export function disconnect(): void {
-	if (manager) {
-		manager.disconnect();
-		manager = null;
-	}
+  if (manager) {
+    manager.disconnect();
+    manager = null;
+  }
 }
 
 /**
  * Get connection statistics
  */
 export function getConnectionStats() {
-	return manager?.getStats();
+  return manager?.getStats();
 }
 
 /**
  * Get active subscriptions
  */
 export function getSubscriptions(): string[] {
-	return manager?.getSubscriptions() ?? [];
+  return manager?.getSubscriptions() ?? [];
 }

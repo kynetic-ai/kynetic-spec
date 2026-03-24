@@ -26,16 +26,17 @@
  * 2. Write YAML strings directly with template literals
  * 3. Use the yaml library: import { stringify } from 'yaml'
  */
-import { execSync, spawnSync } from 'node:child_process';
-import * as fs from 'node:fs/promises';
-import * as path from 'node:path';
-import * as os from 'node:os';
+import { execSync, spawnSync } from "node:child_process";
+import * as fs from "node:fs/promises";
+import { readFileSync } from "node:fs";
+import * as path from "node:path";
+import * as os from "node:os";
 
 // Use built CLI for performance - requires `npm run build` before tests
-export const CLI_PATH = path.join(__dirname, '..', '..', 'dist', 'cli', 'index.js');
+export const CLI_PATH = path.join(__dirname, "..", "..", "dist", "cli", "index.js");
 
 // Fixtures directory for test data
-export const FIXTURES_DIR = path.join(__dirname, '..', 'fixtures');
+export const FIXTURES_DIR = path.join(__dirname, "..", "fixtures");
 
 /**
  * Options for running kspec CLI commands
@@ -111,11 +112,11 @@ export function kspec(args: string, cwd: string, options: KspecOptions = {}): Ks
   // them explicitly via env.
   const cleanEnv = { ...process.env };
   const DISPATCH_ENV_VARS = [
-    'KSPEC_RALPH_SESSION',
-    'KSPEC_SESSION_ID',
-    'KSPEC_DISPATCH_CANONICAL_HEAD',
-    'KSPEC_SHADOW_MUTATION_LOCK_FILE',
-    'KSPEC_SHADOW_MUTATION_LOCK_TIMEOUT_MS',
+    "KSPEC_RALPH_SESSION",
+    "KSPEC_SESSION_ID",
+    "KSPEC_DISPATCH_CANONICAL_HEAD",
+    "KSPEC_SHADOW_MUTATION_LOCK_FILE",
+    "KSPEC_SHADOW_MUTATION_LOCK_TIMEOUT_MS",
   ];
   for (const key of DISPATCH_ENV_VARS) {
     if (!(key in env)) {
@@ -125,23 +126,23 @@ export function kspec(args: string, cwd: string, options: KspecOptions = {}): Ks
 
   // Use spawnSync with shell to capture both stdout and stderr
   // Always use shell mode to properly handle argument parsing and quoting
-  const result = spawnSync('/bin/sh', ['-c', `node ${CLI_PATH} ${args}`], {
+  const result = spawnSync("/bin/sh", ["-c", `node ${CLI_PATH} ${args}`], {
     cwd,
-    encoding: 'utf-8',
+    encoding: "utf-8",
     timeout: 30_000,
-    env: { ...cleanEnv, KSPEC_AUTHOR: '@test', ...env },
-    input: stdin !== undefined ? (stdin.endsWith('\n') ? stdin : stdin + '\n') : undefined,
+    env: { ...cleanEnv, KSPEC_AUTHOR: "@test", ...env },
+    input: stdin !== undefined ? (stdin.endsWith("\n") ? stdin : `${stdin}\n`) : undefined,
   });
 
   // Detect timeout (spawnSync kills the process and sets signal)
-  if (result.signal === 'SIGTERM' && result.error?.message?.includes('ETIMEDOUT')) {
+  if (result.signal === "SIGTERM" && result.error?.message?.includes("ETIMEDOUT")) {
     throw new Error(`Command timed out after 30s: node ${CLI_PATH} ${args}`);
   }
 
   const kspecResult: KspecResult = {
     exitCode: result.status ?? 1,
-    stdout: (result.stdout || '').trim(),
-    stderr: (result.stderr || '').trim(),
+    stdout: (result.stdout || "").trim(),
+    stderr: (result.stderr || "").trim(),
   };
 
   // Handle errors
@@ -156,7 +157,9 @@ export function kspec(args: string, cwd: string, options: KspecOptions = {}): Ks
       return kspecResult;
     }
 
-    throw new Error(`Command failed: node ${CLI_PATH} ${args}\n${kspecResult.stderr || result.error?.message}`);
+    throw new Error(
+      `Command failed: node ${CLI_PATH} ${args}\n${kspecResult.stderr || result.error?.message}`,
+    );
   }
 
   return kspecResult;
@@ -195,12 +198,12 @@ export function kspecJson<T>(args: string, cwd: string, options: KspecOptions = 
 export async function waitForStartup(
   description: string,
   probe: () => StartupProbeResult | Promise<StartupProbeResult>,
-  options: WaitForStartupOptions = {}
+  options: WaitForStartupOptions = {},
 ): Promise<void> {
   const timeoutMs = options.timeoutMs ?? 5_000;
   const intervalMs = options.intervalMs ?? 100;
   const startedAt = Date.now();
-  let lastDetails = 'no observation collected';
+  let lastDetails = "no observation collected";
 
   while (Date.now() - startedAt < timeoutMs) {
     const result = await probe();
@@ -214,7 +217,7 @@ export async function waitForStartup(
   }
 
   throw new Error(
-    `Timed out waiting for ${description} after ${timeoutMs}ms. Last observation: ${lastDetails}`
+    `Timed out waiting for ${description} after ${timeoutMs}ms. Last observation: ${lastDetails}`,
   );
 }
 
@@ -236,12 +239,12 @@ export const kspecWithStatus = (args: string, cwd: string): KspecResult => {
  * @returns Path to the temp directory
  */
 export async function setupTempFixtures(): Promise<string> {
-  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'kspec-test-'));
+  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "kspec-test-"));
 
   // Copy all fixtures except multi-dir
   const entries = await fs.readdir(FIXTURES_DIR, { withFileTypes: true });
   for (const entry of entries) {
-    if (entry.name === 'multi-dir') continue; // Skip multi-dir fixtures
+    if (entry.name === "multi-dir") continue; // Skip multi-dir fixtures
     const source = path.join(FIXTURES_DIR, entry.name);
     const dest = path.join(tempDir, entry.name);
     if (entry.isDirectory()) {
@@ -272,8 +275,8 @@ export async function setupTempFixtures(): Promise<string> {
  * await cleanupTempDir(fixturesRoot);
  */
 export async function setupMultiDirFixtures(): Promise<string> {
-  const multiDirSource = path.join(FIXTURES_DIR, 'multi-dir');
-  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'kspec-multi-'));
+  const multiDirSource = path.join(FIXTURES_DIR, "multi-dir");
+  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "kspec-multi-"));
   await fs.cp(multiDirSource, tempDir, { recursive: true });
   return tempDir;
 }
@@ -293,7 +296,7 @@ export async function cleanupTempDir(dir: string): Promise<void> {
  * @param prefix - Optional prefix for the temp directory name
  * @returns Path to the temp directory
  */
-export async function createTempDir(prefix = 'kspec-test-'): Promise<string> {
+export async function createTempDir(prefix = "kspec-test-"): Promise<string> {
   return fs.mkdtemp(path.join(os.tmpdir(), prefix));
 }
 
@@ -323,17 +326,17 @@ export interface IsolatedKspecHome {
  */
 export async function createIsolatedKspecHome(
   rootDir: string,
-  homeDirName = '.home'
+  homeDirName = ".home",
 ): Promise<IsolatedKspecHome> {
   const homeDir = path.join(rootDir, homeDirName);
-  const configDir = path.join(homeDir, '.config', 'kspec');
+  const configDir = path.join(homeDir, ".config", "kspec");
   await fs.mkdir(configDir, { recursive: true });
 
   return {
     homeDir,
     configDir,
-    daemonPidFilePath: path.join(configDir, 'daemon.pid'),
-    daemonPortFilePath: path.join(configDir, 'daemon.port'),
+    daemonPidFilePath: path.join(configDir, "daemon.pid"),
+    daemonPortFilePath: path.join(configDir, "daemon.port"),
     env: {
       HOME: homeDir,
       USERPROFILE: homeDir,
@@ -347,9 +350,9 @@ export async function createIsolatedKspecHome(
  * @param dir - Directory to initialize
  */
 export function initGitRepo(dir: string): void {
-  execSync('git init -b main', { cwd: dir, stdio: 'pipe' });
-  execSync('git config user.email "test@example.com"', { cwd: dir, stdio: 'pipe' });
-  execSync('git config user.name "Test User"', { cwd: dir, stdio: 'pipe' });
+  execSync("git init -b main", { cwd: dir, stdio: "pipe" });
+  execSync('git config user.email "test@example.com"', { cwd: dir, stdio: "pipe" });
+  execSync('git config user.name "Test User"', { cwd: dir, stdio: "pipe" });
 }
 
 /**
@@ -359,14 +362,49 @@ export function initGitRepo(dir: string): void {
  * @param cwd - Working directory
  */
 export function git(cmd: string, cwd: string): void {
-  execSync(`git ${cmd}`, { cwd, stdio: 'pipe' });
+  execSync(`git ${cmd}`, { cwd, stdio: "pipe" });
+}
+
+/**
+ * Read a file produced by test-generated output.
+ *
+ * Use this instead of raw fs.readFile / readFileSync in tests.
+ * The no-source-scanning lint rule recognizes this function as safe,
+ * so reads through it won't trigger lint errors.
+ *
+ * @param filePath - Path to the file to read (should be test-generated output)
+ * @param encoding - File encoding (default: utf-8)
+ * @returns File contents as a string
+ *
+ * @example
+ * const content = await readTestOutput(path.join(tempDir, "output.yaml"));
+ * expect(content).toContain("expected-value");
+ */
+export async function readTestOutput(
+  filePath: string,
+  encoding: BufferEncoding = "utf-8",
+): Promise<string> {
+  return fs.readFile(filePath, encoding);
+}
+
+/**
+ * Synchronously read a file produced by test-generated output.
+ *
+ * Sync variant of readTestOutput for use outside async contexts.
+ *
+ * @param filePath - Path to the file to read (should be test-generated output)
+ * @param encoding - File encoding (default: utf-8)
+ * @returns File contents as a string
+ */
+export function readTestOutputSync(filePath: string, encoding: BufferEncoding = "utf-8"): string {
+  return readFileSync(filePath, encoding);
 }
 
 /**
  * Crockford base32 alphabet (excludes I, L, O, U)
  * Used for ULID generation
  */
-const CROCKFORD_BASE32 = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
+const CROCKFORD_BASE32 = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
 
 /**
  * Generate a valid test ULID with an optional readable prefix
@@ -388,24 +426,25 @@ const CROCKFORD_BASE32 = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
  * testUlid('TASK', 1) // '01TASK00000001000000000001'
  * testUlid('TRAIT')   // '01TRAJT0000000000000000000' (I replaced with J)
  */
-export function testUlid(prefix = '', sequence = 0): string {
+export function testUlid(prefix = "", sequence = 0): string {
   // Replace invalid Crockford chars: I->J, L->K, O->0, U->V
-  const safePrefix = prefix.toUpperCase()
-    .replace(/I/g, 'J')
-    .replace(/L/g, 'K')
-    .replace(/O/g, '0')
-    .replace(/U/g, 'V');
+  const safePrefix = prefix
+    .toUpperCase()
+    .replace(/I/g, "J")
+    .replace(/L/g, "K")
+    .replace(/O/g, "0")
+    .replace(/U/g, "V");
 
   // Start with timestamp-like prefix (01 = valid ULID start)
-  const base = '01' + safePrefix;
+  const base = `01${safePrefix}`;
 
   // Pad with zeros, leaving room for sequence and checksum
   const padLength = 24 - base.length; // 26 - 2 for suffix
-  const sequenceStr = sequence.toString().padStart(Math.min(padLength, 8), '0');
+  const sequenceStr = sequence.toString().padStart(Math.min(padLength, 8), "0");
   const padded = base + sequenceStr.slice(0, padLength);
 
   // Fill remaining with zeros and add a final valid char
-  const filled = padded.padEnd(25, '0');
+  const filled = padded.padEnd(25, "0");
 
   // Use a deterministic final char based on sequence for uniqueness
   const finalChar = CROCKFORD_BASE32[sequence % 32];

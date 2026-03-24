@@ -26,6 +26,7 @@ kspec session start  # Shows active work at the top
 ```
 
 Priority order:
+
 1. **needs_work** — Fix cycle: address review feedback (highest priority)
 2. **in_progress** — Continue work already started
 3. **ready (pending)** — New work to start
@@ -41,28 +42,28 @@ pending → in_progress → pending_review → completed
                      (→ in_progress → pending_review)
 ```
 
-| Command | Transition | When |
-|---------|-----------|------|
-| `kspec task start @ref` | → in_progress | Beginning work |
-| `kspec task submit @ref` | → pending_review | Work done, ready for review |
-| `kspec task complete @ref --reason "..."` | → completed | Reviewed and merged |
-| `kspec task block @ref --reason "..."` | → blocked | External blocker |
+| Command                                   | Transition       | When                        |
+| ----------------------------------------- | ---------------- | --------------------------- |
+| `kspec task start @ref`                   | → in_progress    | Beginning work              |
+| `kspec task submit @ref`                  | → pending_review | Work done, ready for review |
+| `kspec task complete @ref --reason "..."` | → completed      | Reviewed and merged         |
+| `kspec task block @ref --reason "..."`    | → blocked        | External blocker            |
 
 ## CLI Lookups
 
 Use CLI commands to find information. **Do NOT search `.kspec/` YAML files manually** — it wastes time and misses context that CLI commands provide (like inherited trait ACs).
 
-| Need | Command |
-|------|---------|
-| Task details | `kspec task get @ref` |
-| Spec + all ACs (own + inherited) | `kspec item get @ref` |
-| Trait definition + ACs | `kspec item get @trait-slug` |
-| Search by keyword | `kspec search "keyword"` |
-| List by type | `kspec item list --type feature` |
-| All traits | `kspec trait list` |
-| Task's linked spec | `kspec task get @ref` → read `spec_ref` field |
-| Task's linked plan | `kspec task get @ref` → if `plan_ref` is non-null, run `kspec plan get @plan-ref` |
-| Reviews for a task | `kspec review for-task @ref` |
+| Need                             | Command                                                                           |
+| -------------------------------- | --------------------------------------------------------------------------------- |
+| Task details                     | `kspec task get @ref`                                                             |
+| Spec + all ACs (own + inherited) | `kspec item get @ref`                                                             |
+| Trait definition + ACs           | `kspec item get @trait-slug`                                                      |
+| Search by keyword                | `kspec search "keyword"`                                                          |
+| List by type                     | `kspec item list --type feature`                                                  |
+| All traits                       | `kspec trait list`                                                                |
+| Task's linked spec               | `kspec task get @ref` → read `spec_ref` field                                     |
+| Task's linked plan               | `kspec task get @ref` → if `plan_ref` is non-null, run `kspec plan get @plan-ref` |
+| Reviews for a task               | `kspec review for-task @ref`                                                      |
 
 **Key pattern:** When `kspec item get` output shows "Inherited from @trait-slug", run `kspec item get @trait-slug` to see the trait's ACs. One command — do not grep YAML files.
 
@@ -149,6 +150,7 @@ kspec item get @spec-ref  # Shows own ACs AND inherited trait ACs
 ```
 
 For each AC, identify:
+
 - **Existing code to reuse** — Search the codebase for related functions, utilities, and patterns before creating anything new. Reimplementing existing helpers is a common review blocker.
 - **Edge cases implied by the AC** — If an AC describes concurrent behavior, think beyond the simple 2-actor case. If it says "atomic," consider partial failure. Read the AC literally and think about what would break it.
 - **Test cases that will prove each AC** — List them before writing production code. This surfaces gaps in your understanding early.
@@ -167,7 +169,7 @@ Write test skeletons from your AC analysis **before** implementing production co
 
 **Tests must exercise behavior, not inspect source code.** A test that reads implementation files and asserts on their textual content is never valid AC coverage — regardless of language, framework, or technique used to read the file. These tests fail when the implementation is refactored (even though behavior is preserved) and pass when behavior breaks (as long as the string is still there). They create false coverage and false regressions simultaneously.
 
-The distinction: a behavioral test *runs* the system and checks what it *does*. A source-scanning test *reads* the code and checks what it *says*. Only behavioral tests count as AC coverage.
+The distinction: a behavioral test _runs_ the system and checks what it _does_. A source-scanning test _reads_ the code and checks what it _says_. Only behavioral tests count as AC coverage.
 
 Valid approaches: call the function, run the command, make the request, render the component, execute the pipeline. Check outputs, side effects, exit codes, responses, and rendered results.
 
@@ -184,6 +186,7 @@ kspec task note @ref "Done"
 ```
 
 Note when you:
+
 - Discover something unexpected
 - Make a design decision
 - Encounter a blocker
@@ -233,9 +236,9 @@ Annotations must be standalone line comments, not embedded inside block comments
 
 If your task modified any of these source files, regenerate before committing:
 
-| Modified | Regenerate with |
-|----------|----------------|
-| `templates/skills/` or `.kspec/skills/` | `kspec skill render` |
+| Modified                                                | Regenerate with         |
+| ------------------------------------------------------- | ----------------------- |
+| `templates/skills/` or `.kspec/skills/`                 | `kspec skill render`    |
 | `templates/agents-sections/`, conventions, or workflows | `kspec agents generate` |
 
 Commit the regenerated output alongside your source changes.
@@ -284,6 +287,7 @@ The reviewer (human or agent) takes over from here. See `/kspec-review` for the 
 When inheriting a `needs_work` task, the review feedback lives in kspec review records. Each fix cycle creates a new review record — the reviewer does not reopen the prior review.
 
 1. **Read the review** — Find and read ALL review threads, not just the first blocker
+
    ```bash
    kspec review for-task @ref              # Find all reviews (current + historical)
    kspec review get @review-ref            # Read full review with threads
@@ -294,12 +298,14 @@ When inheriting a `needs_work` task, the review feedback lives in kspec review r
 3. **Address all threads** — Blockers must be resolved before re-approval. Questions and nits are non-blocking but should be addressed. Fix everything the reviewer found in one pass — don't fix one blocker and resubmit hoping the rest will pass.
 
 4. **Reply and resolve threads** — For each thread you addressed, reply explaining what you did, then resolve the thread. This gives the next reviewer clear signal of what was addressed and lets them verify the resolution rather than re-discovering the original issue.
+
    ```bash
    kspec review reply @review-ref --thread <ulid> --body "Fixed: <description of what was changed and why>"
    kspec review resolve @review-ref --thread <ulid>
    ```
 
 5. **Push fixes** — Commit with descriptive message
+
    ```bash
    git add <files> && git commit -m "fix: address review feedback
 
@@ -307,6 +313,7 @@ When inheriting a `needs_work` task, the review feedback lives in kspec review r
    ```
 
 6. **Note what changed** — Before resubmitting, add a task note summarizing what was fixed and why. This note becomes a key entry in the activity timeline and gives the next reviewer context on what changed since the prior review.
+
    ```bash
    kspec task note @ref "Fix cycle N: addressed all review threads. Fixed X (blocker), Y (nit). Also re-verified ACs 1-5 against implementation."
    ```
@@ -327,11 +334,13 @@ Tasks describe expected outcomes, not rigid boundaries:
 ### When to Expand vs Escalate
 
 **Expand** (do it yourself):
+
 - Additional work is clearly implied by the goal
 - Proportional to the original task
 - You have the context
 
 **Escalate** (capture separately):
+
 - Scope expansion is major
 - Uncertain about the right approach
 - Outside your task's domain
@@ -341,17 +350,20 @@ Tasks describe expected outcomes, not rigid boundaries:
 ## Blocking Rules
 
 **Block only for genuine external blockers:**
+
 - Human architectural decision needed
 - Spec clarification required
 - External dependency unavailable
 - Formal `depends_on` blocker
 
 **Do NOT block for:**
+
 - Task seems complex (do the work)
 - Tests are failing (fix them)
 - Service needs running (start it)
 
 After blocking:
+
 ```bash
 kspec task block @ref --reason "Reason..."
 kspec tasks ready --eligible  # Check for other work

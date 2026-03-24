@@ -49,12 +49,7 @@ export function grepItem(
 /**
  * Recursively search an object for regex matches in string values.
  */
-function searchObject(
-  obj: unknown,
-  path: string,
-  regex: RegExp,
-  matches: string[],
-): void {
+function searchObject(obj: unknown, path: string, regex: RegExp, matches: string[]): void {
   if (obj === null || obj === undefined) {
     return;
   }
@@ -102,9 +97,7 @@ export function formatMatchedFields(fields: string[]): string {
   // Simplify common patterns
   const simplified = fields.map((field) => {
     // "acceptance_criteria[0].given" -> "ac[0].given"
-    return field
-      .replace(/^acceptance_criteria/, "ac")
-      .replace(/\.content$/, ""); // notes[0].content -> notes[0]
+    return field.replace(/^acceptance_criteria/, "ac").replace(/\.content$/, ""); // notes[0].content -> notes[0]
   });
 
   // Deduplicate

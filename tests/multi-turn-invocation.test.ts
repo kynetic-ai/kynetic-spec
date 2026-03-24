@@ -25,11 +25,7 @@ import {
 import { SessionRegistry, type SessionHandle } from "../src/agent-runtime/session-registry.js";
 import { registerAdapter } from "../src/agents/adapters.js";
 import * as spawnerModule from "../src/agents/spawner.js";
-import {
-  testUlid,
-  createTempDir,
-  cleanupTempDir,
-} from "./helpers/cli.js";
+import { testUlid, createTempDir, cleanupTempDir } from "./helpers/cli.js";
 import type { Agent } from "../src/schema/meta.js";
 
 // ─── Fixtures ─────────────────────────────────────────────────────────────────
@@ -237,7 +233,11 @@ describe("Single-turn backward compatibility", { timeout: 60_000 }, () => {
 
     const eventsPath = path.join(testDir, "sessions", result.session.id, "events.jsonl");
     const content = await fs.readFile(eventsPath, "utf-8");
-    const events = content.trim().split("\n").filter(Boolean).map((l) => JSON.parse(l));
+    const events = content
+      .trim()
+      .split("\n")
+      .filter(Boolean)
+      .map((l) => JSON.parse(l));
 
     const turnEvent = events.find((e: { type: string }) => e.type === "agent.turn_completed");
     expect(turnEvent).toBeDefined();
@@ -267,9 +267,11 @@ describe("Multi-turn lifecycle", { timeout: 60_000 }, () => {
   // AC: @multi-turn-session-lifecycle ac-4
   it("should execute multiple turns when onIdle queues follow-up prompts", async () => {
     const { spawnedAgent } = createMockSpawnedAgent();
-    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
-      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
-    );
+    spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
 
     const idleContexts: SessionIdleContext[] = [];
     const registry = new SessionRegistry();
@@ -309,9 +311,11 @@ describe("Multi-turn lifecycle", { timeout: 60_000 }, () => {
   // AC: @multi-turn-session-lifecycle ac-2
   it("should keep session open and capable of receiving prompts while in idle", async () => {
     const { spawnedAgent } = createMockSpawnedAgent();
-    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
-      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
-    );
+    spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
 
     const registry = new SessionRegistry();
     let idleHandle: SessionHandle | undefined;
@@ -345,9 +349,11 @@ describe("Multi-turn lifecycle", { timeout: 60_000 }, () => {
   // AC: @multi-turn-session-lifecycle ac-3
   it("should emit onIdle with session context on each idle transition", async () => {
     const { spawnedAgent } = createMockSpawnedAgent();
-    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
-      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
-    );
+    spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
 
     const registry = new SessionRegistry();
     const idleContexts: SessionIdleContext[] = [];
@@ -396,9 +402,11 @@ describe("Multi-turn lifecycle", { timeout: 60_000 }, () => {
       return { stopReason: "end_turn" };
     });
 
-    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
-      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
-    );
+    spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
 
     const registry = new SessionRegistry();
     const idleContexts: SessionIdleContext[] = [];
@@ -442,9 +450,11 @@ describe("Multi-turn lifecycle", { timeout: 60_000 }, () => {
       return { stopReason: "end_turn" };
     });
 
-    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
-      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
-    );
+    spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
 
     const registry = new SessionRegistry();
 
@@ -476,9 +486,11 @@ describe("Multi-turn lifecycle", { timeout: 60_000 }, () => {
   // AC: @multi-turn-session-lifecycle ac-4
   it("should accept asynchronous prompt delivery via registry handle after onIdle returns", async () => {
     const { spawnedAgent } = createMockSpawnedAgent();
-    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
-      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
-    );
+    spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
 
     const registry = new SessionRegistry();
     const idleContexts: SessionIdleContext[] = [];
@@ -517,9 +529,11 @@ describe("Multi-turn lifecycle", { timeout: 60_000 }, () => {
   // AC: @multi-turn-session-lifecycle ac-10
   it("should discard queued prompts and close when close is requested during prompting", async () => {
     const { spawnedAgent } = createMockSpawnedAgent();
-    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
-      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
-    );
+    spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
 
     const registry = new SessionRegistry();
 
@@ -552,9 +566,11 @@ describe("Multi-turn lifecycle", { timeout: 60_000 }, () => {
   // AC: @multi-turn-session-lifecycle ac-10
   it("should not start a new turn with an already-dequeued prompt when close is requested", async () => {
     const { spawnedAgent } = createMockSpawnedAgent();
-    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
-      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
-    );
+    spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
 
     const registry = new SessionRegistry();
 
@@ -614,9 +630,11 @@ describe("Session registry integration", { timeout: 60_000 }, () => {
   // AC: @active-session-registry ac-1
   it("should register session handle in registry before first prompt", async () => {
     const { spawnedAgent } = createMockSpawnedAgent();
-    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
-      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
-    );
+    spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
 
     const registry = new SessionRegistry();
     let handleFoundDuringIdle = false;
@@ -642,9 +660,11 @@ describe("Session registry integration", { timeout: 60_000 }, () => {
   // AC: @active-session-registry ac-2
   it("should unregister session handle from registry after session closes", async () => {
     const { spawnedAgent } = createMockSpawnedAgent();
-    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
-      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
-    );
+    spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
 
     const registry = new SessionRegistry();
 
@@ -671,9 +691,11 @@ describe("Session registry integration", { timeout: 60_000 }, () => {
       throw new Error("Simulated failure");
     });
 
-    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
-      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
-    );
+    spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
 
     const registry = new SessionRegistry();
 
@@ -723,9 +745,11 @@ describe("Multi-turn error handling", { timeout: 60_000 }, () => {
       return { stopReason: "end_turn" };
     });
 
-    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
-      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
-    );
+    spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
 
     const registry = new SessionRegistry();
 
@@ -764,9 +788,11 @@ describe("Multi-turn error handling", { timeout: 60_000 }, () => {
       return { stopReason: "end_turn" };
     });
 
-    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
-      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
-    );
+    spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
 
     const registry = new SessionRegistry();
 
@@ -794,9 +820,15 @@ describe("Multi-turn error handling", { timeout: 60_000 }, () => {
     // Verify prompts_discarded event was logged
     const eventsPath = path.join(testDir, "sessions", result.session.id, "events.jsonl");
     const content = await fs.readFile(eventsPath, "utf-8");
-    const events = content.trim().split("\n").filter(Boolean).map((l) => JSON.parse(l));
+    const events = content
+      .trim()
+      .split("\n")
+      .filter(Boolean)
+      .map((l) => JSON.parse(l));
 
-    const discardEvent = events.find((e: { type: string }) => e.type === "session.prompts_discarded");
+    const discardEvent = events.find(
+      (e: { type: string }) => e.type === "session.prompts_discarded",
+    );
     expect(discardEvent).toBeDefined();
     expect(discardEvent.data.discarded_count).toBe(2); // 2 remaining after first follow-up consumed
   });
@@ -804,9 +836,11 @@ describe("Multi-turn error handling", { timeout: 60_000 }, () => {
   // AC: @multi-turn-session-lifecycle ac-16
   it("should reject sendPrompt on session handle after session closes", async () => {
     const { spawnedAgent } = createMockSpawnedAgent();
-    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
-      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
-    );
+    spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
 
     const registry = new SessionRegistry();
     let capturedSessionId: string | undefined;
@@ -835,9 +869,11 @@ describe("Multi-turn error handling", { timeout: 60_000 }, () => {
   // AC: @multi-turn-session-lifecycle ac-17
   it("should reject prompt with PromptQueueFullError when queue is at max depth", async () => {
     const { spawnedAgent } = createMockSpawnedAgent();
-    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
-      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
-    );
+    spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
 
     const registry = new SessionRegistry();
     let queueFullError: Error | undefined;
@@ -893,9 +929,11 @@ describe("Turn count and duration tracking", { timeout: 60_000 }, () => {
   // AC: @multi-turn-session-lifecycle ac-13
   it("should include turn count in the agent.completed event", async () => {
     const { spawnedAgent } = createMockSpawnedAgent();
-    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
-      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
-    );
+    spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
 
     const registry = new SessionRegistry();
 
@@ -920,7 +958,11 @@ describe("Turn count and duration tracking", { timeout: 60_000 }, () => {
     // Check the agent.completed event includes turn_count
     const eventsPath = path.join(testDir, "sessions", result.session.id, "events.jsonl");
     const content = await fs.readFile(eventsPath, "utf-8");
-    const events = content.trim().split("\n").filter(Boolean).map((l) => JSON.parse(l));
+    const events = content
+      .trim()
+      .split("\n")
+      .filter(Boolean)
+      .map((l) => JSON.parse(l));
 
     const completedEvent = events.find((e: { type: string }) => e.type === "agent.completed");
     expect(completedEvent).toBeDefined();
@@ -931,9 +973,11 @@ describe("Turn count and duration tracking", { timeout: 60_000 }, () => {
   // AC: @multi-turn-session-lifecycle ac-13
   it("should record turn_completed events for each turn with per-turn duration", async () => {
     const { spawnedAgent } = createMockSpawnedAgent();
-    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
-      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
-    );
+    spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
 
     const registry = new SessionRegistry();
 
@@ -955,7 +999,11 @@ describe("Turn count and duration tracking", { timeout: 60_000 }, () => {
 
     const eventsPath = path.join(testDir, "sessions", result.session.id, "events.jsonl");
     const content = await fs.readFile(eventsPath, "utf-8");
-    const events = content.trim().split("\n").filter(Boolean).map((l) => JSON.parse(l));
+    const events = content
+      .trim()
+      .split("\n")
+      .filter(Boolean)
+      .map((l) => JSON.parse(l));
 
     const turnEvents = events.filter((e: { type: string }) => e.type === "agent.turn_completed");
     expect(turnEvents).toHaveLength(2);
@@ -974,9 +1022,11 @@ describe("Turn count and duration tracking", { timeout: 60_000 }, () => {
   // AC: @multi-turn-session-lifecycle ac-14
   it("should fire agent.completed exactly once at session close", async () => {
     const { spawnedAgent } = createMockSpawnedAgent();
-    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
-      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
-    );
+    spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
 
     const registry = new SessionRegistry();
 
@@ -998,7 +1048,11 @@ describe("Turn count and duration tracking", { timeout: 60_000 }, () => {
 
     const eventsPath = path.join(testDir, "sessions", result.session.id, "events.jsonl");
     const content = await fs.readFile(eventsPath, "utf-8");
-    const events = content.trim().split("\n").filter(Boolean).map((l) => JSON.parse(l));
+    const events = content
+      .trim()
+      .split("\n")
+      .filter(Boolean)
+      .map((l) => JSON.parse(l));
 
     // agent.completed should appear exactly once
     const completedEvents = events.filter((e: { type: string }) => e.type === "agent.completed");
@@ -1047,9 +1101,11 @@ describe("Session timeout across multiple turns", { timeout: 60_000 }, () => {
       return { stopReason: "end_turn" };
     });
 
-    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
-      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
-    );
+    spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
 
     const registry = new SessionRegistry();
 
@@ -1081,9 +1137,11 @@ describe("Session timeout across multiple turns", { timeout: 60_000 }, () => {
       return { stopReason: "end_turn" };
     });
 
-    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
-      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
-    );
+    spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
 
     const registry = new SessionRegistry();
 
@@ -1104,7 +1162,11 @@ describe("Session timeout across multiple turns", { timeout: 60_000 }, () => {
 
     const eventsPath = path.join(testDir, "sessions", result.session.id, "events.jsonl");
     const content = await fs.readFile(eventsPath, "utf-8");
-    const events = content.trim().split("\n").filter(Boolean).map((l) => JSON.parse(l));
+    const events = content
+      .trim()
+      .split("\n")
+      .filter(Boolean)
+      .map((l) => JSON.parse(l));
 
     const timeoutEvent = events.find((e: { type: string }) => e.type === "agent.timeout");
     expect(timeoutEvent).toBeDefined();
@@ -1131,9 +1193,11 @@ describe("Idle grace period and auto-close logic", { timeout: 60_000 }, () => {
   // AC: @multi-turn-session-lifecycle ac-5
   it("should close session when grace period expires with no prompt queued", async () => {
     const { spawnedAgent } = createMockSpawnedAgent();
-    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
-      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
-    );
+    spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
 
     const registry = new SessionRegistry();
     const idleContexts: SessionIdleContext[] = [];
@@ -1163,9 +1227,11 @@ describe("Idle grace period and auto-close logic", { timeout: 60_000 }, () => {
   // AC: @multi-turn-session-lifecycle ac-5
   it("should accept prompt within grace period and continue session", async () => {
     const { spawnedAgent } = createMockSpawnedAgent();
-    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
-      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
-    );
+    spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
 
     const registry = new SessionRegistry();
     const idleContexts: SessionIdleContext[] = [];
@@ -1199,9 +1265,11 @@ describe("Idle grace period and auto-close logic", { timeout: 60_000 }, () => {
   // AC: @multi-turn-session-lifecycle ac-6
   it("should stay idle in persistent mode when no prompt arrives within grace period equivalent", async () => {
     const { spawnedAgent } = createMockSpawnedAgent();
-    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
-      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
-    );
+    spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
 
     const registry = new SessionRegistry();
     const idleContexts: SessionIdleContext[] = [];
@@ -1238,9 +1306,11 @@ describe("Idle grace period and auto-close logic", { timeout: 60_000 }, () => {
   // AC: @multi-turn-session-lifecycle ac-6
   it("should accept prompts in persistent mode after grace period would have expired in auto_close", async () => {
     const { spawnedAgent } = createMockSpawnedAgent();
-    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
-      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
-    );
+    spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
 
     const registry = new SessionRegistry();
     const idleContexts: SessionIdleContext[] = [];
@@ -1284,9 +1354,11 @@ describe("Idle grace period and auto-close logic", { timeout: 60_000 }, () => {
   // AC: @multi-turn-session-lifecycle ac-11
   it("should auto-close immediately with no grace period when session mode is auto_close and grace is 0", async () => {
     const { spawnedAgent } = createMockSpawnedAgent();
-    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
-      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
-    );
+    spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
 
     const idleContexts: SessionIdleContext[] = [];
 
@@ -1328,9 +1400,11 @@ describe("Idle timeout", { timeout: 60_000 }, () => {
   // AC: @multi-turn-session-lifecycle ac-7
   it("should emit session.idle_timeout and close when idle exceeds timeout", async () => {
     const { spawnedAgent } = createMockSpawnedAgent();
-    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
-      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
-    );
+    spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
 
     const registry = new SessionRegistry();
     const idleContexts: SessionIdleContext[] = [];
@@ -1358,9 +1432,15 @@ describe("Idle timeout", { timeout: 60_000 }, () => {
     // Verify session.idle_timeout event was logged
     const eventsPath = path.join(testDir, "sessions", result.session.id, "events.jsonl");
     const content = await fs.readFile(eventsPath, "utf-8");
-    const events = content.trim().split("\n").filter(Boolean).map((l) => JSON.parse(l));
+    const events = content
+      .trim()
+      .split("\n")
+      .filter(Boolean)
+      .map((l) => JSON.parse(l));
 
-    const idleTimeoutEvent = events.find((e: { type: string }) => e.type === "session.idle_timeout");
+    const idleTimeoutEvent = events.find(
+      (e: { type: string }) => e.type === "session.idle_timeout",
+    );
     expect(idleTimeoutEvent).toBeDefined();
     expect(idleTimeoutEvent.data.idle_timeout_ms).toBe(100);
     expect(idleTimeoutEvent.data.turn_count).toBe(1);
@@ -1369,9 +1449,11 @@ describe("Idle timeout", { timeout: 60_000 }, () => {
   // AC: @multi-turn-session-lifecycle ac-7
   it("should reset idle timeout when a prompt arrives and timer fires on next idle", async () => {
     const { spawnedAgent } = createMockSpawnedAgent();
-    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
-      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
-    );
+    spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
 
     const registry = new SessionRegistry();
     const idleContexts: SessionIdleContext[] = [];
@@ -1407,9 +1489,11 @@ describe("Idle timeout", { timeout: 60_000 }, () => {
   // AC: @multi-turn-session-lifecycle ac-7
   it("should apply idle timeout in auto_close mode as well", async () => {
     const { spawnedAgent } = createMockSpawnedAgent();
-    spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
-      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
-    );
+    spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
 
     const registry = new SessionRegistry();
 

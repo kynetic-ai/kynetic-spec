@@ -25,12 +25,12 @@ See `kspec help task` for transition commands and options.
 
 **Core principle**: If you're changing behavior and the spec doesn't cover it, update the spec first.
 
-| Situation | Flow |
-|-----------|------|
-| Clear behavior change | Check spec → Update/create spec → Derive task |
-| Vague idea, unclear scope | Capture in inbox → Triage later |
-| Infra/internal (no user impact) | Create task directly, no spec needed |
-| Bug revealing spec gap | Fix bug → Update spec to match reality |
+| Situation                       | Flow                                          |
+| ------------------------------- | --------------------------------------------- |
+| Clear behavior change           | Check spec → Update/create spec → Derive task |
+| Vague idea, unclear scope       | Capture in inbox → Triage later               |
+| Infra/internal (no user impact) | Create task directly, no spec needed          |
+| Bug revealing spec gap          | Fix bug → Update spec to match reality        |
 
 ### Creating Work
 
@@ -44,6 +44,7 @@ See `kspec help task` for transition commands and options.
 ### Staying Aligned During Work
 
 **Watch for scope expansion:**
+
 - Modifying files outside your current task
 - Adding functionality the spec doesn't mention
 - "While I'm here, I should also..." thoughts

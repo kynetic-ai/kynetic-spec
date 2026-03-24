@@ -7,7 +7,7 @@
  * AC: @ui-data-freshness ac-5 — Project switch clears all cached data
  */
 
-import type { QueryClient } from '@tanstack/svelte-query';
+import type { QueryClient } from "@tanstack/svelte-query";
 
 let queryClientInstance: QueryClient | null = null;
 
@@ -16,7 +16,7 @@ let queryClientInstance: QueryClient | null = null;
  * Called once during app initialization in the root layout.
  */
 export function setQueryClient(client: QueryClient): void {
-	queryClientInstance = client;
+  queryClientInstance = client;
 }
 
 /**
@@ -26,7 +26,7 @@ export function setQueryClient(client: QueryClient): void {
  * Prefer using `useQueryClient()` from @tanstack/svelte-query inside components.
  */
 export function getQueryClient(): QueryClient | null {
-	return queryClientInstance;
+  return queryClientInstance;
 }
 
 /**
@@ -40,7 +40,7 @@ export function getQueryClient(): QueryClient | null {
  * AC: @ui-data-freshness ac-5 — Discard all cached data on project change
  */
 export function clearQueryCache(): void {
-	if (queryClientInstance) {
-		queryClientInstance.resetQueries();
-	}
+  if (queryClientInstance) {
+    queryClientInstance.resetQueries();
+  }
 }

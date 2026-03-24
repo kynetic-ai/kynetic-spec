@@ -43,13 +43,8 @@ import {
   type ShadowOptions,
 } from "../../parser/shadow.js";
 import { loadProjectConfig } from "../../parser/config.js";
-import {
-  detectAgentFromEnv,
-  type AgentConfidence,
-} from "../../parser/agent-detection.js";
-import {
-  getSetupStatus as getSharedSetupStatus,
-} from "../../parser/setup-status.js";
+import { detectAgentFromEnv, type AgentConfidence } from "../../parser/agent-detection.js";
+import { getSetupStatus as getSharedSetupStatus } from "../../parser/setup-status.js";
 import {
   type ClaudeHookEntry,
   KSPEC_STOP_HOOK_COMMAND,
@@ -114,16 +109,12 @@ type SetupAgentOverride = (typeof SETUP_AGENT_OVERRIDES)[number];
 
 function parseSetupAgentOverride(value: string): SetupAgentOverride {
   const normalized = value.trim().toLowerCase();
-  if (
-    (SETUP_AGENT_OVERRIDES as readonly string[]).includes(normalized)
-  ) {
+  if ((SETUP_AGENT_OVERRIDES as readonly string[]).includes(normalized)) {
     return normalized as SetupAgentOverride;
   }
 
   const allowed = SETUP_AGENT_OVERRIDES.join(", ");
-  throw new Error(
-    `Invalid --agent value "${value}". Supported values: ${allowed}`,
-  );
+  throw new Error(`Invalid --agent value "${value}". Supported values: ${allowed}`);
 }
 
 function buildDetectedAgent(type: AgentType): DetectedAgent {
@@ -202,11 +193,7 @@ async function installClaudeCodeConfig(author: string): Promise<boolean> {
     config.env = env;
 
     // Write back
-    await fs.writeFile(
-      configPath,
-      `${JSON.stringify(config, null, 2)}\n`,
-      "utf-8",
-    );
+    await fs.writeFile(configPath, `${JSON.stringify(config, null, 2)}\n`, "utf-8");
     return true;
   } catch (err) {
     debugLog("Failed to install Claude Code config", err);
@@ -237,10 +224,7 @@ const NATIVE_GUARD_COMMAND = "kspec guard worktree";
  * Old bash script filenames that should be migrated to native commands.
  * AC: @native-guard-commands ac-migrate-hooks
  */
-const OLD_GUARD_SCRIPTS = [
-  "kspec-worktree-guard.sh",
-  "ralph-task-limit-guard.sh",
-];
+const OLD_GUARD_SCRIPTS = ["kspec-worktree-guard.sh", "ralph-task-limit-guard.sh"];
 
 /**
  * Resolved hooks preferences for installation decisions.
@@ -301,9 +285,7 @@ async function installClaudeCodeHooks(
       | Array<{ hooks?: Array<{ command?: string }> }>
       | undefined;
     const promptAlreadyInstalled = existingPromptHooks?.some((entry) =>
-      entry.hooks?.some((hook) =>
-        hook.command?.includes("session prompt-check"),
-      ),
+      entry.hooks?.some((hook) => hook.command?.includes("session prompt-check")),
     );
 
     if (promptCheckEnabled) {
@@ -326,12 +308,12 @@ async function installClaudeCodeHooks(
     } else {
       // AC: @project-config ac-hooks-section — remove if disabled and previously installed
       if (promptAlreadyInstalled) {
-        const filtered = (existingPromptHooks || []).map((entry) => ({
-          ...entry,
-          hooks: entry.hooks?.filter(
-            (hook) => !hook.command?.includes("session prompt-check"),
-          ),
-        })).filter((entry) => entry.hooks && entry.hooks.length > 0);
+        const filtered = (existingPromptHooks || [])
+          .map((entry) => ({
+            ...entry,
+            hooks: entry.hooks?.filter((hook) => !hook.command?.includes("session prompt-check")),
+          }))
+          .filter((entry) => entry.hooks && entry.hooks.length > 0);
         if (filtered.length > 0) {
           hooks.UserPromptSubmit = filtered;
         } else {
@@ -344,12 +326,8 @@ async function installClaudeCodeHooks(
     // AC: @project-config ac-hooks-section — checkpoint independently controllable
     // Default: disabled (dispatch handles task lifecycle)
     const checkpointEnabled = hooksPrefs?.checkpoint ?? false;
-    const existingStopHooks = hooks.Stop as
-      | ClaudeHookEntry[]
-      | undefined;
-    const stopAlreadyInstalled = existingStopHooks?.some(
-      isKspecManagedStopHookEntry,
-    );
+    const existingStopHooks = hooks.Stop as ClaudeHookEntry[] | undefined;
+    const stopAlreadyInstalled = existingStopHooks?.some(isKspecManagedStopHookEntry);
 
     if (checkpointEnabled) {
       // AC: @project-config ac-hooks-section — install when enabled
@@ -401,11 +379,7 @@ async function installClaudeCodeHooks(
 
     // Check for old bash script entries that need migration
     const hasOldScripts = existingPreToolUseHooks?.some((entry) =>
-      entry.hooks?.some((hook) =>
-        OLD_GUARD_SCRIPTS.some(
-          (name) => hook.command?.includes(name),
-        ),
-      ),
+      entry.hooks?.some((hook) => OLD_GUARD_SCRIPTS.some((name) => hook.command?.includes(name))),
     );
 
     if (hasOldScripts || !nativeAlreadyInstalled) {
@@ -414,8 +388,7 @@ async function installClaudeCodeHooks(
       let filteredPreToolUse = (existingPreToolUseHooks || []).map((entry) => ({
         ...entry,
         hooks: entry.hooks?.filter(
-          (hook) =>
-            !OLD_GUARD_SCRIPTS.some((name) => hook.command?.includes(name)),
+          (hook) => !OLD_GUARD_SCRIPTS.some((name) => hook.command?.includes(name)),
         ),
       }));
       // Remove entries with empty hooks arrays
@@ -460,11 +433,7 @@ async function installClaudeCodeHooks(
 
     // Write back
     if (!dryRun) {
-      await fs.writeFile(
-        configPath,
-        `${JSON.stringify(config, null, 2)}\n`,
-        "utf-8",
-      );
+      await fs.writeFile(configPath, `${JSON.stringify(config, null, 2)}\n`, "utf-8");
     }
     return result;
   } catch (err) {
@@ -499,10 +468,7 @@ async function installAiderConfig(author: string): Promise<boolean> {
       // Add to set-env section or create it
       if (content.includes("set-env:")) {
         // Append to existing set-env section
-        content = content.replace(
-          /(set-env:\s*\n)/m,
-          `$1  - KSPEC_AUTHOR=${author}\n`,
-        );
+        content = content.replace(/(set-env:\s*\n)/m, `$1  - KSPEC_AUTHOR=${author}\n`);
       } else {
         // Add new set-env section
         content += `\n# kspec author for note attribution\nset-env:\n  - KSPEC_AUTHOR=${author}\n`;
@@ -520,10 +486,7 @@ async function installAiderConfig(author: string): Promise<boolean> {
 /**
  * Install KSPEC_AUTHOR for generic JSON config files
  */
-async function installGenericJsonConfig(
-  configPath: string,
-  author: string,
-): Promise<boolean> {
+async function _installGenericJsonConfig(configPath: string, author: string): Promise<boolean> {
   try {
     const configDir = path.dirname(configPath);
     await fs.mkdir(configDir, { recursive: true });
@@ -540,11 +503,7 @@ async function installGenericJsonConfig(
     env.KSPEC_AUTHOR = author;
     config.env = env;
 
-    await fs.writeFile(
-      configPath,
-      `${JSON.stringify(config, null, 2)}\n`,
-      "utf-8",
-    );
+    await fs.writeFile(configPath, `${JSON.stringify(config, null, 2)}\n`, "utf-8");
     return true;
   } catch (err) {
     debugLog(`installGenericJsonConfig failed for ${configPath}`, err);
@@ -623,10 +582,7 @@ async function ensureWorktree(autoWorktree: boolean): Promise<boolean> {
   const branchName = shadowOptions.branchName || SHADOW_BRANCH_NAME;
   const worktreeDir = shadowOptions.directory || SHADOW_WORKTREE_DIR;
   const status = await getShadowStatus(projectRoot, shadowOptions);
-  const remoteHasShadow = await remoteShadowBranchExists(
-    projectRoot,
-    shadowOptions,
-  );
+  const remoteHasShadow = await remoteShadowBranchExists(projectRoot, shadowOptions);
   const recoverableShadow = status.branchExists || remoteHasShadow;
 
   // AC: worktree-already-exists - if already valid, skip
@@ -698,9 +654,7 @@ function printManualInstructions(agentType: AgentType): void {
       console.log("```bash");
       console.log(`export KSPEC_AUTHOR="${author}"`);
       console.log("```");
-      console.log(
-        "\nThis will be inherited by terminals spawned by the VS Code extension.",
-      );
+      console.log("\nThis will be inherited by terminals spawned by the VS Code extension.");
       break;
 
     case "copilot-cli":
@@ -811,9 +765,7 @@ async function renderSkillsForSetup(
   dryRun: boolean,
 ): Promise<{ rendered: number; skipped: number; pluginProvided: number; skillIds: string[] }> {
   // Dynamically import to avoid circular dependencies
-  const { initContext, loadMetaContext } = await import(
-    "../../parser/index.js"
-  );
+  const { initContext, loadMetaContext } = await import("../../parser/index.js");
   const { getRenderer } = await import("../../parser/skill-render.js");
 
   try {
@@ -826,7 +778,7 @@ async function renderSkillsForSetup(
     const metaCtx = await loadMetaContext(ctx);
 
     // Collect all skills that have a registered renderer for their platform
-    const skillsToRender: Array<{ skill: typeof metaCtx.skills[0]; platform: string }> = [];
+    const skillsToRender: Array<{ skill: (typeof metaCtx.skills)[0]; platform: string }> = [];
     for (const skill of metaCtx.skills) {
       for (const platform of skill.platforms) {
         const renderer = getRenderer(platform);
@@ -898,9 +850,7 @@ async function ensureBuiltInAgents(
   dryRun: boolean,
 ): Promise<{ created: string[]; skipped: string[] }> {
   const { initContext } = await import("../../parser/index.js");
-  const { loadMetaContext, saveMetaItem } = await import(
-    "../../parser/meta.js"
-  );
+  const { loadMetaContext, saveMetaItem } = await import("../../parser/meta.js");
   const { ulid } = await import("ulid");
 
   const created: string[] = [];
@@ -994,15 +944,9 @@ async function generateAgentInstructions(
   const hashPath = path.join(projectDir, ".kspec", ".kspec-agents-hash");
 
   // Dynamically import to avoid circular dependencies
-  const { initContext, loadMetaContext } = await import(
-    "../../parser/index.js"
-  );
-  const {
-    generateAgentsContent,
-    loadTemplateSections,
-    getPackageRoot,
-    computeMetaHash,
-  } = await import("./agents.js");
+  const { initContext, loadMetaContext } = await import("../../parser/index.js");
+  const { generateAgentsContent, loadTemplateSections, getPackageRoot, computeMetaHash } =
+    await import("./agents.js");
 
   try {
     const ctx = await initContext();
@@ -1032,11 +976,7 @@ async function generateAgentInstructions(
 
     if (!dryRun) {
       // Compute meta hash for freshness tracking
-      const metaHash = computeMetaHash(
-        metaCtx.conventions,
-        metaCtx.workflows,
-        templateSections,
-      );
+      const metaHash = computeMetaHash(metaCtx.conventions, metaCtx.workflows, templateSections);
 
       // Skip regeneration when content unchanged (same pattern as kspec agents generate)
       let storedHash: string | undefined;
@@ -1044,7 +984,7 @@ async function generateAgentInstructions(
         const hashContent = await fs.readFile(hashPath, "utf-8");
         const hashData = JSON.parse(hashContent);
         storedHash = hashData.metaHash;
-      } catch (_err) {
+      } catch {
         // No hash file or invalid — regenerate
       }
 
@@ -1053,7 +993,7 @@ async function generateAgentInstructions(
       try {
         await fs.access(outputPath);
         outputExists = true;
-      } catch (_e) {
+      } catch {
         // File missing — must regenerate even if hash matches
       }
 
@@ -1097,7 +1037,7 @@ async function generateAgentInstructions(
  */
 async function installCoreSkillsForSetup(
   projectDir: string,
-  dryRun: boolean
+  dryRun: boolean,
 ): Promise<{
   installed: number;
   skipped: number;
@@ -1107,19 +1047,12 @@ async function installCoreSkillsForSetup(
   enableMessage?: string;
 }> {
   // Dynamically import to avoid circular dependencies
-  const {
-    initContext,
-    loadMetaContext,
-    saveMetaItem,
-    getSkillContentPath,
-  } = await import("../../parser/index.js");
+  const { initContext, loadMetaContext, saveMetaItem, getSkillContentPath } =
+    await import("../../parser/index.js");
   const { commitIfShadow } = await import("../../parser/shadow.js");
   const { SkillSchema } = await import("../../schema/index.js");
-  const {
-    loadCoreSkillsManifest,
-    copyCoreSkillFiles,
-    getKspecPackageVersion,
-  } = await import("./skill.js");
+  const { loadCoreSkillsManifest, copyCoreSkillFiles, getKspecPackageVersion } =
+    await import("./skill.js");
   const { ulid } = await import("ulid");
 
   let installed = 0;
@@ -1195,10 +1128,8 @@ async function installCoreSkillsForSetup(
     let marketplaceResult;
     let enableResult;
     if (!dryRun) {
-      const {
-        registerCorePluginMarketplace,
-        enablePluginInProject,
-      } = await import("../../lib/claude-plugin-registry.js");
+      const { registerCorePluginMarketplace, enablePluginInProject } =
+        await import("../../lib/claude-plugin-registry.js");
       marketplaceResult = await registerCorePluginMarketplace();
       enableResult = await enablePluginInProject(projectDir);
     }
@@ -1224,7 +1155,7 @@ async function installCoreSkillsForSetup(
  */
 export async function runSetupPipeline(
   projectDir: string,
-  options: SetupPipelineOptions
+  options: SetupPipelineOptions,
 ): Promise<SetupPipelineResult> {
   const dryRun = options.dryRun ?? false;
   const skipSkills = options.skipSkills ?? false;
@@ -1239,9 +1170,7 @@ export async function runSetupPipeline(
   let memorySeeded = false;
 
   try {
-    const detected = options.agent
-      ? buildDetectedAgent(options.agent)
-      : detectAgent();
+    const detected = options.agent ? buildDetectedAgent(options.agent) : detectAgent();
 
     // Step 1: Agent detection
     steps.push({
@@ -1312,8 +1241,7 @@ export async function runSetupPipeline(
       if (hooksResult.stop) installedHooks.push("Stop");
       if (hooksResult.preToolUse) installedHooks.push("PreToolUse");
 
-      hooksInstalled =
-        hooksResult.promptCheck || hooksResult.stop || hooksResult.preToolUse;
+      hooksInstalled = hooksResult.promptCheck || hooksResult.stop || hooksResult.preToolUse;
 
       steps.push({
         name: "Install hooks",
@@ -1344,7 +1272,7 @@ export async function runSetupPipeline(
       let artifactsCreated = false;
       try {
         await fs.access(artifactsDir);
-      } catch (_e) {
+      } catch {
         if (!dryRun) {
           await fs.mkdir(artifactsDir, { recursive: true });
         }
@@ -1368,7 +1296,7 @@ export async function runSetupPipeline(
       let sessionsCreated = false;
       try {
         await fs.access(sessionsDirPath);
-      } catch (_e) {
+      } catch {
         if (!dryRun) {
           await fs.mkdir(sessionsDirPath, { recursive: true });
         }
@@ -1432,14 +1360,10 @@ export async function runSetupPipeline(
         const ctx = await initContext();
         const sessionStorage = ctx.manifest?.sessions?.storage;
         if (sessionStorage === "branch") {
-          const { initializeSessionBranch, getSessionBranchStatus } = await import(
-            "../../parser/session-branch.js"
-          );
+          const { initializeSessionBranch, getSessionBranchStatus } =
+            await import("../../parser/session-branch.js");
           const sessionBranchName = ctx.manifest?.sessions?.branch || "kspec-sessions";
-          const sessionStatus = await getSessionBranchStatus(
-            projectDir,
-            sessionBranchName,
-          );
+          const sessionStatus = await getSessionBranchStatus(projectDir, sessionBranchName);
           if (sessionStatus.healthy) {
             steps.push({
               name: "Session branch worktree",
@@ -1453,10 +1377,7 @@ export async function runSetupPipeline(
               message: `create orphan branch "${sessionBranchName}" with worktree at ${SESSIONS_WORKTREE_DIR}/`,
             });
           } else {
-            const sessionResult = await initializeSessionBranch(
-              projectDir,
-              sessionBranchName,
-            );
+            const sessionResult = await initializeSessionBranch(projectDir, sessionBranchName);
             if (sessionResult.success) {
               steps.push({
                 name: "Session branch worktree",
@@ -1505,12 +1426,11 @@ export async function runSetupPipeline(
         force: options.force,
       });
       memorySeeded = memResult.seeded;
-      const memoryStepStatus =
-        memResult.message.startsWith("failed:")
-          ? "failed"
-          : memResult.seeded
-            ? "done"
-            : "skipped";
+      const memoryStepStatus = memResult.message.startsWith("failed:")
+        ? "failed"
+        : memResult.seeded
+          ? "done"
+          : "skipped";
 
       steps.push({
         name: "Seed memory",
@@ -1525,10 +1445,15 @@ export async function runSetupPipeline(
       const skillsResult = await renderSkillsForSetup(projectDir, dryRun);
       skillsRendered = skillsResult.rendered;
 
-      if (skillsResult.rendered > 0 || skillsResult.skipped > 0 || skillsResult.pluginProvided > 0) {
+      if (
+        skillsResult.rendered > 0 ||
+        skillsResult.skipped > 0 ||
+        skillsResult.pluginProvided > 0
+      ) {
         const parts = [];
         if (skillsResult.rendered > 0) parts.push(`${skillsResult.rendered} rendered`);
-        if (skillsResult.pluginProvided > 0) parts.push(`${skillsResult.pluginProvided} plugin-provided`);
+        if (skillsResult.pluginProvided > 0)
+          parts.push(`${skillsResult.pluginProvided} plugin-provided`);
         if (skillsResult.skipped > 0) parts.push(`${skillsResult.skipped} unchanged`);
         steps.push({
           name: "Render skills",
@@ -1580,9 +1505,7 @@ export async function runSetupPipeline(
       steps.push({
         name: "Generate kspec-agents.md",
         status: "done",
-        message: agentsResult.skipped
-          ? "already up to date"
-          : agentsResult.path,
+        message: agentsResult.skipped ? "already up to date" : agentsResult.path,
       });
     } else {
       steps.push({
@@ -1713,24 +1636,16 @@ export function registerSetupCommand(program: Command): void {
       "Explicit agent type override (claude-code|cline|droid|cursor|windsurf|unknown)",
     )
     .option("--dry-run", "Show what would be done without making changes")
-    .option(
-      "--author <author>",
-      "Custom author string (default: auto-detected based on agent)",
-    )
+    .option("--author <author>", "Custom author string (default: auto-detected based on agent)")
     .option("--no-hooks", "Skip installing hooks")
     .option("--skip-skills", "Skip rendering skills")
     .option("--status", "Report current setup state without making changes")
     .option("--force", "Overwrite existing configuration")
-    .option(
-      "--auto-worktree",
-      "Automatically create .kspec worktree if kspec-meta branch exists",
-    )
+    .option("--auto-worktree", "Automatically create .kspec worktree if kspec-meta branch exists")
     .action(async (options) => {
       try {
         const projectDir = process.cwd();
-        const agentOverride = options.agent
-          ? parseSetupAgentOverride(options.agent)
-          : undefined;
+        const agentOverride = options.agent ? parseSetupAgentOverride(options.agent) : undefined;
 
         // AC: @enhanced-setup ac-7, ac-8 - --status mode
         if (options.status) {
@@ -1769,15 +1684,11 @@ export function registerSetupCommand(program: Command): void {
               console.log(`  Stop:             ${unsupported}`);
               console.log(`  PreToolUse:       ${unsupported}`);
               if (status.agent.detected === "droid") {
-                console.log(
-                  "  Note:             droid hooks are not yet supported",
-                );
+                console.log("  Note:             droid hooks are not yet supported");
               }
             }
             if (status.hooks.guardsPresent.length > 0) {
-              console.log(
-                `  Guards:           ${status.hooks.guardsPresent.join(", ")}`,
-              );
+              console.log(`  Guards:           ${status.hooks.guardsPresent.join(", ")}`);
             }
             console.log();
 
@@ -1785,9 +1696,7 @@ export function registerSetupCommand(program: Command): void {
             console.log(chalk.gray("Skills:"));
             console.log(`  Rendered: ${status.skills.rendered}`);
             if (status.skills.drifted > 0) {
-              console.log(
-                `  Drifted:  ${chalk.yellow(status.skills.drifted.toString())}`,
-              );
+              console.log(`  Drifted:  ${chalk.yellow(status.skills.drifted.toString())}`);
             }
             console.log();
 
@@ -1820,16 +1729,16 @@ export function registerSetupCommand(program: Command): void {
                     : chalk.yellow;
               console.log(`  Status: ${statusColor(status.agentsMd.status)}`);
               if (status.agentsMd.status === "unknown") {
-                console.log(chalk.gray("  Could not determine staleness (no manifest or hash unavailable)"));
+                console.log(
+                  chalk.gray("  Could not determine staleness (no manifest or hash unavailable)"),
+                );
               }
               if (status.agentsMd.generatedAt) {
                 console.log(`  Generated: ${status.agentsMd.generatedAt}`);
               }
             } else {
               console.log(`  Status: ${chalk.red("missing")}`);
-              console.log(
-                chalk.gray("  Run 'kspec setup' to generate"),
-              );
+              console.log(chalk.gray("  Run 'kspec setup' to generate"));
             }
             console.log();
 
@@ -1842,26 +1751,20 @@ export function registerSetupCommand(program: Command): void {
               `  Memory:      ${status.seeding.memorySeeded ? chalk.green("✓") : chalk.gray("○")}`,
             );
             if (status.seeding.memoryPath) {
-              console.log(
-                chalk.gray(`  Path: ${status.seeding.memoryPath}`),
-              );
+              console.log(chalk.gray(`  Path: ${status.seeding.memoryPath}`));
             }
           });
           return;
         }
 
         // AC: detect-existing-repo, auto-worktree-flag, worktree-already-exists
-        const worktreeReady = await ensureWorktree(
-          options.autoWorktree || false,
-        );
+        const worktreeReady = await ensureWorktree(options.autoWorktree || false);
         if (!worktreeReady) {
           // User declined worktree creation or it failed
           process.exit(EXIT_CODES.ERROR);
         }
 
-        const detected = agentOverride
-          ? buildDetectedAgent(agentOverride)
-          : detectAgent();
+        const detected = agentOverride ? buildDetectedAgent(agentOverride) : detectAgent();
         const dryRun = options.dryRun || false;
 
         // AC: @cmd-setup ac-1 - proceed with setup even when no agent is detected
@@ -1927,16 +1830,10 @@ export function registerSetupCommand(program: Command): void {
             console.log();
 
             if (dryRun) {
-              console.log(
-                chalk.yellow("Run without --dry-run to apply changes."),
-              );
+              console.log(chalk.yellow("Run without --dry-run to apply changes."));
             } else {
-              console.log(
-                chalk.green("Setup complete."),
-              );
-              console.log(
-                chalk.gray("Restart your agent session for changes to take effect."),
-              );
+              console.log(chalk.green("Setup complete."));
+              console.log(chalk.gray("Restart your agent session for changes to take effect."));
             }
 
             const configureAuthorStep = result.steps.find(

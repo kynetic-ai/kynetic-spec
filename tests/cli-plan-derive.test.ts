@@ -135,10 +135,7 @@ describe("Integration: enhanced plan derive", () => {
 `,
     );
 
-    kspec(
-      `plan import "${planPath}" --module @test-core --status approved`,
-      tempDir,
-    );
+    kspec(`plan import "${planPath}" --module @test-core --status approved`, tempDir);
 
     const result = kspecJson<{
       plan_ref: string;
@@ -168,16 +165,10 @@ describe("Integration: enhanced plan derive", () => {
     expect(derivedPlan.derived_specs).toEqual(result.created_specs);
     expect(derivedPlan.derived_tasks).toEqual([]);
 
-    const parent = kspecJson<{ traits: string[] }>(
-      "item get @parent-feature",
-      tempDir,
-    );
+    const parent = kspecJson<{ traits: string[] }>("item get @parent-feature", tempDir);
     expect(parent.traits).toContain("@trait-json-output");
 
-    const rootTrait = kspecJson<{ type: string }>(
-      "item get @plan-root-trait",
-      tempDir,
-    );
+    const rootTrait = kspecJson<{ type: string }>("item get @plan-root-trait", tempDir);
     expect(rootTrait.type).toBe("trait");
   });
 
@@ -231,10 +222,7 @@ describe("Integration: enhanced plan derive", () => {
       'item add --under @test-core --title "Second Module" --type module --slug second-module',
       tempDir,
     );
-    kspec(
-      `plan import "${planPath}" --module @test-core --status approved`,
-      tempDir,
-    );
+    kspec(`plan import "${planPath}" --module @test-core --status approved`, tempDir);
 
     const result = kspecJson<{ module_ref: string }>(
       "plan derive @plan-override-module --module @second-module",
@@ -271,16 +259,11 @@ describe("Integration: enhanced plan derive", () => {
 `,
     );
 
-    kspec(
-      `plan import "${planPath}" --module @test-core --status approved`,
-      tempDir,
-    );
+    kspec(`plan import "${planPath}" --module @test-core --status approved`, tempDir);
 
-    const result = kspecRun(
-      "plan derive @plan-circular-parents --module @test-core",
-      tempDir,
-      { expectFail: true },
-    );
+    const result = kspecRun("plan derive @plan-circular-parents --module @test-core", tempDir, {
+      expectFail: true,
+    });
 
     expect(result.exitCode).toBe(2);
     expect(result.stderr).toContain("Circular parent reference");
@@ -307,10 +290,7 @@ describe("Integration: enhanced plan derive", () => {
 `,
     );
 
-    kspec(
-      `plan import "${planPath}" --module @test-core --status approved`,
-      tempDir,
-    );
+    kspec(`plan import "${planPath}" --module @test-core --status approved`, tempDir);
 
     const result = kspecJson<{ created_specs: string[] }>(
       "plan derive @plan-slug-dedup --module @test-core",
@@ -320,19 +300,21 @@ describe("Integration: enhanced plan derive", () => {
     expect(result.created_specs).toEqual(["@collision-item-1"]);
   });
 
-  it.runIf(canRunShadowTests)("creates a single clean shadow-branch commit when derive succeeds", async () => {
-    // AC: @plan-derive-enhanced ac-commit
-    // AC: @trait-shadow-commit ac-1, ac-8
-    const shadowDir = await createTempDir("kspec-plan-derive-shadow-");
+  it.runIf(canRunShadowTests)(
+    "creates a single clean shadow-branch commit when derive succeeds",
+    async () => {
+      // AC: @plan-derive-enhanced ac-commit
+      // AC: @trait-shadow-commit ac-1, ac-8
+      const shadowDir = await createTempDir("kspec-plan-derive-shadow-");
 
-    try {
-      await setupShadowProject(shadowDir);
-      kspec('module add --title "Test Core" --slug test-core', shadowDir);
+      try {
+        await setupShadowProject(shadowDir);
+        kspec('module add --title "Test Core" --slug test-core', shadowDir);
 
-      const planPath = await writePlanFile(
-        shadowDir,
-        "shadow-derive.md",
-        `# Shadow Derive
+        const planPath = await writePlanFile(
+          shadowDir,
+          "shadow-derive.md",
+          `# Shadow Derive
 
 ## Specs
 
@@ -341,26 +323,22 @@ describe("Integration: enhanced plan derive", () => {
   slug: shadow-feature
 \`\`\`
 `,
-      );
+        );
 
-      kspec(
-        `plan import "${planPath}" --module @test-core --status approved`,
-        shadowDir,
-      );
+        kspec(`plan import "${planPath}" --module @test-core --status approved`, shadowDir);
 
-      const commitsBefore = getShadowCommitCount(shadowDir);
-      kspec("plan derive @plan-shadow-derive --module @test-core", shadowDir);
-      const commitsAfter = getShadowCommitCount(shadowDir);
+        const commitsBefore = getShadowCommitCount(shadowDir);
+        kspec("plan derive @plan-shadow-derive --module @test-core", shadowDir);
+        const commitsAfter = getShadowCommitCount(shadowDir);
 
-      expect(commitsAfter).toBe(commitsBefore + 1);
-      expect(getShadowStatus(shadowDir)).toBe("");
-      expect(getShadowHeadSubject(shadowDir)).toBe(
-        "Derive Plan: @plan-shadow-derive - 1 specs",
-      );
-    } finally {
-      await cleanupTempDir(shadowDir);
-    }
-  });
+        expect(commitsAfter).toBe(commitsBefore + 1);
+        expect(getShadowStatus(shadowDir)).toBe("");
+        expect(getShadowHeadSubject(shadowDir)).toBe("Derive Plan: @plan-shadow-derive - 1 specs");
+      } finally {
+        await cleanupTempDir(shadowDir);
+      }
+    },
+  );
 
   it("derives tasks, maps refs, carries priorities, and stores global plus per-spec implementation notes", async () => {
     // AC: @plan-derive-enhanced ac-depends-on, ac-tasks-flag, ac-task-refs, ac-additional-tasks, ac-impl-notes-global, ac-impl-notes-per-spec, ac-priority-inheritance
@@ -403,10 +381,7 @@ Global implementation note for the plan.
 `,
     );
 
-    kspec(
-      `plan import "${planPath}" --module @test-core --status approved`,
-      tempDir,
-    );
+    kspec(`plan import "${planPath}" --module @test-core --status approved`, tempDir);
 
     const result = kspecJson<{
       created_specs: string[];
@@ -429,7 +404,9 @@ Global implementation note for the plan.
     expect(alphaTask.plan_ref).toBe("@plan-derive-tasks");
     expect(alphaTask.spec_ref).toBe("@alpha-feature");
     expect(alphaTask.priority).toBe(1);
-    expect(alphaTask.notes.some((note) => note.content.includes("Alpha implementation detail."))).toBe(true);
+    expect(
+      alphaTask.notes.some((note) => note.content.includes("Alpha implementation detail.")),
+    ).toBe(true);
 
     const betaTask = kspecJson<{
       depends_on: string[];
@@ -454,7 +431,9 @@ Global implementation note for the plan.
       derived_tasks: string[];
     }>("plan get @plan-derive-tasks", tempDir);
     expect(derivedPlan.derived_tasks).toEqual(result.created_tasks);
-    expect(derivedPlan.notes.some((note) => note.content.includes("Global implementation note"))).toBe(true);
+    expect(
+      derivedPlan.notes.some((note) => note.content.includes("Global implementation note")),
+    ).toBe(true);
   });
 
   it("honors derive_from_specs false while still creating manual tasks", async () => {
@@ -489,18 +468,12 @@ derive_from_specs: false
 `,
     );
 
-    kspec(
-      `plan import "${planPath}" --module @test-core --status approved`,
-      tempDir,
-    );
+    kspec(`plan import "${planPath}" --module @test-core --status approved`, tempDir);
 
     const result = kspecJson<{
       created_specs: string[];
       created_tasks: string[];
-    }>(
-      "plan derive @plan-manual-tasks-only --module @test-core --tasks",
-      tempDir,
-    );
+    }>("plan derive @plan-manual-tasks-only --module @test-core --tasks", tempDir);
 
     expect(result.created_specs).toEqual(["@alpha-feature", "@beta-feature"]);
     expect(result.created_tasks).toEqual(["@migration-guide"]);
@@ -596,10 +569,7 @@ derive_from_specs: false
 `,
     );
 
-    kspec(
-      `plan import "${planPath}" --module @test-core --status approved`,
-      tempDir,
-    );
+    kspec(`plan import "${planPath}" --module @test-core --status approved`, tempDir);
 
     const result = kspecJson<{
       dry_run: boolean;
@@ -654,10 +624,7 @@ derive_from_specs: false
 `,
     );
 
-    kspec(
-      `plan import "${planPath}" --module @test-core --status approved`,
-      tempDir,
-    );
+    kspec(`plan import "${planPath}" --module @test-core --status approved`, tempDir);
 
     const result = kspecJson<{
       created_specs: string[];
@@ -666,7 +633,9 @@ derive_from_specs: false
     }>("plan derive @plan-validation-errors --module @test-core", tempDir);
 
     expect(result.created_specs).toEqual(["@valid-feature", "@unresolved-dependency"]);
-    expect(result.errors.some((err) => err.message.includes("missing required field: title"))).toBe(true);
+    expect(result.errors.some((err) => err.message.includes("missing required field: title"))).toBe(
+      true,
+    );
     expect(result.skipped.some((entry) => entry.ref === "@missing-parent-feature")).toBe(true);
 
     const dependencySpec = kspecJson<{ depends_on: string[] }>(
@@ -688,16 +657,11 @@ Just prose, no structured specs section.
 `,
     );
 
-    kspec(
-      `plan import "${planPath}" --module @test-core --status approved`,
-      tempDir,
-    );
+    kspec(`plan import "${planPath}" --module @test-core --status approved`, tempDir);
 
-    const result = kspecRun(
-      "plan derive @plan-no-specs --module @test-core",
-      tempDir,
-      { expectFail: true },
-    );
+    const result = kspecRun("plan derive @plan-no-specs --module @test-core", tempDir, {
+      expectFail: true,
+    });
 
     expect(result.exitCode).toBe(2);
     expect(result.stderr).toContain("Plan does not define derivable work");
@@ -706,31 +670,21 @@ Just prose, no structured specs section.
 
   it("includes actionable ref guidance in text and JSON errors when the plan ref does not resolve", () => {
     // AC: @trait-error-guidance ac-1, ac-2, ac-3, ac-6
-    const textResult = kspecRun(
-      "plan derive @does-not-exist --module @test-core",
-      tempDir,
-      { expectFail: true },
-    );
+    const textResult = kspecRun("plan derive @does-not-exist --module @test-core", tempDir, {
+      expectFail: true,
+    });
 
     expect(textResult.stderr).toContain("Plan not found: @does-not-exist");
-    expect(textResult.stderr).toContain(
-      "Suggestion: Check available plans with: kspec plan list",
-    );
+    expect(textResult.stderr).toContain("Suggestion: Check available plans with: kspec plan list");
 
-    const jsonResult = kspecRun(
-      "plan derive @does-not-exist --module @test-core --json",
-      tempDir,
-      { expectFail: true },
-    );
+    const jsonResult = kspecRun("plan derive @does-not-exist --module @test-core --json", tempDir, {
+      expectFail: true,
+    });
     const parsed = JSON.parse(jsonResult.stderr);
 
     expect(parsed.error).toBe("Plan not found: @does-not-exist");
-    expect(parsed.details.suggestion).toBe(
-      "Check available plans with: kspec plan list",
-    );
-    expect(parsed.details.guidance).toBe(
-      "Check available plans with: kspec plan list",
-    );
+    expect(parsed.details.suggestion).toBe("Check available plans with: kspec plan list");
+    expect(parsed.details.guidance).toBe("Check available plans with: kspec plan list");
   });
 
   it("returns structured JSON errors for invalid usage and guards draft plus already-derived plans", async () => {
@@ -760,9 +714,7 @@ Just prose, no structured specs section.
     );
     expect(draftResult.exitCode).toBe(5);
     const draftError = JSON.parse(draftResult.stderr);
-    expect(draftError.error).toBe(
-      "Plan must be in approved status to derive (current: draft)",
-    );
+    expect(draftError.error).toBe("Plan must be in approved status to derive (current: draft)");
     expect(draftError.details.suggestion).toContain(
       "kspec plan set @plan-draft-plan --status approved",
     );
@@ -780,24 +732,17 @@ Just prose, no structured specs section.
 \`\`\`
 `,
     );
-    kspec(
-      `plan import "${approvedPath}" --module @test-core --status approved`,
-      tempDir,
-    );
+    kspec(`plan import "${approvedPath}" --module @test-core --status approved`, tempDir);
     kspec("plan derive @plan-already-derived --module @test-core", tempDir);
 
-    const activeResult = kspecRun(
-      "plan derive @plan-already-derived --json",
-      tempDir,
-      { expectFail: true },
-    );
+    const activeResult = kspecRun("plan derive @plan-already-derived --json", tempDir, {
+      expectFail: true,
+    });
     expect(activeResult.exitCode).toBe(5);
     const activeError = JSON.parse(activeResult.stderr);
     expect(activeError.error).toBe(
       "Plan already derived. Manage specs directly via kspec item set.",
     );
-    expect(activeError.details.suggestion).toContain(
-      "kspec item set @plan-already-derived",
-    );
+    expect(activeError.details.suggestion).toContain("kspec item set @plan-already-derived");
   });
 });

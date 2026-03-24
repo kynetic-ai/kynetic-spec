@@ -12,56 +12,56 @@
  */
 
 import type {
-	TaskSummary,
-	TaskDetail,
-	ItemSummary,
-	ItemDetail,
-	BatchItemsResponse,
-	InboxItem,
-	InboxItemWithTriage,
-	SessionContext,
-	Observation,
-	Workflow,
-	Convention,
-	PaginatedResponse,
-	PlanSummary,
-	PlanDetail,
-	ReviewSummary,
-	ReviewDetail,
-	ReviewThread,
-	ErrorResponse,
-	SearchResponse,
-	AgentDefinition,
-	AgentUpdatePayload,
-	ValidationAggregation,
-} from '@kynetic-ai/shared';
-import type { TriageRecord } from './types/triage';
+  TaskSummary,
+  TaskDetail,
+  ItemSummary,
+  ItemDetail,
+  BatchItemsResponse,
+  InboxItem,
+  InboxItemWithTriage,
+  SessionContext,
+  Observation,
+  Workflow,
+  Convention,
+  PaginatedResponse,
+  PlanSummary,
+  PlanDetail,
+  ReviewSummary,
+  ReviewDetail,
+  ReviewThread,
+  ErrorResponse,
+  SearchResponse,
+  AgentDefinition,
+  AgentUpdatePayload,
+  ValidationAggregation,
+} from "@kynetic-ai/shared";
+import type { TriageRecord } from "./types/triage";
 import {
-	getSelectedProjectPath,
-	clearInvalidSelection,
-	isInvalidProjectError,
-	type Project
-} from './stores/project.svelte';
-import { isStaticMode, assertWritable } from './stores/mode.svelte';
+  getSelectedProjectPath,
+  clearInvalidSelection,
+  isInvalidProjectError,
+  type Project,
+} from "./stores/project.svelte";
+import { isStaticMode, assertWritable } from "./stores/mode.svelte";
 import {
-	fetchTasksStatic,
-	fetchTaskStatic,
-	fetchItemsStatic,
-	fetchItemStatic,
-	fetchItemTasksStatic,
-	fetchBatchItemsStatic,
-	fetchInboxStatic,
-	fetchSessionContextStatic,
-	fetchObservationsStatic,
-	searchStatic,
-	fetchTriageRecordsStatic,
-	fetchPlansStatic,
-	fetchPlanContentStatic,
-	fetchValidationStatic,
-	fetchAlignmentStatic,
-	fetchWorkflowsStatic
-} from './api-static';
-import { DAEMON_API_BASE } from './constants';
+  fetchTasksStatic,
+  fetchTaskStatic,
+  fetchItemsStatic,
+  fetchItemStatic,
+  fetchItemTasksStatic,
+  fetchBatchItemsStatic,
+  fetchInboxStatic,
+  fetchSessionContextStatic,
+  fetchObservationsStatic,
+  searchStatic,
+  fetchTriageRecordsStatic,
+  fetchPlansStatic,
+  fetchPlanContentStatic,
+  fetchValidationStatic,
+  fetchAlignmentStatic,
+  fetchWorkflowsStatic,
+} from "./api-static";
+import { DAEMON_API_BASE } from "./constants";
 
 const API_BASE = DAEMON_API_BASE;
 
@@ -70,8 +70,8 @@ const API_BASE = DAEMON_API_BASE;
  * AC: @multi-directory-daemon ac-26
  */
 function getProjectHeaders(): HeadersInit {
-	const path = getSelectedProjectPath();
-	return path ? { 'X-Kspec-Dir': path } : {};
+  const path = getSelectedProjectPath();
+  return path ? { "X-Kspec-Dir": path } : {};
 }
 
 /**
@@ -79,15 +79,15 @@ function getProjectHeaders(): HeadersInit {
  * AC: @multi-directory-daemon ac-36
  */
 async function handleResponseError(response: Response): Promise<never> {
-	const error: ErrorResponse = await response.json();
-	const message = error.message || error.error;
+  const error: ErrorResponse = await response.json();
+  const message = error.message || error.error;
 
-	// Check if this is an invalid project error
-	if (isInvalidProjectError(response, message)) {
-		clearInvalidSelection();
-	}
+  // Check if this is an invalid project error
+  if (isInvalidProjectError(response, message)) {
+    clearInvalidSelection();
+  }
 
-	throw new Error(message);
+  throw new Error(message);
 }
 
 /**
@@ -95,11 +95,11 @@ async function handleResponseError(response: Response): Promise<never> {
  * AC: @multi-directory-daemon ac-25, ac-28
  */
 export async function fetchProjects(): Promise<{ projects: Project[] }> {
-	const response = await fetch(`${API_BASE}/api/projects`);
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
-	return response.json();
+  const response = await fetch(`${API_BASE}/api/projects`);
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
+  return response.json();
 }
 
 /**
@@ -109,41 +109,41 @@ export async function fetchProjects(): Promise<{ projects: Project[] }> {
  * AC: @gh-pages-export ac-11 - Static mode support
  */
 export async function fetchTasks(params?: {
-	status?: string | string[];
-	tag?: string;
-	assignee?: string;
-	automation?: string;
-	plan?: string;
-	limit?: number;
-	offset?: number;
+  status?: string | string[];
+  tag?: string;
+  assignee?: string;
+  automation?: string;
+  plan?: string;
+  limit?: number;
+  offset?: number;
 }): Promise<PaginatedResponse<TaskSummary>> {
-	// AC: @gh-pages-export ac-11 - Use static data in static mode
-	if (isStaticMode()) {
-		return fetchTasksStatic(params);
-	}
+  // AC: @gh-pages-export ac-11 - Use static data in static mode
+  if (isStaticMode()) {
+    return fetchTasksStatic(params);
+  }
 
-	const url = new URL(`${API_BASE}/api/tasks`);
+  const url = new URL(`${API_BASE}/api/tasks`);
 
-	if (params) {
-		Object.entries(params).forEach(([key, value]) => {
-			if (value !== undefined && value !== '') {
-				if (Array.isArray(value)) {
-					value.forEach((v) => url.searchParams.append(key, v));
-				} else {
-					url.searchParams.set(key, String(value));
-				}
-			}
-		});
-	}
+  if (params) {
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== "") {
+        if (Array.isArray(value)) {
+          value.forEach((v) => url.searchParams.append(key, v));
+        } else {
+          url.searchParams.set(key, String(value));
+        }
+      }
+    });
+  }
 
-	const response = await fetch(url.toString(), {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(url.toString(), {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	return response.json();
+  return response.json();
 }
 
 /**
@@ -153,23 +153,23 @@ export async function fetchTasks(params?: {
  * AC: @gh-pages-export ac-12 - Static mode deep linking
  */
 export async function fetchTask(ref: string): Promise<TaskDetail> {
-	// AC: @gh-pages-export ac-12 - Use static data in static mode
-	if (isStaticMode()) {
-		const task = fetchTaskStatic(ref);
-		if (!task) {
-			throw new Error(`Task not found: ${ref}`);
-		}
-		return task;
-	}
+  // AC: @gh-pages-export ac-12 - Use static data in static mode
+  if (isStaticMode()) {
+    const task = fetchTaskStatic(ref);
+    if (!task) {
+      throw new Error(`Task not found: ${ref}`);
+    }
+    return task;
+  }
 
-	const response = await fetch(`${API_BASE}/api/tasks/${ref}`, {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(`${API_BASE}/api/tasks/${ref}`, {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	return response.json();
+  return response.json();
 }
 
 /**
@@ -179,16 +179,16 @@ export async function fetchTask(ref: string): Promise<TaskDetail> {
  * AC: @gh-pages-export ac-16, ac-18 - Disabled in static mode
  */
 export async function startTask(ref: string): Promise<void> {
-	// AC: @gh-pages-export ac-16, ac-18 - Write operations throw in static mode
-	assertWritable('start task');
+  // AC: @gh-pages-export ac-16, ac-18 - Write operations throw in static mode
+  assertWritable("start task");
 
-	const response = await fetch(`${API_BASE}/api/tasks/${ref}/start`, {
-		method: 'POST',
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(`${API_BASE}/api/tasks/${ref}/start`, {
+    method: "POST",
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 }
 
 /**
@@ -198,20 +198,20 @@ export async function startTask(ref: string): Promise<void> {
  * AC: @gh-pages-export ac-18 - Disabled in static mode
  */
 export async function addTaskNote(ref: string, content: string): Promise<void> {
-	// AC: @gh-pages-export ac-18 - Write operations throw in static mode
-	assertWritable('add note');
+  // AC: @gh-pages-export ac-18 - Write operations throw in static mode
+  assertWritable("add note");
 
-	const response = await fetch(`${API_BASE}/api/tasks/${ref}/note`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			...getProjectHeaders()
-		},
-		body: JSON.stringify({ content })
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(`${API_BASE}/api/tasks/${ref}/note`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...getProjectHeaders(),
+    },
+    body: JSON.stringify({ content }),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 }
 
 /**
@@ -219,15 +219,15 @@ export async function addTaskNote(ref: string, content: string): Promise<void> {
  * AC: @ui-task-board ac-6
  */
 export async function submitTask(ref: string): Promise<void> {
-	assertWritable('submit task');
+  assertWritable("submit task");
 
-	const response = await fetch(`${API_BASE}/api/tasks/${ref}/submit`, {
-		method: 'POST',
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(`${API_BASE}/api/tasks/${ref}/submit`, {
+    method: "POST",
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 }
 
 /**
@@ -235,19 +235,19 @@ export async function submitTask(ref: string): Promise<void> {
  * AC: @ui-task-board ac-6
  */
 export async function completeTask(ref: string, reason: string): Promise<void> {
-	assertWritable('complete task');
+  assertWritable("complete task");
 
-	const response = await fetch(`${API_BASE}/api/tasks/${ref}/complete`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			...getProjectHeaders()
-		},
-		body: JSON.stringify({ reason })
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(`${API_BASE}/api/tasks/${ref}/complete`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...getProjectHeaders(),
+    },
+    body: JSON.stringify({ reason }),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 }
 
 /**
@@ -255,19 +255,19 @@ export async function completeTask(ref: string, reason: string): Promise<void> {
  * AC: @ui-task-board ac-6
  */
 export async function blockTask(ref: string, reason: string): Promise<void> {
-	assertWritable('block task');
+  assertWritable("block task");
 
-	const response = await fetch(`${API_BASE}/api/tasks/${ref}/block`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			...getProjectHeaders()
-		},
-		body: JSON.stringify({ reason })
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(`${API_BASE}/api/tasks/${ref}/block`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...getProjectHeaders(),
+    },
+    body: JSON.stringify({ reason }),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 }
 
 /**
@@ -282,39 +282,39 @@ export async function blockTask(ref: string, reason: string): Promise<void> {
  * AC: @gh-pages-export ac-11 - Static mode support
  */
 export async function fetchItems(params?: {
-	type?: string | string[];
-	tag?: string;
-	plan?: string;
-	limit?: number;
-	offset?: number;
+  type?: string | string[];
+  tag?: string;
+  plan?: string;
+  limit?: number;
+  offset?: number;
 }): Promise<PaginatedResponse<ItemSummary>> {
-	// AC: @gh-pages-export ac-11 - Use static data in static mode
-	if (isStaticMode()) {
-		return fetchItemsStatic(params);
-	}
+  // AC: @gh-pages-export ac-11 - Use static data in static mode
+  if (isStaticMode()) {
+    return fetchItemsStatic(params);
+  }
 
-	const url = new URL(`${API_BASE}/api/items`);
+  const url = new URL(`${API_BASE}/api/items`);
 
-	if (params) {
-		Object.entries(params).forEach(([key, value]) => {
-			if (value !== undefined && value !== '') {
-				if (Array.isArray(value)) {
-					value.forEach((v) => url.searchParams.append(key, String(v)));
-				} else {
-					url.searchParams.set(key, String(value));
-				}
-			}
-		});
-	}
+  if (params) {
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== "") {
+        if (Array.isArray(value)) {
+          value.forEach((v) => url.searchParams.append(key, String(v)));
+        } else {
+          url.searchParams.set(key, String(value));
+        }
+      }
+    });
+  }
 
-	const response = await fetch(url.toString(), {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(url.toString(), {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	return response.json();
+  return response.json();
 }
 
 /**
@@ -324,43 +324,43 @@ export async function fetchItems(params?: {
  * AC: @gh-pages-export ac-13 - Static mode deep linking
  */
 export async function fetchItem(ref: string): Promise<ItemDetail> {
-	// AC: @gh-pages-export ac-13 - Use static data in static mode
-	if (isStaticMode()) {
-		const item = fetchItemStatic(ref);
-		if (!item) {
-			throw new Error(`Item not found: ${ref}`);
-		}
-		return item;
-	}
+  // AC: @gh-pages-export ac-13 - Use static data in static mode
+  if (isStaticMode()) {
+    const item = fetchItemStatic(ref);
+    if (!item) {
+      throw new Error(`Item not found: ${ref}`);
+    }
+    return item;
+  }
 
-	const response = await fetch(`${API_BASE}/api/items/${ref}`, {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(`${API_BASE}/api/items/${ref}`, {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	return response.json();
+  return response.json();
 }
 
 export async function fetchBatchItems(refs: string[]): Promise<BatchItemsResponse> {
-	if (isStaticMode()) {
-		return fetchBatchItemsStatic(refs);
-	}
+  if (isStaticMode()) {
+    return fetchBatchItemsStatic(refs);
+  }
 
-	const response = await fetch(`${API_BASE}/api/items/batch`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			...getProjectHeaders()
-		},
-		body: JSON.stringify({ refs })
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(`${API_BASE}/api/items/batch`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...getProjectHeaders(),
+    },
+    body: JSON.stringify({ refs }),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	return response.json();
+  return response.json();
 }
 
 /**
@@ -370,19 +370,19 @@ export async function fetchBatchItems(refs: string[]): Promise<BatchItemsRespons
  * AC: @gh-pages-export ac-11 - Static mode support
  */
 export async function fetchItemTasks(ref: string): Promise<PaginatedResponse<TaskSummary>> {
-	// AC: @gh-pages-export ac-11 - Use static data in static mode
-	if (isStaticMode()) {
-		return fetchItemTasksStatic(ref);
-	}
+  // AC: @gh-pages-export ac-11 - Use static data in static mode
+  if (isStaticMode()) {
+    return fetchItemTasksStatic(ref);
+  }
 
-	const response = await fetch(`${API_BASE}/api/items/${ref}/tasks`, {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(`${API_BASE}/api/items/${ref}/tasks`, {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	return response.json();
+  return response.json();
 }
 
 /**
@@ -392,32 +392,32 @@ export async function fetchItemTasks(ref: string): Promise<PaginatedResponse<Tas
  * AC: @gh-pages-export ac-11 - Static mode support
  */
 export async function fetchInbox(params?: {
-	limit?: number;
-	offset?: number;
+  limit?: number;
+  offset?: number;
 }): Promise<PaginatedResponse<InboxItem>> {
-	// AC: @gh-pages-export ac-11 - Use static data in static mode
-	if (isStaticMode()) {
-		return fetchInboxStatic(params);
-	}
+  // AC: @gh-pages-export ac-11 - Use static data in static mode
+  if (isStaticMode()) {
+    return fetchInboxStatic(params);
+  }
 
-	const url = new URL(`${API_BASE}/api/inbox`);
+  const url = new URL(`${API_BASE}/api/inbox`);
 
-	if (params) {
-		Object.entries(params).forEach(([key, value]) => {
-			if (value !== undefined && value !== '') {
-				url.searchParams.set(key, String(value));
-			}
-		});
-	}
+  if (params) {
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== "") {
+        url.searchParams.set(key, String(value));
+      }
+    });
+  }
 
-	const response = await fetch(url.toString(), {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(url.toString(), {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	return response.json();
+  return response.json();
 }
 
 /**
@@ -426,40 +426,40 @@ export async function fetchInbox(params?: {
  * AC: @ui-api-aggregation ac-3 — Inbox items with inline triage status
  */
 export async function fetchMergedInbox(): Promise<{
-	items: InboxItemWithTriage[];
-	total: number;
+  items: InboxItemWithTriage[];
+  total: number;
 }> {
-	// In static mode, fall back to separate fetches and merge client-side
-	if (isStaticMode()) {
-		const inboxResponse = await fetchInboxStatic();
-		const triageResponse = await fetchTriageRecordsStatic();
-		const items: InboxItemWithTriage[] = inboxResponse.items.map((item) => {
-			const record = triageResponse.items.find((r) => r.inbox_ref === item._ulid);
-			const result: InboxItemWithTriage = { ...item };
-			if (record) {
-				result.triage = {
-					_ulid: record._ulid,
-					status: record.status,
-					action: record.action,
-					reasoning: record.reasoning,
-					decided_by: record.decided_by,
-					acted_at: record.acted_at,
-					result_ref: record.result_ref,
-				};
-			}
-			return result;
-		});
-		return { items, total: items.length };
-	}
+  // In static mode, fall back to separate fetches and merge client-side
+  if (isStaticMode()) {
+    const inboxResponse = await fetchInboxStatic();
+    const triageResponse = await fetchTriageRecordsStatic();
+    const items: InboxItemWithTriage[] = inboxResponse.items.map((item) => {
+      const record = triageResponse.items.find((r) => r.inbox_ref === item._ulid);
+      const result: InboxItemWithTriage = { ...item };
+      if (record) {
+        result.triage = {
+          _ulid: record._ulid,
+          status: record.status,
+          action: record.action,
+          reasoning: record.reasoning,
+          decided_by: record.decided_by,
+          acted_at: record.acted_at,
+          result_ref: record.result_ref,
+        };
+      }
+      return result;
+    });
+    return { items, total: items.length };
+  }
 
-	const response = await fetch(`${API_BASE}/api/aggregation/inbox`, {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(`${API_BASE}/api/aggregation/inbox`, {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	return response.json();
+  return response.json();
 }
 
 /**
@@ -469,23 +469,23 @@ export async function fetchMergedInbox(): Promise<{
  * AC: @gh-pages-export ac-17, ac-18 - Disabled in static mode
  */
 export async function addInboxItem(text: string, tags?: string[]): Promise<InboxItem> {
-	// AC: @gh-pages-export ac-17, ac-18 - Write operations throw in static mode
-	assertWritable('add inbox item');
+  // AC: @gh-pages-export ac-17, ac-18 - Write operations throw in static mode
+  assertWritable("add inbox item");
 
-	const response = await fetch(`${API_BASE}/api/inbox`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			...getProjectHeaders()
-		},
-		body: JSON.stringify({ text, tags })
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(`${API_BASE}/api/inbox`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...getProjectHeaders(),
+    },
+    body: JSON.stringify({ text, tags }),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	const result = await response.json();
-	return result.item;
+  const result = await response.json();
+  return result.item;
 }
 
 /**
@@ -495,16 +495,16 @@ export async function addInboxItem(text: string, tags?: string[]): Promise<Inbox
  * AC: @gh-pages-export ac-18 - Disabled in static mode
  */
 export async function deleteInboxItem(ref: string): Promise<void> {
-	// AC: @gh-pages-export ac-18 - Write operations throw in static mode
-	assertWritable('delete inbox item');
+  // AC: @gh-pages-export ac-18 - Write operations throw in static mode
+  assertWritable("delete inbox item");
 
-	const response = await fetch(`${API_BASE}/api/inbox/${ref}`, {
-		method: 'DELETE',
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(`${API_BASE}/api/inbox/${ref}`, {
+    method: "DELETE",
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 }
 
 /**
@@ -514,23 +514,23 @@ export async function deleteInboxItem(ref: string): Promise<void> {
  * AC: @gh-pages-export ac-11 - Static mode support
  */
 export async function fetchSessionContext(): Promise<SessionContext> {
-	// AC: @gh-pages-export ac-11 - Use static data in static mode
-	if (isStaticMode()) {
-		const session = fetchSessionContextStatic();
-		if (!session) {
-			return { focus: null, threads: [], open_questions: [], updated_at: new Date().toISOString() };
-		}
-		return session;
-	}
+  // AC: @gh-pages-export ac-11 - Use static data in static mode
+  if (isStaticMode()) {
+    const session = fetchSessionContextStatic();
+    if (!session) {
+      return { focus: null, threads: [], open_questions: [], updated_at: new Date().toISOString() };
+    }
+    return session;
+  }
 
-	const response = await fetch(`${API_BASE}/api/meta/session`, {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(`${API_BASE}/api/meta/session`, {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	return response.json();
+  return response.json();
 }
 
 /**
@@ -540,32 +540,32 @@ export async function fetchSessionContext(): Promise<SessionContext> {
  * AC: @gh-pages-export ac-11 - Static mode support
  */
 export async function fetchObservations(params?: {
-	type?: 'friction' | 'success' | 'question' | 'idea';
-	resolved?: boolean;
+  type?: "friction" | "success" | "question" | "idea";
+  resolved?: boolean;
 }): Promise<PaginatedResponse<Observation>> {
-	// AC: @gh-pages-export ac-11 - Use static data in static mode
-	if (isStaticMode()) {
-		return fetchObservationsStatic(params);
-	}
+  // AC: @gh-pages-export ac-11 - Use static data in static mode
+  if (isStaticMode()) {
+    return fetchObservationsStatic(params);
+  }
 
-	const url = new URL(`${API_BASE}/api/meta/observations`);
+  const url = new URL(`${API_BASE}/api/meta/observations`);
 
-	if (params) {
-		Object.entries(params).forEach(([key, value]) => {
-			if (value !== undefined && value !== '') {
-				url.searchParams.set(key, String(value));
-			}
-		});
-	}
+  if (params) {
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== "") {
+        url.searchParams.set(key, String(value));
+      }
+    });
+  }
 
-	const response = await fetch(url.toString(), {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(url.toString(), {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	return response.json();
+  return response.json();
 }
 
 /**
@@ -575,22 +575,22 @@ export async function fetchObservations(params?: {
  * AC: @gh-pages-export ac-11 - Static mode support
  */
 export async function search(query: string): Promise<SearchResponse> {
-	// AC: @gh-pages-export ac-11 - Use static data in static mode
-	if (isStaticMode()) {
-		return searchStatic(query);
-	}
+  // AC: @gh-pages-export ac-11 - Use static data in static mode
+  if (isStaticMode()) {
+    return searchStatic(query);
+  }
 
-	const url = new URL(`${API_BASE}/api/search`);
-	url.searchParams.set('q', query);
+  const url = new URL(`${API_BASE}/api/search`);
+  url.searchParams.set("q", query);
 
-	const response = await fetch(url.toString(), {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(url.toString(), {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	return response.json();
+  return response.json();
 }
 
 // ============================================================
@@ -603,34 +603,34 @@ export async function search(query: string): Promise<SearchResponse> {
  * AC: @interactive-triage-ui ac-1, ac-2, ac-7
  */
 export async function fetchTriageRecords(params?: {
-	status?: string;
-	action?: string;
-	limit?: number;
-	offset?: number;
+  status?: string;
+  action?: string;
+  limit?: number;
+  offset?: number;
 }): Promise<PaginatedResponse<TriageRecord>> {
-	// AC: @interactive-triage-ui ac-8 - Static mode: read-only triage data
-	if (isStaticMode()) {
-		return fetchTriageRecordsStatic(params);
-	}
+  // AC: @interactive-triage-ui ac-8 - Static mode: read-only triage data
+  if (isStaticMode()) {
+    return fetchTriageRecordsStatic(params);
+  }
 
-	const url = new URL(`${API_BASE}/api/triage`);
+  const url = new URL(`${API_BASE}/api/triage`);
 
-	if (params) {
-		Object.entries(params).forEach(([key, value]) => {
-			if (value !== undefined && value !== '') {
-				url.searchParams.set(key, String(value));
-			}
-		});
-	}
+  if (params) {
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== "") {
+        url.searchParams.set(key, String(value));
+      }
+    });
+  }
 
-	const response = await fetch(url.toString(), {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(url.toString(), {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	return response.json();
+  return response.json();
 }
 
 /**
@@ -638,27 +638,27 @@ export async function fetchTriageRecords(params?: {
  * AC: @interactive-triage-ui ac-3
  */
 export async function createTriageRecord(data: {
-	inbox_ref: string;
-	action: string;
-	reasoning: string;
-	decided_by?: string;
-	evidence_refs?: string[];
+  inbox_ref: string;
+  action: string;
+  reasoning: string;
+  decided_by?: string;
+  evidence_refs?: string[];
 }): Promise<{ success: boolean; record: TriageRecord }> {
-	assertWritable('create triage record');
+  assertWritable("create triage record");
 
-	const response = await fetch(`${API_BASE}/api/triage`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			...getProjectHeaders()
-		},
-		body: JSON.stringify(data)
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(`${API_BASE}/api/triage`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...getProjectHeaders(),
+    },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	return response.json();
+  return response.json();
 }
 
 /**
@@ -666,28 +666,28 @@ export async function createTriageRecord(data: {
  * AC: @interactive-triage-ui ac-4
  */
 export async function overrideTriageRecord(
-	ref: string,
-	data: {
-		action: string;
-		reasoning: string;
-		override_by?: string;
-	}
+  ref: string,
+  data: {
+    action: string;
+    reasoning: string;
+    override_by?: string;
+  },
 ): Promise<{ success: boolean; record: TriageRecord }> {
-	assertWritable('override triage record');
+  assertWritable("override triage record");
 
-	const response = await fetch(`${API_BASE}/api/triage/${ref}/override`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			...getProjectHeaders()
-		},
-		body: JSON.stringify(data)
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(`${API_BASE}/api/triage/${ref}/override`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...getProjectHeaders(),
+    },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	return response.json();
+  return response.json();
 }
 
 // ============================================================
@@ -705,26 +705,26 @@ export type { AgentDefinition, AgentUpdatePayload };
  * Active invocation from GET /api/agent/status
  */
 export interface ActiveInvocation {
-	session_id: string;
-	agent_id: string;
-	task_ref: string | null;
-	task_title: string | null;
-	elapsed_ms: number;
+  session_id: string;
+  agent_id: string;
+  task_ref: string | null;
+  task_title: string | null;
+  elapsed_ms: number;
 }
 
 /**
  * Agent dispatch status from GET /api/agent/status
  */
 export interface AgentDispatchStatus {
-	dispatch_enabled: boolean;
-	active_invocations: ActiveInvocation[];
-	queue_depth: number;
-	agent_definitions: Array<{
-		id: string;
-		name: string;
-		adapter: string;
-		completed_sessions?: number;
-	}>;
+  dispatch_enabled: boolean;
+  active_invocations: ActiveInvocation[];
+  queue_depth: number;
+  agent_definitions: Array<{
+    id: string;
+    name: string;
+    adapter: string;
+    completed_sessions?: number;
+  }>;
 }
 
 /**
@@ -732,54 +732,64 @@ export interface AgentDispatchStatus {
  * AC: @ui-agent-dispatch ac-1, ac-2, ac-3
  */
 export async function fetchAgentStatus(): Promise<AgentDispatchStatus> {
-	if (isStaticMode()) {
-		return { dispatch_enabled: false, active_invocations: [], queue_depth: 0, agent_definitions: [] };
-	}
-	const response = await fetch(`${API_BASE}/api/agent/status`, {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
-	return response.json();
+  if (isStaticMode()) {
+    return {
+      dispatch_enabled: false,
+      active_invocations: [],
+      queue_depth: 0,
+      agent_definitions: [],
+    };
+  }
+  const response = await fetch(`${API_BASE}/api/agent/status`, {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
+  return response.json();
 }
 
 /**
  * Fetch full agent definitions from meta
  * AC: @ui-agent-dispatch ac-1
  */
-export async function fetchAgentDefinitions(): Promise<{ items: AgentDefinition[]; total: number }> {
-	if (isStaticMode()) {
-		return { items: [], total: 0 };
-	}
-	const response = await fetch(`${API_BASE}/api/meta/agents`, {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
-	return response.json();
+export async function fetchAgentDefinitions(): Promise<{
+  items: AgentDefinition[];
+  total: number;
+}> {
+  if (isStaticMode()) {
+    return { items: [], total: 0 };
+  }
+  const response = await fetch(`${API_BASE}/api/meta/agents`, {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
+  return response.json();
 }
 
 /**
  * Start or stop the dispatch engine
  * AC: @ui-agent-dispatch ac-2
  */
-export async function controlDispatch(action: 'start' | 'stop'): Promise<{ dispatch_enabled: boolean }> {
-	assertWritable('control dispatch');
+export async function controlDispatch(
+  action: "start" | "stop",
+): Promise<{ dispatch_enabled: boolean }> {
+  assertWritable("control dispatch");
 
-	const response = await fetch(`${API_BASE}/api/agent/dispatch`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			...getProjectHeaders()
-		},
-		body: JSON.stringify({ action })
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
-	return response.json();
+  const response = await fetch(`${API_BASE}/api/agent/dispatch`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...getProjectHeaders(),
+    },
+    body: JSON.stringify({ action }),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
+  return response.json();
 }
 
 /**
@@ -787,24 +797,24 @@ export async function controlDispatch(action: 'start' | 'stop'): Promise<{ dispa
  * AC: @ui-agent-dispatch ac-4
  */
 export async function updateAgentDefinition(
-	agentId: string,
-	payload: AgentUpdatePayload
+  agentId: string,
+  payload: AgentUpdatePayload,
 ): Promise<AgentDefinition> {
-	assertWritable('update agent definition');
+  assertWritable("update agent definition");
 
-	const response = await fetch(`${API_BASE}/api/meta/agents/${agentId}`, {
-		method: 'PATCH',
-		headers: {
-			'Content-Type': 'application/json',
-			...getProjectHeaders()
-		},
-		body: JSON.stringify(payload)
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(`${API_BASE}/api/meta/agents/${agentId}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      ...getProjectHeaders(),
+    },
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	return response.json();
+  return response.json();
 }
 
 /**
@@ -812,19 +822,19 @@ export async function updateAgentDefinition(
  * AC: @interactive-triage-ui ac-3
  */
 export async function actOnTriageRecord(
-	ref: string
+  ref: string,
 ): Promise<{ success: boolean; record: TriageRecord }> {
-	assertWritable('execute triage action');
+  assertWritable("execute triage action");
 
-	const response = await fetch(`${API_BASE}/api/triage/${ref}/act`, {
-		method: 'POST',
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(`${API_BASE}/api/triage/${ref}/act`, {
+    method: "POST",
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	return response.json();
+  return response.json();
 }
 
 // ============================================================
@@ -836,64 +846,64 @@ export async function actOnTriageRecord(
  * Hook summary from GET /api/hooks
  */
 export interface HookSummary {
-	id: string;
-	name: string;
-	on: string;
-	filter: Record<string, unknown> | null;
-	action_type: string;
-	enabled: boolean;
+  id: string;
+  name: string;
+  on: string;
+  filter: Record<string, unknown> | null;
+  action_type: string;
+  enabled: boolean;
 }
 
 /**
  * Schedule summary from GET /api/schedules
  */
 export interface ScheduleSummary {
-	id: string;
-	name: string;
-	enabled: boolean;
-	cron: string;
-	timezone: string;
-	overlap_policy: 'skip' | 'buffer_one' | 'allow';
-	next_tick: number | null;
-	last_tick: number | null;
-	run_count: number;
-	active_run_count: number;
+  id: string;
+  name: string;
+  enabled: boolean;
+  cron: string;
+  timezone: string;
+  overlap_policy: "skip" | "buffer_one" | "allow";
+  next_tick: number | null;
+  last_tick: number | null;
+  run_count: number;
+  active_run_count: number;
 }
 
 /**
  * Schedule runtime status from GET /api/schedules/:id/status
  */
 export interface ScheduleRuntimeStatus extends ScheduleSummary {
-	active_run_ids: string[];
-	overlap_state: 'idle' | 'running' | 'running_buffered';
+  active_run_ids: string[];
+  overlap_state: "idle" | "running" | "running_buffered";
 }
 
 /**
  * Event envelope from GET /api/events/recent
  */
 export interface EventEnvelopeSummary {
-	event_id: string;
-	event_type: string;
-	emitted_at: string;
-	source_type: string;
-	source_id: string;
-	causation_id: string | null;
-	correlation_id: string | null;
-	payload: Record<string, unknown>;
+  event_id: string;
+  event_type: string;
+  emitted_at: string;
+  source_type: string;
+  source_id: string;
+  causation_id: string | null;
+  correlation_id: string | null;
+  payload: Record<string, unknown>;
 }
 
 /**
  * Composition activation from GET /api/compositions/:config_id/activations
  */
 export interface CompositionActivation {
-	activation_id: string;
-	group_id: string;
-	completed_count: number;
-	failed_count: number;
-	total_members: number;
-	member_action_run_ids: string[];
-	timeout_remaining_ms: number | null;
-	first_run_at: string | null;
+  activation_id: string;
+  group_id: string;
+  completed_count: number;
+  failed_count: number;
+  total_members: number;
+  member_action_run_ids: string[];
+  timeout_remaining_ms: number | null;
+  first_run_at: string | null;
 }
 
 /**
@@ -901,23 +911,23 @@ export interface CompositionActivation {
  * AC: @ui-automation-view ac-1
  */
 export async function fetchHooks(params?: {
-	limit?: number;
-	offset?: number;
+  limit?: number;
+  offset?: number;
 }): Promise<PaginatedResponse<HookSummary>> {
-	if (isStaticMode()) {
-		return { items: [], total: 0 };
-	}
-	const url = new URL(`${API_BASE}/api/hooks`);
-	if (params?.limit !== undefined) url.searchParams.set('limit', String(params.limit));
-	if (params?.offset !== undefined) url.searchParams.set('offset', String(params.offset));
+  if (isStaticMode()) {
+    return { items: [], total: 0 };
+  }
+  const url = new URL(`${API_BASE}/api/hooks`);
+  if (params?.limit !== undefined) url.searchParams.set("limit", String(params.limit));
+  if (params?.offset !== undefined) url.searchParams.set("offset", String(params.offset));
 
-	const response = await fetch(url.toString(), {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
-	return response.json();
+  const response = await fetch(url.toString(), {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
+  return response.json();
 }
 
 /**
@@ -925,23 +935,23 @@ export async function fetchHooks(params?: {
  * AC: @ui-automation-view ac-1, ac-4
  */
 export async function fetchSchedules(params?: {
-	limit?: number;
-	offset?: number;
+  limit?: number;
+  offset?: number;
 }): Promise<PaginatedResponse<ScheduleSummary>> {
-	if (isStaticMode()) {
-		return { items: [], total: 0 };
-	}
-	const url = new URL(`${API_BASE}/api/schedules`);
-	if (params?.limit !== undefined) url.searchParams.set('limit', String(params.limit));
-	if (params?.offset !== undefined) url.searchParams.set('offset', String(params.offset));
+  if (isStaticMode()) {
+    return { items: [], total: 0 };
+  }
+  const url = new URL(`${API_BASE}/api/schedules`);
+  if (params?.limit !== undefined) url.searchParams.set("limit", String(params.limit));
+  if (params?.offset !== undefined) url.searchParams.set("offset", String(params.offset));
 
-	const response = await fetch(url.toString(), {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
-	return response.json();
+  const response = await fetch(url.toString(), {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
+  return response.json();
 }
 
 /**
@@ -949,20 +959,29 @@ export async function fetchSchedules(params?: {
  * AC: @ui-automation-view ac-4
  */
 export async function fetchScheduleStatus(id: string): Promise<ScheduleRuntimeStatus> {
-	if (isStaticMode()) {
-		return {
-			id, name: '', enabled: false, cron: '', timezone: 'UTC',
-			overlap_policy: 'skip', next_tick: null, last_tick: null,
-			run_count: 0, active_run_count: 0, active_run_ids: [], overlap_state: 'idle'
-		};
-	}
-	const response = await fetch(`${API_BASE}/api/schedules/${encodeURIComponent(id)}/status`, {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
-	return response.json();
+  if (isStaticMode()) {
+    return {
+      id,
+      name: "",
+      enabled: false,
+      cron: "",
+      timezone: "UTC",
+      overlap_policy: "skip",
+      next_tick: null,
+      last_tick: null,
+      run_count: 0,
+      active_run_count: 0,
+      active_run_ids: [],
+      overlap_state: "idle",
+    };
+  }
+  const response = await fetch(`${API_BASE}/api/schedules/${encodeURIComponent(id)}/status`, {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
+  return response.json();
 }
 
 /**
@@ -970,20 +989,20 @@ export async function fetchScheduleStatus(id: string): Promise<ScheduleRuntimeSt
  * AC: @ui-automation-view ac-3
  */
 export async function triggerSchedule(id: string): Promise<{
-	outcome: 'accepted' | 'buffered' | 'queued' | 'skipped';
-	accepted: boolean;
-	reason: string | null;
+  outcome: "accepted" | "buffered" | "queued" | "skipped";
+  accepted: boolean;
+  reason: string | null;
 }> {
-	assertWritable('trigger schedule');
+  assertWritable("trigger schedule");
 
-	const response = await fetch(`${API_BASE}/api/schedules/${encodeURIComponent(id)}/trigger`, {
-		method: 'POST',
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
-	return response.json();
+  const response = await fetch(`${API_BASE}/api/schedules/${encodeURIComponent(id)}/trigger`, {
+    method: "POST",
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
+  return response.json();
 }
 
 /**
@@ -991,53 +1010,55 @@ export async function triggerSchedule(id: string): Promise<{
  * AC: @ui-automation-view ac-2
  */
 export async function fetchRecentEvents(params?: {
-	type?: string;
-	limit?: number;
-	offset?: number;
+  type?: string;
+  limit?: number;
+  offset?: number;
 }): Promise<PaginatedResponse<EventEnvelopeSummary>> {
-	if (isStaticMode()) {
-		return { items: [], total: 0 };
-	}
-	const url = new URL(`${API_BASE}/api/events/recent`);
-	if (params?.type) url.searchParams.set('type', params.type);
-	if (params?.limit !== undefined) url.searchParams.set('limit', String(params.limit));
-	if (params?.offset !== undefined) url.searchParams.set('offset', String(params.offset));
+  if (isStaticMode()) {
+    return { items: [], total: 0 };
+  }
+  const url = new URL(`${API_BASE}/api/events/recent`);
+  if (params?.type) url.searchParams.set("type", params.type);
+  if (params?.limit !== undefined) url.searchParams.set("limit", String(params.limit));
+  if (params?.offset !== undefined) url.searchParams.set("offset", String(params.offset));
 
-	const response = await fetch(url.toString(), {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
-	return response.json();
+  const response = await fetch(url.toString(), {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
+  return response.json();
 }
 
 /**
  * Composition config summary from GET /api/compositions
  */
 export interface CompositionConfigSummary {
-	id: string;
-	name: string;
-	join_count: number;
-	timeout_ms: number | null;
-	enabled: boolean;
+  id: string;
+  name: string;
+  join_count: number;
+  timeout_ms: number | null;
+  enabled: boolean;
 }
 
 /**
  * Fetch composition configs
  * AC: @ui-automation-view ac-6
  */
-export async function fetchCompositionConfigs(): Promise<PaginatedResponse<CompositionConfigSummary>> {
-	if (isStaticMode()) {
-		return { items: [], total: 0 };
-	}
-	const response = await fetch(`${API_BASE}/api/compositions`, {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
-	return response.json();
+export async function fetchCompositionConfigs(): Promise<
+  PaginatedResponse<CompositionConfigSummary>
+> {
+  if (isStaticMode()) {
+    return { items: [], total: 0 };
+  }
+  const response = await fetch(`${API_BASE}/api/compositions`, {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
+  return response.json();
 }
 
 /**
@@ -1045,20 +1066,20 @@ export async function fetchCompositionConfigs(): Promise<PaginatedResponse<Compo
  * AC: @ui-automation-view ac-6
  */
 export async function fetchCompositionActivations(configId: string): Promise<{
-	config_id: string;
-	activations: CompositionActivation[];
+  config_id: string;
+  activations: CompositionActivation[];
 }> {
-	if (isStaticMode()) {
-		return { config_id: configId, activations: [] };
-	}
-	const response = await fetch(
-		`${API_BASE}/api/compositions/${encodeURIComponent(configId)}/activations`,
-		{ headers: getProjectHeaders() }
-	);
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
-	return response.json();
+  if (isStaticMode()) {
+    return { config_id: configId, activations: [] };
+  }
+  const response = await fetch(
+    `${API_BASE}/api/compositions/${encodeURIComponent(configId)}/activations`,
+    { headers: getProjectHeaders() },
+  );
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
+  return response.json();
 }
 
 // ============================================================
@@ -1071,30 +1092,30 @@ export async function fetchCompositionActivations(configId: string): Promise<{
  * AC: @ui-plans-view ac-1
  */
 export async function fetchPlans(params?: {
-	status?: string;
+  status?: string;
 }): Promise<{ items: PlanSummary[]; total: number }> {
-	if (isStaticMode()) {
-		return fetchPlansStatic(params);
-	}
+  if (isStaticMode()) {
+    return fetchPlansStatic(params);
+  }
 
-	const url = new URL(`${API_BASE}/api/plans`);
+  const url = new URL(`${API_BASE}/api/plans`);
 
-	if (params) {
-		Object.entries(params).forEach(([key, value]) => {
-			if (value !== undefined && value !== '') {
-				url.searchParams.set(key, String(value));
-			}
-		});
-	}
+  if (params) {
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== "") {
+        url.searchParams.set(key, String(value));
+      }
+    });
+  }
 
-	const response = await fetch(url.toString(), {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(url.toString(), {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	return response.json();
+  return response.json();
 }
 
 /**
@@ -1102,18 +1123,18 @@ export async function fetchPlans(params?: {
  * AC: @ui-plans-view ac-2
  */
 export async function fetchPlanContent(ref: string): Promise<PlanDetail> {
-	if (isStaticMode()) {
-		return fetchPlanContentStatic(ref);
-	}
+  if (isStaticMode()) {
+    return fetchPlanContentStatic(ref);
+  }
 
-	const response = await fetch(`${API_BASE}/api/plans/${ref}`, {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(`${API_BASE}/api/plans/${ref}`, {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	return response.json();
+  return response.json();
 }
 
 // ============================================================
@@ -1126,43 +1147,43 @@ export async function fetchPlanContent(ref: string): Promise<PlanDetail> {
  * AC: @review-records-web-ui ac-1
  */
 export async function fetchReviews(params?: {
-	status?: string | string[];
-	disposition?: string;
-	subject_type?: string;
-	subject_ref?: string;
-	head_branch?: string;
-	task?: string;
-	sort?: string;
-	sort_dir?: string;
-	limit?: number;
-	offset?: number;
+  status?: string | string[];
+  disposition?: string;
+  subject_type?: string;
+  subject_ref?: string;
+  head_branch?: string;
+  task?: string;
+  sort?: string;
+  sort_dir?: string;
+  limit?: number;
+  offset?: number;
 }): Promise<PaginatedResponse<ReviewSummary>> {
-	if (isStaticMode()) {
-		return { items: [], total: 0, offset: 0, limit: 0 };
-	}
+  if (isStaticMode()) {
+    return { items: [], total: 0, offset: 0, limit: 0 };
+  }
 
-	const url = new URL(`${API_BASE}/api/reviews`);
+  const url = new URL(`${API_BASE}/api/reviews`);
 
-	if (params) {
-		Object.entries(params).forEach(([key, value]) => {
-			if (value !== undefined && value !== '') {
-				if (Array.isArray(value)) {
-					value.forEach((v) => url.searchParams.append(key, v));
-				} else {
-					url.searchParams.set(key, String(value));
-				}
-			}
-		});
-	}
+  if (params) {
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== "") {
+        if (Array.isArray(value)) {
+          value.forEach((v) => url.searchParams.append(key, v));
+        } else {
+          url.searchParams.set(key, String(value));
+        }
+      }
+    });
+  }
 
-	const response = await fetch(url.toString(), {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(url.toString(), {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	return response.json();
+  return response.json();
 }
 
 /**
@@ -1170,18 +1191,18 @@ export async function fetchReviews(params?: {
  * AC: @review-records-web-ui ac-2
  */
 export async function fetchReview(id: string): Promise<ReviewDetail> {
-	if (isStaticMode()) {
-		throw new Error('Review detail not available in static mode');
-	}
+  if (isStaticMode()) {
+    throw new Error("Review detail not available in static mode");
+  }
 
-	const response = await fetch(`${API_BASE}/api/reviews/${encodeURIComponent(id)}`, {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(`${API_BASE}/api/reviews/${encodeURIComponent(id)}`, {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	return response.json();
+  return response.json();
 }
 
 /**
@@ -1191,24 +1212,24 @@ export async function fetchReview(id: string): Promise<ReviewDetail> {
  * AC: @review-records-web-ui ac-11
  */
 export async function fetchReviewSiblings(params: {
-	subject_type: string;
-	subject_ref?: string;
-	head_branch?: string;
+  subject_type: string;
+  subject_ref?: string;
+  head_branch?: string;
 }): Promise<ReviewSummary[]> {
-	if (isStaticMode()) {
-		return [];
-	}
+  if (isStaticMode()) {
+    return [];
+  }
 
-	const data = await fetchReviews({
-		status: 'all',
-		sort: 'created_at',
-		sort_dir: 'asc',
-		subject_type: params.subject_type,
-		subject_ref: params.subject_ref,
-		head_branch: params.head_branch
-	});
+  const data = await fetchReviews({
+    status: "all",
+    sort: "created_at",
+    sort_dir: "asc",
+    subject_type: params.subject_type,
+    subject_ref: params.subject_ref,
+    head_branch: params.head_branch,
+  });
 
-	return data.items;
+  return data.items;
 }
 
 // ============================================================
@@ -1221,53 +1242,53 @@ export async function fetchReviewSiblings(params: {
  * AC: @review-code-diff-viewer ac-1, ac-2
  */
 export interface DiffChangeLine {
-	type: 'added' | 'deleted' | 'unchanged';
-	content: string;
-	oldLineNumber: number | null;
-	newLineNumber: number | null;
+  type: "added" | "deleted" | "unchanged";
+  content: string;
+  oldLineNumber: number | null;
+  newLineNumber: number | null;
 }
 
 export interface DiffHunk {
-	header: string;
-	oldStart: number;
-	oldCount: number;
-	newStart: number;
-	newCount: number;
-	changes: DiffChangeLine[];
+  header: string;
+  oldStart: number;
+  oldCount: number;
+  newStart: number;
+  newCount: number;
+  changes: DiffChangeLine[];
 }
 
 export interface DiffFile {
-	oldPath: string;
-	newPath: string;
-	status: 'added' | 'deleted' | 'modified' | 'renamed';
-	stats: { additions: number; deletions: number };
-	hunks: DiffHunk[];
+  oldPath: string;
+  newPath: string;
+  status: "added" | "deleted" | "modified" | "renamed";
+  stats: { additions: number; deletions: number };
+  hunks: DiffHunk[];
 }
 
 export interface ParsedDiff {
-	base: string;
-	head: string;
-	files: DiffFile[];
-	stats: {
-		totalFiles: number;
-		totalAdditions: number;
-		totalDeletions: number;
-	};
+  base: string;
+  head: string;
+  files: DiffFile[];
+  stats: {
+    totalFiles: number;
+    totalAdditions: number;
+    totalDeletions: number;
+  };
 }
 
 export interface DiffContextLine {
-	lineNumber: number;
-	content: string;
+  lineNumber: number;
+  content: string;
 }
 
 export interface DiffContextResponse {
-	base: string;
-	head: string;
-	path: string;
-	startLine: number;
-	endLine: number;
-	totalLines: number;
-	lines: DiffContextLine[];
+  base: string;
+  head: string;
+  path: string;
+  startLine: number;
+  endLine: number;
+  totalLines: number;
+  lines: DiffContextLine[];
 }
 
 /**
@@ -1275,46 +1296,50 @@ export interface DiffContextResponse {
  * AC: @review-code-diff-viewer ac-1
  */
 export async function fetchDiff(base: string, head: string): Promise<ParsedDiff> {
-	if (isStaticMode()) {
-		throw new Error('Diff not available in static mode');
-	}
+  if (isStaticMode()) {
+    throw new Error("Diff not available in static mode");
+  }
 
-	const url = new URL(`${API_BASE}/api/diff`);
-	url.searchParams.set('base', base);
-	url.searchParams.set('head', head);
+  const url = new URL(`${API_BASE}/api/diff`);
+  url.searchParams.set("base", base);
+  url.searchParams.set("head", head);
 
-	const response = await fetch(url.toString(), {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(url.toString(), {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	return response.json();
+  return response.json();
 }
 
 /**
  * Fetch diff for a single file (lazy loading).
  * AC: @review-code-diff-viewer ac-6
  */
-export async function fetchFileDiff(base: string, head: string, path: string): Promise<{ base: string; head: string; file: DiffFile }> {
-	if (isStaticMode()) {
-		throw new Error('File diff not available in static mode');
-	}
+export async function fetchFileDiff(
+  base: string,
+  head: string,
+  path: string,
+): Promise<{ base: string; head: string; file: DiffFile }> {
+  if (isStaticMode()) {
+    throw new Error("File diff not available in static mode");
+  }
 
-	const url = new URL(`${API_BASE}/api/diff/file`);
-	url.searchParams.set('base', base);
-	url.searchParams.set('head', head);
-	url.searchParams.set('path', path);
+  const url = new URL(`${API_BASE}/api/diff/file`);
+  url.searchParams.set("base", base);
+  url.searchParams.set("head", head);
+  url.searchParams.set("path", path);
 
-	const response = await fetch(url.toString(), {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(url.toString(), {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	return response.json();
+  return response.json();
 }
 
 /**
@@ -1322,31 +1347,31 @@ export async function fetchFileDiff(base: string, head: string, path: string): P
  * AC: @review-code-diff-viewer ac-3
  */
 export async function fetchDiffContext(
-	base: string,
-	head: string,
-	path: string,
-	start: number,
-	end: number
+  base: string,
+  head: string,
+  path: string,
+  start: number,
+  end: number,
 ): Promise<DiffContextResponse> {
-	if (isStaticMode()) {
-		throw new Error('Diff context not available in static mode');
-	}
+  if (isStaticMode()) {
+    throw new Error("Diff context not available in static mode");
+  }
 
-	const url = new URL(`${API_BASE}/api/diff/context`);
-	url.searchParams.set('base', base);
-	url.searchParams.set('head', head);
-	url.searchParams.set('path', path);
-	url.searchParams.set('start', String(start));
-	url.searchParams.set('end', String(end));
+  const url = new URL(`${API_BASE}/api/diff/context`);
+  url.searchParams.set("base", base);
+  url.searchParams.set("head", head);
+  url.searchParams.set("path", path);
+  url.searchParams.set("start", String(start));
+  url.searchParams.set("end", String(end));
 
-	const response = await fetch(url.toString(), {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(url.toString(), {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	return response.json();
+  return response.json();
 }
 
 // ============================================================
@@ -1359,18 +1384,18 @@ export async function fetchDiffContext(
  * AC: @ui-workflows-view ac-1
  */
 export async function fetchWorkflows(): Promise<{ items: Workflow[]; total: number }> {
-	if (isStaticMode()) {
-		return fetchWorkflowsStatic();
-	}
+  if (isStaticMode()) {
+    return fetchWorkflowsStatic();
+  }
 
-	const response = await fetch(`${API_BASE}/api/meta/workflows`, {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(`${API_BASE}/api/meta/workflows`, {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	return response.json();
+  return response.json();
 }
 
 // ============================================================
@@ -1382,24 +1407,24 @@ export async function fetchWorkflows(): Promise<{ items: Workflow[]; total: numb
  * Session summary from the daemon API.
  */
 export interface SessionSummary {
-	id: string;
-	status: 'active' | 'completed' | 'abandoned' | 'timed_out' | 'failed' | 'stalled';
-	agent_type: string;
-	/** Agent definition ID (e.g. worker, pr-reviewer). */
-	agent_id?: string;
-	session_type: 'loop' | 'invocation';
-	/** Dispatch trigger for distinguishing dispatched agent vs manual CLI run. */
-	trigger?: string;
-	/** Task ID being worked on (if any). AC: @ui-session-history ac-1 */
-	task_id?: string;
-	/** Server-resolved task title. AC: @ui-api-ref-resolution ac-1 */
-	task_title?: string | null;
-	started_at: string;
-	ended_at?: string;
-	duration_ms: number;
-	event_count: number;
-	iteration_count: number;
-	tasks_completed: number;
+  id: string;
+  status: "active" | "completed" | "abandoned" | "timed_out" | "failed" | "stalled";
+  agent_type: string;
+  /** Agent definition ID (e.g. worker, pr-reviewer). */
+  agent_id?: string;
+  session_type: "loop" | "invocation";
+  /** Dispatch trigger for distinguishing dispatched agent vs manual CLI run. */
+  trigger?: string;
+  /** Task ID being worked on (if any). AC: @ui-session-history ac-1 */
+  task_id?: string;
+  /** Server-resolved task title. AC: @ui-api-ref-resolution ac-1 */
+  task_title?: string | null;
+  started_at: string;
+  ended_at?: string;
+  duration_ms: number;
+  event_count: number;
+  iteration_count: number;
+  tasks_completed: number;
 }
 
 /**
@@ -1407,9 +1432,9 @@ export interface SessionSummary {
  * AC: @ui-session-stream ac-4
  */
 export interface SessionSpecContext {
-	spec_ref: string;
-	title: string;
-	acceptance_criteria: Array<{ id: string; description: string }>;
+  spec_ref: string;
+  title: string;
+  acceptance_criteria: Array<{ id: string; description: string }>;
 }
 
 /**
@@ -1417,8 +1442,8 @@ export interface SessionSpecContext {
  * AC: @ui-session-stream ac-4
  */
 export interface SessionBudget {
-	max_per_cycle: number;
-	started_this_cycle: number;
+  max_per_cycle: number;
+  started_this_cycle: number;
 }
 
 /**
@@ -1426,23 +1451,23 @@ export interface SessionBudget {
  * AC: @ui-session-stream ac-4
  */
 export interface SessionDetail extends SessionSummary {
-	task_id?: string;
-	agent_id?: string;
-	trigger?: string;
-	spec_context?: SessionSpecContext | null;
-	budget?: SessionBudget | null;
+  task_id?: string;
+  agent_id?: string;
+  trigger?: string;
+  spec_context?: SessionSpecContext | null;
+  budget?: SessionBudget | null;
 }
 
 /**
  * A single event from events.jsonl.
  */
 export interface SessionEvent {
-	ts: number;
-	seq: number;
-	type: string;
-	session_id: string;
-	trace_id?: string;
-	data: unknown;
+  ts: number;
+  seq: number;
+  type: string;
+  session_id: string;
+  trace_id?: string;
+  data: unknown;
 }
 
 /**
@@ -1451,49 +1476,49 @@ export interface SessionEvent {
  * AC: @session-filter-controls ac-status-filter, ac-agent-filter, ac-agent-type-filter, ac-trigger-filter, ac-date-filter
  */
 export interface FetchSessionsParams {
-	offset?: number;
-	limit?: number;
-	status?: string[];
-	agent_id?: string;
-	agent_type?: string;
-	trigger?: string;
-	since?: string;
-	task_id?: string;
-	spec_ref?: string;
+  offset?: number;
+  limit?: number;
+  status?: string[];
+  agent_id?: string;
+  agent_type?: string;
+  trigger?: string;
+  since?: string;
+  task_id?: string;
+  spec_ref?: string;
 }
 
 export interface SessionSearchMatch {
-	session_id: string;
-	event_seq: number;
-	timestamp: number;
-	event_type: string;
-	content_excerpt: string;
+  session_id: string;
+  event_seq: number;
+  timestamp: number;
+  event_type: string;
+  content_excerpt: string;
 }
 
 export interface SessionSearchResult {
-	session_id: string;
-	agent_type: string;
-	started_at: string;
-	matches: SessionSearchMatch[];
+  session_id: string;
+  agent_type: string;
+  started_at: string;
+  matches: SessionSearchMatch[];
 }
 
 export interface FetchSessionSearchParams {
-	q: string;
-	status?: string[];
-	agent_id?: string;
-	agent_type?: string;
-	trigger?: string;
-	since?: string;
-	task_id?: string;
-	spec_ref?: string;
-	limit?: number;
+  q: string;
+  status?: string[];
+  agent_id?: string;
+  agent_type?: string;
+  trigger?: string;
+  since?: string;
+  task_id?: string;
+  spec_ref?: string;
+  limit?: number;
 }
 
 export interface SessionSearchResponse {
-	items: SessionSearchResult[];
-	total_sessions: number;
-	total_matches: number;
-	query: string;
+  items: SessionSearchResult[];
+  total_sessions: number;
+  total_matches: number;
+  query: string;
 }
 
 /**
@@ -1501,11 +1526,11 @@ export interface SessionSearchResponse {
  * AC: @session-list-infinite-scroll ac-initial-load
  */
 export interface SessionListResponse {
-	items: SessionSummary[];
-	total: number;
-	unfiltered_total: number;
-	offset: number;
-	limit: number;
+  items: SessionSummary[];
+  total: number;
+  unfiltered_total: number;
+  offset: number;
+  limit: number;
 }
 
 /**
@@ -1514,130 +1539,130 @@ export interface SessionListResponse {
  * AC: @session-list-infinite-scroll ac-initial-load
  */
 export async function fetchSessions(params?: FetchSessionsParams): Promise<SessionListResponse> {
-	if (isStaticMode()) {
-		return { items: [], total: 0, unfiltered_total: 0, offset: 0, limit: 25 };
-	}
+  if (isStaticMode()) {
+    return { items: [], total: 0, unfiltered_total: 0, offset: 0, limit: 25 };
+  }
 
-	const url = new URL(`${API_BASE}/api/sessions`);
-	if (params?.offset !== undefined) {
-		url.searchParams.set('offset', String(params.offset));
-	}
-	if (params?.limit !== undefined) {
-		url.searchParams.set('limit', String(params.limit));
-	}
-	// AC: @session-filter-controls ac-status-filter — Multi-value status filter
-	if (params?.status?.length) {
-		for (const s of params.status) {
-			url.searchParams.append('status', s);
-		}
-	}
-	// AC: @session-filter-controls ac-agent-filter
-	if (params?.agent_id) {
-		url.searchParams.set('agent_id', params.agent_id);
-	}
-	// AC: @session-filter-controls ac-agent-type-filter
-	if (params?.agent_type) {
-		url.searchParams.set('agent_type', params.agent_type);
-	}
-	// AC: @session-filter-controls ac-trigger-filter
-	if (params?.trigger) {
-		url.searchParams.set('trigger', params.trigger);
-	}
-	// AC: @session-filter-controls ac-date-filter
-	if (params?.since) {
-		url.searchParams.set('since', params.since);
-	}
-	if (params?.task_id) {
-		url.searchParams.set('task_id', params.task_id);
-	}
-	if (params?.spec_ref) {
-		url.searchParams.set('spec_ref', params.spec_ref);
-	}
+  const url = new URL(`${API_BASE}/api/sessions`);
+  if (params?.offset !== undefined) {
+    url.searchParams.set("offset", String(params.offset));
+  }
+  if (params?.limit !== undefined) {
+    url.searchParams.set("limit", String(params.limit));
+  }
+  // AC: @session-filter-controls ac-status-filter — Multi-value status filter
+  if (params?.status?.length) {
+    for (const s of params.status) {
+      url.searchParams.append("status", s);
+    }
+  }
+  // AC: @session-filter-controls ac-agent-filter
+  if (params?.agent_id) {
+    url.searchParams.set("agent_id", params.agent_id);
+  }
+  // AC: @session-filter-controls ac-agent-type-filter
+  if (params?.agent_type) {
+    url.searchParams.set("agent_type", params.agent_type);
+  }
+  // AC: @session-filter-controls ac-trigger-filter
+  if (params?.trigger) {
+    url.searchParams.set("trigger", params.trigger);
+  }
+  // AC: @session-filter-controls ac-date-filter
+  if (params?.since) {
+    url.searchParams.set("since", params.since);
+  }
+  if (params?.task_id) {
+    url.searchParams.set("task_id", params.task_id);
+  }
+  if (params?.spec_ref) {
+    url.searchParams.set("spec_ref", params.spec_ref);
+  }
 
-	const response = await fetch(url.toString(), {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(url.toString(), {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	return response.json();
+  return response.json();
 }
 
 export async function fetchSessionSearch(
-	params: FetchSessionSearchParams
+  params: FetchSessionSearchParams,
 ): Promise<SessionSearchResponse> {
-	if (isStaticMode()) {
-		return { items: [], total_sessions: 0, total_matches: 0, query: params.q };
-	}
+  if (isStaticMode()) {
+    return { items: [], total_sessions: 0, total_matches: 0, query: params.q };
+  }
 
-	const url = new URL(`${API_BASE}/api/sessions/search`);
-	url.searchParams.set('q', params.q);
-	if (params.limit !== undefined) {
-		url.searchParams.set('limit', String(params.limit));
-	}
-	if (params.status?.length) {
-		for (const s of params.status) {
-			url.searchParams.append('status', s);
-		}
-	}
-	if (params.agent_id) {
-		url.searchParams.set('agent_id', params.agent_id);
-	}
-	if (params.agent_type) {
-		url.searchParams.set('agent_type', params.agent_type);
-	}
-	if (params.trigger) {
-		url.searchParams.set('trigger', params.trigger);
-	}
-	if (params.since) {
-		url.searchParams.set('since', params.since);
-	}
-	if (params.task_id) {
-		url.searchParams.set('task_id', params.task_id);
-	}
-	if (params.spec_ref) {
-		url.searchParams.set('spec_ref', params.spec_ref);
-	}
+  const url = new URL(`${API_BASE}/api/sessions/search`);
+  url.searchParams.set("q", params.q);
+  if (params.limit !== undefined) {
+    url.searchParams.set("limit", String(params.limit));
+  }
+  if (params.status?.length) {
+    for (const s of params.status) {
+      url.searchParams.append("status", s);
+    }
+  }
+  if (params.agent_id) {
+    url.searchParams.set("agent_id", params.agent_id);
+  }
+  if (params.agent_type) {
+    url.searchParams.set("agent_type", params.agent_type);
+  }
+  if (params.trigger) {
+    url.searchParams.set("trigger", params.trigger);
+  }
+  if (params.since) {
+    url.searchParams.set("since", params.since);
+  }
+  if (params.task_id) {
+    url.searchParams.set("task_id", params.task_id);
+  }
+  if (params.spec_ref) {
+    url.searchParams.set("spec_ref", params.spec_ref);
+  }
 
-	const response = await fetch(url.toString(), {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(url.toString(), {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	return response.json();
+  return response.json();
 }
 
 export async function fetchTaskSessions(ref: string): Promise<SessionListResponse> {
-	if (isStaticMode()) {
-		return { items: [], total: 0, offset: 0, limit: 0 };
-	}
+  if (isStaticMode()) {
+    return { items: [], total: 0, offset: 0, limit: 0 };
+  }
 
-	const response = await fetch(`${API_BASE}/api/tasks/${ref}/sessions`, {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(`${API_BASE}/api/tasks/${ref}/sessions`, {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	return response.json();
+  return response.json();
 }
 
 export async function fetchItemSessions(ref: string): Promise<SessionListResponse> {
-	if (isStaticMode()) {
-		return { items: [], total: 0, offset: 0, limit: 0 };
-	}
+  if (isStaticMode()) {
+    return { items: [], total: 0, offset: 0, limit: 0 };
+  }
 
-	const response = await fetch(`${API_BASE}/api/items/${ref}/sessions`, {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(`${API_BASE}/api/items/${ref}/sessions`, {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	return response.json();
+  return response.json();
 }
 
 /**
@@ -1645,18 +1670,18 @@ export async function fetchItemSessions(ref: string): Promise<SessionListRespons
  * AC: @ui-session-stream ac-4
  */
 export async function fetchSession(id: string): Promise<SessionDetail> {
-	if (isStaticMode()) {
-		throw new Error('Session data not available in static mode');
-	}
+  if (isStaticMode()) {
+    throw new Error("Session data not available in static mode");
+  }
 
-	const response = await fetch(`${API_BASE}/api/sessions/${id}`, {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(`${API_BASE}/api/sessions/${id}`, {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	return response.json();
+  return response.json();
 }
 
 /**
@@ -1664,48 +1689,45 @@ export async function fetchSession(id: string): Promise<SessionDetail> {
  * AC: @ui-session-stream ac-1, ac-2
  */
 export async function fetchSessionEvents(
-	id: string,
-	sinceSeq?: number
+  id: string,
+  sinceSeq?: number,
 ): Promise<{ events: SessionEvent[]; total: number }> {
-	if (isStaticMode()) {
-		return { events: [], total: 0 };
-	}
+  if (isStaticMode()) {
+    return { events: [], total: 0 };
+  }
 
-	const url = new URL(`${API_BASE}/api/sessions/${id}/events`);
-	if (sinceSeq !== undefined) {
-		url.searchParams.set('since_seq', String(sinceSeq));
-	}
+  const url = new URL(`${API_BASE}/api/sessions/${id}/events`);
+  if (sinceSeq !== undefined) {
+    url.searchParams.set("since_seq", String(sinceSeq));
+  }
 
-	const response = await fetch(url.toString(), {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(url.toString(), {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	return response.json();
+  return response.json();
 }
 
 /**
  * Fetch a single session event by sequence number (on-demand tool output).
  * AC: @ws-session-event-streaming ac-tool-output-on-demand
  */
-export async function fetchSessionEventDetail(
-	id: string,
-	seq: number
-): Promise<SessionEvent> {
-	if (isStaticMode()) {
-		throw new Error('Session event detail not available in static mode');
-	}
+export async function fetchSessionEventDetail(id: string, seq: number): Promise<SessionEvent> {
+  if (isStaticMode()) {
+    throw new Error("Session event detail not available in static mode");
+  }
 
-	const response = await fetch(`${API_BASE}/api/sessions/${id}/events/${seq}`, {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(`${API_BASE}/api/sessions/${id}/events/${seq}`, {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	return response.json();
+  return response.json();
 }
 
 // ============================================================
@@ -1718,26 +1740,28 @@ export async function fetchSessionEventDetail(
  * Used by the task detail page to show linked review history.
  * AC: @review-records-web-ui ac-7
  */
-export async function fetchReviewsForTask(taskRef: string): Promise<PaginatedResponse<ReviewSummary>> {
-	if (isStaticMode()) {
-		return { items: [], total: 0, offset: 0, limit: 0 };
-	}
+export async function fetchReviewsForTask(
+  taskRef: string,
+): Promise<PaginatedResponse<ReviewSummary>> {
+  if (isStaticMode()) {
+    return { items: [], total: 0, offset: 0, limit: 0 };
+  }
 
-	const url = new URL(`${API_BASE}/api/reviews`);
-	url.searchParams.set('task', taskRef);
-	// Fetch all lifecycle states — backend defaults to 'open' when no status param
-	for (const s of ['draft', 'open', 'closed', 'archived']) {
-		url.searchParams.append('status', s);
-	}
+  const url = new URL(`${API_BASE}/api/reviews`);
+  url.searchParams.set("task", taskRef);
+  // Fetch all lifecycle states — backend defaults to 'open' when no status param
+  for (const s of ["draft", "open", "closed", "archived"]) {
+    url.searchParams.append("status", s);
+  }
 
-	const response = await fetch(url.toString(), {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(url.toString(), {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	return response.json();
+  return response.json();
 }
 
 // ============================================================
@@ -1749,59 +1773,59 @@ export async function fetchReviewsForTask(taskRef: string): Promise<PaginatedRes
  * Content section types returned by GET /api/reviews/:id/content
  */
 export interface ContentSectionMarkdown {
-	id: string;
-	type: 'markdown';
-	title: string;
-	content: string;
+  id: string;
+  type: "markdown";
+  title: string;
+  content: string;
 }
 
 export interface ContentSectionRefList {
-	id: string;
-	type: 'ref_list';
-	title: string;
-	refs: string[];
+  id: string;
+  type: "ref_list";
+  title: string;
+  refs: string[];
 }
 
 export interface ContentSectionAcceptanceCriteria {
-	id: string;
-	type: 'acceptance_criteria';
-	title: string;
-	criteria: Array<{ id: string; given?: string; when?: string; then?: string }>;
+  id: string;
+  type: "acceptance_criteria";
+  title: string;
+  criteria: Array<{ id: string; given?: string; when?: string; then?: string }>;
 }
 
 export interface ContentSectionNotes {
-	id: string;
-	type: 'notes';
-	title: string;
-	notes: Array<{ author: string; body: string; created_at: string }>;
+  id: string;
+  type: "notes";
+  title: string;
+  notes: Array<{ author: string; body: string; created_at: string }>;
 }
 
 export interface ContentSectionMetadata {
-	id: string;
-	type: 'metadata';
-	title: string;
-	metadata: Record<string, unknown>;
+  id: string;
+  type: "metadata";
+  title: string;
+  metadata: Record<string, unknown>;
 }
 
 export type ContentSection =
-	| ContentSectionMarkdown
-	| ContentSectionRefList
-	| ContentSectionAcceptanceCriteria
-	| ContentSectionNotes
-	| ContentSectionMetadata;
+  | ContentSectionMarkdown
+  | ContentSectionRefList
+  | ContentSectionAcceptanceCriteria
+  | ContentSectionNotes
+  | ContentSectionMetadata;
 
 export interface ReviewContentResponse {
-	review_id: string;
-	subject_type: string;
-	subject_ref: string | null;
-	content: {
-		title: string;
-		sections: ContentSection[];
-	} | null;
-	diff_params?: {
-		base: string;
-		head: string;
-	};
+  review_id: string;
+  subject_type: string;
+  subject_ref: string | null;
+  content: {
+    title: string;
+    sections: ContentSection[];
+  } | null;
+  diff_params?: {
+    base: string;
+    head: string;
+  };
 }
 
 /**
@@ -1809,21 +1833,18 @@ export interface ReviewContentResponse {
  * AC: @review-structured-content-viewer ac-1, ac-2
  */
 export async function fetchReviewContent(reviewId: string): Promise<ReviewContentResponse> {
-	if (isStaticMode()) {
-		throw new Error('Review content not available in static mode');
-	}
+  if (isStaticMode()) {
+    throw new Error("Review content not available in static mode");
+  }
 
-	const response = await fetch(
-		`${API_BASE}/api/reviews/${encodeURIComponent(reviewId)}/content`,
-		{
-			headers: getProjectHeaders()
-		}
-	);
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(`${API_BASE}/api/reviews/${encodeURIComponent(reviewId)}/content`, {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	return response.json();
+  return response.json();
 }
 
 // ============================================================
@@ -1836,45 +1857,44 @@ export async function fetchReviewContent(reviewId: string): Promise<ReviewConten
  * AC: @review-records-web-ui ac-3
  */
 export async function createReviewThread(
-	reviewId: string,
-	data: {
-		body: string;
-		kind?: 'blocker' | 'question' | 'nit';
-		author?: string;
-		anchor?: {
-			type: 'code';
-			path: string;
-			side: 'base' | 'head';
-			line_start: number;
-			line_end: number;
-			commit: string;
-		} | {
-			type: 'structured';
-			section?: string;
-			field?: string;
-			path?: string;
-			ref?: string;
-		};
-	}
+  reviewId: string,
+  data: {
+    body: string;
+    kind?: "blocker" | "question" | "nit";
+    author?: string;
+    anchor?:
+      | {
+          type: "code";
+          path: string;
+          side: "base" | "head";
+          line_start: number;
+          line_end: number;
+          commit: string;
+        }
+      | {
+          type: "structured";
+          section?: string;
+          field?: string;
+          path?: string;
+          ref?: string;
+        };
+  },
 ): Promise<ReviewThread> {
-	assertWritable('add comment to review');
+  assertWritable("add comment to review");
 
-	const response = await fetch(
-		`${API_BASE}/api/reviews/${encodeURIComponent(reviewId)}/comments`,
-		{
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				...getProjectHeaders()
-			},
-			body: JSON.stringify(data)
-		}
-	);
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(`${API_BASE}/api/reviews/${encodeURIComponent(reviewId)}/comments`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...getProjectHeaders(),
+    },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	return response.json();
+  return response.json();
 }
 
 /**
@@ -1882,28 +1902,28 @@ export async function createReviewThread(
  * AC: @review-records-web-ui ac-4
  */
 export async function replyToReviewThread(
-	reviewId: string,
-	threadId: string,
-	data: { body: string; author?: string }
+  reviewId: string,
+  threadId: string,
+  data: { body: string; author?: string },
 ): Promise<ReviewThread> {
-	assertWritable('reply to review thread');
+  assertWritable("reply to review thread");
 
-	const response = await fetch(
-		`${API_BASE}/api/reviews/${encodeURIComponent(reviewId)}/comments/${encodeURIComponent(threadId)}/replies`,
-		{
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				...getProjectHeaders()
-			},
-			body: JSON.stringify(data)
-		}
-	);
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(
+    `${API_BASE}/api/reviews/${encodeURIComponent(reviewId)}/comments/${encodeURIComponent(threadId)}/replies`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...getProjectHeaders(),
+      },
+      body: JSON.stringify(data),
+    },
+  );
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	return response.json();
+  return response.json();
 }
 
 /**
@@ -1911,28 +1931,28 @@ export async function replyToReviewThread(
  * AC: @review-records-web-ui ac-5
  */
 export async function resolveReviewThread(
-	reviewId: string,
-	threadId: string,
-	actor?: string
+  reviewId: string,
+  threadId: string,
+  actor?: string,
 ): Promise<ReviewThread> {
-	assertWritable('resolve review thread');
+  assertWritable("resolve review thread");
 
-	const response = await fetch(
-		`${API_BASE}/api/reviews/${encodeURIComponent(reviewId)}/comments/${encodeURIComponent(threadId)}/resolve`,
-		{
-			method: 'PATCH',
-			headers: {
-				'Content-Type': 'application/json',
-				...getProjectHeaders()
-			},
-			body: JSON.stringify({ actor: actor || 'anonymous' })
-		}
-	);
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(
+    `${API_BASE}/api/reviews/${encodeURIComponent(reviewId)}/comments/${encodeURIComponent(threadId)}/resolve`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        ...getProjectHeaders(),
+      },
+      body: JSON.stringify({ actor: actor || "anonymous" }),
+    },
+  );
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	return response.json();
+  return response.json();
 }
 
 /**
@@ -1940,28 +1960,28 @@ export async function resolveReviewThread(
  * AC: @review-records-web-ui ac-5
  */
 export async function reopenReviewThread(
-	reviewId: string,
-	threadId: string,
-	actor?: string
+  reviewId: string,
+  threadId: string,
+  actor?: string,
 ): Promise<ReviewThread> {
-	assertWritable('reopen review thread');
+  assertWritable("reopen review thread");
 
-	const response = await fetch(
-		`${API_BASE}/api/reviews/${encodeURIComponent(reviewId)}/comments/${encodeURIComponent(threadId)}/reopen`,
-		{
-			method: 'PATCH',
-			headers: {
-				'Content-Type': 'application/json',
-				...getProjectHeaders()
-			},
-			body: JSON.stringify({ actor: actor || 'anonymous' })
-		}
-	);
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(
+    `${API_BASE}/api/reviews/${encodeURIComponent(reviewId)}/comments/${encodeURIComponent(threadId)}/reopen`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        ...getProjectHeaders(),
+      },
+      body: JSON.stringify({ actor: actor || "anonymous" }),
+    },
+  );
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	return response.json();
+  return response.json();
 }
 
 /**
@@ -1969,33 +1989,30 @@ export async function reopenReviewThread(
  * AC: @review-records-web-ui ac-6
  */
 export async function submitReviewVerdict(
-	reviewId: string,
-	data: { decision: 'approve' | 'request_changes' | 'comment'; reviewer: string; role?: string }
+  reviewId: string,
+  data: { decision: "approve" | "request_changes" | "comment"; reviewer: string; role?: string },
 ): Promise<{
-	review_ulid: string;
-	decision: string;
-	reviewer: string;
-	lifecycle_state: string;
-	disposition: string;
+  review_ulid: string;
+  decision: string;
+  reviewer: string;
+  lifecycle_state: string;
+  disposition: string;
 }> {
-	assertWritable('submit review verdict');
+  assertWritable("submit review verdict");
 
-	const response = await fetch(
-		`${API_BASE}/api/reviews/${encodeURIComponent(reviewId)}/verdicts`,
-		{
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				...getProjectHeaders()
-			},
-			body: JSON.stringify(data)
-		}
-	);
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(`${API_BASE}/api/reviews/${encodeURIComponent(reviewId)}/verdicts`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...getProjectHeaders(),
+    },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	return response.json();
+  return response.json();
 }
 
 // ============================================================
@@ -2004,92 +2021,92 @@ export async function submitReviewVerdict(
 // ============================================================
 
 export interface SchemaValidationError {
-	file: string;
-	path?: string;
-	message: string;
-	details?: unknown;
+  file: string;
+  path?: string;
+  message: string;
+  details?: unknown;
 }
 
 export interface RefValidationError {
-	ref: string;
-	sourceFile?: string;
-	sourceUlid?: string;
-	field: string;
-	error: 'not_found' | 'ambiguous' | 'duplicate_slug';
-	message: string;
+  ref: string;
+  sourceFile?: string;
+  sourceUlid?: string;
+  field: string;
+  error: "not_found" | "ambiguous" | "duplicate_slug";
+  message: string;
 }
 
 export interface RefValidationWarning {
-	ref: string;
-	sourceFile?: string;
-	sourceUlid?: string;
-	field: string;
-	warning: 'deprecated_target';
-	message: string;
+  ref: string;
+  sourceFile?: string;
+  sourceUlid?: string;
+  field: string;
+  warning: "deprecated_target";
+  message: string;
 }
 
 export interface OrphanItem {
-	ulid: string;
-	title: string;
-	type: string;
-	file?: string;
+  ulid: string;
+  title: string;
+  type: string;
+  file?: string;
 }
 
 export type CompletenessWarningType =
-	| 'missing_acceptance_criteria'
-	| 'missing_description'
-	| 'status_inconsistency'
-	| 'missing_test_coverage'
-	| 'automation_eligible_no_spec'
-	| 'ac_schema_field_mismatch';
+  | "missing_acceptance_criteria"
+  | "missing_description"
+  | "status_inconsistency"
+  | "missing_test_coverage"
+  | "automation_eligible_no_spec"
+  | "ac_schema_field_mismatch";
 
 export interface CompletenessWarning {
-	type: CompletenessWarningType;
-	subtype?: 'own_ac' | 'trait_ac';
-	itemRef: string;
-	itemTitle: string;
-	message: string;
-	details?: string;
+  type: CompletenessWarningType;
+  subtype?: "own_ac" | "trait_ac";
+  itemRef: string;
+  itemTitle: string;
+  message: string;
+  details?: string;
 }
 
 export interface TraitCycleError {
-	traitRef: string;
-	traitTitle: string;
-	cycle: string[];
-	message: string;
+  traitRef: string;
+  traitTitle: string;
+  cycle: string[];
+  message: string;
 }
 
 export interface ValidationResponse {
-	valid: boolean;
-	schemaErrors: SchemaValidationError[];
-	refErrors: RefValidationError[];
-	refWarnings: RefValidationWarning[];
-	orphans: OrphanItem[];
-	completenessWarnings: CompletenessWarning[];
-	traitCycles: TraitCycleError[];
+  valid: boolean;
+  schemaErrors: SchemaValidationError[];
+  refErrors: RefValidationError[];
+  refWarnings: RefValidationWarning[];
+  orphans: OrphanItem[];
+  completenessWarnings: CompletenessWarning[];
+  traitCycles: TraitCycleError[];
 }
 
 /** Alias for backward compatibility with dashboard overview */
 export type ValidationResult = ValidationResponse;
 
 export interface AlignmentWarning {
-	type: 'orphaned_spec' | 'status_mismatch' | 'stale_implementation';
-	specUlid?: string;
-	specTitle?: string;
-	taskUlid?: string;
-	message: string;
+  type: "orphaned_spec" | "status_mismatch" | "stale_implementation";
+  specUlid?: string;
+  specTitle?: string;
+  taskUlid?: string;
+  message: string;
 }
 
 export interface AlignmentStats {
-	totalSpecs: number;
-	specsWithTasks: number;
-	alignedSpecs: number;
-	orphanedSpecs: number;
+  totalSpecs: number;
+  specsWithTasks: number;
+  alignedSpecs: number;
+  orphanedSpecs: number;
 }
 
 export interface AlignmentResponse {
-	stats: AlignmentStats;
-	warnings: AlignmentWarning[];
+  stats: AlignmentStats;
+  warnings: AlignmentWarning[];
 }
 
 /**
@@ -2097,28 +2114,28 @@ export interface AlignmentResponse {
  * AC: @ui-validation-view ac-1
  */
 export async function fetchValidation(): Promise<ValidationResponse> {
-	if (isStaticMode()) {
-		return fetchValidationStatic();
-	}
+  if (isStaticMode()) {
+    return fetchValidationStatic();
+  }
 
-	const response = await fetch(`${API_BASE}/api/validate`, {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(`${API_BASE}/api/validate`, {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	const data = await response.json();
-	// Normalize: ensure all array fields exist even if the API omits them
-	return {
-		valid: data.valid ?? true,
-		schemaErrors: data.schemaErrors ?? [],
-		refErrors: data.refErrors ?? [],
-		refWarnings: data.refWarnings ?? [],
-		orphans: data.orphans ?? [],
-		completenessWarnings: data.completenessWarnings ?? [],
-		traitCycles: data.traitCycles ?? []
-	};
+  const data = await response.json();
+  // Normalize: ensure all array fields exist even if the API omits them
+  return {
+    valid: data.valid ?? true,
+    schemaErrors: data.schemaErrors ?? [],
+    refErrors: data.refErrors ?? [],
+    refWarnings: data.refWarnings ?? [],
+    orphans: data.orphans ?? [],
+    completenessWarnings: data.completenessWarnings ?? [],
+    traitCycles: data.traitCycles ?? [],
+  };
 }
 
 /**
@@ -2126,18 +2143,18 @@ export async function fetchValidation(): Promise<ValidationResponse> {
  * AC: @ui-validation-view ac-1
  */
 export async function fetchAlignment(): Promise<AlignmentResponse> {
-	if (isStaticMode()) {
-		return fetchAlignmentStatic();
-	}
+  if (isStaticMode()) {
+    return fetchAlignmentStatic();
+  }
 
-	const response = await fetch(`${API_BASE}/api/alignment`, {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
+  const response = await fetch(`${API_BASE}/api/alignment`, {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
 
-	return response.json();
+  return response.json();
 }
 
 // ============================================================
@@ -2150,10 +2167,10 @@ export async function fetchAlignment(): Promise<AlignmentResponse> {
  * AC: @ui-settings-view ac-1 — daemon connection info (port, uptime, version)
  */
 export interface HealthResponse {
-	status: string;
-	uptime: number;
-	connections: number;
-	version: string;
+  status: string;
+  uptime: number;
+  connections: number;
+  version: string;
 }
 
 /**
@@ -2161,11 +2178,11 @@ export interface HealthResponse {
  * AC: @ui-settings-view ac-1 — project config (name, version, remote tracking)
  */
 export interface ProjectConfig {
-	project: { name: string; version: string; status: string } | null;
-	spec_version: string | null;
-	root_dir: string;
-	remote_tracking: { value: string; type: string } | null;
-	daemon: { port: number; host: string; auto_start: boolean };
+  project: { name: string; version: string; status: string } | null;
+  spec_version: string | null;
+  root_dir: string;
+  remote_tracking: { value: string; type: string } | null;
+  daemon: { port: number; host: string; auto_start: boolean };
 }
 
 /**
@@ -2173,11 +2190,11 @@ export interface ProjectConfig {
  * AC: @ui-settings-view ac-1 — shadow branch status
  */
 export interface ShadowStatusResponse {
-	enabled: boolean;
-	branch_name: string | null;
-	worktree_dir: string | null;
-	healthy: boolean;
-	remote_tracking: boolean;
+  enabled: boolean;
+  branch_name: string | null;
+  worktree_dir: string | null;
+  healthy: boolean;
+  remote_tracking: boolean;
 }
 
 /**
@@ -2185,14 +2202,14 @@ export interface ShadowStatusResponse {
  * AC: @ui-settings-view ac-1
  */
 export async function fetchHealth(): Promise<HealthResponse> {
-	if (isStaticMode()) {
-		return { status: 'static', uptime: 0, connections: 0, version: '' };
-	}
-	const response = await fetch(`${API_BASE}/api/health`);
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
-	return response.json();
+  if (isStaticMode()) {
+    return { status: "static", uptime: 0, connections: 0, version: "" };
+  }
+  const response = await fetch(`${API_BASE}/api/health`);
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
+  return response.json();
 }
 
 /**
@@ -2200,19 +2217,22 @@ export async function fetchHealth(): Promise<HealthResponse> {
  * AC: @ui-settings-view ac-1
  */
 export async function fetchProjectConfig(): Promise<ProjectConfig> {
-	if (isStaticMode()) {
-		return {
-			project: null, spec_version: null, root_dir: '',
-			remote_tracking: null, daemon: { port: 0, host: '', auto_start: false }
-		};
-	}
-	const response = await fetch(`${API_BASE}/api/meta/config`, {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
-	return response.json();
+  if (isStaticMode()) {
+    return {
+      project: null,
+      spec_version: null,
+      root_dir: "",
+      remote_tracking: null,
+      daemon: { port: 0, host: "", auto_start: false },
+    };
+  }
+  const response = await fetch(`${API_BASE}/api/meta/config`, {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
+  return response.json();
 }
 
 /**
@@ -2220,16 +2240,22 @@ export async function fetchProjectConfig(): Promise<ProjectConfig> {
  * AC: @ui-settings-view ac-1
  */
 export async function fetchShadowStatus(): Promise<ShadowStatusResponse> {
-	if (isStaticMode()) {
-		return { enabled: false, branch_name: null, worktree_dir: null, healthy: false, remote_tracking: false };
-	}
-	const response = await fetch(`${API_BASE}/api/meta/shadow`, {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
-	return response.json();
+  if (isStaticMode()) {
+    return {
+      enabled: false,
+      branch_name: null,
+      worktree_dir: null,
+      healthy: false,
+      remote_tracking: false,
+    };
+  }
+  const response = await fetch(`${API_BASE}/api/meta/shadow`, {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
+  return response.json();
 }
 
 /**
@@ -2237,16 +2263,16 @@ export async function fetchShadowStatus(): Promise<ShadowStatusResponse> {
  * AC: @ui-settings-view ac-1
  */
 export async function fetchConventions(): Promise<{ items: Convention[]; total: number }> {
-	if (isStaticMode()) {
-		return { items: [], total: 0 };
-	}
-	const response = await fetch(`${API_BASE}/api/meta/conventions`, {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
-	return response.json();
+  if (isStaticMode()) {
+    return { items: [], total: 0 };
+  }
+  const response = await fetch(`${API_BASE}/api/meta/conventions`, {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
+  return response.json();
 }
 
 /**
@@ -2254,14 +2280,20 @@ export async function fetchConventions(): Promise<{ items: Convention[]; total: 
  * AC: @ui-api-aggregation ac-2
  */
 export async function fetchValidationAggregation(): Promise<ValidationAggregation> {
-	if (isStaticMode()) {
-		return { entity_count: 0, ac_count: 0, trait_ac_count: 0, trait_count: 0, coverage_percent: 0 } as ValidationAggregation;
-	}
-	const response = await fetch(`${API_BASE}/api/aggregation/validation`, {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
-	return response.json();
+  if (isStaticMode()) {
+    return {
+      entity_count: 0,
+      ac_count: 0,
+      trait_ac_count: 0,
+      trait_count: 0,
+      coverage_percent: 0,
+    } as ValidationAggregation;
+  }
+  const response = await fetch(`${API_BASE}/api/aggregation/validation`, {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
+  return response.json();
 }

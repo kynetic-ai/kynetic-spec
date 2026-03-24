@@ -7,16 +7,15 @@
  * AC: @multi-directory-daemon ac-1, ac-2, ac-3, ac-4, ac-5, ac-6, ac-7, ac-8, ac-8c, ac-14, ac-15, ac-16, ac-20, ac-20b
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { setupMultiDirFixtures, cleanupTempDir } from './helpers/cli';
-import { join } from 'path';
-import { symlink } from 'fs/promises';
-import { ProjectContextManager } from '../packages/daemon/src/project-context';
-import { KspecWatcher } from '../packages/daemon/src/watcher';
-import { SessionWatcher } from '../packages/daemon/src/session-watcher';
-import type { ProjectContext } from '../packages/daemon/src/project-context';
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { setupMultiDirFixtures, cleanupTempDir } from "./helpers/cli";
+import { join } from "path";
+import { symlink } from "fs/promises";
+import { ProjectContextManager } from "../packages/daemon/src/project-context";
+import { KspecWatcher } from "../packages/daemon/src/watcher";
+import { SessionWatcher } from "../packages/daemon/src/session-watcher";
 
-describe('ProjectContextManager', () => {
+describe("ProjectContextManager", () => {
   let fixturesRoot: string;
   let projectA: string;
   let projectB: string;
@@ -25,9 +24,9 @@ describe('ProjectContextManager', () => {
 
   beforeEach(async () => {
     fixturesRoot = await setupMultiDirFixtures();
-    projectA = join(fixturesRoot, 'project-a');
-    projectB = join(fixturesRoot, 'project-b');
-    projectInvalid = join(fixturesRoot, 'project-invalid');
+    projectA = join(fixturesRoot, "project-a");
+    projectB = join(fixturesRoot, "project-b");
+    projectInvalid = join(fixturesRoot, "project-invalid");
     manager = new ProjectContextManager();
   });
 
@@ -36,9 +35,9 @@ describe('ProjectContextManager', () => {
     await cleanupTempDir(fixturesRoot);
   });
 
-  describe('Project registration and caching', () => {
+  describe("Project registration and caching", () => {
     // AC: @multi-directory-daemon ac-4
-    it('should auto-register new project on first request', () => {
+    it("should auto-register new project on first request", () => {
       expect(manager.hasProject(projectA)).toBe(false);
 
       const context = manager.registerProject(projectA);
@@ -50,7 +49,7 @@ describe('ProjectContextManager', () => {
     });
 
     // AC: @multi-directory-daemon ac-4
-    it('should cache registered project', () => {
+    it("should cache registered project", () => {
       const context1 = manager.registerProject(projectA);
       const context2 = manager.getProject(projectA);
 
@@ -58,7 +57,7 @@ describe('ProjectContextManager', () => {
     });
 
     // AC: @multi-directory-daemon ac-14
-    it('should register multiple projects independently', () => {
+    it("should register multiple projects independently", () => {
       manager.registerProject(projectA);
       manager.registerProject(projectB);
 
@@ -73,19 +72,19 @@ describe('ProjectContextManager', () => {
     });
 
     // AC: @multi-directory-daemon ac-15
-    it('should list all registered projects', () => {
+    it("should list all registered projects", () => {
       manager.registerProject(projectA);
       manager.registerProject(projectB);
 
       const projects = manager.listProjects();
 
       expect(projects).toHaveLength(2);
-      expect(projects.map(p => p.path)).toContain(projectA);
-      expect(projects.map(p => p.path)).toContain(projectB);
+      expect(projects.map((p) => p.path)).toContain(projectA);
+      expect(projects.map((p) => p.path)).toContain(projectB);
     });
 
     // AC: @multi-directory-daemon ac-16
-    it('should handle concurrent registration of same project', () => {
+    it("should handle concurrent registration of same project", () => {
       // Simulate concurrent registration
       const context1 = manager.registerProject(projectA);
       const context2 = manager.registerProject(projectA);
@@ -96,7 +95,7 @@ describe('ProjectContextManager', () => {
     });
 
     // AC: @multi-directory-daemon ac-4
-    it('should not re-register already cached project', () => {
+    it("should not re-register already cached project", () => {
       const context1 = manager.registerProject(projectA);
       const registeredAt1 = context1.registeredAt;
 
@@ -108,18 +107,18 @@ describe('ProjectContextManager', () => {
     });
   });
 
-  describe('Watcher startup rollback', () => {
-    it('stops an already-started kspec watcher if session watcher startup fails', async () => {
+  describe("Watcher startup rollback", () => {
+    it("stops an already-started kspec watcher if session watcher startup fails", async () => {
       manager.registerProject(projectA);
 
-      const kspecWatcherStart = vi.spyOn(KspecWatcher.prototype, 'start').mockResolvedValue();
-      const kspecWatcherStop = vi.spyOn(KspecWatcher.prototype, 'stop').mockResolvedValue();
-      const sessionWatcherStart = vi.spyOn(SessionWatcher.prototype, 'start').mockRejectedValue(
-        new Error('session watcher failed'),
-      );
-      const sessionWatcherStop = vi.spyOn(SessionWatcher.prototype, 'stop').mockResolvedValue();
+      const kspecWatcherStart = vi.spyOn(KspecWatcher.prototype, "start").mockResolvedValue();
+      const kspecWatcherStop = vi.spyOn(KspecWatcher.prototype, "stop").mockResolvedValue();
+      const sessionWatcherStart = vi
+        .spyOn(SessionWatcher.prototype, "start")
+        .mockRejectedValue(new Error("session watcher failed"));
+      const sessionWatcherStop = vi.spyOn(SessionWatcher.prototype, "stop").mockResolvedValue();
 
-      await expect(manager.startWatcher(projectA)).rejects.toThrow('session watcher failed');
+      await expect(manager.startWatcher(projectA)).rejects.toThrow("session watcher failed");
 
       expect(kspecWatcherStart).toHaveBeenCalledOnce();
       expect(sessionWatcherStart).toHaveBeenCalledOnce();
@@ -128,25 +127,29 @@ describe('ProjectContextManager', () => {
     });
 
     // AC: @multi-directory-daemon ac-34
-    it('unregisters a project when the watcher reports permanent directory removal', async () => {
+    it("unregisters a project when the watcher reports permanent directory removal", async () => {
       manager.registerProject(projectA);
 
       const watcherInstances: KspecWatcher[] = [];
-      const kspecWatcherStart = vi.spyOn(KspecWatcher.prototype, 'start').mockImplementation(async function () {
-        watcherInstances.push(this as KspecWatcher);
-      });
-      const kspecWatcherStop = vi.spyOn(KspecWatcher.prototype, 'stop').mockResolvedValue();
-      const sessionWatcherStart = vi.spyOn(SessionWatcher.prototype, 'start').mockResolvedValue();
-      const sessionWatcherStop = vi.spyOn(SessionWatcher.prototype, 'stop').mockResolvedValue();
+      const kspecWatcherStart = vi
+        .spyOn(KspecWatcher.prototype, "start")
+        .mockImplementation(async function () {
+          watcherInstances.push(this as KspecWatcher);
+        });
+      const kspecWatcherStop = vi.spyOn(KspecWatcher.prototype, "stop").mockResolvedValue();
+      const sessionWatcherStart = vi.spyOn(SessionWatcher.prototype, "start").mockResolvedValue();
+      const sessionWatcherStop = vi.spyOn(SessionWatcher.prototype, "stop").mockResolvedValue();
 
       await manager.startWatcher(projectA);
       expect(kspecWatcherStart).toHaveBeenCalledOnce();
       expect(sessionWatcherStart).toHaveBeenCalledOnce();
       expect(manager.hasProject(projectA)).toBe(true);
 
-      await (watcherInstances[0] as KspecWatcher & {
-        options: { onPermanentFailure?: (kspecDir: string) => void | Promise<void> };
-      }).options.onPermanentFailure?.(join(projectA, '.kspec'));
+      await (
+        watcherInstances[0] as KspecWatcher & {
+          options: { onPermanentFailure?: (kspecDir: string) => void | Promise<void> };
+        }
+      ).options.onPermanentFailure?.(join(projectA, ".kspec"));
 
       await vi.waitFor(() => {
         expect(manager.hasProject(projectA)).toBe(false);
@@ -157,9 +160,9 @@ describe('ProjectContextManager', () => {
     });
   });
 
-  describe('Daemon restart behavior', () => {
+  describe("Daemon restart behavior", () => {
     // AC: @multi-directory-daemon ac-14
-    it('should re-register project automatically after daemon restart', () => {
+    it("should re-register project automatically after daemon restart", () => {
       // Initial registration before restart
       manager.registerProject(projectA);
       manager.registerProject(projectB);
@@ -181,7 +184,7 @@ describe('ProjectContextManager', () => {
     });
 
     // AC: @multi-directory-daemon ac-15
-    it('should have empty project list after daemon restart', () => {
+    it("should have empty project list after daemon restart", () => {
       // Register projects before restart
       manager.registerProject(projectA);
       manager.registerProject(projectB);
@@ -197,7 +200,7 @@ describe('ProjectContextManager', () => {
     });
 
     // AC: @multi-directory-daemon ac-15
-    it('should require re-registration of all projects after restart', () => {
+    it("should require re-registration of all projects after restart", () => {
       // Register with default before restart
       manager.registerProject(projectA, true);
       manager.registerProject(projectB);
@@ -206,9 +209,9 @@ describe('ProjectContextManager', () => {
       const managerAfterRestart = new ProjectContextManager();
 
       // All projects must be re-registered
-      expect(() => managerAfterRestart.getProject(projectA)).toThrow('Project not registered');
-      expect(() => managerAfterRestart.getProject(projectB)).toThrow('Project not registered');
-      expect(() => managerAfterRestart.getProject()).toThrow('No default project configured');
+      expect(() => managerAfterRestart.getProject(projectA)).toThrow("Project not registered");
+      expect(() => managerAfterRestart.getProject(projectB)).toThrow("Project not registered");
+      expect(() => managerAfterRestart.getProject()).toThrow("No default project configured");
 
       // Re-register on first request after restart
       managerAfterRestart.registerProject(projectA, true);
@@ -216,46 +219,46 @@ describe('ProjectContextManager', () => {
     });
   });
 
-  describe('Path validation', () => {
+  describe("Path validation", () => {
     // AC: @multi-directory-daemon ac-5
-    it('should reject path without .kspec/ directory', () => {
+    it("should reject path without .kspec/ directory", () => {
       expect(() => {
         manager.registerProject(projectInvalid);
-      }).toThrow('Invalid kspec project - .kspec/ not found');
+      }).toThrow("Invalid kspec project - .kspec/ not found");
     });
 
     // AC: @multi-directory-daemon ac-6
-    it('should reject relative paths', () => {
+    it("should reject relative paths", () => {
       expect(() => {
-        manager.registerProject('./project-a');
-      }).toThrow('Path must be absolute');
+        manager.registerProject("./project-a");
+      }).toThrow("Path must be absolute");
     });
 
     // AC: @multi-directory-daemon ac-6
-    it('should reject paths without leading slash', () => {
+    it("should reject paths without leading slash", () => {
       expect(() => {
-        manager.registerProject('project-a');
-      }).toThrow('Path must be absolute');
+        manager.registerProject("project-a");
+      }).toThrow("Path must be absolute");
     });
 
     // AC: @multi-directory-daemon ac-7
-    it('should reject paths with parent traversal (..) segments', () => {
+    it("should reject paths with parent traversal (..) segments", () => {
       expect(() => {
         manager.registerProject(`${projectA}/../project-a`);
-      }).toThrow('Path must not contain parent traversal');
+      }).toThrow("Path must not contain parent traversal");
     });
 
     // AC: @multi-directory-daemon ac-7
-    it('should reject paths with .. in middle', () => {
+    it("should reject paths with .. in middle", () => {
       expect(() => {
-        manager.registerProject('/some/path/../other/path');
-      }).toThrow('Path must not contain parent traversal');
+        manager.registerProject("/some/path/../other/path");
+      }).toThrow("Path must not contain parent traversal");
     });
   });
 
-  describe('Path normalization', () => {
+  describe("Path normalization", () => {
     // AC: @multi-directory-daemon ac-8
-    it('should normalize path with trailing slash', () => {
+    it("should normalize path with trailing slash", () => {
       const contextWithSlash = manager.registerProject(`${projectA}/`);
       const contextWithoutSlash = manager.getProject(projectA);
 
@@ -264,7 +267,7 @@ describe('ProjectContextManager', () => {
     });
 
     // AC: @multi-directory-daemon ac-8
-    it('should normalize path with dot segments', () => {
+    it("should normalize path with dot segments", () => {
       const pathWithDot = `${projectA}/.`;
       const context = manager.registerProject(pathWithDot);
 
@@ -272,7 +275,7 @@ describe('ProjectContextManager', () => {
     });
 
     // AC: @multi-directory-daemon ac-8
-    it('should normalize path with multiple slashes', () => {
+    it("should normalize path with multiple slashes", () => {
       const pathWithSlashes = `${fixturesRoot}//project-a`;
       const context = manager.registerProject(pathWithSlashes);
 
@@ -280,10 +283,10 @@ describe('ProjectContextManager', () => {
     });
 
     // AC: @multi-directory-daemon ac-8c
-    it('should NOT resolve symlinks during normalization', async () => {
+    it("should NOT resolve symlinks during normalization", async () => {
       // Create symlink to project-a
-      const symlinkPath = join(fixturesRoot, 'project-a-symlink');
-      await symlink(projectA, symlinkPath, 'dir');
+      const symlinkPath = join(fixturesRoot, "project-a-symlink");
+      await symlink(projectA, symlinkPath, "dir");
 
       // Register both real path and symlink
       manager.registerProject(projectA);
@@ -301,9 +304,9 @@ describe('ProjectContextManager', () => {
     });
   });
 
-  describe('Default project handling', () => {
+  describe("Default project handling", () => {
     // AC: @multi-directory-daemon ac-2
-    it('should use default project when no path specified', () => {
+    it("should use default project when no path specified", () => {
       manager.registerProject(projectA, true);
 
       const context = manager.getProject();
@@ -311,7 +314,7 @@ describe('ProjectContextManager', () => {
     });
 
     // AC: @multi-directory-daemon ac-2
-    it('should set default project explicitly', () => {
+    it("should set default project explicitly", () => {
       manager.registerProject(projectA);
       manager.setDefaultProject(projectA);
 
@@ -320,14 +323,14 @@ describe('ProjectContextManager', () => {
     });
 
     // AC: @multi-directory-daemon ac-3
-    it('should error when no default project and no path provided', () => {
+    it("should error when no default project and no path provided", () => {
       expect(() => {
         manager.getProject();
-      }).toThrow('No default project configured. Specify X-Kspec-Dir header.');
+      }).toThrow("No default project configured. Specify X-Kspec-Dir header.");
     });
 
     // AC: @multi-directory-daemon ac-2
-    it('should allow default project from constructor', () => {
+    it("should allow default project from constructor", () => {
       const managerWithDefault = new ProjectContextManager(projectA);
       managerWithDefault.registerProject(projectA);
 
@@ -336,7 +339,7 @@ describe('ProjectContextManager', () => {
     });
 
     // AC: @multi-directory-daemon ac-2
-    it('should switch default project when requested', () => {
+    it("should switch default project when requested", () => {
       manager.registerProject(projectA);
       manager.registerProject(projectB);
       manager.setDefaultProject(projectA);
@@ -350,16 +353,16 @@ describe('ProjectContextManager', () => {
     });
 
     // AC: @multi-directory-daemon ac-2
-    it('should error when setting unregistered project as default', () => {
+    it("should error when setting unregistered project as default", () => {
       expect(() => {
         manager.setDefaultProject(projectA);
-      }).toThrow('Project must be registered before setting as default');
+      }).toThrow("Project must be registered before setting as default");
     });
   });
 
-  describe('Project unregistration', () => {
+  describe("Project unregistration", () => {
     // AC: @multi-directory-daemon ac-20
-    it('should unregister project', () => {
+    it("should unregister project", () => {
       manager.registerProject(projectA);
       expect(manager.hasProject(projectA)).toBe(true);
 
@@ -368,7 +371,7 @@ describe('ProjectContextManager', () => {
     });
 
     // AC: @multi-directory-daemon ac-20
-    it('should clear default project when unregistering it', () => {
+    it("should clear default project when unregistering it", () => {
       manager.registerProject(projectA, true);
       expect(() => manager.getProject()).not.toThrow();
 
@@ -376,11 +379,11 @@ describe('ProjectContextManager', () => {
 
       expect(() => {
         manager.getProject();
-      }).toThrow('No default project configured');
+      }).toThrow("No default project configured");
     });
 
     // AC: @multi-directory-daemon ac-20
-    it('should not affect other projects when unregistering', () => {
+    it("should not affect other projects when unregistering", () => {
       manager.registerProject(projectA);
       manager.registerProject(projectB);
 
@@ -391,31 +394,31 @@ describe('ProjectContextManager', () => {
     });
   });
 
-  describe('Deleted project detection', () => {
+  describe("Deleted project detection", () => {
     // AC: @multi-directory-daemon ac-20b
-    it('should error when default project .kspec/ is deleted', async () => {
+    it("should error when default project .kspec/ is deleted", async () => {
       manager.registerProject(projectA, true);
 
       // Delete .kspec/ directory
-      const kspecDir = join(projectA, '.kspec');
+      const kspecDir = join(projectA, ".kspec");
       await cleanupTempDir(kspecDir);
 
       expect(() => {
         manager.getProject();
-      }).toThrow('Default project no longer valid. Specify X-Kspec-Dir header.');
+      }).toThrow("Default project no longer valid. Specify X-Kspec-Dir header.");
     });
 
     // AC: @multi-directory-daemon ac-2
-    it('should allow non-default project access even if default is deleted', async () => {
+    it("should allow non-default project access even if default is deleted", async () => {
       manager.registerProject(projectA, true);
       manager.registerProject(projectB);
 
       // Delete default project's .kspec/
-      const kspecDir = join(projectA, '.kspec');
+      const kspecDir = join(projectA, ".kspec");
       await cleanupTempDir(kspecDir);
 
       // Should error without path (default deleted)
-      expect(() => manager.getProject()).toThrow('Default project no longer valid');
+      expect(() => manager.getProject()).toThrow("Default project no longer valid");
 
       // Should succeed with explicit path
       const contextB = manager.getProject(projectB);
@@ -423,9 +426,9 @@ describe('ProjectContextManager', () => {
     });
   });
 
-  describe('Get project validation', () => {
+  describe("Get project validation", () => {
     // AC: @multi-directory-daemon ac-1
-    it('should return registered project by path', () => {
+    it("should return registered project by path", () => {
       manager.registerProject(projectA);
       const context = manager.getProject(projectA);
 
@@ -433,14 +436,14 @@ describe('ProjectContextManager', () => {
     });
 
     // AC: @multi-directory-daemon ac-1
-    it('should error when getting unregistered project', () => {
+    it("should error when getting unregistered project", () => {
       expect(() => {
         manager.getProject(projectA);
-      }).toThrow('Project not registered');
+      }).toThrow("Project not registered");
     });
 
     // AC: @multi-directory-daemon ac-8
-    it('should normalize path when getting project', () => {
+    it("should normalize path when getting project", () => {
       manager.registerProject(projectA);
 
       // Get with trailing slash

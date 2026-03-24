@@ -66,8 +66,7 @@ export const EXIT_CODE_METADATA = [
   {
     code: EXIT_CODES.VALIDATION_FAILED,
     name: "VALIDATION_FAILED",
-    description:
-      "Validation failed (invalid state, schema violation, business rule violation)",
+    description: "Validation failed (invalid state, schema violation, business rule violation)",
     commands: "validate, task (state transitions), item (schema validation)",
   },
   {
@@ -79,8 +78,7 @@ export const EXIT_CODE_METADATA = [
   {
     code: EXIT_CODES.VALIDATION_WARNINGS,
     name: "VALIDATION_WARNINGS",
-    description:
-      "Validation passed with warnings (no errors but warnings present)",
+    description: "Validation passed with warnings (no errors but warnings present)",
     commands: "validate (when only warnings, no errors)",
   },
 ] as const;

@@ -14,6 +14,7 @@ import {
   cleanupTempDir,
   createTempDir,
   initGitRepo,
+  readTestOutput,
   testUlid,
 } from "./helpers/cli.js";
 
@@ -61,44 +62,13 @@ async function setupProjectWithReviewerAgent(dir: string): Promise<void> {
   await fs.writeFile(path.join(dir, "project.tasks.yaml"), "tasks: []\n", "utf-8");
 }
 
-async function writeTask(dir: string, task: {
-  id: string;
-  title: string;
-  slugs: string[];
-  status: "pending_review";
-}): Promise<void> {
-  await fs.writeFile(
-    path.join(dir, "project.tasks.yaml"),
-    YAML.stringify({
-      tasks: [{
-        _ulid: task.id,
-        title: task.title,
-        slugs: task.slugs,
-        status: task.status,
-        type: "task",
-        priority: 1,
-        blocked_by: [],
-        depends_on: [],
-        context: [],
-        tags: [],
-        vcs_refs: [],
-        notes: [],
-        todos: [],
-        created_at: new Date().toISOString(),
-        automation: "eligible",
-      }],
-    }),
-    "utf-8",
-  );
-}
-
 function workspaceMetadataPath(workspaceDir: string): string {
   return path.join(workspaceDir, WORKSPACE_METADATA_FILE);
 }
 
 async function readRegistryWorkspaces(dir: string): Promise<Array<Record<string, unknown>>> {
   const registryPath = path.join(dir, "project.dispatch-workspaces.yaml");
-  const raw = YAML.parse(await fs.readFile(registryPath, "utf-8")) as {
+  const raw = YAML.parse(await readTestOutput(registryPath)) as {
     workspaces?: Array<Record<string, unknown>>;
   };
   return raw.workspaces ?? [];
@@ -158,7 +128,7 @@ describe("dispatch workspace cleanup", () => {
 
     await fs.access(workerWorkspace.cwd);
     const metadata = JSON.parse(
-      await fs.readFile(workspaceMetadataPath(workerWorkspace.cwd), "utf-8"),
+      await readTestOutput(workspaceMetadataPath(workerWorkspace.cwd)),
     ) as { reviewerWorktreeDir: string | null };
     expect(metadata.reviewerWorktreeDir).toBeNull();
   });
@@ -195,7 +165,9 @@ describe("dispatch workspace cleanup", () => {
     await reconcileDispatchWorkspaceArtifacts(tempDir);
 
     await expect(fs.access(workspace.cwd)).rejects.toThrow();
-    expect(git(tempDir, "branch --list dispatch/task/task-reap-closed-workspace/01task00")).toBe("");
+    expect(git(tempDir, "branch --list dispatch/task/task-reap-closed-workspace/01task00")).toBe(
+      "",
+    );
   });
 
   // AC: @dispatch-workspace-cleanup-policy ac-4
@@ -237,15 +209,16 @@ describe("dispatch workspace cleanup", () => {
       blockedReason: "Cleanup blocked: canonical branch still has an active dispatch invocation.",
     });
 
-    const metadata = JSON.parse(
-      await fs.readFile(workspaceMetadataPath(workspace.cwd), "utf-8"),
-    ) as { lifecycleState: string; cleanupBlockedReason: string | null };
+    const metadata = JSON.parse(await readTestOutput(workspaceMetadataPath(workspace.cwd))) as {
+      lifecycleState: string;
+      cleanupBlockedReason: string | null;
+    };
     expect(metadata.lifecycleState).toBe("cleanup_blocked");
     expect(metadata.cleanupBlockedReason).toContain("active dispatch invocation");
     await fs.access(workspace.cwd);
-    expect(git(tempDir, "branch --list dispatch/task/task-blocked-cleanup-workspace/01task00")).toContain(
-      "dispatch/task/task-blocked-cleanup-workspace/01task00",
-    );
+    expect(
+      git(tempDir, "branch --list dispatch/task/task-blocked-cleanup-workspace/01task00"),
+    ).toContain("dispatch/task/task-blocked-cleanup-workspace/01task00");
   });
 
   // AC: @dispatch-workspace-cleanup-policy ac-4
@@ -277,9 +250,7 @@ describe("dispatch workspace cleanup", () => {
         "Cleanup blocked: workspace integration outcome is unresolved, so the canonical branch must be retained.",
     });
 
-    const metadata = JSON.parse(
-      await fs.readFile(workspaceMetadataPath(workspace.cwd), "utf-8"),
-    ) as {
+    const metadata = JSON.parse(await readTestOutput(workspaceMetadataPath(workspace.cwd))) as {
       lifecycleState: string;
       cleanupBlockedReason: string | null;
       cleanupScheduledAt: string | null;
@@ -313,14 +284,20 @@ describe("dispatch workspace cleanup", () => {
 
     await fs.rm(workspaceMetadataPath(workspace.cwd), { force: true });
     await fs.mkdir(path.join(tempDir, ".kspec-worktrees", "orphan-dir"), { recursive: true });
-    await fs.writeFile(path.join(tempDir, ".kspec-worktrees", "orphan-dir", "leftover.txt"), "orphan\n", "utf-8");
+    await fs.writeFile(
+      path.join(tempDir, ".kspec-worktrees", "orphan-dir", "leftover.txt"),
+      "orphan\n",
+      "utf-8",
+    );
     git(tempDir, "branch dispatch/task/orphaned/no-metadata");
 
     await reconcileDispatchWorkspaceArtifacts(tempDir);
 
     await expect(fs.access(workspace.cwd)).rejects.toThrow();
     await expect(fs.access(path.join(tempDir, ".kspec-worktrees", "orphan-dir"))).rejects.toThrow();
-    expect(git(tempDir, "branch --list dispatch/task/task-orphan-cleanup-workspace/01task00")).toBe("");
+    expect(git(tempDir, "branch --list dispatch/task/task-orphan-cleanup-workspace/01task00")).toBe(
+      "",
+    );
     expect(git(tempDir, "branch --list dispatch/task/orphaned/no-metadata")).toBe("");
   });
 
@@ -345,9 +322,7 @@ describe("dispatch workspace cleanup", () => {
     git(tempDir, `branch -D ${workspace.metadata.canonicalBranch}`);
 
     const metadataFile = workspaceMetadataPath(workspace.cwd);
-    const metadata = JSON.parse(
-      await fs.readFile(metadataFile, "utf-8"),
-    ) as {
+    const metadata = JSON.parse(await readTestOutput(metadataFile)) as {
       canonicalBranch: string;
       canonicalBranchHead: string;
     };

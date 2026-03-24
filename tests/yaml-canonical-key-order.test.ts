@@ -14,16 +14,6 @@ function extractTopLevelKeys(yamlStr: string): string[] {
 }
 
 /**
- * Helper: extract keys from the first item in a YAML array field.
- */
-function extractFirstItemKeys(yamlStr: string, arrayField: string): string[] {
-  const parsed = YAML.parse(yamlStr);
-  const arr = parsed[arrayField];
-  if (!Array.isArray(arr) || arr.length === 0) return [];
-  return Object.keys(arr[0]);
-}
-
-/**
  * Helper: create a Pair-like object for testing the comparator directly.
  */
 function makePair(key: string): Pair {

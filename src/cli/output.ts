@@ -27,9 +27,7 @@ export function filterSupersededNotes(notes: Note[]): Note[] {
  * Annotate notes with superseded status for JSON output.
  * Adds a computed `superseded` field to each note.
  */
-export function annotateNotesWithSuperseded(
-  notes: Note[],
-): Array<Note & { superseded: boolean }> {
+export function annotateNotesWithSuperseded(notes: Note[]): Array<Note & { superseded: boolean }> {
   return notes.map((note) => ({
     ...note,
     superseded: isNoteSuperseded(note, notes),
@@ -230,7 +228,7 @@ export function showChangeDiff(
   if (isStructuredMode()) return;
   for (const change of changes) {
     console.log(
-      `  ${chalk.gray(change.field + ":")} ${chalk.red(formatChangeValue(change.before))} → ${chalk.green(formatChangeValue(change.after))}`,
+      `  ${chalk.gray(`${change.field}:`)} ${chalk.red(formatChangeValue(change.before))} → ${chalk.green(formatChangeValue(change.after))}`,
     );
   }
 }
@@ -280,9 +278,7 @@ export function formatTask(
   const ref = formatTaskRef(task, index);
   const status = statusColor(task.status)(`[${task.status}]`);
   const priority =
-    task.priority <= 2
-      ? chalk.red(`P${task.priority}`)
-      : chalk.gray(`P${task.priority}`);
+    task.priority <= 2 ? chalk.red(`P${task.priority}`) : chalk.gray(`P${task.priority}`);
 
   // AC: @session-scoped-task-claiming ac-display
   const sessionLabel = task.session_id
@@ -310,10 +306,7 @@ export function formatTask(
 /**
  * Get first line of text, truncated to max length
  */
-function getFirstLine(
-  text: string | undefined,
-  maxLength: number = 70,
-): string | undefined {
+function getFirstLine(text: string | undefined, maxLength: number = 70): string | undefined {
   if (!text) return undefined;
   const firstLine = text.split("\n")[0].trim();
   if (firstLine.length <= maxLength) return firstLine;
@@ -339,9 +332,7 @@ function formatFullModeContext(task: Task, index?: ReferenceIndex): void {
   if (task.notes && task.notes.length > 0) {
     const mostRecent = task.notes[task.notes.length - 1];
     const preview = getFirstLine(mostRecent.content, 50);
-    console.log(
-      chalk.gray(`${indent}Notes: ${task.notes.length} (latest: "${preview}")`),
-    );
+    console.log(chalk.gray(`${indent}Notes: ${task.notes.length} (latest: "${preview}")`));
   }
 
   // Show pending todos count (AC-1, AC-3)
@@ -375,25 +366,14 @@ function formatFullModeContext(task: Task, index?: ReferenceIndex): void {
       }
 
       // Show acceptance criteria if available
-      if (
-        "acceptance_criteria" in spec &&
-        Array.isArray(spec.acceptance_criteria)
-      ) {
+      if ("acceptance_criteria" in spec && Array.isArray(spec.acceptance_criteria)) {
         const ac = spec.acceptance_criteria;
         if (ac.length > 0) {
-          console.log(
-            chalk.gray(`${indent}  Acceptance Criteria: ${ac.length}`),
-          );
+          console.log(chalk.gray(`${indent}  Acceptance Criteria: ${ac.length}`));
           // Show first AC as preview
           const firstAC = ac[0];
-          if (
-            typeof firstAC === "object" &&
-            firstAC !== null &&
-            "id" in firstAC
-          ) {
-            console.log(
-              chalk.gray(`${indent}    [${firstAC.id}] ${firstAC.then}`),
-            );
+          if (typeof firstAC === "object" && firstAC !== null && "id" in firstAC) {
+            console.log(chalk.gray(`${indent}    [${firstAC.id}] ${firstAC.then}`));
           }
         }
       }
@@ -405,9 +385,7 @@ function formatFullModeContext(task: Task, index?: ReferenceIndex): void {
     console.log(chalk.gray(`${indent}Tags: ${task.tags.join(", ")}`));
   }
   if (task.depends_on && task.depends_on.length > 0) {
-    console.log(
-      chalk.gray(`${indent}Depends on: ${task.depends_on.join(", ")}`),
-    );
+    console.log(chalk.gray(`${indent}Depends on: ${task.depends_on.join(", ")}`));
   }
 }
 
@@ -451,9 +429,7 @@ export function formatTaskListWithAutomation(
     const ref = formatTaskRef(task, index);
     const status = statusColor(task.status)(`[${task.status}]`);
     const priority =
-      task.priority <= 2
-        ? chalk.red(`P${task.priority}`)
-        : chalk.gray(`P${task.priority}`);
+      task.priority <= 2 ? chalk.red(`P${task.priority}`) : chalk.gray(`P${task.priority}`);
     const automationLabel = formatAutomationStatus(task.automation);
     // AC: @session-scoped-task-claiming ac-display
     const sessionLabel = task.session_id
@@ -478,16 +454,9 @@ export function formatTaskListWithAutomation(
 
     // Show matched fields if grep pattern provided
     if (grepPattern) {
-      const match = grepItem(
-        task as unknown as Record<string, unknown>,
-        grepPattern,
-      );
+      const match = grepItem(task as unknown as Record<string, unknown>, grepPattern);
       if (match && match.matchedFields.length > 0) {
-        console.log(
-          chalk.gray(
-            `    matched: ${formatMatchedFields(match.matchedFields)}`,
-          ),
-        );
+        console.log(chalk.gray(`    matched: ${formatMatchedFields(match.matchedFields)}`));
       }
     } else if (full) {
       formatFullModeContext(task, index);
@@ -523,16 +492,9 @@ export function formatTaskList(
 
     // Show matched fields if grep pattern provided
     if (grepPattern) {
-      const match = grepItem(
-        task as unknown as Record<string, unknown>,
-        grepPattern,
-      );
+      const match = grepItem(task as unknown as Record<string, unknown>, grepPattern);
       if (match && match.matchedFields.length > 0) {
-        console.log(
-          chalk.gray(
-            `    matched: ${formatMatchedFields(match.matchedFields)}`,
-          ),
-        );
+        console.log(chalk.gray(`    matched: ${formatMatchedFields(match.matchedFields)}`));
       }
     } else if (full) {
       // AC: @task-list-verbose ac-1 - Full mode shows richer context
@@ -580,9 +542,7 @@ export function formatTaskDetails(
     console.log(`${fieldLabels.slugs}     ${task.slugs.join(", ")}`);
   }
   console.log(`${fieldLabels.type}      ${task.type}`);
-  console.log(
-    `${fieldLabels.status}    ${statusColor(task.status)(task.status)}`,
-  );
+  console.log(`${fieldLabels.status}    ${statusColor(task.status)(task.status)}`);
   console.log(`${fieldLabels.priority}  ${task.priority}`);
 
   // AC: @task-automation-eligibility ac-17 - show automation status
@@ -595,9 +555,7 @@ export function formatTaskDetails(
         : task.automation === "manual_only"
           ? chalk.red
           : chalk.gray;
-  console.log(
-    `${fieldLabels.automation} ${automationColor(automationDisplay)}`,
-  );
+  console.log(`${fieldLabels.automation} ${automationColor(automationDisplay)}`);
 
   // AC: @session-scoped-task-claiming ac-display
   if (task.session_id) {
@@ -626,9 +584,21 @@ export function formatTaskDetails(
   if (task.review_ref) {
     if (options.activeReview) {
       const r = options.activeReview;
-      const stateColor = r.lifecycle_state === "open" ? chalk.green : r.lifecycle_state === "closed" ? chalk.red : chalk.gray;
-      const dispColor = r.disposition === "approved" ? chalk.green : r.disposition === "changes_requested" ? chalk.red : chalk.yellow;
-      console.log(`Review ref: ${task.review_ref} ${chalk.gray("→")} ${r.title} ${stateColor(`[${r.lifecycle_state}]`)} ${dispColor(`(${r.disposition})`)}`);
+      const stateColor =
+        r.lifecycle_state === "open"
+          ? chalk.green
+          : r.lifecycle_state === "closed"
+            ? chalk.red
+            : chalk.gray;
+      const dispColor =
+        r.disposition === "approved"
+          ? chalk.green
+          : r.disposition === "changes_requested"
+            ? chalk.red
+            : chalk.yellow;
+      console.log(
+        `Review ref: ${task.review_ref} ${chalk.gray("→")} ${r.title} ${stateColor(`[${r.lifecycle_state}]`)} ${dispColor(`(${r.disposition})`)}`,
+      );
     } else {
       console.log(`Review ref: ${task.review_ref}`);
     }
@@ -688,9 +658,7 @@ export function formatTaskDetails(
   }
 
   if (task.blocked_by.length > 0) {
-    console.log(
-      chalk.red(`${fieldLabels.blocked}   ${task.blocked_by.join(", ")}`),
-    );
+    console.log(chalk.red(`${fieldLabels.blocked}   ${task.blocked_by.join(", ")}`));
   }
 
   if (task.tags.length > 0) {
@@ -739,10 +707,7 @@ export function formatTaskDetails(
                 : status.implementation === "in_progress"
                   ? chalk.yellow
                   : chalk.gray;
-          console.log(
-            chalk.gray(fieldLabels.implementation) +
-              implColor(status.implementation),
-          );
+          console.log(chalk.gray(fieldLabels.implementation) + implColor(status.implementation));
         }
       }
       if ("description" in spec && spec.description) {
@@ -768,19 +733,14 @@ export function formatTaskDetails(
               then?: string;
             };
             console.log(chalk.gray(`  [${acObj.id}]`));
-            if (acObj.given)
-              console.log(chalk.gray(`    Given: ${acObj.given}`));
+            if (acObj.given) console.log(chalk.gray(`    Given: ${acObj.given}`));
             if (acObj.when) console.log(chalk.gray(`    When: ${acObj.when}`));
             if (acObj.then) console.log(chalk.gray(`    Then: ${acObj.then}`));
           }
         }
       }
       // Show traceability if present
-      if (
-        "traceability" in spec &&
-        spec.traceability &&
-        typeof spec.traceability === "object"
-      ) {
+      if ("traceability" in spec && spec.traceability && typeof spec.traceability === "object") {
         const trace = spec.traceability as {
           implementation?: Array<{
             path: string;
@@ -824,9 +784,7 @@ export function formatTaskDetails(
 
   if (task.notes.length > 0) {
     // Filter superseded notes unless showAllNotes is true
-    const notesToShow = options.showAllNotes
-      ? task.notes
-      : filterSupersededNotes(task.notes);
+    const notesToShow = options.showAllNotes ? task.notes : filterSupersededNotes(task.notes);
     const hiddenCount = task.notes.length - notesToShow.length;
 
     console.log(`\n${sectionHeaders.notes}`);
@@ -840,7 +798,11 @@ export function formatTaskDetails(
 
     // Show count of hidden notes if any
     if (hiddenCount > 0) {
-      console.log(chalk.gray(`\n(${hiddenCount} superseded note${hiddenCount > 1 ? "s" : ""} hidden - use --all to show)`));
+      console.log(
+        chalk.gray(
+          `\n(${hiddenCount} superseded note${hiddenCount > 1 ? "s" : ""} hidden - use --all to show)`,
+        ),
+      );
     }
   }
 
@@ -848,11 +810,9 @@ export function formatTaskDetails(
   if (options.activity && options.activity.length > 0) {
     const DEFAULT_ACTIVITY_COUNT = 10;
     // Display in reverse chronological order (most recent first)
-    const reversed = [...options.activity].reverse();
+    const reversed = [...options.activity].toReversed();
     const showAll = options.showFullActivity;
-    const entries = showAll
-      ? reversed
-      : reversed.slice(0, DEFAULT_ACTIVITY_COUNT);
+    const entries = showAll ? reversed : reversed.slice(0, DEFAULT_ACTIVITY_COUNT);
     const hiddenCount = reversed.length - entries.length;
 
     console.log(`\n${sectionHeaders.activity}`);
@@ -860,8 +820,7 @@ export function formatTaskDetails(
       const icon = activityIcon(entry.type);
       const time = formatRelativeTime(new Date(entry.timestamp));
       console.log(
-        `${icon} ${chalk.gray(time)} ${entry.summary}` +
-          (entry.author ? chalk.gray(` (${entry.author})`) : ""),
+        `${icon} ${chalk.gray(time)} ${entry.summary}${entry.author ? chalk.gray(` (${entry.author})`) : ""}`,
       );
     }
     if (hiddenCount > 0) {

@@ -100,11 +100,7 @@ export interface JsonRpcNotification {
 /**
  * Any JSON-RPC message type
  */
-export type JsonRpcMessage =
-  | JsonRpcRequest
-  | JsonRpcResponse
-  | JsonRpcError
-  | JsonRpcNotification;
+export type JsonRpcMessage = JsonRpcRequest | JsonRpcResponse | JsonRpcError | JsonRpcNotification;
 
 // ============================================================================
 // Validation Helpers

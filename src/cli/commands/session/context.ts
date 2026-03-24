@@ -52,10 +52,7 @@ import { getDisplayRef } from "./format.js";
  * Build a reverse dependency map: for each task ULID, count how many
  * pending tasks depend on it. Unresolvable refs are silently skipped.
  */
-function computeUnlocksMap(
-  allTasks: LoadedTask[],
-  index: ReferenceIndex,
-): Map<string, number> {
+function computeUnlocksMap(allTasks: LoadedTask[], index: ReferenceIndex): Map<string, number> {
   const counts = new Map<string, number>();
 
   for (const task of allTasks) {
@@ -73,12 +70,8 @@ function computeUnlocksMap(
   return counts;
 }
 
-function toActiveTaskSummary(
-  task: LoadedTask,
-  index: ReferenceIndex,
-): ActiveTaskSummary {
-  const lastNote =
-    task.notes.length > 0 ? task.notes[task.notes.length - 1] : null;
+function toActiveTaskSummary(task: LoadedTask, index: ReferenceIndex): ActiveTaskSummary {
+  const lastNote = task.notes.length > 0 ? task.notes[task.notes.length - 1] : null;
   const incompleteTodos = task.todos.filter((t) => !t.done).length;
   return {
     ref: index.shortUlid(task._ulid),
@@ -141,10 +134,7 @@ function toBlockedTaskSummary(
   };
 }
 
-function toCompletedTaskSummary(
-  task: LoadedTask,
-  index: ReferenceIndex,
-): CompletedTaskSummary {
+function toCompletedTaskSummary(task: LoadedTask, index: ReferenceIndex): CompletedTaskSummary {
   return {
     ref: index.shortUlid(task._ulid),
     slug: task.slugs.length > 0 ? task.slugs[0] : null,
@@ -197,10 +187,7 @@ function collectRecentNotes(
 
   // Sort by date descending, take limit
   return allNotes
-    .sort(
-      (a, b) =>
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-    )
+    .toSorted((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
     .slice(0, options.limit);
 }
 
@@ -229,9 +216,7 @@ function collectIncompleteTodos(
 
   // Sort by added_at descending (most recent first), take limit
   return allTodos
-    .sort(
-      (a, b) => new Date(b.added_at).getTime() - new Date(a.added_at).getTime(),
-    )
+    .toSorted((a, b) => new Date(b.added_at).getTime() - new Date(a.added_at).getTime())
     .slice(0, options.limit);
 }
 
@@ -282,8 +267,7 @@ function buildActivityTimeline(
           // Use the later of commit date and task completion date for sort accuracy
           const commitTime = new Date(commit.date).getTime();
           const taskTime = new Date(linkedTask.completed_at).getTime();
-          const laterDate =
-            taskTime > commitTime ? linkedTask.completed_at : commit.date;
+          const laterDate = taskTime > commitTime ? linkedTask.completed_at : commit.date;
           items.push({
             type: "linked_commit",
             date: laterDate,
@@ -315,9 +299,7 @@ function buildActivityTimeline(
 
   // AC: @session-start-activity-timeline ac-activity-sort
   // Sort most recent first
-  items.sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-  );
+  items.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   return items;
 }
@@ -333,9 +315,7 @@ export async function gatherSessionContext(
 ): Promise<SessionStartContext> {
   const limit = parseInt(options.limit || "10", 10);
   if (Number.isNaN(limit) || limit <= 0) {
-    throw new RangeError(
-      `Invalid limit: "${options.limit}". Must be a positive integer.`,
-    );
+    throw new RangeError(`Invalid limit: "${options.limit}". Must be a positive integer.`);
   }
   const sinceDate = options.since ? parseTimeSpec(options.since) : null;
   const showGit = options.git !== false; // default true
@@ -368,8 +348,7 @@ export async function gatherSessionContext(
   }
 
   // Helper to get a status bucket (returns empty array if none)
-  const bucket = (status: string): LoadedTask[] =>
-    tasksByStatus.get(status) || [];
+  const bucket = (status: string): LoadedTask[] => tasksByStatus.get(status) || [];
 
   // Cache getReadyTasks (expensive: checks dependencies for every pending task)
   const allReadyTasks = getReadyTasks(allTasks);
@@ -377,7 +356,7 @@ export async function gatherSessionContext(
   // Cache sorted completed tasks (used for notes and recentlyCompleted list)
   const completedWithDate = bucket("completed")
     .filter((t) => t.completed_at)
-    .sort((a, b) => {
+    .toSorted((a, b) => {
       const aDate = new Date(a.completed_at || 0);
       const bDate = new Date(b.completed_at || 0);
       return bDate.getTime() - aDate.getTime();
@@ -402,13 +381,13 @@ export async function gatherSessionContext(
   // AC: @cli-ralph ac-16
   const activeTasks = activeStatusTasks
     .filter((t) => !options.eligible || t.automation === "eligible")
-    .sort((a, b) => a.priority - b.priority)
+    .toSorted((a, b) => a.priority - b.priority)
     .slice(0, options.full ? undefined : limit)
     .map((t) => toActiveTaskSummary(t, index));
 
   // Get pending review tasks
   const pendingReviewTasks = bucket("pending_review")
-    .sort((a, b) => a.priority - b.priority)
+    .toSorted((a, b) => a.priority - b.priority)
     .slice(0, options.full ? undefined : limit)
     .map((t) => toActiveTaskSummary(t, index));
 
@@ -419,43 +398,34 @@ export async function gatherSessionContext(
   // In non-full mode, split limit across 3 status buckets to prevent starvation.
   const noteLimitPerStatus = options.full ? undefined : Math.ceil(limit / 3);
 
-  const inProgressNotes = collectRecentNotes(
-    activeStatusTasks,
-    index,
-    { limit: noteLimitPerStatus, since: sinceDate },
-  );
+  const inProgressNotes = collectRecentNotes(activeStatusTasks, index, {
+    limit: noteLimitPerStatus,
+    since: sinceDate,
+  });
 
-  const pendingReviewNotes = collectRecentNotes(
-    bucket("pending_review"),
-    index,
-    { limit: noteLimitPerStatus, since: sinceDate },
-  );
+  const pendingReviewNotes = collectRecentNotes(bucket("pending_review"), index, {
+    limit: noteLimitPerStatus,
+    since: sinceDate,
+  });
 
-  const recentlyCompletedForNotes = completedWithDate
-    .slice(0, 5); // Last 3-5 completed tasks per AC-2
+  const recentlyCompletedForNotes = completedWithDate.slice(0, 5); // Last 3-5 completed tasks per AC-2
 
-  const completedNotes = collectRecentNotes(
-    recentlyCompletedForNotes,
-    index,
-    { limit: noteLimitPerStatus, since: sinceDate },
-  );
+  const completedNotes = collectRecentNotes(recentlyCompletedForNotes, index, {
+    limit: noteLimitPerStatus,
+    since: sinceDate,
+  });
 
   // Combine notes from all statuses, preserving representation from each.
   // In non-full mode, apply final cap to handle ceil() rounding across 3 buckets.
   const noteLimit = options.full ? undefined : limit;
   const recentNotes = [...inProgressNotes, ...pendingReviewNotes, ...completedNotes]
-    .sort(
-      (a, b) =>
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-    )
+    .toSorted((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
     .slice(0, noteLimit);
 
   // Get incomplete todos from active tasks
-  const activeTodos = collectIncompleteTodos(
-    activeStatusTasks,
-    index,
-    { limit: options.full ? limit * 2 : limit },
-  );
+  const activeTodos = collectIncompleteTodos(activeStatusTasks, index, {
+    limit: options.full ? limit * 2 : limit,
+  });
 
   // Compute reverse dependency map for "unlocks N" annotations
   const unlocksMap = computeUnlocksMap(allTasks, index);
@@ -513,10 +483,7 @@ export async function gatherSessionContext(
   // Get inbox items with triage status (oldest first to encourage triage)
   // AC: @session-start-inbox-triage ac-inbox-untriaged-def
   const allInboxSummaries: InboxSummary[] = inboxItems
-    .sort(
-      (a, b) =>
-        new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
-    )
+    .toSorted((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
     .map((item) => {
       const triageInfo = triageByInboxRef.get(item._ulid);
       return {
@@ -534,8 +501,7 @@ export async function gatherSessionContext(
   const inboxStats: InboxStats = {
     total: allInboxSummaries.length,
     untriaged: allInboxSummaries.filter((i) => !i.triaged).length,
-    deferred: allInboxSummaries.filter((i) => i.triage_action === "defer")
-      .length,
+    deferred: allInboxSummaries.filter((i) => i.triage_action === "defer").length,
     triaged: allInboxSummaries.filter((i) => i.triaged).length,
   };
 
@@ -578,10 +544,7 @@ export async function gatherSessionContext(
     const observationUlids = metaCtx.observations.map((observation) => observation._ulid);
     observations = metaCtx.observations
       .filter((o) => !o.resolved)
-      .sort(
-        (a, b) =>
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-      )
+      .toSorted((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
       .map((o) => ({
         ref: shortestUniqueUlid(o._ulid, observationUlids),
         type: o.type,
@@ -639,10 +602,7 @@ export async function gatherSessionContext(
  * Get iteration stats - tasks completed/started since a given time.
  * AC: @ralph-task-limit ac-detection
  */
-export async function getIterationStats(
-  ctx: KspecContext,
-  since: Date,
-): Promise<IterationStats> {
+export async function getIterationStats(ctx: KspecContext, since: Date): Promise<IterationStats> {
   const allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
   const items = await loadAllItems(ctx);
   const index = new ReferenceIndex(allTasks, items);

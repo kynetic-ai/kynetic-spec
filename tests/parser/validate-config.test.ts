@@ -44,7 +44,7 @@ project:
   name: test
 includes:
   - modules/core.yaml
-`
+`,
     );
 
     // Create a spec file with an item that has no acceptance criteria
@@ -58,7 +58,7 @@ type: feature
 slugs:
   - feature-no-ac
 description: This feature has no acceptance criteria
-`
+`,
     );
 
     // Create tasks file
@@ -66,7 +66,7 @@ description: This feature has no acceptance criteria
       path.join(specDir, "project.tasks.yaml"),
       `
 tasks: []
-`
+`,
     );
 
     return await initContext(tempDir);
@@ -87,7 +87,7 @@ project:
   name: test
 includes:
   - modules/core.yaml
-`
+`,
     );
 
     // Create a spec file
@@ -106,7 +106,7 @@ acceptance_criteria:
     given: something
     when: something happens
     then: result
-`
+`,
     );
 
     // Create tasks file with dangling ref
@@ -120,7 +120,7 @@ tasks:
     status: pending
     spec_ref: "@nonexistent-spec"
     priority: 3
-`
+`,
     );
 
     return await initContext(tempDir);
@@ -139,13 +139,13 @@ tasks:
       });
 
       // Should have warning, not error
-      expect(result.completenessWarnings.some(
-        w => w.type === "missing_acceptance_criteria"
-      )).toBe(true);
+      expect(
+        result.completenessWarnings.some((w) => w.type === "missing_acceptance_criteria"),
+      ).toBe(true);
       // Schema errors should not include the AC warning
-      expect(result.schemaErrors.some(
-        e => e.message.includes("no acceptance criteria")
-      )).toBe(false);
+      expect(result.schemaErrors.some((e) => e.message.includes("no acceptance criteria"))).toBe(
+        false,
+      );
       // Validation should still pass (warnings don't fail)
       expect(result.valid).toBe(true);
     });
@@ -161,12 +161,12 @@ tasks:
       });
 
       // Warning should be promoted to error
-      expect(result.completenessWarnings.some(
-        w => w.type === "missing_acceptance_criteria"
-      )).toBe(false);
-      expect(result.schemaErrors.some(
-        e => e.message.includes("no acceptance criteria")
-      )).toBe(true);
+      expect(
+        result.completenessWarnings.some((w) => w.type === "missing_acceptance_criteria"),
+      ).toBe(false);
+      expect(result.schemaErrors.some((e) => e.message.includes("no acceptance criteria"))).toBe(
+        true,
+      );
       // Validation should fail
       expect(result.valid).toBe(false);
     });
@@ -185,13 +185,9 @@ tasks:
       });
 
       // Should be an error
-      expect(result.refErrors.some(
-        e => e.ref === "@nonexistent-spec"
-      )).toBe(true);
+      expect(result.refErrors.some((e) => e.ref === "@nonexistent-spec")).toBe(true);
       // Should not be a warning
-      expect(result.refWarnings.some(
-        w => w.ref === "@nonexistent-spec"
-      )).toBe(false);
+      expect(result.refWarnings.some((w) => w.ref === "@nonexistent-spec")).toBe(false);
       // Validation should fail
       expect(result.valid).toBe(false);
     });
@@ -210,13 +206,9 @@ tasks:
       });
 
       // Should be a warning, not an error
-      expect(result.refWarnings.some(
-        w => w.ref === "@nonexistent-spec"
-      )).toBe(true);
+      expect(result.refWarnings.some((w) => w.ref === "@nonexistent-spec")).toBe(true);
       // Should not be in errors
-      expect(result.refErrors.some(
-        e => e.ref === "@nonexistent-spec"
-      )).toBe(false);
+      expect(result.refErrors.some((e) => e.ref === "@nonexistent-spec")).toBe(false);
       // Validation should still pass (dangling refs are just warnings)
       expect(result.valid).toBe(true);
     });
@@ -236,9 +228,7 @@ tasks:
       });
 
       // Should be an error (default is strict)
-      expect(result.refErrors.some(
-        e => e.ref === "@nonexistent-spec"
-      )).toBe(true);
+      expect(result.refErrors.some((e) => e.ref === "@nonexistent-spec")).toBe(true);
       expect(result.valid).toBe(false);
     });
 
@@ -253,9 +243,7 @@ tasks:
         strictRefs: true, // Explicit true (as if --strict was passed)
       });
 
-      expect(result.refErrors.some(
-        e => e.ref === "@nonexistent-spec"
-      )).toBe(true);
+      expect(result.refErrors.some((e) => e.ref === "@nonexistent-spec")).toBe(true);
       expect(result.valid).toBe(false);
     });
   });
@@ -277,7 +265,7 @@ project:
   name: test
 includes:
   - modules/core.yaml
-`
+`,
       );
 
       const specUlid = testUlid("NOAC02");
@@ -290,7 +278,7 @@ type: feature
 slugs:
   - feature-no-ac
 description: No AC here
-`
+`,
       );
 
       const taskUlid = testUlid("TASK02");
@@ -303,7 +291,7 @@ tasks:
     status: pending
     spec_ref: "@ghost"
     priority: 3
-`
+`,
       );
 
       const ctx = await initContext(tempDir);
@@ -317,13 +305,13 @@ tasks:
       });
 
       // Dangling ref should be warning (strict_refs: false)
-      expect(result.refWarnings.some(w => w.ref === "@ghost")).toBe(true);
-      expect(result.refErrors.some(e => e.ref === "@ghost")).toBe(false);
+      expect(result.refWarnings.some((w) => w.ref === "@ghost")).toBe(true);
+      expect(result.refErrors.some((e) => e.ref === "@ghost")).toBe(false);
 
       // Missing AC should be error (require_acceptance: true)
-      expect(result.schemaErrors.some(
-        e => e.message.includes("no acceptance criteria")
-      )).toBe(true);
+      expect(result.schemaErrors.some((e) => e.message.includes("no acceptance criteria"))).toBe(
+        true,
+      );
 
       // Validation should fail because of require_acceptance error
       expect(result.valid).toBe(false);

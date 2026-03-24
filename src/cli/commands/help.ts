@@ -93,9 +93,7 @@ function showCommandHelp(command: CommandMeta): void {
 
     if (content.seeAlso && content.seeAlso.length > 0) {
       console.log(
-        chalk.gray(
-          `\nSee also: ${content.seeAlso.map((t) => `kspec help ${t}`).join(", ")}`,
-        ),
+        chalk.gray(`\nSee also: ${content.seeAlso.map((t) => `kspec help ${t}`).join(", ")}`),
       );
     }
   }
@@ -120,9 +118,7 @@ function showConceptHelp(topic: string, content: HelpContent): void {
 
   if (content.seeAlso && content.seeAlso.length > 0) {
     console.log(
-      chalk.gray(
-        `\nSee also: ${content.seeAlso.map((t) => `kspec help ${t}`).join(", ")}`,
-      ),
+      chalk.gray(`\nSee also: ${content.seeAlso.map((t) => `kspec help ${t}`).join(", ")}`),
     );
   }
 }
@@ -135,9 +131,7 @@ function getAllTopics(tree: CommandMeta): string[] {
     .filter((cmd) => cmd.name !== "kspec") // Skip root
     .map((cmd) => cmd.name);
 
-  const concepts = Object.keys(helpContent).filter(
-    (key) => !commands.includes(key),
-  );
+  const concepts = Object.keys(helpContent).filter((key) => !commands.includes(key));
 
   return [...new Set([...commands, ...concepts])];
 }
@@ -183,9 +177,7 @@ function showTopicList(): void {
  */
 function showFullReference(): void {
   const tree = extractCommandTree(program);
-  const allCommands = flattenCommandTree(tree).filter(
-    (cmd) => cmd.name !== "kspec",
-  );
+  const allCommands = flattenCommandTree(tree).filter((cmd) => cmd.name !== "kspec");
 
   console.log(chalk.bold.cyan("kspec - Full Command Reference"));
   console.log(chalk.gray("─".repeat(60)));
@@ -199,9 +191,7 @@ function showFullReference(): void {
     if (cmd.options.length > 0) {
       console.log(chalk.gray("  Options:"));
       for (const opt of cmd.options) {
-        console.log(
-          chalk.gray(`    ${opt.flags.padEnd(30)} ${opt.description}`),
-        );
+        console.log(chalk.gray(`    ${opt.flags.padEnd(30)} ${opt.description}`));
       }
     }
   }
@@ -350,58 +340,58 @@ export function registerHelpCommand(program: Command): void {
     .option("--json", "Output as JSON")
     .option("--exit-codes", "Show exit code documentation")
     .option("--json-schema", "Output JSON Schema for command (use with topic)")
-    .action((
-      topic: string | undefined,
-      options: {
-        all?: boolean;
-        json?: boolean;
-        exitCodes?: boolean;
-        jsonSchema?: boolean;
-      },
-    ) => {
-      // Handle exit codes flag
-      if (options?.exitCodes) {
-        // AC: @cli-schema-introspection ac-2, ac-3
-        // Note: globalJsonMode is already set by preAction hook if --json flag present
+    .action(
+      (
+        topic: string | undefined,
+        options: {
+          all?: boolean;
+          json?: boolean;
+          exitCodes?: boolean;
+          jsonSchema?: boolean;
+        },
+      ) => {
+        // Handle exit codes flag
+        if (options?.exitCodes) {
+          // AC: @cli-schema-introspection ac-2, ac-3
+          // Note: globalJsonMode is already set by preAction hook if --json flag present
+          if (isJsonMode()) {
+            showExitCodesJson();
+          } else {
+            showExitCodes();
+          }
+          return;
+        }
+
+        // Handle JSON schema flag
+        if (options?.jsonSchema) {
+          if (!topic) {
+            console.error(chalk.red("Error: --json-schema requires a command topic"));
+            process.exit(EXIT_CODES.USAGE_ERROR);
+          }
+          // AC: @cli-schema-introspection ac-4
+          setJsonMode(true);
+          showCommandJsonSchema(topic);
+          return;
+        }
+
+        // AC: @cli-schema-introspection ac-1, ac-5
+        // If --json flag is present (globalJsonMode set by preAction hook), show JSON
         if (isJsonMode()) {
-          showExitCodesJson();
+          showJson();
+          return;
+        }
+
+        if (options?.all) {
+          showFullReference();
+          return;
+        }
+
+        // Show topic or list
+        if (topic) {
+          showTopic(topic);
         } else {
-          showExitCodes();
+          showTopicList();
         }
-        return;
-      }
-
-      // Handle JSON schema flag
-      if (options?.jsonSchema) {
-        if (!topic) {
-          console.error(
-            chalk.red("Error: --json-schema requires a command topic"),
-          );
-          process.exit(EXIT_CODES.USAGE_ERROR);
-        }
-        // AC: @cli-schema-introspection ac-4
-        setJsonMode(true);
-        showCommandJsonSchema(topic);
-        return;
-      }
-
-      // AC: @cli-schema-introspection ac-1, ac-5
-      // If --json flag is present (globalJsonMode set by preAction hook), show JSON
-      if (isJsonMode()) {
-        showJson();
-        return;
-      }
-
-      if (options?.all) {
-        showFullReference();
-        return;
-      }
-
-      // Show topic or list
-      if (topic) {
-        showTopic(topic);
-      } else {
-        showTopicList();
-      }
-    });
+      },
+    );
 }

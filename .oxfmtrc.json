@@ -1,0 +1,18 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "tabWidth": 2,
+  "useTabs": false,
+  "semi": true,
+  "singleQuote": false,
+  "importSorting": true,
+  "ignorePatterns": [
+    "dist/",
+    ".kspec/",
+    ".agents/",
+    ".claude/",
+    ".factory/",
+    "kspec-agents.md",
+    "packages/web-ui/build/",
+    "**/*.svelte"
+  ]
+}

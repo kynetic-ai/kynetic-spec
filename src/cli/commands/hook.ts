@@ -23,7 +23,6 @@ import {
 import { commitIfShadow } from "../../parser/shadow.js";
 import {
   ActionSchema,
-  type Hook,
   HookEventTypeSchema,
   HookFilterSchema,
   HookSchema,
@@ -38,10 +37,7 @@ import { error, isJsonMode, output, success, warn } from "../output.js";
 /**
  * Resolve a hook reference (ULID prefix or name) from the loaded hooks list.
  */
-function resolveHookRef(
-  ref: string,
-  hooks: LoadedHook[],
-): LoadedHook | null {
+function resolveHookRef(ref: string, hooks: LoadedHook[]): LoadedHook | null {
   const cleanRef = ref.startsWith("@") ? ref.slice(1) : ref;
 
   for (const hook of hooks) {
@@ -143,9 +139,7 @@ function hookToJson(hook: LoadedHook): Record<string, unknown> {
  * AC: @dispatch-event-cli ac-1, ac-4
  */
 export function registerHookCommands(program: Command): void {
-  const hook = program
-    .command("hook")
-    .description("Hook management commands");
+  const hook = program.command("hook").description("Hook management commands");
 
   // ── kspec hook list ─────────────────────────────────────────────────────
   // AC: @dispatch-event-cli ac-1 — list hooks with name, event, action type, enabled
@@ -184,14 +178,13 @@ export function registerHookCommands(program: Command): void {
 
         // AC: @trait-filterable-list ac-2 — filter by tag (event domain)
         if (options.tag) {
-          hooks = hooks.filter((h) => h.on.startsWith(options.tag + "."));
+          hooks = hooks.filter((h) => h.on.startsWith(`${options.tag}.`));
         }
 
         // AC: @trait-filterable-list ac-8 — count mode
         if (options.count) {
-          output(
-            isJsonMode() ? { count: hooks.length } : hooks.length,
-            () => console.log(hooks.length),
+          output(isJsonMode() ? { count: hooks.length } : hooks.length, () =>
+            console.log(hooks.length),
           );
           return;
         }
@@ -220,24 +213,21 @@ export function registerHookCommands(program: Command): void {
 
         // AC: @trait-filterable-list ac-6 — empty result message
         // AC: @trait-filterable-list ac-7 — summary with total and filter state
-        output(
-          hooks.map(hookToJson),
-          () => {
-            if (hooks.length === 0) {
-              const hasFilters = options.status || options.tag;
-              if (hasFilters) {
-                console.log(chalk.yellow("No hooks match the specified filters"));
-              } else {
-                console.log(chalk.yellow("No hooks defined"));
-              }
-              return;
+        output(hooks.map(hookToJson), () => {
+          if (hooks.length === 0) {
+            const hasFilters = options.status || options.tag;
+            if (hasFilters) {
+              console.log(chalk.yellow("No hooks match the specified filters"));
+            } else {
+              console.log(chalk.yellow("No hooks defined"));
             }
-            formatHooksList(hooks);
-            if (totalMatching !== hooks.length) {
-              console.log(chalk.gray(`Showing ${hooks.length} of ${totalMatching} matching hooks`));
-            }
-          },
-        );
+            return;
+          }
+          formatHooksList(hooks);
+          if (totalMatching !== hooks.length) {
+            console.log(chalk.gray(`Showing ${hooks.length} of ${totalMatching} matching hooks`));
+          }
+        });
       } catch (err) {
         error("Failed to list hooks", err);
         process.exit(EXIT_CODES.ERROR);
@@ -381,12 +371,7 @@ export function registerHookCommands(program: Command): void {
       await saveHook(ctx, hookResult.data);
 
       // AC: @trait-shadow-commit ac-1, ac-2, ac-3
-      await commitIfShadow(
-        ctx.shadow,
-        "hook-add",
-        hookResult.data._ulid.substring(0, 8),
-        name,
-      );
+      await commitIfShadow(ctx.shadow, "hook-add", hookResult.data._ulid.substring(0, 8), name);
 
       // AC: @trait-json-output ac-1, ac-2
       output(hookToJson(hookResult.data), () =>
@@ -433,7 +418,9 @@ export function registerHookCommands(program: Command): void {
           (h) => h.name === options.name && h._ulid !== found._ulid,
         );
         if (duplicate) {
-          error(`A hook named '${options.name}' already exists (@${duplicate._ulid.substring(0, 8)}).`);
+          error(
+            `A hook named '${options.name}' already exists (@${duplicate._ulid.substring(0, 8)}).`,
+          );
           process.exit(EXIT_CODES.CONFLICT);
         }
         found.name = options.name;
@@ -482,11 +469,7 @@ export function registerHookCommands(program: Command): void {
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
 
-        if (
-          filterRaw &&
-          typeof filterRaw === "object" &&
-          Object.keys(filterRaw).length === 0
-        ) {
+        if (filterRaw && typeof filterRaw === "object" && Object.keys(filterRaw).length === 0) {
           // Clear filter
           found.filter = undefined;
         } else {
@@ -501,11 +484,7 @@ export function registerHookCommands(program: Command): void {
           found.filter = filterResult.data;
 
           // Warn about unknown filter fields
-          const warnings = validateHookFilter(
-            found.name,
-            found.on,
-            filterResult.data,
-          );
+          const warnings = validateHookFilter(found.name, found.on, filterResult.data);
           for (const w of warnings) {
             warn(w.message);
           }
@@ -518,12 +497,7 @@ export function registerHookCommands(program: Command): void {
       await saveHook(ctx, found);
 
       // AC: @trait-shadow-commit ac-1, ac-2, ac-3
-      await commitIfShadow(
-        ctx.shadow,
-        "hook-set",
-        found._ulid.substring(0, 8),
-        found.name,
-      );
+      await commitIfShadow(ctx.shadow, "hook-set", found._ulid.substring(0, 8), found.name);
 
       output(hookToJson(found), () => success(`Updated hook: ${found.name}`));
     } catch (err) {
@@ -533,96 +507,78 @@ export function registerHookCommands(program: Command): void {
   });
 
   // ── kspec hook enable ───────────────────────────────────────────────────
-  markMutating(
-    hook
-      .command("enable <ref>")
-      .description("Enable a hook"),
-  ).action(async (ref: string) => {
-    try {
-      const ctx = await initContext();
+  markMutating(hook.command("enable <ref>").description("Enable a hook")).action(
+    async (ref: string) => {
+      try {
+        const ctx = await initContext();
 
-      if (!ctx.manifestPath) {
-        error("No kspec project found. Run 'kspec init' to create one.");
+        if (!ctx.manifestPath) {
+          error("No kspec project found. Run 'kspec init' to create one.");
+          process.exit(EXIT_CODES.ERROR);
+        }
+
+        const metaCtx = await loadMetaContext(ctx);
+        const found = resolveHookRef(ref, metaCtx.hooks);
+
+        if (!found) {
+          error(`Hook not found: ${ref}. Try 'kspec hook list' to see available hooks.`);
+          process.exit(EXIT_CODES.NOT_FOUND);
+        }
+
+        if (found.enabled) {
+          output(hookToJson(found), () => success(`Hook '${found.name}' is already enabled`));
+          return;
+        }
+
+        found.enabled = true;
+        await saveHook(ctx, found);
+
+        await commitIfShadow(ctx.shadow, "hook-enable", found._ulid.substring(0, 8), found.name);
+
+        output(hookToJson(found), () => success(`Enabled hook: ${found.name}`));
+      } catch (err) {
+        error("Failed to enable hook", err);
         process.exit(EXIT_CODES.ERROR);
       }
-
-      const metaCtx = await loadMetaContext(ctx);
-      const found = resolveHookRef(ref, metaCtx.hooks);
-
-      if (!found) {
-        error(`Hook not found: ${ref}. Try 'kspec hook list' to see available hooks.`);
-        process.exit(EXIT_CODES.NOT_FOUND);
-      }
-
-      if (found.enabled) {
-        output(hookToJson(found), () =>
-          success(`Hook '${found.name}' is already enabled`),
-        );
-        return;
-      }
-
-      found.enabled = true;
-      await saveHook(ctx, found);
-
-      await commitIfShadow(
-        ctx.shadow,
-        "hook-enable",
-        found._ulid.substring(0, 8),
-        found.name,
-      );
-
-      output(hookToJson(found), () => success(`Enabled hook: ${found.name}`));
-    } catch (err) {
-      error("Failed to enable hook", err);
-      process.exit(EXIT_CODES.ERROR);
-    }
-  });
+    },
+  );
 
   // ── kspec hook disable ──────────────────────────────────────────────────
-  markMutating(
-    hook
-      .command("disable <ref>")
-      .description("Disable a hook"),
-  ).action(async (ref: string) => {
-    try {
-      const ctx = await initContext();
+  markMutating(hook.command("disable <ref>").description("Disable a hook")).action(
+    async (ref: string) => {
+      try {
+        const ctx = await initContext();
 
-      if (!ctx.manifestPath) {
-        error("No kspec project found. Run 'kspec init' to create one.");
+        if (!ctx.manifestPath) {
+          error("No kspec project found. Run 'kspec init' to create one.");
+          process.exit(EXIT_CODES.ERROR);
+        }
+
+        const metaCtx = await loadMetaContext(ctx);
+        const found = resolveHookRef(ref, metaCtx.hooks);
+
+        if (!found) {
+          error(`Hook not found: ${ref}. Try 'kspec hook list' to see available hooks.`);
+          process.exit(EXIT_CODES.NOT_FOUND);
+        }
+
+        if (!found.enabled) {
+          output(hookToJson(found), () => success(`Hook '${found.name}' is already disabled`));
+          return;
+        }
+
+        found.enabled = false;
+        await saveHook(ctx, found);
+
+        await commitIfShadow(ctx.shadow, "hook-disable", found._ulid.substring(0, 8), found.name);
+
+        output(hookToJson(found), () => success(`Disabled hook: ${found.name}`));
+      } catch (err) {
+        error("Failed to disable hook", err);
         process.exit(EXIT_CODES.ERROR);
       }
-
-      const metaCtx = await loadMetaContext(ctx);
-      const found = resolveHookRef(ref, metaCtx.hooks);
-
-      if (!found) {
-        error(`Hook not found: ${ref}. Try 'kspec hook list' to see available hooks.`);
-        process.exit(EXIT_CODES.NOT_FOUND);
-      }
-
-      if (!found.enabled) {
-        output(hookToJson(found), () =>
-          success(`Hook '${found.name}' is already disabled`),
-        );
-        return;
-      }
-
-      found.enabled = false;
-      await saveHook(ctx, found);
-
-      await commitIfShadow(
-        ctx.shadow,
-        "hook-disable",
-        found._ulid.substring(0, 8),
-        found.name,
-      );
-
-      output(hookToJson(found), () => success(`Disabled hook: ${found.name}`));
-    } catch (err) {
-      error("Failed to disable hook", err);
-      process.exit(EXIT_CODES.ERROR);
-    }
-  });
+    },
+  );
 
   // ── kspec hook remove ───────────────────────────────────────────────────
   markMutating(
@@ -648,9 +604,7 @@ export function registerHookCommands(program: Command): void {
       }
 
       if (!options.confirm) {
-        error(
-          `Confirm deletion of hook '${found.name}' with --confirm flag.`,
-        );
+        error(`Confirm deletion of hook '${found.name}' with --confirm flag.`);
         process.exit(EXIT_CODES.ERROR);
       }
 
@@ -662,16 +616,10 @@ export function registerHookCommands(program: Command): void {
       }
 
       // AC: @trait-shadow-commit ac-1
-      await commitIfShadow(
-        ctx.shadow,
-        "hook-remove",
-        found._ulid.substring(0, 8),
-        found.name,
-      );
+      await commitIfShadow(ctx.shadow, "hook-remove", found._ulid.substring(0, 8), found.name);
 
-      output(
-        { deleted: true, _ulid: found._ulid, name: found.name },
-        () => success(`Removed hook: ${found.name}`),
+      output({ deleted: true, _ulid: found._ulid, name: found.name }, () =>
+        success(`Removed hook: ${found.name}`),
       );
     } catch (err) {
       error("Failed to remove hook", err);

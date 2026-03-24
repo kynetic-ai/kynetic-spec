@@ -20,9 +20,7 @@ describe("mergeUlidArrays", () => {
       title: string;
     }
 
-    const base: Task[] = [
-      { _ulid: "01BASE0000000000000000000", title: "Base task" },
-    ];
+    const base: Task[] = [{ _ulid: "01BASE0000000000000000000", title: "Base task" }];
 
     const ours: Task[] = [
       { _ulid: "01BASE0000000000000000000", title: "Base task" },
@@ -51,9 +49,7 @@ describe("mergeUlidArrays", () => {
       content: string;
     }
 
-    const base: Note[] = [
-      { _ulid: "01NOTE1000000000000000000", content: "Note 1" },
-    ];
+    const base: Note[] = [{ _ulid: "01NOTE1000000000000000000", content: "Note 1" }];
 
     const ours: Note[] = [
       { _ulid: "01NOTE1000000000000000000", content: "Note 1" },
@@ -81,17 +77,11 @@ describe("mergeUlidArrays", () => {
       title: string;
     }
 
-    const base: Task[] = [
-      { _ulid: "01TASK0000000000000000000", title: "Original" },
-    ];
+    const base: Task[] = [{ _ulid: "01TASK0000000000000000000", title: "Original" }];
 
-    const ours: Task[] = [
-      { _ulid: "01TASK0000000000000000000", title: "Modified in ours" },
-    ];
+    const ours: Task[] = [{ _ulid: "01TASK0000000000000000000", title: "Modified in ours" }];
 
-    const theirs: Task[] = [
-      { _ulid: "01TASK0000000000000000000", title: "Modified in theirs" },
-    ];
+    const theirs: Task[] = [{ _ulid: "01TASK0000000000000000000", title: "Modified in theirs" }];
 
     const result = mergeUlidArrays(base, ours, theirs);
 
@@ -108,12 +98,8 @@ describe("mergeUlidArrays", () => {
     }
 
     const base: Task[] = [];
-    const ours: Task[] = [
-      { _ulid: "01OURS0000000000000000000", title: "Ours task" },
-    ];
-    const theirs: Task[] = [
-      { _ulid: "01THRS0000000000000000000", title: "Theirs task" },
-    ];
+    const ours: Task[] = [{ _ulid: "01OURS0000000000000000000", title: "Ours task" }];
+    const theirs: Task[] = [{ _ulid: "01THRS0000000000000000000", title: "Theirs task" }];
 
     const result = mergeUlidArrays(base, ours, theirs);
 
@@ -131,9 +117,7 @@ describe("mergeUlidArrays", () => {
       title: string;
     }
 
-    const ours: Task[] = [
-      { _ulid: "01OURS0000000000000000000", title: "Ours task" },
-    ];
+    const ours: Task[] = [{ _ulid: "01OURS0000000000000000000", title: "Ours task" }];
 
     const result = mergeUlidArrays(undefined, ours, undefined);
 
@@ -180,15 +164,11 @@ describe("mergeUlidArrays", () => {
       title: string;
     }
 
-    const base: Task[] = [
-      { _ulid: "01TASK0000000000000000000", title: "Task" },
-    ];
+    const base: Task[] = [{ _ulid: "01TASK0000000000000000000", title: "Task" }];
 
     const ours: Task[] = []; // deleted in ours
 
-    const theirs: Task[] = [
-      { _ulid: "01TASK0000000000000000000", title: "Task modified" },
-    ];
+    const theirs: Task[] = [{ _ulid: "01TASK0000000000000000000", title: "Task modified" }];
 
     const result = mergeUlidArrays(base, ours, theirs);
 
@@ -271,9 +251,7 @@ describe("detectDeletion", () => {
     // AC: @yaml-merge-driver ac-8
     const base = new Map([["01TASK0000000000000000000", {}]]);
     const ours = new Map(); // deleted
-    const theirs = new Map([
-      ["01TASK0000000000000000000", { modified: true }],
-    ]);
+    const theirs = new Map([["01TASK0000000000000000000", { modified: true }]]);
 
     const result = detectDeletion("01TASK0000000000000000000", base, ours, theirs);
 
@@ -285,9 +263,7 @@ describe("detectDeletion", () => {
   it("should detect deletion in theirs branch", () => {
     // AC: @yaml-merge-driver ac-8
     const base = new Map([["01TASK0000000000000000000", {}]]);
-    const ours = new Map([
-      ["01TASK0000000000000000000", { modified: true }],
-    ]);
+    const ours = new Map([["01TASK0000000000000000000", { modified: true }]]);
     const theirs = new Map(); // deleted
 
     const result = detectDeletion("01TASK0000000000000000000", base, ours, theirs);

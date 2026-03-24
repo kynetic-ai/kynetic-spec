@@ -26,9 +26,7 @@ function createAnnotatedTestProgram(): Command {
     .argument("<ref>", "Task reference");
 
   // mutating leaf command
-  markMutating(program.command("derive [ref]")).description(
-    "Derive task from spec",
-  );
+  markMutating(program.command("derive [ref]")).description("Derive task from spec");
 
   // read-only leaf command
   program.command("search <pattern>").description("Search for items");
@@ -113,26 +111,18 @@ describe("ac-allowlist: mutating commands accepted in batch", () => {
   const filter = createBatchCommandFilter();
 
   it("mutating leaf command passes filter", () => {
-    const result = validateBatchCommands(
-      [{ command: "derive", args: { ref: "@spec" } }],
-      tree,
-      { commandFilter: filter },
-    );
-    const rejected = result.errors.filter(
-      (e) => e.type === "rejected_command",
-    );
+    const result = validateBatchCommands([{ command: "derive", args: { ref: "@spec" } }], tree, {
+      commandFilter: filter,
+    });
+    const rejected = result.errors.filter((e) => e.type === "rejected_command");
     expect(rejected).toHaveLength(0);
   });
 
   it("mutating nested command passes filter", () => {
-    const result = validateBatchCommands(
-      [{ command: "task add", args: { title: "Test" } }],
-      tree,
-      { commandFilter: filter },
-    );
-    const rejected = result.errors.filter(
-      (e) => e.type === "rejected_command",
-    );
+    const result = validateBatchCommands([{ command: "task add", args: { title: "Test" } }], tree, {
+      commandFilter: filter,
+    });
+    const rejected = result.errors.filter((e) => e.type === "rejected_command");
     expect(rejected).toHaveLength(0);
   });
 
@@ -174,32 +164,26 @@ describe("ac-denylist: read-only commands rejected in batch", () => {
   const filter = createBatchCommandFilter();
 
   it("read-only leaf command is rejected", () => {
-    const result = validateBatchCommands(
-      [{ command: "search", args: { pattern: "test" } }],
-      tree,
-      { commandFilter: filter },
-    );
+    const result = validateBatchCommands([{ command: "search", args: { pattern: "test" } }], tree, {
+      commandFilter: filter,
+    });
     expect(result.valid).toBe(false);
     expect(result.errors).toHaveLength(1);
     expect(result.errors[0].type).toBe("rejected_command");
   });
 
   it("read-only nested command is rejected", () => {
-    const result = validateBatchCommands(
-      [{ command: "task list", args: {} }],
-      tree,
-      { commandFilter: filter },
-    );
+    const result = validateBatchCommands([{ command: "task list", args: {} }], tree, {
+      commandFilter: filter,
+    });
     expect(result.valid).toBe(false);
     expect(result.errors[0].type).toBe("rejected_command");
   });
 
   it("rejection message explains batch is for mutating operations", () => {
-    const result = validateBatchCommands(
-      [{ command: "search", args: { pattern: "test" } }],
-      tree,
-      { commandFilter: filter },
-    );
+    const result = validateBatchCommands([{ command: "search", args: { pattern: "test" } }], tree, {
+      commandFilter: filter,
+    });
     expect(result.errors[0].message).toContain("mutating");
     expect(result.errors[0].message).toContain("not allowed in batch");
   });
@@ -228,17 +212,13 @@ describe("ac-batch-itself: nested batch commands rejected", () => {
   const filter = createBatchCommandFilter();
 
   it("batch command is rejected with specific message", () => {
-    const result = validateBatchCommands(
-      [{ command: "batch", args: {} }],
-      tree,
-      { commandFilter: filter },
-    );
+    const result = validateBatchCommands([{ command: "batch", args: {} }], tree, {
+      commandFilter: filter,
+    });
     expect(result.valid).toBe(false);
     expect(result.errors).toHaveLength(1);
     expect(result.errors[0].type).toBe("rejected_command");
-    expect(result.errors[0].message).toBe(
-      "Nested batch commands are not allowed",
-    );
+    expect(result.errors[0].message).toBe("Nested batch commands are not allowed");
   });
 
   it("nested batch rejection is distinct from read-only rejection", () => {
@@ -269,9 +249,7 @@ describe("ac-batch-itself: nested batch commands rejected", () => {
     );
     expect(result.valid).toBe(false);
     expect(result.errors[0].type).toBe("rejected_command");
-    expect(result.errors[0].message).toBe(
-      "Nested batch commands are not allowed",
-    );
+    expect(result.errors[0].message).toBe("Nested batch commands are not allowed");
   });
 });
 

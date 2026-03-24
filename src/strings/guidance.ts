@@ -9,18 +9,14 @@ import chalk from "chalk";
  */
 export const alignmentCheck = {
   header: chalk.gray("--- Alignment Check ---"),
-  beyondSpec: chalk.gray(
-    "Did your implementation add anything beyond the original spec?",
-  ),
+  beyondSpec: chalk.gray("Did your implementation add anything beyond the original spec?"),
   updateSpec: (specRef: string) =>
     chalk.gray(
       `If so, consider updating the spec:\n  kspec item set ${specRef} --description "Updated description"`,
     ),
   addAC: chalk.gray("Or add acceptance criteria for new features."),
   testCoverage: (count: number) =>
-    chalk.gray(
-      `Linked spec has ${count} acceptance criteria - consider test coverage.`,
-    ),
+    chalk.gray(`Linked spec has ${count} acceptance criteria - consider test coverage.`),
 } as const;
 
 /**
@@ -32,9 +28,7 @@ export const commitGuidance = {
   trailers: (trailers: string) => chalk.gray(trailers),
   noSpecRef: {
     warning: chalk.yellow("This task has no spec_ref."),
-    consider: chalk.gray(
-      "Is this a spec gap? Consider: kspec item add --under @parent ...",
-    ),
+    consider: chalk.gray("Is this a spec gap? Consider: kspec item add --under @parent ..."),
     intentional: chalk.gray("Or is this intentional (infra/cleanup)?"),
   },
 } as const;
@@ -47,9 +41,7 @@ export const checkpoint = {
 
   inProgressTasks: {
     header: chalk.yellow("\n1. In-Progress Tasks:"),
-    action: chalk.gray(
-      "   Complete them or add a note explaining current state:",
-    ),
+    action: chalk.gray("   Complete them or add a note explaining current state:"),
     noteCommand: (ref: string) =>
       chalk.gray(`   kspec task note ${ref} "WIP: what's done, what remains"`),
   },
@@ -73,26 +65,16 @@ export const checkpoint = {
 
   hints: {
     header: chalk.gray("\nHelpful commands:"),
-    taskNote: chalk.gray(
-      'Use: kspec task note @task "Progress notes..." to document state',
-    ),
-    taskComplete: chalk.gray(
-      'Use: kspec task complete @task --reason "Summary" if task is done',
-    ),
+    taskNote: chalk.gray('Use: kspec task note @task "Progress notes..." to document state'),
+    taskComplete: chalk.gray('Use: kspec task complete @task --reason "Summary" if task is done'),
   },
 
   messages: {
     retry: (count: number) =>
-      chalk.yellow(
-        `[kspec] Session checkpoint: ${count} issue(s) acknowledged - allowing stop`,
-      ),
-    success: chalk.green(
-      "[kspec] Session checkpoint passed - ready to end session",
-    ),
+      chalk.yellow(`[kspec] Session checkpoint: ${count} issue(s) acknowledged - allowing stop`),
+    success: chalk.green("[kspec] Session checkpoint passed - ready to end session"),
     issues: (count: number) =>
-      chalk.yellow(
-        `[kspec] Session checkpoint: ${count} issue(s) need attention`,
-      ),
+      chalk.yellow(`[kspec] Session checkpoint: ${count} issue(s) need attention`),
   },
 } as const;
 

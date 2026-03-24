@@ -31,10 +31,7 @@ import {
   ACTION_STARTED_PAYLOAD_FIELDS,
   ACTION_TERMINAL_PAYLOAD_FIELDS,
 } from "../src/schema/event-payloads.js";
-import {
-  EVENT_REGISTRY,
-  PAYLOAD_FIELDS_BY_EVENT_TYPE,
-} from "../src/schema/event-registry.js";
+import { EVENT_REGISTRY, PAYLOAD_FIELDS_BY_EVENT_TYPE } from "../src/schema/event-registry.js";
 import { EventBus } from "../src/agent-runtime/event-bus.js";
 
 // ─── AC-1: Task event payloads ──────────────────────────────────────────────
@@ -117,8 +114,14 @@ describe("ac-1: task.* event payloads include required fields", () => {
 
   it("should include all spec-required fields in TASK_PAYLOAD_FIELDS", () => {
     const requiredFields = [
-      "task_id", "task_ref", "from_status", "to_status",
-      "task_title", "tags", "priority", "automation",
+      "task_id",
+      "task_ref",
+      "from_status",
+      "to_status",
+      "task_title",
+      "tags",
+      "priority",
+      "automation",
     ];
     for (const field of requiredFields) {
       expect(TASK_PAYLOAD_FIELDS).toContain(field);
@@ -140,7 +143,12 @@ describe("ac-1: task.* event payloads include required fields", () => {
   });
 
   it("should register task event payload_fields in the registry matching the schema", () => {
-    for (const eventType of ["task.ready", "task.in_progress", "task.needs_work", "task.pending_review"]) {
+    for (const eventType of [
+      "task.ready",
+      "task.in_progress",
+      "task.needs_work",
+      "task.pending_review",
+    ]) {
       const registryFields = PAYLOAD_FIELDS_BY_EVENT_TYPE[eventType];
       expect(registryFields).toBeDefined();
       expect([...registryFields]).toEqual([...TASK_PAYLOAD_FIELDS]);
@@ -377,8 +385,12 @@ describe("ac-3: session.* event payloads include required fields", () => {
 
   it("should include all spec-required fields in SESSION_PAYLOAD_FIELDS", () => {
     const requiredFields = [
-      "session_id", "agent_id", "task_ref",
-      "duration_ms", "terminal_reason", "work_summary",
+      "session_id",
+      "agent_id",
+      "task_ref",
+      "duration_ms",
+      "terminal_reason",
+      "work_summary",
     ];
     for (const field of requiredFields) {
       expect(SESSION_PAYLOAD_FIELDS).toContain(field);
@@ -470,8 +482,12 @@ describe("session.idle event payloads include per-turn fields", () => {
 
   it("should include all spec-required fields in SESSION_IDLE_PAYLOAD_FIELDS", () => {
     const requiredFields = [
-      "session_id", "agent_id", "task_ref",
-      "turn_count", "stop_reason", "turn_duration_ms",
+      "session_id",
+      "agent_id",
+      "task_ref",
+      "turn_count",
+      "stop_reason",
+      "turn_duration_ms",
     ];
     for (const field of requiredFields) {
       expect(SESSION_IDLE_PAYLOAD_FIELDS).toContain(field);

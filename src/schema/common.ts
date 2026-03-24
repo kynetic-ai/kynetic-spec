@@ -21,9 +21,7 @@ export const refPattern = /^@[a-zA-Z0-9-]+$/;
 // Base schemas
 export const UlidSchema = z.string().regex(ulidPattern, "Invalid ULID format");
 export const SlugSchema = z.string().regex(slugPattern, "Invalid slug format");
-export const RefSchema = z
-  .string()
-  .regex(refPattern, "Invalid reference format");
+export const RefSchema = z.string().regex(refPattern, "Invalid reference format");
 
 // Priority can be string or number
 export const PrioritySchema = z.union([
@@ -32,19 +30,10 @@ export const PrioritySchema = z.union([
 ]);
 
 // ISO 8601 date or datetime
-export const DateTimeSchema = z.union([
-  z.string().datetime(),
-  z.string().date(),
-]);
+export const DateTimeSchema = z.union([z.string().datetime(), z.string().date()]);
 
 // Maturity status
-export const MaturitySchema = z.enum([
-  "draft",
-  "proposed",
-  "stable",
-  "deferred",
-  "deprecated",
-]);
+export const MaturitySchema = z.enum(["draft", "proposed", "stable", "deferred", "deprecated"]);
 
 // Implementation status
 export const ImplementationStatusSchema = z.enum([

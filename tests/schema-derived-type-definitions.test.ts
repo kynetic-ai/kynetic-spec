@@ -29,9 +29,7 @@ describe("schema-derived type definitions", () => {
     const taskHelp = kspecOutput("task add --help", tempDir).replace(/\s+/g, " ");
     const agentHelp = kspecOutput("agent list --help", tempDir).replace(/\s+/g, " ");
 
-    expect(taskHelp).toContain(
-      `Task type (${TaskTypeSchema.options.join(", ")})`,
-    );
+    expect(taskHelp).toContain(`Task type (${TaskTypeSchema.options.join(", ")})`);
     expect(taskHelp).toContain(
       `Automation eligibility (${AutomationStatusSchema.options.join(", ")})`,
     );
@@ -62,9 +60,7 @@ describe("schema-derived type definitions", () => {
       ),
     );
 
-    expect(projected).toEqual(
-      new Set(AgentDispatchAutomationFilterSchema.options),
-    );
+    expect(projected).toEqual(new Set(AgentDispatchAutomationFilterSchema.options));
     expect(matchesAutomationFilter("eligible", "eligible")).toBe(true);
     expect(matchesAutomationFilter("manual_only", "ineligible")).toBe(true);
     expect(matchesAutomationFilter("needs_review", "eligible")).toBe(false);

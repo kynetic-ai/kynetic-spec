@@ -51,7 +51,12 @@ describe("Integration: hook list", () => {
   it("should list hooks with name, event trigger, action type, and enabled status", async () => {
     // Add two hooks
     addTestHook(tempDir, "notify-on-ready");
-    addTestHook(tempDir, "log-on-complete", "task.in_progress", '{"type":"command","command":"echo","args":["done"]}');
+    addTestHook(
+      tempDir,
+      "log-on-complete",
+      "task.in_progress",
+      '{"type":"command","command":"echo","args":["done"]}',
+    );
 
     const output = kspec("hook list", tempDir);
     expect(output).toContain("notify-on-ready");
@@ -89,11 +94,17 @@ describe("Integration: hook list", () => {
       tempDir,
     );
 
-    const enabled = kspecJson<Array<Record<string, unknown>>>("hook list --status enabled", tempDir);
+    const enabled = kspecJson<Array<Record<string, unknown>>>(
+      "hook list --status enabled",
+      tempDir,
+    );
     expect(enabled).toHaveLength(1);
     expect(enabled[0].name).toBe("enabled-hook");
 
-    const disabled = kspecJson<Array<Record<string, unknown>>>("hook list --status disabled", tempDir);
+    const disabled = kspecJson<Array<Record<string, unknown>>>(
+      "hook list --status disabled",
+      tempDir,
+    );
     expect(disabled).toHaveLength(1);
     expect(disabled[0].name).toBe("disabled-hook");
   });
@@ -101,7 +112,12 @@ describe("Integration: hook list", () => {
   // AC: @trait-filterable-list ac-2 — filter by tag (event domain)
   it("should filter by event type domain using --tag", () => {
     addTestHook(tempDir, "task-hook", "task.ready");
-    addTestHook(tempDir, "invocation-hook", "invocation.started", '{"type":"notify","message":"test"}');
+    addTestHook(
+      tempDir,
+      "invocation-hook",
+      "invocation.started",
+      '{"type":"notify","message":"test"}',
+    );
 
     const taskHooks = kspecJson<Array<Record<string, unknown>>>("hook list --tag task", tempDir);
     expect(taskHooks).toHaveLength(1);
@@ -120,7 +136,10 @@ describe("Integration: hook list", () => {
     const offset = kspecJson<Array<Record<string, unknown>>>("hook list --offset 1", tempDir);
     expect(offset).toHaveLength(2);
 
-    const combo = kspecJson<Array<Record<string, unknown>>>("hook list --offset 1 --limit 1", tempDir);
+    const combo = kspecJson<Array<Record<string, unknown>>>(
+      "hook list --offset 1 --limit 1",
+      tempDir,
+    );
     expect(combo).toHaveLength(1);
   });
 
@@ -131,7 +150,12 @@ describe("Integration: hook list", () => {
       `hook add "task-disabled" --on task.in_progress --action '{"type":"notify","message":"test"}' --disabled`,
       tempDir,
     );
-    addTestHook(tempDir, "invocation-enabled", "invocation.started", '{"type":"notify","message":"test"}');
+    addTestHook(
+      tempDir,
+      "invocation-enabled",
+      "invocation.started",
+      '{"type":"notify","message":"test"}',
+    );
 
     const result = kspecJson<Array<Record<string, unknown>>>(
       "hook list --status enabled --tag task",
@@ -276,11 +300,9 @@ describe("Integration: hook add", () => {
   });
 
   it("should reject malformed JSON in --action", () => {
-    const result = kspecRun(
-      `hook add "bad-json" --on task.ready --action 'not-json'`,
-      tempDir,
-      { expectFail: true },
-    );
+    const result = kspecRun(`hook add "bad-json" --on task.ready --action 'not-json'`, tempDir, {
+      expectFail: true,
+    });
     expect(result.exitCode).not.toBe(0);
     expect(result.stderr).toContain("Invalid JSON");
   });
@@ -451,11 +473,9 @@ describe("Integration: hook set", () => {
   it("should reject invalid event type in set", () => {
     addTestHook(tempDir, "bad-event-set");
 
-    const result = kspecRun(
-      "hook set bad-event-set --on invalid.type",
-      tempDir,
-      { expectFail: true },
-    );
+    const result = kspecRun("hook set bad-event-set --on invalid.type", tempDir, {
+      expectFail: true,
+    });
     expect(result.exitCode).not.toBe(0);
     expect(result.stderr).toContain("Invalid event type");
   });
@@ -569,10 +589,7 @@ describe("Integration: hook remove", () => {
   it("should output JSON on successful remove", () => {
     addTestHook(tempDir, "remove-json");
 
-    const result = kspecJson<Record<string, unknown>>(
-      "hook remove remove-json --confirm",
-      tempDir,
-    );
+    const result = kspecJson<Record<string, unknown>>("hook remove remove-json --confirm", tempDir);
     expect(result.deleted).toBe(true);
     expect(result.name).toBe("remove-json");
   });

@@ -100,9 +100,7 @@ Add comprehensive tests.
 
     const result = parsePlanDocument(plan);
 
-    expect(result.implementationNotes).toBe(
-      "Use existing patterns.\nAdd comprehensive tests.",
-    );
+    expect(result.implementationNotes).toBe("Use existing patterns.\nAdd comprehensive tests.");
   });
 
   // AC: @plan-import ac-21
@@ -452,10 +450,10 @@ describe("Topological Sort", () => {
     expect(result.sorted).toHaveLength(5);
 
     // A must come before B, C, D
-    const aIndex = result.sorted.findIndex(s => s.slug === "a");
-    const bIndex = result.sorted.findIndex(s => s.slug === "b");
-    const cIndex = result.sorted.findIndex(s => s.slug === "c");
-    const dIndex = result.sorted.findIndex(s => s.slug === "d");
+    const aIndex = result.sorted.findIndex((s) => s.slug === "a");
+    const bIndex = result.sorted.findIndex((s) => s.slug === "b");
+    const cIndex = result.sorted.findIndex((s) => s.slug === "c");
+    const dIndex = result.sorted.findIndex((s) => s.slug === "d");
 
     expect(aIndex).toBeLessThan(bIndex);
     expect(aIndex).toBeLessThan(cIndex);
@@ -493,9 +491,7 @@ describe("Topological Sort", () => {
 describe("Parent Reference Validation", () => {
   // AC: @plan-import ac-17
   it("should detect missing parent references", () => {
-    const specs: PlanSpec[] = [
-      { title: "Child", slug: "child", parent: "@nonexistent" },
-    ];
+    const specs: PlanSpec[] = [{ title: "Child", slug: "child", parent: "@nonexistent" }];
 
     const existingRefs = new Set<string>();
 
@@ -509,15 +505,11 @@ describe("Parent Reference Validation", () => {
 
   // AC: @plan-import ac-33
   it("should provide recovery hint for missing parents", () => {
-    const specs: PlanSpec[] = [
-      { title: "Child", slug: "child", parent: "@missing" },
-    ];
+    const specs: PlanSpec[] = [{ title: "Child", slug: "child", parent: "@missing" }];
 
     const errors = validateParentRefs(specs, new Set());
 
-    expect(errors[0].message).toContain(
-      "Check parent exists or define it earlier in plan",
-    );
+    expect(errors[0].message).toContain("Check parent exists or define it earlier in plan");
   });
 
   it("should allow parent refs to specs within the plan", () => {
@@ -532,9 +524,7 @@ describe("Parent Reference Validation", () => {
   });
 
   it("should allow parent refs to existing project specs", () => {
-    const specs: PlanSpec[] = [
-      { title: "Child", slug: "child", parent: "@existing-parent" },
-    ];
+    const specs: PlanSpec[] = [{ title: "Child", slug: "child", parent: "@existing-parent" }];
 
     const existingRefs = new Set(["existing-parent"]);
 
@@ -589,9 +579,11 @@ Some notes here.
 
     expect(result.specs).toHaveLength(0);
     expect(result.errors.length).toBeGreaterThan(0);
-    expect(result.errors.some(e =>
-      e.type === "validation" && e.message.includes("no YAML code block")
-    )).toBe(true);
+    expect(
+      result.errors.some(
+        (e) => e.type === "validation" && e.message.includes("no YAML code block"),
+      ),
+    ).toBe(true);
   });
 
   it("should not warn when Specs section has a YAML code block", () => {
@@ -610,9 +602,11 @@ Some notes here.
 
     const result = parsePlanDocument(plan);
 
-    expect(result.errors.filter(e =>
-      e.type === "validation" && e.message.includes("no YAML code block")
-    )).toHaveLength(0);
+    expect(
+      result.errors.filter(
+        (e) => e.type === "validation" && e.message.includes("no YAML code block"),
+      ),
+    ).toHaveLength(0);
   });
 
   it("should not warn when there is no Specs section at all", () => {
@@ -626,18 +620,14 @@ Just some notes, no specs section.
 
     const result = parsePlanDocument(plan);
 
-    expect(result.errors.filter(e =>
-      e.message.includes("no YAML code block")
-    )).toHaveLength(0);
+    expect(result.errors.filter((e) => e.message.includes("no YAML code block"))).toHaveLength(0);
   });
 });
 
 describe("createSpecItem", () => {
   // AC: @parser-write-type-safety ac-2
   it("should preserve acceptance_criteria when provided", () => {
-    const ac = [
-      { id: "ac-1", given: "precondition", when: "action", then: "result" },
-    ];
+    const ac = [{ id: "ac-1", given: "precondition", when: "action", then: "result" }];
     const item = createSpecItem({
       title: "Test Feature",
       type: "feature",
@@ -797,7 +787,8 @@ describe("detectYamlUnsafeValues", () => {
   });
 
   it("should truncate long values in diagnostic", () => {
-    const longValue = "This is a very long error message that goes on and on and on: with a colon somewhere in it";
+    const longValue =
+      "This is a very long error message that goes on and on and on: with a colon somewhere in it";
     const yaml = `      then: ${longValue}`;
 
     const diagnostics = detectYamlUnsafeValues(yaml);
@@ -908,6 +899,8 @@ describe("parsePlanDocument - YAML-unsafe diagnostics", () => {
 
     expect(result.specs).toHaveLength(1);
     expect(result.errors).toHaveLength(0);
-    expect(result.specs[0].acceptance_criteria?.[0].then).toContain("User sees error: Invalid input");
+    expect(result.specs[0].acceptance_criteria?.[0].then).toContain(
+      "User sees error: Invalid input",
+    );
   });
 });

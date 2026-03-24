@@ -240,7 +240,7 @@ describe("trait: json-output", () => {
 
     if (result.format === "json") {
       const json = JSON.stringify(result.items, null, 2);
-      // eslint-disable-next-line no-control-regex
+      // oxlint-disable-next-line eslint(no-control-regex) -- intentionally matching ANSI escape
       expect(json).not.toMatch(/\x1b\[/);
     }
   });

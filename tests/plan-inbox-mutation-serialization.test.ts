@@ -7,13 +7,7 @@ import {
   mutateInboxItemAtomically,
   mutatePlanAtomically,
 } from "../src/parser/index.js";
-import {
-  cleanupTempDir,
-  CLI_PATH,
-  kspec,
-  setupTempFixtures,
-  testUlid,
-} from "./helpers/cli.js";
+import { cleanupTempDir, CLI_PATH, kspec, setupTempFixtures, testUlid } from "./helpers/cli.js";
 
 function runKspecAsync(
   args: string,
@@ -99,9 +93,7 @@ describe("Plan/Inbox Mutation Serialization", () => {
     expect(setResult.exitCode).toBe(0);
     const refreshed = (await loadPlans(ctx)).find((plan) => plan._ulid === target!._ulid);
     expect(refreshed?.status).toBe("approved");
-    expect(refreshed?.notes.some((entry) => entry.content === note.content)).toBe(
-      true,
-    );
+    expect(refreshed?.notes.some((entry) => entry.content === note.content)).toBe(true);
   });
 
   it("preserves concurrent inbox tag updates during inbox set --content", async () => {
@@ -116,10 +108,7 @@ describe("Plan/Inbox Mutation Serialization", () => {
 
     const targetRef = `@${target!._ulid.slice(0, 8)}`;
     const [setResult] = await Promise.all([
-      runKspecAsync(
-        `inbox set ${targetRef} --content "Updated inbox content"`,
-        tempDir,
-      ),
+      runKspecAsync(`inbox set ${targetRef} --content "Updated inbox content"`, tempDir),
       mutateInboxItemAtomically(ctx, target!, async (latestItem) => {
         await new Promise((resolve) => setTimeout(resolve, 15));
         return {
@@ -130,9 +119,7 @@ describe("Plan/Inbox Mutation Serialization", () => {
     ]);
 
     expect(setResult.exitCode).toBe(0);
-    const refreshed = (await loadInboxItems(ctx)).find(
-      (item) => item._ulid === target!._ulid,
-    );
+    const refreshed = (await loadInboxItems(ctx)).find((item) => item._ulid === target!._ulid);
     expect(refreshed?.text).toBe("Updated inbox content");
     expect(refreshed?.tags).toContain("concurrent");
   });

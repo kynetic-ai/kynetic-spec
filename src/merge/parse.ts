@@ -7,7 +7,7 @@
 
 import * as fs from "node:fs/promises";
 import { parseYaml } from "../parser/yaml.js";
-import type { ParseResult, ParsedVersions } from "./types.js";
+import type { ParseResult } from "./types.js";
 
 /**
  * Parse all three versions of a YAML file.

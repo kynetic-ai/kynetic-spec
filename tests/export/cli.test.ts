@@ -35,10 +35,7 @@ describe("Export CLI", () => {
     });
 
     it("shows validation info when --include-validation used", () => {
-      const result = kspec(
-        "export --format json --dry-run --include-validation",
-        tempDir
-      );
+      const result = kspec("export --format json --dry-run --include-validation", tempDir);
 
       expect(result.exitCode).toBe(0);
       expect(result.stdout).toContain("Validation:");
@@ -64,10 +61,7 @@ describe("Export CLI", () => {
     it("writes to file when --output specified", async () => {
       const outputPath = path.join(tempDir, "export-test.json");
 
-      const result = kspec(
-        `export --format json -o "${outputPath}"`,
-        tempDir
-      );
+      const result = kspec(`export --format json -o "${outputPath}"`, tempDir);
 
       expect(result.exitCode).toBe(0);
 
@@ -93,10 +87,7 @@ describe("Export CLI", () => {
     it("generates HTML file", async () => {
       const outputPath = path.join(tempDir, "export-test.html");
 
-      const result = kspec(
-        `export --format html -o "${outputPath}"`,
-        tempDir
-      );
+      const result = kspec(`export --format html -o "${outputPath}"`, tempDir);
 
       expect(result.exitCode).toBe(0);
 

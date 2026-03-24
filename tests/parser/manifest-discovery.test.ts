@@ -34,10 +34,7 @@ describe("Manifest File Discovery", () => {
 
   // AC: @manifest-discovery ac-1
   it("returns kynetic.yaml path when it exists", async () => {
-    await fs.writeFile(
-      path.join(specDir, "kynetic.yaml"),
-      'kynetic: "1.0"\nproject: Test\n'
-    );
+    await fs.writeFile(path.join(specDir, "kynetic.yaml"), 'kynetic: "1.0"\nproject: Test\n');
 
     const result = await findManifest(tempDir);
     expect(result).toBe(path.join(specDir, "kynetic.yaml"));
@@ -45,10 +42,7 @@ describe("Manifest File Discovery", () => {
 
   // AC: @manifest-discovery ac-2
   it("returns kynetic.spec.yaml when kynetic.yaml doesn't exist", async () => {
-    await fs.writeFile(
-      path.join(specDir, "kynetic.spec.yaml"),
-      'kynetic: "1.0"\nproject: Test\n'
-    );
+    await fs.writeFile(path.join(specDir, "kynetic.spec.yaml"), 'kynetic: "1.0"\nproject: Test\n');
 
     const result = await findManifest(tempDir);
     expect(result).toBe(path.join(specDir, "kynetic.spec.yaml"));
@@ -58,7 +52,7 @@ describe("Manifest File Discovery", () => {
   it("returns slug-based manifest when explicit names don't exist", async () => {
     await fs.writeFile(
       path.join(specDir, "myproject.yaml"),
-      'kynetic: "1.0"\nproject: My Project\n'
+      'kynetic: "1.0"\nproject: My Project\n',
     );
 
     const result = await findManifest(tempDir);
@@ -68,14 +62,8 @@ describe("Manifest File Discovery", () => {
   // AC: @manifest-discovery ac-4
   it("returns first alphabetically when multiple yaml files match", async () => {
     // Create multiple yaml files with kynetic version field
-    await fs.writeFile(
-      path.join(specDir, "zebra.yaml"),
-      'kynetic: "1.0"\nproject: Zebra\n'
-    );
-    await fs.writeFile(
-      path.join(specDir, "alpha.yaml"),
-      'kynetic: "1.0"\nproject: Alpha\n'
-    );
+    await fs.writeFile(path.join(specDir, "zebra.yaml"), 'kynetic: "1.0"\nproject: Zebra\n');
+    await fs.writeFile(path.join(specDir, "alpha.yaml"), 'kynetic: "1.0"\nproject: Alpha\n');
 
     const result = await findManifest(tempDir);
     // Should return alpha.yaml (first alphabetically)
@@ -85,15 +73,9 @@ describe("Manifest File Discovery", () => {
   // AC: @manifest-discovery ac-5
   it("skips yaml files without kynetic version field", async () => {
     // Create a yaml file without kynetic version field
-    await fs.writeFile(
-      path.join(specDir, "notamanifest.yaml"),
-      "some: data\nother: stuff\n"
-    );
+    await fs.writeFile(path.join(specDir, "notamanifest.yaml"), "some: data\nother: stuff\n");
     // Create a valid manifest
-    await fs.writeFile(
-      path.join(specDir, "valid.yaml"),
-      'kynetic: "1.0"\nproject: Valid\n'
-    );
+    await fs.writeFile(path.join(specDir, "valid.yaml"), 'kynetic: "1.0"\nproject: Valid\n');
 
     const result = await findManifest(tempDir);
     expect(result).toBe(path.join(specDir, "valid.yaml"));
@@ -101,14 +83,8 @@ describe("Manifest File Discovery", () => {
 
   // AC: @manifest-discovery ac-1, ac-3
   it("prefers kynetic.yaml over slug-based names", async () => {
-    await fs.writeFile(
-      path.join(specDir, "kynetic.yaml"),
-      'kynetic: "1.0"\nproject: Default\n'
-    );
-    await fs.writeFile(
-      path.join(specDir, "myproject.yaml"),
-      'kynetic: "1.0"\nproject: Custom\n'
-    );
+    await fs.writeFile(path.join(specDir, "kynetic.yaml"), 'kynetic: "1.0"\nproject: Default\n');
+    await fs.writeFile(path.join(specDir, "myproject.yaml"), 'kynetic: "1.0"\nproject: Custom\n');
 
     const result = await findManifest(tempDir);
     expect(result).toBe(path.join(specDir, "kynetic.yaml"));
@@ -116,14 +92,8 @@ describe("Manifest File Discovery", () => {
 
   // AC: @manifest-discovery ac-5
   it("excludes task files from manifest discovery", async () => {
-    await fs.writeFile(
-      path.join(specDir, "project.tasks.yaml"),
-      'kynetic: "1.0"\ntasks: []\n'
-    );
-    await fs.writeFile(
-      path.join(specDir, "valid.yaml"),
-      'kynetic: "1.0"\nproject: Valid\n'
-    );
+    await fs.writeFile(path.join(specDir, "project.tasks.yaml"), 'kynetic: "1.0"\ntasks: []\n');
+    await fs.writeFile(path.join(specDir, "valid.yaml"), 'kynetic: "1.0"\nproject: Valid\n');
 
     const result = await findManifest(tempDir);
     expect(result).toBe(path.join(specDir, "valid.yaml"));
@@ -131,14 +101,8 @@ describe("Manifest File Discovery", () => {
 
   // AC: @manifest-discovery ac-5
   it("excludes inbox files from manifest discovery", async () => {
-    await fs.writeFile(
-      path.join(specDir, "project.inbox.yaml"),
-      'kynetic: "1.0"\ninbox: []\n'
-    );
-    await fs.writeFile(
-      path.join(specDir, "valid.yaml"),
-      'kynetic: "1.0"\nproject: Valid\n'
-    );
+    await fs.writeFile(path.join(specDir, "project.inbox.yaml"), 'kynetic: "1.0"\ninbox: []\n');
+    await fs.writeFile(path.join(specDir, "valid.yaml"), 'kynetic: "1.0"\nproject: Valid\n');
 
     const result = await findManifest(tempDir);
     expect(result).toBe(path.join(specDir, "valid.yaml"));
@@ -148,12 +112,9 @@ describe("Manifest File Discovery", () => {
   it("excludes meta files from manifest discovery", async () => {
     await fs.writeFile(
       path.join(specDir, "kynetic.meta.yaml"),
-      'kynetic_meta: "1.0"\nagents: []\n'
+      'kynetic_meta: "1.0"\nagents: []\n',
     );
-    await fs.writeFile(
-      path.join(specDir, "valid.yaml"),
-      'kynetic: "1.0"\nproject: Valid\n'
-    );
+    await fs.writeFile(path.join(specDir, "valid.yaml"), 'kynetic: "1.0"\nproject: Valid\n');
 
     const result = await findManifest(tempDir);
     expect(result).toBe(path.join(specDir, "valid.yaml"));
@@ -162,10 +123,7 @@ describe("Manifest File Discovery", () => {
   // AC: @manifest-discovery ac-1
   it("also checks current directory for manifest", async () => {
     // Put manifest in tempDir directly (not in spec/)
-    await fs.writeFile(
-      path.join(tempDir, "kynetic.yaml"),
-      'kynetic: "1.0"\nproject: Direct\n'
-    );
+    await fs.writeFile(path.join(tempDir, "kynetic.yaml"), 'kynetic: "1.0"\nproject: Direct\n');
 
     const result = await findManifest(tempDir);
     expect(result).toBe(path.join(tempDir, "kynetic.yaml"));
@@ -174,10 +132,7 @@ describe("Manifest File Discovery", () => {
   // AC: @manifest-discovery ac-5
   it("returns null when no valid manifest exists", async () => {
     // Only create invalid files
-    await fs.writeFile(
-      path.join(specDir, "notamanifest.yaml"),
-      "some: data\n"
-    );
+    await fs.writeFile(path.join(specDir, "notamanifest.yaml"), "some: data\n");
 
     const result = await findManifest(tempDir);
     expect(result).toBeNull();
@@ -202,7 +157,7 @@ describe("Meta Manifest File Discovery", () => {
   it("returns kynetic.meta.yaml path when it exists", async () => {
     await fs.writeFile(
       path.join(specDir, "kynetic.meta.yaml"),
-      'kynetic_meta: "1.0"\nagents: []\n'
+      'kynetic_meta: "1.0"\nagents: []\n',
     );
 
     const result = await findMetaManifest(specDir);
@@ -213,7 +168,7 @@ describe("Meta Manifest File Discovery", () => {
   it("returns slug-based meta manifest when explicit name doesn't exist", async () => {
     await fs.writeFile(
       path.join(specDir, "myproject.meta.yaml"),
-      'kynetic_meta: "1.0"\nagents: []\n'
+      'kynetic_meta: "1.0"\nagents: []\n',
     );
 
     const result = await findMetaManifest(specDir);
@@ -224,11 +179,11 @@ describe("Meta Manifest File Discovery", () => {
   it("prefers kynetic.meta.yaml over slug-based names", async () => {
     await fs.writeFile(
       path.join(specDir, "kynetic.meta.yaml"),
-      'kynetic_meta: "1.0"\nagents: []\n'
+      'kynetic_meta: "1.0"\nagents: []\n',
     );
     await fs.writeFile(
       path.join(specDir, "myproject.meta.yaml"),
-      'kynetic_meta: "1.0"\nagents: []\n'
+      'kynetic_meta: "1.0"\nagents: []\n',
     );
 
     const result = await findMetaManifest(specDir);
@@ -237,14 +192,8 @@ describe("Meta Manifest File Discovery", () => {
 
   // AC: @meta-manifest-discovery ac-3
   it("returns first alphabetically when multiple meta.yaml files exist", async () => {
-    await fs.writeFile(
-      path.join(specDir, "zebra.meta.yaml"),
-      'kynetic_meta: "1.0"\nagents: []\n'
-    );
-    await fs.writeFile(
-      path.join(specDir, "alpha.meta.yaml"),
-      'kynetic_meta: "1.0"\nagents: []\n'
-    );
+    await fs.writeFile(path.join(specDir, "zebra.meta.yaml"), 'kynetic_meta: "1.0"\nagents: []\n');
+    await fs.writeFile(path.join(specDir, "alpha.meta.yaml"), 'kynetic_meta: "1.0"\nagents: []\n');
 
     const result = await findMetaManifest(specDir);
     expect(result).toBe(path.join(specDir, "alpha.meta.yaml"));
@@ -252,14 +201,8 @@ describe("Meta Manifest File Discovery", () => {
 
   // AC: @meta-manifest-discovery ac-2
   it("skips meta.yaml files without kynetic_meta version field", async () => {
-    await fs.writeFile(
-      path.join(specDir, "invalid.meta.yaml"),
-      "agents: []\nworkflows: []\n"
-    );
-    await fs.writeFile(
-      path.join(specDir, "valid.meta.yaml"),
-      'kynetic_meta: "1.0"\nagents: []\n'
-    );
+    await fs.writeFile(path.join(specDir, "invalid.meta.yaml"), "agents: []\nworkflows: []\n");
+    await fs.writeFile(path.join(specDir, "valid.meta.yaml"), 'kynetic_meta: "1.0"\nagents: []\n');
 
     const result = await findMetaManifest(specDir);
     expect(result).toBe(path.join(specDir, "valid.meta.yaml"));
@@ -267,10 +210,7 @@ describe("Meta Manifest File Discovery", () => {
 
   // AC: @meta-manifest-discovery ac-2
   it("returns null when no valid meta manifest exists", async () => {
-    await fs.writeFile(
-      path.join(specDir, "invalid.meta.yaml"),
-      "agents: []\n"
-    );
+    await fs.writeFile(path.join(specDir, "invalid.meta.yaml"), "agents: []\n");
 
     const result = await findMetaManifest(specDir);
     expect(result).toBeNull();

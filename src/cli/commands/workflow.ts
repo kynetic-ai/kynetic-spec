@@ -38,10 +38,7 @@ import { error, isJsonMode, output, success } from "../output.js";
 /**
  * Find a workflow by reference
  */
-function resolveWorkflowRef(
-  ref: string,
-  workflows: Workflow[],
-): Workflow | null {
+function resolveWorkflowRef(ref: string, workflows: Workflow[]): Workflow | null {
   const cleanRef = ref.startsWith("@") ? ref.slice(1) : ref;
 
   // Try by ID first
@@ -50,9 +47,7 @@ function resolveWorkflowRef(
 
   // Try by ULID or ULID prefix
   workflow = workflows.find(
-    (w) =>
-      w._ulid === cleanRef ||
-      w._ulid.toLowerCase().startsWith(cleanRef.toLowerCase()),
+    (w) => w._ulid === cleanRef || w._ulid.toLowerCase().startsWith(cleanRef.toLowerCase()),
   );
   return workflow || null;
 }
@@ -86,10 +81,7 @@ function formatStatus(status: string): string {
  * Command: kspec workflow start @workflow-ref [--task @task-ref] [--json]
  * AC: @workflow-run-foundation ac-1, ac-6
  */
-async function workflowStart(
-  workflowRef: string,
-  options: { task?: string; json?: boolean },
-) {
+async function workflowStart(workflowRef: string, options: { task?: string; json?: boolean }) {
   const ctx = await initContext();
   const metaCtx = await loadMetaContext(ctx);
 
@@ -194,9 +186,7 @@ async function workflowRuns(options: {
     });
 
     for (const run of runs) {
-      const workflow = metaCtx.workflows.find(
-        (w) => `@${w._ulid}` === run.workflow_ref,
-      );
+      const workflow = metaCtx.workflows.find((w) => `@${w._ulid}` === run.workflow_ref);
       const workflowName = workflow?.id || run.workflow_ref;
       const stepProgress = `${run.current_step + 1}/${run.total_steps}`;
       const started = new Date(run.started_at).toLocaleString();
@@ -231,9 +221,7 @@ async function workflowShow(runRef: string, _options: { json?: boolean }) {
   if (isJsonMode()) {
     output({ run });
   } else {
-    const workflow = metaCtx.workflows.find(
-      (w) => `@${w._ulid}` === run.workflow_ref,
-    );
+    const workflow = metaCtx.workflows.find((w) => `@${w._ulid}` === run.workflow_ref);
     const workflowName = workflow?.id || run.workflow_ref;
 
     console.log(chalk.bold("Workflow Run Details"));
@@ -254,9 +242,7 @@ async function workflowShow(runRef: string, _options: { json?: boolean }) {
       console.log(`Paused:       ${new Date(run.paused_at).toLocaleString()}`);
     }
     if (run.completed_at) {
-      console.log(
-        `Completed:    ${new Date(run.completed_at).toLocaleString()}`,
-      );
+      console.log(`Completed:    ${new Date(run.completed_at).toLocaleString()}`);
     }
     if (run.abort_reason) {
       console.log(`Abort reason: ${run.abort_reason}`);
@@ -287,10 +273,7 @@ async function workflowShow(runRef: string, _options: { json?: boolean }) {
  * Command: kspec workflow abort @run-id [--reason text] [--json]
  * AC: @workflow-run-foundation ac-3, ac-5
  */
-async function workflowAbort(
-  runRef: string,
-  options: { reason?: string; json?: boolean },
-) {
+async function workflowAbort(runRef: string, options: { reason?: string; json?: boolean }) {
   const ctx = await initContext();
 
   const run = await findWorkflowRunByRef(ctx, runRef);
@@ -333,10 +316,7 @@ async function workflowAbort(
  * Marks a workflow run as completed with an optional result.
  * Use this for graceful exits (e.g., no_work_available) instead of aborting.
  */
-async function workflowComplete(
-  runRef: string,
-  options: { result?: string; json?: boolean },
-) {
+async function workflowComplete(runRef: string, options: { result?: string; json?: boolean }) {
   const ctx = await initContext();
 
   const run = await findWorkflowRunByRef(ctx, runRef);
@@ -406,9 +386,7 @@ async function workflowPause(runRef: string, _options: { json?: boolean }) {
 
   // Only active runs can be paused
   if (run.status !== "active") {
-    error(
-      `Cannot pause run ${shortUlid(run._ulid)}: current status is ${run.status}`,
-    );
+    error(`Cannot pause run ${shortUlid(run._ulid)}: current status is ${run.status}`);
     process.exit(EXIT_CODES.VALIDATION_FAILED);
   }
 
@@ -458,9 +436,7 @@ async function workflowResume(runRef: string, _options: { json?: boolean }) {
   await commitIfShadow(ctx.shadow, "workflow-resume", run._ulid);
 
   // Get workflow definition to show current step
-  const workflow = metaCtx.workflows.find(
-    (w) => `@${w._ulid}` === run.workflow_ref,
-  );
+  const workflow = metaCtx.workflows.find((w) => `@${w._ulid}` === run.workflow_ref);
   if (!workflow) {
     error(errors.workflowRun.workflowNotFound(run.workflow_ref));
     process.exit(EXIT_CODES.NOT_FOUND);
@@ -542,9 +518,7 @@ async function workflowNext(
   }
 
   // Get workflow definition to access steps
-  const workflow = metaCtx.workflows.find(
-    (w) => `@${w._ulid}` === run.workflow_ref,
-  );
+  const workflow = metaCtx.workflows.find((w) => `@${w._ulid}` === run.workflow_ref);
   if (!workflow) {
     error(errors.workflowRun.workflowNotFound(run.workflow_ref));
     process.exit(EXIT_CODES.NOT_FOUND);
@@ -569,9 +543,7 @@ async function workflowNext(
         const requiredLabel = input.required !== false ? "" : " (optional)";
         const typeLabel = input.type ? ` (${input.type})` : "";
         const desc = input.description ? `: ${input.description}` : "";
-        console.log(
-          chalk.cyan(`    - ${input.name}${typeLabel}${requiredLabel}${desc}`),
-        );
+        console.log(chalk.cyan(`    - ${input.name}${typeLabel}${requiredLabel}${desc}`));
       }
       console.log();
     }
@@ -581,9 +553,7 @@ async function workflowNext(
       for (const inputStr of options.input) {
         const [key, ...valueParts] = inputStr.split("=");
         if (!valueParts.length) {
-          error(
-            `Invalid input format: "${inputStr}". Expected format: key=value`,
-          );
+          error(`Invalid input format: "${inputStr}". Expected format: key=value`);
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
         stepInputs[key] = valueParts.join("="); // Rejoin in case value contains '='
@@ -606,11 +576,7 @@ async function workflowNext(
   }
 
   // AC: @workflow-enforcement-modes ac-2, ac-3 - Check exit criteria for CURRENT step
-  if (
-    currentStep.exit_criteria &&
-    currentStep.exit_criteria.length > 0 &&
-    !options.skip
-  ) {
+  if (currentStep.exit_criteria && currentStep.exit_criteria.length > 0 && !options.skip) {
     // AC: @workflow-enforcement-modes ac-3 - Strict mode requires --confirm
     if (isStrictMode && !options.confirm) {
       if (!isJsonMode()) {
@@ -674,15 +640,11 @@ async function workflowNext(
 
   // AC: @workflow-step-navigation ac-1, ac-6 - Complete current step
   const previousResult = run.step_results[run.step_results.length - 1];
-  const startedAt = previousResult
-    ? previousResult.completed_at
-    : run.started_at;
+  const startedAt = previousResult ? previousResult.completed_at : run.started_at;
 
   // AC: @workflow-enforcement-modes ac-3 - Record confirmations in StepResult
   // Check if a stub result already exists for this step (created when we advanced to it)
-  const existingResultIndex = run.step_results.findIndex(
-    (r) => r.step_index === currentStepIndex,
-  );
+  const existingResultIndex = run.step_results.findIndex((r) => r.step_index === currentStepIndex);
 
   if (existingResultIndex >= 0) {
     // Update existing stub result with completion data
@@ -693,9 +655,7 @@ async function workflowNext(
       completed_at: new Date().toISOString(),
       notes: options.notes,
       exit_confirmed:
-        currentStep.exit_criteria &&
-        currentStep.exit_criteria.length > 0 &&
-        options.confirm
+        currentStep.exit_criteria && currentStep.exit_criteria.length > 0 && options.confirm
           ? true
           : undefined,
       inputs: Object.keys(stepInputs).length > 0 ? stepInputs : undefined,
@@ -709,9 +669,7 @@ async function workflowNext(
       completed_at: new Date().toISOString(),
       notes: options.notes,
       exit_confirmed:
-        currentStep.exit_criteria &&
-        currentStep.exit_criteria.length > 0 &&
-        options.confirm
+        currentStep.exit_criteria && currentStep.exit_criteria.length > 0 && options.confirm
           ? true
           : undefined,
       entry_confirmed: undefined,
@@ -730,14 +688,9 @@ async function workflowNext(
     await commitIfShadow(ctx.shadow, "workflow-next", run._ulid);
 
     // Calculate summary stats
-    const totalDuration =
-      new Date(run.completed_at).getTime() - new Date(run.started_at).getTime();
-    const completedSteps = run.step_results.filter(
-      (r) => r.status === "completed",
-    ).length;
-    const skippedSteps = run.step_results.filter(
-      (r) => r.status === "skipped",
-    ).length;
+    const totalDuration = new Date(run.completed_at).getTime() - new Date(run.started_at).getTime();
+    const completedSteps = run.step_results.filter((r) => r.status === "completed").length;
+    const skippedSteps = run.step_results.filter((r) => r.status === "skipped").length;
 
     if (isJsonMode()) {
       output({
@@ -768,17 +721,14 @@ async function workflowNext(
     // This will be updated with completion data when the step is completed
     const nextStep = workflow.steps[run.current_step];
     const nextStepStartedAt =
-      run.step_results[run.step_results.length - 1]?.completed_at ||
-      new Date().toISOString();
+      run.step_results[run.step_results.length - 1]?.completed_at || new Date().toISOString();
     const nextStepStub = {
       step_index: run.current_step,
       status: "completed" as const, // Placeholder, will be updated
       started_at: nextStepStartedAt,
       completed_at: nextStepStartedAt, // Placeholder, will be updated
       entry_confirmed:
-        nextStep.entry_criteria &&
-        nextStep.entry_criteria.length > 0 &&
-        options.confirm
+        nextStep.entry_criteria && nextStep.entry_criteria.length > 0 && options.confirm
           ? true
           : undefined,
     };
@@ -822,7 +772,7 @@ async function workflowPrune(options: {
   json?: boolean;
 }) {
   const ctx = await initContext();
-  let runs = await loadWorkflowRuns(ctx);
+  const runs = await loadWorkflowRuns(ctx);
 
   // Track which runs to prune
   let toPrune: WorkflowRun[] = [];
@@ -831,9 +781,7 @@ async function workflowPrune(options: {
   if (options.olderThan) {
     const match = options.olderThan.match(/^(\d+)([dhm])$/);
     if (!match) {
-      error(
-        'Invalid duration format. Use format like: 30d (days), 12h (hours), 45m (minutes)',
-      );
+      error("Invalid duration format. Use format like: 30d (days), 12h (hours), 45m (minutes)");
       process.exit(EXIT_CODES.USAGE_ERROR);
     }
 
@@ -846,7 +794,7 @@ async function workflowPrune(options: {
     }[unit];
 
     if (milliseconds === undefined) {
-      error('Invalid duration unit. Use d (days), h (hours), or m (minutes)');
+      error("Invalid duration unit. Use d (days), h (hours), or m (minutes)");
       process.exit(EXIT_CODES.USAGE_ERROR);
     }
 
@@ -859,11 +807,9 @@ async function workflowPrune(options: {
 
   // AC: @workflow-prune ac-2 - Filter by status
   if (options.status) {
-    const validStatuses = ['active', 'paused', 'completed', 'aborted'];
+    const validStatuses = ["active", "paused", "completed", "aborted"];
     if (!validStatuses.includes(options.status)) {
-      error(
-        `Invalid status: ${options.status}. Must be one of: ${validStatuses.join(', ')}`,
-      );
+      error(`Invalid status: ${options.status}. Must be one of: ${validStatuses.join(", ")}`);
       process.exit(EXIT_CODES.USAGE_ERROR);
     }
 
@@ -880,7 +826,7 @@ async function workflowPrune(options: {
   if (options.abandoned) {
     const abandonedCutoff = Date.now() - 7 * 24 * 60 * 60 * 1000; // 7 days
     const abandonedRuns = runs.filter((r) => {
-      if (r.status !== 'active') return false;
+      if (r.status !== "active") return false;
 
       // Find most recent activity time
       let lastActivity = new Date(r.started_at).getTime();
@@ -903,9 +849,7 @@ async function workflowPrune(options: {
 
   // If no filters provided, error
   if (!options.olderThan && !options.status && !options.abandoned) {
-    error(
-      'Must specify at least one filter: --older-than, --status, or --abandoned',
-    );
+    error("Must specify at least one filter: --older-than, --status, or --abandoned");
     process.exit(EXIT_CODES.USAGE_ERROR);
   }
 
@@ -926,35 +870,26 @@ async function workflowPrune(options: {
     } else {
       console.log(
         chalk.yellow(
-          `Would delete ${toPrune.length} workflow run${toPrune.length === 1 ? '' : 's'}:`,
+          `Would delete ${toPrune.length} workflow run${toPrune.length === 1 ? "" : "s"}:`,
         ),
       );
       if (toPrune.length > 0) {
         const table = new Table({
-          head: ['ID', 'Workflow', 'Status', 'Started'],
+          head: ["ID", "Workflow", "Status", "Started"],
           colWidths: [12, 25, 12, 20],
         });
 
         const metaCtx = await loadMetaContext(ctx);
         for (const run of toPrune) {
-          const workflow = metaCtx.workflows.find(
-            (w) => `@${w._ulid}` === run.workflow_ref,
-          );
+          const workflow = metaCtx.workflows.find((w) => `@${w._ulid}` === run.workflow_ref);
           const workflowName = workflow?.id || run.workflow_ref;
           const started = new Date(run.started_at).toLocaleString();
 
-          table.push([
-            shortUlid(run._ulid),
-            workflowName,
-            formatStatus(run.status),
-            started,
-          ]);
+          table.push([shortUlid(run._ulid), workflowName, formatStatus(run.status), started]);
         }
 
         console.log(table.toString());
-        console.log(
-          chalk.gray('\nRun without --dry-run to actually delete these runs'),
-        );
+        console.log(chalk.gray("\nRun without --dry-run to actually delete these runs"));
       }
     }
     return;
@@ -963,7 +898,7 @@ async function workflowPrune(options: {
   // Actually delete
   if (toPrune.length === 0) {
     if (!isJsonMode()) {
-      console.log(chalk.gray('No runs match the specified criteria'));
+      console.log(chalk.gray("No runs match the specified criteria"));
     } else {
       output({ deleted: 0 });
     }
@@ -982,9 +917,7 @@ async function workflowPrune(options: {
   if (isJsonMode()) {
     output({ deleted: toPrune.length });
   } else {
-    success(
-      `Deleted ${toPrune.length} workflow run${toPrune.length === 1 ? '' : 's'}`,
-    );
+    success(`Deleted ${toPrune.length} workflow run${toPrune.length === 1 ? "" : "s"}`);
   }
 }
 
@@ -992,9 +925,7 @@ async function workflowPrune(options: {
  * Register workflow commands
  */
 export function registerWorkflowCommand(program: Command): void {
-  const workflow = program
-    .command("workflow")
-    .description("Manage workflow runs");
+  const workflow = program.command("workflow").description("Manage workflow runs");
 
   markMutating(workflow.command("start"))
     .description("Start a new workflow run")
@@ -1029,10 +960,7 @@ export function registerWorkflowCommand(program: Command): void {
   markMutating(workflow.command("complete"))
     .description("Mark workflow run as completed (graceful exit)")
     .argument("<run-ref>", "Run reference (@ulid or ulid prefix)")
-    .option(
-      "--result <result>",
-      "Completion result (success, no_work_available, early_exit)",
-    )
+    .option("--result <result>", "Completion result (success, no_work_available, early_exit)")
     .option("--json", "Output JSON")
     .action(workflowComplete);
 
@@ -1041,10 +969,7 @@ export function registerWorkflowCommand(program: Command): void {
     .argument("[run-ref]", "Run reference (optional if only one active run)")
     .option("--skip", "Mark current step as skipped")
     .option("--notes <text>", "Notes for the completed step")
-    .option(
-      "--confirm",
-      "Acknowledge entry/exit criteria (required in strict mode)",
-    )
+    .option("--confirm", "Acknowledge entry/exit criteria (required in strict mode)")
     .option("--force", "Allow --skip in strict mode")
     .option(
       "--input <key=value>",
@@ -1076,10 +1001,7 @@ export function registerWorkflowCommand(program: Command): void {
       "--status <status>",
       "Delete runs with specific status (active, paused, completed, aborted)",
     )
-    .option(
-      "--abandoned",
-      "Delete active runs with no activity for 7+ days",
-    )
+    .option("--abandoned", "Delete active runs with no activity for 7+ days")
     .option("--dry-run", "Show what would be deleted without deleting")
     .option("--json", "Output JSON")
     .action(workflowPrune);

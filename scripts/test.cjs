@@ -18,41 +18,37 @@
  *   CI=true        Detected automatically in CI
  */
 
-const { execSync, spawnSync } = require('child_process');
-const fs = require('fs');
-const path = require('path');
-const { checkProjectDependencies } = require('./dependency-health.cjs');
+const { execSync, spawnSync } = require("child_process");
+const fs = require("fs");
+const path = require("path");
+const { checkProjectDependencies } = require("./dependency-health.cjs");
 
 // ANSI colors (zero dependencies)
 const c = {
-  reset: '\x1b[0m',
-  bold: '\x1b[1m',
-  dim: '\x1b[2m',
-  green: '\x1b[32m',
-  yellow: '\x1b[33m',
-  red: '\x1b[31m',
-  cyan: '\x1b[36m',
+  reset: "\x1b[0m",
+  bold: "\x1b[1m",
+  dim: "\x1b[2m",
+  green: "\x1b[32m",
+  yellow: "\x1b[33m",
+  red: "\x1b[31m",
+  cyan: "\x1b[36m",
 };
 
 const projectRoot = path.dirname(__dirname);
-const BUILD_ARTIFACTS = [
-  'dist/cli/index.js',
-  'dist/web-ui/index.html',
-  'dist/daemon/index.ts',
-];
+const BUILD_ARTIFACTS = ["dist/cli/index.js", "dist/web-ui/index.html", "dist/daemon/index.ts"];
 const BUILD_INPUT_PATHS = [
-  'src',
-  'packages/shared/src',
-  'packages/daemon/src',
-  'packages/web-ui/src',
-  'packages/web-ui/static',
-  'package.json',
-  'tsconfig.json',
-  'packages/shared/package.json',
-  'packages/daemon/package.json',
-  'packages/web-ui/package.json',
-  'packages/web-ui/vite.config.ts',
-  'packages/web-ui/svelte.config.js',
+  "src",
+  "packages/shared/src",
+  "packages/daemon/src",
+  "packages/web-ui/src",
+  "packages/web-ui/static",
+  "package.json",
+  "tsconfig.json",
+  "packages/shared/package.json",
+  "packages/daemon/package.json",
+  "packages/web-ui/package.json",
+  "packages/web-ui/vite.config.ts",
+  "packages/web-ui/svelte.config.js",
 ];
 
 // ─── Output helpers ────────────────────────────────────────────────
@@ -158,22 +154,22 @@ function newestPathMtime(fullPath, relativePath) {
 // ─── Fix helpers ───────────────────────────────────────────────────
 
 function installDependencies() {
-  logSetup('Installing dependencies (npm ci)...');
+  logSetup("Installing dependencies (npm ci)...");
   try {
-    execSync('npm ci', { cwd: projectRoot, stdio: 'pipe' });
+    execSync("npm ci", { cwd: projectRoot, stdio: "pipe" });
   } catch (err) {
-    logErr('npm ci failed:');
+    logErr("npm ci failed:");
     if (err.stderr) process.stderr.write(err.stderr);
     throw err;
   }
 }
 
 function runBuild() {
-  logSetup('Building project (npm run build)...');
+  logSetup("Building project (npm run build)...");
   try {
-    execSync('npm run build', { cwd: projectRoot, stdio: 'pipe' });
+    execSync("npm run build", { cwd: projectRoot, stdio: "pipe" });
   } catch (err) {
-    logErr('npm run build failed:');
+    logErr("npm run build failed:");
     if (err.stderr) process.stderr.write(err.stderr);
     throw err;
   }
@@ -189,15 +185,15 @@ function runBuild() {
  */
 const preTestHooks = [
   {
-    name: 'dependencies',
+    name: "dependencies",
     check: checkDependencies,
     fix: installDependencies,
   },
   {
-    name: 'build',
+    name: "build",
     check: checkBuild,
     fix: runBuild,
-    skip: () => process.env.SKIP_BUILD === '1',
+    skip: () => process.env.SKIP_BUILD === "1",
   },
 ];
 
@@ -246,32 +242,32 @@ function runPostTestHooks(exitCode) {
 function main() {
   // Parse our own flags vs vitest pass-through args
   const args = process.argv.slice(2);
-  const dryRun = args.includes('--dry-run');
-  const vitestArgs = args.filter(a => a !== '--dry-run');
+  const dryRun = args.includes("--dry-run");
+  const vitestArgs = args.filter((a) => a !== "--dry-run");
 
   // ── Ensure environment ──
   const fixedCount = ensureEnvironment();
 
   if (fixedCount > 0) {
-    logOk(`Environment ready (${fixedCount} issue${fixedCount > 1 ? 's' : ''} fixed)`);
+    logOk(`Environment ready (${fixedCount} issue${fixedCount > 1 ? "s" : ""} fixed)`);
   }
 
   if (dryRun) {
-    logOk('Environment check passed (dry-run, skipping tests)');
+    logOk("Environment check passed (dry-run, skipping tests)");
     process.exit(0);
   }
 
   // ── Run vitest ──
   // Use npx vitest run to bypass npm pretest hook (we already ensured build)
-  const cmd = ['npx', 'vitest', 'run', ...vitestArgs];
+  const cmd = ["npx", "vitest", "run", ...vitestArgs];
 
   const result = spawnSync(cmd[0], cmd.slice(1), {
     cwd: projectRoot,
-    stdio: 'inherit',
+    stdio: "inherit",
     env: {
       ...process.env,
       // Signal to vitest global-setup that build is already done
-      SKIP_BUILD: '1',
+      SKIP_BUILD: "1",
     },
   });
 
@@ -281,7 +277,7 @@ function main() {
   runPostTestHooks(exitCode);
 
   // ── Summary ──
-  process.stderr.write('\n');
+  process.stderr.write("\n");
   if (exitCode === 0) {
     logOk(`${c.bold}Tests passed${c.reset}`);
   } else {

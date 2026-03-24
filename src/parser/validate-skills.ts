@@ -63,7 +63,7 @@ export async function findSkillFiles(baseDir: string): Promise<string[]> {
 
   // Scan .claude/skills/ (project/local skills)
   const skillsDir = path.join(baseDir, ".claude", "skills");
-  skillFiles.push(...await scanSkillDir(skillsDir));
+  skillFiles.push(...(await scanSkillDir(skillsDir)));
 
   // Core skills are now plugin-provided via npm package; no local render to validate.
   // Only project/local skills in .claude/skills/ are scanned.
@@ -92,7 +92,7 @@ function parseFrontmatter(content: string): {
   try {
     const parsed = yaml.parse(match[1]);
     return { frontmatter: parsed as SkillFrontmatter, errors };
-  } catch (err) {
+  } catch {
     return { frontmatter: null, errors };
   }
 }
@@ -107,10 +107,7 @@ function parseFrontmatter(content: string): {
  * - This is a heuristic to reduce false positives; perfect detection
  *   would require full markdown table parsing
  */
-function checkTablePipes(
-  content: string,
-  file: string,
-): SkillValidationError[] {
+function checkTablePipes(content: string, file: string): SkillValidationError[] {
   const errors: SkillValidationError[] = [];
   const lines = content.split(/\r?\n/);
 
@@ -124,7 +121,7 @@ function checkTablePipes(
     }
 
     // Skip separator rows (only contains |, -, :, and whitespace)
-    if (/^[\s|:\-]+$/.test(trimmed)) {
+    if (/^[\s|:-]+$/.test(trimmed)) {
       continue;
     }
 
@@ -161,9 +158,7 @@ function checkTablePipes(
 /**
  * Validate a single skill file
  */
-export async function validateSkillFile(
-  filePath: string,
-): Promise<SkillValidationError[]> {
+export async function validateSkillFile(filePath: string): Promise<SkillValidationError[]> {
   const errors: SkillValidationError[] = [];
   let relativePath: string;
   if (filePath.includes(".claude/plugins/")) {
@@ -248,9 +243,7 @@ export async function validateSkillFile(
 /**
  * Validate all skill files
  */
-export async function validateSkills(
-  baseDir: string,
-): Promise<SkillValidationResult> {
+export async function validateSkills(baseDir: string): Promise<SkillValidationResult> {
   const skillFiles = await findSkillFiles(baseDir);
   const allErrors: SkillValidationError[] = [];
 

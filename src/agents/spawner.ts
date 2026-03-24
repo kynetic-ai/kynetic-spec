@@ -103,10 +103,7 @@ function forwardFilteredAdapterStderr(child: ChildProcess): void {
  * @param options - Spawn options including cwd and environment
  * @returns SpawnedAgent with client, process, and kill function
  */
-export function spawnAgent(
-  adapter: AgentAdapter,
-  options: SpawnAgentOptions,
-): SpawnedAgent {
+export function spawnAgent(adapter: AgentAdapter, options: SpawnAgentOptions): SpawnedAgent {
   const { cwd, env = {}, extraArgs, clientOptions = {} } = options;
 
   // Strip host-environment variables that interfere with agent startup

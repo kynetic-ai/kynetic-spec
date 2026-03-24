@@ -19,13 +19,7 @@ vi.mock("node:os", async (importOriginal) => {
 
 import { detectAgent } from "../src/parser/setup-status.js";
 import { getSetupStatus } from "../src/parser/setup-status.js";
-import {
-  kspec,
-  kspecJson,
-  createTempDir,
-  cleanupTempDir,
-  initGitRepo,
-} from "./helpers/cli.js";
+import { kspec, kspecJson, createTempDir, cleanupTempDir, initGitRepo } from "./helpers/cli.js";
 
 describe("Droid setup status reporting", () => {
   const originalEnv = process.env;
@@ -156,9 +150,7 @@ describe("Droid setup status reporting", () => {
 
     expect(detected.type).toBe("droid");
     expect(detected.confidence).toBe("medium");
-    expect(detected.configPath).toBe(
-      path.join(tempHome, ".factory", "settings.json"),
-    );
+    expect(detected.configPath).toBe(path.join(tempHome, ".factory", "settings.json"));
   });
 
   // AC: @droid-setup-status ac-2

@@ -12,6 +12,7 @@ import {
   cleanupTempDir,
   createTempDir,
   initGitRepo,
+  readTestOutput,
   testUlid,
 } from "./helpers/cli.js";
 
@@ -52,7 +53,7 @@ async function readWorkspaceRecord(
   registryPath: string,
   taskRef: string,
 ): Promise<Record<string, any>> {
-  const raw = YAML.parse(await fs.readFile(registryPath, "utf-8")) as {
+  const raw = YAML.parse(await readTestOutput(registryPath)) as {
     workspaces?: Array<Record<string, any>>;
   };
   return raw.workspaces?.find((workspace) => workspace.task_ref === taskRef) ?? {};
@@ -263,10 +264,7 @@ describe("remote branch fallback in workspace health reconciliation", () => {
     git(tempDir, `branch -D ${canonicalBranch}`);
 
     // Run reconciliation (which updates canonical_branch_head)
-    await reconcileDispatchWorkspaceRegistry(
-      tempDir,
-      new Map([[taskRef, "in_progress" as const]]),
-    );
+    await reconcileDispatchWorkspaceRegistry(tempDir, new Map([[taskRef, "in_progress" as const]]));
 
     // Read the registry record and verify canonical_branch_head was updated
     const registryPath = path.join(specDir, "project.dispatch-workspaces.yaml");

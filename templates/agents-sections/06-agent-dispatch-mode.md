@@ -33,12 +33,12 @@ kspec agent list
 
 ### Dispatch Rules and Trigger Events
 
-| Trigger event | Typical handler | Notes |
-|---------------|-----------------|-------|
-| `task.ready` | `task-worker` | Worker picks up newly ready automation-eligible tasks |
-| `task.in_progress` | `task-worker` | Worker can continue existing automation-eligible tasks |
-| `task.needs_work` | `task-worker` | Fix-cycle tasks return to worker |
-| `task.pending_review` | `pr-reviewer` | Review and local merge in separate invocation |
+| Trigger event         | Typical handler | Notes                                                  |
+| --------------------- | --------------- | ------------------------------------------------------ |
+| `task.ready`          | `task-worker`   | Worker picks up newly ready automation-eligible tasks  |
+| `task.in_progress`    | `task-worker`   | Worker can continue existing automation-eligible tasks |
+| `task.needs_work`     | `task-worker`   | Fix-cycle tasks return to worker                       |
+| `task.pending_review` | `pr-reviewer`   | Review and local merge in separate invocation          |
 
 ### One-Shot Invocation
 
@@ -81,12 +81,14 @@ Priority: `needs_work` > `in_progress` > `pending`. Always inherit existing work
 ### Blocking Rules
 
 **Block only for genuine external blockers:**
+
 - Requires human architectural decision
 - Needs spec clarification
 - Depends on external API/service not available
 - Formally blocked by `depends_on`
 
 **Do NOT block for:**
+
 - Task seems complex (do the work)
 - Tests are failing (fix them)
 - Service needs running (start it)
@@ -94,6 +96,7 @@ Priority: `needs_work` > `in_progress` > `pending`. Always inherit existing work
 - Merge conflicts that you can resolve (resolve them — see `/kspec:merge` skill conflict handling)
 
 **After blocking a task:**
+
 ```bash
 kspec task block @task --reason "Reason..."
 kspec tasks ready --eligible

@@ -14,27 +14,23 @@ import { output, error as outputError } from "../output.js";
  * - Removes remote origin for isolation
  * - Preserves all branches including kspec-meta
  */
-function cloneRepo(
-  source: string,
-  dest: string,
-): { success: boolean; error?: string } {
+function cloneRepo(source: string, dest: string): { success: boolean; error?: string } {
   // Clone with --mirror to get all branches
-  const cloneResult = spawnSync(
-    "git",
-    ["clone", "--mirror", source, path.join(dest, ".git")],
-    { encoding: "utf-8", stdio: ["ignore", "pipe", "pipe"] },
-  );
+  const cloneResult = spawnSync("git", ["clone", "--mirror", source, path.join(dest, ".git")], {
+    encoding: "utf-8",
+    stdio: ["ignore", "pipe", "pipe"],
+  });
 
   if (cloneResult.status !== 0) {
     return { success: false, error: cloneResult.stderr };
   }
 
   // Convert bare mirror repo to normal repo
-  const configResult = spawnSync(
-    "git",
-    ["config", "--bool", "core.bare", "false"],
-    { cwd: dest, encoding: "utf-8", stdio: ["ignore", "pipe", "pipe"] },
-  );
+  const configResult = spawnSync("git", ["config", "--bool", "core.bare", "false"], {
+    cwd: dest,
+    encoding: "utf-8",
+    stdio: ["ignore", "pipe", "pipe"],
+  });
 
   if (configResult.status !== 0) {
     return { success: false, error: configResult.stderr };
@@ -90,11 +86,11 @@ function setupWorktree(repoPath: string): { success: boolean; error?: string } {
 
   // Create .kspec worktree
   const _worktreePath = path.join(repoPath, ".kspec");
-  const worktreeResult = spawnSync(
-    "git",
-    ["worktree", "add", ".kspec", "kspec-meta"],
-    { cwd: repoPath, encoding: "utf-8", stdio: ["ignore", "pipe", "pipe"] },
-  );
+  const worktreeResult = spawnSync("git", ["worktree", "add", ".kspec", "kspec-meta"], {
+    cwd: repoPath,
+    encoding: "utf-8",
+    stdio: ["ignore", "pipe", "pipe"],
+  });
 
   if (worktreeResult.status !== 0) {
     return { success: false, error: worktreeResult.stderr };
@@ -167,10 +163,7 @@ export function registerCloneForTestingCommand(program: Command): void {
           // AC: @cmd-clone-for-testing ac-4
           // Generate temp dest if not provided
           if (!dest) {
-            dest = path.join(
-              os.tmpdir(),
-              `kspec-test-${ulid().slice(0, 8).toLowerCase()}`,
-            );
+            dest = path.join(os.tmpdir(), `kspec-test-${ulid().slice(0, 8).toLowerCase()}`);
           }
 
           // Create destination directory
@@ -197,9 +190,7 @@ export function registerCloneForTestingCommand(program: Command): void {
           if (options.branch) {
             const checkoutResult = checkoutBranch(dest, options.branch);
             if (!checkoutResult.success) {
-              outputError(
-                `Failed to checkout branch '${options.branch}': ${checkoutResult.error}`,
-              );
+              outputError(`Failed to checkout branch '${options.branch}': ${checkoutResult.error}`);
               process.exit(EXIT_CODES.ERROR);
             }
             currentBranch = checkoutResult.currentBranch;
@@ -214,9 +205,7 @@ export function registerCloneForTestingCommand(program: Command): void {
             }
           });
         } catch (err) {
-          outputError(
-            `Unexpected error: ${err instanceof Error ? err.message : String(err)}`,
-          );
+          outputError(`Unexpected error: ${err instanceof Error ? err.message : String(err)}`);
           process.exit(EXIT_CODES.ERROR);
         }
       },

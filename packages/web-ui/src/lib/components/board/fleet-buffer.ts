@@ -10,10 +10,10 @@
  */
 
 export interface FleetSessionState {
-	/** Raw text buffer — holds partial line content until a newline arrives */
-	buffer: string;
-	/** Complete lines ready for display (last N) */
-	lines: string[];
+  /** Raw text buffer — holds partial line content until a newline arrives */
+  buffer: string;
+  /** Complete lines ready for display (last N) */
+  lines: string[];
 }
 
 const MAX_DISPLAY_LINES = 3;
@@ -22,42 +22,39 @@ const MAX_DISPLAY_LINES = 3;
  * Create a fresh session state.
  */
 export function createSessionState(): FleetSessionState {
-	return {
-		buffer: '',
-		lines: [],
-	};
+  return {
+    buffer: "",
+    lines: [],
+  };
 }
 
 /**
  * Process an incoming text chunk for a session.
  * Accumulates text, extracts complete lines, and returns updated state.
  */
-export function processTextChunk(
-	state: FleetSessionState,
-	text: string,
-): FleetSessionState {
-	const combined = state.buffer + text;
-	const parts = combined.split('\n');
+export function processTextChunk(state: FleetSessionState, text: string): FleetSessionState {
+  const combined = state.buffer + text;
+  const parts = combined.split("\n");
 
-	// Last element is either empty (if text ended with \n) or a partial line
-	const partial = parts.pop() ?? '';
+  // Last element is either empty (if text ended with \n) or a partial line
+  const partial = parts.pop() ?? "";
 
-	// All parts except the last are complete lines
-	const completedLines: string[] = [];
-	for (const part of parts) {
-		const trimmed = part.trim();
-		if (trimmed.length > 0) {
-			completedLines.push(trimmed);
-		}
-	}
+  // All parts except the last are complete lines
+  const completedLines: string[] = [];
+  for (const part of parts) {
+    const trimmed = part.trim();
+    if (trimmed.length > 0) {
+      completedLines.push(trimmed);
+    }
+  }
 
-	// Merge with existing lines and keep last N
-	const allLines = [...state.lines, ...completedLines].slice(-MAX_DISPLAY_LINES);
+  // Merge with existing lines and keep last N
+  const allLines = [...state.lines, ...completedLines].slice(-MAX_DISPLAY_LINES);
 
-	return {
-		buffer: partial,
-		lines: allLines,
-	};
+  return {
+    buffer: partial,
+    lines: allLines,
+  };
 }
 
 /**
@@ -65,9 +62,9 @@ export function processTextChunk(
  * Returns the buffered lines.
  */
 export function getDisplayState(state: FleetSessionState): {
-	lines: string[];
+  lines: string[];
 } {
-	return {
-		lines: state.lines,
-	};
+  return {
+    lines: state.lines,
+  };
 }

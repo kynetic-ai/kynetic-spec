@@ -11,13 +11,7 @@
  * Task: @task-event-cli
  */
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import {
-  kspec,
-  kspecOutput,
-  kspecJson,
-  setupTempFixtures,
-  cleanupTempDir,
-} from "./helpers/cli";
+import { kspec, kspecOutput, kspecJson, setupTempFixtures, cleanupTempDir } from "./helpers/cli";
 
 // ─── event types ────────────────────────────────────────────────────────────
 
@@ -107,11 +101,14 @@ describe("Integration: event types", () => {
   // AC: @trait-json-output ac-2 — JSON includes all data available in human-readable mode
   it("should include event_type, description, and payload_fields in JSON output", () => {
     const data = kspecJson<{
-      domains: Record<string, Array<{
-        event_type: string;
-        description: string;
-        payload_fields: string[];
-      }>>;
+      domains: Record<
+        string,
+        Array<{
+          event_type: string;
+          description: string;
+          payload_fields: string[];
+        }>
+      >;
       total: number;
     }>("event types", tempDir);
 
