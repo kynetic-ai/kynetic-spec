@@ -21157,12 +21157,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-24T21:16:05.646Z
+      updated_at: 2026-03-24T21:17:27.009Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-24T21:16:05.646Z
+      updated_at: 2026-03-24T21:17:27.009Z
     integration:
       status: pending
       detail: null
@@ -21170,7 +21170,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 9ae71df9a2921ca858f772c5b02f4a5dd864430a
-      updated_at: 2026-03-24T21:16:05.646Z
+      updated_at: 2026-03-24T21:17:27.009Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KMFCNVX2MG7X5W3ZRY4G7VHV"
@@ -21178,18 +21178,23 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-24T21:08:14.668Z
-      last_reconciled_at: 2026-03-24T21:16:05.646Z
+      last_reconciled_at: 2026-03-24T21:17:27.009Z
       created_at: 2026-03-24T21:08:04.703Z
-      updated_at: 2026-03-24T21:16:05.646Z
+      updated_at: 2026-03-24T21:17:27.009Z
     workspace_id: dispatch-workspace-01KMFCNVX2MG7X5W3ZRY4G7VHV
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 1c7893b3a190744d649091f4a215ef8455776ee6
+        last_seen_at: 2026-03-24T21:17:27.009Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-readtestoutput-enhanced-setup-01kmfcnv-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-readtestoutput-enhanced-setup/01kmfcnv
-        head: 9ae71df9a2921ca858f772c5b02f4a5dd864430a
-        last_seen_at: 2026-03-24T21:08:04.703Z
+        head: 1c7893b3a190744d649091f4a215ef8455776ee6
+        last_seen_at: 2026-03-24T21:17:27.009Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-readtestoutput-enhanced-setup-01kmfcnv
   - active_role: worker
     base_branch_point: 10d0b34c70bb44db90256d5ba2d42a97d37d2464
