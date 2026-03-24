@@ -48777,6 +48777,19 @@ reviews:
         runner: manual
         created_at: 2026-03-24T07:48:44.486Z
         completed_at: 2026-03-24T07:48:44.486Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Reviewed diffs for claude-code-renderer, shadow, task-atomic-writes, split-backend,
+          platform-renderer. All conversions are mechanical: import readTestOutput, replace
+          fs.readFile(path, 'utf-8') with readTestOutput(path) or readTestOutput(path, 'utf-8'). No
+          behavioral changes."
+        name: test-conversions-mechanical
+        required: true
+        runner: manual
+        created_at: 2026-03-24T07:48:52.319Z
+        completed_at: 2026-03-24T07:48:52.319Z
     events:
       - _ulid: 01KMFD0M2X9QBNPZ6R7RQ4Y0F8
         actor: "@claude"
@@ -48833,6 +48846,13 @@ reviews:
           status: pass
           name: oxlintrc-config
         timestamp: 2026-03-24T07:48:44.840Z
+      - _ulid: 01KMFD2SAWTK3N5RBNQ0RDBX62
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: test-conversions-mechanical
+        timestamp: 2026-03-24T07:48:52.700Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -48864,5 +48884,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-24T07:47:41.790Z
-    updated_at: 2026-03-24T07:48:44.486Z
+    updated_at: 2026-03-24T07:48:52.319Z
     notes: []
