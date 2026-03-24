@@ -50387,6 +50387,13 @@ reviews:
           kind: nit
           thread_ulid: 01KMGYRTS9276794RWGHV0BZM8
         timestamp: 2026-03-24T22:17:15.701Z
+      - _ulid: 01KMGYRYPYR2SQ0G2EYVKV0Z21
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMGYRYABN8GRG5DK9PV94NPS
+        timestamp: 2026-03-24T22:17:19.327Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -50413,7 +50420,22 @@ reviews:
               health check' to make the sequence clearer. Non-blocking.
             created_at: 2026-03-24T22:17:15.306Z
         kind: nit
+      - _ulid: 01KMGYRYABN8GRG5DK9PV94NPS
+        anchor:
+          type: structured
+          ref: "@task-update-related-specs"
+          section: tasks
+        entries:
+          - _ulid: 01KMGYRYABS7E2PGATEJJJV94X
+            author: "@claude"
+            body: "task-update-related-specs has spec_ref: @daemon-entity-cache, but its work is updating other
+              specs (@shadow-lazy-read-sync, @session-summary-cache, @daemon-server,
+              @multi-directory-daemon). Since spec_ref tracks which spec the task implements rather
+              than which specs it modifies, this is acceptable. Just noting the slight mismatch for
+              awareness."
+            created_at: 2026-03-24T22:17:18.923Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-24T22:16:42.537Z
-    updated_at: 2026-03-24T22:17:15.306Z
+    updated_at: 2026-03-24T22:17:18.923Z
     notes: []
