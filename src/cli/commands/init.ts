@@ -8,11 +8,11 @@ import {
   isGitRepo,
   checkConfigMismatch,
 } from "../../parser/shadow.js";
-import { loadProjectConfig, detectRemoteType } from "../../parser/config.js";
+import { loadProjectConfig } from "../../parser/config.js";
 import { errors } from "../../strings/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, success, warn } from "../output.js";
-import { runSetupPipeline, type SetupPipelineResult } from "./setup.js";
+import { runSetupPipeline } from "./setup.js";
 
 /**
  * Default manifest template
@@ -256,7 +256,7 @@ export function registerInitCommand(program: Command): void {
             }
           }
 
-          const slug = toSlug(projectName);
+          const _slug = toSlug(projectName);
 
           success(`Initialized kspec project in ${directoryName}/`, {
             projectName,

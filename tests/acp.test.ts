@@ -209,7 +209,7 @@ describe("JsonRpcFraming", () => {
       id: 1,
       result: { success: true },
     });
-    stdin.write(response + "\n");
+    stdin.write(`${response}\n`);
 
     // Verify result
     const result = await resultPromise;
@@ -230,7 +230,7 @@ describe("JsonRpcFraming", () => {
       id: 1,
       error: { code: -32600, message: "Invalid Request" },
     });
-    stdin.write(errorResponse + "\n");
+    stdin.write(`${errorResponse}\n`);
 
     // Verify error is thrown
     await expect(resultPromise).rejects.toThrow("Invalid Request");
@@ -264,7 +264,7 @@ describe("JsonRpcFraming", () => {
       method: "fs/read_text_file",
       params: { path: "/test.txt" },
     });
-    stdin.write(request + "\n");
+    stdin.write(`${request}\n`);
 
     const receivedRequest = await requestPromise;
     expect(receivedRequest).toEqual({
@@ -286,7 +286,7 @@ describe("JsonRpcFraming", () => {
       method: "session/update",
       params: { sessionId: "test-session", update: { type: "progress" } },
     });
-    stdin.write(notification + "\n");
+    stdin.write(`${notification}\n`);
 
     const receivedNotification = await notificationPromise;
     expect(receivedNotification).toEqual({
@@ -390,13 +390,13 @@ describe("JsonRpcFraming", () => {
 
     // Wait 60ms, then send a notification (activity)
     await new Promise((resolve) => setTimeout(resolve, 60));
-    stdin.write(JSON.stringify({ jsonrpc: "2.0", method: "ping" }) + "\n");
+    stdin.write(`${JSON.stringify({ jsonrpc: "2.0", method: "ping" })}\n`);
 
     // Wait another 60ms (total 120ms, would have timed out without reset)
     await new Promise((resolve) => setTimeout(resolve, 60));
 
     // Send the actual response
-    stdin.write(JSON.stringify({ jsonrpc: "2.0", id: 1, result: "ok" }) + "\n");
+    stdin.write(`${JSON.stringify({ jsonrpc: "2.0", id: 1, result: "ok" })}\n`);
 
     // Should succeed because timer was reset
     const result = await resultPromise;
@@ -441,11 +441,11 @@ describe("ACPClient", () => {
       stdout.once("data", (chunk: Buffer) => {
         const request = JSON.parse(chunk.toString());
         stdin.write(
-          JSON.stringify({
+          `${JSON.stringify({
             jsonrpc: "2.0",
             id: request.id,
             result,
-          }) + "\n",
+          })}\n`,
         );
         resolve();
       });
@@ -576,11 +576,11 @@ describe("ACPClient", () => {
 
       // Send response
       stdin.write(
-        JSON.stringify({
+        `${JSON.stringify({
           jsonrpc: "2.0",
           id: requestId,
           result: { stopReason: "end_turn" },
-        }) + "\n",
+        })}\n`,
       );
 
       await promptPromise;
@@ -628,11 +628,11 @@ describe("ACPClient", () => {
 
       // Clean up first prompt by sending response
       stdin.write(
-        JSON.stringify({
+        `${JSON.stringify({
           jsonrpc: "2.0",
           id: requestId,
           result: { stopReason: "end_turn" },
-        }) + "\n",
+        })}\n`,
       );
       await firstPrompt;
     });
@@ -659,7 +659,7 @@ describe("ACPClient", () => {
 
       // Send session update notification
       stdin.write(
-        JSON.stringify({
+        `${JSON.stringify({
           jsonrpc: "2.0",
           method: "session/update",
           params: {
@@ -669,7 +669,7 @@ describe("ACPClient", () => {
               content: { type: "text", text: "Hello!" },
             },
           },
-        }) + "\n",
+        })}\n`,
       );
 
       const { sessionId, update } = await updatePromise;
@@ -701,6 +701,7 @@ describe("ACPClient", () => {
       expect(client.getSession("session-123")?.status).toBe("cancelled");
     });
 
+    // oxlint-disable-next-line jest/expect-expect -- verifies cancel resolves without throwing
     it("should silently handle Method not found errors", async () => {
       // Suppress console.error for this test
       const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
@@ -711,11 +712,11 @@ describe("ACPClient", () => {
       stdout.once("data", (chunk: Buffer) => {
         const request = JSON.parse(chunk.toString());
         stdin.write(
-          JSON.stringify({
+          `${JSON.stringify({
             jsonrpc: "2.0",
             id: request.id,
             error: { code: -32601, message: "Method not found" },
-          }) + "\n",
+          })}\n`,
         );
       });
 
@@ -735,11 +736,11 @@ describe("ACPClient", () => {
       stdout.once("data", (chunk: Buffer) => {
         const request = JSON.parse(chunk.toString());
         stdin.write(
-          JSON.stringify({
+          `${JSON.stringify({
             jsonrpc: "2.0",
             id: request.id,
             error: { code: -32603, message: "Internal error" },
-          }) + "\n",
+          })}\n`,
         );
       });
 

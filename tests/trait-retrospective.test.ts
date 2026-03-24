@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { cleanupTempDir, initGitRepo, kspec, setupTempFixtures, testUlid } from "./helpers/cli.js";
+import { cleanupTempDir, initGitRepo, kspec, setupTempFixtures } from "./helpers/cli.js";
 
 describe("Trait Retrospective", () => {
   let tempDir: string;
@@ -19,7 +19,6 @@ describe("Trait Retrospective", () => {
   // AC: @trait-retrospective ac-1
   it("should not warn about orphaned spec when using @trait-retrospective", async () => {
     // Create a retrospective spec with no implementing tasks
-    const specUlid = testUlid("SPEC");
     await kspec(
       `item add --under @test-core --type feature --slug retro-feature --title "Retrospective Feature" --description "Already implemented feature"`,
       tempDir,
@@ -224,9 +223,7 @@ describe("Trait Retrospective", () => {
     await kspec(`item set @default-date --trait @trait-retrospective`, tempDir);
 
     // Use only --verified-by flag (should default verified_at to now)
-    const beforeTime = new Date();
     await kspec(`item set @default-date --verified-by @auto`, tempDir);
-    const afterTime = new Date();
 
     // Verify fields are set
     const result = await kspec("item get @default-date", tempDir);

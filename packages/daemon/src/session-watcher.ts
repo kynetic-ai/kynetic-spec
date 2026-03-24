@@ -6,7 +6,7 @@
  */
 
 import { existsSync, readdirSync, watch, type FSWatcher } from "fs";
-import chokidar, { type FSWatcher as ChokidarWatcher } from "chokidar";
+import { watch as chokidarWatch, type FSWatcher as ChokidarWatcher } from "chokidar";
 import { join, relative, sep } from "path";
 
 export interface SessionWatcherOptions {
@@ -73,7 +73,7 @@ export class SessionWatcher {
   }
 
   private async startChokidarWatcher(): Promise<void> {
-    this.watcher = chokidar.watch(this.options.sessionsDir, {
+    this.watcher = chokidarWatch(this.options.sessionsDir, {
       ignoreInitial: true,
       awaitWriteFinish: {
         stabilityThreshold: 100,

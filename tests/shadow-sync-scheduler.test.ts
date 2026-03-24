@@ -56,6 +56,7 @@ describe("ShadowSyncScheduler", () => {
   }
 
   // AC: @config-shadow ac-12
+  // oxlint-disable-next-line vitest/expect-expect -- verifies no-throw on start/stop
   it("does not start when interval is 0", () => {
     const scheduler = new ShadowSyncScheduler({
       worktreeDir: "/fake/path",

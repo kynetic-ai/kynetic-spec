@@ -217,7 +217,7 @@ describe("Multi-Platform Render CLI", () => {
 
       // Both should be in the custom directory
       const claudeCodePath = path.join(tempDir, "shared", "output", "custom-multi", "SKILL.md");
-      const codexPath = path.join(tempDir, "shared", "output", "custom-multi", "SKILL.md");
+      const _codexPath = path.join(tempDir, "shared", "output", "custom-multi", "SKILL.md");
 
       // Since both use the same output dir, only one file exists (last one wins)
       // This is expected behavior - custom output-dir means ALL platforms go there

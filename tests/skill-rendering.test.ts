@@ -9,7 +9,6 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import {
   kspec as kspecFull,
-  kspecOutput as kspec,
   kspecJson,
   setupTempFixtures,
   cleanupTempDir,
@@ -282,7 +281,7 @@ describe("Skill Rendering Pipeline", () => {
       kspecFull("skill delete test-skill --confirm", tempDir);
 
       // Run render --clean - should remove both orphaned managed skills
-      const result = kspecFull("skill render --clean", tempDir);
+      kspecFull("skill render --clean", tempDir);
 
       // Both should be removed
       await expect(
@@ -318,6 +317,7 @@ describe("Skill Rendering Pipeline", () => {
       expect(result.dry_run).toBe(true);
     });
 
+    // oxlint-disable-next-line vitest/expect-expect -- fs.access throws if file missing
     it("should not remove orphaned skills in dry run mode with --clean", async () => {
       // First render normally
       kspecFull("skill render", tempDir);
@@ -527,7 +527,7 @@ describe("Skill Render CLI", () => {
       // Modify the rendered file directly
       const renderedPath = path.join(tempDir, ".claude", "skills", "test-skill", "SKILL.md");
       const content = await fs.readFile(renderedPath, "utf-8");
-      await fs.writeFile(renderedPath, content + "\n\n# Added Section\n", "utf-8");
+      await fs.writeFile(renderedPath, `${content}\n\n# Added Section\n`, "utf-8");
 
       const result = kspecFull("skill status", tempDir);
       expect(result.exitCode).toBe(0);
@@ -718,7 +718,7 @@ describe("Skill Drift Detection", () => {
       // Manually edit the rendered file
       const renderedPath = path.join(tempDir, ".claude", "skills", "test-skill", "SKILL.md");
       const content = await fs.readFile(renderedPath, "utf-8");
-      await fs.writeFile(renderedPath, content + "\n\n# Manually Added Section\n", "utf-8");
+      await fs.writeFile(renderedPath, `${content}\n\n# Manually Added Section\n`, "utf-8");
 
       const result = kspecFull("skill status", tempDir);
       expect(result.exitCode).toBe(0);
@@ -732,7 +732,7 @@ describe("Skill Drift Detection", () => {
       // Manually edit
       const renderedPath = path.join(tempDir, ".claude", "skills", "test-skill", "SKILL.md");
       const content = await fs.readFile(renderedPath, "utf-8");
-      await fs.writeFile(renderedPath, content + "\nEdited.\n", "utf-8");
+      await fs.writeFile(renderedPath, `${content}\nEdited.\n`, "utf-8");
 
       const result = kspecFull("skill status", tempDir);
       expect(result.stdout).toContain("drifted");
@@ -771,7 +771,7 @@ describe("Skill Drift Detection", () => {
       // Edit the file
       const renderedPath = path.join(tempDir, ".claude", "skills", "test-skill", "SKILL.md");
       const content = await fs.readFile(renderedPath, "utf-8");
-      await fs.writeFile(renderedPath, content + "\nEdited.\n", "utf-8");
+      await fs.writeFile(renderedPath, `${content}\nEdited.\n`, "utf-8");
 
       const result = kspecJson<{
         rendered: Array<{ id: string; action: string; skipReason?: string }>;
@@ -821,7 +821,7 @@ describe("Skill Drift Detection", () => {
       // Edit the file
       const renderedPath = path.join(tempDir, ".claude", "skills", "test-skill", "SKILL.md");
       const content = await fs.readFile(renderedPath, "utf-8");
-      await fs.writeFile(renderedPath, content + "\nEdited.\n", "utf-8");
+      await fs.writeFile(renderedPath, `${content}\nEdited.\n`, "utf-8");
 
       // Force render
       kspecFull("skill render --force", tempDir);
@@ -883,14 +883,14 @@ describe("Skill Drift Detection", () => {
       const content = await fs.readFile(renderedPath, "utf-8");
 
       // Manually edit the rendered file but put back original content after
-      await fs.writeFile(renderedPath, content + "\nTemporary edit.\n", "utf-8");
+      await fs.writeFile(renderedPath, `${content}\nTemporary edit.\n`, "utf-8");
 
       // Even if we restore content, hash won't match original since file was overwritten
       // Actually, let's test the opposite - modify source but not rendered
       // The status should still show in-sync because hash matches
 
       // For this test, we check that modifying rendered file (even slightly) breaks hash match
-      await fs.writeFile(renderedPath, content + " ", "utf-8"); // Add trailing space
+      await fs.writeFile(renderedPath, `${content} `, "utf-8"); // Add trailing space
 
       const status = kspecFull("skill status", tempDir);
       expect(status.stdout).toContain("drifted");
@@ -946,7 +946,7 @@ describe("Skill Drift Detection", () => {
       // Edit only the first skill's rendered file
       const renderedPath = path.join(tempDir, ".claude", "skills", "test-skill", "SKILL.md");
       const content = await fs.readFile(renderedPath, "utf-8");
-      await fs.writeFile(renderedPath, content + "\nEdited.\n", "utf-8");
+      await fs.writeFile(renderedPath, `${content}\nEdited.\n`, "utf-8");
 
       // Render without --force - should skip test-skill but render another-skill
       const result = kspecFull("skill render", tempDir);
@@ -1837,7 +1837,7 @@ describe("Codex Skill Renderer", () => {
       // Modify rendered file
       const renderedPath = path.join(tempDir, ".agents", "skills", "drift-skill", "SKILL.md");
       const content = await fs.readFile(renderedPath, "utf-8");
-      await fs.writeFile(renderedPath, content + "\n# Added\n", "utf-8");
+      await fs.writeFile(renderedPath, `${content}\n# Added\n`, "utf-8");
 
       // Check drift - should be drifted
       driftStatus = await codexRenderer.checkDrift(
@@ -1959,7 +1959,7 @@ describe("Codex Skill Renderer", () => {
         "openai.yaml",
       );
       const sidecarContent = await fs.readFile(sidecarPath, "utf-8");
-      await fs.writeFile(sidecarPath, sidecarContent + "\n# manually edited\n", "utf-8");
+      await fs.writeFile(sidecarPath, `${sidecarContent}\n# manually edited\n`, "utf-8");
 
       // Should now detect drift
       driftStatus = await codexRenderer.checkDrift(specDir, tempDir, "sidecar-drift");
@@ -2027,7 +2027,7 @@ describe("Codex Skill Renderer", () => {
       // Modify SKILL.md only (sidecar unchanged)
       const renderedPath = path.join(tempDir, ".agents", "skills", "both-drift", "SKILL.md");
       const content = await fs.readFile(renderedPath, "utf-8");
-      await fs.writeFile(renderedPath, content + "\n# Added\n", "utf-8");
+      await fs.writeFile(renderedPath, `${content}\n# Added\n`, "utf-8");
 
       const specDir = path.join(tempDir, "skills", "..");
       const driftStatus = await codexRenderer.checkDrift(specDir, tempDir, "both-drift");
@@ -2118,7 +2118,7 @@ describe("Skill Verify Command", () => {
     // Manually edit the rendered file
     const renderedPath = path.join(tempDir, ".claude", "skills", "verify-test", "SKILL.md");
     const content = await fs.readFile(renderedPath, "utf-8");
-    await fs.writeFile(renderedPath, content + "\n# Manual edit\n", "utf-8");
+    await fs.writeFile(renderedPath, `${content}\n# Manual edit\n`, "utf-8");
 
     // Run verify and check it reports drift
     const result = kspecJson<
@@ -2166,7 +2166,7 @@ describe("Skill Verify Command", () => {
     // Edit the rendered file
     const renderedPath = path.join(tempDir, ".claude", "skills", "verify-exit", "SKILL.md");
     const content = await fs.readFile(renderedPath, "utf-8");
-    await fs.writeFile(renderedPath, content + "\n# Manual edit\n", "utf-8");
+    await fs.writeFile(renderedPath, `${content}\n# Manual edit\n`, "utf-8");
 
     // kspecFull returns KspecResult with exitCode
     const result = kspecFull("skill verify --json", tempDir, { expectFail: true });

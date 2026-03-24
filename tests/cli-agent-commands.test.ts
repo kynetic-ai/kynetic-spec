@@ -9,7 +9,6 @@
 
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import * as path from "node:path";
-import * as fs from "node:fs/promises";
 import * as fsSync from "node:fs";
 import * as YAML from "yaml";
 import {
@@ -81,37 +80,6 @@ function makeTestAgent(overrides: Partial<Agent> = {}): Agent {
  * Set up a minimal kspec project directory with meta containing agents.
  * Uses traditional (non-shadow) layout.
  */
-async function setupProjectWithAgents(dir: string, agents: Agent[]): Promise<void> {
-  initGitRepo(dir);
-
-  await fs.writeFile(
-    path.join(dir, "kynetic.yaml"),
-    YAML.stringify({ kynetic: "1", title: "Test Project" }),
-    "utf-8",
-  );
-
-  await fs.writeFile(
-    path.join(dir, "kynetic.meta.yaml"),
-    YAML.stringify({
-      kynetic_meta: "1.0",
-      agents: agents.map((a) => ({
-        _ulid: a._ulid,
-        id: a.id,
-        name: a.name,
-        description: a.description,
-        dispatch: a.dispatch ?? [],
-        concurrency: a.concurrency,
-        adapter: a.adapter,
-        budget: a.budget,
-        auto_approve: a.auto_approve ?? false,
-      })),
-    }),
-    "utf-8",
-  );
-
-  await fs.writeFile(path.join(dir, "project.tasks.yaml"), YAML.stringify({ tasks: [] }), "utf-8");
-}
-
 // ─── AC-1: kspec agent list ───────────────────────────────────────────────────
 
 // AC: @cli-agent-commands ac-1
@@ -1749,6 +1717,7 @@ function makeFakeWsClass(): {
     onerror: ((e: unknown) => void) | null = null;
     onclose: (() => void) | null = null;
     constructor(_url: string) {
+      // oxlint-disable-next-line typescript-eslint/no-this-alias -- intentionally capturing instance for test inspection
       last = this;
     }
   }
@@ -1833,8 +1802,8 @@ async function waitFor(
  * causes waitFor timeouts in environments without .kspec/ (clean clones, CI).
  */
 async function mockInitContextFast(): Promise<void> {
-  const parser = await import("../src/parser/index.js");
-  vi.spyOn(parser, "initContext").mockRejectedValue(new Error("mocked"));
+  const parserModule = await import("../src/parser/index.js");
+  vi.spyOn(parserModule, "initContext").mockRejectedValue(new Error("mocked"));
 }
 
 // AC: @cli-agent-commands ac-15

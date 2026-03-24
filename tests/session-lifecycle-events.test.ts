@@ -9,7 +9,7 @@
  * Spec: @dispatch-event-taxonomy, @dispatch-event-payload
  */
 
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import { EventBus, type EventEnvelope } from "../src/agent-runtime/event-bus.js";
 import {
   PAYLOAD_FIELDS_BY_EVENT,

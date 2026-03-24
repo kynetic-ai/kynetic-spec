@@ -11,7 +11,6 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import * as os from "node:os";
 import { parse as parseTOML, stringify as stringifyTOML } from "smol-toml";
 import {
   createSessionWithBudget,
@@ -25,12 +24,9 @@ import {
   getFallbackInjectionInstructions,
   injectEnvForAdapter,
   removeEnvForAdapter,
-  getSession,
-  getBudget,
   getSessionBudgetPath,
   createSession,
 } from "../src/sessions/store.js";
-import type { SessionMetadataInput } from "../src/sessions/types.js";
 import { listAdapters, resolveAdapter } from "../src/agents/adapters.js";
 import { EXIT_CODES } from "../src/cli/exit-codes.js";
 import {
@@ -1098,7 +1094,7 @@ describe("session create CLI", () => {
     const result = kspec("session create --agent-type test-agent --budget 5", testDir);
     expect(result.exitCode).toBe(0);
     // info() routes to stdout in text mode
-    const allOutput = result.stdout + "\n" + result.stderr;
+    const allOutput = `${result.stdout}\n${result.stderr}`;
     expect(allOutput).toContain("Budget: 5 tasks per cycle");
   });
 
@@ -1339,7 +1335,7 @@ describe("session create CLI", () => {
       env: { KSPEC_SESSION_ID: "NONEXISTENT_SESSION_12345" },
     });
     expect(result.exitCode).toBe(0); // Should still create successfully
-    const allOutput = result.stdout + "\n" + result.stderr;
+    const allOutput = `${result.stdout}\n${result.stderr}`;
     expect(allOutput).toContain("invalid");
   });
 

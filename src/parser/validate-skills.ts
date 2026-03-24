@@ -92,7 +92,7 @@ function parseFrontmatter(content: string): {
   try {
     const parsed = yaml.parse(match[1]);
     return { frontmatter: parsed as SkillFrontmatter, errors };
-  } catch  {
+  } catch {
     return { frontmatter: null, errors };
   }
 }

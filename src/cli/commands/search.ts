@@ -167,7 +167,7 @@ export function registerSearchCommand(program: Command): void {
         }
 
         const ctx = await initContext();
-        const { itemIndex, tasks, items, refIndex } = await buildIndexes(ctx);
+        const { itemIndex: _itemIndex, tasks, items, refIndex } = await buildIndexes(ctx);
 
         const results: SearchResult[] = [];
         const limit = parseInt(options.limit, 10) || 50;

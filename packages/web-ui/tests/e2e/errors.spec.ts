@@ -11,7 +11,7 @@ import { test, expect } from "../fixtures/test-base";
 
 test.describe("Error Handling", () => {
   // Start daemon for all tests
-  test.beforeEach(async ({ daemon }) => {
+  test.beforeEach(async ({ daemon: _daemon }) => {
     // Daemon fixture ensures daemon is running
   });
 
@@ -192,7 +192,7 @@ test.describe("Error Handling", () => {
 
     test("handles timeout gracefully", async ({ page }) => {
       // Simulate timeout
-      await page.route("**/api/tasks", async (route) => {
+      await page.route("**/api/tasks", async (_route) => {
         // Delay response indefinitely
         await new Promise(() => {}); // Never resolves
       });

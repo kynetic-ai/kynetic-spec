@@ -9,7 +9,6 @@ import {
   kspec,
   kspecJson,
   testUlid,
-  testUlids,
 } from "./helpers/cli.js";
 
 /**

@@ -17,7 +17,6 @@ import {
   getAllSessionLogSummaries,
   type SessionLogSummary,
 } from "../src/sessions/store.js";
-import type { SessionMetadataInput, SessionEventInput } from "../src/sessions/types.js";
 import { setupTempFixtures, cleanupTempDir, kspec, kspecJson, testUlid } from "./helpers/cli";
 
 // ─── JSON Output Shape ────────────────────────────────────────────────────

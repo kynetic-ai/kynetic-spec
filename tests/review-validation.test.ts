@@ -149,6 +149,7 @@ describe("validateReviewRecord", () => {
 
     for (const subject of subjectTypes) {
       const result = validateReviewRecord(validReviewRecord({ subject }));
+      // oxlint-disable-next-line jest/valid-expect -- Vitest supports custom message as 2nd arg
       expect(result.valid, `subject type '${subject.type}' should be valid`).toBe(true);
     }
   });
@@ -170,7 +171,7 @@ describe("validateReviewRecord", () => {
 
   // AC: @review-record-validation ac-1
   it("should reject review record missing required subject", () => {
-    const { subject, ...noSubject } = validReviewRecord();
+    const { subject: _subject, ...noSubject } = validReviewRecord();
     const result = validateReviewRecord(noSubject);
     expect(result.valid).toBe(false);
     expect(result.errors.some((e) => e.path?.includes("subject"))).toBe(true);
@@ -178,7 +179,7 @@ describe("validateReviewRecord", () => {
 
   // AC: @review-record-validation ac-1
   it("should reject review record missing required author", () => {
-    const { author, ...noAuthor } = validReviewRecord();
+    const { author: _author, ...noAuthor } = validReviewRecord();
     const result = validateReviewRecord(noAuthor);
     expect(result.valid).toBe(false);
     expect(result.errors.some((e) => e.path?.includes("author"))).toBe(true);
@@ -294,21 +295,21 @@ describe("validateReviewRecordInput", () => {
 
   // AC: @review-record-validation ac-1
   it("should reject input missing required title", () => {
-    const { title, ...noTitle } = validReviewInput();
+    const { title: _title, ...noTitle } = validReviewInput();
     const result = validateReviewRecordInput(noTitle);
     expect(result.valid).toBe(false);
   });
 
   // AC: @review-record-validation ac-1
   it("should reject input missing required subject", () => {
-    const { subject, ...noSubject } = validReviewInput();
+    const { subject: _subject, ...noSubject } = validReviewInput();
     const result = validateReviewRecordInput(noSubject);
     expect(result.valid).toBe(false);
   });
 
   // AC: @review-record-validation ac-1
   it("should reject input missing required author", () => {
-    const { author, ...noAuthor } = validReviewInput();
+    const { author: _author, ...noAuthor } = validReviewInput();
     const result = validateReviewRecordInput(noAuthor);
     expect(result.valid).toBe(false);
   });

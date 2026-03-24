@@ -5,7 +5,7 @@ import {
   mirrorExternalCheck,
   evaluateGates,
 } from "../src/review/checks.js";
-import type { CheckGateResult, GateEvaluationResult } from "../src/review/checks.js";
+import type { CheckGateResult } from "../src/review/checks.js";
 import { ReviewCheckSchema, ReviewSubjectVersionSchema } from "../src/schema/review-records.js";
 import type { ReviewCheck, ReviewSubjectVersion } from "../src/schema/review-records.js";
 

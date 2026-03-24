@@ -17,12 +17,6 @@ function initBareRepo(dir: string): void {
   execSync("git init --bare -b main", { cwd: dir, stdio: "pipe" });
 }
 
-function initRepo(dir: string): void {
-  execSync("git init -b main", { cwd: dir, stdio: "pipe" });
-  git(dir, 'config user.email "test@test.com"');
-  git(dir, 'config user.name "Test"');
-}
-
 function makeCommit(dir: string, filename: string, content: string): void {
   const filePath = path.join(dir, filename);
   execSync(`echo "${content}" > "${filePath}"`, { cwd: dir, stdio: "pipe" });

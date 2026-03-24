@@ -966,6 +966,7 @@ describe("Integration: review CLI commands", () => {
       const parsed = JSON.parse(result.stdout);
       expect(parsed).toBeDefined();
       // No ANSI escape codes in JSON output
+      // oxlint-disable-next-line eslint(no-control-regex) -- intentionally matching ANSI escape
       expect(result.stdout).not.toMatch(/\x1b\[/);
     });
 

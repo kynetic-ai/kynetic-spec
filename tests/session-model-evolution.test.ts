@@ -18,7 +18,6 @@ import {
   appendEvent,
   getSession,
   getSessionLogSummary,
-  getSessionLogDetail,
   type SessionLogSummary,
   type SessionLogDetail,
 } from "../src/sessions/store.js";

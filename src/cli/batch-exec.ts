@@ -7,9 +7,8 @@
  */
 
 import * as fs from "node:fs/promises";
-import * as path from "node:path";
 import chalk from "chalk";
-import type { Command, CommanderError } from "commander";
+import type { Command } from "commander";
 import { ZodError } from "zod";
 import {
   BatchInputSchema,
@@ -32,7 +31,6 @@ import {
   installExitInterceptor,
   uninstallExitInterceptor,
   setBatchMode,
-  isBatchMode,
 } from "./batch-context.js";
 import { activateBatchBuffer, deactivateBatchBuffer } from "./batch-write-buffer.js";
 
@@ -749,7 +747,7 @@ async function executeAtomic(
   commands: BatchCommand[],
   program: Command,
   tree: CommandMeta,
-  options: ExecuteBatchOptions,
+  _options: ExecuteBatchOptions,
 ): Promise<BatchExecResult> {
   const ctx = await initContext();
   const realSpecDir = ctx.specDir;

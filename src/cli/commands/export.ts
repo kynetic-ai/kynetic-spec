@@ -15,7 +15,7 @@ import {
   generateJsonSnapshot,
 } from "../../export/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
-import { error, info, isJsonMode, output, success, warn } from "../output.js";
+import { error, info, output, success } from "../output.js";
 
 /**
  * Register the export command.

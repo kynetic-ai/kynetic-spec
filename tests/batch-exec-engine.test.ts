@@ -28,7 +28,7 @@ import {
   initGitRepo,
   CLI_PATH,
 } from "./helpers/cli.js";
-import type { BatchExecResult, BatchCommandResult } from "../src/schema/batch.js";
+import type { BatchExecResult } from "../src/schema/batch.js";
 
 // ── Test Program for Unit Tests ──────────────────────────────────────
 
@@ -812,9 +812,9 @@ No fenced YAML block in this section.
   // AC: @batch-exec ac-forward-ref
   it("forward reference: command 2 uses slug from command 1", () => {
     // First, find the existing module slug from init
-    const itemList = kspec("item list --json", tempDir);
+    const _itemList = kspec("item list --json", tempDir);
     // Init creates a root module; get its slug from the manifest
-    const manifestResult = kspec("validate --json", tempDir);
+    const _manifestResult = kspec("validate --json", tempDir);
     // Create an item, then add a note to it (notes don't require a parent ref)
     // Use inbox add for self-contained test — add two items where the second
     // doesn't depend on the first (forward ref is validated at pre-validation)

@@ -21,7 +21,7 @@ import { test, expect } from "../fixtures/test-base";
 test.describe("Tasks View", () => {
   test.describe("Task List", () => {
     // AC: @web-dashboard ac-default-active-filter
-    test("defaults to showing only active statuses", async ({ page, daemon }) => {
+    test("defaults to showing only active statuses", async ({ page, daemon: _daemon }) => {
       await page.goto("/tasks");
 
       // Wait for task list to load
@@ -47,7 +47,7 @@ test.describe("Tasks View", () => {
     });
 
     // AC: @web-dashboard ac-default-active-filter
-    test('shows all tasks when "All Statuses" is selected', async ({ page, daemon }) => {
+    test('shows all tasks when "All Statuses" is selected', async ({ page, daemon: _daemon }) => {
       await page.goto("/tasks");
 
       // Wait for task list to load
@@ -71,7 +71,7 @@ test.describe("Tasks View", () => {
     // AC: @web-dashboard ac-default-active-filter
     test("switching back to Active hides completed tasks and clears URL param", async ({
       page,
-      daemon,
+      daemon: _daemon,
     }) => {
       // Start with "All Statuses" showing all tasks
       await page.goto("/tasks?status=all");
@@ -99,7 +99,7 @@ test.describe("Tasks View", () => {
     // AC: @web-dashboard ac-4
     test("displays task with title, status badge, priority, spec_ref, notes count", async ({
       page,
-      daemon,
+      daemon: _daemon,
     }) => {
       await page.goto("/tasks");
 
@@ -120,7 +120,7 @@ test.describe("Tasks View", () => {
     });
 
     // AC: @web-dashboard ac-9
-    test("filters tasks by status", async ({ page, daemon }) => {
+    test("filters tasks by status", async ({ page, daemon: _daemon }) => {
       await page.goto("/tasks");
 
       // Wait for task list to load first (ensures page is ready)
@@ -152,7 +152,7 @@ test.describe("Tasks View", () => {
     });
 
     // AC: @web-dashboard ac-9
-    test("filters tasks by tag", async ({ page, daemon }) => {
+    test("filters tasks by tag", async ({ page, daemon: _daemon }) => {
       await page.goto("/tasks");
 
       // Wait for task list to load
@@ -179,7 +179,7 @@ test.describe("Tasks View", () => {
     });
 
     // AC: @web-dashboard ac-9
-    test("filters tasks by assignee", async ({ page, daemon }) => {
+    test("filters tasks by assignee", async ({ page, daemon: _daemon }) => {
       await page.goto("/tasks");
 
       const filterAssignee = page.getByTestId("filter-assignee");
@@ -199,7 +199,7 @@ test.describe("Tasks View", () => {
     });
 
     // AC: @web-dashboard ac-9
-    test("filters tasks by automation status", async ({ page, daemon }) => {
+    test("filters tasks by automation status", async ({ page, daemon: _daemon }) => {
       await page.goto("/tasks");
 
       const filterAutomation = page.getByTestId("filter-automation");
@@ -221,7 +221,7 @@ test.describe("Tasks View", () => {
     });
 
     // AC: @web-dashboard ac-9 - automation filter dropdown has correct options
-    test("automation filter has correct dropdown options", async ({ page, daemon }) => {
+    test("automation filter has correct dropdown options", async ({ page, daemon: _daemon }) => {
       await page.goto("/tasks");
 
       const filterAutomation = page.getByTestId("filter-automation");
@@ -239,7 +239,7 @@ test.describe("Tasks View", () => {
 
     // AC: @web-dashboard ac-10
     // AC: @ui-url-panel-state ac-4 — filter state uses goto() so $page.url stays in sync
-    test("URL updates with filter query params", async ({ page, daemon }) => {
+    test("URL updates with filter query params", async ({ page, daemon: _daemon }) => {
       await page.goto("/tasks");
 
       // Apply status filter
@@ -263,7 +263,10 @@ test.describe("Tasks View", () => {
 
     // AC: @web-dashboard ac-10
     // AC: @ui-url-panel-state ac-4 — filter URL params restored correctly via goto()-based sync
-    test("restores filters from URL query params on page load", async ({ page, daemon }) => {
+    test("restores filters from URL query params on page load", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       // Navigate directly with query params
       await page.goto("/tasks?status=pending&tag=e2e");
 
@@ -284,7 +287,7 @@ test.describe("Tasks View", () => {
 
   test.describe("Task Detail", () => {
     // AC: @web-dashboard ac-5
-    test("opens detail panel when task clicked", async ({ page, daemon }) => {
+    test("opens detail panel when task clicked", async ({ page, daemon: _daemon }) => {
       // Capture console logs
       const consoleLogs: string[] = [];
       page.on("console", (msg) => {
@@ -341,7 +344,7 @@ test.describe("Tasks View", () => {
     });
 
     // AC: @web-dashboard ac-5
-    test("displays notes in chronological order", async ({ page, daemon }) => {
+    test("displays notes in chronological order", async ({ page, daemon: _daemon }) => {
       await page.goto("/tasks");
 
       // Click task to open detail
@@ -367,7 +370,7 @@ test.describe("Tasks View", () => {
     });
 
     // AC: @web-dashboard ac-5
-    test("displays todos and dependencies", async ({ page, daemon }) => {
+    test("displays todos and dependencies", async ({ page, daemon: _daemon }) => {
       await page.goto("/tasks");
 
       // Click task to open detail
@@ -387,7 +390,7 @@ test.describe("Tasks View", () => {
     });
 
     // AC: @web-dashboard ac-6
-    test("spec reference links to spec item detail", async ({ page, daemon }) => {
+    test("spec reference links to spec item detail", async ({ page, daemon: _daemon }) => {
       await page.goto("/tasks");
 
       // Click task with spec_ref
@@ -417,7 +420,7 @@ test.describe("Tasks View", () => {
 
   test.describe("Task Reviews Section", () => {
     // AC: @review-records-web-ui ac-7
-    test("shows reviews section on task detail", async ({ page, daemon }) => {
+    test("shows reviews section on task detail", async ({ page, daemon: _daemon }) => {
       await page.goto("/tasks");
 
       // Wait for tasks to load
@@ -438,7 +441,7 @@ test.describe("Tasks View", () => {
     // AC: @review-records-web-ui ac-7
     test("shows linked reviews with disposition badge for pending_review task", async ({
       page,
-      daemon,
+      daemon: _daemon,
     }) => {
       // Navigate to pending_review tasks
       await page.goto("/tasks?status=pending_review");
@@ -468,7 +471,7 @@ test.describe("Tasks View", () => {
     });
 
     // AC: @review-records-web-ui ac-7
-    test("shows empty state when task has no linked reviews", async ({ page, daemon }) => {
+    test("shows empty state when task has no linked reviews", async ({ page, daemon: _daemon }) => {
       // Navigate to completed tasks (no reviews linked)
       await page.goto("/tasks?status=completed");
 
@@ -489,7 +492,7 @@ test.describe("Tasks View", () => {
     });
 
     // AC: @review-records-web-ui ac-7
-    test("review links navigate to review detail page", async ({ page, daemon }) => {
+    test("review links navigate to review detail page", async ({ page, daemon: _daemon }) => {
       await page.goto("/tasks?status=pending_review");
 
       const taskItem = page.getByTestId("task-list-item").first();
@@ -514,7 +517,7 @@ test.describe("Tasks View", () => {
 
   test.describe("Task Actions", () => {
     // AC: @web-dashboard ac-7
-    test("starts a pending task", async ({ page, daemon }) => {
+    test("starts a pending task", async ({ page, daemon: _daemon }) => {
       await page.goto("/tasks?status=pending");
 
       // Click pending task to open detail
@@ -543,7 +546,7 @@ test.describe("Tasks View", () => {
     });
 
     // AC: @web-dashboard ac-8
-    test("adds note to task", async ({ page, daemon }) => {
+    test("adds note to task", async ({ page, daemon: _daemon }) => {
       await page.goto("/tasks");
 
       // Open task detail
@@ -629,7 +632,7 @@ test.describe("Tasks View", () => {
     // AC: @ui-url-panel-state ac-2 — dismiss removes ?ref= via goto(), dialog stays closed
     test("closing task detail dialog removes ?ref= query param from URL", async ({
       page,
-      daemon,
+      daemon: _daemon,
     }) => {
       await page.goto("/tasks");
 
@@ -661,7 +664,7 @@ test.describe("Tasks View", () => {
     // AC: @ui-url-panel-state ac-3 — deep-link via ?ref=, dismiss works on first attempt
     test("closing task detail opened via URL param removes ?ref= and stays closed", async ({
       page,
-      daemon,
+      daemon: _daemon,
     }) => {
       // Navigate directly with ?ref= to open the modal
       await page.goto("/tasks?ref=01KG0RR8CB8N4YGP991WD7XS9R");
@@ -686,7 +689,7 @@ test.describe("Tasks View", () => {
 
   test.describe("Responsive Layout", () => {
     // AC: @web-dashboard ac-26
-    test("adapts to mobile viewport", async ({ page, daemon }) => {
+    test("adapts to mobile viewport", async ({ page, daemon: _daemon }) => {
       // Set mobile viewport
       await page.setViewportSize({ width: 375, height: 667 });
       await page.goto("/tasks");
@@ -701,7 +704,7 @@ test.describe("Tasks View", () => {
     });
 
     // AC: @web-dashboard ac-27
-    test("shows detail panel as slide-over on desktop", async ({ page, daemon }) => {
+    test("shows detail panel as slide-over on desktop", async ({ page, daemon: _daemon }) => {
       // Set desktop viewport
       await page.setViewportSize({ width: 1280, height: 720 });
       await page.goto("/tasks");

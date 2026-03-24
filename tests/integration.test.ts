@@ -15,8 +15,6 @@ import {
   kspecJson,
   setupTempFixtures,
   cleanupTempDir,
-  FIXTURES_DIR,
-  git,
   initGitRepo,
 } from "./helpers/cli";
 
@@ -584,6 +582,7 @@ describe("Integration: task patch", () => {
   });
 
   // AC: @task-patch ac-4
+  // oxlint-disable-next-line jest/expect-expect -- verifies command doesn't throw
   it("should allow unknown field with --allow-unknown", () => {
     // This should not throw
     kspec("task patch @test-task-pending --data '{\"unknown\":true}' --allow-unknown", tempDir);
@@ -983,6 +982,7 @@ describe("Integration: item patch", () => {
   });
 
   // AC: @item-patch ac-6
+  // oxlint-disable-next-line jest/expect-expect -- verifies command doesn't throw
   it("should allow unknown fields with --allow-unknown", () => {
     kspec(
       'item add --under @test-core --title "AllowUnknown Test" --slug allow-unknown-test --type feature',
@@ -2813,7 +2813,7 @@ describe("Integration: meta observe --from-inbox", () => {
 
     // Convert to observation using --from-inbox
     const result = kspecJson<{ _ulid: string; type: string; content: string }>(
-      "meta observe --from-inbox " + itemRef,
+      `meta observe --from-inbox ${itemRef}`,
       tempDir,
     );
 
@@ -2836,7 +2836,7 @@ describe("Integration: meta observe --from-inbox", () => {
 
     // Convert to friction observation with --type override
     const result = kspecJson<{ _ulid: string; type: string; content: string }>(
-      "meta observe --from-inbox " + itemRef + " --type friction",
+      `meta observe --from-inbox ${itemRef} --type friction`,
       tempDir,
     );
 
@@ -2858,7 +2858,7 @@ describe("Integration: meta observe --from-inbox", () => {
 
     // Convert with workflow reference
     const result = kspecJson<{ _ulid: string; type: string; workflow_ref: string | null }>(
-      "meta observe --from-inbox " + itemRef + " --type success --workflow @some-workflow",
+      `meta observe --from-inbox ${itemRef} --type success --workflow @some-workflow`,
       tempDir,
     );
 
@@ -2885,7 +2885,7 @@ describe("Integration: meta observe --from-inbox", () => {
 
     // Try to convert with invalid type
     try {
-      kspec("meta observe --from-inbox " + itemRef + " --type invalid", tempDir);
+      kspec(`meta observe --from-inbox ${itemRef} --type invalid`, tempDir);
       expect.fail("Should have thrown error for invalid type");
     } catch (error) {
       expect(String(error)).toContain("invalid");
@@ -3054,8 +3054,8 @@ describe("Integration: Batch operations", () => {
 
       const ulid1 = task1.task._ulid;
       const ulid2 = task2.task._ulid;
-      const shortUlid1 = ulid1.slice(0, 8);
-      const shortUlid2 = ulid2.slice(0, 8);
+      const _shortUlid1 = ulid1.slice(0, 8);
+      const _shortUlid2 = ulid2.slice(0, 8);
 
       // Start and submit both tasks
       kspec(`task start @${ulid1}`, tempDir);

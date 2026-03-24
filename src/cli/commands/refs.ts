@@ -107,7 +107,7 @@ function getDisplayRef(entity: AnyLoadedItem | LoadedMetaItem, refIndex: Referen
 /**
  * Get title/name from an entity
  */
-function getTitle(entity: AnyLoadedItem | LoadedMetaItem): string {
+function _getTitle(entity: AnyLoadedItem | LoadedMetaItem): string {
   if ("title" in entity) return entity.title;
   if ("name" in entity) return entity.name;
   if ("id" in entity) return entity.id;
@@ -117,7 +117,7 @@ function getTitle(entity: AnyLoadedItem | LoadedMetaItem): string {
 /**
  * Get entity type
  */
-function getType(entity: AnyLoadedItem | LoadedMetaItem): string {
+function _getType(entity: AnyLoadedItem | LoadedMetaItem): string {
   if ("type" in entity && entity.type) return entity.type;
   return "unknown";
 }
@@ -125,7 +125,7 @@ function getType(entity: AnyLoadedItem | LoadedMetaItem): string {
 /**
  * Check if entity is a task (has string status)
  */
-function isTask(entity: AnyLoadedItem): entity is LoadedTask {
+function _isTask(entity: AnyLoadedItem): entity is LoadedTask {
   return "status" in entity && typeof entity.status === "string";
 }
 

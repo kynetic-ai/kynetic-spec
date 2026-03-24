@@ -3,11 +3,7 @@ import * as fs from "node:fs/promises";
 import { execSync } from "node:child_process";
 import * as path from "node:path";
 import * as invocationModule from "../src/agent-runtime/invocation.js";
-import {
-  DispatchEngine,
-  type TargetSyncResult,
-  type SyncStateEvent,
-} from "../src/agent-runtime/dispatch.js";
+import { DispatchEngine, type SyncStateEvent } from "../src/agent-runtime/dispatch.js";
 import { cleanupTempDir, createTempDir, initGitRepo } from "./helpers/cli.js";
 
 function git(cwd: string, command: string): string {

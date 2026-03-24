@@ -355,7 +355,8 @@ export class WriteBuffer {
       // Staging failed — clean up staging files, nothing committed
       await this._cleanupStaging(stagingMap);
       throw new Error(
-        `Batch flush staging failed: ${err instanceof Error ? err.message : err}. No files were committed.`, { cause: err },
+        `Batch flush staging failed: ${err instanceof Error ? err.message : err}. No files were committed.`,
+        { cause: err },
       );
     }
 
@@ -386,7 +387,8 @@ export class WriteBuffer {
         throw new Error(
           `Batch flush commit failed: ${err instanceof Error ? err.message : err}.\n` +
             `Committed (${committed.length}): ${committed.join(", ") || "none"}\n` +
-            `Uncommitted (${uncommitted.length + (stagingMap.size - committed.length - 1)}): remaining files`, { cause: err },
+            `Uncommitted (${uncommitted.length + (stagingMap.size - committed.length - 1)}): remaining files`,
+          { cause: err },
         );
       }
     }

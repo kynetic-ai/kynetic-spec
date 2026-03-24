@@ -68,7 +68,7 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
   },
 
   daemon: [
-    async ({}, use) => {
+    async (_fixtures, use) => {
       // Check Bun is available (daemon requires it)
       if (!(await checkBunAvailable())) {
         throw new Error(
@@ -83,7 +83,7 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
       const wsUrl = `ws://localhost:${port}`;
 
       // Create temp directory with .kspec subdirectory
-      const tempDir = join(tmpdir(), "kspec-e2e-" + Date.now());
+      const tempDir = join(tmpdir(), `kspec-e2e-${Date.now()}`);
       const kspecDir = join(tempDir, ".kspec");
       mkdirSync(kspecDir, { recursive: true });
 
@@ -147,7 +147,7 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
       );
 
       if (startResult.status !== 0) {
-        throw new Error("Failed to start daemon: " + startResult.stderr);
+        throw new Error(`Failed to start daemon: ${startResult.stderr}`);
       }
 
       // Wait for daemon to be ready by polling health endpoint
@@ -169,7 +169,7 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
       // Helper to create a valid second project for multi-project tests
       // AC: @multi-directory-daemon ac-25 - Tests need multiple valid projects
       async function createSecondProject(): Promise<string> {
-        const secondProjectPath = tempDir + "-second";
+        const secondProjectPath = `${tempDir}-second`;
         const secondKspecDir = join(secondProjectPath, ".kspec");
 
         mkdirSync(secondKspecDir, { recursive: true });
@@ -195,11 +195,14 @@ tasks: []
         });
         execSync('git config user.name "Test"', { cwd: secondProjectPath, stdio: "ignore" });
 
-        const gitWorktreesDir = join(secondProjectPath, ".git", "worktrees", "-kspec");
-        mkdirSync(gitWorktreesDir, { recursive: true });
-        writeFileSync(join(secondKspecDir, ".git"), `gitdir: ${gitWorktreesDir}\n`);
-        writeFileSync(join(gitWorktreesDir, "gitdir"), `${join(secondProjectPath, ".git")}\n`);
-        writeFileSync(join(gitWorktreesDir, "HEAD"), "ref: refs/heads/kspec-meta\n");
+        const secondGitWorktreesDir = join(secondProjectPath, ".git", "worktrees", "-kspec");
+        mkdirSync(secondGitWorktreesDir, { recursive: true });
+        writeFileSync(join(secondKspecDir, ".git"), `gitdir: ${secondGitWorktreesDir}\n`);
+        writeFileSync(
+          join(secondGitWorktreesDir, "gitdir"),
+          `${join(secondProjectPath, ".git")}\n`,
+        );
+        writeFileSync(join(secondGitWorktreesDir, "HEAD"), "ref: refs/heads/kspec-meta\n");
 
         // AC: @e2e-test-daemon-isolation ac-5 — use dynamic port
         const response = await fetch(`${baseUrl}/api/projects`, {
@@ -230,7 +233,7 @@ tasks: []
       // Remove temp directories
       try {
         rmSync(tempDir, { recursive: true, force: true });
-        rmSync(tempDir + "-second", { recursive: true, force: true });
+        rmSync(`${tempDir}-second`, { recursive: true, force: true });
       } catch {
         // Best effort cleanup
       }

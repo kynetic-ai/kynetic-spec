@@ -61,8 +61,10 @@ describe("Output Format Option", () => {
     // AC: @output-format-option ac-yaml-no-ansi
     it("contains no ANSI escape codes", () => {
       const result = kspec("tasks list --yaml", tempDir);
-      // ANSI escape codes start with \x1b[ or \033[
+      // ANSI escape codes start with ESC[
+      // oxlint-disable-next-line eslint(no-control-regex) -- intentionally matching ANSI escape
       expect(result.stdout).not.toMatch(/\x1b\[/);
+      // oxlint-disable-next-line eslint(no-control-regex) -- intentionally matching ANSI escape
       expect(result.stdout).not.toMatch(/\033\[/);
     });
 

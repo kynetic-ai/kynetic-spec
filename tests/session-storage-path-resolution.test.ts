@@ -23,7 +23,7 @@ import {
   createSession,
 } from "../src/sessions/store.js";
 import { initContext } from "../src/parser/yaml.js";
-import { kspec, kspecJson, setupTempFixtures, cleanupTempDir, testUlid } from "./helpers/cli";
+import { kspec, setupTempFixtures, cleanupTempDir, testUlid } from "./helpers/cli";
 
 describe("Session Storage Path Resolution", () => {
   const sessionsDir = "/project/.kspec-sessions";

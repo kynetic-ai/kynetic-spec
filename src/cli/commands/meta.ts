@@ -1102,7 +1102,7 @@ Examples:
           },
           executeOperation: async (
             observation: Observation,
-            { ctx, tasks, items, index, resolution },
+            { ctx, tasks: _tasks, items: _items, index, resolution },
           ) => {
             // AC-obs-7: Check if already resolved
             if (observation.resolved) {

@@ -15,7 +15,7 @@
  * 4. Outputs session context at the end
  */
 
-const { execSync, spawnSync } = require("child_process");
+const { execSync } = require("child_process");
 const fs = require("fs");
 const path = require("path");
 const { checkProjectDependencies } = require("./dependency-health.cjs");

@@ -323,7 +323,7 @@ describe("Init/Setup Sessions Directory", () => {
       expect((await fs.stat(kspecDir)).isDirectory()).toBe(true);
 
       // Sessions dir should NOT be inside .kspec/
-      expect(sessionsDir).not.toContain(kspecDir + "/");
+      expect(sessionsDir).not.toContain(`${kspecDir}/`);
       expect(path.dirname(sessionsDir)).toBe(testDir);
       expect(path.dirname(kspecDir)).toBe(testDir);
     });

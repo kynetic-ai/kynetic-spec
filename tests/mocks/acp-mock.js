@@ -152,7 +152,7 @@ async function handleInitialize(id, _params) {
   });
 }
 
-async function handleNewSession(id, params) {
+async function handleNewSession(id, _params) {
   if (!initialized) {
     sendError(id, -32002, "Not initialized");
     return;
@@ -370,7 +370,7 @@ async function handleMessage(line) {
       default:
         sendError(msg.id, -32601, `Method not found: ${msg.method}`);
     }
-  } catch  {
+  } catch {
     sendError(null, -32700, "Parse error");
   }
 }

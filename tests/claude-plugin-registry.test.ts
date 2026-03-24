@@ -252,7 +252,7 @@ describe("Claude Plugin Registry", () => {
         await import("../src/lib/claude-plugin-registry");
 
       // Register the real marketplace first to get the real path
-      const pluginDir = await getPackagePluginDir();
+      const _pluginDir = await getPackagePluginDir();
       const pluginsDir = getClaudePluginsDir();
       await fs.mkdir(pluginsDir, { recursive: true });
 

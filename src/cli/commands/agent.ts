@@ -26,7 +26,7 @@ import { parseIntOption, validateEnumOption } from "../validators.js";
 import { PidFileManager } from "../pid-utils.js";
 import { errors } from "../../strings/errors.js";
 import type { LoadedAgent } from "../../parser/meta.js";
-import { isEndLoopRequested, requestEndLoop } from "../../sessions/index.js";
+import { requestEndLoop } from "../../sessions/index.js";
 import { AgentDispatchAutomationFilterSchema } from "../../schema/index.js";
 import { describeEnumValues } from "../enum-help.js";
 import WsDefault from "ws";
@@ -280,7 +280,7 @@ export function registerAgentCommands(program: Command): void {
 
         // Resolve the effective adapter
         const adapterId = opts.adapter ?? agentDef.adapter ?? "claude-agent-acp";
-        const adapter = resolveAdapter(adapterId);
+        const _adapter = resolveAdapter(adapterId);
 
         // Build the prompt — respect agent prompt_template when --task is used
         const taskRef = opts.task as string | undefined;
@@ -489,7 +489,7 @@ export function registerAgentCommands(program: Command): void {
     .command("status")
     .description("Show active and queued agent invocations")
     .option("--json", "Output as JSON")
-    .action(async (opts) => {
+    .action(async (_opts) => {
       try {
         const daemonConn = getDaemonUrl();
 
@@ -586,7 +586,7 @@ export function registerAgentCommands(program: Command): void {
     .command("start")
     .description("Start the dispatch engine (daemon must be running)")
     .option("--json", "Output as JSON")
-    .action(async (opts) => {
+    .action(async (_opts) => {
       try {
         const daemonConn = getDaemonUrl();
 
@@ -645,7 +645,7 @@ export function registerAgentCommands(program: Command): void {
     .command("stop")
     .description("Stop the dispatch engine gracefully")
     .option("--json", "Output as JSON")
-    .action(async (opts) => {
+    .action(async (_opts) => {
       try {
         const daemonConn = getDaemonUrl();
 
@@ -694,7 +694,7 @@ export function registerAgentCommands(program: Command): void {
     .command("status")
     .description("Show dispatch engine status and loaded agents")
     .option("--json", "Output as JSON")
-    .action(async (opts) => {
+    .action(async (_opts) => {
       try {
         const daemonConn = getDaemonUrl();
 
@@ -753,9 +753,7 @@ export function registerAgentCommands(program: Command): void {
           // AC: @dispatch-remote-branch-sync ac-degraded-status-api — prominent warning
           if (statusData.degraded?.active) {
             console.log(
-              chalk.bgRed.white.bold("  ⚠ DEGRADED  ") +
-                " " +
-                chalk.red("New workspace provisioning is paused"),
+              `${chalk.bgRed.white.bold("  ⚠ DEGRADED  ")} ${chalk.red("New workspace provisioning is paused")}`,
             );
             console.log(`  ${chalk.red("Reason:")} ${statusData.degraded.reason}`);
             if (statusData.degraded.enteredAt) {
@@ -801,7 +799,7 @@ export function registerAgentCommands(program: Command): void {
     .option("--retries <n>", "Number of reconnect attempts on disconnect (default 5)", "5")
     .option("--verbose", "Show thinking blocks (hidden by default)")
     .action(async (opts) => {
-      const DEFAULT_RETRIES = 5;
+      const _DEFAULT_RETRIES = 5;
       const RETRY_BASE_MS = 1000;
       const MAX_RETRY_MS = 30_000;
 
@@ -904,11 +902,13 @@ export function registerAgentCommands(program: Command): void {
         }
       }
 
+      // oxlint-disable-next-line unicorn/consistent-function-scoping
       function formatSessionIdForDisplay(sessionId: string): string {
         // AC: @cli-agent-commands ac-17 — shorten session ULID in watch prefix.
         return sessionId ? sessionId.slice(0, 8) : "";
       }
 
+      // oxlint-disable-next-line unicorn/consistent-function-scoping
       function summarizeToolInput(input: unknown): string {
         if (input == null) return "";
         try {
@@ -942,7 +942,7 @@ export function registerAgentCommands(program: Command): void {
         // Always uses ws instead of native globalThis.WebSocket for Node < 22 compat.
         const ws = new _wsCtor(wsUrl.toString());
 
-        ws.onopen = () => {
+        ws.addEventListener("open", () => {
           retryCount = 0;
           // Subscribe to agents topic
           ws.send(
@@ -952,9 +952,9 @@ export function registerAgentCommands(program: Command): void {
               payload: { topics: ["agents"] },
             }),
           );
-        };
+        });
 
-        ws.onmessage = (event: MessageEvent) => {
+        ws.addEventListener("message", (event: MessageEvent) => {
           let msg: Record<string, unknown>;
           try {
             msg = JSON.parse(event.data as string);
@@ -1086,13 +1086,13 @@ export function registerAgentCommands(program: Command): void {
                 break;
             }
           }
-        };
+        });
 
-        ws.onerror = () => {
+        ws.addEventListener("error", () => {
           // error event fires before close, handled in onclose
-        };
+        });
 
-        ws.onclose = () => {
+        ws.addEventListener("close", () => {
           if (!shouldReconnect) return;
 
           if (activeStreamKey) {
@@ -1116,7 +1116,7 @@ export function registerAgentCommands(program: Command): void {
             `[watch] Connection lost. Reconnecting in ${Math.round(backoffMs / 1000)}s (attempt ${retryCount}/${retryLimit})...\n`,
           );
           setTimeout(connect, backoffMs);
-        };
+        });
       }
 
       connect();

@@ -204,7 +204,7 @@ export const claudeCodeMemoryWriter: MemorySeedWriter = {
     try {
       await fs.access(getClaudeCodeMemoryPath(projectDir));
       return true;
-    } catch  {
+    } catch {
       return false;
     }
   },

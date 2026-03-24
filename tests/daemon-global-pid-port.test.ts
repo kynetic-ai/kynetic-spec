@@ -21,7 +21,6 @@ import {
 } from "fs";
 import { join } from "path";
 import { homedir } from "os";
-import { spawn } from "child_process";
 
 // Mock PidFileManager for global paths
 class GlobalPidFileManager {

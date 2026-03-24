@@ -19,7 +19,6 @@ import {
   createIsolatedKspecHome,
   initGitRepo,
   testUlid,
-  testUlids,
 } from "./helpers/cli.js";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -99,6 +98,7 @@ describe("schedule list", () => {
     const result = kspec("schedule list --json", testDir);
     expect(result.exitCode).toBe(0);
     // Must not contain ANSI escape codes
+    // oxlint-disable-next-line eslint/no-control-regex -- intentionally matching ANSI escape sequence
     expect(result.stdout).not.toMatch(/\x1b\[/);
     // Must parse as valid JSON
     const data = JSON.parse(result.stdout);

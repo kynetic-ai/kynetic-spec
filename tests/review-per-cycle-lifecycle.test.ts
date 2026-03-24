@@ -4,13 +4,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import {
-  kspec as kspecRun,
-  kspecOutput as kspec,
-  kspecJson,
-  setupTempFixtures,
-  cleanupTempDir,
-} from "./helpers/cli";
+import { kspecOutput as kspec, kspecJson, setupTempFixtures, cleanupTempDir } from "./helpers/cli";
 
 let tempDir: string;
 

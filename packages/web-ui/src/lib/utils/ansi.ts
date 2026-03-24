@@ -11,6 +11,7 @@
  */
 
 // Match a real ANSI escape sequence: ESC [ (optional private-mode prefix) params final-byte
+// oxlint-disable-next-line eslint/no-control-regex -- ANSI escape sequences intentionally match control chars
 const ANSI_RE = /\x1b\[(\??[0-9;]*)([A-Za-z])/g;
 
 // Match orphaned CSI parameters where ESC was stripped: bare [digits;digits followed by letter
@@ -230,6 +231,7 @@ export function safeTruncateAnsi(text: string, maxLen: number): string {
   // Orphaned CSI fragments (where ESC was already stripped) are handled downstream
   // by ansiToHtml/stripOrphanedCsi — truncation must not touch them because
   // bracket+digits like "[12" could be literal text (e.g. array indices, log output).
+  // oxlint-disable-next-line eslint/no-control-regex -- ANSI escape sequences intentionally match control chars
   truncated = truncated.replace(/\x1b(?:\[[\x20-\x3f]*)?$/, "");
   return truncated;
 }

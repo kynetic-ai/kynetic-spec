@@ -13,7 +13,7 @@ import {
   resolveRefEntries,
   buildRefIndex,
 } from "../dist/daemon/routes/ref-resolution.ts";
-import { testUlid, testUlids } from "./helpers/cli.js";
+import { testUlid } from "./helpers/cli.js";
 
 function makeTask(overrides: Partial<LoadedTask> & { _ulid: string; title: string }): LoadedTask {
   return {

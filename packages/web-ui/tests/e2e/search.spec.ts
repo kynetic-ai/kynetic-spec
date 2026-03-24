@@ -1,7 +1,7 @@
 import { test, expect } from "../fixtures/test-base";
 
 test.describe("Command Palette / Search", () => {
-  test.beforeEach(async ({ page, daemon }) => {
+  test.beforeEach(async ({ page, daemon: _daemon }) => {
     await page.goto("/");
     // Wait for page to load
     await page.waitForLoadState("domcontentloaded");
@@ -73,7 +73,7 @@ test.describe("Command Palette / Search", () => {
 
       // Results should NOT appear immediately (within 200ms)
       await page.waitForTimeout(200);
-      const resultsBefore = page.getByTestId("command-palette-results");
+      const _resultsBefore = page.getByTestId("command-palette-results");
       // May or may not be visible yet, just wait
 
       // Wait for debounce (100ms more = 300ms total)
@@ -129,9 +129,9 @@ test.describe("Command Palette / Search", () => {
       // Check for group headers
       // Groups are dynamically created based on results
       // So we check if any groups exist
-      const taskGroup = page.getByTestId("search-group-task");
-      const itemGroup = page.getByTestId("search-group-item");
-      const inboxGroup = page.getByTestId("search-group-inbox");
+      const _taskGroup = page.getByTestId("search-group-task");
+      const _itemGroup = page.getByTestId("search-group-item");
+      const _inboxGroup = page.getByTestId("search-group-inbox");
 
       // At least one group should be visible if results exist
       // (we can't guarantee specific results without seeding data)

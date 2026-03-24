@@ -849,7 +849,7 @@ export function registerValidateCommand(program: Command): void {
                 result.valid = false;
               }
             }
-          } catch  {
+          } catch {
             // Convention loading failure is non-fatal
           }
         }

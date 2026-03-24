@@ -11,7 +11,7 @@ import { test, expect } from "../fixtures/test-base";
 
 test.describe("Observations", () => {
   // Start daemon for all tests
-  test.beforeEach(async ({ daemon }) => {
+  test.beforeEach(async ({ daemon: _daemon }) => {
     // Daemon fixture ensures daemon is running
   });
 
@@ -177,7 +177,7 @@ test.describe("Observations", () => {
       // Loading indicator should appear briefly
       const loadingElement = page.getByTestId("loading");
       // May or may not catch it depending on speed, but should exist in DOM at some point
-      const loadingCount = await loadingElement.count();
+      const _loadingCount = await loadingElement.count();
       // Loading may have already disappeared, so just verify panel loads
       await expect(page.getByTestId("observations-panel")).toBeVisible();
 

@@ -12,23 +12,14 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import * as fs from "node:fs/promises";
 import * as fsSync from "node:fs";
 import * as path from "node:path";
-import * as os from "node:os";
+
 import { pathToFileURL } from "node:url";
 import { EventEmitter } from "node:events";
 import * as YAML from "yaml";
-import {
-  createSession,
-  appendEvent,
-  getSession,
-  closeSession,
-  injectEnvForAdapter,
-  removeEnvForAdapter,
-  isSessionBlobPointer,
-} from "../src/sessions/store.js";
+import { createSession, closeSession, isSessionBlobPointer } from "../src/sessions/store.js";
 import * as storeModule from "../src/sessions/store.js";
 import {
   runInvocation,
-  InvocationTimeoutError,
   DEFAULT_KSPEC_CLI_PATH,
   resolveDefaultKspecCliPath,
 } from "../src/agent-runtime/invocation.js";
@@ -149,7 +140,7 @@ describe("Session creation on invocation start", { timeout: 60_000 }, () => {
 
   it("should create session with trigger, agent_id, and task_id populated", async () => {
     const agent = makeTestAgent({ id: "worker-agent" });
-    const taskRef = "@" + testUlid("TASK");
+    const taskRef = `@${testUlid("TASK")}`;
 
     // Run a quick invocation (mock agent completes immediately)
     const result = await runInvocation({
@@ -171,7 +162,7 @@ describe("Session creation on invocation start", { timeout: 60_000 }, () => {
 
   it("should create session directory with session.yaml", async () => {
     const agent = makeTestAgent();
-    const taskRef = "@" + testUlid("TASK", 1);
+    const taskRef = `@${testUlid("TASK", 1)}`;
 
     const result = await runInvocation({
       agent,
@@ -230,7 +221,7 @@ describe("KSPEC_SESSION_ID injection", { timeout: 60_000 }, () => {
       specDir: testDir,
       sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
-      taskRef: "@" + testUlid("TASK"),
+      taskRef: `@${testUlid("TASK")}`,
       prompt: "Check env injection",
       trigger: "task.ready",
     });
@@ -252,7 +243,7 @@ describe("KSPEC_SESSION_ID injection", { timeout: 60_000 }, () => {
       specDir: testDir,
       sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
-      taskRef: "@" + testUlid("TASK"),
+      taskRef: `@${testUlid("TASK")}`,
       prompt: "Check env cleanup",
       trigger: "task.ready",
     });
@@ -293,7 +284,7 @@ describe("KSPEC_SESSION_ID injection", { timeout: 60_000 }, () => {
         specDir: testDir,
         sessionsDir: path.join(testDir, "sessions"),
         cwd: process.cwd(),
-        taskRef: "@" + testUlid("TASK", 1),
+        taskRef: `@${testUlid("TASK", 1)}`,
         prompt: "Concurrent env injection A",
         trigger: "task.ready",
       }),
@@ -302,7 +293,7 @@ describe("KSPEC_SESSION_ID injection", { timeout: 60_000 }, () => {
         specDir: testDir,
         sessionsDir: path.join(testDir, "sessions"),
         cwd: process.cwd(),
-        taskRef: "@" + testUlid("TASK", 2),
+        taskRef: `@${testUlid("TASK", 2)}`,
         prompt: "Concurrent env injection B",
         trigger: "task.ready",
       }),
@@ -354,7 +345,7 @@ describe("Timeout handling", { timeout: 60_000 }, () => {
       specDir: testDir,
       sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
-      taskRef: "@" + testUlid("TASK"),
+      taskRef: `@${testUlid("TASK")}`,
       prompt: "Test timeout",
       trigger: "task.ready",
       timeoutMinutes: 0.001, // ~60ms timeout — much less than 5s delay
@@ -372,7 +363,7 @@ describe("Timeout handling", { timeout: 60_000 }, () => {
       specDir: testDir,
       sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
-      taskRef: "@" + testUlid("TASK"),
+      taskRef: `@${testUlid("TASK")}`,
       prompt: "Test timeout event logging",
       trigger: "task.ready",
       timeoutMinutes: 0.001,
@@ -397,7 +388,7 @@ describe("Timeout handling", { timeout: 60_000 }, () => {
     // AC: @agent-invocation-lifecycle ac-3 — timeout note written to task
     const agent = makeTestAgent({ adapter: "slow-mock-acp" });
     const captureFile = path.join(testDir, "kspec-calls.json");
-    const taskRef = "@" + testUlid("TASK");
+    const taskRef = `@${testUlid("TASK")}`;
 
     // Set capture env so runKspecCli's spawnSync inherits it
     process.env.KSPEC_CAPTURE_FILE = captureFile;
@@ -454,7 +445,7 @@ describe("Timeout handling", { timeout: 60_000 }, () => {
         specDir: testDir,
         sessionsDir: path.join(testDir, "sessions"),
         cwd: process.cwd(),
-        taskRef: "@" + testUlid("TASK"),
+        taskRef: `@${testUlid("TASK")}`,
         prompt: "Test timeout mutation failure",
         trigger: "task.ready",
         timeoutMinutes: 0.001,
@@ -482,7 +473,7 @@ describe("Timeout handling", { timeout: 60_000 }, () => {
         specDir: testDir,
         sessionsDir: path.join(testDir, "sessions"),
         cwd: process.cwd(),
-        taskRef: "@" + testUlid("TASK"),
+        taskRef: `@${testUlid("TASK")}`,
         prompt: "Test cancel dispatch",
         trigger: "task.ready",
         // Use a longer timeout so the agent has time to spawn + initialize + newSession
@@ -531,7 +522,7 @@ describe("Timeout handling", { timeout: 60_000 }, () => {
         specDir: testDir,
         sessionsDir: path.join(testDir, "sessions"),
         cwd: process.cwd(),
-        taskRef: "@" + testUlid("TASK"),
+        taskRef: `@${testUlid("TASK")}`,
         prompt: "Test ACP prompt timeout alignment",
         trigger: "task.ready",
         timeoutMinutes,
@@ -565,7 +556,7 @@ describe("Successful invocation completion", { timeout: 60_000 }, () => {
 
   it("should log agent.completed event with task_id, outcome, and duration_ms", async () => {
     const agent = makeTestAgent();
-    const taskRef = "@" + testUlid("TASK");
+    const taskRef = `@${testUlid("TASK")}`;
 
     const result = await runInvocation({
       agent,
@@ -603,7 +594,7 @@ describe("Successful invocation completion", { timeout: 60_000 }, () => {
       specDir: testDir,
       sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
-      taskRef: "@" + testUlid("TASK"),
+      taskRef: `@${testUlid("TASK")}`,
       prompt: "Check session completion status",
       trigger: "task.ready",
     });
@@ -620,7 +611,7 @@ describe("Successful invocation completion", { timeout: 60_000 }, () => {
       specDir: testDir,
       sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
-      taskRef: "@" + testUlid("TASK"),
+      taskRef: `@${testUlid("TASK")}`,
       prompt: "Check stop reason",
       trigger: "task.ready",
     });
@@ -656,7 +647,7 @@ describe("Failure handling", { timeout: 60_000 }, () => {
 
   it("should log agent.failed event with error details on process crash", async () => {
     const agent = makeTestAgent({ adapter: "failing-mock-acp" });
-    const taskRef = "@" + testUlid("TASK");
+    const taskRef = `@${testUlid("TASK")}`;
 
     const result = await runInvocation({
       agent,
@@ -695,7 +686,7 @@ describe("Failure handling", { timeout: 60_000 }, () => {
       specDir: testDir,
       sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
-      taskRef: "@" + testUlid("TASK"),
+      taskRef: `@${testUlid("TASK")}`,
       prompt: "Check failed session status",
       trigger: "task.ready",
     });
@@ -707,7 +698,7 @@ describe("Failure handling", { timeout: 60_000 }, () => {
     // AC: @agent-invocation-lifecycle ac-5 — failure note written to task
     const agent = makeTestAgent({ adapter: "failing-mock-acp" });
     const captureFile = path.join(testDir, "kspec-calls.json");
-    const taskRef = "@" + testUlid("TASK");
+    const taskRef = `@${testUlid("TASK")}`;
 
     // Set capture env so runKspecCli's spawnSync inherits it
     process.env.KSPEC_CAPTURE_FILE = captureFile;
@@ -765,7 +756,7 @@ describe("Streaming event logging", { timeout: 60_000 }, () => {
       specDir: testDir,
       sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
-      taskRef: "@" + testUlid("TASK"),
+      taskRef: `@${testUlid("TASK")}`,
       prompt: "Test streaming updates",
       trigger: "task.ready",
       onUpdate: (update) => {
@@ -785,7 +776,7 @@ describe("Streaming event logging", { timeout: 60_000 }, () => {
       specDir: testDir,
       sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
-      taskRef: "@" + testUlid("TASK"),
+      taskRef: `@${testUlid("TASK")}`,
       prompt: "Test event logging",
       trigger: "task.ready",
     });
@@ -879,7 +870,7 @@ describe("Streaming event logging", { timeout: 60_000 }, () => {
         specDir: testDir,
         sessionsDir: path.join(testDir, "sessions"),
         cwd: process.cwd(),
-        taskRef: "@" + testUlid("TASK"),
+        taskRef: `@${testUlid("TASK")}`,
         prompt: "Concurrent update burst ordering",
         trigger: "task.ready",
         onUpdate: (update) => {
@@ -931,7 +922,7 @@ describe("Streaming event logging", { timeout: 60_000 }, () => {
       specDir: testDir,
       sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
-      taskRef: "@" + testUlid("TASK"),
+      taskRef: `@${testUlid("TASK")}`,
       prompt: "Test blob externalization",
       trigger: "task.ready",
     });
@@ -1176,7 +1167,7 @@ describe("Cleanup on completion or failure", { timeout: 60_000 }, () => {
       specDir: testDir,
       sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
-      taskRef: "@" + testUlid("TASK"),
+      taskRef: `@${testUlid("TASK")}`,
       prompt: "Test cleanup on success",
       trigger: "task.ready",
     });
@@ -1194,7 +1185,7 @@ describe("Cleanup on completion or failure", { timeout: 60_000 }, () => {
       specDir: testDir,
       sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
-      taskRef: "@" + testUlid("TASK"),
+      taskRef: `@${testUlid("TASK")}`,
       prompt: "Test env restoration",
       trigger: "task.ready",
     });
@@ -1218,7 +1209,7 @@ describe("Cleanup on completion or failure", { timeout: 60_000 }, () => {
       specDir: testDir,
       sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
-      taskRef: "@" + testUlid("TASK"),
+      taskRef: `@${testUlid("TASK")}`,
       prompt: "Test cleanup on failure",
       trigger: "task.ready",
     });
@@ -1239,7 +1230,7 @@ describe("Cleanup on completion or failure", { timeout: 60_000 }, () => {
         specDir: testDir,
         sessionsDir: path.join(testDir, "sessions"),
         cwd: process.cwd(),
-        taskRef: "@" + testUlid("TASK"),
+        taskRef: `@${testUlid("TASK")}`,
         prompt: "Test adapter env restoration",
         trigger: "task.ready",
       });
@@ -1270,7 +1261,7 @@ describe("Cleanup on completion or failure", { timeout: 60_000 }, () => {
         specDir: testDir,
         sessionsDir: path.join(testDir, "sessions"),
         cwd: process.cwd(),
-        taskRef: "@" + testUlid("TASK"),
+        taskRef: `@${testUlid("TASK")}`,
         prompt: "Test env restoration on failure",
         trigger: "task.ready",
       });
@@ -1307,7 +1298,7 @@ describe("Consecutive failure threshold and task blocking", { timeout: 60_000 },
   it("should block the task with a failure note when consecutive failures reach retry limit", async () => {
     // AC: @agent-invocation-lifecycle ac-9 — consecutive failures → task blocked with note
     const captureFile = path.join(testDir, "kspec-calls.json");
-    const taskRef = "@" + testUlid("TASK");
+    const taskRef = `@${testUlid("TASK")}`;
     const sessionsDir = path.join(testDir, "sessions");
     const agentId = "test-worker";
 
@@ -1355,7 +1346,7 @@ describe("Consecutive failure threshold and task blocking", { timeout: 60_000 },
   it("should NOT block the task when failure count is below the retry limit", async () => {
     // AC: @agent-invocation-lifecycle ac-9 — below threshold: note added, no block
     const captureFile = path.join(testDir, "kspec-calls-below.json");
-    const taskRef = "@" + testUlid("TASK");
+    const taskRef = `@${testUlid("TASK")}`;
 
     process.env.KSPEC_CAPTURE_FILE = captureFile;
     try {
@@ -1398,7 +1389,7 @@ describe("Consecutive failure threshold and task blocking", { timeout: 60_000 },
   it("should reset consecutive failure count after a successful invocation", async () => {
     // AC: @agent-invocation-lifecycle ac-9 — streak resets after success; fail→success→fail is not consecutive
     const captureFile = path.join(testDir, "kspec-calls-reset.json");
-    const taskRef = "@" + testUlid("TASK");
+    const taskRef = `@${testUlid("TASK")}`;
     const sessionsDir = path.join(testDir, "sessions");
     const agentId = "test-worker";
 
@@ -1479,7 +1470,7 @@ describe("ACP permission request handling", { timeout: 60_000 }, () => {
       specDir: testDir,
       sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
-      taskRef: "@" + testUlid("TASK"),
+      taskRef: `@${testUlid("TASK")}`,
       prompt: "Test permission auto-approval",
       trigger: "task.ready",
       autoApprove: true,
@@ -1508,7 +1499,7 @@ describe("ACP permission request handling", { timeout: 60_000 }, () => {
       specDir: testDir,
       sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
-      taskRef: "@" + testUlid("TASK"),
+      taskRef: `@${testUlid("TASK")}`,
       prompt: "Test permission denial",
       trigger: "task.ready",
       autoApprove: false,
@@ -1560,7 +1551,7 @@ describe("Host environment variable sanitization", { timeout: 60_000 }, () => {
       specDir: testDir,
       sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
-      taskRef: "@" + testUlid("TASK"),
+      taskRef: `@${testUlid("TASK")}`,
       prompt: "Test env sanitization",
       trigger: "task.ready",
     });
@@ -1601,7 +1592,7 @@ describe("Host environment variable sanitization", { timeout: 60_000 }, () => {
       specDir: testDir,
       sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
-      taskRef: "@" + testUlid("TASK"),
+      taskRef: `@${testUlid("TASK")}`,
       prompt: "Test parent env preservation",
       trigger: "task.ready",
     });
@@ -1647,7 +1638,7 @@ describe(
         specDir: testDir,
         sessionsDir: path.join(testDir, "sessions"),
         cwd: process.cwd(),
-        taskRef: "@" + testUlid("TASK"),
+        taskRef: `@${testUlid("TASK")}`,
         prompt: "No shadow commit on success",
         trigger: "task.ready",
       });
@@ -1672,7 +1663,7 @@ describe(
         specDir: testDir,
         sessionsDir: path.join(testDir, "sessions"),
         cwd: process.cwd(),
-        taskRef: "@" + testUlid("TASK"),
+        taskRef: `@${testUlid("TASK")}`,
         prompt: "No shadow commit on timeout",
         trigger: "task.ready",
         timeoutMinutes: 0.001,
@@ -1698,7 +1689,7 @@ describe(
         specDir: testDir,
         sessionsDir: path.join(testDir, "sessions"),
         cwd: process.cwd(),
-        taskRef: "@" + testUlid("TASK"),
+        taskRef: `@${testUlid("TASK")}`,
         prompt: "No shadow commit on failure",
         trigger: "task.ready",
       });
@@ -1727,7 +1718,7 @@ describe(
         specDir: testDir,
         sessionsDir: path.join(testDir, "sessions"),
         cwd: process.cwd(),
-        taskRef: "@" + testUlid("TASK"),
+        taskRef: `@${testUlid("TASK")}`,
         prompt: "No shadow commit on abort",
         trigger: "task.ready",
         abortSignal: controller.signal,

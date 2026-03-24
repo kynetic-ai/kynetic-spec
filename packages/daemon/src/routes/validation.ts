@@ -20,23 +20,14 @@ import {
   loadMetaContext,
   validate,
   AlignmentIndex,
-  type LoadedSpecItem,
-  type LoadedTask,
-  type LoadedInboxItem,
 } from "../../parser/index.js";
-import type {
-  LoadedAgent,
-  LoadedWorkflow,
-  LoadedObservation,
-  LoadedConvention,
-} from "../../parser/meta.js";
 import { ItemTypeSchema, TaskStatusSchema } from "../../schema/common.js";
 import { grepItem } from "../../utils/grep.js";
 import { enumUnion } from "./enum-utils.js";
 
 interface ValidationRouteOptions {}
 
-export function createValidationRoutes(options: ValidationRouteOptions = {}) {
+export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
   // No closure-scoped kspecDir needed - comes from middleware
 
   return (

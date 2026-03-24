@@ -1591,7 +1591,7 @@ async function pullRebaseBeforePush(
   worktreeDir: string,
   branchName: string,
   debug: boolean,
-  options?: ShadowOptions,
+  _options?: ShadowOptions,
 ): Promise<boolean> {
   try {
     // Fetch latest remote state for the shadow branch specifically.
@@ -2403,7 +2403,7 @@ export async function ensureShadowSessionsGitignore(
 
     await fs.writeFile(shadowGitignorePath, newContent, "utf-8");
     return true;
-  } catch  {
+  } catch {
     // Non-fatal — shadow gitignore update is best-effort
     return false;
   }
@@ -2514,7 +2514,7 @@ async function installShadowHook(projectRoot: string): Promise<boolean> {
     const hookContent = await fs.readFile(sourceHookPath, "utf-8");
     await fs.writeFile(hookPath, hookContent, { mode: 0o755 });
     return true;
-  } catch  {
+  } catch {
     // Silently fail - hook installation is optional
     return false;
   }
@@ -2575,7 +2575,9 @@ async function configureMergeDriver(projectRoot: string, worktreeDir: string): P
           cwd: projectRoot,
         });
         if (!existingDriverResult.ok) {
-          throw new Error(existingDriverResult.stderr || "failed to read merge.kspec.driver", { cause: error });
+          throw new Error(existingDriverResult.stderr || "failed to read merge.kspec.driver", {
+            cause: error,
+          });
         }
         const existingDriver = existingDriverResult.stdout.trim();
 
@@ -2596,7 +2598,8 @@ async function configureMergeDriver(projectRoot: string, worktreeDir: string): P
           );
           if (!fixResult.ok) {
             throw new Error(
-              fixResult.stderr || "failed to update merge.kspec.driver with --non-interactive", { cause: error },
+              fixResult.stderr || "failed to update merge.kspec.driver with --non-interactive",
+              { cause: error },
             );
           }
         }
@@ -2633,7 +2636,7 @@ async function configureMergeDriver(projectRoot: string, worktreeDir: string): P
     }
 
     return true;
-  } catch  {
+  } catch {
     // Silently fail - merge driver configuration is optional
     return false;
   }

@@ -13,7 +13,7 @@ import {
   handleVerdictTaskTransition,
   checkReviewLinkageConsistency,
 } from "../src/parser/review-task-integration.js";
-import { createTask, loadAllTasks, saveTask, mutateTaskAtomically } from "../src/parser/yaml.js";
+import { createTask, loadAllTasks, saveTask } from "../src/parser/yaml.js";
 import type { KspecContext, LoadedTask } from "../src/parser/yaml.js";
 import { TaskSchema } from "../src/schema/index.js";
 import type { ReviewRecordInput } from "../src/schema/index.js";
@@ -133,7 +133,7 @@ describe("Review-Task Integration", () => {
   // AC: @review-task-lifecycle-integration ac-1
   it("should persist review_ref through save and load cycle", async () => {
     const taskUlid = testUlid("TSK");
-    const task = await createAndSaveTask(ctx, {
+    await createAndSaveTask(ctx, {
       _ulid: taskUlid,
       title: "Task With Review Ref",
       slugs: ["task-with-review"],

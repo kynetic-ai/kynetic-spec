@@ -29,13 +29,11 @@ import {
   generateFrontmatter,
   getRenderer,
   getAllRenderers,
-  getClaudeCodeSkillSubdir,
   getSkillSubdir,
   contentsEqual,
   directoriesEqual,
   migrateOldPluginPaths,
   type PlatformRenderer,
-  type DriftStatus,
 } from "../../parser/skill-render.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import { errors } from "../../strings/errors.js";
@@ -252,14 +250,14 @@ export function generateUnifiedDiff(
 /**
  * Register render/status/diff/verify skill commands
  */
-export function registerSkillDiffCommands(skill: Command): void {
+export function registerSkillDiffCommands(skillCmd: Command): void {
   // AC: @skill-rendering ac-1 through ac-5 - kspec skill render
   // AC: @skill-render-cli ac-1, ac-2 - kspec skill render / kspec skill render @skill-id
   // AC: @skill-drift-detection ac-3, ac-4 - drift handling with --force
   // AC: @multi-platform-render-cli ac-1 through ac-7 - multi-platform rendering
   // AC: @trait-dry-run - supports --dry-run
   // AC: @trait-error-guidance - provides error guidance
-  skill
+  skillCmd
     .command("render [ref]")
     .description("Render skills from shadow branch to platform-specific files on main branch")
     .option("--clean", "Remove orphaned managed skill directories")
@@ -649,7 +647,7 @@ export function registerSkillDiffCommands(skill: Command): void {
             const skippedDrifted = results.filter(
               (r) => r.action === "skipped" && r.skipReason?.includes("drifted"),
             );
-            const skippedUnregistered = results.filter(
+            const _skippedUnregistered = results.filter(
               (r) => r.action === "skipped" && r.skipReason?.includes("unregistered"),
             );
 
@@ -729,7 +727,7 @@ export function registerSkillDiffCommands(skill: Command): void {
 
   // AC: @skill-render-cli ac-3 - kspec skill status
   // AC: @multi-platform-render-cli ac-3 - Per-platform status rows
-  skill
+  skillCmd
     .command("status")
     .description("Show sync status of rendered skills")
     .action(async () => {
@@ -852,7 +850,7 @@ export function registerSkillDiffCommands(skill: Command): void {
     });
 
   // AC: @skill-render-cli ac-4 - kspec skill diff
-  skill
+  skillCmd
     .command("diff <ref>")
     .description("Show diff between source and rendered skill")
     .action(async (ref: string) => {
@@ -955,11 +953,11 @@ export function registerSkillDiffCommands(skill: Command): void {
     });
 
   // AC: @skill-drift-detection-improvements ac-2 - kspec skill verify
-  skill
+  skillCmd
     .command("verify")
     .description("Verify rendered skills match their source (reports drift with guidance)")
     .option("--json", "Output as JSON")
-    .action(async (options: { json?: boolean }) => {
+    .action(async (_options: { json?: boolean }) => {
       try {
         const ctx = await initContext();
 

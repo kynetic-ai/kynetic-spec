@@ -6,7 +6,7 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { grepItem, formatMatchedFields, type GrepMatch } from "../src/utils/grep.js";
+import { grepItem, formatMatchedFields } from "../src/utils/grep.js";
 import { ItemIndex, type ItemFilter } from "../src/parser/items.js";
 import type { LoadedSpecItem, LoadedTask } from "../src/parser/yaml.js";
 
@@ -447,7 +447,7 @@ describe("grep edge cases", () => {
   });
 
   it("should handle very long text content", () => {
-    const longText = "word ".repeat(10000) + "needle " + "word ".repeat(10000);
+    const longText = `${"word ".repeat(10000)}needle ${"word ".repeat(10000)}`;
     const item = createSpecItem({ description: longText });
     const match = grepItem(item as Record<string, unknown>, "needle");
 
@@ -625,6 +625,7 @@ describeE2E("AC-7: Search inbox and meta entities (E2E)", () => {
 
   // TODO: This test has an intermittent issue where meta entities aren't being loaded
   // Individual entity type tests all pass, so the core functionality works
+  // oxlint-disable-next-line jest/no-disabled-tests -- intermittent load issue, individual entity type tests cover functionality
   itE2E.skip("should search all entity types together", async () => {
     // Create meta manifest with multiple entities containing same keyword FIRST
     const specDir = path.join(tempDir, ".kspec");

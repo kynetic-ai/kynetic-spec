@@ -17,7 +17,7 @@ import type { TaskSummary } from "../../shared/src/api";
 
 function makeTask(overrides: Partial<TaskSummary> = {}): TaskSummary {
   return {
-    _ulid: "01ABC" + Math.random().toString(36).slice(2, 10).toUpperCase(),
+    _ulid: `01ABC${Math.random().toString(36).slice(2, 10).toUpperCase()}`,
     slugs: ["test-task"],
     title: "Test Task",
     type: "task",

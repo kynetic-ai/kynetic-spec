@@ -14,7 +14,6 @@ import {
   setupTempFixtures,
   cleanupTempDir,
   initGitRepo,
-  testUlid,
 } from "./helpers/cli";
 
 describe("Skill Meta Integration", () => {

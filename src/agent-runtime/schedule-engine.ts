@@ -13,7 +13,7 @@
 import { Cron } from "croner";
 import { initContext, loadMetaContext, type LoadedSchedule } from "../parser/index.js";
 import type { EventBus, EventEnvelope } from "./event-bus.js";
-import { ActionExecutor, type ActionEventContext, type ActionRunEvent } from "./action-executor.js";
+import { ActionExecutor, type ActionEventContext } from "./action-executor.js";
 import type { Action } from "../schema/action.js";
 import type { OverlapPolicy } from "../schema/schedules.js";
 

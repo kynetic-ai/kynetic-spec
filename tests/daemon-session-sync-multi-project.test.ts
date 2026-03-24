@@ -110,7 +110,7 @@ describe("Multi-project session sync", () => {
       const app = new Elysia().use(routes);
 
       // DELETE with non-canonical path (trailing "/./" appended)
-      const nonCanonicalPath = projectA + "/./";
+      const nonCanonicalPath = `${projectA}/./`;
       const encodedPath = encodeURIComponent(nonCanonicalPath);
       const response = await app.handle(
         new Request(`http://localhost/api/projects/${encodedPath}`, {
@@ -210,7 +210,7 @@ describe("Multi-project session sync", () => {
 
     it("should normalize path and return normalized context", () => {
       const manager = new ProjectContextManager();
-      const nonNormalizedPath = projectA + "/./";
+      const nonNormalizedPath = `${projectA}/./`;
 
       const result = manager.getOrRegisterProject(nonNormalizedPath);
 
@@ -225,7 +225,7 @@ describe("Multi-project session sync", () => {
 
     it("should not double-register when called with same non-normalized path twice", () => {
       const manager = new ProjectContextManager();
-      const nonNormalizedPath = projectA + "/./";
+      const nonNormalizedPath = `${projectA}/./`;
 
       const result1 = manager.getOrRegisterProject(nonNormalizedPath);
       const result2 = manager.getOrRegisterProject(nonNormalizedPath);
@@ -265,7 +265,7 @@ describe("Multi-project session sync", () => {
       const { projectContextMiddleware } =
         await import("../packages/daemon/src/middleware/project-context");
 
-      const { manager, middleware } = projectContextMiddleware({
+      const { manager: _manager, middleware } = projectContextMiddleware({
         onProjectRegistered: onRegistered,
       });
 
@@ -295,7 +295,7 @@ describe("Multi-project session sync", () => {
       const { projectContextMiddleware } =
         await import("../packages/daemon/src/middleware/project-context");
 
-      const { manager, middleware } = projectContextMiddleware({
+      const { manager: _manager2, middleware } = projectContextMiddleware({
         onProjectRegistered: onRegistered,
       });
 
@@ -303,7 +303,7 @@ describe("Multi-project session sync", () => {
       const app = new Elysia().use(middleware).get("/api/test", () => ({ ok: true }));
 
       // Send a request with a non-normalized path (trailing "/./")
-      const nonNormalizedPath = projectA + "/./";
+      const nonNormalizedPath = `${projectA}/./`;
       const response = await app.handle(
         new Request("http://localhost/api/test", {
           headers: {
@@ -327,7 +327,7 @@ describe("Multi-project session sync", () => {
       const { projectContextMiddleware } =
         await import("../packages/daemon/src/middleware/project-context");
 
-      const { manager, middleware } = projectContextMiddleware({
+      const { manager: _manager3, middleware } = projectContextMiddleware({
         startupProject: projectA,
         onProjectRegistered: onRegistered,
       });
@@ -422,7 +422,7 @@ describe("Multi-project session sync", () => {
       const onRegistered = vi.fn().mockResolvedValue(undefined);
       const manager = new ProjectContextManager();
 
-      const nonCanonicalPath = projectA + "/./";
+      const nonCanonicalPath = `${projectA}/./`;
       const request = new Request("http://localhost/ws", {
         headers: { Host: "localhost", "X-Kspec-Dir": nonCanonicalPath },
       });

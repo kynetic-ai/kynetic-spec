@@ -16,7 +16,7 @@ import { test, expect } from "../fixtures/test-base";
 
 test.describe("WebSocket Connection Handling", () => {
   // Start daemon for all tests
-  test.beforeEach(async ({ daemon }) => {
+  test.beforeEach(async ({ daemon: _daemon }) => {
     // Daemon fixture ensures daemon is running
   });
 
@@ -138,7 +138,7 @@ test.describe("WebSocket Connection Handling", () => {
   });
 
   // AC: @web-dashboard ac-28
-  test("exponential backoff caps at 30s", async ({ page, context }) => {
+  test("exponential backoff caps at 30s", async ({ page, context: _context }) => {
     await page.goto("/");
     await page.waitForTimeout(500);
 
@@ -159,7 +159,7 @@ test.describe("WebSocket Connection Handling", () => {
   });
 
   // AC: @web-dashboard ac-28
-  test("stops reconnecting after max attempts", async ({ page, context }) => {
+  test("stops reconnecting after max attempts", async ({ page, context: _context }) => {
     // This is a documentary test for max reconnect attempts.
     // The WebSocketManager is configured to stop after MAX_RECONNECT_ATTEMPTS (10).
     // Testing this would require keeping the network offline for extended period

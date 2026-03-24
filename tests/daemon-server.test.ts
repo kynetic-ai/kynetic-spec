@@ -11,55 +11,54 @@
 
 import { describe, it, expect } from "vitest";
 
+function localhostOnly() {
+  return (context: { request: Request }) => {
+    const host = context.request.headers.get("host");
+    if (!host) {
+      return new Response(
+        JSON.stringify({
+          error: "Forbidden",
+          message: "This server only accepts connections from localhost",
+        }),
+        {
+          status: 403,
+          headers: { "Content-Type": "application/json" },
+        },
+      );
+    }
+
+    // Extract hostname, handling IPv6 brackets
+    let hostname: string;
+    if (host.startsWith("[")) {
+      // IPv6 with brackets: [::1]:3456 -> ::1
+      const closeBracket = host.indexOf("]");
+      hostname = closeBracket > 0 ? host.substring(1, closeBracket) : host;
+    } else {
+      // IPv4 or hostname: localhost:3456 -> localhost
+      hostname = host.split(":")[0];
+    }
+
+    // Allow localhost, 127.0.0.1, and ::1
+    const isLocalhost = hostname === "localhost" || hostname === "127.0.0.1" || hostname === "::1";
+
+    if (!isLocalhost) {
+      return new Response(
+        JSON.stringify({
+          error: "Forbidden",
+          message: "This server only accepts connections from localhost",
+        }),
+        {
+          status: 403,
+          headers: { "Content-Type": "application/json" },
+        },
+      );
+    }
+  };
+}
+
 describe("Daemon Server - Localhost Middleware (ac-3)", () => {
   // Unit tests for middleware logic without needing Bun runtime
   // We recreate the middleware logic to test it directly
-
-  function localhostOnly() {
-    return (context: { request: Request }) => {
-      const host = context.request.headers.get("host");
-      if (!host) {
-        return new Response(
-          JSON.stringify({
-            error: "Forbidden",
-            message: "This server only accepts connections from localhost",
-          }),
-          {
-            status: 403,
-            headers: { "Content-Type": "application/json" },
-          },
-        );
-      }
-
-      // Extract hostname, handling IPv6 brackets
-      let hostname: string;
-      if (host.startsWith("[")) {
-        // IPv6 with brackets: [::1]:3456 -> ::1
-        const closeBracket = host.indexOf("]");
-        hostname = closeBracket > 0 ? host.substring(1, closeBracket) : host;
-      } else {
-        // IPv4 or hostname: localhost:3456 -> localhost
-        hostname = host.split(":")[0];
-      }
-
-      // Allow localhost, 127.0.0.1, and ::1
-      const isLocalhost =
-        hostname === "localhost" || hostname === "127.0.0.1" || hostname === "::1";
-
-      if (!isLocalhost) {
-        return new Response(
-          JSON.stringify({
-            error: "Forbidden",
-            message: "This server only accepts connections from localhost",
-          }),
-          {
-            status: 403,
-            headers: { "Content-Type": "application/json" },
-          },
-        );
-      }
-    };
-  }
 
   // AC: @daemon-server ac-3
   // AC: @trait-localhost-security ac-1

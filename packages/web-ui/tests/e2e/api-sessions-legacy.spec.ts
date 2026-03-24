@@ -51,7 +51,7 @@ function writeSession(
         data: e.data ?? {},
       }),
     );
-    writeFileSync(join(sessionDir, "events.jsonl"), lines.join("\n") + "\n");
+    writeFileSync(join(sessionDir, "events.jsonl"), `${lines.join("\n")}\n`);
   }
 }
 

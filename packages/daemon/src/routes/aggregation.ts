@@ -33,7 +33,7 @@ import type {
 
 interface AggregationRouteOptions {}
 
-export function createAggregationRoutes(options: AggregationRouteOptions = {}) {
+export function createAggregationRoutes(_options: AggregationRouteOptions = {}) {
   return (
     new Elysia({ prefix: "/api/aggregation" })
       // AC: @ui-api-aggregation ac-1 - Task status summary with dependency-aware distinctions

@@ -3,7 +3,7 @@ import type { Page } from "@playwright/test";
 import { test, expect } from "../fixtures/test-base";
 
 test.describe("Plans View", () => {
-  test.beforeEach(async ({ page, daemon }) => {
+  test.beforeEach(async ({ page, daemon: _daemon }) => {
     await page.goto("/plans");
     await expect(page.getByRole("heading", { name: "Plans", exact: true })).toBeVisible();
   });
@@ -91,6 +91,7 @@ Runtime fetch coverage should observe the real batch request.
     },
   ];
 
+  // oxlint-disable-next-line unicorn/consistent-function-scoping
   async function stubActivePlanContent(page: Page, content: string) {
     await page.route("**/api/plans/test-plan-active", async (route) => {
       const response = await route.fetch();
@@ -757,7 +758,9 @@ Runtime fetch coverage should observe the real batch request.
   }) => {
     const tasksPath = `${daemon.tempDir}/project.tasks.yaml`;
     const plansPath = `${daemon.tempDir}/project.plans.yaml`;
+    // oxlint-disable-next-line no-source-scanning/no-source-file-reads
     const taskContent = await fs.readFile(tasksPath, "utf-8");
+    // oxlint-disable-next-line no-source-scanning/no-source-file-reads
     const planContent = await fs.readFile(plansPath, "utf-8");
 
     await fs.writeFile(

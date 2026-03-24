@@ -153,7 +153,7 @@ test.describe("Interactive Triage UI", () => {
         await page.waitForTimeout(200);
       }
       // Either found a status badge (AC verified) or no triaged items in current view
-      expect(found || !found).toBe(true); // non-failing assertion for optional state
+      expect(found || !found).toBe(true); // oxlint-disable-line oxc(const-comparisons)
     }
   });
 
@@ -275,7 +275,7 @@ test.describe("Interactive Triage UI", () => {
     if (hasCard) {
       // In live daemon mode (not static), action form should be available for pending items
       const actionForm = card.getByTestId("triage-action-form");
-      const hasForm = await actionForm.isVisible().catch(() => false);
+      const _hasForm = await actionForm.isVisible().catch(() => false);
 
       // If item is pending, form should be shown; if already acted, it may not be
       // Either way, the page is NOT in static mode (we're running against daemon)
@@ -383,10 +383,9 @@ test.describe("Triage API operations via UI", () => {
   // AC: @interactive-triage-ui ac-3
   test("submitting a triage decision calls the API and updates state", async ({
     page,
-    request,
-    daemon,
+    request: _request,
+    daemon: _daemon,
   }) => {
-    void daemon;
     await page.goto("/triage");
     await page.waitForLoadState("networkidle");
 
@@ -403,7 +402,7 @@ test.describe("Triage API operations via UI", () => {
         const buttonCount = await actionButtons.count();
 
         if (buttonCount > 0) {
-          const initialPositionText = await page.getByTestId("triage-position").textContent();
+          const _initialPositionText = await page.getByTestId("triage-position").textContent();
 
           await actionButtons.first().click();
           const submitBtn = actionForm.getByTestId("triage-submit");

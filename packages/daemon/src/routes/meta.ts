@@ -35,7 +35,7 @@ import { enumArrayUnion, enumUnion } from "./enum-utils.js";
 
 interface MetaRouteOptions {}
 
-export function createMetaRoutes(options: MetaRouteOptions = {}) {
+export function createMetaRoutes(_options: MetaRouteOptions = {}) {
   // No closure-scoped kspecDir needed - comes from middleware
 
   return (

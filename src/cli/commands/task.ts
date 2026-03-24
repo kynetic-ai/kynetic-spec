@@ -1,5 +1,5 @@
 import { execSync } from "node:child_process";
-import * as path from "node:path";
+// path module available via node:path if needed
 import chalk from "chalk";
 import type { Command } from "commander";
 import { markMutating } from "../command-annotations.js";
@@ -236,9 +236,9 @@ function gitRefExists(ref: string): boolean {
  */
 function listRemotes(): string[] {
   try {
-    const output = execSync("git remote", { encoding: "utf-8", stdio: "pipe" }).trim();
-    if (!output) return [];
-    const remotes = output
+    const gitOutput = execSync("git remote", { encoding: "utf-8", stdio: "pipe" }).trim();
+    if (!gitOutput) return [];
+    const remotes = gitOutput
       .split(/\r?\n/)
       .map((l) => l.trim())
       .filter(Boolean);
@@ -453,7 +453,7 @@ async function setTaskFields(
     // Validate review URL if provided and not clearing
     if (options.reviewUrl !== undefined && options.reviewUrl !== "null") {
       try {
-        new URL(options.reviewUrl);
+        const _validatedUrl = new URL(options.reviewUrl);
       } catch {
         return { success: false, error: `Invalid review URL: ${options.reviewUrl}` };
       }
@@ -772,7 +772,7 @@ async function setTaskFields(
  * Register the 'task' command group (singular - operations on individual tasks)
  */
 export function registerTaskCommands(program: Command): void {
-  const task = program
+  const taskCmd = program
     .command("task")
     .description("Operations on individual tasks")
     .allowUnknownOption()
@@ -780,7 +780,7 @@ export function registerTaskCommands(program: Command): void {
 
   // AC: @command-group-default-actions ac-bare-task, ac-unknown-subcommand
   // Default action when no subcommand is given (e.g. `kspec task` or `kspec task --status pending`)
-  task.action(async (_options: Record<string, unknown>, cmd: Command) => {
+  taskCmd.action(async (_options: Record<string, unknown>, cmd: Command) => {
     const { Command: Cmd } = await import("commander");
     const listCmd = addListOptions(new Cmd("_list"));
     listCmd.exitOverride();
@@ -810,7 +810,7 @@ export function registerTaskCommands(program: Command): void {
   });
 
   // kspec task list - alias for 'kspec tasks list'
-  task
+  taskCmd
     .command("list")
     .description("List all tasks (alias for 'kspec tasks list')")
     .option("-s, --status <status>", "Filter by status")
@@ -826,7 +826,7 @@ export function registerTaskCommands(program: Command): void {
     });
 
   // kspec task get <ref>
-  task
+  taskCmd
     .command("get <ref>")
     .description("Get task details")
     .option("--all", "Show all notes including superseded ones")
@@ -1565,8 +1565,7 @@ Examples:
           const endLoopState = await isEndLoopRequested(ctx.sessionsDir, sessionId);
           if (endLoopState?.requested) {
             error(
-              `Cannot start task: loop is ending for session ${sessionId.slice(0, 8)}...` +
-                (endLoopState.reason ? ` Reason: ${endLoopState.reason}` : ""),
+              `Cannot start task: loop is ending for session ${sessionId.slice(0, 8)}...${endLoopState.reason ? ` Reason: ${endLoopState.reason}` : ""}`,
             );
             info(
               "The current session has been signaled to end. Wrap up current work instead of starting new tasks.",
@@ -1931,7 +1930,7 @@ Examples:
         // AC: @task-submit ac-submit-3 - Validate URL before any state change
         if (options.reviewUrl !== undefined) {
           try {
-            new URL(options.reviewUrl);
+            const _validatedUrl = new URL(options.reviewUrl);
           } catch {
             error(`Invalid review URL: ${options.reviewUrl}`);
             process.exit(EXIT_CODES.VALIDATION_FAILED);
@@ -2601,7 +2600,7 @@ Examples:
     });
 
   // kspec task notes <ref>
-  task
+  taskCmd
     .command("notes <ref>")
     .description("Show notes for a task")
     .action(async (ref: string) => {
@@ -2631,7 +2630,7 @@ Examples:
     });
 
   // kspec task review <ref>
-  task
+  taskCmd
     .command("review <ref>")
     .description("Get task context for review (task details, spec, ACs, git diff)")
     .action(async (ref: string) => {
@@ -2793,7 +2792,7 @@ Examples:
     });
 
   // kspec task todos <ref>
-  task
+  taskCmd
     .command("todos <ref>")
     .description("Show todos for a task")
     .action(async (ref: string) => {
@@ -3013,7 +3012,7 @@ Examples:
 
   // kspec task branch <ref>
   // AC: @deterministic-task-branch-helper ac-1, ac-2, ac-3
-  task
+  taskCmd
     .command("branch <ref>")
     .description("Create or resume the deterministic dispatch-compatible branch for a task")
     .action(async (ref: string) => {
@@ -3285,8 +3284,12 @@ Examples:
         toIndexEntry,
         listTaskDirs,
       } = await import("../../parser/split-backend.js");
-      const { extractRawTaskArray, toYaml, readYamlFile, stripRuntimeMetadata } =
-        await import("../../parser/yaml.js");
+      const {
+        extractRawTaskArray,
+        toYaml,
+        readYamlFile,
+        stripRuntimeMetadata: _stripRuntimeMetadata,
+      } = await import("../../parser/yaml.js");
       const { TaskSchema } = await import("../../schema/task.js");
       const { ulid: generateUlid } = await import("ulid");
       const { runWithBuffer, mkdirBufferAware, writeFileBufferAware } =
@@ -3720,7 +3723,7 @@ Examples:
 
   // kspec task rebuild-index
   // AC: @task-index-rebuild ac-1, ac-2, ac-3, ac-4
-  task
+  taskCmd
     .command("rebuild-index")
     .description("Rebuild the task index from per-task directories")
     .option("--repair", "Overwrite the index with the rebuilt version")

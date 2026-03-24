@@ -13,7 +13,7 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import * as os from "node:os";
-import { kspec, type KspecResult } from "./helpers/cli.js";
+import { kspec } from "./helpers/cli.js";
 
 describe("merge-driver CLI", () => {
   let tempDir: string;

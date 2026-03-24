@@ -11,7 +11,6 @@ import * as path from "node:path";
 import * as YAML from "yaml";
 import {
   createSession,
-  appendEvent,
   saveSessionContext,
   resolveSessionId,
   getSessionLogDetail,

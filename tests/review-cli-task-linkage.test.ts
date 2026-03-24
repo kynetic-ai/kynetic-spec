@@ -267,6 +267,7 @@ describe("Review CLI Task Linkage", () => {
       expect(parsed).toBeDefined();
       expect(parsed.active_review).toBeDefined();
       // No ANSI escape codes
+      // oxlint-disable-next-line eslint(no-control-regex) -- intentionally matching ANSI escape
       expect(result.stdout).not.toMatch(/\x1b\[/);
     });
 

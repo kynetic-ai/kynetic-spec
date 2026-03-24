@@ -232,7 +232,7 @@ describe("Task Automation Eligibility", () => {
       // Create an eligible task, then complete it
       kspec('task add --title "Completed eligible" --automation eligible', tempDir);
       const tasks = kspecJson<any[]>("tasks list", tempDir);
-      const task = tasks.find((t) => t.title === "Completed eligible");
+      const _task = tasks.find((t) => t.title === "Completed eligible");
 
       // Manually set status to completed via YAML patch
       const tasksFile = path.join(tempDir, "project.tasks.yaml");
@@ -252,7 +252,7 @@ describe("Task Automation Eligibility", () => {
       // Create an eligible task, then cancel it
       kspec('task add --title "Cancelled eligible" --automation eligible', tempDir);
       const tasks = kspecJson<any[]>("tasks list", tempDir);
-      const task = tasks.find((t) => t.title === "Cancelled eligible");
+      const _task = tasks.find((t) => t.title === "Cancelled eligible");
 
       // Manually set status to cancelled via YAML patch
       const tasksFile = path.join(tempDir, "project.tasks.yaml");
@@ -297,7 +297,7 @@ describe("Task Automation Eligibility", () => {
         tempDir,
       );
       const tasks = kspecJson<any[]>("tasks list", tempDir);
-      const task = tasks.find((t) => t.title === "Completed bad ref");
+      const _task = tasks.find((t) => t.title === "Completed bad ref");
 
       // Manually patch to completed status with unresolvable spec_ref
       const tasksFile = path.join(tempDir, "project.tasks.yaml");
@@ -324,7 +324,7 @@ describe("Task Automation Eligibility", () => {
         tempDir,
       );
       const tasks = kspecJson<any[]>("tasks list", tempDir);
-      const task = tasks.find((t) => t.title === "Cancelled bad ref");
+      const _task = tasks.find((t) => t.title === "Cancelled bad ref");
 
       // Manually patch to cancelled status with unresolvable spec_ref
       const tasksFile = path.join(tempDir, "project.tasks.yaml");
@@ -353,7 +353,7 @@ describe("Task Automation Eligibility", () => {
 
       // Get the task to find its ULID
       const tasks = kspecJson<any[]>("tasks list", tempDir);
-      const task = tasks.find((t) => t.title === "Bad spec ref");
+      const _task = tasks.find((t) => t.title === "Bad spec ref");
 
       // Manually patch the task file to have an unresolvable spec_ref
       // This simulates a spec being deleted after the task was created
@@ -385,7 +385,7 @@ describe("Task Automation Eligibility", () => {
       kspec("task set @test-task-pending --automation eligible", tempDir);
 
       const tasks = kspecJson<any[]>("tasks list", tempDir);
-      const task = tasks.find((t) => t.slugs?.includes("test-task-pending"));
+      const _task = tasks.find((t) => t.slugs?.includes("test-task-pending"));
       expect(task.automation).toBe("eligible");
     });
 
@@ -393,7 +393,7 @@ describe("Task Automation Eligibility", () => {
       kspec("task set @test-task-pending --automation eligible", tempDir);
 
       const tasks = kspecJson<any[]>("tasks ready", tempDir);
-      const task = tasks.find((t) => t.slugs?.includes("test-task-pending"));
+      const _task = tasks.find((t) => t.slugs?.includes("test-task-pending"));
       expect(task.automation).toBe("eligible");
     });
   });

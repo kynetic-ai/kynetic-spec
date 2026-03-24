@@ -3,8 +3,6 @@
  * AC: @spec-task-reset
  */
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import * as fs from "node:fs/promises";
-import * as path from "node:path";
 import {
   kspecOutput as kspec,
   kspecJson,
@@ -300,6 +298,7 @@ describe("Integration: task reset", () => {
     expect(() => JSON.parse(output)).not.toThrow();
 
     // Should not contain ANSI codes
+    // oxlint-disable-next-line eslint(no-control-regex) -- intentionally matching ANSI escape
     expect(output).not.toMatch(/\u001b\[/);
   });
 

@@ -52,7 +52,7 @@ function toPlanSummary(plan: LoadedPlan, tasks: LoadedTask[]): PlanSummary {
   };
 }
 
-export function createPlansRoutes(options: PlansRouteOptions = {}) {
+export function createPlansRoutes(_options: PlansRouteOptions = {}) {
   return (
     new Elysia({ prefix: "/api/plans" })
       // AC: @ui-plans-view ac-1 - List plans with progress

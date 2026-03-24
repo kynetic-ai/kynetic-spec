@@ -11,7 +11,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import * as fsSync from "node:fs";
 import * as path from "node:path";
-import { createSession, closeSession, getSession } from "../src/sessions/store.js";
+import { createSession, closeSession } from "../src/sessions/store.js";
 import {
   runInvocation,
   InvocationStallError,
@@ -150,7 +150,7 @@ describe("Stall detection — no meaningful updates", () => {
       specDir: testDir,
       sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
-      taskRef: "@" + testUlid("TASK"),
+      taskRef: `@${testUlid("TASK")}`,
       prompt: "Test stall detection",
       trigger: "task.ready",
       timeoutMinutes: 1, // Long timeout so stall fires first
@@ -183,7 +183,7 @@ describe("Stall detection — no meaningful updates", () => {
       specDir: testDir,
       sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
-      taskRef: "@" + testUlid("TASK"),
+      taskRef: `@${testUlid("TASK")}`,
       prompt: "Test non-meaningful update stall",
       trigger: "task.ready",
       timeoutMinutes: 1,
@@ -220,7 +220,7 @@ describe("Stall handling — session close and cleanup", () => {
       specDir: testDir,
       sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
-      taskRef: "@" + testUlid("TASK"),
+      taskRef: `@${testUlid("TASK")}`,
       prompt: "Test stall session close",
       trigger: "task.ready",
       timeoutMinutes: 1,
@@ -235,7 +235,7 @@ describe("Stall handling — session close and cleanup", () => {
     const agent = makeTestAgent({
       budget: { initial_response_timeout_seconds: TEST_STALL_TIMEOUT_SECONDS },
     });
-    const taskRef = "@" + testUlid("TASK");
+    const taskRef = `@${testUlid("TASK")}`;
 
     const result = await runInvocation({
       agent,
@@ -264,7 +264,7 @@ describe("Stall handling — session close and cleanup", () => {
       budget: { initial_response_timeout_seconds: TEST_STALL_TIMEOUT_SECONDS },
     });
     const captureFile = path.join(testDir, "kspec-calls.json");
-    const taskRef = "@" + testUlid("TASK");
+    const taskRef = `@${testUlid("TASK")}`;
 
     process.env.KSPEC_CAPTURE_FILE = captureFile;
     try {
@@ -311,7 +311,7 @@ describe("Stall handling — session close and cleanup", () => {
         specDir: testDir,
         sessionsDir: path.join(testDir, "sessions"),
         cwd: process.cwd(),
-        taskRef: "@" + testUlid("TASK"),
+        taskRef: `@${testUlid("TASK")}`,
         prompt: "Test stall cancel",
         trigger: "task.ready",
         timeoutMinutes: 1,
@@ -370,7 +370,7 @@ describe("Stall timer cancelled on meaningful activity", () => {
         specDir: testDir,
         sessionsDir: path.join(testDir, "sessions"),
         cwd: process.cwd(),
-        taskRef: "@" + testUlid("TASK"),
+        taskRef: `@${testUlid("TASK")}`,
         prompt: `Test ${updateType} cancels stall`,
         trigger: "task.ready",
         timeoutMinutes: 1,
@@ -403,7 +403,7 @@ describe("Stalled sessions excluded from failure count", () => {
     // AC: @invocation-initial-activity-watchdog ac-4
     // Seed: 2 failed sessions, then 1 stalled session (most recent)
     const sessionsDir = path.join(testDir, "sessions");
-    const taskRef = "@" + testUlid("TASK");
+    const taskRef = `@${testUlid("TASK")}`;
 
     await seedFailedSession(sessionsDir, testUlid("SES1"), taskRef, "test-worker");
     await seedFailedSession(sessionsDir, testUlid("SES2"), taskRef, "test-worker");
@@ -458,7 +458,7 @@ describe("Stalled sessions excluded from failure count", () => {
     // Stalled sessions return null from toInvocationOutcome, so they're
     // filtered out of the consecutive failure calculation entirely.
     const sessionsDir = path.join(testDir, "sessions");
-    const taskRef = "@" + testUlid("TASK");
+    const taskRef = `@${testUlid("TASK")}`;
 
     // Seed: 1 success, then 1 stalled, then 1 failed
     await createSession(sessionsDir, {
@@ -545,12 +545,12 @@ describe("Custom stall timeout configuration", () => {
       specDir: testDir,
       sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
-      taskRef: "@" + testUlid("TASK"),
+      taskRef: `@${testUlid("TASK")}`,
       prompt: "Test custom stall timeout",
       trigger: "task.ready",
       timeoutMinutes: 1,
     });
-    const elapsed = Date.now() - startTime;
+    const _elapsed = Date.now() - startTime;
 
     expect(result.outcome).toBe("stalled");
     // Verify the close reason includes the custom timeout value
@@ -601,7 +601,7 @@ describe("Stall timer cleanup", () => {
       specDir: testDir,
       sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
-      taskRef: "@" + testUlid("TASK"),
+      taskRef: `@${testUlid("TASK")}`,
       prompt: "Test stall timer cleanup",
       trigger: "task.ready",
       timeoutMinutes: 1,

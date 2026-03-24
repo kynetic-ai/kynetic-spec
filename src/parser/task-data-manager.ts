@@ -153,7 +153,7 @@ export function rawToSummary(raw: unknown): TaskSummary | null {
  *
  * AC: @task-data-manager ac-2 — callers of listTasks get only index data
  */
-function toTaskSummary(task: LoadedTask): TaskSummary {
+function _toTaskSummary(task: LoadedTask): TaskSummary {
   return {
     _ulid: task._ulid,
     slugs: task.slugs,

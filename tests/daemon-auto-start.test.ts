@@ -7,9 +7,9 @@
  * The daemon config doesn't have dedicated ACs - these are schema validation tests.
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { createTempDir, cleanupTempDir, initGitRepo } from "./helpers/cli";
-import { writeFile, mkdir } from "fs/promises";
+import { writeFile } from "fs/promises";
 import { join } from "path";
 import { stringify } from "yaml";
 import { initContext } from "../src/parser/yaml";

@@ -84,7 +84,7 @@ export class WebSocketHandler {
         this.sendAck(ws, undefined, false, "validation_error", "Missing action field");
         return;
       }
-    } catch  {
+    } catch {
       // AC: @api-contract ac-30
       this.sendAck(ws, undefined, false, "validation_error", "Invalid JSON");
       return;

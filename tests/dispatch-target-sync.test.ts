@@ -4,8 +4,8 @@ import { execSync } from "node:child_process";
 import * as path from "node:path";
 import * as invocationModule from "../src/agent-runtime/invocation.js";
 import * as workspaceModule from "../src/agent-runtime/workspace.js";
-import { DispatchEngine, type TargetSyncResult } from "../src/agent-runtime/dispatch.js";
-import { cleanupTempDir, createTempDir, initGitRepo, testUlid } from "./helpers/cli.js";
+import { DispatchEngine } from "../src/agent-runtime/dispatch.js";
+import { cleanupTempDir, createTempDir, initGitRepo } from "./helpers/cli.js";
 
 function git(cwd: string, command: string): string {
   return execSync(`git ${command}`, {

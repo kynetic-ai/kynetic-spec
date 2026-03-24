@@ -5,10 +5,8 @@ import { TaskDataManager, resolveTaskDataManager } from "../src/parser/task-data
 import {
   splitBackend,
   ensureSplitBackendRegistered,
-  getTaskDir,
   getTaskFilePath,
   getNotesFilePath,
-  getIndexFilePath,
 } from "../src/parser/split-backend.js";
 import type { HistoryEntry } from "../src/parser/split-backend.js";
 
@@ -905,7 +903,7 @@ describe("Per-Task Notes File (@task-notes-file)", () => {
     it("superseding note is appended with supersedes reference", async () => {
       const manager = new TaskDataManager("split");
 
-      const created = await manager.createTask(ctx, {
+      await manager.createTask(ctx, {
         title: "Supersede test",
         slugs: ["supersede-test"],
       });
@@ -1004,7 +1002,7 @@ describe("Per-Task Notes File (@task-notes-file)", () => {
       await manager.addNote(ctx, "@mixed-mutation", "First note", "@tester");
 
       // Read notes.yaml before field mutation
-      const notesBefore = await readTestOutput(getNotesFilePath(ctx, created._ulid));
+      const _notesBefore = await readTestOutput(getNotesFilePath(ctx, created._ulid));
 
       // Now mutate a core field (not notes)
       await manager.mutateTask(ctx, "@mixed-mutation", (task) => ({

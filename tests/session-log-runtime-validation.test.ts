@@ -11,7 +11,7 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import * as YAML from "yaml";
-import { setupTempFixtures, cleanupTempDir, kspec, kspecJson, testUlid } from "./helpers/cli";
+import { setupTempFixtures, cleanupTempDir, kspec, testUlid } from "./helpers/cli";
 
 // ─── Status Validation Tests ────────────────────────────────────────────────
 

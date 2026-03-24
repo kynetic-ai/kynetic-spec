@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { createTempDir, cleanupTempDir, initGitRepo, testUlid, testUlids } from "./helpers/cli.js";
+import { createTempDir, cleanupTempDir, testUlid, testUlids } from "./helpers/cli.js";
 import {
   getTriageFilePath,
   loadTriageRecords,

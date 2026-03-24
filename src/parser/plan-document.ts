@@ -500,7 +500,7 @@ export function detectYamlUnsafeValues(yamlText: string): YamlUnsafeDiagnostic[]
     const value = match[2];
 
     // Skip values that are already quoted or use block scalar indicators
-    if (/^["']/.test(value) || value.startsWith('|') || value.startsWith('>')) continue;
+    if (/^["']/.test(value) || value.startsWith("|") || value.startsWith(">")) continue;
 
     // Check if value contains a colon followed by a space (YAML mapping indicator)
     if (/:\s/.test(value)) {

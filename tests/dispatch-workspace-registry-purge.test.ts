@@ -83,6 +83,11 @@ function makeRecord(
   } as LoadedDispatchWorkspaceRecord;
 }
 
+function stripSource(r: LoadedDispatchWorkspaceRecord) {
+  const { _sourceFile, ...clean } = r;
+  return clean;
+}
+
 async function setupShadowSpecDir(dir: string): Promise<string> {
   const specDir = path.join(dir, ".kspec");
   await fs.mkdir(specDir, { recursive: true });
@@ -317,11 +322,6 @@ describe("dispatch workspace registry purge", () => {
       closedAt: twentyDaysAgo,
       updatedAt: twentyDaysAgo,
     });
-
-    const stripSource = (r: LoadedDispatchWorkspaceRecord) => {
-      const { _sourceFile, ...clean } = r;
-      return clean;
-    };
 
     const registryFile = {
       kynetic_dispatch_workspaces: "1.0",

@@ -42,6 +42,7 @@ beforeEach(async () => {
 
   // Initialize session branch worktree
   const result = await initializeSessionBranch(tempDir);
+  // oxlint-disable-next-line jest/no-standalone-expect -- inside beforeEach hook
   expect(result.success).toBe(true);
 
   sessionsDir = path.join(tempDir, SESSIONS_WORKTREE_DIR);

@@ -12,12 +12,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { ulid } from "ulid";
 import { EventBus } from "../src/agent-runtime/event-bus.js";
-import {
-  ActionExecutor,
-  type ActionEventContext,
-  type ActionRunEvent,
-} from "../src/agent-runtime/action-executor.js";
-import { JoinAccumulator, type GroupState } from "../src/agent-runtime/join-accumulator.js";
+import { ActionExecutor, type ActionEventContext } from "../src/agent-runtime/action-executor.js";
+import { JoinAccumulator } from "../src/agent-runtime/join-accumulator.js";
 import { CompositionSchema, type Composition } from "../src/schema/composition.js";
 import { MetaManifestSchema } from "../src/schema/meta.js";
 import type { Action } from "../src/schema/action.js";
@@ -227,7 +223,7 @@ describe("JoinAccumulator", () => {
     });
 
     // Spy on execute to capture calls without actually running actions
-    vi.spyOn(executor, "execute").mockImplementation(async (action, context, sourceName) => {
+    vi.spyOn(executor, "execute").mockImplementation(async (action, context, _sourceName) => {
       executedActions.push({ action, context });
       return {
         action_run_id: ulid(),

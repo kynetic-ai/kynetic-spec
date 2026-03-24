@@ -12,7 +12,7 @@
 import { existsSync, watch, type FSWatcher } from "fs";
 import { readFile, lstat } from "fs/promises";
 import { parse as parseYaml } from "yaml";
-import chokidar, { type FSWatcher as ChokidarWatcher } from "chokidar";
+import { watch as chokidarWatch, type FSWatcher as ChokidarWatcher } from "chokidar";
 import { join, relative } from "path";
 
 export interface WatcherOptions {
@@ -84,7 +84,7 @@ export class KspecWatcher {
    * AC-8: Start Chokidar watcher as fallback
    */
   private async startChokidarWatcher(): Promise<void> {
-    this.watcher = chokidar.watch(join(this.options.kspecDir, "**/*.yaml"), {
+    this.watcher = chokidarWatch(join(this.options.kspecDir, "**/*.yaml"), {
       ignoreInitial: true,
       followSymlinks: false,
       ignored: (filePath: string) => this.isNestedKspecPath(filePath),

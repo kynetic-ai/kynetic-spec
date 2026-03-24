@@ -11,7 +11,7 @@ test.describe("Review Detail Page", () => {
   // AC: @review-records-web-ui ac-11
   test("renders review details, markdown thread bodies, and revision selector", async ({
     page,
-    daemon,
+    daemon: _daemon,
   }) => {
     await page.goto(`/reviews/${OPEN_REVIEW_ULID}`);
 
@@ -59,7 +59,7 @@ test.describe("Review Detail Page", () => {
   // AC: @review-records-web-ui ac-10
   test("shows empty states when review has no threads, checks, or verdicts", async ({
     page,
-    daemon,
+    daemon: _daemon,
   }) => {
     await page.goto(`/reviews/${DRAFT_REVIEW_ULID}`);
 
@@ -70,7 +70,10 @@ test.describe("Review Detail Page", () => {
   });
 
   // AC: @review-records-web-ui ac-11 — code-review revision grouping uses head_branch
-  test("limits code review revisions to the same head branch", async ({ page, daemon }) => {
+  test("limits code review revisions to the same head branch", async ({
+    page,
+    daemon: _daemon,
+  }) => {
     await page.goto(`/reviews/${CODE_REVIEW_ULID}`);
 
     const revisionSelect = page.locator("#revision-select");

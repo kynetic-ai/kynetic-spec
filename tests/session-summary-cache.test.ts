@@ -50,19 +50,6 @@ async function createTestEvents(
   await fs.writeFile(path.join(sessionDir, "events.jsonl"), lines + "\n", "utf-8");
 }
 
-// Helper to create context-iter-*.json files (iteration markers)
-async function createTestIterations(sessionsDir: string, id: string, count: number): Promise<void> {
-  const sessionDir = path.join(sessionsDir, id);
-  await fs.mkdir(sessionDir, { recursive: true });
-  for (let i = 0; i < count; i++) {
-    await fs.writeFile(
-      path.join(sessionDir, `context-iter-${i}.json`),
-      JSON.stringify({ iteration: i }),
-      "utf-8",
-    );
-  }
-}
-
 describe("SessionSummaryCache", () => {
   let sessionsDir: string;
   let cache: SessionSummaryCache;

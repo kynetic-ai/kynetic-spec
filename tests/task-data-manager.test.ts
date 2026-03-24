@@ -7,7 +7,7 @@ import {
   TaskDataManager,
   TaskDataManagerError,
 } from "../src/parser/index.js";
-import type { TaskSummary, TaskStorageBackend } from "../src/parser/task-data-manager.js";
+import type { TaskStorageBackend } from "../src/parser/task-data-manager.js";
 import { registerBackend, unregisterBackend } from "../src/parser/task-data-manager.js";
 import { splitBackend, ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
 
@@ -16,7 +16,6 @@ ensureSplitBackendRegistered();
 import { TaskSchema } from "../src/schema/task.js";
 import {
   cleanupTempDir,
-  kspec,
   readTestOutput,
   setupTempFixtures,
   testUlid,
@@ -589,7 +588,7 @@ describe("TaskDataManager", () => {
     it("throws at construction for an unknown backend format", () => {
       // AC: @trait-error-guidance ac-1, ac-2
       try {
-        new TaskDataManager("nonexistent" as any);
+        const _unused = new TaskDataManager("nonexistent" as any);
         expect.fail("Should have thrown for unregistered backend");
       } catch (err) {
         expect(err).toBeInstanceOf(TaskDataManagerError);
@@ -642,7 +641,7 @@ describe("TaskDataManager", () => {
         },
         async createTask(_ctx, task) {
           calls.push("createTask");
-          return { ...task, _sourceFile: "/mock/split/tasks/" + task._ulid + "/task.yaml" };
+          return { ...task, _sourceFile: `/mock/split/tasks/${task._ulid}/task.yaml` };
         },
         async mutateTask(ctx, task, mutate) {
           calls.push("mutateTask");
@@ -721,7 +720,7 @@ describe("TaskDataManager", () => {
         },
         async createTask(_ctx, task) {
           // Split backend assigns its own _sourceFile
-          return { ...task, _sourceFile: "/split/tasks/" + task._ulid + "/task.yaml" };
+          return { ...task, _sourceFile: `/split/tasks/${task._ulid}/task.yaml` };
         },
         async mutateTask(_ctx, task) {
           return { ...task, _sourceFile: task._sourceFile };
@@ -1330,7 +1329,7 @@ describe("TaskDataManager", () => {
           return undefined;
         },
         async createTask(_ctx, task) {
-          return { ...task, _sourceFile: "/split/" + task._ulid + "/task.yaml" };
+          return { ...task, _sourceFile: `/split/${task._ulid}/task.yaml` };
         },
         async mutateTask(_ctx, task) {
           return task;

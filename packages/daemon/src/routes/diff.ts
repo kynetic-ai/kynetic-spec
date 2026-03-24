@@ -501,7 +501,7 @@ export function createDiffRoutes() {
               };
             }
 
-            const task = tasks.find((t) => t._ulid === resolved.ulid);
+            const task = tasks.find((tk) => tk._ulid === resolved.ulid);
             if (!task) {
               set.status = 404;
               return {

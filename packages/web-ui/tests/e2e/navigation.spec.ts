@@ -11,7 +11,7 @@ import { test, expect } from "../fixtures/test-base";
 
 test.describe("Navigation and URL State", () => {
   // Start daemon for all tests
-  test.beforeEach(async ({ daemon }) => {
+  test.beforeEach(async ({ daemon: _daemon }) => {
     // Daemon fixture ensures daemon is running
   });
 

@@ -88,7 +88,7 @@ export function resolveWebUiPath(webUiDir?: string): string | null {
 let pubsubManager: PubSubManager;
 let heartbeatManager: HeartbeatManager;
 let wsHandler: WebSocketHandler;
-let projectManager: import("./project-context").ProjectContextManager | undefined;
+let _projectManager: import("./project-context").ProjectContextManager | undefined;
 let shadowSyncScheduler: ShadowSyncScheduler | undefined;
 const sessionSyncSchedulers: Map<string, SessionSyncScheduler> = new Map();
 
@@ -220,7 +220,7 @@ export async function createServer(options: ServerOptions) {
     : kspecDir;
 
   // Import ProjectContextManager (needed for WebSocket binding)
-  const { ProjectContextManager } = await import("./project-context");
+  const { ProjectContextManager: _ProjectContextManager } = await import("./project-context");
 
   // AC: @daemon-server ac-17 - Resolve web UI path for static file serving
   const resolvedWebUiPath = resolveWebUiPath(webUiDir);
@@ -280,7 +280,7 @@ export async function createServer(options: ServerOptions) {
     });
 
   // Store manager globally for shutdown
-  projectManager = projectContextManager;
+  _projectManager = projectContextManager;
 
   app
     .use(projectMiddleware)
@@ -573,7 +573,7 @@ export async function createServer(options: ServerOptions) {
 
       // Close all WebSocket connections with code 1000 (clean close)
       // AC: @trait-websocket-protocol ac-7
-      for (const [sessionId, ws] of pubsubManager.getAllConnections()) {
+      for (const [_sessionId, ws] of pubsubManager.getAllConnections()) {
         ws.close(1000, "Server shutting down");
       }
 

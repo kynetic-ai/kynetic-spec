@@ -11,7 +11,7 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { kspec, kspecJson, setupTempFixtures, cleanupTempDir, initGitRepo } from "./helpers/cli";
+import { kspec, setupTempFixtures, cleanupTempDir, initGitRepo } from "./helpers/cli";
 
 /**
  * Helper to create a budget file for a session in the test fixture directory.

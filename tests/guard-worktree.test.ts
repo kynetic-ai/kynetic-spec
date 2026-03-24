@@ -8,11 +8,7 @@
 
 import * as path from "node:path";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import {
-  evaluateWorktreeGuard,
-  type GuardDecision,
-  type GuardOptions,
-} from "../src/cli/commands/guard.js";
+import { evaluateWorktreeGuard, type GuardOptions } from "../src/cli/commands/guard.js";
 import { kspec, createTempDir, initGitRepo, git } from "./helpers/cli.js";
 import * as fs from "node:fs";
 
@@ -802,6 +798,7 @@ describe("kspec guard worktree CLI", () => {
     const parsed = JSON.parse(result.stdout.trim());
     expect(parsed).toBeDefined();
     // No ANSI escape codes
+    // oxlint-disable-next-line eslint/no-control-regex -- intentionally matching ANSI escape sequence
     expect(result.stdout).not.toMatch(/\x1b\[/);
   });
 

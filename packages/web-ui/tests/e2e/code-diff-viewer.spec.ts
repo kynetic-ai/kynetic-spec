@@ -275,16 +275,16 @@ function mockFileDiffResponse(index: number) {
           newStart: 1,
           newCount: 3,
           changes: [
-            { type: "unchanged", content: "// file " + index, oldLineNumber: 1, newLineNumber: 1 },
+            { type: "unchanged", content: `// file ${index}`, oldLineNumber: 1, newLineNumber: 1 },
             {
               type: "deleted",
-              content: "const old = " + index + ";",
+              content: `const old = ${index};`,
               oldLineNumber: 2,
               newLineNumber: null,
             },
             {
               type: "added",
-              content: "const updated = " + index + ";",
+              content: `const updated = ${index};`,
               oldLineNumber: null,
               newLineNumber: 2,
             },
@@ -325,7 +325,7 @@ function mockCodeThread(
     ...(resolved ? { resolved_at: "2026-03-15T11:00:00Z", resolved_by: "worker@test.com" } : {}),
     entries: [
       {
-        _ulid: id + "-entry-1",
+        _ulid: `${id}-entry-1`,
         author: "reviewer@test.com",
         body,
         created_at: "2026-03-15T10:00:00Z",
@@ -364,7 +364,10 @@ async function setupCodeReviewMocks(page: any, review: any, diff: any) {
 test.describe("Code Diff Viewer", () => {
   // AC: @review-code-diff-viewer ac-1
   test.describe("File List with Diff Stats (AC-1)", () => {
-    test("shows file list with all changed files and their stats", async ({ page, daemon }) => {
+    test("shows file list with all changed files and their stats", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       const review = mockCodeReviewDetail();
       const diff = mockDiffResponse();
       await setupCodeReviewMocks(page, review, diff);
@@ -409,7 +412,7 @@ test.describe("Code Diff Viewer", () => {
 
     test("clicking a file in the file list expands it and shows diff content", async ({
       page,
-      daemon,
+      daemon: _daemon,
     }) => {
       const review = mockCodeReviewDetail();
       const diff = mockDiffResponse();
@@ -434,7 +437,7 @@ test.describe("Code Diff Viewer", () => {
       await expect(fileView.getByTestId("diff-hunk")).toBeVisible();
     });
 
-    test("clicking file header toggles expansion", async ({ page, daemon }) => {
+    test("clicking file header toggles expansion", async ({ page, daemon: _daemon }) => {
       const review = mockCodeReviewDetail();
       const diff = mockDiffResponse();
       await setupCodeReviewMocks(page, review, diff);
@@ -457,7 +460,7 @@ test.describe("Code Diff Viewer", () => {
 
   // AC: @review-code-diff-viewer ac-2
   test.describe("Unified Diff with Syntax Highlighting (AC-2)", () => {
-    test("shows unified diff with old and new line numbers", async ({ page, daemon }) => {
+    test("shows unified diff with old and new line numbers", async ({ page, daemon: _daemon }) => {
       const review = mockCodeReviewDetail();
       const diff = mockDiffResponse();
       await setupCodeReviewMocks(page, review, diff);
@@ -486,7 +489,10 @@ test.describe("Code Diff Viewer", () => {
       await expect(unchangedLine.getByTestId("diff-new-line-number")).toHaveText("10");
     });
 
-    test("shows added lines in green and deleted lines in red", async ({ page, daemon }) => {
+    test("shows added lines in green and deleted lines in red", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       const review = mockCodeReviewDetail();
       const diff = mockDiffResponse();
       await setupCodeReviewMocks(page, review, diff);
@@ -514,7 +520,7 @@ test.describe("Code Diff Viewer", () => {
 
     test("renders code content with syntax highlighting for .ts files", async ({
       page,
-      daemon,
+      daemon: _daemon,
     }) => {
       const review = mockCodeReviewDetail();
       const diff = mockDiffResponse();
@@ -543,7 +549,7 @@ test.describe("Code Diff Viewer", () => {
   test.describe("Collapsed Unchanged Regions (AC-3)", () => {
     test('shows "Show N more lines" button between hunks with collapsed context', async ({
       page,
-      daemon,
+      daemon: _daemon,
     }) => {
       const review = mockCodeReviewDetail();
       const diff = mockDiffWithMultipleHunks();
@@ -570,7 +576,7 @@ test.describe("Code Diff Viewer", () => {
 
     test('shows "Show N more lines above" when first hunk does not start at line 1', async ({
       page,
-      daemon,
+      daemon: _daemon,
     }) => {
       // Create a diff where the first hunk starts at line 10
       const diff = {
@@ -633,7 +639,7 @@ test.describe("Code Diff Viewer", () => {
   test.describe("Click-to-Comment (AC-4)", () => {
     test("shows comment button on hover and opens inline comment form", async ({
       page,
-      daemon,
+      daemon: _daemon,
     }) => {
       const review = mockCodeReviewDetail();
       const diff = mockDiffResponse();
@@ -668,7 +674,10 @@ test.describe("Code Diff Viewer", () => {
       await expect(commentForm.getByTestId("diff-comment-cancel")).toBeVisible();
     });
 
-    test("submitting comment form creates a thread with code anchor", async ({ page, daemon }) => {
+    test("submitting comment form creates a thread with code anchor", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       const review = mockCodeReviewDetail();
       const diff = mockDiffResponse();
       await setupCodeReviewMocks(page, review, diff);
@@ -740,7 +749,10 @@ test.describe("Code Diff Viewer", () => {
       });
     });
 
-    test("cancel button closes comment form without submitting", async ({ page, daemon }) => {
+    test("cancel button closes comment form without submitting", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       const review = mockCodeReviewDetail();
       const diff = mockDiffResponse();
       await setupCodeReviewMocks(page, review, diff);
@@ -763,7 +775,10 @@ test.describe("Code Diff Viewer", () => {
       await expect(fileView.getByTestId("diff-comment-form")).not.toBeVisible();
     });
 
-    test("submit button is disabled when comment body is empty", async ({ page, daemon }) => {
+    test("submit button is disabled when comment body is empty", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       const review = mockCodeReviewDetail();
       const diff = mockDiffResponse();
       await setupCodeReviewMocks(page, review, diff);
@@ -793,7 +808,7 @@ test.describe("Code Diff Viewer", () => {
   test.describe("Inline Thread Rendering (AC-5)", () => {
     test("existing threads are shown inline at their anchored position in the diff", async ({
       page,
-      daemon,
+      daemon: _daemon,
     }) => {
       const threads = [
         mockCodeThread(
@@ -842,7 +857,7 @@ test.describe("Code Diff Viewer", () => {
       await expect(nitThread).toBeVisible();
     });
 
-    test("thread shows kind badge, author, and entry count", async ({ page, daemon }) => {
+    test("thread shows kind badge, author, and entry count", async ({ page, daemon: _daemon }) => {
       const threads = [
         mockCodeThread(
           "01THREAD00000000000003",
@@ -874,7 +889,7 @@ test.describe("Code Diff Viewer", () => {
       await expect(thread).toContainText("1 comment");
     });
 
-    test("file header shows thread count indicator", async ({ page, daemon }) => {
+    test("file header shows thread count indicator", async ({ page, daemon: _daemon }) => {
       const threads = [
         mockCodeThread(
           "01THREAD00000000000004",
@@ -913,7 +928,10 @@ test.describe("Code Diff Viewer", () => {
 
   // AC: @review-code-diff-viewer ac-6
   test.describe("Lazy Loading for 20+ Files (AC-6)", () => {
-    test("shows all file headers and stats immediately for 21+ files", async ({ page, daemon }) => {
+    test("shows all file headers and stats immediately for 21+ files", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       const review = mockCodeReviewDetail();
       const diff = mockLargeDiffResponse();
       await setupCodeReviewMocks(page, review, diff);
@@ -930,7 +948,7 @@ test.describe("Code Diff Viewer", () => {
       await expect(fileViews).toHaveCount(21);
     });
 
-    test("lazy-loads diff content when a file is expanded", async ({ page, daemon }) => {
+    test("lazy-loads diff content when a file is expanded", async ({ page, daemon: _daemon }) => {
       const review = mockCodeReviewDetail();
       const diff = mockLargeDiffResponse();
       await setupCodeReviewMocks(page, review, diff);

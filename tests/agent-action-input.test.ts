@@ -11,10 +11,9 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import * as path from "node:path";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
-import { AgentActionSchema, type AgentAction, type Action } from "../src/schema/action.js";
+import { AgentActionSchema, type Action } from "../src/schema/action.js";
 import {
   ActionExecutor,
-  resolveTemplateVars,
   buildDefaultAgentPrompt,
   type ActionEventContext,
   type ActionRunEvent,

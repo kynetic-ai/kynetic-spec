@@ -167,23 +167,23 @@ describe("validateEnumOption", () => {
 
 // ─── validateSpecRef ────────────────────────────────────────
 
+// Create a mock ReferenceIndex that resolves refs to ULIDs
+function createMockIndex(
+  mapping: Record<string, { ok: true; ulid: string } | { ok: false; error: string }>,
+): ReferenceIndex {
+  return {
+    resolve(ref: string) {
+      const cleanRef = ref.startsWith("@") ? ref.slice(1) : ref;
+      return mapping[cleanRef] || { ok: false, error: "not_found", ref };
+    },
+  } as any;
+}
+
 describe("validateSpecRef", () => {
   // Minimal mocks matching the interfaces used by validateSpecRef
   const mockTasks = [{ _ulid: "01TASK00000000000000000000", slugs: ["my-task"] }] as any[];
 
   const mockItems = [{ _ulid: "01SPEC00000000000000000000", slugs: ["my-spec"] }] as any[];
-
-  // Create a mock ReferenceIndex that resolves refs to ULIDs
-  function createMockIndex(
-    mapping: Record<string, { ok: true; ulid: string } | { ok: false; error: string }>,
-  ): ReferenceIndex {
-    return {
-      resolve(ref: string) {
-        const cleanRef = ref.startsWith("@") ? ref.slice(1) : ref;
-        return mapping[cleanRef] || { ok: false, error: "not_found", ref };
-      },
-    } as any;
-  }
 
   it("accepts valid spec ref", () => {
     const index = createMockIndex({

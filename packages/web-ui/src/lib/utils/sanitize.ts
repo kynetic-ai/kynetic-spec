@@ -1,4 +1,4 @@
-import DOMPurify from "isomorphic-dompurify";
+import { sanitize } from "isomorphic-dompurify";
 
 const ALLOWED_TAGS = [
   "p",
@@ -68,7 +68,7 @@ const SANITIZE_CONFIG = {
 
 export function sanitizeHtml(dirtyHtml: string): string {
   if (!dirtyHtml) return "";
-  const cleanHtml = DOMPurify.sanitize(dirtyHtml, SANITIZE_CONFIG) as string;
+  const cleanHtml = sanitize(dirtyHtml, SANITIZE_CONFIG) as string;
   return addExternalLinkSecurity(cleanHtml);
 }
 

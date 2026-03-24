@@ -81,7 +81,9 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           // Tag filter (optional, not in ACs but useful)
           if (query.tag) {
             const tagFilters = Array.isArray(query.tag) ? query.tag : [query.tag];
-            filtered = filtered.filter((task) => task.tags?.some((t) => tagFilters.includes(t)));
+            filtered = filtered.filter((task) =>
+              task.tags?.some((tag) => tagFilters.includes(tag)),
+            );
           }
 
           // Plan filter — show only tasks derived from a given plan

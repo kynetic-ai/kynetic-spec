@@ -15,7 +15,7 @@ import { test, expect } from "../fixtures/test-base";
 test.describe("Workflows View", () => {
   // AC: @ui-workflows-view ac-1
   test.describe("Workflow List Rendering", () => {
-    test("renders workflow cards from meta definitions", async ({ page, daemon }) => {
+    test("renders workflow cards from meta definitions", async ({ page, daemon: _daemon }) => {
       await page.goto("/workflows");
 
       // Wait for loading to finish
@@ -29,7 +29,7 @@ test.describe("Workflows View", () => {
     });
 
     // AC: @ui-workflows-view ac-1 — workflow id
-    test("workflow card shows id", async ({ page, daemon }) => {
+    test("workflow card shows id", async ({ page, daemon: _daemon }) => {
       await page.goto("/workflows");
       await expect(page.getByTestId("workflows-loading")).toHaveCount(0);
 
@@ -39,7 +39,7 @@ test.describe("Workflows View", () => {
     });
 
     // AC: @ui-workflows-view ac-1 — workflow description
-    test("workflow card shows description", async ({ page, daemon }) => {
+    test("workflow card shows description", async ({ page, daemon: _daemon }) => {
       await page.goto("/workflows");
       await expect(page.getByTestId("workflows-loading")).toHaveCount(0);
 
@@ -48,7 +48,7 @@ test.describe("Workflows View", () => {
     });
 
     // AC: @markdown-ui-adoption ac-4
-    test("workflow description renders markdown formatting", async ({ page, daemon }) => {
+    test("workflow description renders markdown formatting", async ({ page, daemon: _daemon }) => {
       await page.goto("/workflows");
       await expect(page.getByTestId("workflows-loading")).toHaveCount(0);
 
@@ -58,7 +58,7 @@ test.describe("Workflows View", () => {
     });
 
     // AC: @ui-workflows-view ac-1 — trigger type badge
-    test("workflow card shows trigger type", async ({ page, daemon }) => {
+    test("workflow card shows trigger type", async ({ page, daemon: _daemon }) => {
       await page.goto("/workflows");
       await expect(page.getByTestId("workflows-loading")).toHaveCount(0);
 
@@ -68,7 +68,7 @@ test.describe("Workflows View", () => {
     });
 
     // AC: @ui-workflows-view ac-1 — ordered steps with names
-    test("workflow card shows ordered steps", async ({ page, daemon }) => {
+    test("workflow card shows ordered steps", async ({ page, daemon: _daemon }) => {
       await page.goto("/workflows");
       await expect(page.getByTestId("workflows-loading")).toHaveCount(0);
 
@@ -87,7 +87,7 @@ test.describe("Workflows View", () => {
     });
 
     // AC: @ui-workflows-view ac-1 — Start button
-    test("workflow card shows Start button", async ({ page, daemon }) => {
+    test("workflow card shows Start button", async ({ page, daemon: _daemon }) => {
       await page.goto("/workflows");
       await expect(page.getByTestId("workflows-loading")).toHaveCount(0);
 
@@ -99,7 +99,7 @@ test.describe("Workflows View", () => {
     // AC: @ui-workflows-view ac-1 — Start button copies command to clipboard
     test("Start button copies workflow start command to clipboard", async ({
       page,
-      daemon,
+      daemon: _daemon,
       context,
     }) => {
       // Grant clipboard permissions
@@ -124,7 +124,10 @@ test.describe("Workflows View", () => {
   });
 
   test.describe("Loading and Empty States", () => {
-    test("shows loading skeleton that transitions to content", async ({ page, daemon }) => {
+    test("shows loading skeleton that transitions to content", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       // Navigate and verify the page transitions from loading to loaded content
       await page.goto("/workflows");
 
@@ -142,7 +145,7 @@ test.describe("Workflows View", () => {
       expect(hasList || hasEmpty).toBe(true);
     });
 
-    test("shows summary count after loading", async ({ page, daemon }) => {
+    test("shows summary count after loading", async ({ page, daemon: _daemon }) => {
       await page.goto("/workflows");
       await expect(page.getByTestId("workflows-loading")).toHaveCount(0);
 
@@ -153,7 +156,7 @@ test.describe("Workflows View", () => {
 
   test.describe("Step Type Icons", () => {
     // AC: @ui-workflows-view ac-1 — steps show type visually
-    test("check steps show on_fail text", async ({ page, daemon }) => {
+    test("check steps show on_fail text", async ({ page, daemon: _daemon }) => {
       await page.goto("/workflows");
       await expect(page.getByTestId("workflows-loading")).toHaveCount(0);
 
@@ -165,7 +168,7 @@ test.describe("Workflows View", () => {
     });
 
     // AC: @ui-workflows-view ac-1 — decision steps show options
-    test("decision steps show options", async ({ page, daemon }) => {
+    test("decision steps show options", async ({ page, daemon: _daemon }) => {
       await page.goto("/workflows");
       await expect(page.getByTestId("workflows-loading")).toHaveCount(0);
 

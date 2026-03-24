@@ -16,7 +16,6 @@ import {
   CronExpressionSchema,
   OverlapPolicySchema,
   MetaManifestSchema,
-  ActionSchema,
 } from "../src/schema/index.js";
 import { testUlid, setupTempFixtures, cleanupTempDir, kspec as kspecRun } from "./helpers/cli.js";
 

@@ -19,9 +19,7 @@ import {
   NotifyActionSchema,
   ActionRunSchema,
   ActionRunStatusSchema,
-  TEMPLATE_VAR_PATTERN,
   type Action,
-  type ActionRun,
 } from "../src/schema/action.js";
 import {
   ActionExecutor,
@@ -29,7 +27,6 @@ import {
   extractTemplateVars,
   validateActionTemplates,
   extractActionTemplates,
-  KNOWN_EVENT_FIELDS,
   type ActionEventContext,
   type ActionRunEvent,
 } from "../src/agent-runtime/action-executor.js";
@@ -430,7 +427,7 @@ describe("ActionExecutor", () => {
     it("resolves template variables in command and args", async () => {
       // Write a small script to verify the resolved value
       const scriptPath = path.join(tempDir, "echo-arg.sh");
-      await fs.writeFile(scriptPath, '#!/bin/sh\necho "$1" > ' + path.join(tempDir, "output.txt"), {
+      await fs.writeFile(scriptPath, `#!/bin/sh\necho "$1" > ${path.join(tempDir, "output.txt")}`, {
         mode: 0o755,
       });
 
@@ -462,7 +459,7 @@ exit 0`,
         { mode: 0o755 },
       );
 
-      const kspecExecutor = new ActionExecutor({
+      const _kspecExecutor = new ActionExecutor({
         projectDir: tempDir,
         kspecCliPath: scriptPath,
         onActionRunEvent: (event) => events.push(event),
@@ -517,7 +514,7 @@ process.exit(0);`,
       const nodeScriptPath = path.join(tempDir, "mock-kspec-slow.cjs");
       await fs.writeFile(nodeScriptPath, `setTimeout(() => process.exit(0), 60000);`);
 
-      const kspecExecutor = new ActionExecutor({
+      const _kspecExecutor = new ActionExecutor({
         projectDir: tempDir,
         kspecCliPath: nodeScriptPath,
         onActionRunEvent: (event) => events.push(event),

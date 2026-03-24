@@ -53,7 +53,7 @@ import {
 import { errors } from "../../strings/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { describeEnumValues } from "../enum-help.js";
-import { error, info, isJsonMode, output, success, warn } from "../output.js";
+import { error, info, isJsonMode, output, success } from "../output.js";
 import { formatRelativeTime as formatRelativeTimeUtil } from "../../utils/time.js";
 import { validateEnumOption } from "../validators.js";
 
@@ -167,7 +167,7 @@ function formatSubject(subject: ReviewSubject): string {
  */
 function buildReviewOutput(
   review: LoadedReviewRecord,
-  reviews: LoadedReviewRecord[],
+  _reviews: LoadedReviewRecord[],
 ): Record<string, unknown> {
   const threadState = computeThreadState(review);
   return {
@@ -199,7 +199,7 @@ function buildReviewOutput(
  * AC: @review-cli-commands ac-2
  */
 function formatReviewDetails(review: LoadedReviewRecord, reviews: LoadedReviewRecord[]): void {
-  const shortRef = shortReviewRef(review, reviews);
+  const _shortRef = shortReviewRef(review, reviews);
   const disposition = computeDisposition(review);
   const gateState = computeGateState(review);
   const threadState = computeThreadState(review);
@@ -254,7 +254,7 @@ function formatReviewDetails(review: LoadedReviewRecord, reviews: LoadedReviewRe
       console.log(`  ${resolved} [${thread.kind}]${anchor} (${thread.entries.length} entries)`);
       if (thread.entries.length > 0) {
         const first = thread.entries[0];
-        const body = first.body.length > 80 ? first.body.slice(0, 77) + "..." : first.body;
+        const body = first.body.length > 80 ? `${first.body.slice(0, 77)}...` : first.body;
         console.log(`    ${first.author}: ${body}`);
       }
     }
@@ -455,7 +455,7 @@ function parseSubjectFromOptions(options: Record<string, unknown>): ReviewSubjec
 // --- Command Registration ---
 
 export function registerReviewCommands(program: Command): void {
-  const review = program.command("review").description("Manage first-party review records");
+  const reviewCmd = program.command("review").description("Manage first-party review records");
 
   // --- review add ---
   // AC: @review-cli-creation-and-query ac-1, ac-2, ac-5
@@ -539,7 +539,7 @@ export function registerReviewCommands(program: Command): void {
   // --- review get ---
   // AC: @review-cli-creation-and-query ac-3
   // AC: @review-cli-commands ac-2
-  review
+  reviewCmd
     .command("get <ref>")
     .description("Show review details")
     .action(async (ref: string) => {
@@ -560,7 +560,7 @@ export function registerReviewCommands(program: Command): void {
   // --- review list ---
   // AC: @review-cli-creation-and-query ac-4
   // AC: @trait-filterable-list ac-1, ac-3, ac-4, ac-5, ac-6, ac-7, ac-8
-  review
+  reviewCmd
     .command("list")
     .description("List review records")
     .option("--status <status>", "Filter by lifecycle state (draft, open, closed, archived)")
@@ -799,7 +799,7 @@ export function registerReviewCommands(program: Command): void {
             ],
           };
 
-          const updated = await mutateReviewAtomically(ctx, found, (latest) => ({
+          const _updated = await mutateReviewAtomically(ctx, found, (latest) => ({
             ...latest,
             threads: [...latest.threads, newThread],
             events: [
@@ -863,7 +863,7 @@ export function registerReviewCommands(program: Command): void {
 
           const entryId = ulid();
 
-          const updated = await mutateReviewAtomically(ctx, found, (latest) => {
+          const _updated = await mutateReviewAtomically(ctx, found, (latest) => {
             const threads = [...latest.threads];
             threads[threadIndex] = {
               ...threads[threadIndex],
@@ -960,7 +960,7 @@ export function registerReviewCommands(program: Command): void {
             completed_at: statusResult.value !== "running" ? now : null,
           };
 
-          const updated = await mutateReviewAtomically(ctx, found, (latest) => ({
+          const _updated = await mutateReviewAtomically(ctx, found, (latest) => ({
             ...latest,
             checks: [...latest.checks, newCheck],
             events: [
@@ -1027,7 +1027,7 @@ export function registerReviewCommands(program: Command): void {
           const shouldAutoClose =
             options.decision === "approve" || options.decision === "request_changes";
 
-          const updated = await mutateReviewAtomically(ctx, found, (latest) => {
+          const _updated = await mutateReviewAtomically(ctx, found, (latest) => {
             const withVerdict = submitVerdict(latest, {
               reviewer,
               decision: options.decision as ReviewVerdictDecision,
@@ -1129,7 +1129,7 @@ export function registerReviewCommands(program: Command): void {
             );
           }
 
-          const updated = await mutateReviewAtomically(ctx, found, (latest) => {
+          const _updated = await mutateReviewAtomically(ctx, found, (latest) => {
             const threads = [...latest.threads];
             threads[threadIndex] = {
               ...threads[threadIndex],
@@ -1209,7 +1209,7 @@ export function registerReviewCommands(program: Command): void {
             );
           }
 
-          const updated = await mutateReviewAtomically(ctx, found, (latest) => {
+          const _updated = await mutateReviewAtomically(ctx, found, (latest) => {
             const threads = [...latest.threads];
             threads[threadIndex] = {
               ...threads[threadIndex],
@@ -1276,7 +1276,7 @@ export function registerReviewCommands(program: Command): void {
             );
           }
 
-          const updated = await mutateReviewAtomically(ctx, found, (latest) => ({
+          const _updated = await mutateReviewAtomically(ctx, found, (latest) => ({
             ...latest,
             lifecycle_state: "open" as ReviewLifecycleState,
             events: [
@@ -1338,7 +1338,7 @@ export function registerReviewCommands(program: Command): void {
             );
           }
 
-          const updated = await mutateReviewAtomically(ctx, found, (latest) => ({
+          const _updated = await mutateReviewAtomically(ctx, found, (latest) => ({
             ...latest,
             lifecycle_state: "closed" as ReviewLifecycleState,
             events: [
@@ -1395,7 +1395,7 @@ export function registerReviewCommands(program: Command): void {
             );
           }
 
-          const updated = await mutateReviewAtomically(ctx, found, (latest) => ({
+          const _updated = await mutateReviewAtomically(ctx, found, (latest) => ({
             ...latest,
             lifecycle_state: "archived" as ReviewLifecycleState,
             events: [
@@ -1450,7 +1450,7 @@ export function registerReviewCommands(program: Command): void {
             );
           }
 
-          const updated = await mutateReviewAtomically(ctx, found, (latest) => {
+          const _updated = await mutateReviewAtomically(ctx, found, (latest) => {
             const subject = { ...latest.subject } as Record<string, unknown>;
             const previousHead = (subject as { head_commit: string }).head_commit;
             subject.head_commit = options.head;
@@ -1490,7 +1490,7 @@ export function registerReviewCommands(program: Command): void {
 
   // --- review for-task ---
   // AC: @review-cli-task-linkage ac-1, ac-2
-  review
+  reviewCmd
     .command("for-task <ref>")
     .description("Find reviews linked to a task")
     .action(async (ref: string) => {

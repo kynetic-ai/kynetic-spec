@@ -17,7 +17,7 @@ import type { ReviewRecord, ReviewVerdictDecision } from "../schema/index.js";
 import type { KspecContext, LoadedTask } from "./yaml.js";
 import { createNote, getAuthor } from "./yaml.js";
 import { resolveTaskDataManager } from "./task-data-manager.js";
-import { findReviewByRef, loadReviewRecords, type LoadedReviewRecord } from "./reviews.js";
+import { findReviewByRef, type LoadedReviewRecord } from "./reviews.js";
 
 /**
  * Result of linking a review to task(s).

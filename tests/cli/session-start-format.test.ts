@@ -59,6 +59,7 @@ import type { SessionContext } from "../helpers/session-types";
  */
 function seedCompletedTasks(dir: string, count: number): void {
   const tasksFile = join(dir, "project.tasks.yaml");
+  // oxlint-disable-next-line no-source-scanning/no-source-file-reads -- reading test fixture data, not source code
   const existing = yamlParse(readFileSync(tasksFile, "utf8")) as { tasks: unknown[] };
   const ulids = testUlids("TMLN", count);
 
@@ -95,6 +96,7 @@ function seedCompletedTasks(dir: string, count: number): void {
  */
 function seedTasksWithNotes(dir: string): void {
   const tasksFile = join(dir, "project.tasks.yaml");
+  // oxlint-disable-next-line no-source-scanning/no-source-file-reads -- reading test fixture data, not source code
   const existing = yamlParse(readFileSync(tasksFile, "utf8")) as { tasks: unknown[] };
   const taskUlids = testUlids("STRV", 7);
   const noteUlids = testUlids("SNOT", 7);
@@ -397,7 +399,7 @@ describe("session start format rewrite", () => {
 
     // AC: @cmd-session-start ac-slug-fallback — inbox always uses @short-ulid
     it("should use @short-ulid for inbox items (no slug schema)", () => {
-      const result = kspec("session start --full", tempDir);
+      kspec("session start --full", tempDir);
       // Inbox items don't have slugs — they use short ULID refs
       // If there are inbox items they should show @ refs
       const session = kspecJson<SessionContext>("session start --json", tempDir);

@@ -18,7 +18,7 @@ import {
   type LoadedSchedule,
 } from "../../parser/index.js";
 import { commitIfShadow } from "../../parser/shadow.js";
-import { ScheduleSchema, type Schedule } from "../../schema/schedules.js";
+import { ScheduleSchema } from "../../schema/schedules.js";
 import { ACTION_TYPES } from "../../schema/action.js";
 import { markMutating } from "../command-annotations.js";
 import { EXIT_CODES } from "../exit-codes.js";

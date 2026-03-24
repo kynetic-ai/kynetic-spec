@@ -7,12 +7,7 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { beforeAll, afterAll, describe, expect, it } from "vitest";
-import {
-  calculateExportStats,
-  formatBytes,
-  generateJsonSnapshot,
-  type KspecSnapshot,
-} from "../../src/export/index.js";
+import { calculateExportStats, formatBytes, generateJsonSnapshot } from "../../src/export/index.js";
 import { setupTempFixtures, cleanupTempDir } from "../helpers/cli.js";
 
 describe("JSON Export", () => {

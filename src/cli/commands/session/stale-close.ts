@@ -12,7 +12,6 @@ import {
   resolveStaleSessionCriteria,
   selectStaleActiveSessions,
   type StaleSessionEvaluation,
-  type StaleSessionSkipped,
 } from "../../../sessions/store.js";
 import { EXIT_CODES } from "../../exit-codes.js";
 import { error, isJsonMode, output } from "../../output.js";

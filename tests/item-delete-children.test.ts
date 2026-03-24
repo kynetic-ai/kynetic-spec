@@ -109,6 +109,7 @@ describe("Item Delete with Children", () => {
   });
 
   // AC: @spec-item-delete-children ac-6
+  // oxlint-disable-next-line jest/no-disabled-tests -- pending git initialization support in test fixtures
   it.skip("should create single shadow commit when cascade deletes multiple items", () => {
     // TODO: This test requires git initialization which is complex in test fixtures
     // The implementation does create a single shadow commit, but testing it requires
@@ -116,6 +117,7 @@ describe("Item Delete with Children", () => {
   });
 
   // AC: @spec-item-delete-children ac-7
+  // oxlint-disable-next-line jest/no-disabled-tests -- pending CLI support for trait implementor relationships
   it.skip("should error when deleting trait with implementors", () => {
     // TODO: Implement this test once we have CLI support for adding "uses" relationships
     // or a proper way to test trait implementors

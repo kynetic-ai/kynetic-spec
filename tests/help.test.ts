@@ -174,7 +174,7 @@ describe("formatCommandUsage", () => {
 
   it("should format subcommand correctly", () => {
     const program = new Command().name("test");
-    const add = program.command("add").argument("<title>").option("-f, --force");
+    const _add = program.command("add").argument("<title>").option("-f, --force");
 
     const tree = extractCommandTree(program);
     const addTree = tree.subcommands[0];
@@ -186,7 +186,7 @@ describe("formatCommandUsage", () => {
   it("should format nested subcommand with full path", () => {
     const program = new Command().name("test");
     const task = program.command("task");
-    const add = task.command("add").argument("<title>");
+    const _add = task.command("add").argument("<title>");
 
     const tree = extractCommandTree(program);
     const addTree = tree.subcommands[0].subcommands[0];
@@ -290,6 +290,7 @@ describe("CLI schema introspection", () => {
     expect(() => JSON.parse(result.stdout)).not.toThrow();
 
     // Should not contain ANSI escape codes
+    // oxlint-disable-next-line eslint/no-control-regex -- intentionally matching ANSI escape sequence
     expect(result.stdout).not.toMatch(/\x1b\[/);
     await cleanupTempDir(tempDir);
   });

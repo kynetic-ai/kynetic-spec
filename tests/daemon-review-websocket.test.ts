@@ -510,7 +510,12 @@ reviews:
     expect(payload).toHaveProperty("thread_ulid");
     expect(payload).toHaveProperty("kind");
     expect(payload).toHaveProperty("author");
-    expect(Object.keys(payload).toSorted()).toEqual(["author", "kind", "review_ulid", "thread_ulid"]);
+    expect(Object.keys(payload).toSorted()).toEqual([
+      "author",
+      "kind",
+      "review_ulid",
+      "thread_ulid",
+    ]);
   });
 
   it("should broadcast check_added with ReviewCheckAddedEventData shape", async () => {

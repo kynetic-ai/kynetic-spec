@@ -269,9 +269,9 @@ function formatSkillDetails(skill: LoadedSkill, content: string | null): void {
 /**
  * Register CRUD skill commands (list, add, get, set, delete, import)
  */
-export function registerSkillCrudCommands(skill: Command): void {
+export function registerSkillCrudCommands(skillCmd: Command): void {
   // AC: @skill-cli ac-1, ac-2 - kspec skill list
-  skill
+  skillCmd
     .command("list")
     .description("List all skills")
     .option("--origin <origin>", "Filter by origin (core, project, local)")
@@ -399,7 +399,7 @@ export function registerSkillCrudCommands(skill: Command): void {
 
           try {
             initialContent = await fs.readFile(contentFilePath, "utf-8");
-          } catch  {
+          } catch {
             // Clean up: remove the skill we just created
             await deleteMetaItem(ctx, skill._ulid, "skill");
             error(`Failed to read content file: ${contentFilePath}`);
@@ -422,7 +422,7 @@ export function registerSkillCrudCommands(skill: Command): void {
     });
 
   // AC: @skill-cli ac-5, ac-6 - kspec skill get
-  skill
+  skillCmd
     .command("get <ref>")
     .description("Show skill details")
     .action(async (ref: string) => {
@@ -669,7 +669,7 @@ export function registerSkillCrudCommands(skill: Command): void {
             const validPlatformConfigKeys = Object.entries(PLATFORM_CONFIG_GUIDANCE_SCHEMAS)
               .map(([platform, schema]) => `  ${platform}: ${Object.keys(schema.shape).join(", ")}`)
               .join("\n");
-            errorMsg += `\n\nValid platform config keys:` + `\n${validPlatformConfigKeys}`;
+            errorMsg += `\n\nValid platform config keys:\n${validPlatformConfigKeys}`;
           }
 
           error(errorMsg);

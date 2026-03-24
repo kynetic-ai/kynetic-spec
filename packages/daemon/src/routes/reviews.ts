@@ -85,7 +85,8 @@ const VALID_CODE_ANCHOR_SIDES = ReviewCodeAnchorSideSchema.options;
 const VALID_REVIEW_SUBJECT_TYPES = ReviewSubjectSchema.options.map(
   (option) => option.shape.type.value,
 );
-const VALID_LIFECYCLE_TARGETS: readonly ReviewLifecycleState[] = ReviewLifecycleStateSchema.options.filter((state) => state !== "draft");
+const VALID_LIFECYCLE_TARGETS: readonly ReviewLifecycleState[] =
+  ReviewLifecycleStateSchema.options.filter((state) => state !== "draft");
 
 /**
  * Build a ReviewSummary from a full ReviewRecord.
@@ -551,7 +552,7 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
           }
 
           // Check thread exists
-          const thread = review.threads.find((t) => t._ulid === params.threadId);
+          const thread = review.threads.find((th) => th._ulid === params.threadId);
           if (!thread) {
             // AC: @review-records-daemon-api ac-10 - actionable error for invalid thread
             return errorResponse(404, {

@@ -74,7 +74,7 @@ function createTestSnapshot() {
             id: "ac-1",
             given: "user has valid credentials",
             when: "user submits login form",
-            then: "user is authenticated",
+            then: "user is authenticated", // oxlint-disable-line unicorn/no-thenable
           },
         ],
         children: [],

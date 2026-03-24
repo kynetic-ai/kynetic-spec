@@ -179,6 +179,7 @@ describe("ac-2: causation and correlation chain tracking", () => {
   });
 
   it("should use causation_id as correlation fallback when cause not in ring buffer", () => {
+    // oxlint-disable-next-line no-shadow -- test-local bus with different config
     const bus = new EventBus({ ringBufferCapacity: 1 });
 
     // Emit and fill ring buffer to evict
@@ -284,6 +285,7 @@ describe("ac-3: task event dedup", () => {
   });
 
   it("should allow same task event after dedup window expires", async () => {
+    // oxlint-disable-next-line no-shadow -- test-local bus with different config
     const bus = new EventBus({ dedupWindowMs: 50 });
 
     const emitTaskEvent = () =>

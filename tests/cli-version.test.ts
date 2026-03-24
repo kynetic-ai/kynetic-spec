@@ -10,6 +10,7 @@ import { CLI_PATH } from "./helpers/cli.js";
 
 // Read the actual version from package.json
 const packageJsonPath = path.join(__dirname, "..", "package.json");
+// oxlint-disable-next-line no-source-scanning/no-source-file-reads -- Reading package.json version for CLI output verification
 const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"));
 const expectedVersion = packageJson.version;
 

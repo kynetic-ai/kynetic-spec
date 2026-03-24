@@ -17,7 +17,7 @@ import { test, expect } from "../fixtures/test-base";
 
 test.describe("Task Board (Kanban)", () => {
   // AC: @ui-task-board ac-1
-  test("renders board with five columns", async ({ page, daemon }) => {
+  test("renders board with five columns", async ({ page, daemon: _daemon }) => {
     await page.goto("/tasks/board");
 
     // Wait for board to load
@@ -29,7 +29,10 @@ test.describe("Task Board (Kanban)", () => {
   });
 
   // AC: @ui-task-board ac-1
-  test("distributes tasks into correct columns based on status", async ({ page, daemon }) => {
+  test("distributes tasks into correct columns based on status", async ({
+    page,
+    daemon: _daemon,
+  }) => {
     await page.goto("/tasks/board");
 
     const boardColumns = page.getByTestId("board-columns");
@@ -46,7 +49,7 @@ test.describe("Task Board (Kanban)", () => {
   // AC: @ui-task-board ac-2
   test("task card shows priority badge, tag chips, title, slug, spec ref link, and metadata", async ({
     page,
-    daemon,
+    daemon: _daemon,
   }) => {
     await page.goto("/tasks/board");
 
@@ -80,7 +83,7 @@ test.describe("Task Board (Kanban)", () => {
   });
 
   // AC: @ui-task-board ac-3
-  test("clicking a task card opens the detail modal", async ({ page, daemon }) => {
+  test("clicking a task card opens the detail modal", async ({ page, daemon: _daemon }) => {
     await page.goto("/tasks/board");
 
     // Click first task card
@@ -103,7 +106,7 @@ test.describe("Task Board (Kanban)", () => {
   // AC: @ui-task-board ac-3
   test("detail modal shows full task info: type, deps, todos, automation, VCS, plan, session", async ({
     page,
-    daemon,
+    daemon: _daemon,
   }) => {
     await page.goto("/tasks/board");
 
@@ -171,7 +174,10 @@ test.describe("Task Board (Kanban)", () => {
   });
 
   // AC: @markdown-ui-adoption ac-1
-  test("renders task description markdown in the detail modal", async ({ page, daemon }) => {
+  test("renders task description markdown in the detail modal", async ({
+    page,
+    daemon: _daemon,
+  }) => {
     await page.goto("/tasks/board");
 
     const backlogColumn = page.locator('[data-column-id="backlog"]');
@@ -186,7 +192,7 @@ test.describe("Task Board (Kanban)", () => {
   });
 
   // AC: @markdown-ui-adoption ac-2
-  test("renders task note markdown in the detail modal", async ({ page, daemon }) => {
+  test("renders task note markdown in the detail modal", async ({ page, daemon: _daemon }) => {
     await page.goto("/tasks/board");
 
     const inProgressColumn = page.locator('[data-column-id="in_progress"]');
@@ -227,7 +233,7 @@ test.describe("Task Board (Kanban)", () => {
     const backlogColumn = page.locator('[data-column-id="backlog"]');
     await expect(backlogColumn).toBeVisible();
     const taskCards = backlogColumn.getByTestId("task-card");
-    const initialBacklogCount = await taskCards.count();
+    const _initialBacklogCount = await taskCards.count();
 
     // Start a pending task via API directly (simulating external state change)
     // Use the ready task which is in pending status
@@ -246,7 +252,10 @@ test.describe("Task Board (Kanban)", () => {
   });
 
   // AC: @ui-task-board ac-6
-  test("Start action button transitions pending task to in_progress", async ({ page, daemon }) => {
+  test("Start action button transitions pending task to in_progress", async ({
+    page,
+    daemon: _daemon,
+  }) => {
     await page.goto("/tasks/board");
     await expect(page.getByTestId("board-columns")).toBeVisible();
 
@@ -276,7 +285,7 @@ test.describe("Task Board (Kanban)", () => {
   // AC: @ui-task-board ac-6
   test("Submit action button transitions in_progress task to pending_review", async ({
     page,
-    daemon,
+    daemon: _daemon,
   }) => {
     await page.goto("/tasks/board");
     await expect(page.getByTestId("board-columns")).toBeVisible();
@@ -303,7 +312,7 @@ test.describe("Task Board (Kanban)", () => {
   });
 
   // AC: @ui-task-board ac-6
-  test("Add Note action adds a note to the task", async ({ page, daemon }) => {
+  test("Add Note action adds a note to the task", async ({ page, daemon: _daemon }) => {
     await page.goto("/tasks/board");
     await expect(page.getByTestId("board-columns")).toBeVisible();
 
@@ -336,7 +345,10 @@ test.describe("Task Board (Kanban)", () => {
   });
 
   // AC: @ui-task-board ac-6
-  test("Complete action transitions task to completed with reason", async ({ page, daemon }) => {
+  test("Complete action transitions task to completed with reason", async ({
+    page,
+    daemon: _daemon,
+  }) => {
     await page.goto("/tasks/board");
     await expect(page.getByTestId("board-columns")).toBeVisible();
 
@@ -372,7 +384,10 @@ test.describe("Task Board (Kanban)", () => {
   });
 
   // AC: @ui-task-board ac-6
-  test("Block action transitions task to blocked with reason", async ({ page, daemon }) => {
+  test("Block action transitions task to blocked with reason", async ({
+    page,
+    daemon: _daemon,
+  }) => {
     await page.goto("/tasks/board");
     await expect(page.getByTestId("board-columns")).toBeVisible();
 
@@ -408,7 +423,10 @@ test.describe("Task Board (Kanban)", () => {
   });
 
   // AC: @ui-task-board ac-4
-  test("active fleet row is hidden when no agents are running", async ({ page, daemon }) => {
+  test("active fleet row is hidden when no agents are running", async ({
+    page,
+    daemon: _daemon,
+  }) => {
     await page.goto("/tasks/board");
 
     // Wait for board to load
@@ -423,7 +441,7 @@ test.describe("Task Board (Kanban)", () => {
   // AC: @ui-task-board ac-4
   test("active fleet row shows running agents with title, agent name, elapsed, output, and pulse", async ({
     page,
-    daemon,
+    daemon: _daemon,
   }) => {
     const mockAgentStatus = {
       dispatch_enabled: true,
@@ -480,7 +498,7 @@ test.describe("Task Board (Kanban)", () => {
   // AC: @ui-task-board ac-4
   test("active fleet row shows last few lines of output from WebSocket", async ({
     page,
-    daemon,
+    daemon: _daemon,
   }) => {
     const mockAgentStatus = {
       dispatch_enabled: true,
@@ -563,7 +581,10 @@ test.describe("Task Board (Kanban)", () => {
   // AC: @ui-task-board ac-7
   // AC: @ui-url-panel-state ac-1 — opens modal via click, URL updated with goto()
   // AC: @ui-url-panel-state ac-2 — dismiss removes ?ref= via goto(), modal stays closed
-  test("closing detail modal removes ?ref= query param from URL", async ({ page, daemon }) => {
+  test("closing detail modal removes ?ref= query param from URL", async ({
+    page,
+    daemon: _daemon,
+  }) => {
     await page.goto("/tasks/board");
     await expect(page.getByTestId("board-columns")).toBeVisible();
 
@@ -594,7 +615,7 @@ test.describe("Task Board (Kanban)", () => {
   // AC: @ui-url-panel-state ac-3 — deep-link via ?ref=, dismiss works on first attempt
   test("closing detail modal opened via URL param removes ?ref= and stays closed", async ({
     page,
-    daemon,
+    daemon: _daemon,
   }) => {
     // Navigate directly with ?ref= param to open modal
     await page.goto("/tasks/board?ref=01KG0RR8CB8N4YGP991WD7XS9R");
@@ -620,7 +641,7 @@ test.describe("Task Board (Kanban)", () => {
   // AC: @ui-url-panel-state ac-3 — deep-link via ?ref=, dismiss works and panel stays closed
   test("can reopen same task after closing modal opened via URL param", async ({
     page,
-    daemon,
+    daemon: _daemon,
   }) => {
     // Open modal via URL param
     await page.goto("/tasks/board?ref=01KG0RR8CB8N4YGP991WD7XS9R");
@@ -643,7 +664,7 @@ test.describe("Task Board (Kanban)", () => {
   });
 
   // View toggle navigation
-  test("view toggle navigates between board and list views", async ({ page, daemon }) => {
+  test("view toggle navigates between board and list views", async ({ page, daemon: _daemon }) => {
     await page.goto("/tasks/board");
 
     // Wait for board to load

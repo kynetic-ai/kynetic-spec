@@ -22,7 +22,7 @@ import {
   validateEventType,
 } from "../../schema/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
-import { error, isJsonMode, output, warn } from "../output.js";
+import { error, isJsonMode, output } from "../output.js";
 import { PidFileManager } from "../pid-utils.js";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────

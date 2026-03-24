@@ -980,7 +980,8 @@ export async function compactSessionEvents(
       parsed = JSON.parse(line);
     } catch (err: unknown) {
       throw new Error(
-        `Invalid JSON in events log at line ${i + 1}: ${err instanceof Error ? err.message : String(err)}`, { cause: err },
+        `Invalid JSON in events log at line ${i + 1}: ${err instanceof Error ? err.message : String(err)}`,
+        { cause: err },
       );
     }
 
@@ -3018,7 +3019,8 @@ export async function injectClaudeCodeEnv(sessionId: string): Promise<EnvInjecti
     } else {
       throw new Error(
         `Cannot inject env: .claude/settings.local.json exists but is not valid JSON. ` +
-          `Fix the file manually or remove it, then retry.`, { cause: err },
+          `Fix the file manually or remove it, then retry.`,
+        { cause: err },
       );
     }
   }
@@ -3147,7 +3149,8 @@ export async function injectCodexEnv(sessionId: string): Promise<EnvInjectionRes
     } else {
       throw new Error(
         `Cannot inject env: ~/.codex/config.toml exists but is not valid TOML. ` +
-          `Fix the file manually or remove it, then retry.`, { cause: err },
+          `Fix the file manually or remove it, then retry.`,
+        { cause: err },
       );
     }
   }

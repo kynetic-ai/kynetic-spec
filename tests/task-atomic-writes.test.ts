@@ -36,7 +36,6 @@ import {
   createTempDir,
   initGitRepo,
   readTestOutput,
-  testUlid,
   testUlids,
 } from "./helpers/cli.js";
 
@@ -301,7 +300,7 @@ describe("Atomic Multi-File Task Writes", () => {
       // Monkey-patch the manager to inject a failure after the backend
       // queues deletions but before flush completes. We do this by
       // activating a buffer that will throw on flush.
-      const realFlush = (await import("../src/cli/batch-write-buffer.js")).WriteBuffer.prototype
+      const _realFlush = (await import("../src/cli/batch-write-buffer.js")).WriteBuffer.prototype
         .flush;
       const { WriteBuffer } = await import("../src/cli/batch-write-buffer.js");
       const originalFlush = WriteBuffer.prototype.flush;
@@ -628,7 +627,7 @@ describe("Atomic Multi-File Task Writes", () => {
       await createSplitTask(ctx, ulidB, "concurrent-b", { status: "pending" });
 
       // Mutation A: will throw after a short delay
-      const mutationA = manager.mutateTask(ctx, `@${ulidA}`, async (task) => {
+      const mutationA = manager.mutateTask(ctx, `@${ulidA}`, async (_task) => {
         // Yield to let mutation B start concurrently
         await new Promise((r) => setTimeout(r, 10));
         throw new Error("Simulated failure in mutation A");

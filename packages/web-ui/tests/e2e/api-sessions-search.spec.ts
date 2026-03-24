@@ -50,7 +50,7 @@ function writeSession(
 
   writeFileSync(
     join(sessionDir, "events.jsonl"),
-    opts.events
+    `${opts.events
       .map((event, index) =>
         JSON.stringify({
           seq: index,
@@ -60,7 +60,7 @@ function writeSession(
           data: { message: event.text },
         }),
       )
-      .join("\n") + "\n",
+      .join("\n")}\n`,
   );
 }
 

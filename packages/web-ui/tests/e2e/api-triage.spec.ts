@@ -41,19 +41,19 @@ const FIXTURE_TRIAGE_PENDING_ULID = "01KJC3NZHCBKZMDKQNZ28JNRG2";
 
 // Inbox item ULIDs from project.inbox.yaml (used for POST /api/triage)
 const INBOX_ITEM_1_ULID = "01KJNBX0CA45ZT43W2T6HJMVA1"; // First inbox item — already has a triage record
-const INBOX_ITEM_2_ULID = "01KJNBX1CC9N4YGP991WD7XS8S"; // Second inbox item — already acted_on
-const INBOX_ITEM_3_ULID = "01KJNBX2CB8N4YGP991WD7XS9R"; // Third inbox item — pending triage record
+const _INBOX_ITEM_2_ULID = "01KJNBX1CC9N4YGP991WD7XS8S"; // Second inbox item — already acted_on
+const _INBOX_ITEM_3_ULID = "01KJNBX2CB8N4YGP991WD7XS9R"; // Third inbox item — pending triage record
 
 async function subscribeToTriageUpdates(
   page: import("@playwright/test").Page,
   baseUrl: string,
   wsUrl: string,
 ): Promise<void> {
-  await page.goto(baseUrl + "/api/health");
+  await page.goto(`${baseUrl}/api/health`);
 
-  await page.evaluate((wsUrl: string) => {
+  await page.evaluate((evaluateWsUrl: string) => {
     return new Promise<void>((resolve, reject) => {
-      const ws = new WebSocket(wsUrl);
+      const ws = new WebSocket(evaluateWsUrl);
       (window as unknown as Record<string, unknown>).__triageWs = ws;
 
       const timeout = setTimeout(() => {
@@ -61,6 +61,7 @@ async function subscribeToTriageUpdates(
         reject(new Error("Timed out connecting/subscribing to triage:updates"));
       }, 5000);
 
+      // oxlint-disable-next-line unicorn/prefer-add-event-listener
       ws.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
@@ -88,12 +89,13 @@ async function subscribeToTriageUpdates(
         }
       };
 
+      // oxlint-disable-next-line unicorn/prefer-add-event-listener
       ws.onerror = () => {
         clearTimeout(timeout);
         reject(new Error("WebSocket error while subscribing to triage:updates"));
       };
     });
-  }, wsUrl + "/ws");
+  }, `${wsUrl}/ws`);
 }
 
 async function waitForTriageBroadcast(

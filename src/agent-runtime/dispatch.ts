@@ -27,12 +27,7 @@ import { loadProjectConfig, resolveDispatchRemoteSync } from "../parser/config.j
 import type { InvocationOptions, InvocationResult } from "./invocation.js";
 import { SessionEventAccumulator } from "./session-event-accumulator.js";
 import type { SessionEventData } from "./session-event-types.js";
-import {
-  EventBus,
-  type EventBusOptions,
-  type EventEnvelope,
-  type EmitOptions,
-} from "./event-bus.js";
+import { EventBus, type EventBusOptions } from "./event-bus.js";
 import { interpolateTemplate, rewriteSkillReferencesForAdapter } from "./prompts.js";
 import { getAdapter } from "../agents/adapters.js";
 import {
@@ -122,7 +117,7 @@ export type TaskStatus =
  * Mapping from dispatch event names to task statuses.
  * AC: @agent-dispatch-engine ac-1
  */
-const EVENT_TO_STATUS: Record<string, TaskStatus> = {
+const _EVENT_TO_STATUS: Record<string, TaskStatus> = {
   "task.in_progress": "in_progress",
   "task.ready": "pending",
   "task.needs_work": "needs_work",
@@ -1103,7 +1098,7 @@ export class DispatchEngine {
    *
    * AC: @agent-dispatch-engine ac-5
    */
-  async handleFileChange(specDir: string): Promise<void> {
+  async handleFileChange(_specDir: string): Promise<void> {
     if (!this.running) return;
 
     try {

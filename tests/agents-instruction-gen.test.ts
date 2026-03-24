@@ -290,7 +290,7 @@ describe("Agent Instruction Generation", () => {
       expect(legacyHash).not.toBe(currentHash);
       await fs.writeFile(
         hashPath,
-        JSON.stringify({ ...hashData, metaHash: legacyHash }, null, 2) + "\n",
+        `${JSON.stringify({ ...hashData, metaHash: legacyHash }, null, 2)}\n`,
         "utf-8",
       );
 
@@ -501,6 +501,7 @@ describe("Agent Instruction Generation", () => {
         for (const file of templateFiles) {
           const templateContent = await fs.readFile(path.join(templateDir, file), "utf-8");
           const headingMatch = templateContent.match(/^## (.+)$/m);
+          // oxlint-disable-next-line jest/valid-expect -- vitest supports custom message as 2nd arg
           expect(headingMatch, `Template ${file} should have a ## heading`).toBeTruthy();
           expect(content).toContain(headingMatch![0]);
         }
@@ -552,6 +553,7 @@ describe("Agent Instruction Generation", () => {
           const templateContent = await fs.readFile(path.join(templateDir, file), "utf-8");
           // Each template's heading must appear in the generated output
           const headingMatch = templateContent.match(/^## (.+)$/m);
+          // oxlint-disable-next-line jest/valid-expect -- vitest supports custom message as 2nd arg
           expect(headingMatch, `Template ${file} should have a ## heading`).toBeTruthy();
           expect(content).toContain(headingMatch![0]);
 

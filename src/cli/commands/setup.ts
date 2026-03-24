@@ -486,7 +486,7 @@ async function installAiderConfig(author: string): Promise<boolean> {
 /**
  * Install KSPEC_AUTHOR for generic JSON config files
  */
-async function installGenericJsonConfig(configPath: string, author: string): Promise<boolean> {
+async function _installGenericJsonConfig(configPath: string, author: string): Promise<boolean> {
   try {
     const configDir = path.dirname(configPath);
     await fs.mkdir(configDir, { recursive: true });
@@ -984,7 +984,7 @@ async function generateAgentInstructions(
         const hashContent = await fs.readFile(hashPath, "utf-8");
         const hashData = JSON.parse(hashContent);
         storedHash = hashData.metaHash;
-      } catch  {
+      } catch {
         // No hash file or invalid — regenerate
       }
 
@@ -993,7 +993,7 @@ async function generateAgentInstructions(
       try {
         await fs.access(outputPath);
         outputExists = true;
-      } catch  {
+      } catch {
         // File missing — must regenerate even if hash matches
       }
 
@@ -1272,7 +1272,7 @@ export async function runSetupPipeline(
       let artifactsCreated = false;
       try {
         await fs.access(artifactsDir);
-      } catch  {
+      } catch {
         if (!dryRun) {
           await fs.mkdir(artifactsDir, { recursive: true });
         }
@@ -1296,7 +1296,7 @@ export async function runSetupPipeline(
       let sessionsCreated = false;
       try {
         await fs.access(sessionsDirPath);
-      } catch  {
+      } catch {
         if (!dryRun) {
           await fs.mkdir(sessionsDirPath, { recursive: true });
         }

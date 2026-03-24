@@ -383,6 +383,7 @@ describe("session branch sync", () => {
     expect(scheduler).toBeDefined();
   });
 
+  // oxlint-disable-next-line vitest/expect-expect -- verifies no-throw on start/stop
   it("SessionSyncScheduler does nothing when interval is 0", () => {
     // AC: @session-branch-worktree ac-sync
     const scheduler = new SessionSyncScheduler({

@@ -132,7 +132,7 @@ class RingBuffer<T> {
   private count = 0;
 
   constructor(private capacity: number) {
-    this.buffer = new Array(capacity);
+    this.buffer = Array.from({ length: capacity });
   }
 
   push(item: T): void {

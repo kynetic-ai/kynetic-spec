@@ -14,7 +14,6 @@ import { symlink } from "fs/promises";
 import { ProjectContextManager } from "../packages/daemon/src/project-context";
 import { KspecWatcher } from "../packages/daemon/src/watcher";
 import { SessionWatcher } from "../packages/daemon/src/session-watcher";
-import type { ProjectContext } from "../packages/daemon/src/project-context";
 
 describe("ProjectContextManager", () => {
   let fixturesRoot: string;

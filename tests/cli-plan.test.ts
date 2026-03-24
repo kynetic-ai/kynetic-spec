@@ -125,7 +125,7 @@ describe("Integration: plan commands", () => {
       expect(result.exitCode).toBe(5); // EXIT_CODES.CONFLICT
     });
 
-    it("should error when provided slug collides with existing item", () => {
+    it("should error when provided slug collides with existing plan slug", () => {
       // Create first plan with custom slug
       kspec('plan add --title "First Plan" --content "Content" --slug my-custom-slug', tempDir);
 
@@ -331,7 +331,7 @@ describe("Integration: plan commands", () => {
       expect(result.exitCode).toBe(5); // EXIT_CODES.CONFLICT
     });
 
-    it("should error when adding slug that collides with existing item", () => {
+    it("should error when adding slug that collides with another plan slug", () => {
       // Create another plan with a known slug
       kspec('plan add --title "Other Plan" --content "Content" --slug other-plan-slug', tempDir);
 

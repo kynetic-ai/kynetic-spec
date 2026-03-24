@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 
 	import { base } from '$app/paths';
+	// oxlint-disable-next-line import/no-unassigned-import -- CSS side-effect import required by Svelte
 	import '../app.css';
 	import { QueryClientProvider } from '@tanstack/svelte-query';
 	import { SidebarProvider, SidebarInset } from '$lib/components/ui/sidebar';

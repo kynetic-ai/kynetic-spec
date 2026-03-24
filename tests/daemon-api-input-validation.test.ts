@@ -222,9 +222,12 @@ describe("Daemon API input validation", () => {
 
     for (const [url, expectedValue] of cases) {
       const response = await makeRequest(url);
+      // oxlint-disable-next-line jest/valid-expect -- vitest supports custom message as 2nd arg
       expect(response.status, url).toBe(400);
       const body = await response.json();
+      // oxlint-disable-next-line jest/valid-expect -- vitest supports custom message as 2nd arg
       expect(body.error, url).toBe("validation_error");
+      // oxlint-disable-next-line jest/valid-expect -- vitest supports custom message as 2nd arg
       expect(body.details[0].message, url).toContain(expectedValue);
     }
   });
@@ -244,7 +247,9 @@ describe("Daemon API input validation", () => {
     ] as const;
 
     for (const [relativePath, snippet] of expectations) {
+      // oxlint-disable-next-line no-source-scanning/no-source-file-reads -- verifying daemon routes use canonical schema enums
       const source = readFileSync(path.join(process.cwd(), relativePath), "utf8");
+      // oxlint-disable-next-line no-source-scanning/no-source-file-reads, jest/valid-expect -- vitest custom message; verifying schema usage
       expect(source, relativePath).toContain(snippet);
     }
   });

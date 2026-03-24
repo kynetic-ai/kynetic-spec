@@ -221,6 +221,7 @@ describe("kspec serve commands", () => {
       }, 100);
     });
 
+    // oxlint-disable-next-line jest/valid-expect -- vitest supports custom message as 2nd arg
     expect(started, `foreground startup output missing:\n${output}`).toBe(true);
 
     // Send SIGINT (Ctrl+C)
@@ -249,6 +250,7 @@ describe("kspec serve commands", () => {
     // Both are valid Ctrl+C outcomes; accept either.
     const exitedCleanly = child.exitCode === 0;
     const killedBySignal = child.exitCode === null && child.signalCode === "SIGINT";
+    // oxlint-disable-next-line jest/valid-expect -- vitest supports custom message as 2nd arg
     expect(
       exitedCleanly || killedBySignal,
       `expected clean exit (0) or SIGINT kill, got exitCode=${child.exitCode} signalCode=${child.signalCode}`,
@@ -595,7 +597,7 @@ describe("kspec serve commands", () => {
 
     try {
       // Fresh pack so we test the current build output
-      const packOutput = execSync("npm pack --pack-destination " + installDir, {
+      const packOutput = execSync(`npm pack --pack-destination ${installDir}`, {
         cwd: projectRoot,
         encoding: "utf-8",
         stdio: ["pipe", "pipe", "pipe"],
@@ -612,6 +614,7 @@ describe("kspec serve commands", () => {
 
       // The installed CLI binary
       const installedCli = join(installDir, "node_modules", ".bin", "kspec");
+      // oxlint-disable-next-line jest/valid-expect -- vitest supports custom message as 2nd arg
       expect(existsSync(installedCli), `installed CLI not found at ${installedCli}`).toBe(true);
 
       // Create a minimal .kspec/ directory so serve has something to point at
@@ -644,6 +647,7 @@ describe("kspec serve commands", () => {
 
       // Verify health endpoint responds (daemon is actually running with Elysia)
       const healthResponse = await fetch(`http://localhost:${port}/api/health`);
+      // oxlint-disable-next-line jest/valid-expect -- vitest supports custom message as 2nd arg
       expect(healthResponse.ok, "daemon health endpoint should respond").toBe(true);
       const healthBody = await healthResponse.json();
       expect(healthBody).toHaveProperty("status", "ok");

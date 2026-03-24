@@ -16,7 +16,6 @@ import {
 } from "../src/parser/review-threads.js";
 import { createReviewRecord, saveReviewRecord, loadReviewRecords } from "../src/parser/reviews.js";
 import type {
-  ReviewRecord,
   ReviewRecordInput,
   ReviewCodeAnchor,
   ReviewStructuredAnchor,
@@ -783,7 +782,7 @@ describe("Atomic thread persistence", () => {
     await saveReviewRecord(ctx, { ...review });
 
     const loaded = await loadReviewRecords(ctx);
-    const { review: updated, thread } = await addThreadAtomic(ctx, loaded[0], {
+    const { review: _updated, thread } = await addThreadAtomic(ctx, loaded[0], {
       author: "reviewer@example.com",
       body: "Persisted thread.",
       kind: "blocker",

@@ -15,7 +15,7 @@ test.describe("Project Selector", () => {
   // AC: @multi-directory-daemon ac-25
   test("shows project selector when multiple projects registered", async ({ page, daemon }) => {
     // Create and register a second valid project
-    const secondProjectPath = await daemon.createSecondProject();
+    const _secondProjectPath = await daemon.createSecondProject();
 
     // Reload page to pick up the new project list
     await page.goto("/");
@@ -40,7 +40,10 @@ test.describe("Project Selector", () => {
   });
 
   // AC: @multi-directory-daemon ac-25
-  test("hides project selector when only one project registered", async ({ page, daemon }) => {
+  test("hides project selector when only one project registered", async ({
+    page,
+    daemon: _daemon,
+  }) => {
     await page.goto("/");
     await page.waitForLoadState("networkidle");
 
@@ -240,7 +243,7 @@ test.describe("Project Selector", () => {
   // AC: @multi-directory-daemon ac-25
   test("preserves selected project across page navigation", async ({ page, daemon }) => {
     // Create second project
-    const secondProjectPath = await daemon.createSecondProject();
+    const _secondProjectPath = await daemon.createSecondProject();
 
     await page.goto("/");
     await page.waitForLoadState("networkidle");

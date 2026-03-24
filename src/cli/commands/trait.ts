@@ -21,7 +21,7 @@ import { error, output, success, warn } from "../output.js";
  * Register trait commands
  */
 export function registerTraitCommands(program: Command): void {
-  const trait = program.command("trait").description("Trait management commands");
+  const traitCmd = program.command("trait").description("Trait management commands");
 
   // kspec trait add <title>
   // AC: @trait-cli ac-1, ac-2
@@ -85,7 +85,7 @@ export function registerTraitCommands(program: Command): void {
 
   // kspec trait list
   // AC: @trait-cli ac-3
-  trait
+  traitCmd
     .command("list")
     .description("List all traits")
     .action(async () => {
@@ -125,7 +125,7 @@ export function registerTraitCommands(program: Command): void {
 
   // kspec trait get <ref>
   // AC: @trait-cli ac-4
-  trait
+  traitCmd
     .command("get <ref>")
     .description("Show trait details")
     .action(async (ref: string) => {
@@ -202,7 +202,7 @@ export function registerItemTraitCommands(itemCommand: Command): void {
     .action(async (specRef: string, traitRefs: string[]) => {
       try {
         const ctx = await initContext();
-        const { refIndex, items } = await buildIndexes(ctx);
+        const { refIndex, items: _items } = await buildIndexes(ctx);
 
         // Resolve spec
         const specResult = refIndex.resolve(specRef);

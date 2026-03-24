@@ -14,11 +14,7 @@ import * as fs from "node:fs/promises";
 import * as fsSync from "node:fs";
 import { execSync } from "node:child_process";
 import * as YAML from "yaml";
-import {
-  DispatchEngine,
-  type TaskStateChange,
-  type DispatchEngineOptions,
-} from "../src/agent-runtime/dispatch.js";
+import { DispatchEngine, type TaskStateChange } from "../src/agent-runtime/dispatch.js";
 import * as invocationModule from "../src/agent-runtime/invocation.js";
 import * as workspaceModule from "../src/agent-runtime/workspace.js";
 import * as configModule from "../src/parser/config.js";
@@ -496,6 +492,7 @@ describe("Dispatch in-progress priority", () => {
 
     // Provide inline task data with automation: eligible so task.ready/task.needs_work
     // default filter passes (AC-21). Tasks are not on disk to avoid staleness discard.
+    // oxlint-disable-next-line unicorn/consistent-function-scoping -- co-located with test data for readability
     const makeEligibleTask = (priority: number) =>
       ({ automation: "eligible", tags: [], priority }) as any;
 
@@ -1117,7 +1114,6 @@ describe("AC-5: File watcher diffs task states", () => {
 
     // Trigger file change notification
     const detectedChanges: TaskStateChange[] = [];
-    const originalHandleStateChange = engine.handleStateChange.bind(engine);
     // Spy on handleStateChange to track changes
     const handleSpy = vi.spyOn(engine, "handleStateChange").mockImplementation(async (change) => {
       detectedChanges.push(change);
@@ -1201,8 +1197,6 @@ describe("AC-6: Dispatch rule filters applied", () => {
     await writeTasks(testDir, [{ _ulid: taskId, status: "pending", automation: "manual_only" }]);
 
     let dispatchedCount = 0;
-    const originalEnqueue = (engine as unknown as { _enqueue: (a: unknown, c: unknown) => void })
-      ._enqueue;
     vi.spyOn(
       engine as unknown as { _enqueue: (a: unknown, c: unknown) => void },
       "_enqueue",
@@ -2052,6 +2046,7 @@ describe("AC-12: Shadow branch mutations serialized via mutex", () => {
       task: { automation: "eligible", tags: [] } as any,
     });
 
+    // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
     for (let i = 0; i < 50 && maxConcurrentInvocations < 2; i++) {
       await new Promise((resolve) => setTimeout(resolve, 10));
     }
@@ -2167,6 +2162,7 @@ describe("Active fleet cleanup on invocation completion", () => {
 
     // Wait for both invocations to complete (second is spawned by drain
     // after the first completes, which involves real git worktree operations)
+    // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
     for (let i = 0; i < 200 && invocationCount < 2; i++) {
       await new Promise((resolve) => setTimeout(resolve, 10));
     }
@@ -2597,12 +2593,12 @@ describe("Dispatch prompt orientation context and interpolation", () => {
   describe("interpolateTemplate", () => {
     // Import the exported helpers directly
     let interpolateTemplate: typeof import("../src/agent-runtime/dispatch.js").interpolateTemplate;
-    let buildOrientationContext: typeof import("../src/agent-runtime/dispatch.js").buildOrientationContext;
+    let _buildOrientationContext: typeof import("../src/agent-runtime/dispatch.js").buildOrientationContext;
 
     beforeEach(async () => {
       const mod = await import("../src/agent-runtime/dispatch.js");
       interpolateTemplate = mod.interpolateTemplate;
-      buildOrientationContext = mod.buildOrientationContext;
+      _buildOrientationContext = mod.buildOrientationContext;
     });
 
     it("should replace known variables", () => {
@@ -3466,7 +3462,7 @@ describe("AC-9: Retry transient errors with exponential backoff", () => {
       toStatus: "pending",
       timestamp: Date.now(),
     };
-    const entry = { agent: agent as unknown, change, retryCount: 0, nextRetryAt: 0 };
+    const _entry = { agent: agent as unknown, change, retryCount: 0, nextRetryAt: 0 };
 
     // Simulate a failure in the runExclusive handler by tracking queue state
     type EngineInternal = {
@@ -4057,8 +4053,8 @@ describe("Self-trigger suppression", () => {
     );
     // Initial git commit so kspec commands work
     await fs.writeFile(path.join(testDir, ".gitignore"), "");
-    const { execSync } = await import("node:child_process");
-    execSync("git add -A && git commit -m init", { cwd: testDir, stdio: "pipe" });
+    const { execSync: execSyncLocal } = await import("node:child_process");
+    execSyncLocal("git add -A && git commit -m init", { cwd: testDir, stdio: "pipe" });
 
     // Create isolated home with fake daemon PID/port pointing at our server
     const isolated = await createIsolatedKspecHome(testDir);
@@ -5629,6 +5625,7 @@ describe("Post-invocation re-evaluation", () => {
     await engine.start();
 
     // Wait for first invocation (worker picks up taskA via bootstrap)
+    // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
     for (let i = 0; i < 100 && invocationCount === 0; i++) {
       await new Promise((r) => setTimeout(r, 10));
     }
@@ -5639,6 +5636,7 @@ describe("Post-invocation re-evaluation", () => {
     resolveFirst();
 
     // Wait for reviewer to be spawned
+    // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
     for (let i = 0; i < 100 && invocationCount < 2; i++) {
       await new Promise((r) => setTimeout(r, 10));
     }
@@ -5691,6 +5689,7 @@ describe("Post-invocation re-evaluation", () => {
     await engine.start();
 
     // Wait for first invocation to start
+    // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
     for (let i = 0; i < 100 && invocationCount === 0; i++) {
       await new Promise((r) => setTimeout(r, 10));
     }
@@ -5700,6 +5699,7 @@ describe("Post-invocation re-evaluation", () => {
     resolveFirst();
 
     // Wait for second invocation
+    // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
     for (let i = 0; i < 100 && invocationCount < 2; i++) {
       await new Promise((r) => setTimeout(r, 10));
     }
@@ -5834,6 +5834,7 @@ describe("Post-invocation re-evaluation", () => {
     await engine.start();
 
     // Wait for first invocation to start
+    // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
     for (let i = 0; i < 100 && invocationCount === 0; i++) {
       await new Promise((r) => setTimeout(r, 10));
     }
@@ -5855,6 +5856,7 @@ describe("Post-invocation re-evaluation", () => {
     resolveFirst();
 
     // Wait for second invocation (from pre-existing queue, not re-evaluation)
+    // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
     for (let i = 0; i < 100 && invocationCount < 2; i++) {
       await new Promise((r) => setTimeout(r, 10));
     }
@@ -6209,7 +6211,7 @@ describe("Per-task dispatch drain coalescing", () => {
       .mockResolvedValue();
 
     await engine.start();
-    const drainCountAfterBoot = drainSpy.mock.calls.length;
+    const _drainCountAfterBoot = drainSpy.mock.calls.length;
 
     const [taskA, taskB] = testUlids("STOP", 2);
     await engine.handleStateChange({
@@ -6331,7 +6333,7 @@ describe("Per-task dispatch drain coalescing", () => {
     expect(drainSpy).toHaveBeenCalled();
 
     // Reconciliation also calls _drainQueues via _serializedDrain (no coalescing delay)
-    const reconcileDrainCount = drainSpy.mock.calls.length;
+    const _reconcileDrainCount = drainSpy.mock.calls.length;
     await (engine as unknown as { _reconcile: () => Promise<void> })._reconcile();
     // _reconcile only calls _drainQueues if enqueued > 0, so check it ran without delay
     // (it either called _drainQueues or found nothing to enqueue — either way, no timer)
@@ -6362,16 +6364,10 @@ describe("Per-task dispatch drain coalescing", () => {
 
     let drainConcurrency = 0;
     let maxConcurrency = 0;
-    const originalDrain = (
-      engine as unknown as {
-        _drainQueues: (agents: unknown[]) => Promise<void>;
-      }
-    )._drainQueues.bind(engine);
-
     vi.spyOn(
       engine as unknown as { _drainQueues: (agents: unknown[]) => Promise<void> },
       "_drainQueues",
-    ).mockImplementation(async (agents) => {
+    ).mockImplementation(async (_agents) => {
       drainConcurrency++;
       maxConcurrency = Math.max(maxConcurrency, drainConcurrency);
       // Simulate some async work
@@ -6720,6 +6716,7 @@ describe("Cross-agent task dispatch exclusivity", () => {
     await engine.start();
 
     // Wait for worker to start
+    // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
     for (let i = 0; i < 100 && invocationCount === 0; i++) {
       await new Promise((r) => setTimeout(r, 10));
     }
@@ -6757,6 +6754,7 @@ describe("Cross-agent task dispatch exclusivity", () => {
     resolveWorker();
 
     // Wait for reviewer to be spawned
+    // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
     for (let i = 0; i < 100 && invocationCount < 2; i++) {
       await new Promise((r) => setTimeout(r, 10));
     }
@@ -6815,6 +6813,7 @@ describe("Cross-agent task dispatch exclusivity", () => {
     await engine.start();
 
     // Wait for first invocation to start
+    // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
     for (let i = 0; i < 100 && invocationCount === 0; i++) {
       await new Promise((r) => setTimeout(r, 10));
     }
@@ -6830,6 +6829,7 @@ describe("Cross-agent task dispatch exclusivity", () => {
     resolveFirst();
 
     // Wait for the second agent to pick up the task
+    // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
     for (let i = 0; i < 100 && invocationCount < 2; i++) {
       await new Promise((r) => setTimeout(r, 10));
     }
@@ -6887,6 +6887,7 @@ describe("Cross-agent task dispatch exclusivity", () => {
     await engine.start();
 
     // Wait for both invocations to start
+    // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
     for (let i = 0; i < 100 && invocationCount < 2; i++) {
       await new Promise((r) => setTimeout(r, 10));
     }
@@ -6954,6 +6955,7 @@ describe("Cross-agent task dispatch exclusivity", () => {
     await engine.start();
 
     // Wait for worker to start
+    // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- modified by async mock callback
     for (let i = 0; i < 100 && invocationCount === 0; i++) {
       await new Promise((r) => setTimeout(r, 10));
     }

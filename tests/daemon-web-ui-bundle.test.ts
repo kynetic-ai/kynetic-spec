@@ -68,7 +68,7 @@ describe("Web UI asset bundling (@daemon-web-ui-bundle)", () => {
     let tempDir: string;
 
     beforeEach(() => {
-      tempDir = join(PROJECT_ROOT, ".tmp-web-ui-test-" + Date.now());
+      tempDir = join(PROJECT_ROOT, `.tmp-web-ui-test-${Date.now()}`);
       mkdirSync(tempDir, { recursive: true });
     });
 

@@ -46,7 +46,7 @@ async function cleanupMemoryDir(tempDir: string): Promise<void> {
     // Remove the project-specific directory under ~/.claude/projects/
     const projectDir = path.dirname(path.dirname(memoryPath)); // up from memory/MEMORY.md
     await fs.rm(projectDir, { recursive: true, force: true });
-  } catch  {
+  } catch {
     // Ignore cleanup errors
   }
 }

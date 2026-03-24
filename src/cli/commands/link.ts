@@ -59,7 +59,7 @@ export function registerLinkCommands(program: Command): void {
     .action(async (fromRef: string, toRef: string, options) => {
       try {
         const ctx = await initContext();
-        const { refIndex, itemIndex } = await buildIndexes(ctx);
+        const { refIndex, itemIndex: _itemIndex } = await buildIndexes(ctx);
 
         // Validate relationship type
         if (!isValidRelationshipType(options.type)) {
@@ -136,7 +136,7 @@ export function registerLinkCommands(program: Command): void {
     .action(async (options) => {
       try {
         const ctx = await initContext();
-        const { refIndex, itemIndex, items } = await buildIndexes(ctx);
+        const { refIndex, itemIndex: _itemIndex2, items } = await buildIndexes(ctx);
 
         // Validate type if provided
         if (options.type && !isValidRelationshipType(options.type)) {

@@ -9,7 +9,6 @@ import {
   ReviewStructuredAnchorSchema,
   ReviewAnchorSchema,
   ReviewThreadKindSchema,
-  ReviewThreadEntrySchema,
   ReviewThreadSchema,
   ReviewCheckStatusSchema,
   ReviewCheckSchema,
@@ -90,6 +89,7 @@ describe("ReviewLifecycleStateSchema", () => {
   // AC: @review-record-core-model ac-2
   it("should accept valid lifecycle states", () => {
     for (const state of ["draft", "open", "closed", "archived"]) {
+      // oxlint-disable-next-line jest/valid-expect -- Vitest supports custom message as 2nd arg
       expect(ReviewLifecycleStateSchema.safeParse(state).success, `should accept ${state}`).toBe(
         true,
       );
@@ -107,6 +107,7 @@ describe("ReviewDispositionSchema", () => {
   // AC: @review-record-core-model ac-2
   it("should accept valid dispositions", () => {
     for (const d of ["pending", "approved", "changes_requested"]) {
+      // oxlint-disable-next-line jest/valid-expect -- Vitest supports custom message as 2nd arg
       expect(ReviewDispositionSchema.safeParse(d).success, `should accept ${d}`).toBe(true);
     }
   });
@@ -119,6 +120,7 @@ describe("ReviewDispositionSchema", () => {
 describe("ReviewGateStateSchema", () => {
   it("should accept valid gate states", () => {
     for (const s of ["passing", "failing", "pending"]) {
+      // oxlint-disable-next-line jest/valid-expect -- Vitest supports custom message as 2nd arg
       expect(ReviewGateStateSchema.safeParse(s).success, `should accept ${s}`).toBe(true);
     }
   });
@@ -420,6 +422,7 @@ describe("ReviewThreadSchema", () => {
 describe("ReviewThreadKindSchema", () => {
   it("should accept valid kinds", () => {
     for (const kind of ["blocker", "question", "nit"]) {
+      // oxlint-disable-next-line jest/valid-expect -- Vitest supports custom message as 2nd arg
       expect(ReviewThreadKindSchema.safeParse(kind).success, `should accept ${kind}`).toBe(true);
     }
   });
@@ -472,6 +475,7 @@ describe("ReviewCheckSchema", () => {
 
   it("should accept all check statuses", () => {
     for (const status of ["pass", "fail", "running", "skipped"]) {
+      // oxlint-disable-next-line jest/valid-expect -- Vitest supports custom message as 2nd arg
       expect(ReviewCheckStatusSchema.safeParse(status).success, `should accept ${status}`).toBe(
         true,
       );
@@ -540,6 +544,7 @@ describe("ReviewVerdictSchema", () => {
 
   it("should accept all verdict decisions", () => {
     for (const d of ["approve", "request_changes", "comment"]) {
+      // oxlint-disable-next-line jest/valid-expect -- Vitest supports custom message as 2nd arg
       expect(ReviewVerdictDecisionSchema.safeParse(d).success, `should accept ${d}`).toBe(true);
     }
   });
@@ -596,6 +601,7 @@ describe("ReviewEventSchema", () => {
       "subject_refreshed",
     ];
     for (const t of eventTypes) {
+      // oxlint-disable-next-line jest/valid-expect -- Vitest supports custom message as 2nd arg
       expect(ReviewEventTypeSchema.safeParse(t).success, `should accept ${t}`).toBe(true);
     }
   });

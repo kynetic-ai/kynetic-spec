@@ -232,7 +232,10 @@ async function setupValidateRoutes(
 test.describe("Validation and Alignment View", () => {
   test.describe("Summary Cards (AC-1)", () => {
     // AC: @ui-validation-view ac-1
-    test("displays error count, warning count, and valid item count", async ({ page, daemon }) => {
+    test("displays error count, warning count, and valid item count", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       await setupValidateRoutes(page);
       await page.goto("/validate");
 
@@ -265,7 +268,10 @@ test.describe("Validation and Alignment View", () => {
     });
 
     // AC: @ui-validation-view ac-1
-    test('shows "Issues Found" badge when validation has errors', async ({ page, daemon }) => {
+    test('shows "Issues Found" badge when validation has errors', async ({
+      page,
+      daemon: _daemon,
+    }) => {
       await setupValidateRoutes(page);
       await page.goto("/validate");
 
@@ -274,7 +280,7 @@ test.describe("Validation and Alignment View", () => {
     });
 
     // AC: @ui-validation-view ac-1
-    test('shows "Valid" badge when all checks pass', async ({ page, daemon }) => {
+    test('shows "Valid" badge when all checks pass', async ({ page, daemon: _daemon }) => {
       await setupValidateRoutes(page, { validation: mockValidationClean() });
       await page.goto("/validate");
 
@@ -285,7 +291,7 @@ test.describe("Validation and Alignment View", () => {
 
   test.describe("Alignment Section (AC-1)", () => {
     // AC: @ui-validation-view ac-1
-    test("shows spec coverage percentage", async ({ page, daemon }) => {
+    test("shows spec coverage percentage", async ({ page, daemon: _daemon }) => {
       await setupValidateRoutes(page);
       await page.goto("/validate");
 
@@ -297,7 +303,7 @@ test.describe("Validation and Alignment View", () => {
     });
 
     // AC: @ui-validation-view ac-1
-    test("shows AC coverage percentage", async ({ page, daemon }) => {
+    test("shows AC coverage percentage", async ({ page, daemon: _daemon }) => {
       await setupValidateRoutes(page);
       await page.goto("/validate");
 
@@ -313,7 +319,7 @@ test.describe("Validation and Alignment View", () => {
     });
 
     // AC: @ui-validation-view ac-1
-    test("AC coverage includes uncovered trait ACs", async ({ page, daemon }) => {
+    test("AC coverage includes uncovered trait ACs", async ({ page, daemon: _daemon }) => {
       // Build validation with ONLY trait AC warnings (no own AC warnings)
       const traitOnlyValidation = {
         ...mockValidationClean(),
@@ -340,7 +346,7 @@ test.describe("Validation and Alignment View", () => {
     });
 
     // AC: @ui-validation-view ac-1
-    test("shows orphaned tasks count", async ({ page, daemon }) => {
+    test("shows orphaned tasks count", async ({ page, daemon: _daemon }) => {
       await setupValidateRoutes(page);
       await page.goto("/validate");
 
@@ -352,7 +358,7 @@ test.describe("Validation and Alignment View", () => {
     });
 
     // AC: @ui-validation-view ac-1
-    test("shows orphaned specs count", async ({ page, daemon }) => {
+    test("shows orphaned specs count", async ({ page, daemon: _daemon }) => {
       await setupValidateRoutes(page);
       await page.goto("/validate");
 
@@ -366,7 +372,7 @@ test.describe("Validation and Alignment View", () => {
 
   test.describe("Issues List (AC-1)", () => {
     // AC: @ui-validation-view ac-1
-    test("shows issues grouped by severity", async ({ page, daemon }) => {
+    test("shows issues grouped by severity", async ({ page, daemon: _daemon }) => {
       await setupValidateRoutes(page);
       await page.goto("/validate");
 
@@ -392,7 +398,7 @@ test.describe("Validation and Alignment View", () => {
     });
 
     // AC: @ui-validation-view ac-1
-    test("error issues show category badge and message", async ({ page, daemon }) => {
+    test("error issues show category badge and message", async ({ page, daemon: _daemon }) => {
       await setupValidateRoutes(page);
       await page.goto("/validate");
 
@@ -411,7 +417,7 @@ test.describe("Validation and Alignment View", () => {
     });
 
     // AC: @ui-validation-view ac-1
-    test("shows no issues message when validation is clean", async ({ page, daemon }) => {
+    test("shows no issues message when validation is clean", async ({ page, daemon: _daemon }) => {
       await setupValidateRoutes(page, {
         validation: mockValidationClean(),
         alignment: { stats: mockAlignment().stats, warnings: [] },
@@ -425,7 +431,7 @@ test.describe("Validation and Alignment View", () => {
   });
 
   test.describe("Loading State", () => {
-    test("shows loading skeleton while fetching", async ({ page, daemon }) => {
+    test("shows loading skeleton while fetching", async ({ page, daemon: _daemon }) => {
       // Delay the response to observe loading state
       await page.route("**/api/validate", async (route) => {
         await new Promise((r) => setTimeout(r, 500));
@@ -468,7 +474,7 @@ test.describe("Validation and Alignment View", () => {
   });
 
   test.describe("Empty State", () => {
-    test("shows empty state when no data returned", async ({ page, daemon }) => {
+    test("shows empty state when no data returned", async ({ page, daemon: _daemon }) => {
       // Return errors for all endpoints to trigger no-data state
       await page.route("**/api/validate", (route) => {
         route.fulfill({
@@ -508,7 +514,7 @@ test.describe("Validation and Alignment View", () => {
   });
 
   test.describe("Navigation", () => {
-    test("validate page is accessible from sidebar", async ({ page, daemon }) => {
+    test("validate page is accessible from sidebar", async ({ page, daemon: _daemon }) => {
       await setupValidateRoutes(page);
       await page.goto("/");
 

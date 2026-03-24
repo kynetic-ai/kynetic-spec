@@ -49,6 +49,7 @@ describe("TriageRecordSchema - required fields", () => {
       const record = validRecord();
       delete (record as Record<string, unknown>)[field];
       const result = TriageRecordSchema.safeParse(record);
+      // oxlint-disable-next-line jest/valid-expect -- Vitest supports custom message as 2nd arg
       expect(result.success, `should reject missing ${field}`).toBe(false);
     }
   });
@@ -69,6 +70,7 @@ describe("TriageRecordSchema - required fields", () => {
 describe("TriageActionSchema", () => {
   it("should accept valid actions: promote, delete, defer, spec-gap, duplicate", () => {
     for (const action of ["promote", "delete", "defer", "spec-gap", "duplicate"]) {
+      // oxlint-disable-next-line jest/valid-expect -- Vitest supports custom message as 2nd arg
       expect(TriageActionSchema.safeParse(action).success, `should accept ${action}`).toBe(true);
     }
   });
@@ -84,6 +86,7 @@ describe("TriageActionSchema", () => {
 describe("TriageStatusSchema", () => {
   it("should accept valid statuses: pending, triaged, acted_on", () => {
     for (const status of ["pending", "triaged", "acted_on"]) {
+      // oxlint-disable-next-line jest/valid-expect -- Vitest supports custom message as 2nd arg
       expect(TriageStatusSchema.safeParse(status).success, `should accept ${status}`).toBe(true);
     }
   });

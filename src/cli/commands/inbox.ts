@@ -341,7 +341,7 @@ Examples:
         const ctx = await initContext();
         const items = await loadInboxItems(ctx);
         const item = resolveInboxRef(ref, items);
-        const itemRef = shortInboxRef(item, items);
+        const _itemRef = shortInboxRef(item, items);
 
         output(item, () => {
           console.log(`${fieldLabels.ulid}     ${item._ulid}`);

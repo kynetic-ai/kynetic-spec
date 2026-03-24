@@ -13,7 +13,6 @@ import {
   createSession,
   getSession,
   getSessionEventsPath,
-  updateSessionStatus,
 } from "../src/sessions/store.js";
 import { cleanupTempDir, kspec, kspecJson, setupTempFixtures, testUlid } from "./helpers/cli.js";
 

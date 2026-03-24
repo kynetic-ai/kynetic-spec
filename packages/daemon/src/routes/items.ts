@@ -138,7 +138,7 @@ function toBatchTaskSummary(task: LoadedTask) {
   };
 }
 
-export function createItemsRoutes(options: ItemsRouteOptions = {}) {
+export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
   // No closure-scoped kspecDir needed - comes from middleware
 
   return (
@@ -192,7 +192,9 @@ export function createItemsRoutes(options: ItemsRouteOptions = {}) {
           // Tag filter (not in ACs but useful)
           if (query.tag) {
             const tagFilters = Array.isArray(query.tag) ? query.tag : [query.tag];
-            filtered = filtered.filter((item) => item.tags?.some((t) => tagFilters.includes(t)));
+            filtered = filtered.filter((item) =>
+              item.tags?.some((tag) => tagFilters.includes(tag)),
+            );
           }
 
           // Plan filter — show only specs derived from a given plan

@@ -65,11 +65,11 @@ async function connectWebSocket(
   baseUrl: string,
   wsUrl: string,
 ): Promise<void> {
-  await page.goto(baseUrl + "/api/health");
+  await page.goto(`${baseUrl}/api/health`);
 
-  await page.evaluate((wsUrl: string) => {
+  await page.evaluate((evaluateWsUrl: string) => {
     return new Promise<void>((resolve, reject) => {
-      const ws = new WebSocket(wsUrl);
+      const ws = new WebSocket(evaluateWsUrl);
       (window as unknown as Record<string, unknown>).__testWs = ws;
 
       const timeout = setTimeout(() => {
@@ -77,6 +77,7 @@ async function connectWebSocket(
         reject(new Error("WebSocket connection timed out after 5s"));
       }, 5000);
 
+      // oxlint-disable-next-line unicorn/prefer-add-event-listener
       ws.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
@@ -89,11 +90,13 @@ async function connectWebSocket(
         }
       };
 
+      // oxlint-disable-next-line unicorn/prefer-add-event-listener
       ws.onerror = () => {
         clearTimeout(timeout);
         reject(new Error("WebSocket error during connection"));
       };
 
+      // oxlint-disable-next-line unicorn/prefer-add-event-listener
       ws.onclose = (event) => {
         if (event.code !== 1000 && event.code !== 1001) {
           clearTimeout(timeout);
@@ -101,7 +104,7 @@ async function connectWebSocket(
         }
       };
     });
-  }, wsUrl + "/ws");
+  }, `${wsUrl}/ws`);
 }
 
 /**
@@ -122,11 +125,13 @@ async function subscribeTopic(page: import("@playwright/test").Page, topic: stri
         }, 5000);
 
         const original = ws.onmessage;
+        // oxlint-disable-next-line unicorn/prefer-add-event-listener
         ws.onmessage = (event) => {
           try {
             const data = JSON.parse(event.data);
             if (data.ack === true && data.success) {
               clearTimeout(timeout);
+              // oxlint-disable-next-line unicorn/prefer-add-event-listener
               ws.onmessage = original;
               resolve();
               return;
@@ -191,12 +196,14 @@ async function waitForBroadcast(
         }, waitMs);
 
         const original = ws.onmessage;
+        // oxlint-disable-next-line unicorn/prefer-add-event-listener
         ws.onmessage = (event) => {
           try {
             const data = JSON.parse(event.data);
             // Broadcast events: msg_id, seq, timestamp, topic, event, data
             if (data.topic === expectedTopic && data.msg_id) {
               clearTimeout(timeout);
+              // oxlint-disable-next-line unicorn/prefer-add-event-listener
               ws.onmessage = original;
               resolve(data);
               return;
@@ -252,6 +259,7 @@ async function installBroadcastCounter(
         if (original) original.call(ws, event);
       };
 
+      // oxlint-disable-next-line unicorn/prefer-add-event-listener
       ws.onmessage = counter;
       // Store for cleanup
       (window as unknown as Record<string, unknown>).__broadcastCounter = counter;
@@ -303,11 +311,13 @@ async function waitForErrorBroadcast(
         }, waitMs);
 
         const original = ws.onmessage;
+        // oxlint-disable-next-line unicorn/prefer-add-event-listener
         ws.onmessage = (event) => {
           try {
             const data = JSON.parse(event.data);
             if (data.topic === "files:errors" && data.msg_id) {
               clearTimeout(timeout);
+              // oxlint-disable-next-line unicorn/prefer-add-event-listener
               ws.onmessage = original;
               resolve(data);
               return;
@@ -327,7 +337,7 @@ test.describe("File Watcher API", () => {
   // Skip all file watcher tests in CI — GitHub Actions does not support recursive fs.watch.
   // The CI environment's Chokidar fallback doesn't reliably emit events, causing flaky tests.
   // Tests pass locally where native fs.watch with recursive mode works correctly.
-  test.beforeEach(async ({}, testInfo) => {
+  test.beforeEach(async (_fixtures, testInfo) => {
     if (process.env.CI) {
       testInfo.skip(
         true,
@@ -446,11 +456,11 @@ test.describe("File Watcher API", () => {
 
     // Phase 2: Make 3 rapid writes within ~120ms — all within the 500ms debounce window.
     // The counter listener is already installed, so no broadcasts will be missed.
-    writeFileSync(targetFile, base + "\n  description: rapid write 1\n");
+    writeFileSync(targetFile, `${base}\n  description: rapid write 1\n`);
     await new Promise((r) => setTimeout(r, 40));
-    writeFileSync(targetFile, base + "\n  description: rapid write 2\n");
+    writeFileSync(targetFile, `${base}\n  description: rapid write 2\n`);
     await new Promise((r) => setTimeout(r, 40));
-    writeFileSync(targetFile, base + "\n  description: rapid write 3\n");
+    writeFileSync(targetFile, `${base}\n  description: rapid write 3\n`);
 
     // Phase 3: Wait for debounce to settle (500ms window + 300ms buffer), then collect count.
     await new Promise((r) => setTimeout(r, 1200));
@@ -487,11 +497,11 @@ test.describe("File Watcher API", () => {
 
     // 3 rapid writes within ~100ms — all within 500ms debounce.
     // The listener is already installed before the first write.
-    writeFileSync(targetFile, base + "\n  description: write A\n");
+    writeFileSync(targetFile, `${base}\n  description: write A\n`);
     await new Promise((r) => setTimeout(r, 40));
-    writeFileSync(targetFile, base + "\n  description: write B\n");
+    writeFileSync(targetFile, `${base}\n  description: write B\n`);
     await new Promise((r) => setTimeout(r, 40));
-    writeFileSync(targetFile, base + "\n  description: write C\n");
+    writeFileSync(targetFile, `${base}\n  description: write C\n`);
 
     // The debounce fires 500ms after the last write (write C + 500ms)
     const firstBroadcast = await firstBroadcastPromise;

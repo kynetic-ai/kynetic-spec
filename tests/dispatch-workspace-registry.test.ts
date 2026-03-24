@@ -1234,6 +1234,7 @@ describe("dispatch workspace registry shadow durability", () => {
       },
     };
 
+    // oxlint-disable-next-line unicorn/consistent-function-scoping -- co-located with baseRecord for readability
     function computedFrom(record: typeof baseRecord) {
       return {
         canonical_branch_head: record.canonical_branch_head,

@@ -437,7 +437,7 @@ export function registerAgentsCommands(program: Command): void {
         let templateSections: string[] = [];
         try {
           templateSections = await loadTemplateSections(getPackageRoot());
-        } catch  {
+        } catch {
           // Templates may not exist in all environments
         }
 

@@ -20,7 +20,7 @@ const RESOLVED_QUESTION_ULID = "01KKTX5CA45ZT43W2T6HJMVA06";
 test.describe("Review Interaction Controls", () => {
   // AC: @review-records-web-ui ac-3
   test.describe("Add Comment (AC-3)", () => {
-    test("shows Add Comment button and opens form", async ({ page, daemon }) => {
+    test("shows Add Comment button and opens form", async ({ page, daemon: _daemon }) => {
       await page.goto(`/reviews/${OPEN_REVIEW_ULID}`);
 
       const addBtn = page.getByTestId("add-comment-button");
@@ -34,7 +34,7 @@ test.describe("Review Interaction Controls", () => {
       await expect(page.getByTestId("comment-cancel-button")).toBeVisible();
     });
 
-    test("creates a new thread with body and kind selection", async ({ page, daemon }) => {
+    test("creates a new thread with body and kind selection", async ({ page, daemon: _daemon }) => {
       await page.goto(`/reviews/${OPEN_REVIEW_ULID}`);
 
       // Open form
@@ -62,7 +62,7 @@ test.describe("Review Interaction Controls", () => {
       );
     });
 
-    test("cancel button closes the form without submitting", async ({ page, daemon }) => {
+    test("cancel button closes the form without submitting", async ({ page, daemon: _daemon }) => {
       await page.goto(`/reviews/${OPEN_REVIEW_ULID}`);
 
       await page.getByTestId("add-comment-button").click();
@@ -74,7 +74,7 @@ test.describe("Review Interaction Controls", () => {
       await expect(page.getByTestId("add-comment-form")).not.toBeVisible();
     });
 
-    test("submit button is disabled when body is empty", async ({ page, daemon }) => {
+    test("submit button is disabled when body is empty", async ({ page, daemon: _daemon }) => {
       await page.goto(`/reviews/${OPEN_REVIEW_ULID}`);
 
       await page.getByTestId("add-comment-button").click();
@@ -84,7 +84,10 @@ test.describe("Review Interaction Controls", () => {
       await expect(page.getByTestId("comment-submit-button")).toBeEnabled();
     });
 
-    test("can add a comment to a review with no existing threads", async ({ page, daemon }) => {
+    test("can add a comment to a review with no existing threads", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       await page.goto(`/reviews/${DRAFT_REVIEW_ULID}`);
 
       // Verify empty state
@@ -107,7 +110,10 @@ test.describe("Review Interaction Controls", () => {
 
   // AC: @review-records-web-ui ac-4
   test.describe("Reply to Thread (AC-4)", () => {
-    test("shows Reply button on threads and opens inline reply form", async ({ page, daemon }) => {
+    test("shows Reply button on threads and opens inline reply form", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       await page.goto(`/reviews/${OPEN_REVIEW_ULID}`);
 
       const firstThread = page.getByTestId("thread-item").first();
@@ -120,7 +126,7 @@ test.describe("Review Interaction Controls", () => {
       await expect(firstThread.getByTestId("reply-submit-button")).toBeVisible();
     });
 
-    test("adds a reply to a thread", async ({ page, daemon }) => {
+    test("adds a reply to a thread", async ({ page, daemon: _daemon }) => {
       await page.goto(`/reviews/${OPEN_REVIEW_ULID}`);
 
       const targetThread = page.locator(`[data-thread-id="${BLOCKER_THREAD_ULID}"]`);
@@ -145,7 +151,7 @@ test.describe("Review Interaction Controls", () => {
       await expect(lastEntry.getByTestId("entry-body")).toContainText("E2E test reply to blocker");
     });
 
-    test("cancel button closes reply form", async ({ page, daemon }) => {
+    test("cancel button closes reply form", async ({ page, daemon: _daemon }) => {
       await page.goto(`/reviews/${OPEN_REVIEW_ULID}`);
 
       const firstThread = page.getByTestId("thread-item").first();
@@ -158,7 +164,7 @@ test.describe("Review Interaction Controls", () => {
       await expect(firstThread.getByTestId("thread-reply-button")).toBeVisible();
     });
 
-    test("reply submit is disabled when body is empty", async ({ page, daemon }) => {
+    test("reply submit is disabled when body is empty", async ({ page, daemon: _daemon }) => {
       await page.goto(`/reviews/${OPEN_REVIEW_ULID}`);
 
       const firstThread = page.getByTestId("thread-item").first();
@@ -169,7 +175,10 @@ test.describe("Review Interaction Controls", () => {
 
   // AC: @review-records-web-ui ac-5
   test.describe("Resolve/Reopen Thread (AC-5)", () => {
-    test("shows Resolve button on open blocker/question threads", async ({ page, daemon }) => {
+    test("shows Resolve button on open blocker/question threads", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       await page.goto(`/reviews/${OPEN_REVIEW_ULID}`);
 
       // Blocker thread should have a Resolve button
@@ -179,7 +188,7 @@ test.describe("Review Interaction Controls", () => {
 
     test("resolves an open blocker thread and moves it to resolved section", async ({
       page,
-      daemon,
+      daemon: _daemon,
     }) => {
       await page.goto(`/reviews/${OPEN_REVIEW_ULID}`);
 
@@ -196,7 +205,10 @@ test.describe("Review Interaction Controls", () => {
       ).toContainText("Resolved", { timeout: 5000 });
     });
 
-    test("shows Reopen button on resolved blocker/question threads", async ({ page, daemon }) => {
+    test("shows Reopen button on resolved blocker/question threads", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       await page.goto(`/reviews/${OPEN_REVIEW_ULID}`);
 
       // Open the resolved threads section
@@ -210,7 +222,7 @@ test.describe("Review Interaction Controls", () => {
       await expect(resolvedThread.getByTestId("thread-reopen-button")).toBeVisible();
     });
 
-    test("reopens a resolved thread", async ({ page, daemon }) => {
+    test("reopens a resolved thread", async ({ page, daemon: _daemon }) => {
       await page.goto(`/reviews/${OPEN_REVIEW_ULID}`);
 
       // Open resolved section
@@ -234,7 +246,10 @@ test.describe("Review Interaction Controls", () => {
 
   // AC: @review-records-web-ui ac-6
   test.describe("Verdict Submission (AC-6)", () => {
-    test("shows verdict submission panel on interactive review", async ({ page, daemon }) => {
+    test("shows verdict submission panel on interactive review", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       await page.goto(`/reviews/${OPEN_REVIEW_ULID}`);
 
       await expect(page.getByTestId("verdict-submission-section")).toBeVisible();
@@ -243,7 +258,7 @@ test.describe("Review Interaction Controls", () => {
       await expect(page.getByTestId("verdict-submit-button")).toBeVisible();
     });
 
-    test("submit button is disabled when reviewer is empty", async ({ page, daemon }) => {
+    test("submit button is disabled when reviewer is empty", async ({ page, daemon: _daemon }) => {
       await page.goto(`/reviews/${OPEN_REVIEW_ULID}`);
 
       await expect(page.getByTestId("verdict-submit-button")).toBeDisabled();
@@ -252,7 +267,7 @@ test.describe("Review Interaction Controls", () => {
       await expect(page.getByTestId("verdict-submit-button")).toBeEnabled();
     });
 
-    test("submits a verdict and updates disposition", async ({ page, daemon }) => {
+    test("submits a verdict and updates disposition", async ({ page, daemon: _daemon }) => {
       await page.goto(`/reviews/${OPEN_REVIEW_ULID}`);
 
       // Select decision
@@ -271,7 +286,10 @@ test.describe("Review Interaction Controls", () => {
       });
     });
 
-    test("submitting approve verdict updates disposition badge", async ({ page, daemon }) => {
+    test("submitting approve verdict updates disposition badge", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       // Use the draft review which has no existing verdicts
       // First open it via lifecycle transition
       await page.goto(`/reviews/${DRAFT_REVIEW_ULID}`);
@@ -287,7 +305,7 @@ test.describe("Review Interaction Controls", () => {
       });
     });
 
-    test("verdict decision options include all three types", async ({ page, daemon }) => {
+    test("verdict decision options include all three types", async ({ page, daemon: _daemon }) => {
       await page.goto(`/reviews/${OPEN_REVIEW_ULID}`);
 
       const select = page.getByTestId("verdict-decision-select");

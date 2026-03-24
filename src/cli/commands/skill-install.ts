@@ -245,7 +245,7 @@ async function sourceMatchesDest(src: string, dest: string): Promise<boolean> {
       }
     }
     return true;
-  } catch  {
+  } catch {
     return false;
   }
 }
@@ -342,9 +342,9 @@ function resolveCoreInstallPlatform(override?: string): {
 /**
  * Register skill install/update commands (install-core, update)
  */
-export function registerSkillInstallCommands(skill: Command): void {
+export function registerSkillInstallCommands(skillCmd: Command): void {
   // AC: @core-skill-install - kspec skill install-core
-  markMutating(skill.command("install-core"))
+  markMutating(skillCmd.command("install-core"))
     .description("Install core skills from kspec package templates")
     .option("--force", "Overwrite custom forks with core versions")
     .option("--dry-run", "Show what would be installed without making changes")

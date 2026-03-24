@@ -43,7 +43,7 @@ describe("Integration: clone-for-testing", () => {
       git("add test-meta.yaml", sourceRepo);
       git('commit -m "Add meta"', sourceRepo);
       git("checkout main", sourceRepo);
-    } catch  {
+    } catch {
       // Branch might already exist, switch back to main
       try {
         git("checkout main", sourceRepo);

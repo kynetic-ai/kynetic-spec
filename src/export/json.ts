@@ -9,7 +9,6 @@
 
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import type { AcceptanceCriterion, InboxItem } from "../schema/index.js";
 import {
   AlignmentIndex,
   buildIndexes,

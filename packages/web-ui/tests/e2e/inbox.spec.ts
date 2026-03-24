@@ -1,7 +1,7 @@
 import { test, expect } from "../fixtures/test-base";
 
 test.describe("Inbox View", () => {
-  test.beforeEach(async ({ page, daemon }) => {
+  test.beforeEach(async ({ page, daemon: _daemon }) => {
     await page.goto("/inbox");
     // Wait for page to load — use exact match to avoid matching "No inbox items" heading
     await expect(page.getByRole("heading", { name: "Inbox", exact: true })).toBeVisible();

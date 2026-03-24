@@ -11,7 +11,6 @@ import {
   loadSkillSupportingFiles,
   listSkillSupportingDirs,
   getSkillSupportingDirPath,
-  type SupportingDirType,
 } from "../src/parser/meta";
 import { initContext, type KspecContext } from "../src/parser/yaml";
 import { loadMetaContext } from "../src/parser/meta";

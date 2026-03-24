@@ -8,7 +8,6 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { execSync } from "node:child_process";
 import { kspec, kspecJson, createTempDir, cleanupTempDir, initGitRepo } from "./helpers/cli.js";
-import { SHADOW_WORKTREE_DIR } from "../src/parser/shadow.js";
 
 describe("kspec setup (enhanced)", () => {
   let tempDir: string;

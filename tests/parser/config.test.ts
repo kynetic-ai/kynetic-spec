@@ -27,7 +27,6 @@ import {
   resolveDispatchRemoteSync,
   getDefaultConfig,
   KspecConfigSchema,
-  type ResolvedKspecConfig,
 } from "../../src/parser/config.js";
 import { getAuthor, initContext } from "../../src/parser/yaml.js";
 import { createTempDir, cleanupTempDir, initGitRepo } from "../helpers/cli.js";

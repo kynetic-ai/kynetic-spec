@@ -214,7 +214,7 @@ export async function findPlanByRef(
  * Create a new plan from input
  * AC: @plan-crud ac-1, ac-2 - creating plans
  */
-export function createPlan(input: PlanInput, author?: string): Plan {
+export function createPlan(input: PlanInput, _author?: string): Plan {
   const now = new Date().toISOString();
 
   return {

@@ -34,7 +34,7 @@ async function main() {
   try {
     console.log(`[daemon] Starting kspec daemon on port ${port}...`);
 
-    const server = await createServer({
+    const _server = await createServer({
       port,
       isDaemon: true, // Always true when running as standalone daemon
       kspecDir,

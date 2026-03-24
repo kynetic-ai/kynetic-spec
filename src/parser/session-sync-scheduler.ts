@@ -7,7 +7,7 @@
  * AC: @session-branch-worktree ac-sync
  */
 
-import { sessionBranchPull, type SessionBranchConfig } from "./session-branch.js";
+import { sessionBranchPull } from "./session-branch.js";
 import { hasRemoteTracking, type ShadowOptions } from "./shadow.js";
 
 export interface SessionSyncSchedulerOptions {

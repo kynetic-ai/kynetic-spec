@@ -150,7 +150,7 @@ function createPathValidationMiddleware(manager: ProjectContextManager) {
         let projectContext: ProjectContext;
         try {
           projectContext = manager.getProject(projectPath);
-        } catch  {
+        } catch {
           // Not registered - try to register
           projectContext = manager.registerProject(projectPath);
         }
@@ -315,7 +315,7 @@ describe("Path Validation Middleware", () => {
     it("should reject paths with parent traversal", async () => {
       const manager = new ProjectContextManager();
       const middleware = createPathValidationMiddleware(manager);
-      const { ctx, responseRef } = createMockContext({ "X-Kspec-Dir": projectA + "/../something" });
+      const { ctx, responseRef } = createMockContext({ "X-Kspec-Dir": `${projectA}/../something` });
 
       await middleware(ctx, async () => {});
 
@@ -332,7 +332,7 @@ describe("Path Validation Middleware", () => {
       const middleware = createPathValidationMiddleware(manager);
 
       // Register with trailing slash
-      const { ctx: ctx1, state: state1 } = createMockContext({ "X-Kspec-Dir": projectA + "/" });
+      const { ctx: ctx1, state: state1 } = createMockContext({ "X-Kspec-Dir": `${projectA}/` });
       await middleware(ctx1, async () => {});
 
       // Request without trailing slash - should get same context
@@ -360,7 +360,7 @@ describe("Path Validation Middleware", () => {
       const manager = new ProjectContextManager();
       const middleware = createPathValidationMiddleware(manager);
 
-      const pathWithDots = projectA + "/.";
+      const pathWithDots = `${projectA}/.`;
       const { ctx, state } = createMockContext({ "X-Kspec-Dir": pathWithDots });
       await middleware(ctx, async () => {});
 

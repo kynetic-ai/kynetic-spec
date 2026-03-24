@@ -114,7 +114,7 @@ describe("Item Set Enum Validation", () => {
 
       // Empty string is falsy — Commander may not pass it through,
       // but if it does, the validation guard `if (options.status)` skips it
-      const result = kspec('item set @enum-test --status ""', tempDir);
+      kspec('item set @enum-test --status ""', tempDir);
 
       // Verify original status is preserved regardless
       const item = kspecJson<{ status: { implementation?: string } }>(
@@ -195,7 +195,7 @@ describe("Item Set Enum Validation", () => {
       kspec("item set @enum-test --maturity proposed", tempDir);
 
       // Empty string should not alter the maturity
-      const result = kspec('item set @enum-test --maturity ""', tempDir);
+      kspec('item set @enum-test --maturity ""', tempDir);
 
       // Verify original maturity is preserved
       const item = kspecJson<{ status: { maturity?: string } }>("item get @enum-test", tempDir);

@@ -23,7 +23,6 @@ import {
 import { commitIfShadow } from "../../parser/shadow.js";
 import {
   ActionSchema,
-  type Hook,
   HookEventTypeSchema,
   HookFilterSchema,
   HookSchema,
@@ -179,7 +178,7 @@ export function registerHookCommands(program: Command): void {
 
         // AC: @trait-filterable-list ac-2 — filter by tag (event domain)
         if (options.tag) {
-          hooks = hooks.filter((h) => h.on.startsWith(options.tag + "."));
+          hooks = hooks.filter((h) => h.on.startsWith(`${options.tag}.`));
         }
 
         // AC: @trait-filterable-list ac-8 — count mode

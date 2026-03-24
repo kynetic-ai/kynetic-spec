@@ -729,6 +729,7 @@ describe("ScheduleEngine lifecycle", () => {
     expect(engine.isRunning()).toBe(false);
   });
 
+  // oxlint-disable-next-line vitest/expect-expect -- verifies no-throw after stop
   it("should unsubscribe from bus events on stop", async () => {
     const { engine } = createEngine([]);
 

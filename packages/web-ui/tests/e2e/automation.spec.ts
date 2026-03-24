@@ -15,7 +15,7 @@ import { test, expect } from "../fixtures/test-base";
 test.describe("Automation View — Dispatch Triggers", () => {
   test.describe("Trigger Display (AC-1)", () => {
     // AC: @ui-automation-view ac-1
-    test("shows dispatch triggers section with agent cards", async ({ page, daemon }) => {
+    test("shows dispatch triggers section with agent cards", async ({ page, daemon: _daemon }) => {
       await page.goto("/automation");
 
       // Wait for loading to finish
@@ -35,7 +35,7 @@ test.describe("Automation View — Dispatch Triggers", () => {
     // AC: @ui-automation-view ac-1
     test("trigger cards show filter badges for automation, tags, and priority", async ({
       page,
-      daemon,
+      daemon: _daemon,
     }) => {
       await page.goto("/automation");
       await expect(page.getByTestId("automation-loading")).toHaveCount(0);
@@ -50,7 +50,7 @@ test.describe("Automation View — Dispatch Triggers", () => {
 
   test.describe("Trigger Editing (AC-5)", () => {
     // AC: @ui-automation-view ac-5
-    test("edit button opens dialog with trigger rows", async ({ page, daemon }) => {
+    test("edit button opens dialog with trigger rows", async ({ page, daemon: _daemon }) => {
       await page.goto("/automation");
       await expect(page.getByTestId("automation-loading")).toHaveCount(0);
 
@@ -70,7 +70,7 @@ test.describe("Automation View — Dispatch Triggers", () => {
     // AC: @ui-automation-view ac-5
     test("trigger row shows filter criteria with inline editing controls", async ({
       page,
-      daemon,
+      daemon: _daemon,
     }) => {
       await page.goto("/automation");
       await expect(page.getByTestId("automation-loading")).toHaveCount(0);
@@ -96,7 +96,10 @@ test.describe("Automation View — Dispatch Triggers", () => {
     });
 
     // AC: @ui-automation-view ac-5
-    test("trigger row shows existing automation filter value", async ({ page, daemon }) => {
+    test("trigger row shows existing automation filter value", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       await page.goto("/automation");
       await expect(page.getByTestId("automation-loading")).toHaveCount(0);
 
@@ -109,7 +112,7 @@ test.describe("Automation View — Dispatch Triggers", () => {
     });
 
     // AC: @ui-automation-view ac-5
-    test("trigger row shows existing tags as chips", async ({ page, daemon }) => {
+    test("trigger row shows existing tags as chips", async ({ page, daemon: _daemon }) => {
       await page.goto("/automation");
       await expect(page.getByTestId("automation-loading")).toHaveCount(0);
 
@@ -122,7 +125,7 @@ test.describe("Automation View — Dispatch Triggers", () => {
     });
 
     // AC: @ui-automation-view ac-5
-    test("trigger row shows existing priority filter value", async ({ page, daemon }) => {
+    test("trigger row shows existing priority filter value", async ({ page, daemon: _daemon }) => {
       await page.goto("/automation");
       await expect(page.getByTestId("automation-loading")).toHaveCount(0);
 
@@ -135,7 +138,10 @@ test.describe("Automation View — Dispatch Triggers", () => {
     });
 
     // AC: @ui-automation-view ac-5 — new task.ready defaults automation to eligible
-    test("new task.ready trigger defaults automation to eligible", async ({ page, daemon }) => {
+    test("new task.ready trigger defaults automation to eligible", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       await page.goto("/automation");
       await expect(page.getByTestId("automation-loading")).toHaveCount(0);
 
@@ -159,7 +165,7 @@ test.describe("Automation View — Dispatch Triggers", () => {
     // AC: @ui-automation-view ac-5 — new task.needs_work defaults automation to eligible
     test("new task.needs_work trigger defaults automation to eligible", async ({
       page,
-      daemon,
+      daemon: _daemon,
     }) => {
       await page.goto("/automation");
       await expect(page.getByTestId("automation-loading")).toHaveCount(0);
@@ -181,7 +187,7 @@ test.describe("Automation View — Dispatch Triggers", () => {
     // AC: @ui-automation-view ac-5 — non-task.ready events don't default to eligible
     test("new task.pending_review trigger does NOT default automation to eligible", async ({
       page,
-      daemon,
+      daemon: _daemon,
     }) => {
       await page.goto("/automation");
       await expect(page.getByTestId("automation-loading")).toHaveCount(0);
@@ -199,7 +205,7 @@ test.describe("Automation View — Dispatch Triggers", () => {
     });
 
     // AC: @ui-automation-view ac-5 — tag filter chip management
-    test("can add tag filter chips via input", async ({ page, daemon }) => {
+    test("can add tag filter chips via input", async ({ page, daemon: _daemon }) => {
       await page.goto("/automation");
       await expect(page.getByTestId("automation-loading")).toHaveCount(0);
 
@@ -220,7 +226,7 @@ test.describe("Automation View — Dispatch Triggers", () => {
     });
 
     // AC: @ui-automation-view ac-5 — tag filter chip removal
-    test("can remove tag filter chips", async ({ page, daemon }) => {
+    test("can remove tag filter chips", async ({ page, daemon: _daemon }) => {
       await page.goto("/automation");
       await expect(page.getByTestId("automation-loading")).toHaveCount(0);
 
@@ -238,7 +244,7 @@ test.describe("Automation View — Dispatch Triggers", () => {
     });
 
     // AC: @ui-automation-view ac-5 — priority filter threshold editing
-    test("can set priority filter threshold", async ({ page, daemon }) => {
+    test("can set priority filter threshold", async ({ page, daemon: _daemon }) => {
       await page.goto("/automation");
       await expect(page.getByTestId("automation-loading")).toHaveCount(0);
 
@@ -254,7 +260,7 @@ test.describe("Automation View — Dispatch Triggers", () => {
     });
 
     // AC: @ui-automation-view ac-5 — trigger add/remove management
-    test("trigger management: add and remove triggers", async ({ page, daemon }) => {
+    test("trigger management: add and remove triggers", async ({ page, daemon: _daemon }) => {
       await page.goto("/automation");
       await expect(page.getByTestId("automation-loading")).toHaveCount(0);
 
@@ -276,7 +282,10 @@ test.describe("Automation View — Dispatch Triggers", () => {
     });
 
     // AC: @ui-automation-view ac-5 — save persists dispatch rules including filter objects
-    test("save persists dispatch rules including filter objects", async ({ page, daemon }) => {
+    test("save persists dispatch rules including filter objects", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       await page.goto("/automation");
       await expect(page.getByTestId("automation-loading")).toHaveCount(0);
 
@@ -313,7 +322,7 @@ test.describe("Automation View — Dispatch Triggers", () => {
       await expect(priorityInput).toHaveValue("3");
     });
 
-    test("cancel discards changes and closes dialog", async ({ page, daemon }) => {
+    test("cancel discards changes and closes dialog", async ({ page, daemon: _daemon }) => {
       await page.goto("/automation");
       await expect(page.getByTestId("automation-loading")).toHaveCount(0);
 
@@ -335,7 +344,7 @@ test.describe("Automation View — Dispatch Triggers", () => {
       await expect(card).toContainText("task.needs_work");
     });
 
-    test("shows error on save failure", async ({ page, daemon }) => {
+    test("shows error on save failure", async ({ page, daemon: _daemon }) => {
       await page.goto("/automation");
       await expect(page.getByTestId("automation-loading")).toHaveCount(0);
 

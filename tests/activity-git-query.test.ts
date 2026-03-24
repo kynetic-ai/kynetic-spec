@@ -167,7 +167,7 @@ describe("parseGitLogLOutput", () => {
 // AC: @task-activity-git-query ac-1
 describe("getRawTaskCommits — ac-1: returns all commits that modified the task", () => {
   let tmpDir: string;
-  const [ULID_A, ULID_B] = testUlids("GTRW", 2);
+  const [ULID_A, _ULID_B] = testUlids("GTRW", 2);
 
   beforeEach(async () => {
     tmpDir = await createTempDir("activity-ac1-");

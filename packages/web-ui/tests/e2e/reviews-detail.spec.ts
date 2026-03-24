@@ -243,7 +243,7 @@ function routeSiblingsMock(siblingData: ReturnType<typeof mockSiblingReviews>) {
 test.describe("Review Detail Page", () => {
   test.describe("Header and Metadata", () => {
     // AC: @review-records-web-ui ac-2 — Review detail shows title and badges
-    test("displays review title and disposition badge", async ({ page, daemon }) => {
+    test("displays review title and disposition badge", async ({ page, daemon: _daemon }) => {
       const detail = mockReviewDetail();
       await page.route(`**/api/reviews/${REVIEW_ULID}`, routeDetailMock(detail));
       await page.route("**/api/reviews?*", routeSiblingsMock(mockSiblingReviews()));
@@ -255,7 +255,7 @@ test.describe("Review Detail Page", () => {
     });
 
     // AC: @review-records-web-ui ac-2 — Subject info with type and ref
-    test("displays subject type and ref link", async ({ page, daemon }) => {
+    test("displays subject type and ref link", async ({ page, daemon: _daemon }) => {
       const detail = mockReviewDetail();
       await page.route(`**/api/reviews/${REVIEW_ULID}`, routeDetailMock(detail));
       await page.route("**/api/reviews?*", routeSiblingsMock(mockSiblingReviews()));
@@ -266,7 +266,7 @@ test.describe("Review Detail Page", () => {
     });
 
     // AC: @review-records-web-ui ac-9 — Author and timestamp displayed
-    test("displays author and creation time", async ({ page, daemon }) => {
+    test("displays author and creation time", async ({ page, daemon: _daemon }) => {
       const detail = mockReviewDetail();
       await page.route(`**/api/reviews/${REVIEW_ULID}`, routeDetailMock(detail));
       await page.route("**/api/reviews?*", routeSiblingsMock(mockSiblingReviews()));
@@ -276,7 +276,7 @@ test.describe("Review Detail Page", () => {
       await expect(page.getByTestId("review-created-at")).toBeVisible();
     });
 
-    test("has back navigation to reviews list", async ({ page, daemon }) => {
+    test("has back navigation to reviews list", async ({ page, daemon: _daemon }) => {
       const detail = mockReviewDetail();
       await page.route(`**/api/reviews/${REVIEW_ULID}`, routeDetailMock(detail));
       await page.route("**/api/reviews?*", routeSiblingsMock(mockSiblingReviews()));
@@ -290,7 +290,7 @@ test.describe("Review Detail Page", () => {
 
   test.describe("Threads Section", () => {
     // AC: @review-records-web-ui ac-2 — Threads displayed with entries, resolution state, kind badges
-    test("displays threads with kind badges and entries", async ({ page, daemon }) => {
+    test("displays threads with kind badges and entries", async ({ page, daemon: _daemon }) => {
       const detail = mockReviewDetail();
       await page.route(`**/api/reviews/${REVIEW_ULID}`, routeDetailMock(detail));
       await page.route("**/api/reviews?*", routeSiblingsMock(mockSiblingReviews()));
@@ -305,7 +305,10 @@ test.describe("Review Detail Page", () => {
     });
 
     // AC: @review-records-web-ui ac-2 — Kind badges with correct labels
-    test("shows correct kind badges (blocker, question, nit)", async ({ page, daemon }) => {
+    test("shows correct kind badges (blocker, question, nit)", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       const detail = mockReviewDetail();
       await page.route(`**/api/reviews/${REVIEW_ULID}`, routeDetailMock(detail));
       await page.route("**/api/reviews?*", routeSiblingsMock(mockSiblingReviews()));
@@ -323,7 +326,7 @@ test.describe("Review Detail Page", () => {
     });
 
     // AC: @review-records-web-ui ac-2 — Resolution state shown
-    test("shows resolved threads in collapsible section", async ({ page, daemon }) => {
+    test("shows resolved threads in collapsible section", async ({ page, daemon: _daemon }) => {
       const detail = mockReviewDetail();
       await page.route(`**/api/reviews/${REVIEW_ULID}`, routeDetailMock(detail));
       await page.route("**/api/reviews?*", routeSiblingsMock(mockSiblingReviews()));
@@ -343,7 +346,10 @@ test.describe("Review Detail Page", () => {
     });
 
     // AC: @review-records-web-ui ac-9 — Author and timestamp on thread entries
-    test("shows author and relative timestamp on thread entries", async ({ page, daemon }) => {
+    test("shows author and relative timestamp on thread entries", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       const detail = mockReviewDetail();
       await page.route(`**/api/reviews/${REVIEW_ULID}`, routeDetailMock(detail));
       await page.route("**/api/reviews?*", routeSiblingsMock(mockSiblingReviews()));
@@ -357,7 +363,10 @@ test.describe("Review Detail Page", () => {
     });
 
     // AC: @review-records-web-ui ac-8 — Markdown rendering in thread bodies
-    test("renders markdown with syntax highlighting in thread bodies", async ({ page, daemon }) => {
+    test("renders markdown with syntax highlighting in thread bodies", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       const detail = mockReviewDetail();
       await page.route(`**/api/reviews/${REVIEW_ULID}`, routeDetailMock(detail));
       await page.route("**/api/reviews?*", routeSiblingsMock(mockSiblingReviews()));
@@ -365,7 +374,7 @@ test.describe("Review Detail Page", () => {
 
       // The 4th thread (index 2 in visible, 0-based) has markdown with code block
       // Find the thread with markdown content
-      const entryBodies = page.getByTestId("entry-body");
+      const _entryBodies = page.getByTestId("entry-body");
 
       // One of the entries should have rendered HTML with <strong> (from **critical bug**)
       const markdownEntry = page.locator('[data-testid="entry-body"] strong');
@@ -383,7 +392,7 @@ test.describe("Review Detail Page", () => {
 
   test.describe("Checks Section", () => {
     // AC: @review-records-web-ui ac-2 — Checks show pass/fail with staleness
-    test("displays checks with pass/fail status", async ({ page, daemon }) => {
+    test("displays checks with pass/fail status", async ({ page, daemon: _daemon }) => {
       const detail = mockReviewDetail();
       await page.route(`**/api/reviews/${REVIEW_ULID}`, routeDetailMock(detail));
       await page.route("**/api/reviews?*", routeSiblingsMock(mockSiblingReviews()));
@@ -407,7 +416,10 @@ test.describe("Review Detail Page", () => {
     });
 
     // AC: @review-records-web-ui ac-2 — Staleness indicator on checks
-    test("shows stale badge on checks with non-matching version", async ({ page, daemon }) => {
+    test("shows stale badge on checks with non-matching version", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       const detail = mockReviewDetail();
       await page.route(`**/api/reviews/${REVIEW_ULID}`, routeDetailMock(detail));
       await page.route("**/api/reviews?*", routeSiblingsMock(mockSiblingReviews()));
@@ -420,7 +432,7 @@ test.describe("Review Detail Page", () => {
     });
 
     // AC: @review-records-web-ui ac-2 — Check evidence displayed
-    test("shows evidence text for checks", async ({ page, daemon }) => {
+    test("shows evidence text for checks", async ({ page, daemon: _daemon }) => {
       const detail = mockReviewDetail();
       await page.route(`**/api/reviews/${REVIEW_ULID}`, routeDetailMock(detail));
       await page.route("**/api/reviews?*", routeSiblingsMock(mockSiblingReviews()));
@@ -433,7 +445,7 @@ test.describe("Review Detail Page", () => {
 
   test.describe("Verdicts Section", () => {
     // AC: @review-records-web-ui ac-2 — Verdicts show reviewer decisions
-    test("displays verdicts with reviewer and decision", async ({ page, daemon }) => {
+    test("displays verdicts with reviewer and decision", async ({ page, daemon: _daemon }) => {
       const detail = mockReviewDetail();
       await page.route(`**/api/reviews/${REVIEW_ULID}`, routeDetailMock(detail));
       await page.route("**/api/reviews?*", routeSiblingsMock(mockSiblingReviews()));
@@ -453,7 +465,7 @@ test.describe("Review Detail Page", () => {
 
   test.describe("Empty States", () => {
     // AC: @review-records-web-ui ac-10 — Empty state for threads
-    test("shows empty state when review has no threads", async ({ page, daemon }) => {
+    test("shows empty state when review has no threads", async ({ page, daemon: _daemon }) => {
       const detail = mockEmptyReview();
       await page.route(`**/api/reviews/${detail._ulid}`, routeDetailMock(detail as any));
       await page.route("**/api/reviews?*", (route: any) => {
@@ -470,7 +482,7 @@ test.describe("Review Detail Page", () => {
     });
 
     // AC: @review-records-web-ui ac-10 — Empty state for checks
-    test("shows empty state when review has no checks", async ({ page, daemon }) => {
+    test("shows empty state when review has no checks", async ({ page, daemon: _daemon }) => {
       const detail = mockEmptyReview();
       await page.route(`**/api/reviews/${detail._ulid}`, routeDetailMock(detail as any));
       await page.route("**/api/reviews?*", (route: any) => {
@@ -487,7 +499,7 @@ test.describe("Review Detail Page", () => {
     });
 
     // AC: @review-records-web-ui ac-10 — Empty state for verdicts
-    test("shows empty state when review has no verdicts", async ({ page, daemon }) => {
+    test("shows empty state when review has no verdicts", async ({ page, daemon: _daemon }) => {
       const detail = mockEmptyReview();
       await page.route(`**/api/reviews/${detail._ulid}`, routeDetailMock(detail as any));
       await page.route("**/api/reviews?*", (route: any) => {
@@ -508,7 +520,7 @@ test.describe("Review Detail Page", () => {
     // AC: @review-records-web-ui ac-11 — Revision dropdown for same-subject reviews
     test("shows revision selector when multiple reviews exist for same subject", async ({
       page,
-      daemon,
+      daemon: _daemon,
     }) => {
       const detail = mockReviewDetail();
       await page.route(`**/api/reviews/${REVIEW_ULID}`, routeDetailMock(detail));
@@ -529,7 +541,7 @@ test.describe("Review Detail Page", () => {
     });
 
     // AC: @review-records-web-ui ac-11 — Selecting a revision navigates to it
-    test("navigating to a sibling review changes the URL", async ({ page, daemon }) => {
+    test("navigating to a sibling review changes the URL", async ({ page, daemon: _daemon }) => {
       const detail = mockReviewDetail();
       await page.route(`**/api/reviews/${REVIEW_ULID}`, routeDetailMock(detail));
       await page.route(
@@ -558,7 +570,7 @@ test.describe("Review Detail Page", () => {
     // AC: @review-records-web-ui ac-11 — No selector when only one review
     test("hides revision selector when only one review exists for subject", async ({
       page,
-      daemon,
+      daemon: _daemon,
     }) => {
       const detail = mockReviewDetail();
       await page.route(`**/api/reviews/${REVIEW_ULID}`, routeDetailMock(detail));
@@ -585,7 +597,7 @@ test.describe("Review Detail Page", () => {
   });
 
   test.describe("Error Handling", () => {
-    test("shows error message when review not found", async ({ page, daemon }) => {
+    test("shows error message when review not found", async ({ page, daemon: _daemon }) => {
       await page.route("**/api/reviews/nonexistent*", (route: any) => {
         route.fulfill({
           status: 404,

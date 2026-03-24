@@ -11,12 +11,8 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { EventBus, type EventEnvelope } from "../src/agent-runtime/event-bus.js";
-import {
-  ActionExecutor,
-  type ActionEventContext,
-  type ActionRunEvent,
-} from "../src/agent-runtime/action-executor.js";
-import { HookExecutor, type HookExecutorOptions } from "../src/agent-runtime/hook-executor.js";
+import { ActionExecutor, type ActionEventContext } from "../src/agent-runtime/action-executor.js";
+import { HookExecutor } from "../src/agent-runtime/hook-executor.js";
 import type { Hook } from "../src/schema/hooks.js";
 import type { Action, ActionRun } from "../src/schema/action.js";
 import { testUlid, testUlids } from "./helpers/cli.js";

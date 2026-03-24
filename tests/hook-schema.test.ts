@@ -14,7 +14,6 @@ import * as path from "node:path";
 import { stringify } from "yaml";
 import {
   HookSchema,
-  HookFilterSchema,
   HookEventTypeSchema,
   ActionSchema,
   MetaManifestSchema,
@@ -24,7 +23,6 @@ import {
   validateHookFilter,
   getValidFilterFields,
   ENVELOPE_FIELDS,
-  PAYLOAD_FIELDS_BY_EVENT,
 } from "../src/schema/hooks.js";
 import { ACTION_TYPES } from "../src/schema/action.js";
 import { testUlid, setupTempFixtures, cleanupTempDir, kspec as kspecRun } from "./helpers/cli.js";
@@ -661,8 +659,7 @@ hooks:
     // Append hooks section to the existing meta manifest
     await fs.writeFile(
       metaPath,
-      existing +
-        `
+      `${existing}
 hooks:
   - _ulid: ${testUlid("HOOK", 43)}
     name: command-hook

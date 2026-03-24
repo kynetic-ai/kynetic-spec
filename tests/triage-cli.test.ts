@@ -178,7 +178,7 @@ describe("kspec triage list", () => {
   // AC: @triage-cli-commands ac-3
   // AC: @trait-filterable-list ac-1
   it("should filter records by status", () => {
-    const ulid1 = addInboxItem("Item pending");
+    addInboxItem("Item pending");
     const ulid2 = addInboxItem("Item triaged");
     recordTriage(ulid2, "promote", "promote it");
 
@@ -605,7 +605,7 @@ describe("kspec triage start (interactive)", () => {
     // Provide action+reasoning for first item, then skip second
     // Each triage record is committed individually, so even if the process
     // ends early, committed records are preserved
-    const result = kspec("triage start", tempDir, { stdin: "defer\nfirst item reasoning\nskip\n" });
+    kspec("triage start", tempDir, { stdin: "defer\nfirst item reasoning\nskip\n" });
 
     // At least one record should have been created
     const records = kspecJson<Array<{ status: string }>>("triage list", tempDir);

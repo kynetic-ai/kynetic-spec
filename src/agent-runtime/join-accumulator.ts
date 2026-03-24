@@ -17,7 +17,6 @@ import { ulid } from "ulid";
 import type { EventBus, EventEnvelope } from "./event-bus.js";
 import type { ActionExecutor, ActionEventContext } from "./action-executor.js";
 import type { Composition } from "../schema/composition.js";
-import type { ActionRun } from "../schema/action.js";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 

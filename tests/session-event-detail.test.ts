@@ -33,7 +33,10 @@ afterEach(async () => {
 
 function writeEvents(events: Array<Record<string, unknown>>): Promise<void> {
   const eventsPath = path.join(sessionsDir, SESSION_ID, "events.jsonl");
-  const content = events.map((e) => JSON.stringify(e)).join("\n") + "\n";
+  const content = events
+    .map((e) => JSON.stringify(e))
+    .join("\n")
+    .concat("\n");
   return fs.writeFile(eventsPath, content, "utf-8");
 }
 
@@ -96,25 +99,26 @@ describe("readEventBySeq", () => {
 
   it("should skip malformed lines and still find valid events", async () => {
     const eventsPath = path.join(sessionsDir, SESSION_ID, "events.jsonl");
-    const content =
-      [
-        "invalid json line",
-        JSON.stringify({
-          ts: 1000,
-          seq: 0,
-          type: "session.start",
-          session_id: SESSION_ID,
-          data: {},
-        }),
-        "{ broken",
-        JSON.stringify({
-          ts: 2000,
-          seq: 1,
-          type: "note",
-          session_id: SESSION_ID,
-          data: { text: "ok" },
-        }),
-      ].join("\n") + "\n";
+    const content = [
+      "invalid json line",
+      JSON.stringify({
+        ts: 1000,
+        seq: 0,
+        type: "session.start",
+        session_id: SESSION_ID,
+        data: {},
+      }),
+      "{ broken",
+      JSON.stringify({
+        ts: 2000,
+        seq: 1,
+        type: "note",
+        session_id: SESSION_ID,
+        data: { text: "ok" },
+      }),
+    ]
+      .join("\n")
+      .concat("\n");
     await fs.writeFile(eventsPath, content, "utf-8");
 
     const event = await readEventBySeq(sessionsDir, SESSION_ID, 1);

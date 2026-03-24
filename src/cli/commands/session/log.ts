@@ -462,7 +462,7 @@ function summarizeEventData(event: SessionEvent): string {
       const rawInput = update.rawInput;
       if (isObject(rawInput) && typeof rawInput.command === "string") {
         const command = rawInput.command;
-        const truncated = command.length > 60 ? command.slice(0, 57) + "..." : command;
+        const truncated = command.length > 60 ? `${command.slice(0, 57)}...` : command;
         return `${toolName}: ${truncated}`;
       }
       return toolName;
@@ -473,7 +473,7 @@ function summarizeEventData(event: SessionEvent): string {
   if (event.type === "prompt.sent") {
     const prompt = data.prompt;
     if (typeof prompt === "string" && prompt.length > 0) {
-      const truncated = prompt.length > 60 ? prompt.slice(0, 57) + "..." : prompt;
+      const truncated = prompt.length > 60 ? `${prompt.slice(0, 57)}...` : prompt;
       return truncated;
     }
   }
@@ -574,7 +574,7 @@ function formatSessionLogShow(
 
   // AC: @session-log-show ac-2 - Per-iteration summary
   if (detail.iterations.length > 0) {
-    console.log("\n" + chalk.bold("Iterations"));
+    console.log(`\n${chalk.bold("Iterations")}`);
     console.log(chalk.gray("─".repeat(60)));
     for (const iter of detail.iterations) {
       const taskInfo: string[] = [];
@@ -591,7 +591,7 @@ function formatSessionLogShow(
 
   // AC: @session-log-show ac-3 - Event timeline
   if (events !== null) {
-    console.log("\n" + chalk.bold("Events"));
+    console.log(`\n${chalk.bold("Events")}`);
     console.log(chalk.gray("─".repeat(60)));
     if (events.length === 0) {
       console.log(chalk.gray("  No events to display."));
@@ -617,7 +617,7 @@ function formatSessionLogShow(
 
   // AC: @session-log-show ac-6 - Context snapshot
   if (contextSnapshot !== null) {
-    console.log("\n" + chalk.bold("Context Snapshot"));
+    console.log(`\n${chalk.bold("Context Snapshot")}`);
     console.log(chalk.gray("─".repeat(60)));
     console.log(JSON.stringify(contextSnapshot, null, 2));
   }
@@ -805,7 +805,7 @@ function formatSessionLogStats(
   console.log(`  Total Duration:     ${formatDurationVerbose(stats.total_duration_ms)}`);
 
   // AC: @session-log-stats ac-2 - Averages
-  console.log("\n" + chalk.bold("Averages"));
+  console.log(`\n${chalk.bold("Averages")}`);
   console.log(chalk.gray("─".repeat(50)));
   console.log(`  Avg Duration/Session:     ${formatDurationVerbose(stats.avg_duration_ms)}`);
   console.log(`  Avg Iterations/Session:   ${stats.avg_iterations_per_session}`);
@@ -813,7 +813,7 @@ function formatSessionLogStats(
 
   // AC: @session-log-stats ac-3 - Status breakdown
   if (stats.status_breakdown.length > 0) {
-    console.log("\n" + chalk.bold("Status Breakdown"));
+    console.log(`\n${chalk.bold("Status Breakdown")}`);
     console.log(chalk.gray("─".repeat(50)));
     for (const item of stats.status_breakdown) {
       console.log(
@@ -824,7 +824,7 @@ function formatSessionLogStats(
 
   // AC: @session-log-stats ac-6 - Tool usage
   if (toolUsage !== null && toolUsage.length > 0) {
-    console.log("\n" + chalk.bold("Top Tool Usage"));
+    console.log(`\n${chalk.bold("Top Tool Usage")}`);
     console.log(chalk.gray("─".repeat(50)));
     for (const tool of toolUsage) {
       console.log(
@@ -836,7 +836,7 @@ function formatSessionLogStats(
   // AC: @session-log-stats ac-7 - Time periods
   if (timePeriods !== null && timePeriods.length > 0) {
     const label = groupBy === "week" ? "By Week" : "By Day";
-    console.log("\n" + chalk.bold(label));
+    console.log(`\n${chalk.bold(label)}`);
     console.log(chalk.gray("─".repeat(50)));
     console.log(
       chalk.gray(`  ${"Period".padEnd(14)} ${"Sessions".padEnd(10)} ${"Tasks".padEnd(8)} Duration`),

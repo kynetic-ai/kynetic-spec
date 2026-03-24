@@ -405,7 +405,7 @@ export async function findTaskFiles(dir: string): Promise<string[]> {
         files.push(fullPath);
       }
     }
-  } catch  {
+  } catch {
     // Directory doesn't exist or not readable
   }
 
@@ -1747,7 +1747,7 @@ export async function loadSpecFile(filePath: string): Promise<LoadedSpecItem[]> 
     }
 
     return items;
-  } catch  {
+  } catch {
     // File doesn't exist or parse error
     return [];
   }

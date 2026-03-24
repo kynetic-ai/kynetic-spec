@@ -17,7 +17,7 @@ import { test, expect } from "../fixtures/test-base";
 test.describe("Items View", () => {
   test.describe("Spec Tree (AC-11)", () => {
     // AC: @web-dashboard ac-11
-    test("displays hierarchical spec tree with modules", async ({ page, daemon }) => {
+    test("displays hierarchical spec tree with modules", async ({ page, daemon: _daemon }) => {
       await page.goto("/items");
 
       // Wait for spec tree to load
@@ -34,7 +34,7 @@ test.describe("Items View", () => {
       await expect(nodeTitle).toContainText("Core Module");
     });
 
-    test("expands module to show nested features", async ({ page, daemon }) => {
+    test("expands module to show nested features", async ({ page, daemon: _daemon }) => {
       await page.goto("/items");
 
       const specTree = page.getByTestId("spec-tree").first();
@@ -57,7 +57,7 @@ test.describe("Items View", () => {
       await expect(featureTitle).toContainText("Test Feature");
     });
 
-    test("expands feature to show nested requirements", async ({ page, daemon }) => {
+    test("expands feature to show nested requirements", async ({ page, daemon: _daemon }) => {
       await page.goto("/items");
 
       const specTree = page.getByTestId("spec-tree").first();
@@ -85,7 +85,7 @@ test.describe("Items View", () => {
       await expect(reqTitle).toContainText("Test Requirement");
     });
 
-    test("collapses expanded node to hide children", async ({ page, daemon }) => {
+    test("collapses expanded node to hide children", async ({ page, daemon: _daemon }) => {
       await page.goto("/items");
 
       const specTree = page.getByTestId("spec-tree").first();
@@ -104,7 +104,10 @@ test.describe("Items View", () => {
     });
 
     // AC: @ui-url-panel-state ac-1 — opens detail panel via click, URL updated with goto()
-    test("clicking item title opens detail panel (not expand)", async ({ page, daemon }) => {
+    test("clicking item title opens detail panel (not expand)", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       await page.goto("/items");
 
       const specTree = page.getByTestId("spec-tree").first();
@@ -126,7 +129,10 @@ test.describe("Items View", () => {
 
   test.describe("Item Detail (AC-12)", () => {
     // AC: @web-dashboard ac-12
-    test("displays item title and description with actual content", async ({ page, daemon }) => {
+    test("displays item title and description with actual content", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       await page.goto("/items");
 
       // Expand module, then click on feature
@@ -151,7 +157,10 @@ test.describe("Items View", () => {
     });
 
     // AC: @markdown-ui-adoption ac-5
-    test("renders spec description markdown in the detail panel", async ({ page, daemon }) => {
+    test("renders spec description markdown in the detail panel", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       await page.goto("/items");
 
       const specTree = page.getByTestId("spec-tree").first();
@@ -167,7 +176,7 @@ test.describe("Items View", () => {
       await expect(description.locator("code")).toContainText("kspec item get");
     });
 
-    test("displays item type badge", async ({ page, daemon }) => {
+    test("displays item type badge", async ({ page, daemon: _daemon }) => {
       await page.goto("/items");
 
       // Click on module to open detail
@@ -181,7 +190,7 @@ test.describe("Items View", () => {
       await expect(typeBadge).toContainText("module");
     });
 
-    test("displays acceptance criteria when item has them", async ({ page, daemon }) => {
+    test("displays acceptance criteria when item has them", async ({ page, daemon: _daemon }) => {
       await page.goto("/items");
 
       // Navigate to feature which has ACs
@@ -213,7 +222,7 @@ test.describe("Items View", () => {
 
   test.describe("Linked Tasks (AC-13)", () => {
     // AC: @web-dashboard ac-13
-    test("shows implementation section with linked task", async ({ page, daemon }) => {
+    test("shows implementation section with linked task", async ({ page, daemon: _daemon }) => {
       await page.goto("/items");
 
       // Navigate to test-feature which has a linked task
@@ -244,7 +253,7 @@ test.describe("Items View", () => {
       await expect(taskStatus).toContainText("Pending");
     });
 
-    test("clicking linked task navigates to tasks view", async ({ page, daemon }) => {
+    test("clicking linked task navigates to tasks view", async ({ page, daemon: _daemon }) => {
       await page.goto("/items");
 
       // Navigate to test-feature
@@ -269,7 +278,10 @@ test.describe("Items View", () => {
       await expect(taskDetailPanel).toBeVisible({ timeout: 5000 });
     });
 
-    test("shows no tasks message when item has no linked tasks", async ({ page, daemon }) => {
+    test("shows no tasks message when item has no linked tasks", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       await page.goto("/items");
 
       // Click on module (which has no linked tasks)
@@ -288,7 +300,7 @@ test.describe("Items View", () => {
 
   test.describe("Traits (AC-14)", () => {
     // AC: @web-dashboard ac-14
-    test("displays traits section with trait chips", async ({ page, daemon }) => {
+    test("displays traits section with trait chips", async ({ page, daemon: _daemon }) => {
       await page.goto("/items");
 
       // Navigate to test-feature which has traits
@@ -317,7 +329,7 @@ test.describe("Items View", () => {
     });
 
     // AC: @ui-url-panel-state ac-3 — navigates with ?ref= in URL, detail panel opens correctly
-    test("clicking trait chip navigates to trait detail", async ({ page, daemon }) => {
+    test("clicking trait chip navigates to trait detail", async ({ page, daemon: _daemon }) => {
       await page.goto("/items");
 
       // Navigate to test-feature
@@ -347,7 +359,10 @@ test.describe("Items View", () => {
       await expect(traitDetail).toContainText("Test Trait");
     });
 
-    test("traits section not visible when item has no traits", async ({ page, daemon }) => {
+    test("traits section not visible when item has no traits", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       await page.goto("/items");
 
       // Navigate to test-requirement which has no traits
@@ -376,7 +391,7 @@ test.describe("Items View", () => {
 
   test.describe("Acceptance Criteria Expansion (AC-15)", () => {
     // AC: @plan-embedded-views ac-7
-    test("expands AC to show full Given/When/Then text", async ({ page, daemon }) => {
+    test("expands AC to show full Given/When/Then text", async ({ page, daemon: _daemon }) => {
       await page.goto("/items");
 
       // Navigate to test-feature which has ACs
@@ -413,7 +428,7 @@ test.describe("Items View", () => {
       await expect(thenFull).toContainText("the feature shows as in progress");
     });
 
-    test("collapses AC to hide full text", async ({ page, daemon }) => {
+    test("collapses AC to hide full text", async ({ page, daemon: _daemon }) => {
       await page.goto("/items");
 
       // Navigate to test-feature
@@ -441,7 +456,10 @@ test.describe("Items View", () => {
       await expect(whenFull).not.toBeVisible();
     });
 
-    test("shows test coverage indicator element when AC expanded", async ({ page, daemon }) => {
+    test("shows test coverage indicator element when AC expanded", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       await page.goto("/items");
 
       // Navigate to test-feature
@@ -470,7 +488,7 @@ test.describe("Items View", () => {
       await expect(coverageIndicator).toHaveClass(/covered/);
     });
 
-    test("shows not covered indicator for uncovered ACs", async ({ page, daemon }) => {
+    test("shows not covered indicator for uncovered ACs", async ({ page, daemon: _daemon }) => {
       await page.goto("/items");
 
       // Navigate to test-feature
@@ -500,7 +518,7 @@ test.describe("Items View", () => {
 
   test.describe("Responsive Layout", () => {
     // AC: @web-dashboard ac-26
-    test("adapts to mobile viewport", async ({ page, daemon }) => {
+    test("adapts to mobile viewport", async ({ page, daemon: _daemon }) => {
       await page.setViewportSize({ width: 375, height: 667 });
       await page.goto("/items");
 
@@ -514,7 +532,7 @@ test.describe("Items View", () => {
     });
 
     // AC: @web-dashboard ac-27
-    test("shows detail panel as slide-over on desktop", async ({ page, daemon }) => {
+    test("shows detail panel as slide-over on desktop", async ({ page, daemon: _daemon }) => {
       await page.setViewportSize({ width: 1280, height: 720 });
       await page.goto("/items");
 

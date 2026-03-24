@@ -18,6 +18,7 @@ import { cleanupTempDir, createTempDir, initGitRepo, testUlid } from "./helpers/
 
 function requireItem(items: LoadedSpecItem[], ref: string): LoadedSpecItem {
   const item = findItemByRef(items, ref);
+  // oxlint-disable-next-line jest/valid-expect -- Vitest supports custom message as 2nd arg
   expect(item, `expected ${ref} to resolve in current project spec`).toBeDefined();
   return item!;
 }

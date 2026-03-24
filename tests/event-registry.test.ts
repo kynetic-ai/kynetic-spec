@@ -21,8 +21,6 @@ import {
   extractEventDomain,
   validateEventType,
   getEventRegistryEntry,
-  type EventDomain,
-  type DispatchEventType,
 } from "../src/schema/event-registry.js";
 import {
   AgentDispatchEventSchema,

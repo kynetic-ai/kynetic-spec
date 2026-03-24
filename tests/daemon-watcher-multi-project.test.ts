@@ -256,7 +256,7 @@ describeOrSkip("Per-Project File Watchers", () => {
       });
 
       // Mock the start method to throw EMFILE error
-      const originalStart = watcher.start.bind(watcher);
+
       vi.spyOn(watcher, "start").mockImplementationOnce(async () => {
         const error = new Error("EMFILE: too many open files") as NodeJS.ErrnoException;
         error.code = "EMFILE";
@@ -318,13 +318,13 @@ describeOrSkip("Per-Project File Watchers", () => {
 
       const watcherA = new KspecWatcher({
         kspecDir: join(projectA, ".kspec"),
-        onFileChange: (file, content) => eventsA.push(file),
+        onFileChange: (file, _content) => eventsA.push(file),
         onError: vi.fn(),
       });
 
       const watcherB = new KspecWatcher({
         kspecDir: join(projectB, ".kspec"),
-        onFileChange: (file, content) => eventsB.push(file),
+        onFileChange: (file, _content) => eventsB.push(file),
         onError: vi.fn(),
       });
 
@@ -428,6 +428,7 @@ describeOrSkip("Per-Project File Watchers", () => {
     });
 
     // AC: @multi-directory-daemon ac-17
+    // oxlint-disable-next-line jest/expect-expect -- smoke test verifying start/stop lifecycle without throwing
     it("should track watcher active state correctly", async () => {
       const watcher = new KspecWatcher({
         kspecDir: join(projectA, ".kspec"),
@@ -446,6 +447,7 @@ describeOrSkip("Per-Project File Watchers", () => {
 
   describe("Error propagation", () => {
     // AC: @multi-directory-daemon ac-17, ac-19
+    // oxlint-disable-next-line jest/expect-expect -- smoke test verifying graceful fallback without throwing
     it("should handle watcher failures gracefully with Chokidar fallback", async () => {
       const errorHandler = vi.fn();
       const changeHandler = vi.fn();

@@ -69,12 +69,12 @@ async function connectWebSocket(
   wsUrl: string,
 ): Promise<{ sessionId: string; wsHandle: unknown }> {
   // Navigate to daemon root first so browser is in the right origin
-  await page.goto(baseUrl + "/api/health");
+  await page.goto(`${baseUrl}/api/health`);
 
   // Open WebSocket and wait for the 'connected' event
-  const sessionId = await page.evaluate((wsUrl: string) => {
+  const sessionId = await page.evaluate((evaluateWsUrl: string) => {
     return new Promise<string>((resolve, reject) => {
-      const ws = new WebSocket(wsUrl);
+      const ws = new WebSocket(evaluateWsUrl);
       (window as unknown as Record<string, unknown>).__testWs = ws;
 
       const timeout = setTimeout(() => {
@@ -82,10 +82,12 @@ async function connectWebSocket(
         reject(new Error("WebSocket connection timed out after 5s"));
       }, 5000);
 
+      // oxlint-disable-next-line unicorn/prefer-add-event-listener
       ws.onopen = () => {
         // Wait for the connected event message
       };
 
+      // oxlint-disable-next-line unicorn/prefer-add-event-listener
       ws.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
@@ -98,11 +100,13 @@ async function connectWebSocket(
         }
       };
 
+      // oxlint-disable-next-line unicorn/prefer-add-event-listener
       ws.onerror = (_event) => {
         clearTimeout(timeout);
         reject(new Error("WebSocket error occurred"));
       };
 
+      // oxlint-disable-next-line unicorn/prefer-add-event-listener
       ws.onclose = (event) => {
         if (event.code !== 1000 && event.code !== 1001) {
           clearTimeout(timeout);
@@ -110,7 +114,7 @@ async function connectWebSocket(
         }
       };
     });
-  }, wsUrl + "/ws");
+  }, `${wsUrl}/ws`);
 
   return { sessionId, wsHandle: null };
 }
@@ -141,11 +145,13 @@ async function sendAndWaitForAck(
       }, 5000);
 
       const originalOnMessage = ws.onmessage;
+      // oxlint-disable-next-line unicorn/prefer-add-event-listener
       ws.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
           if (data.ack === true || data.ack === false) {
             clearTimeout(timeout);
+            // oxlint-disable-next-line unicorn/prefer-add-event-listener
             ws.onmessage = originalOnMessage;
             resolve(data);
             return;
@@ -183,7 +189,7 @@ async function subscribeAndWaitForBroadcast(
   // Subscribe first
   await sendAndWaitForAck(page, {
     action: "subscribe",
-    request_id: "sub-" + topic,
+    request_id: `sub-${topic}`,
     payload: { topics: [topic] },
   });
 
@@ -208,12 +214,14 @@ async function subscribeAndWaitForBroadcast(
       }, 10000);
 
       const originalOnMessage = ws.onmessage;
+      // oxlint-disable-next-line unicorn/prefer-add-event-listener
       ws.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
           // Broadcast events have msg_id, seq, timestamp, topic, event, data fields
           if (data.topic === expectedTopic && data.msg_id) {
             clearTimeout(timeout);
+            // oxlint-disable-next-line unicorn/prefer-add-event-listener
             ws.onmessage = originalOnMessage;
             resolve(data);
             return;
@@ -241,7 +249,7 @@ test.describe("WebSocket Protocol API", () => {
       page,
       daemon,
     }) => {
-      await page.goto(daemon.baseUrl + "/api/health");
+      await page.goto(`${daemon.baseUrl}/api/health`);
 
       const result = await page.evaluate((wsUrl: string) => {
         return new Promise<{ event: string; session_id: string; rawMessage: string }>(
@@ -254,6 +262,7 @@ test.describe("WebSocket Protocol API", () => {
               reject(new Error("WebSocket connection timed out"));
             }, 5000);
 
+            // oxlint-disable-next-line unicorn/prefer-add-event-listener
             ws.onmessage = (event) => {
               try {
                 const data = JSON.parse(event.data);
@@ -265,17 +274,18 @@ test.describe("WebSocket Protocol API", () => {
                 });
               } catch {
                 clearTimeout(timeout);
-                reject(new Error("Could not parse connected event: " + event.data));
+                reject(new Error(`Could not parse connected event: ${event.data}`));
               }
             };
 
+            // oxlint-disable-next-line unicorn/prefer-add-event-listener
             ws.onerror = () => {
               clearTimeout(timeout);
               reject(new Error("WebSocket error"));
             };
           },
         );
-      }, daemon.wsUrl + "/ws");
+      }, `${daemon.wsUrl}/ws`);
 
       // AC: @api-contract ac-25
       expect(result.event).toBe("connected");
@@ -287,12 +297,12 @@ test.describe("WebSocket Protocol API", () => {
 
     // AC: @api-contract ac-25, @trait-websocket-protocol ac-1
     test("each connection gets a unique session_id", async ({ page, daemon }) => {
-      await page.goto(daemon.baseUrl + "/api/health");
+      await page.goto(`${daemon.baseUrl}/api/health`);
 
       const sessionIds = await page.evaluate((wsUrl: string) => {
         return new Promise<string[]>((resolve, reject) => {
           const ids: string[] = [];
-          const connected = 0;
+          const _connected = 0;
 
           function connectAndGetId(): Promise<string> {
             return new Promise((res, rej) => {
@@ -302,6 +312,7 @@ test.describe("WebSocket Protocol API", () => {
                 rej(new Error("Timeout"));
               }, 5000);
 
+              // oxlint-disable-next-line unicorn/prefer-add-event-listener
               ws.onmessage = (event) => {
                 try {
                   const data = JSON.parse(event.data);
@@ -315,6 +326,7 @@ test.describe("WebSocket Protocol API", () => {
                 }
               };
 
+              // oxlint-disable-next-line unicorn/prefer-add-event-listener
               ws.onerror = () => {
                 clearTimeout(timeout);
                 rej(new Error("WebSocket error"));
@@ -334,7 +346,7 @@ test.describe("WebSocket Protocol API", () => {
             })
             .catch(reject);
         });
-      }, daemon.wsUrl + "/ws");
+      }, `${daemon.wsUrl}/ws`);
 
       expect(sessionIds).toHaveLength(2);
       expect(sessionIds[0]).not.toBe(sessionIds[1]);
@@ -346,7 +358,7 @@ test.describe("WebSocket Protocol API", () => {
       daemon,
       request,
     }) => {
-      await page.goto(daemon.baseUrl + "/api/health");
+      await page.goto(`${daemon.baseUrl}/api/health`);
 
       const baselineResponse = await request.get(`${daemon.baseUrl}/api/health`);
       expect(baselineResponse.ok()).toBe(true);
@@ -375,6 +387,7 @@ test.describe("WebSocket Protocol API", () => {
             const ws = new WebSocket(wsUrl);
             sockets.push(ws);
 
+            // oxlint-disable-next-line unicorn/prefer-add-event-listener
             ws.onmessage = (event) => {
               try {
                 const data = JSON.parse(event.data);
@@ -386,13 +399,14 @@ test.describe("WebSocket Protocol API", () => {
               }
             };
 
+            // oxlint-disable-next-line unicorn/prefer-add-event-listener
             ws.onerror = () => {
               clearTimeout(timeout);
               reject(new Error("WebSocket error while opening connection-count test clients"));
             };
           }
         });
-      }, daemon.wsUrl + "/ws");
+      }, `${daemon.wsUrl}/ws`);
 
       const afterConnectResponse = await request.get(`${daemon.baseUrl}/api/health`);
       expect(afterConnectResponse.ok()).toBe(true);
@@ -413,6 +427,7 @@ test.describe("WebSocket Protocol API", () => {
             () => reject(new Error("Timed out waiting for first socket close")),
             5000,
           );
+          // oxlint-disable-next-line unicorn/prefer-add-event-listener
           first.onclose = () => {
             clearTimeout(timeout);
             resolve();
@@ -452,7 +467,10 @@ test.describe("WebSocket Protocol API", () => {
     });
 
     // AC: @api-contract ac-26, @api-contract ac-27, @trait-websocket-protocol ac-2
-    test("subscribe command receives ack with request_id and success", async ({ page, daemon }) => {
+    test("subscribe command receives ack with request_id and success", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       const ack = await sendAndWaitForAck(page, {
         action: "subscribe",
         request_id: "req-subscribe-001",
@@ -467,7 +485,7 @@ test.describe("WebSocket Protocol API", () => {
     });
 
     // AC: @api-contract ac-26, @api-contract ac-27
-    test("subscribe command works without request_id", async ({ page, daemon }) => {
+    test("subscribe command works without request_id", async ({ page, daemon: _daemon }) => {
       const ack = await sendAndWaitForAck(page, {
         action: "subscribe",
         payload: { topics: ["files:updates"] },
@@ -478,7 +496,7 @@ test.describe("WebSocket Protocol API", () => {
     });
 
     // AC: @api-contract ac-26, @api-contract ac-27
-    test("ping command receives ack", async ({ page, daemon }) => {
+    test("ping command receives ack", async ({ page, daemon: _daemon }) => {
       const ack = await sendAndWaitForAck(page, {
         action: "ping",
         request_id: "req-ping-001",
@@ -492,7 +510,10 @@ test.describe("WebSocket Protocol API", () => {
     // AC: @api-contract ac-30
     // Note: implementation sends {ack: true, success: false, error: 'validation_error'} for ALL
     // error responses (ack always confirms receipt; success: false indicates the error).
-    test("malformed JSON command returns validation_error ack", async ({ page, daemon }) => {
+    test("malformed JSON command returns validation_error ack", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       const result = await page.evaluate(() => {
         return new Promise<{ ack: boolean; success: boolean; error: string }>((resolve, reject) => {
           const ws = (window as unknown as Record<string, WebSocket>).__testWs;
@@ -506,12 +527,14 @@ test.describe("WebSocket Protocol API", () => {
           }, 5000);
 
           const originalOnMessage = ws.onmessage;
+          // oxlint-disable-next-line unicorn/prefer-add-event-listener
           ws.onmessage = (event) => {
             try {
               const data = JSON.parse(event.data);
               // ack is always true (confirms message received); success: false signals error
               if (data.ack === true && data.success === false && data.error) {
                 clearTimeout(timeout);
+                // oxlint-disable-next-line unicorn/prefer-add-event-listener
                 ws.onmessage = originalOnMessage;
                 resolve(data);
                 return;
@@ -536,7 +559,10 @@ test.describe("WebSocket Protocol API", () => {
     });
 
     // AC: @api-contract ac-30
-    test("command missing action field returns validation_error", async ({ page, daemon }) => {
+    test("command missing action field returns validation_error", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       const result = await page.evaluate(() => {
         return new Promise<{ ack: boolean; success: boolean; error: string; details?: string }>(
           (resolve, reject) => {
@@ -551,12 +577,14 @@ test.describe("WebSocket Protocol API", () => {
             }, 5000);
 
             const originalOnMessage = ws.onmessage;
+            // oxlint-disable-next-line unicorn/prefer-add-event-listener
             ws.onmessage = (event) => {
               try {
                 const data = JSON.parse(event.data);
                 // ack is always true; success: false + error field signals validation failure
                 if (data.ack === true && data.success === false && data.error) {
                   clearTimeout(timeout);
+                  // oxlint-disable-next-line unicorn/prefer-add-event-listener
                   ws.onmessage = originalOnMessage;
                   resolve(data);
                   return;
@@ -583,7 +611,10 @@ test.describe("WebSocket Protocol API", () => {
     });
 
     // AC: @api-contract ac-28, @api-contract ac-30
-    test("subscribe with missing topics returns validation_error", async ({ page, daemon }) => {
+    test("subscribe with missing topics returns validation_error", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       const ack = await sendAndWaitForAck(page, {
         action: "subscribe",
         request_id: "req-bad-sub",
@@ -663,6 +694,7 @@ test.describe("WebSocket Protocol API", () => {
       });
 
       // Helper to wait for next broadcast
+      // oxlint-disable-next-line unicorn/consistent-function-scoping
       function waitForNextBroadcast(pg: typeof page): Promise<{ seq: number }> {
         return pg.evaluate(() => {
           return new Promise<{ seq: number }>((resolve, reject) => {
@@ -675,11 +707,13 @@ test.describe("WebSocket Protocol API", () => {
             const timeout = setTimeout(() => reject(new Error("Timeout")), 8000);
             const original = ws.onmessage;
 
+            // oxlint-disable-next-line unicorn/prefer-add-event-listener
             ws.onmessage = (event) => {
               try {
                 const data = JSON.parse(event.data);
                 if (data.topic === "files:updates" && data.msg_id) {
                   clearTimeout(timeout);
+                  // oxlint-disable-next-line unicorn/prefer-add-event-listener
                   ws.onmessage = original;
                   resolve({ seq: data.seq });
                   return;
@@ -751,6 +785,7 @@ test.describe("WebSocket Protocol API", () => {
             let broadcastReceived = false;
             const original = ws.onmessage;
 
+            // oxlint-disable-next-line unicorn/prefer-add-event-listener
             ws.onmessage = (event) => {
               try {
                 const data = JSON.parse(event.data);
@@ -771,12 +806,14 @@ test.describe("WebSocket Protocol API", () => {
               body: JSON.stringify({ content: "Unsub test note", author: "@test" }),
             }).then((response) => {
               if (!response.ok) {
+                // oxlint-disable-next-line unicorn/prefer-add-event-listener
                 ws.onmessage = original;
                 resolve(false); // Mutation failed — skip test to avoid false negative
                 return;
               }
               // Wait 2s for any spurious broadcasts to arrive
               setTimeout(() => {
+                // oxlint-disable-next-line unicorn/prefer-add-event-listener
                 ws.onmessage = original;
                 resolve(broadcastReceived);
               }, 2000);
@@ -794,7 +831,7 @@ test.describe("WebSocket Protocol API", () => {
   test.describe("Connection Lifecycle - Clean Close", () => {
     // AC: @api-contract ac-31 — close code 1000 for clean close
     test("clean close uses code 1000", async ({ page, daemon }) => {
-      await page.goto(daemon.baseUrl + "/api/health");
+      await page.goto(`${daemon.baseUrl}/api/health`);
 
       const closeCode = await page.evaluate((wsUrl: string) => {
         return new Promise<number>((resolve, reject) => {
@@ -804,6 +841,7 @@ test.describe("WebSocket Protocol API", () => {
             reject(new Error("Timeout waiting for connection"));
           }, 5000);
 
+          // oxlint-disable-next-line unicorn/prefer-add-event-listener
           ws.onmessage = (event) => {
             try {
               const data = JSON.parse(event.data);
@@ -818,15 +856,17 @@ test.describe("WebSocket Protocol API", () => {
             }
           };
 
+          // oxlint-disable-next-line unicorn/prefer-add-event-listener
           ws.onclose = (event) => {
             resolve(event.code);
           };
 
+          // oxlint-disable-next-line unicorn/prefer-add-event-listener
           ws.onerror = () => {
             reject(new Error("WebSocket error"));
           };
         });
-      }, daemon.wsUrl + "/ws");
+      }, `${daemon.wsUrl}/ws`);
 
       // AC: @api-contract ac-31 — clean close uses code 1000
       expect(closeCode).toBe(1000);

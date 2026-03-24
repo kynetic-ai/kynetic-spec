@@ -258,7 +258,7 @@ test('appends note to task', async () => {});
       expect(getTestCoverageCacheStats().entries).toBe(1);
 
       // Invalidate with trailing slash - should still work
-      invalidateTestCoverageCache(tempDir + "/");
+      invalidateTestCoverageCache(`${tempDir}/`);
       expect(getTestCoverageCacheStats().entries).toBe(0);
     });
   });

@@ -358,7 +358,7 @@ describe("Integration: meta workflows", () => {
     tags: []
 `;
     // Append to end of file instead of replacing 'tasks:'
-    tasksContent = tasksContent.trimEnd() + newTask + "\n";
+    tasksContent = `${tasksContent.trimEnd()}${newTask}\n`;
     await fs.writeFile(tasksPath, tasksContent);
 
     // Validation should fail with reference error

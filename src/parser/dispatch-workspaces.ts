@@ -6,7 +6,6 @@ import { readYamlFile, writeYamlFilePreserveFormat } from "./yaml.js";
 import {
   type DispatchWorkspaceRecord,
   DispatchWorkspaceRecordSchema,
-  type DispatchWorkspaceRegistryFile,
   DispatchWorkspaceRegistryFileSchema,
 } from "../schema/index.js";
 
@@ -197,7 +196,7 @@ function isOpenWorkspace(record: DispatchWorkspaceRecord): boolean {
   return record.lifecycle_state !== "closed";
 }
 
-function validateSingleOpenWorkspacePerTask(records: DispatchWorkspaceRecord[]): void {
+function _validateSingleOpenWorkspacePerTask(records: DispatchWorkspaceRecord[]): void {
   const openCounts = new Map<string, string[]>();
   for (const record of records) {
     if (!isOpenWorkspace(record)) continue;
@@ -236,7 +235,9 @@ export async function findDispatchWorkspaceByTaskRef(
   const filtered = options.includeClosed
     ? matches
     : matches.filter((workspace) => workspace.lifecycle_state !== "closed");
-  return filtered.toSorted((a, b) => (a.timestamps.updated_at < b.timestamps.updated_at ? 1 : -1))[0];
+  return filtered.toSorted((a, b) =>
+    a.timestamps.updated_at < b.timestamps.updated_at ? 1 : -1,
+  )[0];
 }
 
 export async function findDispatchWorkspaceById(
@@ -250,7 +251,7 @@ export async function findDispatchWorkspaceById(
 /** Default retention threshold for closed workspace records (7 days in milliseconds). */
 export const CLOSED_WORKSPACE_RETENTION_MS = 7 * 24 * 60 * 60 * 1000;
 
-function isClosedBeyondRetention(
+function _isClosedBeyondRetention(
   record: DispatchWorkspaceRecord,
   now: number,
   retentionMs: number,
@@ -472,6 +473,7 @@ export async function saveDispatchWorkspaceRecord(
     await fs.mkdir(dir, { recursive: true });
 
     // Load raw workspace data without schema normalization
+    // oxlint-disable-next-line eslint/prefer-const -- rawWorkspaces is reassigned, wrapperObj shares destructuring
     let { rawWorkspaces, wrapperObj } = await extractRawWorkspaceArray(registryPath);
 
     // Validate existing registry content to catch corruption early.

@@ -245,7 +245,7 @@ ${endedAtLine}`,
 test.describe("Session History View", () => {
   test.describe("Session List (AC-1)", () => {
     // AC: @ui-session-history ac-1
-    test("shows session list with required metadata fields", async ({ page, daemon }) => {
+    test("shows session list with required metadata fields", async ({ page, daemon: _daemon }) => {
       await page.route("**/api/sessions*", mockSessionsRoute(mockSessions()));
       await page.goto("/sessions");
 
@@ -257,7 +257,7 @@ test.describe("Session History View", () => {
     });
 
     // AC: @ui-session-history ac-1 — Status badge visible
-    test("shows status badge for each session", async ({ page, daemon }) => {
+    test("shows status badge for each session", async ({ page, daemon: _daemon }) => {
       await page.route("**/api/sessions*", mockSessionsRoute(mockSessions()));
       await page.goto("/sessions");
       await expect(page.getByTestId("sessions-list")).toBeVisible();
@@ -269,7 +269,7 @@ test.describe("Session History View", () => {
     });
 
     // AC: @ui-session-history ac-1 — Session ID displayed
-    test("shows session ID for each row", async ({ page, daemon }) => {
+    test("shows session ID for each row", async ({ page, daemon: _daemon }) => {
       await page.route("**/api/sessions*", mockSessionsRoute(mockSessions()));
       await page.goto("/sessions");
       await expect(page.getByTestId("sessions-list")).toBeVisible();
@@ -280,7 +280,7 @@ test.describe("Session History View", () => {
     });
 
     // AC: @ui-session-history ac-1 — Agent type displayed
-    test("shows agent type for each row", async ({ page, daemon }) => {
+    test("shows agent type for each row", async ({ page, daemon: _daemon }) => {
       await page.route("**/api/sessions*", mockSessionsRoute(mockSessions()));
       await page.goto("/sessions");
       await expect(page.getByTestId("sessions-list")).toBeVisible();
@@ -291,7 +291,7 @@ test.describe("Session History View", () => {
     });
 
     // AC: @ui-session-history ac-1 — Task ref displayed when present
-    test("shows task ref when session has a task_id", async ({ page, daemon }) => {
+    test("shows task ref when session has a task_id", async ({ page, daemon: _daemon }) => {
       await page.route("**/api/sessions*", mockSessionsRoute(mockSessions()));
       await page.goto("/sessions");
       await expect(page.getByTestId("sessions-list")).toBeVisible();
@@ -302,7 +302,7 @@ test.describe("Session History View", () => {
     });
 
     // AC: @ui-session-history ac-1 — Duration displayed
-    test("shows duration for each row", async ({ page, daemon }) => {
+    test("shows duration for each row", async ({ page, daemon: _daemon }) => {
       await page.route("**/api/sessions*", mockSessionsRoute(mockSessions()));
       await page.goto("/sessions");
       await expect(page.getByTestId("sessions-list")).toBeVisible();
@@ -313,7 +313,7 @@ test.describe("Session History View", () => {
     });
 
     // AC: @ui-session-history ac-1 — Age displayed
-    test("shows age for each row", async ({ page, daemon }) => {
+    test("shows age for each row", async ({ page, daemon: _daemon }) => {
       await page.route("**/api/sessions*", mockSessionsRoute(mockSessions()));
       await page.goto("/sessions");
       await expect(page.getByTestId("sessions-list")).toBeVisible();
@@ -326,7 +326,7 @@ test.describe("Session History View", () => {
     });
 
     // AC: @ui-session-history ac-1 — Sorted by most recent first
-    test("sessions are sorted by most recent first", async ({ page, daemon }) => {
+    test("sessions are sorted by most recent first", async ({ page, daemon: _daemon }) => {
       const sorted = mockSessions();
       sorted.items = [sorted.items[1], sorted.items[0], sorted.items[2]];
 
@@ -345,7 +345,7 @@ test.describe("Session History View", () => {
     // AC: @ui-session-history ac-2
     test("clicking a session navigates to /sessions/:id and shows stream view", async ({
       page,
-      daemon,
+      daemon: _daemon,
     }) => {
       const sessionDetail = mockSessions().items[0];
 
@@ -378,7 +378,7 @@ test.describe("Session History View", () => {
     });
 
     // AC: @ui-session-history ac-2
-    test("session row links point to correct detail URL", async ({ page, daemon }) => {
+    test("session row links point to correct detail URL", async ({ page, daemon: _daemon }) => {
       await page.route("**/api/sessions*", mockSessionsRoute(mockSessions()));
       await page.goto("/sessions");
       await expect(page.getByTestId("sessions-list")).toBeVisible();
@@ -390,7 +390,7 @@ test.describe("Session History View", () => {
   });
 
   test.describe("Empty State", () => {
-    test("shows empty state when no sessions exist", async ({ page, daemon }) => {
+    test("shows empty state when no sessions exist", async ({ page, daemon: _daemon }) => {
       await page.route("**/api/sessions*", (route) => {
         route.fulfill({
           status: 200,
@@ -408,7 +408,7 @@ test.describe("Session History View", () => {
   });
 
   test.describe("Loading State", () => {
-    test("shows loading skeleton while fetching", async ({ page, daemon }) => {
+    test("shows loading skeleton while fetching", async ({ page, daemon: _daemon }) => {
       await page.route("**/api/sessions*", async (route) => {
         await new Promise((r) => setTimeout(r, 500));
         route.fulfill({
@@ -428,7 +428,7 @@ test.describe("Session History View", () => {
   });
 
   test.describe("Error State", () => {
-    test("shows error message on API failure", async ({ page, daemon }) => {
+    test("shows error message on API failure", async ({ page, daemon: _daemon }) => {
       await page.route("**/api/sessions*", (route) => {
         route.fulfill({
           status: 500,
@@ -446,7 +446,7 @@ test.describe("Session History View", () => {
 
   test.describe("Session Type Indicators", () => {
     // AC: @ui-session-history ac-1 — Trigger labels distinguish dispatched vs manual
-    test("shows trigger label for each session", async ({ page, daemon }) => {
+    test("shows trigger label for each session", async ({ page, daemon: _daemon }) => {
       await page.route("**/api/sessions*", mockSessionsRoute(mockSessions()));
       await page.goto("/sessions");
       await expect(page.getByTestId("sessions-list")).toBeVisible();
@@ -458,7 +458,7 @@ test.describe("Session History View", () => {
       await expect(labels.nth(2)).toContainText("Manual Run");
     });
 
-    test("shows trigger icon for each session", async ({ page, daemon }) => {
+    test("shows trigger icon for each session", async ({ page, daemon: _daemon }) => {
       await page.route("**/api/sessions*", mockSessionsRoute(mockSessions()));
       await page.goto("/sessions");
       await expect(page.getByTestId("sessions-list")).toBeVisible();
@@ -470,7 +470,7 @@ test.describe("Session History View", () => {
 
   test.describe("Trigger Filter", () => {
     // AC: @session-filter-controls ac-trigger-filter
-    test("filter controls are visible when sessions exist", async ({ page, daemon }) => {
+    test("filter controls are visible when sessions exist", async ({ page, daemon: _daemon }) => {
       await page.route("**/api/sessions*", mockSessionsRoute(mockSessions()));
       await page.goto("/sessions");
       await expect(page.getByTestId("sessions-list")).toBeVisible();
@@ -481,7 +481,7 @@ test.describe("Session History View", () => {
     });
 
     // AC: @session-filter-controls ac-trigger-filter — Filter change triggers new API call
-    test("dispatched filter shows only dispatched sessions", async ({ page, daemon }) => {
+    test("dispatched filter shows only dispatched sessions", async ({ page, daemon: _daemon }) => {
       const apiCalls: string[] = [];
 
       await page.route("**/api/sessions*", (route) => {
@@ -508,7 +508,7 @@ test.describe("Session History View", () => {
     });
 
     // AC: @session-filter-controls ac-trigger-filter
-    test("manual filter shows only manual sessions", async ({ page, daemon }) => {
+    test("manual filter shows only manual sessions", async ({ page, daemon: _daemon }) => {
       await page.route("**/api/sessions*", mockSessionsRoute(mockSessions()));
       await page.goto("/sessions");
       await expect(page.getByTestId("sessions-list")).toBeVisible();
@@ -529,7 +529,7 @@ test.describe("Session History View", () => {
     // AC: @session-text-search ac-ui-search
     test("submitting search persists q in the URL and shows grouped matches", async ({
       page,
-      daemon,
+      daemon: _daemon,
     }) => {
       await page.route("**/api/sessions/search*", mockSearchRoute());
       await page.route("**/api/sessions*", mockSessionsRoute(mockSessions()));
@@ -548,7 +548,7 @@ test.describe("Session History View", () => {
     // AC: @session-text-search ac-empty-query
     test("submitting an empty search clears q and keeps the unfiltered session list", async ({
       page,
-      daemon,
+      daemon: _daemon,
     }) => {
       await page.route("**/api/sessions/search*", mockSearchRoute());
       await page.route("**/api/sessions*", mockSessionsRoute(mockSessions()));
@@ -565,7 +565,7 @@ test.describe("Session History View", () => {
   });
 
   test.describe("Navigation", () => {
-    test("sessions page is accessible from sidebar", async ({ page, daemon }) => {
+    test("sessions page is accessible from sidebar", async ({ page, daemon: _daemon }) => {
       await page.goto("/");
 
       const sessionsLink = page.getByTestId("nav-link-sessions");
@@ -578,7 +578,10 @@ test.describe("Session History View", () => {
 
   // AC: @gh-pages-export ac-22
   test.describe("Static Mode (@gh-pages-export ac-22)", () => {
-    test("session detail shows read-only message in static mode", async ({ page, daemon }) => {
+    test("session detail shows read-only message in static mode", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       await page.route("**/health", (route) => {
         route.fulfill({ status: 503, body: "Service Unavailable" });
       });
@@ -614,7 +617,10 @@ test.describe("Session History View", () => {
       );
     });
 
-    test("session detail does not attempt API calls in static mode", async ({ page, daemon }) => {
+    test("session detail does not attempt API calls in static mode", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       let sessionApiFetched = false;
 
       await page.route("**/health", (route) => {
@@ -669,7 +675,7 @@ test.describe("Session History View", () => {
 
   test.describe("Infinite Scroll", () => {
     // AC: @session-list-infinite-scroll ac-initial-load
-    test("initial load fetches only first page of sessions", async ({ page, daemon }) => {
+    test("initial load fetches only first page of sessions", async ({ page, daemon: _daemon }) => {
       const allSessions = Array.from({ length: 50 }, (_, i) => makeSession(i + 1));
       const requestUrls: string[] = [];
 
@@ -704,7 +710,7 @@ test.describe("Session History View", () => {
     });
 
     // AC: @session-list-infinite-scroll ac-initial-load — Loading skeleton shows during fetch
-    test("shows loading skeleton during initial fetch", async ({ page, daemon }) => {
+    test("shows loading skeleton during initial fetch", async ({ page, daemon: _daemon }) => {
       await page.route("**/api/sessions*", async (route) => {
         await new Promise((r) => setTimeout(r, 500));
         route.fulfill({
@@ -730,15 +736,15 @@ test.describe("Session History View", () => {
     });
 
     // AC: @session-list-infinite-scroll ac-scroll-load
-    test("scrolling near bottom triggers next page load", async ({ page, daemon }) => {
+    test("scrolling near bottom triggers next page load", async ({ page, daemon: _daemon }) => {
       const allSessions = Array.from({ length: 50 }, (_, i) => makeSession(i + 1));
-      let pagesFetched = 0;
+      let _pagesFetched = 0;
 
       await page.route("**/api/sessions*", (route) => {
         const url = new URL(route.request().url());
         const offset = Number(url.searchParams.get("offset") ?? "0");
         const limit = Number(url.searchParams.get("limit") ?? "25");
-        pagesFetched++;
+        _pagesFetched++;
 
         route.fulfill({
           status: 200,
@@ -767,7 +773,10 @@ test.describe("Session History View", () => {
     });
 
     // AC: @session-list-infinite-scroll ac-scroll-load — Already-loaded sessions remain in place
-    test("previously loaded sessions remain when next page loads", async ({ page, daemon }) => {
+    test("previously loaded sessions remain when next page loads", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       const allSessions = Array.from({ length: 30 }, (_, i) => makeSession(i + 1));
 
       await page.route("**/api/sessions*", (route) => {
@@ -804,7 +813,10 @@ test.describe("Session History View", () => {
     });
 
     // AC: @session-list-infinite-scroll ac-scroll-end
-    test("shows end of list indicator when all sessions loaded", async ({ page, daemon }) => {
+    test("shows end of list indicator when all sessions loaded", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       const allSessions = Array.from({ length: 10 }, (_, i) => makeSession(i + 1));
 
       await page.route("**/api/sessions*", (route) => {
@@ -843,7 +855,7 @@ test.describe("Session History View", () => {
     // AC: @session-list-infinite-scroll ac-scroll-end — No more requests after all loaded
     test("does not make additional requests after all sessions loaded", async ({
       page,
-      daemon,
+      daemon: _daemon,
     }) => {
       const allSessions = Array.from({ length: 30 }, (_, i) => makeSession(i + 1));
       let requestCount = 0;
@@ -882,7 +894,7 @@ test.describe("Session History View", () => {
     });
 
     // AC: @session-list-infinite-scroll ac-filter-reset — Filter change resets to page 1
-    test("changing filter resets list to page 1", async ({ page, daemon }) => {
+    test("changing filter resets list to page 1", async ({ page, daemon: _daemon }) => {
       const allSessions = Array.from({ length: 50 }, (_, i) =>
         makeSession(i + 1, {
           trigger: i < 30 ? "task.ready" : "manual",
@@ -934,7 +946,7 @@ test.describe("Session History View", () => {
     });
 
     // AC: @session-list-infinite-scroll ac-filter-reset — Previously loaded items cleared
-    test("filter change clears previously loaded items", async ({ page, daemon }) => {
+    test("filter change clears previously loaded items", async ({ page, daemon: _daemon }) => {
       const allSessions = Array.from({ length: 30 }, (_, i) =>
         makeSession(i + 1, {
           trigger: i < 15 ? "task.ready" : "manual",
@@ -987,7 +999,7 @@ test.describe("Session History View", () => {
     // AC: @session-list-infinite-scroll ac-live-update — New sessions indicator
     test("new sessions indicator is hidden when no new sessions arrive", async ({
       page,
-      daemon,
+      daemon: _daemon,
     }) => {
       const sessions = [makeSession(1)];
 
@@ -1050,7 +1062,10 @@ test.describe("Session History View", () => {
     });
 
     // AC: @session-list-infinite-scroll ac-live-update — Total count updates on new session
-    test("total count increments when WebSocket event arrives", async ({ page, daemon }) => {
+    test("total count increments when WebSocket event arrives", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       const sessions = Array.from({ length: 5 }, (_, i) => makeSession(i + 1));
 
       await page.route("**/api/sessions*", (route) => {
@@ -1118,7 +1133,7 @@ test.describe("Session History View", () => {
     // AC: @session-list-infinite-scroll ac-live-update — At-top prepend behavior
     test("re-fetches page when user is at top and new session arrives", async ({
       page,
-      daemon,
+      daemon: _daemon,
     }) => {
       let fetchCount = 0;
       const sessions = Array.from({ length: 3 }, (_, i) => makeSession(i + 1));
@@ -1191,7 +1206,7 @@ test.describe("Session History View", () => {
     // AC: @session-list-infinite-scroll ac-live-update-scrolled
     test("shows indicator when an in-list update arrives while the user is scrolled down", async ({
       page,
-      daemon,
+      daemon: _daemon,
     }) => {
       // Need enough sessions to enable scrolling
       const sessions = Array.from({ length: 25 }, (_, i) => makeSession(i + 1));
@@ -1274,7 +1289,10 @@ test.describe("Session History View", () => {
     });
 
     // AC: @session-list-infinite-scroll ac-live-update — Clicking indicator refreshes
-    test("clicking new sessions indicator refreshes the list", async ({ page, daemon }) => {
+    test("clicking new sessions indicator refreshes the list", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       let callCount = 0;
       const sessions = Array.from({ length: 25 }, (_, i) => makeSession(i + 1));
 
@@ -1362,7 +1380,7 @@ test.describe("Session History View", () => {
     // AC: @session-filter-controls ac-status-filter
     test("status filter appends repeated status params and filters sessions", async ({
       page,
-      daemon,
+      daemon: _daemon,
     }) => {
       const sessions = mockSessions();
       await page.route("**/api/sessions*", mockSessionsRoute(sessions));
@@ -1386,7 +1404,7 @@ test.describe("Session History View", () => {
     // AC: @session-filter-controls ac-agent-filter
     test("agent filter updates URL with agent_id and filters sessions", async ({
       page,
-      daemon,
+      daemon: _daemon,
     }) => {
       await page.route("**/api/sessions*", mockSessionsRoute(mockSessions()));
       await page.goto("/sessions");
@@ -1403,7 +1421,7 @@ test.describe("Session History View", () => {
     // AC: @session-filter-controls ac-agent-type-filter
     test("agent type filter updates URL with agent_type and filters sessions", async ({
       page,
-      daemon,
+      daemon: _daemon,
     }) => {
       await page.route("**/api/sessions*", mockSessionsRoute(mockSessions()));
       await page.goto("/sessions");
@@ -1418,7 +1436,7 @@ test.describe("Session History View", () => {
     });
 
     // AC: @session-filter-controls ac-date-filter
-    test("date filter updates URL with since param", async ({ page, daemon }) => {
+    test("date filter updates URL with since param", async ({ page, daemon: _daemon }) => {
       await page.route("**/api/sessions*", mockSessionsRoute(mockSessions()));
       await page.goto("/sessions");
       await expect(page.getByTestId("sessions-list")).toBeVisible();
@@ -1431,7 +1449,10 @@ test.describe("Session History View", () => {
     });
 
     // AC: @session-filter-controls ac-clear-filters
-    test("clear filters button removes all filter params from URL", async ({ page, daemon }) => {
+    test("clear filters button removes all filter params from URL", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       await page.route("**/api/sessions*", mockSessionsRoute(mockSessions()));
 
       // Navigate with filters already in URL
@@ -1449,7 +1470,7 @@ test.describe("Session History View", () => {
     });
 
     // AC: @session-filter-controls ac-filter-counts
-    test("shows filtered vs total count when filters active", async ({ page, daemon }) => {
+    test("shows filtered vs total count when filters active", async ({ page, daemon: _daemon }) => {
       const sessions = mockSessions();
       await page.route("**/api/sessions*", mockSessionsRoute(sessions));
       await page.goto("/sessions");
@@ -1466,7 +1487,7 @@ test.describe("Session History View", () => {
 
     test("does not fetch the full session dataset to seed filter controls", async ({
       page,
-      daemon,
+      daemon: _daemon,
     }) => {
       const sessions = {
         items: Array.from({ length: 80 }, (_, index) =>
@@ -1497,7 +1518,7 @@ test.describe("Session History View", () => {
     });
 
     // AC: @session-filter-controls ac-filter-counts — No count when no filters
-    test("does not show filter count when no filters active", async ({ page, daemon }) => {
+    test("does not show filter count when no filters active", async ({ page, daemon: _daemon }) => {
       await page.route("**/api/sessions*", mockSessionsRoute(mockSessions()));
       await page.goto("/sessions");
       await expect(page.getByTestId("sessions-list")).toBeVisible();
@@ -1507,7 +1528,7 @@ test.describe("Session History View", () => {
     });
 
     // AC: @ui-url-panel-state ac-4 — Filters persist in URL on page load
-    test("filters load from URL params on page navigation", async ({ page, daemon }) => {
+    test("filters load from URL params on page navigation", async ({ page, daemon: _daemon }) => {
       await page.route("**/api/sessions*", mockSessionsRoute(mockSessions()));
 
       // Navigate directly with filter params

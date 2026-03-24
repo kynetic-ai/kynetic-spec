@@ -945,7 +945,7 @@ function adoptedBranchProvenance(
   };
 }
 
-function defaultBootstrapState(now: string): DispatchWorkspaceBootstrapState {
+function defaultBootstrapState(_now: string): DispatchWorkspaceBootstrapState {
   return {
     ...emptyBootstrapRoleState(),
     lastRole: null,

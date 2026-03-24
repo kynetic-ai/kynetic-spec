@@ -106,7 +106,7 @@ function createSnapshot(): KspecSnapshot {
             _ulid: "01AC0000000000000000000001",
             given: "given",
             when: "when",
-            then: "then",
+            then: "then", // oxlint-disable-line unicorn/no-thenable
           },
         ],
         created_at: "2026-03-01T00:00:00.000Z",

@@ -181,6 +181,7 @@ Examples:
         const allRecordUlids = records.map((record) => record._ulid);
         const totalCount = records.length;
         const activeFilters: string[] = [];
+        // oxlint-disable-next-line eslint/prefer-const -- assigned conditionally later
         let filteredCount: number;
 
         // AC: @triage-cli-commands ac-3 — status filter

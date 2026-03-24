@@ -62,42 +62,6 @@ async function setupProjectWithReviewerAgent(dir: string): Promise<void> {
   await fs.writeFile(path.join(dir, "project.tasks.yaml"), "tasks: []\n", "utf-8");
 }
 
-async function writeTask(
-  dir: string,
-  task: {
-    id: string;
-    title: string;
-    slugs: string[];
-    status: "pending_review";
-  },
-): Promise<void> {
-  await fs.writeFile(
-    path.join(dir, "project.tasks.yaml"),
-    YAML.stringify({
-      tasks: [
-        {
-          _ulid: task.id,
-          title: task.title,
-          slugs: task.slugs,
-          status: task.status,
-          type: "task",
-          priority: 1,
-          blocked_by: [],
-          depends_on: [],
-          context: [],
-          tags: [],
-          vcs_refs: [],
-          notes: [],
-          todos: [],
-          created_at: new Date().toISOString(),
-          automation: "eligible",
-        },
-      ],
-    }),
-    "utf-8",
-  );
-}
-
 function workspaceMetadataPath(workspaceDir: string): string {
   return path.join(workspaceDir, WORKSPACE_METADATA_FILE);
 }

@@ -39,9 +39,9 @@ export function mergeUlidArrays<T extends { _ulid: string }>(
   const theirsArr = theirs ?? [];
 
   // Build lookup maps by ULID
-  const baseMap = new Map(baseArr.map((item) => [item._ulid, item]));
+  const _baseMap = new Map(baseArr.map((item) => [item._ulid, item]));
   const oursMap = new Map(oursArr.map((item) => [item._ulid, item]));
-  const theirsMap = new Map(theirsArr.map((item) => [item._ulid, item]));
+  const _theirsMap = new Map(theirsArr.map((item) => [item._ulid, item]));
 
   // Result map - track all unique ULIDs
   const resultMap = new Map<string, T>();

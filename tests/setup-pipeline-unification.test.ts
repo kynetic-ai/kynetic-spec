@@ -8,7 +8,6 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { execSync } from "node:child_process";
 import { kspec, createTempDir, cleanupTempDir, initGitRepo } from "./helpers/cli.js";
-import { SHADOW_WORKTREE_DIR } from "../src/parser/shadow.js";
 
 /**
  * Helper: Set up a temp directory with git, kspec init, and a skill for rendering.

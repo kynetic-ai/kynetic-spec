@@ -406,7 +406,7 @@ async function startServer(opts: {
  * Stop the daemon server
  * AC: @cli-serve-commands ac-4 (stop), ac-5 (idempotent)
  */
-async function stopServer(opts: { kspecDir?: string; json?: boolean }): Promise<void> {
+async function stopServer(_opts: { kspecDir?: string; json?: boolean }): Promise<void> {
   // AC: @cli-serve-commands ac-11
   guardAgentContext("stop");
 
@@ -480,7 +480,7 @@ async function stopServer(opts: { kspecDir?: string; json?: boolean }): Promise<
  * Check daemon server status
  * AC: @cli-serve-commands ac-6, @multi-directory-daemon ac-12
  */
-async function statusServer(opts: { kspecDir?: string; json?: boolean }): Promise<void> {
+async function statusServer(_opts: { kspecDir?: string; json?: boolean }): Promise<void> {
   if (isJsonMode()) {
   }
 

@@ -107,8 +107,9 @@ describe("KspecWatcher Chokidar fallback", () => {
 
     const loopYamlPath = join(kspecDir, ".kspec", "kynetic.yaml");
     expect(typeof options?.ignored).toBe("function");
-    expect((options?.ignored as (filePath: string) => boolean)(rootYamlPath)).toBe(false);
-    expect((options?.ignored as (filePath: string) => boolean)(loopYamlPath)).toBe(true);
+    const ignored = options!.ignored as (filePath: string) => boolean;
+    expect(ignored(rootYamlPath)).toBe(false);
+    expect(ignored(loopYamlPath)).toBe(true);
 
     mockState.latestWatcher?.emitChange(loopYamlPath);
     await new Promise((resolve) => setTimeout(resolve, 25));

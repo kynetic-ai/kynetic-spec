@@ -3,7 +3,7 @@
  * AC: @command-group-default-actions
  */
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { kspec, kspecJson, setupTempFixtures, cleanupTempDir, initGitRepo } from "./helpers/cli";
+import { kspec, setupTempFixtures, cleanupTempDir, initGitRepo } from "./helpers/cli";
 
 describe("Integration: command group default actions", () => {
   let tempDir: string;

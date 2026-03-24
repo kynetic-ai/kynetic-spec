@@ -6,7 +6,7 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import * as path from "node:path";
 import * as fs from "node:fs/promises";
-import { setupTempFixtures, kspecOutput as kspec, kspecJson } from "./helpers/cli";
+import { setupTempFixtures, kspecOutput as kspec } from "./helpers/cli";
 
 describe("trait edge cases", () => {
   let tempDir: string;

@@ -26,8 +26,6 @@ import {
   writePlatformRenderHash,
   checkPlatformSkillDrift,
   type PlatformRenderer,
-  type PlatformRenderResult,
-  type DriftStatus,
 } from "../src/parser/skill-render";
 import { initContext, loadMetaContext } from "../src/parser";
 
@@ -558,7 +556,7 @@ describe("Platform Renderer Contract", () => {
       // Modify the rendered file
       const renderedPath = path.join(tempDir, ".claude", "skills", "test-skill", "SKILL.md");
       const content = await readTestOutput(renderedPath, "utf-8");
-      await fs.writeFile(renderedPath, content + "\n# Manual edit\n", "utf-8");
+      await fs.writeFile(renderedPath, `${content}\n# Manual edit\n`, "utf-8");
 
       // Check drift - should be drifted
       const driftStatus = await claudeCodeRenderer.checkDrift(ctx.specDir, tempDir, "test-skill");
@@ -709,7 +707,7 @@ describe("Droid Skill Renderer", () => {
     );
     await fs.writeFile(metaPath, metaContent, "utf-8");
 
-    const { ctx, skill } = await loadDroidSkill("droid-ui");
+    const { ctx: _ctx, skill } = await loadDroidSkill("droid-ui");
     const frontmatter = generateDroidFrontmatter(skill!);
 
     expect(frontmatter).toContain("user-invocable: false");

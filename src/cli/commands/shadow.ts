@@ -155,7 +155,7 @@ export function registerShadowCommands(program: Command): void {
           remote: config.shadow.remote?.value,
           remoteType: config.shadow.remote?.type,
         };
-        const branchName = shadowOptions.branchName || SHADOW_BRANCH_NAME;
+        const _branchName = shadowOptions.branchName || SHADOW_BRANCH_NAME;
         const worktreeDir = shadowOptions.directory || SHADOW_WORKTREE_DIR;
         const status = await getShadowStatus(gitRoot, shadowOptions);
 
@@ -226,7 +226,7 @@ export function registerShadowCommands(program: Command): void {
           remote: config.shadow.remote?.value,
           remoteType: config.shadow.remote?.type,
         };
-        const branchName = shadowOptions.branchName || SHADOW_BRANCH_NAME;
+        const _branchName2 = shadowOptions.branchName || SHADOW_BRANCH_NAME;
         const worktreeDir = shadowOptions.directory || SHADOW_WORKTREE_DIR;
         const status = await getShadowStatus(gitRoot, shadowOptions);
         const remoteHasShadow = await remoteShadowBranchExists(gitRoot, shadowOptions);

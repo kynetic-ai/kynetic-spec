@@ -2,7 +2,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import * as fs from "node:fs/promises";
 import { execSync } from "node:child_process";
 import * as path from "node:path";
-import * as YAML from "yaml";
 import { initContext } from "../src/parser/index.js";
 import {
   findDispatchWorkspaceByTaskRef,
@@ -15,7 +14,6 @@ import {
   reapDispatchWorkspace,
   reconcileDispatchWorkspaceLifecycle,
   reconcileDispatchWorkspaceArtifacts,
-  reconcileDispatchWorkspaceRegistry,
 } from "../src/agent-runtime/workspace.js";
 import {
   cleanupTempDir,
@@ -58,16 +56,6 @@ async function setupShadowSpecDir(dir: string): Promise<string> {
   return specDir;
 }
 
-async function readWorkspaceRecord(
-  registryPath: string,
-  taskRef: string,
-): Promise<Record<string, any>> {
-  const raw = YAML.parse(await readTestOutput(registryPath)) as {
-    workspaces?: Array<Record<string, any>>;
-  };
-  return raw.workspaces?.find((workspace) => workspace.task_ref === taskRef) ?? {};
-}
-
 describe("adopted branch cleanup and recoverability", () => {
   let tempDir: string;
   let specDir: string;
@@ -96,7 +84,7 @@ describe("adopted branch cleanup and recoverability", () => {
     git(tempDir, "checkout -b dev");
 
     const taskRef = `@${testUlid("ACLEAN", 1)}`;
-    const workspace = await provisionDispatchWorkspace({
+    const _workspace = await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
       task: {
@@ -182,7 +170,7 @@ describe("adopted branch cleanup and recoverability", () => {
     git(tempDir, "checkout -b dev");
 
     const taskRef = `@${testUlid("ACLEAN", 2)}`;
-    const workspace = await provisionDispatchWorkspace({
+    const _workspace = await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
       task: {
@@ -236,7 +224,7 @@ describe("adopted branch cleanup and recoverability", () => {
     git(tempDir, `remote add origin "${remoteDir}"`);
 
     const taskRef = `@${testUlid("ACLEAN", 3)}`;
-    const workspace = await provisionDispatchWorkspace({
+    const _workspace = await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
       task: {
@@ -304,7 +292,7 @@ describe("adopted branch cleanup and recoverability", () => {
     git(tempDir, "checkout -b dev");
 
     const taskRef = `@${testUlid("ACLEAN", 4)}`;
-    const workspace = await provisionDispatchWorkspace({
+    const _workspace = await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
       task: {
@@ -365,7 +353,7 @@ describe("adopted branch cleanup and recoverability", () => {
     git(tempDir, "checkout -b dev");
 
     const taskRef = `@${testUlid("ACLEAN", 5)}`;
-    const workspace = await provisionDispatchWorkspace({
+    const _workspace = await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
       task: {
@@ -427,7 +415,7 @@ describe("adopted branch cleanup and recoverability", () => {
     await fs.writeFile(path.join(tempDir, "project.tasks.yaml"), "tasks: []\n", "utf-8");
 
     const taskRef = `@${testUlid("ACLEAN", 6)}`;
-    const workspace = await provisionDispatchWorkspace({
+    const _workspace = await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
       task: {
@@ -472,7 +460,7 @@ describe("adopted branch cleanup and recoverability", () => {
     git(tempDir, `remote add origin "${remoteDir}"`);
 
     const taskRef = `@${testUlid("ACLEAN", 7)}`;
-    const workspace = await provisionDispatchWorkspace({
+    const _workspace = await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
       task: {
@@ -574,7 +562,7 @@ describe("adopted branch cleanup and recoverability", () => {
     git(tempDir, "checkout -b dev");
 
     const taskRef = `@${testUlid("ACLEAN", 8)}`;
-    const workspace = await provisionDispatchWorkspace({
+    const _workspace = await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
       task: {
@@ -659,7 +647,7 @@ describe("adopted branch cleanup and recoverability", () => {
     git(tempDir, "checkout -b dev");
 
     const taskRef = `@${testUlid("ACLEAN", 9)}`;
-    const workspace = await provisionDispatchWorkspace({
+    const _workspace = await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
       task: {
@@ -740,7 +728,7 @@ describe("adopted branch cleanup and recoverability", () => {
     git(tempDir, "checkout -b dev");
 
     const taskRef = `@${testUlid("ACLEAN", 10)}`;
-    const workspace = await provisionDispatchWorkspace({
+    const _workspace = await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
       task: {

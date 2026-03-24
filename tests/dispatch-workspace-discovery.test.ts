@@ -8,13 +8,7 @@ import {
   getDispatchWorkspaceHealth,
   provisionDispatchWorkspace,
 } from "../src/agent-runtime/workspace.js";
-import {
-  cleanupTempDir,
-  createTempDir,
-  initGitRepo,
-  readTestOutput,
-  testUlid,
-} from "./helpers/cli.js";
+import { cleanupTempDir, createTempDir, initGitRepo, testUlid } from "./helpers/cli.js";
 
 // AC: @trait-error-guidance ac-1 — diagnostics include description of what went wrong
 // AC: @trait-error-guidance ac-2 — diagnostics include suggested action to resolve
@@ -63,13 +57,6 @@ async function setupConfig(dir: string): Promise<void> {
   );
 }
 
-async function readRegistryWorkspaces(registryPath: string): Promise<Array<Record<string, any>>> {
-  const raw = YAML.parse(await readTestOutput(registryPath)) as {
-    workspaces?: Array<Record<string, any>>;
-  };
-  return raw.workspaces ?? [];
-}
-
 // AC: @review-and-fix-cycle-workspace-discovery-before-discard ac-1
 // AC: @review-and-fix-cycle-workspace-discovery-before-discard ac-2
 // AC: @review-and-fix-cycle-workspace-discovery-before-discard ac-3
@@ -109,7 +96,7 @@ describe("review and fix-cycle workspace discovery before discard", () => {
     git(tempDir, `remote add origin "${remoteDir}"`);
 
     const taskRef = `@${testUlid("TASK", 1)}`;
-    const workspace = await provisionDispatchWorkspace({
+    const _workspace = await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
       task: {
@@ -288,7 +275,7 @@ describe("review and fix-cycle workspace discovery before discard", () => {
     git(tempDir, `remote add origin "${remoteDir}"`);
 
     const taskRef = `@${testUlid("TASK", 5)}`;
-    const workspace = await provisionDispatchWorkspace({
+    const _workspace = await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
       task: {
@@ -347,7 +334,7 @@ describe("review and fix-cycle workspace discovery before discard", () => {
     const taskRef = `@${testUlid("TASK", 6)}`;
 
     // Provision a workspace with one canonical branch
-    const workspace = await provisionDispatchWorkspace({
+    const _workspace = await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
       task: {
@@ -473,7 +460,7 @@ describe("review and fix-cycle workspace discovery before discard", () => {
 
     // Provision workspace, then destroy everything so it becomes unhealthy
     // with no remote to recover from.
-    const workspace = await provisionDispatchWorkspace({
+    const _workspace = await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
       task: {
@@ -517,7 +504,7 @@ describe("review and fix-cycle workspace discovery before discard", () => {
     const taskRef = `@${testUlid("TASK", 9)}`;
 
     // Provision workspace to create worktree with metadata file
-    const workspace = await provisionDispatchWorkspace({
+    const _workspace = await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
       task: {

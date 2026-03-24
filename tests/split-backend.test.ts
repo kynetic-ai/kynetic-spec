@@ -1,11 +1,7 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import {
-  TaskDataManager,
-  registerBackend,
-  unregisterBackend,
-} from "../src/parser/task-data-manager.js";
+import { TaskDataManager } from "../src/parser/task-data-manager.js";
 import {
   splitBackend,
   ensureSplitBackendRegistered,
@@ -23,7 +19,6 @@ import {
 
 // Register the split backend (no longer auto-registered at module scope)
 ensureSplitBackendRegistered();
-import { initContext } from "../src/parser/yaml.js";
 import type { KspecContext } from "../src/parser/yaml.js";
 import {
   cleanupTempDir,
@@ -31,7 +26,6 @@ import {
   initGitRepo,
   readTestOutput,
   testUlid,
-  testUlids,
 } from "./helpers/cli.js";
 import { toYaml } from "../src/parser/yaml.js";
 
@@ -534,7 +528,7 @@ describe("SplitBackend", () => {
       const manager = new TaskDataManager("split");
 
       // Create tasks with varying notes volumes
-      const created1 = await manager.createTask(ctx, {
+      await manager.createTask(ctx, {
         title: "Few notes task",
         slugs: ["few-notes"],
       });
@@ -742,7 +736,7 @@ describe("SplitBackend", () => {
       });
 
       // Read task.yaml content before note
-      const taskFileBefore = await readTestOutput(getTaskFilePath(ctx, created._ulid), "utf-8");
+      const _taskFileBefore = await readTestOutput(getTaskFilePath(ctx, created._ulid), "utf-8");
 
       // Add a note
       await manager.addNote(ctx, "@note-test", "Test note content", "@tester");

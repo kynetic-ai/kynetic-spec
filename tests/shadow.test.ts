@@ -33,7 +33,6 @@ import {
   createOrphanBranchFallback,
   SESSIONS_WORKTREE_DIR,
   type ShadowConfig,
-  type ShadowOptions,
 } from "../src/parser/shadow.js";
 import { initContext } from "../src/parser/yaml.js";
 import { existsSync } from "node:fs";
@@ -1007,7 +1006,7 @@ describe("Shadow Branch", () => {
         execSync('git config user.name "Test"', { cwd: cloneDir, stdio: "pipe" });
 
         // Verify kspec-meta is not in local remote refs before init
-        const hasLocalRef = (() => {
+        const _hasLocalRef = (() => {
           try {
             execSync(`git show-ref --verify refs/remotes/origin/${SHADOW_BRANCH_NAME}`, {
               cwd: cloneDir,
