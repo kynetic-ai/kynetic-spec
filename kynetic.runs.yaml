@@ -14241,7 +14241,7 @@ runs:
     completed_at: 2026-03-24T20:54:23.723Z
   - _ulid: 01KMGT4G2HNEGNP7JR7M1A9F02
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -14255,7 +14255,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-24T20:56:54.397Z
-        completed_at: 2026-03-24T20:56:54.397Z
+        completed_at: 2026-03-24T20:57:18.881Z
+        notes: "Friction identified (high confidence): Reviewer in detached worktree cannot checkout dev
+          because it's used by the main worktree. Had to cd to main worktree to perform the merge.
+          This is a systemic pattern — every reviewer dispatch in a detached snapshot will hit this.
+          Searched: no existing tracking for this specific friction. However, the dispatch context
+          explicitly instructs to merge from the canonical branch, and cd-ing to the main worktree
+          is the documented workaround for worktree branch locks. This is arguably
+          working-as-designed rather than friction — the reviewer workspace is intentionally
+          read-only/detached. No other high-confidence friction."
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-24T20:57:18.881Z
+        completed_at: 2026-03-24T20:57:18.881Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-24T20:56:14.674Z
