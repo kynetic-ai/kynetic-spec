@@ -1,0 +1,15 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["eslint", "typescript", "unicorn", "oxc", "import"],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn"
+  },
+  "rules": {
+    "no-unused-vars": "error",
+    "prefer-const": "error",
+    "prefer-template": "warn",
+    "prefer-optional-chain": "warn"
+  },
+  "ignorePatterns": ["dist/", "node_modules/", ".kspec/", "packages/web-ui/build/"]
+}

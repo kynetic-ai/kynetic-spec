@@ -1,0 +1,9 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "tabWidth": 2,
+  "useTabs": false,
+  "semi": true,
+  "singleQuote": false,
+  "importSorting": true,
+  "ignorePatterns": ["dist/", ".kspec/", "packages/web-ui/build/"]
+}
