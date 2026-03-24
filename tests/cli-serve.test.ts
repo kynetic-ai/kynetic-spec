@@ -10,13 +10,14 @@ import {
   createIsolatedKspecHome,
   initGitRepo,
   kspec,
+  readTestOutputSync,
   waitForStartup,
   type KspecOptions,
 } from './helpers/cli';
 import { spawn, execSync } from 'child_process';
 import { once } from 'events';
 import { dirname, join } from 'path';
-import { readFileSync, existsSync, mkdirSync } from 'fs';
+import { existsSync, mkdirSync } from 'fs';
 import { createServer } from 'net';
 
 // Check if Bun runtime is available
@@ -266,7 +267,7 @@ describe('kspec serve commands', () => {
     expect(globalPidFilePath.startsWith(isolatedHome)).toBe(true);
     expect(globalPortFilePath.startsWith(isolatedHome)).toBe(true);
 
-    const pid = parseInt(readFileSync(globalPidFilePath, 'utf-8').trim(), 10);
+    const pid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
     expect(pid).toBeGreaterThan(0);
 
     // Process should be running
@@ -319,7 +320,7 @@ describe('kspec serve commands', () => {
       tempDir
     );
 
-    const pid = parseInt(readFileSync(globalPidFilePath, 'utf-8').trim(), 10);
+    const pid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
 
     // Stop daemon
     const result = runKspec(`serve stop --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
@@ -362,7 +363,7 @@ describe('kspec serve commands', () => {
       tempDir
     );
 
-    const pid = parseInt(readFileSync(globalPidFilePath, 'utf-8').trim(), 10);
+    const pid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
 
     // Check status with --json flag
     const result = runKspec(`serve status --json --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
@@ -544,7 +545,7 @@ describe('kspec serve commands', () => {
       tempDir
     );
 
-    const originalPid = parseInt(readFileSync(globalPidFilePath, 'utf-8').trim(), 10);
+    const originalPid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
 
     // Restart
     const result = runKspec(`serve restart --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
@@ -553,7 +554,7 @@ describe('kspec serve commands', () => {
     expect(result.stdout).toContain('Starting daemon');
 
     // Should have new PID
-    const newPid = parseInt(readFileSync(globalPidFilePath, 'utf-8').trim(), 10);
+    const newPid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
     expect(newPid).not.toBe(originalPid);
 
     // New process should be running
@@ -670,7 +671,7 @@ describe('kspec serve commands', () => {
         const pidFile = isolated.daemonPidFilePath;
         if (existsSync(pidFile)) {
           try {
-            const pid = parseInt(readFileSync(pidFile, 'utf-8').trim(), 10);
+            const pid = parseInt(readTestOutputSync(pidFile).trim(), 10);
             process.kill(pid, 'SIGTERM');
           } catch { /* ignore */ }
         }

@@ -5,7 +5,7 @@ import {
   acquireFileLock,
   withFileLock,
 } from "../src/parser/file-lock.js";
-import { createTempDir, cleanupTempDir } from "./helpers/cli.js";
+import { createTempDir, cleanupTempDir, readTestOutput } from "./helpers/cli.js";
 
 describe("File Lock", () => {
   let tempDir: string;
@@ -28,9 +28,8 @@ describe("File Lock", () => {
     expect(stat.isDirectory()).toBe(true);
 
     // PID file should contain our PID
-    const pidContent = await fs.readFile(
+    const pidContent = await readTestOutput(
       path.join(lockDir, "pid"),
-      "utf-8",
     );
     expect(pidContent).toContain(String(process.pid));
 
@@ -100,9 +99,8 @@ describe("File Lock", () => {
     const release = await acquireFileLock(lockTarget, 1000);
 
     // Verify we own the lock
-    const pidContent = await fs.readFile(
+    const pidContent = await readTestOutput(
       path.join(lockDir, "pid"),
-      "utf-8",
     );
     expect(pidContent).toContain(String(process.pid));
 
@@ -189,7 +187,7 @@ describe("File Lock", () => {
     // Simulate 5 concurrent read-modify-write operations
     const promises = Array.from({ length: 5 }, (_, _i) =>
       withFileLock(targetFile, async () => {
-        const content = await fs.readFile(targetFile, "utf-8");
+        const content = await readTestOutput(targetFile);
         const match = content.match(/count: (\d+)/);
         const current = parseInt(match![1], 10);
         // Small delay to increase chance of overlap without lock
@@ -201,7 +199,7 @@ describe("File Lock", () => {
     await Promise.all(promises);
 
     // With locking, all 5 increments should be applied
-    const finalContent = await fs.readFile(targetFile, "utf-8");
+    const finalContent = await readTestOutput(targetFile);
     expect(finalContent).toBe("count: 5\n");
   });
 
@@ -212,12 +210,12 @@ describe("File Lock", () => {
     const pidFile = path.join(lockDir, "pid");
 
     const release1 = await acquireFileLock(lockTarget);
-    const owner1 = await fs.readFile(pidFile, "utf-8");
+    const owner1 = await readTestOutput(pidFile);
 
     await fs.rm(lockDir, { recursive: true, force: true });
 
     const release2 = await acquireFileLock(lockTarget);
-    const owner2 = await fs.readFile(pidFile, "utf-8");
+    const owner2 = await readTestOutput(pidFile);
 
     expect(owner2).not.toBe(owner1);
 
@@ -225,7 +223,7 @@ describe("File Lock", () => {
 
     const stat = await fs.stat(lockDir);
     expect(stat.isDirectory()).toBe(true);
-    expect(await fs.readFile(pidFile, "utf-8")).toBe(owner2);
+    expect(await readTestOutput(pidFile)).toBe(owner2);
 
     await release2();
     await expect(fs.stat(lockDir)).rejects.toThrow();
@@ -278,9 +276,8 @@ describe("File Lock", () => {
     const release = await acquireFileLock(lockTarget, 0);
 
     // Verify we own the lock
-    const pidContent = await fs.readFile(
+    const pidContent = await readTestOutput(
       path.join(lockDir, "pid"),
-      "utf-8",
     );
     expect(pidContent).toContain(String(process.pid));
 

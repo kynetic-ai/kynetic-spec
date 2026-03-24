@@ -12,6 +12,7 @@ import {
   cleanupTempDir,
   createTempDir,
   initGitRepo,
+  readTestOutput,
   testUlid,
 } from "./helpers/cli.js";
 
@@ -68,7 +69,7 @@ async function setupConfig(dir: string): Promise<void> {
 }
 
 async function readRegistryWorkspaces(registryPath: string): Promise<Array<Record<string, any>>> {
-  const raw = YAML.parse(await fs.readFile(registryPath, "utf-8")) as {
+  const raw = YAML.parse(await readTestOutput(registryPath)) as {
     workspaces?: Array<Record<string, any>>;
   };
   return raw.workspaces ?? [];

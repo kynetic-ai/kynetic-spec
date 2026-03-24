@@ -23,6 +23,7 @@ import {
   cleanupTempDir,
   createTempDir,
   initGitRepo,
+  readTestOutput,
   testUlid,
 } from "./helpers/cli.js";
 
@@ -66,7 +67,7 @@ async function setupSplitFixture(tempDir: string): Promise<KspecContext> {
  * Helper: read and parse a YAML file.
  */
 async function readYaml(filePath: string): Promise<Record<string, unknown>> {
-  const content = await fs.readFile(filePath, "utf-8");
+  const content = await readTestOutput(filePath);
   const { parse } = await import("yaml");
   return parse(content);
 }
@@ -770,18 +771,16 @@ describe("Per-Task Notes File (@task-notes-file)", () => {
       });
 
       // Read task.yaml content before adding a note
-      const taskFileBefore = await fs.readFile(
+      const taskFileBefore = await readTestOutput(
         getTaskFilePath(ctx, created._ulid),
-        "utf-8",
       );
 
       // Add a note
       await manager.addNote(ctx, "@note-isolation", "Test note content", "@tester");
 
       // task.yaml should be unchanged
-      const taskFileAfter = await fs.readFile(
+      const taskFileAfter = await readTestOutput(
         getTaskFilePath(ctx, created._ulid),
-        "utf-8",
       );
       expect(taskFileAfter).toBe(taskFileBefore);
 
@@ -1032,9 +1031,8 @@ describe("Per-Task Notes File (@task-notes-file)", () => {
       await manager.addNote(ctx, "@mixed-mutation", "First note", "@tester");
 
       // Read notes.yaml before field mutation
-      const notesBefore = await fs.readFile(
+      const notesBefore = await readTestOutput(
         getNotesFilePath(ctx, created._ulid),
-        "utf-8",
       );
 
       // Now mutate a core field (not notes)

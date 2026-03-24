@@ -14,6 +14,7 @@ import {
   cleanupTempDir,
   createTempDir,
   initGitRepo,
+  readTestOutput,
   testUlid,
 } from "./helpers/cli.js";
 
@@ -98,7 +99,7 @@ function workspaceMetadataPath(workspaceDir: string): string {
 
 async function readRegistryWorkspaces(dir: string): Promise<Array<Record<string, unknown>>> {
   const registryPath = path.join(dir, "project.dispatch-workspaces.yaml");
-  const raw = YAML.parse(await fs.readFile(registryPath, "utf-8")) as {
+  const raw = YAML.parse(await readTestOutput(registryPath)) as {
     workspaces?: Array<Record<string, unknown>>;
   };
   return raw.workspaces ?? [];
@@ -158,7 +159,7 @@ describe("dispatch workspace cleanup", () => {
 
     await fs.access(workerWorkspace.cwd);
     const metadata = JSON.parse(
-      await fs.readFile(workspaceMetadataPath(workerWorkspace.cwd), "utf-8"),
+      await readTestOutput(workspaceMetadataPath(workerWorkspace.cwd)),
     ) as { reviewerWorktreeDir: string | null };
     expect(metadata.reviewerWorktreeDir).toBeNull();
   });
@@ -238,7 +239,7 @@ describe("dispatch workspace cleanup", () => {
     });
 
     const metadata = JSON.parse(
-      await fs.readFile(workspaceMetadataPath(workspace.cwd), "utf-8"),
+      await readTestOutput(workspaceMetadataPath(workspace.cwd)),
     ) as { lifecycleState: string; cleanupBlockedReason: string | null };
     expect(metadata.lifecycleState).toBe("cleanup_blocked");
     expect(metadata.cleanupBlockedReason).toContain("active dispatch invocation");
@@ -278,7 +279,7 @@ describe("dispatch workspace cleanup", () => {
     });
 
     const metadata = JSON.parse(
-      await fs.readFile(workspaceMetadataPath(workspace.cwd), "utf-8"),
+      await readTestOutput(workspaceMetadataPath(workspace.cwd)),
     ) as {
       lifecycleState: string;
       cleanupBlockedReason: string | null;
@@ -346,7 +347,7 @@ describe("dispatch workspace cleanup", () => {
 
     const metadataFile = workspaceMetadataPath(workspace.cwd);
     const metadata = JSON.parse(
-      await fs.readFile(metadataFile, "utf-8"),
+      await readTestOutput(metadataFile),
     ) as {
       canonicalBranch: string;
       canonicalBranchHead: string;

@@ -15,6 +15,7 @@ import {
   cleanupTempDir,
   createTempDir,
   initGitRepo,
+  readTestOutput,
   testUlid,
 } from "./helpers/cli.js";
 
@@ -97,7 +98,7 @@ function makeAgent(overrides?: Partial<Agent>): Agent {
 }
 
 async function readJson<T>(filePath: string): Promise<T> {
-  return JSON.parse(await fs.readFile(filePath, "utf-8")) as T;
+  return JSON.parse(await readTestOutput(filePath)) as T;
 }
 
 async function setupLocalFileDependencyProject(dir: string): Promise<void> {
@@ -138,7 +139,7 @@ async function readWorkspaceRecord(
   registryPath: string,
   taskRef: string,
 ): Promise<Record<string, any>> {
-  const raw = YAML.parse(await fs.readFile(registryPath, "utf-8")) as {
+  const raw = YAML.parse(await readTestOutput(registryPath)) as {
     workspaces?: Array<Record<string, any>>;
   };
   return raw.workspaces?.find((workspace) => workspace.task_ref === taskRef) ?? {};
@@ -149,7 +150,7 @@ async function updateWorkspaceRecord(
   taskRef: string,
   mutate: (workspace: Record<string, any>) => void,
 ): Promise<void> {
-  const raw = YAML.parse(await fs.readFile(registryPath, "utf-8")) as {
+  const raw = YAML.parse(await readTestOutput(registryPath)) as {
     kynetic_dispatch_workspaces?: string;
     workspaces?: Array<Record<string, any>>;
   };
@@ -201,8 +202,8 @@ describe("dispatch runtime bootstrap contract", () => {
     });
 
     const runSpy = vi.spyOn(invocationModule, "runInvocation").mockImplementation(async (options) => {
-      await expect(fs.readFile(path.join(options.cwd, ".dispatch-cache", "project.txt"), "utf-8")).resolves.toBe("project");
-      await expect(fs.readFile(path.join(options.cwd, ".dispatch-cache", "agent.txt"), "utf-8")).resolves.toBe("agent");
+      await expect(readTestOutput(path.join(options.cwd, ".dispatch-cache", "project.txt"))).resolves.toBe("project");
+      await expect(readTestOutput(path.join(options.cwd, ".dispatch-cache", "agent.txt"))).resolves.toBe("agent");
       return {
         session: {} as never,
         outcome: "success",
@@ -348,7 +349,7 @@ describe("dispatch runtime bootstrap contract", () => {
     expect(result.reused).toBe(true);
     expect(result.ranSteps).toBe(false);
     await expect(
-      fs.readFile(path.join(workerWorkspace.cwd, ".dispatch-cache", "worker-only.txt"), "utf-8"),
+      readTestOutput(path.join(workerWorkspace.cwd, ".dispatch-cache", "worker-only.txt")),
     ).resolves.toBe("worker");
     await expect(
       fs.stat(path.join(reviewerWorkspace.cwd, ".dispatch-cache", "worker-only.txt")),
@@ -400,7 +401,7 @@ describe("dispatch runtime bootstrap contract", () => {
     expect(reviewerResult.reused).toBe(false);
     expect(reviewerResult.ranSteps).toBe(true);
     await expect(
-      fs.readFile(path.join(reviewerWorkspace.cwd, ".dispatch-cache", "reviewer-ready.txt"), "utf-8"),
+      readTestOutput(path.join(reviewerWorkspace.cwd, ".dispatch-cache", "reviewer-ready.txt")),
     ).resolves.toBe("reviewer");
 
     const workerWorkspace = await provisionDispatchWorkspace({
@@ -421,7 +422,7 @@ describe("dispatch runtime bootstrap contract", () => {
     expect(workerResult.reused).toBe(false);
     expect(workerResult.ranSteps).toBe(true);
     await expect(
-      fs.readFile(path.join(workerWorkspace.cwd, ".dispatch-cache", "worker-ready.txt"), "utf-8"),
+      readTestOutput(path.join(workerWorkspace.cwd, ".dispatch-cache", "worker-ready.txt")),
     ).resolves.toBe("worker");
 
     const record = await readWorkspaceRecord(workerWorkspace.metadataPath, taskRef);
@@ -627,7 +628,7 @@ describe("dispatch runtime bootstrap contract", () => {
 
     expect(reused.reused).toBe(true);
     await expect(
-      fs.readFile(path.join(workspace.cwd, ".dispatch-cache", "count"), "utf-8"),
+      readTestOutput(path.join(workspace.cwd, ".dispatch-cache", "count")),
     ).resolves.toBe("1\n");
   });
 

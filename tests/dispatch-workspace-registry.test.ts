@@ -31,6 +31,7 @@ import {
   createTempDir,
   initGitRepo,
   kspec,
+  readTestOutput,
   testUlid,
 } from "./helpers/cli.js";
 
@@ -119,7 +120,7 @@ async function readWorkspaceRecord(
   registryPath: string,
   taskRef: string,
 ): Promise<Record<string, any>> {
-  const raw = YAML.parse(await fs.readFile(registryPath, "utf-8")) as {
+  const raw = YAML.parse(await readTestOutput(registryPath)) as {
     workspaces?: Array<Record<string, any>>;
   };
   return raw.workspaces?.find((workspace) => workspace.task_ref === taskRef) ?? {};
@@ -996,7 +997,7 @@ describe("dispatch workspace registry", () => {
       }),
     ).rejects.toThrow(/task_ref/i);
 
-    const raw = await fs.readFile(registryPath, "utf-8");
+    const raw = await readTestOutput(registryPath);
     expect(raw).toContain("task_ref: not-a-ref");
   });
 });
@@ -1141,7 +1142,7 @@ describe("dispatch workspace registry shadow durability", () => {
         const registryExists = existsSync(registryPath);
         if (registryExists) {
           const registryContent = YAML.parse(
-            await fs.readFile(registryPath, "utf-8"),
+            await readTestOutput(registryPath),
           ) as { workspaces?: unknown[] };
           expect(registryContent.workspaces ?? []).toHaveLength(0);
         }

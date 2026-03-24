@@ -9,7 +9,6 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import * as fs from "node:fs/promises";
 import * as fsSync from "node:fs";
 import * as path from "node:path";
 import {
@@ -29,6 +28,7 @@ import {
   testUlid,
   createTempDir,
   cleanupTempDir,
+  readTestOutputSync,
 } from "./helpers/cli.js";
 
 // ─── Fixtures ─────────────────────────────────────────────────────────────────
@@ -123,7 +123,7 @@ async function seedFailedSession(
 }
 
 function readEventsJsonl(eventsPath: string): Array<{ type: string; data: Record<string, unknown> }> {
-  const content = fsSync.readFileSync(eventsPath, "utf-8");
+  const content = readTestOutputSync(eventsPath);
   return content.trim().split("\n").filter(Boolean).map((l) => JSON.parse(l));
 }
 
@@ -288,7 +288,7 @@ describe("Stall handling — session close and cleanup", () => {
 
     // kspec-capture-mock writes calls to capture file; if no calls, file doesn't exist
     if (fsSync.existsSync(captureFile)) {
-      const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{ args: string[] }>;
+      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{ args: string[] }>;
       const noteCall = calls.find((c) =>
         c.args.includes("task") && c.args.includes("note"),
       );
@@ -450,7 +450,7 @@ describe("Stalled sessions excluded from failure count", () => {
     // With only 2 prior failures (not 3), the new failure makes 3 total,
     // which meets the max_retries threshold → task should be blocked.
     if (fsSync.existsSync(captureFile)) {
-      const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{ args: string[] }>;
+      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{ args: string[] }>;
       const blockCall = calls.find((c) =>
         c.args.includes("task") && c.args.includes("block"),
       );
@@ -515,7 +515,7 @@ describe("Stalled sessions excluded from failure count", () => {
 
     // Should NOT be blocked — only 2 consecutive failures (< 3)
     if (fsSync.existsSync(captureFile)) {
-      const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{ args: string[] }>;
+      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{ args: string[] }>;
       const blockCall = calls.find((c) =>
         c.args.includes("task") && c.args.includes("block"),
       );
