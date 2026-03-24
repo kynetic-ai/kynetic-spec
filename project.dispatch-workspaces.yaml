@@ -20747,12 +20747,21 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-24T20:56:51.591Z
+      updated_at: 2026-03-24T20:59:59.724Z
     health:
-      status: healthy
-      issues: []
-      summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-24T20:58:13.466Z
+      status: invalid
+      issues:
+        - code: missing_canonical_branch
+          message: Canonical branch "dispatch/task/task-readtestoutput-yaml-round-trip-stability/01kmfcns" is
+            missing.
+          suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
+        - code: missing_worker_worktree
+          message: Worker worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-readtestoutput-yaml-round-trip-stability-01kmfcns"
+            is missing or no longer registered.
+          suggestion: Re-provision the worker worktree from the recorded canonical branch.
+      summary: Workspace registry record is invalid because required git state is missing.
+      updated_at: 2026-03-24T20:59:59.724Z
     integration:
       status: merged
       detail: integration:merged
@@ -20760,17 +20769,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 3e26d874f93e676dc62e0001d1a8e850662a5595
-      updated_at: 2026-03-24T20:56:51.591Z
-    lifecycle_state: closing
+      updated_at: 2026-03-24T20:59:59.724Z
+    lifecycle_state: stale
     resolved_base_branch: dev
     task_ref: "@01KMFCNSPSBX86MHYDF4HM4M2C"
     task_slug: task-readtestoutput-yaml-round-trip-stability
     timestamps:
       closed_at: null
       last_active_at: 2026-03-24T20:49:57.066Z
-      last_reconciled_at: 2026-03-24T20:58:13.466Z
+      last_reconciled_at: 2026-03-24T20:59:59.724Z
       created_at: 2026-03-24T20:40:23.415Z
-      updated_at: 2026-03-24T20:58:13.466Z
+      updated_at: 2026-03-24T20:59:59.724Z
     workspace_id: dispatch-workspace-01KMFCNSPSBX86MHYDF4HM4M2C
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -20781,7 +20790,7 @@ workspaces:
         head: 0cf7d7b8a2bce1ea566445f29e03c812c9a2e0b3
         last_seen_at: 2026-03-24T20:49:49.667Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-readtestoutput-yaml-round-trip-stability-01kmfcns
-  - active_role: null
+  - active_role: worker
     base_branch_point: 3e26d874f93e676dc62e0001d1a8e850662a5595
     bootstrap:
       status: succeeded
@@ -20865,12 +20874,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-24T20:59:25.886Z
+      updated_at: 2026-03-24T21:00:01.711Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-24T20:59:25.886Z
+      updated_at: 2026-03-24T21:00:01.711Z
     integration:
       status: pending
       detail: null
@@ -20878,17 +20887,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 3e26d874f93e676dc62e0001d1a8e850662a5595
-      updated_at: 2026-03-24T20:59:25.886Z
-    lifecycle_state: ready
+      updated_at: 2026-03-24T21:00:01.711Z
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KMFCNTETP3KE52EAWC9BE47D"
     task_slug: task-readtestoutput-skill-rendering
     timestamps:
       closed_at: null
       last_active_at: 2026-03-24T20:50:05.683Z
-      last_reconciled_at: 2026-03-24T20:59:25.886Z
+      last_reconciled_at: 2026-03-24T21:00:01.711Z
       created_at: 2026-03-24T20:49:57.672Z
-      updated_at: 2026-03-24T20:59:25.886Z
+      updated_at: 2026-03-24T21:00:01.711Z
     workspace_id: dispatch-workspace-01KMFCNTETP3KE52EAWC9BE47D
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
