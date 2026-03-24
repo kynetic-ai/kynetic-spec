@@ -21446,7 +21446,7 @@
     - split-task
   title: Split task
   type: task
-  status: pending
+  status: cancelled
   blocked_by: []
   depends_on: []
   priority: 3
