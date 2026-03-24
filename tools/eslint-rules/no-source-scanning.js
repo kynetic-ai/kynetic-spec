@@ -332,6 +332,9 @@ const noSourceScanning = {
         // Skip safe read wrapper functions (readTestOutput, readTestOutputSync)
         if (isSafeReadWrapper(node)) return;
 
+        // Skip if we're inside a safe wrapper function body (the definition itself)
+        if (isInsideSafeWrapper(node)) return;
+
         // Flag read calls to non-safe paths
         if (isFsReadCall(node)) {
           if (!isReadFromSafePath(node.arguments[0], safeVars)) {
@@ -374,6 +377,23 @@ const noSourceScanning = {
         }
       },
     };
+
+    function isInsideSafeWrapper(node) {
+      let current = node.parent;
+      while (current) {
+        // Check FunctionDeclaration: function readTestOutput(...) { ... }
+        if (current.type === "FunctionDeclaration" && current.id && SAFE_READ_FUNCTIONS.has(current.id.name)) {
+          return true;
+        }
+        // Check VariableDeclarator with function: const readTestOutput = function(...) { ... }
+        // or const readTestOutput = (...) => { ... }
+        if (current.type === "VariableDeclarator" && current.id && current.id.type === "Identifier" && SAFE_READ_FUNCTIONS.has(current.id.name)) {
+          return true;
+        }
+        current = current.parent;
+      }
+      return false;
+    }
 
     function isSafeReadWrapper(node) {
       if (node.type !== "CallExpression") return false;
