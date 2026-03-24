@@ -20715,18 +20715,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-readtestoutput-yaml-round-trip-stability/01kmfcns
-    canonical_branch_head: 3e26d874f93e676dc62e0001d1a8e850662a5595
+    canonical_branch_head: 0cf7d7b8a2bce1ea566445f29e03c812c9a2e0b3
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-24T20:40:23.415Z
+      updated_at: 2026-03-24T20:48:28.326Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-24T20:40:33.160Z
+      updated_at: 2026-03-24T20:48:28.326Z
     integration:
       status: pending
       detail: null
@@ -20734,7 +20734,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 3e26d874f93e676dc62e0001d1a8e850662a5595
-      updated_at: 2026-03-24T20:40:23.415Z
+      updated_at: 2026-03-24T20:48:28.326Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KMFCNSPSBX86MHYDF4HM4M2C"
@@ -20742,9 +20742,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-24T20:40:33.160Z
-      last_reconciled_at: 2026-03-24T20:40:33.160Z
+      last_reconciled_at: 2026-03-24T20:48:28.326Z
       created_at: 2026-03-24T20:40:23.415Z
-      updated_at: 2026-03-24T20:40:33.160Z
+      updated_at: 2026-03-24T20:48:28.326Z
     workspace_id: dispatch-workspace-01KMFCNSPSBX86MHYDF4HM4M2C
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
