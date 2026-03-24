@@ -11,5 +11,20 @@
     "prefer-template": "warn",
     "prefer-optional-chain": "warn"
   },
-  "ignorePatterns": ["dist/", "node_modules/", ".kspec/", "packages/web-ui/build/"]
+  "ignorePatterns": ["dist/", "node_modules/", ".kspec/", "packages/web-ui/build/"],
+  "overrides": [
+    {
+      "files": ["tests/**/*.ts", "packages/*/tests/**/*.ts"],
+      "plugins": ["vitest"],
+      "rules": {
+        "vitest/no-focused-tests": "error",
+        "vitest/no-disabled-tests": "warn",
+        "vitest/no-conditional-tests": "warn",
+        "vitest/expect-expect": "error",
+        "vitest/valid-expect": "error",
+        "vitest/no-identical-title": "error",
+        "vitest/no-standalone-expect": "error"
+      }
+    }
+  ]
 }
