@@ -14190,7 +14190,7 @@ runs:
     completed_at: 2026-03-24T20:39:23.619Z
   - _ulid: 01KMGSWNHNVV4ZZHS56BV55K50
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -14208,7 +14208,21 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-24T20:53:19.138Z
-        completed_at: 2026-03-24T20:53:19.138Z
+        completed_at: 2026-03-24T20:53:59.264Z
+        notes: "Friction: (1) Review worktree missing node_modules — had to run npm install at session
+          start, which dirtied package-lock.json and triggered the session checkpoint hook about
+          uncommitted changes. The dispatch workspace preparation should ensure dependencies are
+          installed, or the bootstrap process should handle this. Searched: no existing tracking for
+          this. (2) Skill template diff noise in branch comparison — when reviewing divergent
+          branches, git diff origin/dev..HEAD showed 8 skill template files that weren't actually
+          changed by the task branch. This added investigation time to confirm they weren't
+          regressions. Not really actionable (it's how git works), but worth noting. Success: (1)
+          The claim-disprove-emit cycle worked correctly — initial suspicion about skill template
+          regressions was disproved by checking the merge base, preventing a false finding."
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-24T20:53:59.264Z
+        completed_at: 2026-03-24T20:53:59.264Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-24T20:51:58.133Z
