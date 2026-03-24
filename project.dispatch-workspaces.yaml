@@ -20934,7 +20934,7 @@ workspaces:
         head: 8283aa44562d51c75908a9a89a36e914b14f984f
         last_seen_at: 2026-03-24T21:00:19.584Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-readtestoutput-skill-rendering-01kmfcnt
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 9ae71df9a2921ca858f772c5b02f4a5dd864430a
     bootstrap:
       status: succeeded
@@ -20997,7 +20997,7 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-24T21:07:53.367Z
+      updated_at: 2026-03-24T21:08:05.820Z
     health:
       status: stale
       issues:
@@ -21007,7 +21007,7 @@ workspaces:
             is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
       summary: Workspace registry record is stale and needs reconciliation.
-      updated_at: 2026-03-24T21:08:04.139Z
+      updated_at: 2026-03-24T21:08:05.820Z
     integration:
       status: pending
       detail: null
@@ -21015,7 +21015,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 9ae71df9a2921ca858f772c5b02f4a5dd864430a
-      updated_at: 2026-03-24T21:07:53.367Z
+      updated_at: 2026-03-24T21:08:05.820Z
     lifecycle_state: stale
     resolved_base_branch: dev
     task_ref: "@01KMFCNV6MRGT4BRKY8BZ29QJX"
@@ -21023,9 +21023,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-24T21:08:04.139Z
-      last_reconciled_at: 2026-03-24T21:08:04.139Z
+      last_reconciled_at: 2026-03-24T21:08:05.820Z
       created_at: 2026-03-24T21:00:26.846Z
-      updated_at: 2026-03-24T21:08:04.139Z
+      updated_at: 2026-03-24T21:08:05.820Z
     workspace_id: dispatch-workspace-01KMFCNV6MRGT4BRKY8BZ29QJX
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
