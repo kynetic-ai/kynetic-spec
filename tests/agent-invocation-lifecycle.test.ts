@@ -30,7 +30,13 @@ import { SANITIZED_ENV_VARS } from "../src/agents/spawner.js";
 import { ACPClient } from "../src/acp/index.js";
 import type { Agent } from "../src/schema/meta.js";
 import * as shadowModule from "../src/parser/shadow.js";
-import { testUlid, createTempDir, cleanupTempDir } from "./helpers/cli.js";
+import {
+  testUlid,
+  createTempDir,
+  cleanupTempDir,
+  readTestOutput,
+  readTestOutputSync,
+} from "./helpers/cli.js";
 
 // ─── Fixtures ─────────────────────────────────────────────────────────────────
 
@@ -178,7 +184,7 @@ describe("Session creation on invocation start", { timeout: 60_000 }, () => {
     const sessionYaml = path.join(sessionDir, "session.yaml");
 
     await expect(fs.access(sessionYaml)).resolves.toBeUndefined();
-    const content = await fs.readFile(sessionYaml, "utf-8");
+    const content = await readTestOutput(sessionYaml);
     const parsed = YAML.parse(content);
     expect(parsed.trigger).toBe("task.needs_work");
     expect(parsed.task_id).toBe(taskRef);
@@ -227,7 +233,7 @@ describe("KSPEC_SESSION_ID injection", { timeout: 60_000 }, () => {
     });
 
     expect(result.outcome).toBe("success");
-    const capturedEnv = JSON.parse(await fs.readFile(captureFile, "utf-8")) as {
+    const capturedEnv = JSON.parse(await readTestOutput(captureFile)) as {
       KSPEC_SESSION_ID: string | null;
     };
     expect(capturedEnv.KSPEC_SESSION_ID).toBe(result.session.id);
@@ -299,10 +305,10 @@ describe("KSPEC_SESSION_ID injection", { timeout: 60_000 }, () => {
       }),
     ]);
 
-    const capturedEnvA = JSON.parse(await fs.readFile(captureFileA, "utf-8")) as {
+    const capturedEnvA = JSON.parse(await readTestOutput(captureFileA)) as {
       KSPEC_SESSION_ID: string | null;
     };
-    const capturedEnvB = JSON.parse(await fs.readFile(captureFileB, "utf-8")) as {
+    const capturedEnvB = JSON.parse(await readTestOutput(captureFileB)) as {
       KSPEC_SESSION_ID: string | null;
     };
 
@@ -371,7 +377,7 @@ describe("Timeout handling", { timeout: 60_000 }, () => {
 
     // Read the events.jsonl
     const eventsPath = path.join(testDir, "sessions", result.session.id, "events.jsonl");
-    const content = await fs.readFile(eventsPath, "utf-8");
+    const content = await readTestOutput(eventsPath);
     const events = content
       .trim()
       .split("\n")
@@ -409,7 +415,7 @@ describe("Timeout handling", { timeout: 60_000 }, () => {
     }
 
     // Verify that kspec task note was called with the task ref and AGENT-TIMEOUT marker
-    const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{
+    const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{
       args: string[];
     }>;
     const noteCall = calls.find(
@@ -571,7 +577,7 @@ describe("Successful invocation completion", { timeout: 60_000 }, () => {
     expect(result.outcome).toBe("success");
 
     const eventsPath = path.join(testDir, "sessions", result.session.id, "events.jsonl");
-    const content = await fs.readFile(eventsPath, "utf-8");
+    const content = await readTestOutput(eventsPath);
     const events = content
       .trim()
       .split("\n")
@@ -662,7 +668,7 @@ describe("Failure handling", { timeout: 60_000 }, () => {
     expect(result.outcome).toBe("failed");
 
     const eventsPath = path.join(testDir, "sessions", result.session.id, "events.jsonl");
-    const content = await fs.readFile(eventsPath, "utf-8");
+    const content = await readTestOutput(eventsPath);
     const events = content
       .trim()
       .split("\n")
@@ -718,7 +724,7 @@ describe("Failure handling", { timeout: 60_000 }, () => {
     }
 
     // Verify that kspec task note was called with the task ref and AGENT-FAIL marker
-    const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{
+    const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{
       args: string[];
     }>;
     const noteCall = calls.find(
@@ -782,7 +788,7 @@ describe("Streaming event logging", { timeout: 60_000 }, () => {
     });
 
     const eventsPath = path.join(testDir, "sessions", result.session.id, "events.jsonl");
-    const content = await fs.readFile(eventsPath, "utf-8");
+    const content = await readTestOutput(eventsPath);
     const lines = content.trim().split("\n").filter(Boolean);
 
     // Should have at least agent.dispatched, agent.started, agent.completed
@@ -885,7 +891,7 @@ describe("Streaming event logging", { timeout: 60_000 }, () => {
       expect(maxInFlightUpdateWrites).toBe(1);
 
       const eventsPath = path.join(testDir, "sessions", result.session.id, "events.jsonl");
-      const content = await fs.readFile(eventsPath, "utf-8");
+      const content = await readTestOutput(eventsPath);
       const events = content
         .trim()
         .split("\n")
@@ -930,7 +936,7 @@ describe("Streaming event logging", { timeout: 60_000 }, () => {
     expect(result.outcome).toBe("success");
 
     const eventsPath = path.join(testDir, "sessions", result.session.id, "events.jsonl");
-    const content = await fs.readFile(eventsPath, "utf-8");
+    const content = await readTestOutput(eventsPath);
     const lines = content.trim().split("\n").filter(Boolean);
     const events = lines.map((l) => JSON.parse(l));
 
@@ -1328,7 +1334,7 @@ describe("Consecutive failure threshold and task blocking", { timeout: 60_000 },
     }
 
     // Verify task block was called
-    const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{
+    const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{
       args: string[];
     }>;
     const blockCall = calls.find(
@@ -1369,7 +1375,7 @@ describe("Consecutive failure threshold and task blocking", { timeout: 60_000 },
       delete process.env.KSPEC_CAPTURE_FILE;
     }
 
-    const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{
+    const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{
       args: string[];
     }>;
 
@@ -1419,7 +1425,7 @@ describe("Consecutive failure threshold and task blocking", { timeout: 60_000 },
       delete process.env.KSPEC_CAPTURE_FILE;
     }
 
-    const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{
+    const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{
       args: string[];
     }>;
 
@@ -1559,7 +1565,7 @@ describe("Host environment variable sanitization", { timeout: 60_000 }, () => {
     expect(result.outcome).toBe("success");
 
     // Read the env vars reported by the child process
-    const reportedEnv = JSON.parse(await fs.readFile(envVerifyFile, "utf-8"));
+    const reportedEnv = JSON.parse(await readTestOutput(envVerifyFile));
 
     // CLAUDECODE and CLAUDE_CODE_SESSION must be null (not present in child env)
     expect(reportedEnv.CLAUDECODE).toBeNull();
