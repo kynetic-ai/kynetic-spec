@@ -48853,9 +48853,25 @@ reviews:
           status: pass
           name: test-conversions-mechanical
         timestamp: 2026-03-24T07:48:52.700Z
+      - _ulid: 01KMFD2ZRA5DB00ZEA789HJVYE
+        actor: jacob.chapel@gmail.com
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-24T07:48:59.274Z
+      - _ulid: 01KMFD2ZRA3ZSS6257Q8BHABG7
+        actor: jacob.chapel@gmail.com
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-24T07:48:59.274Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -48882,7 +48898,14 @@ reviews:
               when it is inside a SAFE_READ_FUNCTIONS body."
             created_at: 2026-03-24T07:48:02.895Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: jacob.chapel@gmail.com
+        role: reviewer
+        created_at: 2026-03-24T07:48:59.274Z
     created_at: 2026-03-24T07:47:41.790Z
-    updated_at: 2026-03-24T07:48:52.319Z
+    updated_at: 2026-03-24T07:48:59.274Z
     notes: []
