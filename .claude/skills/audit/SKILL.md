@@ -4,7 +4,6 @@ description: Comprehensive codebase audit for release readiness. Parallel
   exploration of docs, code, config, tests, and specs to identify cruft, then
   interactive triage with clear action options.
 ---
-
 <!-- kspec-managed -->
 
 # Codebase Audit
@@ -48,7 +47,6 @@ Task tool (subagent_type: Explore) - run all 5 in parallel:
 ```
 
 Each agent should report findings with:
-
 - File and location
 - What the issue is
 - Why it's cruft (outdated, redundant, broken, etc.)
@@ -58,12 +56,12 @@ Each agent should report findings with:
 
 Organize all findings by severity:
 
-| Severity     | Criteria                              | Examples                                                         |
-| ------------ | ------------------------------------- | ---------------------------------------------------------------- |
-| **CRITICAL** | Blocks release, breaks functionality  | Runtime deps in devDeps, security vulns, broken required scripts |
-| **HIGH**     | Should fix, user-facing or misleading | Wrong docs, incorrect command syntax, misleading task statuses   |
-| **MEDIUM**   | Recommended, technical debt           | Unresolved TODOs, duplicate code, test improvements              |
-| **LOW**      | Nice to have, minor cleanup           | Doc cross-refs, test name clarity, helper consolidation          |
+| Severity | Criteria | Examples |
+|----------|----------|----------|
+| **CRITICAL** | Blocks release, breaks functionality | Runtime deps in devDeps, security vulns, broken required scripts |
+| **HIGH** | Should fix, user-facing or misleading | Wrong docs, incorrect command syntax, misleading task statuses |
+| **MEDIUM** | Recommended, technical debt | Unresolved TODOs, duplicate code, test improvements |
+| **LOW** | Nice to have, minor cleanup | Doc cross-refs, test name clarity, helper consolidation |
 
 Present compiled summary to user before triage.
 
@@ -82,7 +80,6 @@ For each item, present options:
 ```
 
 **Triage principles:**
-
 - One item at a time (don't batch)
 - User decides disposition
 - Execute decisions immediately
@@ -93,7 +90,6 @@ For each item, present options:
 For each decision type:
 
 **Fix now:**
-
 ```bash
 # Delete dead files
 rm path/to/dead-file.js
@@ -106,14 +102,12 @@ git add -A && git commit -m "chore: Audit cleanup - [summary]"
 ```
 
 **Task:**
-
 ```bash
 kspec task add --title "Description" --priority N --slug slug-name --tag relevant-tag
 kspec task note @slug "Context: file location, what needs doing, why"
 ```
 
 **Inbox:**
-
 ```bash
 kspec inbox add "Description of item for later" --tag tag1 --tag tag2
 ```
@@ -181,23 +175,18 @@ kspec inbox list
 Use these prompts for the parallel Explore agents:
 
 **Docs:**
-
 > Review documentation files for cruft in preparation for release. Look for: outdated content, stale TODOs, inconsistencies between docs, wrong command syntax, features documented that don't exist. Check README.md, AGENTS.md, CLAUDE.md, and other .md files.
 
 **Code:**
-
 > Review src/ directory for code cruft. Look for: dead code, unused exports, unresolved TODO/FIXME comments, duplicate functions, commented-out code, debug artifacts, unused imports. Note file paths and line numbers.
 
 **Config:**
-
 > Review configuration files for cruft. Look for: unused dependencies, misplaced deps (devDeps vs deps), broken npm scripts, stale tsconfig/eslint options, version inconsistencies. Check package.json, tsconfig.json, and config files.
 
 **Tests:**
-
 > Review tests/ for cruft. Look for: skipped tests (.skip/.todo), dead mock files, duplicate test names, flaky patterns, missing coverage, outdated fixtures. Verify temp directory isolation pattern.
 
 **Specs:**
-
 > Review .kspec/ for spec and task cruft. Look for: stale spec items, orphaned tasks, incorrect statuses, empty stubs, inbox items that should be promoted, tasks with empty slugs.
 
 ## Tips

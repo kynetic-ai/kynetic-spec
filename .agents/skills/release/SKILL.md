@@ -3,7 +3,6 @@ name: release
 description: Create versioned releases - bump version via PR, tag, create GitHub
   release. CI publishes to npm.
 ---
-
 <!-- kspec-managed -->
 
 # Release Skill
@@ -23,7 +22,6 @@ Create versioned releases with proper git tagging and GitHub release creation. T
 - When auditing what changes would be in a release (`--dry-run`)
 
 **Prerequisites:**
-
 - All related kspec tasks should be completed before release
 - Run `npm test` locally to verify tests pass
 - Ensure you're on `main` with a clean working tree
@@ -34,18 +32,18 @@ Create versioned releases with proper git tagging and GitHub release creation. T
 $release [patch|minor|major|X.Y.Z] [options]
 ```
 
-| Argument | Description                                         |
-| -------- | --------------------------------------------------- |
-| `patch`  | Bug fixes, backwards-compatible (0.1.1 -> 0.1.2)    |
-| `minor`  | New features, backwards-compatible (0.1.1 -> 0.2.0) |
-| `major`  | Breaking changes (0.1.1 -> 1.0.0)                   |
-| `X.Y.Z`  | Explicit version number                             |
-| (none)   | Auto-detect from commits since last tag             |
+| Argument | Description |
+|----------|-------------|
+| `patch` | Bug fixes, backwards-compatible (0.1.1 -> 0.1.2) |
+| `minor` | New features, backwards-compatible (0.1.1 -> 0.2.0) |
+| `major` | Breaking changes (0.1.1 -> 1.0.0) |
+| `X.Y.Z` | Explicit version number |
+| (none) | Auto-detect from commits since last tag |
 
-| Option                | Description                                            |
-| --------------------- | ------------------------------------------------------ |
-| `--dry-run`           | Preview only - NO changes to git, tags, PRs, or GitHub |
-| `--prerelease <type>` | Create prerelease (alpha, beta, rc)                    |
+| Option | Description |
+|--------|-------------|
+| `--dry-run` | Preview only - NO changes to git, tags, PRs, or GitHub |
+| `--prerelease <type>` | Create prerelease (alpha, beta, rc) |
 
 ## Workflow
 
@@ -71,7 +69,6 @@ git log $(git describe --tags --abbrev=0 2>/dev/null)..HEAD --oneline
 ```
 
 **Context to gather:**
-
 - Current branch (must be `main`)
 - Working tree status (must be clean)
 - Current version in package.json
@@ -82,13 +79,13 @@ git log $(git describe --tags --abbrev=0 2>/dev/null)..HEAD --oneline
 
 All constraints must pass before proceeding:
 
-| Constraint             | Check                                   | Error Message                                                |
-| ---------------------- | --------------------------------------- | ------------------------------------------------------------ |
-| On main branch         | `git branch --show-current` = main      | "Must be on main branch. Currently on: {branch}"             |
-| Clean working tree     | `git status --porcelain` is empty       | "Working tree must be clean. Commit or stash changes first." |
-| Up to date with origin | After `git fetch`, local matches remote | "Local main is behind origin. Run: git pull"                 |
-| Has releasable changes | At least one commit since last tag      | "No changes since last tag {tag}. Nothing to release."       |
-| Tag doesn't exist      | `git tag -l v{version}` is empty        | "Tag v{version} already exists."                             |
+| Constraint | Check | Error Message |
+|------------|-------|---------------|
+| On main branch | `git branch --show-current` = main | "Must be on main branch. Currently on: {branch}" |
+| Clean working tree | `git status --porcelain` is empty | "Working tree must be clean. Commit or stash changes first." |
+| Up to date with origin | After `git fetch`, local matches remote | "Local main is behind origin. Run: git pull" |
+| Has releasable changes | At least one commit since last tag | "No changes since last tag {tag}. Nothing to release." |
+| Tag doesn't exist | `git tag -l v{version}` is empty | "Tag v{version} already exists." |
 
 **Dry-run behavior:** In dry-run mode, validation failures are reported but the preview continues. In normal mode, ANY validation failure stops execution immediately.
 
@@ -103,30 +100,28 @@ git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:"%s%n%b"
 
 **Auto-detection rules (conventional commits):**
 
-| Pattern                                | Bump  | Notes                               |
-| -------------------------------------- | ----- | ----------------------------------- |
-| `BREAKING CHANGE:` in body             | major | Check commit body, not just subject |
-| `feat!:` or `fix!:` (with `!`)         | major | The `!` suffix indicates breaking   |
-| `feat:` or `feat(scope):`              | minor | Scope is ignored for detection      |
-| `fix:`, `perf:`, `refactor:`, `chore:` | patch | Any maintenance work                |
+| Pattern | Bump | Notes |
+|---------|------|-------|
+| `BREAKING CHANGE:` in body | major | Check commit body, not just subject |
+| `feat!:` or `fix!:` (with `!`) | major | The `!` suffix indicates breaking |
+| `feat:` or `feat(scope):` | minor | Scope is ignored for detection |
+| `fix:`, `perf:`, `refactor:`, `chore:` | patch | Any maintenance work |
 
 **Resolution order:**
-
 1. If ANY commit has breaking change indicator -> major
 2. Else if ANY commit starts with `feat:` -> minor
 3. Else -> patch
 
 **Prerelease handling (`--prerelease <type>`):**
 
-| Current       | Flag                 | Result        | Rule                                   |
-| ------------- | -------------------- | ------------- | -------------------------------------- |
-| 0.1.1         | `--prerelease alpha` | 0.1.2-alpha.0 | Bump patch, add prerelease             |
-| 0.1.2-alpha.0 | `--prerelease alpha` | 0.1.2-alpha.1 | Same type: increment counter           |
-| 0.1.2-alpha.1 | `--prerelease beta`  | 0.1.2-beta.0  | New type: reset counter to 0           |
-| 0.1.2-rc.0    | (no flag)            | 0.1.2         | Stable release: drop prerelease suffix |
+| Current | Flag | Result | Rule |
+|---------|------|--------|------|
+| 0.1.1 | `--prerelease alpha` | 0.1.2-alpha.0 | Bump patch, add prerelease |
+| 0.1.2-alpha.0 | `--prerelease alpha` | 0.1.2-alpha.1 | Same type: increment counter |
+| 0.1.2-alpha.1 | `--prerelease beta` | 0.1.2-beta.0 | New type: reset counter to 0 |
+| 0.1.2-rc.0 | (no flag) | 0.1.2 | Stable release: drop prerelease suffix |
 
 **Prerelease rules:**
-
 1. Same prerelease type -> increment counter (alpha.0 -> alpha.1)
 2. Different prerelease type -> reset counter (alpha.1 -> beta.0)
 3. No prerelease flag on prerelease version -> promote to stable
@@ -136,23 +131,21 @@ git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:"%s%n%b"
 Parse commits and categorize them for user-friendly release notes.
 
 **Commit selection:**
-
 - Prefer merge commits (contain `(#N)` PR reference) to avoid duplicates
 - If no merge commits, include all commits matching conventional patterns
 - Deduplicate by checking if a commit's changes are already in a merge commit
 
 **Categorization (commit type -> section):**
 
-| Commit Type                     | Release Notes Section         |
-| ------------------------------- | ----------------------------- |
-| `feat:`                         | Features & Additions          |
-| `fix:`                          | Bug Fixes                     |
-| `perf:`                         | Performance                   |
-| `refactor:`, `chore:`, `build:` | Other Changes                 |
-| `test:`, `ci:`, `docs:`         | (excluded unless user-facing) |
+| Commit Type | Release Notes Section |
+|-------------|----------------------|
+| `feat:` | Features & Additions |
+| `fix:` | Bug Fixes |
+| `perf:` | Performance |
+| `refactor:`, `chore:`, `build:` | Other Changes |
+| `test:`, `ci:`, `docs:` | (excluded unless user-facing) |
 
 **kspec integration:**
-
 ```bash
 # Extract completed task references from commit trailers
 git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:"%b" | grep -E "^Task: @" | sort -u
@@ -230,13 +223,11 @@ gh pr merge --merge --delete-branch
 ```
 
 **Why version bump first?**
-
 - The tagged commit has the correct version in package.json
 - CI publishes exactly what's in package.json
 - No out-of-sync state between git tag and package version
 
 **Why regenerate kspec-agents.md?**
-
 - The freshness comment includes the kspec version (`Generated by kspec vX.Y.Z`)
 - Regenerating after the version bump keeps the header in sync with the release
 - **Self-hosting note:** When releasing kspec itself, the installed `kspec` binary still has the old version. Use `npm run dev -- agents generate` instead so the dev build reads the bumped version from the local package.json
@@ -278,7 +269,6 @@ EOF
 **Tag naming:** Always use `v` prefix (e.g., `v0.1.2`) for consistency with npm versioning conventions and GitHub release detection.
 
 **CI behavior:**
-
 - Triggers on `release.published` event (within 1-2 minutes)
 - Runs tests and publishes to npm with provenance
 - Monitor progress at the repo's Actions tab
@@ -313,21 +303,17 @@ Generate **friendly, user-facing release notes** (not raw commit dumps):
 Brief high-level summary of what this release brings (1-2 sentences).
 
 ### Features & Additions
-
 - Feature description in plain language
 - Another feature
 
 ### Bug Fixes
-
 - Fixed issue with X when Y happened
 - Resolved problem where Z
 
 ### Performance
-
 - Improved speed of X operation
 
 ### Other Changes
-
 - Updated internal handling of Y
 - Refactored Z for maintainability
 
@@ -335,7 +321,6 @@ Brief high-level summary of what this release brings (1-2 sentences).
 ```
 
 **Writing guidelines:**
-
 - Write in past tense ("Fixed", "Added", "Improved")
 - Focus on user impact, not implementation details
 - Group related changes together
@@ -344,24 +329,23 @@ Brief high-level summary of what this release brings (1-2 sentences).
 
 ## Error Handling
 
-| Error                  | Recovery                                                                                       |
-| ---------------------- | ---------------------------------------------------------------------------------------------- |
-| Not on main            | `git checkout main && git pull`                                                                |
-| Dirty working tree     | Commit or stash changes first                                                                  |
-| Behind origin          | `git pull origin main`                                                                         |
-| No changes             | Nothing to release since last tag                                                              |
-| Tag exists             | Choose different version or `git tag -d v{version}` then `git push origin --delete v{version}` |
-| PR merge fails         | Check CI status, fix issues, retry merge                                                       |
-| `gh` not installed     | Install GitHub CLI: https://cli.github.com/                                                    |
-| `gh` not authenticated | Run `gh auth login`                                                                            |
-| `gh` API rate limit    | Wait and retry, or use `--limit` flag                                                          |
+| Error | Recovery |
+|-------|----------|
+| Not on main | `git checkout main && git pull` |
+| Dirty working tree | Commit or stash changes first |
+| Behind origin | `git pull origin main` |
+| No changes | Nothing to release since last tag |
+| Tag exists | Choose different version or `git tag -d v{version}` then `git push origin --delete v{version}` |
+| PR merge fails | Check CI status, fix issues, retry merge |
+| `gh` not installed | Install GitHub CLI: https://cli.github.com/ |
+| `gh` not authenticated | Run `gh auth login` |
+| `gh` API rate limit | Wait and retry, or use `--limit` flag |
 
 ### Rollback Procedure
 
 If something goes wrong after partial release:
 
 **If tag was pushed but release failed:**
-
 ```bash
 # Delete remote tag
 git push origin --delete v$VERSION
@@ -371,7 +355,6 @@ git tag -d v$VERSION
 ```
 
 **If release was created but CI publish failed:**
-
 ```bash
 # Option 1: Delete and retry
 gh release delete v$VERSION --yes
@@ -384,7 +367,6 @@ git tag -d v$VERSION
 ```
 
 **If version PR was merged but you need to abort:**
-
 ```bash
 # Revert the version bump
 git revert HEAD
@@ -395,7 +377,6 @@ git push origin main
 ## Examples
 
 ### Standard patch release
-
 ```
 User: $release patch
 Agent: [Validates state]
@@ -410,7 +391,6 @@ Release v0.1.2 created successfully.
 ```
 
 ### Auto-detect version
-
 ```
 User: $release
 Agent: [Analyzes 5 commits: 2 feat, 3 fix]
@@ -419,21 +399,18 @@ Detected: feat commits present -> minor bump (0.1.1 -> 0.2.0)
 ```
 
 ### Preview only
-
 ```
 User: $release --dry-run
 Agent: [Shows full preview, makes NO changes]
 ```
 
 ### Pre-release
-
 ```
 User: $release minor --prerelease alpha
 Agent: [Creates v0.2.0-alpha.0]
 ```
 
 ### Explicit version
-
 ```
 User: $release 1.0.0
 Agent: [Creates v1.0.0 - useful for major milestones]
@@ -458,7 +435,6 @@ If npm publish fails with "Access token expired or revoked" + 404:
 **Root cause:** Older npm versions (10.8.x bundled with Node 18) have bugs with OIDC authentication for trusted publishers.
 
 **Fix:** Ensure the publish workflow installs `npm@latest`:
-
 ```yaml
 - name: Install latest npm
   run: npm install -g npm@latest && npm --version

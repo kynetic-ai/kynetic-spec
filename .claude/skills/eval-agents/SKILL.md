@@ -4,7 +4,6 @@ description: Evaluate whether AGENTS.md provides enough context for agents to
   make correct decisions. Spawns test agents with scenario questions and grades
   responses.
 ---
-
 <!-- kspec-managed -->
 
 # Agent Documentation Evaluation
@@ -14,7 +13,6 @@ Validates that AGENTS.md (and the skill system) gives agents enough context to w
 ## Why This Exists
 
 AGENTS.md is loaded into every agent's context. It must be:
-
 - **Complete enough** that agents can make correct decisions without guessing
 - **Concise enough** that it doesn't waste context window on info available via skills/help
 - **Accurate** — wrong information is worse than missing information
@@ -42,7 +40,6 @@ Read: docs/agents-eval-scenarios.md
 ### Phase 2: Spawn Evaluation Agents
 
 For each scenario group, spawn a subagent that:
-
 1. Receives ONLY the current AGENTS.md content (plus skill blurbs as they would normally)
 2. Gets asked the scenario question
 3. Must answer what it would do and why
@@ -50,20 +47,17 @@ For each scenario group, spawn a subagent that:
 Spawn 3-4 agents in parallel, each handling a cluster of related scenarios:
 
 **Agent 1 — Setup & Architecture** (Scenarios 1, 2, 11):
-
 - First session setup
 - Shadow branch understanding
 - Where to find information
 
 **Agent 2 — Task Lifecycle & Loop Mode** (Scenarios 3, 4, 5, 12):
-
 - Inheriting work
 - Blocking decisions
 - Post-block behavior
 - Batch operations
 
 **Agent 3 — Spec-First & PR Flow** (Scenarios 6, 7, 10, 14, 15):
-
 - Adding features (spec-first)
 - PR workflow pairing
 - Scope expansion
@@ -71,7 +65,6 @@ Spawn 3-4 agents in parallel, each handling a cluster of related scenarios:
 - Commit convention
 
 **Agent 4 — Testing & CI** (Scenarios 8, 9, 13):
-
 - ULID gotchas
 - E2E test setup
 - CI limitations
@@ -80,11 +73,11 @@ Spawn 3-4 agents in parallel, each handling a cluster of related scenarios:
 
 For each scenario, compare the agent's response against the expected answer:
 
-| Grade       | Criteria                                                                    |
-| ----------- | --------------------------------------------------------------------------- |
-| **PASS**    | Correct action AND correct reasoning                                        |
+| Grade | Criteria |
+|-------|----------|
+| **PASS** | Correct action AND correct reasoning |
 | **PARTIAL** | Correct action but wrong/missing reasoning, or mostly right with minor gaps |
-| **FAIL**    | Wrong action, would lead to incorrect behavior                              |
+| **FAIL** | Wrong action, would lead to incorrect behavior |
 
 ### Phase 4: Report & Fix
 
@@ -142,23 +135,23 @@ For each scenario, respond with:
 
 The full scenario set lives at `docs/agents-eval-scenarios.md`. Each scenario tests knowledge of a specific area:
 
-| Scenario                   | Tests                       |
-| -------------------------- | --------------------------- |
-| 1. First Session Setup     | Bootstrap, setup            |
-| 2. Shadow Branch Confusion | Architecture, CLI-not-YAML  |
-| 3. Inheriting Work         | Task priority, state        |
-| 4. Task Blocking Decision  | Blocking criteria           |
-| 5. After Blocking in Loop  | Agent dispatch continuation |
-| 6. Adding a New Feature    | Spec-first flow             |
-| 7. PR Workflow             | PR + PR-review pairing      |
-| 8. Test Fixture ULID       | Silent failure gotcha       |
-| 9. E2E Test Setup          | Fixture isolation           |
-| 10. Scope Expansion        | Alignment during work       |
-| 11. Where to Find Info     | Information hierarchy       |
-| 12. Batch Operations       | Efficiency patterns         |
-| 13. CI Test Failure        | CI limitations              |
-| 14. Plan to Implementation | Plan mode, spec-first       |
-| 15. Commit Convention      | Trailers, linking           |
+| Scenario | Tests |
+|----------|-------|
+| 1. First Session Setup | Bootstrap, setup |
+| 2. Shadow Branch Confusion | Architecture, CLI-not-YAML |
+| 3. Inheriting Work | Task priority, state |
+| 4. Task Blocking Decision | Blocking criteria |
+| 5. After Blocking in Loop | Agent dispatch continuation |
+| 6. Adding a New Feature | Spec-first flow |
+| 7. PR Workflow | PR + PR-review pairing |
+| 8. Test Fixture ULID | Silent failure gotcha |
+| 9. E2E Test Setup | Fixture isolation |
+| 10. Scope Expansion | Alignment during work |
+| 11. Where to Find Info | Information hierarchy |
+| 12. Batch Operations | Efficiency patterns |
+| 13. CI Test Failure | CI limitations |
+| 14. Plan to Implementation | Plan mode, spec-first |
+| 15. Commit Convention | Trailers, linking |
 
 ## Adding New Scenarios
 
@@ -185,7 +178,6 @@ Tests whether agents retain AGENTS.md rules after accumulating significant conte
 ## Why Stress Test
 
 In real sessions, agents:
-
 1. Load AGENTS.md at conversation start
 2. Spend 30-100k tokens reading code, running commands, editing files
 3. Make a critical decision that requires recalling an AGENTS.md rule
@@ -199,7 +191,6 @@ Spawn a single subagent that explores the real codebase, building genuine contex
 ### Running Mode 1
 
 Spawn ONE general-purpose agent with the full prompt below. The agent will:
-
 1. Read AGENTS.md (loaded naturally via project instructions)
 2. Execute exploration directives (building 30-50k tokens of real context)
 3. Answer recall questions at the end
@@ -297,27 +288,27 @@ R8: You notice the JSON export has a bug while implementing CSV export
 
 ### Grading Rubric for Stress Test
 
-| Question | Key Rule Being Tested  | Pass Criteria                                                      |
-| -------- | ---------------------- | ------------------------------------------------------------------ |
-| R1       | CLI-not-YAML           | Uses `kspec task set`, does NOT edit file                          |
-| R2       | ULID Crockford base32  | Avoids I, L, O, U — uses `testUlid()` or valid chars               |
-| R3       | E2E fixture isolation  | Correct path, imports test-base, no manual daemon                  |
-| R4       | Batch operations       | Uses `kspec batch`, not 6 sequential commands                      |
-| R5       | PR workflow pairing    | local-review → /pr → /pr-review, task complete after merge         |
-| R6       | Blocking criteria      | Block for missing API (valid), fix failing tests (invalid blocker) |
-| R7       | Spec-first / plan mode | Create specs with ACs → derive tasks → then implement              |
-| R8       | Scope expansion        | Capture separately, note in task, don't derail                     |
+| Question | Key Rule Being Tested | Pass Criteria |
+|----------|----------------------|---------------|
+| R1 | CLI-not-YAML | Uses `kspec task set`, does NOT edit file |
+| R2 | ULID Crockford base32 | Avoids I, L, O, U — uses `testUlid()` or valid chars |
+| R3 | E2E fixture isolation | Correct path, imports test-base, no manual daemon |
+| R4 | Batch operations | Uses `kspec batch`, not 6 sequential commands |
+| R5 | PR workflow pairing | local-review → /pr → /pr-review, task complete after merge |
+| R6 | Blocking criteria | Block for missing API (valid), fix failing tests (invalid blocker) |
+| R7 | Spec-first / plan mode | Create specs with ACs → derive tasks → then implement |
+| R8 | Scope expansion | Capture separately, note in task, don't derail |
 
 **Scoring:** Same PASS/PARTIAL/FAIL scale. Compare against standard eval to find degradation.
 
 ### Interpreting Results
 
-| Standard Eval | Stress Test | Interpretation                                     |
-| ------------- | ----------- | -------------------------------------------------- |
-| PASS          | PASS        | Rule is well-documented and memorable              |
-| PASS          | PARTIAL     | Rule needs reinforcement (bolder text, repetition) |
-| PASS          | FAIL        | Rule is too subtle — needs structural prominence   |
-| FAIL          | FAIL        | Rule is missing or unclear in AGENTS.md            |
+| Standard Eval | Stress Test | Interpretation |
+|---------------|-------------|----------------|
+| PASS | PASS | Rule is well-documented and memorable |
+| PASS | PARTIAL | Rule needs reinforcement (bolder text, repetition) |
+| PASS | FAIL | Rule is too subtle — needs structural prominence |
+| FAIL | FAIL | Rule is missing or unclear in AGENTS.md |
 
 ## Mode 2: Simulated Trace (Fast, Repeatable)
 
@@ -360,7 +351,6 @@ SCENARIOS:
 ### Keeping Traces Fresh
 
 Session traces go stale as the codebase evolves. Regenerate periodically:
-
 - After major refactoring
 - When file structures change significantly
 - When adding new modules or commands
@@ -379,17 +369,17 @@ Compare scores across levels to identify which rules degrade first. Those rules 
 
 Each exploration task creates specific temptation to violate a rule:
 
-| Exploration Task  | What Agent Sees          | Temptation Created                           |
-| ----------------- | ------------------------ | -------------------------------------------- |
-| 1. Read task YAML | Raw status fields        | Edit YAML directly                           |
-| 2. CLI commands   | Complex code             | Skip to manual approach                      |
-| 3. Spec system    | AC structures in YAML    | Add ACs by editing YAML                      |
-| 4. Parser code    | Auto-commit logic        | Think they understand git enough to skip CLI |
-| 5. Test patterns  | ULID strings in tests    | Copy invalid ULID patterns                   |
-| 6. Meta system    | Observation code         | Confuse observations with inbox              |
-| 7. Shadow branch  | Git worktree mechanics   | Manual git operations                        |
-| 8. E2E tests      | Daemon setup code        | Start daemon manually                        |
-| 9. Workflows      | Agent dispatch internals | Call end-loop prematurely                    |
-| 10. CI config     | Skipped tests            | Assume CI failure = skip                     |
+| Exploration Task | What Agent Sees | Temptation Created |
+|-----------------|-----------------|-------------------|
+| 1. Read task YAML | Raw status fields | Edit YAML directly |
+| 2. CLI commands | Complex code | Skip to manual approach |
+| 3. Spec system | AC structures in YAML | Add ACs by editing YAML |
+| 4. Parser code | Auto-commit logic | Think they understand git enough to skip CLI |
+| 5. Test patterns | ULID strings in tests | Copy invalid ULID patterns |
+| 6. Meta system | Observation code | Confuse observations with inbox |
+| 7. Shadow branch | Git worktree mechanics | Manual git operations |
+| 8. E2E tests | Daemon setup code | Start daemon manually |
+| 9. Workflows | Agent dispatch internals | Call end-loop prematurely |
+| 10. CI config | Skipped tests | Assume CI failure = skip |
 
 The recall questions cover the most critical rules. Not every temptation has a matching recall question — add more as gaps are discovered.

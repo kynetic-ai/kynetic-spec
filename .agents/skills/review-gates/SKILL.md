@@ -4,9 +4,7 @@ description: Project-specific review criteria — severity classification,
   regression patterns, anti-rubber-stamping checklist, and quality checks for
   this codebase. Supplements core review skill.
 ---
-
 <!-- kspec-managed -->
-
 # Review Gates
 
 Project-specific review criteria for kspec. Supplements the core `$kspec-review` skill with severity classification, regression patterns, and quality checks specific to this codebase.
@@ -22,7 +20,6 @@ Project-specific review criteria for kspec. Supplements the core `$kspec-review`
 ## Severity Classification
 
 ### MUST-FIX (blocks merge)
-
 - Missing own AC test annotation
 - Missing trait AC test annotation
 - `kspec validate` errors
@@ -35,14 +32,12 @@ Project-specific review criteria for kspec. Supplements the core `$kspec-review`
 - Regressions (existing tests broken)
 
 ### SHOULD-FIX (strong recommendation)
-
 - `kspec validate` warnings (especially trait AC coverage)
 - Undocumented behavior not covered by spec
 - Test doesn't prove its AC robustly (would pass even if feature broke)
 - Likely correctness issue or missing boundary case
 
 ### SUGGESTION (non-blocking)
-
 - No E2E tests (prefer E2E but unit is acceptable)
 - Style preferences with zero correctness implications
 - Naming improvements

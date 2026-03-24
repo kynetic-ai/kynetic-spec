@@ -2,9 +2,7 @@
 name: ui-design
 description: Pencil MCP reference and canvas conventions for designing kynetic-spec web UI
 ---
-
 <!-- kspec-managed -->
-
 # UI Design
 
 Pencil MCP reference and canvas conventions for designing kynetic-spec web UI.
@@ -34,21 +32,21 @@ Design file: `design.pen` (project root)
 
 ## Canvas Organization
 
-| Frame         | Purpose                              | Location |
-| ------------- | ------------------------------------ | -------- |
-| Design System | Tokens, palette, type scale, spacing | TBD      |
-| Components    | Reusable component patterns          | TBD      |
-| Pages         | Full page compositions               | TBD      |
+| Frame | Purpose | Location |
+|-------|---------|----------|
+| Design System | Tokens, palette, type scale, spacing | TBD |
+| Components | Reusable component patterns | TBD |
+| Pages | Full page compositions | TBD |
 
 Locations updated as frames are placed.
 
 ## Component Inventory
 
-_Populated as components are designed._
+*Populated as components are designed.*
 
 | Component | Node ID | Key Descendants | Notes |
-| --------- | ------- | --------------- | ----- |
-| —         | —       | —               | —     |
+|-----------|---------|-----------------|-------|
+| — | — | — | — |
 
 ## Pages to Design
 
