@@ -9,6 +9,7 @@ import {
   hasRemoteTracking,
 } from '../src/parser/shadow.js';
 import { ShadowSyncScheduler } from '../src/parser/shadow-sync-scheduler.js';
+import { readTestOutput } from './helpers/cli.js';
 
 describe('ShadowSyncScheduler', () => {
   const testDir = path.join('/tmp', `kspec-sync-sched-${Date.now()}`);
@@ -128,7 +129,7 @@ describe('ShadowSyncScheduler', () => {
 
         // Verify the change was pulled
         if (tasksFile) {
-          const content = await fs.readFile(path.join(worktreeDir, tasksFile), 'utf-8');
+          const content = await readTestOutput(path.join(worktreeDir, tasksFile));
           expect(content).toContain('# Scheduler sync test change');
         }
       } finally {

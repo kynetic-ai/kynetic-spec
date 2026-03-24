@@ -29,6 +29,7 @@ import {
   cleanupTempDir,
   createTempDir,
   initGitRepo,
+  readTestOutput,
   testUlid,
   testUlids,
 } from "./helpers/cli.js";
@@ -126,7 +127,7 @@ async function createSplitTask(
   const indexPath = getIndexFilePath(ctx);
   let indexTasks: unknown[] = [];
   try {
-    const indexContent = await fs.readFile(indexPath, "utf-8");
+    const indexContent = await readTestOutput(indexPath, "utf-8");
     const { parse } = await import("yaml");
     const parsed = parse(indexContent);
     if (Array.isArray(parsed)) {
@@ -257,7 +258,7 @@ describe("SplitBackend", () => {
       });
 
       const taskFilePath = getTaskFilePath(ctx, created._ulid);
-      const content = await fs.readFile(taskFilePath, "utf-8");
+      const content = await readTestOutput(taskFilePath, "utf-8");
       const { parse } = await import("yaml");
       const parsed = parse(content);
 
@@ -282,7 +283,7 @@ describe("SplitBackend", () => {
       });
 
       const notesFilePath = getNotesFilePath(ctx, ulid);
-      const content = await fs.readFile(notesFilePath, "utf-8");
+      const content = await readTestOutput(notesFilePath, "utf-8");
       const { parse } = await import("yaml");
       const parsed = parse(content);
 
@@ -352,7 +353,7 @@ describe("SplitBackend", () => {
       }));
 
       // Verify the unknown file still exists
-      const customContent = await fs.readFile(customFilePath, "utf-8");
+      const customContent = await readTestOutput(customFilePath, "utf-8");
       expect(customContent).toBe('{"preserved": true}');
     });
 
@@ -380,7 +381,7 @@ describe("SplitBackend", () => {
       // Verify the unknown subdirectory still exists
       const fileStat = await fs.stat(path.join(customDir, "file.txt"));
       expect(fileStat.isFile()).toBe(true);
-      const content = await fs.readFile(path.join(customDir, "file.txt"), "utf-8");
+      const content = await readTestOutput(path.join(customDir, "file.txt"), "utf-8");
       expect(content).toBe("attachment data");
     });
 
@@ -562,7 +563,7 @@ describe("SplitBackend", () => {
 
       // Verify the heavy task has extensive notes on disk
       const notesFilePath = getNotesFilePath(ctx, created2._ulid);
-      const notesContent = await fs.readFile(notesFilePath, "utf-8");
+      const notesContent = await readTestOutput(notesFilePath, "utf-8");
       expect(notesContent.length).toBeGreaterThan(4000);
 
       // listTasks should succeed and return accurate summaries
@@ -749,7 +750,7 @@ describe("SplitBackend", () => {
       });
 
       // Read task.yaml content before note
-      const taskFileBefore = await fs.readFile(
+      const taskFileBefore = await readTestOutput(
         getTaskFilePath(ctx, created._ulid),
         "utf-8",
       );
@@ -760,7 +761,7 @@ describe("SplitBackend", () => {
       // task.yaml should still not contain notes
       // (it will be rewritten because addNote goes through mutateTask,
       // but notes should not appear in task.yaml)
-      const taskFileAfter = await fs.readFile(
+      const taskFileAfter = await readTestOutput(
         getTaskFilePath(ctx, created._ulid),
         "utf-8",
       );
@@ -769,7 +770,7 @@ describe("SplitBackend", () => {
       expect(parsedAfter.notes).toBeUndefined();
 
       // Notes should be in notes.yaml
-      const notesContent = await fs.readFile(
+      const notesContent = await readTestOutput(
         getNotesFilePath(ctx, created._ulid),
         "utf-8",
       );
@@ -872,7 +873,7 @@ describe("SplitBackend", () => {
 
       // Read the raw index file to check what fields are persisted
       const indexPath = getIndexFilePath(ctx);
-      const content = await fs.readFile(indexPath, "utf-8");
+      const content = await readTestOutput(indexPath, "utf-8");
       const { parse } = await import("yaml");
       const parsed = parse(content);
       const indexEntry = Array.isArray(parsed) ? parsed[0] : parsed.tasks[0];
@@ -1082,7 +1083,7 @@ describe("SplitBackend", () => {
 
       // But note *content* must NOT appear in the index (non-indexed data)
       const indexPath = getIndexFilePath(ctx);
-      const indexContent = await fs.readFile(indexPath, "utf-8");
+      const indexContent = await readTestOutput(indexPath, "utf-8");
       expect(indexContent).not.toContain("A note with content that stays out of the index");
 
       // The note should be persisted in the per-task notes file
@@ -1102,14 +1103,14 @@ describe("SplitBackend", () => {
       });
 
       const indexPath = getIndexFilePath(ctx);
-      const indexBefore = await fs.readFile(indexPath, "utf-8");
+      const indexBefore = await readTestOutput(indexPath, "utf-8");
 
       await manager.mutateTask(ctx, "@desc-no-index", (task) => ({
         ...task,
         description: "Updated description",
       }));
 
-      const indexAfter = await fs.readFile(indexPath, "utf-8");
+      const indexAfter = await readTestOutput(indexPath, "utf-8");
       expect(indexAfter).toBe(indexBefore);
     });
 
@@ -1283,7 +1284,7 @@ describe("SplitBackend", () => {
 
       // Manually corrupt the index to have a different priority
       const indexPath = getIndexFilePath(ctx);
-      const indexContent = await fs.readFile(indexPath, "utf-8");
+      const indexContent = await readTestOutput(indexPath, "utf-8");
       const { parse, stringify } = await import("yaml");
       const indexData = parse(indexContent);
 
@@ -1309,7 +1310,7 @@ describe("SplitBackend", () => {
       // Manually update per-task file to have different title
       const taskFilePath = getTaskFilePath(ctx, ulid);
       const { parse, stringify } = await import("yaml");
-      const content = await fs.readFile(taskFilePath, "utf-8");
+      const content = await readTestOutput(taskFilePath, "utf-8");
       const taskData = parse(content);
       taskData.title = "Updated per-task title";
       await fs.writeFile(taskFilePath, stringify(taskData));
@@ -1384,7 +1385,7 @@ describe("SplitBackend", () => {
       // Mutate the per-task file directly (simulating drift)
       const taskFilePath = getTaskFilePath(ctx, created._ulid);
       const { parse, stringify } = await import("yaml");
-      const content = await fs.readFile(taskFilePath, "utf-8");
+      const content = await readTestOutput(taskFilePath, "utf-8");
       const taskData = parse(content);
       taskData.priority = 1;
       taskData.status = "in_progress";

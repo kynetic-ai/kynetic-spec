@@ -19,6 +19,7 @@ import {
   cleanupTempDir,
   createTempDir,
   initGitRepo,
+  readTestOutput,
   testUlid,
 } from "./helpers/cli.js";
 
@@ -54,7 +55,7 @@ function git(cwd: string, command: string): string {
 }
 
 async function readWorkspaceRecord(registryPath: string, taskRef: string): Promise<Record<string, any>> {
-  const raw = YAML.parse(await fs.readFile(registryPath, "utf-8")) as {
+  const raw = YAML.parse(await readTestOutput(registryPath)) as {
     workspaces?: Array<Record<string, any>>;
   };
   return raw.workspaces?.find((workspace) => workspace.task_ref === taskRef) ?? {};
@@ -675,7 +676,7 @@ describe("stale integration target detection", () => {
     });
 
     // Mutate the registry to simulate active integration (merged state)
-    const raw = YAML.parse(await fs.readFile(first.metadataPath, "utf-8")) as {
+    const raw = YAML.parse(await readTestOutput(first.metadataPath)) as {
       workspaces: Array<Record<string, any>>;
     };
     const ws = raw.workspaces.find((w) => w.task_ref === taskRef);
@@ -723,7 +724,7 @@ describe("stale integration target detection", () => {
     });
 
     // Mutate to in_progress integration
-    const raw = YAML.parse(await fs.readFile(first.metadataPath, "utf-8")) as {
+    const raw = YAML.parse(await readTestOutput(first.metadataPath)) as {
       workspaces: Array<Record<string, any>>;
     };
     const ws = raw.workspaces.find((w) => w.task_ref === taskRef);

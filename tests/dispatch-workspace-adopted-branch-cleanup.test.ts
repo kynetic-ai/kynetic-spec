@@ -21,6 +21,7 @@ import {
   cleanupTempDir,
   createTempDir,
   initGitRepo,
+  readTestOutput,
   testUlid,
 } from "./helpers/cli.js";
 
@@ -61,7 +62,7 @@ async function readWorkspaceRecord(
   registryPath: string,
   taskRef: string,
 ): Promise<Record<string, any>> {
-  const raw = YAML.parse(await fs.readFile(registryPath, "utf-8")) as {
+  const raw = YAML.parse(await readTestOutput(registryPath)) as {
     workspaces?: Array<Record<string, any>>;
   };
   return raw.workspaces?.find((workspace) => workspace.task_ref === taskRef) ?? {};
@@ -131,7 +132,7 @@ describe("adopted branch cleanup and recoverability", () => {
 
     // Write adopted branch metadata into the worktree
     const metadataFile = path.join(workspace.cwd, ".kspec-dispatch-workspace.json");
-    const metadata = JSON.parse(await fs.readFile(metadataFile, "utf-8"));
+    const metadata = JSON.parse(await readTestOutput(metadataFile));
     metadata.canonicalBranch = adoptedBranch;
     metadata.branchProvenance = {
       ownership: "adopted",
@@ -517,7 +518,7 @@ describe("adopted branch cleanup and recoverability", () => {
 
     // Write adopted branch metadata into the worktree
     const metadataFile = path.join(workspace.cwd, ".kspec-dispatch-workspace.json");
-    const metadata = JSON.parse(await fs.readFile(metadataFile, "utf-8"));
+    const metadata = JSON.parse(await readTestOutput(metadataFile));
     metadata.canonicalBranch = adoptedBranch;
     metadata.branchProvenance = {
       ownership: "adopted",
@@ -608,7 +609,7 @@ describe("adopted branch cleanup and recoverability", () => {
     });
 
     const metadataFile = path.join(workspace.cwd, ".kspec-dispatch-workspace.json");
-    const metadata = JSON.parse(await fs.readFile(metadataFile, "utf-8"));
+    const metadata = JSON.parse(await readTestOutput(metadataFile));
     metadata.canonicalBranch = adoptedBranch;
     metadata.branchProvenance = {
       ownership: "adopted",
@@ -693,7 +694,7 @@ describe("adopted branch cleanup and recoverability", () => {
     });
 
     const metadataFile = path.join(workspace.cwd, ".kspec-dispatch-workspace.json");
-    const metadata = JSON.parse(await fs.readFile(metadataFile, "utf-8"));
+    const metadata = JSON.parse(await readTestOutput(metadataFile));
     metadata.canonicalBranch = adoptedBranch;
     metadata.branchProvenance = {
       ownership: "adopted",
@@ -774,7 +775,7 @@ describe("adopted branch cleanup and recoverability", () => {
     });
 
     const metadataFile = path.join(workspace.cwd, ".kspec-dispatch-workspace.json");
-    const metadata = JSON.parse(await fs.readFile(metadataFile, "utf-8"));
+    const metadata = JSON.parse(await readTestOutput(metadataFile));
     metadata.canonicalBranch = adoptedBranch;
     metadata.branchProvenance = {
       ownership: "adopted",

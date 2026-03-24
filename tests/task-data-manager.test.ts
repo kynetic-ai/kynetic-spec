@@ -17,6 +17,7 @@ import { TaskSchema } from "../src/schema/task.js";
 import {
   cleanupTempDir,
   kspec,
+  readTestOutput,
   setupTempFixtures,
   testUlid,
   testUlids,
@@ -1249,7 +1250,7 @@ describe("TaskDataManager", () => {
       // Inject a custom field into the raw YAML by inserting it at the
       // correct indentation level within the tasks wrapper
       const tasksFile = path.join(ctx.specDir, "project.tasks.yaml");
-      const content = await fs.readFile(tasksFile, "utf-8");
+      const content = await readTestOutput(tasksFile);
       const lines = content.split("\n");
       const ulidLineIdx = lines.findIndex((l) => l.includes("01KF1645CA45ZT43W2T6HJMVA1"));
       expect(ulidLineIdx).toBeGreaterThan(-1);
@@ -1261,7 +1262,7 @@ describe("TaskDataManager", () => {
       await manager.addNote(ctx, "@test-task-pending", "Note after custom field");
 
       // Re-read raw file to verify custom field survived
-      const afterContent = await fs.readFile(tasksFile, "utf-8");
+      const afterContent = await readTestOutput(tasksFile);
       expect(afterContent).toContain("custom_backend_field: preserved-value");
     });
 
@@ -1272,7 +1273,7 @@ describe("TaskDataManager", () => {
 
       // Inject a custom field into the raw YAML
       const tasksFile = path.join(ctx.specDir, "project.tasks.yaml");
-      const content = await fs.readFile(tasksFile, "utf-8");
+      const content = await readTestOutput(tasksFile);
       const lines = content.split("\n");
       const ulidLineIdx = lines.findIndex((l) => l.includes("01KF1645CA45ZT43W2T6HJMVA1"));
       expect(ulidLineIdx).toBeGreaterThan(-1);
@@ -1286,7 +1287,7 @@ describe("TaskDataManager", () => {
       }));
 
       // Re-read raw file to verify custom field survived
-      const afterContent = await fs.readFile(tasksFile, "utf-8");
+      const afterContent = await readTestOutput(tasksFile);
       expect(afterContent).toContain("backend_metadata: keep-me");
     });
   });

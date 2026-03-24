@@ -8,8 +8,8 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { createTempDir, cleanupTempDir } from './helpers/cli';
-import { writeFileSync, readFileSync, existsSync, mkdirSync, statSync, unlinkSync, openSync, closeSync, constants } from 'fs';
+import { createTempDir, cleanupTempDir, readTestOutputSync } from './helpers/cli';
+import { writeFileSync, existsSync, mkdirSync, statSync, unlinkSync, openSync, closeSync, constants } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';
 import { spawn } from 'child_process';
@@ -78,7 +78,7 @@ class GlobalPidFileManager {
     }
 
     try {
-      const content = readFileSync(this.pidFilePath, 'utf-8').trim();
+      const content = readTestOutputSync(this.pidFilePath).trim();
       const pid = parseInt(content, 10);
       return isNaN(pid) ? null : pid;
     } catch {
@@ -93,7 +93,7 @@ class GlobalPidFileManager {
     }
 
     try {
-      const content = readFileSync(this.portFilePath, 'utf-8').trim();
+      const content = readTestOutputSync(this.portFilePath).trim();
       const port = parseInt(content, 10);
 
       // AC: @multi-directory-daemon ac-9c - validate port content
@@ -158,7 +158,7 @@ describe('Global PID/Port Management', () => {
       const pidFilePath = join(tempConfigDir, 'daemon.pid');
       expect(existsSync(pidFilePath)).toBe(true);
 
-      const content = readFileSync(pidFilePath, 'utf-8').trim();
+      const content = readTestOutputSync(pidFilePath).trim();
       expect(content).toBe(process.pid.toString());
     });
 
@@ -196,7 +196,7 @@ describe('Global PID/Port Management', () => {
       const portFilePath = join(tempConfigDir, 'daemon.port');
       expect(existsSync(portFilePath)).toBe(true);
 
-      const content = readFileSync(portFilePath, 'utf-8').trim();
+      const content = readTestOutputSync(portFilePath).trim();
       expect(content).toBe(port.toString());
     });
 
@@ -430,7 +430,7 @@ describe('Global PID/Port Management', () => {
       const pidFilePath = join(tempConfigDir, 'daemon.pid');
       expect(existsSync(pidFilePath)).toBe(true);
 
-      const firstPid = readFileSync(pidFilePath, 'utf-8').trim();
+      const firstPid = readTestOutputSync(pidFilePath).trim();
       expect(firstPid).toBe(process.pid.toString());
 
       // Second attempt should fail with "Daemon already running"
@@ -438,7 +438,7 @@ describe('Global PID/Port Management', () => {
       expect(() => secondManager.writePid()).toThrow('Daemon already running');
 
       // PID file should still contain first daemon's PID
-      const currentPid = readFileSync(pidFilePath, 'utf-8').trim();
+      const currentPid = readTestOutputSync(pidFilePath).trim();
       expect(currentPid).toBe(firstPid);
     });
 
@@ -453,7 +453,7 @@ describe('Global PID/Port Management', () => {
       expect(() => pidManager.writePid()).not.toThrow();
 
       // Should contain current process PID
-      const newPid = readFileSync(pidFilePath, 'utf-8').trim();
+      const newPid = readTestOutputSync(pidFilePath).trim();
       expect(newPid).toBe(process.pid.toString());
     });
 

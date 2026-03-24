@@ -37,7 +37,7 @@ import {
 } from '../src/parser/shadow.js';
 import { initContext } from '../src/parser/yaml.js';
 import { existsSync } from 'node:fs';
-import { kspec as kspecRun } from './helpers/cli.js';
+import { kspec as kspecRun, readTestOutput } from './helpers/cli.js';
 import { detectRemoteType } from '../src/parser/config.js';
 import { createSession, appendEvent, getSession } from '../src/sessions/store.js';
 
@@ -491,7 +491,7 @@ describe('Shadow Branch', () => {
           // Verify .gitattributes exists in shadow branch
           const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
           const gitattributesPath = path.join(worktreeDir, '.gitattributes');
-          const gitattributesContent = await fs.readFile(gitattributesPath, 'utf-8');
+          const gitattributesContent = await readTestOutput(gitattributesPath, 'utf-8');
           expect(gitattributesContent).toContain('*.yaml merge=kspec');
           expect(gitattributesContent).toContain('*.yml merge=kspec');
         } finally {
@@ -530,7 +530,7 @@ describe('Shadow Branch', () => {
       expect(result.success).toBe(true);
 
       const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
-      const gitignoreContent = await fs.readFile(path.join(worktreeDir, '.gitignore'), 'utf-8');
+      const gitignoreContent = await readTestOutput(path.join(worktreeDir, '.gitignore'), 'utf-8');
       expect(gitignoreContent).toContain('artifacts/');
     });
 
@@ -648,7 +648,7 @@ describe('Shadow Branch', () => {
 
       const result = await repairShadow(testDir);
       expect(result.success).toBe(false);
-      expect(await fs.readFile(gitFile, 'utf-8')).toBe('corrupted content');
+      expect(await readTestOutput(gitFile, 'utf-8')).toBe('corrupted content');
     });
 
     // AC: @shadow-recovery ac-recovery-3 - No shadow branch → repair fails suggesting init
@@ -1154,7 +1154,7 @@ describe('Shadow Branch', () => {
         expect(result.hadConflict).toBe(false);
 
         // Verify the change was pulled
-        const content = await fs.readFile(path.join(worktreeDir, tasksFile!), 'utf-8');
+        const content = await readTestOutput(path.join(worktreeDir, tasksFile!), 'utf-8');
         expect(content).toContain('# Remote change');
       } finally {
         await fs.rm(cloneDir, { recursive: true, force: true });
@@ -1199,14 +1199,14 @@ describe('Shadow Branch', () => {
         expect(result.hadConflict).toBe(false);
 
         // Remote file should be present
-        const remoteContent = await fs.readFile(
+        const remoteContent = await readTestOutput(
           path.join(worktreeDir, 'remote-file.yaml'),
           'utf-8',
         );
         expect(remoteContent).toContain('remote: true');
 
         // Local dirty file should still be present (restored from stash)
-        const localContent = await fs.readFile(
+        const localContent = await readTestOutput(
           path.join(worktreeDir, 'dirty-local.yaml'),
           'utf-8',
         );
@@ -1248,7 +1248,7 @@ describe('Shadow Branch', () => {
       try {
         execSync(`git clone ${remoteDir} ${cloneDir}`, { stdio: 'pipe' });
         execSync(`git -C ${cloneDir} checkout ${SHADOW_BRANCH_NAME}`, { stdio: 'pipe' });
-        const content = await fs.readFile(path.join(cloneDir, tasksFile!), 'utf-8');
+        const content = await readTestOutput(path.join(cloneDir, tasksFile!), 'utf-8');
         expect(content).toContain('# Local change');
       } finally {
         await fs.rm(cloneDir, { recursive: true, force: true });
@@ -1377,14 +1377,14 @@ describe('Shadow Branch', () => {
         await shadowPushAsync(worktreeDir);
 
         // Verify clone's file was pulled into local worktree
-        const remoteMarkerContent = await fs.readFile(
+        const remoteMarkerContent = await readTestOutput(
           path.join(worktreeDir, 'remote-marker.yaml'),
           'utf-8',
         );
         expect(remoteMarkerContent).toContain('marker: from-clone');
 
         // Verify local file still exists
-        const localMarkerContent = await fs.readFile(
+        const localMarkerContent = await readTestOutput(
           path.join(worktreeDir, 'local-marker.yaml'),
           'utf-8',
         );
@@ -1395,11 +1395,11 @@ describe('Shadow Branch', () => {
         try {
           execSync(`git clone ${remoteDir} ${verifyDir}`, { stdio: 'pipe' });
           execSync(`git -C ${verifyDir} checkout ${SHADOW_BRANCH_NAME}`, { stdio: 'pipe' });
-          const verifyRemote = await fs.readFile(
+          const verifyRemote = await readTestOutput(
             path.join(verifyDir, 'remote-marker.yaml'),
             'utf-8',
           );
-          const verifyLocal = await fs.readFile(
+          const verifyLocal = await readTestOutput(
             path.join(verifyDir, 'local-marker.yaml'),
             'utf-8',
           );
@@ -1470,11 +1470,11 @@ describe('Shadow Branch', () => {
         }
 
         // Verify clone's file was pulled into local worktree (proves pull-rebase ran)
-        const remoteMarkerContent = await fs.readFile(remoteMarkerPath, 'utf-8');
+        const remoteMarkerContent = await readTestOutput(remoteMarkerPath, 'utf-8');
         expect(remoteMarkerContent).toContain('marker: from-clone-commitif');
 
         // Verify local file still exists
-        const localMarkerContent = await fs.readFile(
+        const localMarkerContent = await readTestOutput(
           path.join(worktreeDir, 'local-commitif-marker.yaml'),
           'utf-8',
         );
@@ -1573,7 +1573,7 @@ describe('Shadow Branch', () => {
 
         // Verify the remote file was pulled down
         expect(existsSync(markerPath)).toBe(true);
-        const content = await fs.readFile(markerPath, 'utf-8');
+        const content = await readTestOutput(markerPath, 'utf-8');
         expect(content).toContain('marker: from-remote');
       } finally {
         await fs.rm(cloneDir, { recursive: true, force: true });
@@ -1684,7 +1684,7 @@ describe('Shadow Branch', () => {
 
           // Verify the marker was pulled from specs-origin
           expect(existsSync(markerPath)).toBe(true);
-          const content = await fs.readFile(markerPath, 'utf-8');
+          const content = await readTestOutput(markerPath, 'utf-8');
           expect(content).toContain('marker: from-specs-origin');
         } finally {
           await fs.rm(cloneDir, { recursive: true, force: true });
@@ -1757,7 +1757,7 @@ describe('Shadow Branch', () => {
           // Verify clone's file was pulled into local worktree
           const remoteMarkerPath = path.join(worktreeDir, 'push-specs-marker.yaml');
           expect(existsSync(remoteMarkerPath)).toBe(true);
-          const remoteContent = await fs.readFile(remoteMarkerPath, 'utf-8');
+          const remoteContent = await readTestOutput(remoteMarkerPath, 'utf-8');
           expect(remoteContent).toContain('marker: from-clone-via-specs');
 
           // Verify local file still exists
@@ -1827,7 +1827,7 @@ describe('Shadow Branch', () => {
         expect(pullResult.hadConflict).toBe(false);
 
         // Remote change should be present in shadow worktree
-        const remoteContent = await fs.readFile(
+        const remoteContent = await readTestOutput(
           path.join(worktreeDir, 'remote-task-update.yaml'),
           'utf-8',
         );
@@ -2179,7 +2179,7 @@ describe('Shadow Branch', () => {
       // Verify hook was installed to .git/hooks/pre-commit
       const installedHookPath = path.join(testDir, '.git', 'hooks', 'pre-commit');
       try {
-        const hookContent = await fs.readFile(installedHookPath, 'utf-8');
+        const hookContent = await readTestOutput(installedHookPath, 'utf-8');
         // Hook should contain the kspec-meta branch protection logic
         expect(hookContent).toContain('kspec-meta branch protection');
         expect(hookContent).toContain('KSPEC_SHADOW_COMMIT');
@@ -2242,7 +2242,7 @@ describe('Shadow Branch', () => {
       const sourceHookPath = path.join(hooksSourceDir, 'pre-commit');
 
       await fs.mkdir(hooksSourceDir, { recursive: true });
-      const realHookContent = await fs.readFile(realHookPath, 'utf-8');
+      const realHookContent = await readTestOutput(realHookPath, 'utf-8');
       await fs.writeFile(sourceHookPath, realHookContent, { mode: 0o755 });
 
       // Initialize git repo
@@ -2447,7 +2447,7 @@ describe('Shadow Branch', () => {
           shadow: { directory: customDir },
         });
 
-        const gitignore = await fs.readFile(path.join(testDir, '.gitignore'), 'utf-8');
+        const gitignore = await readTestOutput(path.join(testDir, '.gitignore'), 'utf-8');
         expect(gitignore).toContain(`${customDir}/`);
         expect(gitignore).not.toContain(`${SHADOW_WORKTREE_DIR}/`);
       });
@@ -2753,9 +2753,9 @@ describe('Shadow Branch', () => {
       expect(changesExcludingWorktree).toBe('');
 
       // Original files should still be present and unchanged
-      const readme = await fs.readFile(path.join(testDir, 'README.md'), 'utf-8');
+      const readme = await readTestOutput(path.join(testDir, 'README.md'), 'utf-8');
       expect(readme).toBe('# Test');
-      const src = await fs.readFile(path.join(testDir, 'src.ts'), 'utf-8');
+      const src = await readTestOutput(path.join(testDir, 'src.ts'), 'utf-8');
       expect(src).toBe('export const x = 1;');
 
       // Current branch should still be whatever it was (not switched)

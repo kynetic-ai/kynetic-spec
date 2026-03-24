@@ -8,7 +8,7 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { createTempDir } from "./helpers/cli";
+import { createTempDir, readTestOutput } from "./helpers/cli";
 
 // We test the registry functions with KSPEC_CLAUDE_HOME pointing to a temp dir
 // to avoid touching real ~/.claude/plugins/.
@@ -52,7 +52,7 @@ describe("Claude Plugin Registry", () => {
 
       // Verify the JSON file was created
       const marketplacesPath = path.join(getClaudePluginsDir(), "known_marketplaces.json");
-      const content = JSON.parse(await fs.readFile(marketplacesPath, "utf-8"));
+      const content = JSON.parse(await readTestOutput(marketplacesPath));
       expect(content["kspec-plugins"]).toBeDefined();
       expect(content["kspec-plugins"].source).toEqual({ source: "directory", path: expect.any(String) });
       expect(content["kspec-plugins"].installLocation).toBeTruthy();
@@ -69,7 +69,7 @@ describe("Claude Plugin Registry", () => {
       await registerCorePluginMarketplace();
 
       const marketplacesPath = path.join(getClaudePluginsDir(), "known_marketplaces.json");
-      const firstContent = JSON.parse(await fs.readFile(marketplacesPath, "utf-8"));
+      const firstContent = JSON.parse(await readTestOutput(marketplacesPath));
       const firstTimestamp = firstContent["kspec-plugins"].lastUpdated;
 
       // Small delay to ensure timestamps would differ
@@ -82,7 +82,7 @@ describe("Claude Plugin Registry", () => {
       expect(result.action).toBe("unchanged");
 
       // lastUpdated should NOT have changed
-      const secondContent = JSON.parse(await fs.readFile(marketplacesPath, "utf-8"));
+      const secondContent = JSON.parse(await readTestOutput(marketplacesPath));
       expect(secondContent["kspec-plugins"].lastUpdated).toBe(firstTimestamp);
     });
 
@@ -109,7 +109,7 @@ describe("Claude Plugin Registry", () => {
 
       await registerCorePluginMarketplace();
 
-      const content = JSON.parse(await fs.readFile(marketplacesPath, "utf-8"));
+      const content = JSON.parse(await readTestOutput(marketplacesPath));
       expect(content["other-plugin"]).toBeDefined();
       expect(content["other-plugin"].source).toBe("marketplace");
       expect(content["kspec-plugins"]).toBeDefined();
@@ -177,9 +177,8 @@ describe("Claude Plugin Registry", () => {
       expect(result.action).toBe("enabled");
 
       const settings = JSON.parse(
-        await fs.readFile(
+        await readTestOutput(
           path.join(tempProject, ".claude", "settings.json"),
-          "utf-8"
         )
       );
       expect(settings.enabledPlugins?.["kspec@kspec-plugins"]).toBe(true);
@@ -205,9 +204,8 @@ describe("Claude Plugin Registry", () => {
       await enablePluginInProject(tempProject);
 
       const settings = JSON.parse(
-        await fs.readFile(
+        await readTestOutput(
           path.join(tempProject, ".claude", "settings.json"),
-          "utf-8"
         )
       );
       // Hooks should still be there
@@ -245,7 +243,7 @@ describe("Claude Plugin Registry", () => {
       expect(result.action).toBe("error");
 
       // Original corrupt content should be preserved (not overwritten)
-      const content = await fs.readFile(settingsPath, "utf-8");
+      const content = await readTestOutput(settingsPath);
       expect(content).toBe("not valid json{{{");
     });
   });

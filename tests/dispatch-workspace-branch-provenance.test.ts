@@ -21,6 +21,7 @@ import {
   cleanupTempDir,
   createTempDir,
   initGitRepo,
+  readTestOutput,
   testUlid,
 } from "./helpers/cli.js";
 
@@ -61,7 +62,7 @@ async function readWorkspaceRecord(
   registryPath: string,
   taskRef: string,
 ): Promise<Record<string, any>> {
-  const raw = YAML.parse(await fs.readFile(registryPath, "utf-8")) as {
+  const raw = YAML.parse(await readTestOutput(registryPath)) as {
     workspaces?: Array<Record<string, any>>;
   };
   return raw.workspaces?.find((workspace) => workspace.task_ref === taskRef) ?? {};
@@ -470,7 +471,7 @@ describe("dispatch workspace branch provenance", () => {
 
     // Write adopted branch metadata into the worktree
     const metadataFile = path.join(workspace.cwd, ".kspec-dispatch-workspace.json");
-    const metadata = JSON.parse(await fs.readFile(metadataFile, "utf-8"));
+    const metadata = JSON.parse(await readTestOutput(metadataFile));
     metadata.canonicalBranch = adoptedBranch;
     metadata.branchProvenance = {
       ownership: "adopted",
@@ -553,7 +554,7 @@ describe("dispatch workspace branch provenance", () => {
     });
 
     const metadataFile = path.join(workspace.cwd, ".kspec-dispatch-workspace.json");
-    const metadata = JSON.parse(await fs.readFile(metadataFile, "utf-8"));
+    const metadata = JSON.parse(await readTestOutput(metadataFile));
     metadata.canonicalBranch = adoptedBranch;
     metadata.branchProvenance = {
       ownership: "adopted",
@@ -608,7 +609,7 @@ describe("dispatch workspace branch provenance", () => {
     // Write metadata WITHOUT branchProvenance (simulating a legacy workspace
     // that was adopted before provenance tracking existed)
     const metadataFile = path.join(workspace.cwd, ".kspec-dispatch-workspace.json");
-    const metadata = JSON.parse(await fs.readFile(metadataFile, "utf-8"));
+    const metadata = JSON.parse(await readTestOutput(metadataFile));
     metadata.canonicalBranch = adoptedBranch;
     delete metadata.branchProvenance;
     await fs.writeFile(metadataFile, `${JSON.stringify(metadata, null, 2)}\n`, "utf-8");

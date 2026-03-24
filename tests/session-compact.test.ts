@@ -19,6 +19,7 @@ import {
   cleanupTempDir,
   kspec,
   kspecJson,
+  readTestOutput,
   setupTempFixtures,
   testUlid,
 } from "./helpers/cli.js";
@@ -124,14 +125,14 @@ describe("session compact", () => {
     expect(result.session?.bytes_reclaimed).toBeGreaterThan(0);
 
     const eventsPath = getSessionEventsPath(sessionsDir, sessionId);
-    const stored = JSON.parse((await fs.readFile(eventsPath, "utf-8")).trim());
+    const stored = JSON.parse((await readTestOutput(eventsPath)).trim());
     const pointer = stored.data.update.rawOutput as {
       path: string;
     };
     expect(pointer.path).toMatch(/^blobs\//);
 
     const blobPath = path.join(getSessionDir(sessionsDir, sessionId), pointer.path);
-    const blobContent = await fs.readFile(blobPath, "utf-8");
+    const blobContent = await readTestOutput(blobPath);
     expect(blobContent).toBe(rawOutput);
   });
 
@@ -143,7 +144,7 @@ describe("session compact", () => {
     await writeRawEventWithOversizedPayload(sessionId, "Y".repeat(22_000));
 
     const eventsPath = getSessionEventsPath(sessionsDir, sessionId);
-    const before = await fs.readFile(eventsPath, "utf-8");
+    const before = await readTestOutput(eventsPath);
 
     await expect(
       compactSessionEvents(sessionsDir, sessionId, {
@@ -153,7 +154,7 @@ describe("session compact", () => {
       }),
     ).rejects.toThrow("rename failed");
 
-    const after = await fs.readFile(eventsPath, "utf-8");
+    const after = await readTestOutput(eventsPath);
     expect(after).toBe(before);
   });
 
@@ -166,7 +167,7 @@ describe("session compact", () => {
 
     kspec(`session compact ${sessionId}`, tempDir);
     const eventsPath = getSessionEventsPath(sessionsDir, sessionId);
-    const firstContent = await fs.readFile(eventsPath, "utf-8");
+    const firstContent = await readTestOutput(eventsPath);
     const blobsDir = path.join(getSessionDir(sessionsDir, sessionId), "blobs");
     const firstBlobCount = (await fs.readdir(blobsDir)).length;
 
@@ -174,7 +175,7 @@ describe("session compact", () => {
       `session compact ${sessionId}`,
       tempDir,
     );
-    const secondContent = await fs.readFile(eventsPath, "utf-8");
+    const secondContent = await readTestOutput(eventsPath);
     const secondBlobCount = (await fs.readdir(blobsDir)).length;
 
     expect(second.session?.status).toBe("already_compacted");
@@ -245,7 +246,7 @@ describe("session compact", () => {
     await writeRawEventWithOversizedPayload(sessionId, "D".repeat(22_000));
 
     const eventsPath = getSessionEventsPath(sessionsDir, sessionId);
-    const before = await fs.readFile(eventsPath, "utf-8");
+    const before = await readTestOutput(eventsPath);
 
     const jsonResult = kspecJson<SessionCompactJson>(
       `session compact ${sessionId} --dry-run`,
@@ -255,7 +256,7 @@ describe("session compact", () => {
       `session compact ${sessionId} --dry-run`,
       tempDir,
     );
-    const after = await fs.readFile(eventsPath, "utf-8");
+    const after = await readTestOutput(eventsPath);
 
     expect(jsonResult.dry_run).toBe(true);
     expect(jsonResult.session?.status).toBe("would_compact");
@@ -274,7 +275,7 @@ describe("session compact", () => {
     await createSessionWithStatus(sessionId, "completed");
     const eventsPath = getSessionEventsPath(sessionsDir, sessionId);
     await fs.writeFile(eventsPath, "{not-json}\n", "utf-8");
-    const before = await fs.readFile(eventsPath, "utf-8");
+    const before = await readTestOutput(eventsPath);
 
     const result = kspec(
       `session compact ${sessionId} --dry-run --json`,
@@ -287,7 +288,7 @@ describe("session compact", () => {
     expect(errJson.success).toBe(false);
     expect(errJson.error).toContain("Failed to compact session events");
 
-    const after = await fs.readFile(eventsPath, "utf-8");
+    const after = await readTestOutput(eventsPath);
     expect(after).toBe(before);
   });
 

@@ -11,6 +11,7 @@ import {
   setupTempFixtures,
   cleanupTempDir,
   initGitRepo,
+  readTestOutput,
 } from "./helpers/cli";
 import {
   renderClaudeCodeSkill,
@@ -67,7 +68,7 @@ describe("Claude Code Skill Renderer", () => {
       );
 
       // Verify content has YAML frontmatter
-      const content = await fs.readFile(result.path, "utf-8");
+      const content = await readTestOutput(result.path);
       expect(content).toMatch(/^---\n/);
       expect(content).toContain("---");
     });
@@ -100,7 +101,7 @@ describe("Claude Code Skill Renderer", () => {
       const skill = metaCtx.skills.find((s) => s.id === "task-work");
 
       const result = await renderClaudeCodeSkill(ctx, tempDir, skill!);
-      const content = await fs.readFile(result.path, "utf-8");
+      const content = await readTestOutput(result.path);
 
       // Check frontmatter has name field
       expect(content).toContain("name: task-work");
@@ -112,7 +113,7 @@ describe("Claude Code Skill Renderer", () => {
       const skill = metaCtx.skills.find((s) => s.id === "task-work");
 
       const result = await renderClaudeCodeSkill(ctx, tempDir, skill!);
-      const content = await fs.readFile(result.path, "utf-8");
+      const content = await readTestOutput(result.path);
 
       // Check frontmatter has description field
       expect(content).toContain("description: A skill for task work");
@@ -124,7 +125,7 @@ describe("Claude Code Skill Renderer", () => {
       const skill = metaCtx.skills.find((s) => s.id === "task-work");
 
       const result = await renderClaudeCodeSkill(ctx, tempDir, skill!);
-      const content = await fs.readFile(result.path, "utf-8");
+      const content = await readTestOutput(result.path);
 
       // Check frontmatter delimiters
       expect(content.startsWith("---\n")).toBe(true);
@@ -143,7 +144,7 @@ describe("Claude Code Skill Renderer", () => {
       const skill = metaCtx.skills.find((s) => s.id === "task-work");
 
       const result = await renderClaudeCodeSkill(ctx, tempDir, skill!);
-      const content = await fs.readFile(result.path, "utf-8");
+      const content = await readTestOutput(result.path);
 
       // Check that source content is present
       expect(content).toContain("# Task Work Session");
@@ -162,7 +163,7 @@ describe("Claude Code Skill Renderer", () => {
       const skill = metaCtx.skills.find((s) => s.id === "task-work");
 
       const result = await renderClaudeCodeSkill(ctx, tempDir, skill!);
-      const content = await fs.readFile(result.path, "utf-8");
+      const content = await readTestOutput(result.path);
 
       // Source content should appear exactly as written (after frontmatter + marker)
       expect(content).toContain(sourceContent);
@@ -182,7 +183,7 @@ describe("Claude Code Skill Renderer", () => {
       const skill = metaCtx.skills.find((s) => s.id === "task-work");
 
       const result = await renderClaudeCodeSkill(ctx, tempDir, skill!);
-      const content = await fs.readFile(result.path, "utf-8");
+      const content = await readTestOutput(result.path);
 
       // Should have new frontmatter values
       expect(content).toContain("name: task-work");
@@ -334,7 +335,7 @@ describe("Claude Code Skill Renderer", () => {
       const skill = metaCtx.skills.find((s) => s.id === "task-work");
 
       const result = await renderClaudeCodeSkill(ctx, tempDir, skill!);
-      const content = await fs.readFile(result.path, "utf-8");
+      const content = await readTestOutput(result.path);
 
       expect(content).toContain(KSPEC_MANAGED_MARKER);
     });

@@ -13,6 +13,7 @@ import {
   cleanupTempDir,
   createTempDir,
   initGitRepo,
+  readTestOutput,
   testUlid,
 } from "./helpers/cli.js";
 
@@ -230,7 +231,7 @@ describe("dispatch workspace and scheduler flow", () => {
         expect(invocation.taskRef).toBe(primaryTaskRef);
         expect(invocation.cwd).toBe(path.join(tempDir, ".dispatch-root", `${primarySlug}-01task00`));
         await expect(
-          fs.readFile(path.join(invocation.cwd, ".dispatch-cache", "bootstrap.txt"), "utf-8"),
+          readTestOutput(path.join(invocation.cwd, ".dispatch-cache", "bootstrap.txt")),
         ).resolves.toBe("ready");
         expect(invocation.env?.KSPEC_DISPATCH_BASE_BRANCH).toBe("agent-dev");
         expect(invocation.env?.KSPEC_DISPATCH_MERGE_TARGET).toBe("agent-dev");

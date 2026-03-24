@@ -37,6 +37,7 @@ import {
   getSessionContextPath,
   getCompletedSessionCountsByAgent,
 } from '../src/sessions/store.js';
+import { readTestOutput } from './helpers/cli.js';
 
 // ─── Schema Tests ────────────────────────────────────────────────────────────
 
@@ -243,7 +244,7 @@ describe('Session storage', () => {
 
       // Check metadata file was created
       const metadataPath = getSessionMetadataPath(sessionsDir, input.id);
-      const content = await fs.readFile(metadataPath, 'utf-8');
+      const content = await readTestOutput(metadataPath, 'utf-8');
       expect(content).toContain('id: ' + input.id);
       expect(content).toContain('agent_type: claude-code');
       expect(content).toContain('status: active');
@@ -262,7 +263,7 @@ describe('Session storage', () => {
       expect(metadata.task_id).toBe('@my-task');
 
       const metadataPath = getSessionMetadataPath(sessionsDir, input.id);
-      const content = await fs.readFile(metadataPath, 'utf-8');
+      const content = await readTestOutput(metadataPath, 'utf-8');
       // Accept both single and double quotes (yaml library uses double quotes)
       expect(content).toMatch(/task_id: ["']@my-task["']/);
     });
@@ -522,7 +523,7 @@ describe('Event storage', () => {
       });
 
       const eventsPath = getSessionEventsPath(sessionsDir, sessionId);
-      const content = await fs.readFile(eventsPath, 'utf-8');
+      const content = await readTestOutput(eventsPath, 'utf-8');
       const lines = content.trim().split('\n');
 
       expect(lines).toHaveLength(2);
@@ -554,7 +555,7 @@ describe('Event storage', () => {
       });
 
       const eventsPath = getSessionEventsPath(sessionsDir, sessionId);
-      const lines = (await fs.readFile(eventsPath, 'utf-8')).trim().split('\n');
+      const lines = (await readTestOutput(eventsPath, 'utf-8')).trim().split('\n');
       expect(lines).toHaveLength(1);
 
       const stored = JSON.parse(lines[0]);
@@ -575,7 +576,7 @@ describe('Event storage', () => {
       expect(pointer.preview.length).toBeLessThan(rawOutput.length);
 
       const blobPath = path.join(getSessionDir(sessionsDir, sessionId), pointer.path);
-      const blobContent = await fs.readFile(blobPath, 'utf-8');
+      const blobContent = await readTestOutput(blobPath, 'utf-8');
       expect(blobContent).toBe(rawOutput);
     });
 
@@ -595,7 +596,7 @@ describe('Event storage', () => {
       });
 
       const eventsPath = getSessionEventsPath(sessionsDir, sessionId);
-      const stored = JSON.parse((await fs.readFile(eventsPath, 'utf-8')).trim());
+      const stored = JSON.parse((await readTestOutput(eventsPath, 'utf-8')).trim());
       const pointer = stored.data.update.rawOutput as { preview: string };
 
       expect(pointer.preview).toContain('...');
@@ -614,7 +615,7 @@ describe('Event storage', () => {
       });
 
       const eventsPath = getSessionEventsPath(sessionsDir, sessionId);
-      const rawLine = (await fs.readFile(eventsPath, 'utf-8')).trim();
+      const rawLine = (await readTestOutput(eventsPath, 'utf-8')).trim();
       expect(Buffer.byteLength(rawLine, 'utf-8')).toBeLessThan(256 * 1024);
 
       const parsed = JSON.parse(rawLine);
@@ -625,7 +626,7 @@ describe('Event storage', () => {
       expect(pointer.path).toMatch(/^blobs\//);
 
       const blobPath = path.join(getSessionDir(sessionsDir, sessionId), pointer.path);
-      const blobContent = await fs.readFile(blobPath, 'utf-8');
+      const blobContent = await readTestOutput(blobPath, 'utf-8');
       expect(Buffer.byteLength(blobContent, 'utf-8')).toBe(pointer.bytes);
       expect(JSON.parse(blobContent)).toEqual({ prompt: giantPayload });
     });
@@ -854,7 +855,7 @@ describe('Event storage', () => {
       await saveSessionContext(sessionsDir, sessionId, 1, context);
 
       const contextPath = getSessionContextPath(sessionsDir, sessionId, 1);
-      const saved = await fs.readFile(contextPath, 'utf-8');
+      const saved = await readTestOutput(contextPath, 'utf-8');
       const parsed = JSON.parse(saved);
 
       expect(parsed).toEqual(context);
