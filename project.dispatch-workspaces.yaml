@@ -22216,34 +22216,34 @@ workspaces:
     canonical_branch: dispatch/task/task-readtestoutput-core-skill-install/01kmfcp0
     canonical_branch_head: aaa95a9f2fbf1dcb7fffe25caf825efe13521db6
     cleanup:
-      status: not_scheduled
-      detail: null
-      eligible: false
-      reason: null
-      updated_at: 2026-03-24T22:12:02.637Z
+      status: scheduled
+      detail: integrated-into-base-branch
+      eligible: true
+      reason: integrated-into-base-branch
+      updated_at: 2026-03-24T22:24:37.474Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-24T22:12:08.661Z
+      updated_at: 2026-03-24T22:24:37.474Z
     integration:
-      status: pending
-      detail: null
-      outcome: manual_merge
+      status: merged
+      detail: integration:merged
+      outcome: merged
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 548c8781dbe979fde3e1af0d4cc277d02ceb8959
-      updated_at: 2026-03-24T22:12:02.637Z
-    lifecycle_state: integrating
+      updated_at: 2026-03-24T22:24:37.474Z
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KMFCP0SCDRX127XDMZ3FEVYK"
     task_slug: task-readtestoutput-core-skill-install
     timestamps:
       closed_at: null
       last_active_at: 2026-03-24T22:12:08.661Z
-      last_reconciled_at: 2026-03-24T22:12:08.661Z
+      last_reconciled_at: 2026-03-24T22:24:37.474Z
       created_at: 2026-03-24T22:05:40.111Z
-      updated_at: 2026-03-24T22:12:08.661Z
+      updated_at: 2026-03-24T22:24:37.474Z
     workspace_id: dispatch-workspace-01KMFCP0SCDRX127XDMZ3FEVYK
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
