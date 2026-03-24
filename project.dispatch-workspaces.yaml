@@ -22558,7 +22558,7 @@ workspaces:
         head: 03adf7c2e9523d50ad151e7cf75d8f066a5d4a26
         last_seen_at: 2026-03-24T22:28:54.793Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-readtestoutput-agent-dispatch-engine-01kmfcp2
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 3c013290137d63d65590b5e2f2eb14641265c679
     bootstrap:
       status: succeeded
@@ -22663,12 +22663,25 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-24T22:44:03.362Z
+      updated_at: 2026-03-24T22:45:42.835Z
     health:
-      status: healthy
-      issues: []
-      summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-24T22:44:03.362Z
+      status: invalid
+      issues:
+        - code: missing_canonical_branch
+          message: Canonical branch "dispatch/task/task-readtestoutput-trait-cli/01kmfcp2" is missing.
+          suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
+        - code: missing_worker_worktree
+          message: Worker worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-readtestoutput-trait-cli-01kmfcp2"
+            is missing or no longer registered.
+          suggestion: Re-provision the worker worktree from the recorded canonical branch.
+        - code: missing_reviewer_worktree
+          message: Reviewer worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-readtestoutput-trait-cli-01kmfcp2-review"
+            is missing or no longer registered.
+          suggestion: Recreate the detached reviewer snapshot before running review again.
+      summary: Workspace registry record is invalid because required git state is missing.
+      updated_at: 2026-03-24T22:45:42.835Z
     integration:
       status: merged
       detail: integration:merged
@@ -22676,17 +22689,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 3c013290137d63d65590b5e2f2eb14641265c679
-      updated_at: 2026-03-24T22:44:03.362Z
-    lifecycle_state: closing
+      updated_at: 2026-03-24T22:45:42.835Z
+    lifecycle_state: stale
     resolved_base_branch: dev
     task_ref: "@01KMFCP2WYJ9RTCEXJQXC2XFT3"
     task_slug: task-readtestoutput-trait-cli
     timestamps:
       closed_at: null
       last_active_at: 2026-03-24T22:35:43.980Z
-      last_reconciled_at: 2026-03-24T22:44:03.362Z
+      last_reconciled_at: 2026-03-24T22:45:42.835Z
       created_at: 2026-03-24T22:29:02.819Z
-      updated_at: 2026-03-24T22:44:03.362Z
+      updated_at: 2026-03-24T22:45:42.835Z
     workspace_id: dispatch-workspace-01KMFCP2WYJ9RTCEXJQXC2XFT3
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
