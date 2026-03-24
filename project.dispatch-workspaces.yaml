@@ -20642,3 +20642,79 @@ workspaces:
         head: f99e417cb5641fddbfc863130de02dc550f0cc5b
         last_seen_at: 2026-03-24T20:39:48.534Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-flaky-tests-canonical-task-workspace-contract-and-agent-dispatch-engine-01kmgn92
+  - active_role: null
+    base_branch_point: 3e26d874f93e676dc62e0001d1a8e850662a5595
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-readtestoutput-yaml-round-trip-stability/01kmfcns
+    canonical_branch_head: 3e26d874f93e676dc62e0001d1a8e850662a5595
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-03-24T20:40:23.415Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-03-24T20:40:23.415Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: 3e26d874f93e676dc62e0001d1a8e850662a5595
+      updated_at: 2026-03-24T20:40:23.415Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KMFCNSPSBX86MHYDF4HM4M2C"
+    task_slug: task-readtestoutput-yaml-round-trip-stability
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-03-24T20:40:23.415Z
+      created_at: 2026-03-24T20:40:23.415Z
+      updated_at: 2026-03-24T20:40:23.415Z
+    workspace_id: dispatch-workspace-01KMFCNSPSBX86MHYDF4HM4M2C
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-readtestoutput-yaml-round-trip-stability/01kmfcns
+        head: 3e26d874f93e676dc62e0001d1a8e850662a5595
+        last_seen_at: 2026-03-24T20:40:23.415Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-readtestoutput-yaml-round-trip-stability-01kmfcns
