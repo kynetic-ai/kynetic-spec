@@ -21372,7 +21372,7 @@ workspaces:
         head: dfcc0de2f66f05b1c90ec3f05ba89fb08ce2ae10
         last_seen_at: 2026-03-24T21:23:26.084Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-readtestoutput-task-migrate-01kmfcnw
-  - active_role: null
+  - active_role: worker
     base_branch_point: 9a5b5f7cb2d611b937d19e0b44376ee81573778a
     bootstrap:
       status: succeeded
@@ -21461,7 +21461,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-24T21:23:33.789Z
+      updated_at: 2026-03-24T21:23:40.568Z
     integration:
       status: pending
       detail: null
@@ -21470,16 +21470,16 @@ workspaces:
       target_branch: dev
       target_commit: 9a5b5f7cb2d611b937d19e0b44376ee81573778a
       updated_at: 2026-03-24T21:23:33.789Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KMFCNX9QJH82RQMZGE719PB7"
     task_slug: task-readtestoutput-session-create
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-03-24T21:23:33.789Z
+      last_active_at: 2026-03-24T21:23:40.568Z
+      last_reconciled_at: 2026-03-24T21:23:40.568Z
       created_at: 2026-03-24T21:23:33.789Z
-      updated_at: 2026-03-24T21:23:38.898Z
+      updated_at: 2026-03-24T21:23:40.568Z
     workspace_id: dispatch-workspace-01KMFCNX9QJH82RQMZGE719PB7
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
