@@ -20790,7 +20790,7 @@ workspaces:
         head: 0cf7d7b8a2bce1ea566445f29e03c812c9a2e0b3
         last_seen_at: 2026-03-24T20:49:49.667Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-readtestoutput-yaml-round-trip-stability-01kmfcns
-  - active_role: worker
+  - active_role: null
     base_branch_point: 3e26d874f93e676dc62e0001d1a8e850662a5595
     bootstrap:
       status: succeeded
@@ -20874,12 +20874,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-24T21:00:01.711Z
+      updated_at: 2026-03-24T21:00:19.584Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-24T21:00:01.711Z
+      updated_at: 2026-03-24T21:00:19.584Z
     integration:
       status: pending
       detail: null
@@ -20887,24 +20887,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 3e26d874f93e676dc62e0001d1a8e850662a5595
-      updated_at: 2026-03-24T21:00:01.711Z
-    lifecycle_state: active
+      updated_at: 2026-03-24T21:00:19.584Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KMFCNTETP3KE52EAWC9BE47D"
     task_slug: task-readtestoutput-skill-rendering
     timestamps:
       closed_at: null
       last_active_at: 2026-03-24T20:50:05.683Z
-      last_reconciled_at: 2026-03-24T21:00:01.711Z
+      last_reconciled_at: 2026-03-24T21:00:19.584Z
       created_at: 2026-03-24T20:49:57.672Z
-      updated_at: 2026-03-24T21:00:01.711Z
+      updated_at: 2026-03-24T21:00:19.584Z
     workspace_id: dispatch-workspace-01KMFCNTETP3KE52EAWC9BE47D
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 8283aa44562d51c75908a9a89a36e914b14f984f
+        last_seen_at: 2026-03-24T21:00:19.584Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-readtestoutput-skill-rendering-01kmfcnt-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-readtestoutput-skill-rendering/01kmfcnt
-        head: 3e26d874f93e676dc62e0001d1a8e850662a5595
-        last_seen_at: 2026-03-24T20:49:57.672Z
+        head: 8283aa44562d51c75908a9a89a36e914b14f984f
+        last_seen_at: 2026-03-24T21:00:19.584Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-readtestoutput-skill-rendering-01kmfcnt
