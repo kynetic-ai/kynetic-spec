@@ -21991,7 +21991,7 @@
   title: Run oxfmt on codebase and fix lint violations
   type: task
   plan_ref: "@plan-migrate-from-biome-to-oxlint-oxfmt"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-install-oxlint-oxfmt"
@@ -22005,6 +22005,7 @@
   created_at: 2026-03-24T06:16:26.098Z
   started_at: 2026-03-24T08:25:11.119Z
   submitted_at: 2026-03-24T19:39:56.141Z
+  completed_at: 2026-03-24T19:40:09.805Z
 - _ulid: 01KMF7SGZ4ZWXQX4Y31H6Q6FZ0
   slugs:
     - task-delete-static-analysis-lint-test
