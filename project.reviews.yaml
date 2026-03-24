@@ -48518,6 +48518,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-24T06:26:35.833Z
+      - _ulid: 01KMF8CZNCKYRSPWYAY7PSRP5K
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMF8CZA37A6FZ0WFDR03FC05
+        timestamp: 2026-03-24T06:27:03.980Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -48527,8 +48534,24 @@ reviews:
       content_hash: ""
       ref: "@task-install-oxlint-oxfmt"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMF8CZA37A6FZ0WFDR03FC05
+        anchor:
+          type: code
+          commit: ""
+          line_end: 17
+          line_start: 17
+          path: .github/workflows/test.yml
+          side: head
+        entries:
+          - _ulid: 01KMF8CZA3FXNYAX5H6T2GEMVZ
+            author: "@claude"
+            body: CI workflow still triggers on biome.json (deleted file). Should be updated to trigger on
+              .oxlintrc.json and .oxfmtrc.json instead. Without this, config changes to the new
+              linter/formatter won't trigger CI runs.
+            created_at: 2026-03-24T06:27:03.619Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-24T06:26:26.183Z
-    updated_at: 2026-03-24T06:26:35.470Z
+    updated_at: 2026-03-24T06:27:03.619Z
     notes: []
