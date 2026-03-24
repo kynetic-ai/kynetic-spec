@@ -49305,7 +49305,17 @@ reviews:
     slugs: []
     title: Review task-readtestoutput-workflow-runs
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: All 6828 tests passed across 301 test files (3 skipped). No regressions.
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-24T21:15:21.899Z
+        completed_at: 2026-03-24T21:15:21.899Z
     events:
       - _ulid: 01KMGV66GAYHRGXDWW0YB3GNZG
         actor: "@claude"
@@ -49320,6 +49330,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-24T21:15:14.212Z
+      - _ulid: 01KMGV7GRFH88YE8RCK1CP2SWK
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-24T21:15:22.255Z
     examined_commit: 9da8d7b6cd949a1efb3c2c329cbe1bbcf3ef7a94
     external_links: []
     lifecycle_state: open
@@ -49332,5 +49349,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-24T21:14:38.986Z
-    updated_at: 2026-03-24T21:15:13.867Z
+    updated_at: 2026-03-24T21:15:21.899Z
     notes: []
