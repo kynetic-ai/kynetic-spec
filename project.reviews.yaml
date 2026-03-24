@@ -49704,3 +49704,31 @@ reviews:
     created_at: 2026-03-24T21:32:57.201Z
     updated_at: 2026-03-24T21:38:37.213Z
     notes: []
+  - _ulid: 01KMGWRYYG8NWDP0TNEFGXQC1Q
+    slugs: []
+    title: Review task-readtestoutput-meta (cycle 1)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KMGWRYYFFEECN6423A8M180E
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-24T21:42:22.416Z
+    examined_commit: fd6652501f2a64930cfff1ea486119d054073e72
+    external_links: []
+    lifecycle_state: draft
+    related_refs:
+      - "@01KMFCNXZQBJME3WVXJ646MCKN"
+    subject:
+      type: code
+      base_branch: dev
+      base_commit: 0e2a0a982f00bf4461bf94c37a3c8074ae2686ff
+      head_branch: dispatch/task/task-readtestoutput-meta/01kmfcnx
+      head_commit: fd6652501f2a64930cfff1ea486119d054073e72
+    threads: []
+    verdicts: []
+    created_at: 2026-03-24T21:42:22.416Z
+    updated_at: null
+    notes: []
