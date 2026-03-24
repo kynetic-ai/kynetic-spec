@@ -15,7 +15,7 @@
 		dataTestId: string;
 	}
 
-	const { title, sessions, loading, error, filterHref, emptyMessage, dataTestId }: Props = $props();
+	let { title, sessions, loading, error, filterHref, emptyMessage, dataTestId }: Props = $props();
 
 	function statusColor(status: string): string {
 		switch (status) {

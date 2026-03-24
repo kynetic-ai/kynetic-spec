@@ -7,7 +7,7 @@
 	import type { BoardColumn } from './board-utils';
 	import TaskCard from './TaskCard.svelte';
 
-	const {
+	let {
 		column,
 		onCardClick
 	}: {

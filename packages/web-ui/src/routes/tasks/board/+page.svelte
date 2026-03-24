@@ -38,7 +38,7 @@
 	const queryClient = useQueryClient();
 
 	// AC: @ui-task-board ac-4 — Buffered output state per agent session
-	const sessionStates = $state<Record<string, FleetSessionState>>({});
+	let sessionStates = $state<Record<string, FleetSessionState>>({});
 
 	// --- TanStack Query: board data ---
 	// AC: @ui-data-freshness ac-1 — createQuery caches; revisits render from cache
@@ -58,14 +58,14 @@
 		staleTime: 10 * 1000,
 	}));
 
-	const tasks = $derived(tasksQuery.data?.items ?? []);
-	const columns = $derived(distributeToColumns(tasks));
-	const loading = $derived(tasksQuery.isLoading);
-	const error = $derived(tasksQuery.error?.message ?? '');
-	const agentStatus = $derived<AgentDispatchStatus | null>(agentStatusQuery.data ?? null);
+	let tasks = $derived(tasksQuery.data?.items ?? []);
+	let columns = $derived(distributeToColumns(tasks));
+	let loading = $derived(tasksQuery.isLoading);
+	let error = $derived(tasksQuery.error?.message ?? '');
+	let agentStatus = $derived<AgentDispatchStatus | null>(agentStatusQuery.data ?? null);
 
 	// Derived: output lines per session (for ActiveFleetRow)
-	const agentOutputLines = $derived<Record<string, string[]>>(
+	let agentOutputLines = $derived<Record<string, string[]>>(
 		Object.fromEntries(
 			Object.entries(sessionStates).map(([id, s]) => [id, s.lines])
 		)

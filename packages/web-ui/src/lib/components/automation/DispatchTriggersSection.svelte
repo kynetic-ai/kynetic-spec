@@ -40,7 +40,7 @@
 		dispatchEnabled: boolean;
 	}
 
-	const { agents, dispatchEnabled }: Props = $props();
+	let { agents, dispatchEnabled }: Props = $props();
 
 	const queryClient = useQueryClient();
 
@@ -80,7 +80,7 @@
 	}
 
 	// Available dispatch events not yet selected
-	const availableEvents = $derived(
+	let availableEvents = $derived(
 		AGENT_DISPATCH_EVENTS.filter((e) => !editingTriggers.some((t) => t.on === e))
 	);
 
@@ -134,7 +134,7 @@
 		updateMutation.mutate({ agentId: editingAgentId, dispatch: editingTriggers });
 	}
 
-	const editingAgent = $derived(agents.find((a) => a.id === editingAgentId));
+	let editingAgent = $derived(agents.find((a) => a.id === editingAgentId));
 </script>
 
 <section data-testid="dispatch-triggers-section">

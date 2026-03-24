@@ -12,12 +12,12 @@
 	import AlertTriangle from '@lucide/svelte/icons/alert-triangle';
 	import Ban from '@lucide/svelte/icons/ban';
 
-	const { task, onclick }: { task: TaskSummary; onclick: (task: TaskSummary) => void } = $props();
+	let { task, onclick }: { task: TaskSummary; onclick: (task: TaskSummary) => void } = $props();
 
-	const statusInfo = $derived(getStatusClasses(task.status));
-	const isBlocked = $derived(task.status === 'blocked');
-	const isCancelled = $derived(task.status === 'cancelled');
-	const slug = $derived(task.slugs?.[0] ?? task._ulid.slice(0, 8));
+	let statusInfo = $derived(getStatusClasses(task.status));
+	let isBlocked = $derived(task.status === 'blocked');
+	let isCancelled = $derived(task.status === 'cancelled');
+	let slug = $derived(task.slugs?.[0] ?? task._ulid.slice(0, 8));
 </script>
 
 <button

@@ -28,7 +28,7 @@
 		open: boolean;
 	}
 
-	const { ref, open = $bindable(false) }: Props = $props();
+	let { ref, open = $bindable(false) }: Props = $props();
 
 	let item = $state<ItemDetail | null>(null);
 	let linkedTasks = $state<TaskSummary[]>([]);

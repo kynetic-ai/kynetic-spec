@@ -40,7 +40,7 @@
 	import ArrowLeft from '@lucide/svelte/icons/arrow-left';
 	import { base } from '$app/paths';
 
-	const sessionId = $derived($page.params.id);
+	let sessionId = $derived($page.params.id);
 
 	// --- Queries ---
 	// AC: @ui-data-freshness ac-1 — createQuery caches session detail
@@ -57,14 +57,14 @@
 	let eventsLoading = $state(true);
 	let error = $state('');
 
-	const isLive = $derived(sessionQuery.data?.status === 'active');
+	let isLive = $derived(sessionQuery.data?.status === 'active');
 	let lastSeq = $state(-1);
 
 	// Server-resolved task_title eliminates need for separate task title lookup
-	const taskTitle = $derived<string | null>(sessionQuery.data?.task_title ?? null);
-	const session = $derived<SessionDetail | null>(sessionQuery.data ?? null);
+	let taskTitle = $derived<string | null>(sessionQuery.data?.task_title ?? null);
+	let session = $derived<SessionDetail | null>(sessionQuery.data ?? null);
 
-	const loading = $derived(sessionQuery.isLoading || eventsLoading);
+	let loading = $derived(sessionQuery.isLoading || eventsLoading);
 
 	// Track whether initial events load has been triggered
 	let eventsLoadTriggered = $state(false);

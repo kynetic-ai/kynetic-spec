@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Select as SelectPrimitive } from "bits-ui";
 
-	const {
+	let {
 		open = $bindable(false),
 		value = $bindable(),
 		...restProps

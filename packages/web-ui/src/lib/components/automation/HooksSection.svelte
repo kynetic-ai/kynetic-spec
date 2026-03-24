@@ -13,7 +13,7 @@
 		hooks: HookSummary[];
 	}
 
-	const { hooks }: Props = $props();
+	let { hooks }: Props = $props();
 </script>
 
 <section data-testid="hooks-section">

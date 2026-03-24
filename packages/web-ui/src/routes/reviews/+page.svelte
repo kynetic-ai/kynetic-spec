@@ -36,7 +36,7 @@
 		return 'open'; // default landing view
 	}
 
-	const filterParams = $derived({
+	let filterParams = $derived({
 		status: getStatusFilter($page.url.searchParams.get('status')),
 		disposition: $page.url.searchParams.get('disposition') || undefined,
 		subject_type: $page.url.searchParams.get('subject_type') || undefined,
@@ -52,10 +52,10 @@
 		enabled: isProjectInitialized(),
 	}));
 
-	const reviews = $derived(reviewsQuery.data?.items ?? []);
-	const total = $derived(reviewsQuery.data?.total ?? 0);
-	const loading = $derived(reviewsQuery.isLoading);
-	const error = $derived(reviewsQuery.error?.message ?? '');
+	let reviews = $derived(reviewsQuery.data?.items ?? []);
+	let total = $derived(reviewsQuery.data?.total ?? 0);
+	let loading = $derived(reviewsQuery.isLoading);
+	let error = $derived(reviewsQuery.error?.message ?? '');
 
 	// --- Filter helpers ---
 	function updateFilter(key: string, value: string | undefined) {
@@ -69,8 +69,8 @@
 	}
 
 	// --- Sort helpers ---
-	const currentSort = $derived($page.url.searchParams.get('sort') || 'created_at');
-	const currentSortDir = $derived($page.url.searchParams.get('sort_dir') || 'desc');
+	let currentSort = $derived($page.url.searchParams.get('sort') || 'created_at');
+	let currentSortDir = $derived($page.url.searchParams.get('sort_dir') || 'desc');
 
 	function toggleSort(field: string) {
 		const url = new URL($page.url);
@@ -159,9 +159,9 @@
 	}
 
 	// --- Active filter state ---
-	const activeStatus = $derived($page.url.searchParams.get('status') || '');
-	const activeDisposition = $derived($page.url.searchParams.get('disposition') || '');
-	const activeSubjectType = $derived($page.url.searchParams.get('subject_type') || '');
+	let activeStatus = $derived($page.url.searchParams.get('status') || '');
+	let activeDisposition = $derived($page.url.searchParams.get('disposition') || '');
+	let activeSubjectType = $derived($page.url.searchParams.get('subject_type') || '');
 
 	// --- WebSocket updates for highlight animation ---
 	function handleReviewUpdate(event: BroadcastEvent) {

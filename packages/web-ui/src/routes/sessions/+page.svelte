@@ -61,20 +61,20 @@
 	let scrollContainer: HTMLElement | null = null;
 
 	// IntersectionObserver sentinel element
-	const sentinel: HTMLDivElement | undefined = $state();
+	let sentinel: HTMLDivElement | undefined = $state();
 	let observer: IntersectionObserver | undefined;
 
 	// AC: @ui-url-panel-state ac-4 — Derive filter values from URL params
-	const filterStatuses = $derived($page.url.searchParams.getAll('status'));
-	const filterAgentId = $derived($page.url.searchParams.get('agent_id') || '');
-	const filterAgentType = $derived($page.url.searchParams.get('agent_type') || '');
-	const filterTrigger = $derived($page.url.searchParams.get('trigger') || '');
-	const filterSince = $derived($page.url.searchParams.get('since') || '');
-	const filterTaskId = $derived($page.url.searchParams.get('task_id') || '');
-	const filterSpecRef = $derived($page.url.searchParams.get('spec_ref') || '');
-	const searchQuery = $derived($page.url.searchParams.get('q') || '');
-	const searchMode = $derived(searchQuery.trim().length > 0);
-	const hasFilters = $derived(
+	let filterStatuses = $derived($page.url.searchParams.getAll('status'));
+	let filterAgentId = $derived($page.url.searchParams.get('agent_id') || '');
+	let filterAgentType = $derived($page.url.searchParams.get('agent_type') || '');
+	let filterTrigger = $derived($page.url.searchParams.get('trigger') || '');
+	let filterSince = $derived($page.url.searchParams.get('since') || '');
+	let filterTaskId = $derived($page.url.searchParams.get('task_id') || '');
+	let filterSpecRef = $derived($page.url.searchParams.get('spec_ref') || '');
+	let searchQuery = $derived($page.url.searchParams.get('q') || '');
+	let searchMode = $derived(searchQuery.trim().length > 0);
+	let hasFilters = $derived(
 		filterStatuses.length > 0 ||
 			filterAgentId ||
 			filterAgentType ||
@@ -156,26 +156,26 @@
 	}));
 
 	// Derived state from queries
-	const sessions = $derived<SessionSummary[]>(
+	let sessions = $derived<SessionSummary[]>(
 		sessionsQuery.data?.pages.flatMap((p) => p.items) ?? []
 	);
-	const total = $derived(sessionsQuery.data?.pages[0]?.total ?? 0);
-	const loading = $derived(sessionsQuery.isLoading);
-	const loadingMore = $derived(sessionsQuery.isFetchingNextPage);
-	const allLoaded = $derived(searchMode ? true : !sessionsQuery.hasNextPage);
-	const error = $derived(sessionsQuery.error?.message ?? searchResultsQuery.error?.message ?? '');
+	let total = $derived(sessionsQuery.data?.pages[0]?.total ?? 0);
+	let loading = $derived(sessionsQuery.isLoading);
+	let loadingMore = $derived(sessionsQuery.isFetchingNextPage);
+	let allLoaded = $derived(searchMode ? true : !sessionsQuery.hasNextPage);
+	let error = $derived(sessionsQuery.error?.message ?? searchResultsQuery.error?.message ?? '');
 
-	const searchResults = $derived<SessionSearchResult[]>(searchResultsQuery.data?.items ?? []);
-	const totalMatches = $derived(searchResultsQuery.data?.total_matches ?? 0);
-	const searchTotal = $derived(searchResultsQuery.data?.total_sessions ?? 0);
-	const searchLoading = $derived(searchResultsQuery.isLoading);
-	const visibleSessions = $derived(frozenSessions ?? sessions);
+	let searchResults = $derived<SessionSearchResult[]>(searchResultsQuery.data?.items ?? []);
+	let totalMatches = $derived(searchResultsQuery.data?.total_matches ?? 0);
+	let searchTotal = $derived(searchResultsQuery.data?.total_sessions ?? 0);
+	let searchLoading = $derived(searchResultsQuery.isLoading);
+	let visibleSessions = $derived(frozenSessions ?? sessions);
 
 	// AC: @session-filter-controls ac-filter-counts — Read unfiltered_total from paginated response
-	const unfilteredTotal = $derived(sessionsQuery.data?.pages[0]?.unfiltered_total ?? 0);
+	let unfilteredTotal = $derived(sessionsQuery.data?.pages[0]?.unfiltered_total ?? 0);
 
 	// AC: @session-filter-controls ac-agent-filter, ac-agent-type-filter — Distinct values for filter dropdowns
-	const distinctAgentIds = $derived.by(() => {
+	let distinctAgentIds = $derived.by(() => {
 		const agentIdSet = new Set<string>();
 		for (const session of sessions) {
 			if (session.agent_id) agentIdSet.add(session.agent_id);
@@ -184,7 +184,7 @@
 		return [...agentIdSet].sort();
 	});
 
-	const distinctAgentTypes = $derived.by(() => {
+	let distinctAgentTypes = $derived.by(() => {
 		const agentTypeSet = new Set<string>();
 		for (const session of sessions) {
 			agentTypeSet.add(session.agent_type);

@@ -11,7 +11,7 @@
 	import SystemBlock from './SystemBlock.svelte';
 	import ArrowDown from '@lucide/svelte/icons/arrow-down';
 
-	const {
+	let {
 		blocks,
 		isLive = false,
 		sessionId,
@@ -21,13 +21,13 @@
 		sessionId: string;
 	} = $props();
 
-	const scrollContainer: HTMLDivElement | undefined = $state();
+	let scrollContainer: HTMLDivElement | undefined = $state();
 	let autoScrollActive = $state(true);
 	let userScrolling = $state(false);
 	let scrollDebounceTimer: ReturnType<typeof setTimeout> | undefined;
 
 	// Track whether any block is streaming (for auto-scroll reactivity)
-	const hasStreamingBlock = $derived(blocks.some(
+	let hasStreamingBlock = $derived(blocks.some(
 		(b) => (b.type === 'message' || b.type === 'thinking') && b.isStreaming
 	));
 
@@ -78,7 +78,7 @@
 	}
 
 	// AC: @ui-session-stream ac-3 — Uses extracted utility for button visibility
-	const showJumpButton = $derived(computeShowJumpButton(autoScrollActive, isLive, blocks.length));
+	let showJumpButton = $derived(computeShowJumpButton(autoScrollActive, isLive, blocks.length));
 
 	// Use block index as key since WS-created blocks may have seq=-1
 	function blockKey(block: DisplayBlock, index: number): string | number {

@@ -43,7 +43,7 @@
 		return [...ACTIVE_STATUSES];
 	}
 
-	const filterParams = $derived({
+	let filterParams = $derived({
 		status: getStatusFilter($page.url.searchParams.get('status')),
 		tag: $page.url.searchParams.get('tag') || undefined,
 		assignee: $page.url.searchParams.get('assignee') || undefined,
@@ -65,11 +65,11 @@
 		enabled: isProjectInitialized(),
 	}));
 
-	const tasks = $derived(tasksQuery.data?.items ?? []);
-	const total = $derived(tasksQuery.data?.total ?? 0);
+	let tasks = $derived(tasksQuery.data?.items ?? []);
+	let total = $derived(tasksQuery.data?.total ?? 0);
 	// AC: @ui-data-freshness ac-1 — Only show loading on initial fetch (no cache)
-	const loading = $derived(tasksQuery.isLoading);
-	const error = $derived(tasksQuery.error?.message ?? '');
+	let loading = $derived(tasksQuery.isLoading);
+	let error = $derived(tasksQuery.error?.message ?? '');
 
 	// AC: Open task detail when URL has ref param
 	$effect(() => {
@@ -166,7 +166,7 @@
 		unsubscribe(['tasks']);
 	});
 
-	const slug = $derived(panelTask?.slugs?.[0] ?? panelTask?._ulid?.slice(0, 8) ?? '');
+	let slug = $derived(panelTask?.slugs?.[0] ?? panelTask?._ulid?.slice(0, 8) ?? '');
 </script>
 
 <div class="flex flex-col gap-6 p-6 min-w-0">

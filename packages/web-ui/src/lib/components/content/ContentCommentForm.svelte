@@ -7,10 +7,10 @@
 		onCancel: () => void;
 	}
 
-	const { onSubmit, onCancel }: Props = $props();
+	let { onSubmit, onCancel }: Props = $props();
 
-	const body = $state('');
-	const kind = $state<'blocker' | 'question' | 'nit'>('nit');
+	let body = $state('');
+	let kind = $state<'blocker' | 'question' | 'nit'>('nit');
 
 	function handleSubmit() {
 		if (!body.trim()) return;

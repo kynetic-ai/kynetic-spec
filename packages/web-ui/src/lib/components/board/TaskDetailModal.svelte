@@ -10,7 +10,7 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 	import TaskDetailContent from './TaskDetailContent.svelte';
 
-	const {
+	let {
 		open = $bindable(false),
 		taskRef = $bindable<string | null>(null),
 		onTaskUpdated
@@ -52,7 +52,7 @@
 		onTaskUpdated?.();
 	}
 
-	const slug = $derived(task?.slugs?.[0] ?? task?._ulid?.slice(0, 8) ?? '');
+	let slug = $derived(task?.slugs?.[0] ?? task?._ulid?.slice(0, 8) ?? '');
 </script>
 
 <Dialog.Root bind:open>

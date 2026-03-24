@@ -2,7 +2,7 @@
 	import { cn, type WithElementRef, type WithoutChildren } from "$lib/utils.js";
 	import type { HTMLTextareaAttributes } from "svelte/elements";
 
-	const {
+	let {
 		ref = $bindable(null),
 		value = $bindable(),
 		class: className,

@@ -80,15 +80,15 @@
 	type TriageFilterStatus = 'all' | 'untriaged' | 'triaged' | 'acted_on';
 	const TRIAGE_STATUS_VALUES: readonly TriageFilterStatus[] = ['all', 'untriaged', 'triaged', 'acted_on'];
 
-	const filterStatus = $derived.by((): TriageFilterStatus => {
+	let filterStatus = $derived.by((): TriageFilterStatus => {
 		const raw = page.url.searchParams.get('status');
 		if (raw && TRIAGE_STATUS_VALUES.includes(raw as TriageFilterStatus)) {
 			return raw as TriageFilterStatus;
 		}
 		return 'all';
 	});
-	const filterTag = $derived(page.url.searchParams.get('tag') || '');
-	const filterAge = $derived(page.url.searchParams.get('age') || '');
+	let filterTag = $derived(page.url.searchParams.get('tag') || '');
+	let filterAge = $derived(page.url.searchParams.get('age') || '');
 
 	// ── Merged inbox + triage view ──
 	interface InboxCardItem {
@@ -97,7 +97,7 @@
 	}
 
 	// AC: @ui-inbox-enhanced ac-1 — Items include inline triage status from merged endpoint
-	const allItems = $derived.by((): InboxCardItem[] => {
+	let allItems = $derived.by((): InboxCardItem[] => {
 		const items = mergedInboxQuery.data?.items ?? [];
 		return items.map((item) => {
 			const triageStatus = item.triage
@@ -110,7 +110,7 @@
 	});
 
 	// AC: @ui-inbox-enhanced ac-2 — Filtered items
-	const filteredItems = $derived.by(() => {
+	let filteredItems = $derived.by(() => {
 		let items = allItems;
 
 		// Status filter
@@ -145,7 +145,7 @@
 	});
 
 	// All unique tags across inbox items
-	const allTags = $derived.by(() => {
+	let allTags = $derived.by(() => {
 		const items = mergedInboxQuery.data?.items ?? [];
 		const tagSet = new Set<string>();
 		items.forEach((item) => item.tags.forEach((t) => tagSet.add(t)));
@@ -153,15 +153,15 @@
 	});
 
 	// Counts for status summary
-	const untriagedCount = $derived(allItems.filter((i) => i.triageStatus === 'untriaged').length);
-	const triagedCount = $derived(allItems.filter((i) => i.triageStatus === 'triaged').length);
-	const actedCount = $derived(allItems.filter((i) => i.triageStatus === 'acted_on').length);
+	let untriagedCount = $derived(allItems.filter((i) => i.triageStatus === 'untriaged').length);
+	let triagedCount = $derived(allItems.filter((i) => i.triageStatus === 'triaged').length);
+	let actedCount = $derived(allItems.filter((i) => i.triageStatus === 'acted_on').length);
 
 	// AC: @ui-data-freshness ac-1 — Only show loading on initial fetch (no cache)
-	const loading = $derived(mergedInboxQuery.isLoading);
+	let loading = $derived(mergedInboxQuery.isLoading);
 
 	// AC: @ui-data-freshness ac-7 — Surface error from query or write operations
-	const error = $derived(writeError || (mergedInboxQuery.error ? mergedInboxQuery.error.message : ''));
+	let error = $derived(writeError || (mergedInboxQuery.error ? mergedInboxQuery.error.message : ''));
 
 	// ── Filter URL management ──
 	function updateFilterParam(key: 'status' | 'tag' | 'age', value: string) {

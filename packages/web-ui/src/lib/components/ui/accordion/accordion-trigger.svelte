@@ -3,7 +3,7 @@
 	import ChevronDownIcon from "@lucide/svelte/icons/chevron-down";
 	import { cn, type WithoutChild } from "$lib/utils.js";
 
-	const {
+	let {
 		ref = $bindable(null),
 		class: className,
 		level = 3,

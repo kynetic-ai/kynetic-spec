@@ -3,7 +3,7 @@
 	import { Select as SelectPrimitive } from "bits-ui";
 	import { cn, type WithoutChildrenOrChild } from "$lib/utils.js";
 
-	const {
+	let {
 		ref = $bindable(null),
 		class: className,
 		...restProps

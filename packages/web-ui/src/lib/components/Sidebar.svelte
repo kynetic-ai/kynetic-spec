@@ -130,7 +130,7 @@
 	}));
 
 	// AC: @ui-app-shell ac-2 — Badge counts for actionable items
-	const showProjectSelector = $derived(hasMultipleProjects());
+	let showProjectSelector = $derived(hasMultipleProjects());
 
 	// Collapsed group state (all expanded by default)
 	let collapsedGroups = $state<Record<string, boolean>>({});

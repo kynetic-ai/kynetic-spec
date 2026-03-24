@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { createStreamingMarkdownController, type StreamingMarkdownController } from '$lib/utils/streaming-markdown';
 
-	const {
+	let {
 		content = '',
 		isStreaming = false,
 		class: className = ''
@@ -12,7 +12,7 @@
 		class?: string;
 	} = $props();
 
-	const containerEl: HTMLDivElement | undefined = $state();
+	let containerEl: HTMLDivElement | undefined = $state();
 	let controller: StreamingMarkdownController | null = null;
 
 	$effect(() => {

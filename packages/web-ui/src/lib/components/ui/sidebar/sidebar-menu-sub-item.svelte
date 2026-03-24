@@ -2,7 +2,7 @@
 	import { cn, type WithElementRef } from "$lib/utils.js";
 	import type { HTMLAttributes } from "svelte/elements";
 
-	const {
+	let {
 		ref = $bindable(null),
 		children,
 		class: className,

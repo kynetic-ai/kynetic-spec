@@ -12,7 +12,7 @@
 		events: EventEnvelopeSummary[];
 	}
 
-	const { events }: Props = $props();
+	let { events }: Props = $props();
 
 	function formatTimestamp(iso: string): string {
 		const date = new Date(iso);

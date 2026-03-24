@@ -5,7 +5,7 @@
 	import type { ComponentProps } from "svelte";
 	import { useSidebar } from "./context.svelte.js";
 
-	const {
+	let {
 		ref = $bindable(null),
 		class: className,
 		onclick,

@@ -3,7 +3,7 @@
 	import { Skeleton } from "$lib/components/ui/skeleton/index.js";
 	import type { HTMLAttributes } from "svelte/elements";
 
-	const {
+	let {
 		ref = $bindable(null),
 		class: className,
 		showIcon = false,

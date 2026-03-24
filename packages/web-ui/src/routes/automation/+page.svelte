@@ -75,13 +75,13 @@
 	}));
 
 	// --- Derived state ---
-	const dispatchStatus = $derived<AgentDispatchStatus | null>(agentStatusQuery.data ?? null);
-	const agentDefinitions = $derived<AgentDefinition[]>(agentDefsQuery.data?.items ?? []);
-	const hooks = $derived<HookSummary[]>(hooksQuery.data?.items ?? []);
-	const schedules = $derived<ScheduleSummary[]>(schedulesQuery.data?.items ?? []);
-	const events = $derived<EventEnvelopeSummary[]>(eventsQuery.data?.items ?? []);
+	let dispatchStatus = $derived<AgentDispatchStatus | null>(agentStatusQuery.data ?? null);
+	let agentDefinitions = $derived<AgentDefinition[]>(agentDefsQuery.data?.items ?? []);
+	let hooks = $derived<HookSummary[]>(hooksQuery.data?.items ?? []);
+	let schedules = $derived<ScheduleSummary[]>(schedulesQuery.data?.items ?? []);
+	let events = $derived<EventEnvelopeSummary[]>(eventsQuery.data?.items ?? []);
 
-	const loading = $derived(
+	let loading = $derived(
 		agentStatusQuery.isLoading ||
 		agentDefsQuery.isLoading ||
 		hooksQuery.isLoading ||

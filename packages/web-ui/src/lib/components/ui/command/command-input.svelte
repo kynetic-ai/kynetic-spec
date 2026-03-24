@@ -3,7 +3,7 @@
 	import SearchIcon from "@lucide/svelte/icons/search";
 	import { cn } from "$lib/utils.js";
 
-	const {
+	let {
 		ref = $bindable(null),
 		class: className,
 		value = $bindable(""),

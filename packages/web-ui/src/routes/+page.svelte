@@ -96,7 +96,7 @@
 	}));
 
 	// --- Derived state from queries ---
-	const counts = $derived.by(() => {
+	let counts = $derived.by(() => {
 		const tasks = tasksQuery.data?.items ?? [];
 		const newCounts: TaskCounts = {
 			ready: 0,
@@ -151,19 +151,19 @@
 		return newCounts;
 	});
 
-	const agentStatus = $derived<AgentDispatchStatus | null>(agentStatusQuery.data ?? null);
+	let agentStatus = $derived<AgentDispatchStatus | null>(agentStatusQuery.data ?? null);
 
-	const hasActiveWork = $derived(
+	let hasActiveWork = $derived(
 		agentStatus?.dispatch_enabled && (agentStatus?.active_invocations?.length ?? 0) > 0
 	);
 
 	// Buffered output state per agent session (same pattern as board)
-	const sessionStates = $state<Record<string, FleetSessionState>>({});
+	let sessionStates = $state<Record<string, FleetSessionState>>({});
 
-	const inboxUntriaged = $derived(inboxQuery.data?.total ?? 0);
-	const observationsUnresolved = $derived(observationsQuery.data?.total ?? 0);
+	let inboxUntriaged = $derived(inboxQuery.data?.total ?? 0);
+	let observationsUnresolved = $derived(observationsQuery.data?.total ?? 0);
 
-	const validationWarnings = $derived.by(() => {
+	let validationWarnings = $derived.by(() => {
 		const v = validationQuery.data;
 		if (!v) return 0;
 		return (
@@ -174,14 +174,14 @@
 		);
 	});
 
-	const blockedTasks = $derived(counts.blocked);
+	let blockedTasks = $derived(counts.blocked);
 
-	const totalAttention = $derived(
+	let totalAttention = $derived(
 		inboxUntriaged + observationsUnresolved + validationWarnings + blockedTasks
 	);
 
 	// AC: @ui-data-freshness ac-7 — Surface error with retry capability
-	const error = $derived.by(() => {
+	let error = $derived.by(() => {
 		if (tasksQuery.error) return tasksQuery.error.message;
 		if (inboxQuery.error) return inboxQuery.error.message;
 		if (observationsQuery.error) return observationsQuery.error.message;
@@ -189,7 +189,7 @@
 	});
 
 	// AC: @ui-data-freshness ac-1 — Only show loading skeleton on initial fetch (no cache)
-	const loading = $derived(
+	let loading = $derived(
 		tasksQuery.isLoading ||
 		inboxQuery.isLoading ||
 		observationsQuery.isLoading

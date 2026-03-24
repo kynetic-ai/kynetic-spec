@@ -12,7 +12,7 @@
 	import Activity from '@lucide/svelte/icons/activity';
 	import Terminal from '@lucide/svelte/icons/terminal';
 
-	const {
+	let {
 		status,
 		outputLines = {}
 	}: {
@@ -20,11 +20,11 @@
 		outputLines?: Record<string, string[]>;
 	} = $props();
 
-	const activeInvocations = $derived(status?.active_invocations ?? []);
-	const isVisible = $derived(status?.dispatch_enabled && activeInvocations.length > 0);
+	let activeInvocations = $derived(status?.active_invocations ?? []);
+	let isVisible = $derived(status?.dispatch_enabled && activeInvocations.length > 0);
 
 	// AC: @ui-task-board ac-4 — Resolve agent name from agent_definitions
-	const agentNameMap = $derived(
+	let agentNameMap = $derived(
 		Object.fromEntries(
 			(status?.agent_definitions ?? []).map((a) => [a.id, a.name])
 		)

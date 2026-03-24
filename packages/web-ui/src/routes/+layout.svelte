@@ -2,7 +2,6 @@
 	import { onMount } from 'svelte';
 
 	import { base } from '$app/paths';
-	// oxlint-disable-next-line import/no-unassigned-import -- CSS side-effect import required by Svelte
 	import '../app.css';
 	import { QueryClientProvider } from '@tanstack/svelte-query';
 	import { SidebarProvider, SidebarInset } from '$lib/components/ui/sidebar';
@@ -16,7 +15,7 @@
 	import { createQueryClientInstance, setQueryClient } from '$lib/query';
 	import { setupWsInvalidation } from '$lib/query/ws-invalidation.js';
 
-	const { children } = $props();
+	let { children } = $props();
 
 	// AC: @ui-data-freshness ac-1 — QueryClient provides caching and deduplication
 	// AC: @ui-data-freshness ac-2 — Request deduplication built into QueryClient
@@ -55,7 +54,7 @@
 	});
 
 	// SSR is disabled globally via +layout.ts — ready tracks appReady directly
-	const ready = $derived(appReady);
+	let ready = $derived(appReady);
 </script>
 
 <svelte:head>

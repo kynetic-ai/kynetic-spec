@@ -20,7 +20,6 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import X from '@lucide/svelte/icons/x';
 
-	/* oxlint-disable eslint/prefer-const -- Svelte 5 $props() destructuring requires `let` */
 	let {
 		open = $bindable(false),
 		agent,
@@ -30,7 +29,6 @@
 		agent: AgentDefinition;
 		onSaved?: (updated: AgentDefinition) => void;
 	} = $props();
-	/* oxlint-enable eslint/prefer-const */
 
 	// Form state derived from agent prop — reset when dialog opens
 	let name = $state('');

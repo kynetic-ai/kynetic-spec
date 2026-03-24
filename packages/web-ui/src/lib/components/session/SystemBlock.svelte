@@ -5,7 +5,7 @@
 	import type { SystemBlock as SystemBlockType } from './session-utils';
 	import { formatTime } from './session-utils';
 
-	const { block }: { block: SystemBlockType } = $props();
+	let { block }: { block: SystemBlockType } = $props();
 </script>
 
 <div class="flex items-center gap-2 py-1.5" data-testid="system-block">

@@ -12,7 +12,7 @@
 		onSelectFile: (path: string) => void;
 	}
 
-	const { files, selectedFile, onSelectFile }: Props = $props();
+	let { files, selectedFile, onSelectFile }: Props = $props();
 
 	function getStatusIcon(status: DiffFile['status']): string {
 		switch (status) {
@@ -41,8 +41,8 @@
 		return getFilePath(file);
 	}
 
-	const totalAdditions = $derived(files.reduce((sum, f) => sum + f.stats.additions, 0));
-	const totalDeletions = $derived(files.reduce((sum, f) => sum + f.stats.deletions, 0));
+	let totalAdditions = $derived(files.reduce((sum, f) => sum + f.stats.additions, 0));
+	let totalDeletions = $derived(files.reduce((sum, f) => sum + f.stats.deletions, 0));
 </script>
 
 <div class="border rounded-lg overflow-hidden" data-testid="diff-file-list">

@@ -47,7 +47,7 @@
 		onTaskUpdated?: (task: TaskDetail) => void;
 	}
 
-	const { task, loading, error, onTaskUpdated }: Props = $props();
+	let { task, loading, error, onTaskUpdated }: Props = $props();
 
 	let actionError = $state('');
 	let isSubmitting = $state(false);
@@ -210,15 +210,15 @@
 		}).format(new Date(dateStr));
 	}
 
-	const statusInfo = $derived(task ? getStatusClasses(task.status) : null);
-	const slug = $derived(task?.slugs?.[0] ?? task?._ulid?.slice(0, 8) ?? '');
-	const readOnly = $derived(isStaticMode());
+	let statusInfo = $derived(task ? getStatusClasses(task.status) : null);
+	let slug = $derived(task?.slugs?.[0] ?? task?._ulid?.slice(0, 8) ?? '');
+	let readOnly = $derived(isStaticMode());
 
 	// AC: @review-records-web-ui ac-7 — Split reviews into current (open/draft) and closed
-	const currentReviews = $derived(
+	let currentReviews = $derived(
 		linkedReviews.filter((r) => r.lifecycle_state === 'open' || r.lifecycle_state === 'draft')
 	);
-	const closedReviews = $derived(
+	let closedReviews = $derived(
 		linkedReviews.filter((r) => r.lifecycle_state === 'closed' || r.lifecycle_state === 'archived')
 	);
 

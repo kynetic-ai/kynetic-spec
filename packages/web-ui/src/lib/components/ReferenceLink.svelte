@@ -32,7 +32,7 @@
 		class?: string;
 	}
 
-	const {
+	let {
 		ref: rawRef,
 		type,
 		title = null,
@@ -42,9 +42,9 @@
 		class: className = ''
 	}: Props = $props();
 
-	const normalized = $derived(normalizeRef(rawRef));
-	const short = $derived(shortRef(rawRef));
-	const href = $derived(refHref(type, rawRef, base));
+	let normalized = $derived(normalizeRef(rawRef));
+	let short = $derived(shortRef(rawRef));
+	let href = $derived(refHref(type, rawRef, base));
 
 	function handleClick(e: MouseEvent) {
 		if (stopPropagation) {

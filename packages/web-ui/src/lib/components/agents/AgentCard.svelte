@@ -17,7 +17,7 @@
 		onEdit?: () => void;
 	}
 
-	const { agent, activeCount, completedCount, onEdit }: Props = $props();
+	let { agent, activeCount, completedCount, onEdit }: Props = $props();
 </script>
 
 <!-- AC: @ui-agent-dispatch ac-1 -->

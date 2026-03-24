@@ -2,7 +2,7 @@
 	import { Accordion as AccordionPrimitive } from "bits-ui";
 	import { cn } from "$lib/utils.js";
 
-	const {
+	let {
 		ref = $bindable(null),
 		class: className,
 		...restProps

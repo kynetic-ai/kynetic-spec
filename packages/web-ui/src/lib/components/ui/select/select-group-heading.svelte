@@ -3,7 +3,7 @@
 	import { cn } from "$lib/utils.js";
 	import type { ComponentProps } from "svelte";
 
-	const {
+	let {
 		ref = $bindable(null),
 		class: className,
 		children,

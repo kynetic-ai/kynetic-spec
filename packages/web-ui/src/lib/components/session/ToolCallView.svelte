@@ -17,7 +17,7 @@
 	import Loader from '@lucide/svelte/icons/loader';
 	import RefreshCw from '@lucide/svelte/icons/refresh-cw';
 
-	const {
+	let {
 		block,
 		sessionId,
 	}: {
@@ -25,9 +25,9 @@
 		sessionId: string;
 	} = $props();
 
-	const expanded = $state(false);
+	let expanded = $state(false);
 
-	const borderColor = $derived(
+	let borderColor = $derived(
 		block.status === 'completed'
 			? 'border-l-status-completed'
 			: block.status === 'failed'
@@ -35,14 +35,14 @@
 				: 'border-l-status-pending-review'
 	);
 
-	const icon = $derived(getToolIcon(block.toolName));
-	const preview = $derived(getToolInputPreview(block.toolName, block.input));
+	let icon = $derived(getToolIcon(block.toolName));
+	let preview = $derived(getToolInputPreview(block.toolName, block.input));
 
 	// AC: @ws-session-event-streaming ac-tool-output-on-demand — Fetch output on demand when expanded
 	// Use resultSeq (the tool result event) when available; fall back to seq (tool call start event).
 	// resultSeq points to the event that contains the actual output.
-	const outputSeq = $derived(block.resultSeq ?? block.seq);
-	const shouldFetchOutput = $derived(expanded && outputSeq >= 0 && block.output === undefined);
+	let outputSeq = $derived(block.resultSeq ?? block.seq);
+	let shouldFetchOutput = $derived(expanded && outputSeq >= 0 && block.output === undefined);
 
 	const outputQuery = createQuery(() => ({
 		queryKey: queryKeys.sessions.eventDetail(sessionId, outputSeq),
@@ -52,7 +52,7 @@
 	}));
 
 	// Extract output from the fetched event detail
-	const fetchedOutput = $derived.by(() => {
+	let fetchedOutput = $derived.by(() => {
 		if (!outputQuery.data) return undefined;
 		const data = outputQuery.data.data as Record<string, unknown> | null;
 		if (!data) return undefined;
@@ -63,7 +63,7 @@
 	});
 
 	// Use inline output if present, otherwise fetched output
-	const resolvedOutput = $derived(block.output ?? fetchedOutput);
+	let resolvedOutput = $derived(block.output ?? fetchedOutput);
 
 	function formatOutput(output: unknown): string {
 		if (typeof output === 'string') return output;
@@ -83,12 +83,12 @@
 		}
 	}
 
-	const outputText = $derived(resolvedOutput !== undefined ? formatOutput(resolvedOutput) : '');
-	const truncatedOutput = $derived(safeTruncateAnsi(outputText, 1000));
-	const isOutputTruncated = $derived(outputText.length > 1000);
-	const showFullOutput = $state(false);
-	const hasAnsi = $derived(containsAnsi(outputText));
-	const renderedOutput = $derived(
+	let outputText = $derived(resolvedOutput !== undefined ? formatOutput(resolvedOutput) : '');
+	let truncatedOutput = $derived(safeTruncateAnsi(outputText, 1000));
+	let isOutputTruncated = $derived(outputText.length > 1000);
+	let showFullOutput = $state(false);
+	let hasAnsi = $derived(containsAnsi(outputText));
+	let renderedOutput = $derived(
 		hasAnsi ? ansiToHtml(showFullOutput ? outputText : truncatedOutput) : ''
 	);
 </script>

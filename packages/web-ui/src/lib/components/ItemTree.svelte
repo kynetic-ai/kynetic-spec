@@ -5,7 +5,6 @@
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
 	import { createEventDispatcher } from 'svelte';
 
-	// oxlint-disable-next-line eslint/no-unassigned-vars -- Svelte component prop assigned by parent
 	export let items: ItemSummary[];
 
 	const dispatch = createEventDispatcher<{
@@ -56,8 +55,7 @@
 		} else {
 			expandedNodes.add(ulid);
 		}
-		// Trigger Svelte reactivity
-		// oxlint-disable-next-line eslint/no-self-assign -- Svelte reactive assignment pattern
+		// Trigger reactivity
 		expandedNodes = expandedNodes;
 	}
 

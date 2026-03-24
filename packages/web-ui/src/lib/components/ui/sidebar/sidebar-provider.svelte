@@ -10,7 +10,6 @@
 	} from "./constants.js";
 	import { setSidebar } from "./context.svelte.js";
 
-	/* oxlint-disable eslint/prefer-const -- Svelte 5 $props() destructuring requires `let` */
 	let {
 		ref = $bindable(null),
 		open = $bindable(true),
@@ -23,7 +22,6 @@
 		open?: boolean;
 		onOpenChange?: (open: boolean) => void;
 	} = $props();
-	/* oxlint-enable eslint/prefer-const */
 
 	const sidebar = setSidebar({
 		open: () => open,
