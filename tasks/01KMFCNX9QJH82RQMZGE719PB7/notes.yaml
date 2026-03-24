@@ -1,1 +1,9 @@
-notes: []
+notes:
+  - _ulid: 01KMGW2PBJNAQRYHGKG0ZDT91B
+    content: Converted all 25 fs.readFile calls to readTestOutput in tests/session-create.test.ts. All
+      reads were of test-generated output (session.yaml, budget.json, env files, config.toml,
+      settings.local.json). Retained fs import for mkdir/writeFile/stat/access used in test setup.
+      All 70 tests pass, 0 oxlint hits.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-24T21:30:12.722Z
