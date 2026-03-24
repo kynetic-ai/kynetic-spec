@@ -22520,7 +22520,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-24T22:39:14.990Z
+      updated_at: 2026-03-24T22:39:24.441Z
     integration:
       status: merged
       detail: integration:merged
@@ -22536,18 +22536,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-24T22:29:02.342Z
-      last_reconciled_at: 2026-03-24T22:39:21.772Z
+      last_reconciled_at: 2026-03-24T22:39:24.441Z
       created_at: 2026-03-24T22:19:40.114Z
-      updated_at: 2026-03-24T22:39:21.772Z
+      updated_at: 2026-03-24T22:39:24.441Z
     workspace_id: dispatch-workspace-01KMFCP24R2GG8J8DYY4MR1RV7
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 03adf7c2e9523d50ad151e7cf75d8f066a5d4a26
-        last_seen_at: 2026-03-24T22:28:54.793Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-readtestoutput-agent-dispatch-engine-01kmfcp2-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-readtestoutput-agent-dispatch-engine/01kmfcp2
