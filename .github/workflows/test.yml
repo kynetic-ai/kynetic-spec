@@ -14,7 +14,8 @@ on:
       - 'package-lock.json'
       - 'tsconfig.json'
       - 'vitest.config.ts'
-      - 'biome.json'
+      - '.oxlintrc.json'
+      - '.oxfmtrc.json'
       - '.github/workflows/test.yml'
   push:
     branches:
