@@ -7899,6 +7899,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-24T21:40:23.611Z
+  - _ulid: 01KMGXBF4X2N4FCWAXZ4P62E5N
+    type: friction
+    content: "Dispatched reviewer in detached worktree cannot git checkout dev for merge — dev is locked
+      by the main worktree. Workaround: git -C <main-worktree-path> merge <task-branch>. Every
+      dispatched reviewer hits this. Could be addressed by: (1) documenting the git -C pattern in
+      the merge skill, (2) having dispatch prepare merge capability in the main worktree, or (3)
+      creating a temporary local branch tracking dev in the review worktree."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-24T21:52:28.830Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
