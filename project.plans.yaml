@@ -27452,6 +27452,9 @@ plans:
           - tests/package-distribution.test.ts (171 lines, 13 tests)
           - tests/web-ui-design-system.test.ts (255 lines, 18 tests)
           - packages/web-ui/tests/prose-typography.test.ts (68 lines, 2 tests)
+          - tests/lint/no-static-analysis.test.ts — the lint test itself is a static analysis test
+            (reads test files, asserts on string patterns). It has known evasion gaps and is superseded
+            by the skill-level guidance in task-work and review skills (PR #904).
 
           Files with mixed behavioral/static tests — remove only the static analysis tests:
           - tests/daemon-executable.test.ts: remove 2 of 3 tests (keep "should compile standalone
@@ -27643,4 +27646,8 @@ plans:
     source_path: /home/chapel/Projects/kynetic-spec/plans/delete-static-analysis-tests.md
     created_at: 2026-03-24T05:02:05.433Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KMF3M4AQNA2SDQ25V22Y7XKQ
+        content: Added lint test to deletion list
+        author: "@claude"
+        created_at: 2026-03-24T05:03:35.255Z
