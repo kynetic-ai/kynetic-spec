@@ -50407,6 +50407,18 @@ reviews:
         required: true
         created_at: 2026-03-24T22:17:34.794Z
         completed_at: 2026-03-24T22:17:34.794Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: All 6 tasks have what/why/how sections, reference specific files and patterns, list
+          covered ACs explicitly, and could be executed by an agent without chat history. Design
+          task is clearly scoped as design-only (no implementation code). Implementation tasks
+          reference concrete source files.
+        name: Task standalone executability
+        required: true
+        created_at: 2026-03-24T22:17:38.684Z
+        completed_at: 2026-03-24T22:17:38.684Z
     events:
       - _ulid: 01KMGYQTS9JPQGA49J953K0HJM
         actor: "@claude"
@@ -50449,6 +50461,13 @@ reviews:
           status: pass
           name: AC atomicity
         timestamp: 2026-03-24T22:17:35.202Z
+      - _ulid: 01KMGYSJ0NXFA31YA74G4DTBWS
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Task standalone executability
+        timestamp: 2026-03-24T22:17:39.093Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -50492,5 +50511,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-24T22:16:42.537Z
-    updated_at: 2026-03-24T22:17:34.794Z
+    updated_at: 2026-03-24T22:17:38.684Z
     notes: []
