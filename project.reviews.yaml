@@ -48716,7 +48716,20 @@ reviews:
     slugs: []
     title: Review task-custom-no-source-scanning-rule
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Verified: web-ui-tanstack-query.test.ts produces 30+ violations,
+          web-ui-design-system.test.ts produces violations for CSS_ASSETS_DIR reads,
+          cli-version.test.ts flagged for package.json read. Known source-scanning tests correctly
+          caught."
+        name: rule-flags-known-offenders
+        required: true
+        runner: manual
+        created_at: 2026-03-24T07:48:12.209Z
+        completed_at: 2026-03-24T07:48:12.209Z
     events:
       - _ulid: 01KMFD0M2X9QBNPZ6R7RQ4Y0F8
         actor: "@claude"
@@ -48738,6 +48751,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMFD18PFH0KY6X6ANXRGVYXJ
         timestamp: 2026-03-24T07:48:03.250Z
+      - _ulid: 01KMFD1J4KP6E9XYSXRF63PVJZ
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: rule-flags-known-offenders
+        timestamp: 2026-03-24T07:48:12.564Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -48769,5 +48789,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-24T07:47:41.790Z
-    updated_at: 2026-03-24T07:48:02.895Z
+    updated_at: 2026-03-24T07:48:12.209Z
     notes: []
