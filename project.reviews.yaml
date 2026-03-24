@@ -48375,6 +48375,19 @@ reviews:
         runner: manual
         created_at: 2026-03-24T00:21:31.483Z
         completed_at: 2026-03-24T00:21:31.483Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 02ef0686e50d
+          head_commit: 4043b0529691
+        evidence: ac-6 annotations present on dashboard, agents, automation, settings pages. ac-9 covered by
+          existing SSR tests. Test assertions updated to match new pattern (check apiSrc for
+          isStaticMode instead of page-level checks).
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-24T00:21:34.965Z
+        completed_at: 2026-03-24T00:21:34.965Z
     events:
       - _ulid: 01KMEK1HEVPDVDGJP906PJT6Z2
         actor: "@claude"
@@ -48417,6 +48430,13 @@ reviews:
           status: pass
           name: type-safety
         timestamp: 2026-03-24T00:21:31.865Z
+      - _ulid: 01KMEKFS00P868K3MTT68ZAXT1
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-24T00:21:35.360Z
     examined_commit: 4043b05296911b0a7bcbb1d6547f32bddd1412ad
     external_links: []
     lifecycle_state: open
@@ -48452,5 +48472,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-24T00:13:48.891Z
-    updated_at: 2026-03-24T00:21:31.483Z
+    updated_at: 2026-03-24T00:21:34.965Z
     notes: []
