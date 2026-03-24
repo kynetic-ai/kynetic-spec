@@ -49036,6 +49036,24 @@ reviews:
         runner: vitest
         created_at: 2026-03-24T20:49:29.485Z
         completed_at: 2026-03-24T20:49:29.485Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Reviewed full diff (2 test files, 8 skill template files). Test changes: (1)
+          agent-dispatch-engine worker guardrails test — added workspace provisioning/bootstrap
+          mocks matching existing reviewer test pattern, replaced 100ms inline polling with
+          waitForMockCall helper (2s timeout). (2) canonical-task-workspace-contract cleanup
+          eligibility test — mocked reconcileDispatchWorkspaceRegistry and
+          reconcileDispatchWorkspaceArtifacts to bypass heavy engine.start() I/O while preserving
+          full exercise of handleStateChange → reconcileDispatchWorkspaceLifecycle →
+          readWorkspaceRecord chain. Skill template files are unchanged from merge base (divergence
+          is visual noise from parallel oxlint commit on dev)."
+        name: code-review
+        required: true
+        runner: manual
+        created_at: 2026-03-24T20:49:41.070Z
+        completed_at: 2026-03-24T20:49:41.070Z
     events:
       - _ulid: 01KMGSQ2H8SFGJ9CR10X8DC4R9
         actor: "@claude"
@@ -49057,6 +49075,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-24T20:49:29.876Z
+      - _ulid: 01KMGSRG3JDYJMKT2N3YTJ7SJH
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: code-review
+        timestamp: 2026-03-24T20:49:41.490Z
     examined_commit: f99e417cb5641fddbfc863130de02dc550f0cc5b
     external_links: []
     lifecycle_state: open
@@ -49069,5 +49094,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-24T20:48:54.824Z
-    updated_at: 2026-03-24T20:49:29.485Z
+    updated_at: 2026-03-24T20:49:41.070Z
     notes: []
