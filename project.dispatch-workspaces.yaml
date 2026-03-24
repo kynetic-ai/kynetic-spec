@@ -21185,34 +21185,42 @@ workspaces:
     canonical_branch: dispatch/task/task-readtestoutput-enhanced-setup/01kmfcnv
     canonical_branch_head: 1c7893b3a190744d649091f4a215ef8455776ee6
     cleanup:
-      status: not_scheduled
-      detail: null
-      eligible: false
-      reason: null
-      updated_at: 2026-03-24T21:24:43.346Z
+      status: scheduled
+      detail: integrated-into-base-branch
+      eligible: true
+      reason: integrated-into-base-branch
+      updated_at: 2026-03-24T21:27:04.855Z
     health:
-      status: healthy
-      issues: []
-      summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-24T21:24:45.351Z
+      status: invalid
+      issues:
+        - code: missing_canonical_branch
+          message: Canonical branch "dispatch/task/task-readtestoutput-enhanced-setup/01kmfcnv" is missing.
+          suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
+        - code: missing_worker_worktree
+          message: Worker worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-readtestoutput-enhanced-setup-01kmfcnv"
+            is missing or no longer registered.
+          suggestion: Re-provision the worker worktree from the recorded canonical branch.
+      summary: Workspace registry record is invalid because required git state is missing.
+      updated_at: 2026-03-24T21:27:04.855Z
     integration:
-      status: pending
-      detail: null
-      outcome: manual_merge
+      status: merged
+      detail: integration:merged
+      outcome: merged
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 9ae71df9a2921ca858f772c5b02f4a5dd864430a
-      updated_at: 2026-03-24T21:24:43.346Z
-    lifecycle_state: ready
+      updated_at: 2026-03-24T21:27:04.855Z
+    lifecycle_state: stale
     resolved_base_branch: dev
     task_ref: "@01KMFCNVX2MG7X5W3ZRY4G7VHV"
     task_slug: task-readtestoutput-enhanced-setup
     timestamps:
       closed_at: null
       last_active_at: 2026-03-24T21:17:33.756Z
-      last_reconciled_at: 2026-03-24T21:24:45.351Z
+      last_reconciled_at: 2026-03-24T21:27:04.855Z
       created_at: 2026-03-24T21:08:04.703Z
-      updated_at: 2026-03-24T21:24:45.351Z
+      updated_at: 2026-03-24T21:27:04.855Z
     workspace_id: dispatch-workspace-01KMFCNVX2MG7X5W3ZRY4G7VHV
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
