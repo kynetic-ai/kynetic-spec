@@ -22196,7 +22196,7 @@
     - task-readtestoutput-skill-cli
   title: Convert skill-cli.test.ts to readTestOutput (17 calls)
   type: task
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 4
@@ -22210,6 +22210,7 @@
   created_at: 2026-03-24T07:41:52.885Z
   started_at: 2026-03-24T21:50:29.022Z
   submitted_at: 2026-03-24T21:57:33.648Z
+  completed_at: 2026-03-24T22:03:43.564Z
   automation: eligible
 - _ulid: 01KMFCP01S3NZTH4GZNEEVH8RH
   slugs:
