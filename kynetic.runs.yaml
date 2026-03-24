@@ -14411,7 +14411,7 @@ runs:
     completed_at: 2026-03-24T21:41:57.315Z
   - _ulid: 01KMGX09HJRMV8K4H496YCT3J2
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -14424,7 +14424,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-24T21:46:37.381Z
-        completed_at: 2026-03-24T21:46:37.381Z
+        completed_at: 2026-03-24T21:47:23.257Z
+        notes: "No high-confidence friction or success patterns to report. This was a clean mechanical
+          refactoring task. The task description was precise, the helper was available, tests passed
+          on first run. The only minor observation: the task title says '21 calls' but only 18
+          needed converting (3 are project source reads). However, the task description correctly
+          specifies 'Only convert reads of test-generated output' so the instructions were clear.
+          This is not systemic friction — just a minor count mismatch in the title that doesn't
+          cause problems since the description is authoritative."
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-24T21:47:23.257Z
+        completed_at: 2026-03-24T21:47:23.257Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-24T21:46:22.642Z
