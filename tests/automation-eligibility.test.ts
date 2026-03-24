@@ -10,6 +10,7 @@ import {
   kspecJson,
   setupTempFixtures,
   cleanupTempDir,
+  readTestOutput,
 } from "./helpers/cli";
 
 describe("Task Automation Eligibility", () => {
@@ -236,7 +237,7 @@ describe("Task Automation Eligibility", () => {
 
       // Manually set status to completed via YAML patch
       const tasksFile = path.join(tempDir, "project.tasks.yaml");
-      const content = await fs.readFile(tasksFile, "utf-8");
+      const content = await readTestOutput(tasksFile);
       const updatedContent = content.replace(
         new RegExp(`(_ulid: ${task._ulid}[\\s\\S]*?status:) pending`),
         "$1 completed",
@@ -256,7 +257,7 @@ describe("Task Automation Eligibility", () => {
 
       // Manually set status to cancelled via YAML patch
       const tasksFile = path.join(tempDir, "project.tasks.yaml");
-      const content = await fs.readFile(tasksFile, "utf-8");
+      const content = await readTestOutput(tasksFile);
       const updatedContent = content.replace(
         new RegExp(`(_ulid: ${task._ulid}[\\s\\S]*?status:) pending`),
         "$1 cancelled",
@@ -301,7 +302,7 @@ describe("Task Automation Eligibility", () => {
 
       // Manually patch to completed status with unresolvable spec_ref
       const tasksFile = path.join(tempDir, "project.tasks.yaml");
-      let content = await fs.readFile(tasksFile, "utf-8");
+      let content = await readTestOutput(tasksFile);
       content = content.replace(
         new RegExp(`(_ulid: ${task._ulid}[\\s\\S]*?status:) pending`),
         "$1 completed",
@@ -328,7 +329,7 @@ describe("Task Automation Eligibility", () => {
 
       // Manually patch to cancelled status with unresolvable spec_ref
       const tasksFile = path.join(tempDir, "project.tasks.yaml");
-      let content = await fs.readFile(tasksFile, "utf-8");
+      let content = await readTestOutput(tasksFile);
       content = content.replace(
         new RegExp(`(_ulid: ${task._ulid}[\\s\\S]*?status:) pending`),
         "$1 cancelled",
@@ -354,7 +355,7 @@ describe("Task Automation Eligibility", () => {
       // Manually patch the task file to have an unresolvable spec_ref
       // This simulates a spec being deleted after the task was created
       const tasksFile = path.join(tempDir, "project.tasks.yaml");
-      const content = await fs.readFile(tasksFile, "utf-8");
+      const content = await readTestOutput(tasksFile);
       // Replace the valid spec_ref with an invalid one
       const updatedContent = content.replace(
         /spec_ref: "@test-feature"/,

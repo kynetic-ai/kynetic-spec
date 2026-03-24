@@ -12,6 +12,7 @@ import {
   setupTempFixtures,
   cleanupTempDir,
   initGitRepo,
+  readTestOutput,
 } from "./helpers/cli";
 
 describe("Trait Display - Item Get", () => {
@@ -75,7 +76,7 @@ features:
     await fs.writeFile(path.join(tempDir, "modules/specs.yaml"), specModule);
 
     // Update manifest to include new modules
-    const manifest = await fs.readFile(path.join(tempDir, "kynetic.yaml"), "utf-8");
+    const manifest = await readTestOutput(path.join(tempDir, "kynetic.yaml"));
     const updatedManifest = manifest.replace(
       "includes:\n  - modules/core.yaml",
       "includes:\n  - modules/core.yaml\n  - modules/traits.yaml\n  - modules/specs.yaml",
@@ -135,7 +136,7 @@ features:
   // AC: @trait-display ac-5
   it("should show each trait AC in separate labeled section for multiple traits", async () => {
     // Add second trait
-    const traitModule = await fs.readFile(path.join(tempDir, "modules/traits.yaml"), "utf-8");
+    const traitModule = await readTestOutput(path.join(tempDir, "modules/traits.yaml"));
 
     const updatedTraits = `${traitModule}
 ---
@@ -158,7 +159,7 @@ acceptance_criteria:
     await fs.writeFile(path.join(tempDir, "modules/traits.yaml"), updatedTraits);
 
     // Update spec to implement both traits
-    const specModule = await fs.readFile(path.join(tempDir, "modules/specs.yaml"), "utf-8");
+    const specModule = await readTestOutput(path.join(tempDir, "modules/specs.yaml"));
 
     const updatedSpec = specModule.replace(
       'traits:\n      - "@trait-json-output"',
@@ -235,7 +236,7 @@ features:
     await fs.writeFile(path.join(tempDir, "modules/specs.yaml"), specModule);
 
     // Update manifest to include new modules
-    const manifest = await fs.readFile(path.join(tempDir, "kynetic.yaml"), "utf-8");
+    const manifest = await readTestOutput(path.join(tempDir, "kynetic.yaml"));
     const updatedManifest = manifest.replace(
       "includes:\n  - modules/core.yaml",
       "includes:\n  - modules/core.yaml\n  - modules/traits.yaml\n  - modules/specs.yaml",

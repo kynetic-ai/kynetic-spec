@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { execSync } from "node:child_process";
+import { readTestOutput } from "./helpers/cli.js";
 import {
   initializeShadow,
   SHADOW_WORKTREE_DIR,
@@ -71,7 +72,7 @@ describe("Init/Setup Sessions Directory", () => {
       const result = await ensureSessionsGitignore(testDir);
 
       expect(result).toBe(true);
-      const content = await fs.readFile(path.join(testDir, ".gitignore"), "utf-8");
+      const content = await readTestOutput(path.join(testDir, ".gitignore"));
       expect(content).toContain(".kspec-sessions/");
     });
 
@@ -86,7 +87,7 @@ describe("Init/Setup Sessions Directory", () => {
       const result2 = await ensureSessionsGitignore(testDir);
       expect(result2).toBe(false);
 
-      const content = await fs.readFile(path.join(testDir, ".gitignore"), "utf-8");
+      const content = await readTestOutput(path.join(testDir, ".gitignore"));
       const matches = content.split("\n").filter((l) => l.trim() === ".kspec-sessions/");
       expect(matches).toHaveLength(1);
     });
@@ -106,7 +107,7 @@ describe("Init/Setup Sessions Directory", () => {
       const result = await ensureSessionsGitignore(testDir);
 
       expect(result).toBe(true);
-      const content = await fs.readFile(path.join(testDir, ".gitignore"), "utf-8");
+      const content = await readTestOutput(path.join(testDir, ".gitignore"));
       expect(content).toContain(".kspec-sessions/");
     });
 
@@ -131,7 +132,7 @@ describe("Init/Setup Sessions Directory", () => {
       const result = await ensurePlansGitignore(testDir);
 
       expect(result).toBe(true);
-      const content = await fs.readFile(path.join(testDir, ".gitignore"), "utf-8");
+      const content = await readTestOutput(path.join(testDir, ".gitignore"));
       expect(content).toContain(`${TRANSIENT_PLANS_DIR}/`);
     });
 
@@ -145,7 +146,7 @@ describe("Init/Setup Sessions Directory", () => {
       const result2 = await ensurePlansGitignore(testDir);
       expect(result2).toBe(false);
 
-      const content = await fs.readFile(path.join(testDir, ".gitignore"), "utf-8");
+      const content = await readTestOutput(path.join(testDir, ".gitignore"));
       const matches = content.split("\n").filter((l) => l.trim() === `${TRANSIENT_PLANS_DIR}/`);
       expect(matches).toHaveLength(1);
     });
@@ -213,7 +214,7 @@ describe("Init/Setup Sessions Directory", () => {
       const result = await ensureShadowSessionsGitignore(testDir);
 
       expect(result).toBe(true);
-      const content = await fs.readFile(path.join(kspecDir, ".gitignore"), "utf-8");
+      const content = await readTestOutput(path.join(kspecDir, ".gitignore"));
       expect(content).toContain("sessions/");
       expect(content).toContain("artifacts/");
     });
@@ -286,7 +287,7 @@ describe("Init/Setup Sessions Directory", () => {
 
         await initializeShadow(testDir, { projectName: "Test Project" });
 
-        const content = await fs.readFile(path.join(testDir, ".gitignore"), "utf-8");
+        const content = await readTestOutput(path.join(testDir, ".gitignore"));
         expect(content).toContain(".kspec-sessions/");
         expect(content).toContain("plans/");
         expect(content).toContain(".kspec/");
@@ -300,9 +301,8 @@ describe("Init/Setup Sessions Directory", () => {
 
       await initializeShadow(testDir, { projectName: "Test Project" });
 
-      const shadowGitignore = await fs.readFile(
+      const shadowGitignore = await readTestOutput(
         path.join(testDir, SHADOW_WORKTREE_DIR, ".gitignore"),
-        "utf-8",
       );
       expect(shadowGitignore).toContain("sessions/");
       expect(shadowGitignore).toContain("artifacts/");

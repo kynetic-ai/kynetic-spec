@@ -7,14 +7,14 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { execSync } from "node:child_process";
-import { kspec, createTempDir, cleanupTempDir, initGitRepo } from "./helpers/cli.js";
+import { kspec, createTempDir, cleanupTempDir, initGitRepo, readTestOutput } from "./helpers/cli.js";
 
 /**
  * Helper: Set up a temp directory with git, kspec init, and a skill for rendering.
  */
 async function setupKspecProject(tempDir: string): Promise<void> {
   initGitRepo(tempDir);
-  await fs.writeFile(path.join(tempDir, "README.md"), "# Test", "utf-8");
+  await fs.writeFile(path.join(tempDir, "README.md"), "# Test");
   execSync('git add README.md && git commit -m "Initial"', {
     cwd: tempDir,
     stdio: "pipe",
@@ -54,7 +54,7 @@ describe("Setup Pipeline Unification", () => {
 
       // Read the setup-generated file
       const agentsMdPath = path.join(tempDir, "kspec-agents.md");
-      const setupContent = await fs.readFile(agentsMdPath, "utf-8");
+      const setupContent = await readTestOutput(agentsMdPath);
 
       // Delete and regenerate with agents generate to compare
       await fs.unlink(agentsMdPath);
@@ -63,7 +63,7 @@ describe("Setup Pipeline Unification", () => {
       });
       expect(agentsResult.exitCode).toBe(0);
 
-      const agentsContent = await fs.readFile(agentsMdPath, "utf-8");
+      const agentsContent = await readTestOutput(agentsMdPath);
 
       // Both should produce files with the same structural elements
       // Timestamps differ, so compare structure not exact content
@@ -88,7 +88,7 @@ describe("Setup Pipeline Unification", () => {
 
       // Verify hash file exists
       const hashPath = path.join(tempDir, ".kspec", ".kspec-agents-hash");
-      const hashContent = await fs.readFile(hashPath, "utf-8");
+      const hashContent = await readTestOutput(hashPath);
       const hashData = JSON.parse(hashContent);
       expect(hashData).toHaveProperty("metaHash");
       expect(hashData).toHaveProperty("generatedAt");
@@ -161,7 +161,7 @@ describe("Setup Pipeline Unification", () => {
         for (const dir of skillDirs) {
           const skillMd = path.join(skillsDir, dir.name, "SKILL.md");
           try {
-            const content = await fs.readFile(skillMd, "utf-8");
+            const content = await readTestOutput(skillMd);
             expect(content).toContain("<!-- kspec-managed -->");
           } catch {
             // Some skill directories might not have SKILL.md
@@ -261,7 +261,7 @@ describe("Setup Pipeline Unification", () => {
       const errorDir = await createTempDir("kspec-debug-error-");
       try {
         initGitRepo(errorDir);
-        await fs.writeFile(path.join(errorDir, "README.md"), "# Test", "utf-8");
+        await fs.writeFile(path.join(errorDir, "README.md"), "# Test");
         execSync('git add README.md && git commit -m "Initial"', {
           cwd: errorDir,
           stdio: "pipe",
@@ -310,7 +310,7 @@ describe("Setup Pipeline Unification", () => {
         // Set up both directories
         for (const dir of [initDir, setupDir]) {
           initGitRepo(dir);
-          await fs.writeFile(path.join(dir, "README.md"), "# Test", "utf-8");
+          await fs.writeFile(path.join(dir, "README.md"), "# Test");
           execSync('git add README.md && git commit -m "Initial"', {
             cwd: dir,
             stdio: "pipe",
@@ -338,8 +338,8 @@ describe("Setup Pipeline Unification", () => {
         const initAgentsMd = path.join(initDir, "kspec-agents.md");
         const setupAgentsMd = path.join(setupDir, "kspec-agents.md");
 
-        const initContent = await fs.readFile(initAgentsMd, "utf-8");
-        const setupContent = await fs.readFile(setupAgentsMd, "utf-8");
+        const initContent = await readTestOutput(initAgentsMd);
+        const setupContent = await readTestOutput(setupAgentsMd);
 
         // Both should have the same structure (timestamps will differ)
         expect(initContent).toContain("# kspec Agent Instructions");
@@ -351,8 +351,8 @@ describe("Setup Pipeline Unification", () => {
         const initHooksConfig = path.join(initDir, ".claude", "settings.json");
         const setupHooksConfig = path.join(setupDir, ".claude", "settings.json");
 
-        const initHooks = JSON.parse(await fs.readFile(initHooksConfig, "utf-8"));
-        const setupHooks = JSON.parse(await fs.readFile(setupHooksConfig, "utf-8"));
+        const initHooks = JSON.parse(await readTestOutput(initHooksConfig));
+        const setupHooks = JSON.parse(await readTestOutput(setupHooksConfig));
 
         // Both should have the same hook types
         expect(Object.keys(initHooks.hooks || {}).toSorted()).toEqual(
