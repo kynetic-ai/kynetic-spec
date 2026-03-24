@@ -49629,6 +49629,16 @@ reviews:
         runner: vitest
         created_at: 2026-03-24T21:38:25.755Z
         completed_at: 2026-03-24T21:38:25.755Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 0 warnings and 0 errors on tests/session-create.test.ts
+        name: oxlint
+        required: true
+        runner: oxlint
+        created_at: 2026-03-24T21:38:29.554Z
+        completed_at: 2026-03-24T21:38:29.554Z
     events:
       - _ulid: 01KMGW7PZHTGG8ZDVQGXZ6RAY0
         actor: "@claude"
@@ -49650,6 +49660,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-24T21:38:26.121Z
+      - _ulid: 01KMGWHVWKY34CYJPEGMPW5Z1C
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: oxlint
+        timestamp: 2026-03-24T21:38:29.907Z
     examined_commit: c1f48a0e9e1aa25c67c821f83a4db1360cb91646
     external_links: []
     lifecycle_state: open
@@ -49662,5 +49679,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-24T21:32:57.201Z
-    updated_at: 2026-03-24T21:38:25.755Z
+    updated_at: 2026-03-24T21:38:29.554Z
     notes: []
