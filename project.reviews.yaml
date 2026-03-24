@@ -48936,6 +48936,17 @@ reviews:
         runner: grep
         created_at: 2026-03-24T20:25:36.729Z
         completed_at: 2026-03-24T20:25:36.729Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Pre-existing warnings only (uncovered ACs, test fixture annotations). No new warnings
+          introduced by this change.
+        name: kspec-validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-24T20:25:40.400Z
+        completed_at: 2026-03-24T20:25:40.400Z
     events:
       - _ulid: 01KMGR0M5VDHCD3A0Z1Z5C2T6F
         actor: "@claude"
@@ -48964,6 +48975,13 @@ reviews:
           status: pass
           name: stale-reference-sweep
         timestamp: 2026-03-24T20:25:37.121Z
+      - _ulid: 01KMGRCH5Y5BZTXJSSG7542S1E
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec-validate
+        timestamp: 2026-03-24T20:25:40.798Z
     examined_commit: bd0c54c6c9d6aa2f0df42d83cd246ee7cb4d04eb
     external_links: []
     lifecycle_state: open
@@ -48976,5 +48994,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-24T20:19:10.652Z
-    updated_at: 2026-03-24T20:25:36.729Z
+    updated_at: 2026-03-24T20:25:40.400Z
     notes: []
