@@ -48925,6 +48925,17 @@ reviews:
         runner: vitest
         created_at: 2026-03-24T20:25:32.937Z
         completed_at: 2026-03-24T20:25:32.937Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Zero remaining 'eslint' or 'Biome' references in any .md files across the entire
+          repository.
+        name: stale-reference-sweep
+        required: true
+        runner: grep
+        created_at: 2026-03-24T20:25:36.729Z
+        completed_at: 2026-03-24T20:25:36.729Z
     events:
       - _ulid: 01KMGR0M5VDHCD3A0Z1Z5C2T6F
         actor: "@claude"
@@ -48946,6 +48957,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-24T20:25:33.315Z
+      - _ulid: 01KMGRCDK1ZRC270BV7DTTKWJR
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: stale-reference-sweep
+        timestamp: 2026-03-24T20:25:37.121Z
     examined_commit: bd0c54c6c9d6aa2f0df42d83cd246ee7cb4d04eb
     external_links: []
     lifecycle_state: open
@@ -48958,5 +48976,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-24T20:19:10.652Z
-    updated_at: 2026-03-24T20:25:32.937Z
+    updated_at: 2026-03-24T20:25:36.729Z
     notes: []
