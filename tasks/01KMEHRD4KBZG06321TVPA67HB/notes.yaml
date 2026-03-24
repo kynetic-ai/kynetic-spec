@@ -1,1 +1,32 @@
-notes: []
+notes:
+  - _ulid: 01KMEJAZFQ14D814ZGFPC321XB
+    content: >-
+      Approach: Move static mode guards from query enabled conditions into API fetch functions.
+
+
+      1. API layer (api.ts): Add isStaticMode() guards returning empty/default data to ~13
+      daemon-only fetch functions: fetchAgentStatus, fetchAgentDefinitions, fetchHooks,
+      fetchSchedules, fetchScheduleStatus, fetchRecentEvents, fetchCompositionConfigs,
+      fetchCompositionActivations, fetchHealth, fetchShadowStatus, fetchProjectConfig,
+      fetchConventions, fetchValidationAggregation
+
+
+      2. Page/component files (8): Remove '&& !isStaticMode()' from query enabled conditions in:
+      +page.svelte (dashboard), agents/+page.svelte, automation/+page.svelte, settings/+page.svelte,
+      tasks/board/+page.svelte, sessions/[id]/+page.svelte, and SchedulesSection.svelte,
+      CompositionsSection.svelte
+
+
+      3. Keep !isStaticMode() in UI conditionals (button visibility, WebSocket subscriptions) -
+      these are UI concerns, not query concerns
+
+
+      4. Update 3 test assertions in web-ui-tanstack-query.test.ts that check for !isStaticMode() in
+      page source
+
+
+      Test plan: Verify all ACs pass. ac-6 (no daemon calls in static mode) and ac-9 (initial render
+      works) are key.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-24T00:01:29.591Z
