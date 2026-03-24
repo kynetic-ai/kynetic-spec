@@ -50780,9 +50780,25 @@ reviews:
           status: pass
           name: oxlint
         timestamp: 2026-03-24T22:25:02.713Z
+      - _ulid: 01KMGZ7AP0TMB0P7PHDSC1AE55
+        actor: agent:pr-reviewer
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-03-24T22:25:10.336Z
+      - _ulid: 01KMGZ7AP0CW6MD06SKX3ZZ6JV
+        actor: agent:pr-reviewer
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-24T22:25:10.336Z
     examined_commit: dfb3a8859af17c0c76eba76e42faca2f4c125fcd
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -50790,7 +50806,14 @@ reviews:
       ref: "@01KMFCP1EJMETP78DY9W5JKX8R"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: agent:pr-reviewer
+        role: reviewer
+        created_at: 2026-03-24T22:25:10.336Z
     created_at: 2026-03-24T22:24:38.380Z
-    updated_at: 2026-03-24T22:25:02.247Z
+    updated_at: 2026-03-24T22:25:10.336Z
     notes: []
