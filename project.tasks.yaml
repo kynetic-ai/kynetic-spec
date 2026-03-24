@@ -22009,7 +22009,7 @@
   title: Delete no-static-analysis.test.ts
   type: task
   plan_ref: "@plan-migrate-from-biome-to-oxlint-oxfmt"
-  status: pending
+  status: cancelled
   blocked_by: []
   depends_on:
     - "@task-custom-no-source-scanning-rule"
