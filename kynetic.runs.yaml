@@ -14615,7 +14615,7 @@ runs:
     completed_at: 2026-03-24T22:07:27.490Z
   - _ulid: 01KMGYHFWSMWPK0N43QGNVKA9B
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -14636,7 +14636,13 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-03-24T22:15:38.269Z
-        completed_at: 2026-03-24T22:15:38.269Z
+        completed_at: 2026-03-24T22:15:46.488Z
+        notes: "All friction identified is already tracked (detached worktree merge: @01KMGXBF, @01KMGXRB).
+          No unique high-confidence items to capture. Skipping capture step."
+      - status: completed
+        step_index: 3
+        started_at: 2026-03-24T22:15:46.488Z
+        completed_at: 2026-03-24T22:15:46.488Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-24T22:13:14.777Z
