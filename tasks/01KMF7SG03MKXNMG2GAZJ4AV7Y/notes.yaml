@@ -1,1 +1,12 @@
-notes: []
+notes:
+  - _ulid: 01KMF8NVZ021F5Y61S91Z92E4X
+    content: "Added vitest plugin override scoped to tests/**/*.ts and packages/*/tests/**/*.ts. Enabled
+      7 rules: no-focused-tests (error), no-disabled-tests (warn), no-conditional-tests (warn),
+      expect-expect (error), valid-expect (error), no-identical-title (error), no-standalone-expect
+      (error). Evaluated style rules (prefer-to-be-truthy/falsy/object, prefer-expect-type-of) but
+      dropped them — they generated ~2,200 warnings that are stylistic noise, and toBe(true) is
+      actually stricter than toBeTruthy(). All correctness rules pass clean against current test
+      suite."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-24T06:31:55.104Z
