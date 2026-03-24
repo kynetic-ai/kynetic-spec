@@ -11,3 +11,37 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-24T09:39:20.863Z
+  - _ulid: 01KMGAT76XWYFRQ9907ZMTXCGC
+    content: >-
+      Progress update after 7 commits on feat/oxlint-oxfmt-migration:
+
+
+      1. Auto-formatted 675 files with oxfmt, auto-fixed ~800 lint violations with oxlint
+      --fix/--fix-suggestions
+
+      2. Dispatched 4 parallel subagents to fix ~1100 manual violations (no-unused-vars,
+      prefer-template, no-shadow, valid-expect, etc.)
+
+      3. Fixed agent-introduced issues: Commander.js variable renames that broke references, const
+      $state() in Svelte breaking bind directives
+
+      4. Bumped TS target ES2022→ES2024 and Node engines >=18→>=20 to support toSorted/toReversed
+      already in use on branch
+
+      5. Excluded generated files (.agents/, .claude/, .factory/, kspec-agents.md) from oxfmt/oxlint
+      — changes flow through templates
+
+      6. Excluded *.svelte from both oxfmt and oxlint — oxfmt converts let $state() to const which
+      breaks Svelte bind directives
+
+      7. Disabled unicorn/no-thenable rule (false positive on AC given/when/then domain concept)
+
+      8. Cleaned up remaining prefer-template warnings
+
+
+      Current state: 0 errors in kept files, ~109 warnings (80 no-shadow in Commander patterns, rest
+      minor). 490 errors remain in static analysis test files pending deletion. Build passes. Still
+      need to verify tests pass and handle any remaining issues.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-24T16:28:29.278Z
