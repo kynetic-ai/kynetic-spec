@@ -56,6 +56,7 @@ tags:
   - tasks
   - bug
 vcs_refs: []
+review_ref: "@01KMKPWBDX18XMCNPQQC2BFGJY"
 submission_linkage:
   review_url: null
   branch: dev
@@ -99,6 +100,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-03-25T23:55:18.576Z
+  - author: "@claude"
+    changes:
+      review_ref:
+        new: "@01KMKPWBDX18XMCNPQQC2BFGJY"
+        previous: null
+    command: review-link
+    timestamp: 2026-03-25T23:57:06.870Z
 created_at: 2026-03-25T23:37:42.643Z
 started_at: 2026-03-25T23:41:49.914Z
 submitted_at: 2026-03-25T23:55:18.576Z
