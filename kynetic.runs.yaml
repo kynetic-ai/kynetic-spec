@@ -15009,7 +15009,7 @@ runs:
     started_at: 2026-03-25T00:08:09.420Z
     completed_at: 2026-03-25T00:10:08.027Z
   - _ulid: 01KMHS567C3XTGDWBES5CQR0KR
-    status: active
+    status: completed
     current_step: 5
     initiated_by: "@claude"
     step_results:
@@ -15051,7 +15051,10 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-03-25T05:59:39.730Z
-        completed_at: 2026-03-25T05:59:39.730Z
+        completed_at: 2026-03-25T06:32:18.712Z
+        notes: "Captured: 2 inbox items (batch AC allowlist, plan investigation completion path) + 1 success
+          observation (investigation-first approach for test coverage plans)."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-03-25T05:58:23.212Z
+    completed_at: 2026-03-25T06:32:18.712Z
