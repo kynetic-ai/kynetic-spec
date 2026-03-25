@@ -23368,12 +23368,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-25T22:48:39.125Z
+      updated_at: 2026-03-25T22:48:45.493Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-25T22:48:39.125Z
+      updated_at: 2026-03-25T22:48:45.493Z
     integration:
       status: pending
       detail: null
@@ -23381,24 +23381,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: bc3049aba128eb3278e27330e0349349e8b368f8
-      updated_at: 2026-03-25T22:48:39.125Z
-    lifecycle_state: ready
+      updated_at: 2026-03-25T22:48:45.493Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KMK33PK53WC6D21QNJJA8DWJ"
     task_slug: migrate-all-test-fixtures-and-tests-to-split-task-storage-format
     timestamps:
       closed_at: null
       last_active_at: 2026-03-25T22:11:33.146Z
-      last_reconciled_at: 2026-03-25T22:48:39.125Z
+      last_reconciled_at: 2026-03-25T22:48:45.493Z
       created_at: 2026-03-25T20:53:17.314Z
-      updated_at: 2026-03-25T22:48:39.125Z
+      updated_at: 2026-03-25T22:48:45.493Z
     workspace_id: dispatch-workspace-01KMK33PK53WC6D21QNJJA8DWJ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 147d25b6b478d3e17bc5f7b9d98ee56f8b9c2f76
+        last_seen_at: 2026-03-25T22:48:45.493Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/migrate-all-test-fixtures-and-tests-to-split-task-storage-format-01kmk33p-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/migrate-all-test-fixtures-and-tests-to-split-task-storage-format/01kmk33p
-        head: bc3049aba128eb3278e27330e0349349e8b368f8
-        last_seen_at: 2026-03-25T22:11:30.957Z
+        head: 147d25b6b478d3e17bc5f7b9d98ee56f8b9c2f76
+        last_seen_at: 2026-03-25T22:48:45.493Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/migrate-all-test-fixtures-and-tests-to-split-task-storage-format-01kmk33p
