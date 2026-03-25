@@ -47,7 +47,7 @@ description: >-
 spec_ref: "@task-data-manager"
 meta_ref: null
 plan_ref: null
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -56,6 +56,22 @@ tags:
   - tasks
   - bug
 vcs_refs: []
+session_id: 01KMKNZ336W5RZRR76W4QDRM60
+history:
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KMKNZ336W5RZRR76W4QDRM60
+        previous: null
+      started_at:
+        new: 2026-03-25T23:41:49.914Z
+        previous: null
+    command: task-start
+    timestamp: 2026-03-25T23:41:49.915Z
 created_at: 2026-03-25T23:37:42.643Z
+started_at: 2026-03-25T23:41:49.914Z
 todos: []
 automation: eligible

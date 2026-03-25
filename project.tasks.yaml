@@ -22453,7 +22453,7 @@
   title: "Fix split backend mutex: hold lock through write flush"
   type: task
   spec_ref: "@task-data-manager"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 1
@@ -22463,6 +22463,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-03-25T23:37:42.643Z
+  started_at: 2026-03-25T23:41:49.914Z
   automation: eligible
 - _ulid: 01KMKNT9CHTJ5DXFBARB4F91A5
   slugs: []
