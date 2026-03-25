@@ -52238,9 +52238,25 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-25T23:42:59.340Z
+      - _ulid: 01KMKP2R29RF6SVZ5DYH2MQNFR
+        actor: agent@kspec-dispatch
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-03-25T23:43:06.314Z
+      - _ulid: 01KMKP2R2ADWB7R5DSZEY2M0FA
+        actor: agent@kspec-dispatch
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-25T23:43:06.314Z
     examined_commit: c5d5fca0aea73319d3b331ded7ac39267d3c58b1
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -52248,7 +52264,14 @@ reviews:
       ref: "@01KMKMNV2B7T0JCWQZGBP2YSMA"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: agent@kspec-dispatch
+        role: reviewer
+        created_at: 2026-03-25T23:43:06.313Z
     created_at: 2026-03-25T23:42:41.947Z
-    updated_at: 2026-03-25T23:42:58.955Z
+    updated_at: 2026-03-25T23:43:06.314Z
     notes: []
