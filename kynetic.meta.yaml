@@ -7968,6 +7968,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-25T06:32:11.839Z
+  - _ulid: 01KMKJP4G7KX714Y4BECR8Y9Z4
+    type: friction
+    content: "Split backend has race condition bugs: (1) concurrent in-process mutateTask calls on the
+      same task lose mutations because per-task mutex doesn't properly serialize notes.yaml writes,
+      (2) mutateTask + mutateTasks on overlapping tasks don't serialize, (3) writeTaskFile strips
+      unknown fields during mutateTask (unlike monolithic backend). Also kspec validate --refs
+      doesn't load notes/detail fields from per-task files in split format, missing dangling
+      references. These were found during test fixture migration to split format."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-25T22:43:47.335Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
