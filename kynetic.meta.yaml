@@ -7959,6 +7959,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-24T23:23:14.824Z
+  - _ulid: 01KMHV339Z22VZ7VTXZWR2Z9QP
+    type: success
+    content: Questioning spec relevance before writing replacement tests saved significant effort — 3
+      specs removed, 2 ACs dropped, plan went from 6 tasks to 0. Investigation-first approach for
+      test coverage plans is highly effective.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-25T06:32:11.839Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
