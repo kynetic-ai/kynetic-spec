@@ -23362,18 +23362,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/migrate-all-test-fixtures-and-tests-to-split-task-storage-format/01kmk33p
-    canonical_branch_head: bc3049aba128eb3278e27330e0349349e8b368f8
+    canonical_branch_head: 147d25b6b478d3e17bc5f7b9d98ee56f8b9c2f76
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-25T22:11:30.957Z
+      updated_at: 2026-03-25T22:45:26.842Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-25T22:11:33.146Z
+      updated_at: 2026-03-25T22:45:26.842Z
     integration:
       status: pending
       detail: null
@@ -23381,7 +23381,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: bc3049aba128eb3278e27330e0349349e8b368f8
-      updated_at: 2026-03-25T22:11:30.957Z
+      updated_at: 2026-03-25T22:45:26.842Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KMK33PK53WC6D21QNJJA8DWJ"
@@ -23389,9 +23389,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-25T22:11:33.146Z
-      last_reconciled_at: 2026-03-25T22:11:33.146Z
+      last_reconciled_at: 2026-03-25T22:45:26.842Z
       created_at: 2026-03-25T20:53:17.314Z
-      updated_at: 2026-03-25T22:11:33.146Z
+      updated_at: 2026-03-25T22:45:26.842Z
     workspace_id: dispatch-workspace-01KMK33PK53WC6D21QNJJA8DWJ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
