@@ -8011,6 +8011,24 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-25T22:47:50.002Z
+  - _ulid: 01KMKNG403AQDSTKMP98QEZJSX
+    type: success
+    content: Task description with exact file paths, line numbers, and difference analysis between
+      duplicates made deduplication task trivially scoped — zero discovery overhead. This is an
+      ideal pattern for cleanup tasks.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-25T23:32:55.940Z
+  - _ulid: 01KMKNG44RZ1WDHNEAVGDS5QTW
+    type: friction
+    content: file-lock.test.ts concurrent writes test is flaky (expected count:5, got count:4). Required
+      stashing changes and re-running full suite to confirm pre-existing. Not currently tracked
+      anywhere.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-25T23:32:56.088Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
