@@ -14,6 +14,7 @@ import {
   setupTempFixtures,
   cleanupTempDir,
   testUlid,
+  seedSplitTask,
 } from "./helpers/cli";
 
 interface TaskState {
@@ -125,25 +126,21 @@ describe("Integration: restore prior status on task unblock", () => {
 
   // AC: @task-unblock ac-1 — backwards compat: no prior_status falls back to pending
   it("should fall back to pending when prior_status is not set (backwards compat)", () => {
-    const tasksPath = join(tempDir, "project.tasks.yaml");
-    const existing = readTestOutputSync(tasksPath);
-    const ulid = testUlid("LEGACY", 1);
-    const legacyTask = `
-  - _ulid: ${ulid}
-    slugs:
-      - task-legacy-blocked
-    title: Legacy blocked task
-    type: task
-    status: blocked
-    priority: 3
-    tags: []
-    blocked_by:
-      - "Old reason"
-    notes: []
-    todos: []
-    created_at: "2026-01-01T00:00:00Z"
-`;
-    writeFileSync(tasksPath, existing + legacyTask, "utf-8");
+    const ulid = testUlid("KEGACY", 1);
+    seedSplitTask(tempDir, {
+      _ulid: ulid,
+      slugs: ["task-legacy-blocked"],
+      title: "Legacy blocked task",
+      type: "task",
+      status: "blocked",
+      priority: 3,
+      tags: [],
+      blocked_by: ["Old reason"],
+      depends_on: [],
+      notes: [],
+      todos: [],
+      created_at: "2026-01-01T00:00:00Z",
+    });
 
     const blocked = kspecJson<TaskState>("task get @task-legacy-blocked", tempDir);
     expect(blocked.status).toBe("blocked");

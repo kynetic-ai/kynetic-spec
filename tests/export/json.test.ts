@@ -8,7 +8,10 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { beforeAll, afterAll, describe, expect, it } from "vitest";
 import { calculateExportStats, formatBytes, generateJsonSnapshot } from "../../src/export/index.js";
-import { setupTempFixtures, cleanupTempDir } from "../helpers/cli.js";
+import { setupTempFixtures, cleanupTempDir, seedSplitTask } from "../helpers/cli.js";
+import { ensureSplitBackendRegistered } from "../../src/parser/split-backend.js";
+
+ensureSplitBackendRegistered();
 
 describe("JSON Export", () => {
   let tempDir: string;
@@ -184,62 +187,69 @@ plans:
     notes: []
 `,
       );
-      await fs.writeFile(
-        path.join(tempDir, "project.tasks.yaml"),
-        `tasks:
-  - _ulid: 01KG0RR8CB8N4YGP991WD7XS9R
-    slugs:
-      - test-task-in-progress
-    title: In progress task
-    type: task
-    status: in_progress
-    priority: 3
-    plan_ref: "@01KG0RRP"
-    depends_on: []
-    notes: []
-    todos: []
-    created_at: "2026-01-01T00:00:00Z"
-  - _ulid: 01KG0RRFCC9N4YGP991WD7XSCP
-    slugs:
-      - test-task-completed
-    title: Completed task
-    type: task
-    status: completed
-    priority: 3
-    plan_ref: "@01KG0RRPCA45ZT43W2T6HJMVP1"
-    depends_on: []
-    notes: []
-    todos: []
-    created_at: "2026-01-01T00:00:00Z"
-  - _ulid: 01KG0RR6CA45ZT43W2T6HJMVA1
-    slugs:
-      - test-task-ready
-    title: Ready task
-    type: task
-    status: pending
-    priority: 2
-    plan_ref: "@01KG0RRP"
-    depends_on: []
-    notes: []
-    todos: []
-    created_at: "2026-01-01T00:00:00Z"
-  - _ulid: 01KG0RRJCC9N4YGP991WD7XSM1
-    slugs:
-      - test-task-cancelled
-    title: Cancelled task
-    type: task
-    status: cancelled
-    priority: 2
-    plan_ref: "@01KG0RRP"
-    tags:
-      - test
-    description: A cancelled task linked to the active plan
-    depends_on: []
-    notes: []
-    todos: []
-    created_at: "2026-01-01T00:00:00Z"
-`,
-      );
+
+      // Clear existing tasks and write fresh split-format data
+      // Remove existing tasks directory
+      await fs.rm(path.join(tempDir, "tasks"), { recursive: true, force: true });
+      await fs.writeFile(path.join(tempDir, "project.tasks.yaml"), "");
+
+      seedSplitTask(tempDir, {
+        _ulid: "01KG0RR8CB8N4YGP991WD7XS9R",
+        slugs: ["test-task-in-progress"],
+        title: "In progress task",
+        type: "task",
+        status: "in_progress",
+        priority: 3,
+        plan_ref: "@01KG0RRP",
+        depends_on: [],
+        notes: [],
+        todos: [],
+        created_at: "2026-01-01T00:00:00Z",
+      });
+
+      seedSplitTask(tempDir, {
+        _ulid: "01KG0RRFCC9N4YGP991WD7XSCP",
+        slugs: ["test-task-completed"],
+        title: "Completed task",
+        type: "task",
+        status: "completed",
+        priority: 3,
+        plan_ref: "@01KG0RRPCA45ZT43W2T6HJMVP1",
+        depends_on: [],
+        notes: [],
+        todos: [],
+        created_at: "2026-01-01T00:00:00Z",
+      });
+
+      seedSplitTask(tempDir, {
+        _ulid: "01KG0RR6CA45ZT43W2T6HJMVA1",
+        slugs: ["test-task-ready"],
+        title: "Ready task",
+        type: "task",
+        status: "pending",
+        priority: 2,
+        plan_ref: "@01KG0RRP",
+        depends_on: [],
+        notes: [],
+        todos: [],
+        created_at: "2026-01-01T00:00:00Z",
+      });
+
+      seedSplitTask(tempDir, {
+        _ulid: "01KG0RRJCC9N4YGP991WD7XSM1",
+        slugs: ["test-task-cancelled"],
+        title: "Cancelled task",
+        type: "task",
+        status: "cancelled",
+        priority: 2,
+        plan_ref: "@01KG0RRP",
+        tags: ["test"],
+        description: "A cancelled task linked to the active plan",
+        depends_on: [],
+        notes: [],
+        todos: [],
+        created_at: "2026-01-01T00:00:00Z",
+      });
 
       const snapshot = await generateJsonSnapshot();
       const activePlan = snapshot.plans?.find((plan) => plan.slugs.includes("test-plan-active"));

@@ -28,8 +28,9 @@
  */
 import { execSync, spawnSync } from "node:child_process";
 import * as fs from "node:fs/promises";
-import { readFileSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import * as path from "node:path";
+import { parse as yamlParse, stringify as yamlStringify } from "yaml";
 import * as os from "node:os";
 
 // Use built CLI for performance - requires `npm run build` before tests
@@ -464,4 +465,63 @@ export function testUlid(prefix = "", sequence = 0): string {
  */
 export function testUlids(prefix: string, count: number): string[] {
   return Array.from({ length: count }, (_, i) => testUlid(prefix, i));
+}
+
+/**
+ * Write a task in split storage format.
+ *
+ * Creates:
+ * - tasks/<ULID>/task.yaml with core data (everything except notes)
+ * - tasks/<ULID>/notes.yaml with notes array
+ * - Appends a lean index entry to project.tasks.yaml
+ *
+ * The index entry excludes detail-only fields (description, todos, context,
+ * vcs_refs) and instead includes notes_count and todos_count.
+ *
+ * @param dir - Project root directory (where project.tasks.yaml lives)
+ * @param task - Full task record with _ulid. Notes should be in `notes` array.
+ *
+ * @example
+ * seedSplitTask(tempDir, {
+ *   _ulid: testUlid("TSK1", 1),
+ *   slugs: ["my-task"],
+ *   title: "My task",
+ *   type: "task",
+ *   status: "pending",
+ *   priority: 2,
+ *   depends_on: [],
+ *   notes: [],
+ *   todos: [],
+ *   created_at: "2026-01-01T00:00:00Z",
+ * });
+ */
+export function seedSplitTask(
+  dir: string,
+  task: Record<string, unknown> & { _ulid: string; notes?: unknown[] },
+): void {
+  const { notes = [], ...coreData } = task;
+  const taskDir = path.join(dir, "tasks", task._ulid);
+  mkdirSync(taskDir, { recursive: true });
+
+  writeFileSync(path.join(taskDir, "task.yaml"), yamlStringify(coreData));
+  writeFileSync(path.join(taskDir, "notes.yaml"), yamlStringify({ notes }));
+
+  const indexPath = path.join(dir, "project.tasks.yaml");
+  let entries: unknown[] = [];
+  try {
+    // oxlint-disable-next-line no-source-scanning/no-source-file-reads -- reading test fixture data, not source code
+    const existing = readFileSync(indexPath, "utf8");
+    const parsed = yamlParse(existing);
+    if (Array.isArray(parsed)) entries = parsed;
+  } catch {
+    // File doesn't exist yet, start with empty array
+  }
+
+  const { description: _d, todos: _t, context: _c, vcs_refs: _v, ...indexFields } = coreData;
+  entries.push({
+    ...indexFields,
+    notes_count: (notes as unknown[]).length,
+    todos_count: Array.isArray(task.todos) ? (task.todos as unknown[]).length : 0,
+  });
+  writeFileSync(indexPath, yamlStringify(entries));
 }

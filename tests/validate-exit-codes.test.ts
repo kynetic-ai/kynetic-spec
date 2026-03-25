@@ -11,7 +11,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { kspec, setupTempFixtures, cleanupTempDir, testUlid, createTempDir, readTestOutput } from "./helpers/cli";
+import { kspec, setupTempFixtures, cleanupTempDir, testUlid, createTempDir, readTestOutput, seedSplitTask } from "./helpers/cli";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
@@ -54,19 +54,19 @@ items:
 
     it("should exit 4 when reference errors are present", async () => {
       // Add a task with an invalid spec_ref
-      const tasksFile = path.join(tempDir, "project.tasks.yaml");
-      const content = await readTestOutput(tasksFile);
-      const newContent = content.replace(
-        "tasks:",
-        `tasks:
-  - _ulid: ${testUlid("BADREF")}
-    title: "Task with bad ref"
-    status: pending
-    spec_ref: "@nonexistent-spec"
-    priority: 3
-`,
-      );
-      await fs.writeFile(tasksFile, newContent);
+      seedSplitTask(tempDir, {
+        _ulid: testUlid("BADREF"),
+        slugs: ["task-bad-ref"],
+        title: "Task with bad ref",
+        type: "task",
+        status: "pending",
+        priority: 3,
+        spec_ref: "@nonexistent-spec",
+        depends_on: [],
+        notes: [],
+        todos: [],
+        created_at: "2026-01-01T00:00:00Z",
+      });
 
       const result = kspec("validate --refs", tempDir);
       expect(result.exitCode).toBe(4);

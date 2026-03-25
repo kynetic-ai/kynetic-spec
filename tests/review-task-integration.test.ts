@@ -13,14 +13,33 @@ import {
   handleVerdictTaskTransition,
   checkReviewLinkageConsistency,
 } from "../src/parser/review-task-integration.js";
-import { createTask, loadAllTasks, saveTask } from "../src/parser/yaml.js";
+import { createTask } from "../src/parser/yaml.js";
 import type { KspecContext, LoadedTask } from "../src/parser/yaml.js";
 import { TaskSchema } from "../src/schema/index.js";
 import type { ReviewRecordInput } from "../src/schema/index.js";
+import { resolveTaskDataManager } from "../src/parser/task-data-manager.js";
+import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
+import { toYaml } from "../src/parser/yaml.js";
 import { createTempDir, cleanupTempDir, initGitRepo, testUlid, testUlids } from "./helpers/cli.js";
 
+// Register the split backend
+ensureSplitBackendRegistered();
+
 function makeCtx(tempDir: string, specDir: string): KspecContext {
-  return { rootDir: tempDir, projectRoot: tempDir, specDir } as KspecContext;
+  return {
+    rootDir: tempDir,
+    projectRoot: tempDir,
+    specDir,
+    sessionsDir: path.join(tempDir, ".kspec-sessions"),
+    manifestPath: path.join(specDir, "kynetic.yaml"),
+    manifest: {
+      kynetic_spec: "1.0",
+      title: "Test Project",
+      task_storage: { format: "split" as const },
+    } as any,
+    shadow: null,
+    config: {} as any,
+  } as KspecContext;
 }
 
 function makeReviewInput(overrides: Partial<ReviewRecordInput> = {}): ReviewRecordInput {
@@ -45,12 +64,47 @@ async function createAndSaveTask(
   });
   // Apply overrides that createTask may not handle (e.g. status)
   const fullTask = { ...task, ...overrides };
-  const loadedTask: LoadedTask = {
+
+  // Write task to split format: per-task directory + index
+  const taskDir = path.join(ctx.specDir, "tasks", fullTask._ulid);
+  await fs.mkdir(taskDir, { recursive: true });
+
+  const { notes, ...coreData } = fullTask;
+  await fs.writeFile(path.join(taskDir, "task.yaml"), toYaml(coreData));
+  await fs.writeFile(path.join(taskDir, "notes.yaml"), toYaml({ notes: notes || [] }));
+
+  // Update the index
+  const indexPath = path.join(ctx.specDir, "project.tasks.yaml");
+  let indexEntries: Record<string, unknown>[] = [];
+  try {
+    const content = await fs.readFile(indexPath, "utf-8");
+    const { parse } = await import("yaml");
+    const parsed = parse(content);
+    if (Array.isArray(parsed)) indexEntries = parsed;
+  } catch {
+    // empty index
+  }
+
+  indexEntries.push({
+    _ulid: fullTask._ulid,
+    slugs: fullTask.slugs,
+    title: fullTask.title,
+    type: fullTask.type,
+    status: fullTask.status,
+    priority: fullTask.priority,
+    tags: fullTask.tags,
+    depends_on: fullTask.depends_on,
+    blocked_by: fullTask.blocked_by || [],
+    created_at: fullTask.created_at,
+    notes_count: (notes || []).length,
+    todos_count: (fullTask.todos || []).length,
+  });
+  await fs.writeFile(indexPath, toYaml(indexEntries));
+
+  return {
     ...fullTask,
-    _sourceFile: path.join(ctx.specDir, "project.tasks.yaml"),
+    _sourceFile: path.join(taskDir, "task.yaml"),
   };
-  await saveTask(ctx, loadedTask);
-  return loadedTask;
 }
 
 describe("Review-Task Integration", () => {
@@ -61,8 +115,22 @@ describe("Review-Task Integration", () => {
   beforeEach(async () => {
     tempDir = await createTempDir();
     kspecDir = path.join(tempDir, ".kspec");
-    await fs.mkdir(kspecDir, { recursive: true });
+    await fs.mkdir(path.join(kspecDir, "tasks"), { recursive: true });
     initGitRepo(tempDir);
+
+    // Write minimal manifest with split format
+    await fs.writeFile(
+      path.join(kspecDir, "kynetic.yaml"),
+      toYaml({
+        kynetic_spec: "1.0",
+        title: "Test Project",
+        task_storage: { format: "split" },
+      }),
+    );
+
+    // Write empty index
+    await fs.writeFile(path.join(kspecDir, "project.tasks.yaml"), toYaml([]));
+
     ctx = makeCtx(tempDir, kspecDir);
   });
 
@@ -141,7 +209,8 @@ describe("Review-Task Integration", () => {
       review_ref: "@my-review",
     });
 
-    const loaded = await loadAllTasks(ctx);
+    const manager = resolveTaskDataManager(ctx);
+    const loaded = await manager.loadAllTasks(ctx);
     expect(loaded).toHaveLength(1);
     expect(loaded[0].review_ref).toBe("@my-review");
   });
@@ -178,14 +247,15 @@ describe("Review-Task Integration", () => {
     await saveReviewRecord(ctx, { ...review });
 
     // Link the review to tasks
-    const tasks = await loadAllTasks(ctx);
+    const manager = resolveTaskDataManager(ctx);
+    const tasks = await manager.loadAllTasks(ctx);
     const result = await linkReviewToTasks(ctx, review, tasks);
 
     expect(result.linkedTasks).toHaveLength(1);
     expect(result.linkedTasks[0].slug).toBe("task-under-review");
 
     // Verify the task now has review_ref
-    const updatedTasks = await loadAllTasks(ctx);
+    const updatedTasks = await manager.loadAllTasks(ctx);
     const updatedTask = updatedTasks.find((t) => t._ulid === taskUlid);
     expect(updatedTask?.review_ref).toBe("@code-review-1");
   });
@@ -216,10 +286,11 @@ describe("Review-Task Integration", () => {
     );
     await saveReviewRecord(ctx, { ...review });
 
-    const tasks = await loadAllTasks(ctx);
+    const manager = resolveTaskDataManager(ctx);
+    const tasks = await manager.loadAllTasks(ctx);
     await linkReviewToTasks(ctx, review, tasks);
 
-    const updatedTasks = await loadAllTasks(ctx);
+    const updatedTasks = await manager.loadAllTasks(ctx);
     const updatedTask = updatedTasks.find((t) => t._ulid === taskUlid);
     expect(updatedTask?.review_ref).toBe(`@${reviewUlid}`);
   });
@@ -254,14 +325,15 @@ describe("Review-Task Integration", () => {
     );
     await saveReviewRecord(ctx, { ...review });
 
-    const tasks = await loadAllTasks(ctx);
+    const manager = resolveTaskDataManager(ctx);
+    const tasks = await manager.loadAllTasks(ctx);
     const result = await linkReviewToTasks(ctx, review, tasks);
 
     expect(result.linkedTasks).toHaveLength(1);
     expect(result.linkedTasks[0].slug).toBe("related-task");
 
     // Verify review_ref set on the related task
-    const updatedTasks = await loadAllTasks(ctx);
+    const updatedTasks = await manager.loadAllTasks(ctx);
     const updatedTask = updatedTasks.find((t) => t._ulid === taskUlid);
     expect(updatedTask?.review_ref).toBe("@code-review-related");
   });
@@ -298,12 +370,13 @@ describe("Review-Task Integration", () => {
     );
     await saveReviewRecord(ctx, { ...review });
 
-    const tasks = await loadAllTasks(ctx);
+    const manager = resolveTaskDataManager(ctx);
+    const tasks = await manager.loadAllTasks(ctx);
     const result = await linkReviewToTasks(ctx, review, tasks);
 
     expect(result.linkedTasks).toHaveLength(2);
 
-    const updatedTasks = await loadAllTasks(ctx);
+    const updatedTasks = await manager.loadAllTasks(ctx);
     expect(updatedTasks.find((t) => t._ulid === task1Ulid)?.review_ref).toBe("@multi-task-review");
     expect(updatedTasks.find((t) => t._ulid === task2Ulid)?.review_ref).toBe("@multi-task-review");
   });
@@ -361,7 +434,8 @@ describe("Review-Task Integration", () => {
     );
     await saveReviewRecord(ctx, { ...review });
 
-    const tasks = await loadAllTasks(ctx);
+    const manager = resolveTaskDataManager(ctx);
+    const tasks = await manager.loadAllTasks(ctx);
     const results = await handleVerdictTaskTransition(
       ctx,
       review,
@@ -374,7 +448,7 @@ describe("Review-Task Integration", () => {
     expect(results[0].transitioned).toBe(true);
 
     // Verify the task is now needs_work
-    const updatedTasks = await loadAllTasks(ctx);
+    const updatedTasks = await manager.loadAllTasks(ctx);
     const updatedTask = updatedTasks.find((t) => t._ulid === taskUlid);
     expect(updatedTask?.status).toBe("needs_work");
     // Verify fix cycle note was added
@@ -405,14 +479,15 @@ describe("Review-Task Integration", () => {
       }),
     );
 
-    const tasks = await loadAllTasks(ctx);
+    const manager = resolveTaskDataManager(ctx);
+    const tasks = await manager.loadAllTasks(ctx);
     const results = await handleVerdictTaskTransition(ctx, review, "request_changes", tasks);
 
     expect(results).toHaveLength(1);
     expect(results[0].transitioned).toBe(false);
 
     // Status should remain unchanged
-    const updatedTasks = await loadAllTasks(ctx);
+    const updatedTasks = await manager.loadAllTasks(ctx);
     expect(updatedTasks.find((t) => t._ulid === taskUlid)?.status).toBe("in_progress");
   });
 
@@ -439,14 +514,15 @@ describe("Review-Task Integration", () => {
       }),
     );
 
-    const tasks = await loadAllTasks(ctx);
+    const manager = resolveTaskDataManager(ctx);
+    const tasks = await manager.loadAllTasks(ctx);
     const results = await handleVerdictTaskTransition(ctx, review, "approve", tasks);
 
     // approve should not trigger any transitions
     expect(results).toHaveLength(0);
 
     // Status should remain pending_review
-    const updatedTasks = await loadAllTasks(ctx);
+    const updatedTasks = await manager.loadAllTasks(ctx);
     expect(updatedTasks.find((t) => t._ulid === taskUlid)?.status).toBe("pending_review");
   });
 
@@ -474,13 +550,14 @@ describe("Review-Task Integration", () => {
       }),
     );
 
-    const tasks = await loadAllTasks(ctx);
+    const manager = resolveTaskDataManager(ctx);
+    const tasks = await manager.loadAllTasks(ctx);
     const results = await handleVerdictTaskTransition(ctx, review, "request_changes", tasks);
 
     expect(results).toHaveLength(1);
     expect(results[0].transitioned).toBe(true);
 
-    const updatedTasks = await loadAllTasks(ctx);
+    const updatedTasks = await manager.loadAllTasks(ctx);
     expect(updatedTasks.find((t) => t._ulid === taskUlid)?.status).toBe("needs_work");
   });
 
@@ -721,11 +798,12 @@ describe("Review-Task Integration", () => {
     await saveReviewRecord(ctx, { ...review });
 
     // Simulate changes_requested verdict transition
-    let tasks = await loadAllTasks(ctx);
+    const manager = resolveTaskDataManager(ctx);
+    let tasks = await manager.loadAllTasks(ctx);
     await handleVerdictTaskTransition(ctx, review, "request_changes", tasks);
 
     // Verify task is now needs_work
-    tasks = await loadAllTasks(ctx);
+    tasks = await manager.loadAllTasks(ctx);
     const needsWorkTask = tasks.find((t) => t._ulid === taskUlid);
     expect(needsWorkTask?.status).toBe("needs_work");
     expect(needsWorkTask?.review_ref).toBe("@fix-review"); // review_ref preserved
@@ -772,10 +850,11 @@ describe("Review-Task Integration", () => {
     );
     await saveReviewRecord(ctx, { ...review });
 
-    const tasks = await loadAllTasks(ctx);
+    const manager = resolveTaskDataManager(ctx);
+    const tasks = await manager.loadAllTasks(ctx);
     await handleVerdictTaskTransition(ctx, review, "request_changes", tasks);
 
-    const updatedTasks = await loadAllTasks(ctx);
+    const updatedTasks = await manager.loadAllTasks(ctx);
     const updatedTask = updatedTasks.find((t) => t._ulid === taskUlid);
     // Should be cycle 2 since there's already a cycle 1 note
     expect(updatedTask?.notes.some((n) => n.content.includes("[FIX_CYCLE: 2]"))).toBe(true);

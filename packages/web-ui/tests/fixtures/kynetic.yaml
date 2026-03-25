@@ -12,3 +12,6 @@ includes:
 tasks_file: project.tasks.yaml
 inbox_file: project.inbox.yaml
 meta_file: kynetic.meta.yaml
+
+task_storage:
+  format: split

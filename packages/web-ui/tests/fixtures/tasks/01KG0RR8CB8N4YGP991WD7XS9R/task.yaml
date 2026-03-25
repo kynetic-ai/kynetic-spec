@@ -1,0 +1,40 @@
+_ulid: 01KG0RR8CB8N4YGP991WD7XS9R
+slugs:
+  - test-task-in-progress
+title: In progress task
+type: task
+status: in_progress
+priority: 3
+tags:
+  - test
+description: |
+  A task currently being worked on with `npm test`.
+
+  - Verify markdown rendering
+  - Update the UI
+spec_ref: "@test-feature"
+depends_on:
+  - "@test-task-ready"
+blocked_by:
+  - "@test-task-blocked"
+vcs_refs:
+  - ref: "feat/test-task-in-progress"
+    type: branch
+  - ref: "https://github.com/test/repo/pull/42"
+plan_ref: "@test-plan"
+session_id: "session-abc123"
+automation: eligible
+todos:
+  - id: 1
+    text: Write unit tests
+    done: true
+    done_at: "2026-01-01T00:45:00Z"
+    added_at: "2026-01-01T00:30:00Z"
+    added_by: "test-user"
+  - id: 2
+    text: Update documentation
+    done: false
+    added_at: "2026-01-01T00:45:00Z"
+    added_by: "test-user"
+created_at: "2026-01-01T00:00:00Z"
+started_at: "2026-01-01T01:00:00Z"

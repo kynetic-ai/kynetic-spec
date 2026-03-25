@@ -1,156 +1,117 @@
-tasks:
-  - _ulid: 01KG0RR6CA45ZT43W2T6HJMVA1
-    slugs:
-      - test-task-ready
-    title: Ready task
-    type: task
-    status: pending
-    priority: 2
-    assignee: "@alice"
-    tags:
-      - test
-    description: |
-      A task that is **pending** and ready to work on.
-      Run `kspec task start @test-task-ready` to begin.
-    spec_ref: "@test-feature"
-    depends_on: []
-    notes: []
-    todos: []
-    created_at: "2026-01-01T00:00:00Z"
-  - _ulid: 01KG0RR7CC9N4YGP991WD7XS8S
-    slugs:
-      - test-task-blocked
-    title: Test blocked task
-    type: task
-    status: pending
-    priority: 1
-    tags:
-      - e2e
-      - test
-    description: A task that is blocked by another task
-    depends_on:
-      - "@test-task-ready"
-    notes: []
-    todos: []
-    created_at: "2026-01-01T00:00:00Z"
-  - _ulid: 01KG0RR8CB8N4YGP991WD7XS9R
-    slugs:
-      - test-task-in-progress
-    title: In progress task
-    type: task
-    status: in_progress
-    priority: 3
-    tags:
-      - test
-    description: |
-      A task currently being worked on with `npm test`.
+- _ulid: 01KG0RR6CA45ZT43W2T6HJMVA1
+  slugs:
+    - test-task-ready
+  title: Ready task
+  type: task
+  status: pending
+  priority: 2
+  assignee: "@alice"
+  tags:
+    - test
+  spec_ref: "@test-feature"
+  depends_on: []
+  created_at: "2026-01-01T00:00:00Z"
+  notes_count: 0
+  todos_count: 0
 
-      - Verify markdown rendering
-      - Update the UI
-    spec_ref: "@test-feature"
-    depends_on:
-      - "@test-task-ready"
-    blocked_by:
-      - "@test-task-blocked"
-    vcs_refs:
-      - ref: "feat/test-task-in-progress"
-        type: branch
-      - ref: "https://github.com/test/repo/pull/42"
-    plan_ref: "@test-plan"
-    session_id: "session-abc123"
-    automation: eligible
-    notes:
-      - _ulid: 01KG0RR9CCVJA52BZAQ20SZ1V6
-        created_at: "2026-01-01T00:00:00Z"
-        author: "test-user"
-        content: |
-          Started working on this task.
+- _ulid: 01KG0RR7CC9N4YGP991WD7XS8S
+  slugs:
+    - test-task-blocked
+  title: Test blocked task
+  type: task
+  status: pending
+  priority: 1
+  tags:
+    - e2e
+    - test
+  depends_on:
+    - "@test-task-ready"
+  created_at: "2026-01-01T00:00:00Z"
+  notes_count: 0
+  todos_count: 0
 
-          - Ran `npm test`
-          - Checked [docs](https://example.com/task-docs)
-    todos:
-      - id: 1
-        text: Write unit tests
-        done: true
-        done_at: "2026-01-01T00:45:00Z"
-        added_at: "2026-01-01T00:30:00Z"
-        added_by: "test-user"
-      - id: 2
-        text: Update documentation
-        done: false
-        added_at: "2026-01-01T00:45:00Z"
-        added_by: "test-user"
-    created_at: "2026-01-01T00:00:00Z"
-    started_at: "2026-01-01T01:00:00Z"
+- _ulid: 01KG0RR8CB8N4YGP991WD7XS9R
+  slugs:
+    - test-task-in-progress
+  title: In progress task
+  type: task
+  status: in_progress
+  priority: 3
+  tags:
+    - test
+  spec_ref: "@test-feature"
+  depends_on:
+    - "@test-task-ready"
+  blocked_by:
+    - "@test-task-blocked"
+  plan_ref: "@test-plan"
+  session_id: "session-abc123"
+  automation: eligible
+  created_at: "2026-01-01T00:00:00Z"
+  started_at: "2026-01-01T01:00:00Z"
+  notes_count: 1
+  todos_count: 2
 
-  - _ulid: 01KG0RRDCC9N4YGP991WD7XSPR
-    slugs:
-      - test-task-pending-review
-    title: Pending review task
-    type: task
-    status: pending_review
-    priority: 2
-    tags:
-      - test
-    description: A task that is pending review
-    spec_ref: "@test-feature"
-    review_ref: "@test-review-open"
-    depends_on: []
-    notes:
-      - _ulid: 01KG0RRECC9N4YGP991WD7XSN1
-        created_at: "2026-01-01T02:00:00Z"
-        author: "test-user"
-        content: Submitted for review
-    todos: []
-    created_at: "2026-01-01T00:00:00Z"
-    started_at: "2026-01-01T01:00:00Z"
+- _ulid: 01KG0RRDCC9N4YGP991WD7XSPR
+  slugs:
+    - test-task-pending-review
+  title: Pending review task
+  type: task
+  status: pending_review
+  priority: 2
+  tags:
+    - test
+  spec_ref: "@test-feature"
+  review_ref: "@test-review-open"
+  depends_on: []
+  created_at: "2026-01-01T00:00:00Z"
+  started_at: "2026-01-01T01:00:00Z"
+  notes_count: 1
+  todos_count: 0
 
-  - _ulid: 01KG0RRFCC9N4YGP991WD7XSCP
-    slugs:
-      - test-task-completed
-    title: Completed task
-    type: task
-    status: completed
-    priority: 3
-    tags:
-      - test
-    description: A completed task
-    spec_ref: "@test-feature"
-    depends_on: []
-    notes: []
-    todos: []
-    created_at: "2026-01-01T00:00:00Z"
-    started_at: "2026-01-01T01:00:00Z"
-    completed_at: "2026-01-01T03:00:00Z"
+- _ulid: 01KG0RRFCC9N4YGP991WD7XSCP
+  slugs:
+    - test-task-completed
+  title: Completed task
+  type: task
+  status: completed
+  priority: 3
+  tags:
+    - test
+  spec_ref: "@test-feature"
+  depends_on: []
+  created_at: "2026-01-01T00:00:00Z"
+  started_at: "2026-01-01T01:00:00Z"
+  completed_at: "2026-01-01T03:00:00Z"
+  notes_count: 0
+  todos_count: 0
 
-  - _ulid: 01KG0RRGCC9N4YGP991WD7XSNR
-    slugs:
-      - test-task-needs-review
-    title: Needs review task
-    type: task
-    status: pending
-    priority: 2
-    tags:
-      - test
-    description: A task with automation needs_review
-    depends_on: []
-    automation: needs_review
-    notes: []
-    todos: []
-    created_at: "2026-01-01T00:00:00Z"
+- _ulid: 01KG0RRGCC9N4YGP991WD7XSNR
+  slugs:
+    - test-task-needs-review
+  title: Needs review task
+  type: task
+  status: pending
+  priority: 2
+  tags:
+    - test
+  depends_on: []
+  automation: needs_review
+  created_at: "2026-01-01T00:00:00Z"
+  notes_count: 0
+  todos_count: 0
 
-  - _ulid: 01KG0RRHCC9N4YGP991WD7XSML
-    slugs:
-      - test-task-manual-only
-    title: Manual only task
-    type: task
-    status: pending
-    priority: 2
-    tags:
-      - test
-    description: A task with automation manual_only
-    depends_on: []
-    automation: manual_only
-    notes: []
-    todos: []
-    created_at: "2026-01-01T00:00:00Z"
+- _ulid: 01KG0RRHCC9N4YGP991WD7XSML
+  slugs:
+    - test-task-manual-only
+  title: Manual only task
+  type: task
+  status: pending
+  priority: 2
+  tags:
+    - test
+  depends_on: []
+  automation: manual_only
+  created_at: "2026-01-01T00:00:00Z"
+  notes_count: 0
+  todos_count: 0

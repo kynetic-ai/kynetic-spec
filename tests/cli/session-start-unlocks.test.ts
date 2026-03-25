@@ -8,7 +8,7 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { kspec, kspecJson, setupTempFixtures, cleanupTempDir, testUlid } from "../helpers/cli";
+import { kspec, kspecJson, setupTempFixtures, cleanupTempDir, testUlid, seedSplitTask } from "../helpers/cli";
 import type { SessionContext } from "../helpers/session-types";
 
 describe("session start dependency display", () => {
@@ -182,29 +182,23 @@ describe("session start dependency display", () => {
       // Create a target task that would be "unlocked"
       kspec('task add --title "Target task" --slug task-target', tempDir);
 
-      // Inject a task with an unresolvable depends_on ref directly into YAML
-      const tasksPath = join(tempDir, "project.tasks.yaml");
-      const existing = readFileSync(tasksPath, "utf-8");
+      // Inject a task with an unresolvable depends_on ref using split format
       const bogusTaskUlid = testUlid("BADREF", 1);
-      const appendedTask = `
-  - _ulid: ${bogusTaskUlid}
-    slugs:
-      - task-with-bad-ref
-    title: Task with bad ref
-    type: task
-    status: pending
-    priority: 3
-    automation: eligible
-    tags: []
-    description: Has an unresolvable depends_on
-    depends_on:
-      - "@nonexistent-ref-that-does-not-exist"
-      - "@task-target"
-    notes: []
-    todos: []
-    created_at: "2026-01-01T00:00:00Z"
-`;
-      writeFileSync(tasksPath, existing + appendedTask, "utf-8");
+      seedSplitTask(tempDir, {
+        _ulid: bogusTaskUlid,
+        slugs: ["task-with-bad-ref"],
+        title: "Task with bad ref",
+        type: "task",
+        status: "pending",
+        priority: 3,
+        automation: "eligible",
+        tags: [],
+        description: "Has an unresolvable depends_on",
+        depends_on: ["@nonexistent-ref-that-does-not-exist", "@task-target"],
+        notes: [],
+        todos: [],
+        created_at: "2026-01-01T00:00:00Z",
+      });
 
       // Session start should succeed without errors (unresolvable ref silently skipped)
       const session = kspecJson<SessionContext>("session start --json", tempDir);
