@@ -3369,14 +3369,6 @@ features:
           returning empty results
         when: |
           The provided value does not match the filter's type constraint
-      - given: |
-          An API endpoint's type constraints are defined
-        id: ac-4
-        then: |
-          The API type constraints are derived from the canonical
-          schema definition
-        when: |
-          The constraints are implemented
     tags: []
     created: 2026-03-20T15:52:01.376Z
     notes: []
