@@ -3,25 +3,47 @@ slugs:
   - task-remove-monolithic
 title: Remove monolithic task file support
 type: task
-description: |
-  Remove the legacy monolithic file loading path from the task data
-  manager after the split format is activated and stable.
+description: >-
+  Remove the monolithic task storage backend and add version-gated legacy detection so that
+  upgrading users get clear migration guidance.
 
-  Why: Keeping two storage backends increases complexity and testing
-  surface. Once all projects are migrated and activated, the old path
-  serves no purpose.
 
-  What: Remove the code that loads tasks from a monolithic array in
-  project.tasks.yaml. Remove loadTasksFromFile, extractRawTaskArray,
-  writeRawTaskArray, and related helpers. Remove the fallback search
-  paths (backlog.tasks.yaml, active.tasks.yaml, etc.). Remove the
-  git log -L based activity extraction.
+  Why: Keeping two storage backends increases complexity and testing surface. The split format is
+  stable and all projects are migrated. The monolithic backend serves no purpose, but removing it
+  requires a detection gate so legacy projects get a clear error instead of a crash.
 
-  How: Delete the old codepaths, update tests to use the split format,
+
+  What:
+
+  1. Remove MonolithicBackend class, default singleton, and dead yaml.ts functions (saveTask,
+  mutateTaskAtomically, mutateTasksAtomically, deleteTask, writeRawTaskArray). Keep
+  extractRawTaskArray (used by migrate). Keep the backend registry for future extensibility but
+  remove the monolithic registration.
+
+  2. Add version-gated legacy detection in resolveTaskDataManager(): when kynetic version is 1.0 and
+  no task_storage.format: split, error with guidance to run kspec task migrate. This is a
+  higher-level gate than ensureMigrated() which stays as a data-integrity safety net in the split
+  backend.
+
+  3. Update kspec task migrate: on successful completion, set task_storage.format: split in manifest
+  and bump kynetic version to 1.1. This replaces the separate activate command.
+
+  4. Remove kspec task storage activate and kspec task storage status commands. Move storage format
+  check into kspec doctor as a task storage health check.
+
+  5. Update kspec init to generate kynetic: 1.1 with task_storage: { format: split }.
+
+  6. Keep z.enum(["monolithic", "split"]) in schema for parsing compatibility — reject monolithic at
+  runtime, not parse time.
+
+  7. Create one legacy-format test fixture for testing version-gated detection and migration path.
+
+  8. Update error messages in ensureMigrated() and rebuild-index that reference monolithic.
+
+
+  How: Delete the monolithic codepaths, add the version gate in resolveTaskDataManager, update
+  migrate to write the manifest, update init template, add doctor check, create legacy test fixture,
   verify the full test suite passes.
-
-  MANUAL ONLY: Must confirm the switchover is stable before removing
-  the fallback path.
 spec_ref: null
 plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
 origin: derived
@@ -48,6 +70,73 @@ history:
           - "@task-activate-split-storage"
     command: task-set
     timestamp: 2026-03-25T19:59:32.953Z
+  - author: "@claude"
+    changes:
+      description:
+        new: >-
+          Remove the monolithic task storage backend and add version-gated legacy detection so that
+          upgrading users get clear migration guidance.
+
+
+          Why: Keeping two storage backends increases complexity and testing surface. The split
+          format is stable and all projects are migrated. The monolithic backend serves no purpose,
+          but removing it requires a detection gate so legacy projects get a clear error instead of
+          a crash.
+
+
+          What:
+
+          1. Remove MonolithicBackend class, default singleton, and dead yaml.ts functions
+          (saveTask, mutateTaskAtomically, mutateTasksAtomically, deleteTask, writeRawTaskArray).
+          Keep extractRawTaskArray (used by migrate). Keep the backend registry for future
+          extensibility but remove the monolithic registration.
+
+          2. Add version-gated legacy detection in resolveTaskDataManager(): when kynetic version is
+          1.0 and no task_storage.format: split, error with guidance to run kspec task migrate. This
+          is a higher-level gate than ensureMigrated() which stays as a data-integrity safety net in
+          the split backend.
+
+          3. Update kspec task migrate: on successful completion, set task_storage.format: split in
+          manifest and bump kynetic version to 1.1. This replaces the separate activate command.
+
+          4. Remove kspec task storage activate and kspec task storage status commands. Move storage
+          format check into kspec doctor as a task storage health check.
+
+          5. Update kspec init to generate kynetic: 1.1 with task_storage: { format: split }.
+
+          6. Keep z.enum(["monolithic", "split"]) in schema for parsing compatibility — reject
+          monolithic at runtime, not parse time.
+
+          7. Create one legacy-format test fixture for testing version-gated detection and migration
+          path.
+
+          8. Update error messages in ensureMigrated() and rebuild-index that reference monolithic.
+
+
+          How: Delete the monolithic codepaths, add the version gate in resolveTaskDataManager,
+          update migrate to write the manifest, update init template, add doctor check, create
+          legacy test fixture, verify the full test suite passes.
+        previous: |
+          Remove the legacy monolithic file loading path from the task data
+          manager after the split format is activated and stable.
+
+          Why: Keeping two storage backends increases complexity and testing
+          surface. Once all projects are migrated and activated, the old path
+          serves no purpose.
+
+          What: Remove the code that loads tasks from a monolithic array in
+          project.tasks.yaml. Remove loadTasksFromFile, extractRawTaskArray,
+          writeRawTaskArray, and related helpers. Remove the fallback search
+          paths (backlog.tasks.yaml, active.tasks.yaml, etc.). Remove the
+          git log -L based activity extraction.
+
+          How: Delete the old codepaths, update tests to use the split format,
+          verify the full test suite passes.
+
+          MANUAL ONLY: Must confirm the switchover is stable before removing
+          the fallback path.
+    command: task-set
+    timestamp: 2026-03-25T20:40:56.878Z
 created_at: 2026-03-21T00:59:26.926Z
 todos: []
 automation: manual_only
