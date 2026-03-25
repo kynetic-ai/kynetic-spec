@@ -52066,6 +52066,17 @@ reviews:
         runner: npm run build
         created_at: 2026-03-25T23:00:37.146Z
         completed_at: 2026-03-25T23:00:37.146Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation passed. Warnings are pre-existing (missing AC coverage, orphaned specs, invalid
+          AC annotations) — none introduced by this commit.
+        name: kspec-validate
+        required: true
+        runner: kspec validate
+        created_at: 2026-03-25T23:01:07.628Z
+        completed_at: 2026-03-25T23:01:07.628Z
     events:
       - _ulid: 01KMKK28FDG32MYNFBKRX62N46
         actor: "@claude"
@@ -52108,6 +52119,13 @@ reviews:
           status: pass
           name: build
         timestamp: 2026-03-25T23:00:37.523Z
+      - _ulid: 01KMKKNWRVHBRDAR3MKH18SZER
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec-validate
+        timestamp: 2026-03-25T23:01:07.996Z
     examined_commit: 147d25b6b478d3e17bc5f7b9d98ee56f8b9c2f76
     external_links: []
     lifecycle_state: open
@@ -52157,5 +52175,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-25T22:50:24.621Z
-    updated_at: 2026-03-25T23:00:37.146Z
+    updated_at: 2026-03-25T23:01:07.628Z
     notes: []
