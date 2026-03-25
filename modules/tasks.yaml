@@ -1505,6 +1505,10 @@ features:
               and new values
             when: |
               The entry is read back
+          - given: A task file contains fields not defined in the task schema
+            id: ac-4
+            then: The unknown fields are preserved in the written file
+            when: The task is mutated and written back to disk
         tags: []
         created: 2026-03-21T00:59:16.534Z
         notes: []
