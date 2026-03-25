@@ -26,3 +26,23 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-25T23:45:52.054Z
+  - _ulid: 01KMKPRWQHP2WQ9DYG6WY81AQK
+    content: >-
+      Fix complete. The root cause was that SplitBackend's per-task mutex only covered the buffering
+      phase, not the flush. When called through TaskDataManager.withWriteBuffer, each concurrent
+      mutation got its own isolated buffer (via AsyncLocalStorage.run), and the SplitBackend
+      released the lock before the outer buffer flushed. This created a TOCTOU race: a second
+      mutation would read stale disk state while the first mutation's writes were still in its
+      buffer.
+
+
+      Fix: Moved per-task lock from SplitBackend to TaskDataManager, wrapping withWriteBuffer so the
+      lock spans read → mutate → buffer → flush. Removed the now-redundant SplitTaskMutexMap class
+      from split-backend.ts.
+
+
+      All 6 previously-skipped tests now pass. Full test suite: 6821 passed, 6 skipped (pre-existing
+      unrelated), 1 flaky timeout (pre-existing, passes in isolation).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-25T23:55:11.985Z
