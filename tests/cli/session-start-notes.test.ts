@@ -6,44 +6,10 @@
  * AC: @trait-json-output ac-1 - Valid JSON output purity
  */
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
-import { parse as yamlParse, stringify as yamlStringify } from "yaml";
-import { kspec, kspecJson, setupTempFixtures, cleanupTempDir, testUlids } from "../helpers/cli";
+import { kspec, kspecJson, setupTempFixtures, cleanupTempDir, testUlids, seedSplitTask } from "../helpers/cli";
 import type { SessionContext } from "../helpers/session-types";
 
 const SESSION_START_NOTES_TIMEOUT_MS = 20_000;
-
-/**
- * Seed a task in split storage format: creates per-task directory with task.yaml and notes.yaml,
- * and appends a lean entry to the index file.
- */
-function seedSplitTask(
-  tempDir: string,
-  task: Record<string, unknown> & { _ulid: string; notes?: unknown[] },
-): void {
-  const { notes = [], ...coreData } = task;
-  const taskDir = join(tempDir, "tasks", task._ulid);
-  mkdirSync(taskDir, { recursive: true });
-
-  // Write core data (without notes)
-  writeFileSync(join(taskDir, "task.yaml"), yamlStringify(coreData));
-  // Write notes
-  writeFileSync(join(taskDir, "notes.yaml"), yamlStringify({ notes }));
-
-  // Append lean entry to index
-  const indexPath = join(tempDir, "project.tasks.yaml");
-  const existingIndex = yamlParse(readFileSync(indexPath, "utf8")) as unknown[] | null;
-  const entries = Array.isArray(existingIndex) ? existingIndex : [];
-
-  const { description: _d, todos: _t, context: _c, vcs_refs: _v, ...indexFields } = coreData;
-  entries.push({
-    ...indexFields,
-    notes_count: (notes as unknown[]).length,
-    todos_count: Array.isArray(task.todos) ? (task.todos as unknown[]).length : 0,
-  });
-  writeFileSync(indexPath, yamlStringify(entries));
-}
 
 describe("session start notes enrichment", () => {
   let tempDir: string;
