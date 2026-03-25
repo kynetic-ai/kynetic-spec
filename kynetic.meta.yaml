@@ -8040,6 +8040,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-25T23:45:49.656Z
+  - _ulid: 01KMKPTD1J5PEJ8HQ638VDJXK5
+    type: success
+    content: Well-written task descriptions with exact file/line references and skipped test locations
+      dramatically reduce investigation time for concurrency bugs. The fix-split-backend-mutex task
+      was completed in a single pass with no fix cycles needed.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-25T23:56:01.458Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
