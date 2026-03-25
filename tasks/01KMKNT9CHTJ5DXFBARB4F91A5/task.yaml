@@ -1,0 +1,64 @@
+_ulid: 01KMKNT9CHTJ5DXFBARB4F91A5
+slugs: []
+title: Preserve unknown fields through split backend mutateTask writes
+type: task
+description: >-
+  Why: The split backend's writeTaskFile writes schema-validated data that has been through
+  TaskSchema.safeParse(), which strips unknown fields by default (Zod behavior). The monolithic
+  backend avoided this by using mergeTaskPreservingRawShape() to overlay validated data onto the raw
+  YAML, keeping custom fields intact. The split backend never does this merge — it writes
+  coreDataAfter directly, losing any fields not in the schema.
+
+
+  This means external tooling or future extensions that store custom fields in task.yaml (e.g.
+  crm_id, backend_metadata) would silently lose those fields on the next kspec mutation. This
+  violates @task-core-data-file ac-4 (unknown fields preserved through mutations) and is related to
+  @task-directory-storage ac-3 (unknown files/dirs preserved).
+
+
+  1 test is currently skipped citing this bug:
+
+  - tests/task-data-manager.test.ts line 1234: "preserves unknown fields through mutateTask"
+
+
+  What:
+
+  1. In src/parser/split-backend.ts, the mutateTask method loads the task via TaskSchema.safeParse()
+  which drops unknown fields. Before writing, it needs to merge the mutated data back onto the raw
+  file contents to preserve unknown fields.
+
+  2. Read the raw YAML from the task file before parsing, keep it as the base. After mutation, merge
+  the schema-validated result onto the raw data (same pattern as mergeTaskPreservingRawShape in
+  yaml.ts).
+
+  3. Unskip the test at line 1234 in task-data-manager.test.ts.
+
+  4. Run the full test suite to verify no regressions.
+
+
+  How: The approach mirrors what the monolithic backend did. In mutateTask, after getting the
+  mutated task:
+
+  - Read the raw YAML from the task file (or keep it from the initial load)
+
+  - Use mergeTaskPreservingRawShape (or equivalent logic) to overlay schema-known fields from the
+  mutation result onto the raw data
+
+  - Write the merged result via writeTaskFile
+
+  The key is that unknown fields from the raw file survive the round-trip.
+spec_ref: "@task-core-data-file"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - tasks
+  - bug
+vcs_refs: []
+created_at: 2026-03-25T23:38:29.137Z
+todos: []
+automation: eligible
