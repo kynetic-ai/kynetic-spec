@@ -52058,6 +52058,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-25T22:50:36.661Z
+      - _ulid: 01KMKKM1W6VRYBY2AFWTEYJNK0
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMKKM1FPZT0FGAFGAFWD0BNJ
+        timestamp: 2026-03-25T23:00:07.686Z
     examined_commit: 147d25b6b478d3e17bc5f7b9d98ee56f8b9c2f76
     external_links: []
     lifecycle_state: open
@@ -52067,8 +52074,27 @@ reviews:
       content_hash: ""
       ref: "@01KMK33PK53WC6D21QNJJA8DWJ"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMKKM1FPZT0FGAFGAFWD0BNJ
+        anchor:
+          type: code
+          commit: 147d25b6b478
+          line_end: 80
+          line_start: 57
+          path: tests/cli/session-start-format.test.ts
+          side: head
+        entries:
+          - _ulid: 01KMKKM1FP0YWBEH3FX5KBHG7B
+            author: "@claude"
+            body: "seedSplitTask is duplicated in 3 locations: the canonical export in tests/helpers/cli.ts
+              (line 498), and local copies in tests/cli/session-start-format.test.ts (line 57) and
+              tests/cli/session-start-notes.test.ts (line 21). The canonical version has proper
+              error handling (try/catch for missing index file); the local copies do not. Both test
+              files already import from '../helpers/cli' but don't import seedSplitTask. Should use
+              the exported helper instead of duplicating."
+            created_at: 2026-03-25T23:00:07.286Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-25T22:50:24.621Z
-    updated_at: 2026-03-25T22:50:36.272Z
+    updated_at: 2026-03-25T23:00:07.286Z
     notes: []
