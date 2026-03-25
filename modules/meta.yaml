@@ -2049,33 +2049,6 @@ features:
       - meta
       - cli
     requirements:
-      - _ulid: 01KF1XCMD10000000000000000
-        slugs:
-          - meta-show
-        title: kspec meta show
-        type: requirement
-        description: |
-          kspec meta show
-
-          Display meta-spec summary:
-          - Number of defined agents
-          - Number of workflows
-          - Number of conventions
-          - Unresolved observation count
-          - Session context summary
-
-          Quick overview of project process definitions.
-        status:
-          maturity: draft
-          implementation: implemented
-        implements:
-          - "@meta-commands"
-        acceptance_criteria:
-          - given: meta items and session context exist in a project
-            id: ac-1
-            then: the output summarizes agent, workflow, convention, and unresolved observation counts plus
-              session-context status
-            when: kspec meta show runs
       - _ulid: 01KF1XCMD20000000000000000
         slugs:
           - meta-agents-cmd
@@ -2103,33 +2076,6 @@ features:
             id: ac-2
             then: the output groups or organizes agents by capability instead of only raw row order
             when: kspec meta agents --capabilities runs
-      - _ulid: 01KF1XCMD30000000000000000
-        slugs:
-          - meta-workflows-cmd
-        title: kspec meta workflows
-        type: requirement
-        description: |
-          kspec meta workflows [options]
-
-          List defined workflows:
-          - --json: Structured output
-          - --verbose: Show full steps
-
-          Output shows id, trigger, step count for each workflow.
-        status:
-          maturity: draft
-          implementation: implemented
-        implements:
-          - "@meta-commands"
-        acceptance_criteria:
-          - given: workflows are defined in meta
-            id: ac-1
-            then: the command lists each workflow with its id, trigger, and step count
-            when: kspec meta workflows runs
-          - given: a workflow includes detailed steps
-            id: ac-2
-            then: the output expands the workflow to show the full ordered step list
-            when: kspec meta workflows --verbose runs
       - _ulid: 01KF1XCMD40000000000000000
         slugs:
           - meta-conventions-cmd
@@ -2157,66 +2103,6 @@ features:
             id: ac-2
             then: only conventions for the requested domain are returned
             when: kspec meta conventions --domain <domain> runs
-      - _ulid: 01KF1XCMD50000000000000000
-        slugs:
-          - meta-observe-cmd
-        title: kspec meta observe
-        type: requirement
-        description: |
-          kspec meta observe <type> "content" [options]
-
-          Record an observation:
-          - type: friction, success, question, idea
-          - content: The observation text
-
-          Options:
-          - --workflow <ref>: Link to workflow
-          - --json: Return created observation
-
-          Example:
-          kspec meta observe friction "Spec-first is slow for typos"
-        status:
-          maturity: draft
-          implementation: implemented
-        implements:
-          - "@meta-commands"
-        traits:
-          - "@trait-shadow-commit"
-        acceptance_criteria:
-          - given: An inbox item exists that should have been an observation
-            id: from-inbox-conversion
-            then: Inbox item content is used to create observation, inbox item is deleted, observation ref is
-              returned. Type defaults to 'idea' if not specified.
-            when: User runs kspec meta observe --from-inbox @inbox-ref [--type <type>]
-        notes:
-          - _ulid: 01KFAD3FMNYEZP6ZZ98X34E13R
-            content: >-
-              Enhancement: --from-inbox flag for bucket correction
-
-
-              **Use case:** During triage, items sometimes get captured in the wrong bucket. An idea
-              captured as inbox item should have been an observation. This flag allows converting
-              without losing the content.
-
-
-              **Behavior:**
-
-              - --from-inbox @ref takes an inbox item reference
-
-              - Creates observation with inbox item's content
-
-              - Type defaults to 'idea' but can be overridden with --type
-
-              - Deletes inbox item after successful observation creation
-
-              - Preserves original author from inbox item
-
-
-              **Mutually exclusive:** When --from-inbox is used, the positional <type> and content
-              args are ignored (content comes from inbox item).
-            supersedes: null
-            author: "@claude"
-            created_at: 2026-01-19T05:54:34.261Z
       - _ulid: 01KF1XCMD60000000000000000
         slugs:
           - meta-observations-cmd
@@ -2247,37 +2133,6 @@ features:
             id: ac-2
             then: the result set is filtered to matching observations only
             when: kspec meta observations is run with --type or --workflow
-      - _ulid: 01KF1XCMD70000000000000000
-        slugs:
-          - meta-promote-cmd
-        title: kspec meta promote
-        type: requirement
-        description: |
-          kspec meta promote <ref> [options]
-
-          Promote observation to task:
-          - --title <title>: Required task title
-          - --priority <n>: Task priority (1-5)
-          - --json: Return created task
-
-          Creates task with meta_ref to related workflow.
-          Marks observation with promoted_to reference.
-        status:
-          maturity: draft
-          implementation: implemented
-        implements:
-          - "@meta-commands"
-        traits:
-          - "@trait-shadow-commit"
-        acceptance_criteria:
-          - given: an observation reference and title are provided
-            id: ac-1
-            then: it returns or records the created task linked to the observation
-            when: kspec meta promote runs successfully
-          - given: an observation is promoted to a task
-            id: ac-2
-            then: it records the promoted_to linkage instead of remaining an unlinked idea
-            when: the source observation is inspected afterward
       - _ulid: 01KF1XCMD80000000000000000
         slugs:
           - meta-resolve-cmd
@@ -2306,34 +2161,6 @@ features:
             id: ac-1
             then: the observation becomes resolved with the supplied explanation
             when: kspec meta resolve runs
-      - _ulid: 01KF1XCMD90000000000000000
-        slugs:
-          - meta-focus-cmd
-        title: kspec meta focus
-        type: requirement
-        description: |
-          kspec meta focus [ref]
-
-          Get or set session focus:
-          - No args: Show current focus
-          - With ref: Set focus to @ref
-          - --clear: Clear current focus
-
-          Focus is stored in .kspec-session.
-        status:
-          maturity: draft
-          implementation: implemented
-        implements:
-          - "@meta-commands"
-        acceptance_criteria:
-          - given: no reference argument is passed
-            id: ac-1
-            then: the current session focus is shown without changing stored context
-            when: kspec meta focus runs
-          - given: a reference or --clear flag is passed
-            id: ac-2
-            then: the stored session focus is updated or cleared in .kspec-session
-            when: kspec meta focus runs
       - _ulid: 01KF1XCMDA0000000000000000
         slugs:
           - meta-thread-cmd
@@ -2363,35 +2190,6 @@ features:
             id: ac-2
             then: all current threads are shown or removed without touching focus or open questions
             when: kspec meta thread runs
-      - _ulid: 01KF1XCMK00000000000000000
-        slugs:
-          - meta-question-cmd
-        title: kspec meta question
-        type: requirement
-        description: |
-          kspec meta question <action> [text]
-
-          Manage open questions:
-          - add "question": Add question
-          - remove <index>: Remove by index
-          - list: Show all questions
-          - clear: Remove all questions
-
-          Questions are stored in .kspec-session.
-        status:
-          maturity: draft
-          implementation: implemented
-        implements:
-          - "@meta-commands"
-        acceptance_criteria:
-          - given: a user adds or removes an open question through kspec meta question
-            id: ac-1
-            then: the open_questions list in session context reflects the requested mutation
-            when: the command completes
-          - given: the list or clear action is used
-            id: ac-2
-            then: all current open questions are shown or removed without modifying focus or threads
-            when: kspec meta question runs
       - _ulid: 01KF1XCMX00000000000000000
         slugs:
           - meta-context-cmd
@@ -2425,38 +2223,6 @@ features:
             id: ac-2
             then: all stored session-context fields are removed from .kspec-session
             when: kspec meta context --clear runs
-      - _ulid: 01KF2XCMG00000000000000000
-        slugs:
-          - meta-get-cmd
-        title: kspec meta get
-        type: requirement
-        description: |
-          kspec meta get <ref>
-
-          Get a meta item by reference:
-          - Works for any meta item type (agent, workflow, convention, observation)
-          - --json: Structured output
-          - --yaml: YAML output (default for complex items)
-
-          Example:
-          kspec meta get @workflow-spec-first
-          kspec meta get @claude
-
-          Unified access to any meta item by reference.
-        status:
-          maturity: draft
-          implementation: implemented
-        implements:
-          - "@meta-commands"
-        acceptance_criteria:
-          - given: a valid agent, workflow, convention, or observation reference is provided
-            id: ac-1
-            then: the referenced meta item is returned in a type-appropriate representation
-            when: kspec meta get <ref> runs
-          - given: the requested meta ref does not resolve
-            id: ac-2
-            then: the command returns an error instead of unrelated output
-            when: kspec meta get runs
       - _ulid: 01KF2XCMN00000000000000000
         slugs:
           - meta-list-cmd
@@ -2487,57 +2253,6 @@ features:
             id: ac-2
             then: only meta items of the requested type are returned
             when: kspec meta list runs
-      - _ulid: 01KF2XCMA00000000000000000
-        slugs:
-          - meta-add-cmd
-        title: kspec meta add
-        type: requirement
-        description: |
-          kspec meta add <type> [options]
-
-          Add a new meta item:
-          - type: agent, workflow, convention (not observation - use meta observe)
-
-          For agents:
-          --id <id> --name <name> --capabilities <cap1,cap2>
-
-          For workflows:
-          --id <id> --trigger <trigger> --description <desc>
-
-          For conventions:
-          --domain <domain> --rules <rule1> --rules <rule2>
-
-          Example:
-          kspec meta add agent --id human --name "Human Developer" --capabilities code,review
-          kspec meta add workflow --id pr-review --trigger "pull request opened"
-
-          ULID generated automatically. Returns created item reference.
-        status:
-          maturity: draft
-          implementation: implemented
-        implements:
-          - "@meta-commands"
-        traits:
-          - "@trait-shadow-commit"
-        acceptance_criteria:
-          - given: kspec meta add workflow is executed with --steps containing a valid JSON array of workflow
-              steps
-            id: ac-1
-            then: workflow is created with provided steps; steps array persists in meta manifest
-            when: each step object has required 'type' (check/action/decision) and 'content' fields
-          - given: kspec meta add workflow is executed with --steps containing malformed JSON
-            id: ac-2
-            then: command exits with error 'Invalid JSON in --steps' followed by the parse error details
-            when: JSON.parse fails
-          - given: kspec meta add workflow is executed with --steps containing a JSON object (not an array)
-            id: ac-3
-            then: command exits with error 'Steps must be a JSON array'
-            when: the parsed JSON is not an array
-          - given: kspec meta add workflow is executed with --steps containing steps with invalid schema
-            id: ac-4
-            then: "command exits with error 'Invalid workflow steps' showing field path and validation issue
-              (e.g., '0.type: Invalid enum value')"
-            when: step objects fail WorkflowStepSchema validation (e.g., invalid type, missing content)
       - _ulid: 01KF2XCMS00000000000000000
         slugs:
           - meta-set-cmd
@@ -2576,40 +2291,6 @@ features:
             id: ac-2
             then: the new value is appended without removing existing entries
             when: the command completes
-      - _ulid: 01KF2XCMD00000000000000000
-        slugs:
-          - meta-delete-cmd
-        title: kspec meta delete
-        type: requirement
-        description: |
-          kspec meta delete <ref> [options]
-
-          Delete a meta item:
-          - --confirm: Skip confirmation prompt
-          - Validates no dangling references before deletion
-
-          Example:
-          kspec meta delete @workflow-old
-          kspec meta delete @obs-123 --confirm
-
-          Error if item is referenced by tasks (meta_ref) or observations
-          (workflow_ref). Use --confirm to override.
-        status:
-          maturity: draft
-          implementation: implemented
-        implements:
-          - "@meta-commands"
-        traits:
-          - "@trait-shadow-commit"
-        acceptance_criteria:
-          - given: a meta item is still referenced by a task meta_ref or observation workflow_ref
-            id: ac-1
-            then: the command fails with guidance about the dangling reference
-            when: kspec meta delete runs
-          - given: an unreferenced meta item is deleted with confirmation satisfied
-            id: ac-2
-            then: the item is removed from the meta manifest
-            when: kspec meta delete completes
   - _ulid: 01KF1XREF00000000000000000
     slugs:
       - meta-ref

@@ -3,7 +3,7 @@ slugs:
   - update-existing-session-specs-for-new-storage-path
 title: Update existing session specs for new storage paths
 type: task
-spec_ref: "@session-spec-path-updates"
+spec_ref: null
 plan_ref: "@plan-session-storage-separation"
 status: completed
 blocked_by: []
@@ -21,6 +21,14 @@ tags:
   - spec
 vcs_refs: []
 session_id: 01KK8BZFWX77P91QZD0WDN87HA
+history:
+  - author: "@claude"
+    changes:
+      spec_ref:
+        new: null
+        previous: "@session-spec-path-updates"
+    command: item-delete-ref-cleanup
+    timestamp: 2026-03-25T05:57:02.239Z
 created_at: 2026-03-08T22:46:14.966Z
 started_at: 2026-03-09T04:01:17.972Z
 submitted_at: 2026-03-09T04:07:04.856Z

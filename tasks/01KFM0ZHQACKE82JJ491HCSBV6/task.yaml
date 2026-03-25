@@ -6,7 +6,7 @@ type: task
 description: Add --steps <json> flag to allow defining workflow steps at creation time via JSON
   array, avoiding manual YAML edits. This implements the new acceptance criteria ac-1 through ac-4
   on @meta-add-cmd.
-spec_ref: "@meta-add-cmd"
+spec_ref: null
 meta_ref: null
 status: completed
 blocked_by: []
@@ -16,6 +16,14 @@ context: []
 priority: 2
 tags: []
 vcs_refs: []
+history:
+  - author: "@claude"
+    changes:
+      spec_ref:
+        new: null
+        previous: "@meta-add-cmd"
+    command: item-delete-ref-cleanup
+    timestamp: 2026-03-25T05:57:02.237Z
 created_at: 2026-01-22T23:35:06.730Z
 started_at: 2026-01-22T23:40:54.287Z
 completed_at: 2026-01-22T23:55:46.588Z

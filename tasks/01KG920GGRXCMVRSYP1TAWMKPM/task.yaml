@@ -4,7 +4,7 @@ title: Add --title override to kspec derive command
 type: task
 description: 'Allow --title override on kspec derive: kspec derive @spec --title "Custom Task Title"
   to override auto-generated "Implement: {spec title}" format'
-spec_ref: "@derive-title-override"
+spec_ref: null
 status: completed
 blocked_by: []
 closed_reason: "Merged in PR #298. Added --title flag to derive command for custom task titles."
@@ -15,6 +15,14 @@ tags:
   - reflection
   - kspec-cli
 vcs_refs: []
+history:
+  - author: "@claude"
+    changes:
+      spec_ref:
+        new: null
+        previous: "@derive-title-override"
+    command: item-delete-ref-cleanup
+    timestamp: 2026-03-25T05:57:02.237Z
 created_at: 2026-01-31T03:37:09.911Z
 started_at: 2026-02-02T23:43:07.916Z
 completed_at: 2026-02-03T00:00:38.578Z

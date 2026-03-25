@@ -464,7 +464,6 @@
     - task-recursive-derive
   title: Implement recursive derive with auto-dependencies
   type: task
-  spec_ref: "@cmd-derive"
   status: completed
   blocked_by: []
   depends_on: []
@@ -1489,7 +1488,6 @@
     - task-kspec-meta-show
   title: "Implement: kspec meta show"
   type: task
-  spec_ref: "@meta-show"
   status: completed
   blocked_by: []
   depends_on:
@@ -1506,7 +1504,6 @@
     - task-kspec-meta-agents
   title: "Implement: kspec meta agents"
   type: task
-  spec_ref: "@meta-agents-cmd"
   status: completed
   blocked_by: []
   depends_on:
@@ -1523,7 +1520,6 @@
     - task-kspec-meta-workflows
   title: "Implement: kspec meta workflows"
   type: task
-  spec_ref: "@meta-workflows-cmd"
   status: completed
   blocked_by: []
   depends_on:
@@ -1540,7 +1536,6 @@
     - task-kspec-meta-conventions
   title: "Implement: kspec meta conventions"
   type: task
-  spec_ref: "@meta-conventions-cmd"
   status: completed
   blocked_by: []
   depends_on:
@@ -1557,7 +1552,6 @@
     - task-kspec-meta-observe
   title: "Implement: kspec meta observe"
   type: task
-  spec_ref: "@meta-observe-cmd"
   status: completed
   blocked_by: []
   depends_on:
@@ -1574,7 +1568,6 @@
     - task-kspec-meta-observations
   title: "Implement: kspec meta observations"
   type: task
-  spec_ref: "@meta-observations-cmd"
   status: completed
   blocked_by: []
   depends_on:
@@ -1591,7 +1584,6 @@
     - task-kspec-meta-promote
   title: "Implement: kspec meta promote"
   type: task
-  spec_ref: "@meta-promote-cmd"
   status: completed
   blocked_by: []
   depends_on:
@@ -1608,7 +1600,6 @@
     - task-kspec-meta-resolve
   title: "Implement: kspec meta resolve"
   type: task
-  spec_ref: "@meta-resolve-cmd"
   status: completed
   blocked_by: []
   depends_on:
@@ -1625,7 +1616,6 @@
     - task-kspec-meta-focus
   title: "Implement: kspec meta focus"
   type: task
-  spec_ref: "@meta-focus-cmd"
   status: completed
   blocked_by: []
   depends_on:
@@ -1642,7 +1632,6 @@
     - task-kspec-meta-thread
   title: "Implement: kspec meta thread"
   type: task
-  spec_ref: "@meta-thread-cmd"
   status: completed
   blocked_by: []
   depends_on:
@@ -1659,7 +1648,6 @@
     - task-kspec-meta-question
   title: "Implement: kspec meta question"
   type: task
-  spec_ref: "@meta-question-cmd"
   status: completed
   blocked_by: []
   depends_on:
@@ -1676,7 +1664,6 @@
     - task-kspec-meta-context
   title: "Implement: kspec meta context"
   type: task
-  spec_ref: "@meta-context-cmd"
   status: completed
   blocked_by: []
   depends_on:
@@ -1693,7 +1680,6 @@
     - task-kspec-meta-get
   title: "Implement: kspec meta get"
   type: task
-  spec_ref: "@meta-get-cmd"
   status: completed
   blocked_by: []
   depends_on:
@@ -1710,7 +1696,6 @@
     - task-kspec-meta-list
   title: "Implement: kspec meta list"
   type: task
-  spec_ref: "@meta-list-cmd"
   status: completed
   blocked_by: []
   depends_on:
@@ -1727,7 +1712,6 @@
     - task-kspec-meta-add
   title: "Implement: kspec meta add"
   type: task
-  spec_ref: "@meta-add-cmd"
   status: completed
   blocked_by: []
   depends_on:
@@ -1744,7 +1728,6 @@
     - task-kspec-meta-set
   title: "Implement: kspec meta set"
   type: task
-  spec_ref: "@meta-set-cmd"
   status: completed
   blocked_by: []
   depends_on:
@@ -1761,7 +1744,6 @@
     - task-kspec-meta-delete
   title: "Implement: kspec meta delete"
   type: task
-  spec_ref: "@meta-delete-cmd"
   status: completed
   blocked_by: []
   depends_on:
@@ -2512,7 +2494,6 @@
   slugs: []
   title: Add meta observe --from-inbox command
   type: task
-  spec_ref: "@meta-observe-cmd"
   status: completed
   blocked_by: []
   depends_on: []
@@ -3745,7 +3726,6 @@
   slugs: []
   title: Fix derive to skip cancelled tasks in parent lookup
   type: task
-  spec_ref: "@cmd-derive"
   status: completed
   blocked_by: []
   depends_on: []
@@ -3966,7 +3946,6 @@
     - add-steps-flag-workflow
   title: Add --steps flag to kspec meta add workflow
   type: task
-  spec_ref: "@meta-add-cmd"
   status: completed
   blocked_by: []
   depends_on: []
@@ -6331,7 +6310,6 @@
   slugs: []
   title: Add --title override to kspec derive command
   type: task
-  spec_ref: "@derive-title-override"
   status: completed
   blocked_by: []
   depends_on: []
@@ -13591,7 +13569,6 @@
   slugs: []
   title: "Fill spec gap: derive command options and fix spec/code mismatches"
   type: task
-  spec_ref: "@cmd-derive"
   status: completed
   blocked_by: []
   depends_on: []
@@ -13713,7 +13690,6 @@
     - implement-ui-design-system
   title: Implement UI Design System
   type: task
-  spec_ref: "@ui-design-system"
   plan_ref: "@plan-ui-ux-revamp"
   status: completed
   blocked_by: []
@@ -14957,7 +14933,6 @@
     - add-sessions-storage-config-to-manifest-schema
   title: Add sessions.storage config to manifest schema
   type: task
-  spec_ref: "@session-storage-modes"
   plan_ref: "@plan-session-storage-separation"
   status: completed
   blocked_by: []
@@ -15025,7 +15000,6 @@
     - update-existing-session-specs-for-new-storage-path
   title: Update existing session specs for new storage paths
   type: task
-  spec_ref: "@session-spec-path-updates"
   plan_ref: "@plan-session-storage-separation"
   status: completed
   blocked_by: []
@@ -15048,7 +15022,6 @@
     - update-kspec-init-setup-for-session-directory
   title: Update kspec init/setup for session directory
   type: task
-  spec_ref: "@session-storage-modes"
   plan_ref: "@plan-session-storage-separation"
   status: completed
   blocked_by: []
@@ -15071,7 +15044,6 @@
     - add-legacy-session-read-fallback
   title: Add legacy session read fallback
   type: task
-  spec_ref: "@session-legacy-migration"
   plan_ref: "@plan-session-storage-separation"
   status: completed
   blocked_by: []
@@ -15094,7 +15066,6 @@
     - add-kspec-session-migrate-command
   title: Add kspec session migrate command
   type: task
-  spec_ref: "@session-legacy-migration"
   plan_ref: "@plan-session-storage-separation"
   status: completed
   blocked_by: []
@@ -15205,7 +15176,6 @@
   slugs: []
   title: Replace legacy session fallback reads with detect-and-warn
   type: task
-  spec_ref: "@session-legacy-migration"
   status: completed
   blocked_by: []
   depends_on: []
@@ -15521,7 +15491,6 @@
     - implement-session-cli-unified-filtering
   title: Implement Session CLI Unified Filtering
   type: task
-  spec_ref: "@session-cli-unified-filtering"
   plan_ref: "@plan-session-explorer-unified-session-browsing-filterin"
   status: completed
   blocked_by: []

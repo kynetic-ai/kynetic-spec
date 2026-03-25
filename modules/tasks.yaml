@@ -850,29 +850,6 @@ features:
     tags:
       - tasks
     requirements:
-      - _ulid: 01JHNKA6W8TSTR100000000000
-        slugs:
-          - task-storage-alongside
-        title: Storage - Alongside Specs
-        type: requirement
-        description: |
-          For smaller projects, tasks next to specs:
-
-          spec/
-            auth.yaml           # Spec items
-            auth.tasks.yaml     # Tasks for auth module
-
-          Simple, keeps related items together.
-        status:
-          maturity: deprecated
-          implementation: in_progress
-        implements: []
-        acceptance_criteria:
-          - given: a smaller project stores tasks alongside specs
-            id: ac-1
-            then: tasks for that module remain colocated with the related spec
-            when: a module has a companion .tasks.yaml file next to its spec file
-        superseded_by: "@task-directory-storage"
       - _ulid: 01JHNKA6W9TSTR200000000000
         slugs:
           - task-storage-separate

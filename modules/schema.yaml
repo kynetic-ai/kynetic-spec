@@ -919,35 +919,6 @@ features:
         when: Implementation progress is summarized
     tags: []
     requirements:
-      - _ulid: 01KFA4JN8597CWFW7CTNE4T6A9
-        slugs:
-          - alignment-auto-sync
-        title: Automatic Spec Status Synchronization
-        type: requirement
-        description: When tasks referencing a spec item change state (start, complete, cancel), the spec's
-          implementation status automatically updates to reflect progress.
-        status:
-          maturity: draft
-          implementation: in_progress
-        depends_on: []
-        implements: []
-        relates_to: []
-        tests: []
-        acceptance_criteria:
-          - given: A task with spec_ref is marked completed
-            id: ac-1
-            then: Spec implementation status updates to 'implemented' if all linked tasks are completed
-            when: syncSpecImplementationStatus is called
-          - given: A task with spec_ref is marked in_progress
-            id: ac-2
-            then: Spec implementation status updates to 'in_progress'
-            when: syncSpecImplementationStatus is called
-          - given: Multiple tasks reference the same spec, some completed and some in_progress
-            id: ac-3
-            then: Spec implementation status is 'in_progress' (partial completion)
-            when: syncSpecImplementationStatus is called
-        tags: []
-        created: 2026-01-19T03:25:34.341Z
       - _ulid: 01KFA4KB1QBJ1KFT5KEXQCATGQ
         slugs:
           - alignment-index
@@ -973,36 +944,6 @@ features:
             when: getSpecForTask(taskUlid, refIndex) is called
         tags: []
         created: 2026-01-19T03:25:56.664Z
-      - _ulid: 01KFA4KTKFC1JW1F4002Q58VT9
-        slugs:
-          - alignment-warnings
-        title: Alignment Validation and Warnings
-        type: requirement
-        description: "Detect and report alignment issues: orphaned specs (no tasks), status mismatches (spec
-          status doesn't match task progress), and stale implementation status."
-        status:
-          maturity: draft
-          implementation: in_progress
-        depends_on: []
-        implements: []
-        relates_to: []
-        tests: []
-        acceptance_criteria:
-          - given: A spec item has no tasks with spec_ref pointing to it
-            id: ac-1
-            then: Returns warning with type='orphaned_spec' and spec details
-            when: findAlignmentWarnings is called
-          - given: A spec's current implementation status differs from expected status based on linked tasks
-            id: ac-2
-            then: Returns warning with type='status_mismatch' explaining the discrepancy
-            when: findAlignmentWarnings is called
-          - given: A spec has no linked tasks and implementation status is 'implemented' or 'verified'
-            id: ac-3
-            then: No warning is emitted — implemented/verified status is trusted as historical baseline
-              predating the task system
-            when: findAlignmentWarnings is called
-        tags: []
-        created: 2026-01-19T03:26:12.591Z
       - _ulid: 01KFA4M9J3FDXJ50PTMQQK82PT
         slugs:
           - alignment-summaries
@@ -1025,27 +966,6 @@ features:
             when: getImplementationSummary(specUlid) is called
         tags: []
         created: 2026-01-19T03:26:27.907Z
-      - _ulid: 01KFA4MKV8QHT9ZAJQGZ8F7MQF
-        slugs:
-          - alignment-stats
-        title: Alignment Statistics
-        type: requirement
-        description: "Track aggregate statistics about spec-task alignment: total specs, specs with tasks,
-          aligned specs, orphaned specs."
-        status:
-          maturity: draft
-          implementation: in_progress
-        depends_on: []
-        implements: []
-        relates_to: []
-        tests: []
-        acceptance_criteria:
-          - given: AlignmentIndex is built
-            id: ac-1
-            then: Returns object with totalSpecs, specsWithTasks, alignedSpecs, and orphanedSpecs counts
-            when: getStats is called
-        tags: []
-        created: 2026-01-19T03:26:38.440Z
     created: 2026-01-19T03:25:25.371Z
   - _ulid: 01KFC190RJFWPWSYTC128B8Y3N
     slugs:

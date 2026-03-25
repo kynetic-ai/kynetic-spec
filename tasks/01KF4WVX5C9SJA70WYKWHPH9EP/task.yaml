@@ -3,7 +3,7 @@ slugs:
   - task-kspec-meta-add
 title: "Implement: kspec meta add"
 type: task
-spec_ref: "@meta-add-cmd"
+spec_ref: null
 derivation: auto
 status: completed
 blocked_by: []
@@ -14,6 +14,14 @@ context: []
 priority: 3
 tags: []
 vcs_refs: []
+history:
+  - author: "@claude"
+    changes:
+      spec_ref:
+        new: null
+        previous: "@meta-add-cmd"
+    command: item-delete-ref-cleanup
+    timestamp: 2026-03-25T05:57:02.236Z
 created_at: 2026-01-17T02:34:36.588Z
 started_at: 2026-01-18T15:45:35.737Z
 completed_at: 2026-01-18T15:45:35.737Z

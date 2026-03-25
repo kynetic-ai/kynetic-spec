@@ -3,7 +3,7 @@ slugs:
   - update-kspec-init-setup-for-session-directory
 title: Update kspec init/setup for session directory
 type: task
-spec_ref: "@session-storage-modes"
+spec_ref: null
 plan_ref: "@plan-session-storage-separation"
 status: completed
 blocked_by: []
@@ -22,6 +22,14 @@ tags:
   - cli
 vcs_refs: []
 session_id: 01KK89EEBG2XA6TFD63SWC00D3
+history:
+  - author: "@claude"
+    changes:
+      spec_ref:
+        new: null
+        previous: "@session-storage-modes"
+    command: item-delete-ref-cleanup
+    timestamp: 2026-03-25T05:57:02.239Z
 created_at: 2026-03-08T22:46:15.461Z
 started_at: 2026-03-09T03:26:41.185Z
 submitted_at: 2026-03-09T03:35:52.562Z
