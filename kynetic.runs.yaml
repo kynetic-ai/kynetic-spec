@@ -15206,7 +15206,7 @@ runs:
     completed_at: 2026-03-25T23:05:07.902Z
   - _ulid: 01KMKP4TYTSHMC4ZVY2TTR4RBE
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -15221,7 +15221,29 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-25T23:44:42.732Z
-        completed_at: 2026-03-25T23:44:42.732Z
+        completed_at: 2026-03-25T23:45:06.026Z
+        notes: >-
+          Searched existing state. Identified friction points:
+
+
+          1. FRICTION (high confidence): Reviewer worktree cannot checkout dev because it's already
+          checked out in the main worktree. Had to use git -C to merge from the main worktree. This
+          is a workaround — the merge skill instructions say 'git checkout <integration-branch>'
+          which fails in worktree contexts. This is systemic: every dispatch review that needs to
+          merge will hit this.
+
+
+          2. SUCCESS: The review-gates anti-rubber-stamping checklist is effective — it forced
+          verification of the type cast safety, YAML serializer compatibility, and index field
+          parity, all of which are subtle correctness concerns that a surface-level review would
+          miss.
+
+
+          No other high-confidence items. The session was short and focused.
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-25T23:45:06.026Z
+        completed_at: 2026-03-25T23:45:06.026Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-25T23:44:14.810Z
