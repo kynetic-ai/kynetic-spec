@@ -47,7 +47,7 @@ description: >-
 spec_ref: "@task-data-manager"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -56,6 +56,14 @@ tags:
   - tasks
   - bug
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-25T23:55:18.573Z
+  commit: 126d858ae60ed574f4cfd6782a817ec58a27a01a
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
 session_id: 01KMKNZ336W5RZRR76W4QDRM60
 history:
   - author: "@claude"
@@ -71,7 +79,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-03-25T23:41:49.915Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-03-25T23:55:18.573Z
+          commit: 126d858ae60ed574f4cfd6782a817ec58a27a01a
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous: null
+      submitted_at:
+        new: 2026-03-25T23:55:18.576Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-03-25T23:55:18.576Z
 created_at: 2026-03-25T23:37:42.643Z
 started_at: 2026-03-25T23:41:49.914Z
+submitted_at: 2026-03-25T23:55:18.576Z
 todos: []
 automation: eligible
