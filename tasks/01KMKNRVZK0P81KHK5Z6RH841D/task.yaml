@@ -1,0 +1,61 @@
+_ulid: 01KMKNRVZK0P81KHK5Z6RH841D
+slugs: []
+title: "Fix split backend mutex: hold lock through write flush"
+type: task
+description: >-
+  Why: The split backend's per-task mutex releases the lock before runWithBuffer flushes writes to
+  disk. This creates a TOCTOU race: concurrent mutations on the same task read stale state because
+  the previous mutation's write hasn't flushed yet. The last writer wins and earlier mutations are
+  silently lost. This violates @task-data-manager ac-9 (concurrent same-task mutations must
+  serialize without data corruption) and ac-10 (delete + mutate must fully complete before the other
+  begins).
+
+
+  7 tests are currently skipped with TODO comments citing this bug:
+
+  - tests/task-data-manager.test.ts lines 757, 798, 838, 886 (4 tests)
+
+  - tests/task-mutation-serialization.test.ts lines 63, 99 (2 tests)
+
+  These tests verify concurrent mutations preserve all state changes and notes.
+
+
+  What: In src/parser/split-backend.ts, the SplitBackend.mutateTask method (around line 722)
+  acquires the per-task lock via this.taskMutex.acquire(), then releases it in a try/finally block
+  that wraps only the mutation logic. The runWithBuffer flush happens after lock release. The fix is
+  to hold the lock through the entire operation including the write flush. The same pattern needs to
+  be checked and fixed in mutateTasks and deleteTask methods.
+
+
+  Specifically:
+
+  1. Move releaseTaskLock() in mutateTask to AFTER runWithBuffer completes (not in the inner
+  try/finally)
+
+  2. Apply the same fix to deleteTask — hold lock through the buffer flush
+
+  3. Verify mutateTasks acquires locks for all target ULIDs and holds them through flush
+
+  4. Unskip all 7 tests listed above (remove the .skip and TODO comments)
+
+  5. Run the full test suite to verify no deadlocks or regressions from holding locks longer
+
+
+  How: The fix is small — restructure the try/finally in mutateTask, deleteTask, and potentially
+  mutateTasks so that the lock release happens after the buffer flush, not before. The key insight
+  is that the lock must protect the entire read-mutate-write cycle, not just read-mutate.
+spec_ref: "@task-data-manager"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - tasks
+  - bug
+vcs_refs: []
+created_at: 2026-03-25T23:37:42.643Z
+todos: []
+automation: eligible
