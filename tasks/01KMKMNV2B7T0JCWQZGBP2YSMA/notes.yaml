@@ -1,1 +1,25 @@
-notes: []
+notes:
+  - _ulid: 01KMKMTPWWDX1TFJ7NR2ZHB1TG
+    content: >-
+      Approach: Three deduplication targets identified.
+
+
+      1. session-start-format.test.ts — local seedSplitTask is near-identical copy (only difference:
+      missing try/catch on index read). Will import from helpers/cli.ts instead.
+
+
+      2. session-start-notes.test.ts — same as #1, near-identical copy missing try/catch. Will
+      import from helpers/cli.ts instead. 
+
+
+      3. review-task-integration.test.ts — createAndSaveTask is structurally different: async, uses
+      createTask() for defaults, returns LoadedTask with _sourceFile. Will refactor to use
+      seedSplitTask internally for the file-writing portion while keeping the createTask() wrapping
+      and return value.
+
+
+      The canonical seedSplitTask in helpers/cli.ts has proper error handling (try/catch on index
+      read) that the local copies lack, so deduplication also improves robustness.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-25T23:21:14.397Z
