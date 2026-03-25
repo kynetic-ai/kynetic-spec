@@ -1,1 +1,43 @@
-notes: []
+notes:
+  - _ulid: 01KMKCMQZHZZ16GGX8GNGSJ4BS
+    content: >-
+      Approach: Systematic migration of test fixtures and tests from monolithic to split task
+      storage format.
+
+
+      Key findings from research:
+
+      1. tests/fixtures/project.tasks.yaml has 4 tasks in monolithic format (embedded notes arrays)
+      — needs conversion to split format with per-task directories
+
+      2. tests/fixtures/kynetic.yaml lacks task_storage setting — needs task_storage: { format:
+      'split' }
+
+      3. ~106 test files use setupTempFixtures() which copies the monolithic fixtures — migrating
+      fixtures + helper handles all of these
+
+      4. 3 test files import monolithic-specific functions:
+         - yaml-round-trip-stability.test.ts: saveTask, mutateTaskAtomically (saveTask path tests ONLY test monolithic — delete)
+         - task-mutation-serialization.test.ts: mutateTaskAtomically (concurrent mutation tests — behavior still relevant, rewrite against split backend)
+         - review-task-integration.test.ts: saveTask (uses it for test setup — rewrite to use TaskDataManager)
+      5. E2E fixtures in multi-dir already lean format, no changes needed
+
+
+      Plan:
+
+      1. Convert tests/fixtures/ to split format (per-task dirs + lean index)
+
+      2. Update kynetic.yaml fixture with task_storage: { format: 'split' }
+
+      3. Update setupTempFixtures to copy split-format directories
+
+      4. Delete saveTask path tests from yaml-round-trip-stability (monolithic-only)
+
+      5. Rewrite task-mutation-serialization.test.ts against split backend
+
+      6. Rewrite review-task-integration.test.ts to use TaskDataManager instead of saveTask
+
+      7. Run full test suite, fix failures
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-25T20:58:10.289Z
