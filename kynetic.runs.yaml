@@ -15010,7 +15010,7 @@ runs:
     completed_at: 2026-03-25T00:10:08.027Z
   - _ulid: 01KMHS567C3XTGDWBES5CQR0KR
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -15023,7 +15023,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-25T05:58:49.208Z
-        completed_at: 2026-03-25T05:58:49.208Z
+        completed_at: 2026-03-25T05:59:02.515Z
+        notes: "What worked: (1) Parallel subagents for investigation gave complete picture fast. (2)
+          AskUserQuestion one-at-a-time kept decisions focused. (3) Plan document as investigation
+          record — findings persist as revision notes. (4) Questioning spec relevance before writing
+          tests — saved wasted effort on 3 removable specs."
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-25T05:59:02.515Z
+        completed_at: 2026-03-25T05:59:02.515Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-03-25T05:58:23.212Z
