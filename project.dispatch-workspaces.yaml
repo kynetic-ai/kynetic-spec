@@ -23290,21 +23290,43 @@ workspaces:
     base_branch_point: bc3049aba128eb3278e27330e0349349e8b368f8
     bootstrap:
       status: succeeded
-      canonicalBranchHead: bc3049aba128eb3278e27330e0349349e8b368f8
+      canonicalBranchHead: 147d25b6b478d3e17bc5f7b9d98ee56f8b9c2f76
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
       failureMessage: null
-      invalidationReasons: []
-      lastRole: worker
-      lastRunAt: 2026-03-25T20:53:21.892Z
+      invalidationReasons:
+        - workspace-dependencies-missing
+      lastRole: reviewer
+      lastRunAt: 2026-03-25T22:48:50.152Z
       roleStates:
         reviewer:
-          status: not_run
-          canonicalBranchHead: null
-          configHash: null
+          status: succeeded
+          canonicalBranchHead: 147d25b6b478d3e17bc5f7b9d98ee56f8b9c2f76
+          configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
           failureMessage: null
-          invalidationReasons: []
-          lastRunAt: null
-          steps: []
+          invalidationReasons:
+            - workspace-dependencies-missing
+          lastRunAt: 2026-03-25T22:48:50.152Z
+          steps:
+            - status: succeeded
+              allowTrackedChanges: false
+              idempotent: true
+              name: install-workspace-dependencies
+              output: |-
+                added 287 packages, and audited 292 packages in 3s
+
+                67 packages are looking for funding
+                  run `npm fund` for details
+
+                12 vulnerabilities (1 low, 7 moderate, 4 high)
+
+                To address all issues, run:
+                  npm audit fix
+
+                Run `npm audit` for details.
+              reviewerRerunAllowed: true
+              role: reviewer
+              run: npm ci
+              source: dispatch
         worker:
           status: succeeded
           canonicalBranchHead: bc3049aba128eb3278e27330e0349349e8b368f8
@@ -23344,14 +23366,14 @@ workspaces:
             67 packages are looking for funding
               run `npm fund` for details
 
-            10 vulnerabilities (1 low, 6 moderate, 3 high)
+            12 vulnerabilities (1 low, 7 moderate, 4 high)
 
             To address all issues, run:
               npm audit fix
 
             Run `npm audit` for details.
           reviewerRerunAllowed: true
-          role: worker
+          role: reviewer
           run: npm ci
           source: dispatch
     branch_provenance:
@@ -23391,7 +23413,7 @@ workspaces:
       last_active_at: 2026-03-25T22:11:33.146Z
       last_reconciled_at: 2026-03-25T22:48:45.493Z
       created_at: 2026-03-25T20:53:17.314Z
-      updated_at: 2026-03-25T22:48:45.493Z
+      updated_at: 2026-03-25T22:48:50.152Z
     workspace_id: dispatch-workspace-01KMK33PK53WC6D21QNJJA8DWJ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
