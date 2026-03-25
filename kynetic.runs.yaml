@@ -15131,7 +15131,7 @@ runs:
     completed_at: 2026-03-25T22:48:24.006Z
   - _ulid: 01KMKKSJ0T8229WE4HHAA56AQF
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -15145,7 +15145,35 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-25T23:03:23.595Z
-        completed_at: 2026-03-25T23:03:23.595Z
+        completed_at: 2026-03-25T23:04:08.034Z
+        notes: >-
+          High-confidence observations from this session:
+
+
+          1. SUCCESS: Review workflow executed smoothly — read diff first (before description), ran
+          tests, verified claims, found nits, approved, merged, completed. The structured review
+          checklist prevented rubber-stamping.
+
+
+          2. FRICTION: Reviewer in detached worktree cannot 'git checkout dev' to merge because dev
+          is checked out in the main worktree. Had to run 'git -C /path/to/main/worktree merge ...'
+          instead. This is a recurring pattern for reviewer agents — the merge step always requires
+          reaching into the main worktree. Searched: no existing tracking found for this specific
+          friction.
+
+
+          3. SUCCESS: The 9 skipped tests were all justified with TODO comments citing genuine split
+          backend bugs, and the worker had already captured an observation (01KMKJP4) about the
+          underlying issues. This is the system working correctly — skip with tracking, not silent
+          skip.
+
+
+          Dropping: seedSplitTask duplication nit is already captured in the review record as a nit
+          finding. Not systemic enough to warrant a separate observation.
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-25T23:04:08.034Z
+        completed_at: 2026-03-25T23:04:08.034Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-25T23:03:08.058Z
