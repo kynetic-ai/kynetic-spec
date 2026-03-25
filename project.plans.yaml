@@ -27611,112 +27611,96 @@ plans:
 
       ```yaml
 
-      - title: Behavioral tests for markdown rendering trait ACs
-        slug: task-behavioral-tests-markdown-rendering
+      - title: Audit and fill markdown rendering behavioral test gaps
+        slug: task-audit-markdown-rendering-coverage
         description: |
-          Replace static analysis coverage for @trait-markdown-rendering ac-1 through ac-9 and
-          @streaming-markdown-component ac-1 through ac-6 with behavioral tests.
+          Audit existing behavioral tests for @trait-markdown-rendering (ac-1 through ac-9) and
+          @streaming-markdown-component (ac-1 through ac-7) to confirm coverage is sufficient.
 
-          These 15 ACs had their only test coverage in the static analysis portions of
-          tests/web-ui-session-stream.test.ts which were removed. The ACs cover markdown rendering
-          behavior (code blocks, inline formatting, links, lists, tables, streaming incremental
-          updates, etc.).
+          Investigation found that 19 AC annotations already exist in behavioral tests:
+          - tests/web-ui-session-stream.test.ts: 12 annotations for @trait-markdown-rendering,
+            6 for @streaming-markdown-component (event parsing, markdown rendering, sanitization,
+            streaming, auto-scroll, incremental block updates)
+          - packages/web-ui/tests/e2e/smoke.spec.ts: 1 annotation for @streaming-markdown-component
 
-          Write E2E or component-level tests that render actual markdown content and verify the output,
-          not tests that read .svelte source files and check for string patterns.
-        priority: 2
+          The original plan incorrectly claimed these 15 ACs lost all coverage. The static analysis
+          portions of web-ui-session-stream.test.ts were removed, but the behavioral tests were kept.
+
+          Scope: Review each AC against its annotated test(s) and determine if the behavioral test
+          actually exercises the AC's given/when/then. Fill gaps only where the annotation exists but
+          the test doesn't truly validate the behavior.
+        priority: 3
         tags:
           - testing
           - web-ui
         spec_ref: "@trait-markdown-rendering"
-
-      - title: Behavioral tests for design system ACs
-        slug: task-behavioral-tests-design-system
-        description: |
-          Replace static analysis coverage for @ui-design-system ac-1 through ac-4 with behavioral
-          tests.
-
-          These 4 ACs had their only test coverage in tests/web-ui-design-system.test.ts which was
-          deleted. The ACs cover CSS custom properties, design tokens, status colors, and animation
-          keyframes.
-
-          Write E2E tests that render components and verify computed styles, or build-pipeline tests
-          that check the CSS output (not source files) contains the expected tokens.
-        priority: 2
-        tags:
-          - testing
-          - web-ui
-        spec_ref: "@ui-design-system"
-
-      - title: Behavioral tests for API input type safety ACs
-        slug: task-behavioral-tests-api-input-safety
-        description: |
-          Replace static analysis coverage for @api-input-type-safety ac-4 with a behavioral test.
-
-          The removed static test verified daemon route files import from canonical schema options.
-          The 4 behavioral tests already in tests/daemon-api-input-validation.test.ts cover ac-1
-          through ac-3 well. Write an E2E test for ac-4 that sends requests with invalid enum values
-          to all endpoints and verifies they return structured validation errors.
-        priority: 2
-        tags:
-          - testing
-          - daemon
-        spec_ref: "@api-input-type-safety"
-
-      - title: Behavioral tests for package distribution ACs
-        slug: task-behavioral-tests-package-distribution
-        description: |
-          Replace static analysis coverage for @package-distribution ac-1, ac-2, ac-3, ac-5, ac-6 with
-          behavioral tests.
-
-          These 5 ACs had their only test coverage in tests/package-distribution.test.ts which was
-          deleted. The ACs cover that the npm package includes required templates, skills manifest,
-          hooks, and agent section files.
-
-          Write tests that run npm pack (or equivalent) and verify the package tarball contents, or
-          tests that import from the package and verify the expected exports are available. Do not read
-          source files from templates/ and assert on their content.
-        priority: 3
-        tags:
-          - testing
-          - packaging
-        spec_ref: "@package-distribution"
-
-      - title: Behavioral tests for prose typography ACs
-        slug: task-behavioral-tests-prose-typography
-        description: |
-          Replace static analysis coverage for @prose-typography-setup ac-1 and ac-2 with behavioral
-          tests.
-
-          These 2 ACs had their only test coverage in packages/web-ui/tests/prose-typography.test.ts
-          which was deleted. The ACs cover that prose/markdown content uses appropriate typography classes
-          and that the Tailwind typography plugin is active.
-
-          Write E2E tests that render a page with markdown content and verify the computed styles show
-          proper typography treatment (font sizes, line heights, margins on headings/paragraphs).
-        priority: 3
-        tags:
-          - testing
-          - web-ui
-        spec_ref: "@prose-typography-setup"
-
-      - title: Behavioral tests for remaining at-risk ACs
-        slug: task-behavioral-tests-remaining-gaps
-        description: |
-          Replace static analysis coverage for the remaining at-risk ACs:
-
-          - @gh-pages-export ac-24 (from tests/web-ui-settings.test.ts)
-          - @daemon-server ac-16 (from tests/daemon-executable.test.ts — 2 static tests removed,
-            1 behavioral test kept)
-
-          For each AC, write a behavioral test that exercises the feature:
-          - ac-24/@gh-pages-export: build static export and verify settings page renders
-          - ac-16/@daemon-server: the compilation test is already behavioral; verify the removed
-            package.json and build-script checks are covered by the compilation succeeding
-        priority: 3
-        tags:
-          - testing
       ```
+
+
+      ## Spec Cleanup (pre-requisite to remaining work)
+
+
+      Investigation revealed that several specs referenced by the original plan tasks are no longer
+
+      worth testing or need structural changes. These should be handled before (or instead of)
+
+      writing replacement tests:
+
+
+      ### Remove @ui-design-system
+
+      The spec's ACs are implementation-specific (exact token counts, Tailwind @theme inline
+      extensions,
+
+      specific utility class names). A UX-focused redesign is underway that will produce new,
+
+      behaviorally-testable specs. Remove this spec rather than writing tests for a contract that
+
+      will be replaced.
+
+
+      ### Remove @api-input-type-safety ac-4
+
+      ac-1 through ac-3 have behavioral tests in tests/daemon-api-input-validation.test.ts. ac-4
+
+      ("type constraints are derived from the canonical schema definition") is an implementation
+
+      detail — users cannot observe whether validation comes from a shared schema vs hand-coded
+
+      checks. The behavioral outcomes are already covered by ac-1 through ac-3.
+
+
+      ### Remove @package-distribution
+
+      This spec covers stable build/packaging infrastructure (npm pack includes templates, plugin
+
+      system files). The plugin system (ac-5, ac-6) is being deprecated. The remaining ACs (ac-1
+
+      through ac-4) describe build pipeline behavior that is enforced by CI and unlikely to regress
+
+      without immediate visibility. Remove the spec.
+
+
+      ### Fold @prose-typography-setup into @trait-markdown-rendering
+
+      @prose-typography-setup has 2 ACs about Tailwind typography plugin being active. This is a
+
+      prerequisite for @trait-markdown-rendering ac-1 which already requires "Tailwind prose
+      typography
+
+      styling" on GFM elements. The standalone spec is redundant — fold any unique coverage into the
+
+      trait and remove the standalone spec.
+
+
+      ### Defer @gh-pages-export ac-24
+
+      The settings page (ac-24: static mode rendering) will change with the upcoming redesign.
+
+      Writing tests now would be throwaway. @daemon-server ac-16 (bun compile) already has a
+
+      behavioral test in tests/daemon-executable.test.ts — that was a false gap in the original
+      plan.
 
 
       ## Completed Work
@@ -27772,13 +27756,6 @@ plans:
         now catches static analysis patterns at lint time. The old tests/lint/no-static-analysis.test.ts
         is deleted and superseded.
 
-      ### Remaining work:
-
-      The behavioral replacement tasks above cover the ~30 ACs that lost their only test coverage.
-
-      These tasks are independent and can be parallelized.
-
-
       ## Implementation Notes
 
 
@@ -27800,9 +27777,28 @@ plans:
       rule provides automated enforcement at lint time.
 
 
-      Behavioral replacement tasks are independent of each other and grouped by spec domain for
+      ### Post-investigation revision (2026-03-24)
 
-      parallelism.
+
+      The original plan listed 6 behavioral replacement tasks covering ~30 ACs. Investigation found:
+
+      - **Task 1 (markdown rendering):** 19 AC annotations already exist in kept behavioral tests.
+        Re-scoped to an audit of whether existing annotations truly cover the ACs.
+      - **Task 2 (design system):** Spec is implementation-specific, redesign incoming. Removed.
+
+      - **Task 3 (API input safety):** Only ac-4 was uncovered; it's an implementation detail.
+      Removed.
+
+      - **Task 4 (package distribution):** Spec covers stable infra + deprecated plugin system.
+      Removed.
+
+      - **Task 5 (prose typography):** Redundant with @trait-markdown-rendering ac-1. Fold into
+      trait.
+
+      - **Task 6 (remaining):** ac-16 was a false gap (test exists). ac-24 deferred for redesign.
+
+
+      Net: 6 tasks → 1 audit task + 4 spec cleanup items.
     status: draft
     approved_at: null
     derived_specs: []
@@ -27837,6 +27833,11 @@ plans:
           coverage for ~30 at-risk ACs. Removed depends_on references since deletion is done."
         author: "@claude"
         created_at: 2026-03-24T19:45:00.719Z
+      - _ulid: 01KMHQKBAYYHKBP2XQFCQGCW6A
+        content: "Post-investigation revision: 6 tasks → 1 audit task + 4 spec cleanup items based on
+          coverage gap analysis"
+        author: "@claude"
+        created_at: 2026-03-25T05:31:10.046Z
   - _ulid: 01KMF7S3K8Z0SQNR3C51HXKBF3
     slugs:
       - plan-migrate-from-biome-to-oxlint-oxfmt
