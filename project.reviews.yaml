@@ -52056,6 +52056,16 @@ reviews:
         runner: vitest
         created_at: 2026-03-25T23:00:28.862Z
         completed_at: 2026-03-25T23:00:28.862Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Build succeeded — CLI, web-ui, and plugin all built without errors.
+        name: build
+        required: true
+        runner: npm run build
+        created_at: 2026-03-25T23:00:37.146Z
+        completed_at: 2026-03-25T23:00:37.146Z
     events:
       - _ulid: 01KMKK28FDG32MYNFBKRX62N46
         actor: "@claude"
@@ -52091,6 +52101,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-25T23:00:29.238Z
+      - _ulid: 01KMKKMZ0KP0WMB4CCYKGNGATF
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: build
+        timestamp: 2026-03-25T23:00:37.523Z
     examined_commit: 147d25b6b478d3e17bc5f7b9d98ee56f8b9c2f76
     external_links: []
     lifecycle_state: open
@@ -52140,5 +52157,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-25T22:50:24.621Z
-    updated_at: 2026-03-25T23:00:28.862Z
+    updated_at: 2026-03-25T23:00:37.146Z
     notes: []
