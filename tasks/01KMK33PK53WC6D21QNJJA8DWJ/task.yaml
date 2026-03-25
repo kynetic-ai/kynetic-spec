@@ -230,5 +230,13 @@ history:
           fixtures, and no test depends on monolithic code paths that no longer exist.
     command: task-set
     timestamp: 2026-03-25T20:41:24.984Z
+  - author: "@claude"
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-03-25T20:53:04.663Z
 created_at: 2026-03-25T18:11:34.627Z
 todos: []
+automation: eligible
