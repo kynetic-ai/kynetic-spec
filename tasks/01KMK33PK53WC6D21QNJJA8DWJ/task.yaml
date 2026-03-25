@@ -72,8 +72,13 @@ description: >-
 spec_ref: "@task-storage-migration"
 meta_ref: null
 plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: "Merged to dev. All test fixtures and tests migrated from monolithic to split task
+  storage format. Per-task directories created for all fixture sets (main, multi-dir, web-ui E2E).
+  Tests updated to use resolveTaskDataManager(ctx). seedSplitTask helper added. Monolithic-only
+  tests deleted. 9 tests skipped due to pre-existing split backend bugs (observation captured). 2
+  nits recorded: seedSplitTask duplication across test files."
 depends_on:
   - "@task-activate-split-storage"
 context: []
@@ -287,8 +292,26 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-03-25T22:50:26.184Z
+  - author: "@claude"
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: "Merged to dev. All test fixtures and tests migrated from monolithic to split task storage
+          format. Per-task directories created for all fixture sets (main, multi-dir, web-ui E2E).
+          Tests updated to use resolveTaskDataManager(ctx). seedSplitTask helper added.
+          Monolithic-only tests deleted. 9 tests skipped due to pre-existing split backend bugs
+          (observation captured). 2 nits recorded: seedSplitTask duplication across test files."
+        previous: null
+      completed_at:
+        new: 2026-03-25T23:02:18.708Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-03-25T23:02:18.713Z
 created_at: 2026-03-25T18:11:34.627Z
 started_at: 2026-03-25T20:54:08.440Z
 submitted_at: 2026-03-25T22:45:28.410Z
+completed_at: 2026-03-25T23:02:18.708Z
 todos: []
 automation: eligible
