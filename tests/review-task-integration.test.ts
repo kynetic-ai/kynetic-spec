@@ -20,7 +20,7 @@ import type { ReviewRecordInput } from "../src/schema/index.js";
 import { resolveTaskDataManager } from "../src/parser/task-data-manager.js";
 import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
 import { toYaml } from "../src/parser/yaml.js";
-import { createTempDir, cleanupTempDir, initGitRepo, testUlid, testUlids } from "./helpers/cli.js";
+import { createTempDir, cleanupTempDir, initGitRepo, testUlid, testUlids, seedSplitTask } from "./helpers/cli.js";
 
 // Register the split backend
 ensureSplitBackendRegistered();
@@ -55,52 +55,20 @@ function makeReviewInput(overrides: Partial<ReviewRecordInput> = {}): ReviewReco
   };
 }
 
-async function createAndSaveTask(
+function createAndSaveTask(
   ctx: KspecContext,
   overrides: Partial<ReturnType<typeof createTask>> & { _ulid: string; title: string },
-): Promise<LoadedTask> {
+): LoadedTask {
   const task = createTask({
     ...overrides,
   });
   // Apply overrides that createTask may not handle (e.g. status)
   const fullTask = { ...task, ...overrides };
 
-  // Write task to split format: per-task directory + index
+  // Delegate file writing to the canonical helper
+  seedSplitTask(ctx.specDir, fullTask as Record<string, unknown> & { _ulid: string; notes?: unknown[] });
+
   const taskDir = path.join(ctx.specDir, "tasks", fullTask._ulid);
-  await fs.mkdir(taskDir, { recursive: true });
-
-  const { notes, ...coreData } = fullTask;
-  await fs.writeFile(path.join(taskDir, "task.yaml"), toYaml(coreData));
-  await fs.writeFile(path.join(taskDir, "notes.yaml"), toYaml({ notes: notes || [] }));
-
-  // Update the index
-  const indexPath = path.join(ctx.specDir, "project.tasks.yaml");
-  let indexEntries: Record<string, unknown>[] = [];
-  try {
-    const content = await fs.readFile(indexPath, "utf-8");
-    const { parse } = await import("yaml");
-    const parsed = parse(content);
-    if (Array.isArray(parsed)) indexEntries = parsed;
-  } catch {
-    // empty index
-  }
-
-  indexEntries.push({
-    _ulid: fullTask._ulid,
-    slugs: fullTask.slugs,
-    title: fullTask.title,
-    type: fullTask.type,
-    status: fullTask.status,
-    priority: fullTask.priority,
-    tags: fullTask.tags,
-    depends_on: fullTask.depends_on,
-    blocked_by: fullTask.blocked_by || [],
-    created_at: fullTask.created_at,
-    notes_count: (notes || []).length,
-    todos_count: (fullTask.todos || []).length,
-  });
-  await fs.writeFile(indexPath, toYaml(indexEntries));
-
   return {
     ...fullTask,
     _sourceFile: path.join(taskDir, "task.yaml"),
@@ -201,7 +169,7 @@ describe("Review-Task Integration", () => {
   // AC: @review-task-lifecycle-integration ac-1
   it("should persist review_ref through save and load cycle", async () => {
     const taskUlid = testUlid("TSK");
-    await createAndSaveTask(ctx, {
+    createAndSaveTask(ctx, {
       _ulid: taskUlid,
       title: "Task With Review Ref",
       slugs: ["task-with-review"],
@@ -224,7 +192,7 @@ describe("Review-Task Integration", () => {
     const [taskUlid, reviewUlid] = testUlids("INT", 2);
 
     // Create a task in pending_review
-    await createAndSaveTask(ctx, {
+    createAndSaveTask(ctx, {
       _ulid: taskUlid,
       title: "Task Under Review",
       slugs: ["task-under-review"],
@@ -264,7 +232,7 @@ describe("Review-Task Integration", () => {
   it("should use review ULID as ref when review has no slug", async () => {
     const [taskUlid, reviewUlid] = testUlids("INT", 2);
 
-    await createAndSaveTask(ctx, {
+    createAndSaveTask(ctx, {
       _ulid: taskUlid,
       title: "Task Under Review",
       slugs: ["task-no-slug-review"],
@@ -303,7 +271,7 @@ describe("Review-Task Integration", () => {
   it("should auto-set review_ref when task is in related_refs of a code review", async () => {
     const [taskUlid, reviewUlid] = testUlids("REL", 2);
 
-    await createAndSaveTask(ctx, {
+    createAndSaveTask(ctx, {
       _ulid: taskUlid,
       title: "Related Task",
       slugs: ["related-task"],
@@ -342,14 +310,14 @@ describe("Review-Task Integration", () => {
   it("should link review to multiple related tasks", async () => {
     const [task1Ulid, task2Ulid, reviewUlid] = testUlids("MUL", 3);
 
-    await createAndSaveTask(ctx, {
+    createAndSaveTask(ctx, {
       _ulid: task1Ulid,
       title: "First Related Task",
       slugs: ["first-related"],
       status: "pending_review",
     });
 
-    await createAndSaveTask(ctx, {
+    createAndSaveTask(ctx, {
       _ulid: task2Ulid,
       title: "Second Related Task",
       slugs: ["second-related"],
@@ -412,7 +380,7 @@ describe("Review-Task Integration", () => {
   it("should transition task to needs_work on changes_requested verdict", async () => {
     const [taskUlid, reviewUlid] = testUlids("VRD", 2);
 
-    await createAndSaveTask(ctx, {
+    createAndSaveTask(ctx, {
       _ulid: taskUlid,
       title: "Task Needing Changes",
       slugs: ["task-needing-changes"],
@@ -460,7 +428,7 @@ describe("Review-Task Integration", () => {
   it("should not transition task if not in pending_review", async () => {
     const [taskUlid, reviewUlid] = testUlids("VNT", 2);
 
-    await createAndSaveTask(ctx, {
+    createAndSaveTask(ctx, {
       _ulid: taskUlid,
       title: "In Progress Task",
       slugs: ["in-progress-task"],
@@ -495,7 +463,7 @@ describe("Review-Task Integration", () => {
   it("should not transition on approve verdict", async () => {
     const [taskUlid, reviewUlid] = testUlids("VAP", 2);
 
-    await createAndSaveTask(ctx, {
+    createAndSaveTask(ctx, {
       _ulid: taskUlid,
       title: "Approved Task",
       slugs: ["approved-task"],
@@ -530,7 +498,7 @@ describe("Review-Task Integration", () => {
   it("should transition related tasks on changes_requested for code review", async () => {
     const [taskUlid, reviewUlid] = testUlids("VRC", 2);
 
-    await createAndSaveTask(ctx, {
+    createAndSaveTask(ctx, {
       _ulid: taskUlid,
       title: "Related Code Review Task",
       slugs: ["related-code-task"],
@@ -763,7 +731,7 @@ describe("Review-Task Integration", () => {
     const [taskUlid, reviewUlid] = testUlids("FIX", 2);
 
     // Create task in pending_review with review_ref
-    await createAndSaveTask(ctx, {
+    createAndSaveTask(ctx, {
       _ulid: taskUlid,
       title: "Fix Cycle Task",
       slugs: ["fix-cycle-task"],
@@ -821,7 +789,7 @@ describe("Review-Task Integration", () => {
     const [taskUlid, reviewUlid] = testUlids("FC2", 2);
 
     // Create task with existing fix cycle note
-    await createAndSaveTask(ctx, {
+    createAndSaveTask(ctx, {
       _ulid: taskUlid,
       title: "Multi Cycle Task",
       slugs: ["multi-cycle-task"],

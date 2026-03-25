@@ -36,9 +36,8 @@
  * @trait-semantic-exit-codes ac-8 (documentation — exit codes documented in exit-codes.ts)
  */
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { parse as yamlParse, stringify as yamlStringify } from "yaml";
 import {
   kspec,
   kspecJson,
@@ -47,37 +46,9 @@ import {
   initGitRepo,
   git,
   testUlids,
+  seedSplitTask,
 } from "../helpers/cli";
 import type { SessionContext } from "../helpers/session-types";
-
-/**
- * Seed a task in split storage format: creates per-task directory with task.yaml and notes.yaml,
- * and appends a lean entry to the index file.
- */
-function seedSplitTask(
-  dir: string,
-  task: Record<string, unknown> & { _ulid: string; notes?: unknown[] },
-): void {
-  const { notes = [], ...coreData } = task;
-  const taskDir = join(dir, "tasks", task._ulid);
-  mkdirSync(taskDir, { recursive: true });
-
-  writeFileSync(join(taskDir, "task.yaml"), yamlStringify(coreData));
-  writeFileSync(join(taskDir, "notes.yaml"), yamlStringify({ notes }));
-
-  const indexPath = join(dir, "project.tasks.yaml");
-  // oxlint-disable-next-line no-source-scanning/no-source-file-reads -- reading test fixture data, not source code
-  const existingIndex = yamlParse(readFileSync(indexPath, "utf8")) as unknown[] | null;
-  const entries = Array.isArray(existingIndex) ? existingIndex : [];
-
-  const { description: _d, todos: _t, context: _c, vcs_refs: _v, ...indexFields } = coreData;
-  entries.push({
-    ...indexFields,
-    notes_count: (notes as unknown[]).length,
-    todos_count: Array.isArray(task.todos) ? (task.todos as unknown[]).length : 0,
-  });
-  writeFileSync(indexPath, yamlStringify(entries));
-}
 
 /**
  * Seed completed tasks in split format instead of using CLI subprocess loops.
