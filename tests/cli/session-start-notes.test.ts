@@ -6,13 +6,44 @@
  * AC: @trait-json-output ac-1 - Valid JSON output purity
  */
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { parse as yamlParse, stringify as yamlStringify } from "yaml";
 import { kspec, kspecJson, setupTempFixtures, cleanupTempDir, testUlids } from "../helpers/cli";
 import type { SessionContext } from "../helpers/session-types";
 
 const SESSION_START_NOTES_TIMEOUT_MS = 20_000;
+
+/**
+ * Seed a task in split storage format: creates per-task directory with task.yaml and notes.yaml,
+ * and appends a lean entry to the index file.
+ */
+function seedSplitTask(
+  tempDir: string,
+  task: Record<string, unknown> & { _ulid: string; notes?: unknown[] },
+): void {
+  const { notes = [], ...coreData } = task;
+  const taskDir = join(tempDir, "tasks", task._ulid);
+  mkdirSync(taskDir, { recursive: true });
+
+  // Write core data (without notes)
+  writeFileSync(join(taskDir, "task.yaml"), yamlStringify(coreData));
+  // Write notes
+  writeFileSync(join(taskDir, "notes.yaml"), yamlStringify({ notes }));
+
+  // Append lean entry to index
+  const indexPath = join(tempDir, "project.tasks.yaml");
+  const existingIndex = yamlParse(readFileSync(indexPath, "utf8")) as unknown[] | null;
+  const entries = Array.isArray(existingIndex) ? existingIndex : [];
+
+  const { description: _d, todos: _t, context: _c, vcs_refs: _v, ...indexFields } = coreData;
+  entries.push({
+    ...indexFields,
+    notes_count: (notes as unknown[]).length,
+    todos_count: Array.isArray(task.todos) ? (task.todos as unknown[]).length : 0,
+  });
+  writeFileSync(indexPath, yamlStringify(entries));
+}
 
 describe("session start notes enrichment", () => {
   let tempDir: string;
@@ -130,16 +161,14 @@ describe("session start notes enrichment", () => {
       "should limit to last 3-5 completed tasks",
       { timeout: SESSION_START_NOTES_TIMEOUT_MS },
       () => {
-        // Seed 7 completed tasks directly via YAML to avoid 35+ CLI subprocess calls
+        // Seed 7 completed tasks in split format to avoid 35+ CLI subprocess calls
         // that time out under parallel test load.
-        const tasksFile = join(tempDir, "project.tasks.yaml");
-        const existing = yamlParse(readFileSync(tasksFile, "utf8")) as { tasks: unknown[] };
         const taskUlids = testUlids("CMPL", 7);
         const noteUlids = testUlids("CNOT", 7);
 
         for (let i = 0; i < 7; i++) {
           const hour = (i + 1).toString().padStart(2, "0");
-          existing.tasks.push({
+          seedSplitTask(tempDir, {
             _ulid: taskUlids[i],
             slugs: [`completed-${i + 1}`],
             title: `Completed ${i + 1}`,
@@ -164,8 +193,6 @@ describe("session start notes enrichment", () => {
             closed_reason: "Done",
           });
         }
-
-        writeFileSync(tasksFile, yamlStringify(existing));
 
         // Get session context
         const session = kspecJson<SessionContext>("session start --json", tempDir);
@@ -239,17 +266,15 @@ describe("session start notes enrichment", () => {
       "should include pending_review and completed notes even with many in_progress notes",
       { timeout: SESSION_START_NOTES_TIMEOUT_MS },
       () => {
-        // Seed tasks directly via YAML to avoid 24+ CLI subprocess calls
+        // Seed tasks in split format to avoid 24+ CLI subprocess calls
         // that time out under parallel test load.
-        const tasksFile = join(tempDir, "project.tasks.yaml");
-        const existing = yamlParse(readFileSync(tasksFile, "utf8")) as { tasks: unknown[] };
         const taskUlids = testUlids("STRV", 7);
         const noteUlids = testUlids("SNOT", 7);
 
         // 5 in_progress tasks with notes (potential starvation scenario)
         for (let i = 0; i < 5; i++) {
           const minute = (i + 1).toString().padStart(2, "0");
-          existing.tasks.push({
+          seedSplitTask(tempDir, {
             _ulid: taskUlids[i],
             slugs: [`active-${i + 1}`],
             title: `Active ${i + 1}`,
@@ -273,7 +298,7 @@ describe("session start notes enrichment", () => {
         }
 
         // 1 pending_review task with note
-        existing.tasks.push({
+        seedSplitTask(tempDir, {
           _ulid: taskUlids[5],
           slugs: ["review-task"],
           title: "Review task",
@@ -297,7 +322,7 @@ describe("session start notes enrichment", () => {
         });
 
         // 1 completed task with note
-        existing.tasks.push({
+        seedSplitTask(tempDir, {
           _ulid: taskUlids[6],
           slugs: ["done-task"],
           title: "Done task",
@@ -321,8 +346,6 @@ describe("session start notes enrichment", () => {
           completed_at: "2026-01-01T01:00:00Z",
           closed_reason: "Finished",
         });
-
-        writeFileSync(tasksFile, yamlStringify(existing));
 
         // Get session context
         const session = kspecJson<SessionContext>("session start --json", tempDir);

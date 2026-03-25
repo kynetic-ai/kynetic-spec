@@ -5,7 +5,7 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { kspec, kspecJson, readTestOutput, setupTempFixtures, cleanupTempDir, testUlid } from "./helpers/cli";
+import { kspec, kspecJson, readTestOutput, setupTempFixtures, cleanupTempDir, testUlid, seedSplitTask } from "./helpers/cli";
 
 describe("kspec refs", () => {
   let tempDir: string;
@@ -200,72 +200,67 @@ includes:
 
 tasks_file: project.tasks.yaml
 meta_file: kynetic.meta.yaml
+
+task_storage:
+  format: split
 `;
     await fs.writeFile(path.join(tempDir, "kynetic.yaml"), manifest);
 
-    // Add tasks that reference specs
-    // Read existing tasks and add spec_ref to them
-    const existingTasks = await readTestOutput(path.join(tempDir, "project.tasks.yaml"));
-    const updatedTasks = existingTasks.replace('spec_ref: "@test-core"', 'spec_ref: "@test-core"');
+    // Add tasks that reference specs using split format
+    seedSplitTask(tempDir, {
+      _ulid: testUlid("TSK1", 1),
+      slugs: ["task-for-core-1"],
+      title: "Task 1 (for test-core)",
+      type: "task",
+      status: "pending",
+      priority: 2,
+      spec_ref: "@test-core",
+      depends_on: [],
+      notes: [],
+      todos: [],
+      created_at: "2026-01-01T00:00:00Z",
+    });
 
-    // Add new tasks with spec_ref pointing to test-core
-    const additionalTasks = `
-  - _ulid: ${testUlid("TSK1", 1)}
-    slugs:
-      - task-for-core-1
-    title: Task 1 (for test-core)
-    type: task
-    status: pending
-    priority: 2
-    spec_ref: "@test-core"
-    depends_on: []
-    notes: []
-    todos: []
-    created_at: "2026-01-01T00:00:00Z"
+    seedSplitTask(tempDir, {
+      _ulid: testUlid("TSK2", 1),
+      slugs: ["task-for-core-2"],
+      title: "Task 2 (for test-core)",
+      type: "task",
+      status: "pending",
+      priority: 2,
+      spec_ref: "@test-core",
+      depends_on: [],
+      notes: [],
+      todos: [],
+      created_at: "2026-01-01T00:00:00Z",
+    });
 
-  - _ulid: ${testUlid("TSK2", 1)}
-    slugs:
-      - task-for-core-2
-    title: Task 2 (for test-core)
-    type: task
-    status: pending
-    priority: 2
-    spec_ref: "@test-core"
-    depends_on: []
-    notes: []
-    todos: []
-    created_at: "2026-01-01T00:00:00Z"
+    seedSplitTask(tempDir, {
+      _ulid: testUlid("TSK3", 1),
+      slugs: ["task-with-dep"],
+      title: "Task 3 (depends on task-1)",
+      type: "task",
+      status: "pending",
+      priority: 2,
+      depends_on: ["@task-for-core-1"],
+      notes: [],
+      todos: [],
+      created_at: "2026-01-01T00:00:00Z",
+    });
 
-  - _ulid: ${testUlid("TSK3", 1)}
-    slugs:
-      - task-with-dep
-    title: Task 3 (depends on task-1)
-    type: task
-    status: pending
-    priority: 2
-    depends_on:
-      - "@task-for-core-1"
-    notes: []
-    todos: []
-    created_at: "2026-01-01T00:00:00Z"
-
-  - _ulid: ${taskWithMetaUlid}
-    slugs:
-      - task-with-meta-ref
-    title: Task with meta_ref
-    type: task
-    status: pending
-    priority: 2
-    meta_ref: "@workflow-1"
-    depends_on: []
-    notes: []
-    todos: []
-    created_at: "2026-01-01T00:00:00Z"
-`;
-
-    // Append to tasks file
-    const newTasksContent = updatedTasks.trim() + "\n" + additionalTasks;
-    await fs.writeFile(path.join(tempDir, "project.tasks.yaml"), newTasksContent);
+    seedSplitTask(tempDir, {
+      _ulid: taskWithMetaUlid,
+      slugs: ["task-with-meta-ref"],
+      title: "Task with meta_ref",
+      type: "task",
+      status: "pending",
+      priority: 2,
+      meta_ref: "@workflow-1",
+      depends_on: [],
+      notes: [],
+      todos: [],
+      created_at: "2026-01-01T00:00:00Z",
+    });
 
     // Update meta manifest to include workflow
     const metaManifest = `kynetic_meta: "1.0"

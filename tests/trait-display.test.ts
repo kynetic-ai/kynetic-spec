@@ -13,6 +13,7 @@ import {
   cleanupTempDir,
   initGitRepo,
   readTestOutput,
+  seedSplitTask,
 } from "./helpers/cli";
 
 describe("Trait Display - Item Get", () => {
@@ -243,28 +244,23 @@ features:
     );
     await fs.writeFile(path.join(tempDir, "kynetic.yaml"), updatedManifest);
 
-    // Create task linked to spec
-    const tasksFile = `_version: "0.1"
-_updated_at: "2026-01-20T00:00:00Z"
-
-tasks:
-  - _ulid: 01KFCVXQDD1122334455667788
-    slugs:
-      - task-with-trait-spec
-    title: Task with Trait Spec
-    type: task
-    status: pending
-    priority: 2
-    spec_ref: "@feature-with-trait"
-    tags: []
-    depends_on: []
-    blocked_by: []
-    notes: []
-    todos: []
-    created_at: "2026-01-20T00:00:00Z"
-`;
-
-    await fs.writeFile(path.join(tempDir, "project.tasks.yaml"), tasksFile);
+    // Create task linked to spec using split format
+    // Clear existing index and write fresh
+    await fs.writeFile(path.join(tempDir, "project.tasks.yaml"), "");
+    seedSplitTask(tempDir, {
+      _ulid: "01KFCVXQDD1122334455667788",
+      slugs: ["task-with-trait-spec"],
+      title: "Task with Trait Spec",
+      type: "task",
+      status: "pending",
+      priority: 2,
+      spec_ref: "@feature-with-trait",
+      tags: [],
+      depends_on: [],
+      notes: [],
+      todos: [],
+      created_at: "2026-01-20T00:00:00Z",
+    });
   });
 
   afterEach(async () => {

@@ -94,18 +94,18 @@ describe("Integration: session-scoped task claiming", () => {
   // AC: @session-scoped-task-claiming ac-startable
   describe("ac-startable: warn when starting task claimed by another session", () => {
     it("should show warning when task has session_id from another session", async () => {
-      // Write a custom tasks file with session_id pre-set on a pending task
+      // Add session_id to the pending task's per-task file (split format)
       const fs = await import("node:fs/promises");
       const path = await import("node:path");
-      const tasksFile = path.join(tempDir, "project.tasks.yaml");
-      const content = await readTestOutput(tasksFile);
+      const taskFile = path.join(tempDir, "tasks", "01KF1645CA45ZT43W2T6HJMVA1", "task.yaml");
+      const content = await readTestOutput(taskFile);
 
-      // Add session_id to the first pending task
+      // Add session_id to the task detail file
       const updatedContent = content.replace(
-        "status: pending\n    priority: 2\n    automation: eligible",
-        'status: pending\n    priority: 2\n    automation: eligible\n    session_id: "01KJ6NFBHNMBABEHHDVEYSPJFR"',
+        "status: pending\npriority: 2\nautomation: eligible",
+        'status: pending\npriority: 2\nautomation: eligible\nsession_id: "01KJ6NFBHNMBABEHHDVEYSPJFR"',
       );
-      await fs.writeFile(tasksFile, updatedContent);
+      await fs.writeFile(taskFile, updatedContent);
 
       // Start the task with a different session
       const result = kspec("task start @test-task-pending", tempDir, {
@@ -121,16 +121,16 @@ describe("Integration: session-scoped task claiming", () => {
     it("should not warn when same session re-starts a task", async () => {
       const sessionId = "01KJ6NFBHNMBABEHHDVEYSPJFR";
 
-      // Write a custom tasks file with session_id pre-set to same session
+      // Add session_id to the pending task's per-task file (split format)
       const fs = await import("node:fs/promises");
       const path = await import("node:path");
-      const tasksFile = path.join(tempDir, "project.tasks.yaml");
-      const content = await readTestOutput(tasksFile);
+      const taskFile = path.join(tempDir, "tasks", "01KF1645CA45ZT43W2T6HJMVA1", "task.yaml");
+      const content = await readTestOutput(taskFile);
       const updatedContent = content.replace(
-        "status: pending\n    priority: 2\n    automation: eligible",
-        `status: pending\n    priority: 2\n    automation: eligible\n    session_id: "${sessionId}"`,
+        "status: pending\npriority: 2\nautomation: eligible",
+        `status: pending\npriority: 2\nautomation: eligible\nsession_id: "${sessionId}"`,
       );
-      await fs.writeFile(tasksFile, updatedContent);
+      await fs.writeFile(taskFile, updatedContent);
 
       const result = kspec("task start @test-task-pending", tempDir, {
         env: { KSPEC_SESSION_ID: sessionId },

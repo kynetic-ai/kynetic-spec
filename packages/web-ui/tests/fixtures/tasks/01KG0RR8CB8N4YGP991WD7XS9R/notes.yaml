@@ -1,0 +1,9 @@
+notes:
+  - _ulid: 01KG0RR9CCVJA52BZAQ20SZ1V6
+    created_at: "2026-01-01T00:00:00Z"
+    author: "test-user"
+    content: |
+      Started working on this task.
+
+      - Ran `npm test`
+      - Checked [docs](https://example.com/task-docs)

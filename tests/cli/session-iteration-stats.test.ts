@@ -5,6 +5,9 @@
  */
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { kspec, kspecJson, setupTempFixtures, cleanupTempDir } from "../helpers/cli";
+import { ensureSplitBackendRegistered } from "../../src/parser/split-backend.js";
+
+ensureSplitBackendRegistered();
 
 interface Task {
   status: string;
