@@ -393,45 +393,6 @@ export function indexEntriesEqual(a: Record<string, unknown>, b: Record<string, 
   return true;
 }
 
-// ── Per-Task Locking ─────────────────────────────────────────────────────────
-
-/**
- * In-memory per-task FIFO mutex — same design as TaskMutexMap in the
- * monolithic backend, but exported for use by the split backend.
- *
- * Each task ULID maps to a promise representing the tail of a FIFO queue.
- * A new waiter captures the current tail, replaces it with its own promise,
- * then awaits the captured tail.
- *
- * AC: @task-data-manager ac-5 — non-overlapping mutations no contention
- * AC: @task-data-manager ac-9 — same-task mutations serialize
- */
-class SplitTaskMutexMap {
-  private readonly locks = new Map<string, Promise<void>>();
-
-  async acquire(ulid: string): Promise<() => void> {
-    const predecessor = this.locks.get(ulid);
-
-    let release!: () => void;
-    const lockPromise = new Promise<void>((resolve) => {
-      release = resolve;
-    });
-
-    this.locks.set(ulid, lockPromise);
-
-    if (predecessor) {
-      await predecessor;
-    }
-
-    return () => {
-      if (this.locks.get(ulid) === lockPromise) {
-        this.locks.delete(ulid);
-      }
-      release();
-    };
-  }
-}
-
 // ── Split Storage Backend ────────────────────────────────────────────────────
 
 /**
@@ -474,7 +435,6 @@ class IndexMutex {
 
 class SplitBackend implements TaskStorageBackend {
   readonly format = "split" as const;
-  private readonly taskMutex = new SplitTaskMutexMap();
   private readonly indexMutex = new IndexMutex();
   /** Per-specDir cache so each project is checked at most once. */
   private readonly migrationChecked = new Set<string>();
@@ -727,94 +687,97 @@ class SplitBackend implements TaskStorageBackend {
     metadata?: MutationMetadata,
   ): Promise<LoadedTask> {
     await this.ensureMigrated(ctx);
-    const releaseTaskLock = await this.taskMutex.acquire(task._ulid);
 
-    try {
-      // Read latest state from per-task directory (includes existing history)
-      // AC: @task-core-data-file ac-4 — rawCore preserved for unknown field round-trip
-      const { task: latestTask, history: existingHistory, rawCore } = await this.loadTaskFromDirWithHistory(
-        ctx,
-        task._ulid,
-      );
-      if (!latestTask) {
-        throw new TaskDataManagerError(`Task not found: ${task._ulid}`, {
-          suggestion: `Check the reference with: kspec search "${task._ulid}" or kspec task list`,
-        });
+    // Per-task locking is handled by TaskDataManager.mutateTask, which
+    // holds the lock through the buffer flush. This method is always
+    // called inside a write buffer scope (from TaskDataManager.withWriteBuffer),
+    // so runWithBuffer reuses the existing buffer — writes are buffered,
+    // and the flush happens after this method returns, while the outer
+    // lock is still held.
+
+    // Read latest state from per-task directory (includes existing history)
+    // AC: @task-core-data-file ac-4 — rawCore preserved for unknown field round-trip
+    const { task: latestTask, history: existingHistory, rawCore } = await this.loadTaskFromDirWithHistory(
+      ctx,
+      task._ulid,
+    );
+    if (!latestTask) {
+      throw new TaskDataManagerError(`Task not found: ${task._ulid}`, {
+        suggestion: `Check the reference with: kspec search "${task._ulid}" or kspec task list`,
+      });
+    }
+
+    // Snapshot the index entry BEFORE mutation to detect changes
+    const oldIndexEntry = toIndexEntry(latestTask);
+
+    // Capture pre-mutation state for diff computation (excluding notes — they live in notes.yaml)
+    const { notes: _notesBefore, ...coreFieldsBefore } = stripRuntimeMetadata(latestTask) as Task;
+
+    // Run mutation callback
+    const mutatedTask = await mutate(latestTask);
+    const cleanTask = stripRuntimeMetadata(mutatedTask as LoadedTask) as Task;
+
+    // Separate notes from core data for routing
+    const { notes, ...coreDataAfter } = cleanTask;
+
+    // Compute field-level diff for history tracking
+    // AC: @task-core-data-file ac-1 — detect field changes
+    const fieldChanges = computeFieldChanges(
+      coreFieldsBefore as Record<string, unknown>,
+      coreDataAfter as Record<string, unknown>,
+    );
+
+    // Use a write buffer for per-task file AND index atomicity —
+    // runWithBuffer reuses the existing buffer from TaskDataManager.withWriteBuffer.
+    // Both per-task files and the index write are inside the buffer so they flush
+    // atomically — if either write fails, the buffer discards all.
+    const taskFilePath = getTaskFilePath(ctx, task._ulid);
+
+    await runWithBuffer(ctx.specDir, async () => {
+      // Only write task.yaml if core fields actually changed
+      // AC: @task-notes-file ac-1 — note-only mutations don't modify task.yaml
+      if (fieldChanges) {
+        // Append history entry for the field changes
+        // AC: @task-core-data-file ac-1 — history entry appended on mutation
+        const historyEntry = createHistoryEntry(fieldChanges, metadata);
+        const updatedHistory = [...existingHistory, historyEntry];
+
+        // AC: @task-core-data-file ac-4 — preserve unknown fields through mutation
+        const mergedCore = mergeTaskPreservingRawShape(rawCore, coreDataAfter);
+        await writeTaskFile(taskFilePath, mergedCore, updatedHistory);
       }
 
-      // Snapshot the index entry BEFORE mutation to detect changes
-      const oldIndexEntry = toIndexEntry(latestTask);
+      // Write notes if they changed
+      if (notes !== undefined) {
+        const notesFilePath = getNotesFilePath(ctx, task._ulid);
+        await writeNotesFile(notesFilePath, notes);
+      }
 
-      // Capture pre-mutation state for diff computation (excluding notes — they live in notes.yaml)
-      const { notes: _notesBefore, ...coreFieldsBefore } = stripRuntimeMetadata(latestTask) as Task;
-
-      // Run mutation callback
-      const mutatedTask = await mutate(latestTask);
-      const cleanTask = stripRuntimeMetadata(mutatedTask as LoadedTask) as Task;
-
-      // Separate notes from core data for routing
-      const { notes, ...coreDataAfter } = cleanTask;
-
-      // Compute field-level diff for history tracking
-      // AC: @task-core-data-file ac-1 — detect field changes
-      const fieldChanges = computeFieldChanges(
-        coreFieldsBefore as Record<string, unknown>,
-        coreDataAfter as Record<string, unknown>,
-      );
-
-      // Use a write buffer for per-task file AND index atomicity —
-      // runWithBuffer creates an isolated async-local scope so concurrent
-      // mutations on other tasks don't share this buffer. Both per-task
-      // files and the index write are inside the buffer so they flush
-      // atomically — if either write fails, the buffer discards all.
-      const taskFilePath = getTaskFilePath(ctx, task._ulid);
-
-      await runWithBuffer(ctx.specDir, async () => {
-        // Only write task.yaml if core fields actually changed
-        // AC: @task-notes-file ac-1 — note-only mutations don't modify task.yaml
-        if (fieldChanges) {
-          // Append history entry for the field changes
-          // AC: @task-core-data-file ac-1 — history entry appended on mutation
-          const historyEntry = createHistoryEntry(fieldChanges, metadata);
-          const updatedHistory = [...existingHistory, historyEntry];
-
-          // AC: @task-core-data-file ac-4 — preserve unknown fields through mutation
-          const mergedCore = mergeTaskPreservingRawShape(rawCore, coreDataAfter);
-          await writeTaskFile(taskFilePath, mergedCore, updatedHistory);
+      // Index update inside the same buffer — serialized by indexMutex.
+      // The mutex prevents concurrent mutations on different tasks from
+      // clobbering each other's index entry changes.
+      // AC: @task-index-file ac-2 — index updated when indexed fields change
+      const newIndexEntry = toIndexEntry(cleanTask);
+      if (!indexEntriesEqual(oldIndexEntry, newIndexEntry)) {
+        const releaseIndex = await this.indexMutex.acquire();
+        try {
+          await this.updateIndexEntry(ctx, cleanTask);
+        } finally {
+          releaseIndex();
         }
+      }
+    });
 
-        // Write notes if they changed
-        if (notes !== undefined) {
-          const notesFilePath = getNotesFilePath(ctx, task._ulid);
-          await writeNotesFile(notesFilePath, notes);
-        }
-
-        // Index update inside the same buffer — serialized by indexMutex.
-        // The mutex prevents concurrent mutations on different tasks from
-        // clobbering each other's index entry changes.
-        // AC: @task-index-file ac-2 — index updated when indexed fields change
-        const newIndexEntry = toIndexEntry(cleanTask);
-        if (!indexEntriesEqual(oldIndexEntry, newIndexEntry)) {
-          const releaseIndex = await this.indexMutex.acquire();
-          try {
-            await this.updateIndexEntry(ctx, cleanTask);
-          } finally {
-            releaseIndex();
-          }
-        }
-      });
-
-      return { ...cleanTask, _sourceFile: taskFilePath };
-    } finally {
-      releaseTaskLock();
-    }
+    return { ...cleanTask, _sourceFile: taskFilePath };
   }
 
   /**
    * Mutate multiple tasks atomically with history tracking.
    *
-   * Acquires per-task locks in sorted ULID order to prevent deadlocks,
-   * then performs all mutations within a single write buffer transaction.
+   * Per-task locking is handled by TaskDataManager.mutateTasks, which
+   * acquires locks in sorted ULID order and holds them through the buffer
+   * flush. This method performs all mutations within the existing write
+   * buffer transaction provided by TaskDataManager.withWriteBuffer.
    *
    * AC: @task-data-manager ac-5 — non-overlapping mutations no contention
    * AC: @task-data-manager ac-6 — all writes in single atomic operation
@@ -832,119 +795,105 @@ class SplitBackend implements TaskStorageBackend {
     metadata?: MutationMetadata,
   ): Promise<LoadedTask[]> {
     await this.ensureMigrated(ctx);
-    // Acquire per-task locks in sorted order to prevent deadlocks
-    const sortedUlids = [...new Set(tasks.map((t) => t._ulid))].toSorted();
-    const releases: Array<() => void> = [];
 
-    try {
-      for (const ulid of sortedUlids) {
-        releases.push(await this.taskMutex.acquire(ulid));
+    // Load latest state for each task (with history for diff tracking)
+    // AC: @task-core-data-file ac-4 — rawCore preserved for unknown field round-trip
+    const latestResults: Array<{ task: LoadedTask; history: HistoryEntry[]; rawCore: Record<string, unknown> }> = [];
+    for (const task of tasks) {
+      const result = await this.loadTaskFromDirWithHistory(ctx, task._ulid);
+      if (!result.task) {
+        throw new TaskDataManagerError(`Task not found: ${task._ulid}`, {
+          suggestion: `Check the reference with: kspec search "${task._ulid}" or kspec task list`,
+        });
       }
-
-      // Load latest state for each task (with history for diff tracking)
-      // AC: @task-core-data-file ac-4 — rawCore preserved for unknown field round-trip
-      const latestResults: Array<{ task: LoadedTask; history: HistoryEntry[]; rawCore: Record<string, unknown> }> = [];
-      for (const task of tasks) {
-        const result = await this.loadTaskFromDirWithHistory(ctx, task._ulid);
-        if (!result.task) {
-          throw new TaskDataManagerError(`Task not found: ${task._ulid}`, {
-            suggestion: `Check the reference with: kspec search "${task._ulid}" or kspec task list`,
-          });
-        }
-        latestResults.push({ task: result.task, history: result.history, rawCore: result.rawCore });
-      }
-
-      const latestTasks = latestResults.map((r) => r.task);
-
-      // Snapshot index entries BEFORE mutation
-      const oldIndexEntries = latestTasks.map((t) => toIndexEntry(t));
-
-      // Capture pre-mutation core fields for diff computation (excluding notes — they live in notes.yaml)
-      const coreFieldsBefore = latestTasks.map((t) => {
-        const { notes: _n, ...core } = stripRuntimeMetadata(t) as Task;
-        return core as Record<string, unknown>;
-      });
-
-      // Run mutation callback
-      const mutatedTasks = await mutate(latestTasks);
-      if (mutatedTasks.length !== latestTasks.length) {
-        throw new Error(
-          `Expected ${latestTasks.length} mutated tasks, received ${mutatedTasks.length}`,
-        );
-      }
-
-      // Write per-task files AND index within a single buffer transaction.
-      // runWithBuffer creates an isolated async-local scope so concurrent
-      // mutations on other tasks don't share this buffer. Both per-task
-      // files and index writes are inside the buffer for atomicity.
-      const cleanResults: Array<{
-        cleanTask: Task;
-        taskFilePath: string;
-        oldIndexEntry: Record<string, unknown>;
-      }> = [];
-
-      await runWithBuffer(ctx.specDir, async () => {
-        for (let i = 0; i < mutatedTasks.length; i++) {
-          const mutatedTask = mutatedTasks[i];
-          const cleanTask = stripRuntimeMetadata(mutatedTask as LoadedTask) as Task;
-          const { notes, ...coreData } = cleanTask;
-
-          const taskFilePath = getTaskFilePath(ctx, cleanTask._ulid);
-
-          // Compute field-level diff for history tracking
-          const fieldChanges = computeFieldChanges(
-            coreFieldsBefore[i],
-            coreData as Record<string, unknown>,
-          );
-
-          if (fieldChanges) {
-            const historyEntry = createHistoryEntry(fieldChanges, metadata);
-            const updatedHistory = [...latestResults[i].history, historyEntry];
-            // AC: @task-core-data-file ac-4 — preserve unknown fields through mutation
-            const mergedCore = mergeTaskPreservingRawShape(latestResults[i].rawCore, coreData);
-            await writeTaskFile(taskFilePath, mergedCore, updatedHistory);
-          }
-
-          if (notes !== undefined) {
-            const notesFilePath = getNotesFilePath(ctx, cleanTask._ulid);
-            await writeNotesFile(notesFilePath, notes);
-          }
-
-          cleanResults.push({ cleanTask, taskFilePath, oldIndexEntry: oldIndexEntries[i] });
-        }
-
-        // Index updates inside the same buffer — serialized by indexMutex
-        // AC: @task-index-file ac-2 — index updated when indexed fields change
-        const indexUpdates: Task[] = [];
-        for (const { cleanTask, oldIndexEntry } of cleanResults) {
-          const newIndexEntry = toIndexEntry(cleanTask);
-          if (!indexEntriesEqual(oldIndexEntry, newIndexEntry)) {
-            indexUpdates.push(cleanTask);
-          }
-        }
-
-        if (indexUpdates.length > 0) {
-          const releaseIndex = await this.indexMutex.acquire();
-          try {
-            for (const task of indexUpdates) {
-              await this.updateIndexEntry(ctx, task);
-            }
-          } finally {
-            releaseIndex();
-          }
-        }
-      });
-
-      const updatedTasks: LoadedTask[] = cleanResults.map(({ cleanTask, taskFilePath }) => ({
-        ...cleanTask,
-        _sourceFile: taskFilePath,
-      }));
-      return updatedTasks;
-    } finally {
-      for (const release of releases) {
-        release();
-      }
+      latestResults.push({ task: result.task, history: result.history, rawCore: result.rawCore });
     }
+
+    const latestTasks = latestResults.map((r) => r.task);
+
+    // Snapshot index entries BEFORE mutation
+    const oldIndexEntries = latestTasks.map((t) => toIndexEntry(t));
+
+    // Capture pre-mutation core fields for diff computation (excluding notes — they live in notes.yaml)
+    const coreFieldsBefore = latestTasks.map((t) => {
+      const { notes: _n, ...core } = stripRuntimeMetadata(t) as Task;
+      return core as Record<string, unknown>;
+    });
+
+    // Run mutation callback
+    const mutatedTasks = await mutate(latestTasks);
+    if (mutatedTasks.length !== latestTasks.length) {
+      throw new Error(
+        `Expected ${latestTasks.length} mutated tasks, received ${mutatedTasks.length}`,
+      );
+    }
+
+    // Write per-task files AND index within a single buffer transaction.
+    // runWithBuffer reuses the existing buffer from TaskDataManager.withWriteBuffer.
+    // Both per-task files and index writes are inside the buffer for atomicity.
+    const cleanResults: Array<{
+      cleanTask: Task;
+      taskFilePath: string;
+      oldIndexEntry: Record<string, unknown>;
+    }> = [];
+
+    await runWithBuffer(ctx.specDir, async () => {
+      for (let i = 0; i < mutatedTasks.length; i++) {
+        const mutatedTask = mutatedTasks[i];
+        const cleanTask = stripRuntimeMetadata(mutatedTask as LoadedTask) as Task;
+        const { notes, ...coreData } = cleanTask;
+
+        const taskFilePath = getTaskFilePath(ctx, cleanTask._ulid);
+
+        // Compute field-level diff for history tracking
+        const fieldChanges = computeFieldChanges(
+          coreFieldsBefore[i],
+          coreData as Record<string, unknown>,
+        );
+
+        if (fieldChanges) {
+          const historyEntry = createHistoryEntry(fieldChanges, metadata);
+          const updatedHistory = [...latestResults[i].history, historyEntry];
+          // AC: @task-core-data-file ac-4 — preserve unknown fields through mutation
+          const mergedCore = mergeTaskPreservingRawShape(latestResults[i].rawCore, coreData);
+          await writeTaskFile(taskFilePath, mergedCore, updatedHistory);
+        }
+
+        if (notes !== undefined) {
+          const notesFilePath = getNotesFilePath(ctx, cleanTask._ulid);
+          await writeNotesFile(notesFilePath, notes);
+        }
+
+        cleanResults.push({ cleanTask, taskFilePath, oldIndexEntry: oldIndexEntries[i] });
+      }
+
+      // Index updates inside the same buffer — serialized by indexMutex
+      // AC: @task-index-file ac-2 — index updated when indexed fields change
+      const indexUpdates: Task[] = [];
+      for (const { cleanTask, oldIndexEntry } of cleanResults) {
+        const newIndexEntry = toIndexEntry(cleanTask);
+        if (!indexEntriesEqual(oldIndexEntry, newIndexEntry)) {
+          indexUpdates.push(cleanTask);
+        }
+      }
+
+      if (indexUpdates.length > 0) {
+        const releaseIndex = await this.indexMutex.acquire();
+        try {
+          for (const task of indexUpdates) {
+            await this.updateIndexEntry(ctx, task);
+          }
+        } finally {
+          releaseIndex();
+        }
+      }
+    });
+
+    const updatedTasks: LoadedTask[] = cleanResults.map(({ cleanTask, taskFilePath }) => ({
+      ...cleanTask,
+      _sourceFile: taskFilePath,
+    }));
+    return updatedTasks;
   }
 
   /**
@@ -952,46 +901,42 @@ class SplitBackend implements TaskStorageBackend {
    *
    * Strategy: Use the write buffer for the index update, file deletions,
    * and directory removal. The buffer defers directory removal to flush
-   * so it participates in atomicity.
+   * so it participates in atomicity. Per-task locking is handled by
+   * TaskDataManager.deleteTask, which holds the lock through the flush.
    *
    * AC: @task-directory-storage ac-4 — entire directory is removed
    * AC: @task-directory-storage ac-5 — index entry removed in same atomic operation
    */
   async deleteTask(ctx: KspecContext, task: LoadedTask): Promise<void> {
     await this.ensureMigrated(ctx);
-    const releaseTaskLock = await this.taskMutex.acquire(task._ulid);
 
-    try {
-      const taskDir = getTaskDir(ctx, task._ulid);
+    const taskDir = getTaskDir(ctx, task._ulid);
 
-      await runWithBuffer(ctx.specDir, async () => {
-        // Delete known per-task files through the buffer
-        const taskFilePath = getTaskFilePath(ctx, task._ulid);
-        const notesFilePath = getNotesFilePath(ctx, task._ulid);
-        const buffer = getActiveBatchBuffer()!;
-        buffer.delete(taskFilePath);
-        buffer.delete(notesFilePath);
+    await runWithBuffer(ctx.specDir, async () => {
+      // Delete known per-task files through the buffer
+      const taskFilePath = getTaskFilePath(ctx, task._ulid);
+      const notesFilePath = getNotesFilePath(ctx, task._ulid);
+      const buffer = getActiveBatchBuffer()!;
+      buffer.delete(taskFilePath);
+      buffer.delete(notesFilePath);
 
-        // Queue directory removal through the buffer so it happens during
-        // flush — after file-level operations. This ensures the directory
-        // removal participates in the buffer's atomicity: if flush fails,
-        // discard() prevents the removal from executing.
-        // AC: @task-directory-storage ac-4 — entire directory is removed
-        // AC: @task-atomic-writes ac-2 — directory removal deferred to flush
-        buffer.deleteDirectory(taskDir);
+      // Queue directory removal through the buffer so it happens during
+      // flush — after file-level operations. This ensures the directory
+      // removal participates in the buffer's atomicity: if flush fails,
+      // discard() prevents the removal from executing.
+      // AC: @task-directory-storage ac-4 — entire directory is removed
+      // AC: @task-atomic-writes ac-2 — directory removal deferred to flush
+      buffer.deleteDirectory(taskDir);
 
-        // Remove from index within the same buffer — serialized by indexMutex
-        // AC: @task-directory-storage ac-5 — index entry removed atomically with directory
-        const releaseIndex = await this.indexMutex.acquire();
-        try {
-          await this.removeFromIndex(ctx, task._ulid);
-        } finally {
-          releaseIndex();
-        }
-      });
-    } finally {
-      releaseTaskLock();
-    }
+      // Remove from index within the same buffer — serialized by indexMutex
+      // AC: @task-directory-storage ac-5 — index entry removed atomically with directory
+      const releaseIndex = await this.indexMutex.acquire();
+      try {
+        await this.removeFromIndex(ctx, task._ulid);
+      } finally {
+        releaseIndex();
+      }
+    });
   }
 
   // ── Private Helpers ──────────────────────────────────────────────────────

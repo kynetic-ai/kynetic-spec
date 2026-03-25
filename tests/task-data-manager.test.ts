@@ -753,8 +753,7 @@ describe("TaskDataManager", () => {
   // AC: @task-data-manager ac-9
   // Concurrent same-task mutations serialize via lock
   describe("same-task mutation serialization (ac-9)", () => {
-    // TODO: split backend's in-process per-task mutex doesn't reliably serialize concurrent mutations
-    it.skip("serializes concurrent mutations on the same task", async () => {
+    it("serializes concurrent mutations on the same task", async () => {
       tempDir = await setupTempFixtures();
       const ctx = await initContext(tempDir);
       manager = resolveTaskDataManager(ctx);
@@ -794,8 +793,7 @@ describe("TaskDataManager", () => {
       expect(reloaded.notes.some((n) => n.content === "Concurrent note")).toBe(true);
     });
 
-    // TODO: split backend doesn't properly serialize mutateTask + mutateTasks on overlapping tasks
-    it.skip("serializes overlapping mutateTask and mutateTasks on the same task", async () => {
+    it("serializes overlapping mutateTask and mutateTasks on the same task", async () => {
       tempDir = await setupTempFixtures();
       const ctx = await initContext(tempDir);
       manager = resolveTaskDataManager(ctx);
@@ -834,8 +832,7 @@ describe("TaskDataManager", () => {
       expect(secondary.tags).toContain("batch-tagged");
     });
 
-    // TODO: split backend loses mutations when three concurrent mutateTask calls overlap
-    it.skip("serializes three concurrent mutations on the same task (FIFO queue)", async () => {
+    it("serializes three concurrent mutations on the same task (FIFO queue)", async () => {
       tempDir = await setupTempFixtures();
       const ctx = await initContext(tempDir);
       manager = resolveTaskDataManager(ctx);
@@ -882,8 +879,7 @@ describe("TaskDataManager", () => {
       expect(reloaded.tags).toContain("writer-3");
     });
 
-    // TODO: split backend doesn't properly serialize deleteTask + mutateTask on the same task
-    it.skip("serializes concurrent deleteTask and mutateTask on the same task", async () => {
+    it("serializes concurrent deleteTask and mutateTask on the same task", async () => {
       tempDir = await setupTempFixtures();
       const ctx = await initContext(tempDir);
       manager = resolveTaskDataManager(ctx);

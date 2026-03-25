@@ -788,6 +788,23 @@ export class TaskDataManager {
   readonly storageFormat: StorageFormat;
   private readonly backend: TaskStorageBackend;
 
+  /**
+   * Per-task in-memory mutex that spans the entire write-buffer lifecycle
+   * (including flush). For the split backend, the backend's internal mutex
+   * only covers the buffering phase — the flush happens in withWriteBuffer
+   * AFTER the backend method returns. Without this outer lock, concurrent
+   * mutations on the same task read stale disk state because the previous
+   * mutation's buffer hasn't flushed yet.
+   *
+   * The monolithic backend doesn't need this (it has its own file-level
+   * locking), but it's harmless — the lock is acquired/released around
+   * withWriteBuffer which is a no-op wrapper for monolithic.
+   *
+   * AC: @task-data-manager ac-9 — same-task mutations serialize through flush
+   * AC: @task-data-manager ac-10 — delete + mutate fully complete before other begins
+   */
+  private readonly taskMutex = new TaskMutexMap();
+
   constructor(storageFormat: StorageFormat = "monolithic") {
     this.storageFormat = storageFormat;
     let backend = backendRegistry.get(storageFormat);
@@ -1040,18 +1057,28 @@ export class TaskDataManager {
       ? { command: commitOpts.operation, author: getAuthor(ctx.config?.identity?.author) }
       : undefined;
 
-    return this.withWriteBuffer(ctx, commitOpts, async () => {
-      return this.backend.mutateTask(
-        ctx,
-        task,
-        async (latestTask) => {
-          const result = await mutate(latestTask);
-          validateMutationOutput(result, latestTask._ulid);
-          return result;
-        },
-        metadata,
-      );
-    });
+    // Acquire per-task lock BEFORE withWriteBuffer so the lock spans the
+    // entire operation including the buffer flush. Without this, the split
+    // backend's internal lock releases before flush, allowing a concurrent
+    // mutation to read stale disk state.
+    // AC: @task-data-manager ac-9 — same-task mutations serialize through flush
+    const releaseTaskLock = await this.taskMutex.acquire(task._ulid);
+    try {
+      return await this.withWriteBuffer(ctx, commitOpts, async () => {
+        return this.backend.mutateTask(
+          ctx,
+          task,
+          async (latestTask) => {
+            const result = await mutate(latestTask);
+            validateMutationOutput(result, latestTask._ulid);
+            return result;
+          },
+          metadata,
+        );
+      });
+    } finally {
+      releaseTaskLock();
+    }
   }
 
   /**
@@ -1086,20 +1113,36 @@ export class TaskDataManager {
       ? { command: commitOpts.operation, author: getAuthor(ctx.config?.identity?.author) }
       : undefined;
 
-    return this.withWriteBuffer(ctx, commitOpts, async () => {
-      return this.backend.mutateTasks(
-        ctx,
-        tasks,
-        async (latestTasks) => {
-          const results = await mutate(latestTasks);
-          for (let i = 0; i < results.length; i++) {
-            validateMutationOutput(results[i], latestTasks[i]?._ulid);
-          }
-          return results;
-        },
-        metadata,
-      );
-    });
+    // Acquire per-task locks in sorted ULID order to prevent deadlocks,
+    // and hold them through the buffer flush.
+    // AC: @task-data-manager ac-9 — same-task mutations serialize through flush
+    const sortedUlids = [...new Set(tasks.map((t) => t._ulid))].toSorted();
+    const releases: Array<() => void> = [];
+
+    try {
+      for (const ulid of sortedUlids) {
+        releases.push(await this.taskMutex.acquire(ulid));
+      }
+
+      return await this.withWriteBuffer(ctx, commitOpts, async () => {
+        return this.backend.mutateTasks(
+          ctx,
+          tasks,
+          async (latestTasks) => {
+            const results = await mutate(latestTasks);
+            for (let i = 0; i < results.length; i++) {
+              validateMutationOutput(results[i], latestTasks[i]?._ulid);
+            }
+            return results;
+          },
+          metadata,
+        );
+      });
+    } finally {
+      for (const release of releases) {
+        release();
+      }
+    }
   }
 
   /**
@@ -1119,14 +1162,23 @@ export class TaskDataManager {
   ): Promise<void> {
     const task = await this.getTask(ctx, ref);
 
-    return this.withWriteBuffer(ctx, commitOpts, async () => {
-      // Delegate entirely to the backend — it decides how to locate and
-      // remove the task based on its own storage format. The manager does
-      // not require _sourceFile; a split backend may use other metadata.
-      // AC: @task-data-manager ac-1 — callers don't know about storage format
-      // AC: @task-data-manager ac-8 — split backend owns its own deletion path
-      await this.backend.deleteTask(ctx, task);
-    });
+    // Acquire per-task lock BEFORE withWriteBuffer so the lock spans the
+    // entire operation including the buffer flush. Prevents delete + mutate
+    // races where the mutate reads stale state mid-delete.
+    // AC: @task-data-manager ac-10 — delete + mutate fully complete before other begins
+    const releaseTaskLock = await this.taskMutex.acquire(task._ulid);
+    try {
+      return await this.withWriteBuffer(ctx, commitOpts, async () => {
+        // Delegate entirely to the backend — it decides how to locate and
+        // remove the task based on its own storage format. The manager does
+        // not require _sourceFile; a split backend may use other metadata.
+        // AC: @task-data-manager ac-1 — callers don't know about storage format
+        // AC: @task-data-manager ac-8 — split backend owns its own deletion path
+        await this.backend.deleteTask(ctx, task);
+      });
+    } finally {
+      releaseTaskLock();
+    }
   }
 
   /**
