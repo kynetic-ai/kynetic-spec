@@ -51932,7 +51932,17 @@ reviews:
     slugs: []
     title: Review task-readtestoutput-medium-batch-1 (cycle 2)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: All 301 test files passed, 6828 tests, 0 failures, 3 skipped
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-25T00:06:19.360Z
+        completed_at: 2026-03-25T00:06:19.360Z
     events:
       - _ulid: 01KMH4ZYTVFCRQCX3MBYDCSJ2R
         actor: "@claude"
@@ -51947,6 +51957,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-25T00:06:09.584Z
+      - _ulid: 01KMH50HV7TAN452CSGGHXBJVW
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-25T00:06:19.751Z
     examined_commit: 75605e384afdb99bb7d275474684f1885a678c11
     external_links: []
     lifecycle_state: open
@@ -51959,5 +51976,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-25T00:06:00.283Z
-    updated_at: 2026-03-25T00:06:09.201Z
+    updated_at: 2026-03-25T00:06:19.360Z
     notes: []
