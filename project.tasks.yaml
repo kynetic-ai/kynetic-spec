@@ -22414,7 +22414,7 @@
   type: task
   spec_ref: "@task-storage-migration"
   plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-activate-split-storage"
@@ -22426,4 +22426,5 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-03-25T18:11:34.627Z
+  started_at: 2026-03-25T20:54:08.440Z
   automation: eligible
