@@ -1678,6 +1678,10 @@ features:
           data corruption occurs
         when: |
           They are executed
+      - given: A delete and a mutation target the same task concurrently
+        id: ac-10
+        then: One completes fully before the other begins; no partial state or corruption occurs
+        when: They are executed
     tags: []
     requirements:
       - _ulid: 01KM6YEM84WKVXJVP2GWX3MS7C
