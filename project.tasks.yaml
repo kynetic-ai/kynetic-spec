@@ -22407,3 +22407,21 @@
   submitted_at: 2026-03-24T20:37:16.930Z
   completed_at: 2026-03-24T20:50:39.479Z
   automation: eligible
+- _ulid: 01KMK33PK53WC6D21QNJJA8DWJ
+  slugs: []
+  title: Migrate all test fixtures and tests to split task storage format
+  type: task
+  spec_ref: "@task-storage-migration"
+  plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-remove-monolithic"
+  priority: 3
+  tags:
+    - tasks
+    - testing
+    - cleanup
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-25T18:11:34.627Z

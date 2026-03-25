@@ -1,0 +1,79 @@
+_ulid: 01KMK33PK53WC6D21QNJJA8DWJ
+slugs: []
+title: Migrate all test fixtures and tests to split task storage format
+type: task
+description: >-
+  Why: After the monolithic backend is removed (@task-remove-monolithic), every test that writes or
+  reads task data in the old monolithic format will fail. The shared fixtures at
+  tests/fixtures/project.tasks.yaml use full task records with embedded notes arrays, and ~106 test
+  files copy them via setupTempFixtures(). The split backend's ensureMigrated() rejects
+  monolithic-format data, so these all break. This task is the systematic cleanup pass that ensures
+  zero legacy task storage paths remain in the test suite.
+
+
+  What: Find and migrate every test fixture, inline fixture, and test helper that creates or expects
+  monolithic task format. This includes:
+
+  - The shared fixtures (tests/fixtures/project.tasks.yaml and tests/fixtures/kynetic.yaml) —
+  convert to split format with per-task directories and a lean index
+
+  - Tests that write project.tasks.yaml with full task records inline (not just the ~6 files that
+  say "monolithic" — search for any test writing notes arrays, description fields, or other detail
+  fields directly into project.tasks.yaml)
+
+  - Tests that call new TaskDataManager() without arguments (defaults to monolithic) — update to use
+  the split backend
+
+  - Tests that import or reference monolithic-specific functions from yaml.ts (saveTask,
+  mutateTaskAtomically, mutateTasksAtomically, deleteTask, writeRawTaskArray) — these become dead
+  code after removal
+
+  - Test helpers (setupTempFixtures, createTempDir patterns) that assume monolithic layout
+
+  - Any fixture kynetic.yaml files that lack task_storage: { format: "split" }
+
+  - E2E fixtures in packages/web-ui/tests/ if they use monolithic format
+
+
+  Explicitly excluded: One legacy-format fixture will be created by @task-remove-monolithic for
+  testing the migration and version-gated detection logic. That is NOT this task's concern.
+
+
+  How: The agent must perform a thorough search — do not rely on a known list. Search strategies:
+
+  1. Grep for tests writing notes: [...] or description: into project.tasks.yaml content
+
+  2. Grep for new TaskDataManager() without "split" argument
+
+  3. Grep for imports of monolithic-specific yaml.ts functions (saveTask, mutateTaskAtomically,
+  etc.)
+
+  4. Grep for setupTempFixtures usage and verify the shared fixtures are migrated
+
+  5. Grep for any test that references StorageFormat, monolithic, or backend registry functions
+
+  6. Check every kynetic.yaml fixture for missing task_storage setting
+
+  7. Run the full test suite after changes to verify nothing was missed
+
+
+  The migration itself can potentially use kspec task migrate programmatically or replicate its
+  logic in a test helper that converts monolithic fixtures to split format. The key deliverable is
+  that every test runs against the split backend with properly structured fixtures, and no test
+  depends on monolithic code paths that no longer exist.
+spec_ref: "@task-storage-migration"
+meta_ref: null
+plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-remove-monolithic"
+context: []
+priority: 3
+tags:
+  - tasks
+  - testing
+  - cleanup
+vcs_refs: []
+created_at: 2026-03-25T18:11:34.627Z
+todos: []
