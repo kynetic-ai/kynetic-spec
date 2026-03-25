@@ -22417,7 +22417,7 @@
   status: pending
   blocked_by: []
   depends_on:
-    - "@task-remove-monolithic"
+    - "@task-activate-split-storage"
   priority: 3
   tags:
     - tasks
