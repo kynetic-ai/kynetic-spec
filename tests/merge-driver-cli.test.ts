@@ -13,7 +13,7 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import * as os from "node:os";
-import { kspec } from "./helpers/cli.js";
+import { kspec, readTestOutput } from "./helpers/cli.js";
 
 describe("merge-driver CLI", () => {
   let tempDir: string;
@@ -79,7 +79,7 @@ tasks:
     expect(result.exitCode).toBe(0);
 
     // Read merged result from ours path
-    const merged = await fs.readFile(oursFile, "utf-8");
+    const merged = await readTestOutput(oursFile);
 
     // Should have both changes: title from theirs, priority from ours
     // Note: YAML may or may not quote the string depending on content
@@ -168,7 +168,7 @@ tasks:
     expect(result.exitCode).toBe(0);
 
     // Read merged result
-    const merged = await fs.readFile(oursFile, "utf-8");
+    const merged = await readTestOutput(oursFile);
 
     // Should contain conflict comments
     expect(merged).toContain("# CONFLICT:");
@@ -197,7 +197,7 @@ tasks:
     expect(result.exitCode).toBe(0);
 
     // Should successfully merge despite extra arguments
-    const merged = await fs.readFile(oursFile, "utf-8");
+    const merged = await readTestOutput(oursFile);
     expect(merged).toContain("field: ours");
   });
 
@@ -277,7 +277,7 @@ tasks:
     expect(result.stderr).toMatch(/\d+ conflict/);
 
     // Read merged result
-    const merged = await fs.readFile(oursFile, "utf-8");
+    const merged = await readTestOutput(oursFile);
 
     // Should have multiple conflict comment blocks
     const conflictCount = (merged.match(/# CONFLICT:/g) || []).length;
@@ -323,7 +323,7 @@ tasks:
 
     expect(result.exitCode).toBe(0);
 
-    const merged = await fs.readFile(oursFile, "utf-8");
+    const merged = await readTestOutput(oursFile);
 
     // Should have both additions
     expect(merged).toContain("status: in_progress");
@@ -366,7 +366,7 @@ tasks:
       const result = kspec(`merge-driver ${baseFile} ${oursFile} ${theirsFile}`, tempDir);
       expect(result.exitCode).toBe(0);
 
-      const merged = await fs.readFile(oursFile, "utf-8");
+      const merged = await readTestOutput(oursFile);
       expect(merged).toContain("01TASK0000000000000000000");
       expect(merged).toContain("01OURS0000000000000000000");
       expect(merged).toContain("01THRS0000000000000000000");
@@ -391,7 +391,7 @@ tasks:
       const result = kspec(`merge-driver ${baseFile} ${oursFile} ${theirsFile}`, tempDir);
       expect(result.exitCode).toBe(0);
 
-      const merged = await fs.readFile(oursFile, "utf-8");
+      const merged = await readTestOutput(oursFile);
       expect(merged).toContain("01OURS0000000000000000000");
       expect(merged).toContain("01THRS0000000000000000000");
     });
@@ -427,7 +427,7 @@ tasks:
       // Non-interactive: exit 0 even with conflicts (prevents git text-merge fallback)
       expect(result.exitCode).toBe(0);
 
-      const merged = await fs.readFile(oursFile, "utf-8");
+      const merged = await readTestOutput(oursFile);
       expect(merged).toContain("# CONFLICT:");
       expect(merged.trim()).toMatch(/^#|^-/); // Starts with comment or array
     });
@@ -457,7 +457,7 @@ tasks:
       const result = kspec(`merge-driver ${baseFile} ${oursFile} ${theirsFile}`, tempDir);
       expect(result.exitCode).toBe(0);
 
-      const merged = await fs.readFile(oursFile, "utf-8");
+      const merged = await readTestOutput(oursFile);
       expect(merged).toContain("status: in_progress");
       expect(merged).toContain("priority: 2");
       expect(merged).not.toContain("# CONFLICT:");

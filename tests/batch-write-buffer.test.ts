@@ -26,6 +26,7 @@ import {
   cleanupTempDir,
   initGitRepo,
   createTempDir,
+  readTestOutput,
 } from "./helpers/cli.js";
 import type { BatchExecResult } from "../src/schema/batch.js";
 
@@ -225,7 +226,7 @@ describe("buffer-aware fs helpers", () => {
       const filePath = path.join(tempDir, "buffered.md");
 
       await writeFileBufferAware(filePath, "hello from buffer");
-      await expect(fs.readFile(filePath, "utf-8")).rejects.toThrow();
+      await expect(readTestOutput(filePath)).rejects.toThrow();
       await expect(readFileBufferAware(filePath)).resolves.toBe("hello from buffer");
 
       buffer.delete(filePath);
@@ -273,11 +274,11 @@ describe("WriteBuffer.flush()", () => {
     await buf.flush();
 
     // a.yaml was buffered — should be written
-    const aContent = await fs.readFile(fileA, "utf-8");
+    const aContent = await readTestOutput(fileA);
     expect(aContent).toBe("written: true");
 
     // b.yaml was NOT buffered — should be unchanged
-    const bContent = await fs.readFile(fileB, "utf-8");
+    const bContent = await readTestOutput(fileB);
     expect(bContent).toBe("original: true");
   });
 
@@ -293,7 +294,7 @@ describe("WriteBuffer.flush()", () => {
     buf.write(nested, "nested: true");
     await buf.flush();
 
-    const content = await fs.readFile(nested, "utf-8");
+    const content = await readTestOutput(nested);
     expect(content).toBe("nested: true");
   });
 
@@ -329,7 +330,7 @@ describe("WriteBuffer.flush()", () => {
     await expect(buf.flush()).rejects.toThrow("Batch flush staging failed");
 
     // existingFile should be completely unchanged
-    const content = await fs.readFile(existingFile, "utf-8");
+    const content = await readTestOutput(existingFile);
     expect(content).toBe("original: true");
 
     // No staging files should remain after cleanup
@@ -345,7 +346,7 @@ describe("WriteBuffer.flush()", () => {
     buf.write(filePath, "should not appear");
     buf.discard();
 
-    await expect(fs.readFile(filePath, "utf-8")).rejects.toThrow();
+    await expect(readTestOutput(filePath)).rejects.toThrow();
   });
 });
 

@@ -8,7 +8,7 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { kspec, createTempDir, cleanupTempDir, initGitRepo } from "./helpers/cli.js";
+import { kspec, createTempDir, cleanupTempDir, initGitRepo, readTestOutputSync } from "./helpers/cli.js";
 
 describe("kspec setup native guard migration", () => {
   let tempDir: string;
@@ -32,7 +32,7 @@ describe("kspec setup native guard migration", () => {
     expect(result.exitCode).toBe(0);
 
     const settingsPath = path.join(tempDir, ".claude", "settings.json");
-    const settings = JSON.parse(require("fs").readFileSync(settingsPath, "utf-8"));
+    const settings = JSON.parse(readTestOutputSync(settingsPath));
     const preToolUse = settings.hooks?.PreToolUse;
 
     expect(preToolUse).toBeDefined();
@@ -62,7 +62,7 @@ describe("kspec setup native guard migration", () => {
     kspec("setup", tempDir, { env: { CLAUDECODE: "1" } });
 
     const settingsPath = path.join(tempDir, ".claude", "settings.json");
-    const settings = JSON.parse(require("fs").readFileSync(settingsPath, "utf-8"));
+    const settings = JSON.parse(readTestOutputSync(settingsPath));
     const preToolUse = settings.hooks?.PreToolUse || [];
 
     const hasTaskLimit = preToolUse.some((entry: { hooks?: Array<{ command?: string }> }) =>
@@ -108,7 +108,7 @@ describe("kspec setup native guard migration", () => {
     kspec("setup", tempDir, { env: { CLAUDECODE: "1" } });
 
     // Verify old entries replaced
-    const settings = JSON.parse(require("fs").readFileSync(settingsPath, "utf-8"));
+    const settings = JSON.parse(readTestOutputSync(settingsPath));
     const preToolUse = settings.hooks?.PreToolUse || [];
 
     // No old bash script references
@@ -180,7 +180,7 @@ describe("kspec setup native guard migration", () => {
     kspec("setup", tempDir, { env: { CLAUDECODE: "1" } });
 
     const settingsPath = path.join(tempDir, ".claude", "settings.json");
-    const settings = JSON.parse(require("fs").readFileSync(settingsPath, "utf-8"));
+    const settings = JSON.parse(readTestOutputSync(settingsPath));
     const preToolUse = settings.hooks?.PreToolUse || [];
 
     // Count entries with native guard command
@@ -229,7 +229,7 @@ describe("kspec setup native guard migration", () => {
 
     kspec("setup", tempDir, { env: { CLAUDECODE: "1" } });
 
-    const settings = JSON.parse(require("fs").readFileSync(settingsPath, "utf-8"));
+    const settings = JSON.parse(readTestOutputSync(settingsPath));
     const preToolUse = settings.hooks?.PreToolUse || [];
 
     // Custom guard should still be present
