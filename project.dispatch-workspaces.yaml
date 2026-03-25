@@ -23434,7 +23434,7 @@ workspaces:
         head: 147d25b6b478d3e17bc5f7b9d98ee56f8b9c2f76
         last_seen_at: 2026-03-25T22:48:45.493Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/migrate-all-test-fixtures-and-tests-to-split-task-storage-format-01kmk33p
-  - active_role: worker
+  - active_role: null
     base_branch_point: 77b7853efbde33a5f1f229bf8623faaef696153c
     bootstrap:
       status: succeeded
@@ -23518,12 +23518,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-25T23:31:59.502Z
+      updated_at: 2026-03-25T23:33:13.034Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-25T23:31:59.502Z
+      updated_at: 2026-03-25T23:33:13.034Z
     integration:
       status: pending
       detail: null
@@ -23531,17 +23531,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 77b7853efbde33a5f1f229bf8623faaef696153c
-      updated_at: 2026-03-25T23:31:59.502Z
-    lifecycle_state: active
+      updated_at: 2026-03-25T23:33:13.034Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMKMNV2B7T0JCWQZGBP2YSMA"
     task_slug: deduplicate-seedsplittask-helper-across-test-files
     timestamps:
       closed_at: null
       last_active_at: 2026-03-25T23:19:21.528Z
-      last_reconciled_at: 2026-03-25T23:31:59.502Z
+      last_reconciled_at: 2026-03-25T23:33:13.034Z
       created_at: 2026-03-25T23:19:15.820Z
-      updated_at: 2026-03-25T23:31:59.502Z
+      updated_at: 2026-03-25T23:33:13.034Z
     workspace_id: dispatch-workspace-01KMKMNV2B7T0JCWQZGBP2YSMA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
