@@ -15010,7 +15010,7 @@ runs:
     completed_at: 2026-03-25T00:10:08.027Z
   - _ulid: 01KMHS567C3XTGDWBES5CQR0KR
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -15038,7 +15038,13 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-03-25T05:59:13.561Z
-        completed_at: 2026-03-25T05:59:13.561Z
+        completed_at: 2026-03-25T05:59:31.952Z
+        notes: "Coverage check: (1) Stale workflows — already tracked as inbox 01KHVCPEXG. (2) Plan
+          investigation-only completion — not tracked. (3) AC batch operations — not tracked."
+      - status: completed
+        step_index: 4
+        started_at: 2026-03-25T05:59:31.952Z
+        completed_at: 2026-03-25T05:59:31.952Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-03-25T05:58:23.212Z
