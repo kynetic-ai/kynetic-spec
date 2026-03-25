@@ -27797,8 +27797,8 @@ plans:
 
 
       Net: 6 tasks → 0 tasks + 6 spec cleanup items (executed directly as plan completion).
-    status: draft
-    approved_at: null
+    status: approved
+    approved_at: 2026-03-25T05:56:08.893Z
     derived_specs: []
     derived_tasks: []
     module_ref: null
