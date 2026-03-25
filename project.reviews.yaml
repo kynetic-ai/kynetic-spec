@@ -52043,7 +52043,19 @@ reviews:
     slugs: []
     title: Review migrate-all-test-fixtures-and-tests-to-split-task-storage-format
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 299/301 test files passed, 6814 tests passed, 12 skipped. 2 failures are pre-existing
+          timeout flakes in unrelated tests (agent-invocation-lifecycle.test.ts and
+          canonical-task-workspace-contract.test.ts) — neither file was modified in this commit.
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-25T23:00:28.862Z
+        completed_at: 2026-03-25T23:00:28.862Z
     events:
       - _ulid: 01KMKK28FDG32MYNFBKRX62N46
         actor: "@claude"
@@ -52072,6 +52084,13 @@ reviews:
           kind: nit
           thread_ulid: 01KMKKMBR1VGHEW7YJBH5SM2D2
         timestamp: 2026-03-25T23:00:18.196Z
+      - _ulid: 01KMKKMPXN0N21MDRYFCXBZT1G
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-25T23:00:29.238Z
     examined_commit: 147d25b6b478d3e17bc5f7b9d98ee56f8b9c2f76
     external_links: []
     lifecycle_state: open
@@ -52121,5 +52140,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-25T22:50:24.621Z
-    updated_at: 2026-03-25T23:00:17.794Z
+    updated_at: 2026-03-25T23:00:28.862Z
     notes: []
