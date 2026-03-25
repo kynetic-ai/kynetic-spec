@@ -27841,6 +27841,13 @@ plans:
           is now 0 tasks + 6 spec cleanup items."
         author: "@claude"
         created_at: 2026-03-25T05:55:51.261Z
+      - _ulid: 01KMHS3YK13D7KF4FBA03V3FQ2
+        content: "Spec cleanup complete. Deleted: @ui-design-system, @package-distribution,
+          @prose-typography-setup. Removed: @api-input-type-safety ac-4, @trait-markdown-rendering
+          ac-5. Deferred: @gh-pages-export ac-24 (redesign). Behavioral coverage audit found 10 PASS
+          / 6 PARTIAL / 0 FAIL across markdown rendering ACs — no tasks needed."
+        author: "@claude"
+        created_at: 2026-03-25T05:57:42.625Z
   - _ulid: 01KMF7S3K8Z0SQNR3C51HXKBF3
     slugs:
       - plan-migrate-from-biome-to-oxlint-oxfmt
