@@ -52065,6 +52065,13 @@ reviews:
           kind: nit
           thread_ulid: 01KMKKM1FPZT0FGAFGAFWD0BNJ
         timestamp: 2026-03-25T23:00:07.686Z
+      - _ulid: 01KMKKMC4MFTNQTNFYQNBKCDXM
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMKKMBR1VGHEW7YJBH5SM2D2
+        timestamp: 2026-03-25T23:00:18.196Z
     examined_commit: 147d25b6b478d3e17bc5f7b9d98ee56f8b9c2f76
     external_links: []
     lifecycle_state: open
@@ -52094,7 +52101,25 @@ reviews:
               the exported helper instead of duplicating."
             created_at: 2026-03-25T23:00:07.286Z
         kind: nit
+      - _ulid: 01KMKKMBR1VGHEW7YJBH5SM2D2
+        anchor:
+          type: code
+          commit: 147d25b6b478
+          line_end: 102
+          line_start: 68
+          path: tests/review-task-integration.test.ts
+          side: head
+        entries:
+          - _ulid: 01KMKKMBR2HVJGSZM08SJ9G7T1
+            author: "@claude"
+            body: review-task-integration.test.ts has a fourth variant of the split-format writing logic in
+              createAndSaveTask (line 68-102). This version is async and manually enumerates index
+              fields instead of using the destructuring pattern. While functionally different
+              (async, uses createTask), the core logic is the same. Consider extracting a shared
+              async seedSplitTask helper or having createAndSaveTask call the sync seedSplitTask.
+            created_at: 2026-03-25T23:00:17.794Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-25T22:50:24.621Z
-    updated_at: 2026-03-25T23:00:07.286Z
+    updated_at: 2026-03-25T23:00:17.794Z
     notes: []
