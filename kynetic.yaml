@@ -633,14 +633,6 @@ traits:
         when: |
           the content is rendered
       - given: |
-          the UI is in dark mode
-        id: ac-5
-        then: |
-          prose typography and syntax highlighting use dark-mode-compatible
-          color schemes (prose-invert, dark highlight theme)
-        when: |
-          markdown content is rendered
-      - given: |
           markdown content contains external links (href starting with
           http://, https://, or //)
         id: ac-6
