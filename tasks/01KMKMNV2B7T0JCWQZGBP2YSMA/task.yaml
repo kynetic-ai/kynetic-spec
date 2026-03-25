@@ -1,0 +1,60 @@
+_ulid: 01KMKMNV2B7T0JCWQZGBP2YSMA
+slugs: []
+title: Deduplicate seedSplitTask helper across test files
+type: task
+description: >-
+  Why: The seedSplitTask helper function exists in 4 locations with slight variations. The canonical
+  version is exported from tests/helpers/cli.ts (line 498) with proper error handling. Three other
+  files have local copies:
+
+  - tests/cli/session-start-format.test.ts (line 57) — local copy, missing try/catch around fs
+  operations
+
+  - tests/cli/session-start-notes.test.ts (line 21) — local copy, missing try/catch around fs
+  operations
+
+  - tests/review-task-integration.test.ts (line 68) — inline variant that writes split-format task
+  files directly instead of using the helper
+
+
+  These duplicates drift over time and make the split-format test seeding pattern harder to
+  maintain. The canonical helper already handles all the cases correctly.
+
+
+  What:
+
+  1. In tests/cli/session-start-format.test.ts: remove the local seedSplitTask function definition
+  (around line 57) and import seedSplitTask from "../helpers/cli.js" instead. Verify all call sites
+  in the file pass the same arguments.
+
+  2. In tests/cli/session-start-notes.test.ts: remove the local seedSplitTask function definition
+  (around line 21) and import seedSplitTask from "../helpers/cli.js" instead. Verify all call sites
+  in the file pass the same arguments.
+
+  3. In tests/review-task-integration.test.ts: replace the inline split-format file writing (around
+  line 68 and any other locations) with calls to the imported seedSplitTask from
+  "../helpers/cli.js". This may require adjusting the arguments to match the canonical helper's
+  signature.
+
+  4. Run the full test suite to verify no regressions.
+
+
+  How: For each file, read the local function to understand any signature differences from the
+  canonical version. If the canonical seedSplitTask signature doesn't cover a use case in
+  review-task-integration.test.ts, extend the canonical helper rather than keeping the inline code.
+  The goal is one source of truth for seeding split-format task fixtures in tests.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - testing
+  - cleanup
+vcs_refs: []
+created_at: 2026-03-25T23:18:34.827Z
+todos: []
+automation: eligible
