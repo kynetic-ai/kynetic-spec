@@ -23,3 +23,26 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-25T23:21:14.397Z
+  - _ulid: 01KMKNDD3HH4E6GVR7PRNQSP50
+    content: >-
+      Completed deduplication of seedSplitTask helper.
+
+
+      Changes:
+
+      1. session-start-format.test.ts: Removed local seedSplitTask (lines 57-80), now imports from
+      helpers/cli.ts. Removed unused imports (mkdirSync, readFileSync, yamlParse, yamlStringify).
+
+      2. session-start-notes.test.ts: Removed local seedSplitTask (lines 21-46), now imports from
+      helpers/cli.ts. Removed all node:fs, node:path, and yaml imports (only used by the local
+      helper).
+
+      3. review-task-integration.test.ts: Refactored createAndSaveTask to delegate file writing to
+      canonical seedSplitTask. Function is now synchronous. Removed 12 await calls accordingly.
+
+
+      Net: -116 lines, +21 lines. All 77 tests in the 3 modified files pass. Full suite: 300/301
+      test files pass (1 pre-existing flaky failure in file-lock.test.ts unrelated to this change).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-25T23:31:26.962Z
