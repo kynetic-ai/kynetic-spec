@@ -51943,6 +51943,18 @@ reviews:
         runner: vitest
         created_at: 2026-03-25T00:06:19.360Z
         completed_at: 2026-03-25T00:06:19.360Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Prior blocker resolved: task-rebuild-index.test.ts no longer in diff (rebase picked up
+          already-converted version from dev). 3 fs.writeFile encoding args restored in
+          setup-pipeline-unification.test.ts."
+        name: fix-cycle-verification
+        required: true
+        runner: manual
+        created_at: 2026-03-25T00:06:28.594Z
+        completed_at: 2026-03-25T00:06:28.594Z
     events:
       - _ulid: 01KMH4ZYTVFCRQCX3MBYDCSJ2R
         actor: "@claude"
@@ -51964,6 +51976,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-25T00:06:19.751Z
+      - _ulid: 01KMH50TVG0VE07FVCZRMV9JPX
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: fix-cycle-verification
+        timestamp: 2026-03-25T00:06:28.976Z
     examined_commit: 75605e384afdb99bb7d275474684f1885a678c11
     external_links: []
     lifecycle_state: open
@@ -51976,5 +51995,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-25T00:06:00.283Z
-    updated_at: 2026-03-25T00:06:19.360Z
+    updated_at: 2026-03-25T00:06:28.594Z
     notes: []
