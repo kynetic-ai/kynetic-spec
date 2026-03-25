@@ -8245,7 +8245,6 @@
     - implement-package-distribution
   title: Implement Package Distribution
   type: task
-  spec_ref: "@package-distribution"
   plan_ref: "@plan-portable-agent-integration-infrastructure"
   status: completed
   blocked_by: []
