@@ -1,1 +1,28 @@
-notes: []
+notes:
+  - _ulid: 01KMKP7SXPXHFMS5W8KAECR7AP
+    content: >-
+      Approach: The bug is that SplitBackend.mutateTask/mutateTasks/deleteTask acquire per-task
+      locks, but when called through TaskDataManager.withWriteBuffer, the buffer flush happens AFTER
+      the backend method returns (and lock is released). Each concurrent TaskDataManager.mutateTask
+      creates its own isolated buffer via AsyncLocalStorage.run(), so concurrent callers cannot see
+      each other's buffered writes. This creates a TOCTOU race: Mutation B reads stale disk state
+      after Mutation A has buffered writes but before A's buffer flushes.
+
+
+      Fix plan:
+
+      1. Remove per-task locking from SplitBackend.mutateTask, mutateTasks, deleteTask
+
+      2. Remove SplitBackend's internal runWithBuffer calls (TaskDataManager.withWriteBuffer already
+      provides the buffer)
+
+      3. Add per-task lock acquisition in TaskDataManager.mutateTask, mutateTasks, deleteTask
+      wrapping withWriteBuffer (only for split backend, monolithic already has its own file-level
+      locking)
+
+      4. This ensures the lock spans read → mutate → buffer-write → flush
+
+      5. Unskip all 7 tests and verify they pass
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-25T23:45:52.054Z
