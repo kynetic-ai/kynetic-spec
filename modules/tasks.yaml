@@ -1666,21 +1666,10 @@ features:
           all succeed or all roll back
         when: |
           The mutation is persisted
-      - given: |
-          The storage format has not been explicitly activated
-        id: ac-7
-        then: |
-          The monolithic format is used; the split backend is not
-          engaged until explicitly activated
-        when: |
-          The manager reads or writes tasks
-      - given: |
-          The split storage format has been activated
+      - given: The task data manager is initialized
         id: ac-8
-        then: |
-          The split format is used for all operations
-        when: |
-          The manager reads or writes tasks
+        then: The split per-task directory format is always used
+        when: It reads or writes tasks
       - given: |
           Two mutations target the same task concurrently
         id: ac-9
@@ -1823,11 +1812,11 @@ features:
           - task-storage-activation
         title: Task Storage Format Activation
         type: requirement
-        description: |
-          The active storage format is an explicit setting, not auto-detected.
-          The system defaults to the monolithic format until activation. This
-          ensures the switchover from monolithic to split format is a
-          deliberate, coordinated action taken after migration.
+        description: "Split per-task directory format is the only supported storage format. New projects
+          default to it. Legacy projects (kynetic 1.0 without task_storage.format: split) are
+          detected at runtime and blocked with migration guidance. The schema continues to accept
+          both enum values for parsing compatibility, but monolithic is rejected at the task data
+          manager level."
         status:
           maturity: draft
           implementation: implemented
@@ -1999,6 +1988,10 @@ features:
           branch commit
         when: |
           The shadow branch state is examined
+      - given: The migration completes successfully
+        id: ac-9
+        then: task_storage.format is set to split and the kynetic version is bumped to 1.1
+        when: The manifest is examined
     tags: []
     created: 2026-03-21T00:59:16.756Z
     notes: []
