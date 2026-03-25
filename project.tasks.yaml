@@ -22474,7 +22474,7 @@
   title: Preserve unknown fields through split backend mutateTask writes
   type: task
   spec_ref: "@task-core-data-file"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 3
@@ -22484,4 +22484,5 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-03-25T23:38:29.137Z
+  started_at: 2026-03-25T23:57:11.496Z
   automation: eligible
