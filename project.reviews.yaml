@@ -52126,9 +52126,25 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-03-25T23:01:07.996Z
+      - _ulid: 01KMKKPAPB3EB3AVYDQHRKK0NK
+        actor: agent@pr-reviewer
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-03-25T23:01:22.251Z
+      - _ulid: 01KMKKPAPBSCEY51KMH931F5H3
+        actor: agent@pr-reviewer
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-25T23:01:22.251Z
     examined_commit: 147d25b6b478d3e17bc5f7b9d98ee56f8b9c2f76
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -52173,7 +52189,14 @@ reviews:
               async seedSplitTask helper or having createAndSaveTask call the sync seedSplitTask.
             created_at: 2026-03-25T23:00:17.794Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: agent@pr-reviewer
+        role: reviewer
+        created_at: 2026-03-25T23:01:22.251Z
     created_at: 2026-03-25T22:50:24.621Z
-    updated_at: 2026-03-25T23:01:07.628Z
+    updated_at: 2026-03-25T23:01:22.251Z
     notes: []
