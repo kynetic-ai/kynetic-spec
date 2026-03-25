@@ -15570,7 +15570,6 @@
     - implement-prose-typography-setup
   title: Implement Prose Typography Setup
   type: task
-  spec_ref: "@prose-typography-setup"
   plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
   status: completed
   blocked_by: []

@@ -1076,44 +1076,6 @@ features:
         created: 2026-03-10T06:04:40.109Z
         notes: []
     requirements:
-      - _ulid: 01KKB5HX5SNRHQR556DAASNNH9
-        slugs:
-          - prose-typography-setup
-        title: Prose Typography Setup
-        type: requirement
-        description: |
-          Install and configure @tailwindcss/typography (or equivalent Tailwind v4
-          prose plugin) so that prose utility classes produce correct typography
-          styling. Currently prose classes are used in MessageBlock and plans page
-          but have no effect because the typography plugin is not installed.
-        status:
-          maturity: draft
-          implementation: implemented
-        depends_on: []
-        implements: []
-        relates_to: []
-        tests: []
-        traits: []
-        acceptance_criteria:
-          - given: |
-              a container element has class "prose prose-sm dark:prose-invert"
-            id: ac-1
-            then: |
-              headings, paragraphs, lists, blockquotes, code blocks, and tables
-              display with appropriate sizing, spacing, and typography styles
-            when: |
-              the page renders
-          - given: |
-              the typography plugin is configured
-            id: ac-2
-            then: |
-              the prose styles are included in the CSS bundle and work correctly
-              with the existing dark theme
-            when: |
-              the web-ui builds
-        tags: []
-        created: 2026-03-10T06:04:39.993Z
-        notes: []
       - _ulid: 01KKB5HX7KDDWHXT5KFKXE407V
         slugs:
           - batch-item-fetch-api
