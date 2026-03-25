@@ -7980,6 +7980,37 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-25T22:43:47.335Z
+  - _ulid: 01KMKJXH7FPPYS45HM6745DJC0
+    type: friction
+    content: kspec validate --refs does not load per-task detail files (notes.yaml, task.yaml) in split
+      storage format. Validation only reads the lean index (project.tasks.yaml), so dangling
+      references in note authors and plan_ref fields are not detected. This means split-format
+      projects have weaker reference validation than monolithic projects.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-25T22:47:49.743Z
+  - _ulid: 01KMKJXHC5YR1STW9BSY87ZD9B
+    type: friction
+    content: "Dispatch task with large embedded task descriptions can fail twice with Prompt is too long
+      before any meaningful work begins. The research/planning phase loads full task description +
+      fixture data + codebase context, exceeding context limits. The wasted invocations delay task
+      completion and waste compute. Mitigation: task descriptions could reference external docs
+      instead of embedding large fixture examples."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-25T22:47:49.893Z
+  - _ulid: 01KMKJXHFJ0PVATWG4Q9RA4M1F
+    type: success
+    content: Resuming dispatched work from a dirty working tree (uncommitted changes from failed
+      invocation) worked well. The prepared workspace bootstrap pattern preserved all prior work,
+      and the new invocation could assess, fix, and commit without re-doing research. This validates
+      the mutable worker branch design for dispatch continuation.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-25T22:47:50.002Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
