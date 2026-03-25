@@ -15060,7 +15060,7 @@ runs:
     completed_at: 2026-03-25T06:32:18.712Z
   - _ulid: 01KMKJTY9GYQF73P5YY3D9PDTB
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -15073,7 +15073,35 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-25T22:46:44.987Z
-        completed_at: 2026-03-25T22:46:44.987Z
+        completed_at: 2026-03-25T22:47:25.049Z
+        notes: >-
+          Baseline established. Observation 01KMKJP4 already captures split backend race condition
+          friction from this session. No existing tracking for validate+split-format gap or
+          prompt-too-long failures.
+
+
+          High-confidence friction points:
+
+          1. Split backend in-process mutex race conditions (ALREADY TRACKED in 01KMKJP4 — skip)
+
+          2. kspec validate doesn't load per-task detail files in split format — misses dangling
+          refs in notes and plan_ref (NOT TRACKED — concrete, specific, systemic)
+
+          3. Previous invocations of this task failed twice with 'Prompt is too long' before
+          meaningful work could complete — large task descriptions with embedded fixture data can
+          exceed context limits during the plan+research phase (NOT TRACKED — concrete, systemic for
+          dispatch)
+
+
+          High-confidence success:
+
+          1. Previous invocation's uncommitted work was high quality and nearly complete — resuming
+          from dirty working tree saved significant time. The 'prepared' workspace bootstrap pattern
+          works well for continuation.
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-25T22:47:25.049Z
+        completed_at: 2026-03-25T22:47:25.049Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-25T22:46:24.816Z
