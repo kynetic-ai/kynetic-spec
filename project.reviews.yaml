@@ -54573,6 +54573,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMNPQWNAHXG66385W2TZPF6W
         timestamp: 2026-03-26T18:33:08.758Z
+      - _ulid: 01KMNPR0SYQWY8KA0BA80Y4V6Z
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMNPQZRQA7TPPTQN6AR9RD52
+        timestamp: 2026-03-26T18:33:12.254Z
     examined_commit: 189e4fc775aa1f18106e55d895b8e6d3087ea003
     external_links: []
     lifecycle_state: open
@@ -54642,7 +54649,27 @@ reviews:
               and still wrong.
             created_at: 2026-03-26T18:33:08.011Z
         kind: blocker
+      - _ulid: 01KMNPQZRQA7TPPTQN6AR9RD52
+        anchor:
+          type: code
+          commit: 189e4fc775aa1f18106e55d895b8e6d3087ea003
+          line_end: 327
+          line_start: 306
+          path: packages/daemon/src/routes/tasks.ts
+          side: head
+        entries:
+          - _ulid: 01KMNPQZRR3Q99Y60QK30MJG75
+            author: Test User
+            body: Write-through is still unimplemented on the mutation path. After a successful task mutation
+              this route updates files, syncs spec status, commits, and broadcasts, but it never
+              updates the per-project cache before returning. The new writeThrough and
+              markWriteThrough helpers exist only in src/daemon/entity-cache.ts and are not called
+              from any route. A client can therefore observe stale task data until the watcher
+              callback fires, which is exactly the race the write-through acceptance criterion was
+              meant to remove.
+            created_at: 2026-03-26T18:33:11.192Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-26T18:29:11.265Z
-    updated_at: 2026-03-26T18:33:08.011Z
+    updated_at: 2026-03-26T18:33:11.192Z
     notes: []
