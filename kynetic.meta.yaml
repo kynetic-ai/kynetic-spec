@@ -8099,6 +8099,28 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-26T04:48:58.604Z
+  - _ulid: 01KMNH8N7HHT2VRQN6HB22SA1R
+    type: success
+    content: Review quality improved by reproducing suspicious test failures against the recorded base
+      commit before classifying them as regressions. In this session, comparing the timed-out
+      canonical workspace contract test against dev prevented a pre-existing failure from being
+      misattributed to the submitted task, while keeping the real blocker focused on the task
+      migrate manifest-upgrade regression.
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-26T16:57:26.001Z
+  - _ulid: 01KMNH8ND0CRNB3Z2E497MW477
+    type: friction
+    content: Recording review findings through kspec review comment is brittle when the body contains
+      shell-significant characters such as backticks or embedded command examples. In this session,
+      a first attempt to post a blocker comment failed because the shell interpreted inline
+      backticks before kspec saw the payload, forcing a retry with manually sanitized text. Consider
+      a file-based payload option or stdin support for long review comment bodies.
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-26T16:57:26.176Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
