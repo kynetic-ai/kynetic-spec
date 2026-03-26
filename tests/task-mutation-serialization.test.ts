@@ -59,8 +59,7 @@ describe("Task Mutation Serialization", () => {
     }
   });
 
-  // TODO: split backend's in-process per-task mutex doesn't properly serialize concurrent mutateTask calls
-  it.skip("preserves status transition when concurrent note mutation runs on the same task", async () => {
+  it("preserves status transition when concurrent note mutation runs on the same task", async () => {
     // AC: @agent-invocation-lifecycle ac-5 - runtime failure notes must not clobber concurrent task state transitions.
     tempDir = await setupTempFixtures();
     const ctx = await initContext(tempDir);
@@ -95,8 +94,7 @@ describe("Task Mutation Serialization", () => {
     expect(refreshed?.notes.some((note) => note.content === failNote.content)).toBe(true);
   });
 
-  // TODO: split backend's in-process per-task mutex doesn't properly serialize concurrent note mutations
-  it.skip("keeps both notes when concurrent note appends target the same task", async () => {
+  it("keeps both notes when concurrent note appends target the same task", async () => {
     tempDir = await setupTempFixtures();
     const ctx = await initContext(tempDir);
     const manager = resolveTaskDataManager(ctx);
