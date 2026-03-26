@@ -24,3 +24,20 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-26T00:00:23.596Z
+  - _ulid: 01KMKQJAP8HDXBZDAX99VV219J
+    content: >-
+      Implementation complete. Changes:
+
+      1. loadTaskFromDirWithHistory now returns rawCore (pre-schema-parse data) alongside task and
+      history
+
+      2. mutateTask uses mergeTaskPreservingRawShape(rawCore, coreDataAfter) before writeTaskFile
+
+      3. mutateTasks (batch) gets the same fix
+
+      4. Unskipped test at task-data-manager.test.ts line 1234 - now passes
+
+      5. Full test suite: 6817 passed, 11 skipped, 0 failures
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-26T00:09:05.480Z
