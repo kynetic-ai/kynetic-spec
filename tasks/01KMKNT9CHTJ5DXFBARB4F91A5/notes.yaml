@@ -1,1 +1,26 @@
-notes: []
+notes:
+  - _ulid: 01KMKQ2D1CAM66462KFV25ZX6D
+    content: >-
+      Approach: Modify loadTaskFromDirWithHistory to also return the raw core data (before schema
+      parsing). In mutateTask and mutateTasks, use mergeTaskPreservingRawShape (already exists in
+      yaml.ts) to overlay the mutated schema-validated data onto the raw data before writing via
+      writeTaskFile. This mirrors how the monolithic backend preserves unknown fields.
+
+
+      Edge cases:
+
+      - History field must be excluded from raw data before merge (already stripped before parsing)
+
+      - Notes are in a separate file, so not affected
+
+      - mutateTasks (batch) needs the same fix
+
+
+      Test plan:
+
+      - Unskip existing test at task-data-manager.test.ts line 1234
+
+      - ac-4 coverage: the existing test verifies unknown fields survive round-trip mutation
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-26T00:00:23.596Z
