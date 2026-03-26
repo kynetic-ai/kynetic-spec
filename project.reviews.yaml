@@ -53281,6 +53281,16 @@ reviews:
         required: true
         created_at: 2026-03-26T05:29:34.483Z
         completed_at: 2026-03-26T05:29:34.483Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "@daemon-entity-cache applies @trait-api-endpoint even though it is not an endpoint spec,
+          which injects unrelated inherited ACs and breaks the AC-to-task mapping."
+        name: Spec/task alignment
+        required: true
+        created_at: 2026-03-26T05:29:34.464Z
+        completed_at: 2026-03-26T05:29:34.464Z
     events:
       - _ulid: 01KMM9VWZ2P44GS4DYM4DNW5FS
         actor: Jacob Chapel
@@ -53330,6 +53340,13 @@ reviews:
           status: fail
           name: Dependency ordering
         timestamp: 2026-03-26T05:29:35.537Z
+      - _ulid: 01KMM9X6P3E3VGD93GBXHY4VQP
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: Spec/task alignment
+        timestamp: 2026-03-26T05:29:36.195Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -53404,5 +53421,5 @@ reviews:
         kind: question
     verdicts: []
     created_at: 2026-03-26T05:28:53.474Z
-    updated_at: 2026-03-26T05:29:34.483Z
+    updated_at: 2026-03-26T05:29:34.464Z
     notes: []
