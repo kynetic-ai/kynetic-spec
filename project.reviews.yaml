@@ -53496,9 +53496,25 @@ reviews:
           kind: nit
           thread_ulid: 01KMMAF9ZZW9YZQ1R652VJTHKM
         timestamp: 2026-03-26T05:39:30.391Z
+      - _ulid: 01KMMAJ2FF56PBRV75Q9BDJTZV
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-26T05:41:00.015Z
+      - _ulid: 01KMMAJ2FFD3GZDX8AR028KKVK
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-26T05:41:00.015Z
     examined_commit: 31c76a76695b207a1ef6ab2a99901412a2a29ff9
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -53540,7 +53556,14 @@ reviews:
               edge cases, error handling, test quality, integration."
             created_at: 2026-03-26T05:39:29.407Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-26T05:41:00.015Z
     created_at: 2026-03-26T05:36:06.142Z
-    updated_at: 2026-03-26T05:39:29.407Z
+    updated_at: 2026-03-26T05:41:00.015Z
     notes: []
