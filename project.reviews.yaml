@@ -55300,6 +55300,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMNVC9XVB61VPTE07CFGKX9E
         timestamp: 2026-03-26T19:54:11.802Z
+      - _ulid: 01KMNVCQC0V94PZY3RQ6KMNMPA
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMNVCPTKNMCXBY9ZA7N4KAKC
+        timestamp: 2026-03-26T19:54:25.024Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -55410,7 +55417,28 @@ reviews:
               running  and then ; the second command printed  and only the condensed summary.
             created_at: 2026-03-26T19:54:11.259Z
         kind: blocker
+      - _ulid: 01KMNVCPTKNMCXBY9ZA7N4KAKC
+        anchor:
+          type: code
+          commit: d0760f32e8e67d210e40271eb30edaab4047c05f
+          line_end: 547
+          line_start: 531
+          path: scripts/test.cjs
+          side: head
+        entries:
+          - _ulid: 01KMNVCPTM73VNE1ENNH1T7D2T
+            author: Jacob Chapel
+            body: "`--verbose` is bypassed on cache hits. `computeCacheKey()` strips `--verbose` out of
+              `vitestArgs`, and the cache lookup runs before any verbose-specific execution path, so
+              a prior non-verbose run causes `node scripts/test.cjs --verbose
+              tests/test-runner.test.ts` to return condensed cached output instead of streaming
+              Vitest logs. I reproduced this by running `node scripts/test.cjs --fresh
+              tests/test-runner.test.ts` and then `node scripts/test.cjs --verbose
+              tests/test-runner.test.ts`; the second command printed `Using cached results` and only
+              the condensed summary."
+            created_at: 2026-03-26T19:54:24.468Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-26T19:52:09.839Z
-    updated_at: 2026-03-26T19:54:11.259Z
+    updated_at: 2026-03-26T19:54:24.468Z
     notes: []
