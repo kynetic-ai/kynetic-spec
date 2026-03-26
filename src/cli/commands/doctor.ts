@@ -125,6 +125,15 @@ function formatDoctorReport(report: DoctorReport): void {
     }
     console.log();
 
+    // Task storage section
+    if (report.taskStorage.checks.length > 0) {
+      console.log(chalk.bold.blue("Task Storage"));
+      for (const check of report.taskStorage.checks) {
+        formatCheck(check);
+      }
+      console.log();
+    }
+
     // Daemon section
     // AC: @doctor-command ac-daemon-running, ac-daemon-not-running, ac-daemon-unreachable
     console.log(chalk.bold.blue("Daemon"));

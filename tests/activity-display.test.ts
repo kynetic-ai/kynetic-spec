@@ -137,8 +137,10 @@ describe("task get --json — ac-4: structured activity in JSON output", () => {
       expect(entry.summary).toBeTruthy();
     }
 
-    // Should have a state_change entry for start
-    const stateChanges = output.activity!.filter((e) => e.type === "state_change");
+    // Should have a state transition entry for start (type is "started" or "state_change")
+    const stateChanges = output.activity!.filter(
+      (e) => e.type === "state_change" || e.type === "started",
+    );
     expect(stateChanges.length).toBeGreaterThan(0);
   });
 

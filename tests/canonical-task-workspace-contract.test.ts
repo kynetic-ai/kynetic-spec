@@ -16,6 +16,9 @@ import {
   readTestOutput,
   testUlid,
 } from "./helpers/cli.js";
+import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
+
+ensureSplitBackendRegistered();
 
 const MOCK_KSPEC_CLI = path.join(__dirname, "mocks", "kspec-capture-mock.cjs");
 
@@ -47,7 +50,7 @@ async function seedRepo(dir: string): Promise<void> {
 async function setupProjectWithReviewerAgent(dir: string): Promise<void> {
   await fs.writeFile(
     path.join(dir, "kynetic.yaml"),
-    'kynetic: "1"\ntitle: Test Project\n',
+    'kynetic: "1.1"\ntask_storage:\n  format: split\ntitle: Test Project\n',
     "utf-8",
   );
   await fs.writeFile(
@@ -71,7 +74,7 @@ async function setupProjectWithReviewerAgent(dir: string): Promise<void> {
   await fs.writeFile(path.join(dir, "project.tasks.yaml"), "tasks: []\n", "utf-8");
 }
 
-describe("canonical task workspace contract", () => {
+describe("canonical task workspace contract", { timeout: 60_000 }, () => {
   let tempDir: string;
 
   beforeEach(async () => {

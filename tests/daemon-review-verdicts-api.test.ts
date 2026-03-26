@@ -13,10 +13,13 @@ import { execSync } from "node:child_process";
 import { mkdirSync, writeFileSync } from "node:fs";
 import * as path from "node:path";
 import { Elysia } from "elysia";
-import { createTempDir, cleanupTempDir, initGitRepo, testUlid } from "./helpers/cli";
+import { createTempDir, cleanupTempDir, initGitRepo, testUlid, seedSplitTask } from "./helpers/cli";
 import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.ts";
 import { createReviewsRoutes } from "../dist/daemon/routes/reviews.ts";
 import { PubSubManager } from "../dist/daemon/websocket/pubsub.ts";
+// Register split backend in the dist module space (routes use dist, not src)
+import { ensureSplitBackendRegistered } from "../dist/parser/split-backend.js";
+ensureSplitBackendRegistered();
 
 // Test ULIDs
 const REVIEW_DRAFT_ULID = testUlid("RVDR", 1);
@@ -54,14 +57,15 @@ function setupFixtures() {
   // Manifest
   writeFileSync(
     path.join(tempDir, "kynetic.yaml"),
-    `kynetic: "1.0"
+    `kynetic: "1.1"
+task_storage:
+  format: split
 project:
   name: Test Project
   version: "0.1.0"
   status: draft
 includes:
   - modules/test.yaml
-tasks_file: project.tasks.yaml
 `,
   );
 
@@ -79,21 +83,18 @@ tasks_file: project.tasks.yaml
 `,
   );
 
-  // Tasks
-  writeFileSync(
-    path.join(tempDir, "project.tasks.yaml"),
-    `tasks:
-  - _ulid: "${TASK_ULID}"
-    slugs:
-      - task-test
-    title: "Test Task"
-    description: "A test task"
-    status: pending_review
-    spec_ref: "@test-feature"
-    review_ref: "@review-open"
-    created_at: "2026-01-01T00:00:00Z"
-`,
-  );
+  // Tasks (split format)
+  seedSplitTask(tempDir, {
+    _ulid: TASK_ULID,
+    slugs: ["task-test"],
+    title: "Test Task",
+    description: "A test task",
+    status: "pending_review",
+    spec_ref: "@test-feature",
+    review_ref: "@review-open",
+    created_at: "2026-01-01T00:00:00Z",
+    notes: [],
+  });
 
   // Reviews — various lifecycle states
   writeFileSync(

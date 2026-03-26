@@ -693,42 +693,4 @@ describe("Atomic Multi-File Task Writes", () => {
     });
   });
 
-  describe("monolithic format skips buffer management", () => {
-    it("monolithic manager does not activate a write buffer", async () => {
-      const monoManager = new TaskDataManager("monolithic");
-
-      // Set up monolithic fixture (task in project.tasks.yaml)
-      const monoTasksPath = path.join(ctx.specDir, "project.tasks.yaml");
-      const [ulid] = testUlids("AMNO", 1);
-      await fs.writeFile(
-        monoTasksPath,
-        toYaml([
-          {
-            _ulid: ulid,
-            slugs: ["mono-test"],
-            title: "Monolithic test",
-            type: "task",
-            status: "pending",
-            priority: 3,
-            tags: [],
-            depends_on: [],
-            blocked_by: [],
-            created_at: "2026-03-20T00:00:00.000Z",
-            notes: [],
-            todos: [],
-          },
-        ]),
-      );
-
-      let bufferDuringMutation: ReturnType<typeof getActiveBatchBuffer> = null;
-
-      await monoManager.mutateTask(ctx, `@${ulid}`, (task) => {
-        bufferDuringMutation = getActiveBatchBuffer();
-        return { ...task, title: "Updated mono" };
-      });
-
-      // No buffer should be active during monolithic mutations
-      expect(bufferDuringMutation).toBeNull();
-    });
-  });
 });

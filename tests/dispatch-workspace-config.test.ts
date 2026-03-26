@@ -73,7 +73,7 @@ async function seedRepo(dir: string): Promise<void> {
 async function setupProjectWithAgent(dir: string): Promise<void> {
   await fs.writeFile(
     path.join(dir, "kynetic.yaml"),
-    'kynetic: "1"\ntitle: Test Project\n',
+    'kynetic: "1.1"\ntask_storage:\n  format: split\ntitle: Test Project\n',
     "utf-8",
   );
   await fs.writeFile(

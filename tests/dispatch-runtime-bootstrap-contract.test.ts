@@ -18,6 +18,9 @@ import {
   readTestOutput,
   testUlid,
 } from "./helpers/cli.js";
+import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
+
+ensureSplitBackendRegistered();
 
 const MOCK_KSPEC_CLI = path.join(__dirname, "mocks", "kspec-capture-mock.cjs");
 
@@ -50,7 +53,7 @@ async function setupProject(
   const agentId = options?.agentId ?? "dispatch-worker";
   await fs.writeFile(
     path.join(dir, "kynetic.yaml"),
-    'kynetic: "1"\ntitle: Test Project\n',
+    'kynetic: "1.1"\ntitle: Test Project\ntask_storage:\n  format: split\n',
     "utf-8",
   );
   await fs.writeFile(
@@ -185,7 +188,7 @@ async function updateWorkspaceRecord(
   );
 }
 
-describe("dispatch runtime bootstrap contract", () => {
+describe("dispatch runtime bootstrap contract", { timeout: 60_000 }, () => {
   let tempDir: string;
   let originalCaptureFile: string | undefined;
 

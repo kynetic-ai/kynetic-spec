@@ -6,7 +6,7 @@
  * task.yaml and notes.yaml, with a lean index in project.tasks.yaml.
  *
  * This module provides:
- * - Format detection (monolithic vs split)
+ * - Format detection (legacy vs split)
  * - Directory layout conventions (.kspec/tasks/<full-ulid>/)
  * - Routing logic (which operations touch index, per-task files, or both)
  * - Per-task file locking replacing whole-file locking
@@ -442,7 +442,7 @@ class SplitBackend implements TaskStorageBackend {
   /**
    * Verify that migration has been completed before allowing split operations.
    *
-   * Detects unmigrated monolithic entries by checking if project.tasks.yaml
+   * Detects unmigrated legacy entries by checking if project.tasks.yaml
    * contains full task records (with `notes` arrays) rather than lean index
    * entries (with `notes_count` scalars). When unmigrated entries are found
    * without corresponding per-task directories, an error is raised.
@@ -477,9 +477,9 @@ class SplitBackend implements TaskStorageBackend {
       return;
     }
 
-    // Check for monolithic-style entries: lean index entries use `notes_count`
+    // Check for unmigrated entries: lean index entries use `notes_count`
     // as a scalar number. Any entry without `notes_count` as a number is
-    // potentially monolithic (including entries with malformed/missing notes).
+    // potentially unmigrated (including entries with malformed/missing notes).
     const unmigratedEntries = rawEntries.filter((entry) => {
       if (!entry || typeof entry !== "object") return false;
       const rec = entry as Record<string, unknown>;
@@ -497,10 +497,10 @@ class SplitBackend implements TaskStorageBackend {
 
       if (trulyUnmigrated.length > 0) {
         throw new TaskDataManagerError(
-          `Storage format is set to "split" but ${trulyUnmigrated.length} task(s) in project.tasks.yaml have not been migrated to per-task directories. Run the migration command before activating split format.`,
+          `Storage format is set to "split" but ${trulyUnmigrated.length} task(s) in project.tasks.yaml have not been migrated to per-task directories.`,
           {
             suggestion:
-              'Run the task storage migration to convert monolithic entries to per-task directories, or set task_storage.format back to "monolithic".',
+              'Run "kspec task migrate" to convert unmigrated entries to per-task directories.',
             field: "task_storage.format",
           },
         );

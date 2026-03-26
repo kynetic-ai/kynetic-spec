@@ -7,9 +7,12 @@
  * AC: @doctor-command
  */
 
+import * as path from "node:path";
 import { getGitRoot, getShadowStatus, isGitRepo, type ShadowStatus } from "./shadow.js";
 import { getSetupStatus, type SetupStatus } from "./setup-status.js";
 import { getDaemonStatus, type DaemonStatus } from "./daemon-status.js";
+import { findManifestInDir, readYamlFile } from "./yaml.js";
+import type { Manifest } from "../schema/spec.js";
 
 /**
  * Severity levels for health checks
@@ -77,6 +80,15 @@ export interface OverallVerdict {
  * Complete doctor report
  * AC: @doctor-command ac-json-output
  */
+/**
+ * Task storage section of doctor report
+ */
+export interface TaskStorageSection {
+  checks: CheckResult[];
+  format?: string;
+  kyneticVersion?: string;
+}
+
 export interface DoctorReport {
   /** Timestamp of report generation (ISO 8601) */
   generatedAt: string;
@@ -84,6 +96,8 @@ export interface DoctorReport {
   shadow: ShadowSection;
   /** Setup status (hooks, skills, agents.md) */
   setup: SetupSection;
+  /** Task storage status */
+  taskStorage: TaskStorageSection;
   /** Daemon status */
   daemon: DaemonSection;
   /** Overall health verdict */
@@ -127,6 +141,7 @@ export async function getDoctorReport(
     generatedAt,
     shadow: { initialized: false, checks: [] },
     setup: { checks: [] },
+    taskStorage: { checks: [] },
     daemon: { checks: [] },
     overall: { healthy: false, errorCount: 0, warningCount: 0 },
   };
@@ -211,6 +226,9 @@ export async function getDoctorReport(
   // Build setup section
   // AC: @doctor-command ac-setup-agent-hooks, ac-setup-skills-agents-md, ac-partial-init, ac-staleness-unknown
   buildSetupSection(report.setup, setupStatus);
+
+  // Build task storage section — check if project needs migration
+  await buildTaskStorageSection(report.taskStorage, projectRoot);
 
   // Build daemon section
   // AC: @doctor-command ac-daemon-running, ac-daemon-not-running, ac-daemon-unreachable
@@ -480,6 +498,62 @@ function buildDaemonSection(section: DaemonSection, status: DaemonStatus): void 
 }
 
 /**
+ * Build task storage section by reading the manifest and checking the
+ * storage format configuration.
+ */
+async function buildTaskStorageSection(
+  section: TaskStorageSection,
+  projectRoot: string,
+): Promise<void> {
+  const specDir = path.join(projectRoot, ".kspec");
+  const manifestPath = await findManifestInDir(specDir);
+  if (!manifestPath) return; // No manifest found — skip task storage checks
+
+  let manifest: Manifest | null = null;
+  try {
+    manifest = await readYamlFile<Manifest>(manifestPath);
+  } catch {
+    // Manifest not readable — skip task storage checks
+    return;
+  }
+
+  if (!manifest) return;
+
+  const kyneticVersion = manifest.kynetic ?? "1.0";
+  const format = manifest.task_storage?.format;
+  section.kyneticVersion = kyneticVersion;
+  section.format = format ?? undefined;
+
+  if (format === "split") {
+    section.checks.push({
+      name: "task-storage-format",
+      severity: "ok",
+      message: "Task storage: split (per-task directories)",
+    });
+  } else {
+    const majorMinor = parseFloat(kyneticVersion);
+    if (majorMinor >= 1.1) {
+      // Version >= 1.1 but no explicit split format — unusual but ok
+      section.checks.push({
+        name: "task-storage-format",
+        severity: "warning",
+        message: `Task storage format not explicitly set (kynetic: ${kyneticVersion})`,
+        guidance: 'Run "kspec task migrate" to set task_storage.format: split in your manifest.',
+      });
+    } else {
+      // Legacy project needs migration
+      section.checks.push({
+        name: "task-storage-format",
+        severity: "error",
+        message: `Legacy task storage detected (kynetic: ${kyneticVersion}, no split format)`,
+        guidance:
+          'Run "kspec task migrate" to convert to per-task directory storage and upgrade your manifest.',
+      });
+    }
+  }
+}
+
+/**
  * Count errors across all sections
  */
 function countErrors(report: DoctorReport): number {
@@ -488,6 +562,9 @@ function countErrors(report: DoctorReport): number {
     if (check.severity === "error") count++;
   }
   for (const check of report.setup.checks) {
+    if (check.severity === "error") count++;
+  }
+  for (const check of report.taskStorage.checks) {
     if (check.severity === "error") count++;
   }
   for (const check of report.daemon.checks) {
@@ -505,6 +582,9 @@ function countWarnings(report: DoctorReport): number {
     if (check.severity === "warning") count++;
   }
   for (const check of report.setup.checks) {
+    if (check.severity === "warning") count++;
+  }
+  for (const check of report.taskStorage.checks) {
     if (check.severity === "warning") count++;
   }
   for (const check of report.daemon.checks) {

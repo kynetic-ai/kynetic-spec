@@ -1,4 +1,4 @@
-kynetic: "1.0"
+kynetic: "1.1"
 project: Test Project B
 description: Multi-directory daemon test fixture - Project B
 modules:

@@ -29,7 +29,11 @@ import {
   initGitRepo,
   readTestOutput,
   readTestOutputSync,
+  seedSplitTask,
 } from "./helpers/cli.js";
+import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
+
+ensureSplitBackendRegistered();
 import * as http from "node:http";
 import type { Agent } from "../src/schema/meta.js";
 import { provisionDispatchWorkspace } from "../src/agent-runtime/workspace.js";
@@ -389,7 +393,8 @@ async function waitForMockCall(
 }
 
 /**
- * Write tasks to the project tasks file.
+ * Write tasks to the project in split storage format.
+ * Clears existing tasks directory and index, then seeds each task.
  */
 async function writeTasks(
   dir: string,
@@ -403,26 +408,27 @@ async function writeTasks(
     blocked_by?: string[];
   }>,
 ): Promise<void> {
-  await fs.writeFile(
-    path.join(dir, "project.tasks.yaml"),
-    YAML.stringify({
-      tasks: tasks.map((t) => ({
-        _ulid: t._ulid,
-        type: "task",
-        title: `Task ${t._ulid}`,
-        status: t.status,
-        automation: t.automation,
-        tags: t.tags ?? [],
-        priority: t.priority,
-        depends_on: t.depends_on ?? [],
-        blocked_by: t.blocked_by ?? [],
-        created_at: new Date().toISOString(),
-        notes: [],
-        todos: [],
-      })),
-    }),
-    "utf-8",
-  );
+  // Clear existing split tasks so repeated calls don't accumulate
+  const tasksDir = path.join(dir, "tasks");
+  await fs.rm(tasksDir, { recursive: true, force: true });
+  await fs.rm(path.join(dir, "project.tasks.yaml"), { force: true });
+
+  // Seed each task in split format
+  for (const t of tasks) {
+    seedSplitTask(dir, {
+      _ulid: t._ulid,
+      type: "task",
+      title: `Task ${t._ulid}`,
+      status: t.status,
+      automation: t.automation,
+      tags: t.tags ?? [],
+      priority: t.priority ?? 3,
+      depends_on: t.depends_on ?? [],
+      blocked_by: t.blocked_by ?? [],
+      notes: [],
+      created_at: new Date().toISOString(),
+    });
+  }
 }
 
 /**
@@ -4061,25 +4067,19 @@ describe("Self-trigger suppression", () => {
     const taskId = testUlid("TASK");
     await fs.writeFile(
       path.join(testDir, "kynetic.yaml"),
-      YAML.stringify({ kynetic: "1", title: "Test" }),
+      YAML.stringify({ kynetic: "1.1", task_storage: { format: "split" }, project: { name: "Test", version: "0.1.0" } }),
     );
-    await fs.writeFile(
-      path.join(testDir, "project.tasks.yaml"),
-      YAML.stringify({
-        tasks: [
-          {
-            _ulid: taskId,
-            type: "task",
-            title: "Test task",
-            status: "pending",
-            tags: [],
-            notes: [],
-            todos: [],
-            created_at: new Date().toISOString(),
-          },
-        ],
-      }),
-    );
+    seedSplitTask(testDir, {
+      _ulid: taskId,
+      type: "task",
+      title: "Test task",
+      status: "pending",
+      priority: 3,
+      tags: [],
+      depends_on: [],
+      notes: [],
+      created_at: new Date().toISOString(),
+    });
     // Initial git commit so kspec commands work
     await fs.writeFile(path.join(testDir, ".gitignore"), "");
     const { execSync: execSyncLocal } = await import("node:child_process");
@@ -4102,23 +4102,19 @@ describe("Self-trigger suppression", () => {
 
     // Reset task to pending for the next test
     receivedEvents = [];
-    await fs.writeFile(
-      path.join(testDir, "project.tasks.yaml"),
-      YAML.stringify({
-        tasks: [
-          {
-            _ulid: taskId,
-            type: "task",
-            title: "Test task",
-            status: "pending",
-            tags: [],
-            notes: [],
-            todos: [],
-            created_at: new Date().toISOString(),
-          },
-        ],
-      }),
-    );
+    await fs.rm(path.join(testDir, "tasks"), { recursive: true, force: true });
+    await fs.rm(path.join(testDir, "project.tasks.yaml"), { force: true });
+    seedSplitTask(testDir, {
+      _ulid: taskId,
+      type: "task",
+      title: "Test task",
+      status: "pending",
+      priority: 3,
+      tags: [],
+      depends_on: [],
+      notes: [],
+      created_at: new Date().toISOString(),
+    });
     execSync("git add -A && git commit -m reset", { cwd: testDir, stdio: "pipe" });
 
     // Run task start WITH KSPEC_SESSION_ID — event should be suppressed

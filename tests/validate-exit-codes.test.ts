@@ -208,15 +208,17 @@ items:
       // Create minimal kspec structure
       await fs.writeFile(
         path.join(cleanDir, "kynetic.yaml"),
-        `kynetic: "1.0"
+        `kynetic: "1.1"
 project:
   name: "Clean Project"
+task_storage:
+  format: split
 `,
       );
 
       await fs.writeFile(
         path.join(cleanDir, "project.tasks.yaml"),
-        `tasks: []
+        `[]
 `,
       );
     });

@@ -16,6 +16,9 @@ import {
   readTestOutput,
   testUlid,
 } from "./helpers/cli.js";
+import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
+
+ensureSplitBackendRegistered();
 
 const MOCK_KSPEC_CLI = path.join(__dirname, "mocks", "kspec-capture-mock.cjs");
 
@@ -38,7 +41,7 @@ async function seedRepo(dir: string): Promise<void> {
 async function setupProject(dir: string): Promise<void> {
   await fs.writeFile(
     path.join(dir, "kynetic.yaml"),
-    'kynetic: "1"\ntitle: Test Project\n',
+    'kynetic: "1.1"\ntask_storage:\n  format: split\ntitle: Test Project\n',
     "utf-8",
   );
   await fs.writeFile(
@@ -97,28 +100,42 @@ type TaskRecord = {
 };
 
 async function writeTasks(dir: string, tasks: TaskRecord[]): Promise<void> {
+  const indexEntries: Record<string, unknown>[] = [];
+
+  for (const task of tasks) {
+    const taskDir = path.join(dir, "tasks", task._ulid);
+    await fs.mkdir(taskDir, { recursive: true });
+
+    const taskData: Record<string, unknown> = {
+      _ulid: task._ulid,
+      type: "task",
+      title: task.title,
+      slugs: task.slugs,
+      status: task.status,
+      priority: task.priority ?? 1,
+      blocked_by: [],
+      depends_on: [],
+      context: [],
+      tags: [],
+      vcs_refs: [],
+      created_at: task.created_at ?? new Date().toISOString(),
+      automation: task.automation ?? "eligible",
+      ...(task.review_url ? { review_url: task.review_url } : {}),
+    };
+
+    await fs.writeFile(path.join(taskDir, "task.yaml"), YAML.stringify(taskData), "utf-8");
+    await fs.writeFile(path.join(taskDir, "notes.yaml"), YAML.stringify({ notes: [] }), "utf-8");
+
+    indexEntries.push({
+      ...taskData,
+      notes_count: 0,
+      todos_count: 0,
+    });
+  }
+
   await fs.writeFile(
     path.join(dir, "project.tasks.yaml"),
-    YAML.stringify({
-      tasks: tasks.map((task) => ({
-        _ulid: task._ulid,
-        type: "task",
-        title: task.title,
-        slugs: task.slugs,
-        status: task.status,
-        priority: task.priority ?? 1,
-        blocked_by: [],
-        depends_on: [],
-        context: [],
-        tags: [],
-        vcs_refs: [],
-        notes: [],
-        todos: [],
-        created_at: task.created_at ?? new Date().toISOString(),
-        automation: task.automation ?? "eligible",
-        ...(task.review_url ? { review_url: task.review_url } : {}),
-      })),
-    }),
+    YAML.stringify(indexEntries),
     "utf-8",
   );
 }

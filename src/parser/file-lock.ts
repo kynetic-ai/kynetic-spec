@@ -5,8 +5,8 @@
  * Prevents concurrent kspec processes from corrupting YAML files
  * during overlapping read-modify-write cycles.
  *
- * AC: Fixes race condition where concurrent task add commands could
- * lose data due to non-atomic read-modify-write in saveTask.
+ * AC: Fixes race condition where concurrent task operations could
+ * lose data due to non-atomic read-modify-write cycles.
  */
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
