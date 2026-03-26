@@ -52787,6 +52787,19 @@ reviews:
         runner: vitest
         created_at: 2026-03-26T03:43:47.005Z
         completed_at: 2026-03-26T03:43:47.005Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "ac-9: annotated at tests/task-data-manager.test.ts:753 (describe block covering 4 tests).
+          ac-10: annotated at tests/task-data-manager.test.ts:882. Both ACs also annotated in
+          src/parser/task-data-manager.ts:803-804. Tests are behavioral (concurrent mutations, not
+          source scanning)."
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-26T03:43:50.702Z
+        completed_at: 2026-03-26T03:43:50.702Z
     events:
       - _ulid: 01KMM3TWNM5QM3VQ27WNK56E71
         actor: "@claude"
@@ -52808,6 +52821,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-26T03:43:47.446Z
+      - _ulid: 01KMM3VJBBBTEJB0SEPJWNAN63
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-26T03:43:51.148Z
     examined_commit: 014232b9cee59638e28bac59aae8f6ff8b5e1f36
     external_links: []
     lifecycle_state: open
@@ -52820,5 +52840,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-26T03:43:28.949Z
-    updated_at: 2026-03-26T03:43:47.005Z
+    updated_at: 2026-03-26T03:43:50.702Z
     notes: []
