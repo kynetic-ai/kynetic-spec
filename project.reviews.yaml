@@ -53512,6 +53512,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-26T05:41:00.015Z
+      - _ulid: 01KMNH660EWMXRDXC0NJV98DHZ
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMMAAF3CY7JJQYNRWJDA9GB5
+        timestamp: 2026-03-26T16:56:04.878Z
     examined_commit: 31c76a76695b207a1ef6ab2a99901412a2a29ff9
     external_links: []
     lifecycle_state: closed
@@ -53540,6 +53546,16 @@ reviews:
               which violates @task-set ac-1's requirement to show the specific transition command
               for the requested status."
             created_at: 2026-03-26T05:36:50.797Z
+          - _ulid: 01KMNH65JP3B8H9SKT6NPBDGXF
+            author: "@claude"
+            body: "Fixed: Removed static 'pending' and 'in_progress' from VALID_TRANSITIONS_FROM['blocked']. The
+              only static transition from blocked is now 'cancelled'. The unblock target is computed
+              dynamically as prior_status ?? 'pending' and added to valid transitions at runtime.
+              This ensures the error never suggests a command that can't achieve the requested
+              status. Added 2 new tests covering the exact repro: blocking from in_progress then
+              requesting --status pending correctly reports 'Cannot transition from blocked to
+              pending' (both text and JSON modes)."
+            created_at: 2026-03-26T16:56:04.437Z
         kind: blocker
       - _ulid: 01KMMAF9ZZW9YZQ1R652VJTHKM
         entries:
@@ -53565,7 +53581,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-26T05:41:00.015Z
     created_at: 2026-03-26T05:36:06.142Z
-    updated_at: 2026-03-26T05:41:00.015Z
+    updated_at: 2026-03-26T16:56:04.437Z
     notes: []
   - _ulid: 01KMMAPRMFVG07AEKFHNG8T2JQ
     slugs: []
