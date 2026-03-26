@@ -83,7 +83,7 @@ description: |
 spec_ref: "@daemon-entity-cache"
 plan_ref: "@plan-daemon-optimistic-data-layer"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on: []
 context: []
@@ -241,6 +241,13 @@ history:
         previous: "@01KMNPGNF19W767RNJWJ8V9SMY"
     command: review-link
     timestamp: 2026-03-26T23:34:07.392Z
+  - author: Test User
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+    command: review-verdict-needs-work
+    timestamp: 2026-03-26T23:37:12.848Z
 prior_status: null
 created_at: 2026-03-26T05:50:41.235Z
 started_at: 2026-03-26T18:50:48.574Z
