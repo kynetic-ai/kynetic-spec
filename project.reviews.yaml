@@ -56149,6 +56149,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-26T23:34:18.966Z
+      - _ulid: 01KMP829KFHV35YGWG6HXFREB1
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMP8292RVXGHS8MVCRSC7Y0V
+        timestamp: 2026-03-26T23:35:54.735Z
     examined_commit: 704ebd4dd303187ec7b761cee65a3a07ea284578
     external_links: []
     lifecycle_state: open
@@ -56158,8 +56165,25 @@ reviews:
       content_hash: ""
       ref: "@01KMMB3T2K3T6A1CJR884EPKJF"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMP8292RVXGHS8MVCRSC7Y0V
+        anchor:
+          type: code
+          commit: 704ebd4dd303187ec7b761cee65a3a07ea284578
+          line_end: 250
+          line_start: 233
+          path: packages/daemon/src/routes/tasks.ts
+          side: head
+        entries:
+          - _ulid: 01KMP8293062QTHYFR1M2BADTG
+            author: Test User
+            body: The task detail read path still bypasses the cache entirely.  always calls  before touching
+              the cache and only writes the result back with , which means repeated detail requests
+              still reread YAML from disk after warming.  is never consumed anywhere outside tests
+              in this snapshot, so the detail tier is not actually wired into request serving yet.
+            created_at: 2026-03-26T23:35:54.208Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-26T23:34:05.110Z
-    updated_at: 2026-03-26T23:34:18.446Z
+    updated_at: 2026-03-26T23:35:54.208Z
     notes: []
