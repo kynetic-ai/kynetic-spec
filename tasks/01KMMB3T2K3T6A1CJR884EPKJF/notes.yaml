@@ -160,3 +160,9 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-26T22:59:08.346Z
+  - _ulid: 01KMP7FATQCCVPMECJT4GHQJ7X
+    content: Unblocked manually. Block reason was transient dispatch infrastructure failure (shadow
+      branch commit race during bootstrap), not a genuine task blocker. Restored to pending_review.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-26T23:25:33.399Z
