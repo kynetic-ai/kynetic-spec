@@ -55363,6 +55363,12 @@ reviews:
         payload:
           thread_ulid: 01KMNVC9XVB61VPTE07CFGKX9E
         timestamp: 2026-03-26T19:55:14.148Z
+      - _ulid: 01KMNVE84D77NSHNE9C4Q44ZQB
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMNVC8EZA8AXW97PSKJB2NCY
+        timestamp: 2026-03-26T19:55:14.958Z
     examined_commit: null
     external_links: []
     lifecycle_state: closed
@@ -55422,6 +55428,11 @@ reviews:
               without a matching . That breaks the task’s documented  behavior and leaves later
               cached results without a log artifact.
             created_at: 2026-03-26T19:54:09.760Z
+          - _ulid: 01KMNVE6TS6WB9RK1NZ4HGNX7T
+            author: Jacob Chapel
+            body: Superseded by the clean blocker thread on the same anchor. This duplicate was created by a
+              shell-quoting error while posting the review.
+            created_at: 2026-03-26T19:55:13.624Z
         kind: blocker
       - _ulid: 01KMNVC9XVB61VPTE07CFGKX9E
         anchor:
@@ -55538,5 +55549,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-26T19:54:49.979Z
     created_at: 2026-03-26T19:52:09.839Z
-    updated_at: 2026-03-26T19:55:13.611Z
+    updated_at: 2026-03-26T19:55:13.624Z
     notes: []
