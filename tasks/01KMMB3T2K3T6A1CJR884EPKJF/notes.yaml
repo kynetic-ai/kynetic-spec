@@ -1,1 +1,74 @@
-notes: []
+notes:
+  - _ulid: 01KMNKFTTEFXEB3H7RE1SBYVXG
+    content: >-
+      Approach: Implement ProjectEntityCache in packages/daemon/src/entity-cache.ts
+
+
+      Architecture:
+
+      - 8 data domains: tasks, items, meta, inbox, plans, triage, reviews, sessions
+
+      - Each domain has index tier (always hot) + detail tier (loaded on demand, evicted on
+      invalidation)
+
+      - Domain state: loading | ready | degraded | unloaded
+
+      - Progressive loading in priority order: tasks → items → meta → inbox → plans → triage →
+      reviews → sessions
+
+
+      Key patterns:
+
+      - Reuse TaskDataManager.listTasks()/rawToSummary() for task index tier
+
+      - Reuse loadAllItems() for item index (create ItemSummary projection)
+
+      - Reuse existing SessionSummaryCache patterns for session domain
+
+      - In-flight promise dedup (Map<domain, Promise>) for reload coalescing — proven in
+      SessionSummaryCache.buildPromise
+
+      - Write-through flag with domain-level skip to prevent redundant watcher reload
+
+      - File path → domain mapping based on existing patterns (project.tasks.yaml → tasks,
+      modules/*.yaml → items, etc.)
+
+      - Graceful degradation: domain-level error tracking, fallback to direct file reading per
+      request
+
+
+      Integration points:
+
+      - ProjectContextManager.registerProject() creates cache + triggers initial load
+
+      - ProjectContextManager.unregisterProject() releases cache + cancels in-flight reloads
+
+      - KspecWatcher.onFileChange callback gets cache invalidation handler alongside existing pubsub
+      + dispatch
+
+      - Route handlers check cache before falling back to disk reads (backward compatible)
+
+
+      Session bounding:
+
+      - Reuse resolveStaleSessionCriteria() for stale exclusion
+
+      - Configurable retention window (default 100 most recent)
+
+      - Sessions outside window accessible on demand
+
+
+      Absorbing SessionSummaryCache:
+
+      - The session domain in ProjectEntityCache replaces the standalone SessionSummaryCache
+
+      - Existing getSessionCache() registry pattern replaced by per-project cache instance
+
+      - Live event counters migrate to session domain
+
+
+      Test plan: 15 ACs × behavioral E2E/integration tests each. Tests will create temp fixtures,
+      register mock projects, and verify cache behavior through the public API.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-26T17:36:18.255Z
