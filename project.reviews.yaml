@@ -54419,6 +54419,17 @@ reviews:
         runner: npm
         created_at: 2026-03-26T17:37:03.756Z
         completed_at: 2026-03-26T17:37:03.756Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- tests/task-set-batch.test.ts passed: 28 tests in
+          tests/task-set-batch.test.ts; verified blocked/unblock and pending-status cases."
+        name: task-set-batch
+        required: false
+        runner: vitest
+        created_at: 2026-03-26T17:37:05.037Z
+        completed_at: 2026-03-26T17:37:05.037Z
     events:
       - _ulid: 01KMNK6E6DGEWAQ32P6SM2DCWH
         actor: Test User
@@ -54454,6 +54465,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-26T17:37:04.162Z
+      - _ulid: 01KMNKH8WM5AZ0BTGTC4TJ0A15
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: task-set-batch
+        timestamp: 2026-03-26T17:37:05.428Z
     examined_commit: e715241e6c198107043fac8a2a99670426f5bd40
     external_links: []
     lifecycle_state: open
@@ -54490,5 +54508,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-26T17:31:10.413Z
-    updated_at: 2026-03-26T17:37:03.756Z
+    updated_at: 2026-03-26T17:37:05.037Z
     notes: []
