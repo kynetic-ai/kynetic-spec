@@ -409,6 +409,9 @@ conventions:
       - Test runner caches results by content hash (git blob SHAs + unstaged diffs + untracked files
         + Node version + vitest args). Same content = cache hit, even after commits/rebases. Use
         --fresh to force a full re-run.
+      - "Test output is condensed by default: success shows only summary stats, failure shows failed
+        tests with error snippets. Full verbose log path is printed. Use --verbose (or CI=true) for
+        full streaming output."
   - _ulid: 01KHYXJVNDVVFF6PR7K4X6545H
     domain: development
     examples: []
