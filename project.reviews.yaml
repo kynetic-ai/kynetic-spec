@@ -53900,7 +53900,18 @@ reviews:
     slugs: []
     title: Review smart error message for task set --status rejection (cycle 4)
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Focused run passed: npm test -- tests/task-set-batch.test.ts (25 tests). Also manually
+          reproduced blocked->pending invalid transition messaging via dist CLI."
+        name: task-set-batch
+        required: false
+        runner: npm
+        created_at: 2026-03-26T17:07:50.272Z
+        completed_at: 2026-03-26T17:07:50.272Z
     events:
       - _ulid: 01KMNHF18XKWHCW5ES7X5460YX
         actor: Test User
@@ -53915,6 +53926,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-26T17:01:12.531Z
+      - _ulid: 01KMNHVQ8GNMDM2EF4M9S8S33V
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: task-set-batch
+        timestamp: 2026-03-26T17:07:50.672Z
     examined_commit: da84eed96f51832eb8a43101896382573834e62b
     external_links: []
     lifecycle_state: open
@@ -53927,5 +53945,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-26T17:00:54.942Z
-    updated_at: 2026-03-26T17:01:12.114Z
+    updated_at: 2026-03-26T17:07:50.272Z
     notes: []
