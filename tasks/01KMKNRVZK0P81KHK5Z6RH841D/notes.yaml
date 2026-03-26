@@ -101,3 +101,15 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-26T03:17:04.683Z
+  - _ulid: 01KMM35G5AEM4X7J27YDT836Y0
+    content: "Fix cycle 2: rebased onto current dev to resolve merge conflicts. Semantic conflicts in
+      split-backend.ts: dev added rawCore/mergeTaskPreservingRawShape for unknown-field preservation
+      (task-core-data-file ac-4) — integrated with our structural change (per-task mutex in
+      TaskDataManager, not SplitBackend). Both mutateTask and mutateTasks now thread rawCore through
+      loadTaskFromDirWithHistory and use mergeTaskPreservingRawShape before writeTaskFile. Conflict
+      in review-task-integration.test.ts resolved by keeping dev's version (returns LoadedTask, uses
+      seedSplitTask). All 153 tests in affected files pass. Full suite: 6821 passed, 2 pre-existing
+      flaky timeouts in unrelated files."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-26T03:31:48.010Z
