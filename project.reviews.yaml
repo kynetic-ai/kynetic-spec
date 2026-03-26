@@ -53694,7 +53694,18 @@ reviews:
     slugs: []
     title: Review task-remove-monolithic
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate exited 6 with repo-wide warning baseline only: schema OK, references OK,
+          no validation errors triggered by this snapshot."
+        name: kspec-validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-26T16:54:25.825Z
+        completed_at: 2026-03-26T16:54:25.825Z
     events:
       - _ulid: 01KMNGAKG1964SD4GR01QBG5JC
         actor: Test User
@@ -53730,6 +53741,13 @@ reviews:
           kind: nit
           thread_ulid: 01KMNH30X9KK75D4TDWSWQT48M
         timestamp: 2026-03-26T16:54:22.250Z
+      - _ulid: 01KMNH362MNXG0TG6DTXKZMSKF
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec-validate
+        timestamp: 2026-03-26T16:54:26.644Z
     examined_commit: e15627f141c52186333527be6977b57a18b84ea9
     external_links: []
     lifecycle_state: open
@@ -53800,5 +53818,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-26T16:41:01.186Z
-    updated_at: 2026-03-26T16:54:21.354Z
+    updated_at: 2026-03-26T16:54:25.825Z
     notes: []
