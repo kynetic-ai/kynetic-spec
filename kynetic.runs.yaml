@@ -15272,9 +15272,24 @@ runs:
     started_at: 2026-03-26T00:05:45.017Z
   - _ulid: 01KMKREW5KJRTZG7SRM4ZMMFDD
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-03-26T00:24:40.883Z
+        completed_at: 2026-03-26T00:25:00.485Z
+        notes: "Session: Reviewed task @01KMKNT9CHTJ5DXFBARB4F91A5 (preserve unknown fields through split
+          backend mutateTask writes). What worked well: (1) The review was straightforward — the
+          change was small, well-scoped, and the existing mergeTaskPreservingRawShape function was
+          already battle-tested in the monolithic backend, so the fix was a clean reuse of an
+          existing pattern. (2) The worker provided clear notes explaining the approach and test
+          plan, which aligned with what I found in the diff. (3) AC annotations were present in both
+          implementation and tests."
+      - status: completed
+        step_index: 1
+        started_at: 2026-03-26T00:25:00.485Z
+        completed_at: 2026-03-26T00:25:00.485Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-26T00:24:40.883Z
