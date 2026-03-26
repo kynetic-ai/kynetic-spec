@@ -8150,6 +8150,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-26T17:30:06.846Z
+  - _ulid: 01KMNK73AQH40ATCCZVX9MRHTB
+    type: success
+    content: "Fix cycle review threads: using 'kspec review get @ref --json | jq .threads' gives
+      complete thread content when text-mode output truncates long entries. Reliable pattern for
+      reading full reviewer feedback during fix cycles."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-26T17:31:32.055Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
