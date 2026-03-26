@@ -23687,12 +23687,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-26T00:05:45.448Z
+      updated_at: 2026-03-26T00:10:49.401Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-26T00:05:48.704Z
+      updated_at: 2026-03-26T00:10:49.401Z
     integration:
       status: pending
       detail: null
@@ -23700,7 +23700,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 77b7853efbde33a5f1f229bf8623faaef696153c
-      updated_at: 2026-03-26T00:05:45.448Z
+      updated_at: 2026-03-26T00:10:49.401Z
     lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMKNRVZK0P81KHK5Z6RH841D"
@@ -23708,9 +23708,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-25T23:56:27.852Z
-      last_reconciled_at: 2026-03-26T00:05:48.704Z
+      last_reconciled_at: 2026-03-26T00:10:49.401Z
       created_at: 2026-03-25T23:41:00.167Z
-      updated_at: 2026-03-26T00:05:48.704Z
+      updated_at: 2026-03-26T00:10:49.401Z
     workspace_id: dispatch-workspace-01KMKNRVZK0P81KHK5Z6RH841D
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -23719,7 +23719,7 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/fix-split-backend-mutex-hold-lock-through-write-flush/01kmknrv
         head: 64fd67d017ddd376eb07de18f5d198026434ace9
-        last_seen_at: 2026-03-25T23:56:21.614Z
+        last_seen_at: 2026-03-26T00:10:49.401Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-split-backend-mutex-hold-lock-through-write-flush-01kmknrv
   - active_role: null
     base_branch_point: 126d858ae60ed574f4cfd6782a817ec58a27a01a
