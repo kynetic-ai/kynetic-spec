@@ -52947,6 +52947,13 @@ reviews:
           status: skipped
           name: kspec-validate
         timestamp: 2026-03-26T04:55:00.637Z
+      - _ulid: 01KMM7XX5PZ6JE297PAQQVQX86
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMM7XWRA641FA3TQYR85HD3Z
+        timestamp: 2026-03-26T04:55:02.070Z
     examined_commit: 1346c54c59d9445eed8d532e23938edd3fc5aa66
     external_links: []
     lifecycle_state: open
@@ -52985,7 +52992,25 @@ reviews:
               re-annotated against the spec that now owns the behavior.
             created_at: 2026-03-26T04:54:58.115Z
         kind: blocker
+      - _ulid: 01KMM7XWRA641FA3TQYR85HD3Z
+        anchor:
+          type: code
+          commit: 1346c54c59d9445eed8d532e23938edd3fc5aa66
+          line_end: 176
+          line_start: 172
+          path: src/strings/errors.ts
+          side: head
+        entries:
+          - _ulid: 01KMM7XWRAKPBJGZ2VBNE6W3VN
+            author: Test User
+            body: >-
+              The new guidance suggests transition commands that are not actually valid from the
+              task's current state.  always prints the command for the requested target (for example
+              ✗ Complete failed: @ref
+                Reference "@ref" not found for ) even when the current state is  or , where that command still fails. I reproduced this by creating a pending task, running , then running the suggested  command and getting exit 1. That violates the task requirement for an actionable command and will mislead automation into the wrong next step instead of telling it the requested transition is invalid from the current state.
+            created_at: 2026-03-26T04:55:01.642Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-26T04:50:57.279Z
-    updated_at: 2026-03-26T04:55:00.212Z
+    updated_at: 2026-03-26T04:55:01.642Z
     notes: []
