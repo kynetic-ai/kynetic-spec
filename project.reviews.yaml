@@ -53723,6 +53723,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMNGZDN6RXQ971XHM7AQYZVV
         timestamp: 2026-03-26T16:52:24.141Z
+      - _ulid: 01KMNH31SA9FRC1744Y4QP6Y64
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMNH30X9KK75D4TDWSWQT48M
+        timestamp: 2026-03-26T16:54:22.250Z
     examined_commit: e15627f141c52186333527be6977b57a18b84ea9
     external_links: []
     lifecycle_state: open
@@ -53773,7 +53780,25 @@ reviews:
               at  with no  block. The early  returns need to perform the manifest upgrade too."
             created_at: 2026-03-26T16:52:23.335Z
         kind: blocker
+      - _ulid: 01KMNH30X9KK75D4TDWSWQT48M
+        entries:
+          - _ulid: 01KMNH30XAH89QMMRR7EVJCM1D
+            author: Test User
+            body: "Evidence log: Files read: src/cli/commands/task.ts, src/parser/task-data-manager.ts,
+              src/parser/doctor.ts, src/parser/split-backend.ts, src/parser/shadow.ts,
+              tests/legacy-format-detection.test.ts, tests/task-migrate.test.ts,
+              tests/canonical-task-workspace-contract.test.ts,
+              tests/dispatch-runtime-bootstrap-contract.test.ts. Commands run: git diff vs dev,
+              kspec task get, kspec review for-task/get, kspec validate, AC annotation scan with rg,
+              npm test, targeted npm test on the two timed-out files, targeted base-commit npm test
+              for canonical-task-workspace-contract.test.ts, and a manual legacy-project repro of
+              kspec task migrate --force on an empty project. Claims verified: the worker claim that
+              all tests passed was disproved by npm test; the migration upgrade path was disproved
+              by direct CLI repro. Categories searched: correctness, edge cases, error handling,
+              test quality, integration."
+            created_at: 2026-03-26T16:54:21.354Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-26T16:41:01.186Z
-    updated_at: 2026-03-26T16:52:23.335Z
+    updated_at: 2026-03-26T16:54:21.354Z
     notes: []
