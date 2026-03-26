@@ -15366,7 +15366,7 @@ runs:
     started_at: 2026-03-26T00:38:10.058Z
   - _ulid: 01KMM4152M5T466R8G83PP0SJC
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -15383,7 +15383,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-26T03:47:30.491Z
-        completed_at: 2026-03-26T03:47:30.491Z
+        completed_at: 2026-03-26T03:48:29.018Z
+        notes: "Friction identified (high confidence): (1) Reviewer worktree cannot merge to dev because dev
+          is checked out in main worktree — must cd to main worktree for merge. Already tracked as
+          observation 01KMKP7Q. No new friction to capture. Success: (1) Per-cycle review records
+          provided clear audit trail — cycle 3 review could immediately verify all cycle 1+2
+          findings were addressed. (2) Task notes with chronological fix-cycle entries gave complete
+          context for what changed between cycles. Already similar to existing success observations
+          01KMKPTD and 01KMKQMZ."
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-26T03:48:29.018Z
+        completed_at: 2026-03-26T03:48:29.018Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-26T03:46:54.164Z
