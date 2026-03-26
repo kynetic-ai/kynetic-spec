@@ -327,6 +327,92 @@ describe("test runner environment checks", () => {
       }
     });
 
+    it("verbose live run persists a log file in session cache", () => {
+      const tempTestFile = path.join(projectRoot, "tests", "_trivial-verbose-check.test.ts");
+      fs.writeFileSync(
+        tempTestFile,
+        `import { it, expect } from 'vitest';\nit('passes', () => { expect(1).toBe(1); });\n`,
+      );
+
+      // Use a unique session ID to isolate this test's cache
+      const sessionId = `test-verbose-${Date.now()}`;
+      const cacheDir = path.join(os.tmpdir(), "kspec-test-cache", sessionId);
+
+      try {
+        const result = spawnSync(
+          "node",
+          [runnerScript, "--fresh", "--verbose", "tests/_trivial-verbose-check.test.ts"],
+          {
+            cwd: projectRoot,
+            encoding: "utf8",
+            env: { ...process.env, SKIP_BUILD: "1", KSPEC_SESSION_ID: sessionId },
+            timeout: 30_000,
+          },
+        );
+
+        expect(result.status).toBe(0);
+        expect(result.stderr).toContain("Tests passed");
+
+        // A .log file must exist in the session cache
+        const cacheFiles = fs.readdirSync(cacheDir);
+        const logFiles = cacheFiles.filter((f) => f.endsWith(".log"));
+        expect(logFiles.length).toBeGreaterThanOrEqual(1);
+
+        // The log file should contain vitest verbose output
+        const logContent = fs.readFileSync(path.join(cacheDir, logFiles[0]), "utf8");
+        expect(logContent).toContain("passes");
+      } finally {
+        fs.unlinkSync(tempTestFile);
+        fs.rmSync(cacheDir, { recursive: true, force: true });
+      }
+    });
+
+    it("verbose cache hit streams full log instead of condensed output", () => {
+      const tempTestFile = path.join(projectRoot, "tests", "_trivial-verbose-cache.test.ts");
+      fs.writeFileSync(
+        tempTestFile,
+        `import { it, expect } from 'vitest';\nit('passes verbose cache', () => { expect(1).toBe(1); });\n`,
+      );
+
+      const sessionId = `test-verbose-cache-${Date.now()}`;
+      const cacheDir = path.join(os.tmpdir(), "kspec-test-cache", sessionId);
+
+      try {
+        // First run: populate cache (condensed mode)
+        const firstRun = spawnSync(
+          "node",
+          [runnerScript, "--fresh", "tests/_trivial-verbose-cache.test.ts"],
+          {
+            cwd: projectRoot,
+            encoding: "utf8",
+            env: { ...process.env, SKIP_BUILD: "1", KSPEC_SESSION_ID: sessionId },
+            timeout: 30_000,
+          },
+        );
+        expect(firstRun.status).toBe(0);
+
+        // Second run: verbose with cached results
+        const verboseRun = spawnSync(
+          "node",
+          [runnerScript, "--verbose", "tests/_trivial-verbose-cache.test.ts"],
+          {
+            cwd: projectRoot,
+            encoding: "utf8",
+            env: { ...process.env, SKIP_BUILD: "1", KSPEC_SESSION_ID: sessionId },
+            timeout: 30_000,
+          },
+        );
+
+        expect(verboseRun.status).toBe(0);
+        expect(verboseRun.stderr).toContain("Using cached results");
+        // Verbose cached hit must stream the full log, which contains individual test names
+        expect(verboseRun.stdout).toContain("passes verbose cache");
+      } finally {
+        fs.unlinkSync(tempTestFile);
+        fs.rmSync(cacheDir, { recursive: true, force: true });
+      }
+    });
+
     it("exposes preTestHooks and postTestHooks arrays for extensibility", () => {
       expect(runner.preTestHooks).toBeInstanceOf(Array);
       expect(runner.preTestHooks.length).toBeGreaterThanOrEqual(2);
