@@ -52673,6 +52673,18 @@ reviews:
         runner: vitest
         created_at: 2026-03-26T00:34:11.671Z
         completed_at: 2026-03-26T00:34:11.671Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "AC annotations present: ac-9 at tests/task-data-manager.test.ts:753, ac-10 at
+          tests/task-data-manager.test.ts:882, ac-5 at tests/task-data-manager.test.ts:396.
+          Implementation AC annotations in task-data-manager.ts and split-backend.ts."
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-26T00:34:16.045Z
+        completed_at: 2026-03-26T00:34:16.045Z
     events:
       - _ulid: 01KMKRR0M8BVKVZFXKM10PCSX0
         actor: "@claude"
@@ -52694,6 +52706,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-26T00:34:12.068Z
+      - _ulid: 01KMKS0E7NE71SD474TWVYWW0S
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-26T00:34:16.437Z
     examined_commit: f6cd96f3a59c1114908f5fdb347b9df0d5160ae4
     external_links: []
     lifecycle_state: open
@@ -52706,5 +52725,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-26T00:29:40.360Z
-    updated_at: 2026-03-26T00:34:11.671Z
+    updated_at: 2026-03-26T00:34:16.045Z
     notes: []
