@@ -54601,6 +54601,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMNPRMJHE7Z5YCZB75MVVB8X
         timestamp: 2026-03-26T18:33:33.735Z
+      - _ulid: 01KMNPRSAP57M0D5EPZFVR895P
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMNPRR50WYT1GCQH5WD4BKRB
+        timestamp: 2026-03-26T18:33:37.366Z
     examined_commit: 189e4fc775aa1f18106e55d895b8e6d3087ea003
     external_links: []
     lifecycle_state: open
@@ -54752,7 +54759,29 @@ reviews:
               meant to remove.
             created_at: 2026-03-26T18:33:32.497Z
         kind: blocker
+      - _ulid: 01KMNPRR50WYT1GCQH5WD4BKRB
+        anchor:
+          type: code
+          commit: 189e4fc775aa1f18106e55d895b8e6d3087ea003
+          line_end: 188
+          line_start: 60
+          path: packages/daemon/src/routes/tasks.ts
+          side: head
+        entries:
+          - _ulid: 01KMNPRR50D269A23ACNXS4DFX
+            author: Test User
+            body: The new entity cache is not actually on the read path. The task list and task detail handlers
+              still rebuild their data from initContext plus listTasks/getTask plus loadAllItems on
+              every request, and the same direct-disk pattern remains in
+              packages/daemon/src/routes/items.ts and packages/daemon/src/routes/refs.ts. The daemon
+              therefore still re-reads YAML instead of serving from memory, and it cannot surface
+              cache loading or degraded state to satisfy the serve-from-memory, detail-on-demand,
+              graceful-degradation, and warming-availability acceptance criteria. The added tests
+              only exercise ProjectEntityCache directly, so the API-layer behavior is still untested
+              and still wrong.
+            created_at: 2026-03-26T18:33:36.160Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-26T18:29:11.265Z
-    updated_at: 2026-03-26T18:33:32.497Z
+    updated_at: 2026-03-26T18:33:36.160Z
     notes: []
