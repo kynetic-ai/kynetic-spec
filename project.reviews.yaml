@@ -55724,7 +55724,20 @@ reviews:
     slugs: []
     title: Review task-enhance-test-runner-with-smart-caching-and-condensed-output (cycle 3)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Failed in this workspace on commit 0c6c79c71: 6 failed suites / 4 failed tests, including
+          tests/agent-dispatch-engine.test.ts, tests/canonical-task-workspace-contract.test.ts, and
+          tests/dispatch-runtime-bootstrap-contract.test.ts. The task-specific runner tests now
+          pass, but the required full-suite gate is still red. Command run: npm test -- --fresh."
+        name: npm test -- --fresh
+        required: true
+        runner: npm
+        created_at: 2026-03-26T20:25:20.815Z
+        completed_at: 2026-03-26T20:25:20.815Z
     events:
       - _ulid: 01KMNWZDPFWD9MEDQ3WW80ZXV2
         actor: Jacob Chapel
@@ -55739,6 +55752,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-26T20:22:20.392Z
+      - _ulid: 01KMNX5C2GRWFG476K59CD1NCT
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test -- --fresh
+        timestamp: 2026-03-26T20:25:21.232Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -55751,5 +55771,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-26T20:22:06.288Z
-    updated_at: 2026-03-26T20:22:19.633Z
+    updated_at: 2026-03-26T20:25:20.815Z
     notes: []
