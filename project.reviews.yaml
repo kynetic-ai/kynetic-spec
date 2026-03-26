@@ -55585,6 +55585,19 @@ reviews:
         runner: kspec
         created_at: 2026-03-26T20:19:01.152Z
         completed_at: 2026-03-26T20:19:01.152Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Failed in this workspace on commit 91d46b2df: 7 failed suites / 4 failed tests, including
+          tests/test-runner.test.ts (ENOENT unlink of tests/_trivial-summary-check.test.ts) plus
+          existing failures in tests/canonical-task-workspace-contract.test.ts and
+          tests/dispatch-runtime-bootstrap-contract.test.ts. Command run: npm test -- --fresh."
+        name: npm test -- --fresh
+        required: true
+        runner: npm
+        created_at: 2026-03-26T20:19:01.079Z
+        completed_at: 2026-03-26T20:19:01.079Z
     events:
       - _ulid: 01KMNWGE4F5K77ZP8G7YN9W1XW
         actor: Jacob Chapel
@@ -55613,6 +55626,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-03-26T20:19:02.189Z
+      - _ulid: 01KMNWSTJR5CH7V6F6BX9PCKTP
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test -- --fresh
+        timestamp: 2026-03-26T20:19:02.872Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -55646,5 +55666,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-26T20:13:55.215Z
-    updated_at: 2026-03-26T20:19:01.152Z
+    updated_at: 2026-03-26T20:19:01.079Z
     notes: []
