@@ -85,3 +85,24 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-26T04:55:46.913Z
+  - _ulid: 01KMM8NMN38PP6CANQD9Q7Y35G
+    content: >-
+      Fix cycle 1: Addressed both review blockers.
+
+
+      1. AC annotation mismatch (blocker): Updated all 4 test annotations + 2 source annotations
+      from @spec-task-set-batch ac-3 to @task-set ac-1 to match the AC's new home.
+
+
+      2. Invalid transition suggestions (blocker): statusSetRejection() now validates the requested
+      transition against VALID_TRANSITIONS_FROM before suggesting a command. Invalid transitions get
+      an explicit 'Cannot transition from X to Y' message and null suggestedCommand in JSON. Batch
+      mode (no currentStatus) still shows commands as best-effort guidance.
+
+
+      Added 2 new tests: valid transition suggestion (text mode) and valid transition in JSON mode.
+      All 21 tests in task-set-batch.test.ts pass. Full suite passes (2 pre-existing timeout
+      failures unrelated to this change).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-26T05:07:59.779Z
