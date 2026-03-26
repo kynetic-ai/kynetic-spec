@@ -8,18 +8,23 @@
  * gaps automatically.
  *
  * Usage:
- *   node scripts/test.cjs              # Run all tests
+ *   node scripts/test.cjs              # Run all tests (cached if unchanged)
  *   node scripts/test.cjs --shard=1/3  # Run shard 1
  *   node scripts/test.cjs my-test      # Filter by name
  *   node scripts/test.cjs --dry-run    # Check environment only
+ *   node scripts/test.cjs --fresh      # Force full re-run, ignore cache
+ *   node scripts/test.cjs --verbose    # Stream full vitest output to terminal
  *
  * Environment variables:
- *   SKIP_BUILD=1   Skip build step (trust existing dist/)
- *   CI=true        Detected automatically in CI
+ *   SKIP_BUILD=1          Skip build step (trust existing dist/)
+ *   CI=true               Detected automatically in CI (implies --verbose)
+ *   KSPEC_SESSION_ID=...  Session-scoped cache isolation for dispatch agents
  */
 
-const { execSync, spawnSync } = require("child_process");
+const { execSync, spawnSync, spawn } = require("child_process");
+const crypto = require("crypto");
 const fs = require("fs");
+const os = require("os");
 const path = require("path");
 const { checkProjectDependencies } = require("./dependency-health.cjs");
 
@@ -51,6 +56,20 @@ const BUILD_INPUT_PATHS = [
   "packages/web-ui/svelte.config.js",
 ];
 
+// Paths that affect test outcomes — used for cache key computation
+const TEST_INPUT_PATHS = [
+  "src/",
+  "tests/",
+  "packages/shared/src/",
+  "packages/daemon/src/",
+  "packages/web-ui/src/",
+  "package-lock.json",
+  "vitest.config.ts",
+  "tsconfig.json",
+];
+
+const CACHE_ROOT = path.join(os.tmpdir(), "kspec-test-cache");
+
 // ─── Output helpers ────────────────────────────────────────────────
 
 function logSetup(msg) {
@@ -67,6 +86,210 @@ function logWarn(msg) {
 
 function logErr(msg) {
   process.stderr.write(`${c.red}[test-runner]${c.reset} ${msg}\n`);
+}
+
+// ─── Cache key computation ────────────────────────────────────────
+
+/**
+ * Compute a deterministic cache key from repo content state + vitest args.
+ * Uses git blob SHAs (content-addressed) so commits/rebases don't invalidate.
+ */
+function computeCacheKey(vitestArgs) {
+  const hash = crypto.createHash("sha256");
+
+  // 1. Blob SHAs of tracked files in test-affecting paths
+  const pathArgs = TEST_INPUT_PATHS.join(" ");
+  try {
+    const lsFiles = execSync(`git ls-files -s -- ${pathArgs}`, {
+      cwd: projectRoot,
+      encoding: "utf8",
+      stdio: ["pipe", "pipe", "pipe"],
+    });
+    hash.update(lsFiles);
+  } catch {
+    // Not a git repo or git not available — no caching
+    return null;
+  }
+
+  // 2. Unstaged changes (working tree differs from index)
+  try {
+    const diff = execSync(`git diff -- ${pathArgs}`, {
+      cwd: projectRoot,
+      encoding: "utf8",
+      stdio: ["pipe", "pipe", "pipe"],
+    });
+    hash.update(diff);
+  } catch {
+    return null;
+  }
+
+  // 3. Untracked files in test-affecting paths
+  try {
+    const untracked = execSync(`git ls-files --others --exclude-standard -- ${pathArgs}`, {
+      cwd: projectRoot,
+      encoding: "utf8",
+      stdio: ["pipe", "pipe", "pipe"],
+    });
+    if (untracked.trim()) {
+      // Hash the actual content of untracked files
+      for (const file of untracked.trim().split("\n")) {
+        const filePath = path.join(projectRoot, file);
+        try {
+          hash.update(fs.readFileSync(filePath));
+          hash.update(file); // include path so renames invalidate
+        } catch {
+          // File disappeared between listing and reading
+        }
+      }
+    }
+  } catch {
+    // Ignore
+  }
+
+  // 4. Node version
+  hash.update(process.version);
+
+  // 5. Vitest args (different filters = different cache entries)
+  hash.update(vitestArgs.join(" "));
+
+  return hash.digest("hex").slice(0, 16);
+}
+
+/**
+ * Get the session-scoped cache directory.
+ */
+function getCacheDir() {
+  const sessionId = process.env.KSPEC_SESSION_ID || "_default";
+  return path.join(CACHE_ROOT, sessionId);
+}
+
+/**
+ * Look up cached results for a given cache key.
+ * Returns { json, logFile } or null if not cached.
+ */
+function getCachedResults(cacheKey) {
+  if (!cacheKey) return null;
+  const cacheDir = getCacheDir();
+  const jsonPath = path.join(cacheDir, `${cacheKey}.json`);
+  const logPath = path.join(cacheDir, `${cacheKey}.log`);
+
+  if (!fs.existsSync(jsonPath)) return null;
+
+  try {
+    const json = JSON.parse(fs.readFileSync(jsonPath, "utf8"));
+    return { json, logFile: fs.existsSync(logPath) ? logPath : null };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Store test results in the cache.
+ */
+function storeCachedResults(cacheKey, jsonPath, logPath) {
+  if (!cacheKey) return;
+  const cacheDir = getCacheDir();
+  fs.mkdirSync(cacheDir, { recursive: true });
+
+  try {
+    fs.copyFileSync(jsonPath, path.join(cacheDir, `${cacheKey}.json`));
+    if (logPath && fs.existsSync(logPath)) {
+      fs.copyFileSync(logPath, path.join(cacheDir, `${cacheKey}.log`));
+    }
+  } catch {
+    // Cache storage is best-effort
+  }
+}
+
+/**
+ * Clear session cache directory.
+ */
+function clearSessionCache() {
+  const cacheDir = getCacheDir();
+  if (fs.existsSync(cacheDir)) {
+    fs.rmSync(cacheDir, { recursive: true, force: true });
+  }
+}
+
+// ─── Condensed output formatting ──────────────────────────────────
+
+/**
+ * Format condensed test results from vitest JSON output.
+ * On success: summary stats only.
+ * On failure: failed tests + error snippets + summary.
+ */
+function formatCondensedOutput(json, logFile) {
+  const lines = [];
+
+  if (!json.success) {
+    // Show failed test suites and their failed assertions
+    for (const suite of json.testResults || []) {
+      if (suite.status !== "failed") continue;
+
+      const suiteName = path.relative(projectRoot, suite.name);
+      lines.push(`${c.red}FAIL${c.reset} ${suiteName}`);
+
+      for (const assertion of suite.assertionResults || []) {
+        if (assertion.status !== "failed") continue;
+
+        lines.push(`  ${c.red}✕${c.reset} ${assertion.fullName}`);
+
+        // Show first failure message, truncated
+        if (assertion.failureMessages && assertion.failureMessages.length > 0) {
+          const msg = assertion.failureMessages[0];
+          // Take first 3 meaningful lines (skip empty lines)
+          const msgLines = msg
+            .split("\n")
+            .filter((l) => l.trim())
+            .slice(0, 3);
+          for (const ml of msgLines) {
+            lines.push(`    ${c.dim}${ml.trim()}${c.reset}`);
+          }
+        }
+      }
+      lines.push("");
+    }
+  }
+
+  // Summary stats
+  lines.push("─".repeat(50));
+
+  const suitesPassed = `${c.green}${json.numPassedTestSuites} passed${c.reset}`;
+  const suitesFailed =
+    json.numFailedTestSuites > 0 ? `${c.red}${json.numFailedTestSuites} failed${c.reset}, ` : "";
+  lines.push(
+    ` Test Suites: ${suitesFailed}${suitesPassed}${c.dim} of ${json.numTotalTestSuites}${c.reset}`,
+  );
+
+  const testsPassed = `${c.green}${json.numPassedTests} passed${c.reset}`;
+  const testsFailed =
+    json.numFailedTests > 0 ? `${c.red}${json.numFailedTests} failed${c.reset}, ` : "";
+  const testsPending =
+    json.numPendingTests > 0 ? `${c.yellow}${json.numPendingTests} skipped${c.reset}, ` : "";
+  lines.push(
+    `      Tests: ${testsFailed}${testsPending}${testsPassed}${c.dim} of ${json.numTotalTests}${c.reset}`,
+  );
+
+  // Duration: compute from test results if available, else from startTime
+  let totalMs = 0;
+  for (const suite of json.testResults || []) {
+    if (suite.endTime && suite.startTime) {
+      totalMs += suite.endTime - suite.startTime;
+    }
+  }
+  if (totalMs === 0 && json.startTime) {
+    // Fallback: wall time (only accurate for live runs, not cached)
+    totalMs = Date.now() - json.startTime;
+  }
+  const durationStr = totalMs > 1000 ? `${(totalMs / 1000).toFixed(1)}s` : `${totalMs}ms`;
+  lines.push(`   Duration: ${durationStr}`);
+
+  if (logFile) {
+    lines.push("");
+    lines.push(`${c.dim}Full log: ${logFile}${c.reset}`);
+  }
+
+  return lines.join("\n");
 }
 
 // ─── Environment checks ───────────────────────────────────────────
@@ -239,11 +462,45 @@ function runPostTestHooks(exitCode) {
   }
 }
 
-function main() {
+/**
+ * Run vitest and return exit code.
+ * In verbose mode: streams to terminal. In condensed mode: streams to log file.
+ * Uses async spawn to avoid buffering the full output in memory.
+ */
+function runVitest(cmd, { verbose, logOutPath }) {
+  return new Promise((resolve) => {
+    const vitestEnv = { ...process.env, SKIP_BUILD: "1" };
+    const logStream = fs.createWriteStream(logOutPath);
+
+    // Always pipe stdout/stderr to log file; in verbose mode also tee to terminal
+    const child = spawn(cmd[0], cmd.slice(1), {
+      cwd: projectRoot,
+      stdio: ["inherit", "pipe", "pipe"],
+      env: vitestEnv,
+    });
+
+    child.stdout.pipe(logStream);
+    child.stderr.pipe(logStream);
+
+    if (verbose) {
+      child.stdout.pipe(process.stdout);
+      child.stderr.pipe(process.stderr);
+    }
+
+    child.on("close", (code) => {
+      logStream.end(() => resolve(code ?? 1));
+    });
+  });
+}
+
+async function main() {
   // Parse our own flags vs vitest pass-through args
   const args = process.argv.slice(2);
   const dryRun = args.includes("--dry-run");
-  const vitestArgs = args.filter((a) => a !== "--dry-run");
+  const fresh = args.includes("--fresh");
+  const verbose = args.includes("--verbose") || !!process.env.CI;
+  const ownFlags = ["--dry-run", "--fresh", "--verbose"];
+  const vitestArgs = args.filter((a) => !ownFlags.includes(a));
 
   // ── Ensure environment ──
   const fixedCount = ensureEnvironment();
@@ -257,24 +514,93 @@ function main() {
     process.exit(0);
   }
 
+  // ── Clear cache if --fresh ──
+  if (fresh) {
+    clearSessionCache();
+    logSetup("Cache cleared (--fresh)");
+  }
+
+  // ── Check cache ──
+  const cacheKey = computeCacheKey(vitestArgs);
+  if (cacheKey && !fresh) {
+    const cached = getCachedResults(cacheKey);
+    if (cached) {
+      logOk("Using cached results (repo state unchanged)");
+      process.stderr.write("\n");
+
+      if (verbose && cached.logFile) {
+        // Verbose mode: stream the full cached log to terminal
+        process.stdout.write(fs.readFileSync(cached.logFile));
+      } else {
+        process.stderr.write(formatCondensedOutput(cached.json, cached.logFile) + "\n");
+      }
+
+      process.stderr.write("\n");
+      if (cached.json.success) {
+        logOk(`${c.bold}Tests passed${c.reset} ${c.dim}(cached)${c.reset}`);
+      } else {
+        logErr(
+          `${c.bold}Tests failed${c.reset} ${c.dim}(cached — use --fresh to re-run)${c.reset}`,
+        );
+      }
+      process.exit(cached.json.success ? 0 : 1);
+    }
+  }
+
+  // ── Prepare output paths ──
+  const runId = `${Date.now()}-${process.pid}`;
+  const sessionDir = getCacheDir();
+  fs.mkdirSync(sessionDir, { recursive: true });
+  const jsonOutPath = path.join(sessionDir, `${runId}.result.json`);
+  const logOutPath = path.join(sessionDir, `${runId}.log`);
+
   // ── Run vitest ──
-  // Use npx vitest run to bypass npm pretest hook (we already ensured build)
-  const cmd = ["npx", "vitest", "run", ...vitestArgs];
+  // JSON reporter writes structured data to file; verbose reporter goes to stdout
+  // (only JSON supports --outputFile, so we capture stdout ourselves for the log)
+  const reporterArgs = [
+    "--reporter=json",
+    `--outputFile.json=${jsonOutPath}`,
+    "--reporter=verbose",
+  ];
 
-  const result = spawnSync(cmd[0], cmd.slice(1), {
-    cwd: projectRoot,
-    stdio: "inherit",
-    env: {
-      ...process.env,
-      // Signal to vitest global-setup that build is already done
-      SKIP_BUILD: "1",
-    },
-  });
+  const cmd = ["npx", "vitest", "run", ...reporterArgs, ...vitestArgs];
 
-  const exitCode = result.status ?? 1;
+  const exitCode = await runVitest(cmd, { verbose, logOutPath });
 
   // ── Post-test hooks ──
   runPostTestHooks(exitCode);
+
+  // ── Read JSON results and display condensed output ──
+  let jsonResults = null;
+  if (fs.existsSync(jsonOutPath)) {
+    try {
+      jsonResults = JSON.parse(fs.readFileSync(jsonOutPath, "utf8"));
+    } catch {
+      // JSON parse failed — fall back to basic exit code reporting
+    }
+  }
+
+  // Determine cached log path for display
+  const cachedLogPath = cacheKey ? path.join(sessionDir, `${cacheKey}.log`) : logOutPath;
+
+  if (jsonResults) {
+    storeCachedResults(cacheKey, jsonOutPath, logOutPath);
+
+    if (!verbose) {
+      process.stderr.write("\n");
+      const displayLogPath = fs.existsSync(cachedLogPath) ? cachedLogPath : null;
+      process.stderr.write(formatCondensedOutput(jsonResults, displayLogPath) + "\n");
+    }
+  }
+
+  // Clean up temp files (cached copies already stored under cache key names)
+  for (const tmpFile of [jsonOutPath, logOutPath]) {
+    try {
+      if (fs.existsSync(tmpFile)) fs.unlinkSync(tmpFile);
+    } catch {
+      // Best effort
+    }
+  }
 
   // ── Summary ──
   process.stderr.write("\n");
@@ -282,6 +608,10 @@ function main() {
     logOk(`${c.bold}Tests passed${c.reset}`);
   } else {
     logErr(`${c.bold}Tests failed${c.reset} (exit code ${exitCode})`);
+    const displayLog = fs.existsSync(cachedLogPath) ? cachedLogPath : logOutPath;
+    if (displayLog && fs.existsSync(displayLog)) {
+      logSetup(`Full log: ${displayLog}`);
+    }
   }
 
   process.exit(exitCode);
@@ -289,13 +619,20 @@ function main() {
 
 // Allow testing by exporting internals
 if (require.main === module) {
-  main();
+  main().catch((err) => {
+    logErr(err.message);
+    process.exit(1);
+  });
 }
 
 module.exports = {
   checkDependencies,
   checkBuild,
   ensureEnvironment,
+  computeCacheKey,
+  getCacheDir,
+  getCachedResults,
+  formatCondensedOutput,
   preTestHooks,
   postTestHooks,
 };
