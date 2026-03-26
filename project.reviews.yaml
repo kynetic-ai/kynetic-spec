@@ -53967,6 +53967,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-26T17:07:54.019Z
+      - _ulid: 01KMNHVVV0WXRQQTBS9RDPSZSY
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMNHVVDM2WDE7GSYB7PZ6GVD
+        timestamp: 2026-03-26T17:07:55.360Z
     examined_commit: da84eed96f51832eb8a43101896382573834e62b
     external_links: []
     lifecycle_state: open
@@ -53976,8 +53983,27 @@ reviews:
       content_hash: ""
       ref: "@01KMM6PH4EQBRZW72DXWMMNFP3"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMNHVVDM2WDE7GSYB7PZ6GVD
+        anchor:
+          type: code
+          commit: da84eed96f51832eb8a43101896382573834e62b
+          line_end: 19
+          line_start: 19
+          path: src/strings/errors.ts
+          side: head
+        entries:
+          - _ulid: 01KMNHVVDNFRG98VJB5CTW73AD
+            author: Test User
+            body: " now returns a misleading fix suggestion. The new  map hard-codes  to , but  transitions a
+              task from  or  to  rather than to . I reproduced this directly with  in a temp fixture
+              repo; the CLI exited 2 and printed . The same incorrect suggestion appears in  mode as
+              . This breaks the new smart-guidance behavior for one valid enum value and will send
+              users/agents to the wrong command instead of telling them there is no direct
+              transition to  unless an / path is actually available from the current state."
+            created_at: 2026-03-26T17:07:54.933Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-26T17:00:54.942Z
-    updated_at: 2026-03-26T17:07:53.631Z
+    updated_at: 2026-03-26T17:07:54.933Z
     notes: []
