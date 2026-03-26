@@ -8079,6 +8079,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-26T03:33:34.245Z
+  - _ulid: 01KMM391KMY75ASZT49FB6VS89
+    type: friction
+    content: When resolving git merge conflicts via Edit tool, orphaned conflict markers can be left
+      behind if the old_string doesn't capture the complete conflict block (all 3 markers). After
+      each Edit resolving a conflict, always run a Grep for conflict markers to catch orphans
+      immediately. This happened during fix cycle 2 of fix-split-backend-mutex where a <<<<<<< HEAD
+      marker survived after resolving conflict 2.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-26T03:33:44.180Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
