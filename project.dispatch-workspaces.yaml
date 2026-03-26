@@ -23582,7 +23582,7 @@ workspaces:
         head: c5d5fca0aea73319d3b331ded7ac39267d3c58b1
         last_seen_at: 2026-03-25T23:33:19.314Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/deduplicate-seedsplittask-helper-across-test-files-01kmkmnv
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 77b7853efbde33a5f1f229bf8623faaef696153c
     bootstrap:
       status: succeeded
@@ -23690,9 +23690,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-26T03:34:14.975Z
-      last_reconciled_at: 2026-03-26T03:47:29.081Z
+      last_reconciled_at: 2026-03-26T03:49:34.258Z
       created_at: 2026-03-25T23:41:00.167Z
-      updated_at: 2026-03-26T03:47:29.081Z
+      updated_at: 2026-03-26T03:49:34.258Z
     workspace_id: dispatch-workspace-01KMKNRVZK0P81KHK5Z6RH841D
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
