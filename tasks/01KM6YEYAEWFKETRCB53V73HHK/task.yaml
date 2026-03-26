@@ -59,7 +59,7 @@ tags:
   - cleanup
   - manual
 vcs_refs: []
-review_ref: "@01KMNGAKG2Q3F47E5YBD75BP2B"
+review_ref: "@01KMNJAJMM64YWHX6YZRR7PPGX"
 submission_linkage:
   review_url: null
   branch: dev
@@ -244,6 +244,13 @@ history:
         previous: 2026-03-26T08:23:53.081Z
     command: task-submit
     timestamp: 2026-03-26T17:12:26.073Z
+  - author: Test User
+    changes:
+      review_ref:
+        new: "@01KMNJAJMM64YWHX6YZRR7PPGX"
+        previous: "@01KMNGAKG2Q3F47E5YBD75BP2B"
+    command: review-link
+    timestamp: 2026-03-26T17:15:59.182Z
 created_at: 2026-03-21T00:59:26.926Z
 started_at: 2026-03-26T17:12:22.642Z
 submitted_at: 2026-03-26T17:12:26.073Z
