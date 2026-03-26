@@ -1230,8 +1230,8 @@ describe("TaskDataManager", () => {
       expect(afterContent).toContain("custom_backend_field: preserved-value");
     });
 
-    // TODO: split backend's writeTaskFile strips unknown fields during mutateTask (only preserves through addNote)
-    it.skip("preserves unknown fields through mutateTask", async () => {
+    // AC: @task-core-data-file ac-4
+    it("preserves unknown fields through mutateTask", async () => {
       tempDir = await setupTempFixtures();
       const ctx = await initContext(tempDir);
       manager = resolveTaskDataManager(ctx);

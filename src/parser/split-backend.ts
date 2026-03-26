@@ -38,6 +38,7 @@ import {
   findTaskByRef,
   getAuthor,
   getDefaultTaskFilePath,
+  mergeTaskPreservingRawShape,
   readYamlFile,
   stripRuntimeMetadata,
   toYaml,
@@ -730,7 +731,8 @@ class SplitBackend implements TaskStorageBackend {
 
     try {
       // Read latest state from per-task directory (includes existing history)
-      const { task: latestTask, history: existingHistory } = await this.loadTaskFromDirWithHistory(
+      // AC: @task-core-data-file ac-4 — rawCore preserved for unknown field round-trip
+      const { task: latestTask, history: existingHistory, rawCore } = await this.loadTaskFromDirWithHistory(
         ctx,
         task._ulid,
       );
@@ -776,7 +778,9 @@ class SplitBackend implements TaskStorageBackend {
           const historyEntry = createHistoryEntry(fieldChanges, metadata);
           const updatedHistory = [...existingHistory, historyEntry];
 
-          await writeTaskFile(taskFilePath, coreDataAfter, updatedHistory);
+          // AC: @task-core-data-file ac-4 — preserve unknown fields through mutation
+          const mergedCore = mergeTaskPreservingRawShape(rawCore, coreDataAfter);
+          await writeTaskFile(taskFilePath, mergedCore, updatedHistory);
         }
 
         // Write notes if they changed
@@ -838,7 +842,8 @@ class SplitBackend implements TaskStorageBackend {
       }
 
       // Load latest state for each task (with history for diff tracking)
-      const latestResults: Array<{ task: LoadedTask; history: HistoryEntry[] }> = [];
+      // AC: @task-core-data-file ac-4 — rawCore preserved for unknown field round-trip
+      const latestResults: Array<{ task: LoadedTask; history: HistoryEntry[]; rawCore: Record<string, unknown> }> = [];
       for (const task of tasks) {
         const result = await this.loadTaskFromDirWithHistory(ctx, task._ulid);
         if (!result.task) {
@@ -846,7 +851,7 @@ class SplitBackend implements TaskStorageBackend {
             suggestion: `Check the reference with: kspec search "${task._ulid}" or kspec task list`,
           });
         }
-        latestResults.push({ task: result.task, history: result.history });
+        latestResults.push({ task: result.task, history: result.history, rawCore: result.rawCore });
       }
 
       const latestTasks = latestResults.map((r) => r.task);
@@ -895,7 +900,9 @@ class SplitBackend implements TaskStorageBackend {
           if (fieldChanges) {
             const historyEntry = createHistoryEntry(fieldChanges, metadata);
             const updatedHistory = [...latestResults[i].history, historyEntry];
-            await writeTaskFile(taskFilePath, coreData, updatedHistory);
+            // AC: @task-core-data-file ac-4 — preserve unknown fields through mutation
+            const mergedCore = mergeTaskPreservingRawShape(latestResults[i].rawCore, coreData);
+            await writeTaskFile(taskFilePath, mergedCore, updatedHistory);
           }
 
           if (notes !== undefined) {
@@ -1018,7 +1025,7 @@ class SplitBackend implements TaskStorageBackend {
   private async loadTaskFromDirWithHistory(
     ctx: KspecContext,
     ulid: string,
-  ): Promise<{ task: LoadedTask | undefined; history: HistoryEntry[] }> {
+  ): Promise<{ task: LoadedTask | undefined; history: HistoryEntry[]; rawCore: Record<string, unknown> }> {
     const taskFilePath = getTaskFilePath(ctx, ulid);
     const notesFilePath = getNotesFilePath(ctx, ulid);
 
@@ -1026,7 +1033,7 @@ class SplitBackend implements TaskStorageBackend {
       // Read core data
       const rawCore = await readYamlFile<unknown>(taskFilePath);
       if (!rawCore || typeof rawCore !== "object") {
-        return { task: undefined, history: [] };
+        return { task: undefined, history: [], rawCore: {} };
       }
 
       const rawCoreObj = rawCore as Record<string, unknown>;
@@ -1060,15 +1067,16 @@ class SplitBackend implements TaskStorageBackend {
       const assembled = { ...coreWithoutHistory, notes };
       const parsed = TaskSchema.safeParse(assembled);
       if (!parsed.success) {
-        return { task: undefined, history: [] };
+        return { task: undefined, history: [], rawCore: {} };
       }
 
       return {
         task: { ...parsed.data, _sourceFile: taskFilePath },
         history,
+        rawCore: coreWithoutHistory,
       };
     } catch {
-      return { task: undefined, history: [] };
+      return { task: undefined, history: [], rawCore: {} };
     }
   }
 
