@@ -52461,6 +52461,16 @@ reviews:
         runner: vitest
         created_at: 2026-03-26T00:21:03.577Z
         completed_at: 2026-03-26T00:21:03.577Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Build passes cleanly (tsc + SvelteKit + plugin)
+        name: build
+        required: true
+        runner: tsc
+        created_at: 2026-03-26T00:21:08.692Z
+        completed_at: 2026-03-26T00:21:08.692Z
     events:
       - _ulid: 01KMKR5AW4N7G627EE5KNDNVAR
         actor: "@claude"
@@ -52482,6 +52492,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-26T00:21:04.241Z
+      - _ulid: 01KMKR8DM2FHHJHZ3YMV46FBER
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: build
+        timestamp: 2026-03-26T00:21:09.378Z
     examined_commit: 9f1d40dec18f2d9d0be180f9ab49184104f1a629
     external_links: []
     lifecycle_state: open
@@ -52494,5 +52511,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-26T00:19:28.261Z
-    updated_at: 2026-03-26T00:21:03.577Z
+    updated_at: 2026-03-26T00:21:08.692Z
     notes: []
