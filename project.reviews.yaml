@@ -55265,6 +55265,19 @@ reviews:
         runner: npm
         created_at: 2026-03-26T19:54:08.360Z
         completed_at: 2026-03-26T19:54:08.360Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Validation fails in the shadow branch with pre-existing schema/reference errors unrelated
+          to this code diff (for example invalid hook enum 'session.idle' and unresolved refs
+          @cmd-derive, @session-remove-shadow-commits, @session-branch-worktree). Command run: kspec
+          validate."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-26T19:54:48.602Z
+        completed_at: 2026-03-26T19:54:48.602Z
     events:
       - _ulid: 01KMNV8KBF6XC1HFEADFHWJZC1
         actor: Jacob Chapel
@@ -55321,6 +55334,13 @@ reviews:
           kind: nit
           thread_ulid: 01KMNVD0E9F87Q1Y7AN9QXHREE
         timestamp: 2026-03-26T19:54:34.831Z
+      - _ulid: 01KMNVDEXG3XX8K1CW62GRJCXW
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-03-26T19:54:49.136Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -55484,5 +55504,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-26T19:52:09.839Z
-    updated_at: 2026-03-26T19:54:34.314Z
+    updated_at: 2026-03-26T19:54:48.602Z
     notes: []
