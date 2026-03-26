@@ -137,6 +137,13 @@ history:
           the fallback path.
     command: task-set
     timestamp: 2026-03-25T20:40:56.878Z
+  - author: "@claude"
+    changes:
+      automation:
+        new: eligible
+        previous: manual_only
+    command: task-set
+    timestamp: 2026-03-26T05:21:37.704Z
 created_at: 2026-03-21T00:59:26.926Z
 todos: []
-automation: manual_only
+automation: eligible
