@@ -28930,9 +28930,14 @@ plans:
       The command API's mutation serialization handles re-entrant calls the same
 
       as any other client.
-    status: approved
+    status: active
     approved_at: 2026-03-26T05:47:07.259Z
-    derived_specs: []
+    derived_specs:
+      - "@daemon-entity-cache"
+      - "@daemon-read-path"
+      - "@cli-daemon-proxy"
+      - "@daemon-command-api"
+      - "@daemon-proxy-detection"
     derived_tasks: []
     module_ref: "@web-ui"
     source_path: /home/chapel/Projects/kynetic-spec/plans/daemon-optimistic-data-layer.md
@@ -28963,3 +28968,203 @@ plans:
         content: Content updated from file
         author: "@claude"
         created_at: 2026-03-26T05:45:42.421Z
+      - _ulid: 01KMMAXPCQYW6VNZGJ6P4EW9N1
+        content: >-
+          ### Cache Tiering Model
+
+
+          The cache uses a two-tier model: **index** (always hot in memory) and
+
+          **detail** (loaded on demand, evicted on domain invalidation).
+
+
+          | Domain | Index tier (hot) | Detail tier (on-demand) |
+
+          |--------|-----------------|------------------------|
+
+          | **Tasks** | TaskSummary[]: ulid, title, status, priority, tags, spec_ref, depends_on,
+          timestamps, notes_count, todos_count | Full task: notes[], todos[], description, context |
+
+          | **Items** | ItemSummary[] (new type): ulid, title, type, status, priority, tags,
+          traits[], parent path | Full item: acceptance_criteria[], description, notes[],
+          implementation refs |
+
+          | **Meta** | All of it (~200KB, referenced constantly for agents, conventions, hooks) | —
+          |
+
+          | **Inbox** | All of it (~30KB, items are tiny) | — |
+
+          | **Triage** | All of it (records are small, ~500B-2KB each) | — |
+
+          | **Plans** | PlanSummary: ulid, title, status, derived_tasks/specs counts, timestamps |
+          Full content (markdown body, 5-50KB each) |
+
+          | **Reviews** | ReviewSummary: ulid, title, lifecycle_state, author, thread_count,
+          verdict_count | Full threads[], checks[], verdicts[], events[] |
+
+          | **Sessions** | Bounded index of N recent session summaries (session.yaml metadata only)
+          | events.jsonl (1.6MB+ per session, never cached) |
+
+
+          **Why these splits:**
+
+          - Tasks: `project.tasks.yaml` is 400KB+ but notes are the bulk. TaskSummary
+            already exists via `rawToSummary()` in TaskDataManager. Most routes only
+            need summaries for listing/filtering.
+          - Items: Module files total 1.2MB but ACs and descriptions are the bulk.
+            List views only need title/status/type. ItemSummary doesn't exist yet —
+            this task creates it.
+          - Plans: content field is 5-50KB of imported markdown. List views need title
+            and status only. Currently plans are in a single file so detail loading
+            means re-reading the whole file — acceptable for now, future optimization
+            could split storage.
+          - Reviews: threads and verdicts can be substantial. List views only need
+            counts and state.
+          - Sessions: events.jsonl is unbounded and should never be cached. Only
+            session.yaml metadata (270 bytes) goes in the index.
+          - Meta, inbox, triage: small enough to keep entirely hot.
+
+
+          ### Domain Mapping (file patterns → cache domain)
+
+
+          | Domain | File patterns | Load function |
+
+          |--------|---------------|---------------|
+
+          | tasks | `*.tasks.yaml` | loadAllTasks() / loadAllTaskSummaries() |
+
+          | items | `modules/*.yaml`, manifest includes | loadAllItems() |
+
+          | plans | `*.plans.yaml` | loadPlans() |
+
+          | inbox | `project.inbox.yaml` | loadInbox() |
+
+          | triage | `triage/` | loadTriageRecords() |
+
+          | reviews | `reviews/` | loadReviews() |
+
+          | meta | `kynetic.meta.yaml` | loadMeta() |
+
+          | sessions | `.kspec-sessions/*/session.yaml` | SessionSummaryCache |
+
+
+          The manifest (`kynetic.yaml`) invalidates items since it controls includes.
+
+
+          ### Indexes
+
+
+          ReferenceIndex, AlignmentIndex, ItemIndex, and TraitIndex are rebuilt when
+
+          any of their source domains are invalidated. They are cached alongside
+
+          domain data and served to route handlers. This eliminates the per-request
+
+          buildIndexes() call. Indexes are built from index-tier data only — they
+
+          don't need full item/task detail.
+
+
+          ### Progressive Loading Priority
+
+
+          1. Tasks and items (sidebar counts, dashboard, most-visited pages)
+
+          2. Meta (agent definitions, convention rules)
+
+          3. Inbox (badge counts)
+
+          4. Plans, triage, reviews, sessions (visited less frequently)
+
+
+          ### Write-Through Protocol
+
+
+          1. Route handler receives mutation request
+
+          2. Handler executes the mutation (shadow branch commit)
+
+          3. Handler updates the cache with the new state directly
+
+          4. Handler sets a domain-level "just-written" flag
+
+          5. Handler returns the response
+
+          6. File watcher fires (from the git commit) — sees the flag, skips reload
+
+          7. Flag is cleared
+
+
+          ### Session Index Bounding and Staleness
+
+
+          The session domain caches at most N recent session summaries (default 100).
+
+          Sessions are sorted by recency (started_at descending).
+
+
+          **Stale session exclusion:** Sessions with `active` status that meet the
+
+          existing stale criteria from `@session-stale-criteria` (older-than 24h AND
+
+          inactive-for 6h, resolved via `resolveStaleSessionCriteria()` in
+
+          `src/sessions/store.ts`) are not treated as active in the cache index.
+
+          This prevents old stuck sessions from inflating the active count and
+
+          consuming cache slots. The cache applies the same deterministic criteria
+
+          the CLI uses for `kspec session stale-close`.
+
+
+          Sessions outside the bounded window are loaded on demand when accessed by
+
+          ID but not retained in the index.
+
+
+          ### Relationship to Existing Caching
+
+
+          @session-summary-cache established the pattern: load once, serve from memory,
+
+          invalidate on change. The entity cache generalizes this to all domains.
+
+          The standalone SessionSummaryCache is absorbed — the session domain in the
+
+          entity cache replaces it, keeping the same semantics (incremental invalidation,
+
+          active session refresh, persistent stats for terminal sessions).
+
+
+          @shadow-lazy-read-sync's drift-check contract continues for CLI direct-mode.
+
+          For daemon-served reads, the background sync scheduler (already running via
+
+          @shadow-daemon-push-sync) handles sync, and the entity cache handles serving.
+
+          The per-request initContext() drift-check is removed for daemon routes only.
+
+
+          ### CLI Proxy Routing
+
+
+          The CLI serializes commands using the same JSON format as `kspec batch`
+
+          command objects. This means the command API endpoint can reuse the existing
+
+          batch command parser for both single commands and batch payloads.
+
+
+          Dispatch engine interaction: when agents are spawned by the dispatch engine,
+
+          their CLI calls auto-detect the running daemon and route through the command
+
+          API. This is the intended behavior — the daemon remains the single writer.
+
+          The command API's mutation serialization handles re-entrant calls the same
+
+          as any other client.
+        author: "@claude"
+        created_at: 2026-03-26T05:47:20.855Z
