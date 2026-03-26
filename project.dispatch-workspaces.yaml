@@ -23949,12 +23949,21 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-26T17:39:52.466Z
+      updated_at: 2026-03-26T17:41:53.129Z
     health:
-      status: healthy
-      issues: []
-      summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-26T17:40:04.539Z
+      status: invalid
+      issues:
+        - code: missing_canonical_branch
+          message: Canonical branch "dispatch/task/smart-error-message-for-task-set-status-rejection/01kmm6ph"
+            is missing.
+          suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
+        - code: missing_worker_worktree
+          message: Worker worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/smart-error-message-for-task-set-status-rejection-01kmm6ph"
+            is missing or no longer registered.
+          suggestion: Re-provision the worker worktree from the recorded canonical branch.
+      summary: Workspace registry record is invalid because required git state is missing.
+      updated_at: 2026-03-26T17:41:53.129Z
     integration:
       status: merged
       detail: integration:merged
@@ -23962,17 +23971,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: dc022927ea9d7f9c1bdaa7d63d6a4ec967491911
-      updated_at: 2026-03-26T17:39:52.466Z
-    lifecycle_state: closing
+      updated_at: 2026-03-26T17:41:53.129Z
+    lifecycle_state: stale
     resolved_base_branch: dev
     task_ref: "@01KMM6PH4EQBRZW72DXWMMNFP3"
     task_slug: smart-error-message-for-task-set-status-rejection
     timestamps:
       closed_at: null
       last_active_at: 2026-03-26T17:30:25.256Z
-      last_reconciled_at: 2026-03-26T17:40:04.539Z
+      last_reconciled_at: 2026-03-26T17:41:53.129Z
       created_at: 2026-03-26T04:34:48.230Z
-      updated_at: 2026-03-26T17:40:04.539Z
+      updated_at: 2026-03-26T17:41:53.129Z
     workspace_id: dispatch-workspace-01KMM6PH4EQBRZW72DXWMMNFP3
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
