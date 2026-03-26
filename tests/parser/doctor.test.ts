@@ -16,6 +16,7 @@
  * - @doctor-command ac-json-output: JSON output format
  * - @doctor-command ac-exit-zero: Exit 0 when healthy
  * - @doctor-command ac-exit-one: Exit 1 when errors exist
+ * - @task-remove-monolithic ac-4: Doctor task storage health check
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
@@ -552,6 +553,99 @@ describe("Doctor Command", () => {
       // generatedAt should be ISO 8601
       const isoRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/;
       expect(report.generatedAt).toMatch(isoRegex);
+    });
+  });
+
+  describe("ac-task-storage", () => {
+    // AC: @doctor-command ac-task-storage
+    it("shows ok when split format is configured", async () => {
+      initGitRepo(tempDir);
+      await initializeShadow(tempDir, { projectName: "test-project" });
+      // initializeShadow creates kynetic: 1.1 + task_storage.format: split
+
+      const report = await getDoctorReport(tempDir);
+
+      const storageCheck = report.taskStorage.checks.find(
+        (c) => c.name === "task-storage-format",
+      );
+      expect(storageCheck).toBeDefined();
+      expect(storageCheck!.severity).toBe("ok");
+      expect(storageCheck!.message).toContain("split");
+    });
+
+    // AC: @doctor-command ac-task-storage
+    it("shows warning when kynetic >= 1.1 but format not explicitly set", async () => {
+      initGitRepo(tempDir);
+      await initializeShadow(tempDir, { projectName: "test-project" });
+
+      // Overwrite manifest: kynetic 1.1 but no task_storage.format
+      const manifestPath = path.join(tempDir, ".kspec", "test-project.yaml");
+      await fs.writeFile(
+        manifestPath,
+        'kynetic: "1.1"\nproject:\n  name: test-project\n',
+      );
+
+      const report = await getDoctorReport(tempDir);
+
+      const storageCheck = report.taskStorage.checks.find(
+        (c) => c.name === "task-storage-format",
+      );
+      expect(storageCheck).toBeDefined();
+      expect(storageCheck!.severity).toBe("warning");
+      expect(storageCheck!.message).toContain("not explicitly set");
+      expect(storageCheck!.guidance).toContain("kspec task migrate");
+    });
+
+    // AC: @doctor-command ac-task-storage
+    it("shows error for legacy format (kynetic < 1.1 with no split format)", async () => {
+      initGitRepo(tempDir);
+      await initializeShadow(tempDir, { projectName: "test-project" });
+
+      // Overwrite manifest: kynetic 1.0 with no task_storage
+      const manifestPath = path.join(tempDir, ".kspec", "test-project.yaml");
+      await fs.writeFile(
+        manifestPath,
+        'kynetic: "1.0"\nproject:\n  name: test-project\n',
+      );
+
+      const report = await getDoctorReport(tempDir);
+
+      const storageCheck = report.taskStorage.checks.find(
+        (c) => c.name === "task-storage-format",
+      );
+      expect(storageCheck).toBeDefined();
+      expect(storageCheck!.severity).toBe("error");
+      expect(storageCheck!.message).toContain("Legacy task storage");
+      expect(storageCheck!.guidance).toContain("kspec task migrate");
+    });
+
+    // AC: @doctor-command ac-task-storage
+    it("skips task storage checks gracefully when manifest is unreadable", async () => {
+      initGitRepo(tempDir);
+      // Don't initialize shadow — no .kspec/kynetic.yaml exists
+
+      const report = await getDoctorReport(tempDir);
+
+      // taskStorage section should have no checks (graceful skip)
+      expect(report.taskStorage.checks).toHaveLength(0);
+    });
+
+    // AC: @doctor-command ac-task-storage
+    it("legacy task storage error contributes to overall unhealthy verdict", async () => {
+      initGitRepo(tempDir);
+      await initializeShadow(tempDir, { projectName: "test-project" });
+
+      // Overwrite manifest to legacy format
+      const manifestPath = path.join(tempDir, ".kspec", "test-project.yaml");
+      await fs.writeFile(
+        manifestPath,
+        'kynetic: "1.0"\nproject:\n  name: test-project\n',
+      );
+
+      const report = await getDoctorReport(tempDir);
+
+      expect(report.overall.healthy).toBe(false);
+      expect(report.overall.errorCount).toBeGreaterThan(0);
     });
   });
 

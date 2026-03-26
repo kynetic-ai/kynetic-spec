@@ -11,7 +11,7 @@ import * as path from "node:path";
 import { getGitRoot, getShadowStatus, isGitRepo, type ShadowStatus } from "./shadow.js";
 import { getSetupStatus, type SetupStatus } from "./setup-status.js";
 import { getDaemonStatus, type DaemonStatus } from "./daemon-status.js";
-import { readYamlFile } from "./yaml.js";
+import { findManifestInDir, readYamlFile } from "./yaml.js";
 import type { Manifest } from "../schema/spec.js";
 
 /**
@@ -505,11 +505,13 @@ async function buildTaskStorageSection(
   section: TaskStorageSection,
   projectRoot: string,
 ): Promise<void> {
-  const manifestPath = path.join(projectRoot, ".kspec", "kynetic.yaml");
+  const specDir = path.join(projectRoot, ".kspec");
+  const manifestPath = await findManifestInDir(specDir);
+  if (!manifestPath) return; // No manifest found — skip task storage checks
+
   let manifest: Manifest | null = null;
   try {
-    const raw = await readYamlFile<Manifest>(manifestPath);
-    manifest = raw;
+    manifest = await readYamlFile<Manifest>(manifestPath);
   } catch {
     // Manifest not readable — skip task storage checks
     return;
