@@ -23721,7 +23721,7 @@ workspaces:
         head: 64fd67d017ddd376eb07de18f5d198026434ace9
         last_seen_at: 2026-03-25T23:56:21.614Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-split-backend-mutex-hold-lock-through-write-flush-01kmknrv
-  - active_role: worker
+  - active_role: null
     base_branch_point: 126d858ae60ed574f4cfd6782a817ec58a27a01a
     bootstrap:
       status: succeeded
@@ -23805,12 +23805,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-26T00:09:30.569Z
+      updated_at: 2026-03-26T00:10:45.247Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-26T00:09:30.569Z
+      updated_at: 2026-03-26T00:10:45.247Z
     integration:
       status: pending
       detail: null
@@ -23818,17 +23818,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 126d858ae60ed574f4cfd6782a817ec58a27a01a
-      updated_at: 2026-03-26T00:09:30.569Z
-    lifecycle_state: active
+      updated_at: 2026-03-26T00:10:45.247Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMKNT9CHTJ5DXFBARB4F91A5"
     task_slug: preserve-unknown-fields-through-split-backend-mutatetask-writes
     timestamps:
       closed_at: null
       last_active_at: 2026-03-25T23:56:35.107Z
-      last_reconciled_at: 2026-03-26T00:09:30.569Z
+      last_reconciled_at: 2026-03-26T00:10:45.247Z
       created_at: 2026-03-25T23:56:28.201Z
-      updated_at: 2026-03-26T00:09:30.569Z
+      updated_at: 2026-03-26T00:10:45.247Z
     workspace_id: dispatch-workspace-01KMKNT9CHTJ5DXFBARB4F91A5
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
