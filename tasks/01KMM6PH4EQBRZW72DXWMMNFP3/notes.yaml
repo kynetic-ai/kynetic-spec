@@ -145,3 +145,15 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-26T17:10:20.612Z
+  - _ulid: 01KMNK1AK581W0FAHR964VJHC8
+    content: "Fix cycle 4: Addressed the pending→task-start misleading suggestion blocker. Root cause:
+      STATUS_TO_COMMAND mapped 'pending' to 'kspec task start @ref', but task start goes to
+      in_progress, not pending. Fix: removed 'pending' from STATUS_TO_COMMAND (changed type to
+      Partial<Record>) and added ALL_TASK_STATUSES list to distinguish 'known status with no direct
+      command' from 'unknown status'. Batch mode now shows 'No direct command to transition to
+      pending' and JSON mode returns null suggestedCommand. Added 3 new E2E tests. All 28
+      task-set-batch tests pass. Full suite: 6822 pass, 13 pre-existing timeout failures in
+      unrelated tests (native-guard-setup, dispatch/agent lifecycle)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-26T17:28:22.886Z
