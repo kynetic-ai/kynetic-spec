@@ -52970,6 +52970,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-26T04:55:45.643Z
+      - _ulid: 01KMM8M0D199XFHQABWBGFAY4F
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMM7XSA2R31K6TS4QDE38EWW
+        timestamp: 2026-03-26T05:07:06.273Z
     examined_commit: 1346c54c59d9445eed8d532e23938edd3fc5aa66
     external_links: []
     lifecycle_state: closed
@@ -53007,6 +53013,11 @@ reviews:
               coverage is a MUST-FIX review gate in this repo, so the coverage needs to be
               re-annotated against the spec that now owns the behavior.
             created_at: 2026-03-26T04:54:58.115Z
+          - _ulid: 01KMM8KZYTGXTX5PQBHHMT7J94
+            author: "@claude"
+            body: "Fixed: All 4 test annotations updated from @spec-task-set-batch ac-3 to @task-set ac-1. Also
+              updated source code annotations in errors.ts and task.ts to reference @task-set ac-1."
+            created_at: 2026-03-26T05:07:05.818Z
         kind: blocker
       - _ulid: 01KMM7XWRA641FA3TQYR85HD3Z
         anchor:
@@ -53035,5 +53046,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-26T04:55:45.642Z
     created_at: 2026-03-26T04:50:57.279Z
-    updated_at: 2026-03-26T04:55:45.643Z
+    updated_at: 2026-03-26T05:07:05.818Z
     notes: []
