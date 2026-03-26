@@ -5,6 +5,43 @@
  * Each category corresponds to a common error pattern across command files.
  */
 
+import type { TaskStatus } from "../schema/common.js";
+
+// AC: @task-set ac-1, @trait-error-guidance ac-4
+// Maps target status → the CLI command to reach it (only statuses reachable via a direct command)
+// Note: 'pending' is intentionally absent — it is only the initial state or restored via 'unblock'
+const STATUS_TO_COMMAND: Partial<Record<TaskStatus, string>> = {
+  in_progress: "kspec task start @ref",
+  pending_review: "kspec task submit @ref",
+  needs_work: 'kspec task needs-work @ref --reason "..."',
+  blocked: 'kspec task block @ref --reason "..."',
+  completed: 'kspec task complete @ref --reason "..."',
+  cancelled: "kspec task cancel @ref",
+};
+
+// All known task statuses — used to distinguish "no direct command" from "unknown status"
+const ALL_TASK_STATUSES: readonly string[] = [
+  "pending",
+  "in_progress",
+  "pending_review",
+  "needs_work",
+  "blocked",
+  "completed",
+  "cancelled",
+];
+
+// Maps current status → valid target statuses (via dedicated transition commands)
+// For blocked: only cancel is statically valid; unblock restores prior_status dynamically
+const VALID_TRANSITIONS_FROM: Record<TaskStatus, TaskStatus[]> = {
+  pending: ["in_progress", "blocked", "cancelled"],
+  in_progress: ["pending_review", "blocked", "cancelled"],
+  pending_review: ["completed", "needs_work", "blocked", "cancelled"],
+  needs_work: ["in_progress", "blocked", "cancelled"],
+  blocked: ["cancelled"],
+  completed: [],
+  cancelled: [],
+};
+
 /**
  * Reference resolution errors (not found, ambiguous, wrong type)
  */
@@ -127,7 +164,116 @@ export const statusErrors = {
   completeAlreadyCompleted: "Task is already completed",
   // AC: @spec-completion-enforcement ac-8
   skipReviewRequiresReason: "--skip-review requires --reason to document why",
+
+  // AC: @task-set ac-1, @trait-error-guidance ac-1, ac-2, ac-4
+  statusSetRejection: (
+    targetStatus: string,
+    currentStatus?: TaskStatus,
+    priorStatus?: TaskStatus | null,
+  ): { message: string; details: StatusSetRejectionDetails } => {
+    const lines: string[] = [];
+
+    lines.push("Cannot change status via 'task set'. Use dedicated transition commands instead.");
+
+    if (currentStatus) {
+      lines.push(`Current status: ${currentStatus}`);
+    }
+
+    const knownTarget = targetStatus as TaskStatus;
+    const commandForTarget = STATUS_TO_COMMAND[knownTarget];
+    const isKnownStatus = ALL_TASK_STATUSES.includes(targetStatus);
+
+    // Build valid targets from the static transition map
+    const validTargets = currentStatus ? [...VALID_TRANSITIONS_FROM[currentStatus]] : [];
+
+    // For blocked tasks, unblock restores prior_status (or pending if null).
+    // Add the actual unblock target to valid transitions dynamically.
+    const unblockTarget =
+      currentStatus === "blocked" ? (priorStatus ?? ("pending" as TaskStatus)) : null;
+    if (unblockTarget && !validTargets.includes(unblockTarget)) {
+      validTargets.push(unblockTarget);
+    }
+
+    // Only suggest the command for the requested target if the transition is actually valid
+    // When currentStatus is unknown (batch mode), show the command as best-effort guidance
+    const isValidTransition = currentStatus ? validTargets.includes(knownTarget) : undefined;
+
+    if (commandForTarget && (isValidTransition || !currentStatus)) {
+      // For blocked→unblockTarget, suggest unblock instead of the target's direct command
+      if (currentStatus === "blocked" && unblockTarget === knownTarget) {
+        lines.push(
+          `To transition to ${targetStatus}: kspec task unblock @ref (restores prior status)`,
+        );
+      } else {
+        lines.push(`To transition to ${targetStatus}: ${commandForTarget}`);
+      }
+    } else if (currentStatus && (commandForTarget || (isKnownStatus && !commandForTarget))) {
+      lines.push(
+        `Cannot transition from ${currentStatus} to ${targetStatus} — that transition is not valid.`,
+      );
+    } else if (!isKnownStatus) {
+      lines.push(`Unknown target status: ${targetStatus}`);
+    } else if (!commandForTarget) {
+      // Known status but no direct command (e.g. 'pending' — initial state only, or restored via unblock)
+      lines.push(
+        `No direct command to transition to ${targetStatus}. It is only the initial task state or restored via 'kspec task unblock'.`,
+      );
+    }
+
+    if (currentStatus) {
+      if (validTargets.length > 0) {
+        lines.push(`Valid transitions from ${currentStatus}:`);
+        for (const target of validTargets) {
+          if (currentStatus === "blocked" && target === unblockTarget) {
+            lines.push(
+              `  ${target}: kspec task unblock @ref (restores prior status)`,
+            );
+          } else {
+            const cmd = STATUS_TO_COMMAND[target as TaskStatus];
+            lines.push(`  ${target}: ${cmd ?? "N/A"}`);
+          }
+        }
+      } else {
+        lines.push(`No transitions available from ${currentStatus}`);
+      }
+    }
+
+    // Build validTransitions for JSON details
+    const validTransitionsArray = currentStatus
+      ? validTargets.map((s) => ({
+          status: s,
+          command:
+            currentStatus === "blocked" && s === unblockTarget
+              ? "kspec task unblock @ref"
+              : (STATUS_TO_COMMAND[s as TaskStatus] ?? "N/A"),
+        }))
+      : null;
+
+    return {
+      message: lines[0],
+      details: {
+        currentStatus: currentStatus ?? null,
+        targetStatus,
+        suggestedCommand:
+          isValidTransition || !currentStatus
+            ? currentStatus === "blocked" && unblockTarget === knownTarget
+              ? "kspec task unblock @ref"
+              : (commandForTarget ?? null)
+            : null,
+        validTransitions: validTransitionsArray,
+        guidance: lines.slice(1).join("\n"),
+      },
+    };
+  },
 } as const;
+
+export interface StatusSetRejectionDetails {
+  currentStatus: string | null;
+  targetStatus: string;
+  suggestedCommand: string | null;
+  validTransitions: Array<{ status: string; command: string }> | null;
+  guidance: string;
+}
 
 /**
  * Duplicate/conflict errors
