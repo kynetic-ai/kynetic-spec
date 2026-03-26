@@ -52774,7 +52774,19 @@ reviews:
     slugs: []
     title: Review fix-split-backend-mutex (cycle 3)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 6819 passed, 5 skipped, 4 failed (all timeouts in
+          dispatch-runtime-bootstrap-contract.test.ts — pre-existing, unrelated to changed files).
+          58/58 pass in changed test files.
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-26T03:43:47.005Z
+        completed_at: 2026-03-26T03:43:47.005Z
     events:
       - _ulid: 01KMM3TWNM5QM3VQ27WNK56E71
         actor: "@claude"
@@ -52789,6 +52801,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-26T03:43:38.392Z
+      - _ulid: 01KMM3VEQPPDCCJCPMQ7Y7SW6D
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-26T03:43:47.446Z
     examined_commit: 014232b9cee59638e28bac59aae8f6ff8b5e1f36
     external_links: []
     lifecycle_state: open
@@ -52801,5 +52820,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-26T03:43:28.949Z
-    updated_at: 2026-03-26T03:43:37.961Z
+    updated_at: 2026-03-26T03:43:47.005Z
     notes: []
