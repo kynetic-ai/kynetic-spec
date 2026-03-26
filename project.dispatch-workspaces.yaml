@@ -23799,18 +23799,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/preserve-unknown-fields-through-split-backend-mutatetask-writes/01kmknt9
-    canonical_branch_head: 126d858ae60ed574f4cfd6782a817ec58a27a01a
+    canonical_branch_head: 9f1d40dec18f2d9d0be180f9ab49184104f1a629
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-25T23:56:28.201Z
+      updated_at: 2026-03-26T00:09:30.569Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-25T23:56:35.107Z
+      updated_at: 2026-03-26T00:09:30.569Z
     integration:
       status: pending
       detail: null
@@ -23818,7 +23818,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 126d858ae60ed574f4cfd6782a817ec58a27a01a
-      updated_at: 2026-03-25T23:56:28.201Z
+      updated_at: 2026-03-26T00:09:30.569Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KMKNT9CHTJ5DXFBARB4F91A5"
@@ -23826,9 +23826,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-25T23:56:35.107Z
-      last_reconciled_at: 2026-03-25T23:56:35.107Z
+      last_reconciled_at: 2026-03-26T00:09:30.569Z
       created_at: 2026-03-25T23:56:28.201Z
-      updated_at: 2026-03-25T23:56:35.107Z
+      updated_at: 2026-03-26T00:09:30.569Z
     workspace_id: dispatch-workspace-01KMKNT9CHTJ5DXFBARB4F91A5
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
