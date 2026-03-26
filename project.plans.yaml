@@ -28059,8 +28059,6 @@ plans:
           drives cache invalidation — when shadow branch files change, affected
           data is selectively reloaded. Data domains load progressively so
           high-priority data is available before the full cache is ready.
-        traits:
-          - trait-api-endpoint
         acceptance_criteria:
           - id: ac-load-on-register
             given: |
@@ -28294,13 +28292,22 @@ plans:
               the response is served from the daemon's cache
           - id: ac-timeout-fallback
             given: |
-              the daemon responds to a health check but a routed command
-              does not complete within the timeout period
+              the daemon responds to a health check but a routed read-only
+              command does not complete within the timeout period
             when: |
               the timeout expires
             then: |
-              the CLI falls back to direct mode and emits a warning on stderr
-              indicating the daemon is running but not responding correctly
+              the CLI falls back to direct mode for the read-only command and
+              emits a warning on stderr indicating the daemon is not responding
+          - id: ac-timeout-mutation-error
+            given: |
+              the daemon responds to a health check but a routed mutating
+              command does not complete within the timeout period
+            when: |
+              the timeout expires
+            then: |
+              the CLI returns an error instead of falling back to direct mode,
+              because the daemon may still be processing the mutation
 
       - title: Daemon Command API
         slug: daemon-command-api
@@ -28596,6 +28603,7 @@ plans:
         spec_ref: "@cli-daemon-proxy"
         depends_on:
           - "@task-daemon-command-api"
+          - "@task-migrate-read-routes"
         description: |
           Add daemon detection to CLI startup and command routing logic so
           commands are transparently proxied through the daemon when available.
@@ -28616,9 +28624,10 @@ plans:
             command into a command API payload and POST to the daemon's
             command endpoint. Deserialize the response, write stdout/stderr
             to process streams, exit with the returned exit code.
-          - Timeout with fallback: if the daemon health check succeeds but
-            the command request times out, fall back to direct mode and emit
-            a warning on stderr
+          - Timeout handling: if a read-only command times out, fall back to
+            direct mode and emit a warning on stderr. If a mutating command
+            times out, return an error (no fallback) because the daemon may
+            still be processing the mutation
           - KSPEC_NO_DAEMON=1: skip daemon detection entirely, go straight
             to direct mode
           - --daemon flag: require daemon routing, fail with clear error if
@@ -28638,40 +28647,89 @@ plans:
 
           Covers: @cli-daemon-proxy ac-auto-detect, ac-direct-fallback,
           ac-force-direct, ac-force-proxy, ac-transparent-output,
-          ac-mutation-coherence, ac-read-from-cache, ac-timeout-fallback.
+          ac-mutation-coherence, ac-read-from-cache, ac-timeout-fallback,
+          ac-timeout-mutation-error.
           @daemon-proxy-detection ac-port-file-check, ac-fast-detection,
           ac-health-timeout, ac-project-registered.
 
-      - title: Update related specs for daemon cache context
-        slug: task-update-related-specs
+      - title: Narrow shadow-lazy-read-sync scope for daemon context
+        slug: task-narrow-shadow-lazy-read-sync
         priority: 2
         tags: [specs, maintenance]
-        spec_ref: "@daemon-read-path"
+        spec_ref: "@shadow-lazy-read-sync"
+        depends_on:
+          - "@task-entity-cache-impl"
         description: |
-          Update existing specs whose contracts are affected by the entity
-          cache and CLI proxy mode.
+          Add AC to @shadow-lazy-read-sync clarifying that drift-check applies
+          to CLI direct-mode only; daemon reads use the entity cache with
+          background sync instead of per-request drift-check.
 
-          Why: The entity cache changes the daemon's read path and the CLI
-          proxy changes who writes to the shadow branch. Existing specs need
-          to reflect these narrowed or extended scopes.
+          Why: The entity cache changes the daemon's read path. The existing
+          drift-check contract still applies for CLI direct-mode but not for
+          daemon-served reads.
 
           What:
-          - @shadow-lazy-read-sync: add AC or note clarifying that drift-check
-            applies to CLI direct-mode; daemon reads use the entity cache with
-            background sync
-          - @session-summary-cache: add relates_to @daemon-entity-cache,
-            noting that session caching is absorbed into the unified cache
-          - @daemon-server: update description to note file watcher drives
-            both WebSocket broadcast and cache invalidation
-          - @multi-directory-daemon: add relates_to @cli-daemon-proxy
+          - Add an AC to @shadow-lazy-read-sync specifying that daemon reads
+            bypass drift-check and rely on the background sync scheduler
 
-          How: Use kspec batch to apply all updates atomically. Use
-          kspec item set for description updates, kspec item ac add for new
-          ACs, and kspec item set --add-relates-to for relationships.
+          Covers: @shadow-lazy-read-sync (new AC for daemon context).
 
-          Covers: Ensures spec graph accurately reflects the narrowed scope of
-          @shadow-lazy-read-sync for daemon context and the absorption of
-          @session-summary-cache.
+      - title: Link session-summary-cache to unified entity cache
+        slug: task-link-session-cache
+        priority: 2
+        tags: [specs, maintenance]
+        spec_ref: "@session-summary-cache"
+        depends_on:
+          - "@task-entity-cache-impl"
+        description: |
+          Add relates_to @daemon-entity-cache on @session-summary-cache,
+          noting that session caching is absorbed into the unified cache.
+
+          Why: The standalone SessionSummaryCache is replaced by the session
+          domain in the entity cache. The spec relationship documents this.
+
+          What:
+          - Add relates_to @daemon-entity-cache on @session-summary-cache
+
+          Covers: @session-summary-cache (relationship update).
+
+      - title: Update daemon-server description for cache invalidation
+        slug: task-update-daemon-server-desc
+        priority: 2
+        tags: [specs, maintenance]
+        spec_ref: "@daemon-server"
+        depends_on:
+          - "@task-entity-cache-impl"
+        description: |
+          Update @daemon-server description to note that the file watcher
+          drives both WebSocket broadcast and cache invalidation.
+
+          Why: The entity cache adds a second responsibility to the file
+          watcher. The spec description should reflect this.
+
+          What:
+          - Update @daemon-server description to mention cache invalidation
+            alongside WebSocket broadcast
+
+          Covers: @daemon-server (description update).
+
+      - title: Link multi-directory-daemon to CLI proxy mode
+        slug: task-link-multi-dir-proxy
+        priority: 2
+        tags: [specs, maintenance]
+        spec_ref: "@multi-directory-daemon"
+        depends_on:
+          - "@task-cli-proxy-routing"
+        description: |
+          Add relates_to @cli-daemon-proxy on @multi-directory-daemon.
+
+          Why: CLI proxy mode interacts with multi-directory daemon support —
+          the proxy must route to the correct project context.
+
+          What:
+          - Add relates_to @cli-daemon-proxy on @multi-directory-daemon
+
+          Covers: @multi-directory-daemon (relationship update).
       ```
 
 
@@ -28897,3 +28955,7 @@ plans:
           tiering table, data shape analysis
         author: "@claude"
         created_at: 2026-03-24T23:09:03.697Z
+      - _ulid: 01KMMAKZ8HDNRAGW3RCAPR3JTZ
+        content: Content updated from file
+        author: "@claude"
+        created_at: 2026-03-26T05:42:02.257Z
