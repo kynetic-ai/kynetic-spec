@@ -8139,6 +8139,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-26T16:58:38.242Z
+  - _ulid: 01KMNK4G3YWDNW75XRKJY4T06T
+    type: friction
+    content: Full-suite test runs are intermittently timing out in agent-invocation-lifecycle and
+      canonical-task-workspace-contract while the same cases pass in isolated runs. This makes
+      review gates noisy and expensive to verify because npm test can fail without a deterministic
+      reproducer. Consider adding tooling or diagnostics for suite-load timeout triage and
+      stabilization.
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-26T17:30:06.846Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
