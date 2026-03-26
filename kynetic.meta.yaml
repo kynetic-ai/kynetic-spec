@@ -8159,6 +8159,28 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-26T17:31:32.055Z
+  - _ulid: 01KMNP9MY4BFMPMZ4VP6NZ2TX7
+    type: friction
+    content: "Daemon package import paths (packages/daemon/src/) use relative paths that resolve
+      correctly in dist/ layout but not from source. Adding new src/daemon/ files that need to be
+      imported by daemon package code requires: (1) dynamic imports in daemon code, (2) manual
+      build:daemon step to copy the file, and (3) careful path selection (./entity-cache.js works at
+      build time but not test time). This made wiring entity-cache into project-context.ts
+      significantly harder than expected — required callback-based indirection instead of direct
+      imports."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-26T18:25:21.349Z
+  - _ulid: 01KMNP9N4NSNZZY4R3371F0MHW
+    type: success
+    content: Callback-based integration pattern for cross-package dependencies
+      (CacheInvalidationCallback following FileChangeCallback precedent) cleanly avoids import path
+      issues between packages/daemon/src/ and src/daemon/ while maintaining testability.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-26T18:25:21.557Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
