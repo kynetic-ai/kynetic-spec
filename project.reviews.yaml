@@ -52471,6 +52471,17 @@ reviews:
         runner: tsc
         created_at: 2026-03-26T00:21:08.692Z
         completed_at: 2026-03-26T00:21:08.692Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Pre-existing warnings only (uncovered ACs across many specs, test fixture annotations). No
+          new issues from this change.
+        name: kspec-validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-26T00:21:13.747Z
+        completed_at: 2026-03-26T00:21:13.747Z
     events:
       - _ulid: 01KMKR5AW4N7G627EE5KNDNVAR
         actor: "@claude"
@@ -52499,6 +52510,13 @@ reviews:
           status: pass
           name: build
         timestamp: 2026-03-26T00:21:09.378Z
+      - _ulid: 01KMKR8JH979QARPF0NAWZPX9R
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec-validate
+        timestamp: 2026-03-26T00:21:14.409Z
     examined_commit: 9f1d40dec18f2d9d0be180f9ab49184104f1a629
     external_links: []
     lifecycle_state: open
@@ -52511,5 +52529,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-26T00:19:28.261Z
-    updated_at: 2026-03-26T00:21:08.692Z
+    updated_at: 2026-03-26T00:21:13.747Z
     notes: []
