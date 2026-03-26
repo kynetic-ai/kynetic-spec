@@ -84,3 +84,13 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-26T00:24:58.228Z
+  - _ulid: 01KMKS6NRT4SW9VKMA22KV7XAD
+    content: "Review cycle 2 (01KMKRR0): approved. Core fix is correct — per-task mutex moved from
+      SplitBackend to TaskDataManager to hold lock through buffer flush. All 6822 tests pass, AC
+      annotations present for ac-9 and ac-10, all prior review findings addressed. However, merge to
+      dev failed with semantic conflicts: dev has received rawCore/unknown-field-preservation
+      changes (task-core-data-file ac-4) that modify the same mutateTask/mutateTasks methods. Worker
+      needs to rebase onto current dev and integrate both changes."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-26T00:37:40.762Z
