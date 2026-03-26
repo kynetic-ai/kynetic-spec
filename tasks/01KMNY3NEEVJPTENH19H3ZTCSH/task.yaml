@@ -113,6 +113,7 @@ tags:
   - testing
   - bug
 vcs_refs: []
+review_ref: "@01KMP2VKVX2Y89ES7JARNRZR7Y"
 submission_linkage:
   review_url: null
   branch: dispatch/task/fix-pre-existing-test-failures-stack-trace-error-daemon-timeouts-and-cli-timeouts/01kmny3n
@@ -156,6 +157,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-03-26T21:52:39.708Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KMP2VKVX2Y89ES7JARNRZR7Y"
+        previous: null
+    command: review-link
+    timestamp: 2026-03-26T22:04:55.016Z
 created_at: 2026-03-26T20:41:53.869Z
 started_at: 2026-03-26T21:29:46.535Z
 submitted_at: 2026-03-26T21:52:39.707Z
