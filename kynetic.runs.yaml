@@ -15447,9 +15447,22 @@ runs:
     completed_at: 2026-03-26T05:11:01.860Z
   - _ulid: 01KMNJ5M9W0QY65SRVSYYHWJ0Q
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-03-26T17:13:15.325Z
+        completed_at: 2026-03-26T17:13:54.114Z
+        notes: "Session: fix cycle for task-remove-monolithic. What worked: review threads clearly
+          identified the root cause (early-return paths in task migrate missing manifest upgrade).
+          The fix was straightforward once identified — extract helper, call from all paths. Tests
+          confirmed the fix immediately. What was friction: the dispatch-workspace-config.test.ts
+          change was left unstaged from the prior submission, requiring an extra commit."
+      - status: completed
+        step_index: 1
+        started_at: 2026-03-26T17:13:54.114Z
+        completed_at: 2026-03-26T17:13:54.114Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-26T17:13:15.325Z
