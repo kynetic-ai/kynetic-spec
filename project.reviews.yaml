@@ -54799,6 +54799,12 @@ reviews:
         payload:
           thread_ulid: 01KMNPRMJHE7Z5YCZB75MVVB8X
         timestamp: 2026-03-26T22:54:59.597Z
+      - _ulid: 01KMP5QG1A548XW76HGGKTZ1RH
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMNPRR50WYT1GCQH5WD4BKRB
+        timestamp: 2026-03-26T22:55:03.722Z
     examined_commit: 189e4fc775aa1f18106e55d895b8e6d3087ea003
     external_links: []
     lifecycle_state: closed
@@ -55012,6 +55018,8 @@ reviews:
               and still wrong.
             created_at: 2026-03-26T18:33:36.160Z
         kind: blocker
+        resolved_at: 2026-03-26T22:55:03.141Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -55021,7 +55029,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-26T18:35:59.339Z
     created_at: 2026-03-26T18:29:11.265Z
-    updated_at: 2026-03-26T22:54:59.044Z
+    updated_at: 2026-03-26T22:55:03.141Z
     notes: []
   - _ulid: 01KMNQRBK39JRP1J0W0CBYE2ZJ
     slugs: []
