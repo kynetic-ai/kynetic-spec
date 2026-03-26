@@ -56170,6 +56170,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMP82CCT7ZGBTAPEB56S0J7G
         timestamp: 2026-03-26T23:35:58.127Z
+      - _ulid: 01KMP82J4MGDEA3YHG85BFZ7S1
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMP82HKQDH0ET37B181WABWE
+        timestamp: 2026-03-26T23:36:03.476Z
     examined_commit: 704ebd4dd303187ec7b761cee65a3a07ea284578
     external_links: []
     lifecycle_state: open
@@ -56235,7 +56242,25 @@ reviews:
               routes that call  directly.
             created_at: 2026-03-26T23:35:57.594Z
         kind: blocker
+      - _ulid: 01KMP82HKQDH0ET37B181WABWE
+        anchor:
+          type: code
+          commit: 704ebd4dd303187ec7b761cee65a3a07ea284578
+          line_end: 250
+          line_start: 233
+          path: packages/daemon/src/routes/tasks.ts
+          side: head
+        entries:
+          - _ulid: 01KMP82HKQB24F230TSRVQD8MQ
+            author: Test User
+            body: The task detail read path still bypasses the cache entirely. GET /api/tasks/:ref always calls
+              resolveTaskDataManager(ctx).getTask(...) before touching the cache and only writes the
+              result back with setTaskDetail, which means repeated detail requests still reread YAML
+              from disk after warming. getTaskDetail() is never consumed anywhere outside tests in
+              this snapshot, so the detail tier is not actually wired into request serving yet.
+            created_at: 2026-03-26T23:36:02.935Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-26T23:34:05.110Z
-    updated_at: 2026-03-26T23:35:57.594Z
+    updated_at: 2026-03-26T23:36:02.935Z
     notes: []
