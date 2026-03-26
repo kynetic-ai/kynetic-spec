@@ -53995,9 +53995,25 @@ reviews:
           kind: nit
           thread_ulid: 01KMNHZ7CQH3PY95S2NTAV0PYZ
         timestamp: 2026-03-26T17:09:45.931Z
+      - _ulid: 01KMNJ08HKQ35TZ4QEHA6WDDE8
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-26T17:10:19.443Z
+      - _ulid: 01KMNJ08HK90RFV92TZ526S68P
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-26T17:10:19.443Z
     examined_commit: da84eed96f51832eb8a43101896382573834e62b
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -54092,7 +54108,14 @@ reviews:
               coverage present), integration (full suite passed)."
             created_at: 2026-03-26T17:09:45.495Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-26T17:10:19.443Z
     created_at: 2026-03-26T17:00:54.942Z
-    updated_at: 2026-03-26T17:09:45.495Z
+    updated_at: 2026-03-26T17:10:19.443Z
     notes: []

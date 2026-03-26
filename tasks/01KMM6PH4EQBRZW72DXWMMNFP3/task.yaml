@@ -62,7 +62,7 @@ description: >-
 spec_ref: "@task-set"
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on: []
 context: []
@@ -80,7 +80,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
   upstream_ref: refs/heads/dev
-session_id: 01KMNG91HB2Z0QS6M2WSYAVKD7
+session_id: null
 history:
   - author: "@claude"
     changes:
@@ -307,6 +307,16 @@ history:
         previous: "@01KMMA93FYQQQ3ZRBRXJD2KVM4"
     command: review-link
     timestamp: 2026-03-26T17:00:56.560Z
+  - author: Test User
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KMNG91HB2Z0QS6M2WSYAVKD7
+    command: review-verdict-needs-work
+    timestamp: 2026-03-26T17:10:20.613Z
 created_at: 2026-03-26T04:33:31.790Z
 started_at: 2026-03-26T16:57:14.875Z
 submitted_at: 2026-03-26T16:57:22.599Z
