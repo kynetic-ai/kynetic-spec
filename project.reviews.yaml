@@ -52889,7 +52889,17 @@ reviews:
     slugs: []
     title: Review smart error message for task set --status rejection
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm test -- tests/task-set-batch.test.ts passed (19 tests).
+        name: task-set-batch
+        required: true
+        runner: vitest
+        created_at: 2026-03-26T04:54:56.703Z
+        completed_at: 2026-03-26T04:54:56.703Z
     events:
       - _ulid: 01KMM7PE3YRM902FYR6AJTYSP8
         actor: Test User
@@ -52904,6 +52914,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-26T04:51:58.354Z
+      - _ulid: 01KMM7XRBH02NZG7AAAKWMDSHA
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: task-set-batch
+        timestamp: 2026-03-26T04:54:57.137Z
     examined_commit: 1346c54c59d9445eed8d532e23938edd3fc5aa66
     external_links: []
     lifecycle_state: open
@@ -52916,5 +52933,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-26T04:50:57.279Z
-    updated_at: 2026-03-26T04:51:57.930Z
+    updated_at: 2026-03-26T04:54:56.703Z
     notes: []
