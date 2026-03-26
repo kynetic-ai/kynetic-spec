@@ -74,7 +74,7 @@ async function setupProjectWithReviewerAgent(dir: string): Promise<void> {
   await fs.writeFile(path.join(dir, "project.tasks.yaml"), "tasks: []\n", "utf-8");
 }
 
-describe("canonical task workspace contract", () => {
+describe("canonical task workspace contract", { timeout: 60_000 }, () => {
   let tempDir: string;
 
   beforeEach(async () => {

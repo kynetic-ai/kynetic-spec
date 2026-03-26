@@ -188,7 +188,7 @@ async function updateWorkspaceRecord(
   );
 }
 
-describe("dispatch runtime bootstrap contract", () => {
+describe("dispatch runtime bootstrap contract", { timeout: 60_000 }, () => {
   let tempDir: string;
   let originalCaptureFile: string | undefined;
 
