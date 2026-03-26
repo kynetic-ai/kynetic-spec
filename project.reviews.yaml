@@ -55086,6 +55086,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMNRA0P3C3B7MV1VYE9D6P10
         timestamp: 2026-03-26T19:00:31.027Z
+      - _ulid: 01KMNRBESD90V7ETK5T23J05KS
+        actor: codex
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMNRBED2P5NP5VAT6GE2RZTS
+        timestamp: 2026-03-26T19:01:17.741Z
     examined_commit: 9971c42b49331334930881e8e6291b3bf041d99b
     external_links: []
     lifecycle_state: open
@@ -55159,7 +55166,24 @@ reviews:
               entrypoint, this task is not ready to merge.
             created_at: 2026-03-26T19:00:30.531Z
         kind: blocker
+      - _ulid: 01KMNRBED2P5NP5VAT6GE2RZTS
+        entries:
+          - _ulid: 01KMNRBED2Y11NCQE5R682A9BH
+            author: codex
+            body: "Evidence log: Files read: src/parser/task-data-manager.ts, src/parser/doctor.ts,
+              src/cli/commands/task.ts, src/cli/commands/doctor.ts, src/parser/yaml.ts,
+              tests/legacy-format-detection.test.ts, tests/parser/doctor.test.ts,
+              tests/agent-invocation-lifecycle.test.ts. Commands run: kspec task get, kspec review
+              for-task/get, git diff/stat, kspec validate, kspec item get
+              @task-storage-migration/@task-storage-activation/@doctor-command/@task-data-manager,
+              npm test, npm test -- tests/agent-invocation-lifecycle.test.ts, targeted searches, and
+              a manual doctor --json repro on a legacy manifest. Claims verified: manifest upgrade
+              on migrate, legacy runtime gate, split-only default, doctor task-storage output path,
+              and the full-suite gate behavior. Categories searched: correctness, spec alignment,
+              test quality, integration, error handling, and gate stability."
+            created_at: 2026-03-26T19:01:17.346Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-26T18:50:51.875Z
-    updated_at: 2026-03-26T19:00:30.531Z
+    updated_at: 2026-03-26T19:01:17.346Z
     notes: []
