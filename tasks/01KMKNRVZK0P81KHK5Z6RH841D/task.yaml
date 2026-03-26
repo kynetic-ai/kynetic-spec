@@ -47,8 +47,11 @@ description: >-
 spec_ref: "@task-data-manager"
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev. Per-task mutex moved from SplitBackend to TaskDataManager to hold lock
+  through buffer flush, fixing TOCTOU race on concurrent same-task mutations. 6 previously-skipped
+  tests now active and passing. All prior review findings addressed across 3 cycles.
 depends_on: []
 context: []
 priority: 1
@@ -291,9 +294,25 @@ history:
         previous: "@01KMKRR0M89G0X7ANRDA9BH9VK"
     command: review-link
     timestamp: 2026-03-26T03:43:30.796Z
+  - author: "@claude"
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev. Per-task mutex moved from SplitBackend to TaskDataManager to hold lock through
+          buffer flush, fixing TOCTOU race on concurrent same-task mutations. 6 previously-skipped
+          tests now active and passing. All prior review findings addressed across 3 cycles.
+        previous: null
+      completed_at:
+        new: 2026-03-26T03:46:29.419Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-03-26T03:46:29.426Z
 prior_status: null
 created_at: 2026-03-25T23:37:42.643Z
 started_at: 2026-03-26T03:18:51.513Z
 submitted_at: 2026-03-26T03:32:08.468Z
+completed_at: 2026-03-26T03:46:29.419Z
 todos: []
 automation: eligible
