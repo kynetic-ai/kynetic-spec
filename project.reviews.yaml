@@ -53138,6 +53138,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-26T05:17:06.588Z
+      - _ulid: 01KMM96QVB02ETN8PXZJXW3D5B
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMM96Q3RAJ38KQA7XWE679NS
+        timestamp: 2026-03-26T05:17:20.107Z
     examined_commit: e7d37ff438197e4987648ea4f08fa3b83e82d5f6
     external_links: []
     lifecycle_state: closed
@@ -53166,6 +53173,27 @@ reviews:
               transition from blocked to pending_review' even though the task JSON showed .
             created_at: 2026-03-26T05:17:01.628Z
         kind: blocker
+      - _ulid: 01KMM96Q3RAJ38KQA7XWE679NS
+        anchor:
+          type: code
+          commit: e7d37ff438197e4987648ea4f08fa3b83e82d5f6
+          line_end: 28
+          line_start: 22
+          path: src/strings/errors.ts
+          side: head
+        entries:
+          - _ulid: 01KMM96Q3RJ7JZC7KSB0EZ59CN
+            author: Test User
+            body: "Blocked-state guidance is incorrect. task block preserves prior_status, and task unblock
+              restores it, so a task blocked from pending_review can return to pending_review. The
+              new hard-coded map marks blocked -> pending_review as invalid and instead suggests
+              task start/pending, which violates @task-set ac-1 and @trait-error-guidance ac-4. I
+              reproduced this by creating a task, submitting it, blocking it, then running task set
+              @blocked-review --status pending_review; the CLI reported 'Cannot transition from
+              blocked to pending_review' even though the task JSON showed prior_status:
+              pending_review."
+            created_at: 2026-03-26T05:17:19.352Z
+        kind: blocker
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -53175,5 +53203,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-26T05:17:06.587Z
     created_at: 2026-03-26T05:12:57.820Z
-    updated_at: 2026-03-26T05:17:06.588Z
+    updated_at: 2026-03-26T05:17:19.352Z
     notes: []
