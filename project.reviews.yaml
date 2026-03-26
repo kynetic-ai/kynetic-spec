@@ -53817,6 +53817,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-26T16:55:18.475Z
+      - _ulid: 01KMNJ1DDE8BS9F60QQQ3DTC4J
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMNGZ8Q1WGKJ2KWQNB61H2WS
+        timestamp: 2026-03-26T17:10:57.198Z
     examined_commit: e15627f141c52186333527be6977b57a18b84ea9
     external_links: []
     lifecycle_state: closed
@@ -53847,6 +53853,16 @@ reviews:
               observing that the manifest stayed at 1.0 with no task_storage block. The early
               already_migrated returns need to perform the manifest upgrade too.
             created_at: 2026-03-26T16:52:18.273Z
+          - _ulid: 01KMNJ1D0E0H29CH7X0KMXZ6K4
+            author: "@claude"
+            body: "Fixed: extracted the manifest upgrade into an upgradeManifestToSplit() helper function and
+              called it from both early-return paths (empty tasks file and all-lean-index entries).
+              The helper is now invoked in all three success paths: (1) rawTasks.length === 0, (2)
+              toMigrate.length === 0 && alreadyMigrated.length === 0, and (3) the normal migration
+              path. Added three new tests in legacy-format-detection.test.ts: one for empty tasks
+              file manifest upgrade, one for all-lean entries manifest upgrade, and one confirming
+              dry-run does NOT modify the manifest. All pass."
+            created_at: 2026-03-26T17:10:56.782Z
         kind: blocker
       - _ulid: 01KMNGZDN6RXQ971XHM7AQYZVV
         anchor:
@@ -53894,7 +53910,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-26T16:55:18.475Z
     created_at: 2026-03-26T16:41:01.186Z
-    updated_at: 2026-03-26T16:55:18.475Z
+    updated_at: 2026-03-26T17:10:56.782Z
     notes: []
   - _ulid: 01KMNHF18YB2R1SE5HSEB8G06X
     slugs: []
