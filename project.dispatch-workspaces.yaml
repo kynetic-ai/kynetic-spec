@@ -23949,12 +23949,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-26T05:47:26.903Z
+      updated_at: 2026-03-26T16:40:07.992Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-26T05:47:26.903Z
+      updated_at: 2026-03-26T16:40:07.992Z
     integration:
       status: pending
       detail: null
@@ -23962,7 +23962,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: dc022927ea9d7f9c1bdaa7d63d6a4ec967491911
-      updated_at: 2026-03-26T05:47:26.903Z
+      updated_at: 2026-03-26T16:40:07.992Z
     lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMM6PH4EQBRZW72DXWMMNFP3"
@@ -23970,9 +23970,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-26T05:31:27.651Z
-      last_reconciled_at: 2026-03-26T05:47:26.903Z
+      last_reconciled_at: 2026-03-26T16:40:07.992Z
       created_at: 2026-03-26T04:34:48.230Z
-      updated_at: 2026-03-26T05:47:26.903Z
+      updated_at: 2026-03-26T16:40:07.992Z
     workspace_id: dispatch-workspace-01KMM6PH4EQBRZW72DXWMMNFP3
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -23981,7 +23981,7 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/smart-error-message-for-task-set-status-rejection/01kmm6ph
         head: 31c76a76695b207a1ef6ab2a99901412a2a29ff9
-        last_seen_at: 2026-03-26T05:31:21.406Z
+        last_seen_at: 2026-03-26T16:40:07.992Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/smart-error-message-for-task-set-status-rejection-01kmm6ph
   - active_role: null
     base_branch_point: dc022927ea9d7f9c1bdaa7d63d6a4ec967491911
