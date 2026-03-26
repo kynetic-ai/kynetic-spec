@@ -71,5 +71,14 @@ tags:
   - cli
   - mvp
 vcs_refs: []
+history:
+  - author: "@claude"
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-03-26T04:34:18.114Z
 created_at: 2026-03-26T04:33:31.790Z
 todos: []
+automation: eligible
