@@ -24174,12 +24174,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-26T18:25:44.711Z
+      updated_at: 2026-03-26T18:27:05.722Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-26T18:25:44.711Z
+      updated_at: 2026-03-26T18:27:05.722Z
     integration:
       status: pending
       detail: null
@@ -24187,7 +24187,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: dc022927ea9d7f9c1bdaa7d63d6a4ec967491911
-      updated_at: 2026-03-26T18:25:44.711Z
+      updated_at: 2026-03-26T18:27:05.722Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KMMB3T2K3T6A1CJR884EPKJF"
@@ -24195,16 +24195,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-26T17:56:11.688Z
-      last_reconciled_at: 2026-03-26T18:25:44.711Z
+      last_reconciled_at: 2026-03-26T18:27:05.722Z
       created_at: 2026-03-26T17:30:25.720Z
-      updated_at: 2026-03-26T18:25:44.711Z
+      updated_at: 2026-03-26T18:27:05.722Z
     workspace_id: dispatch-workspace-01KMMB3T2K3T6A1CJR884EPKJF
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 189e4fc775aa1f18106e55d895b8e6d3087ea003
+        last_seen_at: 2026-03-26T18:27:05.722Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-entity-cache-impl-01kmmb3t-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-entity-cache-impl/01kmmb3t
-        head: dc022927ea9d7f9c1bdaa7d63d6a4ec967491911
-        last_seen_at: 2026-03-26T17:56:08.654Z
+        head: 189e4fc775aa1f18106e55d895b8e6d3087ea003
+        last_seen_at: 2026-03-26T18:27:05.722Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-entity-cache-impl-01kmmb3t
