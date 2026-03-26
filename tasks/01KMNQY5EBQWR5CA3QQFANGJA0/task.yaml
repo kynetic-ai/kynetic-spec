@@ -82,7 +82,7 @@ description: >-
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -92,6 +92,14 @@ tags:
   - infra
   - testing
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/enhance-test-runner-with-smart-caching-and-condensed-output/01kmnqy5
+  captured_at: 2026-03-26T19:40:26.393Z
+  commit: d0760f32e8e67d210e40271eb30edaab4047c05f
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KM0XRFH87T3QWPVXDQZCA2XK
 history:
   - author: "@claude"
@@ -107,6 +115,27 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-03-26T18:58:54.972Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/enhance-test-runner-with-smart-caching-and-condensed-output/01kmnqy5
+          captured_at: 2026-03-26T19:40:26.393Z
+          commit: d0760f32e8e67d210e40271eb30edaab4047c05f
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-03-26T19:40:26.397Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-03-26T19:40:26.398Z
 created_at: 2026-03-26T18:54:02.187Z
 started_at: 2026-03-26T18:58:54.971Z
+submitted_at: 2026-03-26T19:40:26.397Z
 todos: []
