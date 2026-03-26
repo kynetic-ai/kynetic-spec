@@ -2262,6 +2262,7 @@ requirements:
     tests: []
     traits:
       - "@trait-multi-ref-batch"
+      - "@trait-error-guidance"
     acceptance_criteria:
       - given: multiple refs provided
         id: ac-1
@@ -2273,8 +2274,10 @@ requirements:
         when: kspec task set --refs @a @b --priority 2 --tag urgent executed
       - given: attempting to set status
         id: ac-3
-        then: "error: Use state transition commands (start, complete, block, etc.) to change status"
-        when: kspec task set --refs @a @b --status completed executed
+        then: error shows current task state, the specific transition command for the requested status (e.g.
+          kspec task needs-work @ref --reason "..."), and lists other valid transitions from current
+          state
+        when: kspec task set @ref --status <target> executed
       - given: no changes specified
         id: ac-4
         then: warns No changes specified for each, no changes saved
