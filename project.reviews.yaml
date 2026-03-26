@@ -53988,6 +53988,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMNHYWEGATG57GX31PBX6C8T
         timestamp: 2026-03-26T17:09:35.028Z
+      - _ulid: 01KMNHZ7TBJR3Q2ET6871GHMSA
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMNHZ7CQH3PY95S2NTAV0PYZ
+        timestamp: 2026-03-26T17:09:45.931Z
     examined_commit: da84eed96f51832eb8a43101896382573834e62b
     external_links: []
     lifecycle_state: open
@@ -54068,7 +54075,24 @@ reviews:
               pending unless unblock or reset is actually available from the current state."
             created_at: 2026-03-26T17:09:34.288Z
         kind: blocker
+      - _ulid: 01KMNHZ7CQH3PY95S2NTAV0PYZ
+        entries:
+          - _ulid: 01KMNHZ7CQH804JZK3XKHNBKXT
+            author: Test User
+            body: "Review evidence log: Files read: src/cli/commands/task.ts, src/strings/errors.ts,
+              tests/task-set-batch.test.ts, package.json, scripts/test.cjs. Commands run: git diff
+              against dev base, kspec task get, kspec item get @task-set, kspec item get
+              @trait-error-guidance, kspec review get prior cycle, kspec validate, grep/rg for AC
+              annotations, npm test -- tests/task-set-batch.test.ts, full npm test, and direct dist
+              CLI repros for blocked->pending and batch --status pending. Claims verified:
+              blocked-state fix now rejects blocked->pending correctly; full test suite passes; new
+              pending guidance is still wrong in text and JSON modes. Categories searched:
+              correctness (1 blocker found), edge cases (blocked prior_status, batch mode, pending
+              target), error handling (text and JSON guidance), test quality (behavioral E2E
+              coverage present), integration (full suite passed)."
+            created_at: 2026-03-26T17:09:45.495Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-26T17:00:54.942Z
-    updated_at: 2026-03-26T17:09:34.288Z
+    updated_at: 2026-03-26T17:09:45.495Z
     notes: []
