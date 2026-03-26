@@ -53690,3 +53690,29 @@ reviews:
     created_at: 2026-03-26T05:43:33.775Z
     updated_at: 2026-03-26T05:44:12.021Z
     notes: []
+  - _ulid: 01KMNGAKG2Q3F47E5YBD75BP2B
+    slugs: []
+    title: Review task-remove-monolithic
+    author: Test User
+    checks: []
+    events:
+      - _ulid: 01KMNGAKG1964SD4GR01QBG5JC
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-26T16:41:01.185Z
+    examined_commit: e15627f141c52186333527be6977b57a18b84ea9
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KM6YEYAEWFKETRCB53V73HHK"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-26T16:41:01.186Z
+    updated_at: null
+    notes: []
