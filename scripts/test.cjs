@@ -475,28 +475,26 @@ function runPostTestHooks(exitCode) {
 function runVitest(cmd, { verbose, logOutPath }) {
   return new Promise((resolve) => {
     const vitestEnv = { ...process.env, SKIP_BUILD: "1" };
+    const logStream = fs.createWriteStream(logOutPath);
+
+    // Always pipe stdout/stderr to log file; in verbose mode also tee to terminal
+    const child = spawn(cmd[0], cmd.slice(1), {
+      cwd: projectRoot,
+      stdio: ["inherit", "pipe", "pipe"],
+      env: vitestEnv,
+    });
+
+    child.stdout.pipe(logStream);
+    child.stderr.pipe(logStream);
 
     if (verbose) {
-      const child = spawn(cmd[0], cmd.slice(1), {
-        cwd: projectRoot,
-        stdio: "inherit",
-        env: vitestEnv,
-      });
-      child.on("close", (code) => resolve(code ?? 1));
-    } else {
-      // Stream stdout/stderr to log file without buffering in memory
-      const logStream = fs.createWriteStream(logOutPath);
-      const child = spawn(cmd[0], cmd.slice(1), {
-        cwd: projectRoot,
-        stdio: ["inherit", "pipe", "pipe"],
-        env: vitestEnv,
-      });
-      child.stdout.pipe(logStream);
-      child.stderr.pipe(logStream);
-      child.on("close", (code) => {
-        logStream.end(() => resolve(code ?? 1));
-      });
+      child.stdout.pipe(process.stdout);
+      child.stderr.pipe(process.stderr);
     }
+
+    child.on("close", (code) => {
+      logStream.end(() => resolve(code ?? 1));
+    });
   });
 }
 
@@ -534,7 +532,13 @@ async function main() {
     if (cached) {
       logOk("Using cached results (repo state unchanged)");
       process.stderr.write("\n");
-      process.stderr.write(formatCondensedOutput(cached.json, cached.logFile) + "\n");
+
+      if (verbose && cached.logFile) {
+        // Verbose mode: stream the full cached log to terminal
+        process.stdout.write(fs.readFileSync(cached.logFile));
+      } else {
+        process.stderr.write(formatCondensedOutput(cached.json, cached.logFile) + "\n");
+      }
 
       process.stderr.write("\n");
       if (cached.json.success) {
