@@ -1,0 +1,69 @@
+_ulid: 01KMMB3VRRVWNQFKPPP4WR0TK6
+slugs:
+  - task-cli-proxy-routing
+title: Implement CLI daemon proxy detection and routing
+type: task
+description: |
+  Add daemon detection to CLI startup and command routing logic so
+  commands are transparently proxied through the daemon when available.
+
+  Why: With the entity cache and command API in place, the CLI can
+  route through the daemon to make it the single writer. CLI mutations
+  go through the daemon, the daemon updates its cache immediately,
+  and all clients (web UI, other CLI instances, agents) see consistent
+  state.
+
+  What:
+  - Daemon detection on CLI startup: read port file from
+    ~/.config/kspec/daemon.port, send health check ping to that port
+  - Fast failure: if port file doesn't exist or connection is refused,
+    skip to direct mode within 50ms. If health check doesn't respond,
+    timeout within 200ms and skip to direct mode.
+  - Command routing: when daemon is detected, serialize the CLI
+    command into a command API payload and POST to the daemon's
+    command endpoint. Deserialize the response, write stdout/stderr
+    to process streams, exit with the returned exit code.
+  - Timeout handling: if a read-only command times out, fall back to
+    direct mode and emit a warning on stderr. If a mutating command
+    times out, return an error (no fallback) because the daemon may
+    still be processing the mutation
+  - KSPEC_NO_DAEMON=1: skip daemon detection entirely, go straight
+    to direct mode
+  - --daemon flag: require daemon routing, fail with clear error if
+    daemon is unavailable (no fallback)
+  - Project registration: if daemon is running but current project
+    is not registered, register it before routing the command
+  - Detection result cached for the CLI process lifetime — don't
+    re-detect per subcommand
+
+  How: Detection runs early in the CLI preAction hook
+  (src/cli/index.ts). Use the existing port file reading logic from
+  src/cli/commands/serve.ts. For command serialization, reuse the
+  batch command JSON format (command path + args object). Use
+  fetch() for HTTP calls — Bun and Node both support it natively.
+  Cache the detection result in module-level state (same pattern as
+  syncMode).
+
+  Covers: @cli-daemon-proxy ac-auto-detect, ac-direct-fallback,
+  ac-force-direct, ac-force-proxy, ac-transparent-output,
+  ac-mutation-coherence, ac-read-from-cache, ac-timeout-fallback,
+  ac-timeout-mutation-error.
+  @daemon-proxy-detection ac-port-file-check, ac-fast-detection,
+  ac-health-timeout, ac-project-registered.
+spec_ref: "@cli-daemon-proxy"
+plan_ref: "@plan-daemon-optimistic-data-layer"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-daemon-command-api"
+  - "@task-migrate-read-routes"
+context: []
+priority: 2
+tags:
+  - cli
+  - daemon
+  - proxy
+vcs_refs: []
+created_at: 2026-03-26T05:50:42.968Z
+todos: []

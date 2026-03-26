@@ -1,0 +1,58 @@
+_ulid: 01KMMB3V7N2GC0JSPJKJYMPJPV
+slugs:
+  - task-daemon-command-api
+title: Implement daemon command API endpoint
+type: task
+description: |
+  Build the REST endpoint that accepts CLI command payloads and executes
+  them within the daemon process, returning structured results.
+
+  Why: For the CLI to proxy through the daemon, the daemon needs an
+  endpoint that can execute arbitrary kspec commands. Without it, CLI
+  mutations would still write directly to the shadow branch, creating
+  a window of stale data in the daemon's cache.
+
+  What:
+  - POST /api/command endpoint that accepts a command payload using
+    the same JSON format as kspec batch command objects (command path
+    string + args object)
+  - Execute the command within the daemon process using Commander's
+    parseAsync with captured output streams — avoids child process
+    overhead and keeps everything in the daemon's event loop
+  - Capture stdout, stderr, and exit code; return as structured JSON
+  - For mutating commands: serialize execution using the dispatch
+    mutation lock pattern (acquireFileLock) to prevent concurrent
+    shadow branch conflicts
+  - After successful mutation: update entity cache (write-through)
+    before returning the response, broadcast WebSocket event
+  - Support batch payloads: accept an array of commands, execute
+    atomically via the existing batch runner (src/cli/batch.ts),
+    update cache once after the batch completes
+  - Response parity: stdout/stderr content must match what direct CLI
+    execution would produce
+
+  How: Follow the pattern in packages/daemon/src/routes/agent-dispatch.ts
+  for route structure and middleware. The command executor wraps
+  Commander's parseAsync, redirecting process.stdout/stderr to buffers.
+  Mutation serialization uses the same lock mechanism as the dispatch
+  engine. Batch execution reuses the existing batch runner. Cache
+  update happens after the commit but before the HTTP response.
+
+  Covers: @daemon-command-api ac-command-endpoint, ac-mutation-cache-update,
+  ac-batch-support, ac-concurrent-mutations, ac-response-parity.
+spec_ref: "@daemon-command-api"
+plan_ref: "@plan-daemon-optimistic-data-layer"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-entity-cache-impl"
+context: []
+priority: 2
+tags:
+  - daemon
+  - api
+  - proxy
+vcs_refs: []
+created_at: 2026-03-26T05:50:42.421Z
+todos: []

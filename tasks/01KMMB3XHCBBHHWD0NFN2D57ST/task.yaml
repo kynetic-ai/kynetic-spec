@@ -1,0 +1,32 @@
+_ulid: 01KMMB3XHCBBHHWD0NFN2D57ST
+slugs:
+  - task-update-daemon-server-desc
+title: Update daemon-server description for cache invalidation
+type: task
+description: |
+  Update @daemon-server description to note that the file watcher
+  drives both WebSocket broadcast and cache invalidation.
+
+  Why: The entity cache adds a second responsibility to the file
+  watcher. The spec description should reflect this.
+
+  What:
+  - Update @daemon-server description to mention cache invalidation
+    alongside WebSocket broadcast
+
+  Covers: @daemon-server (description update).
+spec_ref: "@daemon-server"
+plan_ref: "@plan-daemon-optimistic-data-layer"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-entity-cache-impl"
+context: []
+priority: 2
+tags:
+  - specs
+  - maintenance
+vcs_refs: []
+created_at: 2026-03-26T05:50:44.780Z
+todos: []

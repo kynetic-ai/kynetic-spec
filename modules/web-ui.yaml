@@ -229,6 +229,196 @@ features:
         tags: []
         created: 2026-03-02T01:22:20.058Z
         notes: []
+      - _ulid: 01KMMB3S2ST4PH6VDGQ6PP067S
+        slugs:
+          - daemon-entity-cache
+        title: Daemon Entity Cache
+        type: feature
+        description: |
+          Server-side in-memory cache for entity data served by the daemon API.
+          The cache uses a two-tier model: index data (summaries, counts,
+          references) is kept hot in memory, while detail data (full content,
+          notes, event logs) is loaded on demand when accessed. The file watcher
+          drives cache invalidation — when shadow branch files change, affected
+          data is selectively reloaded. Data domains load progressively so
+          high-priority data is available before the full cache is ready.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              a project is registered with the daemon
+            id: ac-load-on-register
+            then: |
+              index-tier entity data is loaded into memory and available for
+              serving
+            when: |
+              the project's shadow branch directory is accessible
+          - given: |
+              a project's index data has been loaded into the cache
+            id: ac-serve-from-memory
+            then: |
+              the response is served from the in-memory cache without reading
+              files from disk or running git operations
+            when: |
+              an API list or summary request arrives for that project
+          - given: |
+              a request arrives for a single entity's full detail
+            id: ac-detail-on-demand
+            then: |
+              the detail is loaded from disk, served, and optionally retained
+              in cache until the next invalidation
+            when: |
+              the detail data is not in the cache
+          - given: |
+              the file watcher detects a change to a shadow branch file
+            id: ac-watcher-invalidation
+            then: |
+              the affected data domain is reloaded from disk and the cache is
+              updated before any subsequent request is served
+            when: |
+              the changed file belongs to a registered project
+          - given: |
+              a file change affects only one data domain
+            id: ac-granular-reload
+            then: |
+              only the affected domain is reloaded, not unrelated domains
+            when: |
+              the cache processes the invalidation
+          - given: |
+              a write operation mutates entity data through the daemon API
+            id: ac-write-through
+            then: |
+              the cache is updated with the new state before the response is
+              sent, without waiting for the file watcher to detect the change
+            when: |
+              the mutation succeeds and is committed to the shadow branch
+          - given: |
+              multiple API requests arrive concurrently for the same project
+            id: ac-concurrent-reads
+            then: |
+              all requests are served from the same cached data without
+              blocking on each other or triggering redundant loads
+            when: |
+              the cache is populated
+          - given: |
+              multiple file changes arrive within a short window
+            id: ac-reload-dedup
+            then: |
+              only a single reload is performed for each affected data domain,
+              not one per file change event
+            when: |
+              the cache processes the invalidation events
+          - given: |
+              the cache encounters an error loading entity data
+            id: ac-graceful-degradation
+            then: |
+              the request falls back to direct file reading and the error is
+              logged, rather than failing the request entirely
+            when: |
+              an API request arrives
+          - given: |
+              multiple projects are registered with the daemon
+            id: ac-project-isolation
+            then: |
+              other projects' cached data is not affected or reloaded
+            when: |
+              one project's cache is invalidated
+          - given: |
+              a project is unregistered from the daemon
+            id: ac-unregister-cleanup
+            then: |
+              all cached data for that project is released from memory
+            when: |
+              the project context is removed
+          - given: |
+              a project has more sessions than the configured retention window
+            id: ac-session-bounded-index
+            then: |
+              only the most recent sessions (up to the configured limit) are
+              retained in the index; older sessions are accessible on demand
+              but not held in the cache
+            when: |
+              the session index is loaded or refreshed
+          - given: |
+              a session has active status but exceeds the stale session
+              criteria (age and inactivity thresholds)
+            id: ac-session-stale-exclusion
+            then: |
+              the session is not treated as active in the cached index
+            when: |
+              the session index is loaded or refreshed
+          - given: |
+              a project is registered and cache loading is in progress
+            id: ac-warming-availability
+            then: |
+              the request receives a response indicating the data is still
+              loading rather than blocking until the full cache is ready
+            when: |
+              an API request arrives before loading completes
+          - given: |
+              a project begins cache loading on registration
+            id: ac-progressive-loading
+            then: |
+              requests for loaded domains are served from cache immediately
+              while remaining domains continue loading
+            when: |
+              high-priority data domains finish loading before others
+        tags: []
+        requirements:
+          - _ulid: 01KMMB3S7MJZ9ZJKZT31QPM572
+            slugs:
+              - daemon-read-path
+            title: Daemon Read Path Optimization
+            type: requirement
+            description: |
+              API read routes serve responses from the entity cache. Per-request
+              sync operations move to the background sync scheduler so that read
+              requests involve no git operations or filesystem reads.
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            acceptance_criteria:
+              - given: |
+                  the daemon is running with a registered project
+                id: ac-no-per-request-sync
+                then: |
+                  no git operations are performed as part of handling the request
+                when: |
+                  a read-only API request arrives
+              - given: |
+                  the daemon's sync interval elapses
+                id: ac-background-sync
+                then: |
+                  drift-check and pull happen in the background, and if new data
+                  is pulled, the entity cache is invalidated and reloaded
+                when: |
+                  the background sync scheduler runs
+              - given: |
+                  a route needs a reference index or alignment index
+                id: ac-index-from-cache
+                then: |
+                  the index is built from cached entity data, not from fresh
+                  disk reads
+                when: |
+                  the request handler builds the index
+              - given: |
+                  a write operation is received through the daemon API
+                id: ac-write-routes-sync
+                then: |
+                  the daemon commits the change to the shadow branch using the
+                  standard write path before updating the cache
+                when: |
+                  the daemon processes the mutation
+            tags: []
+            created: 2026-03-26T05:50:40.372Z
+            notes: []
+        created: 2026-03-26T05:50:40.217Z
+        notes: []
     requirements:
       - _ulid: 01KJRZWDCC8W2WT0Q3A9CZAAGY
         slugs:

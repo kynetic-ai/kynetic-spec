@@ -1,0 +1,31 @@
+_ulid: 01KMMB3WY8E1JYRGHBHZ4RMH9E
+slugs:
+  - task-link-session-cache
+title: Link session-summary-cache to unified entity cache
+type: task
+description: |
+  Add relates_to @daemon-entity-cache on @session-summary-cache,
+  noting that session caching is absorbed into the unified cache.
+
+  Why: The standalone SessionSummaryCache is replaced by the session
+  domain in the entity cache. The spec relationship documents this.
+
+  What:
+  - Add relates_to @daemon-entity-cache on @session-summary-cache
+
+  Covers: @session-summary-cache (relationship update).
+spec_ref: "@session-summary-cache"
+plan_ref: "@plan-daemon-optimistic-data-layer"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-entity-cache-impl"
+context: []
+priority: 2
+tags:
+  - specs
+  - maintenance
+vcs_refs: []
+created_at: 2026-03-26T05:50:44.168Z
+todos: []

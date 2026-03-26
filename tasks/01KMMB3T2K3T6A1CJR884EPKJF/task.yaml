@@ -1,0 +1,97 @@
+_ulid: 01KMMB3T2K3T6A1CJR884EPKJF
+slugs:
+  - task-entity-cache-impl
+title: Implement entity cache with tiered storage and watcher invalidation
+type: task
+description: |
+  Build the entity cache with two-tier storage (index hot, detail on
+  demand) and wire it to the existing file watcher for invalidation.
+  Integrate with the project registration lifecycle.
+
+  Why: The daemon currently re-reads all YAML files and rebuilds indexes
+  on every API request. initContext() + loadAllItems() + loadAllTasks()
+  runs on every route handler. The entity cache eliminates this by
+  loading index data once on project registration and serving from
+  memory, with the file watcher driving selective reloads on change.
+
+  What:
+  - Implement ProjectEntityCache class with per-domain storage. Each
+    domain has an index tier (always hot) and a detail tier (loaded on
+    demand, evicted on invalidation). See the cache tiering table in
+    Implementation Notes for what goes where per domain.
+  - Wire to file watcher in packages/daemon/src/watcher.ts — add cache
+    invalidation alongside the existing WebSocket broadcast. Map changed
+    file paths to domains using the domain mapping table (see
+    Implementation Notes).
+  - Implement reload dedup using in-flight promise dedup (Map<domain,
+    Promise>) — proven pattern from shadowPull(). Multiple file changes
+    within the watcher's existing 500ms debounce window produce a single
+    reload per affected domain.
+  - Implement write-through: daemon API write routes update the cache
+    before returning. Use a write-through flag that causes the watcher
+    callback to skip the redundant reload for that domain.
+  - Implement graceful degradation: if cache load fails for a domain,
+    mark the domain as degraded, fall back to direct file reading for
+    requests to that domain, and log the error.
+  - Implement progressive loading: on project registration, load
+    domains in priority order (tasks → items → meta → inbox → plans →
+    triage → reviews → sessions). Serve loaded domains from cache
+    immediately; unloaded domains return a loading indicator.
+  - Implement session index bounding: cache only the N most recent
+    session summaries (configurable, default 100). Apply stale session
+    exclusion: sessions with active status that exceed the existing
+    stale criteria (older-than + inactive-for thresholds from
+    @session-stale-criteria) are not treated as active in the index.
+    Sessions outside the window are loaded on demand when accessed by
+    ID.
+  - Implement project isolation: each registered project gets its own
+    ProjectEntityCache instance. Watcher events are scoped to the
+    project whose files changed.
+  - On project unregister: release all cached data and cancel any
+    in-flight reloads.
+  - Absorb the existing SessionSummaryCache (src/sessions/cache.ts)
+    into the unified cache — the session domain replaces the standalone
+    session cache.
+
+  How: The cache lives in packages/daemon/ alongside project-context.ts.
+  ProjectContextManager.registerProject() creates the cache instance
+  and starts the initial load. The watcher callback in
+  packages/daemon/src/watcher.ts gets a second handler (alongside the
+  existing WebSocket broadcast) that maps file paths to domains and
+  calls cache.invalidateDomain(). Build the domain mapping from the
+  same file patterns used by the existing YAML loading functions.
+
+  For tasks: TaskDataManager already has listTasks() returning
+  TaskSummary[] and rawToSummary() — use this as the index tier. Full
+  task detail (notes, todos) loaded via getTask() on demand.
+
+  For items: No ItemSummary type exists yet. Create one with the index
+  fields (ulid, title, type, status, priority, tags, traits, parent
+  path). Full item detail (ACs, description, notes) loaded on demand.
+
+  For sessions: Reuse the existing stale criteria resolution from
+  src/sessions/store.ts (resolveStaleSessionCriteria) to determine
+  whether an active-status session should be treated as stale in the
+  cache index.
+
+  Covers: @daemon-entity-cache ac-load-on-register, ac-serve-from-memory,
+  ac-detail-on-demand, ac-watcher-invalidation, ac-granular-reload,
+  ac-write-through, ac-concurrent-reads, ac-reload-dedup,
+  ac-graceful-degradation, ac-project-isolation, ac-unregister-cleanup,
+  ac-session-bounded-index, ac-session-stale-exclusion,
+  ac-warming-availability, ac-progressive-loading.
+spec_ref: "@daemon-entity-cache"
+plan_ref: "@plan-daemon-optimistic-data-layer"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - daemon
+  - implementation
+  - cache
+vcs_refs: []
+created_at: 2026-03-26T05:50:41.235Z
+todos: []

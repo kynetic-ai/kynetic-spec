@@ -1,0 +1,30 @@
+_ulid: 01KMMB3Y3K01Q0D7DNDVV6GQT1
+slugs:
+  - task-link-multi-dir-proxy
+title: Link multi-directory-daemon to CLI proxy mode
+type: task
+description: |
+  Add relates_to @cli-daemon-proxy on @multi-directory-daemon.
+
+  Why: CLI proxy mode interacts with multi-directory daemon support —
+  the proxy must route to the correct project context.
+
+  What:
+  - Add relates_to @cli-daemon-proxy on @multi-directory-daemon
+
+  Covers: @multi-directory-daemon (relationship update).
+spec_ref: "@multi-directory-daemon"
+plan_ref: "@plan-daemon-optimistic-data-layer"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-cli-proxy-routing"
+context: []
+priority: 2
+tags:
+  - specs
+  - maintenance
+vcs_refs: []
+created_at: 2026-03-26T05:50:45.363Z
+todos: []

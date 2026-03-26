@@ -22523,3 +22523,151 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-03-26T05:15:00.598Z
+- _ulid: 01KMMB3T2K3T6A1CJR884EPKJF
+  slugs:
+    - task-entity-cache-impl
+  title: Implement entity cache with tiered storage and watcher invalidation
+  type: task
+  spec_ref: "@daemon-entity-cache"
+  plan_ref: "@plan-daemon-optimistic-data-layer"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - daemon
+    - implementation
+    - cache
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-26T05:50:41.235Z
+- _ulid: 01KMMB3TNHWVQT4HHB9XC1DE0X
+  slugs:
+    - task-migrate-read-routes
+  title: Migrate daemon read routes to serve from entity cache
+  type: task
+  spec_ref: "@daemon-read-path"
+  plan_ref: "@plan-daemon-optimistic-data-layer"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-entity-cache-impl"
+  priority: 1
+  tags:
+    - daemon
+    - implementation
+    - routes
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-26T05:50:41.841Z
+- _ulid: 01KMMB3V7N2GC0JSPJKJYMPJPV
+  slugs:
+    - task-daemon-command-api
+  title: Implement daemon command API endpoint
+  type: task
+  spec_ref: "@daemon-command-api"
+  plan_ref: "@plan-daemon-optimistic-data-layer"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-entity-cache-impl"
+  priority: 2
+  tags:
+    - daemon
+    - api
+    - proxy
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-26T05:50:42.421Z
+- _ulid: 01KMMB3VRRVWNQFKPPP4WR0TK6
+  slugs:
+    - task-cli-proxy-routing
+  title: Implement CLI daemon proxy detection and routing
+  type: task
+  spec_ref: "@cli-daemon-proxy"
+  plan_ref: "@plan-daemon-optimistic-data-layer"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-daemon-command-api"
+    - "@task-migrate-read-routes"
+  priority: 2
+  tags:
+    - cli
+    - daemon
+    - proxy
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-26T05:50:42.968Z
+- _ulid: 01KMMB3WBKZKVE32R64GD0YVH8
+  slugs:
+    - task-narrow-shadow-lazy-read-sync
+  title: Narrow shadow-lazy-read-sync scope for daemon context
+  type: task
+  spec_ref: "@shadow-lazy-read-sync"
+  plan_ref: "@plan-daemon-optimistic-data-layer"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-entity-cache-impl"
+  priority: 2
+  tags:
+    - specs
+    - maintenance
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-26T05:50:43.571Z
+- _ulid: 01KMMB3WY8E1JYRGHBHZ4RMH9E
+  slugs:
+    - task-link-session-cache
+  title: Link session-summary-cache to unified entity cache
+  type: task
+  spec_ref: "@session-summary-cache"
+  plan_ref: "@plan-daemon-optimistic-data-layer"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-entity-cache-impl"
+  priority: 2
+  tags:
+    - specs
+    - maintenance
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-26T05:50:44.168Z
+- _ulid: 01KMMB3XHCBBHHWD0NFN2D57ST
+  slugs:
+    - task-update-daemon-server-desc
+  title: Update daemon-server description for cache invalidation
+  type: task
+  spec_ref: "@daemon-server"
+  plan_ref: "@plan-daemon-optimistic-data-layer"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-entity-cache-impl"
+  priority: 2
+  tags:
+    - specs
+    - maintenance
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-26T05:50:44.780Z
+- _ulid: 01KMMB3Y3K01Q0D7DNDVV6GQT1
+  slugs:
+    - task-link-multi-dir-proxy
+  title: Link multi-directory-daemon to CLI proxy mode
+  type: task
+  spec_ref: "@multi-directory-daemon"
+  plan_ref: "@plan-daemon-optimistic-data-layer"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-cli-proxy-routing"
+  priority: 2
+  tags:
+    - specs
+    - maintenance
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-26T05:50:45.363Z

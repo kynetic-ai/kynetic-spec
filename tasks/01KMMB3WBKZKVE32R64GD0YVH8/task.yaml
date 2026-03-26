@@ -1,0 +1,34 @@
+_ulid: 01KMMB3WBKZKVE32R64GD0YVH8
+slugs:
+  - task-narrow-shadow-lazy-read-sync
+title: Narrow shadow-lazy-read-sync scope for daemon context
+type: task
+description: |
+  Add AC to @shadow-lazy-read-sync clarifying that drift-check applies
+  to CLI direct-mode only; daemon reads use the entity cache with
+  background sync instead of per-request drift-check.
+
+  Why: The entity cache changes the daemon's read path. The existing
+  drift-check contract still applies for CLI direct-mode but not for
+  daemon-served reads.
+
+  What:
+  - Add an AC to @shadow-lazy-read-sync specifying that daemon reads
+    bypass drift-check and rely on the background sync scheduler
+
+  Covers: @shadow-lazy-read-sync (new AC for daemon context).
+spec_ref: "@shadow-lazy-read-sync"
+plan_ref: "@plan-daemon-optimistic-data-layer"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-entity-cache-impl"
+context: []
+priority: 2
+tags:
+  - specs
+  - maintenance
+vcs_refs: []
+created_at: 2026-03-26T05:50:43.571Z
+todos: []
