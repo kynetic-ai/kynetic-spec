@@ -23648,12 +23648,17 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-26T03:18:02.180Z
+      updated_at: 2026-03-26T03:19:44.137Z
     health:
-      status: healthy
-      issues: []
-      summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-26T03:18:05.617Z
+      status: stale
+      issues:
+        - code: missing_worker_worktree
+          message: Worker worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-split-backend-mutex-hold-lock-through-write-flush-01kmknrv"
+            is missing or no longer registered.
+          suggestion: Re-provision the worker worktree from the recorded canonical branch.
+      summary: Workspace registry record is stale and needs reconciliation.
+      updated_at: 2026-03-26T03:19:44.137Z
     integration:
       status: pending
       detail: null
@@ -23661,17 +23666,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 77b7853efbde33a5f1f229bf8623faaef696153c
-      updated_at: 2026-03-26T03:18:02.180Z
-    lifecycle_state: active
+      updated_at: 2026-03-26T03:19:44.137Z
+    lifecycle_state: stale
     resolved_base_branch: dev
     task_ref: "@01KMKNRVZK0P81KHK5Z6RH841D"
     task_slug: fix-split-backend-mutex-hold-lock-through-write-flush
     timestamps:
       closed_at: null
       last_active_at: 2026-03-26T03:18:05.617Z
-      last_reconciled_at: 2026-03-26T03:18:05.617Z
+      last_reconciled_at: 2026-03-26T03:19:44.137Z
       created_at: 2026-03-25T23:41:00.167Z
-      updated_at: 2026-03-26T03:18:05.617Z
+      updated_at: 2026-03-26T03:19:44.137Z
     workspace_id: dispatch-workspace-01KMKNRVZK0P81KHK5Z6RH841D
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
