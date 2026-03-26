@@ -68,16 +68,71 @@ describe("Integration: task set batch support", () => {
   });
 
   // AC: @spec-task-set-batch ac-3
-  it("should reject --status flag with error message", () => {
+  it("should reject --status flag with smart error showing current state and suggested command", () => {
     kspec('task add --title "Status Test" --slug status-test', tempDir);
 
-    const result = kspec("task set --refs @status-test --status completed", tempDir, {
+    const result = kspec("task set @status-test --status completed", tempDir, {
       expectFail: true,
     });
 
     expect(result.exitCode).toBe(2); // USAGE_ERROR
-    expect(result.stderr).toContain("Use state transition commands");
-    expect(result.stderr).toContain("start, complete, block");
+    expect(result.stderr).toContain("Cannot change status via 'task set'");
+    // Should show current state
+    expect(result.stderr).toContain("Current status: pending");
+    // Should show the specific command for the requested target
+    expect(result.stderr).toContain("kspec task complete @ref");
+    // Should show valid transitions from current state
+    expect(result.stderr).toContain("Valid transitions from pending");
+    expect(result.stderr).toContain("in_progress");
+  });
+
+  // AC: @spec-task-set-batch ac-3 — batch mode also rejects --status
+  it("should reject --status flag in batch mode", () => {
+    kspec('task add --title "Status Batch" --slug status-batch', tempDir);
+
+    const result = kspec("task set --refs @status-batch --status in_progress", tempDir, {
+      expectFail: true,
+    });
+
+    expect(result.exitCode).toBe(2); // USAGE_ERROR
+    expect(result.stderr).toContain("Cannot change status via 'task set'");
+    expect(result.stderr).toContain("kspec task start @ref");
+  });
+
+  // AC: @spec-task-set-batch ac-3, @trait-error-guidance ac-4 — shows valid transitions for in_progress task
+  it("should show valid transitions from current state (in_progress)", () => {
+    kspec('task add --title "In Progress Test" --slug ip-test', tempDir);
+    kspec("task start @ip-test", tempDir);
+
+    const result = kspec("task set @ip-test --status completed", tempDir, {
+      expectFail: true,
+    });
+
+    expect(result.exitCode).toBe(2);
+    expect(result.stderr).toContain("Current status: in_progress");
+    expect(result.stderr).toContain("kspec task complete @ref");
+    expect(result.stderr).toContain("Valid transitions from in_progress");
+    expect(result.stderr).toContain("pending_review");
+  });
+
+  // AC: @spec-task-set-batch ac-3, @trait-error-guidance ac-6 — JSON mode includes guidance in structured error
+  it("should include structured details in JSON mode", () => {
+    kspec('task add --title "JSON Status" --slug json-status', tempDir);
+
+    const result = kspec("task set @json-status --status needs_work --json", tempDir, {
+      expectFail: true,
+    });
+
+    expect(result.exitCode).toBe(2);
+    // Parse the JSON error from stderr
+    const jsonError = JSON.parse(result.stderr);
+    expect(jsonError.success).toBe(false);
+    expect(jsonError.error).toContain("Cannot change status via 'task set'");
+    expect(jsonError.details.currentStatus).toBe("pending");
+    expect(jsonError.details.targetStatus).toBe("needs_work");
+    expect(jsonError.details.suggestedCommand).toContain("kspec task needs-work");
+    expect(jsonError.details.validTransitions).toBeInstanceOf(Array);
+    expect(jsonError.details.validTransitions.length).toBeGreaterThan(0);
   });
 
   // AC: @spec-task-set-batch ac-4

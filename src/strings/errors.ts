@@ -5,6 +5,31 @@
  * Each category corresponds to a common error pattern across command files.
  */
 
+import type { TaskStatus } from "../schema/common.js";
+
+// AC: @spec-task-set-batch ac-3, @trait-error-guidance ac-4
+// Maps target status → the CLI command to reach it
+const STATUS_TO_COMMAND: Record<TaskStatus, string> = {
+  in_progress: "kspec task start @ref",
+  pending_review: "kspec task submit @ref",
+  needs_work: 'kspec task needs-work @ref --reason "..."',
+  blocked: 'kspec task block @ref --reason "..."',
+  completed: 'kspec task complete @ref --reason "..."',
+  cancelled: "kspec task cancel @ref",
+  pending: "kspec task start @ref (to resume from pending)",
+};
+
+// Maps current status → valid target statuses
+const VALID_TRANSITIONS_FROM: Record<TaskStatus, TaskStatus[]> = {
+  pending: ["in_progress", "blocked", "cancelled"],
+  in_progress: ["pending_review", "blocked", "cancelled"],
+  pending_review: ["completed", "needs_work", "blocked", "cancelled"],
+  needs_work: ["in_progress", "blocked", "cancelled"],
+  blocked: ["in_progress", "pending", "cancelled"],
+  completed: [],
+  cancelled: [],
+};
+
 /**
  * Reference resolution errors (not found, ambiguous, wrong type)
  */
@@ -127,7 +152,66 @@ export const statusErrors = {
   completeAlreadyCompleted: "Task is already completed",
   // AC: @spec-completion-enforcement ac-8
   skipReviewRequiresReason: "--skip-review requires --reason to document why",
+
+  // AC: @spec-task-set-batch ac-3, @trait-error-guidance ac-1, ac-2, ac-4
+  statusSetRejection: (
+    targetStatus: string,
+    currentStatus?: TaskStatus,
+  ): { message: string; details: StatusSetRejectionDetails } => {
+    const lines: string[] = [];
+
+    lines.push("Cannot change status via 'task set'. Use dedicated transition commands instead.");
+
+    if (currentStatus) {
+      lines.push(`Current status: ${currentStatus}`);
+    }
+
+    const knownTarget = targetStatus as TaskStatus;
+    const commandForTarget = STATUS_TO_COMMAND[knownTarget];
+
+    if (commandForTarget) {
+      lines.push(`To transition to ${targetStatus}: ${commandForTarget}`);
+    } else {
+      lines.push(`Unknown target status: ${targetStatus}`);
+    }
+
+    if (currentStatus) {
+      const validTargets = VALID_TRANSITIONS_FROM[currentStatus];
+      if (validTargets.length > 0) {
+        lines.push(`Valid transitions from ${currentStatus}:`);
+        for (const target of validTargets) {
+          lines.push(`  ${target}: ${STATUS_TO_COMMAND[target]}`);
+        }
+      } else {
+        lines.push(`No transitions available from ${currentStatus}`);
+      }
+    }
+
+    return {
+      message: lines[0],
+      details: {
+        currentStatus: currentStatus ?? null,
+        targetStatus,
+        suggestedCommand: commandForTarget ?? null,
+        validTransitions: currentStatus
+          ? VALID_TRANSITIONS_FROM[currentStatus].map((s) => ({
+              status: s,
+              command: STATUS_TO_COMMAND[s],
+            }))
+          : null,
+        guidance: lines.slice(1).join("\n"),
+      },
+    };
+  },
 } as const;
+
+export interface StatusSetRejectionDetails {
+  currentStatus: string | null;
+  targetStatus: string;
+  suggestedCommand: string | null;
+  validTransitions: Array<{ status: string; command: string }> | null;
+  guidance: string;
+}
 
 /**
  * Duplicate/conflict errors

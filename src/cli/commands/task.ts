@@ -1297,12 +1297,6 @@ Examples:
     )
     .action(async (ref: string | undefined, options) => {
       try {
-        // AC: @spec-task-set-batch ac-3 - Reject --status flag
-        if (options.status !== undefined) {
-          error("Use state transition commands (start, complete, block, etc.) to change status");
-          process.exit(EXIT_CODES.USAGE_ERROR);
-        }
-
         // AC: @spec-task-clear-deps ac-3 - Mutual exclusivity check
         if (options.clearDeps && options.dependsOn) {
           error("Cannot use --clear-deps and --depends-on together");
@@ -1324,6 +1318,29 @@ Examples:
         ];
 
         const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items, allMetaItems);
+
+        // AC: @spec-task-set-batch ac-3, @trait-error-guidance ac-1, ac-2, ac-4
+        // Reject --status flag with context-aware error message
+        if (options.status !== undefined) {
+          let currentStatus: import("../../schema/common.js").TaskStatus | undefined;
+
+          // Try to resolve the task to get current status for a better error message
+          if (ref) {
+            try {
+              const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
+              currentStatus = foundTask.status;
+            } catch {
+              // Task resolution failed - still show the error, just without current status
+            }
+          }
+
+          const rejection = errors.status.statusSetRejection(
+            options.status as string,
+            currentStatus,
+          );
+          error(rejection.message, isJsonMode() ? rejection.details : rejection.details.guidance);
+          process.exit(EXIT_CODES.USAGE_ERROR);
+        }
 
         // AC: @trait-multi-ref-batch ac-8 - Deduplicate refs
         const refsFlag = options.refs ? [...new Set(options.refs as string[])] : undefined;
