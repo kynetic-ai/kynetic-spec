@@ -82,7 +82,7 @@ description: >-
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -96,8 +96,8 @@ review_ref: "@01KMNWGE4FYJHPGEK4M9Q1E1ZW"
 submission_linkage:
   review_url: null
   branch: dispatch/task/enhance-test-runner-with-smart-caching-and-condensed-output/01kmnqy5
-  captured_at: 2026-03-26T20:12:50.641Z
-  commit: 91d46b2dfca10936fcccdc41c0a0bc98c6d8a285
+  captured_at: 2026-03-26T20:21:14.245Z
+  commit: 0c6c79c71f53d6b39c33859d1caa9e094a4941f2
   remote: null
   remote_url: null
   upstream_ref: dev
@@ -223,7 +223,34 @@ history:
         previous: 2026-03-26T20:12:47.302Z
     command: task-start
     timestamp: 2026-03-26T20:20:56.057Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/enhance-test-runner-with-smart-caching-and-condensed-output/01kmnqy5
+          captured_at: 2026-03-26T20:21:14.245Z
+          commit: 0c6c79c71f53d6b39c33859d1caa9e094a4941f2
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous:
+          review_url: null
+          branch: dispatch/task/enhance-test-runner-with-smart-caching-and-condensed-output/01kmnqy5
+          captured_at: 2026-03-26T20:12:50.641Z
+          commit: 91d46b2dfca10936fcccdc41c0a0bc98c6d8a285
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+      submitted_at:
+        new: 2026-03-26T20:21:14.250Z
+        previous: 2026-03-26T20:12:50.645Z
+    command: task-submit
+    timestamp: 2026-03-26T20:21:14.250Z
 created_at: 2026-03-26T18:54:02.187Z
 started_at: 2026-03-26T20:20:56.056Z
-submitted_at: 2026-03-26T20:12:50.645Z
+submitted_at: 2026-03-26T20:21:14.250Z
 todos: []
