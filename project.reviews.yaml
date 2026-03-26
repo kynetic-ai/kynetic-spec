@@ -53364,9 +53364,25 @@ reviews:
           status: fail
           name: Task standalone executability
         timestamp: 2026-03-26T05:29:36.874Z
+      - _ulid: 01KMM9XFMT9NAMVDM9KGCHTTR4
+        actor: Jacob Chapel
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-26T05:29:45.370Z
+      - _ulid: 01KMM9XFMTZD9DC8E2T1YSRP6G
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: closed
+        timestamp: 2026-03-26T05:29:45.370Z
     examined_commit: null
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -53436,7 +53452,14 @@ reviews:
               this into concrete tasks with direct target refs and real AC coverage.
             created_at: 2026-03-26T05:29:17.608Z
         kind: question
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: Jacob Chapel
+        role: reviewer
+        created_at: 2026-03-26T05:29:45.370Z
     created_at: 2026-03-26T05:28:53.474Z
-    updated_at: 2026-03-26T05:29:34.548Z
+    updated_at: 2026-03-26T05:29:45.370Z
     notes: []
