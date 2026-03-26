@@ -47,7 +47,7 @@ description: >-
 spec_ref: null
 plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-activate-split-storage"
@@ -59,6 +59,14 @@ tags:
   - cleanup
   - manual
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-26T08:23:53.079Z
+  commit: dc022927ea9d7f9c1bdaa7d63d6a4ec967491911
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
 session_id: 01KMMA0TAEXZ5WVNG0R3ENM8GB
 history:
   - author: "@claude"
@@ -158,7 +166,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-03-26T05:32:21.618Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-03-26T08:23:53.079Z
+          commit: dc022927ea9d7f9c1bdaa7d63d6a4ec967491911
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous: null
+      submitted_at:
+        new: 2026-03-26T08:23:53.081Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-03-26T08:23:53.082Z
 created_at: 2026-03-21T00:59:26.926Z
 started_at: 2026-03-26T05:32:21.618Z
+submitted_at: 2026-03-26T08:23:53.081Z
 todos: []
 automation: eligible
