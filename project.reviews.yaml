@@ -53463,3 +53463,29 @@ reviews:
     created_at: 2026-03-26T05:28:53.474Z
     updated_at: 2026-03-26T05:29:45.370Z
     notes: []
+  - _ulid: 01KMMA93FYQQQ3ZRBRXJD2KVM4
+    slugs: []
+    title: Review smart error message for task set --status rejection (cycle 3)
+    author: Test User
+    checks: []
+    events:
+      - _ulid: 01KMMA93FY008J7S7HBFXTFTSX
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-26T05:36:06.142Z
+    examined_commit: 31c76a76695b207a1ef6ab2a99901412a2a29ff9
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMM6PH4EQBRZW72DXWMMNFP3"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-26T05:36:06.142Z
+    updated_at: null
+    notes: []
