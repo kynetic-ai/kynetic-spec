@@ -3120,11 +3120,36 @@ Examples:
 
       const indexPath = getIndexFilePath(ctx);
 
+      // Helper: upgrade manifest to kynetic 1.1 with task_storage.format: "split".
+      // Called from every success path (including early-returns for already-migrated)
+      // so that the version gate in resolveTaskDataManager() stops blocking.
+      async function upgradeManifestToSplit(): Promise<void> {
+        if (!ctx.manifestPath) return;
+        const { readYamlFile: readManifest, writeYamlFilePreserveFormat } = await import(
+          "../../parser/yaml.js"
+        );
+        const manifest = await readManifest<Record<string, unknown>>(ctx.manifestPath);
+        if (!manifest) return;
+        // Bump kynetic version to 1.1
+        manifest.kynetic = "1.1";
+        // Set task_storage.format = "split"
+        if (!manifest.task_storage || typeof manifest.task_storage !== "object") {
+          manifest.task_storage = { format: "split" };
+        } else {
+          (manifest.task_storage as Record<string, unknown>).format = "split";
+        }
+        await writeYamlFilePreserveFormat(ctx.manifestPath, manifest);
+      }
+
       // Read the raw task entries from project.tasks.yaml
       const { rawTasks, useTasksWrapper, wrapperObj } = await extractRawTaskArray(indexPath);
 
       if (rawTasks.length === 0) {
         // AC: @task-storage-migration ac-6 — already migrated (no monolithic entries)
+        if (!isDryRun) {
+          await upgradeManifestToSplit();
+          await commitIfShadow(ctx.shadow, "chore: upgrade manifest to split task storage format");
+        }
         const resultData = {
           ...(isDryRun ? { dry_run: true } : {}),
           migrated: 0,
@@ -3188,6 +3213,10 @@ Examples:
 
       if (toMigrate.length === 0 && alreadyMigrated.length === 0) {
         // AC: @task-storage-migration ac-6 — all entries are already lean index entries
+        if (!isDryRun) {
+          await upgradeManifestToSplit();
+          await commitIfShadow(ctx.shadow, "chore: upgrade manifest to split task storage format");
+        }
         const resultData = {
           ...(isDryRun ? { dry_run: true } : {}),
           migrated: 0,
@@ -3496,23 +3525,7 @@ Examples:
 
       // After successful migration, update manifest: set task_storage.format = "split"
       // and bump kynetic version to 1.1. This replaces the separate activate command.
-      if (ctx.manifestPath) {
-        const { readYamlFile: readManifest, writeYamlFilePreserveFormat } = await import(
-          "../../parser/yaml.js"
-        );
-        const manifest = await readManifest<Record<string, unknown>>(ctx.manifestPath);
-        if (manifest) {
-          // Bump kynetic version to 1.1
-          manifest.kynetic = "1.1";
-          // Set task_storage.format = "split"
-          if (!manifest.task_storage || typeof manifest.task_storage !== "object") {
-            manifest.task_storage = { format: "split" };
-          } else {
-            (manifest.task_storage as Record<string, unknown>).format = "split";
-          }
-          await writeYamlFilePreserveFormat(ctx.manifestPath, manifest);
-        }
-      }
+      await upgradeManifestToSplit();
 
       // AC: @task-storage-migration ac-8 — single atomic shadow branch commit
       await commitIfShadow(

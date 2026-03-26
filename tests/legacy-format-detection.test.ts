@@ -196,6 +196,100 @@ describe("Legacy format detection", () => {
     expect(manifest.task_storage).toEqual({ format: "split" });
   });
 
+  // AC: @task-remove-monolithic — migrate upgrades manifest even when tasks file is empty
+  it("kspec task migrate upgrades manifest when project.tasks.yaml is empty", async () => {
+    const { specDir, env } = await setupLegacyProject(tempDir);
+    // project.tasks.yaml is already empty (setupLegacyProject writes toYaml([]))
+
+    // Verify precondition: manifest is kynetic 1.0 with no task_storage
+    const beforeRaw = await fs.readFile(path.join(specDir, "kynetic.yaml"), "utf8");
+    const beforeManifest = parseYaml(beforeRaw) as Record<string, unknown>;
+    expect(beforeManifest.kynetic).toBe("1.0");
+    expect(beforeManifest).not.toHaveProperty("task_storage");
+
+    // Run migration on empty tasks file
+    const result = kspec("task migrate --force", tempDir, { env });
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain("Already migrated");
+
+    // Verify manifest was upgraded despite early return
+    const afterRaw = await fs.readFile(path.join(specDir, "kynetic.yaml"), "utf8");
+    const afterManifest = parseYaml(afterRaw) as Record<string, unknown>;
+    expect(afterManifest.kynetic).toBe("1.1");
+    expect(afterManifest.task_storage).toEqual({ format: "split" });
+  });
+
+  // AC: @task-remove-monolithic — migrate upgrades manifest when all entries are already lean
+  it("kspec task migrate upgrades manifest when all entries are lean index entries", async () => {
+    const { specDir, env } = await setupLegacyProject(tempDir);
+
+    // Write lean index entries (already-migrated format with notes_count)
+    const [ulid] = testUlids("LEAN", 1);
+    await fs.writeFile(
+      path.join(specDir, "project.tasks.yaml"),
+      toYaml([
+        {
+          _ulid: ulid,
+          slugs: ["lean-task"],
+          title: "Already lean",
+          type: "task",
+          status: "pending",
+          priority: 3,
+          tags: [],
+          depends_on: [],
+          blocked_by: [],
+          created_at: "2026-01-01T00:00:00.000Z",
+          notes_count: 0,
+          todos_count: 0,
+        },
+      ]),
+    );
+
+    // Also create the per-task directory so split backend is happy
+    const taskDir = path.join(specDir, "tasks", ulid);
+    await fs.mkdir(taskDir, { recursive: true });
+    await fs.writeFile(
+      path.join(taskDir, "task.yaml"),
+      toYaml({
+        _ulid: ulid,
+        slugs: ["lean-task"],
+        title: "Already lean",
+        type: "task",
+        status: "pending",
+        priority: 3,
+        tags: [],
+        depends_on: [],
+        blocked_by: [],
+        created_at: "2026-01-01T00:00:00.000Z",
+      }),
+    );
+    await fs.writeFile(path.join(taskDir, "notes.yaml"), toYaml({ notes: [] }));
+
+    const result = kspec("task migrate --force", tempDir, { env });
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain("Already migrated");
+
+    // Verify manifest was upgraded despite early return
+    const afterRaw = await fs.readFile(path.join(specDir, "kynetic.yaml"), "utf8");
+    const afterManifest = parseYaml(afterRaw) as Record<string, unknown>;
+    expect(afterManifest.kynetic).toBe("1.1");
+    expect(afterManifest.task_storage).toEqual({ format: "split" });
+  });
+
+  // AC: @task-remove-monolithic — dry-run does NOT upgrade manifest
+  it("kspec task migrate --dry-run does not upgrade manifest", async () => {
+    const { specDir, env } = await setupLegacyProject(tempDir);
+
+    const result = kspec("task migrate --dry-run", tempDir, { env });
+    expect(result.exitCode).toBe(0);
+
+    // Manifest should remain unchanged
+    const afterRaw = await fs.readFile(path.join(specDir, "kynetic.yaml"), "utf8");
+    const afterManifest = parseYaml(afterRaw) as Record<string, unknown>;
+    expect(afterManifest.kynetic).toBe("1.0");
+    expect(afterManifest).not.toHaveProperty("task_storage");
+  });
+
   // AC: @task-remove-monolithic — migrate creates per-task directories
   it("kspec task migrate creates per-task directory structure", async () => {
     const { specDir, env } = await setupLegacyProject(tempDir);
