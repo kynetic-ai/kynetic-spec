@@ -55293,6 +55293,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMNVC8EZA8AXW97PSKJB2NCY
         timestamp: 2026-03-26T19:54:10.313Z
+      - _ulid: 01KMNVCAETSKPW17N9N8EKJDVV
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMNVC9XVB61VPTE07CFGKX9E
+        timestamp: 2026-03-26T19:54:11.802Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -55353,7 +55360,57 @@ reviews:
               cached results without a log artifact.
             created_at: 2026-03-26T19:54:09.760Z
         kind: blocker
+      - _ulid: 01KMNVC9XVB61VPTE07CFGKX9E
+        anchor:
+          type: code
+          commit: d0760f32e8e67d210e40271eb30edaab4047c05f
+          line_end: 547
+          line_start: 531
+          path: scripts/test.cjs
+          side: head
+        entries:
+          - _ulid: 01KMNVC9XVMA996DWS04S3H7SP
+            author: Jacob Chapel
+            body: >2-
+               is bypassed on cache hits.  strips  out of , and the cache lookup runs before any
+              verbose-specific execution path, so a prior non-verbose run causes 
+               RUN  v4.0.17 /home/chapel/Projects/kynetic-spec
+
+               ✓ tests/test-runner.test.ts > test runner environment checks > prerequisite verification and auto-fix > dry-run succeeds when environment is ready 28ms
+               ✓ tests/test-runner.test.ts > test runner environment checks > prerequisite verification and auto-fix > checkDependencies passes against real project root 1ms
+               ✓ tests/test-runner.test.ts > test runner environment checks > prerequisite verification and auto-fix > checkBuild passes against real project root 5ms
+               ✓ tests/test-runner.test.ts > test runner environment checks > prerequisite verification and auto-fix > ensureEnvironment runs all hooks and returns fix count 0ms
+               ✓ tests/test-runner.test.ts > test runner environment checks > prerequisite verification and auto-fix > build hook respects SKIP_BUILD env var 0ms
+               ✓ tests/test-runner.test.ts > test runner environment checks > auto-fix flow > ensureEnvironment calls fix when check fails, then re-checks 0ms
+               ✓ tests/test-runner.test.ts > test runner environment checks > auto-fix flow > checkBuild missing-artifact detection (temp-dir isolated) > detects when dist/daemon/index.ts is missing 1ms
+               ✓ tests/test-runner.test.ts > test runner environment checks > auto-fix flow > checkBuild missing-artifact detection (temp-dir isolated) > detects when dist/web-ui/index.html is missing 0ms
+               ✓ tests/test-runner.test.ts > test runner environment checks > auto-fix flow > checkBuild missing-artifact detection (temp-dir isolated) > detects when dist/cli/index.js is missing 0ms
+               ✓ tests/test-runner.test.ts > test runner environment checks > auto-fix flow > checkBuild missing-artifact detection (temp-dir isolated) > succeeds when all artifacts are present 0ms
+               ✓ tests/test-runner.test.ts > test runner environment checks > auto-fix flow > checkBuild missing-artifact detection (temp-dir isolated) > detects stale build artifacts when a source file is newer 20ms
+               ✓ tests/test-runner.test.ts > test runner environment checks > auto-fix flow > checkBuild missing-artifact detection (temp-dir isolated) > detects empty temp dir with no artifacts 0ms
+               ✓ tests/test-runner.test.ts > test runner environment checks > auto-fix flow > checkDependencies missing detection (temp-dir isolated) > detects missing node_modules 0ms
+               ✓ tests/test-runner.test.ts > test runner environment checks > auto-fix flow > checkDependencies missing detection (temp-dir isolated) > detects missing vitest in node_modules 0ms
+               ✓ tests/test-runner.test.ts > test runner environment checks > auto-fix flow > checkDependencies missing detection (temp-dir isolated) > detects newly added direct dependencies that are missing from node_modules 0ms
+               ✓ tests/test-runner.test.ts > test runner environment checks > auto-fix flow > checkDependencies missing detection (temp-dir isolated) > passes when node_modules and vitest exist 0ms
+               ✓ tests/test-runner.test.ts > test runner environment checks > structured output and extensibility > dry-run output goes to stderr, keeping stdout clean for piping 31ms
+               ✓ tests/test-runner.test.ts > test runner environment checks > structured output and extensibility > setup noise is suppressed — fix steps only emit runner-level status 27ms
+               ✓ tests/test-runner.test.ts > test runner environment checks > structured output and extensibility > passes vitest arguments through 19ms
+               × tests/test-runner.test.ts > test runner environment checks > structured output and extensibility > shows pass/fail summary after test execution 678ms
+                 → ENOENT: no such file or directory, unlink '/home/chapel/Projects/kynetic-spec/tests/_trivial-summary-check.test.ts'
+               ✓ tests/test-runner.test.ts > test runner environment checks > structured output and extensibility > exposes preTestHooks and postTestHooks arrays for extensibility 0ms
+
+               Test Files  1 failed (1)
+                    Tests  1 failed | 20 passed (21)
+                 Start at  12:54:07
+                 Duration  980ms (transform 25ms, setup 8ms, import 28ms, tests 814ms, environment 0ms)
+
+              JSON report written to
+              /tmp/kspec-test-cache/01KMA8DJ3J30S32F4EES5YT2JV/1774554847466-3096227.result.json to
+              return condensed cached output instead of streaming Vitest logs. I reproduced this by
+              running  and then ; the second command printed  and only the condensed summary.
+            created_at: 2026-03-26T19:54:11.259Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-26T19:52:09.839Z
-    updated_at: 2026-03-26T19:54:09.760Z
+    updated_at: 2026-03-26T19:54:11.259Z
     notes: []
