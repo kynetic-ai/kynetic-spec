@@ -83,10 +83,8 @@ description: |
 spec_ref: "@daemon-entity-cache"
 plan_ref: "@plan-daemon-optimistic-data-layer"
 origin: derived
-status: blocked
-blocked_by:
-  - "Dispatch bootstrap failed: Dispatch workspace registry write succeeded but could not be durably
-    committed on the shadow branch for @01KMMB3T2K3T6A1CJR884EPKJF."
+status: pending_review
+blocked_by: []
 depends_on: []
 context: []
 priority: 1
@@ -104,7 +102,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
   upstream_ref: refs/heads/dev
-session_id: 01KMNQPE4SGJ21AN9VHQ8JV440
+session_id: null
 history:
   - author: "@claude"
     changes:
@@ -218,7 +216,25 @@ history:
         previous: null
     command: task-block
     timestamp: 2026-03-26T22:59:11.283Z
-prior_status: pending_review
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: blocked
+      blocked_by:
+        new: []
+        previous:
+          - "Dispatch bootstrap failed: Dispatch workspace registry write succeeded but could not be
+            durably committed on the shadow branch for @01KMMB3T2K3T6A1CJR884EPKJF."
+      session_id:
+        new: null
+        previous: 01KMNQPE4SGJ21AN9VHQ8JV440
+      prior_status:
+        new: null
+        previous: pending_review
+    command: task-unblock
+    timestamp: 2026-03-26T23:25:03.625Z
+prior_status: null
 created_at: 2026-03-26T05:50:41.235Z
 started_at: 2026-03-26T18:50:48.574Z
 submitted_at: 2026-03-26T22:55:58.828Z
