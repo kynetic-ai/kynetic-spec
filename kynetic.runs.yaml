@@ -15316,7 +15316,7 @@ runs:
     completed_at: 2026-03-26T00:25:44.286Z
   - _ulid: 01KMKRJ4CVGZ7T38G84GBV5R4S
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -15331,7 +15331,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-26T00:26:47.172Z
-        completed_at: 2026-03-26T00:26:47.172Z
+        completed_at: 2026-03-26T00:27:30.118Z
+        notes: "Friction: task submit from needs_work requires an intermediate 'task start' to transition
+          through in_progress first. During the fix cycle, I had to run 'kspec task start' before
+          'kspec task submit' because submit rejects needs_work status. This is a two-step dance
+          that could be a single operation for the common fix-cycle resubmit pattern. Searched
+          existing: no tracking found for this. High-confidence: this is systemic — every fix cycle
+          hits it."
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-26T00:27:30.118Z
+        completed_at: 2026-03-26T00:27:30.118Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-26T00:26:27.611Z
