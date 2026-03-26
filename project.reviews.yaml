@@ -53639,9 +53639,25 @@ reviews:
           status: pass
           name: Residual pickup clarity
         timestamp: 2026-03-26T05:44:03.648Z
+      - _ulid: 01KMMAQXZKG7JSN5KQBKFHFA1D
+        actor: Jacob Chapel
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-03-26T05:44:12.021Z
+      - _ulid: 01KMMAQXZN2EXWNVKMPNJGYGNQ
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: closed
+        timestamp: 2026-03-26T05:44:12.022Z
     examined_commit: null
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -53663,7 +53679,14 @@ reviews:
               stale path.
             created_at: 2026-03-26T05:43:45.585Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: Jacob Chapel
+        role: reviewer
+        created_at: 2026-03-26T05:44:12.015Z
     created_at: 2026-03-26T05:43:33.775Z
-    updated_at: 2026-03-26T05:44:00.008Z
+    updated_at: 2026-03-26T05:44:12.021Z
     notes: []
