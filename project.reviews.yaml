@@ -53769,9 +53769,25 @@ reviews:
           status: fail
           name: npm-test
         timestamp: 2026-03-26T16:54:29.048Z
+      - _ulid: 01KMNH4RPBMNWPQAJP0TB1YMZR
+        actor: Test User
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-26T16:55:18.475Z
+      - _ulid: 01KMNH4RPBBRRSMKV548D8RF5F
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-26T16:55:18.475Z
     examined_commit: e15627f141c52186333527be6977b57a18b84ea9
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -53837,7 +53853,14 @@ reviews:
               test quality, integration."
             created_at: 2026-03-26T16:54:21.354Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: Test User
+        role: reviewer
+        created_at: 2026-03-26T16:55:18.475Z
     created_at: 2026-03-26T16:41:01.186Z
-    updated_at: 2026-03-26T16:54:28.388Z
+    updated_at: 2026-03-26T16:55:18.475Z
     notes: []
