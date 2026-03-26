@@ -52848,9 +52848,25 @@ reviews:
           status: pass
           name: prior-review-fixes
         timestamp: 2026-03-26T03:43:54.955Z
+      - _ulid: 01KMM3WREEZ6EVES3031CTY57V
+        actor: pr-reviewer@dispatch
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-03-26T03:44:30.158Z
+      - _ulid: 01KMM3WREEHTFQHA7H4KRG272H
+        actor: pr-reviewer@dispatch
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-26T03:44:30.158Z
     examined_commit: 014232b9cee59638e28bac59aae8f6ff8b5e1f36
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -52858,7 +52874,14 @@ reviews:
       ref: "@01KMKNRVZK0P81KHK5Z6RH841D"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: pr-reviewer@dispatch
+        role: reviewer
+        created_at: 2026-03-26T03:44:30.158Z
     created_at: 2026-03-26T03:43:28.949Z
-    updated_at: 2026-03-26T03:43:54.503Z
+    updated_at: 2026-03-26T03:44:30.158Z
     notes: []
