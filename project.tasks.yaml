@@ -21376,7 +21376,7 @@
   title: Remove monolithic task file support
   type: task
   plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-activate-split-storage"
@@ -21391,7 +21391,7 @@
   todos_count: 0
   created_at: 2026-03-21T00:59:26.926Z
   started_at: 2026-03-26T23:30:45.947Z
-  submitted_at: 2026-03-26T18:47:02.566Z
+  submitted_at: 2026-03-26T23:30:50.985Z
   automation: eligible
 - _ulid: 01KM6YEZ0E4QE1E37DAA4T1X7F
   slugs:
