@@ -52657,3 +52657,29 @@ reviews:
     created_at: 2026-03-26T00:19:28.261Z
     updated_at: 2026-03-26T00:21:57.017Z
     notes: []
+  - _ulid: 01KMKRR0M89G0X7ANRDA9BH9VK
+    slugs: []
+    title: Review fix-split-backend-mutex (cycle 2)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KMKRR0M8BVKVZFXKM10PCSX0
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-26T00:29:40.360Z
+    examined_commit: f6cd96f3a59c1114908f5fdb347b9df0d5160ae4
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMKNRVZK0P81KHK5Z6RH841D"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-26T00:29:40.360Z
+    updated_at: null
+    notes: []
