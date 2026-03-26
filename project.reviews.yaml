@@ -54775,6 +54775,12 @@ reviews:
         payload:
           thread_ulid: 01KMNPQWNAHXG66385W2TZPF6W
         timestamp: 2026-03-26T22:53:58.911Z
+      - _ulid: 01KMP5NMNTVT67WB1TKZQW17KQ
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMNPQZRQA7TPPTQN6AR9RD52
+        timestamp: 2026-03-26T22:54:02.938Z
     examined_commit: 189e4fc775aa1f18106e55d895b8e6d3087ea003
     external_links: []
     lifecycle_state: closed
@@ -54896,6 +54902,8 @@ reviews:
               integration test verifies the full write-through → watcher-skip pattern."
             created_at: 2026-03-26T22:53:04.630Z
         kind: blocker
+        resolved_at: 2026-03-26T22:54:02.366Z
+        resolved_by: "@claude"
       - _ulid: 01KMNPR5BDB58RV1SWM362X94B
         anchor:
           type: code
@@ -54989,7 +54997,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-26T18:35:59.339Z
     created_at: 2026-03-26T18:29:11.265Z
-    updated_at: 2026-03-26T22:53:58.344Z
+    updated_at: 2026-03-26T22:54:02.366Z
     notes: []
   - _ulid: 01KMNQRBK39JRP1J0W0CBYE2ZJ
     slugs: []
