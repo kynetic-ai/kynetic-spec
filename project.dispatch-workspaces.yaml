@@ -23582,27 +23582,28 @@ workspaces:
         head: c5d5fca0aea73319d3b331ded7ac39267d3c58b1
         last_seen_at: 2026-03-25T23:33:19.314Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/deduplicate-seedsplittask-helper-across-test-files-01kmkmnv
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 77b7853efbde33a5f1f229bf8623faaef696153c
     bootstrap:
       status: succeeded
-      canonicalBranchHead: f6cd96f3a59c1114908f5fdb347b9df0d5160ae4
+      canonicalBranchHead: 014232b9cee59638e28bac59aae8f6ff8b5e1f36
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
       failureMessage: null
       invalidationReasons:
         - canonical-branch-head-changed
-      lastRole: worker
-      lastRunAt: 2026-03-26T03:18:03.598Z
+        - workspace-dependencies-missing
+      lastRole: reviewer
+      lastRunAt: 2026-03-26T03:34:12.388Z
       roleStates:
         reviewer:
           status: succeeded
-          canonicalBranchHead: f6cd96f3a59c1114908f5fdb347b9df0d5160ae4
+          canonicalBranchHead: 014232b9cee59638e28bac59aae8f6ff8b5e1f36
           configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
           failureMessage: null
           invalidationReasons:
             - canonical-branch-head-changed
             - workspace-dependencies-missing
-          lastRunAt: 2026-03-26T00:28:43.143Z
+          lastRunAt: 2026-03-26T03:34:12.388Z
           steps:
             - status: succeeded
               allowTrackedChanges: false
@@ -23633,7 +23634,27 @@ workspaces:
             - canonical-branch-head-changed
           lastRunAt: 2026-03-26T03:18:03.598Z
           steps: []
-      steps: []
+      steps:
+        - status: succeeded
+          allowTrackedChanges: false
+          idempotent: true
+          name: install-workspace-dependencies
+          output: |-
+            added 287 packages, and audited 292 packages in 3s
+
+            67 packages are looking for funding
+              run `npm fund` for details
+
+            12 vulnerabilities (1 low, 7 moderate, 4 high)
+
+            To address all issues, run:
+              npm audit fix
+
+            Run `npm audit` for details.
+          reviewerRerunAllowed: true
+          role: reviewer
+          run: npm ci
+          source: dispatch
     branch_provenance:
       adopted_at: null
       adopted_from: null
@@ -23653,7 +23674,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-26T03:34:07.717Z
+      updated_at: 2026-03-26T03:34:14.975Z
     integration:
       status: pending
       detail: null
@@ -23668,10 +23689,10 @@ workspaces:
     task_slug: fix-split-backend-mutex-hold-lock-through-write-flush
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-26T03:18:05.617Z
-      last_reconciled_at: 2026-03-26T03:34:07.717Z
+      last_active_at: 2026-03-26T03:34:14.975Z
+      last_reconciled_at: 2026-03-26T03:34:14.975Z
       created_at: 2026-03-25T23:41:00.167Z
-      updated_at: 2026-03-26T03:34:07.717Z
+      updated_at: 2026-03-26T03:34:14.975Z
     workspace_id: dispatch-workspace-01KMKNRVZK0P81KHK5Z6RH841D
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
