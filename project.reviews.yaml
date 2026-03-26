@@ -53974,6 +53974,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMNHVVDM2WDE7GSYB7PZ6GVD
         timestamp: 2026-03-26T17:07:55.360Z
+      - _ulid: 01KMNHYJQ7RVYVXVAQWZ5RSPHA
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMNHYHZNVAJG6SH860WQEDCP
+        timestamp: 2026-03-26T17:09:24.327Z
     examined_commit: da84eed96f51832eb8a43101896382573834e62b
     external_links: []
     lifecycle_state: open
@@ -54003,7 +54010,37 @@ reviews:
               transition to  unless an / path is actually available from the current state."
             created_at: 2026-03-26T17:07:54.933Z
         kind: blocker
+      - _ulid: 01KMNHYHZNVAJG6SH860WQEDCP
+        anchor:
+          type: code
+          commit: da84eed96f51832eb8a43101896382573834e62b
+          line_end: 19
+          line_start: 19
+          path: src/strings/errors.ts
+          side: head
+        entries:
+          - _ulid: 01KMNHYHZNWWG2R5J87R9ZS8XD
+            author: Test User
+            body: >-
+              `task set --status pending` now returns a misleading fix suggestion. The new
+              `STATUS_TO_COMMAND` map hard-codes `pending` to `kspec task start @ref`, but `task
+              start` transitions a task from `pending` or `needs_work` to `in_progress` rather than
+              to `pending`.
+
+
+              I reproduced this directly with `node dist/cli/index.js task set --refs @pending-batch
+              --status pending` in a temp fixture repo; the CLI exited 2 and printed `To transition
+              to pending: kspec task start @ref (to resume from pending)`. The same incorrect
+              suggestion appears in `--json` mode as `details.suggestedCommand`.
+
+
+              This breaks the new smart-guidance behavior for one valid enum value and will send
+              users or agents to the wrong command instead of telling them there is no direct
+              transition to `pending` unless an `unblock` or `reset` path is actually available from
+              the current state.
+            created_at: 2026-03-26T17:09:23.573Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-26T17:00:54.942Z
-    updated_at: 2026-03-26T17:07:54.933Z
+    updated_at: 2026-03-26T17:09:23.573Z
     notes: []
