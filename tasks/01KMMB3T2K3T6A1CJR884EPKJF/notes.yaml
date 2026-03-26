@@ -124,3 +124,32 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-26T18:36:01.336Z
+  - _ulid: 01KMP5RQGA4JSV089RS1FZRSMW
+    content: >-
+      Fix cycle 1: addressed all review threads.
+
+
+      Blocker 1 (read path not wired): Wired entity cache to all read paths in tasks.ts (list +
+      detail), items.ts (list, detail, batch, linked tasks, sessions), and refs.ts (ref index).
+      Routes check cache domain state and serve from memory when ready, fall back to disk when
+      unavailable/degraded, and return loading indicators during cache warming.
+
+
+      Blocker 2 (write-through not wired): All 5 mutation routes (start, note, submit, complete,
+      block) now call writeThrough('tasks') after shadow commit and before WebSocket broadcast,
+      preventing stale reads between commit and watcher callback.
+
+
+      Integration changes: server.ts passes getEntityCache accessor to createTasksRoutes,
+      createItemsRoutes, and createRefsRoutes. New entity-cache-types.ts decouples routes from cache
+      implementation import path.
+
+
+      Tests: Added route-level integration tests covering serve-from-memory, write-through with
+      watcher skip, warming-availability, graceful-degradation, and detail-on-demand patterns. All
+      52 entity-cache tests pass. Full suite: 6774 passed, 5 skipped, 1 failed (pre-existing flaky
+      timeout in agent-invocation-lifecycle), 1 failed suite (pre-existing duplicate symbol in
+      agent-dispatch-engine from recent merge to dev).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-26T22:55:44.138Z
