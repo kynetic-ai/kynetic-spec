@@ -8209,6 +8209,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-26T18:38:40.007Z
+  - _ulid: 01KMNRM4718CDGC9TY5Z3KA3H0
+    type: friction
+    content: Review record mutations like `kspec review comment` can take 20-30s with no progress
+      output, which makes autonomous review sessions look hung and complicates recovery when a shell
+      payload is malformed.
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-26T19:06:01.825Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
