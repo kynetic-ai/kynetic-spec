@@ -171,6 +171,51 @@ describe("Integration: task set batch support", () => {
     expect(jsonError.details.suggestedCommand).toContain("kspec task start");
   });
 
+  // AC: @task-set ac-1, @trait-error-guidance ac-4 — blocked task with prior_status suggests unblock
+  it("should suggest unblock when blocked task targets its prior_status", () => {
+    kspec('task add --title "Block Test" --slug block-test', tempDir);
+    kspec("task start @block-test", tempDir);
+    kspec("task submit @block-test", tempDir);
+    // Now pending_review — block it
+    kspec('task block @block-test --reason "Waiting for external input"', tempDir);
+
+    // Attempt to set status back to pending_review (the prior_status)
+    const result = kspec("task set @block-test --status pending_review", tempDir, {
+      expectFail: true,
+    });
+
+    expect(result.exitCode).toBe(2);
+    expect(result.stderr).toContain("Current status: blocked");
+    // Should suggest unblock to restore prior status, not report as invalid
+    expect(result.stderr).toContain("kspec task unblock @ref");
+    expect(result.stderr).toContain("restores prior status");
+    // Should NOT say the transition is invalid
+    expect(result.stderr).not.toContain("Cannot transition from blocked to pending_review");
+  });
+
+  // AC: @task-set ac-1, @trait-error-guidance ac-4, ac-6 — blocked task JSON mode includes unblock
+  it("should include unblock in JSON details for blocked task targeting prior_status", () => {
+    kspec('task add --title "Block JSON" --slug block-json', tempDir);
+    kspec("task start @block-json", tempDir);
+    kspec("task submit @block-json", tempDir);
+    kspec('task block @block-json --reason "Waiting"', tempDir);
+
+    const result = kspec("task set @block-json --status pending_review --json", tempDir, {
+      expectFail: true,
+    });
+
+    expect(result.exitCode).toBe(2);
+    const jsonError = JSON.parse(result.stderr);
+    expect(jsonError.details.currentStatus).toBe("blocked");
+    expect(jsonError.details.targetStatus).toBe("pending_review");
+    expect(jsonError.details.suggestedCommand).toContain("kspec task unblock @ref");
+    // Valid transitions should include pending_review via unblock
+    const prTargets = jsonError.details.validTransitions.map(
+      (t: { status: string }) => t.status,
+    );
+    expect(prTargets).toContain("pending_review");
+  });
+
   // AC: @spec-task-set-batch ac-4
   it("should warn when no changes specified", () => {
     kspec('task add --title "No Changes" --slug no-changes', tempDir);

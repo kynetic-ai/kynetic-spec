@@ -1323,12 +1323,14 @@ Examples:
         // Reject --status flag with context-aware error message
         if (options.status !== undefined) {
           let currentStatus: import("../../schema/common.js").TaskStatus | undefined;
+          let priorStatus: import("../../schema/common.js").TaskStatus | null | undefined;
 
           // Try to resolve the task to get current status for a better error message
           if (ref) {
             try {
               const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
               currentStatus = foundTask.status;
+              priorStatus = foundTask.prior_status;
             } catch {
               // Task resolution failed - still show the error, just without current status
             }
@@ -1337,6 +1339,7 @@ Examples:
           const rejection = errors.status.statusSetRejection(
             options.status as string,
             currentStatus,
+            priorStatus,
           );
           error(rejection.message, isJsonMode() ? rejection.details : rejection.details.guidance);
           process.exit(EXIT_CODES.USAGE_ERROR);

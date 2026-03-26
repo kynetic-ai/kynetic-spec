@@ -157,6 +157,7 @@ export const statusErrors = {
   statusSetRejection: (
     targetStatus: string,
     currentStatus?: TaskStatus,
+    priorStatus?: TaskStatus | null,
   ): { message: string; details: StatusSetRejectionDetails } => {
     const lines: string[] = [];
 
@@ -169,14 +170,25 @@ export const statusErrors = {
     const knownTarget = targetStatus as TaskStatus;
     const commandForTarget = STATUS_TO_COMMAND[knownTarget];
 
+    // For blocked tasks, unblock restores prior_status — include that as a valid transition
+    const validTargets = currentStatus ? [...VALID_TRANSITIONS_FROM[currentStatus]] : [];
+    if (currentStatus === "blocked" && priorStatus && !validTargets.includes(priorStatus)) {
+      validTargets.push(priorStatus);
+    }
+
     // Only suggest the command for the requested target if the transition is actually valid
     // When currentStatus is unknown (batch mode), show the command as best-effort guidance
-    const isValidTransition = currentStatus
-      ? VALID_TRANSITIONS_FROM[currentStatus]?.includes(knownTarget)
-      : undefined;
+    const isValidTransition = currentStatus ? validTargets.includes(knownTarget) : undefined;
 
     if (commandForTarget && (isValidTransition || !currentStatus)) {
-      lines.push(`To transition to ${targetStatus}: ${commandForTarget}`);
+      // For blocked→prior_status, suggest unblock instead of the target's direct command
+      if (currentStatus === "blocked" && priorStatus === knownTarget) {
+        lines.push(
+          `To transition to ${targetStatus}: kspec task unblock @ref (restores prior status)`,
+        );
+      } else {
+        lines.push(`To transition to ${targetStatus}: ${commandForTarget}`);
+      }
     } else if (currentStatus && commandForTarget) {
       lines.push(
         `Cannot transition from ${currentStatus} to ${targetStatus} — that transition is not valid.`,
@@ -186,16 +198,32 @@ export const statusErrors = {
     }
 
     if (currentStatus) {
-      const validTargets = VALID_TRANSITIONS_FROM[currentStatus];
       if (validTargets.length > 0) {
         lines.push(`Valid transitions from ${currentStatus}:`);
         for (const target of validTargets) {
-          lines.push(`  ${target}: ${STATUS_TO_COMMAND[target]}`);
+          if (currentStatus === "blocked" && target === priorStatus) {
+            lines.push(
+              `  ${target}: kspec task unblock @ref (restores prior status)`,
+            );
+          } else {
+            lines.push(`  ${target}: ${STATUS_TO_COMMAND[target]}`);
+          }
         }
       } else {
         lines.push(`No transitions available from ${currentStatus}`);
       }
     }
+
+    // Build validTransitions for JSON details
+    const validTransitionsArray = currentStatus
+      ? validTargets.map((s) => ({
+          status: s,
+          command:
+            currentStatus === "blocked" && s === priorStatus
+              ? "kspec task unblock @ref"
+              : STATUS_TO_COMMAND[s],
+        }))
+      : null;
 
     return {
       message: lines[0],
@@ -203,13 +231,12 @@ export const statusErrors = {
         currentStatus: currentStatus ?? null,
         targetStatus,
         suggestedCommand:
-          isValidTransition || !currentStatus ? (commandForTarget ?? null) : null,
-        validTransitions: currentStatus
-          ? VALID_TRANSITIONS_FROM[currentStatus].map((s) => ({
-              status: s,
-              command: STATUS_TO_COMMAND[s],
-            }))
-          : null,
+          isValidTransition || !currentStatus
+            ? currentStatus === "blocked" && priorStatus === knownTarget
+              ? "kspec task unblock @ref"
+              : (commandForTarget ?? null)
+            : null,
+        validTransitions: validTransitionsArray,
         guidance: lines.slice(1).join("\n"),
       },
     };
