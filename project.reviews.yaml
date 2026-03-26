@@ -53847,6 +53847,12 @@ reviews:
         payload:
           thread_ulid: 01KMNH30X9KK75D4TDWSWQT48M
         timestamp: 2026-03-26T17:11:23.881Z
+      - _ulid: 01KMNJ3562EZ9RCVB6MBRPHF97
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMNH30X9KK75D4TDWSWQT48M
+        timestamp: 2026-03-26T17:11:54.306Z
     examined_commit: e15627f141c52186333527be6977b57a18b84ea9
     external_links: []
     lifecycle_state: closed
@@ -53942,6 +53948,8 @@ reviews:
               flakiness under full-suite concurrent load, not caused by this branch's changes.
             created_at: 2026-03-26T17:11:23.361Z
         kind: nit
+        resolved_at: 2026-03-26T17:11:53.921Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -53951,7 +53959,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-26T16:55:18.475Z
     created_at: 2026-03-26T16:41:01.186Z
-    updated_at: 2026-03-26T17:11:23.361Z
+    updated_at: 2026-03-26T17:11:53.921Z
     notes: []
   - _ulid: 01KMNHF18YB2R1SE5HSEB8G06X
     slugs: []
