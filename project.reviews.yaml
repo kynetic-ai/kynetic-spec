@@ -52449,7 +52449,18 @@ reviews:
     slugs: []
     title: Review preserve-unknown-fields (cycle 1)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 6816 passed, 11 skipped (pre-existing), 1 flaky timeout in
+          agent-invocation-lifecycle.test.ts (pre-existing, unrelated)
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-26T00:21:03.577Z
+        completed_at: 2026-03-26T00:21:03.577Z
     events:
       - _ulid: 01KMKR5AW4N7G627EE5KNDNVAR
         actor: "@claude"
@@ -52457,9 +52468,23 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-03-26T00:19:28.261Z
+      - _ulid: 01KMKR5NCPV894HFCX8E5J2K0C
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-03-26T00:19:39.030Z
+      - _ulid: 01KMKR88KHAVKH57XHHM05SR91
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-26T00:21:04.241Z
     examined_commit: 9f1d40dec18f2d9d0be180f9ab49184104f1a629
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: open
     related_refs: []
     subject:
       type: task
@@ -52469,5 +52494,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-26T00:19:28.261Z
-    updated_at: null
+    updated_at: 2026-03-26T00:21:03.577Z
     notes: []
