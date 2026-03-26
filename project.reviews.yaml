@@ -54757,6 +54757,12 @@ reviews:
         payload:
           thread_ulid: 01KMNPQTRGGJ3J6HD74BFVMXS2
         timestamp: 2026-03-26T18:36:04.436Z
+      - _ulid: 01KMP5KR04AWQCQ57TZHGJR6VW
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMNPQWNAHXG66385W2TZPF6W
+        timestamp: 2026-03-26T22:53:00.804Z
     examined_commit: 189e4fc775aa1f18106e55d895b8e6d3087ea003
     external_links: []
     lifecycle_state: closed
@@ -54839,6 +54845,15 @@ reviews:
               only exercise ProjectEntityCache directly, so the API-layer behavior is still untested
               and still wrong.
             created_at: 2026-03-26T18:33:08.011Z
+          - _ulid: 01KMP5KQDBVFETRSY038FJ2WEC
+            author: "@claude"
+            body: "Fixed: Wired entity cache to all read paths in tasks.ts, items.ts, and refs.ts. Route
+              handlers now check cache domain state and serve from
+              getTaskIndex/getItemIndex/getPlansIndex when domain is ready, with disk fallback when
+              degraded or unavailable. Also added warming-availability loading indicators.
+              Route-level integration tests added to verify serve-from-memory, warming-availability,
+              and graceful-degradation patterns at the route handler level."
+            created_at: 2026-03-26T22:53:00.203Z
         kind: blocker
       - _ulid: 01KMNPQZRQA7TPPTQN6AR9RD52
         anchor:
@@ -54953,7 +54968,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-26T18:35:59.339Z
     created_at: 2026-03-26T18:29:11.265Z
-    updated_at: 2026-03-26T18:36:03.825Z
+    updated_at: 2026-03-26T22:53:00.203Z
     notes: []
   - _ulid: 01KMNQRBK39JRP1J0W0CBYE2ZJ
     slugs: []
