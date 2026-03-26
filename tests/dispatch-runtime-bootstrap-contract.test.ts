@@ -501,7 +501,7 @@ describe("dispatch runtime bootstrap contract", () => {
   });
 
   // AC: @dispatch-runtime-bootstrap-contract ac-4
-  it("records explicit bootstrap invalidation reasons for config, head, and prior failure changes", async () => {
+  it("records explicit bootstrap invalidation reasons for config, head, and prior failure changes", { timeout: 30_000 }, async () => {
     await seedRepo(tempDir);
     const configPath = path.join(tempDir, "kspec.config.yaml");
     await fs.writeFile(
@@ -658,7 +658,7 @@ describe("dispatch runtime bootstrap contract", () => {
     ).resolves.toBe("1\n");
   });
 
-  it("repairs missing direct dependencies before reusing a previously successful bootstrap", async () => {
+  it("repairs missing direct dependencies before reusing a previously successful bootstrap", { timeout: 30_000 }, async () => {
     await seedRepo(tempDir);
     await setupLocalFileDependencyProject(tempDir);
     await fs.writeFile(

@@ -2499,6 +2499,24 @@ describe("Autonomous dispatch prompt guardrails", () => {
       kspecCliPath: MOCK_KSPEC_CLI,
       coalesceWindowMs: 0,
     });
+    // Mock workspace provisioning and bootstrap — this test validates prompt content,
+    // not workspace setup. Without these mocks, workspace provisioning may fail silently
+    // under full-suite load and runInvocation is never reached.
+    vi.spyOn(workspaceModule, "getDispatchWorkspaceHealth").mockResolvedValue({
+      exists: true,
+      healthy: true,
+      reason: null,
+      metadata: null,
+    });
+    const mockMetadata = buildMockWorkspaceMetadata(testDir);
+    vi.spyOn(workspaceModule, "provisionDispatchWorkspace").mockResolvedValue({
+      cwd: testDir,
+      metadataPath: path.join(testDir, ".kspec-dispatch-workspace.json"),
+      metadata: mockMetadata,
+    });
+    vi.spyOn(bootstrapModule, "ensureWorkspaceBootstrap").mockResolvedValue({
+      metadata: mockMetadata,
+    });
 
     await engine.start();
     await engine.handleStateChange({

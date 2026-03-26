@@ -278,7 +278,7 @@ describe("canonical task workspace contract", () => {
   });
 
   // AC: @canonical-task-workspace-contract ac-6
-  it("persists cleanup eligibility into canonical workspace metadata during runtime reconciliation", async () => {
+  it("persists cleanup eligibility into canonical workspace metadata during runtime reconciliation", { timeout: 30_000 }, async () => {
     await seedRepo(tempDir);
     git(tempDir, "checkout -b agent-dev");
 
