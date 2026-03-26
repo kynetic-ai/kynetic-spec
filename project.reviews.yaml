@@ -52308,6 +52308,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMKQ8583YJ04PPYWCMFBX87J
         timestamp: 2026-03-26T00:03:32.618Z
+      - _ulid: 01KMKQ8DE35M3VSDN8PZTMQH3F
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMKQ8D1ZG6QJ3N8JYCRERKE7
+        timestamp: 2026-03-26T00:03:40.611Z
     examined_commit: 64fd67d017ddd376eb07de18f5d198026434ace9
     external_links: []
     lifecycle_state: open
@@ -52354,7 +52361,22 @@ reviews:
               making them subtly less robust. Import from helpers instead of duplicating.
             created_at: 2026-03-26T00:03:32.227Z
         kind: blocker
+      - _ulid: 01KMKQ8D1ZG6QJ3N8JYCRERKE7
+        anchor:
+          type: code
+          commit: 64fd67d017dd
+          line_end: 46
+          line_start: 21
+          path: tests/cli/session-start-notes.test.ts
+          side: head
+        entries:
+          - _ulid: 01KMKQ8D1ZP0YWN99XKQNDGG6E
+            author: "@claude"
+            body: "Same issue: seedSplitTask inlined instead of imported from helpers. Duplicate implementation
+              with the same missing try/catch robustness gap."
+            created_at: 2026-03-26T00:03:40.223Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-25T23:57:05.341Z
-    updated_at: 2026-03-26T00:03:32.227Z
+    updated_at: 2026-03-26T00:03:40.223Z
     notes: []
