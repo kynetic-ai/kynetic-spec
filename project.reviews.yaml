@@ -54472,9 +54472,25 @@ reviews:
           status: pass
           name: task-set-batch
         timestamp: 2026-03-26T17:37:05.428Z
+      - _ulid: 01KMNKHGGDXF131H9699ZE7M6Q
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-03-26T17:37:13.229Z
+      - _ulid: 01KMNKHGGDFCXPJSH9GMHKY142
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-26T17:37:13.229Z
     examined_commit: e715241e6c198107043fac8a2a99670426f5bd40
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -54506,7 +54522,14 @@ reviews:
               integration; no remaining issues found.
             created_at: 2026-03-26T17:37:02.497Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-26T17:37:13.229Z
     created_at: 2026-03-26T17:31:10.413Z
-    updated_at: 2026-03-26T17:37:05.037Z
+    updated_at: 2026-03-26T17:37:13.229Z
     notes: []
