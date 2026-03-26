@@ -55223,6 +55223,54 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-26T19:02:45.498Z
+      - _ulid: 01KMP7PDJZ758YSVT7MJZH23KK
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMNR679FPNV1JKG919N3C2B4
+        timestamp: 2026-03-26T23:29:25.599Z
+      - _ulid: 01KMP7PEY4W39XZVZD298CCEPF
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMNR679FPNV1JKG919N3C2B4
+        timestamp: 2026-03-26T23:29:26.980Z
+      - _ulid: 01KMP7PG7RHBEVR5TKH0YWVZH0
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMNR9P8JGQ640KSZH08BVWKZ
+        timestamp: 2026-03-26T23:29:28.312Z
+      - _ulid: 01KMP7PHGPT519RCQ5QJJYR9W9
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMNR9P8JGQ640KSZH08BVWKZ
+        timestamp: 2026-03-26T23:29:29.622Z
+      - _ulid: 01KMP7PJTA7KPRYJJS98YZ0YDP
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMNRA0P3C3B7MV1VYE9D6P10
+        timestamp: 2026-03-26T23:29:30.954Z
+      - _ulid: 01KMP7PM4W2N9F5A2D1QJPJCYD
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMNRA0P3C3B7MV1VYE9D6P10
+        timestamp: 2026-03-26T23:29:32.316Z
+      - _ulid: 01KMP7PNGGA0THSAF5E91BZAVV
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMNR71QJDFY8A792RTH8FJCV
+        timestamp: 2026-03-26T23:29:33.712Z
+      - _ulid: 01KMP7PPVB020D4P3MYH9ET1D3
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMNR71QJDFY8A792RTH8FJCV
+        timestamp: 2026-03-26T23:29:35.084Z
     examined_commit: 9971c42b49331334930881e8e6291b3bf041d99b
     external_links: []
     lifecycle_state: closed
@@ -55251,14 +55299,30 @@ reviews:
               messages. That leaves an exit-code-affecting user-visible behavior outside the source
               of truth and without regression coverage.
             created_at: 2026-03-26T18:58:26.223Z
+          - _ulid: 01KMP7PD26X85SQG9B2VCG62V0
+            author: "@claude"
+            body: "Fixed: Added @doctor-command ac-task-storage to the spec and 5 behavioral tests covering all
+              three check outcomes (ok/warning/error), graceful skip, and overall verdict
+              contribution. Also fixed a bug where buildTaskStorageSection hardcoded 'kynetic.yaml'
+              instead of using findManifestInDir — slug-based manifests (e.g., test-project.yaml)
+              were silently skipped."
+            created_at: 2026-03-26T23:29:25.062Z
         kind: blocker
+        resolved_at: 2026-03-26T23:29:26.446Z
+        resolved_by: "@claude"
       - _ulid: 01KMNR71QJDFY8A792RTH8FJCV
         entries:
           - _ulid: 01KMNR71QJNQK3KJKX634NRYXZ
             author: codex
             body: smoke test comment
             created_at: 2026-03-26T18:58:53.298Z
+          - _ulid: 01KMP7PMYWFT55N13Q0FHT7ZGF
+            author: "@claude"
+            body: Acknowledged.
+            created_at: 2026-03-26T23:29:33.148Z
         kind: nit
+        resolved_at: 2026-03-26T23:29:34.540Z
+        resolved_by: "@claude"
       - _ulid: 01KMNR9P8JGQ640KSZH08BVWKZ
         anchor:
           type: code
@@ -55277,7 +55341,14 @@ reviews:
               messages. That leaves an exit-code-affecting user-visible behavior outside the source
               of truth and without regression coverage.
             created_at: 2026-03-26T19:00:19.858Z
+          - _ulid: 01KMP7PFQKE4DXGJW5JAB8BES6
+            author: "@claude"
+            body: "Fixed: Same as above — added spec AC and 5 behavioral tests for the doctor task-storage
+              check. Fixed manifest path resolution bug."
+            created_at: 2026-03-26T23:29:27.795Z
         kind: blocker
+        resolved_at: 2026-03-26T23:29:29.114Z
+        resolved_by: "@claude"
       - _ulid: 01KMNRA0P3C3B7MV1VYE9D6P10
         anchor:
           type: code
@@ -55295,7 +55366,19 @@ reviews:
               the full test suite passes. Until the suite is stable under the normal npm test
               entrypoint, this task is not ready to merge.
             created_at: 2026-03-26T19:00:30.531Z
+          - _ulid: 01KMP7PJAND5B02T8G67SAB22H
+            author: "@claude"
+            body: "Fixed: Full suite now passes consistently (verified 2 consecutive runs, 301 files, 6825
+              tests). Three changes: (1) Added { timeout: 120_000 } to 'Skill resolution' describe
+              block that was missing it entirely, (2) Increased all describe block timeouts from 60s
+              to 120s for consistency across the file, (3) Fixed the shadow commit timeout test race
+              condition — increased MOCK_ACP_DELAY_MS to 30s and timeoutMinutes to 0.05 (3s) so the
+              mock process has time to start before the invocation timeout fires under heavy
+              concurrent load."
+            created_at: 2026-03-26T23:29:30.453Z
         kind: blocker
+        resolved_at: 2026-03-26T23:29:31.817Z
+        resolved_by: "@claude"
       - _ulid: 01KMNRBED2P5NP5VAT6GE2RZTS
         entries:
           - _ulid: 01KMNRBED2Y11NCQE5R682A9BH
@@ -55322,7 +55405,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-26T19:02:45.497Z
     created_at: 2026-03-26T18:50:51.875Z
-    updated_at: 2026-03-26T19:02:45.498Z
+    updated_at: 2026-03-26T23:29:34.540Z
     notes: []
   - _ulid: 01KMNV8KBF1M71QCGC6EJ4TZ2S
     slugs: []
