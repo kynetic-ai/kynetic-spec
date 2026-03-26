@@ -28930,7 +28930,7 @@ plans:
       The command API's mutation serialization handles re-entrant calls the same
 
       as any other client.
-    status: active
+    status: approved
     approved_at: 2026-03-26T05:47:07.259Z
     derived_specs:
       - "@daemon-entity-cache"
