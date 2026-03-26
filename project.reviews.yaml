@@ -53083,7 +53083,17 @@ reviews:
     slugs: []
     title: Review smart error message for task set --status rejection (cycle 2)
     author: Test User
-    checks: []
+    checks:
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Exited 6 with repository-wide warnings only (orphaned skills/spec coverage warnings), no
+          validation errors.
+        name: kspec-validate
+        required: false
+        created_at: 2026-03-26T05:16:57.761Z
+        completed_at: 2026-03-26T05:16:57.761Z
     events:
       - _ulid: 01KMM8YQPVETD781Z9XRMDAXRA
         actor: Test User
@@ -53098,6 +53108,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-26T05:15:05.277Z
+      - _ulid: 01KMM962RHMDTWWQJT402238X2
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec-validate
+        timestamp: 2026-03-26T05:16:58.513Z
     examined_commit: e7d37ff438197e4987648ea4f08fa3b83e82d5f6
     external_links: []
     lifecycle_state: open
@@ -53110,5 +53127,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-26T05:12:57.820Z
-    updated_at: 2026-03-26T05:15:04.437Z
+    updated_at: 2026-03-26T05:16:57.761Z
     notes: []
