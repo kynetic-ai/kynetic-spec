@@ -1,0 +1,75 @@
+_ulid: 01KMM6PH4EQBRZW72DXWMMNFP3
+slugs: []
+title: Smart error message for task set --status rejection
+type: task
+description: >-
+  ## What
+
+
+  When a user runs `kspec task set @ref --status <target>`, the CLI rejects the command because
+  status changes must go through dedicated transition commands. Currently the error message is
+  generic: "Use state transition commands (start, complete, block, etc.) to change status". It
+  doesn't mention the task's current state, doesn't suggest the specific command needed, and doesn't
+  even list all transition commands (omits needs-work, submit, unblock).
+
+
+  ## Why
+
+
+  Agents and users who don't know the exact transition command names get stuck. The generic error
+  provides no actionable path forward — the user has to guess or search docs for the right command.
+  This caused an automated agent to ignore the error entirely and use the wrong fallback (blocking a
+  task instead of transitioning to needs_work). A context-aware error message would have prevented
+  the mistake.
+
+
+  ## How
+
+
+  In `src/cli/commands/task.ts` at the `--status` rejection point (~line 1302):
+
+
+  1. Load the task to get its current status
+
+  2. Map the requested target status to the correct transition command name and required flags (e.g.
+  needs_work → `kspec task needs-work @ref --reason "..."`, in_progress → `kspec task start @ref`)
+
+  3. Build an error message that includes:
+     - The task's current status
+     - If the requested transition is valid: the exact command to use
+     - If the requested transition is invalid: why it's invalid and what transitions ARE valid from current state
+  4. Ensure the error satisfies @trait-error-guidance ac-4 (current state + valid next states) and
+  @spec-task-set-batch ac-3 (specific command for requested status)
+
+
+  The transition command mapping:
+
+  - pending/needs_work → `kspec task start @ref`
+
+  - in_progress → `kspec task submit @ref`  
+
+  - pending_review → `kspec task complete @ref --reason "..."` or `kspec task needs-work @ref
+  --reason "..."`
+
+  - blocked → `kspec task block @ref --reason "..."`
+
+  - completed → `kspec task complete @ref --reason "..."`
+
+  - cancelled → `kspec task cancel @ref`
+
+
+  Error strings live in `src/strings/errors.ts`.
+spec_ref: "@spec-task-set-batch"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - cli
+  - mvp
+vcs_refs: []
+created_at: 2026-03-26T04:33:31.790Z
+todos: []

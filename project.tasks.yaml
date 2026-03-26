@@ -22490,3 +22490,18 @@
   submitted_at: 2026-03-26T00:09:31.949Z
   completed_at: 2026-03-26T00:23:29.406Z
   automation: eligible
+- _ulid: 01KMM6PH4EQBRZW72DXWMMNFP3
+  slugs: []
+  title: Smart error message for task set --status rejection
+  type: task
+  spec_ref: "@spec-task-set-batch"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 3
+  tags:
+    - cli
+    - mvp
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-26T04:33:31.790Z
