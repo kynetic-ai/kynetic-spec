@@ -53584,6 +53584,16 @@ reviews:
         required: true
         created_at: 2026-03-26T05:43:59.907Z
         completed_at: 2026-03-26T05:43:59.907Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: The former catch-all spec-maintenance task is now split into focused tasks with direct
+          target refs, which makes pickup and validation materially clearer.
+        name: Task structure
+        required: true
+        created_at: 2026-03-26T05:43:59.946Z
+        completed_at: 2026-03-26T05:43:59.946Z
     events:
       - _ulid: 01KMMAPRM67N3D19RKHTTM7Y1D
         actor: Jacob Chapel
@@ -53605,6 +53615,13 @@ reviews:
           status: pass
           name: Previous blockers resolved
         timestamp: 2026-03-26T05:44:00.824Z
+      - _ulid: 01KMMAQMD0M2CFXFZZ1AZAFHEY
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Task structure
+        timestamp: 2026-03-26T05:44:02.208Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -53631,5 +53648,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-26T05:43:33.775Z
-    updated_at: 2026-03-26T05:43:59.907Z
+    updated_at: 2026-03-26T05:43:59.946Z
     notes: []
