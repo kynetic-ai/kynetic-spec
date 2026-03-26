@@ -55050,6 +55050,17 @@ reviews:
         runner: npm
         created_at: 2026-03-26T19:01:28.067Z
         completed_at: 2026-03-26T19:01:28.067Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate returned warnings only (exit 6): no schema/reference errors, but the
+          repository still has its existing warning set."
+        name: kspec-validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-26T19:02:36.740Z
+        completed_at: 2026-03-26T19:02:36.740Z
     events:
       - _ulid: 01KMNQRBK3AP1104NTG97RGP8D
         actor: Test User
@@ -55113,6 +55124,13 @@ reviews:
           status: fail
           name: npm-test
         timestamp: 2026-03-26T19:01:28.569Z
+      - _ulid: 01KMNRDWQ8VJX3RV79EVR2F4V3
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec-validate
+        timestamp: 2026-03-26T19:02:37.545Z
     examined_commit: 9971c42b49331334930881e8e6291b3bf041d99b
     external_links: []
     lifecycle_state: open
@@ -55205,5 +55223,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-26T18:50:51.875Z
-    updated_at: 2026-03-26T19:01:28.067Z
+    updated_at: 2026-03-26T19:02:36.740Z
     notes: []
