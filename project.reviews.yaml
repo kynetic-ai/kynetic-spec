@@ -52954,9 +52954,25 @@ reviews:
           kind: blocker
           thread_ulid: 01KMM7XWRA641FA3TQYR85HD3Z
         timestamp: 2026-03-26T04:55:02.070Z
+      - _ulid: 01KMM7Z7QAXQMF6D3G8T1F11G9
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-26T04:55:45.642Z
+      - _ulid: 01KMM7Z7QBFR1J8DHPE3PT189M
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-26T04:55:45.643Z
     examined_commit: 1346c54c59d9445eed8d532e23938edd3fc5aa66
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -53010,7 +53026,14 @@ reviews:
                 Reference "@ref" not found for ) even when the current state is  or , where that command still fails. I reproduced this by creating a pending task, running , then running the suggested  command and getting exit 1. That violates the task requirement for an actionable command and will mislead automation into the wrong next step instead of telling it the requested transition is invalid from the current state.
             created_at: 2026-03-26T04:55:01.642Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-26T04:55:45.642Z
     created_at: 2026-03-26T04:50:57.279Z
-    updated_at: 2026-03-26T04:55:01.642Z
+    updated_at: 2026-03-26T04:55:45.643Z
     notes: []
