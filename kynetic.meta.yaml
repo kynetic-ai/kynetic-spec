@@ -406,6 +406,9 @@ conventions:
       - Always use npm test (or npm run test:shard1/2/3 for faster dev runs) to run tests. Never
         invoke vitest or npx vitest directly — the test runner script (scripts/test.cjs) performs
         environment readiness checks before executing.
+      - Test runner caches results by content hash (git blob SHAs + unstaged diffs + untracked files
+        + Node version + vitest args). Same content = cache hit, even after commits/rebases. Use
+        --fresh to force a full re-run.
   - _ulid: 01KHYXJVNDVVFF6PR7K4X6545H
     domain: development
     examples: []
