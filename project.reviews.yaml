@@ -55252,7 +55252,19 @@ reviews:
     slugs: []
     title: Review task-enhance-test-runner-with-smart-caching-and-condensed-output
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Failed in this workspace: 6 failed suites / 6 failed tests, including
+          tests/agent-dispatch-engine.test.ts and tests/dispatch-runtime-bootstrap-contract.test.ts.
+          Command run: npm test -- --fresh."
+        name: npm test -- --fresh
+        required: true
+        runner: npm
+        created_at: 2026-03-26T19:54:08.360Z
+        completed_at: 2026-03-26T19:54:08.360Z
     events:
       - _ulid: 01KMNV8KBF6XC1HFEADFHWJZC1
         actor: Jacob Chapel
@@ -55267,6 +55279,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-26T19:52:28.477Z
+      - _ulid: 01KMNVC7MS2VDPNDKD8V2944PH
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test -- --fresh
+        timestamp: 2026-03-26T19:54:08.921Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -55279,5 +55298,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-26T19:52:09.839Z
-    updated_at: 2026-03-26T19:52:27.682Z
+    updated_at: 2026-03-26T19:54:08.360Z
     notes: []
