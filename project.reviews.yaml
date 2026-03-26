@@ -54430,6 +54430,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-26T17:37:01.622Z
+      - _ulid: 01KMNKH6DH8C4GFWR1V8VCGCPV
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMNKH61108YTS0XW3MR7HNQT
+        timestamp: 2026-03-26T17:37:02.897Z
     examined_commit: e715241e6c198107043fac8a2a99670426f5bd40
     external_links: []
     lifecycle_state: open
@@ -54439,8 +54446,32 @@ reviews:
       content_hash: ""
       ref: "@01KMM6PH4EQBRZW72DXWMMNFP3"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMNKH61108YTS0XW3MR7HNQT
+        entries:
+          - _ulid: 01KMNKH611X3TFKQ6M3Y1YAE12
+            author: Test User
+            body: >-
+              Review evidence log:
+
+              Files read: src/cli/commands/task.ts, src/strings/errors.ts,
+              tests/task-set-batch.test.ts, tests/helpers/cli.ts,
+              .agents/skills/review-gates/SKILL.md, kspec-agents.md.
+
+              Commands run: git diff --stat, git diff, git log, git status, kspec task get, kspec
+              item get, kspec review for-task, kspec review get, kspec validate, rg AC annotations,
+              npm test -- tests/task-set-batch.test.ts, manual CLI repro for task set --status
+              pending --json, npm test.
+
+              Claims verified: pending target no longer suggests task start; blocked tasks restore
+              via unblock; transition guidance matches actual command guards in
+              src/cli/commands/task.ts.
+
+              Categories searched: correctness, edge cases, error handling, test quality,
+              integration; no remaining issues found.
+            created_at: 2026-03-26T17:37:02.497Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-26T17:31:10.413Z
-    updated_at: 2026-03-26T17:37:01.207Z
+    updated_at: 2026-03-26T17:37:02.497Z
     notes: []
