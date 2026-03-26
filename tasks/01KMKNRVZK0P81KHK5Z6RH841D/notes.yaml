@@ -74,3 +74,13 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-26T00:05:14.794Z
+  - _ulid: 01KMKRFD3MW815CV469FCFV2CM
+    content: "Fix cycle 1: addressed all 4 review threads (3 blockers, 1 nit). Added missing AC
+      annotation for ac-10 on delete+mutate serialization test. Replaced inlined seedSplitTask in
+      session-start-format.test.ts and session-start-notes.test.ts with canonical import from
+      helpers. Replaced bespoke createAndSaveTask in review-task-integration.test.ts with thin
+      wrapper over seedSplitTask helper. All 129 tests in modified files pass. Full suite: 6820
+      passed, 2 pre-existing flaky timeouts in unrelated files."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-26T00:24:58.228Z
