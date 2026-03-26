@@ -54763,6 +54763,12 @@ reviews:
         payload:
           thread_ulid: 01KMNPQWNAHXG66385W2TZPF6W
         timestamp: 2026-03-26T22:53:00.804Z
+      - _ulid: 01KMP5KWBH3V6NKDSRCHEP3E0W
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMNPQZRQA7TPPTQN6AR9RD52
+        timestamp: 2026-03-26T22:53:05.265Z
     examined_commit: 189e4fc775aa1f18106e55d895b8e6d3087ea003
     external_links: []
     lifecycle_state: closed
@@ -54874,6 +54880,13 @@ reviews:
               callback fires, which is exactly the race the write-through acceptance criterion was
               meant to remove.
             created_at: 2026-03-26T18:33:11.192Z
+          - _ulid: 01KMP5KVQP3ZWAQMD63DR4F9VY
+            author: "@claude"
+            body: "Fixed: All five mutation routes (start, note, submit, complete, block) now call
+              writeThrough('tasks') after the shadow commit and before the WebSocket broadcast. The
+              cache accessor is injected via createTasksRoutes options from server.ts. Route-level
+              integration test verifies the full write-through → watcher-skip pattern."
+            created_at: 2026-03-26T22:53:04.630Z
         kind: blocker
       - _ulid: 01KMNPR5BDB58RV1SWM362X94B
         anchor:
@@ -54968,7 +54981,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-26T18:35:59.339Z
     created_at: 2026-03-26T18:29:11.265Z
-    updated_at: 2026-03-26T22:53:00.203Z
+    updated_at: 2026-03-26T22:53:04.630Z
     notes: []
   - _ulid: 01KMNQRBK39JRP1J0W0CBYE2ZJ
     slugs: []
