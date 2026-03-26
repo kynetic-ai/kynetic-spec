@@ -1478,6 +1478,8 @@ features:
         implements: []
         relates_to: []
         tests: []
+        traits:
+          - "@trait-error-guidance"
         acceptance_criteria:
           - given: a task exists
             id: ac-task-set-1
@@ -1523,6 +1525,11 @@ features:
             id: ac-noop-clear
             then: no diff recorded and no shadow commit for spec_ref
             when: kspec task set @task --spec-ref null runs
+          - given: user attempts to change task status via task set
+            id: ac-1
+            then: error shows current task state, the specific transition command for the requested status, and
+              lists other valid transitions from current state
+            when: --status flag is provided
         tags: []
         created: 2026-01-16T00:51:05.853Z
       - _ulid: 01KF24J220BKK8X3QA86N59E4X

@@ -35,3 +35,10 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-26T04:39:36.491Z
+  - _ulid: 01KMM7C45EHAMG5GYEGHDHVX7F
+    content: Moved --status rejection AC from @spec-task-set-batch (batch-specific) to @task-set (base
+      command). Also moved @trait-error-guidance trait to @task-set. The status rejection is a base
+      task set concern, not batch-specific — the batch spec inherits the behavior.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-26T04:45:19.406Z
