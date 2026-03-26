@@ -54571,6 +54571,20 @@ reviews:
         runner: kspec
         created_at: 2026-03-26T18:35:53.980Z
         completed_at: 2026-03-26T18:35:53.980Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Ran npm test in the review snapshot. Result: 4 timed-out tests, 299 passed files, 3
+          failed files. Failures: tests/agent-invocation-lifecycle.test.ts (timeout handling),
+          tests/canonical-task-workspace-contract.test.ts (cleanup eligibility persistence), and two
+          tests in tests/dispatch-runtime-bootstrap-contract.test.ts (bootstrap invalidation
+          reasons, dependency repair bootstrap reuse)."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-26T18:35:56.651Z
+        completed_at: 2026-03-26T18:35:56.651Z
     events:
       - _ulid: 01KMNPGNF074YB76414WZ4P45F
         actor: Test User
@@ -54673,6 +54687,13 @@ reviews:
           status: skipped
           name: kspec validate
         timestamp: 2026-03-26T18:35:54.925Z
+      - _ulid: 01KMNPX1ZRDSX6G4JG4QBXR6CN
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-26T18:35:57.304Z
     examined_commit: 189e4fc775aa1f18106e55d895b8e6d3087ea003
     external_links: []
     lifecycle_state: open
@@ -54857,5 +54878,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-26T18:29:11.265Z
-    updated_at: 2026-03-26T18:35:53.980Z
+    updated_at: 2026-03-26T18:35:56.651Z
     notes: []
