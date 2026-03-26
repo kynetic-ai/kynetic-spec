@@ -125,14 +125,11 @@ function computeCacheKey(vitestArgs) {
 
   // 3. Untracked files in test-affecting paths
   try {
-    const untracked = execSync(
-      `git ls-files --others --exclude-standard -- ${pathArgs}`,
-      {
-        cwd: projectRoot,
-        encoding: "utf8",
-        stdio: ["pipe", "pipe", "pipe"],
-      },
-    );
+    const untracked = execSync(`git ls-files --others --exclude-standard -- ${pathArgs}`, {
+      cwd: projectRoot,
+      encoding: "utf8",
+      stdio: ["pipe", "pipe", "pipe"],
+    });
     if (untracked.trim()) {
       // Hash the actual content of untracked files
       for (const file of untracked.trim().split("\n")) {
@@ -259,9 +256,7 @@ function formatCondensedOutput(json, logFile) {
 
   const suitesPassed = `${c.green}${json.numPassedTestSuites} passed${c.reset}`;
   const suitesFailed =
-    json.numFailedTestSuites > 0
-      ? `${c.red}${json.numFailedTestSuites} failed${c.reset}, `
-      : "";
+    json.numFailedTestSuites > 0 ? `${c.red}${json.numFailedTestSuites} failed${c.reset}, ` : "";
   lines.push(
     ` Test Suites: ${suitesFailed}${suitesPassed}${c.dim} of ${json.numTotalTestSuites}${c.reset}`,
   );
