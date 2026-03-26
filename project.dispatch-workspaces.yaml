@@ -23786,12 +23786,22 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-26T00:24:28.360Z
+      updated_at: 2026-03-26T00:28:27.856Z
     health:
-      status: healthy
-      issues: []
-      summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-26T00:26:37.864Z
+      status: invalid
+      issues:
+        - code: missing_canonical_branch
+          message: Canonical branch
+            "dispatch/task/preserve-unknown-fields-through-split-backend-mutatetask-writes/01kmknt9"
+            is missing.
+          suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
+        - code: missing_worker_worktree
+          message: Worker worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/preserve-unknown-fields-through-split-backend-mutatetask-writes-01kmknt9"
+            is missing or no longer registered.
+          suggestion: Re-provision the worker worktree from the recorded canonical branch.
+      summary: Workspace registry record is invalid because required git state is missing.
+      updated_at: 2026-03-26T00:28:27.856Z
     integration:
       status: merged
       detail: integration:merged
@@ -23799,17 +23809,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 126d858ae60ed574f4cfd6782a817ec58a27a01a
-      updated_at: 2026-03-26T00:24:28.360Z
-    lifecycle_state: closing
+      updated_at: 2026-03-26T00:28:27.856Z
+    lifecycle_state: stale
     resolved_base_branch: dev
     task_ref: "@01KMKNT9CHTJ5DXFBARB4F91A5"
     task_slug: preserve-unknown-fields-through-split-backend-mutatetask-writes
     timestamps:
       closed_at: null
       last_active_at: 2026-03-26T00:10:59.381Z
-      last_reconciled_at: 2026-03-26T00:26:37.864Z
+      last_reconciled_at: 2026-03-26T00:28:27.856Z
       created_at: 2026-03-25T23:56:28.201Z
-      updated_at: 2026-03-26T00:26:37.864Z
+      updated_at: 2026-03-26T00:28:27.856Z
     workspace_id: dispatch-workspace-01KMKNT9CHTJ5DXFBARB4F91A5
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
