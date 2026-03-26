@@ -77,3 +77,45 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-26T17:55:53.298Z
+  - _ulid: 01KMNP4WWAB9NZP0F50WT5M2VG
+    content: >-
+      Implementation complete. Created ProjectEntityCache with all 15 ACs covered:
+
+
+      Architecture:
+
+      - src/daemon/entity-cache.ts: Full cache class with 8 data domains (tasks, items, meta, inbox,
+      plans, triage, reviews, sessions)
+
+      - Two-tier storage per domain: index (always hot) + detail (on demand, evicted on
+      invalidation)
+
+      - Progressive loading in priority order, in-flight promise dedup, write-through skip, graceful
+      degradation
+
+      - Session bounding (configurable max, default 100) with stale exclusion via
+      resolveStaleSessionCriteria
+
+      - Per-project isolation via cache registry
+      (registerEntityCache/unregisterEntityCache/getEntityCache)
+
+      - Live event counters for active sessions (migrated from SessionSummaryCache pattern)
+
+
+      Integration:
+
+      - packages/daemon/src/server.ts: Registers cache on project registration, unregisters on
+      project removal, lazy imports entity cache module
+
+      - packages/daemon/src/project-context.ts: CacheInvalidationCallback wired to both KspecWatcher
+      (onFileChange) and SessionWatcher (onSessionChange)
+
+      - package.json build:daemon step updated to copy src/daemon/entity-cache.ts into dist/daemon/
+      (cross-package build artifact)
+
+
+      Tests: 52 tests in tests/daemon-entity-cache.test.ts covering all 15 ACs with behavioral
+      assertions using multi-dir fixtures.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-26T18:22:45.642Z
