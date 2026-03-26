@@ -53912,6 +53912,16 @@ reviews:
         runner: npm
         created_at: 2026-03-26T17:07:50.272Z
         completed_at: 2026-03-26T17:07:50.272Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Exited 6 with repo-baseline warnings only; no validation errors. References/schema OK.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-26T17:07:51.527Z
+        completed_at: 2026-03-26T17:07:51.527Z
     events:
       - _ulid: 01KMNHF18XKWHCW5ES7X5460YX
         actor: Test User
@@ -53933,6 +53943,13 @@ reviews:
           status: pass
           name: task-set-batch
         timestamp: 2026-03-26T17:07:50.672Z
+      - _ulid: 01KMNHVRF9VQWK7FXKMQ9T2JPH
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-26T17:07:51.913Z
     examined_commit: da84eed96f51832eb8a43101896382573834e62b
     external_links: []
     lifecycle_state: open
@@ -53945,5 +53962,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-26T17:00:54.942Z
-    updated_at: 2026-03-26T17:07:50.272Z
+    updated_at: 2026-03-26T17:07:51.527Z
     notes: []
