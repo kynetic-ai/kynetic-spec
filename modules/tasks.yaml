@@ -2255,7 +2255,7 @@ requirements:
       dedicated commands (start, complete, etc.), not task set."
     status:
       maturity: draft
-      implementation: implemented
+      implementation: in_progress
     depends_on: []
     implements: []
     relates_to: []
