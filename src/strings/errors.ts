@@ -19,13 +19,14 @@ const STATUS_TO_COMMAND: Record<TaskStatus, string> = {
   pending: "kspec task start @ref (to resume from pending)",
 };
 
-// Maps current status → valid target statuses
+// Maps current status → valid target statuses (via dedicated transition commands)
+// For blocked: only cancel is statically valid; unblock restores prior_status dynamically
 const VALID_TRANSITIONS_FROM: Record<TaskStatus, TaskStatus[]> = {
   pending: ["in_progress", "blocked", "cancelled"],
   in_progress: ["pending_review", "blocked", "cancelled"],
   pending_review: ["completed", "needs_work", "blocked", "cancelled"],
   needs_work: ["in_progress", "blocked", "cancelled"],
-  blocked: ["in_progress", "pending", "cancelled"],
+  blocked: ["cancelled"],
   completed: [],
   cancelled: [],
 };
@@ -170,10 +171,15 @@ export const statusErrors = {
     const knownTarget = targetStatus as TaskStatus;
     const commandForTarget = STATUS_TO_COMMAND[knownTarget];
 
-    // For blocked tasks, unblock restores prior_status — include that as a valid transition
+    // Build valid targets from the static transition map
     const validTargets = currentStatus ? [...VALID_TRANSITIONS_FROM[currentStatus]] : [];
-    if (currentStatus === "blocked" && priorStatus && !validTargets.includes(priorStatus)) {
-      validTargets.push(priorStatus);
+
+    // For blocked tasks, unblock restores prior_status (or pending if null).
+    // Add the actual unblock target to valid transitions dynamically.
+    const unblockTarget =
+      currentStatus === "blocked" ? (priorStatus ?? ("pending" as TaskStatus)) : null;
+    if (unblockTarget && !validTargets.includes(unblockTarget)) {
+      validTargets.push(unblockTarget);
     }
 
     // Only suggest the command for the requested target if the transition is actually valid
@@ -181,8 +187,8 @@ export const statusErrors = {
     const isValidTransition = currentStatus ? validTargets.includes(knownTarget) : undefined;
 
     if (commandForTarget && (isValidTransition || !currentStatus)) {
-      // For blocked→prior_status, suggest unblock instead of the target's direct command
-      if (currentStatus === "blocked" && priorStatus === knownTarget) {
+      // For blocked→unblockTarget, suggest unblock instead of the target's direct command
+      if (currentStatus === "blocked" && unblockTarget === knownTarget) {
         lines.push(
           `To transition to ${targetStatus}: kspec task unblock @ref (restores prior status)`,
         );
@@ -201,7 +207,7 @@ export const statusErrors = {
       if (validTargets.length > 0) {
         lines.push(`Valid transitions from ${currentStatus}:`);
         for (const target of validTargets) {
-          if (currentStatus === "blocked" && target === priorStatus) {
+          if (currentStatus === "blocked" && target === unblockTarget) {
             lines.push(
               `  ${target}: kspec task unblock @ref (restores prior status)`,
             );
@@ -219,7 +225,7 @@ export const statusErrors = {
       ? validTargets.map((s) => ({
           status: s,
           command:
-            currentStatus === "blocked" && s === priorStatus
+            currentStatus === "blocked" && s === unblockTarget
               ? "kspec task unblock @ref"
               : STATUS_TO_COMMAND[s],
         }))
@@ -232,7 +238,7 @@ export const statusErrors = {
         targetStatus,
         suggestedCommand:
           isValidTransition || !currentStatus
-            ? currentStatus === "blocked" && priorStatus === knownTarget
+            ? currentStatus === "blocked" && unblockTarget === knownTarget
               ? "kspec task unblock @ref"
               : (commandForTarget ?? null)
             : null,

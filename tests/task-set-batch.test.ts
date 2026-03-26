@@ -216,6 +216,56 @@ describe("Integration: task set batch support", () => {
     expect(prTargets).toContain("pending_review");
   });
 
+  // AC: @task-set ac-1, @trait-error-guidance ac-4 — blocked task rejects status that doesn't match prior_status
+  it("should reject status that differs from prior_status on blocked task", () => {
+    kspec('task add --title "Block Mismatch" --slug block-mismatch', tempDir);
+    kspec("task start @block-mismatch", tempDir);
+    // Now in_progress — block it (prior_status = in_progress)
+    kspec('task block @block-mismatch --reason "Waiting"', tempDir);
+
+    // Attempt to set status to pending — NOT the prior_status
+    const result = kspec("task set @block-mismatch --status pending", tempDir, {
+      expectFail: true,
+    });
+
+    expect(result.exitCode).toBe(2);
+    expect(result.stderr).toContain("Current status: blocked");
+    // Should report this as an invalid transition since unblock restores in_progress, not pending
+    expect(result.stderr).toContain("Cannot transition from blocked to pending");
+    // Valid transitions should include in_progress (via unblock) and cancelled, but NOT pending
+    expect(result.stderr).toContain("in_progress: kspec task unblock @ref");
+    expect(result.stderr).not.toContain("pending: kspec task unblock @ref");
+  });
+
+  // AC: @task-set ac-1, @trait-error-guidance ac-4, ac-6 — blocked task JSON rejects mismatched status
+  it("should reject mismatched status in JSON mode for blocked task", () => {
+    kspec('task add --title "Block Mismatch JSON" --slug block-mm-json', tempDir);
+    kspec("task start @block-mm-json", tempDir);
+    kspec('task block @block-mm-json --reason "Waiting"', tempDir);
+
+    const result = kspec("task set @block-mm-json --status pending --json", tempDir, {
+      expectFail: true,
+    });
+
+    expect(result.exitCode).toBe(2);
+    const jsonError = JSON.parse(result.stderr);
+    expect(jsonError.details.currentStatus).toBe("blocked");
+    expect(jsonError.details.targetStatus).toBe("pending");
+    // Invalid transition — suggestedCommand should be null
+    expect(jsonError.details.suggestedCommand).toBeNull();
+    // Valid transitions should include in_progress (via unblock) but NOT pending
+    const targets = jsonError.details.validTransitions.map(
+      (t: { status: string }) => t.status,
+    );
+    expect(targets).toContain("in_progress");
+    expect(targets).not.toContain("pending");
+    // The unblock entry should be for in_progress
+    const unblockEntry = jsonError.details.validTransitions.find(
+      (t: { status: string }) => t.status === "in_progress",
+    );
+    expect(unblockEntry.command).toContain("kspec task unblock @ref");
+  });
+
   // AC: @spec-task-set-batch ac-4
   it("should warn when no changes specified", () => {
     kspec('task add --title "No Changes" --slug no-changes', tempDir);
