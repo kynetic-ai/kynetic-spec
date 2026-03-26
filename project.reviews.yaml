@@ -55357,6 +55357,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-26T19:54:49.980Z
+      - _ulid: 01KMNVE7B4G56WFRCHNTG1SHG9
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMNVC9XVB61VPTE07CFGKX9E
+        timestamp: 2026-03-26T19:55:14.148Z
     examined_commit: null
     external_links: []
     lifecycle_state: closed
@@ -55466,6 +55472,11 @@ reviews:
               return condensed cached output instead of streaming Vitest logs. I reproduced this by
               running  and then ; the second command printed  and only the condensed summary.
             created_at: 2026-03-26T19:54:11.259Z
+          - _ulid: 01KMNVE6TC1ANE3A09RCHN3KRY
+            author: Jacob Chapel
+            body: Superseded by the clean blocker thread on the same anchor. This duplicate was created by a
+              shell-quoting error while posting the review.
+            created_at: 2026-03-26T19:55:13.611Z
         kind: blocker
       - _ulid: 01KMNVCPTKNMCXBY9ZA7N4KAKC
         anchor:
@@ -55527,5 +55538,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-26T19:54:49.979Z
     created_at: 2026-03-26T19:52:09.839Z
-    updated_at: 2026-03-26T19:54:49.980Z
+    updated_at: 2026-03-26T19:55:13.611Z
     notes: []
