@@ -56163,6 +56163,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMP82AQZE9NCF5ZACC9ZWWB7
         timestamp: 2026-03-26T23:35:56.425Z
+      - _ulid: 01KMP82CXFRYVZA1BMRMCZ161S
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMP82CCT7ZGBTAPEB56S0J7G
+        timestamp: 2026-03-26T23:35:58.127Z
     examined_commit: 704ebd4dd303187ec7b761cee65a3a07ea284578
     external_links: []
     lifecycle_state: open
@@ -56209,7 +56216,26 @@ reviews:
               item include , , , and related detail keys.
             created_at: 2026-03-26T23:35:55.904Z
         kind: blocker
+      - _ulid: 01KMP82CCT7ZGBTAPEB56S0J7G
+        anchor:
+          type: code
+          commit: 704ebd4dd303187ec7b761cee65a3a07ea284578
+          line_end: 55
+          line_start: 47
+          path: packages/daemon/src/routes/refs.ts
+          side: head
+        entries:
+          - _ulid: 01KMP82CCTC5KVM2TW20WKRX6A
+            author: Test User
+            body: The ref-index endpoint still rebuilds task data from disk on every request via , even when the
+              tasks domain is already hot. This endpoint is one of the lightweight summary/read
+              paths the cache is supposed to serve from memory, and  only needs the summary fields
+              that already exist on  (, , , , ). As written, task cache warming does not remove disk
+              reads from , and the same bypass pattern remains in the item batch/detail/linked-task
+              routes that call  directly.
+            created_at: 2026-03-26T23:35:57.594Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-26T23:34:05.110Z
-    updated_at: 2026-03-26T23:35:55.904Z
+    updated_at: 2026-03-26T23:35:57.594Z
     notes: []
