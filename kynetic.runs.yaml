@@ -15485,9 +15485,23 @@ runs:
     completed_at: 2026-03-26T17:14:25.522Z
   - _ulid: 01KMNK4FTNDZB3Q8V8ATR8PFCR
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-03-26T17:30:06.549Z
+        completed_at: 2026-03-26T17:30:35.853Z
+        notes: "Session was a fix cycle (cycle 4) for task @01KMM6PH4EQBRZW72DXWMMNFP3 — smart error message
+          for task set --status rejection. What worked well: (1) Reading the full review JSON to get
+          exact thread content was efficient — the text-mode output was truncated. (2) Manual CLI
+          repro before writing tests confirmed the fix behavior quickly. (3) The fix was targeted —
+          removing one entry from STATUS_TO_COMMAND and adding a distinction between 'known status
+          with no command' vs 'unknown status'."
+      - status: completed
+        step_index: 1
+        started_at: 2026-03-26T17:30:35.853Z
+        completed_at: 2026-03-26T17:30:35.853Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-26T17:30:06.549Z
