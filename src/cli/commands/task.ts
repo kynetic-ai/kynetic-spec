@@ -1319,7 +1319,7 @@ Examples:
 
         const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items, allMetaItems);
 
-        // AC: @spec-task-set-batch ac-3, @trait-error-guidance ac-1, ac-2, ac-4
+        // AC: @task-set ac-1, @trait-error-guidance ac-1, ac-2, ac-4
         // Reject --status flag with context-aware error message
         if (options.status !== undefined) {
           let currentStatus: import("../../schema/common.js").TaskStatus | undefined;

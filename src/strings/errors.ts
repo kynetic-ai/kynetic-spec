@@ -7,7 +7,7 @@
 
 import type { TaskStatus } from "../schema/common.js";
 
-// AC: @spec-task-set-batch ac-3, @trait-error-guidance ac-4
+// AC: @task-set ac-1, @trait-error-guidance ac-4
 // Maps target status → the CLI command to reach it
 const STATUS_TO_COMMAND: Record<TaskStatus, string> = {
   in_progress: "kspec task start @ref",
@@ -153,7 +153,7 @@ export const statusErrors = {
   // AC: @spec-completion-enforcement ac-8
   skipReviewRequiresReason: "--skip-review requires --reason to document why",
 
-  // AC: @spec-task-set-batch ac-3, @trait-error-guidance ac-1, ac-2, ac-4
+  // AC: @task-set ac-1, @trait-error-guidance ac-1, ac-2, ac-4
   statusSetRejection: (
     targetStatus: string,
     currentStatus?: TaskStatus,
@@ -169,9 +169,19 @@ export const statusErrors = {
     const knownTarget = targetStatus as TaskStatus;
     const commandForTarget = STATUS_TO_COMMAND[knownTarget];
 
-    if (commandForTarget) {
+    // Only suggest the command for the requested target if the transition is actually valid
+    // When currentStatus is unknown (batch mode), show the command as best-effort guidance
+    const isValidTransition = currentStatus
+      ? VALID_TRANSITIONS_FROM[currentStatus]?.includes(knownTarget)
+      : undefined;
+
+    if (commandForTarget && (isValidTransition || !currentStatus)) {
       lines.push(`To transition to ${targetStatus}: ${commandForTarget}`);
-    } else {
+    } else if (currentStatus && commandForTarget) {
+      lines.push(
+        `Cannot transition from ${currentStatus} to ${targetStatus} — that transition is not valid.`,
+      );
+    } else if (!commandForTarget) {
       lines.push(`Unknown target status: ${targetStatus}`);
     }
 
@@ -192,7 +202,8 @@ export const statusErrors = {
       details: {
         currentStatus: currentStatus ?? null,
         targetStatus,
-        suggestedCommand: commandForTarget ?? null,
+        suggestedCommand:
+          isValidTransition || !currentStatus ? (commandForTarget ?? null) : null,
         validTransitions: currentStatus
           ? VALID_TRANSITIONS_FROM[currentStatus].map((s) => ({
               status: s,
