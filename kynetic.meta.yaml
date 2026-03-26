@@ -8058,6 +8058,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-26T00:10:32.832Z
+  - _ulid: 01KMKRMHQXZX2PWJSWPJYSKAYR
+    type: friction
+    content: task submit rejects needs_work status, requiring an intermediate 'kspec task start' before
+      'kspec task submit' in every fix cycle. The needs_work->in_progress->pending_review dance is
+      mechanical — could be a single 'kspec task submit' that auto-transitions through in_progress
+      when current state is needs_work.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-26T00:27:46.813Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
