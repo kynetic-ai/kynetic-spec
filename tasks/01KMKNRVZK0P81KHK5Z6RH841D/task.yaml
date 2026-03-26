@@ -47,30 +47,8 @@ description: >-
 spec_ref: "@task-data-manager"
 meta_ref: null
 plan_ref: null
-status: blocked
-blocked_by:
-  - >-
-    Merge conflict when merging
-    dispatch/task/fix-split-backend-mutex-hold-lock-through-write-flush/01kmknrv into dev.
-
-
-    Conflicting files:
-
-    1. src/parser/split-backend.ts — dev has added rawCore/unknown-field-preservation (AC:
-    @task-core-data-file ac-4) to mutateTask and mutateTasks methods. The task branch removed
-    per-task locking from these same methods. Both modify the function structure. Worker needs to
-    rebase onto dev and integrate both: (a) the rawCore threading from dev, and (b) the mutex
-    removal from this task.
-
-
-    2. tests/review-task-integration.test.ts — dev has a different version of createAndSaveTask that
-    returns LoadedTask and tracks rawCore. The task branch simplified it to a void wrapper over
-    seedSplitTask. Worker needs to reconcile: keep the seedSplitTask usage but ensure rawCore
-    compatibility.
-
-
-    The core fix (moving per-task mutex from SplitBackend to TaskDataManager) is approved. Only the
-    merge needs conflict resolution by rebasing onto current dev.
+status: needs_work
+blocked_by: []
 depends_on: []
 context: []
 priority: 1
@@ -87,7 +65,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
   upstream_ref: refs/heads/dev
-session_id: 01KMKQNJ1EJ3ZRCMX6YPCBVYCK
+session_id: null
 history:
   - author: "@claude"
     changes:
@@ -221,7 +199,52 @@ history:
         previous: null
     command: task-block
     timestamp: 2026-03-26T00:37:00.778Z
-prior_status: pending_review
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: blocked
+      blocked_by:
+        new: []
+        previous:
+          - >-
+            Merge conflict when merging
+            dispatch/task/fix-split-backend-mutex-hold-lock-through-write-flush/01kmknrv into dev.
+
+
+            Conflicting files:
+
+            1. src/parser/split-backend.ts — dev has added rawCore/unknown-field-preservation (AC:
+            @task-core-data-file ac-4) to mutateTask and mutateTasks methods. The task branch
+            removed per-task locking from these same methods. Both modify the function structure.
+            Worker needs to rebase onto dev and integrate both: (a) the rawCore threading from dev,
+            and (b) the mutex removal from this task.
+
+
+            2. tests/review-task-integration.test.ts — dev has a different version of
+            createAndSaveTask that returns LoadedTask and tracks rawCore. The task branch simplified
+            it to a void wrapper over seedSplitTask. Worker needs to reconcile: keep the
+            seedSplitTask usage but ensure rawCore compatibility.
+
+
+            The core fix (moving per-task mutex from SplitBackend to TaskDataManager) is approved.
+            Only the merge needs conflict resolution by rebasing onto current dev.
+      session_id:
+        new: null
+        previous: 01KMKQNJ1EJ3ZRCMX6YPCBVYCK
+      prior_status:
+        new: null
+        previous: pending_review
+    command: task-unblock
+    timestamp: 2026-03-26T03:17:03.998Z
+  - author: "@claude"
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+    command: task-needs-work
+    timestamp: 2026-03-26T03:17:04.683Z
+prior_status: null
 created_at: 2026-03-25T23:37:42.643Z
 started_at: 2026-03-26T00:25:34.694Z
 submitted_at: 2026-03-26T00:25:42.395Z
