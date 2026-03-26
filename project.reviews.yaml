@@ -54076,6 +54076,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-26T17:10:19.443Z
+      - _ulid: 01KMNJZ4TM9KZS8N52B382YZPM
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMNHVVDM2WDE7GSYB7PZ6GVD
+        timestamp: 2026-03-26T17:27:11.444Z
     examined_commit: da84eed96f51832eb8a43101896382573834e62b
     external_links: []
     lifecycle_state: closed
@@ -54104,6 +54110,14 @@ reviews:
               users/agents to the wrong command instead of telling them there is no direct
               transition to  unless an / path is actually available from the current state."
             created_at: 2026-03-26T17:07:54.933Z
+          - _ulid: 01KMNJZ4DA5PR41NXMNY9QKPMY
+            author: "@claude"
+            body: "Fixed: Removed 'pending' from STATUS_TO_COMMAND entirely. There is no direct command to
+              transition TO pending — it's only the initial state or restored via unblock. The
+              function now distinguishes 'known status with no direct command' from 'unknown status'
+              and gives appropriate guidance for each case. Added 3 new E2E tests covering batch
+              mode, single-ref mode, and JSON mode for --status pending."
+            created_at: 2026-03-26T17:27:11.018Z
         kind: blocker
       - _ulid: 01KMNHYHZNVAJG6SH860WQEDCP
         anchor:
@@ -54182,7 +54196,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-26T17:10:19.443Z
     created_at: 2026-03-26T17:00:54.942Z
-    updated_at: 2026-03-26T17:10:19.443Z
+    updated_at: 2026-03-26T17:27:11.018Z
     notes: []
   - _ulid: 01KMNJAJMM64YWHX6YZRR7PPGX
     slugs: []
