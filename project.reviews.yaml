@@ -56164,6 +56164,17 @@ reviews:
         required: false
         created_at: 2026-03-26T23:36:53.400Z
         completed_at: 2026-03-26T23:36:53.400Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Ran kspec validate. Exit code 6 was warnings-only: schema/references passed, but the repo
+          still has existing alignment/completeness warnings unrelated to this task."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-26T23:36:55.038Z
+        completed_at: 2026-03-26T23:36:55.038Z
     events:
       - _ulid: 01KMP7YYHNS68DQJFRB4W0TKMS
         actor: Test User
@@ -56227,6 +56238,13 @@ reviews:
           status: pass
           name: review-evidence
         timestamp: 2026-03-26T23:36:53.902Z
+      - _ulid: 01KMP844ZQE8EFM6Y4JPW19AHN
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec validate
+        timestamp: 2026-03-26T23:36:55.543Z
     examined_commit: 704ebd4dd303187ec7b761cee65a3a07ea284578
     external_links: []
     lifecycle_state: open
@@ -56352,5 +56370,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-26T23:34:05.110Z
-    updated_at: 2026-03-26T23:36:53.400Z
+    updated_at: 2026-03-26T23:36:55.038Z
     notes: []
