@@ -111,3 +111,15 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-26T05:17:15.990Z
+  - _ulid: 01KMM9TNP07CNJSPF1E4Z0VRQC
+    content: "Fix cycle 2: Addressed blocked-state guidance blocker. The VALID_TRANSITIONS_FROM map was
+      hard-coded and didn't account for prior_status on blocked tasks. Fix: statusSetRejection now
+      accepts prior_status as a third parameter. When a blocked task has prior_status, the function
+      dynamically extends valid transitions to include it and suggests 'kspec task unblock @ref'
+      instead of reporting the transition as invalid. Updated task.ts call site to pass
+      foundTask.prior_status. Added 2 new E2E tests (text + JSON mode) for blocked→prior_status
+      scenario. All 23 task-set-batch tests pass. Full suite: 6826 pass, 4 pre-existing timeout
+      failures in unrelated dispatch/agent tests."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-26T05:28:13.248Z
