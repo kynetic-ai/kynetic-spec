@@ -8049,6 +8049,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-25T23:56:01.458Z
+  - _ulid: 01KMKQMZZZ0W3CVH23T0NG02G6
+    type: success
+    content: Well-scoped task descriptions with root cause analysis, prior-art references (monolithic
+      backend pattern), and pre-located skipped tests dramatically reduce implementation time. The
+      preserve-unknown-fields task was completed in a single pass with no false starts.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-26T00:10:32.832Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
