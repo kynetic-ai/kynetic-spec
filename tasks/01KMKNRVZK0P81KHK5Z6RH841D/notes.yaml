@@ -51,3 +51,26 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-26T00:04:40.109Z
+  - _ulid: 01KMKQB9DAYPDPKP8G5FVH7JHF
+    content: >-
+      Review cycle 1 (01KMKPWB): request_changes. Core fix is correct — moving the per-task mutex
+      from SplitBackend to TaskDataManager so the lock spans through the buffer flush resolves the
+      TOCTOU race. All 6822 tests pass with 0 regressions. 6 previously-skipped tests now active.
+
+
+      Blockers:
+
+      1. Missing AC annotation: tests/task-data-manager.test.ts line 882 — the delete+mutate test
+      exercises ac-10 but has no '// AC: @task-data-manager ac-10' annotation. The describe block
+      only covers ac-9.
+
+      2. seedSplitTask inlined in session-start-format.test.ts and session-start-notes.test.ts
+      instead of importing from tests/helpers/cli.ts. Creates duplicate maintenance burden and
+      inlined versions omit try/catch for missing index files.
+
+
+      Nit: review-task-integration.test.ts createAndSaveTask rewritten with bespoke async impl
+      instead of using canonical seedSplitTask helper.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-26T00:05:14.794Z
