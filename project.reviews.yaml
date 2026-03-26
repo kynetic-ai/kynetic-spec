@@ -52294,6 +52294,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-25T23:57:19.517Z
+      - _ulid: 01KMKQ7VBKGG602C4A42MCSNS5
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMKQ7V00W307DX4CPXF2K038
+        timestamp: 2026-03-26T00:03:22.099Z
     examined_commit: 64fd67d017ddd376eb07de18f5d198026434ace9
     external_links: []
     lifecycle_state: open
@@ -52303,8 +52310,26 @@ reviews:
       content_hash: ""
       ref: "@01KMKNRVZK0P81KHK5Z6RH841D"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMKQ7V00W307DX4CPXF2K038
+        anchor:
+          type: code
+          commit: 64fd67d017dd
+          line_end: 898
+          line_start: 882
+          path: tests/task-data-manager.test.ts
+          side: head
+        entries:
+          - _ulid: 01KMKQ7V010G6BN87EDKTNK98Q
+            author: "@claude"
+            body: "The delete+mutate serialization test at line 882 exercises ac-10 behavior (delete + mutate
+              fully complete before the other begins) but has no AC annotation. The describe block
+              at line 753 is annotated with ac-9 only, and the test comment at line 898 references
+              'violating AC-9' when the behavior tested is ac-10. Add '// AC: @task-data-manager
+              ac-10' to the test."
+            created_at: 2026-03-26T00:03:21.729Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-25T23:57:05.341Z
-    updated_at: 2026-03-25T23:57:19.100Z
+    updated_at: 2026-03-26T00:03:21.729Z
     notes: []
