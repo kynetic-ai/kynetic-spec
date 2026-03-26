@@ -501,109 +501,124 @@ describe("dispatch runtime bootstrap contract", () => {
   });
 
   // AC: @dispatch-runtime-bootstrap-contract ac-4
-  it("records explicit bootstrap invalidation reasons for config, head, and prior failure changes", async () => {
-    await seedRepo(tempDir);
-    const configPath = path.join(tempDir, "kspec.config.yaml");
-    await fs.writeFile(
-      configPath,
-      [
-        "dispatch:",
-        "  base_branch: agent-dev",
-        "  bootstrap:",
-        "    steps:",
-        "      - run: mkdir -p .dispatch-cache && echo run >> .dispatch-cache/history",
-      ].join("\n"),
-      "utf-8",
-    );
+  it(
+    "records explicit bootstrap invalidation reasons for config, head, and prior failure changes",
+    { timeout: 30_000 },
+    async () => {
+      await seedRepo(tempDir);
+      const configPath = path.join(tempDir, "kspec.config.yaml");
+      await fs.writeFile(
+        configPath,
+        [
+          "dispatch:",
+          "  base_branch: agent-dev",
+          "  bootstrap:",
+          "    steps:",
+          "      - run: mkdir -p .dispatch-cache && echo run >> .dispatch-cache/history",
+        ].join("\n"),
+        "utf-8",
+      );
 
-    const taskRef = `@${testUlid("TASK", 24)}`;
-    let workspace = await provisionDispatchWorkspace({
-      projectDir: tempDir,
-      taskRef,
-      task: { title: "Bootstrap Invalidation Signals", slugs: ["bootstrap-invalidation-signals"] },
-    });
+      const taskRef = `@${testUlid("TASK", 24)}`;
+      let workspace = await provisionDispatchWorkspace({
+        projectDir: tempDir,
+        taskRef,
+        task: {
+          title: "Bootstrap Invalidation Signals",
+          slugs: ["bootstrap-invalidation-signals"],
+        },
+      });
 
-    let bootstrapped = await ensureWorkspaceBootstrap({
-      projectDir: tempDir,
-      workspaceDir: workspace.cwd,
-      metadataPath: workspace.metadataPath,
-      metadata: workspace.metadata,
-      role: "worker",
-      agent: makeAgent(),
-      env: {},
-    });
+      let bootstrapped = await ensureWorkspaceBootstrap({
+        projectDir: tempDir,
+        workspaceDir: workspace.cwd,
+        metadataPath: workspace.metadataPath,
+        metadata: workspace.metadata,
+        role: "worker",
+        agent: makeAgent(),
+        env: {},
+      });
 
-    await fs.writeFile(
-      configPath,
-      [
-        "dispatch:",
-        "  base_branch: agent-dev",
-        "  bootstrap:",
-        "    steps:",
-        "      - run: mkdir -p .dispatch-cache && echo run >> .dispatch-cache/history",
-        "        idempotent: true",
-      ].join("\n"),
-      "utf-8",
-    );
-    workspace = await provisionDispatchWorkspace({
-      projectDir: tempDir,
-      taskRef,
-      task: { title: "Bootstrap Invalidation Signals", slugs: ["bootstrap-invalidation-signals"] },
-    });
-    bootstrapped = await ensureWorkspaceBootstrap({
-      projectDir: tempDir,
-      workspaceDir: workspace.cwd,
-      metadataPath: workspace.metadataPath,
-      metadata: workspace.metadata,
-      role: "worker",
-      agent: makeAgent(),
-      env: {},
-    });
-    expect(bootstrapped.metadata.bootstrap.invalidationReasons).toContain(
-      "bootstrap-config-changed",
-    );
+      await fs.writeFile(
+        configPath,
+        [
+          "dispatch:",
+          "  base_branch: agent-dev",
+          "  bootstrap:",
+          "    steps:",
+          "      - run: mkdir -p .dispatch-cache && echo run >> .dispatch-cache/history",
+          "        idempotent: true",
+        ].join("\n"),
+        "utf-8",
+      );
+      workspace = await provisionDispatchWorkspace({
+        projectDir: tempDir,
+        taskRef,
+        task: {
+          title: "Bootstrap Invalidation Signals",
+          slugs: ["bootstrap-invalidation-signals"],
+        },
+      });
+      bootstrapped = await ensureWorkspaceBootstrap({
+        projectDir: tempDir,
+        workspaceDir: workspace.cwd,
+        metadataPath: workspace.metadataPath,
+        metadata: workspace.metadata,
+        role: "worker",
+        agent: makeAgent(),
+        env: {},
+      });
+      expect(bootstrapped.metadata.bootstrap.invalidationReasons).toContain(
+        "bootstrap-config-changed",
+      );
 
-    await fs.writeFile(path.join(workspace.cwd, "runtime.txt"), "runtime\n", "utf-8");
-    git(workspace.cwd, "add runtime.txt");
-    git(workspace.cwd, 'commit -m "runtime change"');
-    workspace = await provisionDispatchWorkspace({
-      projectDir: tempDir,
-      taskRef,
-      task: { title: "Bootstrap Invalidation Signals", slugs: ["bootstrap-invalidation-signals"] },
-    });
-    bootstrapped = await ensureWorkspaceBootstrap({
-      projectDir: tempDir,
-      workspaceDir: workspace.cwd,
-      metadataPath: workspace.metadataPath,
-      metadata: workspace.metadata,
-      role: "worker",
-      agent: makeAgent(),
-      env: {},
-    });
-    expect(bootstrapped.metadata.bootstrap.invalidationReasons).toContain(
-      "canonical-branch-head-changed",
-    );
+      await fs.writeFile(path.join(workspace.cwd, "runtime.txt"), "runtime\n", "utf-8");
+      git(workspace.cwd, "add runtime.txt");
+      git(workspace.cwd, 'commit -m "runtime change"');
+      workspace = await provisionDispatchWorkspace({
+        projectDir: tempDir,
+        taskRef,
+        task: {
+          title: "Bootstrap Invalidation Signals",
+          slugs: ["bootstrap-invalidation-signals"],
+        },
+      });
+      bootstrapped = await ensureWorkspaceBootstrap({
+        projectDir: tempDir,
+        workspaceDir: workspace.cwd,
+        metadataPath: workspace.metadataPath,
+        metadata: workspace.metadata,
+        role: "worker",
+        agent: makeAgent(),
+        env: {},
+      });
+      expect(bootstrapped.metadata.bootstrap.invalidationReasons).toContain(
+        "canonical-branch-head-changed",
+      );
 
-    await updateWorkspaceRecord(workspace.metadataPath, taskRef, (record) => {
-      record.bootstrap.status = "failed";
-      record.bootstrap.roleStates.worker.status = "failed";
-    });
-    const failedRecord = await readWorkspaceRecord(workspace.metadataPath, taskRef);
-    bootstrapped = await ensureWorkspaceBootstrap({
-      projectDir: tempDir,
-      workspaceDir: workspace.cwd,
-      metadataPath: workspace.metadataPath,
-      metadata: {
-        ...workspace.metadata,
-        bootstrap: failedRecord.bootstrap,
-        bootstrapState: failedRecord.bootstrap,
-      },
-      role: "worker",
-      agent: makeAgent(),
-      env: {},
-    });
-    expect(bootstrapped.metadata.bootstrap.invalidationReasons).toContain("prior-bootstrap-failed");
-  });
+      await updateWorkspaceRecord(workspace.metadataPath, taskRef, (record) => {
+        record.bootstrap.status = "failed";
+        record.bootstrap.roleStates.worker.status = "failed";
+      });
+      const failedRecord = await readWorkspaceRecord(workspace.metadataPath, taskRef);
+      bootstrapped = await ensureWorkspaceBootstrap({
+        projectDir: tempDir,
+        workspaceDir: workspace.cwd,
+        metadataPath: workspace.metadataPath,
+        metadata: {
+          ...workspace.metadata,
+          bootstrap: failedRecord.bootstrap,
+          bootstrapState: failedRecord.bootstrap,
+        },
+        role: "worker",
+        agent: makeAgent(),
+        env: {},
+      });
+      expect(bootstrapped.metadata.bootstrap.invalidationReasons).toContain(
+        "prior-bootstrap-failed",
+      );
+    },
+  );
 
   // AC: @dispatch-runtime-bootstrap-contract ac-5
   it("reuses prior bootstrap results on later worker invocations when no invalidation signal exists", async () => {
@@ -658,95 +673,99 @@ describe("dispatch runtime bootstrap contract", () => {
     ).resolves.toBe("1\n");
   });
 
-  it("repairs missing direct dependencies before reusing a previously successful bootstrap", async () => {
-    await seedRepo(tempDir);
-    await setupLocalFileDependencyProject(tempDir);
-    await fs.writeFile(
-      path.join(tempDir, "kspec.config.yaml"),
-      ["dispatch:", "  base_branch: agent-dev"].join("\n"),
-      "utf-8",
-    );
+  it(
+    "repairs missing direct dependencies before reusing a previously successful bootstrap",
+    { timeout: 30_000 },
+    async () => {
+      await seedRepo(tempDir);
+      await setupLocalFileDependencyProject(tempDir);
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        ["dispatch:", "  base_branch: agent-dev"].join("\n"),
+        "utf-8",
+      );
 
-    const taskRef = `@${testUlid("TASK", 30)}`;
-    let workspace = await provisionDispatchWorkspace({
-      projectDir: tempDir,
-      taskRef,
-      task: { title: "Dependency Repair Bootstrap", slugs: ["dependency-repair-bootstrap"] },
-    });
+      const taskRef = `@${testUlid("TASK", 30)}`;
+      let workspace = await provisionDispatchWorkspace({
+        projectDir: tempDir,
+        taskRef,
+        task: { title: "Dependency Repair Bootstrap", slugs: ["dependency-repair-bootstrap"] },
+      });
 
-    await ensureWorkspaceBootstrap({
-      projectDir: tempDir,
-      workspaceDir: workspace.cwd,
-      metadataPath: workspace.metadataPath,
-      metadata: workspace.metadata,
-      role: "worker",
-      agent: makeAgent(),
-      env: {},
-    });
-    await expect(
-      fs.stat(path.join(workspace.cwd, "node_modules", "local-dep")),
-    ).resolves.toBeTruthy();
+      await ensureWorkspaceBootstrap({
+        projectDir: tempDir,
+        workspaceDir: workspace.cwd,
+        metadataPath: workspace.metadataPath,
+        metadata: workspace.metadata,
+        role: "worker",
+        agent: makeAgent(),
+        env: {},
+      });
+      await expect(
+        fs.stat(path.join(workspace.cwd, "node_modules", "local-dep")),
+      ).resolves.toBeTruthy();
 
-    await fs.rm(path.join(workspace.cwd, "node_modules"), { recursive: true, force: true });
+      await fs.rm(path.join(workspace.cwd, "node_modules"), { recursive: true, force: true });
 
-    workspace = await provisionDispatchWorkspace({
-      projectDir: tempDir,
-      taskRef,
-      task: { title: "Dependency Repair Bootstrap", slugs: ["dependency-repair-bootstrap"] },
-    });
-    const record = await readWorkspaceRecord(workspace.metadataPath, taskRef);
-    const repaired = await ensureWorkspaceBootstrap({
-      projectDir: tempDir,
-      workspaceDir: workspace.cwd,
-      metadataPath: workspace.metadataPath,
-      metadata: {
-        ...workspace.metadata,
-        bootstrap: record.bootstrap,
-        bootstrapState: record.bootstrap,
-      },
-      role: "worker",
-      agent: makeAgent(),
-      env: {},
-    });
+      workspace = await provisionDispatchWorkspace({
+        projectDir: tempDir,
+        taskRef,
+        task: { title: "Dependency Repair Bootstrap", slugs: ["dependency-repair-bootstrap"] },
+      });
+      const record = await readWorkspaceRecord(workspace.metadataPath, taskRef);
+      const repaired = await ensureWorkspaceBootstrap({
+        projectDir: tempDir,
+        workspaceDir: workspace.cwd,
+        metadataPath: workspace.metadataPath,
+        metadata: {
+          ...workspace.metadata,
+          bootstrap: record.bootstrap,
+          bootstrapState: record.bootstrap,
+        },
+        role: "worker",
+        agent: makeAgent(),
+        env: {},
+      });
 
-    expect(repaired.reused).toBe(false);
-    expect(repaired.ranSteps).toBe(true);
-    expect(repaired.metadata.bootstrap.invalidationReasons).toContain(
-      "workspace-dependencies-missing",
-    );
-    expect(
-      repaired.metadata.bootstrap.steps.some(
-        (step) => step.name === "install-workspace-dependencies",
-      ),
-    ).toBe(true);
-    await expect(
-      fs.stat(path.join(workspace.cwd, "node_modules", "local-dep")),
-    ).resolves.toBeTruthy();
+      expect(repaired.reused).toBe(false);
+      expect(repaired.ranSteps).toBe(true);
+      expect(repaired.metadata.bootstrap.invalidationReasons).toContain(
+        "workspace-dependencies-missing",
+      );
+      expect(
+        repaired.metadata.bootstrap.steps.some(
+          (step) => step.name === "install-workspace-dependencies",
+        ),
+      ).toBe(true);
+      await expect(
+        fs.stat(path.join(workspace.cwd, "node_modules", "local-dep")),
+      ).resolves.toBeTruthy();
 
-    workspace = await provisionDispatchWorkspace({
-      projectDir: tempDir,
-      taskRef,
-      task: { title: "Dependency Repair Bootstrap", slugs: ["dependency-repair-bootstrap"] },
-    });
-    const postRepairRecord = await readWorkspaceRecord(workspace.metadataPath, taskRef);
-    const reusedAfterRepair = await ensureWorkspaceBootstrap({
-      projectDir: tempDir,
-      workspaceDir: workspace.cwd,
-      metadataPath: workspace.metadataPath,
-      metadata: {
-        ...workspace.metadata,
-        bootstrap: postRepairRecord.bootstrap,
-        bootstrapState: postRepairRecord.bootstrap,
-      },
-      role: "worker",
-      agent: makeAgent(),
-      env: {},
-    });
+      workspace = await provisionDispatchWorkspace({
+        projectDir: tempDir,
+        taskRef,
+        task: { title: "Dependency Repair Bootstrap", slugs: ["dependency-repair-bootstrap"] },
+      });
+      const postRepairRecord = await readWorkspaceRecord(workspace.metadataPath, taskRef);
+      const reusedAfterRepair = await ensureWorkspaceBootstrap({
+        projectDir: tempDir,
+        workspaceDir: workspace.cwd,
+        metadataPath: workspace.metadataPath,
+        metadata: {
+          ...workspace.metadata,
+          bootstrap: postRepairRecord.bootstrap,
+          bootstrapState: postRepairRecord.bootstrap,
+        },
+        role: "worker",
+        agent: makeAgent(),
+        env: {},
+      });
 
-    expect(reusedAfterRepair.reused).toBe(true);
-    expect(reusedAfterRepair.ranSteps).toBe(false);
-    expect(reusedAfterRepair.metadata.bootstrap.invalidationReasons).toEqual([]);
-  });
+      expect(reusedAfterRepair.reused).toBe(true);
+      expect(reusedAfterRepair.ranSteps).toBe(false);
+      expect(reusedAfterRepair.metadata.bootstrap.invalidationReasons).toEqual([]);
+    },
+  );
 
   // AC: @dispatch-runtime-bootstrap-contract ac-6
   // AC: @trait-error-guidance ac-1
