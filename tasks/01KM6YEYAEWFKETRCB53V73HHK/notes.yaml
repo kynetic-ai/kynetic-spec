@@ -90,3 +90,27 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-26T19:02:47.939Z
+  - _ulid: 01KMP7RACV3ZFEK3SNX5V1RM4D
+    content: >-
+      Fix cycle 3: addressed all 3 blocker threads from review cycle 3.
+
+
+      1. Doctor task-storage check had no spec AC and no behavioral test. Added @doctor-command
+      ac-task-storage to spec and 5 behavioral tests covering ok/warning/error outcomes, graceful
+      skip, and overall verdict contribution. Also discovered and fixed a bug in
+      buildTaskStorageSection: it hardcoded 'kynetic.yaml' instead of using findManifestInDir(),
+      which silently skipped slug-based manifests (e.g., test-project.yaml).
+
+
+      2. Full-suite test stability: the shadow commit timeout test
+      (agent-invocation-lifecycle.test.ts line 1656) hung under concurrent load because
+      timeoutMinutes: 0.001 (60ms) fired before the mock process could start. Fixed by increasing
+      delay to 30s and timeout to 0.05 (3s), matching the pattern already used by the 'ACP cancel on
+      timeout' test at line 488. Also added missing { timeout: 120_000 } to the Skill resolution
+      describe block and increased all describe block timeouts from 60s to 120s for consistency.
+
+
+      Full suite passes clean (301 files, 6825 tests) — verified 2 consecutive runs.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-26T23:30:27.867Z
