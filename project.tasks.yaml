@@ -22533,8 +22533,10 @@
   type: task
   spec_ref: "@daemon-entity-cache"
   plan_ref: "@plan-daemon-optimistic-data-layer"
-  status: pending_review
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - "Dispatch bootstrap failed: Dispatch workspace registry write succeeded but could not be
+      durably committed on the shadow branch for @01KMMB3T2K3T6A1CJR884EPKJF."
   depends_on: []
   priority: 1
   tags:
