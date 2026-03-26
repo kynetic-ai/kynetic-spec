@@ -266,9 +266,19 @@ export async function createServer(options: ServerOptions) {
     // AC-3: Enforce localhost-only connections
     .onRequest(localhostOnly());
 
+  // AC: @daemon-entity-cache ac-load-on-register — lazy import entity cache module
+  // At build time, packages/daemon/src/ is copied to dist/daemon/ where entity-cache.js
+  // (compiled from src/daemon/entity-cache.ts) is a sibling.
+  const entityCacheModule = await import("./entity-cache.js");
+
   // Shared callback for all registration paths (middleware, projects API, WebSocket)
   const onProjectRegistered = async (projectPath: string) => {
     await startSessionSyncForProject(projectPath, pubsubManager);
+    // AC: @daemon-entity-cache ac-load-on-register — create cache and start progressive loading
+    const entityCache = entityCacheModule.registerEntityCache(projectPath);
+    entityCache.loadAll().catch((err: unknown) => {
+      console.error(`[entity-cache] Error during initial load for ${projectPath}:`, err);
+    });
   };
 
   // AC: @multi-directory-daemon ac-1, ac-2, ac-3 - Project context middleware
@@ -319,6 +329,8 @@ export async function createServer(options: ServerOptions) {
         onProjectRegistered,
         onProjectUnregistered: (projectPath) => {
           stopSessionSyncForProject(projectPath);
+          // AC: @daemon-entity-cache ac-unregister-cleanup — release cached data
+          entityCacheModule.unregisterEntityCache(projectPath);
         },
       }),
     )
@@ -492,6 +504,24 @@ export async function createServer(options: ServerOptions) {
     if (engine) {
       engine.handleFileChange(projectPath).catch((err) => {
         console.error("[dispatch] Error handling file change:", err);
+      });
+    }
+  });
+
+  // AC: @daemon-entity-cache ac-watcher-invalidation — wire cache invalidation to file watcher
+  projectContextManager.setCacheInvalidationCallback((projectPath, kspecDir, file) => {
+    const cache = entityCacheModule.getEntityCache(projectPath);
+    if (!cache) return;
+
+    if (kspecDir.endsWith(".kspec-sessions")) {
+      // Session directory change — directly invalidate sessions domain
+      cache.invalidateDomain("sessions").catch((err: unknown) => {
+        console.error(`[entity-cache] Error invalidating sessions for ${projectPath}:`, err);
+      });
+    } else {
+      // .kspec/ file change — map to domain via file path
+      cache.handleFileChange(kspecDir, file).catch((err: unknown) => {
+        console.error(`[entity-cache] Error handling file change for ${projectPath}:`, err);
       });
     }
   });

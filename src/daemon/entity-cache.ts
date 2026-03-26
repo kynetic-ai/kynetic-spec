@@ -1,0 +1,746 @@
+/**
+ * ProjectEntityCache — Tiered in-memory cache for daemon entity data.
+ *
+ * Two-tier model per domain:
+ * - Index tier: summaries/counts always hot in memory
+ * - Detail tier: full content loaded on demand, evicted on invalidation
+ *
+ * Domains load progressively on project registration.
+ * File watcher drives invalidation; write-through avoids double-reload.
+ *
+ * AC Coverage:
+ * - @daemon-entity-cache ac-load-on-register
+ * - @daemon-entity-cache ac-serve-from-memory
+ * - @daemon-entity-cache ac-detail-on-demand
+ * - @daemon-entity-cache ac-watcher-invalidation
+ * - @daemon-entity-cache ac-granular-reload
+ * - @daemon-entity-cache ac-write-through
+ * - @daemon-entity-cache ac-concurrent-reads
+ * - @daemon-entity-cache ac-reload-dedup
+ * - @daemon-entity-cache ac-graceful-degradation
+ * - @daemon-entity-cache ac-project-isolation
+ * - @daemon-entity-cache ac-unregister-cleanup
+ * - @daemon-entity-cache ac-session-bounded-index
+ * - @daemon-entity-cache ac-session-stale-exclusion
+ * - @daemon-entity-cache ac-warming-availability
+ * - @daemon-entity-cache ac-progressive-loading
+ */
+
+import { relative } from "path";
+import {
+  initContext,
+  loadAllItems,
+  loadPlans,
+  resolveTaskDataManager,
+  type KspecContext,
+  type LoadedSpecItem,
+  type LoadedTask,
+  type TaskSummary,
+} from "../parser/index.js";
+import { loadInboxItems, type LoadedInboxItem } from "../parser/yaml.js";
+import { loadTriageRecords, type LoadedTriageRecord } from "../parser/yaml.js";
+import { loadReviewRecords, type LoadedReviewRecord } from "../parser/reviews.js";
+import { type LoadedPlan } from "../parser/plans.js";
+import {
+  type SessionLogSummary,
+  getSessionMetadataOnly,
+  resolveStaleSessionCriteria,
+  getSessionActivityForStaleCheck,
+} from "../sessions/store.js";
+import { readdir } from "fs/promises";
+
+// ─── Types ───────────────────────────────────────────────────────────────────
+
+/** Data domains managed by the cache, in priority load order. */
+export type CacheDomain =
+  | "tasks"
+  | "items"
+  | "meta"
+  | "inbox"
+  | "plans"
+  | "triage"
+  | "reviews"
+  | "sessions";
+
+/** Load priority order — higher-priority domains load first. */
+export const DOMAIN_LOAD_ORDER: CacheDomain[] = [
+  "tasks",
+  "items",
+  "meta",
+  "inbox",
+  "plans",
+  "triage",
+  "reviews",
+  "sessions",
+];
+
+/** Per-domain state. */
+export type DomainState = "unloaded" | "loading" | "ready" | "degraded";
+
+/** Summary type for spec items (index tier). */
+export interface ItemSummary {
+  _ulid: string;
+  slugs: string[];
+  title: string;
+  type: string;
+  status: unknown; // SpecItem.status can be string | object
+  priority?: number;
+  tags: string[];
+  traits: string[];
+  parent_path?: string;
+  _sourceFile?: string;
+  _path?: string;
+  acceptance_criteria_count: number;
+}
+
+/** Manifest summary for meta domain index tier. */
+export interface MetaSummary {
+  projectName?: string;
+  version?: string;
+  status?: string;
+  modules?: string[];
+}
+
+/** Session cache configuration. */
+export interface SessionCacheConfig {
+  /** Maximum number of session summaries to keep in index (default 100). */
+  maxIndexSize: number;
+}
+
+const DEFAULT_SESSION_CACHE_CONFIG: SessionCacheConfig = {
+  maxIndexSize: 100,
+};
+
+// ─── Domain Data Store ───────────────────────────────────────────────────────
+
+/** Generic per-domain store with index + detail tiers. */
+interface DomainStore<TIndex, TDetail = unknown> {
+  state: DomainState;
+  index: TIndex | null;
+  /** Detail cache keyed by entity ref (ULID or ID). */
+  details: Map<string, TDetail>;
+  /** Error from the last failed load attempt (for degraded state). */
+  lastError?: Error;
+}
+
+// ─── File → Domain Mapping ───────────────────────────────────────────────────
+
+/**
+ * Map a changed file path (relative to .kspec/) to its data domain.
+ * Returns null if the file doesn't map to any cached domain.
+ *
+ * AC: @daemon-entity-cache ac-granular-reload
+ */
+export function fileToDomain(relativePath: string): CacheDomain | null {
+  // Task files
+  if (relativePath.endsWith(".tasks.yaml") || relativePath === "project.tasks.yaml") {
+    return "tasks";
+  }
+
+  // Inbox
+  if (relativePath === "project.inbox.yaml") {
+    return "inbox";
+  }
+
+  // Plans
+  if (relativePath === "project.plans.yaml") {
+    return "plans";
+  }
+
+  // Reviews
+  if (relativePath === "project.reviews.yaml") {
+    return "reviews";
+  }
+
+  // Triage
+  if (relativePath === "project.triage.yaml") {
+    return "triage";
+  }
+
+  // Meta (manifest)
+  if (relativePath === "kynetic.yaml" || relativePath.endsWith(".meta.yaml")) {
+    return "meta";
+  }
+
+  // Spec items — modules/*.yaml or *.spec.yaml or nested YAML in modules/
+  if (
+    relativePath.startsWith("modules/") ||
+    relativePath.endsWith(".spec.yaml") ||
+    relativePath === "kynetic.yaml"
+  ) {
+    return "items";
+  }
+
+  return null;
+}
+
+// ─── ProjectEntityCache ──────────────────────────────────────────────────────
+
+/**
+ * In-memory entity cache for a single project.
+ *
+ * Each registered project gets its own ProjectEntityCache instance,
+ * ensuring AC: @daemon-entity-cache ac-project-isolation.
+ */
+export class ProjectEntityCache {
+  private projectPath: string;
+  private sessionConfig: SessionCacheConfig;
+
+  // Per-domain stores
+  private tasks: DomainStore<TaskSummary[], LoadedTask> = {
+    state: "unloaded",
+    index: null,
+    details: new Map(),
+  };
+  private items: DomainStore<LoadedSpecItem[], LoadedSpecItem> = {
+    state: "unloaded",
+    index: null,
+    details: new Map(),
+  };
+  private meta: DomainStore<MetaSummary> = {
+    state: "unloaded",
+    index: null,
+    details: new Map(),
+  };
+  private inbox: DomainStore<LoadedInboxItem[]> = {
+    state: "unloaded",
+    index: null,
+    details: new Map(),
+  };
+  private plans: DomainStore<LoadedPlan[]> = {
+    state: "unloaded",
+    index: null,
+    details: new Map(),
+  };
+  private triage: DomainStore<LoadedTriageRecord[]> = {
+    state: "unloaded",
+    index: null,
+    details: new Map(),
+  };
+  private reviews: DomainStore<LoadedReviewRecord[]> = {
+    state: "unloaded",
+    index: null,
+    details: new Map(),
+  };
+  private sessions: DomainStore<SessionLogSummary[], SessionLogSummary> = {
+    state: "unloaded",
+    index: null,
+    details: new Map(),
+  };
+
+  /**
+   * In-flight reload promises for dedup.
+   * AC: @daemon-entity-cache ac-reload-dedup
+   */
+  private inFlightReloads = new Map<CacheDomain, Promise<void>>();
+
+  /**
+   * Write-through skip flags — when set, the next watcher invalidation
+   * for this domain is skipped (the write already updated the cache).
+   * AC: @daemon-entity-cache ac-write-through
+   */
+  private writeThroughSkip = new Set<CacheDomain>();
+
+  /** Live event counters for active sessions (migrated from SessionSummaryCache). */
+  private liveEventCounts = new Map<string, number>();
+
+  /** Whether dispose() has been called. */
+  private disposed = false;
+
+  constructor(projectPath: string, sessionConfig?: Partial<SessionCacheConfig>) {
+    this.projectPath = projectPath;
+    this.sessionConfig = { ...DEFAULT_SESSION_CACHE_CONFIG, ...sessionConfig };
+  }
+
+  // ─── Public Query API ────────────────────────────────────────────────────
+
+  /** Get the project path this cache is bound to. */
+  getProjectPath(): string {
+    return this.projectPath;
+  }
+
+  /**
+   * Get state of a domain.
+   * AC: @daemon-entity-cache ac-warming-availability
+   */
+  getDomainState(domain: CacheDomain): DomainState {
+    return this.getStore(domain).state;
+  }
+
+  /**
+   * Get task summaries from index tier.
+   * AC: @daemon-entity-cache ac-serve-from-memory
+   */
+  getTaskIndex(): TaskSummary[] | null {
+    return this.tasks.index;
+  }
+
+  /**
+   * Get a task detail from cache, or null if not cached.
+   * Caller should fall back to disk if null and domain is ready.
+   * AC: @daemon-entity-cache ac-detail-on-demand
+   */
+  getTaskDetail(ulid: string): LoadedTask | null {
+    return this.tasks.details.get(ulid) ?? null;
+  }
+
+  /**
+   * Store a task detail in the cache (loaded on demand).
+   * AC: @daemon-entity-cache ac-detail-on-demand
+   */
+  setTaskDetail(ulid: string, task: LoadedTask): void {
+    this.tasks.details.set(ulid, task);
+  }
+
+  /**
+   * Get spec items from index tier.
+   * AC: @daemon-entity-cache ac-serve-from-memory
+   */
+  getItemIndex(): LoadedSpecItem[] | null {
+    return this.items.index;
+  }
+
+  /**
+   * Get an item detail from cache, or null if not cached.
+   * AC: @daemon-entity-cache ac-detail-on-demand
+   */
+  getItemDetail(ulid: string): LoadedSpecItem | null {
+    return this.items.details.get(ulid) ?? null;
+  }
+
+  /** Store an item detail in the cache. */
+  setItemDetail(ulid: string, item: LoadedSpecItem): void {
+    this.items.details.set(ulid, item);
+  }
+
+  /** Get inbox items from index tier. */
+  getInboxIndex(): LoadedInboxItem[] | null {
+    return this.inbox.index;
+  }
+
+  /** Get plans from index tier. */
+  getPlansIndex(): LoadedPlan[] | null {
+    return this.plans.index;
+  }
+
+  /** Get reviews from index tier. */
+  getReviewsIndex(): LoadedReviewRecord[] | null {
+    return this.reviews.index;
+  }
+
+  /** Get triage records from index tier. */
+  getTriageIndex(): LoadedTriageRecord[] | null {
+    return this.triage.index;
+  }
+
+  /** Get meta summary from index tier. */
+  getMetaIndex(): MetaSummary | null {
+    return this.meta.index;
+  }
+
+  /**
+   * Get session summaries from index tier.
+   * Applies live event counters for active sessions.
+   * AC: @daemon-entity-cache ac-serve-from-memory
+   * AC: @daemon-entity-cache ac-session-bounded-index
+   */
+  getSessionIndex(): SessionLogSummary[] | null {
+    if (!this.sessions.index) return null;
+    return this.sessions.index.map((s) => {
+      const liveCount = this.liveEventCounts.get(s.id);
+      if (s.status === "active" && liveCount !== undefined) {
+        return { ...s, event_count: liveCount };
+      }
+      return s;
+    });
+  }
+
+  /**
+   * Get a session detail from cache.
+   * AC: @daemon-entity-cache ac-detail-on-demand
+   */
+  getSessionDetail(sessionId: string): SessionLogSummary | null {
+    return this.sessions.details.get(sessionId) ?? null;
+  }
+
+  /** Store a session detail in the cache. */
+  setSessionDetail(sessionId: string, summary: SessionLogSummary): void {
+    this.sessions.details.set(sessionId, summary);
+  }
+
+  /**
+   * Increment live event counter for an active session.
+   * Migrated from SessionSummaryCache.
+   */
+  incrementSessionEventCount(sessionId: string): void {
+    const current = this.liveEventCounts.get(sessionId) ?? 0;
+    this.liveEventCounts.set(sessionId, current + 1);
+  }
+
+  /**
+   * Discard live event counter for a session (on close).
+   * Migrated from SessionSummaryCache.
+   */
+  discardSessionLiveCounter(sessionId: string): void {
+    this.liveEventCounts.delete(sessionId);
+  }
+
+  // ─── Progressive Loading ─────────────────────────────────────────────────
+
+  /**
+   * Start progressive loading of all domains.
+   * Domains load in priority order; each becomes available as soon as loaded.
+   *
+   * AC: @daemon-entity-cache ac-load-on-register
+   * AC: @daemon-entity-cache ac-progressive-loading
+   */
+  async loadAll(): Promise<void> {
+    if (this.disposed) return;
+
+    for (const domain of DOMAIN_LOAD_ORDER) {
+      if (this.disposed) return;
+      await this.loadDomain(domain);
+    }
+  }
+
+  /**
+   * Load a single domain's index tier.
+   *
+   * AC: @daemon-entity-cache ac-graceful-degradation — errors mark domain degraded
+   * AC: @daemon-entity-cache ac-reload-dedup — in-flight promise dedup
+   */
+  async loadDomain(domain: CacheDomain): Promise<void> {
+    if (this.disposed) return;
+
+    // AC: @daemon-entity-cache ac-reload-dedup — reuse in-flight promise
+    const existing = this.inFlightReloads.get(domain);
+    if (existing) {
+      await existing;
+      return;
+    }
+
+    const store = this.getStore(domain);
+    store.state = "loading";
+
+    const promise = this.doLoadDomain(domain)
+      .then(() => {
+        if (!this.disposed) {
+          store.state = "ready";
+          store.lastError = undefined;
+        }
+      })
+      .catch((err) => {
+        if (!this.disposed) {
+          // AC: @daemon-entity-cache ac-graceful-degradation
+          store.state = "degraded";
+          store.lastError = err instanceof Error ? err : new Error(String(err));
+          console.error(`[entity-cache] Failed to load domain "${domain}":`, err);
+        }
+      })
+      .finally(() => {
+        this.inFlightReloads.delete(domain);
+      });
+
+    this.inFlightReloads.set(domain, promise);
+    await promise;
+  }
+
+  private async doLoadDomain(domain: CacheDomain): Promise<void> {
+    const ctx = await initContext(this.projectPath);
+
+    switch (domain) {
+      case "tasks": {
+        // AC: @daemon-entity-cache ac-load-on-register — load task index
+        const summaries = await resolveTaskDataManager(ctx).listTasks(ctx);
+        this.tasks.index = summaries;
+        this.tasks.details.clear();
+        break;
+      }
+      case "items": {
+        const loadedItems = await loadAllItems(ctx);
+        this.items.index = loadedItems;
+        this.items.details.clear();
+        break;
+      }
+      case "meta": {
+        this.meta.index = {
+          projectName: ctx.manifest?.project?.name,
+          version: ctx.manifest?.project?.version,
+          status: ctx.manifest?.project?.status,
+          modules: ctx.manifest?.modules?.map(
+            (m: { title?: string; name?: string } | string) =>
+              typeof m === "string" ? m : m.title ?? m.name ?? "unknown",
+          ),
+        };
+        break;
+      }
+      case "inbox": {
+        const inboxItems = await loadInboxItems(ctx);
+        this.inbox.index = inboxItems;
+        break;
+      }
+      case "plans": {
+        const loadedPlans = await loadPlans(ctx);
+        this.plans.index = loadedPlans;
+        break;
+      }
+      case "triage": {
+        const triageRecords = await loadTriageRecords(ctx);
+        this.triage.index = triageRecords;
+        break;
+      }
+      case "reviews": {
+        const reviewRecords = await loadReviewRecords(ctx);
+        this.reviews.index = reviewRecords;
+        break;
+      }
+      case "sessions": {
+        await this.loadSessionIndex(ctx);
+        break;
+      }
+    }
+  }
+
+  /**
+   * Load session index with bounding and stale exclusion.
+   *
+   * AC: @daemon-entity-cache ac-session-bounded-index
+   * AC: @daemon-entity-cache ac-session-stale-exclusion
+   */
+  private async loadSessionIndex(ctx: KspecContext): Promise<void> {
+    const sessionsDir = ctx.sessionsDir;
+    let sessionIds: string[];
+
+    try {
+      const entries = await readdir(sessionsDir, { withFileTypes: true });
+      sessionIds = entries.filter((e) => e.isDirectory()).map((e) => e.name);
+    } catch {
+      // No sessions directory — empty index
+      this.sessions.index = [];
+      return;
+    }
+
+    // Load metadata-only summaries for all sessions (avoids reading events.jsonl)
+    const summaries: SessionLogSummary[] = [];
+    for (const id of sessionIds) {
+      try {
+        const summary = await getSessionMetadataOnly(sessionsDir, id);
+        if (summary) summaries.push(summary);
+      } catch (err) {
+        console.warn(
+          `[entity-cache] Skipping session ${id}: ${err instanceof Error ? err.message : String(err)}`,
+        );
+      }
+    }
+
+    // Sort by started_at descending (most recent first)
+    summaries.sort((a, b) => {
+      const aTs = new Date(a.started_at).getTime();
+      const bTs = new Date(b.started_at).getTime();
+      return bTs - aTs;
+    });
+
+    // AC: @daemon-entity-cache ac-session-stale-exclusion
+    // Resolve stale criteria — sessions with active status that exceed thresholds
+    // are not treated as active in the cached index
+    const staleResolved = resolveStaleSessionCriteria({});
+    if (staleResolved.ok) {
+      const now = Date.now();
+      const { olderThanMs, inactiveForMs } = staleResolved.criteria;
+
+      for (let i = 0; i < summaries.length; i++) {
+        const s = summaries[i];
+        if (s.status !== "active") continue;
+
+        const startedAtMs = new Date(s.started_at).getTime();
+        const ageMs = now - startedAtMs;
+
+        // Check if this active session exceeds the stale criteria
+        if (ageMs > olderThanMs) {
+          // Check inactivity via file-based activity check
+          const activityResult = await getSessionActivityForStaleCheck(sessionsDir, s.id);
+          if (activityResult.ok) {
+            const inactivityMs = now - activityResult.activity.lastActivityTs;
+            if (inactivityMs > inactiveForMs) {
+              // Mark as stale in the index — keep the summary but override the active flag
+              // so consumers know this isn't truly active
+              summaries[i] = { ...s, status: "stalled" as SessionLogSummary["status"] };
+            }
+          }
+        }
+      }
+    }
+
+    // AC: @daemon-entity-cache ac-session-bounded-index — keep only N most recent
+    this.sessions.index = summaries.slice(0, this.sessionConfig.maxIndexSize);
+    this.sessions.details.clear();
+  }
+
+  // ─── Invalidation ────────────────────────────────────────────────────────
+
+  /**
+   * Invalidate a domain and reload from disk.
+   * Called by file watcher when a shadow branch file changes.
+   *
+   * AC: @daemon-entity-cache ac-watcher-invalidation
+   * AC: @daemon-entity-cache ac-granular-reload
+   */
+  async invalidateDomain(domain: CacheDomain): Promise<void> {
+    if (this.disposed) return;
+
+    // AC: @daemon-entity-cache ac-write-through — skip if write-through just updated this domain
+    if (this.writeThroughSkip.has(domain)) {
+      this.writeThroughSkip.delete(domain);
+      return;
+    }
+
+    await this.loadDomain(domain);
+  }
+
+  /**
+   * Handle a file change event from the watcher.
+   * Maps the file path to a domain and invalidates it.
+   *
+   * AC: @daemon-entity-cache ac-watcher-invalidation
+   * AC: @daemon-entity-cache ac-granular-reload
+   */
+  async handleFileChange(kspecDir: string, filePath: string): Promise<void> {
+    if (this.disposed) return;
+
+    const relativePath = relative(kspecDir, filePath);
+    const domain = fileToDomain(relativePath);
+    if (domain) {
+      await this.invalidateDomain(domain);
+    }
+  }
+
+  /**
+   * Mark a domain for write-through skip.
+   * The next watcher invalidation for this domain will be ignored.
+   *
+   * AC: @daemon-entity-cache ac-write-through
+   */
+  markWriteThrough(domain: CacheDomain): void {
+    this.writeThroughSkip.add(domain);
+  }
+
+  /**
+   * Write-through update: refresh domain index from disk and skip
+   * the next watcher invalidation.
+   *
+   * AC: @daemon-entity-cache ac-write-through
+   */
+  async writeThrough(domain: CacheDomain): Promise<void> {
+    this.markWriteThrough(domain);
+    await this.loadDomain(domain);
+  }
+
+  // ─── Lifecycle ───────────────────────────────────────────────────────────
+
+  /**
+   * Dispose the cache — release all data and cancel in-flight reloads.
+   *
+   * AC: @daemon-entity-cache ac-unregister-cleanup
+   */
+  dispose(): void {
+    this.disposed = true;
+
+    // Release all domain data
+    for (const domain of DOMAIN_LOAD_ORDER) {
+      const store = this.getStore(domain);
+      store.index = null;
+      store.details.clear();
+      store.state = "unloaded";
+      store.lastError = undefined;
+    }
+
+    this.inFlightReloads.clear();
+    this.writeThroughSkip.clear();
+    this.liveEventCounts.clear();
+  }
+
+  /** Check if the cache has been disposed. */
+  isDisposed(): boolean {
+    return this.disposed;
+  }
+
+  // ─── Internal Helpers ────────────────────────────────────────────────────
+
+  /** Get the store for a domain. */
+  private getStore(domain: CacheDomain): DomainStore<unknown> {
+    switch (domain) {
+      case "tasks":
+        return this.tasks;
+      case "items":
+        return this.items;
+      case "meta":
+        return this.meta;
+      case "inbox":
+        return this.inbox;
+      case "plans":
+        return this.plans;
+      case "triage":
+        return this.triage;
+      case "reviews":
+        return this.reviews;
+      case "sessions":
+        return this.sessions;
+    }
+  }
+}
+
+// ─── Cache Registry ──────────────────────────────────────────────────────────
+
+/**
+ * Per-project cache registry.
+ * AC: @daemon-entity-cache ac-project-isolation
+ */
+const cacheRegistry = new Map<string, ProjectEntityCache>();
+
+/**
+ * Get the entity cache for a project. Returns null if not registered.
+ */
+export function getEntityCache(projectPath: string): ProjectEntityCache | null {
+  return cacheRegistry.get(projectPath) ?? null;
+}
+
+/**
+ * Register an entity cache for a project.
+ * AC: @daemon-entity-cache ac-load-on-register
+ */
+export function registerEntityCache(
+  projectPath: string,
+  sessionConfig?: Partial<SessionCacheConfig>,
+): ProjectEntityCache {
+  // Reuse existing cache if already registered
+  const existing = cacheRegistry.get(projectPath);
+  if (existing && !existing.isDisposed()) {
+    return existing;
+  }
+
+  const cache = new ProjectEntityCache(projectPath, sessionConfig);
+  cacheRegistry.set(projectPath, cache);
+  return cache;
+}
+
+/**
+ * Unregister and dispose the entity cache for a project.
+ * AC: @daemon-entity-cache ac-unregister-cleanup
+ */
+export function unregisterEntityCache(projectPath: string): void {
+  const cache = cacheRegistry.get(projectPath);
+  if (cache) {
+    cache.dispose();
+    cacheRegistry.delete(projectPath);
+  }
+}
+
+/**
+ * Clear all registered caches (for testing).
+ */
+export function clearAllEntityCaches(): void {
+  for (const cache of cacheRegistry.values()) {
+    cache.dispose();
+  }
+  cacheRegistry.clear();
+}
