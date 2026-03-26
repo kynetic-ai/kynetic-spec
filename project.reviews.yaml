@@ -53709,6 +53709,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-26T16:41:58.087Z
+      - _ulid: 01KMNGZ9JZ9YESFM6SAKE0Y03V
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMNGZ8Q1WGKJ2KWQNB61H2WS
+        timestamp: 2026-03-26T16:52:19.167Z
     examined_commit: e15627f141c52186333527be6977b57a18b84ea9
     external_links: []
     lifecycle_state: open
@@ -53718,8 +53725,29 @@ reviews:
       content_hash: ""
       ref: "@01KM6YEYAEWFKETRCB53V73HHK"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMNGZ8Q1WGKJ2KWQNB61H2WS
+        anchor:
+          type: code
+          commit: e15627f141c52186333527be6977b57a18b84ea9
+          line_end: 3206
+          line_start: 3135
+          path: src/cli/commands/task.ts
+          side: head
+        entries:
+          - _ulid: 01KMNGZ8Q1PXSTS5TRBSG5NG9S
+            author: Test User
+            body: task migrate returns before upgrading the manifest when project.tasks.yaml is empty or already
+              lean-index-only. In a legacy kynetic 1.0 project, that leaves task_storage.format
+              unset even though the command reports success, so the new resolveTaskDataManager()
+              gate continues rejecting every task command and the user has no remaining activation
+              path. I reproduced this by creating a legacy .kspec/kynetic.yaml plus an empty
+              project.tasks.yaml, running KSPEC_SPEC_DIR=... kspec task migrate --force, and
+              observing that the manifest stayed at 1.0 with no task_storage block. The early
+              already_migrated returns need to perform the manifest upgrade too.
+            created_at: 2026-03-26T16:52:18.273Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-26T16:41:01.186Z
-    updated_at: 2026-03-26T16:41:57.643Z
+    updated_at: 2026-03-26T16:52:18.273Z
     notes: []
