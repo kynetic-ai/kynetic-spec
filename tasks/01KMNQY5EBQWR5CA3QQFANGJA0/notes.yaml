@@ -1,1 +1,10 @@
-notes: []
+notes:
+  - _ulid: 01KMNRHZAYBSDB8RJB4R2S433T
+    content: "Implemented all 6 items: condensed output, JSON-based log capture via vitest dual reporter
+      (json to file + verbose to stdout captured via pipe), content-based caching using git blob
+      SHAs, session-scoped cache isolation, --fresh flag, and 3 new testing convention rules. Key
+      discovery: vitest's --outputFile only works for JSON/junit reporters, not verbose — solved by
+      piping stdout/stderr in condensed mode and writing log file ourselves."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-26T19:04:51.294Z
