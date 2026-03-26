@@ -23582,7 +23582,7 @@ workspaces:
         head: c5d5fca0aea73319d3b331ded7ac39267d3c58b1
         last_seen_at: 2026-03-25T23:33:19.314Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/deduplicate-seedsplittask-helper-across-test-files-01kmkmnv
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 77b7853efbde33a5f1f229bf8623faaef696153c
     bootstrap:
       status: succeeded
@@ -23669,12 +23669,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-26T00:28:38.769Z
+      updated_at: 2026-03-26T00:38:09.174Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-26T00:28:44.725Z
+      updated_at: 2026-03-26T00:38:09.174Z
     integration:
       status: pending
       detail: null
@@ -23682,7 +23682,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 77b7853efbde33a5f1f229bf8623faaef696153c
-      updated_at: 2026-03-26T00:28:38.769Z
+      updated_at: 2026-03-26T00:38:09.174Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KMKNRVZK0P81KHK5Z6RH841D"
@@ -23690,9 +23690,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-26T00:28:44.725Z
-      last_reconciled_at: 2026-03-26T00:28:44.725Z
+      last_reconciled_at: 2026-03-26T00:38:09.174Z
       created_at: 2026-03-25T23:41:00.167Z
-      updated_at: 2026-03-26T00:28:44.725Z
+      updated_at: 2026-03-26T00:38:09.174Z
     workspace_id: dispatch-workspace-01KMKNRVZK0P81KHK5Z6RH841D
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
