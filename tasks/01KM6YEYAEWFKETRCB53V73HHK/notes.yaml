@@ -74,3 +74,14 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-26T17:28:19.951Z
+  - _ulid: 01KMNQGQCP11V7C1SXXDZDRWYW
+    content: "Fix cycle 2: addressed blocker — test suite timeout failures in
+      canonical-task-workspace-contract.test.ts and dispatch-runtime-bootstrap-contract.test.ts.
+      Root cause: both describe blocks used DispatchEngine without the { timeout: 60_000 } override
+      that all other DispatchEngine test suites use, causing the 15s global default to be exceeded
+      under full-suite concurrent load. Added timeout overrides to both. Full suite passes clean
+      (301 files, 6820 tests). The agent-invocation-lifecycle flake seen in prior runs is a
+      pre-existing issue (not changed by this task, passes in isolation)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-26T18:46:41.814Z
