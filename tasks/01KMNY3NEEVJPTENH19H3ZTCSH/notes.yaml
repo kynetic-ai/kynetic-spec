@@ -1,1 +1,11 @@
-notes: []
+notes:
+  - _ulid: 01KMP1VRTSBDGD8SGC0Y8SBZ4W
+    content: "Investigation: Only 4 tests fail in full suite (not 30 as originally described). All pass
+      in isolation — failures caused by resource contention under parallel load. Fixes: (1)
+      agent-dispatch-engine guardrails test: added workspace provisioning mocks matching the passing
+      reviewer test — test validates prompt content not workspace setup; (2) 3 timeout tests
+      (bootstrap contract ×2, canonical workspace ×1): increased per-test timeout from 15s→30s for
+      tests doing heavy git/npm I/O. Full suite run pending."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-26T21:47:29.497Z
