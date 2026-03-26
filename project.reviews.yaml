@@ -54974,6 +54974,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-26T18:51:31.161Z
+      - _ulid: 01KMNR68BYWN10JJ4VV69SPJEC
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMNR679FPNV1JKG919N3C2B4
+        timestamp: 2026-03-26T18:58:27.326Z
     examined_commit: 9971c42b49331334930881e8e6291b3bf041d99b
     external_links: []
     lifecycle_state: open
@@ -54983,8 +54990,27 @@ reviews:
       content_hash: ""
       ref: "@01KM6YEYAEWFKETRCB53V73HHK"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMNR679FPNV1JKG919N3C2B4
+        anchor:
+          type: code
+          commit: 9971c42b49331334930881e8e6291b3bf041d99b
+          line_end: 549
+          line_start: 504
+          path: src/parser/doctor.ts
+          side: head
+        entries:
+          - _ulid: 01KMNR679FSRB3ENFJYJ2VZA2W
+            author: Test User
+            body: This adds a new task-storage doctor check, but the owning doctor contract was not updated to
+              cover it and there is still no behavioral test for it. kspec item get @doctor-command
+              still describes doctor as shadow/setup/daemon only, and tests/parser/doctor.test.ts
+              contains no assertions for taskStorage, task-storage-format, or the new legacy/split
+              messages. That leaves an exit-code-affecting user-visible behavior outside the source
+              of truth and without regression coverage.
+            created_at: 2026-03-26T18:58:26.223Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-26T18:50:51.875Z
-    updated_at: 2026-03-26T18:51:30.767Z
+    updated_at: 2026-03-26T18:58:26.223Z
     notes: []
