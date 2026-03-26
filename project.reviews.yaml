@@ -56175,6 +56175,20 @@ reviews:
         runner: kspec
         created_at: 2026-03-26T23:36:55.038Z
         completed_at: 2026-03-26T23:36:55.038Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test in this snapshot finished with 1 failed suite:
+          tests/agent-dispatch-engine.test.ts has a duplicate mockMetadata declaration at line 2526.
+          I verified the same duplicate exists in base commit 992af7921, so this failure is
+          pre-existing rather than introduced by the cache patch, but the required test gate is
+          still red on the reviewed snapshot."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-26T23:36:56.655Z
+        completed_at: 2026-03-26T23:36:56.655Z
     events:
       - _ulid: 01KMP7YYHNS68DQJFRB4W0TKMS
         actor: Test User
@@ -56245,6 +56259,13 @@ reviews:
           status: skipped
           name: kspec validate
         timestamp: 2026-03-26T23:36:55.543Z
+      - _ulid: 01KMP846JJBQZNHJBWSVS9JX41
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-26T23:36:57.170Z
     examined_commit: 704ebd4dd303187ec7b761cee65a3a07ea284578
     external_links: []
     lifecycle_state: open
@@ -56370,5 +56391,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-26T23:34:05.110Z
-    updated_at: 2026-03-26T23:36:55.038Z
+    updated_at: 2026-03-26T23:36:56.655Z
     notes: []
