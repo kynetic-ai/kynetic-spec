@@ -28930,8 +28930,8 @@ plans:
       The command API's mutation serialization handles re-entrant calls the same
 
       as any other client.
-    status: draft
-    approved_at: null
+    status: approved
+    approved_at: 2026-03-26T05:47:07.259Z
     derived_specs: []
     derived_tasks: []
     module_ref: "@web-ui"
