@@ -114,6 +114,59 @@ describe("Integration: task set batch support", () => {
     expect(result.stderr).toContain("kspec task start @ref");
   });
 
+  // AC: @task-set ac-1 — batch mode --status pending should not suggest task start
+  it("should not suggest task start when batch mode targets pending", () => {
+    kspec('task add --title "Pending Batch" --slug pending-batch', tempDir);
+
+    const result = kspec("task set --refs @pending-batch --status pending", tempDir, {
+      expectFail: true,
+    });
+
+    expect(result.exitCode).toBe(2);
+    expect(result.stderr).toContain("Cannot change status via 'task set'");
+    // Should NOT suggest 'kspec task start' — that goes to in_progress, not pending
+    expect(result.stderr).not.toContain("kspec task start");
+    // Should explain that pending has no direct command
+    expect(result.stderr).toContain("No direct command to transition to pending");
+  });
+
+  // AC: @task-set ac-1 — single-ref --status pending should not suggest task start
+  it("should not suggest task start when single-ref targets pending", () => {
+    kspec('task add --title "Pending Single" --slug pending-single', tempDir);
+
+    const result = kspec("task set @pending-single --status pending", tempDir, {
+      expectFail: true,
+    });
+
+    expect(result.exitCode).toBe(2);
+    expect(result.stderr).toContain("Current status: pending");
+    // Should say transition is invalid, not suggest task start
+    expect(result.stderr).toContain("Cannot transition from pending to pending");
+    expect(result.stderr).not.toContain("To transition to pending: kspec task start");
+  });
+
+  // AC: @task-set ac-1, @trait-error-guidance ac-6 — JSON mode --status pending has null suggestedCommand
+  it("should have null suggestedCommand in JSON mode for --status pending", () => {
+    kspec('task add --title "Pending JSON" --slug pending-json', tempDir);
+
+    const result = kspec("task set @pending-json --status pending --json", tempDir, {
+      expectFail: true,
+    });
+
+    expect(result.exitCode).toBe(2);
+    const jsonError = JSON.parse(result.stderr);
+    expect(jsonError.details.currentStatus).toBe("pending");
+    expect(jsonError.details.targetStatus).toBe("pending");
+    // No direct command to pending — suggestedCommand must be null
+    expect(jsonError.details.suggestedCommand).toBeNull();
+    // Valid transitions should NOT include pending
+    const targets = jsonError.details.validTransitions.map(
+      (t: { status: string }) => t.status,
+    );
+    expect(targets).not.toContain("pending");
+    expect(targets).toContain("in_progress");
+  });
+
   // AC: @task-set ac-1, @trait-error-guidance ac-4 — shows valid transitions for in_progress task
   it("should show valid transitions from current state (in_progress)", () => {
     kspec('task add --title "In Progress Test" --slug ip-test', tempDir);

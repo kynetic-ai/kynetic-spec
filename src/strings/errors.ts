@@ -8,16 +8,27 @@
 import type { TaskStatus } from "../schema/common.js";
 
 // AC: @task-set ac-1, @trait-error-guidance ac-4
-// Maps target status → the CLI command to reach it
-const STATUS_TO_COMMAND: Record<TaskStatus, string> = {
+// Maps target status → the CLI command to reach it (only statuses reachable via a direct command)
+// Note: 'pending' is intentionally absent — it is only the initial state or restored via 'unblock'
+const STATUS_TO_COMMAND: Partial<Record<TaskStatus, string>> = {
   in_progress: "kspec task start @ref",
   pending_review: "kspec task submit @ref",
   needs_work: 'kspec task needs-work @ref --reason "..."',
   blocked: 'kspec task block @ref --reason "..."',
   completed: 'kspec task complete @ref --reason "..."',
   cancelled: "kspec task cancel @ref",
-  pending: "kspec task start @ref (to resume from pending)",
 };
+
+// All known task statuses — used to distinguish "no direct command" from "unknown status"
+const ALL_TASK_STATUSES: readonly string[] = [
+  "pending",
+  "in_progress",
+  "pending_review",
+  "needs_work",
+  "blocked",
+  "completed",
+  "cancelled",
+];
 
 // Maps current status → valid target statuses (via dedicated transition commands)
 // For blocked: only cancel is statically valid; unblock restores prior_status dynamically
@@ -170,6 +181,7 @@ export const statusErrors = {
 
     const knownTarget = targetStatus as TaskStatus;
     const commandForTarget = STATUS_TO_COMMAND[knownTarget];
+    const isKnownStatus = ALL_TASK_STATUSES.includes(targetStatus);
 
     // Build valid targets from the static transition map
     const validTargets = currentStatus ? [...VALID_TRANSITIONS_FROM[currentStatus]] : [];
@@ -195,12 +207,17 @@ export const statusErrors = {
       } else {
         lines.push(`To transition to ${targetStatus}: ${commandForTarget}`);
       }
-    } else if (currentStatus && commandForTarget) {
+    } else if (currentStatus && (commandForTarget || (isKnownStatus && !commandForTarget))) {
       lines.push(
         `Cannot transition from ${currentStatus} to ${targetStatus} — that transition is not valid.`,
       );
-    } else if (!commandForTarget) {
+    } else if (!isKnownStatus) {
       lines.push(`Unknown target status: ${targetStatus}`);
+    } else if (!commandForTarget) {
+      // Known status but no direct command (e.g. 'pending' — initial state only, or restored via unblock)
+      lines.push(
+        `No direct command to transition to ${targetStatus}. It is only the initial task state or restored via 'kspec task unblock'.`,
+      );
     }
 
     if (currentStatus) {
@@ -212,7 +229,8 @@ export const statusErrors = {
               `  ${target}: kspec task unblock @ref (restores prior status)`,
             );
           } else {
-            lines.push(`  ${target}: ${STATUS_TO_COMMAND[target]}`);
+            const cmd = STATUS_TO_COMMAND[target as TaskStatus];
+            lines.push(`  ${target}: ${cmd ?? "N/A"}`);
           }
         }
       } else {
@@ -227,7 +245,7 @@ export const statusErrors = {
           command:
             currentStatus === "blocked" && s === unblockTarget
               ? "kspec task unblock @ref"
-              : STATUS_TO_COMMAND[s],
+              : (STATUS_TO_COMMAND[s as TaskStatus] ?? "N/A"),
         }))
       : null;
 
