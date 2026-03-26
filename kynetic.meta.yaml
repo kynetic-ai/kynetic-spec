@@ -8227,6 +8227,23 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-26T19:06:02.416Z
+  - _ulid: 01KMP0NYSW80CGZY0CWTTWSYF6
+    type: success
+    content: Content-based cache key design using git blob SHAs — conversation-first design before
+      coding produced a cache that is immune to commits/rebases/touch-without-edit. Good pattern for
+      any repo-aware tooling.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-26T21:26:50.428Z
+  - _ulid: 01KMP0NYYMPHNEY6F7E8F8H21M
+    type: friction
+    content: oxfmt --check on specific files can pass locally while CI (which runs oxfmt --check .)
+      fails. Always run oxfmt in write mode on changed files before committing, not just --check.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-26T21:26:50.580Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
