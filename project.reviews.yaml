@@ -53122,9 +53122,25 @@ reviews:
           kind: blocker
           thread_ulid: 01KMM965SWFT6V784PAE8ZN3YG
         timestamp: 2026-03-26T05:17:02.441Z
+      - _ulid: 01KMM96AMW4CGAND9A8RB4TC5E
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-26T05:17:06.588Z
+      - _ulid: 01KMM96AMWQKN30BFHH57AC4VQ
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-26T05:17:06.588Z
     examined_commit: e7d37ff438197e4987648ea4f08fa3b83e82d5f6
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -53150,7 +53166,14 @@ reviews:
               transition from blocked to pending_review' even though the task JSON showed .
             created_at: 2026-03-26T05:17:01.628Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-26T05:17:06.587Z
     created_at: 2026-03-26T05:12:57.820Z
-    updated_at: 2026-03-26T05:17:01.628Z
+    updated_at: 2026-03-26T05:17:06.588Z
     notes: []
