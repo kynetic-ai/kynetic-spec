@@ -114,3 +114,8 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-26T23:30:27.867Z
+  - _ulid: 01KMP8D00KZ0W4S0X1F2DAATHH
+    content: "[AGENT-FAIL] Invocation failed: Subagent process exited with signal SIGINT"
+    supersedes: null
+    author: Test User
+    created_at: 2026-03-26T23:41:45.363Z
