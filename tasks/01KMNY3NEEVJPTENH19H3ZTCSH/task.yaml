@@ -1,0 +1,117 @@
+_ulid: 01KMNY3NEEVJPTENH19H3ZTCSH
+slugs: []
+title: "Fix pre-existing test failures: STACK_TRACE_ERROR, daemon timeouts, and CLI timeouts"
+type: task
+description: >-
+  ## What
+
+
+  Fix 30 failing tests across 10 test files that are failing on main. These are pre-existing
+  failures unrelated to any recent work.
+
+
+  ### Failure categories
+
+
+  **1. STACK_TRACE_ERROR (17 tests across 6 files)**
+
+
+  Vitest internal errors — likely import/module resolution or ESM issues causing tests to fail
+  before assertions run.
+
+
+  Files affected:
+
+  - `tests/canonical-task-workspace-contract.test.ts` (1 test)
+
+  - `tests/dispatch-runtime-bootstrap-contract.test.ts` (5 tests)
+
+  - `tests/dispatch-target-sync.test.ts` (5 tests)
+
+  - `tests/dispatch-workspace-registry.test.ts` (2 tests)
+
+  - `tests/setup-pipeline-unification.test.ts` (2 tests)
+
+  - `tests/cli/session-note-limit.test.ts` (1 test)
+
+
+  All share the same stack trace pattern:
+
+  ```
+
+  Error: STACK_TRACE_ERROR
+    at task (node_modules/@vitest/runner/dist/index.js:796:27)
+    at Object.<anonymous> (node_modules/@vitest/runner/dist/index.js:823:16)
+  ```
+
+
+  **2. Daemon startup timeouts (5 tests in 1 file)**
+
+
+  `tests/cli-serve.test.ts` — All 5 tests fail with "Daemon failed to start within 5 seconds". The
+  tests spawn `kspec serve start --daemon --port <random>` and poll for readiness.
+
+
+  **3. CLI command timeouts (3 tests in 2 files)**
+
+
+  - `tests/enhanced-setup.test.ts` (1 test) — `kspec setup --dry-run --skip-skills` times out at 30s
+
+  - `tests/native-guard-setup.test.ts` (2 tests) — `kspec setup` times out at 30s
+
+
+  **4. Mock assertion failure (1 test in 1 file)**
+
+
+  `tests/agent-dispatch-engine.test.ts` — expects `runInvocation` spy to be called but it never
+  fires. Likely a timing issue or changed internal API.
+
+
+  ## Why
+
+
+  These failures cause the full test suite to exit non-zero, which blocks review gates on unrelated
+  work. The test runner now caches failure results, so these will persist as cached failures until
+  fixed.
+
+
+  ## How
+
+
+  Investigation approach for each category:
+
+
+  **STACK_TRACE_ERROR:** Run one affected file in isolation with `--reporter=verbose` to see the
+  actual import/resolution error. The generic STACK_TRACE_ERROR is vitest masking the real error.
+  Check if these tests import modules that were recently refactored or renamed. May need import path
+  fixes or missing re-exports.
+
+
+  **Daemon timeouts:** Check if the daemon binary path is correct (`dist/daemon/index.ts` run via
+  Bun). Verify the health check endpoint. Consider increasing the 5-second timeout or checking if
+  the daemon port binding is failing silently. Run `kspec serve start --daemon --port <port>`
+  manually to see if it starts.
+
+
+  **CLI timeouts:** `kspec setup` timing out at 30s suggests it's blocking on something — possibly
+  trying to fetch remote data, waiting for user input, or hitting a deadlock. Run `kspec setup
+  --dry-run --skip-skills` manually with KSPEC_DEBUG=1 to see where it hangs.
+
+
+  **Mock assertion:** Read the test to understand what triggers `runInvocation`. Check if the
+  function signature or call site changed. May need the mock setup updated to match current
+  internals.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - testing
+  - bug
+vcs_refs: []
+created_at: 2026-03-26T20:41:53.869Z
+todos: []
