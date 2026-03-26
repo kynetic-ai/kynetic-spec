@@ -1941,3 +1941,13 @@ inbox:
       - plans
     added_by: "@claude"
     created_at: 2026-03-25T06:32:11.790Z
+  - _ulid: 01KMMBR4NF4A8FRFJYZFGWVKVX
+    text: task set --depends-on has no way to clear or remove individual dependencies. Had to use
+      replacement semantics (set to a different ref) as workaround. Consider --remove-depends-on
+      @ref or --clear-depends flags, consistent with the --clear-traits / --remove-trait pattern on
+      item set.
+    tags:
+      - cli
+      - dx
+    added_by: "@claude"
+    created_at: 2026-03-26T06:01:47.440Z
