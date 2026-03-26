@@ -52339,9 +52339,25 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-26T00:04:24.025Z
+      - _ulid: 01KMKQA6E9M01PKGHSPMVBHNPA
+        actor: pr-reviewer@dispatch
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-26T00:04:38.985Z
+      - _ulid: 01KMKQA6E9F4JCYJ4MGY6A0QTE
+        actor: pr-reviewer@dispatch
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-26T00:04:38.985Z
     examined_commit: 64fd67d017ddd376eb07de18f5d198026434ace9
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -52418,7 +52434,14 @@ reviews:
               it instead.
             created_at: 2026-03-26T00:04:13.151Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: pr-reviewer@dispatch
+        role: reviewer
+        created_at: 2026-03-26T00:04:38.985Z
     created_at: 2026-03-25T23:57:05.341Z
-    updated_at: 2026-03-26T00:04:23.639Z
+    updated_at: 2026-03-26T00:04:38.985Z
     notes: []
