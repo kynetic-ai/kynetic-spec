@@ -8121,6 +8121,24 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-26T16:57:26.176Z
+  - _ulid: 01KMNHAVKN842AB880EV4QXJYS
+    type: friction
+    content: Review thread bodies are truncated in text output of kspec review get. Must use --json and
+      manually parse to read full thread content. Common friction during fix cycles when reading
+      reviewer feedback.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-26T16:58:38.069Z
+  - _ulid: 01KMNHAVS2EGASH35KB8QNQF4Q
+    type: friction
+    content: Fix cycle resubmission requires kspec task start then kspec task submit from needs_work.
+      The intermediate in_progress state adds ceremony with no value — work is already done. Could
+      allow kspec task submit directly from needs_work, or add a kspec task resubmit shorthand.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-26T16:58:38.242Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
