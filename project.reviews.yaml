@@ -54608,6 +54608,12 @@ reviews:
           kind: blocker
           thread_ulid: 01KMNPRR50WYT1GCQH5WD4BKRB
         timestamp: 2026-03-26T18:33:37.366Z
+      - _ulid: 01KMNPWMA0K6923ZGNBDJA601H
+        actor: Test User
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMNPQRTG1BGJAS94RXJR7GM3
+        timestamp: 2026-03-26T18:35:43.297Z
     examined_commit: 189e4fc775aa1f18106e55d895b8e6d3087ea003
     external_links: []
     lifecycle_state: open
@@ -54636,6 +54642,8 @@ reviews:
               exercises  directly, so this regression is currently untested at the API layer.
             created_at: 2026-03-26T18:33:04.081Z
         kind: blocker
+        resolved_at: 2026-03-26T18:35:42.129Z
+        resolved_by: Test User
       - _ulid: 01KMNPQTRGGJ3J6HD74BFVMXS2
         anchor:
           type: code
@@ -54783,5 +54791,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-26T18:29:11.265Z
-    updated_at: 2026-03-26T18:33:36.160Z
+    updated_at: 2026-03-26T18:35:42.129Z
     notes: []
