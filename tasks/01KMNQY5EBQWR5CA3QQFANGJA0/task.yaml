@@ -82,7 +82,7 @@ description: >-
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -101,7 +101,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: null
+session_id: 01KM0XRFH87T3QWPVXDQZCA2XK
 history:
   - author: "@claude"
     changes:
@@ -153,7 +153,20 @@ history:
         previous: 01KM0XRFH87T3QWPVXDQZCA2XK
     command: review-verdict-needs-work
     timestamp: 2026-03-26T19:54:51.441Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KM0XRFH87T3QWPVXDQZCA2XK
+        previous: null
+      started_at:
+        new: 2026-03-26T20:12:47.302Z
+        previous: 2026-03-26T18:58:54.971Z
+    command: task-start
+    timestamp: 2026-03-26T20:12:47.303Z
 created_at: 2026-03-26T18:54:02.187Z
-started_at: 2026-03-26T18:58:54.971Z
+started_at: 2026-03-26T20:12:47.302Z
 submitted_at: 2026-03-26T19:40:26.397Z
 todos: []
