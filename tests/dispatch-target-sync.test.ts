@@ -6,6 +6,9 @@ import * as invocationModule from "../src/agent-runtime/invocation.js";
 import * as workspaceModule from "../src/agent-runtime/workspace.js";
 import { DispatchEngine } from "../src/agent-runtime/dispatch.js";
 import { cleanupTempDir, createTempDir, initGitRepo } from "./helpers/cli.js";
+import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
+
+ensureSplitBackendRegistered();
 
 function git(cwd: string, command: string): string {
   return execSync(`git ${command}`, {

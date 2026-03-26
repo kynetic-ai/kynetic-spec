@@ -26,6 +26,7 @@ import {
   type DispatchWorkspaceMetadata,
 } from "../src/agent-runtime/workspace.js";
 import { acquireFileLock } from "../src/parser/file-lock.js";
+import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
 import {
   cleanupTempDir,
   createTempDir,
@@ -34,6 +35,8 @@ import {
   readTestOutput,
   testUlid,
 } from "./helpers/cli.js";
+
+ensureSplitBackendRegistered();
 
 const MOCK_KSPEC_CLI = path.join(__dirname, "mocks", "kspec-capture-mock.cjs");
 const projectCli = path.resolve(__dirname, "..", "dist", "cli", "index.js");

@@ -5,51 +5,30 @@
  * through this module. It encapsulates the storage format behind a consistent
  * interface so callers provide mutations, not I/O strategy.
  *
- * The manager supports two storage formats:
- * - "monolithic": All tasks in a single file (default, current)
- * - "split": Per-task directories with a lean index (future)
- *
- * The active format is an explicit setting, not auto-detected.
- * AC: @task-storage-activation ac-1, ac-2
+ * The only supported storage format is "split" (per-task directories with a
+ * lean index). The "monolithic" format has been removed; legacy projects that
+ * still use kynetic: "1.0" without task_storage.format: "split" receive a
+ * version-gated error guiding them to run `kspec task migrate`.
  *
  * Spec: @task-data-manager
  */
 
-import * as fs from "node:fs/promises";
-import * as path from "node:path";
 import type { Note, Task, TaskInput } from "../schema/task.js";
 import { TaskSchema } from "../schema/task.js";
 import type { KspecContext, LoadedTask } from "./yaml.js";
 import {
   createNote,
   createTask,
-  deleteTask as deleteTaskFromFile,
-  extractRawTaskArray,
-  findRawTaskIndex,
-  findTaskByRef,
-  findTaskFiles,
   getAuthor,
-  getDefaultTaskFilePath,
-  loadAllTasks,
-  mergeTaskPreservingRawShape,
-  mutateTasksAtomically,
-  readYamlFile,
-  saveTask as saveTaskToFile,
-  stripRuntimeMetadata,
-  writeRawTaskArray,
 } from "./yaml.js";
 import { createRequire } from "node:module";
-import { acquireFileLock } from "./file-lock.js";
 import { commitIfShadow } from "./shadow.js";
 import { getActiveBatchBuffer, runWithBuffer } from "../cli/batch-write-buffer.js";
 
-/** Synchronous require for ESM — used for lazy backend registration. */
-const esmRequire = createRequire(import.meta.url);
-
 /**
- * Storage format selector.
- * AC: @task-data-manager ac-7, ac-8
- * AC: @task-storage-activation ac-1, ac-2
+ * Storage format type. Only "split" is supported at runtime.
+ * "monolithic" is kept in the type for schema parsing compatibility
+ * but rejected at runtime with version-gated guidance.
  */
 export type StorageFormat = "monolithic" | "split";
 
@@ -371,337 +350,14 @@ class TaskMutexMap {
 }
 
 /**
- * Load task summaries from raw YAML files without full schema validation.
- * Reads the file and extracts only index-level fields from each raw record.
- *
- * AC: @task-data-manager ac-2 — only index data is read; detail fields not parsed
+ * Registry for storage backends. Only the split backend is registered at
+ * runtime. The registry is kept for extensibility.
  */
-async function loadSummariesFromFile(filePath: string): Promise<TaskSummary[]> {
-  const summaries: TaskSummary[] = [];
-
-  try {
-    const raw = await readYamlFile<unknown>(filePath);
-
-    let taskList: unknown[];
-
-    if (Array.isArray(raw)) {
-      taskList = raw;
-    } else if (raw && typeof raw === "object" && "tasks" in raw) {
-      const wrapper = raw as Record<string, unknown>;
-      const tasks = wrapper.tasks;
-      taskList = Array.isArray(tasks) ? tasks : [];
-    } else if (raw) {
-      taskList = [raw];
-    } else {
-      return summaries;
-    }
-
-    for (const taskData of taskList) {
-      const summary = rawToSummary(taskData);
-      if (summary) {
-        summaries.push(summary);
-      }
-    }
-  } catch {
-    // Skip invalid files
-  }
-
-  return summaries;
-}
-
-/**
- * Discover task files and load only summary-level data from each.
- * Delegates file discovery to the same findTaskFiles() used by loadAllTasks
- * so that both code paths discover identical task files (including those
- * in subdirectories).
- *
- * AC: @task-data-manager ac-2 — only index data is read for listing
- */
-async function loadAllTaskSummaries(ctx: KspecContext): Promise<TaskSummary[]> {
-  const summaries: TaskSummary[] = [];
-
-  const checkFile = async (loc: string, files: string[]) => {
-    try {
-      await fs.access(loc);
-      if (!files.includes(loc)) {
-        files.push(loc);
-      }
-    } catch {
-      // File doesn't exist
-    }
-  };
-
-  if (ctx.shadow?.enabled || Boolean(process.env.KSPEC_SPEC_DIR)) {
-    // Use the same recursive findTaskFiles as loadAllTasks
-    const taskFiles = await findTaskFiles(ctx.specDir);
-
-    const standaloneLocations = [
-      path.join(ctx.specDir, "tasks.yaml"),
-      path.join(ctx.specDir, "project.tasks.yaml"),
-      path.join(ctx.specDir, "kynetic.tasks.yaml"),
-      path.join(ctx.specDir, "backlog.tasks.yaml"),
-      path.join(ctx.specDir, "active.tasks.yaml"),
-    ];
-
-    for (const loc of standaloneLocations) {
-      await checkFile(loc, taskFiles);
-    }
-
-    const uniqueFiles = [...new Set(taskFiles)];
-    for (const filePath of uniqueFiles) {
-      const fileSummaries = await loadSummariesFromFile(filePath);
-      summaries.push(...fileSummaries);
-    }
-  } else {
-    // Use the same recursive findTaskFiles as loadAllTasks
-    const taskFiles = await findTaskFiles(ctx.rootDir);
-
-    const additionalPaths = [path.join(ctx.rootDir, "tasks"), path.join(ctx.rootDir, "spec")];
-
-    for (const additionalPath of additionalPaths) {
-      const files = await findTaskFiles(additionalPath);
-      taskFiles.push(...files);
-    }
-
-    const standaloneLocations = [
-      path.join(ctx.rootDir, "tasks.yaml"),
-      path.join(ctx.rootDir, "project.tasks.yaml"),
-      path.join(ctx.rootDir, "spec", "project.tasks.yaml"),
-      path.join(ctx.rootDir, "backlog.tasks.yaml"),
-      path.join(ctx.rootDir, "active.tasks.yaml"),
-    ];
-
-    for (const loc of standaloneLocations) {
-      await checkFile(loc, taskFiles);
-    }
-
-    const uniqueFiles = [...new Set(taskFiles)];
-    for (const filePath of uniqueFiles) {
-      const fileSummaries = await loadSummariesFromFile(filePath);
-      summaries.push(...fileSummaries);
-    }
-  }
-
-  return summaries;
-}
-
-/**
- * Monolithic storage backend — all tasks in a single YAML file.
- * This is the default backend used when no split format is activated.
- *
- * Uses per-task in-memory locks so that non-overlapping mutations do not
- * contend with each other. The file lock is acquired only for the brief
- * write phase, not for the entire mutation callback.
- *
- * AC: @task-data-manager ac-5 — non-overlapping mutations proceed without contention
- * AC: @task-data-manager ac-7 — monolithic format used by default
- */
-class MonolithicBackend implements TaskStorageBackend {
-  readonly format: StorageFormat = "monolithic";
-
-  /** Per-task in-memory locks for contention-free non-overlapping mutations. */
-  private readonly taskMutex = new TaskMutexMap();
-
-  /**
-   * List tasks by reading raw YAML and extracting only summary-level fields.
-   * Detail fields (notes, todos, description, etc.) are not parsed or validated.
-   *
-   * AC: @task-data-manager ac-2 — only index data is read
-   */
-  async listTasks(ctx: KspecContext): Promise<TaskSummary[]> {
-    return loadAllTaskSummaries(ctx);
-  }
-
-  async loadAllTasks(ctx: KspecContext): Promise<LoadedTask[]> {
-    return loadAllTasks(ctx);
-  }
-
-  async getTask(ctx: KspecContext, ref: string): Promise<LoadedTask | undefined> {
-    const tasks = await loadAllTasks(ctx);
-    return findTaskByRef(tasks, ref);
-  }
-
-  async createTask(ctx: KspecContext, task: Task): Promise<LoadedTask> {
-    const loadedTask: LoadedTask = {
-      ...task,
-      _sourceFile: getDefaultTaskFilePath(ctx),
-    };
-    await saveTaskToFile(ctx, loadedTask);
-    return loadedTask;
-  }
-
-  /**
-   * Mutate a single task with per-task locking.
-   *
-   * Acquires an in-memory per-task lock (by ULID) so that concurrent mutations
-   * on different tasks proceed independently. The file-level lock is held only
-   * for the brief re-read + merge + write phase, not during the mutation callback.
-   *
-   * AC: @task-data-manager ac-5 — non-overlapping mutations proceed without contention
-   * AC: @task-data-manager ac-9 — same-task mutations serialize via per-task lock
-   */
-  async mutateTask(
-    ctx: KspecContext,
-    task: LoadedTask,
-    mutate: (latestTask: LoadedTask) => Task | LoadedTask | Promise<Task | LoadedTask>,
-    _metadata?: MutationMetadata,
-  ): Promise<LoadedTask> {
-    const taskFilePath = task._sourceFile || getDefaultTaskFilePath(ctx);
-
-    // Acquire per-task lock: same-task mutations serialize (AC-9),
-    // different-task mutations proceed concurrently (AC-5)
-    const releaseTaskLock = await this.taskMutex.acquire(task._ulid);
-
-    try {
-      // Phase 1: Read current state and run mutation callback OUTSIDE file lock.
-      // This allows other tasks' mutations to read/write concurrently.
-      const dir = path.dirname(taskFilePath);
-      await fs.mkdir(dir, { recursive: true });
-
-      const preRead = await extractRawTaskArray(taskFilePath);
-      const preIndex = findRawTaskIndex(preRead.rawTasks, task._ulid);
-      if (preIndex === -1) {
-        throw new TaskDataManagerError(`Task not found: ${task._ulid}`, {
-          suggestion: `Check the reference with: kspec search "${task._ulid}" or kspec task list`,
-        });
-      }
-
-      const rawTarget = preRead.rawTasks[preIndex];
-      const parsed = TaskSchema.safeParse(rawTarget);
-      if (!parsed.success) {
-        throw new Error(`Invalid task data for ${task._ulid}: ${parsed.error.message}`);
-      }
-      const latestTask: LoadedTask = { ...parsed.data, _sourceFile: taskFilePath };
-
-      // Run the mutation callback outside the file lock
-      const mutatedTask = await mutate(latestTask);
-      const cleanMutatedTask = stripRuntimeMetadata(mutatedTask as LoadedTask);
-
-      // Phase 2: Acquire file lock ONLY for the re-read + merge + write phase.
-      // Since we hold the per-task lock, no other mutation can change our target
-      // task between phases. Other tasks' data may have changed, which is fine —
-      // we re-read the file to get fresh state for all non-target tasks.
-      let updatedTask: LoadedTask | undefined;
-      const releaseFileLock = await acquireFileLock(taskFilePath);
-      try {
-        const { rawTasks, useTasksWrapper, wrapperObj } = await extractRawTaskArray(taskFilePath);
-
-        const taskIndex = findRawTaskIndex(rawTasks, task._ulid);
-        if (taskIndex === -1) {
-          throw new TaskDataManagerError(`Task not found: ${task._ulid}`, {
-            suggestion: `Check the reference with: kspec search "${task._ulid}" or kspec task list`,
-          });
-        }
-
-        rawTasks[taskIndex] = mergeTaskPreservingRawShape(
-          rawTasks[taskIndex] as Record<string, unknown>,
-          cleanMutatedTask as Record<string, unknown>,
-        );
-
-        await writeRawTaskArray(taskFilePath, rawTasks, useTasksWrapper, wrapperObj);
-
-        updatedTask = {
-          ...cleanMutatedTask,
-          _sourceFile: taskFilePath,
-        };
-      } finally {
-        await releaseFileLock();
-      }
-
-      if (!updatedTask) {
-        throw new Error(`Failed to mutate task atomically: ${task._ulid}`);
-      }
-
-      return updatedTask;
-    } finally {
-      releaseTaskLock();
-    }
-  }
-
-  /**
-   * Mutate multiple tasks with per-task locking for each target.
-   *
-   * Acquires per-task mutex locks for all target ULIDs (sorted to prevent
-   * deadlocks) before delegating to mutateTasksAtomically, which handles
-   * file-level locking. This ensures that a concurrent mutateTask() on
-   * any of the target tasks must wait, preventing lost updates.
-   *
-   * AC: @task-data-manager ac-5 — non-overlapping mutations proceed without contention
-   * AC: @task-data-manager ac-9 — same-task mutations serialize via per-task lock
-   */
-  async mutateTasks(
-    ctx: KspecContext,
-    tasks: LoadedTask[],
-    mutate: (
-      latestTasks: LoadedTask[],
-    ) => Array<Task | LoadedTask> | Promise<Array<Task | LoadedTask>>,
-    _metadata?: MutationMetadata,
-  ): Promise<LoadedTask[]> {
-    // Acquire per-task locks in sorted order to prevent deadlocks
-    const sortedUlids = [...new Set(tasks.map((t) => t._ulid))].toSorted();
-    const releases: Array<() => void> = [];
-
-    try {
-      for (const ulid of sortedUlids) {
-        releases.push(await this.taskMutex.acquire(ulid));
-      }
-
-      return await mutateTasksAtomically(ctx, tasks, mutate);
-    } finally {
-      for (const release of releases) {
-        release();
-      }
-    }
-  }
-
-  /**
-   * Delete a task with per-task locking.
-   *
-   * Acquires the same per-task mutex used by mutateTask()/mutateTasks() so
-   * that a concurrent mutation on the same task must wait, preventing
-   * mid-flight "task not found" failures.
-   *
-   * AC: @task-data-manager ac-9 — same-task operations serialize via per-task lock
-   */
-  async deleteTask(ctx: KspecContext, task: LoadedTask): Promise<void> {
-    const releaseTaskLock = await this.taskMutex.acquire(task._ulid);
-    try {
-      await deleteTaskFromFile(ctx, task);
-    } finally {
-      releaseTaskLock();
-    }
-  }
-
-  /**
-   * No-op for monolithic backend — the task file IS the index, so there
-   * is no separate index to drift or rebuild.
-   *
-   * AC: @task-index-file ac-7
-   */
-  async rebuildIndex(ctx: KspecContext): Promise<{ count: number }> {
-    const tasks = await loadAllTasks(ctx);
-    return { count: tasks.length };
-  }
-}
-
-/** Singleton monolithic backend instance. */
-const monolithicBackend = new MonolithicBackend();
-
-/**
- * Registry for storage backends. The split backend will be registered here
- * by @task-impl-split-storage when it is implemented.
- *
- * AC: @task-data-manager ac-8 — split format routes to registered backend
- */
-const backendRegistry = new Map<StorageFormat, TaskStorageBackend>([
-  ["monolithic", monolithicBackend],
-]);
+const backendRegistry = new Map<StorageFormat, TaskStorageBackend>();
 
 /**
  * Register a storage backend for a given format.
  * Used by the split storage implementation to plug in its backend.
- *
- * AC: @task-data-manager ac-8 — enables split format activation
  */
 export function registerBackend(backend: TaskStorageBackend): void {
   backendRegistry.set(backend.format, backend);
@@ -710,12 +366,8 @@ export function registerBackend(backend: TaskStorageBackend): void {
 /**
  * Unregister a storage backend for a given format.
  * Primarily used in tests to restore the default registry state.
- * Cannot unregister the monolithic backend.
  */
 export function unregisterBackend(format: StorageFormat): void {
-  if (format === "monolithic") {
-    return; // monolithic backend is always available
-  }
   backendRegistry.delete(format);
 }
 
@@ -723,9 +375,10 @@ export function unregisterBackend(format: StorageFormat): void {
  * Ensure the split backend is registered. Uses createRequire for synchronous
  * module loading within ESM, avoiding circular dependency from top-level imports.
  * Called lazily from the TaskDataManager constructor when "split" format is requested.
- *
- * AC: @task-data-manager ac-8 — split format routes to registered backend
  */
+/** Synchronous require for ESM — used for lazy backend registration. */
+const esmRequire = createRequire(import.meta.url);
+
 function ensureSplitBackend(): void {
   if (backendRegistry.has("split")) return;
   try {
@@ -776,13 +429,11 @@ function validateMutationOutput(task: Task | LoadedTask, originalUlid?: string):
  * Task Data Manager — owns all task storage operations.
  *
  * AC: @task-data-manager ac-1 — callers don't know about storage format
- * AC: @task-data-manager ac-7 — monolithic format used by default
  * AC: @task-data-manager ac-8 — split format used when activated
  *
- * The manager receives a storage format at construction time. The format
- * defaults to "monolithic" per @task-storage-activation ac-1. When set to
- * "split", the manager routes to the registered split backend. If no split
- * backend has been registered, the manager throws a descriptive error.
+ * The manager uses the split storage backend exclusively. Construction
+ * defaults to "split" format. If the split backend has not been registered,
+ * the constructor throws a descriptive error.
  */
 export class TaskDataManager {
   readonly storageFormat: StorageFormat;
@@ -790,40 +441,34 @@ export class TaskDataManager {
 
   /**
    * Per-task in-memory mutex that spans the entire write-buffer lifecycle
-   * (including flush). For the split backend, the backend's internal mutex
-   * only covers the buffering phase — the flush happens in withWriteBuffer
-   * AFTER the backend method returns. Without this outer lock, concurrent
-   * mutations on the same task read stale disk state because the previous
-   * mutation's buffer hasn't flushed yet.
-   *
-   * The monolithic backend doesn't need this (it has its own file-level
-   * locking), but it's harmless — the lock is acquired/released around
-   * withWriteBuffer which is a no-op wrapper for monolithic.
+   * (including flush). The backend's internal mutex only covers the
+   * buffering phase — the flush happens in withWriteBuffer AFTER the
+   * backend method returns. Without this outer lock, concurrent mutations
+   * on the same task read stale disk state because the previous mutation's
+   * buffer hasn't flushed yet.
    *
    * AC: @task-data-manager ac-9 — same-task mutations serialize through flush
    * AC: @task-data-manager ac-10 — delete + mutate fully complete before other begins
    */
   private readonly taskMutex = new TaskMutexMap();
 
-  constructor(storageFormat: StorageFormat = "monolithic") {
+  constructor(storageFormat: StorageFormat = "split") {
     this.storageFormat = storageFormat;
     let backend = backendRegistry.get(storageFormat);
 
     // Lazy registration: when "split" is requested but not yet registered,
     // synchronously load the split backend module and register it.
-    // AC: @task-data-manager ac-8 — split format activates without caller import
     if (!backend && storageFormat === "split") {
       ensureSplitBackend();
       backend = backendRegistry.get(storageFormat);
     }
 
     if (!backend) {
-      // AC: @trait-error-guidance ac-1, ac-2
       throw new TaskDataManagerError(
-        `No storage backend registered for format "${storageFormat}". The split per-task directory backend is delivered by task @task-impl-split-storage.`,
+        `No storage backend registered for format "${storageFormat}".`,
         {
           suggestion:
-            "Set storage format to 'monolithic' or ensure the split storage backend has been registered via registerBackend().",
+            "Ensure the split storage backend has been registered via registerBackend().",
           field: "storageFormat",
         },
       );
@@ -839,7 +484,6 @@ export class TaskDataManager {
    * todos, description, etc.) are not included and not read from storage.
    *
    * AC: @task-data-manager ac-2 — only index data read from storage
-   * AC: @task-data-manager ac-7 — monolithic format used until split activated
    */
   async listTasks(ctx: KspecContext, filters?: TaskListFilters): Promise<TaskSummary[]> {
     const summaries = await this.backend.listTasks(ctx);
@@ -878,7 +522,6 @@ export class TaskDataManager {
    * index-level fields are needed, prefer listTasks().
    *
    * AC: @task-data-manager ac-1 — callers don't know about storage format
-   * AC: @task-data-manager ac-7 — monolithic format used until split activated
    */
   async loadAllTasks(ctx: KspecContext): Promise<LoadedTask[]> {
     return this.backend.loadAllTasks(ctx);
@@ -887,12 +530,10 @@ export class TaskDataManager {
   /**
    * Get full details for a specific task by reference (ULID, slug, or short ref).
    *
-   * In the monolithic backend, this loads all tasks and finds the match.
-   * When the split format is activated, the backend reads the index + per-task
-   * directory to assemble the complete record.
+   * The backend reads the index + per-task directory to assemble the
+   * complete record.
    *
    * AC: @task-data-manager ac-3 — assembles complete task transparently
-   * AC: @task-data-manager ac-7 — monolithic format used until split activated
    * AC: @trait-error-guidance ac-3 — suggests checking ref on not found
    */
   async getTask(ctx: KspecContext, ref: string): Promise<LoadedTask> {
@@ -909,9 +550,7 @@ export class TaskDataManager {
   /**
    * Get the history entries for a task from the storage backend.
    *
-   * Returns the per-task field-change history if the backend supports it
-   * (split format). For monolithic format, returns an empty array since
-   * history is not tracked at the file level.
+   * Returns the per-task field-change history if the backend supports it.
    *
    * AC: @task-core-data-file ac-2 — history provides complete audit trail
    */
@@ -932,9 +571,6 @@ export class TaskDataManager {
    * other. If a batch buffer is already active (from batch-exec or a parent
    * operation), runWithBuffer() reuses it and the parent owns flush/discard.
    *
-   * For the monolithic format, no buffer is needed since writes go to a single
-   * file under a file lock.
-   *
    * AC: @task-atomic-writes ac-1 — both files written within single buffered transaction
    * AC: @task-atomic-writes ac-2 — if any write fails, buffer is discarded
    * AC: @task-atomic-writes ac-3 — batch buffer reused when active
@@ -944,22 +580,6 @@ export class TaskDataManager {
     commitOpts: ShadowCommitOptions | undefined,
     operation: () => Promise<T>,
   ): Promise<T> {
-    // Monolithic format: no buffer needed, single-file writes are atomic
-    // under file lock. Split format: buffer coordinates multi-file writes.
-    if (this.storageFormat !== "split") {
-      const result = await operation();
-      if (commitOpts && !commitOpts.skipCommit) {
-        await commitIfShadow(
-          ctx.shadow,
-          commitOpts.operation,
-          commitOpts.ref,
-          commitOpts.detail,
-          commitOpts.verbose,
-        );
-      }
-      return result;
-    }
-
     // Check whether a parent buffer already owns the lifecycle BEFORE
     // entering runWithBuffer. When nested, the parent buffer has not
     // flushed yet, so commitIfShadow must be deferred to the parent —
@@ -1216,9 +836,8 @@ export class TaskDataManager {
   /**
    * Rebuild the task index from per-task files.
    *
-   * For the split backend, this scans all task directories and regenerates the
-   * index file — the recovery path when the index has drifted. For the
-   * monolithic backend, this is a no-op since the task file IS the index.
+   * Scans all task directories and regenerates the index file — the recovery
+   * path when the index has drifted.
    *
    * AC: @task-index-file ac-7 — index fully regenerated from per-task files alone
    */
@@ -1228,42 +847,50 @@ export class TaskDataManager {
 }
 
 /**
- * Module-level default singleton instance (monolithic format).
- *
- * This singleton is the default for consumers that don't need a context-aware
- * manager. When the project manifest specifies a different storage format,
- * use resolveTaskDataManager(ctx) instead to get the correctly-configured manager.
- *
- * AC: @task-data-manager ac-7 — monolithic format used by default
- */
-export const taskDataManager = new TaskDataManager();
-
-/**
  * Cached split-format manager instance.
- * Created lazily on first resolveTaskDataManager() call with split format.
+ * Created lazily on first resolveTaskDataManager() call.
  */
 let splitManagerInstance: TaskDataManager | null = null;
 
 /**
  * Resolve the correct TaskDataManager for a given context.
  *
- * Reads the storage format from the project manifest (`tasks.storage`).
- * Returns the monolithic singleton when no manifest or monolithic format,
- * or a split-format manager when the manifest specifies "split".
+ * Returns the split-format manager when the manifest specifies
+ * task_storage.format: "split" (or kynetic version >= 1.1).
  *
- * AC: @task-storage-activation ac-1 — defaults to monolithic without setting
- * AC: @task-storage-activation ac-2 — uses split when explicitly set
- * AC: @task-data-manager ac-8 — split format routes through its own backend
+ * For legacy projects (kynetic: "1.0" without task_storage.format: "split"),
+ * throws a version-gated error guiding users to run `kspec task migrate`.
+ * This is a higher-level gate than ensureMigrated() which stays as a
+ * data-integrity safety net in the split backend.
  */
 export function resolveTaskDataManager(ctx: KspecContext): TaskDataManager {
   const storage = ctx.manifest?.task_storage?.format;
+  const kyneticVersion = ctx.manifest?.kynetic;
 
-  if (storage === "split") {
-    if (!splitManagerInstance) {
-      splitManagerInstance = new TaskDataManager("split");
-    }
-    return splitManagerInstance;
+  // Version-gated legacy detection: when the manifest explicitly declares
+  // kynetic 1.0 without task_storage.format: "split", the project was
+  // created before the split migration and hasn't been upgraded yet.
+  // This is a higher-level gate than ensureMigrated() which stays as a
+  // data-integrity safety net in the split backend.
+  if (
+    kyneticVersion !== undefined &&
+    storage !== "split" &&
+    parseFloat(kyneticVersion) < 1.1
+  ) {
+    throw new TaskDataManagerError(
+      `This project uses kynetic version "${kyneticVersion}" without split task storage. ` +
+        "The monolithic task storage format has been removed.",
+      {
+        suggestion:
+          'Run "kspec task migrate" to convert to per-task directory storage, then tasks will work normally.',
+        field: "task_storage.format",
+      },
+    );
   }
 
-  return taskDataManager;
+  // All other cases: use split format (the only supported backend)
+  if (!splitManagerInstance) {
+    splitManagerInstance = new TaskDataManager("split");
+  }
+  return splitManagerInstance;
 }

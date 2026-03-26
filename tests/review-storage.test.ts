@@ -15,6 +15,9 @@ import type { ReviewRecordInput } from "../src/schema/index.js";
 import { buildReferenceIndex, buildIndexes } from "../src/parser/yaml.js";
 import type { KspecContext } from "../src/parser/yaml.js";
 import { createTempDir, cleanupTempDir, initGitRepo, readTestOutput, testUlid, testUlids } from "./helpers/cli.js";
+import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
+
+ensureSplitBackendRegistered();
 
 function makeCtx(specDir: string): KspecContext {
   return { specDir } as KspecContext;

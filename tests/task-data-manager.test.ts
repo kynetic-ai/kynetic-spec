@@ -522,12 +522,11 @@ describe("TaskDataManager", () => {
     });
   });
 
-  // AC: @task-data-manager ac-7
-  // Monolithic format is used until split explicitly activated
-  describe("monolithic format by default (ac-7)", () => {
-    it("defaults to monolithic format when no format specified", () => {
+  // Split format is the only supported format
+  describe("split format by default", () => {
+    it("defaults to split format when no format specified", () => {
       const defaultManager = new TaskDataManager();
-      expect(defaultManager.storageFormat).toBe("monolithic");
+      expect(defaultManager.storageFormat).toBe("split");
     });
 
     it("reads from tasks file via resolved manager", async () => {
@@ -635,13 +634,11 @@ describe("TaskDataManager", () => {
         },
         async mutateTask(ctx, task, mutate) {
           calls.push("mutateTask");
-          const { mutateTaskAtomically: mut } = await import("../src/parser/yaml.js");
-          return mut(ctx, task, mutate);
+          return splitBackend.mutateTask(ctx, task, mutate);
         },
         async mutateTasks(ctx, tasks, mutate) {
           calls.push("mutateTasks");
-          const { mutateTasksAtomically: mut } = await import("../src/parser/yaml.js");
-          return mut(ctx, tasks, mutate);
+          return splitBackend.mutateTasks(ctx, tasks, mutate);
         },
         async deleteTask() {
           calls.push("deleteTask");
@@ -697,7 +694,7 @@ describe("TaskDataManager", () => {
 
     // AC: @task-data-manager ac-1 — callers don't know about storage format
     // AC: @task-data-manager ac-8 — split backend owns _sourceFile on create
-    it("createTask returns _sourceFile from the backend, not a monolithic path", async () => {
+    it("createTask returns _sourceFile from the backend, not a default path", async () => {
       tempDir = await setupTempFixtures();
 
       const mockSplitBackend: TaskStorageBackend = {
@@ -729,7 +726,7 @@ describe("TaskDataManager", () => {
         const created = await splitManager.createTask(ctx, { title: "Split-owned task" });
 
         // The returned task should have the split backend's _sourceFile,
-        // not the monolithic getDefaultTaskFilePath(ctx)
+        // not a default project.tasks.yaml path
         expect(created._sourceFile).toContain("/split/tasks/");
         expect(created._sourceFile).toContain("/task.yaml");
         expect(created._sourceFile).not.toContain("project.tasks.yaml");
@@ -741,8 +738,8 @@ describe("TaskDataManager", () => {
     });
 
     it("exposes storageFormat property for inspection", () => {
-      const monoManager = new TaskDataManager();
-      expect(monoManager.storageFormat).toBe("monolithic");
+      const defaultManager = new TaskDataManager();
+      expect(defaultManager.storageFormat).toBe("split");
 
       // Split backend is registered and succeeds at construction
       const splitManager = new TaskDataManager("split");
@@ -919,7 +916,7 @@ describe("TaskDataManager", () => {
       // mutate ran first and then the delete followed. If one fails, the
       // failure should be TaskDataManagerError (clean "not found"), not
       // an internal "Task not found in file during write phase" error
-      // from the monolithic backend.
+      // from the storage backend.
       expect(fulfilled.length).toBeGreaterThanOrEqual(1);
 
       for (const r of rejected) {
@@ -1130,14 +1127,6 @@ describe("TaskDataManager", () => {
       );
 
       expect(note.author).toBe("@custom-author");
-    });
-  });
-
-  describe("singleton export", () => {
-    it("provides a module-level singleton instance with monolithic format", async () => {
-      const { taskDataManager } = await import("../src/parser/task-data-manager.js");
-      expect(taskDataManager).toBeInstanceOf(TaskDataManager);
-      expect(taskDataManager.storageFormat).toBe("monolithic");
     });
   });
 

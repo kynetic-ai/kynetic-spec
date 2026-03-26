@@ -3,7 +3,7 @@
  * Spec: @workflow-run-foundation
  */
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { kspec, createTempDir, cleanupTempDir, initGitRepo, readTestOutput } from "./helpers/cli.js";
+import { kspec, createTempDir, cleanupTempDir, initGitRepo, readTestOutput, seedSplitTask } from "./helpers/cli.js";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import * as YAML from "yaml";
@@ -29,8 +29,12 @@ beforeEach(async () => {
   // Create minimal root manifest (non-shadow mode: files in project root)
   await fs.writeFile(
     path.join(tempDir, "kynetic.yaml"),
-    `kynetic: "1.0"
-project: Test Project
+    `kynetic: "1.1"
+task_storage:
+  format: split
+project:
+  name: Test Project
+  version: 0.1.0
 `,
     "utf-8",
   );
@@ -72,21 +76,17 @@ agents:
     "utf-8",
   );
 
-  // Create a test task for task linking tests (non-shadow mode: files in project root)
-  await fs.writeFile(
-    path.join(tempDir, "project.tasks.yaml"),
-    `kynetic_tasks: "1.0"
-tasks:
-  - _ulid: ${testTaskUlid}
-    slugs:
-      - test-task
-    title: Test Task
-    status: pending
-    priority: 3
-    created_at: "${new Date().toISOString()}"
-`,
-    "utf-8",
-  );
+  // Create a test task for task linking tests in split format
+  seedSplitTask(tempDir, {
+    _ulid: testTaskUlid,
+    slugs: ["test-task"],
+    title: "Test Task",
+    status: "pending",
+    priority: 3,
+    depends_on: [],
+    notes: [],
+    created_at: new Date().toISOString(),
+  });
 });
 
 afterEach(async () => {

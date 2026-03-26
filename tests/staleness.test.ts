@@ -7,6 +7,7 @@ import {
   initGitRepo,
   kspecOutput as kspec,
   kspecWithStatus,
+  seedSplitTask,
 } from "./helpers/cli";
 
 /**
@@ -36,14 +37,14 @@ describe("Staleness detection", () => {
     // Create manifest
     await fs.writeFile(
       path.join(tmpDir, "kynetic.yaml"),
-      `kynetic: "1.0"
+      `kynetic: "1.1"
+task_storage:
+  format: split
 project:
   name: test-project
   version: 0.1.0
 includes:
   - "spec/module.yaml"
-tasks:
-  - "spec/test.tasks.yaml"
 `,
     );
 
@@ -60,31 +61,38 @@ tasks:
 `,
     );
 
-    // Create task file with parent task that has completed dependencies
-    await fs.writeFile(
-      path.join(specDir, "test.tasks.yaml"),
-      `tasks:
-  - _ulid: 01JHNKAB01TASK100000000001
-    slugs:
-      - task-dep-1
-    title: Dependency Task 1
-    status: completed
-    spec_ref: "@test-feature"
-  - _ulid: 01JHNKAB01TASK200000000002
-    slugs:
-      - task-dep-2
-    title: Dependency Task 2
-    status: completed
-  - _ulid: 01JHNKAB01TASK300000000003
-    slugs:
-      - task-parent
-    title: Parent Task
-    status: pending
-    depends_on:
-      - "@task-dep-1"
-      - "@task-dep-2"
-`,
-    );
+    // Seed tasks in split format
+    seedSplitTask(tmpDir, {
+      _ulid: "01JHNKAB01TASK100000000001",
+      slugs: ["task-dep-1"],
+      title: "Dependency Task 1",
+      status: "completed",
+      priority: 3,
+      depends_on: [],
+      spec_ref: "@test-feature",
+      notes: [],
+      created_at: "2026-01-01T00:00:00Z",
+    });
+    seedSplitTask(tmpDir, {
+      _ulid: "01JHNKAB01TASK200000000002",
+      slugs: ["task-dep-2"],
+      title: "Dependency Task 2",
+      status: "completed",
+      priority: 3,
+      depends_on: [],
+      notes: [],
+      created_at: "2026-01-01T00:00:00Z",
+    });
+    seedSplitTask(tmpDir, {
+      _ulid: "01JHNKAB01TASK300000000003",
+      slugs: ["task-parent"],
+      title: "Parent Task",
+      status: "pending",
+      priority: 3,
+      depends_on: ["@task-dep-1", "@task-dep-2"],
+      notes: [],
+      created_at: "2026-01-01T00:00:00Z",
+    });
 
     // Run validate --staleness
     const result = kspec("validate --staleness", tmpDir);
@@ -102,14 +110,14 @@ tasks:
     // Create manifest
     await fs.writeFile(
       path.join(tmpDir, "kynetic.yaml"),
-      `kynetic: "1.0"
+      `kynetic: "1.1"
+task_storage:
+  format: split
 project:
   name: test-project
   version: 0.1.0
 includes:
   - "spec/module.yaml"
-tasks:
-  - "spec/test.tasks.yaml"
 `,
     );
 
@@ -126,17 +134,17 @@ tasks:
 `,
     );
 
-    // Create task file with no completed tasks for this spec
-    await fs.writeFile(
-      path.join(specDir, "test.tasks.yaml"),
-      `tasks:
-  - _ulid: 01JHNKAB01TASK0000000000A1
-    slugs:
-      - unrelated-task
-    title: Unrelated Task
-    status: completed
-`,
-    );
+    // Seed task in split format (unrelated, no spec_ref to orphan-spec)
+    seedSplitTask(tmpDir, {
+      _ulid: "01JHNKAB01TASK0000000000A1",
+      slugs: ["unrelated-task"],
+      title: "Unrelated Task",
+      status: "completed",
+      priority: 3,
+      depends_on: [],
+      notes: [],
+      created_at: "2026-01-01T00:00:00Z",
+    });
 
     // Run validate --staleness
     const result = kspec("validate --staleness", tmpDir);
@@ -154,14 +162,14 @@ tasks:
     // Create manifest
     await fs.writeFile(
       path.join(tmpDir, "kynetic.yaml"),
-      `kynetic: "1.0"
+      `kynetic: "1.1"
+task_storage:
+  format: split
 project:
   name: test-project
   version: 0.1.0
 includes:
   - "spec/module.yaml"
-tasks:
-  - "spec/test.tasks.yaml"
 `,
     );
 
@@ -178,18 +186,18 @@ tasks:
 `,
     );
 
-    // Create completed task referencing the not_started spec
-    await fs.writeFile(
-      path.join(specDir, "test.tasks.yaml"),
-      `tasks:
-  - _ulid: 01JHNKAB01TASK0000000000A1
-    slugs:
-      - completed-task
-    title: Completed Task
-    status: completed
-    spec_ref: "@stale-spec"
-`,
-    );
+    // Seed completed task referencing the not_started spec
+    seedSplitTask(tmpDir, {
+      _ulid: "01JHNKAB01TASK0000000000A1",
+      slugs: ["completed-task"],
+      title: "Completed Task",
+      status: "completed",
+      priority: 3,
+      depends_on: [],
+      spec_ref: "@stale-spec",
+      notes: [],
+      created_at: "2026-01-01T00:00:00Z",
+    });
 
     // Run validate --staleness
     const result = kspec("validate --staleness", tmpDir);
@@ -208,14 +216,14 @@ tasks:
     // Create manifest
     await fs.writeFile(
       path.join(tmpDir, "kynetic.yaml"),
-      `kynetic: "1.0"
+      `kynetic: "1.1"
+task_storage:
+  format: split
 project:
   name: test-project
   version: 0.1.0
 includes:
   - "spec/module.yaml"
-tasks:
-  - "spec/test.tasks.yaml"
 `,
     );
 
@@ -232,18 +240,18 @@ tasks:
 `,
     );
 
-    // Create completed task referencing the not_started spec
-    await fs.writeFile(
-      path.join(specDir, "test.tasks.yaml"),
-      `tasks:
-  - _ulid: 01JHNKAB01TASK0000000000A1
-    slugs:
-      - completed-task
-    title: Completed Task
-    status: completed
-    spec_ref: "@stale-spec"
-`,
-    );
+    // Seed completed task referencing the not_started spec
+    seedSplitTask(tmpDir, {
+      _ulid: "01JHNKAB01TASK0000000000A1",
+      slugs: ["completed-task"],
+      title: "Completed Task",
+      status: "completed",
+      priority: 3,
+      depends_on: [],
+      spec_ref: "@stale-spec",
+      notes: [],
+      created_at: "2026-01-01T00:00:00Z",
+    });
 
     // Run validate WITHOUT --staleness flag
     const resultWithoutFlag = kspec("validate", tmpDir);
@@ -269,14 +277,14 @@ tasks:
     // Create manifest
     await fs.writeFile(
       path.join(tmpDir, "kynetic.yaml"),
-      `kynetic: "1.0"
+      `kynetic: "1.1"
+task_storage:
+  format: split
 project:
   name: test-project
   version: 0.1.0
 includes:
   - "spec/module.yaml"
-tasks:
-  - "spec/test.tasks.yaml"
 `,
     );
 
@@ -293,18 +301,18 @@ tasks:
 `,
     );
 
-    // Create completed task referencing the not_started spec
-    await fs.writeFile(
-      path.join(specDir, "test.tasks.yaml"),
-      `tasks:
-  - _ulid: 01JHNKAB01TASK0000000000A1
-    slugs:
-      - completed-task
-    title: Completed Task
-    status: completed
-    spec_ref: "@stale-spec"
-`,
-    );
+    // Seed completed task referencing the not_started spec
+    seedSplitTask(tmpDir, {
+      _ulid: "01JHNKAB01TASK0000000000A1",
+      slugs: ["completed-task"],
+      title: "Completed Task",
+      status: "completed",
+      priority: 3,
+      depends_on: [],
+      spec_ref: "@stale-spec",
+      notes: [],
+      created_at: "2026-01-01T00:00:00Z",
+    });
 
     // Run validate --staleness (without --strict) - should exit 6 (warnings present)
     const resultNoStrict = kspecWithStatus("validate --staleness", tmpDir);
@@ -323,14 +331,14 @@ tasks:
     // Create manifest
     await fs.writeFile(
       path.join(tmpDir, "kynetic.yaml"),
-      `kynetic: "1.0"
+      `kynetic: "1.1"
+task_storage:
+  format: split
 project:
   name: test-project
   version: 0.1.0
 includes:
   - "spec/module.yaml"
-tasks:
-  - "spec/test.tasks.yaml"
 `,
     );
 
@@ -347,18 +355,18 @@ tasks:
 `,
     );
 
-    // Create completed task referencing the implemented spec
-    await fs.writeFile(
-      path.join(specDir, "test.tasks.yaml"),
-      `tasks:
-  - _ulid: 01JHNKAB01TASK0000000000A1
-    slugs:
-      - aligned-task
-    title: Aligned Task
-    status: completed
-    spec_ref: "@aligned-spec"
-`,
-    );
+    // Seed completed task referencing the implemented spec
+    seedSplitTask(tmpDir, {
+      _ulid: "01JHNKAB01TASK0000000000A1",
+      slugs: ["aligned-task"],
+      title: "Aligned Task",
+      status: "completed",
+      priority: 3,
+      depends_on: [],
+      spec_ref: "@aligned-spec",
+      notes: [],
+      created_at: "2026-01-01T00:00:00Z",
+    });
 
     // Run validate --staleness
     const result = kspec("validate --staleness", tmpDir);
@@ -374,14 +382,14 @@ tasks:
     // Create manifest
     await fs.writeFile(
       path.join(tmpDir, "kynetic.yaml"),
-      `kynetic: "1.0"
+      `kynetic: "1.1"
+task_storage:
+  format: split
 project:
   name: test-project
   version: 0.1.0
 includes:
   - "spec/module.yaml"
-tasks:
-  - "spec/test.tasks.yaml"
 `,
     );
 
@@ -398,34 +406,40 @@ tasks:
 `,
     );
 
-    // Create task file with manual_only parent and eligible children
-    await fs.writeFile(
-      path.join(specDir, "test.tasks.yaml"),
-      `tasks:
-  - _ulid: 01JHNKAB01TASK100000000001
-    slugs:
-      - manual-parent
-    title: Manual Only Parent Task
-    status: pending
-    automation: manual_only
-  - _ulid: 01JHNKAB01TASK200000000002
-    slugs:
-      - eligible-child-1
-    title: Eligible Child Task 1
-    status: pending
-    automation: eligible
-    depends_on:
-      - "@manual-parent"
-  - _ulid: 01JHNKAB01TASK300000000003
-    slugs:
-      - eligible-child-2
-    title: Eligible Child Task 2
-    status: pending
-    automation: eligible
-    depends_on:
-      - "@manual-parent"
-`,
-    );
+    // Seed tasks in split format
+    seedSplitTask(tmpDir, {
+      _ulid: "01JHNKAB01TASK100000000001",
+      slugs: ["manual-parent"],
+      title: "Manual Only Parent Task",
+      status: "pending",
+      priority: 3,
+      automation: "manual_only",
+      depends_on: [],
+      notes: [],
+      created_at: "2026-01-01T00:00:00Z",
+    });
+    seedSplitTask(tmpDir, {
+      _ulid: "01JHNKAB01TASK200000000002",
+      slugs: ["eligible-child-1"],
+      title: "Eligible Child Task 1",
+      status: "pending",
+      priority: 3,
+      automation: "eligible",
+      depends_on: ["@manual-parent"],
+      notes: [],
+      created_at: "2026-01-01T00:00:00Z",
+    });
+    seedSplitTask(tmpDir, {
+      _ulid: "01JHNKAB01TASK300000000003",
+      slugs: ["eligible-child-2"],
+      title: "Eligible Child Task 2",
+      status: "pending",
+      priority: 3,
+      automation: "eligible",
+      depends_on: ["@manual-parent"],
+      notes: [],
+      created_at: "2026-01-01T00:00:00Z",
+    });
 
     // Run validate --staleness
     const result = kspec("validate --staleness", tmpDir);
