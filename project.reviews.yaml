@@ -55375,6 +55375,12 @@ reviews:
         payload:
           thread_ulid: 01KMNVC8EZA8AXW97PSKJB2NCY
         timestamp: 2026-03-26T19:55:15.816Z
+      - _ulid: 01KMNVEMMWGTDHCRS6E1HQV42C
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMNVC9XVB61VPTE07CFGKX9E
+        timestamp: 2026-03-26T19:55:27.772Z
     examined_commit: null
     external_links: []
     lifecycle_state: closed
@@ -55497,6 +55503,8 @@ reviews:
               shell-quoting error while posting the review.
             created_at: 2026-03-26T19:55:13.611Z
         kind: blocker
+        resolved_at: 2026-03-26T19:55:27.222Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KMNVCPTKNMCXBY9ZA7N4KAKC
         anchor:
           type: code
@@ -55557,5 +55565,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-26T19:54:49.979Z
     created_at: 2026-03-26T19:52:09.839Z
-    updated_at: 2026-03-26T19:55:13.626Z
+    updated_at: 2026-03-26T19:55:27.222Z
     notes: []
