@@ -47,7 +47,7 @@ description: >-
 spec_ref: null
 plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-activate-split-storage"
@@ -59,6 +59,7 @@ tags:
   - cleanup
   - manual
 vcs_refs: []
+session_id: 01KMMA0TAEXZ5WVNG0R3ENM8GB
 history:
   - author: "@claude"
     changes:
@@ -144,6 +145,20 @@ history:
         previous: manual_only
     command: task-set
     timestamp: 2026-03-26T05:21:37.704Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KMMA0TAEXZ5WVNG0R3ENM8GB
+        previous: null
+      started_at:
+        new: 2026-03-26T05:32:21.618Z
+        previous: null
+    command: task-start
+    timestamp: 2026-03-26T05:32:21.618Z
 created_at: 2026-03-21T00:59:26.926Z
+started_at: 2026-03-26T05:32:21.618Z
 todos: []
 automation: eligible
