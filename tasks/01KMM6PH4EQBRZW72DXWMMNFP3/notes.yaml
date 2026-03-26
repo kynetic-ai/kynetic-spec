@@ -1,1 +1,37 @@
-notes: []
+notes:
+  - _ulid: 01KMM71N9A0FY7R0YDZGNQBJ7N
+    content: >-
+      Approach: Move --status rejection check after initContext/task loading. Build context-aware
+      error message with:
+
+      1. Task's current status
+
+      2. Specific transition command for requested target status
+
+      3. Valid transitions from current state
+
+      4. JSON mode support via error details object
+
+
+      Files to modify:
+
+      - src/strings/errors.ts: Add statusSetRejection() builder function
+
+      - src/cli/commands/task.ts: Move rejection after task resolution, use smart error
+
+      - tests/task-set-batch.test.ts: Update existing AC-3 test, add new tests for various states
+
+
+      Edge cases:
+
+      - No ref provided (neither positional nor --refs) — fall back to generic error without current
+      state
+
+      - Invalid ref (task not found) — fall back to generic error
+
+      - Batch mode (--refs) — reject before loading since we can't show state for multiple refs
+
+      - JSON mode — structured error with details object
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-26T04:39:36.491Z
