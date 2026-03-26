@@ -52301,6 +52301,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMKQ7V00W307DX4CPXF2K038
         timestamp: 2026-03-26T00:03:22.099Z
+      - _ulid: 01KMKQ85M92RAE9H8T66ERX0JY
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMKQ8583YJ04PPYWCMFBX87J
+        timestamp: 2026-03-26T00:03:32.618Z
     examined_commit: 64fd67d017ddd376eb07de18f5d198026434ace9
     external_links: []
     lifecycle_state: open
@@ -52329,7 +52336,25 @@ reviews:
               ac-10' to the test."
             created_at: 2026-03-26T00:03:21.729Z
         kind: blocker
+      - _ulid: 01KMKQ8583YJ04PPYWCMFBX87J
+        anchor:
+          type: code
+          commit: 64fd67d017dd
+          line_end: 82
+          line_start: 57
+          path: tests/cli/session-start-format.test.ts
+          side: head
+        entries:
+          - _ulid: 01KMKQ8583HJB59WNXJ5NSNX2W
+            author: "@claude"
+            body: seedSplitTask is inlined in session-start-format.test.ts and session-start-notes.test.ts
+              instead of importing from tests/helpers/cli.ts where it is already exported. This
+              creates duplicate maintenance burden. The inlined versions also omit the try/catch for
+              missing index files that the canonical helper includes (line 516-518 in cli.ts),
+              making them subtly less robust. Import from helpers instead of duplicating.
+            created_at: 2026-03-26T00:03:32.227Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-25T23:57:05.341Z
-    updated_at: 2026-03-26T00:03:21.729Z
+    updated_at: 2026-03-26T00:03:32.227Z
     notes: []
