@@ -1,1 +1,17 @@
-notes: []
+notes:
+  - _ulid: 01KMMA8ZFFTWBWBA4VZ6388ST1
+    content: >-
+      Approach: Remove monolithic backend in 8 steps per task description.
+
+      Key files: task-data-manager.ts (remove MonolithicBackend class + singleton + registry entry,
+      simplify resolveTaskDataManager), yaml.ts (remove
+      saveTask/writeRawTaskArray/mutateTaskAtomically/mutateTasksAtomically/deleteTask, keep
+      extractRawTaskArray), spec.ts (keep monolithic in schema enum per task requirement), shadow.ts
+      (update init template to kynetic 1.1 + task_storage.format: split), task.ts (remove storage
+      activate/status commands, update migrate to set manifest + bump version), doctor.ts (add task
+      storage health check), split-backend.ts (update ensureMigrated error messages).
+
+      Test plan: legacy format detection test, migration test updates, full test suite pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-26T05:36:02.031Z
