@@ -1,0 +1,17 @@
+_ulid: 01KMM92FKPGBWF83RTF3AKN3AG
+slugs:
+  - blocked-review
+title: Blocked Review
+type: task
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-03-26T05:15:00.598Z
+todos: []
