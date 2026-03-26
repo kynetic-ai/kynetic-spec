@@ -15411,9 +15411,22 @@ runs:
     completed_at: 2026-03-26T03:48:53.853Z
   - _ulid: 01KMM8R32XPQ5JWR8FHJAA27PF
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-03-26T05:09:20.093Z
+        completed_at: 2026-03-26T05:10:17.951Z
+        notes: "Gate: Fix cycle session with meaningful work (addressed 2 review blockers, committed,
+          pushed, resubmitted). What worked: clear review threads, well-structured original code
+          made fix straightforward. Friction: minor (needs_work→submit requires 2 commands, review
+          JSON parsing). No high-confidence captures — friction is minor and doesn't warrant
+          tracking."
+      - status: completed
+        step_index: 1
+        started_at: 2026-03-26T05:10:17.951Z
+        completed_at: 2026-03-26T05:10:17.951Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-26T05:09:20.093Z
