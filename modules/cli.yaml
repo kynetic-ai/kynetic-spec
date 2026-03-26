@@ -6522,6 +6522,12 @@ features:
           exit code is 1
         when: |
           the process exits
+      - given: kspec is initialized and the manifest exists
+        id: ac-task-storage
+        then: the taskStorage section shows the storage format status — ok when split format is configured,
+          warning when kynetic >= 1.1 but format not set, error when legacy format detected (kynetic
+          < 1.1 with no split format) with guidance to run kspec task migrate
+        when: the user runs kspec doctor
     tags: []
     created: 2026-02-19T23:07:25.138Z
     notes: []
