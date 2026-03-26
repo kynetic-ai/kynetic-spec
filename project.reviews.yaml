@@ -55307,6 +55307,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMNVCPTKNMCXBY9ZA7N4KAKC
         timestamp: 2026-03-26T19:54:25.024Z
+      - _ulid: 01KMNVCR5WTR3M4KSC662TPTFV
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMNVCPVS6M73DR5TKST92PFE
+        timestamp: 2026-03-26T19:54:25.852Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -55438,7 +55445,26 @@ reviews:
               the condensed summary."
             created_at: 2026-03-26T19:54:24.468Z
         kind: blocker
+      - _ulid: 01KMNVCPVS6M73DR5TKST92PFE
+        anchor:
+          type: code
+          commit: d0760f32e8e67d210e40271eb30edaab4047c05f
+          line_end: 499
+          line_start: 475
+          path: scripts/test.cjs
+          side: head
+        entries:
+          - _ulid: 01KMNVCPVS6JDV42CZTFVRYSRR
+            author: Jacob Chapel
+            body: "Live `--verbose` runs never persist the promised full log file. In `runVitest()` the verbose
+              branch uses `stdio: \"inherit\"`, so nothing is written to `logOutPath`; my `node
+              scripts/test.cjs --fresh --verbose tests/test-runner.test.ts` reproduction ended with
+              only `JSON report written to ...result.json` and no `Full log:` line, and the session
+              cache contained a `.json` entry without a matching `.log`. That breaks the task's
+              documented full-log behavior and leaves later cached results without a log artifact."
+            created_at: 2026-03-26T19:54:24.505Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-26T19:52:09.839Z
-    updated_at: 2026-03-26T19:54:24.468Z
+    updated_at: 2026-03-26T19:54:24.505Z
     notes: []
