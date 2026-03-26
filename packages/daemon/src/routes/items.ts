@@ -31,8 +31,11 @@ import {
 import { ImplementationStatusSchema, ItemTypeSchema, MaturitySchema } from "../../schema/common.js";
 import { enumArrayUnion } from "./enum-utils.js";
 import { getRelatedSessionsForItem } from "./session-related.js";
+import type { EntityCacheAccessor } from "./entity-cache-types.js";
 
-interface ItemsRouteOptions {}
+interface ItemsRouteOptions {
+  getEntityCache?: EntityCacheAccessor;
+}
 
 /**
  * Compute parent ULIDs for items based on _path and _sourceFile.
@@ -139,17 +142,41 @@ function toBatchTaskSummary(task: LoadedTask) {
 }
 
 export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
-  // No closure-scoped kspecDir needed - comes from middleware
+  const { getEntityCache } = _options;
 
   return (
     new Elysia({ prefix: "/api/items" })
       // AC: @api-contract ac-8, ac-9 - List items with type filter
+      // AC: @daemon-entity-cache ac-serve-from-memory — serve from cache when available
       .get(
         "/",
         async ({ query, projectContext }) => {
+          // AC: @daemon-entity-cache ac-serve-from-memory, ac-warming-availability
+          const cache = getEntityCache?.(projectContext.path);
+          const itemsDomainState = cache?.getDomainState("items");
+
+          // AC: @daemon-entity-cache ac-warming-availability
+          if (cache && itemsDomainState === "loading") {
+            return {
+              items: [],
+              total: 0,
+              offset: 0,
+              limit: 0,
+              _cache_status: "loading" as const,
+            };
+          }
+
           // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
           const ctx = await initContext(projectContext.path);
-          const items = await loadAllItems(ctx);
+
+          // AC: @daemon-entity-cache ac-serve-from-memory — use cached items when ready
+          let items: LoadedSpecItem[];
+          if (cache && itemsDomainState === "ready") {
+            const cachedItems = cache.getItemIndex();
+            items = cachedItems ?? await loadAllItems(ctx);
+          } else {
+            items = await loadAllItems(ctx);
+          }
 
           // Compute parent relationships from path structure
           const parentMap = computeParentMap(items);
@@ -199,7 +226,15 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
 
           // Plan filter — show only specs derived from a given plan
           if (query.plan) {
-            const plans = await loadPlans(ctx);
+            // AC: @daemon-entity-cache ac-serve-from-memory — try cache for plans
+            let plans;
+            const plansDomainState = cache?.getDomainState("plans");
+            if (cache && plansDomainState === "ready") {
+              plans = cache.getPlansIndex();
+            }
+            if (!plans) {
+              plans = await loadPlans(ctx);
+            }
             const plan = plans.find((p) => p._ulid === query.plan || p.slugs.includes(query.plan!));
             if (plan) {
               const derivedRefs = new Set(
@@ -287,7 +322,10 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
 
           // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
           const ctx = await initContext(projectContext.path);
-          const items = await loadAllItems(ctx);
+          // AC: @daemon-entity-cache ac-serve-from-memory — try cache for items
+          const batchCache = getEntityCache?.(projectContext.path);
+          const batchItemsDomainState = batchCache?.getDomainState("items");
+          const items = (batchCache && batchItemsDomainState === "ready" ? batchCache.getItemIndex() : null) ?? await loadAllItems(ctx);
           const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
 
           const resolvedItems = [];
@@ -322,12 +360,16 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
       )
 
       // AC: @api-contract ac-10 - Get single item by ref
+      // AC: @daemon-entity-cache ac-detail-on-demand — load item detail
       .get(
         "/:ref",
         async ({ params, error: errorResponse, projectContext }) => {
           // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
           const ctx = await initContext(projectContext.path);
-          const items = await loadAllItems(ctx);
+          // AC: @daemon-entity-cache ac-serve-from-memory — try cache for items
+          const detailCache = getEntityCache?.(projectContext.path);
+          const detailItemsDomainState = detailCache?.getDomainState("items");
+          const items = (detailCache && detailItemsDomainState === "ready" ? detailCache.getItemIndex() : null) ?? await loadAllItems(ctx);
           const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
           const index = new ReferenceIndex(tasks, items);
 
@@ -399,7 +441,10 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
         async ({ params, error: errorResponse, projectContext }) => {
           // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
           const ctx = await initContext(projectContext.path);
-          const items = await loadAllItems(ctx);
+          // AC: @daemon-entity-cache ac-serve-from-memory — try cache for items
+          const linkedCache = getEntityCache?.(projectContext.path);
+          const linkedItemsDomainState = linkedCache?.getDomainState("items");
+          const items = (linkedCache && linkedItemsDomainState === "ready" ? linkedCache.getItemIndex() : null) ?? await loadAllItems(ctx);
           const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
           const refIndex = new ReferenceIndex(tasks, items);
           const alignIndex = new AlignmentIndex(tasks, items);
@@ -461,7 +506,10 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
         "/:ref/sessions",
         async ({ params, error: errorResponse, projectContext }) => {
           const ctx = await initContext(projectContext.path);
-          const items = await loadAllItems(ctx);
+          // AC: @daemon-entity-cache ac-serve-from-memory — try cache for items
+          const sessCache = getEntityCache?.(projectContext.path);
+          const sessItemsDomainState = sessCache?.getDomainState("items");
+          const items = (sessCache && sessItemsDomainState === "ready" ? sessCache.getItemIndex() : null) ?? await loadAllItems(ctx);
           const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
           const result = await getRelatedSessionsForItem({
             itemRef: params.ref,

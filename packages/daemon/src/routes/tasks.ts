@@ -42,32 +42,77 @@ import { enumArrayUnion, enumUnion } from "./enum-utils.js";
 import { getRelatedSessionsForTask } from "./session-related.js";
 import { resolveRefTitle, resolveRefEntries } from "./ref-resolution.js";
 
+import type { EntityCacheAccessor } from "./entity-cache-types.js";
+
 interface TasksRouteOptions {
   pubsub: PubSubManager;
+  getEntityCache?: EntityCacheAccessor;
 }
 
 export function createTasksRoutes(options: TasksRouteOptions) {
-  const { pubsub } = options;
+  const { pubsub, getEntityCache } = options;
 
   return (
     new Elysia({ prefix: "/api/tasks" })
       // AC: @api-contract ac-2, ac-3, ac-4 - List tasks with filters and pagination
       // AC: @task-data-manager ac-2 - Uses resolveTaskDataManager(ctx).listTasks for index-only read
+      // AC: @daemon-entity-cache ac-serve-from-memory — serve from cache when available
+      // AC: @daemon-entity-cache ac-graceful-degradation — fall back to disk on cache miss
+      // AC: @daemon-entity-cache ac-warming-availability — return loading indicator if warming
       .get(
         "/",
         async ({ query, projectContext }) => {
+          // AC: @daemon-entity-cache ac-serve-from-memory, ac-warming-availability
+          const cache = getEntityCache?.(projectContext.path);
+          const tasksDomainState = cache?.getDomainState("tasks");
+
+          // If cache is warming, return loading indicator
+          // AC: @daemon-entity-cache ac-warming-availability
+          if (cache && tasksDomainState === "loading") {
+            return {
+              items: [],
+              total: 0,
+              offset: 0,
+              limit: 0,
+              _cache_status: "loading" as const,
+            };
+          }
+
           // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
           const ctx = await initContext(projectContext.path);
 
-          // AC: @task-data-manager ac-2 — list uses index-only summaries
-          const summaries = await resolveTaskDataManager(ctx).listTasks(ctx, {
-            status: query.status
-              ? Array.isArray(query.status)
-                ? query.status
-                : [query.status]
-              : undefined,
-            automation: query.automation || undefined,
-          });
+          // AC: @daemon-entity-cache ac-serve-from-memory — use cached index when ready
+          // AC: @daemon-entity-cache ac-graceful-degradation — fall back to disk if degraded
+          let summaries;
+          if (cache && tasksDomainState === "ready") {
+            const cachedTasks = cache.getTaskIndex();
+            if (cachedTasks) {
+              // Apply status and automation filters (matching listTasks contract)
+              summaries = cachedTasks;
+              if (query.status) {
+                const statusFilters = Array.isArray(query.status) ? query.status : [query.status];
+                summaries = summaries.filter((t) => statusFilters.includes(t.status));
+              }
+              if (query.automation) {
+                summaries = summaries.filter((t) => t.automation === query.automation);
+              }
+            } else {
+              summaries = await resolveTaskDataManager(ctx).listTasks(ctx, {
+                status: query.status
+                  ? Array.isArray(query.status) ? query.status : [query.status]
+                  : undefined,
+                automation: query.automation || undefined,
+              });
+            }
+          } else {
+            // AC: @task-data-manager ac-2 — list uses index-only summaries
+            summaries = await resolveTaskDataManager(ctx).listTasks(ctx, {
+              status: query.status
+                ? Array.isArray(query.status) ? query.status : [query.status]
+                : undefined,
+              automation: query.automation || undefined,
+            });
+          }
 
           // Apply filters not supported by TaskListFilters
           let filtered = summaries;
@@ -88,11 +133,19 @@ export function createTasksRoutes(options: TasksRouteOptions) {
 
           // Plan filter — show only tasks derived from a given plan
           if (query.plan) {
-            const plans = await loadPlans(ctx);
-            const plan = plans.find((p) => p._ulid === query.plan || p.slugs.includes(query.plan!));
+            // AC: @daemon-entity-cache ac-serve-from-memory — try cache for plans too
+            let plans;
+            const plansDomainState = cache?.getDomainState("plans");
+            if (cache && plansDomainState === "ready") {
+              plans = cache.getPlansIndex();
+            }
+            if (!plans) {
+              plans = await loadPlans(ctx);
+            }
+            const plan = plans.find((p: { _ulid: string; slugs: string[] }) => p._ulid === query.plan || p.slugs.includes(query.plan!));
             if (plan) {
               const derivedRefs = new Set(
-                plan.derived_tasks.map((r) => (r.startsWith("@") ? r.slice(1) : r)),
+                (plan as { derived_tasks: string[] }).derived_tasks.map((r: string) => (r.startsWith("@") ? r.slice(1) : r)),
               );
               filtered = filtered.filter(
                 (task) => derivedRefs.has(task._ulid) || task.slugs.some((s) => derivedRefs.has(s)),
@@ -110,7 +163,15 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           const paginated = filtered.slice(offset, offset + limit);
 
           // Resolve spec titles via ReferenceIndex (needs spec items)
-          const specItems = await loadAllItems(ctx);
+          // AC: @daemon-entity-cache ac-serve-from-memory — try cache for items
+          let specItems;
+          const itemsDomainState = cache?.getDomainState("items");
+          if (cache && itemsDomainState === "ready") {
+            specItems = cache.getItemIndex();
+          }
+          if (!specItems) {
+            specItems = await loadAllItems(ctx);
+          }
           // Build a minimal index from summaries for ref resolution
           // ReferenceIndex accepts LoadedTask[] — summaries have compatible _ulid/slugs
           const index = new ReferenceIndex([], specItems);
@@ -160,6 +221,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
 
       // AC: @api-contract ac-5 - Get single task by ref
       // AC: @task-data-manager ac-3 - Uses resolveTaskDataManager(ctx).getTask for full detail
+      // AC: @daemon-entity-cache ac-detail-on-demand — load detail from disk, cache result
       .get(
         "/:ref",
         async ({ params, error: errorResponse, projectContext }) => {
@@ -167,6 +229,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           const ctx = await initContext(projectContext.path);
 
           // AC: @task-data-manager ac-3 — get full task detail via manager
+          // AC: @daemon-entity-cache ac-detail-on-demand — load from disk (detail tier)
           let task: LoadedTask;
           try {
             task = await resolveTaskDataManager(ctx).getTask(ctx, params.ref);
@@ -181,9 +244,30 @@ export function createTasksRoutes(options: TasksRouteOptions) {
             throw err;
           }
 
+          // AC: @daemon-entity-cache ac-detail-on-demand — cache the loaded detail
+          const cache = getEntityCache?.(projectContext.path);
+          if (cache) {
+            cache.setTaskDetail(task._ulid, task);
+          }
+
           // Build ReferenceIndex for ref title resolution
-          const items = await loadAllItems(ctx);
-          const plans = await loadPlans(ctx);
+          // AC: @daemon-entity-cache ac-serve-from-memory — try cache for items and plans
+          let items;
+          let plans;
+          const itemsDomainState = cache?.getDomainState("items");
+          const plansDomainState = cache?.getDomainState("plans");
+          if (cache && itemsDomainState === "ready") {
+            items = cache.getItemIndex();
+          }
+          if (!items) {
+            items = await loadAllItems(ctx);
+          }
+          if (cache && plansDomainState === "ready") {
+            plans = cache.getPlansIndex();
+          }
+          if (!plans) {
+            plans = await loadPlans(ctx);
+          }
           const tasks = await resolveTaskDataManager(ctx).listTasks(ctx);
           const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items, [], plans);
 
@@ -326,6 +410,12 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           await syncSpecImplementationStatus(ctx, updatedTask, allTasks, items, index);
           await commitIfShadow(ctx.shadow, `task: start ${params.ref}`);
 
+          // AC: @daemon-entity-cache ac-write-through — update cache before response
+          const startCache = getEntityCache?.(projectContext.path);
+          if (startCache) {
+            await startCache.writeThrough("tasks");
+          }
+
           // AC: @api-contract ac-6, @trait-api-endpoint ac-5 - WebSocket broadcast
           // AC: @ui-api-aggregation ac-4 - Include title and old/new status
           // AC: @multi-directory-daemon ac-18 - Broadcast scoped to request project
@@ -394,6 +484,12 @@ export function createTasksRoutes(options: TasksRouteOptions) {
               });
             }
             throw err;
+          }
+
+          // AC: @daemon-entity-cache ac-write-through — update cache before response
+          const noteCache = getEntityCache?.(projectContext.path);
+          if (noteCache) {
+            await noteCache.writeThrough("tasks");
           }
 
           // AC: @api-contract ac-7 - WebSocket broadcast
@@ -483,6 +579,12 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           await syncSpecImplementationStatus(ctx, updatedTask, allTasks, items, index);
           await commitIfShadow(ctx.shadow, `task: submit ${params.ref}`);
 
+          // AC: @daemon-entity-cache ac-write-through — update cache before response
+          const submitCache = getEntityCache?.(projectContext.path);
+          if (submitCache) {
+            await submitCache.writeThrough("tasks");
+          }
+
           // AC: @ui-api-aggregation ac-4 - Include title and old/new status
           pubsub.broadcast(
             "tasks:updates",
@@ -551,6 +653,12 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           const index = new ReferenceIndex(allTasks, items);
           await syncSpecImplementationStatus(ctx, updatedTask, allTasks, items, index);
           await commitIfShadow(ctx.shadow, `task: complete ${params.ref}`);
+
+          // AC: @daemon-entity-cache ac-write-through — update cache before response
+          const completeCache = getEntityCache?.(projectContext.path);
+          if (completeCache) {
+            await completeCache.writeThrough("tasks");
+          }
 
           // AC: @ui-api-aggregation ac-4 - Include title and old/new status
           pubsub.broadcast(
@@ -624,6 +732,12 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           const index = new ReferenceIndex(allTasks, items);
           await syncSpecImplementationStatus(ctx, updatedTask, allTasks, items, index);
           await commitIfShadow(ctx.shadow, `task: block ${params.ref}`);
+
+          // AC: @daemon-entity-cache ac-write-through — update cache before response
+          const blockCache = getEntityCache?.(projectContext.path);
+          if (blockCache) {
+            await blockCache.writeThrough("tasks");
+          }
 
           // AC: @ui-api-aggregation ac-4 - Include title and old/new status
           pubsub.broadcast(

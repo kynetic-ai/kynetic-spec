@@ -305,10 +305,12 @@ export async function createServer(options: ServerOptions) {
 
     // AC: @api-contract ac-2 through ac-7 - Task API endpoints
     // AC: @multi-directory-daemon ac-24 - Routes use projectContext from middleware
-    .use(createTasksRoutes({ pubsub: pubsubManager }))
+    // AC: @daemon-entity-cache ac-serve-from-memory, ac-write-through — pass cache accessor
+    .use(createTasksRoutes({ pubsub: pubsubManager, getEntityCache: entityCacheModule.getEntityCache }))
 
     // AC: @api-contract ac-8 through ac-11 - Spec Item API endpoints
-    .use(createItemsRoutes())
+    // AC: @daemon-entity-cache ac-serve-from-memory — pass cache accessor
+    .use(createItemsRoutes({ getEntityCache: entityCacheModule.getEntityCache }))
 
     // AC: @api-contract ac-12 through ac-14 - Inbox API endpoints
     .use(createInboxRoutes({ pubsub: pubsubManager }))
@@ -345,7 +347,8 @@ export async function createServer(options: ServerOptions) {
     .use(createAggregationRoutes())
 
     // AC: @ui-api-ref-resolution ac-4, ac-5 - Lightweight ref index endpoint
-    .use(createRefsRoutes())
+    // AC: @daemon-entity-cache ac-serve-from-memory — pass cache accessor
+    .use(createRefsRoutes({ getEntityCache: entityCacheModule.getEntityCache }))
 
     // AC: @review-content-diff-api ac-1, ac-2, ac-3, ac-4 - Diff and review content endpoints
     .use(createDiffRoutes())

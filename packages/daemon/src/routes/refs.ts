@@ -21,19 +21,37 @@ import {
   resolveTaskDataManager,
 } from "../../parser/index.js";
 import { buildRefIndex } from "./ref-resolution.js";
+import type { EntityCacheAccessor } from "./entity-cache-types.js";
 
-export function createRefsRoutes() {
+interface RefsRouteOptions {
+  getEntityCache?: EntityCacheAccessor;
+}
+
+export function createRefsRoutes(options: RefsRouteOptions = {}) {
+  const { getEntityCache } = options;
+
   return (
     new Elysia({ prefix: "/api/refs" })
 
       // AC: @ui-api-ref-resolution ac-4, ac-5 - Lightweight ref index endpoint
       // AC: @trait-api-endpoint ac-1 - Returns 2xx with JSON body
+      // AC: @daemon-entity-cache ac-serve-from-memory — serve from cache when available
       .get("/", async ({ projectContext }) => {
         const ctx = await initContext(projectContext.path);
+
+        // AC: @daemon-entity-cache ac-serve-from-memory — try cache for items and plans
+        const cache = getEntityCache?.(projectContext.path);
+        const itemsDomainState = cache?.getDomainState("items");
+        const plansDomainState = cache?.getDomainState("plans");
+
         const [tasks, items, plans] = await Promise.all([
           resolveTaskDataManager(ctx).loadAllTasks(ctx),
-          loadAllItems(ctx),
-          loadPlans(ctx),
+          cache && itemsDomainState === "ready" && cache.getItemIndex()
+            ? Promise.resolve(cache.getItemIndex()!)
+            : loadAllItems(ctx),
+          cache && plansDomainState === "ready" && cache.getPlansIndex()
+            ? Promise.resolve(cache.getPlansIndex()!)
+            : loadPlans(ctx),
         ]);
         const index = new ReferenceIndex(tasks, items, [], plans);
         const refs = buildRefIndex(index);

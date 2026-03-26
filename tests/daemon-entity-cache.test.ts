@@ -823,6 +823,192 @@ describe("ProjectEntityCache", () => {
     });
   });
 
+  // ─── Route Integration: serve-from-memory via cache ───────────────────
+
+  // AC: @daemon-entity-cache ac-serve-from-memory
+  describe("ac-serve-from-memory: route-level integration", () => {
+    it("should serve task summaries from cache matching route handler pattern", async () => {
+      // Simulate the route handler pattern: get cache → check domain → use index
+      const cache = registerEntityCache(projectA);
+      await cache.loadDomain("tasks");
+      await cache.loadDomain("items");
+
+      // Route pattern: getEntityCache(path) → getDomainState → getTaskIndex
+      const resolvedCache = getEntityCache(projectA);
+      expect(resolvedCache).not.toBeNull();
+      expect(resolvedCache!.getDomainState("tasks")).toBe("ready");
+
+      const taskIndex = resolvedCache!.getTaskIndex();
+      expect(taskIndex).not.toBeNull();
+      expect(taskIndex!.length).toBeGreaterThan(0);
+      // Verify summary fields that routes depend on
+      expect(taskIndex![0]).toHaveProperty("_ulid");
+      expect(taskIndex![0]).toHaveProperty("title");
+      expect(taskIndex![0]).toHaveProperty("status");
+    });
+
+    it("should serve item index from cache matching route handler pattern", async () => {
+      const cache = registerEntityCache(projectA);
+      await cache.loadDomain("items");
+
+      const resolvedCache = getEntityCache(projectA);
+      expect(resolvedCache!.getDomainState("items")).toBe("ready");
+
+      const itemIndex = resolvedCache!.getItemIndex();
+      expect(itemIndex).not.toBeNull();
+      expect(Array.isArray(itemIndex)).toBe(true);
+    });
+
+    it("should return null for unregistered project matching route fallback", () => {
+      // When cache is not registered, route falls back to disk
+      const resolvedCache = getEntityCache("/nonexistent/path");
+      expect(resolvedCache).toBeNull();
+    });
+  });
+
+  // AC: @daemon-entity-cache ac-write-through
+  describe("ac-write-through: route-level integration", () => {
+    it("should update cache via writeThrough matching route mutation pattern", async () => {
+      const cache = registerEntityCache(projectA);
+      await cache.loadDomain("tasks");
+
+      const before = cache.getTaskIndex();
+      expect(before).not.toBeNull();
+      const beforeLength = before!.length;
+
+      // Simulate mutation: modify file, then writeThrough
+      const tasksPath = join(projectA, ".kspec", "project.tasks.yaml");
+      const newTasks = yamlStringify([
+        {
+          _ulid: "01TASKA0000000000000000000",
+          slugs: ["task-a-sample"],
+          title: "Sample Task A",
+          type: "task",
+          status: "in_progress", // Changed status
+          priority: 1,
+          spec_ref: "@spec-a-sample",
+          depends_on: [],
+          created_at: "2026-01-24T00:00:00.000Z",
+          notes: [],
+          todos: [],
+        },
+      ]);
+      await fs.writeFile(tasksPath, newTasks, "utf-8");
+
+      // Route handler calls writeThrough after mutation + commit
+      await cache.writeThrough("tasks");
+
+      const after = cache.getTaskIndex();
+      expect(after).not.toBeNull();
+      // Cache reflects the mutation
+      expect(after![0].status).toBe("in_progress");
+
+      // The write-through skip flag should prevent double-reload from watcher
+      const afterWriteThrough = cache.getTaskIndex();
+      await cache.invalidateDomain("tasks"); // Watcher fires
+      expect(cache.getTaskIndex()).toBe(afterWriteThrough); // Skipped
+    });
+  });
+
+  // AC: @daemon-entity-cache ac-warming-availability
+  describe("ac-warming-availability: route-level integration", () => {
+    it("should report unloaded state before loadAll, matching route loading check", () => {
+      const cache = registerEntityCache(projectA);
+
+      // Route checks: cache.getDomainState("tasks") === "loading"
+      expect(cache.getDomainState("tasks")).toBe("unloaded");
+      expect(cache.getTaskIndex()).toBeNull();
+    });
+
+    it("should report ready after loadAll, matching route ready check", async () => {
+      const cache = registerEntityCache(projectA);
+      await cache.loadAll();
+
+      expect(cache.getDomainState("tasks")).toBe("ready");
+      expect(cache.getTaskIndex()).not.toBeNull();
+    });
+  });
+
+  // AC: @daemon-entity-cache ac-graceful-degradation
+  describe("ac-graceful-degradation: route-level integration", () => {
+    it("should return null index for degraded domain, triggering route fallback", async () => {
+      // Create a project with a broken tasks file
+      const brokenProject = await createTempDir("kspec-route-degraded-");
+      const brokenKspec = join(brokenProject, ".kspec");
+      await fs.mkdir(brokenKspec, { recursive: true });
+      await fs.writeFile(
+        join(brokenKspec, "kynetic.yaml"),
+        yamlStringify({
+          kynetic: "1.0",
+          project: { name: "Degraded", version: "0.1.0" },
+        }),
+        "utf-8",
+      );
+      // Write a corrupt tasks file
+      await fs.writeFile(
+        join(brokenKspec, "project.tasks.yaml"),
+        "this_is_not_a_task_array: true",
+        "utf-8",
+      );
+
+      try {
+        const cache = registerEntityCache(brokenProject);
+        await cache.loadDomain("tasks");
+
+        const state = cache.getDomainState("tasks");
+        if (state === "degraded") {
+          // Route handler checks: if state is degraded, fall back to disk
+          expect(cache.getTaskIndex()).toBeNull();
+        }
+        // Both degraded (null index → fallback) and ready (empty array) are valid
+        expect(["degraded", "ready"]).toContain(state);
+      } finally {
+        unregisterEntityCache(brokenProject);
+        await fs.rm(brokenProject, { recursive: true, force: true });
+      }
+    });
+  });
+
+  // AC: @daemon-entity-cache ac-detail-on-demand
+  describe("ac-detail-on-demand: route-level integration", () => {
+    it("should cache task detail after route loads it from disk", async () => {
+      const cache = registerEntityCache(projectA);
+      await cache.loadDomain("tasks");
+
+      // Route pattern: load task from disk, then setTaskDetail
+      const taskUlid = "01TASKA0000000000000000000";
+      expect(cache.getTaskDetail(taskUlid)).toBeNull(); // Not cached yet
+
+      // Simulate route loading task from disk and caching it
+      const mockDetail = {
+        _ulid: taskUlid,
+        title: "Sample Task A",
+        status: "pending",
+        notes: [{ content: "note1" }],
+      } as any;
+      cache.setTaskDetail(taskUlid, mockDetail);
+
+      // Subsequent requests can use cached detail
+      const cached = cache.getTaskDetail(taskUlid);
+      expect(cached).not.toBeNull();
+      expect(cached!.title).toBe("Sample Task A");
+      expect(cached!.notes).toHaveLength(1);
+    });
+
+    it("should evict cached detail on domain invalidation", async () => {
+      const cache = registerEntityCache(projectA);
+      await cache.loadDomain("tasks");
+
+      const taskUlid = "01TASKA0000000000000000000";
+      cache.setTaskDetail(taskUlid, { _ulid: taskUlid, title: "Detail" } as any);
+      expect(cache.getTaskDetail(taskUlid)).not.toBeNull();
+
+      // Invalidation clears details
+      await cache.invalidateDomain("tasks");
+      expect(cache.getTaskDetail(taskUlid)).toBeNull();
+    });
+  });
+
   // ─── Cache Registry ────────────────────────────────────────────────────
 
   describe("cache registry", () => {
