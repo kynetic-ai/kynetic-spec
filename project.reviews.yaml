@@ -52685,6 +52685,19 @@ reviews:
         runner: manual
         created_at: 2026-03-26T00:34:16.045Z
         completed_at: 2026-03-26T00:34:16.045Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "All 4 prior review threads addressed: (1) AC annotation for ac-10 added at line 882, (2)
+          seedSplitTask deduplicated from session-start-format.test.ts, (3) seedSplitTask
+          deduplicated from session-start-notes.test.ts, (4) createAndSaveTask in
+          review-task-integration.test.ts now wraps seedSplitTask."
+        name: prior-review-fixes
+        required: true
+        runner: manual
+        created_at: 2026-03-26T00:34:42.066Z
+        completed_at: 2026-03-26T00:34:42.066Z
     events:
       - _ulid: 01KMKRR0M8BVKVZFXKM10PCSX0
         actor: "@claude"
@@ -52713,6 +52726,13 @@ reviews:
           status: pass
           name: ac-coverage
         timestamp: 2026-03-26T00:34:16.437Z
+      - _ulid: 01KMKS17KN6AN1AQTE2PZZYHMD
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: prior-review-fixes
+        timestamp: 2026-03-26T00:34:42.421Z
     examined_commit: f6cd96f3a59c1114908f5fdb347b9df0d5160ae4
     external_links: []
     lifecycle_state: open
@@ -52725,5 +52745,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-26T00:29:40.360Z
-    updated_at: 2026-03-26T00:34:16.045Z
+    updated_at: 2026-03-26T00:34:42.066Z
     notes: []
