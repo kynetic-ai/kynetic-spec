@@ -42,3 +42,41 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-26T04:45:19.406Z
+  - _ulid: 01KMM7FRY9ER34NDVJQE855ZSP
+    content: >-
+      Implementation complete. Changes:
+
+
+      1. src/strings/errors.ts: Added STATUS_TO_COMMAND and VALID_TRANSITIONS_FROM maps, plus
+      statusSetRejection() builder that returns structured error with message, guidance text, and
+      JSON details object.
+
+
+      2. src/cli/commands/task.ts: Moved --status rejection after initContext/task loading. When a
+      positional ref is provided, resolves the task to get current status for context-aware error.
+      Falls back gracefully if resolution fails.
+
+
+      3. tests/task-set-batch.test.ts: Updated existing AC-3 test and added 3 new tests:
+         - Batch mode rejection (--refs with --status)
+         - In-progress state transitions display
+         - JSON mode structured error details
+
+      AC coverage:
+
+      - @spec-task-set-batch ac-3: Shows current state, specific command, valid transitions
+
+      - @trait-error-guidance ac-1: Error describes what went wrong
+
+      - @trait-error-guidance ac-2: Suggests specific command to resolve
+
+      - @trait-error-guidance ac-4: Shows current state and valid next states
+
+      - @trait-error-guidance ac-6: Structured details in JSON mode
+
+
+      Full test suite passes (1 pre-existing timeout failure in agent-invocation-lifecycle.test.ts
+      unrelated to this change).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-26T04:47:18.985Z
