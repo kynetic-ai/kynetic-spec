@@ -52921,6 +52921,13 @@ reviews:
           status: pass
           name: task-set-batch
         timestamp: 2026-03-26T04:54:57.137Z
+      - _ulid: 01KMM7XSPS3T2ZXEM7RWEN1CW2
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMM7XSA2R31K6TS4QDE38EWW
+        timestamp: 2026-03-26T04:54:58.521Z
     examined_commit: 1346c54c59d9445eed8d532e23938edd3fc5aa66
     external_links: []
     lifecycle_state: open
@@ -52930,8 +52937,36 @@ reviews:
       content_hash: ""
       ref: "@01KMM6PH4EQBRZW72DXWMMNFP3"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMM7XSA2R31K6TS4QDE38EWW
+        anchor:
+          type: code
+          commit: 1346c54c59d9445eed8d532e23938edd3fc5aa66
+          line_end: 118
+          line_start: 70
+          path: tests/task-set-batch.test.ts
+          side: head
+        entries:
+          - _ulid: 01KMM7XSA35QCZT3XEKY2N7PPY
+            author: Test User
+            body: >-
+              The status-rejection AC was moved to , but the new tests are still annotated only as .
+              tests/task-set-batch.test.ts:70:  // AC: @spec-task-set-batch ac-3
+
+              tests/task-set-batch.test.ts:89:  // AC: @spec-task-set-batch ac-3 — batch mode also
+              rejects --status
+
+              tests/task-set-batch.test.ts:102:  // AC: @spec-task-set-batch ac-3,
+              @trait-error-guidance ac-4 — shows valid transitions for in_progress task
+
+              tests/task-set-batch.test.ts:118:  // AC: @spec-task-set-batch ac-3,
+              @trait-error-guidance ac-6 — JSON mode includes guidance in structured error finds the
+              four new annotations for the batch spec and no annotation for . Missing own-AC
+              coverage is a MUST-FIX review gate in this repo, so the coverage needs to be
+              re-annotated against the spec that now owns the behavior.
+            created_at: 2026-03-26T04:54:58.115Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-26T04:50:57.279Z
-    updated_at: 2026-03-26T04:54:56.703Z
+    updated_at: 2026-03-26T04:54:58.115Z
     notes: []
