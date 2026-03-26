@@ -54256,6 +54256,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-26T17:16:15.819Z
+      - _ulid: 01KMNK0VG5MTN07DFZKCT4QK5C
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMNK0V4GHSR41JHZZ19XNCWJ
+        timestamp: 2026-03-26T17:28:07.429Z
     examined_commit: d7abd9ac245c352c611027eac1701268d590355d
     external_links: []
     lifecycle_state: open
@@ -54265,8 +54272,27 @@ reviews:
       content_hash: ""
       ref: "@01KM6YEYAEWFKETRCB53V73HHK"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMNK0V4GHSR41JHZZ19XNCWJ
+        entries:
+          - _ulid: 01KMNK0V4GH6S8REJ1TCPDM6PA
+            author: Test User
+            body: "Evidence log: Files read: src/cli/commands/task.ts, src/parser/task-data-manager.ts,
+              src/parser/doctor.ts, src/parser/split-backend.ts, src/parser/yaml.ts,
+              tests/legacy-format-detection.test.ts, tests/per-task-files.test.ts,
+              tests/task-data-manager.test.ts, tests/canonical-task-workspace-contract.test.ts,
+              tests/agent-invocation-lifecycle.test.ts, plus the other changed test diffs. Commands
+              run: git diff/stat/name-only against dc022927ea9d..d7abd9ac245c, kspec task get, kspec
+              review get/for-task, kspec validate, kspec validate --json, rg for AC annotations and
+              removed storage commands, npm test twice, targeted npm test runs for the two timing
+              out cases, and isolated base-commit targeted runs for those same tests. Claims
+              verified: task migrate now upgrades the manifest on empty/lean early-return paths;
+              resolveTaskDataManager rejects 1.0 legacy manifests and migrate upgrades them to
+              1.1/split. Categories searched: correctness, edge cases, error handling, test quality,
+              integration."
+            created_at: 2026-03-26T17:28:07.056Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-26T17:15:57.460Z
-    updated_at: 2026-03-26T17:16:15.373Z
+    updated_at: 2026-03-26T17:28:07.056Z
     notes: []
