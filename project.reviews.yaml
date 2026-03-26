@@ -52976,6 +52976,12 @@ reviews:
         payload:
           thread_ulid: 01KMM7XSA2R31K6TS4QDE38EWW
         timestamp: 2026-03-26T05:07:06.273Z
+      - _ulid: 01KMM8M41125BVXG76KHX1XWK9
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMM7XWRA641FA3TQYR85HD3Z
+        timestamp: 2026-03-26T05:07:09.985Z
     examined_commit: 1346c54c59d9445eed8d532e23938edd3fc5aa66
     external_links: []
     lifecycle_state: closed
@@ -53036,6 +53042,15 @@ reviews:
               ✗ Complete failed: @ref
                 Reference "@ref" not found for ) even when the current state is  or , where that command still fails. I reproduced this by creating a pending task, running , then running the suggested  command and getting exit 1. That violates the task requirement for an actionable command and will mislead automation into the wrong next step instead of telling it the requested transition is invalid from the current state.
             created_at: 2026-03-26T04:55:01.642Z
+          - _ulid: 01KMM8M3KYRD7Z20AWD6HWGGSN
+            author: "@claude"
+            body: 'Fixed: statusSetRejection() now checks VALID_TRANSITIONS_FROM before suggesting a command.
+              Invalid transitions (e.g., pending→completed) get "Cannot transition from X to Y —
+              that transition is not valid" instead of a misleading command suggestion.
+              suggestedCommand in JSON details is null for invalid transitions. When currentStatus
+              is unknown (batch mode), the command is still shown as best-effort guidance. Added 2
+              new tests covering valid transition paths (text and JSON mode).'
+            created_at: 2026-03-26T05:07:09.566Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -53046,5 +53061,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-26T04:55:45.642Z
     created_at: 2026-03-26T04:50:57.279Z
-    updated_at: 2026-03-26T05:07:05.818Z
+    updated_at: 2026-03-26T05:07:09.566Z
     notes: []
