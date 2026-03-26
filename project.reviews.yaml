@@ -52800,6 +52800,19 @@ reviews:
         runner: manual
         created_at: 2026-03-26T03:43:50.702Z
         completed_at: 2026-03-26T03:43:50.702Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Cycle 1: 3 blockers + 1 nit all resolved. Missing ac-10 annotation added. seedSplitTask
+          deduplicated in session-start-format.test.ts and session-start-notes.test.ts.
+          createAndSaveTask in review-task-integration.test.ts now delegates to seedSplitTask. Cycle
+          2: rebase onto dev completed, rawCore/mergeTaskPreservingRawShape integrated correctly."
+        name: prior-review-fixes
+        required: true
+        runner: manual
+        created_at: 2026-03-26T03:43:54.503Z
+        completed_at: 2026-03-26T03:43:54.503Z
     events:
       - _ulid: 01KMM3TWNM5QM3VQ27WNK56E71
         actor: "@claude"
@@ -52828,6 +52841,13 @@ reviews:
           status: pass
           name: ac-coverage
         timestamp: 2026-03-26T03:43:51.148Z
+      - _ulid: 01KMM3VP2BJJ0EEQDW54XMDCT3
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: prior-review-fixes
+        timestamp: 2026-03-26T03:43:54.955Z
     examined_commit: 014232b9cee59638e28bac59aae8f6ff8b5e1f36
     external_links: []
     lifecycle_state: open
@@ -52840,5 +52860,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-26T03:43:28.949Z
-    updated_at: 2026-03-26T03:43:50.702Z
+    updated_at: 2026-03-26T03:43:54.503Z
     notes: []
