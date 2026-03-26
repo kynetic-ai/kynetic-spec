@@ -55079,6 +55079,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMNR9P8JGQ640KSZH08BVWKZ
         timestamp: 2026-03-26T19:00:20.396Z
+      - _ulid: 01KMNRA15KA4GJG7NJDHDVZHE1
+        actor: codex
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMNRA0P3C3B7MV1VYE9D6P10
+        timestamp: 2026-03-26T19:00:31.027Z
     examined_commit: 9971c42b49331334930881e8e6291b3bf041d99b
     external_links: []
     lifecycle_state: open
@@ -55134,7 +55141,25 @@ reviews:
               of truth and without regression coverage.
             created_at: 2026-03-26T19:00:19.858Z
         kind: blocker
+      - _ulid: 01KMNRA0P3C3B7MV1VYE9D6P10
+        anchor:
+          type: code
+          commit: 9971c42b49331334930881e8e6291b3bf041d99b
+          line_end: 1679
+          line_start: 1656
+          path: tests/agent-invocation-lifecycle.test.ts
+          side: head
+        entries:
+          - _ulid: 01KMNRA0P389B1MGE9DKH659D5
+            author: codex
+            body: The required full-suite gate is still not green on this snapshot. My npm test run failed in
+              full-suite mode at this timed-out-invocation assertion even though the file passed
+              when rerun alone, so the branch still does not satisfy the task requirement to verify
+              the full test suite passes. Until the suite is stable under the normal npm test
+              entrypoint, this task is not ready to merge.
+            created_at: 2026-03-26T19:00:30.531Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-26T18:50:51.875Z
-    updated_at: 2026-03-26T19:00:19.858Z
+    updated_at: 2026-03-26T19:00:30.531Z
     notes: []
