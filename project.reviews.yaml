@@ -53094,6 +53094,18 @@ reviews:
         required: false
         created_at: 2026-03-26T05:16:57.761Z
         completed_at: 2026-03-26T05:16:57.761Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm test failed in this snapshot. The task-specific area passed, but the full suite failed
+          at tests/agent-invocation-lifecycle.test.ts with 'should close session as timed_out when
+          timeout is reached'.
+        name: npm-test
+        required: true
+        runner: npm
+        created_at: 2026-03-26T05:18:51.255Z
+        completed_at: 2026-03-26T05:18:51.255Z
     events:
       - _ulid: 01KMM8YQPVETD781Z9XRMDAXRA
         actor: Test User
@@ -53151,6 +53163,13 @@ reviews:
         payload:
           thread_ulid: 01KMM965SWFT6V784PAE8ZN3YG
         timestamp: 2026-03-26T05:18:50.214Z
+      - _ulid: 01KMM99H9Q85FRP88Y1010KNFB
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm-test
+        timestamp: 2026-03-26T05:18:51.703Z
     examined_commit: e7d37ff438197e4987648ea4f08fa3b83e82d5f6
     external_links: []
     lifecycle_state: closed
@@ -53211,5 +53230,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-26T05:17:06.587Z
     created_at: 2026-03-26T05:12:57.820Z
-    updated_at: 2026-03-26T05:18:49.788Z
+    updated_at: 2026-03-26T05:18:51.255Z
     notes: []
