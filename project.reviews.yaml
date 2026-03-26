@@ -53482,6 +53482,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-26T05:36:47.832Z
+      - _ulid: 01KMMAAFZ4E40KXY744WCD669A
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMMAAF3CY7JJQYNRWJDA9GB5
+        timestamp: 2026-03-26T05:36:51.684Z
     examined_commit: 31c76a76695b207a1ef6ab2a99901412a2a29ff9
     external_links: []
     lifecycle_state: open
@@ -53491,8 +53498,27 @@ reviews:
       content_hash: ""
       ref: "@01KMM6PH4EQBRZW72DXWMMNFP3"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMMAAF3CY7JJQYNRWJDA9GB5
+        anchor:
+          type: code
+          commit: 31c76a76695b207a1ef6ab2a99901412a2a29ff9
+          line_end: 28
+          line_start: 12
+          path: src/strings/errors.ts
+          side: head
+        entries:
+          - _ulid: 01KMMAAF3DFSSQ8X3Q77FJ80JV
+            author: Test User
+            body: "The new status guidance hard-codes  as a reachable target via , but  transitions a task to ,
+              not . Repro 1:  returns . Repro 2: after blocking a task whose prior status is
+              ,  reports  as a valid transition and suggests , even though  would restore  instead.
+              That means the error can recommend a command that cannot achieve the requested status,
+              which violates @task-set ac-1's requirement to show the specific transition command
+              for the requested status."
+            created_at: 2026-03-26T05:36:50.797Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-26T05:36:06.142Z
-    updated_at: 2026-03-26T05:36:47.356Z
+    updated_at: 2026-03-26T05:36:50.797Z
     notes: []
