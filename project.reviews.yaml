@@ -54241,7 +54241,21 @@ reviews:
     slugs: []
     title: Review remove monolithic task file support
     author: Test User
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Run 1: npm test exited 1 after 162.19s with tests/agent-invocation-lifecycle.test.ts:1202
+          timing out at 60000ms. Run 2: npm test exited 1 after 237.04s with
+          tests/agent-invocation-lifecycle.test.ts:687 timing out at 60000ms and
+          tests/canonical-task-workspace-contract.test.ts:285 timing out at 15000ms. Both targeted
+          tests passed in isolation, so the required full-suite gate remains red under suite load."
+        name: npm-test
+        required: true
+        runner: npm
+        created_at: 2026-03-26T17:28:09.504Z
+        completed_at: 2026-03-26T17:28:09.504Z
     events:
       - _ulid: 01KMNJAJMKPKZ7XBMDRC2X8R2W
         actor: Test User
@@ -54270,6 +54284,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMNK0WANPNM7N88CAYZ7PSQQ
         timestamp: 2026-03-26T17:28:08.653Z
+      - _ulid: 01KMNK0XWWTRDN0R3EMPJ8SYSM
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm-test
+        timestamp: 2026-03-26T17:28:09.884Z
     examined_commit: d7abd9ac245c352c611027eac1701268d590355d
     external_links: []
     lifecycle_state: open
@@ -54320,5 +54341,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-26T17:15:57.460Z
-    updated_at: 2026-03-26T17:28:08.277Z
+    updated_at: 2026-03-26T17:28:09.504Z
     notes: []
