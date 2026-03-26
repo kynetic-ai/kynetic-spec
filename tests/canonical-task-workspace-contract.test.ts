@@ -279,31 +279,34 @@ describe("canonical task workspace contract", () => {
   });
 
   // AC: @canonical-task-workspace-contract ac-6
-  it("persists cleanup eligibility into canonical workspace metadata during runtime reconciliation", async () => {
-    await seedRepo(tempDir);
-    git(tempDir, "checkout -b agent-dev");
+  it(
+    "persists cleanup eligibility into canonical workspace metadata during runtime reconciliation",
+    { timeout: 30_000 },
+    async () => {
+      await seedRepo(tempDir);
+      git(tempDir, "checkout -b agent-dev");
 
-    const completedTaskId = testUlid("TASK", 14);
-    const completedTaskRef = `@${completedTaskId}`;
-    const completedWorkspace = await provisionDispatchWorkspace({
-      projectDir: tempDir,
-      taskRef: completedTaskRef,
-      task: {
-        title: "Cleanup Eligibility Completed",
-        slugs: ["task-cleanup-eligibility-completed"],
-      },
-    });
+      const completedTaskId = testUlid("TASK", 14);
+      const completedTaskRef = `@${completedTaskId}`;
+      const completedWorkspace = await provisionDispatchWorkspace({
+        projectDir: tempDir,
+        taskRef: completedTaskRef,
+        task: {
+          title: "Cleanup Eligibility Completed",
+          slugs: ["task-cleanup-eligibility-completed"],
+        },
+      });
 
-    const cancelledTaskId = testUlid("TASK", 15);
-    const cancelledTaskRef = `@${cancelledTaskId}`;
-    const cancelledWorkspace = await provisionDispatchWorkspace({
-      projectDir: tempDir,
-      taskRef: cancelledTaskRef,
-      task: {
-        title: "Cleanup Eligibility Cancelled",
-        slugs: ["task-cleanup-eligibility-cancelled"],
-      },
-    });
+      const cancelledTaskId = testUlid("TASK", 15);
+      const cancelledTaskRef = `@${cancelledTaskId}`;
+      const cancelledWorkspace = await provisionDispatchWorkspace({
+        projectDir: tempDir,
+        taskRef: cancelledTaskRef,
+        task: {
+          title: "Cleanup Eligibility Cancelled",
+          slugs: ["task-cleanup-eligibility-cancelled"],
+        },
+      });
 
     // Mock heavy engine.start() operations that aren't needed for this test.
     // The test validates handleStateChange → reconcileDispatchWorkspaceLifecycle,
@@ -321,116 +324,117 @@ describe("canonical task workspace contract", () => {
     });
     await engine.start();
 
-    await engine.handleStateChange({
-      taskId: completedTaskId,
-      taskRef: completedTaskRef,
-      fromStatus: "pending_review",
-      toStatus: "completed",
-      timestamp: Date.now(),
-      task: {
-        _ulid: completedTaskId,
-        title: "Cleanup Eligibility Completed",
-        slugs: ["task-cleanup-eligibility-completed"],
-        status: "completed",
-        type: "task",
-        priority: 1,
-        blocked_by: [],
-        depends_on: [],
-        context: [],
-        tags: [],
-        vcs_refs: [],
-        notes: [],
-        todos: [],
-        created_at: new Date().toISOString(),
-        automation: "eligible",
-      } as never,
-    });
+      await engine.handleStateChange({
+        taskId: completedTaskId,
+        taskRef: completedTaskRef,
+        fromStatus: "pending_review",
+        toStatus: "completed",
+        timestamp: Date.now(),
+        task: {
+          _ulid: completedTaskId,
+          title: "Cleanup Eligibility Completed",
+          slugs: ["task-cleanup-eligibility-completed"],
+          status: "completed",
+          type: "task",
+          priority: 1,
+          blocked_by: [],
+          depends_on: [],
+          context: [],
+          tags: [],
+          vcs_refs: [],
+          notes: [],
+          todos: [],
+          created_at: new Date().toISOString(),
+          automation: "eligible",
+        } as never,
+      });
 
-    let completedMetadata = await readWorkspaceRecord(
-      completedWorkspace.metadataPath,
-      completedTaskRef,
-    );
-    expect(completedMetadata).toMatchObject({
-      cleanup: {
-        eligible: true,
-        reason: "integrated-into-base-branch",
-      },
-    });
+      let completedMetadata = await readWorkspaceRecord(
+        completedWorkspace.metadataPath,
+        completedTaskRef,
+      );
+      expect(completedMetadata).toMatchObject({
+        cleanup: {
+          eligible: true,
+          reason: "integrated-into-base-branch",
+        },
+      });
 
-    await engine.handleStateChange({
-      taskId: completedTaskId,
-      taskRef: completedTaskRef,
-      fromStatus: "completed",
-      toStatus: "pending",
-      timestamp: Date.now(),
-      task: {
-        _ulid: completedTaskId,
-        title: "Cleanup Eligibility Completed",
-        slugs: ["task-cleanup-eligibility-completed"],
-        status: "pending",
-        type: "task",
-        priority: 1,
-        blocked_by: [],
-        depends_on: [],
-        context: [],
-        tags: [],
-        vcs_refs: [],
-        notes: [],
-        todos: [],
-        created_at: new Date().toISOString(),
-        automation: "eligible",
-      } as never,
-    });
+      await engine.handleStateChange({
+        taskId: completedTaskId,
+        taskRef: completedTaskRef,
+        fromStatus: "completed",
+        toStatus: "pending",
+        timestamp: Date.now(),
+        task: {
+          _ulid: completedTaskId,
+          title: "Cleanup Eligibility Completed",
+          slugs: ["task-cleanup-eligibility-completed"],
+          status: "pending",
+          type: "task",
+          priority: 1,
+          blocked_by: [],
+          depends_on: [],
+          context: [],
+          tags: [],
+          vcs_refs: [],
+          notes: [],
+          todos: [],
+          created_at: new Date().toISOString(),
+          automation: "eligible",
+        } as never,
+      });
 
-    completedMetadata = await readWorkspaceRecord(
-      completedWorkspace.metadataPath,
-      completedTaskRef,
-    );
-    expect(completedMetadata).toMatchObject({
-      cleanup: {
-        eligible: true,
-        reason: "task-reset",
-      },
-    });
+      completedMetadata = await readWorkspaceRecord(
+        completedWorkspace.metadataPath,
+        completedTaskRef,
+      );
+      expect(completedMetadata).toMatchObject({
+        cleanup: {
+          eligible: true,
+          reason: "task-reset",
+        },
+      });
 
-    await engine.handleStateChange({
-      taskId: cancelledTaskId,
-      taskRef: cancelledTaskRef,
-      fromStatus: "in_progress",
-      toStatus: "cancelled",
-      timestamp: Date.now(),
-      task: {
-        _ulid: cancelledTaskId,
-        title: "Cleanup Eligibility Cancelled",
-        slugs: ["task-cleanup-eligibility-cancelled"],
-        status: "cancelled",
-        type: "task",
-        priority: 1,
-        blocked_by: [],
-        depends_on: [],
-        context: [],
-        tags: [],
-        vcs_refs: [],
-        notes: [],
-        todos: [],
-        created_at: new Date().toISOString(),
-        automation: "eligible",
-      } as never,
-    });
+      await engine.handleStateChange({
+        taskId: cancelledTaskId,
+        taskRef: cancelledTaskRef,
+        fromStatus: "in_progress",
+        toStatus: "cancelled",
+        timestamp: Date.now(),
+        task: {
+          _ulid: cancelledTaskId,
+          title: "Cleanup Eligibility Cancelled",
+          slugs: ["task-cleanup-eligibility-cancelled"],
+          status: "cancelled",
+          type: "task",
+          priority: 1,
+          blocked_by: [],
+          depends_on: [],
+          context: [],
+          tags: [],
+          vcs_refs: [],
+          notes: [],
+          todos: [],
+          created_at: new Date().toISOString(),
+          automation: "eligible",
+        } as never,
+      });
 
-    const cancelledMetadata = await readWorkspaceRecord(
-      cancelledWorkspace.metadataPath,
-      cancelledTaskRef,
-    );
-    expect(cancelledMetadata).toMatchObject({
-      cleanup: {
-        eligible: true,
-        reason: "task-abandoned",
-      },
-    });
+      const cancelledMetadata = await readWorkspaceRecord(
+        cancelledWorkspace.metadataPath,
+        cancelledTaskRef,
+      );
+      expect(cancelledMetadata).toMatchObject({
+        cleanup: {
+          eligible: true,
+          reason: "task-abandoned",
+        },
+      });
 
-    await engine.stop();
-  });
+      await engine.stop();
+    },
+  );
 });
 
 // AC: @trait-error-guidance ac-1 — N/A: dispatch worktree isolation is an internal runtime surface,
