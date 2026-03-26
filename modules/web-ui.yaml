@@ -242,6 +242,9 @@ features:
           drives cache invalidation — when shadow branch files change, affected
           data is selectively reloaded. Data domains load progressively so
           high-priority data is available before the full cache is ready.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
