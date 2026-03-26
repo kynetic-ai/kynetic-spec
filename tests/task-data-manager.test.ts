@@ -879,6 +879,7 @@ describe("TaskDataManager", () => {
       expect(reloaded.tags).toContain("writer-3");
     });
 
+    // AC: @task-data-manager ac-10
     it("serializes concurrent deleteTask and mutateTask on the same task", async () => {
       tempDir = await setupTempFixtures();
       const ctx = await initContext(tempDir);
@@ -895,7 +896,7 @@ describe("TaskDataManager", () => {
       // Run deleteTask and mutateTask concurrently on the same task.
       // Without per-task locking in deleteTask, the mutate can read the
       // task, then delete removes it, then the mutate's write phase fails
-      // with "Task not found in file during write phase" — violating AC-9.
+      // with "Task not found in file during write phase" — violating AC-10.
       // With the per-task lock, one operation completes before the other
       // starts, so we get either:
       //   (a) delete first → mutate throws TaskDataManagerError("Task not found")
