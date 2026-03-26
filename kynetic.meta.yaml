@@ -8181,6 +8181,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-26T18:25:21.557Z
+  - _ulid: 01KMNQ1ZZCJYHC5ZPYBW8THMK8
+    type: success
+    content: "The review workflow correctly enforced the lifecycle once the evidence was recorded:
+      required checks attached to the review, request_changes auto-closed the review, and the task
+      transitioned to needs_work with the review ref preserved. That integration made the review
+      outcome durable even in an autonomous dispatch session."
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-26T18:38:39.084Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
