@@ -54694,9 +54694,25 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-03-26T18:35:57.304Z
+      - _ulid: 01KMNPX3ZB9X8WDNJKKYNV4ZFA
+        actor: Test User
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-26T18:35:59.339Z
+      - _ulid: 01KMNPX3ZC91PJBQ48YV3C2FWK
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-26T18:35:59.340Z
     examined_commit: 189e4fc775aa1f18106e55d895b8e6d3087ea003
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -54876,7 +54892,14 @@ reviews:
               and still wrong.
             created_at: 2026-03-26T18:33:36.160Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: Test User
+        role: reviewer
+        created_at: 2026-03-26T18:35:59.339Z
     created_at: 2026-03-26T18:29:11.265Z
-    updated_at: 2026-03-26T18:35:56.651Z
+    updated_at: 2026-03-26T18:35:59.340Z
     notes: []
