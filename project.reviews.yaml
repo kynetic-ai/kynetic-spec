@@ -53489,6 +53489,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMMAAF3CY7JJQYNRWJDA9GB5
         timestamp: 2026-03-26T05:36:51.684Z
+      - _ulid: 01KMMAFAYQ3W13E410XQGEC8AH
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMMAF9ZZW9YZQ1R652VJTHKM
+        timestamp: 2026-03-26T05:39:30.391Z
     examined_commit: 31c76a76695b207a1ef6ab2a99901412a2a29ff9
     external_links: []
     lifecycle_state: open
@@ -53518,7 +53525,22 @@ reviews:
               for the requested status."
             created_at: 2026-03-26T05:36:50.797Z
         kind: blocker
+      - _ulid: 01KMMAF9ZZW9YZQ1R652VJTHKM
+        entries:
+          - _ulid: 01KMMAF9ZZXZC7GQB1W7AJ332M
+            author: Test User
+            body: "Review evidence log: Files read: src/cli/commands/task.ts, src/strings/errors.ts,
+              tests/task-set-batch.test.ts, tests/agent-invocation-lifecycle.test.ts. Commands run:
+              kspec task get @01KMM6PH4EQBRZW72DXWMMNFP3; kspec item get @task-set; kspec review
+              for-task @01KMM6PH4EQBRZW72DXWMMNFP3; git diff dc022927..31c76a7 on changed files; rg
+              AC annotations in changed files; kspec validate; npm test; npm test --
+              tests/task-set-batch.test.ts; targeted CLI repros for status pending in batch mode and
+              from a blocked task. Claims verified: the submitted task-set test file passes, and the
+              blocker above is reproducible through the built CLI. Categories searched: correctness,
+              edge cases, error handling, test quality, integration."
+            created_at: 2026-03-26T05:39:29.407Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-26T05:36:06.142Z
-    updated_at: 2026-03-26T05:36:50.797Z
+    updated_at: 2026-03-26T05:39:29.407Z
     notes: []
