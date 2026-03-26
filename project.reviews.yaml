@@ -56156,6 +56156,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMP8292RVXGHS8MVCRSC7Y0V
         timestamp: 2026-03-26T23:35:54.735Z
+      - _ulid: 01KMP82B89Y6QT4E8WNJB6J4WJ
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMP82AQZE9NCF5ZACC9ZWWB7
+        timestamp: 2026-03-26T23:35:56.425Z
     examined_commit: 704ebd4dd303187ec7b761cee65a3a07ea284578
     external_links: []
     lifecycle_state: open
@@ -56183,7 +56190,26 @@ reviews:
               in this snapshot, so the detail tier is not actually wired into request serving yet.
             created_at: 2026-03-26T23:35:54.208Z
         kind: blocker
+      - _ulid: 01KMP82AQZE9NCF5ZACC9ZWWB7
+        anchor:
+          type: code
+          commit: 704ebd4dd303187ec7b761cee65a3a07ea284578
+          line_end: 199
+          line_start: 195
+          path: src/daemon/entity-cache.ts
+          side: head
+        entries:
+          - _ulid: 01KMP82AR0M2V6HM4T53MT31HR
+            author: Test User
+            body: The items domain is still caching full LoadedSpecItem records in its hot index tier, so
+              registration eagerly loads descriptions, notes, acceptance criteria, and other detail
+              fields into memory instead of keeping only summaries hot. That violates the required
+              two-tier design for items and undermines the intended disk/memory savings. I confirmed
+              it by loading the cache from the current snapshot with  and seeing the first cached
+              item include , , , and related detail keys.
+            created_at: 2026-03-26T23:35:55.904Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-26T23:34:05.110Z
-    updated_at: 2026-03-26T23:35:54.208Z
+    updated_at: 2026-03-26T23:35:55.904Z
     notes: []
