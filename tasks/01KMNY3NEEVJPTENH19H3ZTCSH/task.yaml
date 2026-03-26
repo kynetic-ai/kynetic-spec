@@ -104,7 +104,7 @@ description: >-
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -113,6 +113,14 @@ tags:
   - testing
   - bug
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/fix-pre-existing-test-failures-stack-trace-error-daemon-timeouts-and-cli-timeouts/01kmny3n
+  captured_at: 2026-03-26T21:52:39.705Z
+  commit: ab2539d5db585cd94ec4604c5ac4e463d3658b00
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KM0XRFH87T3QWPVXDQZCA2XK
 history:
   - author: "@claude"
@@ -128,6 +136,27 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-03-26T21:29:46.536Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/fix-pre-existing-test-failures-stack-trace-error-daemon-timeouts-and-cli-timeouts/01kmny3n
+          captured_at: 2026-03-26T21:52:39.705Z
+          commit: ab2539d5db585cd94ec4604c5ac4e463d3658b00
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-03-26T21:52:39.707Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-03-26T21:52:39.708Z
 created_at: 2026-03-26T20:41:53.869Z
 started_at: 2026-03-26T21:29:46.535Z
+submitted_at: 2026-03-26T21:52:39.707Z
 todos: []
