@@ -53716,6 +53716,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMNGZ8Q1WGKJ2KWQNB61H2WS
         timestamp: 2026-03-26T16:52:19.167Z
+      - _ulid: 01KMNGZEEDA7ZJ7SK4FT8NGGAN
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMNGZDN6RXQ971XHM7AQYZVV
+        timestamp: 2026-03-26T16:52:24.141Z
     examined_commit: e15627f141c52186333527be6977b57a18b84ea9
     external_links: []
     lifecycle_state: open
@@ -53747,7 +53754,26 @@ reviews:
               already_migrated returns need to perform the manifest upgrade too.
             created_at: 2026-03-26T16:52:18.273Z
         kind: blocker
+      - _ulid: 01KMNGZDN6RXQ971XHM7AQYZVV
+        anchor:
+          type: code
+          commit: e15627f141c52186333527be6977b57a18b84ea9
+          line_end: 3214
+          line_start: 3135
+          path: src/cli/commands/task.ts
+          side: head
+        entries:
+          - _ulid: 01KMNGZDN6FSKET15MHPK046GG
+            author: Test User
+            body: " now returns before upgrading  when  is empty or already lean-index-only. In a
+              legacy  project, that leaves  unset even though the command reports success, so the
+              new  gate continues rejecting every task command and the user has no remaining
+              activation path. I reproduced this by creating a legacy  plus an empty , running OK
+              Already migrated — no monolithic tasks found., and observing that the manifest stayed
+              at  with no  block. The early  returns need to perform the manifest upgrade too."
+            created_at: 2026-03-26T16:52:23.335Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-26T16:41:01.186Z
-    updated_at: 2026-03-26T16:52:18.273Z
+    updated_at: 2026-03-26T16:52:23.335Z
     notes: []
