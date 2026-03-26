@@ -54263,6 +54263,13 @@ reviews:
           kind: nit
           thread_ulid: 01KMNK0V4GHSR41JHZZ19XNCWJ
         timestamp: 2026-03-26T17:28:07.429Z
+      - _ulid: 01KMNK0WPDEYKGF92NPZA8M2RX
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMNK0WANPNM7N88CAYZ7PSQQ
+        timestamp: 2026-03-26T17:28:08.653Z
     examined_commit: d7abd9ac245c352c611027eac1701268d590355d
     external_links: []
     lifecycle_state: open
@@ -54292,7 +54299,26 @@ reviews:
               integration."
             created_at: 2026-03-26T17:28:07.056Z
         kind: nit
+      - _ulid: 01KMNK0WANPNM7N88CAYZ7PSQQ
+        anchor:
+          type: code
+          commit: d7abd9ac245c352c611027eac1701268d590355d
+          line_end: 285
+          line_start: 285
+          path: tests/canonical-task-workspace-contract.test.ts
+          side: head
+        entries:
+          - _ulid: 01KMNK0WANK2MSXPGM9Q7YH7W0
+            author: Test User
+            body: "Required gate failure: this snapshot does not keep the full suite green. I ran `npm test`
+              twice in this workspace and both runs exited 1 on suite-level timeouts, including
+              `tests/canonical-task-workspace-contract.test.ts:285` in a file changed by this task.
+              The same test passes in isolation, so this looks like a timing/interaction regression
+              or newly exposed flake under full-suite load, but either way the merge gate is
+              currently red."
+            created_at: 2026-03-26T17:28:08.277Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-26T17:15:57.460Z
-    updated_at: 2026-03-26T17:28:07.056Z
+    updated_at: 2026-03-26T17:28:08.277Z
     notes: []
