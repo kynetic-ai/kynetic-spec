@@ -15533,7 +15533,7 @@ runs:
     completed_at: 2026-03-26T17:32:09.377Z
   - _ulid: 01KMNQJF7VMGXTYXQCNTW1FGY0
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -15546,7 +15546,27 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-26T18:47:54.132Z
-        completed_at: 2026-03-26T18:47:54.132Z
+        completed_at: 2026-03-26T18:48:33.160Z
+        notes: >-
+          Friction identified (high confidence): DispatchEngine test suites missing timeout
+          overrides is a recurring pattern — this session's fix cycle was caused by two test files
+          (canonical-task-workspace-contract, dispatch-runtime-bootstrap-contract) lacking the {
+          timeout: 60_000 } that all other DispatchEngine test suites use. However, this is already
+          a known pattern (existing inbox item 01KJKDBK tracks test timeout instability generally).
+          The fix was mechanical: add timeout overrides to match existing convention.
+
+
+          Success: The existing mocks for
+          reconcileDispatchWorkspaceRegistry/reconcileDispatchWorkspaceArtifacts (added in fix cycle
+          1) were the right approach — this cycle just needed the timeout override on top of them.
+
+
+          No new items to capture — the friction was a gap in test configuration consistency, which
+          is now fixed for these files. The broader test timeout pattern is already tracked.
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-26T18:48:33.160Z
+        completed_at: 2026-03-26T18:48:33.160Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-26T18:47:39.004Z
