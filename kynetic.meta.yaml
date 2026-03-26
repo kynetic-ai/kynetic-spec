@@ -8254,6 +8254,27 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-26T23:34:04.817Z
+  - _ulid: 01KMP87Q369M1H2XYGVSR5GYB5
+    type: friction
+    content: "Review CLI friction: kspec review comment/check bodies currently need shell-escaped inline
+      strings, which broke on backticks and code-like text during this session. A
+      body-from-file/evidence-from-file option would make automated reviews more reliable for
+      anchored findings and evidence logs."
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-26T23:38:52.390Z
+  - _ulid: 01KMP87Q9T9HJZA5TES5YB6WN6
+    type: friction
+    content: "Review gate friction: npm test was red in this review snapshot because of a pre-existing
+      duplicate symbol in tests/agent-dispatch-engine.test.ts. Automated review still needs to
+      record the failure, but baseline-red suites make merge decisions noisier and slower. The
+      workflow would benefit from a clearer way to track or surface known baseline failures
+      separately from change-introduced regressions."
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-26T23:38:52.602Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
