@@ -1,0 +1,96 @@
+_ulid: 01KMNQY5EBQWR5CA3QQFANGJA0
+slugs: []
+title: Enhance test runner with smart caching and condensed output
+type: task
+description: >-
+  ## What
+
+
+  Enhance `scripts/test.cjs` to:
+
+
+  1. **Condensed output by default** — Instead of streaming all vitest output to stdout, capture it
+  and show only:
+     - On success: final summary stats (test files, tests, duration) — no individual test results
+     - On failure: only failed tests with condensed error messages, plus the summary
+     - Always: the path to the full log file
+
+  2. **JSON-based log capture** — Use vitest's native dual-reporter support:
+     - `--reporter=json --outputFile.json=<path>` for structured machine-readable results
+     - `--reporter=verbose --outputFile.verbose=<path>` for full human-readable log
+     - Parse the JSON after vitest exits to produce the condensed terminal output
+
+  3. **Content-based caching to skip redundant runs** — Compute a deterministic cache key from:
+     - `git ls-files -s` blob SHAs for test-affecting paths (src/, tests/, packages/*/src/, package-lock.json, vitest.config.ts, tsconfig.json) — blob hashes are pure content hashes, unaffected by commits/rebases
+     - `git diff` of unstaged changes against those same paths
+     - Untracked file contents in those paths
+     - `process.version` (Node version)
+     - The vitest args passed to the script (so `npm test` and `npm test tests/foo.test.ts` are separate cache entries)
+     If cache key matches a previous run, report results from cached JSON without re-running vitest.
+
+  4. **Session-scoped cache isolation** — Cache directory structure:
+     - `/tmp/kspec-test-cache/<session-id>/<key>.json` when `KSPEC_SESSION_ID` is set (dispatch agents)
+     - `/tmp/kspec-test-cache/_default/<key>.json` for interactive use
+     This prevents parallel dispatch agents from interfering with each other's caches.
+
+  5. **`--fresh` flag** — Force a full re-run, clearing the session's cache directory.
+
+
+  6. **Agent documentation** — Add rules to the `testing` convention (via `kspec meta set`)
+  covering:
+     - Default caching behavior (won't re-run if repo state unchanged)
+     - How to force fresh runs (`--fresh`)
+     - Condensed output behavior and where full logs live
+     - Session-awareness under dispatch
+
+  ## Why
+
+
+  Currently the test script streams all vitest output unfiltered. This creates excessive noise —
+  especially for agents that only need to know pass/fail and which tests broke. Agents in dispatch
+  also frequently re-run the full suite redundantly when repo state hasn't changed (e.g., after
+  committing already-tested code). Content-based caching avoids this waste while session isolation
+  keeps parallel agents independent.
+
+
+  ## How
+
+
+  All changes are in `scripts/test.cjs` plus convention updates:
+
+
+  - Replace `stdio: "inherit"` with piped stdout/stderr, streamed to log files in real-time
+
+  - Add `--reporter=json --outputFile.json=<tempfile>` and `--reporter=verbose
+  --outputFile.verbose=<logfile>` to the vitest args
+
+  - After vitest exits, read the JSON file and format condensed output to terminal
+
+  - Implement cache key computation using `git ls-files -s`, `git diff`, and
+  `child_process.execSync`
+
+  - Store/lookup cache entries in the session-scoped directory
+
+  - Add `--fresh` arg parsing alongside existing `--dry-run`
+
+  - Update testing conventions via `kspec meta set`
+
+
+  The key insight for caching: `git ls-files -s` outputs blob SHAs which are content-addressed —
+  identical file contents always produce the same blob hash regardless of commit history. This means
+  committing unchanged files does not invalidate the cache.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - cli
+  - infra
+  - testing
+vcs_refs: []
+created_at: 2026-03-26T18:54:02.187Z
+todos: []

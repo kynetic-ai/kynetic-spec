@@ -22685,3 +22685,18 @@
   todos_count: 0
   created_at: 2026-03-26T05:50:45.363Z
   automation: eligible
+- _ulid: 01KMNQY5EBQWR5CA3QQFANGJA0
+  slugs: []
+  title: Enhance test runner with smart caching and condensed output
+  type: task
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 3
+  tags:
+    - cli
+    - infra
+    - testing
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-26T18:54:02.187Z
