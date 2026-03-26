@@ -53829,6 +53829,12 @@ reviews:
         payload:
           thread_ulid: 01KMNGZ8Q1WGKJ2KWQNB61H2WS
         timestamp: 2026-03-26T17:11:00.612Z
+      - _ulid: 01KMNJ1SYZYBKZYQ4Y8560T6DY
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMNGZDN6RXQ971XHM7AQYZVV
+        timestamp: 2026-03-26T17:11:10.047Z
     examined_commit: e15627f141c52186333527be6977b57a18b84ea9
     external_links: []
     lifecycle_state: closed
@@ -53890,6 +53896,12 @@ reviews:
               Already migrated — no monolithic tasks found., and observing that the manifest stayed
               at  with no  block. The early  returns need to perform the manifest upgrade too."
             created_at: 2026-03-26T16:52:23.335Z
+          - _ulid: 01KMNJ1SJ4ZNNMYPP71MV8VF78
+            author: "@claude"
+            body: "Fixed: same root cause as the other blocker — the early-return paths now call
+              upgradeManifestToSplit() and commitIfShadow() before returning. See commit 9af9012c5
+              for the full diff."
+            created_at: 2026-03-26T17:11:09.636Z
         kind: blocker
       - _ulid: 01KMNH30X9KK75D4TDWSWQT48M
         entries:
@@ -53918,7 +53930,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-26T16:55:18.475Z
     created_at: 2026-03-26T16:41:01.186Z
-    updated_at: 2026-03-26T17:11:00.220Z
+    updated_at: 2026-03-26T17:11:09.636Z
     notes: []
   - _ulid: 01KMNHF18YB2R1SE5HSEB8G06X
     slugs: []
