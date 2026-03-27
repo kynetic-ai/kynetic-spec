@@ -69721,6 +69721,12 @@ reviews:
         payload:
           thread_ulid: 01KMRMF4M0PVZ6YCTWRVKV194W
         timestamp: 2026-03-27T22:06:19.377Z
+      - _ulid: 01KMRNBAS3FP84YS9S8PQ55X9V
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMRMFH00VV40230QPQWVJM4G
+        timestamp: 2026-03-27T22:06:31.203Z
     examined_commit: f49cb5287187d1fe85c0b991136206dfae17d9c7
     external_links: []
     lifecycle_state: closed
@@ -69803,6 +69809,15 @@ reviews:
               after 1.5s while proxyCommand was still pending, which shows the timeout guard never
               engaged."
             created_at: 2026-03-27T21:51:20.064Z
+          - _ulid: 01KMRNBA7YEPHT2369R2ZKDE1P
+            author: "@claude"
+            body: "Fixed: Added REGISTRATION_TIMEOUT_MS (5s) with AbortController to ensureProjectRegistered().
+              The fetch now has a signal-based timeout that aborts if /api/projects stalls. Since
+              registration is non-fatal (the command API middleware auto-registers via X-Kspec-Dir
+              header), the timeout catch is silent and proxyCommand proceeds to the actual command
+              routing with its own timeout logic. Added a unit test that verifies proxyCommand
+              completes within bounded time when /api/projects hangs."
+            created_at: 2026-03-27T22:06:30.654Z
         kind: blocker
       - _ulid: 01KMRMGAE39BKNZG75928KSHMZ
         entries:
@@ -69834,7 +69849,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T21:51:56.544Z
     created_at: 2026-03-27T21:45:22.654Z
-    updated_at: 2026-03-27T22:06:18.835Z
+    updated_at: 2026-03-27T22:06:30.654Z
     notes: []
   - _ulid: 01KMRMMSSS45Z6WY9K0NGG2CA0
     slugs: []
