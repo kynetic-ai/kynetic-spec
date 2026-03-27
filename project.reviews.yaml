@@ -58991,6 +58991,17 @@ reviews:
         runner: npm
         created_at: 2026-03-27T03:54:42.017Z
         completed_at: 2026-03-27T03:54:42.017Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate exited 6 with repo-wide warnings only; no schema/reference errors for this
+          task's changes.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-27T03:54:43.517Z
+        completed_at: 2026-03-27T03:54:43.517Z
     events:
       - _ulid: 01KMPPDE0TFMGNR6CYQJXP0BPR
         actor: "@claude"
@@ -59033,6 +59044,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-27T03:54:42.496Z
+      - _ulid: 01KMPPW6WX7Y3XXEJY84E69NQ6
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-27T03:54:43.997Z
     examined_commit: 50e673a272bd2a8a1c4abd98c41643c3747a39e0
     external_links: []
     lifecycle_state: open
@@ -59097,5 +59115,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-27T03:46:39.770Z
-    updated_at: 2026-03-27T03:54:42.017Z
+    updated_at: 2026-03-27T03:54:43.517Z
     notes: []
