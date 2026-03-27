@@ -62872,6 +62872,12 @@ reviews:
         payload:
           thread_ulid: 01KMQ6BPKJ71TSTCFCWFM30TV0
         timestamp: 2026-03-27T08:44:46.149Z
+      - _ulid: 01KMQ7FCPY7F6BQ7CFKV5E65GM
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMQ6BR0NKSGZAS5BHSPT5P46
+        timestamp: 2026-03-27T08:44:49.759Z
     examined_commit: c96e530ea4df135b240af245f6e4f838d7c21c82
     external_links: []
     lifecycle_state: closed
@@ -62951,6 +62957,13 @@ reviews:
               watcher event was dropped. A failed write-through can therefore leave the cache
               stale/degraded until some later unrelated change re-invalidates the domain."
             created_at: 2026-03-27T08:25:21.685Z
+          - _ulid: 01KMQ7FC57YR7NNQPZ0K15KJJR
+            author: "@claude"
+            body: "Fixed: writeThrough() now calls loadDomain() first and only sets markWriteThrough() after it
+              succeeds. If loadDomain() fails (throws), the skip flag is never set, so the
+              subsequent watcher invalidation proceeds normally and can recover the domain from
+              degraded state."
+            created_at: 2026-03-27T08:44:49.191Z
         kind: blocker
       - _ulid: 01KMQ6BSDHDZ38D3KB1BGFHSF1
         anchor:
@@ -62980,5 +62993,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T08:25:58.691Z
     created_at: 2026-03-27T08:13:42.769Z
-    updated_at: 2026-03-27T08:44:45.712Z
+    updated_at: 2026-03-27T08:44:49.191Z
     notes: []
