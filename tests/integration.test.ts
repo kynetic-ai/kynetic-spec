@@ -1660,6 +1660,24 @@ describe("Integration: item ac", () => {
     expect(result.exitCode).not.toBe(0);
   });
 
+  // AC: @item-ac ac-item-ac-set
+  it("should accept 'update' as alias for 'set'", () => {
+    // Add an AC to update
+    kspec(
+      'item ac add @test-feature --id ac-alias-test --given "g" --when "w" --then "original"',
+      tempDir,
+    );
+
+    // Use the 'update' alias instead of 'set'
+    const output = kspec('item ac update @test-feature ac-alias-test --then "via alias"', tempDir);
+    expect(output).toContain("Updated acceptance criterion");
+    expect(output).toContain("ac-alias-test");
+
+    // Verify the update took effect
+    const listOutput = kspec("item ac list @test-feature", tempDir);
+    expect(listOutput).toContain("Then:  via alias");
+  });
+
   it("should remove acceptance criterion", () => {
     // First add an AC
     kspec('item ac add @test-feature --id ac-to-remove --given "g" --when "w" --then "t"', tempDir);

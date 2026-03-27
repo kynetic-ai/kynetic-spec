@@ -2037,7 +2037,7 @@ Examples:
     });
 
   // kspec item ac set <ref> <ac-id>
-  markMutating(acCmd.command("set <ref> <acId>"))
+  markMutating(acCmd.command("set <ref> <acId>").alias("update"))
     .description("Update an acceptance criterion")
     .option("--id <newId>", "Rename the AC ID")
     .option("--given <text>", "Update the precondition")
