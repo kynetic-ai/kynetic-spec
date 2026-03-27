@@ -8613,6 +8613,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T06:17:51.801Z
+  - _ulid: 01KMPZT7KWMTY20NPFKY7DNE9F
+    type: friction
+    content: Cache-backed daemon routes are relying on 'as unknown as LoadedTask/LoadedSpecItem' casts
+      from summary types. This let /api/refs return a spec status object instead of the lightweight
+      string contract when served from cache. Consider explicit cache-view types or normalization
+      helpers at route boundaries instead of structural casts.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T06:30:56.380Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
