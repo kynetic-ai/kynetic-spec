@@ -57956,7 +57956,17 @@ reviews:
     slugs: []
     title: Review task-entity-cache-impl (cycle 7)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed locally in review snapshot: 6899 passed, 5 skipped, 0 failed."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-27T01:57:12.769Z
+        completed_at: 2026-03-27T01:57:12.769Z
     events:
       - _ulid: 01KMPFY4FRH3GP6NMPVGZJCXAK
         actor: "@claude"
@@ -57971,6 +57981,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-27T01:53:40.277Z
+      - _ulid: 01KMPG51BDQ9V5MYAQG2VCKWSN
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-27T01:57:13.197Z
     examined_commit: 8813ba365e630450d68e9880bf09f935ba60c6f8
     external_links: []
     lifecycle_state: open
@@ -57983,5 +58000,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-27T01:53:27.032Z
-    updated_at: 2026-03-27T01:53:39.795Z
+    updated_at: 2026-03-27T01:57:12.769Z
     notes: []
