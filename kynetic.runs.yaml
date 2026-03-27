@@ -16754,7 +16754,7 @@ runs:
     completed_at: 2026-03-27T17:14:45.175Z
   - _ulid: 01KMR5XZG0FM5Q3MQ3VNT9QP53
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -16765,7 +16765,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-27T17:37:36.997Z
-        completed_at: 2026-03-27T17:37:36.997Z
+        completed_at: 2026-03-27T17:37:46.853Z
+        notes: "One minor friction: vitest namespace imports (import * as X) from dist/ must use .js
+          extension, not .ts. Other daemon test imports use .ts and work fine for named/default
+          imports. This is a known ESM quirk but cost one test iteration. Not systemic enough to
+          capture — just a gotcha for future reference. No other friction. The entity cache
+          architecture made adding new cached fields straightforward."
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-27T17:37:46.853Z
+        completed_at: 2026-03-27T17:37:46.853Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-27T17:37:05.024Z
