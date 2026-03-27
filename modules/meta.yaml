@@ -6272,6 +6272,29 @@ modules:
         relates_to: []
         tests: []
         traits: []
+        acceptance_criteria:
+          - given: a schedule is configured with any supported action type
+            id: ac-1
+            then: the action executes successfully regardless of action type
+            when: the schedule fires
+          - given: a hook is configured with any supported action type
+            id: ac-2
+            then: the action executes successfully regardless of action type
+            when: a matching event fires
+          - given: a composition join trigger has any supported action type
+            id: ac-3
+            then: the action executes successfully regardless of action type
+            when: the join condition is satisfied
+          - given: an automation subsystem cannot fulfill a configured action type
+            id: ac-4
+            then: the action run fails with an error message identifying what capability is missing and which
+              action type requires it
+            when: the action attempts to execute
+          - given: an automation action fails for any reason
+            id: ac-5
+            then: the event payload includes the error description and failure reason from the action run so the
+              cause is diagnosable from the event log
+            when: the failure event is emitted to the event bus
         tags:
           - agent-runtime
           - daemon
