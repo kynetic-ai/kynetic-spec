@@ -59002,6 +59002,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMPPV973971V9Y6ZRFJCCHCH
         timestamp: 2026-03-27T03:54:14.091Z
+      - _ulid: 01KMPPVB3W8K3V9ZBZ3VJQ0Y0P
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMPPVAP68RQNQQWJ4CMNNSTS
+        timestamp: 2026-03-27T03:54:15.548Z
     examined_commit: 50e673a272bd2a8a1c4abd98c41643c3747a39e0
     external_links: []
     lifecycle_state: open
@@ -59029,7 +59036,25 @@ reviews:
               until some later path re-registers it.
             created_at: 2026-03-27T03:54:13.603Z
         kind: blocker
+      - _ulid: 01KMPPVAP68RQNQQWJ4CMNNSTS
+        anchor:
+          type: code
+          commit: 50e673a272bd2a8a1c4abd98c41643c3747a39e0
+          line_end: 452
+          line_start: 441
+          path: packages/daemon/src/routes/tasks.ts
+          side: head
+        entries:
+          - _ulid: 01KMPPVAP6RTCHSHFB6DKK4N8D
+            author: "@claude"
+            body: "These status mutations rewrite the linked spec item via , but the cache write-through only
+              refreshes the  domain. The same pattern repeats in submit/complete/block. Result:
+              after a task status change,  and  can continue serving stale implementation status
+              from the items cache until the watcher fires, which breaks the write-through guarantee
+              for cross-domain mutations."
+            created_at: 2026-03-27T03:54:15.110Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T03:46:39.770Z
-    updated_at: 2026-03-27T03:54:13.603Z
+    updated_at: 2026-03-27T03:54:15.110Z
     notes: []
