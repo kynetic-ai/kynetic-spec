@@ -69019,7 +69019,17 @@ reviews:
     slugs: []
     title: Review task-link-session-cache
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed in review snapshot: 1947/1947 suites, 6970 passed, 5 skipped, 0 failed."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-27T20:13:34.814Z
+        completed_at: 2026-03-27T20:13:34.814Z
     events:
       - _ulid: 01KMREVM81NHDZ8K6NQN0PARKM
         actor: "@claude"
@@ -69041,6 +69051,13 @@ reviews:
           kind: nit
           thread_ulid: 01KMREW4DEQ99JA6QKXE3N7CEN
         timestamp: 2026-03-27T20:13:22.286Z
+      - _ulid: 01KMREWHPE5WX0RPPF5BE13BNE
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-27T20:13:35.310Z
     examined_commit: 7d699d4855817e533fc2e5066db464312ea38f57
     external_links: []
     lifecycle_state: open
@@ -69073,5 +69090,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-27T20:13:05.153Z
-    updated_at: 2026-03-27T20:13:21.710Z
+    updated_at: 2026-03-27T20:13:34.814Z
     notes: []
