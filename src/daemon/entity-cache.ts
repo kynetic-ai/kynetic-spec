@@ -31,6 +31,7 @@ import {
   initContext,
   loadAllItems,
   loadMetaContext,
+  loadSessionContext,
   loadPlans,
   resolveTaskDataManager,
   type KspecContext,
@@ -45,6 +46,7 @@ import { loadReviewRecords, type LoadedReviewRecord } from "../parser/reviews.js
 import { type LoadedPlan } from "../parser/plans.js";
 import { computeDisposition } from "../parser/review-operations.js";
 import { getUnresolvedBlockers } from "../parser/review-threads.js";
+import { getShadowStatus, hasRemoteTracking } from "../parser/shadow.js";
 import {
   type SessionLogSummary,
   getSessionMetadataOnly,
@@ -95,6 +97,32 @@ export interface ItemSummary {
   _path?: string;
   created?: string;
   acceptance_criteria_count: number;
+}
+
+/** Project a LoadedTask to its index-tier summary (strip notes, todos, description, etc.). */
+function toTaskSummary(task: LoadedTask): TaskSummary {
+  return {
+    _ulid: task._ulid,
+    slugs: task.slugs,
+    title: task.title,
+    type: task.type,
+    status: task.status,
+    priority: task.priority,
+    tags: task.tags,
+    assignee: task.assignee,
+    automation: task.automation,
+    spec_ref: task.spec_ref,
+    plan_ref: task.plan_ref,
+    review_ref: task.review_ref,
+    depends_on: task.depends_on,
+    blocked_by: task.blocked_by,
+    created_at: task.created_at,
+    started_at: task.started_at,
+    submitted_at: task.submitted_at,
+    completed_at: task.completed_at,
+    notes_count: task.notes?.length ?? 0,
+    todos_count: task.todos?.length ?? 0,
+  };
 }
 
 /** Project a LoadedSpecItem to its index-tier summary (strip description, notes, AC content). */
@@ -198,6 +226,7 @@ export interface TriageIndexSummary {
   status: string;
   created_at: string;
   action?: string;
+  reasoning?: string;
   decided_by?: string;
   override_by?: string;
   override_at?: string;
@@ -207,7 +236,7 @@ export interface TriageIndexSummary {
   evidence_refs: string[];
 }
 
-/** Project a LoadedTriageRecord to its index-tier summary (strip item_snapshot, reasoning, override_reasoning). */
+/** Project a LoadedTriageRecord to its index-tier summary (strip item_snapshot, override_reasoning). */
 function toTriageIndexSummary(record: LoadedTriageRecord): TriageIndexSummary {
   return {
     _ulid: record._ulid,
@@ -215,6 +244,7 @@ function toTriageIndexSummary(record: LoadedTriageRecord): TriageIndexSummary {
     status: record.status,
     created_at: record.created_at,
     action: record.action,
+    reasoning: record.reasoning,
     decided_by: record.decided_by,
     override_by: record.override_by,
     override_at: record.override_at,
@@ -231,6 +261,32 @@ export interface MetaSummary {
   version?: string;
   status?: string;
   modules?: string[];
+}
+
+/** Cached shadow branch status, computed at cache load time to avoid per-request git ops. */
+export interface CachedShadowInfo {
+  enabled: boolean;
+  branch_name: string | null;
+  worktree_dir: string | null;
+  healthy: boolean;
+  remote_tracking: boolean;
+}
+
+/** Cached project config, computed at cache load time to avoid per-request initContext. */
+export interface CachedProjectConfig {
+  project: { name?: string; version?: string; status?: string } | null;
+  spec_version: string | null;
+  root_dir: string;
+  remote_tracking: { value: string; type: string } | null;
+  daemon: { port: number; host: string; auto_start: boolean };
+}
+
+/** Cached session context, computed at cache load time to avoid per-request disk reads. */
+export interface CachedSessionContext {
+  focus: string | null;
+  threads: string[];
+  questions: string[];
+  updated_at: string;
 }
 
 /** Session cache configuration. */
@@ -408,6 +464,15 @@ export class ProjectEntityCache {
     details: new Map(),
   };
 
+  /** Cached shadow branch status, populated during meta domain load. */
+  private cachedShadowInfo: CachedShadowInfo | null = null;
+
+  /** Cached project config, populated during meta domain load. */
+  private cachedProjectConfig: CachedProjectConfig | null = null;
+
+  /** Cached session context, populated during meta domain load. */
+  private cachedSessionContext: CachedSessionContext | null = null;
+
   /**
    * In-flight reload promises for dedup.
    * AC: @daemon-entity-cache ac-reload-dedup
@@ -510,6 +575,26 @@ export class ProjectEntityCache {
     this.items.details.set(ulid, item);
   }
 
+  /**
+   * Get all full task entities from the detail tier.
+   * Returns null if the tasks domain is not ready.
+   * Populated during domain load alongside the index tier.
+   */
+  getAllTaskDetails(): LoadedTask[] | null {
+    if (this.tasks.state !== "ready") return null;
+    return Array.from(this.tasks.details.values());
+  }
+
+  /**
+   * Get all full spec item entities from the detail tier.
+   * Returns null if the items domain is not ready.
+   * Populated during domain load alongside the index tier.
+   */
+  getAllItemDetails(): LoadedSpecItem[] | null {
+    if (this.items.state !== "ready") return null;
+    return Array.from(this.items.details.values());
+  }
+
   /** Get inbox items from index tier. */
   getInboxIndex(): LoadedInboxItem[] | null {
     return this.inbox.index;
@@ -585,6 +670,30 @@ export class ProjectEntityCache {
   /** Store the full MetaContext in the cache. */
   setMetaDetail(meta: MetaContext): void {
     this.meta.details.set("_context", meta);
+  }
+
+  /**
+   * Get cached shadow branch status (computed at cache load time).
+   * AC: @daemon-read-path ac-no-per-request-sync
+   */
+  getShadowInfo(): CachedShadowInfo | null {
+    return this.cachedShadowInfo;
+  }
+
+  /**
+   * Get cached project config (computed at cache load time).
+   * AC: @daemon-read-path ac-no-per-request-sync
+   */
+  getProjectConfig(): CachedProjectConfig | null {
+    return this.cachedProjectConfig;
+  }
+
+  /**
+   * Get cached session context (computed at cache load time).
+   * AC: @daemon-read-path ac-no-per-request-sync
+   */
+  getSessionContext(): CachedSessionContext | null {
+    return this.cachedSessionContext;
   }
 
   /**
@@ -722,18 +831,37 @@ export class ProjectEntityCache {
     switch (domain) {
       case "tasks": {
         // AC: @daemon-entity-cache ac-load-on-register — load task index
-        const summaries = await resolveTaskDataManager(ctx).listTasks(ctx);
+        const tdm = resolveTaskDataManager(ctx);
+        const summaries = await tdm.listTasks(ctx);
         if (this.disposed) return;
         this.tasks.index = summaries;
         this.tasks.details.clear();
+        // Eagerly populate detail tier so search (grepItem) can access full
+        // entity data (description, notes, todos) that summaries strip.
+        // Non-fatal: if full loading fails, the detail tier stays empty and
+        // search falls through to disk on miss.
+        try {
+          const fullTasks = await tdm.loadAllTasks(ctx);
+          if (this.disposed) return;
+          for (const task of fullTasks) {
+            this.tasks.details.set(task._ulid, task);
+          }
+        } catch {
+          // Detail tier remains empty — search will use summaries or fall back to disk
+        }
         break;
       }
       case "items": {
-        // AC: @daemon-entity-cache ac-load-on-register — load item index (summaries only)
+        // AC: @daemon-entity-cache ac-load-on-register — load item index + detail tier
+        // Populate detail tier alongside index so full entities are available
+        // for search (grepItem needs description, notes, AC content).
         const loadedItems = await loadAllItems(ctx);
         if (this.disposed) return;
         this.items.index = loadedItems.map(toItemSummary);
         this.items.details.clear();
+        for (const item of loadedItems) {
+          this.items.details.set(item._ulid, item);
+        }
         break;
       }
       case "meta": {
@@ -750,6 +878,67 @@ export class ProjectEntityCache {
           ),
         };
         this.meta.details.set("_context", metaCtx);
+
+        // AC: @daemon-read-path ac-no-per-request-sync — cache shadow status
+        // and project config so /api/meta/shadow and /api/meta/config routes
+        // serve from memory without per-request git operations.
+        if (ctx.shadow) {
+          const status = await getShadowStatus(ctx.rootDir, {
+            branchName: ctx.shadow.branchName,
+            directory: ctx.config.shadow.directory,
+          });
+          if (this.disposed) return;
+          const hasRemote = await hasRemoteTracking(ctx.shadow.worktreeDir, {
+            branchName: ctx.shadow.branchName,
+          });
+          if (this.disposed) return;
+          this.cachedShadowInfo = {
+            enabled: ctx.shadow.enabled,
+            branch_name: ctx.shadow.branchName,
+            worktree_dir: ctx.shadow.worktreeDir,
+            healthy: status.healthy,
+            remote_tracking: hasRemote,
+          };
+        } else {
+          this.cachedShadowInfo = {
+            enabled: false,
+            branch_name: null,
+            worktree_dir: null,
+            healthy: false,
+            remote_tracking: false,
+          };
+        }
+
+        this.cachedProjectConfig = {
+          project: ctx.manifest?.project
+            ? {
+                name: ctx.manifest.project.name,
+                version: ctx.manifest.project.version,
+                status: ctx.manifest.project.status,
+              }
+            : null,
+          spec_version: ctx.manifest?.kynetic ?? null,
+          root_dir: ctx.projectRoot,
+          remote_tracking: ctx.config.shadow.remote
+            ? { value: ctx.config.shadow.remote.value, type: ctx.config.shadow.remote.type }
+            : null,
+          daemon: {
+            port: ctx.config.daemon.port,
+            host: ctx.config.daemon.host,
+            auto_start: ctx.config.daemon.auto_start,
+          },
+        };
+
+        // AC: @daemon-read-path ac-no-per-request-sync — cache session context
+        // so /api/meta/session serves from memory without per-request disk reads.
+        const sessionCtx = await loadSessionContext(ctx);
+        if (this.disposed) return;
+        this.cachedSessionContext = {
+          focus: sessionCtx.focus,
+          threads: sessionCtx.threads || [],
+          questions: sessionCtx.open_questions || [],
+          updated_at: sessionCtx.updated_at,
+        };
         break;
       }
       case "inbox": {

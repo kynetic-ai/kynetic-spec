@@ -18,28 +18,55 @@ import {
   loadInboxItems,
   loadTriageRecords,
   findTriageRecordByInboxRef,
-  buildIndexes,
   validate,
   AlignmentIndex,
+  ReferenceIndex,
   areDependenciesMet,
   resolveTaskDataManager,
 } from "../../parser/index.js";
 import { TriageActionSchema, TriageStatusSchema } from "../../schema/index.js";
+import type { LoadedTask, LoadedSpecItem } from "../../parser/index.js";
 import type {
   TaskStatusSummary,
   ValidationAggregation,
   InboxItemWithTriage,
 } from "@kynetic-ai/shared";
+import type { EntityCacheAccessor } from "./entity-cache-types.js";
 
-interface AggregationRouteOptions {}
+interface AggregationRouteOptions {
+  getEntityCache?: EntityCacheAccessor;
+}
 
 export function createAggregationRoutes(_options: AggregationRouteOptions = {}) {
+  const { getEntityCache } = _options;
+
   return (
     new Elysia({ prefix: "/api/aggregation" })
       // AC: @ui-api-aggregation ac-1 - Task status summary with dependency-aware distinctions
+      // AC: @daemon-read-path ac-no-per-request-sync, ac-index-from-cache — serve from cached task index
       .get("/tasks/summary", async ({ projectContext }) => {
-        const ctx = await initContext(projectContext.path);
-        const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+        const cache = getEntityCache?.(projectContext.path);
+        const tasksDomainState = cache?.getDomainState("tasks");
+
+        // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
+        if (cache && tasksDomainState === "loading") {
+          return { counts: {}, ready: 0, blocked_by_dependencies: 0, total: 0, _cache_status: "loading" as const };
+        }
+
+        let tasks: LoadedTask[];
+        if (cache && tasksDomainState === "ready") {
+          const cachedTasks = cache.getTaskIndex();
+          if (cachedTasks) {
+            // AC: @daemon-read-path ac-index-from-cache — build from cached data
+            tasks = cachedTasks as unknown as LoadedTask[];
+          } else {
+            const ctx = await initContext(projectContext.path);
+            tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+          }
+        } else {
+          const ctx = await initContext(projectContext.path);
+          tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+        }
 
         // Count tasks by status
         const counts: Record<string, number> = {};
@@ -72,14 +99,58 @@ export function createAggregationRoutes(_options: AggregationRouteOptions = {}) 
       })
 
       // AC: @ui-api-aggregation ac-2 - Extended validation/alignment stats
+      // AC: @daemon-read-path ac-index-from-cache — build alignment/reference indexes from cached entity data
+      // Note: validate() requires full context for deep schema/ref validation,
+      // but index building uses cached entity data when available.
       .get("/validation", async ({ projectContext }) => {
-        const ctx = await initContext(projectContext.path);
-        const { tasks, items, refIndex } = await buildIndexes(ctx);
+        const cache = getEntityCache?.(projectContext.path);
+        const tasksDomainState = cache?.getDomainState("tasks");
+        const itemsDomainState = cache?.getDomainState("items");
+
+        // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
+        if (cache && (tasksDomainState === "loading" || itemsDomainState === "loading")) {
+          return {
+            stats: { totalSpecs: 0, specsWithTasks: 0, alignedSpecs: 0, orphanedSpecs: 0 },
+            warnings: [],
+            entity_counts: { items: 0, tasks: 0, traits: 0 },
+            ac_counts: { total: 0, covered: 0, uncovered: 0 },
+            orphan_count: 0,
+            valid: true,
+            error_count: 0,
+            warning_count: 0,
+            _cache_status: "loading" as const,
+          };
+        }
+
+        // Resolve tasks and items from cache when available
+        // AC: @daemon-read-path ac-index-from-cache — indexes built from cached data
+        let tasks: LoadedTask[];
+        if (cache && tasksDomainState === "ready") {
+          tasks = (cache.getTaskIndex() ?? []) as unknown as LoadedTask[];
+        } else {
+          const ctx = await initContext(projectContext.path);
+          tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+        }
+
+        let items: LoadedSpecItem[];
+        if (cache && itemsDomainState === "ready") {
+          items = (cache.getItemIndex() ?? []) as unknown as LoadedSpecItem[];
+        } else {
+          const { loadAllItems } = await import("../../parser/index.js");
+          const ctx = await initContext(projectContext.path);
+          items = await loadAllItems(ctx);
+        }
+
+        // Build reference index from cached data for alignment resolution
+        const refIndex = new ReferenceIndex(tasks, items);
 
         // Run validation for error/warning counts and completeness data
+        // Note: validate() performs deep schema/ref/completeness checks that
+        // require full context — this is computational, not index building
+        const ctx = await initContext(projectContext.path);
         const validationResult = await validate(ctx);
 
-        // Build alignment index
+        // Build alignment index from cached data
         const alignIndex = new AlignmentIndex(tasks, items);
         alignIndex.buildLinks(refIndex);
         const alignStats = alignIndex.getStats();
@@ -90,10 +161,15 @@ export function createAggregationRoutes(_options: AggregationRouteOptions = {}) 
 
         // AC counts from completeness warnings
         // Count total ACs across all non-trait items
+        // When serving from cache, ItemSummary has acceptance_criteria_count;
+        // when from disk, LoadedSpecItem has acceptance_criteria array.
         let totalACs = 0;
         for (const item of items) {
           if (item.type !== "trait") {
-            totalACs += item.acceptance_criteria?.length || 0;
+            const asAny = item as Record<string, unknown>;
+            totalACs += typeof asAny.acceptance_criteria_count === "number"
+              ? asAny.acceptance_criteria_count
+              : (item.acceptance_criteria?.length || 0);
           }
         }
 
@@ -142,10 +218,40 @@ export function createAggregationRoutes(_options: AggregationRouteOptions = {}) 
       })
 
       // AC: @ui-api-aggregation ac-3 - Inbox items with inline triage status
+      // AC: @daemon-read-path ac-no-per-request-sync, ac-index-from-cache — serve from cached inbox and triage indexes
       .get("/inbox", async ({ projectContext }) => {
-        const ctx = await initContext(projectContext.path);
-        const inboxItems = await loadInboxItems(ctx);
-        const triageRecords = await loadTriageRecords(ctx);
+        const cache = getEntityCache?.(projectContext.path);
+        const inboxDomainState = cache?.getDomainState("inbox");
+        const triageDomainState = cache?.getDomainState("triage");
+
+        // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
+        if (cache && (inboxDomainState === "loading" || triageDomainState === "loading")) {
+          return { items: [], total: 0, _cache_status: "loading" as const };
+        }
+
+        let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
+        const getCtx = async () => {
+          if (!_ctx) _ctx = await initContext(projectContext.path);
+          return _ctx;
+        };
+
+        let inboxItems;
+        if (cache && inboxDomainState === "ready") {
+          inboxItems = cache.getInboxIndex();
+        }
+        if (!inboxItems) {
+          const ctx = await getCtx();
+          inboxItems = await loadInboxItems(ctx);
+        }
+
+        let triageRecords;
+        if (cache && triageDomainState === "ready") {
+          triageRecords = cache.getTriageIndex();
+        }
+        if (!triageRecords) {
+          const ctx = await getCtx();
+          triageRecords = await loadTriageRecords(ctx);
+        }
 
         // Sort by created_at descending (newest first)
         const sorted = [...inboxItems].toSorted(
@@ -154,7 +260,10 @@ export function createAggregationRoutes(_options: AggregationRouteOptions = {}) 
 
         // Merge triage status inline
         const items: InboxItemWithTriage[] = sorted.map((item) => {
-          const triageRecord = findTriageRecordByInboxRef(triageRecords, item._ulid);
+          // Find matching triage record by inbox_ref (works with both full and index records)
+          const triageRecord = triageRecords!.find(
+            (r) => r.inbox_ref === item._ulid,
+          );
 
           const result: InboxItemWithTriage = {
             _ulid: item._ulid,

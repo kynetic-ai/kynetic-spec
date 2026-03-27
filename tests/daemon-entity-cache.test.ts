@@ -218,12 +218,15 @@ describe("ProjectEntityCache", () => {
 
   // AC: @daemon-entity-cache ac-detail-on-demand
   describe("ac-detail-on-demand: detail loaded and cached when accessed", () => {
-    it("should return null for uncached task detail", async () => {
+    it("should eagerly populate task detail during domain load", async () => {
       const cache = new ProjectEntityCache(projectA);
       await cache.loadDomain("tasks");
 
+      // Task details are eagerly populated during domain load so that
+      // search (grepItem) can access full entity data (description, notes, etc.)
       const detail = cache.getTaskDetail("01TASKA0000000000000000000");
-      expect(detail).toBeNull();
+      expect(detail).not.toBeNull();
+      expect(detail!.title).toBe("Sample Task A");
     });
 
     it("should retain task detail after explicit set", async () => {
@@ -427,20 +430,22 @@ describe("ProjectEntityCache", () => {
       expect(after!.length).toBe(2);
     });
 
-    it("should clear detail cache when domain is invalidated", async () => {
+    it("should replace stale detail cache when domain is invalidated", async () => {
       const cache = new ProjectEntityCache(projectA);
       await cache.loadDomain("tasks");
 
-      // Set a detail
-      const mockTask = { _ulid: "01TASKA0000000000000000000", title: "Detail" } as any;
+      // Set a mock detail that overrides the eagerly loaded one
+      const mockTask = { _ulid: "01TASKA0000000000000000000", title: "Stale Detail" } as any;
       cache.setTaskDetail("01TASKA0000000000000000000", mockTask);
-      expect(cache.getTaskDetail("01TASKA0000000000000000000")).not.toBeNull();
+      expect(cache.getTaskDetail("01TASKA0000000000000000000")!.title).toBe("Stale Detail");
 
-      // Invalidate domain
+      // Invalidate domain — detail tier reloads from disk
       await cache.invalidateDomain("tasks");
 
-      // Detail should be cleared
-      expect(cache.getTaskDetail("01TASKA0000000000000000000")).toBeNull();
+      // Detail should be refreshed from disk, not stale
+      const detail = cache.getTaskDetail("01TASKA0000000000000000000");
+      expect(detail).not.toBeNull();
+      expect(detail!.title).toBe("Sample Task A"); // Disk value, not stale mock
     });
 
     it("should invalidate both meta and items domains when manifest changes", async () => {
@@ -1296,15 +1301,17 @@ describe("ProjectEntityCache", () => {
 
   // AC: @daemon-entity-cache ac-detail-on-demand
   describe("ac-detail-on-demand: route-level integration", () => {
-    it("should cache task detail after route loads it from disk", async () => {
+    it("should have task detail populated after domain load", async () => {
       const cache = registerEntityCache(projectA);
       await cache.loadDomain("tasks");
 
-      // Route pattern: load task from disk, then setTaskDetail
+      // Task details are eagerly populated during domain load for search support
       const taskUlid = "01TASKA0000000000000000000";
-      expect(cache.getTaskDetail(taskUlid)).toBeNull(); // Not cached yet
+      const detail = cache.getTaskDetail(taskUlid);
+      expect(detail).not.toBeNull();
+      expect(detail!.title).toBe("Sample Task A");
 
-      // Simulate route loading task from disk and caching it
+      // Route can override with explicit set (e.g., after mutation)
       const mockDetail = {
         _ulid: taskUlid,
         title: "Sample Task A",
@@ -1313,24 +1320,27 @@ describe("ProjectEntityCache", () => {
       } as any;
       cache.setTaskDetail(taskUlid, mockDetail);
 
-      // Subsequent requests can use cached detail
+      // Subsequent requests can use updated detail
       const cached = cache.getTaskDetail(taskUlid);
       expect(cached).not.toBeNull();
       expect(cached!.title).toBe("Sample Task A");
       expect(cached!.notes).toHaveLength(1);
     });
 
-    it("should evict cached detail on domain invalidation", async () => {
+    it("should refresh cached detail on domain invalidation", async () => {
       const cache = registerEntityCache(projectA);
       await cache.loadDomain("tasks");
 
       const taskUlid = "01TASKA0000000000000000000";
-      cache.setTaskDetail(taskUlid, { _ulid: taskUlid, title: "Detail" } as any);
-      expect(cache.getTaskDetail(taskUlid)).not.toBeNull();
+      // Override the eagerly loaded detail with a mock
+      cache.setTaskDetail(taskUlid, { _ulid: taskUlid, title: "Overridden" } as any);
+      expect(cache.getTaskDetail(taskUlid)!.title).toBe("Overridden");
 
-      // Invalidation clears details
+      // Invalidation reloads from disk — eagerly populated again
       await cache.invalidateDomain("tasks");
-      expect(cache.getTaskDetail(taskUlid)).toBeNull();
+      const refreshed = cache.getTaskDetail(taskUlid);
+      expect(refreshed).not.toBeNull();
+      expect(refreshed!.title).toBe("Sample Task A"); // Back to disk value
     });
   });
 

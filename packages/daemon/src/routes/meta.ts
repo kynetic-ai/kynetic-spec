@@ -44,7 +44,22 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
   return (
     new Elysia({ prefix: "/api/meta" })
       // AC: @api-contract ac-15 - Get session context
+      // AC: @daemon-read-path ac-no-per-request-sync — serve from cache when available
       .get("/session", async ({ projectContext }) => {
+        const cache = getEntityCache?.(projectContext.path);
+        const metaDomainState = cache?.getDomainState("meta");
+
+        // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
+        if (cache && metaDomainState === "loading") {
+          return { focus: null, threads: [], questions: [], updated_at: new Date().toISOString(), _cache_status: "loading" as const };
+        }
+
+        if (cache && metaDomainState === "ready") {
+          const cachedSession = cache.getSessionContext();
+          if (cachedSession) return cachedSession;
+        }
+
+        // Fallback: cache not ready or no cached session context
         // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
         const ctx = await initContext(projectContext.path);
         const session = await loadSessionContext(ctx);
@@ -256,7 +271,22 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
       )
 
       // AC: @ui-settings-view ac-1 - Project config from manifest
+      // AC: @daemon-read-path ac-no-per-request-sync — serve from cache when available
       .get("/config", async ({ projectContext }) => {
+        const cache = getEntityCache?.(projectContext.path);
+        const metaDomainState = cache?.getDomainState("meta");
+
+        // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
+        if (cache && metaDomainState === "loading") {
+          return { project: null, spec_version: null, root_dir: null, remote_tracking: null, daemon: null, _cache_status: "loading" as const };
+        }
+
+        if (cache && metaDomainState === "ready") {
+          const cachedConfig = cache.getProjectConfig();
+          if (cachedConfig) return cachedConfig;
+        }
+
+        // Fallback: cache not available at all (no entity cache configured)
         const ctx = await initContext(projectContext.path);
         const manifest = ctx.manifest;
         const config = ctx.config;
@@ -277,7 +307,22 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
       })
 
       // AC: @ui-settings-view ac-1 - Shadow branch status
+      // AC: @daemon-read-path ac-no-per-request-sync — serve from cache when available
       .get("/shadow", async ({ projectContext }) => {
+        const cache = getEntityCache?.(projectContext.path);
+        const metaDomainState = cache?.getDomainState("meta");
+
+        // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
+        if (cache && metaDomainState === "loading") {
+          return { enabled: false, branch_name: null, worktree_dir: null, healthy: false, remote_tracking: false, _cache_status: "loading" as const };
+        }
+
+        if (cache && metaDomainState === "ready") {
+          const cachedShadow = cache.getShadowInfo();
+          if (cachedShadow) return cachedShadow;
+        }
+
+        // Fallback: cache not available at all (no entity cache configured)
         const ctx = await initContext(projectContext.path);
 
         if (!ctx.shadow) {

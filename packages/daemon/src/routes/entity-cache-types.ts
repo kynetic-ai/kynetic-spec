@@ -9,7 +9,7 @@
 
 import type { LoadedTask, TaskSummary, LoadedPlan, LoadedSpecItem } from "../../parser/index.js";
 import type { MetaContext } from "../../parser/meta.js";
-import type { ItemSummary, MetaSummary, PlanIndexSummary, ReviewIndexSummary, TriageIndexSummary } from "../../daemon/entity-cache.js";
+import type { ItemSummary, MetaSummary, PlanIndexSummary, ReviewIndexSummary, TriageIndexSummary, CachedShadowInfo, CachedProjectConfig, CachedSessionContext } from "../../daemon/entity-cache.js";
 import type { SessionLogSummary } from "../../sessions/store.js";
 import type { LoadedInboxItem } from "../../parser/yaml.js";
 import type { LoadedTriageRecord } from "../../parser/yaml.js";
@@ -27,9 +27,11 @@ export interface RouteEntityCache {
   getTaskIndex(): TaskSummary[] | null;
   getTaskDetail(ulid: string): LoadedTask | null;
   setTaskDetail(ulid: string, task: LoadedTask): void;
+  getAllTaskDetails(): LoadedTask[] | null;
   getItemIndex(): ItemSummary[] | null;
   getItemDetail(ulid: string): LoadedSpecItem | null;
   setItemDetail(ulid: string, item: LoadedSpecItem): void;
+  getAllItemDetails(): LoadedSpecItem[] | null;
   getSessionIndex(): SessionLogSummary[] | null;
   getSessionDetail(sessionId: string): SessionLogSummary | null;
   setSessionDetail(sessionId: string, summary: SessionLogSummary): void;
@@ -46,6 +48,9 @@ export interface RouteEntityCache {
   getMetaIndex(): MetaSummary | null;
   getMetaDetail(): MetaContext | null;
   setMetaDetail(meta: MetaContext): void;
+  getShadowInfo(): CachedShadowInfo | null;
+  getProjectConfig(): CachedProjectConfig | null;
+  getSessionContext(): CachedSessionContext | null;
   writeThrough(domain: string): Promise<void>;
   markWriteThrough(domain: string): void;
 }
