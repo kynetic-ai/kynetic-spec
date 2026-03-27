@@ -32,6 +32,11 @@ export interface ShadowSyncSchedulerOptions {
   shadowOptions?: ShadowOptions;
   /** Optional pubsub manager for broadcasting sync events */
   pubsub?: ShadowSyncPubSub;
+  /**
+   * AC: @daemon-read-path ac-background-sync — called after a successful pull
+   * so the entity cache can be invalidated and reloaded with fresh data.
+   */
+  onPull?: () => void | Promise<void>;
 }
 
 /**
@@ -56,12 +61,14 @@ export class ShadowSyncScheduler {
   private readonly intervalMs: number;
   private readonly shadowOptions?: ShadowOptions;
   private readonly pubsub?: ShadowSyncPubSub;
+  private readonly onPull?: () => void | Promise<void>;
 
   constructor(options: ShadowSyncSchedulerOptions) {
     this.worktreeDir = options.worktreeDir;
     this.intervalMs = options.intervalSeconds * 1000;
     this.shadowOptions = options.shadowOptions;
     this.pubsub = options.pubsub;
+    this.onPull = options.onPull;
   }
 
   /**
@@ -133,6 +140,15 @@ export class ShadowSyncScheduler {
 
       if (result.pulled) {
         console.log("[daemon] Shadow sync: pulled remote changes");
+
+        // AC: @daemon-read-path ac-background-sync — invalidate entity cache on pull
+        if (this.onPull) {
+          try {
+            await this.onPull();
+          } catch (err) {
+            console.error("[daemon] Shadow sync: onPull callback error:", err);
+          }
+        }
 
         // Broadcast so the UI refreshes
         if (this.pubsub) {

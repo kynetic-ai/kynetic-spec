@@ -325,7 +325,8 @@ export async function createServer(options: ServerOptions) {
     .use(createTriageRoutes({ pubsub: pubsubManager, getEntityCache: entityCacheModule.getEntityCache }))
 
     // AC: @api-contract ac-19 through ac-21 - Validation and search endpoints
-    .use(createValidationRoutes())
+    // AC: @daemon-read-path ac-no-per-request-sync, ac-index-from-cache — pass cache accessor
+    .use(createValidationRoutes({ getEntityCache: entityCacheModule.getEntityCache }))
 
     // AC: @multi-directory-daemon ac-28, ac-29, ac-30 - Projects management endpoints
     .use(
@@ -346,7 +347,8 @@ export async function createServer(options: ServerOptions) {
     .use(createPlansRoutes({ getEntityCache: entityCacheModule.getEntityCache }))
 
     // AC: @ui-api-aggregation ac-1, ac-2, ac-3 - Aggregation endpoints
-    .use(createAggregationRoutes())
+    // AC: @daemon-read-path ac-no-per-request-sync, ac-index-from-cache — pass cache accessor
+    .use(createAggregationRoutes({ getEntityCache: entityCacheModule.getEntityCache }))
 
     // AC: @ui-api-ref-resolution ac-4, ac-5 - Lightweight ref index endpoint
     // AC: @daemon-entity-cache ac-serve-from-memory — pass cache accessor
@@ -576,6 +578,14 @@ export async function createServer(options: ServerOptions) {
             remoteType: config.shadow.remote?.type,
           },
           pubsub: pubsubManager,
+          // AC: @daemon-read-path ac-background-sync — invalidate entity cache when background sync pulls new data
+          onPull: async () => {
+            if (!startupProjectPath) return;
+            const cache = entityCacheModule.getEntityCache(startupProjectPath);
+            if (!cache) return;
+            console.log("[daemon] Shadow sync pulled data — reloading entity cache");
+            await cache.loadAll();
+          },
         });
         shadowSyncScheduler.start();
       }

@@ -198,6 +198,7 @@ export interface TriageIndexSummary {
   status: string;
   created_at: string;
   action?: string;
+  reasoning?: string;
   decided_by?: string;
   override_by?: string;
   override_at?: string;
@@ -207,7 +208,7 @@ export interface TriageIndexSummary {
   evidence_refs: string[];
 }
 
-/** Project a LoadedTriageRecord to its index-tier summary (strip item_snapshot, reasoning, override_reasoning). */
+/** Project a LoadedTriageRecord to its index-tier summary (strip item_snapshot, override_reasoning). */
 function toTriageIndexSummary(record: LoadedTriageRecord): TriageIndexSummary {
   return {
     _ulid: record._ulid,
@@ -215,6 +216,7 @@ function toTriageIndexSummary(record: LoadedTriageRecord): TriageIndexSummary {
     status: record.status,
     created_at: record.created_at,
     action: record.action,
+    reasoning: record.reasoning,
     decided_by: record.decided_by,
     override_by: record.override_by,
     override_at: record.override_at,

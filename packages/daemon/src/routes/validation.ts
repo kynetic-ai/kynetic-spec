@@ -20,25 +20,55 @@ import {
   loadMetaContext,
   validate,
   AlignmentIndex,
+  resolveTaskDataManager,
 } from "../../parser/index.js";
+import type { LoadedTask, LoadedSpecItem } from "../../parser/index.js";
 import { ItemTypeSchema, TaskStatusSchema } from "../../schema/common.js";
 import { grepItem } from "../../utils/grep.js";
 import { enumUnion } from "./enum-utils.js";
+import type { EntityCacheAccessor } from "./entity-cache-types.js";
 
-interface ValidationRouteOptions {}
+interface ValidationRouteOptions {
+  getEntityCache?: EntityCacheAccessor;
+}
 
 export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
-  // No closure-scoped kspecDir needed - comes from middleware
+  const { getEntityCache } = _options;
 
   return (
     new Elysia({ prefix: "/api" })
       // AC: @api-contract ac-19 - Search across all entities
+      // AC: @daemon-read-path ac-no-per-request-sync, ac-index-from-cache — serve from cached entity data
       .get(
         "/search",
         async ({ query, projectContext }) => {
-          // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-          const ctx = await initContext(projectContext.path);
-          const { tasks, items } = await buildIndexes(ctx);
+          const cache = getEntityCache?.(projectContext.path);
+          const tasksDomainState = cache?.getDomainState("tasks");
+          const itemsDomainState = cache?.getDomainState("items");
+
+          let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
+          const getCtx = async () => {
+            if (!_ctx) _ctx = await initContext(projectContext.path);
+            return _ctx;
+          };
+
+          // Resolve tasks and items from cache when available
+          let tasks: LoadedTask[];
+          if (cache && tasksDomainState === "ready") {
+            tasks = (cache.getTaskIndex() ?? []) as unknown as LoadedTask[];
+          } else {
+            const ctx = await getCtx();
+            tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+          }
+
+          let items: LoadedSpecItem[];
+          if (cache && itemsDomainState === "ready") {
+            items = (cache.getItemIndex() ?? []) as unknown as LoadedSpecItem[];
+          } else {
+            const ctx = await getCtx();
+            const { loadAllItems } = await import("../../parser/index.js");
+            items = await loadAllItems(ctx);
+          }
 
           const pattern = query.q;
           if (!pattern) {
@@ -97,7 +127,13 @@ export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
 
           // AC: @api-contract ac-19 - Search inbox items
           if (!query.itemsOnly && !query.tasksOnly) {
-            const inboxItems = await loadInboxItems(ctx);
+            const inboxDomainState = cache?.getDomainState("inbox");
+            let inboxItems;
+            if (cache && inboxDomainState === "ready") {
+              inboxItems = cache.getInboxIndex() ?? [];
+            } else {
+              inboxItems = await loadInboxItems(await getCtx());
+            }
             for (const inboxItem of inboxItems) {
               const match = grepItem(inboxItem as unknown as Record<string, unknown>, pattern);
               if (match) {
@@ -113,7 +149,14 @@ export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
 
           // AC: @api-contract ac-19 - Search meta entities
           if (!query.itemsOnly && !query.tasksOnly) {
-            const metaCtx = await loadMetaContext(ctx);
+            const metaDomainState = cache?.getDomainState("meta");
+            let metaCtx;
+            if (cache && metaDomainState === "ready") {
+              metaCtx = cache.getMetaDetail();
+            }
+            if (!metaCtx) {
+              metaCtx = await loadMetaContext(await getCtx());
+            }
 
             // Search observations
             for (const observation of metaCtx.observations) {
@@ -191,6 +234,7 @@ export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
       )
 
       // AC: @api-contract ac-20 - Run full validation
+      // Note: validate() requires full context for deep schema/ref/completeness checks.
       .get("/validate", async ({ projectContext }) => {
         // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
         const ctx = await initContext(projectContext.path);
@@ -210,6 +254,7 @@ export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
       })
 
       // AC: @api-contract ac-21 - Get alignment stats and warnings
+      // Note: AlignmentIndex needs full spec items with ACs for alignment analysis.
       .get("/alignment", async ({ projectContext }) => {
         // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
         const ctx = await initContext(projectContext.path);
