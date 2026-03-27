@@ -43,6 +43,8 @@ import { loadInboxItems, type LoadedInboxItem } from "../parser/yaml.js";
 import { loadTriageRecords, type LoadedTriageRecord } from "../parser/yaml.js";
 import { loadReviewRecords, type LoadedReviewRecord } from "../parser/reviews.js";
 import { type LoadedPlan } from "../parser/plans.js";
+import { computeDisposition } from "../parser/review-operations.js";
+import { getUnresolvedBlockers } from "../parser/review-threads.js";
 import {
   type SessionLogSummary,
   getSessionMetadataOnly,
@@ -110,6 +112,116 @@ function toItemSummary(item: LoadedSpecItem): ItemSummary {
     _path: item._path,
     created: item.created,
     acceptance_criteria_count: item.acceptance_criteria?.length ?? 0,
+  };
+}
+
+/** Summary type for plans (index tier — excludes content and notes). */
+export interface PlanIndexSummary {
+  _ulid: string;
+  slugs: string[];
+  title: string;
+  status: string;
+  created_at: string;
+  approved_at: string | null;
+  completed_at: string | null;
+  source_path: string | null;
+  module_ref: string | null;
+  derived_tasks: string[];
+  derived_specs: string[];
+}
+
+/** Project a LoadedPlan to its index-tier summary (strip content and notes). */
+function toPlanIndexSummary(plan: LoadedPlan): PlanIndexSummary {
+  return {
+    _ulid: plan._ulid,
+    slugs: plan.slugs,
+    title: plan.title,
+    status: plan.status,
+    created_at: plan.created_at,
+    approved_at: plan.approved_at ?? null,
+    completed_at: plan.completed_at ?? null,
+    source_path: plan.source_path ?? null,
+    module_ref: plan.module_ref ?? null,
+    derived_tasks: plan.derived_tasks,
+    derived_specs: plan.derived_specs,
+  };
+}
+
+/** Summary type for review records (index tier — excludes threads, checks, verdicts, events, notes). */
+export interface ReviewIndexSummary {
+  _ulid: string;
+  slugs: string[];
+  title: string;
+  lifecycle_state: string;
+  author: string;
+  subject: LoadedReviewRecord["subject"];
+  related_refs: string[];
+  created_at: string;
+  updated_at: string | null;
+  examined_commit: string | null;
+  external_links: LoadedReviewRecord["external_links"];
+  /** Pre-computed disposition from threads/checks/verdicts at index load time. */
+  disposition: string;
+  /** Pre-computed counts from the full record. */
+  thread_count: number;
+  unresolved_blocker_count: number;
+  check_count: number;
+  verdict_count: number;
+}
+
+/** Project a LoadedReviewRecord to its index-tier summary (pre-compute derived values, strip heavy fields). */
+function toReviewIndexSummary(review: LoadedReviewRecord): ReviewIndexSummary {
+  return {
+    _ulid: review._ulid,
+    slugs: review.slugs,
+    title: review.title,
+    lifecycle_state: review.lifecycle_state,
+    author: review.author,
+    subject: review.subject,
+    related_refs: review.related_refs,
+    created_at: review.created_at,
+    updated_at: review.updated_at ?? null,
+    examined_commit: review.examined_commit ?? null,
+    external_links: review.external_links,
+    disposition: computeDisposition(review),
+    thread_count: review.threads.length,
+    unresolved_blocker_count: getUnresolvedBlockers(review).length,
+    check_count: review.checks.length,
+    verdict_count: review.verdicts.length,
+  };
+}
+
+/** Summary type for triage records (index tier — excludes item_snapshot, reasoning, override_reasoning). */
+export interface TriageIndexSummary {
+  _ulid: string;
+  inbox_ref: string;
+  status: string;
+  created_at: string;
+  action?: string;
+  decided_by?: string;
+  override_by?: string;
+  override_at?: string;
+  acted_at?: string;
+  updated_at?: string;
+  result_ref?: string;
+  evidence_refs: string[];
+}
+
+/** Project a LoadedTriageRecord to its index-tier summary (strip item_snapshot, reasoning, override_reasoning). */
+function toTriageIndexSummary(record: LoadedTriageRecord): TriageIndexSummary {
+  return {
+    _ulid: record._ulid,
+    inbox_ref: record.inbox_ref,
+    status: record.status,
+    created_at: record.created_at,
+    action: record.action,
+    decided_by: record.decided_by,
+    override_by: record.override_by,
+    override_at: record.override_at,
+    acted_at: record.acted_at,
+    updated_at: record.updated_at,
+    result_ref: record.result_ref,
+    evidence_refs: record.evidence_refs ?? [],
   };
 }
 
@@ -245,17 +357,17 @@ export class ProjectEntityCache {
     index: null,
     details: new Map(),
   };
-  private plans: DomainStore<LoadedPlan[], LoadedPlan> = {
+  private plans: DomainStore<PlanIndexSummary[], LoadedPlan> = {
     state: "unloaded",
     index: null,
     details: new Map(),
   };
-  private triage: DomainStore<LoadedTriageRecord[], LoadedTriageRecord> = {
+  private triage: DomainStore<TriageIndexSummary[], LoadedTriageRecord> = {
     state: "unloaded",
     index: null,
     details: new Map(),
   };
-  private reviews: DomainStore<LoadedReviewRecord[], LoadedReviewRecord> = {
+  private reviews: DomainStore<ReviewIndexSummary[], LoadedReviewRecord> = {
     state: "unloaded",
     index: null,
     details: new Map(),
@@ -356,8 +468,8 @@ export class ProjectEntityCache {
     return this.inbox.index;
   }
 
-  /** Get plans from index tier. */
-  getPlansIndex(): LoadedPlan[] | null {
+  /** Get plan summaries from index tier. */
+  getPlansIndex(): PlanIndexSummary[] | null {
     return this.plans.index;
   }
 
@@ -374,8 +486,8 @@ export class ProjectEntityCache {
     this.plans.details.set(ulid, plan);
   }
 
-  /** Get reviews from index tier. */
-  getReviewsIndex(): LoadedReviewRecord[] | null {
+  /** Get review summaries from index tier. */
+  getReviewsIndex(): ReviewIndexSummary[] | null {
     return this.reviews.index;
   }
 
@@ -392,8 +504,8 @@ export class ProjectEntityCache {
     this.reviews.details.set(ulid, review);
   }
 
-  /** Get triage records from index tier. */
-  getTriageIndex(): LoadedTriageRecord[] | null {
+  /** Get triage summaries from index tier. */
+  getTriageIndex(): TriageIndexSummary[] | null {
     return this.triage.index;
   }
 
@@ -575,20 +687,32 @@ export class ProjectEntityCache {
       }
       case "plans": {
         const loadedPlans = await loadPlans(ctx);
-        this.plans.index = loadedPlans;
+        this.plans.index = loadedPlans.map(toPlanIndexSummary);
         this.plans.details.clear();
+        // Populate detail tier with full records for on-demand access
+        for (const plan of loadedPlans) {
+          this.plans.details.set(plan._ulid, plan);
+        }
         break;
       }
       case "triage": {
         const triageRecords = await loadTriageRecords(ctx);
-        this.triage.index = triageRecords;
+        this.triage.index = triageRecords.map(toTriageIndexSummary);
         this.triage.details.clear();
+        // Populate detail tier with full records for on-demand access
+        for (const record of triageRecords) {
+          this.triage.details.set(record._ulid, record);
+        }
         break;
       }
       case "reviews": {
         const reviewRecords = await loadReviewRecords(ctx);
-        this.reviews.index = reviewRecords;
+        this.reviews.index = reviewRecords.map(toReviewIndexSummary);
         this.reviews.details.clear();
+        // Populate detail tier with full records for on-demand access
+        for (const review of reviewRecords) {
+          this.reviews.details.set(review._ulid, review);
+        }
         break;
       }
       case "sessions": {

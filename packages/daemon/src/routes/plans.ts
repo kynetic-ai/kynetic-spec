@@ -28,6 +28,7 @@ import {
 } from "../../lib/plan-summary.js";
 import type { PlanSummary, PlanDetail } from "@kynetic-ai/shared";
 import type { PlanSummaryTask } from "../../lib/plan-summary.js";
+import type { PlanIndexSummary } from "../../daemon/entity-cache.js";
 import { enumArrayUnion } from "./enum-utils.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
 
@@ -36,10 +37,11 @@ interface PlansRouteOptions {
 }
 
 /**
- * Map a loaded plan to a PlanSummary.
+ * Map a plan (full or summary) to a PlanSummary for the API response.
+ * Accepts LoadedPlan or PlanIndexSummary — both have the required fields.
  * Accepts LoadedTask[] or TaskSummary[] — both satisfy PlanSummaryTask.
  */
-function toPlanSummary(plan: LoadedPlan, tasks: PlanSummaryTask[]): PlanSummary {
+function toPlanSummary(plan: LoadedPlan | PlanIndexSummary, tasks: PlanSummaryTask[]): PlanSummary {
   const linkedTasks = getLinkedPlanSummaryTasks(plan, tasks);
 
   return {
@@ -83,12 +85,12 @@ export function createPlansRoutes(_options: PlansRouteOptions = {}) {
             return _ctx;
           };
 
-          // Try cache for plans
-          let plans;
-          if (cache && plansDomainState === "ready") {
-            plans = cache.getPlansIndex();
-          }
-          if (!plans) {
+          // Try cache for plans (index tier has PlanIndexSummary, disk fallback gives LoadedPlan)
+          let plans: (LoadedPlan | PlanIndexSummary)[];
+          const cachedPlans = cache && plansDomainState === "ready" ? cache.getPlansIndex() : null;
+          if (cachedPlans) {
+            plans = cachedPlans;
+          } else {
             const ctx = await getCtx();
             plans = await loadPlans(ctx);
           }
@@ -105,7 +107,7 @@ export function createPlansRoutes(_options: PlansRouteOptions = {}) {
           }
 
           // Apply status filter
-          let filtered: LoadedPlan[] = plans;
+          let filtered = plans;
           if (query.status) {
             const statusFilters = Array.isArray(query.status) ? query.status : [query.status];
             filtered = filtered.filter((plan) => statusFilters.includes(plan.status));
@@ -143,22 +145,31 @@ export function createPlansRoutes(_options: PlansRouteOptions = {}) {
 
         const cleanRef = params.ref.startsWith("@") ? params.ref.slice(1) : params.ref;
 
-        // Try to find plan from cached index first
+        // AC: @daemon-entity-cache ac-detail-on-demand — resolve via index, load from detail tier
         let plan: LoadedPlan | undefined;
         const plansDomainState = cache?.getDomainState("plans");
         if (cache && plansDomainState === "ready") {
+          // Find the plan's ULID in the index (summaries only)
           const cachedPlans = cache.getPlansIndex();
           if (cachedPlans) {
-            plan = cachedPlans.find(
+            const match = cachedPlans.find(
               (p) =>
                 p._ulid === cleanRef ||
                 p._ulid.toLowerCase().startsWith(cleanRef.toLowerCase()) ||
                 p.slugs.includes(cleanRef),
             );
+            if (match) {
+              // Load full plan from detail tier
+              plan = cache.getPlanDetail(match._ulid) ?? undefined;
+            }
           }
         }
         if (!plan) {
           plan = await findPlanByRef(await getCtx(), params.ref);
+          // Cache the loaded detail for subsequent requests
+          if (plan && cache) {
+            cache.setPlanDetail(plan._ulid, plan);
+          }
         }
 
         if (!plan) {

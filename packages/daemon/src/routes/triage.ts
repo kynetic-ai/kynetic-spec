@@ -292,7 +292,7 @@ export function createTriageRoutes(options: TriageRouteOptions) {
 
       // GET single triage record
       // AC: @ui-api-ref-resolution ac-2 - Resolve evidence_refs titles
-      // AC: @daemon-entity-cache ac-detail-on-demand — serve from cache when available
+      // AC: @daemon-entity-cache ac-detail-on-demand — serve from cache detail tier
       .get(
         "/:ref",
         async ({ params, error: errorResponse, projectContext }) => {
@@ -306,12 +306,20 @@ export function createTriageRoutes(options: TriageRouteOptions) {
 
           const triageDomainState = cache?.getDomainState("triage");
 
-          // Try cache for triage record lookup
-          let record;
+          // AC: @daemon-entity-cache ac-detail-on-demand — resolve via index, load from detail tier
+          let record: LoadedTriageRecord | undefined;
           if (cache && triageDomainState === "ready") {
-            const cachedRecords = cache.getTriageIndex();
-            if (cachedRecords) {
-              record = findTriageRecordByRef(cachedRecords, params.ref);
+            const cachedIndex = cache.getTriageIndex();
+            if (cachedIndex) {
+              const cleanRef = params.ref.startsWith("@") ? params.ref.slice(1) : params.ref;
+              const match = cachedIndex.find(
+                (r) =>
+                  r._ulid === cleanRef ||
+                  r._ulid.toLowerCase().startsWith(cleanRef.toLowerCase()),
+              );
+              if (match) {
+                record = cache.getTriageDetail(match._ulid) ?? undefined;
+              }
             }
           }
           if (!record) {
@@ -320,6 +328,10 @@ export function createTriageRoutes(options: TriageRouteOptions) {
             const records = await loadTriageRecords(ctx);
             // AC: @trait-api-endpoint ac-2 - Resolve ref
             record = findTriageRecordByRef(records, params.ref);
+            // Cache the loaded detail for subsequent requests
+            if (record && cache) {
+              cache.setTriageDetail(record._ulid, record);
+            }
           }
 
           if (!record) {

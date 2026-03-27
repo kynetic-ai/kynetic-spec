@@ -9,7 +9,7 @@
 
 import type { LoadedTask, TaskSummary, LoadedPlan, LoadedSpecItem } from "../../parser/index.js";
 import type { MetaContext } from "../../parser/meta.js";
-import type { ItemSummary, MetaSummary } from "../../daemon/entity-cache.js";
+import type { ItemSummary, MetaSummary, PlanIndexSummary, ReviewIndexSummary, TriageIndexSummary } from "../../daemon/entity-cache.js";
 import type { SessionLogSummary } from "../../sessions/store.js";
 import type { LoadedInboxItem } from "../../parser/yaml.js";
 import type { LoadedTriageRecord } from "../../parser/yaml.js";
@@ -33,14 +33,14 @@ export interface RouteEntityCache {
   getSessionIndex(): SessionLogSummary[] | null;
   getSessionDetail(sessionId: string): SessionLogSummary | null;
   setSessionDetail(sessionId: string, summary: SessionLogSummary): void;
-  getPlansIndex(): LoadedPlan[] | null;
+  getPlansIndex(): PlanIndexSummary[] | null;
   getPlanDetail(ulid: string): LoadedPlan | null;
   setPlanDetail(ulid: string, plan: LoadedPlan): void;
   getInboxIndex(): LoadedInboxItem[] | null;
-  getTriageIndex(): LoadedTriageRecord[] | null;
+  getTriageIndex(): TriageIndexSummary[] | null;
   getTriageDetail(ulid: string): LoadedTriageRecord | null;
   setTriageDetail(ulid: string, record: LoadedTriageRecord): void;
-  getReviewsIndex(): LoadedReviewRecord[] | null;
+  getReviewsIndex(): ReviewIndexSummary[] | null;
   getReviewDetail(ulid: string): LoadedReviewRecord | null;
   setReviewDetail(ulid: string, review: LoadedReviewRecord): void;
   getMetaIndex(): MetaSummary | null;

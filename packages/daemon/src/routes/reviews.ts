@@ -75,6 +75,7 @@ import {
 import { resolveRefTitle } from "./ref-resolution.js";
 import { enumArrayUnion, enumUnion } from "./enum-utils.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
+import type { ReviewIndexSummary } from "../../daemon/entity-cache.js";
 
 interface ReviewsRouteOptions {
   pubsub: PubSubManager;
@@ -133,6 +134,44 @@ function toReviewSummary(review: ReviewRecord, index?: ReferenceIndex) {
   };
 }
 
+/**
+ * Build a ReviewSummary from a ReviewIndexSummary (pre-computed in cache).
+ * Uses the already-computed disposition and counts from the index tier.
+ */
+function indexSummaryToReviewSummary(review: ReviewIndexSummary, index?: ReferenceIndex) {
+  // Determine linked task ref
+  let taskRef: string | undefined;
+  if (review.subject.type === "task") {
+    taskRef = (review.subject as { ref: string }).ref;
+  } else if (review.related_refs.length > 0) {
+    taskRef = review.related_refs[0];
+  }
+
+  // Resolve task title via ReferenceIndex
+  const taskTitle = taskRef && index ? resolveRefTitle(index, taskRef) : null;
+
+  return {
+    _ulid: review._ulid,
+    slugs: review.slugs,
+    title: review.title,
+    lifecycle_state: review.lifecycle_state,
+    disposition: review.disposition,
+    subject_type: review.subject.type,
+    subject_ref: "ref" in review.subject ? (review.subject as { ref: string }).ref : undefined,
+    head_branch: review.subject.type === "code" ? (review.subject as { head_branch?: string }).head_branch : undefined,
+    author: review.author,
+    related_refs: review.related_refs,
+    task_ref: taskRef,
+    task_title: taskTitle,
+    thread_count: review.thread_count,
+    unresolved_blocker_count: review.unresolved_blocker_count,
+    check_count: review.check_count,
+    verdict_count: review.verdict_count,
+    created_at: review.created_at,
+    updated_at: review.updated_at,
+  };
+}
+
 export function createReviewsRoutes(options: ReviewsRouteOptions) {
   const { pubsub, getEntityCache } = options;
 
@@ -159,12 +198,13 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
             return _ctx;
           };
 
-          // Try cache for reviews
-          let reviews;
-          if (cache && reviewsDomainState === "ready") {
-            reviews = cache.getReviewsIndex();
-          }
-          if (!reviews) {
+          // Try cache for reviews (index tier has ReviewIndexSummary, disk gives full records)
+          const cachedReviews = cache && reviewsDomainState === "ready" ? cache.getReviewsIndex() : null;
+          const fromCache = !!cachedReviews;
+          let reviews: (ReviewIndexSummary | Awaited<ReturnType<typeof loadReviewRecords>>[number])[];
+          if (cachedReviews) {
+            reviews = cachedReviews;
+          } else {
             const ctx = await getCtx();
             reviews = await loadReviewRecords(ctx);
           }
@@ -178,7 +218,7 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
             ?? await loadAllItems(await getCtx());
           const index = new ReferenceIndex(tasks as unknown as LoadedTask[], specItems as unknown as LoadedSpecItem[]);
 
-          // Apply filters
+          // Apply filters — both ReviewIndexSummary and LoadedReviewRecord share these fields
           let filtered = reviews;
 
           // Status filter (lifecycle_state) — default to 'open' if not specified
@@ -189,12 +229,18 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
             : ["open"];
           filtered = filtered.filter((r) => statusFilters.includes(r.lifecycle_state));
 
-          // Disposition filter (computed)
+          // Disposition filter — pre-computed for index summaries, computed for full records
           if (query.disposition) {
             const dispFilters = Array.isArray(query.disposition)
               ? query.disposition
               : [query.disposition];
-            filtered = filtered.filter((r) => dispFilters.includes(computeDisposition(r)));
+            filtered = filtered.filter((r) =>
+              dispFilters.includes(
+                "disposition" in r && typeof r.disposition === "string"
+                  ? r.disposition
+                  : computeDisposition(r as ReviewRecord),
+              ),
+            );
           }
 
           // Subject type filter
@@ -275,7 +321,10 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
           const limit = Number(query.limit) || total;
           const paginated = filtered.slice(offset, offset + limit);
 
-          const items = paginated.map((r) => toReviewSummary(r, index));
+          // Map to response summaries — use pre-computed values for cache index, compute for disk
+          const items = fromCache
+            ? paginated.map((r) => indexSummaryToReviewSummary(r as ReviewIndexSummary, index))
+            : paginated.map((r) => toReviewSummary(r as ReviewRecord, index));
 
           return { items, total, offset, limit };
         },
@@ -297,7 +346,7 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
       )
 
       // AC: @review-records-daemon-api ac-2 - Get single review by ref
-      // AC: @daemon-entity-cache ac-detail-on-demand — serve from cache when available
+      // AC: @daemon-entity-cache ac-detail-on-demand — serve from cache detail tier
       .get(
         "/:id",
         async ({ params, error: errorResponse, projectContext }) => {
@@ -307,15 +356,29 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
 
           let review;
           if (cache && reviewsDomainState === "ready") {
-            const cachedReviews = cache.getReviewsIndex();
-            if (cachedReviews) {
-              review = findReviewByRef(cachedReviews, params.id);
+            // Find ULID in index, then load full record from detail tier
+            const cachedIndex = cache.getReviewsIndex();
+            if (cachedIndex) {
+              const cleanRef = params.id.startsWith("@") ? params.id.slice(1) : params.id;
+              const match = cachedIndex.find(
+                (r) =>
+                  r._ulid === cleanRef ||
+                  r._ulid.toLowerCase().startsWith(cleanRef.toLowerCase()) ||
+                  r.slugs.includes(cleanRef),
+              );
+              if (match) {
+                review = cache.getReviewDetail(match._ulid);
+              }
             }
           }
           if (!review) {
             const ctx = await initContext(projectContext.path);
             const reviews = await loadReviewRecords(ctx);
             review = findReviewByRef(reviews, params.id);
+            // Cache the loaded detail for subsequent requests
+            if (review && cache) {
+              cache.setReviewDetail(review._ulid, review);
+            }
           }
 
           if (!review) {
