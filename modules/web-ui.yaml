@@ -1574,6 +1574,7 @@ features:
     implements: []
     relates_to:
       - "@cli-serve-commands"
+      - "@cli-daemon-proxy"
     tests: []
     traits:
       - "@trait-localhost-security"
