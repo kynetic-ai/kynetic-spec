@@ -56924,7 +56924,18 @@ reviews:
     slugs: []
     title: Review fix-git-subprocess-interactive-prompt-hang-in-daemon-dispatch
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Exited 6 with repository-wide warnings only; schema and references passed, and no
+          task-specific validation errors were introduced.
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-03-27T00:43:02.834Z
+        completed_at: 2026-03-27T00:43:02.834Z
     events:
       - _ulid: 01KMPBM6Z6D9W1ZCYG9RA326AY
         actor: "@claude"
@@ -56939,6 +56950,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-27T00:38:19.412Z
+      - _ulid: 01KMPBX7QKVYT1Y7ZK3FEK9KWN
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-27T00:43:03.283Z
     examined_commit: 1dee6a463dd7feeecf5354988107b287660b684e
     external_links: []
     lifecycle_state: open
@@ -56951,5 +56969,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-27T00:38:07.590Z
-    updated_at: 2026-03-27T00:38:18.964Z
+    updated_at: 2026-03-27T00:43:02.834Z
     notes: []
