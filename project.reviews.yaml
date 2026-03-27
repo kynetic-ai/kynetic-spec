@@ -69831,6 +69831,17 @@ reviews:
         runner: kspec
         created_at: 2026-03-27T21:58:17.863Z
         completed_at: 2026-03-27T21:58:17.863Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Test Suites: 1950 passed of 1950; Tests: 6999 passed of 7004, 5 skipped; [test-runner]
+          Tests passed."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-27T21:58:21.813Z
+        completed_at: 2026-03-27T21:58:21.813Z
     events:
       - _ulid: 01KMRMMSSRYDCRAQEJZG6D12J8
         actor: "@claude"
@@ -69875,6 +69886,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-27T21:58:19.852Z
+      - _ulid: 01KMRMWDBBEZ3Q8G66K00WSMTX
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-27T21:58:22.316Z
     examined_commit: bd7a164208824d95dd552a5e45f6dec00306dc06
     external_links: []
     lifecycle_state: closed
@@ -69916,5 +69934,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T21:58:19.851Z
     created_at: 2026-03-27T21:54:12.921Z
-    updated_at: 2026-03-27T21:58:19.852Z
+    updated_at: 2026-03-27T21:58:21.813Z
     notes: []
