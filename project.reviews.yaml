@@ -58166,6 +58166,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-27T02:10:58.342Z
+      - _ulid: 01KMPH5TZMAH8N0YH63SDWJ42B
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMPH5TJHSK1MD745F5HBE70K
+        timestamp: 2026-03-27T02:15:08.020Z
     examined_commit: 536974f5967c5764722c786b8c33eb9cca28d174
     external_links: []
     lifecycle_state: open
@@ -58175,8 +58182,27 @@ reviews:
       content_hash: ""
       ref: "@01KMMB3T2K3T6A1CJR884EPKJF"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMPH5TJHSK1MD745F5HBE70K
+        anchor:
+          type: code
+          commit: 536974f5967c5764722c786b8c33eb9cca28d174
+          line_end: 148
+          line_start: 138
+          path: packages/daemon/src/routes/sessions.ts
+          side: head
+        entries:
+          - _ulid: 01KMPH5TJH2YDAZ8XS6YA8QMM1
+            author: "@claude"
+            body: ac-warming-availability is still not implemented for the sessions domain. This code serves
+              from cache only when the domain is "ready" and otherwise falls back to the standalone
+              disk-backed session cache, so requests during initial warmup do filesystem reads
+              instead of returning a loading response. I also verified that only tasks/items emit ;
+              inbox/meta/plans/reviews/triage follow the same ready-or-disk pattern, so progressive
+              loading is still incomplete for most domains.
+            created_at: 2026-03-27T02:15:07.601Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T02:10:41.995Z
-    updated_at: 2026-03-27T02:10:57.752Z
+    updated_at: 2026-03-27T02:15:07.601Z
     notes: []
