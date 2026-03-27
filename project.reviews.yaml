@@ -63692,6 +63692,17 @@ reviews:
         runner: test.cjs
         created_at: 2026-03-27T15:14:08.627Z
         completed_at: 2026-03-27T15:14:08.627Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Repo-wide pre-existing validation failures remain (reference/completeness issues unrelated
+          to this diff); no .kspec files changed in this task branch
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-27T15:14:08.666Z
+        completed_at: 2026-03-27T15:14:08.666Z
     events:
       - _ulid: 01KMQXHF6AZCDQT772RC34S6VM
         actor: Jacob Chapel
@@ -63720,6 +63731,13 @@ reviews:
           kind: nit
           thread_ulid: 01KMQXR83Q06XGDB1B2C1DGZKZ
         timestamp: 2026-03-27T15:14:09.860Z
+      - _ulid: 01KMQXRA2NBPV708DTKNYXE267
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-03-27T15:14:10.645Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -63756,5 +63774,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-27T15:10:26.506Z
-    updated_at: 2026-03-27T15:14:08.631Z
+    updated_at: 2026-03-27T15:14:08.666Z
     notes: []
