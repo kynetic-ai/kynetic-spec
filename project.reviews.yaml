@@ -65629,6 +65629,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMR4XJ47TCHGTMCDYH325V75
         timestamp: 2026-03-27T17:19:23.270Z
+      - _ulid: 01KMR4XM4D0WNRCEG87VCC8GTG
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMR4XKMR4NWZDB5DKC5CNFEF
+        timestamp: 2026-03-27T17:19:24.813Z
     examined_commit: 44f13a010b11295b83cf65d4fae6d6f8e07a7f01
     external_links: []
     lifecycle_state: open
@@ -65658,7 +65665,26 @@ reviews:
               declared read-route migrations unfinished."
             created_at: 2026-03-27T17:19:22.760Z
         kind: blocker
+      - _ulid: 01KMR4XKMR4NWZDB5DKC5CNFEF
+        anchor:
+          type: code
+          commit: 44f13a010b11295b83cf65d4fae6d6f8e07a7f01
+          line_end: 639
+          line_start: 490
+          path: tests/daemon-read-path.test.ts
+          side: head
+        entries:
+          - _ulid: 01KMR4XKMR5A1HY2VV1FNV83K3
+            author: "@claude"
+            body: "Blocking: the new ac-no-per-request-sync coverage does not actually prove the AC. These tests
+              only assert response bodies from a warm mock cache; they never assert that
+              initContext(), loadAll*, getShadowStatus(), or any git-backed helpers were avoided on
+              the request path. A regression that quietly reintroduced per-request context/disk/git
+              work while returning the same payloads would still pass this whole block, so the task
+              is missing behavioral coverage for its main guarantee."
+            created_at: 2026-03-27T17:19:24.312Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T17:13:06.141Z
-    updated_at: 2026-03-27T17:19:22.760Z
+    updated_at: 2026-03-27T17:19:24.312Z
     notes: []
