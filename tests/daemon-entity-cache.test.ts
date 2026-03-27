@@ -48,37 +48,39 @@ describe("ProjectEntityCache", () => {
   describe("fileToDomain", () => {
     // AC: @daemon-entity-cache ac-granular-reload
     it("should map task files to tasks domain", () => {
-      expect(fileToDomain("project.tasks.yaml")).toBe("tasks");
-      expect(fileToDomain("custom.tasks.yaml")).toBe("tasks");
+      expect(fileToDomain("project.tasks.yaml")).toEqual(["tasks"]);
+      expect(fileToDomain("custom.tasks.yaml")).toEqual(["tasks"]);
     });
 
     it("should map inbox file to inbox domain", () => {
-      expect(fileToDomain("project.inbox.yaml")).toBe("inbox");
+      expect(fileToDomain("project.inbox.yaml")).toEqual(["inbox"]);
     });
 
     it("should map plans file to plans domain", () => {
-      expect(fileToDomain("project.plans.yaml")).toBe("plans");
+      expect(fileToDomain("project.plans.yaml")).toEqual(["plans"]);
     });
 
     it("should map reviews file to reviews domain", () => {
-      expect(fileToDomain("project.reviews.yaml")).toBe("reviews");
+      expect(fileToDomain("project.reviews.yaml")).toEqual(["reviews"]);
     });
 
     it("should map triage file to triage domain", () => {
-      expect(fileToDomain("project.triage.yaml")).toBe("triage");
+      expect(fileToDomain("project.triage.yaml")).toEqual(["triage"]);
     });
 
-    it("should map manifest to meta domain", () => {
-      expect(fileToDomain("kynetic.yaml")).toBe("meta");
+    it("should map manifest to both meta and items domains", () => {
+      const domains = fileToDomain("kynetic.yaml");
+      expect(domains).toEqual(expect.arrayContaining(["meta", "items"]));
+      expect(domains).toHaveLength(2);
     });
 
     it("should map module files to items domain", () => {
-      expect(fileToDomain("modules/test.yaml")).toBe("items");
-      expect(fileToDomain("modules/nested/feature.yaml")).toBe("items");
+      expect(fileToDomain("modules/test.yaml")).toEqual(["items"]);
+      expect(fileToDomain("modules/nested/feature.yaml")).toEqual(["items"]);
     });
 
     it("should map spec files to items domain", () => {
-      expect(fileToDomain("my-feature.spec.yaml")).toBe("items");
+      expect(fileToDomain("my-feature.spec.yaml")).toEqual(["items"]);
     });
 
     it("should return null for unmapped files", () => {
@@ -260,6 +262,33 @@ describe("ProjectEntityCache", () => {
 
       // Detail should be cleared
       expect(cache.getTaskDetail("01TASKA0000000000000000000")).toBeNull();
+    });
+
+    it("should invalidate both meta and items domains when manifest changes", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("meta");
+      await cache.loadDomain("items");
+
+      const metaBefore = cache.getMetaIndex();
+      const itemsBefore = cache.getItemIndex();
+      expect(metaBefore).not.toBeNull();
+      expect(itemsBefore).not.toBeNull();
+
+      // Simulate watcher detecting manifest (kynetic.yaml) change.
+      // Because loadAllItems() reads the manifest to discover module
+      // includes, the items domain must also be reloaded when the
+      // manifest changes — not just the meta domain.
+      const kspecDir = join(projectA, ".kspec");
+      const manifestPath = join(kspecDir, "kynetic.yaml");
+      await cache.handleFileChange(kspecDir, manifestPath);
+
+      // Both domains should have been reloaded (new array references)
+      const metaAfter = cache.getMetaIndex();
+      const itemsAfter = cache.getItemIndex();
+      expect(metaAfter).not.toBeNull();
+      expect(itemsAfter).not.toBeNull();
+      expect(metaAfter).not.toBe(metaBefore);
+      expect(itemsAfter).not.toBe(itemsBefore);
     });
   });
 

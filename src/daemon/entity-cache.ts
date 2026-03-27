@@ -144,52 +144,61 @@ interface DomainStore<TIndex, TDetail = unknown> {
 // ─── File → Domain Mapping ───────────────────────────────────────────────────
 
 /**
- * Map a changed file path (relative to .kspec/) to its data domain.
- * Returns null if the file doesn't map to any cached domain.
+ * Map a changed file path (relative to .kspec/) to its data domain(s).
+ * Returns an array of affected domains, or null if the file doesn't
+ * map to any cached domain.
+ *
+ * A single file may affect multiple domains — e.g. kynetic.yaml is
+ * both the project manifest (meta) and the root of the item include
+ * tree (items). Both domains must be invalidated when it changes.
  *
  * AC: @daemon-entity-cache ac-granular-reload
  */
-export function fileToDomain(relativePath: string): CacheDomain | null {
+export function fileToDomain(relativePath: string): CacheDomain[] | null {
+  const domains: CacheDomain[] = [];
+
   // Task files
   if (relativePath.endsWith(".tasks.yaml") || relativePath === "project.tasks.yaml") {
-    return "tasks";
+    domains.push("tasks");
   }
 
   // Inbox
   if (relativePath === "project.inbox.yaml") {
-    return "inbox";
+    domains.push("inbox");
   }
 
   // Plans
   if (relativePath === "project.plans.yaml") {
-    return "plans";
+    domains.push("plans");
   }
 
   // Reviews
   if (relativePath === "project.reviews.yaml") {
-    return "reviews";
+    domains.push("reviews");
   }
 
   // Triage
   if (relativePath === "project.triage.yaml") {
-    return "triage";
+    domains.push("triage");
   }
 
   // Meta (manifest)
   if (relativePath === "kynetic.yaml" || relativePath.endsWith(".meta.yaml")) {
-    return "meta";
+    domains.push("meta");
   }
 
-  // Spec items — modules/*.yaml or *.spec.yaml or nested YAML in modules/
+  // Spec items — modules/*.yaml, *.spec.yaml, or kynetic.yaml
+  // (kynetic.yaml is the root of the item include tree; loadAllItems()
+  // reads the manifest to discover module includes)
   if (
     relativePath.startsWith("modules/") ||
     relativePath.endsWith(".spec.yaml") ||
     relativePath === "kynetic.yaml"
   ) {
-    return "items";
+    domains.push("items");
   }
 
-  return null;
+  return domains.length > 0 ? domains : null;
 }
 
 // ─── ProjectEntityCache ──────────────────────────────────────────────────────
@@ -627,9 +636,9 @@ export class ProjectEntityCache {
     if (this.disposed) return;
 
     const relativePath = relative(kspecDir, filePath);
-    const domain = fileToDomain(relativePath);
-    if (domain) {
-      await this.invalidateDomain(domain);
+    const domains = fileToDomain(relativePath);
+    if (domains) {
+      await Promise.all(domains.map((d) => this.invalidateDomain(d)));
     }
   }
 
