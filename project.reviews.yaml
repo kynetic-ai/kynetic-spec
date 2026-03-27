@@ -63059,6 +63059,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-27T08:50:41.679Z
+      - _ulid: 01KMQ80W0GA1T462HD3C427F51
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMQ80VHN0D244R9XBVPVJQK7
+        timestamp: 2026-03-27T08:54:22.480Z
     examined_commit: 4893ca5183e4b193cc808f3f61fe778ada10e017
     external_links: []
     lifecycle_state: open
@@ -63068,8 +63075,29 @@ reviews:
       content_hash: ""
       ref: "@01KMMB3T2K3T6A1CJR884EPKJF"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMQ80VHN0D244R9XBVPVJQK7
+        anchor:
+          type: code
+          commit: 4893ca5183e4b193cc808f3f61fe778ada10e017
+          line_end: 517
+          line_start: 501
+          path: packages/daemon/src/routes/sessions.ts
+          side: head
+        entries:
+          - _ulid: 01KMQ80VHN95032HRY556KT6RK
+            author: "@claude"
+            body: "When the sessions domain is ready, GET /api/sessions/:id resolves the requested ID only
+              against the bounded in-memory index and returns not_found if it is absent there. That
+              breaks ac-session-bounded-index's explicit requirement that sessions outside the
+              retained window remain accessible on demand by ID. I reproduced this with
+              ProjectEntityCache(maxIndexSize: 1): the cache kept only ['session-2'],
+              resolveSessionId() on disk still found 'session-0', but the route-resolution logic
+              here returned { ok: false, error: 'not_found' }. This needs a disk fallback when a
+              ready cache misses the requested ID/prefix."
+            created_at: 2026-03-27T08:54:22.005Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T08:50:11.971Z
-    updated_at: 2026-03-27T08:50:41.225Z
+    updated_at: 2026-03-27T08:54:22.005Z
     notes: []
