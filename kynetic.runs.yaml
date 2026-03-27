@@ -15736,7 +15736,7 @@ runs:
     started_at: 2026-03-27T00:00:31.498Z
     completed_at: 2026-03-27T00:01:35.962Z
   - _ulid: 01KMPAN6R5A2YZEESMZQZ2JC2K
-    status: active
+    status: completed
     current_step: 3
     initiated_by: "@claude"
     step_results:
@@ -15798,7 +15798,10 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-03-27T00:22:18.516Z
-        completed_at: 2026-03-27T00:22:18.516Z
+        completed_at: 2026-03-27T00:22:26.712Z
+        notes: No items to capture. All friction points were either one-off or already tracked by existing
+          items. Session was clean.
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-27T00:21:11.558Z
+    completed_at: 2026-03-27T00:22:26.712Z
