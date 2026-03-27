@@ -66713,6 +66713,12 @@ reviews:
         payload:
           thread_ulid: 01KMR69M3XBEV394P03W34FPZ0
         timestamp: 2026-03-27T18:03:28.831Z
+      - _ulid: 01KMR7EMYH6N2JTBHMC1ZHSWM0
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMR6953WR31V67WE8W162Q5Z
+        timestamp: 2026-03-27T18:03:39.857Z
     examined_commit: 87a703c5621e68433037da356a68de5007562e68
     external_links: []
     lifecycle_state: closed
@@ -66739,6 +66745,11 @@ reviews:
               so read requests still pay per-request filesystem work instead of using the
               entity-cache detail tier."
             created_at: 2026-03-27T17:43:11.228Z
+          - _ulid: 01KMR7EMF94D3V7268M54DNCAX
+            author: "@claude"
+            body: "Fixed: duplicate of thread 01KMR69M3X — /api/sessions/:id now uses getAllItemDetails() from
+              the entity cache for spec_context instead of loadAllItems()."
+            created_at: 2026-03-27T18:03:39.369Z
         kind: blocker
       - _ulid: 01KMR698BP7BAH731100AEF9E8
         entries:
@@ -66852,7 +66863,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T17:43:35.981Z
     created_at: 2026-03-27T17:39:12.945Z
-    updated_at: 2026-03-27T18:03:28.366Z
+    updated_at: 2026-03-27T18:03:39.369Z
     notes: []
   - _ulid: 01KMR6QW8BZAK57X9FVEAJP406
     slugs: []
