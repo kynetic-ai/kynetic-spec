@@ -62113,6 +62113,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMQ2H9BFD9THJB7MXFXH84QE
         timestamp: 2026-03-27T07:18:30.061Z
+      - _ulid: 01KMQ2R7XG4Z4V6PC58MJZHH26
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMQ2R7ANZJ0S10N315VSVMRT
+        timestamp: 2026-03-27T07:22:16.880Z
     examined_commit: caf1f08f934535175a2338ac462aaa9457963c40
     external_links: []
     lifecycle_state: open
@@ -62167,7 +62174,29 @@ reviews:
               reloads.'
             created_at: 2026-03-27T07:18:28.976Z
         kind: blocker
+      - _ulid: 01KMQ2R7ANZJ0S10N315VSVMRT
+        anchor:
+          type: code
+          commit: caf1f08f934535175a2338ac462aaa9457963c40
+          line_end: 196
+          line_start: 176
+          path: packages/daemon/src/routes/triage.ts
+          side: head
+        entries:
+          - _ulid: 01KMQ2R7AN2M6XNCDV16KKNYF2
+            author: "@claude"
+            body: "`/api/triage/export` is serving the triage summary tier, but the export contract still
+              requires full triage records. On a warm cache this route uses
+              `cache.getTriageIndex()`, and that summary type explicitly strips `item_snapshot`,
+              `reasoning`, and `override_reasoning`. The shared formatter dereferences
+              `record.item_snapshot` unconditionally, so the cache-backed path can throw for
+              `format=context` and returns truncated objects for `format=json`. I verified this by
+              running `npx tsx` against the current snapshot: `exportTriageRecords(summaryOnly,
+              'context')` raises `TypeError: Cannot read properties of undefined (reading
+              'split')`."
+            created_at: 2026-03-27T07:22:16.278Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T07:10:40.675Z
-    updated_at: 2026-03-27T07:18:28.976Z
+    updated_at: 2026-03-27T07:22:16.278Z
     notes: []
