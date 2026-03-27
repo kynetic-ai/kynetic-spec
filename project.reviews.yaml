@@ -56664,6 +56664,18 @@ reviews:
         runner: kspec
         created_at: 2026-03-27T00:28:59.432Z
         completed_at: 2026-03-27T00:28:59.432Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Failed in this snapshot: 1 failed suite, 1892 passed suites, 6775 passed tests, 5
+          skipped. Transform failure in tests/agent-dispatch-engine.test.ts: The symbol mockMetadata
+          has already been declared."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-27T00:29:00.754Z
+        completed_at: 2026-03-27T00:29:00.754Z
     events:
       - _ulid: 01KMPASFF06VBYBYPFHN26TY6V
         actor: "@claude"
@@ -56727,6 +56739,13 @@ reviews:
           status: skipped
           name: kspec validate
         timestamp: 2026-03-27T00:28:59.869Z
+      - _ulid: 01KMPB3HAW3HXRF57MFQKGG33B
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-27T00:29:01.148Z
     examined_commit: d805371098143a9c456e7100eb1f6680d754c198
     external_links: []
     lifecycle_state: open
@@ -56849,5 +56868,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-27T00:23:31.552Z
-    updated_at: 2026-03-27T00:28:59.432Z
+    updated_at: 2026-03-27T00:29:00.754Z
     notes: []
