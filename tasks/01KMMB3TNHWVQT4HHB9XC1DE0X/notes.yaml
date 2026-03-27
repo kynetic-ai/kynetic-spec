@@ -1,1 +1,38 @@
-notes: []
+notes:
+  - _ulid: 01KMQYHGWQA3YX4WTVXYVBS157
+    content: >-
+      Approach: Most read routes already have cache-first pattern from @task-entity-cache-impl.
+      Remaining work:
+
+
+      1. meta.ts: Migrate /session, /config, /shadow to cache (session/config can use cached
+      MetaContext; /shadow needs initContext for getShadowStatus which does git operations - will
+      keep disk access but note it's not a read-only data path)
+
+      2. aggregation.ts: Wire to cache - /tasks/summary from task index, /validation uses validate()
+      which needs ctx (keep but note validation is computational), /inbox from cached inbox+triage
+      indexes
+
+      3. validation.ts: Wire /search to cache for items/tasks/inbox/meta; /validate and /alignment
+      need buildIndexes/validate which are computational
+
+      4. Background sync: Wire ShadowSyncScheduler post-pull to invalidate entity cache when new
+      data pulled
+
+      5. Build ReferenceIndex/AlignmentIndex from cached data in aggregation and validation routes
+
+
+      Key insight: /validate and /alignment call validate() and buildIndexes() which do deep
+      validation requiring full disk access. These are computational endpoints, not simple data
+      reads - they'll still need initContext but can use cached entity data for index building.
+
+
+      Edge cases: concurrent invalidation during sync, stale cache during watcher gap, /shadow route
+      genuinely needs git operations (not a pure read route for AC purposes).
+
+
+      Test plan: 4 ACs × 1+ behavioral tests each, covering cache-served reads, background sync
+      invalidation, index-from-cache, and write-through.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T15:27:56.823Z
