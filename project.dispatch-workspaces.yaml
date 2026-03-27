@@ -24315,18 +24315,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/fix-git-subprocess-interactive-prompt-hang-in-daemon-dispatch/01kmpah4
-    canonical_branch_head: 10f03ef092b8d60326feb37c02c50dd45f5ed65a
+    canonical_branch_head: 1dee6a463dd7feeecf5354988107b287660b684e
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-27T00:22:51.785Z
+      updated_at: 2026-03-27T00:35:49.585Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-27T00:22:57.483Z
+      updated_at: 2026-03-27T00:35:49.585Z
     integration:
       status: pending
       detail: null
@@ -24334,7 +24334,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 10f03ef092b8d60326feb37c02c50dd45f5ed65a
-      updated_at: 2026-03-27T00:22:51.785Z
+      updated_at: 2026-03-27T00:35:49.585Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KMPAH4QK86PFPYAA2W7SQANC"
@@ -24342,9 +24342,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-27T00:22:57.483Z
-      last_reconciled_at: 2026-03-27T00:22:57.483Z
+      last_reconciled_at: 2026-03-27T00:35:49.585Z
       created_at: 2026-03-27T00:22:51.785Z
-      updated_at: 2026-03-27T00:22:57.483Z
+      updated_at: 2026-03-27T00:35:49.585Z
     workspace_id: dispatch-workspace-01KMPAH4QK86PFPYAA2W7SQANC
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
