@@ -69602,7 +69602,18 @@ reviews:
     slugs: []
     title: Review task-cli-proxy-routing
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed in this workspace: 1957/1957 suites passed, 7029/7034 tests passed, 5 skipped, 0
+          failed. Wall clock 4m11s."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-27T21:51:31.845Z
+        completed_at: 2026-03-27T21:51:31.845Z
     events:
       - _ulid: 01KMRM4KYXNPRGVE4B2TCV7K2Q
         actor: "@claude"
@@ -69638,6 +69649,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMRMFH00VV40230QPQWVJM4G
         timestamp: 2026-03-27T21:51:20.551Z
+      - _ulid: 01KMRMFX094G5HFTSRZKH9VAH6
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-27T21:51:32.361Z
     examined_commit: f49cb5287187d1fe85c0b991136206dfae17d9c7
     external_links: []
     lifecycle_state: open
@@ -69706,5 +69724,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-27T21:45:22.654Z
-    updated_at: 2026-03-27T21:51:20.064Z
+    updated_at: 2026-03-27T21:51:31.845Z
     notes: []
