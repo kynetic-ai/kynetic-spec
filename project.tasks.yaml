@@ -22751,7 +22751,7 @@
   status: pending
   blocked_by: []
   depends_on: []
-  priority: 3
+  priority: 1
   tags:
     - bug
     - agent-runtime
@@ -22759,3 +22759,4 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-03-27T03:28:50.203Z
+  automation: eligible

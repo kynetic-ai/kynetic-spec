@@ -31,11 +31,27 @@ status: pending
 blocked_by: []
 depends_on: []
 context: []
-priority: 3
+priority: 1
 tags:
   - bug
   - agent-runtime
   - daemon
 vcs_refs: []
+history:
+  - author: "@claude"
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-03-27T03:30:03.408Z
+  - author: "@claude"
+    changes:
+      priority:
+        new: 1
+        previous: 3
+    command: task-set
+    timestamp: 2026-03-27T03:30:04.183Z
 created_at: 2026-03-27T03:28:50.203Z
 todos: []
+automation: eligible
