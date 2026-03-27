@@ -5,7 +5,11 @@
  * executor, join accumulator) can execute agent actions and that failure
  * events include error and failure_reason fields for diagnosability.
  *
+ * Also tests the daemon-level createAutomationAgentSpawner wiring to verify
+ * correlation_id and group_id are threaded through to spawned invocations.
+ *
  * AC: @automation-action-type-completeness ac-1 through ac-5
+ * AC: @dispatch-agent-action-input ac-4 (daemon wiring)
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";

@@ -136,6 +136,16 @@ export function createAutomationAgentSpawner(projectDir: string): AgentSpawner {
       );
     }
 
+    // AC: @dispatch-agent-action-input ac-4 — propagate correlation_id and group_id
+    // via env vars so the spawned agent inherits the event correlation chain
+    const env: Record<string, string> = {};
+    if (options.correlation_id) {
+      env.KSPEC_CORRELATION_ID = options.correlation_id;
+    }
+    if (options.group_id) {
+      env.KSPEC_COMPOSITION_GROUP_ID = options.group_id;
+    }
+
     const sessionId = ulid();
     const result = await runInvocation({
       agent: agentDef,
@@ -146,6 +156,7 @@ export function createAutomationAgentSpawner(projectDir: string): AgentSpawner {
       trigger: "manual",
       timeoutMinutes: options.timeout_minutes,
       sessionId,
+      ...(Object.keys(env).length > 0 && { env }),
     });
 
     return { invocation_id: result.session.id };
