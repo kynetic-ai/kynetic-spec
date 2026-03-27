@@ -57290,6 +57290,12 @@ reviews:
         payload:
           thread_ulid: 01KMPCPWPD0K5MH0VVSNR70WQ1
         timestamp: 2026-03-27T01:07:59.741Z
+      - _ulid: 01KMPDB5CD9D84SB7W3ERF7SAF
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMPCP563BARWGZ5EPS0PYWCN
+        timestamp: 2026-03-27T01:08:08.205Z
     examined_commit: 37294e673fe67d970ae172f4d510c5ca5116d0fe
     external_links: []
     lifecycle_state: closed
@@ -57327,6 +57333,8 @@ reviews:
               manifest changes. Full suite: 6899 passed, 5 skipped, 0 failures.'
             created_at: 2026-03-27T01:07:55.715Z
         kind: blocker
+        resolved_at: 2026-03-27T01:08:07.766Z
+        resolved_by: "@claude"
       - _ulid: 01KMPCPWPD0K5MH0VVSNR70WQ1
         anchor:
           type: code
@@ -57363,5 +57371,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T00:57:21.142Z
     created_at: 2026-03-27T00:50:29.571Z
-    updated_at: 2026-03-27T01:07:59.309Z
+    updated_at: 2026-03-27T01:08:07.766Z
     notes: []
