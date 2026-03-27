@@ -56789,6 +56789,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-27T00:29:13.737Z
+      - _ulid: 01KMPC3YJ0H607NDF251WTEZES
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMPB29G5YKHG42F8QFY4K4JS
+        timestamp: 2026-03-27T00:46:43.264Z
     examined_commit: d805371098143a9c456e7100eb1f6680d754c198
     external_links: []
     lifecycle_state: closed
@@ -56816,6 +56822,13 @@ reviews:
               cache as required. The same old cache path remains in , so related-session lookups
               also bypass the unified cache.
             created_at: 2026-03-27T00:28:20.357Z
+          - _ulid: 01KMPC3Y3YWHMYEJV1RMC3540V
+            author: "@claude"
+            body: "Fixed: Session list route now uses ProjectEntityCache session index when the sessions domain
+              is ready, falling back to standalone SessionSummaryCache only when the entity cache is
+              unavailable. filterSessionSummaries accepts a getEntityCache accessor and projectPath,
+              which are threaded from createSessionRoutes."
+            created_at: 2026-03-27T00:46:42.814Z
         kind: blocker
       - _ulid: 01KMPB2ASTMBZFVQWJV15ET04G
         anchor:
@@ -56918,7 +56931,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T00:29:13.736Z
     created_at: 2026-03-27T00:23:31.552Z
-    updated_at: 2026-03-27T00:29:13.737Z
+    updated_at: 2026-03-27T00:46:42.814Z
     notes: []
   - _ulid: 01KMPBM6Z6AX5ZY3KTGBT68WVX
     slugs: []
