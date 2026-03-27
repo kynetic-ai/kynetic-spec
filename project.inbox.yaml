@@ -1889,19 +1889,6 @@ inbox:
       - hooks
     added_by: "@claude"
     created_at: 2026-03-23T17:19:48.938Z
-  - _ulid: 01KMEA2RT6ZNWRW829EAPSX1NE
-    text: action.failed event bus payload does not include the error message or failure_reason from
-      ActionRun. The hook executor onActionRunEvent callback in agent-dispatch.ts only emits
-      action_run_id, action_type, source_name, and duration_ms. Debugging why a hook action failed
-      requires reading source code to deduce the cause. The error field should be included in the
-      event payload for action.failed events so operators can diagnose failures from the event log
-      or web UI.
-    tags:
-      - agent
-      - hooks
-      - feature
-    added_by: "@claude"
-    created_at: 2026-03-23T21:37:12.006Z
   - _ulid: 01KMH2GVWFRF4GQ0AK67X8GVH5
     text: "Update writing-specs skill with description anti-patterns: no non-goals sections, no
       relationship-to-existing-specs sections, no justification references (consistent with @foo),
