@@ -61723,6 +61723,12 @@ reviews:
         payload:
           thread_ulid: 01KMPZPX7C8C15VS5D5ZCMSDTC
         timestamp: 2026-03-27T06:43:05.001Z
+      - _ulid: 01KMQ0GPPNYAKM2TD38K91MZGN
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMPZPX7C8C15VS5D5ZCMSDTC
+        timestamp: 2026-03-27T06:43:12.725Z
     examined_commit: cc6ac5950df1967638315b8d145153fed8d63e12
     external_links: []
     lifecycle_state: closed
@@ -61764,6 +61770,8 @@ reviews:
               wrong for LoadedSpecItem), but the cache path made it visible."
             created_at: 2026-03-27T06:43:04.430Z
         kind: blocker
+        resolved_at: 2026-03-27T06:43:12.143Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -61773,5 +61781,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T06:29:15.352Z
     created_at: 2026-03-27T06:27:56.964Z
-    updated_at: 2026-03-27T06:43:04.430Z
+    updated_at: 2026-03-27T06:43:12.143Z
     notes: []
