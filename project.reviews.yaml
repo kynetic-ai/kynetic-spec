@@ -57002,9 +57002,25 @@ reviews:
           kind: nit
           thread_ulid: 01KMPBXB7TH7J0HGGV48D5NMJF
         timestamp: 2026-03-27T00:43:07.282Z
+      - _ulid: 01KMPBXPDKRV7HBCQ70NMC29CP
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-03-27T00:43:18.323Z
+      - _ulid: 01KMPBXPDK4RBR0ZQXNR7RGZEP
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-27T00:43:18.323Z
     examined_commit: 1dee6a463dd7feeecf5354988107b287660b684e
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -57041,7 +57057,14 @@ reviews:
               integration. No task-specific blockers found.
             created_at: 2026-03-27T00:43:06.874Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-27T00:43:18.323Z
     created_at: 2026-03-27T00:38:07.590Z
-    updated_at: 2026-03-27T00:43:06.874Z
+    updated_at: 2026-03-27T00:43:18.323Z
     notes: []
