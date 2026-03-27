@@ -67611,6 +67611,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-27T18:34:12.677Z
+      - _ulid: 01KMR96PAQ4RMZWT8EVQY4BVTB
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMR96N74BCAK7D5AZVJ11PK8
+        timestamp: 2026-03-27T18:34:16.279Z
     examined_commit: 3f1360f1d80cf5aa5986399e9b6eb5de055ece6c
     external_links: []
     lifecycle_state: open
@@ -67641,7 +67648,25 @@ reviews:
               merely documenting it.
             created_at: 2026-03-27T18:34:04.827Z
         kind: blocker
+      - _ulid: 01KMR96N74BCAK7D5AZVJ11PK8
+        anchor:
+          type: code
+          commit: 3f1360f1d80cf5aa5986399e9b6eb5de055ece6c
+          line_end: 9
+          line_start: 8
+          path: tests/daemon-cache-route-coverage.test.ts
+          side: head
+        entries:
+          - _ulid: 01KMR96N74YD86R0DT9XTT0T83
+            author: "@claude"
+            body: This AC annotation does not prove ac-daemon-bypass. Every test in this file exercises
+              warm-cache session endpoints only; none cover the daemon task list read path added to
+              the spec, and none exercise the cache-miss/degraded path where initContext() is
+              invoked. Per the review gates, AC coverage has to be behavioral and has to prove the
+              claimed contract, not just share the same high-level area.
+            created_at: 2026-03-27T18:34:15.141Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T18:29:03.730Z
-    updated_at: 2026-03-27T18:34:11.661Z
+    updated_at: 2026-03-27T18:34:15.141Z
     notes: []
