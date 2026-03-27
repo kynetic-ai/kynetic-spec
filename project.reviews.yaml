@@ -66677,6 +66677,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-27T17:43:35.981Z
+      - _ulid: 01KMR7CHPZP55GENBDGPG9KVP1
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMR69JK5M5MN7J270YR2S1Y1
+        timestamp: 2026-03-27T18:02:31.007Z
     examined_commit: 87a703c5621e68433037da356a68de5007562e68
     external_links: []
     lifecycle_state: closed
@@ -66764,6 +66770,13 @@ reviews:
               this handler unconditionally calls initContext(projectContext.path) and then
               loadSessionContext(ctx), and loadSessionContext() reads the session YAML from disk."
             created_at: 2026-03-27T17:43:25.029Z
+          - _ulid: 01KMR7CH82GGG5BAV79S9HN96G
+            author: "@claude"
+            body: "Fixed: /api/meta/session now serves from entity cache. Added CachedSessionContext type,
+              populated during meta domain load via loadSessionContext(). Route checks
+              cache.getSessionContext() when meta domain is ready, only falling back to initContext
+              on cache miss."
+            created_at: 2026-03-27T18:02:30.530Z
         kind: blocker
       - _ulid: 01KMR69M3XBEV394P03W34FPZ0
         anchor:
@@ -66792,7 +66805,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T17:43:35.981Z
     created_at: 2026-03-27T17:39:12.945Z
-    updated_at: 2026-03-27T17:43:35.981Z
+    updated_at: 2026-03-27T18:02:30.530Z
     notes: []
   - _ulid: 01KMR6QW8BZAK57X9FVEAJP406
     slugs: []
