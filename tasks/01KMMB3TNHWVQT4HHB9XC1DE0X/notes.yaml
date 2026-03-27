@@ -119,3 +119,13 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T17:19:37.697Z
+  - _ulid: 01KMR5W147CQ55AVMY3N01ZND4
+    content: "Fix cycle 3: Addressed both blockers from review @01KMR4J2AXYMSZXCES089BY3JQ. (1)
+      /api/meta/shadow: Shadow status now computed once during meta domain cache load, stored as
+      CachedShadowInfo. Route reads from cache.getShadowInfo() instead of git helpers per-request.
+      Same for /api/meta/config via CachedProjectConfig. (2) Tests: Added spy-based behavioral test
+      that spies on initContext/getShadowStatus/hasRemoteTracking, hits all 14 read routes, asserts
+      zero spy calls. Proves AC beyond payload matching. All 6969 tests pass. 3 new tests added."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T17:36:01.160Z
