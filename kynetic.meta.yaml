@@ -8845,6 +8845,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T17:22:58.801Z
+  - _ulid: 01KMR5KK5SV5CV1DYS4CHKRBZD
+    type: friction
+    content: Exact CLI/API parity bugs were easy to miss because tests compared against the trimmed
+      tests/helpers/cli.ts kspec() helper or manually trimmed stdout. For parity assertions, the
+      project needs a non-trimming CLI test helper or a convention that exact-output tests must use
+      raw spawn output, otherwise trailing-whitespace regressions slip through review.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T17:31:24.730Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
