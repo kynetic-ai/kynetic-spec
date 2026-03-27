@@ -1951,3 +1951,14 @@ inbox:
       - dx
     added_by: "@claude"
     created_at: 2026-03-26T06:01:47.440Z
+  - _ulid: 01KMPAPQMSYQPG5F6S4PXTXR0T
+    text: Schedule/hook agent actions should optionally support dispatch-like workspace provisioning,
+      bootstrap, and env var injection. Currently they spawn bare (no worktree, no KSPEC_DISPATCH_*
+      env). Add opt-in workspace support to ActionExecutor.executeAgent() path for parity with
+      dispatch engine when needed.
+    tags:
+      - post-mvp
+      - agent-runtime
+      - feature
+    added_by: "@claude"
+    created_at: 2026-03-27T00:22:01.625Z
