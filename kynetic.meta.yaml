@@ -8338,6 +8338,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T00:49:26.903Z
+  - _ulid: 01KMPCSEYS33FHVREBYFZS5SBG
+    type: success
+    content: Review quality improved when I treated passing tests as insufficient and built a direct
+      runtime repro against a temp fixture. That caught a real cache invalidation bug in
+      manifest-backed items even though npm test was green.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T00:58:28.185Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
