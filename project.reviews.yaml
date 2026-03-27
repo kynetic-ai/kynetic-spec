@@ -68479,6 +68479,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-27T19:44:34.715Z
+      - _ulid: 01KMRD9MKSEVD0V32VXMTJJH64
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMRD9KMWBZ9937CSSXD2TE7K
+        timestamp: 2026-03-27T19:45:47.129Z
     examined_commit: 19583c6cbc0605de496770c02e7961c74f4c3a76
     external_links: []
     lifecycle_state: open
@@ -68488,8 +68495,27 @@ reviews:
       content_hash: ""
       ref: "@01KMMB3WBKZKVE32R64GD0YVH8"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMRD9KMWBZ9937CSSXD2TE7K
+        anchor:
+          type: code
+          commit: 19583c6cbc0605de496770c02e7961c74f4c3a76
+          line_end: 345
+          line_start: 343
+          path: packages/daemon/src/routes/items.ts
+          side: head
+        entries:
+          - _ulid: 01KMRD9KMWWKVBSZVK0V3G5K48
+            author: "@claude"
+            body: " is still a daemon read path that calls bare , so it will continue running the per-request
+              drift-check that  forbids. The route only validates refs and returns matching
+              tasks/items; it is not a mutation endpoint, so daemon reads are still inconsistent
+              after this patch. I confirmed the remaining bare call at
+              packages/daemon/src/routes/items.ts:344 and found no new coverage for this endpoint in
+              the added tests, which only exercise  and ."
+            created_at: 2026-03-27T19:45:46.141Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T19:44:08.102Z
-    updated_at: 2026-03-27T19:44:34.177Z
+    updated_at: 2026-03-27T19:45:46.141Z
     notes: []
