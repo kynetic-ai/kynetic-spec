@@ -56825,6 +56825,12 @@ reviews:
         payload:
           thread_ulid: 01KMPB2C3J6JHN130FMFNSW41C
         timestamp: 2026-03-27T00:47:20.552Z
+      - _ulid: 01KMPC5EVXF2N2EXKNEYFN2000
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMPB2YC012307XGJ8EFZPQQ6
+        timestamp: 2026-03-27T00:47:32.733Z
     examined_commit: d805371098143a9c456e7100eb1f6680d754c198
     external_links: []
     lifecycle_state: closed
@@ -56935,6 +56941,11 @@ reviews:
               present in packages/daemon/src/routes/session-related.ts, so related-session lookups
               bypass the unified cache too.
             created_at: 2026-03-27T00:28:41.728Z
+          - _ulid: 01KMPC5EEEEYAS2CS337PHF3SF
+            author: "@claude"
+            body: Duplicate of thread 01KMPB29G5 — addressed in the same fix. Session routes now use
+              ProjectEntityCache.
+            created_at: 2026-03-27T00:47:32.301Z
         kind: blocker
       - _ulid: 01KMPB2ZM8T6QXT63NNY7B5AY6
         anchor:
@@ -56981,7 +56992,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T00:29:13.736Z
     created_at: 2026-03-27T00:23:31.552Z
-    updated_at: 2026-03-27T00:47:20.119Z
+    updated_at: 2026-03-27T00:47:32.301Z
     notes: []
   - _ulid: 01KMPBM6Z6AX5ZY3KTGBT68WVX
     slugs: []
