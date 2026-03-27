@@ -69333,6 +69333,22 @@ reviews:
         runner: kspec
         created_at: 2026-03-27T20:29:12.468Z
         completed_at: 2026-03-27T20:29:12.468Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: modules/web-ui.yaml (shadow commit bd7477fdf), task
+          @01KMMB3XHCBBHHWD0NFN2D57ST, spec @daemon-server. Commands run: git show bd7477fdf, kspec
+          task get --json, kspec item get --json, kspec validate, npm test. Claims verified: worker
+          claim that this is a spec-only description update; verified exact description text now
+          mentions cache invalidation alongside WebSocket broadcast. Categories searched:
+          correctness, spec alignment, collateral changes, validation/test impact; no task-specific
+          findings."
+        name: task-scope-review
+        required: true
+        runner: codex
+        created_at: 2026-03-27T20:29:12.477Z
+        completed_at: 2026-03-27T20:29:12.477Z
     events:
       - _ulid: 01KMRFR4P90N14CDCQWW2D9N08
         actor: "@claude"
@@ -69354,6 +69370,13 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-03-27T20:29:13.004Z
+      - _ulid: 01KMRFS69CDDQWECDBA8ZWFBN2
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: task-scope-review
+        timestamp: 2026-03-27T20:29:13.900Z
     examined_commit: 098d671a198ed582216a99f69c059f0d562fa735
     external_links: []
     lifecycle_state: open
@@ -69366,5 +69389,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-27T20:28:39.498Z
-    updated_at: 2026-03-27T20:29:12.468Z
+    updated_at: 2026-03-27T20:29:12.477Z
     notes: []
