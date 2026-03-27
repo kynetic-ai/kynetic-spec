@@ -6267,6 +6267,9 @@ modules:
 
           If an automation subsystem cannot execute a configured action type, the failure must be
           diagnosable from the action run record and event log.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
