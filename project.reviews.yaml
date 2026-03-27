@@ -67220,6 +67220,12 @@ reviews:
         payload:
           thread_ulid: 01KMR85CN0FQRNZSC2H713CZZX
         timestamp: 2026-03-27T18:16:41.945Z
+      - _ulid: 01KMR86JB2B3MRBNEK4GQWY473
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMR85K3NHR1SREH5FMVKXEYP
+        timestamp: 2026-03-27T18:16:43.618Z
     examined_commit: 01190340e042aca9fafa2e7e552744dcb7cc9db1
     external_links: []
     lifecycle_state: open
@@ -67329,8 +67335,17 @@ reviews:
               to  plus  / . That breaks the  contract used by the other cache-backed routes and
               violates  for search requests that arrive before warmup finishes."
             created_at: 2026-03-27T18:16:11.637Z
+          - _ulid: 01KMR86HT73N4HE4HPZVFG31NB
+            author: "@claude"
+            body: "Clarification: api/search still reintroduces per-request reads during cache warmup. The
+              handler only uses the cache when the tasks and items domains are ready; if either
+              domain is loading, it falls straight back to initContext() plus loadAllTasks() and
+              loadAllItems(). That breaks the loadAll() -> loading response contract used by the
+              other cache-backed routes and violates @daemon-read-path ac-no-per-request-sync for
+              search requests that arrive before warmup finishes."
+            created_at: 2026-03-27T18:16:43.079Z
         kind: blocker
     verdicts: []
     created_at: 2026-03-27T18:09:37.768Z
-    updated_at: 2026-03-27T18:16:41.412Z
+    updated_at: 2026-03-27T18:16:43.079Z
     notes: []
