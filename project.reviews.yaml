@@ -65810,6 +65810,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-27T17:24:35.332Z
+      - _ulid: 01KMR5FPSNHTTXXT52KPTSMMET
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMR5FP8WKZ5YKK75CNE9FR0W
+        timestamp: 2026-03-27T17:29:17.365Z
     examined_commit: 16d50422a0766c15efda5c39d936c326782c3f50
     external_links: []
     lifecycle_state: open
@@ -65819,8 +65826,26 @@ reviews:
       content_hash: ""
       ref: "@01KMMB3V7N2GC0JSPJKJYMPJPV"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMR5FP8WKZ5YKK75CNE9FR0W
+        anchor:
+          type: code
+          commit: 16d50422a0766c15efda5c39d936c326782c3f50
+          line_end: 276
+          line_start: 274
+          path: packages/daemon/src/routes/command.ts
+          side: head
+        entries:
+          - _ulid: 01KMR5FP8WNBD5MEKBY3DD1STZ
+            author: "@claude"
+            body: " is only assigned in , so validation failures generated before the handler never receive it.
+              I reproduced this by POSTing  without  through the route directly: the response
+              was  and the headers only contained , with no . That violates @trait-api-endpoint ac-6
+              for error responses, and the tests miss it because they only assert the header on the
+              success path."
+            created_at: 2026-03-27T17:29:16.828Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T17:24:05.606Z
-    updated_at: 2026-03-27T17:24:34.495Z
+    updated_at: 2026-03-27T17:29:16.828Z
     notes: []
