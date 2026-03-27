@@ -700,6 +700,51 @@ describe("Daemon Command API", () => {
     expect(parsed.title).toBe("Test Task");
   });
 
+  // AC: @daemon-command-api ac-response-parity
+  it("does not leak --yaml output mode into batch commands", async () => {
+    // First request uses --yaml via the single-command endpoint — sets
+    // globalOutputFormat = "yaml" at the process level.
+    const yamlResponse = await makeRequest("/api/command", {
+      method: "POST",
+      body: JSON.stringify({
+        command: "validate",
+        args: { warningsOk: true, yaml: true },
+      }),
+    });
+    expect(yamlResponse.status).toBeLessThan(500);
+
+    // Second request is a BATCH with a mutating command.
+    // Before the fix, dispatchCommand() in batch-exec.ts called
+    // setJsonMode(false) which only clears "json" format — leaving "yaml"
+    // intact from the prior request. Batch commands would then inherit
+    // the leaked YAML mode, corrupting their output capture.
+    const batchResponse = await makeRequest("/api/command/batch", {
+      method: "POST",
+      body: JSON.stringify({
+        commands: [
+          {
+            command: "inbox add",
+            args: { text: "Batch after yaml leak" },
+            id: "batch-leak-test",
+          },
+        ],
+      }),
+    });
+
+    expect(batchResponse.status).toBe(200);
+    const body = await batchResponse.json();
+    expect(body.success).toBe(true);
+
+    const result = body.results[0];
+    expect(result.success).toBe(true);
+
+    // Verify the output doesn't contain YAML indicators that would signal
+    // leaked format. The inbox add output, captured by dispatchCommand(),
+    // should be plain text (not YAML-formatted).
+    const output = typeof result.output === "string" ? result.output : JSON.stringify(result.output);
+    expect(output).not.toMatch(/^---\s*$/m);
+  });
+
   // ───────────────────────────────────────────────────────────────────
   // Edge cases
   // ───────────────────────────────────────────────────────────────────

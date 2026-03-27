@@ -24,7 +24,7 @@ import type { CommandMeta } from "./introspection.js";
 import { extractCommandTree, findCommand, flattenCommandTree } from "./introspection.js";
 import { findClosestCommand } from "./suggest.js";
 import { createBatchCommandFilter } from "./command-annotations.js";
-import { setJsonMode, setVerboseMode } from "./output.js";
+import { setOutputFormat, setVerboseMode } from "./output.js";
 import {
   BatchExitError,
   OutputCapture,
@@ -926,9 +926,11 @@ async function dispatchCommand(
   }
   const argv = buildCommandArgv(enrichedCmd, cmdMeta);
 
-  // Reset Commander state
+  // Reset Commander state and ALL output mode globals between dispatches.
+  // setOutputFormat("text") resets json, yaml, or any other format — unlike
+  // setJsonMode(false) which only clears json and leaves yaml intact.
   resetCommandTree(program);
-  setJsonMode(false);
+  setOutputFormat("text");
   setVerboseMode(false);
 
   const capture = new OutputCapture();
