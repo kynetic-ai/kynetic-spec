@@ -57457,6 +57457,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-27T01:14:57.553Z
+      - _ulid: 01KMPDR3HS4X62X93SBQZG8V3H
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMPDR35GTAT431Z8PH2B0H2P
+        timestamp: 2026-03-27T01:15:12.313Z
     examined_commit: fa0841f6d5564907021177908da89f6890308163
     external_links: []
     lifecycle_state: open
@@ -57506,7 +57513,29 @@ reviews:
               outside the task/item/session/ref subset.
             created_at: 2026-03-27T01:14:54.393Z
         kind: blocker
+      - _ulid: 01KMPDR35GTAT431Z8PH2B0H2P
+        anchor:
+          type: code
+          commit: fa0841f6d5564907021177908da89f6890308163
+          line_end: 358
+          line_start: 315
+          path: packages/daemon/src/server.ts
+          side: head
+        entries:
+          - _ulid: 01KMPDR35GA0FH127T7209SEXG
+            author: "@claude"
+            body: The new cache is registered for eight domains, but only the task/item/session/ref route
+              factories receive a cache accessor here. `createInboxRoutes`, `createMetaRoutes`,
+              `createTriageRoutes`, `createPlansRoutes`, and `createReviewsRoutes` still go straight
+              to `initContext()` plus disk loaders (`loadInboxItems`, `loadMetaContext`,
+              `loadTriageRecords`, `loadPlans`, `loadReviewRecords`) on every request, and their
+              write endpoints never call `writeThrough()`. That means five cached domains are never
+              actually served from memory and are not kept coherent after daemon API writes, so
+              `@daemon-entity-cache` ac-serve-from-memory/ac-write-through remain unmet outside the
+              task/item/session/ref subset.
+            created_at: 2026-03-27T01:15:11.920Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T01:11:01.134Z
-    updated_at: 2026-03-27T01:14:57.115Z
+    updated_at: 2026-03-27T01:15:11.920Z
     notes: []
