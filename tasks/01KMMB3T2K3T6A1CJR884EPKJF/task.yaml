@@ -93,7 +93,7 @@ tags:
   - implementation
   - cache
 vcs_refs: []
-review_ref: "@01KMQ5PDFHP3XBEF8G7P66MR64"
+review_ref: "@01KMQ7S7C3K4TR0N1K4W7M2A31"
 submission_linkage:
   review_url: null
   branch: dev
@@ -1371,6 +1371,13 @@ history:
         previous: 2026-03-27T08:11:02.118Z
     command: task-submit
     timestamp: 2026-03-27T08:46:19.229Z
+  - author: "@claude"
+    changes:
+      review_ref:
+        new: "@01KMQ7S7C3K4TR0N1K4W7M2A31"
+        previous: "@01KMQ5PDFHP3XBEF8G7P66MR64"
+    command: review-link
+    timestamp: 2026-03-27T08:50:13.781Z
 prior_status: null
 created_at: 2026-03-26T05:50:41.235Z
 started_at: 2026-03-27T08:46:16.185Z
