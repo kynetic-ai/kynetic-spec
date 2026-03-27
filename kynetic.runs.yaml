@@ -16950,7 +16950,7 @@ runs:
     completed_at: 2026-03-27T20:03:16.792Z
   - _ulid: 01KMREZCJVSZ09MFBD5Z1HK9RW
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -16967,7 +16967,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-27T20:15:26.732Z
-        completed_at: 2026-03-27T20:15:26.732Z
+        completed_at: 2026-03-27T20:15:48.853Z
+        notes: "Friction: MUTATION_AFFECTED_DOMAINS is a manually-maintained list that must stay in sync
+          with the CacheDomain type. When a new domain is added to CacheDomain, every consumer must
+          remember to update. This caused the exact bug this fix cycle addressed — 'sessions' was
+          added to CacheDomain but not to MUTATION_AFFECTED_DOMAINS. However, this is a
+          low-confidence observation: it only happened once, and the fix was trivial. The list is
+          small (8 items) and unlikely to change often. Not worth capturing as a systemic issue. No
+          other friction identified — the fix cycle was clean and efficient."
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-27T20:15:48.853Z
+        completed_at: 2026-03-27T20:15:48.853Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-27T20:15:08.379Z
