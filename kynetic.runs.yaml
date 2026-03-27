@@ -16389,7 +16389,7 @@ runs:
     completed_at: 2026-03-27T05:49:17.796Z
   - _ulid: 01KMPYZ8ZK0X94FJKB9TSXA2H0
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -16416,7 +16416,16 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-03-27T06:17:33.646Z
-        completed_at: 2026-03-27T06:17:33.646Z
+        completed_at: 2026-03-27T06:17:43.069Z
+        notes: "Decision: (1) ReferenceIndex structural type mismatch — unique, high confidence, systemic.
+          CAPTURE as friction observation. (2) Elysia error() in test handle() — unique, but this
+          may be a known Elysia limitation rather than a project-specific issue. The workaround is
+          straightforward (skip error-path tests in handle() context). Borderline — SKIP as it's
+          more of an external library limitation than internal friction."
+      - status: completed
+        step_index: 3
+        started_at: 2026-03-27T06:17:43.069Z
+        completed_at: 2026-03-27T06:17:43.069Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-27T06:16:13.044Z
