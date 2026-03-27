@@ -150,3 +150,18 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T18:17:04.472Z
+  - _ulid: 01KMR9DWP5QXM8V3VENZVWT64C
+    content: "Fix cycle 6: Addressed all 4 blockers from review @01KMR7SJF8G37BWZDWNH26DMDN. All routes
+      that previously fell through to initContext() + disk/git reads during cache warmup now return
+      _cache_status: 'loading' responses instead. (1) meta.ts: /api/meta/config and /api/meta/shadow
+      now check for loading state. (2) aggregation.ts: /api/aggregation/validation returns loading
+      response when tasks or items domain is warming. (3) validation.ts: /api/alignment returns
+      loading response during warmup. (4) validation.ts: /api/search returns loading response during
+      warmup, with inbox and meta sub-searches also guarded. Added /api/alignment to the initContext
+      spy test (it serves fully from cache when warm). Added a dedicated warmup test that creates a
+      'loading' domain cache and hits all 5 previously-affected routes, verifying _cache_status:
+      'loading' and zero initContext/getShadowStatus/hasRemoteTracking spy calls. All 6970 tests
+      pass (1947 suites)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T18:38:12.165Z
