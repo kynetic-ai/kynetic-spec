@@ -20,7 +20,7 @@ description: |
 spec_ref: "@shadow-lazy-read-sync"
 plan_ref: "@plan-daemon-optimistic-data-layer"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-entity-cache-impl"
@@ -34,8 +34,8 @@ review_ref: "@01KMR8X53JFERSYMXE6C3AMQFR"
 submission_linkage:
   review_url: null
   branch: dev
-  captured_at: 2026-03-27T18:27:06.938Z
-  commit: 1001be210b4251982b7386b475a48b0cc68188e4
+  captured_at: 2026-03-27T19:41:37.439Z
+  commit: 7d699d4855817e533fc2e5066db464312ea38f57
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
   upstream_ref: refs/heads/dev
@@ -111,8 +111,35 @@ history:
         previous: 2026-03-27T18:18:24.848Z
     command: task-start
     timestamp: 2026-03-27T19:41:34.109Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-03-27T19:41:37.439Z
+          commit: 7d699d4855817e533fc2e5066db464312ea38f57
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous:
+          review_url: null
+          branch: dev
+          captured_at: 2026-03-27T18:27:06.938Z
+          commit: 1001be210b4251982b7386b475a48b0cc68188e4
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+      submitted_at:
+        new: 2026-03-27T19:41:37.442Z
+        previous: 2026-03-27T18:27:06.940Z
+    command: task-submit
+    timestamp: 2026-03-27T19:41:37.442Z
 created_at: 2026-03-26T05:50:43.571Z
 started_at: 2026-03-27T19:41:34.109Z
-submitted_at: 2026-03-27T18:27:06.940Z
+submitted_at: 2026-03-27T19:41:37.442Z
 todos: []
 automation: eligible
