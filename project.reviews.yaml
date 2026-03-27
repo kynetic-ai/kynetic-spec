@@ -65710,6 +65710,36 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-27T17:19:36.340Z
+      - _ulid: 01KMR5VA1HXE4FXZ4JDKC1HQYV
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMR4XJ47TCHGTMCDYH325V75
+        timestamp: 2026-03-27T17:35:37.521Z
+      - _ulid: 01KMR5VBE3J25PZCM391A6BS6H
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMR4XJ47TCHGTMCDYH325V75
+        timestamp: 2026-03-27T17:35:38.947Z
+      - _ulid: 01KMR5VCQ5B5VGYT0257KCJFQ1
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMR4XKMR4NWZDB5DKC5CNFEF
+        timestamp: 2026-03-27T17:35:40.261Z
+      - _ulid: 01KMR5VE0VW29J5BPVYPTFME2W
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMR4XKMR4NWZDB5DKC5CNFEF
+        timestamp: 2026-03-27T17:35:41.595Z
+      - _ulid: 01KMR5VFBSBJ2AD81XWHPPZ511
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMR4XN6HPETC8KR3VKS25XQF
+        timestamp: 2026-03-27T17:35:42.970Z
     examined_commit: 44f13a010b11295b83cf65d4fae6d6f8e07a7f01
     external_links: []
     lifecycle_state: closed
@@ -65738,7 +65768,18 @@ reviews:
               @daemon-read-path ac-no-per-request-sync for this endpoint and leaves one of the
               declared read-route migrations unfinished."
             created_at: 2026-03-27T17:19:22.760Z
+          - _ulid: 01KMR5V9CT9BVK8Z3XTXV2AKVQ
+            author: "@claude"
+            body: "Fixed: /api/meta/shadow now serves from cached shadow info computed during meta domain load.
+              getShadowStatus() and hasRemoteTracking() are called once at cache load time and
+              stored as CachedShadowInfo. The route checks cache.getShadowInfo() before falling back
+              to initContext. Same treatment applied to /api/meta/config via CachedProjectConfig.
+              Behavioral spy test confirms neither initContext nor getShadowStatus nor
+              hasRemoteTracking is called during read requests with warm cache."
+            created_at: 2026-03-27T17:35:36.858Z
         kind: blocker
+        resolved_at: 2026-03-27T17:35:38.371Z
+        resolved_by: "@claude"
       - _ulid: 01KMR4XKMR4NWZDB5DKC5CNFEF
         anchor:
           type: code
@@ -65757,7 +65798,21 @@ reviews:
               work while returning the same payloads would still pass this whole block, so the task
               is missing behavioral coverage for its main guarantee."
             created_at: 2026-03-27T17:19:24.312Z
+          - _ulid: 01KMR5VC7B4Y9F0HK3HSSRZJ1Z
+            author: "@claude"
+            body: "Fixed: Added a comprehensive spy-based behavioral test that imports parserModule and
+              shadowModule as namespace objects, spies on initContext, getShadowStatus, and
+              hasRemoteTracking, then hits all 14 registered read routes and asserts none of the
+              spies were called. This proves the AC beyond payload matching — a regression that
+              silently re-introduced per-request git work would trigger the spy assertions. The test
+              covers /api/tasks, /api/items, /api/inbox, /api/aggregation/tasks/summary,
+              /api/aggregation/inbox, /api/search, /api/meta/agents, /api/meta/workflows,
+              /api/meta/conventions, /api/meta/shadow, /api/meta/config, /api/meta/observations,
+              /api/refs, and /api/plans."
+            created_at: 2026-03-27T17:35:39.755Z
         kind: blocker
+        resolved_at: 2026-03-27T17:35:41.063Z
+        resolved_by: "@claude"
       - _ulid: 01KMR4XN6HPETC8KR3VKS25XQF
         entries:
           - _ulid: 01KMR4XN6HH08003W8J45CGK0F
@@ -65780,6 +65835,8 @@ reviews:
               (/api/meta/shadow) and one missing-proof test block for ac-no-per-request-sync."
             created_at: 2026-03-27T17:19:25.905Z
         kind: nit
+        resolved_at: 2026-03-27T17:35:42.409Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -65789,7 +65846,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T17:19:36.339Z
     created_at: 2026-03-27T17:13:06.141Z
-    updated_at: 2026-03-27T17:19:36.340Z
+    updated_at: 2026-03-27T17:35:42.409Z
     notes: []
   - _ulid: 01KMR566B6BBE9H2D3H9RVD4A5
     slugs: []
