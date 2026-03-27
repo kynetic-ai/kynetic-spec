@@ -24477,12 +24477,22 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-27T05:15:06.601Z
+      updated_at: 2026-03-27T05:18:47.527Z
     health:
-      status: healthy
-      issues: []
-      summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-27T05:17:30.634Z
+      status: invalid
+      issues:
+        - code: missing_canonical_branch
+          message: Canonical branch
+            "dispatch/task/wire-agent-spawner-into-automation-subsystem-action-executors/01kmpncs"
+            is missing.
+          suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
+        - code: missing_worker_worktree
+          message: Worker worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/wire-agent-spawner-into-automation-subsystem-action-executors-01kmpncs"
+            is missing or no longer registered.
+          suggestion: Re-provision the worker worktree from the recorded canonical branch.
+      summary: Workspace registry record is invalid because required git state is missing.
+      updated_at: 2026-03-27T05:18:47.527Z
     integration:
       status: merged
       detail: integration:merged
@@ -24490,17 +24500,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: bb256b0254c10f37cf90c9a36c5141f8367047e4
-      updated_at: 2026-03-27T05:15:06.601Z
-    lifecycle_state: closing
+      updated_at: 2026-03-27T05:18:47.527Z
+    lifecycle_state: stale
     resolved_base_branch: dev
     task_ref: "@01KMPNCSGVJHDM47EDN6MXGZV4"
     task_slug: wire-agent-spawner-into-automation-subsystem-action-executors
     timestamps:
       closed_at: null
       last_active_at: 2026-03-27T05:00:08.951Z
-      last_reconciled_at: 2026-03-27T05:17:30.634Z
+      last_reconciled_at: 2026-03-27T05:18:47.527Z
       created_at: 2026-03-27T03:46:16.776Z
-      updated_at: 2026-03-27T05:17:30.634Z
+      updated_at: 2026-03-27T05:18:47.527Z
     workspace_id: dispatch-workspace-01KMPNCSGVJHDM47EDN6MXGZV4
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
