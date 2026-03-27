@@ -25572,7 +25572,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-27T22:49:53.673Z
+      updated_at: 2026-03-27T22:52:04.478Z
     integration:
       status: merged
       detail: integration:merged
@@ -25588,18 +25588,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-27T22:44:06.675Z
-      last_reconciled_at: 2026-03-27T22:52:03.148Z
+      last_reconciled_at: 2026-03-27T22:52:04.478Z
       created_at: 2026-03-27T22:27:57.796Z
-      updated_at: 2026-03-27T22:52:03.148Z
+      updated_at: 2026-03-27T22:52:04.478Z
     workspace_id: dispatch-workspace-01KMMB3Y3K01Q0D7DNDVV6GQT1
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: c3287fc736bce39629b1bdfda617808bd9ef55e0
-        last_seen_at: 2026-03-27T22:44:01.307Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-link-multi-dir-proxy-01kmmb3y-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-link-multi-dir-proxy/01kmmb3y
