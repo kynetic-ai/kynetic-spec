@@ -62844,9 +62844,25 @@ reviews:
           status: fail
           name: cache hot-read repro
         timestamp: 2026-03-27T08:25:49.860Z
+      - _ulid: 01KMQ6CW5345RDA17PTFJNDKT0
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-27T08:25:58.692Z
+      - _ulid: 01KMQ6CW54TZKSBVH52NC57P2Y
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-27T08:25:58.692Z
     examined_commit: c96e530ea4df135b240af245f6e4f838d7c21c82
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -62929,7 +62945,14 @@ reviews:
               verification pipeline unsound for this change set.
             created_at: 2026-03-27T08:25:23.121Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-27T08:25:58.691Z
     created_at: 2026-03-27T08:13:42.769Z
-    updated_at: 2026-03-27T08:25:49.411Z
+    updated_at: 2026-03-27T08:25:58.692Z
     notes: []
