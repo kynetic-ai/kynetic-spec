@@ -8504,6 +8504,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T03:22:53.148Z
+  - _ulid: 01KMPPYHXKY3A313WG4WA32K8C
+    type: friction
+    content: Entity-cache review required many fix cycles because tests covered warmed happy paths but
+      missed startup/default-project registration, cross-domain write-through, and loading-state
+      behavior on secondary endpoints. Add integration coverage for startup registration and
+      cross-domain cache coherence to catch these earlier.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T03:56:00.819Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
