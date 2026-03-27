@@ -57751,6 +57751,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMPF672DBXMMBRFM53DFE5PJ
         timestamp: 2026-03-27T01:40:23.688Z
+      - _ulid: 01KMPF6JBCH0YS9YAWPDX25CGZ
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMPF6HYHVB6E208K969M9VD1
+        timestamp: 2026-03-27T01:40:34.796Z
     examined_commit: 12ac2a14ed2cf4a3dfcbc2c8f464c4ca60cfd2d0
     external_links: []
     lifecycle_state: open
@@ -57816,7 +57823,28 @@ reviews:
               ac-serve-from-memory.
             created_at: 2026-03-27T01:40:23.245Z
         kind: blocker
+      - _ulid: 01KMPF6HYHVB6E208K969M9VD1
+        anchor:
+          type: code
+          commit: 12ac2a14ed2cf4a3dfcbc2c8f464c4ca60cfd2d0
+          line_end: 39
+          line_start: 24
+          path: packages/daemon/src/routes/entity-cache-types.ts
+          side: head
+        entries:
+          - _ulid: 01KMPF6HYH5JCHKFH2HYXDV60Z
+            author: "@claude"
+            body: The two-tier cache is still incomplete outside tasks, items, and sessions. RouteEntityCache
+              exposes detail getters/setters only for those three domains, and the single-record
+              handlers for plans, reviews, and triage therefore still reload from disk on every
+              request (see packages/daemon/src/routes/plans.ts:128,
+              packages/daemon/src/routes/reviews.ts:295, and
+              packages/daemon/src/routes/triage.ts:291). That misses the per-domain detail tier
+              promised by this task and leaves @daemon-entity-cache ac-detail-on-demand
+              unimplemented for three cached domains.
+            created_at: 2026-03-27T01:40:34.385Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T01:35:37.224Z
-    updated_at: 2026-03-27T01:40:23.245Z
+    updated_at: 2026-03-27T01:40:34.385Z
     notes: []
