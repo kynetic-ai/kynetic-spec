@@ -1,1 +1,17 @@
-notes: []
+notes:
+  - _ulid: 01KMPB1P2T4Z8HJXQBZ4KTYVXD
+    content: >-
+      Approach: Two git subprocess environments need patching:
+
+      1. workspace.ts buildDispatchGitEnv() — add GIT_TERMINAL_PROMPT=0 to the env builder. All
+      dispatch engine git calls already route through this.
+
+      2. shadow.ts — create buildShadowGitEnv() helper with GIT_TERMINAL_PROMPT=0 and wire into
+      runGitAsync, runGitSync, and raw spawn calls that touch remotes.
+
+      Also patch dispatch.ts computeDiffStat() (local only, low risk, but for consistency).
+
+      Test plan: Unit tests verifying env vars are set correctly in both environments.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T00:28:00.474Z
