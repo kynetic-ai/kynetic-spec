@@ -62723,3 +62723,29 @@ reviews:
     created_at: 2026-03-27T07:50:42.985Z
     updated_at: 2026-03-27T08:10:31.346Z
     notes: []
+  - _ulid: 01KMQ5PDFHP3XBEF8G7P66MR64
+    slugs: []
+    title: Review task-entity-cache-impl (cycle 22)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KMQ5PDFH554HZ14D1AGJ7YTW
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-27T08:13:42.769Z
+    examined_commit: c96e530ea4df135b240af245f6e4f838d7c21c82
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMMB3T2K3T6A1CJR884EPKJF"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-27T08:13:42.769Z
+    updated_at: null
+    notes: []
