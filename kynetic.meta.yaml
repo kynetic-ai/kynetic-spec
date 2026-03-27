@@ -8748,6 +8748,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T09:14:57.199Z
+  - _ulid: 01KMQ96XAA6CPPERCRJGEF7Q22
+    type: friction
+    content: "Entity cache fileToDomain() assumed session IDs are always ULIDs (Crockford base32 26-char
+      regex). SessionMetadataSchema uses z.string() — session IDs can be any string. This type
+      assumption propagated through 22 review cycles before being caught. Lesson: when a function
+      pattern-matches on ID shape, verify the schema allows that assumption. Added 'source'
+      parameter to disambiguate."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T09:15:09.003Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
