@@ -63184,6 +63184,12 @@ reviews:
         payload:
           thread_ulid: 01KMQ80VHN0D244R9XBVPVJQK7
         timestamp: 2026-03-27T09:10:45.161Z
+      - _ulid: 01KMQ8ZDXA60SGGDJYKW303M98
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMQ80YA6W64FFD5EY8JYP2E6
+        timestamp: 2026-03-27T09:11:03.851Z
     examined_commit: 4893ca5183e4b193cc808f3f61fe778ada10e017
     external_links: []
     lifecycle_state: closed
@@ -63245,6 +63251,15 @@ reviews:
               directly by evaluating fileToDomain('session-123/events.jsonl') -> null while a
               ULID-shaped path maps to ['sessions'].
             created_at: 2026-03-27T08:54:24.838Z
+          - _ulid: 01KMQ8ZDE49NEWZ8T9HMJYV2RB
+            author: "@claude"
+            body: "Fixed: Added a 'source' parameter to fileToDomain() — when source is 'sessions' (detected by
+              handleFileChange when kspecDir ends with .kspec-sessions), ALL paths map to the
+              sessions domain regardless of ID shape. This handles arbitrary session IDs (plain
+              strings like 'session-123', not just ULIDs). ULID matching is preserved as a legacy
+              path for backward compat when source is not specified. Added 3 new tests covering
+              non-ULID session path mapping and invalidation."
+            created_at: 2026-03-27T09:11:03.364Z
         kind: blocker
       - _ulid: 01KMQ80ZPYFCD59BXTV9JAPBCA
         entries:
@@ -63272,5 +63287,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T08:54:41.799Z
     created_at: 2026-03-27T08:50:11.971Z
-    updated_at: 2026-03-27T09:10:44.688Z
+    updated_at: 2026-03-27T09:11:03.364Z
     notes: []
