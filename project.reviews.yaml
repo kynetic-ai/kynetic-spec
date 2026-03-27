@@ -63677,3 +63677,29 @@ reviews:
     created_at: 2026-03-27T09:24:56.894Z
     updated_at: 2026-03-27T15:07:08.367Z
     notes: []
+  - _ulid: 01KMQXHF6AWYY9XJP9EY2852Y0
+    slugs: []
+    title: Review task-entity-cache-impl (cycle 26)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KMQXHF6AZCDQT772RC34S6VM
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-27T15:10:26.506Z
+    examined_commit: null
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@task-entity-cache-impl"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-27T15:10:26.506Z
+    updated_at: null
+    notes: []

@@ -96,7 +96,7 @@ tags:
   - implementation
   - cache
 vcs_refs: []
-review_ref: "@01KMQ9RVDYD7AAVZETX8DWRGP9"
+review_ref: "@01KMQXHF6AWYY9XJP9EY2852Y0"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-entity-cache-impl/01kmmb3t
@@ -1514,6 +1514,13 @@ history:
         previous: 2026-03-27T09:12:58.703Z
     command: task-submit
     timestamp: 2026-03-27T15:07:30.370Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KMQXHF6AWYY9XJP9EY2852Y0"
+        previous: "@01KMQ9RVDYD7AAVZETX8DWRGP9"
+    command: review-link
+    timestamp: 2026-03-27T15:10:28.408Z
 prior_status: null
 created_at: 2026-03-26T05:50:41.235Z
 started_at: 2026-03-27T14:20:27.309Z
