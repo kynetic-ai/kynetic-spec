@@ -16,3 +16,11 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T23:44:45.203Z
+  - _ulid: 01KMRV7M4C1MAD4ZMK8446ACJC
+    content: "Added .alias(\"update\") to the item ac set Commander command. The change is a single line
+      in src/cli/commands/item.ts:2040. Added an integration test that exercises the alias
+      end-to-end: adds an AC, updates it via 'item ac update', and verifies the update took effect.
+      All 293 tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T23:49:21.165Z
