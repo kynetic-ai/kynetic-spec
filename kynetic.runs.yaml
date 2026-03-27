@@ -16704,7 +16704,7 @@ runs:
     completed_at: 2026-03-27T16:44:43.972Z
   - _ulid: 01KMR4HCDP5EV25XBCNGGTS15A
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -16721,7 +16721,21 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-27T17:13:11.724Z
-        completed_at: 2026-03-27T17:13:11.724Z
+        completed_at: 2026-03-27T17:14:19.010Z
+        notes: "Friction: (1) The entity cache's two-tier model (index summaries + detail tier) created a
+          subtle regression when the search route was migrated to use summaries. The issue was that
+          summaries intentionally strip fields that search needs. This is a design tension: lean
+          summaries for list performance vs full data for search. The fix (eager detail loading)
+          resolves it but increases memory usage. This is already tracked in observation 01KMR00G
+          about the tiered architecture. (2) The split backend test fixtures only update the index
+          file without corresponding split directories, creating inconsistencies that are hard to
+          reason about during changes. This is a test-internal pattern, not a production issue. No
+          new captures needed - the friction was addressed in-session and the tiered architecture
+          observation already exists."
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-27T17:14:19.010Z
+        completed_at: 2026-03-27T17:14:19.010Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-27T17:12:43.702Z
