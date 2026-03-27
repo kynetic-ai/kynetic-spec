@@ -63057,6 +63057,19 @@ reviews:
         runner: tsx
         created_at: 2026-03-27T08:54:23.441Z
         completed_at: 2026-03-27T08:54:23.441Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Reproduced locally: fileToDomain('session-123/events.jsonl') returns null, while
+          fileToDomain('01ARZ3NDEKTSV4RRFFQ69G5FAV/events.jsonl') returns ['sessions'].
+          SessionWatcher emits the session root directory name verbatim, so non-ULID sessions bypass
+          cache invalidation entirely."
+        name: non-ULID session invalidation repro
+        required: true
+        runner: tsx
+        created_at: 2026-03-27T08:54:27.797Z
+        completed_at: 2026-03-27T08:54:27.797Z
     events:
       - _ulid: 01KMQ7S7C3T3MDJ9H0YY4YY8WZ
         actor: "@claude"
@@ -63099,6 +63112,13 @@ reviews:
           kind: nit
           thread_ulid: 01KMQ80ZPYFCD59BXTV9JAPBCA
         timestamp: 2026-03-27T08:54:26.753Z
+      - _ulid: 01KMQ811NHYQNE00JT42W55993
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: non-ULID session invalidation repro
+        timestamp: 2026-03-27T08:54:28.273Z
     examined_commit: 4893ca5183e4b193cc808f3f61fe778ada10e017
     external_links: []
     lifecycle_state: open
@@ -63170,5 +63190,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-27T08:50:11.971Z
-    updated_at: 2026-03-27T08:54:26.270Z
+    updated_at: 2026-03-27T08:54:27.797Z
     notes: []
