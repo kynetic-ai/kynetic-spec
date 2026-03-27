@@ -8494,6 +8494,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T03:15:39.516Z
+  - _ulid: 01KMPN1WTW1X6WDR9SPDN056J7
+    type: friction
+    content: Route-level cache warming tests accepted 'unloaded' for not-yet-started domains during
+      progressive load, which let a spec violation survive multiple review cycles. Add a behavioral
+      test that exercises requests arriving after registration but before a later domain begins
+      loading, and assert the API returns _cache_status='loading' instead of falling back to disk.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T03:22:53.148Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
