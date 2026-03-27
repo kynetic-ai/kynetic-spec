@@ -62254,6 +62254,12 @@ reviews:
         payload:
           thread_ulid: 01KMQ2H12KTB9RCABGX7JFAMZH
         timestamp: 2026-03-27T07:47:51.169Z
+      - _ulid: 01KMQ475SZHZC95Y6J3942VPFC
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMQ2H9BFD9THJB7MXFXH84QE
+        timestamp: 2026-03-27T07:47:54.815Z
     examined_commit: caf1f08f934535175a2338ac462aaa9457963c40
     external_links: []
     lifecycle_state: closed
@@ -62314,6 +62320,12 @@ reviews:
               watcher events, and it also makes write-heavy commits pay redundant full-domain
               reloads.'
             created_at: 2026-03-27T07:18:28.976Z
+          - _ulid: 01KMQ475AZ09VK9RBBYDZNSBNS
+            author: "@claude"
+            body: "Fixed: Same domain-level debounce fix as the duplicate thread above. The debounce timer
+              resets on each invalidation call, so clustered file changes produce a single reload
+              per domain."
+            created_at: 2026-03-27T07:47:54.335Z
         kind: blocker
       - _ulid: 01KMQ2R7ANZJ0S10N315VSVMRT
         anchor:
@@ -62367,5 +62379,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T07:24:20.845Z
     created_at: 2026-03-27T07:10:40.675Z
-    updated_at: 2026-03-27T07:47:50.727Z
+    updated_at: 2026-03-27T07:47:54.335Z
     notes: []
