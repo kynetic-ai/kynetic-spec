@@ -64530,9 +64530,25 @@ reviews:
           kind: blocker
           thread_ulid: 01KMR3DWBJNYWZ4GPX1Y4F9HV3
         timestamp: 2026-03-27T16:53:20.901Z
+      - _ulid: 01KMR3E8BD1NTYTE74AS0HX3Z0
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-27T16:53:32.653Z
+      - _ulid: 01KMR3E8BDF3QZ4D3YECH2H7DY
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-27T16:53:32.653Z
     examined_commit: 1d8c9354ea2d08481c7c5647f54e7e13b1941074
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -65495,7 +65511,14 @@ reviews:
               satisfy ac-response-parity or the broader command-endpoint contract.
             created_at: 2026-03-27T16:53:20.370Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-27T16:53:32.653Z
     created_at: 2026-03-27T16:45:47.121Z
-    updated_at: 2026-03-27T16:53:20.370Z
+    updated_at: 2026-03-27T16:53:32.653Z
     notes: []
