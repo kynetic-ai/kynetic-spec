@@ -67565,6 +67565,17 @@ reviews:
         runner: kspec
         created_at: 2026-03-27T18:34:08.261Z
         completed_at: 2026-03-27T18:34:08.261Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 1942 suites passed; 6945 tests passed, 5 skipped. Duration 4096.3s. Test runner rebuilt
+          dist first because dist/cli/index.js was missing, then completed cleanly.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-27T18:34:11.661Z
+        completed_at: 2026-03-27T18:34:11.661Z
     events:
       - _ulid: 01KMR8X53GSAB3R2VP0HD9E1E9
         actor: "@claude"
@@ -67593,6 +67604,13 @@ reviews:
           status: skipped
           name: kspec validate
         timestamp: 2026-03-27T18:34:09.299Z
+      - _ulid: 01KMR96JT5GJC89JWJVZDRCEGT
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-27T18:34:12.677Z
     examined_commit: 3f1360f1d80cf5aa5986399e9b6eb5de055ece6c
     external_links: []
     lifecycle_state: open
@@ -67625,5 +67643,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-27T18:29:03.730Z
-    updated_at: 2026-03-27T18:34:08.261Z
+    updated_at: 2026-03-27T18:34:11.661Z
     notes: []
