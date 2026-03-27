@@ -65622,6 +65622,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-27T17:18:58.074Z
+      - _ulid: 01KMR4XJM65Q7F2Q62D5A3WATV
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMR4XJ47TCHGTMCDYH325V75
+        timestamp: 2026-03-27T17:19:23.270Z
     examined_commit: 44f13a010b11295b83cf65d4fae6d6f8e07a7f01
     external_links: []
     lifecycle_state: open
@@ -65631,8 +65638,27 @@ reviews:
       content_hash: ""
       ref: "@01KMMB3TNHWVQT4HHB9XC1DE0X"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMR4XJ47TCHGTMCDYH325V75
+        anchor:
+          type: code
+          commit: 44f13a010b11295b83cf65d4fae6d6f8e07a7f01
+          line_end: 299
+          line_start: 280
+          path: packages/daemon/src/routes/meta.ts
+          side: head
+        entries:
+          - _ulid: 01KMR4XJ48D7RAGH5GEV4QA9YG
+            author: "@claude"
+            body: "Blocking: GET /api/meta/shadow is still a read endpoint in a route file explicitly named by
+              this task, but it performs per-request shadow status and remote-tracking checks. This
+              handler calls getShadowStatus() and hasRemoteTracking() on every request, and both
+              helpers shell out to git/config checks in src/parser/shadow.ts. That still violates
+              @daemon-read-path ac-no-per-request-sync for this endpoint and leaves one of the
+              declared read-route migrations unfinished."
+            created_at: 2026-03-27T17:19:22.760Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T17:13:06.141Z
-    updated_at: 2026-03-27T17:18:57.265Z
+    updated_at: 2026-03-27T17:19:22.760Z
     notes: []
