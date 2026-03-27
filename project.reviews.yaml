@@ -60324,6 +60324,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMPTG4NRGJK83KH0JEY2PRQR
         timestamp: 2026-03-27T04:58:03.434Z
+      - _ulid: 01KMPTG68PW021FTQJX1B7BXS0
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMPTG4PE91JPQB6TA0N3J79C
+        timestamp: 2026-03-27T04:58:04.438Z
     examined_commit: c903c3369660d1b9746492fa5c1fd4e9844eaec3
     external_links: []
     lifecycle_state: open
@@ -60374,7 +60381,26 @@ reviews:
               breaks @daemon-entity-cache ac-watcher-invalidation and ac-granular-reload."
             created_at: 2026-03-27T04:58:02.808Z
         kind: blocker
+      - _ulid: 01KMPTG4PE91JPQB6TA0N3J79C
+        anchor:
+          type: code
+          commit: c903c3369660d1b9746492fa5c1fd4e9844eaec3
+          line_end: 579
+          line_start: 553
+          path: src/daemon/entity-cache.ts
+          side: head
+        entries:
+          - _ulid: 01KMPTG4PEVM1CSNVFHZEKG7SP
+            author: "@claude"
+            body: "The live session counter overwrites persisted event_count with a counter that starts at zero.
+              I verified this directly against ProjectEntityCache: after seeding an active session
+              summary with event_count=25, getSessionIndex() reported 25 before
+              incrementSessionEventCount(), then 1 after a single increment. The cache is dropping
+              the persisted baseline instead of adding to it, so active sessions can regress from 25
+              events to 1. That breaks @session-summary-cache ac-live-counter."
+            created_at: 2026-03-27T04:58:02.830Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T04:46:33.884Z
-    updated_at: 2026-03-27T04:58:02.808Z
+    updated_at: 2026-03-27T04:58:02.830Z
     notes: []
