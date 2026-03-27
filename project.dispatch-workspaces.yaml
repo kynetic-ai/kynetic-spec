@@ -25609,7 +25609,7 @@ workspaces:
         head: c3287fc736bce39629b1bdfda617808bd9ef55e0
         last_seen_at: 2026-03-27T22:44:01.307Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-link-multi-dir-proxy-01kmmb3y
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: c3287fc736bce39629b1bdfda617808bd9ef55e0
     bootstrap:
       status: succeeded
@@ -25735,9 +25735,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-27T23:50:22.411Z
-      last_reconciled_at: 2026-03-27T23:56:53.573Z
+      last_reconciled_at: 2026-03-27T23:57:01.403Z
       created_at: 2026-03-27T23:45:01.193Z
-      updated_at: 2026-03-27T23:56:53.573Z
+      updated_at: 2026-03-27T23:57:01.403Z
     workspace_id: dispatch-workspace-01KMRTYXRCP5VGBPT546FTX31W
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
