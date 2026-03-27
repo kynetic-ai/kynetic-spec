@@ -24121,44 +24121,23 @@ workspaces:
     base_branch_point: dc022927ea9d7f9c1bdaa7d63d6a4ec967491911
     bootstrap:
       status: succeeded
-      canonicalBranchHead: c903c3369660d1b9746492fa5c1fd4e9844eaec3
+      canonicalBranchHead: 8dfaea2199385d9aa733f052db868d92c22580e0
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
       failureMessage: null
       invalidationReasons:
         - canonical-branch-head-changed
-      lastRole: worker
-      lastRunAt: 2026-03-27T05:00:00.243Z
+      lastRole: reviewer
+      lastRunAt: 2026-03-27T05:12:08.572Z
       roleStates:
         reviewer:
           status: succeeded
-          canonicalBranchHead: c903c3369660d1b9746492fa5c1fd4e9844eaec3
+          canonicalBranchHead: 8dfaea2199385d9aa733f052db868d92c22580e0
           configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
           failureMessage: null
           invalidationReasons:
             - canonical-branch-head-changed
-            - workspace-dependencies-missing
-          lastRunAt: 2026-03-27T04:45:53.220Z
-          steps:
-            - status: succeeded
-              allowTrackedChanges: false
-              idempotent: true
-              name: install-workspace-dependencies
-              output: |-
-                added 287 packages, and audited 292 packages in 4s
-
-                67 packages are looking for funding
-                  run `npm fund` for details
-
-                12 vulnerabilities (1 low, 7 moderate, 4 high)
-
-                To address all issues, run:
-                  npm audit fix
-
-                Run `npm audit` for details.
-              reviewerRerunAllowed: true
-              role: reviewer
-              run: npm ci
-              source: dispatch
+          lastRunAt: 2026-03-27T05:12:08.572Z
+          steps: []
         worker:
           status: succeeded
           canonicalBranchHead: c903c3369660d1b9746492fa5c1fd4e9844eaec3
@@ -24206,7 +24185,7 @@ workspaces:
       last_active_at: 2026-03-27T05:00:01.293Z
       last_reconciled_at: 2026-03-27T05:12:05.756Z
       created_at: 2026-03-26T17:30:25.720Z
-      updated_at: 2026-03-27T05:12:05.756Z
+      updated_at: 2026-03-27T05:12:08.572Z
     workspace_id: dispatch-workspace-01KMMB3T2K3T6A1CJR884EPKJF
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
