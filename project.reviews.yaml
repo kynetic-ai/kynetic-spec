@@ -67552,7 +67552,19 @@ reviews:
     slugs: []
     title: Review task-narrow-shadow-lazy-read-sync
     author: "@claude"
-    checks: []
+    checks:
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Exited 6 on existing repository warnings only. Schema and references were OK; warnings
+          included orphaned skill dir, existing orphaned specs/status mismatches, and known invalid
+          AC-annotation fixture cases.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-27T18:34:08.261Z
+        completed_at: 2026-03-27T18:34:08.261Z
     events:
       - _ulid: 01KMR8X53GSAB3R2VP0HD9E1E9
         actor: "@claude"
@@ -67574,6 +67586,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMR96B4VBDGXAX31K41DG559
         timestamp: 2026-03-27T18:34:05.903Z
+      - _ulid: 01KMR96FGK260BYGT6XPYRZ3X7
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec validate
+        timestamp: 2026-03-27T18:34:09.299Z
     examined_commit: 3f1360f1d80cf5aa5986399e9b6eb5de055ece6c
     external_links: []
     lifecycle_state: open
@@ -67606,5 +67625,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-27T18:29:03.730Z
-    updated_at: 2026-03-27T18:34:04.827Z
+    updated_at: 2026-03-27T18:34:08.261Z
     notes: []
