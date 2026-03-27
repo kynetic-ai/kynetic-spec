@@ -19,6 +19,7 @@
  * - @session-event-detail-endpoint ac-not-found: 404 for missing session or seq
  */
 
+import { join } from "path";
 import { Elysia, t } from "elysia";
 import {
   getSession,
@@ -362,8 +363,15 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
             task_title: s.task_id && refIndex ? resolveRefTitle(refIndex, s.task_id) : null,
           }));
 
-          // Detect legacy sessions and include warning in response
-          const legacyCount = await countLegacySessions((await getCtx()).specDir);
+          // Detect legacy sessions and include warning in response.
+          // AC: @daemon-entity-cache ac-serve-from-memory — only scan for legacy sessions
+          // when we already have a context (i.e. the disk fallback path was taken). When
+          // serving entirely from cache, skip the legacy count to avoid initContext() and
+          // disk I/O, which would negate the cache benefit.
+          let legacyCount = 0;
+          if (_ctx) {
+            legacyCount = await countLegacySessions(_ctx.specDir);
+          }
 
           // AC: @session-filter-controls ac-filter-counts — Include unfiltered_total in response
           return {
@@ -454,10 +462,24 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
       // AC: @session-legacy-migration ac-read-fallback — detect-and-warn for legacy sessions
       // AC: @daemon-entity-cache ac-detail-on-demand — check unified cache for session detail
       .get("/:id", async ({ params, error: errorResponse, projectContext }) => {
-        const ctx = await initContext(projectContext.path);
+        // AC: @daemon-entity-cache ac-warming-availability — return loading indicator during warmup
+        const entityCache = getEntityCache?.(projectContext.path);
+        const sessionsDomainState = entityCache?.getDomainState("sessions");
+        if (entityCache && sessionsDomainState === "loading") {
+          return { _cache_status: "loading" as const };
+        }
+
+        // AC: @daemon-entity-cache ac-serve-from-memory — defer initContext to avoid disk/git
+        // work on cache hits. sessionsDir can be derived directly from projectContext.path.
+        const sessionsDir = join(projectContext.path, ".kspec-sessions");
+        let _ctx: KspecContext | null = null;
+        const getCtx = async () => {
+          if (!_ctx) _ctx = await initContext(projectContext.path);
+          return _ctx;
+        };
 
         // Resolve session ID (supports prefix matching)
-        const resolution = await resolveSessionId(ctx.sessionsDir, params.id);
+        const resolution = await resolveSessionId(sessionsDir, params.id);
         if (!resolution.ok) {
           if (resolution.error === "ambiguous") {
             return errorResponse(400, {
@@ -474,8 +496,7 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
         }
 
         // AC: @daemon-entity-cache ac-detail-on-demand — check unified cache first
-        const entityCache = getEntityCache?.(projectContext.path);
-        const sessionsDomainReady = entityCache && entityCache.getDomainState("sessions") === "ready";
+        const sessionsDomainReady = sessionsDomainState === "ready";
 
         let detail: SessionLogSummary | null = null;
 
@@ -491,8 +512,8 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
 
         if (!detail) {
           // Fall back to standalone session cache (disk read)
-          const sessionCache = getSessionCache(ctx.sessionsDir);
-          detail = await sessionCache.get(ctx.sessionsDir, resolution.id);
+          const sessionCache = getSessionCache(sessionsDir);
+          detail = await sessionCache.get(sessionsDir, resolution.id);
         }
 
         if (!detail) {
@@ -508,7 +529,7 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
           entityCache!.setSessionDetail(resolution.id, detail);
         }
 
-        const metadata = await getSession(ctx.sessionsDir, resolution.id);
+        const metadata = await getSession(sessionsDir, resolution.id);
 
         // AC: @ui-session-stream ac-4 — Resolve spec context from task's spec_ref
         // AC: @ui-api-ref-resolution ac-1 — Resolve task_title
@@ -521,9 +542,16 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
 
         if (metadata?.task_id) {
           try {
-            const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
-            const items = await loadAllItems(ctx);
-            const index = new ReferenceIndex(tasks, items);
+            // AC: @daemon-entity-cache ac-serve-from-memory — use cached tasks/items when available
+            const tasksDomainReady = entityCache && entityCache.getDomainState("tasks") === "ready";
+            const itemsDomainReady = entityCache && entityCache.getDomainState("items") === "ready";
+            const tasks = tasksDomainReady
+              ? (entityCache!.getTaskIndex() as unknown as LoadedTask[])
+              : await resolveTaskDataManager(await getCtx()).loadAllTasks(await getCtx());
+            const items = itemsDomainReady
+              ? (entityCache!.getItemIndex() as unknown as LoadedSpecItem[])
+              : await loadAllItems(await getCtx());
+            const index = new ReferenceIndex(tasks ?? [], items ?? []);
             const taskResult = index.resolve(metadata.task_id);
             if (taskResult.ok) {
               const task = taskResult.item as { title?: string; spec_ref?: string };
@@ -554,13 +582,18 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
         // AC: @ui-session-stream ac-4 — Include budget info
         let budget: { max_per_cycle: number; started_this_cycle: number } | null = null;
         try {
-          budget = await getBudget(ctx.sessionsDir, resolution.id);
+          budget = await getBudget(sessionsDir, resolution.id);
         } catch {
           // No budget configured — that's fine
         }
 
-        // Detect legacy sessions and include warning in response
-        const legacyCount = await countLegacySessions(ctx.specDir);
+        // Detect legacy sessions and include warning in response.
+        // AC: @daemon-entity-cache ac-serve-from-memory — only scan legacy dir if ctx
+        // was already initialized (disk fallback path). Skip when serving from cache.
+        let legacyCount = 0;
+        if (_ctx) {
+          legacyCount = await countLegacySessions(_ctx.specDir);
+        }
 
         return {
           ...detail,

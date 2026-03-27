@@ -271,9 +271,15 @@ interface DomainStore<TIndex, TDetail = unknown> {
 export function fileToDomain(relativePath: string): CacheDomain[] | null {
   const domains: CacheDomain[] = [];
 
-  // Task files — both monolith (project.tasks.yaml, *.tasks.yaml) and
-  // split-backend per-task directories (tasks/<ULID>/task.yaml, tasks/<ULID>/notes.yaml)
-  if (relativePath.endsWith(".tasks.yaml") || relativePath === "project.tasks.yaml") {
+  // Task files — both monolith (project.tasks.yaml, *.tasks.yaml, tasks.yaml) and
+  // split-backend per-task directories (tasks/<ULID>/task.yaml, tasks/<ULID>/notes.yaml).
+  // TaskDataManager.listTasks() explicitly loads tasks.yaml alongside *.tasks.yaml,
+  // so the bare filename must also be matched.
+  if (
+    relativePath.endsWith(".tasks.yaml") ||
+    relativePath === "project.tasks.yaml" ||
+    relativePath === "tasks.yaml"
+  ) {
     domains.push("tasks");
   }
   if (relativePath.startsWith("tasks/")) {
@@ -323,6 +329,17 @@ export function fileToDomain(relativePath: string): CacheDomain[] | null {
   const firstSegment = relativePath.split("/")[0];
   if (firstSegment && /^[0-9A-HJKMNP-TV-Z]{26}$/i.test(firstSegment)) {
     domains.push("sessions");
+  }
+
+  // Catch-all: any .yaml file not already matched should conservatively
+  // invalidate items and meta. The loaders are broader than the explicit
+  // patterns above — findManifest() accepts any *.yaml with a kynetic: header,
+  // loadAllItems() follows arbitrary manifest.includes paths, and
+  // loadMetaContext() follows arbitrary meta.includes. A project that keeps
+  // specs or meta includes outside the hard-coded paths above would serve
+  // stale cache data if we don't invalidate on those changes.
+  if (relativePath.endsWith(".yaml") && domains.length === 0) {
+    domains.push("items", "meta");
   }
 
   return domains.length > 0 ? domains : null;

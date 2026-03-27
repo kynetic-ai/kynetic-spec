@@ -401,9 +401,14 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
             return _ctx;
           };
 
-          // AC: @daemon-entity-cache ac-detail-on-demand — check cache detail tier first
+          // AC: @daemon-entity-cache ac-warming-availability — return loading indicator during warmup
           const cache = getEntityCache?.(projectContext.path);
-          const itemsDomainReady = cache && cache.getDomainState("items") === "ready";
+          const itemsDomainState = cache?.getDomainState("items");
+          if (cache && itemsDomainState === "loading") {
+            return { _cache_status: "loading" as const };
+          }
+          // AC: @daemon-entity-cache ac-detail-on-demand — check cache detail tier first
+          const itemsDomainReady = cache && itemsDomainState === "ready";
 
           // Resolve the ref against cached index or disk to find the ULID
           let resolvedUlid: string | null = null;

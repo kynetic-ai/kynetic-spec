@@ -151,6 +151,25 @@ export class ProjectContextManager {
             this.cacheInvalidationCallback(normalizedPath, kspecDir, file);
           }
         },
+        // AC: @daemon-entity-cache ac-watcher-invalidation — file deletion/rename invalidates cache
+        onFileRemoved: (file) => {
+          if (this.pubsub) {
+            const relativePath = relative(kspecDir, file);
+            this.pubsub.broadcast(
+              "files:updates",
+              "file_changed",
+              {
+                ref: relativePath,
+                action: "removed",
+              },
+              normalizedPath,
+            );
+          }
+          // Cache invalidation for removed files — same path as onFileChange
+          if (this.cacheInvalidationCallback) {
+            this.cacheInvalidationCallback(normalizedPath, kspecDir, file);
+          }
+        },
         onError: (error, file) => {
           // Broadcast error event scoped to project
           if (this.pubsub) {

@@ -243,11 +243,17 @@ export function createTasksRoutes(options: TasksRouteOptions) {
             return _ctx;
           };
 
-          // AC: @daemon-entity-cache ac-detail-on-demand — check cache first, fall back to disk
+          // AC: @daemon-entity-cache ac-warming-availability — return loading indicator during warmup
           const cache = getEntityCache?.(projectContext.path);
+          const tasksDomainState = cache?.getDomainState("tasks");
+          if (cache && tasksDomainState === "loading") {
+            return { _cache_status: "loading" as const };
+          }
+
+          // AC: @daemon-entity-cache ac-detail-on-demand — check cache first, fall back to disk
           let task: LoadedTask | null = null;
 
-          if (cache && cache.getDomainState("tasks") === "ready") {
+          if (cache && tasksDomainState === "ready") {
             // Resolve ref to ULID via cached task index
             const taskIndex = cache.getTaskIndex();
             if (taskIndex) {
