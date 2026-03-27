@@ -64063,9 +64063,25 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-27T16:21:15.814Z
+      - _ulid: 01KMR1K6CSA72D95FR5DHWFT8W
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-27T16:21:17.337Z
+      - _ulid: 01KMR1K6CSQD6HS3W6KK8SYXGY
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-27T16:21:17.337Z
     examined_commit: 65b59e1afcde5d4bda7e227ee4b8947c6573730a
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -64115,7 +64131,14 @@ reviews:
               This leaves two spec guarantees unproven.
             created_at: 2026-03-27T16:20:59.368Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-27T16:21:17.337Z
     created_at: 2026-03-27T16:20:32.420Z
-    updated_at: 2026-03-27T16:21:15.338Z
+    updated_at: 2026-03-27T16:21:17.337Z
     notes: []
