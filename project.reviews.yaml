@@ -57744,6 +57744,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-27T01:40:07.240Z
+      - _ulid: 01KMPF67G8TCFNHZJQ9ST0E452
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMPF672DBXMMBRFM53DFE5PJ
+        timestamp: 2026-03-27T01:40:23.688Z
     examined_commit: 12ac2a14ed2cf4a3dfcbc2c8f464c4ca60cfd2d0
     external_links: []
     lifecycle_state: open
@@ -57789,7 +57796,27 @@ reviews:
               no read-path benefit for , , , or , which misses .
             created_at: 2026-03-27T01:40:05.487Z
         kind: blocker
+      - _ulid: 01KMPF672DBXMMBRFM53DFE5PJ
+        anchor:
+          type: code
+          commit: 12ac2a14ed2cf4a3dfcbc2c8f464c4ca60cfd2d0
+          line_end: 65
+          line_start: 62
+          path: packages/daemon/src/routes/meta.ts
+          side: head
+        entries:
+          - _ulid: 01KMPF672DJWB19VGMMJ3G8ERF
+            author: "@claude"
+            body: Meta reads still bypass the new cache. createMetaRoutes() now accepts getEntityCache, but the
+              GET handlers in this file still go straight to initContext()/loadMetaContext() and
+              none consult getMetaIndex(). That means the meta domain never actually serves from
+              memory, so the manifest watcher invalidation and writeThrough("meta") work added in
+              this task provide no read-path benefit for /api/meta/agents, /api/meta/workflows,
+              /api/meta/observations, or /api/meta/conventions, which misses @daemon-entity-cache
+              ac-serve-from-memory.
+            created_at: 2026-03-27T01:40:23.245Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T01:35:37.224Z
-    updated_at: 2026-03-27T01:40:06.825Z
+    updated_at: 2026-03-27T01:40:23.245Z
     notes: []
