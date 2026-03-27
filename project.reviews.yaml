@@ -61854,6 +61854,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMQ141D0WE39G8DJAJ1VJJJ8
         timestamp: 2026-03-27T06:53:46.871Z
+      - _ulid: 01KMQ14PGSPXZ4YW5E4BCW0F2G
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMQ14NY0AFM0KM3GJVNA4J8M
+        timestamp: 2026-03-27T06:54:07.898Z
     examined_commit: 18d250b7b7c6d5fc7cf96a9ca0ec8afbeb671e1c
     external_links: []
     lifecycle_state: open
@@ -61901,7 +61908,26 @@ reviews:
               disk fallback runs."
             created_at: 2026-03-27T06:53:46.272Z
         kind: blocker
+      - _ulid: 01KMQ14NY0AFM0KM3GJVNA4J8M
+        anchor:
+          type: code
+          commit: 18d250b7b7c6d5fc7cf96a9ca0ec8afbeb671e1c
+          line_end: 329
+          line_start: 297
+          path: packages/daemon/src/routes/triage.ts
+          side: head
+        entries:
+          - _ulid: 01KMQ14NY0NGRAGH70114DVB5R
+            author: "@claude"
+            body: 'GET /api/triage/:ref is still missing the warmup guard that the other cache-backed detail
+              routes now have. When the triage domain is loading, this code falls straight through
+              to initContext() and loadTriageRecords(ctx) instead of returning _cache_status:
+              loading, so requests during progressive warmup violate ac-warming-availability for the
+              triage domain. Add the same early triageDomainState === "loading" return used on the
+              other cache-backed routes before any disk fallback runs.'
+            created_at: 2026-03-27T06:54:07.296Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T06:46:19.059Z
-    updated_at: 2026-03-27T06:53:46.272Z
+    updated_at: 2026-03-27T06:54:07.296Z
     notes: []
