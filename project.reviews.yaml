@@ -61628,6 +61628,26 @@ reviews:
         runner: kspec
         created_at: 2026-03-27T06:28:48.753Z
         completed_at: 2026-03-27T06:28:48.753Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/daemon/entity-cache.ts; packages/daemon/src/server.ts;
+          packages/daemon/src/project-context.ts; packages/daemon/src/watcher.ts;
+          packages/daemon/src/routes/{tasks,items,sessions,session-related,refs,ref-resolution,revi\
+          ews,plans}.ts;
+          tests/{daemon-entity-cache,daemon-cache-route-coverage,ref-resolution}.test.ts. Commands
+          run: kspec task get/item get/review get/review for-task/validate; git diff dev...HEAD; rg
+          AC annotations; npm test --fresh; targeted verbose route test; tsx reproduction for
+          buildRefIndex. Claims verified: cache-backed related-session routes serve from warm cache;
+          full suite passes; cache-backed ref index emits object status for spec summaries.
+          Categories searched: correctness, edge cases, error handling, test quality, integration,
+          build/runtime packaging."
+        name: evidence-log
+        required: false
+        runner: reviewer
+        created_at: 2026-03-27T06:28:50.660Z
+        completed_at: 2026-03-27T06:28:50.660Z
     events:
       - _ulid: 01KMPZMRD4HPKG1KQX4SPCH057
         actor: "@claude"
@@ -61649,6 +61669,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-27T06:28:49.358Z
+      - _ulid: 01KMPZPDEC3XQC2S2KYME1C394
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: evidence-log
+        timestamp: 2026-03-27T06:28:51.276Z
     examined_commit: cc6ac5950df1967638315b8d145153fed8d63e12
     external_links: []
     lifecycle_state: open
@@ -61661,5 +61688,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-27T06:27:56.964Z
-    updated_at: 2026-03-27T06:28:48.753Z
+    updated_at: 2026-03-27T06:28:50.660Z
     notes: []
