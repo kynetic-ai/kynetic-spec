@@ -670,3 +670,14 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T07:55:31.786Z
+  - _ulid: 01KMQ5GZ16DMSGAJNR19FESVX6
+    content: "Fix cycle 21: addressed dispose() race condition blocker from review cycle 21. The issue
+      was that doLoadDomain() wrote to stores after each async loader returned, without checking
+      this.disposed. When dispose() was called mid-flight, the completed load repopulated cleared
+      stores. Fix: added this.disposed bail-out checks after every await point in doLoadDomain() and
+      loadSessionIndex(). Also reordered meta case to await before any store writes. Added
+      regression test proving in-flight loads don't repopulate stores post-dispose. Full suite
+      passes (6915/6920, 5 skipped)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T08:10:44.135Z
