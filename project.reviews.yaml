@@ -60845,6 +60845,29 @@ reviews:
         runner: npm
         created_at: 2026-03-27T05:24:11.172Z
         completed_at: 2026-03-27T05:24:11.172Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/daemon/entity-cache.ts; packages/daemon/src/project-context.ts;
+          packages/daemon/src/server.ts; packages/daemon/src/watcher.ts;
+          packages/daemon/src/session-watcher.ts; src/parser/yaml.ts; src/parser/meta.ts;
+          src/parser/task-data-manager.ts;
+          packages/daemon/src/routes/{tasks,items,refs,plans,reviews,meta,sessions,session-related,\
+          inbox,triage}.ts; tests/daemon-entity-cache.test.ts. Commands run: kspec task get, kspec
+          item get, kspec review for-task, git diff, rg, sed, kspec validate, npm test, ps. Claims
+          verified: watcher invalidation wiring exists in project-context/server, fileToDomain
+          drives cache invalidation, loaders for tasks/items/meta accept broader file sets than
+          fileToDomain handles. Categories searched: correctness (found 3 blockers), edge cases
+          (found add/delete watcher hole and alternate manifest/include holes), integration
+          (verified cache callbacks and route wiring), test quality (targeted entity-cache tests
+          exist but miss the discovered invalidation cases), error handling (reviewed watcher ENOENT
+          path)."
+        name: evidence-log
+        required: false
+        runner: reviewer
+        created_at: 2026-03-27T05:24:13.048Z
+        completed_at: 2026-03-27T05:24:13.048Z
     events:
       - _ulid: 01KMPVBT3DAZ94A36N43FJ1576
         actor: "@claude"
@@ -60991,6 +61014,13 @@ reviews:
           status: skipped
           name: npm test
         timestamp: 2026-03-27T05:24:11.760Z
+      - _ulid: 01KMPW02NM1REQTZA5H7NGDE4P
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: evidence-log
+        timestamp: 2026-03-27T05:24:13.620Z
     examined_commit: 8dfaea2199385d9aa733f052db868d92c22580e0
     external_links: []
     lifecycle_state: closed
@@ -61218,5 +61248,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T05:22:45.308Z
     created_at: 2026-03-27T05:13:09.485Z
-    updated_at: 2026-03-27T05:24:11.172Z
+    updated_at: 2026-03-27T05:24:13.048Z
     notes: []
