@@ -56676,6 +56676,26 @@ reviews:
         runner: npm
         created_at: 2026-03-27T00:29:00.754Z
         completed_at: 2026-03-27T00:29:00.754Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/daemon/entity-cache.ts; packages/daemon/src/routes/tasks.ts;
+          packages/daemon/src/routes/items.ts; packages/daemon/src/routes/refs.ts;
+          packages/daemon/src/routes/sessions.ts; packages/daemon/src/routes/session-related.ts;
+          packages/daemon/src/server.ts; packages/daemon/src/project-context.ts;
+          tests/agent-dispatch-engine.test.ts; tests/daemon-entity-cache.test.ts. Commands run:
+          kspec task get; kspec item get; kspec review for-task/get/add/open; git diff; rg for AC
+          annotations and cache API use; kspec validate; npm test. Claims verified: prior
+          task-detail/ref-index blockers are fixed in current code, but session routes still use the
+          legacy session cache, item detail caching is still unwired, and the full suite is red from
+          the duplicate mockMetadata declaration. Categories searched: correctness, edge cases,
+          error handling, integration, test quality."
+        name: review-evidence
+        required: false
+        runner: reviewer
+        created_at: 2026-03-27T00:29:02.060Z
+        completed_at: 2026-03-27T00:29:02.060Z
     events:
       - _ulid: 01KMPASFF06VBYBYPFHN26TY6V
         actor: "@claude"
@@ -56746,6 +56766,13 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-03-27T00:29:01.148Z
+      - _ulid: 01KMPB3JNR2C72P3AGCB287KVN
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-03-27T00:29:02.520Z
     examined_commit: d805371098143a9c456e7100eb1f6680d754c198
     external_links: []
     lifecycle_state: open
@@ -56868,5 +56895,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-27T00:23:31.552Z
-    updated_at: 2026-03-27T00:29:00.754Z
+    updated_at: 2026-03-27T00:29:02.060Z
     notes: []
