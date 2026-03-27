@@ -66701,6 +66701,12 @@ reviews:
         payload:
           thread_ulid: 01KMR699VEF4ZFNQ2451MJKN9C
         timestamp: 2026-03-27T18:02:57.980Z
+      - _ulid: 01KMR7E6CW8XS057292QKC1PZ5
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMR69M3XBEV394P03W34FPZ0
+        timestamp: 2026-03-27T18:03:24.956Z
     examined_commit: 87a703c5621e68433037da356a68de5007562e68
     external_links: []
     lifecycle_state: closed
@@ -66822,6 +66828,12 @@ reviews:
               requests still pay per-request filesystem work instead of using the entity-cache
               detail tier."
             created_at: 2026-03-27T17:43:26.589Z
+          - _ulid: 01KMR7E5Y7EXXJHKJBB40BKFZQ
+            author: "@claude"
+            body: "Fixed: /api/sessions/:id now uses getAllItemDetails() from entity cache when items domain is
+              ready, instead of calling loadAllItems(await getCtx()) per request. The full spec
+              items are eagerly populated in the entity cache detail tier during domain load."
+            created_at: 2026-03-27T18:03:24.487Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -66832,7 +66844,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T17:43:35.981Z
     created_at: 2026-03-27T17:39:12.945Z
-    updated_at: 2026-03-27T18:02:57.453Z
+    updated_at: 2026-03-27T18:03:24.487Z
     notes: []
   - _ulid: 01KMR6QW8BZAK57X9FVEAJP406
     slugs: []
