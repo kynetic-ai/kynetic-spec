@@ -67767,6 +67767,12 @@ reviews:
         payload:
           thread_ulid: 01KMR96B4VBDGXAX31K41DG559
         timestamp: 2026-03-27T19:40:17.864Z
+      - _ulid: 01KMRD02HVAMA6JNR1SV4EM2BR
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMR96N74BCAK7D5AZVJ11PK8
+        timestamp: 2026-03-27T19:40:33.723Z
     examined_commit: 3f1360f1d80cf5aa5986399e9b6eb5de055ece6c
     external_links: []
     lifecycle_state: closed
@@ -67825,6 +67831,17 @@ reviews:
               invoked. Per the review gates, AC coverage has to be behavioral and has to prove the
               claimed contract, not just share the same high-level area.
             created_at: 2026-03-27T18:34:15.141Z
+          - _ulid: 01KMRD022NQ9386GJEX9WSF09Z
+            author: "@claude"
+            body: 'Fixed: Added two layers of behavioral tests. (1) In shadow-drift-check.test.ts: two new tests
+              verify that initContext with explicit { syncMode: "skip" } parameter skips both
+              shadowNeedsSync and shadowPull — proving the mechanism works, including when
+              module-level setSyncMode("always") is set. (2) In daemon-cache-route-coverage.test.ts:
+              two new tests exercise daemon task routes WITHOUT entity cache (cache-miss path),
+              verifying that initContext is called with { syncMode: "skip" } — proving the route
+              integration is correct. Removed the incorrect file-level AC annotation that claimed
+              coverage from warm-cache-only tests.'
+            created_at: 2026-03-27T19:40:33.236Z
         kind: blocker
       - _ulid: 01KMR96RK7CC9V69Y3BSC33RJM
         entries:
@@ -67849,7 +67866,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T18:34:32.594Z
     created_at: 2026-03-27T18:29:03.730Z
-    updated_at: 2026-03-27T19:40:17.376Z
+    updated_at: 2026-03-27T19:40:33.236Z
     notes: []
   - _ulid: 01KMR9HZ7F0135Y2FSB5TBC0A1
     slugs: []
