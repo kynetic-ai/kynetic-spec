@@ -63681,7 +63681,17 @@ reviews:
     slugs: []
     title: Review task-entity-cache-impl (cycle 26)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 6945 passed, 5 skipped, 0 failed
+        name: npm test
+        required: true
+        runner: test.cjs
+        created_at: 2026-03-27T15:14:08.627Z
+        completed_at: 2026-03-27T15:14:08.627Z
     events:
       - _ulid: 01KMQXHF6AZCDQT772RC34S6VM
         actor: Jacob Chapel
@@ -63696,6 +63706,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-27T15:10:40.838Z
+      - _ulid: 01KMQXR8JHA6XQ3QW59PM6T43K
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-27T15:14:09.105Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -63708,5 +63725,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-27T15:10:26.506Z
-    updated_at: 2026-03-27T15:10:40.354Z
+    updated_at: 2026-03-27T15:14:08.627Z
     notes: []
