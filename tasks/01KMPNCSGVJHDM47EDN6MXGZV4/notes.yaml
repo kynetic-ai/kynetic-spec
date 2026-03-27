@@ -34,3 +34,31 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T03:52:39.311Z
+  - _ulid: 01KMPQ9HNNR7MJ0GEE4HSZ67QJ
+    content: >-
+      Implementation complete. Changes:
+
+
+      1. Created createAutomationAgentSpawner() factory in agent-dispatch.ts that:
+         - Resolves agent definitions from meta config via initContext/loadMetaContext
+         - Calls runInvocation with projectDir as cwd
+         - Returns { invocation_id: result.session.id } matching AgentSpawner type
+         - Throws descriptive error when agent_id not found (lists available agents)
+
+      2. Wired agentSpawner into all three startXxx functions:
+         - startScheduleEngine (AC-1)
+         - startHookExecutor (AC-2)
+         - startJoinAccumulator (AC-3)
+
+      3. Added error/failure_reason to event bus payloads in all three onActionRunEvent callbacks
+      (AC-5):
+         - Conditional spread: only includes fields when present on action_run
+         - Covers all action types, not just agent actions
+
+      Test coverage: 10 tests covering all 5 ACs.
+
+      Pre-existing failure: agent-dispatch-engine.test.ts has a duplicate mockMetadata declaration
+      (transform error) on the dev base branch — not related to this change.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T04:02:01.013Z
