@@ -18,14 +18,14 @@ import {
   loadInboxItems,
   loadTriageRecords,
   findTriageRecordByInboxRef,
-  buildIndexes,
   validate,
   AlignmentIndex,
+  ReferenceIndex,
   areDependenciesMet,
   resolveTaskDataManager,
 } from "../../parser/index.js";
 import { TriageActionSchema, TriageStatusSchema } from "../../schema/index.js";
-import type { LoadedTask } from "../../parser/index.js";
+import type { LoadedTask, LoadedSpecItem } from "../../parser/index.js";
 import type {
   TaskStatusSummary,
   ValidationAggregation,
@@ -99,16 +99,43 @@ export function createAggregationRoutes(_options: AggregationRouteOptions = {}) 
       })
 
       // AC: @ui-api-aggregation ac-2 - Extended validation/alignment stats
-      // Note: validate() requires full context for deep schema/ref validation.
-      // Alignment index building uses cached entity data when available.
+      // AC: @daemon-read-path ac-index-from-cache — build alignment/reference indexes from cached entity data
+      // Note: validate() requires full context for deep schema/ref validation,
+      // but index building uses cached entity data when available.
       .get("/validation", async ({ projectContext }) => {
-        const ctx = await initContext(projectContext.path);
-        const { tasks, items, refIndex } = await buildIndexes(ctx);
+        const cache = getEntityCache?.(projectContext.path);
+        const tasksDomainState = cache?.getDomainState("tasks");
+        const itemsDomainState = cache?.getDomainState("items");
+
+        // Resolve tasks and items from cache when available
+        // AC: @daemon-read-path ac-index-from-cache — indexes built from cached data
+        let tasks: LoadedTask[];
+        if (cache && tasksDomainState === "ready") {
+          tasks = (cache.getTaskIndex() ?? []) as unknown as LoadedTask[];
+        } else {
+          const ctx = await initContext(projectContext.path);
+          tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+        }
+
+        let items: LoadedSpecItem[];
+        if (cache && itemsDomainState === "ready") {
+          items = (cache.getItemIndex() ?? []) as unknown as LoadedSpecItem[];
+        } else {
+          const { loadAllItems } = await import("../../parser/index.js");
+          const ctx = await initContext(projectContext.path);
+          items = await loadAllItems(ctx);
+        }
+
+        // Build reference index from cached data for alignment resolution
+        const refIndex = new ReferenceIndex(tasks, items);
 
         // Run validation for error/warning counts and completeness data
+        // Note: validate() performs deep schema/ref/completeness checks that
+        // require full context — this is computational, not index building
+        const ctx = await initContext(projectContext.path);
         const validationResult = await validate(ctx);
 
-        // Build alignment index
+        // Build alignment index from cached data
         const alignIndex = new AlignmentIndex(tasks, items);
         alignIndex.buildLinks(refIndex);
         const alignStats = alignIndex.getStats();
@@ -119,10 +146,15 @@ export function createAggregationRoutes(_options: AggregationRouteOptions = {}) 
 
         // AC counts from completeness warnings
         // Count total ACs across all non-trait items
+        // When serving from cache, ItemSummary has acceptance_criteria_count;
+        // when from disk, LoadedSpecItem has acceptance_criteria array.
         let totalACs = 0;
         for (const item of items) {
           if (item.type !== "trait") {
-            totalACs += item.acceptance_criteria?.length || 0;
+            const asAny = item as Record<string, unknown>;
+            totalACs += typeof asAny.acceptance_criteria_count === "number"
+              ? asAny.acceptance_criteria_count
+              : (item.acceptance_criteria?.length || 0);
           }
         }
 

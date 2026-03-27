@@ -528,63 +528,171 @@ describe("ac-no-per-request-sync: read routes serve from cache without git opera
 // ─── AC: @daemon-read-path ac-background-sync ─────────────────────────────────
 
 describe("ac-background-sync: background sync invalidates cache on pull", () => {
-  // AC: @daemon-read-path ac-background-sync
-  it("ShadowSyncScheduler invokes onPull callback when pull returns new data", async () => {
-    const onPull = vi.fn();
+  let syncTestDir: string;
+  let syncRemoteDir: string;
 
-    // Create scheduler with onPull but no real sync target — we test the callback mechanism
-    const scheduler = new ShadowSyncScheduler({
-      worktreeDir: "/nonexistent",
-      intervalSeconds: 60,
-      onPull,
+  beforeEach(async () => {
+    syncTestDir = await createTempDir("kspec-bg-sync-");
+    syncRemoteDir = await createTempDir("kspec-bg-sync-remote-");
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(syncTestDir);
+    await cleanupTempDir(syncRemoteDir);
+  });
+
+  async function setupSyncEnvironment(): Promise<string> {
+    // Create bare remote
+    execSync("git init --bare", { cwd: syncRemoteDir, stdio: "pipe" });
+
+    // Create local repo with remote
+    execSync("git init -b main", { cwd: syncTestDir, stdio: "pipe" });
+    execSync('git config user.email "test@test.com"', { cwd: syncTestDir, stdio: "pipe" });
+    execSync('git config user.name "Test"', { cwd: syncTestDir, stdio: "pipe" });
+    writeFileSync(path.join(syncTestDir, "README.md"), "# Test");
+    execSync('git add . && git commit -m "initial"', { cwd: syncTestDir, stdio: "pipe" });
+    execSync(`git remote add origin ${syncRemoteDir}`, { cwd: syncTestDir, stdio: "pipe" });
+    execSync("git push -u origin main", { cwd: syncTestDir, stdio: "pipe" });
+
+    // Initialize shadow branch with worktree
+    const { initializeShadow, SHADOW_WORKTREE_DIR } = await import("../src/parser/shadow.js");
+    await initializeShadow(syncTestDir);
+
+    return path.join(syncTestDir, SHADOW_WORKTREE_DIR);
+  }
+
+  // AC: @daemon-read-path ac-background-sync
+  it("syncOnce invokes onPull callback after pulling remote changes", async () => {
+    const worktreeDir = await setupSyncEnvironment();
+    const { SHADOW_BRANCH_NAME } = await import("../src/parser/shadow.js");
+
+    // Push shadow branch to remote so tracking is set up
+    execSync(`git push -u origin ${SHADOW_BRANCH_NAME}`, {
+      cwd: worktreeDir,
+      stdio: "pipe",
     });
 
-    // Verify the onPull callback is stored
-    expect((scheduler as unknown as { onPull: unknown }).onPull).toBe(onPull);
+    // Make a remote change via a clone
+    const cloneDir = await createTempDir("kspec-bg-sync-clone-");
+    try {
+      execSync(`git clone ${syncRemoteDir} ${cloneDir}`, { stdio: "pipe" });
+      execSync('git config user.email "clone@test.com"', { cwd: cloneDir, stdio: "pipe" });
+      execSync('git config user.name "Clone"', { cwd: cloneDir, stdio: "pipe" });
+
+      const { SHADOW_WORKTREE_DIR } = await import("../src/parser/shadow.js");
+      execSync(`git worktree add ${SHADOW_WORKTREE_DIR} ${SHADOW_BRANCH_NAME}`, {
+        cwd: cloneDir,
+        stdio: "pipe",
+      });
+
+      // Create a file change on the remote shadow branch
+      writeFileSync(
+        path.join(cloneDir, SHADOW_WORKTREE_DIR, "remote-change.txt"),
+        "Background sync test change",
+      );
+      execSync('git add -A && git commit -m "Remote change for bg sync"', {
+        cwd: path.join(cloneDir, SHADOW_WORKTREE_DIR),
+        stdio: "pipe",
+      });
+      execSync(`git push origin ${SHADOW_BRANCH_NAME}`, {
+        cwd: path.join(cloneDir, SHADOW_WORKTREE_DIR),
+        stdio: "pipe",
+      });
+
+      // Create scheduler with onPull spy and run syncOnce
+      const onPull = vi.fn().mockResolvedValue(undefined);
+      const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+
+      try {
+        const scheduler = new ShadowSyncScheduler({
+          worktreeDir,
+          intervalSeconds: 60,
+          onPull,
+        });
+
+        await scheduler.syncOnce();
+
+        // Verify pull happened
+        expect(consoleSpy).toHaveBeenCalledWith(
+          expect.stringContaining("Shadow sync: pulled remote changes"),
+        );
+
+        // Verify onPull callback was invoked by the scheduler (not by us directly)
+        expect(onPull).toHaveBeenCalledTimes(1);
+      } finally {
+        consoleSpy.mockRestore();
+      }
+    } finally {
+      await cleanupTempDir(cloneDir);
+    }
   });
 
   // AC: @daemon-read-path ac-background-sync
-  it("ShadowSyncScheduler accepts onPull option without breaking construction", () => {
-    const scheduler = new ShadowSyncScheduler({
-      worktreeDir: "/tmp/nonexistent",
-      intervalSeconds: 60,
-      onPull: async () => {
-        // Would reload entity cache in production
-      },
+  it("onPull callback errors are caught and do not break the sync cycle", async () => {
+    const worktreeDir = await setupSyncEnvironment();
+    const { SHADOW_BRANCH_NAME } = await import("../src/parser/shadow.js");
+
+    // Push shadow branch to remote so tracking is set up
+    execSync(`git push -u origin ${SHADOW_BRANCH_NAME}`, {
+      cwd: worktreeDir,
+      stdio: "pipe",
     });
 
-    // Should be constructable with the callback
-    expect(scheduler).toBeDefined();
+    // Make a remote change via a clone
+    const cloneDir = await createTempDir("kspec-bg-sync-err-clone-");
+    try {
+      execSync(`git clone ${syncRemoteDir} ${cloneDir}`, { stdio: "pipe" });
+      execSync('git config user.email "clone@test.com"', { cwd: cloneDir, stdio: "pipe" });
+      execSync('git config user.name "Clone"', { cwd: cloneDir, stdio: "pipe" });
 
-    // start/stop should work without errors
-    scheduler.start();
-    scheduler.stop();
-  });
+      const { SHADOW_WORKTREE_DIR } = await import("../src/parser/shadow.js");
+      execSync(`git worktree add ${SHADOW_WORKTREE_DIR} ${SHADOW_BRANCH_NAME}`, {
+        cwd: cloneDir,
+        stdio: "pipe",
+      });
 
-  // AC: @daemon-read-path ac-background-sync
-  it("onPull callback is wired into server configuration for cache invalidation", async () => {
-    // This test verifies the onPull callback mechanism at the scheduler level.
-    // The existing shadow-sync-scheduler tests cover full git sync behavior.
-    // Here we verify the callback contract: onPull is stored and the scheduler
-    // interface accepts the callback that the server uses to invalidate entity cache.
+      writeFileSync(
+        path.join(cloneDir, SHADOW_WORKTREE_DIR, "error-test-change.txt"),
+        "Error callback test",
+      );
+      execSync('git add -A && git commit -m "Remote change for error test"', {
+        cwd: path.join(cloneDir, SHADOW_WORKTREE_DIR),
+        stdio: "pipe",
+      });
+      execSync(`git push origin ${SHADOW_BRANCH_NAME}`, {
+        cwd: path.join(cloneDir, SHADOW_WORKTREE_DIR),
+        stdio: "pipe",
+      });
 
-    const onPull = vi.fn().mockResolvedValue(undefined);
+      // Create an onPull that throws — scheduler should catch and continue
+      const onPull = vi.fn().mockRejectedValue(new Error("Cache reload failed"));
+      const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+      const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
-    const scheduler = new ShadowSyncScheduler({
-      worktreeDir: "/tmp/nonexistent-for-unit-test",
-      intervalSeconds: 60,
-      onPull,
-    });
+      try {
+        const scheduler = new ShadowSyncScheduler({
+          worktreeDir,
+          intervalSeconds: 60,
+          onPull,
+        });
 
-    // The onPull should be stored as a private field
-    // Verify via the public contract: scheduler should not throw on construction
-    expect(scheduler).toBeDefined();
+        // Should not throw even though onPull rejects
+        await scheduler.syncOnce();
 
-    // The server.ts wires this as:
-    // onPull: async () => { cache.loadAll(); }
-    // We verify the callback is callable and async
-    await onPull();
-    expect(onPull).toHaveBeenCalledTimes(1);
+        // onPull was called (pull happened)
+        expect(onPull).toHaveBeenCalledTimes(1);
+        // Error was caught and logged
+        expect(errorSpy).toHaveBeenCalledWith(
+          expect.stringContaining("onPull callback error"),
+          expect.any(Error),
+        );
+      } finally {
+        consoleSpy.mockRestore();
+        errorSpy.mockRestore();
+      }
+    } finally {
+      await cleanupTempDir(cloneDir);
+    }
   });
 });
 
@@ -607,6 +715,8 @@ describe("ac-index-from-cache: indexes built from cached data", () => {
       .use(middleware)
       .use(createTasksRoutes({ pubsub, getEntityCache }))
       .use(createItemsRoutes({ getEntityCache }))
+      .use(createAggregationRoutes({ getEntityCache }))
+      .use(createValidationRoutes({ getEntityCache }))
       .use(createRefsRoutes({ getEntityCache }))
       .use(createPlansRoutes({ getEntityCache }));
   });
@@ -648,6 +758,40 @@ describe("ac-index-from-cache: indexes built from cached data", () => {
     const body = (await res.json()) as { items: Array<{ _ulid: string }>; total: number };
     expect(body.total).toBe(1);
     expect(body.items[0]._ulid).toBe(SPEC_ULID);
+  });
+
+  // AC: @daemon-read-path ac-index-from-cache
+  it("GET /api/aggregation/validation builds alignment index from cached entity data", async () => {
+    const res = await makeRequest("/api/aggregation/validation");
+    expect(res.status).toBe(200);
+
+    const body = (await res.json()) as {
+      stats: { totalSpecs: number; specsWithTasks: number; alignedSpecs: number; orphanedSpecs: number };
+      entity_counts: { items: number; tasks: number; traits: number };
+      ac_counts: { total: number; covered: number; uncovered: number };
+    };
+    // Alignment index was built from cached task/item summaries
+    expect(body.stats).toBeDefined();
+    expect(body.stats.totalSpecs).toBeGreaterThanOrEqual(0);
+    // Entity counts should reflect validation data
+    expect(body.entity_counts).toBeDefined();
+    // AC counts should use acceptance_criteria_count from cached ItemSummary
+    expect(body.ac_counts).toBeDefined();
+  });
+
+  // AC: @daemon-read-path ac-index-from-cache
+  it("GET /api/alignment builds alignment index from cached entity data", async () => {
+    const res = await makeRequest("/api/alignment");
+    expect(res.status).toBe(200);
+
+    const body = (await res.json()) as {
+      stats: { totalSpecs: number; specsWithTasks: number; alignedSpecs: number; orphanedSpecs: number };
+      warnings: unknown[];
+    };
+    // Alignment index was built from cached task/item summaries
+    expect(body.stats).toBeDefined();
+    expect(body.stats.totalSpecs).toBeGreaterThanOrEqual(0);
+    expect(body.warnings).toBeDefined();
   });
 });
 

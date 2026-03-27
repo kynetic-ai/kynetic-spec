@@ -15,11 +15,11 @@
 import { Elysia, t } from "elysia";
 import {
   initContext,
-  buildIndexes,
   loadInboxItems,
   loadMetaContext,
   validate,
   AlignmentIndex,
+  ReferenceIndex,
   resolveTaskDataManager,
 } from "../../parser/index.js";
 import type { LoadedTask, LoadedSpecItem } from "../../parser/index.js";
@@ -254,11 +254,34 @@ export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
       })
 
       // AC: @api-contract ac-21 - Get alignment stats and warnings
-      // Note: AlignmentIndex needs full spec items with ACs for alignment analysis.
+      // AC: @daemon-read-path ac-index-from-cache — build alignment/reference indexes from cached entity data
       .get("/alignment", async ({ projectContext }) => {
         // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-        const ctx = await initContext(projectContext.path);
-        const { tasks, items, refIndex } = await buildIndexes(ctx);
+        const cache = getEntityCache?.(projectContext.path);
+        const tasksDomainState = cache?.getDomainState("tasks");
+        const itemsDomainState = cache?.getDomainState("items");
+
+        // Resolve tasks and items from cache when available
+        // AC: @daemon-read-path ac-index-from-cache — indexes built from cached data
+        let tasks: LoadedTask[];
+        if (cache && tasksDomainState === "ready") {
+          tasks = (cache.getTaskIndex() ?? []) as unknown as LoadedTask[];
+        } else {
+          const ctx = await initContext(projectContext.path);
+          tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+        }
+
+        let items: LoadedSpecItem[];
+        if (cache && itemsDomainState === "ready") {
+          items = (cache.getItemIndex() ?? []) as unknown as LoadedSpecItem[];
+        } else {
+          const { loadAllItems } = await import("../../parser/index.js");
+          const ctx = await initContext(projectContext.path);
+          items = await loadAllItems(ctx);
+        }
+
+        // Build reference index from cached data
+        const refIndex = new ReferenceIndex(tasks, items);
 
         // AC: @api-contract ac-21 - Create AlignmentIndex and get stats
         const alignIndex = new AlignmentIndex(tasks, items);
