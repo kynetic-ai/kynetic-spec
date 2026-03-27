@@ -9098,6 +9098,26 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T20:04:10.834Z
+  - _ulid: 01KMREY8N2MPTMXKBT811QTHC5
+    type: friction
+    content: Detached review snapshots can point at a commit that is already on the integration branch,
+      while the task still instructs the reviewer to manually merge the task branch. That creates
+      avoidable ambiguity during approval because the correct action is to verify integration state
+      and complete the task without a redundant merge.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T20:14:31.586Z
+  - _ulid: 01KMREY8T3F3PGG2RPM4ZGXTCS
+    type: success
+    content: "The review flow worked well when driven by direct evidence: read the exact shadow diff
+      first, verify the related implementation task/spec context, run full npm test, and record an
+      evidence log in the review. For small spec-only tasks this gave a clean approve/complete path
+      without over-reviewing."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T20:14:31.747Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
