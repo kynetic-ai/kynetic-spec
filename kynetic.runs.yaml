@@ -17079,7 +17079,7 @@ runs:
     completed_at: 2026-03-27T22:00:32.315Z
   - _ulid: 01KMRQDDVKY3QR121XM1PZAD7A
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -17092,7 +17092,20 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-27T22:43:19.494Z
-        completed_at: 2026-03-27T22:43:19.494Z
+        completed_at: 2026-03-27T22:43:27.855Z
+        notes: >-
+          High-confidence success: kspec task start auto-sync correctly detected and reverted the
+          misaligned implementation status, making fix cycle trivial. This is a concrete example of
+          the alignment system working as designed.
+
+
+          One friction observation but already tracked: worker agents making out-of-scope spec
+          mutations (scope creep pattern, similar to existing observation 01KMBB81). No new items to
+          capture — existing tracking covers this pattern.
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-27T22:43:27.855Z
+        completed_at: 2026-03-27T22:43:27.855Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-27T22:42:37.043Z
