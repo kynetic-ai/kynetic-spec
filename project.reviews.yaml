@@ -64024,6 +64024,13 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-03-27T16:20:32.420Z
+      - _ulid: 01KMR1JJDD2RBYSRM2K22GG0CA
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMR1JHYT1QMHJQW9PMKYVJRE
+        timestamp: 2026-03-27T16:20:56.877Z
     examined_commit: 65b59e1afcde5d4bda7e227ee4b8947c6573730a
     external_links: []
     lifecycle_state: draft
@@ -64033,8 +64040,29 @@ reviews:
       content_hash: ""
       ref: "@01KMMB3V7N2GC0JSPJKJYMPJPV"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMR1JHYT1QMHJQW9PMKYVJRE
+        anchor:
+          type: code
+          commit: 65b59e1afcde5d4bda7e227ee4b8947c6573730a
+          line_end: 162
+          line_start: 58
+          path: packages/daemon/src/routes/command.ts
+          side: head
+        entries:
+          - _ulid: 01KMR1JHYT8EM6ZWMJD5FWQ5VJ
+            author: "@claude"
+            body: The route mutates process-global state (process.cwd(), console.*, and the exit interceptor)
+              around each request without any cross-request serialization, so concurrent command
+              calls can execute against the wrong project or corrupt each other's captured output. I
+              reproduced this by issuing two POST /api/command requests in parallel against
+              different temp projects; on the first iteration both responses came back 500 with
+              ENOENT for an undefined path instead of returning each project's task list. Because
+              the daemon serves multiple requests concurrently, this breaks the endpoint's core
+              correctness under normal load.
+            created_at: 2026-03-27T16:20:56.410Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T16:20:32.420Z
-    updated_at: null
+    updated_at: 2026-03-27T16:20:56.410Z
     notes: []
