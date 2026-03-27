@@ -16528,7 +16528,7 @@ runs:
     completed_at: 2026-03-27T08:12:45.447Z
   - _ulid: 01KMQZYG4NXXJRQS60SD9R906Y
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -16541,7 +16541,30 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-27T15:52:46.622Z
-        completed_at: 2026-03-27T15:52:46.622Z
+        completed_at: 2026-03-27T15:53:09.222Z
+        notes: >-
+          Searched existing state. Found related tasks @task-narrow-shadow-lazy-read-sync (pending,
+          P2) which covers the remaining initContext() issue for daemon context. No existing
+          friction observations about route migration patterns.
+
+
+          High-confidence observations from this session:
+
+
+          1. SUCCESS: The prior @task-entity-cache-impl work had already migrated most read routes
+          to the cache-first pattern. This session's migration was well-scoped — only
+          aggregation.ts, validation.ts search, and background sync wiring were needed. The tiered
+          cache architecture made it straightforward to add new routes to the cache.
+
+
+          2. FRICTION: The TriageIndexSummary was missing the 'reasoning' field, which the
+          aggregation /inbox route needed. Index tier projections that strip fields create a gap
+          when other routes need those fields from the index. This was a minor fix but required
+          reading through the cache types to discover.
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-27T15:53:09.222Z
+        completed_at: 2026-03-27T15:53:09.222Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-27T15:52:30.613Z
