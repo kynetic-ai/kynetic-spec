@@ -8288,6 +8288,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T00:01:13.988Z
+  - _ulid: 01KMPBH87FKEZHFM4GQ0HK3M3C
+    type: friction
+    content: workspace.ts and shadow.ts have independent git subprocess environments with no shared
+      contract. When adding GIT_TERMINAL_PROMPT=0, both had to be patched separately. A shared
+      buildGitEnv() at a lower layer could prevent future drift when new env vars need to be set for
+      all git subprocesses.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T00:36:30.575Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
