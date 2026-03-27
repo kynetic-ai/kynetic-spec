@@ -69561,9 +69561,25 @@ reviews:
           status: pass
           name: review evidence
         timestamp: 2026-03-27T20:42:01.237Z
+      - _ulid: 01KMRGGW57TRBK5J8C1JP4VGNP
+        actor: test@example.com
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-03-27T20:42:09.959Z
+      - _ulid: 01KMRGGW57QSSNM6VPAAGGB4F6
+        actor: test@example.com
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-27T20:42:09.959Z
     examined_commit: dc170993b418400aeedeba1a53323ec4f275efd4
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -69571,7 +69587,14 @@ reviews:
       ref: "@01KMMB3V7N2GC0JSPJKJYMPJPV"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: test@example.com
+        role: reviewer
+        created_at: 2026-03-27T20:42:09.959Z
     created_at: 2026-03-27T20:36:49.645Z
-    updated_at: 2026-03-27T20:42:00.658Z
+    updated_at: 2026-03-27T20:42:09.959Z
     notes: []
