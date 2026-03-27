@@ -25010,7 +25010,7 @@ workspaces:
         head: 7d699d4855817e533fc2e5066db464312ea38f57
         last_seen_at: 2026-03-27T20:07:37.191Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-link-session-cache-01kmmb3w
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 098d671a198ed582216a99f69c059f0d562fa735
     bootstrap:
       status: succeeded
@@ -25136,9 +25136,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-27T20:20:05.736Z
-      last_reconciled_at: 2026-03-27T20:30:53.244Z
+      last_reconciled_at: 2026-03-27T20:31:11.097Z
       created_at: 2026-03-27T20:16:33.534Z
-      updated_at: 2026-03-27T20:30:53.244Z
+      updated_at: 2026-03-27T20:31:11.097Z
     workspace_id: dispatch-workspace-01KMMB3XHCBBHHWD0NFN2D57ST
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
