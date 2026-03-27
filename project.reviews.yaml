@@ -58591,7 +58591,18 @@ reviews:
     slugs: []
     title: Review task-entity-cache-impl (cycle 11)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Ran npm test in this workspace. Result: 1928 test suites passed, 6901 tests passed, 5
+          skipped."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-27T02:55:05.375Z
+        completed_at: 2026-03-27T02:55:05.375Z
     events:
       - _ulid: 01KMPK6CKDNT0DDBJ6AR5RWG2B
         actor: "@claude"
@@ -58606,6 +58617,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-27T02:50:46.024Z
+      - _ulid: 01KMPKF0K0AYJFZJ7BE7X5V7WJ
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-27T02:55:05.824Z
     examined_commit: 4c9a805d7cc6c6b0ae612ba38e475faefde387f2
     external_links: []
     lifecycle_state: open
@@ -58618,5 +58636,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-27T02:50:23.213Z
-    updated_at: 2026-03-27T02:50:45.436Z
+    updated_at: 2026-03-27T02:55:05.375Z
     notes: []
