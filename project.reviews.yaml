@@ -69727,6 +69727,12 @@ reviews:
         payload:
           thread_ulid: 01KMRMFH00VV40230QPQWVJM4G
         timestamp: 2026-03-27T22:06:31.203Z
+      - _ulid: 01KMRNBJP716VKJN5TNP9FN76Q
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMRMFH00VV40230QPQWVJM4G
+        timestamp: 2026-03-27T22:06:39.303Z
     examined_commit: f49cb5287187d1fe85c0b991136206dfae17d9c7
     external_links: []
     lifecycle_state: closed
@@ -69819,6 +69825,8 @@ reviews:
               completes within bounded time when /api/projects hangs."
             created_at: 2026-03-27T22:06:30.654Z
         kind: blocker
+        resolved_at: 2026-03-27T22:06:38.803Z
+        resolved_by: "@claude"
       - _ulid: 01KMRMGAE39BKNZG75928KSHMZ
         entries:
           - _ulid: 01KMRMGAE4QN77VQJMFA6QD49Q
@@ -69849,7 +69857,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T21:51:56.544Z
     created_at: 2026-03-27T21:45:22.654Z
-    updated_at: 2026-03-27T22:06:30.654Z
+    updated_at: 2026-03-27T22:06:38.803Z
     notes: []
   - _ulid: 01KMRMMSSS45Z6WY9K0NGG2CA0
     slugs: []
