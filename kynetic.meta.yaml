@@ -8865,6 +8865,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T17:44:55.059Z
+  - _ulid: 01KMR6CB1G2PB4SNM6F3F2ZCVM
+    type: friction
+    content: "Route-migration review found claimed cache coverage without route-by-route verification:
+      /api/meta/session and /api/sessions/:id still hit disk because the new behavioral tests only
+      exercised a subset of read endpoints. Improve migration work and review guidance so
+      route-scoped tasks enumerate every affected endpoint and tests explicitly cover the full route
+      inventory."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T17:44:55.600Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
