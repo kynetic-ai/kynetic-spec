@@ -62120,6 +62120,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMQ2R7ANZJ0S10N315VSVMRT
         timestamp: 2026-03-27T07:22:16.880Z
+      - _ulid: 01KMQ2RHCM0XQMMQCM602VXASN
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMQ2RGTCZPCGX3ETN77A4D40
+        timestamp: 2026-03-27T07:22:26.580Z
     examined_commit: caf1f08f934535175a2338ac462aaa9457963c40
     external_links: []
     lifecycle_state: open
@@ -62196,7 +62203,28 @@ reviews:
               'split')`."
             created_at: 2026-03-27T07:22:16.278Z
         kind: blocker
+      - _ulid: 01KMQ2RGTCZPCGX3ETN77A4D40
+        anchor:
+          type: code
+          commit: caf1f08f934535175a2338ac462aaa9457963c40
+          line_end: 582
+          line_start: 559
+          path: packages/daemon/src/routes/sessions.ts
+          side: head
+        entries:
+          - _ulid: 01KMQ2RGTDG787ZZNB0HB664BT
+            author: "@claude"
+            body: 'The cache-hit path for `/api/sessions/:id` cannot preserve spec acceptance criteria. When
+              both `tasks` and `items` are warm, this code builds `spec_context` from
+              `cache.getItemIndex()` after casting `ItemSummary[]` to `LoadedSpecItem[]`. But the
+              item index intentionally keeps only `acceptance_criteria_count`, not the AC content
+              itself, so the route silently returns `spec_context.acceptance_criteria: []` on cache
+              hits even when the spec has ACs. I verified the current logic with `npx tsx`: building
+              a `ReferenceIndex` from `TaskSummary[]` + `ItemSummary[]` and running the same mapping
+              code produced `{"spec_ref":"@spec-a","title":"Spec A","acceptance_criteria":[]}`.'
+            created_at: 2026-03-27T07:22:25.997Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T07:10:40.675Z
-    updated_at: 2026-03-27T07:22:16.278Z
+    updated_at: 2026-03-27T07:22:25.997Z
     notes: []
