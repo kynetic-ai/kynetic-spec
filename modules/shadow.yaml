@@ -4,9 +4,6 @@ slugs:
   - shadow
 title: Shadow Branch
 type: module
-status:
-  maturity: draft
-  implementation: implemented
 description: |
   Shadow branch for transparent spec/task state auto-tracking.
   Uses gitignored worktree (.kspec/) pointing to orphan branch (kspec-meta).
@@ -18,19 +15,15 @@ description: |
   - Main branch gitignores .kspec/
   - All kspec read/write operations target .kspec/
   - Changes auto-commit to shadow branch
+status:
+  maturity: draft
+  implementation: implemented
 features:
   - _ulid: 01KF1V1Z87Z7PTG4C68QSMK4EE
     slugs:
       - shadow-concept
     title: Shadow Branch Concept
     type: feature
-    status:
-      maturity: draft
-      implementation: implemented
-    priority: high
-    tags:
-      - infrastructure
-      - git
     description: |
       Orphan git branch storing kspec state in gitignored worktree.
 
@@ -44,15 +37,25 @@ features:
       - .kspec/ worktree always available
       - Auto-commit on state changes
       - Main branch never touched by kspec operations
+    status:
+      maturity: draft
+      implementation: implemented
+    acceptance_criteria:
+      - given: a project is initialized with shadow branch support
+        id: ac-1
+        then: the metadata change is committed on the orphan shadow branch through the .kspec worktree and
+          the current code branch history remains unchanged
+        when: a mutating kspec command updates spec or task state and git history is inspected
+    priority: high
+    tags:
+      - infrastructure
+      - git
     requirements:
       - _ulid: 01KF1V1ZJBRPWKF16HEPQG7KHX
         slugs:
           - shadow-structure
         title: Shadow Directory Structure
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           Directory layout for shadow branch:
 
@@ -77,78 +80,78 @@ features:
           - *.tasks.yaml - task files
           - *.inbox.yaml - inbox files
           - modules/*.yaml - spec modules
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@shadow-concept"
+        acceptance_criteria:
+          - given: a project has been initialized with the shadow branch worktree
+            id: ac-1
+            then: the main worktree contains a gitignored .kspec worktree and the shadow worktree root contains
+              the manifest, task/inbox files, and modules directory at top-level paths
+            when: the user inspects the project root and the .kspec directory layout
         requirements:
           - _ulid: 01KJ37B5DDFRVPC9AFEQJPMX44
             slugs:
               - artifacts-directory
             title: Artifacts Directory Convention
             type: requirement
-            tags: []
             description: Convention for .kspec/artifacts/ — an untracked directory within the shadow branch
               worktree for ephemeral files generated during sessions (reports, exports, generated
               HTML/JSON). Files are not tracked by the shadow branch. Subdirectories are permitted
               but flat structure is recommended. No automated cleanup or lifecycle management —
               files persist until manually removed.
+            status:
+              maturity: draft
+              implementation: implemented
             depends_on: []
             implements: []
             relates_to: []
             tests: []
             traits: []
-            notes: []
-            created: 2026-02-22T17:46:18.926Z
             acceptance_criteria:
-              - id: ac-init-creates
-                given: a new project is being initialized
+              - given: a new project is being initialized
+                id: ac-init-creates
+                then: .kspec/artifacts/ directory is created with a .gitkeep file
                 when: kspec init runs and creates the shadow branch worktree
-                then: .kspec/artifacts/ directory is created with a .gitkeep file
-              - id: ac-gitignore-entry
-                given: .kspec/ worktree exists
-                when: the .gitignore in .kspec/ is examined
+              - given: .kspec/ worktree exists
+                id: ac-gitignore-entry
                 then: it contains an artifacts/ entry excluding the directory contents from shadow branch tracking
-              - id: ac-commits-exclude
-                given: files exist in .kspec/artifacts/
-                when: any kspec command auto-commits to shadow branch
+                when: the .gitignore in .kspec/ is examined
+              - given: files exist in .kspec/artifacts/
+                id: ac-commits-exclude
                 then: artifact files are never included in the commit
-              - id: ac-setup-ensures
-                given: an existing project where .kspec/artifacts/ is missing
-                when: kspec setup runs
+                when: any kspec command auto-commits to shadow branch
+              - given: an existing project where .kspec/artifacts/ is missing
+                id: ac-setup-ensures
                 then: .kspec/artifacts/ directory is created with a .gitkeep file
-              - id: ac-doctor-checks
-                given: .kspec/artifacts/ directory is missing
-                when: kspec doctor runs
+                when: kspec setup runs
+              - given: .kspec/artifacts/ directory is missing
+                id: ac-doctor-checks
                 then: it reports the missing artifacts directory as an issue
-              - id: ac-repair-recreates
-                given: .kspec/artifacts/ is missing
-                when: kspec shadow repair runs and rebuilds the worktree
+                when: kspec doctor runs
+              - given: .kspec/artifacts/ is missing
+                id: ac-repair-recreates
                 then: .kspec/artifacts/ directory is recreated with a .gitkeep file
-              - id: ac-naming-convention
-                given: a command or agent generates a file for artifacts/
-                when: choosing a filename
+                when: kspec shadow repair runs and rebuilds the worktree
+              - given: a command or agent generates a file for artifacts/
+                id: ac-naming-convention
                 then: the recommended pattern is type-YYYY-MM-DD.ext with a counter suffix for collisions (e.g.
                   triage-report-2026-02-22.html, triage-report-2026-02-22-2.html)
-              - id: ac-empty-dir-persistence
-                given: artifacts/ is empty and the shadow branch worktree is recreated via clone or repair
-                when: the worktree is set up
+                when: choosing a filename
+              - given: artifacts/ is empty and the shadow branch worktree is recreated via clone or repair
+                id: ac-empty-dir-persistence
                 then: the artifacts/ directory exists due to the .gitkeep file being tracked on the shadow branch
-            status:
-              maturity: draft
-              implementation: implemented
-        acceptance_criteria:
-          - id: ac-1
-            given: a project has been initialized with the shadow branch worktree
-            when: the user inspects the project root and the .kspec directory layout
-            then: the main worktree contains a gitignored .kspec worktree and the shadow worktree root contains
-              the manifest, task/inbox files, and modules directory at top-level paths
+                when: the worktree is set up
+            tags: []
+            created: 2026-02-22T17:46:18.926Z
+            notes: []
       - _ulid: 01KF1V1ZTYSNNVT5WP56VCP5YB
         slugs:
           - shadow-autocommit
         title: Auto-Commit on State Changes
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |-
           All state-changing kspec commands automatically commit to shadow branch.
 
@@ -187,41 +190,41 @@ features:
           - After write, run: git -C .kspec add -A && git -C .kspec commit -m "..."
           - Low overhead (local commits only)
           - Commit includes all changes from the operation
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@shadow-concept"
         acceptance_criteria:
-          - id: ac-1
-            given: shadow branch is enabled and task @my-task exists
+          - given: shadow branch is enabled and task @my-task exists
+            id: ac-1
+            then: shadow branch has new commit with appropriate message
             when: kspec task start/complete/block/unblock/cancel/set runs
+          - given: shadow branch is enabled and task @my-task exists
+            id: ac-2
             then: shadow branch has new commit with appropriate message
-          - id: ac-2
-            given: shadow branch is enabled and task @my-task exists
             when: kspec task note/add or task todo add/done/undone runs
+          - given: shadow branch is enabled
+            id: ac-3
             then: shadow branch has new commit with appropriate message
-          - id: ac-3
-            given: shadow branch is enabled
             when: kspec inbox add/promote/delete runs
+          - given: shadow branch is enabled
+            id: ac-4
             then: shadow branch has new commit with appropriate message
-          - id: ac-4
-            given: shadow branch is enabled
             when: kspec item add/set/delete or item ac add/set/remove runs
-            then: shadow branch has new commit with appropriate message
-          - id: ac-5
-            given: shadow branch is enabled and spec item @my-spec exists
-            when: kspec derive @my-spec runs
+          - given: shadow branch is enabled and spec item @my-spec exists
+            id: ac-5
             then: shadow branch has new commit with message containing the spec ref
-          - id: ac-6
-            given: shadow branch is enabled but commit fails (e.g., git error)
-            when: any state-changing command runs
+            when: kspec derive @my-spec runs
+          - given: shadow branch is enabled but commit fails (e.g., git error)
+            id: ac-6
             then: command still succeeds, commit failure is silently ignored
+            when: any state-changing command runs
       - _ulid: 01KF1V2027DTBEBN6A6DCBAT1Q
         slugs:
           - shadow-read-path
         title: Shadow Read Path
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           All kspec read operations target .kspec/ directory.
 
@@ -236,44 +239,44 @@ features:
           - Parser loads YAML from .kspec/kynetic.yaml and includes
           - Ref resolution uses .kspec/ file paths
           - Source file tracking uses .kspec/ paths
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@shadow-concept"
         acceptance_criteria:
-          - id: ac-1
-            given: shadow branch mode is enabled and .kspec contains the latest spec state
-            when: the user runs a read command such as kspec item get or kspec tasks ready
+          - given: shadow branch mode is enabled and .kspec contains the latest spec state
+            id: ac-1
             then: the command resolves data from files under .kspec rather than from copies in the main branch
               working tree
+            when: the user runs a read command such as kspec item get or kspec tasks ready
       - _ulid: 01KF1V209B3C1C7AB3Y63SPSPB
         slugs:
           - shadow-write-path
         title: Shadow Write Path
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           All kspec write operations target .kspec/ directory.
 
           - YAML files written to .kspec/
           - After write, auto-commit triggered
           - No interaction with main branch's working tree
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@shadow-concept"
         acceptance_criteria:
-          - id: ac-1
-            given: shadow branch mode is enabled
-            when: the user runs a mutating kspec command
+          - given: shadow branch mode is enabled
+            id: ac-1
             then: the command writes updated YAML under .kspec, triggers a shadow auto-commit, and does not
               modify tracked spec files in the current code branch working tree
+            when: the user runs a mutating kspec command
       - _ulid: 01KF1V20H5PEMHYR3AEA9FQF6T
         slugs:
           - shadow-errors
         title: Shadow Error Messages
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           Clear error messages for common failure scenarios:
 
@@ -282,44 +285,39 @@ features:
           - ".kspec/ directory missing. Run `kspec shadow repair` to recreate."
 
           Errors should be actionable with clear next steps.
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@shadow-concept"
         acceptance_criteria:
-          - id: ac-1
-            given: Git repo exists but shadow branch has never been initialized
-            when: User runs a kspec command that requires shadow (e.g., task list)
+          - given: Git repo exists but shadow branch has never been initialized
+            id: ac-1
             then: Error message says 'Shadow branch not initialized' and suggests 'Run kspec init to create'
-          - id: ac-2
-            given: Shadow branch exists but .kspec/.git file is missing or corrupt
-            when: User runs a kspec command
+            when: User runs a kspec command that requires shadow (e.g., task list)
+          - given: Shadow branch exists but .kspec/.git file is missing or corrupt
+            id: ac-2
             then: Error message says 'Worktree disconnected' and suggests 'Run kspec shadow repair to fix'
-          - id: ac-3
-            given: Shadow branch exists but .kspec/ directory is deleted
             when: User runs a kspec command
+          - given: Shadow branch exists but .kspec/ directory is deleted
+            id: ac-3
             then: Error message says '.kspec/ directory missing' and suggests 'Run kspec shadow repair to
               recreate'
-          - id: ac-4
-            given: User is inside the .kspec/ directory (cwd is .kspec/)
-            when: User runs any kspec command
+            when: User runs a kspec command
+          - given: User is inside the .kspec/ directory (cwd is .kspec/)
+            id: ac-4
             then: Error message says 'Cannot run kspec from inside .kspec/ directory' and suggests running from
               project root
-          - id: ac-5
-            given: Any shadow-related error occurs
-            when: Error is displayed to user
+            when: User runs any kspec command
+          - given: Any shadow-related error occurs
+            id: ac-5
             then: Error includes specific command to run to fix the issue
+            when: Error is displayed to user
       - _ulid: 01KF3CTXYNWH7TQMJNQZR0HHA9
         slugs:
           - shadow-debug-mode
         title: Shadow Debug Mode
         type: requirement
-        tags:
-          - dx
-          - cli
-        depends_on: []
-        implements: []
-        relates_to: []
-        tests: []
-        created: 2026-01-16T12:35:12.982Z
         description: |-
           Optional verbose output for shadow branch operations.
 
@@ -334,40 +332,35 @@ features:
           - Auto-commit failures are reported to stderr
           - Git operations show underlying commands
           - Useful for diagnosing worktree/branch issues
-        acceptance_criteria:
-          - id: ac-1
-            given: KSPEC_DEBUG=1 is set and auto-commit fails
-            when: any state-changing command runs
-            then: error message is printed to stderr
-          - id: ac-2
-            given: --debug-shadow flag is passed and auto-commit fails
-            when: any state-changing command runs
-            then: error message is printed to stderr
-          - id: ac-3
-            given: debug mode is not enabled
-            when: auto-commit fails
-            then: no error output is shown (silent failure)
         status:
           maturity: draft
           implementation: implemented
-    acceptance_criteria:
-      - id: ac-1
-        given: a project is initialized with shadow branch support
-        when: a mutating kspec command updates spec or task state and git history is inspected
-        then: the metadata change is committed on the orphan shadow branch through the .kspec worktree and
-          the current code branch history remains unchanged
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        acceptance_criteria:
+          - given: KSPEC_DEBUG=1 is set and auto-commit fails
+            id: ac-1
+            then: error message is printed to stderr
+            when: any state-changing command runs
+          - given: --debug-shadow flag is passed and auto-commit fails
+            id: ac-2
+            then: error message is printed to stderr
+            when: any state-changing command runs
+          - given: debug mode is not enabled
+            id: ac-3
+            then: no error output is shown (silent failure)
+            when: auto-commit fails
+        tags:
+          - dx
+          - cli
+        created: 2026-01-16T12:35:12.982Z
   - _ulid: 01KF1V20REJ21SN3JPGXQ9NM25
     slugs:
       - shadow-init
     title: Shadow Initialization
     type: feature
-    status:
-      maturity: draft
-      implementation: implemented
-    priority: high
-    tags:
-      - infrastructure
-      - cli
     description: |
       kspec init creates shadow branch and worktree by default.
 
@@ -376,42 +369,84 @@ features:
       2. Create git worktree at .kspec/ with orphan branch kspec-meta
       3. Create initial manifest and structure in .kspec/
       4. Initial commit on shadow branch
-    acceptance_criteria:
-      - id: ac-shadow-init-1
-        given: a git repository without shadow branch
-        when: kspec init runs
-        then: orphan branch kspec-meta is created
-      - id: ac-shadow-init-2
-        given: kspec init has run
-        when: checking .kspec/ directory
-        then: it is a valid git worktree pointing to kspec-meta
-      - id: ac-shadow-init-3
-        given: kspec init has run
-        when: checking git log
-        then: .gitignore change is committed to main branch
-      - id: ac-shadow-init-4
-        given: shadow branch already exists
-        when: kspec init runs again
-        then: it succeeds without error (idempotent)
-      - id: ac-shadow-init-5
-        given: .gitignore has uncommitted changes
-        when: kspec init runs
-        then: it fails with error explaining the issue
-      - id: ac-shadow-init-6
-        given: kspec init runs
-        when: merge driver configuration fails (kspec not in PATH, permission error)
-        then: warning is shown but init continues (merge driver is optional)
+    status:
+      maturity: draft
+      implementation: implemented
     implements:
       - "@cmd-init"
+    acceptance_criteria:
+      - given: a git repository without shadow branch
+        id: ac-shadow-init-1
+        then: orphan branch kspec-meta is created
+        when: kspec init runs
+      - given: kspec init has run
+        id: ac-shadow-init-2
+        then: it is a valid git worktree pointing to kspec-meta
+        when: checking .kspec/ directory
+      - given: kspec init has run
+        id: ac-shadow-init-3
+        then: .gitignore change is committed to main branch
+        when: checking git log
+      - given: shadow branch already exists
+        id: ac-shadow-init-4
+        then: it succeeds without error (idempotent)
+        when: kspec init runs again
+      - given: .gitignore has uncommitted changes
+        id: ac-shadow-init-5
+        then: it fails with error explaining the issue
+        when: kspec init runs
+      - given: kspec init runs
+        id: ac-shadow-init-6
+        then: warning is shown but init continues (merge driver is optional)
+        when: merge driver configuration fails (kspec not in PATH, permission error)
+    priority: high
+    tags:
+      - infrastructure
+      - cli
+    features:
+      - _ulid: 01KF47G9P4VFQZR8MX8WPN3YZ0
+        slugs:
+          - shadow-init-remote
+        title: Init Remote Detection
+        type: feature
+        description: When running kspec init in a fresh clone, automatically detect if kspec-meta branch
+          exists on remote and attach to it rather than creating a new orphan branch.
+        status:
+          maturity: draft
+          implementation: implemented
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        acceptance_criteria:
+          - given: git remote origin exists and origin/kspec-meta branch exists
+            id: ac-1
+            then: creates worktree from remote branch with tracking configured
+            when: user runs kspec init
+          - given: git remote origin exists but origin/kspec-meta does not exist
+            id: ac-2
+            then: creates orphan branch locally, pushes to remote to establish tracking
+            when: user runs kspec init
+          - given: no git remote configured
+            id: ac-3
+            then: creates orphan branch locally without remote tracking (current behavior)
+            when: user runs kspec init
+          - given: origin remote exists
+            id: ac-4
+            then: queries remote refs directly (e.g. git ls-remote) rather than relying on stale local refs
+            when: checking for remote shadow branch
+          - given: a shallow clone where kspec-meta is not in local refs
+            id: ac-5
+            then: queries the remote directly (e.g. git ls-remote) instead of relying on locally-fetched refs
+            when: checking for remote shadow branch
+        tags: []
+        created: 2026-01-16T20:21:16.100Z
     requirements:
       - _ulid: 01KF1V20ZWB6DG3DAYKHMHM0XN
         slugs:
           - shadow-ci
         title: CI/CD Integration
         type: constraint
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           CI environments need shadow worktree before running kspec commands.
 
@@ -420,78 +455,46 @@ features:
 
           This must be documented in generated README or kspec docs.
           The worktree is not committed to git, so CI must recreate it.
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@shadow-init"
           - "@cmd-init"
         acceptance_criteria:
-          - id: ac-1
-            given: a CI runner checks out the repository without an existing .kspec worktree
-            when: the documented shadow bootstrap step recreates the worktree before running kspec commands
+          - given: a CI runner checks out the repository without an existing .kspec worktree
+            id: ac-1
             then: the shadow worktree exists and subsequent kspec commands can read and write spec state
               successfully
-    features:
-      - _ulid: 01KF47G9P4VFQZR8MX8WPN3YZ0
-        slugs:
-          - shadow-init-remote
-        title: Init Remote Detection
-        type: feature
-        tags: []
-        description: When running kspec init in a fresh clone, automatically detect if kspec-meta branch
-          exists on remote and attach to it rather than creating a new orphan branch.
-        depends_on: []
-        implements: []
-        relates_to: []
-        tests: []
-        created: 2026-01-16T20:21:16.100Z
-        acceptance_criteria:
-          - id: ac-1
-            given: git remote origin exists and origin/kspec-meta branch exists
-            when: user runs kspec init
-            then: creates worktree from remote branch with tracking configured
-          - id: ac-2
-            given: git remote origin exists but origin/kspec-meta does not exist
-            when: user runs kspec init
-            then: creates orphan branch locally, pushes to remote to establish tracking
-          - id: ac-3
-            given: no git remote configured
-            when: user runs kspec init
-            then: creates orphan branch locally without remote tracking (current behavior)
-          - id: ac-4
-            given: origin remote exists
-            when: checking for remote shadow branch
-            then: queries remote refs directly (e.g. git ls-remote) rather than relying on stale local refs
-          - id: ac-5
-            given: a shallow clone where kspec-meta is not in local refs
-            when: checking for remote shadow branch
-            then: queries the remote directly (e.g. git ls-remote) instead of relying on locally-fetched refs
-        status:
-          maturity: draft
-          implementation: implemented
+            when: the documented shadow bootstrap step recreates the worktree before running kspec commands
   - _ulid: 01KF1V217AVWW2EFF87A6M5EGY
     slugs:
       - shadow-cli
     title: Shadow CLI Commands
     type: feature
-    status:
-      maturity: draft
-      implementation: implemented
-    priority: medium
-    tags:
-      - cli
     description: |
       CLI commands for shadow branch management.
       Minimal surface: status, log, repair.
+    status:
+      maturity: draft
+      implementation: implemented
     implements:
       - "@cli"
+    acceptance_criteria:
+      - given: a user needs to inspect or repair shadow branch health
+        id: ac-1
+        then: the CLI lists status, log, and repair subcommands as the management surface for the shadow
+          branch
+        when: the user runs kspec shadow --help
+    priority: medium
+    tags:
+      - cli
     requirements:
       - _ulid: 01KF1V21EKDF1VB0BMTHRAH59Z
         slugs:
           - shadow-status-cmd
         title: Shadow Status Command
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           kspec shadow status
 
@@ -510,22 +513,22 @@ features:
           - Worktree exists and is valid
           - Shadow branch exists
           - No uncommitted changes (should be none with auto-commit)
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@shadow-cli"
         acceptance_criteria:
-          - id: ac-1
-            given: the project has a healthy shadow branch worktree
-            when: the user runs kspec shadow status
+          - given: the project has a healthy shadow branch worktree
+            id: ac-1
             then: the command reports the shadow branch name, worktree directory, current health, recent commit
               summary, and the results of worktree, branch, and cleanliness checks
+            when: the user runs kspec shadow status
       - _ulid: 01KF1V21P816NQFKF0C8426M0D
         slugs:
           - shadow-log-cmd
         title: Shadow Log Command
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           kspec shadow log [-n <limit>] [--oneline]
 
@@ -541,32 +544,22 @@ features:
           - -n, --limit <n>: Number of commits to show
           - --oneline: Compact format
           - --json: Structured output
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@shadow-cli"
         acceptance_criteria:
-          - id: ac-1
-            given: the shadow branch has commit history
-            when: the user runs kspec shadow log -n 3 --oneline
+          - given: the shadow branch has commit history
+            id: ac-1
             then: the command prints the three most recent shadow commits in reverse chronological order using
               the compact one-line format
-    acceptance_criteria:
-      - id: ac-1
-        given: a user needs to inspect or repair shadow branch health
-        when: the user runs kspec shadow --help
-        then: the CLI lists status, log, and repair subcommands as the management surface for the shadow
-          branch
+            when: the user runs kspec shadow log -n 3 --oneline
   - _ulid: 01KF1VBPN5J53QJJM3FTXK2J9R
     slugs:
       - shadow-recovery
     title: Shadow Recovery
     type: feature
-    status:
-      maturity: draft
-      implementation: implemented
-    priority: high
-    tags:
-      - infrastructure
-      - reliability
     description: |
       Recovery mechanisms for shadow branch issues. Provides CLI commands for
       diagnosing and repairing shadow branch problems.
@@ -580,40 +573,44 @@ features:
       - Worktree directory deleted (recreate from existing branch)
       - Worktree disconnected from git (remove and recreate)
       - Stale worktree references in git
+    status:
+      maturity: draft
+      implementation: implemented
     acceptance_criteria:
-      - id: ac-recovery-1
-        given: shadow branch exists but .kspec/ directory is deleted
-        when: kspec shadow repair runs
+      - given: shadow branch exists but .kspec/ directory is deleted
+        id: ac-recovery-1
         then: worktree is recreated from existing branch
-      - id: ac-recovery-2
-        given: .kspec/ exists but .git file is missing or corrupt
         when: kspec shadow repair runs
+      - given: .kspec/ exists but .git file is missing or corrupt
+        id: ac-recovery-2
         then: worktree is removed and recreated
-      - id: ac-recovery-3
-        given: shadow branch does not exist
         when: kspec shadow repair runs
+      - given: shadow branch does not exist
+        id: ac-recovery-3
         then: it fails with error suggesting kspec init
-      - id: ac-recovery-4
-        given: shadow branch is healthy
         when: kspec shadow repair runs
+      - given: shadow branch is healthy
+        id: ac-recovery-4
         then: it succeeds without changes (idempotent)
-      - id: ac-recovery-5
-        given: shadow branch is healthy
-        when: kspec shadow status runs
+        when: kspec shadow repair runs
+      - given: shadow branch is healthy
+        id: ac-recovery-5
         then: it reports healthy status with all checks passing
-      - id: ac-recovery-6
-        given: shadow branch has issues
         when: kspec shadow status runs
+      - given: shadow branch has issues
+        id: ac-recovery-6
         then: it reports the specific issue and suggests repair
+        when: kspec shadow status runs
+    priority: high
+    tags:
+      - infrastructure
+      - reliability
     requirements:
       - _ulid: 01KF1VBR1XMKDJ0K5HYW7RWGQE
         slugs:
           - shadow-repair-cmd
         title: Shadow Repair Command
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           kspec shadow repair
 
@@ -626,22 +623,22 @@ features:
           - Recovers from deleted .kspec/ directory
           - Reports clear error if shadow branch itself is missing
           - Idempotent (safe to run multiple times)
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@shadow-recovery"
         acceptance_criteria:
-          - id: ac-1
-            given: the .kspec worktree is missing or stale while the shadow branch still exists
-            when: the user runs kspec shadow repair
+          - given: the .kspec worktree is missing or stale while the shadow branch still exists
+            id: ac-1
             then: the command recreates or reconnects the worktree and reports either a repaired state or that
               the worktree was already healthy when run again
+            when: the user runs kspec shadow repair
       - _ulid: 01KF1VBRG99HYJ00CVABVKV0QM
         slugs:
           - shadow-validation
         title: Shadow Branch Validation
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           Shadow validation as part of kspec validate.
 
@@ -650,121 +647,122 @@ features:
           - Shadow branch exists and is reachable
           - No uncommitted changes (should be zero with auto-commit)
           - All spec files valid YAML with correct schema
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@shadow-recovery"
         acceptance_criteria:
-          - id: ac-1
-            given: a project uses shadow branch mode
-            when: the user runs kspec validate
+          - given: a project uses shadow branch mode
+            id: ac-1
             then: validation checks the shadow worktree link, branch reachability, clean shadow status, and
               schema-valid shadow spec files before reporting success
+            when: the user runs kspec validate
       - _ulid: 01KKJZTZ6309QBKBMQ0CSF3FXX
         slugs:
           - broken-shadow-safety
         title: Broken Shadow Safety
         type: requirement
-        priority: high
-        tags:
-          - shadow
-          - dispatch
-          - reliability
         description: Broken-shadow handling must be fail-safe. Existing shadow repos that lose or disconnect
           the configured shadow worktree must not silently fall back to repo-root read/write paths,
           and recovery flows must preserve the prior shadow directory unless a replacement worktree
           is successfully recreated.
+        status:
+          maturity: draft
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
         tests: []
         traits: []
-        notes: []
-        created: 2026-03-13T06:58:40.964Z
         acceptance_criteria:
-          - id: ac-preserve-on-failure
-            given: shadow repair or automatic shadow recovery is rebuilding a broken shadow worktree
-            when: the replacement worktree cannot be created successfully
+          - given: shadow repair or automatic shadow recovery is rebuilding a broken shadow worktree
+            id: ac-preserve-on-failure
             then: the pre-repair shadow directory is preserved or restored and the failure reports recovery
               guidance instead of leaving the checkout without its shadow directory
-          - id: ac-bootstrap-reuses-repair
-            given: setup or bootstrap recovery flows run in a checkout where the shadow branch already exists
+            when: the replacement worktree cannot be created successfully
+          - given: setup or bootstrap recovery flows run in a checkout where the shadow branch already exists
               locally or on the configured remote but the shadow worktree is missing or unhealthy
-            when: the flow chooses a shadow recovery action
+            id: ac-bootstrap-reuses-repair
             then: it reuses or reattaches the existing shadow state via repair semantics instead of treating the
               checkout as a brand-new init
-          - id: ac-context-fails-fast
-            given: a checkout has an existing shadow branch but the configured shadow worktree is missing or
+            when: the flow chooses a shadow recovery action
+          - given: a checkout has an existing shadow branch but the configured shadow worktree is missing or
               disconnected
-            when: any kspec read or write path initializes project context for CLI, daemon, or dispatch work
+            id: ac-context-fails-fast
             then: initialization fails with actionable shadow recovery guidance instead of treating the checkout
               as a non-shadow repo
-          - id: ac-no-root-fallback
-            given: a checkout has an existing shadow branch but the configured shadow worktree is missing or
+            when: any kspec read or write path initializes project context for CLI, daemon, or dispatch work
+          - given: a checkout has an existing shadow branch but the configured shadow worktree is missing or
               disconnected
-            when: CLI, daemon, or dispatch code resolves kspec-managed manifest, registry, or metadata paths
+            id: ac-no-root-fallback
             then: it does not redirect reads or writes to repo-root fallback paths outside the configured shadow
               directory
-        status:
-          maturity: draft
-          implementation: implemented
+            when: CLI, daemon, or dispatch code resolves kspec-managed manifest, registry, or metadata paths
+        priority: high
+        tags:
+          - shadow
+          - dispatch
+          - reliability
+        created: 2026-03-13T06:58:40.964Z
+        notes: []
   - _ulid: 01KF47F4J7DAQ3TD3BGHFQSK9C
     slugs:
       - shadow-sync
     title: Shadow Remote Sync
     type: feature
-    tags: []
     description: Automatic synchronization of shadow branch with remote repository. After each local
       auto-commit, attempt push to remote. On session start or read operations, pull remote changes
       first.
+    status:
+      maturity: draft
+      implementation: implemented
     depends_on: []
     implements: []
     relates_to: []
     tests: []
-    created: 2026-01-16T20:20:38.087Z
     acceptance_criteria:
-      - id: ac-1
-        given: remote tracking is configured for shadow branch
-        when: a state-changing operation commits to shadow branch
+      - given: remote tracking is configured for shadow branch
+        id: ac-1
         then: kspec attempts a fire-and-forget push to remote; if push fails, local operation still succeeds
           and warning output surfaces sync failure (with higher-visibility warning after repeated
           consecutive failures).
-      - id: ac-2
-        given: remote tracking is configured
-        when: session start runs
+        when: a state-changing operation commits to shadow branch
+      - given: remote tracking is configured
+        id: ac-2
         then: kspec pulls remote changes before showing session context
-      - id: ac-3
-        given: pull encounters a conflict
-        when: sync is attempted
+        when: session start runs
+      - given: pull encounters a conflict
+        id: ac-3
         then: local operation succeeds, warning displayed, user directed to run kspec shadow resolve
-      - id: ac-4
-        given: no remote tracking configured
-        when: sync would normally occur
+        when: sync is attempted
+      - given: no remote tracking configured
+        id: ac-4
         then: sync is silently skipped (no error)
-      - id: ac-5
-        given: shadow branch has unresolved sync conflict
-        when: user runs kspec shadow resolve
+        when: sync would normally occur
+      - given: shadow branch has unresolved sync conflict
+        id: ac-5
         then: interactive conflict resolution guides user through resolving conflicts
-      - id: ac-6
-        given: sync uses git pull
-        when: pulling remote changes
+        when: user runs kspec shadow resolve
+      - given: sync uses git pull
+        id: ac-6
         then: uses --ff-only first, falls back to --rebase if needed
-      - id: ac-7
-        given: new shadow branch is created and origin remote exists
-        when: initializeShadow completes
+        when: pulling remote changes
+      - given: new shadow branch is created and origin remote exists
+        id: ac-7
         then: tracking is configured to origin/kspec-meta regardless of push success
-      - id: ac-8
-        given: shadow branch exists without tracking and main branch has origin remote
-        when: any sync operation is attempted
+        when: initializeShadow completes
+      - given: shadow branch exists without tracking and main branch has origin remote
+        id: ac-8
         then: tracking is automatically configured to origin/kspec-meta
-    status:
-      maturity: draft
-      implementation: implemented
+        when: any sync operation is attempted
+    tags: []
     requirements:
       - _ulid: 01KKA7TQ0Z1E7G6YS8MVJ9PRS6
         slugs:
           - shadow-lazy-read-sync
         title: Lazy Shadow Sync on Reads
         type: requirement
-        tags: []
         description: |
           Replace the blocking shadowPull() on every CLI/daemon read with a
           lightweight drift check. Only pull when the local shadow branch is
@@ -773,22 +771,28 @@ features:
           fetch data is fresh. FETCH_HEAD path is resolved via
           git rev-parse --git-path FETCH_HEAD from the same cwd used for
           fetch, ensuring correctness in worktree setups.
+        status:
+          maturity: draft
+          implementation: in_progress
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
         acceptance_criteria:
-          - id: ac-drift-check
-            given: |
+          - given: |
               A CLI read command runs (e.g. task list, item get) and
               shadow branch has remote tracking configured
-            when: |
-              initContext() initializes shadow state
+            id: ac-drift-check
             then: |
               Instead of unconditionally calling shadowPull(), a lightweight
               drift check runs first. If no drift detected, pull is skipped
               and the command proceeds with local state.
-          - id: ac-fetch-head-location
-            given: |
-              The shadow branch is a git worktree of the main repository
             when: |
-              Drift check needs to determine fetch freshness
+              initContext() initializes shadow state
+          - given: |
+              The shadow branch is a git worktree of the main repository
+            id: ac-fetch-head-location
             then: |
               FETCH_HEAD path is resolved via git rev-parse --git-path
               FETCH_HEAD from the worktree dir (the same cwd used for
@@ -796,133 +800,133 @@ features:
               to the worktree's git dir (e.g. .git/worktrees/-kspec/),
               not the common git dir. The drift check must stat the same
               file that fetch updates.
-          - id: ac-fetch-head-freshness
-            given: |
+            when: |
+              Drift check needs to determine fetch freshness
+          - given: |
               FETCH_HEAD mtime (resolved per ac-fetch-head-location) is
               within the freshness threshold (derived from
               shadow.sync_interval config, default 60s)
-            when: |
-              Drift check runs
+            id: ac-fetch-head-freshness
             then: |
               Git fetch is skipped. Drift is determined solely by comparing
               local HEAD against the cached upstream ref from the last fetch.
-          - id: ac-fetch-when-stale
-            given: |
-              FETCH_HEAD mtime is older than the freshness threshold
-              or FETCH_HEAD does not exist
             when: |
               Drift check runs
+          - given: |
+              FETCH_HEAD mtime is older than the freshness threshold
+              or FETCH_HEAD does not exist
+            id: ac-fetch-when-stale
             then: |
               A git fetch is performed to refresh remote refs, then
               local HEAD is compared against upstream.
-          - id: ac-fetch-timeout
-            given: |
+            when: |
+              Drift check runs
+          - given: |
               Network is unavailable or git fetch exceeds 5 seconds
               during drift check
-            when: |
-              Drift check attempts a fetch due to stale FETCH_HEAD
+            id: ac-fetch-timeout
             then: |
               The spawned git fetch process is killed (SIGTERM with
               SIGKILL fallback) and drift check proceeds with local
               state only.
-          - id: ac-fetch-timeout-no-error
-            given: |
-              A fetch timeout or network failure occurs during drift check
             when: |
-              The command continues execution
+              Drift check attempts a fetch due to stale FETCH_HEAD
+          - given: |
+              A fetch timeout or network failure occurs during drift check
+            id: ac-fetch-timeout-no-error
             then: |
               No error is surfaced to the user. The command proceeds as if
               no drift was detected.
-          - id: ac-fetch-timeout-debug-log
-            given: |
+            when: |
+              The command continues execution
+          - given: |
               A fetch timeout or network failure occurs during drift check
               and --debug-shadow flag or KSPEC_DEBUG=1 is set
-            when: |
-              Debug output is enabled
+            id: ac-fetch-timeout-debug-log
             then: |
               A debug-level log is emitted describing the fetch failure,
               visible via --debug-shadow for troubleshooting.
-          - id: ac-pull-when-behind
-            given: |
+            when: |
+              Debug output is enabled
+          - given: |
               Drift check detects local shadow branch is behind remote
               (remote has commits not present locally)
-            when: |
-              A read operation is about to proceed
+            id: ac-pull-when-behind
             then: |
               shadowPull() is called to integrate remote changes before
               the read proceeds. Behavior after pull (conflict handling,
               warnings) remains unchanged.
-          - id: ac-no-pull-when-ahead
-            given: |
-              Drift check detects local shadow branch is ahead of remote
-              (local has unpushed commits, but remote has no new commits)
             when: |
               A read operation is about to proceed
+          - given: |
+              Drift check detects local shadow branch is ahead of remote
+              (local has unpushed commits, but remote has no new commits)
+            id: ac-no-pull-when-ahead
             then: |
               No pull is performed. Local state is already up to date with
               all remote changes. The unpushed commits will be pushed on
               the next write or daemon sync cycle.
-          - id: ac-pull-when-diverged
-            given: |
-              Drift check detects local and remote have diverged
-              (both have commits the other does not)
             when: |
               A read operation is about to proceed
+          - given: |
+              Drift check detects local and remote have diverged
+              (both have commits the other does not)
+            id: ac-pull-when-diverged
             then: |
               shadowPull() is called to integrate remote changes, using
               the existing rebase + merge driver strategy.
-          - id: ac-upstream-ref-missing
-            given: |
+            when: |
+              A read operation is about to proceed
+          - given: |
               Remote tracking is configured but the upstream ref does not
               exist after a successful fetch (e.g. first run, never pushed)
-            when: |
-              Drift check compares HEAD vs upstream
+            id: ac-upstream-ref-missing
             then: |
               Drift check returns true (sync needed) as the safer default,
               allowing shadowPull() to handle the situation.
-          - id: ac-no-drift-fast-path
-            given: |
+            when: |
+              Drift check compares HEAD vs upstream
+          - given: |
               Drift check determines local HEAD matches upstream
               (zero behind, zero diverged)
-            when: |
-              initContext() completes
+            id: ac-no-drift-fast-path
             then: |
               No pull is performed. Command proceeds immediately with
               local state. No network calls are made when FETCH_HEAD is
               fresh and refs match.
-          - id: ac-session-start-always-pulls
-            given: |
-              User runs kspec session start and remote tracking is configured
             when: |
-              initContext() runs for session start
+              initContext() completes
+          - given: |
+              User runs kspec session start and remote tracking is configured
+            id: ac-session-start-always-pulls
             then: |
               Session start bypasses the drift check and always performs a
               full shadowPull(), ensuring the user sees the latest remote
               state when beginning a work session.
-          - id: ac-no-sync-env
-            given: |
-              KSPEC_NO_SYNC=1 environment variable is set
             when: |
-              initContext() runs (regardless of syncMode — drift-check,
-              always, or skip)
+              initContext() runs for session start
+          - given: |
+              KSPEC_NO_SYNC=1 environment variable is set
+            id: ac-no-sync-env
             then: |
               All pre-read sync is disabled, including drift check and
               unconditional pull for markAlwaysSync commands like session
               start. KSPEC_NO_SYNC takes highest precedence over all
               syncMode values.
-          - id: ac-threshold-from-config
-            given: |
-              shadow.sync_interval is configured in kspec.config.yaml
             when: |
-              Drift check determines FETCH_HEAD freshness threshold
+              initContext() runs (regardless of syncMode — drift-check,
+              always, or skip)
+          - given: |
+              shadow.sync_interval is configured in kspec.config.yaml
+            id: ac-threshold-from-config
             then: |
               Uses the configured sync_interval value (in seconds) as the
               freshness threshold. If not configured, defaults to 60 seconds.
-          - id: ac-syncmode-propagation
-            given: |
-              A CLI command is dispatched via Commander
             when: |
-              The preAction hook runs before the command handler
+              Drift check determines FETCH_HEAD freshness threshold
+          - given: |
+              A CLI command is dispatched via Commander
+            id: ac-syncmode-propagation
             then: |
               syncMode is determined centrally in the preAction hook based
               on command annotations (markMutating, markAlwaysSync) and
@@ -930,34 +934,28 @@ features:
               call (via maybeAutoStartDaemon) and the action handler
               initContext call read syncMode from this shared state.
               No per-command manual syncMode passing is required.
-          - id: ac-syncmode-consume-once
-            given: |
+            when: |
+              The preAction hook runs before the command handler
+          - given: |
               initContext() is called multiple times within the same CLI
               command (e.g. preAction via maybeAutoStartDaemon, then
               action handler)
-            when: |
-              The second (or subsequent) initContext call runs
+            id: ac-syncmode-consume-once
             then: |
               Only the first initContext call per command lifecycle
               executes the sync action (drift check, pull, or skip).
               Subsequent calls within the same command skip pre-read
               sync entirely, preventing double-pull.
-        depends_on: []
-        implements: []
-        relates_to: []
-        tests: []
-        traits: []
-        notes: []
+            when: |
+              The second (or subsequent) initContext call runs
+        tags: []
         created: 2026-03-09T21:25:11.327Z
-        status:
-          maturity: draft
-          implementation: implemented
+        notes: []
       - _ulid: 01KKA7TQ1JJE7W2DHCNF4G0EQ7
         slugs:
           - shadow-write-sync
         title: Always Sync on Shadow Writes
         type: requirement
-        tags: []
         description: |
           Write operations always perform a full sync (pull then push) to
           ensure consistency. This preserves the current pull-rebase-before-push
@@ -965,44 +963,44 @@ features:
           pre-read drift check in initContext since the write sync supersedes it.
 
           Depends on @shadow-lazy-read-sync for the syncMode mechanism.
-        acceptance_criteria:
-          - id: ac-write-always-syncs
-            given: |
-              A CLI write command commits to the shadow branch
-              (task add, item set, etc.)
-            when: |
-              commitIfShadow() runs
-            then: |
-              The existing pull-rebase-before-push pattern executes
-              regardless of drift check freshness. Writes never skip sync.
-          - id: ac-write-skips-read-check
-            given: |
-              A mutating command triggers initContext() (either directly
-              or via preAction hook)
-            when: |
-              initContext() initializes shadow state
-            then: |
-              The pre-read drift check is skipped for both initContext
-              calls (preAction and action handler). The write path in
-              commitIfShadow provides its own sync, so the pre-read
-              check would be redundant overhead.
+        status:
+          maturity: draft
+          implementation: implemented
         depends_on:
           - "@shadow-lazy-read-sync"
         implements: []
         relates_to: []
         tests: []
         traits: []
-        notes: []
+        acceptance_criteria:
+          - given: |
+              A CLI write command commits to the shadow branch
+              (task add, item set, etc.)
+            id: ac-write-always-syncs
+            then: |
+              The existing pull-rebase-before-push pattern executes
+              regardless of drift check freshness. Writes never skip sync.
+            when: |
+              commitIfShadow() runs
+          - given: |
+              A mutating command triggers initContext() (either directly
+              or via preAction hook)
+            id: ac-write-skips-read-check
+            then: |
+              The pre-read drift check is skipped for both initContext
+              calls (preAction and action handler). The write path in
+              commitIfShadow provides its own sync, so the pre-read
+              check would be redundant overhead.
+            when: |
+              initContext() initializes shadow state
+        tags: []
         created: 2026-03-09T21:25:11.346Z
-        status:
-          maturity: draft
-          implementation: implemented
+        notes: []
       - _ulid: 01KKA7TQ1Y7T5F46Y8MKW3QNE3
         slugs:
           - shadow-daemon-push-sync
         title: Daemon Background Sync Pushes
         type: requirement
-        tags: []
         description: |
           Extend the daemon's periodic ShadowSyncScheduler to also push
           after pulling, ensuring local commits are propagated at the
@@ -1012,42 +1010,43 @@ features:
           can be implemented independently. The daemon's periodic fetch
           freshens FETCH_HEAD in the worktree git dir, which the CLI
           drift check benefits from for its fast path.
-        acceptance_criteria:
-          - id: ac-periodic-push
-            given: |
-              Daemon periodic sync interval elapses and there are local
-              commits ahead of upstream
-            when: |
-              ShadowSyncScheduler.syncOnce() runs
-            then: |
-              After pulling, a push is attempted if local is ahead of
-              remote. Push failure is non-fatal (logged, not thrown).
-          - id: ac-daemon-freshens-fetch-head
-            given: |
-              Daemon periodic sync runs its fetch from the worktree dir
-            when: |
-              CLI commands run between daemon sync intervals
-            then: |
-              FETCH_HEAD in the worktree git dir is fresh from the
-              daemon's last fetch. CLI drift checks (which resolve
-              FETCH_HEAD from the same worktree dir) see it as fresh
-              and skip redundant fetches during the interval.
+        status:
+          maturity: draft
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
         tests: []
         traits: []
-        notes: []
+        acceptance_criteria:
+          - given: |
+              Daemon periodic sync interval elapses and there are local
+              commits ahead of upstream
+            id: ac-periodic-push
+            then: |
+              After pulling, a push is attempted if local is ahead of
+              remote. Push failure is non-fatal (logged, not thrown).
+            when: |
+              ShadowSyncScheduler.syncOnce() runs
+          - given: |
+              Daemon periodic sync runs its fetch from the worktree dir
+            id: ac-daemon-freshens-fetch-head
+            then: |
+              FETCH_HEAD in the worktree git dir is fresh from the
+              daemon's last fetch. CLI drift checks (which resolve
+              FETCH_HEAD from the same worktree dir) see it as fresh
+              and skip redundant fetches during the interval.
+            when: |
+              CLI commands run between daemon sync intervals
+        tags: []
         created: 2026-03-09T21:25:11.358Z
-        status:
-          maturity: draft
-          implementation: implemented
+        notes: []
+    created: 2026-01-16T20:20:38.087Z
   - _ulid: 01KFM78SSTQR07F36DKWJS85ZY
     slugs:
       - yaml-merge-driver
     title: Semantic YAML Merge Driver
     type: feature
-    tags: []
     description: >-
       A custom git merge driver that parses both versions of kspec YAML files and merges them
       semantically, understanding the structure of tasks, items, and other kspec entities. This
@@ -1057,6 +1056,9 @@ features:
       Note on exit codes: This command intentionally does NOT use @trait-semantic-exit-codes because
       git merge drivers have special requirements - they must exit 0 to prevent git from falling
       back to its text merge, which would corrupt YAML.
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on: []
     implements: []
     relates_to: []
@@ -1064,194 +1066,192 @@ features:
     traits:
       - "@trait-dry-run"
       - "@trait-error-guidance"
-    notes: []
-    created: 2026-01-23T01:25:01.370Z
     acceptance_criteria:
-      - id: ac-1
-        given: git attempts to merge two versions of a kspec YAML file
-        when: the merge driver is configured
+      - given: git attempts to merge two versions of a kspec YAML file
+        id: ac-1
         then: kspec parses all three versions (base, ours, theirs) as structured data instead of text
-      - id: ac-2
-        given: both versions add different items to an array (tasks, inbox, specs)
-        when: merge runs
+        when: the merge driver is configured
+      - given: both versions add different items to an array (tasks, inbox, specs)
+        id: ac-2
         then: both additions are included in result (union merge by ULID)
-      - id: ac-3
-        given: both versions modify different fields of the same item
         when: merge runs
+      - given: both versions modify different fields of the same item
+        id: ac-3
         then: fields are merged (non-conflicting field changes combined)
-      - id: ac-4
-        given: both versions modify the same scalar field (title, description, priority) of the same item
         when: merge runs
+      - given: both versions modify the same scalar field (title, description, priority) of the same item
+        id: ac-4
         then: user is prompted interactively to choose which value to keep
-      - id: ac-5
-        given: both versions modify append-only arrays (notes, todos)
         when: merge runs
+      - given: both versions modify append-only arrays (notes, todos)
+        id: ac-5
         then: arrays are union merged by ULID (notes never conflict)
-      - id: ac-6
-        given: both versions modify set-like arrays (tags, depends_on)
         when: merge runs
+      - given: both versions modify set-like arrays (tags, depends_on)
+        id: ac-6
         then: arrays are set-unioned (duplicates removed)
-      - id: ac-7
-        given: both versions modify nested objects (status, traceability)
         when: merge runs
+      - given: both versions modify nested objects (status, traceability)
+        id: ac-7
         then: nested fields are merged recursively at field level
-      - id: ac-8
-        given: one version deletes an item while other modifies it
         when: merge runs
+      - given: one version deletes an item while other modifies it
+        id: ac-8
         then: user is prompted interactively to choose delete vs keep modified
-      - id: ac-9
-        given: merge completes with no true conflicts
-        when: driver exits
+        when: merge runs
+      - given: merge completes with no true conflicts
+        id: ac-9
         then: exit code 0, merged YAML written to output path
-      - id: ac-10
-        given: merge has unresolvable conflicts and --non-interactive flag set
         when: driver exits
+      - given: merge has unresolvable conflicts and --non-interactive flag set
+        id: ac-10
         then: conflict markers written as YAML comments, exit code 0 (prevents git fallback)
-      - id: ac-11
-        given: YAML parsing fails on any input file
-        when: driver runs
+        when: driver exits
+      - given: YAML parsing fails on any input file
+        id: ac-11
         then: "falls back gracefully: copies ours verbatim, creates .kspec-merge-failed marker, exits 0"
-      - id: ac-12
-        given: kspec init runs in a new repo
-        when: initialization completes
+        when: driver runs
+      - given: kspec init runs in a new repo
+        id: ac-12
         then: merge driver is configured in .git/config and .gitattributes updated in shadow branch
+        when: initialization completes
+    tags: []
     requirements:
       - _ulid: 01KFM7AV3TV8XSTRGZDNV5PQ9N
         slugs:
           - merge-driver-cli
         title: Merge Driver CLI
         type: requirement
-        tags: []
         description: CLI subcommand that git invokes as the custom merge driver. Inherits @trait-dry-run and
           @trait-error-guidance from parent.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
         tests: []
         traits: []
-        notes: []
-        created: 2026-01-23T01:26:08.251Z
         acceptance_criteria:
-          - id: ac-1
-            given: git invokes merge driver with standard arguments
-            when: kspec merge-driver %O %A %B %L %P runs
+          - given: git invokes merge driver with standard arguments
+            id: ac-1
             then: driver reads base (%O), ours (%A), theirs (%B) files and writes merged result to %A path
-          - id: ac-2
-            given: driver runs successfully
-            when: processing completes
+            when: kspec merge-driver %O %A %B %L %P runs
+          - given: driver runs successfully
+            id: ac-2
             then: stderr shows summary of what was merged/conflicted for user visibility
-          - id: ac-3
-            given: --non-interactive flag is passed
-            when: conflicts detected
+            when: processing completes
+          - given: --non-interactive flag is passed
+            id: ac-3
             then: driver writes conflicts as YAML comments instead of prompting
-        status:
-          maturity: draft
-          implementation: in_progress
+            when: conflicts detected
+        tags: []
+        created: 2026-01-23T01:26:08.251Z
+        notes: []
       - _ulid: 01KFM7BG7CN59MPYWHRB9HSK9N
         slugs:
           - merge-file-detection
         title: File Type Detection
         type: requirement
-        tags: []
         description: Merge driver must correctly identify kspec file types to apply appropriate merge
           strategies.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
         tests: []
         traits: []
-        notes: []
-        created: 2026-01-23T01:26:29.868Z
         acceptance_criteria:
-          - id: ac-1
-            given: file is *.tasks.yaml
-            when: merge driver runs
+          - given: file is *.tasks.yaml
+            id: ac-1
             then: tasks array is merged using task-specific strategy
-          - id: ac-2
-            given: file is *.inbox.yaml
             when: merge driver runs
+          - given: file is *.inbox.yaml
+            id: ac-2
             then: items array is merged using inbox-specific strategy
-          - id: ac-3
-            given: file is modules/*.yaml
             when: merge driver runs
+          - given: file is modules/*.yaml
+            id: ac-3
             then: spec items are merged recursively with nested children
-          - id: ac-4
-            given: file is kynetic.yaml
             when: merge driver runs
+          - given: file is kynetic.yaml
+            id: ac-4
             then: "manifest fields merged: includes as set-union, project fields prompt on conflict, config
               merged recursively"
-          - id: ac-5
-            given: file is kynetic.meta.yaml
             when: merge driver runs
+          - given: file is kynetic.meta.yaml
+            id: ac-5
             then: arrays (agents, workflows, conventions, observations) merged by ULID, context fields merged at
               field level
-          - id: ac-6
-            given: file is not a recognized kspec file
             when: merge driver runs
+          - given: file is not a recognized kspec file
+            id: ac-6
             then: driver falls back to default behavior (copy ours)
-          - id: ac-7
-            given: file has root-level array (e.g., *.tasks.yaml, *.inbox.yaml)
-            when: merge driver processes
+            when: merge driver runs
+          - given: file has root-level array (e.g., *.tasks.yaml, *.inbox.yaml)
+            id: ac-7
             then: root is identified as array and ULID-based array merge applied to root
-        status:
-          maturity: draft
-          implementation: in_progress
+            when: merge driver processes
+        tags: []
+        created: 2026-01-23T01:26:29.868Z
+        notes: []
       - _ulid: 01KFXSFHV34AN5G6TD88NK41K7
         slugs:
           - merge-ref-normalization
         title: Reference Normalization in Merges
         type: requirement
-        tags: []
         description: When merging set-like arrays containing kspec references (depends_on, blocked_by,
           spec_ref), references should be normalized to canonical form before comparison to prevent
           false conflicts.
+        status:
+          maturity: draft
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
         tests: []
         traits: []
-        notes: []
-        created: 2026-01-26T18:36:26.851Z
         acceptance_criteria:
-          - id: ac-1
-            given: both versions add refs to depends_on array
-            when: one uses @slug and other uses @ULID for same item
+          - given: both versions add refs to depends_on array
+            id: ac-1
             then: refs are deduplicated (one entry in result, not two)
-          - id: ac-2
-            given: merge encounters ref that cannot be resolved
-            when: normalization runs
+            when: one uses @slug and other uses @ULID for same item
+          - given: merge encounters ref that cannot be resolved
+            id: ac-2
             then: ref is kept as-is (no error, graceful degradation)
-        status:
-          maturity: draft
-          implementation: implemented
-    status:
-      maturity: draft
-      implementation: in_progress
+            when: normalization runs
+        tags: []
+        created: 2026-01-26T18:36:26.851Z
+        notes: []
+    created: 2026-01-23T01:25:01.370Z
+    notes: []
 requirements:
   - _ulid: 01KKB938JSR6M7ZBN3NHR6ABRS
     slugs:
       - shadow-ac-backfill
     title: Shadow Branch AC Backfill
     type: requirement
-    tags: []
     description: Add acceptance criteria to spec items under @shadow-branch that lack them. Covers
       orphan branch worktree mechanics, auto-commit, sync, and merge driver.
+    status:
+      maturity: draft
+      implementation: implemented
     depends_on: []
     implements: []
     relates_to: []
     tests: []
     traits: []
-    notes: []
-    created: 2026-03-10T07:06:34.457Z
     acceptance_criteria:
-      - id: ac-coverage
-        given: All feature and requirement items under @shadow-branch module
-        when: kspec validate --completeness runs
+      - given: All feature and requirement items under @shadow-branch module
+        id: ac-coverage
         then: Zero missing acceptance criteria warnings for @shadow-branch descendants
-      - id: ac-testable
-        given: Each newly added AC
-        when: It is reviewed
+        when: kspec validate --completeness runs
+      - given: Each newly added AC
+        id: ac-testable
         then: It follows given/when/then format with concrete, observable outcomes
-    status:
-      maturity: draft
-      implementation: implemented
+        when: It is reviewed
+    tags: []
+    created: 2026-03-10T07:06:34.457Z
+    notes: []
