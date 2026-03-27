@@ -25285,7 +25285,7 @@ workspaces:
         head: f49cb5287187d1fe85c0b991136206dfae17d9c7
         last_seen_at: 2026-03-27T21:53:26.315Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cli-proxy-routing-01kmmb3v
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: f3fb67c100a1c342dcbe251b36da3bfa3e6f2112
     bootstrap:
       status: succeeded
@@ -25395,7 +25395,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-27T21:53:28.103Z
+      updated_at: 2026-03-27T21:53:33.821Z
     integration:
       status: pending
       detail: null
@@ -25410,10 +25410,10 @@ workspaces:
     task_slug: extract-setupshadowdetection-to-shared-test-helpers
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-27T21:44:49.734Z
-      last_reconciled_at: 2026-03-27T21:53:28.103Z
+      last_active_at: 2026-03-27T21:53:33.821Z
+      last_reconciled_at: 2026-03-27T21:53:33.821Z
       created_at: 2026-03-27T21:44:44.404Z
-      updated_at: 2026-03-27T21:53:32.486Z
+      updated_at: 2026-03-27T21:53:33.821Z
     workspace_id: dispatch-workspace-01KMRGJ8VGS65ZE2569WXT31D7
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
