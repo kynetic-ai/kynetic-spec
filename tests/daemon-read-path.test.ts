@@ -31,10 +31,12 @@ import { createMetaRoutes } from "../dist/daemon/routes/meta.ts";
 import { PubSubManager } from "../dist/daemon/websocket/pubsub.ts";
 import type { RouteEntityCache, EntityCacheAccessor } from "../dist/daemon/routes/entity-cache-types.ts";
 import type { TaskSummary } from "../dist/parser/task-data-manager.ts";
-import type { ItemSummary, TriageIndexSummary, PlanIndexSummary, ReviewIndexSummary } from "../dist/daemon/entity-cache.ts";
+import type { ItemSummary, TriageIndexSummary, PlanIndexSummary, ReviewIndexSummary, CachedShadowInfo, CachedProjectConfig } from "../dist/daemon/entity-cache.ts";
 import type { MetaContext } from "../dist/parser/meta.ts";
 import type { LoadedInboxItem, LoadedSpecItem, LoadedTask } from "../dist/parser/yaml.ts";
 import { ShadowSyncScheduler } from "../src/parser/shadow-sync-scheduler.js";
+import * as parserModule from "../dist/parser/index.js";
+import * as shadowModule from "../dist/parser/shadow.js";
 
 // ─── Test Data ────────────────────────────────────────────────────────────────
 
@@ -240,6 +242,8 @@ function createWarmCache(options: {
   inbox?: LoadedInboxItem[];
   triage?: TriageIndexSummary[];
   meta?: MetaContext;
+  shadowInfo?: CachedShadowInfo;
+  projectConfig?: CachedProjectConfig;
 } = {}): RouteEntityCache {
   const tasks = options.tasks ?? [makeTaskSummary()];
   const items = options.items ?? [makeItemSummary()];
@@ -249,6 +253,20 @@ function createWarmCache(options: {
   const inbox = options.inbox ?? [makeInboxItem()];
   const triage = options.triage ?? [makeTriageSummary()];
   const meta = options.meta ?? makeMetaContext();
+  const shadowInfo: CachedShadowInfo = options.shadowInfo ?? {
+    enabled: true,
+    branch_name: "kspec-meta",
+    worktree_dir: "/tmp/test/.kspec",
+    healthy: true,
+    remote_tracking: false,
+  };
+  const projectConfig: CachedProjectConfig = options.projectConfig ?? {
+    project: { name: "Read Path Test", version: "0.1.0", status: "draft" },
+    spec_version: "1.0",
+    root_dir: "/tmp/test",
+    remote_tracking: null,
+    daemon: { port: 3456, host: "localhost", auto_start: false },
+  };
 
   const taskDetails = new Map<string, LoadedTask>();
   for (const t of fullTasks) taskDetails.set(t._ulid, t);
@@ -287,6 +305,8 @@ function createWarmCache(options: {
     getMetaIndex: () => ({ projectName: "test" }),
     getMetaDetail: () => meta,
     setMetaDetail: () => {},
+    getShadowInfo: () => shadowInfo,
+    getProjectConfig: () => projectConfig,
     writeThrough: async (domain: string) => { writeThroughCalls.push(domain); },
     markWriteThrough: () => {},
     // Expose for test assertions
@@ -637,6 +657,84 @@ describe("ac-no-per-request-sync: read routes serve from cache without git opera
     const body = (await res.json()) as { items: Array<{ domain: string }>; total: number };
     expect(body.total).toBe(1);
     expect(body.items[0].domain).toBe("testing");
+  });
+
+  // AC: @daemon-read-path ac-no-per-request-sync
+  it("GET /api/meta/shadow serves from cached shadow info", async () => {
+    const res = await makeRequest("/api/meta/shadow");
+    expect(res.status).toBe(200);
+
+    const body = (await res.json()) as {
+      enabled: boolean;
+      branch_name: string | null;
+      worktree_dir: string | null;
+      healthy: boolean;
+      remote_tracking: boolean;
+    };
+    expect(body.enabled).toBe(true);
+    expect(body.branch_name).toBe("kspec-meta");
+    expect(body.healthy).toBe(true);
+    expect(body.remote_tracking).toBe(false);
+  });
+
+  // AC: @daemon-read-path ac-no-per-request-sync
+  it("GET /api/meta/config serves from cached project config", async () => {
+    const res = await makeRequest("/api/meta/config");
+    expect(res.status).toBe(200);
+
+    const body = (await res.json()) as {
+      project: { name: string; version: string; status: string } | null;
+      spec_version: string | null;
+      root_dir: string;
+      daemon: { port: number; host: string; auto_start: boolean };
+    };
+    expect(body.project?.name).toBe("Read Path Test");
+    expect(body.spec_version).toBe("1.0");
+    expect(body.daemon.port).toBe(3456);
+  });
+
+  // AC: @daemon-read-path ac-no-per-request-sync
+  // Behavioral proof: verify that no parser/shadow git-backed helpers are invoked
+  // during read requests when the cache is warm. A regression that re-introduced
+  // per-request disk/git work would trigger these spies.
+  it("read routes do not call initContext or git-backed helpers when cache is warm", async () => {
+    const initContextSpy = vi.spyOn(parserModule, "initContext");
+    const getShadowStatusSpy = vi.spyOn(shadowModule, "getShadowStatus");
+    const hasRemoteTrackingSpy = vi.spyOn(shadowModule, "hasRemoteTracking");
+
+    try {
+      // Hit every read route that should serve from cache
+      const readRoutes = [
+        "/api/tasks",
+        "/api/items",
+        "/api/inbox",
+        "/api/aggregation/tasks/summary",
+        "/api/aggregation/inbox",
+        `/api/search?q=Read+Path`,
+        "/api/meta/agents",
+        "/api/meta/workflows",
+        "/api/meta/conventions",
+        "/api/meta/shadow",
+        "/api/meta/config",
+        "/api/meta/observations",
+        "/api/refs",
+        "/api/plans",
+      ];
+
+      for (const route of readRoutes) {
+        const res = await makeRequest(route);
+        expect(res.status, `${route} should return 200`).toBe(200);
+      }
+
+      // None of the git-backed helpers should have been called
+      expect(initContextSpy).not.toHaveBeenCalled();
+      expect(getShadowStatusSpy).not.toHaveBeenCalled();
+      expect(hasRemoteTrackingSpy).not.toHaveBeenCalled();
+    } finally {
+      initContextSpy.mockRestore();
+      getShadowStatusSpy.mockRestore();
+      hasRemoteTrackingSpy.mockRestore();
+    }
   });
 });
 

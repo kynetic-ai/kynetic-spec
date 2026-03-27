@@ -256,7 +256,17 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
       )
 
       // AC: @ui-settings-view ac-1 - Project config from manifest
+      // AC: @daemon-read-path ac-no-per-request-sync — serve from cache when available
       .get("/config", async ({ projectContext }) => {
+        const cache = getEntityCache?.(projectContext.path);
+        const metaDomainState = cache?.getDomainState("meta");
+
+        if (cache && metaDomainState === "ready") {
+          const cachedConfig = cache.getProjectConfig();
+          if (cachedConfig) return cachedConfig;
+        }
+
+        // Fallback: cache not ready or no cached config
         const ctx = await initContext(projectContext.path);
         const manifest = ctx.manifest;
         const config = ctx.config;
@@ -277,7 +287,17 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
       })
 
       // AC: @ui-settings-view ac-1 - Shadow branch status
+      // AC: @daemon-read-path ac-no-per-request-sync — serve from cache when available
       .get("/shadow", async ({ projectContext }) => {
+        const cache = getEntityCache?.(projectContext.path);
+        const metaDomainState = cache?.getDomainState("meta");
+
+        if (cache && metaDomainState === "ready") {
+          const cachedShadow = cache.getShadowInfo();
+          if (cachedShadow) return cachedShadow;
+        }
+
+        // Fallback: cache not ready or no cached shadow info
         const ctx = await initContext(projectContext.path);
 
         if (!ctx.shadow) {

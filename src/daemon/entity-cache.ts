@@ -45,6 +45,7 @@ import { loadReviewRecords, type LoadedReviewRecord } from "../parser/reviews.js
 import { type LoadedPlan } from "../parser/plans.js";
 import { computeDisposition } from "../parser/review-operations.js";
 import { getUnresolvedBlockers } from "../parser/review-threads.js";
+import { getShadowStatus, hasRemoteTracking } from "../parser/shadow.js";
 import {
   type SessionLogSummary,
   getSessionMetadataOnly,
@@ -261,6 +262,24 @@ export interface MetaSummary {
   modules?: string[];
 }
 
+/** Cached shadow branch status, computed at cache load time to avoid per-request git ops. */
+export interface CachedShadowInfo {
+  enabled: boolean;
+  branch_name: string | null;
+  worktree_dir: string | null;
+  healthy: boolean;
+  remote_tracking: boolean;
+}
+
+/** Cached project config, computed at cache load time to avoid per-request initContext. */
+export interface CachedProjectConfig {
+  project: { name?: string; version?: string; status?: string } | null;
+  spec_version: string | null;
+  root_dir: string;
+  remote_tracking: { value: string; type: string } | null;
+  daemon: { port: number; host: string; auto_start: boolean };
+}
+
 /** Session cache configuration. */
 export interface SessionCacheConfig {
   /** Maximum number of session summaries to keep in index (default 100). */
@@ -435,6 +454,12 @@ export class ProjectEntityCache {
     index: null,
     details: new Map(),
   };
+
+  /** Cached shadow branch status, populated during meta domain load. */
+  private cachedShadowInfo: CachedShadowInfo | null = null;
+
+  /** Cached project config, populated during meta domain load. */
+  private cachedProjectConfig: CachedProjectConfig | null = null;
 
   /**
    * In-flight reload promises for dedup.
@@ -636,6 +661,22 @@ export class ProjectEntityCache {
   }
 
   /**
+   * Get cached shadow branch status (computed at cache load time).
+   * AC: @daemon-read-path ac-no-per-request-sync
+   */
+  getShadowInfo(): CachedShadowInfo | null {
+    return this.cachedShadowInfo;
+  }
+
+  /**
+   * Get cached project config (computed at cache load time).
+   * AC: @daemon-read-path ac-no-per-request-sync
+   */
+  getProjectConfig(): CachedProjectConfig | null {
+    return this.cachedProjectConfig;
+  }
+
+  /**
    * Get session summaries from index tier.
    * Applies live event counters for active sessions.
    * AC: @daemon-entity-cache ac-serve-from-memory
@@ -817,6 +858,56 @@ export class ProjectEntityCache {
           ),
         };
         this.meta.details.set("_context", metaCtx);
+
+        // AC: @daemon-read-path ac-no-per-request-sync — cache shadow status
+        // and project config so /api/meta/shadow and /api/meta/config routes
+        // serve from memory without per-request git operations.
+        if (ctx.shadow) {
+          const status = await getShadowStatus(ctx.rootDir, {
+            branchName: ctx.shadow.branchName,
+            directory: ctx.config.shadow.directory,
+          });
+          if (this.disposed) return;
+          const hasRemote = await hasRemoteTracking(ctx.shadow.worktreeDir, {
+            branchName: ctx.shadow.branchName,
+          });
+          if (this.disposed) return;
+          this.cachedShadowInfo = {
+            enabled: ctx.shadow.enabled,
+            branch_name: ctx.shadow.branchName,
+            worktree_dir: ctx.shadow.worktreeDir,
+            healthy: status.healthy,
+            remote_tracking: hasRemote,
+          };
+        } else {
+          this.cachedShadowInfo = {
+            enabled: false,
+            branch_name: null,
+            worktree_dir: null,
+            healthy: false,
+            remote_tracking: false,
+          };
+        }
+
+        this.cachedProjectConfig = {
+          project: ctx.manifest?.project
+            ? {
+                name: ctx.manifest.project.name,
+                version: ctx.manifest.project.version,
+                status: ctx.manifest.project.status,
+              }
+            : null,
+          spec_version: ctx.manifest?.kynetic ?? null,
+          root_dir: ctx.projectRoot,
+          remote_tracking: ctx.config.shadow.remote
+            ? { value: ctx.config.shadow.remote.value, type: ctx.config.shadow.remote.type }
+            : null,
+          daemon: {
+            port: ctx.config.daemon.port,
+            host: ctx.config.daemon.host,
+            auto_start: ctx.config.daemon.auto_start,
+          },
+        };
         break;
       }
       case "inbox": {
