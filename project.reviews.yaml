@@ -71988,7 +71988,18 @@ reviews:
     slugs: []
     title: Review add-update-alias-for-item-ac-set
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed: 1957/1957 suites, 7031 tests passed, 5 skipped, 0 failed. Verified full suite in
+          detached review snapshot."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-27T23:55:30.456Z
+        completed_at: 2026-03-27T23:55:30.456Z
     events:
       - _ulid: 01KMRVAM03E8Z7YKCCNJNJQ7YR
         actor: "@claude"
@@ -72003,6 +72014,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-27T23:51:14.138Z
+      - _ulid: 01KMRVJX9Q3NCEF39CRS273RJ4
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-27T23:55:30.999Z
     examined_commit: 51c2d344148c824d6cba110a27bdb3628191d2e4
     external_links: []
     lifecycle_state: open
@@ -72015,5 +72033,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-27T23:50:59.331Z
-    updated_at: 2026-03-27T23:51:13.533Z
+    updated_at: 2026-03-27T23:55:30.456Z
     notes: []
