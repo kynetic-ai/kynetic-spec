@@ -693,3 +693,24 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T08:31:23.836Z
+  - _ulid: 01KMQ7GG4FYZ8E09A7WSAE6HND
+    content: >-
+      Fix cycle 22: addressed all 4 blockers from review cycle 22.
+
+
+      1. items.ts /:ref/tasks — wired to entity cache for hot reads (same pattern as /:ref/sessions)
+
+      2. sessions.ts /:id — cache-based session ID resolution when sessions domain ready (avoids
+      disk scan)
+
+      3. entity-cache.ts writeThrough() — moved markWriteThrough() after loadDomain() to prevent
+      skip-flag being set on failed reloads
+
+      4. test.cjs — added dist/daemon/entity-cache.ts to BUILD_ARTIFACTS sentinel list; updated
+      test-runner tests
+
+
+      All 6915 tests pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T08:45:26.031Z
