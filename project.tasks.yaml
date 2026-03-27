@@ -22817,7 +22817,7 @@
   title: Add update alias for item ac set
   type: task
   spec_ref: "@item-ac"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 3
@@ -22830,4 +22830,5 @@
   created_at: 2026-03-27T23:44:36.108Z
   started_at: 2026-03-27T23:45:27.462Z
   submitted_at: 2026-03-27T23:49:24.678Z
+  completed_at: 2026-03-27T23:56:16.001Z
   automation: eligible
