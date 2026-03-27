@@ -22549,7 +22549,7 @@
   started_at: 2026-03-27T09:12:51.361Z
   submitted_at: 2026-03-27T09:12:58.703Z
   completed_at: 2026-03-27T09:23:26.671Z
-  automation: eligible
+  automation: manual_only
 - _ulid: 01KMMB3TNHWVQT4HHB9XC1DE0X
   slugs:
     - task-migrate-read-routes
