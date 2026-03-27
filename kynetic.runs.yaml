@@ -16866,7 +16866,7 @@ runs:
     completed_at: 2026-03-27T18:08:43.918Z
   - _ulid: 01KMRD30F002MXHVSFKHE6DXTF
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -16881,7 +16881,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-27T19:42:33.756Z
-        completed_at: 2026-03-27T19:42:33.756Z
+        completed_at: 2026-03-27T19:42:59.450Z
+        notes: "Friction: (1) The dist/ directory contains a mix of compiled .js files (dist/parser/) and
+          raw .ts copies (dist/daemon/routes/). This caused a test import error — I tried importing
+          from dist/parser/yaml.ts but only dist/parser/yaml.js exists, while
+          dist/daemon/routes/tasks.ts exists as .ts. This inconsistency is confusing but is an
+          existing architectural decision, not something to change in this session. (2) Delegating
+          route-level changes across 13 files to a subagent was effective but required careful
+          verification — I had to rebuild and test to confirm all changes were correct. No new
+          friction patterns to capture — this was a straightforward fix cycle."
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-27T19:42:59.450Z
+        completed_at: 2026-03-27T19:42:59.450Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-27T19:42:09.888Z
