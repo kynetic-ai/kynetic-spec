@@ -8347,6 +8347,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T00:58:28.185Z
+  - _ulid: 01KMPCSF6KYDCHJ212S1816FP6
+    type: friction
+    content: Recording kspec review findings through shell commands is fragile when the body contains
+      Markdown/backticks. My first review comment was truncated by shell interpolation, forcing a
+      second cleanly-encoded comment. This is avoidable tooling friction around review comment
+      capture.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T00:58:28.435Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
