@@ -63713,6 +63713,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-27T15:14:09.105Z
+      - _ulid: 01KMQXR9A38BMNWM9SZGMNX7F3
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMQXR83Q06XGDB1B2C1DGZKZ
+        timestamp: 2026-03-27T15:14:09.860Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -63722,8 +63729,32 @@ reviews:
       content_hash: ""
       ref: "@task-entity-cache-impl"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMQXR83Q06XGDB1B2C1DGZKZ
+        entries:
+          - _ulid: 01KMQXR83QCF2W1VJKV0S7RKHJ
+            author: Jacob Chapel
+            body: >-
+              Evidence log:
+
+              Files read: src/daemon/entity-cache.ts, tests/daemon-entity-cache.test.ts,
+              kspec-agents.md, .agents/skills/work-gates/SKILL.md
+
+              Commands run: kspec task get @task-entity-cache-impl; kspec item get
+              @daemon-entity-cache; kspec validate; git diff --stat
+              8c5552ff04fc8ac0cea99ff21a36901825fc4499..57cea6c025d03814ab4ca81bc328b0ec5b668bdd;
+              npm test; npm test -- tests/daemon-entity-cache.test.ts -t "should NOT suppress
+              watcher invalidation when writeThrough reload fails"
+
+              Claims verified: previous blocker no longer reproduces because writeThrough() only
+              marks skip when domain state is ready; targeted test confirmed failed reload degrades
+              then next invalidateDomain() recovers the domain
+
+              Categories searched: correctness, edge cases, graceful degradation, watcher
+              invalidation behavior, AC coverage, integration with existing loadDomain semantics
+            created_at: 2026-03-27T15:14:08.631Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-27T15:10:26.506Z
-    updated_at: 2026-03-27T15:14:08.627Z
+    updated_at: 2026-03-27T15:14:08.631Z
     notes: []
