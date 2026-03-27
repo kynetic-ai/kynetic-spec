@@ -68301,6 +68301,26 @@ reviews:
         runner: npm
         created_at: 2026-03-27T19:18:31.992Z
         completed_at: 2026-03-27T19:18:31.992Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: packages/daemon/src/routes/{aggregation,meta,sessions,validation}.ts;
+          packages/daemon/src/server.ts; packages/daemon/src/routes/entity-cache-types.ts;
+          src/daemon/entity-cache.ts;
+          src/parser/{shadow-sync-scheduler,refs,alignment,yaml,split-backend,task-data-manager}.ts;
+          tests/{daemon-read-path,daemon-entity-cache,daemon-cache-route-coverage}.test.ts. Commands
+          run: kspec task get, kspec item get, kspec review for-task/get, git diff/stat/log/show, rg
+          for AC annotations, kspec validate, npm test. Claims verified: final fix removes search
+          warmup partial-result gap and sessions disk fallback; read routes stay off initContext/git
+          helpers when cache is warm; background sync invokes cache reload hook after pulls.
+          Categories searched: correctness, warmup edge cases, error handling, test quality,
+          integration."
+        name: review evidence
+        required: false
+        runner: codex
+        created_at: 2026-03-27T19:18:33.696Z
+        completed_at: 2026-03-27T19:18:33.696Z
     events:
       - _ulid: 01KMRBFD4MZ5YBX03Y6XQES0Y6
         actor: "@claude"
@@ -68322,6 +68342,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-27T19:18:32.549Z
+      - _ulid: 01KMRBQSZZNMGJ0M4BE82R8DDE
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence
+        timestamp: 2026-03-27T19:18:34.239Z
     examined_commit: 8ae2423732110bca31c147700fc0de1d01f538bd
     external_links: []
     lifecycle_state: open
@@ -68334,5 +68361,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-27T19:13:58.932Z
-    updated_at: 2026-03-27T19:18:31.992Z
+    updated_at: 2026-03-27T19:18:33.696Z
     notes: []
