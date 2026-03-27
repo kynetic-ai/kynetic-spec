@@ -67054,6 +67054,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-27T18:09:51.709Z
+      - _ulid: 01KMR859YHQRZS81PW3KWQ4KB3
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMR859DKVCAHCHFJ1ZP8XRXC
+        timestamp: 2026-03-27T18:16:02.258Z
     examined_commit: 01190340e042aca9fafa2e7e552744dcb7cc9db1
     external_links: []
     lifecycle_state: open
@@ -67063,8 +67070,26 @@ reviews:
       content_hash: ""
       ref: "@01KMMB3TNHWVQT4HHB9XC1DE0X"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMR859DKVCAHCHFJ1ZP8XRXC
+        anchor:
+          type: code
+          commit: 01190340e042aca9fafa2e7e552744dcb7cc9db1
+          line_end: 316
+          line_start: 273
+          path: packages/daemon/src/routes/meta.ts
+          side: head
+        entries:
+          - _ulid: 01KMR859DKEZQHEVZSW3XDJK66
+            author: "@claude"
+            body: "Blocking:  and  still bypass the cache during warmup. This branch only special-cases ; when
+              the meta domain is , both routes fall through to  and the shadow helpers instead of
+              returning a loading response like the other meta read routes do. Because  marks
+              domains  up front specifically to avoid disk/git reads during warmup, an early request
+              to either endpoint still performs per-request context/git work, which violates ."
+            created_at: 2026-03-27T18:16:01.715Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T18:09:37.768Z
-    updated_at: 2026-03-27T18:09:51.156Z
+    updated_at: 2026-03-27T18:16:01.715Z
     notes: []
