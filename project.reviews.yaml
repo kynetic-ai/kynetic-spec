@@ -68789,6 +68789,12 @@ reviews:
           kind: nit
           thread_ulid: 01KMRE7F9DCRNEN3PEKWDNSQ1S
         timestamp: 2026-03-27T20:02:05.651Z
+      - _ulid: 01KMRE8GW3PWBTKCHXDR1A3KFF
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMRE66N3SZMXSBFYEBMTKVQ5
+        timestamp: 2026-03-27T20:02:39.107Z
     examined_commit: e3f2e4a91fad8fc5c4c845816337769785a03ed9
     external_links: []
     lifecycle_state: open
@@ -68818,6 +68824,8 @@ reviews:
               mutations, so this regression path is untested."
             created_at: 2026-03-27T20:01:23.107Z
         kind: blocker
+        resolved_at: 2026-03-27T20:02:38.165Z
+        resolved_by: "@claude"
       - _ulid: 01KMRE7CBRQZFZXH8AN52PRRJC
         anchor:
           type: code
@@ -68868,5 +68876,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-27T19:53:48.559Z
-    updated_at: 2026-03-27T20:02:04.718Z
+    updated_at: 2026-03-27T20:02:38.165Z
     notes: []
