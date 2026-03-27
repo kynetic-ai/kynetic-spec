@@ -67916,6 +67916,12 @@ reviews:
         payload:
           thread_ulid: 01KMR9V6CPQNXZNZ1VKN568P4Y
         timestamp: 2026-03-27T19:09:57.632Z
+      - _ulid: 01KMRB85RCYT403C0X18HCPRJQ
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMR9V6CPQNXZNZ1VKN568P4Y
+        timestamp: 2026-03-27T19:10:01.996Z
     examined_commit: 1fdbf904e3dd52c1fbad1aaed1da6381a92309b4
     external_links: []
     lifecycle_state: closed
@@ -67953,6 +67959,8 @@ reviews:
               branches unreachable."
             created_at: 2026-03-27T19:09:56.980Z
         kind: blocker
+        resolved_at: 2026-03-27T19:10:01.330Z
+        resolved_by: "@claude"
       - _ulid: 01KMR9VA7Y0CGANJ0J3JHMYA4Y
         anchor:
           type: code
@@ -68021,7 +68029,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T18:46:04.149Z
     created_at: 2026-03-27T18:40:25.839Z
-    updated_at: 2026-03-27T19:09:56.980Z
+    updated_at: 2026-03-27T19:10:01.330Z
     notes: []
   - _ulid: 01KMRAQHWS379EEZTGXYXXPEXF
     slugs: []
