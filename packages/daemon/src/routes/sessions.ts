@@ -40,6 +40,7 @@ import {
   resolveTaskDataManager,
   type KspecContext,
   type LoadedTask,
+  type LoadedSpecItem,
 } from "../../parser/index.js";
 import { resolveRefTitle } from "./ref-resolution.js";
 import { getSessionCache } from "../../sessions/cache.js";
@@ -96,7 +97,7 @@ function filterSessionsByTaskRefs(
 }
 
 async function filterSessionSummaries(
-  ctx: KspecContext,
+  getCtx: (() => Promise<KspecContext>) | KspecContext,
   query: SessionListQuery,
   options?: { getEntityCache?: EntityCacheAccessor; projectPath?: string },
 ): Promise<
@@ -113,6 +114,9 @@ async function filterSessionSummaries(
       };
     }
 > {
+  // Support both lazy factory and pre-initialized context for backward compatibility
+  const resolveCtx = typeof getCtx === "function" ? getCtx : async () => getCtx;
+
   const validStatuses = SessionStatusSchema.options;
   const statusValues = normalizeValues(query.status);
   const invalidStatuses = statusValues.filter(
@@ -143,7 +147,8 @@ async function filterSessionSummaries(
   if (sessionsDomainReady) {
     allSummaries = entityCache!.getSessionIndex() ?? [];
   } else {
-    // Fallback to standalone SessionSummaryCache
+    // Fallback to standalone SessionSummaryCache — needs ctx for sessionsDir
+    const ctx = await resolveCtx();
     const sessionCache = getSessionCache(ctx.sessionsDir);
     allSummaries = await sessionCache.getAll(ctx.sessionsDir);
   }
@@ -182,8 +187,14 @@ async function filterSessionSummaries(
   let tasks: LoadedTask[] | null = null;
   let items: Awaited<ReturnType<typeof loadAllItems>> | null = null;
   const ensureAlignmentContext = async () => {
-    if (!tasks) tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
-    if (!items) items = await loadAllItems(ctx);
+    if (!tasks) {
+      const ctx = await resolveCtx();
+      tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+    }
+    if (!items) {
+      const ctx = await resolveCtx();
+      items = await loadAllItems(ctx);
+    }
     return { tasks, items };
   };
 
@@ -301,10 +312,15 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
             };
           }
 
-          // AC: @daemon-entity-cache ac-serve-from-memory — initContext deferred;
-          // filterSessionSummaries uses cache when sessions domain is ready
-          const ctx = await initContext(projectContext.path);
-          const filteredResult = await filterSessionSummaries(ctx, query, {
+          // AC: @daemon-entity-cache ac-serve-from-memory — defer initContext to avoid
+          // disk/git work on cache hits. Only initialize when disk fallback is needed.
+          let _ctx: KspecContext | null = null;
+          const getCtx = async () => {
+            if (!_ctx) _ctx = await initContext(projectContext.path);
+            return _ctx;
+          };
+
+          const filteredResult = await filterSessionSummaries(getCtx, query, {
             getEntityCache,
             projectPath: projectContext.path,
           });
@@ -322,13 +338,21 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
           const paginated = filtered.slice(offset, offset + limit);
 
           // AC: @ui-api-ref-resolution ac-1 — Resolve task_title for session summaries
+          // AC: @daemon-entity-cache ac-serve-from-memory — use cached tasks/items when available
           let refIndex: ReferenceIndex | null = null;
           const taskIdsPresent = paginated.some((s) => s.task_id);
           if (taskIdsPresent) {
             try {
-              const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
-              const items = await loadAllItems(ctx);
-              refIndex = new ReferenceIndex(tasks, items);
+              const cache = getEntityCache?.(projectContext.path);
+              const tasksDomainReady = cache && cache.getDomainState("tasks") === "ready";
+              const itemsDomainReady = cache && cache.getDomainState("items") === "ready";
+              const tasks = tasksDomainReady
+                ? (cache!.getTaskIndex() as unknown as LoadedTask[])
+                : await resolveTaskDataManager(await getCtx()).loadAllTasks(await getCtx());
+              const items = itemsDomainReady
+                ? (cache!.getItemIndex() as unknown as LoadedSpecItem[])
+                : await loadAllItems(await getCtx());
+              refIndex = new ReferenceIndex(tasks ?? [], items ?? []);
             } catch {
               // Non-critical — task_title will be null
             }
@@ -339,7 +363,7 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
           }));
 
           // Detect legacy sessions and include warning in response
-          const legacyCount = await countLegacySessions(ctx.specDir);
+          const legacyCount = await countLegacySessions((await getCtx()).specDir);
 
           // AC: @session-filter-controls ac-filter-counts — Include unfiltered_total in response
           return {

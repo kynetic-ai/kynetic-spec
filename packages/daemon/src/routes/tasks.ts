@@ -235,8 +235,13 @@ export function createTasksRoutes(options: TasksRouteOptions) {
       .get(
         "/:ref",
         async ({ params, error: errorResponse, projectContext }) => {
-          // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-          const ctx = await initContext(projectContext.path);
+          // AC: @daemon-entity-cache ac-serve-from-memory, ac-detail-on-demand — defer initContext
+          // to avoid disk/git work on cache hits. Only initialize when disk fallback is needed.
+          let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
+          const getCtx = async () => {
+            if (!_ctx) _ctx = await initContext(projectContext.path);
+            return _ctx;
+          };
 
           // AC: @daemon-entity-cache ac-detail-on-demand — check cache first, fall back to disk
           const cache = getEntityCache?.(projectContext.path);
@@ -258,6 +263,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
 
           // AC: @task-data-manager ac-3 — fall back to disk if not in detail cache
           if (!task) {
+            const ctx = await getCtx();
             try {
               task = await resolveTaskDataManager(ctx).getTask(ctx, params.ref);
             } catch (err) {
@@ -287,20 +293,20 @@ export function createTasksRoutes(options: TasksRouteOptions) {
             items = cache.getItemIndex();
           }
           if (!items) {
-            items = await loadAllItems(ctx);
+            items = await loadAllItems(await getCtx());
           }
           if (cache && plansDomainState === "ready") {
             plans = cache.getPlansIndex();
           }
           if (!plans) {
-            plans = await loadPlans(ctx);
+            plans = await loadPlans(await getCtx());
           }
           // AC: @daemon-entity-cache ac-serve-from-memory — use cached tasks for ref index
           let tasksForIndex: LoadedTask[] | TaskSummary[];
           if (cache && cache.getDomainState("tasks") === "ready" && cache.getTaskIndex()) {
             tasksForIndex = cache.getTaskIndex()!;
           } else {
-            tasksForIndex = await resolveTaskDataManager(ctx).listTasks(ctx);
+            tasksForIndex = await resolveTaskDataManager(await getCtx()).listTasks(await getCtx());
           }
           const index = new ReferenceIndex(tasksForIndex as unknown as LoadedTask[], items, [], plans);
 

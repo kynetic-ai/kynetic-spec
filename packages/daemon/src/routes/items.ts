@@ -393,8 +393,13 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
       .get(
         "/:ref",
         async ({ params, error: errorResponse, projectContext }) => {
-          // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-          const ctx = await initContext(projectContext.path);
+          // AC: @daemon-entity-cache ac-serve-from-memory, ac-detail-on-demand — defer initContext
+          // to avoid disk/git work on cache hits. Only initialize when disk fallback is needed.
+          let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
+          const getCtx = async () => {
+            if (!_ctx) _ctx = await initContext(projectContext.path);
+            return _ctx;
+          };
 
           // AC: @daemon-entity-cache ac-detail-on-demand — check cache detail tier first
           const cache = getEntityCache?.(projectContext.path);
@@ -409,7 +414,7 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
             const tasksDomainReady = cache!.getDomainState("tasks") === "ready";
             const tasks = tasksDomainReady
               ? (cache!.getTaskIndex() as unknown as LoadedTask[])
-              : await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+              : await resolveTaskDataManager(await getCtx()).loadAllTasks(await getCtx());
             if (cachedItems) {
               const index = new ReferenceIndex(tasks ?? [], cachedItems as unknown as LoadedSpecItem[]);
               const result = index.resolve(params.ref);
@@ -423,7 +428,7 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
           if (resolvedUlid && cache) {
             const cachedDetail = cache.getItemDetail(resolvedUlid);
             if (cachedDetail) {
-              // Serve from detail cache
+              // Serve from detail cache — no initContext() needed on this path
               // Use the full item index for parent map so nested items resolve correctly
               const parentMapSource = (itemsDomainReady ? cache!.getItemIndex() : null) ?? [cachedDetail];
               const parentMap = computeParentMap(parentMapSource);
@@ -455,11 +460,11 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
           }
 
           // Detail not in cache — load from disk
-          const items = await loadAllItems(ctx);
+          const items = await loadAllItems(await getCtx());
           // AC: @daemon-entity-cache ac-serve-from-memory — use cached tasks when available
           const tasks =
             (cache && cache.getDomainState("tasks") === "ready" ? cache.getTaskIndex() : null)
-            ?? (await resolveTaskDataManager(ctx).loadAllTasks(ctx));
+            ?? (await resolveTaskDataManager(await getCtx()).loadAllTasks(await getCtx()));
           const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
 
           // Compute parent relationships from path structure
