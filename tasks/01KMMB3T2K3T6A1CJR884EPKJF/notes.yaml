@@ -279,3 +279,28 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T01:40:42.778Z
+  - _ulid: 01KMPFT7YK9SQJMX00M6CK28G2
+    content: >-
+      Fix cycle 6: addressed 2 unique blockers (4 threads, 2 duplicates).
+
+
+      Blocker 1 (detail tier incomplete for plans/reviews/triage): Added detail getters/setters for
+      plans, reviews, and triage to both RouteEntityCache interface and ProjectEntityCache class.
+      Plan detail route searches cached plans index before disk fallback. Review detail route
+      searches cached reviews index. Triage detail route searches cached triage index with lazy
+      initContext.
+
+
+      Blocker 2 (meta reads bypass cache): Meta GET routes (agents, workflows, observations,
+      conventions) now serve from cached MetaContext when the meta domain is ready. Added
+      getMetaDetail()/setMetaDetail() to RouteEntityCache. Meta domain doLoadDomain now loads full
+      MetaContext into detail tier alongside the MetaSummary index.
+
+
+      Also: plans/reviews/triage domain reloads now clear detail caches on invalidation.
+
+
+      Re-verified all 15 ACs against implementation. Tests: 6899 passed, 5 skipped, 0 failures.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T01:51:19.507Z
