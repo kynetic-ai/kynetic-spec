@@ -609,3 +609,14 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T06:29:17.073Z
+  - _ulid: 01KMQ0H1WX7X3P2G7S565DF3NB
+    content: "Fix cycle 18: addressed 1 blocker from review cycle 18. Blocker (ref index status shape):
+      buildRefIndex and resolveRefEntries were casting spec item status as string, but spec items
+      have object status {maturity, implementation}. Added normalizeStatus() helper that extracts
+      implementation (preferred) or maturity from object statuses, passing string statuses through
+      unchanged. Updated tests to use realistic object status shapes. All 21 ref-resolution tests
+      pass. Full suite: 1928 pass, 3 flaky pre-existing failures (canonical-workspace and
+      dispatch-bootstrap contracts that pass in isolation)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T06:43:24.189Z
