@@ -63044,7 +63044,19 @@ reviews:
     slugs: []
     title: Review @01KMMB3T2K3T6A1CJR884EPKJF
     author: "@claude"
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Reproduced locally with ProjectEntityCache(maxIndexSize: 1): cache index retained only
+          ['session-2']; resolveSessionId() on disk still resolved 'session-0'; the route's
+          ready-cache resolution logic returned not_found instead of falling back to disk."
+        name: bounded session detail repro
+        required: true
+        runner: tsx
+        created_at: 2026-03-27T08:54:23.441Z
+        completed_at: 2026-03-27T08:54:23.441Z
     events:
       - _ulid: 01KMQ7S7C3T3MDJ9H0YY4YY8WZ
         actor: "@claude"
@@ -63066,6 +63078,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMQ80VHN0D244R9XBVPVJQK7
         timestamp: 2026-03-27T08:54:22.480Z
+      - _ulid: 01KMQ80XC7GQWZCB9H7HGE8SN5
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: bounded session detail repro
+        timestamp: 2026-03-27T08:54:23.880Z
     examined_commit: 4893ca5183e4b193cc808f3f61fe778ada10e017
     external_links: []
     lifecycle_state: open
@@ -63099,5 +63118,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-27T08:50:11.971Z
-    updated_at: 2026-03-27T08:54:22.005Z
+    updated_at: 2026-03-27T08:54:23.441Z
     notes: []
