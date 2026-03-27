@@ -66543,6 +66543,13 @@ reviews:
           kind: nit
           thread_ulid: 01KMR698BP7BAH731100AEF9E8
         timestamp: 2026-03-27T17:43:15.021Z
+      - _ulid: 01KMR69AAK0A9SGFQ1G15WT8C6
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMR699VEF4ZFNQ2451MJKN9C
+        timestamp: 2026-03-27T17:43:16.564Z
     examined_commit: 87a703c5621e68433037da356a68de5007562e68
     external_links: []
     lifecycle_state: open
@@ -66596,7 +66603,24 @@ reviews:
               (server wiring + cache reload path).
             created_at: 2026-03-27T17:43:14.551Z
         kind: nit
+      - _ulid: 01KMR699VEF4ZFNQ2451MJKN9C
+        anchor:
+          type: code
+          commit: 87a703c5621e68433037da356a68de5007562e68
+          line_end: 50
+          line_start: 47
+          path: packages/daemon/src/routes/meta.ts
+          side: head
+        entries:
+          - _ulid: 01KMR699VEKW51FZJW8NK9XNJ4
+            author: "@claude"
+            body: "Blocking:  still does per-request context initialization and session-context loading. That
+              leaves a read-only daemon route outside the cache migration, so  is still false for
+              this endpoint. Evidence: this handler unconditionally calls  and then , and  reads the
+              session YAML from disk."
+            created_at: 2026-03-27T17:43:16.078Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T17:39:12.945Z
-    updated_at: 2026-03-27T17:43:14.551Z
+    updated_at: 2026-03-27T17:43:16.078Z
     notes: []
