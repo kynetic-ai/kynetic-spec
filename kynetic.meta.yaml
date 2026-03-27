@@ -8876,6 +8876,26 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T17:44:55.600Z
+  - _ulid: 01KMR6N0EBCTYH35EJZ4NZVSFH
+    type: friction
+    content: "Elysia lifecycle gotcha: onBeforeHandle does NOT fire on body validation failures. Elysia
+      runs validation between onTransform and onBeforeHandle. Any setup that must apply to ALL
+      responses (including validation errors) — like X-Request-Id headers — must use onTransform,
+      not onBeforeHandle. This cost multiple fix cycles on the command API task."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T17:49:39.659Z
+  - _ulid: 01KMR6N0JXJ9FJVEP5SAD5T9NH
+    type: success
+    content: Using the kspec() test helper as ground-truth reference for response parity tests proved
+      effective. The helper's .trim() is well-documented and the test logic accounts for it by
+      checking containment rather than exact equality, while separately asserting the API preserves
+      trailing whitespace.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T17:49:39.806Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
