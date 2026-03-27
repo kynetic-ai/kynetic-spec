@@ -17,8 +17,13 @@ description: |
 spec_ref: "@session-summary-cache"
 plan_ref: "@plan-daemon-optimistic-data-layer"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Approved in review @01KMREVM. Verified the shadow-branch diff is exactly the new
+  relates_to link from @session-summary-cache to @daemon-entity-cache, which matches the prior
+  implemented entity-cache work that absorbed SessionSummaryCache. Full npm test passed in the
+  review snapshot; kspec validate showed only pre-existing warnings. No manual merge was needed
+  because dispatch/task/task-link-session-cache/01kmmb3w is already integrated into dev.
 depends_on:
   - "@task-entity-cache-impl"
 context: []
@@ -85,8 +90,27 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-03-27T20:13:06.997Z
+  - author: "@claude"
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Approved in review @01KMREVM. Verified the shadow-branch diff is exactly the new relates_to
+          link from @session-summary-cache to @daemon-entity-cache, which matches the prior
+          implemented entity-cache work that absorbed SessionSummaryCache. Full npm test passed in
+          the review snapshot; kspec validate showed only pre-existing warnings. No manual merge was
+          needed because dispatch/task/task-link-session-cache/01kmmb3w is already integrated into
+          dev.
+        previous: null
+      completed_at:
+        new: 2026-03-27T20:13:56.351Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-03-27T20:13:56.354Z
 created_at: 2026-03-26T05:50:44.168Z
 started_at: 2026-03-27T20:05:19.812Z
 submitted_at: 2026-03-27T20:06:51.601Z
+completed_at: 2026-03-27T20:13:56.351Z
 todos: []
 automation: eligible
