@@ -59009,6 +59009,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMPPVAP68RQNQQWJ4CMNNSTS
         timestamp: 2026-03-27T03:54:15.548Z
+      - _ulid: 01KMPPVCJ3W33T1CPJT7G4SX75
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMPPVC3NYHP5TM8PNWBMDR2F
+        timestamp: 2026-03-27T03:54:17.027Z
     examined_commit: 50e673a272bd2a8a1c4abd98c41643c3747a39e0
     external_links: []
     lifecycle_state: open
@@ -59054,7 +59061,24 @@ reviews:
               for cross-domain mutations."
             created_at: 2026-03-27T03:54:15.110Z
         kind: blocker
+      - _ulid: 01KMPPVC3NYHP5TM8PNWBMDR2F
+        anchor:
+          type: code
+          commit: 50e673a272bd2a8a1c4abd98c41643c3747a39e0
+          line_end: 65
+          line_start: 41
+          path: packages/daemon/src/routes/refs.ts
+          side: head
+        entries:
+          - _ulid: 01KMPPVC3P58HSGHZY3E24C663
+            author: "@claude"
+            body: This endpoint ignores the new loading contract. For any domain that is not , it falls straight
+              back to  + disk reads instead of returning a loading response while the cache is
+              warming. During startup warmup,  therefore defeats / and reintroduces exactly the
+              cold-read behavior this task is supposed to remove.
+            created_at: 2026-03-27T03:54:16.566Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T03:46:39.770Z
-    updated_at: 2026-03-27T03:54:15.110Z
+    updated_at: 2026-03-27T03:54:16.566Z
     notes: []
