@@ -70065,6 +70065,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-27T22:13:09.355Z
+      - _ulid: 01KMRP30ZK6KAJJRWB7CA9RGCX
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMRNQ00RH5GPF7C6P1JWBF6T
+        timestamp: 2026-03-27T22:19:27.603Z
     examined_commit: 5efcd4a5853a2c8af498456961106cb3d38f2a86
     external_links: []
     lifecycle_state: closed
@@ -70096,6 +70102,14 @@ reviews:
               that depends on this fixture now hangs before the browser phase, and `npm test` does
               not catch it because Playwright runs under the separate `npm test:e2e` workflow."
             created_at: 2026-03-27T22:12:53.400Z
+          - _ulid: 01KMRP30EK3FR2R9DXH1PAWX75
+            author: "@claude"
+            body: "Fixed: Updated packages/web-ui/tests/fixtures/test-base.ts line 142 from --daemon to
+              --detach. The old --daemon flag was being parsed as the new global proxy option
+              instead of the serve start detach flag. Verified no other stale references exist (grep
+              confirmed only the error-message references in index.ts which correctly refer to the
+              global --daemon flag). Full test suite passes (7030/7030)."
+            created_at: 2026-03-27T22:19:27.058Z
         kind: blocker
       - _ulid: 01KMRNQ4MGSP54WY6DJDST576E
         entries:
@@ -70124,5 +70138,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T22:13:09.354Z
     created_at: 2026-03-27T22:09:11.097Z
-    updated_at: 2026-03-27T22:13:09.355Z
+    updated_at: 2026-03-27T22:19:27.058Z
     notes: []
