@@ -541,14 +541,30 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
       )
 
       // AC: @api-contract ac-11 - Get tasks linked to spec item
+      // AC: @daemon-entity-cache ac-serve-from-memory — use cached indexes when available
       .get(
         "/:ref/tasks",
         async ({ params, error: errorResponse, projectContext }) => {
-          // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-          const ctx = await initContext(projectContext.path);
-          // Linked-tasks needs full LoadedSpecItem[] and LoadedTask[] for AlignmentIndex
-          const items = await loadAllItems(ctx);
-          const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+          // AC: @daemon-entity-cache ac-serve-from-memory — defer initContext on cache hits
+          const cache = getEntityCache?.(projectContext.path);
+          const tasksDomainReady = cache && cache.getDomainState("tasks") === "ready";
+          const itemsDomainReady = cache && cache.getDomainState("items") === "ready";
+
+          let items: LoadedSpecItem[];
+          let tasks: LoadedTask[];
+
+          if (tasksDomainReady && itemsDomainReady) {
+            // TaskSummary/ItemSummary have _ulid + slugs + spec_ref — sufficient for
+            // ReferenceIndex + AlignmentIndex linkage
+            tasks = (cache!.getTaskIndex() ?? []) as unknown as LoadedTask[];
+            items = (cache!.getItemIndex() ?? []) as unknown as LoadedSpecItem[];
+          } else {
+            // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+            const ctx = await initContext(projectContext.path);
+            items = await loadAllItems(ctx);
+            tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+          }
+
           const refIndex = new ReferenceIndex(tasks, items);
           const alignIndex = new AlignmentIndex(tasks, items);
           alignIndex.buildLinks(refIndex);
@@ -576,22 +592,26 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
           const linkedTasks = alignIndex.getTasksForSpec(result.ulid);
 
           // Return tasks with summary info
-          const result_items = linkedTasks.map((task) => ({
-            _ulid: task._ulid,
-            slugs: task.slugs,
-            title: task.title,
-            type: task.type || "task",
-            status: task.status,
-            priority: task.priority,
-            spec_ref: task.spec_ref,
-            tags: task.tags || [],
-            depends_on: task.depends_on || [],
-            started_at: task.started_at,
-            completed_at: task.completed_at,
-            created_at: task.created_at,
-            notes_count: task.notes?.length || 0,
-            todos_count: task.todos?.length || 0,
-          }));
+          // TaskSummary has notes_count/todos_count directly; LoadedTask has notes/todos arrays
+          const result_items = linkedTasks.map((task) => {
+            const t = task as LoadedTask & { notes_count?: number; todos_count?: number };
+            return {
+              _ulid: t._ulid,
+              slugs: t.slugs,
+              title: t.title,
+              type: t.type || "task",
+              status: t.status,
+              priority: t.priority,
+              spec_ref: t.spec_ref,
+              tags: t.tags || [],
+              depends_on: t.depends_on || [],
+              started_at: t.started_at,
+              completed_at: t.completed_at,
+              created_at: t.created_at,
+              notes_count: t.notes_count ?? t.notes?.length ?? 0,
+              todos_count: t.todos_count ?? t.todos?.length ?? 0,
+            };
+          });
 
           return {
             items: result_items,

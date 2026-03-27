@@ -31,6 +31,7 @@ import {
   getBudget,
   searchSessionEvents,
   type SessionLogSummary,
+  type SessionIdResolution,
 } from "../../sessions/store.js";
 import { countLegacySessions } from "../../sessions/legacy.js";
 import {
@@ -491,8 +492,38 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
           return _ctx;
         };
 
-        // Resolve session ID (supports prefix matching)
-        const resolution = await resolveSessionId(sessionsDir, params.id);
+        // AC: @daemon-entity-cache ac-detail-on-demand — check unified cache first
+        const sessionsDomainReady = sessionsDomainState === "ready";
+
+        // AC: @daemon-entity-cache ac-serve-from-memory — resolve session ID from cache when
+        // available to avoid disk scan; fall back to disk-based resolution otherwise.
+        let resolution: SessionIdResolution;
+        if (sessionsDomainReady) {
+          const index = entityCache!.getSessionIndex();
+          if (index) {
+            const sessionIds = index.map((s) => s.id);
+            // Exact match
+            if (sessionIds.includes(params.id)) {
+              resolution = { ok: true, id: params.id };
+            } else {
+              // Prefix match
+              const matches = sessionIds.filter((id) => id.startsWith(params.id));
+              if (matches.length === 1) {
+                resolution = { ok: true, id: matches[0] };
+              } else if (matches.length > 1) {
+                resolution = { ok: false, error: "ambiguous", matches };
+              } else {
+                resolution = { ok: false, error: "not_found" };
+              }
+            }
+          } else {
+            // Cache ready but empty index — fall back to disk
+            resolution = await resolveSessionId(sessionsDir, params.id);
+          }
+        } else {
+          resolution = await resolveSessionId(sessionsDir, params.id);
+        }
+
         if (!resolution.ok) {
           if (resolution.error === "ambiguous") {
             return errorResponse(400, {
@@ -507,9 +538,6 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
             suggestion: "Use GET /api/sessions to list available sessions",
           });
         }
-
-        // AC: @daemon-entity-cache ac-detail-on-demand — check unified cache first
-        const sessionsDomainReady = sessionsDomainState === "ready";
 
         let detail: SessionLogSummary | null = null;
 

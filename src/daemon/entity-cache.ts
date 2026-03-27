@@ -953,11 +953,16 @@ export class ProjectEntityCache {
    * Write-through update: refresh domain index from disk and skip
    * the next watcher invalidation.
    *
+   * Only sets the skip flag after loadDomain() succeeds — if the reload
+   * fails the watcher invalidation must NOT be suppressed, so a subsequent
+   * file-change event can still recover the domain from degraded state.
+   *
    * AC: @daemon-entity-cache ac-write-through
    */
   async writeThrough(domain: CacheDomain): Promise<void> {
-    this.markWriteThrough(domain);
     await this.loadDomain(domain);
+    // Only suppress the next watcher invalidation when the reload succeeded
+    this.markWriteThrough(domain);
   }
 
   // ─── Lifecycle ───────────────────────────────────────────────────────────

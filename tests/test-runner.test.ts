@@ -168,6 +168,7 @@ describe("test runner environment checks", () => {
           "dist/cli/index.js",
           "dist/web-ui/index.html",
           "dist/daemon/index.ts",
+          "dist/daemon/entity-cache.ts",
         ]) {
           const fullPath = path.join(tempDir, artifact);
           fs.mkdirSync(path.dirname(fullPath), { recursive: true });
@@ -183,6 +184,7 @@ describe("test runner environment checks", () => {
           "dist/cli/index.js",
           "dist/web-ui/index.html",
           "dist/daemon/index.ts",
+          "dist/daemon/entity-cache.ts",
         ]) {
           const fullPath = path.join(tempDir, artifact);
           fs.mkdirSync(path.dirname(fullPath), { recursive: true });
