@@ -69484,7 +69484,18 @@ reviews:
     slugs: []
     title: Review task-daemon-command-api (cycle 9)
     author: "@claude"
-    checks: []
+    checks:
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Exited 6 with pre-existing repo-wide warnings (orphaned skills/specs and global AC
+          coverage warnings). No task-specific validation blocker observed for @daemon-command-api.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-27T20:41:57.167Z
+        completed_at: 2026-03-27T20:41:57.167Z
     events:
       - _ulid: 01KMRG73BCF8ZRHJDEQ25H658K
         actor: "@claude"
@@ -69499,6 +69510,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-27T20:37:16.645Z
+      - _ulid: 01KMRGGG7X3WFJN3F1HVEY21ZY
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec validate
+        timestamp: 2026-03-27T20:41:57.757Z
     examined_commit: dc170993b418400aeedeba1a53323ec4f275efd4
     external_links: []
     lifecycle_state: open
@@ -69511,5 +69529,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-27T20:36:49.645Z
-    updated_at: 2026-03-27T20:37:16.010Z
+    updated_at: 2026-03-27T20:41:57.167Z
     notes: []
