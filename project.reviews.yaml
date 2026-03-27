@@ -68795,9 +68795,25 @@ reviews:
         payload:
           thread_ulid: 01KMRE66N3SZMXSBFYEBMTKVQ5
         timestamp: 2026-03-27T20:02:39.107Z
+      - _ulid: 01KMRE8TV4QYBEPKSP3MEFBBNQ
+        actor: test@example.com
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-27T20:02:49.316Z
+      - _ulid: 01KMRE8TV5T8Z8927TZHYVDJEB
+        actor: test@example.com
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-27T20:02:49.317Z
     examined_commit: e3f2e4a91fad8fc5c4c845816337769785a03ed9
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -68874,7 +68890,14 @@ reviews:
               integration, cache invalidation, response parity.
             created_at: 2026-03-27T20:02:04.718Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: test@example.com
+        role: reviewer
+        created_at: 2026-03-27T20:02:49.316Z
     created_at: 2026-03-27T19:53:48.559Z
-    updated_at: 2026-03-27T20:02:38.165Z
+    updated_at: 2026-03-27T20:02:49.317Z
     notes: []
