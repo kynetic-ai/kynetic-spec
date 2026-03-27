@@ -46,9 +46,19 @@ export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
           const tasksDomainState = cache?.getDomainState("tasks");
           const itemsDomainState = cache?.getDomainState("items");
 
+          const inboxDomainState = cache?.getDomainState("inbox");
+          const metaDomainState = cache?.getDomainState("meta");
+
           // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
-          // Check all domains that search touches: tasks, items, inbox, meta
-          if (cache && (tasksDomainState === "loading" || itemsDomainState === "loading")) {
+          // Check all domains that search touches: tasks, items, inbox, meta.
+          // Any domain still warming means partial results — return loading instead.
+          if (
+            cache &&
+            (tasksDomainState === "loading" ||
+              itemsDomainState === "loading" ||
+              inboxDomainState === "loading" ||
+              metaDomainState === "loading")
+          ) {
             return { results: [], total: 0, showing: 0, _cache_status: "loading" as const };
           }
 
@@ -135,12 +145,8 @@ export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
 
           // AC: @api-contract ac-19 - Search inbox items
           if (!query.itemsOnly && !query.tasksOnly) {
-            const inboxDomainState = cache?.getDomainState("inbox");
             let inboxItems;
-            if (cache && inboxDomainState === "loading") {
-              // Skip inbox search during warmup — tasks/items already covered above
-              inboxItems = [];
-            } else if (cache && inboxDomainState === "ready") {
+            if (cache && inboxDomainState === "ready") {
               inboxItems = cache.getInboxIndex() ?? [];
             } else {
               inboxItems = await loadInboxItems(await getCtx());
@@ -160,15 +166,11 @@ export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
 
           // AC: @api-contract ac-19 - Search meta entities
           if (!query.itemsOnly && !query.tasksOnly) {
-            const metaDomainState = cache?.getDomainState("meta");
             let metaCtx;
-            if (cache && metaDomainState === "loading") {
-              // Skip meta search during warmup — no disk reads
-              metaCtx = null;
-            } else if (cache && metaDomainState === "ready") {
+            if (cache && metaDomainState === "ready") {
               metaCtx = cache.getMetaDetail();
             }
-            if (!metaCtx && !(cache && metaDomainState === "loading")) {
+            if (!metaCtx) {
               metaCtx = await loadMetaContext(await getCtx());
             }
 

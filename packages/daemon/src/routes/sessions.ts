@@ -588,41 +588,45 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
         if (metadata?.task_id) {
           try {
             // AC: @daemon-entity-cache ac-serve-from-memory — use cached tasks for task_title resolution
+            // AC: @daemon-read-path ac-no-per-request-sync — never fall back to disk reads.
+            // When tasks/items domains aren't ready, omit task_title and spec_context
+            // (non-critical enrichment) rather than calling initContext()/loadAll*.
             const tasksDomainReady = entityCache && entityCache.getDomainState("tasks") === "ready";
-            const tasks = tasksDomainReady
-              ? (entityCache!.getTaskIndex() as unknown as LoadedTask[])
-              : await resolveTaskDataManager(await getCtx()).loadAllTasks(await getCtx());
-
-            // For spec_context we need full spec items with acceptance_criteria content.
-            // AC: @daemon-read-path ac-no-per-request-sync — use cached item details
-            // (populated eagerly during domain load) instead of per-request disk reads.
             const itemsDomainReady = entityCache && entityCache.getDomainState("items") === "ready";
-            const items: LoadedSpecItem[] = itemsDomainReady
-              ? (entityCache!.getAllItemDetails() ?? await loadAllItems(await getCtx()))
-              : await loadAllItems(await getCtx());
-            const index = new ReferenceIndex(tasks ?? [], items ?? []);
-            const taskResult = index.resolve(metadata.task_id);
-            if (taskResult.ok) {
-              const task = taskResult.item as { title?: string; spec_ref?: string };
-              task_title = task.title ?? null;
-              if (task.spec_ref) {
-                const specResult = index.resolve(task.spec_ref);
-                if (specResult.ok) {
-                  const specItem = specResult.item as {
-                    title: string;
-                    acceptance_criteria?: Array<{ description?: string; given?: string }>;
-                  };
-                  spec_context = {
-                    spec_ref: task.spec_ref,
-                    title: specItem.title,
-                    acceptance_criteria: (specItem.acceptance_criteria ?? []).map((ac, i) => ({
-                      id: `ac-${i + 1}`,
-                      description: ac.description ?? ac.given ?? "",
-                    })),
-                  };
+
+            if (tasksDomainReady && itemsDomainReady) {
+              const tasks = entityCache!.getTaskIndex() as unknown as LoadedTask[];
+
+              // For spec_context we need full spec items with acceptance_criteria content.
+              // AC: @daemon-read-path ac-no-per-request-sync — use cached item details
+              // (populated eagerly during domain load) instead of per-request disk reads.
+              const items: LoadedSpecItem[] = entityCache!.getAllItemDetails() ?? [];
+              const index = new ReferenceIndex(tasks ?? [], items ?? []);
+              const taskResult = index.resolve(metadata.task_id);
+              if (taskResult.ok) {
+                const task = taskResult.item as { title?: string; spec_ref?: string };
+                task_title = task.title ?? null;
+                if (task.spec_ref) {
+                  const specResult = index.resolve(task.spec_ref);
+                  if (specResult.ok) {
+                    const specItem = specResult.item as {
+                      title: string;
+                      acceptance_criteria?: Array<{ description?: string; given?: string }>;
+                    };
+                    spec_context = {
+                      spec_ref: task.spec_ref,
+                      title: specItem.title,
+                      acceptance_criteria: (specItem.acceptance_criteria ?? []).map((ac, i) => ({
+                        id: `ac-${i + 1}`,
+                        description: ac.description ?? ac.given ?? "",
+                      })),
+                    };
+                  }
                 }
               }
             }
+            // else: tasks/items domains not ready — skip enrichment.
+            // task_title and spec_context remain null; client sees them once cache is warm.
           } catch {
             // Non-critical — spec context is optional
           }
