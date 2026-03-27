@@ -60317,6 +60317,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMPTG2W2MPWBTF80M7EMVMK0
         timestamp: 2026-03-27T04:58:01.556Z
+      - _ulid: 01KMPTG59AJ0663B3GZ7B04Y4E
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMPTG4NRGJK83KH0JEY2PRQR
+        timestamp: 2026-03-27T04:58:03.434Z
     examined_commit: c903c3369660d1b9746492fa5c1fd4e9844eaec3
     external_links: []
     lifecycle_state: open
@@ -60347,7 +60354,27 @@ reviews:
               contract during startup.
             created_at: 2026-03-27T04:58:00.962Z
         kind: blocker
+      - _ulid: 01KMPTG4NRGJK83KH0JEY2PRQR
+        anchor:
+          type: code
+          commit: c903c3369660d1b9746492fa5c1fd4e9844eaec3
+          line_end: 276
+          line_start: 271
+          path: src/daemon/entity-cache.ts
+          side: head
+        entries:
+          - _ulid: 01KMPTG4NRJFYPRN196DFWK2J7
+            author: "@claude"
+            body: "fileToDomain() still misses split-task storage paths, so watcher invalidation never fires for
+              per-task task.yaml/notes.yaml changes. I verified the mapper directly:
+              fileToDomain('project.tasks.yaml') returns ['tasks'], but
+              fileToDomain('tasks/01KF1645CC9N4YGP991WD7XS8S/task.yaml') and .../notes.yaml both
+              return null. In split mode addNote() explicitly writes only notes.yaml, so CLI/manual
+              edits outside the route write-through path can leave the task cache stale, which
+              breaks @daemon-entity-cache ac-watcher-invalidation and ac-granular-reload."
+            created_at: 2026-03-27T04:58:02.808Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T04:46:33.884Z
-    updated_at: 2026-03-27T04:58:00.962Z
+    updated_at: 2026-03-27T04:58:02.808Z
     notes: []
