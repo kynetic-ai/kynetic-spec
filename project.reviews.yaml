@@ -68464,7 +68464,17 @@ reviews:
     slugs: []
     title: Review @01KMMB3WBKZKVE32R64GD0YVH8
     author: "@claude"
-    checks: []
+    checks:
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Ran kspec validate; exit 6 from pre-existing repo warnings (orphaned specs/skills and
+          existing AC annotation warnings), no new schema/reference errors from this task.
+        name: kspec validate
+        required: false
+        created_at: 2026-03-27T19:46:42.865Z
+        completed_at: 2026-03-27T19:46:42.865Z
     events:
       - _ulid: 01KMRD6KX60BP8DZXRJJ3XEQ7N
         actor: "@claude"
@@ -68493,6 +68503,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMRDA48H134GG1FRG6C6G224
         timestamp: 2026-03-27T19:46:04.069Z
+      - _ulid: 01KMRDBBSS5W8RBJ8MSEF001CF
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec validate
+        timestamp: 2026-03-27T19:46:43.641Z
     examined_commit: 19583c6cbc0605de496770c02e7961c74f4c3a76
     external_links: []
     lifecycle_state: open
@@ -68544,5 +68561,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-27T19:44:08.102Z
-    updated_at: 2026-03-27T19:46:03.153Z
+    updated_at: 2026-03-27T19:46:42.865Z
     notes: []
