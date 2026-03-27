@@ -61787,7 +61787,19 @@ reviews:
     slugs: []
     title: Review entity cache with tiered storage and watcher invalidation
     author: "@claude"
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite failed: 6913 passed, 5 skipped, 1 failed test across 2 failed suites. Observed
+          failure in tests/dispatch-runtime-bootstrap-contract.test.ts during full run; log:
+          /tmp/kspec-test-cache/01KMQ0NGA5F1RK4GP1YAMEV6W4/1faf007b1b79cde4.log"
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-27T06:53:07.300Z
+        completed_at: 2026-03-27T06:53:07.300Z
     events:
       - _ulid: 01KMQ0PCNKW1EHJA0QKSW3EKCQ
         actor: "@claude"
@@ -61802,6 +61814,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-27T06:46:37.433Z
+      - _ulid: 01KMQ12VXNRZSW2V9WZ1N5164M
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-27T06:53:07.893Z
     examined_commit: 18d250b7b7c6d5fc7cf96a9ca0ec8afbeb671e1c
     external_links: []
     lifecycle_state: open
@@ -61814,5 +61833,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-27T06:46:19.059Z
-    updated_at: 2026-03-27T06:46:36.810Z
+    updated_at: 2026-03-27T06:53:07.300Z
     notes: []
