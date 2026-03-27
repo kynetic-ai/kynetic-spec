@@ -63444,6 +63444,17 @@ reviews:
         runner: test-runner
         created_at: 2026-03-27T09:25:40.107Z
         completed_at: 2026-03-27T09:25:40.107Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Focused suites passed: tests/daemon-entity-cache.test.ts and
+          tests/daemon-cache-route-coverage.test.ts (79/79)."
+        name: entity-cache targeted tests
+        required: false
+        runner: vitest
+        created_at: 2026-03-27T09:25:43.034Z
+        completed_at: 2026-03-27T09:25:43.034Z
     events:
       - _ulid: 01KMQ9RVDYV6S8TQZJN3Z6ZWGY
         actor: "@claude"
@@ -63472,6 +63483,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMQ9T71G99CGX2NNDKTS2GPG
         timestamp: 2026-03-27T09:25:42.003Z
+      - _ulid: 01KMQ9T8YVRK0W96SK9FW5CG6C
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: entity-cache targeted tests
+        timestamp: 2026-03-27T09:25:43.515Z
     examined_commit: 23ae3945faffc641ec39da1c46e99a7064bb2e4f
     external_links: []
     lifecycle_state: open
@@ -63504,5 +63522,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-27T09:24:56.894Z
-    updated_at: 2026-03-27T09:25:41.552Z
+    updated_at: 2026-03-27T09:25:43.034Z
     notes: []
