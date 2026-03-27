@@ -69674,6 +69674,13 @@ reviews:
           status: skipped
           name: kspec validate
         timestamp: 2026-03-27T21:51:33.925Z
+      - _ulid: 01KMRMGAYCBAMCBXAVVBW475BP
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMRMGAE39BKNZG75928KSHMZ
+        timestamp: 2026-03-27T21:51:46.636Z
     examined_commit: f49cb5287187d1fe85c0b991136206dfae17d9c7
     external_links: []
     lifecycle_state: open
@@ -69740,7 +69747,28 @@ reviews:
               engaged."
             created_at: 2026-03-27T21:51:20.064Z
         kind: blocker
+      - _ulid: 01KMRMGAE39BKNZG75928KSHMZ
+        entries:
+          - _ulid: 01KMRMGAE4QN77VQJMFA6QD49Q
+            author: "@claude"
+            body: "Evidence log. Files read: src/cli/daemon-proxy.ts, src/cli/index.ts,
+              tests/cli-daemon-proxy.test.ts, tests/helpers/mock-daemon.cjs,
+              tests/daemon-command-api.test.ts, src/cli/commands/task.ts, package.json,
+              kspec-agents.md, .agents/skills/review-gates/SKILL.md. Commands run: git diff/stat,
+              kspec task get, kspec review for-task, kspec item/spec context via task get, kspec
+              validate, rg AC annotations and command API references, ./node_modules/.bin/tsx
+              src/cli/index.ts --help, ./node_modules/.bin/tsx src/cli/index.ts task list --daemon,
+              ./node_modules/.bin/tsx src/cli/index.ts task list --require-daemon, npm test, and a
+              local proxyCommand reproduction against a hanging /api/projects server. Claims
+              verified: the daemon command API payload shape matches {command,args}; npm test
+              passes; the CLI does reject --daemon; project-registration stall bypasses proxy
+              timeout handling. Categories searched: correctness found 2 blockers; edge cases found
+              timeout hang on registration; error handling found incorrect force-proxy
+              surface/guidance; test quality found tests asserting the renamed flag instead of the
+              specified one; integration checked against the existing daemon command API contract."
+            created_at: 2026-03-27T21:51:46.116Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-27T21:45:22.654Z
-    updated_at: 2026-03-27T21:51:33.434Z
+    updated_at: 2026-03-27T21:51:46.116Z
     notes: []
