@@ -121,3 +121,13 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T16:53:33.890Z
+  - _ulid: 01KMR518Q10J8GNZJXTVX7H1FR
+    content: "Fix cycle 3: Addressed both blocker threads (same root cause). The command executor only
+      intercepted console.log/error/warn but CLI commands also use process.stdout.write directly
+      (e.g., plan export, session log, agent streaming). Now intercepts process.stdout.write and
+      process.stderr.write during command execution. Added plan export parity test exercising the
+      exact failing scenario. All 6964 tests pass (1944 suites), 1 new test, no regressions.
+      Re-verified all 5 spec ACs and trait ACs."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T17:21:24.193Z
