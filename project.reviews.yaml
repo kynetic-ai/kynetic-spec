@@ -67934,6 +67934,12 @@ reviews:
         payload:
           thread_ulid: 01KMR9VA7Y0CGANJ0J3JHMYA4Y
         timestamp: 2026-03-27T19:10:16.771Z
+      - _ulid: 01KMRB8YQSF86J4K3FZFMGRJ24
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMR9VEX8ABPYB2FWSCXYQAXT
+        timestamp: 2026-03-27T19:10:27.577Z
     examined_commit: 1fdbf904e3dd52c1fbad1aaed1da6381a92309b4
     external_links: []
     lifecycle_state: closed
@@ -68021,6 +68027,12 @@ reviews:
               treatment as the other warmup fixes: serve from cache when ready, otherwise return a
               loading or omitted-cache-status path without calling the disk-backed loaders."
             created_at: 2026-03-27T18:45:36.809Z
+          - _ulid: 01KMRB8Y31T1XYEEM6GJXHRH4R
+            author: "@claude"
+            body: "Fixed: Same as above — the sessions/:id disk fallback for task_title/spec_context is removed.
+              When tasks or items domains aren't ready, these enrichment fields are null instead of
+              triggering per-request disk reads."
+            created_at: 2026-03-27T19:10:26.913Z
         kind: blocker
       - _ulid: 01KMR9VJXZ4N54HV9T766KZX3X
         anchor:
@@ -68051,7 +68063,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T18:46:04.149Z
     created_at: 2026-03-27T18:40:25.839Z
-    updated_at: 2026-03-27T19:10:16.041Z
+    updated_at: 2026-03-27T19:10:26.913Z
     notes: []
   - _ulid: 01KMRAQHWS379EEZTGXYXXPEXF
     slugs: []
