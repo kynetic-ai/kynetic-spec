@@ -62763,6 +62763,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMQ6BR0NKSGZAS5BHSPT5P46
         timestamp: 2026-03-27T08:25:22.142Z
+      - _ulid: 01KMQ6BSW0JTWGT6JA8M5DRV3D
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMQ6BSDHDZ38D3KB1BGFHSF1
+        timestamp: 2026-03-27T08:25:23.584Z
     examined_commit: c96e530ea4df135b240af245f6e4f838d7c21c82
     external_links: []
     lifecycle_state: open
@@ -62829,7 +62836,26 @@ reviews:
               stale/degraded until some later unrelated change re-invalidates the domain."
             created_at: 2026-03-27T08:25:21.685Z
         kind: blocker
+      - _ulid: 01KMQ6BSDHDZ38D3KB1BGFHSF1
+        anchor:
+          type: code
+          commit: c96e530ea4df135b240af245f6e4f838d7c21c82
+          line_end: 43
+          line_start: 43
+          path: scripts/test.cjs
+          side: head
+        entries:
+          - _ulid: 01KMQ6BSDHTJNC9MXGZACNFRQ2
+            author: "@claude"
+            body: The test runner still treats only dist/daemon/index.ts as the daemon build artifact, but this
+              snapshot adds a new required file at dist/daemon/entity-cache.ts and the new
+              cache-route test imports it directly. I reproduced runner.checkBuild() returning
+              {"ok":true} after temporarily removing dist/daemon/entity-cache.ts, so npm test can
+              now reuse an incomplete dist/ instead of forcing a rebuild. That makes the
+              verification pipeline unsound for this change set.
+            created_at: 2026-03-27T08:25:23.121Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T08:13:42.769Z
-    updated_at: 2026-03-27T08:25:21.685Z
+    updated_at: 2026-03-27T08:25:23.121Z
     notes: []
