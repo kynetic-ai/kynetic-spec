@@ -69709,6 +69709,12 @@ reviews:
         payload:
           thread_ulid: 01KMRMEWE1MPQH2JDQ701J7XW1
         timestamp: 2026-03-27T21:52:24.037Z
+      - _ulid: 01KMRNAPJSY73PHVE594M467TB
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMRMF4M0PVZ6YCTWRVKV194W
+        timestamp: 2026-03-27T22:06:10.521Z
     examined_commit: f49cb5287187d1fe85c0b991136206dfae17d9c7
     external_links: []
     lifecycle_state: closed
@@ -69761,6 +69767,14 @@ reviews:
               is still unmet, and the new tests are asserting the renamed flag instead of the
               required CLI surface."
             created_at: 2026-03-27T21:51:07.392Z
+          - _ulid: 01KMRNAP1GW8BF6N60W22Z4WKF
+            author: "@claude"
+            body: "Fixed: Renamed global --require-daemon to --daemon per spec ac-force-proxy. To resolve the
+              Commander namespace collision with serve start's -d/--daemon (daemonize), renamed that
+              subcommand option to -d/--detach. The -d shorthand is preserved for backward
+              compatibility. All tests updated: E2E proxy test now uses --daemon, serve tests use
+              --detach. Build and full test suite pass (7030 tests)."
+            created_at: 2026-03-27T22:06:09.968Z
         kind: blocker
       - _ulid: 01KMRMFH00VV40230QPQWVJM4G
         anchor:
@@ -69812,7 +69826,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T21:51:56.544Z
     created_at: 2026-03-27T21:45:22.654Z
-    updated_at: 2026-03-27T21:52:23.534Z
+    updated_at: 2026-03-27T22:06:09.968Z
     notes: []
   - _ulid: 01KMRMMSSS45Z6WY9K0NGG2CA0
     slugs: []
