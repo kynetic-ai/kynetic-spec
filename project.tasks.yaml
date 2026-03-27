@@ -22812,3 +22812,19 @@
   submitted_at: 2026-03-27T21:52:27.591Z
   completed_at: 2026-03-27T21:59:10.370Z
   automation: eligible
+- _ulid: 01KMRTYXRCP5VGBPT546FTX31W
+  slugs: []
+  title: Add update alias for item ac set
+  type: task
+  spec_ref: "@item-ac"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 3
+  tags:
+    - cli
+    - dx
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-27T23:44:36.108Z
+  automation: eligible
