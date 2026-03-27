@@ -68290,7 +68290,17 @@ reviews:
     slugs: []
     title: Review task-migrate-read-routes (cycle 8)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 1947/1947 suites passed; 6970/6975 tests passed; 5 skipped.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-27T19:18:31.992Z
+        completed_at: 2026-03-27T19:18:31.992Z
     events:
       - _ulid: 01KMRBFD4MZ5YBX03Y6XQES0Y6
         actor: "@claude"
@@ -68305,6 +68315,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-27T19:14:10.901Z
+      - _ulid: 01KMRBQRB5N9S7XC0Y6MEMK81Q
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-27T19:18:32.549Z
     examined_commit: 8ae2423732110bca31c147700fc0de1d01f538bd
     external_links: []
     lifecycle_state: open
@@ -68317,5 +68334,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-27T19:13:58.932Z
-    updated_at: 2026-03-27T19:14:10.399Z
+    updated_at: 2026-03-27T19:18:31.992Z
     notes: []
