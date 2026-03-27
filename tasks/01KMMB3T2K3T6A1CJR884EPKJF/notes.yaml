@@ -573,3 +573,34 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T05:57:34.894Z
+  - _ulid: 01KMPYXTVS2B47JCXF2KQWFPMF
+    content: >-
+      Fix cycle 17: addressed 2 blockers from review cycle 17.
+
+
+      Blocker 1 (related-sessions disk bypass): tasks.ts and items.ts /:ref/sessions routes now use
+      cached TaskSummary[]/ItemSummary[] indexes when warm, avoiding
+      initContext()/loadAllTasks()/loadAllItems() disk reads. sessionsDir derived from
+      projectContext.path. Disk fallback preserved for cold cache.
+
+
+      Blocker 2 (filtered sessions disk bypass): ensureAlignmentContext() in
+      filterSessionSummaries() now checks entity cache domain state for tasks/items before loading
+      from disk. Uses the entityCache variable already captured at function scope.
+
+
+      Both fixes use TaskSummary/ItemSummary as structural stand-ins for LoadedTask/LoadedSpecItem
+      (via unknown cast) — these summary types have _ulid, slugs, spec_ref, title, status which is
+      everything ReferenceIndex, AlignmentIndex, and buildTaskRefSet actually access.
+
+
+      New test file: tests/daemon-cache-route-coverage.test.ts with 5 route-level tests proving all
+      three endpoint paths (tasks/:ref/sessions, items/:ref/sessions, sessions?task_id/spec_ref)
+      serve from warm mock cache.
+
+
+      Full suite: 6911 passed, 5 skipped, 1 failed (pre-existing timeout in
+      dispatch-runtime-bootstrap-contract).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T06:15:25.817Z
