@@ -20,7 +20,7 @@ description: |
 spec_ref: "@shadow-lazy-read-sync"
 plan_ref: "@plan-daemon-optimistic-data-layer"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-entity-cache-impl"
@@ -39,7 +39,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
   upstream_ref: refs/heads/dev
-session_id: null
+session_id: 01KMRBE51T71A5AYTD6VQCVRVR
 history:
   - author: "@claude"
     changes:
@@ -98,8 +98,21 @@ history:
         previous: 01KMR88ZTKKAC7J1D6B1NVVT3W
     command: review-verdict-needs-work
     timestamp: 2026-03-27T18:34:42.748Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KMRBE51T71A5AYTD6VQCVRVR
+        previous: null
+      started_at:
+        new: 2026-03-27T19:41:34.109Z
+        previous: 2026-03-27T18:18:24.848Z
+    command: task-start
+    timestamp: 2026-03-27T19:41:34.109Z
 created_at: 2026-03-26T05:50:43.571Z
-started_at: 2026-03-27T18:18:24.848Z
+started_at: 2026-03-27T19:41:34.109Z
 submitted_at: 2026-03-27T18:27:06.940Z
 todos: []
 automation: eligible
