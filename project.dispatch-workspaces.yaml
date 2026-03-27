@@ -25120,7 +25120,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-27T20:30:53.244Z
+      updated_at: 2026-03-27T20:31:12.515Z
     integration:
       status: merged
       detail: integration:merged
@@ -25136,18 +25136,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-27T20:20:05.736Z
-      last_reconciled_at: 2026-03-27T20:31:11.097Z
+      last_reconciled_at: 2026-03-27T20:31:12.515Z
       created_at: 2026-03-27T20:16:33.534Z
-      updated_at: 2026-03-27T20:31:11.097Z
+      updated_at: 2026-03-27T20:31:12.515Z
     workspace_id: dispatch-workspace-01KMMB3XHCBBHHWD0NFN2D57ST
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 098d671a198ed582216a99f69c059f0d562fa735
-        last_seen_at: 2026-03-27T20:19:11.196Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-update-daemon-server-desc-01kmmb3x-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-update-daemon-server-desc/01kmmb3x
