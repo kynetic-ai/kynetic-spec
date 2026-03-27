@@ -63172,6 +63172,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-27T08:54:41.799Z
+      - _ulid: 01KMQ8YMHMN9Y95YP3AD3XSZJS
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMQ80VHN0D244R9XBVPVJQK7
+        timestamp: 2026-03-27T09:10:37.876Z
     examined_commit: 4893ca5183e4b193cc808f3f61fe778ada10e017
     external_links: []
     lifecycle_state: closed
@@ -63202,6 +63208,14 @@ reviews:
               here returned { ok: false, error: 'not_found' }. This needs a disk fallback when a
               ready cache misses the requested ID/prefix."
             created_at: 2026-03-27T08:54:22.005Z
+          - _ulid: 01KMQ8YM2EC513PP305N6VWWAG
+            author: "@claude"
+            body: "Fixed: Added disk fallback when the bounded index misses the requested session ID. Now when
+              the in-memory index doesn't contain the ID (because it's outside the retained N most
+              recent), the route falls through to resolveSessionId(sessionsDir, params.id) which
+              scans the full sessions directory on disk. Added test verifying fileToDomain with
+              source='sessions' correctly maps non-ULID paths."
+            created_at: 2026-03-27T09:10:37.390Z
         kind: blocker
       - _ulid: 01KMQ80YA6W64FFD5EY8JYP2E6
         anchor:
@@ -63250,5 +63264,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T08:54:41.799Z
     created_at: 2026-03-27T08:50:11.971Z
-    updated_at: 2026-03-27T08:54:41.799Z
+    updated_at: 2026-03-27T09:10:37.390Z
     notes: []
