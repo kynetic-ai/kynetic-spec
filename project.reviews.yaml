@@ -67187,6 +67187,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMR85HF6FHSB5BV7632N6GJC
         timestamp: 2026-03-27T18:16:10.509Z
+      - _ulid: 01KMR85KMP0N31G4XWFYHVQ9AE
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMR85K3NHR1SREH5FMVKXEYP
+        timestamp: 2026-03-27T18:16:12.182Z
     examined_commit: 01190340e042aca9fafa2e7e552744dcb7cc9db1
     external_links: []
     lifecycle_state: open
@@ -67251,7 +67258,24 @@ reviews:
               entity data as required by ."
             created_at: 2026-03-27T18:16:09.959Z
         kind: blocker
+      - _ulid: 01KMR85K3NHR1SREH5FMVKXEYP
+        anchor:
+          type: code
+          commit: 01190340e042aca9fafa2e7e552744dcb7cc9db1
+          line_end: 72
+          line_start: 40
+          path: packages/daemon/src/routes/validation.ts
+          side: head
+        entries:
+          - _ulid: 01KMR85K3NJRM5GF5EB2YYDRGB
+            author: "@claude"
+            body: "Blocking:  still reintroduces per-request reads during cache warmup. The handler only uses
+              the cache when the / domains are ; if either domain is , it falls straight back
+              to  plus  / . That breaks the  contract used by the other cache-backed routes and
+              violates  for search requests that arrive before warmup finishes."
+            created_at: 2026-03-27T18:16:11.637Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T18:09:37.768Z
-    updated_at: 2026-03-27T18:16:09.959Z
+    updated_at: 2026-03-27T18:16:11.637Z
     notes: []
