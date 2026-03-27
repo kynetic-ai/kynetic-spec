@@ -69631,6 +69631,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMRMF4M0PVZ6YCTWRVKV194W
         timestamp: 2026-03-27T21:51:07.908Z
+      - _ulid: 01KMRMFHF7MMB6833JJBYSCFHJ
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMRMFH00VV40230QPQWVJM4G
+        timestamp: 2026-03-27T21:51:20.551Z
     examined_commit: f49cb5287187d1fe85c0b991136206dfae17d9c7
     external_links: []
     lifecycle_state: open
@@ -69677,7 +69684,27 @@ reviews:
               required CLI surface."
             created_at: 2026-03-27T21:51:07.392Z
         kind: blocker
+      - _ulid: 01KMRMFH00VV40230QPQWVJM4G
+        anchor:
+          type: code
+          commit: f49cb5287187d1fe85c0b991136206dfae17d9c7
+          line_end: 167
+          line_start: 158
+          path: src/cli/daemon-proxy.ts
+          side: head
+        entries:
+          - _ulid: 01KMRMFH00FXFCETJNT1F8EFJM
+            author: "@claude"
+            body: "ensureProjectRegistered issues an unbounded fetch before proxyCommand starts its command
+              timeout logic. If /api/projects stalls after the daemon passes health detection, the
+              CLI hangs indefinitely instead of hitting the read fallback or mutation error paths
+              required by the timeout ACs. I reproduced that in this workspace with a local HTTP
+              server that hangs only on /api/projects: a Promise.race returned timed-out-waiting
+              after 1.5s while proxyCommand was still pending, which shows the timeout guard never
+              engaged."
+            created_at: 2026-03-27T21:51:20.064Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T21:45:22.654Z
-    updated_at: 2026-03-27T21:51:07.392Z
+    updated_at: 2026-03-27T21:51:20.064Z
     notes: []
