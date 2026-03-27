@@ -69624,6 +69624,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMRMEWE1MPQH2JDQ701J7XW1
         timestamp: 2026-03-27T21:50:59.522Z
+      - _ulid: 01KMRMF544PD8FD271KEF8SMFY
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMRMF4M0PVZ6YCTWRVKV194W
+        timestamp: 2026-03-27T21:51:07.908Z
     examined_commit: f49cb5287187d1fe85c0b991136206dfae17d9c7
     external_links: []
     lifecycle_state: open
@@ -69651,7 +69658,26 @@ reviews:
               the renamed flag instead of the required CLI surface.
             created_at: 2026-03-27T21:50:59.010Z
         kind: blocker
+      - _ulid: 01KMRMF4M0PVZ6YCTWRVKV194W
+        anchor:
+          type: code
+          commit: f49cb5287187d1fe85c0b991136206dfae17d9c7
+          line_end: 234
+          line_start: 232
+          path: src/cli/index.ts
+          side: head
+        entries:
+          - _ulid: 01KMRMF4M0X7MFJQC6YGY89ZBQ
+            author: "@claude"
+            body: "The force-proxy AC is specified as a --daemon flag, but this snapshot only defines
+              --require-daemon here. Running ./node_modules/.bin/tsx src/cli/index.ts task list
+              --daemon in this workspace returns error: unknown option --daemon, so the
+              documented/spec force-proxy path is not actually available. That means ac-force-proxy
+              is still unmet, and the new tests are asserting the renamed flag instead of the
+              required CLI surface."
+            created_at: 2026-03-27T21:51:07.392Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T21:45:22.654Z
-    updated_at: 2026-03-27T21:50:59.010Z
+    updated_at: 2026-03-27T21:51:07.392Z
     notes: []
