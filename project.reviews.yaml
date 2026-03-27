@@ -58421,9 +58421,25 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-27T02:36:00.349Z
+      - _ulid: 01KMPJC3ASA475044BQT8D2JJP
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-27T02:36:01.753Z
+      - _ulid: 01KMPJC3AS9H5NJ9D2MAVA59KW
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-27T02:36:01.753Z
     examined_commit: 303006d7350881ac5d8a71191978dbc621d8adbd
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -58501,7 +58517,14 @@ reviews:
               unregister-cleanup requirement.
             created_at: 2026-03-27T02:35:44.382Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-27T02:36:01.753Z
     created_at: 2026-03-27T02:27:19.553Z
-    updated_at: 2026-03-27T02:35:59.930Z
+    updated_at: 2026-03-27T02:36:01.753Z
     notes: []
