@@ -57191,7 +57191,25 @@ reviews:
     slugs: []
     title: Review task-entity-cache-impl (cycle 4)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/daemon/entity-cache.ts, packages/daemon/src/server.ts,
+          packages/daemon/src/project-context.ts,
+          packages/daemon/src/routes/{tasks,items,refs,sessions,session-related}.ts,
+          src/parser/yaml.ts, scripts/test.cjs, package.json, tests/daemon-entity-cache.test.ts,
+          tests/test-runner.test.ts, tests/task-set-batch.test.ts. Commands run: kspec task get,
+          kspec item get, kspec review for-task, kspec validate, rg AC annotations, git diff/stat,
+          npm test, targeted tsx repros for manifest-backed item invalidation. Claims verified: full
+          suite passes; item loading depends on manifest + includes; current invalidation leaves
+          items stale after manifest-only changes. Categories searched: correctness, edge cases,
+          test quality, integration, packaging/build."
+        name: review-evidence
+        required: false
+        created_at: 2026-03-27T00:56:41.202Z
+        completed_at: 2026-03-27T00:56:41.202Z
     events:
       - _ulid: 01KMPCAVJ2G8SC06MPXZZTN4ZG
         actor: "@claude"
@@ -57213,6 +57231,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMPCP563BARWGZ5EPS0PYWCN
         timestamp: 2026-03-27T00:56:40.321Z
+      - _ulid: 01KMPCP6XGBN4P8CP0GQB4WP8P
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-03-27T00:56:41.649Z
     examined_commit: 37294e673fe67d970ae172f4d510c5ca5116d0fe
     external_links: []
     lifecycle_state: open
@@ -57244,5 +57269,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-27T00:50:29.571Z
-    updated_at: 2026-03-27T00:56:39.875Z
+    updated_at: 2026-03-27T00:56:41.202Z
     notes: []
