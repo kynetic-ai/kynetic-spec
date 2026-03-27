@@ -68713,7 +68713,22 @@ reviews:
     slugs: []
     title: Review task-daemon-command-api (cycle 7)
     author: "@claude"
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 'Full suite on snapshot e3f2e4a91fad failed: 2 suites failed / 1 test failed after 6967
+          passes, with the visible failure in tests/native-guard-setup.test.ts ("kspec setup native
+          guard migration does not install task-limit guard hook"). I re-ran that file in isolation
+          via node scripts/test.cjs tests/native-guard-setup.test.ts --fresh and it passed, so the
+          full-run failure is either flaky or interaction-based, but the required suite did not
+          complete cleanly.'
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-27T20:01:24.797Z
+        completed_at: 2026-03-27T20:01:24.797Z
     events:
       - _ulid: 01KMRDRAREZ1AF7WY6M7FT0EV8
         actor: "@claude"
@@ -68735,6 +68750,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMRE66N3SZMXSBFYEBMTKVQ5
         timestamp: 2026-03-27T20:01:23.627Z
+      - _ulid: 01KMRE68SSA6WPSMG6KAVSHNVN
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-27T20:01:25.305Z
     examined_commit: e3f2e4a91fad8fc5c4c845816337769785a03ed9
     external_links: []
     lifecycle_state: open
@@ -68766,5 +68788,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-27T19:53:48.559Z
-    updated_at: 2026-03-27T20:01:23.107Z
+    updated_at: 2026-03-27T20:01:24.797Z
     notes: []
