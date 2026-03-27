@@ -527,3 +527,44 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T05:22:58.135Z
+  - _ulid: 01KMPX9AYBF6J5VNGEXMMJJC0P
+    content: >-
+      Fix cycle 16: addressed 7 blockers from review cycle 16.
+
+
+      Blocker 1 (fileToDomain catch-all): Added catch-all for unrecognized .yaml files — any yaml
+      not matched by explicit domain patterns conservatively invalidates items+meta, covering
+      arbitrary manifest.includes and meta.includes paths.
+
+
+      Blocker 2 (watcher add/delete): Watcher now handles add/unlink events (Chokidar) and treats
+      ENOENT in processFileChange as file removal signal. New onFileRemoved callback wired in
+      project-context.ts for cache invalidation.
+
+
+      Blocker 3 (tasks.yaml mapping): Added bare tasks.yaml to fileToDomain task domain check
+      alongside *.tasks.yaml.
+
+
+      Blocker 4 (task detail warmup): Task detail route returns {_cache_status: 'loading'} during
+      warmup instead of falling through to disk.
+
+
+      Blocker 5 (item detail warmup): Item detail route returns {_cache_status: 'loading'} during
+      warmup.
+
+
+      Blocker 6 (sessions list disk avoidance): countLegacySessions only called when _ctx was
+      already initialized (disk fallback path). Cache-hit path skips legacy scan entirely.
+
+
+      Blocker 7 (session detail initContext): Session detail defers initContext via lazy getCtx.
+      sessionsDir derived directly from projectContext.path. Added warmup loading check. Uses cached
+      tasks/items for ref resolution.
+
+
+      All 70 entity-cache tests pass. 6904 total passed, 3 pre-existing failures in unrelated
+      suites.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T05:46:45.582Z
