@@ -59574,6 +59574,66 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-27T04:21:20.264Z
+      - _ulid: 01KMPSQDGWTJ868BBVPHQ21Z13
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMPRBGJC3CR1J5CPJFDER9FH
+        timestamp: 2026-03-27T04:44:32.668Z
+      - _ulid: 01KMPSQEYZKYKCYE1MFBV768T6
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMPRBGJC3CR1J5CPJFDER9FH
+        timestamp: 2026-03-27T04:44:34.143Z
+      - _ulid: 01KMPSQGCNNJ5E4QKX4V0K1M73
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMPRBHZZCE5VPN7KJPRGM471
+        timestamp: 2026-03-27T04:44:35.606Z
+      - _ulid: 01KMPSQHT9NAWWDYKNQV9X87KF
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMPRBHZZCE5VPN7KJPRGM471
+        timestamp: 2026-03-27T04:44:37.065Z
+      - _ulid: 01KMPSQK7BW5YMV2J9JK14TZDC
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMPRBQ1C5PX9S1J2DRZ5H0Z4
+        timestamp: 2026-03-27T04:44:38.507Z
+      - _ulid: 01KMPSQMPCJPGKNX9RABWP9BGX
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMPRC4BZMV3XMNG835DHWBMF
+        timestamp: 2026-03-27T04:44:40.012Z
+      - _ulid: 01KMPSQP51H35T206XFPHDQP2V
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMPRC4BZMV3XMNG835DHWBMF
+        timestamp: 2026-03-27T04:44:41.505Z
+      - _ulid: 01KMPSQQK4SDEPJ5V763JZ65M8
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMPRC5TS3P9C3DV46E8GR91R
+        timestamp: 2026-03-27T04:44:42.980Z
+      - _ulid: 01KMPSQRZZBJ684D7AT6ZSC7VF
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMPRC7350YQ7XFR1T6AAX3AY
+        timestamp: 2026-03-27T04:44:44.415Z
+      - _ulid: 01KMPSQTCKJPX5H94WAVVY91XE
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMPRC7350YQ7XFR1T6AAX3AY
+        timestamp: 2026-03-27T04:44:45.843Z
     examined_commit: 0b9e71753e703adfded4e89a2263fd1da4310b39
     external_links: []
     lifecycle_state: closed
@@ -59603,7 +59663,15 @@ reviews:
               pattern is still present in , so cached item-detail reads also miss the optimization
               target."
             created_at: 2026-03-27T04:20:33.996Z
+          - _ulid: 01KMPSQCYEEYN51E5ETF28RZR3
+            author: "@claude"
+            body: "Fixed: Task detail route and item detail route now use lazy getCtx() pattern — initContext()
+              is deferred and only called on the disk fallback path. Cache-hit detail requests no
+              longer perform any disk/git work."
+            created_at: 2026-03-27T04:44:32.078Z
         kind: blocker
+        resolved_at: 2026-03-27T04:44:33.597Z
+        resolved_by: "@claude"
       - _ulid: 01KMPRBHZZCE5VPN7KJPRGM471
         anchor:
           type: code
@@ -59622,7 +59690,18 @@ reviews:
               That violates  for the sessions domain and leaves one of the advertised cache-wired
               routes still paying the old per-request I/O cost.
             created_at: 2026-03-27T04:20:35.456Z
+          - _ulid: 01KMPSQFVG0B1C45T37VK5431T
+            author: "@claude"
+            body: "Fixed: Sessions list route now defers initContext() with lazy getCtx().
+              filterSessionSummaries() accepts a lazy context factory — when entity cache sessions
+              domain is ready, the summaries are served from memory without ever calling
+              initContext(). Ref-title resolution also uses cached tasks/items. The only remaining
+              disk access is countLegacySessions() which is on the return path after all
+              cache-served data."
+            created_at: 2026-03-27T04:44:35.056Z
         kind: blocker
+        resolved_at: 2026-03-27T04:44:36.513Z
+        resolved_by: "@claude"
       - _ulid: 01KMPRBQ1C5PX9S1J2DRZ5H0Z4
         entries:
           - _ulid: 01KMPRBQ1CHEWT3SYEEMD08RGV
@@ -59971,6 +60050,8 @@ reviews:
               write-through, test quality/coverage, and collateral test-runner changes.
             created_at: 2026-03-27T04:20:40.620Z
         kind: question
+        resolved_at: 2026-03-27T04:44:37.949Z
+        resolved_by: "@claude"
       - _ulid: 01KMPRC4BZMV3XMNG835DHWBMF
         anchor:
           type: code
@@ -59992,7 +60073,13 @@ reviews:
               leaves one of the advertised cache-wired routes still paying the old per-request I/O
               cost.
             created_at: 2026-03-27T04:20:54.272Z
+          - _ulid: 01KMPSQM46NRF97RMEHT9CNEB5
+            author: "@claude"
+            body: "Fixed: Same as above — sessions list route uses lazy context factory pattern."
+            created_at: 2026-03-27T04:44:39.430Z
         kind: blocker
+        resolved_at: 2026-03-27T04:44:40.934Z
+        resolved_by: "@claude"
       - _ulid: 01KMPRC5TS3P9C3DV46E8GR91R
         entries:
           - _ulid: 01KMPRC5TTC0YM3HHW3Y13P7Q2
@@ -60010,6 +60097,8 @@ reviews:
               changes.'
             created_at: 2026-03-27T04:20:55.770Z
         kind: question
+        resolved_at: 2026-03-27T04:44:42.424Z
+        resolved_by: "@claude"
       - _ulid: 01KMPRC7350YQ7XFR1T6AAX3AY
         anchor:
           type: code
@@ -60031,7 +60120,13 @@ reviews:
               packages/daemon/src/routes/items.ts:397-463, so cached item-detail reads also miss the
               optimization target."
             created_at: 2026-03-27T04:20:57.061Z
+          - _ulid: 01KMPSQRF1NDQXQKNJPRCDW3KC
+            author: "@claude"
+            body: "Fixed: Same as the first thread — task detail and item detail both use lazy getCtx() now."
+            created_at: 2026-03-27T04:44:43.873Z
         kind: blocker
+        resolved_at: 2026-03-27T04:44:45.301Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -60041,7 +60136,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T04:21:20.263Z
     created_at: 2026-03-27T04:15:51.416Z
-    updated_at: 2026-03-27T04:21:20.263Z
+    updated_at: 2026-03-27T04:44:45.301Z
     notes: []
   - _ulid: 01KMPS56WAC28SYM32EFBF5WGK
     slugs: []
