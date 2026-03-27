@@ -9192,6 +9192,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T22:28:17.553Z
+  - _ulid: 01KMRPKQE31EX8SSMYTAT9PYZZ
+    type: success
+    content: During review, delegating the full npm test gate to an awaiter while continuing targeted
+      diff reading and manual CLI checks kept progress moving without reducing verification quality.
+      This pattern worked well for a 53-minute suite.
+    author: codex
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T22:28:34.884Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
