@@ -100,3 +100,17 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T16:34:55.943Z
+  - _ulid: 01KMR4EWX90HSMBSP5X2CBZ66W
+    content: "Fix cycle 2: Addressed blocker from review @01KMR24AW39T9T824CPMZQ5A73. The /api/search
+      route was using cache summary data (getTaskIndex/getItemIndex) which strips description,
+      notes, and AC content, breaking grepItem matches. Fixed by: (1) Adding toTaskSummary() and
+      eagerly populating the detail tier during domain load for tasks and items — the cache now
+      stores full entities alongside summaries. (2) Adding getAllTaskDetails()/getAllItemDetails()
+      methods to the entity cache and RouteEntityCache interface. (3) Updating /api/search to use
+      these new methods instead of index summaries. (4) Added 3 regression tests verifying search
+      finds matches in task description, task notes, and item description/AC content. Updated 4
+      entity-cache tests to reflect the new eager detail-tier population behavior. All 6966 tests
+      pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T17:11:22.282Z
