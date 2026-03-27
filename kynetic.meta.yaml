@@ -9068,6 +9068,25 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T19:20:46.528Z
+  - _ulid: 01KMRDP8E99MXRQQG0AVB3P5W6
+    type: friction
+    content: Daemon command executor has repeated fix cycles (5, 6, 7) for process-global state leaking
+      between requests. Output format, cwd, console capture, and command validation all have
+      separate reset paths that can diverge from direct CLI behavior. Consider a single
+      reset-all-state function or a forked execution context to eliminate this class of bug.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T19:52:40.649Z
+  - _ulid: 01KMRDP8KHGYXYF0XEPCR4BA0Y
+    type: friction
+    content: kspec task submit rejects needs_work status — requires explicit kspec task start first. In
+      fix cycles, the worker always intends to resume and resubmit; the intermediate start
+      transition adds friction without value. Consider allowing submit from needs_work directly.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T19:52:40.818Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
