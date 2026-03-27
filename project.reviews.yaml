@@ -59474,6 +59474,13 @@ reviews:
           kind: question
           thread_ulid: 01KMPRC5TS3P9C3DV46E8GR91R
         timestamp: 2026-03-27T04:20:56.167Z
+      - _ulid: 01KMPRC7GV5M9Q258H1JJ7X3WX
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMPRC7350YQ7XFR1T6AAX3AY
+        timestamp: 2026-03-27T04:20:57.499Z
     examined_commit: 0b9e71753e703adfded4e89a2263fd1da4310b39
     external_links: []
     lifecycle_state: open
@@ -59910,7 +59917,29 @@ reviews:
               changes.'
             created_at: 2026-03-27T04:20:55.770Z
         kind: question
+      - _ulid: 01KMPRC7350YQ7XFR1T6AAX3AY
+        anchor:
+          type: code
+          commit: 0b9e71753e703adfded4e89a2263fd1da4310b39
+          line_end: 305
+          line_start: 239
+          path: packages/daemon/src/routes/tasks.ts
+          side: head
+        entries:
+          - _ulid: 01KMPRC735Z7VRCRYQ6K0EN42D
+            author: "@claude"
+            body: "This detail endpoint still calls initContext() before checking the detail tier, and then
+              unconditionally falls back to loadAllItems() / loadPlans() for response enrichment.
+              initContext() is not a cheap no-op here: it loads project config, detects shadow
+              state, and may run shadow sync checks (src/parser/yaml.ts:512-610). That means a
+              cache-hit task-detail request still performs disk/git work on every hit, which breaks
+              the same ac-serve-from-memory / ac-detail-on-demand contract that cycle 5 fixed for
+              list routes. The same eager-context pattern is still present in
+              packages/daemon/src/routes/items.ts:397-463, so cached item-detail reads also miss the
+              optimization target."
+            created_at: 2026-03-27T04:20:57.061Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T04:15:51.416Z
-    updated_at: 2026-03-27T04:20:55.770Z
+    updated_at: 2026-03-27T04:20:57.061Z
     notes: []
