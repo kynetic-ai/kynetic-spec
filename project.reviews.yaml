@@ -66567,6 +66567,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-27T17:43:18.265Z
+      - _ulid: 01KMR69K23GFZ3D41E763VKWZH
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMR69JK5M5MN7J270YR2S1Y1
+        timestamp: 2026-03-27T17:43:25.507Z
     examined_commit: 87a703c5621e68433037da356a68de5007562e68
     external_links: []
     lifecycle_state: open
@@ -66637,7 +66644,25 @@ reviews:
               session YAML from disk."
             created_at: 2026-03-27T17:43:16.078Z
         kind: blocker
+      - _ulid: 01KMR69JK5M5MN7J270YR2S1Y1
+        anchor:
+          type: code
+          commit: 87a703c5621e68433037da356a68de5007562e68
+          line_end: 50
+          line_start: 47
+          path: packages/daemon/src/routes/meta.ts
+          side: head
+        entries:
+          - _ulid: 01KMR69JK5D0Q5E5SE16KQEQ2E
+            author: "@claude"
+            body: "Blocking: /api/meta/session still does per-request context initialization and session-context
+              loading. That leaves a read-only daemon route outside the cache migration, so
+              @daemon-read-path ac-no-per-request-sync is still false for this endpoint. Evidence:
+              this handler unconditionally calls initContext(projectContext.path) and then
+              loadSessionContext(ctx), and loadSessionContext() reads the session YAML from disk."
+            created_at: 2026-03-27T17:43:25.029Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T17:39:12.945Z
-    updated_at: 2026-03-27T17:43:17.620Z
+    updated_at: 2026-03-27T17:43:25.029Z
     notes: []
