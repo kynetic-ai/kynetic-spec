@@ -60383,6 +60383,13 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-03-27T04:58:30.777Z
+      - _ulid: 01KMPTH1RW61JQ52BGVHHG0KQB
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KMPTH174YTP29FG79VZG0PQX
+        timestamp: 2026-03-27T04:58:32.604Z
     examined_commit: c903c3369660d1b9746492fa5c1fd4e9844eaec3
     external_links: []
     lifecycle_state: open
@@ -60491,7 +60498,30 @@ reviews:
               configuration. That weakens the repo's required verification gate."
             created_at: 2026-03-27T04:58:06.755Z
         kind: blocker
+      - _ulid: 01KMPTH174YTP29FG79VZG0PQX
+        entries:
+          - _ulid: 01KMPTH174HTC4XJBP6WQYZ3CB
+            author: "@claude"
+            body: "Evidence log: files read included src/daemon/entity-cache.ts, packages/daemon/src/server.ts,
+              packages/daemon/src/project-context.ts, packages/daemon/src/routes/tasks.ts,
+              packages/daemon/src/routes/items.ts, packages/daemon/src/routes/sessions.ts,
+              packages/daemon/src/routes/session-related.ts, packages/daemon/src/routes/plans.ts,
+              packages/daemon/src/routes/reviews.ts, packages/daemon/src/routes/triage.ts,
+              packages/daemon/src/routes/inbox.ts, packages/daemon/src/routes/meta.ts,
+              packages/daemon/src/routes/refs.ts, scripts/test.cjs, package.json, and
+              tests/daemon-entity-cache.test.ts. Commands run: kspec task get, kspec item get
+              @daemon-entity-cache, kspec item get @session-list-pagination-api, kspec item get
+              @session-summary-cache, kspec validate, rg AC annotation search, npm test -- --fresh,
+              targeted node/tsx repros for plan/review warmup behavior, fileToDomain mapping,
+              computeCacheKey behavior, and ProjectEntityCache session counter behavior, plus
+              isolated test-runner invocations for changed suites. Claims verified: warmup behavior
+              bypasses loading on detail routes, split-task watcher paths miss tasks invalidation,
+              live session counts regress after increment, and test caching ignores package.json
+              changes. Categories searched: correctness, edge cases, error handling, test quality,
+              integration, and verification gates."
+            created_at: 2026-03-27T04:58:32.036Z
+        kind: question
     verdicts: []
     created_at: 2026-03-27T04:46:33.884Z
-    updated_at: 2026-03-27T04:58:30.203Z
+    updated_at: 2026-03-27T04:58:32.036Z
     notes: []
