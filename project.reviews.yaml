@@ -61506,6 +61506,12 @@ reviews:
         payload:
           thread_ulid: 01KMPXWPAG9ZQ6AZ2Q4X7MEH6H
         timestamp: 2026-03-27T06:14:40.966Z
+      - _ulid: 01KMPYWQ5NN9YBX6D45KF1ETTN
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMPXWPAG9ZQ6AZ2Q4X7MEH6H
+        timestamp: 2026-03-27T06:14:49.270Z
     examined_commit: 5b03acb30a52caaebdc360768c3ede7096e7ea7a
     external_links: []
     lifecycle_state: closed
@@ -61548,6 +61554,8 @@ reviews:
               the happy path serves from a warm mock cache."
             created_at: 2026-03-27T06:14:40.367Z
         kind: blocker
+        resolved_at: 2026-03-27T06:14:48.694Z
+        resolved_by: "@claude"
       - _ulid: 01KMPXWR4DTFXFPFT547F83Z9F
         anchor:
           type: code
@@ -61578,5 +61586,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T05:57:33.269Z
     created_at: 2026-03-27T05:51:00.619Z
-    updated_at: 2026-03-27T06:14:40.367Z
+    updated_at: 2026-03-27T06:14:48.694Z
     notes: []
