@@ -9969,6 +9969,9 @@ features:
       the single writer, eliminating coherence issues between CLI mutations
       and daemon state. The CLI auto-detects daemon availability and routes
       accordingly. Users can force either mode explicitly.
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on: []
     implements: []
     relates_to: []
