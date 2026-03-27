@@ -25407,18 +25407,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/extract-setupshadowdetection-to-shared-test-helpers/01kmrgj8
-    canonical_branch_head: 5f65b97c07be2036d5ab8d42077db051d1f0a9d9
+    canonical_branch_head: bd7a164208824d95dd552a5e45f6dec00306dc06
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-27T21:51:52.718Z
+      updated_at: 2026-03-27T21:52:52.926Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-27T21:51:52.718Z
+      updated_at: 2026-03-27T21:52:52.926Z
     integration:
       status: pending
       detail: null
@@ -25426,7 +25426,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: f3fb67c100a1c342dcbe251b36da3bfa3e6f2112
-      updated_at: 2026-03-27T21:51:52.718Z
+      updated_at: 2026-03-27T21:52:52.926Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KMRGJ8VGS65ZE2569WXT31D7"
@@ -25434,9 +25434,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-27T21:44:49.734Z
-      last_reconciled_at: 2026-03-27T21:51:52.718Z
+      last_reconciled_at: 2026-03-27T21:52:52.926Z
       created_at: 2026-03-27T21:44:44.404Z
-      updated_at: 2026-03-27T21:51:52.718Z
+      updated_at: 2026-03-27T21:52:52.926Z
     workspace_id: dispatch-workspace-01KMRGJ8VGS65ZE2569WXT31D7
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
