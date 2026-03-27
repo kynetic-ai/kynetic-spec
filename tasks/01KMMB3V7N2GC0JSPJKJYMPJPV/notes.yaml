@@ -93,3 +93,26 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T16:21:18.515Z
+  - _ulid: 01KMR2T16P292HMTM7NZ8BQFEP
+    content: >-
+      Fix cycle 1: Addressed both review blockers.
+
+
+      Blocker 1 (process-global state corruption): Added DispatchMutex class that serializes ALL
+      command dispatches (reads + writes) within the process. This prevents concurrent requests from
+      corrupting each other's console capture, cwd, and exit interceptor state. The file lock
+      remains for cross-process mutation safety. Removed standalone withProjectDir helper — cwd
+      management is now inline inside the mutex-protected critical section.
+
+
+      Blocker 2 (unproven test coverage): Tests now provide a mock EntityCacheAccessor with
+      spy-instrumented writeThrough, verifying cache updates after mutations (and absence for
+      reads). Response parity tests now compare API output against ground-truth CLI subprocess
+      execution via kspec() helper.
+
+
+      All 6963 tests pass (1944 suites), 4 new tests added, no regressions. Re-verified all 5 spec
+      ACs and trait ACs against updated implementation.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T16:42:29.974Z
