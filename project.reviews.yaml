@@ -61812,6 +61812,18 @@ reviews:
         runner: npm
         created_at: 2026-03-27T06:53:44.384Z
         completed_at: 2026-03-27T06:53:44.384Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 'Isolated rerun passed: npm test -- --fresh
+          tests/dispatch-runtime-bootstrap-contract.test.ts -t "reuses valid worker bootstrap state
+          for reviewer preflight instead of rerunning it"'
+        name: dispatch bootstrap test (isolated)
+        required: false
+        runner: npm
+        created_at: 2026-03-27T06:54:09.152Z
+        completed_at: 2026-03-27T06:54:09.152Z
     events:
       - _ulid: 01KMQ0PCNKW1EHJA0QKSW3EKCQ
         actor: "@claude"
@@ -61861,6 +61873,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMQ14NY0AFM0KM3GJVNA4J8M
         timestamp: 2026-03-27T06:54:07.898Z
+      - _ulid: 01KMQ14RACFZBHX5W1C75GWQYD
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: dispatch bootstrap test (isolated)
+        timestamp: 2026-03-27T06:54:09.740Z
     examined_commit: 18d250b7b7c6d5fc7cf96a9ca0ec8afbeb671e1c
     external_links: []
     lifecycle_state: open
@@ -61929,5 +61948,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-27T06:46:19.059Z
-    updated_at: 2026-03-27T06:54:07.296Z
+    updated_at: 2026-03-27T06:54:09.152Z
     notes: []
