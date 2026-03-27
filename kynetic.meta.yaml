@@ -9001,6 +9001,28 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T18:39:31.844Z
+  - _ulid: 01KMR9Y09RAD6X4JKP6QQC08R8
+    type: friction
+    content: "Daemon read-route warmup tests covered fully-loading caches, but this review exposed two
+      still-missed cases: partial-domain warmup in /api/search (meta or inbox loading yields partial
+      results instead of _cache_status: loading) and the session detail path still falling back to
+      initContext/loadAll* when task/item domains are not ready. Cache warmup coverage should
+      exercise mixed domain states and session detail endpoints, not just all-loading route
+      snapshots."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T18:47:00.152Z
+  - _ulid: 01KMR9Y0H0WHMK76AQBE3PMSTS
+    type: success
+    content: "The cache-only review pattern worked well: reading the diff first, then checking warmup
+      branches and comparing them against the new initContext/getShadowStatus spy tests quickly
+      exposed regressions that payload-only tests missed. Spy-based route coverage is a strong
+      guardrail for daemon read-path migrations."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T18:47:00.384Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
