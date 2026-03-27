@@ -69042,6 +69042,19 @@ reviews:
         runner: kspec
         created_at: 2026-03-27T20:13:36.318Z
         completed_at: 2026-03-27T20:13:36.318Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: grep confirmed existing annotations for @session-summary-cache in
+          tests/session-summary-cache.test.ts (ac-cache-build, ac-cache-invalidate,
+          ac-cache-graceful, ac-active-refresh, ac-persist-on-close, ac-live-counter). This task
+          added no new ACs.
+        name: session-summary-cache AC coverage
+        required: false
+        runner: grep
+        created_at: 2026-03-27T20:13:37.807Z
+        completed_at: 2026-03-27T20:13:37.807Z
     events:
       - _ulid: 01KMREVM81NHDZ8K6NQN0PARKM
         actor: "@claude"
@@ -69077,6 +69090,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-27T20:13:36.788Z
+      - _ulid: 01KMREWMKD9GRP6QGYN16GBJMK
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: session-summary-cache AC coverage
+        timestamp: 2026-03-27T20:13:38.286Z
     examined_commit: 7d699d4855817e533fc2e5066db464312ea38f57
     external_links: []
     lifecycle_state: open
@@ -69109,5 +69129,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-27T20:13:05.153Z
-    updated_at: 2026-03-27T20:13:36.318Z
+    updated_at: 2026-03-27T20:13:37.807Z
     notes: []
