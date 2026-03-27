@@ -68077,6 +68077,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-27T19:08:55.437Z
+      - _ulid: 01KMRB6EV2G3HGF7MRZYV5Y6MV
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMRB6E54MRS9M3QX8TG7K66J
+        timestamp: 2026-03-27T19:09:05.762Z
     examined_commit: 6995679948a5e6093b1e9bbe606e5750266961b3
     external_links: []
     lifecycle_state: open
@@ -68129,7 +68136,26 @@ reviews:
               drops the standard help/suggestion path.
             created_at: 2026-03-27T19:08:52.538Z
         kind: blocker
+      - _ulid: 01KMRB6E54MRS9M3QX8TG7K66J
+        anchor:
+          type: code
+          commit: 6995679948a5e6093b1e9bbe606e5750266961b3
+          line_end: 123
+          line_start: 119
+          path: packages/daemon/src/routes/command.ts
+          side: head
+        entries:
+          - _ulid: 01KMRB6E540589YTB50DKTXEDR
+            author: "@claude"
+            body: "Unknown commands bypass Commander entirely here, so the API no longer returns the same stderr
+              that direct CLI execution produces. `node dist/cli/index.js nonexistent-command`
+              prints `error: unknown command 'nonexistent-command'` followed by `Run 'kspec help' to
+              see available commands`, but this branch returns only `Unknown command:
+              \"nonexistent-command\"`. That breaks @daemon-command-api ac-response-parity for
+              invalid commands and drops the standard help/suggestion path."
+            created_at: 2026-03-27T19:09:05.060Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T19:00:57.369Z
-    updated_at: 2026-03-27T19:08:54.707Z
+    updated_at: 2026-03-27T19:09:05.060Z
     notes: []
