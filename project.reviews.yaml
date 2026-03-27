@@ -57206,6 +57206,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-27T00:50:47.964Z
+      - _ulid: 01KMPCP5M0S6WBCVF5XZ0NCYZS
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMPCP563BARWGZ5EPS0PYWCN
+        timestamp: 2026-03-27T00:56:40.321Z
     examined_commit: 37294e673fe67d970ae172f4d510c5ca5116d0fe
     external_links: []
     lifecycle_state: open
@@ -57215,8 +57222,27 @@ reviews:
       content_hash: ""
       ref: "@01KMMB3T2K3T6A1CJR884EPKJF"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMPCP563BARWGZ5EPS0PYWCN
+        anchor:
+          type: code
+          commit: 37294e673fe67d970ae172f4d510c5ca5116d0fe
+          line_end: 180
+          line_start: 178
+          path: src/daemon/entity-cache.ts
+          side: head
+        entries:
+          - _ulid: 01KMPCP563NH85Q59KZJ59VX4M
+            author: "@claude"
+            body: " maps  only to the  domain, but  rebuilds the items index from the manifest itself plus its .
+              That leaves manifest-backed item data stale after watcher invalidation. I reproduced
+              this with a temp copy of : after , removing  from  and calling  kept the items index
+              unchanged (, ,  still present). Any inline item edits or include list changes in the
+              manifest will therefore remain stale until some unrelated items-domain reload happens,
+              which violates watcher invalidation for the affected domain."
+            created_at: 2026-03-27T00:56:39.875Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T00:50:29.571Z
-    updated_at: 2026-03-27T00:50:47.513Z
+    updated_at: 2026-03-27T00:56:39.875Z
     notes: []
