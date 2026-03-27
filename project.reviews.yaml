@@ -57296,6 +57296,12 @@ reviews:
         payload:
           thread_ulid: 01KMPCP563BARWGZ5EPS0PYWCN
         timestamp: 2026-03-27T01:08:08.205Z
+      - _ulid: 01KMPDB8SMCG71B4GVA38M79WE
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMPCPWPD0K5MH0VVSNR70WQ1
+        timestamp: 2026-03-27T01:08:11.700Z
     examined_commit: 37294e673fe67d970ae172f4d510c5ca5116d0fe
     external_links: []
     lifecycle_state: closed
@@ -57362,6 +57368,8 @@ reviews:
               "items"] for kynetic.yaml, ensuring both domains are invalidated on manifest changes.'
             created_at: 2026-03-27T01:07:59.309Z
         kind: blocker
+        resolved_at: 2026-03-27T01:08:11.289Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -57371,5 +57379,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T00:57:21.142Z
     created_at: 2026-03-27T00:50:29.571Z
-    updated_at: 2026-03-27T01:08:07.766Z
+    updated_at: 2026-03-27T01:08:11.289Z
     notes: []
