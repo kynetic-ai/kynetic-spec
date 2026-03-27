@@ -66,6 +66,17 @@ const DISPATCH_GIT_ENV_KEYS = [
   "GIT_WORK_TREE",
 ] as const;
 
+/**
+ * Environment variables set on all dispatch git subprocesses to prevent
+ * interactive credential prompts that would hang the daemon/dispatch engine.
+ *
+ * GIT_TERMINAL_PROMPT=0 tells git to fail immediately instead of prompting
+ * for credentials when no credential helper is configured.
+ */
+const DISPATCH_GIT_ENV_OVERRIDES: Record<string, string> = {
+  GIT_TERMINAL_PROMPT: "0",
+};
+
 export interface ResolvedDispatchWorkspaceConfig {
   baseBranch: string;
   baseBranchStartPoint: string;
@@ -298,6 +309,7 @@ export function buildDispatchGitEnv(baseEnv: NodeJS.ProcessEnv = process.env): N
   for (const key of DISPATCH_GIT_ENV_KEYS) {
     delete env[key];
   }
+  Object.assign(env, DISPATCH_GIT_ENV_OVERRIDES);
   return env;
 }
 

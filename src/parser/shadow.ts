@@ -22,6 +22,16 @@ const __dirname = path.dirname(__filename);
 
 const execFileAsync = promisify(execFile);
 
+/**
+ * Build an environment for shadow git subprocesses that prevents interactive
+ * credential prompts. GIT_TERMINAL_PROMPT=0 tells git to fail immediately
+ * instead of blocking on stdin when no credential helper is configured.
+ * This prevents the daemon/dispatch engine from hanging indefinitely.
+ */
+function buildShadowGitEnv(baseEnv?: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
+  return { ...(baseEnv ?? process.env), GIT_TERMINAL_PROMPT: "0" };
+}
+
 interface RunCommandOptions {
   cwd?: string;
   env?: NodeJS.ProcessEnv;
@@ -53,7 +63,7 @@ async function runGitAsync(
 ): Promise<{ stdout: string; stderr: string }> {
   const { stdout = "", stderr = "" } = await execFileAsync("git", args, {
     cwd,
-    env,
+    env: buildShadowGitEnv(env),
     encoding: "utf-8",
   });
   return { stdout: stdout.toString(), stderr: stderr.toString() };
@@ -93,6 +103,7 @@ async function discardStashedWorktreeDir(backupDir: string | null): Promise<void
 function runGitSync(cwd: string, args: string[]): { ok: boolean; stdout: string } {
   const result = spawnSync("git", args, {
     cwd,
+    env: buildShadowGitEnv(),
     stdio: ["ignore", "pipe", "pipe"],
     encoding: "utf-8",
   });
@@ -1750,6 +1761,7 @@ export async function shadowPushAsync(
     // We still collect stderr and exit code while process is alive to surface failures.
     const child = spawn("git", ["push"], {
       cwd: worktreeDir,
+      env: buildShadowGitEnv(),
       stdio: ["ignore", "ignore", "pipe"],
       detached: true,
     });
@@ -1995,6 +2007,7 @@ export function spawnGitWithTimeout(
   return new Promise((resolve, reject) => {
     const child = spawn("git", args, {
       cwd,
+      env: buildShadowGitEnv(),
       stdio: ["ignore", "pipe", "pipe"],
     });
     let stdout = "";
