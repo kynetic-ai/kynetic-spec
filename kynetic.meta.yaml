@@ -9023,6 +9023,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T18:47:00.384Z
+  - _ulid: 01KMRANEA2WV2T8RFAFD6BF0SP
+    type: friction
+    content: setJsonMode(false) has asymmetric clearing behavior — only resets when current format is
+      'json', silently leaving 'yaml' or other formats intact. This caused 3 fix cycles on the
+      daemon command API task (cycles 5-6 and the batch-exec path). Every call site resetting output
+      format should use setOutputFormat('text') instead. Consider deprecating setJsonMode(false) as
+      a reset mechanism or making it reset unconditionally.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T18:59:48.162Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
