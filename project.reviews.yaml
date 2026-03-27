@@ -64038,6 +64038,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-27T16:20:58.365Z
+      - _ulid: 01KMR1JNBDWYGN3W980KRKPNC0
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMR1JMV74EWKMD681DSN86FA
+        timestamp: 2026-03-27T16:20:59.885Z
     examined_commit: 65b59e1afcde5d4bda7e227ee4b8947c6573730a
     external_links: []
     lifecycle_state: open
@@ -64069,7 +64076,28 @@ reviews:
               correctness under normal load.
             created_at: 2026-03-27T16:20:56.410Z
         kind: blocker
+      - _ulid: 01KMR1JMV74EWKMD681DSN86FA
+        anchor:
+          type: code
+          commit: 65b59e1afcde5d4bda7e227ee4b8947c6573730a
+          line_end: 359
+          line_start: 145
+          path: tests/daemon-command-api.test.ts
+          side: head
+        entries:
+          - _ulid: 01KMR1JMV84QQ8B3JSAAHBM7E5
+            author: "@claude"
+            body: These tests claim AC coverage for cache updates and response parity, but they never exercise
+              either behavior. The suite constructs the route with createCommandRoutes({ pubsub })
+              only, so getEntityCache is always undefined and the writeThrough branch at
+              packages/daemon/src/routes/command.ts:266-278 and :390-399 is skipped entirely; the
+              ac-mutation-cache-update tests only assert that a WebSocket event was broadcast.
+              Likewise, the ac-response-parity test never runs the direct CLI or compares
+              stdout/stderr, so it would still pass if the API response diverged from CLI output.
+              This leaves two spec guarantees unproven.
+            created_at: 2026-03-27T16:20:59.368Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T16:20:32.420Z
-    updated_at: 2026-03-27T16:20:57.901Z
+    updated_at: 2026-03-27T16:20:59.368Z
     notes: []
