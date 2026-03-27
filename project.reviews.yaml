@@ -64298,6 +64298,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-27T16:34:39.940Z
+      - _ulid: 01KMR2BT51P9KK2JX0KT3XTV7V
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMR2BSP1R6SRNHQBPSVBMKX0
+        timestamp: 2026-03-27T16:34:44.001Z
     examined_commit: 1cfca170864e89adef9907fadaaa2da720c992d6
     external_links: []
     lifecycle_state: open
@@ -64330,7 +64337,28 @@ reviews:
               requirement that response behavior remain unchanged after the cache migration."
             created_at: 2026-03-27T16:34:36.290Z
         kind: blocker
+      - _ulid: 01KMR2BSP1R6SRNHQBPSVBMKX0
+        entries:
+          - _ulid: 01KMR2BSP1ZCZAS7QWF0A5WBN1
+            author: "@claude"
+            body: 'Evidence log:\nFiles read: packages/daemon/src/routes/aggregation.ts,
+              packages/daemon/src/routes/validation.ts, src/parser/refs.ts, src/parser/alignment.ts,
+              src/parser/yaml.ts, src/daemon/entity-cache.ts, src/utils/grep.ts,
+              packages/web-ui/tests/e2e/api-meta.spec.ts, src/cli/commands/search.ts,
+              tests/daemon-read-path.test.ts.\nCommands run: git diff
+              1001be210b4251982b7386b475a48b0cc68188e4..1cfca170864e89adef9907fadaaa2da720c992d6 --
+              packages/daemon/src/routes/aggregation.ts packages/daemon/src/routes/validation.ts
+              tests/daemon-read-path.test.ts; kspec item get @daemon-read-path; kspec validate; grep
+              -Rni "AC: @daemon-read-path\|AC: @trait-" tests/daemon-read-path.test.ts tests; npm
+              test; ./node_modules/.bin/tsx grepItem reproduction.\nClaims verified: full suite
+              passes in this snapshot; cache summary objects omit searchable content fields, so
+              /api/search no longer preserves pre-migration search behavior.\nCategories searched:
+              correctness (1 blocker in /api/search), edge cases (cache-warm search surface), error
+              handling (no new blocker), test quality (new tests pass but miss description/AC search
+              regression), integration (alignment/reference index paths rechecked).'
+            created_at: 2026-03-27T16:34:43.521Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-27T16:30:38.979Z
-    updated_at: 2026-03-27T16:34:39.446Z
+    updated_at: 2026-03-27T16:34:43.521Z
     notes: []
