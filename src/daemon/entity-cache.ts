@@ -77,20 +77,38 @@ export const DOMAIN_LOAD_ORDER: CacheDomain[] = [
 /** Per-domain state. */
 export type DomainState = "unloaded" | "loading" | "ready" | "degraded";
 
-/** Summary type for spec items (index tier). */
+/** Summary type for spec items (index tier — excludes description, notes, AC content). */
 export interface ItemSummary {
   _ulid: string;
   slugs: string[];
   title: string;
-  type: string;
+  type?: string;
   status: unknown; // SpecItem.status can be string | object
-  priority?: number;
+  priority?: number | string;
   tags: string[];
   traits: string[];
-  parent_path?: string;
   _sourceFile?: string;
   _path?: string;
+  created?: string;
   acceptance_criteria_count: number;
+}
+
+/** Project a LoadedSpecItem to its index-tier summary (strip description, notes, AC content). */
+function toItemSummary(item: LoadedSpecItem): ItemSummary {
+  return {
+    _ulid: item._ulid,
+    slugs: item.slugs,
+    title: item.title,
+    type: item.type,
+    status: item.status,
+    priority: item.priority,
+    tags: item.tags ?? [],
+    traits: item.traits ?? [],
+    _sourceFile: item._sourceFile,
+    _path: item._path,
+    created: item.created,
+    acceptance_criteria_count: item.acceptance_criteria?.length ?? 0,
+  };
 }
 
 /** Manifest summary for meta domain index tier. */
@@ -192,7 +210,7 @@ export class ProjectEntityCache {
     index: null,
     details: new Map(),
   };
-  private items: DomainStore<LoadedSpecItem[], LoadedSpecItem> = {
+  private items: DomainStore<ItemSummary[], LoadedSpecItem> = {
     state: "unloaded",
     index: null,
     details: new Map(),
@@ -293,10 +311,10 @@ export class ProjectEntityCache {
   }
 
   /**
-   * Get spec items from index tier.
+   * Get spec item summaries from index tier.
    * AC: @daemon-entity-cache ac-serve-from-memory
    */
-  getItemIndex(): LoadedSpecItem[] | null {
+  getItemIndex(): ItemSummary[] | null {
     return this.items.index;
   }
 
@@ -457,8 +475,9 @@ export class ProjectEntityCache {
         break;
       }
       case "items": {
+        // AC: @daemon-entity-cache ac-load-on-register — load item index (summaries only)
         const loadedItems = await loadAllItems(ctx);
-        this.items.index = loadedItems;
+        this.items.index = loadedItems.map(toItemSummary);
         this.items.details.clear();
         break;
       }

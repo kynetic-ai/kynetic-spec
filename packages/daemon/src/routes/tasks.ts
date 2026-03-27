@@ -33,6 +33,7 @@ import {
   resolveTaskDataManager,
   TaskDataManagerError,
   type LoadedTask,
+  type TaskSummary,
 } from "../../parser/index.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import { TaskStatusSchema, TaskTypeSchema } from "../../schema/common.js";
@@ -228,26 +229,43 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
           const ctx = await initContext(projectContext.path);
 
-          // AC: @task-data-manager ac-3 — get full task detail via manager
-          // AC: @daemon-entity-cache ac-detail-on-demand — load from disk (detail tier)
-          let task: LoadedTask;
-          try {
-            task = await resolveTaskDataManager(ctx).getTask(ctx, params.ref);
-          } catch (err) {
-            if (err instanceof TaskDataManagerError) {
-              return errorResponse(404, {
-                error: "not_found",
-                message: `Task reference "${params.ref}" not found`,
-                suggestion: "Use kspec task list or kspec search to find valid task references",
-              });
+          // AC: @daemon-entity-cache ac-detail-on-demand — check cache first, fall back to disk
+          const cache = getEntityCache?.(projectContext.path);
+          let task: LoadedTask | null = null;
+
+          if (cache && cache.getDomainState("tasks") === "ready") {
+            // Resolve ref to ULID via cached task index
+            const taskIndex = cache.getTaskIndex();
+            if (taskIndex) {
+              const ref = params.ref.startsWith("@") ? params.ref.slice(1) : params.ref;
+              const matched = taskIndex.find(
+                (t) => t._ulid === ref || t._ulid.startsWith(ref.toUpperCase()) || t.slugs.includes(ref),
+              );
+              if (matched) {
+                task = cache.getTaskDetail(matched._ulid);
+              }
             }
-            throw err;
           }
 
-          // AC: @daemon-entity-cache ac-detail-on-demand — cache the loaded detail
-          const cache = getEntityCache?.(projectContext.path);
-          if (cache) {
-            cache.setTaskDetail(task._ulid, task);
+          // AC: @task-data-manager ac-3 — fall back to disk if not in detail cache
+          if (!task) {
+            try {
+              task = await resolveTaskDataManager(ctx).getTask(ctx, params.ref);
+            } catch (err) {
+              if (err instanceof TaskDataManagerError) {
+                return errorResponse(404, {
+                  error: "not_found",
+                  message: `Task reference "${params.ref}" not found`,
+                  suggestion: "Use kspec task list or kspec search to find valid task references",
+                });
+              }
+              throw err;
+            }
+
+            // AC: @daemon-entity-cache ac-detail-on-demand — cache the loaded detail
+            if (cache) {
+              cache.setTaskDetail(task._ulid, task);
+            }
           }
 
           // Build ReferenceIndex for ref title resolution
@@ -268,8 +286,14 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           if (!plans) {
             plans = await loadPlans(ctx);
           }
-          const tasks = await resolveTaskDataManager(ctx).listTasks(ctx);
-          const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items, [], plans);
+          // AC: @daemon-entity-cache ac-serve-from-memory — use cached tasks for ref index
+          let tasksForIndex: LoadedTask[] | TaskSummary[];
+          if (cache && cache.getDomainState("tasks") === "ready" && cache.getTaskIndex()) {
+            tasksForIndex = cache.getTaskIndex()!;
+          } else {
+            tasksForIndex = await resolveTaskDataManager(ctx).listTasks(ctx);
+          }
+          const index = new ReferenceIndex(tasksForIndex as unknown as LoadedTask[], items, [], plans);
 
           // AC: @api-contract ac-5 - Return full task with notes, todos, dependencies
           // AC: @ui-task-board ac-3 - Include type, description, blocked_by, vcs_refs, plan_ref, session_ref

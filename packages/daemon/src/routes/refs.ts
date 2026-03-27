@@ -19,6 +19,8 @@ import {
   loadPlans,
   ReferenceIndex,
   resolveTaskDataManager,
+  type LoadedTask,
+  type LoadedSpecItem,
 } from "../../parser/index.js";
 import { buildRefIndex } from "./ref-resolution.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
@@ -39,13 +41,16 @@ export function createRefsRoutes(options: RefsRouteOptions = {}) {
       .get("/", async ({ projectContext }) => {
         const ctx = await initContext(projectContext.path);
 
-        // AC: @daemon-entity-cache ac-serve-from-memory — try cache for items and plans
+        // AC: @daemon-entity-cache ac-serve-from-memory — try cache for tasks, items, and plans
         const cache = getEntityCache?.(projectContext.path);
+        const tasksDomainState = cache?.getDomainState("tasks");
         const itemsDomainState = cache?.getDomainState("items");
         const plansDomainState = cache?.getDomainState("plans");
 
         const [tasks, items, plans] = await Promise.all([
-          resolveTaskDataManager(ctx).loadAllTasks(ctx),
+          cache && tasksDomainState === "ready" && cache.getTaskIndex()
+            ? Promise.resolve(cache.getTaskIndex()!)
+            : resolveTaskDataManager(ctx).loadAllTasks(ctx),
           cache && itemsDomainState === "ready" && cache.getItemIndex()
             ? Promise.resolve(cache.getItemIndex()!)
             : loadAllItems(ctx),
@@ -53,7 +58,14 @@ export function createRefsRoutes(options: RefsRouteOptions = {}) {
             ? Promise.resolve(cache.getPlansIndex()!)
             : loadPlans(ctx),
         ]);
-        const index = new ReferenceIndex(tasks, items, [], plans);
+        // TaskSummary and ItemSummary are structurally compatible with ReferenceIndex's
+        // needs (indexItem uses _ulid + slugs; buildRefIndex uses title, type, status)
+        const index = new ReferenceIndex(
+          tasks as unknown as LoadedTask[],
+          items as unknown as LoadedSpecItem[],
+          [],
+          plans,
+        );
         const refs = buildRefIndex(index);
 
         return { refs };

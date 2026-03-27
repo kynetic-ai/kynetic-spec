@@ -18,7 +18,6 @@ import {
   initContext,
   loadAllItems,
   loadPlans,
-  findItemByRef,
   findTaskByRef,
   ReferenceIndex,
   AlignmentIndex,
@@ -32,9 +31,17 @@ import { ImplementationStatusSchema, ItemTypeSchema, MaturitySchema } from "../.
 import { enumArrayUnion } from "./enum-utils.js";
 import { getRelatedSessionsForItem } from "./session-related.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
+import type { ItemSummary } from "../../daemon/entity-cache.js";
 
 interface ItemsRouteOptions {
   getEntityCache?: EntityCacheAccessor;
+}
+
+/** Minimal fields needed for parent map computation. */
+interface ParentMapItem {
+  _ulid: string;
+  _sourceFile?: string;
+  _path?: string;
 }
 
 /**
@@ -42,11 +49,11 @@ interface ItemsRouteOptions {
  * Items are nested when they share the same source file and
  * one item's path is a prefix of another's path.
  */
-function computeParentMap(items: LoadedSpecItem[]): Map<string, string | undefined> {
+function computeParentMap(items: ParentMapItem[]): Map<string, string | undefined> {
   const parentMap = new Map<string, string | undefined>();
 
   // Group items by source file
-  const byFile = new Map<string, LoadedSpecItem[]>();
+  const byFile = new Map<string, ParentMapItem[]>();
   for (const item of items) {
     const file = item._sourceFile || "";
     if (!byFile.has(file)) {
@@ -98,23 +105,23 @@ function computeParentMap(items: LoadedSpecItem[]): Map<string, string | undefin
   return parentMap;
 }
 
-function getItemImplementationStatus(item: LoadedSpecItem): string | undefined {
+function getItemImplementationStatus(item: LoadedSpecItem | ItemSummary): string | undefined {
   if (typeof item.status === "string") {
     return item.status;
   }
 
-  return item.status?.implementation;
+  return (item.status as Record<string, string> | undefined)?.implementation;
 }
 
-function getItemMaturity(item: LoadedSpecItem): string | undefined {
+function getItemMaturity(item: LoadedSpecItem | ItemSummary): string | undefined {
   if (typeof item.status === "object") {
-    return item.status?.maturity;
+    return (item.status as Record<string, string> | undefined)?.maturity;
   }
 
   return undefined;
 }
 
-function toBatchSpecItemSummary(item: LoadedSpecItem) {
+function toBatchSpecItemSummary(item: LoadedSpecItem | ItemSummary) {
   return {
     kind: "item",
     ulid: item._ulid,
@@ -124,7 +131,9 @@ function toBatchSpecItemSummary(item: LoadedSpecItem) {
     status: getItemImplementationStatus(item),
     maturity: getItemMaturity(item),
     traits: item.traits ?? [],
-    ac_count: item.acceptance_criteria?.length ?? 0,
+    ac_count: "acceptance_criteria_count" in item
+      ? (item as ItemSummary).acceptance_criteria_count
+      : (item as LoadedSpecItem).acceptance_criteria?.length ?? 0,
   };
 }
 
@@ -169,8 +178,8 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
           // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
           const ctx = await initContext(projectContext.path);
 
-          // AC: @daemon-entity-cache ac-serve-from-memory — use cached items when ready
-          let items: LoadedSpecItem[];
+          // AC: @daemon-entity-cache ac-serve-from-memory — use cached item summaries when ready
+          let items: (LoadedSpecItem | ItemSummary)[];
           if (cache && itemsDomainState === "ready") {
             const cachedItems = cache.getItemIndex();
             items = cachedItems ?? await loadAllItems(ctx);
@@ -264,8 +273,11 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
             status: item.status,
             tags: item.tags,
             parent: parentMap.get(item._ulid),
-            created_at: item.created_at,
-            acceptance_criteria_count: item.acceptance_criteria?.length || 0,
+            created_at: (item as LoadedSpecItem).created,
+            acceptance_criteria_count:
+              "acceptance_criteria_count" in item
+                ? (item as ItemSummary).acceptance_criteria_count
+                : (item as LoadedSpecItem).acceptance_criteria?.length || 0,
           }));
 
           // AC: @trait-api-endpoint ac-4 - Return pagination wrapper
@@ -322,23 +334,34 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
 
           // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
           const ctx = await initContext(projectContext.path);
-          // AC: @daemon-entity-cache ac-serve-from-memory — try cache for items
+          // AC: @daemon-entity-cache ac-serve-from-memory — try cache for items and tasks
           const batchCache = getEntityCache?.(projectContext.path);
           const batchItemsDomainState = batchCache?.getDomainState("items");
-          const items = (batchCache && batchItemsDomainState === "ready" ? batchCache.getItemIndex() : null) ?? await loadAllItems(ctx);
-          const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+          const batchItems: (LoadedSpecItem | ItemSummary)[] =
+            (batchCache && batchItemsDomainState === "ready" ? batchCache.getItemIndex() : null)
+            ?? await loadAllItems(ctx);
+          const batchTasksDomainState = batchCache?.getDomainState("tasks");
+          const tasks =
+            (batchCache && batchTasksDomainState === "ready" ? batchCache.getTaskIndex() : null)
+            ?? (await resolveTaskDataManager(ctx).loadAllTasks(ctx));
 
           const resolvedItems = [];
           const unresolved: string[] = [];
 
           for (const ref of refs) {
-            const task = findTaskByRef(tasks, ref);
+            const task = findTaskByRef(tasks as LoadedTask[], ref);
             if (task) {
               resolvedItems.push(toBatchTaskSummary(task));
               continue;
             }
 
-            const item = findItemByRef(items, ref);
+            // Find item by ref — works with both LoadedSpecItem and ItemSummary
+            const cleanRef = ref.startsWith("@") ? ref.slice(1) : ref;
+            const item = batchItems.find(
+              (i) => i._ulid === cleanRef
+                || i._ulid.toLowerCase().startsWith(cleanRef.toLowerCase())
+                || i.slugs.includes(cleanRef),
+            );
             if (item) {
               resolvedItems.push(toBatchSpecItemSummary(item));
               continue;
@@ -366,12 +389,14 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
         async ({ params, error: errorResponse, projectContext }) => {
           // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
           const ctx = await initContext(projectContext.path);
-          // AC: @daemon-entity-cache ac-serve-from-memory — try cache for items
+          // Item detail needs full LoadedSpecItem[] (for AC content, description, etc.)
+          const items = await loadAllItems(ctx);
+          // AC: @daemon-entity-cache ac-serve-from-memory — use cached tasks when available
           const detailCache = getEntityCache?.(projectContext.path);
-          const detailItemsDomainState = detailCache?.getDomainState("items");
-          const items = (detailCache && detailItemsDomainState === "ready" ? detailCache.getItemIndex() : null) ?? await loadAllItems(ctx);
-          const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
-          const index = new ReferenceIndex(tasks, items);
+          const tasks =
+            (detailCache && detailCache.getDomainState("tasks") === "ready" ? detailCache.getTaskIndex() : null)
+            ?? (await resolveTaskDataManager(ctx).loadAllTasks(ctx));
+          const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
 
           // Compute parent relationships from path structure
           const parentMap = computeParentMap(items);
@@ -441,10 +466,8 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
         async ({ params, error: errorResponse, projectContext }) => {
           // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
           const ctx = await initContext(projectContext.path);
-          // AC: @daemon-entity-cache ac-serve-from-memory — try cache for items
-          const linkedCache = getEntityCache?.(projectContext.path);
-          const linkedItemsDomainState = linkedCache?.getDomainState("items");
-          const items = (linkedCache && linkedItemsDomainState === "ready" ? linkedCache.getItemIndex() : null) ?? await loadAllItems(ctx);
+          // Linked-tasks needs full LoadedSpecItem[] and LoadedTask[] for AlignmentIndex
+          const items = await loadAllItems(ctx);
           const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
           const refIndex = new ReferenceIndex(tasks, items);
           const alignIndex = new AlignmentIndex(tasks, items);
@@ -506,10 +529,8 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
         "/:ref/sessions",
         async ({ params, error: errorResponse, projectContext }) => {
           const ctx = await initContext(projectContext.path);
-          // AC: @daemon-entity-cache ac-serve-from-memory — try cache for items
-          const sessCache = getEntityCache?.(projectContext.path);
-          const sessItemsDomainState = sessCache?.getDomainState("items");
-          const items = (sessCache && sessItemsDomainState === "ready" ? sessCache.getItemIndex() : null) ?? await loadAllItems(ctx);
+          // Sessions route needs full LoadedSpecItem[] and LoadedTask[] for AlignmentIndex
+          const items = await loadAllItems(ctx);
           const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
           const result = await getRelatedSessionsForItem({
             itemRef: params.ref,

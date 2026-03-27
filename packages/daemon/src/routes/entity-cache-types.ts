@@ -7,7 +7,8 @@
  * route constructor options from server.ts.
  */
 
-import type { LoadedSpecItem, LoadedTask, TaskSummary, LoadedPlan } from "../../parser/index.js";
+import type { LoadedTask, TaskSummary, LoadedPlan } from "../../parser/index.js";
+import type { ItemSummary } from "../../daemon/entity-cache.js";
 
 /** Domain state as reported by the cache. */
 export type CacheDomainState = "unloaded" | "loading" | "ready" | "degraded";
@@ -21,7 +22,7 @@ export interface RouteEntityCache {
   getTaskIndex(): TaskSummary[] | null;
   getTaskDetail(ulid: string): LoadedTask | null;
   setTaskDetail(ulid: string, task: LoadedTask): void;
-  getItemIndex(): LoadedSpecItem[] | null;
+  getItemIndex(): ItemSummary[] | null;
   getPlansIndex(): LoadedPlan[] | null;
   writeThrough(domain: string): Promise<void>;
   markWriteThrough(domain: string): void;
