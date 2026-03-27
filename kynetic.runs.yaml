@@ -17133,7 +17133,7 @@ runs:
     started_at: 2026-03-27T22:42:37.043Z
     completed_at: 2026-03-27T22:43:42.750Z
   - _ulid: 01KMRQW2KY77A2KNS5KBXTSBQA
-    status: active
+    status: completed
     current_step: 3
     initiated_by: "@claude"
     step_results:
@@ -17162,7 +17162,10 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-03-27T22:51:27.489Z
-        completed_at: 2026-03-27T22:51:27.489Z
+        completed_at: 2026-03-27T22:51:36.284Z
+        notes: "Captured 1 friction observation: @01KMRQXE. No additional high-confidence successes or
+          improvements needed capture."
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-27T22:50:37.054Z
+    completed_at: 2026-03-27T22:51:36.284Z
