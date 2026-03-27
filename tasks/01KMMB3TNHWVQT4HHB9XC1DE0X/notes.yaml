@@ -134,3 +134,14 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T17:43:37.328Z
+  - _ulid: 01KMR7FK2HWZADEB306KGW9SR0
+    content: "Fix cycle 4: Addressed both blockers from review @01KMR61WDH3RKAYGGRB2ZZA39R. (1)
+      /api/meta/session: Added CachedSessionContext to entity cache, populated during meta domain
+      load via loadSessionContext(ctx). Route now serves from cache.getSessionContext() when meta
+      domain is ready — no initContext or disk reads on the hot path. (2) /api/sessions/:id
+      spec_context: Replaced loadAllItems(await getCtx()) with getAllItemDetails() from entity cache
+      when items domain is ready. Full spec items are eagerly cached in the detail tier during
+      domain load. Added /api/meta/session to the initContext spy test. All 6969 tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T18:04:10.705Z
