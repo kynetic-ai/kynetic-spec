@@ -8429,6 +8429,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T02:09:46.019Z
+  - _ulid: 01KMPH8NSQFPBPQ39KNDVNH5H5
+    type: friction
+    content: Cache route tests need explicit cold-path vs warm-path response-parity coverage. This
+      review found a cache-hit-only regression in item parent resolution and incomplete
+      loading-state behavior outside tasks/items because most checks asserted cache usage, not that
+      cached responses exactly match disk responses across domains.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T02:16:41.015Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
