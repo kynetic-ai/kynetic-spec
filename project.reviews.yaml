@@ -68486,6 +68486,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMRD9KMWBZ9937CSSXD2TE7K
         timestamp: 2026-03-27T19:45:47.129Z
+      - _ulid: 01KMRDA555TP2MH7B6KMRXWT8W
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMRDA48H134GG1FRG6C6G224
+        timestamp: 2026-03-27T19:46:04.069Z
     examined_commit: 19583c6cbc0605de496770c02e7961c74f4c3a76
     external_links: []
     lifecycle_state: open
@@ -68515,7 +68522,27 @@ reviews:
               the added tests, which only exercise  and ."
             created_at: 2026-03-27T19:45:46.141Z
         kind: blocker
+      - _ulid: 01KMRDA48H134GG1FRG6C6G224
+        anchor:
+          type: code
+          commit: 19583c6cbc0605de496770c02e7961c74f4c3a76
+          line_end: 345
+          line_start: 343
+          path: packages/daemon/src/routes/items.ts
+          side: head
+        entries:
+          - _ulid: 01KMRDA48HKHR0JCY4WA5TJY0K
+            author: "@claude"
+            body: POST /api/items/batch is still a daemon read path that calls bare
+              initContext(projectContext.path), so it continues running the per-request drift-check
+              that ac-daemon-bypass forbids. This handler only validates refs and returns matching
+              tasks/items; it is not a mutation endpoint, so daemon reads remain inconsistent after
+              this patch. I confirmed the remaining bare call at
+              packages/daemon/src/routes/items.ts:344 and found no new coverage for this endpoint in
+              the added tests, which only exercise /api/tasks and /api/tasks/:ref.
+            created_at: 2026-03-27T19:46:03.153Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T19:44:08.102Z
-    updated_at: 2026-03-27T19:45:46.141Z
+    updated_at: 2026-03-27T19:46:03.153Z
     notes: []
