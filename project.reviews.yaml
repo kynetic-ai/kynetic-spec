@@ -69268,6 +69268,12 @@ reviews:
         payload:
           thread_ulid: 01KMRFM4EJ43YY3V7C7MH4PKPK
         timestamp: 2026-03-27T20:34:59.527Z
+      - _ulid: 01KMRG3YV8XEE4EWF7HYYJQQPJ
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMRFM4EJ43YY3V7C7MH4PKPK
+        timestamp: 2026-03-27T20:35:06.728Z
     examined_commit: 28797c7de5c19b1d5061ad04b2343f93d1d26645
     external_links: []
     lifecycle_state: closed
@@ -69343,6 +69349,8 @@ reviews:
               function resolves the path at project root, not inside the shadow worktree."
             created_at: 2026-03-27T20:34:58.983Z
         kind: blocker
+        resolved_at: 2026-03-27T20:35:06.178Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -69352,7 +69360,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T20:26:41.016Z
     created_at: 2026-03-27T20:17:01.397Z
-    updated_at: 2026-03-27T20:34:58.983Z
+    updated_at: 2026-03-27T20:35:06.178Z
     notes: []
   - _ulid: 01KMRFR4PAMF3VA40HF32K0E0T
     slugs: []
