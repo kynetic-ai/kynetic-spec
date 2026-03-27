@@ -22728,7 +22728,7 @@
   title: "Fix: git subprocess interactive prompt hang in daemon/dispatch"
   type: task
   spec_ref: "@dispatch-remote-branch-sync"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 3
@@ -22741,4 +22741,5 @@
   created_at: 2026-03-27T00:18:58.419Z
   started_at: 2026-03-27T00:23:19.758Z
   submitted_at: 2026-03-27T00:35:17.934Z
+  completed_at: 2026-03-27T00:44:20.324Z
   automation: eligible
