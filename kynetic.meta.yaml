@@ -8367,6 +8367,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T01:09:41.216Z
+  - _ulid: 01KMPDTC9KAAWP3B5NK10H2JGE
+    type: friction
+    content: "Review-command shell quoting is fragile:  breaks when the review text contains backticks
+      or other shell-significant characters. In this review cycle I had to reissue the commands
+      using a heredoc-safe body. Consider file-based/body-stdin support or a safer CLI pattern for
+      long review text."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T01:16:26.804Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
