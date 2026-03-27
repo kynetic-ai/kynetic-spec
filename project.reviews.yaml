@@ -60844,6 +60844,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMPVJKA4KSF6BYTR7CF2060K
         timestamp: 2026-03-27T05:16:52.940Z
+      - _ulid: 01KMPVJT3MA0GG4W75WV45YAHR
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMPVJS08W97XKCG88GTPC91M
+        timestamp: 2026-03-27T05:16:58.868Z
     examined_commit: 8dfaea2199385d9aa733f052db868d92c22580e0
     external_links: []
     lifecycle_state: open
@@ -60911,7 +60918,27 @@ reviews:
               task/spec/meta/review/etc. file set changes.
             created_at: 2026-03-27T05:16:51.908Z
         kind: blocker
+      - _ulid: 01KMPVJS08W97XKCG88GTPC91M
+        anchor:
+          type: code
+          commit: 8dfaea2199385d9aa733f052db868d92c22580e0
+          line_end: 316
+          line_start: 303
+          path: src/daemon/entity-cache.ts
+          side: head
+        entries:
+          - _ulid: 01KMPVJS08N1690ABYH59PW48F
+            author: "@claude"
+            body: "fileToDomain() only invalidates meta for kynetic.yaml/*.meta.yaml and items for modules/**,
+              *.spec.yaml, or kynetic.yaml, but the loaders are broader than that. findManifest()
+              accepts any *.yaml manifest with a kynetic: header, loadAllItems() follows arbitrary
+              manifest.includes, and loadMetaContext() follows arbitrary meta.includes from whatever
+              *.meta.yaml file was discovered. A valid project that keeps specs or meta includes
+              outside these hard-coded paths will serve stale cache data forever after edits because
+              the watcher never maps those changed files back to items or meta."
+            created_at: 2026-03-27T05:16:57.737Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T05:13:09.485Z
-    updated_at: 2026-03-27T05:16:51.908Z
+    updated_at: 2026-03-27T05:16:57.737Z
     notes: []
