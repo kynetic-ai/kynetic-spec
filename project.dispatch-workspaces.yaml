@@ -25568,12 +25568,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-27T22:37:11.548Z
+      updated_at: 2026-03-27T22:37:15.843Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-27T22:37:12.889Z
+      updated_at: 2026-03-27T22:37:15.843Z
     integration:
       status: pending
       detail: null
@@ -25581,7 +25581,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: c3287fc736bce39629b1bdfda617808bd9ef55e0
-      updated_at: 2026-03-27T22:37:11.548Z
+      updated_at: 2026-03-27T22:37:15.843Z
     lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMMB3Y3K01Q0D7DNDVV6GQT1"
@@ -25589,9 +25589,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-27T22:30:20.853Z
-      last_reconciled_at: 2026-03-27T22:37:12.889Z
+      last_reconciled_at: 2026-03-27T22:37:15.843Z
       created_at: 2026-03-27T22:27:57.796Z
-      updated_at: 2026-03-27T22:37:12.889Z
+      updated_at: 2026-03-27T22:37:15.843Z
     workspace_id: dispatch-workspace-01KMMB3Y3K01Q0D7DNDVV6GQT1
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -25600,5 +25600,5 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-link-multi-dir-proxy/01kmmb3y
         head: c3287fc736bce39629b1bdfda617808bd9ef55e0
-        last_seen_at: 2026-03-27T22:30:15.739Z
+        last_seen_at: 2026-03-27T22:37:15.843Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-link-multi-dir-proxy-01kmmb3y
