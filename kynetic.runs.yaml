@@ -16788,7 +16788,7 @@ runs:
     completed_at: 2026-03-27T17:38:01.211Z
   - _ulid: 01KMR6KNZ64JD23YFWGKYBQ1ZA
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -16800,7 +16800,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-27T17:49:46.720Z
-        completed_at: 2026-03-27T17:49:46.720Z
+        completed_at: 2026-03-27T17:49:54.791Z
+        notes: "Identified 2 high-confidence items: (1) Friction: Elysia lifecycle — onBeforeHandle doesn't
+          fire on validation errors, must use onTransform for headers that need to appear on all
+          responses. Systemic pattern for all daemon routes. (2) Success: kspec() test helper as
+          ground-truth reference for response parity testing."
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-27T17:49:54.791Z
+        completed_at: 2026-03-27T17:49:54.791Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-27T17:48:56.166Z
