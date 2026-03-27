@@ -146,7 +146,7 @@ export function registerServeCommands(program: Command): void {
   serve
     .command("start", { isDefault: true })
     .description("Start the daemon server")
-    .option("-d, --daemon", "Run in background (detached mode)")
+    .option("-d, --detach", "Run in background (detached mode)")
     .option("-p, --port <port>", "Server port (uses config daemon.port if not specified)")
     .option("--kspec-dir <dir>", "Path to .kspec directory (defaults to resolved project .kspec)")
     .option("--json", "Output as JSON")
@@ -227,7 +227,7 @@ export function registerServeCommands(program: Command): void {
  * AC: @config-daemon ac-1 — port from config, ac-2 — CLI flag overrides config
  */
 async function startServer(opts: {
-  daemon?: boolean;
+  detach?: boolean;
   port?: string;
   kspecDir?: string;
 }): Promise<void> {
@@ -318,7 +318,7 @@ async function startServer(opts: {
   }
 
   // AC: @cli-serve-commands ac-2 - background mode
-  if (opts.daemon) {
+  if (opts.detach) {
     const runtime = "bun";
 
     // Spawn detached process
@@ -611,5 +611,5 @@ async function restartServer(opts: { kspecDir?: string; json?: boolean }): Promi
   if (!isJsonMode()) {
     info("Starting daemon...");
   }
-  await startServer({ daemon: true, port, kspecDir: opts.kspecDir });
+  await startServer({ detach: true, port, kspecDir: opts.kspecDir });
 }

@@ -41,6 +41,9 @@ const READ_COMMAND_TIMEOUT_MS = 30_000;
 /** Timeout for proxied mutating commands. */
 const MUTATION_COMMAND_TIMEOUT_MS = 60_000;
 
+/** Timeout for project registration before command routing. */
+const REGISTRATION_TIMEOUT_MS = 5_000;
+
 // ── Module-Level Cached State ──────────────────────────────────────
 
 /**
@@ -159,12 +162,17 @@ async function ensureProjectRegistered(
   port: number,
   projectPath: string,
 ): Promise<void> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), REGISTRATION_TIMEOUT_MS);
+
   try {
     const response = await fetch(`http://127.0.0.1:${port}/api/projects`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ path: projectPath }),
+      signal: controller.signal,
     });
+    clearTimeout(timeout);
 
     // 200 = registered, 409 = already registered — both fine
     if (!response.ok && response.status !== 409) {
@@ -172,7 +180,8 @@ async function ensureProjectRegistered(
       // will auto-register via X-Kspec-Dir header
     }
   } catch {
-    // Non-fatal: middleware handles auto-registration
+    clearTimeout(timeout);
+    // Non-fatal: middleware handles auto-registration (timeout or connection error)
   }
 }
 
@@ -295,7 +304,7 @@ export function extractCommandPayload(actionCommand: {
 
   // Global options that are handled by the proxy layer and should not be
   // forwarded to the daemon command API
-  const proxyOnlyOpts = new Set(["requireDaemon", "require-daemon", "debug-shadow", "debugShadow"]);
+  const proxyOnlyOpts = new Set(["daemon", "debug-shadow", "debugShadow"]);
 
   // Copy options, converting camelCase to kebab-case for the batch format
   for (const [key, value] of Object.entries(rawOpts)) {

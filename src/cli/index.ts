@@ -230,8 +230,7 @@ program
   .option("--raw", "Output in raw JSON format (same as --json)")
   .option("--debug-shadow", "Enable debug output for shadow operations")
   // AC: @cli-daemon-proxy ac-force-proxy — require daemon routing
-  // Named --require-daemon to avoid conflict with serve start --daemon (daemonize)
-  .option("--require-daemon", "Require daemon routing (fail if daemon is unavailable)")
+  .option("--daemon", "Require daemon routing (fail if daemon is unavailable)")
   .hook("preAction", async (thisCommand, actionCommand) => {
     // Skip all hooks during batch dispatch — the batch handler manages modes itself
     if (isBatchMode()) return;
@@ -308,7 +307,7 @@ program
 
     if (!shouldSkipProxy) {
       const proxyResult = await shouldProxyCommand({
-        forceDaemon: opts.requireDaemon,
+        forceDaemon: opts.daemon,
       });
 
       if (proxyResult.proxy) {
@@ -347,14 +346,14 @@ program
         } else {
           // AC: @cli-daemon-proxy ac-timeout-mutation-error, ac-force-proxy error
           console.error(chalk.red(`error: ${result.error}`));
-          if (opts.requireDaemon) {
+          if (opts.daemon) {
             console.error(chalk.gray("Suggested action: start the daemon with 'kspec serve start', or remove --daemon to allow direct mode."));
           } else {
             console.error(chalk.gray("Suggested action: check daemon status with 'kspec serve status' or restart with 'kspec serve restart'."));
           }
           process.exit(EXIT_CODES.ERROR);
         }
-      } else if (opts.requireDaemon && proxyResult.reason) {
+      } else if (opts.daemon && proxyResult.reason) {
         // AC: @cli-daemon-proxy ac-force-proxy — --daemon flag but daemon unavailable
         console.error(chalk.red(`error: ${proxyResult.reason}`));
         console.error(chalk.gray("Suggested action: start the daemon with 'kspec serve start', or remove --daemon to allow direct mode."));

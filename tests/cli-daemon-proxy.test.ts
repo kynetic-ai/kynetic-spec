@@ -346,20 +346,20 @@ describe("extractCommandPayload", () => {
     expect(result.args.ref).toBe("@my-task");
   });
 
-  it("filters out proxy-only options (requireDaemon, debug-shadow)", () => {
+  it("filters out proxy-only options (daemon, debug-shadow)", () => {
     const mockCommand = {
       name: () => "list",
       parent: {
         name: () => "task",
         parent: { name: () => "kspec", parent: null },
       },
-      opts: () => ({ requireDaemon: true, debugShadow: true, json: true }),
+      opts: () => ({ daemon: true, debugShadow: true, json: true }),
       registeredArguments: [],
       processedArgs: [],
     };
 
     const result = extractCommandPayload(mockCommand);
-    expect(result.args).not.toHaveProperty("require-daemon");
+    expect(result.args).not.toHaveProperty("daemon");
     expect(result.args).not.toHaveProperty("debug-shadow");
     expect(result.args.json).toBe(true);
   });
@@ -610,6 +610,44 @@ describe("proxyCommand", () => {
 
     expect(receivedDir).toBe("/home/user/my-project");
   });
+
+  // AC: @daemon-proxy-detection ac-project-registered (registration timeout)
+  it("continues to command routing when project registration stalls", async () => {
+    // /api/projects never responds — simulates stalled registration
+    // The command should still proceed (registration is non-fatal)
+    const { server, port } = await createTestServer(async (req, res) => {
+      const url = new URL(req.url!, `http://localhost:${port}`);
+      if (url.pathname === "/api/projects") {
+        // Never respond — simulates hung registration endpoint
+        return;
+      }
+      if (url.pathname === "/api/command") {
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ stdout: "ok\n", stderr: "", exitCode: 0 }));
+        return;
+      }
+      res.writeHead(404);
+      res.end("Not found");
+    });
+    testServer = server;
+
+    const start = performance.now();
+    const result = await proxyCommand({
+      port,
+      command: "task list",
+      args: {},
+      projectPath: "/tmp/test-project",
+      isMutating: false,
+    });
+    const elapsed = performance.now() - start;
+
+    // Registration should time out and continue to command routing
+    // Total time should be bounded (registration timeout + command execution)
+    expect(result.ok).toBe(true);
+    // Should complete within registration timeout (5s) + reasonable overhead,
+    // not hang indefinitely
+    expect(elapsed).toBeLessThan(10_000);
+  });
 });
 
 // ── E2E Tests: CLI Integration ────────────────────────────────────
@@ -665,7 +703,7 @@ describe("CLI daemon proxy E2E", () => {
   it("--daemon flag fails with clear error when no daemon running", async () => {
     const isolatedHome = await createIsolatedKspecHome(tempDir);
 
-    const result = kspec("task list --require-daemon", tempDir, {
+    const result = kspec("task list --daemon", tempDir, {
       expectFail: true,
       env: {
         ...isolatedHome.env,
