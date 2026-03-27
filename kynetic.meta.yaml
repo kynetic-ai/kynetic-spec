@@ -8408,6 +8408,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T01:52:32.616Z
+  - _ulid: 01KMPGVQ1156EZX4AFEX65B7KF
+    type: friction
+    content: "Entity cache task went through 8 fix cycles. Each cycle found one more unwired domain or
+      missing detail-tier method. Root cause: the implementation had 8 domains x 3 tiers (index,
+      detail, write-through) x N route paths, creating a combinatorial coverage surface. The
+      plan-before-code step should include an explicit domain-x-tier matrix for cache-like features,
+      verified against routes before first submission."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T02:09:36.289Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
