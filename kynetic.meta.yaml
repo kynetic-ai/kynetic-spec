@@ -8729,6 +8729,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T08:56:00.183Z
+  - _ulid: 01KMQ83VN7GH4BCKTZSH5TDW6C
+    type: success
+    content: Targeted executable repros were high-leverage in review. Small tsx scripts against the real
+      cache logic disproved assumptions quickly, converted suspected issues into concrete evidence,
+      and made blocker threads precise without needing speculative findings.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T08:56:00.424Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
