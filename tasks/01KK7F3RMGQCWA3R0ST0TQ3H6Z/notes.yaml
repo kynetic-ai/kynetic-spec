@@ -14,3 +14,11 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-11T05:58:32.008Z
+  - _ulid: 01KMRVTMXGMXEP44MNVBKS8MC9
+    content: "Completed convention promotion: analyzed 336 dispatch agent memory dirs (4 had memory, all
+      implementation details). Promoted 8 rules to testing/development conventions, added terminal
+      states section to task lifecycle template. Merged via PR #908. Remaining: clean stale entries
+      from main project MEMORY.md."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T23:59:44.560Z
