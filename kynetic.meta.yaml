@@ -8419,6 +8419,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T02:09:36.289Z
+  - _ulid: 01KMPGW0H3HCF9Q1D6MJ2RX4T8
+    type: success
+    content: "Fix cycle 8 (session watcher invalidation) was resolved in a single clean pass: traced the
+      full callback chain, identified the gap in fileToDomain, fixed the root cause rather than
+      adding another workaround, simplified the server.ts callback, added targeted tests, full suite
+      green. The Explore subagent for multi-file investigation kept main context clean."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T02:09:46.019Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
