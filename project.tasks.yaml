@@ -22699,7 +22699,7 @@
   type: task
   spec_ref: "@multi-directory-daemon"
   plan_ref: "@plan-daemon-optimistic-data-layer"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-cli-proxy-routing"
@@ -22711,6 +22711,7 @@
   todos_count: 0
   created_at: 2026-03-26T05:50:45.363Z
   started_at: 2026-03-27T22:28:43.346Z
+  submitted_at: 2026-03-27T22:29:45.698Z
   automation: eligible
 - _ulid: 01KMNQY5EBQWR5CA3QQFANGJA0
   slugs: []
