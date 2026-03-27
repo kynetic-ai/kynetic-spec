@@ -58995,6 +58995,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-27T03:46:56.828Z
+      - _ulid: 01KMPPV9PB6KQT5RX9C2511K48
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMPPV973971V9Y6ZRFJCCHCH
+        timestamp: 2026-03-27T03:54:14.091Z
     examined_commit: 50e673a272bd2a8a1c4abd98c41643c3747a39e0
     external_links: []
     lifecycle_state: open
@@ -59004,8 +59011,25 @@ reviews:
       content_hash: ""
       ref: "@01KMMB3T2K3T6A1CJR884EPKJF"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMPPV973971V9Y6ZRFJCCHCH
+        anchor:
+          type: code
+          commit: 50e673a272bd2a8a1c4abd98c41643c3747a39e0
+          line_end: 82
+          line_start: 77
+          path: packages/daemon/src/middleware/project-context.ts
+          side: head
+        entries:
+          - _ulid: 01KMPPV973MZZWW087DX2D3ZD2
+            author: "@claude"
+            body: The startup project is registered here without ever running , but cache creation/warmup only
+              happens inside  in . That means the daemon's default project never gets a  on startup,
+              violating / for the very first registered project and forcing uncached disk reads
+              until some later path re-registers it.
+            created_at: 2026-03-27T03:54:13.603Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T03:46:39.770Z
-    updated_at: 2026-03-27T03:46:56.305Z
+    updated_at: 2026-03-27T03:54:13.603Z
     notes: []
