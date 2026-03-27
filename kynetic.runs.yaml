@@ -16095,7 +16095,7 @@ runs:
     completed_at: 2026-03-27T04:03:55.196Z
   - _ulid: 01KMPRY59R8BSB2G53VCP5X8DZ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -16112,7 +16112,42 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-27T04:31:03.269Z
-        completed_at: 2026-03-27T04:31:03.269Z
+        completed_at: 2026-03-27T04:32:02.566Z
+        notes: >-
+          Friction points identified (high confidence):
+
+
+          1. PRE-EXISTING TEST FAILURE: agent-dispatch-engine.test.ts has a duplicate mockMetadata
+          declaration at line 2532 causing a transform error. This has been on the dev branch for
+          multiple fix cycles now. Not tracked anywhere. Every test run reports 1 failure that isn't
+          related to the work being done, creating noise. This is systemic — every automated
+          dispatch cycle sees this.
+
+
+          2. BUILD:DAEMON STALE DIST: The dist/daemon/ directory is a flat copy of
+          packages/daemon/src/ via build:daemon. When modifying daemon source files, tests import
+          from dist/ which is stale until rebuild. The test runner script detects this and
+          auto-fixes, but it adds build time to every test run that touches daemon code. The
+          copy-based approach (shx cp) means the dist/ files drift from source between builds. This
+          is a moderate friction but the auto-fix in the test runner already handles it.
+
+
+          Successes:
+
+          - The review blocker was specific and actionable, making the fix cycle efficient. Clear
+          identification of the dropped fields and the pattern to follow (kspec action executor env
+          var propagation) made the fix straightforward.
+
+          - vi.mock with vi.hoisted pattern for mocking runInvocation at daemon level worked
+          cleanly.
+
+
+          Assessment: Only item #1 (pre-existing test failure) is worth capturing. Item #2 has an
+          existing mitigation. The success patterns are specific to this task.
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-27T04:32:02.566Z
+        completed_at: 2026-03-27T04:32:02.566Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-27T04:30:45.048Z
