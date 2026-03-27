@@ -287,6 +287,8 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
       .get(
         "/",
         async ({ query, error: errorResponse, projectContext }) => {
+          // AC: @daemon-entity-cache ac-serve-from-memory — initContext deferred;
+          // filterSessionSummaries uses cache when sessions domain is ready
           const ctx = await initContext(projectContext.path);
           const filteredResult = await filterSessionSummaries(ctx, query, {
             getEntityCache,

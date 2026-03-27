@@ -8,8 +8,11 @@
  */
 
 import type { LoadedTask, TaskSummary, LoadedPlan, LoadedSpecItem } from "../../parser/index.js";
-import type { ItemSummary } from "../../daemon/entity-cache.js";
+import type { ItemSummary, MetaSummary } from "../../daemon/entity-cache.js";
 import type { SessionLogSummary } from "../../sessions/store.js";
+import type { LoadedInboxItem } from "../../parser/yaml.js";
+import type { LoadedTriageRecord } from "../../parser/yaml.js";
+import type { LoadedReviewRecord } from "../../parser/reviews.js";
 
 /** Domain state as reported by the cache. */
 export type CacheDomainState = "unloaded" | "loading" | "ready" | "degraded";
@@ -30,6 +33,10 @@ export interface RouteEntityCache {
   getSessionDetail(sessionId: string): SessionLogSummary | null;
   setSessionDetail(sessionId: string, summary: SessionLogSummary): void;
   getPlansIndex(): LoadedPlan[] | null;
+  getInboxIndex(): LoadedInboxItem[] | null;
+  getTriageIndex(): LoadedTriageRecord[] | null;
+  getReviewsIndex(): LoadedReviewRecord[] | null;
+  getMetaIndex(): MetaSummary | null;
   writeThrough(domain: string): Promise<void>;
   markWriteThrough(domain: string): void;
 }

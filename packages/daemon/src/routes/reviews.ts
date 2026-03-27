@@ -45,6 +45,8 @@ import {
   resolveThreadAtomic,
   reopenThreadAtomic,
   resolveTaskDataManager,
+  type LoadedTask,
+  type LoadedSpecItem,
 } from "../../parser/index.js";
 import { getUnresolvedBlockers } from "../../parser/review-threads.js";
 import { createCheck } from "../../review/checks.js";
@@ -72,9 +74,11 @@ import {
 } from "../../schema/index.js";
 import { resolveRefTitle } from "./ref-resolution.js";
 import { enumArrayUnion, enumUnion } from "./enum-utils.js";
+import type { EntityCacheAccessor } from "./entity-cache-types.js";
 
 interface ReviewsRouteOptions {
   pubsub: PubSubManager;
+  getEntityCache?: EntityCacheAccessor;
 }
 
 const VALID_DECISIONS: readonly ReviewVerdictDecision[] = ReviewVerdictDecisionSchema.options;
@@ -130,7 +134,7 @@ function toReviewSummary(review: ReviewRecord, index?: ReferenceIndex) {
 }
 
 export function createReviewsRoutes(options: ReviewsRouteOptions) {
-  const { pubsub } = options;
+  const { pubsub, getEntityCache } = options;
 
   return (
     new Elysia({ prefix: "/api/reviews" })
@@ -140,11 +144,33 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
       .get(
         "/",
         async ({ query, projectContext }) => {
-          const ctx = await initContext(projectContext.path);
-          const reviews = await loadReviewRecords(ctx);
-          const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
-          const specItems = await loadAllItems(ctx);
-          const index = new ReferenceIndex(tasks, specItems);
+          // AC: @daemon-entity-cache ac-serve-from-memory — defer initContext for cache hits
+          const cache = getEntityCache?.(projectContext.path);
+          let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
+          const getCtx = async () => {
+            if (!_ctx) _ctx = await initContext(projectContext.path);
+            return _ctx;
+          };
+
+          // Try cache for reviews
+          const reviewsDomainState = cache?.getDomainState("reviews");
+          let reviews;
+          if (cache && reviewsDomainState === "ready") {
+            reviews = cache.getReviewsIndex();
+          }
+          if (!reviews) {
+            const ctx = await getCtx();
+            reviews = await loadReviewRecords(ctx);
+          }
+
+          // Try cache for tasks and items (for ref resolution)
+          const tasksDomainState = cache?.getDomainState("tasks");
+          const itemsDomainState = cache?.getDomainState("items");
+          const tasks = (cache && tasksDomainState === "ready" ? cache.getTaskIndex() : null)
+            ?? await resolveTaskDataManager(await getCtx()).loadAllTasks(await getCtx());
+          const specItems = (cache && itemsDomainState === "ready" ? cache.getItemIndex() : null)
+            ?? await loadAllItems(await getCtx());
+          const index = new ReferenceIndex(tasks as unknown as LoadedTask[], specItems as unknown as LoadedSpecItem[]);
 
           // Apply filters
           let filtered = reviews;
@@ -495,6 +521,12 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
 
           await commitIfShadow(ctx.shadow, `review: add thread to ${params.id}`);
 
+          // AC: @daemon-entity-cache ac-write-through — update cache before response
+          const threadCache = getEntityCache?.(projectContext.path);
+          if (threadCache) {
+            await threadCache.writeThrough("reviews");
+          }
+
           // AC: @review-records-daemon-api ac-9 - WebSocket broadcast
           pubsub.broadcast(
             "reviews:updates",
@@ -588,6 +620,12 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
               `review: reply to thread ${params.threadId} on ${params.id}`,
             );
 
+            // AC: @daemon-entity-cache ac-write-through — update cache before response
+            const replyCache = getEntityCache?.(projectContext.path);
+            if (replyCache) {
+              await replyCache.writeThrough("reviews");
+            }
+
             // AC: @review-records-daemon-api ac-9 - WebSocket broadcast
             pubsub.broadcast(
               "reviews:updates",
@@ -670,6 +708,12 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
               `review: resolve thread ${params.threadId} on ${params.id}`,
             );
 
+            // AC: @daemon-entity-cache ac-write-through — update cache before response
+            const resolveCache = getEntityCache?.(projectContext.path);
+            if (resolveCache) {
+              await resolveCache.writeThrough("reviews");
+            }
+
             // AC: @review-records-daemon-api ac-9 - WebSocket broadcast
             pubsub.broadcast(
               "reviews:updates",
@@ -750,6 +794,12 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
               ctx.shadow,
               `review: reopen thread ${params.threadId} on ${params.id}`,
             );
+
+            // AC: @daemon-entity-cache ac-write-through — update cache before response
+            const reopenCache = getEntityCache?.(projectContext.path);
+            if (reopenCache) {
+              await reopenCache.writeThrough("reviews");
+            }
 
             // AC: @review-records-daemon-api ac-9 - WebSocket broadcast
             pubsub.broadcast(
@@ -909,6 +959,12 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
             }
           }
 
+          // AC: @daemon-entity-cache ac-write-through — update cache before response
+          const verdictCache = getEntityCache?.(projectContext.path);
+          if (verdictCache) {
+            await verdictCache.writeThrough("reviews");
+          }
+
           // AC: @review-records-daemon-api ac-9 - WebSocket broadcast
           pubsub.broadcast(
             "reviews:updates",
@@ -1053,6 +1109,12 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
             `${body.name}: ${body.status}`,
           );
 
+          // AC: @daemon-entity-cache ac-write-through — update cache before response
+          const checkCache = getEntityCache?.(projectContext.path);
+          if (checkCache) {
+            await checkCache.writeThrough("reviews");
+          }
+
           // Compute gate evaluation for the response
           const currentVersion = extractSubjectVersion(updated.subject);
           const gateResult = evaluateGates(updated.checks, currentVersion);
@@ -1168,6 +1230,12 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
               review.slugs[0] || review._ulid.slice(0, 8),
               `${review.lifecycle_state} → ${lifecycleTarget}`,
             );
+
+            // AC: @daemon-entity-cache ac-write-through — update cache before response
+            const lifecycleCache = getEntityCache?.(projectContext.path);
+            if (lifecycleCache) {
+              await lifecycleCache.writeThrough("reviews");
+            }
 
             // AC: @review-records-daemon-api ac-9 - WebSocket broadcast
             pubsub.broadcast(

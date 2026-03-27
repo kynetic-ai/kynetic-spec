@@ -175,16 +175,21 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
             };
           }
 
-          // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-          const ctx = await initContext(projectContext.path);
+          // AC: @daemon-entity-cache ac-serve-from-memory — defer initContext to avoid
+          // disk/git work on cache hits
+          let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
+          const getCtx = async () => {
+            if (!_ctx) _ctx = await initContext(projectContext.path);
+            return _ctx;
+          };
 
           // AC: @daemon-entity-cache ac-serve-from-memory — use cached item summaries when ready
           let items: (LoadedSpecItem | ItemSummary)[];
           if (cache && itemsDomainState === "ready") {
             const cachedItems = cache.getItemIndex();
-            items = cachedItems ?? await loadAllItems(ctx);
+            items = cachedItems ?? await loadAllItems(await getCtx());
           } else {
-            items = await loadAllItems(ctx);
+            items = await loadAllItems(await getCtx());
           }
 
           // Compute parent relationships from path structure
@@ -242,6 +247,7 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
               plans = cache.getPlansIndex();
             }
             if (!plans) {
+              const ctx = await getCtx();
               plans = await loadPlans(ctx);
             }
             const plan = plans.find((p) => p._ulid === query.plan || p.slugs.includes(query.plan!));

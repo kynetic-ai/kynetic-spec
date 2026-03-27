@@ -27,21 +27,34 @@ import {
 } from "../../parser/index.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import type { PubSubManager } from "../websocket/pubsub";
+import type { EntityCacheAccessor } from "./entity-cache-types.js";
 
 interface InboxRouteOptions {
   pubsub: PubSubManager;
+  getEntityCache?: EntityCacheAccessor;
 }
 
 export function createInboxRoutes(options: InboxRouteOptions) {
-  const { pubsub } = options;
+  const { pubsub, getEntityCache } = options;
 
   return (
     new Elysia({ prefix: "/api/inbox" })
       // AC: @api-contract ac-12 - List inbox items ordered by created_at desc
+      // AC: @daemon-entity-cache ac-serve-from-memory — serve from cache when available
       .get("/", async ({ projectContext }) => {
-        // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-        const ctx = await initContext(projectContext.path);
-        const items = await loadInboxItems(ctx);
+        // AC: @daemon-entity-cache ac-serve-from-memory — use cached inbox when ready
+        const cache = getEntityCache?.(projectContext.path);
+        const inboxDomainState = cache?.getDomainState("inbox");
+
+        let items;
+        if (cache && inboxDomainState === "ready") {
+          items = cache.getInboxIndex();
+        }
+        if (!items) {
+          // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+          const ctx = await initContext(projectContext.path);
+          items = await loadInboxItems(ctx);
+        }
 
         // AC: @api-contract ac-12 - Sort by created_at descending (newest first)
         const sorted = [...items].toSorted(
@@ -87,6 +100,12 @@ export function createInboxRoutes(options: InboxRouteOptions) {
           // Save and commit
           await saveInboxItem(ctx, item);
           await commitIfShadow(ctx.shadow, `inbox: add item ${item._ulid}`);
+
+          // AC: @daemon-entity-cache ac-write-through — update cache before response
+          const createCache = getEntityCache?.(projectContext.path);
+          if (createCache) {
+            await createCache.writeThrough("inbox");
+          }
 
           // Broadcast update
           // AC: @ui-api-aggregation ac-4 - Include full item data for in-place UI updates
@@ -152,6 +171,12 @@ export function createInboxRoutes(options: InboxRouteOptions) {
           // AC: @api-contract ac-14 - Delete item
           await deleteInboxItem(ctx, result.ulid);
           await commitIfShadow(ctx.shadow, `inbox: delete ${params.ref}`);
+
+          // AC: @daemon-entity-cache ac-write-through — update cache before response
+          const deleteCache = getEntityCache?.(projectContext.path);
+          if (deleteCache) {
+            await deleteCache.writeThrough("inbox");
+          }
 
           // Broadcast update
           // AC: @multi-directory-daemon ac-18 - Broadcast scoped to request project

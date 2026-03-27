@@ -79,8 +79,13 @@ export function createTasksRoutes(options: TasksRouteOptions) {
             };
           }
 
-          // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-          const ctx = await initContext(projectContext.path);
+          // AC: @daemon-entity-cache ac-serve-from-memory — defer initContext to avoid
+          // disk/git work on cache hits. Only initialize when disk fallback is needed.
+          let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
+          const getCtx = async () => {
+            if (!_ctx) _ctx = await initContext(projectContext.path);
+            return _ctx;
+          };
 
           // AC: @daemon-entity-cache ac-serve-from-memory — use cached index when ready
           // AC: @daemon-entity-cache ac-graceful-degradation — fall back to disk if degraded
@@ -98,6 +103,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
                 summaries = summaries.filter((t) => t.automation === query.automation);
               }
             } else {
+              const ctx = await getCtx();
               summaries = await resolveTaskDataManager(ctx).listTasks(ctx, {
                 status: query.status
                   ? Array.isArray(query.status) ? query.status : [query.status]
@@ -107,6 +113,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
             }
           } else {
             // AC: @task-data-manager ac-2 — list uses index-only summaries
+            const ctx = await getCtx();
             summaries = await resolveTaskDataManager(ctx).listTasks(ctx, {
               status: query.status
                 ? Array.isArray(query.status) ? query.status : [query.status]
@@ -141,6 +148,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
               plans = cache.getPlansIndex();
             }
             if (!plans) {
+              const ctx = await getCtx();
               plans = await loadPlans(ctx);
             }
             const plan = plans.find((p: { _ulid: string; slugs: string[] }) => p._ulid === query.plan || p.slugs.includes(query.plan!));
@@ -171,6 +179,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
             specItems = cache.getItemIndex();
           }
           if (!specItems) {
+            const ctx = await getCtx();
             specItems = await loadAllItems(ctx);
           }
           // Build a minimal index from summaries for ref resolution

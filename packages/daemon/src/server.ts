@@ -313,13 +313,16 @@ export async function createServer(options: ServerOptions) {
     .use(createItemsRoutes({ getEntityCache: entityCacheModule.getEntityCache }))
 
     // AC: @api-contract ac-12 through ac-14 - Inbox API endpoints
-    .use(createInboxRoutes({ pubsub: pubsubManager }))
+    // AC: @daemon-entity-cache ac-serve-from-memory, ac-write-through — pass cache accessor
+    .use(createInboxRoutes({ pubsub: pubsubManager, getEntityCache: entityCacheModule.getEntityCache }))
 
     // AC: @api-contract ac-15 through ac-18 - Meta API endpoints
-    .use(createMetaRoutes())
+    // AC: @daemon-entity-cache ac-write-through — pass cache accessor for meta write-through
+    .use(createMetaRoutes({ getEntityCache: entityCacheModule.getEntityCache }))
 
     // AC: @triage-daemon-api ac-1 through ac-9 - Triage API endpoints
-    .use(createTriageRoutes({ pubsub: pubsubManager }))
+    // AC: @daemon-entity-cache ac-serve-from-memory, ac-write-through — pass cache accessor
+    .use(createTriageRoutes({ pubsub: pubsubManager, getEntityCache: entityCacheModule.getEntityCache }))
 
     // AC: @api-contract ac-19 through ac-21 - Validation and search endpoints
     .use(createValidationRoutes())
@@ -342,7 +345,8 @@ export async function createServer(options: ServerOptions) {
     .use(createSessionRoutes({ getEntityCache: entityCacheModule.getEntityCache }))
 
     // AC: @ui-plans-view ac-1 - Plans data endpoints
-    .use(createPlansRoutes())
+    // AC: @daemon-entity-cache ac-serve-from-memory — pass cache accessor
+    .use(createPlansRoutes({ getEntityCache: entityCacheModule.getEntityCache }))
 
     // AC: @ui-api-aggregation ac-1, ac-2, ac-3 - Aggregation endpoints
     .use(createAggregationRoutes())
@@ -355,7 +359,8 @@ export async function createServer(options: ServerOptions) {
     .use(createDiffRoutes())
 
     // AC: @review-records-daemon-api ac-3, ac-4, ac-5, ac-6, ac-7, ac-8, ac-9, ac-10 - Review endpoints
-    .use(createReviewsRoutes({ pubsub: pubsubManager }))
+    // AC: @daemon-entity-cache ac-serve-from-memory, ac-write-through — pass cache accessor
+    .use(createReviewsRoutes({ pubsub: pubsubManager, getEntityCache: entityCacheModule.getEntityCache }))
 
     // AC: @agent-dispatch-engine ac-4 - Agent dispatch API endpoints
     // AC: @daemon-agent-dispatch ac-3, ac-4 - Pass pubsub for WebSocket broadcast on invocation events

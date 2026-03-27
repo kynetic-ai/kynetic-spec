@@ -39,24 +39,30 @@ export function createRefsRoutes(options: RefsRouteOptions = {}) {
       // AC: @trait-api-endpoint ac-1 - Returns 2xx with JSON body
       // AC: @daemon-entity-cache ac-serve-from-memory — serve from cache when available
       .get("/", async ({ projectContext }) => {
-        const ctx = await initContext(projectContext.path);
-
         // AC: @daemon-entity-cache ac-serve-from-memory — try cache for tasks, items, and plans
         const cache = getEntityCache?.(projectContext.path);
         const tasksDomainState = cache?.getDomainState("tasks");
         const itemsDomainState = cache?.getDomainState("items");
         const plansDomainState = cache?.getDomainState("plans");
 
+        // AC: @daemon-entity-cache ac-serve-from-memory — defer initContext to avoid
+        // disk/git work when all domains are served from cache
+        let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
+        const getCtx = async () => {
+          if (!_ctx) _ctx = await initContext(projectContext.path);
+          return _ctx;
+        };
+
         const [tasks, items, plans] = await Promise.all([
           cache && tasksDomainState === "ready" && cache.getTaskIndex()
             ? Promise.resolve(cache.getTaskIndex()!)
-            : resolveTaskDataManager(ctx).loadAllTasks(ctx),
+            : getCtx().then((ctx) => resolveTaskDataManager(ctx).loadAllTasks(ctx)),
           cache && itemsDomainState === "ready" && cache.getItemIndex()
             ? Promise.resolve(cache.getItemIndex()!)
-            : loadAllItems(ctx),
+            : getCtx().then((ctx) => loadAllItems(ctx)),
           cache && plansDomainState === "ready" && cache.getPlansIndex()
             ? Promise.resolve(cache.getPlansIndex()!)
-            : loadPlans(ctx),
+            : getCtx().then((ctx) => loadPlans(ctx)),
         ]);
         // TaskSummary and ItemSummary are structurally compatible with ReferenceIndex's
         // needs (indexItem uses _ulid + slugs; buildRefIndex uses title, type, status)

@@ -32,11 +32,14 @@ import type { Agent } from "../../schema/meta.js";
 import { AgentDispatchEventSchema, ObservationTypeSchema } from "../../schema/meta.js";
 import { AgentDispatchAutomationFilterSchema } from "../../schema/task.js";
 import { enumArrayUnion, enumUnion } from "./enum-utils.js";
+import type { EntityCacheAccessor } from "./entity-cache-types.js";
 
-interface MetaRouteOptions {}
+interface MetaRouteOptions {
+  getEntityCache?: EntityCacheAccessor;
+}
 
 export function createMetaRoutes(_options: MetaRouteOptions = {}) {
-  // No closure-scoped kspecDir needed - comes from middleware
+  const { getEntityCache } = _options;
 
   return (
     new Elysia({ prefix: "/api/meta" })
@@ -90,6 +93,12 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
 
           await saveMetaItem(ctx, updated, "agent");
           await commitIfShadow(ctx.shadow, `meta: update agent ${params.id}`);
+
+          // AC: @daemon-entity-cache ac-write-through — update cache before response
+          const agentCache = getEntityCache?.(projectContext.path);
+          if (agentCache) {
+            await agentCache.writeThrough("meta");
+          }
 
           return updated;
         },

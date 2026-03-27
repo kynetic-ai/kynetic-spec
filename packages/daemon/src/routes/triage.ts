@@ -36,6 +36,8 @@ import {
   getAuthor,
   resolveTaskDataManager,
   type LoadedTriageRecord,
+  type LoadedTask,
+  type LoadedSpecItem,
 } from "../../parser/index.js";
 import { resolveRefEntries } from "./ref-resolution.js";
 import { commitIfShadow } from "../../parser/shadow.js";
@@ -45,15 +47,17 @@ import { exportTriageRecords } from "../../export/triage.js";
 import { executeTriageAction, VALID_ACTIONS } from "../../triage/index.js";
 import type { PubSubManager } from "../websocket/pubsub";
 import { enumArrayUnion, enumUnion } from "./enum-utils.js";
+import type { EntityCacheAccessor } from "./entity-cache-types.js";
 
 interface TriageRouteOptions {
   pubsub: PubSubManager;
+  getEntityCache?: EntityCacheAccessor;
 }
 
 // VALID_ACTIONS and executeTriageAction imported from shared triage module
 
 export function createTriageRoutes(options: TriageRouteOptions) {
-  const { pubsub } = options;
+  const { pubsub, getEntityCache } = options;
 
   return (
     new Elysia({ prefix: "/api/triage" })
@@ -62,9 +66,25 @@ export function createTriageRoutes(options: TriageRouteOptions) {
       .get(
         "/",
         async ({ query, projectContext }) => {
-          // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-          const ctx = await initContext(projectContext.path);
-          const records = await loadTriageRecords(ctx);
+          // AC: @daemon-entity-cache ac-serve-from-memory — use cached triage records when ready
+          const cache = getEntityCache?.(projectContext.path);
+          const triageDomainState = cache?.getDomainState("triage");
+
+          let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
+          const getCtx = async () => {
+            if (!_ctx) _ctx = await initContext(projectContext.path);
+            return _ctx;
+          };
+
+          let records;
+          if (cache && triageDomainState === "ready") {
+            records = cache.getTriageIndex();
+          }
+          if (!records) {
+            // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+            const ctx = await getCtx();
+            records = await loadTriageRecords(ctx);
+          }
 
           // Apply filters
           let filtered = records;
@@ -98,9 +118,14 @@ export function createTriageRoutes(options: TriageRouteOptions) {
           let refIndex: ReferenceIndex | null = null;
           if (hasEvidenceRefs) {
             try {
-              const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
-              const items = await loadAllItems(ctx);
-              refIndex = new ReferenceIndex(tasks, items);
+              // AC: @daemon-entity-cache ac-serve-from-memory — try cache for tasks and items
+              const tasksDomainState = cache?.getDomainState("tasks");
+              const itemsDomainState = cache?.getDomainState("items");
+              const tasks = (cache && tasksDomainState === "ready" ? cache.getTaskIndex() : null)
+                ?? await resolveTaskDataManager(await getCtx()).loadAllTasks(await getCtx());
+              const items = (cache && itemsDomainState === "ready" ? cache.getItemIndex() : null)
+                ?? await loadAllItems(await getCtx());
+              refIndex = new ReferenceIndex(tasks as unknown as LoadedTask[], items as unknown as LoadedSpecItem[]);
             } catch {
               // Non-critical
             }
@@ -223,6 +248,12 @@ export function createTriageRoutes(options: TriageRouteOptions) {
             ctx.shadow,
             `triage: record ${savedRecord._ulid.slice(0, 8)} as ${savedRecord.action}`,
           );
+
+          // AC: @daemon-entity-cache ac-write-through — update cache before response
+          const createTriageCache = getEntityCache?.(projectContext.path);
+          if (createTriageCache) {
+            await createTriageCache.writeThrough("triage");
+          }
 
           // AC: @triage-daemon-api ac-3 - Broadcast triage:updates via WebSocket
           // AC: @trait-websocket-protocol ac-3 - Broadcast event
@@ -353,6 +384,12 @@ export function createTriageRoutes(options: TriageRouteOptions) {
           // AC: @trait-api-endpoint ac-5 - Shadow commit
           await commitIfShadow(ctx.shadow, `triage: override ${record._ulid.slice(0, 8)}`);
 
+          // AC: @daemon-entity-cache ac-write-through — update cache before response
+          const overrideCache = getEntityCache?.(projectContext.path);
+          if (overrideCache) {
+            await overrideCache.writeThrough("triage");
+          }
+
           // AC: @triage-daemon-api ac-4 - Broadcast triage:updates
           pubsub.broadcast(
             "triage:updates",
@@ -438,6 +475,12 @@ export function createTriageRoutes(options: TriageRouteOptions) {
 
           // AC: @trait-api-endpoint ac-5 - Shadow commit
           await commitIfShadow(ctx.shadow, `triage: act ${record._ulid.slice(0, 8)}`);
+
+          // AC: @daemon-entity-cache ac-write-through — update cache before response
+          const actCache = getEntityCache?.(projectContext.path);
+          if (actCache) {
+            await actCache.writeThrough("triage");
+          }
 
           // AC: @triage-daemon-api ac-5 - Broadcast triage:updates
           pubsub.broadcast(
