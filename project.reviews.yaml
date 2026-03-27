@@ -64609,6 +64609,12 @@ reviews:
         payload:
           thread_ulid: 01KMR3DWBJNYWZ4GPX1Y4F9HV3
         timestamp: 2026-03-27T17:20:49.334Z
+      - _ulid: 01KMR50F2VH5PEVY1WXCX5G38J
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMR3DWBJNYWZ4GPX1Y4F9HV3
+        timestamp: 2026-03-27T17:20:57.947Z
     examined_commit: 1d8c9354ea2d08481c7c5647f54e7e13b1941074
     external_links: []
     lifecycle_state: closed
@@ -65591,6 +65597,8 @@ reviews:
               stdout matches CLI stdout exactly."
             created_at: 2026-03-27T17:20:48.779Z
         kind: blocker
+        resolved_at: 2026-03-27T17:20:57.436Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -65600,7 +65608,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T16:53:32.653Z
     created_at: 2026-03-27T16:45:47.121Z
-    updated_at: 2026-03-27T17:20:48.779Z
+    updated_at: 2026-03-27T17:20:57.436Z
     notes: []
   - _ulid: 01KMR4J2AXYMSZXCES089BY3JQ
     slugs: []
