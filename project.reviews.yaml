@@ -57720,6 +57720,13 @@ reviews:
           status: pass
           name: review-evidence
         timestamp: 2026-03-27T01:40:04.571Z
+      - _ulid: 01KMPF5P4067T5RGX2TFZC1PTF
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMPF5NQFJ7RFMZWRBKJJYWGV
+        timestamp: 2026-03-27T01:40:05.888Z
     examined_commit: 12ac2a14ed2cf4a3dfcbc2c8f464c4ca60cfd2d0
     external_links: []
     lifecycle_state: open
@@ -57748,7 +57755,24 @@ reviews:
               cached domains.
             created_at: 2026-03-27T01:40:02.783Z
         kind: blocker
+      - _ulid: 01KMPF5NQFJ7RFMZWRBKJJYWGV
+        anchor:
+          type: code
+          commit: 12ac2a14ed2cf4a3dfcbc2c8f464c4ca60cfd2d0
+          line_end: 65
+          line_start: 62
+          path: packages/daemon/src/routes/meta.ts
+          side: head
+        entries:
+          - _ulid: 01KMPF5NQF1D25NN658J3KMF4W
+            author: "@claude"
+            body: Meta reads still bypass the new cache.  now accepts , but the GET handlers in this file still
+              go straight to / and none consult . That means the meta domain never actually serves
+              from memory, so the manifest watcher invalidation and  work added in this task provide
+              no read-path benefit for , , , or , which misses .
+            created_at: 2026-03-27T01:40:05.487Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T01:35:37.224Z
-    updated_at: 2026-03-27T01:40:04.151Z
+    updated_at: 2026-03-27T01:40:05.487Z
     notes: []
