@@ -53,7 +53,7 @@ description: |
 spec_ref: "@cli-daemon-proxy"
 plan_ref: "@plan-daemon-optimistic-data-layer"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-daemon-command-api"
@@ -74,7 +74,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
   upstream_ref: refs/heads/dev
-session_id: 01KMRMKDPNY8782VN4QCG7VS08
+session_id: null
 history:
   - author: "@claude"
     changes:
@@ -180,6 +180,16 @@ history:
         previous: "@01KMRM4KYYE4VRXCTGC68XBD5N"
     command: review-link
     timestamp: 2026-03-27T22:09:12.959Z
+  - author: "@claude"
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KMRMKDPNY8782VN4QCG7VS08
+    command: review-verdict-needs-work
+    timestamp: 2026-03-27T22:13:10.703Z
 created_at: 2026-03-26T05:50:42.968Z
 started_at: 2026-03-27T22:07:07.330Z
 submitted_at: 2026-03-27T22:07:10.342Z
