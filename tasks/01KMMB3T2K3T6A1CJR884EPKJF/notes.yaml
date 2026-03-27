@@ -429,3 +429,32 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T03:55:00.974Z
+  - _ulid: 01KMPQYP91DVSE6AEFJ179KKT2
+    content: >-
+      Fix cycle 13: addressed 3 blockers from review cycle 12.
+
+
+      Blocker 1 (startup project missing cache warmup): Added explicit
+      onProjectRegistered(startupProjectPath) call in server.ts after all callbacks are wired,
+      ensuring the startup project gets an entity cache instance and loadAll() starts immediately.
+      Previously, the middleware registered the startup project directly without the
+      onProjectRegistered callback.
+
+
+      Blocker 2 (task status mutations missing items write-through): All 4 task status mutation
+      routes (start, submit, complete, block) now write through both tasks AND items domains via
+      Promise.all, since syncSpecImplementationStatus modifies spec item implementation_status as a
+      side effect of task transitions.
+
+
+      Blocker 3 (refs endpoint ignoring loading contract): Refs endpoint now returns {refs: {},
+      _cache_status: 'loading'} when any required domain (tasks, items, plans) is still loading,
+      instead of falling through to disk reads during warmup.
+
+
+      Added 2 new behavioral tests covering cross-domain write-through and refs endpoint warming
+      availability. All 6906 tests pass (5 skipped, 1 pre-existing timeout in
+      dispatch-runtime-bootstrap-contract).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T04:13:33.857Z
