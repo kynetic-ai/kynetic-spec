@@ -63345,6 +63345,18 @@ reviews:
         runner: test-runner
         created_at: 2026-03-27T09:21:39.531Z
         completed_at: 2026-03-27T09:21:39.531Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm test -- --run tests/daemon-entity-cache.test.ts
+          tests/daemon-cache-route-coverage.test.ts tests/ref-resolution.test.ts => 37 suites
+          passed, 100 tests passed.
+        name: entity-cache targeted tests
+        required: false
+        runner: test-runner
+        created_at: 2026-03-27T09:21:40.980Z
+        completed_at: 2026-03-27T09:21:40.980Z
     events:
       - _ulid: 01KMQ98SHS19H5WJPTE9FD7S3F
         actor: "@claude"
@@ -63373,6 +63385,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-27T09:21:39.989Z
+      - _ulid: 01KMQ9JWHK6TJHT2S2PCS8H89R
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: entity-cache targeted tests
+        timestamp: 2026-03-27T09:21:41.427Z
     examined_commit: 23ae3945faffc641ec39da1c46e99a7064bb2e4f
     external_links: []
     lifecycle_state: open
@@ -63385,5 +63404,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-27T09:16:10.682Z
-    updated_at: 2026-03-27T09:21:39.531Z
+    updated_at: 2026-03-27T09:21:40.980Z
     notes: []
