@@ -666,6 +666,40 @@ describe("Daemon Command API", () => {
   // AC: @trait-localhost-security ac-3 — N/A: server configuration warning
   // is handled at daemon startup in server.ts, not per-route.
 
+  // AC: @daemon-command-api ac-response-parity
+  it("does not leak --yaml output mode between sequential requests", async () => {
+    // First request uses --yaml: this sets globalOutputFormat = "yaml"
+    const yamlResponse = await makeRequest("/api/command", {
+      method: "POST",
+      body: JSON.stringify({
+        command: "validate",
+        args: { warningsOk: true, yaml: true },
+      }),
+    });
+    expect(yamlResponse.status).toBeLessThan(500);
+
+    // Second request does NOT pass --yaml — output must be text, not YAML.
+    // Before the fix, setJsonMode(false) only cleared "json" format, leaving
+    // "yaml" intact. The second request would then produce YAML output.
+    const textResponse = await makeRequest("/api/command", {
+      method: "POST",
+      body: JSON.stringify({
+        command: "task get",
+        args: { ref: "@task-test", json: true },
+      }),
+    });
+
+    expect(textResponse.status).toBe(200);
+    const body = await textResponse.json();
+    expect(body.exitCode).toBe(0);
+
+    // If YAML mode leaked, stdout would be YAML (contains "---" or "key: val"
+    // style lines) instead of JSON. Since we asked for --json, it must be valid JSON.
+    const parsed = JSON.parse(body.stdout);
+    expect(parsed._ulid).toBe(TASK_ULID);
+    expect(parsed.title).toBe("Test Task");
+  });
+
   // ───────────────────────────────────────────────────────────────────
   // Edge cases
   // ───────────────────────────────────────────────────────────────────

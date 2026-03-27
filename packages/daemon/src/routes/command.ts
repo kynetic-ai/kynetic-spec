@@ -110,7 +110,7 @@ async function executeCommand(
   const { extractCommandTree, findCommand } = await import("../../cli/introspection.js");
   const { installExitInterceptor, uninstallExitInterceptor, BatchExitError } =
     await import("../../cli/batch-context.js");
-  const { setJsonMode, setVerboseMode } = await import("../../cli/output.js");
+  const { setOutputFormat, setVerboseMode } = await import("../../cli/output.js");
 
   const tree = extractCommandTree(program);
   const parts = payload.command.trim().split(/\s+/);
@@ -130,9 +130,12 @@ async function executeCommand(
     cmdMeta,
   );
 
-  // Reset Commander state between dispatches
+  // Reset Commander state and ALL output mode globals between dispatches.
+  // setOutputFormat("text") resets json, yaml, or any other format — unlike
+  // setJsonMode(false) which only clears json and leaves yaml intact.
+  // AC: @daemon-command-api ac-response-parity — prevents output mode leaking between requests
   resetCommandTree(program);
-  setJsonMode(false);
+  setOutputFormat("text");
   setVerboseMode(false);
 
   // Capture stdout and stderr separately.
