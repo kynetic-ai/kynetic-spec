@@ -63703,6 +63703,17 @@ reviews:
         runner: kspec
         created_at: 2026-03-27T15:14:08.666Z
         completed_at: 2026-03-27T15:14:08.666Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm test -- tests/daemon-entity-cache.test.ts -t "should NOT suppress watcher invalidation
+          when writeThrough reload fails" => 1 passed
+        name: writeThrough failure repro
+        required: false
+        runner: test.cjs
+        created_at: 2026-03-27T15:14:08.691Z
+        completed_at: 2026-03-27T15:14:08.691Z
     events:
       - _ulid: 01KMQXHF6AZCDQT772RC34S6VM
         actor: Jacob Chapel
@@ -63738,6 +63749,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-03-27T15:14:10.645Z
+      - _ulid: 01KMQXRATH9HN9Z14GR8TGAKAV
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: writeThrough failure repro
+        timestamp: 2026-03-27T15:14:11.410Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -63774,5 +63792,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-27T15:10:26.506Z
-    updated_at: 2026-03-27T15:14:08.666Z
+    updated_at: 2026-03-27T15:14:08.691Z
     notes: []
