@@ -66963,6 +66963,12 @@ reviews:
         payload:
           thread_ulid: 01KMR76VRPTSX78DDD27QV4Q3X
         timestamp: 2026-03-27T18:15:58.362Z
+      - _ulid: 01KMR85GBYMM6PM24QK5R02CYP
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMR76VRPTSX78DDD27QV4Q3X
+        timestamp: 2026-03-27T18:16:08.830Z
     examined_commit: ec4721b2a555b0de4b6471032f97c300191b6c4f
     external_links: []
     lifecycle_state: closed
@@ -67004,6 +67010,8 @@ reviews:
               leaked YAML).'
             created_at: 2026-03-27T18:15:57.816Z
         kind: blocker
+        resolved_at: 2026-03-27T18:16:08.304Z
+        resolved_by: "@claude"
       - _ulid: 01KMR76YB64XY0PN15XPYK6QC8
         entries:
           - _ulid: 01KMR76YB6SS29G52Z57Z3K5NM
@@ -67033,7 +67041,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T17:59:38.500Z
     created_at: 2026-03-27T17:51:13.675Z
-    updated_at: 2026-03-27T18:15:57.816Z
+    updated_at: 2026-03-27T18:16:08.304Z
     notes: []
   - _ulid: 01KMR7SJF8G37BWZDWNH26DMDN
     slugs: []
