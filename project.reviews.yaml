@@ -62742,6 +62742,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-27T08:13:59.705Z
+      - _ulid: 01KMQ6BNNPYYPY6KPWYH5DEEEY
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMQ6BN6VZ6Y5H2CPKP3KP6C6
+        timestamp: 2026-03-27T08:25:19.286Z
     examined_commit: c96e530ea4df135b240af245f6e4f838d7c21c82
     external_links: []
     lifecycle_state: open
@@ -62751,8 +62758,27 @@ reviews:
       content_hash: ""
       ref: "@01KMMB3T2K3T6A1CJR884EPKJF"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMQ6BN6VZ6Y5H2CPKP3KP6C6
+        anchor:
+          type: code
+          commit: c96e530ea4df135b240af245f6e4f838d7c21c82
+          line_end: 551
+          line_start: 548
+          path: packages/daemon/src/routes/items.ts
+          side: head
+        entries:
+          - _ulid: 01KMQ6BN6WYY8KCR1WWAC3HEBP
+            author: "@claude"
+            body: "GET /api/items/:ref/tasks still bypasses the cache entirely: it calls initContext(),
+              loadAllItems(), and loadAllTasks() unconditionally before resolving the ref. I
+              reproduced this with a warm in-memory tasks/items cache and the backing project files
+              removed; the request failed instead of serving the linked-task summary from cache.
+              That leaves this summary endpoint outside ac-serve-from-memory and reintroduces disk
+              work on hot reads."
+            created_at: 2026-03-27T08:25:18.812Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T08:13:42.769Z
-    updated_at: 2026-03-27T08:13:59.205Z
+    updated_at: 2026-03-27T08:25:18.812Z
     notes: []
