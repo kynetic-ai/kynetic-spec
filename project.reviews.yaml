@@ -68728,6 +68728,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-27T19:54:02.062Z
+      - _ulid: 01KMRE675BC2ZCNCHT4TDQTPT5
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMRE66N3SZMXSBFYEBMTKVQ5
+        timestamp: 2026-03-27T20:01:23.627Z
     examined_commit: e3f2e4a91fad8fc5c4c845816337769785a03ed9
     external_links: []
     lifecycle_state: open
@@ -68737,8 +68744,27 @@ reviews:
       content_hash: ""
       ref: "@01KMMB3V7N2GC0JSPJKJYMPJPV"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMRE66N3SZMXSBFYEBMTKVQ5
+        anchor:
+          type: code
+          commit: e3f2e4a91fad8fc5c4c845816337769785a03ed9
+          line_end: 259
+          line_start: 251
+          path: packages/daemon/src/routes/command.ts
+          side: head
+        entries:
+          - _ulid: 01KMRE66N38ERG2A0ERYNRVR0B
+            author: "@claude"
+            body: " skips the daemon's  cache even though this route executes any mutating CLI command. , , ,
+              and  are all annotated mutating commands, but a successful  call for them will never
+              issue . That leaves  and related session detail reads stale until a watcher catches
+              up, which violates @daemon-command-api ac-mutation-cache-update's requirement to
+              refresh cache state before returning the response. Current tests only cover task/inbox
+              mutations, so this regression path is untested."
+            created_at: 2026-03-27T20:01:23.107Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T19:53:48.559Z
-    updated_at: 2026-03-27T19:54:01.571Z
+    updated_at: 2026-03-27T20:01:23.107Z
     notes: []
