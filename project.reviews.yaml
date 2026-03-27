@@ -57967,6 +57967,23 @@ reviews:
         runner: npm
         created_at: 2026-03-27T01:57:12.769Z
         completed_at: 2026-03-27T01:57:12.769Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/daemon/entity-cache.ts; packages/daemon/src/project-context.ts;
+          packages/daemon/src/server.ts;
+          packages/daemon/src/routes/{meta,plans,reviews,triage,items,refs,sessions}.ts;
+          tests/daemon-entity-cache.test.ts. Commands run: kspec task get
+          @01KMMB3T2K3T6A1CJR884EPKJF; kspec item get @daemon-entity-cache; kspec validate; rg -n
+          'AC: @daemon-entity-cache' tests/...; git diff ...; rg/nl on cache invalidation paths; npx
+          tsx -e 'fileToDomain(...)'; npm test. Claims verified: final fix-cycle claims for meta
+          read wiring, detail-tier wiring, and full-suite pass. Categories searched: correctness,
+          edge cases, error handling, test quality, integration."
+        name: review-evidence
+        required: false
+        created_at: 2026-03-27T01:57:14.149Z
+        completed_at: 2026-03-27T01:57:14.149Z
     events:
       - _ulid: 01KMPFY4FRH3GP6NMPVGZJCXAK
         actor: "@claude"
@@ -57988,6 +58005,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-27T01:57:13.197Z
+      - _ulid: 01KMPG52P54EGGMA67M7G7CHQM
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-03-27T01:57:14.566Z
     examined_commit: 8813ba365e630450d68e9880bf09f935ba60c6f8
     external_links: []
     lifecycle_state: open
@@ -58000,5 +58024,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-27T01:53:27.032Z
-    updated_at: 2026-03-27T01:57:12.769Z
+    updated_at: 2026-03-27T01:57:14.149Z
     notes: []
