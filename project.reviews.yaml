@@ -67180,6 +67180,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-27T18:16:07.190Z
+      - _ulid: 01KMR85J0C08DHNVNQ1STYNZ8A
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMR85HF6FHSB5BV7632N6GJC
+        timestamp: 2026-03-27T18:16:10.509Z
     examined_commit: 01190340e042aca9fafa2e7e552744dcb7cc9db1
     external_links: []
     lifecycle_state: open
@@ -67226,7 +67233,25 @@ reviews:
               this migration is supposed to eliminate."
             created_at: 2026-03-27T18:16:05.025Z
         kind: blocker
+      - _ulid: 01KMR85HF6FHSB5BV7632N6GJC
+        anchor:
+          type: code
+          commit: 01190340e042aca9fafa2e7e552744dcb7cc9db1
+          line_end: 283
+          line_start: 258
+          path: packages/daemon/src/routes/validation.ts
+          side: head
+        entries:
+          - _ulid: 01KMR85HF620CANJFD8532KWKM
+            author: "@claude"
+            body: "Blocking:  has the same warmup fallback bug. When the  or  cache domain is , this code
+              rebuilds the alignment inputs from  and  instead of waiting for the cache or returning
+              . That means an early alignment request still does the exact filesystem work this task
+              is supposed to remove, and the index is no longer guaranteed to come from cached
+              entity data as required by ."
+            created_at: 2026-03-27T18:16:09.959Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T18:09:37.768Z
-    updated_at: 2026-03-27T18:16:06.657Z
+    updated_at: 2026-03-27T18:16:09.959Z
     notes: []
