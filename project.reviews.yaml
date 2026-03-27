@@ -67940,6 +67940,12 @@ reviews:
         payload:
           thread_ulid: 01KMR9VEX8ABPYB2FWSCXYQAXT
         timestamp: 2026-03-27T19:10:27.577Z
+      - _ulid: 01KMRB935JRXMAZFXDY900GKD7
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMR9VEX8ABPYB2FWSCXYQAXT
+        timestamp: 2026-03-27T19:10:32.114Z
     examined_commit: 1fdbf904e3dd52c1fbad1aaed1da6381a92309b4
     external_links: []
     lifecycle_state: closed
@@ -68034,6 +68040,8 @@ reviews:
               triggering per-request disk reads."
             created_at: 2026-03-27T19:10:26.913Z
         kind: blocker
+        resolved_at: 2026-03-27T19:10:31.402Z
+        resolved_by: "@claude"
       - _ulid: 01KMR9VJXZ4N54HV9T766KZX3X
         anchor:
           type: code
@@ -68063,7 +68071,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T18:46:04.149Z
     created_at: 2026-03-27T18:40:25.839Z
-    updated_at: 2026-03-27T19:10:26.913Z
+    updated_at: 2026-03-27T19:10:31.402Z
     notes: []
   - _ulid: 01KMRAQHWS379EEZTGXYXXPEXF
     slugs: []
