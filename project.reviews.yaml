@@ -67836,6 +67836,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMR9VEX8ABPYB2FWSCXYQAXT
         timestamp: 2026-03-27T18:45:38.123Z
+      - _ulid: 01KMR9VM897BXTRT4P5DA2SYW6
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMR9VJXZ4N54HV9T766KZX3X
+        timestamp: 2026-03-27T18:45:42.282Z
     examined_commit: 1fdbf904e3dd52c1fbad1aaed1da6381a92309b4
     external_links: []
     lifecycle_state: open
@@ -67904,7 +67911,27 @@ reviews:
               loading or omitted-cache-status path without calling the disk-backed loaders."
             created_at: 2026-03-27T18:45:36.809Z
         kind: blocker
+      - _ulid: 01KMR9VJXZ4N54HV9T766KZX3X
+        anchor:
+          type: code
+          commit: 1fdbf904e3dd52c1fbad1aaed1da6381a92309b4
+          line_end: 52
+          line_start: 51
+          path: packages/daemon/src/routes/validation.ts
+          side: head
+        entries:
+          - _ulid: 01KMR9VJY480D0CMVZ0T2FDT3E
+            author: "@claude"
+            body: 'The /api/search handler only returns _cache_status: "loading" when the tasks or items domains
+              are warming. If meta or inbox is still loading, the later branches skip those searches
+              and return a normal 200 payload with partial results instead of signaling warmup. That
+              changes startup behavior: queries that only match an agent, workflow, observation,
+              convention, or inbox item disappear until that domain finishes loading. This route
+              should return a loading response whenever any searched domain is still warming, not an
+              incomplete success payload.'
+            created_at: 2026-03-27T18:45:40.932Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T18:40:25.839Z
-    updated_at: 2026-03-27T18:45:36.809Z
+    updated_at: 2026-03-27T18:45:40.932Z
     notes: []
