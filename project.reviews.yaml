@@ -56687,6 +56687,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMPB2C3J6JHN130FMFNSW41C
         timestamp: 2026-03-27T00:28:23.437Z
+      - _ulid: 01KMPB2YRXX5GNAJ5S8CKW36JF
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMPB2YC012307XGJ8EFZPQQ6
+        timestamp: 2026-03-27T00:28:42.141Z
     examined_commit: d805371098143a9c456e7100eb1f6680d754c198
     external_links: []
     lifecycle_state: open
@@ -56752,7 +56759,26 @@ reviews:
               misses the feature’s single-entity detail behavior for spec items.
             created_at: 2026-03-27T00:28:23.026Z
         kind: blocker
+      - _ulid: 01KMPB2YC012307XGJ8EFZPQQ6
+        anchor:
+          type: code
+          commit: d805371098143a9c456e7100eb1f6680d754c198
+          line_end: 133
+          line_start: 132
+          path: packages/daemon/src/routes/sessions.ts
+          side: head
+        entries:
+          - _ulid: 01KMPB2YC0GY8W91F382RAT8XV
+            author: "@claude"
+            body: The session API still reads through the old SessionSummaryCache instead of the new
+              ProjectEntityCache. Because filterSessionSummaries reads session summaries from the
+              standalone cache, the main session list does not use the bounded, stale-aware unified
+              cache that this task was supposed to introduce. The same old cache path is still
+              present in packages/daemon/src/routes/session-related.ts, so related-session lookups
+              bypass the unified cache too.
+            created_at: 2026-03-27T00:28:41.728Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T00:23:31.552Z
-    updated_at: 2026-03-27T00:28:23.026Z
+    updated_at: 2026-03-27T00:28:41.728Z
     notes: []
