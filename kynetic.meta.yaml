@@ -9048,6 +9048,26 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T19:12:55.135Z
+  - _ulid: 01KMRBVV0776NNP3BM5P1EKS6J
+    type: friction
+    content: Detached reviewer snapshots cannot directly merge into the integration branch when that
+      branch is already checked out in another worktree. In this session, the review snapshot could
+      not git checkout dev because dev was already in use by the main worktree, which conflicts with
+      dispatch guidance that all commands run from the assigned workspace.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T19:20:46.343Z
+  - _ulid: 01KMRBVV60KSF4ZJND4QEXZQRR
+    type: success
+    content: A single behavioral daemon-read-path test that hits many read routes and asserts
+      initContext, getShadowStatus, and hasRemoteTracking are never called was an effective
+      regression gate. It caught repeated hot-path fallback issues and gave high-confidence proof
+      that cache-served reads stayed off disk and git paths when warm.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T19:20:46.528Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
