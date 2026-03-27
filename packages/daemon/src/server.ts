@@ -338,7 +338,8 @@ export async function createServer(options: ServerOptions) {
     )
 
     // AC: @ui-session-stream ac-1, ac-4 - Session data endpoints
-    .use(createSessionRoutes())
+    // AC: @daemon-entity-cache ac-serve-from-memory — pass cache accessor for session routes
+    .use(createSessionRoutes({ getEntityCache: entityCacheModule.getEntityCache }))
 
     // AC: @ui-plans-view ac-1 - Plans data endpoints
     .use(createPlansRoutes())

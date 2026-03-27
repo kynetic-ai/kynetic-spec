@@ -383,26 +383,82 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
       )
 
       // AC: @api-contract ac-10 - Get single item by ref
-      // AC: @daemon-entity-cache ac-detail-on-demand — load item detail
+      // AC: @daemon-entity-cache ac-detail-on-demand — load item detail from cache or disk
       .get(
         "/:ref",
         async ({ params, error: errorResponse, projectContext }) => {
           // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
           const ctx = await initContext(projectContext.path);
-          // Item detail needs full LoadedSpecItem[] (for AC content, description, etc.)
+
+          // AC: @daemon-entity-cache ac-detail-on-demand — check cache detail tier first
+          const cache = getEntityCache?.(projectContext.path);
+          const itemsDomainReady = cache && cache.getDomainState("items") === "ready";
+
+          // Resolve the ref against cached index or disk to find the ULID
+          let resolvedUlid: string | null = null;
+
+          if (itemsDomainReady) {
+            // Try to resolve via cached item index (avoid loading all items from disk)
+            const cachedItems = cache!.getItemIndex();
+            const tasksDomainReady = cache!.getDomainState("tasks") === "ready";
+            const tasks = tasksDomainReady
+              ? (cache!.getTaskIndex() as unknown as LoadedTask[])
+              : await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+            if (cachedItems) {
+              const index = new ReferenceIndex(tasks ?? [], cachedItems as unknown as LoadedSpecItem[]);
+              const result = index.resolve(params.ref);
+              if (result.ok) {
+                resolvedUlid = result.ulid;
+              }
+            }
+          }
+
+          // AC: @daemon-entity-cache ac-detail-on-demand — check detail cache
+          if (resolvedUlid && cache) {
+            const cachedDetail = cache.getItemDetail(resolvedUlid);
+            if (cachedDetail) {
+              // Serve from detail cache
+              const parentMap = computeParentMap([cachedDetail]);
+              let acceptanceCriteriaWithCoverage = cachedDetail.acceptance_criteria;
+              if (cachedDetail.acceptance_criteria && cachedDetail.acceptance_criteria.length > 0) {
+                try {
+                  const coveredACs = await getCachedTestCoverage(projectContext.path);
+                  acceptanceCriteriaWithCoverage = computeACCoverage(cachedDetail, coveredACs);
+                } catch {
+                  // Coverage scan failed - leave as-is
+                }
+              }
+              return {
+                _ulid: cachedDetail._ulid,
+                slugs: cachedDetail.slugs,
+                title: cachedDetail.title,
+                type: cachedDetail.type,
+                status: cachedDetail.status,
+                tags: cachedDetail.tags,
+                parent: parentMap.get(cachedDetail._ulid),
+                description: cachedDetail.description,
+                acceptance_criteria: acceptanceCriteriaWithCoverage,
+                traits: cachedDetail.traits,
+                relationships: cachedDetail.relationships,
+                created_at: cachedDetail.created_at,
+                _sourceFile: cachedDetail._sourceFile,
+              };
+            }
+          }
+
+          // Detail not in cache — load from disk
           const items = await loadAllItems(ctx);
           // AC: @daemon-entity-cache ac-serve-from-memory — use cached tasks when available
-          const detailCache = getEntityCache?.(projectContext.path);
           const tasks =
-            (detailCache && detailCache.getDomainState("tasks") === "ready" ? detailCache.getTaskIndex() : null)
+            (cache && cache.getDomainState("tasks") === "ready" ? cache.getTaskIndex() : null)
             ?? (await resolveTaskDataManager(ctx).loadAllTasks(ctx));
           const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
 
           // Compute parent relationships from path structure
           const parentMap = computeParentMap(items);
 
-          // AC: @api-contract ac-10, @trait-api-endpoint ac-2 - Resolve ref via ReferenceIndex
-          const result = index.resolve(params.ref);
+          // Use already-resolved ULID if available, otherwise resolve from disk-loaded index
+          const result = resolvedUlid ? { ok: true as const, ulid: resolvedUlid, item: null } : index.resolve(params.ref);
 
           if (!result.ok) {
             // AC: @trait-api-endpoint ac-2 - Return 404 with error details
@@ -421,6 +477,11 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
               message: `Reference "${params.ref}" is not a spec item`,
               suggestion: "This reference might point to a task instead",
             });
+          }
+
+          // AC: @daemon-entity-cache ac-detail-on-demand — store in cache for subsequent requests
+          if (cache && itemsDomainReady) {
+            cache.setItemDetail(item._ulid, item);
           }
 
           // AC: @web-dashboard ac-15 - Compute test coverage for acceptance criteria
@@ -537,6 +598,8 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
             items,
             tasks,
             sessionsDir: ctx.sessionsDir,
+            getEntityCache,
+            projectPath: projectContext.path,
           });
 
           if ("error" in result) {

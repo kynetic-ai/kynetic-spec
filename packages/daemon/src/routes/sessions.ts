@@ -46,6 +46,11 @@ import { getSessionCache } from "../../sessions/cache.js";
 import { SessionStatusSchema, SessionTriggerSchema } from "../../sessions/types.js";
 import { parseTimeSpec } from "../../utils/time.js";
 import { enumArrayUnion } from "./enum-utils.js";
+import type { EntityCacheAccessor } from "./entity-cache-types.js";
+
+interface SessionRouteOptions {
+  getEntityCache?: EntityCacheAccessor;
+}
 
 const VALID_SESSION_TRIGGER_FILTERS = [...SessionTriggerSchema.options, "dispatched"] as const;
 
@@ -93,6 +98,7 @@ function filterSessionsByTaskRefs(
 async function filterSessionSummaries(
   ctx: KspecContext,
   query: SessionListQuery,
+  options?: { getEntityCache?: EntityCacheAccessor; projectPath?: string },
 ): Promise<
   | { summaries: SessionLogSummary[]; unfilteredTotal: number }
   | {
@@ -129,8 +135,20 @@ async function filterSessionSummaries(
     };
   }
 
-  const sessionCache = getSessionCache(ctx.sessionsDir);
-  let filtered = sortSessionSummaries(await sessionCache.getAll(ctx.sessionsDir));
+  // AC: @daemon-entity-cache ac-serve-from-memory — use unified cache session index when available
+  const entityCache = options?.projectPath ? options.getEntityCache?.(options.projectPath) : null;
+  const sessionsDomainReady = entityCache && entityCache.getDomainState("sessions") === "ready";
+
+  let allSummaries: SessionLogSummary[];
+  if (sessionsDomainReady) {
+    allSummaries = entityCache!.getSessionIndex() ?? [];
+  } else {
+    // Fallback to standalone SessionSummaryCache
+    const sessionCache = getSessionCache(ctx.sessionsDir);
+    allSummaries = await sessionCache.getAll(ctx.sessionsDir);
+  }
+
+  let filtered = sortSessionSummaries(allSummaries);
   // AC: @session-filter-controls ac-filter-counts — Capture unfiltered total before applying filters
   const unfilteredTotal = filtered.length;
 
@@ -253,13 +271,16 @@ async function filterSessionSummaries(
   return { summaries: filtered, unfilteredTotal };
 }
 
-export function createSessionRoutes() {
+export function createSessionRoutes(_options: SessionRouteOptions = {}) {
+  const { getEntityCache } = _options;
+
   return (
     new Elysia({ prefix: "/api/sessions" })
 
       // List all sessions with summaries, pagination, and filtering
       // AC: @session-legacy-migration ac-read-fallback ac-list-merge — detect-and-warn for legacy sessions
       // AC: @session-summary-cache ac-cache-build — Uses cached summaries instead of re-reading all files
+      // AC: @daemon-entity-cache ac-serve-from-memory — Uses unified cache session index when available
       // AC: @session-list-pagination-api ac-pagination — offset/limit pagination with total
       // AC: @session-list-pagination-api ac-metadata-only — Only reads session.yaml, uses cache
       // AC: @ui-api-ref-resolution ac-1 — Include task_title resolved server-side
@@ -267,7 +288,10 @@ export function createSessionRoutes() {
         "/",
         async ({ query, error: errorResponse, projectContext }) => {
           const ctx = await initContext(projectContext.path);
-          const filteredResult = await filterSessionSummaries(ctx, query);
+          const filteredResult = await filterSessionSummaries(ctx, query, {
+            getEntityCache,
+            projectPath: projectContext.path,
+          });
           if ("error" in filteredResult) {
             return errorResponse(filteredResult.error.status, filteredResult.error.body);
           }
@@ -347,7 +371,10 @@ export function createSessionRoutes() {
             };
           }
 
-          const filteredResult = await filterSessionSummaries(ctx, query);
+          const filteredResult = await filterSessionSummaries(ctx, query, {
+            getEntityCache,
+            projectPath: projectContext.path,
+          });
           if ("error" in filteredResult) {
             return errorResponse(filteredResult.error.status, filteredResult.error.body);
           }
@@ -385,6 +412,7 @@ export function createSessionRoutes() {
       // Get single session metadata
       // AC: @ui-session-stream ac-4 — Includes spec context, budget, and task info
       // AC: @session-legacy-migration ac-read-fallback — detect-and-warn for legacy sessions
+      // AC: @daemon-entity-cache ac-detail-on-demand — check unified cache for session detail
       .get("/:id", async ({ params, error: errorResponse, projectContext }) => {
         const ctx = await initContext(projectContext.path);
 
@@ -405,14 +433,39 @@ export function createSessionRoutes() {
           });
         }
 
-        const sessionCache = getSessionCache(ctx.sessionsDir);
-        const detail = await sessionCache.get(ctx.sessionsDir, resolution.id);
+        // AC: @daemon-entity-cache ac-detail-on-demand — check unified cache first
+        const entityCache = getEntityCache?.(projectContext.path);
+        const sessionsDomainReady = entityCache && entityCache.getDomainState("sessions") === "ready";
+
+        let detail: SessionLogSummary | null = null;
+
+        if (sessionsDomainReady) {
+          // Try the detail cache, then fall back to the index
+          detail = entityCache!.getSessionDetail(resolution.id);
+          if (!detail) {
+            // Check if the session is in the index
+            const index = entityCache!.getSessionIndex();
+            detail = index?.find((s) => s.id === resolution.id) ?? null;
+          }
+        }
+
+        if (!detail) {
+          // Fall back to standalone session cache (disk read)
+          const sessionCache = getSessionCache(ctx.sessionsDir);
+          detail = await sessionCache.get(ctx.sessionsDir, resolution.id);
+        }
+
         if (!detail) {
           return errorResponse(404, {
             error: "not_found",
             message: `Session not found: ${params.id}`,
             suggestion: "Use GET /api/sessions to list available sessions",
           });
+        }
+
+        // Store in entity cache detail tier for subsequent requests
+        if (sessionsDomainReady) {
+          entityCache!.setSessionDetail(resolution.id, detail);
         }
 
         const metadata = await getSession(ctx.sessionsDir, resolution.id);

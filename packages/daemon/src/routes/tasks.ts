@@ -354,6 +354,8 @@ export function createTasksRoutes(options: TasksRouteOptions) {
             tasks,
             items,
             sessionsDir: ctx.sessionsDir,
+            getEntityCache,
+            projectPath: projectContext.path,
           });
 
           if ("error" in result) {
