@@ -1,1 +1,18 @@
-notes: []
+notes:
+  - _ulid: 01KMRTZ6MKS528VSNYTN47WM8J
+    content: >-
+      What: Add .alias("update") to the item ac set Commander command so agents and users can use
+      `kspec item ac update` as a synonym for `kspec item ac set`.
+
+
+      Why: Agents naturally reach for `update` when modifying an existing AC. The current naming
+      (`set`) is inconsistent with the mental model of updating a record. This follows the existing
+      alias pattern used by `tasks in-progress` (alias `active`) and `session start` (alias
+      `resume`).
+
+
+      How: One-line change — chain `.alias("update")` on the `set` subcommand in the item ac command
+      setup. No spec change needed — `set` remains canonical, `update` is discoverability sugar.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T23:44:45.203Z
