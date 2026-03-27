@@ -9239,6 +9239,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T23:49:54.732Z
+  - _ulid: 01KMRVTQC71GBB6JTP1B8AMHWK
+    type: friction
+    content: Dispatch agents in worktree sessions occasionally write memory files with implementation
+      details (4 of 336 sessions). These are scoped to ephemeral worktree paths and never reused.
+      Dispatch agent prompts should discourage memory writes for task-scoped worktree sessions.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T23:59:47.079Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
