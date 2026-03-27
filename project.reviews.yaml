@@ -64173,6 +64173,12 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-27T16:21:20.110Z
+      - _ulid: 01KMR2R5SEYTV3XT8KDKY6E8GP
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMR1JHYT1QMHJQW9PMKYVJRE
+        timestamp: 2026-03-27T16:41:29.134Z
     examined_commit: 65b59e1afcde5d4bda7e227ee4b8947c6573730a
     external_links: []
     lifecycle_state: closed
@@ -64203,6 +64209,16 @@ reviews:
               the daemon serves multiple requests concurrently, this breaks the endpoint's core
               correctness under normal load.
             created_at: 2026-03-27T16:20:56.410Z
+          - _ulid: 01KMR2R5AFH5YW23PTHPJZ5K2F
+            author: "@claude"
+            body: "Fixed: Added DispatchMutex class — a promise-based FIFO mutex that serializes ALL command
+              dispatches within the daemon process. Both single-command and batch routes now wrap
+              their entire execution inside dispatchMutex.run(), which ensures process.cwd(),
+              console.log/error/warn, and the exit interceptor are never concurrently mutated. The
+              file lock (withFileLock) remains inside the mutex for cross-process mutation
+              coordination. Also removed the standalone withProjectDir helper — cwd management is
+              now inline within the mutex-protected sections."
+            created_at: 2026-03-27T16:41:28.655Z
         kind: blocker
       - _ulid: 01KMR1JMV74EWKMD681DSN86FA
         anchor:
@@ -64234,7 +64250,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T16:21:17.337Z
     created_at: 2026-03-27T16:20:32.420Z
-    updated_at: 2026-03-27T16:21:19.660Z
+    updated_at: 2026-03-27T16:41:28.655Z
     notes: []
   - _ulid: 01KMR24AW39T9T824CPMZQ5A73
     slugs: []
