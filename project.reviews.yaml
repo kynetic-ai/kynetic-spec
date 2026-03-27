@@ -62738,6 +62738,19 @@ reviews:
         runner: npm
         created_at: 2026-03-27T08:25:45.068Z
         completed_at: 2026-03-27T08:25:45.068Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 'Two direct repros: (1) forcing loadDomain() to fail left ProjectEntityCache degraded and
+          the next invalidateDomain() performed zero reloads because the write-through skip flag was
+          consumed; (2) after temporarily removing dist/daemon/entity-cache.ts, scripts/test.cjs
+          checkBuild() still returned {"ok":true}.'
+        name: write-through/test-runner repro
+        required: true
+        runner: shell
+        created_at: 2026-03-27T08:25:46.487Z
+        completed_at: 2026-03-27T08:25:46.487Z
     events:
       - _ulid: 01KMQ5PDFH554HZ14D1AGJ7YTW
         actor: "@claude"
@@ -62787,6 +62800,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-27T08:25:45.537Z
+      - _ulid: 01KMQ6CGNYBJB71S9S391DF4RX
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: write-through/test-runner repro
+        timestamp: 2026-03-27T08:25:46.942Z
     examined_commit: c96e530ea4df135b240af245f6e4f838d7c21c82
     external_links: []
     lifecycle_state: open
@@ -62874,5 +62894,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-27T08:13:42.769Z
-    updated_at: 2026-03-27T08:25:45.068Z
+    updated_at: 2026-03-27T08:25:46.487Z
     notes: []
