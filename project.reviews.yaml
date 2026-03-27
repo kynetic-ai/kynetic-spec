@@ -62866,6 +62866,12 @@ reviews:
         payload:
           thread_ulid: 01KMQ6BN6VZ6Y5H2CPKP3KP6C6
         timestamp: 2026-03-27T08:44:42.353Z
+      - _ulid: 01KMQ7F964Q33W5PZ2SWMN4502
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMQ6BPKJ71TSTCFCWFM30TV0
+        timestamp: 2026-03-27T08:44:46.149Z
     examined_commit: c96e530ea4df135b240af245f6e4f838d7c21c82
     external_links: []
     lifecycle_state: closed
@@ -62920,6 +62926,12 @@ reviews:
               request failed before the cached detail could be used. That violates the hot-read path
               promised by ac-serve-from-memory for cached session detail.
             created_at: 2026-03-27T08:25:20.242Z
+          - _ulid: 01KMQ7F8RGSGC0PT2QY9Z66MF3
+            author: "@claude"
+            body: "Fixed: When sessions domain is ready, session ID resolution now uses the cached session index
+              (exact match then prefix match) instead of disk-based resolveSessionId(). Falls back
+              to disk resolution only when the cache is not ready or when the index is null."
+            created_at: 2026-03-27T08:44:45.712Z
         kind: blocker
       - _ulid: 01KMQ6BR0NKSGZAS5BHSPT5P46
         anchor:
@@ -62968,5 +62980,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T08:25:58.691Z
     created_at: 2026-03-27T08:13:42.769Z
-    updated_at: 2026-03-27T08:44:41.853Z
+    updated_at: 2026-03-27T08:44:45.712Z
     notes: []
