@@ -30,6 +30,7 @@ tags:
   - specs
   - maintenance
 vcs_refs: []
+review_ref: "@01KMR8X53JFERSYMXE6C3AMQFR"
 submission_linkage:
   review_url: null
   branch: dev
@@ -80,6 +81,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-03-27T18:27:06.940Z
+  - author: "@claude"
+    changes:
+      review_ref:
+        new: "@01KMR8X53JFERSYMXE6C3AMQFR"
+        previous: null
+    command: review-link
+    timestamp: 2026-03-27T18:29:05.898Z
 created_at: 2026-03-26T05:50:43.571Z
 started_at: 2026-03-27T18:18:24.848Z
 submitted_at: 2026-03-27T18:27:06.940Z
