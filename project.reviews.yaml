@@ -64452,6 +64452,17 @@ reviews:
         runner: kspec
         created_at: 2026-03-27T16:53:05.432Z
         completed_at: 2026-03-27T16:53:05.432Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Full build passed, including shared package, daemon packaging copy step, web UI production
+          build, and plugin build.
+        name: npm run build
+        required: false
+        runner: npm
+        created_at: 2026-03-27T16:53:06.904Z
+        completed_at: 2026-03-27T16:53:06.904Z
     events:
       - _ulid: 01KMR301QH5PF7DHTMKVCS25FG
         actor: "@claude"
@@ -64480,6 +64491,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-27T16:53:05.918Z
+      - _ulid: 01KMR3DFNRZDAJ5EX74ZEJPAN4
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm run build
+        timestamp: 2026-03-27T16:53:07.384Z
     examined_commit: 1d8c9354ea2d08481c7c5647f54e7e13b1941074
     external_links: []
     lifecycle_state: open
@@ -64509,5 +64527,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-27T16:45:47.121Z
-    updated_at: 2026-03-27T16:53:05.432Z
+    updated_at: 2026-03-27T16:53:06.904Z
     notes: []
