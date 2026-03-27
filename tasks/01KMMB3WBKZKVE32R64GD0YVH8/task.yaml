@@ -20,7 +20,7 @@ description: |
 spec_ref: "@shadow-lazy-read-sync"
 plan_ref: "@plan-daemon-optimistic-data-layer"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-entity-cache-impl"
@@ -30,6 +30,7 @@ tags:
   - specs
   - maintenance
 vcs_refs: []
+session_id: 01KMR88ZTKKAC7J1D6B1NVVT3W
 history:
   - author: "@claude"
     changes:
@@ -38,6 +39,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-03-26T07:02:13.987Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KMR88ZTKKAC7J1D6B1NVVT3W
+        previous: null
+      started_at:
+        new: 2026-03-27T18:18:24.848Z
+        previous: null
+    command: task-start
+    timestamp: 2026-03-27T18:18:24.849Z
 created_at: 2026-03-26T05:50:43.571Z
+started_at: 2026-03-27T18:18:24.848Z
 todos: []
 automation: eligible
