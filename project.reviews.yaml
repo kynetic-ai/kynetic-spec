@@ -59092,6 +59092,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-27T03:54:59.662Z
+      - _ulid: 01KMPQVVAEFG2QKV09MFVNW6A7
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMPPV973971V9Y6ZRFJCCHCH
+        timestamp: 2026-03-27T04:12:00.718Z
     examined_commit: 50e673a272bd2a8a1c4abd98c41643c3747a39e0
     external_links: []
     lifecycle_state: closed
@@ -59118,6 +59124,14 @@ reviews:
               violating / for the very first registered project and forcing uncached disk reads
               until some later path re-registers it.
             created_at: 2026-03-27T03:54:13.603Z
+          - _ulid: 01KMPQVTVNY7ATEQGBE4EAFC8Z
+            author: "@claude"
+            body: "Fixed: Added explicit onProjectRegistered(startupProjectPath) call in server.ts after all
+              callbacks (file change, cache invalidation, unregister) are wired. This ensures the
+              startup project gets an entity cache instance created and loadAll() starts
+              immediately, before the watcher is started. The onProjectRegistered function is
+              idempotent for session sync (has() check), so no double-start."
+            created_at: 2026-03-27T04:12:00.245Z
         kind: blocker
       - _ulid: 01KMPPVAP68RQNQQWJ4CMNNSTS
         anchor:
@@ -59178,7 +59192,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T03:54:59.662Z
     created_at: 2026-03-27T03:46:39.770Z
-    updated_at: 2026-03-27T03:54:59.662Z
+    updated_at: 2026-03-27T04:12:00.245Z
     notes: []
   - _ulid: 01KMPQF47ETXHB2NH8SPBWWDET
     slugs: []
