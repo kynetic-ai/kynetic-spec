@@ -62547,6 +62547,17 @@ reviews:
         runner: kspec
         created_at: 2026-03-27T07:55:20.127Z
         completed_at: 2026-03-27T07:55:20.127Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Ran npm test from the review workspace. Result: 1932/1932 suites passed, 6914 passed, 5
+          skipped, 0 failed."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-27T07:55:23.485Z
+        completed_at: 2026-03-27T07:55:23.485Z
     events:
       - _ulid: 01KMQ4CA1819TDZ9847BQ2BG48
         actor: "@claude"
@@ -62589,6 +62600,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-27T07:55:20.575Z
+      - _ulid: 01KMQ4MWCYJFX7FQ90APZSZBA9
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-27T07:55:23.934Z
     examined_commit: a546eb8de8a26b46bfbb437134114d8ed351eb62
     external_links: []
     lifecycle_state: open
@@ -62621,5 +62639,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-27T07:50:42.985Z
-    updated_at: 2026-03-27T07:55:20.127Z
+    updated_at: 2026-03-27T07:55:23.485Z
     notes: []
