@@ -57385,7 +57385,25 @@ reviews:
     slugs: []
     title: Review task-entity-cache-impl (cycle 5)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: packages/daemon/src/server.ts, packages/daemon/src/project-context.ts,
+          packages/daemon/src/routes/{tasks,items,refs,sessions,session-related,inbox,meta,plans,tr\
+          iage,reviews}.ts, src/daemon/entity-cache.ts, src/parser/yaml.ts,
+          tests/daemon-entity-cache.test.ts, tests/agent-dispatch-engine.test.ts. Commands run: git
+          diff --stat/name-only/unified, kspec task get, kspec item get, kspec review for-task/get,
+          kspec validate, rg for AC annotations and route/cache wiring, npm test. Claims verified:
+          full suite passes; prior blocker on kynetic.yaml dual-domain invalidation is fixed; cache
+          invalidation callback is wired; several cached domains still bypass cache entirely;
+          cache-hit list paths still call initContext. Categories searched: correctness,
+          integration, cache invalidation, write-through, test quality, route coverage."
+        name: review-evidence
+        required: false
+        created_at: 2026-03-27T01:14:55.763Z
+        completed_at: 2026-03-27T01:14:55.763Z
     events:
       - _ulid: 01KMPDGE8DA4T9ZRXVN5GVFQ39
         actor: "@claude"
@@ -57414,6 +57432,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMPDQJ1RYVSEDSBW0NZ8GTV9
         timestamp: 2026-03-27T01:14:54.807Z
+      - _ulid: 01KMPDQKSDED4PVHHAQ2YBDHGX
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-03-27T01:14:56.173Z
     examined_commit: fa0841f6d5564907021177908da89f6890308163
     external_links: []
     lifecycle_state: open
@@ -57465,5 +57490,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-27T01:11:01.134Z
-    updated_at: 2026-03-27T01:14:54.393Z
+    updated_at: 2026-03-27T01:14:55.763Z
     notes: []
