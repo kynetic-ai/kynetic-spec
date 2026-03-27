@@ -64191,6 +64191,12 @@ reviews:
         payload:
           thread_ulid: 01KMR1JMV74EWKMD681DSN86FA
         timestamp: 2026-03-27T16:42:06.763Z
+      - _ulid: 01KMR2SJX49RTM7Y2Y4HG98QH5
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMR1JMV74EWKMD681DSN86FA
+        timestamp: 2026-03-27T16:42:15.332Z
     examined_commit: 65b59e1afcde5d4bda7e227ee4b8947c6573730a
     external_links: []
     lifecycle_state: closed
@@ -64267,6 +64273,8 @@ reviews:
               non-zero exitCode for failing commands."
             created_at: 2026-03-27T16:42:06.296Z
         kind: blocker
+        resolved_at: 2026-03-27T16:42:14.848Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -64276,7 +64284,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T16:21:17.337Z
     created_at: 2026-03-27T16:20:32.420Z
-    updated_at: 2026-03-27T16:42:06.296Z
+    updated_at: 2026-03-27T16:42:14.848Z
     notes: []
   - _ulid: 01KMR24AW39T9T824CPMZQ5A73
     slugs: []
