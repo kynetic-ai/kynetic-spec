@@ -61880,6 +61880,13 @@ reviews:
           status: pass
           name: dispatch bootstrap test (isolated)
         timestamp: 2026-03-27T06:54:09.740Z
+      - _ulid: 01KMQ14T5EEWQG1RMCPW3WDP67
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMQ14SHVV5NCR81QHQVZFHTB
+        timestamp: 2026-03-27T06:54:11.630Z
     examined_commit: 18d250b7b7c6d5fc7cf96a9ca0ec8afbeb671e1c
     external_links: []
     lifecycle_state: open
@@ -61946,7 +61953,27 @@ reviews:
               other cache-backed routes before any disk fallback runs.'
             created_at: 2026-03-27T06:54:07.296Z
         kind: blocker
+      - _ulid: 01KMQ14SHVV5NCR81QHQVZFHTB
+        anchor:
+          type: code
+          commit: 18d250b7b7c6d5fc7cf96a9ca0ec8afbeb671e1c
+          line_end: 181
+          line_start: 164
+          path: packages/daemon/src/routes/triage.ts
+          side: head
+        entries:
+          - _ulid: 01KMQ14SHV0RC60V8RDYTCXTSV
+            author: "@claude"
+            body: 'GET /api/triage/export still bypasses the entity cache completely. Unlike the main triage
+              list route, this handler always initializes context and calls loadTriageRecords(ctx)
+              directly, so a warm triage domain still hits disk and a warming domain never returns
+              _cache_status: loading. That breaks the cache contract for the triage domain after
+              this task claims all triage reads are wired. Please gate this endpoint on
+              getDomainState("triage") and read from getTriageIndex() when ready, with the same
+              loading fallback as the list route.'
+            created_at: 2026-03-27T06:54:11.003Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T06:46:19.059Z
-    updated_at: 2026-03-27T06:54:09.152Z
+    updated_at: 2026-03-27T06:54:11.003Z
     notes: []
