@@ -24505,7 +24505,7 @@ workspaces:
         head: be56513e6e871afe0c3a53698cec263d003557b0
         last_seen_at: 2026-03-27T05:00:01.497Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/wire-agent-spawner-into-automation-subsystem-action-executors-01kmpncs
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 1001be210b4251982b7386b475a48b0cc68188e4
     bootstrap:
       status: succeeded
@@ -24597,7 +24597,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-27T19:13:18.360Z
+      updated_at: 2026-03-27T19:13:26.109Z
     integration:
       status: pending
       detail: null
@@ -24612,10 +24612,10 @@ workspaces:
     task_slug: task-migrate-read-routes
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-27T19:00:08.380Z
-      last_reconciled_at: 2026-03-27T19:13:18.360Z
+      last_active_at: 2026-03-27T19:13:26.109Z
+      last_reconciled_at: 2026-03-27T19:13:26.109Z
       created_at: 2026-03-27T15:22:33.855Z
-      updated_at: 2026-03-27T19:13:24.329Z
+      updated_at: 2026-03-27T19:13:26.109Z
     workspace_id: dispatch-workspace-01KMMB3TNHWVQT4HHB9XC1DE0X
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
