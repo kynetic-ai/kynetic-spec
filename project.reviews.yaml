@@ -59002,6 +59002,17 @@ reviews:
         runner: kspec
         created_at: 2026-03-27T03:54:43.517Z
         completed_at: 2026-03-27T03:54:43.517Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "rg -n 'AC: @daemon-entity-cache' tests/daemon-entity-cache.test.ts found coverage
+          annotations for all 15 daemon-entity-cache AC groups."
+        name: AC annotations
+        required: false
+        runner: rg
+        created_at: 2026-03-27T03:54:46.474Z
+        completed_at: 2026-03-27T03:54:46.474Z
     events:
       - _ulid: 01KMPPDE0TFMGNR6CYQJXP0BPR
         actor: "@claude"
@@ -59058,6 +59069,13 @@ reviews:
           kind: question
           thread_ulid: 01KMPPW7V290ZPS0MTTZ73E8Q4
         timestamp: 2026-03-27T03:54:45.445Z
+      - _ulid: 01KMPPW9RFS2SKG526Y8BD77YH
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: AC annotations
+        timestamp: 2026-03-27T03:54:46.927Z
     examined_commit: 50e673a272bd2a8a1c4abd98c41643c3747a39e0
     external_links: []
     lifecycle_state: open
@@ -59137,5 +59155,5 @@ reviews:
         kind: question
     verdicts: []
     created_at: 2026-03-27T03:46:39.770Z
-    updated_at: 2026-03-27T03:54:44.962Z
+    updated_at: 2026-03-27T03:54:46.474Z
     notes: []
