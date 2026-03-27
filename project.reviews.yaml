@@ -60851,6 +60851,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMPVJS08W97XKCG88GTPC91M
         timestamp: 2026-03-27T05:16:58.868Z
+      - _ulid: 01KMPVK2MKE78XJB6EPCN84309
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMPVK1C1ZFBGSJB9TF89XZ67
+        timestamp: 2026-03-27T05:17:07.603Z
     examined_commit: 8dfaea2199385d9aa733f052db868d92c22580e0
     external_links: []
     lifecycle_state: open
@@ -60938,7 +60945,26 @@ reviews:
               the watcher never maps those changed files back to items or meta."
             created_at: 2026-03-27T05:16:57.737Z
         kind: blocker
+      - _ulid: 01KMPVK1C1ZFBGSJB9TF89XZ67
+        anchor:
+          type: code
+          commit: 8dfaea2199385d9aa733f052db868d92c22580e0
+          line_end: 281
+          line_start: 274
+          path: src/daemon/entity-cache.ts
+          side: head
+        entries:
+          - _ulid: 01KMPVK1C1HPJWGK7HEQS0TXFD
+            author: "@claude"
+            body: The task-domain mapping still misses tasks.yaml. TaskDataManager.listTasks() explicitly loads
+              tasks.yaml alongside project.tasks.yaml, kynetic.tasks.yaml, backlog.tasks.yaml, and
+              active.tasks.yaml, but fileToDomain() only matches *.tasks.yaml or tasks/. If a
+              project uses the supported standalone tasks.yaml file, watcher updates never
+              invalidate the tasks cache, so list/detail reads can stay stale until some unrelated
+              task file changes.
+            created_at: 2026-03-27T05:17:06.305Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T05:13:09.485Z
-    updated_at: 2026-03-27T05:16:57.737Z
+    updated_at: 2026-03-27T05:17:06.305Z
     notes: []
