@@ -60871,6 +60871,12 @@ reviews:
         payload:
           thread_ulid: 01KMPVK8ECN58DY3BFYNY36FYJ
         timestamp: 2026-03-27T05:19:40.342Z
+      - _ulid: 01KMPVQWGWMP7WK4HGEG8RFS9X
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMPVH7NA6MR523GMEYP3156J
+        timestamp: 2026-03-27T05:19:45.181Z
     examined_commit: 8dfaea2199385d9aa733f052db868d92c22580e0
     external_links: []
     lifecycle_state: open
@@ -60899,6 +60905,8 @@ reviews:
               the watcher never maps those changed files back to  or ."
             created_at: 2026-03-27T05:16:07.211Z
         kind: blocker
+        resolved_at: 2026-03-27T05:19:43.554Z
+        resolved_by: "@claude"
       - _ulid: 01KMPVJE0PS8621THX8HG2YZS2
         anchor:
           type: code
@@ -60998,5 +61006,5 @@ reviews:
         resolved_by: "@claude"
     verdicts: []
     created_at: 2026-03-27T05:13:09.485Z
-    updated_at: 2026-03-27T05:19:38.645Z
+    updated_at: 2026-03-27T05:19:43.554Z
     notes: []
