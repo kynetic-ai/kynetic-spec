@@ -57404,6 +57404,17 @@ reviews:
         required: false
         created_at: 2026-03-27T01:14:55.763Z
         completed_at: 2026-03-27T01:14:55.763Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Executed in the detached review snapshot; 1928/1928 suites passed, 6899 tests passed, 5
+          skipped.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-27T01:14:57.115Z
+        completed_at: 2026-03-27T01:14:57.115Z
     events:
       - _ulid: 01KMPDGE8DA4T9ZRXVN5GVFQ39
         actor: "@claude"
@@ -57439,6 +57450,13 @@ reviews:
           status: pass
           name: review-evidence
         timestamp: 2026-03-27T01:14:56.173Z
+      - _ulid: 01KMPDQN4HV79EACJSGZ9GCBA2
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-27T01:14:57.553Z
     examined_commit: fa0841f6d5564907021177908da89f6890308163
     external_links: []
     lifecycle_state: open
@@ -57490,5 +57508,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-27T01:11:01.134Z
-    updated_at: 2026-03-27T01:14:55.763Z
+    updated_at: 2026-03-27T01:14:57.115Z
     notes: []
