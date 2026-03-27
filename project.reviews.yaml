@@ -67261,6 +67261,12 @@ reviews:
         payload:
           thread_ulid: 01KMR85CN0FQRNZSC2H713CZZX
         timestamp: 2026-03-27T18:37:29.452Z
+      - _ulid: 01KMR9CPTT33R0TWYR0XRY4GFY
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMR85HF6FHSB5BV7632N6GJC
+        timestamp: 2026-03-27T18:37:33.402Z
     examined_commit: 01190340e042aca9fafa2e7e552744dcb7cc9db1
     external_links: []
     lifecycle_state: closed
@@ -67366,6 +67372,12 @@ reviews:
               supposed to remove, and the index is no longer guaranteed to come from cached entity
               data as required by @daemon-read-path ac-index-from-cache."
             created_at: 2026-03-27T18:16:39.728Z
+          - _ulid: 01KMR9CPAD2ZCD4Y2JC5S90XZ5
+            author: "@claude"
+            body: "Fixed: /api/alignment now checks if tasks or items domain is 'loading' and returns a
+              _cache_status: 'loading' response with empty stats/warnings. No initContext() calls
+              during warmup."
+            created_at: 2026-03-27T18:37:32.877Z
         kind: blocker
       - _ulid: 01KMR85K3NHR1SREH5FMVKXEYP
         anchor:
@@ -67423,7 +67435,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T18:17:03.104Z
     created_at: 2026-03-27T18:09:37.768Z
-    updated_at: 2026-03-27T18:37:28.882Z
+    updated_at: 2026-03-27T18:37:32.877Z
     notes: []
   - _ulid: 01KMR8A56JWJ6WNSYTTZ3H4CPE
     slugs: []
