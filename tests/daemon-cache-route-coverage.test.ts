@@ -6,6 +6,7 @@
  * without falling back to disk-based initContext/loadAllItems/loadAllTasks.
  *
  * AC: @daemon-entity-cache ac-serve-from-memory
+ * AC: @shadow-lazy-read-sync ac-daemon-bypass — daemon reads serve from entity cache, no per-request drift-check
  */
 
 import { execSync } from "node:child_process";

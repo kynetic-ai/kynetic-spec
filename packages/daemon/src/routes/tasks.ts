@@ -65,6 +65,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         "/",
         async ({ query, projectContext }) => {
           // AC: @daemon-entity-cache ac-serve-from-memory, ac-warming-availability
+          // AC: @shadow-lazy-read-sync ac-daemon-bypass — cache-first path bypasses per-request drift-check
           const cache = getEntityCache?.(projectContext.path);
           const tasksDomainState = cache?.getDomainState("tasks");
 
