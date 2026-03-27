@@ -967,7 +967,8 @@ features:
           implementation: in_progress
         depends_on: []
         implements: []
-        relates_to: []
+        relates_to:
+          - "@daemon-entity-cache"
         tests: []
         traits: []
         acceptance_criteria:
