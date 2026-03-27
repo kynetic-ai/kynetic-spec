@@ -66574,6 +66574,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMR69JK5M5MN7J270YR2S1Y1
         timestamp: 2026-03-27T17:43:25.507Z
+      - _ulid: 01KMR69MMVYA8ZMEQE6Q125W50
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMR69M3XBEV394P03W34FPZ0
+        timestamp: 2026-03-27T17:43:27.131Z
     examined_commit: 87a703c5621e68433037da356a68de5007562e68
     external_links: []
     lifecycle_state: open
@@ -66662,7 +66669,25 @@ reviews:
               loadSessionContext(ctx), and loadSessionContext() reads the session YAML from disk."
             created_at: 2026-03-27T17:43:25.029Z
         kind: blocker
+      - _ulid: 01KMR69M3XBEV394P03W34FPZ0
+        anchor:
+          type: code
+          commit: 87a703c5621e68433037da356a68de5007562e68
+          line_end: 600
+          line_start: 596
+          path: packages/daemon/src/routes/sessions.ts
+          side: head
+        entries:
+          - _ulid: 01KMR69M3XR516AYS736D1QP82
+            author: "@claude"
+            body: "Blocking: /api/sessions/:id still reloads spec items from disk on the hot read path. The task
+              explicitly includes sessions.ts, but this handler builds spec_context with
+              loadAllItems(await getCtx()) even after resolving the session from cache, so read
+              requests still pay per-request filesystem work instead of using the entity-cache
+              detail tier."
+            created_at: 2026-03-27T17:43:26.589Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T17:39:12.945Z
-    updated_at: 2026-03-27T17:43:25.029Z
+    updated_at: 2026-03-27T17:43:26.589Z
     notes: []
