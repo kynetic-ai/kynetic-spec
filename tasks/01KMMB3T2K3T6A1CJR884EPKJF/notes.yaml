@@ -754,3 +754,31 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T09:26:43.767Z
+  - _ulid: 01KMQXBTDKNDMEBZCNY6RK1FT4
+    content: >-
+      Fix cycle 24 (manual takeover): addressed writeThrough failure suppression blocker from review
+      cycle 25.
+
+
+      Root cause: loadDomain() catches errors and always resolves (never rejects), so writeThrough()
+      unconditionally reached markWriteThrough() even when the domain degraded. Fix: check domain
+      state after loadDomain() — only set writeThroughSkip when state is ready.
+
+
+      Also fixed pre-existing test failures (22 tests) caused by the monolithic→split migration:
+
+      - Added ensureSplitBackendRegistered() to entity cache tests
+
+      - Added setupShadowDetection() helper to create git repos and fake worktree pointers so
+      initContext() finds .kspec/ as specDir
+
+      - Fixed 3 preload tests writing to project root instead of .kspec/
+
+      - Added regression test using vi.spyOn(initContext).mockRejectedValueOnce to reliably trigger
+      degradation
+
+
+      Full suite: 6945 passed, 5 skipped, 0 failures.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T15:07:21.395Z
