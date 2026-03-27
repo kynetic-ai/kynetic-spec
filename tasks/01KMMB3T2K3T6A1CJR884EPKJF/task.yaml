@@ -83,7 +83,7 @@ description: |
 spec_ref: "@daemon-entity-cache"
 plan_ref: "@plan-daemon-optimistic-data-layer"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -102,7 +102,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
   upstream_ref: refs/heads/dev
-session_id: null
+session_id: 01KMPG7C8JKW8SPBV6NTA750RG
 history:
   - author: "@claude"
     changes:
@@ -533,9 +533,22 @@ history:
         previous: 01KMPF8331HWZ6TEQD989B4DYT
     command: review-verdict-needs-work
     timestamp: 2026-03-27T01:57:44.735Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KMPG7C8JKW8SPBV6NTA750RG
+        previous: null
+      started_at:
+        new: 2026-03-27T01:59:01.254Z
+        previous: 2026-03-27T01:51:34.151Z
+    command: task-start
+    timestamp: 2026-03-27T01:59:01.255Z
 prior_status: null
 created_at: 2026-03-26T05:50:41.235Z
-started_at: 2026-03-27T01:51:34.151Z
+started_at: 2026-03-27T01:59:01.254Z
 submitted_at: 2026-03-27T01:51:37.201Z
 todos: []
 automation: eligible
