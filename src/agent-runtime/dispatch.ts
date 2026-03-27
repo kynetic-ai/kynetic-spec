@@ -381,6 +381,7 @@ export function computeDiffStat(fromCommit: string, toCommit: string, cwd: strin
   try {
     const result = spawnSync("git", ["diff", "--stat", fromCommit, toCommit], {
       cwd,
+      env: buildDispatchGitEnv(),
       encoding: "utf-8",
       stdio: "pipe",
       timeout: 10_000,
