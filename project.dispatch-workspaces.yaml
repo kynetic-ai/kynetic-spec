@@ -25270,12 +25270,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-27T21:07:04.175Z
+      updated_at: 2026-03-27T21:07:08.928Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-27T21:07:04.175Z
+      updated_at: 2026-03-27T21:07:08.928Z
     integration:
       status: pending
       detail: null
@@ -25283,7 +25283,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: f3fb67c100a1c342dcbe251b36da3bfa3e6f2112
-      updated_at: 2026-03-27T21:07:04.175Z
+      updated_at: 2026-03-27T21:07:08.928Z
     lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMMB3VRRVWNQFKPPP4WR0TK6"
@@ -25291,9 +25291,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-27T20:44:08.561Z
-      last_reconciled_at: 2026-03-27T21:07:04.175Z
+      last_reconciled_at: 2026-03-27T21:07:08.928Z
       created_at: 2026-03-27T20:44:02.994Z
-      updated_at: 2026-03-27T21:07:04.175Z
+      updated_at: 2026-03-27T21:07:08.928Z
     workspace_id: dispatch-workspace-01KMMB3VRRVWNQFKPPP4WR0TK6
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -25302,5 +25302,5 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-cli-proxy-routing/01kmmb3v
         head: f3fb67c100a1c342dcbe251b36da3bfa3e6f2112
-        last_seen_at: 2026-03-27T20:44:02.994Z
+        last_seen_at: 2026-03-27T21:07:08.928Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cli-proxy-routing-01kmmb3v
