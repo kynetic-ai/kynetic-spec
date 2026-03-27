@@ -61395,7 +61395,18 @@ reviews:
     slugs: []
     title: Review task-entity-cache-impl (cycle 17)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Warnings-only exit (code 6): schema and references OK; no validation errors, but
+          repository-wide completeness/alignment warnings remain."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-27T05:57:21.689Z
+        completed_at: 2026-03-27T05:57:21.689Z
     events:
       - _ulid: 01KMPXH40BWHNMWJ80H876XNP3
         actor: "@claude"
@@ -61424,6 +61435,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMPXWR4DTFXFPFT547F83Z9F
         timestamp: 2026-03-27T05:57:22.272Z
+      - _ulid: 01KMPXWSPDKRAJT3RZ667V40Z9
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-27T05:57:23.277Z
     examined_commit: 5b03acb30a52caaebdc360768c3ede7096e7ea7a
     external_links: []
     lifecycle_state: open
@@ -61479,5 +61497,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-27T05:51:00.619Z
-    updated_at: 2026-03-27T05:57:21.678Z
+    updated_at: 2026-03-27T05:57:21.689Z
     notes: []
