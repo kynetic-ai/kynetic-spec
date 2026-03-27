@@ -65571,7 +65571,18 @@ reviews:
     slugs: []
     title: Review @01KMMB3TNHWVQT4HHB9XC1DE0X
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed locally: 1947 suites, 6966 tests, 5 skipped. The runner auto-built missing dist
+          artifacts before executing."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-27T17:18:54.620Z
+        completed_at: 2026-03-27T17:18:54.620Z
     events:
       - _ulid: 01KMR4J2AWRE0DQFSS039BBZQM
         actor: "@claude"
@@ -65586,6 +65597,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-27T17:13:25.693Z
+      - _ulid: 01KMR4WQER7YTS3CB8JP5DADXQ
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-27T17:18:55.449Z
     examined_commit: 44f13a010b11295b83cf65d4fae6d6f8e07a7f01
     external_links: []
     lifecycle_state: open
@@ -65598,5 +65616,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-27T17:13:06.141Z
-    updated_at: 2026-03-27T17:13:25.229Z
+    updated_at: 2026-03-27T17:18:54.620Z
     notes: []
