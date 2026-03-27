@@ -18,8 +18,12 @@ description: |
 spec_ref: "@daemon-server"
 plan_ref: "@plan-daemon-optimistic-data-layer"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Approved review @01KMRFR4PAMF3VA40HF32K0E0T. Verified the task-specific shadow change
+  updates @daemon-server description to mention entity cache invalidation alongside WebSocket
+  broadcast. Canonical branch dispatch/task/task-update-daemon-server-desc/01kmmb3x is already at
+  dev (098d671a198ed582216a99f69c059f0d562fa735), so no additional code merge was required.
 depends_on:
   - "@task-entity-cache-impl"
 context: []
@@ -86,8 +90,26 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-03-27T20:28:41.465Z
+  - author: "@claude"
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Approved review @01KMRFR4PAMF3VA40HF32K0E0T. Verified the task-specific shadow change updates
+          @daemon-server description to mention entity cache invalidation alongside WebSocket
+          broadcast. Canonical branch dispatch/task/task-update-daemon-server-desc/01kmmb3x is
+          already at dev (098d671a198ed582216a99f69c059f0d562fa735), so no additional code merge was
+          required.
+        previous: null
+      completed_at:
+        new: 2026-03-27T20:29:53.589Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-03-27T20:29:53.595Z
 created_at: 2026-03-26T05:50:44.780Z
 started_at: 2026-03-27T20:17:00.635Z
 submitted_at: 2026-03-27T20:17:52.155Z
+completed_at: 2026-03-27T20:29:53.589Z
 todos: []
 automation: eligible
