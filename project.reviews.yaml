@@ -58872,6 +58872,12 @@ reviews:
         payload:
           thread_ulid: 01KMPMYYHWN2YSG71JJ2TMD3F7
         timestamp: 2026-03-27T03:43:00.832Z
+      - _ulid: 01KMPP6VGXXHB627WN28KFDNR5
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMPMYYHWN2YSG71JJ2TMD3F7
+        timestamp: 2026-03-27T03:43:04.221Z
     examined_commit: ea11de060b7e709735e4d74f9a686a48a8fde614
     external_links: []
     lifecycle_state: closed
@@ -58911,6 +58917,8 @@ reviews:
               verifies all domains show 'loading' or 'ready' after loadAll() starts."
             created_at: 2026-03-27T03:43:00.351Z
         kind: blocker
+        resolved_at: 2026-03-27T03:43:03.741Z
+        resolved_by: "@claude"
       - _ulid: 01KMPMZ23ZZ66YXSVAYQQJGVP8
         anchor:
           type: code
@@ -58944,5 +58952,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T03:21:30.428Z
     created_at: 2026-03-27T03:16:34.259Z
-    updated_at: 2026-03-27T03:43:00.351Z
+    updated_at: 2026-03-27T03:43:03.741Z
     notes: []
