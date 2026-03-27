@@ -726,3 +726,22 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T08:54:43.049Z
+  - _ulid: 01KMQ915BVA5QDYX1V5R5D9DJ5
+    content: >-
+      Fix cycle 23: addressed both blockers from review cycle 23.
+
+      1. sessions.ts /:id route — bounded index miss now falls back to disk-based resolveSessionId()
+      instead of returning not_found. Older sessions outside the retained window remain accessible
+      by ID on demand.
+
+      2. entity-cache.ts fileToDomain() — added 'source' parameter ('kspec' | 'sessions'). When
+      source is 'sessions' (detected by handleFileChange via kspecDir ending with .kspec-sessions),
+      ALL paths map to sessions domain regardless of ID shape. This handles arbitrary session IDs
+      (plain strings like 'session-123'), not just ULIDs. ULID matching preserved as legacy
+      fallback.
+
+      Added 3 new tests: non-ULID session path mapping with source hint, non-ULID without hint
+      returning null, and non-ULID handleFileChange invalidation. Full suite passes (6918/6918).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T09:12:00.635Z
