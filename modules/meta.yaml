@@ -6252,7 +6252,8 @@ modules:
         created: 2026-03-13T03:25:15.649Z
         notes: []
       - _ulid: 01KMPNANGZ3F9YCKCJRT9SEB4A
-        slugs: []
+        slugs:
+          - automation-action-type-completeness
         title: Automation Action Type Completeness
         type: requirement
         description: >-
