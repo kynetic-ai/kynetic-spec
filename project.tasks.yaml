@@ -22784,3 +22784,18 @@
   submitted_at: 2026-03-27T04:59:17.576Z
   completed_at: 2026-03-27T05:14:31.945Z
   automation: eligible
+- _ulid: 01KMRGJ8VGS65ZE2569WXT31D7
+  slugs: []
+  title: Extract setupShadowDetection() to shared test helpers
+  type: task
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 3
+  tags:
+    - infra
+    - testing
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-27T20:42:55.728Z
+  automation: eligible

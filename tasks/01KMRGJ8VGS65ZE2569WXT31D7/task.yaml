@@ -1,0 +1,42 @@
+_ulid: 01KMRGJ8VGS65ZE2569WXT31D7
+slugs: []
+title: Extract setupShadowDetection() to shared test helpers
+type: task
+description: >-
+  What: The daemon-entity-cache.test.ts file contains a local setupShadowDetection() helper that
+  initializes a git repo and creates a fake .kspec/.git worktree pointer in a project directory.
+  This enables initContext() to detect the .kspec/ shadow worktree and resolve specDir correctly.
+  Extract this helper to tests/helpers/cli.ts alongside the existing setupMultiDirFixtures(),
+  initGitRepo(), and createTempDir() helpers so any future test can reuse it.
+
+
+  Why: setupMultiDirFixtures() creates project directories with .kspec/ subdirectories containing
+  manifests and task data, but no git repos. Without a git repo, initContext() cannot detect .kspec/
+  as a shadow worktree — it falls through to traditional mode and resolves specDir to the project
+  root instead of .kspec/. Any test that calls initContext() on a multi-dir fixture project will
+  silently get the wrong specDir, causing loaders to look for data files in the wrong directory.
+  Today only daemon-entity-cache.test.ts is affected (and has the local fix), but as more daemon
+  tests need initContext(), this will recur.
+
+
+  How: Move the setupShadowDetection() function from daemon-entity-cache.test.ts to
+  tests/helpers/cli.ts. Export it alongside the other fixture helpers. Update
+  daemon-entity-cache.test.ts to import from the shared location. Consider whether
+  setupMultiDirFixtures() itself should call setupShadowDetection() on each project directory by
+  default (evaluate whether any existing consumers would break — check that none rely on the no-git
+  behavior). Add a JSDoc comment explaining why shadow detection setup is needed and when to use it.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - infra
+  - testing
+vcs_refs: []
+created_at: 2026-03-27T20:42:55.728Z
+todos: []
+automation: eligible
