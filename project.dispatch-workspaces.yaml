@@ -25687,18 +25687,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/add-update-alias-for-item-ac-set/01kmrtyx
-    canonical_branch_head: c3287fc736bce39629b1bdfda617808bd9ef55e0
+    canonical_branch_head: 51c2d344148c824d6cba110a27bdb3628191d2e4
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-27T23:45:01.193Z
+      updated_at: 2026-03-27T23:49:55.108Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-27T23:45:06.407Z
+      updated_at: 2026-03-27T23:49:55.108Z
     integration:
       status: pending
       detail: null
@@ -25706,7 +25706,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: c3287fc736bce39629b1bdfda617808bd9ef55e0
-      updated_at: 2026-03-27T23:45:01.193Z
+      updated_at: 2026-03-27T23:49:55.108Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KMRTYXRCP5VGBPT546FTX31W"
@@ -25714,9 +25714,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-27T23:45:06.407Z
-      last_reconciled_at: 2026-03-27T23:45:06.407Z
+      last_reconciled_at: 2026-03-27T23:49:55.108Z
       created_at: 2026-03-27T23:45:01.193Z
-      updated_at: 2026-03-27T23:45:06.407Z
+      updated_at: 2026-03-27T23:49:55.108Z
     workspace_id: dispatch-workspace-01KMRTYXRCP5VGBPT546FTX31W
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
