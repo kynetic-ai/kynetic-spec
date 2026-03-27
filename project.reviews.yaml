@@ -70343,6 +70343,12 @@ reviews:
         payload:
           thread_ulid: 01KMRQ03V2FHX12VXPS40JQQKF
         timestamp: 2026-03-27T22:36:02.446Z
+      - _ulid: 01KMRQ1DZHWGSF4Q87C1Z72683
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMRQ03V2FHX12VXPS40JQQKF
+        timestamp: 2026-03-27T22:36:03.953Z
     examined_commit: c3287fc736bce39629b1bdfda617808bd9ef55e0
     external_links: []
     lifecycle_state: open
@@ -71689,6 +71695,11 @@ reviews:
               relationship-only metadata change), edge cases/error handling/security (no additional
               findings in this metadata-only review).
             created_at: 2026-03-27T22:35:20.802Z
+          - _ulid: 01KMRQ1DGM4ZGY2JVRASQ90C1H
+            author: "@claude"
+            body: Superseded by corrected evidence log thread 01KMRQ093E74E59NFXJRMFGSTE after a shell quoting
+              error in the first comment.
+            created_at: 2026-03-27T22:36:03.476Z
         kind: nit
         resolved_at: 2026-03-27T22:36:01.961Z
         resolved_by: "@claude"
@@ -71740,5 +71751,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-27T22:31:05.065Z
-    updated_at: 2026-03-27T22:36:01.961Z
+    updated_at: 2026-03-27T22:36:03.476Z
     notes: []
