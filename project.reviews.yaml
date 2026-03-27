@@ -60837,6 +60837,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMPVJE0PS8621THX8HG2YZS2
         timestamp: 2026-03-27T05:16:48.095Z
+      - _ulid: 01KMPVJMACABPXWWT53X1XY2JA
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMPVJKA4KSF6BYTR7CF2060K
+        timestamp: 2026-03-27T05:16:52.940Z
     examined_commit: 8dfaea2199385d9aa733f052db868d92c22580e0
     external_links: []
     lifecycle_state: open
@@ -60884,7 +60891,27 @@ reviews:
               watcher-driven invalidation for task/spec/meta/review/etc. file set changes.
             created_at: 2026-03-27T05:16:46.486Z
         kind: blocker
+      - _ulid: 01KMPVJKA4KSF6BYTR7CF2060K
+        anchor:
+          type: code
+          commit: 8dfaea2199385d9aa733f052db868d92c22580e0
+          line_end: 155
+          line_start: 86
+          path: packages/daemon/src/watcher.ts
+          side: head
+        entries:
+          - _ulid: 01KMPVJKA4XFF0TNS8NSQQCPTT
+            author: "@claude"
+            body: The .kspec watcher only forwards successful read-and-parse change events. In the Chokidar path
+              it subscribes to change only, so file adds/deletes never reach the cache at all. In
+              the Bun path any rename/delete is funneled through processFileChange(), which calls
+              readFile() and treats ENOENT as a watcher error instead of an invalidation signal.
+              That means creating, removing, or renaming a YAML file in a cached domain can leave
+              the index stale indefinitely, which breaks watcher-driven invalidation for
+              task/spec/meta/review/etc. file set changes.
+            created_at: 2026-03-27T05:16:51.908Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T05:13:09.485Z
-    updated_at: 2026-03-27T05:16:46.486Z
+    updated_at: 2026-03-27T05:16:51.908Z
     notes: []
