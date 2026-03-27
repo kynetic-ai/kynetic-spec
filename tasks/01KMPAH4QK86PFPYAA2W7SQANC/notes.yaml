@@ -15,3 +15,24 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T00:28:00.474Z
+  - _ulid: 01KMPBESZ989XE5XVXPK429BF1
+    content: >-
+      Implementation complete. Set GIT_TERMINAL_PROMPT=0 in both git subprocess environments:
+
+      1. buildDispatchGitEnv() in workspace.ts — covers all dispatch engine git calls (runGit, push,
+      fetch, ls-remote)
+
+      2. buildShadowGitEnv() in shadow.ts — covers all shadow sync paths (runGitAsync, runGitSync,
+      background push spawn, spawnGitWithTimeout)
+
+      3. Also fixed computeDiffStat() in dispatch.ts which was missing env filtering entirely.
+
+
+      Tests: 7 new tests covering env builder behavior and behavioral verification (git
+      fetch/push/ls-remote to unreachable HTTPS remote fails fast instead of hanging).
+
+      All 6723 existing tests pass. Pre-existing parse error in agent-dispatch-engine.test.ts
+      (duplicate mockMetadata declaration) is unrelated.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T00:35:10.441Z
