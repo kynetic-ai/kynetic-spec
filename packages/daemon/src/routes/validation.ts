@@ -37,7 +37,8 @@ export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
         "/search",
         async ({ query, projectContext }) => {
           // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-          const ctx = await initContext(projectContext.path);
+          // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
+          const ctx = await initContext(projectContext.path, { syncMode: "skip" });
           const { tasks, items } = await buildIndexes(ctx);
 
           const pattern = query.q;
@@ -193,7 +194,8 @@ export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
       // AC: @api-contract ac-20 - Run full validation
       .get("/validate", async ({ projectContext }) => {
         // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-        const ctx = await initContext(projectContext.path);
+        // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
+        const ctx = await initContext(projectContext.path, { syncMode: "skip" });
 
         // AC: @api-contract ac-20 - Run validation and return ValidationResult
         const result = await validate(ctx);
@@ -212,7 +214,8 @@ export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
       // AC: @api-contract ac-21 - Get alignment stats and warnings
       .get("/alignment", async ({ projectContext }) => {
         // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-        const ctx = await initContext(projectContext.path);
+        // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
+        const ctx = await initContext(projectContext.path, { syncMode: "skip" });
         const { tasks, items, refIndex } = await buildIndexes(ctx);
 
         // AC: @api-contract ac-21 - Create AlignmentIndex and get stats

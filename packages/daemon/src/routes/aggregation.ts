@@ -38,7 +38,8 @@ export function createAggregationRoutes(_options: AggregationRouteOptions = {}) 
     new Elysia({ prefix: "/api/aggregation" })
       // AC: @ui-api-aggregation ac-1 - Task status summary with dependency-aware distinctions
       .get("/tasks/summary", async ({ projectContext }) => {
-        const ctx = await initContext(projectContext.path);
+        // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
+        const ctx = await initContext(projectContext.path, { syncMode: "skip" });
         const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
 
         // Count tasks by status
@@ -73,7 +74,8 @@ export function createAggregationRoutes(_options: AggregationRouteOptions = {}) 
 
       // AC: @ui-api-aggregation ac-2 - Extended validation/alignment stats
       .get("/validation", async ({ projectContext }) => {
-        const ctx = await initContext(projectContext.path);
+        // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
+        const ctx = await initContext(projectContext.path, { syncMode: "skip" });
         const { tasks, items, refIndex } = await buildIndexes(ctx);
 
         // Run validation for error/warning counts and completeness data
@@ -143,7 +145,8 @@ export function createAggregationRoutes(_options: AggregationRouteOptions = {}) 
 
       // AC: @ui-api-aggregation ac-3 - Inbox items with inline triage status
       .get("/inbox", async ({ projectContext }) => {
-        const ctx = await initContext(projectContext.path);
+        // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
+        const ctx = await initContext(projectContext.path, { syncMode: "skip" });
         const inboxItems = await loadInboxItems(ctx);
         const triageRecords = await loadTriageRecords(ctx);
 

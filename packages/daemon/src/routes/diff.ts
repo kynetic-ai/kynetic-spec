@@ -313,7 +313,8 @@ export function createDiffRoutes() {
       .get(
         "/api/reviews/:id/content",
         async ({ params, set, projectContext }) => {
-          const ctx = await initContext(projectContext.path);
+          // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
+          const ctx = await initContext(projectContext.path, { syncMode: "skip" });
           const reviews = await loadReviewRecords(ctx);
           const review = findReviewByRef(reviews, params.id);
 

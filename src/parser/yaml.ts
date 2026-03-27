@@ -53,7 +53,7 @@ import {
   ShadowError,
 } from "./shadow.js";
 import { loadProjectConfig, type ResolvedKspecConfig } from "./config.js";
-import { consumeSyncMode } from "../cli/sync-mode.js";
+import { consumeSyncMode, type ShadowSyncMode } from "../cli/sync-mode.js";
 import { TraitIndex } from "./traits.js";
 
 /**
@@ -508,7 +508,10 @@ export interface KspecContext {
  *
  * AC: @project-config ac-2 — config loaded before shadow detection
  */
-export async function initContext(startDir?: string): Promise<KspecContext> {
+export async function initContext(
+  startDir?: string,
+  options?: { syncMode?: ShadowSyncMode },
+): Promise<KspecContext> {
   const cwd = startDir || process.cwd();
   const projectRoots = resolveProjectRoots(cwd);
 
@@ -582,7 +585,9 @@ export async function initContext(startDir?: string): Promise<KspecContext> {
     // AC: @shadow-lazy-read-sync ac-syncmode-consume-once — consume-once prevents double-pull
     // AC: @shadow-lazy-read-sync ac-drift-check — drift check replaces unconditional pull
     if (!process.env.KSPEC_NO_SYNC) {
-      const syncMode = consumeSyncMode();
+      // AC: @shadow-lazy-read-sync ac-daemon-bypass — explicit syncMode override
+      // allows daemon routes to skip per-request drift-check on cache-miss fallback
+      const syncMode = options?.syncMode ?? consumeSyncMode();
 
       // AC: @config-shadow ac-3 ac-7 — pass configured shadow options so sync
       // uses the right branch name and remote instead of hardcoded defaults

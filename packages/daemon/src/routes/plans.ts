@@ -80,8 +80,9 @@ export function createPlansRoutes(_options: PlansRouteOptions = {}) {
           }
 
           let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
+          // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
           const getCtx = async () => {
-            if (!_ctx) _ctx = await initContext(projectContext.path);
+            if (!_ctx) _ctx = await initContext(projectContext.path, { syncMode: "skip" });
             return _ctx;
           };
 
@@ -138,8 +139,9 @@ export function createPlansRoutes(_options: PlansRouteOptions = {}) {
         // AC: @daemon-entity-cache ac-serve-from-memory — defer initContext for cache hits
         const cache = getEntityCache?.(projectContext.path);
         let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
+        // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
         const getCtx = async () => {
-          if (!_ctx) _ctx = await initContext(projectContext.path);
+          if (!_ctx) _ctx = await initContext(projectContext.path, { syncMode: "skip" });
           return _ctx;
         };
 

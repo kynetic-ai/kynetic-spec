@@ -330,8 +330,9 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
           // AC: @daemon-entity-cache ac-serve-from-memory — defer initContext to avoid
           // disk/git work on cache hits. Only initialize when disk fallback is needed.
           let _ctx: KspecContext | null = null;
+          // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
           const getCtx = async () => {
-            if (!_ctx) _ctx = await initContext(projectContext.path);
+            if (!_ctx) _ctx = await initContext(projectContext.path, { syncMode: "skip" });
             return _ctx;
           };
 
@@ -422,7 +423,8 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
       .get(
         "/search",
         async ({ query, error: errorResponse, projectContext }) => {
-          const ctx = await initContext(projectContext.path);
+          // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
+          const ctx = await initContext(projectContext.path, { syncMode: "skip" });
           const normalizedQuery = query.q.trim();
           if (normalizedQuery.length === 0) {
             return {
@@ -487,8 +489,9 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
         // work on cache hits. sessionsDir can be derived directly from projectContext.path.
         const sessionsDir = join(projectContext.path, ".kspec-sessions");
         let _ctx: KspecContext | null = null;
+        // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
         const getCtx = async () => {
-          if (!_ctx) _ctx = await initContext(projectContext.path);
+          if (!_ctx) _ctx = await initContext(projectContext.path, { syncMode: "skip" });
           return _ctx;
         };
 
@@ -662,7 +665,8 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
       .get(
         "/:id/events",
         async ({ params, query, error: errorResponse, projectContext }) => {
-          const ctx = await initContext(projectContext.path);
+          // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
+          const ctx = await initContext(projectContext.path, { syncMode: "skip" });
 
           const resolution = await resolveSessionId(ctx.sessionsDir, params.id);
           if (!resolution.ok) {
@@ -719,7 +723,8 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
       // AC: @trait-api-endpoint ac-1 — Returns 2xx with JSON body on success
       // AC: @trait-api-endpoint ac-2 — Returns 404 for invalid session or seq ref
       .get("/:id/events/:seq", async ({ params, error: errorResponse, projectContext }) => {
-        const ctx = await initContext(projectContext.path);
+        // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
+        const ctx = await initContext(projectContext.path, { syncMode: "skip" });
 
         // Resolve session ID (supports prefix matching)
         const resolution = await resolveSessionId(ctx.sessionsDir, params.id);
