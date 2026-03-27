@@ -292,6 +292,12 @@ describe("Daemon Command API", () => {
     expect(apiTask._ulid).toBe(cliTask._ulid);
     expect(apiTask.type).toBe(cliTask.type);
     expect(apiTask.spec_ref).toBe(cliTask.spec_ref);
+
+    // Verify stdout is returned verbatim (not trimmed) — the kspec() helper
+    // trims its output, so the API result should contain that content plus
+    // the trailing newline that direct CLI execution produces.
+    expect(body.stdout).toContain(cliResult.stdout);
+    expect(body.stdout).toMatch(/\n$/);
   });
 
   // AC: @daemon-command-api ac-response-parity
@@ -316,8 +322,10 @@ describe("Daemon Command API", () => {
     expect(cliResult.stdout).toContain("# Test Plan Content");
     expect(body.stdout).toContain("# Test Plan Content");
 
-    // Verify the full content matches between CLI and API
-    expect(body.stdout.trim()).toBe(cliResult.stdout.trim());
+    // API stdout contains the trimmed CLI result (kspec() helper trims)
+    expect(body.stdout).toContain(cliResult.stdout);
+    // API stdout is returned verbatim — not stripped
+    expect(body.stdout.length).toBeGreaterThanOrEqual(cliResult.stdout.length);
   });
 
   // AC: @daemon-command-api ac-response-parity
@@ -619,6 +627,23 @@ describe("Daemon Command API", () => {
     const requestId = response.headers.get("x-request-id");
     expect(requestId).toBeTruthy();
     // Should be a ULID-like string (26 chars)
+    expect(requestId!.length).toBe(26);
+  });
+
+  // AC: @trait-api-endpoint ac-6
+  it("includes X-Request-Id header on validation error responses", async () => {
+    // Send a request missing the required 'command' field — triggers Elysia
+    // body validation before the handler (and onBeforeHandle) runs.
+    const response = await makeRequest("/api/command", {
+      method: "POST",
+      body: JSON.stringify({
+        args: { ref: "@task-test" },
+      }),
+    });
+
+    expect(response.status).toBeGreaterThanOrEqual(400);
+    const requestId = response.headers.get("x-request-id");
+    expect(requestId).toBeTruthy();
     expect(requestId!.length).toBe(26);
   });
 

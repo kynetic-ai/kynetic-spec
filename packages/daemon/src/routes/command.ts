@@ -209,17 +209,17 @@ async function executeCommand(
     uninstallExitInterceptor();
   }
 
-  // Combine captured chunks and trim trailing whitespace.
-  // console.log adds "\n" per call; process.stdout.write passes through raw.
-  const stdout = stdoutChunks.join("").replace(/\n$/, "");
-  const stderr = stderrChunks.join("").replace(/\n$/, "");
+  // Combine captured chunks verbatim — no trimming, to preserve response
+  // parity with direct CLI execution.
+  // AC: @daemon-command-api ac-response-parity — exact stdout/stderr match
+  const stdout = stdoutChunks.join("");
+  const stderr = stderrChunks.join("");
 
-  // Filter BatchExitError noise from stderr
+  // Filter BatchExitError noise from stderr (preserving other content intact)
   const filteredStderr = stderr
     .split("\n")
     .filter((line) => !line.includes("BatchExitError"))
-    .join("\n")
-    .trim();
+    .join("\n");
 
   return {
     stdout,
@@ -291,8 +291,11 @@ export function createCommandRoutes(options: CommandRouteOptions) {
   };
 
   return new Elysia({ prefix: "/api/command" })
-    // AC: @trait-api-endpoint ac-6 — X-Request-Id header on all responses
-    .onBeforeHandle(({ set }) => {
+    // AC: @trait-api-endpoint ac-6 — X-Request-Id header on all responses.
+    // Uses onTransform (not onBeforeHandle) because Elysia runs body validation
+    // between onTransform and onBeforeHandle. Setting the header here ensures it
+    // appears even on validation error responses.
+    .onTransform(({ set }) => {
       set.headers["X-Request-Id"] = ulid();
     })
 
