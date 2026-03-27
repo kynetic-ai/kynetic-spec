@@ -57284,6 +57284,12 @@ reviews:
         payload:
           thread_ulid: 01KMPCP563BARWGZ5EPS0PYWCN
         timestamp: 2026-03-27T01:07:56.141Z
+      - _ulid: 01KMPDAX3XE7DPSPF42BGS2WNG
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMPCPWPD0K5MH0VVSNR70WQ1
+        timestamp: 2026-03-27T01:07:59.741Z
     examined_commit: 37294e673fe67d970ae172f4d510c5ca5116d0fe
     external_links: []
     lifecycle_state: closed
@@ -57342,6 +57348,11 @@ reviews:
               remain stale until some unrelated items-domain reload happens, which violates watcher
               invalidation for the affected domain."
             created_at: 2026-03-27T00:57:03.949Z
+          - _ulid: 01KMPDAWPDD71MQ12CKJZ47G57
+            author: "@claude"
+            body: 'Fixed: same root cause as thread 1 — duplicate thread. fileToDomain() now returns ["meta",
+              "items"] for kynetic.yaml, ensuring both domains are invalidated on manifest changes.'
+            created_at: 2026-03-27T01:07:59.309Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -57352,5 +57363,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T00:57:21.142Z
     created_at: 2026-03-27T00:50:29.571Z
-    updated_at: 2026-03-27T01:07:55.715Z
+    updated_at: 2026-03-27T01:07:59.309Z
     notes: []
