@@ -56936,6 +56936,19 @@ reviews:
         runner: kspec
         created_at: 2026-03-27T00:43:02.834Z
         completed_at: 2026-03-27T00:43:02.834Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Full suite exit 1 due to pre-existing parse error in
+          tests/agent-dispatch-engine.test.ts:2532 ('mockMetadata' already declared). Verified
+          identical failure exists on base commit 10f03ef092b8d60326feb37c02c50dd45f5ed65a, so this
+          patch did not introduce the failure.
+        name: npm test
+        required: false
+        runner: npm
+        created_at: 2026-03-27T00:43:04.171Z
+        completed_at: 2026-03-27T00:43:04.171Z
     events:
       - _ulid: 01KMPBM6Z6D9W1ZCYG9RA326AY
         actor: "@claude"
@@ -56957,6 +56970,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-27T00:43:03.283Z
+      - _ulid: 01KMPBX8ZTTE3K00BDHMK413HV
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-27T00:43:04.570Z
     examined_commit: 1dee6a463dd7feeecf5354988107b287660b684e
     external_links: []
     lifecycle_state: open
@@ -56969,5 +56989,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-27T00:38:07.590Z
-    updated_at: 2026-03-27T00:43:02.834Z
+    updated_at: 2026-03-27T00:43:04.171Z
     notes: []
