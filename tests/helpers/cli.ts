@@ -525,3 +525,45 @@ export function seedSplitTask(
   });
   writeFileSync(indexPath, yamlStringify(entries));
 }
+
+/**
+ * Set up a project directory so initContext() detects the .kspec/ shadow worktree.
+ *
+ * Creates a git repo (via initGitRepo) and a fake .kspec/.git worktree pointer
+ * so that isValidWorktree() passes and initContext() resolves specDir to .kspec/
+ * instead of falling through to traditional mode.
+ *
+ * Use this when a test calls initContext() on a project directory that has a
+ * .kspec/ subdirectory (e.g., from setupMultiDirFixtures()). Without shadow
+ * detection setup, initContext() will silently resolve specDir to the project
+ * root, causing loaders to look for data files in the wrong place.
+ *
+ * @param projectDir - Project root directory that contains a .kspec/ subdirectory
+ *
+ * @example
+ * const fixturesRoot = await setupMultiDirFixtures();
+ * const projectA = path.join(fixturesRoot, 'project-a');
+ * await setupShadowDetection(projectA);
+ * // Now initContext(projectA) will correctly resolve specDir to projectA/.kspec/
+ */
+export async function setupShadowDetection(projectDir: string): Promise<void> {
+  // Initialize git repo
+  initGitRepo(projectDir);
+
+  // Create a worktree entry so isValidWorktree() passes
+  const worktreeDir = path.join(projectDir, ".git", "worktrees", "-kspec");
+  await fs.mkdir(worktreeDir, { recursive: true });
+  await fs.writeFile(path.join(worktreeDir, "HEAD"), "0".repeat(40) + "\n", "utf-8");
+  await fs.writeFile(
+    path.join(worktreeDir, "gitdir"),
+    path.join(projectDir, ".kspec", ".git") + "\n",
+    "utf-8",
+  );
+
+  // Point .kspec/.git to the worktree entry
+  await fs.writeFile(
+    path.join(projectDir, ".kspec", ".git"),
+    `gitdir: ${worktreeDir}\n`,
+    "utf-8",
+  );
+}

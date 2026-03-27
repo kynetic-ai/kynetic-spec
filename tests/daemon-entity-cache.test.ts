@@ -13,9 +13,13 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { join } from "path";
 import * as fs from "fs/promises";
-import { execSync } from "child_process";
 import { stringify as yamlStringify } from "yaml";
-import { setupMultiDirFixtures, cleanupTempDir, createTempDir } from "./helpers/cli";
+import {
+  setupMultiDirFixtures,
+  cleanupTempDir,
+  createTempDir,
+  setupShadowDetection,
+} from "./helpers/cli";
 import {
   ProjectEntityCache,
   fileToDomain,
@@ -30,30 +34,6 @@ import { ensureSplitBackendRegistered } from "../src/parser/split-backend";
 import * as yamlModule from "../src/parser/yaml";
 
 ensureSplitBackendRegistered();
-
-/**
- * Set up a project directory so initContext() finds the .kspec/ shadow worktree.
- * Creates a git repo and a fake .kspec/.git worktree pointer so shadow detection works.
- */
-async function setupShadowDetection(projectDir: string): Promise<void> {
-  // Initialize git repo
-  execSync("git init -b main", { cwd: projectDir, stdio: "pipe" });
-  execSync('git config user.email "test@example.com"', { cwd: projectDir, stdio: "pipe" });
-  execSync('git config user.name "Test User"', { cwd: projectDir, stdio: "pipe" });
-
-  // Create a worktree entry so isValidWorktree() passes
-  const worktreeDir = join(projectDir, ".git", "worktrees", "-kspec");
-  await fs.mkdir(worktreeDir, { recursive: true });
-  await fs.writeFile(join(worktreeDir, "HEAD"), "0".repeat(40) + "\n", "utf-8");
-  await fs.writeFile(join(worktreeDir, "gitdir"), join(projectDir, ".kspec", ".git") + "\n", "utf-8");
-
-  // Point .kspec/.git to the worktree entry
-  await fs.writeFile(
-    join(projectDir, ".kspec", ".git"),
-    `gitdir: ${worktreeDir}\n`,
-    "utf-8",
-  );
-}
 
 describe("ProjectEntityCache", () => {
   let fixturesRoot: string;
