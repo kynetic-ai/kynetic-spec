@@ -78,3 +78,12 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T22:13:10.702Z
+  - _ulid: 01KMRP3W24X4TY6J72PSV4SQAV
+    content: "Fix cycle 2: addressed blocker — Playwright E2E fixture (test-base.ts:142) still used
+      serve start --daemon which now resolves to the global proxy flag instead of the detach flag,
+      causing fixture to start daemon in foreground and hang. Changed to --detach. Verified no other
+      stale references via grep. Re-verified all 9 spec ACs + 4 detection ACs + trait ACs against
+      implementation. Full test suite passes (7030/7030)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T22:19:55.332Z
