@@ -61903,6 +61903,54 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-27T06:54:15.607Z
+      - _ulid: 01KMQ1YZ9MZDFF3R0PGPBPM701
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMQ14NY0AFM0KM3GJVNA4J8M
+        timestamp: 2026-03-27T07:08:28.852Z
+      - _ulid: 01KMQ1Z0SPQRA5EHVQENQ3GX0F
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMQ14NY0AFM0KM3GJVNA4J8M
+        timestamp: 2026-03-27T07:08:30.390Z
+      - _ulid: 01KMQ1Z29JVGB6VVAX00454NBK
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMQ14SHVV5NCR81QHQVZFHTB
+        timestamp: 2026-03-27T07:08:31.922Z
+      - _ulid: 01KMQ1Z3RWNRY6FC6VKBQW6RRW
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMQ14SHVV5NCR81QHQVZFHTB
+        timestamp: 2026-03-27T07:08:33.436Z
+      - _ulid: 01KMQ1Z57Q8Z7JY34GVH69PCRS
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMQ13XR3D3N1NER4DSSAFJ90
+        timestamp: 2026-03-27T07:08:34.935Z
+      - _ulid: 01KMQ1Z6PWCBQ3YP88WZVXFV8E
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMQ13XR3D3N1NER4DSSAFJ90
+        timestamp: 2026-03-27T07:08:36.444Z
+      - _ulid: 01KMQ1Z86H0X3GA8D1TVATRP7G
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMQ141D0WE39G8DJAJ1VJJJ8
+        timestamp: 2026-03-27T07:08:37.969Z
+      - _ulid: 01KMQ1Z9NNGZF1PZT0W3S3BD4C
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMQ141D0WE39G8DJAJ1VJJJ8
+        timestamp: 2026-03-27T07:08:39.477Z
     examined_commit: 18d250b7b7c6d5fc7cf96a9ca0ec8afbeb671e1c
     external_links: []
     lifecycle_state: closed
@@ -61931,7 +61979,15 @@ reviews:
               this task claims all triage reads are wired. Please gate this endpoint on  and read
               from  when ready, with the same loading fallback as the list route."
             created_at: 2026-03-27T06:53:42.532Z
+          - _ulid: 01KMQ1Z4MXP1GJDQ8QZ7JMZ7WX
+            author: "@claude"
+            body: 'Fixed: Added early return with {_cache_status:"loading"} when triageDomainState === "loading"
+              to GET /api/triage/:ref, before the cache/disk lookup. Same guard used on all other
+              cache-backed detail routes.'
+            created_at: 2026-03-27T07:08:34.333Z
         kind: blocker
+        resolved_at: 2026-03-27T07:08:35.847Z
+        resolved_by: "@claude"
       - _ulid: 01KMQ141D0WE39G8DJAJ1VJJJ8
         anchor:
           type: code
@@ -61949,7 +62005,15 @@ reviews:
               the same early  return used on the list/detail routes for the other domains before any
               disk fallback runs."
             created_at: 2026-03-27T06:53:46.272Z
+          - _ulid: 01KMQ1Z7KSS4R3Q514RNSSRD0B
+            author: "@claude"
+            body: 'Fixed: GET /api/triage/:ref now checks triageDomainState === "loading" and returns
+              {_cache_status:"loading"} before any disk fallback, matching the warmup guard pattern
+              on all other cache-backed routes.'
+            created_at: 2026-03-27T07:08:37.369Z
         kind: blocker
+        resolved_at: 2026-03-27T07:08:38.875Z
+        resolved_by: "@claude"
       - _ulid: 01KMQ14NY0AFM0KM3GJVNA4J8M
         anchor:
           type: code
@@ -61968,7 +62032,15 @@ reviews:
               triage domain. Add the same early triageDomainState === "loading" return used on the
               other cache-backed routes before any disk fallback runs.'
             created_at: 2026-03-27T06:54:07.296Z
+          - _ulid: 01KMQ1YYQS625NPD4YQC5J188K
+            author: "@claude"
+            body: 'Fixed: GET /api/triage/export now reads from cached getTriageIndex() when the triage domain
+              is ready, and returns {items:[], _cache_status:"loading"} during warmup. Falls back to
+              disk only on cache miss, matching the list route pattern.'
+            created_at: 2026-03-27T07:08:28.281Z
         kind: blocker
+        resolved_at: 2026-03-27T07:08:29.788Z
+        resolved_by: "@claude"
       - _ulid: 01KMQ14SHVV5NCR81QHQVZFHTB
         anchor:
           type: code
@@ -61988,7 +62060,15 @@ reviews:
               getDomainState("triage") and read from getTriageIndex() when ready, with the same
               loading fallback as the list route.'
             created_at: 2026-03-27T06:54:11.003Z
+          - _ulid: 01KMQ1Z1P5S227HN1X2SEH1DHC
+            author: "@claude"
+            body: 'Fixed: GET /api/triage/export now has the same cache + warmup guard as the list route. Uses
+              getDomainState("triage") to gate, reads from getTriageIndex() when ready, returns
+              loading indicator during warmup.'
+            created_at: 2026-03-27T07:08:31.301Z
         kind: blocker
+        resolved_at: 2026-03-27T07:08:32.833Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -61998,5 +62078,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T06:54:15.607Z
     created_at: 2026-03-27T06:46:19.059Z
-    updated_at: 2026-03-27T06:54:15.607Z
+    updated_at: 2026-03-27T07:08:38.875Z
     notes: []
