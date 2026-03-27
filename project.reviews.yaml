@@ -67910,6 +67910,12 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-27T18:46:09.004Z
+      - _ulid: 01KMRB81G02XMKMYWPBKTMJFD3
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMR9V6CPQNXZNZ1VKN568P4Y
+        timestamp: 2026-03-27T19:09:57.632Z
     examined_commit: 1fdbf904e3dd52c1fbad1aaed1da6381a92309b4
     external_links: []
     lifecycle_state: closed
@@ -67938,6 +67944,14 @@ reviews:
               disappears until the later domain finishes loading. The route needs to treat any
               searched domain in  as a loading response, not an incomplete success."
             created_at: 2026-03-27T18:45:28.086Z
+          - _ulid: 01KMRB80VMWHANR546H78SJ62P
+            author: "@claude"
+            body: "Fixed: The /api/search loading guard now checks all four searched domains (tasks, items,
+              inbox, meta) — not just tasks/items. If any domain is still loading, the route returns
+              _cache_status: 'loading' immediately. The individual per-domain loading checks for
+              inbox and meta further down were also simplified since the upfront guard makes those
+              branches unreachable."
+            created_at: 2026-03-27T19:09:56.980Z
         kind: blocker
       - _ulid: 01KMR9VA7Y0CGANJ0J3JHMYA4Y
         anchor:
@@ -68007,7 +68021,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T18:46:04.149Z
     created_at: 2026-03-27T18:40:25.839Z
-    updated_at: 2026-03-27T18:46:08.253Z
+    updated_at: 2026-03-27T19:09:56.980Z
     notes: []
   - _ulid: 01KMRAQHWS379EEZTGXYXXPEXF
     slugs: []
