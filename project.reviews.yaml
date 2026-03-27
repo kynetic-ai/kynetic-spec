@@ -60883,6 +60883,13 @@ reviews:
         payload:
           thread_ulid: 01KMPVJE0PS8621THX8HG2YZS2
         timestamp: 2026-03-27T05:19:49.402Z
+      - _ulid: 01KMPVSV0JD5F95C4GYXYTJVX7
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMPVSSXTAMQNEGRHWSDJ8XZM
+        timestamp: 2026-03-27T05:20:49.170Z
     examined_commit: 8dfaea2199385d9aa733f052db868d92c22580e0
     external_links: []
     lifecycle_state: open
@@ -61012,7 +61019,25 @@ reviews:
         kind: blocker
         resolved_at: 2026-03-27T05:19:38.645Z
         resolved_by: "@claude"
+      - _ulid: 01KMPVSSXTAMQNEGRHWSDJ8XZM
+        anchor:
+          type: code
+          commit: 8dfaea2199385d9aa733f052db868d92c22580e0
+          line_end: 266
+          line_start: 250
+          path: packages/daemon/src/routes/tasks.ts
+          side: head
+        entries:
+          - _ulid: 01KMPVSSXT59QPEVQ4XV7GKNNW
+            author: "@claude"
+            body: Task detail only special-cases the "ready" state. If the tasks domain is still "loading", the
+              route skips the cache branch and immediately falls through to
+              resolveTaskDataManager(ctx).getTask(...), which reintroduces disk/git work during
+              warmup instead of returning {_cache_status:"loading"}. That leaves
+              ac-warming-availability broken for /api/tasks/:ref.
+            created_at: 2026-03-27T05:20:48.058Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T05:13:09.485Z
-    updated_at: 2026-03-27T05:19:48.278Z
+    updated_at: 2026-03-27T05:20:48.058Z
     notes: []
