@@ -61,7 +61,7 @@ description: >-
 spec_ref: "@dispatch-remote-branch-sync"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -70,6 +70,14 @@ tags:
   - bug
   - cli
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-27T00:35:17.932Z
+  commit: 10f03ef092b8d60326feb37c02c50dd45f5ed65a
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
 session_id: 01KMPARE0J1X0EWAC0EBS3JJ0A
 history:
   - author: "@claude"
@@ -92,7 +100,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-03-27T00:23:19.759Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-03-27T00:35:17.932Z
+          commit: 10f03ef092b8d60326feb37c02c50dd45f5ed65a
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous: null
+      submitted_at:
+        new: 2026-03-27T00:35:17.934Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-03-27T00:35:17.935Z
 created_at: 2026-03-27T00:18:58.419Z
 started_at: 2026-03-27T00:23:19.758Z
+submitted_at: 2026-03-27T00:35:17.934Z
 todos: []
 automation: eligible
