@@ -69187,7 +69187,18 @@ reviews:
     slugs: []
     title: Review task-daemon-command-api (cycle 8)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Ran kspec validate. Exit code 6 due existing repo-wide warnings only; no schema/reference
+          errors introduced by this task.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-27T20:26:22.283Z
+        completed_at: 2026-03-27T20:26:22.283Z
     events:
       - _ulid: 01KMRF2TYMKYNF0DV2SM7F86PE
         actor: "@claude"
@@ -69209,6 +69220,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMRFKG16Y3586WGWYM1N14Q1
         timestamp: 2026-03-27T20:26:08.186Z
+      - _ulid: 01KMRFKZNEW2RYJW1475RGBQH8
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-27T20:26:23.279Z
     examined_commit: 28797c7de5c19b1d5061ad04b2343f93d1d26645
     external_links: []
     lifecycle_state: open
@@ -69243,5 +69261,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-27T20:17:01.397Z
-    updated_at: 2026-03-27T20:26:07.271Z
+    updated_at: 2026-03-27T20:26:22.283Z
     notes: []
