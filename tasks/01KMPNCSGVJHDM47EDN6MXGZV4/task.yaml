@@ -27,7 +27,7 @@ description: >-
 spec_ref: "@automation-action-type-completeness"
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on: []
 context: []
@@ -46,7 +46,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
   upstream_ref: refs/heads/dev
-session_id: 01KMPR23WNDG7HYX50STB3BZCB
+session_id: null
 history:
   - author: "@claude"
     changes:
@@ -159,6 +159,16 @@ history:
         previous: "@01KMPQF47ETXHB2NH8SPBWWDET"
     command: review-link
     timestamp: 2026-03-27T04:34:38.303Z
+  - author: "@claude"
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KMPR23WNDG7HYX50STB3BZCB
+    command: review-verdict-needs-work
+    timestamp: 2026-03-27T04:44:25.996Z
 created_at: 2026-03-27T03:28:50.203Z
 started_at: 2026-03-27T04:18:42.068Z
 submitted_at: 2026-03-27T04:30:22.294Z
