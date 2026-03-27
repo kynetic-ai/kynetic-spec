@@ -50,8 +50,9 @@ interface CommandRouteOptions {
 /**
  * Promise-based mutex that serializes all command dispatches within the
  * daemon process. Required because executeCommand mutates process-global
- * state (process.cwd(), console.log/error/warn, process.exit interceptor)
- * that would corrupt concurrent requests if not serialized.
+ * state (process.cwd(), console.log/error/warn, process.stdout/stderr.write,
+ * process.exit interceptor) that would corrupt concurrent requests if not
+ * serialized.
  *
  * The file lock (withFileLock) only serializes mutating commands across
  * processes; this mutex serializes ALL dispatches (including reads) within
@@ -88,12 +89,13 @@ class DispatchMutex {
  * Execute a single CLI command within the daemon process.
  *
  * IMPORTANT: This function mutates process-global state (process.cwd(),
- * console.log/error/warn, process.exit) and MUST be called inside the
- * dispatch mutex to prevent concurrent request corruption.
+ * console.log/error/warn, process.stdout/stderr.write, process.exit) and
+ * MUST be called inside the dispatch mutex to prevent concurrent request
+ * corruption.
  *
- * Reuses the batch execution infrastructure (OutputCapture, exit interceptor,
- * resetCommandTree) to run a command via Commander's parseAsync with captured
- * output streams.
+ * Intercepts both console methods AND process.stdout/stderr.write to capture
+ * all CLI output, since some commands write directly to process streams
+ * (e.g., plan export uses process.stdout.write).
  *
  * AC: @daemon-command-api ac-command-endpoint — executes command in-process
  * AC: @daemon-command-api ac-response-parity — captures same stdout/stderr as direct CLI
@@ -133,22 +135,50 @@ async function executeCommand(
   setJsonMode(false);
   setVerboseMode(false);
 
-  // Capture stdout and stderr separately
-  // AC: @daemon-command-api ac-response-parity — stdout/stderr separation
-  const stdoutLines: string[] = [];
-  const stderrLines: string[] = [];
+  // Capture stdout and stderr separately.
+  // Intercepts both console.log/error/warn AND process.stdout/stderr.write
+  // because CLI commands use both paths (e.g., plan export uses process.stdout.write).
+  // AC: @daemon-command-api ac-response-parity — full stdout/stderr capture
+  const stdoutChunks: string[] = [];
+  const stderrChunks: string[] = [];
   const origLog = console.log;
   const origError = console.error;
   const origWarn = console.warn;
+  const origStdoutWrite = process.stdout.write;
+  const origStderrWrite = process.stderr.write;
 
   console.log = (...args: unknown[]) => {
-    stdoutLines.push(args.map((a) => (typeof a === "string" ? a : JSON.stringify(a))).join(" "));
+    stdoutChunks.push(
+      args.map((a) => (typeof a === "string" ? a : JSON.stringify(a))).join(" ") + "\n",
+    );
   };
   console.error = (...args: unknown[]) => {
-    stderrLines.push(args.map((a) => (typeof a === "string" ? a : JSON.stringify(a))).join(" "));
+    stderrChunks.push(
+      args.map((a) => (typeof a === "string" ? a : JSON.stringify(a))).join(" ") + "\n",
+    );
   };
   console.warn = (...args: unknown[]) => {
-    stderrLines.push(args.map((a) => (typeof a === "string" ? a : JSON.stringify(a))).join(" "));
+    stderrChunks.push(
+      args.map((a) => (typeof a === "string" ? a : JSON.stringify(a))).join(" ") + "\n",
+    );
+  };
+
+  // Intercept process.stdout.write / process.stderr.write so commands that
+  // bypass console (e.g., process.stdout.write(...)) are also captured.
+  process.stdout.write = (chunk: unknown, ...rest: unknown[]): boolean => {
+    const text = typeof chunk === "string" ? chunk : Buffer.isBuffer(chunk) ? chunk.toString() : String(chunk);
+    stdoutChunks.push(text);
+    // Invoke the callback if provided (Node stream write signature)
+    const cb = typeof rest[0] === "function" ? rest[0] : typeof rest[1] === "function" ? rest[1] : undefined;
+    if (cb) (cb as () => void)();
+    return true;
+  };
+  process.stderr.write = (chunk: unknown, ...rest: unknown[]): boolean => {
+    const text = typeof chunk === "string" ? chunk : Buffer.isBuffer(chunk) ? chunk.toString() : String(chunk);
+    stderrChunks.push(text);
+    const cb = typeof rest[0] === "function" ? rest[0] : typeof rest[1] === "function" ? rest[1] : undefined;
+    if (cb) (cb as () => void)();
+    return true;
   };
 
   installExitInterceptor();
@@ -164,31 +194,36 @@ async function executeCommand(
   } catch (err) {
     if (err instanceof BatchExitError) {
       exitCode = err.code;
-      // Filter BatchExitError noise from captured output
-      const filteredStderr = stderrLines
-        .filter((line) => !line.includes("BatchExitError"))
-        .join("\n")
-        .trim();
-      if (filteredStderr) {
-        stderrLines.length = 0;
-        stderrLines.push(filteredStderr);
-      }
     } else {
       exitCode = 1;
       const msg = err instanceof Error ? err.message : String(err);
-      stderrLines.push(msg);
+      stderrChunks.push(msg);
     }
   } finally {
     process.chdir(originalCwd);
     console.log = origLog;
     console.error = origError;
     console.warn = origWarn;
+    process.stdout.write = origStdoutWrite;
+    process.stderr.write = origStderrWrite;
     uninstallExitInterceptor();
   }
 
+  // Combine captured chunks and trim trailing whitespace.
+  // console.log adds "\n" per call; process.stdout.write passes through raw.
+  const stdout = stdoutChunks.join("").replace(/\n$/, "");
+  const stderr = stderrChunks.join("").replace(/\n$/, "");
+
+  // Filter BatchExitError noise from stderr
+  const filteredStderr = stderr
+    .split("\n")
+    .filter((line) => !line.includes("BatchExitError"))
+    .join("\n")
+    .trim();
+
   return {
-    stdout: stdoutLines.join("\n"),
-    stderr: stderrLines.join("\n"),
+    stdout,
+    stderr: filteredStderr,
     exitCode,
   };
 }

@@ -35,6 +35,7 @@ ensureSplitBackendRegistered();
 
 const TASK_ULID = testUlid("TASK", 1);
 const SPEC_ULID = testUlid("SPEC", 2);
+const PLAN_ULID = testUlid("PLAN", 3);
 
 let tempDir: string;
 let app: Elysia;
@@ -156,7 +157,21 @@ reviews: []
   writeFileSync(
     path.join(tempDir, "project.plans.yaml"),
     `kynetic_plans: "1.0"
-plans: []
+plans:
+  - _ulid: "${PLAN_ULID}"
+    slugs:
+      - test-plan
+    title: "Test Plan"
+    content: |
+      # Test Plan Content
+
+      This is plan content written via process.stdout.write.
+      It spans multiple lines to verify full capture.
+    status: draft
+    derived_tasks: []
+    derived_specs: []
+    created_at: "2026-01-01T00:00:00Z"
+    notes: []
 `,
   );
 
@@ -277,6 +292,32 @@ describe("Daemon Command API", () => {
     expect(apiTask._ulid).toBe(cliTask._ulid);
     expect(apiTask.type).toBe(cliTask.type);
     expect(apiTask.spec_ref).toBe(cliTask.spec_ref);
+  });
+
+  // AC: @daemon-command-api ac-response-parity
+  it("captures process.stdout.write output (plan export uses stdout.write)", async () => {
+    // plan export writes directly to process.stdout.write, not console.log.
+    // This was the exact scenario the reviewer identified as broken.
+    const cliResult = kspec("plan export @test-plan", tempDir);
+
+    const response = await makeRequest("/api/command", {
+      method: "POST",
+      body: JSON.stringify({
+        command: "plan export",
+        args: { ref: "@test-plan" },
+      }),
+    });
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body.exitCode).toBe(0);
+
+    // Both should contain the plan content
+    expect(cliResult.stdout).toContain("# Test Plan Content");
+    expect(body.stdout).toContain("# Test Plan Content");
+
+    // Verify the full content matches between CLI and API
+    expect(body.stdout.trim()).toBe(cliResult.stdout.trim());
   });
 
   // AC: @daemon-command-api ac-response-parity
