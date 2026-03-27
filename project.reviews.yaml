@@ -59453,6 +59453,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMPRBHZZCE5VPN7KJPRGM471
         timestamp: 2026-03-27T04:20:35.910Z
+      - _ulid: 01KMPRBQGVX6M99E8XY0H73NWP
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KMPRBQ1C5PX9S1J2DRZ5H0Z4
+        timestamp: 2026-03-27T04:20:41.115Z
     examined_commit: 0b9e71753e703adfded4e89a2263fd1da4310b39
     external_links: []
     lifecycle_state: open
@@ -59502,7 +59509,355 @@ reviews:
               routes still paying the old per-request I/O cost.
             created_at: 2026-03-27T04:20:35.456Z
         kind: blocker
+      - _ulid: 01KMPRBQ1C5PX9S1J2DRZ5H0Z4
+        entries:
+          - _ulid: 01KMPRBQ1CHEWT3SYEEMD08RGV
+            author: "@claude"
+            body: >-
+              Evidence log: files read included , , , , , , , and the changed tests. Commands run
+              included , , Daemon Entity Cache
+
+              ────────────────────────────────────────
+
+              ULID:      01KMMB3S2ST4PH6VDGQ6PP067S
+
+              Slugs:     daemon-entity-cache
+
+              Type:      feature
+
+              Maturity:  draft
+
+              Implementation: in_progress
+
+
+              ─── Description ───
+
+              Server-side in-memory cache for entity data served by the daemon API.
+
+              The cache uses a two-tier model: index data (summaries, counts,
+
+              references) is kept hot in memory, while detail data (full content,
+
+              notes, event logs) is loaded on demand when accessed. The file watcher
+
+              drives cache invalidation — when shadow branch files change, affected
+
+              data is selectively reloaded. Data domains load progressively so
+
+              high-priority data is available before the full cache is ready.
+
+
+
+              ─── Acceptance Criteria ───
+                [ac-load-on-register]
+                  Given: a project is registered with the daemon
+
+                  When: the project's shadow branch directory is accessible
+
+                  Then: index-tier entity data is loaded into memory and available for
+              serving
+
+                [ac-serve-from-memory]
+                  Given: a project's index data has been loaded into the cache
+
+                  When: an API list or summary request arrives for that project
+
+                  Then: the response is served from the in-memory cache without reading
+              files from disk or running git operations
+
+                [ac-detail-on-demand]
+                  Given: a request arrives for a single entity's full detail
+
+                  When: the detail data is not in the cache
+
+                  Then: the detail is loaded from disk, served, and optionally retained
+              in cache until the next invalidation
+
+                [ac-watcher-invalidation]
+                  Given: the file watcher detects a change to a shadow branch file
+
+                  When: the changed file belongs to a registered project
+
+                  Then: the affected data domain is reloaded from disk and the cache is
+              updated before any subsequent request is served
+
+                [ac-granular-reload]
+                  Given: a file change affects only one data domain
+
+                  When: the cache processes the invalidation
+
+                  Then: only the affected domain is reloaded, not unrelated domains
+
+                [ac-write-through]
+                  Given: a write operation mutates entity data through the daemon API
+
+                  When: the mutation succeeds and is committed to the shadow branch
+
+                  Then: the cache is updated with the new state before the response is
+              sent, without waiting for the file watcher to detect the change
+
+                [ac-concurrent-reads]
+                  Given: multiple API requests arrive concurrently for the same project
+
+                  When: the cache is populated
+
+                  Then: all requests are served from the same cached data without
+              blocking on each other or triggering redundant loads
+
+                [ac-reload-dedup]
+                  Given: multiple file changes arrive within a short window
+
+                  When: the cache processes the invalidation events
+
+                  Then: only a single reload is performed for each affected data domain,
+              not one per file change event
+
+                [ac-graceful-degradation]
+                  Given: the cache encounters an error loading entity data
+
+                  When: an API request arrives
+
+                  Then: the request falls back to direct file reading and the error is
+              logged, rather than failing the request entirely
+
+                [ac-project-isolation]
+                  Given: multiple projects are registered with the daemon
+
+                  When: one project's cache is invalidated
+
+                  Then: other projects' cached data is not affected or reloaded
+
+                [ac-unregister-cleanup]
+                  Given: a project is unregistered from the daemon
+
+                  When: the project context is removed
+
+                  Then: all cached data for that project is released from memory
+
+                [ac-session-bounded-index]
+                  Given: a project has more sessions than the configured retention window
+
+                  When: the session index is loaded or refreshed
+
+                  Then: only the most recent sessions (up to the configured limit) are
+              retained in the index; older sessions are accessible on demand
+
+              but not held in the cache
+
+                [ac-session-stale-exclusion]
+                  Given: a session has active status but exceeds the stale session
+              criteria (age and inactivity thresholds)
+
+                  When: the session index is loaded or refreshed
+
+                  Then: the session is not treated as active in the cached index
+
+                [ac-warming-availability]
+                  Given: a project is registered and cache loading is in progress
+
+                  When: an API request arrives before loading completes
+
+                  Then: the request receives a response indicating the data is still
+              loading rather than blocking until the full cache is ready
+
+                [ac-progressive-loading]
+                  Given: a project begins cache loading on registration
+
+                  When: high-priority data domains finish loading before others
+
+                  Then: requests for loaded domains are served from cache immediately
+              while remaining domains continue loading, Review entity cache tiered storage and
+              watcher invalidation
+
+              ────────────────────────────────────────
+
+              ULID:         01KMPPDE0TZX8KPXY0B1CBBHY5
+
+              Lifecycle:    closed
+
+              Disposition:  changes_requested
+
+              Gate:         passing
+
+              Subject:      task: @01KMMB3T2K3T6A1CJR884EPKJF
+
+              Author:       @claude
+
+              Examined:     50e673a272bd2a8a1c4abd98c41643c3747a39e0
+
+              Created:      2026-03-27T03:46:39.770Z (33 minutes ago)
+
+              Updated:      2026-03-27T04:12:46.778Z (7 minutes ago)
+
+
+              ─── Threads (0 unresolved, 0 blockers) ───
+                ✓ [blocker] packages/daemon/src/middleware/project-context.ts:77 (2 entries)
+                  @claude: The startup project is registered here without ever running , but cache creat...
+                ✓ [blocker] packages/daemon/src/routes/tasks.ts:441 (2 entries)
+                  @claude: These status mutations rewrite the linked spec item via , but the cache write...
+                ✓ [blocker] packages/daemon/src/routes/refs.ts:41 (2 entries)
+                  @claude: This endpoint ignores the new loading contract. For any domain that is not , ...
+                ✓ [question] (1 entries)
+                  @claude: Evidence log: files read included src/daemon/entity-cache.ts, packages/daemon...
+
+              ─── Checks ───
+                ✓ npm test (required) — pass
+                ✓ kspec validate (optional) — pass
+                ✓ AC annotations (optional) — pass
+
+              ─── Verdicts ───
+                codex (reviewer): request_changes — 25 minutes ago
+
+              ─── Events (18) ───
+                check_added by @claude — 25 minutes ago
+                verdict_submitted by codex — 25 minutes ago
+                lifecycle_change by codex — 25 minutes ago
+                thread_replied by @claude — 8 minutes ago
+                thread_resolved by @claude — 8 minutes ago
+                thread_replied by @claude — 8 minutes ago
+                thread_resolved by @claude — 8 minutes ago
+                thread_replied by @claude — 8 minutes ago
+                thread_resolved by @claude — 8 minutes ago
+                thread_resolved by @claude — 7 minutes ago
+                ... and 8 more, ✓ Validation passed
+              ────────────────────────────────────────
+
+              Files checked: 10
+
+              Items checked: 567
+
+              Tasks checked: 0
+
+              Meta: 10 agents, 11 workflows, 10 conventions
+
+
+              Schema: OK
+
+              References: OK
+
+
+              Reference warnings: 1
+                ⚠ @skills
+                  Orphaned skill directory 'skills' has no corresponding meta entry
+                  in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+              Alignment warnings: 34
+                Orphaned specs (no tasks): 30
+                  ○ Test Trait
+                  ○ Filterable List Commands
+                  ○ Dry Run Preview Mode
+                  ... and 27 more
+                Status mismatches: 4
+                  ! Task Set Batch Support
+                    Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+                  ! Lazy Shadow Sync on Reads
+                    Spec "Lazy Shadow Sync on Reads" status is "implemented" but should be "in_progress" based on task progress
+                  ! Session Summary Cache
+                    Spec "Session Summary Cache" status is "implemented" but should be "in_progress" based on task progress
+                  ! Multi-Directory Daemon Architecture
+                    Spec "Multi-Directory Daemon Architecture" status is "implemented" but should be "in_progress" based on task progress
+
+              Alignment stats: 404/567 specs have tasks, 400 aligned
+
+
+              Completeness warnings: 485
+                Missing acceptance criteria: 1
+                  ○ @01KJN1WT - Test Trait
+                Missing own AC coverage: 232
+                  ! @spec-item - Spec Item
+                    Uncovered: ac-item-1, ac-item-2
+                  ! @ulid-system - ULID Identifier System
+                    Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+                  ! @slug-system - Slug Alias System
+                    Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+                  ... and 229 more
+                Invalid AC annotations: 252
+                  ! AC annotation references '@slug' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-entity-cache-impl-01kmmb3t-review/tests/ac-annotation-validation.test.ts:6
+                  ! AC annotation references '@my-spec' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-entity-cache-impl-01kmmb3t-review/tests/ac-annotation-validation.test.ts:84
+                  ! AC annotation references '@my-spec' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-entity-cache-impl-01kmmb3t-review/tests/ac-annotation-validation.test.ts:87
+                  ! AC annotation references '@spec-a' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-entity-cache-impl-01kmmb3t-review/tests/ac-annotation-validation.test.ts:114
+                  ! AC annotation references '@spec-b' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-entity-cache-impl-01kmmb3t-review/tests/ac-annotation-validation.test.ts:118
+                  ... and 247 more
+              Skills: OK (10 files checked), tests/daemon-entity-cache.test.ts:49:    // AC:
+              @daemon-entity-cache ac-granular-reload
+
+              tests/daemon-entity-cache.test.ts:86:    // AC: @daemon-entity-cache
+              ac-watcher-invalidation
+
+              tests/daemon-entity-cache.test.ts:104:  // AC: @daemon-entity-cache
+              ac-load-on-register
+
+              tests/daemon-entity-cache.test.ts:140:  // AC: @daemon-entity-cache
+              ac-serve-from-memory
+
+              tests/daemon-entity-cache.test.ts:169:  // AC: @daemon-entity-cache
+              ac-detail-on-demand
+
+              tests/daemon-entity-cache.test.ts:329:  // AC: @daemon-entity-cache
+              ac-watcher-invalidation
+
+              tests/daemon-entity-cache.test.ts:446:  // AC: @daemon-entity-cache ac-granular-reload
+
+              tests/daemon-entity-cache.test.ts:483:  // AC: @daemon-entity-cache ac-write-through
+
+              tests/daemon-entity-cache.test.ts:542:  // AC: @daemon-entity-cache
+              ac-concurrent-reads
+
+              tests/daemon-entity-cache.test.ts:564:  // AC: @daemon-entity-cache ac-reload-dedup
+
+              tests/daemon-entity-cache.test.ts:600:  // AC: @daemon-entity-cache
+              ac-graceful-degradation
+
+              tests/daemon-entity-cache.test.ts:660:  // AC: @daemon-entity-cache
+              ac-project-isolation
+
+              tests/daemon-entity-cache.test.ts:709:  // AC: @daemon-entity-cache
+              ac-unregister-cleanup
+
+              tests/daemon-entity-cache.test.ts:761:  // AC: @daemon-entity-cache
+              ac-session-bounded-index
+
+              tests/daemon-entity-cache.test.ts:803:  // AC: @daemon-entity-cache
+              ac-session-stale-exclusion
+
+              tests/daemon-entity-cache.test.ts:862:  // AC: @daemon-entity-cache
+              ac-warming-availability
+
+              tests/daemon-entity-cache.test.ts:904:  // AC: @daemon-entity-cache
+              ac-progressive-loading
+
+              tests/daemon-entity-cache.test.ts:1006:  // AC: @daemon-entity-cache
+              ac-serve-from-memory
+
+              tests/daemon-entity-cache.test.ts:1047:  // AC: @daemon-entity-cache ac-write-through
+
+              tests/daemon-entity-cache.test.ts:1091:  // AC: @daemon-entity-cache
+              ac-warming-availability
+
+              tests/daemon-entity-cache.test.ts:1128:  // AC: @daemon-entity-cache
+              ac-graceful-degradation
+
+              tests/daemon-entity-cache.test.ts:1168:  // AC: @daemon-entity-cache
+              ac-detail-on-demand
+
+              tests/daemon-entity-cache.test.ts:1210:  // AC: @daemon-entity-cache ac-write-through
+
+              tests/daemon-entity-cache.test.ts:1246:  // AC: @daemon-entity-cache
+              ac-warming-availability, targeted  searches for cache wiring, and full 
+
+              > @kynetic-ai/spec@0.12.0 test
+
+              > node scripts/test.cjs (6907 passed, 5 skipped, 0 failed). Categories checked:
+              correctness, cache invalidation/loading semantics, edge cases around warmup and
+              write-through, test quality/coverage, and collateral test-runner changes.
+            created_at: 2026-03-27T04:20:40.620Z
+        kind: question
     verdicts: []
     created_at: 2026-03-27T04:15:51.416Z
-    updated_at: 2026-03-27T04:20:35.456Z
+    updated_at: 2026-03-27T04:20:40.620Z
     notes: []
