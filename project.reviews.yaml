@@ -63540,6 +63540,42 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-27T09:26:12.128Z
+      - _ulid: 01KMQXB7XEA4C2W45RD4YB60B1
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMQ9T71G99CGX2NNDKTS2GPG
+        timestamp: 2026-03-27T15:07:02.446Z
+      - _ulid: 01KMQXB964MH4C152C88EA7ST5
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMQ9T71G99CGX2NNDKTS2GPG
+        timestamp: 2026-03-27T15:07:03.748Z
+      - _ulid: 01KMQXBAE8A1CFG3KA69XP5S3Q
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMQ9V30463A1370Y8F5P1XD6
+        timestamp: 2026-03-27T15:07:05.032Z
+      - _ulid: 01KMQXBBP2V4C7THYSX8SRJJ5H
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMQ9V30463A1370Y8F5P1XD6
+        timestamp: 2026-03-27T15:07:06.306Z
+      - _ulid: 01KMQXBCXZTW8TP46WDSXCNMZW
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMQ9TNC8NX1Y0N5Y8V4QG3N2
+        timestamp: 2026-03-27T15:07:07.583Z
+      - _ulid: 01KMQXBE6204XN4XPQWWRP0P43
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMQ9TNC8NX1Y0N5Y8V4QG3N2
+        timestamp: 2026-03-27T15:07:08.867Z
     examined_commit: 23ae3945faffc641ec39da1c46e99a7064bb2e4f
     external_links: []
     lifecycle_state: closed
@@ -63569,7 +63605,17 @@ reviews:
               only the second invalidation reloads the domain. This violates the intended
               write-through recovery path for /."
             created_at: 2026-03-27T09:25:41.552Z
+          - _ulid: 01KMQXB7DXFX5G8NF2NJSQP3P1
+            author: "@claude"
+            body: "Fixed: writeThrough() now checks domain state after loadDomain() — only marks
+              writeThroughSkip when state is ready. When degraded, the skip flag is not set and the
+              next watcher invalidation proceeds normally, allowing recovery. Added regression test
+              that mocks initContext to throw, verifying the domain degrades and the subsequent
+              invalidation is NOT suppressed."
+            created_at: 2026-03-27T15:07:01.949Z
         kind: blocker
+        resolved_at: 2026-03-27T15:07:03.237Z
+        resolved_by: "@claude"
       - _ulid: 01KMQ9TNC8NX1Y0N5Y8V4QG3N2
         entries:
           - _ulid: 01KMQ9TNC88H7RE3BFFA7VBKW7
@@ -63584,7 +63630,13 @@ reviews:
               Categories searched: correctness, cache invalidation, graceful degradation, warmup
               behavior, integration, and test quality."
             created_at: 2026-03-27T09:25:56.232Z
+          - _ulid: 01KMQXBCE4XXZZZR5MBZMWKH8T
+            author: "@claude"
+            body: Acknowledged — evidence log nit noted.
+            created_at: 2026-03-27T15:07:07.076Z
         kind: nit
+        resolved_at: 2026-03-27T15:07:08.367Z
+        resolved_by: "@claude"
       - _ulid: 01KMQ9V30463A1370Y8F5P1XD6
         anchor:
           type: code
@@ -63605,7 +63657,15 @@ reviews:
               second invalidation reloaded the domain. That breaks the intended recovery path for
               ac-write-through and ac-graceful-degradation.'
             created_at: 2026-03-27T09:26:10.180Z
+          - _ulid: 01KMQXB9YKMDW51JT098Z52JAA
+            author: "@claude"
+            body: 'Fixed: same root cause as thread 1 — writeThrough() now conditionally sets the skip flag only
+              when the domain transitions to ready after loadDomain(). The 2-line fix wraps
+              markWriteThrough() in an if (this.getStore(domain).state === "ready") check.'
+            created_at: 2026-03-27T15:07:04.531Z
         kind: blocker
+        resolved_at: 2026-03-27T15:07:05.800Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -63615,5 +63675,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T09:26:12.128Z
     created_at: 2026-03-27T09:24:56.894Z
-    updated_at: 2026-03-27T09:26:12.128Z
+    updated_at: 2026-03-27T15:07:08.367Z
     notes: []
