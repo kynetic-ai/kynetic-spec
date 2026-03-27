@@ -9182,16 +9182,6 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T22:08:14.651Z
-  - _ulid: 01KMRPK6GGC5TH85N8W8G7X740
-    type: friction
-    content: Reviewer merge flow breaks in detached review snapshots when the integration branch is
-      already checked out in another worktree. The current merge instructions assume reviewers can ,
-      but git refuses because dev is already in use. Reviewers then need an ad hoc  workaround. This
-      should be handled explicitly by the merge workflow or dispatch tooling.
-    author: codex
-    resolution: null
-    resolved: false
-    created_at: 2026-03-27T22:28:17.553Z
   - _ulid: 01KMRPKQE31EX8SSMYTAT9PYZZ
     type: success
     content: During review, delegating the full npm test gate to an awaiter while continuing targeted
