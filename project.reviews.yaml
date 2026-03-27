@@ -61887,9 +61887,25 @@ reviews:
           kind: blocker
           thread_ulid: 01KMQ14SHVV5NCR81QHQVZFHTB
         timestamp: 2026-03-27T06:54:11.630Z
+      - _ulid: 01KMQ14Y1QDPHRD4EZRS0ZXXEZ
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-27T06:54:15.607Z
+      - _ulid: 01KMQ14Y1Q3XCJ796ZQSDXS2TT
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-27T06:54:15.607Z
     examined_commit: 18d250b7b7c6d5fc7cf96a9ca0ec8afbeb671e1c
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -61973,7 +61989,14 @@ reviews:
               loading fallback as the list route.'
             created_at: 2026-03-27T06:54:11.003Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-27T06:54:15.607Z
     created_at: 2026-03-27T06:46:19.059Z
-    updated_at: 2026-03-27T06:54:11.003Z
+    updated_at: 2026-03-27T06:54:15.607Z
     notes: []
