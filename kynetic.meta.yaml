@@ -8816,6 +8816,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T16:15:42.747Z
+  - _ulid: 01KMR1986W1AKF88E3JEWQEJZM
+    type: success
+    content: "Daemon command API: reusing existing batch infrastructure (OutputCapture, exit
+      interceptor, buildCommandArgv, resetCommandTree) from batch-exec.ts/batch-context.ts for
+      in-process CLI execution gave response parity with direct CLI for free. The withProjectDir
+      pattern (temporary process.chdir) cleanly bridges daemon's project-context middleware with
+      CLI's process.cwd()-based initContext."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T16:15:51.517Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
