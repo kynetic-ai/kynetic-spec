@@ -16,3 +16,22 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T18:34:42.748Z
+  - _ulid: 01KMRD17PKCPKG65TFYWZ3P70A
+    content: >-
+      Fix cycle 1: addressed both blockers from review @01KMR8X53JFERSYMXE6C3AMQFR.
+
+
+      Blocker 1 (daemon initContext drift-check on cache miss): Added optional { syncMode }
+      parameter to initContext(). All 13 daemon read route files updated to pass { syncMode: "skip"
+      } on cache-miss/degraded fallback paths. POST/mutation routes unchanged.
+
+
+      Blocker 2 (test coverage): Added 4 behavioral tests — 2 in shadow-drift-check.test.ts proving
+      the initContext syncMode override mechanism, 2 in daemon-cache-route-coverage.test.ts proving
+      daemon routes pass syncMode "skip" on cache miss.
+
+
+      All ACs re-verified. 6949 tests pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T19:41:11.763Z
