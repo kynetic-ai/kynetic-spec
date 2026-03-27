@@ -93,6 +93,22 @@ describe("ProjectEntityCache", () => {
       expect(fileToDomain("01TASKA0000000000000000000/events.jsonl")).toEqual(["sessions"]);
     });
 
+    // AC: @daemon-entity-cache ac-watcher-invalidation
+    it("should map non-ULID session paths to sessions domain when source is sessions", () => {
+      // Session IDs can be arbitrary strings (not just ULIDs). When the source
+      // is "sessions" (path is relative to .kspec-sessions/), any path maps to sessions.
+      expect(fileToDomain("session-123", "sessions")).toEqual(["sessions"]);
+      expect(fileToDomain("session-123/events.jsonl", "sessions")).toEqual(["sessions"]);
+      expect(fileToDomain("my-test-session/metadata.json", "sessions")).toEqual(["sessions"]);
+    });
+
+    it("should NOT map non-ULID session paths without source hint", () => {
+      // Without the source hint, non-ULID bare directory names don't match sessions
+      // (they fall through to the catch-all or return null)
+      expect(fileToDomain("session-123")).toBeNull();
+      expect(fileToDomain("session-123/events.jsonl")).toBeNull();
+    });
+
     it("should return null for unmapped files", () => {
       expect(fileToDomain("random.txt")).toBeNull();
       expect(fileToDomain("notes/something.md")).toBeNull();
@@ -436,6 +452,27 @@ describe("ProjectEntityCache", () => {
       await cache.handleFileChange(sessionsDir, sessionPath);
 
       // Sessions domain should have been reloaded (new array reference)
+      const after = cache.getSessionIndex();
+      expect(after).not.toBe(before);
+    });
+
+    // AC: @daemon-entity-cache ac-watcher-invalidation
+    it("should invalidate sessions domain for non-ULID session paths", async () => {
+      // Session IDs in this codebase are plain strings (SessionMetadataSchema uses z.string()).
+      // SessionWatcher broadcasts the session root directory name verbatim, so for a
+      // non-ULID path like 'session-123/events.jsonl', handleFileChange must still
+      // invalidate the sessions domain.
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("sessions");
+
+      const before = cache.getSessionIndex();
+      expect(before).not.toBeNull();
+
+      const sessionsDir = join(projectA, ".kspec-sessions");
+      const sessionPath = join(sessionsDir, "session-123", "events.jsonl");
+      await cache.handleFileChange(sessionsDir, sessionPath);
+
+      // Sessions domain should have been reloaded
       const after = cache.getSessionIndex();
       expect(after).not.toBe(before);
     });

@@ -268,7 +268,7 @@ interface DomainStore<TIndex, TDetail = unknown> {
  *
  * AC: @daemon-entity-cache ac-granular-reload
  */
-export function fileToDomain(relativePath: string): CacheDomain[] | null {
+export function fileToDomain(relativePath: string, source?: "kspec" | "sessions"): CacheDomain[] | null {
   const domains: CacheDomain[] = [];
 
   // Task files — both monolith (project.tasks.yaml, *.tasks.yaml, tasks.yaml) and
@@ -323,12 +323,21 @@ export function fileToDomain(relativePath: string): CacheDomain[] | null {
   }
 
   // Session files — when handleFileChange is called with sessionsDir as
-  // the base, the relative path is a bare ULID (session root from
-  // SessionWatcher.getBroadcastPath) or ULID/filename (e.g. metadata.json,
-  // events.jsonl). Match the leading ULID segment (26 Crockford base32 chars).
-  const firstSegment = relativePath.split("/")[0];
-  if (firstSegment && /^[0-9A-HJKMNP-TV-Z]{26}$/i.test(firstSegment)) {
+  // the base, the relative path is a bare session ID (session root from
+  // SessionWatcher.getBroadcastPath) or sessionId/filename (e.g. metadata.json,
+  // events.jsonl). Session IDs can be any string (ULIDs, plain strings like
+  // "session-123", etc.) so we cannot match by ID shape alone. The `source`
+  // parameter in fileToDomain() disambiguates — when source is "sessions",
+  // ALL paths map to the sessions domain.
+  // (Legacy: also match ULID-shaped segments for backward compatibility with
+  // callers that don't pass source="sessions".)
+  if (source === "sessions") {
     domains.push("sessions");
+  } else {
+    const firstSegment = relativePath.split("/")[0];
+    if (firstSegment && /^[0-9A-HJKMNP-TV-Z]{26}$/i.test(firstSegment)) {
+      domains.push("sessions");
+    }
   }
 
   // Catch-all: any .yaml file not already matched should conservatively
@@ -933,7 +942,11 @@ export class ProjectEntityCache {
     if (this.disposed) return;
 
     const relativePath = relative(kspecDir, filePath);
-    const domains = fileToDomain(relativePath);
+    // Detect whether this change came from the sessions directory (.kspec-sessions/)
+    // or the spec directory (.kspec/). Session IDs can be arbitrary strings (not just
+    // ULIDs), so we pass a source hint to fileToDomain for correct domain mapping.
+    const source = kspecDir.endsWith(".kspec-sessions") ? "sessions" as const : "kspec" as const;
+    const domains = fileToDomain(relativePath, source);
     if (domains) {
       await Promise.all(domains.map((d) => this.invalidateDomain(d)));
     }

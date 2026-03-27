@@ -497,6 +497,8 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
 
         // AC: @daemon-entity-cache ac-serve-from-memory — resolve session ID from cache when
         // available to avoid disk scan; fall back to disk-based resolution otherwise.
+        // AC: @daemon-entity-cache ac-session-bounded-index — the index only keeps N most recent
+        // sessions, so a cache miss must fall back to disk to find older sessions by ID.
         let resolution: SessionIdResolution;
         if (sessionsDomainReady) {
           const index = entityCache!.getSessionIndex();
@@ -513,7 +515,9 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
               } else if (matches.length > 1) {
                 resolution = { ok: false, error: "ambiguous", matches };
               } else {
-                resolution = { ok: false, error: "not_found" };
+                // Not in bounded index — fall back to disk to find sessions outside
+                // the retained window (older sessions still accessible by ID on demand)
+                resolution = await resolveSessionId(sessionsDir, params.id);
               }
             }
           } else {
