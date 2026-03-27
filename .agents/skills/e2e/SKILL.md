@@ -36,7 +36,7 @@ The `test-base.ts` fixture creates a completely isolated environment per test:
 5. Create fake shadow worktree structure:
    - .git/worktrees/-kspec/ directory
    - .kspec/.git file with "gitdir:" pointer
-6. Start daemon: kspec serve start --daemon --port 3456
+6. Start daemon: kspec serve start --detach --port 3456
 7. Set WEB_UI_DIR for static serving
 8. Wait 2 seconds for daemon readiness
 9. Provide isolated fixture to test

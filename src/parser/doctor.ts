@@ -437,7 +437,7 @@ function buildDaemonSection(section: DaemonSection, status: DaemonStatus): void 
       name: "daemon-running",
       severity: "warning",
       message: "Daemon not running",
-      guidance: "Run `kspec serve start --daemon` to start the daemon (optional)",
+      guidance: "Run `kspec serve start --detach` to start the daemon (optional)",
     });
     return;
   }
