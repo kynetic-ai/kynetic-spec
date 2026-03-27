@@ -250,3 +250,13 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T20:02:55.759Z
+  - _ulid: 01KMREY6GTKWQTET5BDW112MWY
+    content: "Fix cycle 8: Addressed blocker — MUTATION_AFFECTED_DOMAINS missing 'sessions' domain.
+      Session-mutating commands (session create/migrate/compact/stale close) would not trigger
+      writeThrough('sessions'), leaving the sessions cache stale until the watcher caught up. Added
+      'sessions' to the domain list and a regression test verifying all 8 CacheDomain values are
+      written through after both single-command and batch mutations. All 6969 tests pass (1944
+      suites), 5 pre-existing skips, no regressions. Re-verified all 5 spec ACs."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T20:14:29.402Z
