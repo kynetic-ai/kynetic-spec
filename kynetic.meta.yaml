@@ -8557,6 +8557,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T04:15:07.996Z
+  - _ulid: 01KMPRFB05K2C329MK03ZV85SJ
+    type: friction
+    content: Review comment capture is still shell-fragile for multiline/code-heavy bodies. In this
+      session, kspec review comment --body with backticks and inline code triggered bash
+      interpolation errors and produced duplicate/garbled threads before succeeding via heredoc.
+      Consider a first-class --body-file option or stronger CLI guidance/defaults for file payloads
+      on review comment/reply commands.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T04:22:39.366Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
