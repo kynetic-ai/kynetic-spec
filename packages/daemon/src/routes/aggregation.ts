@@ -107,6 +107,21 @@ export function createAggregationRoutes(_options: AggregationRouteOptions = {}) 
         const tasksDomainState = cache?.getDomainState("tasks");
         const itemsDomainState = cache?.getDomainState("items");
 
+        // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
+        if (cache && (tasksDomainState === "loading" || itemsDomainState === "loading")) {
+          return {
+            stats: { totalSpecs: 0, specsWithTasks: 0, alignedSpecs: 0, orphanedSpecs: 0 },
+            warnings: [],
+            entity_counts: { items: 0, tasks: 0, traits: 0 },
+            ac_counts: { total: 0, covered: 0, uncovered: 0 },
+            orphan_count: 0,
+            valid: true,
+            error_count: 0,
+            warning_count: 0,
+            _cache_status: "loading" as const,
+          };
+        }
+
         // Resolve tasks and items from cache when available
         // AC: @daemon-read-path ac-index-from-cache — indexes built from cached data
         let tasks: LoadedTask[];

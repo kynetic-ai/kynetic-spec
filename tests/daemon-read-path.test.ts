@@ -712,6 +712,7 @@ describe("ac-no-per-request-sync: read routes serve from cache without git opera
         "/api/aggregation/tasks/summary",
         "/api/aggregation/inbox",
         `/api/search?q=Read+Path`,
+        "/api/alignment",
         "/api/meta/agents",
         "/api/meta/workflows",
         "/api/meta/conventions",
@@ -729,6 +730,66 @@ describe("ac-no-per-request-sync: read routes serve from cache without git opera
       }
 
       // None of the git-backed helpers should have been called
+      expect(initContextSpy).not.toHaveBeenCalled();
+      expect(getShadowStatusSpy).not.toHaveBeenCalled();
+      expect(hasRemoteTrackingSpy).not.toHaveBeenCalled();
+    } finally {
+      initContextSpy.mockRestore();
+      getShadowStatusSpy.mockRestore();
+      hasRemoteTrackingSpy.mockRestore();
+    }
+  });
+
+  // AC: @daemon-read-path ac-no-per-request-sync
+  // Verify that routes which had warmup fallback bugs now return loading responses
+  // instead of falling through to initContext() + disk reads during cache warmup.
+  it("routes return loading response during cache warmup instead of falling through to disk", async () => {
+    // Create a "loading" cache where all domains are in warmup state
+    const loadingCache: RouteEntityCache = {
+      ...warmCache,
+      getDomainState: () => "loading",
+    };
+    const getLoadingCache: EntityCacheAccessor = () => loadingCache;
+    const pubsub = new PubSubManager();
+    const { middleware } = projectContextMiddleware();
+
+    const loadingApp = new Elysia()
+      .use(middleware)
+      .use(createTasksRoutes({ pubsub, getEntityCache: getLoadingCache }))
+      .use(createItemsRoutes({ getEntityCache: getLoadingCache }))
+      .use(createAggregationRoutes({ getEntityCache: getLoadingCache }))
+      .use(createValidationRoutes({ getEntityCache: getLoadingCache }))
+      .use(createInboxRoutes({ pubsub, getEntityCache: getLoadingCache }))
+      .use(createRefsRoutes({ getEntityCache: getLoadingCache }))
+      .use(createPlansRoutes({ getEntityCache: getLoadingCache }))
+      .use(createMetaRoutes({ getEntityCache: getLoadingCache }));
+
+    const initContextSpy = vi.spyOn(parserModule, "initContext");
+    const getShadowStatusSpy = vi.spyOn(shadowModule, "getShadowStatus");
+    const hasRemoteTrackingSpy = vi.spyOn(shadowModule, "hasRemoteTracking");
+
+    try {
+      // These routes previously fell through to initContext during warmup
+      const warmupRoutes = [
+        "/api/meta/config",
+        "/api/meta/shadow",
+        "/api/aggregation/validation",
+        "/api/alignment",
+        "/api/search?q=test",
+      ];
+
+      for (const route of warmupRoutes) {
+        const res = await loadingApp.handle(
+          new Request(`http://localhost${route}`, {
+            headers: { Host: "localhost", "X-Kspec-Dir": tempDir },
+          }),
+        );
+        expect(res.status, `${route} should return 200`).toBe(200);
+        const body = await res.json() as Record<string, unknown>;
+        expect(body._cache_status, `${route} should have _cache_status: loading`).toBe("loading");
+      }
+
+      // None of the git-backed helpers should have been called during warmup
       expect(initContextSpy).not.toHaveBeenCalled();
       expect(getShadowStatusSpy).not.toHaveBeenCalled();
       expect(hasRemoteTrackingSpy).not.toHaveBeenCalled();

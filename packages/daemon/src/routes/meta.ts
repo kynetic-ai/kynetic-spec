@@ -276,12 +276,17 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
         const cache = getEntityCache?.(projectContext.path);
         const metaDomainState = cache?.getDomainState("meta");
 
+        // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
+        if (cache && metaDomainState === "loading") {
+          return { project: null, spec_version: null, root_dir: null, remote_tracking: null, daemon: null, _cache_status: "loading" as const };
+        }
+
         if (cache && metaDomainState === "ready") {
           const cachedConfig = cache.getProjectConfig();
           if (cachedConfig) return cachedConfig;
         }
 
-        // Fallback: cache not ready or no cached config
+        // Fallback: cache not available at all (no entity cache configured)
         const ctx = await initContext(projectContext.path);
         const manifest = ctx.manifest;
         const config = ctx.config;
@@ -307,12 +312,17 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
         const cache = getEntityCache?.(projectContext.path);
         const metaDomainState = cache?.getDomainState("meta");
 
+        // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
+        if (cache && metaDomainState === "loading") {
+          return { enabled: false, branch_name: null, worktree_dir: null, healthy: false, remote_tracking: false, _cache_status: "loading" as const };
+        }
+
         if (cache && metaDomainState === "ready") {
           const cachedShadow = cache.getShadowInfo();
           if (cachedShadow) return cachedShadow;
         }
 
-        // Fallback: cache not ready or no cached shadow info
+        // Fallback: cache not available at all (no entity cache configured)
         const ctx = await initContext(projectContext.path);
 
         if (!ctx.shadow) {

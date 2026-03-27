@@ -46,6 +46,12 @@ export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
           const tasksDomainState = cache?.getDomainState("tasks");
           const itemsDomainState = cache?.getDomainState("items");
 
+          // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
+          // Check all domains that search touches: tasks, items, inbox, meta
+          if (cache && (tasksDomainState === "loading" || itemsDomainState === "loading")) {
+            return { results: [], total: 0, showing: 0, _cache_status: "loading" as const };
+          }
+
           let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
           const getCtx = async () => {
             if (!_ctx) _ctx = await initContext(projectContext.path);
@@ -131,7 +137,10 @@ export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
           if (!query.itemsOnly && !query.tasksOnly) {
             const inboxDomainState = cache?.getDomainState("inbox");
             let inboxItems;
-            if (cache && inboxDomainState === "ready") {
+            if (cache && inboxDomainState === "loading") {
+              // Skip inbox search during warmup — tasks/items already covered above
+              inboxItems = [];
+            } else if (cache && inboxDomainState === "ready") {
               inboxItems = cache.getInboxIndex() ?? [];
             } else {
               inboxItems = await loadInboxItems(await getCtx());
@@ -153,62 +162,67 @@ export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
           if (!query.itemsOnly && !query.tasksOnly) {
             const metaDomainState = cache?.getDomainState("meta");
             let metaCtx;
-            if (cache && metaDomainState === "ready") {
+            if (cache && metaDomainState === "loading") {
+              // Skip meta search during warmup — no disk reads
+              metaCtx = null;
+            } else if (cache && metaDomainState === "ready") {
               metaCtx = cache.getMetaDetail();
             }
-            if (!metaCtx) {
+            if (!metaCtx && !(cache && metaDomainState === "loading")) {
               metaCtx = await loadMetaContext(await getCtx());
             }
 
-            // Search observations
-            for (const observation of metaCtx.observations) {
-              const match = grepItem(observation as unknown as Record<string, unknown>, pattern);
-              if (match) {
-                results.push({
-                  type: "observation",
-                  ulid: observation._ulid,
-                  title: observation.content,
-                  matchedFields: match.matchedFields,
-                });
+            if (metaCtx) {
+              // Search observations
+              for (const observation of metaCtx.observations) {
+                const match = grepItem(observation as unknown as Record<string, unknown>, pattern);
+                if (match) {
+                  results.push({
+                    type: "observation",
+                    ulid: observation._ulid,
+                    title: observation.content,
+                    matchedFields: match.matchedFields,
+                  });
+                }
               }
-            }
 
-            // Search agents
-            for (const agent of metaCtx.agents) {
-              const match = grepItem(agent as unknown as Record<string, unknown>, pattern);
-              if (match) {
-                results.push({
-                  type: "agent",
-                  ulid: agent._ulid,
-                  title: `${agent.id} - ${agent.name}`,
-                  matchedFields: match.matchedFields,
-                });
+              // Search agents
+              for (const agent of metaCtx.agents) {
+                const match = grepItem(agent as unknown as Record<string, unknown>, pattern);
+                if (match) {
+                  results.push({
+                    type: "agent",
+                    ulid: agent._ulid,
+                    title: `${agent.id} - ${agent.name}`,
+                    matchedFields: match.matchedFields,
+                  });
+                }
               }
-            }
 
-            // Search workflows
-            for (const workflow of metaCtx.workflows) {
-              const match = grepItem(workflow as unknown as Record<string, unknown>, pattern);
-              if (match) {
-                results.push({
-                  type: "workflow",
-                  ulid: workflow._ulid,
-                  title: workflow.id,
-                  matchedFields: match.matchedFields,
-                });
+              // Search workflows
+              for (const workflow of metaCtx.workflows) {
+                const match = grepItem(workflow as unknown as Record<string, unknown>, pattern);
+                if (match) {
+                  results.push({
+                    type: "workflow",
+                    ulid: workflow._ulid,
+                    title: workflow.id,
+                    matchedFields: match.matchedFields,
+                  });
+                }
               }
-            }
 
-            // Search conventions
-            for (const convention of metaCtx.conventions) {
-              const match = grepItem(convention as unknown as Record<string, unknown>, pattern);
-              if (match) {
-                results.push({
-                  type: "convention",
-                  ulid: convention._ulid,
-                  title: convention.domain,
-                  matchedFields: match.matchedFields,
-                });
+              // Search conventions
+              for (const convention of metaCtx.conventions) {
+                const match = grepItem(convention as unknown as Record<string, unknown>, pattern);
+                if (match) {
+                  results.push({
+                    type: "convention",
+                    ulid: convention._ulid,
+                    title: convention.domain,
+                    matchedFields: match.matchedFields,
+                  });
+                }
               }
             }
           }
@@ -262,6 +276,15 @@ export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
         const cache = getEntityCache?.(projectContext.path);
         const tasksDomainState = cache?.getDomainState("tasks");
         const itemsDomainState = cache?.getDomainState("items");
+
+        // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
+        if (cache && (tasksDomainState === "loading" || itemsDomainState === "loading")) {
+          return {
+            stats: { totalSpecs: 0, specsWithTasks: 0, alignedSpecs: 0, orphanedSpecs: 0 },
+            warnings: [],
+            _cache_status: "loading" as const,
+          };
+        }
 
         // Resolve tasks and items from cache when available
         // AC: @daemon-read-path ac-index-from-cache — indexes built from cached data
