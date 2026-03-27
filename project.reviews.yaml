@@ -64463,6 +64463,17 @@ reviews:
         runner: npm
         created_at: 2026-03-27T16:53:06.904Z
         completed_at: 2026-03-27T16:53:06.904Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Fresh full-suite run passed: 1944/1944 suites, 6963 passed, 5 skipped, 6968 total. Log:
+          /tmp/kspec-test-cache/01KMR2YXYJF97MB7CT8GVWNM6Y/48e1c394c9eea07e.log"
+        name: npm test
+        required: true
+        runner: vitest
+        created_at: 2026-03-27T16:53:09.797Z
+        completed_at: 2026-03-27T16:53:09.797Z
     events:
       - _ulid: 01KMR301QH5PF7DHTMKVCS25FG
         actor: "@claude"
@@ -64505,6 +64516,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMR3DGMHKXJH9YW7FG33YBHB
         timestamp: 2026-03-27T16:53:08.838Z
+      - _ulid: 01KMR3DJFQ8MH8NHYB8ZX7B78D
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-27T16:53:10.263Z
     examined_commit: 1d8c9354ea2d08481c7c5647f54e7e13b1941074
     external_links: []
     lifecycle_state: open
@@ -65451,5 +65469,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-27T16:45:47.121Z
-    updated_at: 2026-03-27T16:53:08.369Z
+    updated_at: 2026-03-27T16:53:09.797Z
     notes: []
