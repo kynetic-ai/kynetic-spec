@@ -8275,6 +8275,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-26T23:38:52.602Z
+  - _ulid: 01KMP9GN847CGX93EX421SR1P8
+    type: friction
+    content: Dispatch review snapshots are detached worktrees, but the merge instructions still direct
+      reviewers to 'git checkout <integration-branch>' in the current workspace. In this session
+      that failed because 'dev' was already checked out in the main worktree, so the merge had to be
+      completed via git -C against the canonical dev worktree. The review/merge workflow should
+      either document this explicitly or provide a command that performs the manual merge against
+      the canonical target worktree without requiring branch checkout in the detached review
+      snapshot.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T00:01:13.988Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
