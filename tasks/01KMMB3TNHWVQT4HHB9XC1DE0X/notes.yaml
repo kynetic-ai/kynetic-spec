@@ -36,3 +36,46 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T15:27:56.823Z
+  - _ulid: 01KMQZXD6X6XYAA2TTA6HKYAH6
+    content: >-
+      Implementation complete. Changes:
+
+
+      1. ac-no-per-request-sync: Migrated aggregation /tasks/summary and /inbox routes to serve from
+      entity cache (task index, inbox index, triage index). Migrated validation /search route to
+      resolve tasks, items, inbox, and meta entities from cache. These routes no longer call
+      initContext() on the happy path.
+
+
+      2. ac-background-sync: Added onPull callback to ShadowSyncScheduler. Server.ts wires this to
+      call cache.loadAll() when background sync pulls new data. The onPull is invoked after
+      shadowPull() returns with pulled=true.
+
+
+      3. ac-index-from-cache: ReferenceIndex in /refs and task/item list routes already built from
+      cached data (from prior @task-entity-cache-impl work). Aggregation /tasks/summary now uses
+      cached TaskSummary[] for dependency analysis. Search route resolves items/tasks/inbox/meta
+      from cache.
+
+
+      4. ac-write-routes-sync: Write routes (inbox POST/DELETE, task mutations) already used
+      standard shadow branch commit + writeThrough pattern from prior work.
+
+
+      Notes on scope:
+
+      - /validate, /alignment, /aggregation/validation still use initContext() because validate()
+      performs deep schema/ref/completeness checks that require full context
+
+      - meta /session, /config, /shadow use initContext() because session context and shadow git
+      status are not cached in entity cache
+
+      - Added reasoning field to TriageIndexSummary so aggregation /inbox can serve triage data with
+      reasoning from the index tier
+
+
+      Test coverage: 17 new tests across all 4 ACs in tests/daemon-read-path.test.ts. All 307 test
+      files (6962 tests) pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T15:51:54.845Z
