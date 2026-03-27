@@ -59203,6 +59203,20 @@ reviews:
         runner: reviewer
         created_at: 2026-03-27T04:10:52.406Z
         completed_at: 2026-03-27T04:10:52.406Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite result: 1875/1876 suites passed, 1 failed. Failure is
+          tests/agent-dispatch-engine.test.ts transform error: duplicate mockMetadata declaration at
+          lines 2507/2532, and the same failure exists on dev base
+          bb256b0254c10f37cf90c9a36c5141f8367047e4. This is pre-existing and not introduced by this
+          diff, but the required suite is currently red."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-27T04:10:55.430Z
+        completed_at: 2026-03-27T04:10:55.430Z
     events:
       - _ulid: 01KMPQF47DN97QYKY9GY1JD0DE
         actor: "@claude"
@@ -59231,6 +59245,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMPQST2YM4S6Z2DSH3ZBYFJN
         timestamp: 2026-03-27T04:10:54.388Z
+      - _ulid: 01KMPQSW0NHP370N5X4T74M3CS
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-27T04:10:55.893Z
     examined_commit: eafcacde78aa643e00872fc8cc976521f34b3bed
     external_links: []
     lifecycle_state: open
@@ -59264,5 +59285,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-27T04:05:03.854Z
-    updated_at: 2026-03-27T04:10:53.918Z
+    updated_at: 2026-03-27T04:10:55.430Z
     notes: []
