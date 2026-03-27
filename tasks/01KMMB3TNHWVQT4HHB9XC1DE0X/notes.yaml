@@ -84,3 +84,14 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T15:59:29.763Z
+  - _ulid: 01KMR1ZRZJVBCR0Y5K1A703SBX
+    content: "Fix cycle 1: Addressed all 3 blocker threads from review @01KMR02NRPSMRV7MSE8E2EBV9E. (1)
+      aggregation.ts /api/aggregation/validation: Replaced buildIndexes(ctx) with cache-based
+      resolution. Tasks/items from entity cache, ReferenceIndex/AlignmentIndex built from cached
+      summaries. AC counting uses acceptance_criteria_count from ItemSummary. (2) validation.ts
+      /api/alignment: Same fix. (3) ac-background-sync tests: Replaced 3 shallow mock tests with 2
+      behavioral tests exercising real syncOnce() through git pull path. Added ac-index-from-cache
+      tests for aggregation/validation and alignment routes. All 6963 tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T16:28:09.586Z
