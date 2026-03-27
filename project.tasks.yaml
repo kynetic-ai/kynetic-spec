@@ -22534,7 +22534,7 @@
   type: task
   spec_ref: "@daemon-entity-cache"
   plan_ref: "@plan-daemon-optimistic-data-layer"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   priority: 1
@@ -22543,7 +22543,7 @@
     - implementation
     - cache
   review_ref: "@01KMPPDE0TZX8KPXY0B1CBBHY5"
-  notes_count: 27
+  notes_count: 28
   todos_count: 0
   created_at: 2026-03-26T05:50:41.235Z
   started_at: 2026-03-27T03:43:52.081Z
