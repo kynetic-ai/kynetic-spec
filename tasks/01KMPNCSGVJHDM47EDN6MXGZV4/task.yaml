@@ -27,7 +27,7 @@ description: >-
 spec_ref: "@automation-action-type-completeness"
 meta_ref: null
 plan_ref: null
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -37,6 +37,7 @@ tags:
   - agent-runtime
   - daemon
 vcs_refs: []
+session_id: 01KMPPCWQZQ7VB56KFMCPWJJZG
 history:
   - author: "@claude"
     changes:
@@ -52,6 +53,20 @@ history:
         previous: 3
     command: task-set
     timestamp: 2026-03-27T03:30:04.183Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KMPPCWQZQ7VB56KFMCPWJJZG
+        previous: null
+      started_at:
+        new: 2026-03-27T03:46:38.821Z
+        previous: null
+    command: task-start
+    timestamp: 2026-03-27T03:46:38.821Z
 created_at: 2026-03-27T03:28:50.203Z
+started_at: 2026-03-27T03:46:38.821Z
 todos: []
 automation: eligible
