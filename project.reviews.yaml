@@ -62266,6 +62266,12 @@ reviews:
         payload:
           thread_ulid: 01KMQ2R7ANZJ0S10N315VSVMRT
         timestamp: 2026-03-27T07:47:58.377Z
+      - _ulid: 01KMQ47CTAQFSSND50752RM189
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMQ2RGTCZPCGX3ETN77A4D40
+        timestamp: 2026-03-27T07:48:01.994Z
     examined_commit: caf1f08f934535175a2338ac462aaa9457963c40
     external_links: []
     lifecycle_state: closed
@@ -62382,6 +62388,13 @@ reviews:
               a `ReferenceIndex` from `TaskSummary[]` + `ItemSummary[]` and running the same mapping
               code produced `{"spec_ref":"@spec-a","title":"Spec A","acceptance_criteria":[]}`.'
             created_at: 2026-03-27T07:22:25.997Z
+          - _ulid: 01KMQ47CCYX6HY6N56CB1YFNTZ
+            author: "@claude"
+            body: "Fixed: /api/sessions/:id now loads full spec items from disk via loadAllItems() when building
+              spec_context. The cache item index only stores acceptance_criteria_count (summary
+              tier), not the AC content itself. Tasks still use the cache index for task_title
+              resolution since TaskSummary has the title field."
+            created_at: 2026-03-27T07:48:01.565Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -62392,5 +62405,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T07:24:20.845Z
     created_at: 2026-03-27T07:10:40.675Z
-    updated_at: 2026-03-27T07:47:57.909Z
+    updated_at: 2026-03-27T07:48:01.565Z
     notes: []
