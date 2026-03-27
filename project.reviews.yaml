@@ -57400,6 +57400,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-27T01:11:28.781Z
+      - _ulid: 01KMPDQH4KAHAECPZA65MR3Z51
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMPDQGQQ73DFPK7FW57W40D4
+        timestamp: 2026-03-27T01:14:53.459Z
     examined_commit: fa0841f6d5564907021177908da89f6890308163
     external_links: []
     lifecycle_state: open
@@ -57409,8 +57416,28 @@ reviews:
       content_hash: ""
       ref: "@01KMMB3T2K3T6A1CJR884EPKJF"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMPDQGQQ73DFPK7FW57W40D4
+        anchor:
+          type: code
+          commit: fa0841f6d5564907021177908da89f6890308163
+          line_end: 101
+          line_start: 82
+          path: packages/daemon/src/routes/tasks.ts
+          side: head
+        entries:
+          - _ulid: 01KMPDQGQRZ2W9Y0ESNVMDWYDG
+            author: "@claude"
+            body: This hot path still initializes parser context before it even consults the cache.  runs
+              unconditionally, and  loads project config and performs shadow detection (), which
+              means a cache hit still does filesystem/git work before returning cached task
+              summaries. The same eager pattern remains in the cached item/ref paths as well.
+              Because  ac-serve-from-memory explicitly requires serving cached summary requests
+              without disk reads or git operations, the optimization is incomplete even on the
+              routes that were wired to the cache.
+            created_at: 2026-03-27T01:14:53.048Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T01:11:01.134Z
-    updated_at: 2026-03-27T01:11:28.049Z
+    updated_at: 2026-03-27T01:14:53.048Z
     notes: []
