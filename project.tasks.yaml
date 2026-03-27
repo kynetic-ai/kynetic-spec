@@ -22791,7 +22791,7 @@
   slugs: []
   title: Extract setupShadowDetection() to shared test helpers
   type: task
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 3
@@ -22801,4 +22801,5 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-03-27T20:42:55.728Z
+  started_at: 2026-03-27T21:45:14.271Z
   automation: eligible
