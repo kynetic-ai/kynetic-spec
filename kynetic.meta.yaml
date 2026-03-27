@@ -8792,6 +8792,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T15:17:15.949Z
+  - _ulid: 01KMR00G60GAZWAHJP8JCX0C83
+    type: success
+    content: "The tiered entity cache architecture (index + detail tiers per domain) enables incremental
+      route migration. Each read route follows the same pattern: check getDomainState(), serve from
+      getXxxIndex(), fall back to initContext() on miss. The @task-migrate-read-routes work
+      demonstrated this — aggregation, validation/search, and background sync wiring were all
+      straightforward additions. The prior @task-entity-cache-impl investment in progressive
+      loading, domain-level debouncing, and write-through made the route migration a focused,
+      low-risk change."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T15:53:36.192Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
