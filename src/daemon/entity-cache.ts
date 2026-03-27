@@ -974,8 +974,12 @@ export class ProjectEntityCache {
    */
   async writeThrough(domain: CacheDomain): Promise<void> {
     await this.loadDomain(domain);
-    // Only suppress the next watcher invalidation when the reload succeeded
-    this.markWriteThrough(domain);
+    // Only suppress the next watcher invalidation when the reload succeeded —
+    // if the domain degraded, the watcher must still fire so a subsequent
+    // file-change event can recover the domain.
+    if (this.getStore(domain).state === "ready") {
+      this.markWriteThrough(domain);
+    }
   }
 
   // ─── Lifecycle ───────────────────────────────────────────────────────────
