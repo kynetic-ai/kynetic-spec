@@ -83,11 +83,11 @@ description: |
 spec_ref: "@daemon-entity-cache"
 plan_ref: "@plan-daemon-optimistic-data-layer"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
-closed_reason: Reviewed and approved in review @01KMQ98SHTMGGWMNVHESVPB9MJ. Merged
-  dispatch/task/task-entity-cache-impl/01kmmb3t into dev as 8c5552ff0, including a simple textual
-  merge-conflict resolution in tests/agent-dispatch-engine.test.ts.
+closed_reason: Merged to dev after review approval. writeThrough() now only sets watcher-skip when
+  reload leaves the domain ready, and regression coverage now proves failed writeThrough reloads
+  degrade without suppressing the next watcher recovery invalidation.
 depends_on: []
 context: []
 priority: 1
@@ -1521,10 +1521,27 @@ history:
         previous: "@01KMQ9RVDYD7AAVZETX8DWRGP9"
     command: review-link
     timestamp: 2026-03-27T15:10:28.408Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev after review approval. writeThrough() now only sets watcher-skip when reload
+          leaves the domain ready, and regression coverage now proves failed writeThrough reloads
+          degrade without suppressing the next watcher recovery invalidation.
+        previous: Reviewed and approved in review @01KMQ98SHTMGGWMNVHESVPB9MJ. Merged
+          dispatch/task/task-entity-cache-impl/01kmmb3t into dev as 8c5552ff0, including a simple
+          textual merge-conflict resolution in tests/agent-dispatch-engine.test.ts.
+      completed_at:
+        new: 2026-03-27T15:14:56.851Z
+        previous: 2026-03-27T09:23:26.671Z
+    command: task-complete
+    timestamp: 2026-03-27T15:14:56.882Z
 prior_status: null
 created_at: 2026-03-26T05:50:41.235Z
 started_at: 2026-03-27T14:20:27.309Z
 submitted_at: 2026-03-27T15:07:30.369Z
-completed_at: 2026-03-27T09:23:26.671Z
+completed_at: 2026-03-27T15:14:56.851Z
 todos: []
 automation: manual_only
