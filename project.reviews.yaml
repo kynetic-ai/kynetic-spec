@@ -59122,6 +59122,12 @@ reviews:
         payload:
           thread_ulid: 01KMPPVC3NYHP5TM8PNWBMDR2F
         timestamp: 2026-03-27T04:12:28.769Z
+      - _ulid: 01KMPQWT0G1AHMBGQBAETDCZNB
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMPPVC3NYHP5TM8PNWBMDR2F
+        timestamp: 2026-03-27T04:12:32.145Z
     examined_commit: 50e673a272bd2a8a1c4abd98c41643c3747a39e0
     external_links: []
     lifecycle_state: closed
@@ -59212,6 +59218,8 @@ reviews:
               graceful-degradation fallback."
             created_at: 2026-03-27T04:12:28.308Z
         kind: blocker
+        resolved_at: 2026-03-27T04:12:31.677Z
+        resolved_by: "@claude"
       - _ulid: 01KMPPW7V290ZPS0MTTZ73E8Q4
         entries:
           - _ulid: 01KMPPW7V28533FMQSGDM4HFN9
@@ -59236,7 +59244,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T03:54:59.662Z
     created_at: 2026-03-27T03:46:39.770Z
-    updated_at: 2026-03-27T04:12:28.308Z
+    updated_at: 2026-03-27T04:12:31.677Z
     notes: []
   - _ulid: 01KMPQF47ETXHB2NH8SPBWWDET
     slugs: []
