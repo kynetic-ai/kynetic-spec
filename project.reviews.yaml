@@ -56694,6 +56694,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMPB2YC012307XGJ8EFZPQQ6
         timestamp: 2026-03-27T00:28:42.141Z
+      - _ulid: 01KMPB300YN24C3W6VQ46W4R6E
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMPB2ZM8T6QXT63NNY7B5AY6
+        timestamp: 2026-03-27T00:28:43.422Z
     examined_commit: d805371098143a9c456e7100eb1f6680d754c198
     external_links: []
     lifecycle_state: open
@@ -56778,7 +56785,24 @@ reviews:
               bypass the unified cache too.
             created_at: 2026-03-27T00:28:41.728Z
         kind: blocker
+      - _ulid: 01KMPB2ZM8T6QXT63NNY7B5AY6
+        anchor:
+          type: code
+          commit: d805371098143a9c456e7100eb1f6680d754c198
+          line_end: 2533
+          line_start: 2501
+          path: tests/agent-dispatch-engine.test.ts
+          side: head
+        entries:
+          - _ulid: 01KMPB2ZM8927VDHC3E5Z3GYZV
+            author: "@claude"
+            body: The full test suite is red in this snapshot because this block declares mockMetadata twice in
+              the same scope. Vitest fails to transform tests/agent-dispatch-engine.test.ts with the
+              error The symbol mockMetadata has already been declared, so the task does not meet the
+              required full-suite gate.
+            created_at: 2026-03-27T00:28:43.016Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T00:23:31.552Z
-    updated_at: 2026-03-27T00:28:41.728Z
+    updated_at: 2026-03-27T00:28:43.016Z
     notes: []
