@@ -8568,6 +8568,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T04:22:39.366Z
+  - _ulid: 01KMPSWEAY0X82W3EY93ZY6M3E
+    type: success
+    content: "Lazy getCtx() pattern for daemon route cache integration: deferring initContext() via a
+      closure that only initializes on first call avoids disk/git work on cache-hit requests.
+      Pattern proven across all 8 route domains (tasks, items, sessions, meta, plans, reviews,
+      triage, inbox) over fix cycles 5-14. Key insight: the same pattern works for both list routes
+      (where it prevents any disk access) and detail routes (where cache hits skip initContext but
+      misses fall through to disk loading and cache-store)."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T04:47:17.342Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
