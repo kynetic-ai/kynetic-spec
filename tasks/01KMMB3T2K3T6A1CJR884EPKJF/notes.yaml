@@ -384,3 +384,14 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T02:55:49.756Z
+  - _ulid: 01KMPMJDNA944B70K4Z1XEB9MT
+    content: "Fix cycle 11: addressed 1 blocker — plans, reviews, and triage stored full records in the
+      index tier. Created PlanIndexSummary, ReviewIndexSummary, and TriageIndexSummary types that
+      strip heavy content fields (content, threads, checks, verdicts, events, notes, item_snapshot,
+      reasoning). Full records now populate the detail tier during domain loading. Review summaries
+      pre-compute disposition and thread/check/verdict counts at index load time. All detail routes
+      resolve refs via index then serve from detail tier with disk fallback. All 6900 tests pass, 1
+      pre-existing timeout in dispatch-runtime-bootstrap-contract."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T03:14:26.090Z
