@@ -463,3 +463,27 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T04:21:21.437Z
+  - _ulid: 01KMPSR8NCKDH28PKKZ6VPPGQ8
+    content: >-
+      Fix cycle 14: addressed 2 unique blockers from review cycle 13.
+
+
+      Blocker 1 (task/item detail routes call initContext() before cache check): Both routes now use
+      the lazy getCtx() pattern. initContext() is deferred and only called when the disk fallback
+      path is taken. Cache-hit detail requests skip all disk/git work entirely. The same pattern was
+      already proven on list routes in cycle 5.
+
+
+      Blocker 2 (sessions list route bypasses cache on hot reads): The sessions list route now
+      defers initContext() via lazy getCtx(). filterSessionSummaries() was updated to accept either
+      a lazy context factory or a pre-initialized context (backward compatible with the search
+      route). When the entity cache sessions domain is ready, session summaries are served from
+      memory. Ref-title resolution now uses cached tasks/items instead of loading from disk.
+
+
+      Re-verified all 15 ACs against implementation. Tests: 6882 passed, 5 skipped, 25 pre-existing
+      failures in unrelated suites (dispatch-workspace-config, native-guard-setup, activity-display,
+      etc.).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T04:45:00.460Z
