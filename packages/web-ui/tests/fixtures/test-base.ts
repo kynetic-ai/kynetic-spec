@@ -139,7 +139,7 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
       // Start daemon on ephemeral port with isolated HOME
       const startResult = spawnSync(
         "kspec",
-        ["serve", "start", "--daemon", "--port", String(port), "--kspec-dir", tempDir],
+        ["serve", "start", "--detach", "--port", String(port), "--kspec-dir", tempDir],
         {
           cwd: tempDir,
           encoding: "utf-8",
