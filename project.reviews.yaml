@@ -65643,9 +65643,25 @@ reviews:
           kind: nit
           thread_ulid: 01KMR4XN6HPETC8KR3VKS25XQF
         timestamp: 2026-03-27T17:19:26.478Z
+      - _ulid: 01KMR4XZCKK1DRF478KK1KMBYM
+        actor: codex@openai
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-27T17:19:36.340Z
+      - _ulid: 01KMR4XZCMJ6780MKTDCTGS3DM
+        actor: codex@openai
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-27T17:19:36.340Z
     examined_commit: 44f13a010b11295b83cf65d4fae6d6f8e07a7f01
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -65713,7 +65729,14 @@ reviews:
               (/api/meta/shadow) and one missing-proof test block for ac-no-per-request-sync."
             created_at: 2026-03-27T17:19:25.905Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai
+        role: reviewer
+        created_at: 2026-03-27T17:19:36.339Z
     created_at: 2026-03-27T17:13:06.141Z
-    updated_at: 2026-03-27T17:19:25.905Z
+    updated_at: 2026-03-27T17:19:36.340Z
     notes: []
