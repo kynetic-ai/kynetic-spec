@@ -70337,6 +70337,12 @@ reviews:
         payload:
           thread_ulid: 01KMRPZS6J9ETEBC1WC9QPFHQ2
         timestamp: 2026-03-27T22:36:00.931Z
+      - _ulid: 01KMRQ1CGE79MZBK2G19HKRPC2
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMRQ03V2FHX12VXPS40JQQKF
+        timestamp: 2026-03-27T22:36:02.446Z
     examined_commit: c3287fc736bce39629b1bdfda617808bd9ef55e0
     external_links: []
     lifecycle_state: open
@@ -71684,6 +71690,8 @@ reviews:
               findings in this metadata-only review).
             created_at: 2026-03-27T22:35:20.802Z
         kind: nit
+        resolved_at: 2026-03-27T22:36:01.961Z
+        resolved_by: "@claude"
       - _ulid: 01KMRQ07HTGFPBPC2DA0VZ2TS7
         anchor:
           type: structured
@@ -71732,5 +71740,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-27T22:31:05.065Z
-    updated_at: 2026-03-27T22:36:00.420Z
+    updated_at: 2026-03-27T22:36:01.961Z
     notes: []
