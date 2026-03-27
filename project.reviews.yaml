@@ -67573,6 +67573,12 @@ reviews:
         payload:
           thread_ulid: 01KMR8TACMYS0V9R86PTV3C50T
         timestamp: 2026-03-27T18:57:54.762Z
+      - _ulid: 01KMRAJ6FTQQE6N20Y5VG3XMWH
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMR8TACMYS0V9R86PTV3C50T
+        timestamp: 2026-03-27T18:58:01.850Z
     examined_commit: 0adaf3fd0098c94df0b16aab6e1c71fb966d7de8
     external_links: []
     lifecycle_state: closed
@@ -67616,6 +67622,8 @@ reviews:
               leakage.'
             created_at: 2026-03-27T18:57:54.227Z
         kind: blocker
+        resolved_at: 2026-03-27T18:58:01.348Z
+        resolved_by: "@claude"
       - _ulid: 01KMR8TDW1N4GG8F9F77N8Z908
         entries:
           - _ulid: 01KMR8TDW155AR0VGWTP106H6E
@@ -67644,7 +67652,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T18:27:50.974Z
     created_at: 2026-03-27T18:18:41.234Z
-    updated_at: 2026-03-27T18:57:54.227Z
+    updated_at: 2026-03-27T18:58:01.348Z
     notes: []
   - _ulid: 01KMR8X53JFERSYMXE6C3AMQFR
     slugs: []
