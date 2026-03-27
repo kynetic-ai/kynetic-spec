@@ -56995,6 +56995,13 @@ reviews:
           status: pass
           name: targeted prompt suppression tests
         timestamp: 2026-03-27T00:43:05.959Z
+      - _ulid: 01KMPBXBMHAS10YNBBXF088239
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMPBXB7TH7J0HGGV48D5NMJF
+        timestamp: 2026-03-27T00:43:07.282Z
     examined_commit: 1dee6a463dd7feeecf5354988107b287660b684e
     external_links: []
     lifecycle_state: open
@@ -57004,8 +57011,37 @@ reviews:
       content_hash: ""
       ref: "@01KMPAH4QK86PFPYAA2W7SQANC"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMPBXB7TH7J0HGGV48D5NMJF
+        entries:
+          - _ulid: 01KMPBXB7TJ6T5QYSVW94ZDSHJ
+            author: "@claude"
+            body: >-
+              Evidence log
+
+
+              Files read: src/agent-runtime/dispatch.ts, src/agent-runtime/workspace.ts,
+              src/parser/shadow.ts, src/parser/shadow-sync-scheduler.ts,
+              tests/git-terminal-prompt-suppression.test.ts, tests/agent-dispatch-engine.test.ts
+
+              Commands run: git diff --stat/base...head, git diff --unified=80 base...head, kspec
+              task get @01KMPAH4QK86PFPYAA2W7SQANC, kspec item get @dispatch-remote-branch-sync,
+              kspec validate, npm test, npm test -- --run
+              tests/git-terminal-prompt-suppression.test.ts, grep for AC annotations, rg for git
+              subprocess call sites, git show base:tests/agent-dispatch-engine.test.ts
+
+              Claims verified: verified the full-suite failure is pre-existing by comparing the same
+              duplicate mockMetadata declaration on base commit
+              10f03ef092b8d60326feb37c02c50dd45f5ed65a; verified the new regression test passes in
+              this snapshot; verified dispatch remote git calls route through buildDispatchGitEnv()
+              and shadow remote git calls route through buildShadowGitEnv()/runGitAsync()/spawn
+              wrappers.
+
+              Categories searched: correctness, edge cases, error handling, test quality,
+              integration. No task-specific blockers found.
+            created_at: 2026-03-27T00:43:06.874Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-27T00:38:07.590Z
-    updated_at: 2026-03-27T00:43:05.541Z
+    updated_at: 2026-03-27T00:43:06.874Z
     notes: []
