@@ -8929,6 +8929,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T18:18:02.763Z
+  - _ulid: 01KMR8TSNHCG6FMHQ9SQPB8SJ8
+    type: success
+    content: Spec-only tasks with clear scope (add AC, update description) complete efficiently in a
+      single pass — spec update via kspec batch, implementation verification via explore agent, AC
+      annotation, tests pass, submit. No code changes needed when implementation already aligns.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T18:27:46.482Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
