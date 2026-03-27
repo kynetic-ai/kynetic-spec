@@ -16389,7 +16389,7 @@ runs:
     completed_at: 2026-03-27T05:49:17.796Z
   - _ulid: 01KMPYZ8ZK0X94FJKB9TSXA2H0
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -16405,7 +16405,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-27T06:17:17.444Z
-        completed_at: 2026-03-27T06:17:17.444Z
+        completed_at: 2026-03-27T06:17:33.646Z
+        notes: "Searched existing observations, inbox, and task list. High-confidence friction: (1)
+          ReferenceIndex/AlignmentIndex constructors accept LoadedTask[]/LoadedSpecItem[] but only
+          use _ulid/slugs/spec_ref — forces unsafe 'as unknown as' casts when passing summary types
+          from cache. This is systemic (any cache-aware route that needs ref resolution hits it).
+          Not tracked. (2) Elysia error() helper returns undefined in test handle() context — all
+          route error-path tests get 500 instead of expected status. This affects
+          daemon-api-input-validation and the new cache-route-coverage tests. Not tracked."
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-27T06:17:33.646Z
+        completed_at: 2026-03-27T06:17:33.646Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-27T06:16:13.044Z
