@@ -65879,9 +65879,25 @@ reviews:
           kind: nit
           thread_ulid: 01KMR5H6YK49N0QA9J07886PNE
         timestamp: 2026-03-27T17:30:07.154Z
+      - _ulid: 01KMR5HQZ59ZAMM8GX4BHRZ0WE
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-27T17:30:24.101Z
+      - _ulid: 01KMR5HQZ5JWKYXFJNMM4E5KCX
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-27T17:30:24.101Z
     examined_commit: 16d50422a0766c15efda5c39d936c326782c3f50
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -66409,7 +66425,14 @@ reviews:
               concurrency/error-handling paths."
             created_at: 2026-03-27T17:30:06.676Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-27T17:30:24.101Z
     created_at: 2026-03-27T17:24:05.606Z
-    updated_at: 2026-03-27T17:30:06.676Z
+    updated_at: 2026-03-27T17:30:24.101Z
     notes: []
