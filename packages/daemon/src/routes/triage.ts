@@ -287,15 +287,36 @@ export function createTriageRoutes(options: TriageRouteOptions) {
 
       // GET single triage record
       // AC: @ui-api-ref-resolution ac-2 - Resolve evidence_refs titles
+      // AC: @daemon-entity-cache ac-detail-on-demand — serve from cache when available
       .get(
         "/:ref",
         async ({ params, error: errorResponse, projectContext }) => {
-          // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-          const ctx = await initContext(projectContext.path);
-          const records = await loadTriageRecords(ctx);
+          // AC: @daemon-entity-cache ac-serve-from-memory — defer initContext for cache hits
+          const cache = getEntityCache?.(projectContext.path);
+          let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
+          const getCtx = async () => {
+            if (!_ctx) _ctx = await initContext(projectContext.path);
+            return _ctx;
+          };
 
-          // AC: @trait-api-endpoint ac-2 - Resolve ref
-          const record = findTriageRecordByRef(records, params.ref);
+          const triageDomainState = cache?.getDomainState("triage");
+
+          // Try cache for triage record lookup
+          let record;
+          if (cache && triageDomainState === "ready") {
+            const cachedRecords = cache.getTriageIndex();
+            if (cachedRecords) {
+              record = findTriageRecordByRef(cachedRecords, params.ref);
+            }
+          }
+          if (!record) {
+            // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+            const ctx = await getCtx();
+            const records = await loadTriageRecords(ctx);
+            // AC: @trait-api-endpoint ac-2 - Resolve ref
+            record = findTriageRecordByRef(records, params.ref);
+          }
+
           if (!record) {
             return errorResponse(404, {
               error: "not_found",
@@ -308,9 +329,14 @@ export function createTriageRoutes(options: TriageRouteOptions) {
           // AC: @ui-api-ref-resolution ac-2 - Resolve evidence_refs
           if (record.evidence_refs?.length > 0) {
             try {
-              const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
-              const items = await loadAllItems(ctx);
-              const refIndex = new ReferenceIndex(tasks, items);
+              // AC: @daemon-entity-cache ac-serve-from-memory — try cache for tasks and items
+              const tasksDomainState = cache?.getDomainState("tasks");
+              const itemsDomainState = cache?.getDomainState("items");
+              const tasks = (cache && tasksDomainState === "ready" ? cache.getTaskIndex() : null)
+                ?? await resolveTaskDataManager(await getCtx()).loadAllTasks(await getCtx());
+              const items = (cache && itemsDomainState === "ready" ? cache.getItemIndex() : null)
+                ?? await loadAllItems(await getCtx());
+              const refIndex = new ReferenceIndex(tasks as unknown as LoadedTask[], items as unknown as LoadedSpecItem[]);
               return {
                 ...record,
                 resolved_evidence_refs: resolveRefEntries(refIndex, record.evidence_refs),

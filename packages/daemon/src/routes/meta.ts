@@ -59,10 +59,20 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
       })
 
       // AC: @api-contract ac-16 - List agents
+      // AC: @daemon-entity-cache ac-serve-from-memory — serve from cache when available
       .get("/agents", async ({ projectContext }) => {
-        // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-        const ctx = await initContext(projectContext.path);
-        const meta = await loadMetaContext(ctx);
+        // AC: @daemon-entity-cache ac-serve-from-memory — try cached MetaContext first
+        const cache = getEntityCache?.(projectContext.path);
+        const metaDomainState = cache?.getDomainState("meta");
+        let meta;
+        if (cache && metaDomainState === "ready") {
+          meta = cache.getMetaDetail();
+        }
+        if (!meta) {
+          // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+          const ctx = await initContext(projectContext.path);
+          meta = await loadMetaContext(ctx);
+        }
 
         // AC: @api-contract ac-16 - Return all defined agents
         const agents = meta.agents;
@@ -149,10 +159,20 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
       )
 
       // AC: @api-contract ac-17 - List workflows
+      // AC: @daemon-entity-cache ac-serve-from-memory — serve from cache when available
       .get("/workflows", async ({ projectContext }) => {
-        // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-        const ctx = await initContext(projectContext.path);
-        const meta = await loadMetaContext(ctx);
+        // AC: @daemon-entity-cache ac-serve-from-memory — try cached MetaContext first
+        const cache = getEntityCache?.(projectContext.path);
+        const metaDomainState = cache?.getDomainState("meta");
+        let meta;
+        if (cache && metaDomainState === "ready") {
+          meta = cache.getMetaDetail();
+        }
+        if (!meta) {
+          // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+          const ctx = await initContext(projectContext.path);
+          meta = await loadMetaContext(ctx);
+        }
 
         // AC: @api-contract ac-17 - Return all defined workflows
         const workflows = meta.workflows;
@@ -164,12 +184,22 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
       })
 
       // AC: @api-contract ac-18 - List observations with filter
+      // AC: @daemon-entity-cache ac-serve-from-memory — serve from cache when available
       .get(
         "/observations",
         async ({ query, projectContext }) => {
-          // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-          const ctx = await initContext(projectContext.path);
-          const meta = await loadMetaContext(ctx);
+          // AC: @daemon-entity-cache ac-serve-from-memory — try cached MetaContext first
+          const cache = getEntityCache?.(projectContext.path);
+          const metaDomainState = cache?.getDomainState("meta");
+          let meta;
+          if (cache && metaDomainState === "ready") {
+            meta = cache.getMetaDetail();
+          }
+          if (!meta) {
+            // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+            const ctx = await initContext(projectContext.path);
+            meta = await loadMetaContext(ctx);
+          }
 
           // Start with all observations
           let filtered = meta.observations || [];
@@ -260,9 +290,19 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
       })
 
       // AC: @ui-settings-view ac-1 - Convention definitions
+      // AC: @daemon-entity-cache ac-serve-from-memory — serve from cache when available
       .get("/conventions", async ({ projectContext }) => {
-        const ctx = await initContext(projectContext.path);
-        const meta = await loadMetaContext(ctx);
+        // AC: @daemon-entity-cache ac-serve-from-memory — try cached MetaContext first
+        const cache = getEntityCache?.(projectContext.path);
+        const metaDomainState = cache?.getDomainState("meta");
+        let meta;
+        if (cache && metaDomainState === "ready") {
+          meta = cache.getMetaDetail();
+        }
+        if (!meta) {
+          const ctx = await initContext(projectContext.path);
+          meta = await loadMetaContext(ctx);
+        }
 
         return {
           items: meta.conventions,

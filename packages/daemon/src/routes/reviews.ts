@@ -291,12 +291,26 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
       )
 
       // AC: @review-records-daemon-api ac-2 - Get single review by ref
+      // AC: @daemon-entity-cache ac-detail-on-demand — serve from cache when available
       .get(
         "/:id",
         async ({ params, error: errorResponse, projectContext }) => {
-          const ctx = await initContext(projectContext.path);
-          const reviews = await loadReviewRecords(ctx);
-          const review = findReviewByRef(reviews, params.id);
+          // AC: @daemon-entity-cache ac-serve-from-memory — defer initContext for cache hits
+          const cache = getEntityCache?.(projectContext.path);
+          const reviewsDomainState = cache?.getDomainState("reviews");
+
+          let review;
+          if (cache && reviewsDomainState === "ready") {
+            const cachedReviews = cache.getReviewsIndex();
+            if (cachedReviews) {
+              review = findReviewByRef(cachedReviews, params.id);
+            }
+          }
+          if (!review) {
+            const ctx = await initContext(projectContext.path);
+            const reviews = await loadReviewRecords(ctx);
+            review = findReviewByRef(reviews, params.id);
+          }
 
           if (!review) {
             return errorResponse(404, {

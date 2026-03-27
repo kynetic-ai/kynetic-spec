@@ -8,6 +8,7 @@
  */
 
 import type { LoadedTask, TaskSummary, LoadedPlan, LoadedSpecItem } from "../../parser/index.js";
+import type { MetaContext } from "../../parser/meta.js";
 import type { ItemSummary, MetaSummary } from "../../daemon/entity-cache.js";
 import type { SessionLogSummary } from "../../sessions/store.js";
 import type { LoadedInboxItem } from "../../parser/yaml.js";
@@ -33,10 +34,18 @@ export interface RouteEntityCache {
   getSessionDetail(sessionId: string): SessionLogSummary | null;
   setSessionDetail(sessionId: string, summary: SessionLogSummary): void;
   getPlansIndex(): LoadedPlan[] | null;
+  getPlanDetail(ulid: string): LoadedPlan | null;
+  setPlanDetail(ulid: string, plan: LoadedPlan): void;
   getInboxIndex(): LoadedInboxItem[] | null;
   getTriageIndex(): LoadedTriageRecord[] | null;
+  getTriageDetail(ulid: string): LoadedTriageRecord | null;
+  setTriageDetail(ulid: string, record: LoadedTriageRecord): void;
   getReviewsIndex(): LoadedReviewRecord[] | null;
+  getReviewDetail(ulid: string): LoadedReviewRecord | null;
+  setReviewDetail(ulid: string, review: LoadedReviewRecord): void;
   getMetaIndex(): MetaSummary | null;
+  getMetaDetail(): MetaContext | null;
+  setMetaDetail(meta: MetaContext): void;
   writeThrough(domain: string): Promise<void>;
   markWriteThrough(domain: string): void;
 }

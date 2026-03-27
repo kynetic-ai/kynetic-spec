@@ -30,6 +30,7 @@ import { relative } from "path";
 import {
   initContext,
   loadAllItems,
+  loadMetaContext,
   loadPlans,
   resolveTaskDataManager,
   type KspecContext,
@@ -37,6 +38,7 @@ import {
   type LoadedTask,
   type TaskSummary,
 } from "../parser/index.js";
+import type { MetaContext } from "../parser/meta.js";
 import { loadInboxItems, type LoadedInboxItem } from "../parser/yaml.js";
 import { loadTriageRecords, type LoadedTriageRecord } from "../parser/yaml.js";
 import { loadReviewRecords, type LoadedReviewRecord } from "../parser/reviews.js";
@@ -224,7 +226,7 @@ export class ProjectEntityCache {
     index: null,
     details: new Map(),
   };
-  private meta: DomainStore<MetaSummary> = {
+  private meta: DomainStore<MetaSummary, MetaContext> = {
     state: "unloaded",
     index: null,
     details: new Map(),
@@ -234,17 +236,17 @@ export class ProjectEntityCache {
     index: null,
     details: new Map(),
   };
-  private plans: DomainStore<LoadedPlan[]> = {
+  private plans: DomainStore<LoadedPlan[], LoadedPlan> = {
     state: "unloaded",
     index: null,
     details: new Map(),
   };
-  private triage: DomainStore<LoadedTriageRecord[]> = {
+  private triage: DomainStore<LoadedTriageRecord[], LoadedTriageRecord> = {
     state: "unloaded",
     index: null,
     details: new Map(),
   };
-  private reviews: DomainStore<LoadedReviewRecord[]> = {
+  private reviews: DomainStore<LoadedReviewRecord[], LoadedReviewRecord> = {
     state: "unloaded",
     index: null,
     details: new Map(),
@@ -350,9 +352,35 @@ export class ProjectEntityCache {
     return this.plans.index;
   }
 
+  /**
+   * Get a plan detail from cache, or null if not cached.
+   * AC: @daemon-entity-cache ac-detail-on-demand
+   */
+  getPlanDetail(ulid: string): LoadedPlan | null {
+    return this.plans.details.get(ulid) ?? null;
+  }
+
+  /** Store a plan detail in the cache. */
+  setPlanDetail(ulid: string, plan: LoadedPlan): void {
+    this.plans.details.set(ulid, plan);
+  }
+
   /** Get reviews from index tier. */
   getReviewsIndex(): LoadedReviewRecord[] | null {
     return this.reviews.index;
+  }
+
+  /**
+   * Get a review detail from cache, or null if not cached.
+   * AC: @daemon-entity-cache ac-detail-on-demand
+   */
+  getReviewDetail(ulid: string): LoadedReviewRecord | null {
+    return this.reviews.details.get(ulid) ?? null;
+  }
+
+  /** Store a review detail in the cache. */
+  setReviewDetail(ulid: string, review: LoadedReviewRecord): void {
+    this.reviews.details.set(ulid, review);
   }
 
   /** Get triage records from index tier. */
@@ -360,9 +388,35 @@ export class ProjectEntityCache {
     return this.triage.index;
   }
 
+  /**
+   * Get a triage record detail from cache, or null if not cached.
+   * AC: @daemon-entity-cache ac-detail-on-demand
+   */
+  getTriageDetail(ulid: string): LoadedTriageRecord | null {
+    return this.triage.details.get(ulid) ?? null;
+  }
+
+  /** Store a triage record detail in the cache. */
+  setTriageDetail(ulid: string, record: LoadedTriageRecord): void {
+    this.triage.details.set(ulid, record);
+  }
+
   /** Get meta summary from index tier. */
   getMetaIndex(): MetaSummary | null {
     return this.meta.index;
+  }
+
+  /**
+   * Get the full MetaContext from cache (detail tier).
+   * AC: @daemon-entity-cache ac-detail-on-demand
+   */
+  getMetaDetail(): MetaContext | null {
+    return this.meta.details.get("_context") ?? null;
+  }
+
+  /** Store the full MetaContext in the cache. */
+  setMetaDetail(meta: MetaContext): void {
+    this.meta.details.set("_context", meta);
   }
 
   /**
@@ -500,6 +554,9 @@ export class ProjectEntityCache {
               typeof m === "string" ? m : m.title ?? m.name ?? "unknown",
           ),
         };
+        // Load full MetaContext into detail tier for meta read routes
+        const metaCtx = await loadMetaContext(ctx);
+        this.meta.details.set("_context", metaCtx);
         break;
       }
       case "inbox": {
@@ -510,16 +567,19 @@ export class ProjectEntityCache {
       case "plans": {
         const loadedPlans = await loadPlans(ctx);
         this.plans.index = loadedPlans;
+        this.plans.details.clear();
         break;
       }
       case "triage": {
         const triageRecords = await loadTriageRecords(ctx);
         this.triage.index = triageRecords;
+        this.triage.details.clear();
         break;
       }
       case "reviews": {
         const reviewRecords = await loadReviewRecords(ctx);
         this.reviews.index = reviewRecords;
+        this.reviews.details.clear();
         break;
       }
       case "sessions": {

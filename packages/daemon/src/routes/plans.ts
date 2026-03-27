@@ -125,9 +125,35 @@ export function createPlansRoutes(_options: PlansRouteOptions = {}) {
         },
       )
       // AC: @ui-plans-view ac-2 - Get single plan with content (lazy-loaded by UI on expand)
+      // AC: @daemon-entity-cache ac-detail-on-demand — serve from cache when available
       .get("/:ref", async ({ params, error: errorResponse, projectContext }) => {
-        const ctx = await initContext(projectContext.path);
-        const plan = await findPlanByRef(ctx, params.ref);
+        // AC: @daemon-entity-cache ac-serve-from-memory — defer initContext for cache hits
+        const cache = getEntityCache?.(projectContext.path);
+        let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
+        const getCtx = async () => {
+          if (!_ctx) _ctx = await initContext(projectContext.path);
+          return _ctx;
+        };
+
+        const cleanRef = params.ref.startsWith("@") ? params.ref.slice(1) : params.ref;
+
+        // Try to find plan from cached index first
+        let plan: LoadedPlan | undefined;
+        const plansDomainState = cache?.getDomainState("plans");
+        if (cache && plansDomainState === "ready") {
+          const cachedPlans = cache.getPlansIndex();
+          if (cachedPlans) {
+            plan = cachedPlans.find(
+              (p) =>
+                p._ulid === cleanRef ||
+                p._ulid.toLowerCase().startsWith(cleanRef.toLowerCase()) ||
+                p.slugs.includes(cleanRef),
+            );
+          }
+        }
+        if (!plan) {
+          plan = await findPlanByRef(await getCtx(), params.ref);
+        }
 
         if (!plan) {
           return errorResponse(404, {
@@ -137,7 +163,15 @@ export function createPlansRoutes(_options: PlansRouteOptions = {}) {
           });
         }
 
-        const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+        // Try cache for tasks (needed for progress computation)
+        const tasksDomainState = cache?.getDomainState("tasks");
+        let tasks;
+        if (cache && tasksDomainState === "ready") {
+          tasks = cache.getTaskIndex();
+        }
+        if (!tasks) {
+          tasks = await resolveTaskDataManager(await getCtx()).loadAllTasks(await getCtx());
+        }
 
         const detail: PlanDetail = {
           ...toPlanSummary(plan, tasks),
