@@ -58173,6 +58173,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMPH5TJHSK1MD745F5HBE70K
         timestamp: 2026-03-27T02:15:08.020Z
+      - _ulid: 01KMPH5W8R2AX816QHX27CN52J
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMPH5VWBC8CHP5NFCNNVWJN2
+        timestamp: 2026-03-27T02:15:09.336Z
     examined_commit: 536974f5967c5764722c786b8c33eb9cca28d174
     external_links: []
     lifecycle_state: open
@@ -58202,7 +58209,25 @@ reviews:
               loading is still incomplete for most domains.
             created_at: 2026-03-27T02:15:07.601Z
         kind: blocker
+      - _ulid: 01KMPH5VWBC8CHP5NFCNNVWJN2
+        anchor:
+          type: code
+          commit: 536974f5967c5764722c786b8c33eb9cca28d174
+          line_end: 444
+          line_start: 427
+          path: packages/daemon/src/routes/items.ts
+          side: head
+        entries:
+          - _ulid: 01KMPH5VWCSZPFK251X2ABWTHY
+            author: "@claude"
+            body: Cached item-detail responses lose parent information.  only works when it can see the item's
+              siblings/root in the same source file, but the cache-hit path calls it with  only, so
+              any nested spec item comes back with  after the first read warms the detail cache. The
+              disk path below computes the map from the full item list, so the same endpoint returns
+              different data before and after the cache is populated.
+            created_at: 2026-03-27T02:15:08.940Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T02:10:41.995Z
-    updated_at: 2026-03-27T02:15:07.601Z
+    updated_at: 2026-03-27T02:15:08.940Z
     notes: []
