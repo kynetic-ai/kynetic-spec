@@ -16827,7 +16827,7 @@ runs:
     completed_at: 2026-03-27T17:50:11.169Z
   - _ulid: 01KMR7M3BR4RSDB6HMQZ6ZEG6T
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -16840,7 +16840,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-27T18:08:20.165Z
-        completed_at: 2026-03-27T18:08:20.165Z
+        completed_at: 2026-03-27T18:08:28.332Z
+        notes: "Friction: The initContext spy test needed manual maintenance — when new cached routes were
+          added (/api/meta/session), the test didn't automatically detect the gap. This is a known
+          limitation of the test approach, not a new process issue. No new observations needed —
+          this is inherent to the spy-based testing pattern. Success: Entity cache extension pattern
+          is well-established and reliable."
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-27T18:08:28.332Z
+        completed_at: 2026-03-27T18:08:28.332Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-27T18:06:38.456Z
