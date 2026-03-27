@@ -13,6 +13,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { join } from "path";
 import * as fs from "fs/promises";
+import { execSync } from "child_process";
 import { stringify as yamlStringify } from "yaml";
 import { setupMultiDirFixtures, cleanupTempDir, createTempDir } from "./helpers/cli";
 import {
@@ -25,6 +26,34 @@ import {
   type CacheDomain,
   DOMAIN_LOAD_ORDER,
 } from "../src/daemon/entity-cache";
+import { ensureSplitBackendRegistered } from "../src/parser/split-backend";
+import * as yamlModule from "../src/parser/yaml";
+
+ensureSplitBackendRegistered();
+
+/**
+ * Set up a project directory so initContext() finds the .kspec/ shadow worktree.
+ * Creates a git repo and a fake .kspec/.git worktree pointer so shadow detection works.
+ */
+async function setupShadowDetection(projectDir: string): Promise<void> {
+  // Initialize git repo
+  execSync("git init -b main", { cwd: projectDir, stdio: "pipe" });
+  execSync('git config user.email "test@example.com"', { cwd: projectDir, stdio: "pipe" });
+  execSync('git config user.name "Test User"', { cwd: projectDir, stdio: "pipe" });
+
+  // Create a worktree entry so isValidWorktree() passes
+  const worktreeDir = join(projectDir, ".git", "worktrees", "-kspec");
+  await fs.mkdir(worktreeDir, { recursive: true });
+  await fs.writeFile(join(worktreeDir, "HEAD"), "0".repeat(40) + "\n", "utf-8");
+  await fs.writeFile(join(worktreeDir, "gitdir"), join(projectDir, ".kspec", ".git") + "\n", "utf-8");
+
+  // Point .kspec/.git to the worktree entry
+  await fs.writeFile(
+    join(projectDir, ".kspec", ".git"),
+    `gitdir: ${worktreeDir}\n`,
+    "utf-8",
+  );
+}
 
 describe("ProjectEntityCache", () => {
   let fixturesRoot: string;
@@ -35,6 +64,11 @@ describe("ProjectEntityCache", () => {
     fixturesRoot = await setupMultiDirFixtures();
     projectA = join(fixturesRoot, "project-a");
     projectB = join(fixturesRoot, "project-b");
+
+    // Set up shadow detection so initContext() resolves .kspec/ as specDir
+    await setupShadowDetection(projectA);
+    await setupShadowDetection(projectB);
+
     clearAllEntityCaches();
   });
 
@@ -221,11 +255,11 @@ describe("ProjectEntityCache", () => {
     });
 
     it("should not eagerly preload plan details during index load", async () => {
-      // Seed plans file in projectA root (specDir resolves to project root for non-shadow fixtures)
+      // Seed plans file in .kspec/ (specDir resolves to .kspec/ via shadow detection)
       // Note: Crockford base32 excludes I, L, O, U
       const planUlid = "01PPAN00000000000000000000";
       await fs.writeFile(
-        join(projectA, "project.plans.yaml"),
+        join(projectA, ".kspec", "project.plans.yaml"),
         yamlStringify({
           kynetic_plans: "1.0",
           plans: [
@@ -258,10 +292,10 @@ describe("ProjectEntityCache", () => {
     });
 
     it("should not eagerly preload review details during index load", async () => {
-      // Seed reviews file in projectA root (specDir resolves to project root for non-shadow fixtures)
+      // Seed reviews file in .kspec/ (specDir resolves to .kspec/ via shadow detection)
       const reviewUlid = "01REVW00000000000000000000";
       await fs.writeFile(
-        join(projectA, "project.reviews.yaml"),
+        join(projectA, ".kspec", "project.reviews.yaml"),
         yamlStringify({
           kynetic_reviews: "1.0",
           reviews: [
@@ -303,11 +337,11 @@ describe("ProjectEntityCache", () => {
     });
 
     it("should not eagerly preload triage details during index load", async () => {
-      // Seed triage file in projectA root (specDir resolves to project root for non-shadow fixtures)
+      // Seed triage file in .kspec/ (specDir resolves to .kspec/ via shadow detection)
       const triageUlid = "01TRAG00000000000000000000";
       const inboxUlid = "01BNBX00000000000000000000";
       await fs.writeFile(
-        join(projectA, "project.triage.yaml"),
+        join(projectA, ".kspec", "project.triage.yaml"),
         yamlStringify({
           kynetic_triage: "1.0",
           triage: [
@@ -571,6 +605,37 @@ describe("ProjectEntityCache", () => {
       const afterWriteThrough = cache.getTaskIndex();
       await cache.invalidateDomain("tasks");
       expect(cache.getTaskIndex()).toBe(afterWriteThrough);
+    });
+
+    // AC: @daemon-entity-cache ac-write-through
+    // AC: @daemon-entity-cache ac-graceful-degradation
+    it("should NOT suppress watcher invalidation when writeThrough reload fails", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("tasks");
+      expect(cache.getDomainState("tasks")).toBe("ready");
+
+      // Mock initContext to throw on the next call, simulating a transient
+      // infrastructure failure (disk error, shadow branch corruption, etc.).
+      // The split backend catches parse errors gracefully, so we need to
+      // fail at a higher level to exercise the degradation path.
+      const initContextSpy = vi.spyOn(yamlModule, "initContext")
+        .mockRejectedValueOnce(new Error("simulated infrastructure failure"));
+
+      try {
+        // writeThrough should attempt reload (fail → degraded) but NOT mark skip
+        await cache.writeThrough("tasks");
+        expect(cache.getDomainState("tasks")).toBe("degraded");
+
+        // Restore initContext so the next reload succeeds
+        initContextSpy.mockRestore();
+
+        // Watcher invalidation must NOT be suppressed — domain should recover
+        await cache.invalidateDomain("tasks");
+        expect(cache.getDomainState("tasks")).toBe("ready");
+        expect(cache.getTaskIndex()).not.toBeNull();
+      } finally {
+        initContextSpy.mockRestore();
+      }
     });
   });
 
