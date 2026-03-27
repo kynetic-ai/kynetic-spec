@@ -8969,6 +8969,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T18:36:19.293Z
+  - _ulid: 01KMR9AES1R5HVY3S01R3XD9A5
+    type: success
+    content: "Review workflow worked well: creating an anchored review record first, then verifying the
+      diff against runtime paths and full-suite evidence, made it straightforward to return the task
+      to needs_work with precise blockers instead of vague feedback."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T18:36:19.618Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
