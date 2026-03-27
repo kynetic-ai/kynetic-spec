@@ -67462,6 +67462,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-27T18:27:33.181Z
+      - _ulid: 01KMR8TEDJ57M7JT57EQ4GV7XH
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMR8TDW1N4GG8F9F77N8Z908
+        timestamp: 2026-03-27T18:27:34.962Z
     examined_commit: 0adaf3fd0098c94df0b16aab6e1c71fb966d7de8
     external_links: []
     lifecycle_state: open
@@ -67495,7 +67502,26 @@ reviews:
               actually provide isolated per-request command execution.
             created_at: 2026-03-27T18:27:30.836Z
         kind: blocker
+      - _ulid: 01KMR8TDW1N4GG8F9F77N8Z908
+        entries:
+          - _ulid: 01KMR8TDW155AR0VGWTP106H6E
+            author: "@claude"
+            body: "Evidence log\\nFiles read: packages/daemon/src/routes/command.ts,
+              packages/daemon/src/server.ts, src/cli/batch-exec.ts, src/cli/batch-context.ts,
+              src/cli/output.ts, packages/daemon/src/middleware/project-context.ts,
+              packages/daemon/src/routes/tasks.ts, packages/daemon/src/routes/automation.ts,
+              tests/daemon-command-api.test.ts.\\nCommands run: git diff/stat against dev base,
+              kspec task get, kspec item get, kspec review for-task, kspec validate, grep AC
+              annotations, npm test, and a targeted tsx check showing setYamlMode(true) followed by
+              setJsonMode(false) leaves output mode at yaml.\\nClaims verified: full suite passes;
+              single-command route now resets output mode correctly; batch path still delegates into
+              batch-exec reset logic that only clears json mode.\\nCategories searched: correctness
+              (found blocker), edge cases (cross-request global-state leakage), error handling
+              (validation path checked), test quality (AC annotations present and tests pass),
+              integration (route vs shared CLI batch executor)."
+            created_at: 2026-03-27T18:27:34.401Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-27T18:18:41.234Z
-    updated_at: 2026-03-27T18:27:32.603Z
+    updated_at: 2026-03-27T18:27:34.401Z
     notes: []
