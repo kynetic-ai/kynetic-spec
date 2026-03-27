@@ -10059,6 +10059,9 @@ features:
           REST endpoint that accepts CLI command payloads and executes them
           within the daemon process, returning structured results. Serves as
           the server-side counterpart to CLI daemon proxy mode.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
