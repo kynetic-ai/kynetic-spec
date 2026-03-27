@@ -69818,7 +69818,19 @@ reviews:
     slugs: []
     title: Review extract setupShadowDetection to shared test helpers
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Validation reported schema/reference OK with existing repo-wide warnings only (exit 6): 1
+          orphaned skill directory, 32 alignment warnings, 484 completeness warnings; no new
+          validation errors introduced by this task."
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-03-27T21:58:17.863Z
+        completed_at: 2026-03-27T21:58:17.863Z
     events:
       - _ulid: 01KMRMMSSRYDCRAQEJZG6D12J8
         actor: "@claude"
@@ -69840,6 +69852,13 @@ reviews:
           kind: nit
           thread_ulid: 01KMRMW7GT555Z8AP9QRQM83C0
         timestamp: 2026-03-27T21:58:16.833Z
+      - _ulid: 01KMRMW9FB8DXG2SG3W7AA2B4E
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-27T21:58:18.347Z
     examined_commit: bd7a164208824d95dd552a5e45f6dec00306dc06
     external_links: []
     lifecycle_state: open
@@ -69874,5 +69893,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-27T21:54:12.921Z
-    updated_at: 2026-03-27T21:58:16.346Z
+    updated_at: 2026-03-27T21:58:17.863Z
     notes: []
