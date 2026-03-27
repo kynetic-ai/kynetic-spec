@@ -16172,7 +16172,7 @@ runs:
     completed_at: 2026-03-27T04:32:34.191Z
   - _ulid: 01KMPST12KHAY1K52B2E8GGZXA
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -16186,7 +16186,27 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-27T04:46:18.141Z
-        completed_at: 2026-03-27T04:46:18.141Z
+        completed_at: 2026-03-27T04:46:55.867Z
+        notes: >-
+          Searched existing state. Found 1 existing observation about fix cycle review threads
+          (01KMNK73). No existing observations about the lazy initContext pattern or the recurring
+          nature of eager-context review findings.
+
+
+          High-confidence observations:
+
+          1. SUCCESS: The lazy getCtx() pattern (defer initContext until disk fallback) has proved
+          reliable across 3 independent fix cycles. It's now consistently applied across all 8 route
+          domains. This is a proven codebase pattern.
+
+          2. FRICTION: This entity cache task is on fix cycle 14. The recurring pattern is: reviewer
+          finds routes that still call initContext() eagerly. Each cycle catches 2-3 more routes.
+          The underlying issue is that there's no static analysis or test to catch eager
+          initContext() calls when a cache domain is ready — it's only caught by manual code review.
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-27T04:46:55.867Z
+        completed_at: 2026-03-27T04:46:55.867Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-27T04:45:58.227Z
