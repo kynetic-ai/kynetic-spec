@@ -309,3 +309,16 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T01:57:44.734Z
+  - _ulid: 01KMPGSNPVCC2DV5CQT98ZRY04
+    content: "Fix cycle 8: addressed 1 unique blocker (2 threads, 1 duplicate). Blocker: fileToDomain()
+      did not map session watcher paths to the sessions domain. Session paths (ULID-prefixed,
+      relative to .kspec-sessions/) fell through all pattern checks and returned null, preventing
+      cache invalidation. Fixed by adding ULID-pattern recognition to fileToDomain() -- the first
+      path segment is tested against Crockford base32 ULID regex. Also simplified server.ts callback
+      to route all paths through handleFileChange since fileToDomain now handles both .kspec/ YAML
+      paths and session paths. Tests: Added fileToDomain unit test for session ULID paths +
+      behavioral test for handleFileChange with session watcher paths. All 6901 tests pass, 5
+      skipped, 0 failures."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T02:08:29.403Z
