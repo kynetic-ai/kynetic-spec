@@ -68009,3 +68009,29 @@ reviews:
     created_at: 2026-03-27T18:40:25.839Z
     updated_at: 2026-03-27T18:46:08.253Z
     notes: []
+  - _ulid: 01KMRAQHWS379EEZTGXYXXPEXF
+    slugs: []
+    title: Review task-daemon-command-api (cycle 6)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KMRAQHWSKPE8PW91PPHVGBX1
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-27T19:00:57.369Z
+    examined_commit: 6995679948a5e6093b1e9bbe606e5750266961b3
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMMB3V7N2GC0JSPJKJYMPJPV"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-27T19:00:57.369Z
+    updated_at: null
+    notes: []
