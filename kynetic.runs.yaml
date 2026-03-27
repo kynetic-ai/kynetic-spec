@@ -16326,7 +16326,7 @@ runs:
     completed_at: 2026-03-27T05:12:50.150Z
   - _ulid: 01KMPXAW8PW7Q97PESSJNNW46C
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -16342,7 +16342,30 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-27T05:48:17.012Z
-        completed_at: 2026-03-27T05:48:17.012Z
+        completed_at: 2026-03-27T05:48:56.563Z
+        notes: >-
+          Searched existing state. High-confidence observations from this session:
+
+
+          SUCCESS: Batch fixing all review blockers in a single pass was efficient — reading all
+          threads upfront, understanding the patterns, then implementing all fixes together in one
+          commit. This avoided the incremental one-blocker-at-a-time pattern that dominated earlier
+          cycles (15 fix cycles).
+
+
+          FRICTION: This task has been through 16 fix cycles. Many of the blockers are recurring
+          patterns — the same class of issue (warmup holes in detail routes, missing invalidation
+          paths) keeps appearing in new domains as earlier cycles fix it in some but not all routes.
+          The codex reviewer correctly catches these but each cycle only catches a few, leading to a
+          long tail of fix cycles. This is a known challenge with incremental review.
+
+
+          No new items to capture — the fix cycle pattern is already well-tracked, and the entity
+          cache task itself covers the warmup/invalidation coverage gaps being fixed.
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-27T05:48:56.563Z
+        completed_at: 2026-03-27T05:48:56.563Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-27T05:47:36.086Z
