@@ -58803,6 +58803,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-27T03:21:19.013Z
+      - _ulid: 01KMPMZ2NTZN05WSA8H0GB83BV
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMPMZ23ZZ66YXSVAYQQJGVP8
+        timestamp: 2026-03-27T03:21:20.826Z
     examined_commit: ea11de060b7e709735e4d74f9a686a48a8fde614
     external_links: []
     lifecycle_state: open
@@ -58835,7 +58842,31 @@ reviews:
               undermines `ac-progressive-loading` for not-yet-started domains."
             created_at: 2026-03-27T03:21:16.604Z
         kind: blocker
+      - _ulid: 01KMPMZ23ZZ66YXSVAYQQJGVP8
+        anchor:
+          type: code
+          commit: ea11de060b7e709735e4d74f9a686a48a8fde614
+          line_end: 715
+          line_start: 688
+          path: src/daemon/entity-cache.ts
+          side: head
+        entries:
+          - _ulid: 01KMPMZ2448JC705TJM6BCHEDZ
+            author: "@claude"
+            body: "The cache still eagerly preloads full plan/review/triage records during index loads. In
+              `doLoadDomain()` the `plans`, `triage`, and `reviews` branches all load every full
+              record and immediately populate `details`, so these domains are no longer \"detail on
+              demand\" in any meaningful sense. I verified this against the snapshot with `bun
+              --eval ...`: after `loadDomain(\"plans\")`, `loadDomain(\"reviews\")`, and
+              `loadDomain(\"triage\")`, `getPlanDetail/getReviewDetail/getTriageDetail` all returned
+              non-null before any detail request
+              (`{\"planDetailPreloaded\":true,\"reviewDetailPreloaded\":true,\"triageDetailPreloaded\
+              \":true}`). That violates the task's two-tier storage requirement and
+              `@daemon-entity-cache` `ac-detail-on-demand` by keeping the heavy content hot in
+              memory up front."
+            created_at: 2026-03-27T03:21:20.261Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T03:16:34.259Z
-    updated_at: 2026-03-27T03:21:18.449Z
+    updated_at: 2026-03-27T03:21:20.261Z
     notes: []
