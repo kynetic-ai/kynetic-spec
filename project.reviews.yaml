@@ -60830,6 +60830,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMPVH7NA6MR523GMEYP3156J
         timestamp: 2026-03-27T05:16:09.398Z
+      - _ulid: 01KMPVJFJZQZKGCQ167ED6N1QZ
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMPVJE0PS8621THX8HG2YZS2
+        timestamp: 2026-03-27T05:16:48.095Z
     examined_commit: 8dfaea2199385d9aa733f052db868d92c22580e0
     external_links: []
     lifecycle_state: open
@@ -60858,7 +60865,26 @@ reviews:
               the watcher never maps those changed files back to  or ."
             created_at: 2026-03-27T05:16:07.211Z
         kind: blocker
+      - _ulid: 01KMPVJE0PS8621THX8HG2YZS2
+        anchor:
+          type: code
+          commit: 8dfaea2199385d9aa733f052db868d92c22580e0
+          line_end: 155
+          line_start: 86
+          path: packages/daemon/src/watcher.ts
+          side: head
+        entries:
+          - _ulid: 01KMPVJE0PAC6PWY2N48F0KWQP
+            author: "@claude"
+            body: The  watcher only forwards successful read-and-parse  events. In the Chokidar path it
+              subscribes to  only, so file adds/deletes never reach the cache at all. In the Bun
+              path any rename/delete is funneled through , which calls  and treats  as a watcher
+              error instead of an invalidation signal. That means creating, removing, or renaming a
+              YAML file in a cached domain can leave the index stale indefinitely, which breaks
+              watcher-driven invalidation for task/spec/meta/review/etc. file set changes.
+            created_at: 2026-03-27T05:16:46.486Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T05:13:09.485Z
-    updated_at: 2026-03-27T05:16:07.211Z
+    updated_at: 2026-03-27T05:16:46.486Z
     notes: []
