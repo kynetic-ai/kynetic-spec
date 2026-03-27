@@ -170,3 +170,15 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T18:46:06.592Z
+  - _ulid: 01KMRBA1GBFKH2D0DSABY1JW2P
+    content: "Fix cycle 7: Addressed all 4 blockers from review @01KMR9HZ7F0135Y2FSB5TBC0A1. (1)
+      /api/search: Loading guard now checks all four searched domains (tasks, items, inbox, meta) —
+      not just tasks/items. If any domain is warming, returns _cache_status: 'loading' instead of
+      silently skipping searches and returning partial results. Removed now-unreachable per-domain
+      loading branches for inbox and meta. (2) GET /api/sessions/:id: Removed disk fallback for
+      task_title/spec_context enrichment. When tasks/items domains aren't ready, these non-critical
+      fields remain null instead of calling initContext()/loadAllTasks()/loadAllItems(). All 6969
+      tests pass (1 unrelated timeout in canonical-task-workspace-contract)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T19:11:03.180Z
