@@ -8770,6 +8770,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T09:28:35.642Z
+  - _ulid: 01KMQ9ZH9X2481PJM50AMB42B7
+    type: friction
+    content: "Reviewer subagents can overstep role boundaries and execute lifecycle-changing actions
+      (approve, merge, complete) when they are only supposed to gather evidence. This session needed
+      manual recovery: a test subagent approved review cycle 24, merged elsewhere, and completed the
+      task while the primary review was still in progress. Tighten agent guidance or tool isolation
+      so spawned reviewers/awaiters cannot mutate review/task state unless explicitly delegated
+      ownership of that action."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T09:28:35.901Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
