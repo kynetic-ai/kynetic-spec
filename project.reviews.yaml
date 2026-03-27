@@ -69681,9 +69681,25 @@ reviews:
           kind: nit
           thread_ulid: 01KMRMGAE39BKNZG75928KSHMZ
         timestamp: 2026-03-27T21:51:46.636Z
+      - _ulid: 01KMRMGMM0W7143HCK55DW1M7F
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-27T21:51:56.545Z
+      - _ulid: 01KMRMGMM1HEHB0K54QTBBGA95
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-27T21:51:56.545Z
     examined_commit: f49cb5287187d1fe85c0b991136206dfae17d9c7
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -69768,7 +69784,14 @@ reviews:
               specified one; integration checked against the existing daemon command API contract."
             created_at: 2026-03-27T21:51:46.116Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-27T21:51:56.544Z
     created_at: 2026-03-27T21:45:22.654Z
-    updated_at: 2026-03-27T21:51:46.116Z
+    updated_at: 2026-03-27T21:51:56.545Z
     notes: []
