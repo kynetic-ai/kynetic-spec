@@ -63,9 +63,12 @@ const TEST_INPUT_PATHS = [
   "packages/shared/src/",
   "packages/daemon/src/",
   "packages/web-ui/src/",
+  "package.json",
   "package-lock.json",
   "vitest.config.ts",
   "tsconfig.json",
+  "scripts/test.cjs",
+  "scripts/dependency-health.cjs",
 ];
 
 const CACHE_ROOT = path.join(os.tmpdir(), "kspec-test-cache");

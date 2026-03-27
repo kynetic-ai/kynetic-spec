@@ -354,6 +354,11 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
           const cache = getEntityCache?.(projectContext.path);
           const reviewsDomainState = cache?.getDomainState("reviews");
 
+          // AC: @daemon-entity-cache ac-warming-availability — return loading indicator during warmup
+          if (cache && reviewsDomainState === "loading") {
+            return { _cache_status: "loading" as const };
+          }
+
           let review;
           if (cache && reviewsDomainState === "ready") {
             // Find ULID in index, then load full record from detail tier

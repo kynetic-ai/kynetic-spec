@@ -143,11 +143,16 @@ export function createPlansRoutes(_options: PlansRouteOptions = {}) {
           return _ctx;
         };
 
+        // AC: @daemon-entity-cache ac-warming-availability — return loading indicator during warmup
+        const plansDomainState = cache?.getDomainState("plans");
+        if (cache && plansDomainState === "loading") {
+          return { _cache_status: "loading" as const };
+        }
+
         const cleanRef = params.ref.startsWith("@") ? params.ref.slice(1) : params.ref;
 
         // AC: @daemon-entity-cache ac-detail-on-demand — resolve via index, load from detail tier
         let plan: LoadedPlan | undefined;
-        const plansDomainState = cache?.getDomainState("plans");
         if (cache && plansDomainState === "ready") {
           // Find the plan's ULID in the index (summaries only)
           const cachedPlans = cache.getPlansIndex();

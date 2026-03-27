@@ -271,8 +271,12 @@ interface DomainStore<TIndex, TDetail = unknown> {
 export function fileToDomain(relativePath: string): CacheDomain[] | null {
   const domains: CacheDomain[] = [];
 
-  // Task files
+  // Task files — both monolith (project.tasks.yaml, *.tasks.yaml) and
+  // split-backend per-task directories (tasks/<ULID>/task.yaml, tasks/<ULID>/notes.yaml)
   if (relativePath.endsWith(".tasks.yaml") || relativePath === "project.tasks.yaml") {
+    domains.push("tasks");
+  }
+  if (relativePath.startsWith("tasks/")) {
     domains.push("tasks");
   }
 
@@ -572,10 +576,18 @@ export class ProjectEntityCache {
 
   /**
    * Increment live event counter for an active session.
+   * On first call, seeds the counter from the persisted event_count in the
+   * session index so that subsequent getSessionIndex() calls add to the
+   * baseline rather than overwriting it with a counter that started at zero.
    * Migrated from SessionSummaryCache.
    */
   incrementSessionEventCount(sessionId: string): void {
-    const current = this.liveEventCounts.get(sessionId) ?? 0;
+    let current = this.liveEventCounts.get(sessionId);
+    if (current === undefined) {
+      // Seed from persisted event_count in the index
+      const indexEntry = this.sessions.index?.find((s) => s.id === sessionId);
+      current = indexEntry?.event_count ?? 0;
+    }
     this.liveEventCounts.set(sessionId, current + 1);
   }
 
