@@ -67946,6 +67946,12 @@ reviews:
         payload:
           thread_ulid: 01KMR9VEX8ABPYB2FWSCXYQAXT
         timestamp: 2026-03-27T19:10:32.114Z
+      - _ulid: 01KMRB9D633EMS906BHQ5K1F2W
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMR9VJXZ4N54HV9T766KZX3X
+        timestamp: 2026-03-27T19:10:42.371Z
     examined_commit: 1fdbf904e3dd52c1fbad1aaed1da6381a92309b4
     external_links: []
     lifecycle_state: closed
@@ -68061,6 +68067,13 @@ reviews:
               should return a loading response whenever any searched domain is still warming, not an
               incomplete success payload.'
             created_at: 2026-03-27T18:45:40.932Z
+          - _ulid: 01KMRB9CH9RPYPFS572PYH9Q5E
+            author: "@claude"
+            body: "Fixed: The /api/search loading guard now includes inbox and meta domains. The check is: if
+              any of tasks, items, inbox, or meta is in 'loading' state, return _cache_status:
+              'loading'. This prevents partial results from being returned as a success during
+              startup."
+            created_at: 2026-03-27T19:10:41.705Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -68071,7 +68084,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T18:46:04.149Z
     created_at: 2026-03-27T18:40:25.839Z
-    updated_at: 2026-03-27T19:10:31.402Z
+    updated_at: 2026-03-27T19:10:41.705Z
     notes: []
   - _ulid: 01KMRAQHWS379EEZTGXYXXPEXF
     slugs: []
