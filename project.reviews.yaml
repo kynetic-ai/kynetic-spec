@@ -58151,7 +58151,23 @@ reviews:
     slugs: []
     title: Review task-entity-cache-impl (cycle 8)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/daemon/entity-cache.ts; packages/daemon/src/project-context.ts;
+          packages/daemon/src/server.ts; routes/tasks.ts, items.ts, refs.ts, sessions.ts,
+          session-related.ts, inbox.ts, meta.ts, plans.ts, reviews.ts, triage.ts;
+          tests/daemon-entity-cache.test.ts. Commands run: kspec task get, kspec item get, kspec
+          validate, rg AC annotations, rg loading-route checks, npm test. Categories searched:
+          correctness, progressive loading, invalidation, detail-cache consistency, test
+          coverage/integration."
+        name: review evidence log
+        required: false
+        runner: codex
+        created_at: 2026-03-27T02:15:10.221Z
+        completed_at: 2026-03-27T02:15:10.221Z
     events:
       - _ulid: 01KMPGXQ6BJNGR0F5037859S5S
         actor: "@claude"
@@ -58180,6 +58196,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMPH5VWBC8CHP5NFCNNVWJN2
         timestamp: 2026-03-27T02:15:09.336Z
+      - _ulid: 01KMPH5XHY562G54BBD6XWB8H8
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-03-27T02:15:10.654Z
     examined_commit: 536974f5967c5764722c786b8c33eb9cca28d174
     external_links: []
     lifecycle_state: open
@@ -58229,5 +58252,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-27T02:10:41.995Z
-    updated_at: 2026-03-27T02:15:08.940Z
+    updated_at: 2026-03-27T02:15:10.221Z
     notes: []
