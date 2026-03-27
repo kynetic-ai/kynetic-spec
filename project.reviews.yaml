@@ -59439,6 +59439,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-27T04:16:05.434Z
+      - _ulid: 01KMPRBH16FKA0V71FZGE5HTDF
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMPRBGJC3CR1J5CPJFDER9FH
+        timestamp: 2026-03-27T04:20:34.470Z
     examined_commit: 0b9e71753e703adfded4e89a2263fd1da4310b39
     external_links: []
     lifecycle_state: open
@@ -59448,8 +59455,28 @@ reviews:
       content_hash: ""
       ref: "@01KMMB3T2K3T6A1CJR884EPKJF"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMPRBGJC3CR1J5CPJFDER9FH
+        anchor:
+          type: code
+          commit: 0b9e71753e703adfded4e89a2263fd1da4310b39
+          line_end: 305
+          line_start: 239
+          path: packages/daemon/src/routes/tasks.ts
+          side: head
+        entries:
+          - _ulid: 01KMPRBGJCJQW9EWZHD865G58Q
+            author: "@claude"
+            body: "This detail endpoint still calls  before checking the detail tier, and then unconditionally
+              falls back to  /  for response enrichment.  is not a cheap no-op here: it loads
+              project config, detects shadow state, and may run shadow sync checks (). That means a
+              cache-hit task-detail request still performs disk/git work on every hit, which breaks
+              the same  /  contract that cycle 5 fixed for list routes. The same eager-context
+              pattern is still present in , so cached item-detail reads also miss the optimization
+              target."
+            created_at: 2026-03-27T04:20:33.996Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T04:15:51.416Z
-    updated_at: 2026-03-27T04:16:04.951Z
+    updated_at: 2026-03-27T04:20:33.996Z
     notes: []
