@@ -8782,6 +8782,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T09:28:35.901Z
+  - _ulid: 01KMQXXZ1DN1VWKJ4TZWRA9N0E
+    type: friction
+    content: Dispatch churned through 23 fix cycles on task-entity-cache-impl because each automated
+      review+fix cycle was narrow — fix the latest thread, resubmit. No mechanism for the dispatch
+      engine to escalate to manual_only after N cycles or trigger a holistic re-review. Manual
+      takeover resolved it in 1 cycle.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T15:17:15.949Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:

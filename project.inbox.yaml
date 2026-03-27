@@ -1968,3 +1968,13 @@ inbox:
       - agent-runtime
     added_by: "@claude"
     created_at: 2026-03-27T04:32:26.709Z
+  - _ulid: 01KMQXXYZB74FS5E1WQ7XKA7YT
+    text: setupMultiDirFixtures() creates .kspec/ dirs without git repos, so initContext() falls through
+      to traditional mode and gets wrong specDir. The setupShadowDetection() helper in
+      daemon-entity-cache.test.ts fixes this locally but should be extracted to tests/helpers/cli.ts
+      for any test using multi-dir fixtures with initContext().
+    tags:
+      - testing
+      - infrastructure
+    added_by: "@claude"
+    created_at: 2026-03-27T15:17:15.883Z
