@@ -31,9 +31,10 @@ import type {
 import { ScheduleEngine } from "../../agent-runtime/schedule-engine.js";
 import { HookExecutor } from "../../agent-runtime/hook-executor.js";
 import { JoinAccumulator } from "../../agent-runtime/join-accumulator.js";
-import { ActionExecutor } from "../../agent-runtime/action-executor.js";
+import { ActionExecutor, type AgentSpawner } from "../../agent-runtime/action-executor.js";
 import { SessionRegistry } from "../../agent-runtime/session-registry.js";
-import { DEFAULT_KSPEC_CLI_PATH } from "../../agent-runtime/invocation.js";
+import { DEFAULT_KSPEC_CLI_PATH, runInvocation } from "../../agent-runtime/invocation.js";
+import { ulid } from "ulid";
 import {
   initContext,
   loadMetaContext,
@@ -114,6 +115,55 @@ function createEngine(projectDir: string, cwd?: string, pubsub?: PubSubManager):
 }
 
 /**
+ * Create an AgentSpawner callback for automation subsystem action executors.
+ *
+ * Resolves agent definitions from meta config, spawns invocations via
+ * runInvocation with the project root as working directory, and returns
+ * a trackable invocation ID.
+ *
+ * AC: @automation-action-type-completeness ac-1, ac-2, ac-3, ac-4
+ */
+export function createAutomationAgentSpawner(projectDir: string): AgentSpawner {
+  return async (options) => {
+    const ctx = await initContext(projectDir);
+    const meta = await loadMetaContext(ctx);
+    const agentDef = meta.agents.find((a) => a.id === options.agent_id);
+
+    if (!agentDef) {
+      throw new Error(
+        `Agent "${options.agent_id}" not found in project configuration. ` +
+          `Available agents: ${meta.agents.map((a) => a.id).join(", ") || "(none)"}`,
+      );
+    }
+
+    // AC: @dispatch-agent-action-input ac-4 — propagate correlation_id and group_id
+    // via env vars so the spawned agent inherits the event correlation chain
+    const env: Record<string, string> = {};
+    if (options.correlation_id) {
+      env.KSPEC_CORRELATION_ID = options.correlation_id;
+    }
+    if (options.group_id) {
+      env.KSPEC_COMPOSITION_GROUP_ID = options.group_id;
+    }
+
+    const sessionId = ulid();
+    const result = await runInvocation({
+      agent: agentDef,
+      specDir: ctx.specDir,
+      cwd: projectDir,
+      taskRef: options.task_ref,
+      prompt: options.prompt ?? `Run as agent "${options.agent_id}".`,
+      trigger: "manual",
+      timeoutMinutes: options.timeout_minutes,
+      sessionId,
+      ...(Object.keys(env).length > 0 && { env }),
+    });
+
+    return { invocation_id: result.session.id };
+  };
+}
+
+/**
  * Start the schedule engine for a project, integrating with the dispatch engine's event bus.
  * AC: @dispatch-schedule-entities ac-1 through ac-6
  */
@@ -122,13 +172,16 @@ async function startScheduleEngine(
   engine: DispatchEngine,
   pubsub?: PubSubManager,
 ): Promise<void> {
-  // Create action executor wired to the event bus and engine's session registry
+  // Create action executor wired to the event bus, agent spawner, and engine's session registry
+  // AC: @automation-action-type-completeness ac-1, ac-5
   const actionExecutor = new ActionExecutor({
     projectDir,
     kspecCliPath: DEFAULT_KSPEC_CLI_PATH,
     sessionRegistry: engine.sessionRegistry,
+    agentSpawner: createAutomationAgentSpawner(projectDir),
     onActionRunEvent: (event) => {
       // Emit action lifecycle events on the shared bus
+      // AC: @automation-action-type-completeness ac-5 — include error and failure_reason for diagnosability
       engine.eventBus.emit({
         event_type: event.type,
         source_type: "schedule_engine",
@@ -142,6 +195,10 @@ async function startScheduleEngine(
             duration_ms: event.action_run.duration_ms,
           }),
           ...(event.action_run.invocation_id && { session_id: event.action_run.invocation_id }),
+          ...(event.action_run.error && { error: event.action_run.error }),
+          ...(event.action_run.failure_reason && {
+            failure_reason: event.action_run.failure_reason,
+          }),
         },
         causation_id: event.event_context.causation_id,
         correlation_id: event.event_context.correlation_id,
@@ -186,11 +243,14 @@ async function startHookExecutor(
   const ctx = await initContext(projectDir);
   const meta = await loadMetaContext(ctx);
 
+  // AC: @automation-action-type-completeness ac-2, ac-5
   const actionExecutor = new ActionExecutor({
     projectDir,
     kspecCliPath: DEFAULT_KSPEC_CLI_PATH,
     sessionRegistry: engine.sessionRegistry,
+    agentSpawner: createAutomationAgentSpawner(projectDir),
     onActionRunEvent: (event) => {
+      // AC: @automation-action-type-completeness ac-5 — include error and failure_reason for diagnosability
       engine.eventBus.emit({
         event_type: event.type,
         source_type: "api",
@@ -203,6 +263,10 @@ async function startHookExecutor(
             duration_ms: event.action_run.duration_ms,
           }),
           ...(event.action_run.invocation_id && { session_id: event.action_run.invocation_id }),
+          ...(event.action_run.error && { error: event.action_run.error }),
+          ...(event.action_run.failure_reason && {
+            failure_reason: event.action_run.failure_reason,
+          }),
         },
         causation_id: event.event_context.causation_id,
         correlation_id: event.event_context.correlation_id,
@@ -251,11 +315,14 @@ async function startJoinAccumulator(
   const compositions = meta.manifest?.compositions ?? [];
   if (compositions.length === 0) return;
 
+  // AC: @automation-action-type-completeness ac-3, ac-5
   const actionExecutor = new ActionExecutor({
     projectDir,
     kspecCliPath: DEFAULT_KSPEC_CLI_PATH,
     sessionRegistry: engine.sessionRegistry,
+    agentSpawner: createAutomationAgentSpawner(projectDir),
     onActionRunEvent: (event) => {
+      // AC: @automation-action-type-completeness ac-5 — include error and failure_reason for diagnosability
       engine.eventBus.emit({
         event_type: event.type,
         source_type: "api",
@@ -270,6 +337,10 @@ async function startJoinAccumulator(
             duration_ms: event.action_run.duration_ms,
           }),
           ...(event.action_run.invocation_id && { session_id: event.action_run.invocation_id }),
+          ...(event.action_run.error && { error: event.action_run.error }),
+          ...(event.action_run.failure_reason && {
+            failure_reason: event.action_run.failure_reason,
+          }),
         },
         causation_id: event.event_context.causation_id,
         correlation_id: event.event_context.correlation_id,
