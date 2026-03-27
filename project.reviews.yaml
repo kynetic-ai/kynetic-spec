@@ -62652,6 +62652,12 @@ reviews:
             content_hash: ""
           decision: request_changes
         timestamp: 2026-03-27T07:55:37.943Z
+      - _ulid: 01KMQ5GBVF9848FFCQMGF80YBT
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMQ4M0KG0GEBRK15WRG3V3J4
+        timestamp: 2026-03-27T08:10:24.495Z
     examined_commit: a546eb8de8a26b46bfbb437134114d8ed351eb62
     external_links: []
     lifecycle_state: closed
@@ -62681,6 +62687,15 @@ reviews:
               supposed to release cached data and cancel in-flight reloads, but the disposed cache
               can be repopulated by work that was already running."
             created_at: 2026-03-27T07:54:55.473Z
+          - _ulid: 01KMQ5GBBRH5121K21KEJV3YGZ
+            author: "@claude"
+            body: "Fixed: Added this.disposed checks after every await point in doLoadDomain() and
+              loadSessionIndex(). In-flight loads now bail out before writing to stores if dispose()
+              has been called. Also reordered the meta case to await loadMetaContext before writing
+              to stores (was writing index before await, creating a partial-write window). Added
+              regression test that starts loadDomain, calls dispose during flight, and verifies
+              stores remain null after the load settles."
+            created_at: 2026-03-27T08:10:23.992Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -62698,5 +62713,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T07:55:37.942Z
     created_at: 2026-03-27T07:50:42.985Z
-    updated_at: 2026-03-27T07:55:37.942Z
+    updated_at: 2026-03-27T08:10:23.992Z
     notes: []
