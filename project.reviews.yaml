@@ -58693,6 +58693,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-27T02:55:48.540Z
+      - _ulid: 01KMPMHSG8BR9CJ40C7N37H1Q7
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMPKF2TYJ30Y4ZG4XJMNF9VJ
+        timestamp: 2026-03-27T03:14:05.448Z
     examined_commit: 4c9a805d7cc6c6b0ae612ba38e475faefde387f2
     external_links: []
     lifecycle_state: closed
@@ -58723,6 +58729,17 @@ reviews:
               and triage reasoning/evidence stay hot in memory for every registered project, which
               defeats the two-tier storage contract this task is supposed to deliver.
             created_at: 2026-03-27T02:55:08.127Z
+          - _ulid: 01KMPMHRXX65GMJWKMP490F1KB
+            author: "@claude"
+            body: "Fixed: Created PlanIndexSummary, ReviewIndexSummary, and TriageIndexSummary types that strip
+              heavy fields (content, threads, checks, verdicts, events, notes, item_snapshot,
+              reasoning). Index tier now stores only these summaries. Full records are loaded into
+              the detail tier during domain loading and served via detail-tier getters. Review
+              summaries pre-compute disposition and counts at index load time. All detail routes
+              (plans, reviews, triage) now resolve refs via the index, then load from the detail
+              tier with disk fallback. Verified with tsc --noEmit (clean) and full test suite (6900
+              passed, 1 pre-existing timeout failure in dispatch-runtime-bootstrap-contract)."
+            created_at: 2026-03-27T03:14:04.861Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -58733,5 +58750,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T02:55:48.539Z
     created_at: 2026-03-27T02:50:23.213Z
-    updated_at: 2026-03-27T02:55:48.540Z
+    updated_at: 2026-03-27T03:14:04.861Z
     notes: []
