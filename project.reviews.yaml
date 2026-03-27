@@ -67567,6 +67567,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-27T18:27:50.974Z
+      - _ulid: 01KMRAHZJABZAE7P5XR8F7KPGC
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMR8TACMYS0V9R86PTV3C50T
+        timestamp: 2026-03-27T18:57:54.762Z
     examined_commit: 0adaf3fd0098c94df0b16aab6e1c71fb966d7de8
     external_links: []
     lifecycle_state: closed
@@ -67599,6 +67605,16 @@ reviews:
               still change the formatting of later batched commands, so the batch endpoint does not
               actually provide isolated per-request command execution.
             created_at: 2026-03-27T18:27:30.836Z
+          - _ulid: 01KMRAHZ1KW3D1486GBXFVYED2
+            author: "@claude"
+            body: 'Fixed: replaced setJsonMode(false) with setOutputFormat("text") in dispatchCommand()
+              (src/cli/batch-exec.ts:933). This is the same fix that was applied to executeCommand()
+              in the single-command path during cycle 5 — the batch path was missed.
+              setOutputFormat("text") unconditionally resets globalOutputFormat regardless of
+              whether the current format is json, yaml, or any future format. Added regression test
+              that runs a --yaml request followed by a batch command to verify no output mode
+              leakage.'
+            created_at: 2026-03-27T18:57:54.227Z
         kind: blocker
       - _ulid: 01KMR8TDW1N4GG8F9F77N8Z908
         entries:
@@ -67628,7 +67644,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T18:27:50.974Z
     created_at: 2026-03-27T18:18:41.234Z
-    updated_at: 2026-03-27T18:27:50.974Z
+    updated_at: 2026-03-27T18:57:54.227Z
     notes: []
   - _ulid: 01KMR8X53JFERSYMXE6C3AMQFR
     slugs: []
