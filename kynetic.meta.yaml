@@ -8959,6 +8959,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T18:29:24.383Z
+  - _ulid: 01KMR9AEEX90TCY0QT118R948Z
+    type: friction
+    content: "Review gap: daemon-read spec clarifications can look correct on warm-cache paths while
+      cache-miss/degraded paths still call initContext() and inherit CLI drift-check behavior.
+      Reviewers had to manually trace fallback paths across daemon routes and parser initContext to
+      disprove the claim."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T18:36:19.293Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
