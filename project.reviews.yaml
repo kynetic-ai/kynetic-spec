@@ -60425,6 +60425,78 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-27T04:58:42.799Z
+      - _ulid: 01KMPV5G9Z98ZG6MHC5249B985
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMPTG2W2MPWBTF80M7EMVMK0
+        timestamp: 2026-03-27T05:09:42.847Z
+      - _ulid: 01KMPV5K8889XRZH6ESN3M8VFG
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMPTG2W2MPWBTF80M7EMVMK0
+        timestamp: 2026-03-27T05:09:45.864Z
+      - _ulid: 01KMPV5PAGC7XJBBGN0W66FYTD
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMPTG4NRGJK83KH0JEY2PRQR
+        timestamp: 2026-03-27T05:09:49.016Z
+      - _ulid: 01KMPV5SBGBJ5TMCTPAG4Q6F9D
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMPTG4NRGJK83KH0JEY2PRQR
+        timestamp: 2026-03-27T05:09:52.112Z
+      - _ulid: 01KMPV5W9HX19EP4XZC1Q265VP
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMPTG4PE91JPQB6TA0N3J79C
+        timestamp: 2026-03-27T05:09:55.121Z
+      - _ulid: 01KMPV5Z8Y4VYWECMHAEE9VA6C
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMPTG4PE91JPQB6TA0N3J79C
+        timestamp: 2026-03-27T05:09:58.175Z
+      - _ulid: 01KMPV62C4ZQ6D65QNYG5AQTWA
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMPTG6JN76XF7R9CXAG2YZCD
+        timestamp: 2026-03-27T05:10:01.348Z
+      - _ulid: 01KMPV65DETZ148E3EYX0ZSTJT
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMPTG6JN76XF7R9CXAG2YZCD
+        timestamp: 2026-03-27T05:10:04.462Z
+      - _ulid: 01KMPV68N7FCBF6DWPB17B8S1A
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMPTG8H3F973RYNXF5M9J7MS
+        timestamp: 2026-03-27T05:10:07.783Z
+      - _ulid: 01KMPV6BK5QKHMXMQ87RKPXCBF
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMPTG8H3F973RYNXF5M9J7MS
+        timestamp: 2026-03-27T05:10:10.789Z
+      - _ulid: 01KMPV6EPE47M4AM5M6G2R6NSK
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMPTH174YTP29FG79VZG0PQX
+        timestamp: 2026-03-27T05:10:13.966Z
+      - _ulid: 01KMPV6HR5P705KJQ9BE6Y8V8G
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMPTH174YTP29FG79VZG0PQX
+        timestamp: 2026-03-27T05:10:17.093Z
     examined_commit: c903c3369660d1b9746492fa5c1fd4e9844eaec3
     external_links: []
     lifecycle_state: closed
@@ -60454,7 +60526,14 @@ reviews:
               ac-warming-availability for plan detail requests and defeats the progressive-loading
               contract during startup.
             created_at: 2026-03-27T04:58:00.962Z
+          - _ulid: 01KMPV5F3VB7KNRS7TP3P16HBX
+            author: "@claude"
+            body: "Fixed: Plan detail endpoint now checks plansDomainState === 'loading' and returns
+              {_cache_status: 'loading'} before any disk fallback, matching the list route pattern."
+            created_at: 2026-03-27T05:09:41.627Z
         kind: blocker
+        resolved_at: 2026-03-27T05:09:44.595Z
+        resolved_by: "@claude"
       - _ulid: 01KMPTG4NRGJK83KH0JEY2PRQR
         anchor:
           type: code
@@ -60474,7 +60553,14 @@ reviews:
               edits outside the route write-through path can leave the task cache stale, which
               breaks @daemon-entity-cache ac-watcher-invalidation and ac-granular-reload."
             created_at: 2026-03-27T04:58:02.808Z
+          - _ulid: 01KMPV5N3GXRFWSAPRSM4377PV
+            author: "@claude"
+            body: "Fixed: fileToDomain() now includes a tasks/ prefix check to map split-backend per-task paths
+              (tasks/<ULID>/task.yaml, tasks/<ULID>/notes.yaml) to the tasks domain."
+            created_at: 2026-03-27T05:09:47.760Z
         kind: blocker
+        resolved_at: 2026-03-27T05:09:50.979Z
+        resolved_by: "@claude"
       - _ulid: 01KMPTG4PE91JPQB6TA0N3J79C
         anchor:
           type: code
@@ -60493,7 +60579,16 @@ reviews:
               the persisted baseline instead of adding to it, so active sessions can regress from 25
               events to 1. That breaks @session-summary-cache ac-live-counter."
             created_at: 2026-03-27T04:58:02.830Z
+          - _ulid: 01KMPV5V7G0PAT25JQ8PC37KBJ
+            author: "@claude"
+            body: "Fixed: incrementSessionEventCount() now seeds the live counter from the persisted event_count
+              in the session index on first call (when liveEventCounts has no entry for the
+              session). This preserves the baseline so increments add to the persisted count rather
+              than starting from zero."
+            created_at: 2026-03-27T05:09:54.032Z
         kind: blocker
+        resolved_at: 2026-03-27T05:09:57.059Z
+        resolved_by: "@claude"
       - _ulid: 01KMPTG6JN76XF7R9CXAG2YZCD
         anchor:
           type: code
@@ -60512,7 +60607,15 @@ reviews:
               instead of a loading response. That violates @daemon-entity-cache
               ac-warming-availability and means detail traffic can bypass the cache during warmup."
             created_at: 2026-03-27T04:58:04.757Z
+          - _ulid: 01KMPV617YAAMT75CJS47ZVZRH
+            author: "@claude"
+            body: "Fixed: Review detail endpoint now checks reviewsDomainState === 'loading' and returns
+              {_cache_status: 'loading'} before any disk fallback, matching the pattern used on list
+              routes."
+            created_at: 2026-03-27T05:10:00.190Z
         kind: blocker
+        resolved_at: 2026-03-27T05:10:03.263Z
+        resolved_by: "@claude"
       - _ulid: 01KMPTG8H3F973RYNXF5M9J7MS
         anchor:
           type: code
@@ -60532,7 +60635,15 @@ reviews:
               build pipeline, so npm test can now report a cached pass for an outdated build/test
               configuration. That weakens the repo's required verification gate."
             created_at: 2026-03-27T04:58:06.755Z
+          - _ulid: 01KMPV678W3P2S0F7SVX5EJ2T3
+            author: "@claude"
+            body: "Fixed: TEST_INPUT_PATHS in scripts/test.cjs now includes package.json, scripts/test.cjs, and
+              scripts/dependency-health.cjs. Changes to the build pipeline configuration or test
+              runner itself will now invalidate cached test results."
+            created_at: 2026-03-27T05:10:06.364Z
         kind: blocker
+        resolved_at: 2026-03-27T05:10:09.700Z
+        resolved_by: "@claude"
       - _ulid: 01KMPTH174YTP29FG79VZG0PQX
         entries:
           - _ulid: 01KMPTH174HTC4XJBP6WQYZ3CB
@@ -60555,7 +60666,13 @@ reviews:
               changes. Categories searched: correctness, edge cases, error handling, test quality,
               integration, and verification gates."
             created_at: 2026-03-27T04:58:32.036Z
+          - _ulid: 01KMPV6DM5B6A7Z89038563TJ0
+            author: "@claude"
+            body: Acknowledged. All 5 blockers addressed in commit 8dfaea219.
+            created_at: 2026-03-27T05:10:12.869Z
         kind: question
+        resolved_at: 2026-03-27T05:10:15.816Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -60565,7 +60682,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T04:58:42.798Z
     created_at: 2026-03-27T04:46:33.884Z
-    updated_at: 2026-03-27T04:58:42.798Z
+    updated_at: 2026-03-27T05:10:15.816Z
     notes: []
   - _ulid: 01KMPTN6RRKN85Z0T17VP4MDSD
     slugs: []
