@@ -57255,6 +57255,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-27T00:56:43.059Z
+      - _ulid: 01KMPCPX3VXKB5TZ4VKQD3560H
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMPCPWPD0K5MH0VVSNR70WQ1
+        timestamp: 2026-03-27T00:57:04.379Z
     examined_commit: 37294e673fe67d970ae172f4d510c5ca5116d0fe
     external_links: []
     lifecycle_state: open
@@ -57284,7 +57291,29 @@ reviews:
               which violates watcher invalidation for the affected domain."
             created_at: 2026-03-27T00:56:39.875Z
         kind: blocker
+      - _ulid: 01KMPCPWPD0K5MH0VVSNR70WQ1
+        anchor:
+          type: code
+          commit: 37294e673fe67d970ae172f4d510c5ca5116d0fe
+          line_end: 180
+          line_start: 178
+          path: src/daemon/entity-cache.ts
+          side: head
+        entries:
+          - _ulid: 01KMPCPWPD9QES7P97Y3YEDT4Q
+            author: "@claude"
+            body: "fileToDomain() maps kynetic.yaml only to the meta domain, but loadAllItems() rebuilds the
+              items index from the manifest itself plus its includes. That leaves manifest-backed
+              item data stale after watcher invalidation. I reproduced this with a temp copy of
+              tests/fixtures: after ProjectEntityCache.loadDomain('items'), removing
+              modules/core.yaml from kynetic.yaml and calling handleFileChange(tmp, manifestPath)
+              kept the items index unchanged (before_count=3, after_count=3, Core Module still
+              present). Any inline item edits or include list changes in the manifest will therefore
+              remain stale until some unrelated items-domain reload happens, which violates watcher
+              invalidation for the affected domain."
+            created_at: 2026-03-27T00:57:03.949Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T00:50:29.571Z
-    updated_at: 2026-03-27T00:56:42.609Z
+    updated_at: 2026-03-27T00:57:03.949Z
     notes: []
