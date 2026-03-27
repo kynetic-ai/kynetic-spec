@@ -164,24 +164,19 @@ export function createTriageRoutes(options: TriageRouteOptions) {
       .get(
         "/export",
         async ({ query, projectContext }) => {
-          // AC: @daemon-entity-cache ac-serve-from-memory — use cached triage records when ready
+          // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
           const cache = getEntityCache?.(projectContext.path);
           const triageDomainState = cache?.getDomainState("triage");
-
-          // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
           if (cache && triageDomainState === "loading") {
             return { items: [], _cache_status: "loading" as const };
           }
 
-          let records;
-          if (cache && triageDomainState === "ready") {
-            records = cache.getTriageIndex();
-          }
-          if (!records) {
-            // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-            const ctx = await initContext(projectContext.path);
-            records = await loadTriageRecords(ctx);
-          }
+          // Export requires full triage records (item_snapshot, reasoning, etc.)
+          // — the index tier (TriageIndexSummary) strips those fields.
+          // Always load full records from disk for export.
+          // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+          const ctx = await initContext(projectContext.path);
+          let records = await loadTriageRecords(ctx);
 
           // Optional status filter on export
           if (query.status) {

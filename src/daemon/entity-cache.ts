@@ -415,6 +415,23 @@ export class ProjectEntityCache {
   /** Live event counters for active sessions (migrated from SessionSummaryCache). */
   private liveEventCounts = new Map<string, number>();
 
+  /**
+   * Domain-level debounce timers for coalescing rapid watcher invalidations.
+   * When multiple files in the same domain change within the debounce window
+   * (e.g. modules/a.yaml and modules/b.yaml both map to "items"), only one
+   * reload fires.
+   *
+   * AC: @daemon-entity-cache ac-reload-dedup
+   */
+  private domainDebounceTimers = new Map<CacheDomain, NodeJS.Timeout>();
+  private domainDebounceMs = 100;
+
+  /**
+   * Deferred domain invalidation promises for callers awaiting the debounced reload.
+   * AC: @daemon-entity-cache ac-reload-dedup
+   */
+  private domainDebouncePromises = new Map<CacheDomain, { resolve: () => void; promise: Promise<void> }>();
+
   /** Whether dispose() has been called. */
   private disposed = false;
 
@@ -837,8 +854,13 @@ export class ProjectEntityCache {
    * Invalidate a domain and reload from disk.
    * Called by file watcher when a shadow branch file changes.
    *
+   * Uses domain-level debouncing to coalesce rapid multi-file changes into
+   * a single reload per domain. For example, if modules/a.yaml and
+   * modules/b.yaml both change within 100ms, only one "items" reload fires.
+   *
    * AC: @daemon-entity-cache ac-watcher-invalidation
    * AC: @daemon-entity-cache ac-granular-reload
+   * AC: @daemon-entity-cache ac-reload-dedup
    */
   async invalidateDomain(domain: CacheDomain): Promise<void> {
     if (this.disposed) return;
@@ -849,7 +871,38 @@ export class ProjectEntityCache {
       return;
     }
 
-    await this.loadDomain(domain);
+    // AC: @daemon-entity-cache ac-reload-dedup — domain-level debounce.
+    // Reset the timer on each call; when it finally fires, all callers
+    // awaiting this domain's debounced promise get resolved together.
+    const existingTimer = this.domainDebounceTimers.get(domain);
+    if (existingTimer) {
+      clearTimeout(existingTimer);
+    }
+
+    // Create or reuse the deferred promise for this domain's debounce window
+    let deferred = this.domainDebouncePromises.get(domain);
+    if (!deferred) {
+      let resolve!: () => void;
+      const promise = new Promise<void>((r) => {
+        resolve = r;
+      });
+      deferred = { resolve, promise };
+      this.domainDebouncePromises.set(domain, deferred);
+    }
+
+    const timer = setTimeout(async () => {
+      this.domainDebounceTimers.delete(domain);
+      const d = this.domainDebouncePromises.get(domain);
+      this.domainDebouncePromises.delete(domain);
+      try {
+        await this.loadDomain(domain);
+      } finally {
+        d?.resolve();
+      }
+    }, this.domainDebounceMs);
+
+    this.domainDebounceTimers.set(domain, timer);
+    await deferred.promise;
   }
 
   /**
@@ -912,6 +965,17 @@ export class ProjectEntityCache {
     this.inFlightReloads.clear();
     this.writeThroughSkip.clear();
     this.liveEventCounts.clear();
+
+    // Clear domain debounce timers
+    for (const timer of this.domainDebounceTimers.values()) {
+      clearTimeout(timer);
+    }
+    this.domainDebounceTimers.clear();
+    // Resolve any pending debounce promises so awaiting callers don't hang
+    for (const deferred of this.domainDebouncePromises.values()) {
+      deferred.resolve();
+    }
+    this.domainDebouncePromises.clear();
   }
 
   /** Check if the cache has been disposed. */

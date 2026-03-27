@@ -555,15 +555,16 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
 
         if (metadata?.task_id) {
           try {
-            // AC: @daemon-entity-cache ac-serve-from-memory — use cached tasks/items when available
+            // AC: @daemon-entity-cache ac-serve-from-memory — use cached tasks for task_title resolution
             const tasksDomainReady = entityCache && entityCache.getDomainState("tasks") === "ready";
-            const itemsDomainReady = entityCache && entityCache.getDomainState("items") === "ready";
             const tasks = tasksDomainReady
               ? (entityCache!.getTaskIndex() as unknown as LoadedTask[])
               : await resolveTaskDataManager(await getCtx()).loadAllTasks(await getCtx());
-            const items = itemsDomainReady
-              ? (entityCache!.getItemIndex() as unknown as LoadedSpecItem[])
-              : await loadAllItems(await getCtx());
+
+            // For spec_context we need full spec items with acceptance_criteria content.
+            // The cache item index only stores acceptance_criteria_count (summary tier),
+            // so always load full items from disk when building spec_context.
+            const items = await loadAllItems(await getCtx());
             const index = new ReferenceIndex(tasks ?? [], items ?? []);
             const taskResult = index.resolve(metadata.task_id);
             if (taskResult.ok) {
