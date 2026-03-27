@@ -599,6 +599,17 @@ export class ProjectEntityCache {
   async loadAll(): Promise<void> {
     if (this.disposed) return;
 
+    // AC: @daemon-entity-cache ac-warming-availability — mark all domains
+    // as "loading" upfront so routes return a loading indicator for domains
+    // that haven't started their load yet (not-yet-started domains would
+    // otherwise remain "unloaded" and routes would fall back to disk).
+    for (const domain of DOMAIN_LOAD_ORDER) {
+      const store = this.getStore(domain);
+      if (store.state === "unloaded") {
+        store.state = "loading";
+      }
+    }
+
     for (const domain of DOMAIN_LOAD_ORDER) {
       if (this.disposed) return;
       await this.loadDomain(domain);
@@ -688,31 +699,25 @@ export class ProjectEntityCache {
       case "plans": {
         const loadedPlans = await loadPlans(ctx);
         this.plans.index = loadedPlans.map(toPlanIndexSummary);
+        // AC: @daemon-entity-cache ac-detail-on-demand — clear detail cache;
+        // full plan records are loaded on demand when accessed by ID.
         this.plans.details.clear();
-        // Populate detail tier with full records for on-demand access
-        for (const plan of loadedPlans) {
-          this.plans.details.set(plan._ulid, plan);
-        }
         break;
       }
       case "triage": {
         const triageRecords = await loadTriageRecords(ctx);
         this.triage.index = triageRecords.map(toTriageIndexSummary);
+        // AC: @daemon-entity-cache ac-detail-on-demand — clear detail cache;
+        // full triage records are loaded on demand when accessed by ID.
         this.triage.details.clear();
-        // Populate detail tier with full records for on-demand access
-        for (const record of triageRecords) {
-          this.triage.details.set(record._ulid, record);
-        }
         break;
       }
       case "reviews": {
         const reviewRecords = await loadReviewRecords(ctx);
         this.reviews.index = reviewRecords.map(toReviewIndexSummary);
+        // AC: @daemon-entity-cache ac-detail-on-demand — clear detail cache;
+        // full review records are loaded on demand when accessed by ID.
         this.reviews.details.clear();
-        // Populate detail tier with full records for on-demand access
-        for (const review of reviewRecords) {
-          this.reviews.details.set(review._ulid, review);
-        }
         break;
       }
       case "sessions": {

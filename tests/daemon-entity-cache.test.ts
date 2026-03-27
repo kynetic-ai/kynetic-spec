@@ -203,6 +203,125 @@ describe("ProjectEntityCache", () => {
       expect(detail).not.toBeNull();
       expect(detail!.id).toBe("session-001");
     });
+
+    it("should not eagerly preload plan details during index load", async () => {
+      // Seed plans file in projectA root (specDir resolves to project root for non-shadow fixtures)
+      // Note: Crockford base32 excludes I, L, O, U
+      const planUlid = "01PPAN00000000000000000000";
+      await fs.writeFile(
+        join(projectA, "project.plans.yaml"),
+        yamlStringify({
+          kynetic_plans: "1.0",
+          plans: [
+            {
+              _ulid: planUlid,
+              slugs: ["plan-test"],
+              title: "Test Plan",
+              status: "draft",
+              content: "Heavy content that should not be in the index tier",
+              created_at: "2026-01-01T00:00:00.000Z",
+              derived_tasks: [],
+              derived_specs: [],
+              notes: [],
+            },
+          ],
+        }),
+        "utf-8",
+      );
+
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("plans");
+
+      // Index should be populated
+      expect(cache.getPlansIndex()).not.toBeNull();
+      expect(cache.getPlansIndex()!.length).toBe(1);
+      expect(cache.getPlansIndex()![0]._ulid).toBe(planUlid);
+
+      // Detail tier should NOT be eagerly preloaded — ac-detail-on-demand
+      expect(cache.getPlanDetail(planUlid)).toBeNull();
+    });
+
+    it("should not eagerly preload review details during index load", async () => {
+      // Seed reviews file in projectA root (specDir resolves to project root for non-shadow fixtures)
+      const reviewUlid = "01REVW00000000000000000000";
+      await fs.writeFile(
+        join(projectA, "project.reviews.yaml"),
+        yamlStringify({
+          kynetic_reviews: "1.0",
+          reviews: [
+            {
+              _ulid: reviewUlid,
+              slugs: ["review-test"],
+              title: "Test Review",
+              lifecycle_state: "open",
+              author: "@test",
+              subject: {
+                type: "task",
+                ref: "@task-test",
+                shadow_commit: "abc123",
+                content_hash: "def456",
+              },
+              related_refs: [],
+              created_at: "2026-01-01T00:00:00.000Z",
+              threads: [],
+              checks: [],
+              verdicts: [],
+              events: [],
+              external_links: [],
+            },
+          ],
+        }),
+        "utf-8",
+      );
+
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("reviews");
+
+      // Index should be populated
+      expect(cache.getReviewsIndex()).not.toBeNull();
+      expect(cache.getReviewsIndex()!.length).toBe(1);
+      expect(cache.getReviewsIndex()![0]._ulid).toBe(reviewUlid);
+
+      // Detail tier should NOT be eagerly preloaded
+      expect(cache.getReviewDetail(reviewUlid)).toBeNull();
+    });
+
+    it("should not eagerly preload triage details during index load", async () => {
+      // Seed triage file in projectA root (specDir resolves to project root for non-shadow fixtures)
+      const triageUlid = "01TRAG00000000000000000000";
+      const inboxUlid = "01BNBX00000000000000000000";
+      await fs.writeFile(
+        join(projectA, "project.triage.yaml"),
+        yamlStringify({
+          kynetic_triage: "1.0",
+          triage: [
+            {
+              _ulid: triageUlid,
+              inbox_ref: inboxUlid,
+              item_snapshot: "Heavy snapshot content for triage record",
+              status: "triaged",
+              action: "promote",
+              reasoning: "This is heavy reasoning content",
+              decided_by: "@test",
+              evidence_refs: [],
+              created_at: "2026-01-01T00:00:00.000Z",
+            },
+          ],
+        }),
+        "utf-8",
+      );
+
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("triage");
+
+      // Index should be populated
+      expect(cache.getTriageIndex()).not.toBeNull();
+      expect(cache.getTriageIndex()!.length).toBe(1);
+      expect(cache.getTriageIndex()![0]._ulid).toBe(triageUlid);
+
+      // Detail tier should NOT be eagerly preloaded
+      expect(cache.getTriageDetail(triageUlid)).toBeNull();
+    });
   });
 
   // ─── AC: ac-watcher-invalidation ───────────────────────────────────────
@@ -971,12 +1090,30 @@ describe("ProjectEntityCache", () => {
 
   // AC: @daemon-entity-cache ac-warming-availability
   describe("ac-warming-availability: route-level integration", () => {
-    it("should report unloaded state before loadAll, matching route loading check", () => {
+    it("should report unloaded state before loadAll is called", () => {
       const cache = registerEntityCache(projectA);
 
-      // Route checks: cache.getDomainState("tasks") === "loading"
+      // Before loadAll, all domains are unloaded
       expect(cache.getDomainState("tasks")).toBe("unloaded");
       expect(cache.getTaskIndex()).toBeNull();
+    });
+
+    it("should mark all domains as loading when loadAll starts", async () => {
+      const cache = registerEntityCache(projectA);
+
+      // Start loadAll but don't await — check state synchronously after first tick
+      const loadPromise = cache.loadAll();
+
+      // After loadAll starts, all domains should be "loading" (not "unloaded")
+      // so routes return _cache_status: "loading" for not-yet-started domains
+      // instead of falling back to disk.
+      for (const domain of DOMAIN_LOAD_ORDER) {
+        const state = cache.getDomainState(domain);
+        // Each domain is either "loading" (not yet loaded) or "ready" (already completed)
+        expect(["loading", "ready"]).toContain(state);
+      }
+
+      await loadPromise;
     });
 
     it("should report ready after loadAll, matching route ready check", async () => {
