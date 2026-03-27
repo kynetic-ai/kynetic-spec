@@ -1958,3 +1958,13 @@ inbox:
       - testing
     added_by: "@claude"
     created_at: 2026-03-27T00:36:15.700Z
+  - _ulid: 01KMPS18JN9ZTBW5586QZAV183
+    text: Fix agent-dispatch-engine.test.ts duplicate mockMetadata declaration at line 2532 causing
+      transform error. Pre-existing on dev branch — every test run reports 1 spurious failure,
+      adding noise for automated dispatch cycles.
+    tags:
+      - bug
+      - testing
+      - agent-runtime
+    added_by: "@claude"
+    created_at: 2026-03-27T04:32:26.709Z
