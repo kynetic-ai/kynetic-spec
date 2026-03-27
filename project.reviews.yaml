@@ -66508,6 +66508,16 @@ reviews:
         runner: kspec
         created_at: 2026-03-27T17:43:13.048Z
         completed_at: 2026-03-27T17:43:13.048Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed locally in this snapshot: 1947 suites, 6969 tests."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-27T17:43:17.620Z
+        completed_at: 2026-03-27T17:43:17.620Z
     events:
       - _ulid: 01KMR61WDGD46E3594F5MAGR81
         actor: "@claude"
@@ -66550,6 +66560,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMR699VEF4ZFNQ2451MJKN9C
         timestamp: 2026-03-27T17:43:16.564Z
+      - _ulid: 01KMR69BZS3T0ZX49DCMZ5QFVD
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-27T17:43:18.265Z
     examined_commit: 87a703c5621e68433037da356a68de5007562e68
     external_links: []
     lifecycle_state: open
@@ -66622,5 +66639,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-27T17:39:12.945Z
-    updated_at: 2026-03-27T17:43:16.078Z
+    updated_at: 2026-03-27T17:43:17.620Z
     notes: []
