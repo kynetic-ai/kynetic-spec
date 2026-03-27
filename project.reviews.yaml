@@ -58378,6 +58378,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMPJBH23NKM58F2MJ560DBCV
         timestamp: 2026-03-27T02:35:43.459Z
+      - _ulid: 01KMPJBJRJGE3QM9EJVZ4PMWXA
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMPJBJBXDDPJGZJYR4QNS515
+        timestamp: 2026-03-27T02:35:44.786Z
     examined_commit: 303006d7350881ac5d8a71191978dbc621d8adbd
     external_links: []
     lifecycle_state: open
@@ -58440,7 +58447,25 @@ reviews:
               write-through guarantee for daemon API mutations."
             created_at: 2026-03-27T02:35:43.044Z
         kind: blocker
+      - _ulid: 01KMPJBJBXDDPJGZJYR4QNS515
+        anchor:
+          type: code
+          commit: 303006d7350881ac5d8a71191978dbc621d8adbd
+          line_end: 159
+          line_start: 158
+          path: packages/daemon/src/project-context.ts
+          side: head
+        entries:
+          - _ulid: 01KMPJBJBY9FXYGYHGDK1XY3S2
+            author: "@claude"
+            body: A watcher permanent failure unregisters the project directly in , but that code path never
+              disposes the entity cache. The server only calls  from the projects-route callback, so
+              a failed watcher leaves the old cache instance registered and reusable on the next
+              registration instead of releasing memory and starting clean. That violates the
+              unregister-cleanup requirement.
+            created_at: 2026-03-27T02:35:44.382Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T02:27:19.553Z
-    updated_at: 2026-03-27T02:35:43.044Z
+    updated_at: 2026-03-27T02:35:44.382Z
     notes: []
