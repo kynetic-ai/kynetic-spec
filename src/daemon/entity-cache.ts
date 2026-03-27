@@ -200,6 +200,15 @@ export function fileToDomain(relativePath: string): CacheDomain[] | null {
     domains.push("items");
   }
 
+  // Session files — when handleFileChange is called with sessionsDir as
+  // the base, the relative path is a bare ULID (session root from
+  // SessionWatcher.getBroadcastPath) or ULID/filename (e.g. metadata.json,
+  // events.jsonl). Match the leading ULID segment (26 Crockford base32 chars).
+  const firstSegment = relativePath.split("/")[0];
+  if (firstSegment && /^[0-9A-HJKMNP-TV-Z]{26}$/i.test(firstSegment)) {
+    domains.push("sessions");
+  }
+
   return domains.length > 0 ? domains : null;
 }
 

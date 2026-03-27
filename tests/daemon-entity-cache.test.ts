@@ -83,6 +83,16 @@ describe("ProjectEntityCache", () => {
       expect(fileToDomain("my-feature.spec.yaml")).toEqual(["items"]);
     });
 
+    // AC: @daemon-entity-cache ac-watcher-invalidation
+    it("should map session ULID paths to sessions domain", () => {
+      // Bare ULID (session root from SessionWatcher.getBroadcastPath)
+      expect(fileToDomain("01TASKA0000000000000000000")).toEqual(["sessions"]);
+      // ULID/filename (metadata file)
+      expect(fileToDomain("01TASKA0000000000000000000/metadata.json")).toEqual(["sessions"]);
+      // ULID/filename (events file)
+      expect(fileToDomain("01TASKA0000000000000000000/events.jsonl")).toEqual(["sessions"]);
+    });
+
     it("should return null for unmapped files", () => {
       expect(fileToDomain("random.txt")).toBeNull();
       expect(fileToDomain("notes/something.md")).toBeNull();
@@ -289,6 +299,26 @@ describe("ProjectEntityCache", () => {
       expect(itemsAfter).not.toBeNull();
       expect(metaAfter).not.toBe(metaBefore);
       expect(itemsAfter).not.toBe(itemsBefore);
+    });
+
+    it("should invalidate sessions domain when session watcher path is received", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("sessions");
+
+      const before = cache.getSessionIndex();
+      expect(before).not.toBeNull();
+
+      // Simulate session watcher: sessionsDir as kspecDir, session root as filePath.
+      // SessionWatcher.getBroadcastPath returns the session root directory
+      // (e.g. /path/to/.kspec-sessions/01ULID...), and project-context.ts
+      // passes sessionsDir as the second argument to handleFileChange.
+      const sessionsDir = join(projectA, ".kspec-sessions");
+      const sessionPath = join(sessionsDir, "01TASKA0000000000000000000");
+      await cache.handleFileChange(sessionsDir, sessionPath);
+
+      // Sessions domain should have been reloaded (new array reference)
+      const after = cache.getSessionIndex();
+      expect(after).not.toBe(before);
     });
   });
 

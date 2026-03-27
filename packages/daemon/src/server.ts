@@ -518,21 +518,16 @@ export async function createServer(options: ServerOptions) {
   });
 
   // AC: @daemon-entity-cache ac-watcher-invalidation — wire cache invalidation to file watcher
+  // Both .kspec/ and .kspec-sessions/ changes flow through handleFileChange;
+  // fileToDomain() maps YAML files to their domains and ULID-prefixed session
+  // paths to the sessions domain.
   projectContextManager.setCacheInvalidationCallback((projectPath, kspecDir, file) => {
     const cache = entityCacheModule.getEntityCache(projectPath);
     if (!cache) return;
 
-    if (kspecDir.endsWith(".kspec-sessions")) {
-      // Session directory change — directly invalidate sessions domain
-      cache.invalidateDomain("sessions").catch((err: unknown) => {
-        console.error(`[entity-cache] Error invalidating sessions for ${projectPath}:`, err);
-      });
-    } else {
-      // .kspec/ file change — map to domain via file path
-      cache.handleFileChange(kspecDir, file).catch((err: unknown) => {
-        console.error(`[entity-cache] Error handling file change for ${projectPath}:`, err);
-      });
-    }
+    cache.handleFileChange(kspecDir, file).catch((err: unknown) => {
+      console.error(`[entity-cache] Error handling file change for ${projectPath}:`, err);
+    });
   });
 
   // AC: @multi-directory-daemon ac-17 - Start file watcher for startup project
