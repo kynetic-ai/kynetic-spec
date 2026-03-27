@@ -13,6 +13,7 @@
  * - ac-11: GET /api/items/:ref/tasks via AlignmentIndex
  */
 
+import { join } from "path";
 import { Elysia, t } from "elysia";
 import {
   initContext,
@@ -604,18 +605,35 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
         },
       )
 
+      // AC: @daemon-entity-cache ac-serve-from-memory — use cached task/item indexes for related sessions
       .get(
         "/:ref/sessions",
         async ({ params, error: errorResponse, projectContext }) => {
-          const ctx = await initContext(projectContext.path);
-          // Sessions route needs full LoadedSpecItem[] and LoadedTask[] for AlignmentIndex
-          const items = await loadAllItems(ctx);
-          const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+          const cache = getEntityCache?.(projectContext.path);
+          const tasksDomainReady = cache && cache.getDomainState("tasks") === "ready";
+          const itemsDomainReady = cache && cache.getDomainState("items") === "ready";
+
+          let items: LoadedSpecItem[];
+          let tasks: LoadedTask[];
+          let sessionsDir: string;
+
+          if (tasksDomainReady && itemsDomainReady) {
+            // TaskSummary/ItemSummary have _ulid + slugs — sufficient for ReferenceIndex + AlignmentIndex
+            tasks = (cache!.getTaskIndex() ?? []) as unknown as LoadedTask[];
+            items = (cache!.getItemIndex() ?? []) as unknown as LoadedSpecItem[];
+            sessionsDir = join(projectContext.path, ".kspec-sessions");
+          } else {
+            const ctx = await initContext(projectContext.path);
+            items = await loadAllItems(ctx);
+            tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+            sessionsDir = ctx.sessionsDir;
+          }
+
           const result = await getRelatedSessionsForItem({
             itemRef: params.ref,
             items,
             tasks,
-            sessionsDir: ctx.sessionsDir,
+            sessionsDir,
             getEntityCache,
             projectPath: projectContext.path,
           });

@@ -187,14 +187,27 @@ async function filterSessionSummaries(
 
   let tasks: LoadedTask[] | null = null;
   let items: Awaited<ReturnType<typeof loadAllItems>> | null = null;
+  // AC: @daemon-entity-cache ac-serve-from-memory — use cached task/item indexes for alignment filtering
   const ensureAlignmentContext = async () => {
     if (!tasks) {
-      const ctx = await resolveCtx();
-      tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+      const tasksDomainReady = entityCache && entityCache.getDomainState("tasks") === "ready";
+      if (tasksDomainReady) {
+        // TaskSummary has _ulid, slugs, spec_ref, title, status — sufficient for ReferenceIndex + AlignmentIndex
+        tasks = (entityCache!.getTaskIndex() ?? []) as unknown as LoadedTask[];
+      } else {
+        const ctx = await resolveCtx();
+        tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+      }
     }
     if (!items) {
-      const ctx = await resolveCtx();
-      items = await loadAllItems(ctx);
+      const itemsDomainReady = entityCache && entityCache.getDomainState("items") === "ready";
+      if (itemsDomainReady) {
+        // ItemSummary has _ulid, slugs — sufficient for ReferenceIndex + AlignmentIndex
+        items = (entityCache!.getItemIndex() ?? []) as unknown as LoadedSpecItem[];
+      } else {
+        const ctx = await resolveCtx();
+        items = await loadAllItems(ctx);
+      }
     }
     return { tasks, items };
   };
