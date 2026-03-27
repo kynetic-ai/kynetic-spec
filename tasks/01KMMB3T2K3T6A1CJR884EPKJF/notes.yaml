@@ -639,3 +639,29 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T07:24:30.039Z
+  - _ulid: 01KMQ48XX87E1RFXH8CXPG5AWS
+    content: >-
+      Fix cycle 20: addressed all 4 blockers from review cycle 20.
+
+
+      1. Reload dedup (watcher.ts:122): Added domain-level debounce timers (100ms) in
+      ProjectEntityCache.invalidateDomain(). Multiple watcher events for the same domain within the
+      debounce window coalesce into a single reload via deferred promises. This fixes
+      ac-reload-dedup for multi-file edits.
+
+
+      2. Triage export (triage.ts:176): /api/triage/export was using cache.getTriageIndex() which
+      returns TriageIndexSummary (strips item_snapshot, reasoning, override_reasoning). Now always
+      loads full records from disk since export requires complete data.
+
+
+      3. Session AC resolution (sessions.ts:559): /api/sessions/:id was casting ItemSummary[] to
+      LoadedSpecItem[] for spec_context, but ItemSummary only has acceptance_criteria_count. Now
+      loads full items from disk for spec_context while still using cached tasks for task_title
+      resolution.
+
+
+      All 6914 tests pass (5 skipped). All 4 review threads replied to and resolved.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T07:48:52.264Z
