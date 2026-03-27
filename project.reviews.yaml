@@ -70181,6 +70181,17 @@ reviews:
         required: false
         created_at: 2026-03-27T22:26:31.128Z
         completed_at: 2026-03-27T22:26:31.128Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 1957/1957 suites passed, 7030/7035 tests passed, 5 skipped. Test wrapper repaired missing
+          dist/cli/index.js before execution, then suite completed successfully in about 53m.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-27T22:26:35.162Z
+        completed_at: 2026-03-27T22:26:35.162Z
     events:
       - _ulid: 01KMRP763SQZ1XX4BWC5ZFNYJZ
         actor: "@claude"
@@ -70218,6 +70229,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-27T22:26:33.191Z
+      - _ulid: 01KMRPG305HVJ0CDCQVWAP04XV
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-27T22:26:35.654Z
     examined_commit: 5382d348655b47f7748625f776c6c9ac252e6b80
     external_links: []
     lifecycle_state: closed
@@ -70237,5 +70255,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T22:26:33.190Z
     created_at: 2026-03-27T22:21:43.929Z
-    updated_at: 2026-03-27T22:26:33.191Z
+    updated_at: 2026-03-27T22:26:35.162Z
     notes: []
