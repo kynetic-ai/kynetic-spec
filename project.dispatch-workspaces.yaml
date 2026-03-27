@@ -24452,18 +24452,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/wire-agent-spawner-into-automation-subsystem-action-executors/01kmpncs
-    canonical_branch_head: fa942efdf3ed157ecc241e9ee94dd91d49a1ceec
+    canonical_branch_head: be56513e6e871afe0c3a53698cec263d003557b0
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-27T04:46:06.814Z
+      updated_at: 2026-03-27T04:58:52.642Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-27T04:46:08.730Z
+      updated_at: 2026-03-27T04:58:52.642Z
     integration:
       status: pending
       detail: null
@@ -24471,7 +24471,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: bb256b0254c10f37cf90c9a36c5141f8367047e4
-      updated_at: 2026-03-27T04:46:06.814Z
+      updated_at: 2026-03-27T04:58:52.642Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KMPNCSGVJHDM47EDN6MXGZV4"
@@ -24479,9 +24479,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-27T04:46:08.730Z
-      last_reconciled_at: 2026-03-27T04:46:08.730Z
+      last_reconciled_at: 2026-03-27T04:58:52.642Z
       created_at: 2026-03-27T03:46:16.776Z
-      updated_at: 2026-03-27T04:46:08.730Z
+      updated_at: 2026-03-27T04:58:52.642Z
     workspace_id: dispatch-workspace-01KMPNCSGVJHDM47EDN6MXGZV4
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
