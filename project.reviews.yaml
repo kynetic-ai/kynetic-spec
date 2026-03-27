@@ -67843,9 +67843,25 @@ reviews:
           kind: blocker
           thread_ulid: 01KMR9VJXZ4N54HV9T766KZX3X
         timestamp: 2026-03-27T18:45:42.282Z
+      - _ulid: 01KMR9W9KNC5PK04JJR37BZQ40
+        actor: codex@openai
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-27T18:46:04.150Z
+      - _ulid: 01KMR9W9KPPNV0VSEYM8VG529E
+        actor: codex@openai
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-27T18:46:04.150Z
     examined_commit: 1fdbf904e3dd52c1fbad1aaed1da6381a92309b4
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -67931,7 +67947,14 @@ reviews:
               incomplete success payload.'
             created_at: 2026-03-27T18:45:40.932Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai
+        role: reviewer
+        created_at: 2026-03-27T18:46:04.149Z
     created_at: 2026-03-27T18:40:25.839Z
-    updated_at: 2026-03-27T18:45:40.932Z
+    updated_at: 2026-03-27T18:46:04.150Z
     notes: []
