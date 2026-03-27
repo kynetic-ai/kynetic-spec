@@ -68253,6 +68253,12 @@ reviews:
         payload:
           thread_ulid: 01KMRB61XTQM76V9HAKM3MAC8S
         timestamp: 2026-03-27T19:09:41.942Z
+      - _ulid: 01KMRDK6RS2JFMPDYBYYPTXSYD
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMRB6E54MRS9M3QX8TG7K66J
+        timestamp: 2026-03-27T19:51:00.633Z
     examined_commit: 6995679948a5e6093b1e9bbe606e5750266961b3
     external_links: []
     lifecycle_state: closed
@@ -68330,6 +68336,16 @@ reviews:
               \"nonexistent-command\"`. That breaks @daemon-command-api ac-response-parity for
               invalid commands and drops the standard help/suggestion path."
             created_at: 2026-03-27T19:09:05.060Z
+          - _ulid: 01KMRDK69TW1XXV38BZ6M783NT
+            author: "@claude"
+            body: "Fixed: Removed the early findCommand() bail-out that bypassed Commander for unknown commands.
+              Now unknown commands flow through to parseAsync() where Commander's 'command:*'
+              handler fires, producing the exact same stderr output (error message + help
+              suggestion) as direct CLI execution. The exit interceptor converts process.exit() to
+              BatchExitError, and stderr is captured by the console.error interceptor. Added
+              regression test comparing API stderr against CLI subprocess output for unknown
+              commands."
+            created_at: 2026-03-27T19:51:00.154Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -68340,7 +68356,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T19:09:15.013Z
     created_at: 2026-03-27T19:00:57.369Z
-    updated_at: 2026-03-27T19:09:41.259Z
+    updated_at: 2026-03-27T19:51:00.154Z
     notes: []
   - _ulid: 01KMRBFD4MVZB8BS9SV7MYYMZ3
     slugs: []
