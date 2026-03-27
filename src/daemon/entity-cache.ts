@@ -706,11 +706,15 @@ export class ProjectEntityCache {
 
   private async doLoadDomain(domain: CacheDomain): Promise<void> {
     const ctx = await initContext(this.projectPath);
+    // AC: @daemon-entity-cache ac-unregister-cleanup — bail after each await
+    // to prevent a completed load from repopulating stores that dispose() cleared.
+    if (this.disposed) return;
 
     switch (domain) {
       case "tasks": {
         // AC: @daemon-entity-cache ac-load-on-register — load task index
         const summaries = await resolveTaskDataManager(ctx).listTasks(ctx);
+        if (this.disposed) return;
         this.tasks.index = summaries;
         this.tasks.details.clear();
         break;
@@ -718,11 +722,15 @@ export class ProjectEntityCache {
       case "items": {
         // AC: @daemon-entity-cache ac-load-on-register — load item index (summaries only)
         const loadedItems = await loadAllItems(ctx);
+        if (this.disposed) return;
         this.items.index = loadedItems.map(toItemSummary);
         this.items.details.clear();
         break;
       }
       case "meta": {
+        // Load full MetaContext into detail tier for meta read routes
+        const metaCtx = await loadMetaContext(ctx);
+        if (this.disposed) return;
         this.meta.index = {
           projectName: ctx.manifest?.project?.name,
           version: ctx.manifest?.project?.version,
@@ -732,18 +740,18 @@ export class ProjectEntityCache {
               typeof m === "string" ? m : m.title ?? m.name ?? "unknown",
           ),
         };
-        // Load full MetaContext into detail tier for meta read routes
-        const metaCtx = await loadMetaContext(ctx);
         this.meta.details.set("_context", metaCtx);
         break;
       }
       case "inbox": {
         const inboxItems = await loadInboxItems(ctx);
+        if (this.disposed) return;
         this.inbox.index = inboxItems;
         break;
       }
       case "plans": {
         const loadedPlans = await loadPlans(ctx);
+        if (this.disposed) return;
         this.plans.index = loadedPlans.map(toPlanIndexSummary);
         // AC: @daemon-entity-cache ac-detail-on-demand — clear detail cache;
         // full plan records are loaded on demand when accessed by ID.
@@ -752,6 +760,7 @@ export class ProjectEntityCache {
       }
       case "triage": {
         const triageRecords = await loadTriageRecords(ctx);
+        if (this.disposed) return;
         this.triage.index = triageRecords.map(toTriageIndexSummary);
         // AC: @daemon-entity-cache ac-detail-on-demand — clear detail cache;
         // full triage records are loaded on demand when accessed by ID.
@@ -760,6 +769,7 @@ export class ProjectEntityCache {
       }
       case "reviews": {
         const reviewRecords = await loadReviewRecords(ctx);
+        if (this.disposed) return;
         this.reviews.index = reviewRecords.map(toReviewIndexSummary);
         // AC: @daemon-entity-cache ac-detail-on-demand — clear detail cache;
         // full review records are loaded on demand when accessed by ID.
@@ -785,9 +795,11 @@ export class ProjectEntityCache {
 
     try {
       const entries = await readdir(sessionsDir, { withFileTypes: true });
+      if (this.disposed) return;
       sessionIds = entries.filter((e) => e.isDirectory()).map((e) => e.name);
     } catch {
       // No sessions directory — empty index
+      if (this.disposed) return;
       this.sessions.index = [];
       return;
     }
@@ -795,6 +807,7 @@ export class ProjectEntityCache {
     // Load metadata-only summaries for all sessions (avoids reading events.jsonl)
     const summaries: SessionLogSummary[] = [];
     for (const id of sessionIds) {
+      if (this.disposed) return;
       try {
         const summary = await getSessionMetadataOnly(sessionsDir, id);
         if (summary) summaries.push(summary);
@@ -831,6 +844,7 @@ export class ProjectEntityCache {
         if (ageMs > olderThanMs) {
           // Check inactivity via file-based activity check
           const activityResult = await getSessionActivityForStaleCheck(sessionsDir, s.id);
+          if (this.disposed) return;
           if (activityResult.ok) {
             const inactivityMs = now - activityResult.activity.lastActivityTs;
             if (inactivityMs > inactiveForMs) {
@@ -842,6 +856,9 @@ export class ProjectEntityCache {
         }
       }
     }
+
+    // AC: @daemon-entity-cache ac-unregister-cleanup — bail if disposed during stale check
+    if (this.disposed) return;
 
     // AC: @daemon-entity-cache ac-session-bounded-index — keep only N most recent
     this.sessions.index = summaries.slice(0, this.sessionConfig.maxIndexSize);

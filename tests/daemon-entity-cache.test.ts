@@ -745,6 +745,33 @@ describe("ProjectEntityCache", () => {
       expect(cache.getTaskIndex()).toBeNull();
     });
 
+    it("should not repopulate stores when in-flight load completes after dispose", async () => {
+      // AC: @daemon-entity-cache ac-unregister-cleanup
+      // Regression: doLoadDomain() wrote directly to stores without checking
+      // disposed, so a load started before dispose() could repopulate cleared
+      // stores after dispose() returned.
+      const cache = new ProjectEntityCache(projectA);
+
+      // Start a load but don't await it yet — let it be in-flight
+      const loadPromise = cache.loadDomain("tasks");
+
+      // Dispose while the load is in-flight
+      cache.dispose();
+
+      // Verify stores are cleared immediately after dispose
+      expect(cache.getTaskIndex()).toBeNull();
+      expect(cache.isDisposed()).toBe(true);
+
+      // Wait for the in-flight load to settle
+      await loadPromise;
+
+      // After the in-flight load completes, stores must still be null.
+      // Before the fix, doLoadDomain would write to this.tasks.index
+      // even though dispose() had already cleared it.
+      expect(cache.getTaskIndex()).toBeNull();
+      expect(cache.getDomainState("tasks")).toBe("unloaded");
+    });
+
     it("should unregister via registry function", async () => {
       const cache = registerEntityCache(projectA);
       await cache.loadDomain("tasks");
