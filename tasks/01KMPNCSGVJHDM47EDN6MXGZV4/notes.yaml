@@ -83,3 +83,14 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T04:44:25.996Z
+  - _ulid: 01KMPTHY16M3XJRAD4MMJ4419A
+    content: "Fix cycle 2: addressed npm test gate failure. The agent-dispatch-engine.test.ts had a
+      duplicate `const mockMetadata` declaration in the 'should include worker completion
+      guardrails' test — first block set up workspace mocks before engine creation, second block
+      re-declared the same variable after engine creation with an additional health-check mock.
+      esbuild rejected the duplicate in the same scope. Removed the first (incomplete) block,
+      keeping the second which includes the getDispatchWorkspaceHealth mock. Full suite now green:
+      1913/1913 suites, 6863/6868 tests (5 skipped). All 5 ACs verified against implementation."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T04:59:01.542Z
