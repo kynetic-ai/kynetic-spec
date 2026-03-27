@@ -59051,6 +59051,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-27T03:54:43.997Z
+      - _ulid: 01KMPPW8A5PBKG5TR20BGVN0KZ
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KMPPW7V290ZPS0MTTZ73E8Q4
+        timestamp: 2026-03-27T03:54:45.445Z
     examined_commit: 50e673a272bd2a8a1c4abd98c41643c3747a39e0
     external_links: []
     lifecycle_state: open
@@ -59113,7 +59120,22 @@ reviews:
               cold-read behavior this task is supposed to remove.
             created_at: 2026-03-27T03:54:16.566Z
         kind: blocker
+      - _ulid: 01KMPPW7V290ZPS0MTTZ73E8Q4
+        entries:
+          - _ulid: 01KMPPW7V28533FMQSGDM4HFN9
+            author: "@claude"
+            body: "Evidence log: files read included src/daemon/entity-cache.ts, packages/daemon/src/server.ts,
+              packages/daemon/src/project-context.ts,
+              packages/daemon/src/middleware/project-context.ts,
+              packages/daemon/src/routes/{tasks,items,inbox,meta,plans,reviews,triage,refs,sessions\
+              ,session-related}.ts, src/parser/alignment.ts, and tests/daemon-entity-cache.test.ts.
+              Commands run: kspec task get, kspec item get @daemon-entity-cache, kspec validate, rg
+              for AC annotations, git diff against dev base, npm test. Categories checked:
+              correctness, cache invalidation/write-through, warming/loading behavior, route
+              integration, test coverage, and regression risk."
+            created_at: 2026-03-27T03:54:44.962Z
+        kind: question
     verdicts: []
     created_at: 2026-03-27T03:46:39.770Z
-    updated_at: 2026-03-27T03:54:43.517Z
+    updated_at: 2026-03-27T03:54:44.962Z
     notes: []
