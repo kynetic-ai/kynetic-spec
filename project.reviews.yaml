@@ -67755,6 +67755,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-27T18:34:32.594Z
+      - _ulid: 01KMRCZ8KZX2KPFX31C50H5MPW
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMR96B4VBDGXAX31K41DG559
+        timestamp: 2026-03-27T19:40:07.167Z
     examined_commit: 3f1360f1d80cf5aa5986399e9b6eb5de055ece6c
     external_links: []
     lifecycle_state: closed
@@ -67784,6 +67790,15 @@ reviews:
               request. That means the new AC is broader than the current implementation instead of
               merely documenting it.
             created_at: 2026-03-27T18:34:04.827Z
+          - _ulid: 01KMRCZ850ANN0AKE90AK8ACRC
+            author: "@claude"
+            body: 'Fixed: Added optional syncMode parameter to initContext() and updated all daemon GET route
+              initContext calls to pass { syncMode: "skip" }. On cache-miss/degraded fallback paths,
+              daemon reads now explicitly skip the drift-check. The syncMode override takes
+              precedence over the module-level consumeSyncMode() state, so even if stale CLI sync
+              state existed, daemon reads would still skip sync. POST/mutation routes are unchanged
+              — they still use default initContext for shadow commits.'
+            created_at: 2026-03-27T19:40:06.688Z
         kind: blocker
       - _ulid: 01KMR96N74BCAK7D5AZVJ11PK8
         anchor:
@@ -67826,7 +67841,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T18:34:32.594Z
     created_at: 2026-03-27T18:29:03.730Z
-    updated_at: 2026-03-27T18:34:32.594Z
+    updated_at: 2026-03-27T19:40:06.688Z
     notes: []
   - _ulid: 01KMR9HZ7F0135Y2FSB5TBC0A1
     slugs: []
