@@ -16389,9 +16389,23 @@ runs:
     completed_at: 2026-03-27T05:49:17.796Z
   - _ulid: 01KMPYZ8ZK0X94FJKB9TSXA2H0
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-03-27T06:16:13.044Z
+        completed_at: 2026-03-27T06:17:17.444Z
+        notes: "Session produced 1 commit (cc6ac5950): fix cycle 17 for entity cache task. Fixed 2 blockers
+          — related-sessions endpoints and filtered-sessions alignment context now use cached
+          indexes when warm. Added 5 route-level cache tests. What worked: mock cache pattern,
+          structural type analysis upfront. Friction: ReferenceIndex accepts LoadedTask[] but only
+          uses _ulid/slugs (requires unsafe cast from summaries); sessionsDir hardcoded convention
+          without accessor; Elysia error helper broken in test handle() context."
+      - status: completed
+        step_index: 1
+        started_at: 2026-03-27T06:17:17.444Z
+        completed_at: 2026-03-27T06:17:17.444Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-27T06:16:13.044Z
