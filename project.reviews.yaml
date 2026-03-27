@@ -70310,6 +70310,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMRPZS6J9ETEBC1WC9QPFHQ2
         timestamp: 2026-03-27T22:35:10.420Z
+      - _ulid: 01KMRQ04BTHYSQSK67QC2NR405
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMRQ03V2FHX12VXPS40JQQKF
+        timestamp: 2026-03-27T22:35:21.338Z
     examined_commit: c3287fc736bce39629b1bdfda617808bd9ef55e0
     external_links: []
     lifecycle_state: open
@@ -70367,7 +70374,1292 @@ reviews:
               the status flip and keep the relationship-only update.
             created_at: 2026-03-27T22:35:09.906Z
         kind: blocker
+      - _ulid: 01KMRQ03V2FHX12VXPS40JQQKF
+        entries:
+          - _ulid: 01KMRQ03V2AJKMVYGV8RH5ZY30
+            author: "@claude"
+            body: >-
+              Evidence log:\nFiles read: kspec-agents.md; .agents/skills/review-gates/SKILL.md;
+              @multi-directory-daemon; @cli-daemon-proxy; kspec-meta commits
+              c3dd2bc825e15864f56eb2e507919c25ad9d246f and 1777ea88c2349d8c3c4b8e62c67bb6e593e3e41c;
+              kspec-meta modules/web-ui.yaml around the changed fields.\nCommands run: Link
+              multi-directory-daemon to CLI proxy mode
+
+              ────────────────────────────────────────
+
+              ULID:      01KMMB3Y3K01Q0D7DNDVV6GQT1
+
+              Slugs:     task-link-multi-dir-proxy
+
+              Type:      task
+
+              Status:    pending_review
+
+              Priority:  2
+
+              Automation: eligible
+
+              Session:   01KMRPJQPN8BK5TGXKE7KRA34N
+
+
+              ─── Description ───
+                Add relates_to @cli-daemon-proxy on @multi-directory-daemon.
+                Why: CLI proxy mode interacts with multi-directory daemon support —
+                the proxy must route to the correct project context.
+                What:
+                - Add relates_to @cli-daemon-proxy on @multi-directory-daemon
+                Covers: @multi-directory-daemon (relationship update).
+              Spec ref:  @multi-directory-daemon
+
+              Plan ref:  @plan-daemon-optimistic-data-layer
+
+              Review ref: @01KMRPRA39VD88X3B6B2R8AJG6 → Review task-link-multi-dir-proxy [open]
+              (pending)
+
+
+              ─── Submission Linkage ───
+                Branch:  dev
+                Commit:  c3287fc736bce39629b1bdfda617808bd9ef55e0
+                Remote:  origin (git@github.com:kynetic-ai/kynetic-spec.git)
+                Upstream: refs/heads/dev
+                Captured: 2026-03-27T22:29:45.695Z
+              Depends:
+                @task-cli-proxy-routing → Implement CLI daemon proxy detection and routing [completed]
+              Tags:      specs, maintenance
+
+              Created:   2026-03-26T05:50:45.363Z
+
+              Started:   2026-03-27T22:28:43.346Z
+
+
+              ─── Spec Context ───
+
+              Multi-Directory Daemon Architecture
+
+              Type: feature
+
+              Implementation: implemented
+
+              Description:
+                Extends the daemon server to support multiple kspec projects simultaneously from a single
+                daemon process. Projects are identified via X-Kspec-Dir HTTP header. Enables E2E testing
+                with isolated fixtures and multi-project development workflows.
+                Key architectural changes:
+                - Global daemon with PID/port files at ~/.config/kspec/
+                - Project context caching with on-demand registration
+                - Per-project file watchers
+                - WebSocket connections bound to specific projects
+                BREAKING CHANGE: PID/port files move from .kspec/.daemon.pid to ~/.config/kspec/daemon.pid
+              Acceptance Criteria:
+                [ac-1]
+                  Given: daemon is running
+                  When: request includes X-Kspec-Dir header with valid absolute path
+                  Then: daemon uses that project's context for the request
+                [ac-2]
+                  Given: daemon started from directory with .kspec/
+                  When: request has no X-Kspec-Dir header
+                  Then: daemon uses startup directory's project as default
+                [ac-3]
+                  Given: daemon started from directory without .kspec/
+                  When: request without X-Kspec-Dir arrives
+                  Then: return 400 with error "No default project configured. Specify X-Kspec-Dir header."
+                [ac-4]
+                  Given: request specifies unknown project path
+                  When: path is valid kspec project
+                  Then: daemon auto-registers and caches project context
+                [ac-5]
+                  Given: request specifies invalid path (no .kspec/)
+                  When: request processed
+                  Then: return 400 with error "Invalid kspec project - .kspec/ not found at <path>"
+                [ac-6]
+                  Given: X-Kspec-Dir header value
+                  When: path is relative
+                  Then: reject with 400 and error "Path must be absolute"
+                [ac-7]
+                  Given: X-Kspec-Dir header value
+                  When: path contains ".." segments
+                  Then: reject with 400 and error "Path must not contain parent traversal"
+                [ac-8]
+                  Given: X-Kspec-Dir header value
+                  When: normalized path differs from provided path
+                  Then: use normalized path for registration (resolve "." segments, remove trailing slashes, do NOT resolve symlinks)
+                [ac-8b]
+                  Given: X-Kspec-Dir points to path with insufficient read permissions
+                  When: request processed
+                  Then: return 403 with error "Permission denied - cannot read <path>"
+                [ac-9]
+                  Given: no daemon running
+                  When: kspec serve start runs from any directory
+                  Then: daemon starts and writes PID to ~/.config/kspec/daemon.pid and port to ~/.config/kspec/daemon.port
+                [ac-9b]
+                  Given: ~/.config/kspec/ does not exist
+                  When: daemon starts
+                  Then: create directory with mode 0755 before writing PID/port files
+                [ac-9c]
+                  Given: ~/.config/kspec/daemon.port exists but contains invalid content
+                  When: CLI reads port
+                  Then: return error "Invalid daemon port file" and suggest "kspec serve stop && kspec serve start"
+                [ac-10]
+                  Given: daemon running on port 3456
+                  When: kspec serve start runs from different directory
+                  Then: command exits with success and outputs "Daemon already running on port 3456" (no second instance started)
+                [ac-10b]
+                  Given: two kspec serve start commands run concurrently (neither has written PID yet)
+                  When: both check for running daemon
+                  Then: only one daemon starts (use file lock on PID file)
+                [ac-11]
+                  Given: daemon running
+                  When: kspec serve stop runs from any directory
+                  Then: daemon stops and removes global PID and port files
+                [ac-12]
+                  Given: daemon running
+                  When: kspec serve status runs
+                  Then: shows daemon status with port, uptime, and list of registered projects with their paths
+                [ac-13]
+                  Given: CLI needs to connect to daemon
+                  When: daemon is running
+                  Then: CLI reads port from ~/.config/kspec/daemon.port
+                [ac-14]
+                  Given: daemon restarts
+                  When: first request for a project arrives
+                  Then: project is re-registered automatically (same as initial registration)
+                [ac-15]
+                  Given: daemon running with registered projects
+                  When: daemon restarts
+                  Then: registered project list is empty (no persistence across restarts)
+                [ac-16]
+                  Given: two concurrent requests for unregistered project with same path
+                  When: processed
+                  Then: both succeed and share the same registered project context (no duplicate watchers)
+                [ac-17]
+                  Given: project is registered
+                  When: files change in project's .kspec/
+                  Then: file watcher triggers events scoped to that project
+                [ac-18]
+                  Given: multiple projects registered
+                  When: Project A changes
+                  Then: only Project A's WebSocket subscribers receive updates
+                [ac-19]
+                  Given: project watcher creation fails due to OS limits (ulimit)
+                  When: error occurs
+                  Then: project registration fails with 503 and error "Unable to watch project - resource limit reached"
+                [ac-20]
+                  Given: registered project's .kspec/ directory is deleted
+                  When: next request arrives for that project
+                  Then: return 404 and unregister project automatically
+                [ac-21]
+                  Given: WebSocket client connects with X-Kspec-Dir header during handshake
+                  When: connection established
+                  Then: connection is bound to that project for its lifetime and only receives events from that project
+                [ac-21b]
+                  Given: WebSocket connection is established and bound to project
+                  When: client attempts to change project
+                  Then: project binding is immutable - client must disconnect and reconnect with new header
+                [ac-22]
+                  Given: WebSocket client connects without X-Kspec-Dir header
+                  When: default project exists
+                  Then: connection is bound to default project
+                [ac-23]
+                  Given: WebSocket client connects without X-Kspec-Dir header
+                  When: no default project
+                  Then: connection is rejected with close code 4000 and reason "No project specified"
+                [ac-24]
+                  Given: multi-project mode
+                  When: any API endpoint is called
+                  Then: response data is scoped to the request's project (no cross-project data leakage)
+                [ac-25]
+                  Given: web UI loads
+                  When: more than one project registered
+                  Then: project selector is shown listing all registered projects
+                [ac-26]
+                  Given: user selects project in UI
+                  When: selection changes
+                  Then: all subsequent API requests include that project's path in X-Kspec-Dir header
+                [ac-27]
+                  Given: UI is showing project data
+                  When: different project selected
+                  Then: UI reloads data from newly selected project
+                [ac-28]
+                  Given: GET /api/projects
+                  When: called
+                  Then: returns list of registered projects with paths, registration time, and watcher status
+                [ac-29]
+                  Given: POST /api/projects
+                  When: called with {path string} body
+                  Then: manually registers a project (for explicit registration use cases)
+                [ac-30]
+                  Given: DELETE /api/projects/:encodedPath
+                  When: called
+                  Then: unregisters project and stops its file watcher
+                [ac-8c]
+                  Given: X-Kspec-Dir header contains symlinked path
+                  When: path resolves to same directory as another registered project via symlink
+                  Then: paths are treated as separate projects (symlinks are NOT resolved during normalization)
+                [ac-20b]
+                  Given: daemon started from directory with .kspec/ which is later deleted
+                  When: request without X-Kspec-Dir arrives after default project .kspec/ deleted
+                  Then: return 400 with error 'Default project no longer valid. Specify X-Kspec-Dir header.'
+                [ac-11b]
+                  Given: daemon is shutting down
+                  When: shutdown signal received
+                  Then: all project watchers are stopped and all WebSocket connections are closed before process exits
+                [ac-31]
+                  Given: A project is auto-registered or session sync is started for any project
+                  When: The daemon needs to read that project manifest
+                  Then: The manifest is resolved via the discovery API, not by hardcoding kynetic.yaml
+                [ac-32]
+                  Given: KSPEC_NO_DAEMON is set to a truthy value
+                  When: Any CLI command would normally communicate with a running daemon as a side-effect (posting state change events, querying daemon status, auto-starting the daemon)
+                  Then: All incidental daemon communication is suppressed — the CLI behaves as if no daemon is running, completing its primary operation gracefully
+                [ac-33]
+                  Given: KSPEC_NO_DAEMON is set to a truthy value
+                  When: An explicit daemon management command is run (kspec serve start, stop, status, restart)
+                  Then: The command operates normally, ignoring KSPEC_NO_DAEMON
+                [ac-34]
+                  Given: A registered project's .kspec/ directory no longer exists while the daemon is running
+                  When: The file watcher determines the directory is permanently unavailable and cannot continue operating
+                  Then: The daemon proactively unregisters the project and releases associated resources, rather than leaving a stale registration until the next API request
+
+              ─── Notes ───
+
+              [2026-03-27T22:29:37.305Z] @claude:
+
+              Added relates_to @cli-daemon-proxy on @multi-directory-daemon. The spec now has
+              relates_to: [@cli-serve-commands, @cli-daemon-proxy]. This documents the relationship
+              between the multi-directory daemon and CLI proxy mode — the proxy must route to the
+              correct project context, which is the core concern of the multi-directory daemon.
+
+
+              ─── Activity ───
+
+              ◆ 3 minutes ago Review @01KMRPRA39VD88X3B6B2R8AJG6: lifecycle change (@claude)
+
+              ⚑ 4 minutes ago Review linked: @01KMRPRA39VD88X3B6B2R8AJG6 (@claude)
+
+              ◆ 4 minutes ago Review @01KMRPRA39VD88X3B6B2R8AJG6: lifecycle change (@claude)
+
+              ↑ 5 minutes ago Task submitted for review (@claude)
+
+              ✎ 5 minutes ago Note added (@claude)
+
+              ▶ 6 minutes ago Task started (@claude)
+
+              · 1 day ago Updated automation (@claude)
+
+
+              ─── Inherited from @trait-localhost-security ───
+                [ac-1] (from @trait-localhost-security)
+                  Given: server is starting
+                  When: binding to network interface
+                  Then: only accepts connections from 127.0.0.1 and ::1 (IPv6 localhost)
+                [ac-2] (from @trait-localhost-security)
+                  Given: connection attempt from non-localhost
+                  When: request received
+                  Then: connection rejected with 403 Forbidden
+                [ac-3] (from @trait-localhost-security)
+                  Given: server is configured
+                  When: configuration allows external binding
+                  Then: warning displayed about security implications
+
+              ─── Inherited from @trait-websocket-protocol ───
+                [ac-1] (from @trait-websocket-protocol)
+                  Given: WebSocket connection is established
+                  When: client connects
+                  Then: server assigns unique connection ID and sends connected event with session_id
+                [ac-2] (from @trait-websocket-protocol)
+                  Given: client wants notifications
+                  When: subscribe command sent with topics array
+                  Then: server tracks subscription and sends ack with request_id
+                [ac-3] (from @trait-websocket-protocol)
+                  Given: client is subscribed to topic
+                  When: relevant change occurs
+                  Then: server broadcasts event with format {msg_id, seq, timestamp, topic, event, data}
+                [ac-4] (from @trait-websocket-protocol)
+                  Given: WebSocket connection is active
+                  When: 30 seconds pass without activity
+                  Then: server sends ping frame
+                [ac-5] (from @trait-websocket-protocol)
+                  Given: ping was sent
+                  When: no pong received within 90 seconds
+                  Then: connection is closed with code 1001
+                [ac-6] (from @trait-websocket-protocol)
+                  Given: server sends events
+                  When: client cannot keep up (backpressure)
+                  Then: server pauses non-critical broadcasts until drain event
+                [ac-7] (from @trait-websocket-protocol)
+                  Given: connection is closing
+                  When: close initiated
+                  Then: use code 1000 for clean close, 1001 for timeout, 1011 for error
+                [ac-8] (from @trait-websocket-protocol)
+                  Given: client reconnects after disconnect
+                  When: new connection established
+                  Then: client resets sequence tracking (lastSeqProcessed = -1) since server generates new sequence; ; ; Reviews for @01KMMB3Y3K01Q0D7DNDVV6GQT1 (1):
+                01KMRPRA open/pending Review task-link-multi-dir-proxy; Multi-Directory Daemon Architecture
+              ────────────────────────────────────────
+
+              ULID:      01KFQ84FVYMN3Z0HXWZ5AK7CQD
+
+              Slugs:     multi-directory-daemon
+
+              Type:      feature
+
+              Maturity:  draft
+
+              Implementation: implemented
+
+              Tags:      daemon, architecture, multi-project
+
+              Depends on: @daemon-server, @api-contract
+
+              Relates to: @cli-serve-commands, @cli-daemon-proxy
+
+
+              ─── Description ───
+
+              Extends the daemon server to support multiple kspec projects simultaneously from a
+              single
+
+              daemon process. Projects are identified via X-Kspec-Dir HTTP header. Enables E2E
+              testing
+
+              with isolated fixtures and multi-project development workflows.
+
+
+              Key architectural changes:
+
+              - Global daemon with PID/port files at ~/.config/kspec/
+
+              - Project context caching with on-demand registration
+
+              - Per-project file watchers
+
+              - WebSocket connections bound to specific projects
+
+
+              BREAKING CHANGE: PID/port files move from .kspec/.daemon.pid to
+              ~/.config/kspec/daemon.pid
+
+
+
+              ─── Acceptance Criteria ───
+                [ac-1]
+                  Given: daemon is running
+                  When: request includes X-Kspec-Dir header with valid absolute path
+                  Then: daemon uses that project's context for the request
+                [ac-2]
+                  Given: daemon started from directory with .kspec/
+                  When: request has no X-Kspec-Dir header
+                  Then: daemon uses startup directory's project as default
+                [ac-3]
+                  Given: daemon started from directory without .kspec/
+                  When: request without X-Kspec-Dir arrives
+                  Then: return 400 with error "No default project configured. Specify X-Kspec-Dir header."
+                [ac-4]
+                  Given: request specifies unknown project path
+                  When: path is valid kspec project
+                  Then: daemon auto-registers and caches project context
+                [ac-5]
+                  Given: request specifies invalid path (no .kspec/)
+                  When: request processed
+                  Then: return 400 with error "Invalid kspec project - .kspec/ not found at <path>"
+                [ac-6]
+                  Given: X-Kspec-Dir header value
+                  When: path is relative
+                  Then: reject with 400 and error "Path must be absolute"
+                [ac-7]
+                  Given: X-Kspec-Dir header value
+                  When: path contains ".." segments
+                  Then: reject with 400 and error "Path must not contain parent traversal"
+                [ac-8]
+                  Given: X-Kspec-Dir header value
+                  When: normalized path differs from provided path
+                  Then: use normalized path for registration (resolve "." segments, remove trailing slashes, do NOT resolve symlinks)
+                [ac-8b]
+                  Given: X-Kspec-Dir points to path with insufficient read permissions
+                  When: request processed
+                  Then: return 403 with error "Permission denied - cannot read <path>"
+                [ac-9]
+                  Given: no daemon running
+                  When: kspec serve start runs from any directory
+                  Then: daemon starts and writes PID to ~/.config/kspec/daemon.pid and port to ~/.config/kspec/daemon.port
+                [ac-9b]
+                  Given: ~/.config/kspec/ does not exist
+                  When: daemon starts
+                  Then: create directory with mode 0755 before writing PID/port files
+                [ac-9c]
+                  Given: ~/.config/kspec/daemon.port exists but contains invalid content
+                  When: CLI reads port
+                  Then: return error "Invalid daemon port file" and suggest "kspec serve stop && kspec serve start"
+                [ac-10]
+                  Given: daemon running on port 3456
+                  When: kspec serve start runs from different directory
+                  Then: command exits with success and outputs "Daemon already running on port 3456" (no second instance started)
+                [ac-10b]
+                  Given: two kspec serve start commands run concurrently (neither has written PID yet)
+                  When: both check for running daemon
+                  Then: only one daemon starts (use file lock on PID file)
+                [ac-11]
+                  Given: daemon running
+                  When: kspec serve stop runs from any directory
+                  Then: daemon stops and removes global PID and port files
+                [ac-12]
+                  Given: daemon running
+                  When: kspec serve status runs
+                  Then: shows daemon status with port, uptime, and list of registered projects with their paths
+                [ac-13]
+                  Given: CLI needs to connect to daemon
+                  When: daemon is running
+                  Then: CLI reads port from ~/.config/kspec/daemon.port
+                [ac-14]
+                  Given: daemon restarts
+                  When: first request for a project arrives
+                  Then: project is re-registered automatically (same as initial registration)
+                [ac-15]
+                  Given: daemon running with registered projects
+                  When: daemon restarts
+                  Then: registered project list is empty (no persistence across restarts)
+                [ac-16]
+                  Given: two concurrent requests for unregistered project with same path
+                  When: processed
+                  Then: both succeed and share the same registered project context (no duplicate watchers)
+                [ac-17]
+                  Given: project is registered
+                  When: files change in project's .kspec/
+                  Then: file watcher triggers events scoped to that project
+                [ac-18]
+                  Given: multiple projects registered
+                  When: Project A changes
+                  Then: only Project A's WebSocket subscribers receive updates
+                [ac-19]
+                  Given: project watcher creation fails due to OS limits (ulimit)
+                  When: error occurs
+                  Then: project registration fails with 503 and error "Unable to watch project - resource limit reached"
+                [ac-20]
+                  Given: registered project's .kspec/ directory is deleted
+                  When: next request arrives for that project
+                  Then: return 404 and unregister project automatically
+                [ac-21]
+                  Given: WebSocket client connects with X-Kspec-Dir header during handshake
+                  When: connection established
+                  Then: connection is bound to that project for its lifetime and only receives events from that project
+                [ac-21b]
+                  Given: WebSocket connection is established and bound to project
+                  When: client attempts to change project
+                  Then: project binding is immutable - client must disconnect and reconnect with new header
+                [ac-22]
+                  Given: WebSocket client connects without X-Kspec-Dir header
+                  When: default project exists
+                  Then: connection is bound to default project
+                [ac-23]
+                  Given: WebSocket client connects without X-Kspec-Dir header
+                  When: no default project
+                  Then: connection is rejected with close code 4000 and reason "No project specified"
+                [ac-24]
+                  Given: multi-project mode
+                  When: any API endpoint is called
+                  Then: response data is scoped to the request's project (no cross-project data leakage)
+                [ac-25]
+                  Given: web UI loads
+                  When: more than one project registered
+                  Then: project selector is shown listing all registered projects
+                [ac-26]
+                  Given: user selects project in UI
+                  When: selection changes
+                  Then: all subsequent API requests include that project's path in X-Kspec-Dir header
+                [ac-27]
+                  Given: UI is showing project data
+                  When: different project selected
+                  Then: UI reloads data from newly selected project
+                [ac-28]
+                  Given: GET /api/projects
+                  When: called
+                  Then: returns list of registered projects with paths, registration time, and watcher status
+                [ac-29]
+                  Given: POST /api/projects
+                  When: called with {path string} body
+                  Then: manually registers a project (for explicit registration use cases)
+                [ac-30]
+                  Given: DELETE /api/projects/:encodedPath
+                  When: called
+                  Then: unregisters project and stops its file watcher
+                [ac-8c]
+                  Given: X-Kspec-Dir header contains symlinked path
+                  When: path resolves to same directory as another registered project via symlink
+                  Then: paths are treated as separate projects (symlinks are NOT resolved during normalization)
+                [ac-20b]
+                  Given: daemon started from directory with .kspec/ which is later deleted
+                  When: request without X-Kspec-Dir arrives after default project .kspec/ deleted
+                  Then: return 400 with error 'Default project no longer valid. Specify X-Kspec-Dir header.'
+                [ac-11b]
+                  Given: daemon is shutting down
+                  When: shutdown signal received
+                  Then: all project watchers are stopped and all WebSocket connections are closed before process exits
+                [ac-31]
+                  Given: A project is auto-registered or session sync is started for any project
+                  When: The daemon needs to read that project manifest
+                  Then: The manifest is resolved via the discovery API, not by hardcoding kynetic.yaml
+                [ac-32]
+                  Given: KSPEC_NO_DAEMON is set to a truthy value
+                  When: Any CLI command would normally communicate with a running daemon as a side-effect (posting state change events, querying daemon status, auto-starting the daemon)
+                  Then: All incidental daemon communication is suppressed — the CLI behaves as if no daemon is running, completing its primary operation gracefully
+                [ac-33]
+                  Given: KSPEC_NO_DAEMON is set to a truthy value
+                  When: An explicit daemon management command is run (kspec serve start, stop, status, restart)
+                  Then: The command operates normally, ignoring KSPEC_NO_DAEMON
+                [ac-34]
+                  Given: A registered project's .kspec/ directory no longer exists while the daemon is running
+                  When: The file watcher determines the directory is permanently unavailable and cannot continue operating
+                  Then: The daemon proactively unregisters the project and releases associated resources, rather than leaving a stale registration until the next API request
+
+              ─── Inherited from @trait-localhost-security ───
+                [ac-1] (from @trait-localhost-security)
+                  Given: server is starting
+                  When: binding to network interface
+                  Then: only accepts connections from 127.0.0.1 and ::1 (IPv6 localhost)
+                [ac-2] (from @trait-localhost-security)
+                  Given: connection attempt from non-localhost
+                  When: request received
+                  Then: connection rejected with 403 Forbidden
+                [ac-3] (from @trait-localhost-security)
+                  Given: server is configured
+                  When: configuration allows external binding
+                  Then: warning displayed about security implications
+
+              ─── Inherited from @trait-websocket-protocol ───
+                [ac-1] (from @trait-websocket-protocol)
+                  Given: WebSocket connection is established
+                  When: client connects
+                  Then: server assigns unique connection ID and sends connected event with session_id
+                [ac-2] (from @trait-websocket-protocol)
+                  Given: client wants notifications
+                  When: subscribe command sent with topics array
+                  Then: server tracks subscription and sends ack with request_id
+                [ac-3] (from @trait-websocket-protocol)
+                  Given: client is subscribed to topic
+                  When: relevant change occurs
+                  Then: server broadcasts event with format {msg_id, seq, timestamp, topic, event, data}
+                [ac-4] (from @trait-websocket-protocol)
+                  Given: WebSocket connection is active
+                  When: 30 seconds pass without activity
+                  Then: server sends ping frame
+                [ac-5] (from @trait-websocket-protocol)
+                  Given: ping was sent
+                  When: no pong received within 90 seconds
+                  Then: connection is closed with code 1001
+                [ac-6] (from @trait-websocket-protocol)
+                  Given: server sends events
+                  When: client cannot keep up (backpressure)
+                  Then: server pauses non-critical broadcasts until drain event
+                [ac-7] (from @trait-websocket-protocol)
+                  Given: connection is closing
+                  When: close initiated
+                  Then: use code 1000 for clean close, 1001 for timeout, 1011 for error
+                [ac-8] (from @trait-websocket-protocol)
+                  Given: client reconnects after disconnect
+                  When: new connection established
+                  Then: client resets sequence tracking (lastSeqProcessed = -1) since server generates new sequence; CLI Daemon Proxy Mode
+              ────────────────────────────────────────
+
+              ULID:      01KMMB3SAX2KGDBAGRD3X8EJE4
+
+              Slugs:     cli-daemon-proxy
+
+              Type:      feature
+
+              Maturity:  draft
+
+              Implementation: implemented
+
+
+              ─── Description ───
+
+              When a daemon is running, the CLI routes commands through it instead
+
+              of operating directly on the shadow branch. This makes the daemon
+
+              the single writer, eliminating coherence issues between CLI mutations
+
+              and daemon state. The CLI auto-detects daemon availability and routes
+
+              accordingly. Users can force either mode explicitly.
+
+
+
+              ─── Acceptance Criteria ───
+                [ac-auto-detect]
+                  Given: the user runs a kspec command
+
+                  When: a daemon is running and reachable for the current project
+
+                  Then: the command is routed through the daemon's API rather than
+              operating directly on the shadow branch
+
+                [ac-direct-fallback]
+                  Given: the user runs a kspec command
+
+                  When: no daemon is running or the daemon is unreachable
+
+                  Then: the command operates directly on the shadow branch
+
+                [ac-force-direct]
+                  Given: KSPEC_NO_DAEMON=1 is set
+
+                  When: the user runs a kspec command
+
+                  Then: the command operates directly on the shadow branch, bypassing
+              daemon routing
+
+                [ac-force-proxy]
+                  Given: the user runs a kspec command with --daemon flag
+
+                  When: no daemon is running
+
+                  Then: the command fails with a clear error indicating no daemon is
+              available
+
+                [ac-transparent-output]
+                  Given: a command is routed through the daemon
+
+                  When: the command completes
+
+                  Then: the output format, content, and exit code are identical to
+              direct mode
+
+                [ac-mutation-coherence]
+                  Given: a CLI mutation is routed through the daemon
+
+                  When: the mutation succeeds
+
+                  Then: the daemon's entity cache reflects the change immediately and
+              subsequent requests from any client see the updated data
+
+                [ac-read-from-cache]
+                  Given: a CLI read command is routed through the daemon
+
+                  When: the daemon has cached data for the project
+
+                  Then: the response is served from the daemon's cache
+
+                [ac-timeout-fallback]
+                  Given: the daemon responds to a health check but a routed read-only
+              command does not complete within the timeout period
+
+                  When: the timeout expires
+
+                  Then: the CLI falls back to direct mode for the read-only command and
+              emits a warning on stderr indicating the daemon is not responding
+
+                [ac-timeout-mutation-error]
+                  Given: the daemon responds to a health check but a routed mutating
+              command does not complete within the timeout period
+
+                  When: the timeout expires
+
+                  Then: the CLI returns an error instead of falling back to direct mode,
+              because the daemon may still be processing the mutation
+
+
+
+              ─── Inherited from @trait-error-guidance ───
+                [ac-1] (from @trait-error-guidance)
+                  Given: command encounters error
+                  When: error message is shown
+                  Then: includes description of what went wrong
+                [ac-2] (from @trait-error-guidance)
+                  Given: command encounters error
+                  When: error message is shown
+                  Then: includes suggested action to resolve
+                [ac-3] (from @trait-error-guidance)
+                  Given: reference not found
+                  When: error is shown
+                  Then: suggests checking ref with kspec search or kspec <type> list
+                [ac-4] (from @trait-error-guidance)
+                  Given: invalid state transition
+                  When: error is shown
+                  Then: indicates current state and valid next states
+                [ac-5] (from @trait-error-guidance)
+                  Given: validation error
+                  When: error is shown
+                  Then: indicates which field/value failed validation
+                [ac-6] (from @trait-error-guidance)
+                  Given: error in JSON mode
+                  When: --json is active
+                  Then: guidance included in structured error object; ✓ Validation passed
+              ────────────────────────────────────────
+
+              Files checked: 10
+
+              Items checked: 567
+
+              Tasks checked: 0
+
+              Meta: 10 agents, 11 workflows, 10 conventions
+
+
+              Schema: OK
+
+              References: OK
+
+
+              Reference warnings: 1
+                ⚠ @skills
+                  Orphaned skill directory 'skills' has no corresponding meta entry
+                  in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+              Alignment warnings: 32
+                Orphaned specs (no tasks): 30
+                  ○ Test Trait
+                  ○ Filterable List Commands
+                  ○ Dry Run Preview Mode
+                  ... and 27 more
+                Status mismatches: 2
+                  ! Task Set Batch Support
+                    Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+                  ! Multi-Directory Daemon Architecture
+                    Spec "Multi-Directory Daemon Architecture" status is "implemented" but should be "in_progress" based on task progress
+
+              Alignment stats: 404/567 specs have tasks, 402 aligned
+
+
+              Completeness warnings: 482
+                Missing acceptance criteria: 1
+                  ○ @01KJN1WT - Test Trait
+                Missing own AC coverage: 227
+                  ! @spec-item - Spec Item
+                    Uncovered: ac-item-1, ac-item-2
+                  ! @ulid-system - ULID Identifier System
+                    Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+                  ! @slug-system - Slug Alias System
+                    Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+                  ... and 224 more
+                Invalid AC annotations: 254
+                  ! AC annotation references '@slug' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-link-multi-dir-proxy-01kmmb3y-review/tests/ac-annotation-validation.test.ts:6
+                  ! AC annotation references '@my-spec' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-link-multi-dir-proxy-01kmmb3y-review/tests/ac-annotation-validation.test.ts:84
+                  ! AC annotation references '@my-spec' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-link-multi-dir-proxy-01kmmb3y-review/tests/ac-annotation-validation.test.ts:87
+                  ! AC annotation references '@spec-a' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-link-multi-dir-proxy-01kmmb3y-review/tests/ac-annotation-validation.test.ts:114
+                  ! AC annotation references '@spec-b' which cannot be resolved
+                    /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-link-multi-dir-proxy-01kmmb3y-review/tests/ac-annotation-validation.test.ts:118
+                  ... and 249 more
+              Skills: OK (10 files checked); ✓ Validation passed
+
+              ────────────────────────────────────────
+
+              Files checked: 7
+
+              Items checked: 567
+
+              Tasks checked: 0
+
+              Meta: 10 agents, 11 workflows, 10 conventions
+
+
+              Schema: OK
+
+              References: OK
+
+
+              Alignment warnings: 32
+                Orphaned specs (no tasks): 30
+                  ○ Test Trait
+                  ○ Filterable List Commands
+                  ○ Dry Run Preview Mode
+                  ... and 27 more
+                Status mismatches: 2
+                  ! Task Set Batch Support
+                    Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+                  ! Multi-Directory Daemon Architecture
+                    Spec "Multi-Directory Daemon Architecture" status is "implemented" but should be "in_progress" based on task progress
+
+              Alignment stats: 404/567 specs have tasks, 402 aligned;
+              tests/websocket-manager.test.ts:70:  // AC: @trait-websocket-protocol ac-8
+
+              tests/websocket-manager.test.ts:102:  // AC: @trait-websocket-protocol ac-7
+
+              tests/cli-no-daemon.test.ts:27:  // AC: @multi-directory-daemon ac-32
+
+              tests/cli-no-daemon.test.ts:38:  // AC: @multi-directory-daemon ac-33
+
+              tests/cli-no-daemon.test.ts:57:  // AC: @multi-directory-daemon ac-33
+
+              tests/cli-agent-commands.test.ts:3229:// AC: @trait-websocket-protocol ac-1 — N/A:
+              server-side connection ID assignment, not CLI consumer
+
+              tests/cli-agent-commands.test.ts:3230:// AC: @trait-websocket-protocol ac-3 — N/A:
+              server-side broadcast event format, not CLI consumer
+
+              tests/cli-agent-commands.test.ts:3231:// AC: @trait-websocket-protocol ac-4 — N/A:
+              server-side ping frame timing, not CLI consumer
+
+              tests/cli-agent-commands.test.ts:3232:// AC: @trait-websocket-protocol ac-5 — N/A:
+              server-side pong timeout handling, not CLI consumer
+
+              tests/cli-agent-commands.test.ts:3233:// AC: @trait-websocket-protocol ac-6 — N/A:
+              server-side backpressure handling, not CLI consumer
+
+              tests/cli-agent-commands.test.ts:3234:// AC: @trait-websocket-protocol ac-7 — N/A:
+              server-side close code semantics, not CLI consumer
+
+              tests/daemon-diff-api.test.ts:893:// AC: @trait-localhost-security ac-1 — Inherited
+              from daemon server; not specific to these routes.
+
+              tests/daemon-diff-api.test.ts:894:// AC: @trait-localhost-security ac-2 — Inherited
+              from daemon server; not specific to these routes.
+
+              tests/daemon-diff-api.test.ts:895:// AC: @trait-localhost-security ac-3 — N/A: daemon
+              does not support external binding configuration.
+
+              tests/daemon-context-manager.test.ts:7: * AC: @multi-directory-daemon ac-1, ac-2,
+              ac-3, ac-4, ac-5, ac-6, ac-7, ac-8, ac-8c, ac-14, ac-15, ac-16, ac-20, ac-20b
+
+              tests/daemon-context-manager.test.ts:39:    // AC: @multi-directory-daemon ac-4
+
+              tests/daemon-context-manager.test.ts:51:    // AC: @multi-directory-daemon ac-4
+
+              tests/daemon-context-manager.test.ts:59:    // AC: @multi-directory-daemon ac-14
+
+              tests/daemon-context-manager.test.ts:74:    // AC: @multi-directory-daemon ac-15
+
+              tests/daemon-context-manager.test.ts:86:    // AC: @multi-directory-daemon ac-16
+
+              tests/daemon-context-manager.test.ts:97:    // AC: @multi-directory-daemon ac-4
+
+              tests/daemon-context-manager.test.ts:129:    // AC: @multi-directory-daemon ac-34
+
+              tests/daemon-context-manager.test.ts:164:    // AC: @multi-directory-daemon ac-14
+
+              tests/daemon-context-manager.test.ts:186:    // AC: @multi-directory-daemon ac-15
+
+              tests/daemon-context-manager.test.ts:202:    // AC: @multi-directory-daemon ac-15
+
+              tests/daemon-context-manager.test.ts:223:    // AC: @multi-directory-daemon ac-5
+
+              tests/daemon-context-manager.test.ts:230:    // AC: @multi-directory-daemon ac-6
+
+              tests/daemon-context-manager.test.ts:237:    // AC: @multi-directory-daemon ac-6
+
+              tests/daemon-context-manager.test.ts:244:    // AC: @multi-directory-daemon ac-7
+
+              tests/daemon-context-manager.test.ts:251:    // AC: @multi-directory-daemon ac-7
+
+              tests/daemon-context-manager.test.ts:260:    // AC: @multi-directory-daemon ac-8
+
+              tests/daemon-context-manager.test.ts:269:    // AC: @multi-directory-daemon ac-8
+
+              tests/daemon-context-manager.test.ts:277:    // AC: @multi-directory-daemon ac-8
+
+              tests/daemon-context-manager.test.ts:285:    // AC: @multi-directory-daemon ac-8c
+
+              tests/daemon-context-manager.test.ts:308:    // AC: @multi-directory-daemon ac-2
+
+              tests/daemon-context-manager.test.ts:316:    // AC: @multi-directory-daemon ac-2
+
+              tests/daemon-context-manager.test.ts:325:    // AC: @multi-directory-daemon ac-3
+
+              tests/daemon-context-manager.test.ts:332:    // AC: @multi-directory-daemon ac-2
+
+              tests/daemon-context-manager.test.ts:341:    // AC: @multi-directory-daemon ac-2
+
+              tests/daemon-context-manager.test.ts:355:    // AC: @multi-directory-daemon ac-2
+
+              tests/daemon-context-manager.test.ts:364:    // AC: @multi-directory-daemon ac-20
+
+              tests/daemon-context-manager.test.ts:373:    // AC: @multi-directory-daemon ac-20
+
+              tests/daemon-context-manager.test.ts:385:    // AC: @multi-directory-daemon ac-20
+
+              tests/daemon-context-manager.test.ts:398:    // AC: @multi-directory-daemon ac-20b
+
+              tests/daemon-context-manager.test.ts:411:    // AC: @multi-directory-daemon ac-2
+
+              tests/daemon-context-manager.test.ts:430:    // AC: @multi-directory-daemon ac-1
+
+              tests/daemon-context-manager.test.ts:438:    // AC: @multi-directory-daemon ac-1
+
+              tests/daemon-context-manager.test.ts:445:    // AC: @multi-directory-daemon ac-8
+
+              tests/daemon-command-api.test.ts:716:  // AC: @trait-localhost-security ac-1 — N/A:
+              localhost binding is configured
+
+              tests/daemon-command-api.test.ts:719:  // AC: @trait-localhost-security ac-2 — N/A:
+              localhostOnly middleware is a
+
+              tests/daemon-command-api.test.ts:722:  // AC: @trait-localhost-security ac-3 — N/A:
+              server configuration warning
+
+              tests/daemon-automation-routes.test.ts:821:  // AC: @trait-localhost-security ac-1,
+              ac-2, ac-3
+
+              tests/daemon-automation-routes.test.ts:824:  // AC: @trait-localhost-security ac-1 —
+              N/A: Server binding is tested in daemon-server.test.ts
+
+              tests/daemon-automation-routes.test.ts:825:  // AC: @trait-localhost-security ac-2 —
+              N/A: Connection rejection is tested in daemon-server.test.ts
+
+              tests/daemon-automation-routes.test.ts:826:  // AC: @trait-localhost-security ac-3 —
+              N/A: Security warning is tested in daemon-server.test.ts
+
+              tests/daemon-websocket-handler.test.ts:29:  // AC: @trait-websocket-protocol ac-2
+
+              tests/daemon-websocket-handler.test.ts:55:  // AC: @trait-websocket-protocol ac-2
+
+              tests/daemon-websocket-handler.test.ts:85:  // AC: @trait-websocket-protocol ac-2
+
+              tests/daemon-websocket-handler.test.ts:114:  // AC: @trait-websocket-protocol ac-2
+
+              tests/daemon-websocket-handler.test.ts:136:  // AC: @trait-websocket-protocol ac-2
+
+              tests/daemon-watcher-multi-project.test.ts:10: * AC: @multi-directory-daemon ac-17,
+              ac-18, ac-19
+
+              tests/daemon-watcher-multi-project.test.ts:43:    // AC: @multi-directory-daemon ac-17
+
+              tests/daemon-watcher-multi-project.test.ts:68:    // AC: @multi-directory-daemon ac-17
+
+              tests/daemon-watcher-multi-project.test.ts:103:    // AC: @multi-directory-daemon
+              ac-18
+
+              tests/daemon-watcher-multi-project.test.ts:138:    // AC: @multi-directory-daemon
+              ac-17
+
+              tests/daemon-watcher-multi-project.test.ts:168:    // AC: @multi-directory-daemon
+              ac-17
+
+              tests/daemon-watcher-multi-project.test.ts:193:    // AC: @multi-directory-daemon
+              ac-17
+
+              tests/daemon-watcher-multi-project.test.ts:220:    // AC: @multi-directory-daemon
+              ac-17
+
+              tests/daemon-watcher-multi-project.test.ts:232:    // AC: @multi-directory-daemon
+              ac-17
+
+              tests/daemon-watcher-multi-project.test.ts:249:    // AC: @multi-directory-daemon
+              ac-19
+
+              tests/daemon-watcher-multi-project.test.ts:270:    // AC: @multi-directory-daemon
+              ac-19
+
+              tests/daemon-watcher-multi-project.test.ts:290:    // AC: @multi-directory-daemon
+              ac-19
+
+              tests/daemon-watcher-multi-project.test.ts:314:    // AC: @multi-directory-daemon
+              ac-18
+
+              tests/daemon-watcher-multi-project.test.ts:354:    // AC: @multi-directory-daemon
+              ac-17, ac-18
+
+              tests/daemon-watcher-multi-project.test.ts:403:    // AC: @multi-directory-daemon
+              ac-17
+
+              tests/daemon-watcher-multi-project.test.ts:430:    // AC: @multi-directory-daemon
+              ac-17
+
+              tests/daemon-watcher-multi-project.test.ts:449:    // AC: @multi-directory-daemon
+              ac-17, ac-19
+
+              tests/daemon-watcher-multi-project.test.ts:469:    // AC: @multi-directory-daemon
+              ac-17
+
+              tests/daemon-watcher-error-handling.test.ts:69:  // AC: @multi-directory-daemon ac-34
+
+              tests/daemon-session-sync-manifest-discovery.test.ts:8: * AC: @multi-directory-daemon
+              ac-31
+
+              tests/daemon-session-sync-manifest-discovery.test.ts:40:    // AC:
+              @multi-directory-daemon ac-31
+
+              tests/daemon-session-sync-manifest-discovery.test.ts:60:    // AC:
+              @multi-directory-daemon ac-31
+
+              tests/daemon-server.test.ts:64:  // AC: @trait-localhost-security ac-1
+
+              tests/daemon-server.test.ts:79:  // AC: @trait-localhost-security ac-1
+
+              tests/daemon-server.test.ts:94:  // AC: @trait-localhost-security ac-1
+
+              tests/daemon-server.test.ts:109:  // AC: @trait-localhost-security ac-2
+
+              tests/daemon-server.test.ts:129:  // AC: @trait-localhost-security ac-2
+
+              tests/daemon-server.test.ts:148:  // AC: @trait-localhost-security ac-3 — N/A: daemon
+              does not support external binding configuration
+
+              tests/daemon-review-websocket.test.ts:563:// AC: @trait-localhost-security ac-1 — N/A:
+              Server binding is configured in server.ts, not in WebSocket event logic
+
+              tests/daemon-review-websocket.test.ts:564:// AC: @trait-localhost-security ac-2 — N/A:
+              Connection filtering is middleware in server.ts localhostOnly()
+
+              tests/daemon-review-websocket.test.ts:565:// AC: @trait-localhost-security ac-3 — N/A:
+              Configuration warnings are in server.ts
+
+              tests/daemon-review-websocket.test.ts:566:// AC: @trait-websocket-protocol ac-1 — N/A:
+              WebSocket connection handling is in server.ts ws handler
+
+              tests/daemon-review-websocket.test.ts:567:// AC: @trait-websocket-protocol ac-2 — N/A:
+              Topic subscription is in websocket/handler.ts
+
+              tests/daemon-review-websocket.test.ts:568:// AC: @trait-websocket-protocol ac-3 —
+              Broadcast format is verified via pubsub spy assertions (topic, event, data structure)
+
+              tests/daemon-review-websocket.test.ts:569:// AC: @trait-websocket-protocol ac-4 — N/A:
+              Heartbeat is in websocket/heartbeat.ts
+
+              tests/daemon-review-websocket.test.ts:570:// AC: @trait-websocket-protocol ac-5 — N/A:
+              Pong timeout is in websocket/heartbeat.ts
+
+              tests/daemon-review-websocket.test.ts:571:// AC: @trait-websocket-protocol ac-6 — N/A:
+              Backpressure is handled by PubSubManager
+
+              tests/daemon-review-websocket.test.ts:572:// AC: @trait-websocket-protocol ac-7 — N/A:
+              Close codes are in websocket/lifecycle.ts
+
+              tests/daemon-review-websocket.test.ts:573:// AC: @trait-websocket-protocol ac-8 — N/A:
+              Reconnection is client-side behavior
+
+              tests/daemon-review-verdicts-api.test.ts:684:// AC: @trait-localhost-security ac-1 —
+              N/A: Server binding is configured in server.ts, not in route handlers
+
+              tests/daemon-review-verdicts-api.test.ts:685:// AC: @trait-localhost-security ac-2 —
+              N/A: Connection filtering is middleware in server.ts localhostOnly()
+
+              tests/daemon-review-verdicts-api.test.ts:686:// AC: @trait-localhost-security ac-3 —
+              N/A: Configuration warnings are in server.ts
+
+              tests/daemon-review-verdicts-api.test.ts:687:// AC: @trait-websocket-protocol ac-1 —
+              N/A: WebSocket connection handling is in server.ts ws handler
+
+              tests/daemon-review-verdicts-api.test.ts:688:// AC: @trait-websocket-protocol ac-2 —
+              N/A: Topic subscription is in websocket/handler.ts
+
+              tests/daemon-review-verdicts-api.test.ts:689:// AC: @trait-websocket-protocol ac-3 —
+              N/A: Broadcast format is handled by PubSubManager (route just calls pubsub.broadcast)
+
+              tests/daemon-review-verdicts-api.test.ts:690:// AC: @trait-websocket-protocol ac-4 —
+              N/A: Heartbeat is in websocket/heartbeat.ts
+
+              tests/daemon-review-verdicts-api.test.ts:691:// AC: @trait-websocket-protocol ac-5 —
+              N/A: Pong timeout is in websocket/heartbeat.ts
+
+              tests/daemon-review-verdicts-api.test.ts:692:// AC: @trait-websocket-protocol ac-6 —
+              N/A: Backpressure is handled by PubSubManager
+
+              tests/daemon-review-verdicts-api.test.ts:693:// AC: @trait-websocket-protocol ac-7 —
+              N/A: Close codes are in websocket/lifecycle.ts
+
+              tests/daemon-review-verdicts-api.test.ts:694:// AC: @trait-websocket-protocol ac-8 —
+              N/A: Reconnection is client-side behavior
+
+              tests/daemon-pubsub.test.ts:20:    // AC: @multi-directory-daemon ac-18
+
+              tests/daemon-pubsub.test.ts:43:    // AC: @multi-directory-daemon ac-18
+
+              tests/daemon-pubsub.test.ts:62:    // AC: @multi-directory-daemon ac-18
+
+              tests/cli-serve.test.ts:391:  // AC: @multi-directory-daemon ac-12
+
+              tests/cli-serve.test.ts:426:  // AC: @multi-directory-daemon ac-12
+
+              tests/cli-serve.test.ts:467:  // AC: @multi-directory-daemon ac-12
+
+              tests/cli-serve.test.ts:482:    // Start daemon from directory without .kspec/ (AC:
+              @multi-directory-daemon ac-3)
+
+              tests/cli-serve.test.ts:498:  // AC: @multi-directory-daemon ac-12
+
+              tests/daemon-pid.test.ts:4: * AC: @multi-directory-daemon ac-9, ac-10, ac-11
+
+              tests/daemon-pid.test.ts:24:  // AC: @multi-directory-daemon ac-9
+
+              tests/daemon-pid.test.ts:37:  // AC: @multi-directory-daemon ac-9
+
+              tests/daemon-pid.test.ts:47:  // AC: @multi-directory-daemon ac-9
+
+              tests/daemon-pid.test.ts:56:  // AC: @multi-directory-daemon ac-9
+
+              tests/daemon-pid.test.ts:68:  // AC: @multi-directory-daemon ac-11
+
+              tests/daemon-pid.test.ts:79:  // AC: @multi-directory-daemon ac-11
+
+              tests/daemon-pid.test.ts:86:  // AC: @multi-directory-daemon ac-10
+
+              tests/daemon-pid.test.ts:96:  // AC: @multi-directory-daemon ac-10
+
+              tests/daemon-pid.test.ts:106:  // AC: @multi-directory-daemon ac-10
+
+              tests/daemon-pid.test.ts:114:  // AC: @multi-directory-daemon ac-10
+
+              tests/daemon-pid.test.ts:121:  // AC: @multi-directory-daemon ac-10
+
+              tests/daemon-path-validation-middleware.test.ts:7: * AC: @multi-directory-daemon ac-1,
+              ac-2, ac-3, ac-4, ac-5, ac-6, ac-7, ac-8, ac-8b, ac-8c, ac-20b
+
+              tests/daemon-path-validation-middleware.test.ts:148:        // AC:
+              @multi-directory-daemon ac-1, ac-4, ac-5, ac-6, ac-7, ac-8, ac-8b, ac-8c
+
+              tests/daemon-path-validation-middleware.test.ts:160:        // AC:
+              @multi-directory-daemon ac-2, ac-3, ac-20b
+
+              tests/daemon-path-validation-middleware.test.ts:170:      // AC:
+              @multi-directory-daemon ac-3, ac-20b
+
+              tests/daemon-path-validation-middleware.test.ts:179:      // AC:
+              @multi-directory-daemon ac-5
+
+              tests/daemon-path-validation-middleware.test.ts:185:      // AC:
+              @multi-directory-daemon ac-6
+
+              tests/daemon-path-validation-middleware.test.ts:191:      // AC:
+              @multi-directory-daemon ac-7
+
+              tests/daemon-path-validation-middleware.test.ts:197:      // AC:
+              @multi-directory-daemon ac-8b - permission denied
+
+              tests/daemon-path-validation-middleware.test.ts:257:    // AC: @multi-directory-daemon
+              ac-1
+
+              tests/daemon-path-validation-middleware.test.ts:269:    // AC: @multi-directory-daemon
+              ac-4
+
+              tests/daemon-path-validation-middleware.test.ts:287:    // AC: @multi-directory-daemon
+              ac-5
+
+              tests/daemon-path-validation-middleware.test.ts:301:    // AC: @multi-directory-daemon
+              ac-6
+
+              tests/daemon-path-validation-middleware.test.ts:314:    // AC: @multi-directory-daemon
+              ac-7
+
+              tests/daemon-path-validation-middleware.test.ts:329:    // AC: @multi-directory-daemon
+              ac-8
+
+              tests/daemon-path-validation-middleware.test.ts:346:    // AC: @multi-directory-daemon
+              ac-8 (multiple slashes)
+
+              tests/daemon-path-validation-middleware.test.ts:358:    // AC: @multi-directory-daemon
+              ac-8 (dot segments)
+
+              tests/daemon-path-validation-middleware.test.ts:370:    // AC: @multi-directory-daemon
+              ac-8c
+
+              tests/daemon-path-validation-middleware.test.ts:395:    // AC: @multi-directory-daemon
+              ac-2
+
+              tests/daemon-path-validation-middleware.test.ts:409:    // AC: @multi-directory-daemon
+              ac-3
+
+              tests/daemon-path-validation-middleware.test.ts:424:    // AC: @multi-directory-daemon
+              ac-20b
+
+              tests/daemon-path-validation-middleware.test.ts:448:    // AC: @multi-directory-daemon
+              ac-8b
+
+              tests/parser/daemon-config.test.ts:303:      // AC: @multi-directory-daemon ac-32 -
+              warning still emits even when incidental daemon traffic is suppressed.
+
+              tests/daemon-global-pid-port.test.ts:7: * AC: @multi-directory-daemon ac-9, ac-9b,
+              ac-9c, ac-10, ac-10b, ac-11, ac-13
+
+              tests/daemon-global-pid-port.test.ts:37:  // AC: @multi-directory-daemon ac-9b
+
+              tests/daemon-global-pid-port.test.ts:44:  // AC: @multi-directory-daemon ac-9, ac-10b
+
+              tests/daemon-global-pid-port.test.ts:48:    // AC: @multi-directory-daemon ac-10b
+
+              tests/daemon-global-pid-port.test.ts:85:  // AC: @multi-directory-daemon ac-9
+
+              tests/daemon-global-pid-port.test.ts:105:  // AC: @multi-directory-daemon ac-9c, ac-13
+
+              tests/daemon-global-pid-port.test.ts:115:      // AC: @multi-directory-daemon ac-9c -
+              validate port content
+
+              tests/daemon-global-pid-port.test.ts:126:  // AC: @multi-directory-daemon ac-11
+
+              tests/daemon-global-pid-port.test.ts:145:  // AC: @multi-directory-daemon ac-10
+
+              tests/daemon-global-pid-port.test.ts:170:    // AC: @multi-directory-daemon ac-9
+
+              tests/daemon-global-pid-port.test.ts:181:    // AC: @multi-directory-daemon ac-9
+
+              tests/daemon-global-pid-port.test.ts:189:    // AC: @multi-directory-daemon ac-9
+
+              tests/daemon-global-pid-port.test.ts:195:    // AC: @multi-directory-daemon ac-9
+
+              tests/daemon-global-pid-port.test.ts:207:    // AC: @multi-directory-daemon ac-9
+
+              tests/daemon-global-pid-port.test.ts:219:    // AC: @multi-directory-daemon ac-13
+
+              tests/daemon-global-pid-port.test.ts:228:    // AC: @multi-directory-daemon ac-13
+
+              tests/daemon-global-pid-port.test.ts:233:    // AC: @multi-directory-daemon ac-9c
+
+              tests/daemon-global-pid-port.test.ts:242:    // AC: @multi-directory-daemon ac-9c
+
+              tests/daemon-global-pid-port.test.ts:251:    // AC: @multi-directory-daemon ac-9c
+
+              tests/daemon-global-pid-port.test.ts:260:    // AC: @multi-directory-daemon ac-9c
+
+              tests/daemon-global-pid-port.test.ts:266:    // AC: @multi-directory-daemon ac-9c
+
+              tests/daemon-global-pid-port.test.ts:274:    // AC: @multi-directory-daemon ac-9b
+
+              tests/daemon-global-pid-port.test.ts:287:    // AC: @multi-directory-daemon ac-9b
+
+              tests/daemon-global-pid-port.test.ts:300:    // AC: @multi-directory-daemon ac-9b
+
+              tests/daemon-global-pid-port.test.ts:310:    // AC: @multi-directory-daemon ac-9b
+
+              tests/daemon-global-pid-port.test.ts:320:    // AC: @multi-directory-daemon ac-10
+
+              tests/daemon-global-pid-port.test.ts:326:    // AC: @multi-directory-daemon ac-10
+
+              tests/daemon-global-pid-port.test.ts:331:    // AC: @multi-directory-daemon ac-10
+
+              tests/daemon-global-pid-port.test.ts:340:    // AC: @multi-directory-daemon ac-10
+
+              tests/daemon-global-pid-port.test.ts:346:    // AC: @multi-directory-daemon ac-10
+
+              tests/daemon-global-pid-port.test.ts:354:    // AC: @multi-directory-daemon ac-11
+
+              tests/daemon-global-pid-port.test.ts:371:    // AC: @multi-directory-daemon ac-11
+
+              tests/daemon-global-pid-port.test.ts:376:    // AC: @multi-directory-daemon ac-11
+
+              tests/daemon-global-pid-port.test.ts:387:    // AC: @multi-directory-daemon ac-11
+
+              tests/daemon-global-pid-port.test.ts:400:    // AC: @multi-directory-daemon ac-10
+
+              tests/daemon-global-pid-port.test.ts:414:    // AC: @multi-directory-daemon ac-10
+
+              tests/daemon-global-pid-port.test.ts:425:    // AC: @multi-directory-daemon ac-10
+
+              tests/daemon-global-pid-port.test.ts:441:    // AC: @multi-directory-daemon ac-10b
+
+              tests/daemon-global-pid-port.test.ts:461:    // AC: @multi-directory-daemon ac-10b
+
+              tests/daemon-global-pid-port.test.ts:476:    // AC: @multi-directory-daemon ac-10b
+
+              tests/daemon-global-pid-port.test.ts:490:    // AC: @multi-directory-daemon ac-10,
+              ac-13
+
+              tests/daemon-global-pid-port.test.ts:504:    // AC: @multi-directory-daemon ac-11; 
+
+              > @kynetic-ai/spec@0.12.0 test
+
+              > node scripts/test.cjs.\nClaims verified: the task really changed  and also
+              changed  on kspec-meta;  exists and is a sensible relationship target; full test suite
+              passed; alignment check fails specifically because  is now marked .\nCategories
+              searched: correctness (found blocker: wrong implementation status), integration (found
+              blocker: spec/task alignment break), test quality (no new tests required for
+              relationship-only metadata change), edge cases/error handling/security (no additional
+              findings in this metadata-only review).
+            created_at: 2026-03-27T22:35:20.802Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-27T22:31:05.065Z
-    updated_at: 2026-03-27T22:35:09.906Z
+    updated_at: 2026-03-27T22:35:20.802Z
     notes: []
