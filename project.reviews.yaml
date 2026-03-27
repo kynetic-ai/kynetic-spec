@@ -65831,6 +65831,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMR5GJ7T76B9KH8JC7WZV5AN
         timestamp: 2026-03-27T17:29:45.958Z
+      - _ulid: 01KMR5GM72TNJWZBN8JF365110
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMR5GKR9QPEHRETFX3QXRVJK
+        timestamp: 2026-03-27T17:29:47.490Z
     examined_commit: 16d50422a0766c15efda5c39d936c326782c3f50
     external_links: []
     lifecycle_state: open
@@ -66325,7 +66332,26 @@ reviews:
               the trimmed kspec() helper or trimming before comparison.
             created_at: 2026-03-27T17:29:45.466Z
         kind: blocker
+      - _ulid: 01KMR5GKR9QPEHRETFX3QXRVJK
+        anchor:
+          type: code
+          commit: 16d50422a0766c15efda5c39d936c326782c3f50
+          line_end: 297
+          line_start: 293
+          path: packages/daemon/src/routes/command.ts
+          side: head
+        entries:
+          - _ulid: 01KMR5GKR91RRWG41TKN1ESJ7T
+            author: "@claude"
+            body: 'The implementation does not meet @trait-api-endpoint ac-6 on validation failures.
+              X-Request-Id is only assigned in onBeforeHandle, so responses generated before the
+              handler never receive it. I reproduced this by POSTing /api/command without command
+              through the route directly: the response was 400 {"error":"validation_error",...} and
+              the headers only contained content-type, with no x-request-id. The tests miss this
+              because they only assert the header on the success path.'
+            created_at: 2026-03-27T17:29:47.017Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T17:24:05.606Z
-    updated_at: 2026-03-27T17:29:45.466Z
+    updated_at: 2026-03-27T17:29:47.017Z
     notes: []
