@@ -8398,6 +8398,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T01:33:31.461Z
+  - _ulid: 01KMPFWFB87XVJR0EYRNE2Z8A6
+    type: success
+    content: Entity cache fix cycle 6 completed cleanly in one commit. The established patterns (lazy
+      getCtx, domain state check + index lookup + disk fallback, write-through skip) made adding
+      cache support for plans/reviews/triage/meta detail routes mechanical. 6899 tests passed, 0
+      regressions.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T01:52:32.616Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
