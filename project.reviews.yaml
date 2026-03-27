@@ -61417,6 +61417,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMPXWPAG9ZQ6AZ2Q4X7MEH6H
         timestamp: 2026-03-27T05:57:20.393Z
+      - _ulid: 01KMPXWRQ0T816J4H3GWMNZ88E
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMPXWR4DTFXFPFT547F83Z9F
+        timestamp: 2026-03-27T05:57:22.272Z
     examined_commit: 5b03acb30a52caaebdc360768c3ede7096e7ea7a
     external_links: []
     lifecycle_state: open
@@ -61449,7 +61456,28 @@ reviews:
               these endpoints.
             created_at: 2026-03-27T05:57:19.824Z
         kind: blocker
+      - _ulid: 01KMPXWR4DTFXFPFT547F83Z9F
+        anchor:
+          type: code
+          commit: 5b03acb30a52caaebdc360768c3ede7096e7ea7a
+          line_end: 199
+          line_start: 190
+          path: packages/daemon/src/routes/sessions.ts
+          side: head
+        entries:
+          - _ulid: 01KMPXWR4EK4D5BXHVMMRQ0KFP
+            author: "@claude"
+            body: "The filtered /api/sessions hot path still bypasses the entity cache. When the sessions domain
+              is ready but the request includes task_id or spec_ref, ensureAlignmentContext()
+              unconditionally initializes context and reloads all tasks and items from disk before
+              filtering. That means a summary/list request falls back to full YAML reads even though
+              the cache is warm, which breaks ac-serve-from-memory and regresses the filtered
+              session list back to pre-cache I/O. The new cache tests do not cover this path: grep
+              only finds unfiltered /api/sessions coverage in daemon-entity-cache.test.ts, with no
+              task_id/spec_ref route-level cache assertions."
+            created_at: 2026-03-27T05:57:21.678Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T05:51:00.619Z
-    updated_at: 2026-03-27T05:57:19.824Z
+    updated_at: 2026-03-27T05:57:21.678Z
     notes: []
