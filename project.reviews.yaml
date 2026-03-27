@@ -63869,6 +63869,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMR0ARSZXWQ6YHW6QTFX5YBB
         timestamp: 2026-03-27T15:59:13.154Z
+      - _ulid: 01KMR0ATMBK4VN4RFA4G81X2KY
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMR0AT6K2YK5QXXV9CHE0PAG
+        timestamp: 2026-03-27T15:59:14.571Z
     examined_commit: 316e9bc71e013056749ce643496b1e5eb393a8c9
     external_links: []
     lifecycle_state: open
@@ -63917,7 +63924,24 @@ reviews:
               would still pass this AC suite.
             created_at: 2026-03-27T15:59:12.703Z
         kind: blocker
+      - _ulid: 01KMR0AT6K2YK5QXXV9CHE0PAG
+        anchor:
+          type: code
+          commit: 316e9bc71e013056749ce643496b1e5eb393a8c9
+          line_end: 261
+          line_start: 258
+          path: packages/daemon/src/routes/validation.ts
+          side: head
+        entries:
+          - _ulid: 01KMR0AT6K9WA1JD2BMB520WQ4
+            author: "@claude"
+            body: "GET /api/alignment has the same remaining bypass: it still calls initContext() and
+              buildIndexes(ctx), and buildIndexes() reads tasks/items from disk before constructing
+              the AlignmentIndex. That is the exact per-request read path this task was supposed to
+              remove for alignment/index-building routes, so the AC is not met here yet either."
+            created_at: 2026-03-27T15:59:14.132Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T15:54:47.446Z
-    updated_at: 2026-03-27T15:59:12.703Z
+    updated_at: 2026-03-27T15:59:14.132Z
     notes: []
