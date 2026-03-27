@@ -36,3 +36,15 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T21:07:01.404Z
+  - _ulid: 01KMRM1M8VZF870B9TWJ5ER52S
+    content: Implementation complete. Created src/cli/daemon-proxy.ts with detection (port file + health
+      check with 200ms timeout), shouldProxyCommand (KSPEC_NO_DAEMON, --require-daemon,
+      auto-detect), proxyCommand (routes via /api/command with timeout handling), and
+      extractCommandPayload (Commander state to batch JSON format). Integrated into preAction hook
+      in index.ts with parent-chain proxy-skip check for infrastructure commands. Used
+      --require-daemon flag name to avoid conflict with serve start --daemon. 30 tests (unit + E2E)
+      covering all 9 spec ACs + 4 detection ACs + trait error guidance ACs. E2E tests use
+      child-process mock daemon to avoid spawnSync event loop blocking.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T21:43:44.668Z
