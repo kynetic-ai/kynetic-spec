@@ -58699,6 +58699,12 @@ reviews:
         payload:
           thread_ulid: 01KMPKF2TYJ30Y4ZG4XJMNF9VJ
         timestamp: 2026-03-27T03:14:05.448Z
+      - _ulid: 01KMPMJ3H48N9RVPD1TBX9MG8C
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMPKF2TYJ30Y4ZG4XJMNF9VJ
+        timestamp: 2026-03-27T03:14:15.716Z
     examined_commit: 4c9a805d7cc6c6b0ae612ba38e475faefde387f2
     external_links: []
     lifecycle_state: closed
@@ -58741,6 +58747,8 @@ reviews:
               passed, 1 pre-existing timeout failure in dispatch-runtime-bootstrap-contract)."
             created_at: 2026-03-27T03:14:04.861Z
         kind: blocker
+        resolved_at: 2026-03-27T03:14:15.139Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -58750,5 +58758,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T02:55:48.539Z
     created_at: 2026-03-27T02:50:23.213Z
-    updated_at: 2026-03-27T03:14:04.861Z
+    updated_at: 2026-03-27T03:14:15.139Z
     notes: []
