@@ -8601,6 +8601,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T05:58:09.979Z
+  - _ulid: 01KMPZ29DSDV5381D7Q4FJG25K
+    type: friction
+    content: ReferenceIndex and AlignmentIndex constructors accept LoadedTask[]/LoadedSpecItem[] but
+      only use _ulid, slugs, spec_ref, title, status from each element. This forces unsafe 'as
+      unknown as LoadedTask[]' casts when passing cache summary types (TaskSummary/ItemSummary)
+      which are structurally sufficient. Encountered in entity cache route wiring (tasks.ts,
+      items.ts, sessions.ts). A minimal structural interface (like AlignmentTask) accepted by
+      ReferenceIndex would eliminate the casts.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T06:17:51.801Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
