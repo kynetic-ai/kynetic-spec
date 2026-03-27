@@ -67822,6 +67822,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMR9V6CPQNXZNZ1VKN568P4Y
         timestamp: 2026-03-27T18:45:29.286Z
+      - _ulid: 01KMR9VBGED7DSBVVWN219XPB5
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMR9VA7Y0CGANJ0J3JHMYA4Y
+        timestamp: 2026-03-27T18:45:33.326Z
     examined_commit: 1fdbf904e3dd52c1fbad1aaed1da6381a92309b4
     external_links: []
     lifecycle_state: open
@@ -67851,7 +67858,26 @@ reviews:
               searched domain in  as a loading response, not an incomplete success."
             created_at: 2026-03-27T18:45:28.086Z
         kind: blocker
+      - _ulid: 01KMR9VA7Y0CGANJ0J3JHMYA4Y
+        anchor:
+          type: code
+          commit: 1fdbf904e3dd52c1fbad1aaed1da6381a92309b4
+          line_end: 602
+          line_start: 591
+          path: packages/daemon/src/routes/sessions.ts
+          side: head
+        entries:
+          - _ulid: 01KMR9VA7Y7YVFAYVJGNR4N8EE
+            author: "@claude"
+            body: "The warmup fallback is still present on . When the task or item cache domains are not , this
+              code falls back to  plus / to build  and . That reintroduces the per-request disk
+              reads this task is meant to remove, just on the session detail path instead of the
+              routes covered by the new warmup test. This route needs the same treatment as the
+              other warmup fixes: serve from cache when ready, otherwise return a
+              loading/omitted-cache-status path without calling the disk-backed loaders."
+            created_at: 2026-03-27T18:45:32.030Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T18:40:25.839Z
-    updated_at: 2026-03-27T18:45:28.086Z
+    updated_at: 2026-03-27T18:45:32.030Z
     notes: []
