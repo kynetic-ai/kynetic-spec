@@ -8439,6 +8439,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T02:16:41.015Z
+  - _ulid: 01KMPK3FQAHYC57QB7C3FZFQ65
+    type: friction
+    content: "Entity cache fix cycle 10 revealed cross-domain mutation gaps: routes that trigger side
+      effects in other domains (review verdict transitioning tasks, triage act creating
+      tasks/deleting inbox/saving observations) only wrote through their own domain. A write-through
+      audit should check not just 'is this domain wired?' but 'does this route mutate data in other
+      domains?' — the second question is harder because it requires tracing through called
+      functions."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T02:48:48.106Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
