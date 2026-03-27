@@ -61518,6 +61518,12 @@ reviews:
         payload:
           thread_ulid: 01KMPXWR4DTFXFPFT547F83Z9F
         timestamp: 2026-03-27T06:15:01.145Z
+      - _ulid: 01KMPYXBA0W6KC4NFCFG1XNED0
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMPXWR4DTFXFPFT547F83Z9F
+        timestamp: 2026-03-27T06:15:09.892Z
     examined_commit: 5b03acb30a52caaebdc360768c3ede7096e7ea7a
     external_links: []
     lifecycle_state: closed
@@ -61593,6 +61599,8 @@ reviews:
               warm cache in tests/daemon-cache-route-coverage.test.ts."
             created_at: 2026-03-27T06:15:00.553Z
         kind: blocker
+        resolved_at: 2026-03-27T06:15:09.296Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -61602,5 +61610,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T05:57:33.269Z
     created_at: 2026-03-27T05:51:00.619Z
-    updated_at: 2026-03-27T06:15:00.553Z
+    updated_at: 2026-03-27T06:15:09.296Z
     notes: []
