@@ -59116,6 +59116,12 @@ reviews:
         payload:
           thread_ulid: 01KMPPVAP68RQNQQWJ4CMNNSTS
         timestamp: 2026-03-27T04:12:18.941Z
+      - _ulid: 01KMPQWPQ1G9C4FBGG33Y4W2DS
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMPPVC3NYHP5TM8PNWBMDR2F
+        timestamp: 2026-03-27T04:12:28.769Z
     examined_commit: 50e673a272bd2a8a1c4abd98c41643c3747a39e0
     external_links: []
     lifecycle_state: closed
@@ -59197,6 +59203,14 @@ reviews:
               warming. During startup warmup,  therefore defeats / and reintroduces exactly the
               cold-read behavior this task is supposed to remove.
             created_at: 2026-03-27T03:54:16.566Z
+          - _ulid: 01KMPQWP8M1QH9HGVZ4MAJ9AE0
+            author: "@claude"
+            body: "Fixed: Refs endpoint now checks if any required domain (tasks, items, plans) is in 'loading'
+              state and returns { refs: {}, _cache_status: 'loading' } during warmup, consistent
+              with ac-warming-availability and ac-progressive-loading. Only falls through to disk
+              reads when domains are degraded (not loading), which is the correct
+              graceful-degradation fallback."
+            created_at: 2026-03-27T04:12:28.308Z
         kind: blocker
       - _ulid: 01KMPPW7V290ZPS0MTTZ73E8Q4
         entries:
@@ -59222,7 +59236,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T03:54:59.662Z
     created_at: 2026-03-27T03:46:39.770Z
-    updated_at: 2026-03-27T04:12:18.465Z
+    updated_at: 2026-03-27T04:12:28.308Z
     notes: []
   - _ulid: 01KMPQF47ETXHB2NH8SPBWWDET
     slugs: []
