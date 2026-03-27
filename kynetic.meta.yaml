@@ -8978,6 +8978,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T18:36:19.618Z
+  - _ulid: 01KMR9G1YXFY8R27TJY6X4PNB8
+    type: friction
+    content: "Entity cache route migration: every route that uses the entity cache needs a 3-state check
+      (loading → return _cache_status loading, ready → serve from cache, no cache → fallback to
+      disk). Multiple fix cycles on task-migrate-read-routes were caused by routes only checking
+      'ready' and falling through to initContext() during warmup. A lint rule, route helper, or code
+      review checklist entry for 'does every cache-backed route handle the loading state?' would
+      prevent this recurring pattern."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T18:39:23.101Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
