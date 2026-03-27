@@ -363,7 +363,8 @@ describe("Daemon read routes skip drift-check on cache-miss fallback", () => {
 
     noCacheApp = new Elysia()
       .use(middleware)
-      .use(createTasksRoutes({ pubsub, getEntityCache }));
+      .use(createTasksRoutes({ pubsub, getEntityCache }))
+      .use(createItemsRoutes({ getEntityCache }));
 
     // Spy on initContext and mock it to return a valid context that includes
     // the test task data. This lets us verify the syncMode argument without
@@ -393,14 +394,17 @@ describe("Daemon read routes skip drift-check on cache-miss fallback", () => {
     await cleanupTempDir(noCacheTempDir);
   });
 
-  function makeNoCacheRequest(urlPath: string) {
+  function makeNoCacheRequest(urlPath: string, init: RequestInit = {}) {
     return noCacheApp.handle(
       new Request(`http://localhost${urlPath}`, {
-        method: "GET",
+        method: init.method ?? "GET",
         headers: {
           Host: "localhost",
           "X-Kspec-Dir": noCacheTempDir,
+          ...(init.body ? { "Content-Type": "application/json" } : {}),
+          ...init.headers,
         },
+        body: init.body,
       }),
     );
   }
@@ -421,6 +425,21 @@ describe("Daemon read routes skip drift-check on cache-miss fallback", () => {
   // AC: @shadow-lazy-read-sync ac-daemon-bypass — GET /api/tasks/:ref without cache passes syncMode "skip"
   it("GET /api/tasks/:ref passes syncMode 'skip' to initContext on cache miss", async () => {
     const res = await makeNoCacheRequest(`/api/tasks/@cache-test-task`);
+    expect(initContextSpy).toHaveBeenCalled();
+    const calls = initContextSpy.mock.calls;
+    const hasSkipMode = calls.some(
+      (call) => call[1] && (call[1] as { syncMode?: string }).syncMode === "skip",
+    );
+    expect(hasSkipMode).toBe(true);
+  });
+
+  // AC: @shadow-lazy-read-sync ac-daemon-bypass — POST /api/items/batch without cache passes syncMode "skip"
+  it("POST /api/items/batch passes syncMode 'skip' to initContext on cache miss", async () => {
+    initContextSpy.mockClear();
+    const res = await makeNoCacheRequest("/api/items/batch", {
+      method: "POST",
+      body: JSON.stringify({ refs: ["@cache-test-task"] }),
+    });
     expect(initContextSpy).toHaveBeenCalled();
     const calls = initContextSpy.mock.calls;
     const hasSkipMode = calls.some(

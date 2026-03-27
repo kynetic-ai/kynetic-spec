@@ -341,17 +341,24 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
           }
 
           // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-          const ctx = await initContext(projectContext.path);
+          // AC: @daemon-entity-cache ac-serve-from-memory — defer initContext to avoid
+          // disk/git work on cache hits
+          let _batchCtx: Awaited<ReturnType<typeof initContext>> | null = null;
+          // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
+          const getBatchCtx = async () => {
+            if (!_batchCtx) _batchCtx = await initContext(projectContext.path, { syncMode: "skip" });
+            return _batchCtx;
+          };
           // AC: @daemon-entity-cache ac-serve-from-memory — try cache for items and tasks
           const batchCache = getEntityCache?.(projectContext.path);
           const batchItemsDomainState = batchCache?.getDomainState("items");
           const batchItems: (LoadedSpecItem | ItemSummary)[] =
             (batchCache && batchItemsDomainState === "ready" ? batchCache.getItemIndex() : null)
-            ?? await loadAllItems(ctx);
+            ?? await loadAllItems(await getBatchCtx());
           const batchTasksDomainState = batchCache?.getDomainState("tasks");
           const tasks =
             (batchCache && batchTasksDomainState === "ready" ? batchCache.getTaskIndex() : null)
-            ?? (await resolveTaskDataManager(ctx).loadAllTasks(ctx));
+            ?? (await resolveTaskDataManager(await getBatchCtx()).loadAllTasks(await getBatchCtx()));
 
           const resolvedItems = [];
           const unresolved: string[] = [];
