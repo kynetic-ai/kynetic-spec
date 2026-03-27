@@ -9172,6 +9172,16 @@ observations:
     resolved_at: 2026-03-27T22:00:43.769Z
     resolved_by: "@claude"
     created_at: 2026-03-27T22:00:10.896Z
+  - _ulid: 01KMRNEFSVZM6X0SMFZG8FJNJ5
+    type: friction
+    content: serve start --daemon renamed to --detach as side effect of cli-daemon-proxy task. The -d
+      shorthand is preserved but any documentation, scripts, or user muscle memory using the long
+      form needs updating. This was forced by Commander option namespace collision with the new
+      global --daemon flag.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T22:08:14.651Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
