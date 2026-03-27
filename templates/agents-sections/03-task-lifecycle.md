@@ -21,6 +21,21 @@ pending → in_progress → pending_review → completed
 
 See `kspec help task` for transition commands and options.
 
+### Terminal States and Reset
+
+`completed` and `cancelled` are **terminal** — no direct transitions out. To change a terminal task's state, `reset` it first (returns to `pending`), then transition normally. Use `kspec batch` for atomic multi-step transitions:
+
+```json
+[
+  { "command": "task reset", "args": { "ref": "@task-slug" } },
+  { "command": "task cancel", "args": { "ref": "@task-slug", "reason": "..." } }
+]
+```
+
+`blocked` is **semi-terminal** — `unblock` restores the prior state automatically (no reset needed).
+
+Transition commands enforce allowed source states. Use `kspec help task` to see which commands accept which states.
+
 ### Spec-First Development
 
 **Core principle**: If you're changing behavior and the spec doesn't cover it, update the spec first.
