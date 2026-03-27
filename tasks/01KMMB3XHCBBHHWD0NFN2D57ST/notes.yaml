@@ -1,1 +1,8 @@
-notes: []
+notes:
+  - _ulid: 01KMRF38GX0GFETZQ5VGEEXM84
+    content: "Approach: Update @daemon-server description to mention cache invalidation as a second
+      responsibility of the file watcher, alongside WebSocket broadcast. This is a spec-only change
+      — no code or tests needed."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T20:17:15.294Z
