@@ -22625,7 +22625,7 @@
   type: task
   spec_ref: "@shadow-lazy-read-sync"
   plan_ref: "@plan-daemon-optimistic-data-layer"
-  status: needs_work
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-entity-cache-impl"
@@ -22634,11 +22634,11 @@
     - specs
     - maintenance
   review_ref: "@01KMRD6KX6XHD13WX32G2BZ9EJ"
-  notes_count: 4
+  notes_count: 5
   todos_count: 0
   created_at: 2026-03-26T05:50:43.571Z
-  started_at: 2026-03-27T19:41:34.109Z
-  submitted_at: 2026-03-27T19:41:37.442Z
+  started_at: 2026-03-27T20:01:00.796Z
+  submitted_at: 2026-03-27T20:01:01.503Z
   automation: eligible
 - _ulid: 01KMMB3WY8E1JYRGHBHZ4RMH9E
   slugs:

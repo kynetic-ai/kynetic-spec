@@ -20,7 +20,7 @@ description: |
 spec_ref: "@shadow-lazy-read-sync"
 plan_ref: "@plan-daemon-optimistic-data-layer"
 origin: derived
-status: needs_work
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-entity-cache-impl"
@@ -34,12 +34,12 @@ review_ref: "@01KMRD6KX6XHD13WX32G2BZ9EJ"
 submission_linkage:
   review_url: null
   branch: dev
-  captured_at: 2026-03-27T19:41:37.439Z
+  captured_at: 2026-03-27T20:01:01.500Z
   commit: 7d699d4855817e533fc2e5066db464312ea38f57
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
   upstream_ref: refs/heads/dev
-session_id: null
+session_id: 01KMRDPVVZB2VD0ZZH2F7W8Z2Z
 history:
   - author: "@claude"
     changes:
@@ -155,8 +155,48 @@ history:
         previous: 01KMRBE51T71A5AYTD6VQCVRVR
     command: review-verdict-needs-work
     timestamp: 2026-03-27T19:48:13.557Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KMRDPVVZB2VD0ZZH2F7W8Z2Z
+        previous: null
+      started_at:
+        new: 2026-03-27T20:01:00.796Z
+        previous: 2026-03-27T19:41:34.109Z
+    command: task-start
+    timestamp: 2026-03-27T20:01:00.796Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-03-27T20:01:01.500Z
+          commit: 7d699d4855817e533fc2e5066db464312ea38f57
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous:
+          review_url: null
+          branch: dev
+          captured_at: 2026-03-27T19:41:37.439Z
+          commit: 7d699d4855817e533fc2e5066db464312ea38f57
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+      submitted_at:
+        new: 2026-03-27T20:01:01.503Z
+        previous: 2026-03-27T19:41:37.442Z
+    command: task-submit
+    timestamp: 2026-03-27T20:01:01.504Z
 created_at: 2026-03-26T05:50:43.571Z
-started_at: 2026-03-27T19:41:34.109Z
-submitted_at: 2026-03-27T19:41:37.442Z
+started_at: 2026-03-27T20:01:00.796Z
+submitted_at: 2026-03-27T20:01:01.503Z
 todos: []
 automation: eligible

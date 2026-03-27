@@ -40,3 +40,14 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T19:48:13.557Z
+  - _ulid: 01KMRE5G4NNGAR310026V0ZBVZ
+    content: 'Fix cycle 2: addressed the single remaining blocker — POST /api/items/batch was the last
+      daemon read route calling bare initContext() without { syncMode: "skip" }. Applied the
+      deferred-context pattern (getBatchCtx) consistent with all other read routes. Added behavioral
+      test proving syncMode "skip" is passed on cache miss. Verified all remaining bare initContext
+      calls in daemon routes are mutation endpoints (task start/note/submit/complete/block,
+      inbox/triage/review mutations). All ACs re-verified. 6950 tests pass (3 unrelated timeout
+      failures in dispatch-workspace-config and native-guard-setup).'
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T20:01:00.053Z
