@@ -67800,7 +67800,19 @@ reviews:
     slugs: []
     title: Review @01KMMB3TNHWVQT4HHB9XC1DE0X
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Ran kspec validate: schema and references passed; command exited 6 due existing repo-wide
+          warnings (1 reference warning, 33 alignment warnings, 485 completeness warnings), with no
+          new task-specific validation errors."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-27T18:46:08.253Z
+        completed_at: 2026-03-27T18:46:08.253Z
     events:
       - _ulid: 01KMR9HZ7FGCX41KYS81790RV7
         actor: "@claude"
@@ -67859,6 +67871,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-27T18:46:04.150Z
+      - _ulid: 01KMR9WEBCCKBFXS4GKP7NP80Y
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-27T18:46:09.004Z
     examined_commit: 1fdbf904e3dd52c1fbad1aaed1da6381a92309b4
     external_links: []
     lifecycle_state: closed
@@ -67956,5 +67975,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T18:46:04.149Z
     created_at: 2026-03-27T18:40:25.839Z
-    updated_at: 2026-03-27T18:46:04.150Z
+    updated_at: 2026-03-27T18:46:08.253Z
     notes: []
