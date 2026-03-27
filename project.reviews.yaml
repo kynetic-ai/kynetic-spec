@@ -58786,6 +58786,21 @@ reviews:
         runner: kspec
         created_at: 2026-03-27T03:21:22.252Z
         completed_at: 2026-03-27T03:21:22.252Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/daemon/entity-cache.ts, packages/daemon/src/server.ts,
+          packages/daemon/src/project-context.ts,
+          packages/daemon/src/routes/{tasks,items,inbox,meta,plans,reviews,triage,sessions,session-\
+          related,refs}.ts, tests/daemon-entity-cache.test.ts. Commands run: kspec task
+          get/review/item/validate, git status/log/diff, npm test, bun eval preload probes.
+          Categories searched: correctness, edge cases, error handling, test quality, integration."
+        name: review-evidence
+        required: false
+        runner: codex
+        created_at: 2026-03-27T03:21:26.064Z
+        completed_at: 2026-03-27T03:21:26.064Z
     events:
       - _ulid: 01KMPMPATJ7FA8VX0B3J2ZF4T3
         actor: "@claude"
@@ -58828,6 +58843,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-27T03:21:22.863Z
+      - _ulid: 01KMPMZ8C28JSNHRNN0Y16AF3S
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-03-27T03:21:26.658Z
     examined_commit: ea11de060b7e709735e4d74f9a686a48a8fde614
     external_links: []
     lifecycle_state: open
@@ -58886,5 +58908,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-27T03:16:34.259Z
-    updated_at: 2026-03-27T03:21:22.252Z
+    updated_at: 2026-03-27T03:21:26.064Z
     notes: []
