@@ -1,1 +1,9 @@
-notes: []
+notes:
+  - _ulid: 01KMREE81AWCK8C0NMRZGTM847
+    content: "Approach: This is a spec-only metadata task. Adding relates_to relationship from
+      @session-summary-cache to @daemon-entity-cache to document that the standalone session cache
+      is absorbed into the unified entity cache. No code changes needed — purely spec relationship
+      maintenance."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T20:05:46.666Z
