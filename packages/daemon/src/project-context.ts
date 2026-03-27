@@ -55,6 +55,8 @@ export class ProjectContextManager {
   private fileChangeCallback: FileChangeCallback | null = null;
   /** Optional callback for cache invalidation on file changes. AC: @daemon-entity-cache ac-watcher-invalidation */
   private cacheInvalidationCallback: CacheInvalidationCallback | null = null;
+  /** Optional callback invoked when a project is unregistered (from any path). AC: @daemon-entity-cache ac-unregister-cleanup */
+  private unregisterCallback: ((projectPath: string) => void) | null = null;
 
   constructor(defaultProjectPath?: string, pubsub?: PubSubManager) {
     if (defaultProjectPath) {
@@ -80,6 +82,15 @@ export class ProjectContextManager {
    */
   setCacheInvalidationCallback(callback: CacheInvalidationCallback | null): void {
     this.cacheInvalidationCallback = callback;
+  }
+
+  /**
+   * Register a callback invoked when a project is unregistered (from any code path).
+   * Used to dispose entity cache on watcher permanent failure, not just API-driven unregister.
+   * AC: @daemon-entity-cache ac-unregister-cleanup
+   */
+  setUnregisterCallback(callback: ((projectPath: string) => void) | null): void {
+    this.unregisterCallback = callback;
   }
 
   /**
@@ -419,6 +430,12 @@ export class ProjectContextManager {
 
     if (this.defaultProjectPath === normalizedPath) {
       this.defaultProjectPath = null;
+    }
+
+    // AC: @daemon-entity-cache ac-unregister-cleanup — notify listeners (e.g. entity cache disposal)
+    // This fires for all unregister paths: API-driven, watcher permanent failure, etc.
+    if (this.unregisterCallback) {
+      this.unregisterCallback(normalizedPath);
     }
   }
 

@@ -980,9 +980,14 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
           }
 
           // AC: @daemon-entity-cache ac-write-through — update cache before response
+          // Verdict submission can transition linked tasks (e.g. request_changes → needs_work),
+          // so write-through both reviews and tasks domains.
           const verdictCache = getEntityCache?.(projectContext.path);
           if (verdictCache) {
             await verdictCache.writeThrough("reviews");
+            if (decision === "request_changes") {
+              await verdictCache.writeThrough("tasks");
+            }
           }
 
           // AC: @review-records-daemon-api ac-9 - WebSocket broadcast

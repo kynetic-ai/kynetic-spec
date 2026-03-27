@@ -508,9 +508,22 @@ export function createTriageRoutes(options: TriageRouteOptions) {
           await commitIfShadow(ctx.shadow, `triage: act ${record._ulid.slice(0, 8)}`);
 
           // AC: @daemon-entity-cache ac-write-through — update cache before response
+          // executeTriageAction performs cross-domain mutations depending on action:
+          //   promote → creates task + deletes inbox item
+          //   delete/duplicate → deletes inbox item
+          //   spec-gap → saves observation (meta domain)
           const actCache = getEntityCache?.(projectContext.path);
           if (actCache) {
             await actCache.writeThrough("triage");
+            const action = record.action;
+            if (action === "promote") {
+              await actCache.writeThrough("tasks");
+              await actCache.writeThrough("inbox");
+            } else if (action === "delete" || action === "duplicate") {
+              await actCache.writeThrough("inbox");
+            } else if (action === "spec-gap") {
+              await actCache.writeThrough("meta");
+            }
           }
 
           // AC: @triage-daemon-api ac-5 - Broadcast triage:updates

@@ -332,11 +332,8 @@ export async function createServer(options: ServerOptions) {
       createProjectsRoutes({
         projectManager: projectContextManager,
         onProjectRegistered,
-        onProjectUnregistered: (projectPath) => {
-          stopSessionSyncForProject(projectPath);
-          // AC: @daemon-entity-cache ac-unregister-cleanup — release cached data
-          entityCacheModule.unregisterEntityCache(projectPath);
-        },
+        // Cleanup now handled centrally by ProjectContextManager.unregisterCallback
+        // (wired below) so all unregister paths (API + watcher permanent failure) are covered.
       }),
     )
 
@@ -528,6 +525,13 @@ export async function createServer(options: ServerOptions) {
     cache.handleFileChange(kspecDir, file).catch((err: unknown) => {
       console.error(`[entity-cache] Error handling file change for ${projectPath}:`, err);
     });
+  });
+
+  // AC: @daemon-entity-cache ac-unregister-cleanup — dispose cache on any unregister path
+  // (including watcher permanent failure, not just API-driven unregister)
+  projectContextManager.setUnregisterCallback((projectPath) => {
+    stopSessionSyncForProject(projectPath);
+    entityCacheModule.unregisterEntityCache(projectPath);
   });
 
   // AC: @multi-directory-daemon ac-17 - Start file watcher for startup project
