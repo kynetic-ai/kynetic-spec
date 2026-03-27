@@ -62627,9 +62627,25 @@ reviews:
           status: fail
           name: targeted lifecycle repro
         timestamp: 2026-03-27T07:55:27.265Z
+      - _ulid: 01KMQ4N2X30JE15WFGBPXGHT1C
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-27T07:55:30.595Z
+      - _ulid: 01KMQ4N2X3Z98QMEAN606ZA9GY
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-27T07:55:30.595Z
     examined_commit: a546eb8de8a26b46bfbb437134114d8ed351eb62
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -62657,7 +62673,14 @@ reviews:
               can be repopulated by work that was already running."
             created_at: 2026-03-27T07:54:55.473Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-27T07:55:30.594Z
     created_at: 2026-03-27T07:50:42.985Z
-    updated_at: 2026-03-27T07:55:26.821Z
+    updated_at: 2026-03-27T07:55:30.595Z
     notes: []
