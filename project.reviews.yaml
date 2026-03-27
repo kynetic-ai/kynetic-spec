@@ -60865,6 +60865,12 @@ reviews:
           kind: blocker
           thread_ulid: 01KMPVK8ECN58DY3BFYNY36FYJ
         timestamp: 2026-03-27T05:17:15.210Z
+      - _ulid: 01KMPVQQSPB2E6Y9TX803NDEFT
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMPVK8ECN58DY3BFYNY36FYJ
+        timestamp: 2026-03-27T05:19:40.342Z
     examined_commit: 8dfaea2199385d9aa733f052db868d92c22580e0
     external_links: []
     lifecycle_state: open
@@ -60988,7 +60994,9 @@ reviews:
               task file changes.
             created_at: 2026-03-27T05:17:13.548Z
         kind: blocker
+        resolved_at: 2026-03-27T05:19:38.645Z
+        resolved_by: "@claude"
     verdicts: []
     created_at: 2026-03-27T05:13:09.485Z
-    updated_at: 2026-03-27T05:17:13.548Z
+    updated_at: 2026-03-27T05:19:38.645Z
     notes: []
