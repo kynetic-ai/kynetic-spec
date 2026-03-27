@@ -63085,6 +63085,13 @@ reviews:
           status: fail
           name: bounded session detail repro
         timestamp: 2026-03-27T08:54:23.880Z
+      - _ulid: 01KMQ80YR79RRXKQ79997RQANB
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMQ80YA6W64FFD5EY8JYP2E6
+        timestamp: 2026-03-27T08:54:25.287Z
     examined_commit: 4893ca5183e4b193cc808f3f61fe778ada10e017
     external_links: []
     lifecycle_state: open
@@ -63116,7 +63123,28 @@ reviews:
               ready cache misses the requested ID/prefix."
             created_at: 2026-03-27T08:54:22.005Z
         kind: blocker
+      - _ulid: 01KMQ80YA6W64FFD5EY8JYP2E6
+        anchor:
+          type: code
+          commit: 4893ca5183e4b193cc808f3f61fe778ada10e017
+          line_end: 331
+          line_start: 325
+          path: src/daemon/entity-cache.ts
+          side: head
+        entries:
+          - _ulid: 01KMQ80YA6NKCHGZ70RDTJDCEA
+            author: "@claude"
+            body: Session invalidation is still keyed to ULID-shaped directory names only, but session IDs in
+              this codebase are plain strings (SessionMetadataSchema uses z.string(),
+              createSessionWithBudget accepts any string, and existing tests create directories like
+              'session-123'). SessionWatcher broadcasts the session root directory name verbatim;
+              for a non-ULID path such as 'session-123/events.jsonl', fileToDomain() returns null,
+              so the sessions cache never reloads after writes to that session. I verified this
+              directly by evaluating fileToDomain('session-123/events.jsonl') -> null while a
+              ULID-shaped path maps to ['sessions'].
+            created_at: 2026-03-27T08:54:24.838Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T08:50:11.971Z
-    updated_at: 2026-03-27T08:54:23.441Z
+    updated_at: 2026-03-27T08:54:24.838Z
     notes: []
