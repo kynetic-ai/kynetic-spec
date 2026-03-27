@@ -22534,7 +22534,7 @@
   type: task
   spec_ref: "@daemon-entity-cache"
   plan_ref: "@plan-daemon-optimistic-data-layer"
-  status: completed
+  status: needs_work
   blocked_by: []
   depends_on: []
   priority: 1
