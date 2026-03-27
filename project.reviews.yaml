@@ -70299,6 +70299,17 @@ reviews:
         runner: npm
         created_at: 2026-03-27T22:36:16.976Z
         completed_at: 2026-03-27T22:36:16.976Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Alignment warning: Multi-Directory Daemon Architecture is marked implemented but should
+          be in_progress based on task progress."
+        name: kspec validate --alignment
+        required: true
+        runner: kspec
+        created_at: 2026-03-27T22:36:21.448Z
+        completed_at: 2026-03-27T22:36:21.448Z
     events:
       - _ulid: 01KMRPRA39GFCRQTPFG0DMCV0X
         actor: "@claude"
@@ -70388,6 +70399,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-27T22:36:19.177Z
+      - _ulid: 01KMRQ1ZJJR2QJD0B7TZWS2465
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate --alignment
+        timestamp: 2026-03-27T22:36:21.970Z
     examined_commit: c3287fc736bce39629b1bdfda617808bd9ef55e0
     external_links: []
     lifecycle_state: closed
@@ -71799,5 +71817,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T22:36:19.176Z
     created_at: 2026-03-27T22:31:05.065Z
-    updated_at: 2026-03-27T22:36:19.177Z
+    updated_at: 2026-03-27T22:36:21.448Z
     notes: []
