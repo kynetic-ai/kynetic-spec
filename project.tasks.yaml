@@ -22605,7 +22605,7 @@
   type: task
   spec_ref: "@cli-daemon-proxy"
   plan_ref: "@plan-daemon-optimistic-data-layer"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-daemon-command-api"
@@ -22619,7 +22619,7 @@
   notes_count: 7
   todos_count: 0
   created_at: 2026-03-26T05:50:42.968Z
-  started_at: 2026-03-27T22:07:07.330Z
+  started_at: 2026-03-27T22:20:07.265Z
   submitted_at: 2026-03-27T22:07:10.342Z
   automation: eligible
 - _ulid: 01KMMB3WBKZKVE32R64GD0YVH8
