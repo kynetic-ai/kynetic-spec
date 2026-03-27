@@ -171,3 +171,34 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-26T23:37:12.847Z
+  - _ulid: 01KMPAKTR0DK2PK40QPYFSEHGQ
+    content: >-
+      Fix cycle 2: addressed all 3 review blockers (6 threads, 3 unique issues + 3 duplicates).
+
+
+      Blocker 1 (task detail bypasses cache): Task detail route now checks cache.getTaskDetail()
+      first by resolving the ref against the cached task index, falling back to disk only on cache
+      miss. Loaded detail is cached for subsequent requests.
+
+
+      Blocker 2 (items index stores full LoadedSpecItem): Created ItemSummary type and
+      toItemSummary() projection. Items index tier now stores only summary fields (_ulid, slugs,
+      title, type, status, tags, traits, _sourceFile, _path, created, acceptance_criteria_count),
+      stripping description, notes, and AC content from memory.
+
+
+      Blocker 3 (refs endpoint always loads tasks from disk): Refs endpoint now uses cached task and
+      item summaries when domains are ready. TaskSummary and ItemSummary are structurally compatible
+      with ReferenceIndex needs.
+
+
+      Additional: Batch route uses cache for both tasks and items. Detail/linked-tasks routes
+      correctly fall back to disk since they need full LoadedSpecItem[] for
+      ReferenceIndex/AlignmentIndex. computeParentMap generalized to accept both types.
+
+
+      Re-verified all 15 ACs against implementation. Tests: 6775 passed, 5 skipped, 1 pre-existing
+      failure (agent-dispatch-engine duplicate symbol from dev merge).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T00:20:26.496Z
