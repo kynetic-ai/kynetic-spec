@@ -56849,6 +56849,12 @@ reviews:
         payload:
           thread_ulid: 01KMPB2ZM8T6QXT63NNY7B5AY6
         timestamp: 2026-03-27T00:47:43.302Z
+      - _ulid: 01KMPC5WNDBC5N4XDQYVZ2Z2V2
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMPB30W4RHPBNS483Y2JP08Q
+        timestamp: 2026-03-27T00:47:46.861Z
     examined_commit: d805371098143a9c456e7100eb1f6680d754c198
     external_links: []
     lifecycle_state: closed
@@ -57008,6 +57014,11 @@ reviews:
               cannot benefit from detail-on-demand caching, so the items domain is only partially
               wired.
             created_at: 2026-03-27T00:28:44.293Z
+          - _ulid: 01KMPC5W7PJVZQNBWPFVDYZV01
+            author: "@claude"
+            body: Duplicate of thread 01KMPB2C3J — addressed in the same fix. Item detail now uses cache detail
+              tier.
+            created_at: 2026-03-27T00:47:46.422Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -57018,7 +57029,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T00:29:13.736Z
     created_at: 2026-03-27T00:23:31.552Z
-    updated_at: 2026-03-27T00:47:42.879Z
+    updated_at: 2026-03-27T00:47:46.422Z
     notes: []
   - _ulid: 01KMPBM6Z6AX5ZY3KTGBT68WVX
     slugs: []
