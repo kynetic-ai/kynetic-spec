@@ -15951,7 +15951,7 @@ runs:
     completed_at: 2026-03-27T03:23:01.071Z
   - _ulid: 01KMPP945QVBHNHMDDJ5H75M1K
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -15964,7 +15964,35 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-27T03:44:37.388Z
-        completed_at: 2026-03-27T03:44:37.388Z
+        completed_at: 2026-03-27T03:45:15.781Z
+        notes: >-
+          High-confidence observations:
+
+
+          FRICTION 1: Test fixture path resolution confusion. specDir for non-shadow (non-git) test
+          fixtures resolves to the project root, not .kspec/. Plans/reviews/triage loaders use
+          non-recursive path.join(ctx.specDir, 'project.X.yaml'), while task/item loaders recurse
+          into subdirectories. This caused 3 test iteration cycles before discovering the correct
+          file placement. Already documented in testing convention (use testUlid helper), but the
+          specDir mismatch for different loader types is an undocumented pitfall.
+
+
+          FRICTION 2: Invalid Crockford base32 ULIDs in test data silently fail. Hand-crafted ULIDs
+          with L (e.g., 01PLAN...) pass initial creation but Zod validation rejects them silently,
+          returning empty arrays. Already covered by the convention 'ULIDs use Crockford base32
+          (excludes I, L, O, U) — invalid ULIDs cause SILENT test failures' and testUlid() helper.
+          This is a repeat encounter of documented friction.
+
+
+          SUCCESS: The two-blocker fix was cleanly scoped. Both changes were surgical (8 lines in
+          loadAll, 12 lines removed from doLoadDomain) with clear behavioral verification via 4 new
+          tests. The detail route fallback pattern (check cache → disk → cache store) was already
+          correctly implemented from prior cycles, so removing eager preloading required no route
+          changes.
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-27T03:45:15.781Z
+        completed_at: 2026-03-27T03:45:15.781Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-27T03:44:18.616Z
