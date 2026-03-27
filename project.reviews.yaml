@@ -67567,6 +67567,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-27T18:29:29.231Z
+      - _ulid: 01KMR96C6FXW6WDXYDXMF7YNV2
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMR96B4VBDGXAX31K41DG559
+        timestamp: 2026-03-27T18:34:05.903Z
     examined_commit: 3f1360f1d80cf5aa5986399e9b6eb5de055ece6c
     external_links: []
     lifecycle_state: open
@@ -67576,8 +67583,28 @@ reviews:
       content_hash: ""
       ref: "@01KMMB3WBKZKVE32R64GD0YVH8"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMR96B4VBDGXAX31K41DG559
+        anchor:
+          type: code
+          commit: 3f1360f1d80cf5aa5986399e9b6eb5de055ece6c
+          line_end: 88
+          line_start: 84
+          path: packages/daemon/src/routes/tasks.ts
+          side: head
+        entries:
+          - _ulid: 01KMR96B4VD4KYB1ETCHCF7FXJ
+            author: "@claude"
+            body: The new @shadow-lazy-read-sync ac-daemon-bypass says daemon-served reads do not perform
+              per-request drift-check, but this route still falls back to
+              initContext(projectContext.path) on cache miss/degraded reads. initContext() consumes
+              the default sync mode and runs shadowNeedsSync()/shadowPull() unless KSPEC_NO_SYNC is
+              set, so daemon reads are still capable of triggering the drift-check path on a
+              request. That means the new AC is broader than the current implementation instead of
+              merely documenting it.
+            created_at: 2026-03-27T18:34:04.827Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T18:29:03.730Z
-    updated_at: 2026-03-27T18:29:28.665Z
+    updated_at: 2026-03-27T18:34:04.827Z
     notes: []
