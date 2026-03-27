@@ -15737,7 +15737,7 @@ runs:
     completed_at: 2026-03-27T00:01:35.962Z
   - _ulid: 01KMPAN6R5A2YZEESMZQZ2JC2K
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -15750,7 +15750,33 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-27T00:21:33.825Z
-        completed_at: 2026-03-27T00:21:33.825Z
+        completed_at: 2026-03-27T00:22:04.177Z
+        notes: >-
+          Friction identified (high confidence):
+
+
+          1. Review @01KMP7YY had 6 threads but only 3 unique issues — each blocker was duplicated.
+          This made it harder to parse the review feedback. The reviewer (codex) appears to have
+          created duplicate threads. Not a systemic agent instruction issue since the review system
+          itself doesn't prevent duplicates. Low priority — the duplication was minor overhead.
+
+
+          2. The ReferenceIndex constructor accepts LoadedTask[] and LoadedSpecItem[] but is used in
+          contexts where only index-level fields (_ulid, slugs, title, type, status) are needed.
+          This forces type assertions (as unknown as LoadedTask[]) when passing cached summaries. A
+          structural typing approach (generic type parameter on ReferenceIndex) would eliminate the
+          casts. However, this is outside the scope of the entity cache task and already partially
+          addressed by the schema-derived-types work.
+
+
+          Success: The fix cycle was efficient — all 3 blockers were addressed in a single pass,
+          tests passed on first run after fixes, and the approach (ItemSummary projection +
+          selective cache usage per route) was clean. The Explore agent was effective for gathering
+          full context across 8+ files in one pass.
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-27T00:22:04.177Z
+        completed_at: 2026-03-27T00:22:04.177Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-27T00:21:11.558Z
