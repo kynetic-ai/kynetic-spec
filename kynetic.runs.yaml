@@ -16479,7 +16479,7 @@ runs:
     completed_at: 2026-03-27T06:45:25.712Z
   - _ulid: 01KMQ5JPZ12WK210H1QDXV4HPT
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -16511,7 +16511,15 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-03-27T08:12:29.853Z
-        completed_at: 2026-03-27T08:12:29.853Z
+        completed_at: 2026-03-27T08:12:37.980Z
+        notes: "Decision: Skip capture entirely. The one observation (success: precise reviewer feedback
+          enables surgical fixes) is a general pattern already well-understood — not unique enough
+          to capture as a new observation. No friction points identified. Nothing meets the
+          high-confidence, unique, systemic threshold for automated capture."
+      - status: completed
+        step_index: 3
+        started_at: 2026-03-27T08:12:37.980Z
+        completed_at: 2026-03-27T08:12:37.980Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-27T08:11:41.409Z
