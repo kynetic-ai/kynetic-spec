@@ -60904,6 +60904,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMPVT0M1HD5189NG6EN7202J
         timestamp: 2026-03-27T05:20:55.990Z
+      - _ulid: 01KMPVT4ZGYB1A5C0GRE8YZT72
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMPVT3XS235Y2MSN1JPDEGWD
+        timestamp: 2026-03-27T05:20:59.376Z
     examined_commit: 8dfaea2199385d9aa733f052db868d92c22580e0
     external_links: []
     lifecycle_state: open
@@ -61087,7 +61094,25 @@ reviews:
               even when the sessions/tasks/items domains are ready.
             created_at: 2026-03-27T05:20:54.913Z
         kind: blocker
+      - _ulid: 01KMPVT3XS235Y2MSN1JPDEGWD
+        anchor:
+          type: code
+          commit: 8dfaea2199385d9aa733f052db868d92c22580e0
+          line_end: 495
+          line_start: 457
+          path: packages/daemon/src/routes/sessions.ts
+          side: head
+        entries:
+          - _ulid: 01KMPVT3XSVJ6K61CY9PFP08EQ
+            author: "@claude"
+            body: Session detail eagerly runs initContext() before it even checks the cache state, and when the
+              sessions domain is still loading it falls straight through to the standalone session
+              cache. So /api/sessions/:id still performs context setup and disk reads during warmup
+              instead of returning a loading response, which is inconsistent with the fixed
+              plan/review detail routes and still violates ac-warming-availability.
+            created_at: 2026-03-27T05:20:58.297Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T05:13:09.485Z
-    updated_at: 2026-03-27T05:20:54.913Z
+    updated_at: 2026-03-27T05:20:58.297Z
     notes: []
