@@ -56855,6 +56855,12 @@ reviews:
         payload:
           thread_ulid: 01KMPB30W4RHPBNS483Y2JP08Q
         timestamp: 2026-03-27T00:47:46.861Z
+      - _ulid: 01KMPC60T572X04D69DPGP27HF
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMPB30W4RHPBNS483Y2JP08Q
+        timestamp: 2026-03-27T00:47:51.109Z
     examined_commit: d805371098143a9c456e7100eb1f6680d754c198
     external_links: []
     lifecycle_state: closed
@@ -57020,6 +57026,8 @@ reviews:
               tier.
             created_at: 2026-03-27T00:47:46.422Z
         kind: blocker
+        resolved_at: 2026-03-27T00:47:50.670Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -57029,7 +57037,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T00:29:13.736Z
     created_at: 2026-03-27T00:23:31.552Z
-    updated_at: 2026-03-27T00:47:46.422Z
+    updated_at: 2026-03-27T00:47:50.670Z
     notes: []
   - _ulid: 01KMPBM6Z6AX5ZY3KTGBT68WVX
     slugs: []
