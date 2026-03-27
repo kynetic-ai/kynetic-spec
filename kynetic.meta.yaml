@@ -8307,6 +8307,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T00:36:39.066Z
+  - _ulid: 01KMPC20R3288FCABMP04NDSXS
+    type: friction
+    content: Full-suite npm test is currently red on dev because tests/agent-dispatch-engine.test.ts
+      redeclares mockMetadata around line 2532. This forces reviewers to manually compare against
+      base to prove the failure is pre-existing before approving unrelated work, which weakens
+      review throughput and confidence.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T00:45:39.971Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
