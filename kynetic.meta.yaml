@@ -9034,6 +9034,20 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T18:59:48.162Z
+  - _ulid: 01KMRBDETZYXNC1X31VW6TY8H5
+    type: friction
+    content: "Route-by-route cache migration (task-migrate-read-routes) produced 7 fix cycles, each
+      revealing another code path falling through to initContext()+disk during warmup. The spy test
+      catches warm-path regressions but can't catch warmup fallthrough because it only tests the
+      warm state. A 'loading-state' spy test was added in cycle 6 but only covered known routes. The
+      root issue: incremental migration lacks an architectural enforcer that prevents new disk
+      fallback paths from being introduced. Consider a lint rule or assertion that flags
+      initContext() calls in route handlers, or a comprehensive warmup test that auto-discovers all
+      registered routes."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T19:12:55.135Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
