@@ -45,23 +45,40 @@ interface CommandRouteOptions {
   getEntityCache?: EntityCacheAccessor;
 }
 
-// ── Project Directory Scoping ──────────────────────────────────────
+// ── In-Process Dispatch Mutex ────────────────────────────────────────
 
 /**
- * Execute a function with process.cwd() temporarily set to the project path.
+ * Promise-based mutex that serializes all command dispatches within the
+ * daemon process. Required because executeCommand mutates process-global
+ * state (process.cwd(), console.log/error/warn, process.exit interceptor)
+ * that would corrupt concurrent requests if not serialized.
  *
- * CLI commands use initContext() which calls process.cwd() to discover the
- * kspec project. In the daemon, the project path comes from the request's
- * projectContext, so we need to temporarily chdir to make CLI commands
- * resolve the correct project.
+ * The file lock (withFileLock) only serializes mutating commands across
+ * processes; this mutex serializes ALL dispatches (including reads) within
+ * the same process to protect the shared console/cwd state.
+ *
+ * AC: @daemon-command-api ac-concurrent-mutations — in-process serialization
  */
-async function withProjectDir<T>(projectPath: string, fn: () => Promise<T>): Promise<T> {
-  const originalCwd = process.cwd();
-  try {
-    process.chdir(projectPath);
-    return await fn();
-  } finally {
-    process.chdir(originalCwd);
+class DispatchMutex {
+  private _queue: Promise<void> = Promise.resolve();
+
+  /** Run fn exclusively — concurrent callers wait in FIFO order. */
+  async run<T>(fn: () => Promise<T>): Promise<T> {
+    let release: () => void;
+    const gate = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+
+    // Chain onto the queue so callers execute one at a time
+    const previous = this._queue;
+    this._queue = gate;
+
+    await previous;
+    try {
+      return await fn();
+    } finally {
+      release!();
+    }
   }
 }
 
@@ -69,6 +86,10 @@ async function withProjectDir<T>(projectPath: string, fn: () => Promise<T>): Pro
 
 /**
  * Execute a single CLI command within the daemon process.
+ *
+ * IMPORTANT: This function mutates process-global state (process.cwd(),
+ * console.log/error/warn, process.exit) and MUST be called inside the
+ * dispatch mutex to prevent concurrent request corruption.
  *
  * Reuses the batch execution infrastructure (OutputCapture, exit interceptor,
  * resetCommandTree) to run a command via Commander's parseAsync with captured
@@ -132,12 +153,14 @@ async function executeCommand(
 
   installExitInterceptor();
 
+  const originalCwd = process.cwd();
   let exitCode = 0;
 
   try {
-    // Execute with process.cwd() set to the project path so initContext()
-    // discovers the correct kspec project
-    await withProjectDir(projectPath, () => program.parseAsync(argv, { from: "user" }));
+    // Set process.cwd() to the project path so initContext() discovers
+    // the correct kspec project
+    process.chdir(projectPath);
+    await program.parseAsync(argv, { from: "user" });
   } catch (err) {
     if (err instanceof BatchExitError) {
       exitCode = err.code;
@@ -156,6 +179,7 @@ async function executeCommand(
       stderrLines.push(msg);
     }
   } finally {
+    process.chdir(originalCwd);
     console.log = origLog;
     console.error = origError;
     console.warn = origWarn;
@@ -206,10 +230,15 @@ const MUTATION_AFFECTED_DOMAINS: CacheDomain[] = [
  * Create the command API routes.
  *
  * AC: @daemon-command-api ac-command-endpoint — POST /api/command
+ * AC: @daemon-command-api ac-concurrent-mutations — dispatch mutex + file lock
  * AC: @trait-api-endpoint ac-6 — X-Request-Id header
  */
 export function createCommandRoutes(options: CommandRouteOptions) {
   const { pubsub, getEntityCache } = options;
+
+  // In-process mutex serializes all command dispatches to protect
+  // process-global state (cwd, console, exit interceptor).
+  const dispatchMutex = new DispatchMutex();
 
   // Lazy-loaded Commander program reference — loaded once on first request
   let _program: Command | null = null;
@@ -235,7 +264,7 @@ export function createCommandRoutes(options: CommandRouteOptions) {
     // AC: @daemon-command-api ac-command-endpoint — single command execution
     // AC: @daemon-command-api ac-response-parity — stdout/stderr/exitCode parity
     // AC: @daemon-command-api ac-mutation-cache-update — cache + broadcast after mutations
-    // AC: @daemon-command-api ac-concurrent-mutations — file lock for mutations
+    // AC: @daemon-command-api ac-concurrent-mutations — dispatch mutex + file lock
     // AC: @trait-api-endpoint ac-1 — returns 2xx with JSON body
     // AC: @trait-api-endpoint ac-3 — returns 400 on invalid body
     .post(
@@ -252,46 +281,45 @@ export function createCommandRoutes(options: CommandRouteOptions) {
 
         const mutating = await isCommandMutating(payload, program);
 
-        let result: CommandResult;
-
-        if (mutating) {
-          // AC: @daemon-command-api ac-concurrent-mutations — serialize mutations
-          const { withFileLock } = await import("../../parser/file-lock.js");
-          const lockPath = `${projectContext.path}/.kspec/shadow-mutation`;
-
-          result = await withFileLock(lockPath, async () => {
-            return executeCommand(payload, program, projectContext.path);
-          });
-
-          // AC: @daemon-command-api ac-mutation-cache-update — update cache before response
-          if (result.exitCode === 0) {
-            const cache = getEntityCache?.(projectContext.path);
-            if (cache) {
-              // Write through all potentially affected domains
-              await Promise.all(
-                MUTATION_AFFECTED_DOMAINS.map((domain) =>
-                  cache.writeThrough(domain).catch(() => {
-                    // Non-fatal: cache may not have this domain loaded
-                  }),
-                ),
-              );
-            }
-
-            // AC: @daemon-command-api ac-mutation-cache-update — WebSocket broadcast
-            pubsub.broadcast(
-              "command",
-              "command_executed",
-              {
-                command: payload.command,
-                mutating: true,
-                success: true,
-              },
-              projectContext.path,
+        // All command execution goes through the dispatch mutex to serialize
+        // process-global state (cwd, console capture, exit interceptor).
+        // Mutating commands additionally acquire the cross-process file lock.
+        const result = await dispatchMutex.run(async () => {
+          if (mutating) {
+            // AC: @daemon-command-api ac-concurrent-mutations — file lock for cross-process safety
+            const { withFileLock } = await import("../../parser/file-lock.js");
+            const lockPath = `${projectContext.path}/.kspec/shadow-mutation`;
+            return withFileLock(lockPath, () =>
+              executeCommand(payload, program, projectContext.path),
             );
           }
-        } else {
-          // Non-mutating: execute directly, no lock needed
-          result = await executeCommand(payload, program, projectContext.path);
+          return executeCommand(payload, program, projectContext.path);
+        });
+
+        // AC: @daemon-command-api ac-mutation-cache-update — update cache before response
+        if (mutating && result.exitCode === 0) {
+          const cache = getEntityCache?.(projectContext.path);
+          if (cache) {
+            await Promise.all(
+              MUTATION_AFFECTED_DOMAINS.map((domain) =>
+                cache.writeThrough(domain).catch(() => {
+                  // Non-fatal: cache may not have this domain loaded
+                }),
+              ),
+            );
+          }
+
+          // AC: @daemon-command-api ac-mutation-cache-update — WebSocket broadcast
+          pubsub.broadcast(
+            "command",
+            "command_executed",
+            {
+              command: payload.command,
+              mutating: true,
+              success: true,
+            },
+            projectContext.path,
+          );
         }
 
         // AC: @trait-api-endpoint ac-1 — success response
@@ -321,7 +349,7 @@ export function createCommandRoutes(options: CommandRouteOptions) {
     )
 
     // AC: @daemon-command-api ac-batch-support — batch command execution
-    // AC: @daemon-command-api ac-concurrent-mutations — serialized batch execution
+    // AC: @daemon-command-api ac-concurrent-mutations — dispatch mutex + file lock
     // AC: @daemon-command-api ac-mutation-cache-update — cache updated once after batch
     .post(
       "/batch",
@@ -360,30 +388,32 @@ export function createCommandRoutes(options: CommandRouteOptions) {
           id: cmd.id,
         }));
 
-        const executeFn = async () => {
-          // Execute batch with process.cwd() set to project path
-          return withProjectDir(projectPath, () =>
-            executeBatch(batchCommands, program, {
+        const projectPath = projectContext.path;
+
+        // Batch execution goes through the dispatch mutex (process-global
+        // state protection) and optionally the file lock (cross-process).
+        const batchResult = await dispatchMutex.run(async () => {
+          const runBatch = () => {
+            const originalCwd = process.cwd();
+            process.chdir(projectPath);
+            return executeBatch(batchCommands, program, {
               atomic: body.atomic !== false, // Default atomic
               continueOnError: body.continue_on_error ?? false,
               dryRun: false,
               json: true,
-            }),
-          );
-        };
+            }).finally(() => {
+              process.chdir(originalCwd);
+            });
+          };
 
-        const projectPath = projectContext.path;
-
-        let batchResult: Awaited<ReturnType<typeof executeBatch>>;
-
-        if (hasMutating) {
-          // AC: @daemon-command-api ac-concurrent-mutations — serialize batch mutations
-          const { withFileLock } = await import("../../parser/file-lock.js");
-          const lockPath = `${projectPath}/.kspec/shadow-mutation`;
-          batchResult = await withFileLock(lockPath, executeFn);
-        } else {
-          batchResult = await executeFn();
-        }
+          if (hasMutating) {
+            // AC: @daemon-command-api ac-concurrent-mutations — file lock for cross-process safety
+            const { withFileLock } = await import("../../parser/file-lock.js");
+            const lockPath = `${projectPath}/.kspec/shadow-mutation`;
+            return withFileLock(lockPath, runBatch);
+          }
+          return runBatch();
+        });
 
         // AC: @daemon-command-api ac-batch-support, ac-mutation-cache-update
         // Update cache once after batch completes

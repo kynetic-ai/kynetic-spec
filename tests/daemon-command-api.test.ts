@@ -16,11 +16,12 @@ import { execSync } from "node:child_process";
 import { mkdirSync, writeFileSync } from "node:fs";
 import * as path from "node:path";
 import { Elysia } from "elysia";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   cleanupTempDir,
   createTempDir,
   initGitRepo,
+  kspec,
   seedSplitTask,
   testUlid,
 } from "./helpers/cli.js";
@@ -28,6 +29,7 @@ import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
 import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.ts";
 import { createCommandRoutes } from "../dist/daemon/routes/command.ts";
 import { PubSubManager } from "../dist/daemon/websocket/pubsub.ts";
+import type { RouteEntityCache, EntityCacheAccessor } from "../dist/daemon/routes/entity-cache-types.ts";
 
 ensureSplitBackendRegistered();
 
@@ -37,6 +39,45 @@ const SPEC_ULID = testUlid("SPEC", 2);
 let tempDir: string;
 let app: Elysia;
 let pubsub: PubSubManager;
+let mockCache: RouteEntityCache;
+let writeThroughCalls: string[];
+
+/**
+ * Create a mock entity cache that tracks writeThrough calls.
+ * This ensures ac-mutation-cache-update is genuinely exercised.
+ */
+function createMockEntityCache(): RouteEntityCache {
+  writeThroughCalls = [];
+  return {
+    getDomainState: () => "ready",
+    getTaskIndex: () => null,
+    getTaskDetail: () => null,
+    setTaskDetail: () => {},
+    getItemIndex: () => null,
+    getItemDetail: () => null,
+    setItemDetail: () => {},
+    getSessionIndex: () => null,
+    getSessionDetail: () => null,
+    setSessionDetail: () => {},
+    getPlansIndex: () => null,
+    getPlanDetail: () => null,
+    setPlanDetail: () => {},
+    getInboxIndex: () => null,
+    getTriageIndex: () => null,
+    getTriageDetail: () => null,
+    setTriageDetail: () => {},
+    getReviewsIndex: () => null,
+    getReviewDetail: () => null,
+    setReviewDetail: () => {},
+    getMetaIndex: () => null,
+    getMetaDetail: () => null,
+    setMetaDetail: () => {},
+    writeThrough: vi.fn(async (domain: string) => {
+      writeThroughCalls.push(domain);
+    }),
+    markWriteThrough: vi.fn(),
+  };
+}
 
 function makeRequest(urlPath: string, init: RequestInit = {}) {
   return app.handle(
@@ -148,8 +189,16 @@ describe("Daemon Command API", () => {
     setupFixtures();
 
     pubsub = new PubSubManager();
+    mockCache = createMockEntityCache();
+    const getEntityCache: EntityCacheAccessor = (projectPath: string) => {
+      // Return mock cache only for the temp project
+      if (projectPath === tempDir) return mockCache;
+      return null;
+    };
     const { middleware } = projectContextMiddleware();
-    app = new Elysia().use(middleware).use(createCommandRoutes({ pubsub }));
+    app = new Elysia()
+      .use(middleware)
+      .use(createCommandRoutes({ pubsub, getEntityCache }));
   });
 
   afterEach(async () => {
@@ -201,6 +250,10 @@ describe("Daemon Command API", () => {
 
   // AC: @daemon-command-api ac-response-parity
   it("produces the same stdout content as direct CLI execution", async () => {
+    // Run the same command via the direct CLI (subprocess) as ground truth
+    const cliResult = kspec("task get @task-test --json", tempDir);
+
+    // Run the same command via the daemon API
     const response = await makeRequest("/api/command", {
       method: "POST",
       body: JSON.stringify({
@@ -213,10 +266,38 @@ describe("Daemon Command API", () => {
     const body = await response.json();
     expect(body.exitCode).toBe(0);
 
-    // stdout should be parseable JSON containing the task
-    const taskOutput = JSON.parse(body.stdout);
-    expect(taskOutput.title).toBe("Test Task");
-    expect(taskOutput.status).toBe("pending");
+    // Both should produce parseable JSON with the same task data
+    const cliTask = JSON.parse(cliResult.stdout);
+    const apiTask = JSON.parse(body.stdout);
+
+    // Verify key structural fields match — these are the user-visible outputs
+    // that must be identical between CLI and API
+    expect(apiTask.title).toBe(cliTask.title);
+    expect(apiTask.status).toBe(cliTask.status);
+    expect(apiTask._ulid).toBe(cliTask._ulid);
+    expect(apiTask.type).toBe(cliTask.type);
+    expect(apiTask.spec_ref).toBe(cliTask.spec_ref);
+  });
+
+  // AC: @daemon-command-api ac-response-parity
+  it("produces matching exitCode for failing commands via CLI and API", async () => {
+    // Run a command that fails via direct CLI
+    const cliResult = kspec("task get @nonexistent-task --json", tempDir, { expectFail: true });
+
+    // Run the same command via the daemon API
+    const response = await makeRequest("/api/command", {
+      method: "POST",
+      body: JSON.stringify({
+        command: "task get",
+        args: { ref: "@nonexistent-task", json: true },
+      }),
+    });
+
+    const body = await response.json();
+
+    // Both should fail with non-zero exit code
+    expect(cliResult.exitCode).not.toBe(0);
+    expect(body.exitCode).not.toBe(0);
   });
 
   // ───────────────────────────────────────────────────────────────────
@@ -224,7 +305,28 @@ describe("Daemon Command API", () => {
   // ───────────────────────────────────────────────────────────────────
 
   // AC: @daemon-command-api ac-mutation-cache-update
-  it("executes a mutating command and broadcasts WebSocket event", async () => {
+  it("calls writeThrough on entity cache after successful mutating command", async () => {
+    const response = await makeRequest("/api/command", {
+      method: "POST",
+      body: JSON.stringify({
+        command: "task start",
+        args: { ref: "@task-test" },
+      }),
+    });
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body.exitCode).toBe(0);
+
+    // Verify writeThrough was called with cache domains
+    expect(writeThroughCalls.length).toBeGreaterThan(0);
+    // Should include at minimum the core domains affected by task mutations
+    expect(writeThroughCalls).toContain("tasks");
+    expect(writeThroughCalls).toContain("items");
+  });
+
+  // AC: @daemon-command-api ac-mutation-cache-update
+  it("broadcasts WebSocket event after successful mutating command", async () => {
     const broadcastEvents: Array<{ topic: string; event: string; data: Record<string, unknown> }> =
       [];
     const origBroadcast = pubsub.broadcast.bind(pubsub);
@@ -258,12 +360,26 @@ describe("Daemon Command API", () => {
     expect(commandEvent!.data.command).toBe("task start");
   });
 
+  // AC: @daemon-command-api ac-mutation-cache-update
+  it("does not call writeThrough for read-only commands", async () => {
+    await makeRequest("/api/command", {
+      method: "POST",
+      body: JSON.stringify({
+        command: "task list",
+        args: { json: true },
+      }),
+    });
+
+    // Read-only commands should not trigger cache writes
+    expect(writeThroughCalls.length).toBe(0);
+  });
+
   // ───────────────────────────────────────────────────────────────────
   // AC: @daemon-command-api ac-concurrent-mutations
   // ───────────────────────────────────────────────────────────────────
 
   // AC: @daemon-command-api ac-concurrent-mutations
-  it("serializes concurrent mutating commands via file lock", async () => {
+  it("serializes concurrent mutating commands via dispatch mutex", async () => {
     const [response1, response2] = await Promise.all([
       makeRequest("/api/command", {
         method: "POST",
@@ -284,7 +400,8 @@ describe("Daemon Command API", () => {
     const body1 = await response1.json();
     const body2 = await response2.json();
 
-    // Both should succeed — serialization ensures no conflicts
+    // Both should succeed — the dispatch mutex ensures no cwd/console corruption
+    // and the file lock ensures no shadow branch conflicts
     expect(body1.exitCode).toBe(0);
     expect(body2.exitCode).toBe(0);
   });
@@ -324,6 +441,27 @@ describe("Daemon Command API", () => {
     expect(body.results[0].success).toBe(true);
     expect(body.results[1].id).toBe("cmd-2");
     expect(body.results[1].success).toBe(true);
+  });
+
+  // AC: @daemon-command-api ac-batch-support
+  // AC: @daemon-command-api ac-mutation-cache-update
+  it("calls writeThrough on entity cache after successful batch", async () => {
+    await makeRequest("/api/command/batch", {
+      method: "POST",
+      body: JSON.stringify({
+        commands: [
+          {
+            command: "inbox add",
+            args: { text: "Cache test batch item" },
+          },
+        ],
+      }),
+    });
+
+    // Verify writeThrough was called after the batch completed
+    expect(writeThroughCalls.length).toBeGreaterThan(0);
+    expect(writeThroughCalls).toContain("tasks");
+    expect(writeThroughCalls).toContain("inbox");
   });
 
   // AC: @daemon-command-api ac-batch-support
