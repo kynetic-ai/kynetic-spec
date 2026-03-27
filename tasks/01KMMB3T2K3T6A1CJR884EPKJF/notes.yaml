@@ -745,3 +745,12 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T09:12:00.635Z
+  - _ulid: 01KMQ9W3SQF65YB33N1N3FFV8F
+    content: "Review cycle 25 overturned the accidental approval. Blocker: src/daemon/entity-cache.ts
+      writeThrough() still marks writeThroughSkip after a failed reload because loadDomain()
+      degrades and resolves instead of rejecting. Repro run in review: after forcing doLoadDomain()
+      to throw, writeThrough() left the domain degraded, the first invalidateDomain() was skipped,
+      and only the second invalidation reloaded the domain."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T09:26:43.767Z
