@@ -68823,6 +68823,12 @@ reviews:
         payload:
           thread_ulid: 01KMRE7CBRQZFZXH8AN52PRRJC
         timestamp: 2026-03-27T20:14:08.301Z
+      - _ulid: 01KMREXT8YGP8NFN98JNV3K32S
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMRE7F9DCRNEN3PEKWDNSQ1S
+        timestamp: 2026-03-27T20:14:16.862Z
     examined_commit: e3f2e4a91fad8fc5c4c845816337769785a03ed9
     external_links: []
     lifecycle_state: closed
@@ -68911,6 +68917,8 @@ reviews:
               integration, cache invalidation, response parity.
             created_at: 2026-03-27T20:02:04.718Z
         kind: nit
+        resolved_at: 2026-03-27T20:14:16.400Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -68920,7 +68928,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T20:02:49.316Z
     created_at: 2026-03-27T19:53:48.559Z
-    updated_at: 2026-03-27T20:14:07.762Z
+    updated_at: 2026-03-27T20:14:16.400Z
     notes: []
   - _ulid: 01KMREFW510T0SWW6P0BTP4XZG
     slugs: []
