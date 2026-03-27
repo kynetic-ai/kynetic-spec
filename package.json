@@ -39,7 +39,7 @@
     "build": "tsc && chmod +x dist/cli/index.js && npm run build:shared && npm run build:daemon && npm run build:web-ui && npm run build:plugin",
     "build:shared": "cd packages/shared && npm run build",
     "build:plugin": "node scripts/build-plugin.cjs",
-    "build:daemon": "shx rm -rf dist/daemon && shx mkdir -p dist/daemon && shx cp -r packages/daemon/src/* dist/daemon/",
+    "build:daemon": "shx rm -rf dist/daemon && shx mkdir -p dist/daemon && shx cp -r packages/daemon/src/* dist/daemon/ && shx cp src/daemon/entity-cache.ts dist/daemon/",
     "build:web-ui": "shx rm -rf dist/web-ui && cd packages/web-ui && npm run build && shx cp -r build ../../dist/web-ui",
     "build:e2e": "tsc && chmod +x dist/cli/index.js && npm run build:shared && npm run build:daemon && npm run build:web-ui",
     "dev": "tsx src/cli/index.ts",

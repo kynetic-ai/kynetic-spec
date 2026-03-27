@@ -18,6 +18,8 @@ import { join, relative } from "path";
 export interface WatcherOptions {
   kspecDir: string;
   onFileChange: (file: string, content: string) => void;
+  /** Called when a watched file is deleted or renamed away. */
+  onFileRemoved?: (file: string) => void;
   onError: (error: Error, file?: string) => void;
   onPermanentFailure?: (kspecDir: string) => void | Promise<void>;
 }
@@ -94,8 +96,16 @@ export class KspecWatcher {
       },
     });
 
+    // AC: @daemon-entity-cache ac-watcher-invalidation — listen for add/change/unlink
+    // so that new, modified, and deleted files all trigger cache invalidation.
     (this.watcher as ChokidarWatcher).on("change", (path: string) => {
       this.handleFileChange(path);
+    });
+    (this.watcher as ChokidarWatcher).on("add", (path: string) => {
+      this.handleFileChange(path);
+    });
+    (this.watcher as ChokidarWatcher).on("unlink", (path: string) => {
+      this.handleFileRemoved(path);
     });
 
     (this.watcher as ChokidarWatcher).on("error", (err: unknown) => {
@@ -126,6 +136,27 @@ export class KspecWatcher {
   }
 
   /**
+   * AC: @daemon-entity-cache ac-watcher-invalidation — Handle file removal.
+   * Debounce like regular changes, then notify via onFileRemoved.
+   */
+  private handleFileRemoved(filePath: string): void {
+    // Clear existing timer for this file
+    const existingTimer = this.debounceTimers.get(filePath);
+    if (existingTimer) {
+      clearTimeout(existingTimer);
+    }
+
+    const timer = setTimeout(() => {
+      this.debounceTimers.delete(filePath);
+      if (this.isNestedKspecPath(filePath)) return;
+      this.options.onFileRemoved?.(filePath);
+      this.retryCount = 0;
+    }, this.debounceMs);
+
+    this.debounceTimers.set(filePath, timer);
+  }
+
+  /**
    * AC-4, AC-6: Process file change and broadcast to clients
    */
   private async processFileChange(filePath: string): Promise<void> {
@@ -150,6 +181,15 @@ export class KspecWatcher {
         this.options.onError(error, filePath);
       }
     } catch (error) {
+      // AC: @daemon-entity-cache ac-watcher-invalidation — ENOENT means the file was
+      // deleted or renamed. Treat this as a removal signal (cache invalidation) rather
+      // than a watcher infrastructure error.
+      const nodeError = error as NodeJS.ErrnoException;
+      if (nodeError.code === "ENOENT") {
+        this.options.onFileRemoved?.(filePath);
+        this.retryCount = 0;
+        return;
+      }
       // AC-7: Handle file read errors (directory inaccessible, etc.)
       console.error("[watcher] Error reading file:", error);
       this.handleWatcherError(error as Error);

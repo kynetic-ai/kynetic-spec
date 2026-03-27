@@ -19,23 +19,72 @@ import {
   loadPlans,
   ReferenceIndex,
   resolveTaskDataManager,
+  type LoadedTask,
+  type LoadedSpecItem,
 } from "../../parser/index.js";
 import { buildRefIndex } from "./ref-resolution.js";
+import type { EntityCacheAccessor } from "./entity-cache-types.js";
 
-export function createRefsRoutes() {
+interface RefsRouteOptions {
+  getEntityCache?: EntityCacheAccessor;
+}
+
+export function createRefsRoutes(options: RefsRouteOptions = {}) {
+  const { getEntityCache } = options;
+
   return (
     new Elysia({ prefix: "/api/refs" })
 
       // AC: @ui-api-ref-resolution ac-4, ac-5 - Lightweight ref index endpoint
       // AC: @trait-api-endpoint ac-1 - Returns 2xx with JSON body
+      // AC: @daemon-entity-cache ac-serve-from-memory — serve from cache when available
+      // AC: @daemon-entity-cache ac-warming-availability — return loading indicator during warmup
       .get("/", async ({ projectContext }) => {
-        const ctx = await initContext(projectContext.path);
+        // AC: @daemon-entity-cache ac-serve-from-memory — try cache for tasks, items, and plans
+        const cache = getEntityCache?.(projectContext.path);
+        const tasksDomainState = cache?.getDomainState("tasks");
+        const itemsDomainState = cache?.getDomainState("items");
+        const plansDomainState = cache?.getDomainState("plans");
+
+        // AC: @daemon-entity-cache ac-warming-availability — if any required domain is
+        // still loading, return a loading indicator rather than falling through to disk
+        // reads, which would defeat ac-warming-availability and ac-progressive-loading.
+        if (
+          cache &&
+          (tasksDomainState === "loading" ||
+            itemsDomainState === "loading" ||
+            plansDomainState === "loading")
+        ) {
+          return { refs: {}, _cache_status: "loading" as const };
+        }
+
+        // AC: @daemon-entity-cache ac-serve-from-memory — defer initContext to avoid
+        // disk/git work when all domains are served from cache
+        let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
+        const getCtx = async () => {
+          if (!_ctx) _ctx = await initContext(projectContext.path);
+          return _ctx;
+        };
+
         const [tasks, items, plans] = await Promise.all([
-          resolveTaskDataManager(ctx).loadAllTasks(ctx),
-          loadAllItems(ctx),
-          loadPlans(ctx),
+          cache && tasksDomainState === "ready" && cache.getTaskIndex()
+            ? Promise.resolve(cache.getTaskIndex()!)
+            : getCtx().then((ctx) => resolveTaskDataManager(ctx).loadAllTasks(ctx)),
+          cache && itemsDomainState === "ready" && cache.getItemIndex()
+            ? Promise.resolve(cache.getItemIndex()!)
+            : getCtx().then((ctx) => loadAllItems(ctx)),
+          cache && plansDomainState === "ready" && cache.getPlansIndex()
+            ? Promise.resolve(cache.getPlansIndex()!)
+            : getCtx().then((ctx) => loadPlans(ctx)),
         ]);
-        const index = new ReferenceIndex(tasks, items, [], plans);
+        // TaskSummary and ItemSummary are structurally compatible with ReferenceIndex's
+        // needs (indexItem uses _ulid + slugs; buildRefIndex uses title, type, status)
+        const index = new ReferenceIndex(
+          tasks as unknown as LoadedTask[],
+          items as unknown as LoadedSpecItem[],
+          [],
+          plans,
+        );
         const refs = buildRefIndex(index);
 
         return { refs };

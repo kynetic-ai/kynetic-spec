@@ -20,6 +20,16 @@ import type { PubSubManager } from "./websocket/pubsub";
  */
 export type FileChangeCallback = (projectPath: string, file: string, content: string) => void;
 
+/**
+ * Callback for cache invalidation on file changes.
+ * AC: @daemon-entity-cache ac-watcher-invalidation
+ */
+export type CacheInvalidationCallback = (
+  projectPath: string,
+  kspecDir: string,
+  file: string,
+) => void;
+
 export interface ProjectContext {
   path: string;
   registeredAt: Date;
@@ -43,6 +53,10 @@ export class ProjectContextManager {
   private pubsub: PubSubManager | null = null;
   /** Optional callback for file changes (used by dispatch engine). AC: @agent-dispatch-engine ac-5 */
   private fileChangeCallback: FileChangeCallback | null = null;
+  /** Optional callback for cache invalidation on file changes. AC: @daemon-entity-cache ac-watcher-invalidation */
+  private cacheInvalidationCallback: CacheInvalidationCallback | null = null;
+  /** Optional callback invoked when a project is unregistered (from any path). AC: @daemon-entity-cache ac-unregister-cleanup */
+  private unregisterCallback: ((projectPath: string) => void) | null = null;
 
   constructor(defaultProjectPath?: string, pubsub?: PubSubManager) {
     if (defaultProjectPath) {
@@ -60,6 +74,23 @@ export class ProjectContextManager {
    */
   setFileChangeCallback(callback: FileChangeCallback | null): void {
     this.fileChangeCallback = callback;
+  }
+
+  /**
+   * Register a callback for cache invalidation on file changes.
+   * AC: @daemon-entity-cache ac-watcher-invalidation
+   */
+  setCacheInvalidationCallback(callback: CacheInvalidationCallback | null): void {
+    this.cacheInvalidationCallback = callback;
+  }
+
+  /**
+   * Register a callback invoked when a project is unregistered (from any code path).
+   * Used to dispose entity cache on watcher permanent failure, not just API-driven unregister.
+   * AC: @daemon-entity-cache ac-unregister-cleanup
+   */
+  setUnregisterCallback(callback: ((projectPath: string) => void) | null): void {
+    this.unregisterCallback = callback;
   }
 
   /**
@@ -115,6 +146,29 @@ export class ProjectContextManager {
           if (this.fileChangeCallback) {
             this.fileChangeCallback(normalizedPath, file, content);
           }
+          // AC: @daemon-entity-cache ac-watcher-invalidation — invalidate affected cache domain
+          if (this.cacheInvalidationCallback) {
+            this.cacheInvalidationCallback(normalizedPath, kspecDir, file);
+          }
+        },
+        // AC: @daemon-entity-cache ac-watcher-invalidation — file deletion/rename invalidates cache
+        onFileRemoved: (file) => {
+          if (this.pubsub) {
+            const relativePath = relative(kspecDir, file);
+            this.pubsub.broadcast(
+              "files:updates",
+              "file_changed",
+              {
+                ref: relativePath,
+                action: "removed",
+              },
+              normalizedPath,
+            );
+          }
+          // Cache invalidation for removed files — same path as onFileChange
+          if (this.cacheInvalidationCallback) {
+            this.cacheInvalidationCallback(normalizedPath, kspecDir, file);
+          }
         },
         onError: (error, file) => {
           // Broadcast error event scoped to project
@@ -150,6 +204,12 @@ export class ProjectContextManager {
               },
               normalizedPath,
             );
+          }
+          // AC: @daemon-entity-cache ac-watcher-invalidation — invalidate session cache domain
+          if (this.cacheInvalidationCallback) {
+            // Session changes invalidate the sessions domain; pass sessionsDir as kspecDir
+            // so the callback can map the file to a domain
+            this.cacheInvalidationCallback(normalizedPath, sessionsDir, file);
           }
         },
         onError: (error, file) => {
@@ -389,6 +449,12 @@ export class ProjectContextManager {
 
     if (this.defaultProjectPath === normalizedPath) {
       this.defaultProjectPath = null;
+    }
+
+    // AC: @daemon-entity-cache ac-unregister-cleanup — notify listeners (e.g. entity cache disposal)
+    // This fires for all unregister paths: API-driven, watcher permanent failure, etc.
+    if (this.unregisterCallback) {
+      this.unregisterCallback(normalizedPath);
     }
   }
 

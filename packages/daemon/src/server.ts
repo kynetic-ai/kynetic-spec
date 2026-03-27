@@ -266,9 +266,19 @@ export async function createServer(options: ServerOptions) {
     // AC-3: Enforce localhost-only connections
     .onRequest(localhostOnly());
 
+  // AC: @daemon-entity-cache ac-load-on-register — lazy import entity cache module
+  // At build time, packages/daemon/src/ is copied to dist/daemon/ where entity-cache.js
+  // (compiled from src/daemon/entity-cache.ts) is a sibling.
+  const entityCacheModule = await import("./entity-cache.js");
+
   // Shared callback for all registration paths (middleware, projects API, WebSocket)
   const onProjectRegistered = async (projectPath: string) => {
     await startSessionSyncForProject(projectPath, pubsubManager);
+    // AC: @daemon-entity-cache ac-load-on-register — create cache and start progressive loading
+    const entityCache = entityCacheModule.registerEntityCache(projectPath);
+    entityCache.loadAll().catch((err: unknown) => {
+      console.error(`[entity-cache] Error during initial load for ${projectPath}:`, err);
+    });
   };
 
   // AC: @multi-directory-daemon ac-1, ac-2, ac-3 - Project context middleware
@@ -295,19 +305,24 @@ export async function createServer(options: ServerOptions) {
 
     // AC: @api-contract ac-2 through ac-7 - Task API endpoints
     // AC: @multi-directory-daemon ac-24 - Routes use projectContext from middleware
-    .use(createTasksRoutes({ pubsub: pubsubManager }))
+    // AC: @daemon-entity-cache ac-serve-from-memory, ac-write-through — pass cache accessor
+    .use(createTasksRoutes({ pubsub: pubsubManager, getEntityCache: entityCacheModule.getEntityCache }))
 
     // AC: @api-contract ac-8 through ac-11 - Spec Item API endpoints
-    .use(createItemsRoutes())
+    // AC: @daemon-entity-cache ac-serve-from-memory — pass cache accessor
+    .use(createItemsRoutes({ getEntityCache: entityCacheModule.getEntityCache }))
 
     // AC: @api-contract ac-12 through ac-14 - Inbox API endpoints
-    .use(createInboxRoutes({ pubsub: pubsubManager }))
+    // AC: @daemon-entity-cache ac-serve-from-memory, ac-write-through — pass cache accessor
+    .use(createInboxRoutes({ pubsub: pubsubManager, getEntityCache: entityCacheModule.getEntityCache }))
 
     // AC: @api-contract ac-15 through ac-18 - Meta API endpoints
-    .use(createMetaRoutes())
+    // AC: @daemon-entity-cache ac-write-through — pass cache accessor for meta write-through
+    .use(createMetaRoutes({ getEntityCache: entityCacheModule.getEntityCache }))
 
     // AC: @triage-daemon-api ac-1 through ac-9 - Triage API endpoints
-    .use(createTriageRoutes({ pubsub: pubsubManager }))
+    // AC: @daemon-entity-cache ac-serve-from-memory, ac-write-through — pass cache accessor
+    .use(createTriageRoutes({ pubsub: pubsubManager, getEntityCache: entityCacheModule.getEntityCache }))
 
     // AC: @api-contract ac-19 through ac-21 - Validation and search endpoints
     .use(createValidationRoutes())
@@ -317,29 +332,32 @@ export async function createServer(options: ServerOptions) {
       createProjectsRoutes({
         projectManager: projectContextManager,
         onProjectRegistered,
-        onProjectUnregistered: (projectPath) => {
-          stopSessionSyncForProject(projectPath);
-        },
+        // Cleanup now handled centrally by ProjectContextManager.unregisterCallback
+        // (wired below) so all unregister paths (API + watcher permanent failure) are covered.
       }),
     )
 
     // AC: @ui-session-stream ac-1, ac-4 - Session data endpoints
-    .use(createSessionRoutes())
+    // AC: @daemon-entity-cache ac-serve-from-memory — pass cache accessor for session routes
+    .use(createSessionRoutes({ getEntityCache: entityCacheModule.getEntityCache }))
 
     // AC: @ui-plans-view ac-1 - Plans data endpoints
-    .use(createPlansRoutes())
+    // AC: @daemon-entity-cache ac-serve-from-memory — pass cache accessor
+    .use(createPlansRoutes({ getEntityCache: entityCacheModule.getEntityCache }))
 
     // AC: @ui-api-aggregation ac-1, ac-2, ac-3 - Aggregation endpoints
     .use(createAggregationRoutes())
 
     // AC: @ui-api-ref-resolution ac-4, ac-5 - Lightweight ref index endpoint
-    .use(createRefsRoutes())
+    // AC: @daemon-entity-cache ac-serve-from-memory — pass cache accessor
+    .use(createRefsRoutes({ getEntityCache: entityCacheModule.getEntityCache }))
 
     // AC: @review-content-diff-api ac-1, ac-2, ac-3, ac-4 - Diff and review content endpoints
     .use(createDiffRoutes())
 
     // AC: @review-records-daemon-api ac-3, ac-4, ac-5, ac-6, ac-7, ac-8, ac-9, ac-10 - Review endpoints
-    .use(createReviewsRoutes({ pubsub: pubsubManager }))
+    // AC: @daemon-entity-cache ac-serve-from-memory, ac-write-through — pass cache accessor
+    .use(createReviewsRoutes({ pubsub: pubsubManager, getEntityCache: entityCacheModule.getEntityCache }))
 
     // AC: @agent-dispatch-engine ac-4 - Agent dispatch API endpoints
     // AC: @daemon-agent-dispatch ac-3, ac-4 - Pass pubsub for WebSocket broadcast on invocation events
@@ -495,6 +513,39 @@ export async function createServer(options: ServerOptions) {
       });
     }
   });
+
+  // AC: @daemon-entity-cache ac-watcher-invalidation — wire cache invalidation to file watcher
+  // Both .kspec/ and .kspec-sessions/ changes flow through handleFileChange;
+  // fileToDomain() maps YAML files to their domains and ULID-prefixed session
+  // paths to the sessions domain.
+  projectContextManager.setCacheInvalidationCallback((projectPath, kspecDir, file) => {
+    const cache = entityCacheModule.getEntityCache(projectPath);
+    if (!cache) return;
+
+    cache.handleFileChange(kspecDir, file).catch((err: unknown) => {
+      console.error(`[entity-cache] Error handling file change for ${projectPath}:`, err);
+    });
+  });
+
+  // AC: @daemon-entity-cache ac-unregister-cleanup — dispose cache on any unregister path
+  // (including watcher permanent failure, not just API-driven unregister)
+  projectContextManager.setUnregisterCallback((projectPath) => {
+    stopSessionSyncForProject(projectPath);
+    entityCacheModule.unregisterEntityCache(projectPath);
+  });
+
+  // AC: @daemon-entity-cache ac-load-on-register — create cache for the startup project.
+  // The startup project is registered directly by projectContextMiddleware (not via
+  // getOrRegisterProject), so the onProjectRegistered callback isn't fired for it.
+  // Explicitly trigger it here after all callbacks are wired so the startup project
+  // gets an entity cache instance and progressive loading starts immediately.
+  if (startupProjectPath) {
+    try {
+      await onProjectRegistered(startupProjectPath);
+    } catch (error) {
+      console.error("[daemon] Failed to initialize entity cache for startup project:", error);
+    }
+  }
 
   // AC: @multi-directory-daemon ac-17 - Start file watcher for startup project
   if (startupProjectPath) {

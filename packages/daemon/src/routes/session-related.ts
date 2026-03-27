@@ -6,6 +6,7 @@ import {
 } from "../../parser/index.js";
 import { getSessionCache } from "../../sessions/cache.js";
 import type { SessionLogSummary } from "../../sessions/store.js";
+import type { EntityCacheAccessor } from "./entity-cache-types.js";
 
 interface RelatedSessionsNotFound {
   error: "not_found";
@@ -39,11 +40,31 @@ function filterSessionsByTaskRefs(
   });
 }
 
+/**
+ * Get all session summaries, using entity cache when available.
+ * AC: @daemon-entity-cache ac-serve-from-memory — use unified cache for sessions
+ */
+async function getAllSessionSummaries(
+  sessionsDir: string,
+  options?: { getEntityCache?: EntityCacheAccessor; projectPath?: string },
+): Promise<SessionLogSummary[]> {
+  const entityCache = options?.projectPath ? options.getEntityCache?.(options.projectPath) : null;
+  const sessionsDomainReady = entityCache && entityCache.getDomainState("sessions") === "ready";
+  if (sessionsDomainReady) {
+    return entityCache!.getSessionIndex() ?? [];
+  }
+  // Fallback to standalone SessionSummaryCache
+  const sessionCache = getSessionCache(sessionsDir);
+  return sessionCache.getAll(sessionsDir);
+}
+
 export async function getRelatedSessionsForTask(params: {
   items: LoadedSpecItem[];
   tasks: LoadedTask[];
   taskRef: string;
   sessionsDir: string;
+  getEntityCache?: EntityCacheAccessor;
+  projectPath?: string;
 }): Promise<
   { sessions: SessionLogSummary[]; task: LoadedTask } | { error: RelatedSessionsNotFound }
 > {
@@ -72,8 +93,10 @@ export async function getRelatedSessionsForTask(params: {
     };
   }
 
-  const sessionCache = getSessionCache(sessionsDir);
-  const sessions = await sessionCache.getAll(sessionsDir);
+  const sessions = await getAllSessionSummaries(sessionsDir, {
+    getEntityCache: params.getEntityCache,
+    projectPath: params.projectPath,
+  });
   const filtered = filterSessionsByTaskRefs(sessions, buildTaskRefSet(task));
 
   return {
@@ -87,6 +110,8 @@ export async function getRelatedSessionsForItem(params: {
   items: LoadedSpecItem[];
   tasks: LoadedTask[];
   sessionsDir: string;
+  getEntityCache?: EntityCacheAccessor;
+  projectPath?: string;
 }): Promise<
   { item: LoadedSpecItem; sessions: SessionLogSummary[] } | { error: RelatedSessionsNotFound }
 > {
@@ -125,8 +150,10 @@ export async function getRelatedSessionsForItem(params: {
     }
   }
 
-  const sessionCache = getSessionCache(sessionsDir);
-  const sessions = await sessionCache.getAll(sessionsDir);
+  const sessions = await getAllSessionSummaries(sessionsDir, {
+    getEntityCache: params.getEntityCache,
+    projectPath: params.projectPath,
+  });
   const filtered = filterSessionsByTaskRefs(sessions, taskRefs);
 
   return {

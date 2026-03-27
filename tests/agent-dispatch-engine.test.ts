@@ -2501,21 +2501,9 @@ describe("Autonomous dispatch prompt guardrails", () => {
       durationMs: 1,
     });
 
-    const engine = new DispatchEngine({
-      projectDir: testDir,
-      specDir: testDir,
-      kspecCliPath: MOCK_KSPEC_CLI,
-      coalesceWindowMs: 0,
-    });
     // Mock workspace provisioning and bootstrap — this test validates prompt content,
-    // not workspace setup. Without these mocks, workspace provisioning may fail silently
-    // under full-suite load and runInvocation is never reached.
-    vi.spyOn(workspaceModule, "getDispatchWorkspaceHealth").mockResolvedValue({
-      exists: true,
-      healthy: true,
-      reason: null,
-      metadata: null,
-    });
+    // not workspace setup. Without mocks, real git worktree operations cause timing
+    // flakiness under concurrent test load.
     const mockMetadata = buildMockWorkspaceMetadata(testDir);
     vi.spyOn(workspaceModule, "provisionDispatchWorkspace").mockResolvedValue({
       cwd: testDir,
@@ -2524,6 +2512,19 @@ describe("Autonomous dispatch prompt guardrails", () => {
     });
     vi.spyOn(bootstrapModule, "ensureWorkspaceBootstrap").mockResolvedValue({
       metadata: mockMetadata,
+    });
+    vi.spyOn(workspaceModule, "getDispatchWorkspaceHealth").mockResolvedValue({
+      exists: true,
+      healthy: true,
+      reason: null,
+      metadata: null,
+    });
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
     });
 
     await engine.start();

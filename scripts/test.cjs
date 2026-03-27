@@ -40,7 +40,7 @@ const c = {
 };
 
 const projectRoot = path.dirname(__dirname);
-const BUILD_ARTIFACTS = ["dist/cli/index.js", "dist/web-ui/index.html", "dist/daemon/index.ts"];
+const BUILD_ARTIFACTS = ["dist/cli/index.js", "dist/web-ui/index.html", "dist/daemon/index.ts", "dist/daemon/entity-cache.ts"];
 const BUILD_INPUT_PATHS = [
   "src",
   "packages/shared/src",
@@ -63,9 +63,12 @@ const TEST_INPUT_PATHS = [
   "packages/shared/src/",
   "packages/daemon/src/",
   "packages/web-ui/src/",
+  "package.json",
   "package-lock.json",
   "vitest.config.ts",
   "tsconfig.json",
+  "scripts/test.cjs",
+  "scripts/dependency-health.cjs",
 ];
 
 const CACHE_ROOT = path.join(os.tmpdir(), "kspec-test-cache");

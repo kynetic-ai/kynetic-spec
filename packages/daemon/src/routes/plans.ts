@@ -18,6 +18,7 @@ import {
   resolveTaskDataManager,
   type LoadedPlan,
   type LoadedTask,
+  type TaskSummary,
 } from "../../parser/index.js";
 import { PlanStatusSchema } from "../../schema/plan.js";
 import {
@@ -26,14 +27,21 @@ import {
   isCountedInPlanSummary,
 } from "../../lib/plan-summary.js";
 import type { PlanSummary, PlanDetail } from "@kynetic-ai/shared";
+import type { PlanSummaryTask } from "../../lib/plan-summary.js";
+import type { PlanIndexSummary } from "../../daemon/entity-cache.js";
 import { enumArrayUnion } from "./enum-utils.js";
+import type { EntityCacheAccessor } from "./entity-cache-types.js";
 
-interface PlansRouteOptions {}
+interface PlansRouteOptions {
+  getEntityCache?: EntityCacheAccessor;
+}
 
 /**
- * Map a loaded plan to a PlanSummary.
+ * Map a plan (full or summary) to a PlanSummary for the API response.
+ * Accepts LoadedPlan or PlanIndexSummary — both have the required fields.
+ * Accepts LoadedTask[] or TaskSummary[] — both satisfy PlanSummaryTask.
  */
-function toPlanSummary(plan: LoadedPlan, tasks: LoadedTask[]): PlanSummary {
+function toPlanSummary(plan: LoadedPlan | PlanIndexSummary, tasks: PlanSummaryTask[]): PlanSummary {
   const linkedTasks = getLinkedPlanSummaryTasks(plan, tasks);
 
   return {
@@ -53,18 +61,53 @@ function toPlanSummary(plan: LoadedPlan, tasks: LoadedTask[]): PlanSummary {
 }
 
 export function createPlansRoutes(_options: PlansRouteOptions = {}) {
+  const { getEntityCache } = _options;
+
   return (
     new Elysia({ prefix: "/api/plans" })
       // AC: @ui-plans-view ac-1 - List plans with progress
+      // AC: @daemon-entity-cache ac-serve-from-memory — serve from cache when available
       .get(
         "/",
         async ({ query, projectContext }) => {
-          const ctx = await initContext(projectContext.path);
-          const plans = await loadPlans(ctx);
-          const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+          // AC: @daemon-entity-cache ac-serve-from-memory — defer initContext for cache hits
+          const cache = getEntityCache?.(projectContext.path);
+
+          // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
+          const plansDomainState = cache?.getDomainState("plans");
+          if (cache && plansDomainState === "loading") {
+            return { items: [], total: 0, _cache_status: "loading" as const };
+          }
+
+          let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
+          const getCtx = async () => {
+            if (!_ctx) _ctx = await initContext(projectContext.path);
+            return _ctx;
+          };
+
+          // Try cache for plans (index tier has PlanIndexSummary, disk fallback gives LoadedPlan)
+          let plans: (LoadedPlan | PlanIndexSummary)[];
+          const cachedPlans = cache && plansDomainState === "ready" ? cache.getPlansIndex() : null;
+          if (cachedPlans) {
+            plans = cachedPlans;
+          } else {
+            const ctx = await getCtx();
+            plans = await loadPlans(ctx);
+          }
+
+          // Try cache for tasks (needed for progress computation)
+          const tasksDomainState = cache?.getDomainState("tasks");
+          let tasks;
+          if (cache && tasksDomainState === "ready") {
+            tasks = cache.getTaskIndex();
+          }
+          if (!tasks) {
+            const ctx = await getCtx();
+            tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+          }
 
           // Apply status filter
-          let filtered: LoadedPlan[] = plans;
+          let filtered = plans;
           if (query.status) {
             const statusFilters = Array.isArray(query.status) ? query.status : [query.status];
             filtered = filtered.filter((plan) => statusFilters.includes(plan.status));
@@ -90,9 +133,49 @@ export function createPlansRoutes(_options: PlansRouteOptions = {}) {
         },
       )
       // AC: @ui-plans-view ac-2 - Get single plan with content (lazy-loaded by UI on expand)
+      // AC: @daemon-entity-cache ac-detail-on-demand — serve from cache when available
       .get("/:ref", async ({ params, error: errorResponse, projectContext }) => {
-        const ctx = await initContext(projectContext.path);
-        const plan = await findPlanByRef(ctx, params.ref);
+        // AC: @daemon-entity-cache ac-serve-from-memory — defer initContext for cache hits
+        const cache = getEntityCache?.(projectContext.path);
+        let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
+        const getCtx = async () => {
+          if (!_ctx) _ctx = await initContext(projectContext.path);
+          return _ctx;
+        };
+
+        // AC: @daemon-entity-cache ac-warming-availability — return loading indicator during warmup
+        const plansDomainState = cache?.getDomainState("plans");
+        if (cache && plansDomainState === "loading") {
+          return { _cache_status: "loading" as const };
+        }
+
+        const cleanRef = params.ref.startsWith("@") ? params.ref.slice(1) : params.ref;
+
+        // AC: @daemon-entity-cache ac-detail-on-demand — resolve via index, load from detail tier
+        let plan: LoadedPlan | undefined;
+        if (cache && plansDomainState === "ready") {
+          // Find the plan's ULID in the index (summaries only)
+          const cachedPlans = cache.getPlansIndex();
+          if (cachedPlans) {
+            const match = cachedPlans.find(
+              (p) =>
+                p._ulid === cleanRef ||
+                p._ulid.toLowerCase().startsWith(cleanRef.toLowerCase()) ||
+                p.slugs.includes(cleanRef),
+            );
+            if (match) {
+              // Load full plan from detail tier
+              plan = cache.getPlanDetail(match._ulid) ?? undefined;
+            }
+          }
+        }
+        if (!plan) {
+          plan = await findPlanByRef(await getCtx(), params.ref);
+          // Cache the loaded detail for subsequent requests
+          if (plan && cache) {
+            cache.setPlanDetail(plan._ulid, plan);
+          }
+        }
 
         if (!plan) {
           return errorResponse(404, {
@@ -102,7 +185,15 @@ export function createPlansRoutes(_options: PlansRouteOptions = {}) {
           });
         }
 
-        const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+        // Try cache for tasks (needed for progress computation)
+        const tasksDomainState = cache?.getDomainState("tasks");
+        let tasks;
+        if (cache && tasksDomainState === "ready") {
+          tasks = cache.getTaskIndex();
+        }
+        if (!tasks) {
+          tasks = await resolveTaskDataManager(await getCtx()).loadAllTasks(await getCtx());
+        }
 
         const detail: PlanDetail = {
           ...toPlanSummary(plan, tasks),
