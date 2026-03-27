@@ -56282,6 +56282,78 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-26T23:37:11.166Z
+      - _ulid: 01KMPAJQT2GZ2JR73ZJ62P71WT
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMP8292RVXGHS8MVCRSC7Y0V
+        timestamp: 2026-03-27T00:19:50.722Z
+      - _ulid: 01KMPAJRYZ333NJEQASDJRBXZE
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMP8292RVXGHS8MVCRSC7Y0V
+        timestamp: 2026-03-27T00:19:51.903Z
+      - _ulid: 01KMPAJXXFBXW691X0P6FNBAW0
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMP82AQZE9NCF5ZACC9ZWWB7
+        timestamp: 2026-03-27T00:19:56.975Z
+      - _ulid: 01KMPAJZ15GBJMD15CQYTNMPXZ
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMP82AQZE9NCF5ZACC9ZWWB7
+        timestamp: 2026-03-27T00:19:58.117Z
+      - _ulid: 01KMPAK04JMDQPRVNM82J4B69G
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMP82CCT7ZGBTAPEB56S0J7G
+        timestamp: 2026-03-27T00:19:59.250Z
+      - _ulid: 01KMPAK180AR44BS363DHHPYPA
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMP82CCT7ZGBTAPEB56S0J7G
+        timestamp: 2026-03-27T00:20:00.385Z
+      - _ulid: 01KMPAK2AWBZ00QW4W0D51FEGK
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMP82HKQDH0ET37B181WABWE
+        timestamp: 2026-03-27T00:20:01.500Z
+      - _ulid: 01KMPAK3D70TBX6CPTDYKMWHS2
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMP82HKQDH0ET37B181WABWE
+        timestamp: 2026-03-27T00:20:02.599Z
+      - _ulid: 01KMPAK4FHMYVTVJ9H5WSHB9M2
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMP82M0EGV9J7W7EA252JVK3
+        timestamp: 2026-03-27T00:20:03.698Z
+      - _ulid: 01KMPAK5HXAW94C8W24ZZ3CTVH
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMP82M0EGV9J7W7EA252JVK3
+        timestamp: 2026-03-27T00:20:04.797Z
+      - _ulid: 01KMPAK6MRRHKSHZMD2DM177V2
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMP82NMWFKE040B7DV76V0QK
+        timestamp: 2026-03-27T00:20:05.912Z
+      - _ulid: 01KMPAK7PYE4NZXNJ3TPYE9392
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMP82NMWFKE040B7DV76V0QK
+        timestamp: 2026-03-27T00:20:07.006Z
     examined_commit: 704ebd4dd303187ec7b761cee65a3a07ea284578
     external_links: []
     lifecycle_state: closed
@@ -56308,7 +56380,15 @@ reviews:
               still reread YAML from disk after warming.  is never consumed anywhere outside tests
               in this snapshot, so the detail tier is not actually wired into request serving yet.
             created_at: 2026-03-26T23:35:54.208Z
+          - _ulid: 01KMPAJQCKEGKRRVYKBWB8X139
+            author: "@claude"
+            body: "Fixed: Task detail route now checks cache.getTaskDetail() first by resolving the ref against
+              the cached task index, then falls back to disk only if not in detail cache. The loaded
+              detail is cached for subsequent requests."
+            created_at: 2026-03-27T00:19:50.290Z
         kind: blocker
+        resolved_at: 2026-03-27T00:19:51.444Z
+        resolved_by: "@claude"
       - _ulid: 01KMP82AQZE9NCF5ZACC9ZWWB7
         anchor:
           type: code
@@ -56327,7 +56407,16 @@ reviews:
               it by loading the cache from the current snapshot with  and seeing the first cached
               item include , , , and related detail keys.
             created_at: 2026-03-26T23:35:55.904Z
+          - _ulid: 01KMPAJXFS6MF9WAHYA9MQXYRE
+            author: "@claude"
+            body: "Fixed: Items index tier now stores ItemSummary[] instead of full LoadedSpecItem[]. Created
+              toItemSummary() projection that strips description, notes, and AC content. Only
+              index-level fields (_ulid, slugs, title, type, status, tags, traits, _sourceFile,
+              _path, created, acceptance_criteria_count) are kept in memory."
+            created_at: 2026-03-27T00:19:56.537Z
         kind: blocker
+        resolved_at: 2026-03-27T00:19:57.651Z
+        resolved_by: "@claude"
       - _ulid: 01KMP82CCT7ZGBTAPEB56S0J7G
         anchor:
           type: code
@@ -56346,7 +56435,16 @@ reviews:
               reads from , and the same bypass pattern remains in the item batch/detail/linked-task
               routes that call  directly.
             created_at: 2026-03-26T23:35:57.594Z
+          - _ulid: 01KMPAJZQDYPTBKTK0CVA3N64H
+            author: "@claude"
+            body: "Fixed: Refs endpoint now checks cached task index (via getTaskIndex()) before falling back to
+              loadAllTasks. TaskSummary is structurally compatible with ReferenceIndex's indexItem()
+              needs (_ulid, slugs) and buildRefIndex's output needs (title, type, status). Same for
+              ItemSummary. Both are cast to their full types for the constructor."
+            created_at: 2026-03-27T00:19:58.829Z
         kind: blocker
+        resolved_at: 2026-03-27T00:19:59.943Z
+        resolved_by: "@claude"
       - _ulid: 01KMP82HKQDH0ET37B181WABWE
         anchor:
           type: code
@@ -56364,7 +56462,13 @@ reviews:
               from disk after warming. getTaskDetail() is never consumed anywhere outside tests in
               this snapshot, so the detail tier is not actually wired into request serving yet.
             created_at: 2026-03-26T23:36:02.935Z
+          - _ulid: 01KMPAK1XE7ME1M2SE5BZVQRMD
+            author: "@claude"
+            body: "Fixed: duplicate thread — see resolution on 01KMP8292RVXGHS8MVCRSC7Y0V."
+            created_at: 2026-03-27T00:20:01.070Z
         kind: blocker
+        resolved_at: 2026-03-27T00:20:02.183Z
+        resolved_by: "@claude"
       - _ulid: 01KMP82M0EGV9J7W7EA252JVK3
         anchor:
           type: code
@@ -56384,7 +56488,13 @@ reviews:
               first cached item include description, acceptance_criteria, notes, and related detail
               keys.
             created_at: 2026-03-26T23:36:05.390Z
+          - _ulid: 01KMPAK42R3PTZ4GXWN2PNQR0H
+            author: "@claude"
+            body: "Fixed: duplicate thread — see resolution on 01KMP82AQZE9NCF5ZACC9ZWWB7."
+            created_at: 2026-03-27T00:20:03.288Z
         kind: blocker
+        resolved_at: 2026-03-27T00:20:04.382Z
+        resolved_by: "@claude"
       - _ulid: 01KMP82NMWFKE040B7DV76V0QK
         anchor:
           type: code
@@ -56404,7 +56514,13 @@ reviews:
               from /api/refs, and the same bypass pattern remains in the item
               batch/detail/linked-task routes that call loadAllTasks(ctx) directly.
             created_at: 2026-03-26T23:36:07.068Z
+          - _ulid: 01KMPAK67KMWVZDENK79KY6ZWA
+            author: "@claude"
+            body: "Fixed: duplicate thread — see resolution on 01KMP82CCT7ZGBTAPEB56S0J7G."
+            created_at: 2026-03-27T00:20:05.491Z
         kind: blocker
+        resolved_at: 2026-03-27T00:20:06.591Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -56414,7 +56530,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-26T23:37:11.166Z
     created_at: 2026-03-26T23:34:05.110Z
-    updated_at: 2026-03-26T23:37:11.166Z
+    updated_at: 2026-03-27T00:20:06.591Z
     notes: []
   - _ulid: 01KMP865XYP61J5Y4FR5BZ55SZ
     slugs: []
