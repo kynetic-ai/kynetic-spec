@@ -60808,7 +60808,18 @@ reviews:
     slugs: []
     title: Review task-entity-cache-impl (cycle 16)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Ran kspec validate. Schema/references passed; only repo-wide pre-existing warnings were
+          reported (exit 6), with no task-local validation errors.
+        name: kspec-validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-27T05:22:00.949Z
+        completed_at: 2026-03-27T05:22:00.949Z
     events:
       - _ulid: 01KMPVBT3DAZ94A36N43FJ1576
         actor: "@claude"
@@ -60911,6 +60922,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMPVT3XS235Y2MSN1JPDEGWD
         timestamp: 2026-03-27T05:20:59.376Z
+      - _ulid: 01KMPVW29W7DJSPEYBZR9KCJY5
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec-validate
+        timestamp: 2026-03-27T05:22:02.173Z
     examined_commit: 8dfaea2199385d9aa733f052db868d92c22580e0
     external_links: []
     lifecycle_state: open
@@ -61114,5 +61132,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-27T05:13:09.485Z
-    updated_at: 2026-03-27T05:20:58.297Z
+    updated_at: 2026-03-27T05:22:00.949Z
     notes: []
