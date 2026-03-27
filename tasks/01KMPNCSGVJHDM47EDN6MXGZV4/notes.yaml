@@ -1,1 +1,36 @@
-notes: []
+notes:
+  - _ulid: 01KMPPRD4E9BM41NCZCC06NC5S
+    content: >-
+      Approach: Two deliverables.
+
+
+      Deliverable 1 — Wire agent spawner:
+
+      - Create a createAutomationAgentSpawner() factory in agent-dispatch.ts (or a new module) that:
+        (a) Resolves agent definitions from meta config via loadMetaContext()
+        (b) Calls runInvocation() with projectDir as cwd, specDir from initContext()
+        (c) Returns { invocation_id: session.id } matching the AgentSpawner type
+      - Pass the spawner to ActionExecutor in startScheduleEngine, startHookExecutor,
+      startJoinAccumulator
+
+
+      Deliverable 2 — Error fields in action.failed events:
+
+      - Add error and failure_reason from event.action_run to the event bus payload in all three
+      onActionRunEvent callbacks (schedule, hook, join) when event.type is action.failed
+
+
+      Test plan:
+
+      - ac-1: Test schedule with agent action → spawner called, invocation succeeds
+
+      - ac-2: Test hook with agent action → spawner called, invocation succeeds
+
+      - ac-3: Test join accumulator with agent action → spawner called, invocation succeeds
+
+      - ac-4: Test missing capability → action fails with descriptive error message
+
+      - ac-5: Test action.failed event payload includes error and failure_reason fields
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T03:52:39.311Z
