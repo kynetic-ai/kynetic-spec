@@ -8484,6 +8484,16 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-03-27T02:57:13.706Z
+  - _ulid: 01KMPMMNBWYBXSYBE31YS9SYX9
+    type: friction
+    content: Large multi-domain implementations (like entity-cache with 8 domains × N routes) accumulate
+      fix cycles when review finds one domain at a time not properly wired. A self-review checklist
+      or automated structural check before submission — verifying every route for each domain uses
+      the correct tier — would catch these earlier and reduce fix cycle count.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T03:15:39.516Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
