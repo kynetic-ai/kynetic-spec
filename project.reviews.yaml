@@ -60308,6 +60308,18 @@ reviews:
         runner: kspec
         created_at: 2026-03-27T04:58:28.379Z
         completed_at: 2026-03-27T04:58:28.379Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh failed: 5 failed suites, 1925 passed suites, 3 failed tests, 6904
+          passed tests. Reported failures included tests/dispatch-runtime-bootstrap-contract.test.ts
+          and tests/core-skill-install.test.ts in the full-suite run."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-27T04:58:30.203Z
+        completed_at: 2026-03-27T04:58:30.203Z
     events:
       - _ulid: 01KMPSV3WW0AJTETQ3A79YR36M
         actor: "@claude"
@@ -60364,6 +60376,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-27T04:58:28.971Z
+      - _ulid: 01KMPTGZZSZ182JRH80XGTT89B
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-27T04:58:30.777Z
     examined_commit: c903c3369660d1b9746492fa5c1fd4e9844eaec3
     external_links: []
     lifecycle_state: open
@@ -60474,5 +60493,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-27T04:46:33.884Z
-    updated_at: 2026-03-27T04:58:28.379Z
+    updated_at: 2026-03-27T04:58:30.203Z
     notes: []
