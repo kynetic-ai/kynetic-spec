@@ -625,3 +625,12 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T06:54:17.198Z
+  - _ulid: 01KMQ1ZNCTAF9625ADT11FDX64
+    content: "Fix cycle 19: addressed all 4 blockers from review cycle 19. Two issues in triage.ts: (1)
+      GET /api/triage/export was bypassing entity cache entirely — now wired to getTriageIndex()
+      with warmup guard. (2) GET /api/triage/:ref was missing warmup guard — added loading state
+      early return. Both routes now match the cache pattern used by all other cache-backed
+      endpoints."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T07:08:51.482Z
