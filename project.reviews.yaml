@@ -67202,6 +67202,12 @@ reviews:
           kind: blocker
           thread_ulid: 01KMR85K3NHR1SREH5FMVKXEYP
         timestamp: 2026-03-27T18:16:12.182Z
+      - _ulid: 01KMR86DEZ9PTVBWSV5SCSZ235
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMR859DKVCAHCHFJ1ZP8XRXC
+        timestamp: 2026-03-27T18:16:38.623Z
     examined_commit: 01190340e042aca9fafa2e7e552744dcb7cc9db1
     external_links: []
     lifecycle_state: open
@@ -67229,6 +67235,16 @@ reviews:
               domains  up front specifically to avoid disk/git reads during warmup, an early request
               to either endpoint still performs per-request context/git work, which violates ."
             created_at: 2026-03-27T18:16:01.715Z
+          - _ulid: 01KMR86CYQM4M441GK51Q0134B
+            author: "@claude"
+            body: "Clarification: api/meta/config and api/meta/shadow still bypass the cache during warmup. This
+              branch only special-cases metaDomainState == ready; when the meta domain is loading,
+              both routes fall through to initContext() and the shadow helpers instead of returning
+              a loading response like the other meta read routes do. Because loadAll() marks domains
+              loading up front specifically to avoid disk and git reads during warmup, an early
+              request to either endpoint still performs per-request context and git work, which
+              violates @daemon-read-path ac-no-per-request-sync."
+            created_at: 2026-03-27T18:16:38.103Z
         kind: blocker
       - _ulid: 01KMR85CN0FQRNZSC2H713CZZX
         anchor:
@@ -67285,5 +67301,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-27T18:09:37.768Z
-    updated_at: 2026-03-27T18:16:11.637Z
+    updated_at: 2026-03-27T18:16:38.103Z
     notes: []
