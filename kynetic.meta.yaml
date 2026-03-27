@@ -8377,6 +8377,27 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T01:16:26.804Z
+  - _ulid: 01KMPESMSHC23R0ETHDGY0X8QE
+    type: friction
+    content: initContext() is called in 30+ route handlers and performs disk/git work every time. The
+      lazy getCtx() pattern added in the entity cache work is effective but adds boilerplate to
+      every handler. A cache-aware middleware that provides context lazily (only resolving on first
+      access) would eliminate this pattern entirely and ensure new routes get the optimization
+      automatically.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T01:33:31.314Z
+  - _ulid: 01KMPESMY55F9BXBFMZ1J5FQ3A
+    type: success
+    content: "RouteEntityCache interface as decoupling point worked well for incremental domain wiring.
+      Adding new cache-backed domains required only: extend interface, wire route factory options,
+      add cache-first reads and write-through calls. No changes to entity-cache.ts core. Clean
+      separation of concerns."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T01:33:31.461Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
