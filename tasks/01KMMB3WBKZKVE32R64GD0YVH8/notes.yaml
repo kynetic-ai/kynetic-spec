@@ -1,1 +1,13 @@
-notes: []
+notes:
+  - _ulid: 01KMR8SH5XBDFBY2F9KASJVHBQ
+    content: Added ac-daemon-bypass to @shadow-lazy-read-sync. The new AC clarifies that per-request
+      drift-check applies only to CLI direct-mode reads; daemon reads use the entity cache and
+      background sync scheduler. Updated the spec description to narrow 'CLI/daemon read' to 'CLI
+      direct-mode read' with cross-references to @daemon-entity-cache and @daemon-read-path. Added
+      AC annotations to tests/daemon-cache-route-coverage.test.ts and
+      packages/daemon/src/routes/tasks.ts. Verified existing implementation already aligns — daemon
+      routes serve from cache (no initContext on hits) and shadowNeedsSync is never imported in
+      daemon code. All 6945 tests pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T18:27:05.021Z
