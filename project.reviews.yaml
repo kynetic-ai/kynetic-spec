@@ -60936,9 +60936,25 @@ reviews:
           kind: nit
           thread_ulid: 01KMPVWVBM2JPE3GHZ9TEWRBYF
         timestamp: 2026-03-27T05:22:29.119Z
+      - _ulid: 01KMPVXCDWB1MSW9S7GPRJX1ZN
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-27T05:22:45.308Z
+      - _ulid: 01KMPVXCDWSP7D79ZPKYTRWFPP
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-27T05:22:45.309Z
     examined_commit: 8dfaea2199385d9aa733f052db868d92c22580e0
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -61154,7 +61170,14 @@ reviews:
               coverage, write-through wiring, test quality, integration."
             created_at: 2026-03-27T05:22:27.828Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-27T05:22:45.308Z
     created_at: 2026-03-27T05:13:09.485Z
-    updated_at: 2026-03-27T05:22:27.828Z
+    updated_at: 2026-03-27T05:22:45.308Z
     notes: []
