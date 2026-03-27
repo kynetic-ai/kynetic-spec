@@ -17134,7 +17134,7 @@ runs:
     completed_at: 2026-03-27T22:43:42.750Z
   - _ulid: 01KMRQW2KY77A2KNS5KBXTSBQA
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -17155,7 +17155,14 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-03-27T22:51:22.299Z
-        completed_at: 2026-03-27T22:51:22.299Z
+        completed_at: 2026-03-27T22:51:27.489Z
+        notes: "High-confidence items: one friction point only. Detached reviewer snapshots can receive
+          merge instructions they cannot execute because the target branch is already checked out in
+          another worktree and the merge is already a no-op at the same commit."
+      - status: completed
+        step_index: 3
+        started_at: 2026-03-27T22:51:27.489Z
+        completed_at: 2026-03-27T22:51:27.489Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-27T22:50:37.054Z
