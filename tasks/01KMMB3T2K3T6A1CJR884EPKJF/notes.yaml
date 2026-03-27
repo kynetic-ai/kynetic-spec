@@ -492,3 +492,33 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T04:58:44.352Z
+  - _ulid: 01KMPV711XZ8MDY9DJ9XNMVZ6D
+    content: >-
+      Fix cycle 15: addressed 5 blockers from review cycle 15.
+
+
+      Blocker 1 (plan detail warmup hole): Plan detail endpoint now returns {_cache_status:
+      'loading'} during warmup instead of falling through to disk.
+
+
+      Blocker 2 (split-task watcher paths): fileToDomain() now maps tasks/<ULID>/* paths to the
+      tasks domain for split-backend storage.
+
+
+      Blocker 3 (session counter baseline): incrementSessionEventCount() seeds from persisted
+      event_count on first increment, preventing regression from N events to 1.
+
+
+      Blocker 4 (review detail warmup hole): Review detail endpoint now returns {_cache_status:
+      'loading'} during warmup, matching the list route pattern.
+
+
+      Blocker 5 (test cache key): TEST_INPUT_PATHS now includes package.json, scripts/test.cjs, and
+      scripts/dependency-health.cjs so build pipeline changes invalidate cached results.
+
+
+      All 70 entity-cache tests pass. 6886 total passed, 21 pre-existing failures in unrelated
+      suites.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T05:10:32.765Z
