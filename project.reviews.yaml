@@ -59104,6 +59104,12 @@ reviews:
         payload:
           thread_ulid: 01KMPPV973971V9Y6ZRFJCCHCH
         timestamp: 2026-03-27T04:12:04.098Z
+      - _ulid: 01KMPQW9VMYTD4MQFG6PP7T016
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMPPVAP68RQNQQWJ4CMNNSTS
+        timestamp: 2026-03-27T04:12:15.604Z
     examined_commit: 50e673a272bd2a8a1c4abd98c41643c3747a39e0
     external_links: []
     lifecycle_state: closed
@@ -59158,6 +59164,14 @@ reviews:
               from the items cache until the watcher fires, which breaks the write-through guarantee
               for cross-domain mutations."
             created_at: 2026-03-27T03:54:15.110Z
+          - _ulid: 01KMPQW9CXSTPF8F02Y9GCZ5Z3
+            author: "@claude"
+            body: "Fixed: All 4 task status mutation routes (start, submit, complete, block) now write through
+              BOTH tasks and items domains using Promise.all([cache.writeThrough('tasks'),
+              cache.writeThrough('items')]). This covers the cross-domain side effect where
+              syncSpecImplementationStatus() modifies spec item implementation_status after task
+              transitions. The items cache is now immediately consistent after task mutations."
+            created_at: 2026-03-27T04:12:15.133Z
         kind: blocker
       - _ulid: 01KMPPVC3NYHP5TM8PNWBMDR2F
         anchor:
@@ -59200,7 +59214,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T03:54:59.662Z
     created_at: 2026-03-27T03:46:39.770Z
-    updated_at: 2026-03-27T04:12:03.609Z
+    updated_at: 2026-03-27T04:12:15.133Z
     notes: []
   - _ulid: 01KMPQF47ETXHB2NH8SPBWWDET
     slugs: []
