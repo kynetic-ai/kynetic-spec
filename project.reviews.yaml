@@ -63081,6 +63081,18 @@ reviews:
         runner: npm
         created_at: 2026-03-27T08:54:29.261Z
         completed_at: 2026-03-27T08:54:29.261Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Validation exited with warnings only (code 6): schema/references OK, no task-specific
+          validation errors for @daemon-entity-cache. Repo-wide warnings remain for orphaned
+          specs/skills and historical AC coverage gaps."
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-03-27T08:54:30.751Z
+        completed_at: 2026-03-27T08:54:30.751Z
     events:
       - _ulid: 01KMQ7S7C3T3MDJ9H0YY4YY8WZ
         actor: "@claude"
@@ -63137,6 +63149,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-27T08:54:29.722Z
+      - _ulid: 01KMQ814GSHDT5D732VB52711E
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-27T08:54:31.193Z
     examined_commit: 4893ca5183e4b193cc808f3f61fe778ada10e017
     external_links: []
     lifecycle_state: open
@@ -63208,5 +63227,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-27T08:50:11.971Z
-    updated_at: 2026-03-27T08:54:29.261Z
+    updated_at: 2026-03-27T08:54:30.751Z
     notes: []
