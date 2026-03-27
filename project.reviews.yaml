@@ -64031,9 +64031,16 @@ reviews:
           kind: blocker
           thread_ulid: 01KMR1JHYT1QMHJQW9PMKYVJRE
         timestamp: 2026-03-27T16:20:56.877Z
+      - _ulid: 01KMR1JKVXPWVAR43MEKP4MH43
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-03-27T16:20:58.365Z
     examined_commit: 65b59e1afcde5d4bda7e227ee4b8947c6573730a
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: open
     related_refs: []
     subject:
       type: task
@@ -64064,5 +64071,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-27T16:20:32.420Z
-    updated_at: 2026-03-27T16:20:56.410Z
+    updated_at: 2026-03-27T16:20:57.901Z
     notes: []
