@@ -8696,6 +8696,27 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T07:26:17.736Z
+  - _ulid: 01KMQ4EHS82Y2ZTRZVW2FPZB6J
+    type: friction
+    content: Entity cache summary types (TriageIndexSummary, ItemSummary) allow unsafe as-unknown-as
+      casts to full types at call sites, hiding field omissions. Routes that need full data (export,
+      spec_context with ACs) silently serve incomplete responses. TypeScript does not catch these at
+      compile time because of the explicit casts. Consider branded types or separate accessor
+      methods that return distinct types without cast escape hatches.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T07:51:56.456Z
+  - _ulid: 01KMQ4EJ4DBMZXC2B8YGK7SP3W
+    type: success
+    content: Domain-level debounce in ProjectEntityCache.invalidateDomain() effectively coalesces
+      multi-file watcher events into single reloads per domain. Deferred promise pattern lets all
+      callers await the same reload. This two-layer debounce (file-level in watcher + domain-level
+      in cache) is the correct architecture for reload dedup.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T07:51:56.814Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
