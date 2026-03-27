@@ -8938,6 +8938,27 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T18:27:46.482Z
+  - _ulid: 01KMR8XS33ZWYH7YKGC60T5JX5
+    type: friction
+    content: 'Review friction: when a daemon route fixes request isolation only in its direct execution
+      path but still delegates batch work to a shared CLI executor, regressions can survive multiple
+      fix cycles. In this session, /api/command was corrected to reset output mode with
+      setOutputFormat("text"), but /api/command/batch still reused batch-exec reset logic that only
+      called setJsonMode(false), leaving YAML mode sticky across requests.'
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T18:29:24.195Z
+  - _ulid: 01KMR8XS8ZT8VYCVB6EYMJCVVR
+    type: success
+    content: "Review success: adversarial verification with a tiny targeted runtime check caught a real
+      blocker after npm test was fully green. Checking state-reset semantics directly
+      (setYamlMode(true) then setJsonMode(false) still yielding yaml) was higher-signal than relying
+      on broad suite status alone."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T18:29:24.383Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
