@@ -6,3 +6,11 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T20:17:15.294Z
+  - _ulid: 01KMRF43C5Y5VW4JSSN59KKNC7
+    content: Updated @daemon-server description to include 'File watcher drives both WebSocket broadcast
+      and entity cache invalidation.' This is a spec-only metadata change — no code changes, no
+      tests needed. The new sentence is inserted after the first sentence about the HTTP API and
+      WebSocket, making the file watcher's dual responsibility explicit.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T20:17:42.789Z
