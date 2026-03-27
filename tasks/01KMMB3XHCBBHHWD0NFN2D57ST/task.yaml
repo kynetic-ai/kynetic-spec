@@ -18,7 +18,7 @@ description: |
 spec_ref: "@daemon-server"
 plan_ref: "@plan-daemon-optimistic-data-layer"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-entity-cache-impl"
@@ -28,6 +28,14 @@ tags:
   - specs
   - maintenance
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-27T20:17:52.136Z
+  commit: 098d671a198ed582216a99f69c059f0d562fa735
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
 session_id: 01KMRF25ZJESA4DMH14YE236FM
 history:
   - author: "@claude"
@@ -50,7 +58,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-03-27T20:17:00.636Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-03-27T20:17:52.136Z
+          commit: 098d671a198ed582216a99f69c059f0d562fa735
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous: null
+      submitted_at:
+        new: 2026-03-27T20:17:52.155Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-03-27T20:17:52.156Z
 created_at: 2026-03-26T05:50:44.780Z
 started_at: 2026-03-27T20:17:00.635Z
+submitted_at: 2026-03-27T20:17:52.155Z
 todos: []
 automation: eligible
