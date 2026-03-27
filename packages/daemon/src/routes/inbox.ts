@@ -46,6 +46,15 @@ export function createInboxRoutes(options: InboxRouteOptions) {
         const cache = getEntityCache?.(projectContext.path);
         const inboxDomainState = cache?.getDomainState("inbox");
 
+        // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
+        if (cache && inboxDomainState === "loading") {
+          return {
+            items: [],
+            total: 0,
+            _cache_status: "loading" as const,
+          };
+        }
+
         let items;
         if (cache && inboxDomainState === "ready") {
           items = cache.getInboxIndex();

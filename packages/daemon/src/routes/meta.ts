@@ -64,6 +64,12 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
         // AC: @daemon-entity-cache ac-serve-from-memory — try cached MetaContext first
         const cache = getEntityCache?.(projectContext.path);
         const metaDomainState = cache?.getDomainState("meta");
+
+        // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
+        if (cache && metaDomainState === "loading") {
+          return { items: [], total: 0, _cache_status: "loading" as const };
+        }
+
         let meta;
         if (cache && metaDomainState === "ready") {
           meta = cache.getMetaDetail();
@@ -164,6 +170,12 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
         // AC: @daemon-entity-cache ac-serve-from-memory — try cached MetaContext first
         const cache = getEntityCache?.(projectContext.path);
         const metaDomainState = cache?.getDomainState("meta");
+
+        // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
+        if (cache && metaDomainState === "loading") {
+          return { items: [], total: 0, _cache_status: "loading" as const };
+        }
+
         let meta;
         if (cache && metaDomainState === "ready") {
           meta = cache.getMetaDetail();
@@ -191,6 +203,12 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
           // AC: @daemon-entity-cache ac-serve-from-memory — try cached MetaContext first
           const cache = getEntityCache?.(projectContext.path);
           const metaDomainState = cache?.getDomainState("meta");
+
+          // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
+          if (cache && metaDomainState === "loading") {
+            return { items: [], total: 0, _cache_status: "loading" as const };
+          }
+
           let meta;
           if (cache && metaDomainState === "ready") {
             meta = cache.getMetaDetail();
@@ -295,6 +313,12 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
         // AC: @daemon-entity-cache ac-serve-from-memory — try cached MetaContext first
         const cache = getEntityCache?.(projectContext.path);
         const metaDomainState = cache?.getDomainState("meta");
+
+        // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
+        if (cache && metaDomainState === "loading") {
+          return { items: [], total: 0, _cache_status: "loading" as const };
+        }
+
         let meta;
         if (cache && metaDomainState === "ready") {
           meta = cache.getMetaDetail();

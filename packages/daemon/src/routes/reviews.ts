@@ -146,6 +146,13 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
         async ({ query, projectContext }) => {
           // AC: @daemon-entity-cache ac-serve-from-memory — defer initContext for cache hits
           const cache = getEntityCache?.(projectContext.path);
+
+          // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
+          const reviewsDomainState = cache?.getDomainState("reviews");
+          if (cache && reviewsDomainState === "loading") {
+            return { items: [], total: 0, offset: 0, limit: 0, _cache_status: "loading" as const };
+          }
+
           let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
           const getCtx = async () => {
             if (!_ctx) _ctx = await initContext(projectContext.path);
@@ -153,7 +160,6 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
           };
 
           // Try cache for reviews
-          const reviewsDomainState = cache?.getDomainState("reviews");
           let reviews;
           if (cache && reviewsDomainState === "ready") {
             reviews = cache.getReviewsIndex();

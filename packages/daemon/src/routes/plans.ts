@@ -70,6 +70,13 @@ export function createPlansRoutes(_options: PlansRouteOptions = {}) {
         async ({ query, projectContext }) => {
           // AC: @daemon-entity-cache ac-serve-from-memory — defer initContext for cache hits
           const cache = getEntityCache?.(projectContext.path);
+
+          // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
+          const plansDomainState = cache?.getDomainState("plans");
+          if (cache && plansDomainState === "loading") {
+            return { items: [], total: 0, _cache_status: "loading" as const };
+          }
+
           let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
           const getCtx = async () => {
             if (!_ctx) _ctx = await initContext(projectContext.path);
@@ -77,7 +84,6 @@ export function createPlansRoutes(_options: PlansRouteOptions = {}) {
           };
 
           // Try cache for plans
-          const plansDomainState = cache?.getDomainState("plans");
           let plans;
           if (cache && plansDomainState === "ready") {
             plans = cache.getPlansIndex();

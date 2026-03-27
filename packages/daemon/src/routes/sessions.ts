@@ -287,6 +287,20 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
       .get(
         "/",
         async ({ query, error: errorResponse, projectContext }) => {
+          // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
+          const warmingCache = getEntityCache?.(projectContext.path);
+          const sessionsDomainState = warmingCache?.getDomainState("sessions");
+          if (warmingCache && sessionsDomainState === "loading") {
+            return {
+              items: [],
+              total: 0,
+              unfiltered_total: 0,
+              offset: 0,
+              limit: 0,
+              _cache_status: "loading" as const,
+            };
+          }
+
           // AC: @daemon-entity-cache ac-serve-from-memory — initContext deferred;
           // filterSessionSummaries uses cache when sessions domain is ready
           const ctx = await initContext(projectContext.path);

@@ -424,7 +424,9 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
             const cachedDetail = cache.getItemDetail(resolvedUlid);
             if (cachedDetail) {
               // Serve from detail cache
-              const parentMap = computeParentMap([cachedDetail]);
+              // Use the full item index for parent map so nested items resolve correctly
+              const parentMapSource = (itemsDomainReady ? cache!.getItemIndex() : null) ?? [cachedDetail];
+              const parentMap = computeParentMap(parentMapSource);
               let acceptanceCriteriaWithCoverage = cachedDetail.acceptance_criteria;
               if (cachedDetail.acceptance_criteria && cachedDetail.acceptance_criteria.length > 0) {
                 try {

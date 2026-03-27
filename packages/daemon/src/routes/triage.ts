@@ -70,6 +70,11 @@ export function createTriageRoutes(options: TriageRouteOptions) {
           const cache = getEntityCache?.(projectContext.path);
           const triageDomainState = cache?.getDomainState("triage");
 
+          // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
+          if (cache && triageDomainState === "loading") {
+            return { items: [], total: 0, offset: 0, limit: 0, _cache_status: "loading" as const };
+          }
+
           let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
           const getCtx = async () => {
             if (!_ctx) _ctx = await initContext(projectContext.path);
