@@ -763,14 +763,14 @@ features:
           - shadow-lazy-read-sync
         title: Lazy Shadow Sync on Reads
         type: requirement
-        description: |
-          Replace the blocking shadowPull() on every CLI/daemon read with a
-          lightweight drift check. Only pull when the local shadow branch is
-          behind or diverged from remote. Uses FETCH_HEAD mtime to avoid
-          redundant git fetch calls, and compares ahead/behind counts when
-          fetch data is fresh. FETCH_HEAD path is resolved via
-          git rev-parse --git-path FETCH_HEAD from the same cwd used for
-          fetch, ensuring correctness in worktree setups.
+        description: Replace the blocking shadowPull() on every CLI direct-mode read with a lightweight
+          drift check. Only pull when the local shadow branch is behind or diverged from remote.
+          Uses FETCH_HEAD mtime to avoid redundant git fetch calls, and compares ahead/behind counts
+          when fetch data is fresh. FETCH_HEAD path is resolved via git rev-parse --git-path
+          FETCH_HEAD from the same cwd used for fetch, ensuring correctness in worktree setups. When
+          reads are served by the daemon, the daemon's entity cache and background sync scheduler
+          handle freshness instead of per-request drift-check (see @daemon-entity-cache and
+          @daemon-read-path).
         status:
           maturity: draft
           implementation: in_progress
@@ -948,6 +948,13 @@ features:
               sync entirely, preventing double-pull.
             when: |
               The second (or subsequent) initContext call runs
+          - given: A read request is served by the daemon API (not a CLI direct-mode invocation)
+            id: ac-daemon-bypass
+            then: The per-request drift-check defined by this spec is not performed. The daemon relies on its
+              entity cache (populated and invalidated by the file watcher) and the background sync
+              scheduler for data freshness. The drift-check contract applies only to CLI direct-mode
+              reads where initContext() runs in-process.
+            when: The daemon handles the request
         tags: []
         created: 2026-03-09T21:25:11.327Z
         notes: []
