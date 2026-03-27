@@ -116,19 +116,15 @@ async function executeCommand(
   const parts = payload.command.trim().split(/\s+/);
   const cmdMeta = findCommand(tree, parts);
 
-  if (!cmdMeta) {
-    return {
-      stdout: "",
-      stderr: `Unknown command: "${payload.command}"`,
-      exitCode: 1,
-    };
-  }
-
-  // Build argv from payload
-  const argv = buildCommandArgv(
-    { command: payload.command, args: payload.args, id: payload.id },
-    cmdMeta,
-  );
+  // Build argv from payload. For unknown commands, pass the raw command words
+  // so Commander's "command:*" handler fires and produces the same stderr
+  // output as direct CLI execution (ac-response-parity).
+  const argv = cmdMeta
+    ? buildCommandArgv(
+        { command: payload.command, args: payload.args, id: payload.id },
+        cmdMeta,
+      )
+    : parts;
 
   // Reset Commander state and ALL output mode globals between dispatches.
   // setOutputFormat("text") resets json, yaml, or any other format — unlike

@@ -259,6 +259,36 @@ describe("Daemon Command API", () => {
     expect(body.stderr).toBeTruthy();
   });
 
+  // AC: @daemon-command-api ac-response-parity
+  it("produces matching stderr for unknown commands vs direct CLI", async () => {
+    // Run the same unknown command via direct CLI (subprocess) as ground truth
+    const cliResult = kspec("nonexistent-command", tempDir, { expectFail: true });
+
+    // Run the same unknown command via the daemon API
+    const response = await makeRequest("/api/command", {
+      method: "POST",
+      body: JSON.stringify({
+        command: "nonexistent-command",
+        args: {},
+      }),
+    });
+
+    const body = await response.json();
+    expect(body.exitCode).not.toBe(0);
+
+    // CLI stderr contains the Commander "command:*" handler output.
+    // The API must produce the same error text — not a custom message.
+    // Strip ANSI codes for comparison since chalk may differ between contexts.
+    const stripAnsi = (s: string) => s.replace(/\x1b\[[0-9;]*m/g, "");
+    const cliStderr = stripAnsi(cliResult.stderr);
+    const apiStderr = stripAnsi(body.stderr);
+
+    expect(apiStderr).toContain("error: unknown command 'nonexistent-command'");
+    expect(apiStderr).toContain(cliStderr.includes("Did you mean")
+      ? "Did you mean"
+      : "Run 'kspec help' to see available commands");
+  });
+
   // ───────────────────────────────────────────────────────────────────
   // AC: @daemon-command-api ac-response-parity
   // ───────────────────────────────────────────────────────────────────
