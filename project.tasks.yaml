@@ -22699,7 +22699,7 @@
   type: task
   spec_ref: "@multi-directory-daemon"
   plan_ref: "@plan-daemon-optimistic-data-layer"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-cli-proxy-routing"
@@ -22708,7 +22708,7 @@
     - specs
     - maintenance
   review_ref: "@01KMRPRA39VD88X3B6B2R8AJG6"
-  notes_count: 1
+  notes_count: 2
   todos_count: 0
   created_at: 2026-03-26T05:50:45.363Z
   started_at: 2026-03-27T22:28:43.346Z
