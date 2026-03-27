@@ -62458,6 +62458,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-27T07:51:10.753Z
+      - _ulid: 01KMQ4M11RYTD9EV92XDF3XKM7
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMQ4M0KG0GEBRK15WRG3V3J4
+        timestamp: 2026-03-27T07:54:55.928Z
     examined_commit: a546eb8de8a26b46bfbb437134114d8ed351eb62
     external_links: []
     lifecycle_state: open
@@ -62467,8 +62474,28 @@ reviews:
       content_hash: ""
       ref: "@01KMMB3T2K3T6A1CJR884EPKJF"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMQ4M0KG0GEBRK15WRG3V3J4
+        anchor:
+          type: code
+          commit: a546eb8de8a26b46bfbb437134114d8ed351eb62
+          line_end: 774
+          line_start: 684
+          path: src/daemon/entity-cache.ts
+          side: head
+        entries:
+          - _ulid: 01KMQ4M0KGT5J3HFMX1E8SMRRG
+            author: "@claude"
+            body: "dispose() does not actually cancel an in-flight domain load.  only guards the final state
+              transition with , but  still writes  /  after  has already cleared the stores. I
+              confirmed this with a runtime repro against : patch  to resolve after 50ms, call ,
+              call  after 10ms, await the load, and  is non-null even though  is true and the domain
+              state is . That violates @daemon-entity-cache ac-unregister-cleanup: unregister is
+              supposed to release cached data and cancel in-flight reloads, but the disposed cache
+              can be repopulated by work that was already running."
+            created_at: 2026-03-27T07:54:55.473Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T07:50:42.985Z
-    updated_at: 2026-03-27T07:51:10.288Z
+    updated_at: 2026-03-27T07:54:55.473Z
     notes: []
