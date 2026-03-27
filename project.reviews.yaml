@@ -60820,6 +60820,18 @@ reviews:
         runner: kspec
         created_at: 2026-03-27T05:22:00.949Z
         completed_at: 2026-03-27T05:22:00.949Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Ran kspec validate. It exited 6 because of repository-wide pre-existing warnings (orphaned
+          specs, broad AC coverage gaps, invalid annotation fixture cases), but no task-local schema
+          or reference error was introduced by this snapshot.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-27T05:24:09.252Z
+        completed_at: 2026-03-27T05:24:09.252Z
     events:
       - _ulid: 01KMPVBT3DAZ94A36N43FJ1576
         actor: "@claude"
@@ -60952,6 +60964,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-27T05:22:45.309Z
+      - _ulid: 01KMPVZYZZM2BM4TQJHRXJR6RY
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-27T05:24:09.855Z
     examined_commit: 8dfaea2199385d9aa733f052db868d92c22580e0
     external_links: []
     lifecycle_state: closed
@@ -61179,5 +61198,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T05:22:45.308Z
     created_at: 2026-03-27T05:13:09.485Z
-    updated_at: 2026-03-27T05:22:45.308Z
+    updated_at: 2026-03-27T05:24:09.252Z
     notes: []
