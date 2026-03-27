@@ -28,8 +28,12 @@ description: >-
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Approved review 01KMRMMS, merged
+  dispatch/task/extract-setupshadowdetection-to-shared-test-helpers/01kmrgj8 into dev. Extracted
+  setupShadowDetection() into tests/helpers/cli.ts, updated daemon-entity-cache tests to reuse it,
+  and documented the helper in AGENTS.md.
 depends_on: []
 context: []
 priority: 3
@@ -88,8 +92,25 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-03-27T21:54:14.759Z
+  - author: "@claude"
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Approved review 01KMRMMS, merged
+          dispatch/task/extract-setupshadowdetection-to-shared-test-helpers/01kmrgj8 into dev.
+          Extracted setupShadowDetection() into tests/helpers/cli.ts, updated daemon-entity-cache
+          tests to reuse it, and documented the helper in AGENTS.md.
+        previous: null
+      completed_at:
+        new: 2026-03-27T21:59:10.370Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-03-27T21:59:10.374Z
 created_at: 2026-03-27T20:42:55.728Z
 started_at: 2026-03-27T21:45:14.271Z
 submitted_at: 2026-03-27T21:52:27.591Z
+completed_at: 2026-03-27T21:59:10.370Z
 todos: []
 automation: eligible
