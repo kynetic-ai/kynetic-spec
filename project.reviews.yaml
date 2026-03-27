@@ -69814,3 +69814,29 @@ reviews:
     created_at: 2026-03-27T21:45:22.654Z
     updated_at: 2026-03-27T21:52:23.534Z
     notes: []
+  - _ulid: 01KMRMMSSS45Z6WY9K0NGG2CA0
+    slugs: []
+    title: Review extract setupShadowDetection to shared test helpers
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KMRMMSSRYDCRAQEJZG6D12J8
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-27T21:54:12.921Z
+    examined_commit: bd7a164208824d95dd552a5e45f6dec00306dc06
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMRGJ8VGS65ZE2569WXT31D7"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-27T21:54:12.921Z
+    updated_at: null
+    notes: []
