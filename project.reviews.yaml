@@ -63178,6 +63178,12 @@ reviews:
         payload:
           thread_ulid: 01KMQ80VHN0D244R9XBVPVJQK7
         timestamp: 2026-03-27T09:10:37.876Z
+      - _ulid: 01KMQ8YVN9X1FA18A9PRJGQ1D9
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMQ80VHN0D244R9XBVPVJQK7
+        timestamp: 2026-03-27T09:10:45.161Z
     examined_commit: 4893ca5183e4b193cc808f3f61fe778ada10e017
     external_links: []
     lifecycle_state: closed
@@ -63217,6 +63223,8 @@ reviews:
               source='sessions' correctly maps non-ULID paths."
             created_at: 2026-03-27T09:10:37.390Z
         kind: blocker
+        resolved_at: 2026-03-27T09:10:44.688Z
+        resolved_by: "@claude"
       - _ulid: 01KMQ80YA6W64FFD5EY8JYP2E6
         anchor:
           type: code
@@ -63264,5 +63272,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T08:54:41.799Z
     created_at: 2026-03-27T08:50:11.971Z
-    updated_at: 2026-03-27T09:10:37.390Z
+    updated_at: 2026-03-27T09:10:44.688Z
     notes: []
