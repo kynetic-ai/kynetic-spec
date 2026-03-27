@@ -244,3 +244,19 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T00:57:22.380Z
+  - _ulid: 01KMPDBM4CBYV7TEHH848PMD32
+    content: >-
+      Fix cycle 4: addressed 1 unique blocker (2 threads, 1 duplicate).
+
+
+      Blocker: fileToDomain() mapped kynetic.yaml only to meta domain, leaving items stale after
+      manifest changes. Fixed by changing fileToDomain() to return CacheDomain[] instead of
+      CacheDomain|null. kynetic.yaml now returns ["meta", "items"]. handleFileChange iterates all
+      returned domains via Promise.all. Added behavioral test verifying both domains are reloaded on
+      manifest change.
+
+
+      Re-verified all 15 ACs against implementation. Tests: 6899 passed, 5 skipped, 0 failures.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T01:08:23.308Z
