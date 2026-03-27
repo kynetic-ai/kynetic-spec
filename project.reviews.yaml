@@ -61847,6 +61847,13 @@ reviews:
           status: pass
           name: dispatch bootstrap test (isolated)
         timestamp: 2026-03-27T06:53:44.967Z
+      - _ulid: 01KMQ141ZQVD5GYE4C117SP48W
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMQ141D0WE39G8DJAJ1VJJJ8
+        timestamp: 2026-03-27T06:53:46.871Z
     examined_commit: 18d250b7b7c6d5fc7cf96a9ca0ec8afbeb671e1c
     external_links: []
     lifecycle_state: open
@@ -61876,7 +61883,25 @@ reviews:
               from  when ready, with the same loading fallback as the list route."
             created_at: 2026-03-27T06:53:42.532Z
         kind: blocker
+      - _ulid: 01KMQ141D0WE39G8DJAJ1VJJJ8
+        anchor:
+          type: code
+          commit: 18d250b7b7c6d5fc7cf96a9ca0ec8afbeb671e1c
+          line_end: 329
+          line_start: 297
+          path: packages/daemon/src/routes/triage.ts
+          side: head
+        entries:
+          - _ulid: 01KMQ141D0NADYS717G17CMK3J
+            author: "@claude"
+            body: " is still missing the warmup guard that the other cache-backed detail routes now have. When
+              the triage domain is in , this code falls straight through to  and  instead of
+              returning , so requests during progressive warmup violate  for the triage domain. Add
+              the same early  return used on the list/detail routes for the other domains before any
+              disk fallback runs."
+            created_at: 2026-03-27T06:53:46.272Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T06:46:19.059Z
-    updated_at: 2026-03-27T06:53:44.384Z
+    updated_at: 2026-03-27T06:53:46.272Z
     notes: []
