@@ -58012,6 +58012,13 @@ reviews:
           status: pass
           name: review-evidence
         timestamp: 2026-03-27T01:57:14.566Z
+      - _ulid: 01KMPG53ZDX2S599JQH6YJZ3BB
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMPG53HTC4XX7D4HC5S5V2ZP
+        timestamp: 2026-03-27T01:57:15.885Z
     examined_commit: 8813ba365e630450d68e9880bf09f935ba60c6f8
     external_links: []
     lifecycle_state: open
@@ -58021,8 +58028,26 @@ reviews:
       content_hash: ""
       ref: "@01KMMB3T2K3T6A1CJR884EPKJF"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMPG53HTC4XX7D4HC5S5V2ZP
+        anchor:
+          type: code
+          commit: 8813ba365e630450d68e9880bf09f935ba60c6f8
+          line_end: 203
+          line_start: 159
+          path: src/daemon/entity-cache.ts
+          side: head
+        entries:
+          - _ulid: 01KMPG53HTF62N0934C9M1FHF7
+            author: "@claude"
+            body: Session watcher invalidation never reaches the sessions domain.  forwards  changes into ,
+              but  only recognizes  YAML paths, so session paths like  and  map to null (confirmed
+              with {"metadata":null,"events":null} => ). That leaves the unified session index stale
+              after session writes, which violates watcher-driven invalidation for the sessions
+              domain.
+            created_at: 2026-03-27T01:57:15.450Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T01:53:27.032Z
-    updated_at: 2026-03-27T01:57:14.149Z
+    updated_at: 2026-03-27T01:57:15.450Z
     notes: []
