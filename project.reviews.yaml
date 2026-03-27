@@ -60832,6 +60832,19 @@ reviews:
         runner: kspec
         created_at: 2026-03-27T05:24:09.252Z
         completed_at: 2026-03-27T05:24:09.252Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Started npm test from this worktree. One direct run terminated with exit 143 while the
+          test harness was still active; a subsequent harness invocation completed but only surfaced
+          the harness's trivial summary-check cache artifacts, so I do not have a trustworthy
+          full-suite pass/fail result to use as a gate for this cycle.
+        name: npm test
+        required: false
+        runner: npm
+        created_at: 2026-03-27T05:24:11.172Z
+        completed_at: 2026-03-27T05:24:11.172Z
     events:
       - _ulid: 01KMPVBT3DAZ94A36N43FJ1576
         actor: "@claude"
@@ -60971,6 +60984,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-27T05:24:09.855Z
+      - _ulid: 01KMPW00VF82Z0V1AF4WKDN8ZP
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: skipped
+          name: npm test
+        timestamp: 2026-03-27T05:24:11.760Z
     examined_commit: 8dfaea2199385d9aa733f052db868d92c22580e0
     external_links: []
     lifecycle_state: closed
@@ -61198,5 +61218,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T05:22:45.308Z
     created_at: 2026-03-27T05:13:09.485Z
-    updated_at: 2026-03-27T05:24:09.252Z
+    updated_at: 2026-03-27T05:24:11.172Z
     notes: []
