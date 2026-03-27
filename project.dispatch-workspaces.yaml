@@ -24181,12 +24181,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-27T08:00:32.261Z
+      updated_at: 2026-03-27T08:00:35.387Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-27T08:00:32.261Z
+      updated_at: 2026-03-27T08:00:35.387Z
     integration:
       status: pending
       detail: null
@@ -24194,7 +24194,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: dc022927ea9d7f9c1bdaa7d63d6a4ec967491911
-      updated_at: 2026-03-27T08:00:32.261Z
+      updated_at: 2026-03-27T08:00:35.387Z
     lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMMB3T2K3T6A1CJR884EPKJF"
@@ -24202,9 +24202,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-27T07:58:30.705Z
-      last_reconciled_at: 2026-03-27T08:00:32.261Z
+      last_reconciled_at: 2026-03-27T08:00:35.387Z
       created_at: 2026-03-26T17:30:25.720Z
-      updated_at: 2026-03-27T08:00:32.261Z
+      updated_at: 2026-03-27T08:00:35.387Z
     workspace_id: dispatch-workspace-01KMMB3T2K3T6A1CJR884EPKJF
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -24213,7 +24213,7 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-entity-cache-impl/01kmmb3t
         head: a546eb8de8a26b46bfbb437134114d8ed351eb62
-        last_seen_at: 2026-03-27T07:58:29.277Z
+        last_seen_at: 2026-03-27T08:00:35.387Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-entity-cache-impl-01kmmb3t
   - active_role: null
     base_branch_point: 10f03ef092b8d60326feb37c02c50dd45f5ed65a
