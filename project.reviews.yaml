@@ -59460,6 +59460,13 @@ reviews:
           kind: question
           thread_ulid: 01KMPRBQ1C5PX9S1J2DRZ5H0Z4
         timestamp: 2026-03-27T04:20:41.115Z
+      - _ulid: 01KMPRC4TMJCG6YTNSEXQS8W9A
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMPRC4BZMV3XMNG835DHWBMF
+        timestamp: 2026-03-27T04:20:54.740Z
     examined_commit: 0b9e71753e703adfded4e89a2263fd1da4310b39
     external_links: []
     lifecycle_state: open
@@ -59857,7 +59864,29 @@ reviews:
               write-through, test quality/coverage, and collateral test-runner changes.
             created_at: 2026-03-27T04:20:40.620Z
         kind: question
+      - _ulid: 01KMPRC4BZMV3XMNG835DHWBMF
+        anchor:
+          type: code
+          commit: 0b9e71753e703adfded4e89a2263fd1da4310b39
+          line_end: 342
+          line_start: 304
+          path: packages/daemon/src/routes/sessions.ts
+          side: head
+        entries:
+          - _ulid: 01KMPRC4C0QEVWGPANZC6PPS16
+            author: "@claude"
+            body: The sessions list route still bypasses the cache contract on hot reads. Even when the sessions
+              domain is ready, it immediately calls initContext() and then performs extra
+              disk-backed work (resolveTaskDataManager(ctx).loadAllTasks(ctx), loadAllItems(ctx),
+              countLegacySessions(ctx.specDir)) before returning the response. Because initContext()
+              itself does config/shadow detection and possible sync checks
+              (src/parser/yaml.ts:512-610), a cached /api/sessions summary request is not actually
+              served from memory. That violates ac-serve-from-memory for the sessions domain and
+              leaves one of the advertised cache-wired routes still paying the old per-request I/O
+              cost.
+            created_at: 2026-03-27T04:20:54.272Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T04:15:51.416Z
-    updated_at: 2026-03-27T04:20:40.620Z
+    updated_at: 2026-03-27T04:20:54.272Z
     notes: []
