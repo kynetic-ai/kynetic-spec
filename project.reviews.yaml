@@ -58614,6 +58614,27 @@ reviews:
         runner: kspec
         created_at: 2026-03-27T02:55:06.729Z
         completed_at: 2026-03-27T02:55:06.729Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/daemon/entity-cache.ts; packages/daemon/src/server.ts;
+          packages/daemon/src/project-context.ts; packages/daemon/src/routes/items.ts;
+          packages/daemon/src/routes/plans.ts; packages/daemon/src/routes/reviews.ts;
+          packages/daemon/src/routes/triage.ts; packages/daemon/src/routes/sessions.ts;
+          packages/daemon/src/routes/refs.ts; tests/daemon-entity-cache.test.ts. Commands run: git
+          diff --stat/name-only; kspec task get; kspec item get; kspec review for-task; kspec
+          validate; npm test; rg AC annotations; tsx probes against ProjectEntityCache. Claims
+          verified: full suite passes on snapshot; cache index for plans/reviews/triage still
+          contains detail payloads; detail routes read from index instead of detail tier. Categories
+          searched: correctness (found blocker), edge cases (checked invalidation/warming paths),
+          error handling (checked degraded fallback), test quality (AC annotations present),
+          integration (server/project-context wiring)."
+        name: review-evidence
+        required: false
+        runner: manual
+        created_at: 2026-03-27T02:55:09.499Z
+        completed_at: 2026-03-27T02:55:09.499Z
     events:
       - _ulid: 01KMPK6CKDNT0DDBJ6AR5RWG2B
         actor: "@claude"
@@ -58649,6 +58670,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMPKF2TYJ30Y4ZG4XJMNF9VJ
         timestamp: 2026-03-27T02:55:08.537Z
+      - _ulid: 01KMPKF4J90VNZQPDS9CGWHS6S
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-03-27T02:55:09.897Z
     examined_commit: 4c9a805d7cc6c6b0ae612ba38e475faefde387f2
     external_links: []
     lifecycle_state: open
@@ -58682,5 +58710,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-27T02:50:23.213Z
-    updated_at: 2026-03-27T02:55:08.127Z
+    updated_at: 2026-03-27T02:55:09.499Z
     notes: []
