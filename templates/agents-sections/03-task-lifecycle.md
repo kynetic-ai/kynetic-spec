@@ -27,8 +27,8 @@ See `kspec help task` for transition commands and options.
 
 ```json
 [
-  {"command": "task reset", "args": {"ref": "@task-slug"}},
-  {"command": "task cancel", "args": {"ref": "@task-slug", "reason": "..."}}
+  { "command": "task reset", "args": { "ref": "@task-slug" } },
+  { "command": "task cancel", "args": { "ref": "@task-slug", "reason": "..." } }
 ]
 ```
 
