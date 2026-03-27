@@ -207,3 +207,35 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T00:29:14.964Z
+  - _ulid: 01KMPC6JWFGXX0MSHHZY0E4513
+    content: >-
+      Fix cycle 3: addressed all 3 review blockers (6 threads, 3 unique issues + 3 duplicates).
+
+
+      Blocker 1 (session routes bypass unified cache): Session list route's filterSessionSummaries
+      now accepts a getEntityCache accessor. When the sessions domain is ready in
+      ProjectEntityCache, it serves from the cached session index; otherwise falls back to
+      standalone SessionSummaryCache. Session detail route checks entity cache detail tier before
+      falling back to disk. session-related.ts helpers (getRelatedSessionsForTask/Item) also use the
+      unified cache. server.ts passes getEntityCache to createSessionRoutes.
+
+
+      Blocker 2 (duplicate mockMetadata): Removed duplicate const mockMetadata declaration in
+      agent-dispatch-engine.test.ts. The duplicate block (workspace mocking) was redundant — moved
+      getDispatchWorkspaceHealth mock before the engine constructor and deleted the rest.
+
+
+      Blocker 3 (item detail bypasses cache detail tier): Item detail endpoint now checks
+      cache.getItemDetail(ulid) first when items domain is ready. On cache miss, loads from disk,
+      stores in detail cache via setItemDetail, and serves. Subsequent requests are served from the
+      detail cache until domain invalidation.
+
+
+      RouteEntityCache interface extended with getItemDetail, setItemDetail, getSessionIndex,
+      getSessionDetail, setSessionDetail.
+
+
+      Re-verified all 15 ACs against implementation. Tests: 6898 passed, 5 skipped, 0 failures.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T00:48:09.615Z
