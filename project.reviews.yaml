@@ -57675,7 +57675,23 @@ reviews:
     slugs: []
     title: Review task-entity-cache-impl (cycle 6)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/daemon/entity-cache.ts; packages/daemon/src/server.ts;
+          packages/daemon/src/project-context.ts;
+          packages/daemon/src/routes/{tasks,items,refs,sessions,session-related,inbox,meta,plans,tr\
+          iage,reviews}. Commands run: git diff against dev base, kspec task get, kspec item get,
+          kspec review get/for-task, kspec validate, rg AC annotations, rg cache accessor usage, npm
+          test. Claims verified: full suite passes; prior blockers in tasks/items/session wiring are
+          resolved; searched correctness, edge cases, error handling, test quality, and route
+          integration completeness."
+        name: review-evidence
+        required: false
+        created_at: 2026-03-27T01:40:04.151Z
+        completed_at: 2026-03-27T01:40:04.151Z
     events:
       - _ulid: 01KMPEXFR7XV8WBNRD1JGQ3PM5
         actor: "@claude"
@@ -57697,6 +57713,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMPF5K2YYCF0C50EM4SP247J
         timestamp: 2026-03-27T01:40:03.211Z
+      - _ulid: 01KMPF5MTV7AR7H7JKQYD27MFR
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-03-27T01:40:04.571Z
     examined_commit: 12ac2a14ed2cf4a3dfcbc2c8f464c4ca60cfd2d0
     external_links: []
     lifecycle_state: open
@@ -57727,5 +57750,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-27T01:35:37.224Z
-    updated_at: 2026-03-27T01:40:02.783Z
+    updated_at: 2026-03-27T01:40:04.151Z
     notes: []
