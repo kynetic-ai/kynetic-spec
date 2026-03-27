@@ -16326,9 +16326,23 @@ runs:
     completed_at: 2026-03-27T05:12:50.150Z
   - _ulid: 01KMPXAW8PW7Q97PESSJNNW46C
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-03-27T05:47:36.086Z
+        completed_at: 2026-03-27T05:48:17.012Z
+        notes: "Session context: Fix cycle 16 for entity cache task. Single commit addressing 7 blockers
+          from codex reviewer. Key work: (1) watcher now handles add/delete events not just change,
+          (2) fileToDomain catch-all for arbitrary yaml includes, (3) warmup loading responses on
+          task/item/session detail routes, (4) session routes avoid initContext on cache-hit paths.
+          What worked: reading all review threads upfront and fixing everything in one pass. All 70
+          entity-cache tests pass."
+      - status: completed
+        step_index: 1
+        started_at: 2026-03-27T05:48:17.012Z
+        completed_at: 2026-03-27T05:48:17.012Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-27T05:47:36.086Z
