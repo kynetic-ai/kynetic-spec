@@ -16592,7 +16592,7 @@ runs:
     completed_at: 2026-03-27T15:53:44.072Z
   - _ulid: 01KMR2190ZB759QJX4DD6S178A
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -16608,7 +16608,20 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-27T16:29:15.990Z
-        completed_at: 2026-03-27T16:29:15.990Z
+        completed_at: 2026-03-27T16:29:37.612Z
+        notes: "High-confidence observations: (1) FRICTION: The ItemSummary type strips acceptance_criteria
+          to just acceptance_criteria_count, but routes that aggregate AC data need the count. This
+          required a runtime type check (typeof asAny.acceptance_criteria_count === 'number') with
+          fallback. This dual-path pattern is fragile — if more routes need AC data from cache, the
+          pattern will proliferate. Already tracked implicitly in the entity-cache task scope. (2)
+          SUCCESS: The fix cycle was efficient because the review had specific, actionable blockers
+          with file:line references. All three could be addressed in a single pass without
+          ambiguity. No new items to capture — friction is minor and already implicit in the cache
+          design."
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-27T16:29:37.612Z
+        completed_at: 2026-03-27T16:29:37.612Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-27T16:28:58.783Z
