@@ -7,3 +7,12 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T20:05:46.666Z
+  - _ulid: 01KMREFZS3D1Y2XA52X70N0SQY
+    content: "Completed: Added relates_to relationship from @session-summary-cache to
+      @daemon-entity-cache. Verified via kspec item get — relationship is visible. This documents
+      that the standalone SessionSummaryCache is absorbed into the unified entity cache
+      (daemon-entity-cache). No code changes required — this is purely spec relationship
+      maintenance."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T20:06:43.747Z
