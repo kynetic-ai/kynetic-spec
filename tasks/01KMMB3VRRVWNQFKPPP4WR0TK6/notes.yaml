@@ -53,3 +53,23 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T21:51:57.797Z
+  - _ulid: 01KMRNC0JKA43JM95TJTYBG26J
+    content: >-
+      Fix cycle 1: addressed all review threads (2 blockers, 1 nit).
+
+
+      Blocker 1 (--daemon flag): Renamed global --require-daemon to --daemon per spec
+      ac-force-proxy. Resolved Commander namespace collision by renaming serve start's -d/--daemon
+      to -d/--detach. Updated all tests, doctor guidance, and skill documentation.
+
+
+      Blocker 2 (registration timeout): Added 5s timeout (REGISTRATION_TIMEOUT_MS with
+      AbortController) to ensureProjectRegistered(). Stalled /api/projects no longer hangs the CLI —
+      registration is non-fatal, so timeout silently proceeds to command routing. Added unit test
+      verifying bounded completion.
+
+
+      All 7030 tests pass. Re-verified all ACs against implementation.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T22:06:53.523Z
