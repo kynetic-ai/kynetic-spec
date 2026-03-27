@@ -65636,6 +65636,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMR4XKMR4NWZDB5DKC5CNFEF
         timestamp: 2026-03-27T17:19:24.813Z
+      - _ulid: 01KMR4XNREK25M2YVZ4GGMVY45
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMR4XN6HPETC8KR3VKS25XQF
+        timestamp: 2026-03-27T17:19:26.478Z
     examined_commit: 44f13a010b11295b83cf65d4fae6d6f8e07a7f01
     external_links: []
     lifecycle_state: open
@@ -65684,7 +65691,29 @@ reviews:
               is missing behavioral coverage for its main guarantee."
             created_at: 2026-03-27T17:19:24.312Z
         kind: blocker
+      - _ulid: 01KMR4XN6HPETC8KR3VKS25XQF
+        entries:
+          - _ulid: 01KMR4XN6HH08003W8J45CGK0F
+            author: "@claude"
+            body: "Evidence log\\nFiles read: kspec-agents.md, packages/daemon/src/routes/aggregation.ts,
+              packages/daemon/src/routes/validation.ts, packages/daemon/src/routes/meta.ts,
+              packages/daemon/src/routes/tasks.ts, packages/daemon/src/routes/refs.ts,
+              packages/daemon/src/routes/reviews.ts, packages/daemon/src/routes/sessions.ts,
+              packages/daemon/src/server.ts, packages/daemon/src/routes/entity-cache-types.ts,
+              src/daemon/entity-cache.ts, src/parser/shadow-sync-scheduler.ts, src/parser/shadow.ts,
+              src/parser/task-data-manager.ts, src/parser/split-backend.ts, src/parser/yaml.ts,
+              tests/daemon-read-path.test.ts, tests/daemon-entity-cache.test.ts.\\nCommands run:
+              kspec task get @01KMMB3TNHWVQT4HHB9XC1DE0X; git diff/stat against dev base; kspec
+              review add/open/get/for-task; kspec item get @daemon-read-path; kspec validate; rg for
+              AC annotations and route loader usage; npm test.\\nClaims verified: full suite passes
+              locally (6966 tests); background sync wiring calls cache.loadAll() after pull;
+              previous search-summary regression is fixed by using detail-tier
+              entities.\\nCategories searched: correctness, scope completeness, error handling,
+              integration, and test quality. Findings: one remaining read-route bypass
+              (/api/meta/shadow) and one missing-proof test block for ac-no-per-request-sync."
+            created_at: 2026-03-27T17:19:25.905Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-27T17:13:06.141Z
-    updated_at: 2026-03-27T17:19:24.312Z
+    updated_at: 2026-03-27T17:19:25.905Z
     notes: []
