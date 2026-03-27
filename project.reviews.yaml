@@ -64523,6 +64523,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-27T16:53:10.263Z
+      - _ulid: 01KMR3DWW510MVSGEQ86DTXRY2
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMR3DWBJNYWZ4GPX1Y4F9HV3
+        timestamp: 2026-03-27T16:53:20.901Z
     examined_commit: 1d8c9354ea2d08481c7c5647f54e7e13b1941074
     external_links: []
     lifecycle_state: open
@@ -65467,7 +65474,28 @@ reviews:
               satisfy ac-response-parity or the broader command-endpoint contract.
             created_at: 2026-03-27T16:53:08.369Z
         kind: blocker
+      - _ulid: 01KMR3DWBJNYWZ4GPX1Y4F9HV3
+        anchor:
+          type: code
+          commit: 1d8c9354ea2d08481c7c5647f54e7e13b1941074
+          line_end: 152
+          line_start: 136
+          path: packages/daemon/src/routes/command.ts
+          side: head
+        entries:
+          - _ulid: 01KMR3DWBJKT0D5H7AJNSN678A
+            author: "@claude"
+            body: The executor only intercepts console.log/error/warn, but several CLI commands write directly
+              to process.stdout/process.stderr. I verified this with `kspec plan export
+              @plan-daemon-optimistic-data-layer`, which prints markdown directly via
+              `process.stdout.write(...)`; the direct CLI succeeds, while the command API request
+              for the same payload returns `400 ENOENT .../undefined` instead of returning that
+              stdout in the JSON body. Because this endpoint is supposed to proxy arbitrary kspec
+              commands with matching stdout/stderr, commands that bypass console currently do not
+              satisfy ac-response-parity or the broader command-endpoint contract.
+            created_at: 2026-03-27T16:53:20.370Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T16:45:47.121Z
-    updated_at: 2026-03-27T16:53:09.797Z
+    updated_at: 2026-03-27T16:53:20.370Z
     notes: []
