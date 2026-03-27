@@ -57758,9 +57758,25 @@ reviews:
           kind: blocker
           thread_ulid: 01KMPF6HYHVB6E208K969M9VD1
         timestamp: 2026-03-27T01:40:34.796Z
+      - _ulid: 01KMPF6S1KQ4YCPV5YB97EQMD0
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-27T01:40:41.652Z
+      - _ulid: 01KMPF6S1MN8KYGAKK3HRQTYQC
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-27T01:40:41.652Z
     examined_commit: 12ac2a14ed2cf4a3dfcbc2c8f464c4ca60cfd2d0
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -57844,7 +57860,14 @@ reviews:
               unimplemented for three cached domains.
             created_at: 2026-03-27T01:40:34.385Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-27T01:40:41.651Z
     created_at: 2026-03-27T01:35:37.224Z
-    updated_at: 2026-03-27T01:40:34.385Z
+    updated_at: 2026-03-27T01:40:41.652Z
     notes: []
