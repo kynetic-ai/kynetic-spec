@@ -24821,12 +24821,20 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-27T20:12:01.027Z
+      updated_at: 2026-03-27T20:14:51.943Z
     health:
-      status: healthy
-      issues: []
-      summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-27T20:12:57.069Z
+      status: invalid
+      issues:
+        - code: missing_canonical_branch
+          message: Canonical branch "dispatch/task/task-narrow-shadow-lazy-read-sync/01kmmb3w" is missing.
+          suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
+        - code: missing_worker_worktree
+          message: Worker worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-narrow-shadow-lazy-read-sync-01kmmb3w"
+            is missing or no longer registered.
+          suggestion: Re-provision the worker worktree from the recorded canonical branch.
+      summary: Workspace registry record is invalid because required git state is missing.
+      updated_at: 2026-03-27T20:14:51.943Z
     integration:
       status: merged
       detail: integration:merged
@@ -24834,17 +24842,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 1001be210b4251982b7386b475a48b0cc68188e4
-      updated_at: 2026-03-27T20:12:01.027Z
-    lifecycle_state: closing
+      updated_at: 2026-03-27T20:14:51.943Z
+    lifecycle_state: stale
     resolved_base_branch: dev
     task_ref: "@01KMMB3WBKZKVE32R64GD0YVH8"
     task_slug: task-narrow-shadow-lazy-read-sync
     timestamps:
       closed_at: null
       last_active_at: 2026-03-27T20:03:40.577Z
-      last_reconciled_at: 2026-03-27T20:12:57.069Z
+      last_reconciled_at: 2026-03-27T20:14:51.943Z
       created_at: 2026-03-27T18:17:57.076Z
-      updated_at: 2026-03-27T20:12:57.069Z
+      updated_at: 2026-03-27T20:14:51.943Z
     workspace_id: dispatch-workspace-01KMMB3WBKZKVE32R64GD0YVH8
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -24956,34 +24964,34 @@ workspaces:
     canonical_branch: dispatch/task/task-link-session-cache/01kmmb3w
     canonical_branch_head: 7d699d4855817e533fc2e5066db464312ea38f57
     cleanup:
-      status: not_scheduled
-      detail: null
-      eligible: false
-      reason: null
-      updated_at: 2026-03-27T20:14:45.694Z
+      status: scheduled
+      detail: integrated-into-base-branch
+      eligible: true
+      reason: integrated-into-base-branch
+      updated_at: 2026-03-27T20:14:52.267Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-27T20:14:47.078Z
+      updated_at: 2026-03-27T20:14:52.267Z
     integration:
-      status: pending
-      detail: null
-      outcome: manual_merge
+      status: merged
+      detail: integration:merged
+      outcome: merged
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 7d699d4855817e533fc2e5066db464312ea38f57
-      updated_at: 2026-03-27T20:14:45.694Z
-    lifecycle_state: ready
+      updated_at: 2026-03-27T20:14:52.267Z
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KMMB3WY8E1JYRGHBHZ4RMH9E"
     task_slug: task-link-session-cache
     timestamps:
       closed_at: null
       last_active_at: 2026-03-27T20:07:42.783Z
-      last_reconciled_at: 2026-03-27T20:14:47.078Z
+      last_reconciled_at: 2026-03-27T20:14:52.267Z
       created_at: 2026-03-27T20:03:40.981Z
-      updated_at: 2026-03-27T20:14:47.078Z
+      updated_at: 2026-03-27T20:14:52.267Z
     workspace_id: dispatch-workspace-01KMMB3WY8E1JYRGHBHZ4RMH9E
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
