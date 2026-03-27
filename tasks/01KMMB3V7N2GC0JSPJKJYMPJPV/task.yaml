@@ -54,7 +54,7 @@ tags:
   - api
   - proxy
 vcs_refs: []
-review_ref: "@01KMR566B6BBE9H2D3H9RVD4A5"
+review_ref: "@01KMR6QW8BZAK57X9FVEAJP406"
 submission_linkage:
   review_url: null
   branch: dev
@@ -276,6 +276,13 @@ history:
         previous: 2026-03-27T17:21:45.769Z
     command: task-submit
     timestamp: 2026-03-27T17:48:37.332Z
+  - author: "@claude"
+    changes:
+      review_ref:
+        new: "@01KMR6QW8BZAK57X9FVEAJP406"
+        previous: "@01KMR566B6BBE9H2D3H9RVD4A5"
+    command: review-link
+    timestamp: 2026-03-27T17:51:15.473Z
 created_at: 2026-03-26T05:50:42.421Z
 started_at: 2026-03-27T17:48:34.115Z
 submitted_at: 2026-03-27T17:48:37.331Z
