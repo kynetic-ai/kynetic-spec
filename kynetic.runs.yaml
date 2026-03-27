@@ -17042,7 +17042,7 @@ runs:
     completed_at: 2026-03-27T20:37:09.660Z
   - _ulid: 01KMRMYN0CFXJ7RR9AAP8M9WKY
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -17057,7 +17057,13 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-27T22:00:11.535Z
-        completed_at: 2026-03-27T22:00:11.535Z
+        completed_at: 2026-03-27T22:00:12.213Z
+        notes: "Step 2 complete: reviewed existing coverage before capture; no duplicate tracking found for
+          the detached-worktree merge friction."
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-27T22:00:12.213Z
+        completed_at: 2026-03-27T22:00:12.213Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-27T21:59:35.692Z
