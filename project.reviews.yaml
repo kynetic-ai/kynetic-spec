@@ -57464,6 +57464,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMPDR35GTAT431Z8PH2B0H2P
         timestamp: 2026-03-27T01:15:12.313Z
+      - _ulid: 01KMPDR4V2BSFYHN8MEXM809AN
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMPDR4E3G773PJW05BRG79G4
+        timestamp: 2026-03-27T01:15:13.634Z
     examined_commit: fa0841f6d5564907021177908da89f6890308163
     external_links: []
     lifecycle_state: open
@@ -57535,7 +57542,28 @@ reviews:
               task/item/session/ref subset.
             created_at: 2026-03-27T01:15:11.920Z
         kind: blocker
+      - _ulid: 01KMPDR4E3G773PJW05BRG79G4
+        anchor:
+          type: code
+          commit: fa0841f6d5564907021177908da89f6890308163
+          line_end: 101
+          line_start: 82
+          path: packages/daemon/src/routes/tasks.ts
+          side: head
+        entries:
+          - _ulid: 01KMPDR4E3RQFRJFFWC3WSM9NS
+            author: "@claude"
+            body: This hot path still initializes parser context before it even consults the cache.
+              `initContext(projectContext.path)` runs unconditionally, and `initContext()` loads
+              project config and performs shadow detection (`src/parser/yaml.ts:512-589`), which
+              means a cache hit still does filesystem/git work before returning cached task
+              summaries. The same eager pattern remains in the cached item/ref paths as well.
+              Because `@daemon-entity-cache` ac-serve-from-memory explicitly requires serving cached
+              summary requests without disk reads or git operations, the optimization is incomplete
+              even on the routes that were wired to the cache.
+            created_at: 2026-03-27T01:15:13.219Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T01:11:01.134Z
-    updated_at: 2026-03-27T01:15:11.920Z
+    updated_at: 2026-03-27T01:15:13.219Z
     notes: []
