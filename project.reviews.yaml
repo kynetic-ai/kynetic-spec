@@ -65795,7 +65795,17 @@ reviews:
     slugs: []
     title: Review task-daemon-command-api (cycle 3)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite passed in this snapshot: 1944/1944 suites, 6964 passing tests, 5 skipped."
+        name: npm test
+        required: true
+        runner: scripts/test.cjs
+        created_at: 2026-03-27T17:29:48.563Z
+        completed_at: 2026-03-27T17:29:48.563Z
     events:
       - _ulid: 01KMR566B6Q271ZHQZ4XX2431V
         actor: "@claude"
@@ -65838,6 +65848,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMR5GKR9QPEHRETFX3QXRVJK
         timestamp: 2026-03-27T17:29:47.490Z
+      - _ulid: 01KMR5GNQJ7CW5SF55641N4SA3
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-27T17:29:49.042Z
     examined_commit: 16d50422a0766c15efda5c39d936c326782c3f50
     external_links: []
     lifecycle_state: open
@@ -66353,5 +66370,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-27T17:24:05.606Z
-    updated_at: 2026-03-27T17:29:47.017Z
+    updated_at: 2026-03-27T17:29:48.563Z
     notes: []
