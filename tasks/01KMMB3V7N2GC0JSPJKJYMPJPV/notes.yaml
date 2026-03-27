@@ -52,3 +52,39 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T15:58:05.913Z
+  - _ulid: 01KMR16QC2MEPR7M1T0Q194CKW
+    content: >-
+      Implementation complete. Created:
+
+      - packages/daemon/src/routes/command.ts — POST /api/command and POST /api/command/batch
+      endpoints
+
+      - tests/daemon-command-api.test.ts — 14 tests covering all 5 spec ACs and relevant trait ACs
+
+
+      Key design decisions:
+
+      1. Reused existing batch infrastructure (OutputCapture, exit interceptor, buildCommandArgv,
+      resetCommandTree) to avoid reimplementing command dispatch. This ensures response parity
+      (ac-response-parity) because the same capture mechanism is used.
+
+      2. withProjectDir() temporarily changes process.cwd() to project path so CLI commands resolve
+      the correct kspec project context.
+
+      3. Mutation detection uses the same introspection mechanism as batch command validation
+      (CommandMeta.mutating) — no separate classification needed.
+
+      4. File lock path is per-project (.kspec/shadow-mutation) matching the dispatch engine
+      pattern.
+
+      5. Write-through covers all mutation-affected domains (tasks, items, meta, inbox, plans,
+      triage, reviews) because commands can have cross-domain side effects.
+
+      6. Split backend registered lazily on first getProgram() call since CLI task commands require
+      it.
+
+
+      All 6959 tests pass (5 pre-existing skips). No regressions.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T16:14:28.738Z
