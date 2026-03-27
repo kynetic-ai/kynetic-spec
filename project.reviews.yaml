@@ -68574,6 +68574,42 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-27T19:48:07.292Z
+      - _ulid: 01KMRE4HGXPZK6RTQBXNP9BDBJ
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMRD9KMWBZ9937CSSXD2TE7K
+        timestamp: 2026-03-27T20:00:28.701Z
+      - _ulid: 01KMRE4JV702QJZ0A8Z1YSR7SH
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMRD9KMWBZ9937CSSXD2TE7K
+        timestamp: 2026-03-27T20:00:30.055Z
+      - _ulid: 01KMRE4M3MXFKCEXSPGCM7Q0W1
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMRDA48H134GG1FRG6C6G224
+        timestamp: 2026-03-27T20:00:31.348Z
+      - _ulid: 01KMRE4NAWBVC8HPBTHM5G7F6Z
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMRDA48H134GG1FRG6C6G224
+        timestamp: 2026-03-27T20:00:32.604Z
+      - _ulid: 01KMRE4PK1SYBMQ69GFP28SJP0
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMRDDJ79B8ETGPYQK4BGG8W2
+        timestamp: 2026-03-27T20:00:33.889Z
+      - _ulid: 01KMRE4QW51VD426VG69WRYKZ5
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMRDDJ79B8ETGPYQK4BGG8W2
+        timestamp: 2026-03-27T20:00:35.205Z
     examined_commit: 19583c6cbc0605de496770c02e7961c74f4c3a76
     external_links: []
     lifecycle_state: closed
@@ -68602,7 +68638,15 @@ reviews:
               packages/daemon/src/routes/items.ts:344 and found no new coverage for this endpoint in
               the added tests, which only exercise  and ."
             created_at: 2026-03-27T19:45:46.141Z
+          - _ulid: 01KMRE4H20QF7KCZWZSG5NZD1V
+            author: "@claude"
+            body: 'Fixed: POST /api/items/batch now uses the deferred-context pattern (getBatchCtx) with {
+              syncMode: "skip" }, consistent with all other daemon read routes. Added behavioral
+              test proving syncMode "skip" is passed on cache miss.'
+            created_at: 2026-03-27T20:00:28.224Z
         kind: blocker
+        resolved_at: 2026-03-27T20:00:29.516Z
+        resolved_by: "@claude"
       - _ulid: 01KMRDA48H134GG1FRG6C6G224
         anchor:
           type: code
@@ -68622,7 +68666,15 @@ reviews:
               packages/daemon/src/routes/items.ts:344 and found no new coverage for this endpoint in
               the added tests, which only exercise /api/tasks and /api/tasks/:ref.
             created_at: 2026-03-27T19:46:03.153Z
+          - _ulid: 01KMRE4KKHQQS59HTVA3E058C5
+            author: "@claude"
+            body: 'Fixed: Same as thread 1 — POST /api/items/batch now passes { syncMode: "skip" } to
+              initContext on cache-miss fallback. Also added test coverage in
+              daemon-cache-route-coverage.test.ts.'
+            created_at: 2026-03-27T20:00:30.833Z
         kind: blocker
+        resolved_at: 2026-03-27T20:00:32.106Z
+        resolved_by: "@claude"
       - _ulid: 01KMRDDJ79B8ETGPYQK4BGG8W2
         entries:
           - _ulid: 01KMRDDJ79G6JMHBYB9D48FT4S
@@ -68637,7 +68689,15 @@ reviews:
               read routes now pass syncMode skip; POST /api/items/batch still does not. Categories
               searched: correctness, test quality, AC coverage, edge cases, integration."
             created_at: 2026-03-27T19:47:55.754Z
+          - _ulid: 01KMRE4P2VW9ZEZEDHD190EFY5
+            author: "@claude"
+            body: Acknowledged. Verified all remaining bare initContext calls in daemon routes are mutation
+              endpoints (POST task start/note/submit/complete/block, inbox/triage/review mutations).
+              No other read paths remain.
+            created_at: 2026-03-27T20:00:33.371Z
         kind: nit
+        resolved_at: 2026-03-27T20:00:34.648Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -68647,7 +68707,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T19:48:07.291Z
     created_at: 2026-03-27T19:44:08.102Z
-    updated_at: 2026-03-27T19:48:07.292Z
+    updated_at: 2026-03-27T20:00:34.648Z
     notes: []
   - _ulid: 01KMRDRARF6ARWSMAAC2C6N2AW
     slugs: []
