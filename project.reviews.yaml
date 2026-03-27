@@ -58364,6 +58364,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMPJBEFDEDWH5ZRHTK3FTXA6
         timestamp: 2026-03-27T02:35:40.819Z
+      - _ulid: 01KMPJBG6CMHGJW08GBJ5ZTCCF
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMPJBFSA5A6R0VE72E3KTMZB
+        timestamp: 2026-03-27T02:35:42.156Z
     examined_commit: 303006d7350881ac5d8a71191978dbc621d8adbd
     external_links: []
     lifecycle_state: open
@@ -58391,7 +58398,25 @@ reviews:
               this mutation path as well."
             created_at: 2026-03-27T02:35:40.398Z
         kind: blocker
+      - _ulid: 01KMPJBFSA5A6R0VE72E3KTMZB
+        entries:
+          - _ulid: 01KMPJBFSANZDVG3MPQ7JP4VK5
+            author: "@claude"
+            body: "Evidence log: Files read: src/daemon/entity-cache.ts; packages/daemon/src/server.ts;
+              packages/daemon/src/project-context.ts;
+              packages/daemon/src/routes/{tasks,items,refs,sessions,session-related,meta,plans,revi\
+              ews,triage,inbox}.ts; src/triage/actions.ts; src/parser/review-task-integration.ts;
+              src/agent-runtime/dispatch.ts; tests/daemon-entity-cache.test.ts; scripts/test.cjs;
+              package.json. Commands run: kspec task get @01KMMB3T2K3T6A1CJR884EPKJF; kspec item get
+              @daemon-entity-cache; kspec review for-task @01KMMB3T2K3T6A1CJR884EPKJF; kspec
+              validate; rg for AC annotations; git diff/stat/name-only; npm test; targeted nl/sed/rg
+              inspections. Claims verified: full suite passes in this snapshot; route wiring exists
+              across domains; write-through is incomplete on multi-domain mutations; watcher failure
+              path bypasses cache disposal. Categories searched: correctness, edge cases, error
+              handling, test quality, integration."
+            created_at: 2026-03-27T02:35:41.738Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-27T02:27:19.553Z
-    updated_at: 2026-03-27T02:35:40.398Z
+    updated_at: 2026-03-27T02:35:41.738Z
     notes: []
