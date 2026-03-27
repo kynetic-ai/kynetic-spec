@@ -63821,7 +63821,19 @@ reviews:
     slugs: []
     title: Review task-migrate-read-routes
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Schema and reference validation passed. Command exited with warnings only: 1 existing ref
+          warning, 34 alignment warnings, 485 completeness warnings in the repository-wide
+          baseline."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-27T15:59:11.265Z
+        completed_at: 2026-03-27T15:59:11.265Z
     events:
       - _ulid: 01KMR02NRNXMQQ0XGMP4PD2XVA
         actor: "@claude"
@@ -63843,6 +63855,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMR0ANZ8T5EYBFS3XQ0VGPMB
         timestamp: 2026-03-27T15:59:10.245Z
+      - _ulid: 01KMR0AQW1J921F70NVWCSR271
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-27T15:59:11.745Z
     examined_commit: 316e9bc71e013056749ce643496b1e5eb393a8c9
     external_links: []
     lifecycle_state: open
@@ -63873,5 +63892,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-27T15:54:47.446Z
-    updated_at: 2026-03-27T15:59:09.800Z
+    updated_at: 2026-03-27T15:59:11.265Z
     notes: []
