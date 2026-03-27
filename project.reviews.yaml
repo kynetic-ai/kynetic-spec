@@ -60047,7 +60047,30 @@ reviews:
     slugs: []
     title: Review wire agent spawner into automation subsystem action executors (cycle 2)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: packages/daemon/src/routes/agent-dispatch.ts,
+          src/agent-runtime/action-executor.ts, src/agent-runtime/invocation.ts,
+          src/agent-runtime/dispatch.ts, src/sessions/types.ts,
+          tests/automation-action-type-completeness.test.ts,
+          tests/daemon-automation-spawner-wiring.test.ts, tests/agent-action-input.test.ts. Commands
+          run: git diff --stat, git diff --name-only, git diff on each changed file, kspec task get,
+          kspec review get, kspec item get, grep for AC annotations, kspec validate, npm test, npm
+          test -- tests/automation-action-type-completeness.test.ts
+          tests/daemon-automation-spawner-wiring.test.ts tests/agent-action-input.test.ts. Claims
+          verified: prior blocker fix verified by code inspection in createAutomationAgentSpawner
+          and targeted tests passing for correlation_id/group_id propagation and agent spawner
+          wiring. Categories searched: correctness (fixed blocker verified), edge cases (missing
+          agent, missing env, error relay), error handling (action.failed payloads), test quality
+          (behavioral tests, no source scanning), integration (daemon route wiring plus
+          runInvocation contract)."
+        name: review-evidence
+        required: false
+        created_at: 2026-03-27T04:44:08.385Z
+        completed_at: 2026-03-27T04:44:08.385Z
     events:
       - _ulid: 01KMPS56W9RWWN3JB4TMTYDX45
         actor: "@claude"
@@ -60062,6 +60085,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-27T04:34:53.996Z
+      - _ulid: 01KMPSPPC41CZ5W816C786P4R8
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-03-27T04:44:08.964Z
     examined_commit: fa942efdf3ed157ecc241e9ee94dd91d49a1ceec
     external_links: []
     lifecycle_state: open
@@ -60074,5 +60104,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-27T04:34:36.042Z
-    updated_at: 2026-03-27T04:34:53.405Z
+    updated_at: 2026-03-27T04:44:08.385Z
     notes: []
