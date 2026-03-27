@@ -24476,7 +24476,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-27T04:12:08.430Z
+      updated_at: 2026-03-27T04:12:09.731Z
     integration:
       status: pending
       detail: null
@@ -24485,25 +24485,20 @@ workspaces:
       target_branch: dev
       target_commit: bb256b0254c10f37cf90c9a36c5141f8367047e4
       updated_at: 2026-03-27T04:12:08.430Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMPNCSGVJHDM47EDN6MXGZV4"
     task_slug: wire-agent-spawner-into-automation-subsystem-action-executors
     timestamps:
       closed_at: null
       last_active_at: 2026-03-27T04:04:23.345Z
-      last_reconciled_at: 2026-03-27T04:12:08.430Z
+      last_reconciled_at: 2026-03-27T04:12:09.731Z
       created_at: 2026-03-27T03:46:16.776Z
-      updated_at: 2026-03-27T04:12:08.430Z
+      updated_at: 2026-03-27T04:12:09.731Z
     workspace_id: dispatch-workspace-01KMPNCSGVJHDM47EDN6MXGZV4
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: eafcacde78aa643e00872fc8cc976521f34b3bed
-        last_seen_at: 2026-03-27T04:04:17.169Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/wire-agent-spawner-into-automation-subsystem-action-executors-01kmpncs-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/wire-agent-spawner-into-automation-subsystem-action-executors/01kmpncs
