@@ -1,1 +1,54 @@
-notes: []
+notes:
+  - _ulid: 01KMR08QJRK5YCKGK5KF1WSVQK
+    content: >-
+      Approach: Reusing existing batch infrastructure for command execution.
+
+
+      Implementation plan:
+
+      1. Command executor: Reuse OutputCapture + BatchExitError + resetCommandTree from
+      batch-context.ts and batch-exec.ts. Import the Commander program from cli/index.ts. Capture
+      stdout/stderr separately (extend OutputCapture to track stdout vs stderr). The command
+      executes via program.parseAsync() with captured output streams.
+
+
+      2. POST /api/command route: New route file packages/daemon/src/routes/command.ts following the
+      pattern in tasks.ts. Accepts {command: string, args: object} body matching batch schema. For
+      single commands: build argv via buildCommandArgv, execute via parseAsync with output capture.
+
+
+      3. Mutation serialization (ac-concurrent-mutations): Use withFileLock from
+      parser/file-lock.ts. The lock file path will be derived from the project's shadow branch
+      directory. Detect mutating commands using the same command-annotations introspection that
+      batch uses.
+
+
+      4. Cache update + WebSocket broadcast (ac-mutation-cache-update): After successful mutating
+      command, call cache.writeThrough() for all domains that might have changed. Broadcast
+      'command:executed' event on pubsub.
+
+
+      5. Batch support (ac-batch-support): Accept array of commands, delegate to the existing
+      executeBatch function from batch-exec.ts. Cache update once after batch completes.
+
+
+      6. Response parity (ac-response-parity): Same stdout/stderr captured via OutputCapture that
+      batch uses. Return structured {stdout, stderr, exitCode} matching what CLI would produce.
+
+
+      Edge cases:
+
+      - Concurrent mutations: file lock serialization prevents conflicts
+
+      - Batch atomicity: reuses existing batch-exec atomic mode
+
+      - Non-mutating commands: no lock needed, just execute and return
+
+      - Command not found: return 404 with suggestions (reuse batch validation)
+
+
+      Test plan: 5 spec ACs + 6 trait-api-endpoint ACs + 3 trait-localhost-security ACs. E2E tests
+      preferred using HTTP client against daemon.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T15:58:05.913Z
