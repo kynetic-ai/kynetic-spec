@@ -15918,7 +15918,7 @@ runs:
     completed_at: 2026-03-27T01:34:06.158Z
   - _ulid: 01KMPN0HGQAFDBTKMH12MVKF5Y
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -15930,7 +15930,13 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-27T03:22:52.719Z
-        completed_at: 2026-03-27T03:22:52.719Z
+        completed_at: 2026-03-27T03:22:55.503Z
+        notes: "Friction found: cache warmup contract was encoded incorrectly in route-level tests, allowing
+          unloaded later domains to bypass the intended loading response."
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-27T03:22:55.503Z
+        completed_at: 2026-03-27T03:22:55.503Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-27T03:22:08.791Z
