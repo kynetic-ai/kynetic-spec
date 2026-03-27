@@ -68775,6 +68775,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-27T20:01:26.915Z
+      - _ulid: 01KMRE7DA3PMPPPQEVAF3VPC46
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMRE7CBRQZFZXH8AN52PRRJC
+        timestamp: 2026-03-27T20:02:02.691Z
     examined_commit: e3f2e4a91fad8fc5c4c845816337769785a03ed9
     external_links: []
     lifecycle_state: open
@@ -68804,7 +68811,28 @@ reviews:
               mutations, so this regression path is untested."
             created_at: 2026-03-27T20:01:23.107Z
         kind: blocker
+      - _ulid: 01KMRE7CBRQZFZXH8AN52PRRJC
+        anchor:
+          type: code
+          commit: e3f2e4a91fad8fc5c4c845816337769785a03ed9
+          line_end: 259
+          line_start: 251
+          path: packages/daemon/src/routes/command.ts
+          side: head
+        entries:
+          - _ulid: 01KMRE7CBRNQP9RR2R7399TFX5
+            author: "@claude"
+            body: MUTATION_AFFECTED_DOMAINS skips the daemon's sessions cache even though this route executes
+              any mutating CLI command. session create, session migrate, session compact, and
+              session stale close are all annotated mutating commands, but a successful /api/command
+              call for them will never issue writeThrough("sessions"). That leaves /api/sessions and
+              related session detail reads stale until a watcher catches up, which violates
+              @daemon-command-api ac-mutation-cache-update's requirement to refresh cache state
+              before returning the response. Current tests only cover task/inbox mutations, so this
+              regression path is untested.
+            created_at: 2026-03-27T20:02:01.720Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T19:53:48.559Z
-    updated_at: 2026-03-27T20:01:26.401Z
+    updated_at: 2026-03-27T20:02:01.720Z
     notes: []
