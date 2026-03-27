@@ -71,13 +71,27 @@ export function resolveRefEntries(
     if (!result.ok) {
       return { ref, title: null, status: null };
     }
-    const item = result.item as { title?: string; status?: string };
+    const item = result.item as { title?: string; status?: unknown };
     return {
       ref,
       title: item.title ?? null,
-      status: item.status ?? null,
+      status: normalizeStatus(item.status),
     };
   });
+}
+
+/**
+ * Normalize a status value to a string.
+ * Task status is already a string (e.g. "pending", "in_progress").
+ * Spec item status may be an object {maturity, implementation} — extract implementation.
+ */
+function normalizeStatus(status: unknown): string | null {
+  if (typeof status === "string") return status;
+  if (typeof status === "object" && status !== null) {
+    const obj = status as Record<string, string>;
+    return obj.implementation ?? obj.maturity ?? null;
+  }
+  return null;
 }
 
 /**
@@ -93,13 +107,14 @@ export function buildRefIndex(index: ReferenceIndex): Record<string, RefIndexEnt
     const item = index.getByUlid(ulid);
     if (!item) continue;
 
-    const typed = item as { title?: string; type?: string; status?: string; slugs?: string[] };
+    const typed = item as { title?: string; type?: string; status?: unknown; slugs?: string[] };
     if (!typed.title) continue;
 
+    const normalizedStatus = normalizeStatus(typed.status);
     const entry: RefIndexEntry = {
       title: typed.title,
       type: typed.type ?? "unknown",
-      ...(typed.status ? { status: typed.status } : {}),
+      ...(normalizedStatus ? { status: normalizedStatus } : {}),
     };
 
     // Index by ULID

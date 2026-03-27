@@ -72,7 +72,7 @@ describe("Reference Resolution Utility", () => {
       slugs: ["spec-login"],
       title: "Login Feature",
       type: "feature",
-      status: "draft",
+      status: { maturity: "draft", implementation: "in_progress" },
     }),
   ];
 
@@ -126,6 +126,13 @@ describe("Reference Resolution Utility", () => {
       expect(entries).toHaveLength(2);
       expect(entries[0].title).toBe("Setup database");
       expect(entries[1].title).toBe("Login Feature");
+    });
+
+    it("normalizes object status to string for spec items", () => {
+      const entries = resolveRefEntries(index, ["@spec-login"]);
+      expect(entries).toHaveLength(1);
+      // Spec status {maturity: "draft", implementation: "in_progress"} → "in_progress"
+      expect(entries[0].status).toBe("in_progress");
     });
   });
 
@@ -183,11 +190,26 @@ describe("Reference Resolution Utility", () => {
     it("includes status when available", () => {
       const refIndex = buildRefIndex(index);
 
-      // Task has status
+      // Task has string status — passed through directly
       expect(refIndex[taskUlid].status).toBe("in_progress");
 
-      // Spec has status
-      expect(refIndex[specUlid].status).toBe("draft");
+      // Spec has object status {maturity, implementation} — normalized to implementation string
+      expect(refIndex[specUlid].status).toBe("in_progress");
+    });
+
+    it("normalizes object status to string for spec items", () => {
+      // Spec items have status: {maturity: "draft", implementation: "in_progress"}
+      // buildRefIndex should extract implementation as the string status
+      const draftItem = makeItem({
+        _ulid: testUlid("DRFT", 1),
+        slugs: ["spec-draft"],
+        title: "Draft Only",
+        type: "feature",
+        status: { maturity: "stable", implementation: "not_started" },
+      });
+      const draftIndex = new ReferenceIndex([], [draftItem]);
+      const refIndex = buildRefIndex(draftIndex);
+      expect(refIndex[testUlid("DRFT", 1)].status).toBe("not_started");
     });
 
     it("omits status when not present", () => {
