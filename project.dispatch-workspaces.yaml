@@ -24731,7 +24731,7 @@ workspaces:
         head: 0adaf3fd0098c94df0b16aab6e1c71fb966d7de8
         last_seen_at: 2026-03-27T18:17:50.821Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-command-api-01kmmb3v
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 1001be210b4251982b7386b475a48b0cc68188e4
     bootstrap:
       status: succeeded
@@ -24841,7 +24841,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-27T18:28:09.550Z
+      updated_at: 2026-03-27T18:28:16.262Z
     integration:
       status: pending
       detail: null
@@ -24856,10 +24856,10 @@ workspaces:
     task_slug: task-narrow-shadow-lazy-read-sync
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-27T18:18:03.365Z
-      last_reconciled_at: 2026-03-27T18:28:09.550Z
+      last_active_at: 2026-03-27T18:28:16.262Z
+      last_reconciled_at: 2026-03-27T18:28:16.262Z
       created_at: 2026-03-27T18:17:57.076Z
-      updated_at: 2026-03-27T18:28:14.691Z
+      updated_at: 2026-03-27T18:28:16.262Z
     workspace_id: dispatch-workspace-01KMMB3WBKZKVE32R64GD0YVH8
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
