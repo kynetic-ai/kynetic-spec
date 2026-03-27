@@ -8317,6 +8317,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T00:45:39.971Z
+  - _ulid: 01KMPC20ZKJAYHSF09AJ7DK8YH
+    type: friction
+    content: Detached reviewer snapshots cannot always run the documented 'git checkout
+      <integration-branch>' merge flow because the integration branch may already be checked out in
+      another worktree. In this session, checkout of dev failed with 'already used by worktree', and
+      the merge had to be completed via git -C against the primary worktree. Reviewer merge
+      instructions should account for this case explicitly.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T00:45:40.211Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
