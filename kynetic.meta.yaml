@@ -8655,6 +8655,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T06:56:31.648Z
+  - _ulid: 01KMQ19386E02PFMT3KN6Q9793
+    type: success
+    content: "The review flow worked well when it combined three checks in sequence: read the diff
+      before notes, run the full suite through npm test, then rerun the failing test in isolation
+      through the same runner. That combination quickly separated a required-check failure from the
+      actual code-level cache regressions and kept the final review decision grounded in direct
+      evidence."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T06:56:32.006Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
