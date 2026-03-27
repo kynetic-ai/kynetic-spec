@@ -65,7 +65,7 @@ tags:
   - daemon
   - proxy
 vcs_refs: []
-review_ref: "@01KMRM4KYYE4VRXCTGC68XBD5N"
+review_ref: "@01KMRNG6XSBH9HBR2G90XQD65K"
 submission_linkage:
   review_url: null
   branch: dev
@@ -173,6 +173,13 @@ history:
         previous: 2026-03-27T21:43:53.782Z
     command: task-submit
     timestamp: 2026-03-27T22:07:10.342Z
+  - author: "@claude"
+    changes:
+      review_ref:
+        new: "@01KMRNG6XSBH9HBR2G90XQD65K"
+        previous: "@01KMRM4KYYE4VRXCTGC68XBD5N"
+    command: review-link
+    timestamp: 2026-03-27T22:09:12.959Z
 created_at: 2026-03-26T05:50:42.968Z
 started_at: 2026-03-27T22:07:07.330Z
 submitted_at: 2026-03-27T22:07:10.342Z
