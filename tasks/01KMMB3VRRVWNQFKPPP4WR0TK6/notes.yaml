@@ -1,1 +1,33 @@
-notes: []
+notes:
+  - _ulid: 01KMRGT899CC1M0SB7N5ND26PS
+    content: >-
+      Approach: Creating src/cli/daemon-proxy.ts module for daemon detection, health check, project
+      registration, and command routing. 
+
+
+      Detection runs early in preAction hook. Uses PidFileManager.readPort() for port file check,
+      fetch() for health check with 200ms timeout, and caches result at module level (same pattern
+      as syncMode).
+
+
+      Command routing serializes to batch JSON format (command + args) and POSTs to daemon
+      /api/command endpoint with X-Kspec-Dir header. Reads response stdout/stderr/exitCode and
+      writes to process streams.
+
+
+      Timeout handling: read-only commands fall back to direct mode with stderr warning; mutating
+      commands return error (no fallback).
+
+
+      KSPEC_NO_DAEMON=1 skips detection entirely. --daemon flag requires daemon routing, fails with
+      error if unavailable.
+
+
+      Edge cases: project registration before routing, connection refused fast-fail, port file
+      missing fast-fail.
+
+
+      Test plan: E2E tests with CLI helper for all 9 spec ACs + 4 detection ACs + trait ACs.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T20:47:17.289Z
