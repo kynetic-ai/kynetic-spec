@@ -63916,6 +63916,48 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-27T15:59:28.521Z
+      - _ulid: 01KMR1YYZ0QEPBDQENWHY3Z7JQ
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMR0ANZ8T5EYBFS3XQ0VGPMB
+        timestamp: 2026-03-27T16:27:42.944Z
+      - _ulid: 01KMR1Z07EY8MZF6AK7B97M25R
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMR0ANZ8T5EYBFS3XQ0VGPMB
+        timestamp: 2026-03-27T16:27:44.238Z
+      - _ulid: 01KMR1Z1F2N54T1E86RKK2FQY5
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMR0ARSZXWQ6YHW6QTFX5YBB
+        timestamp: 2026-03-27T16:27:45.506Z
+      - _ulid: 01KMR1Z2PWSM9ZZAQAN50009K4
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMR0ARSZXWQ6YHW6QTFX5YBB
+        timestamp: 2026-03-27T16:27:46.780Z
+      - _ulid: 01KMR1Z3ZXEBR0A7Q7Q85E9HQP
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMR0AT6K2YK5QXXV9CHE0PAG
+        timestamp: 2026-03-27T16:27:48.093Z
+      - _ulid: 01KMR1Z56Q50CVD83V1Y3EW46C
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMR0AT6K2YK5QXXV9CHE0PAG
+        timestamp: 2026-03-27T16:27:49.335Z
+      - _ulid: 01KMR1Z6EJ9STVYDVFG9FGAV9S
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMR0AVMAHJH1CWGB5C70PB8X
+        timestamp: 2026-03-27T16:27:50.610Z
     examined_commit: 316e9bc71e013056749ce643496b1e5eb393a8c9
     external_links: []
     lifecycle_state: closed
@@ -63943,7 +63985,18 @@ reviews:
               per-request context loads, so /api/aggregation/validation still violates
               ac-index-from-cache on the production path.
             created_at: 2026-03-27T15:59:09.800Z
+          - _ulid: 01KMR1YYG22DMY04019K03Z6C4
+            author: "@claude"
+            body: "Fixed: Replaced buildIndexes(ctx) in /api/aggregation/validation with cache-based resolution.
+              Tasks and items are now resolved from the entity cache (getTaskIndex/getItemIndex)
+              when domains are ready, then ReferenceIndex and AlignmentIndex are built from that
+              cached data. AC counting uses acceptance_criteria_count from ItemSummary.
+              validate(ctx) still uses initContext for computational validation, which is separate
+              from index building."
+            created_at: 2026-03-27T16:27:42.466Z
         kind: blocker
+        resolved_at: 2026-03-27T16:27:43.777Z
+        resolved_by: "@claude"
       - _ulid: 01KMR0ARSZXWQ6YHW6QTFX5YBB
         anchor:
           type: code
@@ -63963,7 +64016,18 @@ reviews:
               hook effectively untested, so a regression in the actual callback invocation path
               would still pass this AC suite.
             created_at: 2026-03-27T15:59:12.703Z
+          - _ulid: 01KMR1Z10NP6ZYWQB8DJT8SM4Z
+            author: "@claude"
+            body: "Fixed: Replaced all three shallow mock tests with two behavioral tests that exercise the real
+              ShadowSyncScheduler.syncOnce() flow. Test 1 creates a git environment with remote
+              tracking, pushes a remote change, then calls syncOnce() and verifies onPull is invoked
+              after the actual pull. Test 2 verifies error resilience — onPull rejection is caught
+              and logged without breaking the sync cycle. Both tests use real git operations, not
+              mocks."
+            created_at: 2026-03-27T16:27:45.045Z
         kind: blocker
+        resolved_at: 2026-03-27T16:27:46.254Z
+        resolved_by: "@claude"
       - _ulid: 01KMR0AT6K2YK5QXXV9CHE0PAG
         anchor:
           type: code
@@ -63980,7 +64044,16 @@ reviews:
               the AlignmentIndex. That is the exact per-request read path this task was supposed to
               remove for alignment/index-building routes, so the AC is not met here yet either."
             created_at: 2026-03-27T15:59:14.132Z
+          - _ulid: 01KMR1Z3GKBSY9X5T3WW2HM5DZ
+            author: "@claude"
+            body: "Fixed: Replaced buildIndexes(ctx) in /api/alignment with cache-based resolution. Same pattern
+              as aggregation/validation — tasks and items resolved from entity cache, ReferenceIndex
+              and AlignmentIndex built from cached summaries. No more per-request disk reads for
+              index building."
+            created_at: 2026-03-27T16:27:47.603Z
         kind: blocker
+        resolved_at: 2026-03-27T16:27:48.838Z
+        resolved_by: "@claude"
       - _ulid: 01KMR0AVMAHJH1CWGB5C70PB8X
         entries:
           - _ulid: 01KMR0AVMAS6MDA7YT0QQ6VR8F
@@ -64001,6 +64074,8 @@ reviews:
               handling, test quality, integration."
             created_at: 2026-03-27T15:59:15.594Z
         kind: nit
+        resolved_at: 2026-03-27T16:27:50.131Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -64010,7 +64085,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T15:59:28.521Z
     created_at: 2026-03-27T15:54:47.446Z
-    updated_at: 2026-03-27T15:59:28.521Z
+    updated_at: 2026-03-27T16:27:50.131Z
     notes: []
   - _ulid: 01KMR1HTH4XBWWQRCJSJTD6JQF
     slugs: []
