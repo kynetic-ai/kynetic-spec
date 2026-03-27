@@ -62558,6 +62558,19 @@ reviews:
         runner: npm
         created_at: 2026-03-27T07:55:23.485Z
         completed_at: 2026-03-27T07:55:23.485Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Confirmed a cache lifecycle bug with a runtime repro against dist/daemon/entity-cache.ts:
+          patched doLoadDomain() to resolve after 50ms, started loadDomain('tasks'), called
+          dispose() after 10ms, awaited the load, and observed disposed=true, state=unloaded,
+          taskIndexNull=false. An in-flight load can repopulate cache data after dispose()."
+        name: targeted lifecycle repro
+        required: true
+        runner: bun
+        created_at: 2026-03-27T07:55:26.821Z
+        completed_at: 2026-03-27T07:55:26.821Z
     events:
       - _ulid: 01KMQ4CA1819TDZ9847BQ2BG48
         actor: "@claude"
@@ -62607,6 +62620,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-27T07:55:23.934Z
+      - _ulid: 01KMQ4MZN1RSBN0DZ5RW9EX2Q1
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: targeted lifecycle repro
+        timestamp: 2026-03-27T07:55:27.265Z
     examined_commit: a546eb8de8a26b46bfbb437134114d8ed351eb62
     external_links: []
     lifecycle_state: open
@@ -62639,5 +62659,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-27T07:50:42.985Z
-    updated_at: 2026-03-27T07:55:23.485Z
+    updated_at: 2026-03-27T07:55:26.821Z
     notes: []
