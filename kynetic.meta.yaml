@@ -9159,6 +9159,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T21:53:07.221Z
+  - _ulid: 01KMRMZQCGBP65PN90XW6808PM
+    type: friction
+    content: Detached review worktrees cannot always switch to the integration branch for final merge
+      because git refuses to check out a branch already active in another worktree. Review/merge
+      guidance should account for this by directing reviewers to merge in the primary worktree or
+      another non-conflicting worktree.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T22:00:10.896Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
