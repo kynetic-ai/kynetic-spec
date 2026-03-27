@@ -265,3 +265,15 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T20:26:50.570Z
+  - _ulid: 01KMRG49KF85WDBCPFA2YR6C4K
+    content: "Fix cycle 9: Addressed blocker — command API used wrong cross-process mutation lock path.
+      Both single-command and batch handlers hardcoded `${projectPath}/.kspec/shadow-mutation`
+      instead of using the canonical `getDispatchShadowMutationLockPath()` from
+      agent-runtime/workspace.ts which resolves to `${projectDir}/.kspec-dispatch-shadow-mutation`.
+      This meant the command API's file lock didn't coordinate with the CLI or dispatch engine's
+      mutation serialization. Fixed by importing and using the canonical function in both code
+      paths. All 6969 tests pass (1944 suites), 5 pre-existing skips, no regressions. Re-verified
+      all 5 spec ACs."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T20:35:17.743Z
