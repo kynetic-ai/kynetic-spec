@@ -32,6 +32,7 @@ import {
   getDispatchEngine,
   stopAllEngines,
 } from "./routes/agent-dispatch";
+import { createCommandRoutes } from "./routes/command";
 import { createAutomationRoutes } from "./routes/automation";
 import { createSessionRoutes } from "./routes/sessions";
 import { createPlansRoutes } from "./routes/plans";
@@ -364,6 +365,9 @@ export async function createServer(options: ServerOptions) {
     // AC: @agent-dispatch-engine ac-4 - Agent dispatch API endpoints
     // AC: @daemon-agent-dispatch ac-3, ac-4 - Pass pubsub for WebSocket broadcast on invocation events
     .use(createAgentDispatchRoutes({ pubsub: pubsubManager }))
+
+    // AC: @daemon-command-api ac-command-endpoint, ac-batch-support - Command execution API
+    .use(createCommandRoutes({ pubsub: pubsubManager, getEntityCache: entityCacheModule.getEntityCache }))
 
     // AC: @automation-api ac-1 through ac-6 - Automation management endpoints
     .use(createAutomationRoutes())
