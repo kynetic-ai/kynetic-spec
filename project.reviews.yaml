@@ -65817,6 +65817,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMR5FP8WKZ5YKK75CNE9FR0W
         timestamp: 2026-03-27T17:29:17.365Z
+      - _ulid: 01KMR5FT20H36N0KBJERWNM9TG
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMR5FSD22WFQXRR810BPWP9T
+        timestamp: 2026-03-27T17:29:20.704Z
     examined_commit: 16d50422a0766c15efda5c39d936c326782c3f50
     external_links: []
     lifecycle_state: open
@@ -65845,7 +65852,453 @@ reviews:
               success path."
             created_at: 2026-03-27T17:29:16.828Z
         kind: blocker
+      - _ulid: 01KMR5FSD22WFQXRR810BPWP9T
+        anchor:
+          type: code
+          commit: 16d50422a0766c15efda5c39d936c326782c3f50
+          line_end: 222
+          line_start: 214
+          path: packages/daemon/src/routes/command.ts
+          side: head
+        entries:
+          - _ulid: 01KMR5FSD2K1CT36RCJPD1YYJT
+            author: "@claude"
+            body: >-
+              The command API no longer satisfies @daemon-command-api ac-response-parity because it
+              strips trailing output before returning it. I verified direct CLI output with {
+                "_ulid": "01KMMB3V7N2GC0JSPJKJYMPJPV",
+                "slugs": [
+                  "task-daemon-command-api"
+                ],
+                "title": "Implement daemon command API endpoint",
+                "type": "task",
+                "description": "Build the REST endpoint that accepts CLI command payloads and executes\nthem within the daemon process, returning structured results.\n\nWhy: For the CLI to proxy through the daemon, the daemon needs an\nendpoint that can execute arbitrary kspec commands. Without it, CLI\nmutations would still write directly to the shadow branch, creating\na window of stale data in the daemon's cache.\n\nWhat:\n- POST /api/command endpoint that accepts a command payload using\n  the same JSON format as kspec batch command objects (command path\n  string + args object)\n- Execute the command within the daemon process using Commander's\n  parseAsync with captured output streams — avoids child process\n  overhead and keeps everything in the daemon's event loop\n- Capture stdout, stderr, and exit code; return as structured JSON\n- For mutating commands: serialize execution using the dispatch\n  mutation lock pattern (acquireFileLock) to prevent concurrent\n  shadow branch conflicts\n- After successful mutation: update entity cache (write-through)\n  before returning the response, broadcast WebSocket event\n- Support batch payloads: accept an array of commands, execute\n  atomically via the existing batch runner (src/cli/batch.ts),\n  update cache once after the batch completes\n- Response parity: stdout/stderr content must match what direct CLI\n  execution would produce\n\nHow: Follow the pattern in packages/daemon/src/routes/agent-dispatch.ts\nfor route structure and middleware. The command executor wraps\nCommander's parseAsync, redirecting process.stdout/stderr to buffers.\nMutation serialization uses the same lock mechanism as the dispatch\nengine. Batch execution reuses the existing batch runner. Cache\nupdate happens after the commit but before the HTTP response.\n\nCovers: @daemon-command-api ac-command-endpoint, ac-mutation-cache-update,\nac-batch-support, ac-concurrent-mutations, ac-response-parity.\n",
+                "spec_ref": "@daemon-command-api",
+                "plan_ref": "@plan-daemon-optimistic-data-layer",
+                "origin": "derived",
+                "status": "pending_review",
+                "blocked_by": [],
+                "depends_on": [
+                  "@task-entity-cache-impl"
+                ],
+                "context": [],
+                "priority": 2,
+                "tags": [
+                  "daemon",
+                  "api",
+                  "proxy"
+                ],
+                "vcs_refs": [],
+                "review_ref": "@01KMR566B6BBE9H2D3H9RVD4A5",
+                "submission_linkage": {
+                  "branch": "dev",
+                  "commit": "1001be210b4251982b7386b475a48b0cc68188e4",
+                  "remote": "origin",
+                  "remote_url": "git@github.com:kynetic-ai/kynetic-spec.git",
+                  "upstream_ref": "refs/heads/dev",
+                  "review_url": null,
+                  "captured_at": "2026-03-27T17:21:45.764Z"
+                },
+                "session_id": "01KMR4GZ2JRJ9K2DRYEZ34GMG2",
+                "created_at": "2026-03-26T05:50:42.421Z",
+                "started_at": "2026-03-27T17:21:38.341Z",
+                "submitted_at": "2026-03-27T17:21:45.769Z",
+                "notes": [
+                  {
+                    "_ulid": "01KMR08QJRK5YCKGK5KF1WSVQK",
+                    "created_at": "2026-03-27T15:58:05.913Z",
+                    "author": "@claude",
+                    "content": "Approach: Reusing existing batch infrastructure for command execution.\n\nImplementation plan:\n1. Command executor: Reuse OutputCapture + BatchExitError + resetCommandTree from batch-context.ts and batch-exec.ts. Import the Commander program from cli/index.ts. Capture stdout/stderr separately (extend OutputCapture to track stdout vs stderr). The command executes via program.parseAsync() with captured output streams.\n\n2. POST /api/command route: New route file packages/daemon/src/routes/command.ts following the pattern in tasks.ts. Accepts {command: string, args: object} body matching batch schema. For single commands: build argv via buildCommandArgv, execute via parseAsync with output capture.\n\n3. Mutation serialization (ac-concurrent-mutations): Use withFileLock from parser/file-lock.ts. The lock file path will be derived from the project's shadow branch directory. Detect mutating commands using the same command-annotations introspection that batch uses.\n\n4. Cache update + WebSocket broadcast (ac-mutation-cache-update): After successful mutating command, call cache.writeThrough() for all domains that might have changed. Broadcast 'command:executed' event on pubsub.\n\n5. Batch support (ac-batch-support): Accept array of commands, delegate to the existing executeBatch function from batch-exec.ts. Cache update once after batch completes.\n\n6. Response parity (ac-response-parity): Same stdout/stderr captured via OutputCapture that batch uses. Return structured {stdout, stderr, exitCode} matching what CLI would produce.\n\nEdge cases:\n- Concurrent mutations: file lock serialization prevents conflicts\n- Batch atomicity: reuses existing batch-exec atomic mode\n- Non-mutating commands: no lock needed, just execute and return\n- Command not found: return 404 with suggestions (reuse batch validation)\n\nTest plan: 5 spec ACs + 6 trait-api-endpoint ACs + 3 trait-localhost-security ACs. E2E tests preferred using HTTP client against daemon.",
+                    "supersedes": null,
+                    "superseded": false
+                  },
+                  {
+                    "_ulid": "01KMR16QC2MEPR7M1T0Q194CKW",
+                    "created_at": "2026-03-27T16:14:28.738Z",
+                    "author": "@claude",
+                    "content": "Implementation complete. Created:\n- packages/daemon/src/routes/command.ts — POST /api/command and POST /api/command/batch endpoints\n- tests/daemon-command-api.test.ts — 14 tests covering all 5 spec ACs and relevant trait ACs\n\nKey design decisions:\n1. Reused existing batch infrastructure (OutputCapture, exit interceptor, buildCommandArgv, resetCommandTree) to avoid reimplementing command dispatch. This ensures response parity (ac-response-parity) because the same capture mechanism is used.\n2. withProjectDir() temporarily changes process.cwd() to project path so CLI commands resolve the correct kspec project context.\n3. Mutation detection uses the same introspection mechanism as batch command validation (CommandMeta.mutating) — no separate classification needed.\n4. File lock path is per-project (.kspec/shadow-mutation) matching the dispatch engine pattern.\n5. Write-through covers all mutation-affected domains (tasks, items, meta, inbox, plans, triage, reviews) because commands can have cross-domain side effects.\n6. Split backend registered lazily on first getProgram() call since CLI task commands require it.\n\nAll 6959 tests pass (5 pre-existing skips). No regressions.",
+                    "supersedes": null,
+                    "superseded": false
+                  },
+                  {
+                    "_ulid": "01KMR1K7HKNT46TEE81PTR5309",
+                    "created_at": "2026-03-27T16:21:18.515Z",
+                    "author": "@claude",
+                    "content": "[FIX_CYCLE: 1] Review verdict: changes_requested by codex",
+                    "supersedes": null,
+                    "superseded": false
+                  },
+                  {
+                    "_ulid": "01KMR2T16P292HMTM7NZ8BQFEP",
+                    "created_at": "2026-03-27T16:42:29.974Z",
+                    "author": "@claude",
+                    "content": "Fix cycle 1: Addressed both review blockers.\n\nBlocker 1 (process-global state corruption): Added DispatchMutex class that serializes ALL command dispatches (reads + writes) within the process. This prevents concurrent requests from corrupting each other's console capture, cwd, and exit interceptor state. The file lock remains for cross-process mutation safety. Removed standalone withProjectDir helper — cwd management is now inline inside the mutex-protected critical section.\n\nBlocker 2 (unproven test coverage): Tests now provide a mock EntityCacheAccessor with spy-instrumented writeThrough, verifying cache updates after mutations (and absence for reads). Response parity tests now compare API output against ground-truth CLI subprocess execution via kspec() helper.\n\nAll 6963 tests pass (1944 suites), 4 new tests added, no regressions. Re-verified all 5 spec ACs and trait ACs against updated implementation.",
+                    "supersedes": null,
+                    "superseded": false
+                  },
+                  {
+                    "_ulid": "01KMR3E9J2B4T5BM4QK59CXMW1",
+                    "created_at": "2026-03-27T16:53:33.890Z",
+                    "author": "@claude",
+                    "content": "[FIX_CYCLE: 2] Review verdict: changes_requested by codex",
+                    "supersedes": null,
+                    "superseded": false
+                  },
+                  {
+                    "_ulid": "01KMR518Q10J8GNZJXTVX7H1FR",
+                    "created_at": "2026-03-27T17:21:24.193Z",
+                    "author": "@claude",
+                    "content": "Fix cycle 3: Addressed both blocker threads (same root cause). The command executor only intercepted console.log/error/warn but CLI commands also use process.stdout.write directly (e.g., plan export, session log, agent streaming). Now intercepts process.stdout.write and process.stderr.write during command execution. Added plan export parity test exercising the exact failing scenario. All 6964 tests pass (1944 suites), 1 new test, no regressions. Re-verified all 5 spec ACs and trait ACs.",
+                    "supersedes": null,
+                    "superseded": false
+                  }
+                ],
+                "todos": [],
+                "automation": "eligible",
+                "_sourceFile": "/home/chapel/Projects/kynetic-spec-dispatch/.kspec/tasks/01KMMB3V7N2GC0JSPJKJYMPJPV/task.yaml",
+                "active_review": {
+                  "ref": "@01KMR566B6BBE9H2D3H9RVD4A5",
+                  "title": "Review task-daemon-command-api (cycle 3)",
+                  "lifecycle_state": "open",
+                  "disposition": "changes_requested"
+                },
+                "activity": [
+                  {
+                    "type": "field_updated",
+                    "timestamp": "2026-03-26T07:02:12.284Z",
+                    "author": "@claude",
+                    "summary": "Updated automation",
+                    "commitHash": "",
+                    "detail": {
+                      "field": "automation",
+                      "from": "null",
+                      "to": "eligible"
+                    },
+                    "command": "task-set",
+                    "source": "history"
+                  },
+                  {
+                    "type": "started",
+                    "timestamp": "2026-03-27T15:54:36.840Z",
+                    "author": "@claude",
+                    "summary": "Task started",
+                    "commitHash": "",
+                    "detail": {
+                      "status.from": "pending",
+                      "status.to": "in_progress",
+                      "session_id.from": "null",
+                      "session_id.to": "01KMR01QX3F4G3YFWMG593ZAST",
+                      "started_at.from": "null",
+                      "started_at.to": "2026-03-27T15:54:36.840Z"
+                    },
+                    "command": "task-start",
+                    "source": "history"
+                  },
+                  {
+                    "type": "note_added",
+                    "timestamp": "2026-03-27T15:58:05.913Z",
+                    "author": "@claude",
+                    "summary": "Note added",
+                    "commitHash": "",
+                    "source": "note"
+                  },
+                  {
+                    "type": "note_added",
+                    "timestamp": "2026-03-27T16:14:28.738Z",
+                    "author": "@claude",
+                    "summary": "Note added",
+                    "commitHash": "",
+                    "source": "note"
+                  },
+                  {
+                    "type": "submitted",
+                    "timestamp": "2026-03-27T16:14:35.144Z",
+                    "author": "@claude",
+                    "summary": "Task submitted for review",
+                    "commitHash": "",
+                    "detail": {
+                      "status.from": "in_progress",
+                      "status.to": "pending_review",
+                      "submission_linkage.from": "null",
+                      "submission_linkage.to": "[object Object]",
+                      "submitted_at.from": "null",
+                      "submitted_at.to": "2026-03-27T16:14:35.143Z"
+                    },
+                    "command": "task-submit",
+                    "source": "history"
+                  },
+                  {
+                    "type": "review_linked",
+                    "timestamp": "2026-03-27T16:20:34.112Z",
+                    "author": "@claude",
+                    "summary": "Review linked: @01KMR1HTH4XBWWQRCJSJTD6JQF",
+                    "commitHash": "",
+                    "detail": {
+                      "field": "review_ref",
+                      "from": "null",
+                      "to": "@01KMR1HTH4XBWWQRCJSJTD6JQF"
+                    },
+                    "command": "review-link",
+                    "source": "history"
+                  },
+                  {
+                    "type": "note_added",
+                    "timestamp": "2026-03-27T16:21:18.515Z",
+                    "author": "@claude",
+                    "summary": "Note added",
+                    "commitHash": "",
+                    "source": "note"
+                  },
+                  {
+                    "type": "state_change",
+                    "timestamp": "2026-03-27T16:21:18.516Z",
+                    "author": "@claude",
+                    "summary": "Updated status, session_id",
+                    "commitHash": "",
+                    "detail": {
+                      "status.from": "pending_review",
+                      "status.to": "needs_work",
+                      "session_id.from": "01KMR01QX3F4G3YFWMG593ZAST",
+                      "session_id.to": "null"
+                    },
+                    "command": "review-verdict-needs-work",
+                    "source": "history"
+                  },
+                  {
+                    "type": "note_added",
+                    "timestamp": "2026-03-27T16:42:29.974Z",
+                    "author": "@claude",
+                    "summary": "Note added",
+                    "commitHash": "",
+                    "source": "note"
+                  },
+                  {
+                    "type": "started",
+                    "timestamp": "2026-03-27T16:42:46.148Z",
+                    "author": "@claude",
+                    "summary": "Task started",
+                    "commitHash": "",
+                    "detail": {
+                      "status.from": "needs_work",
+                      "status.to": "in_progress",
+                      "session_id.from": "null",
+                      "session_id.to": "01KMR23DHYWQN0509Q64HZJVF9",
+                      "started_at.from": "2026-03-27T15:54:36.840Z",
+                      "started_at.to": "2026-03-27T16:42:46.148Z"
+                    },
+                    "command": "task-start",
+                    "source": "history"
+                  },
+                  {
+                    "type": "submitted",
+                    "timestamp": "2026-03-27T16:42:49.117Z",
+                    "author": "@claude",
+                    "summary": "Task submitted for review",
+                    "commitHash": "",
+                    "detail": {
+                      "status.from": "in_progress",
+                      "status.to": "pending_review",
+                      "submission_linkage.from": "[object Object]",
+                      "submission_linkage.to": "[object Object]",
+                      "submitted_at.from": "2026-03-27T16:14:35.143Z",
+                      "submitted_at.to": "2026-03-27T16:42:49.116Z"
+                    },
+                    "command": "task-submit",
+                    "source": "history"
+                  },
+                  {
+                    "type": "review_linked",
+                    "timestamp": "2026-03-27T16:45:48.832Z",
+                    "author": "@claude",
+                    "summary": "Review linked: @01KMR301QH0R4HCY5KGBS6BJ10",
+                    "commitHash": "",
+                    "detail": {
+                      "field": "review_ref",
+                      "from": "@01KMR1HTH4XBWWQRCJSJTD6JQF",
+                      "to": "@01KMR301QH0R4HCY5KGBS6BJ10"
+                    },
+                    "command": "review-link",
+                    "source": "history"
+                  },
+                  {
+                    "type": "note_added",
+                    "timestamp": "2026-03-27T16:53:33.890Z",
+                    "author": "@claude",
+                    "summary": "Note added",
+                    "commitHash": "",
+                    "source": "note"
+                  },
+                  {
+                    "type": "state_change",
+                    "timestamp": "2026-03-27T16:53:33.891Z",
+                    "author": "@claude",
+                    "summary": "Updated status, session_id",
+                    "commitHash": "",
+                    "detail": {
+                      "status.from": "pending_review",
+                      "status.to": "needs_work",
+                      "session_id.from": "01KMR23DHYWQN0509Q64HZJVF9",
+                      "session_id.to": "null"
+                    },
+                    "command": "review-verdict-needs-work",
+                    "source": "history"
+                  },
+                  {
+                    "type": "note_added",
+                    "timestamp": "2026-03-27T17:21:24.193Z",
+                    "author": "@claude",
+                    "summary": "Note added",
+                    "commitHash": "",
+                    "source": "note"
+                  },
+                  {
+                    "type": "started",
+                    "timestamp": "2026-03-27T17:21:38.342Z",
+                    "author": "@claude",
+                    "summary": "Task started",
+                    "commitHash": "",
+                    "detail": {
+                      "status.from": "needs_work",
+                      "status.to": "in_progress",
+                      "session_id.from": "null",
+                      "session_id.to": "01KMR4GZ2JRJ9K2DRYEZ34GMG2",
+                      "started_at.from": "2026-03-27T16:42:46.148Z",
+                      "started_at.to": "2026-03-27T17:21:38.341Z"
+                    },
+                    "command": "task-start",
+                    "source": "history"
+                  },
+                  {
+                    "type": "submitted",
+                    "timestamp": "2026-03-27T17:21:45.769Z",
+                    "author": "@claude",
+                    "summary": "Task submitted for review",
+                    "commitHash": "",
+                    "detail": {
+                      "status.from": "in_progress",
+                      "status.to": "pending_review",
+                      "submission_linkage.from": "[object Object]",
+                      "submission_linkage.to": "[object Object]",
+                      "submitted_at.from": "2026-03-27T16:42:49.116Z",
+                      "submitted_at.to": "2026-03-27T17:21:45.769Z"
+                    },
+                    "command": "task-submit",
+                    "source": "history"
+                  },
+                  {
+                    "type": "state_change",
+                    "timestamp": "2026-03-27T17:24:05.606Z",
+                    "author": "@claude",
+                    "summary": "Review @01KMR566B6BBE9H2D3H9RVD4A5: lifecycle change",
+                    "commitHash": "",
+                    "source": "review"
+                  },
+                  {
+                    "type": "review_linked",
+                    "timestamp": "2026-03-27T17:24:07.614Z",
+                    "author": "@claude",
+                    "summary": "Review linked: @01KMR566B6BBE9H2D3H9RVD4A5",
+                    "commitHash": "",
+                    "detail": {
+                      "field": "review_ref",
+                      "from": "@01KMR301QH0R4HCY5KGBS6BJ10",
+                      "to": "@01KMR566B6BBE9H2D3H9RVD4A5"
+                    },
+                    "command": "review-link",
+                    "source": "history"
+                  },
+                  {
+                    "type": "state_change",
+                    "timestamp": "2026-03-27T17:24:35.332Z",
+                    "author": "@claude",
+                    "summary": "Review @01KMR566B6BBE9H2D3H9RVD4A5: lifecycle change",
+                    "commitHash": "",
+                    "source": "review"
+                  },
+                  {
+                    "type": "review_linked",
+                    "timestamp": "2026-03-27T17:29:17.365Z",
+                    "author": "@claude",
+                    "summary": "Review @01KMR566B6BBE9H2D3H9RVD4A5: thread created",
+                    "commitHash": "",
+                    "source": "review"
+                  }
+                ],
+                "inherited_traits": [
+                  {
+                    "ref": "@trait-api-endpoint",
+                    "title": "REST API Endpoint Patterns",
+                    "acceptance_criteria": [
+                      {
+                        "id": "ac-1",
+                        "given": "API endpoint receives valid request",
+                        "when": "processing succeeds",
+                        "then": "returns 2xx status with JSON body"
+                      },
+                      {
+                        "id": "ac-2",
+                        "given": "API endpoint receives invalid ref",
+                        "when": "ref not found",
+                        "then": "returns 404 with {error, message, suggestion} including similar refs if available"
+                      },
+                      {
+                        "id": "ac-3",
+                        "given": "API endpoint receives invalid body",
+                        "when": "validation fails",
+                        "then": "returns 400 with {error, details:[{field, message}]} array"
+                      },
+                      {
+                        "id": "ac-4",
+                        "given": "list endpoint is called",
+                        "when": "pagination supported",
+                        "then": "accepts limit and offset query params, returns {items, total, offset, limit} wrapper"
+                      },
+                      {
+                        "id": "ac-5",
+                        "given": "API endpoint mutates state",
+                        "when": "change persists",
+                        "then": "shadow commit occurs with semantic message"
+                      },
+                      {
+                        "id": "ac-6",
+                        "given": "API request is processed",
+                        "when": "response generated",
+                        "then": "includes X-Request-Id header for tracing"
+                      }
+                    ]
+                  },
+                  {
+                    "ref": "@trait-localhost-security",
+                    "title": "Localhost-Only Security",
+                    "acceptance_criteria": [
+                      {
+                        "id": "ac-1",
+                        "given": "server is starting",
+                        "when": "binding to network interface",
+                        "then": "only accepts connections from 127.0.0.1 and ::1 (IPv6 localhost)"
+                      },
+                      {
+                        "id": "ac-2",
+                        "given": "connection attempt from non-localhost",
+                        "when": "request received",
+                        "then": "connection rejected with 403 Forbidden"
+                      },
+                      {
+                        "id": "ac-3",
+                        "given": "server is configured",
+                        "when": "configuration allows external binding",
+                        "then": "warning displayed about security implications"
+                      }
+                    ]
+                  }
+                ]
+              }, which exits 0 and ends with a newline, but  removes that newline via  and
+              additionally s stderr. Any command whose observable output depends on exact trailing
+              whitespace will differ from direct CLI execution, and the current tests mask that by
+              using the trimmed  helper or calling  before comparison.
+            created_at: 2026-03-27T17:29:20.034Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T17:24:05.606Z
-    updated_at: 2026-03-27T17:29:16.828Z
+    updated_at: 2026-03-27T17:29:20.034Z
     notes: []
