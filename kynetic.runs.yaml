@@ -17134,9 +17134,21 @@ runs:
     completed_at: 2026-03-27T22:43:42.750Z
   - _ulid: 01KMRQW2KY77A2KNS5KBXTSBQA
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-03-27T22:50:37.054Z
+        completed_at: 2026-03-27T22:51:21.413Z
+        notes: "What worked well: reading the task diff and review history before trusting notes quickly
+          isolated that the only real issue was a prior spec status regression, and running
+          executable checks (npm test plus targeted alignment validation) gave a clean approval
+          basis."
+      - status: completed
+        step_index: 1
+        started_at: 2026-03-27T22:51:21.413Z
+        completed_at: 2026-03-27T22:51:21.413Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-27T22:50:37.054Z
