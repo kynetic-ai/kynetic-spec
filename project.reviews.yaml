@@ -69507,6 +69507,25 @@ reviews:
         runner: npm
         created_at: 2026-03-27T20:41:58.893Z
         completed_at: 2026-03-27T20:41:58.893Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: packages/daemon/src/routes/command.ts, packages/daemon/src/server.ts,
+          src/cli/batch-exec.ts, src/agent-runtime/workspace.ts, tests/daemon-command-api.test.ts,
+          tests/daemon-api-input-validation.test.ts,
+          packages/daemon/src/middleware/project-context.ts. Commands run: git diff/stat/name-only,
+          kspec task get, kspec item get @daemon-command-api, kspec item get @trait-api-endpoint,
+          kspec item get @trait-localhost-security, kspec review for-task, kspec validate, rg AC
+          annotations, npm test. Claims verified: canonical dispatch lock path now comes from
+          getDispatchShadowMutationLockPath(); full test suite passes. Categories searched:
+          correctness, edge cases, error handling, security/localhost trait handling, test quality,
+          integration. No remaining blockers found."
+        name: review evidence
+        required: false
+        runner: reviewer
+        created_at: 2026-03-27T20:42:00.658Z
+        completed_at: 2026-03-27T20:42:00.658Z
     events:
       - _ulid: 01KMRG73BCF8ZRHJDEQ25H658K
         actor: "@claude"
@@ -69535,6 +69554,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-27T20:41:59.449Z
+      - _ulid: 01KMRGGKMNZ2TZR8QZPBV23JPF
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence
+        timestamp: 2026-03-27T20:42:01.237Z
     examined_commit: dc170993b418400aeedeba1a53323ec4f275efd4
     external_links: []
     lifecycle_state: open
@@ -69547,5 +69573,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-27T20:36:49.645Z
-    updated_at: 2026-03-27T20:41:58.893Z
+    updated_at: 2026-03-27T20:42:00.658Z
     notes: []
