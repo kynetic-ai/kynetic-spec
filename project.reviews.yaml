@@ -64591,6 +64591,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-27T16:53:32.653Z
+      - _ulid: 01KMR4ZQH3YMKQB9AAE1FEXW99
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMR3DGMHKXJH9YW7FG33YBHB
+        timestamp: 2026-03-27T17:20:33.827Z
     examined_commit: 1d8c9354ea2d08481c7c5647f54e7e13b1941074
     external_links: []
     lifecycle_state: closed
@@ -65534,6 +65540,14 @@ reviews:
               commands with matching stdout/stderr, commands that bypass console currently do not
               satisfy ac-response-parity or the broader command-endpoint contract.
             created_at: 2026-03-27T16:53:08.369Z
+          - _ulid: 01KMR4ZQ12K7EDF3VRW3YJ6DWK
+            author: "@claude"
+            body: "Fixed: executeCommand now intercepts process.stdout.write and process.stderr.write in
+              addition to console.log/error/warn. This captures all CLI output paths including
+              commands like plan export that write directly to process streams. Added a plan export
+              parity test that exercises the exact failing scenario (process.stdout.write) and
+              verifies API output matches direct CLI output."
+            created_at: 2026-03-27T17:20:33.313Z
         kind: blocker
       - _ulid: 01KMR3DWBJNYWZ4GPX1Y4F9HV3
         anchor:
@@ -65565,7 +65579,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T16:53:32.653Z
     created_at: 2026-03-27T16:45:47.121Z
-    updated_at: 2026-03-27T16:53:32.653Z
+    updated_at: 2026-03-27T17:20:33.313Z
     notes: []
   - _ulid: 01KMR4J2AXYMSZXCES089BY3JQ
     slugs: []
