@@ -65,6 +65,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         "/",
         async ({ query, projectContext }) => {
           // AC: @daemon-entity-cache ac-serve-from-memory, ac-warming-availability
+          // AC: @shadow-lazy-read-sync ac-daemon-bypass — cache-first path bypasses per-request drift-check
           const cache = getEntityCache?.(projectContext.path);
           const tasksDomainState = cache?.getDomainState("tasks");
 
@@ -82,9 +83,11 @@ export function createTasksRoutes(options: TasksRouteOptions) {
 
           // AC: @daemon-entity-cache ac-serve-from-memory — defer initContext to avoid
           // disk/git work on cache hits. Only initialize when disk fallback is needed.
+          // AC: @shadow-lazy-read-sync ac-daemon-bypass — daemon fallback reads skip
+          // per-request drift-check; freshness is handled by background sync scheduler
           let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
           const getCtx = async () => {
-            if (!_ctx) _ctx = await initContext(projectContext.path);
+            if (!_ctx) _ctx = await initContext(projectContext.path, { syncMode: "skip" });
             return _ctx;
           };
 
@@ -238,9 +241,11 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         async ({ params, error: errorResponse, projectContext }) => {
           // AC: @daemon-entity-cache ac-serve-from-memory, ac-detail-on-demand — defer initContext
           // to avoid disk/git work on cache hits. Only initialize when disk fallback is needed.
+          // AC: @shadow-lazy-read-sync ac-daemon-bypass — daemon fallback reads skip
+          // per-request drift-check; freshness is handled by background sync scheduler
           let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
           const getCtx = async () => {
-            if (!_ctx) _ctx = await initContext(projectContext.path);
+            if (!_ctx) _ctx = await initContext(projectContext.path, { syncMode: "skip" });
             return _ctx;
           };
 
@@ -385,7 +390,9 @@ export function createTasksRoutes(options: TasksRouteOptions) {
             >;
             sessionsDir = join(projectContext.path, ".kspec-sessions");
           } else {
-            const ctx = await initContext(projectContext.path);
+            // AC: @shadow-lazy-read-sync ac-daemon-bypass — daemon fallback reads skip
+            // per-request drift-check; freshness is handled by background sync scheduler
+            const ctx = await initContext(projectContext.path, { syncMode: "skip" });
             tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
             items = await loadAllItems(ctx);
             sessionsDir = ctx.sessionsDir;

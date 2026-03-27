@@ -76,8 +76,9 @@ export function createTriageRoutes(options: TriageRouteOptions) {
           }
 
           let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
+          // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
           const getCtx = async () => {
-            if (!_ctx) _ctx = await initContext(projectContext.path);
+            if (!_ctx) _ctx = await initContext(projectContext.path, { syncMode: "skip" });
             return _ctx;
           };
 
@@ -175,7 +176,8 @@ export function createTriageRoutes(options: TriageRouteOptions) {
           // — the index tier (TriageIndexSummary) strips those fields.
           // Always load full records from disk for export.
           // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-          const ctx = await initContext(projectContext.path);
+          // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
+          const ctx = await initContext(projectContext.path, { syncMode: "skip" });
           let records = await loadTriageRecords(ctx);
 
           // Optional status filter on export
@@ -309,8 +311,9 @@ export function createTriageRoutes(options: TriageRouteOptions) {
           // AC: @daemon-entity-cache ac-serve-from-memory — defer initContext for cache hits
           const cache = getEntityCache?.(projectContext.path);
           let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
+          // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
           const getCtx = async () => {
-            if (!_ctx) _ctx = await initContext(projectContext.path);
+            if (!_ctx) _ctx = await initContext(projectContext.path, { syncMode: "skip" });
             return _ctx;
           };
 

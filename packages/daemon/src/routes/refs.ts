@@ -61,8 +61,9 @@ export function createRefsRoutes(options: RefsRouteOptions = {}) {
         // AC: @daemon-entity-cache ac-serve-from-memory — defer initContext to avoid
         // disk/git work when all domains are served from cache
         let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
+        // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
         const getCtx = async () => {
-          if (!_ctx) _ctx = await initContext(projectContext.path);
+          if (!_ctx) _ctx = await initContext(projectContext.path, { syncMode: "skip" });
           return _ctx;
         };
 

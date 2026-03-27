@@ -60,11 +60,11 @@ export function createAggregationRoutes(_options: AggregationRouteOptions = {}) 
             // AC: @daemon-read-path ac-index-from-cache — build from cached data
             tasks = cachedTasks as unknown as LoadedTask[];
           } else {
-            const ctx = await initContext(projectContext.path);
+            const ctx = await initContext(projectContext.path, { syncMode: "skip" });
             tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
           }
         } else {
-          const ctx = await initContext(projectContext.path);
+          const ctx = await initContext(projectContext.path, { syncMode: "skip" });
           tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
         }
 
@@ -128,7 +128,7 @@ export function createAggregationRoutes(_options: AggregationRouteOptions = {}) 
         if (cache && tasksDomainState === "ready") {
           tasks = (cache.getTaskIndex() ?? []) as unknown as LoadedTask[];
         } else {
-          const ctx = await initContext(projectContext.path);
+          const ctx = await initContext(projectContext.path, { syncMode: "skip" });
           tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
         }
 
@@ -137,7 +137,7 @@ export function createAggregationRoutes(_options: AggregationRouteOptions = {}) 
           items = (cache.getItemIndex() ?? []) as unknown as LoadedSpecItem[];
         } else {
           const { loadAllItems } = await import("../../parser/index.js");
-          const ctx = await initContext(projectContext.path);
+          const ctx = await initContext(projectContext.path, { syncMode: "skip" });
           items = await loadAllItems(ctx);
         }
 
@@ -147,7 +147,7 @@ export function createAggregationRoutes(_options: AggregationRouteOptions = {}) 
         // Run validation for error/warning counts and completeness data
         // Note: validate() performs deep schema/ref/completeness checks that
         // require full context — this is computational, not index building
-        const ctx = await initContext(projectContext.path);
+        const ctx = await initContext(projectContext.path, { syncMode: "skip" });
         const validationResult = await validate(ctx);
 
         // Build alignment index from cached data
@@ -231,7 +231,7 @@ export function createAggregationRoutes(_options: AggregationRouteOptions = {}) 
 
         let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
         const getCtx = async () => {
-          if (!_ctx) _ctx = await initContext(projectContext.path);
+          if (!_ctx) _ctx = await initContext(projectContext.path, { syncMode: "skip" });
           return _ctx;
         };
 

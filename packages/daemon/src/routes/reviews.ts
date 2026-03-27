@@ -193,8 +193,9 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
           }
 
           let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
+          // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
           const getCtx = async () => {
-            if (!_ctx) _ctx = await initContext(projectContext.path);
+            if (!_ctx) _ctx = await initContext(projectContext.path, { syncMode: "skip" });
             return _ctx;
           };
 
@@ -377,7 +378,8 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
             }
           }
           if (!review) {
-            const ctx = await initContext(projectContext.path);
+            // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
+            const ctx = await initContext(projectContext.path, { syncMode: "skip" });
             const reviews = await loadReviewRecords(ctx);
             review = findReviewByRef(reviews, params.id);
             // Cache the loaded detail for subsequent requests

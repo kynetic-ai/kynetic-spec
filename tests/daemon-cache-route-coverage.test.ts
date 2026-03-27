@@ -5,14 +5,18 @@
  * and GET /api/sessions?task_id=... serve from the entity cache when warm,
  * without falling back to disk-based initContext/loadAllItems/loadAllTasks.
  *
+ * Also verifies ac-daemon-bypass: daemon read routes that fall through to
+ * initContext on cache miss pass syncMode "skip" to avoid per-request drift-check.
+ *
  * AC: @daemon-entity-cache ac-serve-from-memory
+ * AC: @shadow-lazy-read-sync ac-daemon-bypass — daemon reads bypass per-request drift-check
  */
 
 import { execSync } from "node:child_process";
 import { mkdirSync, writeFileSync } from "node:fs";
 import * as path from "node:path";
 import { Elysia } from "elysia";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { cleanupTempDir, createTempDir, initGitRepo, testUlid } from "./helpers/cli.js";
 import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.ts";
 import { createTasksRoutes } from "../dist/daemon/routes/tasks.ts";
@@ -23,6 +27,7 @@ import type { RouteEntityCache, EntityCacheAccessor } from "../dist/daemon/route
 import type { TaskSummary } from "../dist/parser/task-data-manager.ts";
 import type { ItemSummary } from "../dist/daemon/entity-cache.ts";
 import type { SessionLogSummary } from "../dist/sessions/store.ts";
+import * as yamlModule from "../dist/parser/yaml.js";
 
 const TASK_ULID = testUlid("RTSK", 1);
 const SPEC_ULID = testUlid("RSPC", 2);
@@ -316,5 +321,135 @@ describe("Route-level cache coverage for related-sessions and filtered sessions"
     const body = (await res.json()) as { items: SessionLogSummary[]; total: number };
     expect(body.total).toBe(1);
     expect(body.items[0]).toMatchObject({ id: SESSION_ID });
+  });
+});
+
+// ─── ac-daemon-bypass: cache-miss fallback skips drift-check ─────────────────
+// These tests verify that daemon read routes pass syncMode "skip" to initContext
+// when falling through to disk on cache miss, ensuring no per-request drift-check.
+
+describe("Daemon read routes skip drift-check on cache-miss fallback", () => {
+  let noCacheApp: Elysia;
+  let noCacheTempDir: string;
+  let initContextSpy: ReturnType<typeof vi.spyOn>;
+
+  beforeEach(async () => {
+    noCacheTempDir = await createTempDir("kspec-daemon-bypass-");
+    initGitRepo(noCacheTempDir);
+
+    // Set up minimal project fixtures
+    mkdirSync(path.join(noCacheTempDir, ".kspec"), { recursive: true });
+    mkdirSync(path.join(noCacheTempDir, "modules"), { recursive: true });
+
+    writeFileSync(
+      path.join(noCacheTempDir, "kynetic.yaml"),
+      `kynetic: "1.0"\nproject:\n  name: Daemon Bypass Test\n  version: "0.1.0"\n  status: draft\nincludes:\n  - modules/test.yaml\ntasks_file: project.tasks.yaml\n`,
+    );
+
+    writeFileSync(
+      path.join(noCacheTempDir, "modules", "test.yaml"),
+      `features:\n  - _ulid: "${SPEC_ULID}"\n    slugs:\n      - cache-test-spec\n    title: "Cache Test Spec"\n    type: feature\n    description: "A test spec"\n    created: "2026-01-01T00:00:00Z"\n`,
+    );
+
+    writeFileSync(
+      path.join(noCacheTempDir, "project.tasks.yaml"),
+      `tasks:\n  - _ulid: "${TASK_ULID}"\n    slugs:\n      - cache-test-task\n    title: "Cache Test Task"\n    description: "A test task"\n    status: in_progress\n    type: task\n    automation: eligible\n    spec_ref: "@cache-test-spec"\n    created_at: "2026-01-01T00:00:00Z"\n`,
+    );
+
+    execSync('git add -A && git commit -m "daemon bypass test setup"', {
+      cwd: noCacheTempDir,
+      stdio: "pipe",
+    });
+
+    // NO entity cache — routes fall through to initContext on every read
+    const getEntityCache: EntityCacheAccessor = () => undefined as unknown as RouteEntityCache;
+    const pubsub = new PubSubManager();
+    const { middleware } = projectContextMiddleware();
+
+    noCacheApp = new Elysia()
+      .use(middleware)
+      .use(createTasksRoutes({ pubsub, getEntityCache }))
+      .use(createItemsRoutes({ getEntityCache }));
+
+    // Spy on initContext and mock it to return a valid context that includes
+    // the test task data. This lets us verify the syncMode argument without
+    // needing a full shadow branch setup.
+    initContextSpy = vi.spyOn(yamlModule, "initContext").mockResolvedValue({
+      rootDir: noCacheTempDir,
+      projectRoot: noCacheTempDir,
+      specDir: noCacheTempDir,
+      sessionsDir: path.join(noCacheTempDir, ".kspec-sessions"),
+      manifestPath: path.join(noCacheTempDir, "kynetic.yaml"),
+      manifest: { project: { name: "Test", version: "0.1.0", status: "draft" as const }, modules: [] },
+      shadow: null,
+      config: {
+        shadow: {
+          branch: "kspec-meta",
+          directory: ".kspec",
+          remote: null,
+          sync_interval: 60,
+        },
+        identity: { author: null },
+      },
+    } as Awaited<ReturnType<typeof yamlModule.initContext>>);
+  });
+
+  afterEach(async () => {
+    initContextSpy.mockRestore();
+    await cleanupTempDir(noCacheTempDir);
+  });
+
+  function makeNoCacheRequest(urlPath: string, init: RequestInit = {}) {
+    return noCacheApp.handle(
+      new Request(`http://localhost${urlPath}`, {
+        method: init.method ?? "GET",
+        headers: {
+          Host: "localhost",
+          "X-Kspec-Dir": noCacheTempDir,
+          ...(init.body ? { "Content-Type": "application/json" } : {}),
+          ...init.headers,
+        },
+        body: init.body,
+      }),
+    );
+  }
+
+  // AC: @shadow-lazy-read-sync ac-daemon-bypass — GET /api/tasks without cache passes syncMode "skip"
+  it("GET /api/tasks passes syncMode 'skip' to initContext on cache miss", async () => {
+    const res = await makeNoCacheRequest("/api/tasks");
+    // Route may return 200 or encounter downstream errors from mocked context,
+    // but the key assertion is that initContext was called with syncMode: "skip"
+    expect(initContextSpy).toHaveBeenCalled();
+    const calls = initContextSpy.mock.calls;
+    const hasSkipMode = calls.some(
+      (call) => call[1] && (call[1] as { syncMode?: string }).syncMode === "skip",
+    );
+    expect(hasSkipMode).toBe(true);
+  });
+
+  // AC: @shadow-lazy-read-sync ac-daemon-bypass — GET /api/tasks/:ref without cache passes syncMode "skip"
+  it("GET /api/tasks/:ref passes syncMode 'skip' to initContext on cache miss", async () => {
+    const res = await makeNoCacheRequest(`/api/tasks/@cache-test-task`);
+    expect(initContextSpy).toHaveBeenCalled();
+    const calls = initContextSpy.mock.calls;
+    const hasSkipMode = calls.some(
+      (call) => call[1] && (call[1] as { syncMode?: string }).syncMode === "skip",
+    );
+    expect(hasSkipMode).toBe(true);
+  });
+
+  // AC: @shadow-lazy-read-sync ac-daemon-bypass — POST /api/items/batch without cache passes syncMode "skip"
+  it("POST /api/items/batch passes syncMode 'skip' to initContext on cache miss", async () => {
+    initContextSpy.mockClear();
+    const res = await makeNoCacheRequest("/api/items/batch", {
+      method: "POST",
+      body: JSON.stringify({ refs: ["@cache-test-task"] }),
+    });
+    expect(initContextSpy).toHaveBeenCalled();
+    const calls = initContextSpy.mock.calls;
+    const hasSkipMode = calls.some(
+      (call) => call[1] && (call[1] as { syncMode?: string }).syncMode === "skip",
+    );
+    expect(hasSkipMode).toBe(true);
   });
 });

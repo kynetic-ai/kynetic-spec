@@ -61,7 +61,8 @@ export function createInboxRoutes(options: InboxRouteOptions) {
         }
         if (!items) {
           // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-          const ctx = await initContext(projectContext.path);
+          // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
+          const ctx = await initContext(projectContext.path, { syncMode: "skip" });
           items = await loadInboxItems(ctx);
         }
 

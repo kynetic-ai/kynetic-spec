@@ -64,7 +64,7 @@ export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
 
           let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
           const getCtx = async () => {
-            if (!_ctx) _ctx = await initContext(projectContext.path);
+            if (!_ctx) _ctx = await initContext(projectContext.path, { syncMode: "skip" });
             return _ctx;
           };
 
@@ -255,7 +255,8 @@ export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
       // Note: validate() requires full context for deep schema/ref/completeness checks.
       .get("/validate", async ({ projectContext }) => {
         // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-        const ctx = await initContext(projectContext.path);
+        // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
+        const ctx = await initContext(projectContext.path, { syncMode: "skip" });
 
         // AC: @api-contract ac-20 - Run validation and return ValidationResult
         const result = await validate(ctx);
@@ -294,7 +295,7 @@ export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
         if (cache && tasksDomainState === "ready") {
           tasks = (cache.getTaskIndex() ?? []) as unknown as LoadedTask[];
         } else {
-          const ctx = await initContext(projectContext.path);
+          const ctx = await initContext(projectContext.path, { syncMode: "skip" });
           tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
         }
 
@@ -303,7 +304,7 @@ export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
           items = (cache.getItemIndex() ?? []) as unknown as LoadedSpecItem[];
         } else {
           const { loadAllItems } = await import("../../parser/index.js");
-          const ctx = await initContext(projectContext.path);
+          const ctx = await initContext(projectContext.path, { syncMode: "skip" });
           items = await loadAllItems(ctx);
         }
 

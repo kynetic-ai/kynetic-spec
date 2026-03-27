@@ -61,7 +61,8 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
 
         // Fallback: cache not ready or no cached session context
         // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-        const ctx = await initContext(projectContext.path);
+        // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
+        const ctx = await initContext(projectContext.path, { syncMode: "skip" });
         const session = await loadSessionContext(ctx);
 
         // AC: @api-contract ac-15 - Return session context (focus, threads, questions)
@@ -91,7 +92,8 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
         }
         if (!meta) {
           // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-          const ctx = await initContext(projectContext.path);
+          // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
+          const ctx = await initContext(projectContext.path, { syncMode: "skip" });
           meta = await loadMetaContext(ctx);
         }
 
@@ -197,7 +199,8 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
         }
         if (!meta) {
           // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-          const ctx = await initContext(projectContext.path);
+          // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
+          const ctx = await initContext(projectContext.path, { syncMode: "skip" });
           meta = await loadMetaContext(ctx);
         }
 
@@ -230,7 +233,8 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
           }
           if (!meta) {
             // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-            const ctx = await initContext(projectContext.path);
+            // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
+            const ctx = await initContext(projectContext.path, { syncMode: "skip" });
             meta = await loadMetaContext(ctx);
           }
 
@@ -287,7 +291,7 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
         }
 
         // Fallback: cache not available at all (no entity cache configured)
-        const ctx = await initContext(projectContext.path);
+        const ctx = await initContext(projectContext.path, { syncMode: "skip" });
         const manifest = ctx.manifest;
         const config = ctx.config;
 
@@ -323,7 +327,7 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
         }
 
         // Fallback: cache not available at all (no entity cache configured)
-        const ctx = await initContext(projectContext.path);
+        const ctx = await initContext(projectContext.path, { syncMode: "skip" });
 
         if (!ctx.shadow) {
           return {
@@ -369,7 +373,8 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
           meta = cache.getMetaDetail();
         }
         if (!meta) {
-          const ctx = await initContext(projectContext.path);
+          // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
+          const ctx = await initContext(projectContext.path, { syncMode: "skip" });
           meta = await loadMetaContext(ctx);
         }
 
