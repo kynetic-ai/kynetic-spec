@@ -61484,9 +61484,25 @@ reviews:
           status: pass
           name: evidence-log
         timestamp: 2026-03-27T05:57:26.109Z
+      - _ulid: 01KMPXX3ENRHYFCPFAP04G9XA5
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-27T05:57:33.270Z
+      - _ulid: 01KMPXX3EQ96XNG7NZ9BM1ZKY6
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-27T05:57:33.271Z
     examined_commit: 5b03acb30a52caaebdc360768c3ede7096e7ea7a
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -61537,7 +61553,14 @@ reviews:
               task_id/spec_ref route-level cache assertions."
             created_at: 2026-03-27T05:57:21.678Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-27T05:57:33.269Z
     created_at: 2026-03-27T05:51:00.619Z
-    updated_at: 2026-03-27T05:57:25.527Z
+    updated_at: 2026-03-27T05:57:33.271Z
     notes: []
