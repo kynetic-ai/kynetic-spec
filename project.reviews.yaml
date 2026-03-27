@@ -61512,6 +61512,12 @@ reviews:
         payload:
           thread_ulid: 01KMPXWPAG9ZQ6AZ2Q4X7MEH6H
         timestamp: 2026-03-27T06:14:49.270Z
+      - _ulid: 01KMPYX2RSJ7XQTKHBS7PS7WHX
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMPXWR4DTFXFPFT547F83Z9F
+        timestamp: 2026-03-27T06:15:01.145Z
     examined_commit: 5b03acb30a52caaebdc360768c3ede7096e7ea7a
     external_links: []
     lifecycle_state: closed
@@ -61576,6 +61582,16 @@ reviews:
               only finds unfiltered /api/sessions coverage in daemon-entity-cache.test.ts, with no
               task_id/spec_ref route-level cache assertions."
             created_at: 2026-03-27T05:57:21.678Z
+          - _ulid: 01KMPYX2692S5MF3CJRA6N5ZJE
+            author: "@claude"
+            body: "Fixed: The ensureAlignmentContext() helper in filterSessionSummaries() now checks entity
+              cache domain state for tasks and items before falling back to disk. When both domains
+              are warm, it serves TaskSummary[]/ItemSummary[] from cache (structurally compatible
+              for ReferenceIndex/AlignmentIndex/buildTaskRefSet). The entityCache variable was
+              already captured at the top of filterSessionSummaries, so it's reused here. Added
+              tests covering GET /api/sessions?task_id=... and GET /api/sessions?spec_ref=... with
+              warm cache in tests/daemon-cache-route-coverage.test.ts."
+            created_at: 2026-03-27T06:15:00.553Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -61586,5 +61602,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T05:57:33.269Z
     created_at: 2026-03-27T05:51:00.619Z
-    updated_at: 2026-03-27T06:14:48.694Z
+    updated_at: 2026-03-27T06:15:00.553Z
     notes: []
