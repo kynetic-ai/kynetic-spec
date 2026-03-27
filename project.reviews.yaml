@@ -56949,6 +56949,17 @@ reviews:
         runner: npm
         created_at: 2026-03-27T00:43:04.171Z
         completed_at: 2026-03-27T00:43:04.171Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --run tests/git-terminal-prompt-suppression.test.ts passed: 4 suites, 7
+          tests."
+        name: targeted prompt suppression tests
+        required: true
+        runner: npm
+        created_at: 2026-03-27T00:43:05.541Z
+        completed_at: 2026-03-27T00:43:05.541Z
     events:
       - _ulid: 01KMPBM6Z6D9W1ZCYG9RA326AY
         actor: "@claude"
@@ -56977,6 +56988,13 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-03-27T00:43:04.570Z
+      - _ulid: 01KMPBXAB7Y19TKRE810AG2R2B
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted prompt suppression tests
+        timestamp: 2026-03-27T00:43:05.959Z
     examined_commit: 1dee6a463dd7feeecf5354988107b287660b684e
     external_links: []
     lifecycle_state: open
@@ -56989,5 +57007,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-27T00:38:07.590Z
-    updated_at: 2026-03-27T00:43:04.171Z
+    updated_at: 2026-03-27T00:43:05.541Z
     notes: []
