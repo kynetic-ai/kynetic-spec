@@ -63836,6 +63836,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-27T15:55:13.647Z
+      - _ulid: 01KMR0APD5MA0S5X0SRQRDD3RH
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMR0ANZ8T5EYBFS3XQ0VGPMB
+        timestamp: 2026-03-27T15:59:10.245Z
     examined_commit: 316e9bc71e013056749ce643496b1e5eb393a8c9
     external_links: []
     lifecycle_state: open
@@ -63845,8 +63852,26 @@ reviews:
       content_hash: ""
       ref: "@01KMMB3TNHWVQT4HHB9XC1DE0X"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMR0ANZ8T5EYBFS3XQ0VGPMB
+        anchor:
+          type: code
+          commit: 316e9bc71e013056749ce643496b1e5eb393a8c9
+          line_end: 106
+          line_start: 104
+          path: packages/daemon/src/routes/aggregation.ts
+          side: head
+        entries:
+          - _ulid: 01KMR0ANZ814GHW4VDNS0S4TCV
+            author: "@claude"
+            body: This endpoint still builds its AlignmentIndex from buildIndexes(ctx), and buildIndexes() still
+              does fresh loadAllTasks()/loadAllItems() disk reads. The task/spec require
+              reference/alignment indexes for read routes to come from cached entity data instead of
+              per-request context loads, so /api/aggregation/validation still violates
+              ac-index-from-cache on the production path.
+            created_at: 2026-03-27T15:59:09.800Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T15:54:47.446Z
-    updated_at: 2026-03-27T15:55:13.156Z
+    updated_at: 2026-03-27T15:59:09.800Z
     notes: []
