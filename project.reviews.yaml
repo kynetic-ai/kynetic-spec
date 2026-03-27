@@ -65952,6 +65952,54 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-27T17:30:24.101Z
+      - _ulid: 01KMR6J2KK0N03418VS3GNHRXS
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMR5FP8WKZ5YKK75CNE9FR0W
+        timestamp: 2026-03-27T17:48:03.571Z
+      - _ulid: 01KMR6J3ZCP2ADNH8VFYSM65PT
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMR5FP8WKZ5YKK75CNE9FR0W
+        timestamp: 2026-03-27T17:48:04.972Z
+      - _ulid: 01KMR6J59P7KGYB4C7QR90J414
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMR5FSD22WFQXRR810BPWP9T
+        timestamp: 2026-03-27T17:48:06.327Z
+      - _ulid: 01KMR6J6HXX4CFVFCKZ3S52T61
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMR5FSD22WFQXRR810BPWP9T
+        timestamp: 2026-03-27T17:48:07.613Z
+      - _ulid: 01KMR6J7YR39D8VYK6F8GYZFKA
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMR5GJ7T76B9KH8JC7WZV5AN
+        timestamp: 2026-03-27T17:48:09.048Z
+      - _ulid: 01KMR6J9JPK387WQ5ATG27A07V
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMR5GJ7T76B9KH8JC7WZV5AN
+        timestamp: 2026-03-27T17:48:10.710Z
+      - _ulid: 01KMR6JATPFPAHN4S6MW7BKE9N
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMR5GKR9QPEHRETFX3QXRVJK
+        timestamp: 2026-03-27T17:48:11.991Z
+      - _ulid: 01KMR6JC6S8MMB4RHKFJZC2B4B
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMR5GKR9QPEHRETFX3QXRVJK
+        timestamp: 2026-03-27T17:48:13.401Z
     examined_commit: 16d50422a0766c15efda5c39d936c326782c3f50
     external_links: []
     lifecycle_state: closed
@@ -65979,7 +66027,16 @@ reviews:
               for error responses, and the tests miss it because they only assert the header on the
               success path."
             created_at: 2026-03-27T17:29:16.828Z
+          - _ulid: 01KMR6J22SC79FE6XMJM333Z8M
+            author: "@claude"
+            body: "Fixed: Moved X-Request-Id assignment from onBeforeHandle to onTransform. Elysia runs body
+              validation between onTransform and onBeforeHandle, so onTransform fires before
+              validation and ensures the header appears on all responses including validation
+              errors. Added test that verifies X-Request-Id on missing-field 4xx response."
+            created_at: 2026-03-27T17:48:03.033Z
         kind: blocker
+        resolved_at: 2026-03-27T17:48:04.422Z
+        resolved_by: "@claude"
       - _ulid: 01KMR5FSD22WFQXRR810BPWP9T
         anchor:
           type: code
@@ -66425,7 +66482,15 @@ reviews:
               whitespace will differ from direct CLI execution, and the current tests mask that by
               using the trimmed  helper or calling  before comparison.
             created_at: 2026-03-27T17:29:20.034Z
+          - _ulid: 01KMR6J4SSV9SF87K82R14FAWZ
+            author: "@claude"
+            body: "Fixed: Removed .replace(/\\n$/, '') from stdout and .trim() from stderr in executeCommand.
+              Output is now returned verbatim — exactly what direct CLI execution produces. Tests
+              updated to verify stdout contains trailing newline and is not stripped."
+            created_at: 2026-03-27T17:48:05.817Z
         kind: blocker
+        resolved_at: 2026-03-27T17:48:07.124Z
+        resolved_by: "@claude"
       - _ulid: 01KMR5GJ7T76B9KH8JC7WZV5AN
         anchor:
           type: code
@@ -66445,7 +66510,14 @@ reviews:
               therefore differ from direct CLI execution, and the current tests mask that by using
               the trimmed kspec() helper or trimming before comparison.
             created_at: 2026-03-27T17:29:45.466Z
+          - _ulid: 01KMR6J7C4G49JMK2DPPEXTAMA
+            author: "@claude"
+            body: "Fixed: Same root cause as the other response parity thread — .replace(/\\n$/, '') and .trim()
+              removed. The BatchExitError filter also no longer trims. API output is now verbatim."
+            created_at: 2026-03-27T17:48:08.452Z
         kind: blocker
+        resolved_at: 2026-03-27T17:48:10.099Z
+        resolved_by: "@claude"
       - _ulid: 01KMR5GKR9QPEHRETFX3QXRVJK
         anchor:
           type: code
@@ -66464,7 +66536,15 @@ reviews:
               the headers only contained content-type, with no x-request-id. The tests miss this
               because they only assert the header on the success path.'
             created_at: 2026-03-27T17:29:47.017Z
+          - _ulid: 01KMR6JAC4BBJ4GR765YX2F0GD
+            author: "@claude"
+            body: "Fixed: Same root cause as the X-Request-Id thread above — onTransform now sets the header
+              before validation runs. Test added to confirm header presence on validation error
+              responses."
+            created_at: 2026-03-27T17:48:11.524Z
         kind: blocker
+        resolved_at: 2026-03-27T17:48:12.929Z
+        resolved_by: "@claude"
       - _ulid: 01KMR5H6YK49N0QA9J07886PNE
         entries:
           - _ulid: 01KMR5H6YKJAX5719CRJ5R25SG
@@ -66491,7 +66571,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T17:30:24.101Z
     created_at: 2026-03-27T17:24:05.606Z
-    updated_at: 2026-03-27T17:30:24.101Z
+    updated_at: 2026-03-27T17:48:12.929Z
     notes: []
   - _ulid: 01KMR61WDH3RKAYGGRB2ZZA39R
     slugs: []
