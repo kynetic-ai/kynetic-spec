@@ -58779,6 +58779,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-27T03:17:02.629Z
+      - _ulid: 01KMPMYZ4R2N4Y8PTNW5GB7NJE
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMPMYYHWN2YSG71JJ2TMD3F7
+        timestamp: 2026-03-27T03:21:17.208Z
     examined_commit: ea11de060b7e709735e4d74f9a686a48a8fde614
     external_links: []
     lifecycle_state: open
@@ -58788,8 +58795,30 @@ reviews:
       content_hash: ""
       ref: "@01KMMB3T2K3T6A1CJR884EPKJF"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMPMYYHWN2YSG71JJ2TMD3F7
+        anchor:
+          type: code
+          commit: ea11de060b7e709735e4d74f9a686a48a8fde614
+          line_end: 605
+          line_start: 599
+          path: src/daemon/entity-cache.ts
+          side: head
+        entries:
+          - _ulid: 01KMPMYYHWEAGD40B040FNB5Y6
+            author: "@claude"
+            body: "Warmup state is still incorrect for domains later in the progressive load order. `loadAll()`
+              only calls `loadDomain()` sequentially, and untouched domains remain `\"unloaded\"`
+              until their turn starts, but every route treats only `\"loading\"` as the signal to
+              return `_cache_status: \"loading\"`. The repo's own route-level test documents this
+              mismatch (`tests/daemon-entity-cache.test:974-979` expects the route check to see
+              `\"unloaded\"` before `loadAll()`), so requests for plans/reviews/triage/etc. during
+              registration warmup will still fall back to disk instead of returning the required
+              loading response. That breaks `@daemon-entity-cache` `ac-warming-availability` and
+              undermines `ac-progressive-loading` for not-yet-started domains."
+            created_at: 2026-03-27T03:21:16.604Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T03:16:34.259Z
-    updated_at: 2026-03-27T03:17:01.706Z
+    updated_at: 2026-03-27T03:21:16.604Z
     notes: []
