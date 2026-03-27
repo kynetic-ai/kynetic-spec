@@ -67285,6 +67285,12 @@ reviews:
         payload:
           thread_ulid: 01KMR85CN0FQRNZSC2H713CZZX
         timestamp: 2026-03-27T18:37:51.594Z
+      - _ulid: 01KMR9DCBWCA188XX3Y99N5FW7
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMR85HF6FHSB5BV7632N6GJC
+        timestamp: 2026-03-27T18:37:55.452Z
     examined_commit: 01190340e042aca9fafa2e7e552744dcb7cc9db1
     external_links: []
     lifecycle_state: closed
@@ -67401,6 +67407,8 @@ reviews:
               during warmup."
             created_at: 2026-03-27T18:37:32.877Z
         kind: blocker
+        resolved_at: 2026-03-27T18:37:54.898Z
+        resolved_by: "@claude"
       - _ulid: 01KMR85K3NHR1SREH5FMVKXEYP
         anchor:
           type: code
@@ -67464,7 +67472,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T18:17:03.104Z
     created_at: 2026-03-27T18:09:37.768Z
-    updated_at: 2026-03-27T18:37:51.036Z
+    updated_at: 2026-03-27T18:37:54.898Z
     notes: []
   - _ulid: 01KMR8A56JWJ6WNSYTTZ3H4CPE
     slugs: []
