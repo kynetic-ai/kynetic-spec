@@ -400,3 +400,27 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T03:21:32.032Z
+  - _ulid: 01KMPP7T71SE1YKDFGWQTFTBGW
+    content: >-
+      Fix cycle 12: addressed 2 blockers from review cycle 11.
+
+
+      Blocker 1 (warmup state incorrect for later domains): loadAll() now marks all domains as
+      'loading' upfront before starting sequential loads. Routes see 'loading' for not-yet-started
+      domains and return _cache_status: 'loading' instead of falling through to disk reads. This
+      correctly implements ac-warming-availability and ac-progressive-loading.
+
+
+      Blocker 2 (eager detail preloading): Removed detail tier pre-population from doLoadDomain()
+      for plans, reviews, and triage. Index loading only populates summaries; full records load on
+      demand when accessed. This correctly implements ac-detail-on-demand two-tier storage.
+
+
+      Added 4 new behavioral tests: warmup state marks all domains loading, plan detail not
+      preloaded, review detail not preloaded, triage detail not preloaded.
+
+
+      All 6905 tests pass (5 skipped, 0 failures).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T03:43:35.650Z
