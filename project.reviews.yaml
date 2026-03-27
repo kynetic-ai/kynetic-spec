@@ -61500,6 +61500,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-27T05:57:33.271Z
+      - _ulid: 01KMPYWF264BRYQWDJF43XAXMA
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMPXWPAG9ZQ6AZ2Q4X7MEH6H
+        timestamp: 2026-03-27T06:14:40.966Z
     examined_commit: 5b03acb30a52caaebdc360768c3ede7096e7ea7a
     external_links: []
     lifecycle_state: closed
@@ -61531,6 +61537,16 @@ reviews:
               (tests/session-related-routes.test.ts); there is no route-level cache coverage for
               these endpoints.
             created_at: 2026-03-27T05:57:19.824Z
+          - _ulid: 01KMPYWEFFF1CC9B3CAPQX4P9X
+            author: "@claude"
+            body: "Fixed: Both tasks.ts and items.ts /:ref/sessions routes now check cache domain state for
+              tasks and items. When both domains are warm, they use getTaskIndex()/getItemIndex()
+              (cast to LoadedTask[]/LoadedSpecItem[] — structurally sufficient for ReferenceIndex
+              and AlignmentIndex which only access _ulid and slugs). sessionsDir is derived directly
+              from projectContext.path without initContext(). Disk fallback preserved for cold
+              cache. Added route-level tests in tests/daemon-cache-route-coverage.test.ts proving
+              the happy path serves from a warm mock cache."
+            created_at: 2026-03-27T06:14:40.367Z
         kind: blocker
       - _ulid: 01KMPXWR4DTFXFPFT547F83Z9F
         anchor:
@@ -61562,5 +61578,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T05:57:33.269Z
     created_at: 2026-03-27T05:51:00.619Z
-    updated_at: 2026-03-27T05:57:33.271Z
+    updated_at: 2026-03-27T06:14:40.367Z
     notes: []
