@@ -69985,7 +69985,18 @@ reviews:
     slugs: []
     title: Review task-cli-proxy-routing (cycle 2)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Exited 6 with repo-wide warnings only (orphaned skills/spec coverage warnings); no
+          task-specific validation errors.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-27T22:12:54.977Z
+        completed_at: 2026-03-27T22:12:54.977Z
     events:
       - _ulid: 01KMRNG6XS39RZY6Q4H396G4SM
         actor: "@claude"
@@ -70007,6 +70018,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMRNQ00RH5GPF7C6P1JWBF6T
         timestamp: 2026-03-27T22:12:53.921Z
+      - _ulid: 01KMRNQ20WKSG75CDR0FH9VG49
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-27T22:12:55.452Z
     examined_commit: 5efcd4a5853a2c8af498456961106cb3d38f2a86
     external_links: []
     lifecycle_state: open
@@ -70041,5 +70059,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-27T22:09:11.097Z
-    updated_at: 2026-03-27T22:12:53.400Z
+    updated_at: 2026-03-27T22:12:54.977Z
     notes: []
