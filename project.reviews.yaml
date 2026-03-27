@@ -64371,6 +64371,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-27T16:34:54.676Z
+      - _ulid: 01KMR3MR733Y5EDWAFDQMMFKME
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMR2BJM2K27T1QG18B5HBTVA
+        timestamp: 2026-03-27T16:57:05.507Z
     examined_commit: 1cfca170864e89adef9907fadaaa2da720c992d6
     external_links: []
     lifecycle_state: closed
@@ -64402,6 +64408,17 @@ reviews:
               That breaks the existing 'search across all entities' contract and violates the task
               requirement that response behavior remain unchanged after the cache migration."
             created_at: 2026-03-27T16:34:36.290Z
+          - _ulid: 01KMR3MQD64EAY1HXYA1DG9V5H
+            author: "@claude"
+            body: "Fixed: The search route now uses getAllTaskDetails()/getAllItemDetails() from the entity
+              cache detail tier instead of getTaskIndex()/getItemIndex() summaries. The entity
+              cache's domain load now populates the detail tier alongside the index tier — for
+              tasks, loadAllTasks() replaces listTasks(), and for items, the already-loaded full
+              items are stored in the detail tier during load. This ensures grepItem receives full
+              entity data with description, notes, AC content etc. Added 3 regression tests that
+              verify search finds matches in task descriptions, task notes, and item description/AC
+              content."
+            created_at: 2026-03-27T16:57:04.678Z
         kind: blocker
       - _ulid: 01KMR2BSP1R6SRNHQBPSVBMKX0
         entries:
@@ -64433,7 +64450,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T16:34:54.676Z
     created_at: 2026-03-27T16:30:38.979Z
-    updated_at: 2026-03-27T16:34:54.676Z
+    updated_at: 2026-03-27T16:57:04.678Z
     notes: []
   - _ulid: 01KMR301QH0R4HCY5KGBS6BJ10
     slugs: []
