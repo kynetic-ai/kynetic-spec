@@ -65824,6 +65824,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMR5FSD22WFQXRR810BPWP9T
         timestamp: 2026-03-27T17:29:20.704Z
+      - _ulid: 01KMR5GJQ6BXHTW7TZ89WWZ1VF
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMR5GJ7T76B9KH8JC7WZV5AN
+        timestamp: 2026-03-27T17:29:45.958Z
     examined_commit: 16d50422a0766c15efda5c39d936c326782c3f50
     external_links: []
     lifecycle_state: open
@@ -66298,7 +66305,27 @@ reviews:
               using the trimmed  helper or calling  before comparison.
             created_at: 2026-03-27T17:29:20.034Z
         kind: blocker
+      - _ulid: 01KMR5GJ7T76B9KH8JC7WZV5AN
+        anchor:
+          type: code
+          commit: 16d50422a0766c15efda5c39d936c326782c3f50
+          line_end: 222
+          line_start: 214
+          path: packages/daemon/src/routes/command.ts
+          side: head
+        entries:
+          - _ulid: 01KMR5GJ7T9MEVT95GXHRG20XR
+            author: "@claude"
+            body: The route does not satisfy @daemon-command-api ac-response-parity because it strips observable
+              output before returning it. I verified with `node ./dist/cli/index.js task get
+              @01KMMB3V7N2GC0JSPJKJYMPJPV --json` that direct CLI stdout exits 0 and ends with a
+              trailing newline, but executeCommand removes that newline via .replace(/\n$/, "") and
+              also .trim()s stderr. Commands whose output depends on exact trailing whitespace will
+              therefore differ from direct CLI execution, and the current tests mask that by using
+              the trimmed kspec() helper or trimming before comparison.
+            created_at: 2026-03-27T17:29:45.466Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T17:24:05.606Z
-    updated_at: 2026-03-27T17:29:20.034Z
+    updated_at: 2026-03-27T17:29:45.466Z
     notes: []
