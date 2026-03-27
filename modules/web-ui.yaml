@@ -380,6 +380,9 @@ features:
               API read routes serve responses from the entity cache. Per-request
               sync operations move to the background sync scheduler so that read
               requests involve no git operations or filesystem reads.
+            status:
+              maturity: draft
+              implementation: in_progress
             depends_on: []
             implements: []
             relates_to: []
