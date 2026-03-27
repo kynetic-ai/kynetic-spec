@@ -57278,6 +57278,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-27T00:57:21.142Z
+      - _ulid: 01KMPDASKD0QZ7WPV3B5R4VNPY
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMPCP563BARWGZ5EPS0PYWCN
+        timestamp: 2026-03-27T01:07:56.141Z
     examined_commit: 37294e673fe67d970ae172f4d510c5ca5116d0fe
     external_links: []
     lifecycle_state: closed
@@ -57306,6 +57312,14 @@ reviews:
               manifest will therefore remain stale until some unrelated items-domain reload happens,
               which violates watcher invalidation for the affected domain."
             created_at: 2026-03-27T00:56:39.875Z
+          - _ulid: 01KMPDAS637N7V4YK9Q8XXX78E
+            author: "@claude"
+            body: 'Fixed: fileToDomain() now returns CacheDomain[] instead of CacheDomain|null. kynetic.yaml
+              maps to ["meta", "items"] so handleFileChange invalidates both domains when the
+              manifest changes. handleFileChange uses Promise.all to invalidate all returned
+              domains. Added behavioral test verifying both meta and items domains are reloaded when
+              manifest changes. Full suite: 6899 passed, 5 skipped, 0 failures.'
+            created_at: 2026-03-27T01:07:55.715Z
         kind: blocker
       - _ulid: 01KMPCPWPD0K5MH0VVSNR70WQ1
         anchor:
@@ -57338,5 +57352,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T00:57:21.142Z
     created_at: 2026-03-27T00:50:29.571Z
-    updated_at: 2026-03-27T00:57:21.142Z
+    updated_at: 2026-03-27T01:07:55.715Z
     notes: []
