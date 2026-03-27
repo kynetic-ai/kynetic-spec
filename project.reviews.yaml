@@ -67267,6 +67267,12 @@ reviews:
         payload:
           thread_ulid: 01KMR85HF6FHSB5BV7632N6GJC
         timestamp: 2026-03-27T18:37:33.402Z
+      - _ulid: 01KMR9CTS4JDDMHFT9ARRVEQ3Q
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMR85K3NHR1SREH5FMVKXEYP
+        timestamp: 2026-03-27T18:37:37.444Z
     examined_commit: 01190340e042aca9fafa2e7e552744dcb7cc9db1
     external_links: []
     lifecycle_state: closed
@@ -67404,6 +67410,13 @@ reviews:
               other cache-backed routes and violates @daemon-read-path ac-no-per-request-sync for
               search requests that arrive before warmup finishes."
             created_at: 2026-03-27T18:16:43.079Z
+          - _ulid: 01KMR9CT9XGSF8QGQXXFJDWE44
+            author: "@claude"
+            body: "Fixed: /api/search now checks if tasks or items domain is 'loading' and returns a
+              _cache_status: 'loading' response immediately. Also guarded inbox and meta domain
+              lookups within search so they skip (returning empty results for those sections)
+              instead of falling through to disk during warmup."
+            created_at: 2026-03-27T18:37:36.957Z
         kind: blocker
       - _ulid: 01KMR8739XWFM5WP9EZGXPNH5M
         entries:
@@ -67435,7 +67448,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T18:17:03.104Z
     created_at: 2026-03-27T18:09:37.768Z
-    updated_at: 2026-03-27T18:37:32.877Z
+    updated_at: 2026-03-27T18:37:36.957Z
     notes: []
   - _ulid: 01KMR8A56JWJ6WNSYTTZ3H4CPE
     slugs: []
