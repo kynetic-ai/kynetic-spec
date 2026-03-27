@@ -8534,6 +8534,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T04:11:56.156Z
+  - _ulid: 01KMPR1A85ZZ7VX2T6QP8VD1WH
+    type: friction
+    content: "Entity cache task hit 13 fix cycles. Root cause: initial implementation wired cache to
+      some routes but missed others (startup project, cross-domain write-through, refs loading
+      contract). Each review cycle found ~3 more unwired integration points. For cross-cutting
+      features that touch many route files, workers should do a systematic route-by-route audit
+      (checklist of every route × every cache behavior: serve-from-memory, write-through,
+      warming-availability, degradation fallback) before first submission. This would catch most
+      integration gaps in one pass rather than N review cycles."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T04:14:59.845Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
