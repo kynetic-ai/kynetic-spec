@@ -16910,7 +16910,7 @@ runs:
     completed_at: 2026-03-27T19:43:16.747Z
   - _ulid: 01KMRE6C329X30Q7W5C99MY7W7
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -16927,7 +16927,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-27T20:02:07.115Z
-        completed_at: 2026-03-27T20:02:07.115Z
+        completed_at: 2026-03-27T20:02:46.273Z
+        notes: Searched for existing tracking. No new friction or success patterns to capture from this
+          session. The fix cycle was clean and fast — the pattern (deferred-context with syncMode
+          skip) was well-established from fix cycle 1, and the test infrastructure was already in
+          place. The review correctly caught the one remaining bare call-site. No systemic friction
+          observed; the review-fix-submit loop worked as designed.
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-27T20:02:46.273Z
+        completed_at: 2026-03-27T20:02:46.273Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-27T20:01:28.674Z
