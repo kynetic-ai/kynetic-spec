@@ -8462,6 +8462,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T02:48:57.274Z
+  - _ulid: 01KMPKJX7DS3MJW2R4HKVFX0H6
+    type: friction
+    content: Review-thread creation via CLI is brittle when the comment body contains shell
+      metacharacters like backticks; this session triggered bash substitution errors before kspec
+      still recorded the thread. A file-based or stdin-based body option for kspec review comment
+      would make autonomous reviews safer and less error-prone.
+    author: codex
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-03-27T02:57:13.453Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
