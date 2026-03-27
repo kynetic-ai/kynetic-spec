@@ -63876,6 +63876,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMR0AT6K2YK5QXXV9CHE0PAG
         timestamp: 2026-03-27T15:59:14.571Z
+      - _ulid: 01KMR0AW31CJ7WQ6N2TXYAJH6P
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMR0AVMAHJH1CWGB5C70PB8X
+        timestamp: 2026-03-27T15:59:16.065Z
     examined_commit: 316e9bc71e013056749ce643496b1e5eb393a8c9
     external_links: []
     lifecycle_state: open
@@ -63941,7 +63948,27 @@ reviews:
               remove for alignment/index-building routes, so the AC is not met here yet either."
             created_at: 2026-03-27T15:59:14.132Z
         kind: blocker
+      - _ulid: 01KMR0AVMAHJH1CWGB5C70PB8X
+        entries:
+          - _ulid: 01KMR0AVMAS6MDA7YT0QQ6VR8F
+            author: "@claude"
+            body: "Evidence log\\nFiles read: packages/daemon/src/routes/aggregation.ts,
+              packages/daemon/src/routes/validation.ts, packages/daemon/src/routes/meta.ts,
+              packages/daemon/src/routes/refs.ts, packages/daemon/src/routes/tasks.ts,
+              packages/daemon/src/routes/items.ts, packages/daemon/src/routes/inbox.ts,
+              packages/daemon/src/routes/plans.ts, packages/daemon/src/server.ts,
+              src/parser/shadow-sync-scheduler.ts, src/parser/yaml.ts, src/daemon/entity-cache.ts,
+              tests/daemon-read-path.test.ts, tests/shadow-sync-scheduler.test.ts.\\nCommands run:
+              git diff --stat, git diff, git log --oneline --decorate --graph -20, kspec task get,
+              kspec item get, kspec review for-task, kspec validate, npm test, rg AC annotation
+              scan, rg onPull/buildIndexes lookups, targeted sed/nl reads.\\nClaims verified: full
+              local suite passed; buildIndexes() still does fresh loadAllTasks()/loadAllItems(); the
+              new ac-background-sync tests do not execute syncOnce() through a pulled=true
+              path.\\nCategories searched: correctness, AC/spec alignment, edge cases, error
+              handling, test quality, integration."
+            created_at: 2026-03-27T15:59:15.594Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-27T15:54:47.446Z
-    updated_at: 2026-03-27T15:59:14.132Z
+    updated_at: 2026-03-27T15:59:15.594Z
     notes: []
