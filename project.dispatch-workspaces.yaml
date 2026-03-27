@@ -24626,7 +24626,7 @@ workspaces:
         head: 87a703c5621e68433037da356a68de5007562e68
         last_seen_at: 2026-03-27T17:38:34.755Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-read-routes-01kmmb3t
-  - active_role: worker
+  - active_role: null
     base_branch_point: 1001be210b4251982b7386b475a48b0cc68188e4
     bootstrap:
       status: succeeded
@@ -24692,12 +24692,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-27T17:47:47.231Z
+      updated_at: 2026-03-27T17:50:22.327Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-27T17:47:47.231Z
+      updated_at: 2026-03-27T17:50:22.327Z
     integration:
       status: pending
       detail: null
@@ -24705,17 +24705,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 1001be210b4251982b7386b475a48b0cc68188e4
-      updated_at: 2026-03-27T17:47:47.231Z
-    lifecycle_state: active
+      updated_at: 2026-03-27T17:50:22.327Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMMB3V7N2GC0JSPJKJYMPJPV"
     task_slug: task-daemon-command-api
     timestamps:
       closed_at: null
       last_active_at: 2026-03-27T17:38:34.564Z
-      last_reconciled_at: 2026-03-27T17:47:47.231Z
+      last_reconciled_at: 2026-03-27T17:50:22.327Z
       created_at: 2026-03-27T15:54:11.704Z
-      updated_at: 2026-03-27T17:47:47.231Z
+      updated_at: 2026-03-27T17:50:22.327Z
     workspace_id: dispatch-workspace-01KMMB3V7N2GC0JSPJKJYMPJPV
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
