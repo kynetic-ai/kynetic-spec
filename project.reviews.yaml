@@ -62106,6 +62106,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMQ2H12KTB9RCABGX7JFAMZH
         timestamp: 2026-03-27T07:18:21.623Z
+      - _ulid: 01KMQ2HADCT2XXQGP5NYCKR4WE
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMQ2H9BFD9THJB7MXFXH84QE
+        timestamp: 2026-03-27T07:18:30.061Z
     examined_commit: caf1f08f934535175a2338ac462aaa9457963c40
     external_links: []
     lifecycle_state: open
@@ -62137,7 +62144,30 @@ reviews:
               full-domain reloads."
             created_at: 2026-03-27T07:18:20.500Z
         kind: blocker
+      - _ulid: 01KMQ2H9BFD9THJB7MXFXH84QE
+        anchor:
+          type: code
+          commit: caf1f08f934535175a2338ac462aaa9457963c40
+          line_end: 156
+          line_start: 122
+          path: packages/daemon/src/watcher.ts
+          side: head
+        entries:
+          - _ulid: 01KMQ2H9BGWA7BDB7GBFPNMPC5
+            author: "@claude"
+            body: 'Reload dedup is still broken for multi-file edits in the same domain. `KspecWatcher`
+              debounces by file path, so changing `modules/a.yaml` and `modules/b.yaml` 100 ms apart
+              schedules two separate timers. Each timer calls `cache.handleFileChange(...)`, and
+              `invalidateDomain()` only reuses an in-flight promise while a reload is already
+              running. Once the first reload finishes, the second timer triggers a second `items`
+              reload. I reproduced this with `npx tsx` against the current snapshot: two `items`
+              files changed within one debounce window produced `{"itemReloads":2}`. That violates
+              `ac-reload-dedup`, which requires a single reload per affected domain for clustered
+              watcher events, and it also makes write-heavy commits pay redundant full-domain
+              reloads.'
+            created_at: 2026-03-27T07:18:28.976Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T07:10:40.675Z
-    updated_at: 2026-03-27T07:18:20.500Z
+    updated_at: 2026-03-27T07:18:28.976Z
     notes: []
