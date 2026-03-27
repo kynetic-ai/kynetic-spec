@@ -60071,6 +60071,25 @@ reviews:
         required: false
         created_at: 2026-03-27T04:44:08.385Z
         completed_at: 2026-03-27T04:44:08.385Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: >-
+          > @kynetic-ai/spec@0.12.0 test
+
+          > node scripts/test.cjs exited 1 in this snapshot after the runner rebuilt missing dist
+          artifacts. Failures included tests/activity-display.test.ts,
+          tests/agent-dispatch-engine.test.ts, tests/cli-mutation-input-validation.test.ts,
+          tests/dispatch-workspace-cleanup.test.ts, tests/native-guard-setup.test.ts,
+          tests/review-per-cycle-lifecycle.test.ts, tests/setup-pipeline-unification.test.ts, and
+          tests/shadow-skill-commit.test.ts. Totals: 17 failed suites, 11 failed tests, 1861 passed
+          suites, 6729 passed tests. Required merge gate is not green.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-27T04:44:10.191Z
+        completed_at: 2026-03-27T04:44:10.191Z
     events:
       - _ulid: 01KMPS56W9RWWN3JB4TMTYDX45
         actor: "@claude"
@@ -60092,6 +60111,13 @@ reviews:
           status: pass
           name: review-evidence
         timestamp: 2026-03-27T04:44:08.964Z
+      - _ulid: 01KMPSPR3X6BND5METG9WVFTJQ
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-27T04:44:10.749Z
     examined_commit: fa942efdf3ed157ecc241e9ee94dd91d49a1ceec
     external_links: []
     lifecycle_state: open
@@ -60104,5 +60130,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-27T04:34:36.042Z
-    updated_at: 2026-03-27T04:44:08.385Z
+    updated_at: 2026-03-27T04:44:10.191Z
     notes: []
