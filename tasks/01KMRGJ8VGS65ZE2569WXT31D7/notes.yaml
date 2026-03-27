@@ -1,1 +1,32 @@
-notes: []
+notes:
+  - _ulid: 01KMRM6DSDGYQ08YJD4TZ3GMA0
+    content: >-
+      Approach: Extract setupShadowDetection() from daemon-entity-cache.test.ts to
+      tests/helpers/cli.ts as a shared export. The function creates a git repo and fake .kspec/.git
+      worktree pointer so initContext() detects shadow worktree mode.
+
+
+      Analysis of setupMultiDirFixtures consumers:
+
+      - daemon-context-manager.test.ts: no initContext/shadow detection
+
+      - daemon-watcher-multi-project.test.ts: no initContext/shadow detection
+
+      - daemon-session-sync-multi-project.test.ts: no initContext/shadow detection
+
+      - daemon-path-validation-middleware.test.ts: no initContext/shadow detection
+
+      - session-watcher.test.ts: no initContext/shadow detection
+
+      - daemon-entity-cache.test.ts: USES initContext via setupShadowDetection
+
+
+      Decision: Do NOT integrate setupShadowDetection into setupMultiDirFixtures by default. Other
+      consumers work fine without it and adding git repo init would slow them down needlessly.
+      Instead, export it as a standalone helper that callers opt into.
+
+
+      Test plan: Verify existing daemon-entity-cache tests still pass after extraction.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T21:46:21.869Z
