@@ -38,12 +38,25 @@ export function createRefsRoutes(options: RefsRouteOptions = {}) {
       // AC: @ui-api-ref-resolution ac-4, ac-5 - Lightweight ref index endpoint
       // AC: @trait-api-endpoint ac-1 - Returns 2xx with JSON body
       // AC: @daemon-entity-cache ac-serve-from-memory — serve from cache when available
+      // AC: @daemon-entity-cache ac-warming-availability — return loading indicator during warmup
       .get("/", async ({ projectContext }) => {
         // AC: @daemon-entity-cache ac-serve-from-memory — try cache for tasks, items, and plans
         const cache = getEntityCache?.(projectContext.path);
         const tasksDomainState = cache?.getDomainState("tasks");
         const itemsDomainState = cache?.getDomainState("items");
         const plansDomainState = cache?.getDomainState("plans");
+
+        // AC: @daemon-entity-cache ac-warming-availability — if any required domain is
+        // still loading, return a loading indicator rather than falling through to disk
+        // reads, which would defeat ac-warming-availability and ac-progressive-loading.
+        if (
+          cache &&
+          (tasksDomainState === "loading" ||
+            itemsDomainState === "loading" ||
+            plansDomainState === "loading")
+        ) {
+          return { refs: {}, _cache_status: "loading" as const };
+        }
 
         // AC: @daemon-entity-cache ac-serve-from-memory — defer initContext to avoid
         // disk/git work when all domains are served from cache

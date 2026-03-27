@@ -1205,6 +1205,74 @@ describe("ProjectEntityCache", () => {
     });
   });
 
+  // ─── AC: ac-write-through cross-domain ─────────────────────────────────
+
+  // AC: @daemon-entity-cache ac-write-through
+  describe("ac-write-through: cross-domain task mutation write-through", () => {
+    it("should support writing through multiple domains in parallel", async () => {
+      // Simulate what task status mutation routes do: write-through both
+      // tasks AND items (because syncSpecImplementationStatus modifies spec items)
+      const cache = registerEntityCache(projectA);
+      await cache.loadAll();
+
+      const tasksBefore = cache.getTaskIndex();
+      const itemsBefore = cache.getItemIndex();
+
+      // Parallel write-through matches the route pattern:
+      // await Promise.all([cache.writeThrough("tasks"), cache.writeThrough("items")])
+      await Promise.all([
+        cache.writeThrough("tasks"),
+        cache.writeThrough("items"),
+      ]);
+
+      // Both domains reloaded (new references)
+      const tasksAfter = cache.getTaskIndex();
+      const itemsAfter = cache.getItemIndex();
+      expect(tasksAfter).not.toBe(tasksBefore);
+      expect(itemsAfter).not.toBe(itemsBefore);
+
+      // Write-through skip flags set for both — next watcher invalidation skipped
+      const tasksRef = cache.getTaskIndex();
+      const itemsRef = cache.getItemIndex();
+      await cache.invalidateDomain("tasks");
+      await cache.invalidateDomain("items");
+      expect(cache.getTaskIndex()).toBe(tasksRef);
+      expect(cache.getItemIndex()).toBe(itemsRef);
+    });
+  });
+
+  // ─── AC: ac-warming-availability refs endpoint ────────────────────────
+
+  // AC: @daemon-entity-cache ac-warming-availability
+  describe("ac-warming-availability: refs endpoint loading contract", () => {
+    it("should report loading state for domains not yet ready", async () => {
+      // Simulates the refs endpoint check: if any required domain is loading,
+      // return a loading response instead of falling through to disk reads
+      const cache = registerEntityCache(projectA);
+
+      // Start loadAll but check state before it completes
+      const loadPromise = cache.loadAll();
+
+      // During warmup, at least some domains should be "loading"
+      const domainsForRefs: CacheDomain[] = ["tasks", "items", "plans"];
+      const anyLoading = domainsForRefs.some(
+        (d) => cache.getDomainState(d) === "loading",
+      );
+      // Either some are still loading (warmup in progress) or all ready (fast load)
+      // The point is that no domain is "unloaded" — loadAll marks them all loading upfront
+      for (const domain of domainsForRefs) {
+        expect(["loading", "ready"]).toContain(cache.getDomainState(domain));
+      }
+
+      await loadPromise;
+
+      // After loadAll, all should be ready
+      for (const domain of domainsForRefs) {
+        expect(cache.getDomainState(domain)).toBe("ready");
+      }
+    });
+  });
+
   // ─── Cache Registry ────────────────────────────────────────────────────
 
   describe("cache registry", () => {

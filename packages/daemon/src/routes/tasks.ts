@@ -446,9 +446,14 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           await commitIfShadow(ctx.shadow, `task: start ${params.ref}`);
 
           // AC: @daemon-entity-cache ac-write-through — update cache before response
+          // Write through both tasks and items domains because syncSpecImplementationStatus
+          // modifies spec items (implementation status) as a side effect of task transitions.
           const startCache = getEntityCache?.(projectContext.path);
           if (startCache) {
-            await startCache.writeThrough("tasks");
+            await Promise.all([
+              startCache.writeThrough("tasks"),
+              startCache.writeThrough("items"),
+            ]);
           }
 
           // AC: @api-contract ac-6, @trait-api-endpoint ac-5 - WebSocket broadcast
@@ -615,9 +620,14 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           await commitIfShadow(ctx.shadow, `task: submit ${params.ref}`);
 
           // AC: @daemon-entity-cache ac-write-through — update cache before response
+          // Write through both tasks and items domains because syncSpecImplementationStatus
+          // modifies spec items (implementation status) as a side effect of task transitions.
           const submitCache = getEntityCache?.(projectContext.path);
           if (submitCache) {
-            await submitCache.writeThrough("tasks");
+            await Promise.all([
+              submitCache.writeThrough("tasks"),
+              submitCache.writeThrough("items"),
+            ]);
           }
 
           // AC: @ui-api-aggregation ac-4 - Include title and old/new status
@@ -690,9 +700,14 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           await commitIfShadow(ctx.shadow, `task: complete ${params.ref}`);
 
           // AC: @daemon-entity-cache ac-write-through — update cache before response
+          // Write through both tasks and items domains because syncSpecImplementationStatus
+          // modifies spec items (implementation status) as a side effect of task transitions.
           const completeCache = getEntityCache?.(projectContext.path);
           if (completeCache) {
-            await completeCache.writeThrough("tasks");
+            await Promise.all([
+              completeCache.writeThrough("tasks"),
+              completeCache.writeThrough("items"),
+            ]);
           }
 
           // AC: @ui-api-aggregation ac-4 - Include title and old/new status
@@ -769,9 +784,14 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           await commitIfShadow(ctx.shadow, `task: block ${params.ref}`);
 
           // AC: @daemon-entity-cache ac-write-through — update cache before response
+          // Write through both tasks and items domains because syncSpecImplementationStatus
+          // modifies spec items (implementation status) as a side effect of task transitions.
           const blockCache = getEntityCache?.(projectContext.path);
           if (blockCache) {
-            await blockCache.writeThrough("tasks");
+            await Promise.all([
+              blockCache.writeThrough("tasks"),
+              blockCache.writeThrough("items"),
+            ]);
           }
 
           // AC: @ui-api-aggregation ac-4 - Include title and old/new status

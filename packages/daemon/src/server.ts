@@ -534,6 +534,19 @@ export async function createServer(options: ServerOptions) {
     entityCacheModule.unregisterEntityCache(projectPath);
   });
 
+  // AC: @daemon-entity-cache ac-load-on-register — create cache for the startup project.
+  // The startup project is registered directly by projectContextMiddleware (not via
+  // getOrRegisterProject), so the onProjectRegistered callback isn't fired for it.
+  // Explicitly trigger it here after all callbacks are wired so the startup project
+  // gets an entity cache instance and progressive loading starts immediately.
+  if (startupProjectPath) {
+    try {
+      await onProjectRegistered(startupProjectPath);
+    } catch (error) {
+      console.error("[daemon] Failed to initialize entity cache for startup project:", error);
+    }
+  }
+
   // AC: @multi-directory-daemon ac-17 - Start file watcher for startup project
   if (startupProjectPath) {
     try {
