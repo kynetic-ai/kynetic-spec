@@ -6251,6 +6251,31 @@ modules:
         tags: []
         created: 2026-03-13T03:25:15.649Z
         notes: []
+      - _ulid: 01KMPNANGZ3F9YCKCJRT9SEB4A
+        slugs: []
+        title: Automation Action Type Completeness
+        type: requirement
+        description: >-
+          When the daemon starts automation subsystems (schedule engine, hook executor, join
+          accumulator), each subsystem must be capable of executing every supported action type. The
+          supported action types are: command, kspec, agent, notify, and session_prompt. Each action
+          type has prerequisites that must be satisfied before execution — agent actions need the
+          ability to spawn invocations, notify actions need the ability to broadcast to clients,
+          session_prompt actions need access to active sessions.
+
+
+          If an automation subsystem cannot execute a configured action type, the failure must be
+          diagnosable from the action run record and event log.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        tags:
+          - agent-runtime
+          - daemon
+        created: 2026-03-27T03:27:40.575Z
+        notes: []
     created: 2026-02-15T00:39:20.586Z
     notes: []
 requirements:
