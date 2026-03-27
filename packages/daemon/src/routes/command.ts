@@ -21,6 +21,7 @@ import type { Command } from "commander";
 import type { PubSubManager } from "../websocket/pubsub";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
 import type { CacheDomain } from "../../daemon/entity-cache.js";
+import { getDispatchShadowMutationLockPath } from "../../agent-runtime/workspace.js";
 
 // ── Types ──────────────────────────────────────────────────────────
 
@@ -325,8 +326,10 @@ export function createCommandRoutes(options: CommandRouteOptions) {
         const result = await dispatchMutex.run(async () => {
           if (mutating) {
             // AC: @daemon-command-api ac-concurrent-mutations — file lock for cross-process safety
+            // Uses the canonical dispatch shadow mutation lock path so that the command API
+            // coordinates with the CLI and dispatch engine's mutation serialization.
             const { withFileLock } = await import("../../parser/file-lock.js");
-            const lockPath = `${projectContext.path}/.kspec/shadow-mutation`;
+            const lockPath = getDispatchShadowMutationLockPath(projectContext.path);
             return withFileLock(lockPath, () =>
               executeCommand(payload, program, projectContext.path),
             );
@@ -446,8 +449,10 @@ export function createCommandRoutes(options: CommandRouteOptions) {
 
           if (hasMutating) {
             // AC: @daemon-command-api ac-concurrent-mutations — file lock for cross-process safety
+            // Uses the canonical dispatch shadow mutation lock path so that the command API
+            // coordinates with the CLI and dispatch engine's mutation serialization.
             const { withFileLock } = await import("../../parser/file-lock.js");
-            const lockPath = `${projectPath}/.kspec/shadow-mutation`;
+            const lockPath = getDispatchShadowMutationLockPath(projectPath);
             return withFileLock(lockPath, runBatch);
           }
           return runBatch();
