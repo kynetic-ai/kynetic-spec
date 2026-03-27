@@ -24886,3 +24886,79 @@ workspaces:
         head: 6de09de429c9f4d59fd131439aa62924f03f9520
         last_seen_at: 2026-03-27T20:03:34.928Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-narrow-shadow-lazy-read-sync-01kmmb3w
+  - active_role: null
+    base_branch_point: 7d699d4855817e533fc2e5066db464312ea38f57
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-link-session-cache/01kmmb3w
+    canonical_branch_head: 7d699d4855817e533fc2e5066db464312ea38f57
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-03-27T20:03:40.981Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-03-27T20:03:40.981Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: 7d699d4855817e533fc2e5066db464312ea38f57
+      updated_at: 2026-03-27T20:03:40.981Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KMMB3WY8E1JYRGHBHZ4RMH9E"
+    task_slug: task-link-session-cache
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-03-27T20:03:40.981Z
+      created_at: 2026-03-27T20:03:40.981Z
+      updated_at: 2026-03-27T20:03:40.981Z
+    workspace_id: dispatch-workspace-01KMMB3WY8E1JYRGHBHZ4RMH9E
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-link-session-cache/01kmmb3w
+        head: 7d699d4855817e533fc2e5066db464312ea38f57
+        last_seen_at: 2026-03-27T20:03:40.981Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-link-session-cache-01kmmb3w
