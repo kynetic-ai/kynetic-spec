@@ -63156,9 +63156,25 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-27T08:54:31.193Z
+      - _ulid: 01KMQ81EW7GZ0C4QTNE50WWTWH
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-27T08:54:41.799Z
+      - _ulid: 01KMQ81EW7RB4S15MZSMSZ2FB6
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-27T08:54:41.799Z
     examined_commit: 4893ca5183e4b193cc808f3f61fe778ada10e017
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -63225,7 +63241,14 @@ reviews:
               handling, test quality, integration."
             created_at: 2026-03-27T08:54:26.270Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-27T08:54:41.799Z
     created_at: 2026-03-27T08:50:11.971Z
-    updated_at: 2026-03-27T08:54:30.751Z
+    updated_at: 2026-03-27T08:54:41.799Z
     notes: []
