@@ -397,11 +397,36 @@ describe("Daemon Command API", () => {
     const body = await response.json();
     expect(body.exitCode).toBe(0);
 
-    // Verify writeThrough was called with cache domains
+    // Verify writeThrough was called with all cache domains including sessions
     expect(writeThroughCalls.length).toBeGreaterThan(0);
-    // Should include at minimum the core domains affected by task mutations
     expect(writeThroughCalls).toContain("tasks");
     expect(writeThroughCalls).toContain("items");
+    expect(writeThroughCalls).toContain("sessions");
+  });
+
+  // AC: @daemon-command-api ac-mutation-cache-update
+  it("writes through all entity cache domains after mutation", async () => {
+    const response = await makeRequest("/api/command", {
+      method: "POST",
+      body: JSON.stringify({
+        command: "task start",
+        args: { ref: "@task-test" },
+      }),
+    });
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body.exitCode).toBe(0);
+
+    // Every CacheDomain must be written through after a mutation so
+    // cross-domain side effects (e.g., session mutations, task → spec
+    // status changes) are always reflected before the response.
+    const expectedDomains = [
+      "tasks", "items", "meta", "inbox", "plans", "triage", "reviews", "sessions",
+    ];
+    for (const domain of expectedDomains) {
+      expect(writeThroughCalls).toContain(domain);
+    }
   });
 
   // AC: @daemon-command-api ac-mutation-cache-update
@@ -537,10 +562,11 @@ describe("Daemon Command API", () => {
       }),
     });
 
-    // Verify writeThrough was called after the batch completed
+    // Verify writeThrough was called for all domains after the batch completed
     expect(writeThroughCalls.length).toBeGreaterThan(0);
     expect(writeThroughCalls).toContain("tasks");
     expect(writeThroughCalls).toContain("inbox");
+    expect(writeThroughCalls).toContain("sessions");
   });
 
   // AC: @daemon-command-api ac-batch-support

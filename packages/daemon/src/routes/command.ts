@@ -256,6 +256,7 @@ const MUTATION_AFFECTED_DOMAINS: CacheDomain[] = [
   "plans",
   "triage",
   "reviews",
+  "sessions",
 ];
 
 // ── Route Factory ──────────────────────────────────────────────────
