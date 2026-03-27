@@ -22581,7 +22581,7 @@
   type: task
   spec_ref: "@daemon-command-api"
   plan_ref: "@plan-daemon-optimistic-data-layer"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-entity-cache-impl"
@@ -22595,7 +22595,7 @@
   todos_count: 0
   created_at: 2026-03-26T05:50:42.421Z
   started_at: 2026-03-27T20:14:42.776Z
-  submitted_at: 2026-03-27T19:51:38.177Z
+  submitted_at: 2026-03-27T20:14:49.084Z
   automation: eligible
 - _ulid: 01KMMB3VRRVWNQFKPPP4WR0TK6
   slugs:
