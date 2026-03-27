@@ -56819,6 +56819,12 @@ reviews:
         payload:
           thread_ulid: 01KMPB2C3J6JHN130FMFNSW41C
         timestamp: 2026-03-27T00:47:17.036Z
+      - _ulid: 01KMPC52Z844YPJ6KAJQXVF5S4
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMPB2C3J6JHN130FMFNSW41C
+        timestamp: 2026-03-27T00:47:20.552Z
     examined_commit: d805371098143a9c456e7100eb1f6680d754c198
     external_links: []
     lifecycle_state: closed
@@ -56909,6 +56915,8 @@ reviews:
               item are served from the detail cache until invalidation."
             created_at: 2026-03-27T00:47:16.596Z
         kind: blocker
+        resolved_at: 2026-03-27T00:47:20.119Z
+        resolved_by: "@claude"
       - _ulid: 01KMPB2YC012307XGJ8EFZPQQ6
         anchor:
           type: code
@@ -56973,7 +56981,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T00:29:13.736Z
     created_at: 2026-03-27T00:23:31.552Z
-    updated_at: 2026-03-27T00:47:16.596Z
+    updated_at: 2026-03-27T00:47:20.119Z
     notes: []
   - _ulid: 01KMPBM6Z6AX5ZY3KTGBT68WVX
     slugs: []
