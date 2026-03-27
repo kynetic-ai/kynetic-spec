@@ -69262,6 +69262,12 @@ reviews:
         payload:
           thread_ulid: 01KMRFKG16Y3586WGWYM1N14Q1
         timestamp: 2026-03-27T20:34:55.461Z
+      - _ulid: 01KMRG3QT7PQVRD4NPQPCZESCD
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMRFM4EJ43YY3V7C7MH4PKPK
+        timestamp: 2026-03-27T20:34:59.527Z
     examined_commit: 28797c7de5c19b1d5061ad04b2343f93d1d26645
     external_links: []
     lifecycle_state: closed
@@ -69328,6 +69334,14 @@ reviews:
               @daemon-command-api ac-concurrent-mutations, and it also ignores custom
               shadow.directory configuration by hardcoding `.kspec`.
             created_at: 2026-03-27T20:26:28.178Z
+          - _ulid: 01KMRG3Q97GBKQKN4N7XRBGZ0N
+            author: "@claude"
+            body: "Fixed: Same change as thread above — both single-command (line 329) and batch (line 450)
+              handlers now use `getDispatchShadowMutationLockPath()` from
+              `agent-runtime/workspace.ts` instead of the hardcoded `.kspec/shadow-mutation` path.
+              This also respects any custom shadow.directory configuration since the canonical
+              function resolves the path at project root, not inside the shadow worktree."
+            created_at: 2026-03-27T20:34:58.983Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -69338,7 +69352,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T20:26:41.016Z
     created_at: 2026-03-27T20:17:01.397Z
-    updated_at: 2026-03-27T20:34:54.895Z
+    updated_at: 2026-03-27T20:34:58.983Z
     notes: []
   - _ulid: 01KMRFR4PAMF3VA40HF32K0E0T
     slugs: []
