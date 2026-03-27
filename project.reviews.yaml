@@ -60331,6 +60331,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMPTG4PE91JPQB6TA0N3J79C
         timestamp: 2026-03-27T04:58:04.438Z
+      - _ulid: 01KMPTG78R4NPFHFX6CR1PW56X
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMPTG6JN76XF7R9CXAG2YZCD
+        timestamp: 2026-03-27T04:58:05.465Z
     examined_commit: c903c3369660d1b9746492fa5c1fd4e9844eaec3
     external_links: []
     lifecycle_state: open
@@ -60400,7 +60407,26 @@ reviews:
               events to 1. That breaks @session-summary-cache ac-live-counter."
             created_at: 2026-03-27T04:58:02.830Z
         kind: blocker
+      - _ulid: 01KMPTG6JN76XF7R9CXAG2YZCD
+        anchor:
+          type: code
+          commit: c903c3369660d1b9746492fa5c1fd4e9844eaec3
+          line_end: 376
+          line_start: 355
+          path: packages/daemon/src/routes/reviews.ts
+          side: head
+        entries:
+          - _ulid: 01KMPTG6JN375DRH5JNCS3D91C
+            author: "@claude"
+            body: "The review detail endpoint has the same warmup hole: when the reviews domain is loading, it
+              bypasses the cache contract and reads from disk. I reproduced this with
+              createReviewsRoutes plus a cache stub reporting reviews=loading; GET
+              /api/reviews/@01KMPR2WKR9BRAGSS6Y6VD5AS8 returned the full review with HTTP 200
+              instead of a loading response. That violates @daemon-entity-cache
+              ac-warming-availability and means detail traffic can bypass the cache during warmup."
+            created_at: 2026-03-27T04:58:04.757Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-27T04:46:33.884Z
-    updated_at: 2026-03-27T04:58:02.830Z
+    updated_at: 2026-03-27T04:58:04.757Z
     notes: []
