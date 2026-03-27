@@ -61021,6 +61021,90 @@ reviews:
           status: pass
           name: evidence-log
         timestamp: 2026-03-27T05:24:13.620Z
+      - _ulid: 01KMPX8AF8EM3AMYGSNQZF5XM6
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMPVJKA4KSF6BYTR7CF2060K
+        timestamp: 2026-03-27T05:46:12.328Z
+      - _ulid: 01KMPX8BZ59665X0PW02DT7S6Y
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMPVJKA4KSF6BYTR7CF2060K
+        timestamp: 2026-03-27T05:46:13.861Z
+      - _ulid: 01KMPX8DDVGCV3GB7JD9DC6CTW
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMPVJS08W97XKCG88GTPC91M
+        timestamp: 2026-03-27T05:46:15.355Z
+      - _ulid: 01KMPX8EWN7ZCH5GMMY8EK00D2
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMPVJS08W97XKCG88GTPC91M
+        timestamp: 2026-03-27T05:46:16.853Z
+      - _ulid: 01KMPX8GBWJ4YKAQ2XNQ6VT1ET
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMPVK1C1ZFBGSJB9TF89XZ67
+        timestamp: 2026-03-27T05:46:18.364Z
+      - _ulid: 01KMPX8HSY0BGEW022GXCR7918
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMPVK1C1ZFBGSJB9TF89XZ67
+        timestamp: 2026-03-27T05:46:19.838Z
+      - _ulid: 01KMPX8K8H5G22KBZVQ756BXEZ
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMPVSSXTAMQNEGRHWSDJ8XZM
+        timestamp: 2026-03-27T05:46:21.329Z
+      - _ulid: 01KMPX8MPJ87CYFQSHVKGE95ND
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMPVSSXTAMQNEGRHWSDJ8XZM
+        timestamp: 2026-03-27T05:46:22.802Z
+      - _ulid: 01KMPX8P5S5SZ25T13GG5X1VCM
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMPVSXA5X03J6RHEAZ4WNCXH
+        timestamp: 2026-03-27T05:46:24.313Z
+      - _ulid: 01KMPX8QM59RE7FKREMGHPE85Y
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMPVSXA5X03J6RHEAZ4WNCXH
+        timestamp: 2026-03-27T05:46:25.797Z
+      - _ulid: 01KMPX8S37AERPFTER0F700VR9
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMPVT0M1HD5189NG6EN7202J
+        timestamp: 2026-03-27T05:46:27.303Z
+      - _ulid: 01KMPX8THRPZ0VX17XC292RYR8
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMPVT0M1HD5189NG6EN7202J
+        timestamp: 2026-03-27T05:46:28.792Z
+      - _ulid: 01KMPX8W0859HGJMF81WYA7KCV
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMPVT3XS235Y2MSN1JPDEGWD
+        timestamp: 2026-03-27T05:46:30.280Z
+      - _ulid: 01KMPX8XF8X7VD7YZ78FZMN2CJ
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMPVT3XS235Y2MSN1JPDEGWD
+        timestamp: 2026-03-27T05:46:31.784Z
     examined_commit: 8dfaea2199385d9aa733f052db868d92c22580e0
     external_links: []
     lifecycle_state: closed
@@ -61091,7 +61175,16 @@ reviews:
               the index stale indefinitely, which breaks watcher-driven invalidation for
               task/spec/meta/review/etc. file set changes.
             created_at: 2026-03-27T05:16:51.908Z
+          - _ulid: 01KMPX89WX09GF0PCG22Y5MX7V
+            author: "@claude"
+            body: "Fixed: Watcher now listens for add/unlink events (Chokidar) and treats ENOENT in
+              processFileChange as a file removal signal rather than a watcher error. New
+              onFileRemoved callback on WatcherOptions is wired in project-context.ts to trigger
+              cache invalidation on file create/delete/rename."
+            created_at: 2026-03-27T05:46:11.741Z
         kind: blocker
+        resolved_at: 2026-03-27T05:46:13.269Z
+        resolved_by: "@claude"
       - _ulid: 01KMPVJS08W97XKCG88GTPC91M
         anchor:
           type: code
@@ -61111,7 +61204,16 @@ reviews:
               outside these hard-coded paths will serve stale cache data forever after edits because
               the watcher never maps those changed files back to items or meta."
             created_at: 2026-03-27T05:16:57.737Z
+          - _ulid: 01KMPX8CVGY2WQWBFRCBSR9T3G
+            author: "@claude"
+            body: "Fixed: fileToDomain() now has a catch-all — any .yaml file not matched by the explicit domain
+              patterns conservatively invalidates both items and meta domains. This covers arbitrary
+              manifest.includes and meta.includes paths that the loaders follow. Also added
+              tasks.yaml (bare filename) to the task domain mapping."
+            created_at: 2026-03-27T05:46:14.768Z
         kind: blocker
+        resolved_at: 2026-03-27T05:46:16.262Z
+        resolved_by: "@claude"
       - _ulid: 01KMPVK1C1ZFBGSJB9TF89XZ67
         anchor:
           type: code
@@ -61130,7 +61232,15 @@ reviews:
               invalidate the tasks cache, so list/detail reads can stay stale until some unrelated
               task file changes.
             created_at: 2026-03-27T05:17:06.305Z
+          - _ulid: 01KMPX8FS7PJKQA3C1S506VZTN
+            author: "@claude"
+            body: 'Fixed: fileToDomain() now matches tasks.yaml (bare filename) in addition to *.tasks.yaml. The
+              condition is: relativePath.endsWith(".tasks.yaml") || relativePath ===
+              "project.tasks.yaml" || relativePath === "tasks.yaml"'
+            created_at: 2026-03-27T05:46:17.767Z
         kind: blocker
+        resolved_at: 2026-03-27T05:46:19.260Z
+        resolved_by: "@claude"
       - _ulid: 01KMPVK8ECN58DY3BFYNY36FYJ
         anchor:
           type: code
@@ -61167,7 +61277,14 @@ reviews:
               warmup instead of returning {_cache_status:"loading"}. That leaves
               ac-warming-availability broken for /api/tasks/:ref.
             created_at: 2026-03-27T05:20:48.058Z
+          - _ulid: 01KMPX8JP763X8APSX2EV9KMYT
+            author: "@claude"
+            body: 'Fixed: Task detail route now checks for loading state first and returns {_cache_status:
+              "loading"} during warmup, consistent with the list route pattern.'
+            created_at: 2026-03-27T05:46:20.743Z
         kind: blocker
+        resolved_at: 2026-03-27T05:46:22.209Z
+        resolved_by: "@claude"
       - _ulid: 01KMPVSXA5X03J6RHEAZ4WNCXH
         anchor:
           type: code
@@ -61185,7 +61302,14 @@ reviews:
               instead of returning a loading indicator. That violates ac-warming-availability for
               item detail.'
             created_at: 2026-03-27T05:20:51.526Z
+          - _ulid: 01KMPX8NJP4EZZHCBA12S64XRD
+            author: "@claude"
+            body: 'Fixed: Item detail route now checks for loading state first and returns {_cache_status:
+              "loading"} during warmup, consistent with the list route pattern.'
+            created_at: 2026-03-27T05:46:23.702Z
         kind: blocker
+        resolved_at: 2026-03-27T05:46:25.214Z
+        resolved_by: "@claude"
       - _ulid: 01KMPVT0M1HD5189NG6EN7202J
         anchor:
           type: code
@@ -61203,7 +61327,15 @@ reviews:
               legacy-session scan, so this endpoint does not actually satisfy ac-serve-from-memory
               even when the sessions/tasks/items domains are ready.
             created_at: 2026-03-27T05:20:54.913Z
+          - _ulid: 01KMPX8RGTJT5B6C7SMAH5N82N
+            author: "@claude"
+            body: "Fixed: Session list route now only calls countLegacySessions when _ctx has already been
+              initialized (disk fallback path). When serving entirely from cache, the legacy count
+              is skipped, avoiding initContext() and disk I/O on the hot path."
+            created_at: 2026-03-27T05:46:26.714Z
         kind: blocker
+        resolved_at: 2026-03-27T05:46:28.196Z
+        resolved_by: "@claude"
       - _ulid: 01KMPVT3XS235Y2MSN1JPDEGWD
         anchor:
           type: code
@@ -61221,7 +61353,16 @@ reviews:
               instead of returning a loading response, which is inconsistent with the fixed
               plan/review detail routes and still violates ac-warming-availability.
             created_at: 2026-03-27T05:20:58.297Z
+          - _ulid: 01KMPX8VD985RK28GPXA37S85W
+            author: "@claude"
+            body: 'Fixed: Session detail route now defers initContext() via lazy getCtx() pattern. sessionsDir
+              is derived directly from projectContext.path (join(path, ".kspec-sessions")). Added
+              warmup loading check at the top. Uses cached tasks/items for ref resolution when
+              domains are ready. Legacy count only checked when _ctx was initialized.'
+            created_at: 2026-03-27T05:46:29.673Z
         kind: blocker
+        resolved_at: 2026-03-27T05:46:31.196Z
+        resolved_by: "@claude"
       - _ulid: 01KMPVWVBM2JPE3GHZ9TEWRBYF
         entries:
           - _ulid: 01KMPVWVBMPF1N6515AKD96QQ9
@@ -61248,5 +61389,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T05:22:45.308Z
     created_at: 2026-03-27T05:13:09.485Z
-    updated_at: 2026-03-27T05:24:13.048Z
+    updated_at: 2026-03-27T05:46:31.196Z
     notes: []
