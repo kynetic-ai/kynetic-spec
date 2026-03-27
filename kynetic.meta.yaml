@@ -9166,8 +9166,11 @@ observations:
       guidance should account for this by directing reviewers to merge in the primary worktree or
       another non-conflicting worktree.
     author: "@claude"
-    resolution: null
-    resolved: false
+    resolution: Duplicate of existing detached-review merge friction observations, especially @01KMRBVV
+      and @01KMRGMW. Resolved during reflection cleanup to avoid duplicate tracking.
+    resolved: true
+    resolved_at: 2026-03-27T22:00:43.769Z
+    resolved_by: "@claude"
     created_at: 2026-03-27T22:00:10.896Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
