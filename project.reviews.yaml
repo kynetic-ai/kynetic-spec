@@ -58437,6 +58437,42 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-27T02:36:01.753Z
+      - _ulid: 01KMPJZH1TKC0HQEP8BRA5QNF0
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMPJBEFDEDWH5ZRHTK3FTXA6
+        timestamp: 2026-03-27T02:46:38.394Z
+      - _ulid: 01KMPJZJFMF4A0F1S82Y71XS63
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMPJBEFDEDWH5ZRHTK3FTXA6
+        timestamp: 2026-03-27T02:46:39.860Z
+      - _ulid: 01KMPJZKX2VSVXR5BT2G3TNM15
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMPJBH23NKM58F2MJ560DBCV
+        timestamp: 2026-03-27T02:46:41.314Z
+      - _ulid: 01KMPJZN96DR59T0A944KN9FNY
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMPJBH23NKM58F2MJ560DBCV
+        timestamp: 2026-03-27T02:46:42.726Z
+      - _ulid: 01KMPJZPNG04AKSYY9HTQHGZFE
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMPJBJBXDDPJGZJYR4QNS515
+        timestamp: 2026-03-27T02:46:44.144Z
+      - _ulid: 01KMPJZR2EWPGNRS0B1SMXZT3K
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMPJBJBXDDPJGZJYR4QNS515
+        timestamp: 2026-03-27T02:46:45.582Z
     examined_commit: 303006d7350881ac5d8a71191978dbc621d8adbd
     external_links: []
     lifecycle_state: closed
@@ -58463,7 +58499,14 @@ reviews:
               until watcher invalidation lands. The cache update needs to cover the tasks domain for
               this mutation path as well."
             created_at: 2026-03-27T02:35:40.398Z
+          - _ulid: 01KMPJZGGFBKZ86R9QH5WN9D58
+            author: "@claude"
+            body: "Fixed: verdict route now writes through both reviews and tasks domains when decision is
+              request_changes, so linked task transitions are visible immediately."
+            created_at: 2026-03-27T02:46:37.839Z
         kind: blocker
+        resolved_at: 2026-03-27T02:46:39.302Z
+        resolved_by: "@claude"
       - _ulid: 01KMPJBFSA5A6R0VE72E3KTMZB
         entries:
           - _ulid: 01KMPJBFSANZDVG3MPQ7JP4VK5
@@ -58498,7 +58541,14 @@ reviews:
               , or  can still serve stale cached data until the watcher fires. That breaks the
               write-through guarantee for daemon API mutations."
             created_at: 2026-03-27T02:35:43.044Z
+          - _ulid: 01KMPJZKBFP9QT0CB1CE1TC8KM
+            author: "@claude"
+            body: "Fixed: triage act route now writes through all affected domains based on action type —
+              promote writes tasks+inbox, delete/duplicate writes inbox, spec-gap writes meta."
+            created_at: 2026-03-27T02:46:40.751Z
         kind: blocker
+        resolved_at: 2026-03-27T02:46:42.169Z
+        resolved_by: "@claude"
       - _ulid: 01KMPJBJBXDDPJGZJYR4QNS515
         anchor:
           type: code
@@ -58516,7 +58566,16 @@ reviews:
               registration instead of releasing memory and starting clean. That violates the
               unregister-cleanup requirement.
             created_at: 2026-03-27T02:35:44.382Z
+          - _ulid: 01KMPJZP49T83VTEYWNT062PH0
+            author: "@claude"
+            body: "Fixed: added setUnregisterCallback on ProjectContextManager that fires from unregisterProject
+              for all code paths (API and watcher permanent failure). Entity cache disposal and
+              session sync cleanup now happen centrally. Removed the per-route onProjectUnregistered
+              to avoid double-calling."
+            created_at: 2026-03-27T02:46:43.593Z
         kind: blocker
+        resolved_at: 2026-03-27T02:46:45.021Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -58526,5 +58585,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T02:36:01.753Z
     created_at: 2026-03-27T02:27:19.553Z
-    updated_at: 2026-03-27T02:36:01.753Z
+    updated_at: 2026-03-27T02:46:45.021Z
     notes: []
