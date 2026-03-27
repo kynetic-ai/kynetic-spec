@@ -6269,7 +6269,7 @@ modules:
           diagnosable from the action run record and event log.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
