@@ -27,9 +27,11 @@ export interface RouteEntityCache {
   getTaskIndex(): TaskSummary[] | null;
   getTaskDetail(ulid: string): LoadedTask | null;
   setTaskDetail(ulid: string, task: LoadedTask): void;
+  getAllTaskDetails(): LoadedTask[] | null;
   getItemIndex(): ItemSummary[] | null;
   getItemDetail(ulid: string): LoadedSpecItem | null;
   setItemDetail(ulid: string, item: LoadedSpecItem): void;
+  getAllItemDetails(): LoadedSpecItem[] | null;
   getSessionIndex(): SessionLogSummary[] | null;
   getSessionDetail(sessionId: string): SessionLogSummary | null;
   setSessionDetail(sessionId: string, summary: SessionLogSummary): void;

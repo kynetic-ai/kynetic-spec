@@ -52,10 +52,12 @@ export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
             return _ctx;
           };
 
-          // Resolve tasks and items from cache when available
+          // Search needs full entities (description, notes, AC content) — summaries
+          // strip those fields, breaking grepItem matches. Use detail tier which is
+          // populated alongside the index during domain load.
           let tasks: LoadedTask[];
           if (cache && tasksDomainState === "ready") {
-            tasks = (cache.getTaskIndex() ?? []) as unknown as LoadedTask[];
+            tasks = cache.getAllTaskDetails() ?? [];
           } else {
             const ctx = await getCtx();
             tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
@@ -63,7 +65,7 @@ export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
 
           let items: LoadedSpecItem[];
           if (cache && itemsDomainState === "ready") {
-            items = (cache.getItemIndex() ?? []) as unknown as LoadedSpecItem[];
+            items = cache.getAllItemDetails() ?? [];
           } else {
             const ctx = await getCtx();
             const { loadAllItems } = await import("../../parser/index.js");

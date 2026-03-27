@@ -33,7 +33,7 @@ import type { RouteEntityCache, EntityCacheAccessor } from "../dist/daemon/route
 import type { TaskSummary } from "../dist/parser/task-data-manager.ts";
 import type { ItemSummary, TriageIndexSummary, PlanIndexSummary, ReviewIndexSummary } from "../dist/daemon/entity-cache.ts";
 import type { MetaContext } from "../dist/parser/meta.ts";
-import type { LoadedInboxItem } from "../dist/parser/yaml.ts";
+import type { LoadedInboxItem, LoadedSpecItem, LoadedTask } from "../dist/parser/yaml.ts";
 import { ShadowSyncScheduler } from "../src/parser/shadow-sync-scheduler.js";
 
 // ─── Test Data ────────────────────────────────────────────────────────────────
@@ -129,6 +129,54 @@ function makeTriageSummary(overrides: Partial<TriageIndexSummary> = {}): TriageI
   };
 }
 
+function makeFullTask(overrides: Partial<LoadedTask> = {}): LoadedTask {
+  return {
+    _ulid: TASK_ULID_1,
+    slugs: ["read-path-task-1"],
+    title: "Read Path Test Task 1",
+    type: "task",
+    status: "in_progress",
+    priority: 2,
+    tags: ["test"],
+    spec_ref: "@read-path-spec",
+    plan_ref: null,
+    review_ref: null,
+    depends_on: [],
+    blocked_by: [],
+    created_at: "2026-01-01T00:00:00Z",
+    description: "A task with searchable description content about unicorn migration",
+    notes: [
+      { content: "Found a needle-in-haystack pattern during investigation", author: "test", created_at: "2026-01-01T00:00:00Z" },
+    ],
+    todos: [],
+    vcs_refs: [],
+    context: [],
+    ...overrides,
+  } as LoadedTask;
+}
+
+function makeFullItem(overrides: Partial<LoadedSpecItem> = {}): LoadedSpecItem {
+  return {
+    _ulid: SPEC_ULID,
+    slugs: ["read-path-spec"],
+    title: "Read Path Test Spec",
+    type: "feature",
+    status: "draft",
+    tags: ["test"],
+    traits: [],
+    description: "Spec describing quantum-entanglement search functionality",
+    acceptance_criteria: [
+      { id: "ac-1", given: "test setup", when: "read requested", then: "xylophone-harmonics verified from cache" },
+      { id: "ac-2", given: "cache warm", when: "index requested", then: "built from cache" },
+    ],
+    notes: [],
+    _sourceFile: "modules/test.yaml",
+    _path: "features[0]",
+    created: "2026-01-01T00:00:00Z",
+    ...overrides,
+  } as LoadedSpecItem;
+}
+
 function makeMetaContext(): MetaContext {
   return {
     manifest: null,
@@ -186,6 +234,8 @@ function makeMetaContext(): MetaContext {
 function createWarmCache(options: {
   tasks?: TaskSummary[];
   items?: ItemSummary[];
+  fullTasks?: LoadedTask[];
+  fullItems?: LoadedSpecItem[];
   plans?: PlanIndexSummary[];
   inbox?: LoadedInboxItem[];
   triage?: TriageIndexSummary[];
@@ -193,13 +243,17 @@ function createWarmCache(options: {
 } = {}): RouteEntityCache {
   const tasks = options.tasks ?? [makeTaskSummary()];
   const items = options.items ?? [makeItemSummary()];
+  const fullTasks = options.fullTasks ?? [makeFullTask()];
+  const fullItems = options.fullItems ?? [makeFullItem()];
   const plans = options.plans ?? [makePlanSummary()];
   const inbox = options.inbox ?? [makeInboxItem()];
   const triage = options.triage ?? [makeTriageSummary()];
   const meta = options.meta ?? makeMetaContext();
 
-  const taskDetails = new Map();
-  const itemDetails = new Map();
+  const taskDetails = new Map<string, LoadedTask>();
+  for (const t of fullTasks) taskDetails.set(t._ulid, t);
+  const itemDetails = new Map<string, LoadedSpecItem>();
+  for (const i of fullItems) itemDetails.set(i._ulid, i);
   const planDetails = new Map();
   const triageDetails = new Map();
   const sessionDetails = new Map();
@@ -212,9 +266,11 @@ function createWarmCache(options: {
     getTaskIndex: () => tasks,
     getTaskDetail: (ulid: string) => taskDetails.get(ulid) ?? null,
     setTaskDetail: (ulid, task) => taskDetails.set(ulid, task),
+    getAllTaskDetails: () => Array.from(taskDetails.values()),
     getItemIndex: () => items,
     getItemDetail: (ulid: string) => itemDetails.get(ulid) ?? null,
     setItemDetail: (ulid, item) => itemDetails.set(ulid, item),
+    getAllItemDetails: () => Array.from(itemDetails.values()),
     getSessionIndex: () => [],
     getSessionDetail: (id: string) => sessionDetails.get(id) ?? null,
     setSessionDetail: (id, summary) => sessionDetails.set(id, summary),
@@ -398,6 +454,17 @@ describe("ac-no-per-request-sync: read routes serve from cache without git opera
           depends_on: ["@read-path-task-1"],
         }),
       ],
+      fullTasks: [
+        makeFullTask(),
+        makeFullTask({
+          _ulid: TASK_ULID_2,
+          slugs: ["read-path-task-2"],
+          title: "Read Path Test Task 2",
+          status: "pending",
+          depends_on: ["@read-path-task-1"],
+          description: "Second task depends on the first",
+        }),
+      ],
     });
 
     const getEntityCache: EntityCacheAccessor = () => warmCache;
@@ -492,6 +559,54 @@ describe("ac-no-per-request-sync: read routes serve from cache without git opera
     // Should find items/tasks containing "Read Path" from cache
     const types = body.results.map((r) => r.type);
     expect(types).toContain("task");
+  });
+
+  // AC: @daemon-read-path ac-no-per-request-sync
+  // Regression: search must find matches in description, notes, and AC content,
+  // not just summary-level fields. Prior implementation used cache summaries that
+  // stripped these fields, causing grepItem to miss matches.
+  it("GET /api/search finds matches in task description (not just title)", async () => {
+    const res = await makeRequest("/api/search?q=unicorn+migration");
+    expect(res.status).toBe(200);
+
+    const body = (await res.json()) as { results: Array<{ type: string; ulid: string; matchedFields: string[] }>; total: number };
+    expect(body.total).toBeGreaterThan(0);
+    const taskResult = body.results.find((r) => r.type === "task" && r.ulid === TASK_ULID_1);
+    expect(taskResult).toBeDefined();
+    expect(taskResult!.matchedFields).toContain("description");
+  });
+
+  // AC: @daemon-read-path ac-no-per-request-sync
+  it("GET /api/search finds matches in task notes content", async () => {
+    const res = await makeRequest("/api/search?q=needle-in-haystack");
+    expect(res.status).toBe(200);
+
+    const body = (await res.json()) as { results: Array<{ type: string; ulid: string; matchedFields: string[] }>; total: number };
+    expect(body.total).toBeGreaterThan(0);
+    const taskResult = body.results.find((r) => r.type === "task" && r.ulid === TASK_ULID_1);
+    expect(taskResult).toBeDefined();
+    expect(taskResult!.matchedFields.some((f) => f.startsWith("notes"))).toBe(true);
+  });
+
+  // AC: @daemon-read-path ac-no-per-request-sync
+  it("GET /api/search finds matches in item description and AC content", async () => {
+    // Search for text only in the item description
+    const descRes = await makeRequest("/api/search?q=quantum-entanglement");
+    expect(descRes.status).toBe(200);
+    const descBody = (await descRes.json()) as { results: Array<{ type: string; ulid: string; matchedFields: string[] }>; total: number };
+    expect(descBody.total).toBeGreaterThan(0);
+    const descItem = descBody.results.find((r) => r.type === "item" && r.ulid === SPEC_ULID);
+    expect(descItem).toBeDefined();
+    expect(descItem!.matchedFields).toContain("description");
+
+    // Search for text only in an AC's "then" clause
+    const acRes = await makeRequest("/api/search?q=xylophone-harmonics");
+    expect(acRes.status).toBe(200);
+    const acBody = (await acRes.json()) as { results: Array<{ type: string; ulid: string; matchedFields: string[] }>; total: number };
+    expect(acBody.total).toBeGreaterThan(0);
+    const acItem = acBody.results.find((r) => r.type === "item" && r.ulid === SPEC_ULID);
+    expect(acItem).toBeDefined();
+    expect(acItem!.matchedFields.some((f) => f.includes("acceptance_criteria"))).toBe(true);
   });
 
   // AC: @daemon-read-path ac-no-per-request-sync

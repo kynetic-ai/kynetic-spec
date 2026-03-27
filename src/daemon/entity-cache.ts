@@ -97,6 +97,32 @@ export interface ItemSummary {
   acceptance_criteria_count: number;
 }
 
+/** Project a LoadedTask to its index-tier summary (strip notes, todos, description, etc.). */
+function toTaskSummary(task: LoadedTask): TaskSummary {
+  return {
+    _ulid: task._ulid,
+    slugs: task.slugs,
+    title: task.title,
+    type: task.type,
+    status: task.status,
+    priority: task.priority,
+    tags: task.tags,
+    assignee: task.assignee,
+    automation: task.automation,
+    spec_ref: task.spec_ref,
+    plan_ref: task.plan_ref,
+    review_ref: task.review_ref,
+    depends_on: task.depends_on,
+    blocked_by: task.blocked_by,
+    created_at: task.created_at,
+    started_at: task.started_at,
+    submitted_at: task.submitted_at,
+    completed_at: task.completed_at,
+    notes_count: task.notes?.length ?? 0,
+    todos_count: task.todos?.length ?? 0,
+  };
+}
+
 /** Project a LoadedSpecItem to its index-tier summary (strip description, notes, AC content). */
 function toItemSummary(item: LoadedSpecItem): ItemSummary {
   return {
@@ -512,6 +538,26 @@ export class ProjectEntityCache {
     this.items.details.set(ulid, item);
   }
 
+  /**
+   * Get all full task entities from the detail tier.
+   * Returns null if the tasks domain is not ready.
+   * Populated during domain load alongside the index tier.
+   */
+  getAllTaskDetails(): LoadedTask[] | null {
+    if (this.tasks.state !== "ready") return null;
+    return Array.from(this.tasks.details.values());
+  }
+
+  /**
+   * Get all full spec item entities from the detail tier.
+   * Returns null if the items domain is not ready.
+   * Populated during domain load alongside the index tier.
+   */
+  getAllItemDetails(): LoadedSpecItem[] | null {
+    if (this.items.state !== "ready") return null;
+    return Array.from(this.items.details.values());
+  }
+
   /** Get inbox items from index tier. */
   getInboxIndex(): LoadedInboxItem[] | null {
     return this.inbox.index;
@@ -724,18 +770,37 @@ export class ProjectEntityCache {
     switch (domain) {
       case "tasks": {
         // AC: @daemon-entity-cache ac-load-on-register — load task index
-        const summaries = await resolveTaskDataManager(ctx).listTasks(ctx);
+        const tdm = resolveTaskDataManager(ctx);
+        const summaries = await tdm.listTasks(ctx);
         if (this.disposed) return;
         this.tasks.index = summaries;
         this.tasks.details.clear();
+        // Eagerly populate detail tier so search (grepItem) can access full
+        // entity data (description, notes, todos) that summaries strip.
+        // Non-fatal: if full loading fails, the detail tier stays empty and
+        // search falls through to disk on miss.
+        try {
+          const fullTasks = await tdm.loadAllTasks(ctx);
+          if (this.disposed) return;
+          for (const task of fullTasks) {
+            this.tasks.details.set(task._ulid, task);
+          }
+        } catch {
+          // Detail tier remains empty — search will use summaries or fall back to disk
+        }
         break;
       }
       case "items": {
-        // AC: @daemon-entity-cache ac-load-on-register — load item index (summaries only)
+        // AC: @daemon-entity-cache ac-load-on-register — load item index + detail tier
+        // Populate detail tier alongside index so full entities are available
+        // for search (grepItem needs description, notes, AC content).
         const loadedItems = await loadAllItems(ctx);
         if (this.disposed) return;
         this.items.index = loadedItems.map(toItemSummary);
         this.items.details.clear();
+        for (const item of loadedItems) {
+          this.items.details.set(item._ulid, item);
+        }
         break;
       }
       case "meta": {
