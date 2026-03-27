@@ -62248,6 +62248,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-27T07:24:20.846Z
+      - _ulid: 01KMQ472812W9R7VMW0P0530XK
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMQ2H12KTB9RCABGX7JFAMZH
+        timestamp: 2026-03-27T07:47:51.169Z
     examined_commit: caf1f08f934535175a2338ac462aaa9457963c40
     external_links: []
     lifecycle_state: closed
@@ -62278,6 +62284,13 @@ reviews:
               clustered watcher events, and it also makes write-heavy commits pay redundant
               full-domain reloads."
             created_at: 2026-03-27T07:18:20.500Z
+          - _ulid: 01KMQ471T7988SAG3Q4YQGGNFA
+            author: "@claude"
+            body: "Fixed: Added domain-level debounce timers (100ms) to ProjectEntityCache.invalidateDomain().
+              Multiple watcher events for the same domain within the debounce window now coalesce
+              into a single reload. The deferred promise pattern ensures all callers await the same
+              reload."
+            created_at: 2026-03-27T07:47:50.727Z
         kind: blocker
       - _ulid: 01KMQ2H9BFD9THJB7MXFXH84QE
         anchor:
@@ -62354,5 +62367,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T07:24:20.845Z
     created_at: 2026-03-27T07:10:40.675Z
-    updated_at: 2026-03-27T07:24:20.846Z
+    updated_at: 2026-03-27T07:47:50.727Z
     notes: []
