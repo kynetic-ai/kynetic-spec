@@ -66957,6 +66957,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-27T17:59:38.501Z
+      - _ulid: 01KMR8564T2SDQ1VGECDPD8WDS
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMR76VRPTSX78DDD27QV4Q3X
+        timestamp: 2026-03-27T18:15:58.362Z
     examined_commit: ec4721b2a555b0de4b6471032f97c300191b6c4f
     external_links: []
     lifecycle_state: closed
@@ -66987,6 +66993,16 @@ reviews:
               /api/command this means one caller can leave the daemon stuck in YAML mode for the
               next caller, breaking @daemon-command-api ac-response-parity."
             created_at: 2026-03-27T17:59:24.694Z
+          - _ulid: 01KMR855KRWK74937FZ9G07FWM
+            author: "@claude"
+            body: 'Fixed: Replaced setJsonMode(false) with setOutputFormat("text") in executeCommand(). The root
+              cause was that setJsonMode(false) only resets if globalOutputFormat === "json"
+              (output.ts:76-78), so when a --yaml request set it to "yaml", subsequent requests
+              never cleared it. setOutputFormat("text") unconditionally resets to the default format
+              regardless of current state. Added a regression test that runs validate --yaml
+              followed by task get --json and verifies the second request produces valid JSON (not
+              leaked YAML).'
+            created_at: 2026-03-27T18:15:57.816Z
         kind: blocker
       - _ulid: 01KMR76YB64XY0PN15XPYK6QC8
         entries:
@@ -67017,7 +67033,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T17:59:38.500Z
     created_at: 2026-03-27T17:51:13.675Z
-    updated_at: 2026-03-27T17:59:38.501Z
+    updated_at: 2026-03-27T18:15:57.816Z
     notes: []
   - _ulid: 01KMR7SJF8G37BWZDWNH26DMDN
     slugs: []
