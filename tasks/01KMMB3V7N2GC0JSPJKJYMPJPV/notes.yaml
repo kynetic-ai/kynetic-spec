@@ -221,3 +221,27 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T19:09:16.746Z
+  - _ulid: 01KMRDKRZMGRYTQEPEE9RFN5CA
+    content: >-
+      Fix cycle 7: Addressed blocker — unknown commands bypassed Commander, breaking response
+      parity.
+
+
+      Root cause: executeCommand() checked findCommand() and returned a custom error message
+      ('Unknown command: ".."') instead of letting Commander handle it. Direct CLI execution uses
+      Commander's 'command:*' handler which produces 'error: unknown command ...' plus help
+      suggestions via console.error/process.exit.
+
+
+      Fix: Removed the early findCommand() bail-out. Unknown commands now pass raw command words to
+      parseAsync(), triggering Commander's 'command:*' handler. The exit interceptor converts
+      process.exit() to BatchExitError, and stderr is captured by the console.error interceptor —
+      producing identical output to direct CLI execution.
+
+
+      Added regression test verifying unknown command stderr matches between CLI subprocess and
+      daemon API. All 6968 tests pass (1944 suites), 5 pre-existing skips, no regressions.
+      Re-verified all 5 spec ACs.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T19:51:19.284Z
