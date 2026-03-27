@@ -58026,9 +58026,25 @@ reviews:
           kind: blocker
           thread_ulid: 01KMPG5R15W00ZHGMVZ7AGTV1Q
         timestamp: 2026-03-27T01:57:36.856Z
+      - _ulid: 01KMPG5Z20TK7ZDDMVE7SM4E9S
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-27T01:57:43.616Z
+      - _ulid: 01KMPG5Z20MB4A0B1M1YXEQSHB
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-27T01:57:43.616Z
     examined_commit: 8813ba365e630450d68e9880bf09f935ba60c6f8
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -58076,7 +58092,14 @@ reviews:
               session writes, violating watcher-driven invalidation for the sessions domain.
             created_at: 2026-03-27T01:57:36.421Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-27T01:57:43.616Z
     created_at: 2026-03-27T01:53:27.032Z
-    updated_at: 2026-03-27T01:57:36.421Z
+    updated_at: 2026-03-27T01:57:43.616Z
     notes: []
