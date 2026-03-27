@@ -58866,6 +58866,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-27T03:21:30.429Z
+      - _ulid: 01KMPP6R70YTQYXPM0R6EYCWY4
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMPMYYHWN2YSG71JJ2TMD3F7
+        timestamp: 2026-03-27T03:43:00.832Z
     examined_commit: ea11de060b7e709735e4d74f9a686a48a8fde614
     external_links: []
     lifecycle_state: closed
@@ -58897,6 +58903,13 @@ reviews:
               loading response. That breaks `@daemon-entity-cache` `ac-warming-availability` and
               undermines `ac-progressive-loading` for not-yet-started domains."
             created_at: 2026-03-27T03:21:16.604Z
+          - _ulid: 01KMPP6QQZ3XAWX0SA3K8F6BRX
+            author: "@claude"
+            body: "Fixed: loadAll() now sets all domains to 'loading' upfront before starting sequential loads.
+              This ensures routes see 'loading' (not 'unloaded') for not-yet-started domains and
+              return _cache_status: 'loading' instead of falling through to disk. Added a test that
+              verifies all domains show 'loading' or 'ready' after loadAll() starts."
+            created_at: 2026-03-27T03:43:00.351Z
         kind: blocker
       - _ulid: 01KMPMZ23ZZ66YXSVAYQQJGVP8
         anchor:
@@ -58931,5 +58944,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T03:21:30.428Z
     created_at: 2026-03-27T03:16:34.259Z
-    updated_at: 2026-03-27T03:21:30.429Z
+    updated_at: 2026-03-27T03:43:00.351Z
     notes: []
