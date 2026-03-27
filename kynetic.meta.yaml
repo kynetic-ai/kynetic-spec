@@ -8906,6 +8906,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T18:00:44.063Z
+  - _ulid: 01KMR87WQ81S2BE0J5TTDB2J6Q
+    type: friction
+    content: "Daemon command API: in-process CLI execution via Commander's parseAsync leaks
+      process-global state across requests. Five fix cycles addressed different leak vectors
+      (console capture, process.stdout.write, output trimming, X-Request-Id lifecycle hook timing,
+      output format mode). Each vector was non-obvious until a specific two-command sequence exposed
+      it. Consider a comprehensive audit of all process-global state touched by CLI commands — or a
+      sandboxed execution context that snapshots and restores all globals."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T18:17:27.016Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
