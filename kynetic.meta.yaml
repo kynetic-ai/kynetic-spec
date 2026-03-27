@@ -8591,6 +8591,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T05:15:58.287Z
+  - _ulid: 01KMPXY79VX24T8P0CNNM1WZV5
+    type: friction
+    content: Entity-cache route tests covered warm list/detail paths but missed filtered /api/sessions
+      requests (task_id/spec_ref) and related-session endpoints, so hot-path disk fallbacks survived
+      a green suite. Add route-level cache assertions for filter-dependent and related-session reads
+      when reviewing or extending cache wiring.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-27T05:58:09.979Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
