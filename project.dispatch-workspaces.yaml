@@ -24366,7 +24366,7 @@ workspaces:
         head: 1dee6a463dd7feeecf5354988107b287660b684e
         last_seen_at: 2026-03-27T00:37:01.101Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-git-subprocess-interactive-prompt-hang-in-daemon-dispatch-01kmpah4
-  - active_role: null
+  - active_role: worker
     base_branch_point: bb256b0254c10f37cf90c9a36c5141f8367047e4
     bootstrap:
       status: succeeded
@@ -24436,7 +24436,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-27T04:15:24.759Z
+      updated_at: 2026-03-27T04:15:26.281Z
     integration:
       status: pending
       detail: null
@@ -24445,16 +24445,16 @@ workspaces:
       target_branch: dev
       target_commit: bb256b0254c10f37cf90c9a36c5141f8367047e4
       updated_at: 2026-03-27T04:15:24.759Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KMPNCSGVJHDM47EDN6MXGZV4"
     task_slug: wire-agent-spawner-into-automation-subsystem-action-executors
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-27T04:04:23.345Z
-      last_reconciled_at: 2026-03-27T04:15:24.759Z
+      last_active_at: 2026-03-27T04:15:26.281Z
+      last_reconciled_at: 2026-03-27T04:15:26.281Z
       created_at: 2026-03-27T03:46:16.776Z
-      updated_at: 2026-03-27T04:15:25.437Z
+      updated_at: 2026-03-27T04:15:26.281Z
     workspace_id: dispatch-workspace-01KMPNCSGVJHDM47EDN6MXGZV4
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
