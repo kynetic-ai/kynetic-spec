@@ -327,3 +327,24 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T02:15:27.840Z
+  - _ulid: 01KMPHRFZKXNSGVQ1WJ1H45CVQ
+    content: >-
+      Fix cycle 9: addressed 2 unique blockers (2 threads).
+
+
+      Blocker 1 (ac-warming-availability incomplete): Added loading response to all 6 remaining
+      domains — sessions, inbox, meta (4 routes), plans, reviews, triage. All 8 domains now return
+      {_cache_status: 'loading'} during warmup instead of silently falling back to disk reads.
+      Previously only tasks and items handled this.
+
+
+      Blocker 2 (cached item-detail loses parent info): Fixed computeParentMap in the cache-hit path
+      to use the full item index (cache.getItemIndex()) instead of passing only the single cached
+      item. Nested spec items now correctly resolve their parent ULID from siblings in the same
+      source file.
+
+
+      Re-verified all 15 ACs against implementation. Tests: 6901 passed, 5 skipped, 0 failures.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T02:25:19.348Z
