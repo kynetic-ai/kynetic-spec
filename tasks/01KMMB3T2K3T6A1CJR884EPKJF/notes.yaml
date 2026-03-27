@@ -265,3 +265,12 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T01:15:23.301Z
+  - _ulid: 01KMPEQ4M3EHTJTBQMMPWZQWYM
+    content: "Fix cycle 5: addressed 2 unique blockers (4 threads, 2 duplicates). Blocker 1:
+      initContext() ran unconditionally on cached paths. Fixed with lazy getCtx() pattern. Blocker
+      2: 5 of 8 domains unwired. Fixed by wiring inbox, meta, triage, plans, reviews to cache with
+      reads and write-through on all mutations. All 15 ACs re-verified. Tests: 6899 passed, 5
+      skipped, 0 failures."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T01:32:09.219Z
