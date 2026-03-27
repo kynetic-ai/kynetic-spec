@@ -69250,6 +69250,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-27T20:26:41.017Z
+      - _ulid: 01KMRG3CCCC4QR62A3N2ZQN1WM
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMRFKG16Y3586WGWYM1N14Q1
+        timestamp: 2026-03-27T20:34:47.820Z
     examined_commit: 28797c7de5c19b1d5061ad04b2343f93d1d26645
     external_links: []
     lifecycle_state: closed
@@ -69281,6 +69287,15 @@ reviews:
               ac-concurrent-mutations, and it also ignores custom shadow.directory configuration by
               hardcoding .
             created_at: 2026-03-27T20:26:07.271Z
+          - _ulid: 01KMRG3BVE5574Q7GPM5NSNS0E
+            author: "@claude"
+            body: "Fixed: Replaced hardcoded `${projectContext.path}/.kspec/shadow-mutation` with
+              `getDispatchShadowMutationLockPath(projectContext.path)` in both single-command and
+              batch handlers. The canonical function returns
+              `${projectDir}/.kspec-dispatch-shadow-mutation` — the same lock file used by the CLI
+              and dispatch engine. This ensures the command API coordinates with all existing
+              mutation writers."
+            created_at: 2026-03-27T20:34:47.278Z
         kind: blocker
       - _ulid: 01KMRFM4EJ43YY3V7C7MH4PKPK
         anchor:
@@ -69315,7 +69330,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T20:26:41.016Z
     created_at: 2026-03-27T20:17:01.397Z
-    updated_at: 2026-03-27T20:26:41.017Z
+    updated_at: 2026-03-27T20:34:47.278Z
     notes: []
   - _ulid: 01KMRFR4PAMF3VA40HF32K0E0T
     slugs: []
