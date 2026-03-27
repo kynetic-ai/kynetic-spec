@@ -57262,9 +57262,25 @@ reviews:
           kind: blocker
           thread_ulid: 01KMPCPWPD0K5MH0VVSNR70WQ1
         timestamp: 2026-03-27T00:57:04.379Z
+      - _ulid: 01KMPCQDFPNY81F6D0YJ32JP0D
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-27T00:57:21.142Z
+      - _ulid: 01KMPCQDFPBKRQ202GR3KG4FAK
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-27T00:57:21.142Z
     examined_commit: 37294e673fe67d970ae172f4d510c5ca5116d0fe
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -57313,7 +57329,14 @@ reviews:
               invalidation for the affected domain."
             created_at: 2026-03-27T00:57:03.949Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-27T00:57:21.142Z
     created_at: 2026-03-27T00:50:29.571Z
-    updated_at: 2026-03-27T00:57:03.949Z
+    updated_at: 2026-03-27T00:57:21.142Z
     notes: []
