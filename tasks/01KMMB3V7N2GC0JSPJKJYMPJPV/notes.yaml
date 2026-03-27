@@ -193,3 +193,26 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T18:27:52.451Z
+  - _ulid: 01KMRAK4NM5AJYP6KY2KBZQDNZ
+    content: >-
+      Fix cycle 6: Addressed blocker — YAML output mode leaking into batch commands.
+
+
+      Root cause: dispatchCommand() in src/cli/batch-exec.ts (the shared batch execution engine)
+      used setJsonMode(false) to reset output format between dispatches. setJsonMode(false) only
+      clears format when currently "json" — leaving "yaml" intact. A prior /api/command request with
+      --yaml would leak into subsequent batch dispatches because the batch path calls executeBatch()
+      → dispatchCommand(), not executeCommand().
+
+
+      Fix: Replaced setJsonMode(false) with setOutputFormat("text") in dispatchCommand()
+      (batch-exec.ts:933), matching the fix already applied to executeCommand() in command.ts during
+      cycle 5. Removed unused setJsonMode import.
+
+
+      Added regression test: runs validate --yaml via single-command endpoint, then inbox add via
+      batch endpoint, verifies the batch command output is not YAML-corrupted. All 6967 tests pass
+      (1944 suites), 5 pre-existing skips, no regressions. Re-verified all 5 spec ACs.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-27T18:58:32.756Z
