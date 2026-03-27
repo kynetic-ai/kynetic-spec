@@ -66707,6 +66707,12 @@ reviews:
         payload:
           thread_ulid: 01KMR69M3XBEV394P03W34FPZ0
         timestamp: 2026-03-27T18:03:24.956Z
+      - _ulid: 01KMR7EA5ZWV67DASGNG32YGNP
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMR69M3XBEV394P03W34FPZ0
+        timestamp: 2026-03-27T18:03:28.831Z
     examined_commit: 87a703c5621e68433037da356a68de5007562e68
     external_links: []
     lifecycle_state: closed
@@ -66835,6 +66841,8 @@ reviews:
               items are eagerly populated in the entity cache detail tier during domain load."
             created_at: 2026-03-27T18:03:24.487Z
         kind: blocker
+        resolved_at: 2026-03-27T18:03:28.366Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -66844,7 +66852,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-27T17:43:35.981Z
     created_at: 2026-03-27T17:39:12.945Z
-    updated_at: 2026-03-27T18:03:24.487Z
+    updated_at: 2026-03-27T18:03:28.366Z
     notes: []
   - _ulid: 01KMR6QW8BZAK57X9FVEAJP406
     slugs: []
