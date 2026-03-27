@@ -307,6 +307,7 @@ function createWarmCache(options: {
     setMetaDetail: () => {},
     getShadowInfo: () => shadowInfo,
     getProjectConfig: () => projectConfig,
+    getSessionContext: () => ({ focus: null, threads: [], questions: [], updated_at: new Date().toISOString() }),
     writeThrough: async (domain: string) => { writeThroughCalls.push(domain); },
     markWriteThrough: () => {},
     // Expose for test assertions
@@ -716,6 +717,7 @@ describe("ac-no-per-request-sync: read routes serve from cache without git opera
         "/api/meta/conventions",
         "/api/meta/shadow",
         "/api/meta/config",
+        "/api/meta/session",
         "/api/meta/observations",
         "/api/refs",
         "/api/plans",

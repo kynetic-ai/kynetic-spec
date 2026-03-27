@@ -594,9 +594,12 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
               : await resolveTaskDataManager(await getCtx()).loadAllTasks(await getCtx());
 
             // For spec_context we need full spec items with acceptance_criteria content.
-            // The cache item index only stores acceptance_criteria_count (summary tier),
-            // so always load full items from disk when building spec_context.
-            const items = await loadAllItems(await getCtx());
+            // AC: @daemon-read-path ac-no-per-request-sync — use cached item details
+            // (populated eagerly during domain load) instead of per-request disk reads.
+            const itemsDomainReady = entityCache && entityCache.getDomainState("items") === "ready";
+            const items: LoadedSpecItem[] = itemsDomainReady
+              ? (entityCache!.getAllItemDetails() ?? await loadAllItems(await getCtx()))
+              : await loadAllItems(await getCtx());
             const index = new ReferenceIndex(tasks ?? [], items ?? []);
             const taskResult = index.resolve(metadata.task_id);
             if (taskResult.ok) {

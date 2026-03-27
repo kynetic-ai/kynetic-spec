@@ -123,6 +123,11 @@ function createWarmCache(
     getMetaIndex: () => null,
     getMetaDetail: () => null,
     setMetaDetail: () => {},
+    getShadowInfo: () => null,
+    getProjectConfig: () => null,
+    getSessionContext: () => null,
+    getAllTaskDetails: () => null,
+    getAllItemDetails: () => null,
     writeThrough: async () => {},
     markWriteThrough: () => {},
   };

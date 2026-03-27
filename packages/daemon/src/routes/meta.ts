@@ -44,7 +44,22 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
   return (
     new Elysia({ prefix: "/api/meta" })
       // AC: @api-contract ac-15 - Get session context
+      // AC: @daemon-read-path ac-no-per-request-sync — serve from cache when available
       .get("/session", async ({ projectContext }) => {
+        const cache = getEntityCache?.(projectContext.path);
+        const metaDomainState = cache?.getDomainState("meta");
+
+        // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
+        if (cache && metaDomainState === "loading") {
+          return { focus: null, threads: [], questions: [], updated_at: new Date().toISOString(), _cache_status: "loading" as const };
+        }
+
+        if (cache && metaDomainState === "ready") {
+          const cachedSession = cache.getSessionContext();
+          if (cachedSession) return cachedSession;
+        }
+
+        // Fallback: cache not ready or no cached session context
         // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
         const ctx = await initContext(projectContext.path);
         const session = await loadSessionContext(ctx);

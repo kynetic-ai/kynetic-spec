@@ -31,6 +31,7 @@ import {
   initContext,
   loadAllItems,
   loadMetaContext,
+  loadSessionContext,
   loadPlans,
   resolveTaskDataManager,
   type KspecContext,
@@ -280,6 +281,14 @@ export interface CachedProjectConfig {
   daemon: { port: number; host: string; auto_start: boolean };
 }
 
+/** Cached session context, computed at cache load time to avoid per-request disk reads. */
+export interface CachedSessionContext {
+  focus: string | null;
+  threads: string[];
+  questions: string[];
+  updated_at: string;
+}
+
 /** Session cache configuration. */
 export interface SessionCacheConfig {
   /** Maximum number of session summaries to keep in index (default 100). */
@@ -460,6 +469,9 @@ export class ProjectEntityCache {
 
   /** Cached project config, populated during meta domain load. */
   private cachedProjectConfig: CachedProjectConfig | null = null;
+
+  /** Cached session context, populated during meta domain load. */
+  private cachedSessionContext: CachedSessionContext | null = null;
 
   /**
    * In-flight reload promises for dedup.
@@ -674,6 +686,14 @@ export class ProjectEntityCache {
    */
   getProjectConfig(): CachedProjectConfig | null {
     return this.cachedProjectConfig;
+  }
+
+  /**
+   * Get cached session context (computed at cache load time).
+   * AC: @daemon-read-path ac-no-per-request-sync
+   */
+  getSessionContext(): CachedSessionContext | null {
+    return this.cachedSessionContext;
   }
 
   /**
@@ -907,6 +927,17 @@ export class ProjectEntityCache {
             host: ctx.config.daemon.host,
             auto_start: ctx.config.daemon.auto_start,
           },
+        };
+
+        // AC: @daemon-read-path ac-no-per-request-sync — cache session context
+        // so /api/meta/session serves from memory without per-request disk reads.
+        const sessionCtx = await loadSessionContext(ctx);
+        if (this.disposed) return;
+        this.cachedSessionContext = {
+          focus: sessionCtx.focus,
+          threads: sessionCtx.threads || [],
+          questions: sessionCtx.open_questions || [],
+          updated_at: sessionCtx.updated_at,
         };
         break;
       }
