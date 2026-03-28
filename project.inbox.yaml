@@ -1991,3 +1991,23 @@ inbox:
       - testing
     added_by: "@claude"
     created_at: 2026-03-28T15:38:44.185Z
+  - _ulid: 01KMV62WZ5J9TFN2VZHPZQZQQ4
+    text: kspec batch task add crashes with TypeError when description is provided. The slug derivation
+      code runs replace() on an undefined value, suggesting it is processing the description field
+      instead of the title. Direct CLI task add with --description works fine.
+    tags:
+      - bug
+      - batch
+      - cli
+    added_by: "@claude"
+    created_at: 2026-03-28T21:37:29.573Z
+  - _ulid: 01KMV62X24B594BP206HWQE421
+    text: No supported path for repairing invalid data in shadow branch YAML. CLI-created records can
+      have invalid fields (e.g., file paths as evidence_refs in triage records) that cause
+      validation warnings on every command. shadow repair fixes structural worktree issues but not
+      data validation errors. Need either a repair command or validation-aware editing.
+    tags:
+      - cli
+      - shadow
+    added_by: "@claude"
+    created_at: 2026-03-28T21:37:29.668Z
