@@ -73208,6 +73208,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMTG9HQS6C55GXHCBSHR3DD5
         timestamp: 2026-03-28T15:16:39.415Z
+      - _ulid: 01KMTG9MBR99CK1FCVQWA52WBP
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMTG9KPYT8QCV7GVWG67ZKNK
+        timestamp: 2026-03-28T15:16:41.464Z
     examined_commit: 11fcbee97e6b8f5fff51f0268670dd169c0e0f4e
     external_links: []
     lifecycle_state: open
@@ -73236,7 +73243,24 @@ reviews:
               same AC-28 guarantee the task is trying to restore.
             created_at: 2026-03-28T15:16:38.777Z
         kind: blocker
+      - _ulid: 01KMTG9KPYT8QCV7GVWG67ZKNK
+        anchor:
+          type: code
+          commit: 11fcbee97e6b8f5fff51f0268670dd169c0e0f4e
+          line_end: 164
+          line_start: 138
+          path: src/agent-runtime/bootstrap.ts
+          side: head
+        entries:
+          - _ulid: 01KMTG9KPYQTRW1MYRP6QCCRG5
+            author: Test User
+            body: AC-28 still is not met in the bootstrap path.  is called from  during , but it still
+              uses  and  on the daemon event loop. That leaves synchronous filesystem bookkeeping in
+              the dispatch execution path, so workspace bootstrap can still block HTTP/WebSocket
+              servicing while it probes , , and .
+            created_at: 2026-03-28T15:16:40.798Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-28T15:11:30.793Z
-    updated_at: 2026-03-28T15:16:38.777Z
+    updated_at: 2026-03-28T15:16:40.798Z
     notes: []
