@@ -74052,6 +74052,20 @@ reviews:
         runner: vitest
         created_at: 2026-03-28T21:29:51.702Z
         completed_at: 2026-03-28T21:29:51.702Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Full suite cached result still has 12 failures in tests/daemon-command-api.test.ts (1958
+          passed / 2 failed suites / 7037 passed tests). Diff for reviewed snapshot touches only
+          src/cli/batch-exec.ts, src/cli/commands/batch.ts, src/schema/batch.ts, and
+          tests/batch-exec-engine.test.ts, so these failures are treated as unrelated pre-existing
+          baseline noise, not regressions from this task.
+        name: npm test
+        required: false
+        runner: scripts/test.cjs
+        created_at: 2026-03-28T21:29:53.814Z
+        completed_at: 2026-03-28T21:29:53.814Z
     events:
       - _ulid: 01KMV5A0P4J3XKT124Y3S7ZQYB
         actor: Test User
@@ -74080,6 +74094,13 @@ reviews:
           status: pass
           name: batch-exec-engine
         timestamp: 2026-03-28T21:29:52.398Z
+      - _ulid: 01KMV5N0HK7V942EXJS63KPW50
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-28T21:29:54.483Z
     examined_commit: deb29e24afec4e6b94b9c1825f82d489f4796e2a
     external_links: []
     lifecycle_state: open
@@ -74121,5 +74142,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-28T21:23:54.181Z
-    updated_at: 2026-03-28T21:29:51.702Z
+    updated_at: 2026-03-28T21:29:53.814Z
     notes: []
