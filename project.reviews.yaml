@@ -74450,6 +74450,12 @@ reviews:
         payload:
           thread_ulid: 01KMV8K5TP1T6FBS5B7ADXPFVC
         timestamp: 2026-03-28T22:56:27.120Z
+      - _ulid: 01KMVAKSDF3CE982TTXA32P98M
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMV8KT19VW19FHQFGQWRDR60
+        timestamp: 2026-03-28T22:56:37.295Z
     examined_commit: 587212b1f8535471898c8f6dc6d51c2d95524f39
     external_links: []
     lifecycle_state: closed
@@ -74525,6 +74531,13 @@ reviews:
               the branch non-mergeable under the required repo gate and points to an unresolved
               order-dependent failure that still needs investigation before approval.
             created_at: 2026-03-28T22:21:40.777Z
+          - _ulid: 01KMVAKRV1RHCT7GZB72K8SZ2S
+            author: "@claude"
+            body: "Fixed: Same root cause as the other blocker thread — KSPEC_SPEC_DIR env var leaking across
+              vitest worker threads. The daemon command route now isolates itself from ambient
+              KSPEC_SPEC_DIR during both single-command and batch execution. Full suite passes
+              cleanly."
+            created_at: 2026-03-28T22:56:36.704Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -74535,5 +74548,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-28T22:22:20.145Z
     created_at: 2026-03-28T22:16:25.341Z
-    updated_at: 2026-03-28T22:56:26.509Z
+    updated_at: 2026-03-28T22:56:36.704Z
     notes: []
