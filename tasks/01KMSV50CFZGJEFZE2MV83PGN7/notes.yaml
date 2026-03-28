@@ -1,1 +1,39 @@
-notes: []
+notes:
+  - _ulid: 01KMSXA9852Z9H8N8X6DECKGEE
+    content: >-
+      Approach: Fix loadDomain() to preserve ready state and serve stale data during reload.
+
+
+      Root cause: loadDomain() unconditionally sets store.state = 'loading' on line 800, even when
+      the domain was previously 'ready'. This causes downstream guards (e.g., sessions.ts task_title
+      resolution) that gate on state === 'ready' to skip enrichment during reloads, returning null
+      data.
+
+
+      Fix plan:
+
+      1. In loadDomain(), when store.state is 'ready', skip setting state to 'loading' — keep it
+      ready so reads continue to succeed
+
+      2. In doLoadDomain(), build new data into local variables first, then assign all properties at
+      once at the end of the case block (semi-atomic swap). This prevents partial state where index
+      is new but details are cleared.
+
+      3. On reload failure of a previously-ready domain, transition to 'degraded' (matches AC:
+      graceful-degradation)
+
+      4. The 'loading' state only applies to first-time loads (from 'unloaded')
+
+
+      Test plan: Write tests for ac-stale-during-reload that verify:
+
+      - Domain state remains 'ready' during reload
+
+      - Old cached data remains accessible during reload
+
+      - New data replaces old after reload completes
+
+      - On reload error, domain transitions to 'degraded' (not back to 'loading')
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-28T09:44:59.909Z
