@@ -1981,3 +1981,13 @@ inbox:
       - design-needed
     added_by: "@claude"
     created_at: 2026-03-28T08:26:07.972Z
+  - _ulid: 01KMTHJ02SBT1VW2B712H42181
+    text: 12 pre-existing test failures in daemon-command-api.test.ts on dev branch — all return 500
+      where 200/422 expected. Likely related to daemon command routing or fixture setup. Verified
+      failing on origin/dev independent of any feature branch.
+    tags:
+      - bug
+      - daemon
+      - testing
+    added_by: "@claude"
+    created_at: 2026-03-28T15:38:44.185Z
