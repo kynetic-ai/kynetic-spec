@@ -26273,7 +26273,7 @@ workspaces:
         head: 7d42d01a3659b6f84c5efdf874a62610eb7ac38f
         last_seen_at: 2026-03-28T15:39:12.519Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/replace-synchronous-process-spawning-in-dispatch-engine-01kmsv5e
-  - active_role: null
+  - active_role: worker
     base_branch_point: a83f81a891a86a63980effc34ff74d56125f34e9
     bootstrap:
       status: succeeded
@@ -26343,7 +26343,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-28T20:26:34.606Z
+      updated_at: 2026-03-28T20:26:37.775Z
     integration:
       status: pending
       detail: null
@@ -26352,16 +26352,16 @@ workspaces:
       target_branch: dev
       target_commit: a83f81a891a86a63980effc34ff74d56125f34e9
       updated_at: 2026-03-28T20:26:34.606Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KMSV9SCBY5E67N98A4KMBRXD"
     task_slug: add-rollback-note-to-batch-atomic-failure-output
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-28T20:18:54.944Z
-      last_reconciled_at: 2026-03-28T20:26:34.606Z
+      last_active_at: 2026-03-28T20:26:37.775Z
+      last_reconciled_at: 2026-03-28T20:26:37.775Z
       created_at: 2026-03-28T11:01:28.228Z
-      updated_at: 2026-03-28T20:26:35.909Z
+      updated_at: 2026-03-28T20:26:37.775Z
     workspace_id: dispatch-workspace-01KMSV9SCBY5E67N98A4KMBRXD
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
