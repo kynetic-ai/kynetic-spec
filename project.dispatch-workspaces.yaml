@@ -26122,7 +26122,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-28T10:04:54.543Z
+      updated_at: 2026-03-28T10:04:56.798Z
     integration:
       status: pending
       detail: null
@@ -26131,25 +26131,20 @@ workspaces:
       target_branch: dev
       target_commit: 39e80b193a2247ab9a52253c6cc9fc060da528fd
       updated_at: 2026-03-28T10:04:54.543Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMSV50CFZGJEFZE2MV83PGN7"
     task_slug: fix-cache-domain-state-regression-during-reload
     timestamps:
       closed_at: null
       last_active_at: 2026-03-28T09:56:08.895Z
-      last_reconciled_at: 2026-03-28T10:04:54.543Z
+      last_reconciled_at: 2026-03-28T10:04:56.798Z
       created_at: 2026-03-28T09:40:40.810Z
-      updated_at: 2026-03-28T10:04:54.543Z
+      updated_at: 2026-03-28T10:04:56.798Z
     workspace_id: dispatch-workspace-01KMSV50CFZGJEFZE2MV83PGN7
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 80d42a907fa9ef28f30266d9a3a65787e5fc698a
-        last_seen_at: 2026-03-28T09:56:00.214Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-cache-domain-state-regression-during-reload-01kmsv50-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/fix-cache-domain-state-regression-during-reload/01kmsv50
