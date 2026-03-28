@@ -73280,6 +73280,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-28T15:17:39.054Z
+      - _ulid: 01KMTHBQTQQ4QRVE2QQKBAGRJH
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMTG9HQS6C55GXHCBSHR3DD5
+        timestamp: 2026-03-28T15:35:19.127Z
     examined_commit: 11fcbee97e6b8f5fff51f0268670dd169c0e0f4e
     external_links: []
     lifecycle_state: closed
@@ -73307,6 +73313,15 @@ reviews:
               path still blocks the Node event loop on local filesystem reads/writes, which is the
               same AC-28 guarantee the task is trying to restore.
             created_at: 2026-03-28T15:16:38.777Z
+          - _ulid: 01KMTHBQ90KBMS9G2WSKDNDN6G
+            author: "@claude"
+            body: "Fixed: Converted all sync file I/O in the coherence snapshot path
+              (loadDispatchCheckoutCoherenceSnapshot and persistDispatchCheckoutCoherenceSnapshot)
+              from fsSync.existsSync/readFileSync/writeFileSync to async fs.readFile/fs.writeFile
+              from node:fs/promises. Removed the fsSync import entirely from workspace.ts. The
+              existence check for loadDispatchCheckoutCoherenceSnapshot is handled by the try/catch
+              around fs.readFile (ENOENT triggers the catch, returning null)."
+            created_at: 2026-03-28T15:35:18.560Z
         kind: blocker
       - _ulid: 01KMTG9KPYT8QCV7GVWG67ZKNK
         anchor:
@@ -73334,5 +73349,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-28T15:17:39.053Z
     created_at: 2026-03-28T15:11:30.793Z
-    updated_at: 2026-03-28T15:17:39.054Z
+    updated_at: 2026-03-28T15:35:18.560Z
     notes: []
