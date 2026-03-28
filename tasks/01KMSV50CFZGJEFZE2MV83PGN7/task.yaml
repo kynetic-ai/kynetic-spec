@@ -14,8 +14,12 @@ description: "What: loadDomain() sets store.state to loading before starting an 
 spec_ref: "@daemon-entity-cache"
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Approved and merged
+  dispatch/task/fix-cache-domain-state-regression-during-reload/01kmsv50 into dev at 5bc00f154.
+  Verified the meta-domain build-then-swap fix and isolated cache/command-api coverage on the
+  reviewed snapshot.
 depends_on: []
 context: []
 priority: 3
@@ -146,8 +150,24 @@ history:
         previous: "@01KMT1STDRE45VXZYZMXC3B2JB"
     command: review-link
     timestamp: 2026-03-28T11:06:49.106Z
+  - author: Test User
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Approved and merged dispatch/task/fix-cache-domain-state-regression-during-reload/01kmsv50 into
+          dev at 5bc00f154. Verified the meta-domain build-then-swap fix and isolated
+          cache/command-api coverage on the reviewed snapshot.
+        previous: null
+      completed_at:
+        new: 2026-03-28T11:10:34.359Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-03-28T11:10:34.369Z
 created_at: 2026-03-28T09:07:09.839Z
 started_at: 2026-03-28T10:58:04.084Z
 submitted_at: 2026-03-28T10:58:07.272Z
+completed_at: 2026-03-28T11:10:34.359Z
 todos: []
 automation: eligible
