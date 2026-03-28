@@ -72957,6 +72957,19 @@ reviews:
         runner: npm
         created_at: 2026-03-28T11:07:51.526Z
         completed_at: 2026-03-28T11:07:51.526Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full npm test on this snapshot failed outside the changed area: 2 suites failed, 12 tests
+          failed, all in tests/daemon-command-api.test.ts, while that suite passes in isolation with
+          tests/daemon-entity-cache.test.ts. This indicates unrelated cross-test instability rather
+          than a regression introduced by the submitted patch."
+        name: npm test
+        required: false
+        runner: npm
+        created_at: 2026-03-28T11:07:55.416Z
+        completed_at: 2026-03-28T11:07:55.416Z
     events:
       - _ulid: 01KMT201AGACKNEP51CZZCETTX
         actor: Test User
@@ -72978,6 +72991,13 @@ reviews:
           status: pass
           name: targeted npm test
         timestamp: 2026-03-28T11:07:52.089Z
+      - _ulid: 01KMT224NVWDP2RFKMQSNFSJZ5
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-28T11:07:55.963Z
     examined_commit: 6dfc4805489d99bea3d96adb5877ae3251faad69
     external_links: []
     lifecycle_state: open
@@ -72990,5 +73010,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-28T11:06:46.992Z
-    updated_at: 2026-03-28T11:07:51.526Z
+    updated_at: 2026-03-28T11:07:55.416Z
     notes: []
