@@ -87,3 +87,15 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-28T21:58:41.874Z
+  - _ulid: 01KMV82T72AP8AZGR9647N0WD5
+    content: "Fix cycle 1: addressed blocker thread on ac-13. The previous implementation deleted
+      branches for 'closing' and 'cleanup_blocked' registry records, but AC-13 specifies only
+      'closed' records are deletion-eligible. Fixed the artifact reconciliation guard to preserve
+      all non-closed registry-tracked branches unconditionally. Simplified the logic:
+      registryBranchMap only contains non-closed records, so any map hit means preserve. Corrected
+      the test that asserted deletion for 'closing' state to assert preservation, and added a new
+      test for 'closed' state deletion. Re-verified all ACs (ac-12, ac-13) against the
+      implementation. Full test suite: 7063 passed, 0 failed."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-28T22:12:23.906Z
