@@ -17814,7 +17814,7 @@ runs:
     completed_at: 2026-03-28T21:46:53.513Z
   - _ulid: 01KMV848H1Z69EKNJKCHQTW49M
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -17829,7 +17829,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-28T22:13:28.123Z
-        completed_at: 2026-03-28T22:13:28.123Z
+        completed_at: 2026-03-28T22:14:11.538Z
+        notes: Searched existing state. No new high-confidence friction to report. This was a clean, short
+          fix cycle. The review-to-fix-to-resubmit flow worked as designed. No systemic friction
+          observed — the only issue was a code logic error (treating closing/cleanup_blocked as
+          deletion-eligible when AC-13 only allows closed), which is a normal fix cycle scenario,
+          not process friction.
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-28T22:14:11.538Z
+        completed_at: 2026-03-28T22:14:11.538Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-28T22:13:11.329Z
