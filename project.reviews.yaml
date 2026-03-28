@@ -73514,6 +73514,13 @@ reviews:
           kind: nit
           thread_ulid: 01KMV1T1D0SCJT6340F9T1193D
         timestamp: 2026-03-28T20:22:45.448Z
+      - _ulid: 01KMV1T3NVWGXHSBY4XQYAZBJE
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMV1T33R73JKKT84ZR7RS3VQ
+        timestamp: 2026-03-28T20:22:47.227Z
     examined_commit: f8339068c0dcc4a9b294a20afdd60d5036b3aa55
     external_links: []
     lifecycle_state: open
@@ -73559,7 +73566,26 @@ reviews:
               integration. Findings: 1 blocker on partial-commit flush failure path."
             created_at: 2026-03-28T20:22:44.896Z
         kind: nit
+      - _ulid: 01KMV1T33R73JKKT84ZR7RS3VQ
+        anchor:
+          type: code
+          commit: f8339068c0dcc4a9b294a20afdd60d5036b3aa55
+          line_end: 833
+          line_start: 833
+          path: src/cli/batch-exec.ts
+          side: head
+        entries:
+          - _ulid: 01KMV1T33SW9VP1H06ZSKXDE6Q
+            author: Test User
+            body: "MUST-FIX:  now sets  for every failed atomic batch, but that is false when  fails during
+              phase 2 after some staged files have already been renamed into place. I reproduced
+              this by running  with one normal target and one pre-existing directory target: the
+              first file persisted on disk and flush threw . With the current change, both JSON
+              output and stderr claim 'All operations rolled back — no changes were applied.' on
+              that path, which misreports persisted state to users and automation."
+            created_at: 2026-03-28T20:22:46.649Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-28T20:19:40.119Z
-    updated_at: 2026-03-28T20:22:44.896Z
+    updated_at: 2026-03-28T20:22:46.649Z
     notes: []
