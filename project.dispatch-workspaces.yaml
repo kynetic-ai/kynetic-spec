@@ -26500,12 +26500,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-28T22:23:32.542Z
+      updated_at: 2026-03-28T22:23:40.099Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-28T22:23:34.802Z
+      updated_at: 2026-03-28T22:23:40.099Z
     integration:
       status: pending
       detail: null
@@ -26513,7 +26513,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: f8a3f4f7cd59e2d27bd624e3106c97691ff09771
-      updated_at: 2026-03-28T22:23:32.542Z
+      updated_at: 2026-03-28T22:23:40.099Z
     lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMV52K0KFVQ33W970Z9NBCR5"
@@ -26521,9 +26521,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-28T22:15:14.428Z
-      last_reconciled_at: 2026-03-28T22:23:34.802Z
+      last_reconciled_at: 2026-03-28T22:23:40.099Z
       created_at: 2026-03-28T21:22:49.841Z
-      updated_at: 2026-03-28T22:23:34.802Z
+      updated_at: 2026-03-28T22:23:40.099Z
     workspace_id: dispatch-workspace-01KMV52K0KFVQ33W970Z9NBCR5
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -26532,5 +26532,5 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/fix-workspace-reconciliation-cycle-for-completed-task-records/01kmv52k
         head: 587212b1f8535471898c8f6dc6d51c2d95524f39
-        last_seen_at: 2026-03-28T22:14:42.493Z
+        last_seen_at: 2026-03-28T22:23:40.099Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-workspace-reconciliation-cycle-for-completed-task-records-01kmv52k
