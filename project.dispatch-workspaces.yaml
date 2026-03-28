@@ -25832,18 +25832,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-fix-ws-watcher-registration/01kmsfmg
-    canonical_branch_head: b89e7561869cc09edff3591d3db7461dcc17ccc4
+    canonical_branch_head: c45892c3a5f17357eb44f4b1ea3a2fb318559aad
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-28T06:05:32.942Z
+      updated_at: 2026-03-28T06:17:39.773Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-28T06:05:38.360Z
+      updated_at: 2026-03-28T06:17:39.773Z
     integration:
       status: pending
       detail: null
@@ -25851,7 +25851,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: b89e7561869cc09edff3591d3db7461dcc17ccc4
-      updated_at: 2026-03-28T06:05:32.942Z
+      updated_at: 2026-03-28T06:17:39.773Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KMSFMG5AJNYD4PWW8MNPVH5C"
@@ -25859,9 +25859,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-28T06:05:38.360Z
-      last_reconciled_at: 2026-03-28T06:05:38.360Z
+      last_reconciled_at: 2026-03-28T06:17:39.773Z
       created_at: 2026-03-28T06:02:11.777Z
-      updated_at: 2026-03-28T06:05:38.360Z
+      updated_at: 2026-03-28T06:17:39.773Z
     workspace_id: dispatch-workspace-01KMSFMG5AJNYD4PWW8MNPVH5C
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
