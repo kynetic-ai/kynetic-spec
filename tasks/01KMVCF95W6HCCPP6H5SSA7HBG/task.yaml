@@ -55,6 +55,8 @@ description: >-
 
   - Reclaim from an alive-but-stuck holder (ac-10)
 
+  - Protect against shadow branch corruption when force-reclaiming (ac-11)
+
 
   Observed in dispatch session 01KMV580P5VCWH2WFYCJCD9B3H: 269 lock timeout errors over 16 minutes.
   The reviewer agent could not complete a single mutation. Lock holder was PID of the daemon
@@ -67,29 +69,63 @@ description: >-
 
   ### 1. Lock release guarantee (ac-7)
 
-  Audit all acquireFileLock call sites. Ensure every acquisition is wrapped in try/finally that
+  Audit ALL acquireFileLock call sites. Ensure every acquisition is wrapped in try/finally that
   calls release(). The withDispatchShadowMutationLock wrapper already does this, but verify no code
   path acquires outside the wrapper. Add a safety timeout to the release() call itself so a failed
   release doesn't silently swallow the error.
 
 
+  Call sites to audit:
+
+  - withDispatchShadowMutationLock (workspace.ts:1389) — the main wrapper
+
+  - persistWorkspaceRecord (workspace.ts:1454) — via the wrapper
+
+  - reconcileDispatchWorkspaceRegistry (workspace.ts:2153) — via the wrapper
+
+  - cleanupReviewerDispatchWorkspace (workspace.ts:2606) — direct acquisition
+
+  - provisionDispatchWorkspace (workspace.ts:3156) — direct acquisition
+
+  - reapDispatchWorkspace and related lifecycle functions (workspace.ts:3533, 3653, 3750)
+
+  - maybeAcquireDispatchMutationLock (cli/index.ts:93) — CLI preAction hook
+
+
   ### 2. Maximum hold duration ceiling (ac-8)
 
   Add a configurable max-hold-duration to the lock metadata (written alongside PID and timestamp in
-  the lock directory). When a waiting process checks staleness, compare elapsed time against the
-  ceiling. If exceeded, treat as reclaimable regardless of PID liveness. The existing stale
-  detection in file-lock.ts (which checks process.kill(pid, 0)) becomes one of two reclamation
+  the lock directory). Configuration via KSPEC_SHADOW_MUTATION_LOCK_MAX_HOLD_MS environment
+  variable, defaulting to 30000ms. When a waiting process checks staleness, compare elapsed time
+  against the ceiling. If exceeded, treat as reclaimable regardless of PID liveness. The existing
+  stale detection in file-lock.ts (which checks process.kill(pid, 0)) becomes one of two reclamation
   paths: dead PID OR exceeded ceiling.
+
+
+  Design note: this deliberately reverses the existing design principle in file-lock.ts (line ~119)
+  that "age alone never breaks mutual exclusion." The rationale is that an alive-but-stuck holder
+  blocking all agents for minutes is worse than the theoretical risk of reclaiming during a
+  legitimately slow operation. The 30s default provides ample headroom for any normal operation.
 
 
   ### 3. Reconciliation lock granularity (ac-9)
 
-  Refactor reconcileDispatchWorkspaceRegistry to acquire/release the file lock per-record (or
-  per-dirty-record-batch) rather than for the entire iteration. Each record that needs saving gets
-  its own lock-acquire → save → commit → release cycle. This allows agent mutations to interleave
-  between record evaluations. The shadowMutex (in-memory) can still serialize within the daemon
-  process, but the file lock window shrinks from "entire reconciliation" to "single record
-  save+commit".
+  Refactor reconcileDispatchWorkspaceRegistry to acquire/release the file lock per-dirty-record
+  rather than for the entire iteration. Each record that needs saving gets its own lock-acquire →
+  save → commit → release cycle. Clean records (no state change) are evaluated without the file lock
+  since they only read.
+
+
+  Performance consideration: this means N git commits instead of 1 per reconciliation cycle.
+  Mitigate by only committing for records that are actually dirty (isWorkspaceRecordDirty returns
+  true). In practice most records are clean during routine reconciliation, so the commit count stays
+  low.
+
+
+  The in-memory shadowMutex in dispatch.ts should continue to serialize daemon-internal operations.
+  The file lock yield only helps external CLI processes interleave — daemon-internal operations
+  (handleStateChange, markActive, markIdle) still queue behind shadowMutex within the daemon
+  process, which is correct for preventing daemon self-contention.
 
 
   ### 4. Alive-but-stuck reclamation (ac-10)
@@ -98,6 +134,15 @@ description: >-
   and compare against the max-hold-duration ceiling. If the lock has been held beyond the ceiling,
   reclaim it even if process.kill(pid, 0) succeeds. Log a diagnostic identifying the previous holder
   PID and hold duration.
+
+
+  ### 5. Shadow worktree protection on force-reclaim (ac-11)
+
+  When a lock is reclaimed via the duration ceiling path (not the dead-PID path), the new holder
+  must check the shadow worktree for uncommitted dirty state before starting its own mutation. If
+  dirty state exists (uncommitted files from the previous holder's interrupted write), roll back
+  with git checkout/reset before proceeding. This prevents the new holder from accidentally
+  committing partial state from the old holder alongside its own changes.
 spec_ref: "@scoped-dispatch-shadow-serialization"
 meta_ref: null
 plan_ref: null
@@ -111,5 +156,258 @@ tags:
   - dispatch
   - bug
 vcs_refs: []
+history:
+  - author: "@claude"
+    changes:
+      description:
+        new: >-
+          ## What
+
+
+          The dispatch shadow mutation file lock (.kspec-dispatch-shadow-mutation) suffers from two
+          related failures:
+
+
+          1. **Lock leak**: The daemon process (workspace.ts withDispatchShadowMutationLock)
+          acquires the lock for workspace lifecycle operations but can fail to release it. When this
+          happens, the daemon PID remains alive, so the existing stale-lock detection (which only
+          checks for dead PIDs) cannot reclaim the lock. All agent CLI mutations are blocked
+          indefinitely.
+
+
+          2. **Lock monopolization during reconciliation**: reconcileDispatchWorkspaceRegistry
+          (workspace.ts:2153) acquires the file lock once for the entire batch of non-closed
+          workspace records, then performs N git operations per record (refExists, resolveCommit,
+          findExistingWorktreeForBranchUnderRoot, pathExists) plus conditional saves and a shadow
+          branch commit. With multiple active workspaces this holds the lock for seconds, starving
+          concurrent agent CLI mutations.
+
+
+          Both failures produce the same symptom: reviewer (or worker) agents cannot run any
+          mutating kspec command (review verdict, task complete, task note, etc.) and burn their
+          entire session retrying.
+
+
+          ## Why
+
+
+          The dispatch engine, worker agents, and reviewer agents all compete for the same file
+          lock:
+
+
+          - The daemon acquires it during workspace reconciliation (every 60s), state change
+          handling, and invocation lifecycle management (mark active/idle).
+
+          - Worker agents acquire it for every mutating kspec CLI command (task note, task submit,
+          etc.) via the preAction hook in cli/index.ts.
+
+          - Reviewer agents acquire it for every mutating kspec CLI command (review verdict, task
+          complete, etc.) via the same hook.
+
+
+          The lock exists to serialize shadow branch writes and prevent concurrent commits from
+          corrupting the worktree. This is correct. But the current implementation has no mechanism
+          to:
+
+          - Guarantee release if the holder gets stuck (ac-7)
+
+          - Enforce a maximum hold duration (ac-8)
+
+          - Yield between record evaluations during batch reconciliation (ac-9)
+
+          - Reclaim from an alive-but-stuck holder (ac-10)
+
+          - Protect against shadow branch corruption when force-reclaiming (ac-11)
+
+
+          Observed in dispatch session 01KMV580P5VCWH2WFYCJCD9B3H: 269 lock timeout errors over 16
+          minutes. The reviewer agent could not complete a single mutation. Lock holder was PID of
+          the daemon process. A subsequent reviewer session (01KMV6PRTZEJYVPHKKW5S3DGQC) hit the
+          same issue with a leaked lock held for 48+ minutes.
+
+
+          ## How
+
+
+          ### 1. Lock release guarantee (ac-7)
+
+          Audit ALL acquireFileLock call sites. Ensure every acquisition is wrapped in try/finally
+          that calls release(). The withDispatchShadowMutationLock wrapper already does this, but
+          verify no code path acquires outside the wrapper. Add a safety timeout to the release()
+          call itself so a failed release doesn't silently swallow the error.
+
+
+          Call sites to audit:
+
+          - withDispatchShadowMutationLock (workspace.ts:1389) — the main wrapper
+
+          - persistWorkspaceRecord (workspace.ts:1454) — via the wrapper
+
+          - reconcileDispatchWorkspaceRegistry (workspace.ts:2153) — via the wrapper
+
+          - cleanupReviewerDispatchWorkspace (workspace.ts:2606) — direct acquisition
+
+          - provisionDispatchWorkspace (workspace.ts:3156) — direct acquisition
+
+          - reapDispatchWorkspace and related lifecycle functions (workspace.ts:3533, 3653, 3750)
+
+          - maybeAcquireDispatchMutationLock (cli/index.ts:93) — CLI preAction hook
+
+
+          ### 2. Maximum hold duration ceiling (ac-8)
+
+          Add a configurable max-hold-duration to the lock metadata (written alongside PID and
+          timestamp in the lock directory). Configuration via KSPEC_SHADOW_MUTATION_LOCK_MAX_HOLD_MS
+          environment variable, defaulting to 30000ms. When a waiting process checks staleness,
+          compare elapsed time against the ceiling. If exceeded, treat as reclaimable regardless of
+          PID liveness. The existing stale detection in file-lock.ts (which checks process.kill(pid,
+          0)) becomes one of two reclamation paths: dead PID OR exceeded ceiling.
+
+
+          Design note: this deliberately reverses the existing design principle in file-lock.ts
+          (line ~119) that "age alone never breaks mutual exclusion." The rationale is that an
+          alive-but-stuck holder blocking all agents for minutes is worse than the theoretical risk
+          of reclaiming during a legitimately slow operation. The 30s default provides ample
+          headroom for any normal operation.
+
+
+          ### 3. Reconciliation lock granularity (ac-9)
+
+          Refactor reconcileDispatchWorkspaceRegistry to acquire/release the file lock
+          per-dirty-record rather than for the entire iteration. Each record that needs saving gets
+          its own lock-acquire → save → commit → release cycle. Clean records (no state change) are
+          evaluated without the file lock since they only read.
+
+
+          Performance consideration: this means N git commits instead of 1 per reconciliation cycle.
+          Mitigate by only committing for records that are actually dirty (isWorkspaceRecordDirty
+          returns true). In practice most records are clean during routine reconciliation, so the
+          commit count stays low.
+
+
+          The in-memory shadowMutex in dispatch.ts should continue to serialize daemon-internal
+          operations. The file lock yield only helps external CLI processes interleave —
+          daemon-internal operations (handleStateChange, markActive, markIdle) still queue behind
+          shadowMutex within the daemon process, which is correct for preventing daemon
+          self-contention.
+
+
+          ### 4. Alive-but-stuck reclamation (ac-10)
+
+          Extend the staleness check in acquireFileLock retry loop (file-lock.ts) to read the lock
+          timestamp and compare against the max-hold-duration ceiling. If the lock has been held
+          beyond the ceiling, reclaim it even if process.kill(pid, 0) succeeds. Log a diagnostic
+          identifying the previous holder PID and hold duration.
+
+
+          ### 5. Shadow worktree protection on force-reclaim (ac-11)
+
+          When a lock is reclaimed via the duration ceiling path (not the dead-PID path), the new
+          holder must check the shadow worktree for uncommitted dirty state before starting its own
+          mutation. If dirty state exists (uncommitted files from the previous holder's interrupted
+          write), roll back with git checkout/reset before proceeding. This prevents the new holder
+          from accidentally committing partial state from the old holder alongside its own changes.
+        previous: >-
+          ## What
+
+
+          The dispatch shadow mutation file lock (.kspec-dispatch-shadow-mutation) suffers from two
+          related failures:
+
+
+          1. **Lock leak**: The daemon process (workspace.ts withDispatchShadowMutationLock)
+          acquires the lock for workspace lifecycle operations but can fail to release it. When this
+          happens, the daemon PID remains alive, so the existing stale-lock detection (which only
+          checks for dead PIDs) cannot reclaim the lock. All agent CLI mutations are blocked
+          indefinitely.
+
+
+          2. **Lock monopolization during reconciliation**: reconcileDispatchWorkspaceRegistry
+          (workspace.ts:2153) acquires the file lock once for the entire batch of non-closed
+          workspace records, then performs N git operations per record (refExists, resolveCommit,
+          findExistingWorktreeForBranchUnderRoot, pathExists) plus conditional saves and a shadow
+          branch commit. With multiple active workspaces this holds the lock for seconds, starving
+          concurrent agent CLI mutations.
+
+
+          Both failures produce the same symptom: reviewer (or worker) agents cannot run any
+          mutating kspec command (review verdict, task complete, task note, etc.) and burn their
+          entire session retrying.
+
+
+          ## Why
+
+
+          The dispatch engine, worker agents, and reviewer agents all compete for the same file
+          lock:
+
+
+          - The daemon acquires it during workspace reconciliation (every 60s), state change
+          handling, and invocation lifecycle management (mark active/idle).
+
+          - Worker agents acquire it for every mutating kspec CLI command (task note, task submit,
+          etc.) via the preAction hook in cli/index.ts.
+
+          - Reviewer agents acquire it for every mutating kspec CLI command (review verdict, task
+          complete, etc.) via the same hook.
+
+
+          The lock exists to serialize shadow branch writes and prevent concurrent commits from
+          corrupting the worktree. This is correct. But the current implementation has no mechanism
+          to:
+
+          - Guarantee release if the holder gets stuck (ac-7)
+
+          - Enforce a maximum hold duration (ac-8)
+
+          - Yield between record evaluations during batch reconciliation (ac-9)
+
+          - Reclaim from an alive-but-stuck holder (ac-10)
+
+
+          Observed in dispatch session 01KMV580P5VCWH2WFYCJCD9B3H: 269 lock timeout errors over 16
+          minutes. The reviewer agent could not complete a single mutation. Lock holder was PID of
+          the daemon process. A subsequent reviewer session (01KMV6PRTZEJYVPHKKW5S3DGQC) hit the
+          same issue with a leaked lock held for 48+ minutes.
+
+
+          ## How
+
+
+          ### 1. Lock release guarantee (ac-7)
+
+          Audit all acquireFileLock call sites. Ensure every acquisition is wrapped in try/finally
+          that calls release(). The withDispatchShadowMutationLock wrapper already does this, but
+          verify no code path acquires outside the wrapper. Add a safety timeout to the release()
+          call itself so a failed release doesn't silently swallow the error.
+
+
+          ### 2. Maximum hold duration ceiling (ac-8)
+
+          Add a configurable max-hold-duration to the lock metadata (written alongside PID and
+          timestamp in the lock directory). When a waiting process checks staleness, compare elapsed
+          time against the ceiling. If exceeded, treat as reclaimable regardless of PID liveness.
+          The existing stale detection in file-lock.ts (which checks process.kill(pid, 0)) becomes
+          one of two reclamation paths: dead PID OR exceeded ceiling.
+
+
+          ### 3. Reconciliation lock granularity (ac-9)
+
+          Refactor reconcileDispatchWorkspaceRegistry to acquire/release the file lock per-record
+          (or per-dirty-record-batch) rather than for the entire iteration. Each record that needs
+          saving gets its own lock-acquire → save → commit → release cycle. This allows agent
+          mutations to interleave between record evaluations. The shadowMutex (in-memory) can still
+          serialize within the daemon process, but the file lock window shrinks from "entire
+          reconciliation" to "single record save+commit".
+
+
+          ### 4. Alive-but-stuck reclamation (ac-10)
+
+          Extend the staleness check in acquireFileLock retry loop (file-lock.ts) to read the lock
+          timestamp and compare against the max-hold-duration ceiling. If the lock has been held
+          beyond the ceiling, reclaim it even if process.kill(pid, 0) succeeds. Log a diagnostic
+          identifying the previous holder PID and hold duration.
+    command: task-set
+    timestamp: 2026-03-28T23:43:30.610Z
 created_at: 2026-03-28T23:29:06.748Z
 todos: []
