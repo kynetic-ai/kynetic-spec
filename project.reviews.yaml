@@ -73904,6 +73904,17 @@ reviews:
         runner: test.cjs
         created_at: 2026-03-28T20:51:11.646Z
         completed_at: 2026-03-28T20:51:11.646Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm test -- tests/batch-exec-engine.test.ts --verbose passed (71 tests). Verified the new
+          atomic/immediate rollback-note cases on commit 30f21b4105cc.
+        name: batch-exec-engine
+        required: true
+        runner: vitest
+        created_at: 2026-03-28T20:51:59.539Z
+        completed_at: 2026-03-28T20:51:59.539Z
     events:
       - _ulid: 01KMV3AASR5FJW6D5DRQAT7QHZ
         actor: Test User
@@ -73939,6 +73950,13 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-03-28T20:51:12.304Z
+      - _ulid: 01KMV3FKEYGK2EWA5Y7X5SV4G7
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: batch-exec-engine
+        timestamp: 2026-03-28T20:52:00.094Z
     examined_commit: 30f21b4105ccb90b13d45dbf703f748baf7d72ce
     external_links: []
     lifecycle_state: open
@@ -73970,5 +73988,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-28T20:49:07.385Z
-    updated_at: 2026-03-28T20:51:11.646Z
+    updated_at: 2026-03-28T20:51:59.539Z
     notes: []
