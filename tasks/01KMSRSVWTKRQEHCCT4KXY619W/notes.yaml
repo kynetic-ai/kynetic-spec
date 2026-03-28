@@ -82,3 +82,34 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-28T08:27:55.591Z
+  - _ulid: 01KMSS2VZ6E12E950GSH53HKPC
+    content: >-
+      Approach: 
+
+      1. Add getCacheDiagnostics() public method to ProjectEntityCache — returns per-domain state,
+      index count, detail count, lastError, lastInvalidatedAt
+
+      2. Add lastInvalidatedAt timestamp to DomainStore — update in invalidateDomain() and
+      writeThrough()
+
+      3. Add getAllRegisteredCaches() export to entity-cache module — iterates cacheRegistry
+
+      4. Extend RouteEntityCache interface with getCacheDiagnostics()
+
+      5. Create packages/daemon/src/routes/debug.ts — GET /api/debug/cache-status endpoint
+
+      6. Register in server.ts with both projectManager and getEntityCache
+
+      7. Response shape: per-project { path, watcherStatus, domains: { [domain]: { state,
+      indexCount, detailCount, lastError, lastInvalidatedAt } } }
+
+      8. Write behavioral tests exercising the endpoint via HTTP
+
+
+      Edge cases: no registered projects, degraded domain with error, unloaded domains during
+      progressive loading.
+
+      Test plan: ac-18 × 1 primary test + edge cases, trait ACs checked for applicability.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-28T08:31:02.630Z
