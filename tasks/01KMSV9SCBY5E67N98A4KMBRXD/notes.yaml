@@ -14,3 +14,22 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-28T11:04:53.082Z
+  - _ulid: 01KMT29VCH3DH9WYTTRFZKK7YA
+    content: >-
+      Implementation complete. Changes:
+
+      - src/schema/batch.ts: Added rolled_back?: boolean field to BatchExecResult interface
+
+      - src/cli/batch-exec.ts: Set rolled_back: true in atomic execution path when batch fails
+
+      - src/cli/commands/batch.ts: Added 'All operations rolled back — no changes were applied.'
+      line to stderr on atomic failure
+
+      - tests/batch-exec-engine.test.ts: 4 new E2E tests verifying rollback note appears in atomic
+      failure (JSON + human-readable) and does NOT appear in immediate mode failure (JSON +
+      human-readable)
+
+      All 7048 tests pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-28T11:12:08.594Z
