@@ -73201,6 +73201,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-28T15:16:37.398Z
+      - _ulid: 01KMTG9JBQGSQ0XNM43TY48NGV
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMTG9HQS6C55GXHCBSHR3DD5
+        timestamp: 2026-03-28T15:16:39.415Z
     examined_commit: 11fcbee97e6b8f5fff51f0268670dd169c0e0f4e
     external_links: []
     lifecycle_state: open
@@ -73210,8 +73217,26 @@ reviews:
       content_hash: ""
       ref: "@01KMSV5ERVHAAC92XGR8TYP19A"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMTG9HQS6C55GXHCBSHR3DD5
+        anchor:
+          type: code
+          commit: 11fcbee97e6b8f5fff51f0268670dd169c0e0f4e
+          line_end: 486
+          line_start: 439
+          path: src/agent-runtime/workspace.ts
+          side: head
+        entries:
+          - _ulid: 01KMTG9HQS1N75FS5E7HD6MWFS
+            author: Test User
+            body: The dispatch runtime still performs synchronous file I/O in the integration-target coherence
+              path.  and  use , , and , and these functions are awaited from  during dispatch
+              synchronization. So the change removed synchronous child-process spawning, but this
+              path still blocks the Node event loop on local filesystem reads/writes, which is the
+              same AC-28 guarantee the task is trying to restore.
+            created_at: 2026-03-28T15:16:38.777Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-28T15:11:30.793Z
-    updated_at: 2026-03-28T15:16:36.716Z
+    updated_at: 2026-03-28T15:16:38.777Z
     notes: []
