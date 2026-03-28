@@ -73381,3 +73381,29 @@ reviews:
     created_at: 2026-03-28T15:11:30.793Z
     updated_at: 2026-03-28T15:36:07.567Z
     notes: []
+  - _ulid: 01KMTHMFF5DQJMW7K6CFJ8FEYK
+    slugs: []
+    title: Review replace synchronous process spawning in dispatch engine (cycle 2)
+    author: Test User
+    checks: []
+    events:
+      - _ulid: 01KMTHMFF4TSC0VVJHYMATKB33
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-28T15:40:05.477Z
+    examined_commit: 7d42d01a3659b6f84c5efdf874a62610eb7ac38f
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMSV5ERVHAAC92XGR8TYP19A"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-28T15:40:05.477Z
+    updated_at: null
+    notes: []
