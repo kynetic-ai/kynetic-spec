@@ -73152,6 +73152,12 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-03-28T11:19:53.607Z
+      - _ulid: 01KMV2EHQSZ8CH9Z89PH1EVRJ6
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMT2QWHRS3DH2AA5X985MYH2
+        timestamp: 2026-03-28T20:33:56.985Z
     examined_commit: f8339068c0dcc4a9b294a20afdd60d5036b3aa55
     external_links: []
     lifecycle_state: open
@@ -73177,10 +73183,15 @@ reviews:
               snapshot due suite-level daemon-command-api failures that reproduce in the full run
               but not in isolated reruns, so merge safety is unverified."
             created_at: 2026-03-28T11:19:48.536Z
+          - _ulid: 01KMV2EH628MV9FER3VW8TV8YE
+            author: "@claude"
+            body: Addressed in cycle 2 review fix. The rolled_back field now correctly only appears when the
+              buffer was never flushed (command failure), not on flush failure paths.
+            created_at: 2026-03-28T20:33:56.418Z
         kind: blocker
     verdicts: []
     created_at: 2026-03-28T11:14:15.536Z
-    updated_at: 2026-03-28T11:19:53.083Z
+    updated_at: 2026-03-28T20:33:56.418Z
     notes: []
   - _ulid: 01KMTG04Z9W9KXMWYJNGDZGAF8
     slugs: []
