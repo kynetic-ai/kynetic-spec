@@ -7978,6 +7978,12 @@ features:
           selection and concurrency accounting for a given agent cannot race
         when: Multiple queue drain paths execute concurrently from any source (event-driven,
           post-invocation, retry wake-up, reconciliation, or bootstrap)
+      - given: the dispatch engine performs internal bookkeeping (task notes, task blocking, git operations,
+          workspace provisioning) within the daemon's Node.js event loop
+        id: ac-28
+        then: they use asynchronous APIs so the event loop remains available to serve HTTP and WebSocket
+          requests concurrently
+        when: those operations involve child process spawning or file I/O
     tags: []
     features:
       - _ulid: 01KKFY93PW5HZ7V21GGJMMZENW

@@ -370,6 +370,13 @@ features:
               while remaining domains continue loading
             when: |
               high-priority data domains finish loading before others
+          - given: a cache domain has reached ready state and a reload is triggered by file watcher invalidation
+              or write-through
+            id: ac-stale-during-reload
+            then: the domain state remains ready and previously cached data continues to be served until the
+              reload completes and the new data is swapped in — the domain never regresses to
+              loading during a reload of already-populated data
+            when: an API request arrives for data in that domain during the reload
         tags: []
         requirements:
           - _ulid: 01KMMB3S7MJZ9ZJKZT31QPM572
