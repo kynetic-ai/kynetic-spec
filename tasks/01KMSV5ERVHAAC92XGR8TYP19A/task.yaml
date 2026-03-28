@@ -14,7 +14,7 @@ description: "What: The dispatch engine uses spawnSync() for kspec CLI commands 
 spec_ref: "@agent-dispatch-engine"
 meta_ref: null
 plan_ref: null
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -24,6 +24,7 @@ tags:
   - daemon
   - dispatch
 vcs_refs: []
+session_id: 01KMSXZ114CDYSRK5628Z8E0N1
 history:
   - author: "@claude"
     changes:
@@ -32,6 +33,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-03-28T09:10:16.228Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KMSXZ114CDYSRK5628Z8E0N1
+        previous: null
+      started_at:
+        new: 2026-03-28T09:57:16.272Z
+        previous: null
+    command: task-start
+    timestamp: 2026-03-28T09:57:16.273Z
 created_at: 2026-03-28T09:07:24.571Z
+started_at: 2026-03-28T09:57:16.272Z
 todos: []
 automation: eligible
