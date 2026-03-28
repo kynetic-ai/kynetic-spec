@@ -73203,6 +73203,25 @@ reviews:
         runner: npm
         created_at: 2026-03-28T15:16:42.906Z
         completed_at: 2026-03-28T15:16:42.906Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: AGENTS.md, kspec-agents.md, src/agent-runtime/bootstrap.ts,
+          src/agent-runtime/dispatch.ts, src/agent-runtime/invocation.ts,
+          src/agent-runtime/workspace.ts, tests/agent-dispatch-engine.test.ts,
+          tests/dispatch-branch-push-lifecycle.test.ts, tests/dispatch-target-sync.test.ts,
+          tests/review-fix-cycle-diff.test.ts, tests/daemon-command-api.test.ts. Commands run: kspec
+          task get @01KMSV5ERVHAAC92XGR8TYP19A; kspec item get @agent-dispatch-engine; git diff/stat
+          against a83f81a891a86a63980effc34ff74d56125f34e9; kspec review for-task; kspec validate;
+          rg AC annotations; npm test; targeted rg/sed/nl reads. Claims verified: sync child-process
+          calls were removed from the touched dispatch files, but sync filesystem calls remain on
+          the dispatch path. Categories searched: correctness, edge cases, error handling, test
+          quality, integration."
+        name: review-evidence
+        required: false
+        created_at: 2026-03-28T15:16:45.013Z
+        completed_at: 2026-03-28T15:16:45.013Z
     events:
       - _ulid: 01KMTG04Z9FWNBHTW19TDA1AWS
         actor: Test User
@@ -73238,6 +73257,13 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-03-28T15:16:43.573Z
+      - _ulid: 01KMTG9RG1BWN76PAFR1TAGJMQ
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-03-28T15:16:45.697Z
     examined_commit: 11fcbee97e6b8f5fff51f0268670dd169c0e0f4e
     external_links: []
     lifecycle_state: open
@@ -73285,5 +73311,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-28T15:11:30.793Z
-    updated_at: 2026-03-28T15:16:42.906Z
+    updated_at: 2026-03-28T15:16:45.013Z
     notes: []
