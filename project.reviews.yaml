@@ -73624,6 +73624,12 @@ reviews:
             content_hash: ""
           decision: request_changes
         timestamp: 2026-03-28T20:24:44.008Z
+      - _ulid: 01KMV2BWR3JFRTNCZE8Q4EHFXR
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMV1SZNS6AR2ZBYHNTHA1H3C
+        timestamp: 2026-03-28T20:32:29.955Z
     examined_commit: f8339068c0dcc4a9b294a20afdd60d5036b3aa55
     external_links: []
     lifecycle_state: closed
@@ -73654,6 +73660,14 @@ reviews:
               were applied." on that path, which misreports persisted state to users and
               automation.'
             created_at: 2026-03-28T20:22:43.129Z
+          - _ulid: 01KMV2BW6C2KGNGTKBW23QJ418
+            author: "@claude"
+            body: 'Fixed: Added `&& \!flushFailed` condition to the `rolled_back` spread on line 833. Now
+              `rolled_back: true` is only set when the failure occurred during command execution
+              (buffer never flushed), not when `buffer.flush()` itself fails in phase 2 where some
+              renames may have committed. When flush fails, `rolled_back` is omitted from the
+              result, so neither JSON output nor stderr will claim "All operations rolled back."'
+            created_at: 2026-03-28T20:32:29.387Z
         kind: blocker
       - _ulid: 01KMV1T1D0SCJT6340F9T1193D
         entries:
@@ -73719,5 +73733,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-28T20:24:44.008Z
     created_at: 2026-03-28T20:19:40.119Z
-    updated_at: 2026-03-28T20:24:44.008Z
+    updated_at: 2026-03-28T20:32:29.387Z
     notes: []
