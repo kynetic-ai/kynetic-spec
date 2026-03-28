@@ -17171,7 +17171,7 @@ runs:
     completed_at: 2026-03-27T22:51:36.284Z
   - _ulid: 01KMSPR0NN7A3K1TWQTH677T4J
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -17231,7 +17231,27 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-03-28T07:51:00.284Z
-        completed_at: 2026-03-28T07:51:00.284Z
+        completed_at: 2026-03-28T07:51:38.996Z
+        notes: >-
+          ## Coverage Check
+
+
+          1. **Daemon cache diagnostic endpoint** — Not tracked. Untracked.
+
+          2. **Daemon log capture to file** — Not tracked. Untracked.
+
+          3. **Silent error swallowing in list routes** — Partially tracked: inbox item 01KHJ4RV
+          covers silent error swallowing in setup pipeline, but not in daemon list routes
+          specifically.
+
+          4. **Stale workflow runs** — Already tracked: @workflow-prune spec exists and is
+          implemented. The feature exists, just wasn't used. Not a gap.
+
+          5. **_cache_status: "loading" not handled by web UI** — Not tracked. Untracked.
+      - status: completed
+        step_index: 3
+        started_at: 2026-03-28T07:51:38.996Z
+        completed_at: 2026-03-28T07:51:38.996Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-03-28T07:50:09.845Z
