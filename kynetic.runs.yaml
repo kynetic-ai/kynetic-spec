@@ -17700,9 +17700,23 @@ runs:
     completed_at: 2026-03-28T20:38:51.083Z
   - _ulid: 01KMV57KKCPMNBJC374453TNKD
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-03-28T21:22:35.244Z
+        completed_at: 2026-03-28T21:23:33.725Z
+        notes: "Session focused on fix cycle 2 for task @01KMSV9SCBY5E67N98A4KMBRXD. Key work: adding a
+          batch-level regression test for the atomic flush-failure code path. What worked: The
+          wrapper .mjs script approach for testing flush failures was effective. What was hard:
+          triggering a flush failure at the batch/CLI level required significant exploration of
+          multiple approaches (read-only directory, inline ESM scripts, various process.argv
+          manipulations) before landing on the wrapper script approach."
+      - status: completed
+        step_index: 1
+        started_at: 2026-03-28T21:23:33.725Z
+        completed_at: 2026-03-28T21:23:33.725Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-28T21:22:35.244Z
