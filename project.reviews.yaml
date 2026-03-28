@@ -73158,6 +73158,12 @@ reviews:
         payload:
           thread_ulid: 01KMT2QWHRS3DH2AA5X985MYH2
         timestamp: 2026-03-28T20:33:56.985Z
+      - _ulid: 01KMV2FVTK3YVE83F0BW1HPB5P
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMT2QWHRS3DH2AA5X985MYH2
+        timestamp: 2026-03-28T20:34:40.083Z
     examined_commit: f8339068c0dcc4a9b294a20afdd60d5036b3aa55
     external_links: []
     lifecycle_state: open
@@ -73189,9 +73195,11 @@ reviews:
               buffer was never flushed (command failure), not on flush failure paths.
             created_at: 2026-03-28T20:33:56.418Z
         kind: blocker
+        resolved_at: 2026-03-28T20:34:39.557Z
+        resolved_by: "@claude"
     verdicts: []
     created_at: 2026-03-28T11:14:15.536Z
-    updated_at: 2026-03-28T20:33:56.418Z
+    updated_at: 2026-03-28T20:34:39.557Z
     notes: []
   - _ulid: 01KMTG04Z9W9KXMWYJNGDZGAF8
     slugs: []
