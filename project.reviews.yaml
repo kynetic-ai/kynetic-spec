@@ -72657,7 +72657,26 @@ reviews:
     slugs: []
     title: Review task-daemon-cache-diagnostic
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: packages/daemon/src/middleware/project-context.ts,
+          packages/daemon/src/routes/debug.ts, packages/daemon/src/routes/entity-cache-types.ts,
+          packages/daemon/src/server.ts, src/daemon/entity-cache.ts,
+          tests/daemon-debug-routes.test.ts, tests/daemon-entity-cache.test.ts, kspec-agents.md.
+          Commands run: kspec task get, kspec review for-task/get, git diff/stat/log, kspec
+          validate, npm test -- tests/daemon-debug-routes.test.ts tests/daemon-entity-cache.test.ts.
+          Claims verified: GET /api/debug/cache-status is wired in server.ts, middleware exempts
+          /api/debug/* from project resolution, cache diagnostics expose domain
+          state/counts/error/timestamps, troubleshooting convention added and kspec-agents.md
+          regenerated. Categories searched: correctness, edge cases, test quality, integration."
+        name: daemon-cache-diagnostic-targeted
+        required: true
+        runner: npm
+        created_at: 2026-03-28T09:52:03.562Z
+        completed_at: 2026-03-28T09:52:03.562Z
     events:
       - _ulid: 01KMSXA0399AB4AFGE2A8KFKRA
         actor: Test User
@@ -72665,6 +72684,13 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-03-28T09:44:50.538Z
+      - _ulid: 01KMSXQ7JE2SKSXAS9ACAYRAXF
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: daemon-cache-diagnostic-targeted
+        timestamp: 2026-03-28T09:52:04.175Z
     examined_commit: 31eb7d62e617273cdba064b537f1247742ab867f
     external_links: []
     lifecycle_state: draft
@@ -72677,5 +72703,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-28T09:44:50.538Z
-    updated_at: null
+    updated_at: 2026-03-28T09:52:03.562Z
     notes: []
