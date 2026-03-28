@@ -1,1 +1,77 @@
-notes: []
+notes:
+  - _ulid: 01KMSRTJDY7EE9MW4DAW3C50SA
+    content: >-
+      ## What
+
+
+      Add a read-only GET /api/debug/cache-status endpoint that exposes the internal state of the
+      entity cache registry and file watchers for all registered projects.
+
+
+      ## Why
+
+
+      When investigating daemon issues (stale data, missing watchers, stuck cache domains), there is
+      no way to inspect cache state without reading source code and guessing. During investigation
+      of a bug where WebSocket-registered projects had stale list data, the inability to see
+      per-domain cache state (ready vs loading vs degraded) and watcher status added significant
+      debugging time. This endpoint provides introspection needed to diagnose daemon data issues
+      quickly.
+
+
+      ## How
+
+
+      ### New public API surface on ProjectEntityCache (src/daemon/entity-cache.ts)
+
+
+      The cache module's internals are private. The endpoint needs new public methods:
+
+
+      1. A registry iterator — export a function like getAllRegisteredCaches() or
+      listCacheProjects() to enumerate all projects in the cacheRegistry Map
+
+      2. getDomainEntryCount(domain) — returns index size and detail cache size for a domain
+      (currently only getTaskIndex() etc. are available, no generic count method)
+
+      3. getDomainError(domain) — returns lastError for degraded domains (currently private on
+      DomainStore)
+
+      4. Add a lastInvalidatedAt timestamp field to DomainStore — NOT currently tracked. Update it
+      in invalidateDomain() and writeThrough() code paths.
+
+
+      ### Route implementation (packages/daemon/src/routes/)
+
+
+      - New route factory createDebugRoutes({ getEntityCache, projectManager }) — this is the first
+      route needing both data sources
+
+      - Combine entity cache data (domain states, counts, errors, timestamps) with
+      ProjectContextManager data (watcher status)
+
+      - Response shape per project: { path, watcherStatus, domains: { tasks: { state, indexCount,
+      detailCount, lastError, lastInvalidatedAt }, ... } }
+
+
+      ### Documentation
+
+
+      - Add the endpoint to daemon API conventions or a meta convention so agents and developers
+      know to use it for debugging
+
+      - Document the response shape and what each field means
+
+
+      ### Notes
+
+
+      - No /api/debug/ namespace exists yet — this is the first endpoint. Sets a precedent for
+      future debug tooling.
+
+      - No authentication beyond existing localhost-only binding.
+
+      - Read-only — no mutation risk.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-28T08:26:30.718Z
