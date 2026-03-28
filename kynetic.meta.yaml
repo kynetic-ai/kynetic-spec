@@ -9297,6 +9297,28 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-28T08:29:07.166Z
+  - _ulid: 01KMSXWPBZQWTB854KQY4QMMAT
+    type: friction
+    content: "Reviewer merge flow in detached worktrees is awkward: the review workspace could not check
+      out integration branch dev because that branch was already attached to the primary worktree,
+      so completing the required manual merge needed an out-of-band git -C invocation against the
+      main worktree. A merge command or workflow helper that targets the recorded integration
+      worktree/branch directly would remove this workaround."
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-28T09:55:03.167Z
+  - _ulid: 01KMSXWPHF0R44V7S6HD1NG6EK
+    type: friction
+    content: Review completion can drift when a newer draft review becomes the task's active review_ref
+      after an earlier review was already approved. In this session, task completion initially
+      stalled until the newly linked draft review was also approved and then closed. The completion
+      flow should either pin to the approved review used for merge or surface a clear actionable
+      error when review_ref changed mid-session.
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-28T09:55:03.343Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
