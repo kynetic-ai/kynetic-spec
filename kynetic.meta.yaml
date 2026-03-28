@@ -9404,6 +9404,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-28T21:45:54.170Z
+  - _ulid: 01KMV8PVAS67S85Z1QXHCEMYE9
+    type: friction
+    content: Retrying kspec review add after a delayed or unclear invocation can create duplicate draft
+      reviews for the same task cycle. Reviewer had to inspect task.review_ref, compare review
+      records, and archive the extra draft manually before proceeding.
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-28T22:23:20.409Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
