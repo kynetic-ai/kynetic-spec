@@ -73654,6 +73654,12 @@ reviews:
         payload:
           thread_ulid: 01KMV1T1D0SCJT6340F9T1193D
         timestamp: 2026-03-28T20:33:37.547Z
+      - _ulid: 01KMV2E2GE8EFRVFADQV7P572A
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMV1T4YAG9QSRA85YC7QAVFQ
+        timestamp: 2026-03-28T20:33:41.391Z
     examined_commit: f8339068c0dcc4a9b294a20afdd60d5036b3aa55
     external_links: []
     lifecycle_state: closed
@@ -73753,6 +73759,8 @@ reviews:
               integration. Findings: 1 blocker on partial-commit flush failure path."
             created_at: 2026-03-28T20:22:48.523Z
         kind: nit
+        resolved_at: 2026-03-28T20:33:40.850Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -73769,5 +73777,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-28T20:24:44.008Z
     created_at: 2026-03-28T20:19:40.119Z
-    updated_at: 2026-03-28T20:33:36.983Z
+    updated_at: 2026-03-28T20:33:40.850Z
     notes: []
