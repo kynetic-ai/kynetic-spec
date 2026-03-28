@@ -74686,6 +74686,17 @@ reviews:
         runner: npm
         created_at: 2026-03-28T23:12:37.941Z
         completed_at: 2026-03-28T23:12:37.941Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Ran kspec validate; exit code 6 due pre-existing warnings only, with Schema OK and
+          References OK.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-28T23:12:50.493Z
+        completed_at: 2026-03-28T23:12:50.493Z
     events:
       - _ulid: 01KMVB0RBK5QM4JWMDMCVNJA7K
         actor: Test User
@@ -74735,6 +74746,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMVBH7C2KK29GDPMPPNWFGND
         timestamp: 2026-03-28T23:12:43.235Z
+      - _ulid: 01KMVBHGWVBYZNRRSKAF7X91DQ
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-28T23:12:51.612Z
     examined_commit: afd332b4c3b16543d6a80c9a905ac644ae07d3bd
     external_links: []
     lifecycle_state: open
@@ -74792,5 +74810,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-28T23:03:42.196Z
-    updated_at: 2026-03-28T23:12:41.858Z
+    updated_at: 2026-03-28T23:12:50.493Z
     notes: []
