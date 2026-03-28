@@ -481,6 +481,94 @@ describe("Multi-project session sync", () => {
       ).toThrow("No project specified");
     });
 
+    // AC: @multi-directory-daemon ac-35
+    it("should call startWatcher for newly registered project via WebSocket", async () => {
+      const onRegistered = vi.fn().mockResolvedValue(undefined);
+      const manager = new ProjectContextManager();
+      const startWatcherSpy = vi
+        .spyOn(manager, "startWatcher")
+        .mockResolvedValue(undefined);
+
+      const request = new Request("http://localhost/ws", {
+        headers: { Host: "localhost", "X-Kspec-Dir": projectA },
+      });
+
+      const result = resolveWebSocketProject({
+        request,
+        manager,
+        fallbackPath: "/fallback",
+        onProjectRegistered: onRegistered,
+      });
+
+      expect(result.resolvedPath).toBe(projectA);
+      expect(result.wasRegistered).toBe(true);
+
+      // startWatcher should be called for the newly registered project
+      await vi.waitFor(() => expect(startWatcherSpy).toHaveBeenCalledTimes(1));
+      expect(startWatcherSpy).toHaveBeenCalledWith(projectA);
+
+      startWatcherSpy.mockRestore();
+    });
+
+    // AC: @multi-directory-daemon ac-35
+    it("should NOT call startWatcher for already-registered project via WebSocket", () => {
+      const manager = new ProjectContextManager();
+      manager.registerProject(projectA);
+      const startWatcherSpy = vi
+        .spyOn(manager, "startWatcher")
+        .mockResolvedValue(undefined);
+
+      const request = new Request("http://localhost/ws", {
+        headers: { Host: "localhost", "X-Kspec-Dir": projectA },
+      });
+
+      const result = resolveWebSocketProject({
+        request,
+        manager,
+        fallbackPath: "/fallback",
+      });
+
+      expect(result.resolvedPath).toBe(projectA);
+      expect(result.wasRegistered).toBe(false);
+      expect(startWatcherSpy).not.toHaveBeenCalled();
+
+      startWatcherSpy.mockRestore();
+    });
+
+    // AC: @multi-directory-daemon ac-35
+    it("should not fail WebSocket resolution if startWatcher throws", async () => {
+      const onRegistered = vi.fn().mockResolvedValue(undefined);
+      const manager = new ProjectContextManager();
+      const startWatcherSpy = vi
+        .spyOn(manager, "startWatcher")
+        .mockRejectedValue(new Error("OS watcher limit"));
+
+      const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+      try {
+        const request = new Request("http://localhost/ws", {
+          headers: { Host: "localhost", "X-Kspec-Dir": projectA },
+        });
+
+        const result = resolveWebSocketProject({
+          request,
+          manager,
+          fallbackPath: "/fallback",
+          onProjectRegistered: onRegistered,
+        });
+
+        // Resolution should succeed despite watcher failure
+        expect(result.resolvedPath).toBe(projectA);
+        expect(result.wasRegistered).toBe(true);
+
+        // Wait for the void promise to settle and log error
+        await vi.waitFor(() => expect(errorSpy).toHaveBeenCalled());
+        expect(startWatcherSpy).toHaveBeenCalledWith(projectA);
+      } finally {
+        errorSpy.mockRestore();
+        startWatcherSpy.mockRestore();
+      }
+    });
+
     it("should prefer X-Kspec-Dir header over ?project= query param", async () => {
       const onRegistered = vi.fn().mockResolvedValue(undefined);
       const manager = new ProjectContextManager();

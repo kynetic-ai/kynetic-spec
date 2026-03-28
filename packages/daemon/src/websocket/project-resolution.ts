@@ -53,14 +53,23 @@ export function resolveWebSocketProject(
     const result = manager.getOrRegisterProject(projectPath);
     projectContext = result.context;
     wasRegistered = result.wasRegistered;
-    if (result.wasRegistered && onProjectRegistered) {
-      // Start session sync for newly auto-registered project (don't block upgrade)
-      void onProjectRegistered(projectContext.path).catch((syncError) => {
+    if (result.wasRegistered) {
+      // AC: @multi-directory-daemon ac-35 - Start file watcher for newly registered project
+      void manager.startWatcher(projectContext.path).catch((watcherError) => {
         console.error(
-          `[daemon] Failed to start session sync for WebSocket-registered ${projectContext.path}:`,
-          syncError,
+          `[daemon] Failed to start watcher for WebSocket-registered ${projectContext.path}:`,
+          watcherError,
         );
       });
+      // Start session sync for newly auto-registered project (don't block upgrade)
+      if (onProjectRegistered) {
+        void onProjectRegistered(projectContext.path).catch((syncError) => {
+          console.error(
+            `[daemon] Failed to start session sync for WebSocket-registered ${projectContext.path}:`,
+            syncError,
+          );
+        });
+      }
     }
   } else {
     // AC: @multi-directory-daemon ac-22, ac-23 - Use default or reject
