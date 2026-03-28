@@ -25950,12 +25950,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-28T09:39:20.073Z
+      updated_at: 2026-03-28T09:39:25.096Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-28T09:39:20.073Z
+      updated_at: 2026-03-28T09:39:25.096Z
     integration:
       status: pending
       detail: null
@@ -25963,7 +25963,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 39e80b193a2247ab9a52253c6cc9fc060da528fd
-      updated_at: 2026-03-28T09:39:20.073Z
+      updated_at: 2026-03-28T09:39:25.096Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KMSRSVWTKRQEHCCT4KXY619W"
@@ -25971,16 +25971,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-28T09:19:59.063Z
-      last_reconciled_at: 2026-03-28T09:39:20.073Z
+      last_reconciled_at: 2026-03-28T09:39:25.096Z
       created_at: 2026-03-28T08:27:09.368Z
-      updated_at: 2026-03-28T09:39:20.073Z
+      updated_at: 2026-03-28T09:39:25.096Z
     workspace_id: dispatch-workspace-01KMSRSVWTKRQEHCCT4KXY619W
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 31eb7d62e617273cdba064b537f1247742ab867f
+        last_seen_at: 2026-03-28T09:39:25.096Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-cache-diagnostic-01kmsrsv-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-daemon-cache-diagnostic/01kmsrsv
-        head: a206213a837867769df3301331c8054b56b93d2a
-        last_seen_at: 2026-03-28T09:17:44.604Z
+        head: 31eb7d62e617273cdba064b537f1247742ab867f
+        last_seen_at: 2026-03-28T09:39:25.096Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-cache-diagnostic-01kmsrsv
