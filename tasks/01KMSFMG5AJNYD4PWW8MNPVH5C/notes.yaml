@@ -51,3 +51,12 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-28T05:46:21.227Z
+  - _ulid: 01KMSGRSY3QPA1S953TYDW89PG
+    content: "Approach: Add manager.startWatcher() call to the WebSocket resolution path in
+      project-resolution.ts, matching the pattern used by HTTP middleware in project-context.ts:113.
+      startWatcher is already idempotent (watchers.has() guard). This is the simplest fix - no
+      signature changes needed since resolveWebSocketProject already receives the manager. Test
+      plan: add test verifying startWatcher is called for newly registered WS projects."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-28T06:05:44.259Z
