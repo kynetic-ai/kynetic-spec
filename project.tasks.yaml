@@ -22863,7 +22863,7 @@
   title: Implement daemon cache diagnostic endpoint
   type: task
   spec_ref: "@daemon-server"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   priority: 2
@@ -22871,7 +22871,7 @@
     - daemon
     - observability
   review_ref: "@01KMSTYQYH4G91MTC9D508PWX5"
-  notes_count: 4
+  notes_count: 5
   todos_count: 0
   created_at: 2026-03-28T08:26:07.642Z
   started_at: 2026-03-28T08:28:04.347Z
