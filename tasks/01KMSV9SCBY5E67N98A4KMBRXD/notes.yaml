@@ -53,3 +53,14 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-28T20:52:40.495Z
+  - _ulid: 01KMV50XG6CCFQMF700QAK29EF
+    content: "Fix cycle 2: Addressed blocker thread requesting a batch-level regression test for the
+      atomic flush-failure path. Added a test that uses a wrapper .mjs script to patch
+      WriteBuffer.prototype.flush to throw, then runs the CLI batch command, verifying: (1) JSON
+      output has rolled_back undefined, (2) human-readable output lacks rollback note but shows
+      flush failure message. This directly proves the !flushFailed guard works at the batch level,
+      preventing the regression the reviewer identified. All 7037 tests pass (12 pre-existing
+      daemon-command-api failures unrelated to this change)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-28T21:18:56.007Z
