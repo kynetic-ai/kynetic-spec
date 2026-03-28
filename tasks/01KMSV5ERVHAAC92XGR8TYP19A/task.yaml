@@ -1,0 +1,28 @@
+_ulid: 01KMSV5ERVHAAC92XGR8TYP19A
+slugs: []
+title: Replace synchronous process spawning in dispatch engine
+type: task
+description: "What: The dispatch engine uses spawnSync() for kspec CLI commands and git operations,
+  blocking the Node.js event loop for 200ms-2s per call. Where: src/agent-runtime/dispatch.ts
+  _runKspecCommand() (line 2189, used by _addTaskNote and _blockTask), computeDiffStat() (line 382),
+  _listGitRemotes() (line 3196), inline spawnSync in error recovery (lines 2342-2420). Also
+  bootstrap.ts and workspace.ts functions called from the dispatch path for workspace provisioning.
+  Why: While spawnSync blocks, the daemon cannot serve HTTP or WebSocket requests. The UI sees
+  timeouts and stale data. Error recovery paths chain 2 sequential spawnSync calls (400ms-2s total
+  block). Convert all sync spawning in the dispatch execution path to async equivalents. Error-path
+  task notes are best-effort and can use fire-and-forget async calls."
+spec_ref: "@agent-dispatch-engine"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - bug
+  - daemon
+  - dispatch
+vcs_refs: []
+created_at: 2026-03-28T09:07:24.571Z
+todos: []
