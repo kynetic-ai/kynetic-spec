@@ -237,7 +237,7 @@ describe("dispatch workspace terminal task reconciliation", () => {
   });
 
   // AC: @dispatch-workspace-registry ac-13
-  it("allows deletion of dispatch branches for registry records in closing state with merged integration", async () => {
+  it("preserves dispatch branches for registry records in closing state (non-closed is not eligible for deletion)", async () => {
     await seedRepo(tempDir);
     git(tempDir, "checkout -b agent-dev");
 
@@ -246,8 +246,8 @@ describe("dispatch workspace terminal task reconciliation", () => {
       projectDir: tempDir,
       taskRef,
       task: {
-        title: "Closing Branch Delete",
-        slugs: ["task-closing-branch-delete"],
+        title: "Closing Branch Preserve",
+        slugs: ["task-closing-branch-preserve"],
       },
     });
 
@@ -259,8 +259,8 @@ describe("dispatch workspace terminal task reconciliation", () => {
       taskRef,
       cleanupState: { integrationState: "merged", taskStatus: "completed" },
       task: {
-        title: "Closing Branch Delete",
-        slugs: ["task-closing-branch-delete"],
+        title: "Closing Branch Preserve",
+        slugs: ["task-closing-branch-preserve"],
       },
     });
 
@@ -271,11 +271,77 @@ describe("dispatch workspace terminal task reconciliation", () => {
     // Verify branch exists
     expect(git(tempDir, `branch --list ${canonicalBranch}`)).toContain(canonicalBranch);
 
-    // Artifact reconciliation should allow deletion since the record is in
-    // closing state with merged integration
+    // Artifact reconciliation must preserve the branch because the record
+    // is still non-closed (lifecycle_state = "closing").  AC-13 says only
+    // branches whose registry record has lifecycle_state "closed" are
+    // eligible for deletion.
     await reconcileDispatchWorkspaceArtifacts(tempDir);
 
-    // Branch should be deleted — record is in terminal cleanup state
+    // Branch should still exist — "closing" is not "closed"
+    expect(git(tempDir, `branch --list ${canonicalBranch}`)).toContain(canonicalBranch);
+  });
+
+  // AC: @dispatch-workspace-registry ac-13
+  it("allows deletion of dispatch branches for registry records in closed state", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+
+    const taskRef = `@${testUlid("TASK", 44)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "Closed Branch Delete",
+        slugs: ["task-closed-branch-delete"],
+      },
+    });
+
+    const canonicalBranch = workspace.metadata.canonicalBranch;
+
+    // Transition to closing/merged first
+    await reconcileDispatchWorkspaceLifecycle({
+      projectDir: tempDir,
+      taskRef,
+      cleanupState: { integrationState: "merged", taskStatus: "completed" },
+      task: {
+        title: "Closed Branch Delete",
+        slugs: ["task-closed-branch-delete"],
+      },
+    });
+
+    // Now advance cleanup to "completed" so lifecycle reaches "closed".
+    // We do this by directly updating the registry record's cleanup status,
+    // simulating what the reap process does after cleaning up artifacts.
+    const ctx = await initContext(tempDir);
+    const records = await loadDispatchWorkspaceRegistry(ctx);
+    const record = records.find((r) => r.task_ref === taskRef);
+    expect(record).toBeDefined();
+    await saveDispatchWorkspaceRecord(ctx, {
+      ...record!,
+      lifecycle_state: "closed",
+      cleanup: {
+        ...record!.cleanup,
+        status: "completed",
+      },
+      timestamps: {
+        ...record!.timestamps,
+        updated_at: new Date().toISOString(),
+        closed_at: new Date().toISOString(),
+      },
+    });
+
+    // Remove the worktree but keep the branch
+    await fs.rm(workspace.cwd, { recursive: true, force: true });
+    git(tempDir, "worktree prune");
+
+    // Verify branch exists
+    expect(git(tempDir, `branch --list ${canonicalBranch}`)).toContain(canonicalBranch);
+
+    // Artifact reconciliation should delete the branch because the record
+    // is in "closed" state — per AC-13, closed records are eligible.
+    await reconcileDispatchWorkspaceArtifacts(tempDir);
+
+    // Branch should be deleted — record is closed
     expect(git(tempDir, `branch --list ${canonicalBranch}`)).toBe("");
   });
 

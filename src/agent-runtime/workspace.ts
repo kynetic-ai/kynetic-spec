@@ -2864,22 +2864,16 @@ export async function reconcileDispatchWorkspaceArtifacts(
       continue;
     }
 
-    // AC: @dispatch-workspace-registry ac-13 — if the branch belongs to a
-    // non-closed registry record, check lifecycle and integration state
-    // before deleting.
-    if (registryBranchMap) {
-      const registryEntry = registryBranchMap.get(branch);
-      if (registryEntry) {
-        // Allow deletion for records that are in terminal cleanup states
-        // (closing with merged/abandoned integration, or cleanup_blocked).
-        const isCleanupEligible =
-          registryEntry.lifecycle_state === "closing" ||
-          registryEntry.lifecycle_state === "cleanup_blocked";
-        if (!isCleanupEligible) {
-          // Branch belongs to an active registry record — preserve it.
-          continue;
-        }
-      }
+    // AC: @dispatch-workspace-registry ac-13 — only branches with no
+    // registry record or whose record has lifecycle_state "closed" are
+    // eligible for deletion.  All other tracked records (including
+    // "closing" and "cleanup_blocked") keep their branch until the
+    // record reaches "closed".
+    // Note: registryBranchMap only contains non-closed records (closed
+    // records are excluded when building the map), so any hit here
+    // means the branch belongs to a non-closed record and must be kept.
+    if (registryBranchMap && registryBranchMap.has(branch)) {
+      continue;
     }
 
     await deleteDispatchBranch(projectDir, branch);
