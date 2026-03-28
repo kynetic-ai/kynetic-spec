@@ -6,8 +6,13 @@ type: task
 spec_ref: "@multi-directory-daemon"
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev in 39e80b193a2247ab9a52253c6cc9fc060da528fd after approving review
+  @01KMSK834SEZEHF94MCSJFJV77. WebSocket project auto-registration now awaits watcher startup before
+  binding the connection and rejects registration when watcher creation fails; focused
+  daemon-session-sync coverage passes, and the unrelated daemon-command-api failures reproduce on
+  base dev.
 depends_on: []
 context: []
 priority: 1
@@ -131,8 +136,26 @@ history:
         previous: "@01KMSHRATNC6CWFWZSC5TNSARV"
     command: review-link
     timestamp: 2026-03-28T06:49:04.699Z
+  - author: Test User
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev in 39e80b193a2247ab9a52253c6cc9fc060da528fd after approving review
+          @01KMSK834SEZEHF94MCSJFJV77. WebSocket project auto-registration now awaits watcher
+          startup before binding the connection and rejects registration when watcher creation
+          fails; focused daemon-session-sync coverage passes, and the unrelated daemon-command-api
+          failures reproduce on base dev.
+        previous: null
+      completed_at:
+        new: 2026-03-28T06:59:19.894Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-03-28T06:59:19.903Z
 created_at: 2026-03-28T05:45:54.602Z
 started_at: 2026-03-28T06:45:49.168Z
 submitted_at: 2026-03-28T06:45:52.530Z
+completed_at: 2026-03-28T06:59:19.894Z
 todos: []
 automation: eligible

@@ -22841,7 +22841,7 @@
   title: Fix file watcher not starting for WebSocket-registered projects
   type: task
   spec_ref: "@multi-directory-daemon"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 1
@@ -22855,4 +22855,5 @@
   created_at: 2026-03-28T05:45:54.602Z
   started_at: 2026-03-28T06:45:49.168Z
   submitted_at: 2026-03-28T06:45:52.530Z
+  completed_at: 2026-03-28T06:59:19.894Z
   automation: eligible
