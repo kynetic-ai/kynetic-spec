@@ -22883,7 +22883,7 @@
   title: Fix cache domain state regression during reload
   type: task
   spec_ref: "@daemon-entity-cache"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 3
@@ -22895,6 +22895,7 @@
   todos_count: 0
   created_at: 2026-03-28T09:07:09.839Z
   started_at: 2026-03-28T09:43:05.134Z
+  submitted_at: 2026-03-28T09:52:56.886Z
   automation: eligible
 - _ulid: 01KMSV5ERVHAAC92XGR8TYP19A
   slugs: []

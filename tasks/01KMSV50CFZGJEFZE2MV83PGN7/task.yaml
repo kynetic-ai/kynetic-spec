@@ -14,7 +14,7 @@ description: "What: loadDomain() sets store.state to loading before starting an 
 spec_ref: "@daemon-entity-cache"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -24,6 +24,14 @@ tags:
   - daemon
   - cache
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-28T09:52:56.883Z
+  commit: a83f81a891a86a63980effc34ff74d56125f34e9
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
 session_id: 01KMSX3JTERFXRC711MRX3G057
 history:
   - author: "@claude"
@@ -46,7 +54,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-03-28T09:43:05.134Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-03-28T09:52:56.883Z
+          commit: a83f81a891a86a63980effc34ff74d56125f34e9
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous: null
+      submitted_at:
+        new: 2026-03-28T09:52:56.886Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-03-28T09:52:56.887Z
 created_at: 2026-03-28T09:07:09.839Z
 started_at: 2026-03-28T09:43:05.134Z
+submitted_at: 2026-03-28T09:52:56.886Z
 todos: []
 automation: eligible
