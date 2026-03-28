@@ -26151,7 +26151,7 @@ workspaces:
         head: 80d42a907fa9ef28f30266d9a3a65787e5fc698a
         last_seen_at: 2026-03-28T09:56:00.214Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-cache-domain-state-regression-during-reload-01kmsv50
-  - active_role: worker
+  - active_role: null
     base_branch_point: a83f81a891a86a63980effc34ff74d56125f34e9
     bootstrap:
       status: succeeded
@@ -26235,12 +26235,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-28T09:56:09.748Z
+      updated_at: 2026-03-28T10:35:21.196Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-28T09:56:19.975Z
+      updated_at: 2026-03-28T10:35:21.196Z
     integration:
       status: pending
       detail: null
@@ -26248,17 +26248,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: a83f81a891a86a63980effc34ff74d56125f34e9
-      updated_at: 2026-03-28T09:56:09.748Z
-    lifecycle_state: active
+      updated_at: 2026-03-28T10:35:21.196Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMSV5ERVHAAC92XGR8TYP19A"
     task_slug: replace-synchronous-process-spawning-in-dispatch-engine
     timestamps:
       closed_at: null
       last_active_at: 2026-03-28T09:56:19.975Z
-      last_reconciled_at: 2026-03-28T09:56:19.975Z
+      last_reconciled_at: 2026-03-28T10:35:21.196Z
       created_at: 2026-03-28T09:56:09.748Z
-      updated_at: 2026-03-28T09:56:19.975Z
+      updated_at: 2026-03-28T10:35:21.196Z
     workspace_id: dispatch-workspace-01KMSV5ERVHAAC92XGR8TYP19A
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
