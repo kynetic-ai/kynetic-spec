@@ -17547,7 +17547,7 @@ runs:
     completed_at: 2026-03-28T10:43:43.998Z
   - _ulid: 01KMT1HPB5XMBPWE45V297D65B
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -17570,7 +17570,16 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-03-28T11:00:15.885Z
-        completed_at: 2026-03-28T11:00:15.885Z
+        completed_at: 2026-03-28T11:00:49.549Z
+        notes: "Decision: No new items to capture. All potential observations are either already tracked
+          (daemon-command-api failures as 01KMSKYFH) or are one-off session-specific outcomes (the
+          meta domain fix itself, which is the task being worked on). The success of the
+          build-then-swap pattern is already codified in the code comments and test annotations — no
+          additional observation needed."
+      - status: completed
+        step_index: 3
+        started_at: 2026-03-28T11:00:49.549Z
+        completed_at: 2026-03-28T11:00:49.549Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-28T10:58:56.998Z
