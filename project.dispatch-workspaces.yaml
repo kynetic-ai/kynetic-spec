@@ -25930,12 +25930,17 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-28T09:39:25.096Z
+      updated_at: 2026-03-28T09:40:34.130Z
     health:
-      status: healthy
-      issues: []
-      summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-28T09:39:25.096Z
+      status: stale
+      issues:
+        - code: missing_reviewer_worktree
+          message: Reviewer worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-cache-diagnostic-01kmsrsv-review"
+            is missing or no longer registered.
+          suggestion: Recreate the detached reviewer snapshot before running review again.
+      summary: Workspace registry record is stale and needs reconciliation.
+      updated_at: 2026-03-28T09:40:34.130Z
     integration:
       status: pending
       detail: null
@@ -25943,17 +25948,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 39e80b193a2247ab9a52253c6cc9fc060da528fd
-      updated_at: 2026-03-28T09:39:25.096Z
-    lifecycle_state: integrating
+      updated_at: 2026-03-28T09:40:34.130Z
+    lifecycle_state: stale
     resolved_base_branch: dev
     task_ref: "@01KMSRSVWTKRQEHCCT4KXY619W"
     task_slug: task-daemon-cache-diagnostic
     timestamps:
       closed_at: null
       last_active_at: 2026-03-28T09:19:59.063Z
-      last_reconciled_at: 2026-03-28T09:39:25.096Z
+      last_reconciled_at: 2026-03-28T09:40:34.130Z
       created_at: 2026-03-28T08:27:09.368Z
-      updated_at: 2026-03-28T09:39:48.071Z
+      updated_at: 2026-03-28T09:40:34.130Z
     workspace_id: dispatch-workspace-01KMSRSVWTKRQEHCCT4KXY619W
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
