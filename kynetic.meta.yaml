@@ -9248,6 +9248,25 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-27T23:59:47.079Z
+  - _ulid: 01KMSKYFHS262BVN6SZS5F9VVH
+    type: success
+    content: During review, reproducing the failing daemon-command-api suite on the exact base dev
+      commit avoided a false regression call and let the task be approved based on change-local
+      evidence. This pattern is useful whenever full-suite failures may be pre-existing.
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-28T07:01:15.961Z
+  - _ulid: 01KMSKYFRK4RFM74VP2KHS08EZ
+    type: friction
+    content: "Reviewer merge from a detached dispatch snapshot hit a git worktree constraint: `git
+      checkout dev` failed because dev was already checked out in the primary worktree. The merge
+      had to be completed via `git -C <primary-worktree> merge ...`, which suggests kspec merge
+      could handle branch-already-attached worktrees more directly for reviewer snapshots."
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-28T07:01:16.179Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
