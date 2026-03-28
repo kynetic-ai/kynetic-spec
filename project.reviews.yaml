@@ -72081,7 +72081,18 @@ reviews:
     slugs: []
     title: Review task-fix-ws-watcher-registration
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate exited 6 with known repo-wide warnings only (orphaned skills/spec
+          coverage), no schema/reference errors introduced by this task.
+        name: validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-28T06:26:24.542Z
+        completed_at: 2026-03-28T06:26:24.542Z
     events:
       - _ulid: 01KMSHRATMVHBDKNCT744WX0AY
         actor: Test User
@@ -72103,6 +72114,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMSHYCKA711V3ZD59AH17ZWC
         timestamp: 2026-03-28T06:26:17.270Z
+      - _ulid: 01KMSHYPF1ZA3JTHSS8DRQ9ZHR
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: validate
+        timestamp: 2026-03-28T06:26:25.889Z
     examined_commit: c45892c3a5f17357eb44f4b1ea3a2fb318559aad
     external_links: []
     lifecycle_state: open
@@ -72139,5 +72157,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-28T06:22:57.365Z
-    updated_at: 2026-03-28T06:26:15.787Z
+    updated_at: 2026-03-28T06:26:24.542Z
     notes: []
