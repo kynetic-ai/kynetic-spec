@@ -17171,7 +17171,7 @@ runs:
     completed_at: 2026-03-27T22:51:36.284Z
   - _ulid: 01KMSPR0NN7A3K1TWQTH677T4J
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -17251,7 +17251,30 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-03-28T07:51:38.996Z
-        completed_at: 2026-03-28T07:51:38.996Z
+        completed_at: 2026-03-28T07:51:50.235Z
+        notes: >-
+          ## Proposed Improvements
+
+
+          1. **Daemon cache diagnostic endpoint** (small) — Add GET /api/debug/cache-status
+          returning per-project, per-domain state (unloaded/loading/ready/degraded), watcher status,
+          last invalidation timestamp, and entry counts. Would have cut investigation time from
+          ~30min to ~2min. Could also power a "daemon health" panel in the web UI.
+
+
+          2. **Web UI handling of _cache_status: "loading"** (small) — When list endpoints return
+          _cache_status: "loading", the UI should show a loading indicator and auto-retry after a
+          short delay rather than caching the empty result. Currently TanStack Query caches the
+          empty response for 30s with no visual indication.
+
+
+          3. **Daemon structured logging to file** (medium) — Write daemon logs to a rotated file
+          (e.g., ~/.config/kspec/daemon.log) in addition to stdout. Enables post-hoc debugging
+          without requiring the daemon terminal. Include log levels to filter noise.
+      - status: completed
+        step_index: 4
+        started_at: 2026-03-28T07:51:50.235Z
+        completed_at: 2026-03-28T07:51:50.235Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-03-28T07:50:09.845Z
