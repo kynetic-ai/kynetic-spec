@@ -72375,9 +72375,16 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-03-28T09:03:18.349Z
+      - _ulid: 01KMSV6NRNB4YSM7EWWYMHEZSG
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-03-28T09:08:04.503Z
     examined_commit: a206213a837867769df3301331c8054b56b93d2a
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: open
     related_refs: []
     subject:
       type: task
@@ -72387,7 +72394,7 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-28T09:03:18.350Z
-    updated_at: null
+    updated_at: 2026-03-28T09:08:02.349Z
     notes: []
   - _ulid: 01KMSTYQYH4G91MTC9D508PWX5
     slugs: []
@@ -72401,9 +72408,16 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-03-28T09:03:44.593Z
+      - _ulid: 01KMSV6BQPA4D06ACKMHX80M5E
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-03-28T09:07:54.231Z
     examined_commit: a206213a837867769df3301331c8054b56b93d2a
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: open
     related_refs: []
     subject:
       type: task
@@ -72413,5 +72427,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-28T09:03:44.593Z
-    updated_at: null
+    updated_at: 2026-03-28T09:07:51.927Z
     notes: []
