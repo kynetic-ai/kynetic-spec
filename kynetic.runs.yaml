@@ -17171,7 +17171,7 @@ runs:
     completed_at: 2026-03-27T22:51:36.284Z
   - _ulid: 01KMSPR0NN7A3K1TWQTH677T4J
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -17197,7 +17197,41 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-28T07:50:44.417Z
-        completed_at: 2026-03-28T07:50:44.417Z
+        completed_at: 2026-03-28T07:51:00.284Z
+        notes: >-
+          ## Friction Points
+
+
+          1. **No daemon diagnostic endpoint for cache state.** We spent significant time guessing
+          whether the entity cache was "ready", "loading", or "degraded" for each project/domain. A
+          `/api/debug/cache-status` endpoint showing per-project, per-domain state + watcher status
+          would have cut investigation time in half.
+
+
+          2. **Daemon logs not captured to a file.** The daemon only logs to the terminal where it
+          was started. When investigating a running daemon started earlier, there's no way to see
+          historical logs. Had to restart to get logs.
+
+
+          3. **Silent error swallowing in list routes.** The split backend's `listTasks` catch at
+          line 543 returns `[]` silently. During investigation this made it impossible to
+          distinguish "no tasks exist" from "failed to read tasks." Same pattern exists in multiple
+          routes.
+
+
+          4. **Many stale workflow runs accumulated.** Over 100 active workflow runs from prior
+          sessions. The workflow next command required specifying the run ID because of this. No
+          cleanup/garbage-collection mechanism.
+
+
+          5. **`_cache_status: "loading"` not handled by web UI.** The daemon returns this indicator
+          but the UI treats it as a normal empty response. TanStack Query caches the empty result
+          for 30s. Even though this wasn't the root cause here, it's a separate issue that would
+          mask cache warming delays.
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-28T07:51:00.284Z
+        completed_at: 2026-03-28T07:51:00.284Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-03-28T07:50:09.845Z
