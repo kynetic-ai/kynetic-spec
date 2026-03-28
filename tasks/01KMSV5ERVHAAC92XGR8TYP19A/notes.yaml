@@ -67,3 +67,11 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-28T10:40:39.098Z
+  - _ulid: 01KMT0PPQ8RWG3M0TDSCKGEXE1
+    content: "[DISPATCH-WORKSPACE] Dispatch workspace registry write succeeded but could not be durably
+      committed on the shadow branch for @01KMSV5ERVHAAC92XGR8TYP19A. Suggested action: Resolve the
+      shadow branch commit issue, then rerun dispatch reconciliation or workspace provisioning so
+      the registry state becomes durable."
+    supersedes: null
+    author: Test User
+    created_at: 2026-03-28T10:44:12.648Z
