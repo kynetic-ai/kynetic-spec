@@ -74363,6 +74363,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-28T22:21:18.811Z
+      - _ulid: 01KMV8K6CVFVFV85P6V5ZXFS2J
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMV8K5TP1T6FBS5B7ADXPFVC
+        timestamp: 2026-03-28T22:21:20.667Z
     examined_commit: 587212b1f8535471898c8f6dc6d51c2d95524f39
     external_links: []
     lifecycle_state: open
@@ -74372,8 +74379,29 @@ reviews:
       content_hash: ""
       ref: "@01KMV52K0KFVQ33W970Z9NBCR5"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMV8K5TP1T6FBS5B7ADXPFVC
+        anchor:
+          type: code
+          commit: 587212b1f8535471898c8f6dc6d51c2d95524f39
+          line_end: 387
+          line_start: 387
+          path: tests/daemon-command-api.test.ts
+          side: head
+        entries:
+          - _ulid: 01KMV8K5TP3A5CB9G0QHAMHS06
+            author: Test User
+            body: >-
+              > @kynetic-ai/spec@0.12.0 test
+
+              > node scripts/test.cjs does not pass on this snapshot. In the full-suite run,  fails
+              12 mutating-command cases with 500 responses / ENOENT JSON parsing, even though an
+              isolated rerun of that file passes. That leaves the branch non-mergeable under the
+              required repo gate and points to an unresolved order-dependent failure that still
+              needs investigation before approval.
+            created_at: 2026-03-28T22:21:20.086Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-28T22:16:25.341Z
-    updated_at: 2026-03-28T22:21:18.248Z
+    updated_at: 2026-03-28T22:21:20.086Z
     notes: []
