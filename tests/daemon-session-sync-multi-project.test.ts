@@ -354,12 +354,13 @@ describe("Multi-project session sync", () => {
     it("should call onProjectRegistered for new project via X-Kspec-Dir header", async () => {
       const onRegistered = vi.fn().mockResolvedValue(undefined);
       const manager = new ProjectContextManager();
+      const startWatcherSpy = vi.spyOn(manager, "startWatcher").mockResolvedValue(undefined);
 
       const request = new Request("http://localhost/ws", {
         headers: { Host: "localhost", "X-Kspec-Dir": projectA },
       });
 
-      const result = resolveWebSocketProject({
+      const result = await resolveWebSocketProject({
         request,
         manager,
         fallbackPath: "/fallback",
@@ -368,22 +369,26 @@ describe("Multi-project session sync", () => {
 
       expect(result.resolvedPath).toBe(projectA);
       expect(result.wasRegistered).toBe(true);
+      expect(startWatcherSpy).toHaveBeenCalledWith(projectA);
 
-      // Allow the void promise to settle
+      // Allow the fire-and-forget onProjectRegistered to settle
       await vi.waitFor(() => expect(onRegistered).toHaveBeenCalledTimes(1));
       expect(onRegistered).toHaveBeenCalledWith(projectA);
+
+      startWatcherSpy.mockRestore();
     });
 
     it("should call onProjectRegistered for new project via ?project= query param", async () => {
       const onRegistered = vi.fn().mockResolvedValue(undefined);
       const manager = new ProjectContextManager();
+      const startWatcherSpy = vi.spyOn(manager, "startWatcher").mockResolvedValue(undefined);
 
       const encodedPath = encodeURIComponent(projectB);
       const request = new Request(`http://localhost/ws?project=${encodedPath}`, {
         headers: { Host: "localhost" },
       });
 
-      const result = resolveWebSocketProject({
+      const result = await resolveWebSocketProject({
         request,
         manager,
         fallbackPath: "/fallback",
@@ -392,12 +397,15 @@ describe("Multi-project session sync", () => {
 
       expect(result.resolvedPath).toBe(projectB);
       expect(result.wasRegistered).toBe(true);
+      expect(startWatcherSpy).toHaveBeenCalledWith(projectB);
 
       await vi.waitFor(() => expect(onRegistered).toHaveBeenCalledTimes(1));
       expect(onRegistered).toHaveBeenCalledWith(projectB);
+
+      startWatcherSpy.mockRestore();
     });
 
-    it("should NOT call onProjectRegistered for already-registered project", () => {
+    it("should NOT call onProjectRegistered for already-registered project", async () => {
       const onRegistered = vi.fn().mockResolvedValue(undefined);
       const manager = new ProjectContextManager();
       manager.registerProject(projectA);
@@ -406,7 +414,7 @@ describe("Multi-project session sync", () => {
         headers: { Host: "localhost", "X-Kspec-Dir": projectA },
       });
 
-      const result = resolveWebSocketProject({
+      const result = await resolveWebSocketProject({
         request,
         manager,
         fallbackPath: "/fallback",
@@ -421,13 +429,14 @@ describe("Multi-project session sync", () => {
     it("should normalize non-canonical path before calling onProjectRegistered (regression)", async () => {
       const onRegistered = vi.fn().mockResolvedValue(undefined);
       const manager = new ProjectContextManager();
+      const startWatcherSpy = vi.spyOn(manager, "startWatcher").mockResolvedValue(undefined);
 
       const nonCanonicalPath = `${projectA}/./`;
       const request = new Request("http://localhost/ws", {
         headers: { Host: "localhost", "X-Kspec-Dir": nonCanonicalPath },
       });
 
-      const result = resolveWebSocketProject({
+      const result = await resolveWebSocketProject({
         request,
         manager,
         fallbackPath: "/fallback",
@@ -437,14 +446,17 @@ describe("Multi-project session sync", () => {
       // Should resolve to the normalized path
       expect(result.resolvedPath).toBe(projectA);
       expect(result.wasRegistered).toBe(true);
+      expect(startWatcherSpy).toHaveBeenCalledWith(projectA);
 
       await vi.waitFor(() => expect(onRegistered).toHaveBeenCalledTimes(1));
       // Callback receives the normalized path, not the raw non-canonical one
       expect(onRegistered).toHaveBeenCalledWith(projectA);
       expect(onRegistered).not.toHaveBeenCalledWith(nonCanonicalPath);
+
+      startWatcherSpy.mockRestore();
     });
 
-    it("should use default project when no project path is specified", () => {
+    it("should use default project when no project path is specified", async () => {
       const onRegistered = vi.fn().mockResolvedValue(undefined);
       const manager = new ProjectContextManager(projectA);
       manager.registerProject(projectA);
@@ -453,7 +465,7 @@ describe("Multi-project session sync", () => {
         headers: { Host: "localhost" },
       });
 
-      const result = resolveWebSocketProject({
+      const result = await resolveWebSocketProject({
         request,
         manager,
         fallbackPath: "/fallback",
@@ -465,24 +477,24 @@ describe("Multi-project session sync", () => {
       expect(onRegistered).not.toHaveBeenCalled();
     });
 
-    it("should throw when no project path specified and no default project", () => {
+    it("should throw when no project path specified and no default project", async () => {
       const manager = new ProjectContextManager();
 
       const request = new Request("http://localhost/ws", {
         headers: { Host: "localhost" },
       });
 
-      expect(() =>
+      await expect(
         resolveWebSocketProject({
           request,
           manager,
           fallbackPath: "/fallback",
         }),
-      ).toThrow("No project specified");
+      ).rejects.toThrow("No project specified");
     });
 
     // AC: @multi-directory-daemon ac-35
-    it("should call startWatcher for newly registered project via WebSocket", async () => {
+    it("should await startWatcher for newly registered project via WebSocket", async () => {
       const onRegistered = vi.fn().mockResolvedValue(undefined);
       const manager = new ProjectContextManager();
       const startWatcherSpy = vi
@@ -493,7 +505,7 @@ describe("Multi-project session sync", () => {
         headers: { Host: "localhost", "X-Kspec-Dir": projectA },
       });
 
-      const result = resolveWebSocketProject({
+      const result = await resolveWebSocketProject({
         request,
         manager,
         fallbackPath: "/fallback",
@@ -503,15 +515,15 @@ describe("Multi-project session sync", () => {
       expect(result.resolvedPath).toBe(projectA);
       expect(result.wasRegistered).toBe(true);
 
-      // startWatcher should be called for the newly registered project
-      await vi.waitFor(() => expect(startWatcherSpy).toHaveBeenCalledTimes(1));
+      // startWatcher must have been called and awaited before resolution completed
+      expect(startWatcherSpy).toHaveBeenCalledTimes(1);
       expect(startWatcherSpy).toHaveBeenCalledWith(projectA);
 
       startWatcherSpy.mockRestore();
     });
 
     // AC: @multi-directory-daemon ac-35
-    it("should NOT call startWatcher for already-registered project via WebSocket", () => {
+    it("should NOT call startWatcher for already-registered project via WebSocket", async () => {
       const manager = new ProjectContextManager();
       manager.registerProject(projectA);
       const startWatcherSpy = vi
@@ -522,7 +534,7 @@ describe("Multi-project session sync", () => {
         headers: { Host: "localhost", "X-Kspec-Dir": projectA },
       });
 
-      const result = resolveWebSocketProject({
+      const result = await resolveWebSocketProject({
         request,
         manager,
         fallbackPath: "/fallback",
@@ -535,36 +547,33 @@ describe("Multi-project session sync", () => {
       startWatcherSpy.mockRestore();
     });
 
-    // AC: @multi-directory-daemon ac-35
-    it("should not fail WebSocket resolution if startWatcher throws", async () => {
+    // AC: @multi-directory-daemon ac-19
+    it("should reject WebSocket resolution if startWatcher fails", async () => {
       const onRegistered = vi.fn().mockResolvedValue(undefined);
       const manager = new ProjectContextManager();
       const startWatcherSpy = vi
         .spyOn(manager, "startWatcher")
-        .mockRejectedValue(new Error("OS watcher limit"));
+        .mockRejectedValue(new Error("Unable to watch project - resource limit reached"));
 
-      const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
       try {
         const request = new Request("http://localhost/ws", {
           headers: { Host: "localhost", "X-Kspec-Dir": projectA },
         });
 
-        const result = resolveWebSocketProject({
-          request,
-          manager,
-          fallbackPath: "/fallback",
-          onProjectRegistered: onRegistered,
-        });
+        await expect(
+          resolveWebSocketProject({
+            request,
+            manager,
+            fallbackPath: "/fallback",
+            onProjectRegistered: onRegistered,
+          }),
+        ).rejects.toThrow("Unable to watch project - resource limit reached");
 
-        // Resolution should succeed despite watcher failure
-        expect(result.resolvedPath).toBe(projectA);
-        expect(result.wasRegistered).toBe(true);
-
-        // Wait for the void promise to settle and log error
-        await vi.waitFor(() => expect(errorSpy).toHaveBeenCalled());
+        // startWatcher was called but failed
         expect(startWatcherSpy).toHaveBeenCalledWith(projectA);
+        // onProjectRegistered should NOT have been called since watcher failed
+        expect(onRegistered).not.toHaveBeenCalled();
       } finally {
-        errorSpy.mockRestore();
         startWatcherSpy.mockRestore();
       }
     });
@@ -572,13 +581,14 @@ describe("Multi-project session sync", () => {
     it("should prefer X-Kspec-Dir header over ?project= query param", async () => {
       const onRegistered = vi.fn().mockResolvedValue(undefined);
       const manager = new ProjectContextManager();
+      const startWatcherSpy = vi.spyOn(manager, "startWatcher").mockResolvedValue(undefined);
 
       const encodedB = encodeURIComponent(projectB);
       const request = new Request(`http://localhost/ws?project=${encodedB}`, {
         headers: { Host: "localhost", "X-Kspec-Dir": projectA },
       });
 
-      const result = resolveWebSocketProject({
+      const result = await resolveWebSocketProject({
         request,
         manager,
         fallbackPath: "/fallback",
@@ -588,9 +598,12 @@ describe("Multi-project session sync", () => {
       // Header takes precedence
       expect(result.resolvedPath).toBe(projectA);
       expect(result.wasRegistered).toBe(true);
+      expect(startWatcherSpy).toHaveBeenCalledWith(projectA);
 
       await vi.waitFor(() => expect(onRegistered).toHaveBeenCalledTimes(1));
       expect(onRegistered).toHaveBeenCalledWith(projectA);
+
+      startWatcherSpy.mockRestore();
     });
   });
 });

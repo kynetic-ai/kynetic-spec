@@ -374,7 +374,7 @@ export async function createServer(options: ServerOptions) {
 
     // AC-4: WebSocket endpoint for real-time updates
     .ws<ConnectionData>("/ws", {
-      beforeHandle({ request, store }) {
+      async beforeHandle({ request, store }) {
         // IMPORTANT: Do NOT return a value from ws beforeHandle.
         // In Elysia 1.4 with derive middleware, returning a value short-circuits
         // the WebSocket upgrade and sends the value as an HTTP 200 response.
@@ -389,7 +389,8 @@ export async function createServer(options: ServerOptions) {
             return;
           }
 
-          const { resolvedPath } = resolveWebSocketProject({
+          // AC: @multi-directory-daemon ac-35 - Await watcher startup before serving cached data
+          const { resolvedPath } = await resolveWebSocketProject({
             request,
             manager,
             fallbackPath: startupProjectPath,
