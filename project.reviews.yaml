@@ -74171,7 +74171,19 @@ reviews:
     slugs: []
     title: Review completed task record reconciliation
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/agent-runtime/workspace.ts,
+          tests/dispatch-workspace-terminal-reconciliation.test.ts. Commands run: kspec task get,
+          kspec item get, grep for AC annotations, kspec validate, git diff. Validation exited with
+          repo-wide warnings only; no new task-specific validation error."
+        name: kspec validate
+        required: false
+        created_at: 2026-03-28T21:57:50.852Z
+        completed_at: 2026-03-28T21:57:50.852Z
     events:
       - _ulid: 01KMV6QG2PTVCYJEQM6P00DF5D
         actor: Test User
@@ -74193,6 +74205,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMV768CDA883BRQ9E7VV01TT
         timestamp: 2026-03-28T21:56:48.855Z
+      - _ulid: 01KMV786CHT45PWEXDBQQ5CQP7
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-28T21:57:51.633Z
     examined_commit: 3845f74f5ffea7b6e03639e38145de493facf24a
     external_links: []
     lifecycle_state: open
@@ -74225,5 +74244,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-28T21:48:44.502Z
-    updated_at: 2026-03-28T21:56:48.141Z
+    updated_at: 2026-03-28T21:57:50.852Z
     notes: []
