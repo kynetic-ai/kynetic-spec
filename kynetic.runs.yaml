@@ -17903,7 +17903,7 @@ runs:
     completed_at: 2026-03-28T23:53:00.368Z
   - _ulid: 01KMVDY64554PAQM1JQ2680M9H
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -17916,7 +17916,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-28T23:55:34.597Z
-        completed_at: 2026-03-28T23:55:34.597Z
+        completed_at: 2026-03-28T23:56:14.085Z
+        notes: "Searched existing state. Found observation 01KMVAV9 about KSPEC_SPEC_DIR sharing — this
+          session's investigation proved the stated mechanism wrong (worker_threads do NOT share
+          process.env). The actual cross-test interference is timing-dependent and involves
+          filesystem-level git operations. High-confidence friction: daemon-command-api test
+          flakiness under targeted parallel runs with dispatch-workspace tests produces
+          false-positive review blockers. This is a pre-existing issue, not introduced by this
+          task."
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-28T23:56:14.085Z
+        completed_at: 2026-03-28T23:56:14.085Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-28T23:54:43.718Z
