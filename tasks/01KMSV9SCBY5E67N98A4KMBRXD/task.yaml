@@ -11,7 +11,7 @@ description: "What: When kspec batch fails in atomic mode, the output says 'N/M 
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -24,7 +24,7 @@ review_ref: "@01KMV3AASSA2XGZT3RE9XVEQRG"
 submission_linkage:
   review_url: null
   branch: dev
-  captured_at: 2026-03-28T20:35:39.932Z
+  captured_at: 2026-03-28T21:20:41.693Z
   commit: f8a3f4f7cd59e2d27bd624e3106c97691ff09771
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
@@ -222,9 +222,36 @@ history:
         previous: 2026-03-28T20:35:36.559Z
     command: task-start
     timestamp: 2026-03-28T21:20:36.134Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-03-28T21:20:41.693Z
+          commit: f8a3f4f7cd59e2d27bd624e3106c97691ff09771
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous:
+          review_url: null
+          branch: dev
+          captured_at: 2026-03-28T20:35:39.932Z
+          commit: f8a3f4f7cd59e2d27bd624e3106c97691ff09771
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+      submitted_at:
+        new: 2026-03-28T21:20:41.700Z
+        previous: 2026-03-28T20:35:39.938Z
+    command: task-submit
+    timestamp: 2026-03-28T21:20:41.700Z
 prior_status: null
 created_at: 2026-03-28T09:09:46.507Z
 started_at: 2026-03-28T21:20:36.133Z
-submitted_at: 2026-03-28T20:35:39.938Z
+submitted_at: 2026-03-28T21:20:41.700Z
 todos: []
 automation: eligible
