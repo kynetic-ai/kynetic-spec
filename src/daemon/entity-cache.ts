@@ -883,10 +883,14 @@ export class ProjectEntityCache {
         break;
       }
       case "meta": {
+        // AC: @daemon-entity-cache ac-stale-during-reload — build all meta
+        // artifacts into local variables, then swap into the store atomically
+        // so reads see either all-old or all-new data during a reload.
+
         // Load full MetaContext into detail tier for meta read routes
         const metaCtx = await loadMetaContext(ctx);
         if (this.disposed) return;
-        this.meta.index = {
+        const newMetaIndex: MetaSummary = {
           projectName: ctx.manifest?.project?.name,
           version: ctx.manifest?.project?.version,
           status: ctx.manifest?.project?.status,
@@ -895,11 +899,11 @@ export class ProjectEntityCache {
               typeof m === "string" ? m : m.title ?? m.name ?? "unknown",
           ),
         };
-        this.meta.details.set("_context", metaCtx);
 
         // AC: @daemon-read-path ac-no-per-request-sync — cache shadow status
         // and project config so /api/meta/shadow and /api/meta/config routes
         // serve from memory without per-request git operations.
+        let newShadowInfo: CachedShadowInfo;
         if (ctx.shadow) {
           const status = await getShadowStatus(ctx.rootDir, {
             branchName: ctx.shadow.branchName,
@@ -910,7 +914,7 @@ export class ProjectEntityCache {
             branchName: ctx.shadow.branchName,
           });
           if (this.disposed) return;
-          this.cachedShadowInfo = {
+          newShadowInfo = {
             enabled: ctx.shadow.enabled,
             branch_name: ctx.shadow.branchName,
             worktree_dir: ctx.shadow.worktreeDir,
@@ -918,7 +922,7 @@ export class ProjectEntityCache {
             remote_tracking: hasRemote,
           };
         } else {
-          this.cachedShadowInfo = {
+          newShadowInfo = {
             enabled: false,
             branch_name: null,
             worktree_dir: null,
@@ -927,7 +931,7 @@ export class ProjectEntityCache {
           };
         }
 
-        this.cachedProjectConfig = {
+        const newProjectConfig: CachedProjectConfig = {
           project: ctx.manifest?.project
             ? {
                 name: ctx.manifest.project.name,
@@ -951,12 +955,22 @@ export class ProjectEntityCache {
         // so /api/meta/session serves from memory without per-request disk reads.
         const sessionCtx = await loadSessionContext(ctx);
         if (this.disposed) return;
-        this.cachedSessionContext = {
+        const newSessionContext: CachedSessionContext = {
           focus: sessionCtx.focus,
           threads: sessionCtx.threads || [],
           questions: sessionCtx.open_questions || [],
           updated_at: sessionCtx.updated_at,
         };
+
+        // Atomic swap: replace all meta artifacts together so concurrent
+        // readers never see a mix of old and new meta state.
+        const newMetaDetails = new Map<string, MetaContext>();
+        newMetaDetails.set("_context", metaCtx);
+        this.meta.index = newMetaIndex;
+        this.meta.details = newMetaDetails;
+        this.cachedShadowInfo = newShadowInfo;
+        this.cachedProjectConfig = newProjectConfig;
+        this.cachedSessionContext = newSessionContext;
         break;
       }
       case "inbox": {

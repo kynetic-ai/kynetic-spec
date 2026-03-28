@@ -1215,6 +1215,78 @@ describe("ProjectEntityCache", () => {
       // Should still be ready
       expect(cache.getDomainState("tasks")).toBe("ready");
     });
+
+    it("should keep meta domain ready and serve stale data during reload", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("meta");
+      expect(cache.getDomainState("meta")).toBe("ready");
+
+      // Capture all meta artifacts before reload
+      const originalMetaIndex = cache.getMetaIndex();
+      const originalMetaDetail = cache.getMetaDetail();
+      const originalShadowInfo = cache.getShadowInfo();
+      const originalProjectConfig = cache.getProjectConfig();
+      const originalSessionContext = cache.getSessionContext();
+
+      // Start a reload — state should remain ready
+      const reloadPromise = cache.loadDomain("meta");
+
+      // During reload, state stays ready and stale data is accessible
+      expect(cache.getDomainState("meta")).toBe("ready");
+      expect(cache.getMetaIndex()).not.toBeNull();
+
+      await reloadPromise;
+
+      // After reload, still ready with refreshed data
+      expect(cache.getDomainState("meta")).toBe("ready");
+      expect(cache.getMetaIndex()).not.toBeNull();
+    });
+
+    it("should swap all meta artifacts atomically on reload", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("meta");
+      expect(cache.getDomainState("meta")).toBe("ready");
+
+      // Capture references to the original meta artifacts so we can
+      // verify the reload produces a fresh swap (new object references).
+      const originalMetaIndex = cache.getMetaIndex();
+      const originalProjectConfig = cache.getProjectConfig();
+      const originalShadowInfo = cache.getShadowInfo();
+
+      // Reload meta domain — should produce fresh objects
+      await cache.loadDomain("meta");
+
+      // After reload, all artifacts are present and consistent
+      expect(cache.getDomainState("meta")).toBe("ready");
+
+      const reloadedIndex = cache.getMetaIndex();
+      const reloadedConfig = cache.getProjectConfig();
+      const reloadedShadow = cache.getShadowInfo();
+
+      expect(reloadedIndex).not.toBeNull();
+      expect(reloadedConfig).not.toBeNull();
+      expect(reloadedShadow).not.toBeNull();
+
+      // New index and details map references confirm the swap happened
+      // (build-then-swap creates new objects each reload)
+      expect(reloadedIndex).not.toBe(originalMetaIndex);
+      expect(reloadedConfig).not.toBe(originalProjectConfig);
+      expect(reloadedShadow).not.toBe(originalShadowInfo);
+    });
+
+    it("should keep meta domain ready during writeThrough reload", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("meta");
+      expect(cache.getDomainState("meta")).toBe("ready");
+
+      // writeThrough calls loadDomain internally
+      await cache.writeThrough("meta");
+
+      // Should still be ready with data intact
+      expect(cache.getDomainState("meta")).toBe("ready");
+      expect(cache.getMetaIndex()).not.toBeNull();
+      expect(cache.getProjectConfig()).not.toBeNull();
+    });
   });
 
   // ─── Session live counters (migrated from SessionSummaryCache) ─────────
