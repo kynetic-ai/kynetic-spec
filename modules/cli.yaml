@@ -8181,6 +8181,18 @@ features:
                 then: the dispatcher attempts to recover or re-provision the canonical workspace and branch lineage
                   instead of discarding the in_progress queue entry as workspace missing
                 when: the dispatcher reconstructs active workspace state for that task
+              - given: reconciliation evaluates workspace health for a record whose task is in a terminal state and
+                  whose integration status is merged or abandoned
+                id: ac-12
+                then: health reconciliation skips branch restoration attempts and evaluates the record using its
+                  last persisted state rather than trying to recover git refs that are no longer
+                  needed
+                when: the canonical branch is missing locally
+              - given: artifact reconciliation identifies a dispatch branch with no matching worktree
+                id: ac-13
+                then: artifact reconciliation consults registry lifecycle and integration state before deleting the
+                  branch, rather than treating all untracked-worktree branches as orphaned
+                when: the branch belongs to a workspace record still tracked in the registry
             tags: []
             requirements:
               - _ulid: 01KKFY93ZNBHPNV5S09KQEXBFA
