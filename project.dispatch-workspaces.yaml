@@ -25885,7 +25885,7 @@ workspaces:
         head: f8c4c2ab4017040dedf5b60dcda210f4e9f3b3cc
         last_seen_at: 2026-03-28T06:47:13.508Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-ws-watcher-registration-01kmsfmg
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 39e80b193a2247ab9a52253c6cc9fc060da528fd
     bootstrap:
       status: succeeded
@@ -25940,7 +25940,7 @@ workspaces:
             is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
       summary: Workspace registry record is stale and needs reconciliation.
-      updated_at: 2026-03-28T09:40:34.130Z
+      updated_at: 2026-03-28T09:40:40.397Z
     integration:
       status: pending
       detail: null
@@ -25955,10 +25955,10 @@ workspaces:
     task_slug: task-daemon-cache-diagnostic
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-28T09:19:59.063Z
-      last_reconciled_at: 2026-03-28T09:40:34.130Z
+      last_active_at: 2026-03-28T09:40:40.397Z
+      last_reconciled_at: 2026-03-28T09:40:40.397Z
       created_at: 2026-03-28T08:27:09.368Z
-      updated_at: 2026-03-28T09:40:34.130Z
+      updated_at: 2026-03-28T09:40:40.397Z
     workspace_id: dispatch-workspace-01KMSRSVWTKRQEHCCT4KXY619W
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
