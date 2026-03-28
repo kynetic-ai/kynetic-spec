@@ -72403,9 +72403,25 @@ reviews:
           status: pass
           name: full-suite-base-parity
         timestamp: 2026-03-28T09:49:12.042Z
+      - _ulid: 01KMSXJ10YNWDR7N3Y2PK3S2F5
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-03-28T09:49:13.630Z
+      - _ulid: 01KMSXJ10YC1NDB7CM8BAWA0XG
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-28T09:49:13.630Z
     examined_commit: a206213a837867769df3301331c8054b56b93d2a
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -72413,9 +72429,16 @@ reviews:
       ref: "@01KMSRSVWTKRQEHCCT4KXY619W"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-28T09:49:13.630Z
     created_at: 2026-03-28T09:02:56.903Z
-    updated_at: 2026-03-28T09:49:11.493Z
+    updated_at: 2026-03-28T09:49:13.630Z
     notes: []
   - _ulid: 01KMSTXYAEDKJG68B956MFX767
     slugs: []
