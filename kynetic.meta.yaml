@@ -9267,6 +9267,33 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-28T07:01:16.179Z
+  - _ulid: 01KMSRZAWYGMXBJRVW7RWSDF5B
+    type: success
+    content: Spawning a review agent for task proposals catches implementation gaps (missing public
+      APIs, scope underestimates) before the task enters the system. Used for both the watcher fix
+      task and the three reflection proposals — caught that P3 was too large for a task.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-28T08:29:06.846Z
+  - _ulid: 01KMSRZB29X56302KSKCYCPS5J
+    type: success
+    content: Detailed task notes with standalone what/why/how context enable dispatch agents to complete
+      work autonomously. The watcher fix task (@task-fix-ws-watcher-registration) was completed and
+      reviewed (2 cycles, approved) without manual intervention.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-28T08:29:07.017Z
+  - _ulid: 01KMSRZB6YG8J0TC72GBPW7TG6
+    type: friction
+    content: No way to inspect daemon entity cache state at runtime. Debugging stale data required
+      tracing code paths and guessing domain states. Task @task-daemon-cache-diagnostic created to
+      address this.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-28T08:29:07.166Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
