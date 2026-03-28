@@ -5,8 +5,11 @@ type: task
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Promoted durable learnings to conventions (8 rules) and task lifecycle template
+  (terminal states). Cleaned stale/redundant entries from MEMORY.md. Captured dispatch agent memory
+  friction as observation.
 depends_on: []
 context: []
 priority: 3
@@ -57,8 +60,24 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-03-28T00:01:59.069Z
+  - author: "@claude"
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Promoted durable learnings to conventions (8 rules) and task lifecycle template (terminal
+          states). Cleaned stale/redundant entries from MEMORY.md. Captured dispatch agent memory
+          friction as observation.
+        previous: null
+      completed_at:
+        new: 2026-03-28T00:02:02.312Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-03-28T00:02:02.316Z
 created_at: 2026-03-08T19:34:44.624Z
 started_at: 2026-03-28T00:01:56.042Z
 submitted_at: 2026-03-28T00:01:59.069Z
+completed_at: 2026-03-28T00:02:02.312Z
 todos: []
 automation: manual_only
