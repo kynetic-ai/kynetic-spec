@@ -26227,18 +26227,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/replace-synchronous-process-spawning-in-dispatch-engine/01kmsv5e
-    canonical_branch_head: a83f81a891a86a63980effc34ff74d56125f34e9
+    canonical_branch_head: 11fcbee97e6b8f5fff51f0268670dd169c0e0f4e
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-28T10:35:29.737Z
+      updated_at: 2026-03-28T10:40:37.599Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-28T10:35:34.186Z
+      updated_at: 2026-03-28T10:40:37.599Z
     integration:
       status: pending
       detail: null
@@ -26246,7 +26246,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: a83f81a891a86a63980effc34ff74d56125f34e9
-      updated_at: 2026-03-28T10:35:29.737Z
+      updated_at: 2026-03-28T10:40:37.599Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KMSV5ERVHAAC92XGR8TYP19A"
@@ -26254,9 +26254,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-28T10:35:34.186Z
-      last_reconciled_at: 2026-03-28T10:35:34.186Z
+      last_reconciled_at: 2026-03-28T10:40:37.599Z
       created_at: 2026-03-28T09:56:09.748Z
-      updated_at: 2026-03-28T10:35:34.186Z
+      updated_at: 2026-03-28T10:40:37.599Z
     workspace_id: dispatch-workspace-01KMSV5ERVHAAC92XGR8TYP19A
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
