@@ -17893,10 +17893,11 @@ runs:
     started_at: 2026-03-28T22:59:15.186Z
     completed_at: 2026-03-28T23:01:27.070Z
   - _ulid: 01KMVDBVS40V60H8A6K1SJDTSH
-    status: active
+    status: completed
     current_step: 0
     initiated_by: "@claude"
     step_results: []
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-03-28T23:44:43.300Z
+    completed_at: 2026-03-28T23:53:00.368Z
