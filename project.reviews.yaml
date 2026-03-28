@@ -74330,7 +74330,18 @@ reviews:
     slugs: []
     title: Review completed task record reconciliation (cycle 2)
     author: codex
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation passed with pre-existing project warnings only (orphaned skill dir,
+          alignment/completeness warnings unrelated to this task).
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-28T22:21:18.248Z
+        completed_at: 2026-03-28T22:21:18.248Z
     events:
       - _ulid: 01KMV8A5ZWVY1PCAFWESA5Q6KY
         actor: codex
@@ -74345,6 +74356,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-28T22:18:06.548Z
+      - _ulid: 01KMV8K4JTSNZDR4Z6T3BC09Y0
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-28T22:21:18.811Z
     examined_commit: 587212b1f8535471898c8f6dc6d51c2d95524f39
     external_links: []
     lifecycle_state: open
@@ -74357,5 +74375,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-28T22:16:25.341Z
-    updated_at: 2026-03-28T22:18:05.593Z
+    updated_at: 2026-03-28T22:21:18.248Z
     notes: []
