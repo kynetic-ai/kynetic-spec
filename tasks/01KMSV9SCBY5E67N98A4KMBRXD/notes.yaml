@@ -1,1 +1,16 @@
-notes: []
+notes:
+  - _ulid: 01KMT1WJ2TBSE74PTP1NPF41NN
+    content: >-
+      Approach: The bug is in src/cli/commands/batch.ts lines 196-198. When atomic batch fails, the
+      human-readable output says 'N/M succeeded, N failed' without mentioning that all changes were
+      rolled back. Fix: add a rollback note line after the failure summary in atomic mode. Also add
+      a 'rolled_back' field to the JSON output for programmatic consumers.
+
+      Edge cases: (1) atomic mode failure, (2) immediate mode failure (no rollback - should NOT show
+      note), (3) JSON mode output, (4) flush failure in atomic mode.
+
+      Test plan: E2E test verifying rollback note appears in atomic failure output and does NOT
+      appear in immediate failure output.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-28T11:04:53.082Z
