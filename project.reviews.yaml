@@ -72215,6 +72215,17 @@ reviews:
         runner: kspec
         created_at: 2026-03-28T06:57:20.130Z
         completed_at: 2026-03-28T06:57:20.130Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm test -- tests/daemon-session-sync-multi-project.test.ts => 6 suites passed, 23/23
+          tests passed.
+        name: daemon-session-sync-multi-project
+        required: true
+        runner: npm-test
+        created_at: 2026-03-28T06:57:24.286Z
+        completed_at: 2026-03-28T06:57:24.286Z
     events:
       - _ulid: 01KMSK834R6G7CNMB61HS0K72R
         actor: Test User
@@ -72236,6 +72247,13 @@ reviews:
           status: pass
           name: validate
         timestamp: 2026-03-28T06:57:20.778Z
+      - _ulid: 01KMSKQDYS8QSA8RQKYCHPS1JM
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: daemon-session-sync-multi-project
+        timestamp: 2026-03-28T06:57:24.953Z
     examined_commit: f8c4c2ab4017040dedf5b60dcda210f4e9f3b3cc
     external_links: []
     lifecycle_state: open
@@ -72248,5 +72266,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-28T06:49:02.361Z
-    updated_at: 2026-03-28T06:57:20.130Z
+    updated_at: 2026-03-28T06:57:24.286Z
     notes: []
