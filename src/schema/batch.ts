@@ -80,4 +80,6 @@ export interface BatchExecResult {
   validationFailed?: boolean;
   /** True when result is from --dry-run (no changes applied) */
   dry_run?: boolean;
+  /** True when atomic mode failed before flush and all changes were rolled back (not set on flush failure, which may leave partial state) */
+  rolled_back?: boolean;
 }

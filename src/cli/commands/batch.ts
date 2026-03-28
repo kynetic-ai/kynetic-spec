@@ -196,6 +196,9 @@ Examples:
             console.error(
               `Batch failed (${modeLabel}): ${result.summary.succeeded}/${result.summary.total} succeeded, ${result.summary.failed} failed`,
             );
+            if (result.rolled_back) {
+              console.error("All operations rolled back — no changes were applied.");
+            }
           }
 
           // Show per-command results
