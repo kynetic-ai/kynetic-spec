@@ -73850,3 +73850,29 @@ reviews:
     created_at: 2026-03-28T20:48:59.753Z
     updated_at: null
     notes: []
+  - _ulid: 01KMV3A71B48QHXDFV7S1MYBD9
+    slugs: []
+    title: Review add rollback note to batch atomic failure output (cycle 3)
+    author: Test User
+    checks: []
+    events:
+      - _ulid: 01KMV3A71B3T9F0PWSJP9HTGHM
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-28T20:49:03.531Z
+    examined_commit: 30f21b4105ccb90b13d45dbf703f748baf7d72ce
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMSV9SCBY5E67N98A4KMBRXD"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-28T20:49:03.531Z
+    updated_at: null
+    notes: []
