@@ -74753,9 +74753,16 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-28T23:12:51.612Z
+      - _ulid: 01KMVBRCN0H8QE7YXEKR1AA60Q
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-28T23:16:36.640Z
     examined_commit: afd332b4c3b16543d6a80c9a905ac644ae07d3bd
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -74810,5 +74817,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-28T23:03:42.196Z
-    updated_at: 2026-03-28T23:12:50.493Z
+    updated_at: 2026-03-28T23:16:35.958Z
     notes: []
