@@ -71,3 +71,14 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-28T10:02:47.600Z
+  - _ulid: 01KMT1EGZWHHXMB9QBM3NZW0TW
+    content: "Fix cycle 1: Addressed review blocker about meta domain partial state during reload.
+      Applied the same build-then-swap pattern already used for tasks/items domains to the meta
+      domain case. All five meta artifacts (meta.index, meta.details, cachedShadowInfo,
+      cachedProjectConfig, cachedSessionContext) are now built into local variables across async
+      operations, then swapped in synchronously. Added 3 new tests for meta domain
+      stale-during-reload coverage. All 85 entity-cache tests pass. Pre-existing daemon-command-api
+      failures (12 tests) are unrelated and reproduce without my changes."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-28T10:57:13.212Z
