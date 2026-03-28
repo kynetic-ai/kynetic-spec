@@ -14,7 +14,7 @@ description: "What: The dispatch engine uses spawnSync() for kspec CLI commands 
 spec_ref: "@agent-dispatch-engine"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -24,6 +24,14 @@ tags:
   - daemon
   - dispatch
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-28T10:40:45.311Z
+  commit: a83f81a891a86a63980effc34ff74d56125f34e9
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
 session_id: 01KMSXZ114CDYSRK5628Z8E0N1
 history:
   - author: "@claude"
@@ -46,7 +54,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-03-28T09:57:16.273Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-03-28T10:40:45.311Z
+          commit: a83f81a891a86a63980effc34ff74d56125f34e9
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous: null
+      submitted_at:
+        new: 2026-03-28T10:40:45.316Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-03-28T10:40:45.316Z
 created_at: 2026-03-28T09:07:24.571Z
 started_at: 2026-03-28T09:57:16.272Z
+submitted_at: 2026-03-28T10:40:45.316Z
 todos: []
 automation: eligible
