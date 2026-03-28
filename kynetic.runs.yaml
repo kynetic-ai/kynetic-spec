@@ -17408,9 +17408,21 @@ runs:
     completed_at: 2026-03-28T09:35:37.722Z
   - _ulid: 01KMSXTF52YDX466SZDVVWK4E4
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-03-28T09:53:50.242Z
+        completed_at: 2026-03-28T09:54:46.024Z
+        notes: "Gate: task submitted (01KMSV50), 1 commit, 2 files changed. What worked well: detailed task
+          description with exact file/line references made investigation fast. Existing test
+          patterns were comprehensive and easy to follow. Fix was minimal (single conditional +
+          atomic swaps)."
+      - status: completed
+        step_index: 1
+        started_at: 2026-03-28T09:54:46.024Z
+        completed_at: 2026-03-28T09:54:46.024Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-28T09:53:50.242Z
