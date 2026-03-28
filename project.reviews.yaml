@@ -72677,6 +72677,20 @@ reviews:
         runner: npm
         created_at: 2026-03-28T09:52:03.562Z
         completed_at: 2026-03-28T09:52:03.562Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm test on head ran 7032/7049 passing with 12 failures, all in
+          tests/daemon-command-api.test.ts. The same targeted suite reproduces identically on base
+          commit 39e80b193a2247ab9a52253c6cc9fc060da528fd via npm test --
+          tests/daemon-command-api.test.ts, so these failures are pre-existing and not introduced by
+          commits a206213a8 or 31eb7d62e.
+        name: full-suite-base-parity
+        required: false
+        runner: npm
+        created_at: 2026-03-28T09:52:05.319Z
+        completed_at: 2026-03-28T09:52:05.319Z
     events:
       - _ulid: 01KMSXA0399AB4AFGE2A8KFKRA
         actor: Test User
@@ -72691,6 +72705,13 @@ reviews:
           status: pass
           name: daemon-cache-diagnostic-targeted
         timestamp: 2026-03-28T09:52:04.175Z
+      - _ulid: 01KMSXQ97JF65P8CDZQA4XMBR9
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: full-suite-base-parity
+        timestamp: 2026-03-28T09:52:05.875Z
     examined_commit: 31eb7d62e617273cdba064b537f1247742ab867f
     external_links: []
     lifecycle_state: draft
@@ -72703,5 +72724,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-28T09:44:50.538Z
-    updated_at: 2026-03-28T09:52:03.562Z
+    updated_at: 2026-03-28T09:52:05.319Z
     notes: []
