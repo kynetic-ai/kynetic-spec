@@ -74228,6 +74228,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-28T21:58:40.077Z
+      - _ulid: 01KMV81EWNNS57VZYQT7WAHFVP
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMV768CDA883BRQ9E7VV01TT
+        timestamp: 2026-03-28T22:11:39.541Z
     examined_commit: 3845f74f5ffea7b6e03639e38145de493facf24a
     external_links: []
     lifecycle_state: closed
@@ -74257,6 +74263,16 @@ reviews:
               mismatch the AC was added to prevent: a registry-tracked branch can still be treated
               as orphaned before the record reaches "closed".'
             created_at: 2026-03-28T21:56:48.141Z
+          - _ulid: 01KMV81ECKWDSKEXVXD4NJ9JEX
+            author: "@claude"
+            body: 'Fixed: Narrowed the deletion guard to match AC-13 exactly. Only branches whose registry
+              record has lifecycle_state "closed" are now eligible for deletion. The
+              registryBranchMap only contains non-closed records, and any branch found in it is
+              preserved unconditionally — no special-casing for "closing" or "cleanup_blocked".
+              Updated the test that incorrectly asserted deletion for "closing" state to assert
+              preservation instead, and added a new test that verifies deletion only happens for
+              "closed" records.'
+            created_at: 2026-03-28T22:11:39.027Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -74267,5 +74283,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-28T21:58:40.076Z
     created_at: 2026-03-28T21:48:44.502Z
-    updated_at: 2026-03-28T21:58:40.077Z
+    updated_at: 2026-03-28T22:11:39.027Z
     notes: []
