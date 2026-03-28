@@ -22877,3 +22877,19 @@
   started_at: 2026-03-28T08:28:04.347Z
   submitted_at: 2026-03-28T08:55:08.686Z
   automation: eligible
+- _ulid: 01KMSV50CFZGJEFZE2MV83PGN7
+  slugs: []
+  title: Fix cache domain state regression during reload
+  type: task
+  spec_ref: "@daemon-entity-cache"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 3
+  tags:
+    - bug
+    - daemon
+    - cache
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-28T09:07:09.839Z
