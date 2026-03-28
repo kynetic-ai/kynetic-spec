@@ -2807,9 +2807,7 @@ triage:
     status: triaged
     action: delete
     decided_by: Jacob Chapel
-    evidence_refs:
-      - "@src/cli/commands/guard.ts"
-      - "@tests/guard-worktree.test"
+    evidence_refs: []
     inbox_ref: 01KKQSRQADYB6JJ7ARDK9PCFSD
     item_snapshot: "Worktree guard blocks git push from within kspec worktrees even though push is safe.
       Workaround: push from main repo via git push origin <branch>. Guard should allow push
@@ -2858,8 +2856,7 @@ triage:
     status: triaged
     action: promote
     decided_by: Jacob Chapel
-    evidence_refs:
-      - "@src/cli/commands/item.ts"
+    evidence_refs: []
     inbox_ref: 01KKT10X5JS0Y3883M8HFBMZCR
     item_snapshot: "Batch arg naming inconsistency: item ac add uses 'id' but item ac remove uses 'acId'
       for the same AC identifier parameter. Should be consistent across subcommands."
