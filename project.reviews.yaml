@@ -73186,7 +73186,23 @@ reviews:
     slugs: []
     title: Review replace synchronous process spawning in dispatch engine
     author: Test User
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: >-
+          > @kynetic-ai/spec@0.12.0 test
+
+          > node scripts/test.cjs failed on this snapshot (cached result for current repo state): 2
+          failed suites / 12 failed tests. The visible failures are all in , with 500 responses
+          where 200/422 were expected and one JSON parse failure. Full log:
+          /tmp/kspec-test-cache/01KMTFY4NF3PD6KP89E0KFWG23/d76ecc3ac67f9891.log
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-28T15:16:42.906Z
+        completed_at: 2026-03-28T15:16:42.906Z
     events:
       - _ulid: 01KMTG04Z9FWNBHTW19TDA1AWS
         actor: Test User
@@ -73215,6 +73231,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMTG9KPYT8QCV7GVWG67ZKNK
         timestamp: 2026-03-28T15:16:41.464Z
+      - _ulid: 01KMTG9PDNBAWX20C9RDQ8V2G7
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-28T15:16:43.573Z
     examined_commit: 11fcbee97e6b8f5fff51f0268670dd169c0e0f4e
     external_links: []
     lifecycle_state: open
@@ -73262,5 +73285,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-28T15:11:30.793Z
-    updated_at: 2026-03-28T15:16:40.798Z
+    updated_at: 2026-03-28T15:16:42.906Z
     notes: []
