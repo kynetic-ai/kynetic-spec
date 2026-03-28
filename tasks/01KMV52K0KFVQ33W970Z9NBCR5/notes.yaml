@@ -104,3 +104,16 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-28T22:22:21.660Z
+  - _ulid: 01KMVAPWFNB0JZZBQ5BVAK8YXX
+    content: "Fix cycle 2: addressed both blocker threads on full-suite test failure. Root cause:
+      KSPEC_SPEC_DIR env var shared across vitest worker_threads — dispatch workspace tests setting
+      it concurrently poisoned initContext() inside daemon command execution, redirecting CLI
+      commands to the wrong .kspec/ directory. Two fixes: (1) daemon command route
+      (packages/daemon/src/routes/command.ts) now saves/clears KSPEC_SPEC_DIR around both
+      executeCommand and batch execution so the project resolves from explicit chdir, not ambient
+      env; (2) terminal reconciliation test replaced KSPEC_SPEC_DIR mutation with proper kspec init
+      shadow project setup. Re-verified all ACs (ac-12, ac-13) and the original workspace.ts
+      changes. Full test suite: 7063 passed, 0 failed, 5 skipped (pre-existing)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-28T22:58:18.741Z
