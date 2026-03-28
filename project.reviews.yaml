@@ -74167,3 +74167,29 @@ reviews:
     created_at: 2026-03-28T21:23:54.181Z
     updated_at: 2026-03-28T21:33:22.150Z
     notes: []
+  - _ulid: 01KMV6QG2PEAE6BXG85K98G46T
+    slugs: []
+    title: Review completed task record reconciliation
+    author: Test User
+    checks: []
+    events:
+      - _ulid: 01KMV6QG2PTVCYJEQM6P00DF5D
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-28T21:48:44.502Z
+    examined_commit: 3845f74f5ffea7b6e03639e38145de493facf24a
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMV52K0KFVQ33W970Z9NBCR5"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-28T21:48:44.502Z
+    updated_at: null
+    notes: []
