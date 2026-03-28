@@ -1968,3 +1968,16 @@ inbox:
       - agent-runtime
     added_by: "@claude"
     created_at: 2026-03-27T04:32:26.709Z
+  - _ulid: 01KMSRSW74NKX21CW3NS56Z9DD
+    text: "Daemon structured logging to file — daemon currently logs only to stdout via
+      console.log/error with informal prefixes ([daemon], [entity-cache], etc). No persistent log
+      file exists, making post-hoc debugging impossible when the daemon terminal is inaccessible.
+      Needs design decisions: logging library (pino vs custom), rotation strategy, structured JSON
+      vs text, log level configurability, kspec serve logs convenience command. Previously attempted
+      as cancelled task @01KFMMMN. Should be its own spec item, not just an AC on @daemon-server."
+    tags:
+      - daemon
+      - observability
+      - design-needed
+    added_by: "@claude"
+    created_at: 2026-03-28T08:26:07.972Z

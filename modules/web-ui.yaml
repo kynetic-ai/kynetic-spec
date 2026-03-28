@@ -134,6 +134,11 @@ features:
         id: ac-17
         then: serves the built web UI assets (SvelteKit static build) as the root route
         when: browser opens http://localhost:<port>/
+      - given: the daemon is running
+        id: ac-18
+        then: it returns per-project cache state including domain states (unloaded/loading/ready/degraded),
+          watcher status, entry counts per domain, and last invalidation timestamps
+        when: GET /api/debug/cache-status is requested
     tags:
       - server
       - websocket

@@ -1,0 +1,20 @@
+_ulid: 01KMSRSVWTKRQEHCCT4KXY619W
+slugs:
+  - task-daemon-cache-diagnostic
+title: Implement daemon cache diagnostic endpoint
+type: task
+spec_ref: "@daemon-server"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - daemon
+  - observability
+vcs_refs: []
+created_at: 2026-03-28T08:26:07.642Z
+todos: []
+automation: eligible
