@@ -9,7 +9,7 @@
 
 import type { LoadedTask, TaskSummary, LoadedPlan, LoadedSpecItem } from "../../parser/index.js";
 import type { MetaContext } from "../../parser/meta.js";
-import type { ItemSummary, MetaSummary, PlanIndexSummary, ReviewIndexSummary, TriageIndexSummary, CachedShadowInfo, CachedProjectConfig, CachedSessionContext } from "../../daemon/entity-cache.js";
+import type { ItemSummary, MetaSummary, PlanIndexSummary, ReviewIndexSummary, TriageIndexSummary, CachedShadowInfo, CachedProjectConfig, CachedSessionContext, CacheDiagnostic } from "../../daemon/entity-cache.js";
 import type { SessionLogSummary } from "../../sessions/store.js";
 import type { LoadedInboxItem } from "../../parser/yaml.js";
 import type { LoadedTriageRecord } from "../../parser/yaml.js";
@@ -53,6 +53,7 @@ export interface RouteEntityCache {
   getSessionContext(): CachedSessionContext | null;
   writeThrough(domain: string): Promise<void>;
   markWriteThrough(domain: string): void;
+  getCacheDiagnostics(): CacheDiagnostic;
 }
 
 /**

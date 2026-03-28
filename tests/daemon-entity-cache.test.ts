@@ -26,6 +26,7 @@ import {
   registerEntityCache,
   unregisterEntityCache,
   getEntityCache,
+  getAllRegisteredCaches,
   clearAllEntityCaches,
   type CacheDomain,
   DOMAIN_LOAD_ORDER,
@@ -1418,6 +1419,90 @@ describe("ProjectEntityCache", () => {
 
       expect(getEntityCache(projectA)).toBeNull();
       expect(getEntityCache(projectB)).toBeNull();
+    });
+
+    // AC: @daemon-server ac-18
+    it("should enumerate all registered caches via getAllRegisteredCaches", () => {
+      const cacheA = registerEntityCache(projectA);
+      const cacheB = registerEntityCache(projectB);
+
+      const all = getAllRegisteredCaches();
+      expect(all).toHaveLength(2);
+      expect(all).toContain(cacheA);
+      expect(all).toContain(cacheB);
+    });
+  });
+
+  // ─── AC: @daemon-server ac-18 — Diagnostics ────────────────────────────
+
+  // AC: @daemon-server ac-18
+  describe("getCacheDiagnostics: diagnostic snapshot", () => {
+    it("should return per-domain state and counts after loadAll", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadAll();
+
+      const diagnostics = cache.getCacheDiagnostics();
+      expect(diagnostics.projectPath).toBe(projectA);
+      expect(Object.keys(diagnostics.domains)).toHaveLength(DOMAIN_LOAD_ORDER.length);
+
+      // Tasks domain should be ready with populated index
+      expect(diagnostics.domains.tasks.state).toBe("ready");
+      expect(diagnostics.domains.tasks.indexCount).toBeGreaterThan(0);
+      expect(diagnostics.domains.tasks.lastError).toBeNull();
+      // Detail count may be 0 if eager detail population fails silently for test fixtures
+      expect(diagnostics.domains.tasks.detailCount).toBeGreaterThanOrEqual(0);
+
+      // Items domain should be ready (index may be empty in test fixtures without
+      // full shadow branch — consistent with existing item-load tests)
+      expect(diagnostics.domains.items.state).toBe("ready");
+      expect(diagnostics.domains.items.indexCount).toBeGreaterThanOrEqual(0);
+      expect(diagnostics.domains.items.detailCount).toBeGreaterThanOrEqual(0);
+
+      // Meta domain has a single-object index (not an array)
+      expect(diagnostics.domains.meta.state).toBe("ready");
+      expect(diagnostics.domains.meta.indexCount).toBe(1);
+    });
+
+    it("should report unloaded state before any loading", () => {
+      const cache = new ProjectEntityCache(projectA);
+      const diagnostics = cache.getCacheDiagnostics();
+
+      for (const domain of DOMAIN_LOAD_ORDER) {
+        expect(diagnostics.domains[domain].state).toBe("unloaded");
+        expect(diagnostics.domains[domain].indexCount).toBe(0);
+        expect(diagnostics.domains[domain].detailCount).toBe(0);
+        expect(diagnostics.domains[domain].lastError).toBeNull();
+        expect(diagnostics.domains[domain].lastInvalidatedAt).toBeNull();
+      }
+    });
+
+    it("should include lastInvalidatedAt after invalidation", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("tasks");
+
+      const before = cache.getCacheDiagnostics();
+      expect(before.domains.tasks.lastInvalidatedAt).toBeNull();
+
+      await cache.invalidateDomain("tasks");
+
+      const after = cache.getCacheDiagnostics();
+      expect(after.domains.tasks.lastInvalidatedAt).not.toBeNull();
+      // Should be a valid ISO 8601 timestamp
+      const ts = new Date(after.domains.tasks.lastInvalidatedAt!);
+      expect(ts.getTime()).not.toBeNaN();
+    });
+
+    it("should include lastInvalidatedAt after writeThrough", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("items");
+
+      const before = cache.getCacheDiagnostics();
+      expect(before.domains.items.lastInvalidatedAt).toBeNull();
+
+      await cache.writeThrough("items");
+
+      const after = cache.getCacheDiagnostics();
+      expect(after.domains.items.lastInvalidatedAt).not.toBeNull();
     });
   });
 });

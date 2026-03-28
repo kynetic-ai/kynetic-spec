@@ -34,6 +34,7 @@ import {
 } from "./routes/agent-dispatch";
 import { createCommandRoutes } from "./routes/command";
 import { createAutomationRoutes } from "./routes/automation";
+import { createDebugRoutes } from "./routes/debug";
 import { createSessionRoutes } from "./routes/sessions";
 import { createPlansRoutes } from "./routes/plans";
 import { createAggregationRoutes } from "./routes/aggregation";
@@ -371,6 +372,12 @@ export async function createServer(options: ServerOptions) {
 
     // AC: @automation-api ac-1 through ac-6 - Automation management endpoints
     .use(createAutomationRoutes())
+
+    // AC: @daemon-server ac-18 - Debug/diagnostic endpoints
+    .use(createDebugRoutes({
+      projectManager: projectContextManager,
+      getEntityCache: entityCacheModule.getEntityCache,
+    }))
 
     // AC-4: WebSocket endpoint for real-time updates
     .ws<ConnectionData>("/ws", {

@@ -289,6 +289,21 @@ export interface CachedSessionContext {
   updated_at: string;
 }
 
+/** Per-domain diagnostic snapshot returned by getCacheDiagnostics(). */
+export interface DomainDiagnostic {
+  state: DomainState;
+  indexCount: number;
+  detailCount: number;
+  lastError: string | null;
+  lastInvalidatedAt: string | null;
+}
+
+/** Full cache diagnostic snapshot for a single project. */
+export interface CacheDiagnostic {
+  projectPath: string;
+  domains: Record<CacheDomain, DomainDiagnostic>;
+}
+
 /** Session cache configuration. */
 export interface SessionCacheConfig {
   /** Maximum number of session summaries to keep in index (default 100). */
@@ -309,6 +324,8 @@ interface DomainStore<TIndex, TDetail = unknown> {
   details: Map<string, TDetail>;
   /** Error from the last failed load attempt (for degraded state). */
   lastError?: Error;
+  /** Timestamp of last invalidation (watcher-driven or write-through). */
+  lastInvalidatedAt?: string;
 }
 
 // ─── File → Domain Mapping ───────────────────────────────────────────────────
@@ -751,6 +768,32 @@ export class ProjectEntityCache {
     this.liveEventCounts.delete(sessionId);
   }
 
+  // ─── Diagnostics ─────────────────────────────────────────────────────────
+
+  /**
+   * Get a diagnostic snapshot of all domain states, counts, errors, and timestamps.
+   * AC: @daemon-server ac-18
+   */
+  getCacheDiagnostics(): CacheDiagnostic {
+    const domains = {} as Record<CacheDomain, DomainDiagnostic>;
+    for (const domain of DOMAIN_LOAD_ORDER) {
+      const store = this.getStore(domain);
+      const indexCount = store.index == null
+        ? 0
+        : Array.isArray(store.index)
+          ? store.index.length
+          : 1; // meta index is a single object
+      domains[domain] = {
+        state: store.state,
+        indexCount,
+        detailCount: store.details.size,
+        lastError: store.lastError?.message ?? null,
+        lastInvalidatedAt: store.lastInvalidatedAt ?? null,
+      };
+    }
+    return { projectPath: this.projectPath, domains };
+  }
+
   // ─── Progressive Loading ─────────────────────────────────────────────────
 
   /**
@@ -1110,6 +1153,8 @@ export class ProjectEntityCache {
       const d = this.domainDebouncePromises.get(domain);
       this.domainDebouncePromises.delete(domain);
       try {
+        // AC: @daemon-server ac-18 — track last invalidation timestamp
+        this.getStore(domain).lastInvalidatedAt = new Date().toISOString();
         await this.loadDomain(domain);
       } finally {
         d?.resolve();
@@ -1162,6 +1207,8 @@ export class ProjectEntityCache {
    * AC: @daemon-entity-cache ac-write-through
    */
   async writeThrough(domain: CacheDomain): Promise<void> {
+    // AC: @daemon-server ac-18 — track last invalidation timestamp
+    this.getStore(domain).lastInvalidatedAt = new Date().toISOString();
     await this.loadDomain(domain);
     // Only suppress the next watcher invalidation when the reload succeeded —
     // if the domain degraded, the watcher must still fire so a subsequent
@@ -1280,6 +1327,14 @@ export function unregisterEntityCache(projectPath: string): void {
     cache.dispose();
     cacheRegistry.delete(projectPath);
   }
+}
+
+/**
+ * Enumerate all registered project caches.
+ * AC: @daemon-server ac-18
+ */
+export function getAllRegisteredCaches(): ProjectEntityCache[] {
+  return Array.from(cacheRegistry.values());
 }
 
 /**
