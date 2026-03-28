@@ -72363,3 +72363,29 @@ reviews:
     created_at: 2026-03-28T09:02:56.903Z
     updated_at: null
     notes: []
+  - _ulid: 01KMSTXYAEDKJG68B956MFX767
+    slugs: []
+    title: Review task-daemon-cache-diagnostic
+    author: Test User
+    checks: []
+    events:
+      - _ulid: 01KMSTXYADRQFKRBGEH12J201W
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-28T09:03:18.349Z
+    examined_commit: a206213a837867769df3301331c8054b56b93d2a
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMSRSVWTKRQEHCCT4KXY619W"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-28T09:03:18.350Z
+    updated_at: null
+    notes: []
