@@ -74342,6 +74342,18 @@ reviews:
         runner: kspec
         created_at: 2026-03-28T22:21:18.248Z
         completed_at: 2026-03-28T22:21:18.248Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Isolated rerun passed: 24/24 tests. The failure reproduces only in the full suite,
+          indicating order-dependent interference/flakiness rather than a permanently broken
+          single-file scenario."
+        name: npm test -- --run tests/daemon-command-api.test.ts
+        required: false
+        runner: npm
+        created_at: 2026-03-28T22:21:21.936Z
+        completed_at: 2026-03-28T22:21:21.936Z
     events:
       - _ulid: 01KMV8A5ZWVY1PCAFWESA5Q6KY
         actor: codex
@@ -74370,6 +74382,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMV8K5TP1T6FBS5B7ADXPFVC
         timestamp: 2026-03-28T22:21:20.667Z
+      - _ulid: 01KMV8K86JXBK3T2N18GHB48RY
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test -- --run tests/daemon-command-api.test.ts
+        timestamp: 2026-03-28T22:21:22.515Z
     examined_commit: 587212b1f8535471898c8f6dc6d51c2d95524f39
     external_links: []
     lifecycle_state: open
@@ -74403,5 +74422,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-28T22:16:25.341Z
-    updated_at: 2026-03-28T22:21:20.086Z
+    updated_at: 2026-03-28T22:21:21.936Z
     notes: []
