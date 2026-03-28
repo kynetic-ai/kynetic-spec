@@ -22903,8 +22903,12 @@
   title: Replace synchronous process spawning in dispatch engine
   type: task
   spec_ref: "@agent-dispatch-engine"
-  status: pending_review
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - "Dispatch workspace provisioning failed: Dispatch workspace registry write succeeded but could
+      not be durably committed on the shadow branch for @01KMSV5ERVHAAC92XGR8TYP19A.. Suggested
+      action: Resolve the shadow branch commit issue, then rerun dispatch reconciliation or
+      workspace provisioning so the registry state becomes durable."
   depends_on: []
   priority: 3
   tags:
