@@ -1,1 +1,53 @@
-notes: []
+notes:
+  - _ulid: 01KMV5H58C1SYD5YVXSC85VQQJ
+    content: >-
+      Approach: Two targeted changes to break the restore-delete cycle.
+
+
+      AC-12 fix (reconcileWorkspaceHealth):
+
+      - Add taskStatus + integration status parameters to reconcileWorkspaceHealth
+
+      - Before calling tryRestoreBranchFromRemote, check if task is in terminal state
+      (completed/cancelled) AND integration is merged/abandoned
+
+      - If so, skip the branch restoration and instead return the last persisted health state or a
+      degraded healthy status (branch is expected to be missing for terminal+merged records)
+
+      - This prevents the futile restore that artifact reconciliation will undo
+
+
+      AC-13 fix (reconcileDispatchWorkspaceArtifacts):
+
+      - Load registry records at the start of artifact reconciliation
+
+      - Build a Map of canonical_branch -> record for quick lookup
+
+      - In the orphan branch cleanup loop (line 2821-2826), before deleting a dispatch branch, check
+      if it belongs to a registry record
+
+      - If the record exists and is in closing/closed/cleanup_blocked state with merged/abandoned
+      integration, allow deletion (cleanup is expected)
+
+      - If the record exists and is NOT in a terminal/cleanup state, skip deletion (branch is still
+      needed)
+
+      - If no record exists, proceed with deletion as before (true orphan)
+
+
+      Edge cases:
+
+      - Records in 'stale' state with missing branch should still be preserved (may be recoverable)
+
+      - Records transitioning through cleanup should still allow branch deletion when the reaper
+      handles it
+
+      - The trackedBranches set from worktree metadata remains authoritative for worktree-backed
+      branches
+
+
+      Test plan: 2 targeted tests (one per AC) exercising the reconciliation cycle for completed
+      tasks with cleaned-up branches.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-28T21:27:48.236Z
