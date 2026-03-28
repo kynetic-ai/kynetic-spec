@@ -22924,12 +22924,8 @@
   slugs: []
   title: Add rollback note to batch atomic failure output
   type: bug
-  status: blocked
-  blocked_by:
-    - Full-suite verification is unstable in this snapshot. npm test failed with 12
-      daemon-command-api failures (500/ENOENT behavior), while isolated reruns of
-      tests/daemon-command-api.test.ts and tests/batch-exec-engine.test.ts passed. Submitted batch
-      change looks correct, but merge safety is not yet verified against a green full suite.
+  status: pending_review
+  blocked_by: []
   depends_on: []
   priority: 3
   tags:

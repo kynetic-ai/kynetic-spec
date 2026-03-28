@@ -11,12 +11,8 @@ description: "What: When kspec batch fails in atomic mode, the output says 'N/M 
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: blocked
-blocked_by:
-  - Full-suite verification is unstable in this snapshot. npm test failed with 12 daemon-command-api
-    failures (500/ENOENT behavior), while isolated reruns of tests/daemon-command-api.test.ts and
-    tests/batch-exec-engine.test.ts passed. Submitted batch change looks correct, but merge safety
-    is not yet verified against a green full suite.
+status: pending_review
+blocked_by: []
 depends_on: []
 context: []
 priority: 3
@@ -33,7 +29,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
   upstream_ref: refs/heads/dev
-session_id: 01KMT1QEN302E8Q6J9MZV89NZ3
+session_id: null
 history:
   - author: "@claude"
     changes:
@@ -100,7 +96,28 @@ history:
         previous: null
     command: task-block
     timestamp: 2026-03-28T11:19:51.994Z
-prior_status: pending_review
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: blocked
+      blocked_by:
+        new: []
+        previous:
+          - Full-suite verification is unstable in this snapshot. npm test failed with 12
+            daemon-command-api failures (500/ENOENT behavior), while isolated reruns of
+            tests/daemon-command-api.test.ts and tests/batch-exec-engine.test.ts passed. Submitted
+            batch change looks correct, but merge safety is not yet verified against a green full
+            suite.
+      session_id:
+        new: null
+        previous: 01KMT1QEN302E8Q6J9MZV89NZ3
+      prior_status:
+        new: null
+        previous: pending_review
+    command: task-unblock
+    timestamp: 2026-03-28T20:14:34.778Z
+prior_status: null
 created_at: 2026-03-28T09:09:46.507Z
 started_at: 2026-03-28T11:03:49.889Z
 submitted_at: 2026-03-28T11:12:18.647Z
