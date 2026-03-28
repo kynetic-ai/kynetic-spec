@@ -74415,6 +74415,13 @@ reviews:
           kind: nit
           thread_ulid: 01KMV8KR71RYEX0SM8ZS8P7X16
         timestamp: 2026-03-28T22:21:39.517Z
+      - _ulid: 01KMV8KTKS31R497VJMGTSG7DA
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMV8KT19VW19FHQFGQWRDR60
+        timestamp: 2026-03-28T22:21:41.369Z
     examined_commit: 587212b1f8535471898c8f6dc6d51c2d95524f39
     external_links: []
     lifecycle_state: open
@@ -74460,7 +74467,25 @@ reviews:
               searched: correctness, AC coverage, test quality, integration, regression behavior."
             created_at: 2026-03-28T22:21:38.913Z
         kind: nit
+      - _ulid: 01KMV8KT19VW19FHQFGQWRDR60
+        anchor:
+          type: code
+          commit: 587212b1f8535471898c8f6dc6d51c2d95524f39
+          line_end: 387
+          line_start: 387
+          path: tests/daemon-command-api.test.ts
+          side: head
+        entries:
+          - _ulid: 01KMV8KT19QRVSMF50X6DWNKMJ
+            author: Test User
+            body: Full npm test does not pass on this snapshot. In the full-suite run,
+              tests/daemon-command-api.test.ts fails 12 mutating-command cases with 500 responses or
+              ENOENT JSON parsing, even though an isolated rerun of that file passes. That leaves
+              the branch non-mergeable under the required repo gate and points to an unresolved
+              order-dependent failure that still needs investigation before approval.
+            created_at: 2026-03-28T22:21:40.777Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-28T22:16:25.341Z
-    updated_at: 2026-03-28T22:21:38.913Z
+    updated_at: 2026-03-28T22:21:40.777Z
     notes: []
