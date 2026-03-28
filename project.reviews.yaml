@@ -72367,7 +72367,18 @@ reviews:
     slugs: []
     title: Review task-daemon-cache-diagnostic
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate exited 6 with repo-wide warnings only; schema and references OK, no
+          task-specific validation errors in this snapshot
+        name: validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-28T09:10:00.250Z
+        completed_at: 2026-03-28T09:10:00.250Z
     events:
       - _ulid: 01KMSTXYADRQFKRBGEH12J201W
         actor: Test User
@@ -72382,6 +72393,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-28T09:08:04.503Z
+      - _ulid: 01KMSVA7Y7ZZ92Y04W52TYW7KN
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: validate
+        timestamp: 2026-03-28T09:10:01.416Z
     examined_commit: a206213a837867769df3301331c8054b56b93d2a
     external_links: []
     lifecycle_state: open
@@ -72394,7 +72412,7 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-28T09:03:18.350Z
-    updated_at: 2026-03-28T09:08:02.349Z
+    updated_at: 2026-03-28T09:10:00.250Z
     notes: []
   - _ulid: 01KMSTYQYH4G91MTC9D508PWX5
     slugs: []
