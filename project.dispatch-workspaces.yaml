@@ -207,14 +207,10 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-28T21:46:58.623Z
+      updated_at: 2026-03-28T21:48:00.666Z
     health:
-      status: invalid
+      status: stale
       issues:
-        - code: missing_canonical_branch
-          message: Canonical branch
-            "dispatch/task/reconcile-legacy-dispatch-workspaces-and-spec-gaps/01kkjp6e" is missing.
-          suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
           message: Worker worktree
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/reconcile-legacy-dispatch-workspaces-and-spec-gaps-01kkjp6e"
@@ -225,8 +221,8 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/reconcile-legacy-dispatch-workspaces-and-spec-gaps-01kkjp6e-review"
             is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
-      summary: Workspace registry record is invalid because required git state is missing.
-      updated_at: 2026-03-28T21:46:58.623Z
+      summary: Workspace registry record is stale and needs reconciliation.
+      updated_at: 2026-03-28T21:48:00.666Z
     integration:
       status: merged
       detail: integration:merged
@@ -234,7 +230,7 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: e728c62710bbc6fe43d7bd1dfd135c092ef732f2
-      updated_at: 2026-03-28T21:46:58.623Z
+      updated_at: 2026-03-28T21:48:00.666Z
     lifecycle_state: stale
     resolved_base_branch: main
     task_ref: "@01KKJP6E1TN5ZFMHASTHSGG2MH"
@@ -242,9 +238,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-13T05:18:14.161Z
-      last_reconciled_at: 2026-03-28T21:46:58.623Z
+      last_reconciled_at: 2026-03-28T21:48:00.666Z
       created_at: 2026-03-13T04:11:14.073Z
-      updated_at: 2026-03-28T21:46:58.623Z
+      updated_at: 2026-03-28T21:48:00.666Z
     workspace_id: dispatch-workspace-01KKJP6E1TN5ZFMHASTHSGG2MH
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -26501,12 +26497,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-28T21:47:58.004Z
+      updated_at: 2026-03-28T21:48:10.782Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-28T21:47:58.004Z
+      updated_at: 2026-03-28T21:48:10.782Z
     integration:
       status: pending
       detail: null
@@ -26514,24 +26510,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: f8a3f4f7cd59e2d27bd624e3106c97691ff09771
-      updated_at: 2026-03-28T21:47:58.004Z
-    lifecycle_state: ready
+      updated_at: 2026-03-28T21:48:10.782Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KMV52K0KFVQ33W970Z9NBCR5"
     task_slug: fix-workspace-reconciliation-cycle-for-completed-task-records
     timestamps:
       closed_at: null
       last_active_at: 2026-03-28T21:23:36.570Z
-      last_reconciled_at: 2026-03-28T21:47:58.004Z
+      last_reconciled_at: 2026-03-28T21:48:10.782Z
       created_at: 2026-03-28T21:22:49.841Z
-      updated_at: 2026-03-28T21:47:58.004Z
+      updated_at: 2026-03-28T21:48:10.782Z
     workspace_id: dispatch-workspace-01KMV52K0KFVQ33W970Z9NBCR5
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 3845f74f5ffea7b6e03639e38145de493facf24a
+        last_seen_at: 2026-03-28T21:48:10.782Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-workspace-reconciliation-cycle-for-completed-task-records-01kmv52k-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/fix-workspace-reconciliation-cycle-for-completed-task-records/01kmv52k
-        head: f8a3f4f7cd59e2d27bd624e3106c97691ff09771
-        last_seen_at: 2026-03-28T21:22:49.841Z
+        head: 3845f74f5ffea7b6e03639e38145de493facf24a
+        last_seen_at: 2026-03-28T21:48:10.782Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-workspace-reconciliation-cycle-for-completed-task-records-01kmv52k
