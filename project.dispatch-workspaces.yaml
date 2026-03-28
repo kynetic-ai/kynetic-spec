@@ -26077,12 +26077,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-28T11:01:10.900Z
+      updated_at: 2026-03-28T11:01:14.396Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-28T11:01:10.900Z
+      updated_at: 2026-03-28T11:01:14.396Z
     integration:
       status: pending
       detail: null
@@ -26090,26 +26090,31 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 39e80b193a2247ab9a52253c6cc9fc060da528fd
-      updated_at: 2026-03-28T11:01:10.900Z
-    lifecycle_state: ready
+      updated_at: 2026-03-28T11:01:14.396Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KMSV50CFZGJEFZE2MV83PGN7"
     task_slug: fix-cache-domain-state-regression-during-reload
     timestamps:
       closed_at: null
       last_active_at: 2026-03-28T10:44:08.384Z
-      last_reconciled_at: 2026-03-28T11:01:10.900Z
+      last_reconciled_at: 2026-03-28T11:01:14.396Z
       created_at: 2026-03-28T09:40:40.810Z
-      updated_at: 2026-03-28T11:01:10.900Z
+      updated_at: 2026-03-28T11:01:14.396Z
     workspace_id: dispatch-workspace-01KMSV50CFZGJEFZE2MV83PGN7
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 6dfc4805489d99bea3d96adb5877ae3251faad69
+        last_seen_at: 2026-03-28T11:01:14.396Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-cache-domain-state-regression-during-reload-01kmsv50-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/fix-cache-domain-state-regression-during-reload/01kmsv50
-        head: 80d42a907fa9ef28f30266d9a3a65787e5fc698a
-        last_seen_at: 2026-03-28T10:44:02.130Z
+        head: 6dfc4805489d99bea3d96adb5877ae3251faad69
+        last_seen_at: 2026-03-28T11:01:14.396Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-cache-domain-state-regression-during-reload-01kmsv50
   - active_role: null
     base_branch_point: a83f81a891a86a63980effc34ff74d56125f34e9
