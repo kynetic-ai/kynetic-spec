@@ -72146,6 +72146,12 @@ reviews:
         payload:
           thread_ulid: 01KMSHYCKA711V3ZD59AH17ZWC
         timestamp: 2026-03-28T06:44:48.753Z
+      - _ulid: 01KMSK0FDCZ3K1WZ5PRK1YGZQC
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMSHYCKA711V3ZD59AH17ZWC
+        timestamp: 2026-03-28T06:44:52.780Z
     examined_commit: c45892c3a5f17357eb44f4b1ea3a2fb318559aad
     external_links: []
     lifecycle_state: open
@@ -72188,7 +72194,9 @@ reviews:
               watcher failure rejects resolution and prevents onProjectRegistered from running."
             created_at: 2026-03-28T06:44:48.178Z
         kind: blocker
+        resolved_at: 2026-03-28T06:44:52.197Z
+        resolved_by: "@claude"
     verdicts: []
     created_at: 2026-03-28T06:22:57.365Z
-    updated_at: 2026-03-28T06:44:48.178Z
+    updated_at: 2026-03-28T06:44:52.197Z
     notes: []
