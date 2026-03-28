@@ -51,3 +51,34 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-28T21:27:48.236Z
+  - _ulid: 01KMV6BC1WNNGJ5CSWF276VGFN
+    content: >-
+      Implementation complete. Two changes to src/agent-runtime/workspace.ts:
+
+
+      AC-12: reconcileWorkspaceHealth now receives taskStatus parameter. When task is terminal
+      (completed/cancelled) AND integration is resolved (merged/abandoned), it skips
+      tryRestoreBranchFromRemote and returns the last persisted health state. This prevents the
+      futile branch restoration that artifact reconciliation would immediately undo.
+
+
+      AC-13: reconcileDispatchWorkspaceArtifacts now loads the workspace registry and builds a
+      branch-to-record map before the orphan branch cleanup loop. Branches belonging to non-closed
+      registry records in non-terminal lifecycle states (ready, active, stale, integrating) are
+      preserved. Branches in closing/cleanup_blocked states are still deleted (cleanup is expected).
+      True orphans (no registry record) continue to be deleted. Registry load failure falls back to
+      original behavior.
+
+
+      5 new tests in dispatch-workspace-terminal-reconciliation.test.ts:
+
+      - AC-12: skips restore for completed+merged, skips restore for cancelled+abandoned
+
+      - AC-13: preserves registry-tracked branches, allows deletion for closing state, still deletes
+      true orphans
+
+
+      Full test suite: 2216 passed, 0 failed, 1 skipped (pre-existing).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-28T21:42:07.164Z
