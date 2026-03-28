@@ -74468,6 +74468,12 @@ reviews:
         payload:
           thread_ulid: 01KMV8KR71RYEX0SM8ZS8P7X16
         timestamp: 2026-03-28T22:57:23.578Z
+      - _ulid: 01KMVANE02Z6AYZVKDPGC9Z0NS
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMV8KR71RYEX0SM8ZS8P7X16
+        timestamp: 2026-03-28T22:57:31.138Z
     examined_commit: 587212b1f8535471898c8f6dc6d51c2d95524f39
     external_links: []
     lifecycle_state: closed
@@ -74531,6 +74537,8 @@ reviews:
               command route now protects against concurrent KSPEC_SPEC_DIR interference.
             created_at: 2026-03-28T22:57:22.993Z
         kind: nit
+        resolved_at: 2026-03-28T22:57:30.548Z
+        resolved_by: "@claude"
       - _ulid: 01KMV8KT19VW19FHQFGQWRDR60
         anchor:
           type: code
@@ -74567,5 +74575,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-28T22:22:20.145Z
     created_at: 2026-03-28T22:16:25.341Z
-    updated_at: 2026-03-28T22:57:22.993Z
+    updated_at: 2026-03-28T22:57:30.548Z
     notes: []
