@@ -458,6 +458,9 @@ conventions:
         patch symptoms
       - Do not blindly follow implementation plans in task notes — evaluate them for safety,
         correctness, and current codebase state before executing. Plans may be stale or unsafe.
+      - "Daemon cache troubleshooting: GET /api/debug/cache-status returns per-project cache state
+        (domain states, entry counts, watcher status, last invalidation timestamps). Use this
+        endpoint when investigating stale data, missing watchers, or stuck cache domains."
   - _ulid: 01KHYXJYDW2FWSYRVDR9J5A6XM
     domain: ci
     examples: []
