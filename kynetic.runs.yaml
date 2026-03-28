@@ -17814,9 +17814,22 @@ runs:
     completed_at: 2026-03-28T21:46:53.513Z
   - _ulid: 01KMV848H1Z69EKNJKCHQTW49M
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-03-28T22:13:11.329Z
+        completed_at: 2026-03-28T22:13:28.123Z
+        notes: "Session: Fix cycle for task @01KMV52K0KFVQ33W970Z9NBCR5 (workspace reconciliation). What
+          worked: Review thread was clear and specific — pointed to exact lines and explained the AC
+          mismatch. Fix was straightforward once the issue was understood. The registryBranchMap
+          design (only containing non-closed records) made the fix a simplification rather than
+          adding more conditions. Full test suite passed on first try after the fix."
+      - status: completed
+        step_index: 1
+        started_at: 2026-03-28T22:13:28.123Z
+        completed_at: 2026-03-28T22:13:28.123Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-28T22:13:11.329Z
