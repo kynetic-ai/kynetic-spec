@@ -21,7 +21,10 @@
  */
 
 import * as path from "node:path";
-import { spawnSync } from "node:child_process";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
+
+const execFileAsync = promisify(execFile);
 import { fileURLToPath } from "node:url";
 import { ulid } from "ulid";
 import type { Agent, SessionMode } from "../schema/meta.js";
@@ -319,39 +322,48 @@ interface InvocationState {
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 /**
- * Run a kspec CLI command synchronously.
+ * Run a kspec CLI command asynchronously.
+ * AC: @agent-dispatch-engine ac-28 — async to avoid blocking the event loop
  */
-function runKspecCli(
+async function runKspecCli(
   args: string[],
   cwd: string,
   kspecCliPath: string,
   env?: Record<string, string>,
-): { stdout: string; stderr: string; status: number | null } {
-  const result = spawnSync(process.execPath, [kspecCliPath, ...args], {
-    encoding: "utf-8",
-    stdio: "pipe",
-    cwd,
-    env: env ? { ...process.env, ...env } : process.env,
-  });
-  return {
-    stdout: result.stdout ?? "",
-    stderr: result.stderr ?? "",
-    status: result.status,
-  };
+): Promise<{ stdout: string; stderr: string; status: number | null }> {
+  try {
+    const result = await execFileAsync(process.execPath, [kspecCliPath, ...args], {
+      encoding: "utf-8",
+      cwd,
+      env: env ? { ...process.env, ...env } : process.env,
+    });
+    return {
+      stdout: result.stdout ?? "",
+      stderr: result.stderr ?? "",
+      status: 0,
+    };
+  } catch (err: unknown) {
+    const e = err as { stdout?: string; stderr?: string; code?: number | string; killed?: boolean };
+    return {
+      stdout: e.stdout ?? "",
+      stderr: e.stderr ?? "",
+      status: typeof e.code === "number" ? e.code : (e.killed ? null : 1),
+    };
+  }
 }
 
 /**
  * Add a note to a task via kspec CLI.
  */
-function addTaskNote(
+async function addTaskNote(
   taskRef: string,
   note: string,
   cwd: string,
   kspecCliPath: string,
   env?: Record<string, string>,
   strict = false,
-): void {
-  const result = runKspecCli(["task", "note", taskRef, note], cwd, kspecCliPath, env);
+): Promise<void> {
+  const result = await runKspecCli(["task", "note", taskRef, note], cwd, kspecCliPath, env);
   if (strict && result.status !== 0) {
     throw new DispatchMutationError(
       `Dispatch mutation failed while writing task note for ${taskRef}: ${result.stderr || result.stdout || "kspec task note exited non-zero"}`,
@@ -362,15 +374,15 @@ function addTaskNote(
 /**
  * Block a task via kspec CLI.
  */
-function blockTask(
+async function blockTask(
   taskRef: string,
   reason: string,
   cwd: string,
   kspecCliPath: string,
   env?: Record<string, string>,
   strict = false,
-): void {
-  const result = runKspecCli(
+): Promise<void> {
+  const result = await runKspecCli(
     ["task", "block", taskRef, "--reason", reason],
     cwd,
     kspecCliPath,
@@ -1034,7 +1046,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
 
       // Add timeout note to task (only when a task is bound)
       if (taskRef) {
-        addTaskNote(
+        await addTaskNote(
           taskRef,
           `[AGENT-TIMEOUT] Invocation timed out after ${timeoutMinutes} minutes`,
           cwd,
@@ -1184,7 +1196,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
 
     // Add failure note to task and check retry threshold (only when a task is bound)
     if (taskRef) {
-      addTaskNote(
+      await addTaskNote(
         taskRef,
         `[AGENT-FAIL] Invocation failed: ${errorMessage}`,
         cwd,
@@ -1199,7 +1211,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       const consecutiveFailures = await getConsecutiveFailureCount(sessionsDir, taskRef, agent.id);
 
       if (consecutiveFailures >= retryLimit) {
-        blockTask(
+        await blockTask(
           taskRef,
           `Agent ${agent.id} failed ${consecutiveFailures} consecutive times: ${errorMessage}`,
           cwd,

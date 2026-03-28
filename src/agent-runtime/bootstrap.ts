@@ -1,7 +1,10 @@
-import { spawnSync } from "node:child_process";
+import { execFile } from "node:child_process";
 import { createHash } from "node:crypto";
-import * as fs from "node:fs";
+import * as fs from "node:fs/promises";
 import * as path from "node:path";
+import { promisify } from "node:util";
+
+const execFileAsync = promisify(execFile);
 import { loadProjectConfig } from "../parser/config.js";
 import type { Agent } from "../schema/meta.js";
 import type {
@@ -53,34 +56,45 @@ interface DependencyHealth {
   missingPackages: string[];
 }
 
-function runShell(
+async function runShell(
   cwd: string,
   command: string,
   env: Record<string, string>,
-): { status: number | null; stdout: string; stderr: string } {
-  const result = spawnSync("bash", ["-lc", command], {
-    cwd,
-    env: {
-      ...process.env,
-      ...env,
-    },
-    encoding: "utf-8",
-    stdio: "pipe",
-  });
-  return {
-    status: result.status,
-    stdout: result.stdout ?? "",
-    stderr: result.stderr ?? "",
-  };
+): Promise<{ status: number | null; stdout: string; stderr: string }> {
+  try {
+    const result = await execFileAsync("bash", ["-lc", command], {
+      cwd,
+      env: {
+        ...process.env,
+        ...env,
+      },
+      encoding: "utf-8",
+    });
+    return {
+      status: 0,
+      stdout: result.stdout ?? "",
+      stderr: result.stderr ?? "",
+    };
+  } catch (err: unknown) {
+    const e = err as { stdout?: string; stderr?: string; code?: number | string; killed?: boolean };
+    return {
+      status: typeof e.code === "number" ? e.code : (e.killed ? null : 1),
+      stdout: e.stdout ?? "",
+      stderr: e.stderr ?? "",
+    };
+  }
 }
 
-function trackedStatus(cwd: string): string {
-  const result = spawnSync("git", ["status", "--porcelain", "--untracked-files=no"], {
-    cwd,
-    encoding: "utf-8",
-    stdio: "pipe",
-  });
-  return result.status === 0 ? (result.stdout ?? "").trim() : "";
+async function trackedStatus(cwd: string): Promise<string> {
+  try {
+    const result = await execFileAsync("git", ["status", "--porcelain", "--untracked-files=no"], {
+      cwd,
+      encoding: "utf-8",
+    });
+    return (result.stdout ?? "").trim();
+  } catch {
+    return "";
+  }
 }
 
 function summarizeOutput(stdout: string, stderr: string): string | null {
@@ -121,23 +135,29 @@ function collectDirectDependencies(packageJson: Record<string, unknown>): string
   return [...names].toSorted();
 }
 
-function checkWorkspaceDependencies(workspaceDir: string): DependencyHealth {
+async function checkWorkspaceDependencies(workspaceDir: string): Promise<DependencyHealth> {
   const packageJsonPath = path.join(workspaceDir, "package.json");
   const lockfilePath = path.join(workspaceDir, "package-lock.json");
   const nodeModulesDir = path.join(workspaceDir, "node_modules");
 
-  if (!fs.existsSync(packageJsonPath) || !fs.existsSync(lockfilePath)) {
+  const [packageJsonExists, lockfileExists] = await Promise.all([
+    fs.access(packageJsonPath).then(() => true, () => false),
+    fs.access(lockfilePath).then(() => true, () => false),
+  ]);
+
+  if (!packageJsonExists || !lockfileExists) {
     return { ok: true, reason: null, missingPackages: [] };
   }
 
   let packageJson: Record<string, unknown>;
   try {
-    packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8")) as Record<string, unknown>;
+    packageJson = JSON.parse(await fs.readFile(packageJsonPath, "utf-8")) as Record<string, unknown>;
   } catch {
     return { ok: true, reason: null, missingPackages: [] };
   }
 
-  if (!fs.existsSync(nodeModulesDir)) {
+  const nodeModulesExists = await fs.access(nodeModulesDir).then(() => true, () => false);
+  if (!nodeModulesExists) {
     return {
       ok: false,
       reason: "node_modules/ not found",
@@ -145,9 +165,13 @@ function checkWorkspaceDependencies(workspaceDir: string): DependencyHealth {
     };
   }
 
-  const missingPackages = collectDirectDependencies(packageJson).filter(
-    (packageName) => !fs.existsSync(path.join(nodeModulesDir, ...packageName.split("/"))),
+  const dependencyNames = collectDirectDependencies(packageJson);
+  const existResults = await Promise.all(
+    dependencyNames.map((packageName) =>
+      fs.access(path.join(nodeModulesDir, ...packageName.split("/"))).then(() => true, () => false),
+    ),
   );
+  const missingPackages = dependencyNames.filter((_, i) => !existResults[i]);
 
   if (missingPackages.length > 0) {
     return {
@@ -160,8 +184,8 @@ function checkWorkspaceDependencies(workspaceDir: string): DependencyHealth {
   return { ok: true, reason: null, missingPackages: [] };
 }
 
-function implicitDependencyStep(workspaceDir: string): DispatchBootstrapStep | null {
-  const dependencyHealth = checkWorkspaceDependencies(workspaceDir);
+async function implicitDependencyStep(workspaceDir: string): Promise<DispatchBootstrapStep | null> {
+  const dependencyHealth = await checkWorkspaceDependencies(workspaceDir);
   if (dependencyHealth.ok) {
     return null;
   }
@@ -271,7 +295,7 @@ export async function ensureWorkspaceBootstrap(
   const { projectDir, workspaceDir, metadataPath, role, agent, env } = options;
   const { config } = await loadProjectConfig(projectDir, projectDir);
   const steps = resolveBootstrapSteps(agent, config.dispatch.bootstrap.steps);
-  const dependencyStep = implicitDependencyStep(workspaceDir);
+  const dependencyStep = await implicitDependencyStep(workspaceDir);
   const effectiveSteps = dependencyStep ? [dependencyStep, ...steps] : steps;
   const roleSteps = effectiveSteps.filter((step) => stepAppliesToRole(step, role));
   const configHash = hashConfig(steps);
@@ -379,14 +403,14 @@ export async function ensureWorkspaceBootstrap(
 
   const executedSteps: DispatchWorkspaceMetadata["bootstrap"]["steps"] = [];
   for (const step of rerunnableSteps) {
-    const beforeStatus = trackedStatus(workspaceDir);
-    const result = runShell(workspaceDir, step.run, {
+    const beforeStatus = await trackedStatus(workspaceDir);
+    const result = await runShell(workspaceDir, step.run, {
       ...env,
       KSPEC_DISPATCH_BOOTSTRAP_ROLE: role,
       KSPEC_DISPATCH_BOOTSTRAP_SOURCE: step.source,
       KSPEC_DISPATCH_BOOTSTRAP_STEP: step.name,
     });
-    const afterStatus = trackedStatus(workspaceDir);
+    const afterStatus = await trackedStatus(workspaceDir);
     const output = summarizeOutput(result.stdout, result.stderr);
 
     if (result.status !== 0) {
