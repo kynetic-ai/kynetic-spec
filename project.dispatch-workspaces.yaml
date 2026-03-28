@@ -26251,7 +26251,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-28T15:22:39.430Z
+      updated_at: 2026-03-28T15:22:41.968Z
     integration:
       status: pending
       detail: null
@@ -26260,25 +26260,20 @@ workspaces:
       target_branch: dev
       target_commit: a83f81a891a86a63980effc34ff74d56125f34e9
       updated_at: 2026-03-28T15:22:39.430Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMSV5ERVHAAC92XGR8TYP19A"
     task_slug: replace-synchronous-process-spawning-in-dispatch-engine
     timestamps:
       closed_at: null
       last_active_at: 2026-03-28T15:10:36.955Z
-      last_reconciled_at: 2026-03-28T15:22:39.430Z
+      last_reconciled_at: 2026-03-28T15:22:41.968Z
       created_at: 2026-03-28T09:56:09.748Z
-      updated_at: 2026-03-28T15:22:39.430Z
+      updated_at: 2026-03-28T15:22:41.968Z
     workspace_id: dispatch-workspace-01KMSV5ERVHAAC92XGR8TYP19A
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 11fcbee97e6b8f5fff51f0268670dd169c0e0f4e
-        last_seen_at: 2026-03-28T15:09:21.450Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/replace-synchronous-process-spawning-in-dispatch-engine-01kmsv5e-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/replace-synchronous-process-spawning-in-dispatch-engine/01kmsv5e
