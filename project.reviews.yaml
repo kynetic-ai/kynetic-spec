@@ -73888,9 +73888,16 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-03-28T20:49:07.385Z
+      - _ulid: 01KMV3C7PBQ1MRJ9M0Q1QW06NM
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-03-28T20:50:09.739Z
     examined_commit: 30f21b4105ccb90b13d45dbf703f748baf7d72ce
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: open
     related_refs: []
     subject:
       type: task
@@ -73900,5 +73907,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-28T20:49:07.385Z
-    updated_at: null
+    updated_at: 2026-03-28T20:50:09.071Z
     notes: []
