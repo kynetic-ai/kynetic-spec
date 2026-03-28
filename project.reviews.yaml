@@ -73385,7 +73385,18 @@ reviews:
     slugs: []
     title: Review replace synchronous process spawning in dispatch engine (cycle 2)
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 7057 passed, 5 skipped, 0 failed in 1962 suites on 2026-03-28. Environment-prep build ran
+          first because dist/cli/index.js was missing.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-28T15:44:47.017Z
+        completed_at: 2026-03-28T15:44:47.017Z
     events:
       - _ulid: 01KMTHMFF4TSC0VVJHYMATKB33
         actor: Test User
@@ -73400,6 +73411,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-28T15:40:19.832Z
+      - _ulid: 01KMTHX2VW657DBXHGJZ3BJDWJ
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-28T15:44:47.485Z
     examined_commit: 7d42d01a3659b6f84c5efdf874a62610eb7ac38f
     external_links: []
     lifecycle_state: open
@@ -73412,5 +73430,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-28T15:40:05.477Z
-    updated_at: 2026-03-28T15:40:19.317Z
+    updated_at: 2026-03-28T15:44:47.017Z
     notes: []
