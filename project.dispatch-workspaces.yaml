@@ -25885,7 +25885,7 @@ workspaces:
         head: f8c4c2ab4017040dedf5b60dcda210f4e9f3b3cc
         last_seen_at: 2026-03-28T06:47:13.508Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-ws-watcher-registration-01kmsfmg
-  - active_role: null
+  - active_role: worker
     base_branch_point: 39e80b193a2247ab9a52253c6cc9fc060da528fd
     bootstrap:
       status: succeeded
@@ -25974,7 +25974,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-28T08:27:09.368Z
+      updated_at: 2026-03-28T08:27:20.873Z
     integration:
       status: pending
       detail: null
@@ -25983,16 +25983,16 @@ workspaces:
       target_branch: dev
       target_commit: 39e80b193a2247ab9a52253c6cc9fc060da528fd
       updated_at: 2026-03-28T08:27:09.368Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KMSRSVWTKRQEHCCT4KXY619W"
     task_slug: task-daemon-cache-diagnostic
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-03-28T08:27:09.368Z
+      last_active_at: 2026-03-28T08:27:20.873Z
+      last_reconciled_at: 2026-03-28T08:27:20.873Z
       created_at: 2026-03-28T08:27:09.368Z
-      updated_at: 2026-03-28T08:27:14.701Z
+      updated_at: 2026-03-28T08:27:20.873Z
     workspace_id: dispatch-workspace-01KMSRSVWTKRQEHCCT4KXY619W
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
