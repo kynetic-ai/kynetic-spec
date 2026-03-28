@@ -72767,7 +72767,17 @@ reviews:
     slugs: []
     title: Review @01KMSV50CFZGJEFZE2MV83PGN7
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed from cache on identical repo state: 1958/1958 suites, 7041 passed, 5 skipped."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-28T10:02:02.174Z
+        completed_at: 2026-03-28T10:02:02.174Z
     events:
       - _ulid: 01KMSY028V41BR2J3T96JK11CX
         actor: Test User
@@ -72789,6 +72799,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMSY9DWQXWBH09G4BBMNS1BJ
         timestamp: 2026-03-28T10:02:01.033Z
+      - _ulid: 01KMSY9G4CE36Q0MSJ8T9S9S8C
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-28T10:02:02.765Z
     examined_commit: 80d42a907fa9ef28f30266d9a3a65787e5fc698a
     external_links: []
     lifecycle_state: open
@@ -72822,5 +72839,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-28T09:56:53.659Z
-    updated_at: 2026-03-28T10:02:00.471Z
+    updated_at: 2026-03-28T10:02:02.174Z
     notes: []
