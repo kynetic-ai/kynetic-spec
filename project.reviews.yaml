@@ -73397,6 +73397,25 @@ reviews:
         runner: npm
         created_at: 2026-03-28T15:44:47.017Z
         completed_at: 2026-03-28T15:44:47.017Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/agent-runtime/bootstrap.ts, src/agent-runtime/dispatch.ts,
+          src/agent-runtime/invocation.ts, src/agent-runtime/workspace.ts,
+          tests/agent-dispatch-engine.test.ts, tests/dispatch-branch-push-lifecycle.test.ts,
+          tests/dispatch-target-sync.test.ts, tests/review-fix-cycle-diff.test.ts,
+          tests/mocks/kspec-capture-mock.cjs. Commands run: git diff/stat vs dev and current base,
+          kspec task get, kspec review get/for-task, kspec validate, rg AC annotations, rg sync API
+          usage, npm test. Claims verified: sync child-process usage in dispatch path replaced with
+          async execFile/promises; prior review blockers in bootstrap/workspace sync fs calls
+          removed; changed async signatures have awaited call sites and passing tests. Categories
+          searched: correctness, edge cases, error handling, test quality, integration; no blocking
+          findings."
+        name: review-evidence
+        required: false
+        created_at: 2026-03-28T15:44:51.113Z
+        completed_at: 2026-03-28T15:44:51.113Z
     events:
       - _ulid: 01KMTHMFF4TSC0VVJHYMATKB33
         actor: Test User
@@ -73434,6 +73453,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-28T15:44:49.011Z
+      - _ulid: 01KMTHX6X302AHPFVMYESFTEAB
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-03-28T15:44:51.619Z
     examined_commit: 7d42d01a3659b6f84c5efdf874a62610eb7ac38f
     external_links: []
     lifecycle_state: closed
@@ -73453,5 +73479,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-28T15:44:49.011Z
     created_at: 2026-03-28T15:40:05.477Z
-    updated_at: 2026-03-28T15:44:49.011Z
+    updated_at: 2026-03-28T15:44:51.113Z
     notes: []
