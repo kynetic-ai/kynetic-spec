@@ -14,12 +14,8 @@ description: "What: The dispatch engine uses spawnSync() for kspec CLI commands 
 spec_ref: "@agent-dispatch-engine"
 meta_ref: null
 plan_ref: null
-status: blocked
-blocked_by:
-  - "Dispatch workspace provisioning failed: Dispatch workspace registry write succeeded but could
-    not be durably committed on the shadow branch for @01KMSV5ERVHAAC92XGR8TYP19A.. Suggested
-    action: Resolve the shadow branch commit issue, then rerun dispatch reconciliation or workspace
-    provisioning so the registry state becomes durable."
+status: pending_review
+blocked_by: []
 depends_on: []
 context: []
 priority: 3
@@ -36,7 +32,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
   upstream_ref: refs/heads/dev
-session_id: 01KMSXZ114CDYSRK5628Z8E0N1
+session_id: null
 history:
   - author: "@claude"
     changes:
@@ -95,7 +91,27 @@ history:
         previous: null
     command: task-block
     timestamp: 2026-03-28T10:44:15.638Z
-prior_status: pending_review
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: blocked
+      blocked_by:
+        new: []
+        previous:
+          - "Dispatch workspace provisioning failed: Dispatch workspace registry write succeeded but
+            could not be durably committed on the shadow branch for @01KMSV5ERVHAAC92XGR8TYP19A..
+            Suggested action: Resolve the shadow branch commit issue, then rerun dispatch
+            reconciliation or workspace provisioning so the registry state becomes durable."
+      session_id:
+        new: null
+        previous: 01KMSXZ114CDYSRK5628Z8E0N1
+      prior_status:
+        new: null
+        previous: pending_review
+    command: task-unblock
+    timestamp: 2026-03-28T15:05:50.830Z
+prior_status: null
 created_at: 2026-03-28T09:07:24.571Z
 started_at: 2026-03-28T09:57:16.272Z
 submitted_at: 2026-03-28T10:40:45.316Z
