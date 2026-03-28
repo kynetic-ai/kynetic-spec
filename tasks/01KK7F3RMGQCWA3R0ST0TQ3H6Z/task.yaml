@@ -5,7 +5,7 @@ type: task
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -14,6 +14,14 @@ tags:
   - docs
   - infra
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-28T00:01:59.065Z
+  commit: 91d83f11f0173e0b5fa257dccb2cbc3049907407
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
 session_id: 01KM0XRFH87T3QWPVXDQZCA2XK
 history:
   - author: "@claude"
@@ -29,7 +37,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-03-28T00:01:56.042Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-03-28T00:01:59.065Z
+          commit: 91d83f11f0173e0b5fa257dccb2cbc3049907407
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous: null
+      submitted_at:
+        new: 2026-03-28T00:01:59.069Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-03-28T00:01:59.069Z
 created_at: 2026-03-08T19:34:44.624Z
 started_at: 2026-03-28T00:01:56.042Z
+submitted_at: 2026-03-28T00:01:59.069Z
 todos: []
 automation: manual_only
