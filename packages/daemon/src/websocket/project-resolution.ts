@@ -25,14 +25,14 @@ export interface ResolveWebSocketProjectResult {
  * Resolves the project path for a WebSocket connection request.
  *
  * Extracts the project path from X-Kspec-Dir header or ?project= query param,
- * registers it if new, and fires onProjectRegistered for newly-registered projects
- * so that session sync starts.
+ * registers it if new, awaits watcher startup for newly-registered projects,
+ * and fires onProjectRegistered after the watcher is confirmed running.
  *
- * AC: @multi-directory-daemon ac-21, ac-22, ac-23, ac-34
+ * AC: @multi-directory-daemon ac-21, ac-22, ac-23, ac-34, ac-35, ac-19
  */
-export function resolveWebSocketProject(
+export async function resolveWebSocketProject(
   options: ResolveWebSocketProjectOptions,
-): ResolveWebSocketProjectResult {
+): Promise<ResolveWebSocketProjectResult> {
   const { request, manager, fallbackPath, onProjectRegistered } = options;
 
   // AC: @multi-directory-daemon ac-34 - Browser WebSocket API doesn't support custom headers,
@@ -53,14 +53,20 @@ export function resolveWebSocketProject(
     const result = manager.getOrRegisterProject(projectPath);
     projectContext = result.context;
     wasRegistered = result.wasRegistered;
-    if (result.wasRegistered && onProjectRegistered) {
-      // Start session sync for newly auto-registered project (don't block upgrade)
-      void onProjectRegistered(projectContext.path).catch((syncError) => {
-        console.error(
-          `[daemon] Failed to start session sync for WebSocket-registered ${projectContext.path}:`,
-          syncError,
-        );
-      });
+    if (result.wasRegistered) {
+      // AC: @multi-directory-daemon ac-35 - Watcher must be started before cached data is served
+      // AC: @multi-directory-daemon ac-19 - Registration fails if watcher creation fails
+      await manager.startWatcher(projectContext.path);
+
+      // Start session sync only after watcher is confirmed running
+      if (onProjectRegistered) {
+        void onProjectRegistered(projectContext.path).catch((syncError) => {
+          console.error(
+            `[daemon] Failed to start session sync for WebSocket-registered ${projectContext.path}:`,
+            syncError,
+          );
+        });
+      }
     }
   } else {
     // AC: @multi-directory-daemon ac-22, ac-23 - Use default or reject
