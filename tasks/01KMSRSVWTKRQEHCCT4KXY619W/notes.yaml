@@ -154,3 +154,9 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-28T09:11:56.534Z
+  - _ulid: 01KMSVE5P6S83X8N310VCJGVZR
+    content: "Review @01KMSTXY requested changes. Blocker: add the daemon troubleshooting convention for
+      /api/debug/cache-status and regenerate kspec-agents.md, as required by the task note."
+    supersedes: null
+    author: Test User
+    created_at: 2026-03-28T09:12:10.182Z
