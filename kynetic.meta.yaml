@@ -9350,6 +9350,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-28T15:38:44.249Z
+  - _ulid: 01KMTJ0RSE74BH0CWHQ967FPA4
+    type: success
+    content: "The review workflow held up once the merge location issue was handled: creating a fresh
+      review record, reading the exact delta against the integration base, recording an evidence
+      log, and running the full npm test suite before verdict produced a clean approval and merge
+      with good auditability."
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-28T15:46:48.238Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
