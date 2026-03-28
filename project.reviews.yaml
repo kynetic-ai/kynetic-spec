@@ -74669,6 +74669,23 @@ reviews:
         runner: npm
         created_at: 2026-03-28T23:12:29.806Z
         completed_at: 2026-03-28T23:12:29.806Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: >-
+          > @kynetic-ai/spec@0.12.0 test
+
+          > node scripts/test.cjs --fresh --run
+          tests/dispatch-workspace-terminal-reconciliation.test.ts tests/daemon-command-api.test.ts
+          failed: 12 failing assertions in tests/daemon-command-api.test.ts, where mutating daemon
+          command API requests returned 500 instead of expected 200/422. Workspace terminal
+          reconciliation tests passed in the same run.
+        name: targeted npm test
+        required: false
+        runner: npm
+        created_at: 2026-03-28T23:12:37.941Z
+        completed_at: 2026-03-28T23:12:37.941Z
     events:
       - _ulid: 01KMVB0RBK5QM4JWMDMCVNJA7K
         actor: Test User
@@ -74704,6 +74721,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMVBH02BQ1AC333GVARH3QDZ
         timestamp: 2026-03-28T23:12:35.302Z
+      - _ulid: 01KMVBH4QCK75Q43334149SMVK
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: targeted npm test
+        timestamp: 2026-03-28T23:12:39.149Z
     examined_commit: afd332b4c3b16543d6a80c9a905ac644ae07d3bd
     external_links: []
     lifecycle_state: open
@@ -74741,5 +74765,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-28T23:03:42.196Z
-    updated_at: 2026-03-28T23:12:34.379Z
+    updated_at: 2026-03-28T23:12:37.941Z
     notes: []
