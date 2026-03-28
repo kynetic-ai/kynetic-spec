@@ -24,6 +24,7 @@
  * - @daemon-entity-cache ac-session-stale-exclusion
  * - @daemon-entity-cache ac-warming-availability
  * - @daemon-entity-cache ac-progressive-loading
+ * - @daemon-entity-cache ac-stale-during-reload
  */
 
 import { relative } from "path";
@@ -785,6 +786,7 @@ export class ProjectEntityCache {
    *
    * AC: @daemon-entity-cache ac-graceful-degradation — errors mark domain degraded
    * AC: @daemon-entity-cache ac-reload-dedup — in-flight promise dedup
+   * AC: @daemon-entity-cache ac-stale-during-reload — ready domains stay ready during reload
    */
   async loadDomain(domain: CacheDomain): Promise<void> {
     if (this.disposed) return;
@@ -797,7 +799,15 @@ export class ProjectEntityCache {
     }
 
     const store = this.getStore(domain);
-    store.state = "loading";
+
+    // AC: @daemon-entity-cache ac-stale-during-reload — only transition to
+    // "loading" for initial loads. When a domain is already "ready", keep it
+    // ready so API routes continue serving cached data during the reload.
+    // Previously cached data remains accessible until doLoadDomain() swaps
+    // in the new data on completion.
+    if (store.state !== "ready") {
+      store.state = "loading";
+    }
 
     const promise = this.doLoadDomain(domain)
       .then(() => {
@@ -831,37 +841,45 @@ export class ProjectEntityCache {
     switch (domain) {
       case "tasks": {
         // AC: @daemon-entity-cache ac-load-on-register — load task index
+        // AC: @daemon-entity-cache ac-stale-during-reload — build new data locally,
+        // then swap into the store atomically so reads see either all-old or all-new.
         const tdm = resolveTaskDataManager(ctx);
         const summaries = await tdm.listTasks(ctx);
         if (this.disposed) return;
-        this.tasks.index = summaries;
-        this.tasks.details.clear();
         // Eagerly populate detail tier so search (grepItem) can access full
         // entity data (description, notes, todos) that summaries strip.
         // Non-fatal: if full loading fails, the detail tier stays empty and
         // search falls through to disk on miss.
+        const newTaskDetails = new Map<string, LoadedTask>();
         try {
           const fullTasks = await tdm.loadAllTasks(ctx);
           if (this.disposed) return;
           for (const task of fullTasks) {
-            this.tasks.details.set(task._ulid, task);
+            newTaskDetails.set(task._ulid, task);
           }
         } catch {
           // Detail tier remains empty — search will use summaries or fall back to disk
         }
+        // Atomic swap: replace index and details together
+        this.tasks.index = summaries;
+        this.tasks.details = newTaskDetails;
         break;
       }
       case "items": {
         // AC: @daemon-entity-cache ac-load-on-register — load item index + detail tier
+        // AC: @daemon-entity-cache ac-stale-during-reload — build new data locally,
+        // then swap into the store atomically so reads see either all-old or all-new.
         // Populate detail tier alongside index so full entities are available
         // for search (grepItem needs description, notes, AC content).
         const loadedItems = await loadAllItems(ctx);
         if (this.disposed) return;
-        this.items.index = loadedItems.map(toItemSummary);
-        this.items.details.clear();
+        const newItemDetails = new Map<string, LoadedSpecItem>();
         for (const item of loadedItems) {
-          this.items.details.set(item._ulid, item);
+          newItemDetails.set(item._ulid, item);
         }
+        // Atomic swap: replace index and details together
+        this.items.index = loadedItems.map(toItemSummary);
+        this.items.details = newItemDetails;
         break;
       }
       case "meta": {
@@ -950,28 +968,31 @@ export class ProjectEntityCache {
       case "plans": {
         const loadedPlans = await loadPlans(ctx);
         if (this.disposed) return;
+        // AC: @daemon-entity-cache ac-stale-during-reload — atomic swap
         this.plans.index = loadedPlans.map(toPlanIndexSummary);
-        // AC: @daemon-entity-cache ac-detail-on-demand — clear detail cache;
+        // AC: @daemon-entity-cache ac-detail-on-demand — reset detail cache;
         // full plan records are loaded on demand when accessed by ID.
-        this.plans.details.clear();
+        this.plans.details = new Map();
         break;
       }
       case "triage": {
         const triageRecords = await loadTriageRecords(ctx);
         if (this.disposed) return;
+        // AC: @daemon-entity-cache ac-stale-during-reload — atomic swap
         this.triage.index = triageRecords.map(toTriageIndexSummary);
-        // AC: @daemon-entity-cache ac-detail-on-demand — clear detail cache;
+        // AC: @daemon-entity-cache ac-detail-on-demand — reset detail cache;
         // full triage records are loaded on demand when accessed by ID.
-        this.triage.details.clear();
+        this.triage.details = new Map();
         break;
       }
       case "reviews": {
         const reviewRecords = await loadReviewRecords(ctx);
         if (this.disposed) return;
+        // AC: @daemon-entity-cache ac-stale-during-reload — atomic swap
         this.reviews.index = reviewRecords.map(toReviewIndexSummary);
-        // AC: @daemon-entity-cache ac-detail-on-demand — clear detail cache;
+        // AC: @daemon-entity-cache ac-detail-on-demand — reset detail cache;
         // full review records are loaded on demand when accessed by ID.
-        this.reviews.details.clear();
+        this.reviews.details = new Map();
         break;
       }
       case "sessions": {
