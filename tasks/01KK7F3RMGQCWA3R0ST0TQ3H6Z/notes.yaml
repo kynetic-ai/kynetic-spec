@@ -22,3 +22,14 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-27T23:59:44.560Z
+  - _ulid: 01KMRVY4ZRPZK1SNE0B7GRRQDE
+    content: "Completed memory cleanup: deleted 4 feedback files promoted to conventions
+      (evaluate_tests_before_workarounds, evaluate_task_plans_critically, research_before_patching,
+      multidir_fixtures_need_shadow). Removed 7 inline sections from MEMORY.md: Plan Import Known
+      Issues (stale), batch+task add/cancel-reset/ac-set CLI gotchas (fixed/promoted/tracked),
+      vitest assertion + ESM spy gotchas (promoted), Testing Preferences (promoted), Testing CLI
+      Side-Effects (derivable), Daemon Architecture (derivable), kspec batch usage (already in
+      AGENTS.md). MEMORY.md reduced from 168 to 107 lines."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-28T00:01:39.320Z
