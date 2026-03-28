@@ -73957,9 +73957,25 @@ reviews:
           status: pass
           name: batch-exec-engine
         timestamp: 2026-03-28T20:52:00.094Z
+      - _ulid: 01KMV3GSJ1F16CVS6T638GZSJT
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-28T20:52:39.105Z
+      - _ulid: 01KMV3GSJ1QKGBXCW2SYBD9GC5
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-28T20:52:39.105Z
     examined_commit: 30f21b4105ccb90b13d45dbf703f748baf7d72ce
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -73986,7 +74002,14 @@ reviews:
               this can regress silently even though  still passes at the lower buffer layer."
             created_at: 2026-03-28T20:51:09.577Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-28T20:52:39.104Z
     created_at: 2026-03-28T20:49:07.385Z
-    updated_at: 2026-03-28T20:51:59.539Z
+    updated_at: 2026-03-28T20:52:39.105Z
     notes: []

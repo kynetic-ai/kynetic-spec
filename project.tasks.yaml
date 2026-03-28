@@ -22924,7 +22924,7 @@
   slugs: []
   title: Add rollback note to batch atomic failure output
   type: bug
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   priority: 3
@@ -22932,7 +22932,7 @@
     - cli
     - batch
   review_ref: "@01KMV3AASSA2XGZT3RE9XVEQRG"
-  notes_count: 4
+  notes_count: 5
   todos_count: 0
   created_at: 2026-03-28T09:09:46.507Z
   started_at: 2026-03-28T20:35:36.559Z

@@ -11,7 +11,7 @@ description: "What: When kspec batch fails in atomic mode, the output says 'N/M 
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on: []
 context: []
@@ -29,7 +29,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
   upstream_ref: refs/heads/dev
-session_id: 01KMV214GJG61A80NAM09WQ923
+session_id: null
 history:
   - author: "@claude"
     changes:
@@ -199,6 +199,16 @@ history:
         previous: "@01KMV3A71B48QHXDFV7S1MYBD9"
     command: review-link
     timestamp: 2026-03-28T20:49:09.950Z
+  - author: Test User
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KMV214GJG61A80NAM09WQ923
+    command: review-verdict-needs-work
+    timestamp: 2026-03-28T20:52:40.495Z
 prior_status: null
 created_at: 2026-03-28T09:09:46.507Z
 started_at: 2026-03-28T20:35:36.559Z
