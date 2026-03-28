@@ -14,7 +14,7 @@ description: "What: The dispatch engine uses spawnSync() for kspec CLI commands 
 spec_ref: "@agent-dispatch-engine"
 meta_ref: null
 plan_ref: null
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -33,7 +33,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
   upstream_ref: refs/heads/dev
-session_id: null
+session_id: 01KMTGN3TMEWS3BEETA8PPZT3F
 history:
   - author: "@claude"
     changes:
@@ -126,9 +126,22 @@ history:
         previous: pending_review
     command: review-verdict-needs-work
     timestamp: 2026-03-28T15:17:40.735Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KMTGN3TMEWS3BEETA8PPZT3F
+        previous: null
+      started_at:
+        new: 2026-03-28T15:37:06.366Z
+        previous: 2026-03-28T09:57:16.272Z
+    command: task-start
+    timestamp: 2026-03-28T15:37:06.367Z
 prior_status: null
 created_at: 2026-03-28T09:07:24.571Z
-started_at: 2026-03-28T09:57:16.272Z
+started_at: 2026-03-28T15:37:06.366Z
 submitted_at: 2026-03-28T10:40:45.316Z
 todos: []
 automation: eligible
