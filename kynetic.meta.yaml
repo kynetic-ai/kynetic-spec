@@ -9426,6 +9426,27 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-28T23:00:43.047Z
+  - _ulid: 01KMVBSN6EKZFSY067GN5A5GEQ
+    type: friction
+    content: "Reviewer flow friction: `kspec review check` and `kspec review verdict` hung during a
+      detached review snapshot after adding checks/threads, forcing fallback to `kspec task
+      needs-work` to complete the required state transition. The review/task transition path should
+      stay responsive so reviewers can finish a cycle without manual process cleanup."
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-28T23:17:18.159Z
+  - _ulid: 01KMVBSNCVA5M3A8652H1WWCW6
+    type: success
+    content: "Review quality win: diff-first review plus a targeted fresh repro (`npm test -- --fresh
+      --run tests/dispatch-workspace-terminal-reconciliation.test.ts
+      tests/daemon-command-api.test.ts`) caught a daemon-command regression before approval.
+      Capturing and rerunning the smallest failing slice was faster and more reliable than relying
+      on notes or a prior full-suite claim."
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-28T23:17:18.364Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
