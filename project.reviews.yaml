@@ -74101,9 +74101,25 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-03-28T21:29:54.483Z
+      - _ulid: 01KMV5VBB5FHS7F3K1CVJQQD19
+        actor: reviewer@example.com
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-03-28T21:33:22.149Z
+      - _ulid: 01KMV5VBB632DP477FKJVXTT1W
+        actor: reviewer@example.com
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-28T21:33:22.150Z
     examined_commit: deb29e24afec4e6b94b9c1825f82d489f4796e2a
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -74140,7 +74156,14 @@ reviews:
               remain in full-suite baseline).
             created_at: 2026-03-28T21:29:49.570Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: reviewer@example.com
+        role: reviewer
+        created_at: 2026-03-28T21:33:22.149Z
     created_at: 2026-03-28T21:23:54.181Z
-    updated_at: 2026-03-28T21:29:53.814Z
+    updated_at: 2026-03-28T21:33:22.150Z
     notes: []
