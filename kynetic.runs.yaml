@@ -17171,9 +17171,33 @@ runs:
     completed_at: 2026-03-27T22:51:36.284Z
   - _ulid: 01KMSPR0NN7A3K1TWQTH677T4J
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-03-28T07:50:09.845Z
+        completed_at: 2026-03-28T07:50:44.417Z
+        notes: >-
+          ## What Worked Well
+
+
+          1. Systematic investigation: API calls to reproduce (curl with/without headers), comparing
+          list vs detail routes, tracing registration paths. Each step eliminated hypotheses.
+
+          2. Daemon logs were the breakthrough — showed watcher only starting for startup project
+          and WebSocket connecting for autoencoder, making the gap obvious.
+
+          3. Spawning a review agent for the task proposal caught the centralization insight.
+
+          4. Task note with full root cause context enabled dispatch to complete the fix
+          autonomously (2 review cycles, landed without manual intervention).
+
+          5. Adding the AC before implementing made the behavioral contract explicit.
+      - status: completed
+        step_index: 1
+        started_at: 2026-03-28T07:50:44.417Z
+        completed_at: 2026-03-28T07:50:44.417Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-03-28T07:50:09.845Z
