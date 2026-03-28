@@ -25990,12 +25990,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-28T09:17:37.803Z
+      updated_at: 2026-03-28T09:17:44.604Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-28T09:17:37.803Z
+      updated_at: 2026-03-28T09:17:44.604Z
     integration:
       status: pending
       detail: null
@@ -26003,7 +26003,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 39e80b193a2247ab9a52253c6cc9fc060da528fd
-      updated_at: 2026-03-28T09:17:37.803Z
+      updated_at: 2026-03-28T09:17:44.604Z
     lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMSRSVWTKRQEHCCT4KXY619W"
@@ -26011,9 +26011,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-28T08:59:19.468Z
-      last_reconciled_at: 2026-03-28T09:17:37.803Z
+      last_reconciled_at: 2026-03-28T09:17:44.604Z
       created_at: 2026-03-28T08:27:09.368Z
-      updated_at: 2026-03-28T09:17:37.803Z
+      updated_at: 2026-03-28T09:17:44.604Z
     workspace_id: dispatch-workspace-01KMSRSVWTKRQEHCCT4KXY619W
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -26022,5 +26022,5 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-daemon-cache-diagnostic/01kmsrsv
         head: a206213a837867769df3301331c8054b56b93d2a
-        last_seen_at: 2026-03-28T08:58:59.128Z
+        last_seen_at: 2026-03-28T09:17:44.604Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-cache-diagnostic-01kmsrsv
