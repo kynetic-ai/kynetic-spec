@@ -26378,12 +26378,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-28T20:26:26.386Z
+      updated_at: 2026-03-28T20:26:34.606Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-28T20:26:28.981Z
+      updated_at: 2026-03-28T20:26:34.606Z
     integration:
       status: pending
       detail: null
@@ -26391,7 +26391,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: a83f81a891a86a63980effc34ff74d56125f34e9
-      updated_at: 2026-03-28T20:26:26.386Z
+      updated_at: 2026-03-28T20:26:34.606Z
     lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMSV9SCBY5E67N98A4KMBRXD"
@@ -26399,9 +26399,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-28T20:18:54.944Z
-      last_reconciled_at: 2026-03-28T20:26:28.981Z
+      last_reconciled_at: 2026-03-28T20:26:34.606Z
       created_at: 2026-03-28T11:01:28.228Z
-      updated_at: 2026-03-28T20:26:28.981Z
+      updated_at: 2026-03-28T20:26:34.606Z
     workspace_id: dispatch-workspace-01KMSV9SCBY5E67N98A4KMBRXD
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -26410,5 +26410,5 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/add-rollback-note-to-batch-atomic-failure-output/01kmsv9s
         head: f8339068c0dcc4a9b294a20afdd60d5036b3aa55
-        last_seen_at: 2026-03-28T20:18:47.312Z
+        last_seen_at: 2026-03-28T20:26:34.606Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/add-rollback-note-to-batch-atomic-failure-output-01kmsv9s
