@@ -124,17 +124,20 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-28T21:41:15.891Z
+      updated_at: 2026-03-28T21:53:43.933Z
     health:
-      status: stale
+      status: invalid
       issues:
+        - code: missing_canonical_branch
+          message: Canonical branch "dispatch/task/implement-droid-agent-detection/01kkjkm6" is missing.
+          suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
           message: Worker worktree
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-agent-detection-01kkjkm6"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      summary: Workspace registry record is stale and needs reconciliation.
-      updated_at: 2026-03-28T21:41:15.891Z
+      summary: Workspace registry record is invalid because required git state is missing.
+      updated_at: 2026-03-28T21:53:43.933Z
     integration:
       status: merged
       detail: integration:merged
@@ -142,7 +145,7 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: 38084e8cb463cf3128e69d2cac20fc6431452618
-      updated_at: 2026-03-28T21:41:15.891Z
+      updated_at: 2026-03-28T21:53:43.933Z
     lifecycle_state: stale
     resolved_base_branch: main
     task_ref: "@01KKJKM6NQ8M1W9MSAKGXDXW97"
@@ -150,9 +153,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-13T08:04:18.340Z
-      last_reconciled_at: 2026-03-28T21:41:15.891Z
+      last_reconciled_at: 2026-03-28T21:53:43.933Z
       created_at: 2026-03-13T04:01:50.333Z
-      updated_at: 2026-03-28T21:41:15.891Z
+      updated_at: 2026-03-28T21:53:43.933Z
     workspace_id: dispatch-workspace-01KKJKM6NQ8M1W9MSAKGXDXW97
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -297,17 +300,20 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-19T03:56:00.977Z
+      updated_at: 2026-03-28T21:53:45.071Z
     health:
-      status: stale
+      status: invalid
       issues:
+        - code: missing_canonical_branch
+          message: Canonical branch "dispatch/task/implement-droid-acp-adapter/01kkjkm7" is missing.
+          suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
           message: Worker worktree
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-acp-adapter-01kkjkm7"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      summary: Workspace registry record is stale and needs reconciliation.
-      updated_at: 2026-03-19T03:56:00.977Z
+      summary: Workspace registry record is invalid because required git state is missing.
+      updated_at: 2026-03-28T21:53:45.071Z
     integration:
       status: merged
       detail: integration:merged
@@ -315,7 +321,7 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: e728c62710bbc6fe43d7bd1dfd135c092ef732f2
-      updated_at: 2026-03-19T03:56:00.977Z
+      updated_at: 2026-03-28T21:53:45.071Z
     lifecycle_state: stale
     resolved_base_branch: main
     task_ref: "@01KKJKM79JZR25WY03DTZETJN7"
@@ -323,9 +329,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-13T04:44:46.937Z
-      last_reconciled_at: 2026-03-19T03:56:00.977Z
+      last_reconciled_at: 2026-03-28T21:53:45.071Z
       created_at: 2026-03-13T04:33:22.590Z
-      updated_at: 2026-03-19T03:56:00.977Z
+      updated_at: 2026-03-28T21:53:45.071Z
     workspace_id: dispatch-workspace-01KKJKM79JZR25WY03DTZETJN7
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
