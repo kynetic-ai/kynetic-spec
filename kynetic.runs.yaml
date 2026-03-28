@@ -17661,9 +17661,21 @@ runs:
     completed_at: 2026-03-28T15:22:28.918Z
   - _ulid: 01KMV2KDYY5KVYJMC4CYHJMMH2
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-03-28T20:36:36.959Z
+        completed_at: 2026-03-28T20:37:36.037Z
+        notes: "Session: Fix cycle for @add-rollback-note-to-batch-atomic-failure-output. Addressed 2
+          blocker threads (duplicates) about rolled_back being incorrectly set on flush failures.
+          Single-line condition fix: added && !flushFailed. All tests pass. Clean fix cycle — read
+          review, understood issue, applied minimal fix, verified, resubmitted."
+      - status: completed
+        step_index: 1
+        started_at: 2026-03-28T20:37:36.037Z
+        completed_at: 2026-03-28T20:37:36.037Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-28T20:36:36.959Z
