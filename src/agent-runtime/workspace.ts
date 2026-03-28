@@ -1,5 +1,4 @@
 import * as fs from "node:fs/promises";
-import * as fsSync from "node:fs";
 import * as path from "node:path";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
@@ -436,12 +435,12 @@ async function loadDispatchCheckoutCoherenceSnapshot(
   branch: string,
 ): Promise<DispatchCheckoutCoherenceSnapshot | null> {
   const coherencePath = await resolveDispatchCheckoutCoherencePath(projectDir);
-  if (!coherencePath || !fsSync.existsSync(coherencePath)) {
+  if (!coherencePath) {
     return null;
   }
 
   try {
-    const raw = fsSync.readFileSync(coherencePath, "utf-8");
+    const raw = await fs.readFile(coherencePath, "utf-8");
     const parsed = JSON.parse(raw) as Partial<DispatchCheckoutCoherenceState>;
     if (parsed.version !== 1 || !parsed.branches || typeof parsed.branches !== "object") {
       return null;
@@ -467,23 +466,21 @@ async function persistDispatchCheckoutCoherenceSnapshot(
   }
 
   let state: DispatchCheckoutCoherenceState = { version: 1, branches: {} };
-  if (fsSync.existsSync(coherencePath)) {
-    try {
-      const raw = fsSync.readFileSync(coherencePath, "utf-8");
-      const parsed = JSON.parse(raw) as Partial<DispatchCheckoutCoherenceState>;
-      if (parsed.version === 1 && parsed.branches && typeof parsed.branches === "object") {
-        state = {
-          version: 1,
-          branches: parsed.branches as Record<string, DispatchCheckoutCoherenceSnapshot>,
-        };
-      }
-    } catch {
-      state = { version: 1, branches: {} };
+  try {
+    const raw = await fs.readFile(coherencePath, "utf-8");
+    const parsed = JSON.parse(raw) as Partial<DispatchCheckoutCoherenceState>;
+    if (parsed.version === 1 && parsed.branches && typeof parsed.branches === "object") {
+      state = {
+        version: 1,
+        branches: parsed.branches as Record<string, DispatchCheckoutCoherenceSnapshot>,
+      };
     }
+  } catch {
+    state = { version: 1, branches: {} };
   }
 
   state.branches[branch] = snapshot;
-  fsSync.writeFileSync(coherencePath, `${JSON.stringify(state, null, 2)}\n`, "utf-8");
+  await fs.writeFile(coherencePath, `${JSON.stringify(state, null, 2)}\n`, "utf-8");
 }
 
 async function resolveBranchTree(projectDir: string, ref: string): Promise<string | null> {

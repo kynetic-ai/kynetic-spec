@@ -1,6 +1,6 @@
 import { execFile } from "node:child_process";
 import { createHash } from "node:crypto";
-import * as fs from "node:fs";
+import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { promisify } from "node:util";
 
@@ -135,23 +135,29 @@ function collectDirectDependencies(packageJson: Record<string, unknown>): string
   return [...names].toSorted();
 }
 
-function checkWorkspaceDependencies(workspaceDir: string): DependencyHealth {
+async function checkWorkspaceDependencies(workspaceDir: string): Promise<DependencyHealth> {
   const packageJsonPath = path.join(workspaceDir, "package.json");
   const lockfilePath = path.join(workspaceDir, "package-lock.json");
   const nodeModulesDir = path.join(workspaceDir, "node_modules");
 
-  if (!fs.existsSync(packageJsonPath) || !fs.existsSync(lockfilePath)) {
+  const [packageJsonExists, lockfileExists] = await Promise.all([
+    fs.access(packageJsonPath).then(() => true, () => false),
+    fs.access(lockfilePath).then(() => true, () => false),
+  ]);
+
+  if (!packageJsonExists || !lockfileExists) {
     return { ok: true, reason: null, missingPackages: [] };
   }
 
   let packageJson: Record<string, unknown>;
   try {
-    packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8")) as Record<string, unknown>;
+    packageJson = JSON.parse(await fs.readFile(packageJsonPath, "utf-8")) as Record<string, unknown>;
   } catch {
     return { ok: true, reason: null, missingPackages: [] };
   }
 
-  if (!fs.existsSync(nodeModulesDir)) {
+  const nodeModulesExists = await fs.access(nodeModulesDir).then(() => true, () => false);
+  if (!nodeModulesExists) {
     return {
       ok: false,
       reason: "node_modules/ not found",
@@ -159,9 +165,13 @@ function checkWorkspaceDependencies(workspaceDir: string): DependencyHealth {
     };
   }
 
-  const missingPackages = collectDirectDependencies(packageJson).filter(
-    (packageName) => !fs.existsSync(path.join(nodeModulesDir, ...packageName.split("/"))),
+  const dependencyNames = collectDirectDependencies(packageJson);
+  const existResults = await Promise.all(
+    dependencyNames.map((packageName) =>
+      fs.access(path.join(nodeModulesDir, ...packageName.split("/"))).then(() => true, () => false),
+    ),
   );
+  const missingPackages = dependencyNames.filter((_, i) => !existResults[i]);
 
   if (missingPackages.length > 0) {
     return {
@@ -174,8 +184,8 @@ function checkWorkspaceDependencies(workspaceDir: string): DependencyHealth {
   return { ok: true, reason: null, missingPackages: [] };
 }
 
-function implicitDependencyStep(workspaceDir: string): DispatchBootstrapStep | null {
-  const dependencyHealth = checkWorkspaceDependencies(workspaceDir);
+async function implicitDependencyStep(workspaceDir: string): Promise<DispatchBootstrapStep | null> {
+  const dependencyHealth = await checkWorkspaceDependencies(workspaceDir);
   if (dependencyHealth.ok) {
     return null;
   }
@@ -285,7 +295,7 @@ export async function ensureWorkspaceBootstrap(
   const { projectDir, workspaceDir, metadataPath, role, agent, env } = options;
   const { config } = await loadProjectConfig(projectDir, projectDir);
   const steps = resolveBootstrapSteps(agent, config.dispatch.bootstrap.steps);
-  const dependencyStep = implicitDependencyStep(workspaceDir);
+  const dependencyStep = await implicitDependencyStep(workspaceDir);
   const effectiveSteps = dependencyStep ? [dependencyStep, ...steps] : steps;
   const roleSteps = effectiveSteps.filter((step) => stepAppliesToRole(step, role));
   const configHash = hashConfig(steps);
