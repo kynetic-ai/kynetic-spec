@@ -72441,6 +72441,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-28T09:11:53.382Z
+      - _ulid: 01KMSWA4A3BPY3HCJN0J4AHY2D
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMSVADTF6NCKWP5AVXMX0TYQ
+        timestamp: 2026-03-28T09:27:26.275Z
     examined_commit: a206213a837867769df3301331c8054b56b93d2a
     external_links: []
     lifecycle_state: closed
@@ -72469,6 +72475,12 @@ reviews:
               pointer to /api/debug/cache-status for daemon troubleshooting. Please add the
               convention/meta entry and commit the regenerated instructions alongside the endpoint.
             created_at: 2026-03-28T09:10:07.440Z
+          - _ulid: 01KMSWA368H29E703GJDF5QB1Z
+            author: "@claude"
+            body: "Fixed: Added development convention rule documenting GET /api/debug/cache-status for daemon
+              cache troubleshooting. Regenerated kspec-agents.md — the new rule appears at line 102
+              in the development conventions section."
+            created_at: 2026-03-28T09:27:25.128Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -72479,7 +72491,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-28T09:11:53.381Z
     created_at: 2026-03-28T09:03:18.350Z
-    updated_at: 2026-03-28T09:11:53.382Z
+    updated_at: 2026-03-28T09:27:25.128Z
     notes: []
   - _ulid: 01KMSTYQYH4G91MTC9D508PWX5
     slugs: []
