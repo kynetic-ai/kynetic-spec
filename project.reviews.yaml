@@ -72418,6 +72418,13 @@ reviews:
           status: pass
           name: focused daemon tests
         timestamp: 2026-03-28T09:10:05.018Z
+      - _ulid: 01KMSVAEYT80687VR7BMNQ293Y
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMSVADTF6NCKWP5AVXMX0TYQ
+        timestamp: 2026-03-28T09:10:08.602Z
     examined_commit: a206213a837867769df3301331c8054b56b93d2a
     external_links: []
     lifecycle_state: open
@@ -72427,10 +72434,29 @@ reviews:
       content_hash: ""
       ref: "@01KMSRSVWTKRQEHCCT4KXY619W"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMSVADTF6NCKWP5AVXMX0TYQ
+        anchor:
+          type: code
+          commit: a206213a837867769df3301331c8054b56b93d2a
+          line_end: 101
+          line_start: 86
+          path: kspec-agents.md
+          side: head
+        entries:
+          - _ulid: 01KMSVADTGJ6K4ZYX92VRKBD18
+            author: Test User
+            body: The task note explicitly required adding a development convention for the new diagnostic
+              endpoint and regenerating kspec-agents.md once the endpoint existed. This snapshot
+              adds the route in packages/daemon/src/routes/debug.ts but never updates the
+              conventions section in kspec-agents.md, so future agents still have no documented
+              pointer to /api/debug/cache-status for daemon troubleshooting. Please add the
+              convention/meta entry and commit the regenerated instructions alongside the endpoint.
+            created_at: 2026-03-28T09:10:07.440Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-28T09:03:18.350Z
-    updated_at: 2026-03-28T09:10:03.855Z
+    updated_at: 2026-03-28T09:10:07.440Z
     notes: []
   - _ulid: 01KMSTYQYH4G91MTC9D508PWX5
     slugs: []
