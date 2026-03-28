@@ -73292,6 +73292,12 @@ reviews:
         payload:
           thread_ulid: 01KMTG9KPYT8QCV7GVWG67ZKNK
         timestamp: 2026-03-28T15:35:23.265Z
+      - _ulid: 01KMTHC4GZ3F53NQASPQ9BDK6B
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMTG9HQS6C55GXHCBSHR3DD5
+        timestamp: 2026-03-28T15:35:32.127Z
     examined_commit: 11fcbee97e6b8f5fff51f0268670dd169c0e0f4e
     external_links: []
     lifecycle_state: closed
@@ -73329,6 +73335,8 @@ reviews:
               around fs.readFile (ENOENT triggers the catch, returning null)."
             created_at: 2026-03-28T15:35:18.560Z
         kind: blocker
+        resolved_at: 2026-03-28T15:35:31.598Z
+        resolved_by: "@claude"
       - _ulid: 01KMTG9KPYT8QCV7GVWG67ZKNK
         anchor:
           type: code
@@ -73363,5 +73371,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-28T15:17:39.053Z
     created_at: 2026-03-28T15:11:30.793Z
-    updated_at: 2026-03-28T15:35:22.733Z
+    updated_at: 2026-03-28T15:35:31.598Z
     notes: []
