@@ -71,3 +71,12 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-28T06:17:42.271Z
+  - _ulid: 01KMSHGEF444G06ZBY9TBVP8QZ
+    content: "Fix complete. Added manager.startWatcher() call to resolveWebSocketProject in
+      project-resolution.ts, matching the pattern used by HTTP middleware and POST /api/projects.
+      Three new tests verify: (1) startWatcher called for new WS projects, (2) not called for
+      existing projects, (3) WS resolution succeeds even if startWatcher throws. Full test suite
+      passes: 7034/7034 (5 skipped CI-only)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-28T06:18:38.948Z
