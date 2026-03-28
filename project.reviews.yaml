@@ -74408,6 +74408,13 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-03-28T22:21:24.386Z
+      - _ulid: 01KMV8KRSX486X7V0Q2W6YWWP8
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMV8KR71RYEX0SM8ZS8P7X16
+        timestamp: 2026-03-28T22:21:39.517Z
     examined_commit: 587212b1f8535471898c8f6dc6d51c2d95524f39
     external_links: []
     lifecycle_state: open
@@ -74439,7 +74446,21 @@ reviews:
               needs investigation before approval.
             created_at: 2026-03-28T22:21:20.086Z
         kind: blocker
+      - _ulid: 01KMV8KR71RYEX0SM8ZS8P7X16
+        entries:
+          - _ulid: 01KMV8KR71EG69QRFNR5YMS13A
+            author: Test User
+            body: "Evidence log: Files read: src/agent-runtime/workspace.ts, src/agent-runtime/dispatch.ts,
+              tests/dispatch-workspace-terminal-reconciliation.test.ts,
+              tests/daemon-command-api.test.ts. Commands run: kspec task get, kspec review
+              for-task/get, git diff --stat/diff, kspec validate, grep AC annotations, npm test, npm
+              test -- --run tests/daemon-command-api.test.ts. Claims verified: ac-12/ac-13 are
+              behaviorally covered by new tests and the dispatch reconciliation path passes
+              taskStatus into registry reconciliation; full-suite test gate still fails. Categories
+              searched: correctness, AC coverage, test quality, integration, regression behavior."
+            created_at: 2026-03-28T22:21:38.913Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-28T22:16:25.341Z
-    updated_at: 2026-03-28T22:21:23.798Z
+    updated_at: 2026-03-28T22:21:38.913Z
     notes: []
