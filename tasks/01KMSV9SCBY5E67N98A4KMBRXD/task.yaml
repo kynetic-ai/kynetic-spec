@@ -11,7 +11,7 @@ description: "What: When kspec batch fails in atomic mode, the output says 'N/M 
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -20,6 +20,7 @@ tags:
   - cli
   - batch
 vcs_refs: []
+session_id: 01KMT1QEN302E8Q6J9MZV89NZ3
 history:
   - author: "@claude"
     changes:
@@ -28,6 +29,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-03-28T09:10:18.088Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KMT1QEN302E8Q6J9MZV89NZ3
+        previous: null
+      started_at:
+        new: 2026-03-28T11:03:49.889Z
+        previous: null
+    command: task-start
+    timestamp: 2026-03-28T11:03:49.889Z
 created_at: 2026-03-28T09:09:46.507Z
+started_at: 2026-03-28T11:03:49.889Z
 todos: []
 automation: eligible
