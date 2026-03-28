@@ -25756,7 +25756,7 @@ workspaces:
         head: 51c2d344148c824d6cba110a27bdb3628191d2e4
         last_seen_at: 2026-03-27T23:50:15.681Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/add-update-alias-for-item-ac-set-01kmrtyx
-  - active_role: worker
+  - active_role: null
     base_branch_point: b89e7561869cc09edff3591d3db7461dcc17ccc4
     bootstrap:
       status: succeeded
@@ -25838,12 +25838,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-28T06:17:39.773Z
+      updated_at: 2026-03-28T06:18:44.685Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-28T06:17:39.773Z
+      updated_at: 2026-03-28T06:18:44.685Z
     integration:
       status: pending
       detail: null
@@ -25851,17 +25851,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: b89e7561869cc09edff3591d3db7461dcc17ccc4
-      updated_at: 2026-03-28T06:17:39.773Z
-    lifecycle_state: active
+      updated_at: 2026-03-28T06:18:44.685Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMSFMG5AJNYD4PWW8MNPVH5C"
     task_slug: task-fix-ws-watcher-registration
     timestamps:
       closed_at: null
       last_active_at: 2026-03-28T06:05:38.360Z
-      last_reconciled_at: 2026-03-28T06:17:39.773Z
+      last_reconciled_at: 2026-03-28T06:18:44.685Z
       created_at: 2026-03-28T06:02:11.777Z
-      updated_at: 2026-03-28T06:17:39.773Z
+      updated_at: 2026-03-28T06:18:44.685Z
     workspace_id: dispatch-workspace-01KMSFMG5AJNYD4PWW8MNPVH5C
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
