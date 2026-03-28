@@ -22904,7 +22904,7 @@
   title: Replace synchronous process spawning in dispatch engine
   type: task
   spec_ref: "@agent-dispatch-engine"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 3
@@ -22917,7 +22917,7 @@
   todos_count: 0
   created_at: 2026-03-28T09:07:24.571Z
   started_at: 2026-03-28T15:37:06.366Z
-  submitted_at: 2026-03-28T10:40:45.316Z
+  submitted_at: 2026-03-28T15:37:09.427Z
   automation: eligible
 - _ulid: 01KMSV9SCBY5E67N98A4KMBRXD
   slugs: []

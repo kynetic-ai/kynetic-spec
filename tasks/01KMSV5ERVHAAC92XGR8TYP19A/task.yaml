@@ -14,7 +14,7 @@ description: "What: The dispatch engine uses spawnSync() for kspec CLI commands 
 spec_ref: "@agent-dispatch-engine"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -28,8 +28,8 @@ review_ref: "@01KMTG04Z9W9KXMWYJNGDZGAF8"
 submission_linkage:
   review_url: null
   branch: dev
-  captured_at: 2026-03-28T10:40:45.311Z
-  commit: a83f81a891a86a63980effc34ff74d56125f34e9
+  captured_at: 2026-03-28T15:37:09.423Z
+  commit: 5bc00f15425072557bb74beb73e3e92c051e341f
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
   upstream_ref: refs/heads/dev
@@ -139,9 +139,36 @@ history:
         previous: 2026-03-28T09:57:16.272Z
     command: task-start
     timestamp: 2026-03-28T15:37:06.367Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-03-28T15:37:09.423Z
+          commit: 5bc00f15425072557bb74beb73e3e92c051e341f
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous:
+          review_url: null
+          branch: dev
+          captured_at: 2026-03-28T10:40:45.311Z
+          commit: a83f81a891a86a63980effc34ff74d56125f34e9
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+      submitted_at:
+        new: 2026-03-28T15:37:09.427Z
+        previous: 2026-03-28T10:40:45.316Z
+    command: task-submit
+    timestamp: 2026-03-28T15:37:09.427Z
 prior_status: null
 created_at: 2026-03-28T09:07:24.571Z
 started_at: 2026-03-28T15:37:06.366Z
-submitted_at: 2026-03-28T10:40:45.316Z
+submitted_at: 2026-03-28T15:37:09.427Z
 todos: []
 automation: eligible
