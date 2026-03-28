@@ -72728,9 +72728,16 @@ reviews:
           from: draft
           to: closed
         timestamp: 2026-03-28T09:52:07.465Z
+      - _ulid: 01KMSXQDEHWAZPPM2KV9SHAPYN
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          from: closed
+          to: open
+        timestamp: 2026-03-28T09:52:10.193Z
     examined_commit: 31eb7d62e617273cdba064b537f1247742ab867f
     external_links: []
-    lifecycle_state: closed
+    lifecycle_state: open
     related_refs: []
     subject:
       type: task
@@ -72747,5 +72754,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-28T09:52:07.465Z
     created_at: 2026-03-28T09:44:50.538Z
-    updated_at: 2026-03-28T09:52:07.465Z
+    updated_at: 2026-03-28T09:52:09.629Z
     notes: []
