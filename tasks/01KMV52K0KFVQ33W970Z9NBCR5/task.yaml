@@ -24,7 +24,7 @@ description: "What: Workspace reconciliation enters an infinite restore-delete c
 spec_ref: "@dispatch-workspace-registry"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -38,7 +38,7 @@ review_ref: "@01KMV6QG2PEAE6BXG85K98G46T"
 submission_linkage:
   review_url: null
   branch: dev
-  captured_at: 2026-03-28T21:42:15.446Z
+  captured_at: 2026-03-28T22:12:37.975Z
   commit: 737fd3d275ed9010448597c1a3565a2761b7f9af
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
@@ -108,8 +108,35 @@ history:
         previous: 2026-03-28T21:23:57.943Z
     command: task-start
     timestamp: 2026-03-28T22:12:34.876Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-03-28T22:12:37.975Z
+          commit: 737fd3d275ed9010448597c1a3565a2761b7f9af
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous:
+          review_url: null
+          branch: dev
+          captured_at: 2026-03-28T21:42:15.446Z
+          commit: 737fd3d275ed9010448597c1a3565a2761b7f9af
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+      submitted_at:
+        new: 2026-03-28T22:12:37.980Z
+        previous: 2026-03-28T21:42:15.449Z
+    command: task-submit
+    timestamp: 2026-03-28T22:12:37.980Z
 created_at: 2026-03-28T21:19:50.803Z
 started_at: 2026-03-28T22:12:34.876Z
-submitted_at: 2026-03-28T21:42:15.449Z
+submitted_at: 2026-03-28T22:12:37.980Z
 todos: []
 automation: eligible
