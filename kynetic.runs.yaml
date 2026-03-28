@@ -17170,7 +17170,7 @@ runs:
     started_at: 2026-03-27T22:50:37.054Z
     completed_at: 2026-03-27T22:51:36.284Z
   - _ulid: 01KMSPR0NN7A3K1TWQTH677T4J
-    status: active
+    status: completed
     current_step: 5
     initiated_by: "@claude"
     step_results:
@@ -17288,7 +17288,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-03-28T08:28:54.567Z
-        completed_at: 2026-03-28T08:28:54.567Z
+        completed_at: 2026-03-28T08:29:16.115Z
+        notes: Captured 2 success observations (review agents for proposals, detailed task notes for
+          dispatch) and 1 friction observation (no cache diagnostic endpoint). All actionable items
+          already created in steps 4-5.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-03-28T07:50:09.845Z
+    completed_at: 2026-03-28T08:29:16.115Z
