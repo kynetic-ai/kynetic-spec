@@ -1,1 +1,53 @@
-notes: []
+notes:
+  - _ulid: 01KMSFNA5B1JFYWKCXDVGP6JZT
+    content: >-
+      ## Root Cause
+
+
+      Four project registration paths exist in the daemon. Three start file watchers, one doesn't:
+
+
+      1. HTTP middleware (project-context.ts:113) — starts watcher ✓
+
+      2. POST /api/projects (projects.ts:87) — starts watcher ✓
+
+      3. Server startup (server.ts:559) — starts watcher ✓
+
+      4. WebSocket handler (project-resolution.ts:56) — does NOT start watcher ✗
+
+
+      The web UI connects via WebSocket first, registering the project with wasRegistered=true. This
+      "uses up" the registration event without starting a watcher. All subsequent HTTP requests find
+      wasRegistered=false and skip setup. The entity cache loads once during WebSocket registration
+      and never invalidates.
+
+
+      ## Impact
+
+
+      List endpoints (/api/tasks, /api/items, /api/sessions) serve stale cached data. Detail
+      endpoints work because they fall back to disk reads.
+
+
+      ## Recommended Fix
+
+
+      Centralize startWatcher() into the onProjectRegistered callback in server.ts so every
+      registration path gets a watcher automatically. startWatcher is already idempotent
+      (this.watchers.has() guard), so the startup project's explicit startWatcher call becomes a
+      harmless no-op.
+
+
+      Optionally remove the now-redundant explicit startWatcher calls from HTTP middleware and POST
+      /api/projects, or leave them as defense-in-depth no-ops.
+
+
+      ## Tests Needed
+
+
+      - Unit test: WebSocket registration triggers startWatcher
+
+      - Integration test: after WebSocket registration, file changes invalidate the entity cache
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-28T05:46:21.227Z
