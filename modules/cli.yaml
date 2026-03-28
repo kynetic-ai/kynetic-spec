@@ -9224,7 +9224,8 @@ features:
           - given: Multiple dispatch-scoped kspec CLI mutations are queued behind a held lock
             id: ac-4
             then: Waiting mutations block until the lock is released
-            when: The lock holder process is alive and executing
+            when: The lock holder process is alive, executing, and has not exceeded the maximum hold duration
+              ceiling
           - given: A dispatch mutation is waiting for the shadow mutation lock
             id: ac-5
             then: Stale lock detection identifies the orphaned lock, cleans it up, and the waiting mutation
@@ -9242,7 +9243,8 @@ features:
             id: ac-8
             then: The lock is eligible for reclamation by other processes regardless of whether the holder
               process is alive
-            when: The hold duration exceeds a configurable maximum
+            when: The hold duration exceeds a configurable maximum (KSPEC_SHADOW_MUTATION_LOCK_MAX_HOLD_MS
+              environment variable, defaulting to 30000ms)
           - given: Periodic reconciliation evaluates multiple workspace records requiring shadow mutations
             id: ac-9
             then: Reconciliation yields the lock between individual record evaluations so waiting mutations can
@@ -9254,6 +9256,12 @@ features:
             then: The lock is treated as orphaned and reclaimed, with a diagnostic message identifying the
               previous holder
             when: The acquiring process evaluates lock staleness
+          - given: A process reclaims the shadow mutation lock from a holder that exceeded the maximum hold
+              duration
+            id: ac-11
+            then: The new holder checks the shadow worktree for uncommitted dirty state from the previous holder
+              and rolls back uncommitted changes before proceeding with its own mutation
+            when: The new holder begins its protected operation
         tags: []
         created: 2026-03-12T02:33:44.530Z
         notes: []
