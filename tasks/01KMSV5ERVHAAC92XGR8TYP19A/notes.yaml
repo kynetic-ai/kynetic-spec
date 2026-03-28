@@ -1,1 +1,55 @@
-notes: []
+notes:
+  - _ulid: 01KMSY8KJT4DQ2TX7NBP9XNQTW
+    content: >-
+      Approach: Convert all spawnSync calls in the dispatch execution path to async equivalents
+      using promisify(execFile). 
+
+
+      Files with spawnSync to convert:
+
+      1. dispatch.ts: _runKspecCommand (→ async), _addTaskNote (→ async), _blockTask (→ async),
+      error recovery inline spawnSync (→ fire-and-forget async), _listGitRemotes (→ async),
+      computeDiffStat (→ async)
+
+      2. bootstrap.ts: runShell (→ async), trackedStatus (→ async)  
+
+      3. workspace.ts: runGit (→ async), commandAvailable (→ async), pathExists (→ async with
+      fs.access)
+
+      4. invocation.ts: runKspecCli (→ async)
+
+
+      Pattern: Use promisify(execFile) which is already established in parser/shadow.ts.
+
+
+      Key considerations:
+
+      - Error recovery paths (lines 2342-2420 in dispatch.ts) are best-effort and should use
+      fire-and-forget async (no await needed per task description)
+
+      - _addTaskNote and _blockTask are called from both sync and async contexts — need to make
+      callers async too
+
+      - workspace.ts runGit is used by ~50+ call sites — all internal functions that use it will
+      need to become async, cascading through the file
+
+      - pathExists can be replaced with fs.access (no child process needed)
+
+      - commandAvailable can use promisify(execFile)
+
+
+      Edge cases: 
+
+      - Error handling must be preserved (try/catch around async calls)
+
+      - Fire-and-forget calls must not cause unhandled promise rejections
+
+      - Return type changes from sync to Promise need to propagate to all callers
+
+
+      Test plan: AC-28 coverage — verify that dispatch engine internal bookkeeping uses async APIs.
+      Behavioral test: spawn a dispatch engine, trigger operations, verify event loop remains
+      responsive during those operations.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-28T10:01:33.530Z
