@@ -38,3 +38,13 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-28T20:24:29.777Z
+  - _ulid: 01KMV2G4MWVMZK98PZ9FBFVVEQ
+    content: "Fix cycle 1: Addressed both blocker threads (duplicate findings). The issue was that
+      rolled_back was unconditionally set to true for all atomic failures, including flush failures
+      where phase 2 renames may have partially committed files. Fix: changed condition from
+      `!allSucceeded` to `!allSucceeded && !flushFailed` so rolled_back is only true when the buffer
+      was never flushed (command execution failure). Also updated the schema comment to clarify
+      semantics. All 7048 tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-28T20:34:49.116Z
