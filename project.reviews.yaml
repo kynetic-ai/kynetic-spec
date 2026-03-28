@@ -74422,9 +74422,25 @@ reviews:
           kind: blocker
           thread_ulid: 01KMV8KT19VW19FHQFGQWRDR60
         timestamp: 2026-03-28T22:21:41.369Z
+      - _ulid: 01KMV8N0FHY6E130ETVHS99RZV
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-28T22:22:20.145Z
+      - _ulid: 01KMV8N0FHWW3B51TREY2FRBD6
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-28T22:22:20.145Z
     examined_commit: 587212b1f8535471898c8f6dc6d51c2d95524f39
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -74485,7 +74501,14 @@ reviews:
               order-dependent failure that still needs investigation before approval.
             created_at: 2026-03-28T22:21:40.777Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-28T22:22:20.145Z
     created_at: 2026-03-28T22:16:25.341Z
-    updated_at: 2026-03-28T22:21:40.777Z
+    updated_at: 2026-03-28T22:22:20.145Z
     notes: []
