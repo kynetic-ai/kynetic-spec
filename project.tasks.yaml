@@ -22938,3 +22938,20 @@
   started_at: 2026-03-28T20:35:36.559Z
   submitted_at: 2026-03-28T20:35:39.938Z
   automation: eligible
+- _ulid: 01KMV52K0KFVQ33W970Z9NBCR5
+  slugs: []
+  title: Fix workspace reconciliation cycle for completed task records
+  type: task
+  spec_ref: "@dispatch-workspace-registry"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 3
+  tags:
+    - bug
+    - daemon
+    - dispatch
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-28T21:19:50.803Z
+  automation: eligible
