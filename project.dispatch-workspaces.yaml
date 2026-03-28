@@ -26009,7 +26009,7 @@ workspaces:
         head: 31eb7d62e617273cdba064b537f1247742ab867f
         last_seen_at: 2026-03-28T09:42:16.043Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-cache-diagnostic-01kmsrsv
-  - active_role: worker
+  - active_role: null
     base_branch_point: 39e80b193a2247ab9a52253c6cc9fc060da528fd
     bootstrap:
       status: succeeded
@@ -26093,12 +26093,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-28T09:52:48.250Z
+      updated_at: 2026-03-28T09:55:51.759Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-28T09:52:48.250Z
+      updated_at: 2026-03-28T09:55:51.759Z
     integration:
       status: pending
       detail: null
@@ -26106,17 +26106,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 39e80b193a2247ab9a52253c6cc9fc060da528fd
-      updated_at: 2026-03-28T09:52:48.250Z
-    lifecycle_state: active
+      updated_at: 2026-03-28T09:55:51.759Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMSV50CFZGJEFZE2MV83PGN7"
     task_slug: fix-cache-domain-state-regression-during-reload
     timestamps:
       closed_at: null
       last_active_at: 2026-03-28T09:42:06.325Z
-      last_reconciled_at: 2026-03-28T09:52:48.250Z
+      last_reconciled_at: 2026-03-28T09:55:51.759Z
       created_at: 2026-03-28T09:40:40.810Z
-      updated_at: 2026-03-28T09:52:48.250Z
+      updated_at: 2026-03-28T09:55:51.759Z
     workspace_id: dispatch-workspace-01KMSV50CFZGJEFZE2MV83PGN7
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
