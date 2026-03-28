@@ -6,7 +6,7 @@ type: task
 spec_ref: "@multi-directory-daemon"
 meta_ref: null
 plan_ref: null
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -25,7 +25,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
   upstream_ref: refs/heads/dev
-session_id: null
+session_id: 01KMSJ8FKMS604E7P8KTX9K580
 history:
   - author: "@claude"
     changes:
@@ -84,8 +84,21 @@ history:
         previous: 01KMSGJMVRBBKTP88N1SS0AHQY
     command: task-needs-work
     timestamp: 2026-03-28T06:28:39.608Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KMSJ8FKMS604E7P8KTX9K580
+        previous: null
+      started_at:
+        new: 2026-03-28T06:45:49.168Z
+        previous: 2026-03-28T06:03:24.151Z
+    command: task-start
+    timestamp: 2026-03-28T06:45:49.168Z
 created_at: 2026-03-28T05:45:54.602Z
-started_at: 2026-03-28T06:03:24.151Z
+started_at: 2026-03-28T06:45:49.168Z
 submitted_at: 2026-03-28T06:17:52.613Z
 todos: []
 automation: eligible
