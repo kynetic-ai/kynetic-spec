@@ -17447,9 +17447,22 @@ runs:
     completed_at: 2026-03-28T09:55:07.744Z
   - _ulid: 01KMSXTNKWQC8VBSBNMJZHZSVQ
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Test User
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-03-28T09:53:56.860Z
+        completed_at: 2026-03-28T09:55:09.685Z
+        notes: "Completed automated reflection. What worked well: targeted daemon cache tests plus
+          base-snapshot parity checking let the review distinguish task-specific behavior from
+          unrelated failing suites. Friction captured: detached reviewer worktree merge flow
+          required git -C against the primary worktree; task completion drifted when a newer draft
+          review became the active review_ref after an earlier approval."
+      - status: completed
+        step_index: 1
+        started_at: 2026-03-28T09:55:09.685Z
+        completed_at: 2026-03-28T09:55:09.685Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-28T09:53:56.860Z
