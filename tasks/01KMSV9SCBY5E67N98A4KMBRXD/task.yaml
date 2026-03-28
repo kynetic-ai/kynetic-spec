@@ -1,0 +1,24 @@
+_ulid: 01KMSV9SCBY5E67N98A4KMBRXD
+slugs: []
+title: Add rollback note to batch atomic failure output
+type: bug
+description: "What: When kspec batch fails in atomic mode, the output says 'N/M succeeded, N failed'
+  which implies the successful ones persisted. The rollback is silent — users must know atomic
+  semantics to understand nothing was committed. Where: Batch command handler that formats the
+  failure summary output. Why: Misleading output caused a real mistake — ACs appeared created (2/4
+  OK) but were actually rolled back. Adding a note like 'all operations rolled back' to the failure
+  message makes the atomic guarantee visible."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - cli
+  - batch
+vcs_refs: []
+created_at: 2026-03-28T09:09:46.507Z
+todos: []

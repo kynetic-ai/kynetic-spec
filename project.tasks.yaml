@@ -22909,3 +22909,17 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-03-28T09:07:24.571Z
+- _ulid: 01KMSV9SCBY5E67N98A4KMBRXD
+  slugs: []
+  title: Add rollback note to batch atomic failure output
+  type: bug
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 3
+  tags:
+    - cli
+    - batch
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-28T09:09:46.507Z
