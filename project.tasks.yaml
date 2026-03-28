@@ -22924,7 +22924,7 @@
   slugs: []
   title: Add rollback note to batch atomic failure output
   type: bug
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 3
@@ -22936,5 +22936,5 @@
   todos_count: 0
   created_at: 2026-03-28T09:09:46.507Z
   started_at: 2026-03-28T20:35:36.559Z
-  submitted_at: 2026-03-28T11:12:18.647Z
+  submitted_at: 2026-03-28T20:35:39.938Z
   automation: eligible
