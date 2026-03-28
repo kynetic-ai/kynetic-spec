@@ -20,7 +20,7 @@ tags:
   - cli
   - batch
 vcs_refs: []
-review_ref: "@01KMT2DQBGY3PTHAV87MC7SM3V"
+review_ref: "@01KMV1MCYQ1EAZ9XR0QY2EVET8"
 submission_linkage:
   review_url: null
   branch: dev
@@ -117,6 +117,13 @@ history:
         previous: pending_review
     command: task-unblock
     timestamp: 2026-03-28T20:14:34.778Z
+  - author: Test User
+    changes:
+      review_ref:
+        new: "@01KMV1MCYQ1EAZ9XR0QY2EVET8"
+        previous: "@01KMT2DQBGY3PTHAV87MC7SM3V"
+    command: review-link
+    timestamp: 2026-03-28T20:19:42.192Z
 prior_status: null
 created_at: 2026-03-28T09:09:46.507Z
 started_at: 2026-03-28T11:03:49.889Z
