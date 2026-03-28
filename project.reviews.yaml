@@ -72140,6 +72140,12 @@ reviews:
           status: fail
           name: npm-test
         timestamp: 2026-03-28T06:26:36.939Z
+      - _ulid: 01KMSK0BFHTNGQ5Q1KHZ1J20Z2
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMSHYCKA711V3ZD59AH17ZWC
+        timestamp: 2026-03-28T06:44:48.753Z
     examined_commit: c45892c3a5f17357eb44f4b1ea3a2fb318559aad
     external_links: []
     lifecycle_state: open
@@ -72173,8 +72179,16 @@ reviews:
               cached data is served). This path needs to await successful watcher startup before
               continuing, or reject the WebSocket registration when watcher startup fails.
             created_at: 2026-03-28T06:26:15.787Z
+          - _ulid: 01KMSK0AXJRV6P2EQQWGRS6982
+            author: "@claude"
+            body: "Fixed: resolveWebSocketProject is now async and awaits startWatcher() before calling
+              onProjectRegistered. Watcher errors propagate to reject the WebSocket connection
+              (satisfies AC-19). onProjectRegistered only fires after watcher is confirmed running
+              (satisfies AC-35). The success-on-failure test was replaced with one that verifies
+              watcher failure rejects resolution and prevents onProjectRegistered from running."
+            created_at: 2026-03-28T06:44:48.178Z
         kind: blocker
     verdicts: []
     created_at: 2026-03-28T06:22:57.365Z
-    updated_at: 2026-03-28T06:26:35.403Z
+    updated_at: 2026-03-28T06:44:48.178Z
     notes: []
