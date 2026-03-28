@@ -11,8 +11,11 @@ description: "What: When kspec batch fails in atomic mode, the output says 'N/M 
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev at 737fd3d. Added rollback note for atomic batch runtime failures,
+  exposed rolled_back in JSON only when failure happens before flush, and added regression coverage
+  for flush-failure behavior.
 depends_on: []
 context: []
 priority: 3
@@ -256,9 +259,25 @@ history:
         previous: "@01KMV3AASSA2XGZT3RE9XVEQRG"
     command: review-link
     timestamp: 2026-03-28T21:23:56.185Z
+  - author: Test User
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev at 737fd3d. Added rollback note for atomic batch runtime failures, exposed
+          rolled_back in JSON only when failure happens before flush, and added regression coverage
+          for flush-failure behavior.
+        previous: null
+      completed_at:
+        new: 2026-03-28T21:37:12.818Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-03-28T21:37:12.842Z
 prior_status: null
 created_at: 2026-03-28T09:09:46.507Z
 started_at: 2026-03-28T21:20:36.133Z
 submitted_at: 2026-03-28T21:20:41.700Z
+completed_at: 2026-03-28T21:37:12.818Z
 todos: []
 automation: eligible
