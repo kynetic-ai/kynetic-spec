@@ -29376,3 +29376,120 @@ plans:
           as any other client.
         author: "@claude"
         created_at: 2026-03-26T05:50:46.013Z
+  - _ulid: 01KMSRYEXRWZMDKSGT5B4D8QBP
+    slugs:
+      - plan-daemon-cache-warming-ux
+    title: Daemon Cache Warming UX
+    content: >
+      # Daemon Cache Warming UX
+
+
+      ## Problem
+
+
+      When the daemon's entity cache is warming (after project registration, restart, or
+      watcher-triggered reload), list endpoints return `{items: [], total: 0, _cache_status:
+      "loading"}`. The web UI treats this as a normal empty response — TanStack Query caches it for
+      30 seconds. Users see empty pages with no indication that data is loading.
+
+
+      Detail endpoints are unaffected because they fall back to disk reads when cache data is
+      unavailable.
+
+
+      ## Why This Matters
+
+
+      - Users switching projects in the web UI see empty task/session/item lists until the cache
+      finishes warming
+
+      - Hard refresh within the stale window shows the same empty result
+
+      - No visual feedback distinguishes "cache warming" from "project has no data"
+
+      - The daemon already provides the `_cache_status` signal but the UI ignores it
+
+
+      ## Findings
+
+
+      ### Server Side
+
+
+      - `_cache_status: "loading"` is returned by **all** list endpoints (tasks, items, sessions,
+      inbox, plans, reviews, triage, meta, aggregation, validation, refs) — not just a few
+
+      - Response shapes vary per endpoint: some return `{items: []}`, others `{counts: {}}`, detail
+      endpoints return bare `{_cache_status: "loading"}`
+
+      - The daemon broadcasts WebSocket events when cache domains finish loading — these could drive
+      UI invalidation instead of polling
+
+
+      ### Client Side
+
+
+      - Zero handling of `_cache_status` in the web UI currently
+
+      - No centralized response interceptor — each fetch function in `api.ts` handles responses
+      independently
+
+      - TanStack Query config: `staleTime: 30s`, `retry: 1`, `retryDelay: 1s` — insufficient for
+      cache warming scenarios
+
+      - Existing loading skeleton components exist and should be reused
+
+
+      ## Goals
+
+
+      1. Normalize how list endpoints signal cache state so the UI has a consistent contract
+
+      2. Web UI detects cache-warming responses and shows loading state instead of empty data
+
+      3. Cache-warming responses are not persisted in TanStack Query's cache as "real" data
+
+      4. UI transitions to real data automatically when the cache becomes ready (via WebSocket event
+      or retry)
+
+      5. Retry/refresh has a ceiling to prevent infinite loading if cache never warms
+
+
+      ## Open Questions
+
+
+      - Should the UI use WebSocket domain-ready events (push) or TanStack Query retry (poll) to
+      detect when cache is ready? WebSocket is more efficient but adds complexity.
+
+      - Should `_cache_status` be a top-level API contract (documented, typed) or remain an informal
+      signal?
+
+      - What retry ceiling is appropriate? 30s? 60s? Should it fall back to disk-read mode after
+      timeout?
+
+      - Should the API layer normalize response shapes so all loading responses look the same, or
+      should the UI handle each shape?
+
+
+      ## Implementation Notes
+
+
+      This is a draft plan for refinement. Key areas of work:
+
+      - Spec: AC on `@ui-data-freshness` for cache warming behavior, possibly a new spec for
+      normalized API response contracts
+
+      - API layer: centralized response interceptor or per-query wrapper in the web UI
+
+      - UI components: loading/warming indicator using existing skeleton patterns
+
+      - Testing: unit tests for interceptor, E2E test for loading-to-ready transition
+    status: draft
+    approved_at: null
+    derived_specs: []
+    derived_tasks: []
+    module_ref: null
+    source_path: /home/chapel/Projects/kynetic-spec/plans/daemon-cache-warming-ux.md
+    created_at: 2026-03-28T08:28:38.200Z
+    completed_at: null
+    notes: []
