@@ -17447,7 +17447,7 @@ runs:
     completed_at: 2026-03-28T09:55:07.744Z
   - _ulid: 01KMSXTNKWQC8VBSBNMJZHZSVQ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Test User
     step_results:
       - status: completed
@@ -17462,7 +17462,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-28T09:55:09.685Z
-        completed_at: 2026-03-28T09:55:09.685Z
+        completed_at: 2026-03-28T09:55:46.361Z
+        notes: "High-confidence items identified. Success: targeted tests plus base-snapshot parity checking
+          made it easy to separate task-specific behavior from pre-existing failures. Existing
+          coverage found: @01KGGPJ6 already tracks workflow show inferring active runs, so that
+          friction was not duplicated. New captures: (1) detached reviewer worktree merge flow
+          requires out-of-band git -C against the primary worktree, (2) task completion can stall
+          when a newer draft review replaces the active review_ref after approval."
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-28T09:55:46.361Z
+        completed_at: 2026-03-28T09:55:46.361Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-28T09:53:56.860Z
