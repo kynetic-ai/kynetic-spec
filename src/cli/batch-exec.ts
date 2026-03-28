@@ -830,7 +830,7 @@ async function executeAtomic(
         mode: "atomic" as const,
         summary: { total: commands.length, succeeded, failed },
         results,
-        ...(!allSucceeded ? { rolled_back: true } : {}),
+        ...(!allSucceeded && !flushFailed ? { rolled_back: true } : {}),
       };
     });
   } finally {
