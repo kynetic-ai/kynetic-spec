@@ -9413,6 +9413,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-28T22:23:20.409Z
+  - _ulid: 01KMVAV9D705BGSXX8G1Z574WA
+    type: friction
+    content: process.env.KSPEC_SPEC_DIR is shared across vitest worker_threads, causing intermittent
+      test failures when dispatch workspace tests run concurrently with tests that rely on
+      initContext() cwd resolution (e.g. daemon-command-api). 15+ test files set this env var. The
+      daemon command route was patched to save/clear it during execution, but the systemic pattern
+      of mutating shared process.env in parallel tests remains a reliability risk. Consider
+      migrating remaining KSPEC_SPEC_DIR test usages to kspec init shadow projects or switching the
+      vitest pool to forks for process-level isolation.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-28T23:00:43.047Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
