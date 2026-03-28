@@ -17700,7 +17700,7 @@ runs:
     completed_at: 2026-03-28T20:38:51.083Z
   - _ulid: 01KMV57KKCPMNBJC374453TNKD
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -17716,7 +17716,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-28T21:23:33.725Z
-        completed_at: 2026-03-28T21:23:33.725Z
+        completed_at: 2026-03-28T21:25:34.976Z
+        notes: "Searched existing state. No existing tracking for the pattern identified. One
+          high-confidence friction point: Testing flush failures at the CLI/batch level is
+          non-trivial because (1) file locks prevent the read-only directory approach, (2) ESM
+          import.meta.url guards prevent simple inline script patches, (3) process.argv manipulation
+          with -e mode is fragile. The wrapper .mjs file approach works but took significant
+          iteration to discover. This is a success pattern worth noting for future CLI-level fault
+          injection tests."
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-28T21:25:34.976Z
+        completed_at: 2026-03-28T21:25:34.976Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-28T21:22:35.244Z
