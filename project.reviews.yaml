@@ -73636,6 +73636,12 @@ reviews:
         payload:
           thread_ulid: 01KMV1SZNS6AR2ZBYHNTHA1H3C
         timestamp: 2026-03-28T20:32:37.439Z
+      - _ulid: 01KMV2C86AECYJ69937SK6A4F5
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMV1T33R73JKKT84ZR7RS3VQ
+        timestamp: 2026-03-28T20:32:41.674Z
     examined_commit: f8339068c0dcc4a9b294a20afdd60d5036b3aa55
     external_links: []
     lifecycle_state: closed
@@ -73709,6 +73715,12 @@ reviews:
               output and stderr claim 'All operations rolled back — no changes were applied.' on
               that path, which misreports persisted state to users and automation."
             created_at: 2026-03-28T20:22:46.649Z
+          - _ulid: 01KMV2C7MS0F7ATF2CQ0K58SSN
+            author: "@claude"
+            body: "Fixed: Same fix as thread 01KMV1SZNS — this was a duplicate finding. The `rolled_back` field
+              is now only set when `\\!allSucceeded && \\!flushFailed`, ensuring it is never claimed
+              when flush failure may have left partial state on disk."
+            created_at: 2026-03-28T20:32:41.113Z
         kind: blocker
       - _ulid: 01KMV1T4YAG9QSRA85YC7QAVFQ
         entries:
@@ -73741,5 +73753,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-28T20:24:44.008Z
     created_at: 2026-03-28T20:19:40.119Z
-    updated_at: 2026-03-28T20:32:36.920Z
+    updated_at: 2026-03-28T20:32:41.113Z
     notes: []
