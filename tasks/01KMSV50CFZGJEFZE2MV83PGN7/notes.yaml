@@ -37,3 +37,32 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-28T09:44:59.909Z
+  - _ulid: 01KMSXRM9X594A78Q2C6VJKWEE
+    content: >-
+      Implementation complete. Changes:
+
+
+      1. loadDomain() (entity-cache.ts:800): Only sets state='loading' for initial loads (from
+      'unloaded'). When domain is already 'ready', state is preserved during reload so API routes
+      continue serving cached data.
+
+
+      2. doLoadDomain() (entity-cache.ts:841-876): Tasks and items domains now build new data into
+      local Map variables before swapping into the store atomically. Plans, triage, and reviews
+      domains replace details with new Map() instead of clear(). This prevents partial state where
+      details are cleared mid-reload.
+
+
+      3. Tests (daemon-entity-cache.test.ts): Added 7 tests covering ac-stale-during-reload:
+         - State remains ready during reload
+         - Cached data accessible during reload
+         - New data swapped atomically after reload
+         - No regression to loading on failure
+         - Loading state only for initial unloaded->loading transition
+         - Items domain ready during invalidateDomain reload
+         - Domain ready during writeThrough reload
+
+      All 7041 tests pass (0 regressions).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-28T09:52:49.981Z
