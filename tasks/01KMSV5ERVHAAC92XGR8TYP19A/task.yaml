@@ -14,8 +14,11 @@ description: "What: The dispatch engine uses spawnSync() for kspec CLI commands 
 spec_ref: "@agent-dispatch-engine"
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev after review approval. Verified async conversion across
+  dispatch/bootstrap/workspace/invocation paths, confirmed prior sync fs blockers were resolved, and
+  ran full npm test (7057 passed, 5 skipped, 0 failed).
 depends_on: []
 context: []
 priority: 3
@@ -173,9 +176,25 @@ history:
         previous: "@01KMTG04Z9W9KXMWYJNGDZGAF8"
     command: review-link
     timestamp: 2026-03-28T15:40:07.498Z
+  - author: Test User
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev after review approval. Verified async conversion across
+          dispatch/bootstrap/workspace/invocation paths, confirmed prior sync fs blockers were
+          resolved, and ran full npm test (7057 passed, 5 skipped, 0 failed).
+        previous: null
+      completed_at:
+        new: 2026-03-28T15:45:47.695Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-03-28T15:45:47.709Z
 prior_status: null
 created_at: 2026-03-28T09:07:24.571Z
 started_at: 2026-03-28T15:37:06.366Z
 submitted_at: 2026-03-28T15:37:09.427Z
+completed_at: 2026-03-28T15:45:47.695Z
 todos: []
 automation: eligible
