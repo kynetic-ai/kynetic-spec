@@ -72093,6 +72093,18 @@ reviews:
         runner: kspec
         created_at: 2026-03-28T06:26:24.542Z
         completed_at: 2026-03-28T06:26:24.542Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Unable to complete npm test in this snapshot: scripts/test.cjs failed during the required
+          build step in packages/web-ui with ERR_MODULE_NOT_FOUND for
+          .svelte-kit/output/server/manifest-full.js after multiple Svelte warnings."
+        name: npm-test
+        required: true
+        runner: npm
+        created_at: 2026-03-28T06:26:35.403Z
+        completed_at: 2026-03-28T06:26:35.403Z
     events:
       - _ulid: 01KMSHRATMVHBDKNCT744WX0AY
         actor: Test User
@@ -72121,6 +72133,13 @@ reviews:
           status: pass
           name: validate
         timestamp: 2026-03-28T06:26:25.889Z
+      - _ulid: 01KMSHZ18B1RGM4YT3C9PKSNXZ
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm-test
+        timestamp: 2026-03-28T06:26:36.939Z
     examined_commit: c45892c3a5f17357eb44f4b1ea3a2fb318559aad
     external_links: []
     lifecycle_state: open
@@ -72157,5 +72176,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-28T06:22:57.365Z
-    updated_at: 2026-03-28T06:26:24.542Z
+    updated_at: 2026-03-28T06:26:35.403Z
     notes: []
