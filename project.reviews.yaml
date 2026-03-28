@@ -74728,6 +74728,13 @@ reviews:
           status: fail
           name: targeted npm test
         timestamp: 2026-03-28T23:12:39.149Z
+      - _ulid: 01KMVBH8Q3YFF216F98VG7Y8E0
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMVBH7C2KK29GDPMPPNWFGND
+        timestamp: 2026-03-28T23:12:43.235Z
     examined_commit: afd332b4c3b16543d6a80c9a905ac644ae07d3bd
     external_links: []
     lifecycle_state: open
@@ -74763,7 +74770,27 @@ reviews:
               mutations are affected.
             created_at: 2026-03-28T23:12:34.379Z
         kind: blocker
+      - _ulid: 01KMVBH7C2KK29GDPMPPNWFGND
+        anchor:
+          type: code
+          commit: afd332b4c3b16543d6a80c9a905ac644ae07d3bd
+          line_end: 190
+          line_start: 187
+          path: packages/daemon/src/routes/command.ts
+          side: head
+        entries:
+          - _ulid: 01KMVBH7C2K7YR3F5PQ464NW4T
+            author: Test User
+            body: "Unconditionally clearing KSPEC_SPEC_DIR here regresses the daemon mutation path for isolated
+              project contexts. Repro: npm test -- --fresh --run
+              tests/dispatch-workspace-terminal-reconciliation.test.ts
+              tests/daemon-command-api.test.ts now fails 12 assertions in
+              tests/daemon-command-api.test.ts, where mutating /api/command and /api/command/batch
+              requests return 500 instead of 200 or 422. The same env clearing is repeated in the
+              batch path, so both single-command and batch mutations are affected."
+            created_at: 2026-03-28T23:12:41.858Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-28T23:03:42.196Z
-    updated_at: 2026-03-28T23:12:37.941Z
+    updated_at: 2026-03-28T23:12:41.858Z
     notes: []
