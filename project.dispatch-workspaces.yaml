@@ -26071,18 +26071,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/fix-cache-domain-state-regression-during-reload/01kmsv50
-    canonical_branch_head: 80d42a907fa9ef28f30266d9a3a65787e5fc698a
+    canonical_branch_head: 6dfc4805489d99bea3d96adb5877ae3251faad69
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-28T10:44:02.130Z
+      updated_at: 2026-03-28T10:56:52.107Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-28T10:44:08.384Z
+      updated_at: 2026-03-28T10:56:52.107Z
     integration:
       status: pending
       detail: null
@@ -26090,7 +26090,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 39e80b193a2247ab9a52253c6cc9fc060da528fd
-      updated_at: 2026-03-28T10:44:02.130Z
+      updated_at: 2026-03-28T10:56:52.107Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KMSV50CFZGJEFZE2MV83PGN7"
@@ -26098,9 +26098,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-28T10:44:08.384Z
-      last_reconciled_at: 2026-03-28T10:44:08.384Z
+      last_reconciled_at: 2026-03-28T10:56:52.107Z
       created_at: 2026-03-28T09:40:40.810Z
-      updated_at: 2026-03-28T10:44:08.384Z
+      updated_at: 2026-03-28T10:56:52.107Z
     workspace_id: dispatch-workspace-01KMSV50CFZGJEFZE2MV83PGN7
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
