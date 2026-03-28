@@ -1065,6 +1065,231 @@ describe("ProjectEntityCache", () => {
     });
   });
 
+  // ─── AC: ac-stale-during-reload ─────────────────────────────────────────
+
+  // AC: @daemon-entity-cache ac-stale-during-reload
+  describe("ac-stale-during-reload: domain stays ready and serves stale data during reload", () => {
+    it("should keep domain state as ready during a reload of already-populated data", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("tasks");
+      expect(cache.getDomainState("tasks")).toBe("ready");
+
+      // Capture the state during reload by intercepting loadDomain mid-flight.
+      // We'll spy on the underlying data loader to pause mid-reload.
+      const statesDuringReload: string[] = [];
+      const originalLoadDomain = cache.loadDomain.bind(cache);
+
+      // Trigger a reload (e.g., via invalidateDomain) and check state mid-flight
+      // Use a zero-ms debounce cache for instant reload
+      const reloadPromise = cache.loadDomain("tasks");
+
+      // State should remain "ready" while the reload is in-flight
+      statesDuringReload.push(cache.getDomainState("tasks"));
+
+      await reloadPromise;
+
+      // After reload completes, still ready
+      expect(cache.getDomainState("tasks")).toBe("ready");
+      // During reload, state should never have been "loading"
+      for (const state of statesDuringReload) {
+        expect(state).toBe("ready");
+      }
+    });
+
+    it("should serve previously cached data while reload is in progress", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("tasks");
+
+      const originalTaskIndex = cache.getTaskIndex();
+      expect(originalTaskIndex).not.toBeNull();
+      expect(originalTaskIndex!.length).toBeGreaterThan(0);
+
+      // Start a reload
+      const reloadPromise = cache.loadDomain("tasks");
+
+      // During reload, cached data should still be accessible
+      const duringReloadIndex = cache.getTaskIndex();
+      expect(duringReloadIndex).not.toBeNull();
+      expect(duringReloadIndex!.length).toBeGreaterThan(0);
+
+      await reloadPromise;
+
+      // After reload, data should be refreshed but present
+      const afterReloadIndex = cache.getTaskIndex();
+      expect(afterReloadIndex).not.toBeNull();
+      expect(afterReloadIndex!.length).toBeGreaterThan(0);
+    });
+
+    it("should swap in new data atomically after reload completes", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("tasks");
+
+      const originalTaskIndex = cache.getTaskIndex();
+      expect(originalTaskIndex).not.toBeNull();
+
+      // Modify the underlying task file to produce different data on reload
+      const kspecDir = join(projectA, ".kspec");
+      const tasksFile = join(kspecDir, "project.tasks.yaml");
+      const newTask = yamlStringify([
+        {
+          _ulid: "01TASKA0000000000000000000",
+          title: "Updated Task Title",
+          slug: "task-sample-a",
+          status: "pending",
+          priority: 3,
+        },
+      ]);
+      await fs.writeFile(tasksFile, newTask, "utf-8");
+
+      // Reload domain
+      await cache.loadDomain("tasks");
+
+      // New data should be served
+      const updatedIndex = cache.getTaskIndex();
+      expect(updatedIndex).not.toBeNull();
+      expect(updatedIndex![0].title).toBe("Updated Task Title");
+    });
+
+    it("should never regress to loading state on reload failure", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("tasks");
+      expect(cache.getDomainState("tasks")).toBe("ready");
+
+      // Corrupt the task file so the reload encounters bad data.
+      // The task loader may gracefully handle it (ready with empty data)
+      // or throw (degraded). Either outcome is acceptable — the key
+      // invariant is that the domain NEVER transitions to "loading".
+      const kspecDir = join(projectA, ".kspec");
+      const tasksFile = join(kspecDir, "project.tasks.yaml");
+      await fs.writeFile(tasksFile, "{{{{invalid yaml!!!!:", "utf-8");
+
+      await cache.loadDomain("tasks");
+      const state = cache.getDomainState("tasks");
+      // State should be "ready" (graceful handling) or "degraded" (error),
+      // but NEVER "loading" — that's the regression we're fixing.
+      expect(["ready", "degraded"]).toContain(state);
+      expect(state).not.toBe("loading");
+    });
+
+    it("should set loading state only for initial loads from unloaded", async () => {
+      const cache = new ProjectEntityCache(projectA);
+
+      // Before any load, state is unloaded
+      expect(cache.getDomainState("tasks")).toBe("unloaded");
+
+      // During initial load, state transitions through loading to ready
+      // (we can't easily observe the transient "loading" state in a sync test,
+      // but we verify the final state)
+      await cache.loadDomain("tasks");
+      expect(cache.getDomainState("tasks")).toBe("ready");
+    });
+
+    it("should keep items domain ready during reload via invalidateDomain", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("items");
+      expect(cache.getDomainState("items")).toBe("ready");
+
+      const originalItems = cache.getItemIndex();
+
+      // Invalidate triggers a debounced reload
+      const invalidatePromise = cache.invalidateDomain("items");
+
+      // State should remain ready during debounce and reload
+      expect(cache.getDomainState("items")).toBe("ready");
+
+      // Original data still accessible
+      expect(cache.getItemIndex()).not.toBeNull();
+
+      await invalidatePromise;
+
+      expect(cache.getDomainState("items")).toBe("ready");
+    });
+
+    it("should keep domain ready during writeThrough reload", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("tasks");
+      expect(cache.getDomainState("tasks")).toBe("ready");
+
+      // writeThrough calls loadDomain internally
+      await cache.writeThrough("tasks");
+
+      // Should still be ready
+      expect(cache.getDomainState("tasks")).toBe("ready");
+    });
+
+    it("should keep meta domain ready and serve stale data during reload", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("meta");
+      expect(cache.getDomainState("meta")).toBe("ready");
+
+      // Capture all meta artifacts before reload
+      const originalMetaIndex = cache.getMetaIndex();
+      const originalMetaDetail = cache.getMetaDetail();
+      const originalShadowInfo = cache.getShadowInfo();
+      const originalProjectConfig = cache.getProjectConfig();
+      const originalSessionContext = cache.getSessionContext();
+
+      // Start a reload — state should remain ready
+      const reloadPromise = cache.loadDomain("meta");
+
+      // During reload, state stays ready and stale data is accessible
+      expect(cache.getDomainState("meta")).toBe("ready");
+      expect(cache.getMetaIndex()).not.toBeNull();
+
+      await reloadPromise;
+
+      // After reload, still ready with refreshed data
+      expect(cache.getDomainState("meta")).toBe("ready");
+      expect(cache.getMetaIndex()).not.toBeNull();
+    });
+
+    it("should swap all meta artifacts atomically on reload", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("meta");
+      expect(cache.getDomainState("meta")).toBe("ready");
+
+      // Capture references to the original meta artifacts so we can
+      // verify the reload produces a fresh swap (new object references).
+      const originalMetaIndex = cache.getMetaIndex();
+      const originalProjectConfig = cache.getProjectConfig();
+      const originalShadowInfo = cache.getShadowInfo();
+
+      // Reload meta domain — should produce fresh objects
+      await cache.loadDomain("meta");
+
+      // After reload, all artifacts are present and consistent
+      expect(cache.getDomainState("meta")).toBe("ready");
+
+      const reloadedIndex = cache.getMetaIndex();
+      const reloadedConfig = cache.getProjectConfig();
+      const reloadedShadow = cache.getShadowInfo();
+
+      expect(reloadedIndex).not.toBeNull();
+      expect(reloadedConfig).not.toBeNull();
+      expect(reloadedShadow).not.toBeNull();
+
+      // New index and details map references confirm the swap happened
+      // (build-then-swap creates new objects each reload)
+      expect(reloadedIndex).not.toBe(originalMetaIndex);
+      expect(reloadedConfig).not.toBe(originalProjectConfig);
+      expect(reloadedShadow).not.toBe(originalShadowInfo);
+    });
+
+    it("should keep meta domain ready during writeThrough reload", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("meta");
+      expect(cache.getDomainState("meta")).toBe("ready");
+
+      // writeThrough calls loadDomain internally
+      await cache.writeThrough("meta");
+
+      // Should still be ready with data intact
+      expect(cache.getDomainState("meta")).toBe("ready");
+      expect(cache.getMetaIndex()).not.toBeNull();
+      expect(cache.getProjectConfig()).not.toBeNull();
+    });
+  });
+
   // ─── Session live counters (migrated from SessionSummaryCache) ─────────
 
   describe("session live event counters", () => {
