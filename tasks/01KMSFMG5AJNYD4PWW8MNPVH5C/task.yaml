@@ -6,7 +6,7 @@ type: task
 spec_ref: "@multi-directory-daemon"
 meta_ref: null
 plan_ref: null
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -16,6 +16,7 @@ tags:
   - daemon
   - mvp
 vcs_refs: []
+session_id: 01KMSGJMVRBBKTP88N1SS0AHQY
 history:
   - author: "@claude"
     changes:
@@ -24,6 +25,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-03-28T05:57:15.235Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KMSGJMVRBBKTP88N1SS0AHQY
+        previous: null
+      started_at:
+        new: 2026-03-28T06:03:24.151Z
+        previous: null
+    command: task-start
+    timestamp: 2026-03-28T06:03:24.152Z
 created_at: 2026-03-28T05:45:54.602Z
+started_at: 2026-03-28T06:03:24.151Z
 todos: []
 automation: eligible
