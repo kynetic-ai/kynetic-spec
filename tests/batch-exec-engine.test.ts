@@ -728,6 +728,26 @@ No fenced YAML block in this section.
     expect(inbox.stdout).not.toContain("should-not-persist");
   });
 
+  it("atomic mode failure: JSON output includes rolled_back field", () => {
+    const result = kspecJson<BatchExecResult>(
+      `batch --commands '[{"command":"inbox add","args":{"text":"rollback-json-test"}},{"command":"task start","args":{"ref":"@nonexistent-task"}}]'`,
+      tempDir,
+      { expectFail: true },
+    );
+    expect(result.success).toBe(false);
+    expect(result.mode).toBe("atomic");
+    expect(result.rolled_back).toBe(true);
+  });
+
+  it("atomic mode failure: human-readable output includes rollback note", () => {
+    const result = kspec(
+      `batch --commands '[{"command":"inbox add","args":{"text":"rollback-text-test"}},{"command":"task start","args":{"ref":"@nonexistent-task"}}]'`,
+      tempDir,
+      { expectFail: true },
+    );
+    expect(result.stderr).toContain("All operations rolled back");
+  });
+
   // AC: @batch-exec ac-no-atomic-flag
   // AC: @batch-exec ac-immediate-per-commit
   // AC: @trait-shadow-commit ac-1 — git commit created in shadow branch
@@ -764,6 +784,26 @@ No fenced YAML block in this section.
     const inbox = kspec("inbox list", tempDir);
     expect(inbox.stdout).toContain("persist-this");
     expect(inbox.stdout).not.toContain("not-reached");
+  });
+
+  it("immediate mode failure: JSON output does not include rolled_back field", () => {
+    const result = kspecJson<BatchExecResult>(
+      `batch --no-atomic --commands '[{"command":"inbox add","args":{"text":"no-rollback-json"}},{"command":"task start","args":{"ref":"@bad-ref"}}]'`,
+      tempDir,
+      { expectFail: true },
+    );
+    expect(result.success).toBe(false);
+    expect(result.mode).toBe("immediate");
+    expect(result.rolled_back).toBeUndefined();
+  });
+
+  it("immediate mode failure: human-readable output does not include rollback note", () => {
+    const result = kspec(
+      `batch --no-atomic --commands '[{"command":"inbox add","args":{"text":"no-rollback-text"}},{"command":"task start","args":{"ref":"@bad-ref"}}]'`,
+      tempDir,
+      { expectFail: true },
+    );
+    expect(result.stderr).not.toContain("rolled back");
   });
 
   // AC: @batch-exec ac-continue
