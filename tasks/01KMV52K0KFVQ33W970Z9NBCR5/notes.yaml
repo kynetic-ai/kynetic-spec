@@ -127,3 +127,13 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-28T23:15:44.172Z
+  - _ulid: 01KMVDW68EW4QS45JC9PN30HAC
+    content: "Fix cycle 3: investigated KSPEC_SPEC_DIR clearing blocker. The clearing IS necessary —
+      full suite fails without it (14 daemon-command-api failures from cross-test env
+      contamination). The reviewer's targeted 2-file repro fails both WITH and WITHOUT the clearing
+      — it's a pre-existing flaky cross-test parallelism issue unrelated to this change. Full suite
+      (npm test --fresh): 7063 passed, 0 failed, 5 skipped. No code changes needed; current
+      implementation at afd332b4c is correct."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-28T23:53:38.318Z
