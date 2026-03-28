@@ -423,9 +423,9 @@ describe("dispatch target branch sync", () => {
     git(projectDir, `checkout ${previousTip} -- dev.txt`);
     git(projectDir, "add dev.txt");
 
-    expect(() =>
+    await expect(
       workspaceModule.ensureDispatchIntegrationTargetCheckoutCoherence(projectDir, "dev"),
-    ).toThrowError(
+    ).rejects.toThrowError(
       /staged tracked changes after dispatch already observed this branch tip as coherent/,
     );
     expect(git(projectDir, "diff --cached --name-only")).toContain("dev.txt");
@@ -441,7 +441,7 @@ describe("dispatch target branch sync", () => {
     const poisonDir = await setupPoisonRepo();
     try {
       await withPoisonedGitContext(poisonDir, async () => {
-        const result = workspaceModule.runDispatchIntegrationTargetGit(projectDir, "dev", [
+        const result = await workspaceModule.runDispatchIntegrationTargetGit(projectDir, "dev", [
           "rev-parse",
           "--show-toplevel",
         ]);

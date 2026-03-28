@@ -1,7 +1,10 @@
-import { spawnSync } from "node:child_process";
+import { execFile } from "node:child_process";
 import { createHash } from "node:crypto";
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { promisify } from "node:util";
+
+const execFileAsync = promisify(execFile);
 import { loadProjectConfig } from "../parser/config.js";
 import type { Agent } from "../schema/meta.js";
 import type {
@@ -53,34 +56,45 @@ interface DependencyHealth {
   missingPackages: string[];
 }
 
-function runShell(
+async function runShell(
   cwd: string,
   command: string,
   env: Record<string, string>,
-): { status: number | null; stdout: string; stderr: string } {
-  const result = spawnSync("bash", ["-lc", command], {
-    cwd,
-    env: {
-      ...process.env,
-      ...env,
-    },
-    encoding: "utf-8",
-    stdio: "pipe",
-  });
-  return {
-    status: result.status,
-    stdout: result.stdout ?? "",
-    stderr: result.stderr ?? "",
-  };
+): Promise<{ status: number | null; stdout: string; stderr: string }> {
+  try {
+    const result = await execFileAsync("bash", ["-lc", command], {
+      cwd,
+      env: {
+        ...process.env,
+        ...env,
+      },
+      encoding: "utf-8",
+    });
+    return {
+      status: 0,
+      stdout: result.stdout ?? "",
+      stderr: result.stderr ?? "",
+    };
+  } catch (err: unknown) {
+    const e = err as { stdout?: string; stderr?: string; code?: number | string; killed?: boolean };
+    return {
+      status: typeof e.code === "number" ? e.code : (e.killed ? null : 1),
+      stdout: e.stdout ?? "",
+      stderr: e.stderr ?? "",
+    };
+  }
 }
 
-function trackedStatus(cwd: string): string {
-  const result = spawnSync("git", ["status", "--porcelain", "--untracked-files=no"], {
-    cwd,
-    encoding: "utf-8",
-    stdio: "pipe",
-  });
-  return result.status === 0 ? (result.stdout ?? "").trim() : "";
+async function trackedStatus(cwd: string): Promise<string> {
+  try {
+    const result = await execFileAsync("git", ["status", "--porcelain", "--untracked-files=no"], {
+      cwd,
+      encoding: "utf-8",
+    });
+    return (result.stdout ?? "").trim();
+  } catch {
+    return "";
+  }
 }
 
 function summarizeOutput(stdout: string, stderr: string): string | null {
@@ -379,14 +393,14 @@ export async function ensureWorkspaceBootstrap(
 
   const executedSteps: DispatchWorkspaceMetadata["bootstrap"]["steps"] = [];
   for (const step of rerunnableSteps) {
-    const beforeStatus = trackedStatus(workspaceDir);
-    const result = runShell(workspaceDir, step.run, {
+    const beforeStatus = await trackedStatus(workspaceDir);
+    const result = await runShell(workspaceDir, step.run, {
       ...env,
       KSPEC_DISPATCH_BOOTSTRAP_ROLE: role,
       KSPEC_DISPATCH_BOOTSTRAP_SOURCE: step.source,
       KSPEC_DISPATCH_BOOTSTRAP_STEP: step.name,
     });
-    const afterStatus = trackedStatus(workspaceDir);
+    const afterStatus = await trackedStatus(workspaceDir);
     const output = summarizeOutput(result.stdout, result.stderr);
 
     if (result.status !== 0) {

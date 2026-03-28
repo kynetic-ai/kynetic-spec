@@ -11,7 +11,10 @@
  */
 
 import * as path from "node:path";
-import { spawnSync } from "node:child_process";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
+
+const execFileAsync = promisify(execFile);
 import { ulid } from "ulid";
 import {
   initContext,
@@ -377,17 +380,14 @@ export function findPriorExaminedCommit(
  *
  * AC: @review-fix-cycle-diff ac-3 — graceful omission on unreachable commits
  */
-export function computeDiffStat(fromCommit: string, toCommit: string, cwd: string): string | null {
+export async function computeDiffStat(fromCommit: string, toCommit: string, cwd: string): Promise<string | null> {
   try {
-    const result = spawnSync("git", ["diff", "--stat", fromCommit, toCommit], {
+    const result = await execFileAsync("git", ["diff", "--stat", fromCommit, toCommit], {
       cwd,
       env: buildDispatchGitEnv(),
       encoding: "utf-8",
-      stdio: "pipe",
       timeout: 10_000,
     });
-
-    if (result.status !== 0) return null;
 
     const stat = result.stdout?.trim();
     if (!stat) return null;
@@ -972,7 +972,7 @@ export class DispatchEngine {
     try {
       const resolvedConfig = await resolveDispatchWorkspaceConfig(this.projectDir);
       const { config } = await loadProjectConfig(this.projectDir);
-      this.dispatchRemote = resolveDispatchRemote(this.projectDir);
+      this.dispatchRemote = await resolveDispatchRemote(this.projectDir);
       this.remoteSyncEnabled = resolveDispatchRemoteSync(config, this.dispatchRemote !== null);
       this.integrationTargetBranch = resolvedConfig.baseBranch;
     } catch (err) {
@@ -1372,9 +1372,9 @@ export class DispatchEngine {
    * AC: @dispatch-remote-branch-sync ac-subsequent-push
    * AC: @dispatch-remote-branch-sync ac-push-non-fatal
    */
-  private _pushDispatchBranchAsync(canonicalBranch: string, taskRef: string): void {
+  private async _pushDispatchBranchAsync(canonicalBranch: string, taskRef: string): Promise<void> {
     try {
-      const result = pushDispatchBranch(this.projectDir, canonicalBranch, this.dispatchRemote!);
+      const result = await pushDispatchBranch(this.projectDir, canonicalBranch, this.dispatchRemote!);
       if (result.error) {
         // AC: @dispatch-remote-branch-sync ac-push-non-fatal
         console.warn(
@@ -1403,7 +1403,7 @@ export class DispatchEngine {
    * AC: @dispatch-remote-branch-sync ac-target-push-serialization
    * AC: @dispatch-remote-branch-sync ac-push-non-fatal
    */
-  private _pushIntegrationTargetAsync(trigger: string): void {
+  private async _pushIntegrationTargetAsync(trigger: string): Promise<void> {
     // AC: @dispatch-remote-branch-sync ac-target-push-serialization
     if (this.targetPushInProgress) {
       return;
@@ -1415,14 +1415,14 @@ export class DispatchEngine {
         return;
       }
       try {
-        resolveDispatchIntegrationMutationScope(this.projectDir, config);
+        await resolveDispatchIntegrationMutationScope(this.projectDir, config);
       } catch (err) {
         const reason = this._formatUnsafeMutationScopeReason(err, config);
         this._enterDegradedState(reason);
         console.warn(`[dispatch] Integration target push skipped (${trigger}): ${reason}`);
         return;
       }
-      const result = pushIntegrationTarget(this.projectDir, config, this.dispatchRemote!);
+      const result = await pushIntegrationTarget(this.projectDir, config, this.dispatchRemote!);
       if (result.error) {
         // AC: @dispatch-remote-branch-sync ac-push-non-fatal
         console.warn(`[dispatch] Integration target push failed (${trigger}): ${result.error}`);
@@ -2186,22 +2186,29 @@ export class DispatchEngine {
     return `${basePrompt}\n\n${orientation}\n\n${roleEntry}\n\n${autonomousPreamble.join("\n")}\n\n${triggerSpecific.join("\n")}`;
   }
 
-  private _runKspecCommand(args: string[]): KspecCommandResult {
-    const result = spawnSync(
-      process.execPath,
-      [this.kspecCliPath ?? DEFAULT_KSPEC_CLI_PATH, ...args],
-      {
-        cwd: this.cwd,
-        encoding: "utf-8",
-        stdio: "pipe",
-      },
-    );
-
-    return {
-      status: result.status,
-      stdout: result.stdout ?? "",
-      stderr: result.stderr ?? "",
-    };
+  private async _runKspecCommand(args: string[]): Promise<KspecCommandResult> {
+    try {
+      const result = await execFileAsync(
+        process.execPath,
+        [this.kspecCliPath ?? DEFAULT_KSPEC_CLI_PATH, ...args],
+        {
+          cwd: this.cwd,
+          encoding: "utf-8",
+        },
+      );
+      return {
+        status: 0,
+        stdout: result.stdout ?? "",
+        stderr: result.stderr ?? "",
+      };
+    } catch (err: unknown) {
+      const e = err as { stdout?: string; stderr?: string; code?: number | string; killed?: boolean };
+      return {
+        status: typeof e.code === "number" ? e.code : (e.killed ? null : 1),
+        stdout: e.stdout ?? "",
+        stderr: e.stderr ?? "",
+      };
+    }
   }
 
   private _taskCommandError(args: string[], result: KspecCommandResult): Error {
@@ -2213,9 +2220,9 @@ export class DispatchEngine {
     );
   }
 
-  private _addTaskNote(taskRef: string, note: string): void {
+  private async _addTaskNote(taskRef: string, note: string): Promise<void> {
     const args = ["task", "note", taskRef, note];
-    const result = this._runKspecCommand(args);
+    const result = await this._runKspecCommand(args);
     if (result.status !== 0) {
       console.warn(
         `[dispatch] Failed to add task note for ${taskRef}: ${this._taskCommandError(args, result).message}`,
@@ -2223,17 +2230,17 @@ export class DispatchEngine {
     }
   }
 
-  private _blockTask(taskRef: string, reason: string): void {
+  private async _blockTask(taskRef: string, reason: string): Promise<void> {
     const args = ["task", "block", taskRef, "--reason", reason];
-    const result = this._runKspecCommand(args);
+    const result = await this._runKspecCommand(args);
     if (result.status !== 0) {
       throw this._taskCommandError(args, result);
     }
   }
 
-  private _runRecoveryTaskCommand(taskRef: string, action: string, run: () => void): void {
+  private async _runRecoveryTaskCommand(taskRef: string, action: string, run: () => Promise<void>): Promise<void> {
     try {
-      run();
+      await run();
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       console.warn(`[dispatch] Failed to ${action} for ${taskRef} during recovery: ${message}`);
@@ -2292,13 +2299,13 @@ export class DispatchEngine {
         console.error(
           `[dispatch] Failed to provision workspace for ${entry.change.taskRef}: ${message}`,
         );
-        this._runRecoveryTaskCommand(entry.change.taskRef, "add task note", () =>
+        await this._runRecoveryTaskCommand(entry.change.taskRef, "add task note", () =>
           this._addTaskNote(
             entry.change.taskRef,
             `[DISPATCH-WORKSPACE] ${message} Suggested action: ${guidance}`,
           ),
         );
-        this._runRecoveryTaskCommand(entry.change.taskRef, "block task", () =>
+        await this._runRecoveryTaskCommand(entry.change.taskRef, "block task", () =>
           this._blockTask(
             entry.change.taskRef,
             `Dispatch workspace provisioning failed: ${message}. Suggested action: ${guidance}`,
@@ -2339,29 +2346,19 @@ export class DispatchEngine {
           `[dispatch] Failed to bootstrap workspace for ${entry.change.taskRef}: ${message}`,
         );
         if (this.kspecCliPath) {
-          spawnSync(
-            process.execPath,
-            [
-              this.kspecCliPath,
-              "task",
-              "note",
-              entry.change.taskRef,
-              `[DISPATCH-BOOTSTRAP] ${message} Suggested action: ${guidance}`,
-            ],
-            { cwd: this.cwd },
+          // AC: @agent-dispatch-engine ac-28 — fire-and-forget async error recovery
+          await this._addTaskNote(
+            entry.change.taskRef,
+            `[DISPATCH-BOOTSTRAP] ${message} Suggested action: ${guidance}`,
           );
-          spawnSync(
-            process.execPath,
-            [
-              this.kspecCliPath,
-              "task",
-              "block",
+          try {
+            await this._blockTask(
               entry.change.taskRef,
-              "--reason",
               `Dispatch bootstrap failed: ${message}`,
-            ],
-            { cwd: this.cwd },
-          );
+            );
+          } catch {
+            // Best-effort — block may fail if task already blocked
+          }
         }
         return false;
       }
@@ -2377,16 +2374,10 @@ export class DispatchEngine {
             : "Inspect dispatch role-entry configuration and workspace metadata.";
         console.error(`[dispatch] Failed to build prompt for ${entry.change.taskRef}: ${message}`);
         if (this.kspecCliPath) {
-          spawnSync(
-            process.execPath,
-            [
-              this.kspecCliPath,
-              "task",
-              "note",
-              entry.change.taskRef,
-              `[DISPATCH-PROMPT] ${message} Suggested action: ${guidance}`,
-            ],
-            { cwd: this.cwd },
+          // AC: @agent-dispatch-engine ac-28 — fire-and-forget async error recovery
+          await this._addTaskNote(
+            entry.change.taskRef,
+            `[DISPATCH-PROMPT] ${message} Suggested action: ${guidance}`,
           );
         }
         return false;
@@ -2406,17 +2397,11 @@ export class DispatchEngine {
         const currentActive = this.activeCount.get(agentId) ?? 1;
         this.activeCount.set(agentId, Math.max(0, currentActive - 1));
         // AC: @agent-dispatch-engine ac-10 - Add task note for unresolvable adapter
+        // AC: @agent-dispatch-engine ac-28 — async fire-and-forget
         if (this.kspecCliPath) {
-          spawnSync(
-            process.execPath,
-            [
-              this.kspecCliPath,
-              "task",
-              "note",
-              entry.change.taskRef,
-              `[AGENT-SKIP] Cannot resolve adapter "${adapterId}" for agent "${agentId}". Invocation skipped.`,
-            ],
-            { cwd: this.cwd },
+          await this._addTaskNote(
+            entry.change.taskRef,
+            `[AGENT-SKIP] Cannot resolve adapter "${adapterId}" for agent "${agentId}". Invocation skipped.`,
           );
         }
         return false;
@@ -2908,7 +2893,7 @@ export class DispatchEngine {
       this._syncIntervalMs = config.dispatch.sync_interval * 1000;
 
       // Detect remote
-      const remotes = this._listGitRemotes();
+      const remotes = await this._listGitRemotes();
       const hasRemote = remotes.length > 0;
       this._remoteSyncEnabled = resolveDispatchRemoteSync(config, hasRemote);
 
@@ -2961,7 +2946,7 @@ export class DispatchEngine {
     try {
       let mutationScope;
       try {
-        mutationScope = resolveDispatchIntegrationMutationScope(
+        mutationScope = await resolveDispatchIntegrationMutationScope(
           this.projectDir,
           this._syncBaseBranch,
         );
@@ -2972,7 +2957,7 @@ export class DispatchEngine {
       }
 
       // Step 1: Fetch the target branch from remote
-      const fetchResult = runDispatchIntegrationTargetGit(
+      const fetchResult = await runDispatchIntegrationTargetGit(
         this.projectDir,
         this._syncBaseBranch,
         ["fetch", this._syncRemote, this._syncBaseBranch],
@@ -3006,13 +2991,13 @@ export class DispatchEngine {
       // Step 2: Fast-forward merge the target branch
       // AC: @dispatch-remote-branch-sync ac-pull-ff-only — no merge commits
       const mergeResult = mutationScope.targetBranchCheckedOut
-        ? runDispatchIntegrationTargetGit(
+        ? await runDispatchIntegrationTargetGit(
             this.projectDir,
             this._syncBaseBranch,
             ["merge", "--ff-only", `${this._syncRemote}/${this._syncBaseBranch}`],
             { timeout: 10_000 },
           )
-        : fastForwardDispatchIntegrationBranch(
+        : await fastForwardDispatchIntegrationBranch(
             this.projectDir,
             this._syncBaseBranch,
             `${this._syncRemote}/${this._syncBaseBranch}`,
@@ -3024,7 +3009,7 @@ export class DispatchEngine {
 
         // AC: @dispatch-remote-branch-sync ac-divergence-enters-degraded
         // AC: @dispatch-remote-branch-sync ac-divergence-log-guidance
-        const reason = this._classifyDivergence(stderr || stdout);
+        const reason = await this._classifyDivergence(stderr || stdout);
         this._enterDegradedState(reason);
         return "diverged";
       }
@@ -3056,7 +3041,7 @@ export class DispatchEngine {
    * Distinguishes "local has unpushed merges" from "remote history was rewritten".
    * AC: @dispatch-remote-branch-sync ac-divergence-log-guidance
    */
-  private _classifyDivergence(_mergeOutput: string): string {
+  private async _classifyDivergence(_mergeOutput: string): Promise<string> {
     const remote = this._syncRemote;
     const branch = this._syncBaseBranch;
     if (!remote || !branch) {
@@ -3067,14 +3052,14 @@ export class DispatchEngine {
     let localAhead = 0;
     let remoteAhead = 0;
     try {
-      const aheadResult = runDispatchIntegrationTargetGit(this.projectDir, branch, [
+      const aheadResult = await runDispatchIntegrationTargetGit(this.projectDir, branch, [
         "rev-list",
         "--count",
         `${remote}/${branch}..${branch}`,
       ]);
       localAhead = parseInt(aheadResult.stdout?.trim() ?? "0", 10);
 
-      const behindResult = runDispatchIntegrationTargetGit(this.projectDir, branch, [
+      const behindResult = await runDispatchIntegrationTargetGit(this.projectDir, branch, [
         "rev-list",
         "--count",
         `${branch}..${remote}/${branch}`,
@@ -3192,24 +3177,27 @@ export class DispatchEngine {
   /**
    * List git remotes from the project directory, origin first.
    */
-  private _listGitRemotes(): string[] {
-    const result = spawnSync("git", ["remote"], {
-      cwd: this.projectDir,
-      env: buildDispatchGitEnv(),
-      encoding: "utf-8",
-      stdio: "pipe",
-    });
-    if (result.status !== 0 || !result.stdout) {
+  private async _listGitRemotes(): Promise<string[]> {
+    try {
+      const result = await execFileAsync("git", ["remote"], {
+        cwd: this.projectDir,
+        env: buildDispatchGitEnv(),
+        encoding: "utf-8",
+      });
+      if (!result.stdout) {
+        return [];
+      }
+      const remotes = result.stdout
+        .split(/\r?\n/)
+        .map((line) => line.trim())
+        .filter(Boolean)
+        .toSorted();
+      const originFirst = remotes.filter((r) => r === "origin");
+      const rest = remotes.filter((r) => r !== "origin");
+      return [...originFirst, ...rest];
+    } catch {
       return [];
     }
-    const remotes = result.stdout
-      .split(/\r?\n/)
-      .map((line) => line.trim())
-      .filter(Boolean)
-      .toSorted();
-    const originFirst = remotes.filter((r) => r === "origin");
-    const rest = remotes.filter((r) => r !== "origin");
-    return [...originFirst, ...rest];
   }
 
   private _formatUnsafeMutationScopeReason(err: unknown, branch: string): string {
