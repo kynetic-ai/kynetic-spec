@@ -74654,6 +74654,21 @@ reviews:
         runner: kspec
         created_at: 2026-03-28T23:12:29.749Z
         completed_at: 2026-03-28T23:12:29.749Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: >-
+          > @kynetic-ai/spec@0.12.0 test
+
+          > node scripts/test.cjs exited 1 in this snapshot: 7062 passed, 1 failed, 5 skipped (2
+          failed suites of 1964). The failing test reported by the run was  at line 5878, so the
+          required full-suite gate is not clean.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-28T23:12:29.806Z
+        completed_at: 2026-03-28T23:12:29.806Z
     events:
       - _ulid: 01KMVB0RBK5QM4JWMDMCVNJA7K
         actor: Test User
@@ -74675,6 +74690,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-28T23:12:30.465Z
+      - _ulid: 01KMVBGXD41JRAQYE7ECX9QEFE
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-28T23:12:31.653Z
     examined_commit: afd332b4c3b16543d6a80c9a905ac644ae07d3bd
     external_links: []
     lifecycle_state: open
@@ -74687,5 +74709,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-28T23:03:42.196Z
-    updated_at: 2026-03-28T23:12:29.749Z
+    updated_at: 2026-03-28T23:12:29.806Z
     notes: []
