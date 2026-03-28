@@ -184,6 +184,10 @@ async function executeCommand(
   installExitInterceptor();
 
   const originalCwd = process.cwd();
+  // Clear KSPEC_SPEC_DIR so initContext() discovers the project via cwd
+  // (set below) rather than an ambient env override that may point elsewhere.
+  const savedSpecDir = process.env.KSPEC_SPEC_DIR;
+  delete process.env.KSPEC_SPEC_DIR;
   let exitCode = 0;
 
   try {
@@ -201,6 +205,9 @@ async function executeCommand(
     }
   } finally {
     process.chdir(originalCwd);
+    if (savedSpecDir !== undefined) {
+      process.env.KSPEC_SPEC_DIR = savedSpecDir;
+    }
     console.log = origLog;
     console.error = origError;
     console.warn = origWarn;
@@ -436,6 +443,8 @@ export function createCommandRoutes(options: CommandRouteOptions) {
         const batchResult = await dispatchMutex.run(async () => {
           const runBatch = () => {
             const originalCwd = process.cwd();
+            const savedBatchSpecDir = process.env.KSPEC_SPEC_DIR;
+            delete process.env.KSPEC_SPEC_DIR;
             process.chdir(projectPath);
             return executeBatch(batchCommands, program, {
               atomic: body.atomic !== false, // Default atomic
@@ -444,6 +453,9 @@ export function createCommandRoutes(options: CommandRouteOptions) {
               json: true,
             }).finally(() => {
               process.chdir(originalCwd);
+              if (savedBatchSpecDir !== undefined) {
+                process.env.KSPEC_SPEC_DIR = savedBatchSpecDir;
+              }
             });
           };
 

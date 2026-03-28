@@ -19,6 +19,7 @@ import {
   cleanupTempDir,
   createTempDir,
   initGitRepo,
+  kspec,
   readTestOutput,
   testUlid,
 } from "./helpers/cli.js";
@@ -31,22 +32,25 @@ function git(cwd: string, command: string): string {
   }).trim();
 }
 
+/**
+ * Seed a test repo with a real shadow worktree via `kspec init`.
+ * This avoids setting process.env.KSPEC_SPEC_DIR which is shared across
+ * vitest worker threads and can corrupt concurrent tests (e.g.
+ * daemon-command-api.test.ts) that rely on initContext() resolving
+ * from cwd rather than an env override.
+ */
 async function seedRepo(dir: string): Promise<void> {
   initGitRepo(dir);
   await fs.writeFile(path.join(dir, "README.md"), "seed\n", "utf-8");
   git(dir, "add README.md");
   git(dir, 'commit -m "init"');
-}
 
-async function setupShadowSpecDir(dir: string): Promise<string> {
-  const specDir = path.join(dir, ".kspec");
-  await fs.mkdir(specDir, { recursive: true });
-  await fs.writeFile(
-    path.join(specDir, "kynetic.yaml"),
-    'kynetic: "1"\ntitle: "Terminal Reconciliation Test"\n',
-    "utf-8",
-  );
-  return specDir;
+  const result = kspec("init --no-prompt", dir, {
+    env: { KSPEC_AUTHOR: "@test" },
+  });
+  if (result.exitCode !== 0) {
+    throw new Error(`kspec init --no-prompt failed: ${result.stderr}`);
+  }
 }
 
 async function readWorkspaceRecord(
@@ -68,23 +72,13 @@ async function readWorkspaceRecord(
 
 describe("dispatch workspace terminal task reconciliation", () => {
   let tempDir: string;
-  let specDir: string;
-  let originalSpecDir: string | undefined;
 
   beforeEach(async () => {
     tempDir = await createTempDir("kspec-dispatch-terminal-reconcile-");
-    specDir = await setupShadowSpecDir(tempDir);
-    originalSpecDir = process.env.KSPEC_SPEC_DIR;
-    process.env.KSPEC_SPEC_DIR = specDir;
   });
 
   afterEach(async () => {
     vi.restoreAllMocks();
-    if (originalSpecDir === undefined) {
-      delete process.env.KSPEC_SPEC_DIR;
-    } else {
-      process.env.KSPEC_SPEC_DIR = originalSpecDir;
-    }
     await cleanupTempDir(tempDir);
   });
 
