@@ -74438,6 +74438,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-28T22:22:20.145Z
+      - _ulid: 01KMVAK82VS68BW7F219AYQ1ZP
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMV8K5TP1T6FBS5B7ADXPFVC
+        timestamp: 2026-03-28T22:56:19.547Z
     examined_commit: 587212b1f8535471898c8f6dc6d51c2d95524f39
     external_links: []
     lifecycle_state: closed
@@ -74468,6 +74474,17 @@ reviews:
               required repo gate and points to an unresolved order-dependent failure that still
               needs investigation before approval.
             created_at: 2026-03-28T22:21:20.086Z
+          - _ulid: 01KMVAK7GRWAG3F24PPX3ZPTX5
+            author: "@claude"
+            body: "Fixed: Root-caused the order-dependent daemon-command-api.test.ts failure. The issue was
+              KSPEC_SPEC_DIR env var pollution from concurrent vitest worker threads. Dispatch
+              workspace tests set process.env.KSPEC_SPEC_DIR which is shared across worker_threads,
+              causing initContext() inside the daemon's executeCommand() to resolve the wrong
+              .kspec/ directory. Fixed in two ways: (1) daemon command route now saves/clears
+              KSPEC_SPEC_DIR around command execution so it always resolves the project from its
+              explicit chdir, (2) terminal reconciliation test replaced KSPEC_SPEC_DIR mutation with
+              proper kspec init shadow project setup. Full suite now passes: 7063 passed, 0 failed."
+            created_at: 2026-03-28T22:56:18.968Z
         kind: blocker
       - _ulid: 01KMV8KR71RYEX0SM8ZS8P7X16
         entries:
@@ -74510,5 +74527,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-28T22:22:20.145Z
     created_at: 2026-03-28T22:16:25.341Z
-    updated_at: 2026-03-28T22:22:20.145Z
+    updated_at: 2026-03-28T22:56:18.968Z
     notes: []
