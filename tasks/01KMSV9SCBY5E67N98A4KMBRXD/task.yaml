@@ -20,5 +20,14 @@ tags:
   - cli
   - batch
 vcs_refs: []
+history:
+  - author: "@claude"
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-03-28T09:10:18.088Z
 created_at: 2026-03-28T09:09:46.507Z
 todos: []
+automation: eligible
