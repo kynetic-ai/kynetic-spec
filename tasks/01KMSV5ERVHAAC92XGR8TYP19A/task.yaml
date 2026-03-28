@@ -24,6 +24,7 @@ tags:
   - daemon
   - dispatch
 vcs_refs: []
+review_ref: "@01KMTG04Z9W9KXMWYJNGDZGAF8"
 submission_linkage:
   review_url: null
   branch: dev
@@ -111,6 +112,13 @@ history:
         previous: pending_review
     command: task-unblock
     timestamp: 2026-03-28T15:05:50.830Z
+  - author: Test User
+    changes:
+      review_ref:
+        new: "@01KMTG04Z9W9KXMWYJNGDZGAF8"
+        previous: null
+    command: review-link
+    timestamp: 2026-03-28T15:11:33.265Z
 prior_status: null
 created_at: 2026-03-28T09:07:24.571Z
 started_at: 2026-03-28T09:57:16.272Z

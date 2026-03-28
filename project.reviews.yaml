@@ -73182,3 +73182,29 @@ reviews:
     created_at: 2026-03-28T11:14:15.536Z
     updated_at: 2026-03-28T11:19:53.083Z
     notes: []
+  - _ulid: 01KMTG04Z9W9KXMWYJNGDZGAF8
+    slugs: []
+    title: Review replace synchronous process spawning in dispatch engine
+    author: Test User
+    checks: []
+    events:
+      - _ulid: 01KMTG04Z9FWNBHTW19TDA1AWS
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-28T15:11:30.793Z
+    examined_commit: 11fcbee97e6b8f5fff51f0268670dd169c0e0f4e
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMSV5ERVHAAC92XGR8TYP19A"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-28T15:11:30.793Z
+    updated_at: null
+    notes: []
