@@ -73087,6 +73087,17 @@ reviews:
         runner: npm
         created_at: 2026-03-28T11:19:46.946Z
         completed_at: 2026-03-28T11:19:46.946Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- tests/daemon-command-api.test.ts passed in isolation: 2 suites, 24 tests,
+          2.2s. Log: /tmp/kspec-test-cache/01KMT2CJ2Y67C83W07BMZKXANS/76ae2097749b6946.log"
+        name: daemon-command-api
+        required: true
+        runner: npm
+        created_at: 2026-03-28T11:19:50.252Z
+        completed_at: 2026-03-28T11:19:50.252Z
     events:
       - _ulid: 01KMT2DQBFKN6H3V3PGA8WJZ14
         actor: Test User
@@ -73115,6 +73126,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMT2QWHRS3DH2AA5X985MYH2
         timestamp: 2026-03-28T11:19:49.065Z
+      - _ulid: 01KMT2QYRVX9AQ02FSCC0QYSBY
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: daemon-command-api
+        timestamp: 2026-03-28T11:19:50.812Z
     examined_commit: f8339068c0dcc4a9b294a20afdd60d5036b3aa55
     external_links: []
     lifecycle_state: open
@@ -73143,5 +73161,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-28T11:14:15.536Z
-    updated_at: 2026-03-28T11:19:48.536Z
+    updated_at: 2026-03-28T11:19:50.252Z
     notes: []
