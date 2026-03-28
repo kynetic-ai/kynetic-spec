@@ -1,0 +1,20 @@
+_ulid: 01KMSFMG5AJNYD4PWW8MNPVH5C
+slugs:
+  - task-fix-ws-watcher-registration
+title: Fix file watcher not starting for WebSocket-registered projects
+type: task
+spec_ref: "@multi-directory-daemon"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - bug
+  - daemon
+  - mvp
+vcs_refs: []
+created_at: 2026-03-28T05:45:54.602Z
+todos: []

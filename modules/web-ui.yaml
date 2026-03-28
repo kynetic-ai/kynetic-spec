@@ -1757,6 +1757,10 @@ features:
           leaving a stale registration until the next API request
         when: The file watcher determines the directory is permanently unavailable and cannot continue
           operating
+      - given: a project is auto-registered through any path
+        id: ac-35
+        then: a file watcher is started for that project before any cached data is served
+        when: registration succeeds
     tags:
       - daemon
       - architecture
