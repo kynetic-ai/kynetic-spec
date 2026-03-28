@@ -1173,16 +1173,33 @@ function buildIssue(code: string, message: string, suggestion: string): Dispatch
 }
 
 // AC: @adopted-branch-cleanup-and-recoverability ac-3
+// AC: @dispatch-workspace-registry ac-12
 async function reconcileWorkspaceHealth(
   projectDir: string,
   record: DispatchWorkspaceRecord,
   now: string,
+  taskStatus?: ResolveDispatchWorkspaceCleanupStateOptions["taskStatus"],
 ): Promise<DispatchWorkspaceHealthState> {
   const issues: DispatchWorkspaceIssue[] = [];
   const branchRef = `refs/heads/${record.canonical_branch}`;
   let branchExists = await refExists(projectDir, branchRef);
-  if (!branchExists) {
+
+  // AC: @dispatch-workspace-registry ac-12 — skip branch restoration for terminal
+  // tasks whose integration is merged or abandoned. These branches are expected
+  // to be missing after cleanup; restoring them creates a futile restore-delete
+  // cycle with artifact reconciliation.
+  const isTerminalTask = taskStatus === "completed" || taskStatus === "cancelled";
+  const isIntegrationResolved =
+    record.integration.status === "merged" || record.integration.status === "abandoned";
+  const skipBranchRestore = isTerminalTask && isIntegrationResolved;
+
+  if (!branchExists && !skipBranchRestore) {
     branchExists = await tryRestoreBranchFromRemote(projectDir, record.canonical_branch);
+  }
+  if (!branchExists && skipBranchRestore) {
+    // For terminal tasks with resolved integration, a missing branch is expected.
+    // Return the last persisted health state rather than flagging issues.
+    return record.health;
   }
   if (!branchExists) {
     const isAdopted = record.branch_provenance?.ownership === "adopted";
@@ -2157,7 +2174,7 @@ export async function reconcileDispatchWorkspaceRegistry(
     for (const record of nonClosedRecords) {
       const now = new Date().toISOString();
       const currentTaskStatus = taskStatusByRef?.get(record.task_ref) ?? null;
-      const health = await reconcileWorkspaceHealth(projectDir, record, now);
+      const health = await reconcileWorkspaceHealth(projectDir, record, now, currentTaskStatus);
       const canonicalBranchHead = await refExists(projectDir, `refs/heads/${record.canonical_branch}`)
         ? await resolveCommit(projectDir, record.canonical_branch)
         : record.canonical_branch_head;
@@ -2818,10 +2835,53 @@ export async function reconcileDispatchWorkspaceArtifacts(
     await fs.rm(candidate, { recursive: true, force: true });
   }
 
+  // AC: @dispatch-workspace-registry ac-13 — consult the workspace registry
+  // before deleting untracked dispatch branches. Registry-only records (no
+  // worktree on disk) would be invisible to trackedBranches, which is built
+  // solely from worktree metadata. Without this check, branches belonging to
+  // active registry records get deleted as orphans.
+  let registryBranchMap: Map<string, { lifecycle_state: string; integration_status: string }> | null = null;
+  try {
+    const ctx = await initContext(projectDir);
+    const registryRecords = await loadDispatchWorkspaceRegistry(ctx);
+    registryBranchMap = new Map();
+    for (const record of registryRecords) {
+      if (record.lifecycle_state !== "closed") {
+        registryBranchMap.set(record.canonical_branch, {
+          lifecycle_state: record.lifecycle_state,
+          integration_status: record.integration.status,
+        });
+      }
+    }
+  } catch {
+    // Registry may not exist yet or be unparseable — fall back to the original
+    // behavior of deleting all untracked dispatch branches.
+    registryBranchMap = null;
+  }
+
   for (const branch of await listDispatchBranches(projectDir)) {
     if (trackedBranches.has(branch)) {
       continue;
     }
+
+    // AC: @dispatch-workspace-registry ac-13 — if the branch belongs to a
+    // non-closed registry record, check lifecycle and integration state
+    // before deleting.
+    if (registryBranchMap) {
+      const registryEntry = registryBranchMap.get(branch);
+      if (registryEntry) {
+        // Allow deletion for records that are in terminal cleanup states
+        // (closing with merged/abandoned integration, or cleanup_blocked).
+        const isCleanupEligible =
+          registryEntry.lifecycle_state === "closing" ||
+          registryEntry.lifecycle_state === "cleanup_blocked";
+        if (!isCleanupEligible) {
+          // Branch belongs to an active registry record — preserve it.
+          continue;
+        }
+      }
+    }
+
     await deleteDispatchBranch(projectDir, branch);
   }
 }
