@@ -9371,6 +9371,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-28T15:46:48.497Z
+  - _ulid: 01KMV5DQMWF9PTMGBNSHJC182Q
+    type: success
+    content: "CLI fault injection via wrapper .mjs scripts: When testing flush failures or other
+      internal error paths at the batch/CLI level, write a temporary .mjs wrapper that (1) imports
+      and patches the target class prototype, (2) sets process.argv[1] to the CLI entry point path
+      (to satisfy the import.meta.url entry guard), (3) dynamically imports the CLI. Run via
+      spawnSync with the wrapper as the script arg. This avoids read-only directory timing issues
+      and ESM inline script limitations."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-28T21:25:55.996Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
