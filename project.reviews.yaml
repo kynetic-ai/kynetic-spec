@@ -73565,9 +73565,25 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-03-28T20:23:33.331Z
+      - _ulid: 01KMV1X6DWX9PE9ME3VNB75HFE
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-28T20:24:28.348Z
+      - _ulid: 01KMV1X6DWMDM3BMKD92M9A693
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-28T20:24:28.348Z
     examined_commit: f8339068c0dcc4a9b294a20afdd60d5036b3aa55
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -73644,7 +73660,14 @@ reviews:
               integration. Findings: 1 blocker on partial-commit flush failure path."
             created_at: 2026-03-28T20:22:48.523Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-28T20:24:28.348Z
     created_at: 2026-03-28T20:19:40.119Z
-    updated_at: 2026-03-28T20:23:32.744Z
+    updated_at: 2026-03-28T20:24:28.348Z
     notes: []

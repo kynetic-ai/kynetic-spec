@@ -11,7 +11,7 @@ description: "What: When kspec batch fails in atomic mode, the output says 'N/M 
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on: []
 context: []
@@ -124,6 +124,13 @@ history:
         previous: "@01KMT2DQBGY3PTHAV87MC7SM3V"
     command: review-link
     timestamp: 2026-03-28T20:19:42.192Z
+  - author: Test User
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+    command: review-verdict-needs-work
+    timestamp: 2026-03-28T20:24:29.777Z
 prior_status: null
 created_at: 2026-03-28T09:09:46.507Z
 started_at: 2026-03-28T11:03:49.889Z
