@@ -25963,18 +25963,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-daemon-cache-diagnostic/01kmsrsv
-    canonical_branch_head: 39e80b193a2247ab9a52253c6cc9fc060da528fd
+    canonical_branch_head: a206213a837867769df3301331c8054b56b93d2a
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-28T08:27:09.368Z
+      updated_at: 2026-03-28T08:54:52.223Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-28T08:27:20.873Z
+      updated_at: 2026-03-28T08:54:52.223Z
     integration:
       status: pending
       detail: null
@@ -25982,7 +25982,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 39e80b193a2247ab9a52253c6cc9fc060da528fd
-      updated_at: 2026-03-28T08:27:09.368Z
+      updated_at: 2026-03-28T08:54:52.223Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KMSRSVWTKRQEHCCT4KXY619W"
@@ -25990,9 +25990,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-28T08:27:20.873Z
-      last_reconciled_at: 2026-03-28T08:27:20.873Z
+      last_reconciled_at: 2026-03-28T08:54:52.223Z
       created_at: 2026-03-28T08:27:09.368Z
-      updated_at: 2026-03-28T08:27:20.873Z
+      updated_at: 2026-03-28T08:54:52.223Z
     workspace_id: dispatch-workspace-01KMSRSVWTKRQEHCCT4KXY619W
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
