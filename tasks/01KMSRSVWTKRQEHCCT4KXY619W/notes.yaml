@@ -113,3 +113,39 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-28T08:31:02.630Z
+  - _ulid: 01KMSTER1JV3YW5RCSQ0P1WTQV
+    content: >-
+      Implementation complete. 
+
+
+      Changes:
+
+      1. entity-cache.ts: Added lastInvalidatedAt to DomainStore (set in
+      invalidateDomain/writeThrough), getCacheDiagnostics() public method,
+      DomainDiagnostic/CacheDiagnostic types, getAllRegisteredCaches() registry function
+
+      2. routes/debug.ts: New route file with createDebugRoutes() — GET /api/debug/cache-status
+      returns per-project cache state
+
+      3. server.ts: Registered debug routes with projectManager + getEntityCache
+
+      4. middleware/project-context.ts: Skips project resolution for /api/debug/* (cross-project
+      endpoint)
+
+      5. entity-cache-types.ts: Extended RouteEntityCache interface with getCacheDiagnostics()
+
+
+      Tests:
+
+      - daemon-debug-routes.test.ts: 5 behavioral tests covering normal operation, degraded domains,
+      empty projects, null cache, and loading states
+
+      - daemon-entity-cache.test.ts: 5 unit tests for getCacheDiagnostics() and
+      getAllRegisteredCaches() covering all domain states, timestamp tracking
+
+
+      All new tests pass. Full suite has 17 pre-existing failures (confirmed on base branch) — zero
+      regressions from this change.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-28T08:55:00.402Z
