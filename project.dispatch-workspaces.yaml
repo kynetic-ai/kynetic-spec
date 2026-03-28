@@ -26012,7 +26012,7 @@ workspaces:
         head: 31eb7d62e617273cdba064b537f1247742ab867f
         last_seen_at: 2026-03-28T09:42:16.043Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-cache-diagnostic-01kmsrsv
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 39e80b193a2247ab9a52253c6cc9fc060da528fd
     bootstrap:
       status: succeeded
@@ -26120,9 +26120,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-28T11:01:27.345Z
-      last_reconciled_at: 2026-03-28T11:11:25.825Z
+      last_reconciled_at: 2026-03-28T11:12:12.730Z
       created_at: 2026-03-28T09:40:40.810Z
-      updated_at: 2026-03-28T11:11:25.825Z
+      updated_at: 2026-03-28T11:12:12.730Z
     workspace_id: dispatch-workspace-01KMSV50CFZGJEFZE2MV83PGN7
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
