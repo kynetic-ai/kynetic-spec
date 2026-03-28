@@ -72379,6 +72379,17 @@ reviews:
         runner: kspec
         created_at: 2026-03-28T09:10:00.250Z
         completed_at: 2026-03-28T09:10:00.250Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- tests/daemon-debug-routes.test.ts tests/daemon-entity-cache.test.ts: 30
+          suites, 85 tests passed in 40.4s"
+        name: focused daemon tests
+        required: true
+        runner: npm
+        created_at: 2026-03-28T09:10:03.855Z
+        completed_at: 2026-03-28T09:10:03.855Z
     events:
       - _ulid: 01KMSTXYADRQFKRBGEH12J201W
         actor: Test User
@@ -72400,6 +72411,13 @@ reviews:
           status: pass
           name: validate
         timestamp: 2026-03-28T09:10:01.416Z
+      - _ulid: 01KMSVABESP948Y20Y1RMVYQY8
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: focused daemon tests
+        timestamp: 2026-03-28T09:10:05.018Z
     examined_commit: a206213a837867769df3301331c8054b56b93d2a
     external_links: []
     lifecycle_state: open
@@ -72412,7 +72430,7 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-28T09:03:18.350Z
-    updated_at: 2026-03-28T09:10:00.250Z
+    updated_at: 2026-03-28T09:10:03.855Z
     notes: []
   - _ulid: 01KMSTYQYH4G91MTC9D508PWX5
     slugs: []
