@@ -74354,6 +74354,18 @@ reviews:
         runner: npm
         created_at: 2026-03-28T22:21:21.936Z
         completed_at: 2026-03-28T22:21:21.936Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite failed: 1962/1964 suites passed, with 12 failures in
+          tests/daemon-command-api.test.ts (mutating command cases returning 500 / ENOENT under
+          full-suite execution)."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-28T22:21:23.798Z
+        completed_at: 2026-03-28T22:21:23.798Z
     events:
       - _ulid: 01KMV8A5ZWVY1PCAFWESA5Q6KY
         actor: codex
@@ -74389,6 +74401,13 @@ reviews:
           status: pass
           name: npm test -- --run tests/daemon-command-api.test.ts
         timestamp: 2026-03-28T22:21:22.515Z
+      - _ulid: 01KMV8KA12DK3JSB2V31Y2YT1V
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-28T22:21:24.386Z
     examined_commit: 587212b1f8535471898c8f6dc6d51c2d95524f39
     external_links: []
     lifecycle_state: open
@@ -74422,5 +74441,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-28T22:16:25.341Z
-    updated_at: 2026-03-28T22:21:21.936Z
+    updated_at: 2026-03-28T22:21:23.798Z
     notes: []
