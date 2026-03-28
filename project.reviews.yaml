@@ -74819,3 +74819,29 @@ reviews:
     created_at: 2026-03-28T23:03:42.196Z
     updated_at: 2026-03-28T23:16:35.958Z
     notes: []
+  - _ulid: 01KMVE4KYYR26RPZ6D3E8SCEFZ
+    slugs: []
+    title: Review fix-workspace-reconciliation-cycle-for-completed-task-records
+    author: Test User
+    checks: []
+    events:
+      - _ulid: 01KMVE4KYX889Q367QVTTDRQS5
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-28T23:58:14.494Z
+    examined_commit: afd332b4c3b16543d6a80c9a905ac644ae07d3bd
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMV52K0KFVQ33W970Z9NBCR5"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-28T23:58:14.494Z
+    updated_at: null
+    notes: []
