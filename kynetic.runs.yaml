@@ -17625,7 +17625,7 @@ runs:
     completed_at: 2026-03-28T11:22:12.153Z
   - _ulid: 01KMTGF9X2J1AAMKSSZP1B45DC
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Test User
     step_results:
       - status: completed
@@ -17637,7 +17637,14 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-28T15:20:51.050Z
-        completed_at: 2026-03-28T15:20:51.050Z
+        completed_at: 2026-03-28T15:21:31.715Z
+        notes: "High-confidence reflection: AC-28 test coverage was too narrow and missed synchronous
+          filesystem branches on the dispatch path. Tool-specific shell quoting friction was
+          observed but intentionally not captured because it is not project-level."
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-28T15:21:31.715Z
+        completed_at: 2026-03-28T15:21:31.715Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-28T15:19:47.362Z
