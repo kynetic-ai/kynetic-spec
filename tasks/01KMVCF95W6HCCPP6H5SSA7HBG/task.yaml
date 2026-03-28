@@ -409,5 +409,13 @@ history:
           identifying the previous holder PID and hold duration.
     command: task-set
     timestamp: 2026-03-28T23:43:30.610Z
+  - author: "@claude"
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-03-28T23:44:18.352Z
 created_at: 2026-03-28T23:29:06.748Z
 todos: []
+automation: eligible
