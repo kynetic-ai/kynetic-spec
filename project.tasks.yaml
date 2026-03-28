@@ -22863,7 +22863,7 @@
   title: Implement daemon cache diagnostic endpoint
   type: task
   spec_ref: "@daemon-server"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 2
@@ -22874,4 +22874,5 @@
   todos_count: 0
   created_at: 2026-03-28T08:26:07.642Z
   started_at: 2026-03-28T08:28:04.347Z
+  submitted_at: 2026-03-28T08:55:08.686Z
   automation: eligible

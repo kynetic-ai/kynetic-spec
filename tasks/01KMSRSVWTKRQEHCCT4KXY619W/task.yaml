@@ -6,7 +6,7 @@ type: task
 spec_ref: "@daemon-server"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -15,6 +15,14 @@ tags:
   - daemon
   - observability
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-28T08:55:08.676Z
+  commit: 39e80b193a2247ab9a52253c6cc9fc060da528fd
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
 session_id: 01KMSRW302HY7ZVCBPTE2ZXM7D
 history:
   - author: "@claude"
@@ -30,7 +38,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-03-28T08:28:04.348Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-03-28T08:55:08.676Z
+          commit: 39e80b193a2247ab9a52253c6cc9fc060da528fd
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous: null
+      submitted_at:
+        new: 2026-03-28T08:55:08.686Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-03-28T08:55:08.687Z
 created_at: 2026-03-28T08:26:07.642Z
 started_at: 2026-03-28T08:28:04.347Z
+submitted_at: 2026-03-28T08:55:08.686Z
 todos: []
 automation: eligible
