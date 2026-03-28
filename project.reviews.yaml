@@ -74056,6 +74056,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-28T21:25:38.389Z
+      - _ulid: 01KMV5MWDKZYWJJ9N2Y8YV2M2E
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMV5MVR2K1YB0W3DW7EBR2DC
+        timestamp: 2026-03-28T21:29:50.259Z
     examined_commit: deb29e24afec4e6b94b9c1825f82d489f4796e2a
     external_links: []
     lifecycle_state: open
@@ -74065,8 +74072,37 @@ reviews:
       content_hash: ""
       ref: "@01KMSV9SCBY5E67N98A4KMBRXD"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMV5MVR2K1YB0W3DW7EBR2DC
+        entries:
+          - _ulid: 01KMV5MVR2DDH7JD71NM2HSQBW
+            author: Test User
+            body: >-
+              Evidence log:
+
+              Files read: src/cli/batch-exec.ts, src/cli/commands/batch.ts, src/schema/batch.ts,
+              tests/batch-exec-engine.test.ts, tests/helpers/cli.ts
+
+              Commands run: git diff a83f81a...deb29e24, kspec task get @01KMSV9SCBY5E67N98A4KMBRXD,
+              kspec item get @batch-exec, kspec item get @trait-json-output, kspec item get
+              @trait-shadow-commit, kspec item get @batch-write-buffer, kspec item get
+              @project-config, kspec validate, grep -Rni AC annotations under tests, node
+              dist/cli/index.js batch ..., node dist/cli/index.js batch --json ..., npm test, npm
+              test -- tests/batch-exec-engine.test.ts
+
+              Claims verified: atomic runtime failures now print the rollback note in human-readable
+              mode, return rolled_back: true in JSON mode, and do not persist state; flush-failure
+              regression is covered by the new wrapper-based test and the touched code keeps
+              rolled_back unset in that branch.
+
+              Categories searched: correctness (no issue), edge cases (flush failure explicitly
+              covered), error handling (runtime failure and flush failure both checked), test
+              quality (behavioral CLI coverage, no source scanning), integration (touched-file
+              boundary limited to batch execution and tests; unrelated daemon-command-api failures
+              remain in full-suite baseline).
+            created_at: 2026-03-28T21:29:49.570Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-28T21:23:54.181Z
-    updated_at: 2026-03-28T21:25:37.171Z
+    updated_at: 2026-03-28T21:29:49.570Z
     notes: []
