@@ -60,3 +60,14 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-28T06:05:44.259Z
+  - _ulid: 01KMSHEQ3ZNXB1T67FC58AZ91T
+    content: "Fix implemented and tested. Added manager.startWatcher() call to resolveWebSocketProject()
+      when wasRegistered=true, matching the pattern used by HTTP middleware
+      (project-context.ts:113). Three new tests added: (1) verifies startWatcher is called for newly
+      registered WS projects, (2) verifies startWatcher is NOT called for already-registered
+      projects, (3) verifies resolution succeeds even if startWatcher throws. All tests pass. 12
+      pre-existing failures in daemon-command-api.test.ts confirmed unrelated (same failures on base
+      branch)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-28T06:17:42.271Z
