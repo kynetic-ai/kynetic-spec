@@ -117,3 +117,13 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-28T22:58:18.741Z
+  - _ulid: 01KMVBPSDCYTK2JQHZT43AKXKN
+    content: "[FIX_CYCLE: 3] Review findings: Review cycle 3: packages/daemon/src/routes/command.ts
+      clears KSPEC_SPEC_DIR before daemon command execution, and a reproducible targeted run (npm
+      test -- --fresh --run tests/dispatch-workspace-terminal-reconciliation.test.ts
+      tests/daemon-command-api.test.ts) now fails 12 daemon-command-api assertions with 500
+      responses on mutating routes. Full npm test also failed in this snapshot, so the review gate
+      is not clean."
+    supersedes: null
+    author: Test User
+    created_at: 2026-03-28T23:15:44.172Z
