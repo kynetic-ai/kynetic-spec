@@ -9234,6 +9234,26 @@ features:
             id: ac-6
             then: The explicit timeout is honored, overriding the default wait-indefinitely behavior
             when: A dispatch mutation waits for the lock
+          - given: The shadow mutation lock is acquired for a protected operation
+            id: ac-7
+            then: The lock is released before any subsequent work continues in that code path
+            when: The operation completes, whether successfully or with an error
+          - given: The shadow mutation lock has been held by a process
+            id: ac-8
+            then: The lock is eligible for reclamation by other processes regardless of whether the holder
+              process is alive
+            when: The hold duration exceeds a configurable maximum
+          - given: Periodic reconciliation evaluates multiple workspace records requiring shadow mutations
+            id: ac-9
+            then: Reconciliation yields the lock between individual record evaluations so waiting mutations can
+              interleave
+            when: Other processes are waiting to acquire the shadow mutation lock
+          - given: A process attempts to acquire the shadow mutation lock and the current holder process is
+              alive but has held the lock beyond the maximum duration ceiling
+            id: ac-10
+            then: The lock is treated as orphaned and reclaimed, with a diagnostic message identifying the
+              previous holder
+            when: The acquiring process evaluates lock staleness
         tags: []
         created: 2026-03-12T02:33:44.530Z
         notes: []
