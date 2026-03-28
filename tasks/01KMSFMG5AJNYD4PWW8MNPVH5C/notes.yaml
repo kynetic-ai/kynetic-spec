@@ -89,3 +89,14 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-28T06:28:39.608Z
+  - _ulid: 01KMSK0S1VJ7XHRZ114ZQ0PXHP
+    content: "Fix cycle 1: addressed review blocker. Made resolveWebSocketProject async — it now awaits
+      startWatcher() before calling onProjectRegistered, and lets watcher errors propagate to reject
+      the WebSocket connection. This satisfies AC-35 (watcher started before cached data served) and
+      AC-19 (registration fails on watcher creation failure). Replaced the success-on-failure test
+      with one verifying watcher failure rejects resolution. All 23 tests in
+      daemon-session-sync-multi-project.test.ts pass. Remaining 12 failures in
+      daemon-command-api.test.ts are pre-existing on dev branch."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-28T06:45:02.651Z
