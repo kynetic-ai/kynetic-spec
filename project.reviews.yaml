@@ -79237,6 +79237,18 @@ reviews:
         runner: npm
         created_at: 2026-03-29T09:54:11.381Z
         completed_at: 2026-03-29T09:54:11.381Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Exit 6 with repo-wide existing warnings only; no task-specific schema/reference errors
+          observed. Warnings include baseline orphaned specs/skills and historical AC coverage
+          issues unrelated to this route migration.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-29T09:54:13.386Z
+        completed_at: 2026-03-29T09:54:13.386Z
     events:
       - _ulid: 01KMWFT26SDF8C42VZP943HXTW
         actor: Test User
@@ -79265,6 +79277,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-29T09:54:12.132Z
+      - _ulid: 01KMWG7XDEJGYHRFXZZ7AQY3N4
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec validate
+        timestamp: 2026-03-29T09:54:14.063Z
     examined_commit: dfd20ae3709b032ac181cf04488b97e11b82d689
     external_links: []
     lifecycle_state: open
@@ -79306,5 +79325,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-29T09:46:40.217Z
-    updated_at: 2026-03-29T09:54:11.381Z
+    updated_at: 2026-03-29T09:54:13.386Z
     notes: []
