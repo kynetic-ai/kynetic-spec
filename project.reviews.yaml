@@ -78389,9 +78389,25 @@ reviews:
           status: skipped
           name: kspec-validate
         timestamp: 2026-03-29T08:55:59.660Z
+      - _ulid: 01KMWCXJBX0415K0X41V3VP2TG
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-29T08:56:09.341Z
+      - _ulid: 01KMWCXJBXEGXW66442E14TRAA
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-29T08:56:09.341Z
     examined_commit: d362c71d16d2916574e317b78a38a94f5f062b94
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -78429,7 +78445,14 @@ reviews:
               wiring, regression coverage."
             created_at: 2026-03-29T08:55:56.186Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-29T08:56:09.341Z
     created_at: 2026-03-29T08:51:15.379Z
-    updated_at: 2026-03-29T08:55:58.999Z
+    updated_at: 2026-03-29T08:56:09.341Z
     notes: []
