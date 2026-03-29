@@ -146,7 +146,7 @@ description: >-
 spec_ref: "@scoped-dispatch-shadow-serialization"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -156,6 +156,14 @@ tags:
   - dispatch
   - bug
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-29T00:10:29.049Z
+  commit: 737fd3d275ed9010448597c1a3565a2761b7f9af
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
 session_id: 01KMVE3BPMJHK8XBJS1ERQAK3H
 history:
   - author: "@claude"
@@ -430,7 +438,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-03-28T23:58:13.891Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-03-29T00:10:29.049Z
+          commit: 737fd3d275ed9010448597c1a3565a2761b7f9af
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous: null
+      submitted_at:
+        new: 2026-03-29T00:10:29.052Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-03-29T00:10:29.052Z
 created_at: 2026-03-28T23:29:06.748Z
 started_at: 2026-03-28T23:58:13.891Z
+submitted_at: 2026-03-29T00:10:29.052Z
 todos: []
 automation: eligible
