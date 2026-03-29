@@ -18637,7 +18637,7 @@ runs:
     completed_at: 2026-03-29T12:26:22.005Z
   - _ulid: 01KMWV5BA3KCZNCAPCT92W0FDJ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -18650,7 +18650,32 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-29T13:05:21.611Z
-        completed_at: 2026-03-29T13:05:21.611Z
+        completed_at: 2026-03-29T13:06:03.211Z
+        notes: >-
+          Friction identified (high confidence):
+
+          1. kspec not on PATH in worktree shells — had to use 'npx kspec' for all commands. The
+          bootstrap script exists (completed task 01KGHFM9) but worktree shells don't inherit the
+          PATH. This is a known pattern; not new friction.
+
+
+          2. Vitest has no Svelte component rendering capability (no jsdom/happy-dom, no
+          @testing-library/svelte). When reviewers request behavioral view-rendering tests, the only
+          option is heavyweight E2E Playwright tests. This is a gap in the testing infrastructure
+          but may be intentional (project prefers E2E for component tests).
+
+
+          Successes:
+
+          1. page.clock.install() in Playwright 1.58 enables fast-forward of retry timeouts — avoids
+          30-second waits in E2E tests. Good pattern to reuse.
+
+          2. Fix cycle workflow was smooth — review threads had clear IDs, reply+resolve worked
+          cleanly, batch note+submit was straightforward.
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-29T13:06:03.211Z
+        completed_at: 2026-03-29T13:06:03.211Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-29T13:05:04.324Z
