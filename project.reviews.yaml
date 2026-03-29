@@ -81490,9 +81490,25 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-03-29T21:48:44.222Z
+      - _ulid: 01KMXS5MKB3DK0X6GG28NHA2TZ
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-29T21:49:31.116Z
+      - _ulid: 01KMXS5MKC3QSDGPC35A0VB436
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-29T21:49:31.116Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -81518,7 +81534,14 @@ reviews:
               preserving it. Update the moved specs to import the colocated fixture path.
             created_at: 2026-03-29T21:46:55.728Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-29T21:49:31.115Z
     created_at: 2026-03-29T21:45:06.930Z
-    updated_at: 2026-03-29T21:48:43.666Z
+    updated_at: 2026-03-29T21:49:31.116Z
     notes: []
