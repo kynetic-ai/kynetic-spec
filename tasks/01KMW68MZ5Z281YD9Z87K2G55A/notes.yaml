@@ -50,3 +50,15 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-29T12:50:11.823Z
+  - _ulid: 01KMWV46CFGDJ1SYTE3ESXC5YR
+    content: "Fix cycle 1: addressed both review blockers. (1) Triage retry bug: CacheWarmingBanner now
+      accepts extraQueryKeys prop so the triage page resets both mergedInboxQuery and
+      triageRecordsQuery on retry — previously only reset inbox.merged(). (2) Non-behavioral tests:
+      removed deriveViewState() reimplementation from vitest test; added Playwright E2E test
+      (tests/e2e/cache-warming-views.spec.ts) that renders actual route components, mocks API
+      responses with cache_status loading, and asserts skeleton/banner branches via data-testid.
+      Vitest file now covers only the real CacheWarmingError/isCacheWarmingError utilities. Full
+      test suite: 7193 passed, typecheck clean."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-29T13:04:26.512Z
