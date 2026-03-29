@@ -26620,7 +26620,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-29T00:17:17.006Z
+      updated_at: 2026-03-29T00:17:19.609Z
     integration:
       status: pending
       detail: null
@@ -26629,25 +26629,20 @@ workspaces:
       target_branch: dev
       target_commit: 737fd3d275ed9010448597c1a3565a2761b7f9af
       updated_at: 2026-03-29T00:17:17.006Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMVCF95W6HCCPP6H5SSA7HBG"
     task_slug: fix-dispatch-shadow-mutation-lock-contention-and-leak-between-daemon-and-agents
     timestamps:
       closed_at: null
       last_active_at: 2026-03-29T00:11:46.506Z
-      last_reconciled_at: 2026-03-29T00:17:17.006Z
+      last_reconciled_at: 2026-03-29T00:17:19.609Z
       created_at: 2026-03-28T23:57:26.968Z
-      updated_at: 2026-03-29T00:17:17.006Z
+      updated_at: 2026-03-29T00:17:19.609Z
     workspace_id: dispatch-workspace-01KMVCF95W6HCCPP6H5SSA7HBG
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 6c58d673bad68d70fee52aa770d4792602926229
-        last_seen_at: 2026-03-29T00:11:37.945Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-dispatch-shadow-mutation-lock-contention-and-leak-between-daemon-and-agents-01kmvcf9-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/fix-dispatch-shadow-mutation-lock-contention-and-leak-between-daemon-and-agents/01kmvcf9
