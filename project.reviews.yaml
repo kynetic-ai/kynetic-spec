@@ -81339,9 +81339,25 @@ reviews:
           status: skipped
           name: cache-warming e2e
         timestamp: 2026-03-29T13:34:46.373Z
+      - _ulid: 01KMWWW3VC6DGZ6JP4WTFTC9X9
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-03-29T13:34:58.924Z
+      - _ulid: 01KMWWW3VCNQ7NMXG2GG0ZS5NY
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-29T13:34:58.924Z
     examined_commit: 65b9cc87bfebad12330eaec3b14f345459cc8f92
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -81397,7 +81413,14 @@ reviews:
               dispatch reviewer restrictions.
             created_at: 2026-03-29T13:34:26.763Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-29T13:34:58.923Z
     created_at: 2026-03-29T13:27:27.601Z
-    updated_at: 2026-03-29T13:34:45.785Z
+    updated_at: 2026-03-29T13:34:58.924Z
     notes: []
