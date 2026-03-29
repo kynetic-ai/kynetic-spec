@@ -175,3 +175,52 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-29T14:59:33.482Z
+  - _ulid: 01KMX1WX49XMMYVWHDDM83KDHE
+    content: >-
+      ## Review Findings
+
+
+      Agent reviewed plan against codebase. Key findings:
+
+
+      ### BLOCKERs (must address in plan)
+
+      1. **vi.mock() paths break on move** — 6 unit test files have ~30 `vi.mock("../src/lib/...")`
+      calls that need updating alongside the regular imports. Files: api-envelope, api-static,
+      query-client-retry, cache-warming-view-states, ws-cache-invalidation
+
+      2. **vi.importActual() paths break** — 2 files (query-client-retry, cache-warming-view-states)
+      use `vi.importActual("../src/lib/api")` which also needs updating
+
+
+      ### GAPs (add to plan)
+
+      3. **playwright-report/ gitignore** — root .gitignore has test-results/ but not
+      playwright-report/. Add it when moving playwright config to root
+
+      4. **packages/web-ui/package.json test script** — currently has a `test` script pointing to
+      root-level tests. May need updating or removal since all tests run from root
+
+      5. **File count corrections** — 11 unit tests not 12, 44 e2e specs not 45
+
+
+      ### RISKs (verify during execution)
+
+      6. **$lib alias mocks** — unit tests mock both `$lib/...` and `../src/lib/...`. The $lib alias
+      is SvelteKit-specific. vi.mock intercepts by module name so should work, but needs
+      verification
+
+      7. **node vs kspec detach behavior** — `node dist/cli/index.js serve start --detach` may
+      behave differently than `kspec serve start --detach` for daemon forking. Test during execution
+
+      8. **@playwright/test hoisting** — only available at root via workspace hoisting, not declared
+      in root package.json. Consider adding explicitly for resilience
+
+
+      ### Pre-existing (out of scope)
+
+      9. **daemon.projectDir in api-watcher.spec.ts** — references a property not in DaemonFixture
+      interface. Pre-existing bug, not migration-related
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-29T15:02:47.689Z
