@@ -76612,6 +76612,17 @@ reviews:
         required: true
         created_at: 2026-03-29T06:55:42.054Z
         completed_at: 2026-03-29T06:55:42.054Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "task-ui-unwrap-envelope now commits to a single static-mode strategy: static helpers emit
+          the same envelope shape with cache_status=ready, so workers have one normalization path to
+          implement and test."
+        name: Task executability
+        required: true
+        created_at: 2026-03-29T06:55:42.142Z
+        completed_at: 2026-03-29T06:55:42.142Z
     events:
       - _ulid: 01KMW60D9G4EYVHYKC4CSXC39D
         actor: Jacob Chapel
@@ -76633,6 +76644,13 @@ reviews:
           status: pass
           name: Existing spec alignment
         timestamp: 2026-03-29T06:55:42.619Z
+      - _ulid: 01KMW611W4BC00E0S3GN0Z0P33
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Task executability
+        timestamp: 2026-03-29T06:55:43.492Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -76645,5 +76663,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-29T06:55:22.417Z
-    updated_at: 2026-03-29T06:55:42.054Z
+    updated_at: 2026-03-29T06:55:42.142Z
     notes: []
