@@ -79580,6 +79580,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMWJ1R0JSJ2HY8F1G2SN7M6V
         timestamp: 2026-03-29T10:25:49.694Z
+      - _ulid: 01KMWJ1TR1D0TZ879TT0BBSJ91
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMWJ1T0835PW68GQYCX81CYA
+        timestamp: 2026-03-29T10:25:51.873Z
     examined_commit: 9272feb686c31924d97cd35693791cc6a314ab97
     external_links: []
     lifecycle_state: open
@@ -79608,7 +79615,25 @@ reviews:
               file needs to be migrated to assert  and  consistently."
             created_at: 2026-03-29T10:25:49.074Z
         kind: blocker
+      - _ulid: 01KMWJ1T0835PW68GQYCX81CYA
+        anchor:
+          type: code
+          commit: 9272feb686c31924d97cd35693791cc6a314ab97
+          line_end: 180
+          line_start: 172
+          path: packages/web-ui/tests/e2e/api-sessions-pagination.spec.ts
+          side: head
+        entries:
+          - _ulid: 01KMWJ1T088HBCF0KTGMZ585PG
+            author: Test User
+            body: "The session list/detail migration has the same coverage gap: these API E2E assertions still
+              expect  at the top level, even though the session endpoints now return those values
+              inside the envelope (, , etc.). The related session-context spec still does the same
+              for  and . Without updating those tests, the session API coverage is no longer
+              verifying the current response contract."
+            created_at: 2026-03-29T10:25:51.112Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-29T10:20:48.683Z
-    updated_at: 2026-03-29T10:25:49.074Z
+    updated_at: 2026-03-29T10:25:51.112Z
     notes: []
