@@ -285,7 +285,7 @@ export async function createServer(options: ServerOptions) {
         pubsubManager.broadcast(
           "cache:status",
           "domain_ready",
-          { domain, previousState, timestamp: new Date().toISOString() },
+          { domain, projectPath: cachePath, previousState, timestamp: new Date().toISOString() },
           cachePath,
         );
       },
