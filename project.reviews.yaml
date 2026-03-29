@@ -81653,6 +81653,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-29T22:09:45.972Z
+      - _ulid: 01KMXTC3CSKFH5F0979VAA0QKV
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMXTC2TM1RX7D43X6F41G2ZZ
+        timestamp: 2026-03-29T22:10:31.449Z
     examined_commit: 16bf033f141f9de2e878c93802f2979933dacc09
     external_links: []
     lifecycle_state: closed
@@ -81699,6 +81706,24 @@ reviews:
               assertion that distinguishes the push-driven path from the polling fallback.
             created_at: 2026-03-29T22:09:18.677Z
         kind: blocker
+      - _ulid: 01KMXTC2TM1RX7D43X6F41G2ZZ
+        anchor:
+          type: code
+          commit: 16bf033f141f9de2e878c93802f2979933dacc09
+          line_end: 166
+          line_start: 158
+          path: packages/web-ui/tests/e2e/cache-warming-transition.spec.ts
+          side: head
+        entries:
+          - _ulid: 01KMXTC2TM9TMEVD5NB99A3261
+            author: Test User
+            body: The submitted task scope includes the timeout scenario, but the full-stack timeout test is
+              checked in as . That leaves @ui-data-freshness ac-warming-timeout without the
+              end-to-end coverage this task was created to add. Existing route-intercepted coverage
+              elsewhere does not satisfy this task's missing full-stack scenario; as submitted, the
+              third scenario is explicitly skipped.
+            created_at: 2026-03-29T22:10:30.868Z
+        kind: blocker
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -81708,5 +81733,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T22:09:45.971Z
     created_at: 2026-03-29T22:04:14.293Z
-    updated_at: 2026-03-29T22:09:45.972Z
+    updated_at: 2026-03-29T22:10:30.868Z
     notes: []
