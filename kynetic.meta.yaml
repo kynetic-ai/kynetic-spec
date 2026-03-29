@@ -9583,6 +9583,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-29T07:21:41.930Z
+  - _ulid: 01KMW89XSC9KF4X589HHQTFGTT
+    type: friction
+    content: Dispatch review context can point reviewers at a non-existent detached worktree path (for
+      this task the prompt said .../task-spec-update-entity-cache-01kmw68j-review, but the actual
+      snapshot was .../task-spec-update-entity-cache-01kmw68j). Reviewers then waste time diagnosing
+      tool failures before discovering the real workspace.
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-29T07:35:31.372Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
