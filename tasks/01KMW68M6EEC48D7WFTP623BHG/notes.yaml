@@ -28,3 +28,33 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-29T11:10:24.916Z
+  - _ulid: 01KMWNBERCJ2DV6CZJX56Z39ZQ
+    content: >-
+      Implementation complete. Changes:
+
+
+      1. Added 3 new envelope unwrap helpers in api.ts:
+         - unwrapListEnvelope: for {items, total} list endpoints (plans, workflows, conventions, agents, mergedInbox)
+         - unwrapSessionListEnvelope: for sessions list with unfiltered_total
+         - unwrapSimpleSessionListEnvelope: for task/item session sub-endpoints
+      2. Consolidated 12 inline envelope.data access patterns to use these helpers
+
+      3. Updated api-static.ts: all static functions now return ApiResponse<T> envelope with
+      cache_status: 'ready'
+         - Added wrapEnvelope() and paginateEnvelope() helpers
+         - Removed PaginatedResponse dependency from static module
+      4. Updated api.ts static branches: all isStaticMode() branches now unwrap through the same
+      helpers as the live path
+
+      5. Updated api-static.test.ts: assertions updated to access .data and .meta instead of legacy
+      .items/.total
+
+
+      Non-envelope endpoints (hooks, schedules, events, compositions, mutations, diff, batch,
+      health) left as-is per ac-envelope exclusion clause.
+
+
+      All 7128 tests pass (5 skipped), build succeeds.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-29T11:23:33.004Z
