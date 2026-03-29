@@ -16,12 +16,10 @@
 
 import { test, expect } from "./fixtures/test-base";
 
-const DAEMON_URL = "http://localhost:3456";
-
 test.describe("Agent and Dispatch View", () => {
   test.describe("Dispatch Stopped State (AC-3)", () => {
     // AC: @ui-agent-dispatch ac-3
-    test("shows dispatch status as stopped initially", async ({ page, daemon: _daemon }) => {
+    test("shows dispatch status as stopped initially", async ({ page, daemon }) => {
       await page.goto("/agents");
 
       const dispatchStatus = page.getByTestId("dispatch-status");
@@ -34,7 +32,7 @@ test.describe("Agent and Dispatch View", () => {
     // AC: @ui-agent-dispatch ac-3
     test("shows stopped indicator when dispatch is not running", async ({
       page,
-      daemon: _daemon,
+      daemon,
     }) => {
       await page.goto("/agents");
 
@@ -45,7 +43,7 @@ test.describe("Agent and Dispatch View", () => {
     // AC: @ui-agent-dispatch ac-3
     test("shows no active invocations when dispatch is stopped", async ({
       page,
-      daemon: _daemon,
+      daemon,
     }) => {
       await page.goto("/agents");
 
@@ -56,7 +54,7 @@ test.describe("Agent and Dispatch View", () => {
 
   test.describe("Agent Definitions (AC-1)", () => {
     // AC: @ui-agent-dispatch ac-1
-    test("renders agent cards from meta definitions", async ({ page, daemon: _daemon }) => {
+    test("renders agent cards from meta definitions", async ({ page, daemon }) => {
       await page.goto("/agents");
 
       // Wait for loading to finish
@@ -74,7 +72,7 @@ test.describe("Agent and Dispatch View", () => {
     });
 
     // AC: @ui-agent-dispatch ac-1
-    test("agent card shows name", async ({ page, daemon: _daemon }) => {
+    test("agent card shows name", async ({ page, daemon }) => {
       await page.goto("/agents");
       await expect(page.getByTestId("agents-loading")).toHaveCount(0);
 
@@ -84,7 +82,7 @@ test.describe("Agent and Dispatch View", () => {
     });
 
     // AC: @ui-agent-dispatch ac-1
-    test("agent card shows triggers", async ({ page, daemon: _daemon }) => {
+    test("agent card shows triggers", async ({ page, daemon }) => {
       await page.goto("/agents");
       await expect(page.getByTestId("agents-loading")).toHaveCount(0);
 
@@ -95,7 +93,7 @@ test.describe("Agent and Dispatch View", () => {
     });
 
     // AC: @ui-agent-dispatch ac-1
-    test("agent card shows active invocation count", async ({ page, daemon: _daemon }) => {
+    test("agent card shows active invocation count", async ({ page, daemon }) => {
       await page.goto("/agents");
       await expect(page.getByTestId("agents-loading")).toHaveCount(0);
 
@@ -106,7 +104,7 @@ test.describe("Agent and Dispatch View", () => {
     });
 
     // AC: @ui-agent-dispatch ac-1
-    test("agent card shows completed count", async ({ page, daemon: _daemon }) => {
+    test("agent card shows completed count", async ({ page, daemon }) => {
       await page.goto("/agents");
       await expect(page.getByTestId("agents-loading")).toHaveCount(0);
 
@@ -117,7 +115,7 @@ test.describe("Agent and Dispatch View", () => {
     });
 
     // AC: @ui-agent-dispatch ac-1
-    test("pr-reviewer agent shows pending_review trigger", async ({ page, daemon: _daemon }) => {
+    test("pr-reviewer agent shows pending_review trigger", async ({ page, daemon }) => {
       await page.goto("/agents");
       await expect(page.getByTestId("agents-loading")).toHaveCount(0);
 
@@ -130,7 +128,7 @@ test.describe("Agent and Dispatch View", () => {
     // AC: @ui-agent-dispatch ac-1 — Read-only filter badges on agent cards
     test("agent card shows filter badges for automation, tags, and priority", async ({
       page,
-      daemon: _daemon,
+      daemon,
     }) => {
       await page.goto("/agents");
       await expect(page.getByTestId("agents-loading")).toHaveCount(0);
@@ -143,7 +141,7 @@ test.describe("Agent and Dispatch View", () => {
       await expect(card.getByTestId("filter-badge-priority").first()).toContainText("p≤3");
     });
 
-    test('agent card shows "Configure in Automation" link', async ({ page, daemon: _daemon }) => {
+    test('agent card shows "Configure in Automation" link', async ({ page, daemon }) => {
       await page.goto("/agents");
       await expect(page.getByTestId("agents-loading")).toHaveCount(0);
 
@@ -157,9 +155,9 @@ test.describe("Agent and Dispatch View", () => {
 
   test.describe("Dispatch Running State (AC-2)", () => {
     // AC: @ui-agent-dispatch ac-2
-    test("shows dispatch as running after start", async ({ page, daemon: _daemon, request }) => {
+    test("shows dispatch as running after start", async ({ page, daemon, request }) => {
       // Start dispatch via API
-      await request.post(`${DAEMON_URL}/api/agent/dispatch`, {
+      await request.post(`${daemon.baseUrl}/api/agent/dispatch`, {
         data: { action: "start" },
         headers: { "Content-Type": "application/json" },
       });
@@ -173,7 +171,7 @@ test.describe("Agent and Dispatch View", () => {
       await expect(indicator).toBeVisible();
 
       // Clean up
-      await request.post(`${DAEMON_URL}/api/agent/dispatch`, {
+      await request.post(`${daemon.baseUrl}/api/agent/dispatch`, {
         data: { action: "stop" },
         headers: { "Content-Type": "application/json" },
       });
@@ -182,10 +180,10 @@ test.describe("Agent and Dispatch View", () => {
     // AC: @ui-agent-dispatch ac-2
     test("shows stop button when dispatch is running", async ({
       page,
-      daemon: _daemon,
+      daemon,
       request,
     }) => {
-      await request.post(`${DAEMON_URL}/api/agent/dispatch`, {
+      await request.post(`${daemon.baseUrl}/api/agent/dispatch`, {
         data: { action: "start" },
         headers: { "Content-Type": "application/json" },
       });
@@ -197,15 +195,15 @@ test.describe("Agent and Dispatch View", () => {
       await expect(toggleButton).toContainText("Stop");
 
       // Clean up
-      await request.post(`${DAEMON_URL}/api/agent/dispatch`, {
+      await request.post(`${daemon.baseUrl}/api/agent/dispatch`, {
         data: { action: "stop" },
         headers: { "Content-Type": "application/json" },
       });
     });
 
     // AC: @ui-agent-dispatch ac-2
-    test("clicking stop button stops dispatch", async ({ page, daemon: _daemon, request }) => {
-      await request.post(`${DAEMON_URL}/api/agent/dispatch`, {
+    test("clicking stop button stops dispatch", async ({ page, daemon, request }) => {
+      await request.post(`${daemon.baseUrl}/api/agent/dispatch`, {
         data: { action: "start" },
         headers: { "Content-Type": "application/json" },
       });
@@ -222,7 +220,7 @@ test.describe("Agent and Dispatch View", () => {
     });
 
     // AC: @ui-agent-dispatch ac-2
-    test("clicking start button starts dispatch", async ({ page, daemon: _daemon }) => {
+    test("clicking start button starts dispatch", async ({ page, daemon }) => {
       await page.goto("/agents");
 
       const toggleButton = page.getByTestId("dispatch-toggle-button");
@@ -241,7 +239,7 @@ test.describe("Agent and Dispatch View", () => {
   });
 
   test.describe("Loading and Error States", () => {
-    test("shows loading skeleton initially", async ({ page, daemon: _daemon }) => {
+    test("shows loading skeleton initially", async ({ page, daemon }) => {
       // Delay API responses so the skeleton is reliably visible
       await page.route("**/api/agent/status", async (route) => {
         await new Promise((r) => setTimeout(r, 500));
@@ -262,7 +260,7 @@ test.describe("Agent and Dispatch View", () => {
       await expect(page.getByTestId("dispatch-section")).toBeVisible({ timeout: 5000 });
     });
 
-    test("error message displays on API failure", async ({ page, daemon: _daemon }) => {
+    test("error message displays on API failure", async ({ page, daemon }) => {
       // Intercept API calls and return errors
       await page.route("**/api/agent/status", (route) => {
         route.fulfill({
@@ -289,7 +287,7 @@ test.describe("Agent and Dispatch View", () => {
   });
 
   test.describe("Empty State", () => {
-    test("shows agent definitions section", async ({ page, daemon: _daemon }) => {
+    test("shows agent definitions section", async ({ page, daemon }) => {
       await page.goto("/agents");
       await expect(page.getByTestId("agents-loading")).toHaveCount(0);
 
@@ -300,11 +298,11 @@ test.describe("Agent and Dispatch View", () => {
     // AC: @ui-agent-dispatch ac-2 — Empty state for active invocations when dispatch is running
     test("shows actionable empty state when dispatch is running with no active invocations", async ({
       page,
-      daemon: _daemon,
+      daemon,
       request,
     }) => {
       // Start dispatch so it's enabled
-      await request.post(`${DAEMON_URL}/api/agent/dispatch`, {
+      await request.post(`${daemon.baseUrl}/api/agent/dispatch`, {
         data: { action: "start" },
         headers: { "Content-Type": "application/json" },
       });
@@ -323,7 +321,7 @@ test.describe("Agent and Dispatch View", () => {
       await expect(emptyState).toContainText("kspec tasks ready --eligible");
 
       // Clean up
-      await request.post(`${DAEMON_URL}/api/agent/dispatch`, {
+      await request.post(`${daemon.baseUrl}/api/agent/dispatch`, {
         data: { action: "stop" },
         headers: { "Content-Type": "application/json" },
       });
@@ -331,7 +329,7 @@ test.describe("Agent and Dispatch View", () => {
   });
 
   test.describe("Accessibility", () => {
-    test("has aria-live region for invocation announcements", async ({ page, daemon: _daemon }) => {
+    test("has aria-live region for invocation announcements", async ({ page, daemon }) => {
       await page.goto("/agents");
       await expect(page.getByTestId("agents-loading")).toHaveCount(0);
 
@@ -343,11 +341,11 @@ test.describe("Agent and Dispatch View", () => {
 
     test("active invocations section has aria-live attribute", async ({
       page,
-      daemon: _daemon,
+      daemon,
       request,
     }) => {
       // Start dispatch to make the section appear
-      await request.post(`${DAEMON_URL}/api/agent/dispatch`, {
+      await request.post(`${daemon.baseUrl}/api/agent/dispatch`, {
         data: { action: "start" },
         headers: { "Content-Type": "application/json" },
       });
@@ -359,7 +357,7 @@ test.describe("Agent and Dispatch View", () => {
       await expect(invocationsSection).toHaveAttribute("aria-live", "polite");
 
       // Clean up
-      await request.post(`${DAEMON_URL}/api/agent/dispatch`, {
+      await request.post(`${daemon.baseUrl}/api/agent/dispatch`, {
         data: { action: "stop" },
         headers: { "Content-Type": "application/json" },
       });
@@ -367,7 +365,7 @@ test.describe("Agent and Dispatch View", () => {
   });
 
   test.describe("Navigation", () => {
-    test("agents page is accessible from sidebar", async ({ page, daemon: _daemon }) => {
+    test("agents page is accessible from sidebar", async ({ page, daemon }) => {
       await page.goto("/");
 
       const agentsLink = page.getByTestId("nav-link-agents");
@@ -381,7 +379,7 @@ test.describe("Agent and Dispatch View", () => {
   test.describe("Agent Editing", () => {
     test("edit button opens dialog with agent fields pre-populated", async ({
       page,
-      daemon: _daemon,
+      daemon,
     }) => {
       await page.goto("/agents");
       await expect(page.getByTestId("agents-loading")).toHaveCount(0);
@@ -404,7 +402,7 @@ test.describe("Agent and Dispatch View", () => {
       await expect(nameInput).toHaveValue("Task Worker");
     });
 
-    test("edit dialog shows prompt template textarea", async ({ page, daemon: _daemon }) => {
+    test("edit dialog shows prompt template textarea", async ({ page, daemon }) => {
       await page.goto("/agents");
       await expect(page.getByTestId("agents-loading")).toHaveCount(0);
 
@@ -417,7 +415,7 @@ test.describe("Agent and Dispatch View", () => {
 
     test("edit dialog mentions automation view for trigger editing", async ({
       page,
-      daemon: _daemon,
+      daemon,
     }) => {
       await page.goto("/agents");
       await expect(page.getByTestId("agents-loading")).toHaveCount(0);
@@ -430,7 +428,7 @@ test.describe("Agent and Dispatch View", () => {
       await expect(dialog).toContainText("Automation");
     });
 
-    test("cancel discards changes and closes dialog", async ({ page, daemon: _daemon }) => {
+    test("cancel discards changes and closes dialog", async ({ page, daemon }) => {
       await page.goto("/agents");
       await expect(page.getByTestId("agents-loading")).toHaveCount(0);
 
@@ -454,7 +452,7 @@ test.describe("Agent and Dispatch View", () => {
 
     test("save persists changes via PATCH API and updates card", async ({
       page,
-      daemon: _daemon,
+      daemon,
     }) => {
       await page.goto("/agents");
       await expect(page.getByTestId("agents-loading")).toHaveCount(0);
@@ -480,7 +478,7 @@ test.describe("Agent and Dispatch View", () => {
       await expect(card).toContainText("Updated description via E2E test");
     });
 
-    test("edit form shows error on save failure", async ({ page, daemon: _daemon }) => {
+    test("edit form shows error on save failure", async ({ page, daemon }) => {
       await page.goto("/agents");
       await expect(page.getByTestId("agents-loading")).toHaveCount(0);
 
