@@ -78425,6 +78425,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-29T08:56:09.341Z
+      - _ulid: 01KMWDJVMY7D5528489XA42CSB
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMWCWBRX3XPE4RNQN28G0SN0
+        timestamp: 2026-03-29T09:07:46.974Z
     examined_commit: d362c71d16d2916574e317b78a38a94f5f062b94
     external_links: []
     lifecycle_state: closed
@@ -78452,6 +78458,15 @@ reviews:
               referenced inside  and the new tests. As shipped, clients still receive no real-time
               event when a domain becomes ready, so the AC remains unmet."
             created_at: 2026-03-29T08:55:29.821Z
+          - _ulid: 01KMWDJV2RHC7QWG10VPJB6EFR
+            author: "@claude"
+            body: "Fixed: wired the onDomainReady callback to pubsubManager.broadcast() in server.ts
+              onProjectRegistered. The callback is now passed as the third argument to
+              registerEntityCache(), broadcasting on topic 'cache:status' with event 'domain_ready'
+              and payload {domain, previousState, timestamp}. Also added an integration test
+              verifying the callback flows through registerEntityCache to the cache instance. Full
+              suite passes (7128/7133, 5 skipped)."
+            created_at: 2026-03-29T09:07:46.391Z
         kind: blocker
       - _ulid: 01KMWCX5GT5H5M4K9Z8Q30NK9C
         entries:
@@ -78474,7 +78489,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T08:56:09.341Z
     created_at: 2026-03-29T08:51:15.379Z
-    updated_at: 2026-03-29T08:56:09.341Z
+    updated_at: 2026-03-29T09:07:46.391Z
     notes: []
   - _ulid: 01KMWD4BKMTM65DDHGRDZZJBSH
     slugs: []
