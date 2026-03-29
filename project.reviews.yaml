@@ -80179,6 +80179,30 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-29T11:33:40.012Z
+      - _ulid: 01KMWPKCADCSYZJ7ZVB8A2SZB6
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMWNWY5H6CFY7TT49BHVSQSW
+        timestamp: 2026-03-29T11:45:21.229Z
+      - _ulid: 01KMWPKDXYR1PMQCXFKT4E7RRA
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMWNWY5H6CFY7TT49BHVSQSW
+        timestamp: 2026-03-29T11:45:22.878Z
+      - _ulid: 01KMWPKFDESJR8T4SXHY0RDPP8
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMWNWZZYXR3YKD783W0QQPN0
+        timestamp: 2026-03-29T11:45:24.398Z
+      - _ulid: 01KMWPKH1J19TH3EW4FQYQAZBP
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMWNWZZYXR3YKD783W0QQPN0
+        timestamp: 2026-03-29T11:45:26.066Z
     examined_commit: cd80c3aca1b13a308b92ccc43fcd539a84e62692
     external_links: []
     lifecycle_state: closed
@@ -80215,7 +80239,19 @@ reviews:
               packages/web-ui/src/lib/api-static.ts:46:    meta: { cache_status: "ready", ...meta },
               finds no runtime consumer beyond comments.
             created_at: 2026-03-29T11:33:05.841Z
+          - _ulid: 01KMWPKBPBY23KT7GWKRNYVY2S
+            author: "@claude"
+            body: 'Fixed: Added CacheWarmingError class and checkCacheStatus() guard. All unwrap helpers
+              (unwrapEnvelope, unwrapPaginatedEnvelope, unwrapListEnvelope,
+              unwrapSessionListEnvelope, unwrapSimpleSessionListEnvelope) now call
+              checkCacheStatus(envelope.meta) before extracting data. When cache_status is
+              "loading", CacheWarmingError is thrown immediately — preventing empty/default data
+              from reaching TanStack Query cache. CacheWarmingError is exported for downstream
+              consumers.'
+            created_at: 2026-03-29T11:45:20.587Z
         kind: blocker
+        resolved_at: 2026-03-29T11:45:22.270Z
+        resolved_by: "@claude"
       - _ulid: 01KMWNWZZYXR3YKD783W0QQPN0
         anchor:
           type: code
@@ -80241,7 +80277,22 @@ reviews:
               > node scripts/test.cjs, so this needs at least one behavioral test that mocks a
               live  response through .
             created_at: 2026-03-29T11:33:07.710Z
+          - _ulid: 01KMWPKEWF0HABMWGV2YD9E34W
+            author: "@claude"
+            body: "Fixed: Added packages/web-ui/tests/api-envelope.test.ts with 44 behavioral tests covering:
+              (1) paginated endpoint unwrapping for fetchTasks, fetchItems, fetchItemTasks,
+              fetchInbox, fetchObservations, fetchReviews, fetchTriageRecords; (2) detail endpoint
+              unwrapping for fetchTask, fetchItem, fetchPlanContent, fetchReview, fetchSession,
+              search, fetchSessionSearch, fetchSessionEventDetail, fetchValidation, fetchAlignment,
+              fetchProjectConfig, fetchShadowStatus, fetchValidationAggregation; (3) list endpoint
+              unwrapping for fetchPlans, fetchWorkflows, fetchConventions, fetchAgentDefinitions,
+              fetchMergedInbox; (4) session endpoints for fetchSessions and fetchSessionEvents; (5)
+              CacheWarmingError thrown for loading cache_status on 15+ endpoints. All tests mock
+              global fetch to return daemon-shaped envelopes."
+            created_at: 2026-03-29T11:45:23.855Z
         kind: blocker
+        resolved_at: 2026-03-29T11:45:25.455Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -80251,5 +80302,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T11:33:40.012Z
     created_at: 2026-03-29T11:32:04.356Z
-    updated_at: 2026-03-29T11:33:40.012Z
+    updated_at: 2026-03-29T11:45:25.455Z
     notes: []
