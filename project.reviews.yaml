@@ -79329,6 +79329,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-29T09:54:25.958Z
+      - _ulid: 01KMWHHKPPB5Q0JQCHD2J6CVC9
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMWG7S1X6DY1NJDR7RJNCZMD
+        timestamp: 2026-03-29T10:17:00.374Z
     examined_commit: dfd20ae3709b032ac181cf04488b97e11b82d689
     external_links: []
     lifecycle_state: closed
@@ -79367,6 +79373,19 @@ reviews:
               sessions.ts:645/:700/:774, validation.ts:258/:311). This migration needs to finish the
               client-side unwrapping for every affected read helper before it is safe to merge.
             created_at: 2026-03-29T09:54:09.597Z
+          - _ulid: 01KMWHHK49XXD8TMYZG1GY8NH3
+            author: "@claude"
+            body: "Fixed: Added unwrapEnvelope() and unwrapPaginatedEnvelope() helpers to api.ts. Updated all
+              ~30 affected client functions (fetchTask, fetchItem, fetchItemTasks, fetchReview,
+              fetchSession, fetchValidation, fetchAlignment, fetchConventions, fetchWorkflows,
+              fetchAgentDefinitions, fetchPlans, fetchPlanContent, fetchSessions, fetchTaskSessions,
+              fetchItemSessions, fetchSessionContext, fetchProjectConfig, fetchShadowStatus,
+              fetchMergedInbox, fetchValidationAggregation, search, fetchInbox, fetchObservations,
+              fetchTriageRecords, fetchTasks, fetchItems, fetchReviews, fetchReviewsForTask) to
+              unwrap the envelope before returning data to callers. Also updated E2E test mocks in 6
+              spec files (dashboard, sessions, validate, reviews-detail, code-diff-viewer, smoke) to
+              return the new envelope format. All 7123 tests pass."
+            created_at: 2026-03-29T10:16:59.785Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -79377,7 +79396,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T09:54:25.958Z
     created_at: 2026-03-29T09:46:40.217Z
-    updated_at: 2026-03-29T09:54:25.958Z
+    updated_at: 2026-03-29T10:16:59.785Z
     notes: []
   - _ulid: 01KMWGFA2PRKXP0MZBPNPRW5AP
     slugs: []
