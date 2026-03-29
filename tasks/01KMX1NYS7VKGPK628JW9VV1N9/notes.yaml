@@ -1,1 +1,177 @@
-notes: []
+notes:
+  - _ulid: 01KMX1PZFAYTPWP11X5CGQK73J
+    content: >-
+      ## Implementation Plan: Consolidate web-ui tests into root tests/
+
+
+      ### Problem
+
+      1. `npm link` in root `test:e2e` scripts overwrites the system `kspec` binary — unsafe for
+      dispatch agents
+
+      2. Tests split across `packages/web-ui/tests/` and `tests/` — agents miss common patterns
+
+      3. E2e fixture (`test-base.ts`) calls `spawnSync("kspec", ...)` requiring global binary
+      instead of using existing `CLI_PATH` from `tests/helpers/cli.ts`
+
+
+      ### Target Structure
+
+      ```
+
+      tests/
+
+      ├── e2e/
+
+      │   ├── *.spec.ts            ← 45 playwright spec files (moved from
+      packages/web-ui/tests/e2e/)
+
+      │   └── fixtures/
+
+      │       ├── test-base.ts     ← daemon fixture (moved, updated paths + CLI_PATH import)
+
+      │       ├── project-tests/   ← AC coverage test fixture
+
+      │       ├── kynetic.yaml     ← e2e YAML fixtures
+
+      │       ├── kynetic.meta.yaml
+
+      │       ├── project.*.yaml
+
+      │       ├── modules/
+
+      │       └── tasks/
+
+      ├── web-ui/
+
+      │   ├── ansi.test.ts         ← 12 vitest unit tests (moved from packages/web-ui/tests/)
+
+      │   ├── board-utils.test.ts
+
+      │   ├── api-envelope.test.ts
+
+      │   ├── api-static.test.ts
+
+      │   ├── cache-warming-view-states.test.ts
+
+      │   ├── fleet-buffer.test.ts
+
+      │   ├── plan-embedded-content.test.ts
+
+      │   ├── query-client-retry.test.ts
+
+      │   ├── reference.test.ts
+
+      │   ├── session-utils.test.ts
+
+      │   └── ws-cache-invalidation.test.ts
+
+      ├── helpers/cli.ts           ← existing, already exports CLI_PATH
+
+      └── [existing 200+ tests]
+
+      playwright.config.ts          ← moved from packages/web-ui/ to root
+
+      ```
+
+
+      ### Step-by-step
+
+
+      #### Step 1: Move playwright config to root
+
+      - Move `packages/web-ui/playwright.config.ts` → `playwright.config.ts`
+
+      - Update `testDir: "./tests/e2e"`
+
+      - Update `outputDir` to `"test-results"` (root-relative)
+
+
+      #### Step 2: Move e2e fixtures
+
+      - Move `packages/web-ui/tests/fixtures/` contents (YAML, modules/, tasks/, project-tests/,
+      kynetic.meta.yaml, .kspec-session) → `tests/e2e/fixtures/`
+
+      - Move `packages/web-ui/tests/fixtures/test-base.ts` → `tests/e2e/fixtures/test-base.ts`
+
+      - Do NOT move the web-ui vitest unit tests yet (step 4)
+
+
+      #### Step 3: Update test-base.ts
+
+      - Import `CLI_PATH` from `../../helpers/cli.ts` (or define locally as `join(__dirname,
+      "../../../dist/cli/index.js")`)
+
+      - Update `E2E_FIXTURES` to `join(__dirname, ".")` (fixtures are now colocated)
+
+      - Update `WEB_UI_BUILD` to `join(__dirname, "../../../packages/web-ui/build")`
+
+      - Replace both `spawnSync("kspec", [...])` calls with `spawnSync("node", [CLI_PATH, ...])`
+
+      - This is the core safety fix — no more reliance on global `kspec` binary
+
+
+      #### Step 4: Move e2e spec files
+
+      - Move all 45 `packages/web-ui/tests/e2e/*.spec.ts` → `tests/e2e/*.spec.ts`
+
+      - Import path stays `"../fixtures/test-base"` — unchanged since relative structure is
+      preserved
+
+
+      #### Step 5: Move web-ui vitest unit tests
+
+      - Move 12 `packages/web-ui/tests/*.test.ts` → `tests/web-ui/*.test.ts`
+
+      - Update relative imports: `../src/lib/...` → `../../packages/web-ui/src/lib/...`
+
+      - Update any `../../shared/src/...` imports → `../../packages/shared/src/...`
+
+      - Vitest sharding picks these up automatically (already scans tests/**)
+
+
+      #### Step 6: Update vitest.config.ts
+
+      - Change exclude: `"**/packages/web-ui/tests/e2e/**"` → `"**/tests/e2e/**"`
+
+
+      #### Step 7: Update package.json scripts
+
+      - Root `package.json`:
+        - `test:e2e`: `"npm run build:e2e && npx playwright test tests/e2e/smoke.spec.ts tests/e2e/api-server.spec.ts"` (no npm link)
+        - `test:e2e:full`: `"npm run build:e2e && npx playwright test"` (no npm link)
+      - `packages/web-ui/package.json`:
+        - Remove or redirect e2e scripts (they now run from root)
+        - Update `test` script if it references moved files
+
+      #### Step 8: Update CI references
+
+      - `.github/workflows/test.yml` — verify e2e job still works (likely just needs `npx playwright
+      test` from root)
+
+      - Playwright install step may need to run from root now
+
+
+      #### Step 9: Cleanup
+
+      - Remove empty `packages/web-ui/tests/e2e/` directory
+
+      - Remove empty `packages/web-ui/tests/fixtures/` directory
+
+      - Remove `packages/web-ui/tests/` if fully empty (only if all files moved)
+
+      - Verify `packages/web-ui/tests/` gitignore or similar doesn't affect anything
+
+
+      ### Verification
+
+      - `npm test` — all vitest shards pass (web-ui unit tests found in new location)
+
+      - `npm run test:e2e` — e2e tests pass without npm link
+
+      - Confirm system `kspec` binary unchanged after e2e run
+
+      - `kspec` command still works normally after test run
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-29T14:59:33.482Z
