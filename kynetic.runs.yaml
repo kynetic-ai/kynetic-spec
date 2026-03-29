@@ -18054,9 +18054,21 @@ runs:
     completed_at: 2026-03-29T01:02:43.948Z
   - _ulid: 01KMVJ6JSB9JAQ6B7KN9Y2JC54
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-03-29T01:09:13.132Z
+        completed_at: 2026-03-29T01:10:15.609Z
+        notes: "Session: fix cycle for shadow mutation lock task. One commit addressing 3 review blockers
+          (staged index rollback, ac-9 test rewrite, ac-11 behavioral test). Worked well: efficient
+          single-pass fix cycle, precise reviewer feedback. Friction: stale test cache after source
+          changes (already tracked in observation 01KKDR3H). No new items to capture."
+      - status: completed
+        step_index: 1
+        started_at: 2026-03-29T01:10:15.609Z
+        completed_at: 2026-03-29T01:10:15.609Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-29T01:09:13.132Z
