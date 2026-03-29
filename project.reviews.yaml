@@ -76854,3 +76854,29 @@ reviews:
     created_at: 2026-03-29T07:11:00.295Z
     updated_at: 2026-03-29T07:14:55.297Z
     notes: []
+  - _ulid: 01KMW75WM5GNQX37W4YZTBG2EB
+    slugs: []
+    title: Review task-spec-update-api-contract
+    author: Test User
+    checks: []
+    events:
+      - _ulid: 01KMW75WM4GHS1B1CCDX30N60E
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-29T07:15:50.533Z
+    examined_commit: 6943dad4b8203281f7a00c18ae29804ce34c559a
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMW68JFTW7WDPNX354YWEKAN"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-29T07:15:50.533Z
+    updated_at: null
+    notes: []
