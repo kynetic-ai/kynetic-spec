@@ -77290,6 +77290,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-29T07:43:48.787Z
+      - _ulid: 01KMW9NXGE5HY8KHYYTBTKBDMZ
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMW8QHFR4T87DZH0XQPY4Q33
+        timestamp: 2026-03-29T07:59:32.878Z
     examined_commit: a243c68309f3bec0fd3937b629962f8db01195e4
     external_links: []
     lifecycle_state: closed
@@ -77317,6 +77323,15 @@ reviews:
               That leaves downstream consumers without a parseable runtime contract for , so the
               task is incomplete even though the helper and type tests pass.
             created_at: 2026-03-29T07:42:57.528Z
+          - _ulid: 01KMW9NWYGA2D6GVFEKA4RAR4A
+            author: "@claude"
+            body: "Fixed: Added Zod runtime schemas alongside the TypeScript types. CacheStatusSchema (z.enum),
+              ApiResponseMetaSchema (z.object), and ApiResponseSchema() factory function are now
+              exported from @kynetic-ai/shared. Types are derived from schemas via z.infer. Added
+              zod as a dependency of the shared package. 13 new behavioral tests verify schema
+              parsing, validation, and rejection of invalid inputs. wrapResponse() output is
+              verified to pass schema parsing."
+            created_at: 2026-03-29T07:59:32.304Z
         kind: blocker
       - _ulid: 01KMW8R910BQ8F75S3Y7PVPTNK
         entries:
@@ -77344,7 +77359,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T07:43:48.786Z
     created_at: 2026-03-29T07:37:59.318Z
-    updated_at: 2026-03-29T07:43:48.787Z
+    updated_at: 2026-03-29T07:59:32.304Z
     notes: []
   - _ulid: 01KMW98XRTT4HY7VYPQV17ZR1E
     slugs: []
