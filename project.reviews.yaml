@@ -76399,3 +76399,29 @@ reviews:
     created_at: 2026-03-29T06:01:44.082Z
     updated_at: 2026-03-29T06:03:14.290Z
     notes: []
+  - _ulid: 01KMW4XDZAH327BSC3J0YNPRAM
+    slugs: []
+    title: "Plan review: Daemon Cache Warming UX"
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KMW4XDZ9Z39NRSPEJ5DAX67D
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-29T06:36:16.234Z
+    examined_commit: null
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-daemon-cache-warming-ux"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-29T06:36:16.234Z
+    updated_at: null
+    notes: []
