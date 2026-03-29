@@ -146,8 +146,12 @@ description: >-
 spec_ref: "@scoped-dispatch-shadow-serialization"
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Approved in review @01KMVKBBSJCVHNCZXBBYMBVKHY and merged
+  dispatch/task/fix-dispatch-shadow-mutation-lock-contention-and-leak-between-daemon-and-agents/01kmvcf9
+  into dev at 6e86281bbfca8f3122af302005adab1c6c844f50 after resolving a mechanical merge conflict
+  in src/agent-runtime/workspace.ts and re-running npm test (7080 passed, 5 skipped).
 depends_on: []
 context: []
 priority: 1
@@ -580,8 +584,26 @@ history:
         previous: "@01KMVJ8QGEZTKRG0P3X7RM1MBV"
     command: review-link
     timestamp: 2026-03-29T01:29:20.436Z
+  - author: Test User
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Approved in review @01KMVKBBSJCVHNCZXBBYMBVKHY and merged
+          dispatch/task/fix-dispatch-shadow-mutation-lock-contention-and-leak-between-daemon-and-agents/01kmvcf9
+          into dev at 6e86281bbfca8f3122af302005adab1c6c844f50 after resolving a mechanical merge
+          conflict in src/agent-runtime/workspace.ts and re-running npm test (7080 passed, 5
+          skipped).
+        previous: null
+      completed_at:
+        new: 2026-03-29T01:38:16.467Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-03-29T01:38:16.477Z
 created_at: 2026-03-28T23:29:06.748Z
 started_at: 2026-03-29T01:26:29.822Z
 submitted_at: 2026-03-29T01:26:37.609Z
+completed_at: 2026-03-29T01:38:16.467Z
 todos: []
 automation: eligible

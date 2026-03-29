@@ -22965,7 +22965,7 @@
   title: Fix dispatch shadow mutation lock contention and leak between daemon and agents
   type: task
   spec_ref: "@scoped-dispatch-shadow-serialization"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 1
@@ -22979,4 +22979,5 @@
   created_at: 2026-03-28T23:29:06.748Z
   started_at: 2026-03-29T01:26:29.822Z
   submitted_at: 2026-03-29T01:26:37.609Z
+  completed_at: 2026-03-29T01:38:16.467Z
   automation: eligible
