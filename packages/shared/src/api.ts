@@ -5,9 +5,48 @@
  * These types define the contract for HTTP endpoints.
  */
 
+// ─── Unified Response Envelope ──────────────────────────────────────────────
+// AC: @api-contract ac-envelope
+// AC: @api-contract ac-cache-status-field
+
+/**
+ * Cache readiness state for API response metadata.
+ * "ready" — cache is populated, data is current.
+ * "loading" — cache is warming, data is empty/default.
+ */
+export type CacheStatus = "ready" | "loading";
+
+/**
+ * Metadata for API response envelope.
+ * Always includes cache_status. Pagination fields are present only
+ * for list/paginated endpoints.
+ * AC: @api-contract ac-envelope
+ */
+export interface ApiResponseMeta {
+  cache_status: CacheStatus;
+  total?: number;
+  offset?: number;
+  limit?: number;
+}
+
+/**
+ * Unified API response envelope.
+ * All cache-backed endpoints return this shape.
+ * `data` is the typed payload (array for lists, object for detail/aggregation).
+ * `meta` carries cache readiness and optional pagination.
+ * AC: @api-contract ac-envelope
+ * AC: @api-contract ac-cache-status-field
+ */
+export interface ApiResponse<T> {
+  data: T;
+  meta: ApiResponseMeta;
+}
+
 /**
  * Common paginated response wrapper
  * AC: @api-contract ac-4
+ * @deprecated Use ApiResponse<T[]> with pagination fields in meta instead.
+ * Kept for backward compatibility during route migration.
  */
 export interface PaginatedResponse<T> {
   items: T[];
