@@ -18143,7 +18143,7 @@ runs:
     completed_at: 2026-03-29T07:14:33.594Z
   - _ulid: 01KMW7FHHBQ7RAE1XXJXZA86NE
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Test User
     step_results:
       - status: completed
@@ -18157,7 +18157,14 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-29T07:22:04.028Z
-        completed_at: 2026-03-29T07:22:04.028Z
+        completed_at: 2026-03-29T07:22:04.712Z
+        notes: "Friction point: detached reviewer worktrees cannot switch to the integration branch if that
+          branch is already checked out in the primary worktree. This makes the standard merge
+          instruction fail with 'already used by worktree' even when the review is approved."
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-29T07:22:04.712Z
+        completed_at: 2026-03-29T07:22:04.712Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-29T07:21:06.859Z
