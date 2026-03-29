@@ -77003,6 +77003,18 @@ reviews:
         runner: kspec
         created_at: 2026-03-29T07:33:46.899Z
         completed_at: 2026-03-29T07:33:46.899Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite failed on snapshot 6943dad4b8203281f7a00c18ae29804ce34c559a: FAIL
+          tests/agent-dispatch-engine.test.ts; assertion 'expected 1 to be 2'; 2 failed suites, 1
+          failed test, 7087 passed, 5 skipped."
+        name: npm-test
+        required: true
+        runner: npm
+        created_at: 2026-03-29T07:33:50.820Z
+        completed_at: 2026-03-29T07:33:50.820Z
     events:
       - _ulid: 01KMW7WCN6E5NF42BHTMG3M4WN
         actor: Test User
@@ -77024,6 +77036,13 @@ reviews:
           status: pass
           name: validate
         timestamp: 2026-03-29T07:33:47.530Z
+      - _ulid: 01KMW86W7WYZGAFYDQE6JE89D0
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm-test
+        timestamp: 2026-03-29T07:33:51.485Z
     examined_commit: 6943dad4b8203281f7a00c18ae29804ce34c559a
     external_links: []
     lifecycle_state: open
@@ -77036,5 +77055,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-29T07:28:07.846Z
-    updated_at: 2026-03-29T07:33:46.899Z
+    updated_at: 2026-03-29T07:33:50.820Z
     notes: []
