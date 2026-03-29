@@ -78884,6 +78884,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMWEWHHX69DEQ23PZHC079Z6
         timestamp: 2026-03-29T09:30:33.516Z
+      - _ulid: 01KMWEWM0CY6GF5V0VTJ86SD58
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMWEWKC3CZYX8HCY1JYFQGFW
+        timestamp: 2026-03-29T09:30:35.404Z
     examined_commit: 30b11d43a7c751c7b0f377892a3ad24a91974979
     external_links: []
     lifecycle_state: open
@@ -78913,7 +78920,26 @@ reviews:
               mutation/health/debug set.
             created_at: 2026-03-29T09:30:32.893Z
         kind: blocker
+      - _ulid: 01KMWEWKC3CZYX8HCY1JYFQGFW
+        anchor:
+          type: code
+          commit: 30b11d43a7c751c7b0f377892a3ad24a91974979
+          line_end: 778
+          line_start: 663
+          path: packages/daemon/src/routes/sessions.ts
+          side: head
+        entries:
+          - _ulid: 01KMWEWKC4P9KEVPRTMMBRXEJC
+            author: Test User
+            body: GET /api/sessions/:id/events and GET /api/sessions/:id/events/:seq still return raw event
+              payloads instead of wrapResponse(...). Those are read/detail endpoints in the daemon
+              routes directory, so they keep the session API on a mixed contract and preserve more
+              UI/test special cases ( expects raw events and  still asserts top-level fields). Until
+              these endpoints also emit {data, meta}, the unified envelope is not actually universal
+              for daemon reads.
+            created_at: 2026-03-29T09:30:34.756Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-29T09:22:31.567Z
-    updated_at: 2026-03-29T09:30:32.893Z
+    updated_at: 2026-03-29T09:30:34.756Z
     notes: []
