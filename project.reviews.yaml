@@ -78763,6 +78763,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-29T09:19:30.443Z
+      - _ulid: 01KMWEW1JNT10JMV4SD02CCWQJ
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMWE7R8WVGCSM8964H93P2HY
+        timestamp: 2026-03-29T09:30:16.533Z
     examined_commit: 82976814d411e8a10eed4d34c3bb531089798d47
     external_links: []
     lifecycle_state: closed
@@ -78790,6 +78796,13 @@ reviews:
               filter, and pubsub.ts does not serialize it into the BroadcastEvent. Connected clients
               therefore receive no project identifier at all.
             created_at: 2026-03-29T09:19:11.644Z
+          - _ulid: 01KMWEW0Z6N7D246E7BF59DCW6
+            author: "@claude"
+            body: "Fixed: added projectPath: cachePath to the broadcast data payload in server.ts. Previously
+              projectPath was only passed as PubSubManager's 4th argument (server-side filter) and
+              never serialized into the BroadcastEvent. Now clients receive { domain, projectPath,
+              previousState, timestamp } in the event data."
+            created_at: 2026-03-29T09:30:15.910Z
         kind: blocker
       - _ulid: 01KMWE7VQC2AKN0964NWBKN1TK
         anchor:
@@ -78835,7 +78848,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T09:19:30.443Z
     created_at: 2026-03-29T09:12:13.672Z
-    updated_at: 2026-03-29T09:19:30.443Z
+    updated_at: 2026-03-29T09:30:15.910Z
     notes: []
   - _ulid: 01KMWEDVGFD10XV88HV8CMPP7V
     slugs: []
