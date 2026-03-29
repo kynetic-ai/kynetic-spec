@@ -74860,6 +74860,13 @@ reviews:
           status: fail
           name: targeted daemon+reconciliation repro
         timestamp: 2026-03-29T00:05:10.246Z
+      - _ulid: 01KMVEJZBVNQKR4RS2FKV6ZSK4
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMVEJYSG70M2AE8HNZ2SYSJQ
+        timestamp: 2026-03-29T00:06:04.923Z
     examined_commit: afd332b4c3b16543d6a80c9a905ac644ae07d3bd
     external_links: []
     lifecycle_state: open
@@ -74869,8 +74876,29 @@ reviews:
       content_hash: ""
       ref: "@01KMV52K0KFVQ33W970Z9NBCR5"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMVEJYSG70M2AE8HNZ2SYSJQ
+        anchor:
+          type: code
+          commit: afd332b4c3b16543d6a80c9a905ac644ae07d3bd
+          line_end: 209
+          line_start: 187
+          path: packages/daemon/src/routes/command.ts
+          side: head
+        entries:
+          - _ulid: 01KMVEJYSHCP8KRA3W7276XBY3
+            author: Test User
+            body: Clearing KSPEC_SPEC_DIR in the daemon command executor is still breaking the daemon API under
+              concurrent test execution. On this snapshot, npm test -- --fresh failed with 12
+              daemon-command-api assertions returning 500 instead of 200/422, and I separately
+              reproduced the same 12 failures with npm test -- --fresh --run
+              tests/dispatch-workspace-terminal-reconciliation.test.ts
+              tests/daemon-command-api.test.ts. The failures hit mutating commands, batch execution,
+              and YAML-mode parity, so the review gate is not clean. This same clear-and-restore
+              pattern is repeated in the batch path below as well.
+            created_at: 2026-03-29T00:06:04.337Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-28T23:58:14.494Z
-    updated_at: 2026-03-29T00:05:09.341Z
+    updated_at: 2026-03-29T00:06:04.337Z
     notes: []
