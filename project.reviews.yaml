@@ -77043,6 +77043,13 @@ reviews:
           status: fail
           name: npm-test
         timestamp: 2026-03-29T07:33:51.485Z
+      - _ulid: 01KMW87ZT7GD7YF6E7QZAWFKYQ
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMW87Z6Q02HJZZKPBV01A4D1
+        timestamp: 2026-03-29T07:34:27.911Z
     examined_commit: 6943dad4b8203281f7a00c18ae29804ce34c559a
     external_links: []
     lifecycle_state: open
@@ -77052,8 +77059,24 @@ reviews:
       content_hash: ""
       ref: "@01KMW68JT108S4RS3G1GNYH5A9"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMW87Z6Q02HJZZKPBV01A4D1
+        anchor:
+          type: code
+          commit: 6943dad4b8203281f7a00c18ae29804ce34c559a
+          line_end: 5721
+          line_start: 5721
+          path: tests/agent-dispatch-engine.test.ts
+          side: head
+        entries:
+          - _ulid: 01KMW87Z6QG17DFWJ7KP7KEED7
+            author: Test User
+            body: "Merge gate is failing on the reviewed snapshot: the required full-suite run fails in this
+              test with 'expected 1 to be 2', so this task cannot be approved/merged until the repo
+              is back to a green state."
+            created_at: 2026-03-29T07:34:27.287Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-29T07:28:07.846Z
-    updated_at: 2026-03-29T07:33:50.820Z
+    updated_at: 2026-03-29T07:34:27.287Z
     notes: []
