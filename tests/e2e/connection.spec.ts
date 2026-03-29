@@ -1,4 +1,4 @@
-import { test, expect } from "../fixtures/test-base";
+import { test, expect } from "./fixtures/test-base";
 
 /**
  * WebSocket Connection Handling E2E Tests

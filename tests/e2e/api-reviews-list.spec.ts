@@ -11,7 +11,7 @@
  * - @review-records-web-ui ac-10: Empty state / empty results
  */
 
-import { test, expect } from "../fixtures/test-base";
+import { test, expect } from "./fixtures/test-base";
 
 // Fixture ULIDs from project.reviews.yaml
 const OPEN_REVIEW_ULID = "01KKTX0CA45ZT43W2T6HJMVA01";

@@ -1,4 +1,4 @@
-import { test, expect } from "../fixtures/test-base";
+import { test, expect } from "./fixtures/test-base";
 
 /**
  * Tasks View E2E Tests

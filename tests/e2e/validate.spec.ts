@@ -10,7 +10,7 @@
  *   Issues list grouped by severity.
  */
 
-import { test, expect } from "../fixtures/test-base";
+import { test, expect } from "./fixtures/test-base";
 
 /** Wrap data in the unified API response envelope. */
 function envelope<T>(data: T, meta?: Record<string, unknown>) {

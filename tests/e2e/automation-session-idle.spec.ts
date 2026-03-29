@@ -9,7 +9,7 @@
  * - @session-idle-event ac-1: Event log renders session idle events with turn context
  */
 
-import { test, expect } from "../fixtures/test-base";
+import { test, expect } from "./fixtures/test-base";
 
 // AC: @session-idle-event ac-1
 test.describe("Automation View — Session Idle Event Rendering", () => {

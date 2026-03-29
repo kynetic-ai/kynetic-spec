@@ -36,7 +36,7 @@
 // AC: @trait-websocket-protocol ac-7 — N/A: WebSocket close codes; tested separately in api-websocket E2E tests
 // AC: @trait-websocket-protocol ac-8 — N/A: WebSocket reconnection; tested separately in api-websocket E2E tests
 
-import { test, expect } from "../fixtures/test-base";
+import { test, expect } from "./fixtures/test-base";
 
 // Fixture ULIDs
 const OPEN_REVIEW_ULID = "01KKTX0CA45ZT43W2T6HJMVA01";

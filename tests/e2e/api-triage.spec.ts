@@ -29,7 +29,7 @@
 // AC: @trait-websocket-protocol ac-7 — N/A: WebSocket close codes; tested in future api-websocket E2E tests
 // AC: @trait-websocket-protocol ac-8 — N/A: WebSocket reconnection; tested in future api-websocket E2E tests
 
-import { test, expect } from "../fixtures/test-base";
+import { test, expect } from "./fixtures/test-base";
 
 // Fixture ULIDs defined in project.triage.yaml
 // TRIAGED record: inbox_ref = 01KJNBX0CA45ZT43W2T6HJMVA1 ("First inbox item for testing"), status=triaged

@@ -12,7 +12,7 @@
  * - @review-records-web-ui ac-11: Revision dropdown for same-subject reviews
  */
 
-import { test, expect } from "../fixtures/test-base";
+import { test, expect } from "./fixtures/test-base";
 
 const REVIEW_ULID = "01KKTX0CA45ZT43W2T6HJMVA01";
 const SIBLING_ULID = "01KKV0TCA45ZT43W2T6HJMVB03";

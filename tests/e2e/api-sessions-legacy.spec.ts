@@ -10,7 +10,7 @@
  * - @session-legacy-migration ac-list-merge: GET /api/sessions warns about legacy count
  */
 
-import { test, expect } from "../fixtures/test-base";
+import { test, expect } from "./fixtures/test-base";
 import { mkdirSync, writeFileSync } from "fs";
 import { join } from "path";
 import * as YAML from "yaml";

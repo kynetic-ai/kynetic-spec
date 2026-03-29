@@ -14,7 +14,7 @@
  * - @api-contract ac-7: POST /api/tasks/:ref/note appends note
  */
 
-import { test, expect } from "../fixtures/test-base";
+import { test, expect } from "./fixtures/test-base";
 
 test.describe("Tasks API", () => {
   test.describe("GET /api/tasks", () => {

@@ -10,7 +10,7 @@
  *   workflow via daemon API.
  */
 
-import { test, expect } from "../fixtures/test-base";
+import { test, expect } from "./fixtures/test-base";
 
 test.describe("Workflows View", () => {
   // AC: @ui-workflows-view ac-1

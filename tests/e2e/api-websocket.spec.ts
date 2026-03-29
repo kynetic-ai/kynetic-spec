@@ -54,7 +54,7 @@
 // AC: @api-contract ac-32 — N/A: backpressure requires sustained flooding beyond E2E capability; implementation verified in pubsub.ts
 // AC: @api-contract ac-33 — N/A: daemon shutdown sends WebSocket close frame (code 1000, reason 'Server shutting down') directly without a preceding JSON shutdown event; the ac-31 clean-close test confirms code 1000 is used for graceful closure
 
-import { test, expect } from "../fixtures/test-base";
+import { test, expect } from "./fixtures/test-base";
 
 /**
  * Connect to the daemon WebSocket from the browser context.

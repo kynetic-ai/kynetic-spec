@@ -1,4 +1,4 @@
-import { test, expect } from "../fixtures/test-base";
+import { test, expect } from "./fixtures/test-base";
 
 /**
  * Dashboard Overview E2E Tests

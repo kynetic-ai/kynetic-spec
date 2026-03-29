@@ -53,7 +53,7 @@
 // AC: @trait-websocket-protocol ac-8 — N/A: WebSocket reconnection; tested separately in api-websocket E2E tests
 // AC: @multi-directory-daemon ac-24 — covered: meta/validation routes use projectContext from middleware (daemon fixture provides this)
 
-import { test, expect } from "../fixtures/test-base";
+import { test, expect } from "./fixtures/test-base";
 
 test.describe("Meta API", () => {
   test.describe("GET /api/meta/session", () => {

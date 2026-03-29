@@ -1,4 +1,4 @@
-import { test, expect } from "../fixtures/test-base";
+import { test, expect } from "./fixtures/test-base";
 
 /**
  * Task Board (Kanban) E2E Tests

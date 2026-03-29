@@ -14,7 +14,7 @@
 // AC: @trait-api-endpoint ac-4 — N/A: search results are bounded by limit, not offset/limit pagination.
 // AC: @trait-api-endpoint ac-5 — N/A: the search endpoint is read-only and does not mutate shadow state.
 
-import { test, expect } from "../fixtures/test-base";
+import { test, expect } from "./fixtures/test-base";
 import { mkdirSync, writeFileSync } from "fs";
 import { join } from "path";
 import * as YAML from "yaml";

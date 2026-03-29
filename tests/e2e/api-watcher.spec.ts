@@ -54,7 +54,7 @@
 
 import { mkdirSync, writeFileSync } from "fs";
 import { join } from "path";
-import { test, expect } from "../fixtures/test-base";
+import { test, expect } from "./fixtures/test-base";
 
 /**
  * Connect to the daemon WebSocket from the browser context.

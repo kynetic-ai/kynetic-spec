@@ -46,7 +46,7 @@
 // AC: @trait-websocket-protocol ac-8 — N/A: WebSocket reconnection tested in api-websocket.spec.ts
 // AC: @daemon-server ac-12 — N/A: graceful SIGTERM/SIGINT shutdown tested in tests/cli-serve.test.ts
 
-import { test, expect } from "../fixtures/test-base";
+import { test, expect } from "./fixtures/test-base";
 import * as http from "http";
 
 /**

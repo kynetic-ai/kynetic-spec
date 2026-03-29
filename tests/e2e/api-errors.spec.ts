@@ -28,7 +28,7 @@
 // AC: @trait-websocket-protocol ac-7 — N/A: WebSocket close codes tested in future api-websocket.spec.ts
 // AC: @trait-websocket-protocol ac-8 — N/A: WebSocket reconnection tested in future api-websocket.spec.ts
 
-import { test, expect } from "../fixtures/test-base";
+import { test, expect } from "./fixtures/test-base";
 
 test.describe("Error Handling API", () => {
   test.describe("404 Not Found Errors", () => {

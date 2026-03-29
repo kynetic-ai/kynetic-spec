@@ -12,7 +12,7 @@
  * AC: @ui-data-freshness ac-warming-timeout — error state with manual retry after 30s
  */
 
-import { test, expect } from "../fixtures/test-base";
+import { test, expect } from "./fixtures/test-base";
 
 /** Return a response envelope with cache_status: "loading" (triggers CacheWarmingError). */
 function warmingEnvelope<T>(data: T, meta?: Record<string, unknown>) {

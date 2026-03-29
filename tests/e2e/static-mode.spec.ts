@@ -11,7 +11,7 @@
  * - @gh-pages-export ac-11: SPA loads and renders dashboard from snapshot
  */
 
-import { test, expect } from "../fixtures/test-base";
+import { test, expect } from "./fixtures/test-base";
 
 /** Snapshot with realistic data for testing that pages render content. */
 function createTestSnapshot() {

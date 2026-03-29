@@ -7,7 +7,7 @@
  * - AC-24: 409 with {error, current, valid_transitions} for state error
  */
 
-import { test, expect } from "../fixtures/test-base";
+import { test, expect } from "./fixtures/test-base";
 
 test.describe("Error Handling", () => {
   // Start daemon for all tests

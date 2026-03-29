@@ -7,7 +7,7 @@
  * - AC-22: Panel lists observations with type icons
  */
 
-import { test, expect } from "../fixtures/test-base";
+import { test, expect } from "./fixtures/test-base";
 
 test.describe("Observations", () => {
   // Start daemon for all tests

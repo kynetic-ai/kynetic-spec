@@ -1,4 +1,4 @@
-import { test, expect } from "../fixtures/test-base";
+import { test, expect } from "./fixtures/test-base";
 
 test.describe("Inbox View", () => {
   test.beforeEach(async ({ page, daemon: _daemon }) => {

@@ -7,7 +7,7 @@
  * - AC-27: Desktop slide-over panels (>= 1024px)
  */
 
-import { test, expect } from "../fixtures/test-base";
+import { test, expect } from "./fixtures/test-base";
 
 test.describe("Navigation and URL State", () => {
   // Start daemon for all tests

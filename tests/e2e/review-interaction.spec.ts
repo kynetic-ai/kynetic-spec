@@ -10,7 +10,7 @@
  * AC: @review-records-web-ui ac-6 — Verdict submission with disposition update
  */
 
-import { test, expect } from "../fixtures/test-base";
+import { test, expect } from "./fixtures/test-base";
 
 const OPEN_REVIEW_ULID = "01KKTX0CA45ZT43W2T6HJMVA01";
 const DRAFT_REVIEW_ULID = "01KKTX9CA45ZT43W2T6HJMVA10";

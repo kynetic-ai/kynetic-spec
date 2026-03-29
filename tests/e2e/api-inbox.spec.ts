@@ -11,7 +11,7 @@
  * - @api-contract ac-14: DELETE /api/inbox/:ref removes item, returns success confirmation
  */
 
-import { test, expect } from "../fixtures/test-base";
+import { test, expect } from "./fixtures/test-base";
 
 test.describe("Inbox API", () => {
   test.describe("GET /api/inbox", () => {

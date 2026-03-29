@@ -45,7 +45,7 @@
 // AC: @daemon-agent-dispatch ac-1 — N/A: file watcher integration is tested implicitly via the dispatch engine; isolated watcher+diffing behavior is covered in unit tests (agent-dispatch-engine.test.ts ac-5)
 // AC: @daemon-agent-dispatch ac-3, ac-4 — N/A: actual invocation broadcasts require a real agent adapter (claude-agent-acp) which cannot run in E2E; the event callback wiring is verified by unit inspection of createEngine() in agent-dispatch.ts
 
-import { test, expect } from "../fixtures/test-base";
+import { test, expect } from "./fixtures/test-base";
 
 test.describe("Agent Dispatch API", () => {
   test.describe("GET /api/agent/status", () => {

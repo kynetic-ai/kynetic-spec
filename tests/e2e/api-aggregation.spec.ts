@@ -25,7 +25,7 @@
  * AC: @trait-websocket-protocol ac-8 — N/A: WebSocket enrichment is a separate task
  */
 
-import { test, expect } from "../fixtures/test-base";
+import { test, expect } from "./fixtures/test-base";
 
 test.describe("Aggregation API", () => {
   test.describe("GET /api/aggregation/tasks/summary", () => {

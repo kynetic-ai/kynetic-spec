@@ -1,4 +1,4 @@
-import { test, expect } from "../fixtures/test-base";
+import { test, expect } from "./fixtures/test-base";
 
 test.describe("Smoke Tests", () => {
   test("page loads and shows sidebar", async ({ page, daemon: _daemon }) => {

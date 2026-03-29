@@ -12,7 +12,7 @@
  * AC: @review-code-diff-viewer ac-6 — Lazy loading for 20+ changed files
  */
 
-import { test, expect } from "../fixtures/test-base";
+import { test, expect } from "./fixtures/test-base";
 
 const CODE_REVIEW_ULID = "01KKV1ACA45ZT43W2T6HJMVB10";
 

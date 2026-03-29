@@ -14,7 +14,7 @@
  * - @ui-agent-dispatch ac-3: Dispatch stopped with no active invocations
  */
 
-import { test, expect } from "../fixtures/test-base";
+import { test, expect } from "./fixtures/test-base";
 
 const DAEMON_URL = "http://localhost:3456";
 

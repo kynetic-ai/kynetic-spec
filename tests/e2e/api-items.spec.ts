@@ -12,7 +12,7 @@
  * - @api-contract ac-11: GET /api/items/:ref/tasks returns tasks linked via AlignmentIndex
  */
 
-import { test, expect } from "../fixtures/test-base";
+import { test, expect } from "./fixtures/test-base";
 
 // AC: @trait-api-endpoint ac-2 — N/A: POST /api/items/batch reports missing refs in an
 // unresolved array by design instead of failing the whole batch with 404.

@@ -23,7 +23,7 @@
  * - @trait-api-endpoint ac-4: Pagination wrapper {data, meta}
  */
 
-import { test, expect } from "../fixtures/test-base";
+import { test, expect } from "./fixtures/test-base";
 import { mkdirSync, writeFileSync } from "fs";
 import { join } from "path";
 import * as YAML from "yaml";

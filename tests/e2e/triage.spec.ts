@@ -27,7 +27,7 @@
 // AC: @trait-websocket-protocol ac-7 — N/A: server close codes tested in api-websocket.spec.ts
 // AC: @trait-websocket-protocol ac-8 — N/A: client sequence reset on reconnect tested in api-websocket.spec.ts
 
-import { test, expect } from "../fixtures/test-base";
+import { test, expect } from "./fixtures/test-base";
 
 const ACTION_LABELS: Record<string, string> = {
   promote: "Promote to Task",

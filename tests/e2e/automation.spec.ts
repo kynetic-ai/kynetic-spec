@@ -10,7 +10,7 @@
  * - @ui-automation-view ac-5: Inline editing of trigger event type and filter criteria
  */
 
-import { test, expect } from "../fixtures/test-base";
+import { test, expect } from "./fixtures/test-base";
 
 test.describe("Automation View — Dispatch Triggers", () => {
   test.describe("Trigger Display (AC-1)", () => {
