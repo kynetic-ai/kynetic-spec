@@ -3053,6 +3053,26 @@ features:
         then: The active view stays fresh without a manual reload, and the freshness contract does not
           depend on which internal path produced the change.
         when: Any path changes list-visible data for an active view
+      - given: the server signals that its cache is still warming
+        id: ac-warming-skeleton
+        then: a loading skeleton is displayed instead of empty content, and the warming response is not
+          persisted in the client cache as real data
+        when: the UI receives the response
+      - given: the UI is displaying a loading skeleton due to cache warming
+        id: ac-warming-auto-transition
+        then: the affected queries are invalidated and the view transitions to real data without user
+          interaction
+        when: a real-time event indicates the cache domain is ready
+      - given: the UI is displaying a loading skeleton due to cache warming
+        id: ac-warming-retry-fallback
+        then: the UI retries the request at short intervals as a fallback for missed or delayed real-time
+          events
+        when: no real-time domain-ready event has been received
+      - given: the UI has been retrying a cache-warming response
+        id: ac-warming-timeout
+        then: the UI displays an error state with a manual retry option instead of continuing to show the
+          loading skeleton
+        when: the retry ceiling (30 seconds) is reached without the cache becoming ready
     tags: []
     created: 2026-03-15T03:28:12.161Z
     notes: []
