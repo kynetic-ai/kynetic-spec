@@ -29500,9 +29500,18 @@ plans:
       ## Tasks
 
 
-      - title: "Implement unified API response envelope type and server wrapper"
+      derive_from_specs: false
+
+
+      ```yaml
+
+      # ─── Phase 1: Server-Side Envelope ───
+
+
+      - title: Implement unified API response envelope type and server wrapper
+        slug: task-api-response-envelope-type
         spec_ref: "@api-contract"
-        depends_on: []
+        priority: 1
         tags: [api, daemon]
         description: |
           Define the normalized response envelope type (data + meta with
@@ -29510,9 +29519,11 @@ plans:
           that all route handlers use to construct responses. Update the
           shared types package.
 
-      - title: "Migrate daemon route handlers to unified envelope"
+      - title: Migrate daemon route handlers to unified envelope
+        slug: task-migrate-route-handlers-envelope
         spec_ref: "@api-contract"
-        depends_on: ["Implement unified API response envelope type and server wrapper"]
+        priority: 2
+        depends_on: ["@task-api-response-envelope-type"]
         tags: [api, daemon]
         description: |
           Update all ~27 route handlers to use the envelope wrapper.
@@ -29521,29 +29532,51 @@ plans:
           endpoints. Each handler wraps its domain data in the envelope
           with appropriate cache_status from domain state.
 
-      - title: "Add cache domain ready WebSocket event"
+      # ─── Phase 2: WebSocket + Client Unwrapping ───
+
+
+      - title: Add cache domain ready WebSocket event
+        slug: task-cache-domain-ready-ws-event
         spec_ref: "@daemon-entity-cache"
-        depends_on: []
+        priority: 1
         tags: [daemon, websocket]
         description: |
           When EntityCache transitions a domain from loading to ready,
           broadcast a domain_ready event via PubSub. Include domain name
           and project path. Follows existing broadcast patterns.
 
-      - title: "Create UI response interceptor for envelope unwrapping and cache warming detection"
-        spec_ref: "@ui-data-freshness"
-        depends_on: ["Implement unified API response envelope type and server wrapper", "Migrate daemon route handlers to unified envelope"]
+      - title: Update web UI fetch functions to unwrap unified envelope
+        slug: task-ui-unwrap-envelope
+        spec_ref: "@api-contract"
+        priority: 3
+        depends_on: ["@task-migrate-route-handlers-envelope"]
         tags: [web-ui, data-layer]
         description: |
-          Add a centralized response handler in the web UI that unwraps
-          the normalized envelope. When meta.cache_status is "loading",
-          signal to TanStack Query that this is not cacheable real data
-          (throw a typed error or use a query meta flag). Configure
-          retry behavior: 2s intervals, 30s ceiling.
+          Update all fetch functions in the web UI API layer to work with
+          the new envelope shape. Unwrap data/meta for consumers. Update
+          TypeScript types for all response interfaces.
 
-      - title: "Subscribe to cache domain ready events for query invalidation"
+      # ─── Phase 3: Cache Warming UX ───
+
+
+      - title: Create UI response interceptor for cache warming detection
+        slug: task-ui-cache-warming-interceptor
         spec_ref: "@ui-data-freshness"
-        depends_on: ["Add cache domain ready WebSocket event", "Create UI response interceptor for envelope unwrapping and cache warming detection"]
+        priority: 4
+        depends_on: ["@task-ui-unwrap-envelope"]
+        tags: [web-ui, data-layer]
+        description: |
+          Add a centralized response handler in the web UI that detects
+          cache warming from the envelope metadata. When cache_status is
+          "loading", signal to TanStack Query that this is not cacheable
+          real data (throw a typed error or use a query meta flag).
+          Configure retry behavior: 2s intervals, 30s ceiling.
+
+      - title: Subscribe to cache domain ready events for query invalidation
+        slug: task-ui-cache-domain-ready-subscription
+        spec_ref: "@ui-data-freshness"
+        priority: 5
+        depends_on: ["@task-cache-domain-ready-ws-event", "@task-ui-cache-warming-interceptor"]
         tags: [web-ui, websocket]
         description: |
           Add a WebSocket subscription handler for domain_ready events
@@ -29551,9 +29584,11 @@ plans:
           TanStack Query keys for the corresponding domain. This is the
           primary mechanism for transitioning from skeleton to real data.
 
-      - title: "Update all web UI views to show loading skeletons during cache warming"
+      - title: Update all web UI views to show loading skeletons during cache warming
+        slug: task-ui-warming-skeletons
         spec_ref: "@ui-data-freshness"
-        depends_on: ["Create UI response interceptor for envelope unwrapping and cache warming detection"]
+        priority: 6
+        depends_on: ["@task-ui-cache-warming-interceptor"]
         tags: [web-ui, components]
         description: |
           Update all list views (tasks board, items, sessions, inbox,
@@ -29561,24 +29596,22 @@ plans:
           query result and render existing skeleton components instead of
           empty content. Add error state with retry button for timeout.
 
-      - title: "Update web UI fetch functions to unwrap unified envelope"
-        spec_ref: "@api-contract"
-        depends_on: ["Migrate daemon route handlers to unified envelope"]
-        tags: [web-ui, data-layer]
-        description: |
-          Update all fetch functions in the web UI API layer to work with
-          the new envelope shape. Unwrap data/meta for consumers. Update
-          TypeScript types for all response interfaces.
+      # ─── Phase 4: Validation ───
 
-      - title: "E2E test for cache warming to ready transition"
+
+      - title: E2E test for cache warming to ready transition
+        slug: task-e2e-cache-warming-transition
         spec_ref: "@ui-data-freshness"
-        depends_on: ["Update all web UI views to show loading skeletons during cache warming", "Subscribe to cache domain ready events for query invalidation"]
+        priority: 7
+        depends_on: ["@task-ui-warming-skeletons", "@task-ui-cache-domain-ready-subscription"]
         tags: [test, e2e]
         description: |
           Playwright test that verifies: initial load during cache warming
           shows skeleton, WebSocket domain_ready event triggers transition
           to real data, and 30s timeout shows error state with working
           retry button.
+      ```
+
 
       ## Implementation Notes
 
@@ -29642,3 +29675,7 @@ plans:
           internal change no versioning, 30s timeout with error state"
         author: "@claude"
         created_at: 2026-03-29T05:42:03.651Z
+      - _ulid: 01KMW2AAH9YSMBM5FWN7YW5TN9
+        content: "Fixed task format: added slugs, priorities, phases, derive_from_specs false"
+        author: "@claude"
+        created_at: 2026-03-29T05:50:52.969Z
