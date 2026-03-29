@@ -8,7 +8,7 @@
  * Covered ACs:
  * - @api-contract ac-2: GET /api/tasks returns tasks with expected fields
  * - @api-contract ac-3: GET /api/tasks?status filter (multi-value)
- * - @api-contract ac-4: GET /api/tasks pagination {items, total, offset, limit}
+ * - @api-contract ac-4: GET /api/tasks pagination {data, meta} envelope
  * - @api-contract ac-5: GET /api/tasks/:ref returns full task with notes, todos, deps
  * - @api-contract ac-6: POST /api/tasks/:ref/start transitions to in_progress
  * - @api-contract ac-7: POST /api/tasks/:ref/note appends note
@@ -26,16 +26,14 @@ test.describe("Tasks API", () => {
 
       const body = await response.json();
 
-      // Response should have items array (paginated format)
-      expect(body).toHaveProperty("items");
-      expect(body).toHaveProperty("total");
-      expect(body).toHaveProperty("offset");
-      expect(body).toHaveProperty("limit");
-      expect(Array.isArray(body.items)).toBe(true);
-      expect(body.items.length).toBeGreaterThan(0);
+      // Response uses {data, meta} envelope
+      expect(body).toHaveProperty("data");
+      expect(body).toHaveProperty("meta");
+      expect(Array.isArray(body.data)).toBe(true);
+      expect(body.data.length).toBeGreaterThan(0);
 
       // Each task should have required fields
-      const task = body.items[0];
+      const task = body.data[0];
       expect(task).toHaveProperty("_ulid");
       expect(task).toHaveProperty("title");
       expect(task).toHaveProperty("status");
@@ -50,12 +48,12 @@ test.describe("Tasks API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(Array.isArray(body.items)).toBe(true);
+      expect(Array.isArray(body.data)).toBe(true);
       // Fixtures include tasks with spec_ref — at least one must have it
-      expect(body.items.length).toBeGreaterThan(0);
+      expect(body.data.length).toBeGreaterThan(0);
 
       // Find a task with spec_ref (fixture has tasks with @test-feature)
-      const taskWithSpecRef = body.items.find(
+      const taskWithSpecRef = body.data.find(
         (t: { spec_ref?: string }) => t.spec_ref !== undefined && t.spec_ref !== null,
       );
       expect(taskWithSpecRef).toBeDefined();
@@ -69,12 +67,12 @@ test.describe("Tasks API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(Array.isArray(body.items)).toBe(true);
+      expect(Array.isArray(body.data)).toBe(true);
       // Fixtures have pending tasks
-      expect(body.items.length).toBeGreaterThan(0);
+      expect(body.data.length).toBeGreaterThan(0);
 
       // All returned tasks should have pending status
-      for (const task of body.items) {
+      for (const task of body.data) {
         expect(task.status).toBe("pending");
       }
     });
@@ -90,12 +88,12 @@ test.describe("Tasks API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(Array.isArray(body.items)).toBe(true);
+      expect(Array.isArray(body.data)).toBe(true);
       // Fixtures have both pending and in_progress tasks
-      expect(body.items.length).toBeGreaterThan(0);
+      expect(body.data.length).toBeGreaterThan(0);
 
       // All returned tasks should have pending or in_progress status
-      for (const task of body.items) {
+      for (const task of body.data) {
         expect(["pending", "in_progress"]).toContain(task.status);
       }
     });
@@ -106,18 +104,18 @@ test.describe("Tasks API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(Array.isArray(body.items)).toBe(true);
+      expect(Array.isArray(body.data)).toBe(true);
       // Fixtures have pending and in_progress tasks — filter must return non-empty
-      expect(body.items.length).toBeGreaterThan(0);
+      expect(body.data.length).toBeGreaterThan(0);
 
       // All returned tasks should match the filter
-      for (const task of body.items) {
+      for (const task of body.data) {
         expect(["pending", "in_progress"]).toContain(task.status);
       }
     });
 
     // AC: @api-contract ac-4 - pagination shape
-    test("returns paginated response with {items, total, offset, limit}", async ({
+    test("returns paginated response with {data, meta} envelope", async ({
       request,
       daemon,
     }) => {
@@ -125,15 +123,13 @@ test.describe("Tasks API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(body).toHaveProperty("items");
-      expect(body).toHaveProperty("total");
-      expect(body).toHaveProperty("offset");
-      expect(body).toHaveProperty("limit");
+      expect(body).toHaveProperty("data");
+      expect(body).toHaveProperty("meta");
 
-      expect(typeof body.total).toBe("number");
-      expect(body.offset).toBe(0);
-      expect(body.limit).toBe(2);
-      expect(body.items.length).toBeLessThanOrEqual(2);
+      expect(typeof body.meta.total).toBe("number");
+      expect(body.meta.offset).toBe(0);
+      expect(body.meta.limit).toBe(2);
+      expect(body.data.length).toBeLessThanOrEqual(2);
     });
 
     // AC: @api-contract ac-4 - pagination offset
@@ -144,8 +140,8 @@ test.describe("Tasks API", () => {
       const body1 = await page1.json();
 
       // Fixtures have 5 tasks — there must be more than 2 for pagination to be meaningful
-      expect(body1.total).toBeGreaterThan(2);
-      expect(body1.items.length).toBe(2);
+      expect(body1.meta.total).toBeGreaterThan(2);
+      expect(body1.data.length).toBe(2);
 
       // Get second page
       const page2 = await request.get(`${daemon.baseUrl}/api/tasks?offset=2&limit=2`);
@@ -153,8 +149,8 @@ test.describe("Tasks API", () => {
       const body2 = await page2.json();
 
       // Pages should have different items
-      const ids1 = body1.items.map((t: { _ulid: string }) => t._ulid);
-      const ids2 = body2.items.map((t: { _ulid: string }) => t._ulid);
+      const ids1 = body1.data.map((t: { _ulid: string }) => t._ulid);
+      const ids2 = body2.data.map((t: { _ulid: string }) => t._ulid);
       // No overlap between pages
       for (const id of ids2) {
         expect(ids1).not.toContain(id);
@@ -167,10 +163,10 @@ test.describe("Tasks API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(Array.isArray(body.items)).toBe(true);
-      expect(body.items.length).toBeGreaterThan(0);
+      expect(Array.isArray(body.data)).toBe(true);
+      expect(body.data.length).toBeGreaterThan(0);
 
-      for (const task of body.items) {
+      for (const task of body.data) {
         expect(task.automation).toBe("eligible");
       }
     });
@@ -181,10 +177,10 @@ test.describe("Tasks API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(Array.isArray(body.items)).toBe(true);
-      expect(body.items.length).toBeGreaterThan(0);
+      expect(Array.isArray(body.data)).toBe(true);
+      expect(body.data.length).toBeGreaterThan(0);
 
-      for (const task of body.items) {
+      for (const task of body.data) {
         expect(task.automation).toBe("needs_review");
       }
     });
@@ -195,10 +191,10 @@ test.describe("Tasks API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(Array.isArray(body.items)).toBe(true);
-      expect(body.items.length).toBeGreaterThan(0);
+      expect(Array.isArray(body.data)).toBe(true);
+      expect(body.data.length).toBeGreaterThan(0);
 
-      for (const task of body.items) {
+      for (const task of body.data) {
         expect(task.automation).toBe("manual_only");
       }
     });
@@ -212,7 +208,7 @@ test.describe("Tasks API", () => {
       const body2 = await response2.json();
 
       // Total should be the same across pages
-      expect(body1.total).toBe(body2.total);
+      expect(body1.meta.total).toBe(body2.meta.total);
     });
   });
 
@@ -223,7 +219,8 @@ test.describe("Tasks API", () => {
       const response = await request.get(`${daemon.baseUrl}/api/tasks/@test-task-ready`);
       expect(response.status()).toBe(200);
 
-      const task = await response.json();
+      const envelope = await response.json();
+      const task = envelope.data;
       expect(task).toHaveProperty("_ulid");
       expect(task).toHaveProperty("title");
       expect(task).toHaveProperty("status");
@@ -239,7 +236,8 @@ test.describe("Tasks API", () => {
       const response = await request.get(`${daemon.baseUrl}/api/tasks/@test-task-in-progress`);
       expect(response.status()).toBe(200);
 
-      const task = await response.json();
+      const envelope = await response.json();
+      const task = envelope.data;
       expect(Array.isArray(task.notes)).toBe(true);
       expect(task.notes.length).toBeGreaterThan(0);
 
@@ -255,7 +253,8 @@ test.describe("Tasks API", () => {
       const response = await request.get(`${daemon.baseUrl}/api/tasks/@test-task-blocked`);
       expect(response.status()).toBe(200);
 
-      const task = await response.json();
+      const envelope = await response.json();
+      const task = envelope.data;
       expect(Array.isArray(task.depends_on)).toBe(true);
       expect(task.depends_on.length).toBeGreaterThan(0);
     });
@@ -265,16 +264,17 @@ test.describe("Tasks API", () => {
       // First get the task list to find a ULID
       const listResponse = await request.get(`${daemon.baseUrl}/api/tasks`);
       const body = await listResponse.json();
-      expect(body.items.length).toBeGreaterThan(0);
+      expect(body.data.length).toBeGreaterThan(0);
 
-      const firstTask = body.items[0];
+      const firstTask = body.data[0];
       expect(firstTask._ulid).toBeTruthy();
 
       // Get by full ULID
       const response = await request.get(`${daemon.baseUrl}/api/tasks/@${firstTask._ulid}`);
       expect(response.status()).toBe(200);
 
-      const task = await response.json();
+      const envelope = await response.json();
+      const task = envelope.data;
       expect(task._ulid).toBe(firstTask._ulid);
       expect(task.title).toBe(firstTask.title);
     });
@@ -284,7 +284,8 @@ test.describe("Tasks API", () => {
       const response = await request.get(`${daemon.baseUrl}/api/tasks/@test-task-pending-review`);
       expect(response.status()).toBe(200);
 
-      const task = await response.json();
+      const envelope = await response.json();
+      const task = envelope.data;
       expect(task).toHaveProperty("review_ref");
       expect(task.review_ref).toBe("@test-review-open");
     });
@@ -294,7 +295,8 @@ test.describe("Tasks API", () => {
       const response = await request.get(`${daemon.baseUrl}/api/tasks/@test-task-ready`);
       expect(response.status()).toBe(200);
 
-      const task = await response.json();
+      const envelope = await response.json();
+      const task = envelope.data;
       expect(task).toHaveProperty("review_ref");
       expect(task.review_ref).toBeNull();
     });
@@ -470,15 +472,16 @@ test.describe("Tasks API", () => {
       // Get list
       const listResponse = await request.get(`${daemon.baseUrl}/api/tasks`);
       const listBody = await listResponse.json();
-      expect(listBody.items.length).toBeGreaterThan(0);
+      expect(listBody.data.length).toBeGreaterThan(0);
 
-      const listTask = listBody.items[0];
+      const listTask = listBody.data[0];
       expect(listTask._ulid).toBeTruthy();
 
       // Get detail by ULID
       const detailResponse = await request.get(`${daemon.baseUrl}/api/tasks/@${listTask._ulid}`);
       expect(detailResponse.status()).toBe(200);
-      const detailTask = await detailResponse.json();
+      const detailEnvelope = await detailResponse.json();
+      const detailTask = detailEnvelope.data;
 
       // Core fields should be consistent
       expect(detailTask._ulid).toBe(listTask._ulid);

@@ -62,15 +62,15 @@ test.describe("Task and Spec Session Context", () => {
     expect(response.status()).toBe(200);
 
     const body = await response.json();
-    expect(body.total).toBe(1);
-    expect(body.items).toHaveLength(1);
-    expect(body.items[0]).toMatchObject({
+    expect(body.meta.total).toBe(1);
+    expect(body.data).toHaveLength(1);
+    expect(body.data[0]).toMatchObject({
       id: "session-task-ready",
       task_id: "@test-task-ready",
       status: "completed",
       started_at: "2026-03-01T10:00:00Z",
     });
-    expect(body.items[0].duration_ms).toBe(300000);
+    expect(body.data[0].duration_ms).toBe(300000);
   });
 
   // AC: @task-spec-session-context ac-api-item-sessions
@@ -84,12 +84,12 @@ test.describe("Task and Spec Session Context", () => {
     expect(response.status()).toBe(200);
 
     const body = await response.json();
-    expect(body.total).toBe(2);
-    expect(body.items.map((item: { id: string }) => item.id)).toEqual([
+    expect(body.meta.total).toBe(2);
+    expect(body.data.map((item: { id: string }) => item.id)).toEqual([
       "session-task-progress",
       "session-task-ready",
     ]);
-    expect(body.items.map((item: { task_id: string }) => item.task_id).toSorted()).toEqual([
+    expect(body.data.map((item: { task_id: string }) => item.task_id).toSorted()).toEqual([
       "@test-task-in-progress",
       "@test-task-ready",
     ]);

@@ -69,13 +69,13 @@ test.describe("Meta API", () => {
       const body = await response.json();
 
       // Required fields per ac-15
-      expect(body).toHaveProperty("focus");
-      expect(body).toHaveProperty("threads");
-      expect(body).toHaveProperty("questions");
+      expect(body.data).toHaveProperty("focus");
+      expect(body.data).toHaveProperty("threads");
+      expect(body.data).toHaveProperty("questions");
 
       // threads and questions are arrays
-      expect(Array.isArray(body.threads)).toBe(true);
-      expect(Array.isArray(body.questions)).toBe(true);
+      expect(Array.isArray(body.data.threads)).toBe(true);
+      expect(Array.isArray(body.data.questions)).toBe(true);
     });
 
     // AC: @api-contract ac-15 - fixture data integrity
@@ -85,9 +85,9 @@ test.describe("Meta API", () => {
 
       const body = await response.json();
       // Fixture has focus: "E2E testing", threads: [], questions: []
-      expect(body.focus).toBe("E2E testing");
-      expect(body.threads).toEqual([]);
-      expect(body.questions).toEqual([]);
+      expect(body.data.focus).toBe("E2E testing");
+      expect(body.data.threads).toEqual([]);
+      expect(body.data.questions).toEqual([]);
     });
 
     // AC: @api-contract ac-15 - JSON content type
@@ -107,10 +107,10 @@ test.describe("Meta API", () => {
 
       const body = await response.json();
 
-      expect(body).toHaveProperty("items");
-      expect(body).toHaveProperty("total");
-      expect(Array.isArray(body.items)).toBe(true);
-      expect(typeof body.total).toBe("number");
+      expect(body).toHaveProperty("data");
+      expect(body).toHaveProperty("meta");
+      expect(Array.isArray(body.data)).toBe(true);
+      expect(typeof body.meta.total).toBe("number");
     });
 
     // AC: @api-contract ac-16 - fixture data consistency
@@ -120,9 +120,9 @@ test.describe("Meta API", () => {
 
       const body = await response.json();
       // Fixture has agents: [] in kynetic.meta.yaml
-      expect(body.total).toBe(body.items.length);
-      expect(body.items.length).toBe(0);
-      expect(body.total).toBe(0);
+      expect(body.meta.total).toBe(body.data.length);
+      expect(body.data.length).toBe(0);
+      expect(body.meta.total).toBe(0);
     });
   });
 
@@ -135,10 +135,10 @@ test.describe("Meta API", () => {
 
       const body = await response.json();
 
-      expect(body).toHaveProperty("items");
-      expect(body).toHaveProperty("total");
-      expect(Array.isArray(body.items)).toBe(true);
-      expect(typeof body.total).toBe("number");
+      expect(body).toHaveProperty("data");
+      expect(body).toHaveProperty("meta");
+      expect(Array.isArray(body.data)).toBe(true);
+      expect(typeof body.meta.total).toBe("number");
     });
 
     // AC: @api-contract ac-17 - fixture data consistency
@@ -148,9 +148,9 @@ test.describe("Meta API", () => {
 
       const body = await response.json();
       // Fixture has workflows: [] in kynetic.meta.yaml
-      expect(body.total).toBe(body.items.length);
-      expect(body.items.length).toBe(0);
-      expect(body.total).toBe(0);
+      expect(body.meta.total).toBe(body.data.length);
+      expect(body.data.length).toBe(0);
+      expect(body.meta.total).toBe(0);
     });
   });
 
@@ -163,12 +163,12 @@ test.describe("Meta API", () => {
 
       const body = await response.json();
 
-      expect(body).toHaveProperty("items");
-      expect(body).toHaveProperty("total");
-      expect(Array.isArray(body.items)).toBe(true);
+      expect(body).toHaveProperty("data");
+      expect(body).toHaveProperty("meta");
+      expect(Array.isArray(body.data)).toBe(true);
       // Fixture has 2 observations
-      expect(body.items.length).toBe(2);
-      expect(body.total).toBe(2);
+      expect(body.data.length).toBe(2);
+      expect(body.meta.total).toBe(2);
     });
 
     // AC: @api-contract ac-18 - each observation has required fields
@@ -177,9 +177,9 @@ test.describe("Meta API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(body.items.length).toBeGreaterThan(0);
+      expect(body.data.length).toBeGreaterThan(0);
 
-      const obs = body.items[0];
+      const obs = body.data[0];
       expect(obs).toHaveProperty("_ulid");
       expect(obs).toHaveProperty("created_at");
       expect(obs).toHaveProperty("type");
@@ -195,7 +195,7 @@ test.describe("Meta API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      const items = body.items;
+      const items = body.data;
       expect(items.length).toBeGreaterThanOrEqual(2);
 
       // Verify descending order
@@ -213,12 +213,12 @@ test.describe("Meta API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(Array.isArray(body.items)).toBe(true);
+      expect(Array.isArray(body.data)).toBe(true);
       // Fixture has 2 unresolved observations
-      expect(body.items.length).toBe(2);
+      expect(body.data.length).toBe(2);
 
       // None should have resolved_at set
-      for (const obs of body.items) {
+      for (const obs of body.data) {
         expect(obs.resolved_at).toBeFalsy();
       }
     });
@@ -230,10 +230,10 @@ test.describe("Meta API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(Array.isArray(body.items)).toBe(true);
+      expect(Array.isArray(body.data)).toBe(true);
       // Fixture has no resolved observations
-      expect(body.items.length).toBe(0);
-      expect(body.total).toBe(0);
+      expect(body.data.length).toBe(0);
+      expect(body.meta.total).toBe(0);
     });
 
     // AC: @api-contract ac-18 - fixture content check
@@ -242,16 +242,16 @@ test.describe("Meta API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      const types = body.items.map((obs: { type: string }) => obs.type);
+      const types = body.data.map((obs: { type: string }) => obs.type);
 
       // Fixture has friction and success observations
       expect(types).toContain("friction");
       expect(types).toContain("success");
 
-      const frictionObs = body.items.find((obs: { type: string }) => obs.type === "friction");
+      const frictionObs = body.data.find((obs: { type: string }) => obs.type === "friction");
       expect(frictionObs.content).toBe("Test friction observation");
 
-      const successObs = body.items.find((obs: { type: string }) => obs.type === "success");
+      const successObs = body.data.find((obs: { type: string }) => obs.type === "success");
       expect(successObs.content).toBe("Test success observation");
     });
   });
@@ -267,9 +267,9 @@ test.describe("Search API", () => {
 
       const body = await response.json();
 
-      expect(body).toHaveProperty("results");
-      expect(body).toHaveProperty("total");
-      expect(Array.isArray(body.results)).toBe(true);
+      expect(body).toHaveProperty("data");
+      expect(body.data).toHaveProperty("total");
+      expect(Array.isArray(body.data.results)).toBe(true);
     });
 
     // AC: @api-contract ac-19 - each result has type, ulid, title, matchedFields
@@ -278,9 +278,9 @@ test.describe("Search API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(body.results.length).toBeGreaterThan(0);
+      expect(body.data.results.length).toBeGreaterThan(0);
 
-      const result = body.results[0];
+      const result = body.data.results[0];
       expect(result).toHaveProperty("type");
       expect(result).toHaveProperty("ulid");
       expect(result).toHaveProperty("title");
@@ -295,7 +295,7 @@ test.describe("Search API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      const itemResults = body.results.filter((r: { type: string }) => r.type === "item");
+      const itemResults = body.data.results.filter((r: { type: string }) => r.type === "item");
       expect(itemResults.length).toBeGreaterThan(0);
     });
 
@@ -306,7 +306,7 @@ test.describe("Search API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      const taskResults = body.results.filter((r: { type: string }) => r.type === "task");
+      const taskResults = body.data.results.filter((r: { type: string }) => r.type === "task");
       expect(taskResults.length).toBeGreaterThan(0);
       expect(taskResults[0].type).toBe("task");
     });
@@ -318,7 +318,7 @@ test.describe("Search API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      const inboxResults = body.results.filter((r: { type: string }) => r.type === "inbox");
+      const inboxResults = body.data.results.filter((r: { type: string }) => r.type === "inbox");
       expect(inboxResults.length).toBeGreaterThan(0);
     });
 
@@ -329,7 +329,7 @@ test.describe("Search API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      const obsResults = body.results.filter((r: { type: string }) => r.type === "observation");
+      const obsResults = body.data.results.filter((r: { type: string }) => r.type === "observation");
       expect(obsResults.length).toBeGreaterThan(0);
     });
 
@@ -341,8 +341,8 @@ test.describe("Search API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(body.results).toEqual([]);
-      expect(body.total).toBe(0);
+      expect(body.data.results).toEqual([]);
+      expect(body.data.total).toBe(0);
     });
 
     // AC: @api-contract ac-19 - returns empty results for empty query
@@ -351,8 +351,8 @@ test.describe("Search API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(body.results).toEqual([]);
-      expect(body.total).toBe(0);
+      expect(body.data.results).toEqual([]);
+      expect(body.data.total).toBe(0);
     });
 
     // AC: @api-contract ac-19 - result types are from known set
@@ -371,7 +371,7 @@ test.describe("Search API", () => {
         "convention",
       ];
 
-      for (const result of body.results) {
+      for (const result of body.data.results) {
         expect(knownTypes).toContain(result.type);
       }
     });
@@ -383,9 +383,9 @@ test.describe("Search API", () => {
 
       const body = await response.json();
       // Should have at most 2 results
-      expect(body.results.length).toBeLessThanOrEqual(2);
+      expect(body.data.results.length).toBeLessThanOrEqual(2);
       // Total may be higher than shown
-      expect(body).toHaveProperty("showing");
+      expect(body.data).toHaveProperty("showing");
     });
 
     // AC: @api-contract ac-19 - showing field
@@ -394,8 +394,8 @@ test.describe("Search API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(body).toHaveProperty("showing");
-      expect(body.showing).toBe(body.results.length);
+      expect(body.data).toHaveProperty("showing");
+      expect(body.data.showing).toBe(body.data.results.length);
     });
   });
 });
@@ -411,15 +411,15 @@ test.describe("Validation API", () => {
       const body = await response.json();
 
       // Required ValidationResult fields per ac-20
-      expect(body).toHaveProperty("valid");
-      expect(body).toHaveProperty("schemaErrors");
-      expect(body).toHaveProperty("refErrors");
-      expect(body).toHaveProperty("orphans");
+      expect(body.data).toHaveProperty("valid");
+      expect(body.data).toHaveProperty("schemaErrors");
+      expect(body.data).toHaveProperty("refErrors");
+      expect(body.data).toHaveProperty("orphans");
 
-      expect(typeof body.valid).toBe("boolean");
-      expect(Array.isArray(body.schemaErrors)).toBe(true);
-      expect(Array.isArray(body.refErrors)).toBe(true);
-      expect(Array.isArray(body.orphans)).toBe(true);
+      expect(typeof body.data.valid).toBe("boolean");
+      expect(Array.isArray(body.data.schemaErrors)).toBe(true);
+      expect(Array.isArray(body.data.refErrors)).toBe(true);
+      expect(Array.isArray(body.data.orphans)).toBe(true);
     });
 
     // AC: @api-contract ac-20 - fixture data is valid
@@ -429,8 +429,8 @@ test.describe("Validation API", () => {
 
       const body = await response.json();
       // Fixture data should be valid
-      expect(body.schemaErrors.length).toBe(0);
-      expect(body.refErrors.length).toBe(0);
+      expect(body.data.schemaErrors.length).toBe(0);
+      expect(body.data.refErrors.length).toBe(0);
     });
 
     // AC: @api-contract ac-20 - includes refWarnings and completenessWarnings
@@ -440,10 +440,10 @@ test.describe("Validation API", () => {
 
       const body = await response.json();
 
-      expect(body).toHaveProperty("refWarnings");
-      expect(body).toHaveProperty("completenessWarnings");
-      expect(Array.isArray(body.refWarnings)).toBe(true);
-      expect(Array.isArray(body.completenessWarnings)).toBe(true);
+      expect(body.data).toHaveProperty("refWarnings");
+      expect(body.data).toHaveProperty("completenessWarnings");
+      expect(Array.isArray(body.data.refWarnings)).toBe(true);
+      expect(Array.isArray(body.data.completenessWarnings)).toBe(true);
     });
 
     // AC: @api-contract ac-20 - includes traitCycles field
@@ -452,8 +452,8 @@ test.describe("Validation API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(body).toHaveProperty("traitCycles");
-      expect(Array.isArray(body.traitCycles)).toBe(true);
+      expect(body.data).toHaveProperty("traitCycles");
+      expect(Array.isArray(body.data.traitCycles)).toBe(true);
     });
 
     // AC: @api-contract ac-20 - JSON content type
@@ -473,9 +473,9 @@ test.describe("Validation API", () => {
 
       const body = await response.json();
 
-      expect(body).toHaveProperty("stats");
-      expect(body).toHaveProperty("warnings");
-      expect(Array.isArray(body.warnings)).toBe(true);
+      expect(body.data).toHaveProperty("stats");
+      expect(body.data).toHaveProperty("warnings");
+      expect(Array.isArray(body.data.warnings)).toBe(true);
     });
 
     // AC: @api-contract ac-21 - stats has required fields
@@ -484,7 +484,7 @@ test.describe("Validation API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      const stats = body.stats;
+      const stats = body.data.stats;
 
       expect(stats).toHaveProperty("totalSpecs");
       expect(stats).toHaveProperty("specsWithTasks");
@@ -503,7 +503,7 @@ test.describe("Validation API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      const stats = body.stats;
+      const stats = body.data.stats;
 
       expect(stats.totalSpecs).toBeGreaterThanOrEqual(0);
       expect(stats.specsWithTasks).toBeGreaterThanOrEqual(0);
@@ -518,7 +518,7 @@ test.describe("Validation API", () => {
 
       const body = await response.json();
       // Fixture has modules/core.yaml with module, feature, trait, requirement
-      expect(body.stats.totalSpecs).toBeGreaterThan(0);
+      expect(body.data.stats.totalSpecs).toBeGreaterThan(0);
     });
 
     // AC: @api-contract ac-21 - JSON content type
