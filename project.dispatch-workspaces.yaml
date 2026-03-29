@@ -27309,7 +27309,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-29T07:44:56.177Z
+      updated_at: 2026-03-29T07:44:58.264Z
     integration:
       status: pending
       detail: null
@@ -27318,25 +27318,20 @@ workspaces:
       target_branch: dev
       target_commit: 6943dad4b8203281f7a00c18ae29804ce34c559a
       updated_at: 2026-03-29T07:44:56.177Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMW68KC5Z7W9QJP96GYRYPHE"
     task_slug: task-api-response-envelope-type
     timestamps:
       closed_at: null
       last_active_at: 2026-03-29T07:37:33.482Z
-      last_reconciled_at: 2026-03-29T07:44:56.177Z
+      last_reconciled_at: 2026-03-29T07:44:58.264Z
       created_at: 2026-03-29T07:21:36.147Z
-      updated_at: 2026-03-29T07:44:56.177Z
+      updated_at: 2026-03-29T07:44:58.264Z
     workspace_id: dispatch-workspace-01KMW68KC5Z7W9QJP96GYRYPHE
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: a243c68309f3bec0fd3937b629962f8db01195e4
-        last_seen_at: 2026-03-29T07:37:11.970Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-api-response-envelope-type-01kmw68k-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-api-response-envelope-type/01kmw68k
