@@ -8195,6 +8195,15 @@ features:
                   closed are eligible for deletion
                 when: the branch belongs to a workspace record still tracked in the registry with a non-closed
                   lifecycle state
+              - given: A workspace record exists for a non-terminal task (any status except completed or cancelled)
+                  and reconciliation determines the workspace is unrecoverable — all recovery paths
+                  (local branch check, remote branch fallback, submission linkage adoption) have
+                  been attempted and failed
+                id: ac-14
+                then: The stale record is purged or reset so the task becomes eligible for fresh provisioning on the
+                  next dispatch cycle, rather than being permanently discarded from the queue as
+                  unhealthy
+                when: The dispatch scheduler evaluates the task for queue eligibility
             tags: []
             requirements:
               - _ulid: 01KKFY93ZNBHPNV5S09KQEXBFA
