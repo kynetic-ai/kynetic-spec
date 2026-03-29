@@ -45,3 +45,34 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-29T03:15:17.395Z
+  - _ulid: 01KMVTM0950B1QGAGP8YE5YW2C
+    content: >-
+      Implementation complete. Summary of changes:
+
+
+      1. Added deleteDispatchWorkspaceRecord() in src/parser/dispatch-workspaces.ts — atomically
+      removes a workspace record by workspace_id within the file lock, following existing raw YAML
+      preservation patterns.
+
+
+      2. Modified _workspaceCandidateHealth in src/agent-runtime/dispatch.ts:
+         - After determining workspace is unrecoverable (missing-canonical-branch or missing-adopted-branch) for a non-terminal task
+         - Purges the stale record via deleteDispatchWorkspaceRecord
+         - Returns eligible=true, exists=false so provisioning creates a fresh workspace immediately
+         - For resumable tasks: purge runs after workspace discovery fails
+         - For non-resumable tasks: purge runs directly
+         - Terminal tasks excluded (they proceed to cleanup, not re-provisioning)
+
+      3. Added 6 behavioral tests in tests/dispatch-workspace-unrecoverable-purge.test.ts:
+         - E2E: pending task with unrecoverable record gets purged and re-provisioned
+         - E2E: in_progress task with unrecoverable record gets purged after discovery fails
+         - Unit: terminal tasks are NOT purged
+         - Unit: stale (non-invalid) records are NOT purged
+         - Unit: deleteDispatchWorkspaceRecord removes target record
+         - Unit: deleteDispatchWorkspaceRecord is idempotent for missing records
+
+      All dispatch-workspace tests pass (117 tests, 28 suites). Full suite has pre-existing timing
+      flakes in agent-dispatch-engine.test.ts (pass when run in isolation).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-29T03:36:21.541Z
