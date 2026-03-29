@@ -91,10 +91,7 @@ export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
 
           const pattern = query.q;
           if (!pattern) {
-            return {
-              results: [],
-              total: 0,
-            };
+            return wrapResponse({ results: [], total: 0, showing: 0 }, {});
           }
 
           const limit = query.limit ? parseInt(query.limit, 10) : 50;
