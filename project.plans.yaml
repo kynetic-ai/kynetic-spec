@@ -29387,18 +29387,24 @@ plans:
       ## Context
 
 
-      When the daemon's entity cache is warming (after project registration, restart, or
-      watcher-triggered reload), list endpoints return empty data with `_cache_status: "loading"`.
-      The web UI treats this as a normal empty response and caches it. Users see empty pages with no
-      indication that data is loading.
+      When the daemon's entity cache is warming after initial project registration or daemon
+      restart, list endpoints return empty data with `_cache_status: "loading"`. The web UI treats
+      this as a normal empty response and caches it. Users see empty pages with no indication that
+      data is loading.
+
+
+      Note: Watcher-triggered reloads of already-populated domains are NOT affected —
+      `@daemon-entity-cache` ac-stale-during-reload ensures ready domains serve prior cached data
+      during reload. This plan targets the cold-cache scenario only (no prior data to serve).
 
 
       ### Design Decisions
 
 
-      1. **Full response envelope normalization** — All endpoints return `{data: T, meta: {total,
-      offset, limit, cache_status}}`. Internal change, no API versioning needed (only consumer is
-      our web UI).
+      1. **Response envelope normalization for cache-sensitive endpoints** — All endpoints that
+      serve entity data from the cache return `{data: T, meta: {total, offset, limit,
+      cache_status}}`. Non-cache endpoints (health, projects, command, mutation responses) are
+      excluded. Internal change, no API versioning needed (only consumer is our web UI).
 
       2. **WebSocket push + retry fallback** — Daemon broadcasts `cache:domain:ready` events; UI
       subscribes and invalidates queries. Retry at 2s intervals as safety net.
@@ -29478,10 +29484,13 @@ plans:
 
           ac-envelope:
             Given: the daemon is running and receives an API request
-            When: any endpoint returns a response
+            When: an endpoint that serves entity data from the cache returns
+            a response
             Then: the response uses a normalized envelope with a typed data
             payload and a metadata object containing cache readiness state,
-            and pagination fields (total, offset, limit) when applicable
+            and pagination fields (total, offset, limit) when applicable.
+            Non-cache endpoints (health, projects, command, mutation
+            responses) are excluded from this contract.
 
           ac-cache-status-field:
             Given: a cache domain is still loading for the requested project
@@ -29716,11 +29725,13 @@ plans:
 
           How: Import the ApiResponse<T> type from shared types. Each fetch
           function calls response.json() to get the envelope, then returns
-          the unwrapped result. For static mode (isStaticMode()), the static
-          data functions also need to return envelope-compatible shapes, or
-          the unwrapping needs to handle both formats. Update all TypeScript
-          interfaces (PaginatedResponse, etc.) to match the new contract.
-          Update component-level destructuring as needed.
+          the unwrapped result. For static mode (isStaticMode()), update the
+          static data helpers to return the same envelope shape — wrap their
+          pre-baked data with {data, meta: {cache_status: "ready"}}. This
+          means the unwrap path is identical for both live and static modes,
+          no branching needed. Update all TypeScript interfaces
+          (PaginatedResponse, etc.) to match the new contract. Update
+          component-level destructuring as needed.
 
           Covers: @api-contract ac-envelope (client-side).
 
@@ -29932,9 +29943,9 @@ plans:
       ### Static Mode
 
 
-      Static exports don't have cache warming — all data is pre-baked. The envelope wrapper should
-      set `cache_status: "ready"` for static responses. Existing `isStaticMode()` checks in fetch
-      functions continue to work.
+      Static exports don't have cache warming — all data is pre-baked. Static data helpers are
+      updated to return the same envelope shape with `cache_status: "ready"`. This means the unwrap
+      path is identical for live and static modes — no branching or format detection needed.
 
 
       ### Migration Order
@@ -29981,3 +29992,8 @@ plans:
           route migration"
         author: "@claude"
         created_at: 2026-03-29T06:33:03.384Z
+      - _ulid: 01KMW5Y69X5NT67B06A1B7Q0F0
+        content: "Address codex review: narrow ac-envelope to cache-serving endpoints, fix context to
+          cold-cache only, commit static mode strategy (wrap at source)"
+        author: "@claude"
+        created_at: 2026-03-29T06:54:09.725Z
