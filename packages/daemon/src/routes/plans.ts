@@ -31,6 +31,7 @@ import type { PlanSummaryTask } from "../../lib/plan-summary.js";
 import type { PlanIndexSummary } from "../../daemon/entity-cache.js";
 import { enumArrayUnion } from "./enum-utils.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
+import { wrapResponse } from "./response-envelope.js";
 
 interface PlansRouteOptions {
   getEntityCache?: EntityCacheAccessor;
@@ -76,7 +77,7 @@ export function createPlansRoutes(_options: PlansRouteOptions = {}) {
           // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
           const plansDomainState = cache?.getDomainState("plans");
           if (cache && plansDomainState === "loading") {
-            return { items: [], total: 0, _cache_status: "loading" as const };
+            return wrapResponse([] as PlanSummary[], { cacheDomainState: "loading", total: 0 });
           }
 
           let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
@@ -122,10 +123,7 @@ export function createPlansRoutes(_options: PlansRouteOptions = {}) {
           // AC: @ui-plans-view ac-1 - Compute progress for each plan
           const items: PlanSummary[] = sorted.map((plan) => toPlanSummary(plan, tasks));
 
-          return {
-            items,
-            total: items.length,
-          };
+          return wrapResponse(items, { total: items.length, cacheDomainState: plansDomainState });
         },
         {
           query: t.Object({
@@ -148,7 +146,7 @@ export function createPlansRoutes(_options: PlansRouteOptions = {}) {
         // AC: @daemon-entity-cache ac-warming-availability — return loading indicator during warmup
         const plansDomainState = cache?.getDomainState("plans");
         if (cache && plansDomainState === "loading") {
-          return { _cache_status: "loading" as const };
+          return wrapResponse(null, { cacheDomainState: "loading" });
         }
 
         const cleanRef = params.ref.startsWith("@") ? params.ref.slice(1) : params.ref;
@@ -202,7 +200,7 @@ export function createPlansRoutes(_options: PlansRouteOptions = {}) {
           content: plan.content,
         };
 
-        return detail;
+        return wrapResponse(detail, { cacheDomainState: plansDomainState });
       })
   );
 }

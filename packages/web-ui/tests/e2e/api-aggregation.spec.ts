@@ -40,19 +40,23 @@ test.describe("Aggregation API", () => {
 
       const body = await response.json();
 
-      // Must have required fields
-      expect(body).toHaveProperty("counts");
-      expect(body).toHaveProperty("ready");
-      expect(body).toHaveProperty("blocked_by_dependencies");
-      expect(body).toHaveProperty("total");
+      // Must have envelope structure
+      expect(body).toHaveProperty("data");
+      expect(body).toHaveProperty("meta");
+
+      // Must have required fields inside data
+      expect(body.data).toHaveProperty("counts");
+      expect(body.data).toHaveProperty("ready");
+      expect(body.data).toHaveProperty("blocked_by_dependencies");
+      expect(body.data).toHaveProperty("total");
 
       // counts should be an object with status keys
-      expect(typeof body.counts).toBe("object");
-      expect(body.total).toBeGreaterThan(0);
+      expect(typeof body.data.counts).toBe("object");
+      expect(body.data.total).toBeGreaterThan(0);
 
       // ready and blocked_by_dependencies should be non-negative integers
-      expect(body.ready).toBeGreaterThanOrEqual(0);
-      expect(body.blocked_by_dependencies).toBeGreaterThanOrEqual(0);
+      expect(body.data.ready).toBeGreaterThanOrEqual(0);
+      expect(body.data.blocked_by_dependencies).toBeGreaterThanOrEqual(0);
     });
 
     // AC: @ui-api-aggregation ac-1
@@ -61,12 +65,12 @@ test.describe("Aggregation API", () => {
       const body = await response.json();
 
       // Fixture has pending, in_progress, pending_review, and completed tasks
-      expect(body.counts).toHaveProperty("pending");
-      expect(body.counts.pending).toBeGreaterThan(0);
-      expect(body.counts).toHaveProperty("in_progress");
-      expect(body.counts.in_progress).toBeGreaterThan(0);
-      expect(body.counts).toHaveProperty("completed");
-      expect(body.counts.completed).toBeGreaterThan(0);
+      expect(body.data.counts).toHaveProperty("pending");
+      expect(body.data.counts.pending).toBeGreaterThan(0);
+      expect(body.data.counts).toHaveProperty("in_progress");
+      expect(body.data.counts.in_progress).toBeGreaterThan(0);
+      expect(body.data.counts).toHaveProperty("completed");
+      expect(body.data.counts.completed).toBeGreaterThan(0);
     });
 
     // AC: @ui-api-aggregation ac-1
@@ -76,11 +80,11 @@ test.describe("Aggregation API", () => {
 
       // Fixture has test-task-blocked which depends on test-task-ready (pending, not completed)
       // So blocked_by_dependencies should be >= 1
-      expect(body.blocked_by_dependencies).toBeGreaterThanOrEqual(1);
+      expect(body.data.blocked_by_dependencies).toBeGreaterThanOrEqual(1);
 
       // Fixture has test-task-ready which is pending with no dependencies
       // So ready should be >= 1
-      expect(body.ready).toBeGreaterThanOrEqual(1);
+      expect(body.data.ready).toBeGreaterThanOrEqual(1);
     });
 
     // AC: @ui-api-aggregation ac-1
@@ -88,11 +92,11 @@ test.describe("Aggregation API", () => {
       const response = await request.get(`${daemon.baseUrl}/api/aggregation/tasks/summary`);
       const body = await response.json();
 
-      const countSum = Object.values(body.counts as Record<string, number>).reduce(
+      const countSum = Object.values(body.data.counts as Record<string, number>).reduce(
         (sum: number, count: number) => sum + count,
         0,
       );
-      expect(countSum).toBe(body.total);
+      expect(countSum).toBe(body.data.total);
     });
 
     // AC: @trait-api-endpoint ac-1
@@ -113,24 +117,28 @@ test.describe("Aggregation API", () => {
 
       const body = await response.json();
 
+      // Must have envelope structure
+      expect(body).toHaveProperty("data");
+      expect(body).toHaveProperty("meta");
+
       // Must have alignment stats
-      expect(body).toHaveProperty("stats");
-      expect(body.stats).toHaveProperty("totalSpecs");
-      expect(body.stats).toHaveProperty("specsWithTasks");
-      expect(body.stats).toHaveProperty("alignedSpecs");
-      expect(body.stats).toHaveProperty("orphanedSpecs");
+      expect(body.data).toHaveProperty("stats");
+      expect(body.data.stats).toHaveProperty("totalSpecs");
+      expect(body.data.stats).toHaveProperty("specsWithTasks");
+      expect(body.data.stats).toHaveProperty("alignedSpecs");
+      expect(body.data.stats).toHaveProperty("orphanedSpecs");
 
       // Must have warnings array
-      expect(body).toHaveProperty("warnings");
-      expect(Array.isArray(body.warnings)).toBe(true);
+      expect(body.data).toHaveProperty("warnings");
+      expect(Array.isArray(body.data.warnings)).toBe(true);
 
       // Must have entity counts
-      expect(body).toHaveProperty("entity_counts");
-      expect(body.entity_counts).toHaveProperty("items");
-      expect(body.entity_counts).toHaveProperty("tasks");
-      expect(body.entity_counts).toHaveProperty("traits");
-      expect(body.entity_counts.items).toBeGreaterThan(0);
-      expect(body.entity_counts.tasks).toBeGreaterThan(0);
+      expect(body.data).toHaveProperty("entity_counts");
+      expect(body.data.entity_counts).toHaveProperty("items");
+      expect(body.data.entity_counts).toHaveProperty("tasks");
+      expect(body.data.entity_counts).toHaveProperty("traits");
+      expect(body.data.entity_counts.items).toBeGreaterThan(0);
+      expect(body.data.entity_counts.tasks).toBeGreaterThan(0);
     });
 
     // AC: @ui-api-aggregation ac-2
@@ -139,18 +147,18 @@ test.describe("Aggregation API", () => {
       const body = await response.json();
 
       // Must have AC counts
-      expect(body).toHaveProperty("ac_counts");
-      expect(body.ac_counts).toHaveProperty("total");
-      expect(body.ac_counts).toHaveProperty("covered");
-      expect(body.ac_counts).toHaveProperty("uncovered");
+      expect(body.data).toHaveProperty("ac_counts");
+      expect(body.data.ac_counts).toHaveProperty("total");
+      expect(body.data.ac_counts).toHaveProperty("covered");
+      expect(body.data.ac_counts).toHaveProperty("uncovered");
 
       // Total should be non-negative
-      expect(body.ac_counts.total).toBeGreaterThanOrEqual(0);
-      expect(body.ac_counts.covered).toBeGreaterThanOrEqual(0);
-      expect(body.ac_counts.uncovered).toBeGreaterThanOrEqual(0);
+      expect(body.data.ac_counts.total).toBeGreaterThanOrEqual(0);
+      expect(body.data.ac_counts.covered).toBeGreaterThanOrEqual(0);
+      expect(body.data.ac_counts.uncovered).toBeGreaterThanOrEqual(0);
 
       // covered + uncovered should equal total
-      expect(body.ac_counts.covered + body.ac_counts.uncovered).toBe(body.ac_counts.total);
+      expect(body.data.ac_counts.covered + body.data.ac_counts.uncovered).toBe(body.data.ac_counts.total);
     });
 
     // AC: @ui-api-aggregation ac-2
@@ -158,9 +166,9 @@ test.describe("Aggregation API", () => {
       const response = await request.get(`${daemon.baseUrl}/api/aggregation/validation`);
       const body = await response.json();
 
-      expect(body).toHaveProperty("orphan_count");
-      expect(typeof body.orphan_count).toBe("number");
-      expect(body.orphan_count).toBeGreaterThanOrEqual(0);
+      expect(body.data).toHaveProperty("orphan_count");
+      expect(typeof body.data.orphan_count).toBe("number");
+      expect(body.data.orphan_count).toBeGreaterThanOrEqual(0);
     });
 
     // AC: @ui-api-aggregation ac-2
@@ -168,12 +176,12 @@ test.describe("Aggregation API", () => {
       const response = await request.get(`${daemon.baseUrl}/api/aggregation/validation`);
       const body = await response.json();
 
-      expect(body).toHaveProperty("valid");
-      expect(typeof body.valid).toBe("boolean");
-      expect(body).toHaveProperty("error_count");
-      expect(typeof body.error_count).toBe("number");
-      expect(body).toHaveProperty("warning_count");
-      expect(typeof body.warning_count).toBe("number");
+      expect(body.data).toHaveProperty("valid");
+      expect(typeof body.data.valid).toBe("boolean");
+      expect(body.data).toHaveProperty("error_count");
+      expect(typeof body.data.error_count).toBe("number");
+      expect(body.data).toHaveProperty("warning_count");
+      expect(typeof body.data.warning_count).toBe("number");
     });
 
     // AC: @trait-api-endpoint ac-1
@@ -194,14 +202,15 @@ test.describe("Aggregation API", () => {
 
       const body = await response.json();
 
-      // Must have items array and total
-      expect(body).toHaveProperty("items");
-      expect(body).toHaveProperty("total");
-      expect(Array.isArray(body.items)).toBe(true);
-      expect(body.items.length).toBeGreaterThan(0);
+      // Must have envelope structure
+      expect(body).toHaveProperty("data");
+      expect(body).toHaveProperty("meta");
+      expect(body.meta).toHaveProperty("total");
+      expect(Array.isArray(body.data)).toBe(true);
+      expect(body.data.length).toBeGreaterThan(0);
 
       // Each item should have standard inbox fields
-      const item = body.items[0];
+      const item = body.data[0];
       expect(item).toHaveProperty("_ulid");
       expect(item).toHaveProperty("text");
       expect(item).toHaveProperty("tags");
@@ -215,7 +224,7 @@ test.describe("Aggregation API", () => {
       const body = await response.json();
 
       // Fixture has first inbox item (01KJNBX0CA45ZT43W2T6HJMVA1) with triage record
-      const triagedItem = body.items.find(
+      const triagedItem = body.data.find(
         (item: { triage?: { status: string } }) => item.triage && item.triage.status === "triaged",
       );
       expect(triagedItem).toBeDefined();
@@ -231,7 +240,7 @@ test.describe("Aggregation API", () => {
       const body = await response.json();
 
       // Fixture has second inbox item (01KJNBX1CC9N4YGP991WD7XS8S) with acted_on triage
-      const actedItem = body.items.find(
+      const actedItem = body.data.find(
         (item: { triage?: { status: string } }) => item.triage && item.triage.status === "acted_on",
       );
       expect(actedItem).toBeDefined();
@@ -247,7 +256,7 @@ test.describe("Aggregation API", () => {
       // All items should either have a triage field or not
       // Fixture has 3 inbox items, all with triage records (including a pending one)
       // The pending one has action: null, so it should still have triage data
-      for (const item of body.items) {
+      for (const item of body.data) {
         if (item.triage) {
           expect(item.triage).toHaveProperty("_ulid");
           expect(item.triage).toHaveProperty("status");
@@ -260,10 +269,10 @@ test.describe("Aggregation API", () => {
       const response = await request.get(`${daemon.baseUrl}/api/aggregation/inbox`);
       const body = await response.json();
 
-      if (body.items.length > 1) {
-        for (let i = 0; i < body.items.length - 1; i++) {
-          const currentDate = new Date(body.items[i].created_at).getTime();
-          const nextDate = new Date(body.items[i + 1].created_at).getTime();
+      if (body.data.length > 1) {
+        for (let i = 0; i < body.data.length - 1; i++) {
+          const currentDate = new Date(body.data[i].created_at).getTime();
+          const nextDate = new Date(body.data[i + 1].created_at).getTime();
           expect(currentDate).toBeGreaterThanOrEqual(nextDate);
         }
       }

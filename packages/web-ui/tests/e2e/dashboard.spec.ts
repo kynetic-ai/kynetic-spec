@@ -19,85 +19,86 @@ import { test, expect } from "../fixtures/test-base";
 
 // --- Mock data matching E2E fixture expectations ---
 
+/** Wrap data in the unified API response envelope. */
+function envelope<T>(data: T, meta?: Record<string, unknown>) {
+  return { data, meta: { cache_status: "ready" as const, ...meta } };
+}
+
 /** Task data matching packages/web-ui/tests/fixtures/project.tasks.yaml */
 function fixtureTasks() {
-  return {
-    items: [
-      {
-        _ulid: "01KG0RR6CA45ZT43W2T6HJMVA1",
-        slugs: ["test-task-ready"],
-        title: "Ready task",
-        type: "task",
-        status: "pending",
-        priority: 2,
-        tags: ["test"],
-        depends_on: [],
-        created_at: "2026-01-01T00:00:00Z",
-      },
-      {
-        _ulid: "01KG0RR7CC9N4YGP991WD7XS8S",
-        slugs: ["test-task-blocked"],
-        title: "Test blocked task",
-        type: "task",
-        status: "pending",
-        priority: 1,
-        tags: ["e2e", "test"],
-        depends_on: ["@test-task-ready"],
-        created_at: "2026-01-01T00:00:00Z",
-      },
-      {
-        _ulid: "01KG0RR8CB8N4YGP991WD7XS9R",
-        slugs: ["test-task-in-progress"],
-        title: "In progress task",
-        type: "task",
-        status: "in_progress",
-        priority: 3,
-        tags: ["test"],
-        depends_on: [],
-        created_at: "2026-01-01T00:00:00Z",
-      },
-      {
-        _ulid: "01KG0RRDCC9N4YGP991WD7XSPR",
-        slugs: ["test-task-pending-review"],
-        title: "Pending review task",
-        type: "task",
-        status: "pending_review",
-        priority: 2,
-        tags: ["test"],
-        depends_on: [],
-        created_at: "2026-01-01T00:00:00Z",
-      },
-      {
-        _ulid: "01KG0RRFCC9N4YGP991WD7XSCP",
-        slugs: ["test-task-completed"],
-        title: "Completed task",
-        type: "task",
-        status: "completed",
-        priority: 3,
-        tags: ["test"],
-        depends_on: [],
-        created_at: "2026-01-01T00:00:00Z",
-      },
-    ],
-    total: 5,
-    limit: 50,
-    offset: 0,
-  };
+  const items = [
+    {
+      _ulid: "01KG0RR6CA45ZT43W2T6HJMVA1",
+      slugs: ["test-task-ready"],
+      title: "Ready task",
+      type: "task",
+      status: "pending",
+      priority: 2,
+      tags: ["test"],
+      depends_on: [],
+      created_at: "2026-01-01T00:00:00Z",
+    },
+    {
+      _ulid: "01KG0RR7CC9N4YGP991WD7XS8S",
+      slugs: ["test-task-blocked"],
+      title: "Test blocked task",
+      type: "task",
+      status: "pending",
+      priority: 1,
+      tags: ["e2e", "test"],
+      depends_on: ["@test-task-ready"],
+      created_at: "2026-01-01T00:00:00Z",
+    },
+    {
+      _ulid: "01KG0RR8CB8N4YGP991WD7XS9R",
+      slugs: ["test-task-in-progress"],
+      title: "In progress task",
+      type: "task",
+      status: "in_progress",
+      priority: 3,
+      tags: ["test"],
+      depends_on: [],
+      created_at: "2026-01-01T00:00:00Z",
+    },
+    {
+      _ulid: "01KG0RRDCC9N4YGP991WD7XSPR",
+      slugs: ["test-task-pending-review"],
+      title: "Pending review task",
+      type: "task",
+      status: "pending_review",
+      priority: 2,
+      tags: ["test"],
+      depends_on: [],
+      created_at: "2026-01-01T00:00:00Z",
+    },
+    {
+      _ulid: "01KG0RRFCC9N4YGP991WD7XSCP",
+      slugs: ["test-task-completed"],
+      title: "Completed task",
+      type: "task",
+      status: "completed",
+      priority: 3,
+      tags: ["test"],
+      depends_on: [],
+      created_at: "2026-01-01T00:00:00Z",
+    },
+  ];
+  return envelope(items, { total: 5, limit: 50, offset: 0 });
 }
 
 /** Inbox data: 3 items matching fixture */
 function fixtureInbox() {
-  return { items: [], total: 3, limit: 0, offset: 0 };
+  return envelope([], { total: 3, limit: 0, offset: 0 });
 }
 
 /** Observations: 2 unresolved matching fixture */
 function fixtureObservations() {
-  return { items: [], total: 2, limit: 50, offset: 0 };
+  return envelope([], { total: 2, limit: 50, offset: 0 });
 }
 
 /** Validation: some warnings to verify count aggregation */
 function fixtureValidation() {
-  return {
+  return envelope({
     valid: false,
     schemaErrors: [],
     refErrors: [{ source: "test", ref: "@missing", message: "Missing ref" }],
@@ -105,7 +106,7 @@ function fixtureValidation() {
     orphans: [],
     completenessWarnings: [],
     traitCycles: [],
-  };
+  });
 }
 
 /** Agent status: no dispatch running */
@@ -397,28 +398,28 @@ test.describe("Dashboard Overview", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({ items: [], total: 0, limit: 50, offset: 0 }),
+          body: JSON.stringify(envelope([], { total: 0, limit: 50, offset: 0 })),
         });
       });
       await page.route("**/api/inbox?*", (route) => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({ items: [], total: 0, limit: 0, offset: 0 }),
+          body: JSON.stringify(envelope([], { total: 0, limit: 0, offset: 0 })),
         });
       });
       await page.route("**/api/meta/observations?*", (route) => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({ items: [], total: 0, limit: 50, offset: 0 }),
+          body: JSON.stringify(envelope([], { total: 0, limit: 50, offset: 0 })),
         });
       });
       await page.route("**/api/validate", (route) => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({
+          body: JSON.stringify(envelope({
             valid: true,
             schemaErrors: [],
             refErrors: [],
@@ -426,7 +427,7 @@ test.describe("Dashboard Overview", () => {
             orphans: [],
             completenessWarnings: [],
             traitCycles: [],
-          }),
+          })),
         });
       });
       await page.route("**/api/agent/status", (route) => {

@@ -22,12 +22,12 @@ test.describe("Inbox API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(body).toHaveProperty("items");
-      expect(body).toHaveProperty("total");
-      expect(Array.isArray(body.items)).toBe(true);
+      expect(body).toHaveProperty("data");
+      expect(body).toHaveProperty("meta");
+      expect(Array.isArray(body.data)).toBe(true);
       // Fixtures include 3 inbox items
-      expect(body.items.length).toBeGreaterThan(0);
-      expect(body.total).toBe(body.items.length);
+      expect(body.data.length).toBeGreaterThan(0);
+      expect(body.meta.total).toBe(body.data.length);
     });
 
     // AC: @api-contract ac-12 - ordered by created_at desc
@@ -39,7 +39,7 @@ test.describe("Inbox API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      const items = body.items;
+      const items = body.data;
       // Fixtures have 3 items with different created_at timestamps
       expect(items.length).toBeGreaterThanOrEqual(2);
 
@@ -57,9 +57,9 @@ test.describe("Inbox API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(body.items.length).toBeGreaterThan(0);
+      expect(body.data.length).toBeGreaterThan(0);
 
-      const item = body.items[0];
+      const item = body.data[0];
       expect(item).toHaveProperty("_ulid");
       expect(item).toHaveProperty("text");
       expect(item).toHaveProperty("created_at");
@@ -77,10 +77,10 @@ test.describe("Inbox API", () => {
       // 01KJNBX0CA...: 2026-01-01T10:00:00Z (newest)
       // 01KJNBX1CC...: 2026-01-01T09:00:00Z
       // 01KJNBX2CB...: 2026-01-01T08:00:00Z (oldest)
-      expect(body.items.length).toBe(3);
-      expect(body.items[0].text).toBe("First inbox item for testing");
-      expect(body.items[1].text).toBe("Second inbox item with different tags");
-      expect(body.items[2].text).toBe("Third inbox item - oldest");
+      expect(body.data.length).toBe(3);
+      expect(body.data[0].text).toBe("First inbox item for testing");
+      expect(body.data[1].text).toBe("Second inbox item with different tags");
+      expect(body.data[2].text).toBe("Third inbox item - oldest");
     });
 
     // AC: @api-contract ac-12 (response format) - JSON content type
@@ -141,7 +141,7 @@ test.describe("Inbox API", () => {
       const list = await listResponse.json();
 
       // Find our newly created item
-      const found = list.items.find((i: { _ulid: string }) => i._ulid === created.item._ulid);
+      const found = list.data.find((i: { _ulid: string }) => i._ulid === created.item._ulid);
       expect(found).toBeDefined();
       expect(found.text).toBe(itemText);
     });
@@ -259,7 +259,7 @@ test.describe("Inbox API", () => {
       // Verify it's gone
       const listResponse = await request.get(`${daemon.baseUrl}/api/inbox`);
       const list = await listResponse.json();
-      const found = list.items.find((i: { _ulid: string }) => i._ulid === ulid);
+      const found = list.data.find((i: { _ulid: string }) => i._ulid === ulid);
       expect(found).toBeUndefined();
     });
 
@@ -316,7 +316,7 @@ test.describe("Inbox API", () => {
       // Verify list now has 2 items
       const listResponse = await request.get(`${daemon.baseUrl}/api/inbox`);
       const list = await listResponse.json();
-      expect(list.items.length).toBe(2);
+      expect(list.data.length).toBe(2);
     });
   });
 
@@ -339,7 +339,7 @@ test.describe("Inbox API", () => {
       const list = await listResponse.json();
 
       // Newest item should be first since fixture items are from 2026-01-01
-      expect(list.items[0]._ulid).toBe(created.item._ulid);
+      expect(list.data[0]._ulid).toBe(created.item._ulid);
     });
   });
 });

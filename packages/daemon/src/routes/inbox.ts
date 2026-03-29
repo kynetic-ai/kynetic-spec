@@ -28,6 +28,7 @@ import {
 import { commitIfShadow } from "../../parser/shadow.js";
 import type { PubSubManager } from "../websocket/pubsub";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
+import { wrapResponse } from "./response-envelope.js";
 
 interface InboxRouteOptions {
   pubsub: PubSubManager;
@@ -48,11 +49,7 @@ export function createInboxRoutes(options: InboxRouteOptions) {
 
         // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
         if (cache && inboxDomainState === "loading") {
-          return {
-            items: [],
-            total: 0,
-            _cache_status: "loading" as const,
-          };
+          return wrapResponse([] as never[], { cacheDomainState: "loading", total: 0 });
         }
 
         let items;
@@ -71,10 +68,8 @@ export function createInboxRoutes(options: InboxRouteOptions) {
           (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
         );
 
-        return {
-          items: sorted,
-          total: sorted.length,
-        };
+        // AC: @api-contract ac-envelope - Unified envelope response
+        return wrapResponse(sorted, { total: sorted.length, cacheDomainState: inboxDomainState });
       })
 
       // AC: @api-contract ac-13 - Create inbox item

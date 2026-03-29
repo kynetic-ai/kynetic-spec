@@ -60,18 +60,21 @@ test.describe("Smoke Tests", () => {
         status: 200,
         contentType: "application/json",
         body: JSON.stringify({
-          id: "test-session-stream",
-          status: "active",
-          agent_type: "task-worker",
-          agent_id: "worker",
-          session_type: "invocation",
-          trigger: "task.ready",
-          task_id: null,
-          started_at: "2026-03-11T11:00:00.000Z",
-          duration_ms: 1000,
-          event_count: 0,
-          iteration_count: 1,
-          tasks_completed: 0,
+          data: {
+            id: "test-session-stream",
+            status: "active",
+            agent_type: "task-worker",
+            agent_id: "worker",
+            session_type: "invocation",
+            trigger: "task.ready",
+            task_id: null,
+            started_at: "2026-03-11T11:00:00.000Z",
+            duration_ms: 1000,
+            event_count: 0,
+            iteration_count: 1,
+            tasks_completed: 0,
+          },
+          meta: { cache_status: "ready" },
         }),
       });
     });
@@ -80,7 +83,7 @@ test.describe("Smoke Tests", () => {
       route.fulfill({
         status: 200,
         contentType: "application/json",
-        body: JSON.stringify({ events: [], total: 0 }),
+        body: JSON.stringify({ data: { events: [] }, meta: { total: 0, cache_status: "ready" } }),
       });
     });
 

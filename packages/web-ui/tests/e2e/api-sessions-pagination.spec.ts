@@ -20,7 +20,7 @@
  * - @trait-api-endpoint ac-2: Returns 404 for unknown task_id/spec_ref refs
  * - @trait-api-endpoint ac-3: Returns 400 with details array on invalid params
  * - @session-filter-controls ac-filter-counts: unfiltered_total in paginated response
- * - @trait-api-endpoint ac-4: Pagination wrapper {items, total, offset, limit}
+ * - @trait-api-endpoint ac-4: Pagination wrapper {data, meta}
  */
 
 import { test, expect } from "../fixtures/test-base";
@@ -169,15 +169,15 @@ test.describe("Session List Pagination API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(body).toHaveProperty("items");
-      expect(body).toHaveProperty("total");
-      expect(body).toHaveProperty("offset");
-      expect(body).toHaveProperty("limit");
-      expect(Array.isArray(body.items)).toBe(true);
-      expect(body.items.length).toBe(2);
-      expect(body.total).toBe(6);
-      expect(body.offset).toBe(0);
-      expect(body.limit).toBe(2);
+      expect(body).toHaveProperty("data");
+      expect(body).toHaveProperty("meta");
+      expect(body).toHaveProperty("meta.offset");
+      expect(body).toHaveProperty("meta.limit");
+      expect(Array.isArray(body.data.items)).toBe(true);
+      expect(body.data.items.length).toBe(2);
+      expect(body.meta.total).toBe(6);
+      expect(body.meta.offset).toBe(0);
+      expect(body.meta.limit).toBe(2);
     });
 
     // AC: @session-list-pagination-api ac-pagination
@@ -192,15 +192,15 @@ test.describe("Session List Pagination API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(body.items.length).toBe(6);
+      expect(body.data.items.length).toBe(6);
 
       // Most recent session is session 5 (Mar 5), then 4 (Mar 4), etc.
-      expect(body.items[0].id).toBe("01KTEST0000000000000000005");
-      expect(body.items[1].id).toBe("01KTEST0000000000000000004");
-      expect(body.items[2].id).toBe("01KTEST0000000000000000003");
-      expect(body.items[3].id).toBe("01KTEST0000000000000000002");
-      expect(body.items[4].id).toBe("01KTEST0000000000000000001");
-      expect(body.items[5].id).toBe("01KTEST0000000000000000006");
+      expect(body.data.items[0].id).toBe("01KTEST0000000000000000005");
+      expect(body.data.items[1].id).toBe("01KTEST0000000000000000004");
+      expect(body.data.items[2].id).toBe("01KTEST0000000000000000003");
+      expect(body.data.items[3].id).toBe("01KTEST0000000000000000002");
+      expect(body.data.items[4].id).toBe("01KTEST0000000000000000001");
+      expect(body.data.items[5].id).toBe("01KTEST0000000000000000006");
     });
 
     // AC: @session-list-pagination-api ac-pagination
@@ -212,12 +212,12 @@ test.describe("Session List Pagination API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(body.items.length).toBe(2);
-      expect(body.total).toBe(6);
-      expect(body.offset).toBe(3);
+      expect(body.data.items.length).toBe(2);
+      expect(body.meta.total).toBe(6);
+      expect(body.meta.offset).toBe(3);
       // Items 3 and 4 (0-indexed) from sorted list
-      expect(body.items[0].id).toBe("01KTEST0000000000000000002");
-      expect(body.items[1].id).toBe("01KTEST0000000000000000001");
+      expect(body.data.items[0].id).toBe("01KTEST0000000000000000002");
+      expect(body.data.items[1].id).toBe("01KTEST0000000000000000001");
     });
 
     // AC: @session-list-pagination-api ac-pagination
@@ -230,10 +230,10 @@ test.describe("Session List Pagination API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(body.items.length).toBe(6);
-      expect(body.total).toBe(6);
-      expect(body.offset).toBe(0);
-      expect(body.limit).toBe(6);
+      expect(body.data.items.length).toBe(6);
+      expect(body.meta.total).toBe(6);
+      expect(body.meta.offset).toBe(0);
+      expect(body.meta.limit).toBe(6);
     });
 
     // AC: @session-filter-controls ac-filter-counts
@@ -248,9 +248,9 @@ test.describe("Session List Pagination API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(body).toHaveProperty("unfiltered_total");
-      expect(body.unfiltered_total).toBe(6);
-      expect(body.unfiltered_total).toBe(body.total);
+      expect(body).toHaveProperty("data.unfiltered_total");
+      expect(body.data.unfiltered_total).toBe(6);
+      expect(body.data.unfiltered_total).toBe(body.meta.total);
     });
 
     // AC: @session-filter-controls ac-filter-counts
@@ -265,8 +265,8 @@ test.describe("Session List Pagination API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(body.total).toBe(3); // Only completed sessions
-      expect(body.unfiltered_total).toBe(6); // All sessions regardless of filter
+      expect(body.meta.total).toBe(3); // Only completed sessions
+      expect(body.data.unfiltered_total).toBe(6); // All sessions regardless of filter
     });
 
     // AC: @session-filter-controls ac-filter-counts
@@ -280,9 +280,9 @@ test.describe("Session List Pagination API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(body.items.length).toBe(2);
-      expect(body.total).toBe(3); // Filtered total
-      expect(body.unfiltered_total).toBe(6); // Unfiltered total
+      expect(body.data.items.length).toBe(2);
+      expect(body.meta.total).toBe(3); // Filtered total
+      expect(body.data.unfiltered_total).toBe(6); // Unfiltered total
     });
   });
 
@@ -296,11 +296,11 @@ test.describe("Session List Pagination API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(body.items.length).toBe(3); // Sessions 1, 2, 5
-      for (const item of body.items) {
+      expect(body.data.items.length).toBe(3); // Sessions 1, 2, 5
+      for (const item of body.data.items) {
         expect(item.status).toBe("completed");
       }
-      expect(body.total).toBe(3);
+      expect(body.meta.total).toBe(3);
     });
 
     // AC: @session-list-pagination-api ac-filter-status
@@ -314,8 +314,8 @@ test.describe("Session List Pagination API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(body.items.length).toBe(4); // Sessions 1, 2, 3, 5
-      for (const item of body.items) {
+      expect(body.data.items.length).toBe(4); // Sessions 1, 2, 3, 5
+      for (const item of body.data.items) {
         expect(["completed", "failed"]).toContain(item.status);
       }
     });
@@ -331,9 +331,9 @@ test.describe("Session List Pagination API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(body.items.length).toBe(1);
-      expect(body.items[0].agent_type).toBe("codex-acp");
-      expect(body.items[0].id).toBe("01KTEST0000000000000000005");
+      expect(body.data.items.length).toBe(1);
+      expect(body.data.items[0].agent_type).toBe("codex-acp");
+      expect(body.data.items[0].id).toBe("01KTEST0000000000000000005");
     });
   });
 
@@ -347,8 +347,8 @@ test.describe("Session List Pagination API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(body.items.length).toBe(1);
-      expect(body.items[0].id).toBe("01KTEST0000000000000000002");
+      expect(body.data.items.length).toBe(1);
+      expect(body.data.items[0].id).toBe("01KTEST0000000000000000002");
     });
 
     // AC: @session-list-pagination-api ac-filter-agent-id
@@ -361,8 +361,8 @@ test.describe("Session List Pagination API", () => {
 
       const body = await response.json();
       // Sessions 1, 3, 4, 5 have agent_id=worker
-      expect(body.items.length).toBe(4);
-      for (const item of body.items) {
+      expect(body.data.items.length).toBe(4);
+      for (const item of body.data.items) {
         expect(item.agent_id).toBe("worker");
       }
     });
@@ -378,8 +378,8 @@ test.describe("Session List Pagination API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(body.items.length).toBe(2); // Sessions 4, 5
-      for (const item of body.items) {
+      expect(body.data.items.length).toBe(2); // Sessions 4, 5
+      for (const item of body.data.items) {
         expect(item.trigger).toBe("manual");
       }
     });
@@ -394,8 +394,8 @@ test.describe("Session List Pagination API", () => {
 
       const body = await response.json();
       // Sessions 1 (task.ready), 2 (task.pending_review), 3 (task.in_progress)
-      expect(body.items.length).toBe(3);
-      for (const item of body.items) {
+      expect(body.data.items.length).toBe(3);
+      for (const item of body.data.items) {
         expect(item.trigger).toMatch(/^task\./);
       }
     });
@@ -412,10 +412,10 @@ test.describe("Session List Pagination API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(Array.isArray(body.items)).toBe(true);
-      expect(body.items.length).toBe(2); // Sessions 1 and 3 reference @test-task-ready
-      expect(body.total).toBe(2);
-      const ids = body.items.map((s: { id: string }) => s.id);
+      expect(Array.isArray(body.data.items)).toBe(true);
+      expect(body.data.items.length).toBe(2); // Sessions 1 and 3 reference @test-task-ready
+      expect(body.meta.total).toBe(2);
+      const ids = body.data.items.map((s: { id: string }) => s.id);
       expect(ids).toContain("01KTEST0000000000000000001");
       expect(ids).toContain("01KTEST0000000000000000003");
     });
@@ -435,8 +435,8 @@ test.describe("Session List Pagination API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(body.items.length).toBe(1);
-      expect(body.items[0].id).toBe("01KTEST0000000000000000002");
+      expect(body.data.items.length).toBe(1);
+      expect(body.data.items[0].id).toBe("01KTEST0000000000000000002");
     });
   });
 
@@ -451,8 +451,8 @@ test.describe("Session List Pagination API", () => {
 
       const body = await response.json();
       // Sessions started on or after Mar 3: sessions 3, 4, 5
-      expect(body.items.length).toBe(3);
-      for (const item of body.items) {
+      expect(body.data.items.length).toBe(3);
+      for (const item of body.data.items) {
         expect(new Date(item.started_at).getTime()).toBeGreaterThanOrEqual(
           new Date("2026-03-03").getTime(),
         );
@@ -471,7 +471,7 @@ test.describe("Session List Pagination API", () => {
 
       const body = await response.json();
       // Sessions started at or after Mar 4 10:00: sessions 4 and 5
-      expect(body.items.length).toBe(2);
+      expect(body.data.items.length).toBe(2);
     });
   });
 
@@ -489,11 +489,11 @@ test.describe("Session List Pagination API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(Array.isArray(body.items)).toBe(true);
+      expect(Array.isArray(body.data.items)).toBe(true);
       // Sessions 1, 2, 3 have task_ids that resolve to tasks linked to @test-feature
-      expect(body.items.length).toBe(3);
-      expect(body.total).toBe(3);
-      const ids = body.items.map((s: { id: string }) => s.id);
+      expect(body.data.items.length).toBe(3);
+      expect(body.meta.total).toBe(3);
+      const ids = body.data.items.map((s: { id: string }) => s.id);
       expect(ids).toContain("01KTEST0000000000000000001");
       expect(ids).toContain("01KTEST0000000000000000002");
       expect(ids).toContain("01KTEST0000000000000000003");
@@ -511,8 +511,8 @@ test.describe("Session List Pagination API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(body.items.length).toBe(2);
-      for (const item of body.items) {
+      expect(body.data.items.length).toBe(2);
+      for (const item of body.data.items) {
         expect(item.status).toBe("completed");
       }
     });
@@ -566,8 +566,8 @@ test.describe("Session List Pagination API", () => {
 
       const body = await response.json();
       // Sessions that are both completed AND have agent_id=worker: 1 and 5
-      expect(body.items.length).toBe(2);
-      for (const item of body.items) {
+      expect(body.data.items.length).toBe(2);
+      for (const item of body.data.items) {
         expect(item.status).toBe("completed");
         expect(item.agent_id).toBe("worker");
       }
@@ -585,10 +585,10 @@ test.describe("Session List Pagination API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(body.items.length).toBe(1);
-      expect(body.total).toBe(3); // 3 completed sessions total
-      expect(body.offset).toBe(0);
-      expect(body.limit).toBe(1);
+      expect(body.data.items.length).toBe(1);
+      expect(body.meta.total).toBe(3); // 3 completed sessions total
+      expect(body.meta.offset).toBe(0);
+      expect(body.meta.limit).toBe(1);
     });
   });
 
@@ -661,11 +661,11 @@ test.describe("Session List Pagination API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(body.items.length).toBe(3);
-      expect(body.total).toBe(3);
+      expect(body.data.items.length).toBe(3);
+      expect(body.meta.total).toBe(3);
 
       // Metadata fields are present from session.yaml
-      for (const item of body.items) {
+      for (const item of body.data.items) {
         expect(item).toHaveProperty("id");
         expect(item).toHaveProperty("status");
         expect(item).toHaveProperty("agent_type");
@@ -674,7 +674,7 @@ test.describe("Session List Pagination API", () => {
       }
 
       // Summary stats are 0 because events.jsonl is not read in list path
-      for (const item of body.items) {
+      for (const item of body.data.items) {
         expect(item.event_count).toBe(0);
         expect(item.iteration_count).toBe(0);
         expect(item.tasks_completed).toBe(0);
@@ -693,10 +693,10 @@ test.describe("Session List Pagination API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(body.items.length).toBeGreaterThan(0);
+      expect(body.data.items.length).toBeGreaterThan(0);
 
       // Verify metadata fields from session.yaml are populated correctly
-      const item = body.items[0];
+      const item = body.data.items[0];
       expect(item).toHaveProperty("id");
       expect(item).toHaveProperty("status");
       expect(item).toHaveProperty("agent_type");
@@ -716,8 +716,8 @@ test.describe("Session List Pagination API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(body.items).toEqual([]);
-      expect(body.total).toBe(0);
+      expect(body.data.items).toEqual([]);
+      expect(body.meta.total).toBe(0);
     });
   });
 });

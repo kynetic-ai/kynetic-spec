@@ -48,6 +48,7 @@ import { executeTriageAction, VALID_ACTIONS } from "../../triage/index.js";
 import type { PubSubManager } from "../websocket/pubsub";
 import { enumArrayUnion, enumUnion } from "./enum-utils.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
+import { wrapResponse } from "./response-envelope.js";
 
 interface TriageRouteOptions {
   pubsub: PubSubManager;
@@ -72,7 +73,7 @@ export function createTriageRoutes(options: TriageRouteOptions) {
 
           // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
           if (cache && triageDomainState === "loading") {
-            return { items: [], total: 0, offset: 0, limit: 0, _cache_status: "loading" as const };
+            return wrapResponse([] as never[], { cacheDomainState: "loading", total: 0, offset: 0, limit: 0 });
           }
 
           let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
@@ -143,12 +144,7 @@ export function createTriageRoutes(options: TriageRouteOptions) {
               }))
             : paginated;
 
-          return {
-            items: enriched,
-            total,
-            offset,
-            limit,
-          };
+          return wrapResponse(enriched, { total, offset, limit, cacheDomainState: triageDomainState });
         },
         {
           query: t.Object({
@@ -169,7 +165,7 @@ export function createTriageRoutes(options: TriageRouteOptions) {
           const cache = getEntityCache?.(projectContext.path);
           const triageDomainState = cache?.getDomainState("triage");
           if (cache && triageDomainState === "loading") {
-            return { items: [], _cache_status: "loading" as const };
+            return wrapResponse([] as never[], { cacheDomainState: "loading" });
           }
 
           // Export requires full triage records (item_snapshot, reasoning, etc.)
@@ -321,7 +317,7 @@ export function createTriageRoutes(options: TriageRouteOptions) {
 
           // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
           if (cache && triageDomainState === "loading") {
-            return { _cache_status: "loading" as const };
+            return wrapResponse(null, { cacheDomainState: "loading" });
           }
 
           // AC: @daemon-entity-cache ac-detail-on-demand — resolve via index, load from detail tier
@@ -372,16 +368,13 @@ export function createTriageRoutes(options: TriageRouteOptions) {
               const items = (cache && itemsDomainState === "ready" ? cache.getItemIndex() : null)
                 ?? await loadAllItems(await getCtx());
               const refIndex = new ReferenceIndex(tasks as unknown as LoadedTask[], items as unknown as LoadedSpecItem[]);
-              return {
-                ...record,
-                resolved_evidence_refs: resolveRefEntries(refIndex, record.evidence_refs),
-              };
+              return wrapResponse({ ...record, resolved_evidence_refs: resolveRefEntries(refIndex, record.evidence_refs) }, { cacheDomainState: triageDomainState });
             } catch {
               // Non-critical
             }
           }
 
-          return record;
+          return wrapResponse(record, { cacheDomainState: triageDomainState });
         },
         {
           params: t.Object({

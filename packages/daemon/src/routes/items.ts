@@ -33,6 +33,7 @@ import { enumArrayUnion } from "./enum-utils.js";
 import { getRelatedSessionsForItem } from "./session-related.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
 import type { ItemSummary } from "../../daemon/entity-cache.js";
+import { wrapResponse } from "./response-envelope.js";
 
 interface ItemsRouteOptions {
   getEntityCache?: EntityCacheAccessor;
@@ -167,13 +168,7 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
 
           // AC: @daemon-entity-cache ac-warming-availability
           if (cache && itemsDomainState === "loading") {
-            return {
-              items: [],
-              total: 0,
-              offset: 0,
-              limit: 0,
-              _cache_status: "loading" as const,
-            };
+            return wrapResponse([] as never[], { cacheDomainState: "loading", total: 0, offset: 0, limit: 0 });
           }
 
           // AC: @daemon-entity-cache ac-serve-from-memory — defer initContext to avoid
@@ -289,12 +284,8 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
           }));
 
           // AC: @trait-api-endpoint ac-4 - Return pagination wrapper
-          return {
-            items: result,
-            total,
-            offset,
-            limit,
-          };
+          // AC: @api-contract ac-envelope - Unified envelope response
+          return wrapResponse(result, { total, offset, limit, cacheDomainState: itemsDomainState });
         },
         {
           query: t.Object({
@@ -415,7 +406,7 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
           const cache = getEntityCache?.(projectContext.path);
           const itemsDomainState = cache?.getDomainState("items");
           if (cache && itemsDomainState === "loading") {
-            return { _cache_status: "loading" as const };
+            return wrapResponse(null, { cacheDomainState: "loading" });
           }
           // AC: @daemon-entity-cache ac-detail-on-demand — check cache detail tier first
           const itemsDomainReady = cache && itemsDomainState === "ready";
@@ -456,7 +447,8 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
                   // Coverage scan failed - leave as-is
                 }
               }
-              return {
+              // AC: @api-contract ac-envelope - Unified envelope response
+              return wrapResponse({
                 _ulid: cachedDetail._ulid,
                 slugs: cachedDetail.slugs,
                 title: cachedDetail.title,
@@ -470,7 +462,7 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
                 relationships: cachedDetail.relationships,
                 created_at: cachedDetail.created_at,
                 _sourceFile: cachedDetail._sourceFile,
-              };
+              }, { cacheDomainState: itemsDomainState });
             }
           }
 
@@ -526,7 +518,8 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
           }
 
           // AC: @api-contract ac-10 - Return full item with acceptance_criteria, traits, relationships
-          return {
+          // AC: @api-contract ac-envelope - Unified envelope response
+          return wrapResponse({
             _ulid: item._ulid,
             slugs: item.slugs,
             title: item.title,
@@ -540,7 +533,7 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
             relationships: item.relationships,
             created_at: item.created_at,
             _sourceFile: item._sourceFile,
-          };
+          }, { cacheDomainState: itemsDomainState });
         },
         {
           params: t.Object({
@@ -623,10 +616,8 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
             };
           });
 
-          return {
-            items: result_items,
-            total: result_items.length,
-          };
+          // AC: @api-contract ac-envelope - Unified envelope response
+          return wrapResponse(result_items, { total: result_items.length });
         },
         {
           params: t.Object({
@@ -673,12 +664,11 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
             return errorResponse(404, result.error);
           }
 
-          return {
-            items: result.sessions,
+          return wrapResponse(result.sessions, {
             total: result.sessions.length,
             offset: 0,
             limit: result.sessions.length,
-          };
+          });
         },
         {
           params: t.Object({

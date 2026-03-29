@@ -12,6 +12,11 @@
 
 import { test, expect } from "../fixtures/test-base";
 
+/** Wrap data in the unified API response envelope. */
+function envelope<T>(data: T, meta?: Record<string, unknown>) {
+  return { data, meta: { cache_status: "ready" as const, ...meta } };
+}
+
 /** Mock validation response with issues. */
 function mockValidationWithIssues() {
   return {
@@ -200,7 +205,7 @@ async function setupValidateRoutes(
     route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify(validationData),
+      body: JSON.stringify(envelope(validationData)),
     });
   });
 
@@ -208,7 +213,7 @@ async function setupValidateRoutes(
     route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify(alignmentData),
+      body: JSON.stringify(envelope(alignmentData)),
     });
   });
 
@@ -216,7 +221,7 @@ async function setupValidateRoutes(
     route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify(itemsData),
+      body: JSON.stringify(envelope(itemsData.items, { total: itemsData.total, offset: itemsData.offset, limit: itemsData.limit })),
     });
   });
 
@@ -224,7 +229,7 @@ async function setupValidateRoutes(
     route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify(tasksData),
+      body: JSON.stringify(envelope(tasksData.items, { total: tasksData.total, offset: tasksData.offset, limit: tasksData.limit })),
     });
   });
 }
@@ -438,28 +443,30 @@ test.describe("Validation and Alignment View", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify(mockValidationClean()),
+          body: JSON.stringify(envelope(mockValidationClean())),
         });
       });
       await page.route("**/api/alignment", (route) => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify(mockAlignment()),
+          body: JSON.stringify(envelope(mockAlignment())),
         });
       });
       await page.route("**/api/items?*", (route) => {
+        const d = mockItems();
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify(mockItems()),
+          body: JSON.stringify(envelope(d.items, { total: d.total, offset: d.offset, limit: d.limit })),
         });
       });
       await page.route("**/api/tasks?*", (route) => {
+        const d = mockTasks();
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify(mockTasks()),
+          body: JSON.stringify(envelope(d.items, { total: d.total, offset: d.offset, limit: d.limit })),
         });
       });
 

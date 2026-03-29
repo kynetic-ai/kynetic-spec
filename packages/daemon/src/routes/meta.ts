@@ -33,6 +33,7 @@ import { AgentDispatchEventSchema, ObservationTypeSchema } from "../../schema/me
 import { AgentDispatchAutomationFilterSchema } from "../../schema/task.js";
 import { enumArrayUnion, enumUnion } from "./enum-utils.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
+import { wrapResponse } from "./response-envelope.js";
 
 interface MetaRouteOptions {
   getEntityCache?: EntityCacheAccessor;
@@ -51,12 +52,12 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
 
         // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
         if (cache && metaDomainState === "loading") {
-          return { focus: null, threads: [], questions: [], updated_at: new Date().toISOString(), _cache_status: "loading" as const };
+          return wrapResponse({ focus: null, threads: [], questions: [], updated_at: new Date().toISOString() }, { cacheDomainState: "loading" });
         }
 
         if (cache && metaDomainState === "ready") {
           const cachedSession = cache.getSessionContext();
-          if (cachedSession) return cachedSession;
+          if (cachedSession) return wrapResponse(cachedSession, { cacheDomainState: metaDomainState });
         }
 
         // Fallback: cache not ready or no cached session context
@@ -66,12 +67,12 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
         const session = await loadSessionContext(ctx);
 
         // AC: @api-contract ac-15 - Return session context (focus, threads, questions)
-        return {
+        return wrapResponse({
           focus: session.focus,
           threads: session.threads || [],
           questions: session.questions || [],
           updated_at: session.updated_at,
-        };
+        });
       })
 
       // AC: @api-contract ac-16 - List agents
@@ -83,7 +84,7 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
 
         // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
         if (cache && metaDomainState === "loading") {
-          return { items: [], total: 0, _cache_status: "loading" as const };
+          return wrapResponse([] as never[], { cacheDomainState: "loading", total: 0 });
         }
 
         let meta;
@@ -100,10 +101,7 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
         // AC: @api-contract ac-16 - Return all defined agents
         const agents = meta.agents;
 
-        return {
-          items: agents,
-          total: agents.length,
-        };
+        return wrapResponse(agents, { total: agents.length, cacheDomainState: metaDomainState });
       })
 
       // AC: @ui-agent-dispatch ac-4 - Update agent definition
@@ -190,7 +188,7 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
 
         // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
         if (cache && metaDomainState === "loading") {
-          return { items: [], total: 0, _cache_status: "loading" as const };
+          return wrapResponse([] as never[], { cacheDomainState: "loading", total: 0 });
         }
 
         let meta;
@@ -207,10 +205,7 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
         // AC: @api-contract ac-17 - Return all defined workflows
         const workflows = meta.workflows;
 
-        return {
-          items: workflows,
-          total: workflows.length,
-        };
+        return wrapResponse(workflows, { total: workflows.length, cacheDomainState: metaDomainState });
       })
 
       // AC: @api-contract ac-18 - List observations with filter
@@ -224,7 +219,7 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
 
           // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
           if (cache && metaDomainState === "loading") {
-            return { items: [], total: 0, _cache_status: "loading" as const };
+            return wrapResponse([] as never[], { cacheDomainState: "loading", total: 0 });
           }
 
           let meta;
@@ -261,10 +256,7 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
             (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
           );
 
-          return {
-            items: sorted,
-            total: sorted.length,
-          };
+          return wrapResponse(sorted, { total: sorted.length, cacheDomainState: metaDomainState });
         },
         {
           query: t.Object({
@@ -282,12 +274,12 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
 
         // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
         if (cache && metaDomainState === "loading") {
-          return { project: null, spec_version: null, root_dir: null, remote_tracking: null, daemon: null, _cache_status: "loading" as const };
+          return wrapResponse({ project: null, spec_version: null, root_dir: null, remote_tracking: null, daemon: null }, { cacheDomainState: "loading" });
         }
 
         if (cache && metaDomainState === "ready") {
           const cachedConfig = cache.getProjectConfig();
-          if (cachedConfig) return cachedConfig;
+          if (cachedConfig) return wrapResponse(cachedConfig, { cacheDomainState: metaDomainState });
         }
 
         // Fallback: cache not available at all (no entity cache configured)
@@ -295,7 +287,7 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
         const manifest = ctx.manifest;
         const config = ctx.config;
 
-        return {
+        return wrapResponse({
           project: manifest?.project ?? null,
           spec_version: manifest?.kynetic ?? null,
           root_dir: ctx.projectRoot,
@@ -307,7 +299,7 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
             host: config.daemon.host,
             auto_start: config.daemon.auto_start,
           },
-        };
+        });
       })
 
       // AC: @ui-settings-view ac-1 - Shadow branch status
@@ -318,25 +310,25 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
 
         // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
         if (cache && metaDomainState === "loading") {
-          return { enabled: false, branch_name: null, worktree_dir: null, healthy: false, remote_tracking: false, _cache_status: "loading" as const };
+          return wrapResponse({ enabled: false, branch_name: null, worktree_dir: null, healthy: false, remote_tracking: false }, { cacheDomainState: "loading" });
         }
 
         if (cache && metaDomainState === "ready") {
           const cachedShadow = cache.getShadowInfo();
-          if (cachedShadow) return cachedShadow;
+          if (cachedShadow) return wrapResponse(cachedShadow, { cacheDomainState: metaDomainState });
         }
 
         // Fallback: cache not available at all (no entity cache configured)
         const ctx = await initContext(projectContext.path, { syncMode: "skip" });
 
         if (!ctx.shadow) {
-          return {
+          return wrapResponse({
             enabled: false,
             branch_name: null,
             worktree_dir: null,
             healthy: false,
             remote_tracking: false,
-          };
+          });
         }
 
         const status = await getShadowStatus(ctx.rootDir, {
@@ -347,13 +339,13 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
           branchName: ctx.shadow.branchName,
         });
 
-        return {
+        return wrapResponse({
           enabled: ctx.shadow.enabled,
           branch_name: ctx.shadow.branchName,
           worktree_dir: ctx.shadow.worktreeDir,
           healthy: status.healthy,
           remote_tracking: hasRemote,
-        };
+        });
       })
 
       // AC: @ui-settings-view ac-1 - Convention definitions
@@ -365,7 +357,7 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
 
         // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
         if (cache && metaDomainState === "loading") {
-          return { items: [], total: 0, _cache_status: "loading" as const };
+          return wrapResponse([] as never[], { cacheDomainState: "loading", total: 0 });
         }
 
         let meta;
@@ -378,10 +370,7 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
           meta = await loadMetaContext(ctx);
         }
 
-        return {
-          items: meta.conventions,
-          total: meta.conventions.length,
-        };
+        return wrapResponse(meta.conventions, { total: meta.conventions.length, cacheDomainState: metaDomainState });
       })
   );
 }

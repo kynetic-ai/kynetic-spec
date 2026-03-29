@@ -21,6 +21,11 @@ import { mkdir, writeFile } from "fs/promises";
 import { join } from "path";
 import { test, expect } from "../fixtures/test-base";
 
+/** Wrap data in the unified API response envelope. */
+function envelope<T>(data: T, meta?: Record<string, unknown>) {
+  return { data, meta: { cache_status: "ready" as const, ...meta } };
+}
+
 /** Generate a session with a specific index for stable ordering. */
 function makeSession(
   index: number,
@@ -152,12 +157,10 @@ function mockSessionsRoute(sessions: ReturnType<typeof mockSessions>) {
     route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify({
-        items: paginated,
-        total,
-        offset,
-        limit,
-      }),
+      body: JSON.stringify(envelope(
+        { items: paginated, unfiltered_total: sessions.items.length },
+        { total, offset, limit },
+      )),
     });
   };
 }
@@ -201,10 +204,13 @@ function mockSearchRoute() {
       status: 200,
       contentType: "application/json",
       body: JSON.stringify({
-        items,
-        total_sessions: items.length,
-        total_matches: totalMatches,
-        query,
+        data: {
+          items,
+          total_sessions: items.length,
+          total_matches: totalMatches,
+          query,
+        },
+        meta: { cache_status: "ready" },
       }),
     });
   };
@@ -355,7 +361,7 @@ test.describe("Session History View", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify(sessionDetail),
+          body: JSON.stringify(envelope(sessionDetail)),
         });
       });
 
@@ -363,7 +369,7 @@ test.describe("Session History View", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({ events: [], total: 0 }),
+          body: JSON.stringify({ data: { events: [] }, meta: { total: 0, cache_status: "ready" } }),
         });
       });
 
@@ -395,7 +401,7 @@ test.describe("Session History View", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({ items: [], total: 0, offset: 0, limit: 25 }),
+          body: JSON.stringify(envelope({ items: [], unfiltered_total: 0 }, { total: 0, offset: 0, limit: 25 })),
         });
       });
 
@@ -411,10 +417,14 @@ test.describe("Session History View", () => {
     test("shows loading skeleton while fetching", async ({ page, daemon: _daemon }) => {
       await page.route("**/api/sessions*", async (route) => {
         await new Promise((r) => setTimeout(r, 500));
+        const sessions = mockSessions();
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify(mockSessions()),
+          body: JSON.stringify(envelope(
+            { items: sessions.items, unfiltered_total: sessions.total },
+            { total: sessions.total, offset: sessions.offset, limit: sessions.limit },
+          )),
         });
       });
 
@@ -654,13 +664,13 @@ test.describe("Session History View", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({
+          body: JSON.stringify(envelope({
             id: "test",
             status: "completed",
             agent_type: "worker",
             events: [],
             total: 0,
-          }),
+          })),
         });
       });
 
@@ -688,12 +698,10 @@ test.describe("Session History View", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({
-            items: allSessions.slice(offset, offset + limit),
-            total: allSessions.length,
-            offset,
-            limit,
-          }),
+          body: JSON.stringify(envelope(
+            { items: allSessions.slice(offset, offset + limit), unfiltered_total: allSessions.length },
+            { total: allSessions.length, offset, limit },
+          )),
         });
       });
 
@@ -716,12 +724,10 @@ test.describe("Session History View", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({
-            items: [makeSession(1)],
-            total: 1,
-            offset: 0,
-            limit: 25,
-          }),
+          body: JSON.stringify(envelope(
+            { items: [makeSession(1)], unfiltered_total: 1 },
+            { total: 1, offset: 0, limit: 25 },
+          )),
         });
       });
 
@@ -749,12 +755,10 @@ test.describe("Session History View", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({
-            items: allSessions.slice(offset, offset + limit),
-            total: allSessions.length,
-            offset,
-            limit,
-          }),
+          body: JSON.stringify(envelope(
+            { items: allSessions.slice(offset, offset + limit), unfiltered_total: allSessions.length },
+            { total: allSessions.length, offset, limit },
+          )),
         });
       });
 
@@ -787,12 +791,10 @@ test.describe("Session History View", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({
-            items: allSessions.slice(offset, offset + limit),
-            total: allSessions.length,
-            offset,
-            limit,
-          }),
+          body: JSON.stringify(envelope(
+            { items: allSessions.slice(offset, offset + limit), unfiltered_total: allSessions.length },
+            { total: allSessions.length, offset, limit },
+          )),
         });
       });
 
@@ -827,12 +829,10 @@ test.describe("Session History View", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({
-            items: allSessions.slice(offset, offset + limit),
-            total: allSessions.length,
-            offset,
-            limit,
-          }),
+          body: JSON.stringify(envelope(
+            { items: allSessions.slice(offset, offset + limit), unfiltered_total: allSessions.length },
+            { total: allSessions.length, offset, limit },
+          )),
         });
       });
 
@@ -869,12 +869,10 @@ test.describe("Session History View", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({
-            items: allSessions.slice(offset, offset + limit),
-            total: allSessions.length,
-            offset,
-            limit,
-          }),
+          body: JSON.stringify(envelope(
+            { items: allSessions.slice(offset, offset + limit), unfiltered_total: allSessions.length },
+            { total: allSessions.length, offset, limit },
+          )),
         });
       });
 
@@ -920,7 +918,7 @@ test.describe("Session History View", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({ items: paginated, total, offset, limit }),
+          body: JSON.stringify(envelope({ items: paginated, unfiltered_total: allSessions.length }, { total, offset, limit })),
         });
       });
 
@@ -973,7 +971,7 @@ test.describe("Session History View", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({ items: paginated, total, offset, limit }),
+          body: JSON.stringify(envelope({ items: paginated, unfiltered_total: allSessions.length }, { total, offset, limit })),
         });
       });
 
@@ -1007,12 +1005,10 @@ test.describe("Session History View", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({
-            items: sessions,
-            total: sessions.length,
-            offset: 0,
-            limit: 25,
-          }),
+          body: JSON.stringify(envelope(
+            { items: sessions, unfiltered_total: sessions.length },
+            { total: sessions.length, offset: 0, limit: 25 },
+          )),
         });
       });
 
@@ -1072,12 +1068,10 @@ test.describe("Session History View", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({
-            items: sessions,
-            total: sessions.length,
-            offset: 0,
-            limit: 25,
-          }),
+          body: JSON.stringify(envelope(
+            { items: sessions, unfiltered_total: sessions.length },
+            { total: sessions.length, offset: 0, limit: 25 },
+          )),
         });
       });
 
@@ -1143,12 +1137,10 @@ test.describe("Session History View", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({
-            items: sessions,
-            total: sessions.length,
-            offset: 0,
-            limit: 25,
-          }),
+          body: JSON.stringify(envelope(
+            { items: sessions, unfiltered_total: sessions.length },
+            { total: sessions.length, offset: 0, limit: 25 },
+          )),
         });
       });
 
@@ -1223,12 +1215,10 @@ test.describe("Session History View", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({
-            items: currentSessions,
-            total: 50, // More than one page so sentinel is visible
-            offset: 0,
-            limit: 25,
-          }),
+          body: JSON.stringify(envelope(
+            { items: currentSessions, unfiltered_total: 50 },
+            { total: 50, offset: 0, limit: 25 },
+          )),
         });
       });
 
@@ -1301,12 +1291,10 @@ test.describe("Session History View", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({
-            items: sessions,
-            total: 50,
-            offset: 0,
-            limit: 25,
-          }),
+          body: JSON.stringify(envelope(
+            { items: sessions, unfiltered_total: 50 },
+            { total: 50, offset: 0, limit: 25 },
+          )),
         });
       });
 

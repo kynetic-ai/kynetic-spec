@@ -76,6 +76,7 @@ import { resolveRefTitle } from "./ref-resolution.js";
 import { enumArrayUnion, enumUnion } from "./enum-utils.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
 import type { ReviewIndexSummary } from "../../daemon/entity-cache.js";
+import { wrapResponse } from "./response-envelope.js";
 
 interface ReviewsRouteOptions {
   pubsub: PubSubManager;
@@ -189,7 +190,7 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
           // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
           const reviewsDomainState = cache?.getDomainState("reviews");
           if (cache && reviewsDomainState === "loading") {
-            return { items: [], total: 0, offset: 0, limit: 0, _cache_status: "loading" as const };
+            return wrapResponse([] as never[], { cacheDomainState: "loading", total: 0, offset: 0, limit: 0 });
           }
 
           let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
@@ -327,7 +328,7 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
             ? paginated.map((r) => indexSummaryToReviewSummary(r as ReviewIndexSummary, index))
             : paginated.map((r) => toReviewSummary(r as ReviewRecord, index));
 
-          return { items, total, offset, limit };
+          return wrapResponse(items, { total, offset, limit, cacheDomainState: reviewsDomainState });
         },
         {
           query: t.Object({
@@ -357,7 +358,7 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
 
           // AC: @daemon-entity-cache ac-warming-availability — return loading indicator during warmup
           if (cache && reviewsDomainState === "loading") {
-            return { _cache_status: "loading" as const };
+            return wrapResponse(null, { cacheDomainState: "loading" });
           }
 
           let review;
@@ -396,10 +397,7 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
             });
           }
 
-          return {
-            ...review,
-            disposition: computeDisposition(review),
-          };
+          return wrapResponse({ ...review, disposition: computeDisposition(review) }, { cacheDomainState: reviewsDomainState });
         },
         {
           params: t.Object({

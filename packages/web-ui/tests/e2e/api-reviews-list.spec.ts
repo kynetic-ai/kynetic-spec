@@ -28,12 +28,12 @@ test.describe("Review List API (GET /api/reviews)", () => {
     expect(response.status()).toBe(200);
 
     const body = await response.json();
-    expect(body).toHaveProperty("items");
-    expect(body).toHaveProperty("total");
-    expect(body).toHaveProperty("offset");
-    expect(body).toHaveProperty("limit");
-    expect(Array.isArray(body.items)).toBe(true);
-    expect(body.items.length).toBeGreaterThan(0);
+    expect(body).toHaveProperty("data");
+    expect(body.meta).toHaveProperty("total");
+    expect(body.meta).toHaveProperty("offset");
+    expect(body.meta).toHaveProperty("limit");
+    expect(Array.isArray(body.data)).toBe(true);
+    expect(body.data.length).toBeGreaterThan(0);
   });
 
   // AC: @review-records-daemon-api ac-1
@@ -42,7 +42,7 @@ test.describe("Review List API (GET /api/reviews)", () => {
     expect(response.status()).toBe(200);
 
     const body = await response.json();
-    const review = body.items[0];
+    const review = body.data[0];
     expect(review).toHaveProperty("_ulid");
     expect(review).toHaveProperty("title");
     expect(review).toHaveProperty("lifecycle_state");
@@ -63,10 +63,10 @@ test.describe("Review List API (GET /api/reviews)", () => {
 
     const body = await response.json();
     // No status param → defaults to open reviews only
-    for (const review of body.items) {
+    for (const review of body.data) {
       expect(review.lifecycle_state).toBe("open");
     }
-    expect(body.items.length).toBeGreaterThan(0);
+    expect(body.data.length).toBeGreaterThan(0);
   });
 
   // AC: @review-records-daemon-api ac-1 — status filter
@@ -76,8 +76,8 @@ test.describe("Review List API (GET /api/reviews)", () => {
     expect(response.status()).toBe(200);
 
     const body = await response.json();
-    expect(body.items.length).toBeGreaterThan(0);
-    for (const review of body.items) {
+    expect(body.data.length).toBeGreaterThan(0);
+    for (const review of body.data) {
       expect(review.lifecycle_state).toBe("draft");
     }
   });
@@ -89,8 +89,8 @@ test.describe("Review List API (GET /api/reviews)", () => {
     expect(response.status()).toBe(200);
 
     const body = await response.json();
-    expect(body.items.length).toBeGreaterThan(0);
-    for (const review of body.items) {
+    expect(body.data.length).toBeGreaterThan(0);
+    for (const review of body.data) {
       expect(review.lifecycle_state).toBe("open");
     }
   });
@@ -105,8 +105,8 @@ test.describe("Review List API (GET /api/reviews)", () => {
 
     const body = await response.json();
     // Filter across all statuses for pending disposition
-    expect(body.items.length).toBeGreaterThan(0);
-    for (const review of body.items) {
+    expect(body.data.length).toBeGreaterThan(0);
+    for (const review of body.data) {
       expect(review.disposition).toBe("pending");
     }
   });
@@ -120,8 +120,8 @@ test.describe("Review List API (GET /api/reviews)", () => {
     expect(response.status()).toBe(200);
 
     const body = await response.json();
-    expect(body.items.length).toBeGreaterThan(0);
-    for (const review of body.items) {
+    expect(body.data.length).toBeGreaterThan(0);
+    for (const review of body.data) {
       expect(review.subject_type).toBe("task");
     }
   });
@@ -133,8 +133,8 @@ test.describe("Review List API (GET /api/reviews)", () => {
     expect(response.status()).toBe(200);
 
     const body = await response.json();
-    expect(body.items).toEqual([]);
-    expect(body.total).toBe(0);
+    expect(body.data).toEqual([]);
+    expect(body.meta.total).toBe(0);
   });
 
   // AC: @review-records-daemon-api ac-1 — sorting
@@ -144,10 +144,10 @@ test.describe("Review List API (GET /api/reviews)", () => {
     expect(response.status()).toBe(200);
 
     const body = await response.json();
-    expect(body.items.length).toBeGreaterThanOrEqual(2);
+    expect(body.data.length).toBeGreaterThanOrEqual(2);
 
     // Default sort: created_at desc — most recent first
-    const dates = body.items.map((r: { created_at: string }) => new Date(r.created_at).getTime());
+    const dates = body.data.map((r: { created_at: string }) => new Date(r.created_at).getTime());
     for (let i = 0; i < dates.length - 1; i++) {
       expect(dates[i]).toBeGreaterThanOrEqual(dates[i + 1]);
     }
@@ -162,9 +162,9 @@ test.describe("Review List API (GET /api/reviews)", () => {
     expect(response.status()).toBe(200);
 
     const body = await response.json();
-    expect(body.items.length).toBeGreaterThanOrEqual(2);
+    expect(body.data.length).toBeGreaterThanOrEqual(2);
 
-    const dates = body.items.map((r: { created_at: string }) => new Date(r.created_at).getTime());
+    const dates = body.data.map((r: { created_at: string }) => new Date(r.created_at).getTime());
     for (let i = 0; i < dates.length - 1; i++) {
       expect(dates[i]).toBeLessThanOrEqual(dates[i + 1]);
     }
@@ -176,10 +176,10 @@ test.describe("Review List API (GET /api/reviews)", () => {
     expect(response.status()).toBe(200);
 
     const body = await response.json();
-    expect(body.items.length).toBe(1);
-    expect(body.limit).toBe(1);
-    expect(body.offset).toBe(0);
-    expect(body.total).toBeGreaterThanOrEqual(2);
+    expect(body.data.length).toBe(1);
+    expect(body.meta.limit).toBe(1);
+    expect(body.meta.offset).toBe(0);
+    expect(body.meta.total).toBeGreaterThanOrEqual(2);
   });
 
   // AC: @review-records-daemon-api ac-1 — pagination offset
@@ -190,9 +190,9 @@ test.describe("Review List API (GET /api/reviews)", () => {
     const body1 = await page1.json();
     const body2 = await page2.json();
 
-    expect(body1.items.length).toBe(1);
-    expect(body2.items.length).toBe(1);
-    expect(body1.items[0]._ulid).not.toBe(body2.items[0]._ulid);
+    expect(body1.data.length).toBe(1);
+    expect(body2.data.length).toBe(1);
+    expect(body1.data[0]._ulid).not.toBe(body2.data[0]._ulid);
   });
 
   // AC: @review-records-daemon-api ac-1 — task title resolution via ReferenceIndex
@@ -202,7 +202,7 @@ test.describe("Review List API (GET /api/reviews)", () => {
 
     const body = await response.json();
     // Open review references @test-task-pending-review
-    const openReview = body.items.find((r: { _ulid: string }) => r._ulid === OPEN_REVIEW_ULID);
+    const openReview = body.data.find((r: { _ulid: string }) => r._ulid === OPEN_REVIEW_ULID);
     expect(openReview).toBeDefined();
     expect(openReview.task_ref).toBe("@test-task-pending-review");
     expect(openReview.task_title).toBe("Pending review task");
@@ -217,7 +217,7 @@ test.describe("Review List API (GET /api/reviews)", () => {
     expect(response.status()).toBe(200);
 
     const body = await response.json();
-    const openReview = body.items.find((r: { _ulid: string }) => r._ulid === OPEN_REVIEW_ULID);
+    const openReview = body.data.find((r: { _ulid: string }) => r._ulid === OPEN_REVIEW_ULID);
     expect(openReview).toBeDefined();
     // Open review fixture has 4 threads, 2 unresolved blockers, 3 checks, 1 verdict
     expect(openReview.thread_count).toBe(4);
@@ -233,7 +233,7 @@ test.describe("Review List API (GET /api/reviews)", () => {
 
     const body = await response.json();
     const validDispositions = ["pending", "approved", "changes_requested"];
-    for (const review of body.items) {
+    for (const review of body.data) {
       expect(validDispositions).toContain(review.disposition);
     }
   });
@@ -253,10 +253,10 @@ test.describe("Review List API (GET /api/reviews)", () => {
     );
     expect(response.status()).toBe(200);
 
-    const data = await response.json();
-    expect(data.items.length).toBeGreaterThanOrEqual(1);
+    const body = await response.json();
+    expect(body.data.length).toBeGreaterThanOrEqual(1);
 
-    const review = data.items.find((r: { _ulid: string }) => r._ulid === OPEN_REVIEW_ULID);
+    const review = body.data.find((r: { _ulid: string }) => r._ulid === OPEN_REVIEW_ULID);
     expect(review).toBeDefined();
     expect(review.title).toBe("Review of test task");
   });
@@ -268,10 +268,10 @@ test.describe("Review List API (GET /api/reviews)", () => {
     );
     expect(response.status()).toBe(200);
 
-    const data = await response.json();
-    expect(data.items.length).toBeGreaterThanOrEqual(1);
+    const body = await response.json();
+    expect(body.data.length).toBeGreaterThanOrEqual(1);
 
-    const review = data.items.find((r: { _ulid: string }) => r._ulid === OPEN_REVIEW_ULID);
+    const review = body.data.find((r: { _ulid: string }) => r._ulid === OPEN_REVIEW_ULID);
     expect(review).toBeDefined();
   });
 
@@ -280,9 +280,9 @@ test.describe("Review List API (GET /api/reviews)", () => {
     const response = await request.get(`${daemon.baseUrl}/api/reviews?task=test-task-completed`);
     expect(response.status()).toBe(200);
 
-    const data = await response.json();
-    expect(data.items.length).toBe(0);
-    expect(data.total).toBe(0);
+    const body = await response.json();
+    expect(body.data.length).toBe(0);
+    expect(body.meta.total).toBe(0);
   });
 
   // AC: @review-records-web-ui ac-11 — sibling lookup by subject_ref
@@ -292,9 +292,9 @@ test.describe("Review List API (GET /api/reviews)", () => {
     );
     expect(response.status()).toBe(200);
 
-    const data = await response.json();
-    expect(data.items).toHaveLength(2);
-    expect(data.items.map((r: { _ulid: string }) => r._ulid)).toEqual(
+    const body = await response.json();
+    expect(body.data).toHaveLength(2);
+    expect(body.data.map((r: { _ulid: string }) => r._ulid)).toEqual(
       expect.arrayContaining([OPEN_REVIEW_ULID, SIBLING_REVIEW_ULID]),
     );
   });
@@ -309,13 +309,13 @@ test.describe("Review List API (GET /api/reviews)", () => {
     );
     expect(response.status()).toBe(200);
 
-    const data = await response.json();
-    expect(data.items).toHaveLength(2);
-    expect(data.items.map((r: { _ulid: string }) => r._ulid)).toEqual(
+    const body = await response.json();
+    expect(body.data).toHaveLength(2);
+    expect(body.data.map((r: { _ulid: string }) => r._ulid)).toEqual(
       expect.arrayContaining([CODE_REVIEW_ULID, CODE_REVIEW_SIBLING_ULID]),
     );
     expect(
-      data.items.every((r: { head_branch?: string }) => r.head_branch === "feat/review-detail"),
+      body.data.every((r: { head_branch?: string }) => r.head_branch === "feat/review-detail"),
     ).toBe(true);
   });
 });
@@ -326,7 +326,7 @@ test.describe("Review Detail API (GET /api/reviews/:id)", () => {
     const response = await request.get(`${daemon.baseUrl}/api/reviews/${OPEN_REVIEW_ULID}`);
     expect(response.status()).toBe(200);
 
-    const review = await response.json();
+    const { data: review } = await response.json();
     expect(review._ulid).toBe(OPEN_REVIEW_ULID);
     expect(review.title).toBe("Review of test task");
     expect(review.lifecycle_state).toBe("open");
@@ -343,7 +343,7 @@ test.describe("Review Detail API (GET /api/reviews/:id)", () => {
     const response = await request.get(`${daemon.baseUrl}/api/reviews/${OPEN_REVIEW_ULID}`);
     expect(response.status()).toBe(200);
 
-    const review = await response.json();
+    const { data: review } = await response.json();
     expect(review.threads.length).toBe(4);
 
     // First blocker thread
@@ -370,7 +370,7 @@ test.describe("Review Detail API (GET /api/reviews/:id)", () => {
     const response = await request.get(`${daemon.baseUrl}/api/reviews/${OPEN_REVIEW_ULID}`);
     expect(response.status()).toBe(200);
 
-    const review = await response.json();
+    const { data: review } = await response.json();
     // Has request_changes verdict → disposition is 'changes_requested'
     expect(review.disposition).toBe("changes_requested");
   });
@@ -380,7 +380,7 @@ test.describe("Review Detail API (GET /api/reviews/:id)", () => {
     const response = await request.get(`${daemon.baseUrl}/api/reviews/${DRAFT_REVIEW_ULID}`);
     expect(response.status()).toBe(200);
 
-    const review = await response.json();
+    const { data: review } = await response.json();
     expect(review._ulid).toBe(DRAFT_REVIEW_ULID);
     expect(review.threads).toEqual([]);
     expect(review.checks).toEqual([]);
@@ -402,7 +402,7 @@ test.describe("Review Detail API (GET /api/reviews/:id)", () => {
     const response = await request.get(`${daemon.baseUrl}/api/reviews/${OPEN_REVIEW_ULID}`);
     expect(response.status()).toBe(200);
 
-    const review = await response.json();
+    const { data: review } = await response.json();
     expect(review.subject.type).toBe("task");
     expect(review.subject.ref).toBe("@test-task-pending-review");
   });

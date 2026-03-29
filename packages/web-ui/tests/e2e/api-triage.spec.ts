@@ -171,11 +171,11 @@ test.describe("Triage API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(body).toHaveProperty("items");
-      expect(body).toHaveProperty("total");
-      expect(Array.isArray(body.items)).toBe(true);
-      expect(body.items.length).toBeGreaterThan(0);
-      expect(body.total).toBe(body.items.length);
+      expect(body).toHaveProperty("data");
+      expect(body).toHaveProperty("meta");
+      expect(Array.isArray(body.data)).toBe(true);
+      expect(body.data.length).toBeGreaterThan(0);
+      expect(body.meta.total).toBe(body.data.length);
     });
 
     // AC: @triage-daemon-api ac-1 — sorted by created_at desc
@@ -187,12 +187,12 @@ test.describe("Triage API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(body.items.length).toBeGreaterThanOrEqual(2);
+      expect(body.data.length).toBeGreaterThanOrEqual(2);
 
       // Verify descending order
-      for (let i = 0; i < body.items.length - 1; i++) {
-        const current = new Date(body.items[i].created_at).getTime();
-        const next = new Date(body.items[i + 1].created_at).getTime();
+      for (let i = 0; i < body.data.length - 1; i++) {
+        const current = new Date(body.data[i].created_at).getTime();
+        const next = new Date(body.data[i + 1].created_at).getTime();
         expect(current).toBeGreaterThanOrEqual(next);
       }
     });
@@ -204,9 +204,9 @@ test.describe("Triage API", () => {
 
       const body = await response.json();
       // We have 3 fixture records
-      expect(body.items.length).toBe(3);
+      expect(body.data.length).toBe(3);
 
-      const item = body.items[0];
+      const item = body.data[0];
       expect(item).toHaveProperty("_ulid");
       expect(item).toHaveProperty("inbox_ref");
       expect(item).toHaveProperty("item_snapshot");
@@ -228,10 +228,10 @@ test.describe("Triage API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(Array.isArray(body.items)).toBe(true);
+      expect(Array.isArray(body.data)).toBe(true);
 
       // All returned items should have status=triaged
-      for (const item of body.items) {
+      for (const item of body.data) {
         expect(item.status).toBe("triaged");
       }
     });
@@ -242,9 +242,9 @@ test.describe("Triage API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(body.items.length).toBe(1);
-      expect(body.items[0]._ulid).toBe(FIXTURE_TRIAGE_ACTED_ULID);
-      expect(body.items[0].status).toBe("acted_on");
+      expect(body.data.length).toBe(1);
+      expect(body.data[0]._ulid).toBe(FIXTURE_TRIAGE_ACTED_ULID);
+      expect(body.data[0].status).toBe("acted_on");
     });
 
     // AC: @triage-daemon-api ac-2 — filter for pending
@@ -253,9 +253,9 @@ test.describe("Triage API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(body.items.length).toBe(1);
-      expect(body.items[0]._ulid).toBe(FIXTURE_TRIAGE_PENDING_ULID);
-      expect(body.items[0].status).toBe("pending");
+      expect(body.data.length).toBe(1);
+      expect(body.data[0]._ulid).toBe(FIXTURE_TRIAGE_PENDING_ULID);
+      expect(body.data[0].status).toBe("pending");
     });
 
     // AC: @trait-api-endpoint ac-4 — pagination
@@ -263,17 +263,17 @@ test.describe("Triage API", () => {
       // Get all records first
       const allResponse = await request.get(`${daemon.baseUrl}/api/triage`);
       const allBody = await allResponse.json();
-      const totalCount = allBody.total;
+      const totalCount = allBody.meta.total;
 
       // Get first page with limit=1
       const pagedResponse = await request.get(`${daemon.baseUrl}/api/triage?limit=1&offset=0`);
       expect(pagedResponse.status()).toBe(200);
 
       const pagedBody = await pagedResponse.json();
-      expect(pagedBody.items.length).toBe(1);
-      expect(pagedBody.total).toBe(totalCount);
-      expect(pagedBody.offset).toBe(0);
-      expect(pagedBody.limit).toBe(1);
+      expect(pagedBody.data.length).toBe(1);
+      expect(pagedBody.meta.total).toBe(totalCount);
+      expect(pagedBody.meta.offset).toBe(0);
+      expect(pagedBody.meta.limit).toBe(1);
     });
 
     // AC: @trait-api-endpoint ac-4 — pagination offset
@@ -288,7 +288,7 @@ test.describe("Triage API", () => {
       const secondBody = await secondResponse.json();
 
       // First and second pages should have different records
-      expect(firstBody.items[0]._ulid).not.toBe(secondBody.items[0]._ulid);
+      expect(firstBody.data[0]._ulid).not.toBe(secondBody.data[0]._ulid);
     });
   });
 
@@ -364,9 +364,9 @@ test.describe("Triage API", () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(body._ulid).toBe(FIXTURE_TRIAGE_TRIAGED_ULID);
-      expect(body.status).toBe("triaged");
-      expect(body.action).toBe("defer");
+      expect(body.data._ulid).toBe(FIXTURE_TRIAGE_TRIAGED_ULID);
+      expect(body.data.status).toBe("triaged");
+      expect(body.data.action).toBe("defer");
     });
 
     // AC: @trait-api-endpoint ac-2 — 404 for nonexistent ref
@@ -479,7 +479,7 @@ test.describe("Triage API", () => {
       expect(listResponse.status()).toBe(200);
       const list = await listResponse.json();
 
-      const found = list.items.find((r: { _ulid: string }) => r._ulid === created.record._ulid);
+      const found = list.data.find((r: { _ulid: string }) => r._ulid === created.record._ulid);
       expect(found).toBeDefined();
       expect(found.action).toBe("spec-gap");
     });
@@ -842,7 +842,7 @@ test.describe("Triage API", () => {
       // Verify the list reflects acted_on status
       const listResponse = await request.get(`${daemon.baseUrl}/api/triage?status=acted_on`);
       const list = await listResponse.json();
-      const found = list.items.find((r: { _ulid: string }) => r._ulid === triage.record._ulid);
+      const found = list.data.find((r: { _ulid: string }) => r._ulid === triage.record._ulid);
       expect(found).toBeDefined();
       expect(found.status).toBe("acted_on");
     });
@@ -982,7 +982,7 @@ test.describe("Triage API", () => {
       // Only 1 record for this inbox item
       const listResponse = await request.get(`${daemon.baseUrl}/api/triage`);
       const list = await listResponse.json();
-      const recordsForItem = list.items.filter(
+      const recordsForItem = list.data.filter(
         (r: { inbox_ref: string }) => r.inbox_ref === inboxUlid,
       );
       expect(recordsForItem.length).toBe(1);
