@@ -29410,91 +29410,23 @@ plans:
       ## Specs
 
 
-      ### Update: @api-contract
+      No new specs. This plan updates three existing specs with new acceptance
+
+      criteria. The AC additions are handled as tasks (see Phase 0 below)
+
+      because `kspec plan derive` creates new specs — it cannot modify existing
+
+      ones.
 
 
-      ```yaml
+      **Specs updated:**
 
-      acceptance_criteria:
-        - id: ac-envelope
-          given: |
-            the daemon is running and receives an API request
-          when: |
-            any endpoint returns a response
-          then: |
-            the response uses a normalized envelope with a typed data payload
-            and a metadata object containing cache readiness state, and
-            pagination fields (total, offset, limit) when applicable
-        - id: ac-cache-status-field
-          given: |
-            a cache domain is still loading for the requested project
-          when: |
-            an API list or query endpoint is called
-          then: |
-            the response metadata includes a cache status value of "loading"
-            and the data payload is empty or default, distinct from a
-            normal empty result where cache status is "ready"
-      ```
+      - `@api-contract` — add ac-envelope, ac-cache-status-field
 
+      - `@daemon-entity-cache` — add ac-domain-ready-event
 
-      ### Update: @daemon-entity-cache
-
-
-      ```yaml
-
-      acceptance_criteria:
-        - id: ac-domain-ready-event
-          given: |
-            a cache domain transitions from loading to ready
-          when: |
-            the transition completes
-          then: |
-            a real-time event is broadcast to all connected clients
-            identifying the domain and project that became ready
-      ```
-
-
-      ### Update: @ui-data-freshness
-
-
-      ```yaml
-
-      acceptance_criteria:
-        - id: ac-warming-skeleton
-          given: |
-            the server signals that its cache is still warming for a data domain
-          when: |
-            the UI receives the response
-          then: |
-            a loading skeleton is displayed instead of empty content, and
-            the warming response is not persisted in the client cache as
-            real data
-        - id: ac-warming-auto-transition
-          given: |
-            the UI is displaying a loading skeleton due to cache warming
-          when: |
-            a real-time event indicates the cache domain is ready
-          then: |
-            the affected queries are invalidated and the view transitions
-            to real data without user interaction
-        - id: ac-warming-retry-fallback
-          given: |
-            the UI is displaying a loading skeleton due to cache warming
-          when: |
-            no real-time domain-ready event has been received
-          then: |
-            the UI retries the request at short intervals as a fallback
-            for missed or delayed real-time events
-        - id: ac-warming-timeout
-          given: |
-            the UI has been retrying a cache-warming response
-          when: |
-            the retry ceiling (30 seconds) is reached without the cache
-            becoming ready
-          then: |
-            the UI displays an error state with a manual retry option
-            instead of continuing to show the loading skeleton
-      ```
+      - `@ui-data-freshness` — add ac-warming-skeleton, ac-warming-auto-transition,
+      ac-warming-retry-fallback, ac-warming-timeout
 
 
       ## Tasks
@@ -29505,13 +29437,123 @@ plans:
 
       ```yaml
 
+      # ─── Phase 0: Spec Updates ───
+
+
+      - title: Add response envelope ACs to API contract spec
+        slug: task-spec-update-api-contract
+        spec_ref: "@api-contract"
+        priority: 1
+        tags: [spec, api]
+        description: |
+          The @api-contract spec defines the REST and WebSocket API contract
+          but has no acceptance criteria for a normalized response envelope or
+          typed cache status signaling. Implementation tasks in this plan
+          depend on these ACs existing as the behavioral contract.
+
+          Why: Spec-first development requires the AC to exist before the
+          implementation task can reference it. The envelope and cache status
+          ACs define what "correct" looks like for the server-side migration.
+
+          What: Add two ACs to @api-contract using kspec batch:
+
+          ac-envelope:
+            Given: the daemon is running and receives an API request
+            When: any endpoint returns a response
+            Then: the response uses a normalized envelope with a typed data
+            payload and a metadata object containing cache readiness state,
+            and pagination fields (total, offset, limit) when applicable
+
+          ac-cache-status-field:
+            Given: a cache domain is still loading for the requested project
+            When: an API list or query endpoint is called
+            Then: the response metadata includes a cache status value of
+            "loading" and the data payload is empty or default, distinct from
+            a normal empty result where cache status is "ready"
+
+          How: Use kspec batch with two "item ac add" commands targeting
+          @api-contract. Use given/when/then block scalars.
+
+      - title: Add domain ready event AC to entity cache spec
+        slug: task-spec-update-entity-cache
+        spec_ref: "@daemon-entity-cache"
+        priority: 1
+        tags: [spec, daemon]
+        description: |
+          The @daemon-entity-cache spec covers cache loading, serving, and
+          invalidation but has no AC for broadcasting when a domain becomes
+          ready. The WebSocket event task depends on this AC.
+
+          Why: The domain-ready broadcast is new behavior not covered by
+          existing ACs. ac-warming-availability covers the server returning
+          a loading response, but not actively notifying clients when loading
+          completes.
+
+          What: Add one AC to @daemon-entity-cache:
+
+          ac-domain-ready-event:
+            Given: a cache domain transitions from loading to ready
+            When: the transition completes
+            Then: a real-time event is broadcast to all connected clients
+            identifying the domain and project that became ready
+
+          How: Use kspec item ac add @daemon-entity-cache with the AC fields.
+
+      - title: Add cache warming UX ACs to data freshness spec
+        slug: task-spec-update-data-freshness
+        spec_ref: "@ui-data-freshness"
+        priority: 1
+        tags: [spec, web-ui]
+        description: |
+          The @ui-data-freshness spec covers caching, invalidation, and
+          WebSocket-driven updates but has no ACs for cache warming behavior —
+          what the UI should do when the server reports its cache is still
+          loading. The warming UX tasks depend on these ACs.
+
+          Why: Four new behaviors need AC coverage: showing skeletons instead
+          of empty content, auto-transitioning when cache is ready, retry
+          fallback for missed events, and timeout error state. Without these
+          ACs, the warming UX has no testable contract.
+
+          What: Add four ACs to @ui-data-freshness using kspec batch:
+
+          ac-warming-skeleton:
+            Given: the server signals that its cache is still warming
+            When: the UI receives the response
+            Then: a loading skeleton is displayed instead of empty content,
+            and the warming response is not persisted in the client cache
+            as real data
+
+          ac-warming-auto-transition:
+            Given: the UI is displaying a loading skeleton due to cache warming
+            When: a real-time event indicates the cache domain is ready
+            Then: the affected queries are invalidated and the view transitions
+            to real data without user interaction
+
+          ac-warming-retry-fallback:
+            Given: the UI is displaying a loading skeleton due to cache warming
+            When: no real-time domain-ready event has been received
+            Then: the UI retries the request at short intervals as a fallback
+            for missed or delayed real-time events
+
+          ac-warming-timeout:
+            Given: the UI has been retrying a cache-warming response
+            When: the retry ceiling (30 seconds) is reached without the cache
+            becoming ready
+            Then: the UI displays an error state with a manual retry option
+            instead of continuing to show the loading skeleton
+
+          How: Use kspec batch with four "item ac add" commands targeting
+          @ui-data-freshness. Use given/when/then block scalars.
+
       # ─── Phase 1: Server-Side Envelope ───
 
 
       - title: Define unified API response envelope type and wrapper
         slug: task-api-response-envelope-type
         spec_ref: "@api-contract"
-        priority: 1
+        priority: 2
+        depends_on: ["@task-spec-update-api-contract"]
         tags: [api, daemon, schema]
         description: |
           Today, daemon API responses have inconsistent shapes: list endpoints
@@ -29547,7 +29589,7 @@ plans:
       - title: Migrate daemon route handlers to unified envelope
         slug: task-migrate-route-handlers-envelope
         spec_ref: "@api-contract"
-        priority: 2
+        priority: 3
         depends_on: ["@task-api-response-envelope-type"]
         tags: [api, daemon]
         description: |
@@ -29588,7 +29630,8 @@ plans:
       - title: Broadcast cache domain ready event via WebSocket
         slug: task-cache-domain-ready-ws-event
         spec_ref: "@daemon-entity-cache"
-        priority: 1
+        priority: 2
+        depends_on: ["@task-spec-update-entity-cache"]
         tags: [daemon, websocket]
         description: |
           The daemon's EntityCache tracks per-domain loading state (unloaded →
@@ -29624,7 +29667,7 @@ plans:
       - title: Update web UI fetch functions for unified envelope
         slug: task-ui-unwrap-envelope
         spec_ref: "@api-contract"
-        priority: 3
+        priority: 4
         depends_on: ["@task-migrate-route-handlers-envelope"]
         tags: [web-ui, data-layer]
         description: |
@@ -29665,8 +29708,9 @@ plans:
       - title: Implement cache warming detection and retry in query layer
         slug: task-ui-cache-warming-interceptor
         spec_ref: "@ui-data-freshness"
-        priority: 4
-        depends_on: ["@task-ui-unwrap-envelope"]
+        priority: 5
+
+        depends_on: ["@task-ui-unwrap-envelope", "@task-spec-update-data-freshness"]
         tags: [web-ui, data-layer]
         description: |
           After the fetch functions unwrap the envelope, the web UI has access
@@ -29704,7 +29748,7 @@ plans:
       - title: Subscribe to cache domain ready events for query invalidation
         slug: task-ui-cache-domain-ready-subscription
         spec_ref: "@ui-data-freshness"
-        priority: 5
+        priority: 6
         depends_on: ["@task-cache-domain-ready-ws-event", "@task-ui-cache-warming-interceptor"]
         tags: [web-ui, websocket]
         description: |
@@ -29742,7 +29786,7 @@ plans:
       - title: Show loading skeletons and timeout error across all views
         slug: task-ui-warming-skeletons
         spec_ref: "@ui-data-freshness"
-        priority: 6
+        priority: 7
         depends_on: ["@task-ui-cache-warming-interceptor"]
         tags: [web-ui, components]
         description: |
@@ -29786,7 +29830,7 @@ plans:
       - title: E2E test for cache warming to ready transition
         slug: task-e2e-cache-warming-transition
         spec_ref: "@ui-data-freshness"
-        priority: 7
+        priority: 8
         depends_on: ["@task-ui-warming-skeletons", "@task-ui-cache-domain-ready-subscription"]
         tags: [test, e2e]
         description: |
@@ -29895,3 +29939,8 @@ plans:
         content: Rewrote tasks with standalone What/Why/How detail and AC coverage
         author: "@claude"
         created_at: 2026-03-29T05:54:23.580Z
+      - _ulid: 01KMW2QEXQ70181JEGS1N8W1GZ
+        content: "Restructured: spec updates as Phase 0 tasks (derive can't update existing specs), updated
+          priorities and dependencies"
+        author: "@claude"
+        created_at: 2026-03-29T05:58:03.448Z
