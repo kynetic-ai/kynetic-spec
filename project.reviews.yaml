@@ -76044,6 +76044,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-29T06:01:52.429Z
+      - _ulid: 01KMW2YX772XCV3FNHX4VQM83P
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMW2YWNG489Y89YCTYWK1JV0
+        timestamp: 2026-03-29T06:02:07.463Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -76053,8 +76060,42 @@ reviews:
       content_hash: ""
       ref: "@plan-daemon-cache-warming-ux"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMW2YWNG489Y89YCTYWK1JV0
+        anchor:
+          type: structured
+          ref: "@task-api-response-envelope-type"
+          section: Tasks
+        entries:
+          - _ulid: 01KMW2YWNGGBSTSET983DJ2XP7
+            author: "@claude"
+            body: >-
+              @trait-api-endpoint ac-4 specifies the current response shape: {items, total, offset,
+              limit}. The proposed ac-envelope changes ALL responses to {data, meta: {total, offset,
+              limit, cache_status}}. This directly conflicts with the trait AC that is inherited by
+              @api-contract and every API endpoint spec.
+
+
+              The plan must either:
+
+              1. Update @trait-api-endpoint ac-4 as part of Phase 0 (add a
+              task-spec-update-api-endpoint-trait task), OR
+
+              2. Acknowledge this as a breaking change to the trait contract and explain the
+              migration path.
+
+
+              Similarly, @api-contract ac-4 explicitly says "returns paginated results with {items,
+              total, offset, limit} wrapper" — this AC will be violated by the envelope migration.
+              The plan adds new ACs (ac-envelope, ac-cache-status-field) but does not update or
+              supersede ac-4.
+
+
+              Without addressing this, the envelope migration creates a contradiction: ac-4 says
+              {items, total, offset, limit}, ac-envelope says {data, meta}.
+            created_at: 2026-03-29T06:02:06.896Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-29T06:01:44.082Z
-    updated_at: 2026-03-29T06:01:51.857Z
+    updated_at: 2026-03-29T06:02:06.896Z
     notes: []
