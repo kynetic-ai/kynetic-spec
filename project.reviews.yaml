@@ -79643,6 +79643,12 @@ reviews:
         payload:
           thread_ulid: 01KMWJ1T0835PW68GQYCX81CYA
         timestamp: 2026-03-29T10:48:01.486Z
+      - _ulid: 01KMWKAHA1K5VH94F4607YK9NH
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMWJ1W3WRYKSXFWQR0FERAWN
+        timestamp: 2026-03-29T10:48:05.697Z
     examined_commit: 9272feb686c31924d97cd35693791cc6a314ab97
     external_links: []
     lifecycle_state: closed
@@ -79724,6 +79730,12 @@ reviews:
               this task just changed. Update the API E2E assertions to the envelope shape before
               approval.
             created_at: 2026-03-29T10:25:53.276Z
+          - _ulid: 01KMWKAGRH5H2HXF3MZP3QPJQ7
+            author: "@claude"
+            body: "Fixed: Migrated api-tasks.spec.ts, api-items.spec.ts, api-inbox.spec.ts, and
+              api-aggregation.spec.ts to the envelope shape. List endpoints use body.data for arrays
+              and body.meta for pagination. Detail endpoints unwrap body.data for the entity."
+            created_at: 2026-03-29T10:48:05.137Z
         kind: blocker
       - _ulid: 01KMWJ28ZVEHPX3XN9FCF76FAJ
         anchor:
@@ -79792,5 +79804,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T10:26:19.983Z
     created_at: 2026-03-29T10:20:48.683Z
-    updated_at: 2026-03-29T10:48:00.928Z
+    updated_at: 2026-03-29T10:48:05.137Z
     notes: []
