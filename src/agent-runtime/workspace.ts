@@ -7,6 +7,7 @@ const execFileAsync = promisify(execFile);
 import { initContext } from "../parser/index.js";
 import { acquireFileLock, type FileLockAcquireInfo } from "../parser/file-lock.js";
 import {
+  deleteDispatchWorkspaceRecord,
   getDispatchWorkspaceRegistryPath,
   loadDispatchWorkspaceRegistry,
   saveDispatchWorkspaceRecord,
@@ -1537,6 +1538,27 @@ async function persistWorkspaceRecord(
     const registryPath = await saveWorkspaceRecordToRegistry(projectDir, record);
     await commitWorkspaceRegistryToShadow(projectDir, record.task_ref);
     return registryPath;
+  });
+}
+
+/**
+ * Purge a workspace record from the registry: acquire the dispatch shadow
+ * mutation lock, delete the record, then durably commit — all within the
+ * lock scope so the deletion is never visible without a matching shadow
+ * commit. This ensures daemon restarts cannot resurrect the stale record.
+ *
+ * AC: @dispatch-workspace-registry ac-8
+ * AC: @dispatch-workspace-registry ac-14
+ */
+export async function purgeDispatchWorkspaceRecord(
+  projectDir: string,
+  taskRef: string,
+  workspaceId: string,
+): Promise<void> {
+  await withDispatchShadowMutationLock(projectDir, taskRef, async () => {
+    const ctx = await initContext(projectDir);
+    await deleteDispatchWorkspaceRecord(ctx, workspaceId);
+    await commitWorkspaceRegistryToShadow(projectDir, taskRef);
   });
 }
 
