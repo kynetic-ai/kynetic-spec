@@ -9514,6 +9514,24 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-29T01:39:28.706Z
+  - _ulid: 01KMVTP2J8EWBXS5NHVNFMMY0C
+    type: friction
+    content: Dispatch test specDir resolution is confusing — initContext(tempDir) resolves specDir to
+      tempDir when kynetic.yaml is there, but tests that set up .kspec/ subdirs may write registry
+      files to the wrong location. The pattern isnt documented in test helpers.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-29T03:37:29.416Z
+  - _ulid: 01KMVTP2S461PXH2N02N95MT4E
+    type: success
+    content: Using Explore agent to map the full workspace registry system (10+ functions across 4
+      files) saved significant time and provided a complete dependency graph before writing any
+      code.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-29T03:37:29.636Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
