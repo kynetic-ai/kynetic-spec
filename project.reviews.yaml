@@ -79573,6 +79573,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-29T10:25:27.078Z
+      - _ulid: 01KMWJ1RKYW1M9P80WP1ZWW4FH
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMWJ1R0JSJ2HY8F1G2SN7M6V
+        timestamp: 2026-03-29T10:25:49.694Z
     examined_commit: 9272feb686c31924d97cd35693791cc6a314ab97
     external_links: []
     lifecycle_state: open
@@ -79582,8 +79589,26 @@ reviews:
       content_hash: ""
       ref: "@01KMW68KM0EXKESA30EMPW63VY"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMWJ1R0JSJ2HY8F1G2SN7M6V
+        anchor:
+          type: code
+          commit: 9272feb686c31924d97cd35693791cc6a314ab97
+          line_end: 76
+          line_start: 71
+          path: packages/web-ui/tests/e2e/api-meta.spec.ts
+          side: head
+        entries:
+          - _ulid: 01KMWJ1R0J5MC6MX1TJXVX2VZ2
+            author: Test User
+            body: ", , , and  now return the unified envelope, but this spec still reads the old top-level
+              fields (, , , , , etc.) directly from the response body. That leaves the AC-bearing
+              API coverage for the migrated meta/search/validation endpoints incorrect and would
+              fail as soon as this Playwright suite is exercised against the new contract. The test
+              file needs to be migrated to assert  and  consistently."
+            created_at: 2026-03-29T10:25:49.074Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-29T10:20:48.683Z
-    updated_at: 2026-03-29T10:25:26.438Z
+    updated_at: 2026-03-29T10:25:49.074Z
     notes: []
