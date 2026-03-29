@@ -77840,6 +77840,17 @@ reviews:
         runner: npm
         created_at: 2026-03-29T08:08:15.078Z
         completed_at: 2026-03-29T08:08:15.078Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- tests/api-response-envelope.test.ts packages/shared/tests/types.test.ts
+          passed: 12 suites, 60 tests."
+        name: targeted tests
+        required: true
+        runner: npm
+        created_at: 2026-03-29T08:08:21.813Z
+        completed_at: 2026-03-29T08:08:21.813Z
     events:
       - _ulid: 01KMW9VA09F8S4ZV4CBJ6813R6
         actor: Test User
@@ -77891,6 +77902,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-29T08:08:17.525Z
+      - _ulid: 01KMWA62QTATT779E2WRAACSXE
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted tests
+        timestamp: 2026-03-29T08:08:22.522Z
     examined_commit: 874f6f54ea34af06938220461a6500d1ca2bcddc
     external_links: []
     lifecycle_state: closed
@@ -77931,5 +77949,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T08:08:17.524Z
     created_at: 2026-03-29T08:02:29.513Z
-    updated_at: 2026-03-29T08:08:17.525Z
+    updated_at: 2026-03-29T08:08:21.813Z
     notes: []
