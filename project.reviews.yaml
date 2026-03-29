@@ -81455,6 +81455,19 @@ reviews:
         runner: npm
         created_at: 2026-03-29T21:48:43.666Z
         completed_at: 2026-03-29T21:48:43.666Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Re-ran tests/cli-plan.test.ts tests/dispatch-workspace-registry.test.ts
+          tests/triage-cli.test.ts tests/workflow-runs.test.ts on both dev and this branch: 55
+          suites / 212 tests passed in each environment. The earlier full npm test failures were not
+          confirmed as branch-specific during targeted repro."
+        name: targeted comparison
+        required: false
+        runner: npm
+        created_at: 2026-03-29T21:50:48.100Z
+        completed_at: 2026-03-29T21:50:48.100Z
     events:
       - _ulid: 01KMXRXJKH9VYZV1FBF2XKK2WJ
         actor: Jacob Chapel
@@ -81506,6 +81519,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-29T21:49:31.116Z
+      - _ulid: 01KMXS80A1XQYDDHHPNAV9G1TH
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted comparison
+        timestamp: 2026-03-29T21:50:48.641Z
     examined_commit: null
     external_links: []
     lifecycle_state: closed
@@ -81543,5 +81563,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T21:49:31.115Z
     created_at: 2026-03-29T21:45:06.930Z
-    updated_at: 2026-03-29T21:49:31.116Z
+    updated_at: 2026-03-29T21:50:48.100Z
     notes: []
