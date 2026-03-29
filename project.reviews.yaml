@@ -77122,6 +77122,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-29T07:40:57.460Z
+      - _ulid: 01KMW8QJ150VN6AESGYCFHKH18
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMW8QHFR4T87DZH0XQPY4Q33
+        timestamp: 2026-03-29T07:42:58.085Z
     examined_commit: a243c68309f3bec0fd3937b629962f8db01195e4
     external_links: []
     lifecycle_state: open
@@ -77131,8 +77138,26 @@ reviews:
       content_hash: ""
       ref: "@01KMW68KC5Z7W9QJP96GYRYPHE"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMW8QHFR4T87DZH0XQPY4Q33
+        anchor:
+          type: code
+          commit: a243c68309f3bec0fd3937b629962f8db01195e4
+          line_end: 42
+          line_start: 17
+          path: packages/shared/src/api.ts
+          side: head
+        entries:
+          - _ulid: 01KMW8QHFRY6PTXSY7WNA1K0BB
+            author: Test User
+            body: The task contract explicitly calls for adding a Zod schema alongside the new TypeScript
+              envelope type, but this file only adds compile-time unions/interfaces. I verified
+              with  and there is no runtime schema/export for the envelope anywhere in the snapshot.
+              That leaves downstream consumers without a parseable runtime contract for , so the
+              task is incomplete even though the helper and type tests pass.
+            created_at: 2026-03-29T07:42:57.528Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-29T07:37:59.318Z
-    updated_at: 2026-03-29T07:40:56.411Z
+    updated_at: 2026-03-29T07:42:57.528Z
     notes: []
