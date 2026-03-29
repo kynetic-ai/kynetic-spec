@@ -76415,6 +76415,16 @@ reviews:
         required: true
         created_at: 2026-03-29T06:37:13.679Z
         completed_at: 2026-03-29T06:37:13.679Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Referenced specs and task dependencies resolve, and the AC coverage labels are internally
+          consistent after the latest revision.
+        name: Reference validation
+        required: true
+        created_at: 2026-03-29T06:37:13.745Z
+        completed_at: 2026-03-29T06:37:13.745Z
     events:
       - _ulid: 01KMW4XDZ9Z39NRSPEJ5DAX67D
         actor: Jacob Chapel
@@ -76457,6 +76467,13 @@ reviews:
           status: fail
           name: Existing spec alignment
         timestamp: 2026-03-29T06:37:14.209Z
+      - _ulid: 01KMW4Z7ERJDPNGN5072KB6M0J
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Reference validation
+        timestamp: 2026-03-29T06:37:15.096Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -76518,5 +76535,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-29T06:36:16.234Z
-    updated_at: 2026-03-29T06:37:13.679Z
+    updated_at: 2026-03-29T06:37:13.745Z
     notes: []
