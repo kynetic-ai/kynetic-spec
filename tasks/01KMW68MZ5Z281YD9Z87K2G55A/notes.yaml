@@ -43,3 +43,10 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-29T12:47:46.308Z
+  - _ulid: 01KMWTA3QFT8SCBY0W3ZNK4GQY
+    content: '[AGENT-FAIL] Invocation failed: Internal error: API Error: 500
+      {"type":"error","error":{"type":"api_error","message":"Internal server
+      error"},"request_id":"req_011CZXQ9i3Ny5DkqG9dPvRKz"}'
+    supersedes: null
+    author: Test User
+    created_at: 2026-03-29T12:50:11.823Z
