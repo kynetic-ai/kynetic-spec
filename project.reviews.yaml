@@ -77302,6 +77302,12 @@ reviews:
         payload:
           thread_ulid: 01KMW8QHFR4T87DZH0XQPY4Q33
         timestamp: 2026-03-29T07:59:38.985Z
+      - _ulid: 01KMW9PA52WEZK3TQ22RYVBCPD
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMW8R910BQ8F75S3Y7PVPTNK
+        timestamp: 2026-03-29T07:59:45.826Z
     examined_commit: a243c68309f3bec0fd3937b629962f8db01195e4
     external_links: []
     lifecycle_state: closed
@@ -77358,6 +77364,8 @@ reviews:
               schema exists. Categories searched: correctness, tests, edge cases, integration."
             created_at: 2026-03-29T07:43:21.632Z
         kind: nit
+        resolved_at: 2026-03-29T07:59:45.249Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -77367,7 +77375,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T07:43:48.786Z
     created_at: 2026-03-29T07:37:59.318Z
-    updated_at: 2026-03-29T07:59:38.454Z
+    updated_at: 2026-03-29T07:59:45.249Z
     notes: []
   - _ulid: 01KMW98XRTT4HY7VYPQV17ZR1E
     slugs: []
