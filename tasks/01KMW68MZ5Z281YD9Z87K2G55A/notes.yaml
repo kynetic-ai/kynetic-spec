@@ -67,3 +67,14 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-29T13:11:38.526Z
+  - _ulid: 01KMWW7DG1A6VHBG5JF3DT8021
+    content: "Fix cycle 2: addressed blocker — sessions search mode cache warming. The cacheWarming
+      derived state now checks searchResultsQuery.error when in search mode (searchMode=true)
+      instead of only checking sessionsQuery.error. CacheWarmingBanner queryKey is also mode-aware,
+      passing the search query key when in search mode so retry resets the correct query. Generic
+      error derivation now suppresses CacheWarmingError from both query paths. Added 2 E2E tests:
+      skeleton display during search warming, and timeout banner after search retries exhaust. Full
+      suite: 7192 passed (1 pre-existing unrelated failure in dispatch-workspace-registry)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-29T13:23:40.673Z
