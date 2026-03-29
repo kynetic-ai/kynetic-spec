@@ -78328,6 +78328,18 @@ reviews:
         runner: kspec
         created_at: 2026-03-29T08:55:42.500Z
         completed_at: 2026-03-29T08:55:42.500Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate exits 6 with existing repository-wide warnings (orphaned skill dir,
+          orphaned specs, baseline AC annotation/completeness warnings). No new task-specific
+          validation error was surfaced.
+        name: kspec-validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-29T08:55:58.999Z
+        completed_at: 2026-03-29T08:55:58.999Z
     events:
       - _ulid: 01KMWCMK9KWY9P3N5MZ4S1NBY9
         actor: Test User
@@ -78370,6 +78382,13 @@ reviews:
           kind: nit
           thread_ulid: 01KMWCX5GT5H5M4K9Z8Q30NK9C
         timestamp: 2026-03-29T08:55:57.102Z
+      - _ulid: 01KMWCX8XCGTSW5EJJCTGKBV66
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec-validate
+        timestamp: 2026-03-29T08:55:59.660Z
     examined_commit: d362c71d16d2916574e317b78a38a94f5f062b94
     external_links: []
     lifecycle_state: open
@@ -78412,5 +78431,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-29T08:51:15.379Z
-    updated_at: 2026-03-29T08:55:56.186Z
+    updated_at: 2026-03-29T08:55:58.999Z
     notes: []
