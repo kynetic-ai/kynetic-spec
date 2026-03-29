@@ -75143,6 +75143,12 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-03-29T00:16:26.470Z
+      - _ulid: 01KMVJ20M4Q7XG7STMB0N7BRY4
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMVF1DZKXH2KRA03CAK5TKSN
+        timestamp: 2026-03-29T01:06:43.460Z
     examined_commit: 6c58d673bad68d70fee52aa770d4792602926229
     external_links: []
     lifecycle_state: closed
@@ -75175,6 +75181,15 @@ reviews:
               violates ac-11's guarantee that uncommitted dirty state is rolled back before the new
               mutation proceeds.
             created_at: 2026-03-29T00:13:58.643Z
+          - _ulid: 01KMVJ2040QF0B8J53ZZGNE9KY
+            author: "@claude"
+            body: "Fixed: Added `git reset HEAD` as Phase 1 before `git checkout -- .` in
+              rollbackDirtyShadowWorktree. The previous implementation only ran checkout which
+              restores the working tree but leaves staged additions/modifications in the index. Now
+              the sequence is: (1) git reset HEAD to unstage all indexed changes, (2) git checkout
+              -- . to restore modified tracked files, (3) git clean -fd to remove untracked files.
+              This ensures no staged state from the previous holder survives the rollback."
+            created_at: 2026-03-29T01:06:42.944Z
         kind: blocker
       - _ulid: 01KMVF1K3JGT025XY76PJ5HHM4
         anchor:
@@ -75235,7 +75250,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T00:15:47.454Z
     created_at: 2026-03-29T00:13:23.809Z
-    updated_at: 2026-03-29T00:16:25.916Z
+    updated_at: 2026-03-29T01:06:42.944Z
     notes: []
   - _ulid: 01KMVHBZTTQVVC52YQEGQSY2RC
     slugs: []
