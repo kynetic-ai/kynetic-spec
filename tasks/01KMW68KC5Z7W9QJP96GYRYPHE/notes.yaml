@@ -51,3 +51,28 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-29T07:24:46.629Z
+  - _ulid: 01KMW8A6Y0N2CFHA4X7RQTABK8
+    content: >-
+      Implementation complete. Created:
+
+
+      1. packages/shared/src/api.ts — Added CacheStatus ("ready"|"loading"), ApiResponseMeta
+      ({cache_status, total?, offset?, limit?}), ApiResponse<T> ({data: T, meta: ApiResponseMeta}).
+      Kept PaginatedResponse<T> as @deprecated for backward compat during route migration.
+
+
+      2. packages/daemon/src/routes/response-envelope.ts — wrapResponse<T>(data, options) constructs
+      envelope. toCacheStatus() maps internal CacheDomainState to API CacheStatus (only "loading"
+      maps to "loading", all others → "ready").
+
+
+      3. Tests: 14 behavioral tests (toCacheStatus mapping + wrapResponse for arrays, objects,
+      pagination, loading/ready distinction) + 5 type-level tests for
+      CacheStatus/ApiResponseMeta/ApiResponse shape. All trait ACs annotated N/A (types-only task).
+
+
+      Full suite: 7099 passed, 8 flaky dispatch-workspace failures (pre-existing, pass in
+      isolation).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-29T07:35:40.736Z
