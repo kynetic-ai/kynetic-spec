@@ -62,3 +62,13 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-29T09:30:57.767Z
+  - _ulid: 01KMWFNKX8E8KX09JXZHPVFVW6
+    content: "Fix cycle 3: Wrapped the 3 remaining unwrapped session endpoints in wrapResponse(): GET
+      /api/sessions/search (both empty-query and normal paths), GET /api/sessions/:id/events (total
+      moved to meta), and GET /api/sessions/:id/events/:seq. Updated web UI client functions
+      (fetchSessionSearch, fetchSessionEvents, fetchSessionEventDetail) to unwrap envelope.data.
+      Updated E2E test assertions in api-sessions-search.spec.ts to use body.data.xxx and updated
+      E2E mocks in sessions.spec.ts to return {data, meta} envelope shape. All 7123 tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-29T09:44:14.505Z
