@@ -23254,3 +23254,18 @@
   started_at: 2026-03-29T13:37:08.311Z
   submitted_at: 2026-03-29T14:15:56.028Z
   automation: eligible
+- _ulid: 01KMX1NYS7VKGPK628JW9VV1N9
+  slugs: []
+  title: Consolidate web-ui tests into root tests/ directory
+  type: task
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - infra
+    - test
+    - e2e
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-29T14:59:00.007Z
