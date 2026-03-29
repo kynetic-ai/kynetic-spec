@@ -26,6 +26,7 @@ import {
   type DispatchWorkspaceMetadata,
 } from "../src/agent-runtime/workspace.js";
 import { acquireFileLock } from "../src/parser/file-lock.js";
+import * as fileLockModule from "../src/parser/file-lock.js";
 import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
 import {
   cleanupTempDir,
@@ -1395,6 +1396,60 @@ describe("dispatch workspace registry shadow durability", () => {
       // Second reconciliation with no change — no new commit expected.
       await reconcileDispatchWorkspaceRegistry(tempDir);
       expect(getShadowCommitCount(tempDir)).toBe(commitCountBefore);
+    },
+  );
+
+  // AC: @scoped-dispatch-shadow-serialization ac-9
+  it(
+    "reconciliation acquires the lock per dirty record, not once for the entire batch",
+    async () => {
+      await seedRepo(tempDir);
+      git(tempDir, "checkout -b agent-dev");
+
+      // Provision 2 workspace records so reconciliation has 2 dirty records to process.
+      const taskRef1 = `@${testUlid("TASK", 35)}`;
+      const taskRef2 = `@${testUlid("TASK", 36)}`;
+
+      await provisionDispatchWorkspace({
+        projectDir: tempDir,
+        taskRef: taskRef1,
+        task: {
+          title: "AC-9 Yield Record A",
+          slugs: ["task-ac9-yield-record-a"],
+        },
+      });
+
+      await provisionDispatchWorkspace({
+        projectDir: tempDir,
+        taskRef: taskRef2,
+        task: {
+          title: "AC-9 Yield Record B",
+          slugs: ["task-ac9-yield-record-b"],
+        },
+      });
+
+      // Settle initial state so subsequent reconciliation only saves records
+      // that become dirty via a status change.
+      await reconcileDispatchWorkspaceRegistry(tempDir);
+
+      // Spy on acquireFileLock to count how many times reconciliation acquires it.
+      const lockSpy = vi.spyOn(fileLockModule, "acquireFileLock");
+
+      // Reconcile with changed task status for both records — both become dirty,
+      // so reconciliation should acquire the lock once per dirty record.
+      await reconcileDispatchWorkspaceRegistry(
+        tempDir,
+        new Map([
+          [taskRef1, "completed" as const],
+          [taskRef2, "completed" as const],
+        ]),
+      );
+
+      // Per-record yielding means acquireFileLock is called once per dirty record (2 times).
+      // A batch-wide lock would call it exactly once.
+      expect(lockSpy).toHaveBeenCalledTimes(2);
+
+      lockSpy.mockRestore();
     },
   );
 

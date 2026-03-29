@@ -144,12 +144,10 @@ describe("Dispatch shadow mutation lock", () => {
     expect(result.exitCode).toBe(0);
   });
 
-  // AC: @scoped-dispatch-shadow-serialization ac-9
-  it("concurrent CLI mutation can interleave while reconciliation yields between records", async () => {
-    // This test proves that when the lock is held (simulating reconciliation
-    // processing a dirty record), a CLI mutation blocks, and when the lock is
-    // released (simulating the yield between records), the CLI mutation
-    // succeeds — demonstrating the interleaving behavior.
+  // AC: @scoped-dispatch-shadow-serialization ac-4
+  it("concurrent CLI mutation interleaves when lock is released between holds", async () => {
+    // General lock-interleaving test: a CLI mutation blocks while the lock
+    // is held, then succeeds when the lock is released.
     tempDir = await setupTempFixtures();
     const lockFile = path.join(tempDir, "dispatch-shadow-mutation");
 

@@ -62,7 +62,8 @@ import { setSyncMode, clearSyncMode } from "./sync-mode.js";
 import { spawn } from "child_process";
 import { join } from "path";
 import { existsSync } from "fs";
-import { acquireFileLock } from "../parser/file-lock.js";
+import { acquireFileLock, type FileLockAcquireInfo } from "../parser/file-lock.js";
+import { rollbackDirtyShadowWorktree } from "../agent-runtime/workspace.js";
 import {
   shouldProxyCommand,
   proxyCommand,
@@ -76,7 +77,7 @@ setVerboseModeGetter(getVerboseMode);
 
 // Track if we've already shown the manifest daemon deprecation warning this session
 let manifestDaemonWarningShown = false;
-let heldMutationLockRelease: (() => Promise<void>) | null = null;
+let heldMutationLockRelease: ((() => Promise<void>) & { info: FileLockAcquireInfo }) | null = null;
 let heldMutationLockPath: string | null = null;
 
 function releaseHeldMutationLockSync(): void {
@@ -102,6 +103,14 @@ async function maybeAcquireDispatchMutationLock(isMutating: boolean): Promise<vo
   try {
     heldMutationLockRelease = await acquireFileLock(lockFile, timeoutMs);
     heldMutationLockPath = lockFile;
+
+    // AC: @scoped-dispatch-shadow-serialization ac-11 — when the CLI
+    // force-reclaims the lock from an alive-but-stuck holder, the shadow
+    // worktree may contain uncommitted dirty state from the previous holder's
+    // interrupted write. Roll it back before proceeding with the CLI mutation.
+    if (heldMutationLockRelease.info.forceReclaimed) {
+      await rollbackDirtyShadowWorktree(process.cwd(), "cli", heldMutationLockRelease.info);
+    }
   } catch (err) {
     const reason = err instanceof Error ? err.message : String(err);
     console.error(chalk.red("error: dispatch shadow mutation lock unavailable"));

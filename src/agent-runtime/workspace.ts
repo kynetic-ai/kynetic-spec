@@ -1434,7 +1434,7 @@ async function withDispatchShadowMutationLock<T>(
  *
  * AC: @scoped-dispatch-shadow-serialization ac-11
  */
-async function rollbackDirtyShadowWorktree(
+export async function rollbackDirtyShadowWorktree(
   projectDir: string,
   taskRef: string,
   acquireInfo: FileLockAcquireInfo,
