@@ -81266,6 +81266,18 @@ reviews:
         runner: kspec
         created_at: 2026-03-29T13:34:30.349Z
         completed_at: 2026-03-29T13:34:30.349Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test exited 1 in this snapshot: failures were in unrelated
+          batch/daemon/registry/workflow suites, not in the cache-warming web UI tests or changed
+          files under review."
+        name: full test suite
+        required: false
+        runner: npm
+        created_at: 2026-03-29T13:34:44.021Z
+        completed_at: 2026-03-29T13:34:44.021Z
     events:
       - _ulid: 01KMWWEB3GM07MRSRXCAY81V3B
         actor: Test User
@@ -81301,6 +81313,13 @@ reviews:
           status: pass
           name: validate
         timestamp: 2026-03-29T13:34:30.957Z
+      - _ulid: 01KMWWVNTWCZD8EC7BYV52FTXE
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: full test suite
+        timestamp: 2026-03-29T13:34:44.572Z
     examined_commit: 65b9cc87bfebad12330eaec3b14f345459cc8f92
     external_links: []
     lifecycle_state: open
@@ -81361,5 +81380,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-29T13:27:27.601Z
-    updated_at: 2026-03-29T13:34:30.349Z
+    updated_at: 2026-03-29T13:34:44.021Z
     notes: []
