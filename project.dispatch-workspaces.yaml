@@ -26532,7 +26532,7 @@ workspaces:
         head: afd332b4c3b16543d6a80c9a905ac644ae07d3bd
         last_seen_at: 2026-03-28T23:57:19.155Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-workspace-reconciliation-cycle-for-completed-task-records-01kmv52k
-  - active_role: worker
+  - active_role: null
     base_branch_point: 737fd3d275ed9010448597c1a3565a2761b7f9af
     bootstrap:
       status: succeeded
@@ -26616,12 +26616,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-29T00:11:15.974Z
+      updated_at: 2026-03-29T00:11:30.826Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-29T00:11:15.974Z
+      updated_at: 2026-03-29T00:11:30.826Z
     integration:
       status: pending
       detail: null
@@ -26629,17 +26629,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 737fd3d275ed9010448597c1a3565a2761b7f9af
-      updated_at: 2026-03-29T00:11:15.974Z
-    lifecycle_state: active
+      updated_at: 2026-03-29T00:11:30.826Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMVCF95W6HCCPP6H5SSA7HBG"
     task_slug: fix-dispatch-shadow-mutation-lock-contention-and-leak-between-daemon-and-agents
     timestamps:
       closed_at: null
       last_active_at: 2026-03-28T23:57:33.747Z
-      last_reconciled_at: 2026-03-29T00:11:15.974Z
+      last_reconciled_at: 2026-03-29T00:11:30.826Z
       created_at: 2026-03-28T23:57:26.968Z
-      updated_at: 2026-03-29T00:11:15.974Z
+      updated_at: 2026-03-29T00:11:30.826Z
     workspace_id: dispatch-workspace-01KMVCF95W6HCCPP6H5SSA7HBG
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
