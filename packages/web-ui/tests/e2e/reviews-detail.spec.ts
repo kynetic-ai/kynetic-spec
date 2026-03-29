@@ -216,7 +216,7 @@ function routeDetailMock(reviewData: ReturnType<typeof mockReviewDetail>) {
     route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify(reviewData),
+      body: JSON.stringify({ data: reviewData, meta: { cache_status: "ready" } }),
     });
   };
 }
@@ -235,7 +235,7 @@ function routeSiblingsMock(siblingData: ReturnType<typeof mockSiblingReviews>) {
     route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify({ ...siblingData, items, total: items.length }),
+      body: JSON.stringify({ data: items, meta: { cache_status: "ready", total: items.length, offset: 0, limit: items.length } }),
     });
   };
 }

@@ -340,7 +340,7 @@ async function setupCodeReviewMocks(page: any, review: any, diff: any) {
     route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify(review),
+      body: JSON.stringify({ data: review, meta: { cache_status: "ready" } }),
     });
   });
 
@@ -348,7 +348,7 @@ async function setupCodeReviewMocks(page: any, review: any, diff: any) {
     route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify({ items: [], total: 0, offset: 0, limit: 0 }),
+      body: JSON.stringify({ data: [], meta: { cache_status: "ready", total: 0, offset: 0, limit: 0 } }),
     });
   });
 
@@ -711,7 +711,7 @@ test.describe("Code Diff Viewer", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify(review),
+          body: JSON.stringify({ data: review, meta: { cache_status: "ready" } }),
         });
       });
 

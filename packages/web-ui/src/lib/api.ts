@@ -66,6 +66,32 @@ import { DAEMON_API_BASE } from "./constants";
 const API_BASE = DAEMON_API_BASE;
 
 /**
+ * Unwrap a unified API response envelope, returning just the data payload.
+ * Used for detail/aggregation endpoints that return { data: T, meta: {...} }.
+ * AC: @api-contract ac-envelope
+ */
+function unwrapEnvelope<T>(envelope: { data: T; meta: unknown }): T {
+  return envelope.data;
+}
+
+/**
+ * Unwrap a unified API response envelope into the legacy PaginatedResponse shape.
+ * Maps { data: T[], meta: { total, offset, limit, cache_status } } → { items: T[], total, offset, limit }.
+ * AC: @api-contract ac-envelope
+ */
+function unwrapPaginatedEnvelope<T>(envelope: {
+  data: T[];
+  meta: { total?: number; offset?: number; limit?: number };
+}): PaginatedResponse<T> {
+  return {
+    items: envelope.data,
+    total: envelope.meta.total ?? envelope.data.length,
+    offset: envelope.meta.offset ?? 0,
+    limit: envelope.meta.limit ?? envelope.data.length,
+  };
+}
+
+/**
  * Get headers for API requests, including X-Kspec-Dir if project is selected
  * AC: @multi-directory-daemon ac-26
  */
@@ -143,7 +169,7 @@ export async function fetchTasks(params?: {
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapPaginatedEnvelope(await response.json());
 }
 
 /**
@@ -169,7 +195,7 @@ export async function fetchTask(ref: string): Promise<TaskDetail> {
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapEnvelope(await response.json());
 }
 
 /**
@@ -314,7 +340,7 @@ export async function fetchItems(params?: {
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapPaginatedEnvelope(await response.json());
 }
 
 /**
@@ -340,7 +366,7 @@ export async function fetchItem(ref: string): Promise<ItemDetail> {
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapEnvelope(await response.json());
 }
 
 export async function fetchBatchItems(refs: string[]): Promise<BatchItemsResponse> {
@@ -382,7 +408,7 @@ export async function fetchItemTasks(ref: string): Promise<PaginatedResponse<Tas
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapPaginatedEnvelope(await response.json());
 }
 
 /**
@@ -417,7 +443,7 @@ export async function fetchInbox(params?: {
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapPaginatedEnvelope(await response.json());
 }
 
 /**
@@ -459,7 +485,8 @@ export async function fetchMergedInbox(): Promise<{
     await handleResponseError(response);
   }
 
-  return response.json();
+  const envelope = await response.json();
+  return { items: envelope.data, total: envelope.meta?.total ?? envelope.data.length };
 }
 
 /**
@@ -530,7 +557,7 @@ export async function fetchSessionContext(): Promise<SessionContext> {
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapEnvelope(await response.json());
 }
 
 /**
@@ -565,7 +592,7 @@ export async function fetchObservations(params?: {
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapPaginatedEnvelope(await response.json());
 }
 
 /**
@@ -590,7 +617,7 @@ export async function search(query: string): Promise<SearchResponse> {
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapEnvelope(await response.json());
 }
 
 // ============================================================
@@ -630,7 +657,7 @@ export async function fetchTriageRecords(params?: {
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapPaginatedEnvelope(await response.json());
 }
 
 /**
@@ -766,7 +793,8 @@ export async function fetchAgentDefinitions(): Promise<{
   if (!response.ok) {
     await handleResponseError(response);
   }
-  return response.json();
+  const envelope = await response.json();
+  return { items: envelope.data, total: envelope.meta?.total ?? envelope.data.length };
 }
 
 /**
@@ -1115,7 +1143,8 @@ export async function fetchPlans(params?: {
     await handleResponseError(response);
   }
 
-  return response.json();
+  const envelope = await response.json();
+  return { items: envelope.data, total: envelope.meta?.total ?? envelope.data.length };
 }
 
 /**
@@ -1134,7 +1163,7 @@ export async function fetchPlanContent(ref: string): Promise<PlanDetail> {
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapEnvelope(await response.json());
 }
 
 // ============================================================
@@ -1183,7 +1212,7 @@ export async function fetchReviews(params?: {
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapPaginatedEnvelope(await response.json());
 }
 
 /**
@@ -1202,7 +1231,7 @@ export async function fetchReview(id: string): Promise<ReviewDetail> {
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapEnvelope(await response.json());
 }
 
 /**
@@ -1395,7 +1424,8 @@ export async function fetchWorkflows(): Promise<{ items: Workflow[]; total: numb
     await handleResponseError(response);
   }
 
-  return response.json();
+  const envelope = await response.json();
+  return { items: envelope.data, total: envelope.meta?.total ?? envelope.data.length };
 }
 
 // ============================================================
@@ -1586,7 +1616,14 @@ export async function fetchSessions(params?: FetchSessionsParams): Promise<Sessi
     await handleResponseError(response);
   }
 
-  return response.json();
+  const envelope = await response.json();
+  return {
+    items: envelope.data.items,
+    total: envelope.meta?.total ?? envelope.data.items.length,
+    unfiltered_total: envelope.data.unfiltered_total ?? 0,
+    offset: envelope.meta?.offset ?? 0,
+    limit: envelope.meta?.limit ?? envelope.data.items.length,
+  };
 }
 
 export async function fetchSessionSearch(
@@ -1638,7 +1675,7 @@ export async function fetchSessionSearch(
 
 export async function fetchTaskSessions(ref: string): Promise<SessionListResponse> {
   if (isStaticMode()) {
-    return { items: [], total: 0, offset: 0, limit: 0 };
+    return { items: [], total: 0, unfiltered_total: 0, offset: 0, limit: 0 };
   }
 
   const response = await fetch(`${API_BASE}/api/tasks/${ref}/sessions`, {
@@ -1648,12 +1685,19 @@ export async function fetchTaskSessions(ref: string): Promise<SessionListRespons
     await handleResponseError(response);
   }
 
-  return response.json();
+  const envelope = await response.json();
+  return {
+    items: envelope.data,
+    total: envelope.meta?.total ?? envelope.data.length,
+    unfiltered_total: envelope.data.length,
+    offset: envelope.meta?.offset ?? 0,
+    limit: envelope.meta?.limit ?? envelope.data.length,
+  };
 }
 
 export async function fetchItemSessions(ref: string): Promise<SessionListResponse> {
   if (isStaticMode()) {
-    return { items: [], total: 0, offset: 0, limit: 0 };
+    return { items: [], total: 0, unfiltered_total: 0, offset: 0, limit: 0 };
   }
 
   const response = await fetch(`${API_BASE}/api/items/${ref}/sessions`, {
@@ -1663,7 +1707,14 @@ export async function fetchItemSessions(ref: string): Promise<SessionListRespons
     await handleResponseError(response);
   }
 
-  return response.json();
+  const envelope = await response.json();
+  return {
+    items: envelope.data,
+    total: envelope.meta?.total ?? envelope.data.length,
+    unfiltered_total: envelope.data.length,
+    offset: envelope.meta?.offset ?? 0,
+    limit: envelope.meta?.limit ?? envelope.data.length,
+  };
 }
 
 /**
@@ -1682,7 +1733,7 @@ export async function fetchSession(id: string): Promise<SessionDetail> {
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapEnvelope(await response.json());
 }
 
 /**
@@ -1764,7 +1815,7 @@ export async function fetchReviewsForTask(
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapPaginatedEnvelope(await response.json());
 }
 
 // ============================================================
@@ -2128,7 +2179,8 @@ export async function fetchValidation(): Promise<ValidationResponse> {
     await handleResponseError(response);
   }
 
-  const data = await response.json();
+  const envelope = await response.json();
+  const data = envelope.data;
   // Normalize: ensure all array fields exist even if the API omits them
   return {
     valid: data.valid ?? true,
@@ -2157,7 +2209,7 @@ export async function fetchAlignment(): Promise<AlignmentResponse> {
     await handleResponseError(response);
   }
 
-  return response.json();
+  return unwrapEnvelope(await response.json());
 }
 
 // ============================================================
@@ -2235,7 +2287,7 @@ export async function fetchProjectConfig(): Promise<ProjectConfig> {
   if (!response.ok) {
     await handleResponseError(response);
   }
-  return response.json();
+  return unwrapEnvelope(await response.json());
 }
 
 /**
@@ -2258,7 +2310,7 @@ export async function fetchShadowStatus(): Promise<ShadowStatusResponse> {
   if (!response.ok) {
     await handleResponseError(response);
   }
-  return response.json();
+  return unwrapEnvelope(await response.json());
 }
 
 /**
@@ -2275,7 +2327,8 @@ export async function fetchConventions(): Promise<{ items: Convention[]; total: 
   if (!response.ok) {
     await handleResponseError(response);
   }
-  return response.json();
+  const envelope = await response.json();
+  return { items: envelope.data, total: envelope.meta?.total ?? envelope.data.length };
 }
 
 /**
@@ -2298,5 +2351,5 @@ export async function fetchValidationAggregation(): Promise<ValidationAggregatio
   if (!response.ok) {
     await handleResponseError(response);
   }
-  return response.json();
+  return unwrapEnvelope(await response.json());
 }
