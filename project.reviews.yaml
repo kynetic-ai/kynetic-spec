@@ -81667,6 +81667,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMXTC4GX1XSZDD9ZDHY65PNA
         timestamp: 2026-03-29T22:10:33.183Z
+      - _ulid: 01KMXTC6T8NSJDAYHE7QQPB2PR
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMXTC67SFRCBN48KE8B67HHZ
+        timestamp: 2026-03-29T22:10:34.952Z
     examined_commit: 16bf033f141f9de2e878c93802f2979933dacc09
     external_links: []
     lifecycle_state: closed
@@ -81749,6 +81756,25 @@ reviews:
               for the second project actually rendered.
             created_at: 2026-03-29T22:10:32.605Z
         kind: blocker
+      - _ulid: 01KMXTC67SFRCBN48KE8B67HHZ
+        anchor:
+          type: code
+          commit: 16bf033f141f9de2e878c93802f2979933dacc09
+          line_end: 152
+          line_start: 147
+          path: packages/web-ui/tests/e2e/cache-warming-transition.spec.ts
+          side: head
+        entries:
+          - _ulid: 01KMXTC67S8EPZBGQ758CQT5VS
+            author: Test User
+            body: The 'auto-transition' test does not prove the WebSocket-driven path required by
+              @ui-data-freshness ac-warming-auto-transition. The assertion window is 15s, while the
+              fallback retry path is intentionally allowed every short interval; the test comment
+              explicitly says either WebSocket invalidation or retry fallback is acceptable. That
+              means a regression in the real-time domain_ready subscription can still pass this
+              test, so the primary integration path this task was meant to cover remains unverified.
+            created_at: 2026-03-29T22:10:34.361Z
+        kind: blocker
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -81758,5 +81784,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T22:09:45.971Z
     created_at: 2026-03-29T22:04:14.293Z
-    updated_at: 2026-03-29T22:10:32.605Z
+    updated_at: 2026-03-29T22:10:34.361Z
     notes: []
