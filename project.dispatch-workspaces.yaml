@@ -1432,14 +1432,10 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-29T03:33:14.103Z
+      updated_at: 2026-03-29T03:34:09.754Z
     health:
-      status: invalid
+      status: stale
       issues:
-        - code: missing_canonical_branch
-          message: Canonical branch "dispatch/task/task-implement-priority-aware-dispatch-scheduler/01kkfy9j"
-            is missing.
-          suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
           message: Worker worktree
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-priority-aware-dispatch-scheduler-01kkfy9j"
@@ -1450,8 +1446,8 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-priority-aware-dispatch-scheduler-01kkfy9j-review"
             is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
-      summary: Workspace registry record is invalid because required git state is missing.
-      updated_at: 2026-03-29T03:33:14.103Z
+      summary: Workspace registry record is stale and needs reconciliation.
+      updated_at: 2026-03-29T03:34:09.754Z
     integration:
       status: merged
       detail: integration:merged
@@ -1459,7 +1455,7 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: a3120f904159a992682178398e87ffe5649ab7f5
-      updated_at: 2026-03-29T03:33:14.103Z
+      updated_at: 2026-03-29T03:34:09.754Z
     lifecycle_state: stale
     resolved_base_branch: main
     task_ref: "@01KKFY9JJ9SDWB05ZBQSV2VBDW"
@@ -1467,9 +1463,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: null
-      last_reconciled_at: 2026-03-29T03:33:14.103Z
+      last_reconciled_at: 2026-03-29T03:34:09.754Z
       created_at: 2026-03-12T20:40:02.242Z
-      updated_at: 2026-03-29T03:33:14.103Z
+      updated_at: 2026-03-29T03:34:09.754Z
     workspace_id: dispatch-workspace-01KKFY9JJ9SDWB05ZBQSV2VBDW
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -1790,17 +1786,21 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-19T03:56:06.745Z
+      updated_at: 2026-03-29T03:34:10.932Z
     health:
-      status: stale
+      status: invalid
       issues:
+        - code: missing_canonical_branch
+          message: Canonical branch "dispatch/task/implement-portable-skill-reference-resolution/01kkjkm9" is
+            missing.
+          suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
           message: Worker worktree
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-portable-skill-reference-resolution-01kkjkm9"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      summary: Workspace registry record is stale and needs reconciliation.
-      updated_at: 2026-03-19T03:56:06.745Z
+      summary: Workspace registry record is invalid because required git state is missing.
+      updated_at: 2026-03-29T03:34:10.932Z
     integration:
       status: merged
       detail: integration:merged
@@ -1808,7 +1808,7 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: 48408281d10e9f1d5ec6ba581041cd9477006c46
-      updated_at: 2026-03-19T03:56:06.745Z
+      updated_at: 2026-03-29T03:34:10.932Z
     lifecycle_state: stale
     resolved_base_branch: main
     task_ref: "@01KKJKM9SGG5AV5N0EV3GFTMZ4"
@@ -1816,9 +1816,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-13T08:21:13.773Z
-      last_reconciled_at: 2026-03-19T03:56:06.745Z
+      last_reconciled_at: 2026-03-29T03:34:10.932Z
       created_at: 2026-03-13T06:33:53.248Z
-      updated_at: 2026-03-19T03:56:06.745Z
+      updated_at: 2026-03-29T03:34:10.932Z
     workspace_id: dispatch-workspace-01KKJKM9SGG5AV5N0EV3GFTMZ4
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
