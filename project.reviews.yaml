@@ -77206,6 +77206,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-29T07:43:01.929Z
+      - _ulid: 01KMW8R9J9J09NY71FNBR5XQK5
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMW8R910BQ8F75S3Y7PVPTNK
+        timestamp: 2026-03-29T07:43:22.185Z
     examined_commit: a243c68309f3bec0fd3937b629962f8db01195e4
     external_links: []
     lifecycle_state: open
@@ -77234,7 +77241,24 @@ reviews:
               task is incomplete even though the helper and type tests pass.
             created_at: 2026-03-29T07:42:57.528Z
         kind: blocker
+      - _ulid: 01KMW8R910BQ8F75S3Y7PVPTNK
+        entries:
+          - _ulid: 01KMW8R910MF1W5A1NWHTA96CQ
+            author: Test User
+            body: "Evidence log: Files read: packages/shared/src/api.ts, packages/shared/src/index.ts,
+              packages/daemon/src/routes/response-envelope.ts,
+              packages/daemon/src/routes/entity-cache-types.ts, packages/daemon/src/routes/tasks.ts,
+              packages/daemon/src/routes/items.ts, packages/daemon/src/routes/aggregation.ts,
+              tests/api-response-envelope.test.ts, packages/shared/tests/types.test.ts,
+              src/daemon/entity-cache.ts, tests/daemon-entity-cache.test.ts. Commands run: kspec
+              task get, kspec review for-task, git diff, kspec validate, grep AC annotations, npm
+              test, npm test -- tests/api-response-envelope.test.ts
+              packages/shared/tests/types.test.ts, rg for schema/export coverage. Claims verified:
+              changed tests pass; shared package exports the new TS types; no envelope runtime
+              schema exists. Categories searched: correctness, tests, edge cases, integration."
+            created_at: 2026-03-29T07:43:21.632Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-29T07:37:59.318Z
-    updated_at: 2026-03-29T07:43:01.366Z
+    updated_at: 2026-03-29T07:43:21.632Z
     notes: []
