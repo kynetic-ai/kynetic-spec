@@ -79667,6 +79667,42 @@ reviews:
         payload:
           thread_ulid: 01KMWJ2CS9WERARDYF85CAW39A
         timestamp: 2026-03-29T10:48:18.908Z
+      - _ulid: 01KMWKPTDVE7YS12ASRPEWP7SW
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMWJ1R0JSJ2HY8F1G2SN7M6V
+        timestamp: 2026-03-29T10:54:48.251Z
+      - _ulid: 01KMWKPW1PAJ0276JY2A4PA0T6
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMWJ1T0835PW68GQYCX81CYA
+        timestamp: 2026-03-29T10:54:49.910Z
+      - _ulid: 01KMWKPXGQRNAK9Q1K5EHVQ86S
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMWJ1W3WRYKSXFWQR0FERAWN
+        timestamp: 2026-03-29T10:54:51.415Z
+      - _ulid: 01KMWKPZ06CB3YZGAE4A606GGH
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMWJ28ZVEHPX3XN9FCF76FAJ
+        timestamp: 2026-03-29T10:54:52.934Z
+      - _ulid: 01KMWKQ0HJ1BFJ6340MDBZF7QG
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMWJ2AYQHHMXXSH6ESE5KG12
+        timestamp: 2026-03-29T10:54:54.514Z
+      - _ulid: 01KMWKQ26FZHDGJVFGM8VQPKA1
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMWJ2CS9WERARDYF85CAW39A
+        timestamp: 2026-03-29T10:54:56.207Z
     examined_commit: 9272feb686c31924d97cd35693791cc6a314ab97
     external_links: []
     lifecycle_state: closed
@@ -79701,6 +79737,8 @@ reviews:
               search results, validation, and alignment all now verify the envelope shape."
             created_at: 2026-03-29T10:47:56.384Z
         kind: blocker
+        resolved_at: 2026-03-29T10:54:47.675Z
+        resolved_by: "@claude"
       - _ulid: 01KMWJ1T0835PW68GQYCX81CYA
         anchor:
           type: code
@@ -79725,6 +79763,8 @@ reviews:
               /api/tasks/:ref/sessions and /api/items/:ref/sessions endpoints."
             created_at: 2026-03-29T10:48:00.928Z
         kind: blocker
+        resolved_at: 2026-03-29T10:54:49.240Z
+        resolved_by: "@claude"
       - _ulid: 01KMWJ1W3WRYKSXFWQR0FERAWN
         anchor:
           type: code
@@ -79755,6 +79795,8 @@ reviews:
               and body.meta for pagination. Detail endpoints unwrap body.data for the entity."
             created_at: 2026-03-29T10:48:05.137Z
         kind: blocker
+        resolved_at: 2026-03-29T10:54:50.856Z
+        resolved_by: "@claude"
       - _ulid: 01KMWJ28ZVEHPX3XN9FCF76FAJ
         anchor:
           type: code
@@ -79781,6 +79823,8 @@ reviews:
               session-context endpoints. All 7123 tests pass."
             created_at: 2026-03-29T10:48:09.500Z
         kind: blocker
+        resolved_at: 2026-03-29T10:54:52.351Z
+        resolved_by: "@claude"
       - _ulid: 01KMWJ2AYQHHMXXSH6ESE5KG12
         anchor:
           type: code
@@ -79807,6 +79851,8 @@ reviews:
               /api/tasks/:ref/sessions and /api/items/:ref/sessions."
             created_at: 2026-03-29T10:48:13.907Z
         kind: blocker
+        resolved_at: 2026-03-29T10:54:53.980Z
+        resolved_by: "@claude"
       - _ulid: 01KMWJ2CS9WERARDYF85CAW39A
         anchor:
           type: code
@@ -79833,6 +79879,8 @@ reviews:
               checks body.data.valid/schemaErrors/etc. Alignment checks body.data.stats/warnings."
             created_at: 2026-03-29T10:48:18.301Z
         kind: blocker
+        resolved_at: 2026-03-29T10:54:55.565Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -79842,5 +79890,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T10:26:19.983Z
     created_at: 2026-03-29T10:20:48.683Z
-    updated_at: 2026-03-29T10:48:18.301Z
+    updated_at: 2026-03-29T10:54:55.565Z
     notes: []
