@@ -76432,6 +76432,13 @@ reviews:
           kind: question
           thread_ulid: 01KMW4YPAWT82VQ687EN95NSQG
         timestamp: 2026-03-29T06:36:58.923Z
+      - _ulid: 01KMW4YRJ39FEWN6HDHYFH5MNF
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMW4YPD1CND6MDT3YJ3F5ZP6
+        timestamp: 2026-03-29T06:36:59.843Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -76474,7 +76481,24 @@ reviews:
               one compatibility strategy and state where the normalization lives."
             created_at: 2026-03-29T06:36:57.565Z
         kind: question
+      - _ulid: 01KMW4YPD1CND6MDT3YJ3F5ZP6
+        anchor:
+          type: structured
+          section: context
+        entries:
+          - _ulid: 01KMW4YPD126EGKTDFYBPZDVFJ
+            author: Jacob Chapel
+            body: "The plan context currently says that after project registration, restart, or
+              watcher-triggered reload, list endpoints return empty loading data. That is no longer
+              true for watcher-triggered reloads: @daemon-entity-cache already has
+              ac-stale-during-reload, and the implementation in src/daemon/entity-cache.ts keeps
+              ready domains serving prior cached data during reload instead of regressing to
+              loading. Leaving the current wording in place mis-scopes the work toward a behavior
+              the system intentionally no longer has. Rewrite the context to target initial
+              registration/restart or otherwise explain the specific remaining failure mode."
+            created_at: 2026-03-29T06:36:57.633Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-29T06:36:16.234Z
-    updated_at: 2026-03-29T06:36:57.565Z
+    updated_at: 2026-03-29T06:36:57.633Z
     notes: []
