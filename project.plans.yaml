@@ -29421,7 +29421,11 @@ plans:
 
       **Specs updated:**
 
-      - `@api-contract` — add ac-envelope, ac-cache-status-field
+      - `@trait-api-endpoint` — rewrite ac-4 to behavioral language (remove response shape
+      prescription)
+
+      - `@api-contract` — rewrite ac-4 to behavioral language, add ac-envelope,
+      ac-cache-status-field
 
       - `@daemon-entity-cache` — add ac-domain-ready-event
 
@@ -29440,22 +29444,37 @@ plans:
       # ─── Phase 0: Spec Updates ───
 
 
-      - title: Add response envelope ACs to API contract spec
+      - title: Rewrite pagination ACs to behavioral language and add envelope ACs
         slug: task-spec-update-api-contract
         spec_ref: "@api-contract"
         priority: 1
         tags: [spec, api]
         description: |
-          The @api-contract spec defines the REST and WebSocket API contract
-          but has no acceptance criteria for a normalized response envelope or
-          typed cache status signaling. Implementation tasks in this plan
-          depend on these ACs existing as the behavioral contract.
+          Two existing ACs prescribe the response wire format ({items, total,
+          offset, limit}) rather than describing pagination behavior. This
+          conflicts with the envelope normalization in this plan. Additionally,
+          @api-contract has no ACs for a normalized response envelope or typed
+          cache status signaling.
 
-          Why: Spec-first development requires the AC to exist before the
-          implementation task can reference it. The envelope and cache status
-          ACs define what "correct" looks like for the server-side migration.
+          Why: @trait-api-endpoint ac-4 says "returns {items, total, offset,
+          limit} wrapper" and @api-contract ac-4 says "returns paginated
+          results with {items, total, offset, limit} wrapper." Both prescribe
+          a specific shape instead of describing the behavioral contract
+          (accepts pagination params, response includes total count and
+          pagination metadata). If left unchanged, the new envelope shape
+          {data, meta} would violate these ACs. The new envelope and cache
+          status ACs define what "correct" looks like for the server-side
+          migration.
 
-          What: Add two ACs to @api-contract using kspec batch:
+          What:
+          1. Rewrite @trait-api-endpoint ac-4 to: "accepts limit and offset
+             query params, response includes the total count of matching
+             items and the pagination parameters applied" — behavioral, no
+             shape prescription.
+          2. Rewrite @api-contract ac-4 to: "returns paginated results
+             including total count and the pagination parameters applied" —
+             behavioral, endpoint-specific detail without shape.
+          3. Add two new ACs to @api-contract:
 
           ac-envelope:
             Given: the daemon is running and receives an API request
@@ -29471,8 +29490,10 @@ plans:
             "loading" and the data payload is empty or default, distinct from
             a normal empty result where cache status is "ready"
 
-          How: Use kspec batch with two "item ac add" commands targeting
-          @api-contract. Use given/when/then block scalars.
+          How: Use kspec batch. For ac rewrites, use "item ac set" on
+          @trait-api-endpoint and @api-contract targeting ac-4. For new ACs,
+          use "item ac add" on @api-contract. Use given/when/then block
+          scalars.
 
       - title: Add domain ready event AC to entity cache spec
         slug: task-spec-update-entity-cache
@@ -29492,7 +29513,8 @@ plans:
           What: Add one AC to @daemon-entity-cache:
 
           ac-domain-ready-event:
-            Given: a cache domain transitions from loading to ready
+            Given: a cache domain transitions to ready state (from loading,
+            degraded, or any non-ready state)
             When: the transition completes
             Then: a real-time event is broadcast to all connected clients
             identifying the domain and project that became ready
@@ -29605,15 +29627,13 @@ plans:
           all routes use the envelope, the web UI cannot rely on a single
           response shape.
 
-          What: Update every route handler in packages/daemon/src/routes/ to
-          use the wrapResponse helper. This includes: tasks.ts, items.ts,
-          sessions.ts, inbox.ts, plans.ts, reviews.ts, triage.ts, refs.ts
-          (list endpoints), aggregation.ts (counts/stats endpoints),
-          validation.ts, and all meta.ts endpoints (session, agents,
-          workflows, observations, config, shadow, conventions). Remove the
-          inline _cache_status field construction from each handler — the
-          wrapper handles it. Detail endpoints (single entity by ref) also
-          get the envelope.
+          What: Update every route handler in the daemon routes directory to
+          use the wrapResponse helper. Discover all handlers by searching for
+          existing _cache_status usage and direct response object construction
+          — these are the sites that need migration. This covers list
+          endpoints, aggregation/stats endpoints, validation endpoints, meta
+          endpoints, and detail endpoints. Remove the inline _cache_status
+          field construction from each handler — the wrapper handles it.
 
           How: For each route: replace the return statement with a call to
           wrapResponse(), passing the domain data and cache domain state.
@@ -29646,9 +29666,9 @@ plans:
           daemon already has a PubSubManager that broadcasts entity mutation
           events — domain-ready events follow the same pattern.
 
-          What: When EntityCache transitions a domain from "loading" to "ready"
-          (the setDomainState method), broadcast a domain_ready event on a
-          "cache:status" topic via PubSubManager. The event payload includes
+          What: When EntityCache transitions a domain to "ready" from any
+          non-ready state (loading, degraded, or unloaded), broadcast a
+          domain_ready event on a "cache:status" topic via PubSubManager. The event payload includes
           the domain name (e.g. "tasks", "items", "sessions") and the project
           path. This event is scoped to the project, matching how entity
           mutation broadcasts work.
@@ -29684,13 +29704,15 @@ plans:
           undefined where they expect arrays. This is the client-side
           counterpart of the server migration.
 
-          What: Update all fetch functions in packages/web-ui/src/lib/api.ts
-          to unwrap the envelope. Each function should extract response.data
-          and response.meta, returning the domain data to callers. Update the
+          What: Update all fetch functions in the web UI API layer to unwrap
+          the envelope. Each function should extract response.data and
+          response.meta, returning the domain data to callers. Update the
           TypeScript return types to match. The meta object (including
-          cache_status) needs to be accessible to the query layer for cache
-          warming detection — either return a wrapped type that includes both,
-          or use a response header/side channel.
+          cache_status) must be inspectable before the data is returned —
+          the downstream cache warming interceptor
+          (@task-ui-cache-warming-interceptor) checks cache_status and throws
+          a CacheWarmingError for "loading" responses before data reaches
+          TanStack Query's cache.
 
           How: Import the ApiResponse<T> type from shared types. Each fetch
           function calls response.json() to get the envelope, then returns
@@ -29741,8 +29763,12 @@ plans:
           Either way, the warming response must not enter the query cache as
           successful data.
 
-          Covers: @ui-data-freshness ac-warming-skeleton (detection half),
-          ac-warming-retry-fallback, ac-warming-timeout.
+          Covers: @ui-data-freshness ac-warming-retry-fallback,
+          ac-warming-timeout. Also covers ac-warming-skeleton's requirement
+          that warming responses are not persisted in the client cache — the
+          CacheWarmingError prevents TanStack Query from caching them as
+          successful data. The skeleton rendering itself is in
+          @task-ui-warming-skeletons.
 
       - title: Subscribe to cache domain ready events for query invalidation
         slug: task-ui-cache-domain-ready-subscription
@@ -29820,8 +29846,10 @@ plans:
           failureCount >= 15), render the error state instead. The Retry
           button calls queryClient.resetQueries() for the relevant key.
 
-          Covers: @ui-data-freshness ac-warming-skeleton (display half),
-          ac-warming-timeout.
+          Covers: @ui-data-freshness ac-warming-skeleton (skeleton rendering
+          and view integration — the "not persisted in cache" requirement is
+          handled by @task-ui-cache-warming-interceptor), ac-warming-timeout
+          (error state UI and retry button).
 
       # ─── Phase 4: Validation ───
 
@@ -29853,15 +29881,14 @@ plans:
           (or takes >30s) — verify the error state appears with a working
           Retry button.
 
-          How: The E2E test needs to control cache warming timing. Options:
-          (a) Use the debug/cache-status endpoint to verify cache state and
-          time navigation to hit the warming window. (b) Add a test-only
-          daemon endpoint that delays cache domain loading. (c) Register a
-          new project mid-test to trigger fresh cache warming. Option (c) is
-          most realistic. For the timeout scenario, a mock or very large
-          dataset may be needed to extend warming time beyond 30s, or a
-          test-only delay endpoint. The test should use existing Playwright
-          fixture patterns from the e2e test suite.
+          How: Register a new project mid-test to trigger fresh cache warming
+          — this is the most realistic way to control timing without test-only
+          endpoints. Navigate to the new project's view immediately after
+          registration to catch the warming window. For the timeout scenario,
+          add a test-only daemon endpoint that injects an artificial delay
+          into cache domain loading (behind a KSPEC_TEST flag) so the 30s
+          ceiling can be hit reliably without needing a massive dataset. Use
+          existing Playwright fixture patterns from the e2e test suite.
 
           Covers: @ui-data-freshness ac-warming-skeleton, ac-warming-auto-
           transition, ac-warming-retry-fallback, ac-warming-timeout.
@@ -29913,9 +29940,10 @@ plans:
       ### Migration Order
 
 
-      Server-side envelope first (tasks 1-2), then client-side unwrapping (task 7), then WebSocket
-      event (task 3), then cache warming UX (tasks 4-6), then E2E test (task 8). Tasks 1 and 3 can
-      run in parallel since they're independent.
+      Phase 0 spec updates first (P1, can run in parallel). Then server-side envelope type + WS
+      event (P1, can run in parallel since independent). Then route handler migration (P2). Then
+      client unwrapping + interceptor (P3). Then WS subscription + skeleton views (P4). Finally E2E
+      test (P5).
     status: draft
     approved_at: null
     derived_specs: []
@@ -29947,3 +29975,9 @@ plans:
         content: Fixed priorities to 1-5 range
         author: "@claude"
         created_at: 2026-03-29T05:58:50.766Z
+      - _ulid: 01KMW4QHMRG6SCN60K3002NEYG
+        content: "Address review findings: add trait/AC rewrite task, broaden domain-ready AC, fix split
+          coverage labels, remove contradictory alternatives, commit E2E strategy, discovery-based
+          route migration"
+        author: "@claude"
+        created_at: 2026-03-29T06:33:03.384Z
