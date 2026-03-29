@@ -80568,6 +80568,28 @@ reviews:
         runner: kspec
         created_at: 2026-03-29T12:31:51.949Z
         completed_at: 2026-03-29T12:31:51.949Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: packages/web-ui/src/lib/query/ws-invalidation.ts,
+          packages/web-ui/tests/ws-cache-invalidation.test.ts,
+          packages/web-ui/src/lib/query/keys.ts, packages/web-ui/src/lib/query/client.ts,
+          packages/web-ui/tests/query-client-retry.test.ts, src/daemon/entity-cache.ts,
+          packages/daemon/src/server.ts, packages/daemon/src/routes/command.ts,
+          packages/daemon/src/routes/aggregation.ts, packages/daemon/src/routes/validation.ts,
+          packages/web-ui/src/routes/validate/+page.svelte, packages/web-ui/src/routes/+page.svelte.
+          Commands run: kspec task get, kspec review for-task, git diff, git diff --stat, git diff
+          --name-only, kspec validate, rg AC search, rg cache/domain searches, npm test. Claims
+          verified: cache:status topic subscription and domain_ready mapping exist in ws
+          invalidation layer; daemon publishes cache:status domain_ready; query keys match active
+          web UI queries; full suite passes. Categories searched: correctness, edge cases, error
+          handling, test quality, integration; no task-specific findings."
+        name: review evidence
+        required: false
+        runner: manual
+        created_at: 2026-03-29T12:31:53.758Z
+        completed_at: 2026-03-29T12:31:53.758Z
     events:
       - _ulid: 01KMWS0VTEQJ5GQT214QKQ02SB
         actor: Test User
@@ -80596,6 +80618,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-29T12:31:52.508Z
+      - _ulid: 01KMWS8KZ3H3FJ4DDX2Y7V41PH
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence
+        timestamp: 2026-03-29T12:31:54.339Z
     examined_commit: 6423b512795c4cdc2ac7398f5c9bf73137a2b800
     external_links: []
     lifecycle_state: open
@@ -80608,5 +80637,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-29T12:27:40.239Z
-    updated_at: 2026-03-29T12:31:51.949Z
+    updated_at: 2026-03-29T12:31:53.758Z
     notes: []
