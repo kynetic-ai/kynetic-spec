@@ -17948,9 +17948,30 @@ runs:
     completed_at: 2026-03-28T23:56:32.562Z
   - _ulid: 01KMVH9R483CC0Z8PPYW9EZC7K
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-03-29T00:53:28.328Z
+        completed_at: 2026-03-29T00:54:18.878Z
+        notes: >-
+          Session reviewed fix cycle 4 for task @01KMV52K0KFVQ33W970Z9NBCR5.
+
+
+          What worked: AsyncLocalStorage was the correct abstraction for isolating KSPEC_SPEC_DIR
+          reads without mutating shared process.env. The approach is confined to the async execution
+          chain and avoids all cross-thread races.
+
+
+          Friction: (1) daemon-command-api tests are flaky in the full suite due to process.chdir()
+          being process-wide, not thread-local. Multiple ~55min full suite runs were needed to
+          confirm this is pre-existing and unrelated to the task. (2) Test runner cache hash doesn't
+          include gitignored dist/, so verifying builds match source required manual checks.
+      - status: completed
+        step_index: 1
+        started_at: 2026-03-29T00:54:18.878Z
+        completed_at: 2026-03-29T00:54:18.878Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-29T00:53:28.328Z
