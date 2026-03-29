@@ -9,3 +9,10 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-29T21:42:07.402Z
+  - _ulid: 01KMXXXJ5Y1Y4HSXYJ55V2JRMS
+    content: Discovered 316 pre-existing e2e failures (0 migration-caused). Also found 257+ API-only
+      tests running in Playwright that should be vitest daemon tests. Created separate plan for e2e
+      test audit.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-29T23:12:29.374Z
