@@ -76051,6 +76051,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMW2YWNG489Y89YCTYWK1JV0
         timestamp: 2026-03-29T06:02:07.463Z
+      - _ulid: 01KMW2Z2WHCRN3DGPDVG412DVQ
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KMW2Z2AQ1EMP0WKH0B44JYE5
+        timestamp: 2026-03-29T06:02:13.265Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -76095,7 +76102,32 @@ reviews:
               {items, total, offset, limit}, ac-envelope says {data, meta}.
             created_at: 2026-03-29T06:02:06.896Z
         kind: blocker
+      - _ulid: 01KMW2Z2AQ1EMP0WKH0B44JYE5
+        anchor:
+          type: structured
+          ref: "@task-migrate-route-handlers-envelope"
+          section: Tasks
+        entries:
+          - _ulid: 01KMW2Z2AQ5DNBTWGYA48BBE5V
+            author: "@claude"
+            body: >-
+              The task description says "~27 route handlers" and lists specific files. This is
+              implementation-prescriptive detail that may go stale. More importantly, the task
+              description contains file paths (packages/daemon/src/routes/, tasks.ts, items.ts,
+              etc.) which violates the spec abstraction convention.
+
+
+              Since this is a task (not a spec), implementation detail is acceptable, but the exact
+              file list creates a risk: if routes are added or renamed before this task executes,
+              the agent will follow stale instructions. Consider replacing the file enumeration with
+              "all route handlers that return data" and let the agent discover the full set.
+
+
+              Also: the "~27 route handlers" claim should be verified. If the count is significantly
+              different, the priority/effort estimate may be wrong.
+            created_at: 2026-03-29T06:02:12.695Z
+        kind: question
     verdicts: []
     created_at: 2026-03-29T06:01:44.082Z
-    updated_at: 2026-03-29T06:02:06.896Z
+    updated_at: 2026-03-29T06:02:12.695Z
     notes: []
