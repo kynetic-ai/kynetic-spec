@@ -27706,7 +27706,7 @@ workspaces:
         head: 1377ddf5db42d1acc5b217e5c82bc24ac5281f4b
         last_seen_at: 2026-03-29T11:47:45.219Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ui-unwrap-envelope-01kmw68m
-  - active_role: worker
+  - active_role: null
     base_branch_point: c3a862f1be7f815e76a2a2efa8b18eb604926627
     bootstrap:
       status: succeeded
@@ -27790,12 +27790,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-29T12:05:34.113Z
+      updated_at: 2026-03-29T12:06:55.072Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-29T12:05:34.113Z
+      updated_at: 2026-03-29T12:06:55.072Z
     integration:
       status: pending
       detail: null
@@ -27803,17 +27803,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: c3a862f1be7f815e76a2a2efa8b18eb604926627
-      updated_at: 2026-03-29T12:05:34.113Z
-    lifecycle_state: active
+      updated_at: 2026-03-29T12:06:55.072Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMW68MFA3AFKAEQJS9M05J92"
     task_slug: task-ui-cache-warming-interceptor
     timestamps:
       closed_at: null
       last_active_at: 2026-03-29T11:54:47.911Z
-      last_reconciled_at: 2026-03-29T12:05:34.113Z
+      last_reconciled_at: 2026-03-29T12:06:55.072Z
       created_at: 2026-03-29T11:54:41.195Z
-      updated_at: 2026-03-29T12:05:34.113Z
+      updated_at: 2026-03-29T12:06:55.072Z
     workspace_id: dispatch-workspace-01KMW68MFA3AFKAEQJS9M05J92
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
