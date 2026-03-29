@@ -75253,6 +75253,16 @@ reviews:
         runner: npm-test
         created_at: 2026-03-29T00:58:32.114Z
         completed_at: 2026-03-29T00:58:32.114Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh passed: 1964 suites, 7063 passed, 5 skipped, 0 failures."
+        name: npm test -- --fresh
+        required: true
+        runner: npm-test
+        created_at: 2026-03-29T00:58:33.813Z
+        completed_at: 2026-03-29T00:58:33.813Z
     events:
       - _ulid: 01KMVHBZTTXN3A1D24G6KSTZQS
         actor: Test User
@@ -75274,6 +75284,13 @@ reviews:
           status: pass
           name: targeted daemon+reconciliation repro
         timestamp: 2026-03-29T00:58:32.623Z
+      - _ulid: 01KMVHK32RJEPYY38ERK596XNN
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test -- --fresh
+        timestamp: 2026-03-29T00:58:34.456Z
     examined_commit: 9b50c4d10bde1740c6515d9e8fc7aaa52f1c7e5f
     external_links: []
     lifecycle_state: open
@@ -75286,5 +75303,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-29T00:54:41.754Z
-    updated_at: 2026-03-29T00:58:32.114Z
+    updated_at: 2026-03-29T00:58:33.813Z
     notes: []
