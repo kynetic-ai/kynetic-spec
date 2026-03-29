@@ -79431,6 +79431,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-29T10:02:10.307Z
+      - _ulid: 01KMWGPHDCFYPDPZJ6MW1JZN8J
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMWGPGVAHMPVD4V5BTYJQZKJ
+        timestamp: 2026-03-29T10:02:13.292Z
     examined_commit: 107be4397478b42cab064d2afccd4750bbce812c
     external_links: []
     lifecycle_state: closed
@@ -79440,7 +79447,22 @@ reviews:
       content_hash: ""
       ref: "@01KMW68KWFR1SEWZWVQV1G93HP"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMWGPGVAHMPVD4V5BTYJQZKJ
+        entries:
+          - _ulid: 01KMWGPGVAKZQD9Z6KER8RKP4Q
+            author: Test User
+            body: "Evidence log: Files read: src/daemon/entity-cache.ts, packages/daemon/src/server.ts,
+              packages/daemon/src/websocket/pubsub.ts, tests/daemon-entity-cache.test.ts. Commands
+              run: kspec task get @01KMW68KWFR1SEWZWVQV1G93HP; kspec item get @daemon-entity-cache;
+              kspec validate; grep for AC annotations; kspec log @01KMW68KWFR1SEWZWVQV1G93HP; kspec
+              log @task-spec-update-entity-cache; npm test. Claims verified: the domain-ready
+              callback only fires on non-ready→ready transitions, and the WebSocket broadcast
+              payload delivered to subscribers includes both domain and projectPath. Categories
+              searched: correctness, edge cases, error handling, test quality, integration; no
+              blocking issues found in the submitted snapshot."
+            created_at: 2026-03-29T10:02:12.714Z
+        kind: nit
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -79450,5 +79472,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T10:02:10.306Z
     created_at: 2026-03-29T09:58:16.406Z
-    updated_at: 2026-03-29T10:02:10.306Z
+    updated_at: 2026-03-29T10:02:12.714Z
     notes: []
