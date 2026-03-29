@@ -80546,7 +80546,17 @@ reviews:
     slugs: []
     title: Review task-ui-cache-domain-ready-subscription
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 1994/1994 suites passed, 7200/7205 tests passed, 5 skipped. Elapsed 56m49s.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-29T12:31:50.113Z
+        completed_at: 2026-03-29T12:31:50.113Z
     events:
       - _ulid: 01KMWS0VTEQJ5GQT214QKQ02SB
         actor: Test User
@@ -80561,6 +80571,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-29T12:28:01.477Z
+      - _ulid: 01KMWS8GFBYM1QXRTH5E48SS9T
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-29T12:31:50.763Z
     examined_commit: 6423b512795c4cdc2ac7398f5c9bf73137a2b800
     external_links: []
     lifecycle_state: open
@@ -80573,5 +80590,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-29T12:27:40.239Z
-    updated_at: 2026-03-29T12:28:00.814Z
+    updated_at: 2026-03-29T12:31:50.113Z
     notes: []
