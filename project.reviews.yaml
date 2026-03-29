@@ -78994,6 +78994,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-29T09:30:56.246Z
+      - _ulid: 01KMWFMSTPNHN5QW7D4QQGF4J7
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMWEWHHX69DEQ23PZHC079Z6
+        timestamp: 2026-03-29T09:43:47.798Z
     examined_commit: 30b11d43a7c751c7b0f377892a3ad24a91974979
     external_links: []
     lifecycle_state: closed
@@ -79022,6 +79028,13 @@ reviews:
               should migrate to wrapResponse(), and session search is not in the excluded
               mutation/health/debug set.
             created_at: 2026-03-29T09:30:32.893Z
+          - _ulid: 01KMWFMS7SWRBWEWWTWJ1DRN8Q
+            author: "@claude"
+            body: "Fixed: Wrapped GET /api/sessions/search in wrapResponse() for both the empty-query early
+              return and the normal search result path. Updated the web UI fetchSessionSearch()
+              client function to unwrap envelope.data. Updated E2E mock in mockSearchRoute() and
+              api-sessions-search.spec.ts assertions to expect {data, meta} envelope shape."
+            created_at: 2026-03-29T09:43:47.193Z
         kind: blocker
       - _ulid: 01KMWEWKC3CZYX8HCY1JYFQGFW
         anchor:
@@ -79051,7 +79064,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T09:30:56.246Z
     created_at: 2026-03-29T09:22:31.567Z
-    updated_at: 2026-03-29T09:30:56.246Z
+    updated_at: 2026-03-29T09:43:47.193Z
     notes: []
   - _ulid: 01KMWF5DMYQEEV11M07H3AFH6C
     slugs: []
