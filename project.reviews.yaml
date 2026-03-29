@@ -77737,6 +77737,12 @@ reviews:
         payload:
           thread_ulid: 01KMW99ZFVPWDSZ044N8RGX6AP
         timestamp: 2026-03-29T08:08:20.353Z
+      - _ulid: 01KMWA651TG9T4HSAGK1V63QJN
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMW9AJ7R4EYPGPKFBXF1PF8K
+        timestamp: 2026-03-29T08:08:24.890Z
     examined_commit: 6943dad4b8203281f7a00c18ae29804ce34c559a
     external_links: []
     lifecycle_state: closed
@@ -77802,6 +77808,8 @@ reviews:
               the branch-linkage check failure."
             created_at: 2026-03-29T08:08:05.128Z
         kind: blocker
+        resolved_at: 2026-03-29T08:08:24.180Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -77811,7 +77819,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T07:53:32.358Z
     created_at: 2026-03-29T07:52:27.162Z
-    updated_at: 2026-03-29T08:08:19.694Z
+    updated_at: 2026-03-29T08:08:24.180Z
     notes: []
   - _ulid: 01KMW9VA09ZSY2YZ1TCYRRZHRV
     slugs: []
