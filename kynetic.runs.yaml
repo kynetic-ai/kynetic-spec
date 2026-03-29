@@ -18182,9 +18182,19 @@ runs:
     completed_at: 2026-03-29T07:22:07.133Z
   - _ulid: 01KMW97SX3R21TTYAY5S7R8BHC
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-03-29T07:51:50.435Z
+        completed_at: 2026-03-29T07:53:03.175Z
+        notes: "Gate check: spec-only fix cycle session, task resubmitted. One friction point identified and
+          captured."
+      - status: completed
+        step_index: 1
+        started_at: 2026-03-29T07:53:03.175Z
+        completed_at: 2026-03-29T07:53:03.175Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-29T07:51:50.435Z
