@@ -18379,7 +18379,7 @@ runs:
     completed_at: 2026-03-29T09:21:25.190Z
   - _ulid: 01KMWEZQDGBGF3MJV5MYA03471
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -18402,7 +18402,17 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-03-29T09:33:44.060Z
-        completed_at: 2026-03-29T09:33:44.060Z
+        completed_at: 2026-03-29T09:33:53.237Z
+        notes: "Decision matrix: (1) SUCCESS on reviewer tracing broadcast path — unique, high confidence,
+          systemic (applies to any cross-boundary callback wiring). CAPTURE as success observation.
+          (2) FRICTION needs_work→submit — SKIP, already tracked as 01KMNHAV. (3) PATTERN on testing
+          callback chains — this is a general testing principle already covered by work-gates skill
+          'Tests must exercise behavior, not inspect source code'. SKIP — already documented in
+          conventions."
+      - status: completed
+        step_index: 3
+        started_at: 2026-03-29T09:33:53.237Z
+        completed_at: 2026-03-29T09:33:53.237Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-29T09:32:17.200Z
