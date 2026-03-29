@@ -1,1 +1,20 @@
-notes: []
+notes:
+  - _ulid: 01KMW6XFC5NBFCRM249XDC0JS5
+    content: >-
+      Approach: This is a spec-only task — no code changes. Using kspec batch to:
+
+      1. Rewrite @trait-api-endpoint ac-4: remove shape prescription ({items, total, offset,
+      limit}), keep behavioral contract (accepts limit/offset params, response includes total count
+      and pagination params applied)
+
+      2. Rewrite @api-contract ac-4: same behavioral rewrite, endpoint-specific detail without shape
+
+      3. Add ac-envelope to @api-contract: normalized envelope for cache-serving endpoints
+
+      4. Add ac-cache-status-field to @api-contract: loading vs ready cache status in metadata
+
+
+      No tests needed — spec-only changes. Will verify via kspec item get after batch.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-29T07:11:14.821Z
