@@ -377,6 +377,11 @@ features:
               reload completes and the new data is swapped in — the domain never regresses to
               loading during a reload of already-populated data
             when: an API request arrives for data in that domain during the reload
+          - given: a cache domain transitions to ready state (from loading, degraded, or any non-ready state)
+            id: ac-domain-ready-event
+            then: a real-time event is broadcast to all connected clients identifying the domain and project
+              that became ready
+            when: the transition completes
         tags: []
         requirements:
           - _ulid: 01KMMB3S7MJZ9ZJKZT31QPM572
