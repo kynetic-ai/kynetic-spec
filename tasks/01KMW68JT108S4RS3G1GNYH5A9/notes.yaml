@@ -1,1 +1,9 @@
-notes: []
+notes:
+  - _ulid: 01KMW76ZK0XR40CPFR8E6YVER0
+    content: Added ac-domain-ready-event to @daemon-entity-cache. The AC covers broadcasting a real-time
+      event when a cache domain transitions to ready state, which is the prerequisite for the
+      WebSocket event task (@task-cache-domain-ready-ws-event). No code changes needed — this is a
+      spec-only update.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-29T07:16:26.336Z
