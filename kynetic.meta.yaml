@@ -9704,6 +9704,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-29T09:32:48.619Z
+  - _ulid: 01KMWF2WV5R985ECDZKGHWG5PV
+    type: success
+    content: "Review-driven integration testing: reviewer traced PubSubManager.broadcast() to prove the
+      4th arg (projectPath) is only a server-side filter, never serialized into BroadcastEvent. This
+      caught a real correctness bug that callback-level tests missed. Pattern: when callbacks cross
+      module boundaries (entity-cache → server → pubsub → websocket), the review process correctly
+      identifies that tests must verify the serialized output at the integration boundary, not just
+      the callback arguments."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-29T09:34:01.062Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
