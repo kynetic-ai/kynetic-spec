@@ -80959,6 +80959,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMWVFXGPKGKHGN2CZWWTHR3K
         timestamp: 2026-03-29T13:10:51.262Z
+      - _ulid: 01KMWVG00K1BTTFPP6HG11RFY0
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMWVFZC57P4TDY63RM5A2V0M
+        timestamp: 2026-03-29T13:10:53.203Z
     examined_commit: 7aa92989e9de97463c356afbe1d2bdcc7fc92274
     external_links: []
     lifecycle_state: open
@@ -80988,7 +80995,34 @@ reviews:
               sessions view states."
             created_at: 2026-03-29T13:10:50.646Z
         kind: blocker
+      - _ulid: 01KMWVFZC57P4TDY63RM5A2V0M
+        entries:
+          - _ulid: 01KMWVFZC6JJZWMGF3BMRJKZ13
+            author: Test User
+            body: "Review evidence log\\n\\nFiles read:
+              packages/web-ui/src/lib/components/CacheWarmingBanner.svelte;
+              packages/web-ui/src/routes/tasks/+page.svelte;
+              packages/web-ui/src/routes/tasks/board/+page.svelte;
+              packages/web-ui/src/routes/specs/+page.svelte;
+              packages/web-ui/src/routes/reviews/+page.svelte;
+              packages/web-ui/src/routes/sessions/+page.svelte;
+              packages/web-ui/src/routes/plans/+page.svelte;
+              packages/web-ui/src/routes/inbox/+page.svelte;
+              packages/web-ui/src/routes/triage/+page.svelte; packages/web-ui/src/lib/api.ts;
+              packages/web-ui/tests/cache-warming-view-states.test.ts;
+              packages/web-ui/tests/e2e/cache-warming-views.spec.ts.\\n\\nCommands run: git
+              diff/stat against 9b6b755..7aa9298; node dist/cli/index.js task get
+              @01KMW68MZ5Z281YD9Z87K2G55A; node dist/cli/index.js item get @ui-data-freshness; node
+              dist/cli/index.js review for-task @01KMW68MZ5Z281YD9Z87K2G55A; grep for AC annotations
+              in packages/web-ui/tests; node scripts/test.cjs --fresh --verbose (long-running suite
+              inspection).\\n\\nClaims verified: fetchSessionSearch can raise cache-warming errors
+              (existing API envelope tests); sessions route only derives warming state from
+              sessionsQuery.error; new E2E coverage exercises tasks and triage timeout flows, not
+              sessions search mode.\\n\\nCategories searched: correctness, edge cases, error
+              handling, test quality, integration."
+            created_at: 2026-03-29T13:10:52.550Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-29T13:09:59.966Z
-    updated_at: 2026-03-29T13:10:50.646Z
+    updated_at: 2026-03-29T13:10:52.550Z
     notes: []
