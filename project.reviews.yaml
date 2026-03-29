@@ -74839,6 +74839,18 @@ reviews:
         runner: npm
         created_at: 2026-03-29T00:05:09.341Z
         completed_at: 2026-03-29T00:05:09.341Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Failed in this snapshot after 3369.3s: 2 suites failed, 12 tests failed, all concentrated
+          in tests/daemon-command-api.test.ts with 500 responses on mutating routes and one
+          ENOENT-driven JSON parse failure."
+        name: npm test -- --fresh
+        required: true
+        runner: npm
+        created_at: 2026-03-29T00:06:37.699Z
+        completed_at: 2026-03-29T00:06:37.699Z
     events:
       - _ulid: 01KMVE4KYX889Q367QVTTDRQS5
         actor: Test User
@@ -74867,6 +74879,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMVEJYSG70M2AE8HNZ2SYSJQ
         timestamp: 2026-03-29T00:06:04.923Z
+      - _ulid: 01KMVEM01A7B98XB1JFNCTYNF5
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test -- --fresh
+        timestamp: 2026-03-29T00:06:38.378Z
     examined_commit: afd332b4c3b16543d6a80c9a905ac644ae07d3bd
     external_links: []
     lifecycle_state: open
@@ -74900,5 +74919,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-28T23:58:14.494Z
-    updated_at: 2026-03-29T00:06:04.337Z
+    updated_at: 2026-03-29T00:06:37.699Z
     notes: []
