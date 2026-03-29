@@ -146,7 +146,7 @@ description: >-
 spec_ref: "@scoped-dispatch-shadow-serialization"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -160,8 +160,8 @@ review_ref: "@01KMVF0BZ1CFC953MH2ZPTN6KS"
 submission_linkage:
   review_url: null
   branch: dev
-  captured_at: 2026-03-29T00:10:29.049Z
-  commit: 737fd3d275ed9010448597c1a3565a2761b7f9af
+  captured_at: 2026-03-29T01:08:34.802Z
+  commit: b96b655c4df22ae2b131068060475e55e6c41769
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
   upstream_ref: refs/heads/dev
@@ -489,8 +489,35 @@ history:
         previous: 2026-03-28T23:58:13.891Z
     command: task-start
     timestamp: 2026-03-29T01:08:31.411Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-03-29T01:08:34.802Z
+          commit: b96b655c4df22ae2b131068060475e55e6c41769
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous:
+          review_url: null
+          branch: dev
+          captured_at: 2026-03-29T00:10:29.049Z
+          commit: 737fd3d275ed9010448597c1a3565a2761b7f9af
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+      submitted_at:
+        new: 2026-03-29T01:08:34.806Z
+        previous: 2026-03-29T00:10:29.052Z
+    command: task-submit
+    timestamp: 2026-03-29T01:08:34.806Z
 created_at: 2026-03-28T23:29:06.748Z
 started_at: 2026-03-29T01:08:31.410Z
-submitted_at: 2026-03-29T00:10:29.052Z
+submitted_at: 2026-03-29T01:08:34.806Z
 todos: []
 automation: eligible
