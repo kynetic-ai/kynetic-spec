@@ -10,3 +10,27 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-29T11:57:48.659Z
+  - _ulid: 01KMWQRGYBFC8KJV7JS9F2Y3HS
+    content: >-
+      Implementation complete. Changes:
+
+
+      1. **client.ts**: Replaced static retry:1/retryDelay:1000 with callback functions.
+      CacheWarmingError gets 15 retries at 2s intervals (30s ceiling). Normal errors keep 1 retry at
+      1s. Exported CACHE_WARMING_MAX_RETRIES and CACHE_WARMING_RETRY_DELAY_MS constants.
+
+
+      2. **api.ts**: Added isCacheWarmingError() type guard for downstream view components to
+      distinguish warming state from other query errors (needed by @task-ui-warming-skeletons).
+
+
+      3. **query-client-retry.test.ts**: 14 behavioral tests covering retry callback (15x for
+      warming, 1x for normal), retryDelay callback (2s for warming, 1s for normal), 30s ceiling
+      math, error propagation at ceiling, CacheWarmingError properties, isCacheWarmingError type
+      guard, and preserved existing config.
+
+
+      Full test suite: 1989 suites, 7186 tests pass, 0 regressions.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-29T12:05:38.379Z
