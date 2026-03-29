@@ -76510,9 +76510,25 @@ reviews:
           status: pass
           name: Dependency ordering
         timestamp: 2026-03-29T06:37:16.772Z
+      - _ulid: 01KMW4ZHD4SQ4VA2AXPGNJBVCE
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-29T06:37:25.284Z
+      - _ulid: 01KMW4ZHD4NRD8G64BC65M42FV
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-29T06:37:25.284Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -76569,7 +76585,14 @@ reviews:
               registration/restart or otherwise explain the specific remaining failure mode."
             created_at: 2026-03-29T06:36:57.633Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-29T06:37:25.283Z
     created_at: 2026-03-29T06:36:16.234Z
-    updated_at: 2026-03-29T06:37:13.805Z
+    updated_at: 2026-03-29T06:37:25.284Z
     notes: []
