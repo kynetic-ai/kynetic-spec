@@ -9602,6 +9602,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-29T07:36:46.484Z
+  - _ulid: 01KMW99SEJHWSSZKZBGRB9CV64
+    type: friction
+    content: "Review gate applied npm-test check to a spec-only task (zero code changes). Pre-existing
+      flaky timeouts on dev caused a fix cycle that required only investigation and explanation, no
+      actual fixes. Consider: reviewer agents could skip test gates when the branch has no code diff
+      from the integration target."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-29T07:52:55.506Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
