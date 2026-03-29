@@ -30073,4 +30073,111 @@ plans:
     source_path: null
     created_at: 2026-03-29T23:13:42.585Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KMXY0K8QYV2JVT74S82TH0CE
+        content: >-
+          ## WIP Draft — E2E Test Suite Audit and Restructure
+
+
+          ### Problem
+
+
+          786 e2e tests, 469 pass, 316 fail. The suite hasn't been maintained as a whole —
+          individual specs were written but never run together. Three structural issues:
+
+
+          1. **242 API-only tests in Playwright** — these test HTTP contracts (status codes,
+          response shapes, filtering, pagination) but never touch a browser. They spin up a full
+          daemon + Chromium per test when they only need HTTP. These belong in vitest daemon
+          integration tests.
+
+
+          2. **316 stale UI tests** — primarily broken by the response envelope migration
+          (9272feb68) which changed API response structure. UI-level e2e tests were never updated.
+          Pages render structure but data sections are empty because queries get unexpected response
+          formats.
+
+
+          3. **Missing UI coverage** — the API-only tests mask gaps in actual UI testing. We have
+          242 tests proving the API works, but the actual browser-based tests for those same
+          features may be broken or missing.
+
+
+          ### Current State
+
+
+          | Category | Specs | Tests | Status |
+
+          |----------|-------|-------|--------|
+
+          | API-only (no browser) | 13 | 242 | Mostly passing (these are the bulk of the 469
+          passing) |
+
+          | Mixed (API + UI) | 8 | ~164 | Partially failing |
+
+          | UI-only | 23 | ~380 | Mostly failing |
+
+
+          ### API-Only Specs (13 files, 242 tests)
+
+
+          These test HTTP behavior via `request.get/post/patch/delete` — no `page.goto` or DOM
+          interaction:
+
+
+          - api-tasks (35), api-items (26), api-sessions-pagination (23), api-meta (23), api-inbox
+          (18), api-reviews-list (18), api-reviews-threads (17), api-aggregation (11), api-errors
+          (14), api-projects (10), api-agent-dispatch (9), api-server (8), api-sessions-legacy (7),
+          api-sessions-search (3)
+
+
+          **Only 2 have corresponding daemon unit tests** (api-agent-dispatch, api-server), and even
+          those are complementary — the daemon unit tests cover internal logic while the e2e specs
+          test HTTP contracts.
+
+
+          ### Investigation Needed
+
+
+          #### Phase 1: Move API-only tests to vitest daemon integration tests
+
+          - These are valuable tests — they verify HTTP contracts against a real daemon
+
+          - But they don't need Playwright/Chromium — just HTTP
+
+          - Could run as vitest integration tests using the daemon test helpers (or a lightweight
+          daemon harness)
+
+          - Question: Can we run a real Bun daemon from vitest, or do we need a different approach?
+
+
+          #### Phase 2: Audit failing UI tests
+
+          - Group failures by root cause (response envelope, missing testids, timing, stale
+          fixtures)
+
+          - Determine which are worth fixing vs which duplicate API coverage
+
+          - Identify genuine UI coverage gaps hidden by the API tests
+
+
+          #### Phase 3: Fix or purge
+
+          - Fix tests that cover real UI behavior
+
+          - Purge tests that are pure API contract tests better served by Phase 1
+
+          - Purge tests for removed/redesigned features
+
+
+          ### Open Questions
+
+
+          - What's the right test layer for HTTP contract testing? Vitest with a real daemon
+          subprocess? Or keep in Playwright but without browser (Playwright's APIRequestContext)?
+
+          - Should API contract tests use response snapshots or structural assertions?
+
+          - How do we prevent this drift from happening again? CI enforcement of full e2e suite?
+        author: "@claude"
+        created_at: 2026-03-29T23:14:08.791Z
