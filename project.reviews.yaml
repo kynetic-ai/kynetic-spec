@@ -78363,6 +78363,13 @@ reviews:
           status: skipped
           name: kspec-validate
         timestamp: 2026-03-29T08:55:43.504Z
+      - _ulid: 01KMWCX6DE6BPDMJC9CRJ3EQQV
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMWCX5GT5H5M4K9Z8Q30NK9C
+        timestamp: 2026-03-29T08:55:57.102Z
     examined_commit: d362c71d16d2916574e317b78a38a94f5f062b94
     external_links: []
     lifecycle_state: open
@@ -78391,7 +78398,19 @@ reviews:
               event when a domain becomes ready, so the AC remains unmet."
             created_at: 2026-03-29T08:55:29.821Z
         kind: blocker
+      - _ulid: 01KMWCX5GT5H5M4K9Z8Q30NK9C
+        entries:
+          - _ulid: 01KMWCX5GTZWXWFR7040MY4B08
+            author: Test User
+            body: "Evidence log: Files read: src/daemon/entity-cache.ts, tests/daemon-entity-cache.test.ts,
+              prior review @01KMWABZ, task/spec context via kspec task get. Commands run: git diff
+              6943dad..d362c71, git show --stat d362c71, kspec validate, grep for AC annotations
+              under tests/, rg for ac-domain-ready-event and broadcast wiring under src/tests, npm
+              test. Categories checked: correctness/spec alignment, test quality, integration
+              wiring, regression coverage."
+            created_at: 2026-03-29T08:55:56.186Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-29T08:51:15.379Z
-    updated_at: 2026-03-29T08:55:42.500Z
+    updated_at: 2026-03-29T08:55:56.186Z
     notes: []
