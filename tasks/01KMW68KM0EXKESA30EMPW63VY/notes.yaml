@@ -47,3 +47,13 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-29T09:04:06.470Z
+  - _ulid: 01KMWE90M0KYE0DEXY5A9EQS2J
+    content: "Fix cycle 2: Addressed blocker — GET /api/validate was still returning raw
+      ValidationResult object instead of wrapping in wrapResponse(). Wrapped it in wrapResponse() to
+      match all other GET endpoints. Verified all other route handlers already use the envelope. All
+      envelope/validate-related tests pass (532 tests). 8 pre-existing failures in
+      enhanced-setup.test.ts and native-guard-setup.test.ts are unrelated (kspec setup native guard
+      migration)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-29T09:19:52.960Z
