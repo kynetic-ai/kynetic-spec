@@ -28094,7 +28094,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-29T12:49:18.034Z
+      updated_at: 2026-03-29T12:49:20.045Z
     integration:
       status: pending
       detail: null
@@ -28103,25 +28103,20 @@ workspaces:
       target_branch: dev
       target_commit: 9b6b755439cc00d3bfe911f7974077e6942c6de5
       updated_at: 2026-03-29T12:49:18.034Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMW68MZ5Z281YD9Z87K2G55A"
     task_slug: task-ui-warming-skeletons
     timestamps:
       closed_at: null
       last_active_at: 2026-03-29T12:44:01.198Z
-      last_reconciled_at: 2026-03-29T12:49:18.034Z
+      last_reconciled_at: 2026-03-29T12:49:20.045Z
       created_at: 2026-03-29T12:26:53.472Z
-      updated_at: 2026-03-29T12:49:18.034Z
+      updated_at: 2026-03-29T12:49:20.045Z
     workspace_id: dispatch-workspace-01KMW68MZ5Z281YD9Z87K2G55A
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 25f80a8785149c5266bda75c4441abc7057a00bd
-        last_seen_at: 2026-03-29T12:43:53.949Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ui-warming-skeletons-01kmw68m-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-ui-warming-skeletons/01kmw68m
