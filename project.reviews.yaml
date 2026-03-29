@@ -80308,7 +80308,18 @@ reviews:
     slugs: []
     title: Review task-ui-unwrap-envelope (cycle 2)
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed via test-runner cache for current repo state: 1981/1981 suites passed, 7172/7177
+          tests passed, 5 skipped."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-29T11:53:15.292Z
+        completed_at: 2026-03-29T11:53:15.292Z
     events:
       - _ulid: 01KMWPYBGHTNYDKSSVDY4K02J2
         actor: Test User
@@ -80323,6 +80334,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-29T11:51:36.213Z
+      - _ulid: 01KMWQ1VX0GFYZW7PN1KPY95JT
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-29T11:53:15.937Z
     examined_commit: 1377ddf5db42d1acc5b217e5c82bc24ac5281f4b
     external_links: []
     lifecycle_state: open
@@ -80335,5 +80353,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-29T11:51:20.850Z
-    updated_at: 2026-03-29T11:51:35.205Z
+    updated_at: 2026-03-29T11:53:15.292Z
     notes: []
