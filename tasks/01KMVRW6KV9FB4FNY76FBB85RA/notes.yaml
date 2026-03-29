@@ -1,1 +1,47 @@
-notes: []
+notes:
+  - _ulid: 01KMVSDDRKPPFKEB2PWP74Y4D1
+    content: >-
+      Approach: AC-14 implementation for purging unrecoverable workspace records.
+
+
+      Problem: _workspaceCandidateHealth in dispatch.ts has no path for non-terminal tasks with
+      existing but unrecoverable (health.status=invalid) workspace records. The record blocks fresh
+      provisioning indefinitely.
+
+
+      Plan:
+
+      1. Add deleteDispatchWorkspaceRecord() in src/parser/dispatch-workspaces.ts — removes a
+      workspace record by workspace_id atomically within the file lock, following the same raw YAML
+      preservation pattern as save/mutate.
+
+
+      2. Modify _workspaceCandidateHealth in dispatch.ts:
+         - After determining a workspace exists but is unhealthy (eligible=false, exists=true)
+         - Check if the health reason indicates an unrecoverable state (health.status=invalid => missing_canonical_branch or missing_adopted_branch)
+         - Check that the task is non-terminal (not completed/cancelled)
+         - If both conditions met: purge the stale record via deleteDispatchWorkspaceRecord
+         - Return {eligible: false, exists: false, reason: null} so the task becomes eligible on the NEXT cycle
+         - This applies for ALL non-terminal tasks, not just resumable ones (the discovery fallback already handles resumable states)
+
+      3. The fix targets the gap between detection and resolution: ac-5 already detects the
+      unhealthy state, this work closes the gap by purging the stale record.
+
+
+      Edge cases:
+
+      - Resumable tasks (in_progress/pending_review/needs_work) already go through discovery first.
+      If discovery fails AND record is unrecoverable, same purge should apply.
+
+      - Non-resumable tasks (pending via task.ready) with unrecoverable workspaces get purged
+      directly.
+
+      - Terminal tasks are excluded (they should proceed to cleanup, not re-provisioning).
+
+
+      Test plan: 5+ tests covering ac-14 scenarios — non-terminal with invalid health gets purged,
+      terminal tasks are NOT purged, stale-but-not-invalid records are NOT purged, resumable tasks
+      with failed discovery AND invalid health get purged, fresh provisioning succeeds after purge.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-29T03:15:17.395Z
