@@ -8,3 +8,10 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-29T12:18:06.084Z
+  - _ulid: 01KMWRTXT2XQ9B8WQFMC23TFRX
+    content: "Implementation complete. Added cache:status to INVALIDATION_TOPICS and domain_ready->query
+      key mapping via DOMAIN_QUERY_KEY_MAP. All 8 daemon cache domains mapped. 14 new behavioral
+      tests (subscription, all domain mappings, edge cases). Full suite: 7200 pass, 5 skip, 0 fail."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-29T12:24:25.666Z
