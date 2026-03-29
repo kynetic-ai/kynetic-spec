@@ -1,1 +1,29 @@
-notes: []
+notes:
+  - _ulid: 01KMWG5ZH0GPG4HFH22D7SSY6T
+    content: >-
+      Implementation verified complete across 4 prior commits on this branch:
+
+
+      1. **DomainReadyCallback type** (entity-cache.ts:319-323) — callback receives domain,
+      projectPath, previousState
+
+      2. **EntityCache constructor** accepts optional onDomainReady callback (entity-cache.ts:550)
+
+      3. **Callback invocation** in loadDomain (entity-cache.ts:888-893) — only fires when
+      previousState !== 'ready', correctly excluding ready→ready reloads (ac-stale-during-reload)
+
+      4. **registerEntityCache** passes callback through (entity-cache.ts:1374-1388)
+
+      5. **server.ts wiring** (packages/daemon/src/server.ts:276-296) — onProjectRegistered creates
+      the callback that broadcasts on topic='cache:status', event='domain_ready' with payload
+      {domain, projectPath, previousState, timestamp}
+
+      6. **5 tests** cover: unloaded→ready, degraded→ready, integration with PubSubManager (full WS
+      message verification), no-fire on ready→ready reload, and registerEntityCache wiring
+
+
+      Full test suite passes: 7128/7128 (5 CI-only skipped). No new code changes needed — verified
+      existing implementation satisfies ac-domain-ready-event.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-29T09:53:10.689Z
