@@ -74946,6 +74946,12 @@ reviews:
         payload:
           thread_ulid: 01KMVENNKQ6BN3G50126AK2P83
         timestamp: 2026-03-29T00:51:23.032Z
+      - _ulid: 01KMVH63ZP77R5P3KGF04AVEJ9
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMVENNKQ6BN3G50126AK2P83
+        timestamp: 2026-03-29T00:51:29.398Z
     examined_commit: afd332b4c3b16543d6a80c9a905ac644ae07d3bd
     external_links: []
     lifecycle_state: closed
@@ -75041,6 +75047,8 @@ reviews:
               this branch's workspace reconciliation changes.
             created_at: 2026-03-29T00:51:22.501Z
         kind: nit
+        resolved_at: 2026-03-29T00:51:28.896Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -75050,7 +75058,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T00:07:44.039Z
     created_at: 2026-03-28T23:58:14.494Z
-    updated_at: 2026-03-29T00:51:22.501Z
+    updated_at: 2026-03-29T00:51:28.896Z
     notes: []
   - _ulid: 01KMVF0BZ1CFC953MH2ZPTN6KS
     slugs: []
