@@ -26737,12 +26737,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-29T03:39:40.990Z
+      updated_at: 2026-03-29T03:39:45.990Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-29T03:39:43.132Z
+      updated_at: 2026-03-29T03:39:45.990Z
     integration:
       status: pending
       detail: null
@@ -26750,24 +26750,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 6e86281bb6f7af2c9307f20593ccbd80df68dcd1
-      updated_at: 2026-03-29T03:39:40.990Z
-    lifecycle_state: ready
+      updated_at: 2026-03-29T03:39:45.990Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KMVRW6KV9FB4FNY76FBB85RA"
     task_slug: purge-unrecoverable-workspace-records-so-non-terminal-tasks-can-be-re-provisioned
     timestamps:
       closed_at: null
       last_active_at: 2026-03-29T03:39:39.273Z
-      last_reconciled_at: 2026-03-29T03:39:43.132Z
+      last_reconciled_at: 2026-03-29T03:39:45.990Z
       created_at: 2026-03-29T03:10:25.408Z
-      updated_at: 2026-03-29T03:39:43.132Z
+      updated_at: 2026-03-29T03:39:45.990Z
     workspace_id: dispatch-workspace-01KMVRW6KV9FB4FNY76FBB85RA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 2529f7659365ae1d9a7dbba2c6f35edf93d2d222
+        last_seen_at: 2026-03-29T03:39:45.990Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/purge-unrecoverable-workspace-records-so-non-terminal-tasks-can-be-re-provisioned-01kmvrw6-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/purge-unrecoverable-workspace-records-so-non-terminal-tasks-can-be-re-provisioned/01kmvrw6
         head: 2529f7659365ae1d9a7dbba2c6f35edf93d2d222
-        last_seen_at: 2026-03-29T03:38:50.250Z
+        last_seen_at: 2026-03-29T03:39:45.990Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/purge-unrecoverable-workspace-records-so-non-terminal-tasks-can-be-re-provisioned-01kmvrw6
