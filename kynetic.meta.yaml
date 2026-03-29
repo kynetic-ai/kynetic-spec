@@ -9823,6 +9823,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-29T11:24:56.003Z
+  - _ulid: 01KMWP140BGQ593B4HQ2A5QZ9W
+    type: friction
+    content: "Review comments and check evidence that include backticks or brace-heavy payload examples
+      are fragile to enter through the CLI because shell interpolation can execute parts of the body
+      before kspec receives it. Session evidence: posting review findings with inline examples like
+      {data, meta} and unwrap*Envelope(...) triggered shell substitution errors and required
+      retrying with safer quoting. Improvement direction: support --body-file/--evidence-file or
+      stdin for kspec review comment/check commands so agents can pass literal multi-line content
+      safely."
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-29T11:35:22.891Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
