@@ -27845,7 +27845,7 @@ workspaces:
         head: 4ccb779f2f2c8a4cc6b34c8e6ae78520fc1d5120
         last_seen_at: 2026-03-29T12:06:58.068Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ui-cache-warming-interceptor-01kmw68m
-  - active_role: worker
+  - active_role: null
     base_branch_point: 9b6b755439cc00d3bfe911f7974077e6942c6de5
     bootstrap:
       status: succeeded
@@ -27929,12 +27929,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-29T12:24:34.529Z
+      updated_at: 2026-03-29T12:26:39.799Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-29T12:24:34.529Z
+      updated_at: 2026-03-29T12:26:39.799Z
     integration:
       status: pending
       detail: null
@@ -27942,17 +27942,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 9b6b755439cc00d3bfe911f7974077e6942c6de5
-      updated_at: 2026-03-29T12:24:34.529Z
-    lifecycle_state: active
+      updated_at: 2026-03-29T12:26:39.799Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMW68MQ3V3C5PF4NXKB1PAG1"
     task_slug: task-ui-cache-domain-ready-subscription
     timestamps:
       closed_at: null
       last_active_at: 2026-03-29T12:12:47.605Z
-      last_reconciled_at: 2026-03-29T12:24:34.529Z
+      last_reconciled_at: 2026-03-29T12:26:39.799Z
       created_at: 2026-03-29T12:12:41.145Z
-      updated_at: 2026-03-29T12:24:34.529Z
+      updated_at: 2026-03-29T12:26:39.799Z
     workspace_id: dispatch-workspace-01KMW68MQ3V3C5PF4NXKB1PAG1
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
