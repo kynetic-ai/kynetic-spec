@@ -18588,7 +18588,7 @@ runs:
     completed_at: 2026-03-29T10:19:37.730Z
   - _ulid: 01KMWRVZ7Z1X9AK8ETSN6KM9JD
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -18605,7 +18605,20 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-29T12:25:18.959Z
-        completed_at: 2026-03-29T12:25:18.959Z
+        completed_at: 2026-03-29T12:26:06.089Z
+        notes: "Friction: (1) kspec binary not on PATH in worktree — had to run 'node scripts/bootstrap.cjs'
+          to get it available. The dispatch context reported 'workspace-dependencies-missing' but
+          the agent had to discover the fix by trial and error (tried ./node_modules/.bin/kspec, npx
+          kspec, etc before finding bootstrap.cjs). This is a repeatable pattern for every worktree
+          session. SEARCH: task @01KGHFM9 exists (completed) for bootstrap script, so the bootstrap
+          mechanism exists — the friction is that agents waste turns discovering kspec isn't on PATH
+          before remembering to bootstrap. Already tracked, no new item needed. Success:
+          ws-invalidation module's clean additive architecture made this task straightforward — new
+          topic, new case, new map, done."
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-29T12:26:06.089Z
+        completed_at: 2026-03-29T12:26:06.089Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-29T12:24:59.904Z
