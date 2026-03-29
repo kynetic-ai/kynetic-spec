@@ -76723,3 +76723,29 @@ reviews:
     created_at: 2026-03-29T06:55:22.417Z
     updated_at: 2026-03-29T06:55:51.385Z
     notes: []
+  - _ulid: 01KMW6X167ZKF5SNBZWYJF5AHT
+    slugs: []
+    title: Review task-spec-update-data-freshness
+    author: Test User
+    checks: []
+    events:
+      - _ulid: 01KMW6X1666C5R6ANT2RCJAJEA
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-29T07:11:00.294Z
+    examined_commit: 6943dad4b8203281f7a00c18ae29804ce34c559a
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMW68K2PP8BX24XEPK4XS9W5"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-29T07:11:00.295Z
+    updated_at: null
+    notes: []
