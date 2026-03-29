@@ -9571,6 +9571,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-29T07:16:15.157Z
+  - _ulid: 01KMW7GKSAZBQD8YCKFY33S5R8
+    type: friction
+    content: "Detached reviewer worktrees cannot switch to the integration branch when that branch is
+      already checked out in the primary worktree. Review instructions currently say to merge by
+      switching to the target branch, but in this session git returned 'dev is already used by
+      worktree'. Review/merge guidance should document the detached-reviewer path: if the task
+      branch already matches the target, treat merge as a verified no-op; otherwise run the merge
+      from the primary worktree or another worktree that can own the target branch."
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-29T07:21:41.930Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
