@@ -35,7 +35,7 @@ tags:
   - spec
   - daemon
 vcs_refs: []
-review_ref: "@01KMW7WCN63HJFS0RHGB10VTB8"
+review_ref: "@01KMW98XRTT4HY7VYPQV17ZR1E"
 submission_linkage:
   review_url: null
   branch: dev
@@ -143,6 +143,13 @@ history:
         previous: 2026-03-29T07:16:27.110Z
     command: task-submit
     timestamp: 2026-03-29T07:51:21.486Z
+  - author: Test User
+    changes:
+      review_ref:
+        new: "@01KMW98XRTT4HY7VYPQV17ZR1E"
+        previous: "@01KMW7WCN63HJFS0RHGB10VTB8"
+    command: review-link
+    timestamp: 2026-03-29T07:52:29.133Z
 created_at: 2026-03-29T06:59:50.209Z
 started_at: 2026-03-29T07:51:18.512Z
 submitted_at: 2026-03-29T07:51:21.485Z
