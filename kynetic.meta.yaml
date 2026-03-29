@@ -9877,6 +9877,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-29T12:43:32.297Z
+  - _ulid: 01KMWT80KSSBEQ75KWDRS6VT56
+    type: friction
+    content: Detached review snapshots can be prepared with no runnable kspec CLI on PATH and no built
+      dist/cli, while the tsx CLI path fails against split storage ('No storage backend registered
+      for format split'). Reviewers have to discover and trigger a build indirectly before they can
+      run task/review/validate commands. Either ship review snapshots with a ready CLI or make the
+      source CLI initialize the same storage backends as dist.
+    author: codex
+    resolution: null
+    resolved: false
+    created_at: 2026-03-29T12:49:03.097Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
