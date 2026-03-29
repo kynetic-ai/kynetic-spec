@@ -80005,3 +80005,29 @@ reviews:
     created_at: 2026-03-29T10:58:24.423Z
     updated_at: 2026-03-29T11:02:09.216Z
     notes: []
+  - _ulid: 01KMWNV2449H74FD45644Q47XS
+    slugs: []
+    title: Review task-ui-unwrap-envelope
+    author: Test User
+    checks: []
+    events:
+      - _ulid: 01KMWNV243B861E5NVJRERYFF9
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-29T11:32:04.356Z
+    examined_commit: cd80c3aca1b13a308b92ccc43fcd539a84e62692
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMW68M6EEC48D7WFTP623BHG"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-29T11:32:04.356Z
+    updated_at: null
+    notes: []
