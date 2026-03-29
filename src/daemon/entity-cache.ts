@@ -25,6 +25,7 @@
  * - @daemon-entity-cache ac-warming-availability
  * - @daemon-entity-cache ac-progressive-loading
  * - @daemon-entity-cache ac-stale-during-reload
+ * - @daemon-entity-cache ac-domain-ready-event
  */
 
 import { relative } from "path";
@@ -311,6 +312,16 @@ export interface SessionCacheConfig {
   maxIndexSize: number;
 }
 
+/**
+ * Callback invoked when a cache domain transitions to ready state.
+ * AC: @daemon-entity-cache ac-domain-ready-event
+ */
+export type DomainReadyCallback = (
+  domain: CacheDomain,
+  projectPath: string,
+  previousState: DomainState,
+) => void;
+
 const DEFAULT_SESSION_CACHE_CONFIG: SessionCacheConfig = {
   maxIndexSize: 100,
 };
@@ -527,9 +538,20 @@ export class ProjectEntityCache {
   /** Whether dispose() has been called. */
   private disposed = false;
 
-  constructor(projectPath: string, sessionConfig?: Partial<SessionCacheConfig>) {
+  /**
+   * Optional callback for domain-ready transitions.
+   * AC: @daemon-entity-cache ac-domain-ready-event
+   */
+  private onDomainReady?: DomainReadyCallback;
+
+  constructor(
+    projectPath: string,
+    sessionConfig?: Partial<SessionCacheConfig>,
+    onDomainReady?: DomainReadyCallback,
+  ) {
     this.projectPath = projectPath;
     this.sessionConfig = { ...DEFAULT_SESSION_CACHE_CONFIG, ...sessionConfig };
+    this.onDomainReady = onDomainReady;
   }
 
   // ─── Public Query API ────────────────────────────────────────────────────
@@ -830,6 +852,7 @@ export class ProjectEntityCache {
    * AC: @daemon-entity-cache ac-graceful-degradation — errors mark domain degraded
    * AC: @daemon-entity-cache ac-reload-dedup — in-flight promise dedup
    * AC: @daemon-entity-cache ac-stale-during-reload — ready domains stay ready during reload
+   * AC: @daemon-entity-cache ac-domain-ready-event — broadcast on non-ready → ready transition
    */
   async loadDomain(domain: CacheDomain): Promise<void> {
     if (this.disposed) return;
@@ -842,6 +865,10 @@ export class ProjectEntityCache {
     }
 
     const store = this.getStore(domain);
+
+    // AC: @daemon-entity-cache ac-domain-ready-event — capture state before
+    // transition so we can detect non-ready → ready and fire the callback.
+    const previousState = store.state;
 
     // AC: @daemon-entity-cache ac-stale-during-reload — only transition to
     // "loading" for initial loads. When a domain is already "ready", keep it
@@ -857,6 +884,13 @@ export class ProjectEntityCache {
         if (!this.disposed) {
           store.state = "ready";
           store.lastError = undefined;
+
+          // AC: @daemon-entity-cache ac-domain-ready-event — only fire when
+          // transitioning FROM a non-ready state. Reloads of already-ready
+          // domains (ac-stale-during-reload) do not trigger the event.
+          if (previousState !== "ready" && this.onDomainReady) {
+            this.onDomainReady(domain, this.projectPath, previousState);
+          }
         }
       })
       .catch((err) => {
@@ -1340,6 +1374,7 @@ export function getEntityCache(projectPath: string): ProjectEntityCache | null {
 export function registerEntityCache(
   projectPath: string,
   sessionConfig?: Partial<SessionCacheConfig>,
+  onDomainReady?: DomainReadyCallback,
 ): ProjectEntityCache {
   // Reuse existing cache if already registered
   const existing = cacheRegistry.get(projectPath);
@@ -1347,7 +1382,7 @@ export function registerEntityCache(
     return existing;
   }
 
-  const cache = new ProjectEntityCache(projectPath, sessionConfig);
+  const cache = new ProjectEntityCache(projectPath, sessionConfig, onDomainReady);
   cacheRegistry.set(projectPath, cache);
   return cache;
 }

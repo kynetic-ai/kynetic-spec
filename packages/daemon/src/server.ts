@@ -277,7 +277,19 @@ export async function createServer(options: ServerOptions) {
   const onProjectRegistered = async (projectPath: string) => {
     await startSessionSyncForProject(projectPath, pubsubManager);
     // AC: @daemon-entity-cache ac-load-on-register — create cache and start progressive loading
-    const entityCache = entityCacheModule.registerEntityCache(projectPath);
+    // AC: @daemon-entity-cache ac-domain-ready-event — wire domain-ready transitions to WebSocket broadcast
+    const entityCache = entityCacheModule.registerEntityCache(
+      projectPath,
+      undefined,
+      (domain, cachePath, previousState) => {
+        pubsubManager.broadcast(
+          "cache:status",
+          "domain_ready",
+          { domain, projectPath: cachePath, previousState, timestamp: new Date().toISOString() },
+          cachePath,
+        );
+      },
+    );
     entityCache.loadAll().catch((err: unknown) => {
       console.error(`[entity-cache] Error during initial load for ${projectPath}:`, err);
     });
