@@ -18090,7 +18090,7 @@ runs:
     completed_at: 2026-03-29T01:10:42.169Z
   - _ulid: 01KMW71D9H7B8GPDRVH7HS761S
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -18103,7 +18103,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-29T07:13:40.383Z
-        completed_at: 2026-03-29T07:13:40.383Z
+        completed_at: 2026-03-29T07:14:15.166Z
+        notes: Searched existing state. Found observation 01KMR8TS already tracking 'spec-only tasks with
+          clear scope' pattern. No batch-related friction observations found. Recent friction
+          observations cover dispatch review snapshots and validate noisiness — unrelated to this
+          session.
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-29T07:14:15.166Z
+        completed_at: 2026-03-29T07:14:15.166Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-29T07:13:23.761Z
