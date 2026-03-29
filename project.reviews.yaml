@@ -75754,6 +75754,25 @@ reviews:
         runner: npm
         created_at: 2026-03-29T03:47:16.006Z
         completed_at: 2026-03-29T03:47:16.006Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/agent-runtime/dispatch.ts, src/parser/dispatch-workspaces.ts,
+          src/agent-runtime/workspace.ts, tests/dispatch-workspace-unrecoverable-purge.test.ts,
+          tests/dispatch-workspace-registry.test.ts. Commands run: git diff 6e86281bb..2529f7659,
+          kspec task get @01KMVRW6KV9FB4FNY76FBB85RA, kspec item get @dispatch-workspace-registry,
+          grep AC annotations, kspec validate, npm run build, npm test -- --fresh
+          tests/dispatch-workspace-unrecoverable-purge.test.ts. Claims verified: the new purge path
+          exists and targeted tests pass; shadow-runtime durability is not covered. Categories
+          searched: correctness (found blocker), edge cases (checked terminal/stale cases), error
+          handling (checked idempotent delete path), integration (found shadow durability gap), test
+          quality (found missing shadow-backed coverage)."
+        name: review-evidence
+        required: false
+        runner: manual
+        created_at: 2026-03-29T03:47:17.029Z
+        completed_at: 2026-03-29T03:47:17.029Z
     events:
       - _ulid: 01KMVTX0SKFQNBMJ1MHBGJJXWA
         actor: Test User
@@ -75775,6 +75794,13 @@ reviews:
           status: pass
           name: targeted-regression
         timestamp: 2026-03-29T03:47:16.776Z
+      - _ulid: 01KMVV819ZKM1XM9ERA5BSRH1Z
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-03-29T03:47:17.951Z
     examined_commit: 2529f7659365ae1d9a7dbba2c6f35edf93d2d222
     external_links: []
     lifecycle_state: open
@@ -75787,5 +75813,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-29T03:41:16.980Z
-    updated_at: 2026-03-29T03:47:16.006Z
+    updated_at: 2026-03-29T03:47:17.029Z
     notes: []
