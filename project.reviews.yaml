@@ -79224,7 +79224,19 @@ reviews:
     slugs: []
     title: Review task-migrate-route-handlers-envelope (cycle 4)
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed in review workspace: 1973/1973 suites, 7123 passed, 5 skipped, 7128 total.
+          Duration 3458.1s. Log:
+          /tmp/kspec-test-cache/01KMWFRMWEZYHQM8RCF0TGM4TY/063e20032bf0dfbf.log"
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-29T09:54:11.381Z
+        completed_at: 2026-03-29T09:54:11.381Z
     events:
       - _ulid: 01KMWFT26SDF8C42VZP943HXTW
         actor: Test User
@@ -79246,6 +79258,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMWG7S1X6DY1NJDR7RJNCZMD
         timestamp: 2026-03-29T09:54:10.231Z
+      - _ulid: 01KMWG7VH48XGWBSNA5N4X53YP
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-29T09:54:12.132Z
     examined_commit: dfd20ae3709b032ac181cf04488b97e11b82d689
     external_links: []
     lifecycle_state: open
@@ -79287,5 +79306,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-29T09:46:40.217Z
-    updated_at: 2026-03-29T09:54:09.597Z
+    updated_at: 2026-03-29T09:54:11.381Z
     notes: []
