@@ -81255,6 +81255,17 @@ reviews:
         runner: vitest
         created_at: 2026-03-29T13:34:28.465Z
         completed_at: 2026-03-29T13:34:28.465Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: node dist/cli/index.js validate exited 6 with warnings only; no schema/reference errors
+          attributable to this task.
+        name: validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-29T13:34:30.349Z
+        completed_at: 2026-03-29T13:34:30.349Z
     events:
       - _ulid: 01KMWWEB3GM07MRSRXCAY81V3B
         actor: Test User
@@ -81283,6 +81294,13 @@ reviews:
           status: pass
           name: web-ui targeted tests
         timestamp: 2026-03-29T13:34:29.048Z
+      - _ulid: 01KMWWV8HDQ1BSSV02A7CCF4B1
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: validate
+        timestamp: 2026-03-29T13:34:30.957Z
     examined_commit: 65b9cc87bfebad12330eaec3b14f345459cc8f92
     external_links: []
     lifecycle_state: open
@@ -81343,5 +81361,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-29T13:27:27.601Z
-    updated_at: 2026-03-29T13:34:28.465Z
+    updated_at: 2026-03-29T13:34:30.349Z
     notes: []
