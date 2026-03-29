@@ -18301,7 +18301,7 @@ runs:
     completed_at: 2026-03-29T08:36:24.543Z
   - _ulid: 01KMWDMVA31YJDTB4Z2GAZRH57
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -18324,7 +18324,15 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-03-29T09:10:32.608Z
-        completed_at: 2026-03-29T09:10:32.608Z
+        completed_at: 2026-03-29T09:10:40.676Z
+        notes: "Decision: (1) Scope creep friction — SKIP, already tracked by observation 01KMBB81. (2)
+          Explore-agent-first success — this is a one-off observation from a single session, not yet
+          a confirmed systemic pattern. Skipping per high-confidence criteria. Better to observe if
+          this repeats across more sessions before capturing."
+      - status: completed
+        step_index: 3
+        started_at: 2026-03-29T09:10:40.676Z
+        completed_at: 2026-03-29T09:10:40.676Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-29T09:08:52.163Z
