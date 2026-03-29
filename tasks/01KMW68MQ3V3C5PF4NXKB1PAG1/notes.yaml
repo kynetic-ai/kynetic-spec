@@ -1,1 +1,10 @@
-notes: []
+notes:
+  - _ulid: 01KMWRFB441FAPKWR1JAEVTTRM
+    content: "Approach: Add cache:status to INVALIDATION_TOPICS in ws-invalidation.ts. Map domain_ready
+      events domain field to query keys. Domain mapping: tasks->tasks.all, items->items.all,
+      inbox->inbox.all, triage->inbox.all, reviews->reviews.all, plans->plans.all,
+      sessions->sessions.all, meta->settings+workflows+observations+automation+sessionContext. Write
+      unit tests for all domain mappings."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-29T12:18:06.084Z
