@@ -75033,6 +75033,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMVF1RDP5AKAQ1K4J3412149
         timestamp: 2026-03-29T00:14:10.313Z
+      - _ulid: 01KMVF3HGNNCEE0GH2TEVR3M6H
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMVF3GY3ZKGQNK6T34PJBQZY
+        timestamp: 2026-03-29T00:15:07.797Z
     examined_commit: 6c58d673bad68d70fee52aa770d4792602926229
     external_links: []
     lifecycle_state: open
@@ -75100,7 +75107,23 @@ reviews:
               this change, missing coverage here is a must-fix.
             created_at: 2026-03-29T00:14:09.335Z
         kind: blocker
+      - _ulid: 01KMVF3GY3ZKGQNK6T34PJBQZY
+        entries:
+          - _ulid: 01KMVF3GY3NVT2GFKRV7N5MTC6
+            author: Test User
+            body: "Evidence log: Files read: src/parser/file-lock.ts, src/agent-runtime/workspace.ts,
+              tests/file-lock.test.ts, tests/dispatch-shadow-mutation-lock.test.ts,
+              tests/dispatch-workspace-registry.test.ts. Commands run: git diff 737fd3d...HEAD,
+              kspec task get @01KMVCF95W6HCCPP6H5SSA7HBG, kspec item get
+              @scoped-dispatch-shadow-serialization, kspec validate, rg AC annotations in tests, rg
+              acquireFileLock/withDispatchShadowMutationLock call sites, local git reproduction
+              showing staged changes survive 'git checkout -- .', npm test. Categories searched:
+              correctness, edge cases, error handling, test quality, integration. Claims verified:
+              staged-index behavior after checkout, AC annotation presence, changed call sites using
+              the shared lock wrapper."
+            created_at: 2026-03-29T00:15:07.203Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-29T00:13:23.809Z
-    updated_at: 2026-03-29T00:14:09.335Z
+    updated_at: 2026-03-29T00:15:07.203Z
     notes: []
