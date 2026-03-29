@@ -630,17 +630,22 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-28T22:19:01.274Z
+      updated_at: 2026-03-29T00:09:49.987Z
     health:
-      status: stale
+      status: invalid
       issues:
+        - code: missing_canonical_branch
+          message: Canonical branch
+            "dispatch/task/durably-shadow-commit-dispatch-workspace-registry-writes/01kkjt2v" is
+            missing.
+          suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
           message: Worker worktree
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/durably-shadow-commit-dispatch-workspace-registry-writes-01kkjt2v"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      summary: Workspace registry record is stale and needs reconciliation.
-      updated_at: 2026-03-28T22:19:01.274Z
+      summary: Workspace registry record is invalid because required git state is missing.
+      updated_at: 2026-03-29T00:09:49.987Z
     integration:
       status: merged
       detail: integration:merged
@@ -648,7 +653,7 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: e728c62710bbc6fe43d7bd1dfd135c092ef732f2
-      updated_at: 2026-03-28T22:19:01.274Z
+      updated_at: 2026-03-29T00:09:49.987Z
     lifecycle_state: stale
     resolved_base_branch: main
     task_ref: "@01KKJT2VJPSPQRCVDW5NZ9G6TJ"
@@ -656,9 +661,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-13T15:50:29.262Z
-      last_reconciled_at: 2026-03-28T22:19:01.274Z
+      last_reconciled_at: 2026-03-29T00:09:49.987Z
       created_at: 2026-03-13T05:30:39.118Z
-      updated_at: 2026-03-28T22:19:01.274Z
+      updated_at: 2026-03-29T00:09:49.987Z
     workspace_id: dispatch-workspace-01KKJT2VJPSPQRCVDW5NZ9G6TJ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -26413,7 +26418,7 @@ workspaces:
         head: deb29e24afec4e6b94b9c1825f82d489f4796e2a
         last_seen_at: 2026-03-28T21:22:41.637Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/add-rollback-note-to-batch-atomic-failure-output-01kmsv9s
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: f8a3f4f7cd59e2d27bd624e3106c97691ff09771
     bootstrap:
       status: succeeded
@@ -26498,12 +26503,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-29T00:09:46.991Z
+      updated_at: 2026-03-29T00:10:17.083Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-29T00:09:46.991Z
+      updated_at: 2026-03-29T00:10:17.083Z
     integration:
       status: pending
       detail: null
@@ -26511,7 +26516,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: f8a3f4f7cd59e2d27bd624e3106c97691ff09771
-      updated_at: 2026-03-29T00:09:46.991Z
+      updated_at: 2026-03-29T00:10:17.083Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KMV52K0KFVQ33W970Z9NBCR5"
@@ -26519,9 +26524,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-28T23:57:26.610Z
-      last_reconciled_at: 2026-03-29T00:09:46.991Z
+      last_reconciled_at: 2026-03-29T00:10:17.083Z
       created_at: 2026-03-28T21:22:49.841Z
-      updated_at: 2026-03-29T00:09:46.991Z
+      updated_at: 2026-03-29T00:10:17.083Z
     workspace_id: dispatch-workspace-01KMV52K0KFVQ33W970Z9NBCR5
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
