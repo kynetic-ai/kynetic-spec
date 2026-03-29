@@ -26805,7 +26805,7 @@ workspaces:
         head: 6399630335db5fd44284e87708c9239fbeb59f46
         last_seen_at: 2026-03-29T04:08:36.010Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/purge-unrecoverable-workspace-records-so-non-terminal-tasks-can-be-re-provisioned-01kmvrw6
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 6943dad4b8203281f7a00c18ae29804ce34c559a
     bootstrap:
       status: succeeded
@@ -26910,12 +26910,12 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-29T07:15:33.836Z
+      updated_at: 2026-03-29T07:16:30.903Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-29T07:15:33.836Z
+      updated_at: 2026-03-29T07:16:30.903Z
     integration:
       status: merged
       detail: integration:merged
@@ -26923,7 +26923,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 6943dad4b8203281f7a00c18ae29804ce34c559a
-      updated_at: 2026-03-29T07:15:33.836Z
+      updated_at: 2026-03-29T07:16:30.903Z
     lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KMW68K2PP8BX24XEPK4XS9W5"
@@ -26931,9 +26931,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-29T07:10:02.254Z
-      last_reconciled_at: 2026-03-29T07:15:33.836Z
+      last_reconciled_at: 2026-03-29T07:16:30.903Z
       created_at: 2026-03-29T07:05:48.225Z
-      updated_at: 2026-03-29T07:15:33.836Z
+      updated_at: 2026-03-29T07:16:30.903Z
     workspace_id: dispatch-workspace-01KMW68K2PP8BX24XEPK4XS9W5
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
