@@ -75478,6 +75478,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMVJGDCTCNHWTV6541CCEB3J
         timestamp: 2026-03-29T01:14:35.809Z
+      - _ulid: 01KMVJGR1NY8615JZE5ARRDKKJ
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMVJGQEG8M1VG6G821TFAG5T
+        timestamp: 2026-03-29T01:14:46.197Z
     examined_commit: 5055285aca2f919de50c96cdff688775120a90d5
     external_links: []
     lifecycle_state: open
@@ -75508,7 +75515,26 @@ reviews:
               the CLI mutation, which is exactly the corruption ac-11 is meant to prevent.
             created_at: 2026-03-29T01:14:35.290Z
         kind: blocker
+      - _ulid: 01KMVJGQEG8M1VG6G821TFAG5T
+        anchor:
+          type: code
+          commit: 5055285aca2f919de50c96cdff688775120a90d5
+          line_end: 179
+          line_start: 147
+          path: tests/dispatch-shadow-mutation-lock.test.ts
+          side: head
+        entries:
+          - _ulid: 01KMVJGQEG4RPPK51H45JXNF7A
+            author: Test User
+            body: The only ac-9 annotation still does not exercise reconcileDispatchWorkspaceRegistry or
+              multiple dirty records. This test acquires the lock manually, starts a CLI task note,
+              and releases it; it would still pass if reconciliation reverted to a single batch-wide
+              lock, because the code under test never invokes reconciliation at all. That leaves
+              ac-9 without a behavioral test proving that reconciliation actually yields between
+              per-record save+commit cycles.
+            created_at: 2026-03-29T01:14:45.584Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-29T01:10:23.502Z
-    updated_at: 2026-03-29T01:14:35.290Z
+    updated_at: 2026-03-29T01:14:45.584Z
     notes: []
