@@ -80031,6 +80031,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMWNWY5H6CFY7TT49BHVSQSW
         timestamp: 2026-03-29T11:33:06.422Z
+      - _ulid: 01KMWNX0NYB6EQKJ8T3PKQX8BC
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMWNWZZYXR3YKD783W0QQPN0
+        timestamp: 2026-03-29T11:33:08.414Z
     examined_commit: cd80c3aca1b13a308b92ccc43fcd539a84e62692
     external_links: []
     lifecycle_state: open
@@ -80068,7 +80075,33 @@ reviews:
               finds no runtime consumer beyond comments.
             created_at: 2026-03-29T11:33:05.841Z
         kind: blocker
+      - _ulid: 01KMWNWZZYXR3YKD783W0QQPN0
+        anchor:
+          type: code
+          commit: cd80c3aca1b13a308b92ccc43fcd539a84e62692
+          line_end: 340
+          line_start: 252
+          path: packages/web-ui/tests/api-static.test.ts
+          side: head
+        entries:
+          - _ulid: 01KMWNWZZY3P34FPCDY2J8X0AA
+            author: Test User
+            body: >-
+              The changed behavior in the live  fetch layer is still untested. These additions only
+              assert against , while the production path now unwraps daemon envelopes for , , , , ,
+              , and related helpers. Evidence: packages/web-ui/tests/api-static.test.ts:337:    //
+              Board calls fetchTasks() with no params — should return ALL tasks
+
+              packages/web-ui/tests/api-static.test.ts:376:    const result = await fetchSessions();
+              only reports this static adapter file. A bad live envelope mapping would still pass 
+
+              > @kynetic-ai/spec@0.12.0 test
+
+              > node scripts/test.cjs, so this needs at least one behavioral test that mocks a
+              live  response through .
+            created_at: 2026-03-29T11:33:07.710Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-29T11:32:04.356Z
-    updated_at: 2026-03-29T11:33:05.841Z
+    updated_at: 2026-03-29T11:33:07.710Z
     notes: []
