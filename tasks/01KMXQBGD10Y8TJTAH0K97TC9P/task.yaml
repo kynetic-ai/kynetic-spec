@@ -1,0 +1,128 @@
+_ulid: 01KMXQBGD10Y8TJTAH0K97TC9P
+slugs: []
+title: Consolidate all tests under root tests/ directory
+type: task
+description: >-
+  Tests are split between packages/web-ui/tests/ (11 vitest unit tests + 44 playwright e2e specs)
+  and tests/ (200+ vitest tests). This causes two problems: (1) the root test:e2e script uses npm
+  link to make the built kspec binary globally available, which overwrites the system kspec — unsafe
+  for dispatch agents; (2) agents working on tests miss common patterns because helpers and tests
+  live in different package trees. Moving everything under tests/ eliminates npm link by using the
+  existing CLI_PATH helper, and puts all tests in one discoverable location.
+
+
+  ## Target structure
+
+
+  ```
+
+  tests/
+
+  ├── e2e/                       ← from packages/web-ui/tests/e2e/
+
+  │   ├── *.spec.ts              ← 44 playwright specs
+
+  │   └── fixtures/              ← from packages/web-ui/tests/fixtures/
+
+  │       ├── test-base.ts       ← daemon fixture (key changes here)
+
+  │       ├── project-tests/     ← AC coverage fixture
+
+  │       └── *.yaml, modules/, tasks/
+
+  ├── web-ui/                    ← from packages/web-ui/tests/
+
+  │   └── *.test.ts              ← 11 vitest unit tests
+
+  ├── helpers/cli.ts             ← existing, exports CLI_PATH
+
+  └── [existing 200+ tests]
+
+  playwright.config.ts           ← from packages/web-ui/playwright.config.ts
+
+  ```
+
+
+  ## What changes
+
+
+  **test-base.ts** (core safety fix):
+
+  - Import CLI_PATH from ../../helpers/cli.ts
+
+  - Replace spawnSync("kspec", [...]) → spawnSync("node", [CLI_PATH, ...]) (2 callsites: start +
+  stop)
+
+  - Update E2E_FIXTURES to join(__dirname, ".") (fixtures now colocated)
+
+  - Update WEB_UI_BUILD to join(__dirname, "../../../packages/web-ui/build")
+
+
+  **11 web-ui unit tests** — update all path references:
+
+  - Regular imports: ../src/lib/... → ../../packages/web-ui/src/lib/...
+
+  - vi.mock() paths: same transformation (~30 mock calls across 6 files)
+
+  - vi.importActual() paths: same transformation (2 files: query-client-retry,
+  cache-warming-view-states)
+
+  - ../../shared/src/... → ../../packages/shared/src/...
+
+
+  **playwright.config.ts** — move to root, update testDir to "./tests/e2e"
+
+
+  **vitest.config.ts** — update exclude: **/packages/web-ui/tests/e2e/** → **/tests/e2e/**
+
+
+  **Root package.json** scripts:
+
+  - test:e2e: remove npm link, run npx playwright test tests/e2e/smoke.spec.ts
+  tests/e2e/api-server.spec.ts
+
+  - test:e2e:full: remove npm link, run npx playwright test
+
+
+  **packages/web-ui/package.json** — remove e2e scripts (now root-level)
+
+
+  **Root .gitignore** — add playwright-report/
+
+
+  ## What stays the same
+
+  - E2e isolation design (ephemeral ports, temp dirs, isolated HOME)
+
+  - 44 e2e spec files keep import { test } from "../fixtures/test-base" (relative structure
+  preserved)
+
+  - Vitest sharding auto-discovers tests/web-ui/*.test.ts
+
+  - CI workflow calls npm run test:e2e — script change handles it
+
+
+  ## Risks to verify during execution
+
+  - $lib alias mocks in unit tests: vi.mock intercepts by module name so should work, but verify
+
+  - node dist/cli/index.js serve start --detach: confirm daemon still detaches properly via node vs
+  shebang binary
+
+  - @playwright/test available at root via workspace hoisting but not declared in root package.json
+  — consider adding explicitly
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - infra
+  - test
+  - e2e
+vcs_refs: []
+created_at: 2026-03-29T21:17:46.273Z
+todos: []
