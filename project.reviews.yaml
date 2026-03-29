@@ -80009,7 +80009,25 @@ reviews:
     slugs: []
     title: Review task-ui-unwrap-envelope
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: >-
+          7128 passed, 5 skipped (1974/1974 suites). Verified in this workspace via 
+
+          > @kynetic-ai/spec@0.12.0 test
+
+          > node scripts/test.cjs. Files read: packages/web-ui/src/lib/api.ts,
+          packages/web-ui/src/lib/api-static.ts, packages/web-ui/tests/api-static.test.ts,
+          packages/shared/src/api.ts. Categories searched: correctness, edge cases, error-handling,
+          test quality, integration.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-29T11:33:09.633Z
+        completed_at: 2026-03-29T11:33:09.633Z
     events:
       - _ulid: 01KMWNV243B861E5NVJRERYFF9
         actor: Test User
@@ -80038,6 +80056,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMWNWZZYXR3YKD783W0QQPN0
         timestamp: 2026-03-29T11:33:08.414Z
+      - _ulid: 01KMWNX2EFW76N7GT76RPJ4MDG
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-29T11:33:10.223Z
     examined_commit: cd80c3aca1b13a308b92ccc43fcd539a84e62692
     external_links: []
     lifecycle_state: open
@@ -80103,5 +80128,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-29T11:32:04.356Z
-    updated_at: 2026-03-29T11:33:07.710Z
+    updated_at: 2026-03-29T11:33:09.633Z
     notes: []
