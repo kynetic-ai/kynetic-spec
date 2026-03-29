@@ -18255,7 +18255,7 @@ runs:
     completed_at: 2026-03-29T08:10:36.974Z
   - _ulid: 01KMWBQA5P3QVBS64F9VQVA4D2
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -18271,7 +18271,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-29T08:35:32.981Z
-        completed_at: 2026-03-29T08:35:32.981Z
+        completed_at: 2026-03-29T08:35:57.231Z
+        notes: "Searched existing state. One high-confidence observation: The daemon route handlers are now
+          fully migrated to the envelope, but the web-ui data fetching layer likely still expects
+          the old response shapes ({items, total} instead of {data, meta}). This is a known
+          follow-on task — the task description mentions 'Until all routes use the envelope, the web
+          UI cannot rely on a single response shape.' However, I did not find an existing task
+          tracking the web-ui side of this migration. This may warrant an inbox item. No systemic
+          friction found in this session — the migration was mechanical and the test runner worked
+          well."
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-29T08:35:57.231Z
+        completed_at: 2026-03-29T08:35:57.231Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-29T08:35:15.766Z
