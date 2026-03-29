@@ -32,3 +32,13 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-29T08:42:16.153Z
+  - _ulid: 01KMWD0AJN50PMDSXNB5SX081Q
+    content: "Fix cycle 1: Addressed review blocker. The GET /api/search handler had a legacy code path
+      (lines 92-97 of validation.ts) that returned {results, total} directly when q was omitted,
+      bypassing the wrapResponse() envelope. Wrapped it in wrapResponse({results: [], total: 0,
+      showing: 0}, {}) to match the loading and success paths. Also verified no other route handlers
+      have remaining legacy branches — the sessions.ts line was an internal helper, and debug.ts is
+      excluded per ac-envelope (non-cache endpoint). All 7123 tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-29T08:57:39.669Z
