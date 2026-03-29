@@ -79394,6 +79394,17 @@ reviews:
         runner: test.cjs
         created_at: 2026-03-29T10:02:07.930Z
         completed_at: 2026-03-29T10:02:07.930Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Exited 6 with known repo-wide warnings only; no warnings specific to @daemon-entity-cache
+          ac-domain-ready-event.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-29T10:02:14.447Z
+        completed_at: 2026-03-29T10:02:14.447Z
     events:
       - _ulid: 01KMWGFA2NEW6ME4B3TD2KZFV6
         actor: Test User
@@ -79438,6 +79449,13 @@ reviews:
           kind: nit
           thread_ulid: 01KMWGPGVAHMPVD4V5BTYJQZKJ
         timestamp: 2026-03-29T10:02:13.292Z
+      - _ulid: 01KMWGPK31VSS0W0JM588BMSXG
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-29T10:02:15.009Z
     examined_commit: 107be4397478b42cab064d2afccd4750bbce812c
     external_links: []
     lifecycle_state: closed
@@ -79472,5 +79490,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T10:02:10.306Z
     created_at: 2026-03-29T09:58:16.406Z
-    updated_at: 2026-03-29T10:02:12.714Z
+    updated_at: 2026-03-29T10:02:14.447Z
     notes: []
