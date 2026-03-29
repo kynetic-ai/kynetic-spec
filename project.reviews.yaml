@@ -76109,6 +76109,29 @@ reviews:
         required: true
         created_at: 2026-03-29T06:03:02.384Z
         completed_at: 2026-03-29T06:03:02.384Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: >-
+          CONFLICT: @trait-api-endpoint ac-4 defines the current pagination wrapper as {items,
+          total, offset, limit}. This trait is inherited by @api-contract. The plan proposes
+          ac-envelope which changes all responses to {data, meta: {total, offset, limit,
+          cache_status}} — a direct contradiction with ac-4. Additionally, @api-contract's own ac-4
+          says "returns paginated results with {items, total, offset, limit} wrapper."
+
+
+          The plan does not include updating @trait-api-endpoint ac-4 or @api-contract ac-4 to
+          reflect the new envelope shape. This means after implementation, the live system would
+          violate two existing ACs.
+
+
+          No overlap found with @dispatch-event-envelope (that covers internal event bus envelope,
+          not HTTP response envelope — different domain entirely).
+        name: Spec neighborhood overlap
+        required: true
+        created_at: 2026-03-29T06:03:06.532Z
+        completed_at: 2026-03-29T06:03:06.532Z
     events:
       - _ulid: 01KMW2Y6CH7YP8X5216XWDVXT7
         actor: "@claude"
@@ -76186,6 +76209,13 @@ reviews:
           status: pass
           name: Cross-reference validation
         timestamp: 2026-03-29T06:03:02.954Z
+      - _ulid: 01KMW30QF2EGK41EACBMN2JWX0
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: Spec neighborhood overlap
+        timestamp: 2026-03-29T06:03:07.107Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -76344,5 +76374,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-29T06:01:44.082Z
-    updated_at: 2026-03-29T06:03:02.384Z
+    updated_at: 2026-03-29T06:03:06.532Z
     notes: []
