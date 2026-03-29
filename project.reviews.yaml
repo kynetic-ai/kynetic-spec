@@ -79523,7 +79523,18 @@ reviews:
     slugs: []
     title: Review task-migrate-route-handlers-envelope (cycle 5)
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Exited 6 with repo-wide warnings only (orphaned skills/spec coverage noise); no
+          task-specific schema/reference failures.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-29T10:25:24.580Z
+        completed_at: 2026-03-29T10:25:24.580Z
     events:
       - _ulid: 01KMWHRJNB8BPQSV3X8B9QPFND
         actor: Test User
@@ -79538,6 +79549,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-29T10:21:18.841Z
+      - _ulid: 01KMWJ10NJVN5YBX1QR3W8YD58
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-29T10:25:25.170Z
     examined_commit: 9272feb686c31924d97cd35693791cc6a314ab97
     external_links: []
     lifecycle_state: open
@@ -79550,5 +79568,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-29T10:20:48.683Z
-    updated_at: 2026-03-29T10:21:18.177Z
+    updated_at: 2026-03-29T10:25:24.580Z
     notes: []
