@@ -76058,6 +76058,13 @@ reviews:
           kind: question
           thread_ulid: 01KMW2Z2AQ1EMP0WKH0B44JYE5
         timestamp: 2026-03-29T06:02:13.265Z
+      - _ulid: 01KMW2Z98GF7PAAYPD5C5T02R3
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KMW2Z8PHPV0A0BTKTB55DB7C
+        timestamp: 2026-03-29T06:02:19.792Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -76127,7 +76134,36 @@ reviews:
               different, the priority/effort estimate may be wrong.
             created_at: 2026-03-29T06:02:12.695Z
         kind: question
+      - _ulid: 01KMW2Z8PHPV0A0BTKTB55DB7C
+        anchor:
+          type: structured
+          ref: "@task-ui-cache-warming-interceptor"
+          section: Tasks
+        entries:
+          - _ulid: 01KMW2Z8PJN7K0X3MDTDG7CYH9
+            author: "@claude"
+            body: >-
+              The "Covers:" line claims ac-warming-skeleton (detection half). But
+              ac-warming-skeleton is about displaying a loading skeleton — the detection half is
+              implicit, not explicitly part of the AC's given/when/then. The AC says "a loading
+              skeleton is displayed instead of empty content, and the warming response is not
+              persisted in the client cache as real data."
+
+
+              The "not persisted in client cache" part IS handled by this task (throwing
+              CacheWarmingError prevents caching). But the "display" part is in
+              task-ui-warming-skeletons. This split coverage is fine but the "detection half" /
+              "display half" labeling is informal and could confuse an automated agent. Suggest
+              either:
+
+              1. Split ac-warming-skeleton into two ACs (ac-warming-no-cache and
+              ac-warming-skeleton-display), or
+
+              2. Have both tasks claim the full AC and note in the description which aspect each
+              covers.
+            created_at: 2026-03-29T06:02:19.218Z
+        kind: question
     verdicts: []
     created_at: 2026-03-29T06:01:44.082Z
-    updated_at: 2026-03-29T06:02:12.695Z
+    updated_at: 2026-03-29T06:02:19.218Z
     notes: []
