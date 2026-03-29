@@ -27088,7 +27088,7 @@ workspaces:
         head: 6943dad4b8203281f7a00c18ae29804ce34c559a
         last_seen_at: 2026-03-29T07:14:54.076Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-spec-update-api-contract-01kmw68j
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 6943dad4b8203281f7a00c18ae29804ce34c559a
     bootstrap:
       status: succeeded
@@ -27177,7 +27177,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-29T07:18:12.983Z
+      updated_at: 2026-03-29T07:18:16.670Z
     integration:
       status: pending
       detail: null
@@ -27192,10 +27192,10 @@ workspaces:
     task_slug: task-spec-update-entity-cache
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-29T07:15:14.437Z
-      last_reconciled_at: 2026-03-29T07:18:12.983Z
+      last_active_at: 2026-03-29T07:18:16.670Z
+      last_reconciled_at: 2026-03-29T07:18:16.670Z
       created_at: 2026-03-29T07:15:06.825Z
-      updated_at: 2026-03-29T07:18:12.983Z
+      updated_at: 2026-03-29T07:18:16.670Z
     workspace_id: dispatch-workspace-01KMW68JT108S4RS3G1GNYH5A9
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
