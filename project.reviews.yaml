@@ -75944,3 +75944,29 @@ reviews:
     created_at: 2026-03-29T03:41:16.980Z
     updated_at: 2026-03-29T04:06:17.653Z
     notes: []
+  - _ulid: 01KMVWGDBF8RWCTZJVAE1PS7GV
+    slugs: []
+    title: Review purge-unrecoverable workspace records (cycle 2)
+    author: Test User
+    checks: []
+    events:
+      - _ulid: 01KMVWGDBE6HWS08FCTKZRH2J6
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-29T04:09:21.006Z
+    examined_commit: 6399630335db5fd44284e87708c9239fbeb59f46
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMVRW6KV9FB4FNY76FBB85RA"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-29T04:09:21.007Z
+    updated_at: null
+    notes: []
