@@ -30407,3 +30407,155 @@ plans:
     created_at: 2026-03-29T23:22:12.217Z
     completed_at: null
     notes: []
+  - _ulid: 01KMXYM0XF2NW6TNT0X9WNG1AY
+    slugs:
+      - plan-e2e-test-suite-audit-and-restructure-2
+    title: E2E Test Suite Audit and Restructure
+    content: >
+      # E2E Test Suite Audit and Restructure
+
+
+      ## Context
+
+
+      786 e2e tests exist: 469 pass, 316 fail. The suite was never run as a whole — individual specs
+      were written incrementally but accumulated structural debt. Three problems need solving:
+
+
+      1. 242 API-only tests run in Playwright (spawning Chromium + daemon per test) but never touch
+      a browser — they belong in vitest daemon integration tests
+
+      2. 316 UI tests are stale, primarily broken by the response envelope migration that changed
+      API response structure
+
+      3. API-only tests mask UI coverage gaps — we have tests proving the API works but the actual
+      UI tests for those features are broken or missing
+
+
+      ## Tasks
+
+
+      ```yaml
+
+      - title: Investigate daemon integration test harness
+        slug: task-investigate-daemon-harness
+        description: |
+          Determine the right approach for running API contract tests against a
+          real daemon from vitest. Options: spawn daemon subprocess in beforeAll,
+          use Bun directly, or use Playwright's APIRequestContext without browser.
+          Produce a working proof-of-concept with one migrated spec.
+        priority: 1
+        tags: [infra, test, e2e]
+
+      - title: Categorize all failing e2e UI tests by root cause
+        slug: task-categorize-e2e-failures
+        description: |
+          Read error-context.md files from test-results/ and git history to
+          categorize each of the 316 failing tests. Group by: response envelope
+          drift, missing testid, timing, stale fixtures, removed feature,
+          redesigned UI. Produce a triage table with fix/rewrite/purge
+          decisions per spec.
+        priority: 1
+        tags: [test, e2e, audit]
+
+      - title: Expand CI e2e gate to full suite
+        slug: task-ci-full-e2e
+        depends_on: ["@task-investigate-daemon-harness", "@task-categorize-e2e-failures"]
+        description: |
+          After API tests are migrated and UI tests are triaged, update CI to run
+          the full e2e suite (not just smoke). Configure parallel workers and
+          appropriate timeouts.
+        priority: 2
+        tags: [ci, e2e, infra]
+      ```
+
+
+      ## Implementation Notes
+
+
+      ### API-only spec inventory (13 files, 242 tests)
+
+
+      | Spec | Tests | Endpoints | Daemon unit test overlap |
+
+      |------|-------|-----------|------------------------|
+
+      | api-tasks | 35 | GET/POST tasks, start, note | None |
+
+      | api-items | 26 | GET items, batch | None |
+
+      | api-sessions-pagination | 23 | GET sessions (7 filter types) | None |
+
+      | api-meta | 23 | GET meta, search, validate, alignment | None |
+
+      | api-inbox | 18 | GET/POST/DELETE inbox | None |
+
+      | api-reviews-list | 18 | GET reviews (filters, sort) | None |
+
+      | api-reviews-threads | 17 | POST/PATCH review threads | None |
+
+      | api-errors | 14 | Cross-endpoint error format | None |
+
+      | api-aggregation | 11 | GET aggregation stats | None |
+
+      | api-projects | 10 | GET/POST/DELETE projects | None |
+
+      | api-agent-dispatch | 9 | GET/POST dispatch | Complementary (dispatch engine state) |
+
+      | api-server | 8 | Health, CORS, localhost security | Complementary (middleware logic) |
+
+      | api-sessions-legacy | 7 | GET sessions (legacy warnings) | None |
+
+      | api-sessions-search | 3 | GET sessions/search | None |
+
+
+      Only 2 of 14 specs have any daemon unit test overlap, and it's complementary (different test
+      angles), not duplicative.
+
+
+      ### E2E test breakdown by type
+
+
+      | Category | Specs | Tests | Status |
+
+      |----------|-------|-------|--------|
+
+      | API-only (no browser) | 13 | 242 | Mostly passing |
+
+      | Mixed (API + UI) | 8 | ~164 | Partially failing |
+
+      | UI-only | 23 | ~380 | Mostly failing |
+
+
+      ### Failure root causes (from agent analysis)
+
+
+      - **Response envelope migration** — biggest cause. API responses wrapped in `{ data, meta }`
+      envelope but UI queries and e2e mocks expect unwrapped format
+
+      - **Project store initialization** — queries gated on `isProjectInitialized()` that don't fire
+      in test context, causing empty page renders
+
+      - **Timing/race conditions** — WebSocket reconnection, siblings queries, content loading
+
+      - **Platform limitations** — file watcher tests unreliable outside Linux with inotify
+
+
+      ### Open questions
+
+
+      - What's the right test layer for HTTP contract testing? Vitest with a real daemon subprocess?
+      Or keep in Playwright but without browser?
+
+      - Should API contract tests use response snapshots or structural assertions?
+
+      - How do we prevent this drift from happening again? CI enforcement of full e2e suite?
+    status: draft
+    approved_at: null
+    derived_specs: []
+    derived_tasks: []
+    module_ref: null
+    source_path: /tmp/e2e-audit-plan.md
+    created_at: 2026-03-29T23:24:45.359Z
+    completed_at: null
+    notes: []
