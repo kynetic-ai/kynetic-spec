@@ -42,7 +42,7 @@ description: |
 spec_ref: "@ui-data-freshness"
 plan_ref: "@plan-daemon-cache-warming-ux"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-ui-unwrap-envelope"
@@ -53,6 +53,14 @@ tags:
   - web-ui
   - data-layer
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-29T12:05:44.704Z
+  commit: c3a862f1be7f815e76a2a2efa8b18eb604926627
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
 session_id: 01KMWQ4N5QNDFH8MHFC9K1C867
 history:
   - author: "@claude"
@@ -75,7 +83,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-03-29T11:55:13.238Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-03-29T12:05:44.704Z
+          commit: c3a862f1be7f815e76a2a2efa8b18eb604926627
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous: null
+      submitted_at:
+        new: 2026-03-29T12:05:44.707Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-03-29T12:05:44.707Z
 created_at: 2026-03-29T06:59:51.914Z
 started_at: 2026-03-29T11:55:13.237Z
+submitted_at: 2026-03-29T12:05:44.707Z
 todos: []
 automation: eligible
