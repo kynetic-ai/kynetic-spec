@@ -79239,6 +79239,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-29T09:46:55.356Z
+      - _ulid: 01KMWG7SNQY9EM37WFWWW8FTFP
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMWG7S1X6DY1NJDR7RJNCZMD
+        timestamp: 2026-03-29T09:54:10.231Z
     examined_commit: dfd20ae3709b032ac181cf04488b97e11b82d689
     external_links: []
     lifecycle_state: open
@@ -79248,8 +79255,37 @@ reviews:
       content_hash: ""
       ref: "@01KMW68KM0EXKESA30EMPW63VY"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMWG7S1X6DY1NJDR7RJNCZMD
+        anchor:
+          type: code
+          commit: dfd20ae3709b032ac181cf04488b97e11b82d689
+          line_end: 172
+          line_start: 155
+          path: packages/web-ui/src/lib/api.ts
+          side: head
+        entries:
+          - _ulid: 01KMWG7S1X7C2EX1GZ6W57KQJQ
+            author: Test User
+            body: The daemon routes are now correctly emitting the unified {data, meta} envelope, but the web UI
+              client only updated a few session helpers and still returns raw response.json() for
+              many migrated read APIs. In this file, fetchTask()/fetchItem()/fetchItemTasks() and
+              later
+              fetchReview()/fetchWorkflows()/fetchTaskSessions()/fetchItemSessions()/fetchSession()/fetchValidation()/fetchAlignment()/fetchConventions()
+              all leak the envelope object to callers typed as bare payloads. Those callers
+              immediately dereference payload fields (for example TaskDetailContent.svelte reads
+              response.items, ItemDetail.svelte reads itemResponse.title and tasksResponse.items,
+              sessions/[id]/+page.svelte reads sessionQuery.data.status, validate/+page.svelte reads
+              validation.schemaErrors, settings/+page.svelte reads conventionsQuery.data.items,
+              workflows/+page.svelte reads workflowsQuery.data.items, reviews/[id]/+page.svelte
+              reads review.subject). That means these pages will render undefined data or break as
+              soon as they hit the migrated daemon, even though the route tests now prove the server
+              returns envelopes (for example tasks.ts:321 and :406, items.ts:451/:522/:667,
+              sessions.ts:645/:700/:774, validation.ts:258/:311). This migration needs to finish the
+              client-side unwrapping for every affected read helper before it is safe to merge.
+            created_at: 2026-03-29T09:54:09.597Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-29T09:46:40.217Z
-    updated_at: 2026-03-29T09:46:54.812Z
+    updated_at: 2026-03-29T09:54:09.597Z
     notes: []
