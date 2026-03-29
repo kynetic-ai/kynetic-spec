@@ -26949,7 +26949,7 @@ workspaces:
         head: 6943dad4b8203281f7a00c18ae29804ce34c559a
         last_seen_at: 2026-03-29T07:09:51.140Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-spec-update-data-freshness-01kmw68k
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 6943dad4b8203281f7a00c18ae29804ce34c559a
     bootstrap:
       status: succeeded
@@ -27059,7 +27059,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-29T07:14:54.076Z
+      updated_at: 2026-03-29T07:15:06.264Z
     integration:
       status: pending
       detail: null
@@ -27074,10 +27074,10 @@ workspaces:
     task_slug: task-spec-update-api-contract
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-29T07:10:15.159Z
-      last_reconciled_at: 2026-03-29T07:14:54.076Z
+      last_active_at: 2026-03-29T07:15:06.264Z
+      last_reconciled_at: 2026-03-29T07:15:06.264Z
       created_at: 2026-03-29T07:10:04.067Z
-      updated_at: 2026-03-29T07:15:04.129Z
+      updated_at: 2026-03-29T07:15:06.264Z
     workspace_id: dispatch-workspace-01KMW68JFTW7WDPNX354YWEKAN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
