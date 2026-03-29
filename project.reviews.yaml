@@ -79335,6 +79335,12 @@ reviews:
         payload:
           thread_ulid: 01KMWG7S1X6DY1NJDR7RJNCZMD
         timestamp: 2026-03-29T10:17:00.374Z
+      - _ulid: 01KMWHHWR8W59KWN26AGWKNDXR
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMWG7S1X6DY1NJDR7RJNCZMD
+        timestamp: 2026-03-29T10:17:09.641Z
     examined_commit: dfd20ae3709b032ac181cf04488b97e11b82d689
     external_links: []
     lifecycle_state: closed
@@ -79387,6 +79393,8 @@ reviews:
               return the new envelope format. All 7123 tests pass."
             created_at: 2026-03-29T10:16:59.785Z
         kind: blocker
+        resolved_at: 2026-03-29T10:17:09.011Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -79396,7 +79404,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T09:54:25.958Z
     created_at: 2026-03-29T09:46:40.217Z
-    updated_at: 2026-03-29T10:16:59.785Z
+    updated_at: 2026-03-29T10:17:09.011Z
     notes: []
   - _ulid: 01KMWGFA2PRKXP0MZBPNPRW5AP
     slugs: []
