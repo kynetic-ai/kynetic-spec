@@ -80709,6 +80709,17 @@ reviews:
         runner: tsc
         created_at: 2026-03-29T12:47:36.228Z
         completed_at: 2026-03-29T12:47:36.228Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm test -- --runInBand exited 1 in this snapshot after rebuilding dist; targeted
+          cache-warming suites and typecheck passed, but the full-suite run did not.
+        name: npm-test
+        required: true
+        runner: npm
+        created_at: 2026-03-29T12:47:40.351Z
+        completed_at: 2026-03-29T12:47:40.351Z
     events:
       - _ulid: 01KMWT2T3T053S2HZA9251BBQ9
         actor: Test User
@@ -80772,6 +80783,13 @@ reviews:
           status: pass
           name: typecheck
         timestamp: 2026-03-29T12:47:36.815Z
+      - _ulid: 01KMWT5GBKAB27F287K6JC0265
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm-test
+        timestamp: 2026-03-29T12:47:40.916Z
     examined_commit: 25f80a8785149c5266bda75c4441abc7057a00bd
     external_links: []
     lifecycle_state: open
@@ -80837,5 +80855,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-29T12:46:12.602Z
-    updated_at: 2026-03-29T12:47:36.228Z
+    updated_at: 2026-03-29T12:47:40.351Z
     notes: []
