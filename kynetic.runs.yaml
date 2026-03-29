@@ -18422,9 +18422,25 @@ runs:
     completed_at: 2026-03-29T09:34:08.567Z
   - _ulid: 01KMWFGHGR6NHCJX1Z7SH03PYZ
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Test User
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-03-29T09:41:28.216Z
+        completed_at: 2026-03-29T09:42:31.356Z
+        notes: >-
+          What worked well: the structured review flow caught prior blockers efficiently once
+          anchored to the actual diff. The required evidence log and mandatory full 
+
+          > @kynetic-ai/spec@0.12.0 test
+
+          > node scripts/test.cjs run prevented a shallow approval and made the clean merge decision
+          defensible.
+      - status: completed
+        step_index: 1
+        started_at: 2026-03-29T09:42:31.356Z
+        completed_at: 2026-03-29T09:42:31.356Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-29T09:41:28.216Z
