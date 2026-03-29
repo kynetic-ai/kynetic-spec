@@ -9908,6 +9908,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-29T13:24:54.239Z
+  - _ulid: 01KMWWZPPGCZY83Y0NT8XXVM7S
+    type: friction
+    content: Dispatch reviewers cannot execute Playwright E2E specs whose fixtures call 'kspec serve
+      start/stop'. In this review session, cache-warming E2E verification was blocked because the
+      fixture in packages/web-ui/tests/fixtures/test-base.ts manages its own daemon, but dispatch
+      correctly forbids agent-run daemon lifecycle commands. This creates a recurring gap for
+      reviewer verification of web UI behavior under dispatch. Consider a dispatch-safe E2E mode
+      that reuses the host daemon or allows fixture-level opt-out of daemon management when already
+      running.
+    author: codex
+    resolution: null
+    resolved: false
+    created_at: 2026-03-29T13:36:56.528Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
