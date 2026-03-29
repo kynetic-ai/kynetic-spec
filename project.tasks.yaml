@@ -22981,3 +22981,19 @@
   submitted_at: 2026-03-29T01:26:37.609Z
   completed_at: 2026-03-29T01:38:16.467Z
   automation: eligible
+- _ulid: 01KMVRW6KV9FB4FNY76FBB85RA
+  slugs: []
+  title: Purge unrecoverable workspace records so non-terminal tasks can be re-provisioned
+  type: task
+  spec_ref: "@dispatch-workspace-registry"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 3
+  tags:
+    - dispatch
+    - workspace
+    - bug
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-29T03:05:53.019Z
