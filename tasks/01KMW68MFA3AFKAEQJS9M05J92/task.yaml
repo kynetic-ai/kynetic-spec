@@ -42,7 +42,7 @@ description: |
 spec_ref: "@ui-data-freshness"
 plan_ref: "@plan-daemon-cache-warming-ux"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-ui-unwrap-envelope"
@@ -53,6 +53,7 @@ tags:
   - web-ui
   - data-layer
 vcs_refs: []
+session_id: 01KMWQ4N5QNDFH8MHFC9K1C867
 history:
   - author: "@claude"
     changes:
@@ -61,6 +62,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-03-29T07:02:54.803Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KMWQ4N5QNDFH8MHFC9K1C867
+        previous: null
+      started_at:
+        new: 2026-03-29T11:55:13.237Z
+        previous: null
+    command: task-start
+    timestamp: 2026-03-29T11:55:13.238Z
 created_at: 2026-03-29T06:59:51.914Z
+started_at: 2026-03-29T11:55:13.237Z
 todos: []
 automation: eligible

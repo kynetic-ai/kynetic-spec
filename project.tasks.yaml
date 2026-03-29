@@ -23168,7 +23168,7 @@
   type: task
   spec_ref: "@ui-data-freshness"
   plan_ref: "@plan-daemon-cache-warming-ux"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-ui-unwrap-envelope"
@@ -23180,6 +23180,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-03-29T06:59:51.914Z
+  started_at: 2026-03-29T11:55:13.237Z
   automation: eligible
 - _ulid: 01KMW68MQ3V3C5PF4NXKB1PAG1
   slugs:
