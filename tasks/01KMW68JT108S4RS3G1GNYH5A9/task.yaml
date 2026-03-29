@@ -26,7 +26,7 @@ description: |
 spec_ref: "@daemon-entity-cache"
 plan_ref: "@plan-daemon-cache-warming-ux"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on: []
 context: []
@@ -44,7 +44,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
   upstream_ref: refs/heads/dev
-session_id: 01KMWD31X93F4ARN9DAB9P66T8
+session_id: null
 history:
   - author: "@claude"
     changes:
@@ -321,6 +321,16 @@ history:
         previous: "@01KMWCMK9KNH1PZ1EDJ8M59EDX"
     command: review-link
     timestamp: 2026-03-29T09:12:15.710Z
+  - author: Test User
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KMWD31X93F4ARN9DAB9P66T8
+    command: review-verdict-needs-work
+    timestamp: 2026-03-29T09:19:31.800Z
 created_at: 2026-03-29T06:59:50.209Z
 started_at: 2026-03-29T09:08:29.032Z
 submitted_at: 2026-03-29T09:08:32.336Z
