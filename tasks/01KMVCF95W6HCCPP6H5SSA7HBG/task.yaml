@@ -156,6 +156,7 @@ tags:
   - dispatch
   - bug
 vcs_refs: []
+review_ref: "@01KMVF0BZ1CFC953MH2ZPTN6KS"
 submission_linkage:
   review_url: null
   branch: dev
@@ -458,6 +459,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-03-29T00:10:29.052Z
+  - author: Test User
+    changes:
+      review_ref:
+        new: "@01KMVF0BZ1CFC953MH2ZPTN6KS"
+        previous: null
+    command: review-link
+    timestamp: 2026-03-29T00:13:31.460Z
 created_at: 2026-03-28T23:29:06.748Z
 started_at: 2026-03-28T23:58:13.891Z
 submitted_at: 2026-03-29T00:10:29.052Z
