@@ -9694,6 +9694,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-29T09:32:48.364Z
+  - _ulid: 01KMWF0P3ATFS6D4JESMX98YE4
+    type: friction
+    content: Daemon envelope migrations can miss session read endpoints because route-level coverage
+      does not currently exercise /api/sessions/search, /api/sessions/:id/events, and
+      /api/sessions/:id/events/:seq after contract changes; this review only caught the gap via
+      manual source scan.
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-29T09:32:48.619Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
