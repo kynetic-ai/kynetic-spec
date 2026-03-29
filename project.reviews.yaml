@@ -77978,6 +77978,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-29T08:11:56.788Z
+      - _ulid: 01KMWAKW08Z4BFQWZNAA5G8D1G
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMWAKVBTGQE0QCVX013Q197Q
+        timestamp: 2026-03-29T08:15:54.376Z
     examined_commit: 905a844fee7a14ce9a8667f502b96548ce3a3bff
     external_links: []
     lifecycle_state: open
@@ -77987,8 +77994,26 @@ reviews:
       content_hash: ""
       ref: "@01KMW68JT108S4RS3G1GNYH5A9"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMWAKVBTGQE0QCVX013Q197Q
+        anchor:
+          type: code
+          commit: 905a844fee7a14ce9a8667f502b96548ce3a3bff
+          line_end: 1751
+          line_start: 1736
+          path: tests/daemon-entity-cache.test.ts
+          side: head
+        entries:
+          - _ulid: 01KMWAKVBV5KWKE8VAP66YAASD
+            author: Test User
+            body: The new AC is only represented by `it.todo(...)` placeholders, so this review cycle still does
+              not add behavioral coverage for `@daemon-entity-cache ac-domain-ready-event`. These
+              lines never execute the cache or assert the broadcast behavior, which means the task
+              remains without a test that proves the loading→ready/degraded→ready event contract
+              described by the spec.
+            created_at: 2026-03-29T08:15:53.723Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-29T08:11:35.940Z
-    updated_at: 2026-03-29T08:11:56.158Z
+    updated_at: 2026-03-29T08:15:53.723Z
     notes: []
