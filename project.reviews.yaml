@@ -79249,6 +79249,28 @@ reviews:
         runner: kspec
         created_at: 2026-03-29T09:54:13.386Z
         completed_at: 2026-03-29T09:54:13.386Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: AGENTS.md, kspec-agents.md,
+          packages/daemon/src/routes/{aggregation,inbox,items,meta,plans,refs,reviews,sessions,task\
+          s,triage,validation,response-envelope}.ts, packages/web-ui/src/lib/api.ts,
+          packages/web-ui/src/lib/components/board/TaskDetailContent.svelte,
+          packages/web-ui/src/lib/components/ItemDetail.svelte,
+          packages/web-ui/src/routes/{sessions/[id],settings,validate,workflows,reviews/[id]}/+page\
+          .svelte,
+          tests/{api-response-envelope,daemon-api-input-validation,daemon-cache-route-coverage,daem\
+          on-read-path}.test.ts, packages/web-ui/tests/e2e/{api-sessions-search,sessions}.spec.ts.
+          Commands run: kspec task get, kspec item get @api-contract, kspec review for-task/get, git
+          diff/stat/name-only, rg AC annotations, kspec validate, npm test. Claims verified: server
+          routes now return wrapResponse envelopes; full test suite passes; previous session-route
+          blockers were fixed. Categories searched: correctness, edge cases/loading states, error
+          handling, test quality, integration."
+        name: review-evidence
+        required: false
+        created_at: 2026-03-29T09:54:15.267Z
+        completed_at: 2026-03-29T09:54:15.267Z
     events:
       - _ulid: 01KMWFT26SDF8C42VZP943HXTW
         actor: Test User
@@ -79284,6 +79306,13 @@ reviews:
           status: skipped
           name: kspec validate
         timestamp: 2026-03-29T09:54:14.063Z
+      - _ulid: 01KMWG7Z7PP06WD97N0B6GKHAH
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-03-29T09:54:15.926Z
     examined_commit: dfd20ae3709b032ac181cf04488b97e11b82d689
     external_links: []
     lifecycle_state: open
@@ -79325,5 +79354,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-29T09:46:40.217Z
-    updated_at: 2026-03-29T09:54:13.386Z
+    updated_at: 2026-03-29T09:54:15.267Z
     notes: []
