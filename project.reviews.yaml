@@ -78719,6 +78719,13 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-03-29T09:19:17.894Z
+      - _ulid: 01KMWE805MD9BMHEZFSE2G6YH7
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMWE7ZH5893D4ZBXS8NTTVYM
+        timestamp: 2026-03-29T09:19:19.732Z
     examined_commit: 82976814d411e8a10eed4d34c3bb531089798d47
     external_links: []
     lifecycle_state: open
@@ -78765,7 +78772,24 @@ reviews:
               this AC, coverage has to inspect the broadcast payload delivered to subscribers.
             created_at: 2026-03-29T09:19:15.180Z
         kind: blocker
+      - _ulid: 01KMWE7ZH5893D4ZBXS8NTTVYM
+        entries:
+          - _ulid: 01KMWE7ZH5Y9E14AANJVK5XG4E
+            author: Test User
+            body: "Evidence log: Files read: packages/daemon/src/server.ts,
+              packages/daemon/src/websocket/pubsub.ts, packages/daemon/src/websocket/types.ts,
+              src/daemon/entity-cache.ts, tests/daemon-entity-cache.test.ts,
+              tests/daemon-pubsub.test.ts. Commands run: kspec task get @01KMW68JT108S4RS3G1GNYH5A9,
+              kspec review for-task @01KMW68JT108S4RS3G1GNYH5A9, kspec item get
+              @daemon-entity-cache, kspec validate, git diff/stat/log on the task commits, rg for AC
+              annotations and pubsub usage, npm test -- tests/daemon-entity-cache.test.ts, npm test.
+              Claims verified: the new AC exists on @daemon-entity-cache; the focused entity-cache
+              suite passes (95/95); the full suite does not pass in this snapshot; the production
+              broadcast payload omits project identity. Categories searched: correctness, test
+              quality, integration, error handling, edge cases."
+            created_at: 2026-03-29T09:19:19.077Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-29T09:12:13.672Z
-    updated_at: 2026-03-29T09:19:17.252Z
+    updated_at: 2026-03-29T09:19:19.077Z
     notes: []
