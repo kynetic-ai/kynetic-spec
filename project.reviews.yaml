@@ -75318,9 +75318,25 @@ reviews:
           kind: nit
           thread_ulid: 01KMVHK5Z89M4RHV9024E5NB2R
         timestamp: 2026-03-29T00:58:38.044Z
+      - _ulid: 01KMVHMBG5JWC3TJ20BVEGDRGM
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-03-29T00:59:15.845Z
+      - _ulid: 01KMVHMBG53EVB0FC9H6WWY3YH
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-29T00:59:15.845Z
     examined_commit: 9b50c4d10bde1740c6515d9e8fc7aaa52f1c7e5f
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -75352,7 +75368,14 @@ reviews:
               integration. No blocking issues found.
             created_at: 2026-03-29T00:58:37.416Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-29T00:59:15.845Z
     created_at: 2026-03-29T00:54:41.754Z
-    updated_at: 2026-03-29T00:58:37.416Z
+    updated_at: 2026-03-29T00:59:15.845Z
     notes: []
