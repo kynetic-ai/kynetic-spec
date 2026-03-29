@@ -77592,6 +77592,17 @@ reviews:
         runner: git
         created_at: 2026-03-29T07:53:11.606Z
         completed_at: 2026-03-29T07:53:11.606Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Ran kspec item get @daemon-entity-cache and kspec validate; ac-domain-ready-event is
+          present and validate exits with warnings only from existing repo-wide issues.
+        name: validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-29T07:53:16.294Z
+        completed_at: 2026-03-29T07:53:16.294Z
     events:
       - _ulid: 01KMW98XRTV8MHBF9ZA6EAM7C9
         actor: Test User
@@ -77627,6 +77638,13 @@ reviews:
           status: fail
           name: branch-linkage
         timestamp: 2026-03-29T07:53:12.221Z
+      - _ulid: 01KMW9AE9MAZA4MQS52D62FVVB
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: validate
+        timestamp: 2026-03-29T07:53:16.853Z
     examined_commit: 6943dad4b8203281f7a00c18ae29804ce34c559a
     external_links: []
     lifecycle_state: open
@@ -77657,5 +77675,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-29T07:52:27.162Z
-    updated_at: 2026-03-29T07:53:11.606Z
+    updated_at: 2026-03-29T07:53:16.294Z
     notes: []
