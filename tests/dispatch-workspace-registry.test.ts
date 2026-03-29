@@ -1397,4 +1397,76 @@ describe("dispatch workspace registry shadow durability", () => {
       expect(getShadowCommitCount(tempDir)).toBe(commitCountBefore);
     },
   );
+
+  // AC: @scoped-dispatch-shadow-serialization ac-11
+  it.skipIf(!canRunShadowTests)(
+    "rolls back uncommitted dirty shadow state when force-reclaiming a lock held beyond max duration",
+    async () => {
+      await setupShadowProject(tempDir);
+      git(tempDir, "checkout -b agent-dev");
+
+      const shadowDir = path.join(tempDir, SHADOW_WORKTREE_DIR);
+
+      // Phase 1: Dirty the shadow worktree with staged and untracked changes.
+      // - Staged new file: simulates an interrupted kspec mutation that staged
+      //   a new registry file but never committed it.
+      const stagedFile = path.join(shadowDir, "staged-partial.yaml");
+      await fs.writeFile(stagedFile, "partial: staged-data\n", "utf-8");
+      git(shadowDir, "add staged-partial.yaml");
+
+      // - Untracked file: simulates a partially-interrupted write
+      const untrackedFile = path.join(shadowDir, "partial-write.tmp");
+      await fs.writeFile(untrackedFile, "partial data\n", "utf-8");
+
+      // Verify shadow is dirty (staged + untracked)
+      const dirtyStatus = git(shadowDir, "status --porcelain");
+      expect(dirtyStatus).toContain("staged-partial.yaml");
+      expect(dirtyStatus).toContain("partial-write.tmp");
+
+      // Phase 2: Plant a force-reclaimable lock (alive PID, old timestamp).
+      const lockPath = getDispatchShadowMutationLockPath(tempDir);
+      const lockDir = `${lockPath}.lock`;
+      await fs.mkdir(lockDir, { recursive: true });
+      const oldTimestamp = Date.now() - 60_000; // 60 seconds ago
+      await fs.writeFile(
+        path.join(lockDir, "pid"),
+        `${process.pid}\n${oldTimestamp}\nfake-uuid`,
+        "utf-8",
+      );
+
+      // Phase 3: Provision a workspace — this goes through withDispatchShadowMutationLock.
+      // The lock will be force-reclaimed (alive PID + exceeded ceiling),
+      // triggering rollbackDirtyShadowWorktree before the provisioning callback.
+      const original = process.env.KSPEC_SHADOW_MUTATION_LOCK_MAX_HOLD_MS;
+      process.env.KSPEC_SHADOW_MUTATION_LOCK_MAX_HOLD_MS = "5000";
+
+      try {
+        const taskRef = `@${testUlid("TASK", 34)}`;
+        await provisionDispatchWorkspace({
+          projectDir: tempDir,
+          taskRef,
+          task: {
+            title: "AC-11 Dirty Rollback",
+            slugs: ["task-ac-11-dirty-rollback"],
+          },
+        });
+
+        // Phase 4: Verify the shadow worktree was cleaned before provisioning proceeded.
+        // - The staged file must be unstaged and removed (it was new, not previously tracked)
+        expect(existsSync(stagedFile)).toBe(false);
+
+        // - The untracked partial-write.tmp must be removed
+        expect(existsSync(untrackedFile)).toBe(false);
+
+        // - Shadow status must be clean (provisioning committed its own changes only)
+        expect(getShadowStatus(tempDir)).toBe("");
+      } finally {
+        if (original === undefined) {
+          delete process.env.KSPEC_SHADOW_MUTATION_LOCK_MAX_HOLD_MS;
+        } else {
+          process.env.KSPEC_SHADOW_MUTATION_LOCK_MAX_HOLD_MS = original;
+        }
+      }
+    },
+  );
 });

@@ -146,24 +146,36 @@ describe("Dispatch shadow mutation lock", () => {
 
   // AC: @scoped-dispatch-shadow-serialization ac-9
   it("concurrent CLI mutation can interleave while reconciliation yields between records", async () => {
-    // This test verifies that the lock is NOT held for the entire
-    // reconciliation batch. We hold the lock manually, start a mutation
-    // in a subprocess, then release — simulating the yield between records.
-    // The key assertion is that a CLI mutation started while the lock is
-    // momentarily free succeeds without timing out.
+    // This test proves that when the lock is held (simulating reconciliation
+    // processing a dirty record), a CLI mutation blocks, and when the lock is
+    // released (simulating the yield between records), the CLI mutation
+    // succeeds — demonstrating the interleaving behavior.
     tempDir = await setupTempFixtures();
     const lockFile = path.join(tempDir, "dispatch-shadow-mutation");
 
-    // First acquire and release — simulating a reconciliation yield
+    // Phase 1: Hold the lock (simulates reconciliation holding lock for a dirty record)
     const release1 = await acquireFileLock(lockFile);
-    await release1();
 
-    // CLI mutation should succeed since lock was yielded
-    const result = await runKspecAsync('task note @test-task-pending "interleaved note"', tempDir, {
+    // Start a CLI mutation while the lock is held — it should block
+    let mutationSettled = false;
+    const mutation = runKspecAsync('task note @test-task-pending "interleaved note"', tempDir, {
       KSPEC_SHADOW_MUTATION_LOCK_FILE: lockFile,
-      KSPEC_SHADOW_MUTATION_LOCK_TIMEOUT_MS: "2000",
+      KSPEC_SHADOW_MUTATION_LOCK_TIMEOUT_MS: "5000",
+    }).finally(() => {
+      mutationSettled = true;
     });
 
+    // Give the CLI subprocess time to start and attempt lock acquisition
+    await sleep(200);
+
+    // The CLI mutation must still be blocked (lock is held by "reconciliation")
+    expect(mutationSettled).toBe(false);
+
+    // Phase 2: Release the lock (simulates reconciliation yielding between records)
+    await release1();
+
+    // The CLI mutation should now acquire the lock and succeed
+    const result = await mutation;
     expect(result.exitCode).toBe(0);
   });
 });

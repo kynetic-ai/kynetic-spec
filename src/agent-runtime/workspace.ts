@@ -1460,9 +1460,15 @@ async function rollbackDirtyShadowWorktree(
       `Rolling back dirty state for ${taskRef}.`,
   );
 
-  // Reset staged changes and restore modified files
-  const resetResult = await runGit(shadowDir, ["checkout", "--", "."]);
-  if (resetResult.status !== 0) {
+  // Phase 1: Unstage all indexed changes (git reset HEAD).
+  // `git checkout -- .` only restores the working tree — it leaves staged
+  // additions/modifications in the index.  Without this reset, a new holder
+  // would inherit and commit the previous holder's partial staged changes.
+  await runGit(shadowDir, ["reset", "HEAD"]);
+
+  // Phase 2: Restore modified tracked files in the working tree.
+  const checkoutResult = await runGit(shadowDir, ["checkout", "--", "."]);
+  if (checkoutResult.status !== 0) {
     // Fallback to hard reset if checkout fails
     await runGit(shadowDir, ["reset", "--hard", "HEAD"]);
   }
