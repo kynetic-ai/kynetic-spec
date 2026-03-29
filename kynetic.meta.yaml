@@ -9632,6 +9632,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-29T08:10:29.659Z
+  - _ulid: 01KMWAP2J9ZASM9E5MHP8N5V8V
+    type: friction
+    content: "Review fix cycles can degenerate into placeholder branch-linkage patches: this session’s
+      spec task already had the AC in shadow state, but the worker responded to a no-diff blocker by
+      adding only it.todo() placeholders to create branch divergence. Reviewers still have to reject
+      these because they provide no behavioral AC evidence. Consider a review or submission gate
+      that distinguishes real behavioral coverage from placeholder annotated tests when a task is
+      spec-only or when branch-linkage is the only failing condition."
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-29T08:17:06.633Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
