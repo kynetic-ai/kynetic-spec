@@ -35,7 +35,7 @@ description: |
 spec_ref: "@api-contract"
 plan_ref: "@plan-daemon-cache-warming-ux"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-api-response-envelope-type"
@@ -54,7 +54,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
   upstream_ref: refs/heads/dev
-session_id: 01KMWAB7N6H16AFDET4FQ6V89F
+session_id: null
 history:
   - author: "@claude"
     changes:
@@ -103,6 +103,16 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-03-29T08:37:42.506Z
+  - author: Test User
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KMWAB7N6H16AFDET4FQ6V89F
+    command: review-verdict-needs-work
+    timestamp: 2026-03-29T08:42:16.153Z
 created_at: 2026-03-29T06:59:51.040Z
 started_at: 2026-03-29T08:11:35.441Z
 submitted_at: 2026-03-29T08:34:55.866Z
