@@ -75019,6 +75019,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMVF1DZKXH2KRA03CAK5TKSN
         timestamp: 2026-03-29T00:13:59.637Z
+      - _ulid: 01KMVF1M0Y7A4NHSAY5MMVRYCY
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMVF1K3JGT025XY76PJ5HHM4
+        timestamp: 2026-03-29T00:14:04.830Z
     examined_commit: 6c58d673bad68d70fee52aa770d4792602926229
     external_links: []
     lifecycle_state: open
@@ -75052,7 +75059,24 @@ reviews:
               mutation proceeds.
             created_at: 2026-03-29T00:13:58.643Z
         kind: blocker
+      - _ulid: 01KMVF1K3JGT025XY76PJ5HHM4
+        anchor:
+          type: code
+          commit: 6c58d673bad68d70fee52aa770d4792602926229
+          line_end: 168
+          line_start: 147
+          path: tests/dispatch-shadow-mutation-lock.test.ts
+          side: head
+        entries:
+          - _ulid: 01KMVF1K3KSST172C5RCYXG9C3
+            author: Test User
+            body: This ac-9 test does not exercise reconciliation at all. It acquires and releases the lock in
+              the test process, then runs a single CLI mutation after the lock is already free. That
+              would pass even if  still monopolized the lock for an entire batch, so it does not
+              prove the required interleaving behavior.
+            created_at: 2026-03-29T00:14:03.891Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-29T00:13:23.809Z
-    updated_at: 2026-03-29T00:13:58.643Z
+    updated_at: 2026-03-29T00:14:03.891Z
     notes: []
