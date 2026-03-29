@@ -78502,6 +78502,24 @@ reviews:
         runner: kspec
         created_at: 2026-03-29T09:03:46.637Z
         completed_at: 2026-03-29T09:03:46.637Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: AGENTS.md, kspec-agents.md,
+          packages/daemon/src/routes/{response-envelope,tasks,sessions,validation,reviews,triage,ag\
+          gregation,items,inbox,meta,plans,refs}.ts,
+          tests/{daemon-read-path,daemon-cache-route-coverage,daemon-api-input-validation,api-respo\
+          nse-envelope}.test.ts. Commands run: kspec task get, kspec item get @api-contract, kspec
+          review for-task/get/add/open, git diff/name-only, rg AC annotations, rg route return
+          paths, kspec validate, npm test. Claims verified: prior search-branch fix is present; full
+          suite passes; envelope adoption is incomplete because /api/validate still returns raw
+          fields. Categories searched: correctness, test coverage, edge cases, integration, error
+          handling."
+        name: review-evidence
+        required: false
+        created_at: 2026-03-29T09:03:48.327Z
+        completed_at: 2026-03-29T09:03:48.327Z
     events:
       - _ulid: 01KMWD4BKKQ8A6YC2NR513GWD8
         actor: Test User
@@ -78530,6 +78548,13 @@ reviews:
           status: skipped
           name: kspec validate
         timestamp: 2026-03-29T09:03:47.181Z
+      - _ulid: 01KMWDBK5H0XKP0D2KXZPAVX1F
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-03-29T09:03:48.913Z
     examined_commit: 41e45ab603c0de98920ef1f0a3e44954f3766350
     external_links: []
     lifecycle_state: open
@@ -78542,5 +78567,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-29T08:59:51.796Z
-    updated_at: 2026-03-29T09:03:46.637Z
+    updated_at: 2026-03-29T09:03:48.327Z
     notes: []
