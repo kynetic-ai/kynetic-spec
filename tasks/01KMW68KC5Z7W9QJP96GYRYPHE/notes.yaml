@@ -1,1 +1,53 @@
-notes: []
+notes:
+  - _ulid: 01KMW7P8557BM3ZKY2NFWS3WY8
+    content: >-
+      Approach: Define ApiResponse<T> envelope type + CacheStatus type + wrapResponse helper.
+
+
+      Key files:
+
+      - packages/shared/src/api.ts — Add CacheStatus type, ApiResponseMeta, ApiResponse<T>
+      interfaces
+
+      - packages/daemon/src/routes/response-envelope.ts — New file for wrapResponse() helper
+
+      - packages/shared/tests/types.test.ts — Add type tests for new types
+
+      - tests/api-response-envelope.test.ts — Behavioral tests for wrapResponse()
+
+
+      Design decisions:
+
+      1. CacheStatus = "ready" | "loading" (per ac-cache-status-field). Current codebase also uses
+      "degraded" | "unloaded" but the task spec specifically calls for "ready" | "loading" literal.
+      Will keep CacheStatus narrowed to what the spec requires.
+
+      2. ApiResponseMeta has: cache_status (required CacheStatus), total/offset/limit (optional
+      numbers for pagination).
+
+      3. ApiResponse<T> = { data: T; meta: ApiResponseMeta }
+
+      4. wrapResponse() takes domain data, optional pagination, and cache domain state. Returns
+      envelope.
+
+      5. This task only defines types and the wrapper. Route handler migration is a separate task
+      (@task-migrate-route-handlers-envelope).
+
+      6. Existing PaginatedResponse<T> kept for backward compat — the migration task will update
+      routes.
+
+
+      Edge cases:
+
+      - Cache warming: wrapResponse returns {data: defaultEmpty, meta: {cache_status: "loading"}}
+
+      - Normal response: cache_status is "ready"
+
+      - Non-paginated endpoints: meta has cache_status but no pagination fields
+
+
+      Test plan: ac-envelope (type structure + wrapper behavior) + ac-cache-status-field (loading vs
+      ready distinction)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-29T07:24:46.629Z
