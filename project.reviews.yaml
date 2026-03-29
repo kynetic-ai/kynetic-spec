@@ -77365,6 +77365,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-29T07:52:47.362Z
+      - _ulid: 01KMW9A03D5JTER2WMW03EFH7M
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMW99ZFVPWDSZ044N8RGX6AP
+        timestamp: 2026-03-29T07:53:02.318Z
     examined_commit: 6943dad4b8203281f7a00c18ae29804ce34c559a
     external_links: []
     lifecycle_state: open
@@ -77374,8 +77381,26 @@ reviews:
       content_hash: ""
       ref: "@01KMW68JT108S4RS3G1GNYH5A9"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMW99ZFVPWDSZ044N8RGX6AP
+        anchor:
+          type: code
+          commit: 6943dad4b8203281f7a00c18ae29804ce34c559a
+          line_end: 1
+          line_start: 1
+          path: .kspec/modules/daemon.yaml
+          side: head
+        entries:
+          - _ulid: 01KMW99ZFVJKTTRTD4ZS5B1R5F
+            author: Test User
+            body: The submitted snapshot does not contain task-specific branch work to merge.  is byte-for-byte
+              identical to  (0	0 returns ), and the examined commit  is just the current  merge
+              commit for an unrelated dispatch change. The intended AC addition exists only on , so
+              this review cycle cannot approve or merge the task in manual-merge mode until the task
+              branch actually carries the submitted change or the submission linkage is corrected.
+            created_at: 2026-03-29T07:53:01.691Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-29T07:52:27.162Z
-    updated_at: 2026-03-29T07:52:46.805Z
+    updated_at: 2026-03-29T07:53:01.691Z
     notes: []
