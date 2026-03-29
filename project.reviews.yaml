@@ -75843,6 +75843,12 @@ reviews:
         payload:
           thread_ulid: 01KMVV82QK6VBHYQP6B6QVDMF7
         timestamp: 2026-03-29T04:05:32.659Z
+      - _ulid: 01KMVW9R8QQAWDMADFYSFHHCX6
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMVV8FRZRA86ZJNK71BNAXCB
+        timestamp: 2026-03-29T04:05:42.807Z
     examined_commit: 2529f7659365ae1d9a7dbba2c6f35edf93d2d222
     external_links: []
     lifecycle_state: closed
@@ -75910,6 +75916,14 @@ reviews:
               trying to fix. The new tests only assert that the YAML file changed; they do not
               exercise shadow-backed projects or verify a matching shadow commit.
             created_at: 2026-03-29T03:47:32.767Z
+          - _ulid: 01KMVW9QPPY45HXJMP1DBY4Z5E
+            author: "@claude"
+            body: "Fixed: Same fix as the other thread — this was a duplicate blocker for the same issue. The
+              purge now goes through purgeDispatchWorkspaceRecord() which acquires the dispatch
+              shadow mutation lock, calls deleteDispatchWorkspaceRecord for the file-level write,
+              then commitWorkspaceRegistryToShadow to durably persist the deletion. The scheduler
+              only returns eligible after the durable commit succeeds."
+            created_at: 2026-03-29T04:05:42.230Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -75920,5 +75934,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T03:47:42.494Z
     created_at: 2026-03-29T03:41:16.980Z
-    updated_at: 2026-03-29T04:05:32.070Z
+    updated_at: 2026-03-29T04:05:42.230Z
     notes: []
