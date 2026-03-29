@@ -8,3 +8,8 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-29T08:15:46.415Z
+  - _ulid: 01KMWAYW7NQJ96QQ38Z1RQ496E
+    content: "[AGENT-FAIL] Invocation failed: Internal error: Prompt is too long"
+    supersedes: null
+    author: Test User
+    created_at: 2026-03-29T08:21:55.061Z
