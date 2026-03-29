@@ -27710,22 +27710,43 @@ workspaces:
     base_branch_point: c3a862f1be7f815e76a2a2efa8b18eb604926627
     bootstrap:
       status: succeeded
-      canonicalBranchHead: c3a862f1be7f815e76a2a2efa8b18eb604926627
+      canonicalBranchHead: 4ccb779f2f2c8a4cc6b34c8e6ae78520fc1d5120
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
       failureMessage: null
       invalidationReasons:
         - workspace-dependencies-missing
-      lastRole: worker
-      lastRunAt: 2026-03-29T11:54:46.152Z
+      lastRole: reviewer
+      lastRunAt: 2026-03-29T12:07:02.808Z
       roleStates:
         reviewer:
-          status: not_run
-          canonicalBranchHead: null
-          configHash: null
+          status: succeeded
+          canonicalBranchHead: 4ccb779f2f2c8a4cc6b34c8e6ae78520fc1d5120
+          configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
           failureMessage: null
-          invalidationReasons: []
-          lastRunAt: null
-          steps: []
+          invalidationReasons:
+            - workspace-dependencies-missing
+          lastRunAt: 2026-03-29T12:07:02.808Z
+          steps:
+            - status: succeeded
+              allowTrackedChanges: false
+              idempotent: true
+              name: install-workspace-dependencies
+              output: |-
+                added 287 packages, and audited 292 packages in 3s
+
+                67 packages are looking for funding
+                  run `npm fund` for details
+
+                12 vulnerabilities (1 low, 7 moderate, 4 high)
+
+                To address all issues, run:
+                  npm audit fix
+
+                Run `npm audit` for details.
+              reviewerRerunAllowed: true
+              role: reviewer
+              run: npm ci
+              source: dispatch
         worker:
           status: succeeded
           canonicalBranchHead: c3a862f1be7f815e76a2a2efa8b18eb604926627
@@ -27773,7 +27794,7 @@ workspaces:
 
             Run `npm audit` for details.
           reviewerRerunAllowed: true
-          role: worker
+          role: reviewer
           run: npm ci
           source: dispatch
     branch_provenance:
@@ -27790,12 +27811,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-29T12:06:55.072Z
+      updated_at: 2026-03-29T12:06:58.068Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-29T12:06:55.072Z
+      updated_at: 2026-03-29T12:06:58.068Z
     integration:
       status: pending
       detail: null
@@ -27803,24 +27824,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: c3a862f1be7f815e76a2a2efa8b18eb604926627
-      updated_at: 2026-03-29T12:06:55.072Z
-    lifecycle_state: ready
+      updated_at: 2026-03-29T12:06:58.068Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KMW68MFA3AFKAEQJS9M05J92"
     task_slug: task-ui-cache-warming-interceptor
     timestamps:
       closed_at: null
       last_active_at: 2026-03-29T11:54:47.911Z
-      last_reconciled_at: 2026-03-29T12:06:55.072Z
+      last_reconciled_at: 2026-03-29T12:06:58.068Z
       created_at: 2026-03-29T11:54:41.195Z
-      updated_at: 2026-03-29T12:06:55.072Z
+      updated_at: 2026-03-29T12:07:02.809Z
     workspace_id: dispatch-workspace-01KMW68MFA3AFKAEQJS9M05J92
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 4ccb779f2f2c8a4cc6b34c8e6ae78520fc1d5120
+        last_seen_at: 2026-03-29T12:06:58.068Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ui-cache-warming-interceptor-01kmw68m-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-ui-cache-warming-interceptor/01kmw68m
-        head: c3a862f1be7f815e76a2a2efa8b18eb604926627
-        last_seen_at: 2026-03-29T11:54:41.195Z
+        head: 4ccb779f2f2c8a4cc6b34c8e6ae78520fc1d5120
+        last_seen_at: 2026-03-29T12:06:58.068Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ui-cache-warming-interceptor-01kmw68m
