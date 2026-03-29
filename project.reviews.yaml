@@ -76436,6 +76436,17 @@ reviews:
         required: true
         created_at: 2026-03-29T06:37:13.725Z
         completed_at: 2026-03-29T06:37:13.725Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Phase ordering is coherent once the envelope scope is corrected: spec updates precede
+          server contract changes, client unwrapping waits for server migration, and E2E validation
+          runs after UI and WebSocket work."
+        name: Dependency ordering
+        required: true
+        created_at: 2026-03-29T06:37:13.805Z
+        completed_at: 2026-03-29T06:37:13.805Z
     events:
       - _ulid: 01KMW4XDZ9Z39NRSPEJ5DAX67D
         actor: Jacob Chapel
@@ -76492,6 +76503,13 @@ reviews:
           status: fail
           name: AC coverage mapping
         timestamp: 2026-03-29T06:37:15.909Z
+      - _ulid: 01KMW4Z93463HT7755ESN9WSCC
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Dependency ordering
+        timestamp: 2026-03-29T06:37:16.772Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -76553,5 +76571,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-29T06:36:16.234Z
-    updated_at: 2026-03-29T06:37:13.725Z
+    updated_at: 2026-03-29T06:37:13.805Z
     notes: []
