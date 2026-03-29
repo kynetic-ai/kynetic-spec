@@ -18143,9 +18143,21 @@ runs:
     completed_at: 2026-03-29T07:14:33.594Z
   - _ulid: 01KMW7FHHBQ7RAE1XXJXZA86NE
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Test User
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-03-29T07:21:06.859Z
+        completed_at: 2026-03-29T07:22:04.028Z
+        notes: "Improvement: update reviewer/merge guidance for detached review snapshots so the merge step
+          explicitly handles the case where the target branch is owned by another worktree. Guidance
+          should say when to treat merge as a verified no-op and when to perform it from the primary
+          worktree."
+      - status: completed
+        step_index: 1
+        started_at: 2026-03-29T07:22:04.028Z
+        completed_at: 2026-03-29T07:22:04.028Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-29T07:21:06.859Z
