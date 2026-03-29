@@ -81660,6 +81660,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMXTC2TM1RX7D43X6F41G2ZZ
         timestamp: 2026-03-29T22:10:31.449Z
+      - _ulid: 01KMXTC52ZF1WX3ZAWA9A9HNER
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMXTC4GX1XSZDD9ZDHY65PNA
+        timestamp: 2026-03-29T22:10:33.183Z
     examined_commit: 16bf033f141f9de2e878c93802f2979933dacc09
     external_links: []
     lifecycle_state: closed
@@ -81724,6 +81731,24 @@ reviews:
               third scenario is explicitly skipped.
             created_at: 2026-03-29T22:10:30.868Z
         kind: blocker
+      - _ulid: 01KMXTC4GX1XSZDD9ZDHY65PNA
+        anchor:
+          type: code
+          commit: 16bf033f141f9de2e878c93802f2979933dacc09
+          line_end: 155
+          line_start: 152
+          path: packages/web-ui/tests/e2e/cache-warming-transition.spec.ts
+          side: head
+        entries:
+          - _ulid: 01KMXTC4GXKTS7A4G0C3AGP4M5
+            author: Test User
+            body: This assertion does not verify a transition to real data. The page heading is always rendered
+              on /tasks, so checking for 'Tasks' plus the skeleton disappearing can still pass if
+              the page lands in another non-data state. The route already exposes a concrete signal
+              for loaded content (), but the test never asserts that the list or empty-state content
+              for the second project actually rendered.
+            created_at: 2026-03-29T22:10:32.605Z
+        kind: blocker
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -81733,5 +81758,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T22:09:45.971Z
     created_at: 2026-03-29T22:04:14.293Z
-    updated_at: 2026-03-29T22:10:30.868Z
+    updated_at: 2026-03-29T22:10:32.605Z
     notes: []
