@@ -76425,6 +76425,17 @@ reviews:
         required: true
         created_at: 2026-03-29T06:37:13.745Z
         completed_at: 2026-03-29T06:37:13.745Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: The proposed @api-contract ac-envelope covers any endpoint response, but the planned tasks
+          only migrate read/query handlers and fetch paths. Non-read endpoints are not claimed by
+          any task.
+        name: AC coverage mapping
+        required: true
+        created_at: 2026-03-29T06:37:13.725Z
+        completed_at: 2026-03-29T06:37:13.725Z
     events:
       - _ulid: 01KMW4XDZ9Z39NRSPEJ5DAX67D
         actor: Jacob Chapel
@@ -76474,6 +76485,13 @@ reviews:
           status: pass
           name: Reference validation
         timestamp: 2026-03-29T06:37:15.096Z
+      - _ulid: 01KMW4Z884RTXKGFVETWTH3YK8
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: AC coverage mapping
+        timestamp: 2026-03-29T06:37:15.909Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -76535,5 +76553,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-29T06:36:16.234Z
-    updated_at: 2026-03-29T06:37:13.745Z
+    updated_at: 2026-03-29T06:37:13.725Z
     notes: []
