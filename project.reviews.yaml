@@ -76873,6 +76873,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-29T07:16:01.444Z
+      - _ulid: 01KMW7DBPBZM0200N933KEJTW3
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMW7DB4Y2J1WTS7MRCKJRRGV
+        timestamp: 2026-03-29T07:19:55.339Z
     examined_commit: 6943dad4b8203281f7a00c18ae29804ce34c559a
     external_links: []
     lifecycle_state: open
@@ -76882,8 +76889,42 @@ reviews:
       content_hash: ""
       ref: "@01KMW68JFTW7WDPNX354YWEKAN"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMW7DB4Y2J1WTS7MRCKJRRGV
+        entries:
+          - _ulid: 01KMW7DB4ZGBKF8HYDDW8AZ45H
+            author: Test User
+            body: >-
+              Evidence log:
+
+
+              Files read: @api-contract, @trait-api-endpoint, @plan-daemon-cache-warming-ux, git
+              branch/diff state, route search hits for existing _cache_status usage.
+
+
+              Commands run: git diff --stat
+              origin/dev...origin/dispatch/task/task-spec-update-api-contract/01kmw68j; kspec task
+              get @01KMW68JFTW7WDPNX354YWEKAN; kspec review for-task @01KMW68JFTW7WDPNX354YWEKAN;
+              kspec item get @api-contract; kspec item get @trait-api-endpoint; kspec plan get
+              @plan-daemon-cache-warming-ux; kspec validate; npm test; grep -Rni "AC:
+              @api-contract\|AC: @trait-" tests/; rg -n
+              "cache_status|_cache_status|ApiResponse|wrapResponse|normalized envelope|cache
+              readiness" src packages tests docs.
+
+
+              Claims verified: verified the submitted task is spec-only because the task branch and
+              dev resolve to the same commit (6943dad4b820) and the main-tree diff is empty;
+              verified the current AC text matches the planned rewrite/additions; verified full test
+              suite passes.
+
+
+              Categories searched: correctness (AC wording and scope), edge cases (loading vs ready
+              empty/default response distinction), error handling (no new contradictions with
+              existing error ACs), test quality (AC annotation scan and full suite run), integration
+              (plan alignment and existing route shapes using _cache_status). No blockers found.
+            created_at: 2026-03-29T07:19:54.783Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-29T07:15:50.533Z
-    updated_at: 2026-03-29T07:16:00.853Z
+    updated_at: 2026-03-29T07:19:54.783Z
     notes: []
