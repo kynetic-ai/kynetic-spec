@@ -77178,6 +77178,23 @@ reviews:
         required: false
         created_at: 2026-03-29T07:43:01.366Z
         completed_at: 2026-03-29T07:43:01.366Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: >-
+          Ran 
+
+          > @kynetic-ai/spec@0.12.0 test
+
+          > node scripts/test.cjs tests/api-response-envelope.test.ts
+          packages/shared/tests/types.test.ts; 9 suites / 44 tests passed, covering the new helper
+          and shared type assertions.
+        name: targeted tests
+        required: false
+        runner: npm
+        created_at: 2026-03-29T07:43:23.342Z
+        completed_at: 2026-03-29T07:43:23.342Z
     events:
       - _ulid: 01KMW8EE8P97GPH8JVEQ04NG95
         actor: Test User
@@ -77213,6 +77230,13 @@ reviews:
           kind: nit
           thread_ulid: 01KMW8R910BQ8F75S3Y7PVPTNK
         timestamp: 2026-03-29T07:43:22.185Z
+      - _ulid: 01KMW8RB7BA003B84D9BTKJ85T
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted tests
+        timestamp: 2026-03-29T07:43:23.884Z
     examined_commit: a243c68309f3bec0fd3937b629962f8db01195e4
     external_links: []
     lifecycle_state: open
@@ -77260,5 +77284,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-29T07:37:59.318Z
-    updated_at: 2026-03-29T07:43:21.632Z
+    updated_at: 2026-03-29T07:43:23.342Z
     notes: []
