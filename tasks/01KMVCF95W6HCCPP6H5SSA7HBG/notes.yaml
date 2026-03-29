@@ -1,1 +1,17 @@
-notes: []
+notes:
+  - _ulid: 01KMVEABGEDD9762V48A9TK5XD
+    content: "Approach: 5 changes across 2 files. (1) file-lock.ts: Add max-hold-duration support to
+      acquireFileLock via KSPEC_SHADOW_MUTATION_LOCK_MAX_HOLD_MS env var (default 30s). Extend
+      checkStaleLock to treat locks held beyond ceiling as stale regardless of PID liveness. Add
+      reclaimInfo to release so callers know if force-reclaimed. (2) file-lock.ts: checkStaleLock
+      returns richer info including whether duration-based reclaim occurred + holder PID + hold
+      duration. (3) workspace.ts: Refactor reconcileDispatchWorkspaceRegistry to acquire/release
+      lock per-dirty-record instead of batch. Clean records evaluated without lock. (4)
+      workspace.ts: After force-reclaiming a lock (duration-based), check shadow worktree for dirty
+      state and roll back before proceeding. (5) Audit: All call sites already use
+      withDispatchShadowMutationLock wrapper with try/finally. CLI uses preAction/postAction +
+      process.exit handler. No bare acquireFileLock calls outside wrappers. Test plan: ac-7 through
+      ac-11 each need annotated tests."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-29T00:01:22.446Z
