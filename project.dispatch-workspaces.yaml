@@ -28050,12 +28050,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-29T13:25:08.164Z
+      updated_at: 2026-03-29T13:25:12.000Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-29T13:25:08.164Z
+      updated_at: 2026-03-29T13:25:12.000Z
     integration:
       status: pending
       detail: null
@@ -28063,24 +28063,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 9b6b755439cc00d3bfe911f7974077e6942c6de5
-      updated_at: 2026-03-29T13:25:08.164Z
-    lifecycle_state: ready
+      updated_at: 2026-03-29T13:25:12.000Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KMW68MZ5Z281YD9Z87K2G55A"
     task_slug: task-ui-warming-skeletons
     timestamps:
       closed_at: null
       last_active_at: 2026-03-29T13:12:45.847Z
-      last_reconciled_at: 2026-03-29T13:25:08.164Z
+      last_reconciled_at: 2026-03-29T13:25:12.000Z
       created_at: 2026-03-29T12:26:53.472Z
-      updated_at: 2026-03-29T13:25:08.164Z
+      updated_at: 2026-03-29T13:25:12.000Z
     workspace_id: dispatch-workspace-01KMW68MZ5Z281YD9Z87K2G55A
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 65b9cc87bfebad12330eaec3b14f345459cc8f92
+        last_seen_at: 2026-03-29T13:25:12.000Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ui-warming-skeletons-01kmw68m-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-ui-warming-skeletons/01kmw68m
-        head: 7aa92989e9de97463c356afbe1d2bdcc7fc92274
-        last_seen_at: 2026-03-29T13:12:42.270Z
+        head: 65b9cc87bfebad12330eaec3b14f345459cc8f92
+        last_seen_at: 2026-03-29T13:25:12.000Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ui-warming-skeletons-01kmw68m
