@@ -80423,7 +80423,18 @@ reviews:
     slugs: []
     title: Review task-ui-cache-warming-interceptor
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 1989/1989 suites passed, 7186/7191 tests passed, 5 skipped on snapshot
+          4ccb779f2f2c8a4cc6b34c8e6ae78520fc1d5120.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-29T12:11:04.040Z
+        completed_at: 2026-03-29T12:11:04.040Z
     events:
       - _ulid: 01KMWQYMAB3D9W3N0S79FA1G7A
         actor: Test User
@@ -80438,6 +80449,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-29T12:09:52.240Z
+      - _ulid: 01KMWR2FJ2MHCDVYWP62VWWXX8
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-29T12:11:04.643Z
     examined_commit: 4ccb779f2f2c8a4cc6b34c8e6ae78520fc1d5120
     external_links: []
     lifecycle_state: open
@@ -80450,5 +80468,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-29T12:08:58.443Z
-    updated_at: 2026-03-29T12:09:51.597Z
+    updated_at: 2026-03-29T12:11:04.040Z
     notes: []
