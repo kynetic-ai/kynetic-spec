@@ -18422,7 +18422,7 @@ runs:
     completed_at: 2026-03-29T09:34:08.567Z
   - _ulid: 01KMWFGHGR6NHCJX1Z7SH03PYZ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Test User
     step_results:
       - status: completed
@@ -18440,7 +18440,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-29T09:42:31.356Z
-        completed_at: 2026-03-29T09:42:31.356Z
+        completed_at: 2026-03-29T09:43:00.278Z
+        notes: "High-confidence reflection: (1) detached reviewer merge friction recurred, but it is already
+          tracked by existing friction observations including 01KMSXWP, 01KMVHSD, 01KMVKXZ,
+          01KMVWVR, 01KMW76M, and 01KMW7GK; do not duplicate. (2) Review evidence-log discipline
+          again proved valuable, but that success overlaps existing review-workflow success
+          observations such as 01KMVBSN and 01KMWF2W. No new untracked item met the bar for
+          capture."
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-29T09:43:00.278Z
+        completed_at: 2026-03-29T09:43:00.278Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-29T09:41:28.216Z
