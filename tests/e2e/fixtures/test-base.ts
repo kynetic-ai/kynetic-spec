@@ -5,10 +5,12 @@ import { join, dirname } from "path";
 import { tmpdir } from "os";
 import { fileURLToPath } from "url";
 import { createServer } from "net";
-import { CLI_PATH } from "../../helpers/cli.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+// Built CLI path — resolved locally to avoid importing vitest-only helpers
+const CLI_PATH = join(__dirname, "../../../dist/cli/index.js");
 
 // E2E fixtures live alongside this file
 const E2E_FIXTURES = __dirname;
@@ -93,7 +95,11 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
       const isolatedHome = join(tempDir, ".home");
       const configDir = join(isolatedHome, ".config", "kspec");
       mkdirSync(configDir, { recursive: true });
-      const { KSPEC_NO_DAEMON: _kspecNoDaemon, ...baseEnv } = process.env;
+      const {
+        KSPEC_NO_DAEMON: _kspecNoDaemon,
+        KSPEC_SESSION_ID: _kspecSessionId,
+        ...baseEnv
+      } = process.env;
       const isolatedEnv = {
         ...baseEnv,
         HOME: isolatedHome,
