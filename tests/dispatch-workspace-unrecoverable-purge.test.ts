@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { existsSync } from "node:fs";
 import * as fs from "node:fs/promises";
 import { execSync } from "node:child_process";
 import * as path from "node:path";
@@ -6,19 +7,69 @@ import * as YAML from "yaml";
 import * as invocationModule from "../src/agent-runtime/invocation.js";
 import { DispatchEngine } from "../src/agent-runtime/dispatch.js";
 import {
+  getDispatchShadowMutationLockPath,
   getDispatchWorkspaceHealth,
+  purgeDispatchWorkspaceRecord,
 } from "../src/agent-runtime/workspace.js";
+import { acquireFileLock } from "../src/parser/file-lock.js";
 import {
   loadDispatchWorkspaceRegistry,
   deleteDispatchWorkspaceRecord,
 } from "../src/parser/dispatch-workspaces.js";
+import { SHADOW_WORKTREE_DIR } from "../src/parser/shadow.js";
 import { initContext } from "../src/parser/index.js";
-import { cleanupTempDir, createTempDir, initGitRepo, testUlid } from "./helpers/cli.js";
+import { cleanupTempDir, createTempDir, initGitRepo, kspec, testUlid } from "./helpers/cli.js";
 import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
 
 ensureSplitBackendRegistered();
 
 const MOCK_KSPEC_CLI = path.join(__dirname, "mocks", "kspec-capture-mock.cjs");
+const projectCli = path.resolve(__dirname, "..", "dist", "cli", "index.js");
+
+const canRunShadowTests = (() => {
+  try {
+    const version = execSync("git --version", { encoding: "utf-8" }).trim();
+    const match = version.match(/(\d+)\.(\d+)/);
+    if (!match) return false;
+    const [, major, minor] = match.map(Number);
+    return (major > 2 || (major === 2 && minor >= 42)) && existsSync(projectCli);
+  } catch {
+    return false;
+  }
+})();
+
+async function setupShadowProject(dir: string): Promise<string> {
+  initGitRepo(dir);
+  await fs.writeFile(path.join(dir, "README.md"), "seed\n", "utf-8");
+  git(dir, "add README.md");
+  git(dir, 'commit -m "init"');
+  const result = kspec("init --no-prompt", dir, {
+    env: { KSPEC_AUTHOR: "@test" },
+  });
+  if (result.exitCode !== 0) {
+    throw new Error(`kspec init --no-prompt failed: ${result.stderr}`);
+  }
+  return path.join(dir, SHADOW_WORKTREE_DIR);
+}
+
+function getShadowCommitCount(projectDir: string): number {
+  return parseInt(
+    execSync("git rev-list --count HEAD", {
+      cwd: path.join(projectDir, SHADOW_WORKTREE_DIR),
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "pipe"],
+    }).trim(),
+    10,
+  );
+}
+
+function getShadowStatus(projectDir: string): string {
+  return execSync("git status --porcelain", {
+    cwd: path.join(projectDir, SHADOW_WORKTREE_DIR),
+    encoding: "utf-8",
+    stdio: ["pipe", "pipe", "pipe"],
+  }).trim();
+}
 
 function git(cwd: string, command: string): string {
   return execSync(`git ${command}`, {
@@ -660,11 +711,13 @@ describe("purge unrecoverable workspace records for non-terminal tasks", () => {
         };
       });
 
+      // Use a short reconcile interval so the engine runs a second cycle
+      // after the first-cycle purge returns eligible=false.
       const engine = new DispatchEngine({
         projectDir: tempDir,
         specDir: tempDir,
         kspecCliPath: MOCK_KSPEC_CLI,
-        reconcileIntervalMs: 0,
+        reconcileIntervalMs: 100,
         coalesceWindowMs: 0,
       });
 
@@ -684,6 +737,80 @@ describe("purge unrecoverable workspace records for non-terminal tasks", () => {
       const records = await loadDispatchWorkspaceRegistry(ctx);
       const staleRecord = records.find((r) => r.workspace_id === workspaceId);
       expect(staleRecord).toBeUndefined();
+    },
+  );
+
+  // AC: @dispatch-workspace-registry ac-8
+  // AC: @dispatch-workspace-registry ac-14
+  it.skipIf(!canRunShadowTests)(
+    "purgeDispatchWorkspaceRecord durably commits the deletion to the shadow branch",
+    async () => {
+      const shadowDir = await setupShadowProject(tempDir);
+      git(tempDir, "checkout -b agent-dev");
+
+      const taskRef = `@${testUlid("TASK", 80)}`;
+      const taskSlug = "task-shadow-purge-durable";
+      const workspaceId = "ws-shadow-purge-durable";
+
+      // Seed the registry inside the shadow worktree (specDir = .kspec/)
+      await seedWorkspaceRegistry(shadowDir, [
+        makeUnrecoverableWorkspaceRecord(tempDir, {
+          workspaceId,
+          taskRef,
+          taskSlug,
+          canonicalBranch: `dispatch/task/${taskSlug}/01task00`,
+        }),
+      ]);
+
+      // Commit the seeded registry so it starts from a clean shadow state.
+      // Use --no-verify to bypass the pre-commit hook that blocks direct
+      // shadow commits — this is test-only seeding, not a runtime mutation.
+      git(shadowDir, "add project.dispatch-workspaces.yaml");
+      git(shadowDir, 'commit --no-verify -m "seed registry"');
+
+      const commitsBefore = getShadowCommitCount(tempDir);
+
+      // Purge the record through the durable path
+      await purgeDispatchWorkspaceRecord(tempDir, taskRef, workspaceId);
+
+      // Shadow worktree should be clean (no uncommitted changes)
+      expect(getShadowStatus(tempDir)).toBe("");
+
+      // A new shadow commit should have been created
+      const commitsAfter = getShadowCommitCount(tempDir);
+      expect(commitsAfter).toBeGreaterThan(commitsBefore);
+
+      // The record should be gone from the registry
+      const ctx = await initContext(tempDir);
+      const records = await loadDispatchWorkspaceRegistry(ctx);
+      expect(records.find((r) => r.workspace_id === workspaceId)).toBeUndefined();
+    },
+  );
+
+  // AC: @dispatch-workspace-registry ac-8
+  // AC: @dispatch-workspace-registry ac-14
+  it.skipIf(!canRunShadowTests)(
+    "purgeDispatchWorkspaceRecord acquires the shadow mutation lock",
+    async () => {
+      await setupShadowProject(tempDir);
+      git(tempDir, "checkout -b agent-dev");
+
+      // Hold the lock so purge cannot acquire it
+      const release = await acquireFileLock(getDispatchShadowMutationLockPath(tempDir));
+      process.env.KSPEC_SHADOW_MUTATION_LOCK_TIMEOUT_MS = "50";
+
+      try {
+        await expect(
+          purgeDispatchWorkspaceRecord(
+            tempDir,
+            `@${testUlid("TASK", 81)}`,
+            "ws-lock-contention",
+          ),
+        ).rejects.toThrow(/dispatch shadow mutation lock unavailable/i);
+      } finally {
+        delete process.env.KSPEC_SHADOW_MUTATION_LOCK_TIMEOUT_MS;
+        await release();
+      }
     },
   );
 });

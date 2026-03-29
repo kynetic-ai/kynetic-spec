@@ -22,7 +22,6 @@ import {
   loadMetaContext,
   areDependenciesMet,
   loadReviewRecords,
-  deleteDispatchWorkspaceRecord,
   type LoadedTask,
   type LoadedAgent,
 } from "../parser/index.js";
@@ -59,6 +58,7 @@ import {
   resolveDispatchIntegrationMutationScope,
   resolveDispatchRemote,
   resolveDispatchWorkspaceConfig,
+  purgeDispatchWorkspaceRecord,
 } from "./workspace.js";
 import { ensureWorkspaceBootstrap, DispatchBootstrapError } from "./bootstrap.js";
 import type { AgentDispatchRule, AgentDispatchFilter } from "../schema/meta.js";
@@ -1885,8 +1885,8 @@ export class DispatchEngine {
 
       // AC: @dispatch-workspace-registry ac-14 — after discovery fails for a
       // resumable task with an unrecoverable workspace, purge the stale record
-      // so the task can be freshly provisioned. Return eligible with exists=false
-      // so provisioning creates a new workspace in this dispatch cycle.
+      // so the task can be freshly provisioned. The purge acquires the shadow
+      // mutation lock and durably commits (ac-8) before returning eligible.
       if (isNonTerminal && isUnrecoverable && health.metadata) {
         await this._purgeUnrecoverableWorkspaceRecord(
           entry.change.taskRef,
@@ -1909,9 +1909,9 @@ export class DispatchEngine {
 
     // AC: @dispatch-workspace-registry ac-14 — for non-resumable non-terminal tasks
     // (e.g., pending via task.ready) with an unrecoverable workspace record, purge
-    // the stale record so the task becomes eligible for fresh provisioning. Return
-    // eligible with exists=false so provisioning creates a new workspace in this
-    // dispatch cycle.
+    // the stale record so the task becomes eligible for fresh provisioning. The
+    // purge acquires the shadow mutation lock and durably commits (ac-8) before
+    // returning eligible.
     if (!eligible && isNonTerminal && isUnrecoverable && health.metadata) {
       await this._purgeUnrecoverableWorkspaceRecord(
         entry.change.taskRef,
@@ -1932,6 +1932,11 @@ export class DispatchEngine {
    * Purge an unrecoverable workspace record so the task can be freshly
    * provisioned on the next dispatch cycle.
    *
+   * Acquires the dispatch shadow mutation lock and durably commits the
+   * deletion to the shadow branch so daemon restart cannot resurrect the
+   * stale record.
+   *
+   * AC: @dispatch-workspace-registry ac-8
    * AC: @dispatch-workspace-registry ac-14
    */
   private async _purgeUnrecoverableWorkspaceRecord(
@@ -1944,8 +1949,7 @@ export class DispatchEngine {
         `Task will be eligible for fresh provisioning on the next dispatch cycle.`,
     );
     try {
-      const ctx = await initContext(this.projectDir);
-      await deleteDispatchWorkspaceRecord(ctx, workspaceId);
+      await purgeDispatchWorkspaceRecord(this.projectDir, taskRef, workspaceId);
     } catch (err) {
       console.log(
         `[dispatch] Failed to purge workspace record ${workspaceId}: ${err instanceof Error ? err.message : String(err)}`,
