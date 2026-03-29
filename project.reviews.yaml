@@ -75241,7 +75241,18 @@ reviews:
     slugs: []
     title: Review completed task record reconciliation (cycle 5)
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh --run tests/dispatch-workspace-terminal-reconciliation.test.ts
+          tests/daemon-command-api.test.ts passed: 4 suites, 30 tests, 0 failures."
+        name: targeted daemon+reconciliation repro
+        required: true
+        runner: npm-test
+        created_at: 2026-03-29T00:58:32.114Z
+        completed_at: 2026-03-29T00:58:32.114Z
     events:
       - _ulid: 01KMVHBZTTXN3A1D24G6KSTZQS
         actor: Test User
@@ -75256,6 +75267,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-29T00:55:18.265Z
+      - _ulid: 01KMVHK19EHR8YN297B88ZCJJ7
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted daemon+reconciliation repro
+        timestamp: 2026-03-29T00:58:32.623Z
     examined_commit: 9b50c4d10bde1740c6515d9e8fc7aaa52f1c7e5f
     external_links: []
     lifecycle_state: open
@@ -75268,5 +75286,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-29T00:54:41.754Z
-    updated_at: 2026-03-29T00:55:17.407Z
+    updated_at: 2026-03-29T00:58:32.114Z
     notes: []
