@@ -1,0 +1,49 @@
+_ulid: 01KMW68KM0EXKESA30EMPW63VY
+slugs:
+  - task-migrate-route-handlers-envelope
+title: Migrate daemon route handlers to unified envelope
+type: task
+description: |
+  There are ~27 route handlers across the daemon that return responses
+  directly with varying shapes. Each currently has its own inline
+  cache warming check that returns a hand-crafted loading response
+  (e.g. {items: [], total: 0, _cache_status: "loading"} in tasks.ts,
+  {counts: {}, _cache_status: "loading"} in aggregation.ts). These
+  all need to use the envelope wrapper from the previous task.
+
+  Why: The envelope type is defined but not yet used by any route. This
+  task is the mechanical migration that makes the contract real. Until
+  all routes use the envelope, the web UI cannot rely on a single
+  response shape.
+
+  What: Update every route handler in the daemon routes directory to
+  use the wrapResponse helper. Discover all handlers by searching for
+  existing _cache_status usage and direct response object construction
+  — these are the sites that need migration. This covers list
+  endpoints, aggregation/stats endpoints, validation endpoints, meta
+  endpoints, and detail endpoints. Remove the inline _cache_status
+  field construction from each handler — the wrapper handles it.
+
+  How: For each route: replace the return statement with a call to
+  wrapResponse(), passing the domain data and cache domain state.
+  List endpoints pass their items array as data. Aggregation endpoints
+  pass their counts/stats object. The wrapper reads domain state from
+  EntityCache.getDomainState() to set cache_status. Existing tests
+  need updating to expect the new shape.
+
+  Covers: @api-contract ac-envelope, ac-cache-status-field.
+spec_ref: "@api-contract"
+plan_ref: "@plan-daemon-cache-warming-ux"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-api-response-envelope-type"
+context: []
+priority: 2
+tags:
+  - api
+  - daemon
+vcs_refs: []
+created_at: 2026-03-29T06:59:51.040Z
+todos: []

@@ -29955,10 +29955,21 @@ plans:
       event (P1, can run in parallel since independent). Then route handler migration (P2). Then
       client unwrapping + interceptor (P3). Then WS subscription + skeleton views (P4). Finally E2E
       test (P5).
-    status: approved
+    status: active
     approved_at: 2026-03-29T06:59:34.916Z
     derived_specs: []
-    derived_tasks: []
+    derived_tasks:
+      - "@task-spec-update-api-contract"
+      - "@task-spec-update-entity-cache"
+      - "@task-spec-update-data-freshness"
+      - "@task-api-response-envelope-type"
+      - "@task-migrate-route-handlers-envelope"
+      - "@task-cache-domain-ready-ws-event"
+      - "@task-ui-unwrap-envelope"
+      - "@task-ui-cache-warming-interceptor"
+      - "@task-ui-cache-domain-ready-subscription"
+      - "@task-ui-warming-skeletons"
+      - "@task-e2e-cache-warming-transition"
     module_ref: null
     source_path: /home/chapel/Projects/kynetic-spec/plans/daemon-cache-warming-ux.md
     created_at: 2026-03-28T08:28:38.200Z
@@ -29997,3 +30008,55 @@ plans:
           cold-cache only, commit static mode strategy (wrap at source)"
         author: "@claude"
         created_at: 2026-03-29T06:54:09.725Z
+      - _ulid: 01KMW68NGEHRA2ZKK560C8AVTK
+        content: >-
+          ### Response Envelope Shape
+
+
+          ```typescript
+
+          interface ApiResponse<T> {
+            data: T;
+            meta: {
+              total?: number;
+              offset?: number;
+              limit?: number;
+              cache_status: "ready" | "loading";
+            };
+          }
+
+          ```
+
+
+          All list endpoints: `T = SomeItem[]`. Aggregation: `T = { counts: {...} }`. Detail
+          endpoints can use the same envelope with `T = SingleItem`.
+
+
+          ### Cache Warming Detection Strategy
+
+
+          The interceptor should treat `cache_status: "loading"` responses as transient errors
+          rather than successful empty results. This prevents TanStack Query from caching them with
+          the normal staleTime. The retry mechanism (2s interval, 15 attempts = 30s ceiling) runs
+          automatically. WebSocket domain_ready events short-circuit the retry by invalidating the
+          query.
+
+
+          ### Static Mode
+
+
+          Static exports don't have cache warming — all data is pre-baked. Static data helpers are
+          updated to return the same envelope shape with `cache_status: "ready"`. This means the
+          unwrap path is identical for live and static modes — no branching or format detection
+          needed.
+
+
+          ### Migration Order
+
+
+          Phase 0 spec updates first (P1, can run in parallel). Then server-side envelope type + WS
+          event (P1, can run in parallel since independent). Then route handler migration (P2). Then
+          client unwrapping + interceptor (P3). Then WS subscription + skeleton views (P4). Finally
+          E2E test (P5).
+        author: "@claude"
+        created_at: 2026-03-29T06:59:52.974Z

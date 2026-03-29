@@ -1,0 +1,67 @@
+_ulid: 01KMW68JFTW7WDPNX354YWEKAN
+slugs:
+  - task-spec-update-api-contract
+title: Rewrite pagination ACs to behavioral language and add envelope ACs
+type: task
+description: |
+  Two existing ACs prescribe the response wire format ({items, total,
+  offset, limit}) rather than describing pagination behavior. This
+  conflicts with the envelope normalization in this plan. Additionally,
+  @api-contract has no ACs for a normalized response envelope or typed
+  cache status signaling.
+
+  Why: @trait-api-endpoint ac-4 says "returns {items, total, offset,
+  limit} wrapper" and @api-contract ac-4 says "returns paginated
+  results with {items, total, offset, limit} wrapper." Both prescribe
+  a specific shape instead of describing the behavioral contract
+  (accepts pagination params, response includes total count and
+  pagination metadata). If left unchanged, the new envelope shape
+  {data, meta} would violate these ACs. The new envelope and cache
+  status ACs define what "correct" looks like for the server-side
+  migration.
+
+  What:
+  1. Rewrite @trait-api-endpoint ac-4 to: "accepts limit and offset
+     query params, response includes the total count of matching
+     items and the pagination parameters applied" — behavioral, no
+     shape prescription.
+  2. Rewrite @api-contract ac-4 to: "returns paginated results
+     including total count and the pagination parameters applied" —
+     behavioral, endpoint-specific detail without shape.
+  3. Add two new ACs to @api-contract:
+
+  ac-envelope:
+    Given: the daemon is running and receives an API request
+    When: an endpoint that serves entity data from the cache returns
+    a response
+    Then: the response uses a normalized envelope with a typed data
+    payload and a metadata object containing cache readiness state,
+    and pagination fields (total, offset, limit) when applicable.
+    Non-cache endpoints (health, projects, command, mutation
+    responses) are excluded from this contract.
+
+  ac-cache-status-field:
+    Given: a cache domain is still loading for the requested project
+    When: an API list or query endpoint is called
+    Then: the response metadata includes a cache status value of
+    "loading" and the data payload is empty or default, distinct from
+    a normal empty result where cache status is "ready"
+
+  How: Use kspec batch. For ac rewrites, use "item ac set" on
+  @trait-api-endpoint and @api-contract targeting ac-4. For new ACs,
+  use "item ac add" on @api-contract. Use given/when/then block
+  scalars.
+spec_ref: "@api-contract"
+plan_ref: "@plan-daemon-cache-warming-ux"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - spec
+  - api
+vcs_refs: []
+created_at: 2026-03-29T06:59:49.881Z
+todos: []

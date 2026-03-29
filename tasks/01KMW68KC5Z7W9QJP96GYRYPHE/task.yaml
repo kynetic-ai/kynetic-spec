@@ -1,0 +1,51 @@
+_ulid: 01KMW68KC5Z7W9QJP96GYRYPHE
+slugs:
+  - task-api-response-envelope-type
+title: Define unified API response envelope type and wrapper
+type: task
+description: |
+  Today, daemon API responses have inconsistent shapes: list endpoints
+  return {items, total, offset, limit}, aggregation endpoints return
+  {counts: {...}}, and cache warming state is an ad-hoc _cache_status
+  field mixed in at the top level. This makes it impossible for the
+  web UI to have a single response handling path.
+
+  Why: A normalized envelope is the prerequisite for centralized cache
+  warming detection in the UI. Without it, every fetch function needs
+  its own logic to find and interpret the cache status field, and the
+  UI cannot distinguish "cache is warming, data is empty" from "data
+  really is empty."
+
+  What: Define a generic ApiResponse<T> type with two fields: `data`
+  (typed payload — array for lists, object for aggregation/detail) and
+  `meta` (object with total, offset, limit as optional numbers, and
+  cache_status as a required "ready" | "loading" literal). Create a
+  server-side wrapper function (e.g. wrapResponse) that route handlers
+  call to construct envelope responses. Export the type from the shared
+  types package so the web UI can import it.
+
+  How: Add the Zod schema and TypeScript type to the shared types
+  package. The wrapper function takes the domain data, pagination
+  params, and cache domain state, and returns the envelope. For cache
+  warming responses, it returns {data: default-empty, meta: {
+  cache_status: "loading"}}. For normal responses, cache_status is
+  "ready". This is an internal contract change — no API versioning
+  needed since the only consumer is the web UI.
+
+  Covers: @api-contract ac-envelope.
+spec_ref: "@api-contract"
+plan_ref: "@plan-daemon-cache-warming-ux"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-spec-update-api-contract"
+context: []
+priority: 1
+tags:
+  - api
+  - daemon
+  - schema
+vcs_refs: []
+created_at: 2026-03-29T06:59:50.789Z
+todos: []

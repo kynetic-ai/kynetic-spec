@@ -1,0 +1,56 @@
+_ulid: 01KMW68MZ5Z281YD9Z87K2G55A
+slugs:
+  - task-ui-warming-skeletons
+title: Show loading skeletons and timeout error across all views
+type: task
+description: |
+  The web UI has existing skeleton components (Skeleton, BoardSkeleton,
+  SessionStreamSkeleton, SidebarMenuSkeleton) but no view currently
+  uses them for cache warming. Views either show empty content or their
+  own initial loading state only on first mount. Once TanStack Query
+  has cached data (even an empty warming response), views show that
+  cached data with no indication that it's incomplete.
+
+  Why: This is the user-facing piece — without it, the interceptor and
+  WebSocket plumbing work correctly but users still see empty pages
+  during cache warming. The existing skeleton components were built
+  for exactly this purpose but have never been connected to the cache
+  warming signal.
+
+  What: Update all list views in the web UI to detect when the query
+  is in a cache-warming retry state and render the appropriate skeleton
+  component instead of empty content. Views to update: tasks board
+  (BoardSkeleton), items list, sessions list (SessionStreamSkeleton
+  for detail), inbox, plans, reviews, and triage. Also add a timeout
+  error state component: after 30 seconds of retrying, show an error
+  message ("Unable to load [entity]. The server cache did not become
+  ready.") with a manual Retry button that resets the retry counter
+  and tries again.
+
+  How: The cache warming interceptor (previous task) either throws
+  CacheWarmingError or sets a flag. TanStack Query's isError +
+  error type, or a custom isPending-like flag, can be checked in
+  each view's template. When warming is detected, render the skeleton.
+  When the retry ceiling is exceeded (error is CacheWarmingError and
+  failureCount >= 15), render the error state instead. The Retry
+  button calls queryClient.resetQueries() for the relevant key.
+
+  Covers: @ui-data-freshness ac-warming-skeleton (skeleton rendering
+  and view integration — the "not persisted in cache" requirement is
+  handled by @task-ui-cache-warming-interceptor), ac-warming-timeout
+  (error state UI and retry button).
+spec_ref: "@ui-data-freshness"
+plan_ref: "@plan-daemon-cache-warming-ux"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-ui-cache-warming-interceptor"
+context: []
+priority: 4
+tags:
+  - web-ui
+  - components
+vcs_refs: []
+created_at: 2026-03-29T06:59:52.421Z
+todos: []

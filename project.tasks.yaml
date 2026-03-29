@@ -23002,3 +23002,202 @@
   submitted_at: 2026-03-29T04:07:27.555Z
   completed_at: 2026-03-29T04:14:30.891Z
   automation: eligible
+- _ulid: 01KMW68JFTW7WDPNX354YWEKAN
+  slugs:
+    - task-spec-update-api-contract
+  title: Rewrite pagination ACs to behavioral language and add envelope ACs
+  type: task
+  spec_ref: "@api-contract"
+  plan_ref: "@plan-daemon-cache-warming-ux"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - spec
+    - api
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-29T06:59:49.881Z
+- _ulid: 01KMW68JT108S4RS3G1GNYH5A9
+  slugs:
+    - task-spec-update-entity-cache
+  title: Add domain ready event AC to entity cache spec
+  type: task
+  spec_ref: "@daemon-entity-cache"
+  plan_ref: "@plan-daemon-cache-warming-ux"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - spec
+    - daemon
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-29T06:59:50.209Z
+- _ulid: 01KMW68K2PP8BX24XEPK4XS9W5
+  slugs:
+    - task-spec-update-data-freshness
+  title: Add cache warming UX ACs to data freshness spec
+  type: task
+  spec_ref: "@ui-data-freshness"
+  plan_ref: "@plan-daemon-cache-warming-ux"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - spec
+    - web-ui
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-29T06:59:50.486Z
+- _ulid: 01KMW68KC5Z7W9QJP96GYRYPHE
+  slugs:
+    - task-api-response-envelope-type
+  title: Define unified API response envelope type and wrapper
+  type: task
+  spec_ref: "@api-contract"
+  plan_ref: "@plan-daemon-cache-warming-ux"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-spec-update-api-contract"
+  priority: 1
+  tags:
+    - api
+    - daemon
+    - schema
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-29T06:59:50.789Z
+- _ulid: 01KMW68KM0EXKESA30EMPW63VY
+  slugs:
+    - task-migrate-route-handlers-envelope
+  title: Migrate daemon route handlers to unified envelope
+  type: task
+  spec_ref: "@api-contract"
+  plan_ref: "@plan-daemon-cache-warming-ux"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-api-response-envelope-type"
+  priority: 2
+  tags:
+    - api
+    - daemon
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-29T06:59:51.040Z
+- _ulid: 01KMW68KWFR1SEWZWVQV1G93HP
+  slugs:
+    - task-cache-domain-ready-ws-event
+  title: Broadcast cache domain ready event via WebSocket
+  type: task
+  spec_ref: "@daemon-entity-cache"
+  plan_ref: "@plan-daemon-cache-warming-ux"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-spec-update-entity-cache"
+  priority: 1
+  tags:
+    - daemon
+    - websocket
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-29T06:59:51.311Z
+- _ulid: 01KMW68M6EEC48D7WFTP623BHG
+  slugs:
+    - task-ui-unwrap-envelope
+  title: Update web UI fetch functions for unified envelope
+  type: task
+  spec_ref: "@api-contract"
+  plan_ref: "@plan-daemon-cache-warming-ux"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-migrate-route-handlers-envelope"
+  priority: 3
+  tags:
+    - web-ui
+    - data-layer
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-29T06:59:51.630Z
+- _ulid: 01KMW68MFA3AFKAEQJS9M05J92
+  slugs:
+    - task-ui-cache-warming-interceptor
+  title: Implement cache warming detection and retry in query layer
+  type: task
+  spec_ref: "@ui-data-freshness"
+  plan_ref: "@plan-daemon-cache-warming-ux"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-ui-unwrap-envelope"
+    - "@task-spec-update-data-freshness"
+  priority: 3
+  tags:
+    - web-ui
+    - data-layer
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-29T06:59:51.914Z
+- _ulid: 01KMW68MQ3V3C5PF4NXKB1PAG1
+  slugs:
+    - task-ui-cache-domain-ready-subscription
+  title: Subscribe to cache domain ready events for query invalidation
+  type: task
+  spec_ref: "@ui-data-freshness"
+  plan_ref: "@plan-daemon-cache-warming-ux"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-cache-domain-ready-ws-event"
+    - "@task-ui-cache-warming-interceptor"
+  priority: 4
+  tags:
+    - web-ui
+    - websocket
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-29T06:59:52.163Z
+- _ulid: 01KMW68MZ5Z281YD9Z87K2G55A
+  slugs:
+    - task-ui-warming-skeletons
+  title: Show loading skeletons and timeout error across all views
+  type: task
+  spec_ref: "@ui-data-freshness"
+  plan_ref: "@plan-daemon-cache-warming-ux"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-ui-cache-warming-interceptor"
+  priority: 4
+  tags:
+    - web-ui
+    - components
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-29T06:59:52.421Z
+- _ulid: 01KMW68N7AB8WWRZMVQV3C2789
+  slugs:
+    - task-e2e-cache-warming-transition
+  title: E2E test for cache warming to ready transition
+  type: task
+  spec_ref: "@ui-data-freshness"
+  plan_ref: "@plan-daemon-cache-warming-ux"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-ui-warming-skeletons"
+    - "@task-ui-cache-domain-ready-subscription"
+  priority: 5
+  tags:
+    - test
+    - e2e
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-03-29T06:59:52.682Z

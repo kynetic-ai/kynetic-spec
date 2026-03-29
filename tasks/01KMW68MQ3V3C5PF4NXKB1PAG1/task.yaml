@@ -1,0 +1,52 @@
+_ulid: 01KMW68MQ3V3C5PF4NXKB1PAG1
+slugs:
+  - task-ui-cache-domain-ready-subscription
+title: Subscribe to cache domain ready events for query invalidation
+type: task
+description: |
+  The web UI already subscribes to WebSocket events for entity mutation
+  invalidation (e.g. when a task is updated, the tasks query is
+  invalidated). Cache domain ready events need the same treatment —
+  when the server broadcasts that a domain finished loading, the UI
+  should invalidate queries for that domain so they refetch immediately
+  instead of waiting for the next retry interval.
+
+  Why: WebSocket push is faster and more efficient than retry polling.
+  When the daemon's tasks cache finishes loading, the UI should refetch
+  within milliseconds, not wait up to 2 seconds for the next retry.
+  This is the primary transition mechanism; retry is the fallback for
+  missed events or reconnection gaps.
+
+  What: Add a WebSocket subscription handler for the "cache:status"
+  topic alongside existing mutation topic handlers. When a
+  "domain_ready" event is received, map the domain name to TanStack
+  Query keys (e.g. domain "tasks" → query key ["tasks"], domain
+  "items" → query key ["items"]) and call
+  queryClient.invalidateQueries() for those keys. This triggers an
+  immediate refetch of any active queries for that domain.
+
+  How: The web UI's WebSocket handler (in the query/websocket
+  integration layer) already maps topics to query invalidation. Add
+  "cache:status" as a subscribed topic. The domain_ready event
+  payload includes {domain, project} — use the domain field to
+  determine which query keys to invalidate. If the domain maps to
+  multiple query keys (e.g. "meta" covers several endpoints), all
+  related keys should be invalidated.
+
+  Covers: @ui-data-freshness ac-warming-auto-transition.
+spec_ref: "@ui-data-freshness"
+plan_ref: "@plan-daemon-cache-warming-ux"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-cache-domain-ready-ws-event"
+  - "@task-ui-cache-warming-interceptor"
+context: []
+priority: 4
+tags:
+  - web-ui
+  - websocket
+vcs_refs: []
+created_at: 2026-03-29T06:59:52.163Z
+todos: []

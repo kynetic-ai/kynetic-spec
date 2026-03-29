@@ -1,0 +1,60 @@
+_ulid: 01KMW68K2PP8BX24XEPK4XS9W5
+slugs:
+  - task-spec-update-data-freshness
+title: Add cache warming UX ACs to data freshness spec
+type: task
+description: |
+  The @ui-data-freshness spec covers caching, invalidation, and
+  WebSocket-driven updates but has no ACs for cache warming behavior —
+  what the UI should do when the server reports its cache is still
+  loading. The warming UX tasks depend on these ACs.
+
+  Why: Four new behaviors need AC coverage: showing skeletons instead
+  of empty content, auto-transitioning when cache is ready, retry
+  fallback for missed events, and timeout error state. Without these
+  ACs, the warming UX has no testable contract.
+
+  What: Add four ACs to @ui-data-freshness using kspec batch:
+
+  ac-warming-skeleton:
+    Given: the server signals that its cache is still warming
+    When: the UI receives the response
+    Then: a loading skeleton is displayed instead of empty content,
+    and the warming response is not persisted in the client cache
+    as real data
+
+  ac-warming-auto-transition:
+    Given: the UI is displaying a loading skeleton due to cache warming
+    When: a real-time event indicates the cache domain is ready
+    Then: the affected queries are invalidated and the view transitions
+    to real data without user interaction
+
+  ac-warming-retry-fallback:
+    Given: the UI is displaying a loading skeleton due to cache warming
+    When: no real-time domain-ready event has been received
+    Then: the UI retries the request at short intervals as a fallback
+    for missed or delayed real-time events
+
+  ac-warming-timeout:
+    Given: the UI has been retrying a cache-warming response
+    When: the retry ceiling (30 seconds) is reached without the cache
+    becoming ready
+    Then: the UI displays an error state with a manual retry option
+    instead of continuing to show the loading skeleton
+
+  How: Use kspec batch with four "item ac add" commands targeting
+  @ui-data-freshness. Use given/when/then block scalars.
+spec_ref: "@ui-data-freshness"
+plan_ref: "@plan-daemon-cache-warming-ux"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - spec
+  - web-ui
+vcs_refs: []
+created_at: 2026-03-29T06:59:50.486Z
+todos: []

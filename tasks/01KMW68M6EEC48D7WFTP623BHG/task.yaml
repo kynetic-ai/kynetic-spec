@@ -1,0 +1,55 @@
+_ulid: 01KMW68M6EEC48D7WFTP623BHG
+slugs:
+  - task-ui-unwrap-envelope
+title: Update web UI fetch functions for unified envelope
+type: task
+description: |
+  The web UI's api.ts contains ~20 fetch functions (fetchTasks,
+  fetchItems, fetchInbox, fetchPlans, fetchSessions, fetchReviews,
+  etc.) that each return response.json() directly, typed to the old
+  per-endpoint shapes (e.g. PaginatedResponse<TaskSummary> with
+  {items, total, offset, limit}). After the server migrates to the
+  unified envelope, these functions will receive {data, meta} but
+  still expect the old shape.
+
+  Why: Without updating the fetch functions, TypeScript types will be
+  wrong, destructuring will break, and components will receive
+  undefined where they expect arrays. This is the client-side
+  counterpart of the server migration.
+
+  What: Update all fetch functions in the web UI API layer to unwrap
+  the envelope. Each function should extract response.data and
+  response.meta, returning the domain data to callers. Update the
+  TypeScript return types to match. The meta object (including
+  cache_status) must be inspectable before the data is returned —
+  the downstream cache warming interceptor
+  (@task-ui-cache-warming-interceptor) checks cache_status and throws
+  a CacheWarmingError for "loading" responses before data reaches
+  TanStack Query's cache.
+
+  How: Import the ApiResponse<T> type from shared types. Each fetch
+  function calls response.json() to get the envelope, then returns
+  the unwrapped result. For static mode (isStaticMode()), update the
+  static data helpers to return the same envelope shape — wrap their
+  pre-baked data with {data, meta: {cache_status: "ready"}}. This
+  means the unwrap path is identical for both live and static modes,
+  no branching needed. Update all TypeScript interfaces
+  (PaginatedResponse, etc.) to match the new contract. Update
+  component-level destructuring as needed.
+
+  Covers: @api-contract ac-envelope (client-side).
+spec_ref: "@api-contract"
+plan_ref: "@plan-daemon-cache-warming-ux"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-migrate-route-handlers-envelope"
+context: []
+priority: 3
+tags:
+  - web-ui
+  - data-layer
+vcs_refs: []
+created_at: 2026-03-29T06:59:51.630Z
+todos: []

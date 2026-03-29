@@ -1,0 +1,39 @@
+_ulid: 01KMW68JT108S4RS3G1GNYH5A9
+slugs:
+  - task-spec-update-entity-cache
+title: Add domain ready event AC to entity cache spec
+type: task
+description: |
+  The @daemon-entity-cache spec covers cache loading, serving, and
+  invalidation but has no AC for broadcasting when a domain becomes
+  ready. The WebSocket event task depends on this AC.
+
+  Why: The domain-ready broadcast is new behavior not covered by
+  existing ACs. ac-warming-availability covers the server returning
+  a loading response, but not actively notifying clients when loading
+  completes.
+
+  What: Add one AC to @daemon-entity-cache:
+
+  ac-domain-ready-event:
+    Given: a cache domain transitions to ready state (from loading,
+    degraded, or any non-ready state)
+    When: the transition completes
+    Then: a real-time event is broadcast to all connected clients
+    identifying the domain and project that became ready
+
+  How: Use kspec item ac add @daemon-entity-cache with the AC fields.
+spec_ref: "@daemon-entity-cache"
+plan_ref: "@plan-daemon-cache-warming-ux"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - spec
+  - daemon
+vcs_refs: []
+created_at: 2026-03-29T06:59:50.209Z
+todos: []

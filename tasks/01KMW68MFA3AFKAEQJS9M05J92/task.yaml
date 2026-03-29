@@ -1,0 +1,57 @@
+_ulid: 01KMW68MFA3AFKAEQJS9M05J92
+slugs:
+  - task-ui-cache-warming-interceptor
+title: Implement cache warming detection and retry in query layer
+type: task
+description: |
+  After the fetch functions unwrap the envelope, the web UI has access
+  to meta.cache_status on every response. But TanStack Query doesn't
+  know that a cache_status: "loading" response is transient — it caches
+  it with the normal 30s staleTime, meaning users see empty pages for
+  up to 30 seconds even after the server cache is ready.
+
+  Why: Cache warming responses must not be treated as successful data.
+  They need to trigger automatic retry so the UI refetches when the
+  server is ready. Without this, the existing staleTime (30s) and
+  retry config (1 retry, 1s delay) are insufficient — the UI caches
+  the empty response and stops trying.
+
+  What: Add a centralized mechanism in the query layer that detects
+  cache_status: "loading" responses and treats them as retryable
+  transient conditions rather than successful empty results. Configure
+  retry behavior: 2-second intervals, maximum 15 attempts (30-second
+  ceiling). The retry should be specific to cache warming — normal
+  successful-but-empty responses (cache_status: "ready" with zero
+  items) must NOT retry.
+
+  How: Two approaches to evaluate: (1) Throw a typed CacheWarmingError
+  from the fetch function when cache_status is "loading" — TanStack
+  Query's retry mechanism handles it naturally. The retry callback
+  checks error type to only retry CacheWarmingError. (2) Use TanStack
+  Query's queryFn meta or select to flag warming responses and
+  configure per-query retry. Option 1 is simpler and recommended.
+  Either way, the warming response must not enter the query cache as
+  successful data.
+
+  Covers: @ui-data-freshness ac-warming-retry-fallback,
+  ac-warming-timeout. Also covers ac-warming-skeleton's requirement
+  that warming responses are not persisted in the client cache — the
+  CacheWarmingError prevents TanStack Query from caching them as
+  successful data. The skeleton rendering itself is in
+  @task-ui-warming-skeletons.
+spec_ref: "@ui-data-freshness"
+plan_ref: "@plan-daemon-cache-warming-ux"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-ui-unwrap-envelope"
+  - "@task-spec-update-data-freshness"
+context: []
+priority: 3
+tags:
+  - web-ui
+  - data-layer
+vcs_refs: []
+created_at: 2026-03-29T06:59:51.914Z
+todos: []
