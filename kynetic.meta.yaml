@@ -9716,6 +9716,27 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-29T09:34:01.062Z
+  - _ulid: 01KMWFQPQA5Q85NG31A8Z96YN6
+    type: success
+    content: "Fix cycle pattern working well: reading all review threads upfront, addressing all
+      blockers in one pass, replying+resolving each thread, adding a summary note before resubmit.
+      This session completed fix cycle 3 in a single focused pass."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-29T09:45:22.923Z
+  - _ulid: 01KMWFQPX9A69Z0PZTEMGPF3XV
+    type: friction
+    content: During route handler envelope migration, wrapping server-side without updating the
+      corresponding client-side fetch functions creates a silent contract mismatch. E2E tests that
+      mock API routes mask this because the mocks return the old shape. Only E2E tests that hit the
+      real daemon would catch it. The existing task @task-ui-unwrap-envelope tracks this, but the
+      split migration (server then client) means intermediate states have broken real-daemon E2E
+      tests.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-29T09:45:23.113Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
