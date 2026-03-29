@@ -27460,38 +27460,17 @@ workspaces:
       failureMessage: null
       invalidationReasons:
         - workspace-dependencies-missing
-      lastRole: reviewer
-      lastRunAt: 2026-03-29T09:55:29.037Z
+      lastRole: worker
+      lastRunAt: 2026-03-29T09:46:00.910Z
       roleStates:
         reviewer:
-          status: succeeded
-          canonicalBranchHead: 107be4397478b42cab064d2afccd4750bbce812c
-          configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
           failureMessage: null
-          invalidationReasons:
-            - workspace-dependencies-missing
-          lastRunAt: 2026-03-29T09:55:29.037Z
-          steps:
-            - status: succeeded
-              allowTrackedChanges: false
-              idempotent: true
-              name: install-workspace-dependencies
-              output: |-
-                added 287 packages, and audited 292 packages in 3s
-
-                67 packages are looking for funding
-                  run `npm fund` for details
-
-                12 vulnerabilities (1 low, 7 moderate, 4 high)
-
-                To address all issues, run:
-                  npm audit fix
-
-                Run `npm audit` for details.
-              reviewerRerunAllowed: true
-              role: reviewer
-              run: npm ci
-              source: dispatch
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
         worker:
           status: succeeded
           canonicalBranchHead: 107be4397478b42cab064d2afccd4750bbce812c
@@ -27539,7 +27518,7 @@ workspaces:
 
             Run `npm audit` for details.
           reviewerRerunAllowed: true
-          role: reviewer
+          role: worker
           run: npm ci
           source: dispatch
     branch_provenance:
@@ -27556,12 +27535,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-29T09:55:24.505Z
+      updated_at: 2026-03-29T09:55:37.851Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-29T09:55:24.505Z
+      updated_at: 2026-03-29T09:55:37.851Z
     integration:
       status: pending
       detail: null
@@ -27569,7 +27548,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 107be4397478b42cab064d2afccd4750bbce812c
-      updated_at: 2026-03-29T09:55:24.505Z
+      updated_at: 2026-03-29T09:55:37.851Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KMW68KWFR1SEWZWVQV1G93HP"
@@ -27577,21 +27556,16 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-29T09:46:03.314Z
-      last_reconciled_at: 2026-03-29T09:55:24.505Z
+      last_reconciled_at: 2026-03-29T09:55:37.851Z
       created_at: 2026-03-29T09:45:55.099Z
-      updated_at: 2026-03-29T09:55:29.037Z
+      updated_at: 2026-03-29T09:55:37.851Z
     workspace_id: dispatch-workspace-01KMW68KWFR1SEWZWVQV1G93HP
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 107be4397478b42cab064d2afccd4750bbce812c
-        last_seen_at: 2026-03-29T09:55:24.505Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cache-domain-ready-ws-event-01kmw68k-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-cache-domain-ready-ws-event/01kmw68k
         head: 107be4397478b42cab064d2afccd4750bbce812c
-        last_seen_at: 2026-03-29T09:55:24.505Z
+        last_seen_at: 2026-03-29T09:45:55.099Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cache-domain-ready-ws-event-01kmw68k
