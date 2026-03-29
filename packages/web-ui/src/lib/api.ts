@@ -23,6 +23,7 @@ import type {
   Observation,
   Workflow,
   Convention,
+  CacheStatus,
   PaginatedResponse,
   PlanSummary,
   PlanDetail,
@@ -66,23 +67,58 @@ import { DAEMON_API_BASE } from "./constants";
 const API_BASE = DAEMON_API_BASE;
 
 /**
+ * Error thrown when the daemon returns a response with cache_status "loading".
+ * This prevents TanStack Query from caching empty/default data as if it were a
+ * real result. The query layer treats this as a retryable error, keeping the
+ * previous cached data visible while the cache warms.
+ * AC: @api-contract ac-cache-status-field
+ */
+export class CacheWarmingError extends Error {
+  readonly cacheStatus: CacheStatus;
+
+  constructor() {
+    super("Cache is still warming — data not yet available");
+    this.name = "CacheWarmingError";
+    this.cacheStatus = "loading";
+  }
+}
+
+/**
+ * Check envelope meta for cache_status and throw CacheWarmingError if "loading".
+ * Must be called before extracting data so callers never see default/empty payloads
+ * from a warming cache.
+ * AC: @api-contract ac-cache-status-field
+ */
+function checkCacheStatus(meta: { cache_status?: CacheStatus }): void {
+  if (meta.cache_status === "loading") {
+    throw new CacheWarmingError();
+  }
+}
+
+/**
  * Unwrap a unified API response envelope, returning just the data payload.
+ * Throws CacheWarmingError if cache_status is "loading".
  * Used for detail/aggregation endpoints that return { data: T, meta: {...} }.
  * AC: @api-contract ac-envelope
+ * AC: @api-contract ac-cache-status-field
  */
-function unwrapEnvelope<T>(envelope: { data: T; meta: unknown }): T {
+function unwrapEnvelope<T>(envelope: { data: T; meta: { cache_status?: CacheStatus } }): T {
+  checkCacheStatus(envelope.meta);
   return envelope.data;
 }
 
 /**
  * Unwrap a unified API response envelope into the legacy PaginatedResponse shape.
+ * Throws CacheWarmingError if cache_status is "loading".
  * Maps { data: T[], meta: { total, offset, limit, cache_status } } → { items: T[], total, offset, limit }.
  * AC: @api-contract ac-envelope
+ * AC: @api-contract ac-cache-status-field
  */
 function unwrapPaginatedEnvelope<T>(envelope: {
   data: T[];
-  meta: { total?: number; offset?: number; limit?: number };
+  meta: { total?: number; offset?: number; limit?: number; cache_status?: CacheStatus };
 }): PaginatedResponse<T> {
+  checkCacheStatus(envelope.meta);
   return {
     items: envelope.data,
     total: envelope.meta.total ?? envelope.data.length,
@@ -93,13 +129,16 @@ function unwrapPaginatedEnvelope<T>(envelope: {
 
 /**
  * Unwrap a unified API response envelope for list endpoints that return { items, total }.
+ * Throws CacheWarmingError if cache_status is "loading".
  * Maps { data: T[], meta: { total } } → { items: T[], total }.
  * AC: @api-contract ac-envelope
+ * AC: @api-contract ac-cache-status-field
  */
 function unwrapListEnvelope<T>(envelope: {
   data: T[];
-  meta: { total?: number };
+  meta: { total?: number; cache_status?: CacheStatus };
 }): { items: T[]; total: number } {
+  checkCacheStatus(envelope.meta);
   return {
     items: envelope.data,
     total: envelope.meta.total ?? envelope.data.length,
@@ -108,13 +147,16 @@ function unwrapListEnvelope<T>(envelope: {
 
 /**
  * Unwrap a unified API response envelope for the session list pattern.
+ * Throws CacheWarmingError if cache_status is "loading".
  * Maps { data: { items, unfiltered_total }, meta: { total, offset, limit } } → SessionListResponse.
  * AC: @api-contract ac-envelope
+ * AC: @api-contract ac-cache-status-field
  */
 function unwrapSessionListEnvelope(envelope: {
   data: { items: SessionSummary[]; unfiltered_total?: number };
-  meta: { total?: number; offset?: number; limit?: number };
+  meta: { total?: number; offset?: number; limit?: number; cache_status?: CacheStatus };
 }): SessionListResponse {
+  checkCacheStatus(envelope.meta);
   return {
     items: envelope.data.items,
     total: envelope.meta.total ?? envelope.data.items.length,
@@ -126,13 +168,16 @@ function unwrapSessionListEnvelope(envelope: {
 
 /**
  * Unwrap a unified API response envelope for simple session list pattern (no unfiltered_total).
+ * Throws CacheWarmingError if cache_status is "loading".
  * Maps { data: T[], meta: { total, offset, limit } } → SessionListResponse.
  * AC: @api-contract ac-envelope
+ * AC: @api-contract ac-cache-status-field
  */
 function unwrapSimpleSessionListEnvelope(envelope: {
   data: SessionSummary[];
-  meta: { total?: number; offset?: number; limit?: number };
+  meta: { total?: number; offset?: number; limit?: number; cache_status?: CacheStatus };
 }): SessionListResponse {
+  checkCacheStatus(envelope.meta);
   return {
     items: envelope.data,
     total: envelope.meta.total ?? envelope.data.length,
