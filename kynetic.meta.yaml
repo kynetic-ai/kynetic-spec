@@ -9685,6 +9685,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-29T09:05:02.054Z
+  - _ulid: 01KMWF0NVC5QSS9RAA67SXJTCN
+    type: success
+    content: "The review workflow handled a detached snapshot cleanly: anchored blocker threads on exact
+      route lines plus a request_changes verdict moved the task back to needs_work without any
+      manual state cleanup or merge ambiguity."
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-29T09:32:48.364Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
