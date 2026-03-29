@@ -18500,7 +18500,7 @@ runs:
     completed_at: 2026-03-29T09:55:00.536Z
   - _ulid: 01KMWHKPBP4E4VCGDE3ZZ1VHAX
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -18513,7 +18513,44 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-29T10:18:28.473Z
-        completed_at: 2026-03-29T10:18:28.473Z
+        completed_at: 2026-03-29T10:19:06.909Z
+        notes: >-
+          Identified patterns from this session (fix cycle 4):
+
+
+          SUCCESS (high confidence):
+
+          1. Systematic client-side approach — Adding unwrapEnvelope/unwrapPaginatedEnvelope helpers
+          at the API layer was the right abstraction. It kept all ~30 functions consistent without
+          requiring component changes. Already covered by existing observation 01KMWGA6.
+
+
+          2. Using explore agents for parallel analysis — Launching subagents to catalog all 80+
+          daemon endpoints and their wrapResponse usage was efficient and prevented missing
+          endpoints.
+
+
+          FRICTION (high confidence):
+
+          1. E2E mock maintenance burden — When the daemon response format changes, E2E test mocks
+          using page.route() must be manually updated in every spec file. There's no shared mock
+          layer — each file independently constructs JSON.stringify({ items, total, offset, limit })
+          inline. This required touching 6 files with repetitive envelope wrapping. Already
+          partially covered by observation 01KMWFQP (wrapping issue). Could benefit from a shared
+          E2E mock envelope helper.
+
+
+          2. Envelope shape varies by endpoint type — Sessions list wraps { items, unfiltered_total
+          } inside data (compound object), while tasks/items wrap the array directly as data. This
+          inconsistency required different unwrapping logic for fetchSessions vs fetchTasks. Already
+          captured in observation 01KMWGA6.
+
+
+          No new friction to capture — existing observations cover the patterns found.
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-29T10:19:06.909Z
+        completed_at: 2026-03-29T10:19:06.909Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-29T10:18:08.630Z
