@@ -27285,12 +27285,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-29T08:01:15.315Z
+      updated_at: 2026-03-29T08:01:24.140Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-29T08:01:15.315Z
+      updated_at: 2026-03-29T08:01:24.140Z
     integration:
       status: pending
       detail: null
@@ -27298,24 +27298,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 6943dad4b8203281f7a00c18ae29804ce34c559a
-      updated_at: 2026-03-29T08:01:15.315Z
-    lifecycle_state: ready
+      updated_at: 2026-03-29T08:01:24.140Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KMW68KC5Z7W9QJP96GYRYPHE"
     task_slug: task-api-response-envelope-type
     timestamps:
       closed_at: null
       last_active_at: 2026-03-29T07:51:57.777Z
-      last_reconciled_at: 2026-03-29T08:01:15.315Z
+      last_reconciled_at: 2026-03-29T08:01:24.140Z
       created_at: 2026-03-29T07:21:36.147Z
-      updated_at: 2026-03-29T08:01:15.315Z
+      updated_at: 2026-03-29T08:01:24.140Z
     workspace_id: dispatch-workspace-01KMW68KC5Z7W9QJP96GYRYPHE
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 874f6f54ea34af06938220461a6500d1ca2bcddc
+        last_seen_at: 2026-03-29T08:01:24.140Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-api-response-envelope-type-01kmw68k-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-api-response-envelope-type/01kmw68k
-        head: a243c68309f3bec0fd3937b629962f8db01195e4
-        last_seen_at: 2026-03-29T07:51:54.255Z
+        head: 874f6f54ea34af06938220461a6500d1ca2bcddc
+        last_seen_at: 2026-03-29T08:01:24.140Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-api-response-envelope-type-01kmw68k
