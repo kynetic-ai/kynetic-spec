@@ -78907,6 +78907,20 @@ reviews:
         runner: reviewer
         created_at: 2026-03-29T09:30:41.770Z
         completed_at: 2026-03-29T09:30:41.770Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Failed in this snapshot: 11 suites / 9 tests failing, 1962 suites passing, duration
+          5113.8s. Failures reported in agent-dispatch-engine.test.ts,
+          canonical-task-workspace-contract.test.ts, dispatch-runtime-bootstrap-contract.test.ts,
+          dispatch-workspace-cleanup.test.ts, and setup-pipeline-unification.test.ts. Full log:
+          /tmp/kspec-test-cache/01KMWECQJWQBYQ8GSJXYGD5RF9/91ec59515e0ade0e.log"
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-29T09:30:43.604Z
+        completed_at: 2026-03-29T09:30:43.604Z
     events:
       - _ulid: 01KMWEDVGEAHA7YVTNPDT5X6M7
         actor: Test User
@@ -78949,6 +78963,13 @@ reviews:
           status: pass
           name: review-evidence
         timestamp: 2026-03-29T09:30:42.385Z
+      - _ulid: 01KMWEWWKYEBG7ND8B9GKBH9H3
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-29T09:30:44.223Z
     examined_commit: 30b11d43a7c751c7b0f377892a3ad24a91974979
     external_links: []
     lifecycle_state: open
@@ -78999,5 +79020,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-29T09:22:31.567Z
-    updated_at: 2026-03-29T09:30:41.770Z
+    updated_at: 2026-03-29T09:30:43.604Z
     notes: []
