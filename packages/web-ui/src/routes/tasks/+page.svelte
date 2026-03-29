@@ -16,7 +16,8 @@
 	import TaskFilters, { ACTIVE_STATUSES } from '$lib/components/TaskFilters.svelte';
 	import TaskList from '$lib/components/TaskList.svelte';
 	import TaskDetailContent from '$lib/components/board/TaskDetailContent.svelte';
-	import { fetchTasks, fetchTask } from '$lib/api';
+	import { fetchTasks, fetchTask, isCacheWarmingError } from '$lib/api';
+	import CacheWarmingBanner from '$lib/components/CacheWarmingBanner.svelte';
 	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
 	import { isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 	import { queryKeys } from '$lib/query/keys.js';
@@ -69,7 +70,9 @@
 	let total = $derived(tasksQuery.data?.total ?? 0);
 	// AC: @ui-data-freshness ac-1 — Only show loading on initial fetch (no cache)
 	let loading = $derived(tasksQuery.isLoading);
-	let error = $derived(tasksQuery.error?.message ?? '');
+	// AC: @ui-data-freshness ac-warming-skeleton — Distinguish warming errors from other errors
+	let cacheWarming = $derived(isCacheWarmingError(tasksQuery.error));
+	let error = $derived(cacheWarming ? '' : (tasksQuery.error?.message ?? ''));
 
 	// AC: Open task detail when URL has ref param
 	$effect(() => {
@@ -213,9 +216,15 @@
 		</div>
 	{/if}
 
-	{#if loading}
-		<div class="flex justify-center items-center py-12">
-			<p class="text-muted-foreground">Loading tasks...</p>
+	<!-- AC: @ui-data-freshness ac-warming-skeleton — Show skeleton during cache warming -->
+	<!-- AC: @ui-data-freshness ac-warming-timeout — Show error banner after 30s timeout -->
+	{#if cacheWarming}
+		<CacheWarmingBanner entityName="tasks" queryKey={queryKeys.tasks.list(filterParams)} />
+	{:else if loading}
+		<div class="space-y-2" data-testid="tasks-loading">
+			{#each Array(5) as _}
+				<div class="h-16 rounded-lg bg-muted ds-shimmer"></div>
+			{/each}
 		</div>
 	{:else}
 		<!-- AC: @web-dashboard ac-33 -->

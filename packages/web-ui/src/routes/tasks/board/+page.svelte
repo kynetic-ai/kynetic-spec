@@ -14,7 +14,8 @@
 	import { onMount, onDestroy } from 'svelte';
 	import type { BroadcastEvent } from '@kynetic-ai/shared';
 	import { createQuery, useQueryClient } from '@tanstack/svelte-query';
-	import { fetchTasks, fetchAgentStatus, type AgentDispatchStatus } from '$lib/api';
+	import { fetchTasks, fetchAgentStatus, isCacheWarmingError, type AgentDispatchStatus } from '$lib/api';
+	import CacheWarmingBanner from '$lib/components/CacheWarmingBanner.svelte';
 	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
 	import { isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 	import { isStaticMode } from '$lib/stores/mode.svelte';
@@ -61,7 +62,9 @@
 	let tasks = $derived(tasksQuery.data?.items ?? []);
 	let columns = $derived(distributeToColumns(tasks));
 	let loading = $derived(tasksQuery.isLoading);
-	let error = $derived(tasksQuery.error?.message ?? '');
+	// AC: @ui-data-freshness ac-warming-skeleton — Distinguish warming errors from other errors
+	let cacheWarming = $derived(isCacheWarmingError(tasksQuery.error));
+	let error = $derived(cacheWarming ? '' : (tasksQuery.error?.message ?? ''));
 	let agentStatus = $derived<AgentDispatchStatus | null>(agentStatusQuery.data ?? null);
 
 	// Derived: output lines per session (for ActiveFleetRow)
@@ -197,8 +200,11 @@
 		</div>
 	{/if}
 
-	<!-- Loading skeleton -->
-	{#if loading}
+	<!-- AC: @ui-data-freshness ac-warming-skeleton — Show skeleton during cache warming -->
+	<!-- AC: @ui-data-freshness ac-warming-timeout — Show error banner after 30s timeout -->
+	{#if cacheWarming}
+		<CacheWarmingBanner entityName="tasks" queryKey={queryKeys.tasks.list({})} />
+	{:else if loading}
 		<BoardSkeleton />
 	{:else if tasks.length === 0}
 		<!-- Empty state -->
