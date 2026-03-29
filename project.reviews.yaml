@@ -81584,6 +81584,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-29T22:04:32.872Z
+      - _ulid: 01KMXT9V6DVAF3AXGZGKSGKS43
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMXT9TMXP60W9K29S6YS3ZXK
+        timestamp: 2026-03-29T22:09:17.517Z
     examined_commit: 16bf033f141f9de2e878c93802f2979933dacc09
     external_links: []
     lifecycle_state: open
@@ -81593,8 +81600,26 @@ reviews:
       content_hash: ""
       ref: "@01KMW68N7AB8WWRZMVQV3C2789"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMXT9TMXP60W9K29S6YS3ZXK
+        anchor:
+          type: code
+          commit: 16bf033f141f9de2e878c93802f2979933dacc09
+          line_end: 166
+          line_start: 158
+          path: packages/web-ui/tests/e2e/cache-warming-transition.spec.ts
+          side: head
+        entries:
+          - _ulid: 01KMXT9TMX7DZE7KF7EP6WPR6X
+            author: Test User
+            body: "The full-stack timeout scenario required by this task is still unimplemented in this
+              snapshot: it is checked in as , and the Playwright run for this file reports .
+              Existing timeout coverage on  only route-mocks the API, so the daemon-cache ->
+              retry-ceiling -> banner path this task set out to cover can still regress without any
+              full-stack test failing."
+            created_at: 2026-03-29T22:09:16.957Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-29T22:04:14.293Z
-    updated_at: 2026-03-29T22:04:32.283Z
+    updated_at: 2026-03-29T22:09:16.957Z
     notes: []
