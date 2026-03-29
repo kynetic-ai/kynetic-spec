@@ -238,7 +238,7 @@ describe("Daemon API input validation", () => {
 
     expect(response.status).toBe(200);
     const body = await response.json();
-    expect(body.items).toEqual([]);
-    expect(body.total).toBe(0);
+    expect(body.data.items).toEqual([]);
+    expect(body.meta.total).toBe(0);
   });
 });

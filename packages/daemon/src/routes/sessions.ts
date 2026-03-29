@@ -50,6 +50,7 @@ import { SessionStatusSchema, SessionTriggerSchema } from "../../sessions/types.
 import { parseTimeSpec } from "../../utils/time.js";
 import { enumArrayUnion } from "./enum-utils.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
+import { wrapResponse } from "./response-envelope.js";
 
 interface SessionRouteOptions {
   getEntityCache?: EntityCacheAccessor;
@@ -317,14 +318,7 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
           const warmingCache = getEntityCache?.(projectContext.path);
           const sessionsDomainState = warmingCache?.getDomainState("sessions");
           if (warmingCache && sessionsDomainState === "loading") {
-            return {
-              items: [],
-              total: 0,
-              unfiltered_total: 0,
-              offset: 0,
-              limit: 0,
-              _cache_status: "loading" as const,
-            };
+            return wrapResponse([] as never[], { cacheDomainState: "loading", total: 0, offset: 0, limit: 0 });
           }
 
           // AC: @daemon-entity-cache ac-serve-from-memory — defer initContext to avoid
@@ -389,18 +383,15 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
           }
 
           // AC: @session-filter-controls ac-filter-counts — Include unfiltered_total in response
-          return {
+          return wrapResponse({
             items: enriched,
-            total,
             unfiltered_total: unfilteredTotal,
-            offset,
-            limit,
             ...(legacyCount > 0
               ? {
                   warning: `${legacyCount} legacy session(s) found in .kspec/sessions/. Run \`kspec session migrate\` to move them to .kspec-sessions/.`,
                 }
               : {}),
-          };
+          }, { total, offset, limit, cacheDomainState: sessionsDomainState });
         },
         {
           query: t.Object({
@@ -482,7 +473,7 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
         const entityCache = getEntityCache?.(projectContext.path);
         const sessionsDomainState = entityCache?.getDomainState("sessions");
         if (entityCache && sessionsDomainState === "loading") {
-          return { _cache_status: "loading" as const };
+          return wrapResponse(null, { cacheDomainState: "loading" });
         }
 
         // AC: @daemon-entity-cache ac-serve-from-memory — defer initContext to avoid disk/git
@@ -651,7 +642,7 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
           legacyCount = await countLegacySessions(_ctx.specDir);
         }
 
-        return {
+        return wrapResponse({
           ...detail,
           task_id: metadata?.task_id,
           task_title,
@@ -664,7 +655,7 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
                 warning: `${legacyCount} legacy session(s) found in .kspec/sessions/. Run \`kspec session migrate\` to move them to .kspec-sessions/.`,
               }
             : {}),
-        };
+        }, { cacheDomainState: sessionsDomainState });
       })
 
       // Get session events

@@ -45,6 +45,7 @@ import { getRelatedSessionsForTask } from "./session-related.js";
 import { resolveRefTitle, resolveRefEntries } from "./ref-resolution.js";
 
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
+import { wrapResponse } from "./response-envelope.js";
 
 interface TasksRouteOptions {
   pubsub: PubSubManager;
@@ -72,13 +73,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           // If cache is warming, return loading indicator
           // AC: @daemon-entity-cache ac-warming-availability
           if (cache && tasksDomainState === "loading") {
-            return {
-              items: [],
-              total: 0,
-              offset: 0,
-              limit: 0,
-              _cache_status: "loading" as const,
-            };
+            return wrapResponse([] as never[], { cacheDomainState: "loading", total: 0, offset: 0, limit: 0 });
           }
 
           // AC: @daemon-entity-cache ac-serve-from-memory — defer initContext to avoid
@@ -213,12 +208,8 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           }));
 
           // AC: @api-contract ac-4, @trait-api-endpoint ac-4 - Return pagination wrapper
-          return {
-            items,
-            total,
-            offset,
-            limit,
-          };
+          // AC: @api-contract ac-envelope - Unified envelope response
+          return wrapResponse(items, { total, offset, limit, cacheDomainState: tasksDomainState });
         },
         {
           query: t.Object({
@@ -253,7 +244,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           const cache = getEntityCache?.(projectContext.path);
           const tasksDomainState = cache?.getDomainState("tasks");
           if (cache && tasksDomainState === "loading") {
-            return { _cache_status: "loading" as const };
+            return wrapResponse(null, { cacheDomainState: "loading" });
           }
 
           // AC: @daemon-entity-cache ac-detail-on-demand — check cache first, fall back to disk
@@ -326,7 +317,8 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           // AC: @ui-task-board ac-3 - Include type, description, blocked_by, vcs_refs, plan_ref, session_ref
           // AC: @ui-api-ref-resolution ac-1, ac-2 - Include resolved titles for refs
           // AC: @review-records-web-ui ac-7 - Include review_ref for task-review integration
-          return {
+          // AC: @api-contract ac-envelope - Unified envelope response
+          return wrapResponse({
             _ulid: task._ulid,
             slugs: task.slugs,
             title: task.title,
@@ -361,7 +353,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
             closed_reason: task.closed_reason,
             automation: task.automation,
             created_at: task.created_at,
-          };
+          }, { cacheDomainState: tasksDomainState });
         },
         {
           params: t.Object({
@@ -411,12 +403,11 @@ export function createTasksRoutes(options: TasksRouteOptions) {
             return errorResponse(404, result.error);
           }
 
-          return {
-            items: result.sessions,
+          return wrapResponse(result.sessions, {
             total: result.sessions.length,
             offset: 0,
             limit: result.sessions.length,
-          };
+          });
         },
         {
           params: t.Object({

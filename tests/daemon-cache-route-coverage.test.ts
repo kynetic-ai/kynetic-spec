@@ -260,9 +260,9 @@ describe("Route-level cache coverage for related-sessions and filtered sessions"
     const res = await makeRequest(`/api/tasks/@cache-test-task/sessions`);
     expect(res.status).toBe(200);
 
-    const body = (await res.json()) as { items: SessionLogSummary[]; total: number };
-    expect(body.total).toBe(1);
-    expect(body.items[0]).toMatchObject({
+    const body = (await res.json()) as { data: SessionLogSummary[]; meta: { total: number; cache_status: string } };
+    expect(body.meta.total).toBe(1);
+    expect(body.data[0]).toMatchObject({
       id: SESSION_ID,
       task_id: "@cache-test-task",
       status: "completed",
@@ -276,9 +276,9 @@ describe("Route-level cache coverage for related-sessions and filtered sessions"
     const res = await makeRequest(`/api/items/@cache-test-spec/sessions`);
     expect(res.status).toBe(200);
 
-    const body = (await res.json()) as { items: SessionLogSummary[]; total: number };
-    expect(body.total).toBe(1);
-    expect(body.items[0]).toMatchObject({
+    const body = (await res.json()) as { data: SessionLogSummary[]; meta: { total: number; cache_status: string } };
+    expect(body.meta.total).toBe(1);
+    expect(body.data[0]).toMatchObject({
       id: SESSION_ID,
       task_id: "@cache-test-task",
     });
@@ -291,9 +291,9 @@ describe("Route-level cache coverage for related-sessions and filtered sessions"
     const res = await makeRequest(`/api/sessions?task_id=@cache-test-task`);
     expect(res.status).toBe(200);
 
-    const body = (await res.json()) as { items: SessionLogSummary[]; total: number };
-    expect(body.total).toBe(1);
-    expect(body.items[0]).toMatchObject({
+    const body = (await res.json()) as { data: { items: SessionLogSummary[] }; meta: { total: number; cache_status: string } };
+    expect(body.meta.total).toBe(1);
+    expect(body.data.items[0]).toMatchObject({
       id: SESSION_ID,
       task_id: "@cache-test-task",
     });
@@ -304,10 +304,10 @@ describe("Route-level cache coverage for related-sessions and filtered sessions"
     const res = await makeRequest(`/api/sessions?spec_ref=@cache-test-spec`);
     expect(res.status).toBe(200);
 
-    const body = (await res.json()) as { items: SessionLogSummary[]; total: number };
+    const body = (await res.json()) as { data: { items: SessionLogSummary[] }; meta: { total: number; cache_status: string } };
     // The spec has one task linked, and that task has one session
-    expect(body.total).toBe(1);
-    expect(body.items[0]).toMatchObject({
+    expect(body.meta.total).toBe(1);
+    expect(body.data.items[0]).toMatchObject({
       id: SESSION_ID,
     });
   });
@@ -318,9 +318,9 @@ describe("Route-level cache coverage for related-sessions and filtered sessions"
     const res = await makeRequest(`/api/sessions`);
     expect(res.status).toBe(200);
 
-    const body = (await res.json()) as { items: SessionLogSummary[]; total: number };
-    expect(body.total).toBe(1);
-    expect(body.items[0]).toMatchObject({ id: SESSION_ID });
+    const body = (await res.json()) as { data: { items: SessionLogSummary[] }; meta: { total: number; cache_status: string } };
+    expect(body.meta.total).toBe(1);
+    expect(body.data.items[0]).toMatchObject({ id: SESSION_ID });
   });
 });
 

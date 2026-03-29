@@ -24,6 +24,7 @@ import {
 } from "../../parser/index.js";
 import { buildRefIndex } from "./ref-resolution.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
+import { wrapResponse } from "./response-envelope.js";
 
 interface RefsRouteOptions {
   getEntityCache?: EntityCacheAccessor;
@@ -55,7 +56,7 @@ export function createRefsRoutes(options: RefsRouteOptions = {}) {
             itemsDomainState === "loading" ||
             plansDomainState === "loading")
         ) {
-          return { refs: {}, _cache_status: "loading" as const };
+          return wrapResponse({ refs: {} }, { cacheDomainState: "loading" });
         }
 
         // AC: @daemon-entity-cache ac-serve-from-memory — defer initContext to avoid
@@ -88,7 +89,7 @@ export function createRefsRoutes(options: RefsRouteOptions = {}) {
         );
         const refs = buildRefIndex(index);
 
-        return { refs };
+        return wrapResponse({ refs }, { cacheDomainState: undefined });
       })
   );
 }

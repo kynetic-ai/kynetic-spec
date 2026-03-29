@@ -32,6 +32,7 @@ import type {
   InboxItemWithTriage,
 } from "@kynetic-ai/shared";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
+import { wrapResponse } from "./response-envelope.js";
 
 interface AggregationRouteOptions {
   getEntityCache?: EntityCacheAccessor;
@@ -50,7 +51,7 @@ export function createAggregationRoutes(_options: AggregationRouteOptions = {}) 
 
         // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
         if (cache && tasksDomainState === "loading") {
-          return { counts: {}, ready: 0, blocked_by_dependencies: 0, total: 0, _cache_status: "loading" as const };
+          return wrapResponse({ counts: {}, ready: 0, blocked_by_dependencies: 0, total: 0 } as TaskStatusSummary, { cacheDomainState: "loading" });
         }
 
         let tasks: LoadedTask[];
@@ -95,7 +96,8 @@ export function createAggregationRoutes(_options: AggregationRouteOptions = {}) 
           total: tasks.length,
         };
 
-        return result;
+        // AC: @api-contract ac-envelope - Unified envelope response
+        return wrapResponse(result, { cacheDomainState: tasksDomainState });
       })
 
       // AC: @ui-api-aggregation ac-2 - Extended validation/alignment stats
@@ -109,7 +111,7 @@ export function createAggregationRoutes(_options: AggregationRouteOptions = {}) 
 
         // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
         if (cache && (tasksDomainState === "loading" || itemsDomainState === "loading")) {
-          return {
+          return wrapResponse({
             stats: { totalSpecs: 0, specsWithTasks: 0, alignedSpecs: 0, orphanedSpecs: 0 },
             warnings: [],
             entity_counts: { items: 0, tasks: 0, traits: 0 },
@@ -118,8 +120,7 @@ export function createAggregationRoutes(_options: AggregationRouteOptions = {}) 
             valid: true,
             error_count: 0,
             warning_count: 0,
-            _cache_status: "loading" as const,
-          };
+          } as ValidationAggregation, { cacheDomainState: "loading" });
         }
 
         // Resolve tasks and items from cache when available
@@ -214,7 +215,8 @@ export function createAggregationRoutes(_options: AggregationRouteOptions = {}) 
             validationResult.refWarnings.length + validationResult.completenessWarnings.length,
         };
 
-        return result;
+        // AC: @api-contract ac-envelope - Unified envelope response
+        return wrapResponse(result, { cacheDomainState: tasksDomainState === "ready" && itemsDomainState === "ready" ? "ready" : undefined });
       })
 
       // AC: @ui-api-aggregation ac-3 - Inbox items with inline triage status
@@ -226,7 +228,7 @@ export function createAggregationRoutes(_options: AggregationRouteOptions = {}) 
 
         // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
         if (cache && (inboxDomainState === "loading" || triageDomainState === "loading")) {
-          return { items: [], total: 0, _cache_status: "loading" as const };
+          return wrapResponse([] as InboxItemWithTriage[], { cacheDomainState: "loading", total: 0 });
         }
 
         let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
@@ -292,10 +294,8 @@ export function createAggregationRoutes(_options: AggregationRouteOptions = {}) 
           return result;
         });
 
-        return {
-          items,
-          total: items.length,
-        };
+        // AC: @api-contract ac-envelope - Unified envelope response
+        return wrapResponse(items, { total: items.length, cacheDomainState: inboxDomainState });
       })
   );
 }
