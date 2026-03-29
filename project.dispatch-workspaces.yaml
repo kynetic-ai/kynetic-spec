@@ -26805,7 +26805,7 @@ workspaces:
         head: 6399630335db5fd44284e87708c9239fbeb59f46
         last_seen_at: 2026-03-29T04:08:36.010Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/purge-unrecoverable-workspace-records-so-non-terminal-tasks-can-be-re-provisioned-01kmvrw6
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 6943dad4b8203281f7a00c18ae29804ce34c559a
     bootstrap:
       status: succeeded
@@ -26915,7 +26915,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-29T07:09:51.140Z
+      updated_at: 2026-03-29T07:10:02.254Z
     integration:
       status: pending
       detail: null
@@ -26930,10 +26930,10 @@ workspaces:
     task_slug: task-spec-update-data-freshness
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-29T07:06:48.710Z
-      last_reconciled_at: 2026-03-29T07:09:51.140Z
+      last_active_at: 2026-03-29T07:10:02.254Z
+      last_reconciled_at: 2026-03-29T07:10:02.254Z
       created_at: 2026-03-29T07:05:48.225Z
-      updated_at: 2026-03-29T07:09:58.095Z
+      updated_at: 2026-03-29T07:10:02.254Z
     workspace_id: dispatch-workspace-01KMW68K2PP8BX24XEPK4XS9W5
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
