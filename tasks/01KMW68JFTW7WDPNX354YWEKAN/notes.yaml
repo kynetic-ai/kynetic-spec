@@ -18,3 +18,30 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-29T07:11:14.821Z
+  - _ulid: 01KMW70K9RM3G25RQK35VVDMKZ
+    content: >-
+      Completed all 4 AC changes via atomic kspec batch:
+
+
+      1. @trait-api-endpoint ac-4: Rewritten from shape-prescriptive '{items, total, offset, limit}
+      wrapper' to behavioral 'accepts limit and offset query params, response includes the total
+      count of matching items and the pagination parameters applied'
+
+
+      2. @api-contract ac-4: Rewritten from '{items, total, offset, limit} wrapper' to 'returns
+      paginated results including total count and the pagination parameters applied'
+
+
+      3. @api-contract ac-envelope: Added — normalized envelope contract for cache-serving endpoints
+      (data payload + metadata with cache readiness and pagination fields). Excludes non-cache
+      endpoints.
+
+
+      4. @api-contract ac-cache-status-field: Added — loading vs ready cache status in response
+      metadata, with empty/default data payload when loading.
+
+
+      Verified all changes via kspec item get. Spec-only task — no code changes or tests needed.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-29T07:12:57.144Z
