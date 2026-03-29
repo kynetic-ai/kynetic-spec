@@ -47,7 +47,7 @@ description: |
 spec_ref: "@ui-data-freshness"
 plan_ref: "@plan-daemon-cache-warming-ux"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -56,6 +56,7 @@ tags:
   - spec
   - web-ui
 vcs_refs: []
+session_id: 01KMW6NAASEZAJKBCQTKFPAWMZ
 history:
   - author: "@claude"
     changes:
@@ -64,6 +65,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-03-29T07:02:49.148Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KMW6NAASEZAJKBCQTKFPAWMZ
+        previous: null
+      started_at:
+        new: 2026-03-29T07:07:22.856Z
+        previous: null
+    command: task-start
+    timestamp: 2026-03-29T07:07:22.856Z
 created_at: 2026-03-29T06:59:50.486Z
+started_at: 2026-03-29T07:07:22.856Z
 todos: []
 automation: eligible
