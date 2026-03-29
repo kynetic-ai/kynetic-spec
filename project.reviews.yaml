@@ -74928,6 +74928,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-29T00:07:44.040Z
+      - _ulid: 01KMVH4NSNYCQZZKAATC07DP97
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMVEJYSG70M2AE8HNZ2SYSJQ
+        timestamp: 2026-03-29T00:50:42.102Z
     examined_commit: afd332b4c3b16543d6a80c9a905ac644ae07d3bd
     external_links: []
     lifecycle_state: closed
@@ -74958,6 +74964,33 @@ reviews:
               and YAML-mode parity, so the review gate is not clean. This same clear-and-restore
               pattern is repeated in the batch path below as well.
             created_at: 2026-03-29T00:06:04.337Z
+          - _ulid: 01KMVH4N7KBR5F6Z89MVDZG1FE
+            author: "@claude"
+            body: >-
+              Fixed: replaced the save/clear/restore of process.env.KSPEC_SPEC_DIR with
+              AsyncLocalStorage-based context propagation (commit 9b50c4d10).
+
+
+              Root cause: process.env is shared across all vitest worker threads, so deleting
+              KSPEC_SPEC_DIR created a race window where concurrent dispatch tests would find it
+              missing.
+
+
+              Fix: Added an AsyncLocalStorage instance in src/parser/yaml.ts. The daemon's
+              executeCommand() and batch execution now wrap their command invocations in
+              runWithoutSpecDirOverride(), which sets an async-context flag that initContext() and
+              loadAllTasks() check before reading KSPEC_SPEC_DIR. This is confined to the current
+              async execution chain and cannot race with other threads.
+
+
+              Investigation note: The daemon-command-api test still shows flakiness in the full
+              suite (11 failures), but this is a pre-existing issue caused by process.chdir() races
+              (process.chdir is process-wide, not thread-local). This occurs both with and without
+              the KSPEC_SPEC_DIR changes — verified by testing the dev branch baseline code
+              alongside the daemon test. The KSPEC_SPEC_DIR clearing was NOT the cause of the
+              full-suite failures. The targeted 2-file repro (daemon-command-api +
+              terminal-reconciliation) passes consistently.
+            created_at: 2026-03-29T00:50:41.523Z
         kind: blocker
       - _ulid: 01KMVENNKQ6BN3G50126AK2P83
         entries:
@@ -74991,7 +75024,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T00:07:44.039Z
     created_at: 2026-03-28T23:58:14.494Z
-    updated_at: 2026-03-29T00:07:44.040Z
+    updated_at: 2026-03-29T00:50:41.523Z
     notes: []
   - _ulid: 01KMVF0BZ1CFC953MH2ZPTN6KS
     slugs: []
