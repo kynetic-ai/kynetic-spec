@@ -74912,9 +74912,25 @@ reviews:
           kind: nit
           thread_ulid: 01KMVENNKQ6BN3G50126AK2P83
         timestamp: 2026-03-29T00:07:34.204Z
+      - _ulid: 01KMVEP058E9XK4ESR1239PE3H
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-29T00:07:44.040Z
+      - _ulid: 01KMVEP058TTQCW1KP5F5PE4XG
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-29T00:07:44.040Z
     examined_commit: afd332b4c3b16543d6a80c9a905ac644ae07d3bd
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -74966,7 +74982,14 @@ reviews:
               integration. Finding: integration/test regression in daemon command API remains.
             created_at: 2026-03-29T00:07:33.239Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-29T00:07:44.039Z
     created_at: 2026-03-28T23:58:14.494Z
-    updated_at: 2026-03-29T00:07:33.239Z
+    updated_at: 2026-03-29T00:07:44.040Z
     notes: []
