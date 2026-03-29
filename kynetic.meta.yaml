@@ -9447,6 +9447,29 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-28T23:17:18.364Z
+  - _ulid: 01KMVHDDDHGZY13SN16D9ZKEPV
+    type: friction
+    content: daemon-command-api tests flake in full suite because process.chdir() is process-wide, not
+      thread-local. In vitest worker_threads, concurrent tests that call process.chdir() (e.g.
+      daemon executeCommand, cli-agent-commands, session-create) race with each other, causing
+      ENOENT errors when commands resolve paths against a cwd set by another thread. Root cause of
+      existing observation 01KKE41E. Fix requires either isolating daemon tests into their own
+      thread pool or replacing process.chdir() with explicit path passing.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-29T00:55:28.434Z
+  - _ulid: 01KMVHDDQB4FC9Z5VCJNAM4ZZ3
+    type: success
+    content: "AsyncLocalStorage for env-var isolation in multi-threaded tests. When daemon command
+      execution needed to suppress KSPEC_SPEC_DIR (set by concurrent dispatch tests), replacing
+      process.env mutation with AsyncLocalStorage-based context propagation eliminated cross-thread
+      races entirely. The pattern: store a flag in AsyncLocalStorage, check it before reading the
+      env var. Confined to the async execution chain, invisible to other threads."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-29T00:55:28.747Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
