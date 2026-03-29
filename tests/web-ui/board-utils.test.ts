@@ -12,8 +12,8 @@ import {
   formatAge,
   formatElapsed,
   formatVcsRef,
-} from "../src/lib/components/board/board-utils";
-import type { TaskSummary } from "../../shared/src/api";
+} from "../../packages/web-ui/src/lib/components/board/board-utils";
+import type { TaskSummary } from "../../packages/shared/src/api";
 
 function makeTask(overrides: Partial<TaskSummary> = {}): TaskSummary {
   return {

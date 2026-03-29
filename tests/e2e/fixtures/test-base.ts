@@ -5,14 +5,15 @@ import { join, dirname } from "path";
 import { tmpdir } from "os";
 import { fileURLToPath } from "url";
 import { createServer } from "net";
+import { CLI_PATH } from "../../helpers/cli.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// E2E tests use dedicated fixtures to avoid breaking unit tests
-const E2E_FIXTURES = join(__dirname, "../fixtures");
+// E2E fixtures live alongside this file
+const E2E_FIXTURES = __dirname;
 // Path to built web UI (daemon serves this for E2E tests)
-const WEB_UI_BUILD = join(__dirname, "../../build");
+const WEB_UI_BUILD = join(__dirname, "../../../packages/web-ui/build");
 
 interface DaemonFixture {
   tempDir: string;
@@ -136,10 +137,10 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
         );
       }
 
-      // Start daemon on ephemeral port with isolated HOME
+      // Start daemon on ephemeral port with isolated HOME (use built CLI directly, no npm link)
       const startResult = spawnSync(
-        "kspec",
-        ["serve", "start", "--detach", "--port", String(port), "--kspec-dir", tempDir],
+        "node",
+        [CLI_PATH, "serve", "start", "--detach", "--port", String(port), "--kspec-dir", tempDir],
         {
           cwd: tempDir,
           encoding: "utf-8",
@@ -224,7 +225,7 @@ tasks: []
       await use({ tempDir, kspecDir, port, baseUrl, wsUrl, createSecondProject });
 
       // AC: @e2e-test-daemon-isolation ac-4 — scoped cleanup via serve stop, not process killing
-      spawnSync("kspec", ["serve", "stop", "--kspec-dir", tempDir], {
+      spawnSync("node", [CLI_PATH, "serve", "stop", "--kspec-dir", tempDir], {
         cwd: tempDir,
         encoding: "utf-8",
         env: isolatedEnv,

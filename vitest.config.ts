@@ -13,7 +13,7 @@ export default defineConfig({
       "**/.review/**",
       "**/.worktrees/**",
       "**/.kspec-worktrees/**",
-      "**/packages/web-ui/tests/e2e/**",
+      "**/tests/e2e/**",
     ],
   },
 });

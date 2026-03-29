@@ -868,23 +868,12 @@ async function scanDirForACAnnotations(dir: string, coveredACs: Set<string>): Pr
 
 /**
  * Scan test files for AC annotations to build coverage index.
- * Scans:
- * - tests/ (unit/integration tests, .test.ts/.test.js)
- * - packages/web-ui/tests/e2e/ (E2E Playwright tests, .spec.ts/.spec.js)
+ * Scans tests/ directory (unit, integration, and E2E Playwright tests).
  * Returns a Set of covered ACs in format "@spec-ref ac-id"
  */
 export async function scanTestCoverage(rootDir: string): Promise<Set<string>> {
   const coveredACs = new Set<string>();
-
-  // Scan primary tests directory (unit/integration tests)
   await scanDirForACAnnotations(path.join(rootDir, "tests"), coveredACs);
-
-  // Scan E2E test directory (Playwright specs)
-  await scanDirForACAnnotations(
-    path.join(rootDir, "packages", "web-ui", "tests", "e2e"),
-    coveredACs,
-  );
-
   return coveredACs;
 }
 

@@ -24,7 +24,7 @@ function envelope<T>(data: T, meta?: Record<string, unknown>) {
   return { data, meta: { cache_status: "ready" as const, ...meta } };
 }
 
-/** Task data matching packages/web-ui/tests/fixtures/project.tasks.yaml */
+/** Task data matching tests/e2e/fixtures/project.tasks.yaml */
 function fixtureTasks() {
   const items = [
     {

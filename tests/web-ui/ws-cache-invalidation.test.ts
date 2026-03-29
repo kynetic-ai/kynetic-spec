@@ -39,7 +39,7 @@ const { connectionHandlers, subscribedTopics, connectionFns } = vi.hoisted(() =>
 });
 
 vi.mock("$lib/stores/connection.svelte", () => connectionFns);
-vi.mock("../src/lib/stores/connection.svelte", () => connectionFns);
+vi.mock("../../packages/web-ui/src/lib/stores/connection.svelte", () => connectionFns);
 
 // Mock @tanstack/svelte-query so we don't need Svelte runtime
 vi.mock("@tanstack/svelte-query", () => ({}));
@@ -49,8 +49,8 @@ vi.mock("@tanstack/svelte-query", () => ({}));
 import {
   setupWsInvalidation,
   teardownWsInvalidation,
-} from "../src/lib/query/ws-invalidation";
-import { queryKeys } from "../src/lib/query/keys";
+} from "../../packages/web-ui/src/lib/query/ws-invalidation";
+import { queryKeys } from "../../packages/web-ui/src/lib/query/keys";
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
 

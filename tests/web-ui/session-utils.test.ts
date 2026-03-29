@@ -10,7 +10,7 @@ import {
   formatAge,
   getTriggerLabel,
   isDispatchedSession,
-} from "../src/lib/components/session/session-utils";
+} from "../../packages/web-ui/src/lib/components/session/session-utils";
 
 describe("formatTimeline", () => {
   afterEach(() => {

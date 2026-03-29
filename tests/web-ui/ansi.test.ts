@@ -10,7 +10,7 @@ import {
   containsAnsi,
   stripOrphanedCsi,
   safeTruncateAnsi,
-} from "../src/lib/utils/ansi";
+} from "../../packages/web-ui/src/lib/utils/ansi";
 
 // AC: @ansi-terminal-rendering ac-1
 describe("ac-1: basic SGR rendering", () => {

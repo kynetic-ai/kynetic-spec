@@ -9,7 +9,7 @@ import {
   createSessionState,
   processTextChunk,
   getDisplayState,
-} from "../src/lib/components/board/fleet-buffer";
+} from "../../packages/web-ui/src/lib/components/board/fleet-buffer";
 
 describe("createSessionState", () => {
   // AC: @ui-task-board ac-4

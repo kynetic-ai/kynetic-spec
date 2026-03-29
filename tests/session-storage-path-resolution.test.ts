@@ -184,7 +184,7 @@ describe("Session Storage Path Resolution", () => {
   // Daemon routes call initContext() on every request, which provides ctx.sessionsDir.
   // All session store functions (getAllSessionLogSummaries, getSession, readEvents, etc.)
   // are called with ctx.sessionsDir. Full E2E coverage is in
-  // packages/web-ui/tests/e2e/sessions.spec.ts.
+  // tests/e2e/sessions.spec.ts.
   describe("ac-daemon-routes: daemon routes resolve sessionsDir from context", () => {
     it("initContext provides sessionsDir that daemon routes would use", async () => {
       const tempDir = await setupTempFixtures();

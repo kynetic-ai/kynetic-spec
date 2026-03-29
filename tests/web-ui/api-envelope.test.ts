@@ -43,15 +43,15 @@ const constantsMock = vi.hoisted(() => () => ({
 
 // Mock both $lib/ alias (used by api-static.ts) and relative path (resolved by api.ts)
 vi.mock("$lib/stores/mode.svelte", modeMock);
-vi.mock("../src/lib/stores/mode.svelte", modeMock);
+vi.mock("../../packages/web-ui/src/lib/stores/mode.svelte", modeMock);
 vi.mock("$lib/stores/project.svelte", projectMock);
-vi.mock("../src/lib/stores/project.svelte", projectMock);
+vi.mock("../../packages/web-ui/src/lib/stores/project.svelte", projectMock);
 vi.mock("$lib/constants", constantsMock);
-vi.mock("../src/lib/constants", constantsMock);
+vi.mock("../../packages/web-ui/src/lib/constants", constantsMock);
 
 // Mock api-static so imports don't fail (not exercised in live mode tests)
 vi.mock("$lib/api-static", () => ({}));
-vi.mock("../src/lib/api-static", () => ({}));
+vi.mock("../../packages/web-ui/src/lib/api-static", () => ({}));
 
 import {
   fetchTasks,
@@ -82,7 +82,7 @@ import {
   fetchTriageRecords,
   fetchValidationAggregation,
   CacheWarmingError,
-} from "../src/lib/api";
+} from "../../packages/web-ui/src/lib/api";
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
 

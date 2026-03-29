@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { KspecSnapshot } from "../../shared/src/api";
+import type { KspecSnapshot } from "../../packages/shared/src/api";
 
 const modeState = vi.hoisted(() => ({
   snapshot: null as KspecSnapshot | null,
@@ -33,11 +33,11 @@ const constantsMock = vi.hoisted(() => () => ({
 
 // Mock both $lib/ alias (used by api-static.ts) and relative path (resolved by api.ts)
 vi.mock("$lib/stores/mode.svelte", modeMock);
-vi.mock("../src/lib/stores/mode.svelte", modeMock);
+vi.mock("../../packages/web-ui/src/lib/stores/mode.svelte", modeMock);
 vi.mock("$lib/stores/project.svelte", projectMock);
-vi.mock("../src/lib/stores/project.svelte", projectMock);
+vi.mock("../../packages/web-ui/src/lib/stores/project.svelte", projectMock);
 vi.mock("$lib/constants", constantsMock);
-vi.mock("../src/lib/constants", constantsMock);
+vi.mock("../../packages/web-ui/src/lib/constants", constantsMock);
 
 import {
   fetchAlignmentStatic,
@@ -47,8 +47,8 @@ import {
   fetchTasksStatic,
   fetchTriageRecordsStatic,
   fetchValidationStatic,
-} from "../src/lib/api-static";
-import { fetchSessions, fetchSession } from "../src/lib/api";
+} from "../../packages/web-ui/src/lib/api-static";
+import { fetchSessions, fetchSession } from "../../packages/web-ui/src/lib/api";
 
 function createSnapshot(): KspecSnapshot {
   return {

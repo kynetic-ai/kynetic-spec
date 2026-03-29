@@ -32,19 +32,19 @@ const constantsMock = vi.hoisted(() => () => ({
 }));
 
 vi.mock("$lib/stores/mode.svelte", modeMock);
-vi.mock("../src/lib/stores/mode.svelte", modeMock);
+vi.mock("../../packages/web-ui/src/lib/stores/mode.svelte", modeMock);
 vi.mock("$lib/stores/project.svelte", projectMock);
-vi.mock("../src/lib/stores/project.svelte", projectMock);
+vi.mock("../../packages/web-ui/src/lib/stores/project.svelte", projectMock);
 vi.mock("$lib/constants", constantsMock);
-vi.mock("../src/lib/constants", constantsMock);
+vi.mock("../../packages/web-ui/src/lib/constants", constantsMock);
 vi.mock("$lib/api-static", () => ({}));
-vi.mock("../src/lib/api-static", () => ({}));
+vi.mock("../../packages/web-ui/src/lib/api-static", () => ({}));
 vi.mock("$lib/api", async () => {
-  const actual = await vi.importActual("../src/lib/api");
+  const actual = await vi.importActual("../../packages/web-ui/src/lib/api");
   return actual;
 });
 
-import { CacheWarmingError, isCacheWarmingError } from "../src/lib/api";
+import { CacheWarmingError, isCacheWarmingError } from "../../packages/web-ui/src/lib/api";
 
 // ── Tests ───────────────────────────────────────────────────────────────────
 

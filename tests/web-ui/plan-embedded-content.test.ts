@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { buildPlanContentBlocks } from "../src/lib/utils/plan-embedded-content";
+import { buildPlanContentBlocks } from "../../packages/web-ui/src/lib/utils/plan-embedded-content";
 
 const basePlan = {
   _ulid: "01TESTPLANEMBED000000000000",

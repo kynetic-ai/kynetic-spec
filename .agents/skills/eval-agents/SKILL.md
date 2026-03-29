@@ -237,8 +237,8 @@ Read tests/shadow.test.ts (first 300 lines).
 Question: How is the shadow branch worktree tested? What edge cases are covered?
 
 TASK 8: Study E2E test architecture
-Read packages/web-ui/tests/fixtures/test-base.ts (if it exists) and
-look at packages/web-ui/tests/e2e/ for any test file.
+Read tests/e2e/fixtures/test-base.ts and
+look at tests/e2e/ for any test file.
 Question: How are E2E tests structured? What does the fixture provide?
 
 TASK 9: Review workflow system

@@ -16,17 +16,17 @@ ensureSplitBackendRegistered();
 describe("JSON Export", () => {
   let tempDir: string;
   let originalCwd: string;
-  const webUiFixtureDir = path.resolve(process.cwd(), "packages", "web-ui", "tests", "fixtures");
+  const e2eFixtureDir = path.resolve(process.cwd(), "tests", "e2e", "fixtures");
 
   beforeAll(async () => {
     originalCwd = process.cwd();
     tempDir = await setupTempFixtures();
     await fs.copyFile(
-      path.join(webUiFixtureDir, "project.plans.yaml"),
+      path.join(e2eFixtureDir, "project.plans.yaml"),
       path.join(tempDir, "project.plans.yaml"),
     );
     await fs.copyFile(
-      path.join(webUiFixtureDir, "project.triage.yaml"),
+      path.join(e2eFixtureDir, "project.triage.yaml"),
       path.join(tempDir, "project.triage.yaml"),
     );
     process.chdir(tempDir);
