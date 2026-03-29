@@ -249,43 +249,47 @@ describe("static API snapshot adapters", () => {
       } as any,
     );
 
+    // AC: @api-contract ac-envelope — static returns unified envelope
+    // AC: @api-contract ac-cache-status-field — static data always "ready"
+
     // Filter by active statuses only (array of statuses)
     const active = fetchTasksStatic({
       status: ["pending", "in_progress", "pending_review", "needs_work", "blocked"],
     });
-    expect(active.total).toBe(2);
-    expect(active.items.map((t) => t.status)).toEqual(
+    expect(active.meta.cache_status).toBe("ready");
+    expect(active.meta.total).toBe(2);
+    expect(active.data.map((t: any) => t.status)).toEqual(
       expect.arrayContaining(["in_progress", "pending"]),
     );
 
     // Filter by single status (string)
     const pendingOnly = fetchTasksStatic({ status: "pending" });
-    expect(pendingOnly.total).toBe(1);
-    expect(pendingOnly.items[0].status).toBe("pending");
+    expect(pendingOnly.meta.total).toBe(1);
+    expect(pendingOnly.data[0].status).toBe("pending");
 
     // No filter returns all
     const all = fetchTasksStatic();
-    expect(all.total).toBe(4);
+    expect(all.meta.total).toBe(4);
   });
 
   // AC: @gh-pages-export ac-23
   it("returns static plans and resolves plan content by ref", () => {
     const plans = fetchPlansStatic();
-    expect(plans.total).toBe(1);
-    expect(plans.items[0].title).toBe("Plan One");
+    expect(plans.meta.total).toBe(1);
+    expect(plans.data[0].title).toBe("Plan One");
 
     const detail = fetchPlanContentStatic("@plan-one");
-    expect(detail.content).toContain("Plan One");
+    expect(detail.data.content).toContain("Plan One");
   });
 
   // AC: @gh-pages-export ac-23
   it("returns static triage records with filters", () => {
     const triaged = fetchTriageRecordsStatic({ status: "triaged" });
-    expect(triaged.total).toBe(1);
-    expect(triaged.items[0].action).toBe("defer");
+    expect(triaged.meta.total).toBe(1);
+    expect(triaged.data[0].action).toBe("defer");
 
     const acted = fetchTriageRecordsStatic({ status: "acted_on" });
-    expect(acted.total).toBe(0);
+    expect(acted.meta.total).toBe(0);
   });
 
   // AC: @gh-pages-export ac-21
@@ -293,10 +297,10 @@ describe("static API snapshot adapters", () => {
     const validation = fetchValidationStatic();
     const alignment = fetchAlignmentStatic();
 
-    expect(validation.schemaErrors).toHaveLength(1);
-    expect(validation.completenessWarnings).toHaveLength(1);
-    expect(alignment.stats.totalSpecs).toBe(2);
-    expect(alignment.stats.orphanedSpecs).toBe(1);
+    expect(validation.data.schemaErrors).toHaveLength(1);
+    expect(validation.data.completenessWarnings).toHaveLength(1);
+    expect(alignment.data.stats.totalSpecs).toBe(2);
+    expect(alignment.data.stats.orphanedSpecs).toBe(1);
   });
 
   // AC: @ui-task-board ac-all-active-tasks — static paginate returns all tasks when no limit
@@ -332,17 +336,17 @@ describe("static API snapshot adapters", () => {
 
     // Board calls fetchTasks() with no params — should return ALL tasks
     const result = fetchTasksStatic();
-    expect(result.items).toHaveLength(snapshot.tasks.length);
-    expect(result.total).toBe(snapshot.tasks.length);
-    expect(result.limit).toBe(snapshot.tasks.length);
+    expect(result.data).toHaveLength(snapshot.tasks.length);
+    expect(result.meta.total).toBe(snapshot.tasks.length);
+    expect(result.meta.limit).toBe(snapshot.tasks.length);
   });
 
   // AC: @ui-task-board ac-all-active-tasks — explicit limit still works
   it("respects explicit limit when provided", () => {
     const result = fetchTasksStatic({ limit: 1 });
-    expect(result.items).toHaveLength(1);
-    expect(result.total).toBe(2); // snapshot has 2 tasks
-    expect(result.limit).toBe(1);
+    expect(result.data).toHaveLength(1);
+    expect(result.meta.total).toBe(2); // snapshot has 2 tasks
+    expect(result.meta.limit).toBe(1);
   });
 
   // AC: @gh-pages-export ac-23
@@ -350,11 +354,11 @@ describe("static API snapshot adapters", () => {
     const tasks = fetchTasksStatic({ plan: "plan-one" });
     const items = fetchItemsStatic({ plan: "plan-one" });
 
-    expect(tasks.total).toBe(1);
-    expect(tasks.items[0].title).toBe("Task One");
-    expect(items.total).toBe(1);
-    expect(items.items[0].title).toBe("Spec One");
-    expect(items.items[0].acceptance_criteria_count).toBe(1);
+    expect(tasks.meta.total).toBe(1);
+    expect(tasks.data[0].title).toBe("Task One");
+    expect(items.meta.total).toBe(1);
+    expect(items.data[0].title).toBe("Spec One");
+    expect(items.data[0].acceptance_criteria_count).toBe(1);
   });
 });
 

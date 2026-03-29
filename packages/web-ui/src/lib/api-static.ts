@@ -23,15 +23,29 @@ import type {
   SessionContext,
   Observation,
   TriageRecord,
-  ValidationResponse,
   AlignmentResponse,
   Workflow,
-  PaginatedResponse,
   SearchResponse,
   SearchResult,
+  ApiResponse,
+  ApiResponseMeta,
 } from "@kynetic-ai/shared";
+import type { ValidationResponse } from "$lib/api";
 import type { KspecSnapshot, ExportedTask, ExportedItem } from "$lib/types/snapshot";
 import { getSnapshot, ReadOnlyModeError } from "$lib/stores/mode.svelte";
+
+/**
+ * Wrap data in a unified API response envelope with cache_status: "ready".
+ * Static data is always "ready" since it's pre-baked at build time.
+ * AC: @api-contract ac-envelope
+ * AC: @api-contract ac-cache-status-field
+ */
+function wrapEnvelope<T>(data: T, meta?: Partial<ApiResponseMeta>): ApiResponse<T> {
+  return {
+    data,
+    meta: { cache_status: "ready", ...meta },
+  };
+}
 
 /**
  * Convert ExportedTask to TaskSummary
@@ -203,22 +217,18 @@ function filterItems(
 }
 
 /**
- * Paginate array
+ * Paginate array and wrap in envelope
+ * AC: @api-contract ac-envelope
  */
-function paginate<T>(
+function paginateEnvelope<T>(
   items: T[],
   params?: { limit?: number; offset?: number },
-): PaginatedResponse<T> {
+): ApiResponse<T[]> {
   const limit = params?.limit ?? items.length;
   const offset = params?.offset ?? 0;
   const paged = items.slice(offset, offset + limit);
 
-  return {
-    items: paged,
-    total: items.length,
-    offset,
-    limit,
-  };
+  return wrapEnvelope(paged, { total: items.length, offset, limit });
 }
 
 /**
@@ -264,6 +274,7 @@ function findItemByRef(items: ExportedItem[], ref: string): ExportedItem | null 
 /**
  * Fetch tasks from static snapshot
  * AC: @gh-pages-export ac-11
+ * AC: @api-contract ac-envelope
  */
 export function fetchTasksStatic(params?: {
   status?: string | string[];
@@ -273,26 +284,24 @@ export function fetchTasksStatic(params?: {
   plan?: string;
   limit?: number;
   offset?: number;
-}): PaginatedResponse<TaskSummary> {
+}): ApiResponse<TaskSummary[]> {
   const snapshot = getSnapshot();
   if (!snapshot) {
-    return { items: [], total: 0, offset: 0, limit: 50 };
+    return wrapEnvelope([] as TaskSummary[], { total: 0, offset: 0, limit: 50 });
   }
 
   const filtered = filterTasks(snapshot.tasks, params);
-  const paginated = paginate(filtered, params);
+  const envelope = paginateEnvelope(filtered, params);
 
-  return {
-    ...paginated,
-    items: paginated.items.map(toTaskSummary),
-  };
+  return wrapEnvelope(envelope.data.map(toTaskSummary), envelope.meta);
 }
 
 /**
  * Fetch single task from static snapshot
  * AC: @gh-pages-export ac-12
+ * AC: @api-contract ac-envelope
  */
-export function fetchTaskStatic(ref: string): TaskDetail | null {
+export function fetchTaskStatic(ref: string): ApiResponse<TaskDetail> | null {
   const snapshot = getSnapshot();
   if (!snapshot) return null;
 
@@ -300,12 +309,13 @@ export function fetchTaskStatic(ref: string): TaskDetail | null {
   if (!task) return null;
 
   // ExportedTask extends TaskDetail, so we can return it directly
-  return task;
+  return wrapEnvelope<TaskDetail>(task);
 }
 
 /**
  * Fetch items from static snapshot
  * AC: @gh-pages-export ac-11
+ * AC: @api-contract ac-envelope
  */
 export function fetchItemsStatic(params?: {
   type?: string | string[];
@@ -313,47 +323,46 @@ export function fetchItemsStatic(params?: {
   plan?: string;
   limit?: number;
   offset?: number;
-}): PaginatedResponse<ItemSummary> {
+}): ApiResponse<ItemSummary[]> {
   const snapshot = getSnapshot();
   if (!snapshot) {
-    return { items: [], total: 0, offset: 0, limit: 50 };
+    return wrapEnvelope([] as ItemSummary[], { total: 0, offset: 0, limit: 50 });
   }
 
   const filtered = filterItems(snapshot.items, params);
-  const paginated = paginate(filtered, params);
+  const envelope = paginateEnvelope(filtered, params);
 
-  return {
-    ...paginated,
-    items: paginated.items.map(toItemSummary),
-  };
+  return wrapEnvelope(envelope.data.map(toItemSummary), envelope.meta);
 }
 
 /**
  * Fetch single item from static snapshot
  * AC: @gh-pages-export ac-13
+ * AC: @api-contract ac-envelope
  */
-export function fetchItemStatic(ref: string): ItemDetail | null {
+export function fetchItemStatic(ref: string): ApiResponse<ItemDetail> | null {
   const snapshot = getSnapshot();
   if (!snapshot) return null;
 
   const item = findItemByRef(snapshot.items, ref);
   if (!item) return null;
 
-  return item;
+  return wrapEnvelope<ItemDetail>(item);
 }
 
 /**
  * Fetch tasks linked to an item from static snapshot
+ * AC: @api-contract ac-envelope
  */
-export function fetchItemTasksStatic(ref: string): PaginatedResponse<TaskSummary> {
+export function fetchItemTasksStatic(ref: string): ApiResponse<TaskSummary[]> {
   const snapshot = getSnapshot();
   if (!snapshot) {
-    return { items: [], total: 0, offset: 0, limit: 50 };
+    return wrapEnvelope([] as TaskSummary[], { total: 0, offset: 0, limit: 50 });
   }
 
   const item = findItemByRef(snapshot.items, ref);
   if (!item) {
-    return { items: [], total: 0, offset: 0, limit: 50 };
+    return wrapEnvelope([] as TaskSummary[], { total: 0, offset: 0, limit: 50 });
   }
 
   // Find tasks that reference this item
@@ -363,12 +372,8 @@ export function fetchItemTasksStatic(ref: string): PaginatedResponse<TaskSummary
     return item.slugs.includes(specRef) || item._ulid.startsWith(specRef.toUpperCase());
   });
 
-  return {
-    items: linkedTasks.map(toTaskSummary),
-    total: linkedTasks.length,
-    offset: 0,
-    limit: linkedTasks.length,
-  };
+  const summaries = linkedTasks.map(toTaskSummary);
+  return wrapEnvelope(summaries, { total: summaries.length, offset: 0, limit: summaries.length });
 }
 
 export function fetchBatchItemsStatic(refs: string[]): BatchItemsResponse {
@@ -402,37 +407,41 @@ export function fetchBatchItemsStatic(refs: string[]): BatchItemsResponse {
 /**
  * Fetch inbox from static snapshot
  * AC: @gh-pages-export ac-11
+ * AC: @api-contract ac-envelope
  */
 export function fetchInboxStatic(params?: {
   limit?: number;
   offset?: number;
-}): PaginatedResponse<InboxItem> {
+}): ApiResponse<InboxItem[]> {
   const snapshot = getSnapshot();
   if (!snapshot) {
-    return { items: [], total: 0, offset: 0, limit: 50 };
+    return wrapEnvelope([] as InboxItem[], { total: 0, offset: 0, limit: 50 });
   }
 
-  return paginate(snapshot.inbox, params);
+  return paginateEnvelope(snapshot.inbox, params);
 }
 
 /**
  * Fetch session context from static snapshot
+ * AC: @api-contract ac-envelope
  */
-export function fetchSessionContextStatic(): SessionContext | null {
+export function fetchSessionContextStatic(): ApiResponse<SessionContext> | null {
   const snapshot = getSnapshot();
-  return snapshot?.session ?? null;
+  if (!snapshot?.session) return null;
+  return wrapEnvelope(snapshot.session);
 }
 
 /**
  * Fetch observations from static snapshot
+ * AC: @api-contract ac-envelope
  */
 export function fetchObservationsStatic(params?: {
   type?: "friction" | "success" | "question" | "idea";
   resolved?: boolean;
-}): PaginatedResponse<Observation> {
+}): ApiResponse<Observation[]> {
   const snapshot = getSnapshot();
   if (!snapshot) {
-    return { items: [], total: 0, offset: 0, limit: 50 };
+    return wrapEnvelope([] as Observation[], { total: 0, offset: 0, limit: 50 });
   }
 
   let filtered = snapshot.observations;
@@ -444,22 +453,18 @@ export function fetchObservationsStatic(params?: {
     filtered = filtered.filter((o) => o.resolved === params.resolved);
   }
 
-  return {
-    items: filtered,
-    total: filtered.length,
-    offset: 0,
-    limit: filtered.length,
-  };
+  return wrapEnvelope(filtered, { total: filtered.length, offset: 0, limit: filtered.length });
 }
 
 /**
  * Search across static snapshot
  * AC: @gh-pages-export ac-11
+ * AC: @api-contract ac-envelope
  */
-export function searchStatic(query: string): SearchResponse {
+export function searchStatic(query: string): ApiResponse<SearchResponse> {
   const snapshot = getSnapshot();
   if (!snapshot) {
-    return { results: [], total: 0, showing: 0 };
+    return wrapEnvelope({ results: [], total: 0, showing: 0 });
   }
 
   const lowerQuery = query.toLowerCase();
@@ -507,26 +512,31 @@ export function searchStatic(query: string): SearchResponse {
     }
   }
 
-  return {
+  return wrapEnvelope({
     results: results.slice(0, 20),
     total: results.length,
     showing: Math.min(results.length, 20),
-  };
+  });
 }
 
 /**
  * Fetch triage records from static snapshot
  * AC: @interactive-triage-ui ac-8
+ * AC: @api-contract ac-envelope
  */
 export function fetchTriageRecordsStatic(params?: {
   status?: string;
   action?: string;
   limit?: number;
   offset?: number;
-}): PaginatedResponse<TriageRecord> {
+}): ApiResponse<TriageRecord[]> {
   const snapshot = getSnapshot();
   if (!snapshot) {
-    return { items: [], total: 0, offset: params?.offset ?? 0, limit: params?.limit ?? 50 };
+    return wrapEnvelope([] as TriageRecord[], {
+      total: 0,
+      offset: params?.offset ?? 0,
+      limit: params?.limit ?? 50,
+    });
   }
 
   let items = snapshot.triage ?? [];
@@ -538,7 +548,7 @@ export function fetchTriageRecordsStatic(params?: {
     items = items.filter((item) => item.action === params.action);
   }
 
-  return paginate(items, params);
+  return paginateEnvelope(items, params);
 }
 
 // ============================================================
@@ -548,17 +558,16 @@ export function fetchTriageRecordsStatic(params?: {
 /**
  * Fetch workflows from static snapshot
  * AC: @ui-workflows-view ac-1
+ * AC: @api-contract ac-envelope
  */
-export function fetchWorkflowsStatic(): { items: Workflow[]; total: number } {
+export function fetchWorkflowsStatic(): ApiResponse<Workflow[]> {
   const snapshot = getSnapshot();
   if (!snapshot) {
-    return { items: [], total: 0 };
+    return wrapEnvelope([] as Workflow[], { total: 0 });
   }
 
-  return {
-    items: snapshot.workflows ?? [],
-    total: (snapshot.workflows ?? []).length,
-  };
+  const workflows = snapshot.workflows ?? [];
+  return wrapEnvelope(workflows, { total: workflows.length });
 }
 
 // ============================================================
@@ -567,15 +576,12 @@ export function fetchWorkflowsStatic(): { items: Workflow[]; total: number } {
 
 /**
  * Fetch plans from static snapshot
- * Plans are not included in static snapshots, so return empty.
+ * AC: @api-contract ac-envelope
  */
-export function fetchPlansStatic(_params?: { status?: string }): {
-  items: PlanSummary[];
-  total: number;
-} {
+export function fetchPlansStatic(_params?: { status?: string }): ApiResponse<PlanSummary[]> {
   const snapshot = getSnapshot();
   if (!snapshot) {
-    return { items: [], total: 0 };
+    return wrapEnvelope([] as PlanSummary[], { total: 0 });
   }
 
   let items = snapshot.plans ?? [];
@@ -583,13 +589,14 @@ export function fetchPlansStatic(_params?: { status?: string }): {
     items = items.filter((plan) => plan.status === _params.status);
   }
 
-  return {
-    items: items.map(({ content: _content, ...plan }) => plan),
-    total: items.length,
-  };
+  const summaries = items.map(({ content: _content, ...plan }) => plan);
+  return wrapEnvelope(summaries, { total: summaries.length });
 }
 
-export function fetchPlanContentStatic(ref: string): PlanDetail {
+/**
+ * AC: @api-contract ac-envelope
+ */
+export function fetchPlanContentStatic(ref: string): ApiResponse<PlanDetail> {
   const snapshot = getSnapshot();
   if (!snapshot) {
     throw new Error("Plan content not available in static mode");
@@ -600,13 +607,16 @@ export function fetchPlanContentStatic(ref: string): PlanDetail {
     throw new Error(`Plan not found: ${ref}`);
   }
 
-  return plan;
+  return wrapEnvelope(plan);
 }
 
-export function fetchValidationStatic(): ValidationResponse {
+/**
+ * AC: @api-contract ac-envelope
+ */
+export function fetchValidationStatic(): ApiResponse<ValidationResponse> {
   const snapshot = getSnapshot();
   if (!snapshot?.validation) {
-    return {
+    return wrapEnvelope({
       valid: true,
       schemaErrors: [],
       refErrors: [],
@@ -614,10 +624,10 @@ export function fetchValidationStatic(): ValidationResponse {
       orphans: [],
       completenessWarnings: [],
       traitCycles: [],
-    };
+    });
   }
 
-  return {
+  return wrapEnvelope({
     valid: snapshot.validation.valid,
     schemaErrors: snapshot.validation.schemaErrors ?? [],
     refErrors: snapshot.validation.refErrors ?? [],
@@ -625,16 +635,18 @@ export function fetchValidationStatic(): ValidationResponse {
     orphans: snapshot.validation.orphans ?? [],
     completenessWarnings: snapshot.validation.completenessWarnings ?? [],
     traitCycles: snapshot.validation.traitCycles ?? [],
-  };
+  });
 }
 
-export function fetchAlignmentStatic(): AlignmentResponse {
-  return (
-    getSnapshot()?.alignment ?? {
-      stats: { totalSpecs: 0, specsWithTasks: 0, alignedSpecs: 0, orphanedSpecs: 0 },
-      warnings: [],
-    }
-  );
+/**
+ * AC: @api-contract ac-envelope
+ */
+export function fetchAlignmentStatic(): ApiResponse<AlignmentResponse> {
+  const alignment = getSnapshot()?.alignment ?? {
+    stats: { totalSpecs: 0, specsWithTasks: 0, alignedSpecs: 0, orphanedSpecs: 0 },
+    warnings: [],
+  };
+  return wrapEnvelope(alignment);
 }
 
 // ============================================================
