@@ -81637,9 +81637,25 @@ reviews:
           status: fail
           name: npm-test
         timestamp: 2026-03-29T22:09:34.317Z
+      - _ulid: 01KMXTAPZMH8YRCZTQ395Q792X
+        actor: codex@openai.com
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-29T22:09:45.972Z
+      - _ulid: 01KMXTAPZM3BYDYQB6QCRWRZTE
+        actor: codex@openai.com
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-29T22:09:45.972Z
     examined_commit: 16bf033f141f9de2e878c93802f2979933dacc09
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -81683,7 +81699,14 @@ reviews:
               assertion that distinguishes the push-driven path from the polling fallback.
             created_at: 2026-03-29T22:09:18.677Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai.com
+        role: reviewer
+        created_at: 2026-03-29T22:09:45.971Z
     created_at: 2026-03-29T22:04:14.293Z
-    updated_at: 2026-03-29T22:09:33.716Z
+    updated_at: 2026-03-29T22:09:45.972Z
     notes: []
