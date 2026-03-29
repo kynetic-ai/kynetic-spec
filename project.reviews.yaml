@@ -79415,9 +79415,25 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-29T10:02:08.508Z
+      - _ulid: 01KMWGPEG250HNWD5J1SE7DN3M
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-03-29T10:02:10.306Z
+      - _ulid: 01KMWGPEG3EJPFB39MA8DN5AMA
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-29T10:02:10.307Z
     examined_commit: 107be4397478b42cab064d2afccd4750bbce812c
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -79425,7 +79441,14 @@ reviews:
       ref: "@01KMW68KWFR1SEWZWVQV1G93HP"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-29T10:02:10.306Z
     created_at: 2026-03-29T09:58:16.406Z
-    updated_at: 2026-03-29T10:02:07.930Z
+    updated_at: 2026-03-29T10:02:10.306Z
     notes: []
