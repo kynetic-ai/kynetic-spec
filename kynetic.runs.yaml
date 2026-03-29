@@ -18588,9 +18588,24 @@ runs:
     completed_at: 2026-03-29T10:19:37.730Z
   - _ulid: 01KMWRVZ7Z1X9AK8ETSN6KM9JD
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-03-29T12:24:59.904Z
+        completed_at: 2026-03-29T12:25:18.959Z
+        notes: "Session: Completed task @task-ui-cache-domain-ready-subscription. What worked well: (1)
+          Thorough codebase exploration before writing code — the Explore agent found all relevant
+          files and the exact daemon broadcast format in one pass, which prevented any guesswork.
+          (2) The ws-invalidation module has a clean, extensible architecture — adding a new topic
+          was purely additive (new topic in array, new switch case, new domain map). (3) The
+          existing test patterns (query-client-retry.test.ts) showed how to mock SvelteKit aliases
+          for vitest. (4) Test runner cache with --fresh flag worked smoothly."
+      - status: completed
+        step_index: 1
+        started_at: 2026-03-29T12:25:18.959Z
+        completed_at: 2026-03-29T12:25:18.959Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-29T12:24:59.904Z
