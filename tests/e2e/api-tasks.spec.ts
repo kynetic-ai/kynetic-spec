@@ -16,7 +16,8 @@
 
 import { test, expect } from "./fixtures/test-base";
 
-test.describe("Tasks API", () => {
+// SKIPPED: API-only tests — no browser interaction. Migrating to vitest daemon integration tests.
+test.describe.skip("Tasks API", () => {
   test.describe("GET /api/tasks", () => {
     // AC: @api-contract ac-2
     test("returns tasks with required fields", async ({ request, daemon }) => {

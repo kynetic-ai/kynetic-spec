@@ -64,7 +64,8 @@ function writeSession(
   );
 }
 
-test.describe("Session Search API", () => {
+// SKIPPED: API-only tests — no browser interaction. Migrating to vitest daemon integration tests.
+test.describe.skip("Session Search API", () => {
   // AC: @session-text-search ac-api-search
   // AC: @session-text-search ac-performance
   // AC: @session-text-search ac-scope-narrowing

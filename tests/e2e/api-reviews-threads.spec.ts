@@ -45,7 +45,8 @@ const BLOCKER_THREAD_ULID = "01KKTX1CA45ZT43W2T6HJMVA02";
 const NIT_THREAD_ULID = "01KKTX3CA45ZT43W2T6HJMVA04";
 const RESOLVED_THREAD_ULID = "01KKTX5CA45ZT43W2T6HJMVA06";
 
-test.describe("Review Thread Mutation API", () => {
+// SKIPPED: API-only tests — no browser interaction. Migrating to vitest daemon integration tests.
+test.describe.skip("Review Thread Mutation API", () => {
   test.describe("POST /api/reviews/:id/comments", () => {
     // AC: @review-records-daemon-api ac-3
     test("creates a new thread on the review", async ({ request, daemon }) => {

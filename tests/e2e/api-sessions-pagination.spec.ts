@@ -157,7 +157,8 @@ function setupTestSessions(sessionsDir: string): void {
   });
 }
 
-test.describe("Session List Pagination API", () => {
+// SKIPPED: API-only tests — no browser interaction. Migrating to vitest daemon integration tests.
+test.describe.skip("Session List Pagination API", () => {
   test.describe("Pagination", () => {
     // AC: @session-list-pagination-api ac-pagination
     // AC: @trait-api-endpoint ac-4

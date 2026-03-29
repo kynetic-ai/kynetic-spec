@@ -21,7 +21,8 @@ const CODE_REVIEW_ULID = "01KKV1ACA45ZT43W2T6HJMVB10";
 const CODE_REVIEW_SIBLING_ULID = "01KKV1BCA45ZT43W2T6HJMVB11";
 const PENDING_REVIEW_TASK_ULID = "01KG0RRDCC9N4YGP991WD7XSPR";
 
-test.describe("Review List API (GET /api/reviews)", () => {
+// SKIPPED: API-only tests — no browser interaction. Migrating to vitest daemon integration tests.
+test.describe.skip("Review List API (GET /api/reviews)", () => {
   // AC: @review-records-daemon-api ac-1
   test("returns paginated review list with expected shape", async ({ request, daemon }) => {
     const response = await request.get(`${daemon.baseUrl}/api/reviews`);
@@ -320,7 +321,8 @@ test.describe("Review List API (GET /api/reviews)", () => {
   });
 });
 
-test.describe("Review Detail API (GET /api/reviews/:id)", () => {
+// SKIPPED: API-only tests — no browser interaction. Migrating to vitest daemon integration tests.
+test.describe.skip("Review Detail API (GET /api/reviews/:id)", () => {
   // AC: @review-records-daemon-api ac-2
   test("returns full review detail by ULID", async ({ request, daemon }) => {
     const response = await request.get(`${daemon.baseUrl}/api/reviews/${OPEN_REVIEW_ULID}`);

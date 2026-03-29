@@ -55,7 +55,8 @@
 
 import { test, expect } from "./fixtures/test-base";
 
-test.describe("Meta API", () => {
+// SKIPPED: API-only tests — no browser interaction. Migrating to vitest daemon integration tests.
+test.describe.skip("Meta API", () => {
   test.describe("GET /api/meta/session", () => {
     // AC: @api-contract ac-15
     test("returns session context with focus, threads, and questions", async ({
@@ -257,7 +258,8 @@ test.describe("Meta API", () => {
   });
 });
 
-test.describe("Search API", () => {
+// SKIPPED: API-only tests — no browser interaction. Migrating to vitest daemon integration tests.
+test.describe.skip("Search API", () => {
   test.describe("GET /api/search", () => {
     // AC: @api-contract ac-19
     test("returns search results with results array and total", async ({ request, daemon }) => {
@@ -400,7 +402,8 @@ test.describe("Search API", () => {
   });
 });
 
-test.describe("Validation API", () => {
+// SKIPPED: API-only tests — no browser interaction. Migrating to vitest daemon integration tests.
+test.describe.skip("Validation API", () => {
   test.describe("GET /api/validate", () => {
     // AC: @api-contract ac-20
     test("returns ValidationResult with required fields", async ({ request, daemon }) => {

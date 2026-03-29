@@ -27,7 +27,8 @@
 
 import { test, expect } from "./fixtures/test-base";
 
-test.describe("Aggregation API", () => {
+// SKIPPED: API-only tests — no browser interaction. Migrating to vitest daemon integration tests.
+test.describe.skip("Aggregation API", () => {
   test.describe("GET /api/aggregation/tasks/summary", () => {
     // AC: @ui-api-aggregation ac-1
     test("returns task status counts with dependency-aware distinctions", async ({

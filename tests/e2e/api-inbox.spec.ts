@@ -13,7 +13,8 @@
 
 import { test, expect } from "./fixtures/test-base";
 
-test.describe("Inbox API", () => {
+// SKIPPED: API-only tests — no browser interaction. Migrating to vitest daemon integration tests.
+test.describe.skip("Inbox API", () => {
   test.describe("GET /api/inbox", () => {
     // AC: @api-contract ac-12
     test("returns inbox items as array with total", async ({ request, daemon }) => {

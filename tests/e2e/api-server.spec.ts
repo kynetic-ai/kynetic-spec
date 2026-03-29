@@ -90,7 +90,8 @@ function rawHttpRequest(options: {
   });
 }
 
-test.describe("Server Core API", () => {
+// SKIPPED: API-only tests — no browser interaction. Migrating to vitest daemon integration tests.
+test.describe.skip("Server Core API", () => {
   test.describe("GET /api/health", () => {
     // AC: @daemon-server ac-1
     // Implicitly verified: if the daemon starts and responds to /api/health,

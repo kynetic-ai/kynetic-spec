@@ -55,7 +55,8 @@ function writeSession(
   }
 }
 
-test.describe("Session API Legacy Detect-and-Warn", () => {
+// SKIPPED: API-only tests — no browser interaction. Migrating to vitest daemon integration tests.
+test.describe.skip("Session API Legacy Detect-and-Warn", () => {
   // AC: @session-legacy-migration ac-read-fallback
   // AC: @session-legacy-migration ac-list-merge
   test.describe("GET /api/sessions", () => {

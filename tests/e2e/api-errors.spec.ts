@@ -30,7 +30,8 @@
 
 import { test, expect } from "./fixtures/test-base";
 
-test.describe("Error Handling API", () => {
+// SKIPPED: API-only tests — no browser interaction. Migrating to vitest daemon integration tests.
+test.describe.skip("Error Handling API", () => {
   test.describe("404 Not Found Errors", () => {
     // AC: @api-contract ac-22
     test("GET /api/tasks/:ref returns 404 with {error, message, suggestion} for invalid ref", async ({

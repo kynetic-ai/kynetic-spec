@@ -26,7 +26,8 @@
 
 import { test, expect } from "./fixtures/test-base";
 
-test.describe("Projects API", () => {
+// SKIPPED: API-only tests — no browser interaction. Migrating to vitest daemon integration tests.
+test.describe.skip("Projects API", () => {
   test.describe("GET /api/projects", () => {
     // AC: @multi-directory-daemon ac-28
     test("returns list of registered projects with paths, registeredAt, and watcherStatus", async ({

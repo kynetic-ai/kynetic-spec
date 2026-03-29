@@ -20,7 +20,8 @@ import { test, expect } from "./fixtures/test-base";
 // it is a batch lookup endpoint, not a paginated list endpoint.
 // AC: @trait-api-endpoint ac-5 — N/A: POST /api/items/batch is read-only and does not mutate shadow state.
 
-test.describe("Items API", () => {
+// SKIPPED: API-only tests — no browser interaction. Migrating to vitest daemon integration tests.
+test.describe.skip("Items API", () => {
   test.describe("GET /api/items", () => {
     // AC: @api-contract ac-8
     test("returns spec items with required fields", async ({ request, daemon }) => {

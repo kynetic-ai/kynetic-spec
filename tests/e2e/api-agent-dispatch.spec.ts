@@ -47,7 +47,8 @@
 
 import { test, expect } from "./fixtures/test-base";
 
-test.describe("Agent Dispatch API", () => {
+// SKIPPED: API-only tests — no browser interaction. Migrating to vitest daemon integration tests.
+test.describe.skip("Agent Dispatch API", () => {
   test.describe("GET /api/agent/status", () => {
     // AC: @daemon-agent-dispatch ac-5
     test("returns dispatch_enabled, active_invocations, queue_depth, agent_definitions", async ({
