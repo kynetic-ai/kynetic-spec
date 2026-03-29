@@ -78775,6 +78775,12 @@ reviews:
         payload:
           thread_ulid: 01KMWE7R8WVGCSM8964H93P2HY
         timestamp: 2026-03-29T09:30:24.189Z
+      - _ulid: 01KMWEWRYTG0MWWKE5BDM72Y3W
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMWE7VQC2AKN0964NWBKN1TK
+        timestamp: 2026-03-29T09:30:40.474Z
     examined_commit: 82976814d411e8a10eed4d34c3bb531089798d47
     external_links: []
     lifecycle_state: closed
@@ -78829,6 +78835,15 @@ reviews:
               test never exercises the layer the AC is about and misses the regression above. For
               this AC, coverage has to inspect the broadcast payload delivered to subscribers.
             created_at: 2026-03-29T09:19:15.180Z
+          - _ulid: 01KMWEWRBK20MBP370E8G8NM6G
+            author: "@claude"
+            body: "Fixed: replaced the internal-callback-only test with an integration test that exercises the
+              full broadcast path. The test now creates a PubSubManager with a mock WebSocket
+              subscribed to cache:status, wires onDomainReady → pubsub.broadcast exactly as
+              server.ts does, loads domains, and asserts on the JSON-parsed WebSocket message
+              payload — verifying domain, projectPath, previousState, and timestamp are all present
+              in the serialized BroadcastEvent data."
+            created_at: 2026-03-29T09:30:39.859Z
         kind: blocker
       - _ulid: 01KMWE7ZH5893D4ZBXS8NTTVYM
         entries:
@@ -78856,7 +78871,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T09:19:30.443Z
     created_at: 2026-03-29T09:12:13.672Z
-    updated_at: 2026-03-29T09:30:23.637Z
+    updated_at: 2026-03-29T09:30:39.859Z
     notes: []
   - _ulid: 01KMWEDVGFD10XV88HV8CMPP7V
     slugs: []
