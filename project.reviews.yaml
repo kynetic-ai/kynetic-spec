@@ -79608,6 +79608,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMWJ2AYQHHMXXSH6ESE5KG12
         timestamp: 2026-03-29T10:26:09.086Z
+      - _ulid: 01KMWJ2DCCEAGP5DXHHWJ7VK3Q
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMWJ2CS9WERARDYF85CAW39A
+        timestamp: 2026-03-29T10:26:10.956Z
     examined_commit: 9272feb686c31924d97cd35693791cc6a314ab97
     external_links: []
     lifecycle_state: open
@@ -79717,7 +79724,26 @@ reviews:
               longer verifying the current response contract."
             created_at: 2026-03-29T10:26:08.471Z
         kind: blocker
+      - _ulid: 01KMWJ2CS9WERARDYF85CAW39A
+        anchor:
+          type: code
+          commit: 9272feb686c31924d97cd35693791cc6a314ab97
+          line_end: 76
+          line_start: 71
+          path: packages/web-ui/tests/e2e/api-meta.spec.ts
+          side: head
+        entries:
+          - _ulid: 01KMWJ2CS9EKQZ2PXGXCS1Q48Z
+            author: Test User
+            body: The migrated meta/search/validation endpoints now return the unified envelope, but this spec
+              still reads the old top-level fields directly from the response body. It expects
+              focus/items/results/valid/stats at the top level instead of asserting body.data and
+              body.meta. That leaves the AC-bearing API coverage for /api/meta/*, /api/search,
+              /api/validate, and /api/alignment incorrect under the new contract. This file needs to
+              be migrated to the envelope shape before approval.
+            created_at: 2026-03-29T10:26:10.345Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-29T10:20:48.683Z
-    updated_at: 2026-03-29T10:26:08.471Z
+    updated_at: 2026-03-29T10:26:10.345Z
     notes: []
