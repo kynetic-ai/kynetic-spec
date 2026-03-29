@@ -78667,6 +78667,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-29T09:12:32.085Z
+      - _ulid: 01KMWE7RTGF1201EMHC9A5HVA6
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMWE7R8WVGCSM8964H93P2HY
+        timestamp: 2026-03-29T09:19:12.208Z
     examined_commit: 82976814d411e8a10eed4d34c3bb531089798d47
     external_links: []
     lifecycle_state: open
@@ -78676,8 +78683,26 @@ reviews:
       content_hash: ""
       ref: "@01KMW68JT108S4RS3G1GNYH5A9"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMWE7R8WVGCSM8964H93P2HY
+        anchor:
+          type: code
+          commit: 82976814d411e8a10eed4d34c3bb531089798d47
+          line_end: 289
+          line_start: 285
+          path: packages/daemon/src/server.ts
+          side: head
+        entries:
+          - _ulid: 01KMWE7R8WSS8V9HVK27KPRX5M
+            author: Test User
+            body: ac-domain-ready-event says the client-visible event must identify both the domain and the
+              project. This broadcast only puts { domain, previousState, timestamp } into the
+              message payload; the fourth argument is just PubSubManager's server-side project
+              filter, and pubsub.ts does not serialize it into the BroadcastEvent. Connected clients
+              therefore receive no project identifier at all.
+            created_at: 2026-03-29T09:19:11.644Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-29T09:12:13.672Z
-    updated_at: 2026-03-29T09:12:31.409Z
+    updated_at: 2026-03-29T09:19:11.644Z
     notes: []
