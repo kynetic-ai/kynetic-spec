@@ -22,6 +22,7 @@ import {
   loadMetaContext,
   areDependenciesMet,
   loadReviewRecords,
+  deleteDispatchWorkspaceRecord,
   type LoadedTask,
   type LoadedAgent,
 } from "../parser/index.js";
@@ -1832,6 +1833,17 @@ export class DispatchEngine {
         hasSubmissionLinkage
       : health.healthy;
 
+    // AC: @dispatch-workspace-registry ac-14 — determine if the workspace record
+    // is unrecoverable (missing canonical branch with no recovery path) for a
+    // non-terminal task. These reasons correspond to health.status === "invalid"
+    // in reconcileWorkspaceHealth.
+    const isNonTerminal =
+      entry.change.toStatus !== "completed" && entry.change.toStatus !== "cancelled";
+    const isUnrecoverable =
+      health.exists &&
+      !health.healthy &&
+      (health.reason === "missing-canonical-branch" || health.reason === "missing-adopted-branch");
+
     // For resumable tasks, attempt workspace discovery before discarding the
     // queue entry as missing or ineligible.
     if (
@@ -1871,6 +1883,19 @@ export class DispatchEngine {
         };
       }
 
+      // AC: @dispatch-workspace-registry ac-14 — after discovery fails for a
+      // resumable task with an unrecoverable workspace, purge the stale record
+      // so the task can be freshly provisioned. Return eligible with exists=false
+      // so provisioning creates a new workspace in this dispatch cycle.
+      if (isNonTerminal && isUnrecoverable && health.metadata) {
+        await this._purgeUnrecoverableWorkspaceRecord(
+          entry.change.taskRef,
+          health.metadata.workspaceId,
+          health.reason!,
+        );
+        return { eligible: true, exists: false, reason: null };
+      }
+
       // Discovery failed — return ineligible with diagnostic-enriched reason.
       const diagnosticReason =
         discoveryResult.diagnostics[0]?.code ??
@@ -1882,11 +1907,50 @@ export class DispatchEngine {
       };
     }
 
+    // AC: @dispatch-workspace-registry ac-14 — for non-resumable non-terminal tasks
+    // (e.g., pending via task.ready) with an unrecoverable workspace record, purge
+    // the stale record so the task becomes eligible for fresh provisioning. Return
+    // eligible with exists=false so provisioning creates a new workspace in this
+    // dispatch cycle.
+    if (!eligible && isNonTerminal && isUnrecoverable && health.metadata) {
+      await this._purgeUnrecoverableWorkspaceRecord(
+        entry.change.taskRef,
+        health.metadata.workspaceId,
+        health.reason!,
+      );
+      return { eligible: true, exists: false, reason: null };
+    }
+
     return {
       eligible,
       exists: health.exists,
       reason: health.reason,
     };
+  }
+
+  /**
+   * Purge an unrecoverable workspace record so the task can be freshly
+   * provisioned on the next dispatch cycle.
+   *
+   * AC: @dispatch-workspace-registry ac-14
+   */
+  private async _purgeUnrecoverableWorkspaceRecord(
+    taskRef: string,
+    workspaceId: string,
+    reason: string,
+  ): Promise<void> {
+    console.log(
+      `[dispatch] Purging unrecoverable workspace record ${workspaceId} for ${taskRef} (${reason}). ` +
+        `Task will be eligible for fresh provisioning on the next dispatch cycle.`,
+    );
+    try {
+      const ctx = await initContext(this.projectDir);
+      await deleteDispatchWorkspaceRecord(ctx, workspaceId);
+    } catch (err) {
+      console.log(
+        `[dispatch] Failed to purge workspace record ${workspaceId}: ${err instanceof Error ? err.message : String(err)}`,
+      );
+    }
   }
 
   private async _pruneIneligibleQueueEntries(
