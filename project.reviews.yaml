@@ -80681,6 +80681,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-29T12:46:58.805Z
+      - _ulid: 01KMWT492TRAK88QYH6S4CCAJ6
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMWT48GFF4Z8RCFWX10CGA9J
+        timestamp: 2026-03-29T12:47:00.698Z
     examined_commit: 25f80a8785149c5266bda75c4441abc7057a00bd
     external_links: []
     lifecycle_state: open
@@ -80690,8 +80697,21 @@ reviews:
       content_hash: ""
       ref: "@01KMW68MZ5Z281YD9Z87K2G55A"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMWT48GFF4Z8RCFWX10CGA9J
+        entries:
+          - _ulid: 01KMWT48GF8PSPG7PA074R5PKZ
+            author: Test User
+            body: |-
+              Review evidence log
+
+              Files read: packages/web-ui/src/lib/components/CacheWarmingBanner.svelte, packages/web-ui/src/routes/{inbox,plans,reviews,sessions,specs,tasks,tasks/board,triage}/+page.svelte, packages/web-ui/tests/cache-warming-view-states.test.ts, packages/web-ui/src/lib/{api.ts,query/client.ts,query/keys.ts}.
+              Commands run: git diff/stat, ./dist/cli/index.js task get, ./dist/cli/index.js review for-task, ./dist/cli/index.js validate, npm test -- --runInBand, node scripts/test.cjs cache-warming-view-states --fresh, node scripts/test.cjs query-client-retry --fresh, npm run typecheck.
+              Claims verified: the new UI distinguishes CacheWarmingError from normal errors in the modified views; targeted cache-warming and query retry tests pass; full-suite npm test exited 1 in this snapshot.
+              Categories searched: correctness, edge cases, error handling, test quality, integration.
+            created_at: 2026-03-29T12:47:00.111Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-29T12:46:12.602Z
-    updated_at: 2026-03-29T12:46:58.224Z
+    updated_at: 2026-03-29T12:47:00.111Z
     notes: []
