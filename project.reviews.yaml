@@ -78666,6 +78666,17 @@ reviews:
         runner: npm
         created_at: 2026-03-29T09:19:13.302Z
         completed_at: 2026-03-29T09:19:13.302Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Ran kspec validate. Exit 6 with repo-level warnings only (orphaned skills/spec
+          alignment/completeness warnings); no validation errors tied to this task.
+        name: kspec-validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-29T09:19:17.252Z
+        completed_at: 2026-03-29T09:19:17.252Z
     events:
       - _ulid: 01KMWDV037N0D6HX6FRJQVCT4J
         actor: Test User
@@ -78701,6 +78712,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMWE7VQC2AKN0964NWBKN1TK
         timestamp: 2026-03-29T09:19:15.763Z
+      - _ulid: 01KMWE7YC6C7DR6QVXHF3QCVX2
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec-validate
+        timestamp: 2026-03-29T09:19:17.894Z
     examined_commit: 82976814d411e8a10eed4d34c3bb531089798d47
     external_links: []
     lifecycle_state: open
@@ -78749,5 +78767,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-29T09:12:13.672Z
-    updated_at: 2026-03-29T09:19:15.180Z
+    updated_at: 2026-03-29T09:19:17.252Z
     notes: []
