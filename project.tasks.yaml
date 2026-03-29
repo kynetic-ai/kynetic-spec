@@ -23239,7 +23239,7 @@
   type: task
   spec_ref: "@ui-data-freshness"
   plan_ref: "@plan-daemon-cache-warming-ux"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-ui-warming-skeletons"
@@ -23252,4 +23252,5 @@
   todos_count: 0
   created_at: 2026-03-29T06:59:52.682Z
   started_at: 2026-03-29T13:37:08.311Z
+  submitted_at: 2026-03-29T14:15:56.028Z
   automation: eligible
