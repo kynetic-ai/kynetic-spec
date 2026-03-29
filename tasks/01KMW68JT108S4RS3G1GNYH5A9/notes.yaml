@@ -73,3 +73,15 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-29T09:19:31.800Z
+  - _ulid: 01KMWEXHV216XDT1HKXV363T49
+    content: "Fix cycle 5: addressed both blockers from review @01KMWDV0. Blocker 1 — broadcast payload
+      was missing projectPath; the 4th arg to pubsub.broadcast() is only a server-side project
+      filter, not part of the serialized BroadcastEvent. Added projectPath: cachePath to the data
+      object so clients receive it. Blocker 2 — replaced the internal-callback-only test with an
+      integration test that wires PubSubManager with a mock WebSocket, broadcasts through the same
+      path as server.ts, and asserts on the parsed WebSocket message payload (domain, projectPath,
+      previousState, timestamp). Entity cache suite: 95/95 passing. Full suite: 15 failures, all
+      pre-existing on dev (dispatch engine, workspace, setup tests — unchanged from origin/dev)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-29T09:31:05.954Z
