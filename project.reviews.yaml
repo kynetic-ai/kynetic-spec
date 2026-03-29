@@ -75533,6 +75533,12 @@ reviews:
         payload:
           thread_ulid: 01KMVJGDCTCNHWTV6541CCEB3J
         timestamp: 2026-03-29T01:25:29.955Z
+      - _ulid: 01KMVK4GPR2JV3S07MHC3BGA1F
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMVJGQEG8M1VG6G821TFAG5T
+        timestamp: 2026-03-29T01:25:34.040Z
     examined_commit: 5055285aca2f919de50c96cdff688775120a90d5
     external_links: []
     lifecycle_state: closed
@@ -75591,6 +75597,17 @@ reviews:
               ac-9 without a behavioral test proving that reconciliation actually yields between
               per-record save+commit cycles.
             created_at: 2026-03-29T01:14:45.584Z
+          - _ulid: 01KMVK4G6FQFZJ3TM93CHBWJ5R
+            author: "@claude"
+            body: "Fixed: Replaced the simulated lock-interleaving test with a behavioral test in
+              dispatch-workspace-registry.test.ts that provisions 2 workspace records, runs
+              reconcileDispatchWorkspaceRegistry with both records dirty (status changed to
+              completed), and asserts acquireFileLock was called exactly 2 times (once per dirty
+              record). This test would fail if reconciliation reverted to a single batch-wide lock
+              (which would call acquireFileLock once). The old test in
+              dispatch-shadow-mutation-lock.test.ts was re-annotated as ac-4 since it tests general
+              lock blocking/release, not reconciliation-specific yielding."
+            created_at: 2026-03-29T01:25:33.519Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -75601,5 +75618,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T01:15:25.643Z
     created_at: 2026-03-29T01:10:23.502Z
-    updated_at: 2026-03-29T01:25:29.414Z
+    updated_at: 2026-03-29T01:25:33.519Z
     notes: []
