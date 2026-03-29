@@ -9502,6 +9502,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-29T01:27:34.926Z
+  - _ulid: 01KMVKXZT2SXW1V2VYJWKN6ZCP
+    type: friction
+    content: Manual merge from a detached reviewer snapshot is still awkward when the integration target
+      branch (dev) is already checked out in another worktree. This session required creating a
+      temporary merge branch at the target tip, resolving the merge there, re-running tests on the
+      merge commit, then advancing refs/heads/dev manually with git update-ref. Consider a kspec
+      merge helper or documented workflow for detached review snapshots with occupied target
+      branches.
+    author: Test User
+    resolution: null
+    resolved: false
+    created_at: 2026-03-29T01:39:28.706Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
