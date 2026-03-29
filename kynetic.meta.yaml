@@ -9654,6 +9654,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-29T08:36:17.188Z
+  - _ulid: 01KMWCJ1J1K6073SVSMT9V2K0F
+    type: success
+    content: "Fix cycle 3 on entity-cache task: reading all historical review records (not just the
+      latest) gave clear escalation context across cycles. The Explore agent's deep analysis of
+      loadDomain() state transitions informed both the implementation approach (callback injection +
+      previousState capture) and the test design (4 behavioral tests covering all transition
+      paths)."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-29T08:49:51.681Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
