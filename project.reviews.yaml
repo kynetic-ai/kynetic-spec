@@ -79535,6 +79535,16 @@ reviews:
         runner: kspec
         created_at: 2026-03-29T10:25:24.580Z
         completed_at: 2026-03-29T10:25:24.580Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed locally in review snapshot: 1973 suites passed, 7123 tests passed, 5 skipped."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-29T10:25:26.438Z
+        completed_at: 2026-03-29T10:25:26.438Z
     events:
       - _ulid: 01KMWHRJNB8BPQSV3X8B9QPFND
         actor: Test User
@@ -79556,6 +79566,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-03-29T10:25:25.170Z
+      - _ulid: 01KMWJ12H6MRPY0501Y2R6HES2
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-29T10:25:27.078Z
     examined_commit: 9272feb686c31924d97cd35693791cc6a314ab97
     external_links: []
     lifecycle_state: open
@@ -79568,5 +79585,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-29T10:20:48.683Z
-    updated_at: 2026-03-29T10:25:24.580Z
+    updated_at: 2026-03-29T10:25:26.438Z
     notes: []
