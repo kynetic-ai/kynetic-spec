@@ -468,6 +468,7 @@ conventions:
       - File watcher tests skip in CI — GitHub Actions does not support recursive fs.watch
       - E2E port hardcoded at 3456 — tests cannot run in parallel on same machine
       - GitHub Pages needs BASE_PATH=/kynetic-spec for local static builds; CI handles automatically
+      - E2E tests use ephemeral ports — safe to run in parallel and with dispatch agents
   - _ulid: 01KJ9BCWSFHEJFHW7024Y4K68Y
     domain: cli-lookups
     examples: []
