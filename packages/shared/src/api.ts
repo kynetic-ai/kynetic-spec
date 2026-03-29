@@ -1,13 +1,76 @@
 /**
  * API Response Types
  *
- * Shared types for REST API responses between daemon and web-ui.
- * These types define the contract for HTTP endpoints.
+ * Shared types and Zod runtime schemas for REST API responses between daemon and web-ui.
+ * These define the contract for HTTP endpoints — both compile-time types and runtime validation.
  */
+
+import { z } from "zod";
+
+// ─── Unified Response Envelope ──────────────────────────────────────────────
+// AC: @api-contract ac-envelope
+// AC: @api-contract ac-cache-status-field
+
+/**
+ * Zod schema for cache readiness state.
+ * "ready" — cache is populated, data is current.
+ * "loading" — cache is warming, data is empty/default.
+ * AC: @api-contract ac-cache-status-field
+ */
+export const CacheStatusSchema = z.enum(["ready", "loading"]);
+
+/**
+ * Cache readiness state for API response metadata.
+ */
+export type CacheStatus = z.infer<typeof CacheStatusSchema>;
+
+/**
+ * Zod schema for API response metadata.
+ * Always includes cache_status. Pagination fields are present only
+ * for list/paginated endpoints.
+ * AC: @api-contract ac-envelope
+ */
+export const ApiResponseMetaSchema = z.object({
+  cache_status: CacheStatusSchema,
+  total: z.number().optional(),
+  offset: z.number().optional(),
+  limit: z.number().optional(),
+});
+
+/**
+ * Metadata for API response envelope.
+ */
+export type ApiResponseMeta = z.infer<typeof ApiResponseMetaSchema>;
+
+/**
+ * Creates a Zod schema for the unified API response envelope with a typed data payload.
+ * Use: `ApiResponseSchema(z.array(TaskSummarySchema))` for list endpoints.
+ * AC: @api-contract ac-envelope
+ * AC: @api-contract ac-cache-status-field
+ */
+export function ApiResponseSchema<T extends z.ZodTypeAny>(dataSchema: T) {
+  return z.object({
+    data: dataSchema,
+    meta: ApiResponseMetaSchema,
+  });
+}
+
+/**
+ * Unified API response envelope.
+ * All cache-backed endpoints return this shape.
+ * `data` is the typed payload (array for lists, object for detail/aggregation).
+ * `meta` carries cache readiness and optional pagination.
+ */
+export interface ApiResponse<T> {
+  data: T;
+  meta: ApiResponseMeta;
+}
 
 /**
  * Common paginated response wrapper
  * AC: @api-contract ac-4
+ * @deprecated Use ApiResponse<T[]> with pagination fields in meta instead.
+ * Kept for backward compatibility during route migration.
  */
 export interface PaginatedResponse<T> {
   items: T[];

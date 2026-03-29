@@ -18,7 +18,11 @@ import type {
   ImplementationStatus,
   Maturity,
   ObservationType,
-  // API types
+  // API types — envelope
+  CacheStatus,
+  ApiResponseMeta,
+  ApiResponse,
+  // API types — legacy pagination
   PaginatedResponse,
   ErrorResponse,
   TaskSummary,
@@ -71,6 +75,58 @@ describe("Core Schema Types", () => {
 
   it("ObservationType should be union of valid types", () => {
     expectTypeOf<ObservationType>().toEqualTypeOf<"friction" | "success" | "question" | "idea">();
+  });
+});
+
+describe("API Response Envelope Types", () => {
+  // AC: @api-contract ac-envelope
+  it("CacheStatus should be 'ready' | 'loading'", () => {
+    expectTypeOf<CacheStatus>().toEqualTypeOf<"ready" | "loading">();
+  });
+
+  // AC: @api-contract ac-envelope
+  it("ApiResponseMeta should have cache_status and optional pagination", () => {
+    expectTypeOf<ApiResponseMeta>().toHaveProperty("cache_status");
+    expectTypeOf<ApiResponseMeta["cache_status"]>().toEqualTypeOf<CacheStatus>();
+
+    expectTypeOf<ApiResponseMeta>().toHaveProperty("total");
+    expectTypeOf<ApiResponseMeta["total"]>().toEqualTypeOf<number | undefined>();
+
+    expectTypeOf<ApiResponseMeta>().toHaveProperty("offset");
+    expectTypeOf<ApiResponseMeta["offset"]>().toEqualTypeOf<number | undefined>();
+
+    expectTypeOf<ApiResponseMeta>().toHaveProperty("limit");
+    expectTypeOf<ApiResponseMeta["limit"]>().toEqualTypeOf<number | undefined>();
+  });
+
+  // AC: @api-contract ac-envelope
+  it("ApiResponse should have typed data and meta", () => {
+    type TestResponse = ApiResponse<string[]>;
+
+    expectTypeOf<TestResponse>().toHaveProperty("data");
+    expectTypeOf<TestResponse>().toHaveProperty("meta");
+
+    expectTypeOf<TestResponse["data"]>().toEqualTypeOf<string[]>();
+    expectTypeOf<TestResponse["meta"]>().toEqualTypeOf<ApiResponseMeta>();
+  });
+
+  // AC: @api-contract ac-envelope
+  it("ApiResponse should work with object payloads", () => {
+    type AggResponse = ApiResponse<{ counts: Record<string, number>; total: number }>;
+
+    expectTypeOf<AggResponse["data"]>().toHaveProperty("counts");
+    expectTypeOf<AggResponse["data"]>().toHaveProperty("total");
+    expectTypeOf<AggResponse["meta"]>().toEqualTypeOf<ApiResponseMeta>();
+  });
+
+  // AC: @api-contract ac-cache-status-field
+  it("ApiResponseMeta cache_status rejects invalid values at type level", () => {
+    // "ready" and "loading" are assignable
+    expectTypeOf<"ready">().toMatchTypeOf<CacheStatus>();
+    expectTypeOf<"loading">().toMatchTypeOf<CacheStatus>();
+
+    // Arbitrary strings are not assignable to CacheStatus
+    expectTypeOf<string>().not.toMatchTypeOf<CacheStatus>();
   });
 });
 

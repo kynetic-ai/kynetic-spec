@@ -13,6 +13,9 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run tests/"
   },
+  "dependencies": {
+    "zod": "^3.23.8"
+  },
   "devDependencies": {
     "typescript": "^5.3.3"
   }
