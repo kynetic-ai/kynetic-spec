@@ -75652,6 +75652,24 @@ reviews:
         runner: npm
         created_at: 2026-03-29T01:33:25.378Z
         completed_at: 2026-03-29T01:33:25.378Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: AGENTS.md, kspec-agents.md, src/agent-runtime/workspace.ts,
+          src/parser/file-lock.ts, src/cli/index.ts, tests/dispatch-shadow-mutation-lock.test.ts,
+          tests/dispatch-workspace-registry.test.ts, tests/file-lock.test.ts,
+          src/agent-runtime/dispatch.ts. Commands run: kspec task get, kspec item get, kspec
+          validate, rg AC annotations, git diff/stat/log, npm test -- --fresh. Claims verified: CLI
+          force-reclaim cleanup now runs in src/cli/index.ts; reconciliation lock acquisition is per
+          dirty record in src/agent-runtime/workspace.ts and exercised by
+          dispatch-workspace-registry tests; full regression suite passes. Categories searched:
+          correctness, edge cases, error handling, test quality, integration."
+        name: review-evidence
+        required: false
+        runner: codex
+        created_at: 2026-03-29T01:33:29.963Z
+        completed_at: 2026-03-29T01:33:29.963Z
     events:
       - _ulid: 01KMVKBBSJ2XQHS2ZHKFHSWY7C
         actor: Test User
@@ -75689,6 +75707,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-29T01:33:27.606Z
+      - _ulid: 01KMVKK20A2TT6BX7K6B9B3D0Y
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-03-29T01:33:30.506Z
     examined_commit: 50717a7c9736640f7450550e90c1fe5784e2c44b
     external_links: []
     lifecycle_state: closed
@@ -75708,5 +75733,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T01:33:27.606Z
     created_at: 2026-03-29T01:29:18.386Z
-    updated_at: 2026-03-29T01:33:27.606Z
+    updated_at: 2026-03-29T01:33:29.963Z
     notes: []
