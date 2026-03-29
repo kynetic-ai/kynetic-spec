@@ -3,10 +3,10 @@ import { defineConfig, devices } from "@playwright/test";
 export default defineConfig({
   testDir: "./tests/e2e",
   testMatch: "*.spec.ts",
-  fullyParallel: false,
+  fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: 1, // Sequential: each test gets its own ephemeral-port daemon
+  workers: process.env.CI ? 2 : 4,
   reporter: process.env.CI ? "github" : "html",
   timeout: 30_000,
 
