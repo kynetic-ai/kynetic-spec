@@ -712,10 +712,14 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-29T03:28:44.541Z
+      updated_at: 2026-03-29T04:45:05.791Z
     health:
-      status: stale
+      status: invalid
       issues:
+        - code: missing_canonical_branch
+          message: Canonical branch "dispatch/task/implement-droid-platform-config-schema/01kkjkm6" is
+            missing.
+          suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
           message: Worker worktree
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-platform-config-schema-01kkjkm6"
@@ -726,8 +730,8 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-platform-config-schema-01kkjkm6-review"
             is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
-      summary: Workspace registry record is stale and needs reconciliation.
-      updated_at: 2026-03-29T03:28:44.541Z
+      summary: Workspace registry record is invalid because required git state is missing.
+      updated_at: 2026-03-29T04:45:05.791Z
     integration:
       status: merged
       detail: integration:merged
@@ -735,7 +739,7 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: a3120f904159a992682178398e87ffe5649ab7f5
-      updated_at: 2026-03-29T03:28:44.541Z
+      updated_at: 2026-03-29T04:45:05.791Z
     lifecycle_state: stale
     resolved_base_branch: main
     task_ref: "@01KKJKM61M5BAEFRPNBRK7XDRY"
@@ -743,9 +747,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-13T07:57:55.750Z
-      last_reconciled_at: 2026-03-29T03:28:44.541Z
+      last_reconciled_at: 2026-03-29T04:45:05.791Z
       created_at: 2026-03-13T03:30:24.310Z
-      updated_at: 2026-03-29T03:28:44.541Z
+      updated_at: 2026-03-29T04:45:05.791Z
     workspace_id: dispatch-workspace-01KKJKM61M5BAEFRPNBRK7XDRY
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -1866,17 +1870,21 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-19T03:56:06.911Z
+      updated_at: 2026-03-29T04:45:08.789Z
     health:
-      status: stale
+      status: invalid
       issues:
+        - code: missing_canonical_branch
+          message: Canonical branch "dispatch/task/implement-droid-core-skill-install-support/01kkjkma" is
+            missing.
+          suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
           message: Worker worktree
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-core-skill-install-support-01kkjkma"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      summary: Workspace registry record is stale and needs reconciliation.
-      updated_at: 2026-03-19T03:56:06.911Z
+      summary: Workspace registry record is invalid because required git state is missing.
+      updated_at: 2026-03-29T04:45:08.789Z
     integration:
       status: merged
       detail: integration:merged
@@ -1884,7 +1892,7 @@ workspaces:
       publication_mode: pull_request
       target_branch: main
       target_commit: 48408281d10e9f1d5ec6ba581041cd9477006c46
-      updated_at: 2026-03-19T03:56:06.911Z
+      updated_at: 2026-03-29T04:45:08.789Z
     lifecycle_state: stale
     resolved_base_branch: main
     task_ref: "@01KKJKMACTMKC8CNF9D9Y56B3C"
@@ -1892,9 +1900,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-13T08:26:59.132Z
-      last_reconciled_at: 2026-03-19T03:56:06.911Z
+      last_reconciled_at: 2026-03-29T04:45:08.789Z
       created_at: 2026-03-13T08:14:07.606Z
-      updated_at: 2026-03-19T03:56:06.911Z
+      updated_at: 2026-03-29T04:45:08.789Z
     workspace_id: dispatch-workspace-01KKJKMACTMKC8CNF9D9Y56B3C
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
