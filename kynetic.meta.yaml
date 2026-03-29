@@ -9888,6 +9888,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-29T12:49:03.097Z
+  - _ulid: 01KMWV7QFAK1TRDYM805X2T876
+    type: success
+    content: "Playwright page.clock.install() enables fast-forward of TanStack Query retry delays in E2E
+      tests. Used in cache-warming-views.spec.ts to avoid 30-second real-time waits for the 15×2s
+      retry ceiling. Pattern: install clock before goto, then runFor(2500) in a loop to advance
+      through retries. Works because TanStack Query uses setTimeout for retryDelay."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-29T13:06:22.314Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
