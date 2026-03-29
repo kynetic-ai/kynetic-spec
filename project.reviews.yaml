@@ -80812,6 +80812,12 @@ reviews:
         payload:
           thread_ulid: 01KMWT4YD85919XADCFHC1ZRGJ
         timestamp: 2026-03-29T13:03:40.737Z
+      - _ulid: 01KMWV31917FSA0HRWN2A4V5JG
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KMWT4YD85919XADCFHC1ZRGJ
+        timestamp: 2026-03-29T13:03:48.513Z
     examined_commit: 25f80a8785149c5266bda75c4441abc7057a00bd
     external_links: []
     lifecycle_state: closed
@@ -80864,6 +80870,8 @@ reviews:
               CacheWarmingBanner branches."
             created_at: 2026-03-29T13:03:40.212Z
         kind: blocker
+        resolved_at: 2026-03-29T13:03:47.910Z
+        resolved_by: "@claude"
       - _ulid: 01KMWT508QZ45PSQA40FG812CB
         anchor:
           type: code
@@ -80893,5 +80901,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T12:47:44.861Z
     created_at: 2026-03-29T12:46:12.602Z
-    updated_at: 2026-03-29T13:03:40.212Z
+    updated_at: 2026-03-29T13:03:47.910Z
     notes: []
