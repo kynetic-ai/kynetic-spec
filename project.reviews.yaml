@@ -76858,7 +76858,17 @@ reviews:
     slugs: []
     title: Review task-spec-update-api-contract
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 1966/1966 suites passed; 7088 passed, 5 skipped; duration 3461.2s.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-29T07:19:56.516Z
+        completed_at: 2026-03-29T07:19:56.516Z
     events:
       - _ulid: 01KMW75WM4GHS1B1CCDX30N60E
         actor: Test User
@@ -76880,6 +76890,13 @@ reviews:
           kind: nit
           thread_ulid: 01KMW7DB4Y2J1WTS7MRCKJRRGV
         timestamp: 2026-03-29T07:19:55.339Z
+      - _ulid: 01KMW7DDC5PBQ6K67MZXVWPP7G
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-29T07:19:57.062Z
     examined_commit: 6943dad4b8203281f7a00c18ae29804ce34c559a
     external_links: []
     lifecycle_state: open
@@ -76926,5 +76943,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-29T07:15:50.533Z
-    updated_at: 2026-03-29T07:19:54.783Z
+    updated_at: 2026-03-29T07:19:56.516Z
     notes: []
