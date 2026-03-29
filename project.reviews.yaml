@@ -76072,6 +76072,13 @@ reviews:
           kind: question
           thread_ulid: 01KMW2ZMWRERHV6R9NAV2PV4ES
         timestamp: 2026-03-29T06:02:32.266Z
+      - _ulid: 01KMW2ZSE3CQ22JE702GAG0Y9A
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KMW2ZRWAWMRTEDX5RWHMS376
+        timestamp: 2026-03-29T06:02:36.355Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -76192,7 +76199,23 @@ reviews:
               intentional scoping or an oversight.
             created_at: 2026-03-29T06:02:31.704Z
         kind: question
+      - _ulid: 01KMW2ZRWAWMRTEDX5RWHMS376
+        anchor:
+          type: structured
+          ref: "@task-ui-unwrap-envelope"
+          section: Tasks
+        entries:
+          - _ulid: 01KMW2ZRWBBNKY2N6R41D2TAXF
+            author: "@claude"
+            body: The description mentions returning meta.cache_status via "a response header/side channel" as
+              an alternative to returning a wrapped type. This is unnecessary design ambiguity for
+              an automated agent. The interceptor task (task-ui-cache-warming-interceptor) already
+              assumes the CacheWarmingError approach where the fetch function throws on loading
+              status. The meta doesn't need to be passed through — it's consumed at the fetch layer.
+              Suggest removing the header/side-channel mention to avoid confusion.
+            created_at: 2026-03-29T06:02:35.787Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-29T06:01:44.082Z
-    updated_at: 2026-03-29T06:02:31.704Z
+    updated_at: 2026-03-29T06:02:35.787Z
     notes: []
