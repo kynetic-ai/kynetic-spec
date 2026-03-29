@@ -27650,12 +27650,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-29T11:47:41.554Z
+      updated_at: 2026-03-29T11:47:45.219Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-29T11:47:41.554Z
+      updated_at: 2026-03-29T11:47:45.219Z
     integration:
       status: pending
       detail: null
@@ -27663,24 +27663,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: d64e38817eb430d7496769373b2751bd89808a4d
-      updated_at: 2026-03-29T11:47:41.554Z
-    lifecycle_state: ready
+      updated_at: 2026-03-29T11:47:45.219Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KMW68M6EEC48D7WFTP623BHG"
     task_slug: task-ui-unwrap-envelope
     timestamps:
       closed_at: null
       last_active_at: 2026-03-29T11:35:50.601Z
-      last_reconciled_at: 2026-03-29T11:47:41.554Z
+      last_reconciled_at: 2026-03-29T11:47:45.219Z
       created_at: 2026-03-29T11:03:40.751Z
-      updated_at: 2026-03-29T11:47:41.554Z
+      updated_at: 2026-03-29T11:47:45.219Z
     workspace_id: dispatch-workspace-01KMW68M6EEC48D7WFTP623BHG
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 1377ddf5db42d1acc5b217e5c82bc24ac5281f4b
+        last_seen_at: 2026-03-29T11:47:45.219Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ui-unwrap-envelope-01kmw68m-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-ui-unwrap-envelope/01kmw68m
-        head: cd80c3aca1b13a308b92ccc43fcd539a84e62692
-        last_seen_at: 2026-03-29T11:35:46.501Z
+        head: 1377ddf5db42d1acc5b217e5c82bc24ac5281f4b
+        last_seen_at: 2026-03-29T11:47:45.219Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ui-unwrap-envelope-01kmw68m
