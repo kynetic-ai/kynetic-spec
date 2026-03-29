@@ -75471,6 +75471,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-29T01:14:24.000Z
+      - _ulid: 01KMVJGDX1BXJ8N8H8DJYGJYT8
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMVJGDCTCNHWTV6541CCEB3J
+        timestamp: 2026-03-29T01:14:35.809Z
     examined_commit: 5055285aca2f919de50c96cdff688775120a90d5
     external_links: []
     lifecycle_state: open
@@ -75480,8 +75487,28 @@ reviews:
       content_hash: ""
       ref: "@01KMVCF95W6HCCPP6H5SSA7HBG"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMVJGDCTCNHWTV6541CCEB3J
+        anchor:
+          type: code
+          commit: 5055285aca2f919de50c96cdff688775120a90d5
+          line_end: 104
+          line_start: 102
+          path: src/cli/index.ts
+          side: head
+        entries:
+          - _ulid: 01KMVJGDCTH1C7P6PPWR7HA49V
+            author: Test User
+            body: The force-reclaim cleanup only runs in withDispatchShadowMutationLock, so CLI mutations still
+              skip the ac-11 safety check. The new max-hold reclaim path is used by the CLI
+              preAction hook in src/cli/index.ts, but maybeAcquireDispatchMutationLock only stores
+              the release handle and immediately proceeds into task/review mutations. If a reviewer
+              or worker CLI command reclaims the lock from an alive-but-stuck daemon, any staged or
+              untracked shadow-branch residue is left in place and can be committed together with
+              the CLI mutation, which is exactly the corruption ac-11 is meant to prevent.
+            created_at: 2026-03-29T01:14:35.290Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-29T01:10:23.502Z
-    updated_at: 2026-03-29T01:14:23.411Z
+    updated_at: 2026-03-29T01:14:35.290Z
     notes: []
