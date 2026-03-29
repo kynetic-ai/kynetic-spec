@@ -78694,6 +78694,13 @@ reviews:
           status: fail
           name: npm-test
         timestamp: 2026-03-29T09:19:13.841Z
+      - _ulid: 01KMWE7W9K8MTTYC7RHB2XM91N
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMWE7VQC2AKN0964NWBKN1TK
+        timestamp: 2026-03-29T09:19:15.763Z
     examined_commit: 82976814d411e8a10eed4d34c3bb531089798d47
     external_links: []
     lifecycle_state: open
@@ -78722,7 +78729,25 @@ reviews:
               therefore receive no project identifier at all.
             created_at: 2026-03-29T09:19:11.644Z
         kind: blocker
+      - _ulid: 01KMWE7VQC2AKN0964NWBKN1TK
+        anchor:
+          type: code
+          commit: 82976814d411e8a10eed4d34c3bb531089798d47
+          line_end: 1806
+          line_start: 1785
+          path: tests/daemon-entity-cache.test.ts
+          side: head
+        entries:
+          - _ulid: 01KMWE7VQCGEDA1Y51BH49864Q
+            author: Test User
+            body: This test claims to cover the AC's "domain and project identifier in the broadcast event"
+              requirement, but it only asserts the internal onDomainReady callback arguments. The
+              client-visible WebSocket message is assembled later in server.ts/pubsub.ts, so this
+              test never exercises the layer the AC is about and misses the regression above. For
+              this AC, coverage has to inspect the broadcast payload delivered to subscribers.
+            created_at: 2026-03-29T09:19:15.180Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-29T09:12:13.672Z
-    updated_at: 2026-03-29T09:19:13.302Z
+    updated_at: 2026-03-29T09:19:15.180Z
     notes: []
