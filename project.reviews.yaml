@@ -77603,6 +77603,19 @@ reviews:
         runner: kspec
         created_at: 2026-03-29T07:53:16.294Z
         completed_at: 2026-03-29T07:53:16.294Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Reviewed snapshot is not task-specific: git rev-list --left-right --count
+          dev...dispatch/task/task-spec-update-entity-cache/01kmw68j returned 0 0, and examined
+          commit 6943dad4b820 is the current dev merge commit for unrelated dispatch runtime
+          changes."
+        name: branch-linkage
+        required: true
+        runner: git
+        created_at: 2026-03-29T07:53:18.917Z
+        completed_at: 2026-03-29T07:53:18.917Z
     events:
       - _ulid: 01KMW98XRTV8MHBF9ZA6EAM7C9
         actor: Test User
@@ -77645,6 +77658,13 @@ reviews:
           status: pass
           name: validate
         timestamp: 2026-03-29T07:53:16.853Z
+      - _ulid: 01KMW9AGWZDY55QEQKCR3HF9B9
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: branch-linkage
+        timestamp: 2026-03-29T07:53:19.519Z
     examined_commit: 6943dad4b8203281f7a00c18ae29804ce34c559a
     external_links: []
     lifecycle_state: open
@@ -77675,5 +77695,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-29T07:52:27.162Z
-    updated_at: 2026-03-29T07:53:16.294Z
+    updated_at: 2026-03-29T07:53:18.917Z
     notes: []
