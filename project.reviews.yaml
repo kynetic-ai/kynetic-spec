@@ -75456,7 +75456,26 @@ reviews:
     title: Review fix-dispatch-shadow-mutation-lock-contention-and-leak-between-daemon-and-agents (cycle
       2)
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed: 1962/1962 suites, 7073 passed, 5 skipped, 0 failed. Files read:
+          src/parser/file-lock.ts, src/cli/index.ts, src/agent-runtime/workspace.ts,
+          src/parser/dispatch-workspaces.ts, tests/file-lock.test.ts,
+          tests/dispatch-shadow-mutation-lock.test.ts, tests/dispatch-workspace-registry.test.ts.
+          Commands run: kspec task get @01KMVCF95W6HCCPP6H5SSA7HBG; kspec item get
+          @scoped-dispatch-shadow-serialization; kspec review get @01KMVF0BZ1CFC953MH2ZPTN6KS; kspec
+          review for-task @01KMVCF95W6HCCPP6H5SSA7HBG; git diff 737fd3d...5055285; rg AC annotations
+          in changed tests; kspec validate; npm test. Claims verified: previous review fixes for
+          staged cleanup, ac-9 test rewrite, ac-11 test addition. Categories searched: correctness,
+          edge cases, error handling, test quality, integration."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-29T01:15:15.633Z
+        completed_at: 2026-03-29T01:15:15.633Z
     events:
       - _ulid: 01KMVJ8QGEKKRX97AB5JYEXYA6
         actor: Test User
@@ -75485,6 +75504,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMVJGQEG8M1VG6G821TFAG5T
         timestamp: 2026-03-29T01:14:46.197Z
+      - _ulid: 01KMVJHN9EGGHHXACVHRTYGZ77
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-29T01:15:16.143Z
     examined_commit: 5055285aca2f919de50c96cdff688775120a90d5
     external_links: []
     lifecycle_state: open
@@ -75536,5 +75562,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-29T01:10:23.502Z
-    updated_at: 2026-03-29T01:14:45.584Z
+    updated_at: 2026-03-29T01:15:15.633Z
     notes: []
