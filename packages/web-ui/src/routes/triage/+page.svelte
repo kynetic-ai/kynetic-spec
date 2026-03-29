@@ -420,7 +420,7 @@
 	<!-- AC: @ui-data-freshness ac-warming-skeleton — Show skeleton during cache warming -->
 	<!-- AC: @ui-data-freshness ac-warming-timeout — Show error banner after 30s timeout -->
 	{#if cacheWarming}
-		<CacheWarmingBanner entityName="triage data" queryKey={queryKeys.inbox.merged()} />
+		<CacheWarmingBanner entityName="triage data" queryKey={queryKeys.inbox.merged()} extraQueryKeys={[queryKeys.inbox.list({ type: 'triage-records' })]} />
 	{:else if loading}
 		<div class="space-y-2" data-testid="triage-loading">
 			{#each Array(3) as _}

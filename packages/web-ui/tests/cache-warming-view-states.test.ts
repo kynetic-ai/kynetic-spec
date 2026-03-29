@@ -1,12 +1,13 @@
 /**
- * Cache warming view state tests.
+ * Cache warming error detection and query retry integration tests.
  *
- * Verifies that the view-level logic correctly distinguishes cache warming
- * errors from normal errors, enabling skeleton display during warming and
- * CacheWarmingBanner display after timeout.
+ * Tests the real CacheWarmingError class and isCacheWarmingError type guard
+ * that views use to derive the cacheWarming state. Behavioral rendering tests
+ * (skeleton display, CacheWarmingBanner rendering, retry button) are covered
+ * by E2E tests in tests/e2e/cache-warming-views.spec.ts.
  *
- * AC: @ui-data-freshness ac-warming-skeleton — skeleton displayed instead of empty content
- * AC: @ui-data-freshness ac-warming-timeout — error state with manual retry after 30s
+ * AC: @ui-data-freshness ac-warming-skeleton — CacheWarmingError detection used by views
+ * AC: @ui-data-freshness ac-warming-timeout — error properties for banner display
  */
 
 import { describe, expect, it, vi } from "vitest";
@@ -45,123 +46,46 @@ vi.mock("$lib/api", async () => {
 
 import { CacheWarmingError, isCacheWarmingError } from "../src/lib/api";
 
-// ── Helpers ─────────────────────────────────────────────────────────────────
-
-/**
- * Simulates the view-level derived state logic used in all list views:
- *   let cacheWarming = $derived(isCacheWarmingError(query.error));
- *   let error = $derived(cacheWarming ? '' : (query.error?.message ?? ''));
- */
-function deriveViewState(queryError: Error | null) {
-  const cacheWarming = isCacheWarmingError(queryError);
-  const error = cacheWarming ? "" : (queryError?.message ?? "");
-  return { cacheWarming, error };
-}
-
 // ── Tests ───────────────────────────────────────────────────────────────────
 
-describe("cache warming view state derivation", () => {
+describe("CacheWarmingError for view state integration", () => {
   // AC: @ui-data-freshness ac-warming-skeleton
-  describe("during cache warming (CacheWarmingError)", () => {
-    it("sets cacheWarming=true when query error is CacheWarmingError", () => {
-      const state = deriveViewState(new CacheWarmingError());
-      expect(state.cacheWarming).toBe(true);
+  describe("error detection used by view derived state", () => {
+    it("isCacheWarmingError returns true for CacheWarmingError", () => {
+      expect(isCacheWarmingError(new CacheWarmingError())).toBe(true);
     });
 
-    it("suppresses error message so generic error UI is not shown", () => {
-      const state = deriveViewState(new CacheWarmingError());
-      expect(state.error).toBe("");
+    it("isCacheWarmingError returns false for regular errors", () => {
+      expect(isCacheWarmingError(new Error("Network timeout"))).toBe(false);
     });
 
-    it("skeleton is shown instead of error (cacheWarming + empty error = skeleton branch)", () => {
-      // In templates: {#if cacheWarming} <CacheWarmingBanner/> {:else if loading} <Skeleton/>
-      // When cacheWarming is true, the CacheWarmingBanner shows (timeout error state)
-      // During retries, isLoading is true and the skeleton shows
-      // After retries exhaust, cacheWarming becomes true → CacheWarmingBanner shows
-      const state = deriveViewState(new CacheWarmingError());
-      expect(state.cacheWarming).toBe(true);
-      expect(state.error).toBe("");
+    it("isCacheWarmingError returns false for null (no error state)", () => {
+      expect(isCacheWarmingError(null)).toBe(false);
+    });
+
+    it("isCacheWarmingError returns false for non-Error values", () => {
+      expect(isCacheWarmingError(undefined)).toBe(false);
+      expect(isCacheWarmingError("string")).toBe(false);
+      expect(isCacheWarmingError({ name: "CacheWarmingError" })).toBe(false);
     });
   });
 
   // AC: @ui-data-freshness ac-warming-timeout
-  describe("after warming timeout (retries exhausted)", () => {
-    it("CacheWarmingError propagates as cacheWarming=true for banner display", () => {
-      // After 15 retries (30s), TanStack Query sets query.error = CacheWarmingError
-      // The view derives cacheWarming=true, which renders CacheWarmingBanner
-      const state = deriveViewState(new CacheWarmingError());
-      expect(state.cacheWarming).toBe(true);
-      // The CacheWarmingBanner provides:
-      // - Error message: "Unable to load [entity]. The server cache did not become ready."
-      // - Retry button: calls queryClient.resetQueries() for the relevant key
+  describe("CacheWarmingError properties for banner display", () => {
+    it("has user-friendly message for UI display", () => {
+      const err = new CacheWarmingError();
+      expect(err.message).toContain("Cache is still warming");
+    });
+
+    it("cacheStatus is 'loading' for status detection", () => {
+      const err = new CacheWarmingError();
+      expect(err.cacheStatus).toBe("loading");
+    });
+
+    it("is an Error instance so TanStack Query treats it as failure", () => {
+      const err = new CacheWarmingError();
+      expect(err).toBeInstanceOf(Error);
+      expect(err.name).toBe("CacheWarmingError");
     });
   });
-
-  describe("normal errors (non-warming)", () => {
-    it("sets cacheWarming=false for regular Error", () => {
-      const state = deriveViewState(new Error("Network timeout"));
-      expect(state.cacheWarming).toBe(false);
-    });
-
-    it("passes through error message for generic error display", () => {
-      const state = deriveViewState(new Error("Daemon unreachable"));
-      expect(state.error).toBe("Daemon unreachable");
-    });
-  });
-
-  describe("no error (successful query)", () => {
-    it("sets cacheWarming=false when no error", () => {
-      const state = deriveViewState(null);
-      expect(state.cacheWarming).toBe(false);
-    });
-
-    it("error is empty string when no error", () => {
-      const state = deriveViewState(null);
-      expect(state.error).toBe("");
-    });
-  });
-});
-
-describe("CacheWarmingBanner retry mechanism", () => {
-  // AC: @ui-data-freshness ac-warming-timeout
-  it("CacheWarmingError message is user-friendly", () => {
-    const err = new CacheWarmingError();
-    expect(err.message).toContain("Cache is still warming");
-  });
-
-  it("CacheWarmingError.cacheStatus is 'loading'", () => {
-    const err = new CacheWarmingError();
-    expect(err.cacheStatus).toBe("loading");
-  });
-});
-
-describe("view state across all entity types", () => {
-  // AC: @ui-data-freshness ac-warming-skeleton — all views show skeletons
-  // This test documents that each view follows the same pattern
-  const viewEntities = [
-    "tasks board",
-    "tasks list",
-    "spec items",
-    "inbox items",
-    "sessions",
-    "plans",
-    "reviews",
-    "triage data",
-  ];
-
-  for (const entity of viewEntities) {
-    it(`${entity} view suppresses warming error for skeleton display`, () => {
-      const state = deriveViewState(new CacheWarmingError());
-      expect(state.cacheWarming).toBe(true);
-      expect(state.error).toBe("");
-    });
-  }
-
-  for (const entity of viewEntities) {
-    it(`${entity} view passes through non-warming errors`, () => {
-      const state = deriveViewState(new Error("Something went wrong"));
-      expect(state.cacheWarming).toBe(false);
-      expect(state.error).toBe("Something went wrong");
-    });
-  }
 });

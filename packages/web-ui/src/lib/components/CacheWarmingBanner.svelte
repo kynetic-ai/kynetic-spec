@@ -12,11 +12,13 @@
 	interface Props {
 		/** Human-readable entity name, e.g. "tasks", "inbox items" */
 		entityName: string;
-		/** Query key(s) to reset when Retry is clicked */
+		/** Query key(s) to reset when Retry is clicked. Pass a single key or array of keys. */
 		queryKey: readonly unknown[];
+		/** Additional query keys to reset alongside the primary key. */
+		extraQueryKeys?: (readonly unknown[])[];
 	}
 
-	let { entityName, queryKey }: Props = $props();
+	let { entityName, queryKey, extraQueryKeys }: Props = $props();
 
 	const queryClient = useQueryClient();
 	let retrying = $state(false);
@@ -24,6 +26,11 @@
 	async function handleRetry() {
 		retrying = true;
 		await queryClient.resetQueries({ queryKey: [...queryKey] });
+		if (extraQueryKeys) {
+			for (const key of extraQueryKeys) {
+				await queryClient.resetQueries({ queryKey: [...key] });
+			}
+		}
 		retrying = false;
 	}
 </script>
