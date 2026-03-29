@@ -9836,6 +9836,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-29T11:35:22.891Z
+  - _ulid: 01KMWPQ8408KHHVB7CXX227TZW
+    type: success
+    content: "Fix cycle pattern: reading full review threads + re-reading all ACs before coding leads to
+      focused, minimal fixes. The single-point CacheWarmingError guard in the unwrap helpers
+      addressed both blockers (missing cache_status inspection + missing tests) with one
+      architectural change."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-29T11:47:28.000Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
