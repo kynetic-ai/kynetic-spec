@@ -18255,9 +18255,23 @@ runs:
     completed_at: 2026-03-29T08:10:36.974Z
   - _ulid: 01KMWBQA5P3QVBS64F9VQVA4D2
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-03-29T08:35:15.766Z
+        completed_at: 2026-03-29T08:35:32.981Z
+        notes: "Session: Migrated 11 daemon route handlers to unified {data, meta} envelope using
+          wrapResponse(). Fixed 26 test assertions across 3 test files. What worked well: (1)
+          Previous agent left clean, complete route handler changes — just needed test updates. (2)
+          The wrapResponse() helper made migration mechanical — each route just needed its return
+          value wrapped. (3) Running the full test suite early identified all 26 failures in one
+          pass rather than discovering them incrementally."
+      - status: completed
+        step_index: 1
+        started_at: 2026-03-29T08:35:32.981Z
+        completed_at: 2026-03-29T08:35:32.981Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-29T08:35:15.766Z
