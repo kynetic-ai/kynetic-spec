@@ -1825,5 +1825,27 @@ describe("ProjectEntityCache", () => {
       expect(cache.getDomainState("tasks")).toBe("ready");
       expect(readyEvents).toHaveLength(1); // Still just the initial one
     });
+
+    // AC: @daemon-entity-cache ac-domain-ready-event
+    it("should fire onDomainReady when cache is created via registerEntityCache", async () => {
+      const readyEvents: Array<{ domain: CacheDomain; projectPath: string; previousState: DomainState }> = [];
+      const onDomainReady: DomainReadyCallback = (domain, projectPath, previousState) => {
+        readyEvents.push({ domain, projectPath, previousState });
+      };
+
+      // Use the registry function (same as production code) with the callback
+      const cache = registerEntityCache(projectA, undefined, onDomainReady);
+      await cache.loadDomain("tasks");
+
+      expect(readyEvents).toHaveLength(1);
+      expect(readyEvents[0]).toEqual({
+        domain: "tasks",
+        projectPath: projectA,
+        previousState: "unloaded",
+      });
+
+      // Clean up — unregister so other tests aren't affected
+      unregisterEntityCache(projectA);
+    });
   });
 });
