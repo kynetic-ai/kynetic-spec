@@ -92,6 +92,57 @@ function unwrapPaginatedEnvelope<T>(envelope: {
 }
 
 /**
+ * Unwrap a unified API response envelope for list endpoints that return { items, total }.
+ * Maps { data: T[], meta: { total } } → { items: T[], total }.
+ * AC: @api-contract ac-envelope
+ */
+function unwrapListEnvelope<T>(envelope: {
+  data: T[];
+  meta: { total?: number };
+}): { items: T[]; total: number } {
+  return {
+    items: envelope.data,
+    total: envelope.meta.total ?? envelope.data.length,
+  };
+}
+
+/**
+ * Unwrap a unified API response envelope for the session list pattern.
+ * Maps { data: { items, unfiltered_total }, meta: { total, offset, limit } } → SessionListResponse.
+ * AC: @api-contract ac-envelope
+ */
+function unwrapSessionListEnvelope(envelope: {
+  data: { items: SessionSummary[]; unfiltered_total?: number };
+  meta: { total?: number; offset?: number; limit?: number };
+}): SessionListResponse {
+  return {
+    items: envelope.data.items,
+    total: envelope.meta.total ?? envelope.data.items.length,
+    unfiltered_total: envelope.data.unfiltered_total ?? 0,
+    offset: envelope.meta.offset ?? 0,
+    limit: envelope.meta.limit ?? envelope.data.items.length,
+  };
+}
+
+/**
+ * Unwrap a unified API response envelope for simple session list pattern (no unfiltered_total).
+ * Maps { data: T[], meta: { total, offset, limit } } → SessionListResponse.
+ * AC: @api-contract ac-envelope
+ */
+function unwrapSimpleSessionListEnvelope(envelope: {
+  data: SessionSummary[];
+  meta: { total?: number; offset?: number; limit?: number };
+}): SessionListResponse {
+  return {
+    items: envelope.data,
+    total: envelope.meta.total ?? envelope.data.length,
+    unfiltered_total: envelope.data.length,
+    offset: envelope.meta.offset ?? 0,
+    limit: envelope.meta.limit ?? envelope.data.length,
+  };
+}
+
+/**
  * Get headers for API requests, including X-Kspec-Dir if project is selected
  * AC: @multi-directory-daemon ac-26
  */
@@ -144,8 +195,9 @@ export async function fetchTasks(params?: {
   offset?: number;
 }): Promise<PaginatedResponse<TaskSummary>> {
   // AC: @gh-pages-export ac-11 - Use static data in static mode
+  // AC: @api-contract ac-envelope — static returns envelope, unwrap identically to live
   if (isStaticMode()) {
-    return fetchTasksStatic(params);
+    return unwrapPaginatedEnvelope(fetchTasksStatic(params));
   }
 
   const url = new URL(`${API_BASE}/api/tasks`);
@@ -180,12 +232,13 @@ export async function fetchTasks(params?: {
  */
 export async function fetchTask(ref: string): Promise<TaskDetail> {
   // AC: @gh-pages-export ac-12 - Use static data in static mode
+  // AC: @api-contract ac-envelope — static returns envelope, unwrap identically to live
   if (isStaticMode()) {
-    const task = fetchTaskStatic(ref);
-    if (!task) {
+    const envelope = fetchTaskStatic(ref);
+    if (!envelope) {
       throw new Error(`Task not found: ${ref}`);
     }
-    return task;
+    return unwrapEnvelope(envelope);
   }
 
   const response = await fetch(`${API_BASE}/api/tasks/${ref}`, {
@@ -315,8 +368,9 @@ export async function fetchItems(params?: {
   offset?: number;
 }): Promise<PaginatedResponse<ItemSummary>> {
   // AC: @gh-pages-export ac-11 - Use static data in static mode
+  // AC: @api-contract ac-envelope — static returns envelope, unwrap identically to live
   if (isStaticMode()) {
-    return fetchItemsStatic(params);
+    return unwrapPaginatedEnvelope(fetchItemsStatic(params));
   }
 
   const url = new URL(`${API_BASE}/api/items`);
@@ -351,12 +405,13 @@ export async function fetchItems(params?: {
  */
 export async function fetchItem(ref: string): Promise<ItemDetail> {
   // AC: @gh-pages-export ac-13 - Use static data in static mode
+  // AC: @api-contract ac-envelope — static returns envelope, unwrap identically to live
   if (isStaticMode()) {
-    const item = fetchItemStatic(ref);
-    if (!item) {
+    const envelope = fetchItemStatic(ref);
+    if (!envelope) {
       throw new Error(`Item not found: ${ref}`);
     }
-    return item;
+    return unwrapEnvelope(envelope);
   }
 
   const response = await fetch(`${API_BASE}/api/items/${ref}`, {
@@ -397,8 +452,9 @@ export async function fetchBatchItems(refs: string[]): Promise<BatchItemsRespons
  */
 export async function fetchItemTasks(ref: string): Promise<PaginatedResponse<TaskSummary>> {
   // AC: @gh-pages-export ac-11 - Use static data in static mode
+  // AC: @api-contract ac-envelope — static returns envelope, unwrap identically to live
   if (isStaticMode()) {
-    return fetchItemTasksStatic(ref);
+    return unwrapPaginatedEnvelope(fetchItemTasksStatic(ref));
   }
 
   const response = await fetch(`${API_BASE}/api/items/${ref}/tasks`, {
@@ -422,8 +478,9 @@ export async function fetchInbox(params?: {
   offset?: number;
 }): Promise<PaginatedResponse<InboxItem>> {
   // AC: @gh-pages-export ac-11 - Use static data in static mode
+  // AC: @api-contract ac-envelope — static returns envelope, unwrap identically to live
   if (isStaticMode()) {
-    return fetchInboxStatic(params);
+    return unwrapPaginatedEnvelope(fetchInboxStatic(params));
   }
 
   const url = new URL(`${API_BASE}/api/inbox`);
@@ -456,11 +513,12 @@ export async function fetchMergedInbox(): Promise<{
   total: number;
 }> {
   // In static mode, fall back to separate fetches and merge client-side
+  // AC: @api-contract ac-envelope — static returns envelope, unwrap identically
   if (isStaticMode()) {
-    const inboxResponse = await fetchInboxStatic();
-    const triageResponse = await fetchTriageRecordsStatic();
-    const items: InboxItemWithTriage[] = inboxResponse.items.map((item) => {
-      const record = triageResponse.items.find((r) => r.inbox_ref === item._ulid);
+    const inboxData = unwrapEnvelope(fetchInboxStatic());
+    const triageData = unwrapEnvelope(fetchTriageRecordsStatic());
+    const items: InboxItemWithTriage[] = inboxData.map((item) => {
+      const record = triageData.find((r) => r.inbox_ref === item._ulid);
       const result: InboxItemWithTriage = { ...item };
       if (record) {
         result.triage = {
@@ -485,8 +543,7 @@ export async function fetchMergedInbox(): Promise<{
     await handleResponseError(response);
   }
 
-  const envelope = await response.json();
-  return { items: envelope.data, total: envelope.meta?.total ?? envelope.data.length };
+  return unwrapListEnvelope(await response.json());
 }
 
 /**
@@ -542,12 +599,13 @@ export async function deleteInboxItem(ref: string): Promise<void> {
  */
 export async function fetchSessionContext(): Promise<SessionContext> {
   // AC: @gh-pages-export ac-11 - Use static data in static mode
+  // AC: @api-contract ac-envelope — static returns envelope, unwrap identically to live
   if (isStaticMode()) {
-    const session = fetchSessionContextStatic();
-    if (!session) {
+    const envelope = fetchSessionContextStatic();
+    if (!envelope) {
       return { focus: null, threads: [], open_questions: [], updated_at: new Date().toISOString() };
     }
-    return session;
+    return unwrapEnvelope(envelope);
   }
 
   const response = await fetch(`${API_BASE}/api/meta/session`, {
@@ -571,8 +629,9 @@ export async function fetchObservations(params?: {
   resolved?: boolean;
 }): Promise<PaginatedResponse<Observation>> {
   // AC: @gh-pages-export ac-11 - Use static data in static mode
+  // AC: @api-contract ac-envelope — static returns envelope, unwrap identically to live
   if (isStaticMode()) {
-    return fetchObservationsStatic(params);
+    return unwrapPaginatedEnvelope(fetchObservationsStatic(params));
   }
 
   const url = new URL(`${API_BASE}/api/meta/observations`);
@@ -603,8 +662,9 @@ export async function fetchObservations(params?: {
  */
 export async function search(query: string): Promise<SearchResponse> {
   // AC: @gh-pages-export ac-11 - Use static data in static mode
+  // AC: @api-contract ac-envelope — static returns envelope, unwrap identically to live
   if (isStaticMode()) {
-    return searchStatic(query);
+    return unwrapEnvelope(searchStatic(query));
   }
 
   const url = new URL(`${API_BASE}/api/search`);
@@ -636,8 +696,9 @@ export async function fetchTriageRecords(params?: {
   offset?: number;
 }): Promise<PaginatedResponse<TriageRecord>> {
   // AC: @interactive-triage-ui ac-8 - Static mode: read-only triage data
+  // AC: @api-contract ac-envelope — static returns envelope, unwrap identically to live
   if (isStaticMode()) {
-    return fetchTriageRecordsStatic(params);
+    return unwrapPaginatedEnvelope(fetchTriageRecordsStatic(params));
   }
 
   const url = new URL(`${API_BASE}/api/triage`);
@@ -793,8 +854,7 @@ export async function fetchAgentDefinitions(): Promise<{
   if (!response.ok) {
     await handleResponseError(response);
   }
-  const envelope = await response.json();
-  return { items: envelope.data, total: envelope.meta?.total ?? envelope.data.length };
+  return unwrapListEnvelope(await response.json());
 }
 
 /**
@@ -1122,8 +1182,9 @@ export async function fetchCompositionActivations(configId: string): Promise<{
 export async function fetchPlans(params?: {
   status?: string;
 }): Promise<{ items: PlanSummary[]; total: number }> {
+  // AC: @api-contract ac-envelope — static returns envelope, unwrap identically to live
   if (isStaticMode()) {
-    return fetchPlansStatic(params);
+    return unwrapListEnvelope(fetchPlansStatic(params));
   }
 
   const url = new URL(`${API_BASE}/api/plans`);
@@ -1143,8 +1204,7 @@ export async function fetchPlans(params?: {
     await handleResponseError(response);
   }
 
-  const envelope = await response.json();
-  return { items: envelope.data, total: envelope.meta?.total ?? envelope.data.length };
+  return unwrapListEnvelope(await response.json());
 }
 
 /**
@@ -1152,8 +1212,9 @@ export async function fetchPlans(params?: {
  * AC: @ui-plans-view ac-2
  */
 export async function fetchPlanContent(ref: string): Promise<PlanDetail> {
+  // AC: @api-contract ac-envelope — static returns envelope, unwrap identically to live
   if (isStaticMode()) {
-    return fetchPlanContentStatic(ref);
+    return unwrapEnvelope(fetchPlanContentStatic(ref));
   }
 
   const response = await fetch(`${API_BASE}/api/plans/${ref}`, {
@@ -1413,8 +1474,9 @@ export async function fetchDiffContext(
  * AC: @ui-workflows-view ac-1
  */
 export async function fetchWorkflows(): Promise<{ items: Workflow[]; total: number }> {
+  // AC: @api-contract ac-envelope — static returns envelope, unwrap identically to live
   if (isStaticMode()) {
-    return fetchWorkflowsStatic();
+    return unwrapListEnvelope(fetchWorkflowsStatic());
   }
 
   const response = await fetch(`${API_BASE}/api/meta/workflows`, {
@@ -1424,8 +1486,7 @@ export async function fetchWorkflows(): Promise<{ items: Workflow[]; total: numb
     await handleResponseError(response);
   }
 
-  const envelope = await response.json();
-  return { items: envelope.data, total: envelope.meta?.total ?? envelope.data.length };
+  return unwrapListEnvelope(await response.json());
 }
 
 // ============================================================
@@ -1616,14 +1677,7 @@ export async function fetchSessions(params?: FetchSessionsParams): Promise<Sessi
     await handleResponseError(response);
   }
 
-  const envelope = await response.json();
-  return {
-    items: envelope.data.items,
-    total: envelope.meta?.total ?? envelope.data.items.length,
-    unfiltered_total: envelope.data.unfiltered_total ?? 0,
-    offset: envelope.meta?.offset ?? 0,
-    limit: envelope.meta?.limit ?? envelope.data.items.length,
-  };
+  return unwrapSessionListEnvelope(await response.json());
 }
 
 export async function fetchSessionSearch(
@@ -1669,8 +1723,7 @@ export async function fetchSessionSearch(
     await handleResponseError(response);
   }
 
-  const envelope = await response.json();
-  return envelope.data;
+  return unwrapEnvelope(await response.json());
 }
 
 export async function fetchTaskSessions(ref: string): Promise<SessionListResponse> {
@@ -1685,14 +1738,7 @@ export async function fetchTaskSessions(ref: string): Promise<SessionListRespons
     await handleResponseError(response);
   }
 
-  const envelope = await response.json();
-  return {
-    items: envelope.data,
-    total: envelope.meta?.total ?? envelope.data.length,
-    unfiltered_total: envelope.data.length,
-    offset: envelope.meta?.offset ?? 0,
-    limit: envelope.meta?.limit ?? envelope.data.length,
-  };
+  return unwrapSimpleSessionListEnvelope(await response.json());
 }
 
 export async function fetchItemSessions(ref: string): Promise<SessionListResponse> {
@@ -1707,14 +1753,7 @@ export async function fetchItemSessions(ref: string): Promise<SessionListRespons
     await handleResponseError(response);
   }
 
-  const envelope = await response.json();
-  return {
-    items: envelope.data,
-    total: envelope.meta?.total ?? envelope.data.length,
-    unfiltered_total: envelope.data.length,
-    offset: envelope.meta?.offset ?? 0,
-    limit: envelope.meta?.limit ?? envelope.data.length,
-  };
+  return unwrapSimpleSessionListEnvelope(await response.json());
 }
 
 /**
@@ -1760,8 +1799,9 @@ export async function fetchSessionEvents(
     await handleResponseError(response);
   }
 
-  const envelope = await response.json();
-  return { events: envelope.data.events, total: envelope.meta?.total ?? envelope.data.events.length };
+  const json = await response.json();
+  const { events } = unwrapEnvelope<{ events: SessionEvent[] }>(json);
+  return { events, total: json.meta?.total ?? events.length };
 }
 
 /**
@@ -1780,8 +1820,7 @@ export async function fetchSessionEventDetail(id: string, seq: number): Promise<
     await handleResponseError(response);
   }
 
-  const envelope = await response.json();
-  return envelope.data;
+  return unwrapEnvelope(await response.json());
 }
 
 // ============================================================
@@ -2168,8 +2207,19 @@ export interface AlignmentResponse {
  * AC: @ui-validation-view ac-1
  */
 export async function fetchValidation(): Promise<ValidationResponse> {
+  // AC: @api-contract ac-envelope — static returns envelope, unwrap identically to live
   if (isStaticMode()) {
-    return fetchValidationStatic();
+    const data = unwrapEnvelope(fetchValidationStatic());
+    // Normalize: ensure all array fields exist even if omitted
+    return {
+      valid: data.valid ?? true,
+      schemaErrors: data.schemaErrors ?? [],
+      refErrors: data.refErrors ?? [],
+      refWarnings: data.refWarnings ?? [],
+      orphans: data.orphans ?? [],
+      completenessWarnings: data.completenessWarnings ?? [],
+      traitCycles: data.traitCycles ?? [],
+    };
   }
 
   const response = await fetch(`${API_BASE}/api/validate`, {
@@ -2179,8 +2229,7 @@ export async function fetchValidation(): Promise<ValidationResponse> {
     await handleResponseError(response);
   }
 
-  const envelope = await response.json();
-  const data = envelope.data;
+  const data = unwrapEnvelope<Partial<ValidationResponse>>(await response.json());
   // Normalize: ensure all array fields exist even if the API omits them
   return {
     valid: data.valid ?? true,
@@ -2198,8 +2247,9 @@ export async function fetchValidation(): Promise<ValidationResponse> {
  * AC: @ui-validation-view ac-1
  */
 export async function fetchAlignment(): Promise<AlignmentResponse> {
+  // AC: @api-contract ac-envelope — static returns envelope, unwrap identically to live
   if (isStaticMode()) {
-    return fetchAlignmentStatic();
+    return unwrapEnvelope(fetchAlignmentStatic());
   }
 
   const response = await fetch(`${API_BASE}/api/alignment`, {
@@ -2327,8 +2377,7 @@ export async function fetchConventions(): Promise<{ items: Convention[]; total: 
   if (!response.ok) {
     await handleResponseError(response);
   }
-  const envelope = await response.json();
-  return { items: envelope.data, total: envelope.meta?.total ?? envelope.data.length };
+  return unwrapListEnvelope(await response.json());
 }
 
 /**
