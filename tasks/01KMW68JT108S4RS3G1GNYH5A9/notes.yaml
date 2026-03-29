@@ -12,3 +12,12 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-29T07:34:33.503Z
+  - _ulid: 01KMW96J77K66FTEHBV1P2J7ZW
+    content: "Fix cycle 1: investigated the test failure blocker. Branch has zero code changes from
+      origin/dev (both at 6943dad4b). All 22 test failures are pre-existing on dev — 18 are timeouts
+      under full-suite load, 4 are timing-dependent race conditions in dispatch engine tests. All
+      pass when run in isolation or with sharding. The spec change (ac-domain-ready-event added to
+      @daemon-entity-cache) is correct and verified. Replied to and resolved the review thread."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-29T07:51:09.800Z
