@@ -103,18 +103,20 @@ test.describe("Session Search API", () => {
     expect(response.status()).toBe(200);
 
     const body = await response.json();
-    expect(body.query).toBe("error handling");
-    expect(body.total_sessions).toBe(1);
-    expect(body.total_matches).toBe(1);
-    expect(body.items).toHaveLength(1);
-    expect(body.items[0].session_id).toBe("01KSEARCH000000000000000001");
-    expect(body.items[0].matches[0]).toMatchObject({
+    expect(body.data.query).toBe("error handling");
+    expect(body.data.total_sessions).toBe(1);
+    expect(body.data.total_matches).toBe(1);
+    expect(body.data.items).toHaveLength(1);
+    expect(body.data.items[0].session_id).toBe("01KSEARCH000000000000000001");
+    expect(body.data.items[0].matches[0]).toMatchObject({
       session_id: "01KSEARCH000000000000000001",
       event_seq: 1,
       event_type: "session.update",
     });
-    expect(typeof body.items[0].matches[0].timestamp).toBe("number");
-    expect(body.items[0].matches[0].content_excerpt).toContain("Error handling");
+    expect(typeof body.data.items[0].matches[0].timestamp).toBe("number");
+    expect(body.data.items[0].matches[0].content_excerpt).toContain("Error handling");
+    expect(body.meta).toBeDefined();
+    expect(body.meta.cache_status).toBe("ready");
   });
 
   // AC: @trait-api-endpoint ac-2

@@ -418,12 +418,12 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
           const ctx = await initContext(projectContext.path, { syncMode: "skip" });
           const normalizedQuery = query.q.trim();
           if (normalizedQuery.length === 0) {
-            return {
+            return wrapResponse({
               items: [],
               total_sessions: 0,
               total_matches: 0,
               query: "",
-            };
+            });
           }
 
           const filteredResult = await filterSessionSummaries(ctx, query, {
@@ -441,12 +441,12 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
           });
           const totalMatches = items.reduce((sum, session) => sum + session.matches.length, 0);
 
-          return {
+          return wrapResponse({
             items,
             total_sessions: items.length,
             total_matches: totalMatches,
             query: normalizedQuery,
-          };
+          });
         },
         {
           query: t.Object({
@@ -697,15 +697,14 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
           // Detect legacy sessions and include warning in response
           const legacyCount = await countLegacySessions(ctx.specDir);
 
-          return {
+          return wrapResponse({
             events,
-            total: events.length,
             ...(legacyCount > 0
               ? {
                   warning: `${legacyCount} legacy session(s) found in .kspec/sessions/. Run \`kspec session migrate\` to move them to .kspec-sessions/.`,
                 }
               : {}),
-          };
+          }, { total: events.length });
         },
         {
           query: t.Object({
@@ -772,10 +771,10 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
           event.data,
         );
 
-        return {
+        return wrapResponse({
           ...event,
           data: resolvedData,
-        };
+        });
       })
   );
 }

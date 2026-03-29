@@ -1632,7 +1632,8 @@ export async function fetchSessionSearch(
     await handleResponseError(response);
   }
 
-  return response.json();
+  const envelope = await response.json();
+  return envelope.data;
 }
 
 export async function fetchTaskSessions(ref: string): Promise<SessionListResponse> {
@@ -1708,7 +1709,8 @@ export async function fetchSessionEvents(
     await handleResponseError(response);
   }
 
-  return response.json();
+  const envelope = await response.json();
+  return { events: envelope.data.events, total: envelope.meta?.total ?? envelope.data.events.length };
 }
 
 /**
@@ -1727,7 +1729,8 @@ export async function fetchSessionEventDetail(id: string, seq: number): Promise<
     await handleResponseError(response);
   }
 
-  return response.json();
+  const envelope = await response.json();
+  return envelope.data;
 }
 
 // ============================================================

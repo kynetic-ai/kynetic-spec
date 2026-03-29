@@ -201,10 +201,13 @@ function mockSearchRoute() {
       status: 200,
       contentType: "application/json",
       body: JSON.stringify({
-        items,
-        total_sessions: items.length,
-        total_matches: totalMatches,
-        query,
+        data: {
+          items,
+          total_sessions: items.length,
+          total_matches: totalMatches,
+          query,
+        },
+        meta: { cache_status: "ready" },
       }),
     });
   };
@@ -363,7 +366,7 @@ test.describe("Session History View", () => {
         route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({ events: [], total: 0 }),
+          body: JSON.stringify({ data: { events: [] }, meta: { total: 0, cache_status: "ready" } }),
         });
       });
 
