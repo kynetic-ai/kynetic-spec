@@ -27033,12 +27033,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-29T07:14:47.316Z
+      updated_at: 2026-03-29T07:14:54.076Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-29T07:14:47.316Z
+      updated_at: 2026-03-29T07:14:54.076Z
     integration:
       status: pending
       detail: null
@@ -27046,24 +27046,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 6943dad4b8203281f7a00c18ae29804ce34c559a
-      updated_at: 2026-03-29T07:14:47.316Z
-    lifecycle_state: ready
+      updated_at: 2026-03-29T07:14:54.076Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KMW68JFTW7WDPNX354YWEKAN"
     task_slug: task-spec-update-api-contract
     timestamps:
       closed_at: null
       last_active_at: 2026-03-29T07:10:15.159Z
-      last_reconciled_at: 2026-03-29T07:14:47.316Z
+      last_reconciled_at: 2026-03-29T07:14:54.076Z
       created_at: 2026-03-29T07:10:04.067Z
-      updated_at: 2026-03-29T07:14:47.316Z
+      updated_at: 2026-03-29T07:14:54.076Z
     workspace_id: dispatch-workspace-01KMW68JFTW7WDPNX354YWEKAN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 6943dad4b8203281f7a00c18ae29804ce34c559a
+        last_seen_at: 2026-03-29T07:14:54.076Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-spec-update-api-contract-01kmw68j-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-spec-update-api-contract/01kmw68j
         head: 6943dad4b8203281f7a00c18ae29804ce34c559a
-        last_seen_at: 2026-03-29T07:10:04.067Z
+        last_seen_at: 2026-03-29T07:14:54.076Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-spec-update-api-contract-01kmw68j
