@@ -81428,7 +81428,20 @@ reviews:
     slugs: []
     title: Review consolidate-all-tests-under-root-tests-directory
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "build:e2e completed, then Playwright failed before discovery: Cannot find module
+          /home/chapel/Projects/kynetic-spec/tests/fixtures/test-base imported from
+          tests/e2e/smoke.spec.ts and tests/e2e/api-server.spec.ts. rg found the same stale import
+          in 44 files under tests/e2e/."
+        name: npm run test:e2e
+        required: true
+        runner: npm
+        created_at: 2026-03-29T21:46:55.709Z
+        completed_at: 2026-03-29T21:46:55.709Z
     events:
       - _ulid: 01KMXRXJKH9VYZV1FBF2XKK2WJ
         actor: Jacob Chapel
@@ -81443,6 +81456,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-29T21:45:22.445Z
+      - _ulid: 01KMXS0XV4WA3PP050BRFPSD6Y
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm run test:e2e
+        timestamp: 2026-03-29T21:46:56.740Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -81455,5 +81475,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-29T21:45:06.930Z
-    updated_at: 2026-03-29T21:45:21.902Z
+    updated_at: 2026-03-29T21:46:55.709Z
     notes: []
