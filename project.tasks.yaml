@@ -23216,7 +23216,7 @@
   type: task
   spec_ref: "@ui-data-freshness"
   plan_ref: "@plan-daemon-cache-warming-ux"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-ui-cache-warming-interceptor"
@@ -23229,7 +23229,7 @@
   todos_count: 0
   created_at: 2026-03-29T06:59:52.421Z
   started_at: 2026-03-29T13:04:39.767Z
-  submitted_at: 2026-03-29T12:42:25.750Z
+  submitted_at: 2026-03-29T13:04:43.562Z
   automation: eligible
 - _ulid: 01KMW68N7AB8WWRZMVQV3C2789
   slugs:
