@@ -18090,9 +18090,20 @@ runs:
     completed_at: 2026-03-29T01:10:42.169Z
   - _ulid: 01KMW71D9H7B8GPDRVH7HS761S
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-03-29T07:13:23.761Z
+        completed_at: 2026-03-29T07:13:40.383Z
+        notes: "Session gate check: Completed task @task-spec-update-api-contract (spec-only AC rewrites).
+          Working tree is clean (spec changes are on shadow branch). One task moved from pending ->
+          in_progress -> pending_review. Meaningful work was done — proceeding with reflection."
+      - status: completed
+        step_index: 1
+        started_at: 2026-03-29T07:13:40.383Z
+        completed_at: 2026-03-29T07:13:40.383Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-29T07:13:23.761Z
