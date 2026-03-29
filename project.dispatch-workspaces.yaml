@@ -27984,7 +27984,7 @@ workspaces:
         head: 6423b512795c4cdc2ac7398f5c9bf73137a2b800
         last_seen_at: 2026-03-29T12:26:44.358Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ui-cache-domain-ready-subscription-01kmw68m
-  - active_role: null
+  - active_role: worker
     base_branch_point: 9b6b755439cc00d3bfe911f7974077e6942c6de5
     bootstrap:
       status: succeeded
@@ -28055,7 +28055,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-29T13:12:42.270Z
+      updated_at: 2026-03-29T13:12:45.847Z
     integration:
       status: pending
       detail: null
@@ -28064,16 +28064,16 @@ workspaces:
       target_branch: dev
       target_commit: 9b6b755439cc00d3bfe911f7974077e6942c6de5
       updated_at: 2026-03-29T13:12:42.270Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KMW68MZ5Z281YD9Z87K2G55A"
     task_slug: task-ui-warming-skeletons
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-29T13:06:56.812Z
-      last_reconciled_at: 2026-03-29T13:12:42.270Z
+      last_active_at: 2026-03-29T13:12:45.847Z
+      last_reconciled_at: 2026-03-29T13:12:45.847Z
       created_at: 2026-03-29T12:26:53.472Z
-      updated_at: 2026-03-29T13:12:43.395Z
+      updated_at: 2026-03-29T13:12:45.847Z
     workspace_id: dispatch-workspace-01KMW68MZ5Z281YD9Z87K2G55A
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
