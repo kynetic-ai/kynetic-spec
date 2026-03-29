@@ -9612,6 +9612,26 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-29T07:52:55.506Z
+  - _ulid: 01KMWA9YQNBHKB0JJSEQ6SMQ1A
+    type: friction
+    content: "Spec-only tasks with manual_merge publication mode fail branch-linkage review checks
+      because they produce no code branch divergence from the integration target. Two fix cycles
+      wasted on task-spec-update-entity-cache before the pattern was understood. Workaround: add
+      annotated todo test stubs for the new ACs. Consider adding a spec-only task type or skipping
+      branch-linkage for spec-only deliverables."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-29T08:10:29.494Z
+  - _ulid: 01KMWA9YWV4NM9MSTH401W97K2
+    type: success
+    content: Adding annotated it.todo() test stubs for new spec ACs is a good pattern for spec-only
+      tasks. It satisfies branch-linkage requirements, provides downstream implementers with a
+      starting point, and documents expected behavior in the test suite.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-29T08:10:29.659Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
