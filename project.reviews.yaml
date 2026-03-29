@@ -76062,6 +76062,34 @@ reviews:
         required: true
         created_at: 2026-03-29T06:02:52.074Z
         completed_at: 2026-03-29T06:02:52.074Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: >-
+          Dependency graph is acyclic and well-ordered:
+
+          Phase 0 (P1): spec-update-api-contract, spec-update-entity-cache,
+          spec-update-data-freshness — no deps, parallel
+
+          Phase 1 (P1-P2): api-response-envelope-type -> migrate-route-handlers-envelope (serial,
+          correct)
+
+          Phase 2 (P1,P3): cache-domain-ready-ws-event (parallel with Phase 1), ui-unwrap-envelope
+          -> migrate-route-handlers
+
+          Phase 3 (P3-P4): ui-cache-warming-interceptor -> ui-unwrap-envelope +
+          spec-update-data-freshness; ui-cache-domain-ready-subscription -> ws-event + interceptor;
+          ui-warming-skeletons -> interceptor
+
+          Phase 4 (P5): e2e-cache-warming-transition -> skeletons + subscription
+
+          No cycles. No unnecessary serialization — Phase 1 and the WS event task correctly run in
+          parallel. Priorities align with dependency depth.
+        name: Dependency ordering
+        required: true
+        created_at: 2026-03-29T06:02:58.155Z
+        completed_at: 2026-03-29T06:02:58.155Z
     events:
       - _ulid: 01KMW2Y6CH7YP8X5216XWDVXT7
         actor: "@claude"
@@ -76125,6 +76153,13 @@ reviews:
           status: pass
           name: AC coverage mapping
         timestamp: 2026-03-29T06:02:52.621Z
+      - _ulid: 01KMW30F8WASMJNCRSE66Z6BYE
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: Dependency ordering
+        timestamp: 2026-03-29T06:02:58.716Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -76283,5 +76318,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-29T06:01:44.082Z
-    updated_at: 2026-03-29T06:02:52.074Z
+    updated_at: 2026-03-29T06:02:58.155Z
     notes: []
