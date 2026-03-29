@@ -26609,12 +26609,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-29T01:28:13.597Z
+      updated_at: 2026-03-29T01:28:17.444Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-29T01:28:13.597Z
+      updated_at: 2026-03-29T01:28:17.444Z
     integration:
       status: pending
       detail: null
@@ -26622,24 +26622,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 737fd3d275ed9010448597c1a3565a2761b7f9af
-      updated_at: 2026-03-29T01:28:13.597Z
-    lifecycle_state: ready
+      updated_at: 2026-03-29T01:28:17.444Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KMVCF95W6HCCPP6H5SSA7HBG"
     task_slug: fix-dispatch-shadow-mutation-lock-contention-and-leak-between-daemon-and-agents
     timestamps:
       closed_at: null
       last_active_at: 2026-03-29T01:16:25.095Z
-      last_reconciled_at: 2026-03-29T01:28:13.597Z
+      last_reconciled_at: 2026-03-29T01:28:17.444Z
       created_at: 2026-03-28T23:57:26.968Z
-      updated_at: 2026-03-29T01:28:13.597Z
+      updated_at: 2026-03-29T01:28:17.444Z
     workspace_id: dispatch-workspace-01KMVCF95W6HCCPP6H5SSA7HBG
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 50717a7c9736640f7450550e90c1fe5784e2c44b
+        last_seen_at: 2026-03-29T01:28:17.444Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-dispatch-shadow-mutation-lock-contention-and-leak-between-daemon-and-agents-01kmvcf9-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/fix-dispatch-shadow-mutation-lock-contention-and-leak-between-daemon-and-agents/01kmvcf9
-        head: 5055285aca2f919de50c96cdff688775120a90d5
-        last_seen_at: 2026-03-29T01:16:21.094Z
+        head: 50717a7c9736640f7450550e90c1fe5784e2c44b
+        last_seen_at: 2026-03-29T01:28:17.444Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-dispatch-shadow-mutation-lock-contention-and-leak-between-daemon-and-agents-01kmvcf9
