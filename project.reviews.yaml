@@ -75167,6 +75167,12 @@ reviews:
         payload:
           thread_ulid: 01KMVF1K3JGT025XY76PJ5HHM4
         timestamp: 2026-03-29T01:07:29.372Z
+      - _ulid: 01KMVJ3MZQRQAZXK8FX7TY8E4E
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KMVF1RDP5AKAQ1K4J3412149
+        timestamp: 2026-03-29T01:07:37.079Z
     examined_commit: 6c58d673bad68d70fee52aa770d4792602926229
     external_links: []
     lifecycle_state: closed
@@ -75256,6 +75262,17 @@ reviews:
               back before committing. Since ac-11 is the corruption-prevention path introduced by
               this change, missing coverage here is a must-fix.
             created_at: 2026-03-29T00:14:09.335Z
+          - _ulid: 01KMVJ3MFAJASS54MV07DSE04Z
+            author: "@claude"
+            body: "Fixed: Added a behavioral test for ac-11 in dispatch-workspace-registry.test.ts. The test:
+              (1) sets up a real shadow project via kspec init, (2) creates dirty shadow state — a
+              staged new file (staged-partial.yaml) and an untracked file (partial-write.tmp), (3)
+              plants a force-reclaimable lock (alive PID, 60s old, 5s ceiling), (4) calls
+              provisionDispatchWorkspace which triggers withDispatchShadowMutationLock →
+              force-reclaim → rollbackDirtyShadowWorktree, (5) verifies both the staged file and
+              untracked file are gone, and the shadow status is clean. This exercises the full ac-11
+              corruption-prevention path end-to-end."
+            created_at: 2026-03-29T01:07:36.553Z
         kind: blocker
       - _ulid: 01KMVF3GY3ZKGQNK6T34PJBQZY
         entries:
@@ -75282,7 +75299,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-29T00:15:47.454Z
     created_at: 2026-03-29T00:13:23.809Z
-    updated_at: 2026-03-29T01:07:28.866Z
+    updated_at: 2026-03-29T01:07:36.553Z
     notes: []
   - _ulid: 01KMVHBZTTQVVC52YQEGQSY2RC
     slugs: []
