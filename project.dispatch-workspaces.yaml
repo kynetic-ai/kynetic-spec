@@ -27585,7 +27585,7 @@ workspaces:
         head: 107be4397478b42cab064d2afccd4750bbce812c
         last_seen_at: 2026-03-29T09:57:18.559Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cache-domain-ready-ws-event-01kmw68k
-  - active_role: null
+  - active_role: worker
     base_branch_point: d64e38817eb430d7496769373b2751bd89808a4d
     bootstrap:
       status: succeeded
@@ -27655,7 +27655,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-29T11:35:46.501Z
+      updated_at: 2026-03-29T11:35:50.601Z
     integration:
       status: pending
       detail: null
@@ -27664,16 +27664,16 @@ workspaces:
       target_branch: dev
       target_commit: d64e38817eb430d7496769373b2751bd89808a4d
       updated_at: 2026-03-29T11:35:46.501Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KMW68M6EEC48D7WFTP623BHG"
     task_slug: task-ui-unwrap-envelope
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-29T11:25:36.248Z
-      last_reconciled_at: 2026-03-29T11:35:46.501Z
+      last_active_at: 2026-03-29T11:35:50.601Z
+      last_reconciled_at: 2026-03-29T11:35:50.601Z
       created_at: 2026-03-29T11:03:40.751Z
-      updated_at: 2026-03-29T11:35:47.657Z
+      updated_at: 2026-03-29T11:35:50.601Z
     workspace_id: dispatch-workspace-01KMW68M6EEC48D7WFTP623BHG
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
