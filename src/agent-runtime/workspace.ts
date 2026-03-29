@@ -5,7 +5,7 @@ import { promisify } from "node:util";
 
 const execFileAsync = promisify(execFile);
 import { initContext } from "../parser/index.js";
-import { acquireFileLock } from "../parser/file-lock.js";
+import { acquireFileLock, type FileLockAcquireInfo } from "../parser/file-lock.js";
 import {
   getDispatchWorkspaceRegistryPath,
   loadDispatchWorkspaceRegistry,
@@ -1401,19 +1401,25 @@ async function saveWorkspaceRecordToRegistry(
  * Run a callback inside the dispatch shadow mutation file lock.
  * Serializes with other shadow writers across processes.
  *
+ * When the lock is force-reclaimed from an alive-but-stuck holder
+ * (ac-10), checks the shadow worktree for uncommitted dirty state
+ * and rolls it back before proceeding (ac-11).
+ *
  * AC: @dispatch-workspace-registry ac-8
+ * AC: @scoped-dispatch-shadow-serialization ac-7
+ * AC: @scoped-dispatch-shadow-serialization ac-11
  */
 async function withDispatchShadowMutationLock<T>(
   projectDir: string,
   taskRef: string,
-  fn: () => Promise<T>,
+  fn: (acquireInfo?: FileLockAcquireInfo) => Promise<T>,
 ): Promise<T> {
   const lockPath = getDispatchShadowMutationLockPath(projectDir);
   const timeoutMs = resolveDispatchMutationLockTimeoutMs();
 
-  let release: (() => Promise<void>) | undefined;
+  let release: ((() => Promise<void>) & { info: FileLockAcquireInfo }) | undefined;
   try {
-    release = await acquireFileLock(lockPath, timeoutMs);
+    release = await acquireFileLock(lockPath, { timeoutMs });
   } catch (error) {
     const reason = error instanceof Error ? error.message : String(error);
     throw new DispatchWorkspaceError(
@@ -1423,10 +1429,69 @@ async function withDispatchShadowMutationLock<T>(
   }
 
   try {
-    return await fn();
+    // AC: @scoped-dispatch-shadow-serialization ac-11 — when the lock was
+    // force-reclaimed from an alive-but-stuck holder, the shadow worktree
+    // may contain uncommitted dirty state from the previous holder's
+    // interrupted write. Roll it back before proceeding.
+    if (release.info.forceReclaimed) {
+      await rollbackDirtyShadowWorktree(projectDir, taskRef, release.info);
+    }
+
+    return await fn(release.info);
   } finally {
+    // AC: @scoped-dispatch-shadow-serialization ac-7 — guaranteed release
     await release?.();
   }
+}
+
+/**
+ * Roll back uncommitted dirty state in the shadow worktree after a
+ * force-reclaim. Prevents the new holder from accidentally committing
+ * partial state from the previous holder alongside its own changes.
+ *
+ * AC: @scoped-dispatch-shadow-serialization ac-11
+ */
+export async function rollbackDirtyShadowWorktree(
+  projectDir: string,
+  taskRef: string,
+  acquireInfo: FileLockAcquireInfo,
+): Promise<void> {
+  let ctx;
+  try {
+    ctx = await initContext(projectDir);
+  } catch {
+    return; // No context available, nothing to roll back
+  }
+
+  if (!ctx.shadow?.enabled) return;
+
+  const shadowDir = ctx.shadow.worktreeDir;
+  const status = await runGit(shadowDir, ["status", "--porcelain"]);
+  if (status.status !== 0 || status.stdout.trim().length === 0) {
+    return; // No dirty state to roll back
+  }
+
+  console.warn(
+    `[dispatch] Shadow worktree has uncommitted changes after force-reclaiming lock ` +
+      `from PID ${acquireInfo.previousHolderPid} (held ${acquireInfo.previousHoldDurationMs}ms). ` +
+      `Rolling back dirty state for ${taskRef}.`,
+  );
+
+  // Phase 1: Unstage all indexed changes (git reset HEAD).
+  // `git checkout -- .` only restores the working tree — it leaves staged
+  // additions/modifications in the index.  Without this reset, a new holder
+  // would inherit and commit the previous holder's partial staged changes.
+  await runGit(shadowDir, ["reset", "HEAD"]);
+
+  // Phase 2: Restore modified tracked files in the working tree.
+  const checkoutResult = await runGit(shadowDir, ["checkout", "--", "."]);
+  if (checkoutResult.status !== 0) {
+    // Fallback to hard reset if checkout fails
+    await runGit(shadowDir, ["reset", "--hard", "HEAD"]);
+  }
+
+  // Clean untracked files that may have been left by the interrupted write
+  await runGit(shadowDir, ["clean", "-fd"]);
 }
 
 /**
@@ -2161,51 +2226,51 @@ export async function reconcileDispatchWorkspaceRegistry(
   );
   if (nonClosedRecords.length === 0) return;
 
-  // Use the first non-closed record's task_ref for lock/commit attribution.
-  const lockTaskRef = nonClosedRecords[0].task_ref;
+  // AC: @scoped-dispatch-shadow-serialization ac-9 — yield the lock between
+  // individual record evaluations so concurrent CLI mutations can interleave.
+  // Evaluate all records without the lock (read-only), then acquire the lock
+  // only for each dirty record's save + commit cycle.
+  for (const record of nonClosedRecords) {
+    const now = new Date().toISOString();
+    const currentTaskStatus = taskStatusByRef?.get(record.task_ref) ?? null;
+    const health = await reconcileWorkspaceHealth(projectDir, record, now, currentTaskStatus);
+    const canonicalBranchHead = await refExists(projectDir, `refs/heads/${record.canonical_branch}`)
+      ? await resolveCommit(projectDir, record.canonical_branch)
+      : record.canonical_branch_head;
+    const { cleanup, integration } = resolveRegistryStateForTaskStatus(
+      currentTaskStatus,
+      record,
+      now,
+    );
+    const activeRole = activeRoleByTaskRef?.get(record.task_ref) ?? null;
+    const lifecycleState = resolveLifecycleState(
+      currentTaskStatus,
+      health,
+      integration,
+      cleanup,
+      activeRole,
+    );
 
-  // AC: @dispatch-workspace-registry ac-8 — all registry writes + commit
-  // happen inside the shadow mutation lock so no write is visible without
-  // a matching durable commit.
-  await withDispatchShadowMutationLock(projectDir, lockTaskRef, async () => {
-    let lastTaskRef: string | null = null;
-    let anyDirty = false;
+    // AC: @dispatch-workspace-registry ac-10 — skip save when no meaningful
+    // field has changed. Timestamps must not change unless a real field differs.
+    const dirty = isWorkspaceRecordDirty(record, {
+      canonical_branch_head: canonicalBranchHead,
+      lifecycle_state: lifecycleState,
+      active_role: activeRole,
+      health,
+      cleanup,
+      integration,
+    });
 
-    for (const record of nonClosedRecords) {
-      const now = new Date().toISOString();
-      const currentTaskStatus = taskStatusByRef?.get(record.task_ref) ?? null;
-      const health = await reconcileWorkspaceHealth(projectDir, record, now, currentTaskStatus);
-      const canonicalBranchHead = await refExists(projectDir, `refs/heads/${record.canonical_branch}`)
-        ? await resolveCommit(projectDir, record.canonical_branch)
-        : record.canonical_branch_head;
-      const { cleanup, integration } = resolveRegistryStateForTaskStatus(
-        currentTaskStatus,
-        record,
-        now,
-      );
-      const activeRole = activeRoleByTaskRef?.get(record.task_ref) ?? null;
-      const lifecycleState = resolveLifecycleState(
-        currentTaskStatus,
-        health,
-        integration,
-        cleanup,
-        activeRole,
-      );
+    if (dirty) {
+      const closedAt = lifecycleState === "closed" ? (record.timestamps.closed_at ?? now) : null;
 
-      // AC: @dispatch-workspace-registry ac-10 — skip save when no meaningful
-      // field has changed. Timestamps must not change unless a real field differs.
-      const dirty = isWorkspaceRecordDirty(record, {
-        canonical_branch_head: canonicalBranchHead,
-        lifecycle_state: lifecycleState,
-        active_role: activeRole,
-        health,
-        cleanup,
-        integration,
-      });
-
-      if (dirty) {
-        const closedAt = lifecycleState === "closed" ? (record.timestamps.closed_at ?? now) : null;
-
+      // AC: @dispatch-workspace-registry ac-8 — registry write + commit
+      // happen inside the shadow mutation lock so no write is visible
+      // without a matching durable commit.
+      // AC: @scoped-dispatch-shadow-serialization ac-9 — per-record lock
+      // acquisition yields between records, allowing interleaving.
+      await withDispatchShadowMutationLock(projectDir, record.task_ref, async () => {
         await saveWorkspaceRecordToRegistry(projectDir, {
           ...record,
           canonical_branch_head: canonicalBranchHead,
@@ -2221,18 +2286,10 @@ export async function reconcileDispatchWorkspaceRegistry(
             closed_at: closedAt,
           },
         });
-        anyDirty = true;
-      }
-      lastTaskRef = record.task_ref;
+        await commitWorkspaceRegistryToShadow(projectDir, record.task_ref);
+      });
     }
-
-    // Commit all registry changes once after the loop rather than per-record.
-    // AC: @dispatch-workspace-registry ac-10 — only commit when at least one
-    // record had a meaningful change.
-    if (anyDirty && lastTaskRef) {
-      await commitWorkspaceRegistryToShadow(projectDir, lastTaskRef);
-    }
-  });
+  }
 }
 
 async function safelyRemoveDispatchWorktree(

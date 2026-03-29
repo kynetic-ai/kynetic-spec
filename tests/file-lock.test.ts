@@ -1,4 +1,4 @@
-import { describe, it, expect, afterEach } from "vitest";
+import { describe, it, expect, afterEach, vi } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { acquireFileLock, withFileLock } from "../src/parser/file-lock.js";
@@ -97,7 +97,7 @@ describe("File Lock", () => {
     await release();
   });
 
-  it("should NOT treat lock as stale when PID is alive even if old", async () => {
+  it("should NOT treat lock as stale when PID is alive and within max hold duration", async () => {
     tempDir = await createTempDir();
     const lockTarget = path.join(tempDir, "test.yaml");
     const lockDir = `${lockTarget}.lock`;
@@ -105,10 +105,11 @@ describe("File Lock", () => {
     // Acquire lock normally
     const release = await acquireFileLock(lockTarget);
 
-    // Overwrite the PID file with an old timestamp but our (alive) PID
-    await fs.writeFile(path.join(lockDir, "pid"), `${process.pid}\n${Date.now() - 60000}`);
+    // Overwrite the PID file with a recent timestamp and our (alive) PID.
+    // The lock is within the default 30s max-hold-duration ceiling.
+    await fs.writeFile(path.join(lockDir, "pid"), `${process.pid}\n${Date.now()}`);
 
-    // Second acquire should still timeout (lock is held by live process)
+    // Second acquire should still timeout (lock is held by live process within ceiling)
     await expect(acquireFileLock(lockTarget, 200)).rejects.toThrow(
       /Timed out waiting for file lock/,
     );
@@ -264,5 +265,200 @@ describe("File Lock", () => {
     expect(pidContent).toContain(String(process.pid));
 
     await release();
+  });
+
+  // AC: @scoped-dispatch-shadow-serialization ac-7
+  it("should release lock in finally even when callback throws (withFileLock)", async () => {
+    tempDir = await createTempDir();
+    const lockTarget = path.join(tempDir, "test.yaml");
+    const lockDir = `${lockTarget}.lock`;
+
+    // withFileLock guarantees release via try/finally
+    await expect(
+      withFileLock(lockTarget, async () => {
+        // Verify lock is held
+        const stat = await fs.stat(lockDir);
+        expect(stat.isDirectory()).toBe(true);
+        throw new Error("intentional failure");
+      }),
+    ).rejects.toThrow("intentional failure");
+
+    // Lock must be released after error
+    await expect(fs.stat(lockDir)).rejects.toThrow();
+
+    // Another acquire should succeed immediately (no stale lock)
+    const release = await acquireFileLock(lockTarget, 200);
+    await release();
+  });
+
+  // AC: @scoped-dispatch-shadow-serialization ac-7
+  it("should release lock after successful operation (acquireFileLock)", async () => {
+    tempDir = await createTempDir();
+    const lockTarget = path.join(tempDir, "test.yaml");
+    const lockDir = `${lockTarget}.lock`;
+
+    const release = await acquireFileLock(lockTarget);
+
+    // Lock directory should exist
+    const stat = await fs.stat(lockDir);
+    expect(stat.isDirectory()).toBe(true);
+
+    await release();
+
+    // Lock directory should be removed
+    await expect(fs.stat(lockDir)).rejects.toThrow();
+
+    // Subsequent acquire succeeds immediately
+    const release2 = await acquireFileLock(lockTarget, 200);
+    await release2();
+  });
+
+  // AC: @scoped-dispatch-shadow-serialization ac-8
+  it("should reclaim lock when holder exceeds max hold duration even if alive", async () => {
+    tempDir = await createTempDir();
+    const lockTarget = path.join(tempDir, "test.yaml");
+    const lockDir = `${lockTarget}.lock`;
+
+    // Create a lock with our own (alive) PID but a timestamp far in the past
+    await fs.mkdir(lockDir);
+    const oldTimestamp = Date.now() - 60_000; // 60 seconds ago
+    await fs.writeFile(path.join(lockDir, "pid"), `${process.pid}\n${oldTimestamp}\nfake-uuid`);
+
+    // With maxHoldMs=5000 (5s), the 60s-old lock exceeds the ceiling
+    const release = await acquireFileLock(lockTarget, {
+      timeoutMs: 1000,
+      maxHoldMs: 5000,
+    });
+
+    // Verify we acquired the lock
+    const pidContent = await readTestOutput(path.join(lockDir, "pid"));
+    expect(pidContent).toContain(String(process.pid));
+
+    // Verify the acquire info indicates force reclaim
+    expect(release.info.forceReclaimed).toBe(true);
+    expect(release.info.previousHolderPid).toBe(process.pid);
+    expect(release.info.previousHoldDurationMs).toBeGreaterThan(50_000);
+
+    await release();
+  });
+
+  // AC: @scoped-dispatch-shadow-serialization ac-8
+  it("should NOT reclaim lock when holder is within max hold duration", async () => {
+    tempDir = await createTempDir();
+    const lockTarget = path.join(tempDir, "test.yaml");
+    const lockDir = `${lockTarget}.lock`;
+
+    // Create a lock with our own (alive) PID and a recent timestamp
+    await fs.mkdir(lockDir);
+    await fs.writeFile(path.join(lockDir, "pid"), `${process.pid}\n${Date.now()}\nfake-uuid`);
+
+    // With maxHoldMs=30000 (30s), the fresh lock should NOT be reclaimable
+    await expect(
+      acquireFileLock(lockTarget, { timeoutMs: 200, maxHoldMs: 30_000 }),
+    ).rejects.toThrow(/Timed out waiting for file lock/);
+
+    // Clean up
+    await fs.rm(lockDir, { recursive: true, force: true });
+  });
+
+  // AC: @scoped-dispatch-shadow-serialization ac-8
+  it("should respect KSPEC_SHADOW_MUTATION_LOCK_MAX_HOLD_MS env var", async () => {
+    tempDir = await createTempDir();
+    const lockTarget = path.join(tempDir, "test.yaml");
+    const lockDir = `${lockTarget}.lock`;
+
+    // Create a lock with our own PID, 10 seconds old
+    await fs.mkdir(lockDir);
+    const tenSecondsAgo = Date.now() - 10_000;
+    await fs.writeFile(path.join(lockDir, "pid"), `${process.pid}\n${tenSecondsAgo}\nfake-uuid`);
+
+    // Set env var to 5 seconds — the 10s lock should be reclaimable
+    const original = process.env.KSPEC_SHADOW_MUTATION_LOCK_MAX_HOLD_MS;
+    process.env.KSPEC_SHADOW_MUTATION_LOCK_MAX_HOLD_MS = "5000";
+
+    try {
+      // No explicit maxHoldMs — should pick up from env
+      const release = await acquireFileLock(lockTarget, { timeoutMs: 1000 });
+      expect(release.info.forceReclaimed).toBe(true);
+      await release();
+    } finally {
+      if (original === undefined) {
+        delete process.env.KSPEC_SHADOW_MUTATION_LOCK_MAX_HOLD_MS;
+      } else {
+        process.env.KSPEC_SHADOW_MUTATION_LOCK_MAX_HOLD_MS = original;
+      }
+    }
+  });
+
+  // AC: @scoped-dispatch-shadow-serialization ac-10
+  it("should log diagnostic when force-reclaiming from alive process", async () => {
+    tempDir = await createTempDir();
+    const lockTarget = path.join(tempDir, "test.yaml");
+    const lockDir = `${lockTarget}.lock`;
+
+    // Create a lock with our own (alive) PID, far in the past
+    await fs.mkdir(lockDir);
+    const oldTimestamp = Date.now() - 60_000;
+    await fs.writeFile(path.join(lockDir, "pid"), `${process.pid}\n${oldTimestamp}\nfake-uuid`);
+
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    try {
+      const release = await acquireFileLock(lockTarget, {
+        timeoutMs: 1000,
+        maxHoldMs: 5000,
+      });
+
+      // Verify diagnostic was logged
+      expect(warnSpy).toHaveBeenCalledOnce();
+      const message = warnSpy.mock.calls[0][0] as string;
+      expect(message).toContain("[file-lock] Reclaiming lock");
+      expect(message).toContain(`PID ${process.pid}`);
+      expect(message).toContain("ceiling 5000ms");
+
+      await release();
+    } finally {
+      warnSpy.mockRestore();
+    }
+  });
+
+  // AC: @scoped-dispatch-shadow-serialization ac-10
+  it("should report forceReclaimed=false for dead-PID stale lock reclaim", async () => {
+    tempDir = await createTempDir();
+    const lockTarget = path.join(tempDir, "test.yaml");
+    const lockDir = `${lockTarget}.lock`;
+
+    // Create a stale lock with a dead PID
+    await fs.mkdir(lockDir);
+    await fs.writeFile(path.join(lockDir, "pid"), `999999\n${Date.now()}\nfake-uuid`);
+
+    const release = await acquireFileLock(lockTarget, { timeoutMs: 1000 });
+
+    // Dead-PID reclaim should NOT set forceReclaimed
+    expect(release.info.forceReclaimed).toBe(false);
+    expect(release.info.previousHolderPid).toBeNull();
+
+    await release();
+  });
+
+  // AC: @scoped-dispatch-shadow-serialization ac-8
+  it("should disable duration-based reclamation when maxHoldMs is 0", async () => {
+    tempDir = await createTempDir();
+    const lockTarget = path.join(tempDir, "test.yaml");
+    const lockDir = `${lockTarget}.lock`;
+
+    // Create a lock with our own (alive) PID, far in the past
+    await fs.mkdir(lockDir);
+    await fs.writeFile(
+      path.join(lockDir, "pid"),
+      `${process.pid}\n${Date.now() - 60_000}\nfake-uuid`,
+    );
+
+    // maxHoldMs=0 disables duration-based reclamation
+    await expect(
+      acquireFileLock(lockTarget, { timeoutMs: 200, maxHoldMs: 0 }),
+    ).rejects.toThrow(/Timed out waiting for file lock/);
+
+    await fs.rm(lockDir, { recursive: true, force: true });
   });
 });
