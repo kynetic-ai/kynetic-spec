@@ -75026,6 +75026,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMVF1K3JGT025XY76PJ5HHM4
         timestamp: 2026-03-29T00:14:04.830Z
+      - _ulid: 01KMVF1SC9RVPP79MBWJVSVS82
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMVF1RDP5AKAQ1K4J3412149
+        timestamp: 2026-03-29T00:14:10.313Z
     examined_commit: 6c58d673bad68d70fee52aa770d4792602926229
     external_links: []
     lifecycle_state: open
@@ -75076,7 +75083,24 @@ reviews:
               prove the required interleaving behavior.
             created_at: 2026-03-29T00:14:03.891Z
         kind: blocker
+      - _ulid: 01KMVF1RDP5AKAQ1K4J3412149
+        anchor:
+          type: code
+          commit: 6c58d673bad68d70fee52aa770d4792602926229
+          line_end: 463
+          line_start: 316
+          path: tests/file-lock.test.ts
+          side: head
+        entries:
+          - _ulid: 01KMVF1RDQNVF0YYBMZWW1D3KW
+            author: Test User
+            body: There is still no behavioral test for ac-11. The new file-lock tests cover ac-7/ac-8/ac-10
+              only, and the suite never exercises  reclaiming a dirty shadow worktree and rolling it
+              back before committing. Since ac-11 is the corruption-prevention path introduced by
+              this change, missing coverage here is a must-fix.
+            created_at: 2026-03-29T00:14:09.335Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-29T00:13:23.809Z
-    updated_at: 2026-03-29T00:14:03.891Z
+    updated_at: 2026-03-29T00:14:09.335Z
     notes: []
