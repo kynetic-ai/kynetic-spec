@@ -27391,12 +27391,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-29T09:05:18.466Z
+      updated_at: 2026-03-29T09:11:05.528Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-29T09:05:24.526Z
+      updated_at: 2026-03-29T09:11:05.528Z
     integration:
       status: pending
       detail: null
@@ -27404,7 +27404,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: c2a8353f4aa3a0e2ead188d9f184487defd94877
-      updated_at: 2026-03-29T09:05:18.466Z
+      updated_at: 2026-03-29T09:11:05.528Z
     lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KMW68KM0EXKESA30EMPW63VY"
@@ -27412,9 +27412,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-29T08:59:18.295Z
-      last_reconciled_at: 2026-03-29T09:05:24.526Z
+      last_reconciled_at: 2026-03-29T09:11:05.528Z
       created_at: 2026-03-29T08:11:03.853Z
-      updated_at: 2026-03-29T09:05:24.526Z
+      updated_at: 2026-03-29T09:11:05.528Z
     workspace_id: dispatch-workspace-01KMW68KM0EXKESA30EMPW63VY
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -27423,5 +27423,5 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-migrate-route-handlers-envelope/01kmw68k
         head: 41e45ab603c0de98920ef1f0a3e44954f3766350
-        last_seen_at: 2026-03-29T08:59:09.380Z
+        last_seen_at: 2026-03-29T09:11:05.528Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-route-handlers-envelope-01kmw68k
