@@ -78103,6 +78103,22 @@ reviews:
         runner: kspec
         created_at: 2026-03-29T08:42:08.327Z
         completed_at: 2026-03-29T08:42:08.327Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: 11 changed daemon route files, 3 changed tests, response-envelope.ts.
+          Commands run: git diff/stat, kspec task get, kspec item get, kspec review for-task, kspec
+          validate, rg AC annotations, npm test, npm test -- --run
+          tests/daemon-api-input-validation.test.ts, targeted source reads with sed/nl/rg. Claims
+          verified: full suite passes; q is optional on /api/search; missing-q branch still returns
+          legacy payload. Categories searched: correctness, cache-loading behavior, envelope
+          consistency, tests, error handling, integration."
+        name: review-evidence
+        required: false
+        runner: codex
+        created_at: 2026-03-29T08:42:10.176Z
+        completed_at: 2026-03-29T08:42:10.176Z
     events:
       - _ulid: 01KMWBVQDJ8C4G1Z241VFDS9YC
         actor: Test User
@@ -78131,6 +78147,13 @@ reviews:
           status: skipped
           name: kspec validate
         timestamp: 2026-03-29T08:42:08.961Z
+      - _ulid: 01KMWC3ZG65NR88CRT5DXKEYP8
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-03-29T08:42:10.822Z
     examined_commit: 8114e0c341800e1bde5f7083318783c1e4cbf345
     external_links: []
     lifecycle_state: open
@@ -78143,5 +78166,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-29T08:37:40.403Z
-    updated_at: 2026-03-29T08:42:08.327Z
+    updated_at: 2026-03-29T08:42:10.176Z
     notes: []
