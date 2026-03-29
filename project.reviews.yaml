@@ -76869,6 +76869,18 @@ reviews:
         runner: npm
         created_at: 2026-03-29T07:19:56.516Z
         completed_at: 2026-03-29T07:19:56.516Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Schema and references OK. Command exited 6 because of pre-existing repository warnings (1
+          orphaned skill dir plus existing alignment/completeness warnings); no task-specific
+          validation errors surfaced for @api-contract or @trait-api-endpoint.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-29T07:19:58.299Z
+        completed_at: 2026-03-29T07:19:58.299Z
     events:
       - _ulid: 01KMW75WM4GHS1B1CCDX30N60E
         actor: Test User
@@ -76897,6 +76909,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-29T07:19:57.062Z
+      - _ulid: 01KMW7DF6MNS5WD9HJ3HEAAAC7
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-29T07:19:58.932Z
     examined_commit: 6943dad4b8203281f7a00c18ae29804ce34c559a
     external_links: []
     lifecycle_state: open
@@ -76943,5 +76962,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-29T07:15:50.533Z
-    updated_at: 2026-03-29T07:19:56.516Z
+    updated_at: 2026-03-29T07:19:58.299Z
     notes: []
