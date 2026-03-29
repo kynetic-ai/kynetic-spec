@@ -75451,3 +75451,30 @@ reviews:
     created_at: 2026-03-29T00:54:41.754Z
     updated_at: 2026-03-29T00:59:15.845Z
     notes: []
+  - _ulid: 01KMVJ8QGEZTKRG0P3X7RM1MBV
+    slugs: []
+    title: Review fix-dispatch-shadow-mutation-lock-contention-and-leak-between-daemon-and-agents (cycle
+      2)
+    author: Test User
+    checks: []
+    events:
+      - _ulid: 01KMVJ8QGEKKRX97AB5JYEXYA6
+        actor: Test User
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-29T01:10:23.502Z
+    examined_commit: 5055285aca2f919de50c96cdff688775120a90d5
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KMVCF95W6HCCPP6H5SSA7HBG"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-29T01:10:23.502Z
+    updated_at: null
+    notes: []
