@@ -36,7 +36,7 @@ description: |
 spec_ref: "@daemon-entity-cache"
 plan_ref: "@plan-daemon-cache-warming-ux"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-spec-update-entity-cache"
@@ -46,6 +46,14 @@ tags:
   - daemon
   - websocket
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-29T09:53:18.262Z
+  commit: 107be4397478b42cab064d2afccd4750bbce812c
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
 session_id: 01KMWFRX43S942TD82MZ6MACBM
 history:
   - author: "@claude"
@@ -68,7 +76,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-03-29T09:46:24.611Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-03-29T09:53:18.262Z
+          commit: 107be4397478b42cab064d2afccd4750bbce812c
+          remote: origin
+          remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous: null
+      submitted_at:
+        new: 2026-03-29T09:53:18.264Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-03-29T09:53:18.264Z
 created_at: 2026-03-29T06:59:51.311Z
 started_at: 2026-03-29T09:46:24.610Z
+submitted_at: 2026-03-29T09:53:18.264Z
 todos: []
 automation: eligible

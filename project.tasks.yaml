@@ -23121,7 +23121,7 @@
   type: task
   spec_ref: "@daemon-entity-cache"
   plan_ref: "@plan-daemon-cache-warming-ux"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-spec-update-entity-cache"
@@ -23133,6 +23133,7 @@
   todos_count: 0
   created_at: 2026-03-29T06:59:51.311Z
   started_at: 2026-03-29T09:46:24.610Z
+  submitted_at: 2026-03-29T09:53:18.264Z
   automation: eligible
 - _ulid: 01KMW68M6EEC48D7WFTP623BHG
   slugs:
