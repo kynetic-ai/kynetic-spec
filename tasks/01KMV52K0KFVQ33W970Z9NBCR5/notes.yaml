@@ -142,3 +142,35 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-29T00:07:50.213Z
+  - _ulid: 01KMVH6JMD64JTCNPX55G8NFKM
+    content: >-
+      Fix cycle 4: addressed the blocker on KSPEC_SPEC_DIR clearing in daemon command execution.
+
+
+      Root cause analysis: The previous fix (commit afd332b4c) saved/cleared/restored
+      process.env.KSPEC_SPEC_DIR around daemon command execution. This created a race condition
+      because process.env is shared across all vitest worker threads — concurrent dispatch tests
+      that set KSPEC_SPEC_DIR would find it missing during the clear window.
+
+
+      Fix (commit 9b50c4d10): Replaced process.env mutation with AsyncLocalStorage-based context
+      propagation. Added runWithoutSpecDirOverride() in src/parser/yaml.ts that sets an
+      async-context flag. initContext() and loadAllTasks() check this flag before reading
+      KSPEC_SPEC_DIR. The daemon's executeCommand() and batch execution wrap their invocations in
+      this context. This is confined to the async execution chain and cannot race with other
+      threads.
+
+
+      Full-suite note: daemon-command-api still shows 11 flaky failures in the full suite, but
+      investigation confirms this is a pre-existing issue caused by process.chdir() being
+      process-wide (not thread-local). Verified by testing dev baseline code — same failures occur
+      without any KSPEC_SPEC_DIR changes. Targeted 2-file repro (daemon-command-api +
+      terminal-reconciliation) passes consistently. This pre-existing flakiness is outside the scope
+      of this task.
+
+
+      Re-verified all ACs (ac-12, ac-13) — workspace.ts implementation and terminal reconciliation
+      tests unchanged and passing.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-29T00:51:44.397Z
