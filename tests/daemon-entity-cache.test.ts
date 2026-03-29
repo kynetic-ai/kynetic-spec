@@ -1730,4 +1730,25 @@ describe("ProjectEntityCache", () => {
       expect(after.domains.items.lastInvalidatedAt).not.toBeNull();
     });
   });
+
+  // ─── AC: ac-domain-ready-event ──────────────────────────────────────────
+
+  // AC: @daemon-entity-cache ac-domain-ready-event
+  describe("ac-domain-ready-event: broadcast when domain transitions to ready", () => {
+    it.todo(
+      "should broadcast a real-time event when a domain transitions from loading to ready"
+    );
+
+    it.todo(
+      "should broadcast a real-time event when a domain transitions from degraded to ready"
+    );
+
+    it.todo(
+      "should include the domain name and project identifier in the broadcast event"
+    );
+
+    it.todo(
+      "should not broadcast when a domain stays in ready state during a reload"
+    );
+  });
 });
