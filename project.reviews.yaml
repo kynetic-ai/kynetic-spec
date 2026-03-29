@@ -76425,6 +76425,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMW4YP9Z3EQC28N36V6TKRY7
         timestamp: 2026-03-29T06:36:58.070Z
+      - _ulid: 01KMW4YQNBV1Z9WZ6VKQZHJ22G
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KMW4YPAWT82VQ687EN95NSQG
+        timestamp: 2026-03-29T06:36:58.923Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -76453,7 +76460,21 @@ reviews:
               endpoints and the corresponding client contract updates.
             created_at: 2026-03-29T06:36:57.536Z
         kind: blocker
+      - _ulid: 01KMW4YPAWT82VQ687EN95NSQG
+        anchor:
+          type: structured
+          ref: "@task-ui-unwrap-envelope"
+          section: description
+        entries:
+          - _ulid: 01KMW4YPAX7HF8AQCKQYS602WG
+            author: Jacob Chapel
+            body: "This task still leaves the static-mode migration unresolved: it says the static data helpers
+              should either return envelope-compatible shapes or the unwrapping should handle both
+              formats. That leaves the worker without a single contract to implement or test. Pick
+              one compatibility strategy and state where the normalization lives."
+            created_at: 2026-03-29T06:36:57.565Z
+        kind: question
     verdicts: []
     created_at: 2026-03-29T06:36:16.234Z
-    updated_at: 2026-03-29T06:36:57.536Z
+    updated_at: 2026-03-29T06:36:57.565Z
     notes: []
