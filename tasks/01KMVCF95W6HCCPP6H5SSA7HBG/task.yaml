@@ -146,7 +146,7 @@ description: >-
 spec_ref: "@scoped-dispatch-shadow-serialization"
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on: []
 context: []
@@ -165,7 +165,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
   upstream_ref: refs/heads/dev
-session_id: 01KMVE3BPMJHK8XBJS1ERQAK3H
+session_id: null
 history:
   - author: "@claude"
     changes:
@@ -466,6 +466,16 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-03-29T00:13:31.460Z
+  - author: Test User
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KMVE3BPMJHK8XBJS1ERQAK3H
+    command: review-verdict-needs-work
+    timestamp: 2026-03-29T00:15:48.789Z
 created_at: 2026-03-28T23:29:06.748Z
 started_at: 2026-03-28T23:58:13.891Z
 submitted_at: 2026-03-29T00:10:29.052Z

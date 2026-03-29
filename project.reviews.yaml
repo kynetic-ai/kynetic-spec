@@ -75040,9 +75040,25 @@ reviews:
           kind: nit
           thread_ulid: 01KMVF3GY3ZKGQNK6T34PJBQZY
         timestamp: 2026-03-29T00:15:07.797Z
+      - _ulid: 01KMVF4R7Y5TQCKQCZSA0KHF2E
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-29T00:15:47.454Z
+      - _ulid: 01KMVF4R7YNAMJFCD45MVDMQ1C
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-29T00:15:47.454Z
     examined_commit: 6c58d673bad68d70fee52aa770d4792602926229
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -75123,7 +75139,14 @@ reviews:
               the shared lock wrapper."
             created_at: 2026-03-29T00:15:07.203Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-29T00:15:47.454Z
     created_at: 2026-03-29T00:13:23.809Z
-    updated_at: 2026-03-29T00:15:07.203Z
+    updated_at: 2026-03-29T00:15:47.454Z
     notes: []
