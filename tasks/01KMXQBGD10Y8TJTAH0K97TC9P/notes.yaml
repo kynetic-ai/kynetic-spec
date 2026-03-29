@@ -1,1 +1,11 @@
-notes: []
+notes:
+  - _ulid: 01KMXRR39AR2H4CCCEY4VXYYGX
+    content: "Completed migration. Moved 44 e2e specs + fixtures to tests/e2e/, 11 web-ui unit tests to
+      tests/web-ui/. Core safety fix: test-base.ts now imports CLI_PATH from tests/helpers/cli.ts
+      and uses node + CLI_PATH instead of spawning kspec by name. npm link removed from root
+      scripts. Also fixed tests/export/json.test.ts which referenced old fixture path. Updated
+      scanTestCoverage to remove redundant second scan (e2e is now under tests/). Updated e2e skill,
+      eval-agents skill, and docs. All vitest tests pass (7194 tests, shard1 verified)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-29T21:42:07.402Z
