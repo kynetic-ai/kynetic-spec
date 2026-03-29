@@ -18379,9 +18379,21 @@ runs:
     completed_at: 2026-03-29T09:21:25.190Z
   - _ulid: 01KMWEZQDGBGF3MJV5MYA03471
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-03-29T09:32:17.200Z
+        completed_at: 2026-03-29T09:33:12.188Z
+        notes: "Session: fix cycle 5 for task-spec-update-entity-cache. Two blockers from review @01KMWDV0:
+          (1) broadcast payload missing projectPath — PubSubManager 4th arg is server-side filter
+          only, not serialized; (2) test only checked internal callback, not broadcast layer. Both
+          fixed in one commit."
+      - status: completed
+        step_index: 1
+        started_at: 2026-03-29T09:33:12.188Z
+        completed_at: 2026-03-29T09:33:12.188Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-29T09:32:17.200Z
