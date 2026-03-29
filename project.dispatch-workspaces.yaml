@@ -27224,24 +27224,22 @@ workspaces:
     base_branch_point: 6943dad4b8203281f7a00c18ae29804ce34c559a
     bootstrap:
       status: succeeded
-      canonicalBranchHead: 874f6f54ea34af06938220461a6500d1ca2bcddc
+      canonicalBranchHead: a243c68309f3bec0fd3937b629962f8db01195e4
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
       failureMessage: null
       invalidationReasons:
         - canonical-branch-head-changed
-        - workspace-dependencies-missing
-      lastRole: reviewer
-      lastRunAt: 2026-03-29T08:01:29.000Z
+      lastRole: worker
+      lastRunAt: 2026-03-29T07:51:55.284Z
       roleStates:
         reviewer:
           status: succeeded
-          canonicalBranchHead: 874f6f54ea34af06938220461a6500d1ca2bcddc
+          canonicalBranchHead: a243c68309f3bec0fd3937b629962f8db01195e4
           configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
           failureMessage: null
           invalidationReasons:
-            - canonical-branch-head-changed
             - workspace-dependencies-missing
-          lastRunAt: 2026-03-29T08:01:29.000Z
+          lastRunAt: 2026-03-29T07:37:17.925Z
           steps:
             - status: succeeded
               allowTrackedChanges: false
@@ -27272,27 +27270,7 @@ workspaces:
             - canonical-branch-head-changed
           lastRunAt: 2026-03-29T07:51:55.284Z
           steps: []
-      steps:
-        - status: succeeded
-          allowTrackedChanges: false
-          idempotent: true
-          name: install-workspace-dependencies
-          output: |-
-            added 287 packages, and audited 292 packages in 3s
-
-            67 packages are looking for funding
-              run `npm fund` for details
-
-            12 vulnerabilities (1 low, 7 moderate, 4 high)
-
-            To address all issues, run:
-              npm audit fix
-
-            Run `npm audit` for details.
-          reviewerRerunAllowed: true
-          role: reviewer
-          run: npm ci
-          source: dispatch
+      steps: []
     branch_provenance:
       adopted_at: null
       adopted_from: null
@@ -27307,12 +27285,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-29T08:01:24.140Z
+      updated_at: 2026-03-29T08:01:39.094Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-29T08:01:24.140Z
+      updated_at: 2026-03-29T08:01:39.094Z
     integration:
       status: pending
       detail: null
@@ -27320,7 +27298,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 6943dad4b8203281f7a00c18ae29804ce34c559a
-      updated_at: 2026-03-29T08:01:24.140Z
+      updated_at: 2026-03-29T08:01:39.094Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KMW68KC5Z7W9QJP96GYRYPHE"
@@ -27328,21 +27306,16 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-29T07:51:57.777Z
-      last_reconciled_at: 2026-03-29T08:01:24.140Z
+      last_reconciled_at: 2026-03-29T08:01:39.094Z
       created_at: 2026-03-29T07:21:36.147Z
-      updated_at: 2026-03-29T08:01:29.000Z
+      updated_at: 2026-03-29T08:01:39.094Z
     workspace_id: dispatch-workspace-01KMW68KC5Z7W9QJP96GYRYPHE
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 874f6f54ea34af06938220461a6500d1ca2bcddc
-        last_seen_at: 2026-03-29T08:01:24.140Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-api-response-envelope-type-01kmw68k-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-api-response-envelope-type/01kmw68k
-        head: 874f6f54ea34af06938220461a6500d1ca2bcddc
-        last_seen_at: 2026-03-29T08:01:24.140Z
+        head: a243c68309f3bec0fd3937b629962f8db01195e4
+        last_seen_at: 2026-03-29T07:51:54.255Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-api-response-envelope-type-01kmw68k
