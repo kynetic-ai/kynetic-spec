@@ -18379,7 +18379,7 @@ runs:
     completed_at: 2026-03-29T09:21:25.190Z
   - _ulid: 01KMWEZQDGBGF3MJV5MYA03471
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -18393,7 +18393,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-29T09:33:12.188Z
-        completed_at: 2026-03-29T09:33:12.188Z
+        completed_at: 2026-03-29T09:33:44.060Z
+        notes: "Identified: (1) SUCCESS - precise reviewer feedback traced PubSubManager broadcast path to
+          prove projectPath never reaches clients. (2) FRICTION - needs_work submit requires task
+          start first — already tracked as 01KMNHAV. (3) PATTERN - when wiring callbacks across
+          module boundaries, tests should verify the serialized output at the integration boundary,
+          not just callback arguments at the first hop."
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-29T09:33:44.060Z
+        completed_at: 2026-03-29T09:33:44.060Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-29T09:32:17.200Z
