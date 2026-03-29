@@ -80024,6 +80024,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-29T11:32:19.449Z
+      - _ulid: 01KMWNWYQPKFBNTMV0VSKV2SN7
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KMWNWY5H6CFY7TT49BHVSQSW
+        timestamp: 2026-03-29T11:33:06.422Z
     examined_commit: cd80c3aca1b13a308b92ccc43fcd539a84e62692
     external_links: []
     lifecycle_state: open
@@ -80033,8 +80040,35 @@ reviews:
       content_hash: ""
       ref: "@01KMW68M6EEC48D7WFTP623BHG"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KMWNWY5H6CFY7TT49BHVSQSW
+        anchor:
+          type: code
+          commit: cd80c3aca1b13a308b92ccc43fcd539a84e62692
+          line_end: 142
+          line_start: 73
+          path: packages/web-ui/src/lib/api.ts
+          side: head
+        entries:
+          - _ulid: 01KMWNWY5H6KE90829SRSVC2HT
+            author: Test User
+            body: >-
+              The new unwrap helpers discard response metadata immediately, so callers can no longer
+              observe  once a live fetch resolves. This breaks the task requirement that cache
+              readiness remain inspectable before data reaches TanStack Query: a  response is
+              normalized to the same legacy shape as a real empty result. Evidence: every migrated
+              live list/detail fetch in this file now returns , and
+              packages/web-ui/src/lib/api.ts:79: * Maps { data: T[], meta: { total, offset, limit,
+              cache_status } } → { items: T[], total, offset, limit }.
+
+              packages/web-ui/src/lib/api-static.ts:38: * Wrap data in a unified API response
+              envelope with cache_status: "ready".
+
+              packages/web-ui/src/lib/api-static.ts:46:    meta: { cache_status: "ready", ...meta },
+              finds no runtime consumer beyond comments.
+            created_at: 2026-03-29T11:33:05.841Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-29T11:32:04.356Z
-    updated_at: 2026-03-29T11:32:18.878Z
+    updated_at: 2026-03-29T11:33:05.841Z
     notes: []
