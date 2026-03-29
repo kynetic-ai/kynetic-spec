@@ -81,3 +81,33 @@ notes:
     supersedes: null
     author: Test User
     created_at: 2026-03-29T03:47:44.078Z
+  - _ulid: 01KMVWBBYH28EA8FJMFK5NJS3V
+    content: >-
+      Fix cycle 1: addressed both blocker threads (duplicate issue).
+
+
+      Problem: deleteDispatchWorkspaceRecord used only the per-file lock, bypassing the dispatch
+      shadow-mutation lock and shadow branch commit. _purgeUnrecoverableWorkspaceRecord in
+      dispatch.ts called it directly, so a failed or interrupted purge could leave an uncommitted
+      deletion in the shadow worktree. Tests only asserted YAML file changes, not shadow-backed
+      durability.
+
+
+      Fix:
+
+      1. Added purgeDispatchWorkspaceRecord() in workspace.ts — wraps the delete inside
+      withDispatchShadowMutationLock + commitWorkspaceRegistryToShadow, matching the
+      persistWorkspaceRecord pattern.
+
+      2. Updated _purgeUnrecoverableWorkspaceRecord in dispatch.ts to call the new durable function
+      instead of deleteDispatchWorkspaceRecord directly.
+
+      3. Added two shadow-backed tests: (a) verifies purge creates a shadow commit and leaves clean
+      worktree, (b) verifies purge acquires the shadow mutation lock (times out when held).
+
+
+      Re-verified all 14 ACs against implementation. Full test suite passes (7088 tests, 0
+      failures).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-29T04:06:35.729Z
