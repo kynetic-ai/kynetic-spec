@@ -76403,7 +76403,18 @@ reviews:
     slugs: []
     title: "Plan review: Daemon Cache Warming UX"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Plan context still claims watcher-triggered reloads surface empty loading responses, but
+          @daemon-entity-cache now includes ac-stale-during-reload and the implementation keeps
+          ready domains serving stale data during reload.
+        name: Existing spec alignment
+        required: true
+        created_at: 2026-03-29T06:37:13.679Z
+        completed_at: 2026-03-29T06:37:13.679Z
     events:
       - _ulid: 01KMW4XDZ9Z39NRSPEJ5DAX67D
         actor: Jacob Chapel
@@ -76439,6 +76450,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KMW4YPD1CND6MDT3YJ3F5ZP6
         timestamp: 2026-03-29T06:36:59.843Z
+      - _ulid: 01KMW4Z6K1FHFBEB38MQWG5NAT
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: Existing spec alignment
+        timestamp: 2026-03-29T06:37:14.209Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -76500,5 +76518,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-29T06:36:16.234Z
-    updated_at: 2026-03-29T06:36:57.633Z
+    updated_at: 2026-03-29T06:37:13.679Z
     notes: []
