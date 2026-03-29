@@ -29,6 +29,8 @@ import {
   getAllRegisteredCaches,
   clearAllEntityCaches,
   type CacheDomain,
+  type DomainState,
+  type DomainReadyCallback,
   DOMAIN_LOAD_ORDER,
 } from "../src/daemon/entity-cache";
 import { ensureSplitBackendRegistered } from "../src/parser/split-backend";
@@ -1735,20 +1737,93 @@ describe("ProjectEntityCache", () => {
 
   // AC: @daemon-entity-cache ac-domain-ready-event
   describe("ac-domain-ready-event: broadcast when domain transitions to ready", () => {
-    it.todo(
-      "should broadcast a real-time event when a domain transitions from loading to ready"
-    );
+    it("should broadcast a real-time event when a domain transitions from loading to ready", async () => {
+      const readyEvents: Array<{ domain: CacheDomain; projectPath: string; previousState: DomainState }> = [];
+      const onDomainReady: DomainReadyCallback = (domain, projectPath, previousState) => {
+        readyEvents.push({ domain, projectPath, previousState });
+      };
 
-    it.todo(
-      "should broadcast a real-time event when a domain transitions from degraded to ready"
-    );
+      const cache = new ProjectEntityCache(projectA, undefined, onDomainReady);
+      expect(cache.getDomainState("tasks")).toBe("unloaded");
 
-    it.todo(
-      "should include the domain name and project identifier in the broadcast event"
-    );
+      await cache.loadDomain("tasks");
 
-    it.todo(
-      "should not broadcast when a domain stays in ready state during a reload"
-    );
+      expect(cache.getDomainState("tasks")).toBe("ready");
+      expect(readyEvents).toHaveLength(1);
+      expect(readyEvents[0].domain).toBe("tasks");
+      expect(readyEvents[0].previousState).toBe("unloaded");
+    });
+
+    it("should broadcast a real-time event when a domain transitions from degraded to ready", async () => {
+      const readyEvents: Array<{ domain: CacheDomain; projectPath: string; previousState: DomainState }> = [];
+      const onDomainReady: DomainReadyCallback = (domain, projectPath, previousState) => {
+        readyEvents.push({ domain, projectPath, previousState });
+      };
+
+      const cache = new ProjectEntityCache(projectA, undefined, onDomainReady);
+
+      // Force the domain into degraded state by making initContext fail
+      const initContextSpy = vi.spyOn(yamlModule, "initContext")
+        .mockRejectedValueOnce(new Error("simulated failure"));
+
+      await cache.loadDomain("tasks");
+      expect(cache.getDomainState("tasks")).toBe("degraded");
+
+      initContextSpy.mockRestore();
+
+      // The first load should NOT have fired a ready event (it degraded)
+      expect(readyEvents).toHaveLength(0);
+
+      // Now reload — should transition from degraded to ready
+      await cache.loadDomain("tasks");
+      expect(cache.getDomainState("tasks")).toBe("ready");
+      expect(readyEvents).toHaveLength(1);
+      expect(readyEvents[0].domain).toBe("tasks");
+      expect(readyEvents[0].previousState).toBe("degraded");
+    });
+
+    it("should include the domain name and project identifier in the broadcast event", async () => {
+      const readyEvents: Array<{ domain: CacheDomain; projectPath: string; previousState: DomainState }> = [];
+      const onDomainReady: DomainReadyCallback = (domain, projectPath, previousState) => {
+        readyEvents.push({ domain, projectPath, previousState });
+      };
+
+      const cache = new ProjectEntityCache(projectA, undefined, onDomainReady);
+
+      await cache.loadDomain("tasks");
+      await cache.loadDomain("items");
+
+      expect(readyEvents).toHaveLength(2);
+
+      // First event — tasks domain
+      expect(readyEvents[0].domain).toBe("tasks");
+      expect(readyEvents[0].projectPath).toBe(projectA);
+      expect(readyEvents[0].previousState).toBe("unloaded");
+
+      // Second event — items domain
+      expect(readyEvents[1].domain).toBe("items");
+      expect(readyEvents[1].projectPath).toBe(projectA);
+      expect(readyEvents[1].previousState).toBe("unloaded");
+    });
+
+    it("should not broadcast when a domain stays in ready state during a reload", async () => {
+      const readyEvents: Array<{ domain: CacheDomain; projectPath: string; previousState: DomainState }> = [];
+      const onDomainReady: DomainReadyCallback = (domain, projectPath, previousState) => {
+        readyEvents.push({ domain, projectPath, previousState });
+      };
+
+      const cache = new ProjectEntityCache(projectA, undefined, onDomainReady);
+
+      // Initial load — should fire ready event
+      await cache.loadDomain("tasks");
+      expect(cache.getDomainState("tasks")).toBe("ready");
+      expect(readyEvents).toHaveLength(1);
+
+      // Reload via invalidation — domain stays ready (ac-stale-during-reload),
+      // so no additional ready event should fire
+      await cache.invalidateDomain("tasks");
+      expect(cache.getDomainState("tasks")).toBe("ready");
+      expect(readyEvents).toHaveLength(1); // Still just the initial one
+    });
   });
 });
