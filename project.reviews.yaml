@@ -80689,6 +80689,16 @@ reviews:
         runner: vitest
         created_at: 2026-03-29T12:47:28.437Z
         completed_at: 2026-03-29T12:47:28.437Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "node scripts/test.cjs query-client-retry --fresh: 8/8 suites passed, 14/14 tests passed."
+        name: query-client-retry
+        required: true
+        runner: vitest
+        created_at: 2026-03-29T12:47:32.524Z
+        completed_at: 2026-03-29T12:47:32.524Z
     events:
       - _ulid: 01KMWT2T3T053S2HZA9251BBQ9
         actor: Test User
@@ -80738,6 +80748,13 @@ reviews:
           status: pass
           name: cache-warming-view-states
         timestamp: 2026-03-29T12:47:29.011Z
+      - _ulid: 01KMWT58P7PVQR6EJTYMG9RFTT
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: query-client-retry
+        timestamp: 2026-03-29T12:47:33.063Z
     examined_commit: 25f80a8785149c5266bda75c4441abc7057a00bd
     external_links: []
     lifecycle_state: open
@@ -80803,5 +80820,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-29T12:46:12.602Z
-    updated_at: 2026-03-29T12:47:28.437Z
+    updated_at: 2026-03-29T12:47:32.524Z
     notes: []
